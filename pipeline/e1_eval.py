@@ -477,9 +477,23 @@ def load_policy(ckpt, device: str = "cpu"):
 # ------------------------------------------------------------------------------------------------------
 # one match
 # ------------------------------------------------------------------------------------------------------
+_FORM_SUFFIX = ("", "@evolution", "@hero")          # RoyaleSim MatchSetup.forms value -> the corpus name suffix
+
+
+def loaded_deck_names(env, side: int, names: Sequence[str]) -> list[str]:
+    """``names`` (``side``'s deck, in env deck order) as the policy's form inputs should read them. Default (no
+    ``forms_mode`` or "base"): unchanged -- the DECKED form, which RoyaleSim does not play. RoyaleSim forms_mode "deck":
+    each card's suffix set to the form the engine LOADED (``env.loaded_forms``; a refused form -> base), i.e. the decked
+    """
+    if getattr(env, "forms_mode", "base") != "deck":
+        return names
+    return [str(n).split("@")[0] + _FORM_SUFFIX[f] for n, f in zip(names, env.loaded_forms[side])]
+
+
 def _slot_maps(env, deck, entry) -> tuple[list[str], dict[int, int], list[float]]:
     side = env.side
     engine_deck = [f"{it['name']}@{it['form']}" if it["form"] != "base" else str(it["name"]) for it in env.final_decks[side]]
+    engine_deck = loaded_deck_names(env, side, engine_deck)
     deck_index_of_slot: dict[int, int] = {}
     for i, nm in enumerate(engine_deck):
         s = deck.slot_of(vocab.engine_key(nm))
@@ -759,6 +773,8 @@ class Match:
             **({"action_delay_ticks": self.delay, "plays_unlanded": self.n_unlanded,
                 "plays_refused_at_landing": n_att - n_acc - self.n_unlanded} if self.delay else {}),
             **({"extrapolate_ticks": self.extrap} if self.extrap else {}),
+            **({"forms_mode": "deck", "form_fallbacks": [list(x) for x in env.form_fallbacks]}
+               if getattr(env, "forms_mode", "base") == "deck" else {}),
         }
 
     def _outcome(self) -> tuple[str, tuple[int, int]]:
@@ -941,7 +957,7 @@ class SelfPlaySide(Match):
         self._setup(env, selfplay_deck(names), k, cfg)
         self.entry, self.model = {"tag": tag}, model
         self.side, self.mirror = int(side), int(side) == 1
-        self.engine_deck = list(names)
+        self.engine_deck = list(loaded_deck_names(env, self.side, names))
         ix = {self.deck.slot_of(vocab.engine_key(n)): i for i, n in enumerate(names)}
         if sorted(ix) != list(range(N_SLOTS)):
             raise RuntimeError(f"{tag}: engine deck {list(names)} does not cover the 8 deck slots")

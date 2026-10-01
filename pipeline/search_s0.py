@@ -416,6 +416,7 @@ class Runner:
                 "opp_plays_accepted": r["opp_side"]["plays_accepted"], "decisions": r["decisions"],
                 **st, "search_s": round(st["search_s"], 2),
                 "s_per_searched": round(st["search_s"] / st["searched"], 3) if st["searched"] else None,
+                **({k: r[k] for k in ("forms_mode", "form_fallbacks")} if "forms_mode" in r else {}),
                 "wall_s": round(time.perf_counter() - t0, 1)}
 
     def round(self, m, ds, arm: str, st: dict, rng: random.Random) -> None:
@@ -499,9 +500,9 @@ def _init_worker(args: dict) -> None:
     if "s1" in args["opps"]:
         s1, si = E.load_policy(REPO / args["s1"], dev)
         opps["s1"] = (s1, live_cfg(TAU_OPP, str(si.get("grid", "floor")), dev))
-    cap = int(args["tail_cap"])
+    cap, fm = int(args["tail_cap"]), args.get("forms_mode", "base")
     _W["runner"] = Runner(gen, opps, live_cfg(TAU_PLAIN, gi["grid"], dev),
-                          lambda: RoyaleSelfPlayEnv(decision_ticks=10, tail_cap=cap),
+                          lambda: RoyaleSelfPlayEnv(decision_ticks=10, tail_cap=cap, forms_mode=fm),
                           horizon_s=args["horizon"], interval=args["interval"], topk=args["topk"], cells=args["cells"],
                           search_min_p=args["search_min_p"], rollout_self=args.get("rollout_self", "idle"))
     _W["census"] = league_decks(REPO / "scratchpad/gauntlet/L68/selfplay/loadable_decks.json")
@@ -612,6 +613,9 @@ def main(argv=None) -> int:
                     help="our side in a fork after the candidate: idle (S0) or policy (its own live rule, tau 0.35)")
     ap.add_argument("--workers", type=int, default=1, help="parallel matches (processes)")
     ap.add_argument("--tail-cap", type=int, default=7200, help="match end tick cap (RoyaleSelfPlayEnv tail_cap)")
+    ap.add_argument("--forms-mode", default="base", choices=("base", "deck"),
+                    help="RoyaleSim card forms: base = every card as its base card (today); deck = decked evolutions / "
+                         "heroes the engine loads, refused forms fall back to base (royale_env docstring)")
     ap.add_argument("--max-wall-min", type=float, default=0.0,
                     help="0 = none; else no match starts after this and running matches stop (wall_truncated)")
     a = ap.parse_args(argv)
@@ -636,7 +640,8 @@ def main(argv=None) -> int:
     opp_sha = sha256(REPO / a.opp_gen)
     wargs = {"gen": a.gen, "opp_gen": a.opp_gen, "opp_gen_sha256": opp_sha, "s1": a.s1, "opps": opps, "threads": a.threads, "tail_cap": a.tail_cap, "horizon": a.horizon,
              "interval": a.interval, "topk": a.topk, "cells": a.cells,
-             "device": a.device, "search_min_p": a.search_min_p, "rollout_self": a.rollout_self}
+             "device": a.device, "search_min_p": a.search_min_p, "rollout_self": a.rollout_self,
+             "forms_mode": a.forms_mode}
     (a.out / "run.json").write_text(json.dumps({**vars(a), "out": str(a.out), "summarise": None,
                                                 "gen_sha256": sha256(REPO / a.gen), "opp_gen_sha256": opp_sha,
                                                 "s1_sha256": sha256(REPO / a.s1),

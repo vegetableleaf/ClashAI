@@ -8,7 +8,13 @@ with ``match.OVERTIME_S`` = 120 (L68 local patch) or 62% of pool matches end a m
 
 What the engine cannot play is a DECK problem, not a runtime one: ``reset`` refuses an entry whose decks name a card
 the catalogue lacks, unless ``subs`` maps it to one it has (e.g. {"Tornado": "Arrows"} for an engine without Tornado; RoyaleSim plays real Tornado since 2026-09-23, and no run passes subs).
-Evolution / hero forms run as the base card -- RoyaleSim has no forms.
+Evolution / hero forms: ``forms_mode`` "base" (default) plays every card as the base card, as before RoyaleSim had
+forms. "deck" plays each entry's decked form (``@evolution`` -> 1, ``@hero`` -> 2; pool items' ``form``) through
+``MatchSetup.forms``: an evolved card plays its evolution on every third play of it (the engine's counter,
+``PlayerState.evo``); a hero is an ability button this wrapper never presses. A form the engine refuses (RoyaleSim
+369fe33: only Tesla / Knight / Skeletons evolve, only Knight has a hero, of icebow's cards) falls back to the base card
+and is recorded per reset in ``form_fallbacks`` [(side, name, form)]; ``loaded_forms[side]`` = what was loaded, in
+``deck_ids`` order (e1_eval feeds it to the policy's form inputs).
 
 Needs ``royalesim`` + ``royalegym`` importable (the Royale stack venv, or both installed into the caller's venv).
 """
@@ -32,6 +38,10 @@ REGEN_SCHEDULE = ((0, 1 / 56), (2400, 1 / 28), (4800, 1 / 18.6), (6000, 0.0))
 NOT_ENOUGH_ELIXIR = 13
 NOT_IN_HAND = 1003              # deck_index names a card that is not in the hand right now
 REFUSED_BASE = 2000             # 2000 + DeployStatus for every other refusal
+FORMS_MODES = ("base", "deck")
+FORM_OF = {"": 0, "base": 0, "evolution": 1, "hero": 2}   # name suffix / pool item ``form`` -> MatchSetup.forms value
+# (card_id, form) -> whether this process's RoyaleSim build loads it. ponytail: one engine build per process assumed.
+_FORM_LOADS: dict[tuple[int, int], bool] = {}
 RESULT_CODE_NAMES = {NOT_ENOUGH_ELIXIR: "not_enough_elixir", NOT_IN_HAND: "not_in_hand",
                      **{REFUSED_BASE + s: s.name.lower() for s in DeployStatus}}
 
@@ -87,7 +97,11 @@ class _Core:
 
 class RoyalePoolEnv:
     def __init__(self, *, decision_ticks: int = 10, elixir_slack: int = 40, tail_cap: int = 7200,
-                 warmup_ticks: int = 90, seed: int = 0, subs: Optional[dict[str, str]] = None, **_ignored):
+                 warmup_ticks: int = 90, seed: int = 0, subs: Optional[dict[str, str]] = None,
+                 forms_mode: str = "base", **_ignored):
+        if forms_mode not in FORMS_MODES:
+            raise ValueError(f"forms_mode {forms_mode!r} not in {FORMS_MODES}")
+        self.forms_mode = forms_mode
         self.core = RustEngine()
         self.ids = {c.name: c.card_id for c in self.core.cards()}
         self.names = {v: k for k, v in self.ids.items()}
@@ -104,6 +118,37 @@ class RoyalePoolEnv:
             raise UnsupportedDeck(name)
         return self.ids[n]
 
+    def _setup(self, deal: dict, order: dict, wanted: Optional[dict]) -> MatchSetup:
+        """The MatchSetup for deal ids ``deal[s]`` (= ``deck_ids[s]`` permuted by ``order[s]``). ``wanted`` (deck mode):
+        {side: decked form per ``deck_ids`` entry}; refused forms fall back to 0 (``form_fallbacks``). Base mode:
+        today's setup exactly."""
+        if self.forms_mode == "base":
+            return MatchSetup(decks=[deal[0], deal[1]], shuffle=ShuffleMode.NONE)
+        self.form_fallbacks, self.loaded_forms = [], {}
+        for s in (0, 1):
+            self.loaded_forms[s] = []
+            for cid, f in zip(self.deck_ids[s], wanted[s]):
+                if f and not self._form_loads(s, cid, f):
+                    self.form_fallbacks.append((s, self.names[cid], f))
+                    f = 0
+                self.loaded_forms[s].append(f)
+        return MatchSetup(decks=[deal[0], deal[1]], shuffle=ShuffleMode.NONE,
+                          forms=[[self.loaded_forms[s][i] for i in order[s]] for s in (0, 1)])
+
+    def _form_loads(self, side: int, cid: int, form: int) -> bool:
+        """Probe (once per process) whether RoyaleSim loads ``cid`` in ``form``: a reset with only that entry marked.
+        The real reset follows, so the probe leaves no state behind."""
+        if (cid, form) not in _FORM_LOADS:
+            d = [list(self.deck_ids[0]), list(self.deck_ids[1])]
+            f = [[0] * len(d[0]), [0] * len(d[1])]
+            f[side][d[side].index(cid)] = form
+            try:
+                self.core.reset(self.seed, MatchSetup(decks=d, shuffle=ShuffleMode.NONE, forms=f))
+                _FORM_LOADS[cid, form] = True
+            except ValueError:
+                _FORM_LOADS[cid, form] = False
+        return _FORM_LOADS[cid, form]
+
     # ---------------------------------------------------------------- episode
     def reset(self, entry: dict, *, index=None) -> dict:
         self.entry = entry
@@ -111,14 +156,15 @@ class RoyalePoolEnv:
         self._mirror = self.side == 1
         self.final_decks = {self.side: list(ours(entry, "deck")), self.opp: list(entry["ghost_deck"])}
         self.deck_ids = {s: [self.card_id(it["name"]) for it in self.final_decks[s]] for s in (0, 1)}
-        deal = {}
+        deal, orders = {}, {}
         for s, cmds in ((self.side, ours(entry, "commands")), (self.opp, entry["ghost_commands"])):
             slugs = [it["slug"] for it in self.final_decks[s]]
             order = deal_order(slugs, [c["card"] for c in cmds if not c.get("ability") and c.get("corpus_accepted", True)])
             if order is None:
                 raise UnsupportedDeck(f"{entry['tag']}: no deal fits side {s}'s recorded plays")
-            deal[s] = [self.deck_ids[s][i] for i in order]
-        self.core.reset(self.seed, MatchSetup(decks=[deal[0], deal[1]], shuffle=ShuffleMode.NONE))
+            deal[s], orders[s] = [self.deck_ids[s][i] for i in order], order
+        wanted = None if self.forms_mode == "base" else             {s: [FORM_OF[str(it.get("form", "base"))] for it in self.final_decks[s]] for s in (0, 1)}
+        self.core.reset(self.seed, self._setup(deal, orders, wanted))
         idx = {it["slug"]: i for i, it in enumerate(self.final_decks[self.opp])}
         self._ghosts = sorted(({"tick": int(c["tick"]), "sched": int(c["tick"]), "deck_index": idx[c["card"]],
                                 "x": int(c["x"]), "y": int(c["y"]), "card": c["card"]}
@@ -222,7 +268,7 @@ class RoyaleSelfPlayEnv(RoyalePoolEnv):
     """Self-play (L68 league, T12a): ANY two 8-card decks, BOTH sides policy-driven, no ghost.
 
     ``reset(deck0, deck1, seed)``: a deck is 8 card names (engine spelling ``IceWizard``; a ``@evolution`` / ``@hero``
-    suffix runs as the base card, like the pool) or pool deck items with a ``name``. Each side's deal is a SEEDED
+    suffix runs as the base card under forms_mode "base", as its form under "deck" -- module docstring) or pool deck items with a ``name``. Each side's deal is a SEEDED
     shuffle (``self.deal[side]``, reproducible per seed) fed to RoyaleSim's ShuffleMode.NONE cycle -- the same deal
     mechanics RoyalePoolEnv uses, with the order drawn instead of reconstructed. ``act`` / ``raw`` / warm-up /
     ``tail_cap`` / game-over handling are RoyalePoolEnv's own (inherited; with no ghosts ``_advance_to`` just steps).
@@ -236,14 +282,22 @@ class RoyaleSelfPlayEnv(RoyalePoolEnv):
         for s in (0, 1):                                          # validate BEFORE touching any state (T12b)
             if len(deck_ids[s]) != 8 or len(set(deck_ids[s])) != 8:
                 raise UnsupportedDeck(f"side {s}: need 8 distinct cards (after subs), got {decks[s]}")
+        wanted = None
+        if self.forms_mode == "deck":
+            wanted = {}
+            for s, d in ((0, deck0), (1, deck1)):
+                sfx = [str(it["name"] if isinstance(it, dict) else it).partition("@")[2] for it in d]
+                if any(x not in FORM_OF for x in sfx):
+                    raise UnsupportedDeck(f"side {s}: unknown form suffix in {list(d)}")
+                wanted[s] = [FORM_OF[x] for x in sfx]
         self.decks, self.deck_ids, self.seed = decks, deck_ids, int(seed)
         self.side, self.opp, self._mirror = 0, 1, False          # inherited _crowns reads side 0's view
         orders = {s: list(range(8)) for s in (0, 1)}
         for s in (0, 1):
             random.Random(f"deal:{self.seed}:{s}").shuffle(orders[s])   # str seed: stable across processes
         self.deal = {s: [self.decks[s][i] for i in orders[s]] for s in (0, 1)}
-        self.core.reset(self.seed, MatchSetup(decks=[[self.deck_ids[s][i] for i in orders[s]] for s in (0, 1)],
-                                              shuffle=ShuffleMode.NONE))
+        self.core.reset(self.seed, self._setup({s: [self.deck_ids[s][i] for i in orders[s]] for s in (0, 1)}, orders,
+                                               wanted))
         self._ghosts, self._gi, self._pending = [], 0, []
         self.terminated, self.episode, self.eng.last_episode = False, {}, None
         self.tick = int(self.core.state().tick)

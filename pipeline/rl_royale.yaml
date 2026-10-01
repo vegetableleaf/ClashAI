@@ -19,6 +19,8 @@ opp_elixir: null            # null = the view's own opp elixir; counter = public
                             # equivalent, bodiless spells dropped); counter_all = every delivered ghost play
 action_delay_ticks: 0
 extrapolate_ticks: 0        # each decision sees the raw board advanced H ticks (pipeline/extrapolate.py)
+forms_mode: base            # RoyaleSim card forms, rollouts + screens: base = every card as its base card (as before);
+                            # deck = decked evolutions / heroes the engine loads (royale_env module docstring)
 
 # ---- self-play LEAGUE (L68 T12b; RUNBOOK section 9). Off = the ghost-pool rollouts above, unchanged. On: every
 # rollout is a self-play match on RoyaleSelfPlayEnv -- the learner (a generalist init, sampled + recorded) vs a FROZEN

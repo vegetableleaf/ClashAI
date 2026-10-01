@@ -1006,6 +1006,7 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
                 results.append(line)
 
             n_fl = max(1, min(int(base["in_flight"]), len(jobs)))
+            fm = base.get("forms_mode", "base")                # RoyaleSim forms (royale_env.FORMS_MODES)
             on_skip = (lambda e, exc: skipped.append({"tag": e["tag"], "why": str(exc)}))
             if kind == "selfplay":
                 cfg = actor_cfg(base, "rollout", aid, dev)
@@ -1018,12 +1019,12 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
                 opps = {j[1]["opp"]["id"]: (opp_cache[j[1]["opp"]["path"]][0],
                                             {**cfg, "policy": base["league_opp_policy"], "record": False,
                                              "grid": opp_cache[j[1]["opp"]["path"]][1]}) for j in jobs}
-                E.run_selfplay_batch(lambda: RoyaleSelfPlayEnv(decision_ticks=int(base["decide_every"])), model, opps,
+                E.run_selfplay_batch(lambda: RoyaleSelfPlayEnv(decision_ticks=int(base["decide_every"]), forms_mode=fm), model, opps,
                                      rollout_jobs(jobs, update), cfg, n_fl, on_result=on_result, on_skip=on_skip,
                                      skip=(UnsupportedDeck,))
             else:
                 it = rollout_jobs(jobs, update) if kind == "rollout" else jobs     # screen: eval obs seed of (tag, k)
-                E.run_batch(lambda: RoyalePoolEnv(decision_ticks=int(base["decide_every"])), model, deck, it, cfg,
+                E.run_batch(lambda: RoyalePoolEnv(decision_ticks=int(base["decide_every"]), forms_mode=fm), model, deck, it, cfg,
                             n_fl, on_result=on_result, on_skip=on_skip, skip=(UnsupportedDeck,))
             stats = {"wall_s": time.perf_counter() - t0, "matches": len(results),
                      "gpu_peak_mb": (torch.cuda.max_memory_allocated() / 2**20) if dev.startswith("cuda") else None}
@@ -1670,6 +1671,9 @@ class Learner:
         base.update({k: self.cfg.get(k) for k in COND_KEYS})
         base["gen"] = getattr(self, "gen", None)
         base["league_opp_policy"] = self.cfg.get("league_opp_policy", "sample")
+        base["forms_mode"] = self.cfg.get("forms_mode", "base")
+        if base["forms_mode"] not in ("base", "deck"):
+            raise SystemExit(f"forms_mode must be base or deck, got {base['forms_mode']!r}")
         if self.cfg.get("shaping", "none") != "none":         # R2: actor_cfg -> record_phi (absent by default)
             base["shaping"] = self.cfg["shaping"]
         return base
