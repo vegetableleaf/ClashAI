@@ -9,7 +9,7 @@ Rows, all in MY board frame (``obs_contract`` docstring; me at the bottom):
   * PLAY rows -- one per ACCEPTED play of a deck-matching side: the state before it, the deck slot
     played and the continuous cell (x, y) in [0, 1]. gate = 1.
   * WAIT rows -- every ``wait_stride // record_every``-th compact frame where that side had no accepted play within
-    ``play_window`` ticks. gate = 0. Their hand/next are reconstructed exactly: a hand only changes
+    ``play_window`` ticks, and none ON the frame's tick (that frame is a play row's pre-act state). gate = 0. Their hand/next are reconstructed exactly: a hand only changes
     when its owner plays, so between my plays k and k+1 the hand is ``hand_before`` of play k+1 and
     ``next`` is play k+1's recorded ``next``. Frames after my last play are dropped (hand unknown).
     ``wait_slot`` / ``wait_dt`` = the slot I play next and how many seconds until then (the
@@ -231,6 +231,11 @@ def build_replay(rec: dict, deck: Deck, rows: _Rows, rep_index: int, *, wait_str
             if j >= len(plays):
                 break                                   # after my last play: hand unknown
             nxt = plays[j]
+            if t in acc_ticks:
+                # a frame ON my own play tick is the pre-act state of a PLAY row: as a wait row it would be
+                # labelled both play and wait (and the j-walk above hands it the POST-play hand)
+                st["wait_on_play_tick"] = st.get("wait_on_play_tick", 0) + 1
+                continue
             if any(t < a <= t + play_window + shift_ticks for a in acc_ticks):
                 st["wait_in_window"] = st.get("wait_in_window", 0) + 1
                 continue
