@@ -49,17 +49,25 @@ adv_clip: 2.0               # |A| <= 2, no std normalisation (E1 3.2)
 advantage: match_loo        # match_loo = the per-match LOO advantage above (unchanged); gae = per-decision GAE with
                             # V = P(win) - P(loss) from the existing crown-diff value head, normalised per batch
 gae_gamma: 0.999            # gae: discount per contributing decision row (0.5 s)
+gae_gamma_unit: row         # gae: row = gae_gamma per kept row; tick = gae_gamma_tick ** (ticks between consecutive
+                            # kept rows), in GAE AND the shaping F (actors then record each row's decision tick)
+gae_gamma_tick: 0.99994     # gae, unit tick: league1c kept 279 rows / ~4330 ticks a match (15.5 ticks a row);
+                            # 0.99994^15.5 = 0.99907 ~ 0.999 per row (whole match 0.77 vs 0.76)
 gae_lambda: 0.95            # gae: GAE lambda
 vf_coef: 0.5                # gae: value-loss coefficient
 vf_clip: 0.2                # gae: PPO value clip around the update's starting V (V in [-1, 1])
 critic_warmup_updates: 0    # gae: the first N updates train ONLY the value head (no L_pg, no KL term, beta held)
 vf_trunk_grad: true         # gae: false = the value loss trains value_head only (trunk features detached on the value
                             # path; the policy gradient unchanged). Logged either way: gae.vf_trunk_share
-# ---- potential-based shaping (R2, reward_plan.md 2 / 3b; gae only, refused with match_loo): F_t = gamma Phi(s_{t+1})
-# - Phi(s_t) added to r_step on every kept row, gamma = gae_gamma, Phi = 0 after the match's last kept row
+# ---- potential-based shaping (R2, reward_plan.md 2 / 3b / 7b; gae only, refused with match_loo): F_t = gamma_t
+# Phi(s_{t+1}) - Phi(s_t) on every kept row, gamma_t = the GAE discount of that step, Phi = 0 after the match's last
+# kept row. Applied as a RESIDUAL critic (= the shaped-critic method): V_eff = Phi + shaping_critic_scale x v_net,
+# A = GAE(r, V_eff) on the unshaped r, v_net's target (lambda-return - Phi) / scale. Needs critic_warmup_updates > 0
 shaping: none               # none | tower_crown (Phi = w_tower (own - foe tower HP fractions)/3 + w_crown crown diff/3)
 shaping_w_tower: 0.3        # plan 3b: |Phi| <= (5/3) w = 0.5 x the terminal reward at w 0.3
 shaping_w_crown: 0.3
+shaping_critic_scale: 1.5   # v_net (P(win) - P(loss), bounded [-1, 1]) learns (G - Phi) / scale; |G - Phi| < 1 + w_tower
+                            # + (2/3) w_crown = 1.5 at w 0.3 (a smaller scale is refused); measured max |Phi| 0.388
 
 # ---- actors (plan diff 5)
 n_actors: 3                 # actor processes (torch.multiprocessing, spawn)

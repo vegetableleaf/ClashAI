@@ -690,6 +690,8 @@ class Match:
             if cfg.get("record_phi"):                         # rl_royale shaping (R2): what Phi needs, own view
                 from pipeline.reward_shaping import phi_record
                 row = {**row, "phi_state": phi_record(self.state, self.side)}
+            if cfg.get("record_tick"):                        # rl_royale gae_gamma_unit tick: the decision tick
+                row = {**row, "tick": int(tick)}
             self.traj.append({**row, "allowed": d["allowed"],
                               "stalled": d["stalled"], "gate_sampled": d["gate_sampled"], "played": d["play"],
                               "slot": d["slot"], "cell": d["cell"], "lp_gate": d["lp_gate"], "lp_card": d["lp_card"],
@@ -825,6 +827,8 @@ class Match:
             out.update({k: stack(k).astype(np.int64) for k in GEN_IDENT_KEYS})
         if tj and "phi_state" in tj[0]:                      # cfg["record_phi"]: reward_shaping.phi_record rows
             out["phi_state"] = stack("phi_state").astype(np.float64)
+        if tj and "tick" in tj[0]:                           # cfg["record_tick"]: each row's decision tick
+            out["tick"] = scalar("tick", np.int64)
         return out
 
 

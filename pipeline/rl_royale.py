@@ -35,8 +35,13 @@ One update (``Learner.one_update``):
      PPO-clipped value loss; the first ``critic_warmup_updates`` updates train ONLY the value head (no L_pg, no KL,
      beta held).
      ``vf_trunk_grad: false`` (default true): the value loss reaches value_head only. ``shaping: tower_crown`` (R2,
-     gae only; default none): F_t = gae_gamma Phi(s_{t+1}) - Phi(s_t) (``reward_shaping``, Phi = 0 at the match end)
-     added to ``r_step`` on every kept row, from the ``phi_state`` rows e1_eval records under ``record_phi``.
+     gae only; default none): F_t = gamma_t Phi(s_{t+1}) - Phi(s_t) (``reward_shaping``, Phi = 0 at the match end) on
+     every kept row, from the ``phi_state`` rows e1_eval records under ``record_phi``, applied as a RESIDUAL critic
+     V_eff = Phi + shaping_critic_scale x v_net with A = GAE(r, V_eff) on the unshaped reward (= the shaped-critic
+     method, ``gae_batch``, L69 7b); needs critic_warmup_updates > 0.
+     ``gae_gamma_unit: tick`` (gae only; default row = gae_gamma per kept row): gamma_t = gae_gamma_tick ** (ticks
+     from kept row t to the next kept row, ``row_gammas``), in GAE AND in F_t, from the ``tick`` rows e1_eval records
+     under ``record_tick``.
   3. Rows that sampled nothing (no card allowed) are dropped; each remaining decision carries weight 1/(n_i M) so a
      match's decisions sum to 1/M (``match_weights``: the loss is averaged per match, then over the batch).
   4. Frozen-ref terms once per update (``ref_terms``); ``ppo_epochs`` x minibatches of ``minibatch`` decisions:
@@ -130,6 +135,8 @@ def actor_cfg(base: dict, kind: str, aid: int, dev: str) -> dict:
     cfg.update(condition_cfg(base))
     if kind == "rollout" and base.get("shaping", "none") != "none":
         cfg["record_phi"] = True                              # R2: each row carries reward_shaping.phi_record
+    if kind == "rollout" and base.get("gae_gamma_unit", "row") == "tick":
+        cfg["record_tick"] = True                             # each row carries its decision tick
     return cfg
 
 
@@ -153,7 +160,10 @@ SHAPING_MODES = ("none", "tower_crown")         # R2 (reward_plan.md 2 / 3b): po
 GAE_DEFAULTS = {"advantage": "match_loo", "gae_gamma": 0.999, "gae_lambda": 0.95, "vf_coef": 0.5, "vf_clip": 0.2,
                 "critic_warmup_updates": 0,     # a config WITHOUT these keys (a run started before R1) = match_loo
                 "shaping": "none", "shaping_w_tower": 0.3, "shaping_w_crown": 0.3,   # ... and no shaping (R2)
-                "vf_trunk_grad": True}          # ... and the value loss trains the shared trunk (R1 as committed)
+                "vf_trunk_grad": True,          # ... and the value loss trains the shared trunk (R1 as committed)
+                "gae_gamma_unit": "row", "gae_gamma_tick": 0.99994,   # ... and gamma per kept row (R1 as committed)
+                "shaping_critic_scale": 1.5}    # R2 residual critic: V_eff = Phi + scale x v_net (``gae_batch``)
+GAMMA_UNITS = ("row", "tick")
 
 
 def adv_cfg(cfg: dict) -> dict:
@@ -185,6 +195,23 @@ def adv_cfg(cfg: dict) -> dict:
         bad.append(f"vf_trunk_grad must be true or false, got {c['vf_trunk_grad']!r}")
     elif not c["vf_trunk_grad"] and c["advantage"] != "gae":
         bad.append("vf_trunk_grad false needs advantage gae (match_loo has no value loss)")
+    if c["gae_gamma_unit"] not in GAMMA_UNITS:
+        bad.append(f"gae_gamma_unit must be one of {GAMMA_UNITS}, got {c['gae_gamma_unit']!r}")
+    elif c["gae_gamma_unit"] != "row" and c["advantage"] != "gae":
+        bad.append(f"gae_gamma_unit {c['gae_gamma_unit']!r} needs advantage gae (match_loo has no discount)")
+    if not (num(c["gae_gamma_tick"]) and 0.0 < c["gae_gamma_tick"] <= 1.0):
+        bad.append(f"gae_gamma_tick must be in (0, 1], got {c['gae_gamma_tick']!r}")
+    sc = c["shaping_critic_scale"]
+    if not (num(sc) and sc > 0.0):
+        bad.append(f"shaping_critic_scale must be a finite number > 0, got {sc!r}")
+    elif c["shaping"] != "none" and not bad:
+        need = 1.0 + c["shaping_w_tower"] + 2.0 / 3.0 * c["shaping_w_crown"]   # max |G - Phi| before the end
+        if sc < need:
+            bad.append(f"shaping_critic_scale {sc} < {need:.4f} = 1 + w_tower + (2/3) w_crown: the residual target "
+                       f"(G - Phi) / scale could leave the value head's [-1, 1]")
+        if c["critic_warmup_updates"] == 0:
+            bad.append(f"shaping {c['shaping']!r} needs critic_warmup_updates > 0 (the pretrained value head "
+                       f"predicts G, not the residual (G - Phi) / scale)")
     if bad:
         raise SystemExit("bad advantage config: " + "; ".join(bad))
     return c
@@ -211,21 +238,36 @@ def terminal_rewards(n_rows, outcomes) -> list[np.ndarray]:
     return out
 
 
-def gae(r, v, match, gamma: float, lam: float) -> tuple[np.ndarray, np.ndarray]:
+def gae(r, v, match, gamma, lam: float) -> tuple[np.ndarray, np.ndarray]:
     """GAE(gamma, lambda) over rows grouped in contiguous time-ordered matches (``match`` id per row): delta_t = r_t +
-    gamma V_{t+1} - V_t with V after a match's last row = 0 (terminal); A_t = delta_t + gamma lambda A_{t+1} within the
-    match. -> (A, returns = A + V); lambda = 1 makes the returns the discounted returns-to-go. One step = one
-    contributing decision row (rows collate drops are skipped, not discounted)."""
+    gamma_t V_{t+1} - V_t with V after a match's last row = 0 (terminal); A_t = delta_t + gamma_t lambda A_{t+1} within
+    the match. -> (A, returns = A + V); lambda = 1 makes the returns the discounted returns-to-go. One step = one
+    contributing decision row (rows collate drops are skipped, not discounted). ``gamma``: one float (per kept row,
+    the default) or a per-row array, gamma_t = the discount from row t to the next row of its match (``row_gammas``;
+    ignored on a match's last row)."""
     r, v, m = (np.asarray(x, dtype=np.float64) for x in (r, v, match))
+    g = np.broadcast_to(np.asarray(gamma, dtype=np.float64), r.shape)
     A = np.zeros(len(r))
     nxt_v, nxt_a = 0.0, 0.0
     for t in range(len(r) - 1, -1, -1):
         if t == len(r) - 1 or m[t + 1] != m[t]:
             nxt_v, nxt_a = 0.0, 0.0
-        d = r[t] + gamma * nxt_v - v[t]
-        A[t] = nxt_a = d + gamma * lam * nxt_a
+        d = r[t] + g[t] * nxt_v - v[t]
+        A[t] = nxt_a = d + g[t] * lam * nxt_a
         nxt_v = v[t]
     return A, A + v
+
+
+def row_gammas(ticks, gamma_tick: float) -> np.ndarray:
+    """``gae_gamma_unit: tick``: one match's per-kept-row discount gamma_t = gamma_tick ** (tick_{t+1} - tick_t), the
+    decision ticks of consecutive KEPT rows (time order); the last row's entry (1.0) is never used (V = Phi = 0
+    after it). Default 0.99994: league1c (144 updates) kept 279 rows over ~4330 ticks a match, 15.5 ticks a row, and
+    0.99994^15.5 = 0.99907 ~ the row unit's 0.999 (horizon 1/(1-gamma) ~ 16.7k ticks ~ 1075 rows vs 1000 rows; a whole
+    match 0.99994^4330 = 0.77 vs 0.999^279 = 0.76)."""
+    dt = np.diff(np.asarray(ticks, dtype=np.int64))
+    if (dt <= 0).any():
+        raise ValueError(f"kept-row ticks must strictly increase, got gaps {dt[dt <= 0][:5].tolist()}")
+    return np.append(float(gamma_tick) ** dt.astype(np.float64), 1.0)
 
 
 def explained_variance(v, ret) -> Optional[float]:
@@ -547,12 +589,14 @@ def _py(x):
 # trajectories -> one batch
 # ------------------------------------------------------------------------------------------------------
 def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_loo",
-            shaping: Optional[dict] = None) -> tuple[dict, dict]:
+            shaping: Optional[dict] = None, gamma_tick: Optional[float] = None) -> tuple[dict, dict]:
     """Rollout result records (each with ``traj`` = ``Match._traj_arrays``) -> numpy batch of the CONTRIBUTING rows
     (gate sampled or card/cell played) with per-row A, per-match weight w, match id, and the stored log-probs.
-    ``advantage="gae"`` adds ``r_step`` (``terminal_rewards``); A stays the LOO value until ``gae_batch`` replaces it.
-    ``shaping`` (gae only; {gamma, w_tower, w_crown}): + F_t (``shaping_rewards``) on every kept row of r_step, and
-    the stats under ``st["shaping"]``."""
+    ``advantage="gae"`` adds ``r_step`` (``terminal_rewards``, the UNSHAPED win/loss reward); A stays the LOO value
+    until ``gae_batch`` replaces it. ``gamma_tick`` (gae only; ``gae_gamma_unit: tick``): + ``gamma_row`` per kept
+    row (``row_gammas`` of the traj ``tick``), the discount GAE and the shaping use. ``shaping`` (gae only; {gamma,
+    w_tower, w_crown}; gamma replaced by ``gamma_row`` under gamma_tick): + ``phi`` (Phi(s_t)) per kept row (the
+    residual critic's base, ``gae_batch``), and the F / Phi stats under ``st["shaping"]``."""
     groups: dict = {}
     for j, r in enumerate(results):
         groups.setdefault(r["entry_index"], []).append(j)
@@ -581,13 +625,17 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
     sh = None
     if advantage == "gae":
         rs = terminal_rewards(n_rows, [r["outcome"] for r in results])
-        if shaping is not None:
-            sh = {j: shaping_rewards(results[j]["traj"]["phi_state"][keep[j]], shaping) for j in use}
-            for j in use:
-                rs[j] = rs[j] + sh[j]["F"]
         B["r_step"] = cat(lambda j: rs[j])
-    elif shaping is not None:
-        raise ValueError("shaping needs advantage gae")
+        gr = None
+        if gamma_tick is not None:
+            gr = {j: row_gammas(results[j]["traj"]["tick"][keep[j]], gamma_tick) for j in use}
+            B["gamma_row"] = cat(lambda j: gr[j])
+        if shaping is not None:
+            sh = {j: shaping_rewards(results[j]["traj"]["phi_state"][keep[j]],
+                                     shaping if gr is None else {**shaping, "gamma": gr[j]}) for j in use}
+            B["phi"] = cat(lambda j: sh[j]["phi"])
+    elif shaping is not None or gamma_tick is not None:
+        raise ValueError("shaping / gamma_tick need advantage gae")
     st = {"matches": len(results), "groups": len(groups), "mixed_groups": mixed,
           "mixed_group_share": mixed / max(len(groups), 1), "mean_abs_A": float(np.abs(A).mean()) if len(A) else 0.0,
           "rows": int(len(B["A"])), "rows_played": int(B["played"].sum()), "rows_gate": int(B["gate_sampled"].sum()),
@@ -599,12 +647,14 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
 
 def shaping_rewards(phi_rows, shaping: dict) -> dict:
     """One match's R2 shaping on its KEPT rows (``reward_shaping.phi_record`` rows, time order): F_t = gamma Phi(s_{t+1})
-    - Phi(s_t) with gamma = ``gae_gamma`` per kept row (the GAE step unit) and Phi = 0 after the last kept row (the
-    match end). -> numpy F, its weighted terms tower / crown (F = tower + crown), and Phi(s_t) per row (``phi``, the
-    terminal 0 dropped) with its weighted terms ``phi_tower`` / ``phi_crown``."""
+    - Phi(s_t) with gamma = ``gae_gamma`` per kept row (the GAE step unit; or the per-row ``gamma_row`` array under
+    ``gae_gamma_unit: tick``) and Phi = 0 after the last kept row (the match end). -> numpy F, its weighted terms
+    tower / crown (F = tower + crown), and Phi(s_t) per row (``phi``, the terminal 0 dropped) with its weighted
+    terms ``phi_tower`` / ``phi_crown``."""
     pt, pc = (np.atleast_1d(x).astype(np.float64) for x in RS.phi_parts(phi_rows))
     wt, wc = float(shaping["w_tower"]), float(shaping["w_crown"])
-    out = RS.shaping_from_parts(pt.tolist(), pc.tolist(), float(shaping["gamma"]), (wt, wc))
+    g = shaping["gamma"]
+    out = RS.shaping_from_parts(pt.tolist(), pc.tolist(), float(g) if np.ndim(g) == 0 else g, (wt, wc))
     return {"F": np.asarray(out["F"]), "tower": np.asarray(out["tower"]), "crown": np.asarray(out["crown"]),
             "phi": np.asarray(out["phi"][:-1]), "phi_tower": wt * pt, "phi_crown": wc * pc}
 
@@ -712,17 +762,50 @@ def value_rows(model, B: dict, chunk: int = 512) -> torch.Tensor:
 def gae_batch(model, B: dict, cfg: dict) -> dict:
     """gae mode, once per update BEFORE any step (``model`` = the behaviour policy): ``v_old`` = V(s) per row, GAE over
     ``r_step`` -> ``ret`` (value target) and ``A`` normalised over the batch (mean 0, std 1). -> monitors (advantage
-    mean / std BEFORE normalisation, return mean, V mean, explained variance of v_old for ret)."""
+    mean / std BEFORE normalisation, return mean, V mean, explained variance of v_old for ret). The discount is
+    ``B["gamma_row"]`` when collate made it (``gae_gamma_unit: tick``), else ``gae_gamma`` per row.
+
+    Shaping (``B["phi"]``, L69 7b): a RESIDUAL critic. v_net = ``value_scalar`` (P(win) - P(loss), a difference of
+    softmax probabilities: bounded in [-1, 1], no tanh), s = ``shaping_critic_scale``, and per row
+        V_eff_t = Phi_t + s v_net_t,        A = GAE(r, V_eff) on the UNSHAPED r, per-row gamma_t,
+        ret_t = A_t + V_eff_t (the unshaped lambda-return),   value target for v_net = (ret_t - Phi_t) / s.
+    This IS the shaped-critic method (Ng 1999 / Wiewiora 2003): with F_t = gamma_t Phi_{t+1} - Phi_t and the same
+    gamma_t (Phi = V = 0 after a match's last row),
+        r_t + gamma_t V_eff_{t+1} - V_eff_t = (r_t + F_t) + gamma_t (s v_net_{t+1}) - s v_net_t,
+    i.e. the TD error of a critic s v_net on the shaped reward r + F, whose true value is G - Phi. So the net learns
+    the shaped value (scaled into [-1, 1]); Phi is the hand-made prior the plan wants (3b). If s v_net = V_true - Phi
+    exactly, A = GAE(r, V_true), the true-value advantage. s: |G - Phi| <= 1 + |Phi| < 1 + w_tower + (2/3) w_crown =
+    1.5 at w 0.3 (adv_cfg rejects a smaller s); measured max |Phi| 0.388 in the 7b smoke (|G - Phi| <= 1.39).
+    A pretrained v_net predicts G, not (G - Phi) / s: its first targets move by -Phi / s and its scale by 1/s, so a
+    critic warm-up is mandatory with shaping (adv_cfg rejects critic_warmup_updates 0). Monitors: ``adv_r1_diff`` =
+    mean |A - GAE(r, v_net)| (what R1 would compute with the same net; 0 = shaping changed nothing), ``phi_share`` =
+    mean |Phi| / mean |V_eff|, ``veff_mean``; ``explained_var`` is of V_eff for ret."""
     c = adv_cfg(cfg)
     v = value_rows(model, B)
-    A, ret = gae(B["r_step"].cpu().numpy(), v.cpu().numpy(), B["match"].cpu().numpy(), c["gae_gamma"],
-                 c["gae_lambda"])
-    st = {"adv_mean": float(A.mean()) if len(A) else None, "adv_std": float(A.std()) if len(A) else None,
-          "ret_mean": float(ret.mean()) if len(ret) else None, "v_mean": float(v.mean()) if len(v) else None,
-          "explained_var": explained_variance(v.cpu().numpy(), ret) if len(A) else None}
+    gam = B["gamma_row"].cpu().numpy() if "gamma_row" in B else c["gae_gamma"]
+    vn, m, r = v.cpu().numpy(), B["match"].cpu().numpy(), B["r_step"].cpu().numpy()
+    if "phi" not in B:
+        A, ret = gae(r, vn, m, gam, c["gae_lambda"])
+        st = {"adv_mean": float(A.mean()) if len(A) else None, "adv_std": float(A.std()) if len(A) else None,
+              "ret_mean": float(ret.mean()) if len(ret) else None, "v_mean": float(v.mean()) if len(v) else None,
+              "explained_var": explained_variance(v.cpu().numpy(), ret) if len(A) else None}
+        target = ret
+    else:
+        phi, sc = B["phi"].cpu().numpy(), float(c["shaping_critic_scale"])
+        veff = phi + sc * vn
+        A, ret = gae(r, veff, m, gam, c["gae_lambda"])
+        a_r1, _ = gae(r, vn, m, gam, c["gae_lambda"])
+        n = len(A)
+        mean = (lambda x: float(x.mean()) if n else None)
+        st = {"adv_mean": mean(A), "adv_std": float(A.std()) if n else None, "ret_mean": mean(ret),
+              "v_mean": mean(vn), "explained_var": explained_variance(veff, ret) if n else None,
+              "veff_mean": mean(veff), "adv_r1_diff": mean(np.abs(A - a_r1)),
+              "phi_share": float(np.abs(phi).mean() / max(float(np.abs(veff).mean()), 1e-12)) if n else None,
+              "critic_scale": sc}
+        target = (ret - phi) / sc
     dev = B["A"].device
     B["A"] = torch.from_numpy((A - A.mean()) / (A.std() + 1e-8) if len(A) else A).to(dev)
-    B["ret"] = torch.from_numpy(ret).to(dev)
+    B["ret"] = torch.from_numpy(target).to(dev)
     B["v_old"] = v
     return st
 
@@ -1501,7 +1584,10 @@ class Learner:
         gae_on = ac["advantage"] == "gae"
         shp = ({"gamma": ac["gae_gamma"], "w_tower": ac["shaping_w_tower"], "w_crown": ac["shaping_w_crown"]}
                if ac["shaping"] != "none" else None)
-        Bn, bst = collate(results, float(cfg["adv_clip"]), advantage=ac["advantage"], shaping=shp)
+        tick_unit = gae_on and ac["gae_gamma_unit"] == "tick"
+        Bn, bst = collate(results, float(cfg["adv_clip"]), advantage=ac["advantage"], shaping=shp,
+                          **({"gamma_tick": ac["gae_gamma_tick"]} if tick_unit else {}))
+        gamma_row_mean = float(Bn["gamma_row"].mean()) if tick_unit and len(Bn["gamma_row"]) else None
         del results
         t1 = time.perf_counter()
         B = to_device(Bn, self.dev)
@@ -1562,6 +1648,9 @@ class Learner:
             rec["gae"] = {**gst, "l_v": upd["l_v"], "l_v_first": upd["l_v_first"], "critic_warmup": warm,
                           "gamma": ac["gae_gamma"], "lambda": ac["gae_lambda"], "vf_coef": ac["vf_coef"],
                           "vf_trunk_grad": ac["vf_trunk_grad"], "shaping": ac["shaping"]}
+            if tick_unit:
+                rec["gae"].update({"gamma_unit": "tick", "gamma_tick": ac["gae_gamma_tick"],
+                                   "gamma_row_mean": gamma_row_mean})
         del B, R
         if not crash:
             u1 = self.update
@@ -1676,6 +1765,8 @@ class Learner:
             raise SystemExit(f"forms_mode must be base or deck, got {base['forms_mode']!r}")
         if self.cfg.get("shaping", "none") != "none":         # R2: actor_cfg -> record_phi (absent by default)
             base["shaping"] = self.cfg["shaping"]
+        if self.cfg.get("gae_gamma_unit", "row") != "row":    # actor_cfg -> record_tick (absent by default)
+            base["gae_gamma_unit"] = self.cfg["gae_gamma_unit"]
         return base
 
     def start_actors(self) -> None:

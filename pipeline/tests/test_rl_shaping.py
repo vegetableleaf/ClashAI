@@ -2,6 +2,7 @@
 
     research/ext/Royale/.venv/Scripts/python.exe -m pytest -q pipeline/tests/test_rl_shaping.py
 
+(The L69 7b shaped critic V' = V - Phi and the tick discount: test_rl_gamma_tick.py.)
 Covers: defaults (shaping none, vf_trunk_grad true) bit-identical to R1's commit a963b39 (collate arrays + whole
 updates in match_loo AND gae mode, weights compared with torch.equal); the telescoping identities on the kept rows
 (gamma = 1 and gamma < 1, same gamma unit as GAE); F added to r_step on the right rows only; shaping refused without
@@ -173,21 +174,20 @@ class TestCollateShaping(unittest.TestCase):
                                                      (1, 1, 6, "win")], seed=4), seed=1, garbage_unkept=True)
 
     def test_F_added_on_kept_rows(self):
+        """L69 7b: r_step stays the UNSHAPED reward; Phi(s_t) rides as ``phi`` (the residual critic's base)."""
         B, st = RL.collate(copy.deepcopy(self.results), 2.0, advantage="gae", shaping=SHP)
         Bd, _ = RL.collate(copy.deepcopy(self.results), 2.0, advantage="gae")
-        self.assertEqual(sorted(B), sorted(Bd))                             # no new batch key
+        self.assertEqual(sorted(B), sorted(list(Bd) + ["phi"]))
         for k in Bd:
-            if k != "r_step":
-                self.assertEqual(B[k].tobytes(), Bd[k].tobytes(), k)
-        self.assertLess(float(np.abs(B["r_step"]).max()), 3.0)             # the 1e6 unkept rows never entered
+            self.assertEqual(B[k].tobytes(), Bd[k].tobytes(), k)          # r_step included: unshaped
+        self.assertLess(float(np.abs(B["phi"]).max()), 3.0)                # the 1e6 unkept rows never entered
         all_f = []
         for j, r in enumerate(self.results):
             t = r["traj"]
             keep = t["gate_sampled"] | t["played"]
             self.assertTrue((~keep).any() or j)                             # the fixture does drop rows
             sh = RL.shaping_rewards(t["phi_state"][keep], SHP)
-            np.testing.assert_allclose(B["r_step"][B["match"] == j], Bd["r_step"][Bd["match"] == j] + sh["F"],
-                                       atol=1e-15)
+            np.testing.assert_array_equal(B["phi"][B["match"] == j], sh["phi"])
             all_f.append(sh)
         want = RL.shaping_stats(all_f)
         self.assertEqual(st["shaping"], want)
@@ -202,9 +202,9 @@ class TestCollateShaping(unittest.TestCase):
         for j, r in enumerate(self.results):
             m = B["match"] == j
             n = int(m.sum())
-            _, ret = RL.gae(B["r_step"][m], np.zeros(n), np.zeros(n), g, 1.0)
             t = r["traj"]
             sh = RL.shaping_rewards(t["phi_state"][t["gate_sampled"] | t["played"]], SHP)
+            _, ret = RL.gae(B["r_step"][m] + sh["F"], np.zeros(n), np.zeros(n), g, 1.0)
             want = g ** np.arange(n - 1, -1, -1) * RL.reward(r["outcome"]) - sh["phi"]
             np.testing.assert_allclose(ret, want, atol=1e-12)
 
@@ -216,7 +216,8 @@ class TestCollateShaping(unittest.TestCase):
             with self.assertRaises(SystemExit, msg=bad) as cm:
                 RL.adv_cfg(bad)
             self.assertTrue(any(k in str(cm.exception) for k in bad), (bad, str(cm.exception)))
-        c = RL.adv_cfg({"advantage": "gae", "shaping": "tower_crown", "vf_trunk_grad": False})
+        c = RL.adv_cfg({"advantage": "gae", "shaping": "tower_crown", "vf_trunk_grad": False,
+                        "critic_warmup_updates": 1})
         self.assertEqual((c["shaping"], c["shaping_w_tower"], c["shaping_w_crown"], c["vf_trunk_grad"]),
                          ("tower_crown", 0.3, 0.3, False))
         with self.assertRaises(ValueError):

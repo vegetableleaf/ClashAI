@@ -10,7 +10,9 @@ the ABSOLUTE engine side (0 = Blue) whose point of view the potential takes; the
     F_t = gamma * Phi(s_{t+1}) - Phi(s_t),   Phi(s_T) = 0 at the terminal index T
 
 Identities (tested): sum_t gamma^t F_t = -Phi(s_0) for any gamma, and the shaping part of the return-to-go from
-decision t, sum_{k>=t} gamma^(k-t) F_k, is exactly -Phi(s_t). So the shaping part of a per-decision return depends
+decision t, sum_{k>=t} gamma^(k-t) F_k, is exactly -Phi(s_t). Both hold with a per-step discount gamma_t too
+(``shaping_from_parts`` takes a sequence; rl_royale ``gae_gamma_unit: tick``): F_t = gamma_t Phi(s_{t+1}) - Phi(s_t)
+and sum_{k>=t} (prod_{t<=i<k} gamma_i) F_k = -Phi(s_t), as long as the returns discount by the same gamma_t. So the shaping part of a per-decision return depends
 only on the state decided in, never on the action taken there (Ng et al. 1999).
 
 Crowns: ``raw()`` carries no crown count. ``crowns`` reads ``state["crowns"]`` ([side 0, side 1]) when the caller
@@ -101,15 +103,21 @@ def shaping_terms(states: Sequence[dict], side: int, gamma: float, weights: tupl
 def shaping_from_parts(tower: Sequence[float], crown: Sequence[float], gamma: float,
                        weights: tuple[float, float]) -> dict:
     """``shaping_terms`` on the UNWEIGHTED potentials of decisions 0..T-1 (``phi_tower`` / ``phi_crown`` values, or
-    ``phi_parts`` of recorded rows); the state after the last one is terminal (Phi = 0)."""
+    ``phi_parts`` of recorded rows); the state after the last one is terminal (Phi = 0). ``gamma``: one float, or a
+    per-step sequence of length T (gamma[t] discounts step t -> t+1; the last one multiplies Phi = 0)."""
     w_tower, w_crown = float(weights[0]), float(weights[1])
     T = len(tower)
+    scalar = np.ndim(gamma) == 0
+    g = [float(gamma)] * T if scalar else [float(x) for x in gamma]
+    if len(g) != T:
+        raise ValueError(f"per-step gamma has {len(g)} entries for {T} steps")
     pt = [w_tower * float(x) for x in tower] + [0.0]
     pc = [w_crown * float(x) for x in crown] + [0.0]
-    ft = [gamma * pt[t + 1] - pt[t] for t in range(T)]
-    fc = [gamma * pc[t + 1] - pc[t] for t in range(T)]
+    ft = [g[t] * pt[t + 1] - pt[t] for t in range(T)]
+    fc = [g[t] * pc[t + 1] - pc[t] for t in range(T)]
     return {"F": [a + b for a, b in zip(ft, fc)], "tower": ft, "crown": fc,
-            "phi": [a + b for a, b in zip(pt, pc)], "gamma": float(gamma), "weights": (w_tower, w_crown)}
+            "phi": [a + b for a, b in zip(pt, pc)], "gamma": float(gamma) if scalar else g,
+            "weights": (w_tower, w_crown)}
 
 
 def returns_to_go(rewards: Sequence[float], gamma: float) -> list[float]:
