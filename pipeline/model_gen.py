@@ -32,6 +32,20 @@ CARD_PAD, FORM_PAD = 0, 3
 IDENT = ("hand_card", "hand_form", "next_card", "next_form", "deck_card", "deck_form")
 
 
+class UnitFormInput(nn.Module):
+    """V3: small actual-form embedding added to each entity embedding."""
+    def __init__(self, base: nn.Linear, d: int):
+        super().__init__()
+        self.base = base
+        self.form = nn.Embedding(3, 8)
+        self.project = nn.Linear(8, d, bias=False)
+
+    def forward(self, features):
+        # S1.encode appends Fourier coordinates after the token's non-class columns.
+        form = features[..., 13].long()
+        return self.base(torch.cat([features[..., :13], features[..., 14:]], -1)) + self.project(self.form(form))
+
+
 def _pool(e: torch.Tensor, m: torch.Tensor) -> torch.Tensor:
     """Masked mean + max over dim 1: [B, n, d_c], [B, n] -> [B, 2 d_c] (order-invariant)."""
     mf = m.unsqueeze(-1).float()
@@ -42,20 +56,25 @@ def _pool(e: torch.Tensor, m: torch.Tensor) -> torch.Tensor:
 
 class GenModel(S1Model):
     def __init__(self, d: int = 128, layers: int = 4, heads: int = 4, n_fourier: int = 8, dropout: float = 0.1,
-                 d_c: int = 64, n_cards: int = N_CARDS):
+                 d_c: int = 64, n_cards: int = N_CARDS, feature_version: int = 1):
         super().__init__(d=d, layers=layers, heads=heads, n_fourier=n_fourier, dropout=dropout)
         del self.card_head, self.wait_head, self.card_emb       # the deck-slot heads; pointers replace them
         self.d_c, self.n_cards = d_c, n_cards
+        self.feature_version = int(feature_version)
         nfeat = 4 * n_fourier
         self.card_id = nn.Embedding(n_cards, d_c)
         self.form_id = nn.Embedding(N_FORMS, d_c)
         g_in = SC_S + 2 * d_c + d_c + 2 * d_c + PAST_K * (d_c + 2 + nfeat + 1)   # sc, hand, next, deck, past
+        if self.feature_version >= 3:
+            g_in += PAST_K * (d_c + 2 + nfeat + 1)
         self.global_in = nn.Sequential(nn.Linear(g_in, d), nn.GELU(), nn.Linear(d, d))
         self.card_q = nn.Linear(d, d_c)
         self.card_b = nn.Embedding(n_cards, 1)
         self.wait_q = nn.Linear(d, d_c)
         self.wait_b = nn.Embedding(n_cards, 1)
         self.query = nn.Sequential(nn.Linear(d + d_c, d), nn.GELU(), nn.Linear(d, d))
+        if self.feature_version >= 3:
+            self.unit_in = UnitFormInput(self.unit_in, d)
 
     def emb(self, card: torch.Tensor, form: torch.Tensor) -> torch.Tensor:
         return self.card_id(card.long()) + self.form_id(form.long())
@@ -68,13 +87,22 @@ class GenModel(S1Model):
         pe = self.emb(past[..., 0].long(), past[..., 1].long())
         pxy = past[..., 2:4].clamp(0, 1)                         # S1's past channel, with identity for the slot
         pf = torch.cat([pe, pxy, _fourier(pxy, self.nf), past[..., 4:5] / 30.0], -1).flatten(1)
-        return torch.cat([b["sc"], _pool(hand, b["hand_card"] > 0), nxt, _pool(deck, b["deck_card"] > 0), pf], -1)
+        parts = [b["sc"], _pool(hand, b["hand_card"] > 0), nxt, _pool(deck, b["deck_card"] > 0), pf]
+        if self.feature_version >= 3:
+            op = b["opp_past"]
+            oe = self.emb(op[..., 0].long(), op[..., 1].long())
+            oxy = op[..., 2:4].clamp(0, 1)
+            parts.append(torch.cat([oe, oxy, _fourier(oxy, self.nf), op[..., 4:5] / 30.0], -1).flatten(1))
+        return torch.cat(parts, -1)
 
     def encode_gen(self, b: dict) -> dict:
         # ponytail: S1Model.encode builds g_in = cat[sc, past-channel]; passing our full global vector as `sc` and a
         # K=0 past reuses the whole trunk unchanged (its past_slot path sees an empty tensor).
         empty = b["past"].new_zeros(b["past"].shape[0], 0, 4)
-        return self.encode(b["tok"], b["mask"], self.global_features(b), empty)
+        tok = b["tok"]
+        if self.feature_version >= 3:
+            tok = torch.cat([tok, b["unit_form"].to(tok.dtype).unsqueeze(-1)], -1)
+        return self.encode(tok, b["mask"], self.global_features(b), empty)
 
     def heads_gen(self, enc: dict, b: dict) -> dict:
         g = enc["g"]
@@ -117,3 +145,14 @@ def card_form_of(deck_card: torch.Tensor, deck_form: torch.Tensor, card: torch.T
     return torch.where(hit.any(-1), deck_form.gather(-1, hit.long().argmax(-1, keepdim=True)).squeeze(-1),
                        torch.full_like(card, FORM_PAD))
 
+
+def load_model(ckpt, device):
+    """Versioned generalist loader. Only stored args enable new observations."""
+    st = torch.load(ckpt, map_location=device)
+    if not st.get("gen"):
+        raise SystemExit(f"{ckpt} is not a generalist checkpoint (no 'gen' key)")
+    a = st["args"]
+    model = GenModel(d=int(a["d"]), layers=int(a["layers"]), d_c=int(st["d_c"]),
+                     n_cards=len(st["card_vocab"]), feature_version=int(a.get("feature_version", 1))).to(device)
+    model.load_state_dict(st["model"])
+    return model, st

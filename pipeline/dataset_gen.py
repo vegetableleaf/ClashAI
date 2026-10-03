@@ -9,6 +9,10 @@ S1 writes into ``sc`` are then DECODED into card identities (slot -> that side's
 ``sc`` keeps S1's 70-column layout (so the S1 trunk's input width is unchanged), columns ``SC_SLOT_COLS``
 (``hand_slot_onehot_4x9`` + ``next_slot_onehot_9``, 7..51) are always 0.
 
+V3 opt-in (``--feature-version 3``) adds parallel ``unit_form`` and ``opp_past`` arrays.
+Legacy versions retain every existing feature, including decked-form own past. Recording
+forms without stable ids use conservative isolated cohorts; see ``tag_recording``.
+
 Card identity: key = RoyaleAPI base slug (``vocab.base_key(vocab.engine_key(name))`` with ``_`` -> ``-``, e.g.
 ``x-bow``, ``the-log``); id 0 = pad, cards 1..V sorted by key (meta ``card_vocab``). Form = 0 base / 1 evo /
 2 hero / 3 pad, read from the side's ``final_decks`` entry (``Knight@evolution`` -> 1, ``@hero`` -> 2): it is the
@@ -68,7 +72,158 @@ def side_deck(names: list[str]) -> Optional[Deck]:
                 src_dir=Path(), crawl_dir=Path(), data_dir=Path())
 
 
-def replay_rows(path: str, wait_stride: int = 40, play_window: int = 20, shift_ticks: int = 0) -> dict[str, Any]:
+def evolution_cycles() -> dict[str, int]:
+    """RoyaleSim card.rs:10941: per-card evo_cycles, absent -> 2 basic plays.
+
+    state.rs:6545 / 8738 / 24065: independent (side, card) counters start at
+    zero, increment on accepted base plays and reset after an evolved play.
+    """
+    if not hasattr(evolution_cycles, "cache"):
+        path = REPO / "research/ext/Royale/RoyaleSim/data/derived/cards.json"
+        data = json.loads(path.read_text(encoding="utf-8"))
+        evolution_cycles.cache = {card_key(c["form_of"]): int(c.get("evo_cycles") or 2)
+                                  for c in data["evolutions"]}
+    return evolution_cycles.cache
+
+
+def played_forms(rec: dict) -> list[dict]:
+    """Accepted public plays, chronological, with ACTUAL form; never change own past."""
+    cycles = evolution_cycles()
+    decks = {(int(s), card_key(n)): card_form(n)
+             for s, ns in rec["final_decks"].items() for n in ns}
+    counters: Counter = Counter()
+    out = []
+    for e in sorted(rec["log"], key=lambda e: (int(e.get("tick", 0)), int(e.get("play_index", 0)))):
+        if not e.get("accepted") or e.get("ability") or "card" not in e:
+            continue
+        key = card_key(e["card"])
+        pair = (int(e["side"]), key)
+        decked = decks.get(pair, 0)
+        form = 2 if decked == 2 else 0
+        if decked == 1:
+            form = int(counters[pair] >= cycles.get(key, 2))
+            counters[pair] = 0 if form else counters[pair] + 1
+        # SIM replay logs may supply the directly observed actual form.
+        form = int(e.get("actual_form", form))
+        out.append(dict(e, card=key, form=form))
+    return out
+
+
+def opponent_past(plays: list[dict], tick: int, side: int, gid: dict[str, int]) -> np.ndarray:
+    """Public accepted opponent plays strictly before tick; newest first, in MY frame."""
+    from .dataset import OPP_PAST_K
+    from .obs_contract import _engine_xy, TICK_S
+    out = np.tile(np.array([0, FORM_PAD, -1, -1, -1], np.float32), (OPP_PAST_K, 1))
+    prev = [e for e in plays if e.get("accepted", True) and int(e["side"]) != side and int(e["tick"]) < tick]
+    prev.sort(key=lambda e: (int(e["tick"]), int(e.get("play_index", 0))))
+    for i, e in enumerate(reversed(prev[-OPP_PAST_K:])):
+        c = gid.get(card_key(e["card"]), 0)
+        if c:
+            x, y = _engine_xy(float(e["x"]), float(e["y"]), side == 1)
+            out[i] = (c, int(e["form"]), x, y, (tick - int(e["tick"])) * TICK_S)
+    return out
+
+
+def tag_recording(rec: dict, plays: list[dict], stats: dict) -> dict:
+    """Conservative, causal attribution. Never treat the seventh (kind) column as an id.
+
+    Stable ids (dict entity_id, frame entity_ids, or explicit entity_fields) retain
+    birth attribution. Legacy six/seven-column frames have NO ids: only isolated
+    cohorts born on a previously empty board for that side/card within 60 ticks
+    and 3 tiles of exactly one play are attributable. A later play while a cohort
+    is alive makes it ambiguous, hence base until the board empties. No future
+    frame or future play can change a row's form. Parent-labelled hero summons
+    (including Goblins' 2560-HP flag) inherit their parent's hero form.
+    """
+    from .obs_contract import entity_form
+    deck_forms = {(int(s), card_key(n)): card_form(n)
+                  for s, ns in rec["final_decks"].items() for n in ns}
+    for (side, key), form in deck_forms.items():
+        if form == FORM_EVO:
+            stats["evo_deck_sides:" + key] = stats.get("evo_deck_sides:" + key, 0) + 1
+    by_card = {}
+    for e in plays:
+        by_card.setdefault((int(e["side"]), e["card"]), []).append(e)
+        k = f"actual_plays:{e['card']}:{e['form']}"
+        stats[k] = stats.get(k, 0) + 1
+    frames = [(int(f["tick"]), source, i, f) for source in ("frames", "play_frames")
+              for i, f in enumerate(rec.get(source) or [])]
+    frames.sort(key=lambda v: v[0])
+    out = dict(rec)
+    for source in ("frames", "play_frames"):
+        out[source] = list(rec.get(source) or [])
+    active, ids = {}, {}
+    counted_births = set()
+    previous_tick = None
+    snapshot = {}
+    for tick, source, index, frame in frames:
+        # Multiple pre-act observations at a tick must use the same prior snapshot.
+        if tick != previous_tick:
+            snapshot = dict(active)
+            previous_tick = tick
+        groups = {}
+        ents = frame.get("entities") or []
+        forms = [0] * len(ents)
+        for j, e in enumerate(ents):
+            raw = isinstance(e, dict)
+            side, x, y, name, hp = ((e["side"], e["x"], e["y"], e.get("name", "-1"), e["hp"])
+                                    if raw else e[:5])
+            if str(name) == "-1" or hp <= 0:
+                continue
+            pair = (int(side), card_key(name))
+            eid = e.get("entity_id") if raw else None
+            if not raw and frame.get("entity_ids"):
+                eid = frame["entity_ids"][j]
+            fields = rec.get("entity_fields", [])
+            if not raw and "entity_id" in fields:
+                eid = e[fields.index("entity_id")]
+            groups.setdefault(pair, []).append((j, e, eid, float(x), float(y)))
+        active = {}
+        for pair, bodies in groups.items():
+            decked = deck_forms.get(pair, 0)
+            before = [e for e in by_card.get(pair, []) if int(e["tick"]) < tick]
+            recent = [e for e in before if tick - int(e["tick"]) <= 60]
+            last_tick = int(before[-1]["tick"]) if before else -1
+            cohort = snapshot.get(pair)
+            if cohort is None:
+                near = [e for e in recent if all((x - float(e["x"]))**2 + (y - float(e["y"]))**2 <= 3000**2
+                                                 for _, _, _, x, y in bodies)]
+                cohort = (int(near[0]["form"]), last_tick, "isolated") if len(near) == 1 else (0, last_tick, "no_birth_evidence")
+                if cohort[0] and (tick, pair) not in counted_births:
+                    counted_births.add((tick, pair))
+                    k = f"tag_birth:{pair[1]}:{cohort[0]}"
+                    stats[k] = stats.get(k, 0) + len(bodies)
+            elif last_tick != cohort[1]:
+                cohort = (0, last_tick, "overlapping_plays")
+            active[pair] = cohort
+            for j, e, eid, x, y in bodies:
+                f = 2 if decked == 2 else cohort[0] if decked == 1 else 0
+                if isinstance(e, dict) and "status_flags" in e:
+                    f = entity_form(e)
+                elif eid is not None:
+                    ident = (pair, eid)
+                    if ident not in ids:
+                        near = [p for p in recent if (x-float(p["x"]))**2 + (y-float(p["y"]))**2 <= 3000**2]
+                        ids[ident] = 2 if decked == 2 else int(near[0]["form"]) if len(near) == 1 else 0
+                    f = ids[ident]
+                forms[j] = f
+                if decked and not f:
+                    k = f"tag_base_observations:{pair[1]}"
+                    stats[k] = stats.get(k, 0) + 1
+                if decked == 1 and not f and cohort[2] != "isolated":
+                    k = f"tag_ambiguous:{pair[1]}:{cohort[2]}"
+                    stats[k] = stats.get(k, 0) + 1
+                if f:
+                    k = f"tag_observations:{pair[1]}:{f}"
+                    stats[k] = stats.get(k, 0) + 1
+                    hp = e["max_hp"] if isinstance(e, dict) else e[5]
+                    k = f"tag_max_hp:{pair[1]}:{f}:{hp}"
+                    stats[k] = stats.get(k, 0) + 1
+        out[source][index] = dict(frame, unit_forms=forms)
+    return out
+
+
+def replay_rows(path: str, wait_stride: int = 40, play_window: int = 20, shift_ticks: int = 0, feature_version: int = 1) -> dict[str, Any]:
     """One replay file -> its rows with card identities as indices into the returned local ``keys`` (-1 = pad)."""
     global _ICEBOW
     try:
@@ -94,11 +249,14 @@ def replay_rows(path: str, wait_stride: int = 40, play_window: int = 20, shift_t
                 if k not in keys:
                     keys.append(k)
                 ktbl[s, j], ftbl[s, j] = keys.index(k), form[c]
-        rows = _Rows()
+        actual_plays = played_forms(rec) if feature_version >= 3 else []
+        if feature_version >= 3:
+            rec = tag_recording(rec, actual_plays, st)
+        rows = _Rows(feature_version)
         for s in ((0,) if mirror else (0, 1)):                   # a mirror match is built once, both sides
             if decks[s] is not None:
                 build_replay(rec, decks[s], rows, 0, wait_stride=wait_stride, play_window=play_window, val_pct=0,
-                             stats=st, shift_ticks=shift_ticks)
+                             stats=st, shift_ticks=shift_ticks, feature_version=feature_version)
         a = rows.arrays()
         n = len(a["sc"])
         side = a["side"].astype(np.int64)
@@ -118,6 +276,7 @@ def replay_rows(path: str, wait_stride: int = 40, play_window: int = 20, shift_t
             "path": path, "tag": str(rec["tag"]), "keys": keys, "stats": st,
             "deck_keys": {s: sorted(keys[i] for i in ktbl[s, :8]) for s in (0, 1) if decks[s] is not None},
             "icebow_sides": deck_sides(rec, _ICEBOW),
+            **({"unit_form": a["unit_form"], "actual_plays": actual_plays} if feature_version >= 3 else {}),
             "tok": a["tok"], "n_tok": np.diff(a["off"]), "sc": sc,
             "hand_card": ktbl[side[:, None], hs], "hand_form": ftbl[side[:, None], hs],
             "next_card": ktbl[side, ns], "next_form": ftbl[side, ns],
@@ -145,7 +304,7 @@ def v3val_tags(npz: Path = V3VAL_NPZ) -> set[str]:
 
 def build(corpora: list[Path], out: Path, *, grid: str = "lattice", limit: int = 0, workers: int = 4,
           wait_stride: int = 40, play_window: int = 20, val_pct: int = 10, v3val_npz: Path = V3VAL_NPZ,
-          shift_ticks: int = 0, log=sys.stderr) -> dict[str, Any]:
+          shift_ticks: int = 0, feature_version: int = 1, log=sys.stderr) -> dict[str, Any]:
     t0 = time.time()
     files, seen = [], set()
     for c in corpora:
@@ -156,7 +315,7 @@ def build(corpora: list[Path], out: Path, *, grid: str = "lattice", limit: int =
     if limit:
         files = files[:limit]
     keep_val = v3val_tags(v3val_npz)
-    jobs = [(f, wait_stride, play_window, shift_ticks) for f in files]
+    jobs = [(f, wait_stride, play_window, shift_ticks, feature_version) for f in files]
     if workers > 1:
         with ProcessPoolExecutor(max_workers=workers) as ex:
             res = []
@@ -213,6 +372,10 @@ def build(corpora: list[Path], out: Path, *, grid: str = "lattice", limit: int =
             "deck_id": np.asarray([deck_ix[dk[int(s)]] for s in side], np.int32),
             "v3val": np.asarray([int(r["tag"] in keep_val and int(s) in r["icebow_sides"]) for s in side], np.int8),
         }
+        if feature_version >= 3:
+            cols["unit_form"] = r["unit_form"]
+            cols["opp_past"] = np.stack([opponent_past(r["actual_plays"], int(t), int(s), gid)
+                                          for t, s in zip(r["tick"], side)])
         for k, v in cols.items():
             parts.setdefault(k, []).append(v)
 
@@ -246,6 +409,13 @@ def build(corpora: list[Path], out: Path, *, grid: str = "lattice", limit: int =
         "decks": decks, "built": time.strftime("%Y-%m-%d %H:%M:%S"),
         "stats": {**dict(st), "unmapped": sorted(unmapped)},
     }
+    if feature_version >= 3:
+        meta.update(feature_version=3, OPP_PAST_K=PAST_K, evolution_cycles=evolution_cycles(),
+                    new_features={"unit_form_shape": list(arrs["unit_form"].shape),
+                                  "opp_past_shape": list(arrs["opp_past"].shape),
+                                  "evo_share": float(np.mean(arrs["unit_form"] == 1)),
+                                  "hero_share": float(np.mean(arrs["unit_form"] == 2)),
+                                  "opponent_rows_share": float(np.mean((arrs["opp_past"][..., 0] > 0).any(1)))})
     out.parent.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(out, tags=np.asarray(tags), meta=json.dumps(meta), **arrs)
     out.with_suffix(".json").write_text(json.dumps(meta, indent=1), encoding="utf-8")
@@ -260,6 +430,7 @@ def build(corpora: list[Path], out: Path, *, grid: str = "lattice", limit: int =
 
 def main(argv: Optional[list[str]] = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
+    ap.add_argument("--feature-version", type=int, choices=(1, 2, 3), default=1)
     ap.add_argument("--corpus", type=Path, nargs="+", required=True)
     ap.add_argument("--out", type=Path, required=True)
     ap.add_argument("--grid", choices=("floor", "lattice"), default="lattice")
@@ -273,7 +444,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     a = ap.parse_args(argv)
     s = build(a.corpus, a.out, grid=a.grid, limit=a.limit, workers=a.workers, wait_stride=a.wait_stride,
               play_window=a.play_window, val_pct=a.val_pct, v3val_npz=a.v3val_npz,
-              shift_ticks=a.shift_ticks)
+              shift_ticks=a.shift_ticks, feature_version=a.feature_version)
     print(json.dumps(s, default=str))
     return 0
 

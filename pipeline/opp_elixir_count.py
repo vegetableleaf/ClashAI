@@ -36,7 +36,7 @@ from typing import Any, Mapping, Optional
 
 from . import vocab
 from .board_side import my_side_of
-from .obs_contract import REPO, _catalog_names
+from .obs_contract import REPO, _catalog_names, catalog_card_form
 
 START_ELIXIR = 6.0
 MAX_ELIXIR = 10.0
@@ -101,6 +101,9 @@ class PlayEvent:
     key: str              # base vocab key, e.g. 'knight', 'goblin_barrel'
     cost: Optional[float]
     n_bodies: int = 1
+    form: int = 0
+    x: float = 0.0       # observed birth centroid in native engine coordinates
+    y: float = 0.0
 
 
 _DB = None
@@ -167,6 +170,7 @@ class PlayDetector:
         tick = int(frame["game_tick"])
         cur: dict[Any, tuple[str, int, float, float]] = {}
         groups: dict[str, dict[Any, tuple[str, int, float, float]]] = {}   # key -> {new addr: body}
+        forms = {}
         for e in frame.get("entities") or ():
             cid = int(e["card_id"])
             if cid < 0 or int(e["side"]) == self.my_side:
@@ -177,6 +181,7 @@ class PlayDetector:
                 self.unknown_ids.add(cid)
                 continue
             body = (key, int(e.get("max_hp", -1)), float(e["x"]), float(e["y"]))
+            forms[e["uid"]] = catalog_card_form(cid)[1]
             cur[e["uid"]] = body
             if e["uid"] not in self.seen:
                 self.seen.add(e["uid"])
@@ -204,6 +209,9 @@ class PlayDetector:
                 self.spawns += len(bodies)
                 continue
             ev = PlayEvent(tick, key, card_cost(key), len(bodies))
+            ev.form = max(forms[a] for a in group)
+            ev.x = sum(b[2] for b in bodies) / len(bodies)
+            ev.y = sum(b[3] for b in bodies) / len(bodies)
             self.open[key] = (ev, tick)
             if m != float("inf"):
                 self.play_hp[key] = max(self.play_hp.get(key, 0), m)
@@ -223,6 +231,7 @@ class LiveOppElixir:
         self.detector.reset()
         self.counter = OppElixirCounter()
         self.battle: Any = None
+        self.detected_plays: list[dict] = []
 
     def update(self, frame: Mapping[str, Any]) -> float:
         tick = int(frame["game_tick"])
@@ -232,4 +241,7 @@ class LiveOppElixir:
         self.battle = battle if battle is not None else self.battle
         for ev in self.detector.feed(frame):
             self.counter.play(ev.tick, ev.key, ev.cost)
+            self.detected_plays.append({"tick": ev.tick, "side": 1 - self.detector.my_side,
+                                        "card": ev.key, "form": ev.form, "x": ev.x, "y": ev.y,
+                                        "accepted": True})
         return self.counter.at(tick)

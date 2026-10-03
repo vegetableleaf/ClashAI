@@ -36,10 +36,10 @@ from typing import Any, Optional
 import numpy as np
 
 from . import vocab
-from .obs_contract import Deck, F, S, _engine_xy, from_engine, load_deck, to_tokens
+from .obs_contract import Deck, F, S, _engine_xy, from_engine, load_deck, to_tokens, to_unit_forms
 
 REPO = Path(__file__).resolve().parents[1]
-PAST_K = 3          # past-actions channel: my last K accepted plays as (slot, x, y, seconds ago); slot -1 = none
+OPP_PAST_K = PAST_K = 3          # past-actions channel: my last K accepted plays as (slot, x, y, seconds ago); slot -1 = none
 CORPUS = REPO / "scratchpad" / "gauntlet" / "ext" / "corpus_v3"
 
 
@@ -108,7 +108,9 @@ def _tag_split(tag: str, val_pct: int) -> int:
 
 
 class _Rows:
-    def __init__(self) -> None:
+    def __init__(self, feature_version: int = 1) -> None:
+        self.feature_version = feature_version
+        self.unit_form: list[np.ndarray] = []
         self.tok: list[np.ndarray] = []
         self.off: list[int] = [0]
         self.sc: list[np.ndarray] = []
@@ -128,6 +130,8 @@ class _Rows:
             tick: int, rep: int, side: int, split: int, past: np.ndarray, crowns: tuple[int, int]) -> None:
         toks, mask, sc = to_tokens(bs)
         kept = toks[mask]
+        if self.feature_version >= 3:
+            self.unit_form.append(to_unit_forms(bs)[mask])
         self.tok.append(kept)
         self.off.append(self.off[-1] + len(kept))
         self.sc.append(sc)
@@ -140,6 +144,8 @@ class _Rows:
         n = len(self.sc)
         return {
             "tok": np.concatenate(self.tok).astype(np.float32) if self.tok else np.zeros((0, F), np.float32),
+            **({"unit_form": np.concatenate(self.unit_form) if self.unit_form else np.zeros(0, np.int8)}
+               if self.feature_version >= 3 else {}),
             "off": np.asarray(self.off, np.int64),
             "sc": np.stack(self.sc).astype(np.float32) if n else np.zeros((0, S), np.float32),
             "y_slot": np.asarray(self.slot, np.int8), "y_xy": np.asarray(self.xy, np.float32).reshape(n, 2),
@@ -154,7 +160,7 @@ class _Rows:
 
 def build_replay(rec: dict, deck: Deck, rows: _Rows, rep_index: int, *, wait_stride: int = 40,
                  play_window: int = 20, val_pct: int = 15, stats: Optional[dict] = None,
-                 shift_ticks: int = 0) -> None:
+                 shift_ticks: int = 0, feature_version: int = 1) -> None:
     """
     compact frame ~shift_ticks before the play (``_shift_frame``) with the hand/next of that pre-act snapshot
     (my plays at tick >= t0 not yet made), past plays strictly before that tick, row ``tick`` = that frame's; a row whose card is not in that hand
@@ -200,7 +206,7 @@ def build_replay(rec: dict, deck: Deck, rows: _Rows, rep_index: int, *, wait_str
                     obs = dict(fr)
                     obs["players"] = [{"side": side, "hand": hand, "next": nxt_card}]
                     bs = from_engine(obs, side, deck, engine_deck=engine_deck,
-                                     unmapped=st.setdefault("unmapped", set()))
+                                     unmapped=st.setdefault("unmapped", set()), feature_version=feature_version)
                     drop = ("shift_no_hand" if len(hand) != 4 else
                             "shift_drop_combo" if deck.card_ids[slot] not in bs.my_hand else None)
                 if drop:
@@ -212,7 +218,7 @@ def build_replay(rec: dict, deck: Deck, rows: _Rows, rep_index: int, *, wait_str
             else:
                 t0 = int(pf["tick"])
                 bs = from_engine(_as_compact(pf), side, deck, engine_deck=engine_deck,
-                                 unmapped=st.setdefault("unmapped", set()))
+                                 unmapped=st.setdefault("unmapped", set()), feature_version=feature_version)
             rows.add(bs, slot=slot, xy=xy, gate=1, wait_slot=slot, wait_dt=0.0, tick=t0,
                      rep=rep_index, side=side, split=split, past=_past(done, t0), crowns=crowns)
             done.append((int(e["tick"]), slot, xy[0], xy[1]))
@@ -245,7 +251,7 @@ def build_replay(rec: dict, deck: Deck, rows: _Rows, rep_index: int, *, wait_str
                 continue
             obs = dict(fr)
             obs["players"] = [{"side": side, "hand": hand, "next": nxt_card}]
-            bs = from_engine(obs, side, deck, engine_deck=engine_deck, unmapped=st.setdefault("unmapped", set()))
+            bs = from_engine(obs, side, deck, engine_deck=engine_deck, unmapped=st.setdefault("unmapped", set()), feature_version=feature_version)
             wslot = crawl_slot(deck, nxt["card"])
             rows.add(bs, slot=-1, xy=(-1.0, -1.0), gate=0, wait_slot=wslot,
                      wait_dt=(int(nxt["tick"]) - t) * 0.05, tick=t, rep=rep_index, side=side, split=split,

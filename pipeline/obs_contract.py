@@ -117,6 +117,7 @@ class Unit:
     deploying: Optional[bool]
     age_sec: Optional[float]        # engine: (tick - first_seen_tick) * TICK_S when fed a history, else None
     conf: float
+    form: int = 0                   # gen_v3 only: actual body form (base / evolved / hero)
 
 
 @dataclass(frozen=True)
@@ -195,6 +196,27 @@ def _catalog_names() -> dict[int, str]:
     return _CATALOG_NAMES
 
 
+def catalog_card_form(card_id: int) -> tuple[Optional[str], int]:
+    """Public public card id -> (base display name, actual form)."""
+    if not hasattr(catalog_card_form, "table"):
+        p = REPO / "pipeline/decks/card_catalog.json"
+        table = {}
+        for c in json.loads(p.read_text(encoding="utf-8"))["cards"]:
+            for field, form in (("card_id", 0), ("evolution_form_id", 1), ("hero_form_id", 2)):
+                if c.get(field) is not None:
+                    table[int(c[field])] = (str(c["display_name"]), form)
+        catalog_card_form.table = table
+    return catalog_card_form.table.get(int(card_id), (None, 0))
+
+
+def entity_form(entity: Mapping[str, Any]) -> int:
+    """SIM status bits take precedence over native ids (the two id spaces differ)."""
+    if "status_flags" in entity:
+        flags = int(entity["status_flags"])
+        return 0 if flags < 0 else 2 if flags & 16 else 1 if flags & 8 else 0
+    return catalog_card_form(int(entity.get("card_id", -1)))[1]
+
+
 def _engine_xy(x: float, y: float, mirror: bool) -> tuple[float, float]:
     if mirror:
         x, y = ENGINE_X - x, ENGINE_Y - y
@@ -216,7 +238,8 @@ def _hand_ids(deck: Deck, names: Sequence[Optional[str]]) -> tuple[int, int, int
 
 
 def from_engine(obs: Mapping[str, Any], my_side: int, deck: Deck, *, history: Optional[dict] = None,
-                engine_deck: Optional[Sequence[str]] = None, unmapped: Optional[set] = None) -> BoardState:
+                engine_deck: Optional[Sequence[str]] = None, unmapped: Optional[set] = None,
+                feature_version: int = 1) -> BoardState:
     """Engine state -> BoardState in MY frame (me at the bottom). Accepts BOTH the raw ``observe()`` dict
     list-encoded frame on disk (entities ``[side, x, y, name, hp, max_hp(, kind)]``, towers
     ``[side, type, lane, x, y, hp, max_hp]``, ``elixir[2]``, optional ``players`` / ``effects``).
@@ -273,7 +296,10 @@ def from_engine(obs: Mapping[str, Any], my_side: int, deck: Deck, *, history: Op
 
     # --- units ---
     units: list[Unit] = []
-    for e in ents:
+    for ei, e in enumerate(ents):
+        form = 0
+        if feature_version >= 3:
+            form = entity_form(e) if raw else int((obs.get("unit_forms") or [0] * len(ents))[ei])
         if raw:
             if int(e.get("card_id", -1)) < 0 or str(e.get("name", "")) == "-1":
                 continue
@@ -300,7 +326,7 @@ def from_engine(obs: Mapping[str, Any], my_side: int, deck: Deck, *, history: Op
             first = history.setdefault(eid, tick)
             age = (tick - int(first)) * TICK_S
         units.append(Unit(cid, side_of(s), x, y, float(hp) / float(mhp) if mhp else None,
-                          kind in DEPLOYING_KINDS if kind >= 0 else None, age, 1.0))
+                          kind in DEPLOYING_KINDS if kind >= 0 else None, age, 1.0, form))
 
     # --- spells: engine effects whose card is a spell (unit-attack effects and tower shots are not) ---
     spells: list[Unit] = []
@@ -529,7 +555,7 @@ def degrade(bs: BoardState, rng: np.random.Generator, *, recall: float = DEGRADE
         return Unit(u.cls if cls is None else cls, side,
                     float(np.clip(u.x + dx, 0.0, 1.0)), float(np.clip(u.y + dy, 0.0, 1.0)),
                     None if drop_hp else u.hp_frac, None if drop_deploying else u.deploying, None,
-                    _draw_conf(rng))
+                    _draw_conf(rng), u.form if cls is None else 0)
 
     units: list[Unit] = []
     for u in bs.units:
@@ -610,3 +636,13 @@ def to_tokens(bs: BoardState, max_units: int = 64) -> tuple[np.ndarray, np.ndarr
     sc += [float(t.alive) for t in bs.towers]
     assert len(sc) == S
     return toks, mask, np.asarray(sc, dtype=np.float32)
+
+
+def to_unit_forms(bs: BoardState, max_units: int = 64) -> np.ndarray:
+    """Parallel to to_tokens, including its stable ordering, spell positions and padding."""
+    bodies = list(bs.units) + list(bs.spells)
+    bodies.sort(key=lambda u: (abs(u.y - RIVER_Y), -u.conf))
+    forms = np.zeros(max_units, np.int8)
+    for i, u in enumerate(bodies[:max_units]):
+        forms[i] = u.form
+    return forms
