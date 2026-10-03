@@ -468,6 +468,7 @@ class Runner:
                 "opp_plays_accepted": r["opp_side"]["plays_accepted"], "decisions": r["decisions"],
                 **st, "search_s": round(st["search_s"], 2),
                 "s_per_searched": round(st["search_s"] / st["searched"], 3) if st["searched"] else None,
+                **({k: r[k] for k in ("hero_abilities", "ability_presses")} if "hero_abilities" in r else {}),
                 **({k: r[k] for k in ("forms_mode", "form_fallbacks")} if "forms_mode" in r else {}),
                 "wall_s": round(time.perf_counter() - t0, 1)}
 
@@ -554,7 +555,8 @@ def _init_worker(args: dict) -> None:
         opps["s1"] = (s1, live_cfg(TAU_OPP, str(si.get("grid", "floor")), dev))
     cap, fm = int(args["tail_cap"]), args.get("forms_mode", "base")
     _W["runner"] = Runner(gen, opps, live_cfg(TAU_PLAIN, gi["grid"], dev),
-                          lambda: RoyaleSelfPlayEnv(decision_ticks=10, tail_cap=cap, forms_mode=fm),
+                          lambda: RoyaleSelfPlayEnv(decision_ticks=10, tail_cap=cap, forms_mode=fm,
+                                                    hero_abilities=args.get("hero_abilities", False)),
                           horizon_s=args["horizon"], interval=args["interval"], topk=args["topk"], cells=args["cells"],
                           search_min_p=args["search_min_p"], rollout_self=args.get("rollout_self", "idle"),
                           scorer_version=args.get("scorer", "v1"))
@@ -673,6 +675,8 @@ def main(argv=None) -> int:
                     help="rollout Scorer: v1 (ported, default) or v2 (board value x current HP x position)")
     ap.add_argument("--workers", type=int, default=1, help="parallel matches (processes)")
     ap.add_argument("--tail-cap", type=int, default=7200, help="match end tick cap (RoyaleSelfPlayEnv tail_cap)")
+    ap.add_argument("--hero-abilities", action="store_true",
+                    help="press ready, affordable hero buttons within attack range + 1.5 tiles of enemies")
     ap.add_argument("--forms-mode", default="base", choices=("base", "deck"),
                     help="RoyaleSim card forms: base = every card as its base card (today); deck = decked evolutions / "
                          "heroes the engine loads, refused forms fall back to base (royale_env docstring)")
@@ -701,7 +705,7 @@ def main(argv=None) -> int:
     wargs = {"gen": a.gen, "opp_gen": a.opp_gen, "opp_gen_sha256": opp_sha, "s1": a.s1, "opps": opps, "threads": a.threads, "tail_cap": a.tail_cap, "horizon": a.horizon,
              "interval": a.interval, "topk": a.topk, "cells": a.cells,
              "device": a.device, "search_min_p": a.search_min_p, "rollout_self": a.rollout_self,
-             "forms_mode": a.forms_mode, "scorer": a.scorer, "census": a.census}
+             "forms_mode": a.forms_mode, "hero_abilities": a.hero_abilities, "scorer": a.scorer, "census": a.census}
     (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if k != "census" or a.census != CENSUS}, "out": str(a.out), "summarise": None,
                                                 "gen_sha256": sha256(REPO / a.gen), "opp_gen_sha256": opp_sha,
                                                 "s1_sha256": sha256(REPO / a.s1),

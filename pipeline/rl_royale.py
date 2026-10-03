@@ -1127,12 +1127,14 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
                 opps = {j[1]["opp"]["id"]: (opp_cache[j[1]["opp"]["path"]][0],
                                             {**cfg, "policy": base["league_opp_policy"], "record": False,
                                              "grid": opp_cache[j[1]["opp"]["path"]][1]}) for j in jobs}
-                E.run_selfplay_batch(lambda: RoyaleSelfPlayEnv(decision_ticks=int(base["decide_every"]), forms_mode=fm), model, opps,
+                E.run_selfplay_batch(lambda: RoyaleSelfPlayEnv(decision_ticks=int(base["decide_every"]), forms_mode=fm,
+                                                               hero_abilities=base.get("hero_abilities", False)), model, opps,
                                      rollout_jobs(jobs, update), cfg, n_fl, on_result=on_result, on_skip=on_skip,
                                      skip=(UnsupportedDeck,))
             else:
                 it = rollout_jobs(jobs, update) if kind == "rollout" else jobs     # screen: eval obs seed of (tag, k)
-                E.run_batch(lambda: RoyalePoolEnv(decision_ticks=int(base["decide_every"]), forms_mode=fm), model, deck, it, cfg,
+                E.run_batch(lambda: RoyalePoolEnv(decision_ticks=int(base["decide_every"]), forms_mode=fm,
+                                                               hero_abilities=base.get("hero_abilities", False)), model, deck, it, cfg,
                             n_fl, on_result=on_result, on_skip=on_skip, skip=(UnsupportedDeck,))
             stats = {"wall_s": time.perf_counter() - t0, "matches": len(results),
                      "gpu_peak_mb": (torch.cuda.max_memory_allocated() / 2**20) if dev.startswith("cuda") else None}
@@ -1251,6 +1253,7 @@ class ActorPool:
 def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
     import yaml
     cfg = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
+    cfg.setdefault("hero_abilities", False)
     if smoke:
         cfg.update(SMOKE)
     for ov in overrides:
@@ -1260,10 +1263,15 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
         if k not in cfg:
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
         cfg[k] = yaml.safe_load(v)
+    if type(cfg["hero_abilities"]) is not bool:
+        raise SystemExit("hero_abilities must be a bool")
     return cfg
 
 
 def config_sha(cfg: dict) -> str:
+    # Off is the historical configuration, including checkpoint resume hashes.
+    if cfg.get("hero_abilities") is False:
+        cfg = {k: v for k, v in cfg.items() if k != "hero_abilities"}
     return hashlib.sha256(json.dumps(cfg, sort_keys=True, default=str).encode()).hexdigest()
 
 
@@ -1786,6 +1794,9 @@ class Learner:
         base.update({k: self.cfg.get(k) for k in COND_KEYS})
         base["gen"] = getattr(self, "gen", None)
         base["league_opp_policy"] = self.cfg.get("league_opp_policy", "sample")
+        base["hero_abilities"] = self.cfg.get("hero_abilities", False)
+        if type(base["hero_abilities"]) is not bool:
+            raise SystemExit("hero_abilities must be a bool")
         base["forms_mode"] = self.cfg.get("forms_mode", "base")
         if base["forms_mode"] not in ("base", "deck"):
             raise SystemExit(f"forms_mode must be base or deck, got {base['forms_mode']!r}")

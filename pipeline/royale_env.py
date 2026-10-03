@@ -11,7 +11,8 @@ the catalogue lacks, unless ``subs`` maps it to one it has (e.g. {"Tornado": "Ar
 Evolution / hero forms: ``forms_mode`` "base" (default) plays every card as the base card, as before RoyaleSim had
 forms. "deck" plays each entry's decked form (``@evolution`` -> 1, ``@hero`` -> 2; pool items' ``form``) through
 ``MatchSetup.forms``: an evolved card plays its evolution on every third play of it (the engine's counter,
-``PlayerState.evo``); a hero is an ability button this wrapper never presses. A form the engine refuses (RoyaleSim
+``PlayerState.evo``); a hero has an ability button. Opt-in ``hero_abilities`` presses ready, affordable buttons near enemies;
+its default False preserves the original command and RNG paths. A form the engine refuses (RoyaleSim
 369fe33: only Tesla / Knight / Skeletons evolve, only Knight has a hero, of icebow's cards) falls back to the base card
 and is recorded per reset in ``form_fallbacks`` [(side, name, form)]; ``loaded_forms[side]`` = what was loaded, in
 ``deck_ids`` order (e1_eval feeds it to the policy's form inputs).
@@ -20,12 +21,13 @@ Needs ``royalesim`` + ``royalegym`` importable (the Royale stack venv, or both i
 """
 from __future__ import annotations
 
+import json
 import random
 from collections import Counter
 from typing import Optional
 
-from royalegym.protocol import (BLUE, EMPTY_CARD, DeployCommand, DeployStatus, EntityKind, MatchSetup, ShuffleMode,
-                                Winner)
+from royalegym.protocol import (BLUE, EMPTY_CARD, HAND_SIZE, STATUS_HERO, DeployCommand, DeployStatus, EntityKind,
+                                MatchSetup, ShuffleMode, Winner)
 from royalegym.rust_engine import RustEngine
 
 from pipeline.e1_pool import ours
@@ -79,8 +81,13 @@ class _Core:
         self.env = env
         self.last_episode: Optional[dict] = None
 
-    def act(self, *, side: int, deck_index: int, x: int, y: int) -> dict:
+    def act(self, *, side: int, deck_index: int = -1, x: int = 0, y: int = 0,
+            ability_button: Optional[int] = None) -> dict:
         env = self.env
+        if ability_button is not None:
+            (r,) = env.core.step([DeployCommand(side, HAND_SIZE + ability_button, 0, 0)], 0)
+            code = NOT_ENOUGH_ELIXIR if r.status == DeployStatus.NOT_ENOUGH_ELIXIR else REFUSED_BASE + int(r.status)
+            return {"accepted": r.status == DeployStatus.OK, "result_code": 0 if r.status == DeployStatus.OK else code}
         cid = env.deck_ids[side][deck_index]
         hand = env.core.state().players[side].hand
         if cid not in hand:
@@ -98,7 +105,10 @@ class _Core:
 class RoyalePoolEnv:
     def __init__(self, *, decision_ticks: int = 10, elixir_slack: int = 40, tail_cap: int = 7200,
                  warmup_ticks: int = 90, seed: int = 0, subs: Optional[dict[str, str]] = None,
-                 forms_mode: str = "base", **_ignored):
+                 forms_mode: str = "base", hero_abilities: bool = False, **_ignored):
+        if type(hero_abilities) is not bool:
+            raise ValueError("hero_abilities must be a bool")
+        self.hero_abilities = hero_abilities
         if forms_mode not in FORMS_MODES:
             raise ValueError(f"forms_mode {forms_mode!r} not in {FORMS_MODES}")
         self.forms_mode = forms_mode
@@ -173,6 +183,7 @@ class RoyalePoolEnv:
         self.ghost_ok = self.ghost_rejected = 0
         self.ghost_reject_reasons, self.ghost_events, self.ghost_cards_delivered = {}, [], Counter()
         self.terminated, self.episode, self.eng.last_episode = False, {}, None
+        self._reset_abilities()
         self.tick = int(self.core.state().tick)
         self._advance_to(self.warmup_ticks)
         return self.raw()
@@ -212,6 +223,8 @@ class RoyalePoolEnv:
         while self.tick < target and not self.terminated:
             nxt = self._next_ghost_tick()
             stop = target if (nxt is None or nxt > target) else max(min(nxt, target), self.tick + 1)
+            if self.hero_abilities and self._ability_pending:
+                stop = min(stop, self._ability_pending[0][0])
             self.core.step([], stop - self.tick)
             st = self.core.state()
             self.tick = int(st.tick)
@@ -222,9 +235,89 @@ class RoyalePoolEnv:
                 self.episode = self.eng.last_episode = {"winner": w, "crowns": c, "termination_reason": "game_over"}
                 return
             self._fire_ghosts_at(self.tick)
+            if self.hero_abilities:
+                self._fire_abilities()
 
     def ghost_undelivered(self) -> int:
         return len(self._ghosts) - self._gi + len(self._pending)
+
+    def _reset_abilities(self) -> None:
+        self.ability_presses = {0: Counter(), 1: Counter()}
+        self._ability_pending = []
+        self._hero_ids = {s: [cid for cid, form in zip(self.deck_ids[s],
+                           getattr(self, "loaded_forms", {}).get(s, [])) if form == 2]
+                          if self.forms_mode == "deck" else [] for s in (0, 1)}
+        if not self.hero_abilities or not any(self._hero_ids.values()):
+            return
+        if not hasattr(self, "_hero_costs"):
+            import royalesim
+            from royalegym.rust_engine import engine_cards_json_path
+            column = list(royalesim.CATALOGUE_FIELDS).index("hero")
+            self._hero_costs = {cid: row[column] for cid, row in
+                               enumerate(json.loads(self.core._battle.catalogue_json()))}
+            # BattleState has no attack range. Read the engine-selected table, including
+            # hero-local summoned units (e.g. Hero Barbarian Barrel), not base-card stats.
+            path, _ = engine_cards_json_path()
+            data = json.loads(path.read_text(encoding="utf-8"))
+            rows = list(data["hero_forms"])
+            for form in data["hero_forms"]:
+                rows.extend(form.get("tables", {}).get("units", {}).values())
+            self._hero_ranges = {r["name"]: int(r.get("range_milli") or 0) * SCALE for r in rows}
+            # debug_units exposes troops only. The Goblins button belongs to its
+            # flag building, whose table range is zero, not the Goblins' melee range.
+            self._hero_buildings = {self.ids[f["form_of"]]: f["ability"]["effect"]["unit"]
+                                    for f in data["hero_forms"]
+                                    if f["ability"]["effect"]["kind"] == "flag_spawns"}
+
+    def ability_commands(self, side: int) -> list[tuple[int, int, int]]:
+        """Ready (button, base card id, newest hero uid), with centre distance <= range + 1.5 tiles.
+        Pure engine readiness query; no RNG, observation edits, or policy/card bookkeeping.
+        """
+        if not self.hero_abilities or not self._hero_ids[side]:
+            return []
+        st = self.core.state()
+        buttons = st.players[side].abilities
+        pending = {(s, b) for _, s, b, _, _ in self._ability_pending}
+        ready, units = [], None
+        for button, row in enumerate(buttons):
+            cid = row[3]
+            if cid not in self._hero_ids[side] or (side, button) in pending:
+                continue
+            cost = self._hero_costs[cid]
+            if cost is None or st.players[side].elixir_milli < cost * 1000:
+                continue
+            if self.core.check_deploy(DeployCommand(side, HAND_SIZE + button, 0, 0)) != DeployStatus.OK:
+                continue
+            hero = max((e for e in st.entities if e.team == side and e.card_id == cid and e.hp > 0
+                        and e.status_flags >= 0 and e.status_flags & STATUS_HERO),
+                       key=lambda e: e.uid, default=None)
+            if hero is None:
+                continue
+            if units is None:
+                units = {r[0]: r[1] for r in self.core._battle.debug_units()}
+            name = units.get(hero.uid, self._hero_buildings.get(cid, self.names[cid] + "_hero"))
+            reach = self._hero_ranges[name] + 1500 * SCALE
+            if any(e.team == 1 - side and e.hp > 0
+                   and (e.x - hero.x) ** 2 + (e.y - hero.y) ** 2 <= reach ** 2 for e in st.entities):
+                ready.append((button, cid, hero.uid))
+        return ready
+
+    def queue_abilities(self, side: int, commands: list, delay: int) -> None:
+        for button, cid, uid in commands:
+            if not any(s == side and b == button for _, s, b, _, _ in self._ability_pending):
+                self._ability_pending.append((self.tick + delay, side, button, cid, uid))
+        self._ability_pending.sort()
+        self._fire_abilities()
+
+    def _fire_abilities(self) -> None:
+        while self._ability_pending and self._ability_pending[0][0] <= self.tick:
+            _, side, button, cid, uid = self._ability_pending.pop(0)
+            # A delayed card can land after the board/elixir changed. Recheck the whole
+            # rule, including unit identity, before submitting a press to the same act path.
+            if not self.terminated and (button, cid, uid) in self.ability_commands(side):
+                r = self.eng.act(side=side, ability_button=button)
+                if r["accepted"]:
+                    self.ability_presses[side][self.names[cid]] += 1
 
     # ---------------------------------------------------------------- state
     def raw(self) -> dict:
@@ -300,6 +393,7 @@ class RoyaleSelfPlayEnv(RoyalePoolEnv):
                                                wanted))
         self._ghosts, self._gi, self._pending = [], 0, []
         self.terminated, self.episode, self.eng.last_episode = False, {}, None
+        self._reset_abilities()
         self.tick = int(self.core.state().tick)
         self._advance_to(self.warmup_ticks)
         return self.raw()

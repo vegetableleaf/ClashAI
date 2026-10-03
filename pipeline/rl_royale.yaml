@@ -19,6 +19,7 @@ opp_elixir: null            # null = the view's own opp elixir; counter = public
                             # equivalent, bodiless spells dropped); counter_all = every delivered ghost play
 action_delay_ticks: 0
 extrapolate_ticks: 0        # each decision sees the raw board advanced H ticks (pipeline/extrapolate.py)
+hero_abilities: false      # deterministic ready/affordable hero buttons near enemies, both sides
 forms_mode: base            # RoyaleSim card forms, rollouts + screens: base = every card as its base card (as before);
                             # deck = decked evolutions / heroes the engine loads (royale_env module docstring)
 

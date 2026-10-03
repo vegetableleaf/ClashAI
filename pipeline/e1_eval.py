@@ -574,6 +574,9 @@ class Match:
         """-> (tok, mask, sc, past) for the current state."""
         cfg = self.cfg
         tick = int(self.env.tick)
+        if getattr(self.env, "hero_abilities", False):
+            sides = [self.side] if isinstance(self, SelfPlaySide) else [0, 1]
+            self._ability_commands = {s: self.env.ability_commands(s) for s in sides}
         self._gen_row = None
         if self.last_play_tick is None:
             self.last_play_tick = tick                       # match start = first decision (anti-stall clock)
@@ -663,6 +666,9 @@ class Match:
         """(b): record p_gate / traj, act on the engine, advance -- the tail of the old ``step`` (L68), unchanged."""
         env = self.env
         tick = self._record(p, d)
+        if getattr(self.env, "hero_abilities", False):
+            for side, commands in self._ability_commands.items():
+                self.env.queue_abilities(side, commands, self.delay)
         delay = self.delay
         if d["play"]:
             land = tick + delay                               # cfg["action_delay_ticks"]: the play enters here
@@ -775,6 +781,8 @@ class Match:
             **({"action_delay_ticks": self.delay, "plays_unlanded": self.n_unlanded,
                 "plays_refused_at_landing": n_att - n_acc - self.n_unlanded} if self.delay else {}),
             **({"extrapolate_ticks": self.extrap} if self.extrap else {}),
+            **({"hero_abilities": True, "ability_presses": {s: dict(c) for s, c in env.ability_presses.items()}}
+               if getattr(env, "hero_abilities", False) else {}),
             **({"forms_mode": "deck", "form_fallbacks": [list(x) for x in env.form_fallbacks]}
                if getattr(env, "forms_mode", "base") == "deck" else {}),
         }
@@ -979,6 +987,9 @@ class SelfPlaySide(Match):
 
     def apply(self, p: float, d: dict) -> None:
         tick = self._record(p, d)
+        if getattr(self.env, "hero_abilities", False):
+            for side, commands in self._ability_commands.items():
+                self.env.queue_abilities(side, commands, self.delay)
         de, delay = self.cfg["decide_every"], self.delay
         if d["play"] and delay:
             self.pending = (tick + delay, p, d)
