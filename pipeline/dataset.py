@@ -176,7 +176,8 @@ def build_replay(rec: dict, deck: Deck, rows: _Rows, rep_index: int, *, wait_str
         engine_deck = rec["final_decks"][str(side)]
         mirror = side == 1
         # every driven play of this side (accepted or not) in tick order; accepted ones become PLAY rows
-        plays = sorted((e for e in rec["log"] if int(e.get("side", -1)) == side and "tick" in e),
+        plays = sorted((e for e in rec["log"] if int(e.get("side", -1)) == side and "tick" in e
+                        and not e.get("ability")),
                        key=lambda e: (int(e["tick"]), int(e["play_index"])))
         if not plays:
             st["no_plays"] = st.get("no_plays", 0) + 1
