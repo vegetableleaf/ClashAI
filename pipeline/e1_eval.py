@@ -377,6 +377,53 @@ def sample_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.n
 # ------------------------------------------------------------------------------------------------------
 # generalist (GenModel) behind S1's deck-slot interface (L68 T4)
 # ------------------------------------------------------------------------------------------------------
+GEN_V3_KEYS = ("unit_form", "opp_past")
+
+
+def gen_row_keys(model):
+    return GEN_ROW_KEYS + (GEN_V3_KEYS if getattr(model, "feature_version", 1) >= 3 else ())
+
+
+def policy_feature_version(policy):
+    return int(getattr(getattr(policy, "model", policy), "feature_version", 1))
+
+
+def enable_sim_features(env, *policies):
+    version = max(policy_feature_version(p) for p in policies)
+    if version >= 3 or hasattr(env, "feature_version"):
+        env.feature_version = version
+    return version
+
+
+def sim_compact(match, raw):
+    """Keep status bits through compacting only for this side's v3 observation."""
+    compact = match.ep.compact_raw(raw)
+    if match.feature_version >= 3:
+        if not hasattr(match.env, "public_plays"):
+            raise ValueError("gen_v3 requires SIM accepted public_plays")
+        for e, original in zip(compact["entities"], raw.get("entities", [])):
+            if "status_flags" not in original:
+                raise ValueError("gen_v3 requires SIM entity status_flags")
+            e["status_flags"] = original["status_flags"]
+    return compact
+
+
+def sim_v3_features(match, policy):
+    """V3 public features. Requires the SIM adapter's accepted landing log and status bits.
+
+    Fail closed when an adapter has discarded that information instead of silently
+    feeding a v3 network base forms and empty opponent history.
+    """
+    from pipeline.dataset_gen import opponent_past
+    from pipeline.obs_contract import to_unit_forms
+    if match.feature_version < 3:
+        raise ValueError("enable v3 observations before preparing the match")
+    # Use the very same view as tok/mask, after drops, substitutions and extrapolation.
+    view = match._cur[2]
+    return {"unit_form": to_unit_forms(view, MAX_U),
+            "opp_past": opponent_past(match.env.public_plays, match._view_tick, match.side, policy.gid)}
+
+
 class GenPolicy:
     """A ``pipeline.model_gen.GenModel`` checkpoint behind the S1 deck-SLOT API that ``live_decide(_batch)``,
     ``sample_decide_batch``, ``Match`` and ``run_batch`` use, so every decide rule (tau, anti-stall, affordability,
@@ -441,7 +488,7 @@ class GenPolicy:
         import torch
         with torch.no_grad():
             b = {k: torch.from_numpy(np.ascontiguousarray(np.stack([r[k] for r in rows]))).to(device)
-                 for k in GEN_ROW_KEYS}
+                 for k in gen_row_keys(self.model)}
             enc, heads = self.heads_t(b)
             B = heads["card"].shape[0]
             hand = torch.zeros(B, N_SLOTS + 1, dtype=torch.bool, device=heads["card"].device)
@@ -467,7 +514,7 @@ def load_policy(ckpt, device: str = "cpu"):
         gen = False
     if not gen:
         return ep.load_model(ckpt, device)
-    from pipeline.eval_gen import load_model
+    from pipeline.model_gen import load_model
     model, st = load_model(ckpt, torch.device(device))
     model.eval()
     return GenPolicy(model, st["card_vocab"]), {"gen": True, "epoch": st.get("epoch"), "n_params": st.get("n_params"),
@@ -525,6 +572,7 @@ class Match:
         ``SelfPlaySide``, which plays one side of an env another object resets)."""
         from pipeline import policy_io as ep
         self.ep, self.env, self.deck, self.k, self.cfg = ep, env, deck, int(k), cfg
+        self.feature_version = int(cfg.get("feature_version", 1))
         self.t0 = time.perf_counter()
         self.delay = int(cfg.get("action_delay_ticks") or 0)
         if self.delay < 0:
@@ -586,8 +634,8 @@ class Match:
             if h:
                 raw = extrapolate(self.state, self._prev_raw, h, self.side)
             self._prev_raw = self.state
-        bs = from_engine(self.ep.compact_raw(raw), self.side, self.deck, engine_deck=self.engine_deck,
-                         unmapped=self.unmapped)
+        bs = from_engine(sim_compact(self, raw), self.side, self.deck, engine_deck=self.engine_deck,
+                         unmapped=self.unmapped, feature_version=self.feature_version)
         view = live_view(bs, self.rng_obs, self.deck, cfg["noise"]) if cfg["obs"] == "live" else bs
         if self.opp_mode:
             est = self.opp_estimate(tick)
@@ -603,6 +651,7 @@ class Match:
         tok, mask, sc = to_tokens(view, MAX_U)
         past = _past(self.done_plays, tick + h)
         self._cur = (tick, bs, view)
+        self._view_tick = tick + h
         self._obs = (tok, mask, sc, past)                    # kept for cfg["record"] (see apply())
         return tok, mask, sc, past
 
@@ -630,6 +679,8 @@ class Match:
         """The current prepared state as a generalist row (``GenPolicy.row``); call after ``prepare``. Kept until the
         next ``prepare`` so cfg["record"] stores the row the GenModel actually saw (``apply``)."""
         self._gen_row = policy.row(*self._obs, *policy.slot_ident(self.engine_deck, self.deck_index_of_slot))
+        if getattr(policy.model, "feature_version", 1) >= 3:
+            self._gen_row.update(sim_v3_features(self, policy))
         return self._gen_row
 
     def pre(self, hand) -> tuple[float, np.ndarray, bool]:
@@ -692,7 +743,7 @@ class Match:
             tok, mask, sc, past = self._obs
             row = {"tok": tok, "mask": mask, "sc": sc, "past": past}
             if self._gen_row is not None:                     # GenPolicy: the generalist's input row (zeroed sc,
-                row = {k: self._gen_row[k] for k in GEN_ROW_KEYS}   # (card, form, x, y, dt) past, identities)
+                row = {k: self._gen_row[k] for k in self._gen_row if k in GEN_ROW_KEYS + GEN_V3_KEYS}   # (card, form, x, y, dt) past, identities)
             if cfg.get("record_phi"):                         # rl_royale shaping (R2): what Phi needs, own view
                 from pipeline.reward_shaping import phi_record
                 row = {**row, "phi_state": phi_record(self.state, self.side)}
@@ -833,6 +884,9 @@ class Match:
                 "T": scalar("T", np.float64)}
         if tj and "hand_card" in tj[0]:
             out.update({k: stack(k).astype(np.int64) for k in GEN_IDENT_KEYS})
+        if tj and "unit_form" in tj[0]:
+            out["unit_form"] = stack("unit_form").astype(np.int64)
+            out["opp_past"] = stack("opp_past").astype(np.float32)
         if tj and "phi_state" in tj[0]:                      # cfg["record_phi"]: reward_shaping.phi_record rows
             out["phi_state"] = stack("phi_state").astype(np.float64)
         if tj and "tick" in tj[0]:                           # cfg["record_tick"]: each row's decision tick
@@ -841,6 +895,9 @@ class Match:
 
 
 def run_match(env, model, deck, entry: dict, k: int, cfg: dict) -> dict:
+    version = enable_sim_features(env, model)
+    if version >= 3:
+        cfg = dict(cfg, feature_version=version)
     m = Match(env, deck, entry, k, cfg)
     while not m.done:
         tok, mask, sc, past = m.prepare()
@@ -892,6 +949,9 @@ def run_batch(make_env, model, deck, jobs, cfg: dict, n: int, on_result, on_skip
             i, entry, k, *rest = job
             over = dict(rest[0]) if rest and rest[0] else {}
             env = free.pop()
+            version = enable_sim_features(env, model)
+            if version >= 3:
+                over["feature_version"] = version
             try:
                 m = Match(env, deck, entry, k, {**cfg, **over, "entry_index": i})
             except skip as exc:
@@ -966,6 +1026,8 @@ class SelfPlaySide(Match):
     counter reads the OTHER side's ACCEPTED plays at their landing tick (``accepted``), never its elixir."""
 
     def __init__(self, env, names: Sequence[str], side: int, tag: str, k: int, cfg: dict, model=None):
+        if policy_feature_version(model) >= 3:
+            cfg = dict(cfg, feature_version=policy_feature_version(model))
         self._setup(env, selfplay_deck(names), k, cfg)
         self.entry, self.model = {"tag": tag}, model
         self.side, self.mirror = int(side), int(side) == 1
@@ -1030,6 +1092,7 @@ class SelfPlayMatch:
         self.env, self.spec = env, spec
         L = int(spec["learner_side"])
         decks = {L: spec["learner_deck"], 1 - L: spec["opp_deck"]}
+        enable_sim_features(env, learner, opponent)
         env.reset(decks[0], decks[1], int(spec["seed"]))
         tag = str(spec["tag"])
         self.learner = SelfPlaySide(env, spec["learner_deck"], L, tag, k, cfg, learner)

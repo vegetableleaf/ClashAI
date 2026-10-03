@@ -45,6 +45,10 @@ class GenRows(Rows):
         self.form = card_form_of(ident["deck_card"], ident["deck_form"], card).to(device)
         self.ident = {k: v.to(device) for k, v in ident.items()}
         self.card = card.to(device)
+        self.unit_form = torch.as_tensor(arrs["unit_form"], dtype=torch.long) if "unit_form" in arrs else None
+        self.opp_past = torch.as_tensor(arrs["opp_past"], device=device) if "opp_past" in arrs else None
+        if (self.unit_form is None) != (self.opp_past is None):
+            raise ValueError("v3 rows require both unit_form and opp_past")
 
     def view(self, idx: np.ndarray) -> "GenRows":
         """"""
@@ -60,12 +64,17 @@ class GenRows(Rows):
         m = np.minimum(self.off[ids + 1] - a, MAX_U)
         mask = torch.from_numpy(np.arange(MAX_U)[None, :] < m[:, None])
         src = torch.from_numpy(a[:, None] + np.arange(MAX_U)[None, :]).clamp_(max=max(len(self.tok_all) - 1, 0))
-        tok = self.tok_all[src].masked_fill_(~mask.unsqueeze(-1), 0.0)
+        tok = (self.tok_all[src].masked_fill_(~mask.unsqueeze(-1), 0.0) if len(self.tok_all)
+               else torch.zeros((*src.shape, self.tok_all.shape[-1]), dtype=self.tok_all.dtype))
         t = torch.from_numpy(ids).to(self.dev)
         b = {"tok": tok.to(self.dev), "mask": mask.to(self.dev), "sc": self.sc[t], "past": self.past[t],
              "xy": self.xy[t], "slot": self.slot[t], "gate": self.gate[t], "wait": self.wait[t], "value": self.value[t]}
         b.update({k: v[t].long() for k, v in self.ident.items()})
         b["card"], b["form"] = self.card[t].long(), self.form[t].long()
+        if self.unit_form is not None:
+            f = self.unit_form[src] if len(self.unit_form) else torch.zeros(src.shape, dtype=torch.long)
+            b["unit_form"] = f.masked_fill(~mask, 0).to(self.dev)
+            b["opp_past"] = self.opp_past[t]
         return b
 
 
@@ -195,7 +204,8 @@ def load_model(ckpt: Path, device) -> tuple[GenModel, dict]:
     if not st.get("gen"):
         raise SystemExit(f"{ckpt} is not a generalist checkpoint (no 'gen' key)")
     a = st["args"]
-    model = GenModel(d=int(a["d"]), layers=int(a["layers"]), d_c=int(st["d_c"]), n_cards=len(st["card_vocab"])).to(device)
+    model = GenModel(d=int(a["d"]), layers=int(a["layers"]), d_c=int(st["d_c"]), n_cards=len(st["card_vocab"]),
+                     feature_version=int(a.get("feature_version", 1))).to(device)
     model.load_state_dict(st["model"])
     return model, st
 

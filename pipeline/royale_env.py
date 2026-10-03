@@ -89,11 +89,19 @@ class _Core:
             code = NOT_ENOUGH_ELIXIR if r.status == DeployStatus.NOT_ENOUGH_ELIXIR else REFUSED_BASE + int(r.status)
             return {"accepted": r.status == DeployStatus.OK, "result_code": 0 if r.status == DeployStatus.OK else code}
         cid = env.deck_ids[side][deck_index]
-        hand = env.core.state().players[side].hand
+        before = env.core.state()
+        player = before.players[side]
+        hand = player.hand
         if cid not in hand:
             return {"accepted": False, "result_code": NOT_IN_HAND}
+        if env.feature_version >= 3:
+            form = (2 if env.forms_mode == "deck" and env.loaded_forms[side][deck_index] == 2
+                    else int(any(v[0] == cid and v[2] for v in player.evo)))
         (r,) = env.core.step([DeployCommand(side, hand.index(cid), int(x) * SCALE, int(y) * SCALE)], 0)
         if r.status == DeployStatus.OK:
+            if env.feature_version >= 3:
+                env.public_plays.append(dict(tick=int(before.tick), side=side, card=env.names[cid], form=form,
+                                             x=int(x), y=int(y), accepted=True, play_index=len(env.public_plays)))
             return {"accepted": True, "result_code": 0}
         code = NOT_ENOUGH_ELIXIR if r.status == DeployStatus.NOT_ENOUGH_ELIXIR else REFUSED_BASE + int(r.status)
         return {"accepted": False, "result_code": code}
@@ -105,7 +113,8 @@ class _Core:
 class RoyalePoolEnv:
     def __init__(self, *, decision_ticks: int = 10, elixir_slack: int = 40, tail_cap: int = 7200,
                  warmup_ticks: int = 90, seed: int = 0, subs: Optional[dict[str, str]] = None,
-                 forms_mode: str = "base", hero_abilities: bool = False, **_ignored):
+                 forms_mode: str = "base", hero_abilities: bool = False, feature_version: int = 1, **_ignored):
+        self.feature_version = int(feature_version)
         if type(hero_abilities) is not bool:
             raise ValueError("hero_abilities must be a bool")
         self.hero_abilities = hero_abilities
@@ -175,6 +184,7 @@ class RoyalePoolEnv:
             deal[s], orders[s] = [self.deck_ids[s][i] for i in order], order
         wanted = None if self.forms_mode == "base" else             {s: [FORM_OF[str(it.get("form", "base"))] for it in self.final_decks[s]] for s in (0, 1)}
         self.core.reset(self.seed, self._setup(deal, orders, wanted))
+        self.public_plays = []
         idx = {it["slug"]: i for i, it in enumerate(self.final_decks[self.opp])}
         self._ghosts = sorted(({"tick": int(c["tick"]), "sched": int(c["tick"]), "deck_index": idx[c["card"]],
                                 "x": int(c["x"]), "y": int(c["y"]), "card": c["card"]}
@@ -339,6 +349,8 @@ class RoyalePoolEnv:
                 ents.append({"side": e.team, "x": e.x / SCALE, "y": e.y / SCALE, "name": self.names.get(e.card_id, str(e.card_id)),
                              "hp": e.hp, "max_hp": e.max_hp, "card_id": e.card_id, "entity_id": e.uid,
                              "kind": 12 if e.deploy_ticks > 0 else int(e.kind)})
+                if self.feature_version >= 3:
+                    ents[-1]["status_flags"] = int(e.status_flags)
         effects = [{"side": s.team, "x": s.x / SCALE, "y": s.y / SCALE, "name": self.names.get(s.card_id, str(s.card_id))}
                    for s in st.spells]
         return {"tick": st.tick, "players": players, "entities": ents, "effects": effects,
@@ -391,6 +403,7 @@ class RoyaleSelfPlayEnv(RoyalePoolEnv):
         self.deal = {s: [self.decks[s][i] for i in orders[s]] for s in (0, 1)}
         self.core.reset(self.seed, self._setup({s: [self.deck_ids[s][i] for i in orders[s]] for s in (0, 1)}, orders,
                                                wanted))
+        self.public_plays = []
         self._ghosts, self._gi, self._pending = [], 0, []
         self.terminated, self.episode, self.eng.last_episode = False, {}, None
         self._reset_abilities()

@@ -1,6 +1,8 @@
 """Actual RoyaleSim CPU replay versus the recording adapter. No policy or training."""
 import numpy as np
 import pytest
+import json
+from pathlib import Path
 from pipeline import dataset_gen as D, obs_contract as O, dataset as DS
 from pipeline import e1_eval as E
 from pipeline.model_gen import GenModel
@@ -64,3 +66,8 @@ def test_royalesim_replay_forms_and_opponent_history_both_sides():
             seen.update(sf.tolist())
             np.testing.assert_array_equal(D.opponent_past(inferred,raw["tick"],side,gid),rows[side]['opp_past'])
     assert seen == {0,1,2}
+    forms=np.concatenate([r['unit_form'][r['mask']] for rows in sim_rows for r in rows])
+    summary=dict(states=len(truths),side_views=2*len(truths),accepted_plays=len(public),
+                 unit_tokens=len(forms),evolved=int((forms==1).sum()),hero=int((forms==2).sum()),
+                 played_forms=sorted({p['form'] for p in public}),parity='exact')
+    (Path(__file__).parent/'sim_parity_result.json').write_text(json.dumps(summary,indent=2))

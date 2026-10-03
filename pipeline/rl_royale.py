@@ -629,7 +629,10 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
     use = [j for j, n in enumerate(n_rows) if n]
     cat = (lambda f: np.concatenate([f(j) for j in use]))
     gen = bool(use) and "hand_card" in results[use[0]]["traj"]           # GenPolicy rows: + the identity arrays
-    B = {k: cat(lambda j, k=k: results[j]["traj"][k][keep[j]]) for k in TRAJ_KEYS + (E.GEN_IDENT_KEYS if gen else ())}
+    extra = E.GEN_IDENT_KEYS if gen else ()
+    if gen and "unit_form" in results[use[0]]["traj"]:
+        extra += E.GEN_V3_KEYS
+    B = {k: cat(lambda j, k=k: results[j]["traj"][k][keep[j]]) for k in TRAJ_KEYS + extra}
     for k in ("lp_gate", "lp_card", "lp_cell"):
         B[k] = cat(lambda j, k=k: results[j]["traj"][k][keep[j]])
     B["lp_old"] = B["lp_gate"] + B["lp_card"] + B["lp_cell"]
@@ -709,6 +712,9 @@ def gen_v3val_arrays(path: Path, n: int = 0) -> tuple[dict, dict]:
     out["tok"] = z["tok"][np.concatenate([np.arange(a, b) for a, b in zip(lo, hi)]).astype(np.int64)]
     for k in GEN_PA_KEYS:
         out[k] = z[k][idx]
+    if "unit_form" in z:
+        out["unit_form"] = z["unit_form"][np.concatenate([np.arange(a, b) for a, b in zip(lo, hi)]).astype(np.int64)]
+        out["opp_past"] = z["opp_past"][idx]
     return out, json.loads(str(z["meta"]))
 
 
@@ -737,7 +743,7 @@ def policy_terms(model, B: dict, idx, tau: float, T: float, value: bool = False,
     False (``vf_trunk_grad: false``) detaches the trunk features under ``v``, so a loss on ``v`` reaches value_head only."""
     if "hand_card" in B:
         pol = E.GenPolicy(model, ())
-        enc, heads = pol.heads_t({k: B[k][idx] for k in E.GEN_ROW_KEYS})
+        enc, heads = pol.heads_t({k: B[k][idx] for k in E.gen_row_keys(model)})
         cell_of = pol.cell_logits
     else:
         tok, mask, sc, past = B["tok"][idx], B["mask"][idx], B["sc"][idx], B["past"][idx]
@@ -772,7 +778,7 @@ def value_rows(model, B: dict, chunk: int = 512) -> torch.Tensor:
     for s in range(0, N, chunk):
         idx = torch.arange(s, min(s + chunk, N), device=B["A"].device)
         if "hand_card" in B:
-            enc = model.encode_gen({k: B[k][idx] for k in E.GEN_ROW_KEYS})
+            enc = model.encode_gen({k: B[k][idx] for k in E.gen_row_keys(model)})
         else:
             enc = model.encode(B["tok"][idx], B["mask"][idx], B["sc"][idx], B["past"][idx])
         out.append(value_scalar(model.value_head(enc["g"])))
@@ -1080,7 +1086,7 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
         if g:                                                 # generalist: GenModel weights behind GenPolicy
             from pipeline.model_gen import GenModel
             net = GenModel(d=int(base["d"]), layers=int(base["layers"]), d_c=int(g["d_c"]),
-                           n_cards=len(g["card_vocab"])).to(dev).eval()
+                           n_cards=len(g["card_vocab"]), feature_version=int(g.get("feature_version", 1))).to(dev).eval()
             model = E.GenPolicy(net, g["card_vocab"])
         else:
             net = model = S1Model(d=int(base["d"]), layers=int(base["layers"])).to(dev).eval()
@@ -1340,6 +1346,8 @@ class Learner:
         adv_cfg(cfg)                                          # ... and the advantage (R1) keys
         ick = torch.load(self.init_path, map_location="cpu")
         self.gen = {"d_c": int(ick["d_c"]), "card_vocab": list(ick["card_vocab"])} if ick.get("gen") else None
+        if self.gen and int(ick["args"].get("feature_version", 1)) >= 3:
+            self.gen["feature_version"] = int(ick["args"]["feature_version"])
         if self.gen:                                          # generalist init: the learner trains the GenModel itself
             self.model = self._load_net(self.init_path)
             self.minfo = {"gen": True, "grid": str(ick["args"].get("grid", "lattice"))}   # = e1_eval.load_policy's
@@ -1492,6 +1500,8 @@ class Learner:
                 arrs, meta = gen_v3val_arrays(REPO / self.cfg["proagree_data_gen"], int(self.cfg["proagree_rows"]))
                 if meta["card_vocab"] != self.gen["card_vocab"]:
                     raise SystemExit("proagree_data_gen card_vocab differs from the init checkpoint's")
+                if getattr(model, "feature_version", 1) >= 3 and not all(k in arrs for k in E.GEN_V3_KEYS):
+                    raise SystemExit("v3 pro-agreement requires a v3 proagree_data_gen with unit_form and opp_past")
                 self._rows = GenRows(arrs, np.arange(len(arrs["y_gate"])), self.dev)
             ev = evaluate_gen(model, self._rows, grid=self.grid)
             model.eval()

@@ -128,7 +128,8 @@ def _degrade_switchable(bs: BoardState, rng: np.random.Generator, noise: Noise) 
         y = float(np.clip(u.y + (dy if noise.position else 0.0), 0.0, 1.0))
         hp = None if noise.unit_hp else u.hp_frac
         dep = None if noise.deploying else u.deploying
-        return Unit(u.cls if cls is None else cls, side, x, y, hp, dep, None, conf if noise.conf else u.conf)
+        return Unit(u.cls if cls is None else cls, side, x, y, hp, dep, None, conf if noise.conf else u.conf,
+                    form=u.form if cls is None else 0)
 
     def pass_(seq: Sequence[Unit], *, with_fp: bool) -> list[Unit]:
         out: list[Unit] = []
