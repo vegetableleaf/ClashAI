@@ -41,7 +41,8 @@ One update (``Learner.one_update``):
      method, ``gae_batch``, L69 7b); needs critic_warmup_updates > 0.
      ``gae_gamma_unit: tick`` (gae only; default row = gae_gamma per kept row): gamma_t = gae_gamma_tick ** (ticks
      from kept row t to the next kept row, ``row_gammas``), in GAE AND in F_t, from the ``tick`` rows e1_eval records
-     under ``record_tick``.
+     under ``record_tick``. ``gae_terminal_gap: true`` (default false, gae + tick only) also discounts the terminal
+     outcome by gae_gamma_tick ** (end_tick - last_kept_tick); Phi at the match end stays 0.
   3. Rows that sampled nothing (no card allowed) are dropped; each remaining decision carries weight 1/(n_i M) so a
      match's decisions sum to 1/M (``match_weights``: the loss is averaged per match, then over the batch).
   4. Frozen-ref terms once per update (``ref_terms``); ``ppo_epochs`` x minibatches of ``minibatch`` decisions:
@@ -162,6 +163,7 @@ GAE_DEFAULTS = {"advantage": "match_loo", "gae_gamma": 0.999, "gae_lambda": 0.95
                 "shaping": "none", "shaping_w_tower": 0.3, "shaping_w_crown": 0.3,   # ... and no shaping (R2)
                 "vf_trunk_grad": True,          # ... and the value loss trains the shared trunk (R1 as committed)
                 "gae_gamma_unit": "row", "gae_gamma_tick": 0.99994,   # ... and gamma per kept row (R1 as committed)
+                "gae_terminal_gap": False,    # opt-in: discount the outcome from the actual match end
                 "shaping_critic_scale": 1.5}    # R2 residual critic: V_eff = Phi + scale x v_net (``gae_batch``)
 GAMMA_UNITS = ("row", "tick")
 
@@ -201,6 +203,10 @@ def adv_cfg(cfg: dict) -> dict:
         bad.append(f"gae_gamma_unit {c['gae_gamma_unit']!r} needs advantage gae (match_loo has no discount)")
     if not (num(c["gae_gamma_tick"]) and 0.0 < c["gae_gamma_tick"] <= 1.0):
         bad.append(f"gae_gamma_tick must be in (0, 1], got {c['gae_gamma_tick']!r}")
+    if not isinstance(c["gae_terminal_gap"], bool):
+        bad.append(f"gae_terminal_gap must be true or false, got {c['gae_terminal_gap']!r}")
+    elif c["gae_terminal_gap"] and (c["advantage"] != "gae" or c["gae_gamma_unit"] != "tick"):
+        bad.append("gae_terminal_gap true needs advantage gae AND gae_gamma_unit tick")
     sc = c["shaping_critic_scale"]
     if not (num(sc) and sc > 0.0):
         bad.append(f"shaping_critic_scale must be a finite number > 0, got {sc!r}")
@@ -589,14 +595,22 @@ def _py(x):
 # trajectories -> one batch
 # ------------------------------------------------------------------------------------------------------
 def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_loo",
-            shaping: Optional[dict] = None, gamma_tick: Optional[float] = None) -> tuple[dict, dict]:
+            shaping: Optional[dict] = None, gamma_tick: Optional[float] = None,
+            gae_terminal_gap: bool = False) -> tuple[dict, dict]:
     """Rollout result records (each with ``traj`` = ``Match._traj_arrays``) -> numpy batch of the CONTRIBUTING rows
     (gate sampled or card/cell played) with per-row A, per-match weight w, match id, and the stored log-probs.
     ``advantage="gae"`` adds ``r_step`` (``terminal_rewards``, the UNSHAPED win/loss reward); A stays the LOO value
     until ``gae_batch`` replaces it. ``gamma_tick`` (gae only; ``gae_gamma_unit: tick``): + ``gamma_row`` per kept
     row (``row_gammas`` of the traj ``tick``), the discount GAE and the shaping use. ``shaping`` (gae only; {gamma,
     w_tower, w_crown}; gamma replaced by ``gamma_row`` under gamma_tick): + ``phi`` (Phi(s_t)) per kept row (the
-    residual critic's base, ``gae_batch``), and the F / Phi stats under ``st["shaping"]``."""
+    residual critic's base, ``gae_batch``), and the F / Phi stats under ``st["shaping"]``. ``gae_terminal_gap``
+    discounts only the last reward by gamma_tick ** (end_tick - last_kept_tick); requires every result's end_tick."""
+    if gae_terminal_gap:
+        if advantage != "gae" or gamma_tick is None:
+            raise ValueError("gae_terminal_gap true needs advantage gae AND gamma_tick (gae_gamma_unit tick)")
+        for j, r in enumerate(results):
+            if r.get("end_tick") is None:
+                raise ValueError(f"gae_terminal_gap true needs end_tick for result {j}")
     groups: dict = {}
     for j, r in enumerate(results):
         groups.setdefault(r["entry_index"], []).append(j)
@@ -625,6 +639,12 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
     sh = None
     if advantage == "gae":
         rs = terminal_rewards(n_rows, [r["outcome"] for r in results])
+        if gae_terminal_gap:
+            for j in use:
+                gap = results[j]["end_tick"] - results[j]["traj"]["tick"][keep[j]][-1]
+                if not np.isfinite(gap) or gap < 0:
+                    raise ValueError(f"gae_terminal_gap: end_tick must be finite and >= last kept tick for result {j}")
+                rs[j][-1] *= gamma_tick ** gap
         B["r_step"] = cat(lambda j: rs[j])
         gr = None
         if gamma_tick is not None:
@@ -779,7 +799,9 @@ def gae_batch(model, B: dict, cfg: dict) -> dict:
     A pretrained v_net predicts G, not (G - Phi) / s: its first targets move by -Phi / s and its scale by 1/s, so a
     critic warm-up is mandatory with shaping (adv_cfg rejects critic_warmup_updates 0). Monitors: ``adv_r1_diff`` =
     mean |A - GAE(r, v_net)| (what R1 would compute with the same net; 0 = shaping changed nothing), ``phi_share`` =
-    mean |Phi| / mean |V_eff|, ``veff_mean``; ``explained_var`` is of V_eff for ret."""
+    mean |Phi| / mean |V_eff|, ``veff_mean``; ``explained_var`` is of V_eff for ret. Critic diagnostics (logging only):
+    ``value_target_outside_share`` = share of v_net targets outside [-1, 1], ``value_saturation_share`` = share with
+    |v_net| > 0.95, ``value_mae`` = mean |v_net - target| (residual target with shaping, ret otherwise)."""
     c = adv_cfg(cfg)
     v = value_rows(model, B)
     gam = B["gamma_row"].cpu().numpy() if "gamma_row" in B else c["gae_gamma"]
@@ -803,6 +825,9 @@ def gae_batch(model, B: dict, cfg: dict) -> dict:
               "phi_share": float(np.abs(phi).mean() / max(float(np.abs(veff).mean()), 1e-12)) if n else None,
               "critic_scale": sc}
         target = (ret - phi) / sc
+    st.update({"value_target_outside_share": float((np.abs(target) > 1.0).mean()) if len(target) else None,
+               "value_saturation_share": float((np.abs(vn) > 0.95).mean()) if len(vn) else None,
+               "value_mae": float(np.abs(vn - target).mean()) if len(target) else None})
     dev = B["A"].device
     B["A"] = torch.from_numpy((A - A.mean()) / (A.std() + 1e-8) if len(A) else A).to(dev)
     B["ret"] = torch.from_numpy(target).to(dev)
@@ -1586,7 +1611,8 @@ class Learner:
                if ac["shaping"] != "none" else None)
         tick_unit = gae_on and ac["gae_gamma_unit"] == "tick"
         Bn, bst = collate(results, float(cfg["adv_clip"]), advantage=ac["advantage"], shaping=shp,
-                          **({"gamma_tick": ac["gae_gamma_tick"]} if tick_unit else {}))
+                          **({"gamma_tick": ac["gae_gamma_tick"]} if tick_unit else {}),
+                          **({"gae_terminal_gap": True} if ac["gae_terminal_gap"] else {}))
         gamma_row_mean = float(Bn["gamma_row"].mean()) if tick_unit and len(Bn["gamma_row"]) else None
         del results
         t1 = time.perf_counter()

@@ -77,7 +77,11 @@ def _learner(mod, model, results, tmp: Path, **cfg_extra):
 def _strip(rec: dict) -> str:
     """An update record without its wall-clock fields, as canonical JSON."""
     drop = {"time", "learner_gpu_peak_mb", "ckpt"}
-    return json.dumps(RL._py({k: v for k, v in rec.items() if k not in drop and not k.startswith("wall")}),
+    # 2026-10-02 critic monitors (nested under the gae stats): logging only, no training quantity, absent from HEAD-era
+    # records; their values are tested in test_rl_terminal_gap.py
+    logonly = {"value_target_outside_share", "value_saturation_share", "value_mae"}
+    nest = (lambda o: {k: nest(v) for k, v in o.items() if k not in logonly} if isinstance(o, dict) else o)
+    return json.dumps(RL._py(nest({k: v for k, v in rec.items() if k not in drop and not k.startswith("wall")})),
                       sort_keys=True)
 
 
