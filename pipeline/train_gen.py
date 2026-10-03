@@ -26,11 +26,33 @@ import torch
 import torch.nn.functional as Fn
 
 from .dataset import load as load_ds
-from .eval_gen import GenRows, evaluate, val_rows
+from .eval_gen import GenRows as LegacyGenRows, evaluate, val_rows
 from .model_gen import GenModel, mirror_gen
 from .model_v3 import cell_label
 
 REPO = Path(__file__).resolve().parents[1]
+
+
+class GenRows(LegacyGenRows):
+    """Versioned batching; legacy datasets take the original batch path unchanged."""
+    def __init__(self, arrs, idx, device):
+        super().__init__(arrs, idx, device)
+        self.unit_form = torch.as_tensor(arrs["unit_form"], dtype=torch.long) if "unit_form" in arrs else None
+        self.opp_past = torch.as_tensor(arrs["opp_past"], device=device) if "opp_past" in arrs else None
+
+    def batch(self, ids):
+        b = super().batch(ids)
+        if self.unit_form is not None:
+            from .train_s1 import MAX_U
+            ids = np.asarray(ids)
+            src = torch.from_numpy(self.off[ids, None] + np.arange(MAX_U)[None, :])
+            if len(self.unit_form):
+                f = self.unit_form[src.clamp(max=len(self.unit_form) - 1)].to(self.dev)
+            else:
+                f = torch.zeros(src.shape, dtype=torch.long, device=self.dev)
+            b["unit_form"] = f.masked_fill(~b["mask"], 0)
+            b["opp_past"] = self.opp_past[torch.as_tensor(ids, device=self.dev)]
+        return b
 
 
 def _ce(logits: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
@@ -44,6 +66,10 @@ def losses(model: GenModel, b: dict, mirror: bool, grid: str = "floor") -> tuple
     tok, sc, past, xy = b["tok"], b["sc"], b["past"], b["xy"]
     if mirror:
         tok, sc, past, xy = mirror_gen(tok, sc, past, xy)
+    if mirror and "opp_past" in b:
+        op = b["opp_past"].clone()
+        op[..., 2] = torch.where(op[..., 0] > 0, 1 - op[..., 2], op[..., 2])
+        b = dict(b, opp_past=op)
     play = b["gate"] > 0.5
     out = model(dict(b, tok=tok, sc=sc, past=past), card=b["card"], form=b["form"])
     parts = {}
@@ -59,9 +85,13 @@ def losses(model: GenModel, b: dict, mirror: bool, grid: str = "floor") -> tuple
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
+    ap.add_argument("--feature-version", type=int, choices=(1, 2, 3), default=None)
     ap.add_argument("--data", type=Path, required=True)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--epochs", type=int, default=20)
+    ap.add_argument("--amp", choices=("none", "bf16"), default="none",
+                    help="bf16 autocast for the TRAINING forward/loss (+ TF32 matmuls); eval stays fp32. 2026-10-03 "
+                         "profile: 244 -> 150 ms/step on the RTX 5050. Default none = byte-identical")
     ap.add_argument("--bs", type=int, default=256)
     ap.add_argument("--lr", type=float, default=3e-4)
     ap.add_argument("--d", type=int, default=128)
@@ -78,6 +108,10 @@ def main(argv=None) -> int:
                     help="per-epoch all-deck val = a FIXED seed-0 sample of N val rows (0 = all); v3val is always full")
     a = ap.parse_args(argv)
     arrs, meta = load_ds(a.data)
+    version = int(meta.get("feature_version", 1))
+    if a.feature_version is not None and (a.feature_version >= 3) != (version >= 3):
+        raise ValueError("feature version does not match dataset")
+    a.feature_version = version if a.feature_version is None else a.feature_version
     if meta.get("grid") != a.grid:
         print(json.dumps({"warning": f"dataset built with grid {meta.get('grid')!r}, training with {a.grid!r}"}))
     a.out_dir.mkdir(parents=True, exist_ok=True)
@@ -97,7 +131,7 @@ def main(argv=None) -> int:
         p_row = 1.0 / np.sqrt(n_dk[arrs["deck_id"][tr_idx]])
         p_row /= p_row.sum()
     vocab_list = meta["card_vocab"]
-    model = GenModel(d=a.d, layers=a.layers, d_c=a.d_c, n_cards=len(vocab_list)).to(dev)
+    model = GenModel(d=a.d, layers=a.layers, d_c=a.d_c, n_cards=len(vocab_list), feature_version=a.feature_version).to(dev)
     n_params = sum(p.numel() for p in model.parameters())
     opt = torch.optim.AdamW(model.parameters(), lr=a.lr, weight_decay=0.01)
     steps = a.epochs * (len(tr_idx) // a.bs)
@@ -113,9 +147,13 @@ def main(argv=None) -> int:
         te = time.time()
         perm = rng.permutation(tr_idx) if p_row is None else rng.choice(tr_idx, size=len(tr_idx), p=p_row)
         tot, nb, parts_acc = 0.0, 0, {}
+        amp = a.amp == "bf16" and dev.type == "cuda"
+        if amp:                                          # TF32 for the fp32 parts the autocast leaves (optimizer etc.)
+            torch.backends.cuda.matmul.allow_tf32 = torch.backends.cudnn.allow_tf32 = True
         for s in range(0, len(perm) - a.bs + 1, a.bs):
             b = rows.batch(perm[s:s + a.bs])
-            loss, parts = losses(model, b, mirror=(not a.no_mirror) and rng.random() < 0.5, grid=a.grid)
+            with torch.autocast("cuda", dtype=torch.bfloat16, enabled=amp):
+                loss, parts = losses(model, b, mirror=(not a.no_mirror) and rng.random() < 0.5, grid=a.grid)
             opt.zero_grad(set_to_none=True)
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
