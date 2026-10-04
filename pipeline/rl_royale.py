@@ -1235,6 +1235,9 @@ class ActorPool:
                 elif tag == "done" and a in pending:
                     results += msg[3]; skipped += msg[4]; stats[a] = msg[5]
                     del pending[a]
+                    if not pending:   # lead 2026-10-04: arrival order (actor count, timing) must not reorder the batch
+                        results.sort(key=lambda r: (str(r.get("tag")), int(r.get("k", 0)),
+                                                    int(r.get("entry_index", -1)), str(r.get("side"))))
                 elif tag == "error" and a in pending:
                     self._crash(a, msg[3])
                     self.in_qs[a].put((kind, update, sd, shares[a]))
