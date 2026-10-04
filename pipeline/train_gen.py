@@ -62,7 +62,7 @@ def _ce(logits: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     return Fn.cross_entropy(logits[ok], target[ok]) if ok.any() else logits.new_zeros(())
 
 
-def losses(model: GenModel, b: dict, mirror: bool, grid: str = "floor") -> tuple[torch.Tensor, dict]:
+def losses(model: GenModel, b: dict, mirror: bool, grid: str = "floor", rocket_context_weight: float = 1.0) -> tuple[torch.Tensor, dict]:
     tok, sc, past, xy = b["tok"], b["sc"], b["past"], b["xy"]
     if mirror:
         tok, sc, past, xy = mirror_gen(tok, sc, past, xy)
@@ -70,9 +70,27 @@ def losses(model: GenModel, b: dict, mirror: bool, grid: str = "floor") -> tuple
         op = b["opp_past"].clone()
         op[..., 2] = torch.where(op[..., 0] > 0, 1 - op[..., 2], op[..., 2])
         b = dict(b, opp_past=op)
+    if mirror and 'projectiles' in b:
+        b = dict(b)
+        for key, xcols in (('projectiles', (2, 4)), ('effects', (2,))):
+            obj = b[key].clone()
+            for col in xcols:
+                obj[..., col] = torch.where(obj[..., 0] > 0, 1-obj[..., col], obj[..., col])
+            b[key] = obj
     play = b["gate"] > 0.5
     out = model(dict(b, tok=tok, sc=sc, past=past), card=b["card"], form=b["form"])
     parts = {}
+    if rocket_context_weight != 1.0:
+        from .rocket_context import row_weights, mean_loss, weighted_ce
+        weights = row_weights(b['rocket_context_probability'], rocket_context_weight)
+        if play.any():
+            parts['cell'] = weighted_ce(out['cell'][play], cell_label(xy[play], grid), weights[play])
+            parts['card'] = weighted_ce(out['card'][play], b['slot'][play], weights[play])
+        if (~play).any():
+            parts['wait'] = .5*weighted_ce(out['wait'][~play], b['wait'][~play], weights[~play])
+        parts['gate'] = mean_loss(Fn.binary_cross_entropy_with_logits(out['gate'], b['gate'], reduction='none'), weights)
+        parts['value'] = .5*weighted_ce(out['value'], b['value'], weights)
+        return sum(parts.values()), {k: float(v.detach()) for k, v in parts.items()}
     if play.any():
         parts["cell"] = Fn.cross_entropy(out["cell"][play], cell_label(xy[play], grid))
         parts["card"] = _ce(out["card"][play], b["slot"][play])
@@ -85,7 +103,23 @@ def losses(model: GenModel, b: dict, mirror: bool, grid: str = "floor") -> tuple
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--feature-version", type=int, choices=(1, 2, 3), default=None)
+    ap.add_argument("--feature-version", type=int, choices=(1, 2, 3, 4), default=None)
+    ap.add_argument('--smoke-one-batch', action='store_true', help='One forward/backward only; no model or deployment checkpoint.')
+    ap.add_argument('--rocket-context-weight', type=float, default=None,
+                    help='Maximum pro-context loss weight from held-out selection; legacy default 1.')
+    ap.add_argument('--exclude-defensive-xbow-context', action='store_true',
+                    help='Owner-authorized overnight five-target contract; tactical label awaits Tuesday.')
+    ap.add_argument('--inputs-only-deadline-fallback', action='store_true',
+                    help='Owner-authorized 02:30 deadline fallback; requires explicit context weight 1.')
+    ap.add_argument('--rocket-context-artifact', type=Path,
+                    help='Verified probability.npy and artifact.json sidecar for this exact dataset.')
+    ap.add_argument('--inputs-only-arm', action='store_true',
+                    help='Lead 2026-10-04: gen_v3.1a A/B arm = every v4 input, NO context weighting (weight None/1, no '
+                         'artifact); gen_v3.1b adds the six-target weighting, so its effect is attributable.')
+    ap.add_argument('--allow-causal-tti-unknowns', action='store_true',
+                    help='Owner decision2: past-motion estimates plus explicit unknown masks for ambiguous/new tracks.')
+    ap.add_argument('--mmap-cache-dir', type=Path,
+                    help='Fresh directory for version4 disk-backed dataset arrays; identical values, bounded heap.')
     ap.add_argument("--data", type=Path, required=True)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--epochs", type=int, default=20)
@@ -107,11 +141,36 @@ def main(argv=None) -> int:
     ap.add_argument("--val-sample", type=int, default=30000,
                     help="per-epoch all-deck val = a FIXED seed-0 sample of N val rows (0 = all); v3val is always full")
     a = ap.parse_args(argv)
-    arrs, meta = load_ds(a.data)
+    if a.mmap_cache_dir is not None:
+        from .dataset_spool import load_mapped
+        arrs, meta = load_mapped(a.data, a.mmap_cache_dir)
+    else:
+        arrs, meta = load_ds(a.data)
     version = int(meta.get("feature_version", 1))
-    if a.feature_version is not None and (a.feature_version >= 3) != (version >= 3):
+    if a.feature_version is not None and max(a.feature_version, 2) != max(version, 2):
         raise ValueError("feature version does not match dataset")
     a.feature_version = version if a.feature_version is None else a.feature_version
+    if a.rocket_context_artifact is not None:
+        from .rocket_context import load_weight_artifact
+        probability, evidence = load_weight_artifact(a.rocket_context_artifact, a.data)
+        arrs['rocket_context_probability'] = probability
+        meta['rocket_context'] = evidence
+    if version >= 4:
+        from .projectile_observation import require_complete_training
+        require_complete_training(meta, allow_causal_tti_unknowns=a.allow_causal_tti_unknowns)
+        if not a.smoke_one_batch:
+            if a.exclude_defensive_xbow_context or a.inputs_only_deadline_fallback:
+                raise ValueError('Owner 2026-10-04 cancelled proxy/exclusion/deadline training')
+            if a.inputs_only_arm:
+                if a.rocket_context_weight not in (None, 1.0) or a.rocket_context_artifact is not None:
+                    raise ValueError('--inputs-only-arm trains WITHOUT context weighting (no weight > 1, no artifact)')
+            else:
+                from .rocket_context import require_weight_artifact
+                require_weight_artifact(arrs, meta, a.rocket_context_weight)
+    if a.rocket_context_weight is not None and (not np.isfinite(a.rocket_context_weight) or a.rocket_context_weight < 1):
+        raise ValueError('Rocket context weight must be finite and >= 1')
+    if version < 4 and a.rocket_context_weight not in (None, 1.0):
+        raise ValueError('Rocket context weighting requires public-only version 4')
     if meta.get("grid") != a.grid:
         print(json.dumps({"warning": f"dataset built with grid {meta.get('grid')!r}, training with {a.grid!r}"}))
     a.out_dir.mkdir(parents=True, exist_ok=True)
@@ -134,6 +193,20 @@ def main(argv=None) -> int:
     model = GenModel(d=a.d, layers=a.layers, d_c=a.d_c, n_cards=len(vocab_list), feature_version=a.feature_version).to(dev)
     n_params = sum(p.numel() for p in model.parameters())
     opt = torch.optim.AdamW(model.parameters(), lr=a.lr, weight_decay=0.01)
+    if a.smoke_one_batch:
+        if a.amp == 'bf16' and dev.type != 'cuda':
+            raise ValueError('BF16 smoke requires CUDA; refusing a silent fp32 smoke')
+        b = rows.batch(tr_idx[:a.bs])
+        with torch.autocast(dev.type, dtype=torch.bfloat16, enabled=a.amp == 'bf16'):
+            loss, _ = losses(model, b, mirror=not a.no_mirror, grid=a.grid)
+        if not torch.isfinite(loss): raise ValueError('Nonfinite smoke loss')
+        loss.backward()
+        if not all(p.grad is None or torch.isfinite(p.grad).all() for p in model.parameters()):
+            raise ValueError('Nonfinite smoke gradients')
+        opt.step()
+        result=dict(status='TRAIN_GEN_ONE_BATCH_PASS',amp=a.amp,device=str(dev),rows=len(b['gate']),loss=float(loss.detach()),deployment_evidence=False)
+        (a.out_dir/'smoke.json').write_text(json.dumps(result,indent=2))
+        print(json.dumps(result)); return 0
     steps = a.epochs * (len(tr_idx) // a.bs)
     sched = torch.optim.lr_scheduler.OneCycleLR(opt, max_lr=a.lr, total_steps=max(steps, 1), pct_start=0.05)
     tag = f"{a.tag}_s{a.seed}" if a.tag else f"s{a.seed}"
@@ -153,7 +226,8 @@ def main(argv=None) -> int:
         for s in range(0, len(perm) - a.bs + 1, a.bs):
             b = rows.batch(perm[s:s + a.bs])
             with torch.autocast("cuda", dtype=torch.bfloat16, enabled=amp):
-                loss, parts = losses(model, b, mirror=(not a.no_mirror) and rng.random() < 0.5, grid=a.grid)
+                loss, parts = losses(model, b, mirror=(not a.no_mirror) and rng.random() < 0.5, grid=a.grid,
+                                     rocket_context_weight=a.rocket_context_weight or 1.0)
             opt.zero_grad(set_to_none=True)
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
