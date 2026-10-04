@@ -47,6 +47,9 @@ class GenRows(Rows):
         self.card = card.to(device)
         self.unit_form = torch.as_tensor(arrs["unit_form"], dtype=torch.long) if "unit_form" in arrs else None
         self.opp_past = torch.as_tensor(arrs["opp_past"], device=device) if "opp_past" in arrs else None
+        self.opp_cycle = torch.as_tensor(arrs['opp_cycle'], device=device) if 'opp_cycle' in arrs else None
+        # Keep the larger public-object arrays on CPU; gather only this batch.
+        self.public_objects = {k: torch.as_tensor(arrs[k]) for k in ('projectiles', 'effects', 'own_ability', 'rocket_context_probability') if k in arrs}
         if (self.unit_form is None) != (self.opp_past is None):
             raise ValueError("v3 rows require both unit_form and opp_past")
 
@@ -75,6 +78,10 @@ class GenRows(Rows):
             f = self.unit_form[src] if len(self.unit_form) else torch.zeros(src.shape, dtype=torch.long)
             b["unit_form"] = f.masked_fill(~mask, 0).to(self.dev)
             b["opp_past"] = self.opp_past[t]
+        if self.opp_cycle is not None:
+            b['opp_cycle'] = self.opp_cycle[t]
+        for key, values in self.public_objects.items():
+            b[key] = values[torch.from_numpy(ids)].to(self.dev)
         return b
 
 

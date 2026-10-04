@@ -378,10 +378,12 @@ def sample_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.n
 # generalist (GenModel) behind S1's deck-slot interface (L68 T4)
 # ------------------------------------------------------------------------------------------------------
 GEN_V3_KEYS = ("unit_form", "opp_past")
+GEN_V31_KEYS = ('opp_cycle', 'projectiles', 'effects', 'own_ability')
 
 
 def gen_row_keys(model):
-    return GEN_ROW_KEYS + (GEN_V3_KEYS if getattr(model, "feature_version", 1) >= 3 else ())
+    version = getattr(model, 'feature_version', 1)
+    return GEN_ROW_KEYS + (GEN_V3_KEYS if version >= 3 else ()) + (GEN_V31_KEYS if version >= 4 else ())
 
 
 def policy_feature_version(policy):
@@ -399,7 +401,7 @@ def sim_compact(match, raw):
     """Keep status bits through compacting only for this side's v3 observation."""
     compact = match.ep.compact_raw(raw)
     if match.feature_version >= 3:
-        if not hasattr(match.env, "public_plays"):
+        if match.feature_version == 3 and not hasattr(match.env, "public_plays"):
             raise ValueError("gen_v3 requires SIM accepted public_plays")
         for e, original in zip(compact["entities"], raw.get("entities", [])):
             if "status_flags" not in original:
@@ -420,6 +422,10 @@ def sim_v3_features(match, policy):
         raise ValueError("enable v3 observations before preparing the match")
     # Use the very same view as tok/mask, after drops, substitutions and extrapolation.
     view = match._cur[2]
+    if policy_feature_version(policy) >= 4:
+        return dict(unit_form=to_unit_forms(view, MAX_U),
+                    **match.public.features(match._view_tick, policy.gid,
+                        objects_override=match._public_object_view))
     return {"unit_form": to_unit_forms(view, MAX_U),
             "opp_past": opponent_past(match.env.public_plays, match._view_tick, match.side, policy.gid)}
 
@@ -572,7 +578,11 @@ class Match:
         ``SelfPlaySide``, which plays one side of an env another object resets)."""
         from pipeline import policy_io as ep
         self.ep, self.env, self.deck, self.k, self.cfg = ep, env, deck, int(k), cfg
+        if cfg.get('behaviour_telemetry') and getattr(env, 'behaviour_telemetry', None) is None:
+            from pipeline.behaviour_telemetry import BehaviourTelemetry
+            env.behaviour_telemetry = BehaviourTelemetry()
         self.feature_version = int(cfg.get("feature_version", 1))
+        self.public = None
         self.t0 = time.perf_counter()
         self.delay = int(cfg.get("action_delay_ticks") or 0)
         if self.delay < 0:
@@ -629,15 +639,33 @@ class Match:
         if self.last_play_tick is None:
             self.last_play_tick = tick                       # match start = first decision (anti-stall clock)
         raw, h = self.state, (self.extrap if self._prev_raw is not None else 0)
+        if self.feature_version >= 4:
+            from pipeline.public_observation import PublicObserver
+            if self.public is None:
+                self.public = PublicObserver(self.side, schedule=getattr(self.env, 'elixir_regen_schedule', None))
+            self.public.own_events=[e for e in getattr(self.env,'public_plays',[])+getattr(self.env,'own_ability_events',[]) if e['side']==self.side]
+            self.public.update(self.state, source='sim')
         if self.extrap:                                      # cfg["extrapolate_ticks"]; 0 -> this block is skipped
             from pipeline.extrapolate import extrapolate
             if h:
-                raw = extrapolate(self.state, self._prev_raw, h, self.side)
+                object_context = self.public.object_context(tick) if self.feature_version >= 4 else {}
+                raw = extrapolate(self.state, self._prev_raw, h, self.side, **object_context)
             self._prev_raw = self.state
+        if self.feature_version >= 4:
+            self._public_object_view = raw.get('extrapolated_public_objects')
+            self.public_lookahead_counts = raw.get('public_lookahead_counts', {})
+            if cfg.get('behaviour_telemetry') and h:
+                if not hasattr(self, '_public_lookahead_total'):
+                    self._public_lookahead_total = Counter()
+                self._public_lookahead_total.update(self.public_lookahead_counts)
         bs = from_engine(sim_compact(self, raw), self.side, self.deck, engine_deck=self.engine_deck,
                          unmapped=self.unmapped, feature_version=self.feature_version)
         view = live_view(bs, self.rng_obs, self.deck, cfg["noise"]) if cfg["obs"] == "live" else bs
-        if self.opp_mode:
+        if self.feature_version >= 4:
+            # No opponent truth or delivered command log reaches v3.1 inputs.
+            from pipeline.public_observation import body_only_board
+            view = body_only_board(dc_replace(view, opp_elixir=self.public.estimate_at(tick+h) if self.opp_mode else None))
+        elif self.opp_mode:
             est = self.opp_estimate(tick)
             if bs.opp_elixir is not None:                    # truth read for the result's error log ONLY
                 self.opp_err.append(est - bs.opp_elixir)     # (extrapolate leaves the opponent's elixir at tick)
@@ -743,7 +771,7 @@ class Match:
             tok, mask, sc, past = self._obs
             row = {"tok": tok, "mask": mask, "sc": sc, "past": past}
             if self._gen_row is not None:                     # GenPolicy: the generalist's input row (zeroed sc,
-                row = {k: self._gen_row[k] for k in self._gen_row if k in GEN_ROW_KEYS + GEN_V3_KEYS}   # (card, form, x, y, dt) past, identities)
+                row = {k: self._gen_row[k] for k in self._gen_row if k in GEN_ROW_KEYS + GEN_V3_KEYS + GEN_V31_KEYS}
             if cfg.get("record_phi"):                         # rl_royale shaping (R2): what Phi needs, own view
                 from pipeline.reward_shaping import phi_record
                 row = {**row, "phi_state": phi_record(self.state, self.side)}
@@ -828,12 +856,19 @@ class Match:
             "real_outcome": entry.get("real_outcome"), "s1_split": entry.get("s1_split"), "group": entry.get("group"),
             "unmapped": sorted(self.unmapped), "wall_s": round(time.perf_counter() - self.t0, 1),
             **({"traj": self._traj_arrays()} if cfg.get("record") else {}),
+            **({'behaviour': env.behaviour_telemetry.result(self.side, env.eng.last_episode)}
+               if cfg.get('behaviour_telemetry') else {}),
+            **({'public_lookahead_counts': dict(self._public_lookahead_total)}
+               if cfg.get('behaviour_telemetry') and hasattr(self, '_public_lookahead_total') else {}),
             **({"opp_counter": self._opp_summary()} if self.opp_mode else {}),
             **({"action_delay_ticks": self.delay, "plays_unlanded": self.n_unlanded,
                 "plays_refused_at_landing": n_att - n_acc - self.n_unlanded} if self.delay else {}),
             **({"extrapolate_ticks": self.extrap} if self.extrap else {}),
             **({"hero_abilities": True, "ability_presses": {s: dict(c) for s, c in env.ability_presses.items()}}
                if getattr(env, "hero_abilities", False) else {}),
+            **({"ability_policy": "v2", "ability_fallback_generic": dict(env.ability_fallback_generic),
+                "ability_deployments": {s: dict(c) for s, c in env.ability_deployments.items()}}
+               if getattr(env, "ability_policy", "generic") == "v2" else {}),
             **({"forms_mode": "deck", "form_fallbacks": [list(x) for x in env.form_fallbacks]}
                if getattr(env, "forms_mode", "base") == "deck" else {}),
         }
@@ -856,6 +891,14 @@ class Match:
     def _opp_summary(self) -> dict:
         """cfg["opp_elixir"]: counter bookkeeping + estimate-minus-TRUE-elixir over this match's decisions (a
         diagnostic; the truth never reaches the estimate) and a (tick, est, truth) sample every OPP_TRACE_EVERY."""
+        if self.feature_version >= 4:
+            observer = self.public
+            counter = observer.counter if observer is not None else self.opp_counter
+            return {'mode': 'public_observation_v31', 'requested_mode': self.opp_mode,
+                    'fed': len(observer.plays) if observer is not None else 0,
+                    'dropped': None, 'undelivered_to_counter': None,
+                    'rebases': counter.rebases, 'rebase_total': round(counter.rebase_total, 3),
+                    'mae': None, 'bias': None, 'n': 0, 'trace': []}
         e = np.asarray(self.opp_err, dtype=np.float64)
         c = self.opp_counter
         return {"mode": self.opp_mode, "fed": self.opp_fed, "dropped": self.opp_dropped,
@@ -887,6 +930,9 @@ class Match:
         if tj and "unit_form" in tj[0]:
             out["unit_form"] = stack("unit_form").astype(np.int64)
             out["opp_past"] = stack("opp_past").astype(np.float32)
+        if tj and 'opp_cycle' in tj[0]:
+            for key in GEN_V31_KEYS:
+                out[key] = stack(key).astype(np.float32)
         if tj and "phi_state" in tj[0]:                      # cfg["record_phi"]: reward_shaping.phi_record rows
             out["phi_state"] = stack("phi_state").astype(np.float64)
         if tj and "tick" in tj[0]:                           # cfg["record_tick"]: each row's decision tick

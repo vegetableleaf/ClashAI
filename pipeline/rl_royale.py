@@ -632,6 +632,8 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
     extra = E.GEN_IDENT_KEYS if gen else ()
     if gen and "unit_form" in results[use[0]]["traj"]:
         extra += E.GEN_V3_KEYS
+    if gen and 'opp_cycle' in results[use[0]]['traj']:
+        extra += E.GEN_V31_KEYS
     B = {k: cat(lambda j, k=k: results[j]["traj"][k][keep[j]]) for k in TRAJ_KEYS + extra}
     for k in ("lp_gate", "lp_card", "lp_cell"):
         B[k] = cat(lambda j, k=k: results[j]["traj"][k][keep[j]])
@@ -715,6 +717,9 @@ def gen_v3val_arrays(path: Path, n: int = 0) -> tuple[dict, dict]:
     if "unit_form" in z:
         out["unit_form"] = z["unit_form"][np.concatenate([np.arange(a, b) for a, b in zip(lo, hi)]).astype(np.int64)]
         out["opp_past"] = z["opp_past"][idx]
+    if 'opp_cycle' in z:
+        for key in E.GEN_V31_KEYS:
+            out[key] = z[key][idx]
     return out, json.loads(str(z["meta"]))
 
 
@@ -1134,13 +1139,15 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
                                             {**cfg, "policy": base["league_opp_policy"], "record": False,
                                              "grid": opp_cache[j[1]["opp"]["path"]][1]}) for j in jobs}
                 E.run_selfplay_batch(lambda: RoyaleSelfPlayEnv(decision_ticks=int(base["decide_every"]), forms_mode=fm,
-                                                               hero_abilities=base.get("hero_abilities", False)), model, opps,
+                                                               hero_abilities=base.get("hero_abilities", False),
+                                                               ability_policy=base.get("ability_policy", "generic")), model, opps,
                                      rollout_jobs(jobs, update), cfg, n_fl, on_result=on_result, on_skip=on_skip,
                                      skip=(UnsupportedDeck,))
             else:
                 it = rollout_jobs(jobs, update) if kind == "rollout" else jobs     # screen: eval obs seed of (tag, k)
                 E.run_batch(lambda: RoyalePoolEnv(decision_ticks=int(base["decide_every"]), forms_mode=fm,
-                                                               hero_abilities=base.get("hero_abilities", False)), model, deck, it, cfg,
+                                                               hero_abilities=base.get("hero_abilities", False),
+                                                               ability_policy=base.get("ability_policy", "generic")), model, deck, it, cfg,
                             n_fl, on_result=on_result, on_skip=on_skip, skip=(UnsupportedDeck,))
             stats = {"wall_s": time.perf_counter() - t0, "matches": len(results),
                      "gpu_peak_mb": (torch.cuda.max_memory_allocated() / 2**20) if dev.startswith("cuda") else None}
@@ -1266,11 +1273,15 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
         if "=" not in ov:
             raise SystemExit(f"bad override {ov!r} (want key=value)")
         k, v = ov.split("=", 1)
-        if k not in cfg:
+        if k not in cfg and k != "ability_policy":       # optional: absent = generic (the historical hash / config)
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
         cfg[k] = yaml.safe_load(v)
     if type(cfg["hero_abilities"]) is not bool:
         raise SystemExit("hero_abilities must be a bool")
+    if cfg.get("ability_policy", "generic") not in ("generic", "v2"):
+        raise SystemExit(f"ability_policy must be generic or v2, got {cfg['ability_policy']!r}")
+    if cfg.get("ability_policy") == "v2" and not cfg["hero_abilities"]:
+        raise SystemExit("ability_policy v2 needs hero_abilities=true")
     return cfg
 
 
@@ -1278,6 +1289,8 @@ def config_sha(cfg: dict) -> str:
     # Off is the historical configuration, including checkpoint resume hashes.
     if cfg.get("hero_abilities") is False:
         cfg = {k: v for k, v in cfg.items() if k != "hero_abilities"}
+    if cfg.get("ability_policy", "generic") == "generic":
+        cfg = {k: v for k, v in cfg.items() if k != "ability_policy"}
     return hashlib.sha256(json.dumps(cfg, sort_keys=True, default=str).encode()).hexdigest()
 
 
@@ -1502,6 +1515,8 @@ class Learner:
                     raise SystemExit("proagree_data_gen card_vocab differs from the init checkpoint's")
                 if getattr(model, "feature_version", 1) >= 3 and not all(k in arrs for k in E.GEN_V3_KEYS):
                     raise SystemExit("v3 pro-agreement requires a v3 proagree_data_gen with unit_form and opp_past")
+                if getattr(model, 'feature_version', 1) >= 4 and int(meta.get('feature_version', 1)) != 4:
+                    raise SystemExit('v3.1 pro-agreement requires public-only v3.1 data')
                 self._rows = GenRows(arrs, np.arange(len(arrs["y_gate"])), self.dev)
             ev = evaluate_gen(model, self._rows, grid=self.grid)
             model.eval()
@@ -1807,6 +1822,9 @@ class Learner:
         base["hero_abilities"] = self.cfg.get("hero_abilities", False)
         if type(base["hero_abilities"]) is not bool:
             raise SystemExit("hero_abilities must be a bool")
+        base["ability_policy"] = self.cfg.get("ability_policy", "generic")
+        if base["ability_policy"] not in ("generic", "v2"):
+            raise SystemExit(f"ability_policy must be generic or v2, got {base['ability_policy']!r}")
         base["forms_mode"] = self.cfg.get("forms_mode", "base")
         if base["forms_mode"] not in ("base", "deck"):
             raise SystemExit(f"forms_mode must be base or deck, got {base['forms_mode']!r}")

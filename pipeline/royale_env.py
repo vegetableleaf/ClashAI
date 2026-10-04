@@ -41,6 +41,34 @@ NOT_ENOUGH_ELIXIR = 13
 NOT_IN_HAND = 1003              # deck_index names a card that is not in the hand right now
 REFUSED_BASE = 2000             # 2000 + DeployStatus for every other refusal
 FORMS_MODES = ("base", "deck")
+ABILITY_POLICIES = ("generic", "v2")
+# (ability_policy.py + ability_models_v2.json, CALIBRATION_V2.md). RoyaleSim card name -> the model's key; a button whose
+# card is not here (e.g. a hero Ice Wizard: no pro data) keeps the generic rule and is counted (ability_fallback_generic).
+V2_KEYS = {"Giant": "giant-hero", "Balloon": "balloon-hero", "Bowler": "bowler-hero", "Goblins": "goblins-hero",
+           "Knight": "knight-hero", "Musketeer": "musketeer-hero", "Tombstone": "tombstone-hero",
+           "Valkyrie": "valkyrie-hero", "Wizard": "wizard-hero", "Berserker": "berserker-hero",
+           "BarbLog": "barbarian-barrel-hero", "DarkPrince": "dark-prince-hero", "IceGolemite": "ice-golem-hero",
+           "EliteArcher": "magic-archer-hero", "MegaMinion": "mega-minion-hero", "MiniPekka": "mini-pekka-hero",
+           "ArcherQueen": "archer-queen", "GoldenKnight": "golden-knight", "SkeletonKing": "skeleton-king",
+           "MightyMiner": "mighty-miner", "Monk": "monk", "LittlePrince": "little-prince", "Goblinstein": "goblinstein",
+           "BossBandit": "boss-bandit"}
+V2_REPRESS_TICKS = 60      # boss-bandit's second charge: phase2_build.eligible (>= 3 s after the first press)
+_POLICY = None
+
+
+def _v2_policy():
+    """The L70 ability_policy module, loaded by path on first use (not at import: nothing else needs it)."""
+    global _POLICY
+    if _POLICY is None:
+        import importlib.util
+        from pathlib import Path
+        p = Path(__file__).resolve().parents[1] / "scratchpad/gauntlet/L70/abilities/ability_policy.py"
+        spec = importlib.util.spec_from_file_location("l70_ability_policy", p)
+        _POLICY = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(_POLICY)
+    return _POLICY
+
+
 FORM_OF = {"": 0, "base": 0, "evolution": 1, "hero": 2}   # name suffix / pool item ``form`` -> MatchSetup.forms value
 # (card_id, form) -> whether this process's RoyaleSim build loads it. ponytail: one engine build per process assumed.
 _FORM_LOADS: dict[tuple[int, int], bool] = {}
@@ -99,6 +127,12 @@ class _Core:
                     else int(any(v[0] == cid and v[2] for v in player.evo)))
         (r,) = env.core.step([DeployCommand(side, hand.index(cid), int(x) * SCALE, int(y) * SCALE)], 0)
         if r.status == DeployStatus.OK:
+            if env.ability_policy == "v2":      # the v2 press model's deployment clock + per-deployment denominator
+                env._last_play[side, cid] = int(before.tick)
+                if cid in env._hero_ids[side]:
+                    env.ability_deployments[side][env.names[cid]] += 1
+            if getattr(env, 'behaviour_telemetry', None) is not None:
+                env.behaviour_telemetry.play(before.tick, side, env.names[cid], int(x), int(y))
             if env.feature_version >= 3:
                 env.public_plays.append(dict(tick=int(before.tick), side=side, card=env.names[cid], form=form,
                                              x=int(x), y=int(y), accepted=True, play_index=len(env.public_plays)))
@@ -113,11 +147,17 @@ class _Core:
 class RoyalePoolEnv:
     def __init__(self, *, decision_ticks: int = 10, elixir_slack: int = 40, tail_cap: int = 7200,
                  warmup_ticks: int = 90, seed: int = 0, subs: Optional[dict[str, str]] = None,
-                 forms_mode: str = "base", hero_abilities: bool = False, feature_version: int = 1, **_ignored):
+                 forms_mode: str = "base", hero_abilities: bool = False, feature_version: int = 1,
+                 ability_policy: str = "generic", **_ignored):
         self.feature_version = int(feature_version)
         if type(hero_abilities) is not bool:
             raise ValueError("hero_abilities must be a bool")
         self.hero_abilities = hero_abilities
+        if ability_policy not in ABILITY_POLICIES:
+            raise ValueError(f"ability_policy {ability_policy!r} not in {ABILITY_POLICIES}")
+        if ability_policy == "v2" and not hero_abilities:
+            raise ValueError("ability_policy v2 needs hero_abilities=True")
+        self.ability_policy = ability_policy
         if forms_mode not in FORMS_MODES:
             raise ValueError(f"forms_mode {forms_mode!r} not in {FORMS_MODES}")
         self.forms_mode = forms_mode
@@ -231,13 +271,20 @@ class RoyalePoolEnv:
     def _advance_to(self, target: int) -> None:
         """"""
         while self.tick < target and not self.terminated:
+            telemetry = getattr(self, 'behaviour_telemetry', None)
+            if telemetry is not None:
+                telemetry.observe(self)
             nxt = self._next_ghost_tick()
             stop = target if (nxt is None or nxt > target) else max(min(nxt, target), self.tick + 1)
+            if telemetry is not None:
+                stop = min(stop, self.tick + 1)
             if self.hero_abilities and self._ability_pending:
                 stop = min(stop, self._ability_pending[0][0])
             self.core.step([], stop - self.tick)
             st = self.core.state()
             self.tick = int(st.tick)
+            if telemetry is not None:
+                telemetry.observe(self)
             if st.game_over:
                 self.terminated = True
                 c = [p.crowns for p in st.players]
@@ -252,11 +299,25 @@ class RoyalePoolEnv:
         return len(self._ghosts) - self._gi + len(self._pending)
 
     def _reset_abilities(self) -> None:
+        if self.feature_version >= 4:
+            self.own_ability_events = []
+        if getattr(self, 'behaviour_telemetry', None) is not None:
+            from .behaviour_telemetry import BehaviourTelemetry
+            self.behaviour_telemetry = BehaviourTelemetry()
         self.ability_presses = {0: Counter(), 1: Counter()}
         self._ability_pending = []
         self._hero_ids = {s: [cid for cid, form in zip(self.deck_ids[s],
                            getattr(self, "loaded_forms", {}).get(s, [])) if form == 2]
                           if self.forms_mode == "deck" else [] for s in (0, 1)}
+        self._champ_ids = {0: set(), 1: set()}
+        if self.ability_policy == "v2":
+            # v2 presses champions too (the generic rule never did): the buttons the engine gives beyond the heroes'.
+            self.ability_fallback_generic, self.ability_deployments = Counter(), {0: Counter(), 1: Counter()}
+            self._ability_uid, self._last_play, self._ability_check = {}, {}, {0: [None, None], 1: [None, None]}
+            for s in (0, 1):
+                rows = self.core.state().players[s].abilities
+                self._champ_ids[s] = {int(r[3]) for r in rows if r[3] != EMPTY_CARD} - set(self._hero_ids[s])
+                self._hero_ids[s] = list(self._hero_ids[s]) + sorted(self._champ_ids[s])
         if not self.hero_abilities or not any(self._hero_ids.values()):
             return
         if not hasattr(self, "_hero_costs"):
@@ -282,35 +343,104 @@ class RoyalePoolEnv:
     def ability_commands(self, side: int) -> list[tuple[int, int, int]]:
         """Ready (button, base card id, newest hero uid), with centre distance <= range + 1.5 tiles.
         Pure engine readiness query; no RNG, observation edits, or policy/card bookkeeping.
+        ``ability_policy`` "v2": the press DECISION is the per-ability calibrated model's (``_v2_gate``) instead of the
+        range rule -- a seeded draw per (match, side, hero uid, tick), so the same call twice in one tick answers the same.
         """
         if not self.hero_abilities or not self._hero_ids[side]:
             return []
+        if self.ability_policy == "v2":
+            last = self._ability_check[side]
+            if last[1] != self.tick:
+                last[:] = [last[1], self.tick]
+            self._v2_dt = (self.decision_ticks if last[0] is None else self.tick - last[0]) / 20
+            return self._scan(side, self._v2_gate)
+        return self._scan(side, self._near)
+
+    def _scan(self, side: int, gate) -> list[tuple[int, int, int]]:
+        """The readiness checks (button free, hero card, cost, engine check_deploy, living hero entity) then
+        ``gate(button, cid, hero, st)`` -> the final press decision."""
         st = self.core.state()
         buttons = st.players[side].abilities
         pending = {(s, b) for _, s, b, _, _ in self._ability_pending}
-        ready, units = [], None
+        ready = []
+        self._units = None
         for button, row in enumerate(buttons):
             cid = row[3]
             if cid not in self._hero_ids[side] or (side, button) in pending:
                 continue
-            cost = self._hero_costs[cid]
+            cost = row[2] if cid in self._champ_ids[side] else self._hero_costs[cid]
             if cost is None or st.players[side].elixir_milli < cost * 1000:
                 continue
             if self.core.check_deploy(DeployCommand(side, HAND_SIZE + button, 0, 0)) != DeployStatus.OK:
                 continue
+            # a champion is its biggest living body (Goblinstein is doctor + monster); a hero its newest
             hero = max((e for e in st.entities if e.team == side and e.card_id == cid and e.hp > 0
                         and e.status_flags >= 0 and e.status_flags & STATUS_HERO),
-                       key=lambda e: e.uid, default=None)
+                       key=(lambda e: (e.max_hp, e.uid)) if cid in self._champ_ids[side] else (lambda e: e.uid),
+                       default=None)
             if hero is None:
                 continue
-            if units is None:
-                units = {r[0]: r[1] for r in self.core._battle.debug_units()}
-            name = units.get(hero.uid, self._hero_buildings.get(cid, self.names[cid] + "_hero"))
-            reach = self._hero_ranges[name] + 1500 * SCALE
-            if any(e.team == 1 - side and e.hp > 0
-                   and (e.x - hero.x) ** 2 + (e.y - hero.y) ** 2 <= reach ** 2 for e in st.entities):
+            if gate(button, cid, hero, st):
                 ready.append((button, cid, hero.uid))
         return ready
+
+    def _near(self, button, cid, hero, st) -> bool:
+        """The generic rule: any enemy within the hero's attack range + 1.5 tiles."""
+        side = hero.team
+        if self._units is None:
+            self._units = {r[0]: r[1] for r in self.core._battle.debug_units()}
+        name = self._units.get(hero.uid, self._hero_buildings.get(cid, self.names[cid] + "_hero"))
+        reach = self._hero_ranges[name] + 1500 * SCALE
+        return any(e.team == 1 - side and e.hp > 0
+                   and (e.x - hero.x) ** 2 + (e.y - hero.y) ** 2 <= reach ** 2 for e in st.entities)
+
+    def _v2_gate(self, button, cid, hero, st) -> bool:
+        key = V2_KEYS.get(self.names[cid])
+        if key is None:                     # no v2 model (hero Ice Wizard, ...): the old rule, counted at the press
+            return self._near(button, cid, hero, st)
+        side = hero.team
+        info = self._ability_uid.setdefault((side, hero.uid), {"dep": self._last_play.get((side, cid), self.tick),
+                                                               "presses": 0, "last": None, "card": self.names[cid]})
+        n = info["presses"]       # one press per deployment, except boss-bandit's two charges (>= 3 s apart)
+        if n >= (2 if key == "boss-bandit" else 1) or (n and self.tick - info["last"] < V2_REPRESS_TICKS):
+            return False
+        p = _v2_policy().predict(key, self._ability_features(side, hero, st, info["dep"]), "v2", n)
+        q = 1 - (1 - p) ** self._v2_dt
+        tag = getattr(self, "entry", {}).get("tag", "")
+        return random.Random(f"ability:{self.seed}:{tag}:{side}:{hero.uid}:{self.tick}").random() < q
+
+    def _v2_recheck(self, button, cid, hero, st) -> bool:
+        """At landing the decision is made; only a fallback ability re-asks its (range) rule."""
+        return V2_KEYS.get(self.names[cid]) is not None or self._near(button, cid, hero, st)
+
+    def _ability_features(self, side: int, hero, st, dep_tick: int) -> list[float]:
+        """
+        HP in the engine's own unit, level 11 = the corpus level; units = enemy troops, structures = enemy buildings +
+        alive crown towers; the hero Goblins flag is untargetable and skipped)."""
+        goblins = self.ids.get("Goblins")
+        units, structures, towers = [], [], []
+        for u in st.entities:
+            if u.team == side or u.hp <= 0:
+                continue
+            d = ((u.x - hero.x) ** 2 + (u.y - hero.y) ** 2) ** .5 / (SCALE * 1000)
+            if u.kind in (EntityKind.KING_TOWER, EntityKind.PRINCESS_TOWER):
+                towers.append(d)
+            elif u.card_id == EMPTY_CARD:
+                continue
+            elif u.kind == EntityKind.BUILDING:
+                if not (u.card_id == goblins and u.status_flags & STATUS_HERO):
+                    structures.append(d)
+            else:
+                units.append((d, u.hp))
+        sd = structures + towers
+        tick, me, foe = self.tick, st.players[side], st.players[1 - side]
+        return [(tick - dep_tick) / 20, min(1., max(0., hero.hp / max(1, hero.max_hp))),
+                min((d for d, _ in units), default=40.), min(sd, default=40.),
+                sum(d <= 3 for d, _ in units), sum(h for d, h in units if d <= 3),
+                sum(d <= 5 for d, _ in units), sum(h for d, h in units if d <= 5),
+                float(hero.y > 16 * 18000 if side == 0 else hero.y < 16 * 18000),
+                min(towers, default=40.), me.elixir_milli / 1000, min(tick // 1200, 3),
+                1 if tick < 2400 else (2 if tick < 4800 else 3), me.crowns - foe.crowns]
 
     def queue_abilities(self, side: int, commands: list, delay: int) -> None:
         for button, cid, uid in commands:
@@ -324,10 +454,22 @@ class RoyalePoolEnv:
             _, side, button, cid, uid = self._ability_pending.pop(0)
             # A delayed card can land after the board/elixir changed. Recheck the whole
             # rule, including unit identity, before submitting a press to the same act path.
-            if not self.terminated and (button, cid, uid) in self.ability_commands(side):
+            if not self.terminated and (button, cid, uid) in (
+                    self.ability_commands(side) if self.ability_policy == "generic" else self._scan(side, self._v2_recheck)):
                 r = self.eng.act(side=side, ability_button=button)
                 if r["accepted"]:
                     self.ability_presses[side][self.names[cid]] += 1
+                    if self.ability_policy == "v2":
+                        info = self._ability_uid.setdefault((side, uid), {"dep": self.tick, "presses": 0, "last": None,
+                                                              "card": self.names[cid]})
+                        info["presses"] += 1
+                        info["last"] = self.tick
+                        if V2_KEYS.get(self.names[cid]) is None:
+                            self.ability_fallback_generic[self.names[cid]] += 1
+                    if self.feature_version >= 4:
+                        self.own_ability_events.append(dict(tick=self.tick,side=side,card=self.names[cid],accepted=True,ability=True))
+                    if getattr(self, 'behaviour_telemetry', None) is not None:
+                        self.behaviour_telemetry.play(self.tick, side, self.names[cid], None, None, ability=True)
 
     # ---------------------------------------------------------------- state
     def raw(self) -> dict:
@@ -353,8 +495,15 @@ class RoyalePoolEnv:
                     ents[-1]["status_flags"] = int(e.status_flags)
         effects = [{"side": s.team, "x": s.x / SCALE, "y": s.y / SCALE, "name": self.names.get(s.card_id, str(s.card_id))}
                    for s in st.spells]
-        return {"tick": st.tick, "players": players, "entities": ents, "effects": effects,
-                "episode": {"crown_towers": towers}}
+        out = {"tick": st.tick, "players": players, "entities": ents, "effects": effects,
+               "episode": {"crown_towers": towers}}
+        if self.feature_version >= 4:
+            # py.rs Flight.delay_ticks is PRE-flight delay, NOT time to impact.
+            # Only PULSING.delay_ticks is a remaining effect lifetime. Keep all
+            # unexposed timings unknown instead of turning them into false zeroes.
+            from .projectile_observation import sim_objects
+            out.update(sim_objects(st, self.names, SCALE))
+        return out
 
     # the real env's readouts ep._outcome uses
     @staticmethod

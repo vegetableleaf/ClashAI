@@ -67,6 +67,11 @@ class GenModel(S1Model):
         g_in = SC_S + 2 * d_c + d_c + 2 * d_c + PAST_K * (d_c + 2 + nfeat + 1)   # sc, hand, next, deck, past
         if self.feature_version >= 3:
             g_in += PAST_K * (d_c + 2 + nfeat + 1)
+        if self.feature_version >= 4:
+            from .public_observation import CYCLE_K
+            g_in += CYCLE_K * (d_c + 2)
+            g_in += 4 * d_c  # masked mean/max of projectile and effect tokens
+            g_in += 2 * d_c  # own visible ability controllers; readiness unknown
         self.global_in = nn.Sequential(nn.Linear(g_in, d), nn.GELU(), nn.Linear(d, d))
         self.card_q = nn.Linear(d, d_c)
         self.card_b = nn.Embedding(n_cards, 1)
@@ -75,6 +80,10 @@ class GenModel(S1Model):
         self.query = nn.Sequential(nn.Linear(d + d_c, d), nn.GELU(), nn.Linear(d, d))
         if self.feature_version >= 3:
             self.unit_in = UnitFormInput(self.unit_in, d)
+        if self.feature_version >= 4:
+            self.projectile_in = nn.Sequential(nn.Linear(d_c+7, d_c), nn.GELU(), nn.Linear(d_c, d_c))
+            self.effect_in = nn.Sequential(nn.Linear(d_c+5, d_c), nn.GELU(), nn.Linear(d_c, d_c))
+            self.ability_in = nn.Sequential(nn.Linear(d_c+6, d_c), nn.GELU(), nn.Linear(d_c, d_c))
 
     def emb(self, card: torch.Tensor, form: torch.Tensor) -> torch.Tensor:
         return self.card_id(card.long()) + self.form_id(form.long())
@@ -93,6 +102,17 @@ class GenModel(S1Model):
             oe = self.emb(op[..., 0].long(), op[..., 1].long())
             oxy = op[..., 2:4].clamp(0, 1)
             parts.append(torch.cat([oe, oxy, _fourier(oxy, self.nf), op[..., 4:5] / 30.0], -1).flatten(1))
+        if self.feature_version >= 4:
+            cycle = b['opp_cycle']
+            ce = self.emb(cycle[..., 0].long(), cycle[..., 1].long())
+            parts.append(torch.cat([ce, cycle[..., 2:3]/4.0, cycle[..., 3:4]/30.0], -1).flatten(1))
+            for key, layer in (('projectiles', self.projectile_in), ('effects', self.effect_in)):
+                obj = b[key]
+                embedding = self.card_id(obj[..., 0].long())
+                parts.append(_pool(layer(torch.cat([embedding, obj[..., 1:]], -1)), obj[..., 0] > 0))
+            obj = b['own_ability']
+            embedding = self.card_id(obj[..., 0].long())
+            parts.append(_pool(self.ability_in(torch.cat([embedding, obj[..., 1:]], -1)), obj[..., 0] > 0))
         return torch.cat(parts, -1)
 
     def encode_gen(self, b: dict) -> dict:

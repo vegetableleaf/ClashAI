@@ -223,6 +223,14 @@ def tag_recording(rec: dict, plays: list[dict], stats: dict) -> dict:
     return out
 
 
+class _PublicRows(_Rows):
+    def add(self, bs, **kwargs):
+        from dataclasses import replace
+        from .public_observation import body_only_board
+        # The caller fills these scalars from the causal public timeline later.
+        super().add(body_only_board(replace(bs, opp_elixir=None)), **kwargs)
+
+
 def replay_rows(path: str, wait_stride: int = 40, play_window: int = 20, shift_ticks: int = 0, feature_version: int = 1) -> dict[str, Any]:
     """One replay file -> its rows with card identities as indices into the returned local ``keys`` (-1 = pad)."""
     global _ICEBOW
@@ -249,10 +257,20 @@ def replay_rows(path: str, wait_stride: int = 40, play_window: int = 20, shift_t
                 if k not in keys:
                     keys.append(k)
                 ktbl[s, j], ftbl[s, j] = keys.index(k), form[c]
-        actual_plays = played_forms(rec) if feature_version >= 3 else []
-        if feature_version >= 3:
+        actual_plays = played_forms(rec) if feature_version == 3 else []
+        if feature_version == 3:
             rec = tag_recording(rec, actual_plays, st)
-        rows = _Rows(feature_version)
+        observers = None
+        if feature_version >= 4:
+            from .native_recording import tag_native_recording
+            from .public_observation import recording_observers
+            rec = tag_native_recording(rec, st)
+            unknown = {k: v for k, v in st.items() if k.startswith('native_unknown_card_id:') and v}
+            if unknown:
+                raise ValueError(f'gen_v3.1 exact forms require catalog coverage: {unknown}')
+            observers = recording_observers(rec)
+            actual_plays = sorted([e for o in observers for e in o.plays], key=lambda e: (e['tick'], e['side'], e['card']))
+        rows = (_PublicRows if feature_version >= 4 else _Rows)(feature_version)
         for s in ((0,) if mirror else (0, 1)):                   # a mirror match is built once, both sides
             if decks[s] is not None:
                 build_replay(rec, decks[s], rows, 0, wait_stride=wait_stride, play_window=play_window, val_pct=0,
@@ -270,9 +288,25 @@ def replay_rows(path: str, wait_stride: int = 40, play_window: int = 20, shift_t
         pos[a["y_gate"] == 0] = -1
         sc = sc.copy()
         sc[:, SC_SLOT_COLS] = 0.0
+        if observers is not None:
+            # Opponent truth in generic engine rows is never a gen_v3.1 input.
+            sc[:, 5] = [observers[int(s)].estimate_at(int(t))/10 for s, t in zip(side, a['tick'])]
+            sc[:, 6] = 1.0
         if _ICEBOW is None:
             _ICEBOW = load_deck("icebow")
+        extra = {}
+        if feature_version >= 4:
+            from .projectile_observation import recording_tokens
+            extra = recording_tokens(rec, a['tick'], side, keys, st)
+            gid = {key: i+1 for i, key in enumerate(keys)}
+            from .own_ability import tokens
+            from bisect import bisect_right
+            extra['own_ability'] = np.stack([tokens(
+                observers[int(s)].ability_rows[bisect_right(observers[int(s)].ability_ticks, int(t))-1]
+                if bisect_right(observers[int(s)].ability_ticks, int(t)) else [], gid, observers[int(s)].own_events, int(t))
+                for s, t in zip(side, a['tick'])])
         return {
+            **extra,
             "path": path, "tag": str(rec["tag"]), "keys": keys, "stats": st,
             "deck_keys": {s: sorted(keys[i] for i in ktbl[s, :8]) for s in (0, 1) if decks[s] is not None},
             "icebow_sides": deck_sides(rec, _ICEBOW),
@@ -308,7 +342,10 @@ def build(corpora: list[Path], out: Path, *, grid: str = "lattice", limit: int =
     t0 = time.time()
     files, seen = [], set()
     for c in corpora:
-        for f in sorted(Path(c).glob("replay_*.json")):
+        paths = list(Path(c).glob('replay_*.json'))
+        if feature_version >= 4:
+            paths += list(Path(c).glob('j*/replay_*.json'))
+        for f in sorted(paths):
             if f.name not in seen:                               # the same replay in two corpora is read once
                 seen.add(f.name)
                 files.append(str(f))
@@ -316,7 +353,24 @@ def build(corpora: list[Path], out: Path, *, grid: str = "lattice", limit: int =
         files = files[:limit]
     keep_val = v3val_tags(v3val_npz)
     jobs = [(f, wait_stride, play_window, shift_ticks, feature_version) for f in files]
-    if workers > 1:
+    spool = None
+    if feature_version >= 4 and workers == 1:
+        import uuid
+        from .dataset_spool import ReplaySpool, ArraySpool
+        out.parent.mkdir(parents=True, exist_ok=True)
+        spool = out.parent / ('v4_build_' + uuid.uuid4().hex)
+        spool.mkdir()
+        res = ReplaySpool(spool)
+        for i, job in enumerate(jobs):
+            row = _job(job)
+            if 'error' in row:
+                raise ValueError(f'gen_v3.1 build refuses failed recordings: {row}')
+            res.append(row)
+            if log and (i+1) % 100 == 0:
+                print(f'[dataset_gen] {i+1}/{len(jobs)} {time.time()-t0:.0f}s', file=log, flush=True)
+        if jobs:
+            del row
+    elif workers > 1:
         with ProcessPoolExecutor(max_workers=workers) as ex:
             res = []
             for i, r in enumerate(ex.map(_job, jobs, chunksize=8)):
@@ -326,12 +380,16 @@ def build(corpora: list[Path], out: Path, *, grid: str = "lattice", limit: int =
     else:
         res = [_job(j) for j in jobs]
     failed = [(r["path"], r["error"]) for r in res if "error" in r]
-    res = [r for r in res if "error" not in r]
+    if feature_version >= 4 and failed:
+        raise ValueError(f'gen_v3.1 build refuses failed recordings: {len(failed)}; first={failed[0]}')
+    if spool is None:
+        res = [r for r in res if "error" not in r]
 
     vocab_keys = sorted({k for r in res for k in r["keys"]})
     gid = {k: i + 1 for i, k in enumerate(vocab_keys)}          # 0 = pad
     deck_ix: dict[tuple, int] = {}
     parts: dict[str, list[np.ndarray]] = {}
+    disk_parts = ArraySpool(spool) if spool is not None else None
     tags: list[str] = []
     st: Counter = Counter()
     unmapped: set = set()
@@ -376,10 +434,21 @@ def build(corpora: list[Path], out: Path, *, grid: str = "lattice", limit: int =
             cols["unit_form"] = r["unit_form"]
             cols["opp_past"] = np.stack([opponent_past(r["actual_plays"], int(t), int(s), gid)
                                           for t, s in zip(r["tick"], side)])
+        if feature_version >= 4:
+            from .public_observation import opponent_cycle
+            cols['opp_cycle'] = np.stack([opponent_cycle(r['actual_plays'], int(t), int(s), gid)
+                                         for t, s in zip(r['tick'], side)])
+            for key in ('projectiles', 'effects', 'own_ability'):
+                cols[key] = r[key].copy()
+                local = cols[key][..., 0].astype(np.int64)-1
+                cols[key][..., 0] = lut[local]
         for k, v in cols.items():
-            parts.setdefault(k, []).append(v)
+            if disk_parts is not None:
+                disk_parts.append(k, v)
+            else:
+                parts.setdefault(k, []).append(v)
 
-    arrs = {k: np.concatenate(v) for k, v in parts.items()}
+    arrs = disk_parts.arrays() if disk_parts is not None else {k: np.concatenate(v) for k, v in parts.items()}
     n = len(arrs.get("sc", []))
     if not n:
         raise SystemExit(f"no rows from {len(files)} files ({len(failed)} failed)")
@@ -410,12 +479,26 @@ def build(corpora: list[Path], out: Path, *, grid: str = "lattice", limit: int =
         "stats": {**dict(st), "unmapped": sorted(unmapped)},
     }
     if feature_version >= 3:
-        meta.update(feature_version=3, OPP_PAST_K=PAST_K, evolution_cycles=evolution_cycles(),
+        meta.update(feature_version=feature_version, OPP_PAST_K=PAST_K, evolution_cycles=evolution_cycles(),
                     new_features={"unit_form_shape": list(arrs["unit_form"].shape),
                                   "opp_past_shape": list(arrs["opp_past"].shape),
                                   "evo_share": float(np.mean(arrs["unit_form"] == 1)),
                                   "hero_share": float(np.mean(arrs["unit_form"] == 2)),
                                   "opponent_rows_share": float(np.mean((arrs["opp_past"][..., 0] > 0).any(1)))})
+    if feature_version >= 4:
+        from .projectile_observation import PROJECTILE_COLS, EFFECT_COLS
+        meta.pop('evolution_cycles', None)
+        meta.update(projectile_cols=list(PROJECTILE_COLS), effect_cols=list(EFFECT_COLS))
+        from .projectile_observation import unavailable_area_timers
+        meta.update(public_timing_contract='R6_catalog_distance_speed_all_frames_v1',
+                    area_timer_unknown_cards=sorted(unavailable_area_timers()))
+        from .own_ability import ABILITY_COLS
+        meta['own_ability_cols'] = list(ABILITY_COLS)
+        meta['own_ability_readiness'] = 'own_accepted_deploy_and_press_history_plus_catalog; unknown_without_history'
+        meta.update(public_observation='periodic_native_bodies_and_spell_sightings_v1',
+                    opponent_elixir='public_counter_strictly_prior_sightings',
+                    opp_cycle_cols=['card', 'form', 'subsequent_detected_plays', 'age_s'],
+                    opp_cycle_shape=list(arrs['opp_cycle'].shape))
     out.parent.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(out, tags=np.asarray(tags), meta=json.dumps(meta), **arrs)
     out.with_suffix(".json").write_text(json.dumps(meta, indent=1), encoding="utf-8")
@@ -430,7 +513,7 @@ def build(corpora: list[Path], out: Path, *, grid: str = "lattice", limit: int =
 
 def main(argv: Optional[list[str]] = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
-    ap.add_argument("--feature-version", type=int, choices=(1, 2, 3), default=1)
+    ap.add_argument("--feature-version", type=int, choices=(1, 2, 3, 4), default=1)
     ap.add_argument("--corpus", type=Path, nargs="+", required=True)
     ap.add_argument("--out", type=Path, required=True)
     ap.add_argument("--grid", choices=("floor", "lattice"), default="lattice")

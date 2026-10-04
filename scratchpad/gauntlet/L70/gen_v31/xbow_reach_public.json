@@ -1,0 +1,23 @@
+{
+  "status": "R1_FINAL_LEAD_APPROVED",
+  "approval_rule": "R1-FINAL",
+  "reach_milli": 13038.404810405298,
+  "modal_offensive": true,
+  "modal_y": 0.609375,
+  "confusion": {
+    "TP": 3517,
+    "FP": 2260,
+    "FN": 66,
+    "TN": 1537
+  },
+  "overlap": 0.31517615176151764,
+  "hit_recall": 0.981579681830868,
+  "far_hits": 66,
+  "eligible": 7380,
+  "excluded": 4472,
+  "calibration_report": ".foreman\\codex_autopilot\\runs\\public_xbow_calibration_full.json",
+  "calibration_report_sha256": "e7889aa646da5dc9d536296785eb3fbefb6494591a73c5acef1102c98ae0f624",
+  "lead_rulings_sha256": "155f3ab139d95d707211c22a11eae0a30f3639a7e2d5dfe38b8effeb9bfd3c74",
+  "precision_note": "Retains the measured 13038.404810405298 milli-unit boundary; rounding it to13038.4 would exclude the exact modal cell.",
+  "limitation": "66 far hits include competing own X-Bows outside the7-tile exclusion; success/failure is not a geometric reach test."
+}

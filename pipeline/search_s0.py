@@ -292,6 +292,8 @@ def fork_into(m, env2, blob: bytes):
         if k not in ("core", "eng"):
             env2.__dict__[k] = v if k in SHARED_ENV else copy.deepcopy(v)
     env2.eng.last_episode = copy.deepcopy(env.eng.last_episode)
+    if getattr(env2, 'behaviour_telemetry', None) is not None:
+        env2.behaviour_telemetry = None  # hypothetical forks are not acceptance plays
     env2.core.load_state(blob)
     f = object.__new__(type(m))
     f.env, f.spec = env2, m.spec
@@ -468,7 +470,10 @@ class Runner:
                 "opp_plays_accepted": r["opp_side"]["plays_accepted"], "decisions": r["decisions"],
                 **st, "search_s": round(st["search_s"], 2),
                 "s_per_searched": round(st["search_s"] / st["searched"], 3) if st["searched"] else None,
-                **({k: r[k] for k in ("hero_abilities", "ability_presses")} if "hero_abilities" in r else {}),
+                **({k: r[k] for k in ("hero_abilities", "ability_presses", "ability_policy", "ability_fallback_generic",
+                                      "ability_deployments") if k in r} if "hero_abilities" in r else {}),
+                **({'behaviour': r['behaviour']} if 'behaviour' in r else {}),
+                **({'public_lookahead_counts': r['public_lookahead_counts']} if 'public_lookahead_counts' in r else {}),
                 **({k: r[k] for k in ("forms_mode", "form_fallbacks")} if "forms_mode" in r else {}),
                 "wall_s": round(time.perf_counter() - t0, 1)}
 
@@ -554,9 +559,13 @@ def _init_worker(args: dict) -> None:
         s1, si = E.load_policy(REPO / args["s1"], dev)
         opps["s1"] = (s1, live_cfg(TAU_OPP, str(si.get("grid", "floor")), dev))
     cap, fm = int(args["tail_cap"]), args.get("forms_mode", "base")
-    _W["runner"] = Runner(gen, opps, live_cfg(TAU_PLAIN, gi["grid"], dev),
+    learner_cfg = live_cfg(TAU_PLAIN, gi['grid'], dev)
+    if args.get('behaviour_telemetry'):
+        learner_cfg['behaviour_telemetry'] = True
+    _W["runner"] = Runner(gen, opps, learner_cfg,
                           lambda: RoyaleSelfPlayEnv(decision_ticks=10, tail_cap=cap, forms_mode=fm,
-                                                    hero_abilities=args.get("hero_abilities", False)),
+                                                    hero_abilities=args.get("hero_abilities", False),
+                                                    ability_policy=args.get("ability_policy", "generic")),
                           horizon_s=args["horizon"], interval=args["interval"], topk=args["topk"], cells=args["cells"],
                           search_min_p=args["search_min_p"], rollout_self=args.get("rollout_self", "idle"),
                           scorer_version=args.get("scorer", "v1"))
@@ -674,15 +683,21 @@ def main(argv=None) -> int:
     ap.add_argument("--scorer", default="v1", choices=SCORERS,
                     help="rollout Scorer: v1 (ported, default) or v2 (board value x current HP x position)")
     ap.add_argument("--workers", type=int, default=1, help="parallel matches (processes)")
+    ap.add_argument('--behaviour-telemetry', action='store_true', help='Record public per-tick behaviour metrics; defaults unchanged.')
     ap.add_argument("--tail-cap", type=int, default=7200, help="match end tick cap (RoyaleSelfPlayEnv tail_cap)")
     ap.add_argument("--hero-abilities", action="store_true",
                     help="press ready, affordable hero buttons within attack range + 1.5 tiles of enemies")
+    ap.add_argument("--ability-policy", default="generic", choices=("generic", "v2"),
+                    help="with --hero-abilities: generic = the range rule above (today); v2 = L70 per-ability calibrated "
+                         "press model (heroes and champions; royale_env V2_KEYS)")
     ap.add_argument("--forms-mode", default="base", choices=("base", "deck"),
                     help="RoyaleSim card forms: base = every card as its base card (today); deck = decked evolutions / "
                          "heroes the engine loads, refused forms fall back to base (royale_env docstring)")
     ap.add_argument("--max-wall-min", type=float, default=0.0,
                     help="0 = none; else no match starts after this and running matches stop (wall_truncated)")
     a = ap.parse_args(argv)
+    if a.ability_policy == "v2" and not a.hero_abilities:
+        ap.error("--ability-policy v2 needs --hero-abilities")
     if a.summarise:
         rows = [json.loads(x) for x in (a.summarise / "matches.jsonl").read_text(encoding="utf-8").splitlines() if x]
         s = summarise(rows)
@@ -705,8 +720,8 @@ def main(argv=None) -> int:
     wargs = {"gen": a.gen, "opp_gen": a.opp_gen, "opp_gen_sha256": opp_sha, "s1": a.s1, "opps": opps, "threads": a.threads, "tail_cap": a.tail_cap, "horizon": a.horizon,
              "interval": a.interval, "topk": a.topk, "cells": a.cells,
              "device": a.device, "search_min_p": a.search_min_p, "rollout_self": a.rollout_self,
-             "forms_mode": a.forms_mode, "hero_abilities": a.hero_abilities, "scorer": a.scorer, "census": a.census}
-    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if k != "census" or a.census != CENSUS}, "out": str(a.out), "summarise": None,
+             "forms_mode": a.forms_mode, "hero_abilities": a.hero_abilities, "ability_policy": a.ability_policy, "scorer": a.scorer, "census": a.census}
+    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v)}, "out": str(a.out), "summarise": None,
                                                 "gen_sha256": sha256(REPO / a.gen), "opp_gen_sha256": opp_sha,
                                                 "s1_sha256": sha256(REPO / a.s1),
                                                 "tau_plain": TAU_PLAIN, "tau_opp": TAU_OPP, "crown_w": CROWN_W,
