@@ -499,6 +499,9 @@ def build(corpora: list[Path], out: Path, *, grid: str = "lattice", limit: int =
                     opponent_elixir='public_counter_strictly_prior_sightings',
                     opp_cycle_cols=['card', 'form', 'subsequent_detected_plays', 'age_s'],
                     opp_cycle_shape=list(arrs['opp_cycle'].shape))
+    if feature_version >= 5:
+        from .body_identity import FAMILIES
+        meta.update(body_identity_contract='catalog_spawner_bodies_v1', body_identity_families=sorted(FAMILIES))
     out.parent.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(out, tags=np.asarray(tags), meta=json.dumps(meta), **arrs)
     out.with_suffix(".json").write_text(json.dumps(meta, indent=1), encoding="utf-8")
@@ -513,7 +516,7 @@ def build(corpora: list[Path], out: Path, *, grid: str = "lattice", limit: int =
 
 def main(argv: Optional[list[str]] = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
-    ap.add_argument("--feature-version", type=int, choices=(1, 2, 3, 4), default=1)
+    ap.add_argument("--feature-version", type=int, choices=(1, 2, 3, 4, 5), default=1)
     ap.add_argument("--corpus", type=Path, nargs="+", required=True)
     ap.add_argument("--out", type=Path, required=True)
     ap.add_argument("--grid", choices=("floor", "lattice"), default="lattice")

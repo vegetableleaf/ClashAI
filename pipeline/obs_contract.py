@@ -314,7 +314,12 @@ def from_engine(obs: Mapping[str, Any], my_side: int, deck: Deck, *, history: Op
                 continue
         if hp <= 0:
             continue
-        cid = vocab.engine_unit_id(str(name), float(mhp))
+        if feature_version >= 5:
+            from .body_identity import resolve
+            identity = resolve(str(name), float(mhp), form)
+            cid, form = identity.cls, identity.form
+        else:
+            cid = vocab.engine_unit_id(str(name), float(mhp))
         if cid is None:
             if unmapped is None:
                 raise UnmappedName(str(name))

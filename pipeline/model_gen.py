@@ -23,7 +23,7 @@ import torch
 import torch.nn as nn
 
 from .dataset import PAST_K
-from .model_v3 import S1Model, _fourier, mirror_batch
+from .model_v3 import S1Model, _fourier, mirror_batch, N_PATCHES, PATCH_X, PATCH_Y, cell_index
 from .obs_contract import S as SC_S
 
 N_CARDS = 123          # 122 base keys + pad 0 (dataset_gen card_vocab)
@@ -84,6 +84,29 @@ class GenModel(S1Model):
             self.projectile_in = nn.Sequential(nn.Linear(d_c+7, d_c), nn.GELU(), nn.Linear(d_c, d_c))
             self.effect_in = nn.Sequential(nn.Linear(d_c+5, d_c), nn.GELU(), nn.Linear(d_c, d_c))
             self.ability_in = nn.Sequential(nn.Linear(d_c+6, d_c), nn.GELU(), nn.Linear(d_c, d_c))
+        if self.feature_version >= 6:
+            self.projectile_target_in = nn.Sequential(nn.Linear(d_c+7, d), nn.GELU(), nn.Linear(d, d))
+            self.projectile_target_spread = nn.Conv2d(d, d, 3, padding=1, groups=d, bias=False)
+            nn.init.zeros_(self.projectile_target_spread.weight)
+
+    def target_patches(self, b: dict) -> torch.Tensor:
+        """Learned generic target/nearby-patch features; no card-specific rule.
+
+        Zero-initialized spatial residual preserves the source checkpoint.
+        Unknown and padded targets contribute nothing, including after training.
+        """
+        obj = b['projectiles']
+        xy = obj[..., 4:6]
+        valid = (obj[..., 0] > 0) & torch.isfinite(xy).all(-1) & (xy >= 0).all(-1) & (xy <= 1).all(-1)
+        features = torch.where(valid.unsqueeze(-1), obj[..., 1:], 0)
+        embedding = self.card_id(obj[..., 0].long())
+        vectors = self.projectile_target_in(torch.cat([embedding, features], -1))
+        vectors = torch.where(valid.unsqueeze(-1), vectors, 0)
+        indexes = cell_index(torch.where(valid.unsqueeze(-1), xy, 0), PATCH_X, PATCH_Y)
+        patches = vectors.new_zeros((len(obj), N_PATCHES, self.d))
+        patches.scatter_add_(1, indexes.unsqueeze(-1).expand(-1, -1, self.d), vectors)
+        patches = patches.transpose(1, 2).reshape(len(obj), self.d, PATCH_Y, PATCH_X)
+        return self.projectile_target_spread(patches).flatten(2).transpose(1, 2)
 
     def emb(self, card: torch.Tensor, form: torch.Tensor) -> torch.Tensor:
         return self.card_id(card.long()) + self.form_id(form.long())
@@ -122,7 +145,10 @@ class GenModel(S1Model):
         tok = b["tok"]
         if self.feature_version >= 3:
             tok = torch.cat([tok, b["unit_form"].to(tok.dtype).unsqueeze(-1)], -1)
-        return self.encode(tok, b["mask"], self.global_features(b), empty)
+        enc = self.encode(tok, b["mask"], self.global_features(b), empty)
+        if self.feature_version >= 6:
+            enc = dict(enc, p=enc['p'] + self.target_patches(b))
+        return enc
 
     def heads_gen(self, enc: dict, b: dict) -> dict:
         g = enc["g"]

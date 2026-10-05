@@ -75,7 +75,10 @@ def losses(model: GenModel, b: dict, mirror: bool, grid: str = "floor", rocket_c
         for key, xcols in (('projectiles', (2, 4)), ('effects', (2,))):
             obj = b[key].clone()
             for col in xcols:
-                obj[..., col] = torch.where(obj[..., 0] > 0, 1-obj[..., col], obj[..., col])
+                known = obj[..., 0] > 0
+                if getattr(model, 'feature_version', 1) >= 6 and key == 'projectiles' and col == 4:
+                    known = known & (obj[..., 4] >= 0) & (obj[..., 5] >= 0)
+                obj[..., col] = torch.where(known, 1-obj[..., col], obj[..., col])
             b[key] = obj
     play = b["gate"] > 0.5
     out = model(dict(b, tok=tok, sc=sc, past=past), card=b["card"], form=b["form"])
@@ -103,7 +106,7 @@ def losses(model: GenModel, b: dict, mirror: bool, grid: str = "floor", rocket_c
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--feature-version", type=int, choices=(1, 2, 3, 4), default=None)
+    ap.add_argument("--feature-version", type=int, choices=(1, 2, 3, 4, 5, 6), default=None)
     ap.add_argument('--smoke-one-batch', action='store_true', help='One forward/backward only; no model or deployment checkpoint.')
     ap.add_argument('--rocket-context-weight', type=float, default=None,
                     help='Maximum pro-context loss weight from held-out selection; legacy default 1.')
@@ -147,7 +150,8 @@ def main(argv=None) -> int:
     else:
         arrs, meta = load_ds(a.data)
     version = int(meta.get("feature_version", 1))
-    if a.feature_version is not None and max(a.feature_version, 2) != max(version, 2):
+    expected_data_version = 5 if a.feature_version == 6 else a.feature_version
+    if a.feature_version is not None and max(expected_data_version, 2) != max(version, 2):
         raise ValueError("feature version does not match dataset")
     a.feature_version = version if a.feature_version is None else a.feature_version
     if a.rocket_context_artifact is not None:
