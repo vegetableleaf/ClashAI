@@ -3,8 +3,8 @@
 not-enough-elixir refusal is retried each tick for up to ``elixir_slack`` ticks, the episode starts at
 the same 4,500 ms). Coordinates: side 0 / Blue at low y in both, but RoyaleSim is 18,000 units per tile against the
 pool's 1,000 (arena 324,000 x 576,000; kings at (162000, 54000) = tile (9, 3), measured L68) -- hence ``SCALE``.
-Overtime: RoyaleSim ships 60 s (2018 locations.csv); the 2026 corpus runs to 5,979 ticks = 120 s. Build the engine
-with ``match.OVERTIME_S`` = 120 (L68 local patch) or 62% of pool matches end a minute early.
+Overtime: the pinned runtime ships120 s, matching the 2026 corpus. Normal play stops at tick6000;
+level-crown matches then resolve through the upstream tower drain (judge tick6147, state tick6148).
 
 What the engine cannot play is a DECK problem, not a runtime one: ``reset`` refuses an entry whose decks name a card
 the catalogue lacks, unless ``subs`` maps it to one it has (e.g. {"Tornado": "Arrows"} for an engine without Tornado; RoyaleSim plays real Tornado since 2026-09-23, and no run passes subs).
@@ -17,7 +17,7 @@ its default False preserves the original command and RNG paths. A form the engin
 and is recorded per reset in ``form_fallbacks`` [(side, name, form)]; ``loaded_forms[side]`` = what was loaded, in
 ``deck_ids`` order (e1_eval feeds it to the policy's form inputs).
 
-Needs ``royalesim`` + ``royalegym`` importable (the Royale stack venv, or both installed into the caller's venv).
+Uses the reviewed runtime selected by pipeline.royale_runtime; missing or stale installs fail explicitly.
 """
 from __future__ import annotations
 
@@ -25,6 +25,10 @@ import json
 import random
 from collections import Counter
 from typing import Optional
+
+from pipeline.royale_runtime import activate as _activate_runtime
+
+_activate_runtime()
 
 from royalegym.protocol import (BLUE, EMPTY_CARD, HAND_SIZE, STATUS_HERO, DeployCommand, DeployStatus, EntityKind,
                                 MatchSetup, ShuffleMode, Winner)
@@ -322,14 +326,18 @@ class RoyalePoolEnv:
             return
         if not hasattr(self, "_hero_costs"):
             import royalesim
-            from royalegym.rust_engine import engine_cards_json_path
+            from royalegym.rust_engine import embedded_card_table, engine_cards_json_path
             column = list(royalesim.CATALOGUE_FIELDS).index("hero")
             self._hero_costs = {cid: row[column] for cid, row in
                                enumerate(json.loads(self.core._battle.catalogue_json()))}
             # BattleState has no attack range. Read the engine-selected table, including
             # hero-local summoned units (e.g. Hero Barbarian Barrel), not base-card stats.
-            path, _ = engine_cards_json_path()
-            data = json.loads(path.read_text(encoding="utf-8"))
+            embedded = embedded_card_table()
+            if embedded is not None:
+                data = json.loads(embedded)
+            else:
+                path, _ = engine_cards_json_path()
+                data = json.loads(path.read_text(encoding="utf-8"))
             rows = list(data["hero_forms"])
             for form in data["hero_forms"]:
                 rows.extend(form.get("tables", {}).get("units", {}).values())

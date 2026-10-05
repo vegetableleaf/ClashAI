@@ -1081,6 +1081,8 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
     send = actor_sender(out_q)
     torch.set_num_threads(int(base["actor_threads"]))
     try:
+        from pipeline.royale_runtime import require_same
+        require_same(base.get("runtime"))
         from pipeline.model_v3 import S1Model
         from pipeline.obs_contract import load_deck
         from pipeline.royale_env import RoyalePoolEnv, RoyaleSelfPlayEnv, UnsupportedDeck
@@ -1354,6 +1356,8 @@ def screen_score(results: list[dict], init: Optional[dict]) -> dict:
 # ------------------------------------------------------------------------------------------------------
 class Learner:
     def __init__(self, cfg: dict, run: str, run_dir: Path, ck_dir: Path, log: Log, resume: bool):
+        from pipeline.royale_runtime import activate
+        self.runtime = activate()
         from pipeline import policy_io as ep
         self.cfg, self.run, self.run_dir, self.ck_dir, self.log = cfg, run, run_dir, ck_dir, log
         self.dev = torch.device(cfg["learner_device"])
@@ -1548,6 +1552,7 @@ class Learner:
                 "rng": _py(self.rng.bit_generator.state), "visits": list(map(int, self.visits)),
                 "config": _py(self.cfg), "config_sha256": config_sha(self.cfg), "run": self.run,
                 "init": str(self.cfg["init"]), "pool_sha256": self.pool_sha,
+                "runtime": getattr(self, "runtime", None),
                 "baselines": _py({**self.base, "init_screen": self.base.get("init_screen")}),
                 "guards": _py(self.guards.s), **({"league": _py(self.league)} if getattr(self, "league", None) else {})}
 
@@ -1590,6 +1595,9 @@ class Learner:
     def _restore(self, path: Path) -> None:
         ck = torch.load(path, map_location=self.dev)          # weights_only (the default): proves the layout loads
         rl = ck["rl"]
+        if getattr(self, "runtime", None) is not None:
+            from pipeline.royale_runtime import require_same
+            require_same(rl.get("runtime"))
         self.model.load_state_dict(ck["model"])
         self.model.eval()
         self.opt.load_state_dict(rl["optimizer"])
@@ -1821,6 +1829,7 @@ class Learner:
         base.update({"d": int(a.get("d", 128)), "layers": int(a.get("layers", 4)), "grid": self.grid})
         base.update({k: self.cfg.get(k) for k in COND_KEYS})
         base["gen"] = getattr(self, "gen", None)
+        base["runtime"] = getattr(self, "runtime", None)
         base["league_opp_policy"] = self.cfg.get("league_opp_policy", "sample")
         base["hero_abilities"] = self.cfg.get("hero_abilities", False)
         if type(base["hero_abilities"]) is not bool:
@@ -1938,6 +1947,8 @@ def main(argv=None) -> int:
     ap.add_argument("--resume", action="store_true")
     ap.add_argument("overrides", nargs="*", help="key=value config overrides")
     a = ap.parse_args(argv)
+    from pipeline.royale_runtime import activate
+    runtime = activate()
     cfg = load_config(a.config, a.overrides, a.smoke)
     run_dir, ck_dir = RUN_ROOT / a.run, CKPT_ROOT / a.run
     if a.resume:
@@ -1951,10 +1962,13 @@ def main(argv=None) -> int:
                 raise SystemExit(f"REFUSING: {d} exists and is not empty (new --run name, or --resume)")
     run_dir.mkdir(parents=True, exist_ok=True)
     ck_dir.mkdir(parents=True, exist_ok=True)
+    (run_dir / (f"runtime_resume_{int(time.time())}.json" if a.resume else "runtime.json")).write_text(
+        json.dumps(runtime, indent=2), encoding="utf-8")
     import yaml
     (run_dir / (f"config_resume_{int(time.time())}.yaml" if a.resume else "config.yaml")).write_text(
         yaml.safe_dump(cfg, sort_keys=False), encoding="utf-8")
     log = Log(run_dir)
+    log(f"[rl] runtime {json.dumps(runtime, sort_keys=True)}")
     log(f"[rl] {'RESUME' if a.resume else 'START'} {a.run} pid {os.getpid()} "
         f"{'SMOKE ' if a.smoke else ''}config sha {config_sha(cfg)[:12]} argv {sys.argv[1:] if argv is None else argv}")
     L = None

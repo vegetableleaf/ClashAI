@@ -1,0 +1,79 @@
+"""Select the reviewed Royale runtime before importing either engine package.
+
+The old installation stays intact for already frozen experiments. There is no
+fallback: a missing, changed or previously imported older runtime aborts a new run.
+"""
+from __future__ import annotations
+
+import hashlib
+import importlib
+import json
+import os
+from pathlib import Path
+import sys
+
+REPO = Path(__file__).resolve().parents[1]
+MANIFEST = REPO / "scratchpad/gauntlet/L71/royale_update_20261005/build_manifest.json"
+RUNTIME = REPO / "research/ext/Royale-20261005/runtime"
+_STAMP = None
+
+
+def _verify_files(runtime: Path, manifest: dict) -> None:
+    runtime = runtime.resolve()
+    for name, expected in manifest["files"].items():
+        path = (runtime / name).resolve()
+        if not path.is_relative_to(runtime) or not path.is_file():
+            raise RuntimeError(f"Pinned Royale runtime file missing or outside runtime: {name}")
+        if hashlib.sha256(path.read_bytes()).hexdigest() != expected:
+            raise RuntimeError(f"Pinned Royale runtime file changed: {name}")
+
+
+def _check_imports(runtime: Path) -> None:
+    for name, module in tuple(sys.modules.items()):
+        if name.split(".", 1)[0] in ("royalesim", "royalegym"):
+            filename = getattr(module, "__file__", None)
+            if filename is None or not Path(filename).resolve().is_relative_to(runtime):
+                raise RuntimeError(f"An unpinned Royale module was already imported: {name}. "
+                                   "Start a fresh process and activate pipeline.royale_runtime first.")
+
+
+def activate() -> dict:
+    """Verify installed bytes and compiled provenance once per process; return a JSON stamp."""
+    global _STAMP
+    runtime = RUNTIME.resolve()
+    override = os.environ.get("ROYALESIM_DATA_DIR")
+    if override and Path(override).resolve() != runtime / "royalesim/data":
+        raise RuntimeError("ROYALESIM_DATA_DIR would override the pinned runtime's data")
+    _check_imports(runtime)
+    if _STAMP is None:
+        if not MANIFEST.is_file():
+            raise RuntimeError(f"Pinned Royale build manifest missing: {MANIFEST}")
+        contents = MANIFEST.read_bytes()
+        manifest = json.loads(contents)
+        _verify_files(runtime, manifest)
+        sys.path.insert(0, str(runtime))
+        importlib.invalidate_caches()
+        sim = importlib.import_module("royalesim")
+        importlib.import_module("royalegym")
+        _check_imports(runtime)
+        if tuple(sim.Battle.provenance()) != (manifest["pins"]["RoyaleSim"], "clean"):
+            raise RuntimeError("RoyaleSim compiled provenance differs from the reviewed source")
+        if sim.card_table_source() != "embedded":
+            raise RuntimeError("Pinned RoyaleSim must use its compiled-in card table")
+        from royalegym.rust_engine import RustEngine
+        from royalegym.protocol import data_dir
+        if data_dir().resolve() != runtime / "royalesim/data":
+            raise RuntimeError("RoyaleGym data path differs from the pinned runtime")
+        _STAMP = dict(schema=1, pins=manifest["pins"], wheels=manifest["wheels"],
+                      manifest_sha256=hashlib.sha256(contents).hexdigest(),
+                      card_table=RustEngine().card_table_stamp())
+    return json.loads(json.dumps(_STAMP))
+
+
+def require_same(expected: dict | None) -> dict:
+    """Actors and exact resumes must match the learner's recorded runtime."""
+    actual = activate()
+    if actual != expected:
+        raise RuntimeError("Royale runtime differs from the learner/checkpoint (or was not recorded). "
+                           "Use the checkpoint as init for a new run, rather than resuming across engines.")
+    return actual

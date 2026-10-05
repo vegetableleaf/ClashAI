@@ -1,4 +1,4 @@
-"""Public body identity prototype, staged outside the running Q3 source snapshot.
+"""Public body identity from catalog and measured calibration records.
 
 This changes observations, never card choices. Exact catalog maximum-HP evidence
 separates a spawned body from its originating card. Unrecognised or ambiguous
@@ -14,6 +14,7 @@ from pipeline import vocab
 from pipeline.obs_contract import REPO
 
 CATALOG = REPO / 'research/ext/Royale/RoyaleSim/data/derived/cards.json'
+CALIBRATION = CATALOG.parent.parent / 'calibration.json'
 # Coverage boundary: these six families have native replay witnesses. This is
 # observation normalisation, not a tactical preference or a spawn schedule.
 FAMILIES = frozenset(('witch', 'night_witch', 'furnace', 'goblin_hut',
@@ -53,6 +54,21 @@ def body_key(name, units):
 @lru_cache(maxsize=1)
 def tables():
     catalog = json.loads(CATALOG.read_text(encoding='utf-8'))
+    # Recordings span table vintages. The simulator also applies the measured
+    # Never replace an ambiguous maximum with a guessed body identity.
+    calibration = json.loads(CALIBRATION.read_text(encoding='utf-8'))
+    correction = calibration.get('cards', {}).get('CLIENT16402_VALUES', {}).get('value', {})
+    calibrated = (correction.get('values', {})
+                  if correction.get('arm') == 'client16402' and correction.get('table') == catalog.get('version')
+                  else {})
+
+    def hitpoints(name, record):
+        values = {int(record['hitpoints'])}
+        changed = calibrated.get(name, {}).get('Hitpoints')
+        if isinstance(changed, int) and changed > 0:
+            values.add(changed)
+        return values
+
     canonical = {}
     for card in catalog['cards']:
         key = vocab.engine_key(card['name'])
@@ -75,15 +91,17 @@ def tables():
             if not 0 <= step < len(ls['multiplier_percent_by_level']):
                 continue
             multiplier = ls['multiplier_percent_by_level'][step]
-            hp = int(record['hitpoints']) * multiplier // 100
-            possibilities.setdefault(hp, set()).add((vocab.unit_id(parent), form, 'parent'))
+            for base_hp in hitpoints(record['name'], record):
+                hp = base_hp * multiplier // 100
+                possibilities.setdefault(hp, set()).add((vocab.unit_id(parent), form, 'parent'))
             for name, key in children:
                 if key is None:
                     continue
-                hp = int(units[name]['hitpoints']) * multiplier // 100
-                if hp > 0:
-                    # A child is its own character, not the parent's evo/hero.
-                    possibilities.setdefault(hp, set()).add((vocab.unit_id(key), 0, 'child'))
+                for base_hp in hitpoints(name, units[name]):
+                    hp = base_hp * multiplier // 100
+                    if hp > 0:
+                        # A child is its own character, not the parent's evo/hero.
+                        possibilities.setdefault(hp, set()).add((vocab.unit_id(key), 0, 'child'))
         result[parent, form] = possibilities
     return result
 
