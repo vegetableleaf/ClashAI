@@ -244,11 +244,16 @@ def model_forward(model, tok, mask, sc, past, device: str = "cpu"):
 
 
 def live_decide(model, enc, heads, p_gate: float, allowed: np.ndarray, *, tau: float, stalled: bool,
-                device: str = "cpu") -> dict:
+                device: str = "cpu", decision_options=None, rng=None, card_names=None) -> dict:
     """
     no allowed slot -> WAIT ('no_affordable'); slot = argmax over allowed of the hand-masked card logits;
     p <= tau and not stalled -> WAIT; else cell = argmax of the card-conditioned cell logits."""
     import torch
+    if decision_options is not None and decision_options.active:
+        from .decision_options import decide_batch
+        return decide_batch(model, enc, heads, [p_gate], np.asarray(allowed, bool)[None], np.array([stalled]),
+                            tau=tau, device=device, options=decision_options, rngs=[rng],
+                            card_names=[card_names] if card_names is not None else None)[0]
     allowed = np.asarray(allowed, dtype=bool)
     if not allowed.any():
         return {"play": False, "slot": -1, "cell": -1, "why": "no_affordable"}
@@ -274,11 +279,15 @@ def random_decide(rng: random.Random, allowed: np.ndarray, p_random: float) -> d
 
 
 def live_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.ndarray, *, tau: float,
-                       device: str = "cpu") -> list[dict]:
+                       device: str = "cpu", decision_options=None, rngs=None, card_names=None) -> list[dict]:
     """``live_decide`` over every row of a shared forward at once. The card argmax and the p-vs-tau compare are
     elementwise (bit-identical to a per-row loop); ONE ``cell_logits`` call covers every row that plays, so this
     is O(1) GPU calls per round, not O(matches) (L68e)."""
     import torch
+    if decision_options is not None and decision_options.active:
+        from .decision_options import decide_batch
+        return decide_batch(model, enc, heads, p, allowed, stalled, tau=tau, device=device,
+                            options=decision_options, rngs=rngs or [None] * len(allowed), card_names=card_names)
     B = allowed.shape[0]
     p = np.asarray(p, dtype=np.float64)
     any_allowed = allowed.any(axis=1)
@@ -730,7 +739,12 @@ class Match:
         cfg, policy, device = self.cfg, self.cfg["policy"], self.cfg["device"]
         el_int, allowed, stalled = self.pre(hand)
         if policy == "live":
-            return live_decide(model, enc, heads, p, allowed, tau=cfg["tau"], stalled=stalled, device=device)
+            from .decision_options import match_kwargs
+            extras = match_kwargs([self])
+            if extras:
+                return live_decide_batch(model, enc, heads, [p], allowed[None], np.array([stalled]),
+                                         tau=cfg['tau'], device=device, **extras)[0]
+            return live_decide(model, enc, heads, p, allowed, tau=cfg['tau'], stalled=stalled, device=device)
         if policy == "sample":
             return sample_decide_batch(model, enc, heads, [p], allowed[None, :], np.array([stalled]), [self], cfg)[0]
         if policy == "random":
@@ -1019,8 +1033,9 @@ def run_batch(make_env, model, deck, jobs, cfg: dict, n: int, on_result, on_skip
             pre = [m.pre(hand[r]) for r, m in enumerate(live)]
             allowed = np.stack([x[1] for x in pre])
             stalled = np.array([x[2] for x in pre], dtype=bool)
+            from .decision_options import match_kwargs
             decisions = live_decide_batch(model, enc, heads, p, allowed, stalled, tau=cfg["tau"],
-                                          device=cfg["device"]) if policy == "live" else \
+                                          device=cfg["device"], **match_kwargs(live)) if policy == "live" else \
                 sample_decide_batch(model, enc, heads, p, allowed, stalled, live, cfg)
         else:                                                # random / none: cheap, no GPU call -> per-row is fine
             decisions = [m.decide_row(model, {k: v[r:r + 1] for k, v in enc.items()},
@@ -1245,7 +1260,9 @@ def run_selfplay_batch(make_env, learner, opponents: dict, jobs, cfg: dict, n: i
             pre = [s.pre(hand[r]) for r, s in enumerate(sides)]
             allowed = np.stack([x[1] for x in pre])
             stalled = np.array([x[2] for x in pre], dtype=bool)
-            decisions = live_decide_batch(model, enc, heads, p, allowed, stalled, tau=c["tau"], device=c["device"]) \
+            from .decision_options import match_kwargs
+            decisions = live_decide_batch(model, enc, heads, p, allowed, stalled, tau=c["tau"], device=c["device"],
+                                          **match_kwargs(sides)) \
                 if c["policy"] == "live" else sample_decide_batch(model, enc, heads, p, allowed, stalled, sides, c)
             todo += [(s, p[r], decisions[r]) for r, s in enumerate(sides)]
         for s, pr, d in todo:
@@ -1313,6 +1330,8 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--seeds", default="0", help="comma list of eval seeds k")
     ap.add_argument("--shard", default="0/1", help="i/n: round-robin share of the (entry, k) tasks")
     ap.add_argument("--policy", choices=("live", "none", "random", "sample"), default="live")
+    from .decision_options import add_arguments
+    add_arguments(ap)
     ap.add_argument("--p-random", type=float, default=0.09)
     ap.add_argument("--random-hand-only", action="store_true", help="random control over hand slots, no affordability")
     ap.add_argument("--sample-T", type=float, default=0.5, help="--policy sample: softmax/Bernoulli temperature "
@@ -1351,6 +1370,11 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv=None) -> int:
     a = build_parser().parse_args(argv)
     refuse_existing_out(a.out, a.resume)                 # FIRST: nothing is loaded or connected before this check
+    from .decision_options import config_from_args
+    decision_cfg = config_from_args(a)
+    decision_active = decision_cfg['card_choice'] != 'argmax' or decision_cfg['spell_aim'] != 'argmax'
+    if decision_active and a.policy != 'live':
+        raise ValueError('decision options require --policy live')
     if a.mode == "eval" and a.ckpt is None:
         raise SystemExit("--mode eval needs --ckpt")
     shard = parse_shard(a.shard)
@@ -1388,7 +1412,8 @@ def main(argv=None) -> int:
                 r = json.loads(line)
                 done_keys.add((r["tag"], int(r["k"])))
     slot = SLOT_OF_PORT.get(int(a.port), int(a.port))
-    run = {"argv": sys.argv[1:] if argv is None else list(argv), "args": {k: str(v) for k, v in vars(a).items()},
+    run = {"argv": sys.argv[1:] if argv is None else list(argv),
+           "args": {k: str(v) for k, v in vars(a).items() if decision_active or k not in decision_cfg},
            "slot": slot, "pool_sha256": pool_sha, "split_sha256": sha256_file(split_path),
            "n_split_entries": len(entries), "n_tasks": len(tasks), "resumed_done": len(done_keys),
            "noise_off": noise_off, "started": time.strftime("%Y-%m-%d %H:%M:%S")}
@@ -1405,6 +1430,8 @@ def main(argv=None) -> int:
            "random_hand_only": bool(a.random_hand_only), "grid": minfo.get("grid", "floor"), "device": a.device,
            "decide_every": int(a.decide_every), "slot": slot, "port": int(a.port), "T": float(a.sample_T),
            "opp_elixir": a.opp_elixir, "action_delay_ticks": int(a.action_delay), "extrapolate_ticks": int(a.extrapolate)}
+    if decision_active:
+        cfg.update(decision_cfg)
     print(json.dumps({"e1_eval": a.mode, "policy": a.policy, "port": a.port, "tasks": len(tasks),
                       "already_done": len(done_keys), "grid": cfg["grid"], "tau": cfg["tau"],
                       "noise_off": noise_off, "opp_elixir": a.opp_elixir, "action_delay_ticks": a.action_delay,

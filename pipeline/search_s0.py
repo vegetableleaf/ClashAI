@@ -108,6 +108,7 @@ for _p in (REPO, REPO / "icebow" / "src"):
         sys.path.insert(0, str(_p))
 
 from pipeline import e1_eval as E                                                   # noqa: E402
+from pipeline.decision_options import match_kwargs as decision_match_kwargs         # noqa: E402
 
 GEN_CKPT = "icebow/data/pipeline/gen_v1_s0/gen_s0.pt"
 S1_CKPT = "icebow/data/pipeline/s1_icebow_v6aug_s1.pt"
@@ -421,7 +422,7 @@ class Runner:
                 pre = [s.pre(hand[r]) for r, s in enumerate(sides)]
                 dec = live_decide_batch(self.learner, enc, heads, pp, np.stack([x[1] for x in pre]),
                                         np.array([x[2] for x in pre], dtype=bool), tau=sides[0].cfg["tau"],
-                                        device=self.dev)
+                                        device=self.dev, **decision_match_kwargs(sides))
                 todo.update({id(s): (pp[r], dec[r]) for r, s in enumerate(sides)})
             for s in due:
                 s.apply(*todo[id(s)])
@@ -488,7 +489,7 @@ class Runner:
             p, enc, heads, hand = forward(s)
             _, allowed, stalled = s.pre(hand)
             d = live_decide_batch(s.model, enc, heads, [p], allowed[None], np.array([stalled]), tau=s.cfg["tau"],
-                                  device=s.cfg["device"])[0]
+                                  device=s.cfg["device"], **decision_match_kwargs([s]))[0]
             if s is m.learner and arm == "never":
                 d = NEVER_PLAY                              # our side never plays (stall rule included)
             elif s is m.learner and arm != "plain" and allowed.any():
@@ -560,6 +561,8 @@ def _init_worker(args: dict) -> None:
         opps["s1"] = (s1, live_cfg(TAU_OPP, str(si.get("grid", "floor")), dev))
     cap, fm = int(args["tail_cap"]), args.get("forms_mode", "base")
     learner_cfg = live_cfg(TAU_PLAIN, gi['grid'], dev)
+    if args.get('decision_options'):
+        learner_cfg.update(args['decision_options'])
     if args.get('behaviour_telemetry'):
         learner_cfg['behaviour_telemetry'] = True
     _W["runner"] = Runner(gen, opps, learner_cfg,
@@ -663,6 +666,8 @@ def main(argv=None) -> int:
     ap.add_argument("--seeds", default="0:2", help="a:b range or comma list; learner_side = seed %% 2")
     ap.add_argument("--opps", default="gen,s1")
     ap.add_argument("--arms", default=",".join(ARMS))
+    from pipeline.decision_options import add_arguments, config_from_args
+    add_arguments(ap)
     ap.add_argument("--gen", default=GEN_CKPT)
     ap.add_argument("--opp-gen", default=None,
                     help="checkpoint of the frozen 'gen' OPPONENT only (default None = --gen); --gen stays our policy "
@@ -696,6 +701,10 @@ def main(argv=None) -> int:
     ap.add_argument("--max-wall-min", type=float, default=0.0,
                     help="0 = none; else no match starts after this and running matches stop (wall_truncated)")
     a = ap.parse_args(argv)
+    decision_cfg = config_from_args(a)
+    decision_active = decision_cfg['card_choice'] != 'argmax' or decision_cfg['spell_aim'] != 'argmax'
+    if decision_active and a.arms != 'plain':
+        ap.error('decision options require --arms plain; search experiments are separate')
     if a.ability_policy == "v2" and not a.hero_abilities:
         ap.error("--ability-policy v2 needs --hero-abilities")
     if a.summarise:
@@ -721,7 +730,11 @@ def main(argv=None) -> int:
              "interval": a.interval, "topk": a.topk, "cells": a.cells,
              "device": a.device, "search_min_p": a.search_min_p, "rollout_self": a.rollout_self,
              "forms_mode": a.forms_mode, "hero_abilities": a.hero_abilities, "ability_policy": a.ability_policy, "scorer": a.scorer, "census": a.census}
-    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v)}, "out": str(a.out), "summarise": None,
+    if decision_active:
+        wargs['decision_options'] = decision_cfg
+    if a.behaviour_telemetry:
+        wargs['behaviour_telemetry'] = True
+    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
                                                 "gen_sha256": sha256(REPO / a.gen), "opp_gen_sha256": opp_sha,
                                                 "s1_sha256": sha256(REPO / a.s1),
                                                 "tau_plain": TAU_PLAIN, "tau_opp": TAU_OPP, "crown_w": CROWN_W,
