@@ -3693,6 +3693,34 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   start adbd is not root: `adb root`. (4) Codex `gpt-6.1-sol` is rejected for this ChatGPT login on codex-cli 0.153.4;
 >   `gpt-6-astra` works.
 >
+> ## ⟳ 2026-10-06 18:xx -- CLAUDE BACK (usage reset). REVIEW OF CODEX'S 10-04..10-06 WORK + first fix
+> Owner tasks: review Codex; Hero Ice Wizard crawl + own-ability tuning; improve defensive X-Bow/Rocket-cycling switch,
+> Rocket use, dead-lane X-Bow+Tesla at 1-1, counter retention, late-game cheap-card collapse; review recent live losses.
+> * **Reviews (two independent verifiers, opus).** EXPERIMENTS: FAIL on method, numbers OK (14/14 spot checks match).
+>   (1) the "tower_v7 overdefends" premise was never compared with R1e: confirmed elixir per 1000 ticks tower 23.6 vs
+>   R1e 25.27 (10-05, 113 matches) / 25.36 (10-06, 42); Log rate equal. (2) outcome RL graded only on pro-Rocket
+>   agreement, never wins (train wins flat RL1 63->64/128, RL2 64->64; RL3 fell 291->263, 304->251 of 512). (3) Codex
+>   WROTE the "mandatory final floors" itself (PLAN.md 10-05 14:28) and presented them as the owner's. (4) its
+>   "development" set = R1e's own training data. (5) ~10 "no point decline" checks + one seed -> near-certain rejection
+>   (tower_v7 failed on Furnace 549 vs 550). Useful: Rocket upweighting -> more Rocket, fewer wins (v4_rocket -3.68
+>   [-7.02, -0.33]); card sampling ~-2 pp; area aim neutral (tower Rockets 7 -> 11); ghost screen near ceiling (R1e
+>   285/299); **R1e calls PLAY on 23,077 of 54,723 rows vs pros 17,192 (+34%)**; Rocket fit 175/2,366 training rows.
+>   CODE: FAIL. C1 (fixed below) Codex's 10-06 14:56 alias (obs_contract + reader_identity_aliases) made the live model
+>   see TWO Hero Ice Wizards (Hero + FloatingCube share 203000023, co-located, 1,702/1,702 frames); before it, none.
+>   C2 live_play defaults changed without an opt-out: anti-leak deleted (--no-anti-leak is a no-op), CPU default,
+>   Discord clip + connection-lost post removed (HANDOFF says owner asked "remove stale behavior" -- owner to confirm).
+>   M1 royale_env switches to engine Royale-20261005 ON IMPORT (screens/search_s0/e1_eval): screens before 10-05 03:00
+>   cannot be paired with new ones and outputs do not record the engine -> every new comparison needs fresh baselines.
+>   M2 gen_v3/test_sim_integration fails on the new runtime check (unrecorded). No hidden-info leak; hand reader OFF and
+>   public-only; ability button picks the real Hero first (cube only after the hero dies, then the button blocks).
+> * **FIX C1:** `reader_identity_aliases.dedupe_hero_bodies` (keep the first 203000023 object per side, drop co-located
+>   ones within 0.5 tile), applied in `live_gen.observe` + `row`. 1,702/1,702 sidebyside frames had the pair -> 0 after;
+>   R1e reader smoke PASS; 3 tests. Takes effect at the next live start (live was STOPPED 17:32 by the owner).
+> * Hero Ice Wizard crawl BLOCKED on login (Cloudflare cleared; /data/replay needs a RoyaleAPI session; saved tokens
+>   from Aug 30 expired). Owner: `cd /c/Users/benpe/clash-replay-scraper && python crawl_deck.py --deck icebow probe`,
+>   log in in its Chrome window; then rerun `scratchpad/gauntlet/L70/abilities/ice_wizard_hero/crawl_hero_iw.py`
+>   (roster of 1,390 players saved).
+
 > ## ⟳ 2026-10-04 00:0x -- OWNER CHANGE OF PLAN (owner bought usage; lead active again)
 > Owner: every Tuesday-deferred item is unblocked now; FULL native re-drive NOW with spell effects + projectile
 > time-to-impact (no proxy "temporary fixes"); rebuild data + retrain gen_v3.1 with ALL of today's upgrades; the lead may

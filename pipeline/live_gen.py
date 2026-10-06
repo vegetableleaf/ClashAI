@@ -68,6 +68,8 @@ class GenPilot:
 
     def observe(self, frame: Mapping[str, Any]) -> float | None:
         """Feed the opponent-elixir counter one active+coherent frame (call on EVERY such frame)."""
+        from .reader_identity_aliases import dedupe_hero_bodies
+        frame = dedupe_hero_bodies(frame)        # lead 2026-10-06: the 203000023 Hero + FloatingCube pair -> one Hero
         if getattr(self, 'feature_version', 1) >= 4:
             from .public_observation import PublicObserver
             side = my_side_of(frame)
@@ -103,6 +105,8 @@ class GenPilot:
         return self.gid[k]
 
     def row(self, frame: Mapping[str, Any]) -> tuple[dict, dict]:
+        from .reader_identity_aliases import dedupe_hero_bodies
+        frame = dedupe_hero_bodies(frame)        # lead 2026-10-06: the 203000023 Hero + FloatingCube pair -> one Hero
         side = my_side_of(frame)
         _, names = deck_of(frame, side)
         me = next(p for p in frame["players"] if int(p["side"]) == side)
