@@ -1,0 +1,13 @@
+{
+  "command": [
+    "research/ext/Royale/.venv/Scripts/python.exe",
+    "scratchpad/gauntlet/L72/improvement_loop/decision_capture_replay_completion/verify.py"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot",
+  "shell": "none; subprocess argument vector",
+  "exit_code": 0,
+  "expected": "DECISION_CAPTURE_REPLAY_COMPLETED",
+  "matched": true,
+  "output_sha256": "bd8b9b131cae2196245e4f1c547b778065c348b68440471038e9889d1cde35d4",
+  "seconds": 15.877695560455322
+}

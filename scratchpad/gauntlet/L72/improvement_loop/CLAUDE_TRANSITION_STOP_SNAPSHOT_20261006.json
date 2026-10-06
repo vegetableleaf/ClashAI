@@ -1,0 +1,39 @@
+{
+  "time": "2026-10-06T16:33:17.585418-04:00",
+  "worker_automation": {
+    "id": "continue-clashbot-acceptance-and-deployment",
+    "name": "Continue ClashBot acceptance and deployment",
+    "status": "PAUSED",
+    "rrule": "FREQ=MINUTELY;INTERVAL=20",
+    "updated_at": 1791318216677
+  },
+  "newsletter_automation": {
+    "id": "clashai-daily-newsletter",
+    "name": "ClashAI daily newsletter",
+    "status": "ACTIVE",
+    "rrule": "FREQ=DAILY;BYHOUR=21;BYMINUTE=30;BYSECOND=0",
+    "updated_at": 1791250004088
+  },
+  "processes": [
+    {
+      "ProcessId": 62188,
+      "ParentProcessId": 50856,
+      "Name": "python.exe",
+      "CommandLine": "C:\\Users\\benpe\\ClashBot\\icebow\\.venv\\Scripts\\python.exe -u scratchpad/gauntlet/L68/live_reader/live_play.py --ladder --matches 400 --tau 0.35 --no-anti-leak --max-seconds 600 --clip-every 1800 --overlay reader --stop-file scratchpad/gauntlet/L70/live/STOP",
+      "CreationDate": "2026-10-06T15:08:51.947867-04:00"
+    },
+    {
+      "ProcessId": 44492,
+      "ParentProcessId": 62188,
+      "Name": "python.exe",
+      "CommandLine": "C:\\Users\\benpe\\ClashBot\\icebow\\.venv\\Scripts\\python.exe -u scratchpad/gauntlet/L68/live_reader/live_play.py --ladder --matches 400 --tau 0.35 --no-anti-leak --max-seconds 600 --clip-every 1800 --overlay reader --stop-file scratchpad/gauntlet/L70/live/STOP",
+      "CreationDate": "2026-10-06T15:08:51.970216-04:00"
+    }
+  ],
+  "stop_present": false,
+  "checkpoint_override": "C:/Users/benpe/ClashBot/icebow/data/bench/rl_royale/rseries_r1e31/rseries_r1e31_u0155.pt",
+  "checkpoint_sha256": "76fdfaacbd9c2049cc88792278f06e3f73a56eaf9653791e922d9332dd6751cd",
+  "hand_reader_enabled": "0",
+  "experimental_work_stopped": true,
+  "assistant_live_actions": false
+}

@@ -1,0 +1,13 @@
+{
+  "command": [
+    "research/ext/Royale/.venv/Scripts/python.exe",
+    "scratchpad/gauntlet/L72/improvement_loop/review_decision_capture.py"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot",
+  "shell": "none; subprocess argument vector",
+  "exit_code": 0,
+  "expected": "DECISION_CAPTURE_REVIEWED",
+  "matched": true,
+  "output_sha256": "a50750226903addf808e77a5ac919edf709f482f7429b4fa2edb9636a25e76f4",
+  "seconds": 0.45052647590637207
+}

@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "time": 1791318343.143103,
+  "reviewer_source_sha256": "d8d97b69f4fdbe8f1b4a22bf9c08dafb86f41bc53410deefbd23fbdc4686d00d",
+  "verified_sha256": "38555f9b9bd413c2c0074ea26212010962cf8e532822c345e6604e11cc5916bd",
+  "registration_sha256": "9a56710bdbd7bd1e4e30cf432902ffb115ce2f43b785b745e131b49abc400b14",
+  "completion_receipt_sha256": "71a3bb1b1eb77415b3df579ef779fc8208f6d8fefef70712cde7b2afc777c36e",
+  "receipt": {
+    "command": [
+      "research/ext/Royale/.venv/Scripts/python.exe",
+      "scratchpad/gauntlet/L72/improvement_loop/decision_capture_replay_completion/verify.py"
+    ],
+    "cwd": "C:\\Users\\benpe\\ClashBot",
+    "shell": "none; subprocess argument vector",
+    "exit_code": 0,
+    "expected": "DECISION_CAPTURE_REPLAY_COMPLETED",
+    "matched": true,
+    "output_sha256": "bd8b9b131cae2196245e4f1c547b778065c348b68440471038e9889d1cde35d4",
+    "seconds": 15.877695560455322
+  },
+  "preserved_failures": {
+    "l72-decision-capture-qualify": 1,
+    "l72-decision-capture-async-qualify": 1
+  },
+  "prior_receipts": [
+    {
+      "name": "l72-decision-capture-unit",
+      "receipt_sha256": "a89d6589e18a078f824b6ce92c52cce0e9c44a9f38a7a2db731c66724561e7cc",
+      "command": [
+        "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L72\\improvement_loop\\decision_capture\\test_capture.py",
+        "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L72\\improvement_loop\\decision_capture\\test_entry_capture.py",
+        "-q"
+      ],
+      "cwd": "C:\\Users\\benpe\\ClashBot",
+      "shell": "none; subprocess argument vector",
+      "exit_code": 0,
+      "expected": "passed",
+      "matched": true,
+      "output_sha256": "289e0fc0b135f69189e12de65805cbd4418c58df3afc7da7ae8d99fd6e357d60",
+      "seconds": 8.418438911437988
+    },
+    {
+      "name": "l72-decision-capture-qualify",
+      "receipt_sha256": "adad0019904ee9211aa75786d288d0ee9bb91bd84b5059637f141fba84d0cc1e",
+      "command": [
+        "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L72\\improvement_loop\\decision_capture\\qualify.py"
+      ],
+      "cwd": "C:\\Users\\benpe\\ClashBot",
+      "shell": "none; subprocess argument vector",
+      "exit_code": 1,
+      "expected": "DECISION_CAPTURE_QUALIFIED",
+      "matched": false,
+      "output_sha256": "9816fa2754c731aa49a340f89b257caafa98927cba087963849a88a13147e63b",
+      "seconds": 13.676313161849976
+    },
+    {
+      "name": "l72-decision-capture-async-unit",
+      "receipt_sha256": "98e8c48727df9d9dcec015ac119736038b574dbee6f65830072069d6f0e46d16",
+      "command": [
+        "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L72\\improvement_loop\\decision_capture_async\\test_async.py",
+        "-q"
+      ],
+      "cwd": "C:\\Users\\benpe\\ClashBot",
+      "shell": "none; subprocess argument vector",
+      "exit_code": 0,
+      "expected": "passed",
+      "matched": true,
+      "output_sha256": "f7ac23154f0df5959bcb464cbe688d2c1a33efa934c24bb4c1a18e6922e59182",
+      "seconds": 10.680521011352539
+    },
+    {
+      "name": "l72-decision-capture-async-qualify",
+      "receipt_sha256": "dd5e2aeba3f922e67fc43e49d32d4deaa6b7d57bedf8531ee263d6718c0667e2",
+      "command": [
+        "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L72\\improvement_loop\\decision_capture_async\\qualify.py"
+      ],
+      "cwd": "C:\\Users\\benpe\\ClashBot",
+      "shell": "none; subprocess argument vector",
+      "exit_code": 1,
+      "expected": "ASYNC_CAPTURE_QUALIFIED",
+      "matched": false,
+      "output_sha256": "c08bd919c56da68f54a2e71ada7a57ddd8a0fffb35285b08907221ed2ab9927c",
+      "seconds": 17.548128604888916
+    }
+  ],
+  "cases": 24,
+  "saved_records": 48,
+  "fresh_forwards": 42,
+  "heads_exact": 228,
+  "input_conditioning_arrays_exact": 708,
+  "reference_arrays_exact": 936,
+  "original_latency_pass": false,
+  "async_latency_pass": false,
+  "live_eligible": false,
+  "new_model": false,
+  "scope": "Training Camp deck; no Rocket/Log/Tornado/Tesla/X-Bow; 16 Hero, 8 no-Hero, 6 incoming Barrel; friendly Knight in all cases; no enemy troop push. No Icebow spending, defense value, ladder or model-strength conclusion."
+}

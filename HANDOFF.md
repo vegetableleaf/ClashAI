@@ -1,3 +1,58 @@
+## 2026-10-06 16:41 EDT - Owner handoff: experimental work stopped; complete transition record
+
+**Read [CLAUDE_TRANSITION_RECORD_20261006.md](CLAUDE_TRANSITION_RECORD_20261006.md) first.**
+The owner requested a complete Claude handoff after this turn and directed Codex to stop.
+Experimental work is stopped. The existing worker heartbeat
+`continue-clashbot-acceptance-and-deployment` is **PAUSED** (app confirmation and
+fresh configuration readback). The separate daily newsletter remains ACTIVE and
+unchanged. No further experiment, training, collection, tactical inference or live
+transition is queued. Historical continuation instructions below are superseded.
+
+The single record contains the owner goals, every numerical acceptance floor,
+training and live-wiring issues, methods and findings, corrections/failures,
+what improved, unfinished work, source/runtime/reporting constraints and next
+conditional steps. It embeds **448 complete narrative source snapshots**, including
+the pre-transition HANDOFF/HANDOFF_ARCHIVE/GAUNTLET_LOG and all L68-L72 Markdown
+records, plus an indexed experiment registry and 10,611 tracked repository paths.
+Coverage and source payload hashes were checked; proof is
+`scratchpad/gauntlet/L72/improvement_loop/CLAUDE_TRANSITION_VERIFIED_20261006.json`.
+Heavy data/checkpoints/private captures remain at their original local paths.
+
+**Owner live state was preserved.** Fresh read-only inspection at16:40:59 EDT:
+one actual canonical R1e worker44492 (venv62188, parent supervisor50856), STOP
+ABSENT. R1e31u0155 SHA256
+`76fdfaacbd9c2049cc88792278f06e3f73a56eaf9653791e922d9332dd6751cd` remains selected;
+HAND_READER_ENABLED=0. Codex did not start/stop/restart policy, change its loaded
+sources, or create/remove STOP. Verify fresh state before future owner-authorized
+actions. Pausing Codex does not stop this owner-started session.
+
+Last current-turn work completed: separate fresh CPU4 R1e replay15.877696s
+exit0/token,24cases/48savedrecords/42freshforwards/228heads/456headcomparisons/
+708input-conditioning arrays/936reference arrays exact; independent action
+reconstruction6PLAY/6no-affordableWAIT/12affordableWAIT. Weights/RNG unchanged,
+empty gradients. Outside receipt review.450526s exit0/token. All five prior
+receipts are bound, including both latency failures. Never rerun completed jobs.
+Synchronous capture failed median9.786750/p9512.199670ms; separate async capture
+failed median2.917800ms against2ms (p954.975245/max5.381200 passed5/20ms).
+**Both capture paths remain unqualified and OFF.** No new checkpoint or Discord
+model report resulted. Frozen failed sources and local fixture archives preserved.
+
+The named Hero/cube reader and evolved Elite Barbarians overlay remain isolated
+and unactivated. The existing owner-authorized Hero ability heuristic reads raw
+frames separately; the named model-input adapter does not cover that path.
+Same-ID Hero/cube selection and ability costs remain an unmeasured wiring concern.
+Eight tower logs lack frame records; the ninth also lacks the schema/history
+needed for exact policy replay. Do not fabricate missing state.
+
+No new model has met the full replacement requirements or demonstrated sustained
+progress beyond11,000 trophies. FinalN2-N7/statistical/component/physical/gameplay/
+public/Q4/Q5 and untouched-evidence requirements remain open. The record preserves
+the conditional defense/resource recovery direction for the next owner-directed
+work. Forecast readiness remains deferred. All prior once-delivered model reports
+and the shared dated newsletter ledger must remain unduplicated.
+
+---
+
 ## 2026-10-06 15:36 EDT - Hero auxiliary identity found; separate reader and entry qualified
 
 CURRENT OWNER LIVE: owner restarted canonical R1e at15:12. At15:32 one actual worker44492(venv62188; supervisors62556/50856) active; STOP ABSENT. Assistant did not restart policy, write STOP, or edit live sources. Selected R1e31u0155 SHA76fdfaacbd9c2049cc88792278f06e3f73a56eaf9653791e922d9332dd6751cd, handOFF. Inspect fresh before acting.

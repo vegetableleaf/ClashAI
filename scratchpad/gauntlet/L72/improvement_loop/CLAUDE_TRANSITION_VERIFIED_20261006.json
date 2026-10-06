@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "time": "2026-10-06T16:40:29.080206-04:00",
+  "git_head": "61c44d6a9696087fcda29f80d1feca7cc49f0eb1",
+  "record_path": "CLAUDE_TRANSITION_RECORD_20261006.md",
+  "record_sha256": "2708f7e434965545312e9033399d71c1b2c3225a494c3f4e6192f34aa159081f",
+  "bytes": 5087324,
+  "lines": 64252,
+  "source_documents": 448,
+  "archived_source_lines": 42085,
+  "tracked_file_paths": 10611,
+  "source_coverage_exact": true,
+  "source_payload_hashes_exact": true,
+  "part_bindings": [
+    {
+      "part": "OVERVIEW",
+      "path": "scratchpad/gauntlet/L72/improvement_loop/CLAUDE_TRANSITION_OVERVIEW_20261006.part.md",
+      "sha256": "db7170e954da8af3923062a4b90d92af951914f990a5611240f77c19a46d5324"
+    },
+    {
+      "part": "TARGETS",
+      "path": "scratchpad/gauntlet/L72/improvement_loop/CLAUDE_TRANSITION_TARGETS_20261006.part.md",
+      "sha256": "34a1066e0d1f64925b7c3ba167047a95ccbac85704bd27d136eff688fd546607"
+    },
+    {
+      "part": "METHODS",
+      "path": "scratchpad/gauntlet/L72/improvement_loop/CLAUDE_TRANSITION_METHODS_20261006.part.md",
+      "sha256": "0714fdf557e016813b415e25f3156f6b5e142ae9ca718643932d79e14703eff2"
+    },
+    {
+      "part": "OPERATIONS",
+      "path": "scratchpad/gauntlet/L72/improvement_loop/CLAUDE_TRANSITION_OPERATIONS_20261006.part.md",
+      "sha256": "3c34e975a6a2bbf10a5d2a22bb90738a8dd5b2b6a8993f490cc0cc5745a7ef3f"
+    }
+  ],
+  "credentials_scan_matches": 0,
+  "owner_worker_untouched": true,
+  "worker_heartbeat_paused": true,
+  "no_experiments_after_replay_completion": true
+}
