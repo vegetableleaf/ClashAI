@@ -1,0 +1,7 @@
+hand-reader model input: 0
+[live] checkpoint: C:\Users\benpe\ClashBot\icebow\data\bench\rl_royale\rseries_r1e31\rseries_r1e31_u0155.pt
+[live] selected by: C:\Users\benpe\ClashBot\scratchpad\gauntlet\L70\live\CKPT_OVERRIDE
+[live] SHA256: 76fdfaacbd9c2049cc88792278f06e3f73a56eaf9653791e922d9332dd6751cd
+{"check": "LIVE_CHECK_PASS", "checkpoint": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\rl_royale\\rseries_r1e31\\rseries_r1e31_u0155.pt", "sha256": "76fdfaacbd9c2049cc88792278f06e3f73a56eaf9653791e922d9332dd6751cd", "feature_version": 4, "device": "cpu", "tau": 0.35, "anti_leak": false, "public_audit": true, "decision_options": {"card_choice": "argmax", "card_ratio": 0.7, "card_T": 1.0, "spell_aim": "argmax"}}
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)

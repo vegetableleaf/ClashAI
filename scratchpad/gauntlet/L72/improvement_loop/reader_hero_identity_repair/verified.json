@@ -1,0 +1,103 @@
+{
+  "complete": true,
+  "rows": 1169,
+  "raw_body_entries": 2435,
+  "conversion_checks": 4676,
+  "census": [
+    {
+      "file": "live_play_20261006_140419.jsonl",
+      "sha256": "8222c02690592627955cb1f8f21eec399b67dd8538f38d5aaf9e0df37accbbc3",
+      "decisions": 87,
+      "hero_body_entries": 174
+    },
+    {
+      "file": "live_play_20261006_140737.jsonl",
+      "sha256": "0e04af575721eec854158f1750d1a85a6ca4c9a56966e99dc3086659fdcd7359",
+      "decisions": 187,
+      "hero_body_entries": 387
+    },
+    {
+      "file": "live_play_20261006_141053.jsonl",
+      "sha256": "20b82f9eed88b505535b4497a0c798dfd5a3f623f61afbf7cbb1fab15886e7f8",
+      "decisions": 83,
+      "hero_body_entries": 178
+    },
+    {
+      "file": "live_play_20261006_141406.jsonl",
+      "sha256": "2daf0d84c030dd7b49c9ee1dff802790ff22fa9e17ecf84970e2465373641432",
+      "decisions": 82,
+      "hero_body_entries": 180
+    },
+    {
+      "file": "live_play_20261006_141745.jsonl",
+      "sha256": "6b360a91547f47c7d520e5bf2ba75cbd383e8e98b43e1e3f9dacbd7cc3ff7bd8",
+      "decisions": 136,
+      "hero_body_entries": 283
+    },
+    {
+      "file": "live_play_20261006_142102.jsonl",
+      "sha256": "1ff7fd75aef58470104ec362167e8d4269cd991d450e70b98f9c900be86b1a62",
+      "decisions": 190,
+      "hero_body_entries": 402
+    },
+    {
+      "file": "live_play_20261006_142420.jsonl",
+      "sha256": "74d0dec8c056fb6a354febfb30af7ce9e97dad40701cc64c10184a36c7b67fc5",
+      "decisions": 151,
+      "hero_body_entries": 312
+    },
+    {
+      "file": "live_play_20261006_142820.jsonl",
+      "sha256": "e544a9e4d267466bd7b8b1c99d076b59585d1d2cc8a17545db0a8f8109479263",
+      "decisions": 201,
+      "hero_body_entries": 415
+    },
+    {
+      "file": "live_play_20261006_143227.jsonl",
+      "sha256": "69a3ca7a73c93334235587fe61ed8f9383fa625aa67232d15263d870b2a7f659",
+      "decisions": 52,
+      "hero_body_entries": 104
+    }
+  ],
+  "existing_mappings_unchanged": 209,
+  "alias_count": 1,
+  "conflict_negative_controls": 4,
+  "private_invariance": true,
+  "dead_and_unknown_controls": true,
+  "sources": {
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_hero_identity_repair\\check_repair.py": "df0fa024e75b74bef45cef321e00f147ac7a0e254ec3285f6a2332f65f6eeb78",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_hero_identity_repair\\PLAN.md": "828bf796945d0c9e1bd1ffc9772837aec9213a50be96c04564a2c6546e9bff6e",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_hero_identity_repair\\original\\obs_contract.py": "80c41def73dcb619b9127b18018233d2c8c55cdd7c9054abe221513bedad2584",
+    "pipeline\\obs_contract.py": "84d9334b46d9f6f114960b944cc653f50695707602a43cb25dcd668ee0e295b3",
+    "pipeline\\reader_identity_aliases.py": "7d29a05a282a1d46c13ba6329ab311a50421c744ecca6f9e9abdbb526dadbb6c",
+    "pipeline\\live_mem.py": "a96e13674899e4e14bb4dbe159467275e335e09c0058d1731af277cd27fae6a1",
+    "pipeline\\public_observation.py": "f4b9b7af6aa9c39be80f00573ed95166eaadace1b079a372b42f15731cb74893",
+    "scratchpad\\gauntlet\\L68\\live_reader\\hero_button.py": "1e7131ef18e6b1ee974e6255cc87b8ca9f0c60e925f0f1615ad3f263ec36d0f7",
+    "research\\ext\\cr-native-sandbox\\native_core\\data\\live_card_catalog.json": "7b01d9ac62e5035493131e974913fd00d6b67dd735703c28f5f496ec6a11722b"
+  },
+  "settings": {
+    "check": "LIVE_CHECK_PASS",
+    "checkpoint": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\rl_royale\\rseries_r1e31\\rseries_r1e31_u0155.pt",
+    "sha256": "76fdfaacbd9c2049cc88792278f06e3f73a56eaf9653791e922d9332dd6751cd",
+    "feature_version": 4,
+    "device": "cpu",
+    "tau": 0.35,
+    "anti_leak": false,
+    "public_audit": true,
+    "decision_options": {
+      "card_choice": "argmax",
+      "card_ratio": 0.7,
+      "card_T": 1.0,
+      "spell_aim": "argmax"
+    }
+  },
+  "startup_command": [
+    "C:/Program Files/Git/bin/bash.exe",
+    "scratchpad/gauntlet/L70/live/start_live.sh",
+    "--check"
+  ],
+  "stop_unchanged": true,
+  "live_started": false,
+  "checkpoint_changed": false,
+  "gameplay_improvement_unmeasured": true
+}

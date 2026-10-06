@@ -1,0 +1,35 @@
+{
+  "complete": true,
+  "receipts": {
+    "l72-owner-r1e-restored": {
+      "seconds": 6.027880907058716,
+      "receipt_sha256": "ba6dce547e6bc624a804865e7941891cced508e5075f49418f7a9398d20a3c24",
+      "output_sha256": "e556107ec1f352765aa7c3104e9b9f446cc93737940db866c6f7ebb1e3723e54"
+    },
+    "l72-owner-tower-session-triage": {
+      "seconds": 1.121277093887329,
+      "receipt_sha256": "70613713810dd93107cb8216f59e362b940d575a292e022f64b67f43a23079ec",
+      "output_sha256": "9483ee57a85030c02a532d5f38cb47b2cd55524c5ac452cff70da409f97d92f2"
+    },
+    "l72-owner-tower-triage-verified": {
+      "seconds": 0.7054591178894043,
+      "receipt_sha256": "ecec4b36c633fea0a8628785cf19c79f0b35eae17d71da54b8bc72be84a99bb5",
+      "output_sha256": "1fe2cc79222e0c498ff808cfb001d334f3413f505a20cd60275b5f8312a07cbb"
+    },
+    "l72-reader-hero-identity-repaired": {
+      "seconds": 8.840901136398315,
+      "receipt_sha256": "0327da8aae81a6c37012016a2afbf6d28cec779a686bf0e05bac971e7ad5d202",
+      "output_sha256": "36a048651afbee2cc34cc97ce645deae952704bd759e27ae8d61b686aef9235c"
+    },
+    "l72-reader-hero-regressions": {
+      "seconds": 10.14506220817566,
+      "receipt_sha256": "1b06db5f9210b3fe2bb51afa66b202fae2a967f3f833f7e303ffaf75a73356f6",
+      "output_sha256": "97e4b9cd6488858b3b7924e6007c297c2085c7c72e8d76c24b0c09fd861a6ab9"
+    }
+  },
+  "verified_sha256": "ecb3d7891a70462ac7fc05a766c0e5b5c47c21fc6221e0694d20cd5d8ab9b3fd",
+  "regression_test_sha256": "dde30b823fbe0938499eb4a79266fa0f597469bc330334f838235826a9a2848c",
+  "new_model": false,
+  "live_started": false,
+  "gameplay_effect_unmeasured": true
+}

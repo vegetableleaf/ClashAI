@@ -1,3 +1,47 @@
+## 2026-10-06 15:03 EDT - R1e restored; missing Hero defender repaired; ladder plan revised
+
+Read DEFENSE_AND_LADDER_RECOVERY_20261006.md and reader_hero_identity_repair/REVIEW.md.
+Owner explicitly withdrew tower_spatial_v7 after excessive defense/counter spending.
+R1e31u0155 selected, SHA76fdfaacbd9c2049cc88792278f06e3f73a56eaf9653791e922d9332dd6751cd.
+Hand model inputOFF. Owner STOP14:32:14 preserved; no assistant live restart.
+Original tower rejection remains. No accepted stronger model or proved climb.
+
+CONFIRMED FIX: generic public model lookup omitted Hero Ice Wizard203000023;
+prior hero_button correction only fixed ability control. Nine live tower logs
+contain1169/2706decision snapshots with2435alive friendly Hero entries and ZERO
+model Hero entries. Added ONE witnessed IceWizard/form2 alias in new
+pipeline/reader_identity_aliases.py and two shared lookup calls. Original
+obs_contract retained in reader_hero_identity_repair/original. Catalog bytes and
+all existing mappings unchanged. All4676conversions(twoorientations/features4,7)
+match scalar/reference identity/HP/position;4conflictnegative/private/dead/unknown
+controls pass. Actual startup R1e exacthash/options/STOPpass. Repair8.840901s exit0.
+Permanent actual-live-batch regression plus relevant suites70passed5skipped,
+10.145062s exit0. reviewed.json binds5receipts/all sources. NEVERreruncompleted
+triage/repaircheck to recreate evidence. Gameplay benefit still unmeasured.
+
+Tower session triage9matches:2706decisions310attempts288confirmed14unconfirmed8unresolved,
+1win7losses1unrecorded result;trophiesabsent.806confirmed cardelixir +16abilityreceipts
+withabilitycostsexcluded.48Logs24Tornadoes3Rocketsconfirmed. Median40-46ms/p95max72.7ms,
+no CPUstarvation/forcedspend. Independent rawreceipt/cardcost/outcomes/source/Hero
+census pass; later-resource descriptors remain review aids. All310publiccase records
+local owner_r1e_restore_20261006/triage_details.json(hashbound5.5MB,notstaged).
+Two empty-body Log examples have incomingBarrels; no waste labels from unitcounts.
+
+NEXT: follow recovery planA. Inspect remaining unmapped13000043(19decisions),
+repeated same-position Hero objects, and complete defense/resource cases using
+original public identity evidence. Qualify bounded actual public model-batch
+capture for exact fixed-R1e diagnostic comparison; eight of nine logs lack full
+observerframes, so do not fabricate replaystate. Then one registered complete-
+sequence learning hypothesis from freshR1e with matched controls, preserving
+all finalN2-N7/component/physical/statistical/public/Q4/Q5 requirements. Include
+WAIT/extra-defense opportunitycost, latercounteravailability, bothlanes, Rocket
+lead/finishes, Rocket-Tornado and defensiveXbow. Freeze eventual ladder sample and
+record start/end/nettrophies/levels/matchups; sustainedpositiveprogress beyond11000
+and advantage overR1e remain required. No nexttrainingregistered/launched.
+
+opponent_forecast_readiness draft is PREPARED/UNEXECUTED/DEFERRED by latest owner
+priority. Do NOT launch from staleheartbeat. No newmodelreportdue. Same autonomy
+continues; preserve owner live state and inspect fresh before any job.
 ## 2026-10-06 14:58 EDT - owner retracts tower; R1e restored; concrete reader defect found
 
 Direct owner instruction supersedes the tower selection: restore previous R1e,
