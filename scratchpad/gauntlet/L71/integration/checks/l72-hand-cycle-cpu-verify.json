@@ -1,0 +1,13 @@
+{
+  "command": [
+    "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe",
+    "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L72\\improvement_loop\\hand_cycle_sensitivity_cpu\\verify.py"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot",
+  "shell": "none; subprocess argument vector",
+  "exit_code": 0,
+  "expected": "HAND_CYCLE_CPU_VERIFIED",
+  "matched": true,
+  "output_sha256": "50e98e2cef42dc8e8d9e3b11eff6bb426c3cef9229006a6f2a97567fd58337e4",
+  "seconds": 10.15317177772522
+}

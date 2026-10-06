@@ -1,0 +1,13 @@
+{
+  "command": [
+    "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe",
+    "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L72\\improvement_loop\\hand_cycle_sensitivity_cpu\\collect.py"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot",
+  "shell": "none; subprocess argument vector",
+  "exit_code": 0,
+  "expected": "HAND_CYCLE_CPU_COLLECTED",
+  "matched": true,
+  "output_sha256": "3c26b22237e7a21f28f0a2d838e17ef730a15e6a8e1f4b604fbf32a6ae2180e0",
+  "seconds": 138.61480331420898
+}

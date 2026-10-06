@@ -1,0 +1,13 @@
+{
+  "command": [
+    "research/ext/Royale/.venv/Scripts/python.exe",
+    "scratchpad/gauntlet/L72/improvement_loop/review_hand_cycle_cpu.py"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot",
+  "shell": "none; subprocess argument vector",
+  "exit_code": 0,
+  "expected": "HAND_CYCLE_CPU_REVIEWED",
+  "matched": true,
+  "output_sha256": "c079d4f3237615bd8d9f5f6eb94e89e8bd86b6e291c691c214550d5e5616de84",
+  "seconds": 0.9229259490966797
+}

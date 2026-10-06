@@ -1,3 +1,32 @@
+## 2026-10-06 14:30 EDT - CPU cycle sensitivity complete; live tower confirmed
+
+hand_cycle_sensitivity_cpu C1/V1/R1 COMPLETE,138.614803/10.153172/.922926s all0/token.
+Read REVIEW/collected/verified/reviewed/chain_complete.1024originalTRAINdraws,
+1022unique/738replays/256mirrored,4096views twofixedmodels/twoconditions. All
+schedule/rawlabels/features/censorship/scalar/replay counts reconcile,2positive8bad.
+Blind exact ALLheads/global,weights unchanged,0backward/optimizer/newcheckpoint.
+Hand cycle censorship changes5affordablecards (1whilebothPLAY),0WAIT-to-PLAY,
+1PLAY-to-WAIT,10forcedaimcells; wait/valueargmax15/30. All1024.20Rocketrows
+have0card/gate/aimchange, too sparse for tactical inference. Base publicopp_cycle
+stillpresent; no benefit/cause/no-cycle-information claim. OriginalCUDAfailure
+staysFAILED with preserved sources/receipt/partial2048blindviews; neverrepeat.
+No newmodel/report/deployment. Handmodel remainsREJECTED/liveflagOFF.
+
+Owner-selected tower live snapshot14:25: oneactualworker39112/venv64088 under
+supervisor52036/55704, exactSHA2feffe4f0990d93721ceb0b6661338f52e7f935e85b80e29535ea713ad6569a0.
+Latestlog live_play_20261006_142420.jsonl had83decisions,47msmedian/65msp95,
+8plays8confirmed0unconfirmed; partialmatch,notwins/strength. CPU/tau.35/
+feature7/publicaudit/anti-leakOFF/argmax confirmed. STOPabsent followingOWNER
+startup, not removed by this assistant. Do not alter active live sources/workers.
+
+Next work in NEXT_HAND_LEARNING_HYPOTHESIS.md: separately register and implement
+TRAIN-only public next-opponent-play target/readiness qualification before any
+new auxiliary forecast learning. Original actionlabels intact; strict causal inputs,
+future/private invariance, grouped control/budget/selection/proper scores before
+fit. This is a hypothesis, not a proved remedy or automatic loss change. No new
+training registered/launched yet. Same autonomous heartbeat ACTIVE, all final
+N2-N7/statistical/component/physical/gameplay/public/Q4/Q5 OPEN, goalunfinished.
+
 ## 2026-10-06 14:24 EDT - preserved CUDA control failure; CPU successor registered
 
 Original hand_cycle_sensitivity C1FAILED exit1/67.989497s at exact blind gate

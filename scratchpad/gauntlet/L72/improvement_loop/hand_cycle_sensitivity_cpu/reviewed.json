@@ -1,0 +1,27 @@
+{
+  "complete": true,
+  "source_sha256": "bff3fee0814bc433286fe71d47ee5ceabd4f571dc505ca4948a97b51797d116b",
+  "receipts": {
+    "collect": {
+      "seconds": 138.61480331420898,
+      "receipt_sha256": "128d95a5f175be91d62c3d1ec8cb52f60249820d380a8d943ad920f0e1c25e2c",
+      "output_sha256": "0dd8075f2d59f6f31f337dbf1efb0b8ee9a90fbe515dd13a64cda1470fec88e6"
+    },
+    "verify": {
+      "seconds": 10.15317177772522,
+      "receipt_sha256": "efb80d0488eb13be88bd2c3cffb9a097dd62842ae073bd8979ef27d2c91dece0",
+      "output_sha256": "a74e06f6822f21fe5ca7897c8d3ff416a32f0b068e4875f97e36683c2ec1d8ad"
+    }
+  },
+  "bindings": {
+    "started.json": "f2d2f4e8bdb5e42a331c92f179a66c7817a0844ad6bd603bb27e081d0a14867a",
+    "collected.json": "4fefa45ab86061177baad5af0066c10522e55735d14fa702f46aad649f04bc90",
+    "verified.json": "fe19ad1d82d007edc39a4bda07fe324ce03a3357e5e7baf2a53101ff72c59e83",
+    "chain_complete.json": "49dd6886a42f52112be4fe769ca7387aabbc9694acf20404dee392a93ba0b9ad"
+  },
+  "backward_calls": 0,
+  "optimizer_updates": 0,
+  "new_model": false,
+  "accepted": false,
+  "deployed": false
+}

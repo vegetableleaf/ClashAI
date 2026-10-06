@@ -10,6 +10,7 @@ def main():
  assert not (HERE/'reviewed.json').exists()
  c=read(HERE/'collected.json');v=read(HERE/'verified.json');end=read(HERE/'chain_complete.json')
  assert c['complete'] and v['complete'] and end['complete'] and v['rows']==1024 and v['model_row_views']==4096
+ assert c['runtime']==dict(device='cpu',threads=1,deterministic=True)
  assert v['controls']==dict(positive=2,negative=8) and v['collected_sha256']==sha(HERE/'collected.json')
  assert c['outputs']==v['outputs']=={p.name:sha(p) for p in OUT.iterdir()}
  for p,h in read(HERE/'started.json')['sources'].items():assert sha(ROOT/p)==h,p
