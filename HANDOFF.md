@@ -1,3 +1,36 @@
+## 2026-10-06 13:28 EDT - paired hand models trained; final evaluation active
+
+Owner-supervised direct request continues; expired overnight heartbeat remains
+paused. Read hand_retention_integration/learning PLAN/METRICS/GATES and current
+chain.out/err, progress, prepared/trained/training_verified before acting.
+ONE common-lock serial chain launcher20304/chain60888 launched13:18:32EDT.
+P1 complete10.185066s, T1 complete511.197607s, both exit0/token. Both arms completed
+exactly1000 finite updates. Training independent artifact exists; final evaluation
+is active. No duplicate jobs, gap use, active bound source edits or model promotion.
+The lock spans all five jobs. Inspect every final receipt before outer review.
+
+M1 v2 model qualification COMPLETE: l72-hand-model-qualified-v4 127.186727s,
+exit0/HAND_MODEL_QUALIFIED. Exact512 initial prediction comparisons, original
+loss/base weights, finite backward, roundtrip, public privacy, future exclusion,
+reset and token-permutation invariance passed. Original three failed qualification
+sources and receipts remain preserved. The third exposed floating-point pooling
+order; separate v2 canonical ordering fixes exactness without a tolerance waiver.
+No v1 training occurred. Qualified registration published cf591d2.
+
+Fresh ordinary_v5 parents, identical104-parameter-state architecture/capacity,
+1000x128 each, exact matched draws/mirrors/seed2026100613, original losses/dropout,
+baseLR1e-5/newbranch1e-3. Only explicit hand information differs. Future response
+descriptors remain audit-only. No holding rules, rewards or invented labels.
+All continuation floors versus BOTH v5 and matched blind control remain unchanged.
+After all stages: outside review_learning.py once, then reviewed new paired-model
+Discord report once with stable ID model-public-hand-belief-pair-final, then outside
+close_learning_report.py once. Draft/sender must wait for final verified results.
+
+No live worker appeared in the13:28 process inspection; this turn did not stop one.
+Original STOP unchanged; no assistant live startup. New hand companion is separate
+from canonical live files. Final N2-N7/statistical/physical/component/gameplay/public/
+Q4/Q5 remain OPEN; no accepted stronger model yet.
+
 ## 2026-10-06 13:11 EDT - sequences verified; hand-model qualification pending
 
 Owner-supervised work continues under the renewed direct request. Sequence_data

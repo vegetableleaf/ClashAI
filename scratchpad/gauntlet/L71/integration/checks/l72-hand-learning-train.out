@@ -1,0 +1,25 @@
+hand_blind_control_v5 100 4.956344127655029
+hand_blind_control_v5 200 5.346987724304199
+hand_blind_control_v5 300 5.06856632232666
+hand_blind_control_v5 400 5.183833122253418
+hand_blind_control_v5 500 5.240391731262207
+hand_blind_control_v5 600 5.906203269958496
+hand_blind_control_v5 700 5.401825428009033
+hand_blind_control_v5 800 5.106426239013672
+hand_blind_control_v5 900 5.894556522369385
+hand_blind_control_v5 1000 4.920248031616211
+hand_belief_v5 100 4.953019142150879
+hand_belief_v5 200 5.361213207244873
+hand_belief_v5 300 5.069808006286621
+hand_belief_v5 400 5.207666873931885
+hand_belief_v5 500 5.210290431976318
+hand_belief_v5 600 5.896621227264404
+hand_belief_v5 700 5.3365631103515625
+hand_belief_v5 800 5.077293395996094
+hand_belief_v5 900 5.7956390380859375
+hand_belief_v5 1000 4.842770576477051
+HAND_LEARNING_TRAINED
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)

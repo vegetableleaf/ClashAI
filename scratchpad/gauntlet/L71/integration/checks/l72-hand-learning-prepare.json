@@ -1,0 +1,13 @@
+{
+  "command": [
+    "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe",
+    "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L72\\improvement_loop\\hand_retention_integration\\learning\\prepare.py"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot",
+  "shell": "none; subprocess argument vector",
+  "exit_code": 0,
+  "expected": "HAND_LEARNING_PREPARED",
+  "matched": true,
+  "output_sha256": "d1485bad84aa092623a98762decbfa845c1a6db65423af3519d32281408f5299",
+  "seconds": 10.18506646156311
+}
