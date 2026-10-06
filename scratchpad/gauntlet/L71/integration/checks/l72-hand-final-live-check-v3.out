@@ -1,0 +1,6 @@
+[live] checkpoint: C:\Users\benpe\ClashBot\icebow\data\bench\hand_belief_learning_20261006\hand_belief_v5\candidate.pt
+[live] selected by: explicit --ckpt
+[live] SHA256: c5aedd869b9a8d132be51767dbb1c3aec41d6585e0ce98b1c3f10e251ff7a34a
+{"check": "LIVE_CHECK_PASS", "checkpoint": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\hand_belief_learning_20261006\\hand_belief_v5\\candidate.pt", "sha256": "c5aedd869b9a8d132be51767dbb1c3aec41d6585e0ce98b1c3f10e251ff7a34a", "feature_version": 5, "device": "cpu", "tau": 0.35, "anti_leak": false, "public_audit": true, "decision_options": {"card_choice": "argmax", "card_ratio": 0.7, "card_T": 1.0, "spell_aim": "argmax"}}
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)

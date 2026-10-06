@@ -1,0 +1,13 @@
+{
+  "command": [
+    "research/ext/Royale/.venv/Scripts/python.exe",
+    "scratchpad/gauntlet/L72/improvement_loop/hand_retention_integration/review_learning.py"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot",
+  "shell": "none; subprocess argument vector",
+  "exit_code": 0,
+  "expected": "HAND_LEARNING_EVIDENCE_REVIEWED",
+  "matched": true,
+  "output_sha256": "bf5a851ab1da631216f95064910b3026be12c5a803e2431d5ac7d7b5f9c155bf",
+  "seconds": 1.7635178565979004
+}

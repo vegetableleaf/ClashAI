@@ -1,0 +1,48 @@
+{
+  "complete": true,
+  "source_sha256": "0fc8b0f51548864e85ff6efef5ca52183f97f78ff179d50ce43b08342f1c1342",
+  "receipts": {
+    "l72-hand-learning-reviewed-evidence": {
+      "receipt_sha256": "5cc012a4dfef5afac821cc70830e431acbcd53b4e891a0999ff19b58137f6303",
+      "output_sha256": "952c2235cb1f0cd86676d2c1969f9790ac2c33ae86e946195c90f00af5fb10cf",
+      "seconds": 1.7635178565979004
+    },
+    "l72-hand-learning-discord": {
+      "receipt_sha256": "8227bfcf7eed7fa9748579933f848d9da1b482d8075a82720c8a2e0e2cd15e3a",
+      "output_sha256": "251b0a9e9f8585ed3d8591cceb6961342ca6c9c53c41aed86974d81fed3ca471",
+      "seconds": 3.0806198120117188
+    }
+  },
+  "evidence_sha256": "2cdbd59b0f1f1a4eab33bccd9dd295810e485f07a935a1b3bc43e1fc305996ba",
+  "results_sha256": "ec08efc419e86d00e638220b4be7b29336615aa02474db1afac88479747b3408",
+  "message_sha256": "f8c5988bf3ed02dbe5b07ad4621308878f2062521dd42f8ac68e6997ad1fcc7d",
+  "delivery_sha256": "b04abc3961222b9edcb32eaeb05e4c1bbf813984427e85e81a2daa16a2865fdb",
+  "message_ids": [
+    "1557084646729187471",
+    "1557084651334533162",
+    "1557084653511249955",
+    "1557084655230914582"
+  ],
+  "cli_receipts": {
+    "l72-hand-final-live-check": {
+      "receipt_sha256": "7482d36148cb7651a5c0601a8b6b03c012d2345c499e02919cecab817622ab05",
+      "output_sha256": "0f7cba911c0025c6dc19bc04775d9d7743fda42c163cb5ff9251dffd5f22c7fa",
+      "seconds": 7.849264621734619,
+      "exit_code": 1
+    },
+    "l72-hand-final-live-check-v3": {
+      "receipt_sha256": "25260567202e9f1bc1f3b792c71d9ec10306f67e04d53739b29cd98975d5cca0",
+      "output_sha256": "4faace367f80960484cf2afdc250d14da486a5a7d1272550319f498c55ba9033",
+      "seconds": 5.67524790763855,
+      "exit_code": 0
+    }
+  },
+  "cli_sources": {
+    "live_play_hand_v2.py": "3eeccc6911e3557af80218a09b247d3e1563be352ba96fdc923b4411fc09b8f8",
+    "live_play_hand_v3.py": "76dda429555b87c546f6198464bd3544f97ac7246a773495b5a69b97caf24325",
+    "LIVE_ENTRYPOINT_CORRECTION.md": "e0a5df65a1606b48b07767ef8cb28294865e06d55943757e14e504aed2121c26"
+  },
+  "continuation_passed": false,
+  "accepted": false,
+  "deployed": false
+}

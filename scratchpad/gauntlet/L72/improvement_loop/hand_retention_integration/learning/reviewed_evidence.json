@@ -1,0 +1,47 @@
+{
+  "complete": true,
+  "receipts": {
+    "l72-hand-model-qualified-v4": {
+      "seconds": 127.18672704696655,
+      "receipt_sha256": "7378f17b7eb85bc26f310aa8af77b594fb4498f5b9c4d1becb4199fdd65be400",
+      "output_sha256": "4e5de43df0a85eeb46af53f7bb16f3e218c1d7e519b108c8aad8c705c5b058cc"
+    },
+    "l72-hand-learning-prepare": {
+      "seconds": 10.18506646156311,
+      "receipt_sha256": "db4f191468167251cdc8e10994cb556b09d021513be8e29642117bfd4067b3c6",
+      "output_sha256": "074c4027501132b734458a419cb1618db2081be3ce0d7af762d4328362b0f7bc"
+    },
+    "l72-hand-learning-train": {
+      "seconds": 511.1976070404053,
+      "receipt_sha256": "7e3df7d58f5591cc7497c37a7d8ba998102bd6c427f432bb4d3af26eb7ccc7ac",
+      "output_sha256": "ab05c1174394f2ee74484ad08797202f13852546bc2eb0ffe75418ab48c58562"
+    },
+    "l72-hand-learning-verify_training": {
+      "seconds": 11.78624677658081,
+      "receipt_sha256": "91832f08170fd55e09431895ac75bb2c08b60968c424d8dc4f2533e7ed51b17e",
+      "output_sha256": "8fc20d7ca3d5dc7cf6a05c5ef4cd1286f42297ee65777e4f8f04b086b17df206"
+    },
+    "l72-hand-learning-evaluate": {
+      "seconds": 360.34751057624817,
+      "receipt_sha256": "eea50062d5273f84611b0bac1ef010b2ea2168c105c51cf94dc7c2badbf98ca1",
+      "output_sha256": "52fa491f4c093417f4593e43f73e1028c24a71dcbf16fc31514da2f0a3a072ad"
+    },
+    "l72-hand-learning-verify_results": {
+      "seconds": 111.25123143196106,
+      "receipt_sha256": "8c29d00e37d24d6c26e329a1a95091595b1c92dc111e7326c58deae89a93f25f",
+      "output_sha256": "4ff410519d6990053acb5a983ec657237bacc59c9de7a0fc0a8acbc70cc416ab"
+    }
+  },
+  "bindings": {
+    "prepared.json": "2a5bebfab2c47e9f502d9793abc5c3392c595dd19301bc3086086d9e466bc974",
+    "trained.json": "cfb3d197bc18ff38956b57b7114137a6ec011d6249ff22d064eadb166f258514",
+    "training_verified.json": "6f88abfd44db6c7d9f3249463ea58011f96fe587d3fcddd75109c3a78140da84",
+    "evaluated.json": "58e71424d60a8beb8962229890712a64838a5b0a52b7417ad8d98deaf31757a4",
+    "results_verified.json": "ec08efc419e86d00e638220b4be7b29336615aa02474db1afac88479747b3408",
+    "chain_complete.json": "a67e0c0403df261d3a188c80fcdd0481b1dff6b9d1d37b3c257d53f43de591b5"
+  },
+  "source_sha256": "a1358ce3c15bffa7d802de567b65f9738662a3846543efa7c3157fa80eb1aa6e",
+  "continuation_passed": false,
+  "accepted": false,
+  "deployed": false
+}

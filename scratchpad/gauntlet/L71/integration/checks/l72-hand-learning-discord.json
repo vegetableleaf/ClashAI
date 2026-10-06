@@ -1,0 +1,17 @@
+{
+  "command": [
+    "research/ext/Royale/.venv/Scripts/python.exe",
+    "scratchpad/gauntlet/L69/discord/send_report.py",
+    "--id",
+    "model-public-hand-belief-pair-final",
+    "--file",
+    "scratchpad/gauntlet/L72/improvement_loop/hand_retention_integration/learning/message.md"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot",
+  "shell": "none; subprocess argument vector",
+  "exit_code": 0,
+  "expected": "DELIVERED model-public-hand-belief-pair-final",
+  "matched": true,
+  "output_sha256": "d30072586cd232af7e247f5a3297efb37388129954fee3f01110b6204f82feab",
+  "seconds": 3.0806198120117188
+}

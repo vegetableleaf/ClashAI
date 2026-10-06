@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L72\improvement_loop\hand_retention_integration\live_play_hand_v2.py", line 20, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L72\improvement_loop\hand_retention_integration\live_play_hand_v2.py", line 18, in main
+    runpy.run_path(str(ROOT/'scratchpad/gauntlet/L68/live_reader/live_play.py'),run_name='__main__')
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen runpy>", line 294, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\live_play.py", line 37, in <module>
+    from hero_button import HeroButton, hero_ids, should_press  # noqa: E402
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'hero_button'

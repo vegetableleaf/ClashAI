@@ -1,0 +1,13 @@
+{
+  "command": [
+    "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe",
+    "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L72\\improvement_loop\\hand_retention_integration\\learning\\evaluate.py"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot",
+  "shell": "none; subprocess argument vector",
+  "exit_code": 0,
+  "expected": "HAND_LEARNING_EVALUATED",
+  "matched": true,
+  "output_sha256": "2e2a1e16e136e8d92ab54a94a100cddd6787696b029753696e8962ff0745b0e8",
+  "seconds": 360.34751057624817
+}

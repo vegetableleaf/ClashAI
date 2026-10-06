@@ -1,0 +1,18 @@
+{
+  "command": [
+    "icebow/.venv/Scripts/python.exe",
+    "scratchpad/gauntlet/L72/improvement_loop/hand_retention_integration/live_play_hand_v2.py",
+    "--ckpt",
+    "icebow/data/bench/hand_belief_learning_20261006/hand_belief_v5/candidate.pt",
+    "--device",
+    "cpu",
+    "--check"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot",
+  "shell": "none; subprocess argument vector",
+  "exit_code": 1,
+  "expected": "LIVE_CHECK_PASS",
+  "matched": false,
+  "output_sha256": "3aa1f123d595f1b666b6efd9423b2e41a6781e37cc2d4fc40475fe2798689583",
+  "seconds": 7.849264621734619
+}

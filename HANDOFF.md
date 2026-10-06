@@ -1,3 +1,57 @@
+## 2026-10-06 13:41 EDT - hand integration complete; matched candidate rejected
+
+Owner-supervised direct request, not resumed overnight scheduler. Read
+hand_retention_integration/README.md and learning/REVIEW.md, GATES.md,
+prepared/trained/training_verified/evaluated/results_verified/reviewed_evidence/
+reviewed_results/chain_complete. ALL five jobs completed13:35:25EDT:
+prepare10.185066s/train511.197607s/training-independent11.786247s/eval360.347511s/
+results-independent111.251231s, all0/token. Do NOT repeat/extend these jobs or
+continue rejected weights. Two fresh ordinary_v5 parents, one information factor,
+1000x128 each,104 optimizer states each1000,54723 final predictions each. All
+original labels/masks/choices/per-replay counts reconcile; log1positive7bad per
+arm, results3positive16bad. No future/private hand input or hard-coded holding.
+
+CorrectedR1e/v5/blind/hand Rocket aim290/292/294/293 of955, full54/77/82/85,
+late14/22/26/25 of320. Hand-v5 +.104712/+.837696/+.9375pp and hand-blind
+-.104712/+.314136/-.3125pp: ALL original+5/+2/+2pp FAIL BOTH. Generalcard
+11348/11403/11357/11211 of17192 also FAILS both .5pp protection. Barrelcorrect
+36/40/39/40,wrong20/22/22/22,notfired7/1/2/1 of63; full18/20/19/19.
+Witch332/339/357/361,NW156/161/176/168,Furnace538/549/578/570,defense
+3952/4011/4174/4122,lateall1949/1984/2104/2066; lastfour FAIL matchedcontrol.
+Allaction30968/31962/33236/32815. Hand-v5 +853=WAIT+1045/PLAY-192;
+hand-blind -421=WAIT-430/PLAY+9. No physical counter/holding/gameplay superiority.
+Candidate REJECTED for continuation; blind control not replacement; NOT ACCEPTED/
+NOT DEPLOYED. Both final hashes and all paired groups in REVIEW.
+
+Public hand reader Mirror successor/data/model integration engineering complete.
+Full development hand estimates4253/4367 exact over10424 queries (97.39% conditional
+precision,41.89% coverage); old4245/4354 (97.50%). Added13full=8right5wrong, not
+precision improvement. Public memory-object identity is not instant complete play
+event visibility. Exact public tokens, privacy/future/reset/roundtrip/permutation
+checks pass. No hidden opponent data repair. Response windows remain audit-only,
+selection-biased and overlapping, not intent/optimal hold/profit labels.
+
+Final hand-model CLI v2 failed hero_button sibling import7.849265s; original source/
+receipt retained. Separate live_play_hand_v3.py adds canonical sibling directory,
+passes offline5.675248s with exact final SHA c5aedd869b9a8d132be51767dbb1c3aec41d6585e0ce98b1c3f10e251ff7a34a,
+CPU/tau.35/publicauditON/anti-leakOFF/argmax. No live or simulator hand-model games.
+Use v3 companion with v2 model/pilot; canonical owner live files unchanged.
+
+Outside evidence review1.763518s, report3.080620s, closeout.257716s all0/token.
+One compound report DELIVERED13:38:31EDT fourHTTP200 stableID
+model-public-hand-belief-pair-final. IDs1557084646729187471,1557084651334533162,
+1557084653511249955,1557084655230914582. reviewed_results binds exacttext/delivery/
+IDs/evidence/failed+successfulCLIreceipts. NEVERresend. No new trial registered.
+
+13:38 inspection found no hand-chain or live_play worker; this turn killed none.
+OwnerSTOP Oct5 13:39:32 unchanged. Tower_spatial_v7 still strongest Rocket/Barrel
+development combination for owner's exploratory --ckpt trial, not accepted or
+proven stronger gameplay. Ordinary_v5 best measured new gameplay42/64 vs R1e45/64.
+Next PROPOSED: decision-change diagnosis and public event timing qualification,
+then downstream resource/defense/outcome retention tests before new recipe.
+All N2-N7/statistical/physical/component/gameplay/public/Q4/Q5 remain OPEN.
+Overnight heartbeat stays PAUSED; daily newsletter separate. Overall objective unmet.
+
 ## 2026-10-06 13:28 EDT - paired hand models trained; final evaluation active
 
 Owner-supervised direct request continues; expired overnight heartbeat remains

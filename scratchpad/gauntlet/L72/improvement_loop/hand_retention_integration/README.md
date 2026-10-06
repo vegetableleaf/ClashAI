@@ -1,5 +1,16 @@
 # Public opponent hand and learned card retention
 
+The fixed matched trial is complete. The hand-aware model failed continuation:
+Rocket aim293/955 versus blind294 and ordinary_v5 292; full Rocket85 versus82/77;
+late Rocket25/320 versus26/22. It missed all required material gains, lost general
+card agreement and several matched-control protections. Aggregate improvement
+over v5 came from more correct waits alongside fewer correct plays. Neither model
+is accepted or deployed. See learning/REVIEW.md for the complete comparisons.
+
+Reader, data and model integration are implemented and verified. Profitable
+counter retention and improved gameplay remain unproven; this trial is not a
+reason to enforce holding or continue rejected checkpoints.
+
 This owner-supervised work uses the memory reader's public board observations.
 It does not use YOLO or the hidden opponent hand/deck/next-card/elixir fields.
 The existing observer recognizes plays from body/spell sightings; that can miss,
@@ -48,12 +59,16 @@ results/review to determine its status. No qualification check alone promotes a
 candidate. All original material/protection/gameplay/statistical/physical/public
 acceptance requirements remain, and the overnight scheduler stays paused.
 
-The new model has an explicit opt-in manual companion, `live_play_hand_v2.py`,
+The new model has an explicit opt-in manual companion, `live_play_hand_v3.py`,
 which accepts the canonical CLI arguments and requires an explicit `--ckpt`.
 It substitutes the pilot only in that newly launched process. Current owner live
 workers and canonical live source files are left alone. The companion logs public
 hand estimates and quality flags in the decision audit. Use `--check` for offline
 loading; starting a real trial remains distinct from accepted deployment.
+
+The final checkpoint passes the offline CLI load via v3. The original v2 CLI
+failed a canonical sibling import; v3 adds the canonical script directory to its
+process import path. See LIVE_ENTRYPOINT_CORRECTION.md; the old failure remains.
 
 The earlier v1 model/live companions and three failed qualification probes remain
 as preserved evidence. v1 was never trained. Use the v2 integration and qualified

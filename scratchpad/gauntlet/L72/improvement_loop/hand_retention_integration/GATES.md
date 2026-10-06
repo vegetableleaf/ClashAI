@@ -16,7 +16,7 @@ OWNS: pipeline/model_tower.py, pipeline/model_gen.py, pipeline/opponent_hand_v2.
   CHECK: research/ext/Royale/.venv/Scripts/python.exe scratchpad/gauntlet/L72/improvement_loop/hand_retention_integration/check_model_v4.py
   EXPECT: HAND_MODEL_QUALIFIED
   EVIDENCE: model_verified.json; l72-hand-model-qualified-v4 exit0/token127.186727s,512 row/orientation/arm comparisons,9malformed controls. All three old failures preserved.
-- [ ] T1: Frozen matched training/evaluation and independent recount establish the candidate's complete verdict.
-  EVIDENCE: pending; recipe and commands must be registered before optimization.
-- [ ] R1: Publish verified results, once-only new-model report and accurate remaining work.
-  EVIDENCE: pending
+- [x] T1: Frozen matched training/evaluation and independent recount establish the candidate's complete verdict.
+  EVIDENCE: learning/reviewed_evidence.json and REVIEW.md;1000 updates per arm,104 optimizer states each,54723 predictions each, all original labels/per-replay counts verified. Candidate continuation FAILED, not accepted/deployed.
+- [x] R1: Publish verified results, once-only new-model report and accurate remaining work.
+  EVIDENCE: learning/reviewed_results.json; four HTTP200 report parts delivered once13:38:31EDT, exact text/IDs/receipts bound. HANDOFF and scoped commit accompany ledger. All broader final acceptance work remains OPEN.
