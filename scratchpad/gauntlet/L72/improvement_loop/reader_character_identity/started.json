@@ -1,0 +1,18 @@
+{
+  "time": 1791314583.0176597,
+  "sources": {
+    "scratchpad\\gauntlet\\L70\\reader\\capture_a.jsonl": "e4bd08af71f40bd9bf0ee302535fb921abe2b6c00ec3d00f07b186606ebb6256",
+    "scratchpad\\gauntlet\\L70\\reader\\capture_b.jsonl": "594656fcadb2926403ce73afd172fd67ceecfdefd25aa33310447d47a8fde8e1",
+    "scratchpad\\gauntlet\\L70\\reader\\live_sampler2.c": "381410d95784cb28ddbe9fe5cc19ea638a1ee485da2180514d780e7ca8e02201",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\PLAN.md": "6981facf8aa4becede2d7bf29456cdf583c531b590217b8dc726ad8885db2a84",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\qualify.py": "b983234e782d013c8bb8ae4cc5fb85d5d49a574b24a6534de459422677196886",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\adapter.py": "6834fdfb70ca0842c3cbfa7e766ec8fe92cdbfeec08310c9d0457a30b139234d",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\test_adapter.py": "10f062de182d9cdaae0f260b62151052d59a7300c3857acdb46adc0236f6d027",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\build_successor.py": "83058ee3fa6716852a2949dc46d873fdcb1155b38e368001e063c347eb01e138",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\character_name.h": "5e3cb87b63731c19ba0650a8fa6083fbde6dbde232663b2c8c00940a936f71bf",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\decoder_test.c": "e90010ec32efc22eb632ef3eabd8c1cc856d943407eed26249524465eff59060",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\native_elite_form_probe_v5.json": "f638486ebcb8fd755579d13b6bcef09fe78c7437a769981b097d96dc89bfa38d"
+  },
+  "live_started": false,
+  "model_calls": 0
+}

@@ -1,0 +1,16 @@
+{
+  "command": [
+    "research/ext/Royale/.venv/Scripts/python.exe",
+    "-m",
+    "pytest",
+    "scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/test_entry.py",
+    "-q"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot",
+  "shell": "none; subprocess argument vector",
+  "exit_code": 0,
+  "expected": "passed",
+  "matched": true,
+  "output_sha256": "d8d598f886866e72dd7a6a49c722f54fdccafebfbe325c9834d6a301d18b2e40",
+  "seconds": 7.554490089416504
+}

@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L72\improvement_loop\reader_character_identity\passive.py", line 85, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L72\improvement_loop\reader_character_identity\passive.py", line 32, in main
+    assert rows and len(set(rows))==1
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

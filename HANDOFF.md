@@ -1,3 +1,19 @@
+## 2026-10-06 15:36 EDT - Hero auxiliary identity found; separate reader and entry qualified
+
+CURRENT OWNER LIVE: owner restarted canonical R1e at15:12. At15:32 one actual worker44492(venv62188; supervisors62556/50856) active; STOP ABSENT. Assistant did not restart policy, write STOP, or edit live sources. Selected R1e31u0155 SHA76fdfaacbd9c2049cc88792278f06e3f73a56eaf9653791e922d9332dd6751cd, handOFF. Inspect fresh before acting.
+
+Read reader_character_identity/REVIEW.md,PLAN/GATES,verified/passive_v2/reviewed.json and NEXT_DECISION_CAPTURE_20261006.md. The prior card-ID-only repair is incomplete:203000023 identifies true Hero plus FloatingCube and IceCube. Earlier2435alive shared-ID entries cannot all be called actual Hero bodies. Preserve prior raw counts/conversion checks; those did not prove character-role correctness.
+
+New original-byte census1202records:579Hero,534FloatingCube,31IceCube,58readerrors. All534FloatingCubes join current-registry same-side Heroes through+0x180. Independent C/scalar1215decodes exact with4positive9badnames/4badstreams. Partialregistry/missingreads retained. Three default entity formatter fixtures exact; no full default stream comparison.19.644861s0/token. Never repeat.
+
+Separate sampler3 compiled from preserved original. One bounded passive current-client160402012 check:120/120coherentactiveframes,73Hero+73FloatingCube,146successfulnames; all73parentjoins independent,1positive6badcontrols. readus median242.5,p95 520,max897. Installed separately at/data/local/tmp/re_live_sampler3_20261006; no policy/match launch, no old binary overwritten. Adapter keeps exact Hero, excludes cube/unresolved full-body/event/controller aliases, preserves raw audit/colocated real bodies. IceCube mechanics remainUNQUALIFIED.
+
+13000043 has original native/assets proof for evolved EliteBarbarians, AngryBarbarians/form1. Isolated entry adds exact catalog overlay. live_play_identity.py normalizes before BOTHobserve/row/storedmotion and retains original raw audit.4integrationtestsPASS; offline check exactR1e/CPU/tau.35/publicauditON/argmax/anti-leakOFF. Canonical start_live/config/sources remain untouched. New entry NOTACTIVATED, no weights/checkpoint/report changes.
+
+Original adapter19passed/1failed solely at final card-slug spelling; preserved9.785971snonzero receipt/source. Only failed lifecycle case separately completed6.929660s0 using canonical engine key. Original passive .661686s failure before probe/upload on segment-base uniqueness; preserved. Separatev2 soleoffset0/minbase, unchanged fingerprint checks:60.939313s0. Its frozen scene-count aggregation flaw is bounded here by independent120/120coherent proof; future code must count coherent sightings directly. Entrytests7.554490s0/check5.771325s0/outside review.456867s0. reviewed binds7priorreceipts including2failures. No relabeling/reruns.
+
+NEXT: implement/register bounded exact public tensor/output capture per NEXT_DECISION_CAPTURE_20261006.md in separate sources, defaultOFF, original two forwards, strict privacy/latency/bytecaps and exactR1e replay before altered-input comparison. Then complete defensive-resource sequences and conditional freshR1e learning. Forecast draft staysDEFERRED. Safe owner-worker transition and policy/climbing benefit remainOPEN, plus all finalN2-N7/component/statistical/physical/gameplay/public/Q4/Q5. Raw passive/details/fixture binaries remain local/hashbound; neverstage icebow/data or rawtriagearchive. No newmodelreportdue.
+
 ## 2026-10-06 15:03 EDT - R1e restored; missing Hero defender repaired; ladder plan revised
 
 Fresh final process inspection: no live worker or supervisor is running. STOP remains present; its latest observed modification is15:01:12, later than the14:32:14 timestamp preserved during the repair checks. This assistant did not write or remove STOP.

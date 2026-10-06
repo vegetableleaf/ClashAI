@@ -1,0 +1,13 @@
+{
+  "command": [
+    "research/ext/Royale/.venv/Scripts/python.exe",
+    "scratchpad/gauntlet/L72/improvement_loop/review_reader_characters.py"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot",
+  "shell": "none; subprocess argument vector",
+  "exit_code": 0,
+  "expected": "READER_CHARACTER_REVIEWED",
+  "matched": true,
+  "output_sha256": "ef3d731de158372f50be617b896562422661b41e98c5aed09eb0577f9ddf98d7",
+  "seconds": 0.4568667411804199
+}

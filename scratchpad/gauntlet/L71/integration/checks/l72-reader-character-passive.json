@@ -1,0 +1,13 @@
+{
+  "command": [
+    "research/ext/Royale/.venv/Scripts/python.exe",
+    "scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/passive.py"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot",
+  "shell": "none; subprocess argument vector",
+  "exit_code": 1,
+  "expected": "READER_CHARACTER_PASSIVE_COMPLETE",
+  "matched": false,
+  "output_sha256": "2071ef1abe3f27c930625cd8552301b64fe3bfc1371e1575df6875a0ad7704b7",
+  "seconds": 0.6616864204406738
+}

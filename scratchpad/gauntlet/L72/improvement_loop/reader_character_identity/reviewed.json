@@ -1,0 +1,177 @@
+{
+  "complete": true,
+  "original_byte_records": 1202,
+  "original_counts": {
+    "read_error": 58,
+    "IceWizardHero": 579,
+    "IceWizardHeroFloatingCube": 534,
+    "IceWizardHero_IceCube": 31
+  },
+  "passive_coherent_frames": 120,
+  "passive_coherent_names": {
+    "IceWizardHero": 73,
+    "IceWizardHeroFloatingCube": 73
+  },
+  "current_floating_parent_joined": 73,
+  "current_floating_parent_unknown": 0,
+  "parent_controls": {
+    "positive": 1,
+    "negative": 6
+  },
+  "adapter_completed_tests": 20,
+  "entry_completed_tests": 4,
+  "failed_originals_preserved": [
+    "test_adapter.py final canonical-slug assertion",
+    "passive.py segment-base uniqueness assertion"
+  ],
+  "source_bindings": {
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\review_reader_characters.py": "326607944db05292352e4fb44d373702c8ad3f7cd19800005c44289b8ad5066d",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\adapter.py": "6834fdfb70ca0842c3cbfa7e766ec8fe92cdbfeec08310c9d0457a30b139234d",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\build_successor.py": "83058ee3fa6716852a2949dc46d873fdcb1155b38e368001e063c347eb01e138",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\live_play_identity.py": "3f13f81c018760cdd1979ef78ff6705ec12f5018564267b2f5090955dc7d3a43",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\passive.py": "a6261bc90d17ee0ed2b980c23f3e22e2513cbaca8c660c3aa661510a9a589272",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\passive_v2.py": "65a614f0857271bfbaa9f5b9a73cc8d683f338f2d29ae4c9f065eb9019bd5459",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\qualify.py": "b983234e782d013c8bb8ae4cc5fb85d5d49a574b24a6534de459422677196886",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\test_adapter.py": "10f062de182d9cdaae0f260b62151052d59a7300c3857acdb46adc0236f6d027",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\test_entry.py": "3c04e67e2896c73057043cd75f1c1a5c30aa960c0fc8114a0b39f38b20c80884",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\test_lifecycle_v2.py": "efa0c972b2d91186ff6146a7b384a9308d2f85c3f26556d0d0f8843225bb8dad",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\decoder_test.c": "e90010ec32efc22eb632ef3eabd8c1cc856d943407eed26249524465eff59060",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\format_original.c": "20ca5e5c8a258341b977d549c29a5598e984193266930db230b7477c7d8b7c35",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\format_successor.c": "f0a22b2aa005540fb40d49c990c2e4047613b34ee828319befee1282575114a5",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\live_sampler3.c": "f0a874d2bc95f6ec26e9db5c3c35fd41de0658af10472157377211a1fe090410",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\character_name.h": "5e3cb87b63731c19ba0650a8fa6083fbde6dbde232663b2c8c00940a936f71bf",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\ENTRY_PLAN.md": "5830076ab943dbce087bd6b8218f38f41d8937013a56cc89686fd01845ba9acb",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\LIFECYCLE_RECOVERY.md": "dd6c57796baef6e36eedb0988ee7cd22f5bdd41c0332a17f1aaa4f25bec5bba9"
+  },
+  "receipts": {
+    "l72-reader-character-identity": {
+      "sha256": "b68fe28a3cfcbf30567e8d0bf2d028d7e19d9e8b3b21e2dc58191ae83f44370a",
+      "command": [
+        "research/ext/Royale/.venv/Scripts/python.exe",
+        "scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/qualify.py"
+      ],
+      "cwd": "C:\\Users\\benpe\\ClashBot",
+      "shell": "none; subprocess argument vector",
+      "exit_code": 0,
+      "expected": "READER_CHARACTER_IDENTITY_VERIFIED",
+      "matched": true,
+      "output_sha256": "b4c1ec02c349d74bb42e64f4cbb15599de729de0d09f701095009fc44f8c5a55",
+      "seconds": 19.64486050605774
+    },
+    "l72-reader-character-adapter": {
+      "sha256": "34b39fe6ba016a3681d9aede08ae7612fcbb123fd1129ff30d3917b677e74777",
+      "command": [
+        "research/ext/Royale/.venv/Scripts/python.exe",
+        "-m",
+        "pytest",
+        "scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/test_adapter.py",
+        "-q"
+      ],
+      "cwd": "C:\\Users\\benpe\\ClashBot",
+      "shell": "none; subprocess argument vector",
+      "exit_code": 1,
+      "expected": "passed",
+      "matched": true,
+      "output_sha256": "f5725ff3292886833c5bba04503afa4b95a8017c2071da5aae35418f7de1f053",
+      "seconds": 9.78597116470337
+    },
+    "l72-reader-character-lifecycle-v2": {
+      "sha256": "b747897b3b2b38215f5916b60704c5c56f05ab3660fc389770c61f54296875d6",
+      "command": [
+        "research/ext/Royale/.venv/Scripts/python.exe",
+        "-m",
+        "pytest",
+        "scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/test_lifecycle_v2.py",
+        "-q"
+      ],
+      "cwd": "C:\\Users\\benpe\\ClashBot",
+      "shell": "none; subprocess argument vector",
+      "exit_code": 0,
+      "expected": "passed",
+      "matched": true,
+      "output_sha256": "c0bc7055f7d7257983c248e5aeeb1fbe5e38802c895d0672f49769ac142e35f4",
+      "seconds": 6.929660081863403
+    },
+    "l72-reader-character-passive": {
+      "sha256": "5eea2d1b8a8c7e45b75283cc50f4abce304336e14e4c0b4324d3b44d0be0b0c8",
+      "command": [
+        "research/ext/Royale/.venv/Scripts/python.exe",
+        "scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/passive.py"
+      ],
+      "cwd": "C:\\Users\\benpe\\ClashBot",
+      "shell": "none; subprocess argument vector",
+      "exit_code": 1,
+      "expected": "READER_CHARACTER_PASSIVE_COMPLETE",
+      "matched": false,
+      "output_sha256": "2071ef1abe3f27c930625cd8552301b64fe3bfc1371e1575df6875a0ad7704b7",
+      "seconds": 0.6616864204406738
+    },
+    "l72-reader-character-passive-v2": {
+      "sha256": "5dfebe7b898ea57ec57bee813cd336813ea1d3e2cf70577bea23cce8fb724863",
+      "command": [
+        "research/ext/Royale/.venv/Scripts/python.exe",
+        "scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/passive_v2.py"
+      ],
+      "cwd": "C:\\Users\\benpe\\ClashBot",
+      "shell": "none; subprocess argument vector",
+      "exit_code": 0,
+      "expected": "READER_CHARACTER_PASSIVE_V2_COMPLETE",
+      "matched": true,
+      "output_sha256": "b027735e4182a718c3dce22a42203e66a232b1acdd363bb0383fa244698c4f19",
+      "seconds": 60.93931317329407
+    },
+    "l72-reader-character-entry": {
+      "sha256": "ea42f615731b76ce07a60054cded8096729794087e32608aa675113467713fe4",
+      "command": [
+        "research/ext/Royale/.venv/Scripts/python.exe",
+        "-m",
+        "pytest",
+        "scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/test_entry.py",
+        "-q"
+      ],
+      "cwd": "C:\\Users\\benpe\\ClashBot",
+      "shell": "none; subprocess argument vector",
+      "exit_code": 0,
+      "expected": "passed",
+      "matched": true,
+      "output_sha256": "d8d598f886866e72dd7a6a49c722f54fdccafebfbe325c9834d6a301d18b2e40",
+      "seconds": 7.554490089416504
+    },
+    "l72-reader-character-entry-check": {
+      "sha256": "a757acaaa85ee6f00c322c907fff0bc466f6be1aa332826992573cee98f05d59",
+      "command": [
+        "icebow/.venv/Scripts/python.exe",
+        "scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/live_play_identity.py",
+        "--check"
+      ],
+      "cwd": "C:\\Users\\benpe\\ClashBot",
+      "shell": "none; subprocess argument vector",
+      "exit_code": 0,
+      "expected": "LIVE_CHECK_PASS",
+      "matched": true,
+      "output_sha256": "29c48546bdf9107399ca4b56261c031c1fdd31e6bd297ce47cd9bfb6aa0e5cf6",
+      "seconds": 5.771325349807739
+    }
+  },
+  "entry_check": {
+    "check": "LIVE_CHECK_PASS",
+    "checkpoint": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\rl_royale\\rseries_r1e31\\rseries_r1e31_u0155.pt",
+    "sha256": "76fdfaacbd9c2049cc88792278f06e3f73a56eaf9653791e922d9332dd6751cd",
+    "feature_version": 4,
+    "device": "cpu",
+    "tau": 0.35,
+    "anti_leak": false,
+    "public_audit": true,
+    "decision_options": {
+      "card_choice": "argmax",
+      "card_ratio": 0.7,
+      "card_T": 1.0,
+      "spell_aim": "argmax"
+    }
+  },
+  "production_sources_unchanged": true,
+  "owner_worker_transition": "PENDING",
+  "decision_capture": "PENDING",
+  "policy_benefit": "UNMEASURED",
+  "ice_cube_mechanics": "UNQUALIFIED"
+}

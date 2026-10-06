@@ -1,0 +1,13 @@
+{
+  "command": [
+    "research/ext/Royale/.venv/Scripts/python.exe",
+    "scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/qualify.py"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot",
+  "shell": "none; subprocess argument vector",
+  "exit_code": 0,
+  "expected": "READER_CHARACTER_IDENTITY_VERIFIED",
+  "matched": true,
+  "output_sha256": "b4c1ec02c349d74bb42e64f4cbb15599de729de0d09f701095009fc44f8c5a55",
+  "seconds": 19.64486050605774
+}

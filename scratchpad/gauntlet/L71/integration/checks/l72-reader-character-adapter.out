@@ -1,0 +1,32 @@
+..................F.                                                     [100%]
+================================== FAILURES ===================================
+____________ test_auxiliary_lifecycle_does_not_invent_enemy_plays _____________
+
+    def test_auxiliary_lifecycle_does_not_invent_enemy_plays():
+        f=copy.deepcopy(FRAME); f['projectiles']=[]; f['effects']=[]
+        f['character_identity']={'schema':1,'build':A.BUILD}
+        hero=T(5000010,15,0,3000,10000,911,911,A.HERO_ID,'0x1')
+        hero.update(native_name='IceWizardHero',native_name_status='ok')
+        cube=copy.deepcopy(hero);cube.update(address='0x2',category=5000011,native_name='IceWizardHeroFloatingCube')
+        ice=copy.deepcopy(cube);ice.update(address='0x3',category=5000012,native_name='IceWizardHero_IceCube')
+        obs=PublicObserver(1)
+        f['entities']=[cube,ice];obs.update(A.adapt(f),source='reader')
+        assert obs.plays==[]
+        f['game_tick']+=10;f['entities']=[hero,cube,ice];obs.update(A.adapt(f),source='reader')
+        assert len(obs.plays)==1
+        f['game_tick']+=200;f['entities']=[hero];obs.update(A.adapt(f),source='reader')
+        f['game_tick']+=10;f['entities']=[hero,cube,ice];obs.update(A.adapt(f),source='reader')
+>       assert len(obs.plays)==1 and obs.plays[0]['card']=='ice-wizard'
+E       AssertionError: assert (1 == 1 and 'ice_wizard' == 'ice-wizard'
+E        +  where 1 = len([{'card': 'ice_wizard', 'form': 2, 'x': 3000.0, 'y': 10000.0, ...}])
+E        +    where [{'card': 'ice_wizard', 'form': 2, 'x': 3000.0, 'y': 10000.0, ...}] = <pipeline.public_observation.PublicObserver object at 0x000002335EBAFCB0>.plays
+E         
+E         - ice-wizard
+E         ?    ^
+E         + ice_wizard
+E         ?    ^)
+
+scratchpad\gauntlet\L72\improvement_loop\reader_character_identity\test_adapter.py:100: AssertionError
+=========================== short test summary info ===========================
+FAILED scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/test_adapter.py::test_auxiliary_lifecycle_does_not_invent_enemy_plays
+1 failed, 19 passed in 7.62s

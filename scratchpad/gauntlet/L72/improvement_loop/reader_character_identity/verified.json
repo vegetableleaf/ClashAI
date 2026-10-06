@@ -1,0 +1,57 @@
+{
+  "complete": true,
+  "frames": {
+    "all_batches": 1680,
+    "incoherent_or_unbracketed": 59,
+    "coherent": 1621,
+    "partial_registry": 438,
+    "uncaptured_registry_suffix": 917,
+    "missing_object_bytes": 1821
+  },
+  "classes": {
+    "read_error": 58,
+    "IceWizardHero": 579,
+    "IceWizardHeroFloatingCube": 534,
+    "IceWizardHero_IceCube": 31
+  },
+  "attachments": {
+    "floating_total": 534,
+    "qualified_parent": 534
+  },
+  "raw_object_records": 1202,
+  "exact_c_decodes": 1215,
+  "positive_name_fixtures": 4,
+  "malformed_name_fixtures": 9,
+  "malformed_streams": 4,
+  "legacy_formatter_cases": 3,
+  "legacy_formatter_exact": true,
+  "decoder_fixture_bytes": 137254,
+  "sources": {
+    "scratchpad\\gauntlet\\L70\\reader\\capture_a.jsonl": "e4bd08af71f40bd9bf0ee302535fb921abe2b6c00ec3d00f07b186606ebb6256",
+    "scratchpad\\gauntlet\\L70\\reader\\capture_b.jsonl": "594656fcadb2926403ce73afd172fd67ceecfdefd25aa33310447d47a8fde8e1",
+    "scratchpad\\gauntlet\\L70\\reader\\live_sampler2.c": "381410d95784cb28ddbe9fe5cc19ea638a1ee485da2180514d780e7ca8e02201",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\PLAN.md": "6981facf8aa4becede2d7bf29456cdf583c531b590217b8dc726ad8885db2a84",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\qualify.py": "b983234e782d013c8bb8ae4cc5fb85d5d49a574b24a6534de459422677196886",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\adapter.py": "6834fdfb70ca0842c3cbfa7e766ec8fe92cdbfeec08310c9d0457a30b139234d",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\test_adapter.py": "10f062de182d9cdaae0f260b62151052d59a7300c3857acdb46adc0236f6d027",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\build_successor.py": "83058ee3fa6716852a2949dc46d873fdcb1155b38e368001e063c347eb01e138",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\character_name.h": "5e3cb87b63731c19ba0650a8fa6083fbde6dbde232663b2c8c00940a936f71bf",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\decoder_test.c": "e90010ec32efc22eb632ef3eabd8c1cc856d943407eed26249524465eff59060",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\native_elite_form_probe_v5.json": "f638486ebcb8fd755579d13b6bcef09fe78c7437a769981b097d96dc89bfa38d"
+  },
+  "generated": {
+    "live_sampler3.c": "f0a874d2bc95f6ec26e9db5c3c35fd41de0658af10472157377211a1fe090410",
+    "live_sampler3": "f5d407413e3303bf168a9c7f09f8aa75671ab885a301c4fdf4c92cb305cc309b",
+    "decoder_test": "8a4ae187540700bc7d0555ea736285877f00b382a155d9c2b31d7ab00da2cd15",
+    "public_name_fixtures.bin": "bb06697f6895f233646821078c397d1163b6bce705b051a1a5939cb1350f60e1",
+    "decoder.out": "56674811982b92bc6b0b86c0661d61374654f5b018996b435500b623add027d6",
+    "details.json": "333f6deeb27819cf3e5ea0ec8a91875d19a307356f6e8254fc55f1037017b4d4"
+  },
+  "live_started": false,
+  "reader_installed": false,
+  "active_sources_edited": false,
+  "model_calls": 0,
+  "optimizer_steps": 0,
+  "activation": "PENDING current build/passive runtime qualification and owner-worker transition",
+  "cube_mechanics": "UNQUALIFIED"
+}
