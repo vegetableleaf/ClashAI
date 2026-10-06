@@ -198,6 +198,20 @@ def load_model(ckpt, device):
     if not st.get("gen"):
         raise SystemExit(f"{ckpt} is not a generalist checkpoint (no 'gen' key)")
     a = st["args"]
+    if st.get("architecture") == "public_tower_spatial_v1":
+        # Explicit checkpoint metadata selects this owner-requested architecture;
+        # ordinary checkpoints retain the original constructor and exact behavior.
+        from .model_tower import construct
+        if int(a.get("feature_version", 1)) != 7:
+            raise ValueError("Tower architecture requires feature_version=7")
+        model = construct(st)
+        for key in ("tower_spatial_xy", "tower_spatial_side", "tower_spatial_kind"):
+            if not torch.equal(st["model"][key].cpu(), model.state_dict()[key]):
+                raise ValueError(f"Invalid fixed public tower geometry: {key}")
+        model.load_state_dict(st["model"], strict=True)
+        return model.to(device), st
+    if st.get("architecture"):
+        raise ValueError(f"Unsupported checkpoint architecture: {st['architecture']}")
     model = GenModel(d=int(a["d"]), layers=int(a["layers"]), d_c=int(st["d_c"]),
                      n_cards=len(st["card_vocab"]), feature_version=int(a.get("feature_version", 1))).to(device)
     model.load_state_dict(st["model"])
