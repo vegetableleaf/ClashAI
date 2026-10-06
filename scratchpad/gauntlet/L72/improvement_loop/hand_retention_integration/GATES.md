@@ -12,10 +12,10 @@ OWNS: pipeline/model_tower.py, pipeline/model_gen.py, pipeline/opponent_hand_v2.
   EVIDENCE: l72-hand-successor exit0/token, eight tests; live event completeness remains conditional.
 - [x] S1: Original expert sequences and public beliefs are joined and independently verified without future/private input.
   EVIDENCE: sequence_data/reviewed.json; 268718 rows, all labels/features/windows/replays exact.
-- [ ] M1: Versioned learned representation preserves initial eligible-parent predictions and supports strict load/save/live inputs.
+- [x] M1: Versioned learned representation preserves initial eligible-parent predictions and supports strict load/save/live inputs.
   CHECK: research/ext/Royale/.venv/Scripts/python.exe scratchpad/gauntlet/L72/improvement_loop/hand_retention_integration/check_model_v4.py
   EXPECT: HAND_MODEL_QUALIFIED
-  EVIDENCE: original probe failed a missing-coordinate fixture; preserved. v2 rejected an ambiguous dual-visible-hand fixture; focused live fixture passed; v3 failed bitwise pooling order; separate model v2/check v4 pending, no tolerance waiver. See both MODEL_*_CORRECTION.md files.
+  EVIDENCE: model_verified.json; l72-hand-model-qualified-v4 exit0/token127.186727s,512 row/orientation/arm comparisons,9malformed controls. All three old failures preserved.
 - [ ] T1: Frozen matched training/evaluation and independent recount establish the candidate's complete verdict.
   EVIDENCE: pending; recipe and commands must be registered before optimization.
 - [ ] R1: Publish verified results, once-only new-model report and accurate remaining work.
