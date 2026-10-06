@@ -1,0 +1,13 @@
+{
+  "command": [
+    "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe",
+    "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L72\\improvement_loop\\hand_decision_audit\\verify.py"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot",
+  "shell": "none; subprocess argument vector",
+  "exit_code": 0,
+  "expected": "HAND_DECISIONS_VERIFIED",
+  "matched": true,
+  "output_sha256": "c25f93c8d5386238e0cbb2e8db7997bf4f94a1534412d785f5d9269d921cb734",
+  "seconds": 18.1943256855011
+}

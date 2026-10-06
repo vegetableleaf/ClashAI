@@ -1,3 +1,22 @@
+## 2026-10-06 14:15 EDT - cached hand decision diagnosis complete
+
+hand_decision_audit C1/V1/R1 COMPLETE:3.493583/18.194326/.631120s all0/token.
+Read REVIEW/collected/verified/reviewed/chain_complete.54723rows/405replays,
+38groups/twocomparisons/30effects/EVERYreplay independently exact;2positive8bad.
+No model call/optimization/new checkpoint/native/live/confirmation; never rerun.
+Matched blind->hand750WAIT-to-PLAY/91PLAY-to-WAIT; on expertWAIT56gains486losses
+(net-430), on expertPLAY166gains157losses(net+9).157lostPLAY firstfails gate5/
+card114/aim38; card311gains457losses,forcedaim105/92. Arithmetic hybrids cannot
+be promoted or imply gameplay causation. Full-hand/no-issue16197rows265replays
+still-102actions/-68card; partial36885rows-313actions. Reader uncertainty alone
+is not the explanation, and full estimates are not oracle truth. Retained29437
+rows-257actions,314new/176removed later-response spends; no profitable-holding
+label follows. Original candidate staysREJECTED/handflagOFF/no model report due.
+Next separately registered training-only fixed-weight cycle-input sensitivity
+probe will separate cycle status from revealed identity, with matched blind
+negative control. No automatic architecture/loss change or rejected-weight reuse.
+Owner tower live worker remains protected; previous live snapshot below.
+
 ## 2026-10-06 14:06 EDT - owner selects tower live; autonomous work renewed
 
 Read OWNER_SUPERVISED_CONTINUATION_20261006.md under L72/improvement_loop.

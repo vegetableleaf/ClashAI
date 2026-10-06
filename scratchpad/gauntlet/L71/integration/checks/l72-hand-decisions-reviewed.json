@@ -1,0 +1,13 @@
+{
+  "command": [
+    "research/ext/Royale/.venv/Scripts/python.exe",
+    "scratchpad/gauntlet/L72/improvement_loop/review_hand_decisions.py"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot",
+  "shell": "none; subprocess argument vector",
+  "exit_code": 0,
+  "expected": "HAND_DECISIONS_REVIEWED",
+  "matched": true,
+  "output_sha256": "219ee1c7777d2f973eafeffee0018317f42c6412709ebce70963f526f93970a8",
+  "seconds": 0.6311204433441162
+}
