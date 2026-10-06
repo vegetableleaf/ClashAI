@@ -3734,6 +3734,14 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   preferred card is unaffordable: ~1% of plays -> CONTRADICTED as a cause. Pro-rate-matching tau: .49 / .54 / .59
 >   (1x/2x/OT), .54 overall. Exp 1 RUNNING (`L73/econ_tau/run.sh`): tau .35 / .45 / .54, ghost + 96 reactive games
 >   (old + evo census) + telemetry (new: per-phase elixir at play). search_s0 `--tau-plain` added (default unchanged).
+> * **19:xx -- owner rulings + live changes (live STOPPED; all take effect at the next start).** Codex "did more than I
+>   asked": RESTORED the 30-min Discord clip (live_play: discord_clip.py after a clip match) + the "another device /
+>   connection lost" Discord alert (live_play) + Discord posting of supervisor stop/restart messages (run_live.sh post()).
+>   KEPT: anti-leak removal (owner: forced plays cost games). Hero Ice Wizard interim rule now ELIXIR VALUE (owner): clump
+>   = >= 2 enemy troops in the freeze zone worth >= 4.0 elixir (`live_reader/unit_values.json` = RoyaleAPI mana_cost /
+>   units spawned, from icebow/data/webcache; unknown 0.5); hero/cube pair deduped first. Win-con branch unchanged.
+>   Owner logged in to RoyaleAPI 18:48 -> Ice Wizard crawl RUNNING (`L70/abilities/ice_wizard_hero/crawl/`).
+>   Lead now owns the DAILY 21:30 EST Discord report (Codex's newsletter is the owner's to switch off).
 > * Hero Ice Wizard crawl BLOCKED on login (Cloudflare cleared; /data/replay needs a RoyaleAPI session; saved tokens
 >   from Aug 30 expired). Owner: `cd /c/Users/benpe/clash-replay-scraper && python crawl_deck.py --deck icebow probe`,
 >   log in in its Chrome window; then rerun `scratchpad/gauntlet/L70/abilities/ice_wizard_hero/crawl_hero_iw.py`

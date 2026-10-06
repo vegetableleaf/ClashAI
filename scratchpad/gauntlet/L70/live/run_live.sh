@@ -12,7 +12,8 @@ L=scratchpad/gauntlet/L70/live
 source "$L/live_config.sh" || exit 2
 load_live_config || exit 2
 MAX=${MAX_RESTARTS:-10}
-post() { printf '%s\n' "$1" >> "$L/supervisor.log"; }
+post() { printf '%s\n' "$1" >> "$L/supervisor.log"; printf '%s\n' "$1" > "$L/_msg.txt"   # owner 2026-10-06: Discord restored
+  icebow/.venv/Scripts/python.exe scratchpad/gauntlet/L69/discord/post.py "$L/_msg.txt" >> "$L/supervisor.log" 2>&1; }
 running() {   # number of ladder live_play python processes (fail -> 1: assume running, never start a second one)
   local n
   n=$(powershell -NoProfile -Command "@(Get-CimInstance Win32_Process -Filter \"Name='python.exe'\" | Where-Object {\$_.CommandLine -like '*live_play.py*--ladder*' -or \$_.CommandLine -like '*live_play_hand_v*--ladder*'}).Count" 2>/dev/null | tr -dc '0-9')

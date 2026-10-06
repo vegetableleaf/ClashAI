@@ -25,6 +25,8 @@ import numpy as np
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parents[3] / "icebow" / "src"))
+if str(HERE.parents[3]) not in sys.path:
+    sys.path.insert(0, str(HERE.parents[3]))             # pipeline.* (reader aliases, catalog names)
 from clashrl.hero_ability import ability_button_state  # noqa: E402
 
 BUTTON = (0.909, 0.765)            # frame fractions, GPG-measured (config.yaml hero.button)
@@ -56,6 +58,20 @@ ICE_WIZARD = 26000023
 # not in hand or not affordable. Frosty Fella spawns its snowman behind the Ice Wizard's current target and freezes
 # every enemy within 2.5 tiles, so the freeze centre ~ that target ~ the nearest enemy inside his 5.5-tile range.
 IW_RANGE, FREEZE_R, CLUMP_MIN, TESLA_COST = 5.5, 2.5, 3, 4.0
+# owner 2026-10-06 (interim, until the pro Frosty Fella model): a clump must be WORTH the 2-elixir ability -- >= 2 enemy
+# troops in the freeze zone totalling >= CLUMP_VALUE_MIN elixir (card cost / units it spawns, unit_values.json; unknown
+# or spawned units 0.5). Live 10-05/06: 73 of 145 clump presses were exactly 3 bodies, 37 on Skeletons / Skeleton Army /
+# Minions / Goblin Gang.
+CLUMP_BODIES_MIN, CLUMP_VALUE_MIN, UNKNOWN_UNIT_VALUE = 2, 4.0, 0.5
+_UNIT_VALUES = None
+
+
+def unit_values() -> dict:
+    global _UNIT_VALUES
+    if _UNIT_VALUES is None:
+        import json
+        _UNIT_VALUES = json.loads((HERE / "unit_values.json").read_text(encoding="utf-8"))["value_per_unit"]
+    return _UNIT_VALUES
 WINCONS = {"HogRider", "SuperHogRider", "Giant", "GoblinGiant", "Golem", "RoyalGiant", "ElectroGiant", "Balloon",
            "LavaHound", "RamRider", "BattleRam", "Miner", "RoyalHogs", "Wallbreakers", "ElixirGolem", "GiantSkeleton",
            "SkeletonBalloon", "Pekka", "MegaKnight"}
@@ -87,8 +103,10 @@ def ice_wizard_should_press(f: dict, side: int, hero: dict | None, names: dict |
         return False, "iw_no_target"
     target = min(in_range, key=lambda e: d(e, hero))
     frozen = [e for e in foes if d(e, target) <= FREEZE_R and nm(e) not in BUILDINGS]
-    if len(frozen) >= CLUMP_MIN:
-        return True, f"iw_clump n={len(frozen)} target={nm(target)}"
+    vals = unit_values()
+    value = sum(vals.get(nm(e), UNKNOWN_UNIT_VALUE) for e in frozen)
+    if len(frozen) >= CLUMP_BODIES_MIN and value >= CLUMP_VALUE_MIN:
+        return True, f"iw_clump n={len(frozen)} value={value:.1f} target={nm(target)}"
     me = next(p for p in f["players"] if p["side"] == side)
     hand = [names.get(int(me["deck_card_ids"][i]), "") for i in me["hand_deck_indices"] if i >= 0]
     elixir = me["elixir_raw"] / 1e4
@@ -106,6 +124,8 @@ def should_press(f: dict, side: int, hero_card_ids: set[int], reach_tiles: float
     (reader positions, 1000 units per tile); if the hero entity cannot be found, when an enemy troop is on my half.
     Deliberately generic -- no per-hero stats -- so it only guarantees the button is USED, not used well.
     Hero Ice Wizard uses ``ice_wizard_should_press`` (owner's interim rule) instead."""
+    from pipeline.reader_identity_aliases import dedupe_hero_bodies
+    f = dedupe_hero_bodies(f)                  # 2026-10-06: a hero + its FloatingCube share 203000023
     ids = hero_card_ids | hero_form_ids(hero_card_ids)
     if ICE_WIZARD in hero_card_ids:
         return ice_wizard_should_press(f, side, next((e for e in f["entities"] if e["side"] == side
@@ -189,11 +209,13 @@ if __name__ == "__main__":          # self-check: raw parse + placeholder policy
     assert should_press(f, 1, {26000014})[0] is False                 # enemy 14 tiles away
     assert should_press({"entities": [ent(0, 9000, 20000, 1)]}, 1, {26000014})[0] is True   # hero unseen, foe on my half
     # Ice Wizard interim rule (names injected; no catalog needed): I am side 1 (my half y > 16000), IW at (9000, 24000)
-    N = {1: "Skeletons", 2: "HogRider", 3: "Tesla", 4: "Knight", 5: "Cannon"}
+    N = {1: "Skeletons", 2: "HogRider", 3: "Tesla", 4: "Knight", 5: "Cannon", 6: "Barbarians"}
     iw = ent(1, 9000, 24000, ICE_WIZARD)
     pl = lambda hand, el: [{"side": 1, "deck_card_ids": [3, 4, 4, 4], "hand_deck_indices": hand, "elixir_raw": el * 10000}]  # noqa: E731
     clump = {"entities": [iw] + [ent(0, 9000 + 300 * k, 21000, 1) for k in range(3)], "players": pl([1, 2, 3, -1], 9)}
-    assert ice_wizard_should_press(clump, 1, iw, N)[0] is True                       # 3 skeletons inside the freeze
+    assert ice_wizard_should_press(clump, 1, iw, N)[0] is False                      # 3 skeletons = 1 elixir: not worth it
+    barbs = {"entities": [iw] + [ent(0, 9000 + 300 * k, 21000, 6) for k in range(4)], "players": pl([1, 2, 3, -1], 9)}
+    assert ice_wizard_should_press(barbs, 1, iw, N)[0] is True                       # 4 Barbarians = 4 elixir in the freeze
     hog = {"entities": [iw, ent(0, 9000, 21000, 2)], "players": pl([1, 2, 3, -1], 9)}  # hand has no Tesla (index 0)
     assert ice_wizard_should_press(hog, 1, iw, N)[0] is True                         # wincon, Tesla not in hand
     hog["players"] = pl([0, 1, 2, -1], 9)

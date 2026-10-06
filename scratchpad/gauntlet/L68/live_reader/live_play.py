@@ -11,8 +11,8 @@ Stops: battle over / tick stalled 3 s, 5 unconfirmed taps, --max-seconds. Log: l
 --matches N --friend NAME: N matches back to back; between them friend_nav.py starts the next friendly 1v1 against
 that friend's bot (allowlisted taps only; see its docstring and --nav-dry-run). Default N = 1: no navigation.
 --ladder --matches N: N Trophy Road matches back to back; between them ladder_nav.py taps Play Again (or, after the
-day's 4th win, OK -> opens the daily chests -> Battle). --clip-every S: record only one match every S seconds;
-the other matches are not recorded. Videos stay local. --stop-file: stop between
+day's 4th win, OK -> opens the daily chests -> Battle). --clip-every S: record only one match every S seconds and post a
+60-s overlaid clip of it to Discord (discord_clip.py); the other matches are not recorded. --stop-file: stop between
 matches once that file exists.
 --menu-guard (OPT-IN since 2026-09-30): classify a full screencap every <= 2 s during the match and stop on any menu.
 Off by default: those PNG screencaps saturated adb live (live_play_20260930_184444: tap_ms median 3021 / max 5407,
@@ -262,7 +262,8 @@ def main() -> int:
     ap.add_argument("--wins-today", type=int, default=None,
                     help="ladder: set today's win count (daily chests come with wins 1-4); default = ladder_state.json")
     ap.add_argument("--clip-every", type=float, default=0.0,
-                    help="seconds; > 0: record ONLY the first match and then one match every this many seconds; local videos only")
+                    help="seconds; > 0: record ONLY the first match and then one match every this many seconds, and post a 60-s "
+                         "overlaid clip of it to Discord (discord_clip.py) -- all other matches unrecorded")
     ap.add_argument("--stop-file", type=Path, help="stop the run between matches once this file exists")
     ap.add_argument("--ckpt-override-file", type=Path, default=REPO / "scratchpad/gauntlet/L70/live/CKPT_OVERRIDE",
                     help="default checkpoint selection; explicit --ckpt wins. A changed selection ends a default-selected run between matches")
@@ -339,6 +340,9 @@ def main() -> int:
                                        f"another device (Connection lost). The bot will not kick it. Ask Claude to "
                                        f"resume (press RELOAD, delete the STOP file, restart the supervisor).")
                         print(msg.read_text(), flush=True)
+                        # owner 2026-10-06: restore the Discord pause alert (Codex had removed it)
+                        subprocess.run([sys.executable, str(REPO / "scratchpad/gauntlet/L69/discord/post.py"), str(msg)],
+                                       capture_output=True, timeout=60)
                     break
                 pilot.reset_match()                      # same loaded model, fresh history / opp counter
             record, caption, prev_clip = not a.no_record, None, last_clip
@@ -692,7 +696,19 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
         W(event="end", played=played, confirmed=confirmed, fails=fails, seconds=round(time.time() - t0, 1))
         log.close()
         print(json.dumps({"played": played, "confirmed": confirmed, "fails": fails, "log": log.name}))
-        if rec and renders is not None:                  # a next match follows: render in a separate low-priority
+        if rec and clip_caption is not None:             # owner 2026-10-06: restore the 60-s Discord clip (Codex removed it)
+            try:
+                p = subprocess.Popen([sys.executable, str(HERE / "discord_clip.py"), log.name, "--caption", clip_caption,
+                                      "--overlay", a.overlay],
+                                     env=dict(ENV, CUDA_VISIBLE_DEVICES="", OMP_NUM_THREADS="2"),
+                                     creationflags=getattr(subprocess, "BELOW_NORMAL_PRIORITY_CLASS", 0))
+                if renders is not None:
+                    renders.append((p, log.name))
+                elif p.wait():
+                    print(f"[clip] failed (exit {p.returncode}); retry: discord_clip.py {log.name}")
+            except Exception as exc:                     # noqa: BLE001 -- never mask the original error
+                print(f"[clip] could not start: {exc!r}")
+        elif rec and renders is not None:                # a next match follows: render in a separate low-priority
             try:                                         # process (no GIL/CPU fight with its decisions)
                 renders.append((subprocess.Popen(   # detector on the CPU (2 threads): the GPU is the next match's
                     [sys.executable, str(HERE / "overlay_replay.py"), log.name, "--overlay", a.overlay],
