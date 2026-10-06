@@ -1,0 +1,16 @@
+{
+  "command": [
+    "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe",
+    "-m",
+    "pytest",
+    "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L72\\improvement_loop\\decision_capture_async\\test_async.py",
+    "-q"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot",
+  "shell": "none; subprocess argument vector",
+  "exit_code": 0,
+  "expected": "passed",
+  "matched": true,
+  "output_sha256": "f7ac23154f0df5959bcb464cbe688d2c1a33efa934c24bb4c1a18e6922e59182",
+  "seconds": 10.680521011352539
+}
