@@ -52,6 +52,7 @@ def main():
     pilot = make_pilot()
     expected_manifest = manifest(pilot)
     assert expected_manifest == q['manifest']
+    assert sha(HERE / 'reference_heads.npz') == q['reference_sha256']
     reference = np.load(HERE / 'reference_heads.npz', allow_pickle=False)
     details = []
     heads = 0
