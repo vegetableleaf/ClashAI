@@ -1,3 +1,49 @@
+## 2026-10-06 14:06 EDT - owner selects tower live; autonomous work renewed
+
+Read OWNER_SUPERVISED_CONTINUATION_20261006.md under L72/improvement_loop.
+Owner reports strong live tower_spatial_v7 matches and explicitly selects it for
+start_live.sh. CKPT_OVERRIDE now points to development_iteration_5_20261005/
+tower_spatial_v7/candidate.pt, SHA2feffe4f0990d93721ceb0b6661338f52e7f935e85b80e29535ea713ad6569a0.
+This is owner-directed live selection, NOT statistical acceptance or erased
+development failures. No assistant live startup/STOP removal occurred.
+
+live_selection_20261006 S1/R1 COMPLETE: actual explicit Git Bash start_live.sh
+--check verifies tower default/OFF, explicit hand checkpoint/ON, invalid flag and
+incompatible tower/hand-loader rejection.2positive2negative/3shellsyntaxchecks,
+l72-owner-tower-selection16.959988s exit0/token. Original scripts/pointer preserved.
+HAND_READER_ENABLED=0 default; optional HAND_READER env0/1. OFF canonical live_play;
+ON separate live_play_hand_v4.py retains default pointer/change detection and strict
+hand loader. Never enable hand inputs merely because engineering checks passed.
+Offline checks preserved the original STOP. Owner subsequently launched the live
+supervisor at14:04:19; at14:07 STOP is absent and ONE actual worker39112 (venv
+launcher64088, supervisor52036/55704) runs canonical live_play.py. Header confirms
+exact tower SHA above through CKPT_OVERRIDE, feature7/CPU/tau.35/public audits/
+anti-leakOFF/argmax/26tick extrapolation.31 attempts/28confirmed/2unconfirmed and
+one not yet resolved at that snapshot; no outcome claim. This assistant did not
+start that worker, remove STOP, or kill/restart owner workers. Active live sources
+must now remain unchanged until the owner run exits.
+
+The SAME continue-clashbot-acceptance-and-deployment heartbeat is ACTIVE again,
+20minute interval without the expired overnight cutoff, under renewed direct owner
+authority. Daily newsletter untouched. Stop for actual cancellation/takeover or
+achieved objective. Autonomous priorities: overtime damage-lead/finishing Rocket
+cycles with efficient defense; defensive Rocket and Rocket->Tornado; learned
+defensive/offensive X-Bow adaptation; learned counter retention with justified
+immediate spending. Preserve all original final/component/statistical/physical/
+gameplay/public/Q4/Q5 floors. Owner live anecdotes are not expert labels.
+
+NEXT hand_decision_audit REGISTERED, not yet launched at this entry. Read its
+PLAN/METRICS/GATES/common/collect/verify/run_chain. Cached-only new diagnostic:
+all54723 original devrows, hand candidate vs matchedblind and v5, head transitions,
+exclusive first-failure decomposition,8 arithmetic head hybrids and all38 public
+quality/phase/component/response groups with every replay. Independent scalar
+effects/counts and2positive8corrupt controls. No new model/inference/optimizer/
+native/live/confirmation access. This diagnoses the failed hand trial before another
+recipe; arithmetic hybrids are not policies or causal gameplay. Same shared lock.
+Outside review_hand_decisions.py prepared; execute once only after both jobs pass.
+Prior model report model-public-hand-belief-pair-final already DELIVERED; never
+resend. Prior learned hand candidate remains REJECTED and default flag OFF.
+
 ## 2026-10-06 13:41 EDT - hand integration complete; matched candidate rejected
 
 Owner-supervised direct request, not resumed overnight scheduler. Read

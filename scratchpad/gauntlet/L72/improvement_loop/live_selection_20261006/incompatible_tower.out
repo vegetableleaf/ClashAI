@@ -1,0 +1,38 @@
+hand-reader model input: 1
+[live] checkpoint: C:\Users\benpe\ClashBot\icebow\data\bench\development_iteration_5_20261005\tower_spatial_v7\candidate.pt
+[live] selected by: C:\Users\benpe\ClashBot\scratchpad\gauntlet\L70\live\CKPT_OVERRIDE
+[live] SHA256: 2feffe4f0990d93721ceb0b6661338f52e7f935e85b80e29535ea713ad6569a0
+Traceback (most recent call last):
+  File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L72\improvement_loop\hand_retention_integration\live_play_hand_v4.py", line 21, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L72\improvement_loop\hand_retention_integration\live_play_hand_v4.py", line 19, in main
+    runpy.run_path(str(entry),run_name='__main__')
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen runpy>", line 294, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\live_play.py", line 713, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\live_play.py", line 289, in main
+    device, pilot = load_pilot(a, decision_cfg)
+                    ~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\live_play.py", line 386, in load_pilot
+    pilot = GenPilot(a.ckpt, device=device, gate_tau=a.tau, use_counter=not a.no_opp_counter,
+                     extrapolate_ticks=a.extrapolate, decision_options=options_from_config(decision_cfg),
+                     decision_seed=a.decision_seed, public_audit=a.public_audit)
+  File "C:\Users\benpe\ClashBot\pipeline\live_hand_v2.py", line 23, in __init__
+    super().__init__(*args,**kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\benpe\ClashBot\pipeline\live_gen_v2.py", line 17, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\benpe\ClashBot\pipeline\live_gen.py", line 40, in __init__
+    self.model, st = load_model(ckpt, torch.device(device))
+                     ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\benpe\ClashBot\pipeline\model_hand_belief_v2.py", line 61, in load_checkpoint
+    model=construct(state);model.load_state_dict(state['model'],strict=True)
+  File "C:\Users\benpe\ClashBot\pipeline\model_hand_belief_v2.py", line 53, in construct
+    raise ValueError('Unsupported public hand architecture/version')
+ValueError: Unsupported public hand architecture/version

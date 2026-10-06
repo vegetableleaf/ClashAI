@@ -1,0 +1,98 @@
+{
+  "complete": true,
+  "tower_sha256": "2feffe4f0990d93721ceb0b6661338f52e7f935e85b80e29535ea713ad6569a0",
+  "hand_input_default": false,
+  "stop_unchanged": true,
+  "live_started": false,
+  "positive_controls": 2,
+  "negative_controls": 2,
+  "cases": {
+    "default": {
+      "command": [
+        "C:\\Program Files\\Git\\bin\\bash.exe",
+        "scratchpad/gauntlet/L70/live/start_live.sh",
+        "--check"
+      ],
+      "seconds": 5.257033824920654,
+      "exit_code": 0,
+      "settings": [
+        {
+          "check": "LIVE_CHECK_PASS",
+          "checkpoint": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\development_iteration_5_20261005\\tower_spatial_v7\\candidate.pt",
+          "sha256": "2feffe4f0990d93721ceb0b6661338f52e7f935e85b80e29535ea713ad6569a0",
+          "feature_version": 7,
+          "device": "cpu",
+          "tau": 0.35,
+          "anti_leak": false,
+          "public_audit": true,
+          "decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0,
+            "spell_aim": "argmax"
+          }
+        }
+      ],
+      "output_sha256": "99dea9163a3968a25b5fde3e77e55ba016fcdac3cddc23cf9a9cdc27fee81fbd"
+    },
+    "hand_opt_in": {
+      "command": [
+        "C:\\Program Files\\Git\\bin\\bash.exe",
+        "scratchpad/gauntlet/L70/live/start_live.sh",
+        "--check"
+      ],
+      "seconds": 5.249963045120239,
+      "exit_code": 0,
+      "settings": [
+        {
+          "check": "LIVE_CHECK_PASS",
+          "checkpoint": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\hand_belief_learning_20261006\\hand_belief_v5\\candidate.pt",
+          "sha256": "c5aedd869b9a8d132be51767dbb1c3aec41d6585e0ce98b1c3f10e251ff7a34a",
+          "feature_version": 5,
+          "device": "cpu",
+          "tau": 0.35,
+          "anti_leak": false,
+          "public_audit": true,
+          "decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0,
+            "spell_aim": "argmax"
+          }
+        }
+      ],
+      "output_sha256": "7b6a9b4e4d2b5cfa44c78cc67305c2a1ea2959e5e75a8a77f8deffe74f19e1c9"
+    },
+    "invalid_flag": {
+      "command": [
+        "C:\\Program Files\\Git\\bin\\bash.exe",
+        "scratchpad/gauntlet/L70/live/start_live.sh",
+        "--check"
+      ],
+      "seconds": 0.10510444641113281,
+      "exit_code": 2,
+      "settings": [],
+      "output_sha256": "b2bdcfc45b75f1de8574ebe902de83344f6be81c14394dfc40c86678a5716ce8"
+    },
+    "incompatible_tower": {
+      "command": [
+        "C:\\Program Files\\Git\\bin\\bash.exe",
+        "scratchpad/gauntlet/L70/live/start_live.sh",
+        "--check"
+      ],
+      "seconds": 5.122893333435059,
+      "exit_code": 1,
+      "settings": [],
+      "output_sha256": "8617d260b880193a2305b722c91fb6f1fd7625d6a9bee542977aaa48f6467dc6"
+    }
+  },
+  "sources": {
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\live_selection_20261006\\check_selection.py": "6a754c4c24eba419add045bb02024189ec2622c41ea64babc761f9cb8944ba24",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\live_selection_20261006\\PLAN.md": "a3880497ddabc29d4ccdb7b8a35530d737bafd3e68821af6e9a976a21c8eb22e",
+    "scratchpad\\gauntlet\\L70\\live\\start_live.sh": "14e585ae98b5f9ce56f025848e9384f73a7aedf427108f39fc47c7f749d54c19",
+    "scratchpad\\gauntlet\\L70\\live\\run_live.sh": "fde0466634a2d58b6988e3e0ad97bc720b6e235213caa776008e6a87f53eba84",
+    "scratchpad\\gauntlet\\L70\\live\\live_config.sh": "89ad15ec4ed4696187f502dd0004b1dccac2f558ba022158835398aab3de0b41",
+    "scratchpad\\gauntlet\\L70\\live\\HAND_READER_ENABLED": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\hand_retention_integration\\live_play_hand_v4.py": "b7f86d8824a4e8f6a4d09d1d46a4fda59b6cb8a0683247b9a1fd242838234780"
+  }
+}

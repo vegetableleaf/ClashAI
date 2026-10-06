@@ -9,17 +9,18 @@
 # counts as the first restart -- never a second live_play beside it.
 cd /c/Users/benpe/ClashBot
 L=scratchpad/gauntlet/L70/live
-source "$L/live_config.sh" || exit 2
-load_live_config || exit 2
+PY=icebow/.venv/Scripts/python.exe
 MAX=${MAX_RESTARTS:-10}
 post() { printf '%s\n' "$1" >> "$L/supervisor.log"; }
 running() {   # number of ladder live_play python processes (fail -> 1: assume running, never start a second one)
   local n
-  n=$(powershell -NoProfile -Command "@(Get-CimInstance Win32_Process -Filter \"Name='python.exe'\" | Where-Object {\$_.CommandLine -like '*live_play.py*--ladder*' -or \$_.CommandLine -like '*live_play_hand_v*--ladder*'}).Count" 2>/dev/null | tr -dc '0-9')
+  n=$(powershell -NoProfile -Command "@(Get-CimInstance Win32_Process -Filter \"Name='python.exe'\" | Where-Object {\$_.CommandLine -like '*live_play.py*--ladder*'}).Count" 2>/dev/null | tr -dc '0-9')
   echo "${n:-1}"
 }
 last_stop() { grep -aE '\[live\] run stopped|\[nav\] run stopped|\[ladder\] STOP|stop file|new checkpoint deployed' $L/overnight.out | tail -1; }
 state() { cat scratchpad/gauntlet/L68/live_reader/ladder_state.json 2>/dev/null; }
+CKPT_ARGS=()
+if [ -n "${CKPT:-}" ]; then CKPT_ARGS=(--ckpt "$CKPT"); fi
 restarts=0
 if [ "$(running)" -gt 0 ]; then
   echo "[sup] adopting the running live_play $(date) (restart counter reset, limit $MAX)" >> $L/supervisor.log
@@ -34,7 +35,7 @@ if [ "$(running)" -gt 0 ]; then
 fi
 while [ ! -e $L/STOP ]; do
   echo "[sup] start (restarts used $restarts/$MAX) $(date)" >> $L/supervisor.log
-  $PY -u "$LIVE_ENTRY" --ladder --matches 400 \
+  $PY -u scratchpad/gauntlet/L68/live_reader/live_play.py --ladder --matches 400 \
     "${CKPT_ARGS[@]}" --tau 0.35 --no-anti-leak --max-seconds 600 \
     --clip-every 1800 --overlay reader --stop-file $L/STOP >> $L/overnight.out 2>&1
   rc=$?

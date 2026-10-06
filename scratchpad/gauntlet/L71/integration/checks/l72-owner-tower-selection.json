@@ -1,0 +1,13 @@
+{
+  "command": [
+    "research/ext/Royale/.venv/Scripts/python.exe",
+    "scratchpad/gauntlet/L72/improvement_loop/live_selection_20261006/check_selection.py"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot",
+  "shell": "none; subprocess argument vector",
+  "exit_code": 0,
+  "expected": "OWNER_LIVE_SELECTION_VERIFIED",
+  "matched": true,
+  "output_sha256": "5bc93dd3c65a97253169eea6e297f29b8e35e4af1a7551c826a7179d119872a0",
+  "seconds": 16.95998764038086
+}
