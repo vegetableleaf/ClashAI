@@ -39,7 +39,8 @@ def main():
         assert report[name] is True
     receipt_path = CHECKS / 'l72-decision-capture-replay-completion.json'
     receipt = read(receipt_path)
-    expected = [str(ROOT / 'research/ext/Royale/.venv/Scripts/python.exe'), str(LEAF / 'verify.py')]
+    expected = ['research/ext/Royale/.venv/Scripts/python.exe',
+                'scratchpad/gauntlet/L72/improvement_loop/decision_capture_replay_completion/verify.py']
     assert receipt['command'] == expected and receipt['cwd'] == str(ROOT)
     assert receipt['exit_code'] == 0 and receipt['matched'] is True
     assert receipt['expected'] == 'DECISION_CAPTURE_REPLAY_COMPLETED'
