@@ -1,0 +1,13 @@
+{
+  "command": [
+    "research/ext/Royale/.venv/Scripts/python.exe",
+    "scratchpad/gauntlet/L72/improvement_loop/hand_retention_integration/check_live_hand_fixture.py"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot",
+  "shell": "none; subprocess argument vector",
+  "exit_code": 0,
+  "expected": "LIVE_HAND_FIXTURE_VERIFIED",
+  "matched": true,
+  "output_sha256": "a9dd1daf0863f31e4c97beea9080ba8d5dbb12cf5865fd472bbb91ea8ba85086",
+  "seconds": 7.929928302764893
+}

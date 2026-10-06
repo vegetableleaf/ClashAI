@@ -1,0 +1,13 @@
+{
+  "command": [
+    "research/ext/Royale/.venv/Scripts/python.exe",
+    "scratchpad/gauntlet/L72/improvement_loop/hand_retention_integration/check_model_v2.py"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot",
+  "shell": "none; subprocess argument vector",
+  "exit_code": 1,
+  "expected": "HAND_MODEL_QUALIFIED",
+  "matched": false,
+  "output_sha256": "8d129327ab400df4e264f5d0cd8f16736ea51fbcfc98b5f79ad72dec116d4a9c",
+  "seconds": 114.4182071685791
+}

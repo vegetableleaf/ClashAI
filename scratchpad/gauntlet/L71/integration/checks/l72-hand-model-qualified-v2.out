@@ -1,0 +1,22 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+Traceback (most recent call last):
+  File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L72\improvement_loop\hand_retention_integration\check_model_v2.py", line 129, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L72\improvement_loop\hand_retention_integration\check_model_v2.py", line 99, in main
+    other,_=p.row(private)
+            ~~~~~^^^^^^^^^
+  File "C:\Users\benpe\ClashBot\pipeline\live_hand.py", line 27, in row
+    b,info=super().row(frame)
+           ~~~~~~~~~~~^^^^^^^
+  File "C:\Users\benpe\ClashBot\pipeline\live_gen_v2.py", line 34, in row
+    b, info = super().row(frame)
+              ~~~~~~~~~~~^^^^^^^
+  File "C:\Users\benpe\ClashBot\pipeline\live_gen.py", line 106, in row
+    side = my_side_of(frame)
+  File "C:\Users\benpe\ClashBot\pipeline\live_mem.py", line 28, in my_side_of
+    raise ValueError(f"expected exactly one side with a visible hand, got {vis}")
+ValueError: expected exactly one side with a visible hand, got [0, 1]

@@ -13,9 +13,9 @@ OWNS: pipeline/model_tower.py, pipeline/model_gen.py, pipeline/opponent_hand_v2.
 - [x] S1: Original expert sequences and public beliefs are joined and independently verified without future/private input.
   EVIDENCE: sequence_data/reviewed.json; 268718 rows, all labels/features/windows/replays exact.
 - [ ] M1: Versioned learned representation preserves initial eligible-parent predictions and supports strict load/save/live inputs.
-  CHECK: research/ext/Royale/.venv/Scripts/python.exe scratchpad/gauntlet/L72/improvement_loop/hand_retention_integration/check_model.py
+  CHECK: research/ext/Royale/.venv/Scripts/python.exe scratchpad/gauntlet/L72/improvement_loop/hand_retention_integration/check_model_v3.py
   EXPECT: HAND_MODEL_QUALIFIED
-  EVIDENCE: pending; MODEL_METRICS.md froze representation before implementation.
+  EVIDENCE: original probe failed a missing-coordinate fixture; preserved. v2 rejected an ambiguous dual-visible-hand fixture; focused live fixture passed; corrected v3 pending. See both MODEL_*_CORRECTION.md files.
 - [ ] T1: Frozen matched training/evaluation and independent recount establish the candidate's complete verdict.
   EVIDENCE: pending; recipe and commands must be registered before optimization.
 - [ ] R1: Publish verified results, once-only new-model report and accurate remaining work.
