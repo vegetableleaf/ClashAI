@@ -572,7 +572,7 @@ def _init_worker(args: dict) -> None:
         s1, si = E.load_policy(REPO / args["s1"], dev)
         opps["s1"] = (s1, live_cfg(TAU_OPP, str(si.get("grid", "floor")), dev))
     cap, fm = int(args["tail_cap"]), args.get("forms_mode", "base")
-    learner_cfg = live_cfg(TAU_PLAIN, gi['grid'], dev)
+    learner_cfg = live_cfg(args.get('tau_plain', TAU_PLAIN), gi['grid'], dev)
     if args.get('decision_options'):
         learner_cfg.update(args['decision_options'])
     if args.get('behaviour_telemetry'):
@@ -702,6 +702,8 @@ def main(argv=None) -> int:
     ap.add_argument("--workers", type=int, default=1, help="parallel matches (processes)")
     ap.add_argument('--behaviour-telemetry', action='store_true', help='Record public per-tick behaviour metrics; defaults unchanged.')
     ap.add_argument("--tail-cap", type=int, default=7200, help="match end tick cap (RoyaleSelfPlayEnv tail_cap)")
+    ap.add_argument("--tau-plain", type=float, default=None,
+                    help="lead 2026-10-06: the plain arm's gate threshold (default None = TAU_PLAIN 0.35, unchanged)")
     ap.add_argument("--hero-abilities", action="store_true",
                     help="press ready, affordable hero buttons within attack range + 1.5 tiles of enemies")
     ap.add_argument("--ability-policy", default="generic", choices=("generic", "v2"),
@@ -746,7 +748,9 @@ def main(argv=None) -> int:
         wargs['decision_options'] = decision_cfg
     if a.behaviour_telemetry:
         wargs['behaviour_telemetry'] = True
-    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
+    if a.tau_plain is not None:
+        wargs['tau_plain'] = float(a.tau_plain)
+    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
                                                 "gen_sha256": sha256(REPO / a.gen), "opp_gen_sha256": opp_sha,
                                                 "s1_sha256": sha256(REPO / a.s1),
                                                 "tau_plain": TAU_PLAIN, "tau_opp": TAU_OPP, "crown_w": CROWN_W,

@@ -1,0 +1,8438 @@
+{
+ "scope": {
+  "first_log": "live_play_20261004_205129",
+  "n_logs_in_scope": 219,
+  "n_analysed": 217,
+  "excluded": [
+   "live_play_20261004_230613.jsonl",
+   "live_play_20261006_145935.jsonl"
+  ],
+  "state_source_counts": {
+   "frame": 6,
+   "none": 30,
+   "decision": 181
+  }
+ },
+ "per_model": {
+  "rseries_r1e31": {
+   "n": 200,
+   "W": 100,
+   "L": 100,
+   "winrate": 50.0,
+   "dur_s": 207.39,
+   "crowns_for": 0.641,
+   "crowns_against": 0.729,
+   "n_state": 170,
+   "P1": {
+    "plays": 2944,
+    "plays_per_min": 7.41,
+    "cheap_share_pct": 53.8,
+    "mean_elixir_at_play": 5.72
+   },
+   "P2": {
+    "plays": 2809,
+    "plays_per_min": 14.62,
+    "cheap_share_pct": 52.8,
+    "mean_elixir_at_play": 4.18
+   },
+   "P3": {
+    "plays": 1560,
+    "plays_per_min": 15.3,
+    "cheap_share_pct": 53.8,
+    "mean_elixir_at_play": 3.5
+   },
+   "T3": {
+    "plays": 624,
+    "plays_per_min": 19.95,
+    "cheap_share_pct": 55.4,
+    "mean_elixir_at_play": 3.21
+   },
+   "per_match_Rocket": 0.31,
+   "per_match_Xbow": 3.33,
+   "per_match_Tesla": 4.82,
+   "per_match_Log": 5.83,
+   "per_match_Knight": 6.66,
+   "per_match_Skeletons": 7.04,
+   "per_match_IceWizard": 6.29,
+   "per_match_Tornado": 2.29,
+   "abilities_per_match": 1.47,
+   "rocket_in_hand_pct_of_match": 87.2,
+   "rocket_castable_pct_of_match": 20.7,
+   "rocket_matches_with_cast": 48,
+   "no_crown_scored_pct": 45.3,
+   "conceded_first_crown_pct": 41.8,
+   "scored_first_crown_pct": 46.5
+  },
+  "tower_spatial_v7": {
+   "n": 17,
+   "W": 6,
+   "L": 11,
+   "winrate": 35.3,
+   "dur_s": 212.347,
+   "crowns_for": 0.412,
+   "crowns_against": 0.824,
+   "n_state": 17,
+   "P1": {
+    "plays": 254,
+    "plays_per_min": 7.47,
+    "cheap_share_pct": 53.9,
+    "mean_elixir_at_play": 5.65
+   },
+   "P2": {
+    "plays": 245,
+    "plays_per_min": 15.14,
+    "cheap_share_pct": 53.9,
+    "mean_elixir_at_play": 4.27
+   },
+   "P3": {
+    "plays": 158,
+    "plays_per_min": 15.83,
+    "cheap_share_pct": 56.3,
+    "mean_elixir_at_play": 3.09
+   },
+   "T3": {
+    "plays": 54,
+    "plays_per_min": 21.41,
+    "cheap_share_pct": 57.4,
+    "mean_elixir_at_play": 2.81
+   },
+   "per_match_Rocket": 0.35,
+   "per_match_Xbow": 2.71,
+   "per_match_Tesla": 4.82,
+   "per_match_Log": 6.35,
+   "per_match_Knight": 7.06,
+   "per_match_Skeletons": 7.65,
+   "per_match_IceWizard": 6.71,
+   "per_match_Tornado": 3.0,
+   "abilities_per_match": 1.24,
+   "rocket_in_hand_pct_of_match": 86.9,
+   "rocket_castable_pct_of_match": 19.8,
+   "rocket_matches_with_cast": 6,
+   "no_crown_scored_pct": 58.8,
+   "conceded_first_crown_pct": 41.2,
+   "scored_first_crown_pct": 35.3
+  }
+ },
+ "r1e31_by_day": {
+  "20261004": {
+   "n": 35,
+   "W": 19,
+   "L": 16,
+   "winrate": 54.3,
+   "dur_s": 212.697,
+   "crowns_for": 0.6,
+   "crowns_against": 0.4,
+   "n_state": 5,
+   "P1": {
+    "plays": 531,
+    "plays_per_min": 7.62,
+    "cheap_share_pct": 54.2,
+    "mean_elixir_at_play": 5.71
+   },
+   "P2": {
+    "plays": 500,
+    "plays_per_min": 14.71,
+    "cheap_share_pct": 53.4,
+    "mean_elixir_at_play": 4.2
+   },
+   "P3": {
+    "plays": 314,
+    "plays_per_min": 15.41,
+    "cheap_share_pct": 53.8,
+    "mean_elixir_at_play": 3.35
+   },
+   "T3": {
+    "plays": 130,
+    "plays_per_min": 19.96,
+    "cheap_share_pct": 55.4,
+    "mean_elixir_at_play": 2.97
+   },
+   "per_match_Rocket": 0.23,
+   "per_match_Xbow": 3.4,
+   "per_match_Tesla": 5.06,
+   "per_match_Log": 6.11,
+   "per_match_Knight": 7.23,
+   "per_match_Skeletons": 7.34,
+   "per_match_IceWizard": 6.54,
+   "per_match_Tornado": 2.51,
+   "abilities_per_match": 1.46,
+   "rocket_in_hand_pct_of_match": null,
+   "rocket_castable_pct_of_match": null,
+   "rocket_matches_with_cast": 7,
+   "no_crown_scored_pct": 40.0,
+   "conceded_first_crown_pct": 40.0,
+   "scored_first_crown_pct": 60.0
+  },
+  "20261005": {
+   "n": 117,
+   "W": 56,
+   "L": 61,
+   "winrate": 47.9,
+   "dur_s": 205.416,
+   "crowns_for": 0.59,
+   "crowns_against": 0.735,
+   "n_state": 117,
+   "P1": {
+    "plays": 1720,
+    "plays_per_min": 7.43,
+    "cheap_share_pct": 53.9,
+    "mean_elixir_at_play": 5.74
+   },
+   "P2": {
+    "plays": 1607,
+    "plays_per_min": 14.44,
+    "cheap_share_pct": 52.5,
+    "mean_elixir_at_play": 4.18
+   },
+   "P3": {
+    "plays": 883,
+    "plays_per_min": 15.28,
+    "cheap_share_pct": 53.8,
+    "mean_elixir_at_play": 3.62
+   },
+   "T3": {
+    "plays": 346,
+    "plays_per_min": 19.94,
+    "cheap_share_pct": 56.6,
+    "mean_elixir_at_play": 3.39
+   },
+   "per_match_Rocket": 0.37,
+   "per_match_Xbow": 3.25,
+   "per_match_Tesla": 4.79,
+   "per_match_Log": 5.72,
+   "per_match_Knight": 6.51,
+   "per_match_Skeletons": 6.97,
+   "per_match_IceWizard": 6.19,
+   "per_match_Tornado": 2.19,
+   "abilities_per_match": 1.33,
+   "rocket_in_hand_pct_of_match": 86.6,
+   "rocket_castable_pct_of_match": 20.5,
+   "rocket_matches_with_cast": 31,
+   "no_crown_scored_pct": 47.0,
+   "conceded_first_crown_pct": 41.9,
+   "scored_first_crown_pct": 46.2
+  },
+  "20261006": {
+   "n": 48,
+   "W": 25,
+   "L": 23,
+   "winrate": 52.1,
+   "dur_s": 208.332,
+   "crowns_for": 0.771,
+   "crowns_against": 0.75,
+   "n_state": 48,
+   "P1": {
+    "plays": 693,
+    "plays_per_min": 7.22,
+    "cheap_share_pct": 53.2,
+    "mean_elixir_at_play": 5.69
+   },
+   "P2": {
+    "plays": 702,
+    "plays_per_min": 14.98,
+    "cheap_share_pct": 52.8,
+    "mean_elixir_at_play": 4.17
+   },
+   "P3": {
+    "plays": 363,
+    "plays_per_min": 15.26,
+    "cheap_share_pct": 54.0,
+    "mean_elixir_at_play": 3.34
+   },
+   "T3": {
+    "plays": 148,
+    "plays_per_min": 19.97,
+    "cheap_share_pct": 52.7,
+    "mean_elixir_at_play": 3.01
+   },
+   "per_match_Rocket": 0.23,
+   "per_match_Xbow": 3.5,
+   "per_match_Tesla": 4.69,
+   "per_match_Log": 5.9,
+   "per_match_Knight": 6.6,
+   "per_match_Skeletons": 7.0,
+   "per_match_IceWizard": 6.35,
+   "per_match_Tornado": 2.35,
+   "abilities_per_match": 1.81,
+   "rocket_in_hand_pct_of_match": 88.7,
+   "rocket_castable_pct_of_match": 21.0,
+   "rocket_matches_with_cast": 10,
+   "no_crown_scored_pct": 41.7,
+   "conceded_first_crown_pct": 41.7,
+   "scored_first_crown_pct": 45.8
+  }
+ },
+ "by_result": {
+  "rseries_r1e31": {
+   "WIN": {
+    "n": 100,
+    "W": 100,
+    "L": 0,
+    "winrate": 100.0,
+    "dur_s": 211.785,
+    "crowns_for": 1.048,
+    "crowns_against": 0.095,
+    "n_state": 84,
+    "P1": {
+     "plays": 1460,
+     "plays_per_min": 7.3,
+     "cheap_share_pct": 53.6,
+     "mean_elixir_at_play": 5.91
+    },
+    "P2": {
+     "plays": 1445,
+     "plays_per_min": 14.55,
+     "cheap_share_pct": 53.1,
+     "mean_elixir_at_play": 4.3
+    },
+    "P3": {
+     "plays": 801,
+     "plays_per_min": 14.93,
+     "cheap_share_pct": 52.9,
+     "mean_elixir_at_play": 3.62
+    },
+    "T3": {
+     "plays": 313,
+     "plays_per_min": 19.7,
+     "cheap_share_pct": 54.3,
+     "mean_elixir_at_play": 3.29
+    },
+    "per_match_Rocket": 0.32,
+    "per_match_Xbow": 3.68,
+    "per_match_Tesla": 4.98,
+    "per_match_Log": 5.77,
+    "per_match_Knight": 6.79,
+    "per_match_Skeletons": 7.17,
+    "per_match_IceWizard": 6.34,
+    "per_match_Tornado": 2.01,
+    "abilities_per_match": 1.43,
+    "rocket_in_hand_pct_of_match": 88.4,
+    "rocket_castable_pct_of_match": 21.7,
+    "rocket_matches_with_cast": 25,
+    "no_crown_scored_pct": 14.3,
+    "conceded_first_crown_pct": 6.0,
+    "scored_first_crown_pct": 79.8
+   },
+   "LOSS": {
+    "n": 100,
+    "W": 0,
+    "L": 100,
+    "winrate": 0.0,
+    "dur_s": 202.995,
+    "crowns_for": 0.244,
+    "crowns_against": 1.349,
+    "n_state": 86,
+    "P1": {
+     "plays": 1484,
+     "plays_per_min": 7.52,
+     "cheap_share_pct": 54.0,
+     "mean_elixir_at_play": 5.53
+    },
+    "P2": {
+     "plays": 1364,
+     "plays_per_min": 14.69,
+     "cheap_share_pct": 52.4,
+     "mean_elixir_at_play": 4.05
+    },
+    "P3": {
+     "plays": 759,
+     "plays_per_min": 15.72,
+     "cheap_share_pct": 54.8,
+     "mean_elixir_at_play": 3.38
+    },
+    "T3": {
+     "plays": 311,
+     "plays_per_min": 20.2,
+     "cheap_share_pct": 56.6,
+     "mean_elixir_at_play": 3.13
+    },
+    "per_match_Rocket": 0.3,
+    "per_match_Xbow": 2.99,
+    "per_match_Tesla": 4.65,
+    "per_match_Log": 5.89,
+    "per_match_Knight": 6.53,
+    "per_match_Skeletons": 6.91,
+    "per_match_IceWizard": 6.24,
+    "per_match_Tornado": 2.56,
+    "abilities_per_match": 1.51,
+    "rocket_in_hand_pct_of_match": 86.0,
+    "rocket_castable_pct_of_match": 19.6,
+    "rocket_matches_with_cast": 23,
+    "no_crown_scored_pct": 75.6,
+    "conceded_first_crown_pct": 76.7,
+    "scored_first_crown_pct": 14.0
+   }
+  },
+  "tower_spatial_v7": {
+   "WIN": {
+    "n": 6,
+    "W": 6,
+    "L": 0,
+    "winrate": 100.0,
+    "dur_s": 224.567,
+    "crowns_for": 0.667,
+    "crowns_against": 0.167,
+    "n_state": 6,
+    "P1": {
+     "plays": 87,
+     "plays_per_min": 7.25,
+     "cheap_share_pct": 55.2,
+     "mean_elixir_at_play": 5.81
+    },
+    "P2": {
+     "plays": 90,
+     "plays_per_min": 15.0,
+     "cheap_share_pct": 50.0,
+     "mean_elixir_at_play": 4.21
+    },
+    "P3": {
+     "plays": 71,
+     "plays_per_min": 15.93,
+     "cheap_share_pct": 54.9,
+     "mean_elixir_at_play": 3.2
+    },
+    "T3": {
+     "plays": 28,
+     "plays_per_min": 20.66,
+     "cheap_share_pct": 53.6,
+     "mean_elixir_at_play": 3.11
+    },
+    "per_match_Rocket": 0.33,
+    "per_match_Xbow": 3.5,
+    "per_match_Tesla": 5.67,
+    "per_match_Log": 6.33,
+    "per_match_Knight": 7.5,
+    "per_match_Skeletons": 8.17,
+    "per_match_IceWizard": 7.17,
+    "per_match_Tornado": 2.67,
+    "abilities_per_match": 0.5,
+    "rocket_in_hand_pct_of_match": 89.0,
+    "rocket_castable_pct_of_match": 19.3,
+    "rocket_matches_with_cast": 2,
+    "no_crown_scored_pct": 33.3,
+    "conceded_first_crown_pct": 0.0,
+    "scored_first_crown_pct": 66.7
+   },
+   "LOSS": {
+    "n": 11,
+    "W": 0,
+    "L": 11,
+    "winrate": 0.0,
+    "dur_s": 205.682,
+    "crowns_for": 0.273,
+    "crowns_against": 1.182,
+    "n_state": 11,
+    "P1": {
+     "plays": 167,
+     "plays_per_min": 7.59,
+     "cheap_share_pct": 53.3,
+     "mean_elixir_at_play": 5.56
+    },
+    "P2": {
+     "plays": 155,
+     "plays_per_min": 15.22,
+     "cheap_share_pct": 56.1,
+     "mean_elixir_at_play": 4.31
+    },
+    "P3": {
+     "plays": 87,
+     "plays_per_min": 15.76,
+     "cheap_share_pct": 57.5,
+     "mean_elixir_at_play": 3.01
+    },
+    "T3": {
+     "plays": 26,
+     "plays_per_min": 22.29,
+     "cheap_share_pct": 61.5,
+     "mean_elixir_at_play": 2.49
+    },
+    "per_match_Rocket": 0.36,
+    "per_match_Xbow": 2.27,
+    "per_match_Tesla": 4.36,
+    "per_match_Log": 6.36,
+    "per_match_Knight": 6.82,
+    "per_match_Skeletons": 7.36,
+    "per_match_IceWizard": 6.45,
+    "per_match_Tornado": 3.18,
+    "abilities_per_match": 1.64,
+    "rocket_in_hand_pct_of_match": 85.6,
+    "rocket_castable_pct_of_match": 20.0,
+    "rocket_matches_with_cast": 4,
+    "no_crown_scored_pct": 72.7,
+    "conceded_first_crown_pct": 63.6,
+    "scored_first_crown_pct": 18.2
+   }
+  },
+  "ALL": {
+   "WIN": {
+    "n": 106,
+    "W": 106,
+    "L": 0,
+    "winrate": 100.0,
+    "dur_s": 212.508,
+    "crowns_for": 1.022,
+    "crowns_against": 0.1,
+    "n_state": 90,
+    "P1": {
+     "plays": 1547,
+     "plays_per_min": 7.3,
+     "cheap_share_pct": 53.7,
+     "mean_elixir_at_play": 5.91
+    },
+    "P2": {
+     "plays": 1535,
+     "plays_per_min": 14.58,
+     "cheap_share_pct": 52.9,
+     "mean_elixir_at_play": 4.3
+    },
+    "P3": {
+     "plays": 872,
+     "plays_per_min": 15.0,
+     "cheap_share_pct": 53.1,
+     "mean_elixir_at_play": 3.58
+    },
+    "T3": {
+     "plays": 341,
+     "plays_per_min": 19.78,
+     "cheap_share_pct": 54.3,
+     "mean_elixir_at_play": 3.28
+    },
+    "per_match_Rocket": 0.32,
+    "per_match_Xbow": 3.67,
+    "per_match_Tesla": 5.02,
+    "per_match_Log": 5.8,
+    "per_match_Knight": 6.83,
+    "per_match_Skeletons": 7.23,
+    "per_match_IceWizard": 6.39,
+    "per_match_Tornado": 2.05,
+    "abilities_per_match": 1.38,
+    "rocket_in_hand_pct_of_match": 88.5,
+    "rocket_castable_pct_of_match": 21.5,
+    "rocket_matches_with_cast": 27,
+    "no_crown_scored_pct": 15.6,
+    "conceded_first_crown_pct": 5.6,
+    "scored_first_crown_pct": 78.9
+   },
+   "LOSS": {
+    "n": 111,
+    "W": 0,
+    "L": 111,
+    "winrate": 0.0,
+    "dur_s": 203.262,
+    "crowns_for": 0.247,
+    "crowns_against": 1.33,
+    "n_state": 97,
+    "P1": {
+     "plays": 1651,
+     "plays_per_min": 7.53,
+     "cheap_share_pct": 54.0,
+     "mean_elixir_at_play": 5.54
+    },
+    "P2": {
+     "plays": 1519,
+     "plays_per_min": 14.75,
+     "cheap_share_pct": 52.8,
+     "mean_elixir_at_play": 4.08
+    },
+    "P3": {
+     "plays": 846,
+     "plays_per_min": 15.72,
+     "cheap_share_pct": 55.1,
+     "mean_elixir_at_play": 3.34
+    },
+    "T3": {
+     "plays": 337,
+     "plays_per_min": 20.35,
+     "cheap_share_pct": 57.0,
+     "mean_elixir_at_play": 3.08
+    },
+    "per_match_Rocket": 0.31,
+    "per_match_Xbow": 2.92,
+    "per_match_Tesla": 4.62,
+    "per_match_Log": 5.94,
+    "per_match_Knight": 6.56,
+    "per_match_Skeletons": 6.95,
+    "per_match_IceWizard": 6.26,
+    "per_match_Tornado": 2.62,
+    "abilities_per_match": 1.52,
+    "rocket_in_hand_pct_of_match": 85.9,
+    "rocket_castable_pct_of_match": 19.7,
+    "rocket_matches_with_cast": 27,
+    "no_crown_scored_pct": 75.3,
+    "conceded_first_crown_pct": 75.3,
+    "scored_first_crown_pct": 14.4
+   }
+  }
+ },
+ "flags": {
+  "ability_ge1_with_le1_enemy_near": {
+   "losses": 48,
+   "of_losses": 97,
+   "wins": 38,
+   "of_wins": 90,
+   "loss_rate_when_flag_pct": 55.8,
+   "examples_loss": [
+    "20261004_212221",
+    "20261005_052057",
+    "20261005_064528",
+    "20261005_065159",
+    "20261005_065516",
+    "20261005_080838"
+   ]
+  },
+  "barrel_log_in_hand_not_cast_el_ge2": {
+   "losses": 5,
+   "of_losses": 94,
+   "wins": 4,
+   "of_wins": 87,
+   "loss_rate_when_flag_pct": 55.6,
+   "examples_loss": [
+    "20261005_070510",
+    "20261005_074149",
+    "20261005_095750",
+    "20261005_110919",
+    "20261005_124225"
+   ]
+  },
+  "barrel_log_not_in_hand": {
+   "losses": 12,
+   "of_losses": 94,
+   "wins": 4,
+   "of_wins": 87,
+   "loss_rate_when_flag_pct": 75.0,
+   "examples_loss": [
+    "20261005_070510",
+    "20261005_074149",
+    "20261005_095750",
+    "20261005_104436",
+    "20261005_110919",
+    "20261005_112313"
+   ]
+  },
+  "barrel_logless_tower_hit": {
+   "losses": 11,
+   "of_losses": 94,
+   "wins": 4,
+   "of_wins": 87,
+   "loss_rate_when_flag_pct": 73.3,
+   "examples_loss": [
+    "20261005_070510",
+    "20261005_074149",
+    "20261005_095750",
+    "20261005_110919",
+    "20261005_112313",
+    "20261005_121518"
+   ]
+  },
+  "conceded_first_crown": {
+   "losses": 73,
+   "of_losses": 97,
+   "wins": 5,
+   "of_wins": 90,
+   "loss_rate_when_flag_pct": 93.6,
+   "examples_loss": [
+    "20261004_212221",
+    "20261004_225921",
+    "20261005_061128",
+    "20261005_064528",
+    "20261005_065159",
+    "20261005_070248"
+   ]
+  },
+  "has_barrel": {
+   "losses": 12,
+   "of_losses": 94,
+   "wins": 5,
+   "of_wins": 87,
+   "loss_rate_when_flag_pct": 70.6,
+   "examples_loss": [
+    "20261005_070510",
+    "20261005_074149",
+    "20261005_095750",
+    "20261005_104436",
+    "20261005_110919",
+    "20261005_112313"
+   ]
+  },
+  "match_under_150s": {
+   "losses": 7,
+   "of_losses": 97,
+   "wins": 0,
+   "of_wins": 90,
+   "loss_rate_when_flag_pct": 100.0,
+   "examples_loss": [
+    "20261005_070248",
+    "20261005_091137",
+    "20261005_102744",
+    "20261005_122154",
+    "20261005_130730",
+    "20261005_132004"
+   ]
+  },
+  "never_scored_a_crown": {
+   "losses": 73,
+   "of_losses": 97,
+   "wins": 14,
+   "of_wins": 90,
+   "loss_rate_when_flag_pct": 83.9,
+   "examples_loss": [
+    "20261004_212221",
+    "20261004_225921",
+    "20261005_064528",
+    "20261005_065159",
+    "20261005_065516",
+    "20261005_070248"
+   ]
+  },
+  "no_rocket_on_tower": {
+   "losses": 77,
+   "of_losses": 97,
+   "wins": 74,
+   "of_wins": 90,
+   "loss_rate_when_flag_pct": 51.0,
+   "examples_loss": [
+    "20261004_212221",
+    "20261004_225921",
+    "20261005_052057",
+    "20261005_061128",
+    "20261005_065516",
+    "20261005_070248"
+   ]
+  },
+  "rocket_never_cast": {
+   "losses": 84,
+   "of_losses": 111,
+   "wins": 79,
+   "of_wins": 106,
+   "loss_rate_when_flag_pct": 51.5,
+   "examples_loss": [
+    "20261004_210212",
+    "20261004_212221",
+    "20261004_212616",
+    "20261004_212932",
+    "20261004_213250",
+    "20261004_215633"
+   ]
+  },
+  "rocket_pinned_in_hand_ge80pct_and_never_cast": {
+   "losses": 63,
+   "of_losses": 94,
+   "wins": 64,
+   "of_wins": 87,
+   "loss_rate_when_flag_pct": 49.6,
+   "examples_loss": [
+    "20261005_061128",
+    "20261005_065516",
+    "20261005_070248",
+    "20261005_070935",
+    "20261005_071827",
+    "20261005_073833"
+   ]
+  },
+  "scored_first_crown": {
+   "losses": 14,
+   "of_losses": 97,
+   "wins": 71,
+   "of_wins": 90,
+   "loss_rate_when_flag_pct": 16.5,
+   "examples_loss": [
+    "20261005_052057",
+    "20261005_070510",
+    "20261005_074149",
+    "20261005_074842",
+    "20261005_083449",
+    "20261005_095750"
+   ]
+  },
+  "three_crowned": {
+   "losses": 12,
+   "of_losses": 97,
+   "wins": 0,
+   "of_wins": 90,
+   "loss_rate_when_flag_pct": 100.0,
+   "examples_loss": [
+    "20261005_070248",
+    "20261005_102744",
+    "20261005_111236",
+    "20261005_111617",
+    "20261005_122154",
+    "20261005_124621"
+   ]
+  },
+  "wincon_tesla_absent_and_tower_hit": {
+   "losses": 58,
+   "of_losses": 94,
+   "wins": 33,
+   "of_wins": 87,
+   "loss_rate_when_flag_pct": 63.7,
+   "examples_loss": [
+    "20261005_061128",
+    "20261005_065159",
+    "20261005_070510",
+    "20261005_070935",
+    "20261005_071827",
+    "20261005_074149"
+   ]
+  },
+  "wincon_with_no_tesla_board_or_hand": {
+   "losses": 62,
+   "of_losses": 94,
+   "wins": 48,
+   "of_wins": 87,
+   "loss_rate_when_flag_pct": 56.4,
+   "examples_loss": [
+    "20261005_061128",
+    "20261005_064528",
+    "20261005_065159",
+    "20261005_065516",
+    "20261005_070248",
+    "20261005_070510"
+   ]
+  },
+  "xbow_any_nonreaching": {
+   "losses": 29,
+   "of_losses": 97,
+   "wins": 43,
+   "of_wins": 90,
+   "loss_rate_when_flag_pct": 40.3,
+   "examples_loss": [
+    "20261004_225921",
+    "20261005_052057",
+    "20261005_065159",
+    "20261005_065516",
+    "20261005_074149",
+    "20261005_074842"
+   ]
+  },
+  "xbow_at_1_1_any": {
+   "losses": 14,
+   "of_losses": 97,
+   "wins": 9,
+   "of_wins": 90,
+   "loss_rate_when_flag_pct": 60.9,
+   "examples_loss": [
+    "20261005_052057",
+    "20261005_061128",
+    "20261005_074149",
+    "20261005_074842",
+    "20261005_083449",
+    "20261005_101428"
+   ]
+  },
+  "xbow_deadlane_any": {
+   "losses": 14,
+   "of_losses": 97,
+   "wins": 29,
+   "of_wins": 90,
+   "loss_rate_when_flag_pct": 32.6,
+   "examples_loss": [
+    "20261005_052057",
+    "20261005_074149",
+    "20261005_074842",
+    "20261005_083449",
+    "20261005_101428",
+    "20261005_110919"
+   ]
+  },
+  "xbow_deadlane_at_1_1": {
+   "losses": 12,
+   "of_losses": 97,
+   "wins": 3,
+   "of_wins": 90,
+   "loss_rate_when_flag_pct": 80.0,
+   "examples_loss": [
+    "20261005_052057",
+    "20261005_074149",
+    "20261005_074842",
+    "20261005_083449",
+    "20261005_101428",
+    "20261005_110919"
+   ]
+  },
+  "xbow_deadlane_tesla_at_1_1": {
+   "losses": 4,
+   "of_losses": 97,
+   "wins": 2,
+   "of_wins": 90,
+   "loss_rate_when_flag_pct": 66.7,
+   "examples_loss": [
+    "20261005_052057",
+    "20261005_101428",
+    "20261006_174028",
+    "20261006_180120"
+   ]
+  },
+  "xbow_deadlane_with_tesla": {
+   "losses": 6,
+   "of_losses": 97,
+   "wins": 9,
+   "of_wins": 90,
+   "loss_rate_when_flag_pct": 40.0,
+   "examples_loss": [
+    "20261005_052057",
+    "20261005_101428",
+    "20261006_141053",
+    "20261006_172546",
+    "20261006_174028",
+    "20261006_180120"
+   ]
+  },
+  "xbow_ge2_reaching_none_defensive": {
+   "losses": 51,
+   "of_losses": 97,
+   "wins": 46,
+   "of_wins": 90,
+   "loss_rate_when_flag_pct": 52.6,
+   "examples_loss": [
+    "20261004_212221",
+    "20261005_061128",
+    "20261005_070935",
+    "20261005_071827",
+    "20261005_072708",
+    "20261005_073020"
+   ]
+  },
+  "xbow_ge2_reaching_that_died_early_ge2": {
+   "losses": 58,
+   "of_losses": 97,
+   "wins": 56,
+   "of_wins": 90,
+   "loss_rate_when_flag_pct": 50.9,
+   "examples_loss": [
+    "20261004_212221",
+    "20261004_225921",
+    "20261005_052057",
+    "20261005_061128",
+    "20261005_070935",
+    "20261005_071827"
+   ]
+  }
+ },
+ "events": {
+  "WIN": {
+   "matches": 90,
+   "xbow_placements": 335,
+   "reach": 276,
+   "nonreach": 59,
+   "deadlane": 37,
+   "deadlane_tesla": 9,
+   "deadlane_at_1_1": 4,
+   "at_1_1": 15,
+   "at_1_1_reach": 10,
+   "tesla_adjacent": 96,
+   "reach_life_s": 18.116,
+   "reach_died_early_pct": 68.5,
+   "reach_tower_dmg_mean_pct": 41.4,
+   "per_match": 3.72,
+   "rockets": 29,
+   "rocket_targets": {
+    "eL": 11,
+    "troops": 10,
+    "eR": 8
+   },
+   "rocket_finishing_blows": 2,
+   "rocket_mean_elixir": 6.718,
+   "rocket_tower_drop_mean_pct": 10.8,
+   "rocket_phase": {
+    "P3": 13,
+    "P2": 9,
+    "P1": 7
+   },
+   "matches_2plus_rockets_same_tower": 1,
+   "barrels": 27,
+   "matches_with_barrel": 5,
+   "barrel_log_in_hand": 19,
+   "barrel_log_responded": 10,
+   "barrel_log_in_hand_and_el_ge2_not_cast": 8,
+   "barrel_since_log_le10s": 2,
+   "barrel_tower_dmg_ge5pct": 17,
+   "barrel_tower_dmg_mean_pct": 13.1,
+   "barrel_dmg_when_log_responded_pct": 8.7,
+   "barrel_dmg_when_no_log_pct": 15.7,
+   "barrel_mean_elixir": 4.522,
+   "wincons": 546,
+   "wincon_tesla_on_board": 226,
+   "wincon_tesla_in_hand_only": 235,
+   "wincon_tesla_neither": 85,
+   "wincon_tower_dmg_mean_pct": 4.8,
+   "abilities": 119,
+   "ability_enemies_near_mean": 2.227,
+   "ability_le1_enemy_near": 59,
+   "ability_elixir_mean": 3.522,
+   "ability_kind": {
+    "iw_wincon": 60,
+    "iw_clump": 59
+   }
+  },
+  "LOSS": {
+   "matches": 97,
+   "xbow_placements": 278,
+   "reach": 234,
+   "nonreach": 44,
+   "deadlane": 23,
+   "deadlane_tesla": 7,
+   "deadlane_at_1_1": 19,
+   "at_1_1": 30,
+   "at_1_1_reach": 10,
+   "tesla_adjacent": 88,
+   "reach_life_s": 16.381,
+   "reach_died_early_pct": 81.6,
+   "reach_tower_dmg_mean_pct": 29.5,
+   "per_match": 2.87,
+   "rockets": 32,
+   "rocket_targets": {
+    "eL": 7,
+    "eR": 15,
+    "troops": 9,
+    "empty": 1
+   },
+   "rocket_finishing_blows": 1,
+   "rocket_mean_elixir": 7.104,
+   "rocket_tower_drop_mean_pct": 11.9,
+   "rocket_phase": {
+    "P2": 7,
+    "P1": 14,
+    "P3": 11
+   },
+   "matches_2plus_rockets_same_tower": 0,
+   "barrels": 63,
+   "matches_with_barrel": 12,
+   "barrel_log_in_hand": 26,
+   "barrel_log_responded": 24,
+   "barrel_log_in_hand_and_el_ge2_not_cast": 5,
+   "barrel_since_log_le10s": 12,
+   "barrel_tower_dmg_ge5pct": 40,
+   "barrel_tower_dmg_mean_pct": 17.0,
+   "barrel_dmg_when_log_responded_pct": 9.8,
+   "barrel_dmg_when_no_log_pct": 21.6,
+   "barrel_mean_elixir": 3.586,
+   "wincons": 677,
+   "wincon_tesla_on_board": 229,
+   "wincon_tesla_in_hand_only": 318,
+   "wincon_tesla_neither": 130,
+   "wincon_tower_dmg_mean_pct": 11.0,
+   "abilities": 148,
+   "ability_enemies_near_mean": 2.599,
+   "ability_le1_enemy_near": 66,
+   "ability_elixir_mean": 3.643,
+   "ability_kind": {
+    "iw_clump": 87,
+    "iw_wincon": 61
+   }
+  }
+ },
+ "opp_card_loss_rate": {
+  "Skeletons": {
+   "n": 38,
+   "losses": 10,
+   "loss_pct": 26.3
+  },
+  "ElectroSpirit": {
+   "n": 17,
+   "losses": 6,
+   "loss_pct": 35.3
+  },
+  "BarbLog": {
+   "n": 23,
+   "losses": 12,
+   "loss_pct": 52.2
+  },
+  "Hunter": {
+   "n": 12,
+   "losses": 4,
+   "loss_pct": 33.3
+  },
+  "Ghost": {
+   "n": 13,
+   "losses": 8,
+   "loss_pct": 61.5
+  },
+  "MiniPekka": {
+   "n": 36,
+   "losses": 22,
+   "loss_pct": 61.1
+  },
+  "Golem": {
+   "n": 11,
+   "losses": 8,
+   "loss_pct": 72.7
+  },
+  "Cannon": {
+   "n": 26,
+   "losses": 10,
+   "loss_pct": 38.5
+  },
+  "Witch": {
+   "n": 36,
+   "losses": 28,
+   "loss_pct": 77.8
+  },
+  "Minions": {
+   "n": 14,
+   "losses": 10,
+   "loss_pct": 71.4
+  },
+  "Knight": {
+   "n": 35,
+   "losses": 17,
+   "loss_pct": 48.6
+  },
+  "Valkyrie": {
+   "n": 33,
+   "losses": 20,
+   "loss_pct": 60.6
+  },
+  "IceWizard": {
+   "n": 13,
+   "losses": 6,
+   "loss_pct": 46.2
+  },
+  "EliteArcher": {
+   "n": 11,
+   "losses": 1,
+   "loss_pct": 9.1
+  },
+  "BlowdartGoblin": {
+   "n": 15,
+   "losses": 10,
+   "loss_pct": 66.7
+  },
+  "SkeletonBalloon": {
+   "n": 12,
+   "losses": 7,
+   "loss_pct": 58.3
+  },
+  "Wizard": {
+   "n": 24,
+   "losses": 18,
+   "loss_pct": 75.0
+  },
+  "GiantSkeleton": {
+   "n": 10,
+   "losses": 6,
+   "loss_pct": 60.0
+  },
+  "DarkPrince": {
+   "n": 21,
+   "losses": 12,
+   "loss_pct": 57.1
+  },
+  "GoblinBarrel": {
+   "n": 18,
+   "losses": 13,
+   "loss_pct": 72.2
+  },
+  "Princess": {
+   "n": 13,
+   "losses": 9,
+   "loss_pct": 69.2
+  },
+  "GoldenKnight": {
+   "n": 11,
+   "losses": 4,
+   "loss_pct": 36.4
+  },
+  "GoblinGang": {
+   "n": 12,
+   "losses": 7,
+   "loss_pct": 58.3
+  },
+  "Barbarians": {
+   "n": 14,
+   "losses": 10,
+   "loss_pct": 71.4
+  },
+  "HogRider": {
+   "n": 31,
+   "losses": 19,
+   "loss_pct": 61.3
+  },
+  "InfernoDragon": {
+   "n": 14,
+   "losses": 8,
+   "loss_pct": 57.1
+  },
+  "SkeletonKing": {
+   "n": 11,
+   "losses": 8,
+   "loss_pct": 72.7
+  },
+  "SkeletonArmy": {
+   "n": 31,
+   "losses": 19,
+   "loss_pct": 61.3
+  },
+  "Firecracker": {
+   "n": 34,
+   "losses": 22,
+   "loss_pct": 64.7
+  },
+  "Prince": {
+   "n": 11,
+   "losses": 8,
+   "loss_pct": 72.7
+  },
+  "AngryBarbarians": {
+   "n": 11,
+   "losses": 6,
+   "loss_pct": 54.5
+  },
+  "AxeMan": {
+   "n": 21,
+   "losses": 7,
+   "loss_pct": 33.3
+  },
+  "Balloon": {
+   "n": 11,
+   "losses": 4,
+   "loss_pct": 36.4
+  },
+  "ElixirGolem": {
+   "n": 13,
+   "losses": 11,
+   "loss_pct": 84.6
+  },
+  "RoyalHogs": {
+   "n": 15,
+   "losses": 9,
+   "loss_pct": 60.0
+  },
+  "IceSpirits": {
+   "n": 14,
+   "losses": 5,
+   "loss_pct": 35.7
+  },
+  "BabyDragon": {
+   "n": 13,
+   "losses": 8,
+   "loss_pct": 61.5
+  },
+  "Bomber": {
+   "n": 19,
+   "losses": 7,
+   "loss_pct": 36.8
+  },
+  "Musketeer": {
+   "n": 10,
+   "losses": 4,
+   "loss_pct": 40.0
+  },
+  "Tombstone": {
+   "n": 11,
+   "losses": 7,
+   "loss_pct": 63.6
+  },
+  "Berserker": {
+   "n": 13,
+   "losses": 2,
+   "loss_pct": 15.4
+  },
+  "FireSpirits": {
+   "n": 11,
+   "losses": 0,
+   "loss_pct": 0.0
+  },
+  "Tesla": {
+   "n": 16,
+   "losses": 5,
+   "loss_pct": 31.2
+  },
+  "Archer": {
+   "n": 10,
+   "losses": 4,
+   "loss_pct": 40.0
+  },
+  "Miner": {
+   "n": 16,
+   "losses": 4,
+   "loss_pct": 25.0
+  },
+  "Bats": {
+   "n": 18,
+   "losses": 9,
+   "loss_pct": 50.0
+  },
+  "Wallbreakers": {
+   "n": 12,
+   "losses": 4,
+   "loss_pct": 33.3
+  },
+  "ElectroWizard": {
+   "n": 22,
+   "losses": 10,
+   "loss_pct": 45.5
+  },
+  "SkeletonWarriors": {
+   "n": 12,
+   "losses": 6,
+   "loss_pct": 50.0
+  },
+  "MegaKnight": {
+   "n": 18,
+   "losses": 15,
+   "loss_pct": 83.3
+  },
+  "Bowler": {
+   "n": 10,
+   "losses": 4,
+   "loss_pct": 40.0
+  }
+ },
+ "base_loss_pct_state_matches": 51.9,
+ "first_conceded_tower_s": {
+  "n": 73,
+  "median": 146.8,
+  "q": [
+   84.8,
+   146.8,
+   196.1
+  ]
+ },
+ "first_scored_tower_s_in_wins": {
+  "n": 71,
+  "median": 146.5,
+  "q": [
+   103.3,
+   146.5,
+   192.2
+  ]
+ },
+ "final_crowns": {
+  "WIN": {
+   "1-0": 58,
+   "2-0": 8,
+   "0-0": 14,
+   "2-1": 6,
+   "1-1": 3,
+   "3-0": 1
+  },
+  "LOSS": {
+   "0-1": 52,
+   "1-2": 14,
+   "0-0": 10,
+   "0-3": 7,
+   "1-1": 5,
+   "0-2": 4,
+   "1-3": 5
+  }
+ },
+ "spend": {
+  "WIN": {
+   "P1": {
+    "mean_card_cost": 2.93,
+    "elixir_spent_per_min": 21.4,
+    "income_per_min": 21.43,
+    "le3_share_pct": 74.8,
+    "xbow_per_min": 0.78,
+    "tornado_per_min": 0.36,
+    "tesla_per_min": 1.01,
+    "rocket_per_min": 0.042
+   },
+   "P2": {
+    "mean_card_cost": 2.94,
+    "elixir_spent_per_min": 42.8,
+    "income_per_min": 42.86,
+    "le3_share_pct": 75.4,
+    "xbow_per_min": 1.52,
+    "tornado_per_min": 0.69,
+    "tesla_per_min": 1.96,
+    "rocket_per_min": 0.114
+   },
+   "P3": {
+    "mean_card_cost": 2.84,
+    "elixir_spent_per_min": 42.7,
+    "income_per_min": 42.86,
+    "le3_share_pct": 78.6,
+    "xbow_per_min": 1.08,
+    "tornado_per_min": 1.17,
+    "tesla_per_min": 1.91,
+    "rocket_per_min": 0.224
+   },
+   "T3": {
+    "mean_card_cost": 2.72,
+    "elixir_spent_per_min": 53.7,
+    "income_per_min": 64.29,
+    "le3_share_pct": 83.0,
+    "xbow_per_min": 0.75,
+    "tornado_per_min": 2.2,
+    "tesla_per_min": 2.32,
+    "rocket_per_min": 0.29
+   }
+  },
+  "LOSS": {
+   "P1": {
+    "mean_card_cost": 2.87,
+    "elixir_spent_per_min": 21.6,
+    "income_per_min": 21.43,
+    "le3_share_pct": 76.5,
+    "xbow_per_min": 0.65,
+    "tornado_per_min": 0.48,
+    "tesla_per_min": 1.05,
+    "rocket_per_min": 0.068
+   },
+   "P2": {
+    "mean_card_cost": 2.89,
+    "elixir_spent_per_min": 42.6,
+    "income_per_min": 42.86,
+    "le3_share_pct": 77.9,
+    "xbow_per_min": 1.38,
+    "tornado_per_min": 0.98,
+    "tesla_per_min": 1.81,
+    "rocket_per_min": 0.068
+   },
+   "P3": {
+    "mean_card_cost": 2.74,
+    "elixir_spent_per_min": 43.0,
+    "income_per_min": 42.86,
+    "le3_share_pct": 82.5,
+    "xbow_per_min": 0.74,
+    "tornado_per_min": 1.58,
+    "tesla_per_min": 1.78,
+    "rocket_per_min": 0.223
+   },
+   "T3": {
+    "mean_card_cost": 2.65,
+    "elixir_spent_per_min": 54.0,
+    "income_per_min": 64.29,
+    "le3_share_pct": 85.2,
+    "xbow_per_min": 0.66,
+    "tornado_per_min": 2.17,
+    "tesla_per_min": 2.11,
+    "rocket_per_min": 0.242
+   }
+  }
+ },
+ "tower_race": {
+  "WIN": {
+   "n": 88,
+   "60": {
+    "princess_hp_dealt_pct": 19.4,
+    "princess_hp_taken_pct": 10.7
+   },
+   "120": {
+    "princess_hp_dealt_pct": 36.1,
+    "princess_hp_taken_pct": 18.9
+   },
+   "180": {
+    "princess_hp_dealt_pct": 60.8,
+    "princess_hp_taken_pct": 28.9
+   },
+   "first_xbow_s": 46.184,
+   "xbows_before_120s": 1.625
+  },
+  "LOSS": {
+   "n": 84,
+   "60": {
+    "princess_hp_dealt_pct": 11.1,
+    "princess_hp_taken_pct": 15.0
+   },
+   "120": {
+    "princess_hp_dealt_pct": 23.0,
+    "princess_hp_taken_pct": 38.7
+   },
+   "180": {
+    "princess_hp_dealt_pct": 40.7,
+    "princess_hp_taken_pct": 54.9
+   },
+   "first_xbow_s": 54.719,
+   "xbows_before_120s": 1.179
+  }
+ },
+ "barrel_base": {
+  "matches": 17,
+  "barrels": 90,
+  "base_log_in_hand_pct": 30.7,
+  "at_barrel_log_in_hand_pct": 50.0,
+  "base_within10s_after_own_log_pct": 24.8,
+  "at_barrel_within10s_after_own_log_pct": 15.6,
+  "barrel_responded_pct_when_log_in_hand": 60.0,
+  "barrel_responded_pct_when_log_in_hand_and_el_ge2": 55.2,
+  "barrel_elixir_le2_pct": 32.2
+ },
+ "wincon_base": {
+  "base_tesla_on_board_pct_of_time": 32.4,
+  "at_wincon_tesla_on_board_pct": 37.2,
+  "n_wincon_arrivals": 1223,
+  "tower_dmg_15s_mean_pct_tesla_on_board": 5.7,
+  "tower_dmg_15s_mean_pct_no_tesla_on_board": 9.3,
+  "n_on": 455,
+  "n_off": 768,
+  "tower_hit_ge10pct_share_on": 14.7,
+  "tower_hit_ge10pct_share_off": 24.3
+ },
+ "adjusted_final_blow_matches": 9,
+ "derived_result_matches": 23,
+ "xbow_failed_offence": {
+  "counts": {
+   "W": {
+    "failed_reaching_xbow": 46,
+    "next_none": 6,
+    "next_reaching": 37,
+    "next_nonreaching": 3
+   },
+   "L": {
+    "failed_reaching_xbow": 85,
+    "next_none": 28,
+    "next_reaching": 53,
+    "next_nonreaching": 4
+   }
+  },
+  "matches_ge2_failed_no_defensive": {
+   "W": 9,
+   "L": 17
+  },
+  "examples_loss": [
+   {
+    "log": "20261004_212221",
+    "failed_reaching_xbows": 4,
+    "placements": [
+     [
+      12,
+      "L"
+     ],
+     [
+      90,
+      "R"
+     ],
+     [
+      129,
+      "R"
+     ],
+     [
+      156,
+      "R"
+     ]
+    ]
+   },
+   {
+    "log": "20261005_070935",
+    "failed_reaching_xbows": 2,
+    "placements": [
+     [
+      24,
+      "L"
+     ],
+     [
+      94,
+      "L"
+     ],
+     [
+      138,
+      "L"
+     ]
+    ]
+   },
+   {
+    "log": "20261005_071827",
+    "failed_reaching_xbows": 2,
+    "placements": [
+     [
+      142,
+      "R"
+     ],
+     [
+      163,
+      "L"
+     ],
+     [
+      227,
+      "R"
+     ],
+     [
+      254,
+      "R"
+     ]
+    ]
+   },
+   {
+    "log": "20261005_081512",
+    "failed_reaching_xbows": 2,
+    "placements": [
+     [
+      90,
+      "R"
+     ],
+     [
+      127,
+      "R"
+     ]
+    ]
+   },
+   {
+    "log": "20261005_090355",
+    "failed_reaching_xbows": 2,
+    "placements": [
+     [
+      131,
+      "L"
+     ],
+     [
+      164,
+      "L"
+     ],
+     [
+      195,
+      "L"
+     ]
+    ]
+   },
+   {
+    "log": "20261005_104436",
+    "failed_reaching_xbows": 3,
+    "placements": [
+     [
+      10,
+      "R"
+     ],
+     [
+      101,
+      "R"
+     ],
+     [
+      138,
+      "L"
+     ],
+     [
+      185,
+      "R"
+     ]
+    ]
+   }
+  ]
+ },
+ "early_collapse": {
+  "losses_my_princess_down_before_90s": 26,
+  "wins_my_princess_down_before_90s": 3,
+  "losses_ended_by_king_3crowns": 12,
+  "king_after_princess_gap_s_median": null,
+  "examples_3crown_under_150s": [
+   [
+    "20261004_224403",
+    102,
+    null,
+    null
+   ],
+   [
+    "20261005_070248",
+    133,
+    0,
+    3
+   ],
+   [
+    "20261005_091137",
+    148,
+    0,
+    1
+   ],
+   [
+    "20261005_102744",
+    76,
+    1,
+    3
+   ],
+   [
+    "20261005_122154",
+    126,
+    0,
+    3
+   ],
+   [
+    "20261005_130730",
+    77,
+    0,
+    3
+   ],
+   [
+    "20261005_132004",
+    57,
+    0,
+    3
+   ],
+   [
+    "20261006_143227",
+    131,
+    0,
+    3
+   ]
+  ],
+  "king_after_first_princess_gap_s_median": 71.3,
+  "n_king_losses": 12
+ },
+ "examples": {
+  "xbow_deadlane_at_1_1_loss": [
+   {
+    "log": "20261005_052057",
+    "sec": 129,
+    "tick": 2575,
+    "lane": "L",
+    "tesla_adjacent": false,
+    "crowns": [
+     1,
+     1
+    ]
+   },
+   {
+    "log": "20261005_052057",
+    "sec": 172,
+    "tick": 3432,
+    "lane": "L",
+    "tesla_adjacent": true,
+    "crowns": [
+     1,
+     1
+    ]
+   },
+   {
+    "log": "20261005_052057",
+    "sec": 219,
+    "tick": 4384,
+    "lane": "L",
+    "tesla_adjacent": false,
+    "crowns": [
+     1,
+     1
+    ]
+   },
+   {
+    "log": "20261005_074149",
+    "sec": 166,
+    "tick": 3311,
+    "lane": "R",
+    "tesla_adjacent": false,
+    "crowns": [
+     1,
+     1
+    ]
+   },
+   {
+    "log": "20261005_074842",
+    "sec": 198,
+    "tick": 3957,
+    "lane": "R",
+    "tesla_adjacent": false,
+    "crowns": [
+     1,
+     1
+    ]
+   },
+   {
+    "log": "20261005_074842",
+    "sec": 286,
+    "tick": 5712,
+    "lane": "R",
+    "tesla_adjacent": false,
+    "crowns": [
+     1,
+     1
+    ]
+   },
+   {
+    "log": "20261005_083449",
+    "sec": 127,
+    "tick": 2539,
+    "lane": "L",
+    "tesla_adjacent": false,
+    "crowns": [
+     1,
+     1
+    ]
+   },
+   {
+    "log": "20261005_083449",
+    "sec": 192,
+    "tick": 3840,
+    "lane": "L",
+    "tesla_adjacent": false,
+    "crowns": [
+     1,
+     1
+    ]
+   }
+  ],
+  "barrel_log_in_hand_not_cast_loss": [
+   {
+    "log": "20261005_070510",
+    "sec": 185,
+    "tick": 3697,
+    "elixir": 4.0,
+    "lane": "R",
+    "tower_dmg_pct": 0
+   },
+   {
+    "log": "20261005_074149",
+    "sec": 153,
+    "tick": 3055,
+    "elixir": 3.0,
+    "lane": "R",
+    "tower_dmg_pct": 4
+   },
+   {
+    "log": "20261005_095750",
+    "sec": 186,
+    "tick": 3730,
+    "elixir": 4.2,
+    "lane": "R",
+    "tower_dmg_pct": 32
+   },
+   {
+    "log": "20261005_110919",
+    "sec": 165,
+    "tick": 3301,
+    "elixir": 2.9,
+    "lane": "R",
+    "tower_dmg_pct": 70
+   },
+   {
+    "log": "20261005_124225",
+    "sec": 151,
+    "tick": 3018,
+    "elixir": 5.3,
+    "lane": "R",
+    "tower_dmg_pct": 8
+   }
+  ],
+  "barrel_no_log_big_hit_loss": [
+   {
+    "log": "20261005_070510",
+    "sec": 217,
+    "tick": 4338,
+    "log_in_hand": false,
+    "elixir": 2.9,
+    "tower_dmg_pct": 41
+   },
+   {
+    "log": "20261005_074149",
+    "sec": 35,
+    "tick": 700,
+    "log_in_hand": false,
+    "elixir": 1.7,
+    "tower_dmg_pct": 29
+   },
+   {
+    "log": "20261005_074149",
+    "sec": 103,
+    "tick": 2054,
+    "log_in_hand": false,
+    "elixir": 0.4,
+    "tower_dmg_pct": 30
+   },
+   {
+    "log": "20261005_095750",
+    "sec": 135,
+    "tick": 2691,
+    "log_in_hand": false,
+    "elixir": 3.1,
+    "tower_dmg_pct": 58
+   },
+   {
+    "log": "20261005_095750",
+    "sec": 186,
+    "tick": 3730,
+    "log_in_hand": true,
+    "elixir": 4.2,
+    "tower_dmg_pct": 32
+   },
+   {
+    "log": "20261005_110919",
+    "sec": 165,
+    "tick": 3301,
+    "log_in_hand": true,
+    "elixir": 2.9,
+    "tower_dmg_pct": 70
+   }
+  ],
+  "rocket_loss": [
+   {
+    "log": "20261005_064528",
+    "sec": 151,
+    "tick": 3021,
+    "target": "eL",
+    "elixir": 6.9
+   },
+   {
+    "log": "20261005_065159",
+    "sec": 55,
+    "tick": 1107,
+    "target": "eR",
+    "elixir": 9.3
+   },
+   {
+    "log": "20261005_070510",
+    "sec": 119,
+    "tick": 2383,
+    "target": "troops",
+    "elixir": 6.4
+   },
+   {
+    "log": "20261005_070510",
+    "sec": 153,
+    "tick": 3054,
+    "target": "troops",
+    "elixir": 6.0
+   },
+   {
+    "log": "20261005_073020",
+    "sec": 99,
+    "tick": 1988,
+    "target": "troops",
+    "elixir": 7.6
+   },
+   {
+    "log": "20261005_073020",
+    "sec": 195,
+    "tick": 3908,
+    "target": "troops",
+    "elixir": 5.8
+   },
+   {
+    "log": "20261005_074842",
+    "sec": 96,
+    "tick": 1930,
+    "target": "eR",
+    "elixir": 7.9
+   },
+   {
+    "log": "20261005_074842",
+    "sec": 225,
+    "tick": 4502,
+    "target": "empty",
+    "elixir": 6.3
+   }
+  ],
+  "wincon_no_tesla_big_hit_loss": [
+   {
+    "log": "20261005_061128",
+    "sec": 101,
+    "tick": 2018,
+    "card": "HogRider",
+    "lane": "R",
+    "tower_dmg_pct": 27
+   },
+   {
+    "log": "20261005_065159",
+    "sec": 168,
+    "tick": 3361,
+    "card": "Golem",
+    "lane": "L",
+    "tower_dmg_pct": 48
+   },
+   {
+    "log": "20261005_080525",
+    "sec": 81,
+    "tick": 1624,
+    "card": "SkeletonBalloon",
+    "lane": "L",
+    "tower_dmg_pct": 30
+   },
+   {
+    "log": "20261005_080525",
+    "sec": 88,
+    "tick": 1761,
+    "card": "SkeletonBalloon",
+    "lane": "L",
+    "tower_dmg_pct": 30
+   },
+   {
+    "log": "20261005_092802",
+    "sec": 35,
+    "tick": 696,
+    "card": "Golem",
+    "lane": "R",
+    "tower_dmg_pct": 48
+   },
+   {
+    "log": "20261005_092802",
+    "sec": 44,
+    "tick": 876,
+    "card": "RoyalHogs",
+    "lane": "R",
+    "tower_dmg_pct": 44
+   }
+  ]
+ },
+ "ability_total": {
+  "presses": 315,
+  "confirmed": 313
+ },
+ "matches": [
+  {
+   "log": "live_play_20261004_205129.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 240,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 47,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    4722,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261004_205543.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 33,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true
+   }
+  },
+  {
+   "log": "live_play_20261004_205859.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 29,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true
+   }
+  },
+  {
+   "log": "live_play_20261004_210212.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 212,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 37,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 4,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true
+   }
+  },
+  {
+   "log": "live_play_20261004_210556.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 302,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 72,
+   "rockets": 0,
+   "xb": 5,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true
+   }
+  },
+  {
+   "log": "live_play_20261004_211113.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 204,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 37,
+   "rockets": 0,
+   "xb": 2,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true
+   }
+  },
+  {
+   "log": "live_play_20261004_211450.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 230,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 44,
+   "rockets": 1,
+   "xb": 3,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": null,
+   "flags": {}
+  },
+  {
+   "log": "live_play_20261004_211903.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 30,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true
+   }
+  },
+  {
+   "log": "live_play_20261004_212221.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 219,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 38,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    4302,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261004_212616.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 32,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true
+   }
+  },
+  {
+   "log": "live_play_20261004_212932.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 31,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true
+   }
+  },
+  {
+   "log": "live_play_20261004_213250.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 33,
+   "rockets": 0,
+   "xb": 2,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true
+   }
+  },
+  {
+   "log": "live_play_20261004_213607.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 194,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 34,
+   "rockets": 0,
+   "xb": 5,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true
+   }
+  },
+  {
+   "log": "live_play_20261004_213936.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 190,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 33,
+   "rockets": 1,
+   "xb": 3,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": null,
+   "flags": {}
+  },
+  {
+   "log": "live_play_20261004_214258.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 310,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 68,
+   "rockets": 0,
+   "xb": 5,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true
+   }
+  },
+  {
+   "log": "live_play_20261004_215110.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 310,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 71,
+   "rockets": 1,
+   "xb": 6,
+   "xb_reach": 6,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    6113,
+    "me"
+   ],
+   "flags": {
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261004_215633.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 33,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true
+   }
+  },
+  {
+   "log": "live_play_20261004_215951.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 277,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 67,
+   "rockets": 0,
+   "xb": 1,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true
+   }
+  },
+  {
+   "log": "live_play_20261004_220440.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 33,
+   "rockets": 0,
+   "xb": 1,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true
+   }
+  },
+  {
+   "log": "live_play_20261004_220757.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 29,
+   "rockets": 1,
+   "xb": 2,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": null,
+   "flags": {}
+  },
+  {
+   "log": "live_play_20261004_221110.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 179,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 30,
+   "rockets": 0,
+   "xb": 2,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true
+   }
+  },
+  {
+   "log": "live_play_20261004_221417.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 38,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true
+   }
+  },
+  {
+   "log": "live_play_20261004_221737.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 31,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true
+   }
+  },
+  {
+   "log": "live_play_20261004_222053.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 26,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true
+   }
+  },
+  {
+   "log": "live_play_20261004_222423.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 278,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 62,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    5475,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "scored_first_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261004_222915.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 189,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 41,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true
+   }
+  },
+  {
+   "log": "live_play_20261004_223238.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 261,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 55,
+   "rockets": 2,
+   "xb": 4,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": null,
+   "flags": {}
+  },
+  {
+   "log": "live_play_20261004_223712.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 31,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true
+   }
+  },
+  {
+   "log": "live_play_20261004_224025.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 206,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 34,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true
+   }
+  },
+  {
+   "log": "live_play_20261004_224403.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 102,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 12,
+   "rockets": 0,
+   "xb": 1,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true
+   }
+  },
+  {
+   "log": "live_play_20261004_224555.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 31,
+   "rockets": 0,
+   "xb": 2,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true
+   }
+  },
+  {
+   "log": "live_play_20261004_224912.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 278,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 70,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true
+   }
+  },
+  {
+   "log": "live_play_20261004_225401.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 296,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 67,
+   "rockets": 1,
+   "xb": 8,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": null,
+   "flags": {}
+  },
+  {
+   "log": "live_play_20261004_225921.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 31,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 5,
+   "abil": 0,
+   "first_crown": [
+    2216,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261004_230237.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 202,
+   "crowns": [
+    null,
+    null
+   ],
+   "plays": 35,
+   "rockets": 1,
+   "xb": 5,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": null,
+   "flags": {}
+  },
+  {
+   "log": "live_play_20261005_052057.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "derived",
+   "dur_s": 313,
+   "crowns": [
+    1,
+    2
+   ],
+   "plays": 68,
+   "rockets": 0,
+   "xb": 7,
+   "xb_reach": 4,
+   "xb_deadlane": 3,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    1281,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_deadlane_at_1_1": true,
+    "xbow_deadlane_with_tesla": true,
+    "xbow_deadlane_tesla_at_1_1": true,
+    "xbow_at_1_1_any": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_061128.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "derived",
+   "dur_s": 181,
+   "crowns": [
+    1,
+    2
+   ],
+   "plays": 32,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    1191,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_at_1_1_any": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_062759.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "derived",
+   "dur_s": 311,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 66,
+   "rockets": 2,
+   "xb": 4,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": [
+    6139,
+    "me"
+   ],
+   "flags": {
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_064528.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 34,
+   "rockets": 1,
+   "xb": 1,
+   "xb_reach": 1,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    3368,
+    "opp"
+   ],
+   "flags": {
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_064842.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 32,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 3,
+   "xb_deadlane": 1,
+   "barrels": 6,
+   "abil": 1,
+   "first_crown": [
+    2930,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_deadlane_with_tesla": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "has_barrel": true,
+    "barrel_logless_tower_hit": true,
+    "barrel_log_in_hand_not_cast_el_ge2": true,
+    "barrel_log_not_in_hand": true
+   }
+  },
+  {
+   "log": "live_play_20261005_065159.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 182,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 29,
+   "rockets": 1,
+   "xb": 2,
+   "xb_reach": 1,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    2324,
+    "opp"
+   ],
+   "flags": {
+    "xbow_any_nonreaching": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_065516.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 240,
+   "crowns": [
+    0,
+    0
+   ],
+   "plays": 45,
+   "rockets": 0,
+   "xb": 5,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_065932.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 33,
+   "rockets": 0,
+   "xb": 2,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    2748,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_070248.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 133,
+   "crowns": [
+    0,
+    3
+   ],
+   "plays": 17,
+   "rockets": 0,
+   "xb": 1,
+   "xb_reach": 1,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    1207,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "match_under_150s": true,
+    "three_crowned": true,
+    "wincon_with_no_tesla_board_or_hand": true
+   }
+  },
+  {
+   "log": "live_play_20261005_070510.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 251,
+   "crowns": [
+    1,
+    1
+   ],
+   "plays": 54,
+   "rockets": 2,
+   "xb": 1,
+   "xb_reach": 1,
+   "xb_deadlane": 0,
+   "barrels": 6,
+   "abil": 1,
+   "first_crown": [
+    666,
+    "me"
+   ],
+   "flags": {
+    "no_rocket_on_tower": true,
+    "scored_first_crown": true,
+    "has_barrel": true,
+    "barrel_logless_tower_hit": true,
+    "barrel_log_in_hand_not_cast_el_ge2": true,
+    "barrel_log_not_in_hand": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_070935.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    0,
+    2
+   ],
+   "plays": 34,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    1125,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_071253.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 226,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 38,
+   "rockets": 1,
+   "xb": 4,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    4445,
+    "me"
+   ],
+   "flags": {
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261005_071827.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 308,
+   "crowns": [
+    0,
+    0
+   ],
+   "plays": 72,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_072350.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 32,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 3,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    3329,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261005_072708.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 20,
+   "rockets": 0,
+   "xb": 2,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    2977,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261005_073020.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 280,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 63,
+   "rockets": 2,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    5590,
+    "opp"
+   ],
+   "flags": {
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261005_073515.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    2,
+    0
+   ],
+   "plays": 31,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    2805,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true
+   }
+  },
+  {
+   "log": "live_play_20261005_073833.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 182,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 28,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    3364,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261005_074149.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 190,
+   "crowns": [
+    1,
+    1
+   ],
+   "plays": 33,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 3,
+   "xb_deadlane": 1,
+   "barrels": 4,
+   "abil": 0,
+   "first_crown": [
+    1692,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_deadlane_at_1_1": true,
+    "xbow_at_1_1_any": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "has_barrel": true,
+    "barrel_logless_tower_hit": true,
+    "barrel_log_in_hand_not_cast_el_ge2": true,
+    "barrel_log_not_in_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_074514.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 181,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 28,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    3444,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_074842.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 309,
+   "crowns": [
+    1,
+    2
+   ],
+   "plays": 66,
+   "rockets": 3,
+   "xb": 5,
+   "xb_reach": 3,
+   "xb_deadlane": 2,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    2697,
+    "me"
+   ],
+   "flags": {
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_deadlane_at_1_1": true,
+    "xbow_at_1_1_any": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_075405.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    0,
+    0
+   ],
+   "plays": 31,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_075724.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 29,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 1,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    1376,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_080041.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 270,
+   "crowns": [
+    0,
+    0
+   ],
+   "plays": 56,
+   "rockets": 3,
+   "xb": 5,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": null,
+   "flags": {
+    "xbow_any_nonreaching": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_080525.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 179,
+   "crowns": [
+    1,
+    2
+   ],
+   "plays": 32,
+   "rockets": 0,
+   "xb": 2,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    1094,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "conceded_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_080838.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 182,
+   "crowns": [
+    0,
+    2
+   ],
+   "plays": 36,
+   "rockets": 1,
+   "xb": 2,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    2259,
+    "opp"
+   ],
+   "flags": {
+    "xbow_ge2_reaching_none_defensive": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_081154.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 31,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 1,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    1469,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "scored_first_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261005_081512.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 202,
+   "crowns": [
+    0,
+    0
+   ],
+   "plays": 35,
+   "rockets": 1,
+   "xb": 2,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": null,
+   "flags": {
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_081858.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 219,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 41,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    4355,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_082252.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 273,
+   "crowns": [
+    0,
+    0
+   ],
+   "plays": 59,
+   "rockets": 1,
+   "xb": 5,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": null,
+   "flags": {
+    "xbow_any_nonreaching": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_082738.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 223,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 40,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": [
+    4398,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_083137.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 30,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 2,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    3048,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "scored_first_crown": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_083449.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 266,
+   "crowns": [
+    1,
+    1
+   ],
+   "plays": 56,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 2,
+   "xb_deadlane": 2,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    1788,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_deadlane_at_1_1": true,
+    "xbow_at_1_1_any": true,
+    "scored_first_crown": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_083930.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 269,
+   "crowns": [
+    2,
+    1
+   ],
+   "plays": 56,
+   "rockets": 0,
+   "xb": 6,
+   "xb_reach": 5,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    1759,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_at_1_1_any": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_084413.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 243,
+   "crowns": [
+    2,
+    1
+   ],
+   "plays": 51,
+   "rockets": 0,
+   "xb": 5,
+   "xb_reach": 5,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    1849,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_at_1_1_any": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_084831.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 182,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 32,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 2,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    2834,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true
+   }
+  },
+  {
+   "log": "live_play_20261005_085159.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 307,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 72,
+   "rockets": 0,
+   "xb": 2,
+   "xb_reach": 1,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 5,
+   "first_crown": [
+    6082,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_085720.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 36,
+   "rockets": 0,
+   "xb": 2,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    2936,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_090037.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 33,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    3302,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261005_090355.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 250,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 51,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    4945,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_090820.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 182,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 32,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    2884,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_091137.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 148,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 26,
+   "rockets": 0,
+   "xb": 1,
+   "xb_reach": 1,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    2546,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "match_under_150s": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_091419.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 196,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 30,
+   "rockets": 0,
+   "xb": 5,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    3844,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_091743.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 186,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 43,
+   "rockets": 0,
+   "xb": 1,
+   "xb_reach": 1,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 4,
+   "first_crown": [
+    3718,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "no_rocket_on_tower": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_092103.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 197,
+   "crowns": [
+    0,
+    0
+   ],
+   "plays": 36,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true
+   }
+  },
+  {
+   "log": "live_play_20261005_092447.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 181,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 35,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 2,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": [
+    2456,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_092802.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 30,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    1404,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_093120.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 29,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 1,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    1376,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_093433.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 232,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 43,
+   "rockets": 1,
+   "xb": 4,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    4592,
+    "me"
+   ],
+   "flags": {
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261005_093839.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 192,
+   "crowns": [
+    0,
+    0
+   ],
+   "plays": 43,
+   "rockets": 0,
+   "xb": 1,
+   "xb_reach": 1,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "never_scored_a_crown": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_094205.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 263,
+   "crowns": [
+    1,
+    1
+   ],
+   "plays": 59,
+   "rockets": 0,
+   "xb": 5,
+   "xb_reach": 3,
+   "xb_deadlane": 2,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    1076,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_deadlane_at_1_1": true,
+    "xbow_deadlane_with_tesla": true,
+    "xbow_deadlane_tesla_at_1_1": true,
+    "xbow_at_1_1_any": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_094643.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 245,
+   "crowns": [
+    0,
+    0
+   ],
+   "plays": 49,
+   "rockets": 0,
+   "xb": 5,
+   "xb_reach": 5,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_095105.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 31,
+   "rockets": 1,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    3445,
+    "opp"
+   ],
+   "flags": {
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true
+   }
+  },
+  {
+   "log": "live_play_20261005_095424.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 181,
+   "crowns": [
+    2,
+    0
+   ],
+   "plays": 31,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    3084,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_095750.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 200,
+   "crowns": [
+    1,
+    2
+   ],
+   "plays": 37,
+   "rockets": 0,
+   "xb": 2,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 6,
+   "abil": 2,
+   "first_crown": [
+    2681,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "has_barrel": true,
+    "barrel_logless_tower_hit": true,
+    "barrel_log_in_hand_not_cast_el_ge2": true,
+    "barrel_log_not_in_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_100121.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    0,
+    2
+   ],
+   "plays": 36,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    2048,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_100439.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 28,
+   "rockets": 1,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    3595,
+    "me"
+   ],
+   "flags": {
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "scored_first_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261005_100757.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 182,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 30,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    3051,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_101113.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 30,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 3,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    2913,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_101428.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 192,
+   "crowns": [
+    1,
+    1
+   ],
+   "plays": 35,
+   "rockets": 0,
+   "xb": 5,
+   "xb_reach": 1,
+   "xb_deadlane": 3,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    807,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_deadlane_at_1_1": true,
+    "xbow_deadlane_with_tesla": true,
+    "xbow_deadlane_tesla_at_1_1": true,
+    "xbow_at_1_1_any": true,
+    "scored_first_crown": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_101754.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 182,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 30,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 3,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    1715,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true
+   }
+  },
+  {
+   "log": "live_play_20261005_102110.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 182,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 38,
+   "rockets": 0,
+   "xb": 1,
+   "xb_reach": 1,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": [
+    3277,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_102426.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    2,
+    0
+   ],
+   "plays": 32,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 2,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    751,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "scored_first_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261005_102744.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 76,
+   "crowns": [
+    1,
+    3
+   ],
+   "plays": 11,
+   "rockets": 0,
+   "xb": 1,
+   "xb_reach": 1,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    816,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "scored_first_crown": true,
+    "match_under_150s": true,
+    "three_crowned": true
+   }
+  },
+  {
+   "log": "live_play_20261005_102921.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 28,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 2,
+   "xb_deadlane": 2,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": [
+    2171,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_103238.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 307,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 73,
+   "rockets": 1,
+   "xb": 5,
+   "xb_reach": 5,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    6094,
+    "me"
+   ],
+   "flags": {
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261005_103800.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 182,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 30,
+   "rockets": 1,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    1285,
+    "opp"
+   ],
+   "flags": {
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261005_104118.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 32,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    2536,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_104436.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 228,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 43,
+   "rockets": 1,
+   "xb": 4,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 4,
+   "abil": 2,
+   "first_crown": [
+    4498,
+    "opp"
+   ],
+   "flags": {
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "has_barrel": true,
+    "barrel_log_not_in_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_104832.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 35,
+   "rockets": 1,
+   "xb": 2,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    1586,
+    "me"
+   ],
+   "flags": {
+    "xbow_ge2_reaching_none_defensive": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_105150.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 35,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    2499,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_105507.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 205,
+   "crowns": [
+    2,
+    1
+   ],
+   "plays": 37,
+   "rockets": 2,
+   "xb": 3,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 4,
+   "abil": 0,
+   "first_crown": [
+    1349,
+    "opp"
+   ],
+   "flags": {
+    "xbow_any_nonreaching": true,
+    "xbow_at_1_1_any": true,
+    "conceded_first_crown": true,
+    "has_barrel": true,
+    "barrel_logless_tower_hit": true,
+    "barrel_log_in_hand_not_cast_el_ge2": true,
+    "barrel_log_not_in_hand": true
+   }
+  },
+  {
+   "log": "live_play_20261005_105847.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 214,
+   "crowns": [
+    0,
+    0
+   ],
+   "plays": 37,
+   "rockets": 1,
+   "xb": 4,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": null,
+   "flags": {
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_110247.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 182,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 29,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 3,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    2229,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_110603.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 182,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 34,
+   "rockets": 0,
+   "xb": 2,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    3496,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_110919.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 182,
+   "crowns": [
+    1,
+    2
+   ],
+   "plays": 32,
+   "rockets": 1,
+   "xb": 3,
+   "xb_reach": 1,
+   "xb_deadlane": 2,
+   "barrels": 4,
+   "abil": 0,
+   "first_crown": [
+    1700,
+    "me"
+   ],
+   "flags": {
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_deadlane_at_1_1": true,
+    "xbow_at_1_1_any": true,
+    "scored_first_crown": true,
+    "has_barrel": true,
+    "barrel_logless_tower_hit": true,
+    "barrel_log_in_hand_not_cast_el_ge2": true,
+    "barrel_log_not_in_hand": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_111236.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 206,
+   "crowns": [
+    1,
+    3
+   ],
+   "plays": 32,
+   "rockets": 2,
+   "xb": 3,
+   "xb_reach": 2,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    2245,
+    "opp"
+   ],
+   "flags": {
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_deadlane_at_1_1": true,
+    "xbow_at_1_1_any": true,
+    "conceded_first_crown": true,
+    "three_crowned": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_111617.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 171,
+   "crowns": [
+    1,
+    3
+   ],
+   "plays": 30,
+   "rockets": 0,
+   "xb": 2,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    1928,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "three_crowned": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_111922.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 216,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 42,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    4290,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "scored_first_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261005_112313.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    0,
+    2
+   ],
+   "plays": 34,
+   "rockets": 0,
+   "xb": 2,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 4,
+   "abil": 0,
+   "first_crown": [
+    3380,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "has_barrel": true,
+    "barrel_logless_tower_hit": true,
+    "barrel_log_not_in_hand": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_112630.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 212,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 38,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    4179,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_113013.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 219,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 42,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    4389,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_113418.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 182,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 27,
+   "rockets": 0,
+   "xb": 5,
+   "xb_reach": 2,
+   "xb_deadlane": 3,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    685,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_deadlane_with_tesla": true,
+    "scored_first_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261005_113735.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 311,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 72,
+   "rockets": 1,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    6145,
+    "opp"
+   ],
+   "flags": {
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261005_114253.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 309,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 73,
+   "rockets": 1,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    6135,
+    "me"
+   ],
+   "flags": {
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_114817.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 31,
+   "rockets": 0,
+   "xb": 5,
+   "xb_reach": 5,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    3245,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261005_115136.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 232,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 41,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": [
+    4583,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_115536.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 31,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 1,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    1238,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_115849.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 182,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 32,
+   "rockets": 1,
+   "xb": 2,
+   "xb_reach": 1,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    2450,
+    "opp"
+   ],
+   "flags": {
+    "xbow_any_nonreaching": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_120204.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 182,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 33,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 1,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    3101,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_deadlane_with_tesla": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_120533.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 30,
+   "rockets": 1,
+   "xb": 4,
+   "xb_reach": 2,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    2771,
+    "me"
+   ],
+   "flags": {
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_120850.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 32,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    1655,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_121202.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 182,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 31,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 3,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    2589,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261005_121518.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 32,
+   "rockets": 0,
+   "xb": 5,
+   "xb_reach": 5,
+   "xb_deadlane": 0,
+   "barrels": 3,
+   "abil": 0,
+   "first_crown": [
+    3348,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "has_barrel": true,
+    "barrel_logless_tower_hit": true,
+    "barrel_log_not_in_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_121837.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 188,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 30,
+   "rockets": 2,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    3681,
+    "me"
+   ],
+   "flags": {
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_122154.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 126,
+   "crowns": [
+    0,
+    3
+   ],
+   "plays": 18,
+   "rockets": 0,
+   "xb": 1,
+   "xb_reach": 1,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    718,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "match_under_150s": true,
+    "three_crowned": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_122414.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 221,
+   "crowns": [
+    0,
+    0
+   ],
+   "plays": 45,
+   "rockets": 0,
+   "xb": 2,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true
+   }
+  },
+  {
+   "log": "live_play_20261005_122809.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 310,
+   "crowns": [
+    0,
+    0
+   ],
+   "plays": 72,
+   "rockets": 0,
+   "xb": 2,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "never_scored_a_crown": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_123334.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 181,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 32,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    3526,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_123701.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 310,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 70,
+   "rockets": 0,
+   "xb": 7,
+   "xb_reach": 7,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    6131,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_124225.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 222,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 36,
+   "rockets": 3,
+   "xb": 5,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 5,
+   "abil": 2,
+   "first_crown": [
+    4442,
+    "opp"
+   ],
+   "flags": {
+    "xbow_any_nonreaching": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "has_barrel": true,
+    "barrel_logless_tower_hit": true,
+    "barrel_log_in_hand_not_cast_el_ge2": true,
+    "barrel_log_not_in_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_124621.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 160,
+   "crowns": [
+    1,
+    3
+   ],
+   "plays": 23,
+   "rockets": 0,
+   "xb": 2,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    1454,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_at_1_1_any": true,
+    "scored_first_crown": true,
+    "three_crowned": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_124916.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 31,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 3,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    1565,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_125234.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 263,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 53,
+   "rockets": 1,
+   "xb": 6,
+   "xb_reach": 6,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 5,
+   "first_crown": [
+    5237,
+    "me"
+   ],
+   "flags": {
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_125711.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 181,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 32,
+   "rockets": 0,
+   "xb": 2,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    3080,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_130027.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 30,
+   "rockets": 0,
+   "xb": 2,
+   "xb_reach": 1,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": [
+    2043,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_130339.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 204,
+   "crowns": [
+    0,
+    0
+   ],
+   "plays": 41,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 8,
+   "abil": 2,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "never_scored_a_crown": true,
+    "has_barrel": true,
+    "barrel_logless_tower_hit": true,
+    "barrel_log_in_hand_not_cast_el_ge2": true,
+    "barrel_log_not_in_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_130730.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 77,
+   "crowns": [
+    0,
+    3
+   ],
+   "plays": 14,
+   "rockets": 0,
+   "xb": 0,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    1194,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "no_rocket_on_tower": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "match_under_150s": true,
+    "three_crowned": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_130858.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 32,
+   "rockets": 0,
+   "xb": 1,
+   "xb_reach": 1,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    2911,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_131214.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 182,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 31,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 2,
+   "xb_deadlane": 2,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    826,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_131531.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 258,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 48,
+   "rockets": 0,
+   "xb": 6,
+   "xb_reach": 6,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    5095,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_132004.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 57,
+   "crowns": [
+    0,
+    3
+   ],
+   "plays": 12,
+   "rockets": 0,
+   "xb": 1,
+   "xb_reach": 1,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    879,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "no_rocket_on_tower": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "match_under_150s": true,
+    "three_crowned": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261005_132112.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 28,
+   "rockets": 1,
+   "xb": 3,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": [
+    1986,
+    "opp"
+   ],
+   "flags": {
+    "xbow_any_nonreaching": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_132429.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 266,
+   "crowns": [
+    0,
+    0
+   ],
+   "plays": 54,
+   "rockets": 0,
+   "xb": 6,
+   "xb_reach": 5,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true
+   }
+  },
+  {
+   "log": "live_play_20261005_132911.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 240,
+   "crowns": [
+    2,
+    1
+   ],
+   "plays": 50,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    3174,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_at_1_1_any": true,
+    "conceded_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261005_133326.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 31,
+   "rockets": 1,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    1735,
+    "opp"
+   ],
+   "flags": {
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261005_133644.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "derived",
+   "dur_s": 310,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 73,
+   "rockets": 0,
+   "xb": 1,
+   "xb_reach": 1,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 5,
+   "first_crown": [
+    6146,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_100703.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "derived",
+   "dur_s": 218,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 41,
+   "rockets": 0,
+   "xb": 5,
+   "xb_reach": 5,
+   "xb_deadlane": 0,
+   "barrels": 5,
+   "abil": 1,
+   "first_crown": [
+    4341,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "has_barrel": true,
+    "barrel_logless_tower_hit": true,
+    "barrel_log_not_in_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_120339.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "derived",
+   "dur_s": 310,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 70,
+   "rockets": 0,
+   "xb": 5,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    6125,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_120907.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "derived",
+   "dur_s": 237,
+   "crowns": [
+    0,
+    0
+   ],
+   "plays": 40,
+   "rockets": 1,
+   "xb": 5,
+   "xb_reach": 5,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": null,
+   "flags": {
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "never_scored_a_crown": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_121407.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "derived",
+   "dur_s": 221,
+   "crowns": [
+    0,
+    0
+   ],
+   "plays": 34,
+   "rockets": 1,
+   "xb": 7,
+   "xb_reach": 7,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": null,
+   "flags": {
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "never_scored_a_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261006_122925.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "derived",
+   "dur_s": 154,
+   "crowns": [
+    2,
+    0
+   ],
+   "plays": 21,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 3,
+   "xb_deadlane": 2,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    804,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "scored_first_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261006_123255.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "derived",
+   "dur_s": 211,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 39,
+   "rockets": 1,
+   "xb": 4,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    4209,
+    "opp"
+   ],
+   "flags": {
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261006_124440.jsonl",
+   "model": "tower_spatial_v7",
+   "res": "WIN",
+   "src": "derived",
+   "dur_s": 181,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 31,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 3,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    2067,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true
+   }
+  },
+  {
+   "log": "live_play_20261006_125159.jsonl",
+   "model": "tower_spatial_v7",
+   "res": "WIN",
+   "src": "derived",
+   "dur_s": 183,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 29,
+   "rockets": 1,
+   "xb": 2,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 2,
+   "abil": 0,
+   "first_crown": [
+    3275,
+    "me"
+   ],
+   "flags": {
+    "xbow_ge2_reaching_none_defensive": true,
+    "scored_first_crown": true,
+    "has_barrel": true
+   }
+  },
+  {
+   "log": "live_play_20261006_125740.jsonl",
+   "model": "tower_spatial_v7",
+   "res": "LOSS",
+   "src": "derived",
+   "dur_s": 240,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 50,
+   "rockets": 0,
+   "xb": 2,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    4796,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261006_130342.jsonl",
+   "model": "tower_spatial_v7",
+   "res": "WIN",
+   "src": "derived",
+   "dur_s": 242,
+   "crowns": [
+    0,
+    0
+   ],
+   "plays": 43,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 7,
+   "abil": 0,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "never_scored_a_crown": true,
+    "has_barrel": true,
+    "barrel_logless_tower_hit": true,
+    "barrel_log_in_hand_not_cast_el_ge2": true,
+    "barrel_log_not_in_hand": true
+   }
+  },
+  {
+   "log": "live_play_20261006_130809.jsonl",
+   "model": "tower_spatial_v7",
+   "res": "LOSS",
+   "src": "derived",
+   "dur_s": 187,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 30,
+   "rockets": 1,
+   "xb": 2,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 4,
+   "abil": 2,
+   "first_crown": [
+    3671,
+    "opp"
+   ],
+   "flags": {
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "has_barrel": true,
+    "barrel_logless_tower_hit": true,
+    "barrel_log_not_in_hand": true,
+    "wincon_with_no_tesla_board_or_hand": true
+   }
+  },
+  {
+   "log": "live_play_20261006_131142.jsonl",
+   "model": "tower_spatial_v7",
+   "res": "WIN",
+   "src": "derived",
+   "dur_s": 259,
+   "crowns": [
+    0,
+    0
+   ],
+   "plays": 54,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "never_scored_a_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261006_131641.jsonl",
+   "model": "tower_spatial_v7",
+   "res": "WIN",
+   "src": "derived",
+   "dur_s": 300,
+   "crowns": [
+    1,
+    1
+   ],
+   "plays": 71,
+   "rockets": 1,
+   "xb": 4,
+   "xb_reach": 3,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    3216,
+    "me"
+   ],
+   "flags": {
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_deadlane_at_1_1": true,
+    "xbow_at_1_1_any": true,
+    "scored_first_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261006_140419.jsonl",
+   "model": "tower_spatial_v7",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 31,
+   "rockets": 1,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    1958,
+    "opp"
+   ],
+   "flags": {
+    "xbow_ge2_reaching_none_defensive": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261006_140737.jsonl",
+   "model": "tower_spatial_v7",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 181,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 31,
+   "rockets": 1,
+   "xb": 2,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 3,
+   "abil": 2,
+   "first_crown": [
+    3067,
+    "opp"
+   ],
+   "flags": {
+    "xbow_ge2_reaching_none_defensive": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "has_barrel": true,
+    "barrel_logless_tower_hit": true,
+    "barrel_log_not_in_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_141053.jsonl",
+   "model": "tower_spatial_v7",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    1,
+    2
+   ],
+   "plays": 25,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 2,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": [
+    990,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_deadlane_with_tesla": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_141406.jsonl",
+   "model": "tower_spatial_v7",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 205,
+   "crowns": [
+    1,
+    1
+   ],
+   "plays": 37,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 2,
+   "xb_deadlane": 2,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    902,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_deadlane_at_1_1": true,
+    "xbow_at_1_1_any": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261006_141745.jsonl",
+   "model": "tower_spatial_v7",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 182,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 31,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    3193,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_142102.jsonl",
+   "model": "tower_spatial_v7",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 40,
+   "rockets": 0,
+   "xb": 1,
+   "xb_reach": 1,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 4,
+   "first_crown": [
+    3257,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "no_rocket_on_tower": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_142420.jsonl",
+   "model": "tower_spatial_v7",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 225,
+   "crowns": [
+    0,
+    0
+   ],
+   "plays": 46,
+   "rockets": 0,
+   "xb": 0,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 4,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_142820.jsonl",
+   "model": "tower_spatial_v7",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 232,
+   "crowns": [
+    0,
+    0
+   ],
+   "plays": 47,
+   "rockets": 1,
+   "xb": 2,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": null,
+   "flags": {
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261006_143227.jsonl",
+   "model": "tower_spatial_v7",
+   "res": "LOSS",
+   "src": "derived",
+   "dur_s": 131,
+   "crowns": [
+    0,
+    3
+   ],
+   "plays": 22,
+   "rockets": 0,
+   "xb": 1,
+   "xb_reach": 1,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    1149,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "match_under_150s": true,
+    "three_crowned": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261006_150201.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "derived",
+   "dur_s": 184,
+   "crowns": [
+    2,
+    0
+   ],
+   "plays": 32,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 2,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    751,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_deadlane_with_tesla": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true
+   }
+  },
+  {
+   "log": "live_play_20261006_150923.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    1,
+    2
+   ],
+   "plays": 37,
+   "rockets": 0,
+   "xb": 2,
+   "xb_reach": 1,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 4,
+   "first_crown": [
+    704,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_deadlane_at_1_1": true,
+    "xbow_at_1_1_any": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_151240.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 28,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    3319,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261006_151558.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    2,
+    0
+   ],
+   "plays": 39,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 2,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": [
+    1128,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_deadlane_with_tesla": true,
+    "scored_first_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261006_151915.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 182,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 34,
+   "rockets": 0,
+   "xb": 2,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    2245,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261006_152233.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 31,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 2,
+   "xb_deadlane": 2,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    1682,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_deadlane_with_tesla": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261006_152551.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 206,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 40,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    4126,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_152934.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 182,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 34,
+   "rockets": 0,
+   "xb": 0,
+   "xb_reach": 0,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    3460,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_153251.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 181,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 35,
+   "rockets": 0,
+   "xb": 2,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    3604,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_153607.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 30,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 1,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": [
+    2852,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_153939.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 216,
+   "crowns": [
+    0,
+    0
+   ],
+   "plays": 38,
+   "rockets": 1,
+   "xb": 4,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": null,
+   "flags": {
+    "xbow_any_nonreaching": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261006_154329.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 180,
+   "crowns": [
+    0,
+    3
+   ],
+   "plays": 31,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": [
+    1804,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "three_crowned": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_154643.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 298,
+   "crowns": [
+    0,
+    0
+   ],
+   "plays": 67,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_155156.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 29,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    2021,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261006_155514.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 181,
+   "crowns": [
+    1,
+    2
+   ],
+   "plays": 34,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    1655,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261006_155830.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 32,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    3036,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261006_160148.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 32,
+   "rockets": 0,
+   "xb": 2,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    1257,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261006_160505.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 28,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    1555,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true
+   }
+  },
+  {
+   "log": "live_play_20261006_160823.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 171,
+   "crowns": [
+    0,
+    3
+   ],
+   "plays": 26,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    3136,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "three_crowned": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_161136.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 36,
+   "rockets": 0,
+   "xb": 1,
+   "xb_reach": 1,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 4,
+   "first_crown": [
+    1465,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_161450.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 204,
+   "crowns": [
+    1,
+    2
+   ],
+   "plays": 39,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    2270,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261006_161831.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 182,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 28,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 1,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 4,
+   "first_crown": [
+    1005,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_162148.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 313,
+   "crowns": [
+    2,
+    1
+   ],
+   "plays": 68,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 2,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 8,
+   "first_crown": [
+    2259,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_deadlane_at_1_1": true,
+    "xbow_deadlane_with_tesla": true,
+    "xbow_deadlane_tesla_at_1_1": true,
+    "xbow_at_1_1_any": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_162709.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 284,
+   "crowns": [
+    0,
+    0
+   ],
+   "plays": 65,
+   "rockets": 0,
+   "xb": 2,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 5,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_163209.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 182,
+   "crowns": [
+    2,
+    0
+   ],
+   "plays": 31,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    2685,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261006_163525.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 310,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 73,
+   "rockets": 1,
+   "xb": 5,
+   "xb_reach": 5,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    6138,
+    "opp"
+   ],
+   "flags": {
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_164050.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 163,
+   "crowns": [
+    1,
+    3
+   ],
+   "plays": 26,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 2,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    1435,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_deadlane_at_1_1": true,
+    "xbow_at_1_1_any": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "three_crowned": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261006_164355.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    2,
+    1
+   ],
+   "plays": 31,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": [
+    1994,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_at_1_1_any": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_164712.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 199,
+   "crowns": [
+    1,
+    2
+   ],
+   "plays": 39,
+   "rockets": 0,
+   "xb": 2,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    2955,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "conceded_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_165046.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 256,
+   "crowns": [
+    1,
+    1
+   ],
+   "plays": 54,
+   "rockets": 0,
+   "xb": 6,
+   "xb_reach": 4,
+   "xb_deadlane": 2,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    2309,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_deadlane_with_tesla": true,
+    "xbow_at_1_1_any": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261006_165517.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 231,
+   "crowns": [
+    0,
+    0
+   ],
+   "plays": 45,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": null,
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_165923.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 276,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 61,
+   "rockets": 1,
+   "xb": 2,
+   "xb_reach": 2,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": [
+    5528,
+    "opp"
+   ],
+   "flags": {
+    "xbow_ge2_reaching_none_defensive": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261006_170414.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    2,
+    0
+   ],
+   "plays": 29,
+   "rockets": 1,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    2811,
+    "me"
+   ],
+   "flags": {
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261006_170732.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 164,
+   "crowns": [
+    3,
+    0
+   ],
+   "plays": 25,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 0,
+   "first_crown": [
+    2369,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_deadlane_any": true,
+    "scored_first_crown": true
+   }
+  },
+  {
+   "log": "live_play_20261006_171031.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 206,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 31,
+   "rockets": 1,
+   "xb": 5,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": [
+    4055,
+    "me"
+   ],
+   "flags": {
+    "xbow_any_nonreaching": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_171425.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 205,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 35,
+   "rockets": 0,
+   "xb": 5,
+   "xb_reach": 5,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 1,
+   "first_crown": [
+    4056,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_171805.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "ladder",
+   "dur_s": 248,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 42,
+   "rockets": 2,
+   "xb": 5,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": [
+    4876,
+    "me"
+   ],
+   "flags": {
+    "xbow_any_nonreaching": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_172227.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 184,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 28,
+   "rockets": 0,
+   "xb": 4,
+   "xb_reach": 4,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": [
+    1492,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_172546.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "ladder",
+   "dur_s": 183,
+   "crowns": [
+    1,
+    2
+   ],
+   "plays": 37,
+   "rockets": 1,
+   "xb": 4,
+   "xb_reach": 2,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 4,
+   "first_crown": [
+    1002,
+    "opp"
+   ],
+   "flags": {
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_deadlane_with_tesla": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_172904.jsonl",
+   "model": "rseries_r1e31",
+   "res": "WIN",
+   "src": "derived",
+   "dur_s": 182,
+   "crowns": [
+    1,
+    0
+   ],
+   "plays": 31,
+   "rockets": 0,
+   "xb": 2,
+   "xb_reach": 1,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    1222,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "scored_first_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261006_174028.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "derived",
+   "dur_s": 309,
+   "crowns": [
+    1,
+    2
+   ],
+   "plays": 74,
+   "rockets": 0,
+   "xb": 6,
+   "xb_reach": 4,
+   "xb_deadlane": 2,
+   "barrels": 15,
+   "abil": 1,
+   "first_crown": [
+    2994,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_deadlane_at_1_1": true,
+    "xbow_deadlane_with_tesla": true,
+    "xbow_deadlane_tesla_at_1_1": true,
+    "xbow_at_1_1_any": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "has_barrel": true,
+    "barrel_logless_tower_hit": true,
+    "barrel_log_not_in_hand": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true
+   }
+  },
+  {
+   "log": "live_play_20261006_175729.jsonl",
+   "model": "rseries_r1e31",
+   "res": "LOSS",
+   "src": "derived",
+   "dur_s": 189,
+   "crowns": [
+    0,
+    1
+   ],
+   "plays": 31,
+   "rockets": 0,
+   "xb": 3,
+   "xb_reach": 3,
+   "xb_deadlane": 0,
+   "barrels": 0,
+   "abil": 3,
+   "first_crown": [
+    3700,
+    "opp"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_ge2_reaching_none_defensive": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "conceded_first_crown": true,
+    "never_scored_a_crown": true,
+    "wincon_with_no_tesla_board_or_hand": true,
+    "wincon_tesla_absent_and_tower_hit": true,
+    "ability_ge1_with_le1_enemy_near": true
+   }
+  },
+  {
+   "log": "live_play_20261006_180120.jsonl",
+   "model": "tower_spatial_v7",
+   "res": "LOSS",
+   "src": "derived",
+   "dur_s": 310,
+   "crowns": [
+    1,
+    2
+   ],
+   "plays": 73,
+   "rockets": 0,
+   "xb": 5,
+   "xb_reach": 4,
+   "xb_deadlane": 1,
+   "barrels": 0,
+   "abil": 2,
+   "first_crown": [
+    1239,
+    "me"
+   ],
+   "flags": {
+    "rocket_never_cast": true,
+    "rocket_pinned_in_hand_ge80pct_and_never_cast": true,
+    "no_rocket_on_tower": true,
+    "xbow_any_nonreaching": true,
+    "xbow_deadlane_any": true,
+    "xbow_deadlane_at_1_1": true,
+    "xbow_deadlane_with_tesla": true,
+    "xbow_deadlane_tesla_at_1_1": true,
+    "xbow_at_1_1_any": true,
+    "xbow_ge2_reaching_that_died_early_ge2": true,
+    "scored_first_crown": true
+   }
+  }
+ ]
+}

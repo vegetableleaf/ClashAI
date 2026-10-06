@@ -144,7 +144,8 @@ class _Core:
                 if cid in env._hero_ids[side]:
                     env.ability_deployments[side][env.names[cid]] += 1
             if getattr(env, 'behaviour_telemetry', None) is not None:
-                env.behaviour_telemetry.play(before.tick, side, env.names[cid], int(x), int(y))
+                env.behaviour_telemetry.play(before.tick, side, env.names[cid], int(x), int(y),
+                                             elixir=before.players[side].elixir_milli / 1000.0)
             if env.feature_version >= 3:
                 env.public_plays.append(dict(tick=int(before.tick), side=side, card=env.names[cid], form=form,
                                              x=int(x), y=int(y), accepted=True, play_index=len(env.public_plays)))

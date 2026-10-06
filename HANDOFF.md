@@ -3716,6 +3716,24 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 > * **FIX C1:** `reader_identity_aliases.dedupe_hero_bodies` (keep the first 203000023 object per side, drop co-located
 >   ones within 0.5 tile), applied in `live_gen.observe` + `row`. 1,702/1,702 sidebyside frames had the pair -> 0 after;
 >   R1e reader smoke PASS; 3 tests. Takes effect at the next live start (live was STOPPED 17:32 by the owner).
+> * **LIVE REVIEW (`L73/live_review/`, 217 matches 10-04 20:51..10-06 18:06):** R1e 100-100 (50.0%); tower_v7 6-11.
+>   Losses: opponent takes the first crown in 73/97 L vs 5/90 W (median tower falls 147 s; 26/71 conceded towers were
+>   >= 90% HP 30 s before = one push; my elixir averaged 3.0 in that window); never scores a crown 73/97 L (first X-Bow
+>   55 s L vs 46 s W; reaching X-Bow dies < 24 s in 82% L); Rocket 0.31/match, castable (in hand + >= 6) only 21% of
+>   time; win-con arrives with no Tesla on board 62/94 L vs 48/87 W; no defensive switch (after a failed offensive X-Bow
+>   the next is offensive again 53/85 L, defensive 4); dead-lane X-Bow at 1-1 12 L vs 3 W (19 of 30 1-1 X-Bows in L
+>   were dead-lane); Goblin Barrel decks 12/17 lost (Log in hand at 50% of arrivals, 32% land with < 2 elixir); spend =
+>   income in every phase, elixir at play 5.7 / 4.2 / 3.5 / 3.2 (1x/2x/OT2x/3x); <= 3-cost share rises 75 -> 83% (W),
+>   76 -> 85% (L) -- Tornado/Ice Wizard replacing X-Bow, not more Skeletons; hard matchups Elixir Golem 11/13 L, Mega
+>   Knight 15/18, Witch 28/36, Wizard 18/24. Ice Wizard: 145 presses "clump n>=3" (73 at exactly 3; Skeletons/Skeleton
+>   Army/Minions/Goblin Gang 37) -> the interim rule counts bodies, not value.
+> * **ECONOMY DIAGNOSIS (`L73/econ_diag/`, R1e, 38,317 val pro rows icebow deck):** pros play 6.9 / 13.5 / 16.8 per
+>   min (1x/2x/OT) at elixir 7.2 / 6.5 / 6.2; the bot plays as often (live 7.4 / 14.6 / 15.3) but at 5.7 / 4.2 / 3.5 --
+>   it spends as soon as it can, pros bank. At live tau .35 R1e says PLAY on 41.8% of rows vs pros 31.1% (1x .279 vs
+>   .205, 2x .489 vs .373, OT .600 vs .446); when the pro WAITED it plays 24%. Substituting a cheaper card because the
+>   preferred card is unaffordable: ~1% of plays -> CONTRADICTED as a cause. Pro-rate-matching tau: .49 / .54 / .59
+>   (1x/2x/OT), .54 overall. Exp 1 RUNNING (`L73/econ_tau/run.sh`): tau .35 / .45 / .54, ghost + 96 reactive games
+>   (old + evo census) + telemetry (new: per-phase elixir at play). search_s0 `--tau-plain` added (default unchanged).
 > * Hero Ice Wizard crawl BLOCKED on login (Cloudflare cleared; /data/replay needs a RoyaleAPI session; saved tokens
 >   from Aug 30 expired). Owner: `cd /c/Users/benpe/clash-replay-scraper && python crawl_deck.py --deck icebow probe`,
 >   log in in its Chrome window; then rerun `scratchpad/gauntlet/L70/abilities/ice_wizard_hero/crawl_hero_iw.py`
