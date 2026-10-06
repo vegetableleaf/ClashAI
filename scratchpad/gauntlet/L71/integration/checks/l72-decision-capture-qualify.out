@@ -1,0 +1,10 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+Traceback (most recent call last):
+  File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L72\improvement_loop\decision_capture\qualify.py", line 165, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L72\improvement_loop\decision_capture\qualify.py", line 160, in main
+    assert qualified, ('capture overhead budget failed', perf)
+           ^^^^^^^^^
+AssertionError: ('capture overhead budget failed', {'median': 9.78675001533702, 'p95': 12.199669916299172, 'maximum': 12.854099972173572})

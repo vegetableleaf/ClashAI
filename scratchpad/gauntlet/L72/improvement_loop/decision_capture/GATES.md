@@ -2,14 +2,16 @@
 
 OWNS: scratchpad/gauntlet/L72/improvement_loop/decision_capture/**
 
-- [ ] U1 Public schema, failures, caps, mutation and hooks qualified
+- [x] U1 Public schema, failures, caps, mutation and hooks qualified
   CHECK: research/ext/Royale/.venv/Scripts/python.exe -m pytest scratchpad/gauntlet/L72/improvement_loop/decision_capture/test_capture.py scratchpad/gauntlet/L72/improvement_loop/decision_capture/test_entry_capture.py -q
   EXPECT: passed
-  EVIDENCE: pending registration and inspected execution receipt.
+  EVIDENCE: l72-decision-capture-unit,42passed,8.418439s,exit0/token.
 - [ ] C1 Exact captureOFF/ON engineering workload and fixed latency floor
   CHECK: research/ext/Royale/.venv/Scripts/python.exe scratchpad/gauntlet/L72/improvement_loop/decision_capture/qualify.py
   EXPECT: DECISION_CAPTURE_QUALIFIED
-  EVIDENCE: pending.
+  EVIDENCE: l72-decision-capture-qualify13.676313s exit1 at final latency;24cases
+  exact but overhead median9.786750/p9512.199670/max12.854100ms fails2/5/20.
+  ABANDON: C1 synchronous storage failed frozen latency. Preserve all artifacts.
 - [ ] V1 Fresh-process exact R1e replay and independent corruption rejection
   CHECK: research/ext/Royale/.venv/Scripts/python.exe scratchpad/gauntlet/L72/improvement_loop/decision_capture/replay.py
   EXPECT: DECISION_CAPTURE_REPLAYED

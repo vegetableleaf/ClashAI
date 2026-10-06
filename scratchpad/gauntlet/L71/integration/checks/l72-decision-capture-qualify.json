@@ -1,0 +1,13 @@
+{
+  "command": [
+    "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe",
+    "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L72\\improvement_loop\\decision_capture\\qualify.py"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot",
+  "shell": "none; subprocess argument vector",
+  "exit_code": 1,
+  "expected": "DECISION_CAPTURE_QUALIFIED",
+  "matched": false,
+  "output_sha256": "9816fa2754c731aa49a340f89b257caafa98927cba087963849a88a13147e63b",
+  "seconds": 13.676313161849976
+}
