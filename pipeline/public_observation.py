@@ -66,7 +66,11 @@ def public_frame(frame, *, source):
                 cid = int(e['card_id'])
                 # Category is the reader's generation identity; address alone is reusable.
                 eid = (e['address'], e.get('category')) if source == 'reader' else e['entity_id']
-        if int(side) not in (0, 1) or cid < 0 or hp <= 0:
+        # lead 2026-10-06 (IDENTITY_AUDIT #3): keep UNREADABLE bodies (max_hp <= 0, e.g. every Evo Witch 13000007 reads
+        # hp/max_hp -1) -- dropping them hid the parent, so her Skeletons became 'new Witch plays' (+5 elixir each;
+        # native 232 phantom vs 556 true Evo Witch plays, live 13 / 92). PlayDetector already treats max_hp <= 0 as a
+        # possible parent. Dead bodies (hp 0 with a known max) are still dropped.
+        if int(side) not in (0, 1) or cid < 0 or (hp <= 0 and mhp > 0):
             continue
         out['entities'].append(dict(side=int(side), x=float(x), y=float(y), hp=hp,
                                     max_hp=mhp, card_id=cid, address=(int(side), eid)))

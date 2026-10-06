@@ -3742,6 +3742,21 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   units spawned, from icebow/data/webcache; unknown 0.5); hero/cube pair deduped first. Win-con branch unchanged.
 >   Owner logged in to RoyaleAPI 18:48 -> Ice Wizard crawl RUNNING (`L70/abilities/ice_wizard_hero/crawl/`).
 >   Lead now owns the DAILY 21:30 EST Discord report (Codex's newsletter is the owner's to switch off).
+> * **20:xx -- SPAWNER IDENTITY AUDIT (`L73/spawners/IDENTITY_AUDIT.md` + results.json) + 3 LIVE INPUT FIXES.** Audit:
+>   10 issues; worst: (#1) children carry the parent's card_id in training, live AND the pinned SIM (78.5% of `witch`
+>   tokens are skeletons, 70.4% `night_witch` = bats, 69.2% tombstone, 61.0% goblin_hut, 38.3% furnace; live R1e sees
+>   ~4 Witches for 1) -- consistent train/live, needs a corrected dataset + retrain (Codex fv5 covers 6 families, never
+>   deployed); (#3) every Evo Witch (13000007) reads hp/max_hp -1 and was dropped, so her skeletons became phantom
+>   Witch plays (native 232 vs 556 true; live 13/92) +5 elixir each; (#5) LIVE-ONLY Elixir Golem level mismatch.
+>   Upstream RoyaleSim 0.1.17 adds per-unit `unit_type` (pinned runtime is 0.1.13, 49 commits behind).
+>   FIXES (live path; default for all sources but SIM/native unchanged): (a) `public_observation.public_frame` keeps
+>   unreadable bodies (max_hp <= 0) -> live audit 0 phantom plays (Witch 78 real, was 92 incl. 13 phantom);
+>   native truth re-audit RUNNING. (b) **`live_mem.to_observe` types towers by POSITION**: the reader reports a woken
+>   king with the princess kind (13) in **33% of live frames (27,758 / 83,381)** -> from_engine filed it as the RIGHT
+>   princess and left the king slot EMPTY (= destroyed king) -- live-only corruption of tower inputs, late game.
+>   (c) `obs_contract` sub-spawn HP splits divided by the side's tower level factor (max_hp / 3052 princess, / 4824
+>   king; exactly 1.0 for native/SIM): live Elixir Golem 524/576 -> blob, 1108/1218 -> golemite, 2280/2507 -> golem
+>   (before: golemites as Elixir Golems, blobs as golemites).
 > * Hero Ice Wizard crawl BLOCKED on login (Cloudflare cleared; /data/replay needs a RoyaleAPI session; saved tokens
 >   from Aug 30 expired). Owner: `cd /c/Users/benpe/clash-replay-scraper && python crawl_deck.py --deck icebow probe`,
 >   log in in its Chrome window; then rerun `scratchpad/gauntlet/L70/abilities/ice_wizard_hero/crawl_hero_iw.py`

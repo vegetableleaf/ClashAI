@@ -283,6 +283,7 @@ def from_engine(obs: Mapping[str, Any], my_side: int, deck: Deck, *, history: Op
 
     # --- towers ---
     found: dict[tuple[int, str, Optional[str]], Tower] = {}
+    lvl_factor: dict[int, float] = {}
     tower_rows = (obs.get("episode") or {}).get("crown_towers", []) if raw else obs.get("towers") or []
     for tw in tower_rows:
         if raw:
@@ -293,6 +294,8 @@ def from_engine(obs: Mapping[str, Any], my_side: int, deck: Deck, *, history: Op
             destroyed = False
         x, _y = _engine_xy(float(X), float(Y), mirror)
         kind = "king" if kind == "king" else "princess"
+        if mhp:   # lead 2026-10-06: per-side card-level factor from tower max HP (level 11 = 3052 princess / 4824 king)
+            lvl_factor.setdefault(int(s), float(mhp) / (4824.0 if kind == "king" else 3052.0))
         lane = None if kind == "king" else _lane_of(x)
         frac = float(hp) / float(mhp) if mhp else 0.0
         alive = (hp > 0) and not destroyed
@@ -324,7 +327,11 @@ def from_engine(obs: Mapping[str, Any], my_side: int, deck: Deck, *, history: Op
             identity = resolve(str(name), float(mhp), form)
             cid, form = identity.cls, identity.form
         else:
-            cid = vocab.engine_unit_id(str(name), float(mhp))
+            # sub-spawn HP splits (Elixir Golem / Golem / Lava / Mother Witch) were measured at level 11; live opponents
+            # are higher level, so golemites read as Elixir Golems (IDENTITY_AUDIT #5). Normalise by the side's tower
+            # level factor; level-11 sources (native, SIM) give factor 1.0 exactly -> unchanged.
+            f = lvl_factor.get(int(s), 1.0)
+            cid = vocab.engine_unit_id(str(name), float(mhp) / f if abs(f - 1.0) > 0.02 else float(mhp))
         if cid is None:
             if unmapped is None:
                 raise UnmappedName(str(name))

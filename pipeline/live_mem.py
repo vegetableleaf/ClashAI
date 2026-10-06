@@ -49,7 +49,11 @@ def to_observe(frame: Mapping[str, Any], my_side: int, names: list[str]) -> dict
     for e in frame["entities"]:
         if int(e["card_id"]) < 0:
             if e["kind"] in (KING_KIND, PRINCESS_KIND):
-                towers.append({"side": e["side"], "type": "king" if e["kind"] == KING_KIND else "princess",
+                # lead 2026-10-06: type by POSITION, not kind -- the reader reports a woken king with the princess kind
+                # (13) in 33% of live frames (27,758 / 83,381, 10-05/06), which made from_engine file the king as the
+                # RIGHT princess and leave the king slot empty (= destroyed). Kings sit on the centre column (x 9000).
+                is_king = abs(float(e["x"]) - 9000.0) < 1500.0
+                towers.append({"side": e["side"], "type": "king" if is_king else "princess",
                                "x": e["x"], "y": e["y"], "hp": e["hp"], "max_hp": e["max_hp"]})
             continue
         name = _catalog_names().get(int(e["card_id"]), str(e["card_id"]))
