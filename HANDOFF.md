@@ -1,3 +1,39 @@
+## 2026-10-06 13:11 EDT - sequences verified; hand-model qualification pending
+
+Owner-supervised work continues under the renewed direct request. Sequence_data
+C1/V1/review COMPLETE: all268718 original training/development rows and1978replays,
+raw labels, causal public features and separate future-window descriptors reconcile.
+Collect592.773279s/verify322.451654s/review1.210942s all0/token. Do not rerun.
+See hand_retention_integration/sequence_data/REVIEW.md. Future-response selection
+strongly biases retained/spent counts; not intent, profit or counter-quality labels.
+Published9775174; matched learning registration365f231.
+
+Mirror successor cached160-replay audit complete29.004408s: training unchanged
+980/1008 full; development4253/4367 vs old4245/4354 (13 extra full estimates:8right,
+5wrong). Precision97.39% vs97.50%; not a precision improvement. All new features
+independently match scalar FIFO. Public event completeness remains unproven.
+
+New HandBeliefModel and opt-in live companion implemented. Both matched arms have
+identical zero-residual capacity/initial weights; only one receives the new hand
+information. Learning recipe1000x128 each, fresh eligible ordinary_v5, seed2026100613,
+baseLR1e-5/newbranch1e-3, original loss/dropout/mirrors, final only. NOT launched yet.
+M1 original and v2 qualification probes FAILED malformed test fixtures (missing
+coordinates, then dual-visible-hand ownership mutation); preserve both originals.
+Separate small live fixture passed7.929928s for privacy/future/reset and explicit
+ambiguous-ownership refusal. Corrected check_model_v3 ACTIVE; inspect fresh receipt
+before training. No original model acceptance floor or runtime behavior changed.
+
+Owner's canonical tower_spatial_v7 run launcher/child47456/65288 uses explicit --ckpt,
+CPU/publicaudit and anti-leakOFF. File live_play_20261006_130342.jsonl has41confirmed,
+1unconfirmed,43attempts and a stop record; one attempt unresolved in this tally.
+Confirmed evidence latency1.201..2.304s is not inference latency. No win-superiority
+claim. Do not kill healthy owner workers or edit their bound live files. New hand
+companion lives separately. Original STOP untouched; no assistant live startup.
+
+Overnight heartbeat remains paused; daily newsletter separate. All new training,
+evaluation, independent results and new-model reporting PENDING, all final
+N2-N7/statistical/physical/component/gameplay/public/Q4/Q5 still OPEN.
+
 ## 2026-10-06 12:53 EDT - owner-supervised hand/retention successor registered
 
 The owner is awake and explicitly renewed hand reader, learned hold/play and model
