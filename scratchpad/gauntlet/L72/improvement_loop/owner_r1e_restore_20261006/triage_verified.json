@@ -1,0 +1,16 @@
+{
+  "complete": true,
+  "matches": 9,
+  "attempts": 310,
+  "controls": {
+    "positive": 1,
+    "negative": 7
+  },
+  "raw_hero_ice_wizard_decisions": 1169,
+  "raw_hero_entries": 2435,
+  "decisions_with_model_hero": 0,
+  "triage_sha256": "9c50b371abed82aeb2913ae21d78a3cdf301fe6371e752bb5f0b2a814c18d0cf",
+  "details_sha256": "e59a182df3054a6c9c26fe43b00329dff0ad963f22e48aee6d5581e7bbd27d9f",
+  "source_sha256": "734add5b2985c907fa9dfd0958a959d35874d0115fee0da3e4150fd3bca926c0",
+  "causal_attribution": false
+}

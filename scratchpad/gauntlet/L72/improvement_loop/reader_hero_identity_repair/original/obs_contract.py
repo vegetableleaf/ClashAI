@@ -194,8 +194,7 @@ def _catalog_names() -> dict[int, str]:
                 for k in ("evolution_form_id", "hero_form_id"):
                     if c.get(k) is not None:
                         names[int(c[k])] = str(c["display_name"])
-        from .reader_identity_aliases import extend_names
-        _CATALOG_NAMES = extend_names(names)
+        _CATALOG_NAMES = names
     return _CATALOG_NAMES
 
 
@@ -208,8 +207,7 @@ def catalog_card_form(card_id: int) -> tuple[Optional[str], int]:
             for field, form in (("card_id", 0), ("evolution_form_id", 1), ("hero_form_id", 2)):
                 if c.get(field) is not None:
                     table[int(c[field])] = (str(c["display_name"]), form)
-        from .reader_identity_aliases import extend_forms
-        catalog_card_form.table = extend_forms(table)
+        catalog_card_form.table = table
     return catalog_card_form.table.get(int(card_id), (None, 0))
 
 

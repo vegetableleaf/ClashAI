@@ -1,3 +1,32 @@
+## 2026-10-06 14:58 EDT - owner retracts tower; R1e restored; concrete reader defect found
+
+Direct owner instruction supersedes the tower selection: restore previous R1e,
+investigate excessive defensive spending/counter loss, and target sustained ladder
+progress from11000. Avoid contrastive "X, not Y" phrasing. Same autonomous authority
+continues. No new model is accepted. Opponent forecasting draft is UNEXECUTED and
+DEFERRED; do not launch it from an older heartbeat.
+
+CKPT_OVERRIDE restored to rseries_r1e31_u0155.pt, SHA
+76fdfaacbd9c2049cc88792278f06e3f73a56eaf9653791e922d9332dd6751cd.
+Actual explicit-Git-Bash startup --check passed6.027881s, hand inputOFF/public auditON/
+anti-leakOFF/tau.35/CPU/argmax. Owner STOP14:32:14 preserved. Owner supervisor exited0
+at14:34:39; fresh inspection found no live or research chain. No assistant restart.
+
+owner_r1e_restore_20261006 triage and independent receipt census COMPLETE:
+9 tower matches,2706 decisions,310attempts/288confirmed/14unconfirmed/8unresolved;
+806confirmed card elixir plus16ability receipts (ability cost excluded).3confirmed
+Rockets,48Logs,24Tornadoes.1win7losses1unreported outcome; trophies unrecorded.
+Decision medians40-46ms; maxp95 72.7ms; no CPU-starvation/forced-spend events.
+Keep projectile context: two no-enemy-body Log cases have incoming Barrels.
+
+Concrete source defect: public Hero Ice Wizard203000023 is absent from the pinned
+catalog. Generic model adapter silently drops it. Across1169decisions/2435alive raw
+entries(allfriendly),model Hero Ice Wizard count isZERO. Prior hero_button fix only
+covered ability control. Register reader_hero_identity_repair: preserve original
+obs_contract, add ONE measured identity alias(baseIceWizard/form2), retain all other
+mappings/unknowns; verify actual conversion both sides/features4/7, public privacy,
+dead controls and actualR1e startup. Repair code prepared; verification PENDING.
+No hypothesis that this alone explains every loss or proves climbing.
 ## 2026-10-06 14:30 EDT - CPU cycle sensitivity complete; live tower confirmed
 
 hand_cycle_sensitivity_cpu C1/V1/R1 COMPLETE,138.614803/10.153172/.922926s all0/token.

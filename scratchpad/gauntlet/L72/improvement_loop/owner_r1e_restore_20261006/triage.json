@@ -1,0 +1,605 @@
+{
+  "complete": true,
+  "sources": {
+    "scratchpad\\gauntlet\\L68\\live_reader\\live_play_20261006_140419.jsonl": "8222c02690592627955cb1f8f21eec399b67dd8538f38d5aaf9e0df37accbbc3",
+    "scratchpad\\gauntlet\\L68\\live_reader\\live_play_20261006_140737.jsonl": "0e04af575721eec854158f1750d1a85a6ca4c9a56966e99dc3086659fdcd7359",
+    "scratchpad\\gauntlet\\L68\\live_reader\\live_play_20261006_141053.jsonl": "20b82f9eed88b505535b4497a0c798dfd5a3f623f61afbf7cbb1fab15886e7f8",
+    "scratchpad\\gauntlet\\L68\\live_reader\\live_play_20261006_141406.jsonl": "2daf0d84c030dd7b49c9ee1dff802790ff22fa9e17ecf84970e2465373641432",
+    "scratchpad\\gauntlet\\L68\\live_reader\\live_play_20261006_141745.jsonl": "6b360a91547f47c7d520e5bf2ba75cbd383e8e98b43e1e3f9dacbd7cc3ff7bd8",
+    "scratchpad\\gauntlet\\L68\\live_reader\\live_play_20261006_142102.jsonl": "1ff7fd75aef58470104ec362167e8d4269cd991d450e70b98f9c900be86b1a62",
+    "scratchpad\\gauntlet\\L68\\live_reader\\live_play_20261006_142420.jsonl": "74d0dec8c056fb6a354febfb30af7ce9e97dad40701cc64c10184a36c7b67fc5",
+    "scratchpad\\gauntlet\\L68\\live_reader\\live_play_20261006_142820.jsonl": "e544a9e4d267466bd7b8b1c99d076b59585d1d2cc8a17545db0a8f8109479263",
+    "scratchpad\\gauntlet\\L68\\live_reader\\live_play_20261006_143227.jsonl": "69a3ca7a73c93334235587fe61ed8f9383fa625aa67232d15263d870b2a7f659",
+    "scratchpad\\gauntlet\\L68\\live_reader\\ladder_nav_20261006_140213.jsonl": "190b9f970747398ff15db80002eded46525821dfbe99bbd814ec144fc04dc91d",
+    "scratchpad\\gauntlet\\L68\\live_reader\\ladder_nav_20261006_140407.jsonl": "5ad7faa21ebce86dbf1c41b81fc0f17db06ed747f1a866a140623e6d12dc616c",
+    "scratchpad\\gauntlet\\L68\\live_reader\\ladder_nav_20261006_140729.jsonl": "e2f122b11e0dd2956eb2b2cbb77106328485f11103ec3f55dbff8ab196a9645b",
+    "scratchpad\\gauntlet\\L68\\live_reader\\ladder_nav_20261006_141045.jsonl": "d07175ed25ffbd5af01bdc79415337787ef9b9c686f361082210f6e181cf33dd",
+    "scratchpad\\gauntlet\\L68\\live_reader\\ladder_nav_20261006_141358.jsonl": "946ded2f32b4d7fbb378f87a074c1d07fcac921b47c1ab627f8701d5f5dba229",
+    "scratchpad\\gauntlet\\L68\\live_reader\\ladder_nav_20261006_141738.jsonl": "84d8b53b45eea082ec37b5bfc035cd8eaa7c97c77afa8a641968aa07a33a284f",
+    "scratchpad\\gauntlet\\L68\\live_reader\\ladder_nav_20261006_142054.jsonl": "892fa027594af6c517b94f255164023ce60e479a2cb838367be26c85a2da02dd",
+    "scratchpad\\gauntlet\\L68\\live_reader\\ladder_nav_20261006_142411.jsonl": "42836e23c8e0ab6cb8486609c9fdfff8ce5bec6a26280804ecbdfedf17c66c85",
+    "scratchpad\\gauntlet\\L68\\live_reader\\ladder_nav_20261006_142812.jsonl": "4e7546a40d2ee7c7f1e3295f0d1cb893fb7a2662aa245386449b5246ae3bc7cd",
+    "scratchpad\\gauntlet\\L68\\live_reader\\ladder_nav_20261006_143218.jsonl": "bf2dbfd775212cb44c86ea403b12d9ded48483cbb0ac19c53ab4ab995fa819bb"
+  },
+  "source_sha256": "f5f3e12c3d593bf167fceebcca99909a210fb9592336b9968735952e44192fe3",
+  "details_sha256": "e59a182df3054a6c9c26fe43b00329dff0ad963f22e48aee6d5581e7bbd27d9f",
+  "matches": [
+    {
+      "match": "live_play_20261006_140419.jsonl",
+      "decisions": 292,
+      "played": 31,
+      "confirmed": 28,
+      "unconfirmed": 2,
+      "unresolved": 1,
+      "cards": {
+        "IceWizard": {
+          "attempted": 6,
+          "confirmed": 4,
+          "confirmed_cost": 12.0
+        },
+        "Knight": {
+          "attempted": 5,
+          "confirmed": 4,
+          "confirmed_cost": 12.0
+        },
+        "Log": {
+          "attempted": 4,
+          "confirmed": 4,
+          "confirmed_cost": 8.0
+        },
+        "Rocket": {
+          "attempted": 1,
+          "confirmed": 1,
+          "confirmed_cost": 6.0
+        },
+        "Skeletons": {
+          "attempted": 5,
+          "confirmed": 5,
+          "confirmed_cost": 5.0
+        },
+        "Tesla": {
+          "attempted": 3,
+          "confirmed": 3,
+          "confirmed_cost": 12.0
+        },
+        "Tornado": {
+          "attempted": 4,
+          "confirmed": 4,
+          "confirmed_cost": 12.0
+        },
+        "Xbow": {
+          "attempted": 3,
+          "confirmed": 3,
+          "confirmed_cost": 18.0
+        }
+      },
+      "confirmed_card_cost": 85.0,
+      "ability_confirmed": 0,
+      "below_raw_cost": 5,
+      "below_raw_cost_confirmed": 4,
+      "latency_ms_median": 44.0,
+      "latency_ms_p95": 59.44999999999999,
+      "max_backlog": 0,
+      "cpu_starved": 0,
+      "forced": 0,
+      "review_subset": 0,
+      "outcome": "loss"
+    },
+    {
+      "match": "live_play_20261006_140737.jsonl",
+      "decisions": 296,
+      "played": 31,
+      "confirmed": 29,
+      "unconfirmed": 1,
+      "unresolved": 1,
+      "cards": {
+        "IceWizard": {
+          "attempted": 5,
+          "confirmed": 5,
+          "confirmed_cost": 15.0
+        },
+        "Knight": {
+          "attempted": 6,
+          "confirmed": 5,
+          "confirmed_cost": 15.0
+        },
+        "Log": {
+          "attempted": 5,
+          "confirmed": 5,
+          "confirmed_cost": 10.0
+        },
+        "Rocket": {
+          "attempted": 1,
+          "confirmed": 1,
+          "confirmed_cost": 6.0
+        },
+        "Skeletons": {
+          "attempted": 6,
+          "confirmed": 6,
+          "confirmed_cost": 6.0
+        },
+        "Tesla": {
+          "attempted": 5,
+          "confirmed": 4,
+          "confirmed_cost": 16.0
+        },
+        "Tornado": {
+          "attempted": 1,
+          "confirmed": 1,
+          "confirmed_cost": 3.0
+        },
+        "Xbow": {
+          "attempted": 2,
+          "confirmed": 2,
+          "confirmed_cost": 12.0
+        }
+      },
+      "confirmed_card_cost": 83.0,
+      "ability_confirmed": 2,
+      "below_raw_cost": 5,
+      "below_raw_cost_confirmed": 4,
+      "latency_ms_median": 43.0,
+      "latency_ms_p95": 57.0,
+      "max_backlog": 0,
+      "cpu_starved": 0,
+      "forced": 0,
+      "review_subset": 2,
+      "outcome": "loss"
+    },
+    {
+      "match": "live_play_20261006_141053.jsonl",
+      "decisions": 309,
+      "played": 25,
+      "confirmed": 25,
+      "unconfirmed": 0,
+      "unresolved": 0,
+      "cards": {
+        "IceWizard": {
+          "attempted": 4,
+          "confirmed": 4,
+          "confirmed_cost": 12.0
+        },
+        "Knight": {
+          "attempted": 5,
+          "confirmed": 5,
+          "confirmed_cost": 15.0
+        },
+        "Log": {
+          "attempted": 3,
+          "confirmed": 3,
+          "confirmed_cost": 6.0
+        },
+        "Skeletons": {
+          "attempted": 4,
+          "confirmed": 4,
+          "confirmed_cost": 4.0
+        },
+        "Tesla": {
+          "attempted": 5,
+          "confirmed": 5,
+          "confirmed_cost": 20.0
+        },
+        "Tornado": {
+          "attempted": 1,
+          "confirmed": 1,
+          "confirmed_cost": 3.0
+        },
+        "Xbow": {
+          "attempted": 3,
+          "confirmed": 3,
+          "confirmed_cost": 18.0
+        }
+      },
+      "confirmed_card_cost": 78.0,
+      "ability_confirmed": 3,
+      "below_raw_cost": 5,
+      "below_raw_cost_confirmed": 5,
+      "latency_ms_median": 40.0,
+      "latency_ms_p95": 53.19999999999993,
+      "max_backlog": 0,
+      "cpu_starved": 0,
+      "forced": 0,
+      "review_subset": 0,
+      "outcome": "loss"
+    },
+    {
+      "match": "live_play_20261006_141406.jsonl",
+      "decisions": 324,
+      "played": 37,
+      "confirmed": 34,
+      "unconfirmed": 2,
+      "unresolved": 1,
+      "cards": {
+        "IceWizard": {
+          "attempted": 6,
+          "confirmed": 5,
+          "confirmed_cost": 15.0
+        },
+        "Knight": {
+          "attempted": 6,
+          "confirmed": 6,
+          "confirmed_cost": 18.0
+        },
+        "Log": {
+          "attempted": 5,
+          "confirmed": 5,
+          "confirmed_cost": 10.0
+        },
+        "Skeletons": {
+          "attempted": 6,
+          "confirmed": 6,
+          "confirmed_cost": 6.0
+        },
+        "Tesla": {
+          "attempted": 3,
+          "confirmed": 3,
+          "confirmed_cost": 12.0
+        },
+        "Tornado": {
+          "attempted": 5,
+          "confirmed": 5,
+          "confirmed_cost": 15.0
+        },
+        "Xbow": {
+          "attempted": 6,
+          "confirmed": 4,
+          "confirmed_cost": 24.0
+        }
+      },
+      "confirmed_card_cost": 100.0,
+      "ability_confirmed": 0,
+      "below_raw_cost": 10,
+      "below_raw_cost_confirmed": 9,
+      "latency_ms_median": 41.0,
+      "latency_ms_p95": 48.0,
+      "max_backlog": 0,
+      "cpu_starved": 0,
+      "forced": 0,
+      "review_subset": 0,
+      "outcome": "loss"
+    },
+    {
+      "match": "live_play_20261006_141745.jsonl",
+      "decisions": 297,
+      "played": 31,
+      "confirmed": 29,
+      "unconfirmed": 1,
+      "unresolved": 1,
+      "cards": {
+        "IceWizard": {
+          "attempted": 5,
+          "confirmed": 5,
+          "confirmed_cost": 15.0
+        },
+        "Knight": {
+          "attempted": 6,
+          "confirmed": 5,
+          "confirmed_cost": 15.0
+        },
+        "Log": {
+          "attempted": 6,
+          "confirmed": 5,
+          "confirmed_cost": 10.0
+        },
+        "Skeletons": {
+          "attempted": 6,
+          "confirmed": 6,
+          "confirmed_cost": 6.0
+        },
+        "Tesla": {
+          "attempted": 4,
+          "confirmed": 4,
+          "confirmed_cost": 16.0
+        },
+        "Tornado": {
+          "attempted": 1,
+          "confirmed": 1,
+          "confirmed_cost": 3.0
+        },
+        "Xbow": {
+          "attempted": 3,
+          "confirmed": 3,
+          "confirmed_cost": 18.0
+        }
+      },
+      "confirmed_card_cost": 83.0,
+      "ability_confirmed": 2,
+      "below_raw_cost": 5,
+      "below_raw_cost_confirmed": 4,
+      "latency_ms_median": 41.0,
+      "latency_ms_p95": 51.0,
+      "max_backlog": 0,
+      "cpu_starved": 0,
+      "forced": 0,
+      "review_subset": 3,
+      "outcome": "win"
+    },
+    {
+      "match": "live_play_20261006_142102.jsonl",
+      "decisions": 268,
+      "played": 40,
+      "confirmed": 34,
+      "unconfirmed": 5,
+      "unresolved": 1,
+      "cards": {
+        "IceWizard": {
+          "attempted": 7,
+          "confirmed": 7,
+          "confirmed_cost": 21.0
+        },
+        "Knight": {
+          "attempted": 8,
+          "confirmed": 6,
+          "confirmed_cost": 18.0
+        },
+        "Log": {
+          "attempted": 8,
+          "confirmed": 7,
+          "confirmed_cost": 14.0
+        },
+        "Skeletons": {
+          "attempted": 7,
+          "confirmed": 7,
+          "confirmed_cost": 7.0
+        },
+        "Tesla": {
+          "attempted": 7,
+          "confirmed": 5,
+          "confirmed_cost": 20.0
+        },
+        "Tornado": {
+          "attempted": 2,
+          "confirmed": 1,
+          "confirmed_cost": 3.0
+        },
+        "Xbow": {
+          "attempted": 1,
+          "confirmed": 1,
+          "confirmed_cost": 6.0
+        }
+      },
+      "confirmed_card_cost": 89.0,
+      "ability_confirmed": 4,
+      "below_raw_cost": 7,
+      "below_raw_cost_confirmed": 4,
+      "latency_ms_median": 41.0,
+      "latency_ms_p95": 52.299999999999955,
+      "max_backlog": 1,
+      "cpu_starved": 0,
+      "forced": 0,
+      "review_subset": 0,
+      "outcome": "loss"
+    },
+    {
+      "match": "live_play_20261006_142420.jsonl",
+      "decisions": 350,
+      "played": 46,
+      "confirmed": 44,
+      "unconfirmed": 1,
+      "unresolved": 1,
+      "cards": {
+        "IceWizard": {
+          "attempted": 8,
+          "confirmed": 8,
+          "confirmed_cost": 24.0
+        },
+        "Knight": {
+          "attempted": 9,
+          "confirmed": 9,
+          "confirmed_cost": 27.0
+        },
+        "Log": {
+          "attempted": 9,
+          "confirmed": 7,
+          "confirmed_cost": 14.0
+        },
+        "Skeletons": {
+          "attempted": 9,
+          "confirmed": 9,
+          "confirmed_cost": 9.0
+        },
+        "Tesla": {
+          "attempted": 6,
+          "confirmed": 6,
+          "confirmed_cost": 24.0
+        },
+        "Tornado": {
+          "attempted": 5,
+          "confirmed": 5,
+          "confirmed_cost": 15.0
+        }
+      },
+      "confirmed_card_cost": 113.0,
+      "ability_confirmed": 4,
+      "below_raw_cost": 11,
+      "below_raw_cost_confirmed": 10,
+      "latency_ms_median": 46.0,
+      "latency_ms_p95": 63.55000000000001,
+      "max_backlog": 1,
+      "cpu_starved": 0,
+      "forced": 0,
+      "review_subset": 2,
+      "outcome": "loss"
+    },
+    {
+      "match": "live_play_20261006_142820.jsonl",
+      "decisions": 363,
+      "played": 47,
+      "confirmed": 45,
+      "unconfirmed": 1,
+      "unresolved": 1,
+      "cards": {
+        "IceWizard": {
+          "attempted": 10,
+          "confirmed": 8,
+          "confirmed_cost": 24.0
+        },
+        "Knight": {
+          "attempted": 8,
+          "confirmed": 8,
+          "confirmed_cost": 24.0
+        },
+        "Log": {
+          "attempted": 9,
+          "confirmed": 9,
+          "confirmed_cost": 18.0
+        },
+        "Rocket": {
+          "attempted": 1,
+          "confirmed": 1,
+          "confirmed_cost": 6.0
+        },
+        "Skeletons": {
+          "attempted": 9,
+          "confirmed": 9,
+          "confirmed_cost": 9.0
+        },
+        "Tesla": {
+          "attempted": 5,
+          "confirmed": 5,
+          "confirmed_cost": 20.0
+        },
+        "Tornado": {
+          "attempted": 3,
+          "confirmed": 3,
+          "confirmed_cost": 9.0
+        },
+        "Xbow": {
+          "attempted": 2,
+          "confirmed": 2,
+          "confirmed_cost": 12.0
+        }
+      },
+      "confirmed_card_cost": 122.0,
+      "ability_confirmed": 1,
+      "below_raw_cost": 13,
+      "below_raw_cost_confirmed": 12,
+      "latency_ms_median": 44.0,
+      "latency_ms_p95": 60.89999999999998,
+      "max_backlog": 1,
+      "cpu_starved": 0,
+      "forced": 0,
+      "review_subset": 0,
+      "outcome": "loss"
+    },
+    {
+      "match": "live_play_20261006_143227.jsonl",
+      "decisions": 207,
+      "played": 22,
+      "confirmed": 20,
+      "unconfirmed": 1,
+      "unresolved": 1,
+      "cards": {
+        "IceWizard": {
+          "attempted": 4,
+          "confirmed": 4,
+          "confirmed_cost": 12.0
+        },
+        "Knight": {
+          "attempted": 4,
+          "confirmed": 4,
+          "confirmed_cost": 12.0
+        },
+        "Log": {
+          "attempted": 5,
+          "confirmed": 3,
+          "confirmed_cost": 6.0
+        },
+        "Skeletons": {
+          "attempted": 4,
+          "confirmed": 4,
+          "confirmed_cost": 4.0
+        },
+        "Tesla": {
+          "attempted": 1,
+          "confirmed": 1,
+          "confirmed_cost": 4.0
+        },
+        "Tornado": {
+          "attempted": 3,
+          "confirmed": 3,
+          "confirmed_cost": 9.0
+        },
+        "Xbow": {
+          "attempted": 1,
+          "confirmed": 1,
+          "confirmed_cost": 6.0
+        }
+      },
+      "confirmed_card_cost": 53.0,
+      "ability_confirmed": 0,
+      "below_raw_cost": 6,
+      "below_raw_cost_confirmed": 5,
+      "latency_ms_median": 45.0,
+      "latency_ms_p95": 72.69999999999999,
+      "max_backlog": 1,
+      "cpu_starved": 0,
+      "forced": 0,
+      "review_subset": 0,
+      "outcome": "unknown"
+    }
+  ],
+  "totals": {
+    "decisions": 2706,
+    "played": 310,
+    "confirmed": 288,
+    "unconfirmed": 14,
+    "unresolved": 8,
+    "confirmed_card_cost": 806.0,
+    "ability_confirmed": 16,
+    "below_raw_cost": 67,
+    "below_raw_cost_confirmed": 57,
+    "cpu_starved": 0,
+    "forced": 0,
+    "review_subset": 7
+  },
+  "cards": {
+    "IceWizard": {
+      "attempted": 55,
+      "confirmed": 50,
+      "confirmed_cost": 150.0
+    },
+    "Knight": {
+      "attempted": 57,
+      "confirmed": 52,
+      "confirmed_cost": 156.0
+    },
+    "Log": {
+      "attempted": 54,
+      "confirmed": 48,
+      "confirmed_cost": 96.0
+    },
+    "Rocket": {
+      "attempted": 3,
+      "confirmed": 3,
+      "confirmed_cost": 18.0
+    },
+    "Skeletons": {
+      "attempted": 56,
+      "confirmed": 56,
+      "confirmed_cost": 56.0
+    },
+    "Tesla": {
+      "attempted": 39,
+      "confirmed": 36,
+      "confirmed_cost": 144.0
+    },
+    "Tornado": {
+      "attempted": 25,
+      "confirmed": 24,
+      "confirmed_cost": 72.0
+    },
+    "Xbow": {
+      "attempted": 21,
+      "confirmed": 19,
+      "confirmed_cost": 114.0
+    }
+  },
+  "outcomes": {
+    "loss": 7,
+    "win": 1,
+    "unknown": 1
+  },
+  "trophies": "unrecorded",
+  "causal_waste_labels": false
+}

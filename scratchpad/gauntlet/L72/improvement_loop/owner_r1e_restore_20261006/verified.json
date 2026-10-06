@@ -1,0 +1,38 @@
+{
+  "complete": true,
+  "settings": {
+    "check": "LIVE_CHECK_PASS",
+    "checkpoint": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\rl_royale\\rseries_r1e31\\rseries_r1e31_u0155.pt",
+    "sha256": "76fdfaacbd9c2049cc88792278f06e3f73a56eaf9653791e922d9332dd6751cd",
+    "feature_version": 4,
+    "device": "cpu",
+    "tau": 0.35,
+    "anti_leak": false,
+    "public_audit": true,
+    "decision_options": {
+      "card_choice": "argmax",
+      "card_ratio": 0.7,
+      "card_T": 1.0,
+      "spell_aim": "argmax"
+    }
+  },
+  "command": [
+    "C:/Program Files/Git/bin/bash.exe",
+    "scratchpad/gauntlet/L70/live/start_live.sh",
+    "--check"
+  ],
+  "exit_code": 0,
+  "stop_mtime_ns": 1791311534765800800,
+  "stop_unchanged": true,
+  "live_started": false,
+  "sources": {
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\owner_r1e_restore_20261006\\check_restore.py": "6a6aca306015102e068cd09bbdeb418f3777033961788bae191af7c15df48d15",
+    "scratchpad\\gauntlet\\L72\\improvement_loop\\owner_r1e_restore_20261006\\PLAN.md": "7eda40ac76c0f73b51a9b10a5ff5d7cb1bbcc1726ead3b2bc4c6c78d4f926944",
+    "scratchpad\\gauntlet\\L70\\live\\start_live.sh": "14e585ae98b5f9ce56f025848e9384f73a7aedf427108f39fc47c7f749d54c19",
+    "scratchpad\\gauntlet\\L70\\live\\run_live.sh": "fde0466634a2d58b6988e3e0ad97bc720b6e235213caa776008e6a87f53eba84",
+    "scratchpad\\gauntlet\\L70\\live\\live_config.sh": "89ad15ec4ed4696187f502dd0004b1dccac2f558ba022158835398aab3de0b41",
+    "scratchpad\\gauntlet\\L70\\live\\HAND_READER_ENABLED": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "scratchpad\\gauntlet\\L70\\live\\CKPT_OVERRIDE": "bfcb2c67e152443cf3cb7c002a94e54a8e8e5f9e9c24d57c1b93570c51cb6194"
+  },
+  "output_sha256": "99804179271b471c8f2a167d320dae3294003741cfb3b962c9345aefc5449bd4"
+}
