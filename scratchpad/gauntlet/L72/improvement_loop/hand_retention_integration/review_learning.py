@@ -23,7 +23,7 @@ def main():
         assert e['arms'][arm]['cache_sha256']==r['hashes'][arm]['cache']
     for path,h in p['sources'].items():assert sha(ROOT/path)==h,path
     receipts={}
-    for name in ('l72-hand-model-qualified-v3','l72-hand-learning-prepare','l72-hand-learning-train',
+    for name in ('l72-hand-model-qualified-v4','l72-hand-learning-prepare','l72-hand-learning-train',
                  'l72-hand-learning-verify_training','l72-hand-learning-evaluate','l72-hand-learning-verify_results'):
         path=CHECKS/(name+'.json');q=read(path);out=path.with_suffix('.out')
         assert q['exit_code']==0 and q['matched'] and hashlib.sha256(out.read_text().encode()).hexdigest()==q['output_sha256']

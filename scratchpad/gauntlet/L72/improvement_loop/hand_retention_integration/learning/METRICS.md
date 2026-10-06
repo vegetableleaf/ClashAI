@@ -1,7 +1,8 @@
 # Frozen paired recipe and comparisons
 
 - Eligible parent SHA c0ba1ab910df50fdcbe1fcf4191aedd584c86fe94c5a6d3248359bda059db419.
-- Architecture public_hand_belief_v1, feature_version5, hand_belief_version1.
+- Architecture public_hand_belief_v2, feature_version5, hand_belief_version2.
+  Pre-optimization successor canonicalizes token order to preserve exact permutation invariance; same parameterization.
   Identical initialized tensors seed2026100613. Two modes differ only true/false
   hand_information_enabled. Base dropout .1 in training, EVAL for predictions.
 - Each arm: 1000 updates x128 draws sampled uniformly with replacement from

@@ -1,6 +1,6 @@
 import copy
 from shared import *
-from pipeline.model_hand_belief import initialize,load_checkpoint
+from pipeline.model_hand_belief_v2 import initialize,load_checkpoint
 def verify_log(logs,draws,mirror):
     assert len(logs)==STEPS and [v['step'] for v in logs]==list(range(1,STEPS+1))
     for i,r in enumerate(logs):

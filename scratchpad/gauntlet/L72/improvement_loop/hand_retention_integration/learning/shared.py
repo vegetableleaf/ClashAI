@@ -21,7 +21,7 @@ def arrays(p):
     with np.load(p,allow_pickle=False) as z:return {k:z[k] for k in z.files}
 def sources():
     files=list((ROOT/'pipeline').glob('*.py'))+list(HERE.glob('*.py'))+[HERE/'PLAN.md',HERE/'METRICS.md',
-        HERE.parent/'MODEL_METRICS.md',HERE.parent/'model_verified.json',HERE.parent/'mirror_replays_verified.json',HERE.parent/'sequence_data/verified.json',
+        HERE.parent/'MODEL_METRICS.md',HERE.parent/'MODEL_METRICS_V2.md',HERE.parent/'model_verified.json',HERE.parent/'mirror_replays_verified.json',HERE.parent/'sequence_data/verified.json',
         HERE.parent/'sequence_data/collected.json',HERE.parent/'sequence_data/started.json',SEQ/'features.npz',
         INIT,c.DATA,c.SOURCE,c.OUT/'indices.npz',LOOP/'development_iteration_10/shared.py',c.HERE/'common.py',
         c.HERE/'metrics.py',c.HERE/'recount_v2.py',LOOP/'development_iteration_4/extra_masks.py',

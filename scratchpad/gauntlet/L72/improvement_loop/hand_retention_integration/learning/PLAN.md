@@ -20,3 +20,7 @@ independent optimizer/log verification, E1 final-only development inference,
 V2 original-label/scalar/per-replay recount plus retention/spending descriptors,
 R1 evidence/report review. No gameplay/live starts in this driver. Failure preserves
 all original artifacts and stops; successors need separate registration.
+
+Pre-optimization engineering successor: public_hand_belief_v2 / hand_belief_version2
+canonically orders public tokens before pooling. Original v1 qualification failure
+remains recorded; no v1 training occurred. All other paired recipe settings remain.

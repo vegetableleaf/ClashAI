@@ -1,5 +1,5 @@
 from shared import *
-from pipeline.model_hand_belief import load_checkpoint
+from pipeline.model_hand_belief_v2 import load_checkpoint
 def main():
     check();assert not (HERE/'evaluation_started.json').exists()
     tv=read(HERE/'training_verified.json');assert tv['complete'] and tv['trained_sha256']==sha(HERE/'trained.json')

@@ -1,6 +1,6 @@
 import time
 from shared import *
-from pipeline.model_hand_belief import initialize
+from pipeline.model_hand_belief_v2 import initialize
 def main():
     p=check();assert not (HERE/'training_started.json').exists()
     write(HERE/'training_started.json',dict(prepared_sha256=sha(HERE/'prepared.json')))

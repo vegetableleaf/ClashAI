@@ -1,0 +1,13 @@
+{
+  "command": [
+    "research/ext/Royale/.venv/Scripts/python.exe",
+    "scratchpad/gauntlet/L72/improvement_loop/hand_retention_integration/check_hand_order.py"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot",
+  "shell": "none; subprocess argument vector",
+  "exit_code": 0,
+  "expected": "HAND_CANONICAL_ORDER_VERIFIED",
+  "matched": true,
+  "output_sha256": "a13b352a694a17f30b23e80cdc304ec62e732fff8eb22359dc0008ee9da847a0",
+  "seconds": 6.246995449066162
+}
