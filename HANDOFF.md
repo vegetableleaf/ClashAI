@@ -1,3 +1,18 @@
+## 2026-10-06 14:19 EDT - cycle sensitivity registered before execution
+
+Read hand_cycle_sensitivity/PLAN.md,METRICS.md,GATES.md and sources. Fixed rejected
+hand/blind final weights,EVAL only. Eight original training batches0,125,...875,
+1024draws with original mirrors; full versus cycle-censored hand inputs,4096model
+rowviews total. Revealed identities/base opp_cycle/all other public inputs stay.
+Censor extra hand status/return bounds/full-hand flag only. Exact blind negative
+control; independent original1000drawstream/rawlabels/features/scalarreductions/
+EVERYreplay plus2positive8corruptions. No backward/optimizer/newcheckpoint/dev/
+confirmation/native/live. Do not mistake censored-input sensitivity for a learned
+replacement, gameplay benefit or all-cycle information removal. Prior rejected
+weights remain ineligible parents. Common chain.lock across both jobs. Outside
+review_hand_cycle_sensitivity.py prepared, once only after both successes.
+At registration no competing model chain; owner live39112 remains active/untouched.
+
 ## 2026-10-06 14:15 EDT - cached hand decision diagnosis complete
 
 hand_decision_audit C1/V1/R1 COMPLETE:3.493583/18.194326/.631120s all0/token.
