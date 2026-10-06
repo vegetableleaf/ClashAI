@@ -1,3 +1,22 @@
+## 2026-10-06 14:24 EDT - preserved CUDA control failure; CPU successor registered
+
+Original hand_cycle_sensitivity C1FAILED exit1/67.989497s at exact blind gate
+output equality. Both1024-row blind caches saved; no hand model inference/complete
+report/independent run. FAILED sources/receipt/outputs preserved in a196408.
+Read FAILURE/DIAGNOSIS/GATES. Two source rows391/895 (IDs3514173/2983029) differ:
+gate2values max2.38418579e-7;card6 max1.90734863e-6;cell2492 max4.76837158e-6;
+all argmax and qualified gate choices unchanged. Numerical cause UNPROVEN; no
+exactness waiver. Latent float32 subtraction issue found in reduction source,
+not cause of collection failure. Frozen originals never edited or rerun.
+
+NEW hand_cycle_sensitivity_cpu registered under same lock, CPU one thread and
+deterministic algorithms; SAME1024draws/mirrors/twofixedmodels/twoconditions,
+4096views, exactblindcontrol, source/rawlabel/features/everyreplay,2positive8bad.
+Float64 operands explicitly cast before subtraction. Original failed artifacts
+bound. No gradient/optimizer/newmodel/dev/native/live/confirmation. Read new
+PLAN/METRICS/GATES before launch; outer review_hand_cycle_cpu.py prepared once
+only after both jobs succeed. Owner tower run untouched; handflag remainsOFF.
+
 ## 2026-10-06 14:19 EDT - cycle sensitivity registered before execution
 
 Read hand_cycle_sensitivity/PLAN.md,METRICS.md,GATES.md and sources. Fixed rejected
