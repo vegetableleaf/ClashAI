@@ -4039,6 +4039,16 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 > * **13:xx owner 1v1 vs a friend -> lead SUSPENDED 11 heavy processes** (R2 learner + 5 actors, T2 validate + 2
 >   workers; PIDs in `L73/paused_pids.json`). Resume on the owner's word; R2's actor_timeout_s 3600 means a pause much
 >   over ~45 min risks an actor "crash" restart. RESUMED 12:54 (paused 12:48:33, ~6 min; all 11 running).
+> * **OWNER 10-07 ~13:1x -- R3 + morning live plan (PRE-REGISTERED by the lead before any R2/R3 result).** R3 waits for
+>   C's code to be BUILT AND CHECKED if the offline Phi check passes (never launch without a passing lever). Live test
+>   capped at 24 h; the decision + reasoning goes to Discord. Definitions (vs R1e, engine 20261006, 48 seeds x gen/S1 on
+>   census AND ladder decks = 192 games): PASS = reactive >= R1e + 6 of 192 AND ghost ci_hi >= 0 AND >= 1 behaviour gap
+>   toward pros (elixir at play 2x/OT, Rocket rate, defensive X-Bow share) with none away. SIGNIFICANTLY BETTER = PASS
+>   AND paired game-level gain with sign-test p < .05 on the 192 paired games AND >= 2 behaviour gaps toward pros.
+>   BARELY = PASS but not significant. Tree (owner): both pass, one significant -> that one, tau .35/.45 alternating;
+>   both significant -> alternate R2 vs R3 (tau .35), compare with R1e data on disk; one passes + significant -> it
+>   alone, tau .35/.45 alternating; one passes + barely -> alternate it vs R1e at tau .35; neither -> R1e tau .35/.45
+>   alternating. Unspecified case (both pass, both barely) -> lead: alternate the higher-reactive one vs R1e at .35.
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
