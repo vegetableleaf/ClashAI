@@ -146,7 +146,8 @@ def reward_cards(img, hsv) -> list | None:
             gap = b[0] - (a[0] + a[2])
             if not (abs(a[1] - b[1]) <= 0.02 * H and abs(a[2] - b[2]) <= 0.1 * a[2] and abs(a[3] - b[3]) <= 0.1 * a[3]
                     and 0 <= gap <= 0.15 * W and abs(a[0] + b[0] + b[2] - W) <= 0.1 * W   # pair centred on W/2
-                    and min(a[4][0], a[4][1], a[4][2], b[4][0], b[4][1], b[4][3]) >= 0.9):
+                    and min(a[4][1], a[4][2], b[4][1], b[4][3]) >= 0.9          # bottom + outer sides fully dark
+                    and min(a[4][0], b[4][0]) >= 0.35):   # top: 'New!' labels cover up to ~60% (live MuMu 2026-10-07)
                 continue
             top, bottom = a[1], max(a[1] + a[3], b[1] + b[3])
             title = _range(hsv[max(0, top - int(0.12 * H)):max(0, top - int(0.01 * H)), a[0]:b[0] + b[2]], *TITLE_BLUE)

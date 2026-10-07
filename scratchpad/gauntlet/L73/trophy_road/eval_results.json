@@ -2584,6 +2584,27 @@
    "green": [],
    "blue_ok": null
   },
+  "L68\\live_reader\\ladder_unknown\\20261007_170702_00_243710.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261007_170702_01_choose_247659.png": {
+   "cards": null,
+   "green": [
+    [
+     691.0,
+     534.0
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": null,
+   "choose": [
+    691.0,
+    534.0
+   ]
+  },
   "L68\\live_reader\\ladder_unknown\\after_reload.png": {
    "cards": null,
    "green": [],
@@ -2653,6 +2674,20 @@
   },
   "L68\\live_reader\\ladder_stop_20261006_140213.png": {
    "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_stop_20261007_170702.png": {
+   "cards": [
+    [
+     274.5,
+     474.5
+    ],
+    [
+     623.0,
+     474.5
+    ]
+   ],
    "green": [],
    "blue_ok": null
   },

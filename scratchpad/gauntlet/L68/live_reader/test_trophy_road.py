@@ -159,3 +159,11 @@ nav.plan(PATH, 1); nav.acted("choose", 1.5); nav.plan(CHOICE, 3); nav.acted("rew
 nav.plan(PATH, 5)
 assert nav.chooses == 0 and not nav.choose_flow
 print("verifier F1/F4 regressions ok")
+
+# 2026-10-07 live MuMu frames (the first real encounter stopped here: "New!" labels hid the card tops)
+_real = Path(__file__).resolve().parents[2] / "L73" / "trophy_road"
+_c = clf.classify(cv2.imread(str(_real / "real_mumu_choose_reward.png")))
+assert _c["screen"] == "choose_reward" and len(_c["cards"]) == 2, _c["screen"]
+_p = clf.classify(cv2.imread(str(_real / "real_mumu_path_choose.png")))
+assert _p["screen"] == "trophy_road" and _p["choose"], (_p["screen"], _p.get("choose"))
+print("real MuMu trophy-road frames ok")
