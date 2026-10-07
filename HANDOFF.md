@@ -3921,7 +3921,7 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   --decision-seed <distinct N>` on the live_play line + CKPT_OVERRIDE. Residual Hero Ice Wizard duplicate: 21/1,095
 >   frames have two same-side 203000023 objects 2.8 tiles apart (outside the 500-unit dedupe radius) -- open; fix in
 >   reader_identity_aliases (needs which-is-the-cube evidence; Codex's named reader distinguishes them). Blind
->   verifier running.
+>   verifier (opus) PASS_WITH_NOTES: default path untouched (live_gen_v2:49-51), supervisor reaches this pilot, phase time = SIM's, enemy towers correct; options are inert until run_live.sh passes the flags.
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
