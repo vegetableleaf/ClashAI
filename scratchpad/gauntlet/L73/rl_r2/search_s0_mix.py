@@ -2,6 +2,7 @@
 full-distribution class mix and the first draw for gen-opponent seeds 0..47 (redraws for unseen cards not simulated)."""
 import os, sys, collections
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+import ctypes; ctypes.windll.kernel32.SetPriorityClass(ctypes.windll.kernel32.GetCurrentProcess(), 0x4000)   # below normal
 sys.path.insert(0, "C:/Users/benpe/ClashBot/scratchpad/gauntlet/L73/rl_r2")
 from build_ladder import cls, trs, TRAITS
 from pipeline.rl_royale import league_decks, deck_weights

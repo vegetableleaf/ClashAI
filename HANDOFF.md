@@ -3999,7 +3999,7 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   dry run). run_r2.sh (bash array for the league_mix dict) waits for `L73/rl_r2/GO`; acceptance re-runs R1e at 48
 >   seeds on both deck files. Dry validation through Learner.__init__ PASS; a real 1-update smoke is owed (CPU was
 >   saturated). search_s0 --census hard-codes alpha .5/floor .5 (flattens the ladder mix in acceptance games). Witch
->   trait realized 16.9% vs live 23.4% -> follow-up raking over class x trait margins requested.
+>   trait raked (capped IPF, 3x per-deck cap, class shares unchanged): Witch/Night Witch 30.8% (live 23.4%, x1.5 target 31.4%), Mega Knight card 10.2% (target 12.9%, cap-limited), heavy tank 49.8% (live 49.3%); 157 decks carry 50% of mass.
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live

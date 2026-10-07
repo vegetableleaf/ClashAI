@@ -140,75 +140,30 @@
   "Spawners (Witch/huts)": 0.07310386841303684,
   "X-Bow/Mortar": 0.0009137983551629608
  },
- "trait_target_opponent": {
-  "has Witch/Night Witch": 0.31403118040089084,
-  "heavy tank": 0.4925373134328358,
-  "MegaKnight card": 0.1285714285714286
- },
- "trait_rule": {
-  "live_ci_hi": {
-   "has Witch/Night Witch": 0.48329340494697026,
-   "heavy tank": 0.48227014772405,
-   "MegaKnight card": 0.3922249963835924
-  },
-  "tilted": {
-   "has Witch/Night Witch": true,
-   "MegaKnight card": true,
-   "heavy tank": false
-  },
-  "heavy_tank_rule_would_tilt_to": 0.592814371257485
- },
- "rake": {
-  "stage1_census": {
-   "has Witch/Night Witch": 0.1732855607458794,
-   "heavy tank": 0.5230344203752415,
-   "MegaKnight card": 0.06448535538262685
-  },
-  "want_census": {
-   "has Witch/Night Witch": 0.3284509795009318,
-   "heavy tank": 0.515153822723119,
-   "MegaKnight card": 0.13447521865889214
-  },
-  "mode": "priority: heavy exact > Witch max (MK at live) > MK max",
-  "lambda_witch": 0.925445556640625,
-  "lambda_mk": 0.2957000732421875,
-  "realized_census": {
-   "has Witch/Night Witch": 0.3168828094435155,
-   "heavy tank": 0.5151541711914718,
-   "MegaKnight card": 0.1057321137544936
-  },
-  "max_ratio_to_stage1": 3.0,
-  "n_at_cap": 30,
-  "decks_for_50pct_mass": {
-   "stage1": 210,
-   "raked": 157,
-   "of": 1000
-  }
- },
  "sim": {
   "snaps0": {
    "n": 20000,
    "n_snapshots": 0,
    "class": {
-    "Hog (incl. Royal Hogs)": 0.16955,
-    "Lava Hound": 0.0135,
-    "Balloon": 0.05475,
-    "Golem": 0.18085,
-    "Other/no clear wincon": 0.0876,
-    "Ram/Bridge spam": 0.09775,
-    "Bait": 0.01805,
-    "Spawners (Witch/huts)": 0.0699,
-    "Mega Knight": 0.04465,
-    "X-Bow/Mortar": 0.05525,
-    "Giant (incl. Goblin/Electro)": 0.1249,
-    "Royal Giant": 0.0381,
-    "Graveyard": 0.0281,
-    "Miner": 0.01705
+    "Golem": 0.1799,
+    "Hog (incl. Royal Hogs)": 0.16865,
+    "Spawners (Witch/huts)": 0.06975,
+    "Lava Hound": 0.0143,
+    "Miner": 0.01965,
+    "Mega Knight": 0.04215,
+    "Other/no clear wincon": 0.08725,
+    "Giant (incl. Goblin/Electro)": 0.12425,
+    "Royal Giant": 0.03975,
+    "X-Bow/Mortar": 0.05535,
+    "Ram/Bridge spam": 0.09425,
+    "Bait": 0.01925,
+    "Graveyard": 0.0304,
+    "Balloon": 0.0551
    },
    "traits": {
-    "has Witch/Night Witch": 0.3044,
-    "heavy tank": 0.4883,
-    "MegaKnight card": 0.101
+    "has Witch/Night Witch": 0.1653,
+    "heavy tank": 0.4925,
+    "MegaKnight card": 0.06095
    },
    "icebow_mirror": 0.0543,
    "opp_s1": 0.0335,
@@ -218,25 +173,25 @@
    "n": 20000,
    "n_snapshots": 1,
    "class": {
-    "Hog (incl. Royal Hogs)": 0.16955,
-    "Lava Hound": 0.0135,
-    "Balloon": 0.05475,
-    "Golem": 0.18085,
-    "Other/no clear wincon": 0.0876,
-    "Ram/Bridge spam": 0.09775,
-    "Bait": 0.01805,
-    "Spawners (Witch/huts)": 0.0699,
-    "Mega Knight": 0.04465,
-    "X-Bow/Mortar": 0.05525,
-    "Giant (incl. Goblin/Electro)": 0.1249,
-    "Royal Giant": 0.0381,
-    "Graveyard": 0.0281,
-    "Miner": 0.01705
+    "Golem": 0.1799,
+    "Hog (incl. Royal Hogs)": 0.16865,
+    "Spawners (Witch/huts)": 0.06975,
+    "Lava Hound": 0.0143,
+    "Miner": 0.01965,
+    "Mega Knight": 0.04215,
+    "Other/no clear wincon": 0.08725,
+    "Giant (incl. Goblin/Electro)": 0.12425,
+    "Royal Giant": 0.03975,
+    "X-Bow/Mortar": 0.05535,
+    "Ram/Bridge spam": 0.09425,
+    "Bait": 0.01925,
+    "Graveyard": 0.0304,
+    "Balloon": 0.0551
    },
    "traits": {
-    "has Witch/Night Witch": 0.3044,
-    "heavy tank": 0.4883,
-    "MegaKnight card": 0.101
+    "has Witch/Night Witch": 0.1653,
+    "heavy tank": 0.4925,
+    "MegaKnight card": 0.06095
    },
    "icebow_mirror": 0.0543,
    "opp_s1": 0.0335,
@@ -246,25 +201,25 @@
    "n": 20000,
    "n_snapshots": 8,
    "class": {
-    "X-Bow/Mortar": 0.0436,
-    "Lava Hound": 0.01525,
-    "Balloon": 0.05525,
-    "Golem": 0.1857,
-    "Hog (incl. Royal Hogs)": 0.1697,
-    "Other/no clear wincon": 0.08915,
-    "Giant (incl. Goblin/Electro)": 0.1246,
-    "Ram/Bridge spam": 0.09475,
-    "Royal Giant": 0.04225,
-    "Graveyard": 0.0297,
-    "Mega Knight": 0.0418,
-    "Miner": 0.02005,
-    "Spawners (Witch/huts)": 0.07,
-    "Bait": 0.0182
+    "X-Bow/Mortar": 0.04405,
+    "Hog (incl. Royal Hogs)": 0.17185,
+    "Spawners (Witch/huts)": 0.0677,
+    "Lava Hound": 0.0133,
+    "Miner": 0.0188,
+    "Mega Knight": 0.04355,
+    "Giant (incl. Goblin/Electro)": 0.1294,
+    "Balloon": 0.054,
+    "Other/no clear wincon": 0.0881,
+    "Golem": 0.18325,
+    "Ram/Bridge spam": 0.0948,
+    "Royal Giant": 0.04425,
+    "Bait": 0.0194,
+    "Graveyard": 0.02755
    },
    "traits": {
-    "has Witch/Night Witch": 0.3075,
-    "heavy tank": 0.49815,
-    "MegaKnight card": 0.1017
+    "has Witch/Night Witch": 0.16905,
+    "heavy tank": 0.5068,
+    "MegaKnight card": 0.06285
    },
    "icebow_mirror": 0.04295,
    "opp_s1": 0.0237,

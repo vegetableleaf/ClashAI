@@ -57,7 +57,81 @@ def simulate(census, p, n_snaps, n=20000, seed=0):
             "learner_icebow": sum(m["learner_deck_name"] == "icebow" for m in ms) / n}
 
 
+def tilt(p): return MULT * p / (MULT * p + 1 - p)          # x1.5 on the share, renormalised against the rest
+
+
+def trait_targets(live, n_live, ov):
+    """Opponent-level trait targets. Witch: the class weak rule (live win-rate CI upper < overall) -> x1.5. MK card: same
+    rule on its Wilson CI. heavy tank: the lead fixed it at the live share (the rule alone would tilt it too: CI hi .48)."""
+    from live_eval import wilson
+    wt, mk = live["traits"]["has Witch/Night Witch"], live["cards"]["MegaKnight"]
+    ht = live["traits"]["heavy tank"]
+    mk_ci = wilson(round(mk["wr_present"] * mk["n_present"]), mk["n_present"])
+    share = {"has Witch/Night Witch": wt["n"] / n_live, "heavy tank": ht["n"] / n_live, "MegaKnight card": mk["n_present"] / n_live}
+    rule = {"has Witch/Night Witch": wt["ci"][1] < ov, "MegaKnight card": mk_ci[1] < ov, "heavy tank": False}
+    tgt = {k: (tilt(v) if rule[k] else v) for k, v in share.items()}
+    info = {"live_ci_hi": {"has Witch/Night Witch": wt["ci"][1], "heavy tank": ht["ci"][1], "MegaKnight card": mk_ci[1]},
+            "tilted": rule, "heavy_tank_rule_would_tilt_to": tilt(share["heavy tank"]) if ht["ci"][1] < ov else None}
+    return share, tgt, info
+
+
+def fit(wi, ci, T):
+    """Scale wi by one factor f, each capped at ci, so the group sums to T (exact, sorted breakpoints)."""
+    if T <= 0: return np.zeros_like(wi)
+    if ci.sum() <= T: return ci.copy()
+    r = ci / wi; o = np.argsort(r); rs, ws, cs = r[o], wi[o], ci[o]
+    capsum = np.concatenate([[0.0], np.cumsum(cs)])[:-1]           # capped mass of the first k (sorted) decks
+    rest = np.cumsum(ws[::-1])[::-1]                                # uncapped weight from k on
+    f = (T - capsum) / rest
+    ok = (f <= rs) & np.concatenate([[True], f[1:] >= rs[:-1]])
+    return np.minimum(f[np.argmax(ok)] * wi, ci)
+
+
+def rake(W0, C, ctarget, TR, want, iters=3000, tol=1e-6):
+    """Capped IPF over the class partition + each binary trait (yes / no). -> (weights, converged, max margin error)."""
+    w, cap = W0.copy(), 3.0 * W0
+    groups = [(C == k, v) for k, v in ctarget.items() if (C == k).any()]
+    for k, v in want.items(): groups += [(TR[k], v), (~TR[k], 1.0 - v)]
+    for it in range(iters):
+        for m, T in groups: w[m] = fit(w[m], cap[m], T)
+        err = max(abs(w[m].sum() - T) for m, T in groups)
+        if err < tol: return w, True, err
+    return w, False, err
+
+
+def rake_feasible(W0, C, ctarget, TR, want, mk_floor):
+    """Full targets if feasible; else the priority order below (bisection, 16 steps each). A first version moved all three
+    traits together (one lambda): Witch 25.3% / MK card 10.1% / heavy 49.6% of opponent games -- the alternative point."""
+    cur = {k: float(W0[TR[k]].sum()) for k in want}
+    w, ok, err = rake(W0, C, ctarget, TR, want)
+    info = {"stage1_census": cur, "want_census": want, "mode": "full"}
+    if not ok:
+        # priority: heavy tank exact; Witch as high as feasible with MK card at its LIVE share (floor); then MK card as
+        # high as feasible (up to its tilted target) with Witch held there
+        def best(make):
+            lo, hi, bw = 0.0, 1.0, None
+            for _ in range(16):
+                mid = (lo + hi) / 2; ww, k_ok, _e = rake(W0, C, ctarget, TR, make(mid))
+                if k_ok: lo, bw = mid, ww
+                else: hi = mid
+            return lo, bw
+        Wt, M = "has Witch/Night Witch", "MegaKnight card"
+        lam_w, bw = best(lambda x: {**want, M: mk_floor, Wt: cur[Wt] + x * (want[Wt] - cur[Wt])})
+        if bw is None: raise SystemExit("raking infeasible: heavy tank exact + MK card at live share + Witch at stage-1")
+        w_wt = cur[Wt] + lam_w * (want[Wt] - cur[Wt])
+        lam_m, bm = best(lambda x: {**want, Wt: w_wt, M: mk_floor + x * (want[M] - mk_floor)})
+        info.update(mode="priority: heavy exact > Witch max (MK at live) > MK max", lambda_witch=lam_w, lambda_mk=lam_m)
+        w = bm if bm is not None else bw
+    info["realized_census"] = {k: float(w[TR[k]].sum()) for k in want}
+    info["max_ratio_to_stage1"] = float((w / W0).max()); info["n_at_cap"] = int((w >= 3 * W0 * (1 - 1e-9)).sum())
+    def half(x): s = np.sort(x)[::-1]; return int(np.searchsorted(np.cumsum(s) / s.sum(), 0.5) + 1)
+    info["decks_for_50pct_mass"] = {"stage1": half(W0), "raked": half(w), "of": int(len(w))}
+    return w, info
+
+
 def main():
+    import ctypes
+    ctypes.windll.kernel32.SetPriorityClass(ctypes.windll.kernel32.GetCurrentProcess(), 0x4000)   # below normal
     raw = json.load(open(CENSUS, encoding="utf-8"))
     live = json.load(open(LIVE, encoding="utf-8"))["matchups"]
     n_live, ov = live["n"], live["overall_wr"]
@@ -87,12 +161,21 @@ def main():
     census_target = {k: v / so * (1 - cx) for k, v in oth.items()}
     if XBOW in by_cls: census_target[XBOW] = cx
 
-    new_sides = {}
+    w0 = {}                                                # stage 1: class target, within class ~ sides ** 0.5
     for k, ds in by_cls.items():
         tk = census_target.get(k, 0.0)                     # a census class with no live share -> 0
         s = np.array([d["sides"] for d in ds], dtype=np.float64) ** 0.5
         for d, w in zip(ds, s / s.sum() * tk):
-            new_sides[d["name"]] = max(1, int(round(w * SCALE))) if tk > 0 else 0
+            w0[d["name"]] = w
+    # stage 2 (lead follow-up): rake per-deck weights to class x trait margins, cap 3x stage-1 weight
+    names = [d["name"] for d in census]
+    W0 = np.array([w0[n] for n in names])
+    C = np.array([cls(d["engine"]) for d in census])
+    TR = {k: np.array([trs(d["engine"])[k] for d in census]) for k in TRAITS}
+    live_tr, trait_target, trait_rule = trait_targets(live, n_live, ov)
+    want = {k: v / (1 - mirror) for k, v in trait_target.items()}          # icebow carries none of the three traits
+    W, rake_info = rake_feasible(W0, C, census_target, TR, want, live_tr["MegaKnight card"] / (1 - mirror))
+    new_sides = {n: (max(1, int(round(w * SCALE))) if w > 0 else 0) for n, w in zip(names, W)}
     out = dict(raw)
     out["decks"] = []
     for x in raw["decks"]:
@@ -105,7 +188,9 @@ def main():
                              "sides_census = the original census count. Built by build_ladder.py.",
                      "source_census": CENSUS, "live": LIVE, "weak_x1.5": weak, "overall_live_wr": ov,
                      "opponent_target": t, "census_target": census_target, "icebow_mirror_expected": mirror,
-                     "live_classes_absent_from_census": absent, "census_classes_absent_live": census_only}
+                     "live_classes_absent_from_census": absent, "census_classes_absent_live": census_only,
+                     "trait_target_opponent": trait_target, "trait_rule": trait_rule, "rake": rake_info,
+                     "stage": "2: class shares then capped IPF to trait margins (cap 3x stage-1 deck weight)"}
     json.dump(out, open(OUT, "w", encoding="utf-8"), indent=1)
 
     # ---- checks through the real path: league_decks -> deck_weights -> sample_matchups
@@ -115,6 +200,9 @@ def main():
     got = collections.defaultdict(float)
     for d, pi in zip(lad, p): got[cls(d["engine"])] += pi
     assert all(abs(got[k] - census_target.get(k, 0)) < 1e-4 for k in got), (dict(got), census_target)
+    for k in TRAITS:
+        tk = sum(pi for d, pi in zip(lad, p) if trs(d["engine"])[k])
+        assert abs(tk - rake_info["realized_census"][k]) < 1e-4, (k, tk, rake_info["realized_census"][k])
     sims = {f"snaps{s}": simulate(lad, p, s) for s in (0, 1, 8)}
 
     # the census as R1e trained on it (alpha .5 floor .5, icebow share .2, s1 .2) -> cross-check vs q12 (X-Bow 38.4%)
@@ -135,7 +223,8 @@ def main():
            "census_only": census_only, "n_census_decks": len(census), "decks_per_class": {k: len(v) for k, v in by_cls.items()},
            "live": live_share, "live_traits": live_tr, "census_deckcount": cen_dc, "census_sides": cen_sides,
            "census_traits_deckcount": cen_t, "r1e_training_sim": {"class": old_c, "traits": old_t},
-           "opponent_target": t, "census_target": census_target, "sim": sims}
+           "opponent_target": t, "census_target": census_target, "trait_target_opponent": trait_target,
+           "trait_rule": trait_rule, "rake": rake_info, "sim": sims}
     json.dump(chk, open(HERE + "ladder_check.json", "w"), indent=1)
 
     P = print
@@ -147,9 +236,11 @@ def main():
     for k in rows:
         f = lambda d: f"{100 * d.get(k, 0):6.1f}%"
         P(f"{k:30s}{len(by_cls.get(k, [])):6d} {f(cen_dc)}  {f(cen_sides)}  {f(old_c)}{f(live_share)} {f(t)} {f(S['class'])} {f(sims['snaps0']['class'])}")
+    P(f"rake: {json.dumps(rake_info)}")
+    P(f"trait opponent targets {json.dumps(trait_target)} rule {json.dumps(trait_rule)}")
     P(f"{'trait':30s}{'':6s} {'cen#':>7s}  {'':8s}  {'R1eTrain':>7s}{'live':>7s} {'':7s} {'R2 s8':>7s} {'R2 s0':>7s}")
     for k in TRAITS:
-        P(f"{k:30s}{'':6s} {100 * cen_t[k]:6.1f}%  {'':8s}  {100 * old_t[k]:6.1f}%{100 * (live_tr[k] or 0):6.1f}% {'':7s} "
+        P(f"{k:30s}{'':6s} {100 * cen_t[k]:6.1f}%  {'':8s}  {100 * old_t[k]:6.1f}%{100 * (live_tr[k] or 0):6.1f}% {100 * trait_target[k]:6.1f}% "
           f"{100 * S['traits'][k]:6.1f}% {100 * sims['snaps0']['traits'][k]:6.1f}%")
     for s in ("snaps0", "snaps1", "snaps8"):
         P(f"{s}: icebow mirror {sims[s]['icebow_mirror']:.4f}  opp s1 {sims[s]['opp_s1']:.4f}  learner icebow {sims[s]['learner_icebow']:.3f}")
