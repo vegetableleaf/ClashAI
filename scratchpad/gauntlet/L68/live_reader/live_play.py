@@ -279,6 +279,11 @@ def main() -> int:
                     help="play nothing: run ONE between-match navigation that classifies the live screens and logs "
                          "the tap it WOULD make, never tapping (navigate by hand to test it)")
     a = ap.parse_args()
+    try:                                     # owner 2026-10-07: live play gets the CPU before training / sim jobs
+        import psutil
+        psutil.Process().nice(psutil.ABOVE_NORMAL_PRIORITY_CLASS)
+    except Exception as exc:                 # never block live play on a priority call
+        print(f"[live] priority not raised: {exc}", flush=True)
     decision_cfg = config_from_args(a)
     if a.matches < 1:
         print("refusing: --matches must be >= 1")
