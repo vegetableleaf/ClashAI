@@ -55,6 +55,9 @@ class BranchSpec:
     horizon_s: Optional[float] = None
     k: int = 1
     seed: int = 0
+    alt: str = "hold"                                           # R4 alternative-action kinds
+    a: Optional[tuple] = None
+    b: Optional[tuple] = None
 
 
 class BranchRunner:
@@ -124,7 +127,10 @@ class TestBranchConfig(unittest.TestCase):
                "branch_horizon_s": [0, -3, "12"], "branch_k": [0, 2.0], "branch_score": ["towers", None],
                "branch_phi_ckpt": [None, ""], "branch_coef": [-0.1, float("nan"), True],
                "branch_min_abs_delta": [-1, float("inf")], "branch_buffer": [0, 1.5, "512", None],
-               "branch_threads": [0, 2.5, None], "branch_max_staleness": [-1, 1.5, None]}
+               "branch_threads": [0, 2.5, None], "branch_max_staleness": [-1, 1.5, None],
+               "branch_kinds": [[], ["play"], ["hold", "hold"], "hold", None], "branch_card_points": [0, 1.5, "6"],
+               "branch_xbow_points": [0, None], "branch_card_coef": [-1, float("nan")], "branch_xbow_coef": [-0.5, "x"],
+               "branch_rocket_band": [0, 1.5, float("nan"), None], "branch_xbow_floor": [0, 0.6, None]}
         self.assertEqual(set(bad), set(RL.BRANCH_DEFAULTS))     # every key is covered
         for k, vals in bad.items():
             for v in vals:
@@ -615,8 +621,9 @@ class TestBranchMatch(unittest.TestCase):
         for s in out:
             self.assertTrue(s["branch"])
             self.assertEqual(s["phase"], RL.phase_of(s["tick"]))
-            self.assertEqual(set(s), {"branch", "tag", "k", "entry_index", "side", "tick", "phase", "p_gate", "p_play",
-                                      "hold_s", "delta", "weight", "wall_s", "row"})
+            self.assertEqual(set(s), {"branch", "kind", "tag", "k", "entry_index", "side", "tick", "phase", "p_gate",
+                                      "p_play", "hold_s", "delta", "weight", "wall_s", "row"})
+            self.assertEqual(s["kind"], "hold")
             self.assertIn(s["hold_s"], (2.0, 4.0, 8.0))
             self.assertEqual(s["side"], 1)
             for k in E.gen_row_keys(gen.model):
