@@ -1,0 +1,157 @@
+{"pros_icebow_sides": 2244, "pros_replays": 2241, "pro_engine_agrees": 1765, "bot_matches": 220, "bot_models": {"rseries_r1": 8, "gen_v31a_s0": 5, "gen_v31b_s0": 3, "rseries_r1e31": 187, "tower_spatial_v7": 17}, "bot_result": {"W": 105, "L": 114, "D": 1}, "pro_result": {"W": 1191, "L": 1053}, "pro_side": {"1": 1956, "0": 288}, "pro_term": {"native_logic_clock_stopped": 1473, "native_tiebreak_hp_drain": 770, "native_tiebreak_exact_draw": 1}, "RD": {"pro": 342.0, "bot": 497.0, "n_pro": 826, "n_bot": 17}}
+===== pros_all 2244 RD 342.0
+{'all': 8758, 'off': 6217, 'def': 2541, 'other': 0, 'off_status': {'ok': 2055, 'alive': 293, 'fail': 3857, 'unk': 12}}
+Q1
+  prev_2fail|1x events 205 next_exists 92% [88,95] n=205 | def|next 17% [12,22] n=188 | off|next 83% [77,88] n=188
+  prev_2fail|2x events 610 next_exists 88% [86,91] n=610 | def|next 20% [17,24] n=539 | off|next 80% [76,83] n=539
+  prev_2fail|OT events 806 next_exists 67% [64,69] n=806 | def|next 15% [12,18] n=536 | off|next 85% [82,88] n=536
+  prev_2fail|all events 1621 next_exists 78% [76,80] n=1621 | def|next 17% [15,20] n=1263 | off|next 83% [80,85] n=1263
+  prev_fail|1x events 1162 next_exists 92% [90,93] n=1162 | def|next 20% [18,23] n=1069 | off|next 80% [77,82] n=1069
+  prev_fail|2x events 1231 next_exists 85% [83,87] n=1231 | def|next 25% [22,28] n=1050 | off|next 75% [72,78] n=1050
+  prev_fail|OT events 1464 next_exists 64% [62,66] n=1464 | def|next 20% [18,23] n=942 | off|next 80% [77,82] n=942
+  prev_fail|all events 3857 next_exists 79% [78,80] n=3857 | def|next 22% [20,23] n=3061 | off|next 78% [77,80] n=3061
+  prev_ok|1x events 814 next_exists 92% [90,94] n=814 | def|next 29% [26,33] n=748 | off|next 71% [67,74] n=748
+  prev_ok|2x events 603 next_exists 70% [67,74] n=603 | def|next 32% [28,37] n=423 | off|next 68% [63,72] n=423
+  prev_ok|OT events 638 next_exists 53% [49,56] n=638 | def|next 33% [28,39] n=335 | off|next 67% [61,72] n=335
+  prev_ok|all events 2055 next_exists 73% [72,75] n=2055 | def|next 31% [29,33] n=1506 | off|next 69% [66,71] n=1506
+Q2
+  phase|1x 15% [14,17] n=2813
+  phase|2x 33% [31,35] n=2948
+  phase|OT 38% [35,40] n=2997
+  phase|all 29% [28,30] n=8758
+  crowns|ahead 39% [30,48] n=163
+  crowns|ahead|1x 28% [15,43] n=46
+  crowns|ahead|2x 44% [34,53] n=117
+  crowns|ahead|OT n/a
+  crowns|level 29% [28,30] n=8451
+  crowns|level|1x 15% [14,17] n=2729
+  crowns|level|2x 33% [31,35] n=2725
+  crowns|level|OT 38% [35,40] n=2997
+  crowns|behind 18% [12,25] n=144
+  crowns|behind|1x 8% [0,17] n=38
+  crowns|behind|2x 22% [14,30] n=106
+  crowns|behind|OT n/a
+  hp|deficit(<-10%) 24% [22,26] n=2525
+  hp_late|deficit(<-10%) 26% [24,29] n=2138
+  hp|even(+-10%) 30% [29,32] n=5697
+  hp_late|even(+-10%) 40% [38,42] n=3365
+  hp|lead(>+10%) 43% [38,48] n=536
+  hp_late|lead(>+10%) 48% [42,53] n=442
+Q3
+  tower_rockets_per_min|1x 0.05 [0.05,0.06] n=4465
+  tower_rockets_per_match|1x 0.10 [0.09,0.12] n=2244
+  P(>=1 tower rocket)|1x 10% [9,11] n=2244
+  P(>=2 tower rockets)|1x 0% [0,1] n=2244
+  tower_rockets_per_min|2x 0.14 [0.12,0.16] n=2123
+  tower_rockets_per_match|2x 0.14 [0.12,0.15] n=2125
+  P(>=1 tower rocket)|2x 13% [11,14] n=2125
+  P(>=2 tower rockets)|2x 1% [1,2] n=2125
+  tower_rockets_per_min|OT 0.32 [0.30,0.35] n=2619
+  tower_rockets_per_match|OT 0.55 [0.50,0.59] n=1524
+  P(>=1 tower rocket)|OT 37% [34,39] n=1524
+  P(>=2 tower rockets)|OT 13% [11,15] n=1524
+  tower_rockets_per_match|whole 0.61 [0.57,0.66] n=2244
+  P(>=2 tower rockets)|whole 14% [13,16] n=2244
+  rockets_total_per_match 2.42 [2.34,2.49] n=2244
+  share_of_rockets_on_tower 25% [24,27] n=5426
+  tower_rockets_per_level_minute|late(>=120s) 0.25 [0.23,0.27] n=4536
+  P(>=1 tower rocket | >=30s level)|late(>=120s) 38% [36,40] n=1902
+  P(>=2 tower rockets | >=30s level)|late(>=120s) 14% [12,15] n=1902
+  tower_rockets_per_level_minute|OT(>=180s) 0.32 [0.30,0.34] n=2654
+  P(>=1 tower rocket | >=30s level)|OT(>=180s) 37% [34,39] n=1503
+  P(>=2 tower rockets | >=30s level)|OT(>=180s) 13% [11,15] n=1503
+  tower_rocket_target_hp|<=25% 14% [12,16] n=1380
+  tower_rocket_target_hp|25-50% 21% [19,23] n=1380
+  tower_rocket_target_hp|>50% 66% [63,68] n=1380
+  tower_rocket_target_hp<=1_rocket_dmg 5% [4,6] n=1380
+  P(tower rocket within 20s | an enemy tower first <=40% HP) 9% [7,10] n=915
+Q4
+  all 3653 {'new_offensive_Xbow': '41% [39,43] n=3653', 'defensive_Xbow': '11% [10,12] n=3653', 'tower_Rocket': '8% [7,9] n=3653', 'Tesla': '68% [66,69] n=3653', 'defXbow_and_Tesla': '8% [7,9] n=3653', 'no_offX_but_defX_or_towerRocket': '14% [13,16] n=3653', 'none_of_Xbow/Tesla/towerRocket(hold)': '18% [16,19] n=3653', 'median_elixir_at_window_end_when_hold': 8.2973}
+  ph_2x 1206 {'new_offensive_Xbow': '52% [49,55] n=1206', 'defensive_Xbow': '15% [13,17] n=1206', 'tower_Rocket': '7% [6,9] n=1206', 'Tesla': '80% [77,82] n=1206', 'defXbow_and_Tesla': '11% [9,13] n=1206', 'no_offX_but_defX_or_towerRocket': '18% [15,20] n=1206', 'none_of_Xbow/Tesla/towerRocket(hold)': '5% [4,7] n=1206', 'median_elixir_at_window_end_when_hold': 10.0}
+  ph_1x 1162 {'new_offensive_Xbow': '20% [17,22] n=1162', 'defensive_Xbow': '3% [2,4] n=1162', 'tower_Rocket': '3% [2,4] n=1162', 'Tesla': '44% [41,46] n=1162', 'defXbow_and_Tesla': '1% [1,2] n=1162', 'no_offX_but_defX_or_towerRocket': '6% [4,7] n=1162', 'none_of_Xbow/Tesla/towerRocket(hold)': '41% [39,44] n=1162', 'median_elixir_at_window_end_when_hold': 8.042449999999999}
+  2fail 1510 {'new_offensive_Xbow': '52% [49,54] n=1510', 'defensive_Xbow': '10% [9,12] n=1510', 'tower_Rocket': '10% [8,12] n=1510', 'Tesla': '76% [73,78] n=1510', 'defXbow_and_Tesla': '8% [6,9] n=1510', 'no_offX_but_defX_or_towerRocket': '15% [13,17] n=1510', 'none_of_Xbow/Tesla/towerRocket(hold)': '10% [8,11] n=1510', 'median_elixir_at_window_end_when_hold': 8.68555}
+  ph_OT 1285 {'new_offensive_Xbow': '50% [47,53] n=1285', 'defensive_Xbow': '13% [11,15] n=1285', 'tower_Rocket': '14% [12,17] n=1285', 'Tesla': '78% [76,80] n=1285', 'defXbow_and_Tesla': '10% [9,12] n=1285', 'no_offX_but_defX_or_towerRocket': '19% [17,22] n=1285', 'none_of_Xbow/Tesla/towerRocket(hold)': '7% [6,9] n=1285', 'median_elixir_at_window_end_when_hold': 10.0}
+   OUT re-offend (new offensive X-Bow <=30s) 455 {'win': '53% [48,57] n=455', 'loss': '47% [43,52] n=455', 'win_with_equal_crowns(tiebreak)': '24% [20,28] n=455'}
+   OUT no re-offend 1145 {'win': '48% [45,51] n=1145', 'loss': '52% [49,55] n=1145', 'win_with_equal_crowns(tiebreak)': '26% [23,28] n=1145'}
+   OUT no re-offend, def X-Bow or tower Rocket 190 {'win': '60% [53,67] n=190', 'loss': '40% [33,47] n=190', 'win_with_equal_crowns(tiebreak)': '37% [31,45] n=190'}
+   OUT no re-offend, hold (no X-Bow/Tesla/rocket) 459 {'win': '45% [41,49] n=459', 'loss': '55% [51,60] n=459', 'win_with_equal_crowns(tiebreak)': '22% [18,26] n=459'}
+baseline {'win': '53% [51,55] n=2244', 'win_with_equal_crowns': '23% [22,25] n=2244'}
+Q5 {'matches': 2244, 'play_rows': 95488, 'xbow_rows': 8758, 'xbow_def_rows': 2541, 'xbow_off_rows': 6217, 'xbow_def_by_phase': {'1x': 433, '2x': 980, 'OT': 1128}, 'failed_offensive_xbow_events': 3857, 'fail_then_next_xbow_pairs': 3061, '2fail_then_next_xbow_pairs': 1263, 'def_xbow_right_after_fail': 667, 'def_xbow_right_after_2fail': 220, 'tower_rockets': 1380, 'matches_with_ge2_tower_rockets_in_a_phase': 215, 'level_late_tower_rocket_rows(>=120s)': 1128, 'failure_windows(>=15s left)': 3653, 'failure_windows_no_reoffend': 2152, 'failure_windows_no_reoffend_with_defX_or_towerRocket': 525}
+===== bot 220 RD 497.0
+{'all': 720, 'off': 593, 'def': 127, 'other': 0, 'off_status': {'ok': 373, 'fail': 166, 'alive': 51, 'unk': 3}}
+Q1
+  prev_2fail|1x events 9 next_exists 89% [62,100] n=9 | def|next 0% [0,0] n=8 | off|next 100% [100,100] n=8
+  prev_2fail|2x events 25 next_exists 64% [44,82] n=25 | def|next 0% [0,0] n=16 | off|next 100% [100,100] n=16
+  prev_2fail|OT events 14 next_exists 43% [17,62] n=14 | def|next 0% [0,0] n=6 | off|next 100% [100,100] n=6
+  prev_2fail|all events 48 next_exists 62% [48,75] n=48 | def|next 0% [0,0] n=30 | off|next 100% [100,100] n=30
+  prev_fail|1x events 53 next_exists 96% [90,100] n=53 | def|next 6% [0,13] n=51 | off|next 94% [86,100] n=51
+  prev_fail|2x events 79 next_exists 67% [57,77] n=79 | def|next 13% [5,24] n=53 | off|next 87% [77,95] n=53
+  prev_fail|OT events 34 next_exists 50% [36,63] n=34 | def|next 12% [0,28] n=17 | off|next 88% [71,100] n=17
+  prev_fail|all events 166 next_exists 73% [66,79] n=166 | def|next 10% [5,16] n=121 | off|next 90% [84,95] n=121
+  prev_ok|1x events 177 next_exists 95% [91,98] n=177 | def|next 24% [18,30] n=168 | off|next 76% [69,82] n=168
+  prev_ok|2x events 148 next_exists 66% [58,74] n=148 | def|next 31% [22,40] n=97 | off|next 69% [60,78] n=97
+  prev_ok|OT events 48 next_exists 31% [17,45] n=48 | def|next 13% [0,35] n=15 | off|next 87% [67,100] n=15
+  prev_ok|all events 373 next_exists 75% [71,79] n=373 | def|next 26% [21,31] n=280 | off|next 74% [69,79] n=280
+Q2
+  phase|1x 10% [7,14] n=320
+  phase|2x 25% [20,30] n=306
+  phase|OT 18% [10,27] n=94
+  phase|all 18% [15,21] n=720
+  crowns|ahead 63% [53,73] n=71
+  crowns|ahead|1x 73% [40,100] n=11
+  crowns|ahead|2x 62% [51,72] n=60
+  crowns|ahead|OT n/a
+  crowns|level 13% [10,15] n=575
+  crowns|level|1x 8% [5,11] n=291
+  crowns|level|2x 16% [11,22] n=190
+  crowns|level|OT 18% [10,27] n=94
+  crowns|behind 14% [5,22] n=74
+  crowns|behind|1x 6% [0,19] n=18
+  crowns|behind|2x 16% [5,29] n=56
+  crowns|behind|OT n/a
+  hp|deficit(<-10%) 20% [13,27] n=147
+  hp_late|deficit(<-10%) 24% [15,34] n=107
+  hp|even(+-10%) 13% [10,16] n=387
+  hp_late|even(+-10%) 19% [12,25] n=160
+  hp|lead(>+10%) 25% [19,31] n=186
+  hp_late|lead(>+10%) 29% [21,36] n=133
+Q3
+  tower_rockets_per_min|1x 0.03 [0.02,0.05] n=435
+  tower_rockets_per_match|1x 0.06 [0.03,0.09] n=220
+  P(>=1 tower rocket)|1x 6% [3,10] n=220
+  P(>=2 tower rockets)|1x 0% [0,0] n=220
+  tower_rockets_per_min|2x 0.03 [0.01,0.05] n=207
+  tower_rockets_per_match|2x 0.03 [0.01,0.05] n=209
+  P(>=1 tower rocket)|2x 3% [1,5] n=209
+  P(>=2 tower rockets)|2x 0% [0,0] n=209
+  tower_rockets_per_min|OT 0.05 [0.01,0.10] n=98
+  tower_rockets_per_match|OT 0.04 [0.00,0.09] n=72
+  P(>=1 tower rocket)|OT 4% [0,9] n=72
+  P(>=2 tower rockets)|OT 0% [0,0] n=72
+  tower_rockets_per_match|whole 0.11 [0.07,0.16] n=220
+  P(>=2 tower rockets)|whole 1% [0,2] n=220
+  rockets_total_per_match 0.33 [0.25,0.42] n=220
+  share_of_rockets_on_tower 33% [22,44] n=73
+  tower_rockets_per_level_minute|late(>=120s) 0.04 [0.02,0.07] n=225
+  P(>=1 tower rocket | >=30s level)|late(>=120s) 7% [3,12] n=131
+  P(>=2 tower rockets | >=30s level)|late(>=120s) 0% [0,0] n=131
+  tower_rockets_per_level_minute|OT(>=180s) 0.05 [0.01,0.10] n=100
+  P(>=1 tower rocket | >=30s level)|OT(>=180s) 4% [0,10] n=70
+  P(>=2 tower rockets | >=30s level)|OT(>=180s) 0% [0,0] n=70
+  tower_rocket_target_hp|<=25% 8% [0,22] n=24
+  tower_rocket_target_hp|25-50% 21% [5,37] n=24
+  tower_rocket_target_hp|>50% 71% [50,88] n=24
+  tower_rocket_target_hp<=1_rocket_dmg 0% [0,0] n=24
+  P(tower rocket within 20s | an enemy tower first <=40% HP) 1% [0,3] n=165
+Q4
+  all 155 {'new_offensive_Xbow': '45% [38,52] n=155', 'defensive_Xbow': '5% [2,8] n=155', 'tower_Rocket': '1% [0,3] n=155', 'Tesla': '68% [60,75] n=155', 'defXbow_and_Tesla': '3% [1,5] n=155', 'no_offX_but_defX_or_towerRocket': '5% [2,9] n=155', 'none_of_Xbow/Tesla/towerRocket(hold)': '15% [10,21] n=155', 'median_elixir_at_window_end_when_hold': 4.7781}
+  ph_1x 53 {'new_offensive_Xbow': '34% [22,46] n=53', 'defensive_Xbow': '2% [0,7] n=53', 'tower_Rocket': '2% [0,6] n=53', 'Tesla': '47% [35,60] n=53', 'defXbow_and_Tesla': '0% [0,0] n=53', 'no_offX_but_defX_or_towerRocket': '2% [0,7] n=53', 'none_of_Xbow/Tesla/towerRocket(hold)': '28% [18,40] n=53', 'median_elixir_at_window_end_when_hold': 6.3714}
+  ph_2x 70 {'new_offensive_Xbow': '56% [45,67] n=70', 'defensive_Xbow': '6% [1,12] n=70', 'tower_Rocket': '0% [0,0] n=70', 'Tesla': '80% [70,89] n=70', 'defXbow_and_Tesla': '3% [0,8] n=70', 'no_offX_but_defX_or_towerRocket': '6% [1,12] n=70', 'none_of_Xbow/Tesla/towerRocket(hold)': '9% [3,16] n=70', 'median_elixir_at_window_end_when_hold': 3.5705}
+  2fail 46 {'new_offensive_Xbow': '50% [36,62] n=46', 'defensive_Xbow': '0% [0,0] n=46', 'tower_Rocket': '0% [0,0] n=46', 'Tesla': '78% [67,88] n=46', 'defXbow_and_Tesla': '0% [0,0] n=46', 'no_offX_but_defX_or_towerRocket': '0% [0,0] n=46', 'none_of_Xbow/Tesla/towerRocket(hold)': '15% [6,26] n=46', 'median_elixir_at_window_end_when_hold': 6.5608}
+  ph_OT 32 {'new_offensive_Xbow': '41% [26,54] n=32', 'defensive_Xbow': '6% [0,15] n=32', 'tower_Rocket': '3% [0,11] n=32', 'Tesla': '75% [60,92] n=32', 'defXbow_and_Tesla': '6% [0,15] n=32', 'no_offX_but_defX_or_towerRocket': '9% [0,21] n=32', 'none_of_Xbow/Tesla/towerRocket(hold)': '9% [0,20] n=32', 'median_elixir_at_window_end_when_hold': 2.0398}
+   OUT re-offend (new offensive X-Bow <=30s) 40 {'win': '42% [27,59] n=40', 'loss': '57% [42,72] n=40'}
+   OUT no re-offend 54 {'win': '35% [22,48] n=54', 'loss': '65% [52,78] n=54'}
+   OUT no re-offend, def X-Bow or tower Rocket 6 {'win': '50% [0,100] n=6', 'loss': '50% [0,100] n=6'}
+   OUT no re-offend, hold (no X-Bow/Tesla/rocket) 17 {'win': '18% [0,38] n=17', 'loss': '82% [62,100] n=17'}
+baseline {'win': '48% [42,55] n=220'}
+Q5 {'matches': 220, 'play_rows': 8359, 'xbow_rows': 720, 'xbow_def_rows': 127, 'xbow_off_rows': 593, 'xbow_def_by_phase': {'1x': 33, '2x': 77, 'OT': 17}, 'failed_offensive_xbow_events': 166, 'fail_then_next_xbow_pairs': 121, '2fail_then_next_xbow_pairs': 30, 'def_xbow_right_after_fail': 12, 'def_xbow_right_after_2fail': 0, 'tower_rockets': 24, 'matches_with_ge2_tower_rockets_in_a_phase': 0, 'level_late_tower_rocket_rows(>=120s)': 10, 'failure_windows(>=15s left)': 155, 'failure_windows_no_reoffend': 85, 'failure_windows_no_reoffend_with_defX_or_towerRocket': 8}

@@ -3806,6 +3806,20 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   from Aug 30 expired). Owner: `cd /c/Users/benpe/clash-replay-scraper && python crawl_deck.py --deck icebow probe`,
 >   log in in its Chrome window; then rerun `scratchpad/gauntlet/L70/abilities/ice_wizard_hero/crawl_hero_iw.py`
 >   (roster of 1,390 players saved).
+> * **22:xx -- DEFENSIVE X-BOW / ROCKET CYCLING MEASURED (worker sonnet, `L73/xbow_switch/`, results.json, show_out.txt).**
+>   Pros 2,244 icebow sides (2,241 re-drives, 8,758 X-Bows) vs bot 220 live matches with decision state (187 R1e).
+>   Owner premise "pros switch to defensive X-Bows when offence fails" CONTRADICTED: next X-Bow defensive 22% [20,23]
+>   after a failed offensive X-Bow vs 31% [29,33] after a successful one (bot 10% [5,16] / 26%); pros re-offend 78%.
+>   REAL gaps: (1) Rockets/match 2.42 [2.34,2.49] pros vs 0.33 [0.25,0.42] bot (5.7% vs 0.9% of plays); tower Rockets
+>   in OT 0.55 vs 0.04; >=2 tower Rockets in one phase 10% of pro matches (13% in OT), bot 0/220; 66% of pro tower
+>   Rockets hit a tower >50% HP (chip/tiebreak, not finishers). (2) Defensive X-Bow share rises with time for pros
+>   15/33/38% (1x/2x/OT) vs bot 10/25/18%. (3) After a failed X-Bow, holding pros sit at 8.3 elixir median vs bot 4.8.
+>   CAVEAT: pro X-Bow "failure" comes from native re-drive HP (65% fail) vs bot screen reads (31%) -> fail-conditioned
+>   rows mix sources; unconditional rows (Rocket counts, phase shares) are clean. Prior: L71 rocket_diag (3.1a) on pro
+>   Rocket rows -> model argmax is Rocket only 22%, 69% of misses "another affordable card ranked first" (not gate,
+>   not affordability); Codex v4_rocket upweighting -> more Rocket, ghost -3.68 [-7.02,-0.33]. NOT acted on (one change
+>   per experiment: gen_v3.2 identity first). Candidate next single changes in HANDOFF order: phase-wise tau (econ),
+>   then a Rocket lever measured on pro Rocket rows + reactive, never weight alone.
 
 > ## ⟳ 2026-10-04 00:0x -- OWNER CHANGE OF PLAN (owner bought usage; lead active again)
 > Owner: every Tuesday-deferred item is unblocked now; FULL native re-drive NOW with spell effects + projectile
