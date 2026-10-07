@@ -217,6 +217,11 @@ def main() -> int:
                     help="owner 2026-10-07: A/B the play threshold match by match (counter in --tau-alternate-state "
                          "survives supervisor restarts; each match logs its tau in the start event)")
     ap.add_argument("--tau-alternate-state", default=str(REPO / "scratchpad/gauntlet/L70/live/tau_alternate.json"))
+    ap.add_argument("--ckpt-alternate", nargs=2, default=None, metavar=("CKPT_A", "CKPT_B"),
+                    help="owner 2026-10-07: A/B two checkpoints match by match (both loaded at startup; counter in "
+                         "--ckpt-alternate-state survives supervisor restarts; each match's start event logs the chosen "
+                         "ckpt + ckpt_sha256). Bypasses CKPT_OVERRIDE; refused together with --ckpt or --tau-alternate")
+    ap.add_argument("--ckpt-alternate-state", default=str(REPO / "scratchpad/gauntlet/L70/live/ckpt_alternate.json"))
     ap.add_argument("--leak", type=float, default=9.5, help=argparse.SUPPRESS)
     ap.add_argument("--no-anti-leak", action="store_true", default=True,
                     help="compatibility flag: forced anti-leak spending has been removed")
@@ -291,14 +296,38 @@ def main() -> int:
     if (a.matches > 1 or a.nav_dry_run) and not (a.friend or a.ladder):
         print("refusing: --matches > 1 and --nav-dry-run need --friend NAME or --ladder")
         return 2
-    from pipeline.live_checkpoint import resolve_checkpoint
-    try:
-        selected = resolve_checkpoint(a.ckpt, a.ckpt_override_file, REPO)
-    except (OSError, ValueError) as exc:
-        print(f"[live] {exc}", flush=True)
+    if a.ckpt_alternate and (a.tau_alternate or a.ckpt):
+        print("refusing: --ckpt-alternate cannot be combined with --tau-alternate or --ckpt (one A/B variable at a time)")
         return 2
-    a.ckpt, a.ckpt_source, a.ckpt_sha256 = str(selected.path), selected.source, selected.sha256
-    print(f"[live] checkpoint: {a.ckpt}\n[live] selected by: {a.ckpt_source}\n[live] SHA256: {a.ckpt_sha256}", flush=True)
+    selected, arms, pilots = None, None, None
+    if a.ckpt_alternate:                         # the pair bypasses resolve_checkpoint / CKPT_OVERRIDE
+        try:
+            arms = [alternate_arm(p) for p in a.ckpt_alternate]
+        except (OSError, ValueError) as exc:
+            print(f"[live] {exc}", flush=True)
+            return 2
+        for i, (path, sha) in enumerate(arms):
+            print(f"[live] checkpoint {'AB'[i]}: {path}\n[live] SHA256 {'AB'[i]}: {sha}", flush=True)
+        if arms[0][1] == arms[1][1]:
+            print("refusing: --ckpt-alternate got the same checkpoint twice")
+            return 2
+        a.ckpt, a.ckpt_source, a.ckpt_sha256 = arms[0][0], "--ckpt-alternate", arms[0][1]
+        if a.check:
+            loaded = [load_pilot(a, decision_cfg, ckpt=path) for path, _ in arms]
+            print(json.dumps(dict(check='LIVE_CHECK_PASS', checkpoints=[
+                dict(checkpoint=path, sha256=sha, feature_version=pl.feature_version)
+                for (path, sha), (_, pl) in zip(arms, loaded)], device=loaded[0][0], tau=a.tau, anti_leak=False,
+                public_audit=a.public_audit, decision_options=vars(loaded[0][1].decision_options))))
+            return 0
+    else:
+        from pipeline.live_checkpoint import resolve_checkpoint
+        try:
+            selected = resolve_checkpoint(a.ckpt, a.ckpt_override_file, REPO)
+        except (OSError, ValueError) as exc:
+            print(f"[live] {exc}", flush=True)
+            return 2
+        a.ckpt, a.ckpt_source, a.ckpt_sha256 = str(selected.path), selected.source, selected.sha256
+        print(f"[live] checkpoint: {a.ckpt}\n[live] selected by: {a.ckpt_source}\n[live] SHA256: {a.ckpt_sha256}", flush=True)
     if a.check:
         device, pilot = load_pilot(a, decision_cfg)
         print(json.dumps(dict(check='LIVE_CHECK_PASS', checkpoint=a.ckpt, sha256=a.ckpt_sha256,
@@ -325,13 +354,18 @@ def main() -> int:
         print(f"refusing: the in-match menu guard needs a 900x1600 screen (got {lay.w}x{lay.h}); fix the emulator "
               f"resolution, or run without --menu-guard")
         return 2
-    device, pilot = load_pilot(a, decision_cfg)
+    if arms:                                     # two models in memory; each match picks one (~2x RAM, one forward per tick)
+        loaded = [load_pilot(a, decision_cfg, ckpt=path) for path, _ in arms]
+        device, pilots = loaded[0][0], [pl for _, pl in loaded]
+        pilot = pilots[0]
+    else:
+        device, pilot = load_pilot(a, decision_cfg)
     renders: list = []                                   # background overlay renders of matches 1..N-1
     rc = 0                                               # 1 = the run stopped for any non-normal reason
     last_clip, no_start = -1e18, 0
     try:
         for k in range(a.matches):
-            if selected.changed():
+            if selected is not None and selected.changed():
                 print("[live] new checkpoint deployed or selection unavailable -- ending this run between matches",
                       flush=True)
                 break
@@ -360,7 +394,10 @@ def main() -> int:
                     elif why.startswith("TROPHY_ROAD_ALERT") and a.stop_file:   # the nav already posted its screenshot:
                         a.stop_file.touch()                     # pause, don't let the supervisor retry an unknown screen
                     break
-                pilot.reset_match()                      # same loaded model, fresh history / opp counter
+                if not pilots:
+                    pilot.reset_match()                  # same loaded model, fresh history / opp counter
+            if pilots:                                   # BEFORE the caption / play_match: everything per-match uses this pilot
+                (a.ckpt, a.ckpt_sha256), pilot = pick_alternate(Path(a.ckpt_alternate_state), arms, pilots)
             record, caption, prev_clip = not a.no_record, None, last_clip
             if a.clip_every > 0:                         # owner 2026-10-02: replays off, one clip per --clip-every
                 record = time.time() - last_clip >= a.clip_every
@@ -400,19 +437,41 @@ def main() -> int:
     return rc
 
 
-def next_alternate_tau(state: Path, arms) -> float:
+def next_alternate(state: Path, arms):
     """The next arm of a match-by-match A/B; the counter lives in ``state`` so a restarted supervisor keeps alternating."""
     n = json.loads(state.read_text()).get("n", 0) if state.exists() else 0
     state.write_text(json.dumps({"n": n + 1}))
-    return float(arms[n % 2])
+    return arms[n % 2]
 
 
-def load_pilot(a, decision_cfg):
+def next_alternate_tau(state: Path, arms) -> float:
+    return float(next_alternate(state, arms))
+
+
+def alternate_arm(path: str):
+    """(absolute path, sha256) of one --ckpt-alternate checkpoint; ValueError when the file is missing."""
+    import hashlib
+    p = Path(path).expanduser()
+    p = (REPO / p).resolve() if not p.is_absolute() else p.resolve()
+    if not p.is_file():
+        raise ValueError(f"--ckpt-alternate checkpoint does not exist: {p}")
+    with p.open("rb") as stream:
+        return str(p), hashlib.file_digest(stream, "sha256").hexdigest()
+
+
+def pick_alternate(state: Path, arms, pilots):
+    """The next match's (arm, pilot) with its per-match state cleared; the swap happens before play_match."""
+    i = next_alternate(state, [0, 1])
+    pilots[i].reset_match()                              # fresh history / opp counter / decision seed for this match
+    return arms[i], pilots[i]
+
+
+def load_pilot(a, decision_cfg, ckpt=None):
     import torch
     from pipeline.decision_options import options_from_config
     torch.set_num_threads(4)
     device = ("cuda" if torch.cuda.is_available() else "cpu") if a.device == "auto" else a.device
-    pilot = GenPilot(a.ckpt, device=device, gate_tau=a.tau, use_counter=not a.no_opp_counter,
+    pilot = GenPilot(ckpt or a.ckpt, device=device, gate_tau=a.tau, use_counter=not a.no_opp_counter,
                      extrapolate_ticks=a.extrapolate, decision_options=options_from_config(decision_cfg),
                      decision_seed=a.decision_seed, public_audit=a.public_audit)
     return device, pilot
