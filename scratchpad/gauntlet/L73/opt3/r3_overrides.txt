@@ -58,7 +58,7 @@ branch_min_abs_delta=0.25
 branch_max_staleness=6
 branch_buffer=512
 branch_coef=0.1
-branch_lr=null
+branch_lr=2.0e-6
 branch_buffer_max_age=20
 # lever C: potential shaping, Phi = shaping_w_value x the 10 s causal trailing mean of the FROZEN init's (shaping_phi_ckpt
 # unset = init) P(win) - P(loss); residual critic needs shaping_critic_scale >= 1 + w_value (adv_cfg enforces it).
