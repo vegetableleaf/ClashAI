@@ -3922,6 +3922,14 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   frames have two same-side 203000023 objects 2.8 tiles apart (outside the 500-unit dedupe radius) -- open; fix in
 >   reader_identity_aliases (needs which-is-the-cube evidence; Codex's named reader distinguishes them). Blind
 >   verifier (opus) PASS_WITH_NOTES: default path untouched (live_gen_v2:49-51), supervisor reaches this pilot, phase time = SIM's, enemy towers correct; options are inert until run_live.sh passes the flags.
+> * **HERO DEDUPE REWORKED, NOT MERGED (worker opus; branch `worktree-agent-a26fbb093f97a71fa` @fd136a7, lead read the
+>   diff).** Named evidence (Codex census 1,202 + sampler3 146): every FloatingCube (607/607) sits on its owner hero with
+>   category = owner + 1 -> drop by that rule in any list order (old radius rule in reversed order kept 534 cubes and
+>   dropped 538 heroes). The 21 "residual" frames are TWO REAL heroes on one side (49 named frame-sides; second hero
+>   deployed tick 3148, own cube, own damage) -> kept by design (premise of "one hero per side" contradicted). 26 tests
+>   pass. OPEN: IceCube (third 203000023 object, behaviour_state_raw 0 in 31/31 vs 0/652 heroes) still reads as a hero;
+>   absent from the 1,095 recorded frames; a fix needs the test_reader_identity_aliases fixture changed (hero there has
+>   behaviour 0). hero_button picks the first of two real heroes (which one the ability uses is unmeasured).
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
