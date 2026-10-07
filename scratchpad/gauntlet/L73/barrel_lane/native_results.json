@@ -1,0 +1,29 @@
+{
+ "dataset": "icebow\\data\\pipeline\\gen_dataset_v31_public.npz",
+ "log_plays": 47703,
+ "with_one_enemy_barrel_target_known": 1409,
+ "selected_noncenter_own_half": 1405,
+ "pro_log_same_lane_as_target": {
+  "n": 1405,
+  "same": 1361,
+  "rate": 0.969
+ },
+ "by_side": {
+  "0": {
+   "n": 573,
+   "same": 557
+  },
+  "1": {
+   "n": 832,
+   "same": 804
+  }
+ },
+ "median_dx_tiles": 0.0,
+ "target_x_hist_own": [
+  639,
+  22,
+  1,
+  743
+ ],
+ "target_y_own_median": 0.797
+}

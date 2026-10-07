@@ -3829,6 +3829,18 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   avoid offensive X-Bows when a counter is publicly in hand + affordable, and does the live model condition likewise
 >   (teacher-forced); outcome cost within-source; support spend on no-lock X-Bows and the counterpush that follows.
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
+> * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
+>   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
+>   enemy barrel flights, target present 285/285 sightings, target lane = goblin landing lane 71/71; model input target
+>   = raw target to 3e-8; look-ahead on-line; mirroring matches bodies and actions; Log taps land in the intended lane
+>   1025/1027. Behaviour: in-flight Logs to the barrel's lane 18/29 live (62%; all 11 misses a full lane off at the usual
+>   princess-front cell). Cause: fv4/fv5 pool projectiles into one vector (model_gen.py:131-136), so the barrel's target
+>   never reaches the placement head -- mirroring ONLY the barrel flips R1e's Log lane on 5/1,405 pro states (fv6
+>   target-patch branch: 1,271). Offline R1e 61.7% = live 62%. Fix: frozen-base fv6 branch (Codex L72 iteration 7 on
+>   ordinary_v5: Barrel correct 40->56/63, wrong 22->6, everything else within +-2; rejected only on its self-written
+>   Rocket -2/955 and 1e-6 exact-logit floors). End-to-end v6 lost games (39/64 vs R1e 45/64) -> branch-only.
+>   PLAN: after gen_v3.2 trains, branch-only on gen_v3.2 (worker preparing `L73/barrel_branch/train_branch.py`), A/B
+>   v3.2+branch vs v3.2 (counterfactual held-out >=115/126 lane, ghost + reactive no worse), then RL from the winner.
 
 > ## ⟳ 2026-10-04 00:0x -- OWNER CHANGE OF PLAN (owner bought usage; lead active again)
 > Owner: every Tuesday-deferred item is unblocked now; FULL native re-drive NOW with spell effects + projectile

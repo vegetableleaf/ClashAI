@@ -1,0 +1,273 @@
+{
+ "files": 187,
+ "flights": 82,
+ "flights_with_concurrent_targets": 20,
+ "same_target_duplicates": 0,
+ "flights_by_side": {
+  "1": 66,
+  "0": 16
+ },
+ "target_field": {
+  "present": 285
+ },
+ "matched_landing": 71,
+ "landing_lane_agree": {
+  "n": 71,
+  "true": 71,
+  "rate": 1.0
+ },
+ "landing_lane_agree_noncenter": {
+  "n": 68,
+  "true": 68,
+  "rate": 1.0
+ },
+ "landing_lane_agree_by_side": {
+  "0": {
+   "n": 16,
+   "true": 16,
+   "rate": 1.0
+  },
+  "1": {
+   "n": 55,
+   "true": 55,
+   "rate": 1.0
+  }
+ },
+ "target_err_tiles": [
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.001,
+  0.001,
+  0.001,
+  0.001,
+  0.001,
+  0.001,
+  0.001,
+  0.001,
+  0.001,
+  0.001,
+  0.001,
+  0.001,
+  0.001,
+  0.001,
+  0.001,
+  0.002,
+  0.002,
+  0.002,
+  0.002,
+  0.002,
+  0.002,
+  0.002,
+  0.002,
+  0.002,
+  0.002,
+  0.002,
+  0.002,
+  0.003,
+  0.004,
+  0.009,
+  0.061,
+  0.104,
+  0.192,
+  0.2,
+  0.223,
+  0.278,
+  0.342,
+  0.371,
+  0.382,
+  0.408,
+  0.422,
+  0.422,
+  0.423,
+  0.438,
+  0.438,
+  0.51,
+  0.51,
+  0.513,
+  0.538,
+  0.553,
+  0.705,
+  0.705,
+  0.738,
+  0.74,
+  0.759,
+  0.811,
+  0.813,
+  0.813,
+  0.814,
+  0.814,
+  0.814,
+  0.814,
+  0.91,
+  1.05
+ ],
+ "center_targets": 3,
+ "model_rows": 285,
+ "model_rows_missing": 0,
+ "model_target_vs_raw_transform_max_abs": 2.6490953208835322e-08,
+ "normalized_pos_vs_raw_transform_max_abs": 2.95639037695139e-08,
+ "model_lane_eq_raw_target_lane": {
+  "true": 285
+ },
+ "lookahead_fraction_along_segment": {
+  "min": 0.36866258036725746,
+  "max": 1.0000004307852548,
+  "median": 0.67741135858931
+ },
+ "lookahead_perpendicular_offset_max": 3.7522533776516e-08,
+ "model_tti_known": {
+  "1": 285
+ },
+ "logs": {
+  "total": 1078,
+  "no_audit": 0,
+  "by_context": {
+   "other": 1033,
+   "in_flight": 37,
+   "goblins_on_ground": 8
+  },
+  "executed_found": 1047,
+  "exec_err_x_tiles_max": 11.0008,
+  "exec_lane_matches_intent": {
+   "n": 1047,
+   "true": 1045,
+   "rate": 0.998
+  },
+  "in_flight": {
+   "n": 37,
+   "target_known": 37,
+   "lane_vs_target": {
+    "n": 37,
+    "true": 26,
+    "rate": 0.703
+   },
+   "lane_vs_target_noncenter": {
+    "n": 36,
+    "true": 25,
+    "rate": 0.694
+   },
+   "lane_vs_target_by_side": {
+    "0": {
+     "n": 5,
+     "true": 2,
+     "rate": 0.4
+    },
+    "1": {
+     "n": 31,
+     "true": 23,
+     "rate": 0.742
+    }
+   },
+   "lane_vs_landing": {
+    "n": 27,
+    "true": 17,
+    "rate": 0.63
+   },
+   "lane_vs_landing_by_side": {
+    "0": {
+     "n": 5,
+     "true": 2,
+     "rate": 0.4
+    },
+    "1": {
+     "n": 22,
+     "true": 15,
+     "rate": 0.682
+    }
+   },
+   "would_hit": {
+    "n": 27,
+    "true": 11,
+    "rate": 0.407
+   },
+   "by_stage": {
+    "early<0.33": {
+     "n": 12,
+     "true": 8,
+     "rate": 0.667
+    },
+    "mid": {
+     "n": 14,
+     "true": 8,
+     "rate": 0.571
+    },
+    "late>=0.66": {
+     "n": 0,
+     "true": 0,
+     "rate": null
+    }
+   },
+   "by_remaining_tiles": {
+    ">15": {
+     "n": 12,
+     "true": 7,
+     "rate": 0.583
+    },
+    "8-15": {
+     "n": 11,
+     "true": 10,
+     "rate": 0.909
+    },
+    "<8": {
+     "n": 13,
+     "true": 8,
+     "rate": 0.615
+    }
+   },
+   "dx_target_tiles_wrong": [
+    11.0,
+    11.0,
+    11.0,
+    11.0,
+    11.0,
+    11.0,
+    11.0,
+    11.0,
+    11.0,
+    12.0,
+    14.0
+   ],
+   "two_lane_barrels": 7,
+   "confirmed": {
+    "n": 37,
+    "true": 34,
+    "rate": 0.919
+   }
+  },
+  "goblins_on_ground": {
+   "n": 8,
+   "lane_vs_goblins": {
+    "n": 8,
+    "true": 7,
+    "rate": 0.875
+   },
+   "by_side": {
+    "0": {
+     "n": 1,
+     "true": 1,
+     "rate": 1.0
+    },
+    "1": {
+     "n": 7,
+     "true": 6,
+     "rate": 0.857
+    }
+   },
+   "dx_nearest_goblin_tiles": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.4
+   ]
+  }
+ }
+}

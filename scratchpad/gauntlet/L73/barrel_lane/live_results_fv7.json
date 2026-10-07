@@ -1,0 +1,2557 @@
+{
+ "summary": {
+  "files": 17,
+  "flights": 16,
+  "flights_with_concurrent_targets": 0,
+  "same_target_duplicates": 0,
+  "flights_by_side": {
+   "1": 2,
+   "0": 14
+  },
+  "target_field": {
+   "present": 50
+  },
+  "matched_landing": 15,
+  "landing_lane_agree": {
+   "n": 15,
+   "true": 15,
+   "rate": 1.0
+  },
+  "landing_lane_agree_noncenter": {
+   "n": 15,
+   "true": 15,
+   "rate": 1.0
+  },
+  "landing_lane_agree_by_side": {
+   "0": {
+    "n": 14,
+    "true": 14,
+    "rate": 1.0
+   },
+   "1": {
+    "n": 1,
+    "true": 1,
+    "rate": 1.0
+   }
+  },
+  "target_err_tiles": [
+   0.001,
+   0.001,
+   0.001,
+   0.002,
+   0.002,
+   0.01,
+   0.049,
+   0.053,
+   0.084,
+   0.11,
+   0.289,
+   0.474,
+   0.705,
+   0.771,
+   0.815
+  ],
+  "center_targets": 0,
+  "model_rows": 50,
+  "model_rows_missing": 0,
+  "model_target_vs_raw_transform_max_abs": 2.6490953208835322e-08,
+  "normalized_pos_vs_raw_transform_max_abs": 2.95639037695139e-08,
+  "model_lane_eq_raw_target_lane": {
+   "true": 50
+  },
+  "lookahead_fraction_along_segment": {
+   "min": 0.4568573455939242,
+   "max": 0.9999999923147518,
+   "median": 0.6292006446983816
+  },
+  "lookahead_perpendicular_offset_max": 3.12205496803596e-08,
+  "model_tti_known": {
+   "1": 50
+  },
+  "logs": {
+   "total": 115,
+   "no_audit": 0,
+   "by_context": {
+    "other": 106,
+    "goblins_on_ground": 1,
+    "in_flight": 8
+   },
+   "executed_found": 110,
+   "exec_err_x_tiles_max": 5.000400000000001,
+   "exec_lane_matches_intent": {
+    "n": 110,
+    "true": 109,
+    "rate": 0.991
+   },
+   "in_flight": {
+    "n": 8,
+    "target_known": 8,
+    "lane_vs_target": {
+     "n": 8,
+     "true": 7,
+     "rate": 0.875
+    },
+    "lane_vs_target_noncenter": {
+     "n": 8,
+     "true": 7,
+     "rate": 0.875
+    },
+    "lane_vs_target_by_side": {
+     "0": {
+      "n": 7,
+      "true": 6,
+      "rate": 0.857
+     },
+     "1": {
+      "n": 1,
+      "true": 1,
+      "rate": 1.0
+     }
+    },
+    "lane_vs_landing": {
+     "n": 7,
+     "true": 6,
+     "rate": 0.857
+    },
+    "lane_vs_landing_by_side": {
+     "0": {
+      "n": 7,
+      "true": 6,
+      "rate": 0.857
+     },
+     "1": {
+      "n": 0,
+      "true": 0,
+      "rate": null
+     }
+    },
+    "would_hit": {
+     "n": 7,
+     "true": 5,
+     "rate": 0.714
+    },
+    "by_stage": {
+     "early<0.33": {
+      "n": 3,
+      "true": 2,
+      "rate": 0.667
+     },
+     "mid": {
+      "n": 4,
+      "true": 4,
+      "rate": 1.0
+     },
+     "late>=0.66": {
+      "n": 0,
+      "true": 0,
+      "rate": null
+     }
+    },
+    "by_remaining_tiles": {
+     ">15": {
+      "n": 3,
+      "true": 2,
+      "rate": 0.667
+     },
+     "8-15": {
+      "n": 1,
+      "true": 1,
+      "rate": 1.0
+     },
+     "<8": {
+      "n": 4,
+      "true": 4,
+      "rate": 1.0
+     }
+    },
+    "dx_target_tiles_wrong": [
+     13.0
+    ],
+    "two_lane_barrels": 0,
+    "confirmed": {
+     "n": 8,
+     "true": 8,
+     "rate": 1.0
+    }
+   },
+   "goblins_on_ground": {
+    "n": 1,
+    "lane_vs_goblins": {
+     "n": 1,
+     "true": 1,
+     "rate": 1.0
+    },
+    "by_side": {
+     "0": {
+      "n": 0,
+      "true": 0,
+      "rate": null
+     },
+     "1": {
+      "n": 1,
+      "true": 1,
+      "rate": 1.0
+     }
+    },
+    "dx_nearest_goblin_tiles": [
+     0.9
+    ]
+   }
+  }
+ },
+ "flights": [
+  {
+   "file": "live_play_20261006_125159.jsonl",
+   "side": 1,
+   "first_tick": 1001,
+   "last_tick": 1041,
+   "n_obs": 5,
+   "concurrent_targets": 1,
+   "same_target_dup": false,
+   "target_raw": [
+    15500,
+    26500
+   ],
+   "first_pos_raw": [
+    11014,
+    10315
+   ],
+   "landing": {
+    "tick": 1051,
+    "n": 3,
+    "kinds": [
+     14
+    ],
+    "centroid": [
+     15798.0,
+     26868.333333333332
+    ]
+   },
+   "target_err_tiles": 0.47378628562300484,
+   "target_lane_own": "L",
+   "landing_lane_own": "L",
+   "lane_agree": true,
+   "target_center": false
+  },
+  {
+   "file": "live_play_20261006_125159.jsonl",
+   "side": 1,
+   "first_tick": 3077,
+   "last_tick": 3119,
+   "n_obs": 4,
+   "concurrent_targets": 1,
+   "same_target_dup": false,
+   "target_raw": [
+    14500,
+    25500
+   ],
+   "first_pos_raw": [
+    9283,
+    4164
+   ],
+   "landing": null
+  },
+  {
+   "file": "live_play_20261006_130342.jsonl",
+   "side": 0,
+   "first_tick": 211,
+   "last_tick": 241,
+   "n_obs": 3,
+   "concurrent_targets": 1,
+   "same_target_dup": false,
+   "target_raw": [
+    14500,
+    6499
+   ],
+   "first_pos_raw": [
+    9947,
+    25120
+   ],
+   "landing": {
+    "tick": 269,
+    "n": 3,
+    "kinds": [
+     14
+    ],
+    "centroid": [
+     14226.0,
+     6406.0
+    ]
+   },
+   "target_err_tiles": 0.28935272592460576,
+   "target_lane_own": "R",
+   "landing_lane_own": "R",
+   "lane_agree": true,
+   "target_center": false
+  },
+  {
+   "file": "live_play_20261006_130342.jsonl",
+   "side": 0,
+   "first_tick": 1462,
+   "last_tick": 1517,
+   "n_obs": 3,
+   "concurrent_targets": 1,
+   "same_target_dup": false,
+   "target_raw": [
+    17500,
+    7499
+   ],
+   "first_pos_raw": [
+    9147,
+    28629
+   ],
+   "landing": {
+    "tick": 1527,
+    "n": 3,
+    "kinds": [
+     14
+    ],
+    "centroid": [
+     17416.666666666668,
+     7489.333333333333
+    ]
+   },
+   "target_err_tiles": 0.08389212650117228,
+   "target_lane_own": "R",
+   "landing_lane_own": "R",
+   "lane_agree": true,
+   "target_center": false
+  },
+  {
+   "file": "live_play_20261006_130342.jsonl",
+   "side": 0,
+   "first_tick": 2607,
+   "last_tick": 2656,
+   "n_obs": 5,
+   "concurrent_targets": 1,
+   "same_target_dup": false,
+   "target_raw": [
+    16500,
+    6499
+   ],
+   "first_pos_raw": [
+    9630,
+    27105
+   ],
+   "landing": {
+    "tick": 2666,
+    "n": 3,
+    "kinds": [
+     14
+    ],
+    "centroid": [
+     16534.0,
+     6463.333333333333
+    ]
+   },
+   "target_err_tiles": 0.0492758674313414,
+   "target_lane_own": "R",
+   "landing_lane_own": "R",
+   "lane_agree": true,
+   "target_center": false
+  },
+  {
+   "file": "live_play_20261006_130342.jsonl",
+   "side": 0,
+   "first_tick": 3209,
+   "last_tick": 3247,
+   "n_obs": 3,
+   "concurrent_targets": 1,
+   "same_target_dup": false,
+   "target_raw": [
+    16500,
+    6499
+   ],
+   "first_pos_raw": [
+    10008,
+    25968
+   ],
+   "landing": {
+    "tick": 3275,
+    "n": 3,
+    "kinds": [
+     14
+    ],
+    "centroid": [
+     16501.0,
+     6498.0
+    ]
+   },
+   "target_err_tiles": 0.0014142135623730952,
+   "target_lane_own": "R",
+   "landing_lane_own": "R",
+   "lane_agree": true,
+   "target_center": false
+  },
+  {
+   "file": "live_play_20261006_130342.jsonl",
+   "side": 0,
+   "first_tick": 3622,
+   "last_tick": 3630,
+   "n_obs": 2,
+   "concurrent_targets": 1,
+   "same_target_dup": false,
+   "target_raw": [
+    16500,
+    6499
+   ],
+   "first_pos_raw": [
+    11268,
+    22178
+   ],
+   "landing": {
+    "tick": 3676,
+    "n": 3,
+    "kinds": [
+     14
+    ],
+    "centroid": [
+     16501.0,
+     6498.0
+    ]
+   },
+   "target_err_tiles": 0.0014142135623730952,
+   "target_lane_own": "R",
+   "landing_lane_own": "R",
+   "lane_agree": true,
+   "target_center": false
+  },
+  {
+   "file": "live_play_20261006_130342.jsonl",
+   "side": 0,
+   "first_tick": 4140,
+   "last_tick": 4174,
+   "n_obs": 3,
+   "concurrent_targets": 1,
+   "same_target_dup": false,
+   "target_raw": [
+    16500,
+    5499
+   ],
+   "first_pos_raw": [
+    9968,
+    25952
+   ],
+   "landing": {
+    "tick": 4204,
+    "n": 3,
+    "kinds": [
+     14
+    ],
+    "centroid": [
+     16501.0,
+     5498.0
+    ]
+   },
+   "target_err_tiles": 0.0014142135623730952,
+   "target_lane_own": "R",
+   "landing_lane_own": "R",
+   "lane_agree": true,
+   "target_center": false
+  },
+  {
+   "file": "live_play_20261006_130342.jsonl",
+   "side": 0,
+   "first_tick": 4603,
+   "last_tick": 4657,
+   "n_obs": 3,
+   "concurrent_targets": 1,
+   "same_target_dup": false,
+   "target_raw": [
+    14500,
+    6499
+   ],
+   "first_pos_raw": [
+    9094,
+    28612
+   ],
+   "landing": {
+    "tick": 4667,
+    "n": 3,
+    "kinds": [
+     14
+    ],
+    "centroid": [
+     14500.0,
+     6609.333333333333
+    ]
+   },
+   "target_err_tiles": 0.11033333333333303,
+   "target_lane_own": "R",
+   "landing_lane_own": "R",
+   "lane_agree": true,
+   "target_center": false
+  },
+  {
+   "file": "live_play_20261006_130809.jsonl",
+   "side": 0,
+   "first_tick": 702,
+   "last_tick": 738,
+   "n_obs": 3,
+   "concurrent_targets": 1,
+   "same_target_dup": false,
+   "target_raw": [
+    3499,
+    6499
+   ],
+   "first_pos_raw": [
+    8621,
+    27448
+   ],
+   "landing": {
+    "tick": 766,
+    "n": 3,
+    "kinds": [
+     14
+    ],
+    "centroid": [
+     3500.3333333333335,
+     6498.0
+    ]
+   },
+   "target_err_tiles": 0.001666666666666788,
+   "target_lane_own": "L",
+   "landing_lane_own": "L",
+   "lane_agree": true,
+   "target_center": false
+  },
+  {
+   "file": "live_play_20261006_130809.jsonl",
+   "side": 0,
+   "first_tick": 1821,
+   "last_tick": 1855,
+   "n_obs": 3,
+   "concurrent_targets": 1,
+   "same_target_dup": false,
+   "target_raw": [
+    3499,
+    6499
+   ],
+   "first_pos_raw": [
+    8526,
+    27060
+   ],
+   "landing": {
+    "tick": 1885,
+    "n": 2,
+    "kinds": [
+     14
+    ],
+    "centroid": [
+     4203.5,
+     6186.5
+    ]
+   },
+   "target_err_tiles": 0.7706987089647938,
+   "target_lane_own": "L",
+   "landing_lane_own": "L",
+   "lane_agree": true,
+   "target_center": false
+  },
+  {
+   "file": "live_play_20261006_130809.jsonl",
+   "side": 0,
+   "first_tick": 2684,
+   "last_tick": 2710,
+   "n_obs": 2,
+   "concurrent_targets": 1,
+   "same_target_dup": false,
+   "target_raw": [
+    3499,
+    6499
+   ],
+   "first_pos_raw": [
+    7767,
+    23956
+   ],
+   "landing": {
+    "tick": 2742,
+    "n": 2,
+    "kinds": [
+     14
+    ],
+    "centroid": [
+     2794.5,
+     6088.5
+    ]
+   },
+   "target_err_tiles": 0.8153713877736942,
+   "target_lane_own": "L",
+   "landing_lane_own": "L",
+   "lane_agree": true,
+   "target_center": false
+  },
+  {
+   "file": "live_play_20261006_130809.jsonl",
+   "side": 0,
+   "first_tick": 3507,
+   "last_tick": 3555,
+   "n_obs": 3,
+   "concurrent_targets": 1,
+   "same_target_dup": false,
+   "target_raw": [
+    3499,
+    6499
+   ],
+   "first_pos_raw": [
+    8716,
+    27836
+   ],
+   "landing": {
+    "tick": 3565,
+    "n": 3,
+    "kinds": [
+     14
+    ],
+    "centroid": [
+     3499.0,
+     6497.333333333333
+    ]
+   },
+   "target_err_tiles": 0.00166666666666697,
+   "target_lane_own": "L",
+   "landing_lane_own": "L",
+   "lane_agree": true,
+   "target_center": false
+  },
+  {
+   "file": "live_play_20261006_140737.jsonl",
+   "side": 0,
+   "first_tick": 172,
+   "last_tick": 200,
+   "n_obs": 3,
+   "concurrent_targets": 1,
+   "same_target_dup": false,
+   "target_raw": [
+    14500,
+    6499
+   ],
+   "first_pos_raw": [
+    9947,
+    25120
+   ],
+   "landing": {
+    "tick": 227,
+    "n": 3,
+    "kinds": [
+     14
+    ],
+    "centroid": [
+     14524.666666666666,
+     6452.333333333333
+    ]
+   },
+   "target_err_tiles": 0.0527846779115135,
+   "target_lane_own": "R",
+   "landing_lane_own": "R",
+   "lane_agree": true,
+   "target_center": false
+  },
+  {
+   "file": "live_play_20261006_140737.jsonl",
+   "side": 0,
+   "first_tick": 1254,
+   "last_tick": 1289,
+   "n_obs": 3,
+   "concurrent_targets": 1,
+   "same_target_dup": false,
+   "target_raw": [
+    14500,
+    6499
+   ],
+   "first_pos_raw": [
+    9852,
+    25508
+   ],
+   "landing": {
+    "tick": 1319,
+    "n": 3,
+    "kinds": [
+     14
+    ],
+    "centroid": [
+     14500.0,
+     6508.666666666667
+    ]
+   },
+   "target_err_tiles": 0.009666666666666969,
+   "target_lane_own": "R",
+   "landing_lane_own": "R",
+   "lane_agree": true,
+   "target_center": false
+  },
+  {
+   "file": "live_play_20261006_140737.jsonl",
+   "side": 0,
+   "first_tick": 2579,
+   "last_tick": 2607,
+   "n_obs": 2,
+   "concurrent_targets": 1,
+   "same_target_dup": false,
+   "target_raw": [
+    14500,
+    7499
+   ],
+   "first_pos_raw": [
+    9792,
+    25904
+   ],
+   "landing": {
+    "tick": 2635,
+    "n": 3,
+    "kinds": [
+     14
+    ],
+    "centroid": [
+     14500.0,
+     8204.0
+    ]
+   },
+   "target_err_tiles": 0.705,
+   "target_lane_own": "R",
+   "landing_lane_own": "R",
+   "lane_agree": true,
+   "target_center": false
+  }
+ ],
+ "logs": [
+  {
+   "file": "live_play_20261006_124440.jsonl",
+   "side": 1,
+   "tick": 674,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_124440.jsonl",
+   "side": 1,
+   "tick": 1508,
+   "xy": [
+    0.8056,
+    0.7031
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_124440.jsonl",
+   "side": 1,
+   "tick": 2920,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_124440.jsonl",
+   "side": 1,
+   "tick": 3289,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_124440.jsonl",
+   "side": 1,
+   "tick": 3619,
+   "xy": [
+    0.25,
+    0.6719
+   ],
+   "log_lane": "L",
+   "context": "other",
+   "confirmed": false
+  },
+  {
+   "file": "live_play_20261006_125159.jsonl",
+   "side": 1,
+   "tick": 557,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444442,
+   "exec_err_x_tiles": 0.0007999999999997454,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_125159.jsonl",
+   "side": 1,
+   "tick": 1053,
+   "xy": [
+    0.1944,
+    0.8594
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444442,
+   "exec_err_x_tiles": 0.0007999999999997454,
+   "context": "goblins_on_ground",
+   "goblins_own": [
+    0.1223333333333333,
+    0.8396354166666666
+   ],
+   "n_goblins": 3,
+   "lane_vs_goblins": true,
+   "dx_nearest_goblin_tiles": 0.9012000000000002,
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_125159.jsonl",
+   "side": 1,
+   "tick": 3089,
+   "xy": [
+    0.1944,
+    0.8594
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444442,
+   "exec_err_x_tiles": 0.0007999999999997454,
+   "context": "in_flight",
+   "n_barrels": 1,
+   "two_lanes": false,
+   "target_known": true,
+   "target_own": [
+    0.19444444444444442,
+    0.796875
+   ],
+   "lane_vs_target": true,
+   "target_center": false,
+   "dx_target_tiles": 0.0007999999999997454,
+   "remaining_tiles": 17.171269143543235,
+   "model_target_own": [
+    0.1944444477558136,
+    0.796875
+   ],
+   "model_pos_own": [
+    0.2837837040424347,
+    0.5913267731666565
+   ],
+   "model_tti_s": 0.8464086651802063,
+   "flight_first_tick": 3077,
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_125740.jsonl",
+   "side": 1,
+   "tick": 1012,
+   "xy": [
+    0.8056,
+    0.6406
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_125740.jsonl",
+   "side": 1,
+   "tick": 2144,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_125740.jsonl",
+   "side": 1,
+   "tick": 2545,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_125740.jsonl",
+   "side": 1,
+   "tick": 2779,
+   "xy": [
+    0.75,
+    0.7031
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.75,
+   "exec_err_x_tiles": 0.0,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_125740.jsonl",
+   "side": 1,
+   "tick": 3311,
+   "xy": [
+    0.6389,
+    0.6719
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.6388888888888888,
+   "exec_err_x_tiles": 0.00020000000000131024,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_125740.jsonl",
+   "side": 1,
+   "tick": 3787,
+   "xy": [
+    0.75,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.75,
+   "exec_err_x_tiles": 0.0,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_125740.jsonl",
+   "side": 1,
+   "tick": 4090,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_125740.jsonl",
+   "side": 1,
+   "tick": 4355,
+   "xy": [
+    0.75,
+    0.6406
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.75,
+   "exec_err_x_tiles": 0.0,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_125740.jsonl",
+   "side": 1,
+   "tick": 4659,
+   "xy": [
+    0.75,
+    0.7656
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.75,
+   "exec_err_x_tiles": 0.0,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_130342.jsonl",
+   "side": 0,
+   "tick": 474,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444445,
+   "exec_err_x_tiles": 0.000800000000000245,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_130342.jsonl",
+   "side": 0,
+   "tick": 1462,
+   "xy": [
+    0.25,
+    0.7656
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.25,
+   "exec_err_x_tiles": 0.0,
+   "context": "in_flight",
+   "n_barrels": 1,
+   "two_lanes": false,
+   "target_known": true,
+   "target_own": [
+    0.9722222222222222,
+    0.76565625
+   ],
+   "lane_vs_target": false,
+   "target_center": false,
+   "dx_target_tiles": 13.0,
+   "remaining_tiles": 22.72112473008324,
+   "model_target_own": [
+    0.9722222089767456,
+    0.7656562328338623
+   ],
+   "model_pos_own": [
+    0.7205759286880493,
+    0.4075845181941986
+   ],
+   "model_tti_s": 1.5401406288146973,
+   "flight_first_tick": 1462,
+   "stage": 0.0,
+   "landing_own": [
+    0.9675925925925927,
+    0.7659583333333333
+   ],
+   "lane_vs_landing": false,
+   "dx_landing_tiles": 12.916666666666668,
+   "landing_in_roll_y": true,
+   "would_hit": false,
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_130342.jsonl",
+   "side": 0,
+   "tick": 2996,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_130342.jsonl",
+   "side": 0,
+   "tick": 3630,
+   "xy": [
+    0.8056,
+    0.8594
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "in_flight",
+   "n_barrels": 1,
+   "two_lanes": false,
+   "target_known": true,
+   "target_own": [
+    0.9166666666666666,
+    0.79690625
+   ],
+   "lane_vs_target": true,
+   "target_center": false,
+   "dx_target_tiles": 1.9991999999999996,
+   "remaining_tiles": 13.333746097777626,
+   "model_target_own": [
+    0.9166666865348816,
+    0.7969062328338623
+   ],
+   "model_pos_own": [
+    0.8650343418121338,
+    0.7099485993385315
+   ],
+   "model_tti_s": 0.36671826243400574,
+   "flight_first_tick": 3622,
+   "stage": 0.14814814814814814,
+   "landing_own": [
+    0.9167222222222222,
+    0.7969375
+   ],
+   "lane_vs_landing": true,
+   "dx_landing_tiles": 2.0002000000000004,
+   "landing_in_roll_y": true,
+   "would_hit": true,
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_130342.jsonl",
+   "side": 0,
+   "tick": 4174,
+   "xy": [
+    0.8056,
+    0.8594
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "in_flight",
+   "n_barrels": 1,
+   "two_lanes": false,
+   "target_known": true,
+   "target_own": [
+    0.9166666666666666,
+    0.82815625
+   ],
+   "lane_vs_target": true,
+   "target_center": false,
+   "dx_target_tiles": 1.9991999999999996,
+   "remaining_tiles": 7.89612968485194,
+   "model_target_own": [
+    0.9166666865348816,
+    0.8281562328338623
+   ],
+   "model_pos_own": [
+    0.9166666865348816,
+    0.8281562328338623
+   ],
+   "model_tti_s": 0.0,
+   "flight_first_tick": 4140,
+   "stage": 0.53125,
+   "landing_own": [
+    0.9167222222222222,
+    0.8281875
+   ],
+   "lane_vs_landing": true,
+   "dx_landing_tiles": 2.0002000000000004,
+   "landing_in_roll_y": true,
+   "would_hit": true,
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_130342.jsonl",
+   "side": 0,
+   "tick": 4603,
+   "xy": [
+    0.75,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.75,
+   "exec_err_x_tiles": 0.0,
+   "context": "in_flight",
+   "n_barrels": 1,
+   "two_lanes": false,
+   "target_known": true,
+   "target_own": [
+    0.8055555555555556,
+    0.79690625
+   ],
+   "lane_vs_target": true,
+   "target_center": false,
+   "dx_target_tiles": 1.0000000000000004,
+   "remaining_tiles": 22.764217645243157,
+   "model_target_own": [
+    0.8055555820465088,
+    0.7969062328338623
+   ],
+   "model_pos_own": [
+    0.6424317359924316,
+    0.42157769203186035
+   ],
+   "model_tti_s": 1.5455272197723389,
+   "flight_first_tick": 4603,
+   "stage": 0.0,
+   "landing_own": [
+    0.8055555555555556,
+    0.7934583333333334
+   ],
+   "lane_vs_landing": true,
+   "dx_landing_tiles": 1.0000000000000004,
+   "landing_in_roll_y": false,
+   "would_hit": false,
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_130809.jsonl",
+   "side": 0,
+   "tick": 297,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_130809.jsonl",
+   "side": 0,
+   "tick": 1144,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444445,
+   "exec_err_x_tiles": 0.000800000000000245,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_130809.jsonl",
+   "side": 0,
+   "tick": 2147,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444445,
+   "exec_err_x_tiles": 0.000800000000000245,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_130809.jsonl",
+   "side": 0,
+   "tick": 2710,
+   "xy": [
+    0.1944,
+    0.8594
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444445,
+   "exec_err_x_tiles": 0.000800000000000245,
+   "context": "in_flight",
+   "n_barrels": 1,
+   "two_lanes": false,
+   "target_known": true,
+   "target_own": [
+    0.1943888888888889,
+    0.79690625
+   ],
+   "lane_vs_target": true,
+   "target_center": false,
+   "dx_target_tiles": 0.00019999999999981144,
+   "remaining_tiles": 7.586129777429335,
+   "model_target_own": [
+    0.19438889622688293,
+    0.7969062328338623
+   ],
+   "model_pos_own": [
+    0.19438889622688293,
+    0.7969062328338623
+   ],
+   "model_tti_s": 0.0,
+   "flight_first_tick": 2684,
+   "stage": 0.4482758620689655,
+   "landing_own": [
+    0.15525,
+    0.809734375
+   ],
+   "lane_vs_landing": true,
+   "dx_landing_tiles": 0.7046999999999999,
+   "landing_in_roll_y": true,
+   "would_hit": true,
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_130809.jsonl",
+   "side": 0,
+   "tick": 3441,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444445,
+   "exec_err_x_tiles": 0.000800000000000245,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_131142.jsonl",
+   "side": 1,
+   "tick": 245,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444442,
+   "exec_err_x_tiles": 0.0007999999999997454,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_131142.jsonl",
+   "side": 1,
+   "tick": 832,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_131142.jsonl",
+   "side": 1,
+   "tick": 2035,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444442,
+   "exec_err_x_tiles": 0.0007999999999997454,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_131142.jsonl",
+   "side": 1,
+   "tick": 2698,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444442,
+   "exec_err_x_tiles": 0.0007999999999997454,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_131142.jsonl",
+   "side": 1,
+   "tick": 3279,
+   "xy": [
+    0.75,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.75,
+   "exec_err_x_tiles": 0.0,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_131142.jsonl",
+   "side": 1,
+   "tick": 3481,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444442,
+   "exec_err_x_tiles": 0.0007999999999997454,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_131142.jsonl",
+   "side": 1,
+   "tick": 4033,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444442,
+   "exec_err_x_tiles": 0.0007999999999997454,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_131142.jsonl",
+   "side": 1,
+   "tick": 4496,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444442,
+   "exec_err_x_tiles": 0.0007999999999997454,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_131142.jsonl",
+   "side": 1,
+   "tick": 5017,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444442,
+   "exec_err_x_tiles": 0.0007999999999997454,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_131641.jsonl",
+   "side": 0,
+   "tick": 304,
+   "xy": [
+    0.75,
+    0.6406
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.75,
+   "exec_err_x_tiles": 0.0,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_131641.jsonl",
+   "side": 0,
+   "tick": 1057,
+   "xy": [
+    0.8056,
+    0.7656
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_131641.jsonl",
+   "side": 0,
+   "tick": 2072,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_131641.jsonl",
+   "side": 0,
+   "tick": 2649,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_131641.jsonl",
+   "side": 0,
+   "tick": 3270,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444445,
+   "exec_err_x_tiles": 0.000800000000000245,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_131641.jsonl",
+   "side": 0,
+   "tick": 4085,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444445,
+   "exec_err_x_tiles": 0.000800000000000245,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_131641.jsonl",
+   "side": 0,
+   "tick": 4575,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444445,
+   "exec_err_x_tiles": 0.000800000000000245,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_131641.jsonl",
+   "side": 0,
+   "tick": 4862,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444445,
+   "exec_err_x_tiles": 0.000800000000000245,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_131641.jsonl",
+   "side": 0,
+   "tick": 5415,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444445,
+   "exec_err_x_tiles": 0.000800000000000245,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_131641.jsonl",
+   "side": 0,
+   "tick": 5621,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444445,
+   "exec_err_x_tiles": 0.000800000000000245,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_131641.jsonl",
+   "side": 0,
+   "tick": 5835,
+   "xy": [
+    0.4722,
+    0.3594
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.4722222222222222,
+   "exec_err_x_tiles": 0.0003999999999996229,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_140419.jsonl",
+   "side": 1,
+   "tick": 314,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_140419.jsonl",
+   "side": 1,
+   "tick": 940,
+   "xy": [
+    0.8056,
+    0.7656
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_140419.jsonl",
+   "side": 1,
+   "tick": 2425,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444442,
+   "exec_err_x_tiles": 0.0007999999999997454,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_140419.jsonl",
+   "side": 1,
+   "tick": 2763,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_140737.jsonl",
+   "side": 0,
+   "tick": 200,
+   "xy": [
+    0.8056,
+    0.8594
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "in_flight",
+   "n_barrels": 1,
+   "two_lanes": false,
+   "target_known": true,
+   "target_own": [
+    0.8055555555555556,
+    0.79690625
+   ],
+   "lane_vs_target": true,
+   "target_center": false,
+   "dx_target_tiles": 0.0007999999999992458,
+   "remaining_tiles": 7.985590648161225,
+   "model_target_own": [
+    0.8055555820465088,
+    0.7969062328338623
+   ],
+   "model_pos_own": [
+    0.8055555820465088,
+    0.7969062328338623
+   ],
+   "model_tti_s": 0.0,
+   "flight_first_tick": 172,
+   "stage": 0.509090909090909,
+   "landing_own": [
+    0.8069259259259259,
+    0.7983645833333334
+   ],
+   "lane_vs_landing": true,
+   "dx_landing_tiles": 0.023866666666667147,
+   "landing_in_roll_y": true,
+   "would_hit": true,
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_140737.jsonl",
+   "side": 0,
+   "tick": 1010,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_140737.jsonl",
+   "side": 0,
+   "tick": 1862,
+   "xy": [
+    0.75,
+    0.6406
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.75,
+   "exec_err_x_tiles": 0.0,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_140737.jsonl",
+   "side": 0,
+   "tick": 2607,
+   "xy": [
+    0.8056,
+    0.8594
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "in_flight",
+   "n_barrels": 1,
+   "two_lanes": false,
+   "target_known": true,
+   "target_own": [
+    0.8055555555555556,
+    0.76565625
+   ],
+   "lane_vs_target": true,
+   "target_center": false,
+   "dx_target_tiles": 0.0007999999999992458,
+   "remaining_tiles": 7.81267284608795,
+   "model_target_own": [
+    0.8055555820465088,
+    0.7656562328338623
+   ],
+   "model_pos_own": [
+    0.8055555820465088,
+    0.7656562328338623
+   ],
+   "model_tti_s": 0.0,
+   "flight_first_tick": 2579,
+   "stage": 0.5,
+   "landing_own": [
+    0.8055555555555556,
+    0.743625
+   ],
+   "lane_vs_landing": true,
+   "dx_landing_tiles": 0.0007999999999992458,
+   "landing_in_roll_y": true,
+   "would_hit": true,
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_140737.jsonl",
+   "side": 0,
+   "tick": 3143,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444445,
+   "exec_err_x_tiles": 0.000800000000000245,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_141053.jsonl",
+   "side": 1,
+   "tick": 663,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_141053.jsonl",
+   "side": 1,
+   "tick": 1862,
+   "xy": [
+    0.25,
+    0.6406
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.25,
+   "exec_err_x_tiles": 0.0,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_141053.jsonl",
+   "side": 1,
+   "tick": 2911,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_141406.jsonl",
+   "side": 1,
+   "tick": 744,
+   "xy": [
+    0.1944,
+    0.7344
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444442,
+   "exec_err_x_tiles": 0.0007999999999997454,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_141406.jsonl",
+   "side": 1,
+   "tick": 2769,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444442,
+   "exec_err_x_tiles": 0.0007999999999997454,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_141406.jsonl",
+   "side": 1,
+   "tick": 3075,
+   "xy": [
+    0.8056,
+    0.6719
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_141406.jsonl",
+   "side": 1,
+   "tick": 3520,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_141406.jsonl",
+   "side": 1,
+   "tick": 3878,
+   "xy": [
+    0.8056,
+    0.7656
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_141745.jsonl",
+   "side": 0,
+   "tick": 394,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_141745.jsonl",
+   "side": 0,
+   "tick": 1585,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444445,
+   "exec_err_x_tiles": 0.000800000000000245,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_141745.jsonl",
+   "side": 0,
+   "tick": 2164,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444445,
+   "exec_err_x_tiles": 0.000800000000000245,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_141745.jsonl",
+   "side": 0,
+   "tick": 2885,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_141745.jsonl",
+   "side": 0,
+   "tick": 3263,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444445,
+   "exec_err_x_tiles": 0.000800000000000245,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_141745.jsonl",
+   "side": 0,
+   "tick": 3638,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "context": "other",
+   "confirmed": false
+  },
+  {
+   "file": "live_play_20261006_142102.jsonl",
+   "side": 1,
+   "tick": 284,
+   "xy": [
+    0.25,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.25,
+   "exec_err_x_tiles": 0.0,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_142102.jsonl",
+   "side": 1,
+   "tick": 664,
+   "xy": [
+    0.5278,
+    0.7031
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.25,
+   "exec_err_x_tiles": 5.000400000000001,
+   "context": "other",
+   "confirmed": false
+  },
+  {
+   "file": "live_play_20261006_142102.jsonl",
+   "side": 1,
+   "tick": 765,
+   "xy": [
+    0.25,
+    0.7031
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.25,
+   "exec_err_x_tiles": 0.0,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_142102.jsonl",
+   "side": 1,
+   "tick": 1631,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444442,
+   "exec_err_x_tiles": 0.0007999999999997454,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_142102.jsonl",
+   "side": 1,
+   "tick": 2058,
+   "xy": [
+    0.25,
+    0.7656
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.25,
+   "exec_err_x_tiles": 0.0,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_142102.jsonl",
+   "side": 1,
+   "tick": 2823,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_142102.jsonl",
+   "side": 1,
+   "tick": 3155,
+   "xy": [
+    0.25,
+    0.7656
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.25,
+   "exec_err_x_tiles": 0.0,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_142102.jsonl",
+   "side": 1,
+   "tick": 3457,
+   "xy": [
+    0.3611,
+    0.7031
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.36111111111111116,
+   "exec_err_x_tiles": 0.00020000000000131024,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_142420.jsonl",
+   "side": 1,
+   "tick": 851,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_142420.jsonl",
+   "side": 1,
+   "tick": 1904,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_142420.jsonl",
+   "side": 1,
+   "tick": 2550,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444442,
+   "exec_err_x_tiles": 0.0007999999999997454,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_142420.jsonl",
+   "side": 1,
+   "tick": 2839,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_142420.jsonl",
+   "side": 1,
+   "tick": 3367,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_142420.jsonl",
+   "side": 1,
+   "tick": 3748,
+   "xy": [
+    0.75,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.75,
+   "exec_err_x_tiles": 0.0,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_142420.jsonl",
+   "side": 1,
+   "tick": 4142,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_142420.jsonl",
+   "side": 1,
+   "tick": 4433,
+   "xy": [
+    0.8056,
+    0.7656
+   ],
+   "log_lane": "R",
+   "context": "other",
+   "confirmed": false
+  },
+  {
+   "file": "live_play_20261006_142420.jsonl",
+   "side": 1,
+   "tick": 4496,
+   "xy": [
+    0.75,
+    0.7656
+   ],
+   "log_lane": "R",
+   "context": "other",
+   "confirmed": false
+  },
+  {
+   "file": "live_play_20261006_142820.jsonl",
+   "side": 1,
+   "tick": 275,
+   "xy": [
+    0.8056,
+    0.7656
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_142820.jsonl",
+   "side": 1,
+   "tick": 1094,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_142820.jsonl",
+   "side": 1,
+   "tick": 1960,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_142820.jsonl",
+   "side": 1,
+   "tick": 2452,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_142820.jsonl",
+   "side": 1,
+   "tick": 2855,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_142820.jsonl",
+   "side": 1,
+   "tick": 3099,
+   "xy": [
+    0.25,
+    0.7656
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.25,
+   "exec_err_x_tiles": 0.0,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_142820.jsonl",
+   "side": 1,
+   "tick": 3532,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_142820.jsonl",
+   "side": 1,
+   "tick": 3936,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_142820.jsonl",
+   "side": 1,
+   "tick": 4338,
+   "xy": [
+    0.8056,
+    0.7344
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_143227.jsonl",
+   "side": 1,
+   "tick": 348,
+   "xy": [
+    0.75,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.75,
+   "exec_err_x_tiles": 0.0,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_143227.jsonl",
+   "side": 1,
+   "tick": 885,
+   "xy": [
+    0.8056,
+    0.8906
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": false
+  },
+  {
+   "file": "live_play_20261006_143227.jsonl",
+   "side": 1,
+   "tick": 949,
+   "xy": [
+    0.8056,
+    0.8594
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_143227.jsonl",
+   "side": 1,
+   "tick": 2176,
+   "xy": [
+    0.8056,
+    0.6406
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_143227.jsonl",
+   "side": 1,
+   "tick": 2624,
+   "xy": [
+    0.6389,
+    0.8906
+   ],
+   "log_lane": "R",
+   "context": "other",
+   "confirmed": false
+  },
+  {
+   "file": "live_play_20261006_180120.jsonl",
+   "side": 1,
+   "tick": 530,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_180120.jsonl",
+   "side": 1,
+   "tick": 1412,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_180120.jsonl",
+   "side": 1,
+   "tick": 2778,
+   "xy": [
+    0.75,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.75,
+   "exec_err_x_tiles": 0.0,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_180120.jsonl",
+   "side": 1,
+   "tick": 3104,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_180120.jsonl",
+   "side": 1,
+   "tick": 3517,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_180120.jsonl",
+   "side": 1,
+   "tick": 4039,
+   "xy": [
+    0.25,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.25,
+   "exec_err_x_tiles": 0.0,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_180120.jsonl",
+   "side": 1,
+   "tick": 4396,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_180120.jsonl",
+   "side": 1,
+   "tick": 4824,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.8055555555555556,
+   "exec_err_x_tiles": 0.0007999999999992458,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_180120.jsonl",
+   "side": 1,
+   "tick": 5013,
+   "xy": [
+    0.75,
+    0.5469
+   ],
+   "log_lane": "R",
+   "executed_own_x": 0.75,
+   "exec_err_x_tiles": 0.0,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_180120.jsonl",
+   "side": 1,
+   "tick": 5251,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444442,
+   "exec_err_x_tiles": 0.0007999999999997454,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_180120.jsonl",
+   "side": 1,
+   "tick": 5479,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444442,
+   "exec_err_x_tiles": 0.0007999999999997454,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_180120.jsonl",
+   "side": 1,
+   "tick": 5721,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.19444444444444442,
+   "exec_err_x_tiles": 0.0007999999999997454,
+   "context": "other",
+   "confirmed": true
+  },
+  {
+   "file": "live_play_20261006_180120.jsonl",
+   "side": 1,
+   "tick": 5958,
+   "xy": [
+    0.25,
+    0.5469
+   ],
+   "log_lane": "L",
+   "executed_own_x": 0.25,
+   "exec_err_x_tiles": 0.0,
+   "context": "other",
+   "confirmed": true
+  }
+ ]
+}

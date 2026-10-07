@@ -1,0 +1,1003 @@
+{
+ "live": {
+  "files": 187,
+  "perception": {
+   "flights": 82,
+   "flights_by_side": {
+    "1": 66,
+    "0": 16
+   },
+   "flights_with_concurrent_targets": 20,
+   "target_field": {
+    "present": 285
+   },
+   "matched_landing": 71,
+   "landing_lane_agree": {
+    "n": 71,
+    "true": 71,
+    "rate": 1.0
+   },
+   "landing_lane_agree_by_side": {
+    "0": {
+     "n": 16,
+     "true": 16,
+     "rate": 1.0
+    },
+    "1": {
+     "n": 55,
+     "true": 55,
+     "rate": 1.0
+    }
+   },
+   "model_rows": 285,
+   "model_rows_missing": 0,
+   "model_target_vs_raw_transform_max_abs": 2.6490953208835322e-08,
+   "normalized_pos_vs_raw_transform_max_abs": 2.95639037695139e-08,
+   "model_lane_eq_raw_target_lane": {
+    "true": 285
+   },
+   "lookahead_fraction_along_segment": {
+    "min": 0.36866258036725746,
+    "max": 1.0000004307852548,
+    "median": 0.67741135858931
+   },
+   "lookahead_perpendicular_offset_max": 3.7522533776516e-08,
+   "model_tti_known": {
+    "1": 285
+   }
+  },
+  "target_err_tiles": {
+   "max": 1.05,
+   "median": 0.004
+  },
+  "logs": {
+   "total": 1078,
+   "by_context": {
+    "other": 1033,
+    "in_flight": 37,
+    "goblins_on_ground": 8
+   },
+   "executed_lane_matches_intent": {
+    "n": 1047,
+    "true": 1045,
+    "rate": 0.998
+   },
+   "in_flight": {
+    "all": 37,
+    "two_lane_barrels": 7,
+    "center_target": 1,
+    "single_lane": {
+     "n": 29,
+     "true": 18,
+     "rate": 0.621
+    },
+    "single_lane_by_side": {
+     "0": {
+      "n": 4,
+      "true": 1,
+      "rate": 0.25
+     },
+     "1": {
+      "n": 25,
+      "true": 17,
+      "rate": 0.68
+     }
+    },
+    "single_lane_by_stage": {
+     "early": {
+      "n": 10,
+      "true": 6,
+      "rate": 0.6
+     },
+     "mid": {
+      "n": 11,
+      "true": 5,
+      "rate": 0.455
+     },
+     "late": {
+      "n": 0,
+      "true": 0,
+      "rate": null
+     },
+     "unknown": {
+      "n": 8,
+      "true": 7,
+      "rate": 0.875
+     }
+    },
+    "single_lane_by_remaining_tiles": {
+     ">15": {
+      "n": 12,
+      "true": 7,
+      "rate": 0.583
+     },
+     "8-15": {
+      "n": 7,
+      "true": 6,
+      "rate": 0.857
+     },
+     "<8": {
+      "n": 10,
+      "true": 5,
+      "rate": 0.5
+     }
+    },
+    "target_known": {
+     "n": 37,
+     "true": 37,
+     "rate": 1.0
+    },
+    "with_matched_landing": {
+     "n": 21,
+     "true": 11,
+     "rate": 0.524
+    },
+    "would_hit_landing": {
+     "n": 21,
+     "true": 8,
+     "rate": 0.381
+    },
+    "wrong_lane_dx_tiles": [
+     11.0,
+     11.0,
+     11.0,
+     11.0,
+     11.0,
+     11.0,
+     11.0,
+     11.0,
+     11.0,
+     12.0,
+     14.0
+    ],
+    "wrong_cases": [
+     {
+      "file": "live_play_20261005_064842.jsonl",
+      "tick": 282,
+      "side": 1,
+      "log_xy": [
+       0.1944,
+       0.8594
+      ],
+      "target_own": [
+       0.806,
+       0.797
+      ],
+      "model_target_own": [
+       0.806,
+       0.797
+      ],
+      "model_pos_own": [
+       0.716,
+       0.591
+      ],
+      "executed_own_x": 0.194,
+      "stage": 0.15
+     },
+     {
+      "file": "live_play_20261005_064842.jsonl",
+      "tick": 1012,
+      "side": 1,
+      "log_xy": [
+       0.1944,
+       0.8594
+      ],
+      "target_own": [
+       0.806,
+       0.797
+      ],
+      "model_target_own": [
+       0.806,
+       0.797
+      ],
+      "model_pos_own": [
+       0.806,
+       0.797
+      ],
+      "executed_own_x": 0.194,
+      "stage": 0.42
+     },
+     {
+      "file": "live_play_20261005_070510.jsonl",
+      "tick": 3701,
+      "side": 0,
+      "log_xy": [
+       0.8056,
+       0.8594
+      ],
+      "target_own": [
+       0.139,
+       0.859
+      ],
+      "model_target_own": [
+       0.139,
+       0.859
+      ],
+      "model_pos_own": [
+       0.25,
+       0.625
+      ],
+      "executed_own_x": 0.806,
+      "stage": 0.07
+     },
+     {
+      "file": "live_play_20261005_074149.jsonl",
+      "tick": 3073,
+      "side": 0,
+      "log_xy": [
+       0.8056,
+       0.8594
+      ],
+      "target_own": [
+       0.028,
+       0.828
+      ],
+      "model_target_own": [
+       0.028,
+       0.828
+      ],
+      "model_pos_own": [
+       0.137,
+       0.658
+      ],
+      "executed_own_x": 0.806,
+      "stage": 0.22
+     },
+     {
+      "file": "live_play_20261005_095750.jsonl",
+      "tick": 3740,
+      "side": 0,
+      "log_xy": [
+       0.8056,
+       0.8594
+      ],
+      "target_own": [
+       0.194,
+       0.828
+      ],
+      "model_target_own": [
+       0.194,
+       0.828
+      ],
+      "model_pos_own": [
+       0.272,
+       0.641
+      ],
+      "executed_own_x": 0.806,
+      "stage": 0.15
+     },
+     {
+      "file": "live_play_20261005_105507.jsonl",
+      "tick": 284,
+      "side": 1,
+      "log_xy": [
+       0.1944,
+       0.8594
+      ],
+      "target_own": [
+       0.806,
+       0.797
+      ],
+      "model_target_own": [
+       0.806,
+       0.797
+      ],
+      "model_pos_own": [
+       0.806,
+       0.797
+      ],
+      "executed_own_x": 0.194,
+      "stage": 0.57
+     },
+     {
+      "file": "live_play_20261005_124225.jsonl",
+      "tick": 877,
+      "side": 1,
+      "log_xy": [
+       0.8056,
+       0.8594
+      ],
+      "target_own": [
+       0.194,
+       0.797
+      ],
+      "model_target_own": [
+       0.194,
+       0.797
+      ],
+      "model_pos_own": [
+       0.194,
+       0.797
+      ],
+      "executed_own_x": 0.806,
+      "stage": 0.58
+     },
+     {
+      "file": "live_play_20261005_124225.jsonl",
+      "tick": 3058,
+      "side": 1,
+      "log_xy": [
+       0.8056,
+       0.8594
+      ],
+      "target_own": [
+       0.194,
+       0.797
+      ],
+      "model_target_own": [
+       0.194,
+       0.797
+      ],
+      "model_pos_own": [
+       0.194,
+       0.797
+      ],
+      "executed_own_x": 0.806,
+      "stage": 0.59
+     },
+     {
+      "file": "live_play_20261005_130339.jsonl",
+      "tick": 3473,
+      "side": 1,
+      "log_xy": [
+       0.1944,
+       0.5469
+      ],
+      "target_own": [
+       0.806,
+       0.797
+      ],
+      "model_target_own": [
+       0.806,
+       0.797
+      ],
+      "model_pos_own": [
+       0.642,
+       0.422
+      ],
+      "executed_own_x": 0.194,
+      "stage": null
+     },
+     {
+      "file": "live_play_20261006_202754.jsonl",
+      "tick": 2547,
+      "side": 1,
+      "log_xy": [
+       0.1944,
+       0.8594
+      ],
+      "target_own": [
+       0.806,
+       0.797
+      ],
+      "model_target_own": [
+       0.806,
+       0.797
+      ],
+      "model_pos_own": [
+       0.806,
+       0.797
+      ],
+      "executed_own_x": 0.194,
+      "stage": 0.58
+     },
+     {
+      "file": "live_play_20261006_202754.jsonl",
+      "tick": 2995,
+      "side": 1,
+      "log_xy": [
+       0.1944,
+       0.8594
+      ],
+      "target_own": [
+       0.806,
+       0.797
+      ],
+      "model_target_own": [
+       0.806,
+       0.797
+      ],
+      "model_pos_own": [
+       0.806,
+       0.797
+      ],
+      "executed_own_x": 0.194,
+      "stage": 0.56
+     }
+    ]
+   },
+   "goblins_on_ground": {
+    "n": 8,
+    "lane": {
+     "n": 8,
+     "true": 7,
+     "rate": 0.875
+    },
+    "by_side": {
+     "0": {
+      "n": 1,
+      "true": 1,
+      "rate": 1.0
+     },
+     "1": {
+      "n": 7,
+      "true": 6,
+      "rate": 0.857
+     }
+    }
+   }
+  }
+ },
+ "native_training": {
+  "dataset": "icebow\\data\\pipeline\\gen_dataset_v31_public.npz",
+  "log_plays": 47703,
+  "with_one_enemy_barrel_target_known": 1409,
+  "selected_noncenter_own_half": 1405,
+  "pro_log_same_lane_as_target": {
+   "n": 1405,
+   "same": 1361,
+   "rate": 0.969
+  },
+  "by_side": {
+   "0": {
+    "n": 573,
+    "same": 557
+   },
+   "1": {
+    "n": 832,
+    "same": 804
+   }
+  },
+  "median_dx_tiles": 0.0,
+  "target_x_hist_own": [
+   639,
+   22,
+   1,
+   743
+  ],
+  "target_y_own_median": 0.797
+ },
+ "sim": [
+  {
+   "seed": 5,
+   "casts": {
+    "0": {
+     "cast": [
+      14500,
+      25500
+     ],
+     "first_row": {
+      "tick": 91,
+      "side": 0,
+      "x": 9094.0,
+      "y": 3388.0,
+      "tx": 14500.0,
+      "ty": 25500.0
+     },
+     "last_row": {
+      "tick": 147,
+      "side": 0,
+      "x": 14406.0,
+      "y": 25116.0,
+      "tx": 14500.0,
+      "ty": 25500.0
+     },
+     "flight_ticks": 57,
+     "goblins": [
+      {
+       "tick": 148,
+       "x": 14500.0,
+       "y": 26227.0,
+       "name": "GoblinBarrel"
+      },
+      {
+       "tick": 148,
+       "x": 15128.0,
+       "y": 25137.0,
+       "name": "GoblinBarrel"
+      },
+      {
+       "tick": 148,
+       "x": 13872.0,
+       "y": 25137.0,
+       "name": "GoblinBarrel"
+      }
+     ],
+     "centroid": [
+      14500.0,
+      25500.333333333332
+     ],
+     "err_tiles": 0.0003333333333321207,
+     "observer_side": 1,
+     "target_own": [
+      0.19444444444444442,
+      0.796875
+     ],
+     "landing_own": [
+      0.19444444444444442,
+      0.7968854166666667
+     ],
+     "lane_agree": true,
+     "production_token_row": [
+      [
+       42.0,
+       1.0,
+       0.49477776885032654,
+       0.10587500035762787,
+       0.1944444477558136,
+       0.796875,
+       2.8454058170318604,
+       1.0
+      ]
+     ]
+    },
+    "1": {
+     "cast": [
+      3500,
+      6500
+     ],
+     "first_row": {
+      "tick": 91,
+      "side": 1,
+      "x": 8906.0,
+      "y": 28612.0,
+      "tx": 3500.0,
+      "ty": 6500.0
+     },
+     "last_row": {
+      "tick": 147,
+      "side": 1,
+      "x": 3594.0,
+      "y": 6884.0,
+      "tx": 3500.0,
+      "ty": 6500.0
+     },
+     "flight_ticks": 57,
+     "goblins": [
+      {
+       "tick": 148,
+       "x": 3500.0,
+       "y": 5773.0,
+       "name": "GoblinBarrel"
+      },
+      {
+       "tick": 148,
+       "x": 2872.0,
+       "y": 6863.0,
+       "name": "GoblinBarrel"
+      },
+      {
+       "tick": 148,
+       "x": 4128.0,
+       "y": 6863.0,
+       "name": "GoblinBarrel"
+      }
+     ],
+     "centroid": [
+      3500.0,
+      6499.666666666667
+     ],
+     "err_tiles": 0.0003333333333330302,
+     "observer_side": 0,
+     "target_own": [
+      0.19444444444444445,
+      0.796875
+     ],
+     "landing_own": [
+      0.19444444444444445,
+      0.7968854166666667
+     ],
+     "lane_agree": true,
+     "production_token_row": [
+      [
+       42.0,
+       1.0,
+       0.49477776885032654,
+       0.10587500035762787,
+       0.1944444477558136,
+       0.796875,
+       2.8454058170318604,
+       1.0
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "seed": 7,
+   "casts": {
+    "0": {
+     "cast": [
+      14500,
+      25500
+     ],
+     "first_row": {
+      "tick": 91,
+      "side": 0,
+      "x": 9094.0,
+      "y": 3388.0,
+      "tx": 14500.0,
+      "ty": 25500.0
+     },
+     "last_row": {
+      "tick": 147,
+      "side": 0,
+      "x": 14406.0,
+      "y": 25116.0,
+      "tx": 14500.0,
+      "ty": 25500.0
+     },
+     "flight_ticks": 57,
+     "goblins": [
+      {
+       "tick": 148,
+       "x": 14500.0,
+       "y": 26227.0,
+       "name": "GoblinBarrel"
+      },
+      {
+       "tick": 148,
+       "x": 15128.0,
+       "y": 25137.0,
+       "name": "GoblinBarrel"
+      },
+      {
+       "tick": 148,
+       "x": 13872.0,
+       "y": 25137.0,
+       "name": "GoblinBarrel"
+      }
+     ],
+     "centroid": [
+      14500.0,
+      25500.333333333332
+     ],
+     "err_tiles": 0.0003333333333321207,
+     "observer_side": 1,
+     "target_own": [
+      0.19444444444444442,
+      0.796875
+     ],
+     "landing_own": [
+      0.19444444444444442,
+      0.7968854166666667
+     ],
+     "lane_agree": true,
+     "production_token_row": [
+      [
+       42.0,
+       1.0,
+       0.49477776885032654,
+       0.10587500035762787,
+       0.1944444477558136,
+       0.796875,
+       2.8454058170318604,
+       1.0
+      ]
+     ]
+    },
+    "1": {
+     "cast": [
+      3500,
+      6500
+     ],
+     "first_row": {
+      "tick": 91,
+      "side": 1,
+      "x": 8906.0,
+      "y": 28612.0,
+      "tx": 3500.0,
+      "ty": 6500.0
+     },
+     "last_row": {
+      "tick": 147,
+      "side": 1,
+      "x": 3594.0,
+      "y": 6884.0,
+      "tx": 3500.0,
+      "ty": 6500.0
+     },
+     "flight_ticks": 57,
+     "goblins": [
+      {
+       "tick": 148,
+       "x": 3500.0,
+       "y": 5773.0,
+       "name": "GoblinBarrel"
+      },
+      {
+       "tick": 148,
+       "x": 2872.0,
+       "y": 6863.0,
+       "name": "GoblinBarrel"
+      },
+      {
+       "tick": 148,
+       "x": 4128.0,
+       "y": 6863.0,
+       "name": "GoblinBarrel"
+      }
+     ],
+     "centroid": [
+      3500.0,
+      6499.666666666667
+     ],
+     "err_tiles": 0.0003333333333330302,
+     "observer_side": 0,
+     "target_own": [
+      0.19444444444444445,
+      0.796875
+     ],
+     "landing_own": [
+      0.19444444444444445,
+      0.7968854166666667
+     ],
+     "lane_agree": true,
+     "production_token_row": [
+      [
+       42.0,
+       1.0,
+       0.49477776885032654,
+       0.10587500035762787,
+       0.1944444477558136,
+       0.796875,
+       2.8454058170318604,
+       1.0
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "seed": 11,
+   "casts": {
+    "0": {
+     "cast": [
+      14500,
+      25500
+     ],
+     "first_row": {
+      "tick": 91,
+      "side": 0,
+      "x": 9094.0,
+      "y": 3388.0,
+      "tx": 14500.0,
+      "ty": 25500.0
+     },
+     "last_row": {
+      "tick": 147,
+      "side": 0,
+      "x": 14406.0,
+      "y": 25116.0,
+      "tx": 14500.0,
+      "ty": 25500.0
+     },
+     "flight_ticks": 57,
+     "goblins": [
+      {
+       "tick": 148,
+       "x": 14500.0,
+       "y": 26227.0,
+       "name": "GoblinBarrel"
+      },
+      {
+       "tick": 148,
+       "x": 15128.0,
+       "y": 25137.0,
+       "name": "GoblinBarrel"
+      },
+      {
+       "tick": 148,
+       "x": 13872.0,
+       "y": 25137.0,
+       "name": "GoblinBarrel"
+      }
+     ],
+     "centroid": [
+      14500.0,
+      25500.333333333332
+     ],
+     "err_tiles": 0.0003333333333321207,
+     "observer_side": 1,
+     "target_own": [
+      0.19444444444444442,
+      0.796875
+     ],
+     "landing_own": [
+      0.19444444444444442,
+      0.7968854166666667
+     ],
+     "lane_agree": true,
+     "production_token_row": [
+      [
+       42.0,
+       1.0,
+       0.49477776885032654,
+       0.10587500035762787,
+       0.1944444477558136,
+       0.796875,
+       2.8454058170318604,
+       1.0
+      ]
+     ]
+    },
+    "1": {
+     "cast": [
+      3500,
+      6500
+     ],
+     "first_row": {
+      "tick": 91,
+      "side": 1,
+      "x": 8906.0,
+      "y": 28612.0,
+      "tx": 3500.0,
+      "ty": 6500.0
+     },
+     "last_row": {
+      "tick": 147,
+      "side": 1,
+      "x": 3594.0,
+      "y": 6884.0,
+      "tx": 3500.0,
+      "ty": 6500.0
+     },
+     "flight_ticks": 57,
+     "goblins": [
+      {
+       "tick": 148,
+       "x": 3500.0,
+       "y": 5773.0,
+       "name": "GoblinBarrel"
+      },
+      {
+       "tick": 148,
+       "x": 2872.0,
+       "y": 6863.0,
+       "name": "GoblinBarrel"
+      },
+      {
+       "tick": 148,
+       "x": 4128.0,
+       "y": 6863.0,
+       "name": "GoblinBarrel"
+      }
+     ],
+     "centroid": [
+      3500.0,
+      6499.666666666667
+     ],
+     "err_tiles": 0.0003333333333330302,
+     "observer_side": 0,
+     "target_own": [
+      0.19444444444444445,
+      0.796875
+     ],
+     "landing_own": [
+      0.19444444444444445,
+      0.7968854166666667
+     ],
+     "lane_agree": true,
+     "production_token_row": [
+      [
+       42.0,
+       1.0,
+       0.49477776885032654,
+       0.10587500035762787,
+       0.1944444477558136,
+       0.796875,
+       2.8454058170318604,
+       1.0
+      ]
+     ]
+    }
+   }
+  }
+ ],
+ "model_counterfactual": {
+  "rows": 1405,
+  "pro_same_lane": 1361,
+  "R1e_u0155": {
+   "feature_version": 4,
+   "A_real": {
+    "log_lane_eq_real_target": 867,
+    "log_lane_eq_pro": 893
+   },
+   "B_barrel_x_mirrored": {
+    "log_lane_eq_real_target": 864,
+    "log_lane_eq_pro": 890
+   },
+   "C_barrel_removed": {
+    "log_lane_eq_real_target": 815,
+    "log_lane_eq_pro": 845
+   },
+   "val_only": {
+    "rows": 126,
+    "A_log_lane_eq_target": 79,
+    "flips_when_barrel_mirrored": 1
+   },
+   "lane_flips_when_barrel_mirrored": 5
+  },
+  "R1e_u0000": {
+   "feature_version": 4,
+   "A_real": {
+    "log_lane_eq_real_target": 908,
+    "log_lane_eq_pro": 936
+   },
+   "B_barrel_x_mirrored": {
+    "log_lane_eq_real_target": 907,
+    "log_lane_eq_pro": 935
+   },
+   "C_barrel_removed": {
+    "log_lane_eq_real_target": 826,
+    "log_lane_eq_pro": 856
+   },
+   "val_only": {
+    "rows": 126,
+    "A_log_lane_eq_target": 84,
+    "flips_when_barrel_mirrored": 0
+   },
+   "lane_flips_when_barrel_mirrored": 11
+  }
+ },
+ "model_counterfactual_positive_control": {
+  "rows": 1405,
+  "pro_same_lane": 1361,
+  "v5_rocket_barrel": {
+   "feature_version": 5,
+   "A_real": {
+    "log_lane_eq_real_target": 889,
+    "log_lane_eq_pro": 917
+   },
+   "B_barrel_x_mirrored": {
+    "log_lane_eq_real_target": 892,
+    "log_lane_eq_pro": 920
+   },
+   "C_barrel_removed": {
+    "log_lane_eq_real_target": 807,
+    "log_lane_eq_pro": 839
+   },
+   "val_only": {
+    "rows": 126,
+    "A_log_lane_eq_target": 84,
+    "flips_when_barrel_mirrored": 0
+   },
+   "lane_flips_when_barrel_mirrored": 11
+  },
+  "v6_rocket_barrel": {
+   "feature_version": 6,
+   "A_real": {
+    "log_lane_eq_real_target": 1362,
+    "log_lane_eq_pro": 1384
+   },
+   "B_barrel_x_mirrored": {
+    "log_lane_eq_real_target": 91,
+    "log_lane_eq_pro": 121
+   },
+   "C_barrel_removed": {
+    "log_lane_eq_real_target": 814,
+    "log_lane_eq_pro": 840
+   },
+   "val_only": {
+    "rows": 126,
+    "A_log_lane_eq_target": 121,
+    "flips_when_barrel_mirrored": 113
+   },
+   "lane_flips_when_barrel_mirrored": 1271
+  }
+ },
+ "live_fv7_candidate_comparison": {
+  "files": 17,
+  "flights": 16,
+  "landing_lane_agree": {
+   "n": 15,
+   "true": 15,
+   "rate": 1.0
+  },
+  "in_flight_single_lane": {
+   "n": 8,
+   "true": 7,
+   "rate": 0.875
+  }
+ }
+}
