@@ -1,0 +1,18 @@
+{
+  "command": [
+    "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe",
+    "-m",
+    "maturin",
+    "build",
+    "--release",
+    "--no-default-features",
+    "-i",
+    "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe",
+    "--out",
+    "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale-20261006\\wheels"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale-20261006\\RoyaleSim",
+  "exit_code": 1,
+  "output_sha256": "ab87c3e3e7441ebb79731b8229706db7a9edcda1cdd9092bb9c9f4de1a83bfde",
+  "seconds": 5.0506322383880615
+}

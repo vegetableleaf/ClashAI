@@ -1,0 +1,10 @@
+{
+  "command": [
+    "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe",
+    "tools/extract_globals.py"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale-20261006\\RoyaleSim",
+  "exit_code": 0,
+  "output_sha256": "6be63b3cd9b908750171a2678d85a72f7a94227b1ed84a8c3acf874d87939307",
+  "seconds": 0.4044985771179199
+}

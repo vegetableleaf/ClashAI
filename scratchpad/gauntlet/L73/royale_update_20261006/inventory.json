@@ -1,0 +1,459 @@
+{
+  "RoyaleSim": {
+    "old": "015f9b0084afe574915e3f6ce2f0764c6dec6099",
+    "new": "d088f53162c3d3349f192276621a372826653fb3",
+    "commits": [
+      {
+        "commit": "d088f53162c3d3349f192276621a372826653fb3",
+        "date": "2026-10-06",
+        "subject": "0.1.17: changelog and version"
+      },
+      {
+        "commit": "0d95c70802cbec2dbcb7ebfaa333d20c6467ce1f",
+        "date": "2026-10-06",
+        "subject": "sim: CATALOGUE_ORDER pins all 136 default catalogue ids before the card tables move (option B step 5)"
+      },
+      {
+        "commit": "7d0f6694a77808b78e009a7673146c987aad4f25",
+        "date": "2026-10-06",
+        "subject": "tests: the unit_type tests name each unit without the value under test (review, 2026-10-05)"
+      },
+      {
+        "commit": "79413befb40b77edc6d52bad7c5a181bc0ab68e0",
+        "date": "2026-10-06",
+        "subject": "sim: an ability button's available column is the press check's own verdict (RoyaleGym, 2026-10-05)"
+      },
+      {
+        "commit": "fdd393748190692394e7d7e9b9d5bc7cac6331ea",
+        "date": "2026-10-06",
+        "subject": "sim: unit_type test pins the Graveyard's Skeletons on their own row (Graveyard_rework_Skeleton)"
+      },
+      {
+        "commit": "9c7ae7c25ff101b2c770d2dfeb7b9d2c8d963645",
+        "date": "2026-10-06",
+        "subject": "sim: each entity row reports its own unit_type beside the producer card_id (owner 2026-10-05, observation row 22)"
+      },
+      {
+        "commit": "00449e9869a36dffc2b4454dcbb003b7547eff04",
+        "date": "2026-10-06",
+        "subject": "sim: tests/line_placement.rs (244): the ties' and centres' types named (Point, Tap) for clippy's type_complexity (r49b: clippy -D warnings refused the test's two nested tuple types)"
+      },
+      {
+        "commit": "1951917ed077888b35f067c382ab89aa290fdf07",
+        "date": "2026-10-06",
+        "subject": "sim: spawner.DEATH_RING_DIRECTION = client15535_walk_step (250): a death on a knockback ladder's step keeps the target's direction (Scratch::pushed): the death tick's move was the ladder's, not a walk. r49b's isolated score lost sp-ram-v-Knight-2500-s0 (-323 within, off the bar) and sp-form-BattleRam-evo-s0 (-232 hp), whose Evo Battle Rams died on a ladder (steps 222, 197, 172 against their heading (35, 253)); client 15.535.29 laid the pair along the heading, as the old rule does, where the ladder's step reversed it"
+      },
+      {
+        "commit": "0ad25697a966b5cf29bb5d2084fa64d98a4aee0f",
+        "date": "2026-10-06",
+        "subject": "sim: combat.SIEGE_RESET_HOLD = client15535_two_tick_hold (249) holds SIEGE_RESET_HOLD_TICKS + 1 ticks: the hold set in Status runs down in the same tick's Resolve, so the hero stood one tick only and made its first shell on the press + 59 (r49a); now the ticks it stands plus that one, as the cage's release hold, and the first shell comes on the press + 60, as measured on client 15.535.29"
+      },
+      {
+        "commit": "5568e0dae944e6780851b84b0bf66f8187940128",
+        "date": "2026-10-06",
+        "subject": "sim: tests/evo_goblin_cage.rs (247): the let-go test compares the two arms' points (r49a: the Knight held no target on K + 1 under either arm, as a troop walking for a tower holds none in the engine; stunned, only the Brawler's push moves it on K + 2, straight down the cage's column; under client15535_scans_while_held it walks on K + 2, off that column)"
+      },
+      {
+        "commit": "98cd56fe3603e8eaf0eaa3b1dea1898af9b1aaeb",
+        "date": "2026-10-06",
+        "subject": "sim: transform.DISMOUNT_MOUNT_ACQUIRE (new, per client): at_once (shipped: the Hero Dark Prince's mount is released with no acquire delay) or client15535_8th_frame (it waits as an action's troop does under targeting.SPAWNED_UNIT_ACQUIRE_DELAY: no enemy takes it before its F + 7). Measured on client 15.535.29's hero Dark Prince scenes: every enemy's first take of a mount on F + 7 or later (a Knight and two Skeletons on F + 7 in sp-form-DarkPrince-hero-s0, a Knight on F + 7 in sp-hero2-DarkPrince-melee-s0 that kept the hero it was hitting through F + 6); the engine's took it on F + 1. replay_parity runs a 15.535.29 capture at the new arm. Plant mount_acquired_at_once; test dismount_mount_birth"
+      },
+      {
+        "commit": "7d7cc8c4638772a7ef871d2ef9adb4827051e517",
+        "date": "2026-10-06",
+        "subject": "sim: spawner.DEATH_RING_DIRECTION (new, per client): target_first (shipped: a facing death ring lies toward the dying unit's target, else its facing) or client15535_walk_step (a unit that walked on its death tick lays it along that step, its point less its point before the tick's walk; one that stood keeps its target's direction). Measured on client 15.535.29's Evo Battle Ram deaths (sp-form-BattleRam-evo-s0 and the sp-ram-* scenes): 9 of 9 deaths while walking laid their Evo Barbarians at the whole degree of the death tick's step (sp-ram-alone-s0 -5 where the tower lay at +10; sp-ram-v-Giant-3500-s0 16 against 29), the 4 standing ones and the 27 plain Rams hitting their towers toward the target as the engine does. replay_parity runs a 15.535.29 capture at the new arm. Plant death_ring_step_unread; test death_ring_axis"
+      },
+      {
+        "commit": "556ed813d9b0798042a9fd43ee536ca4a586c550",
+        "date": "2026-10-06",
+        "subject": "sim: combat.SIEGE_RESET_HOLD (new, per client): next_tick (shipped: at its siege's target reset the Hero Bowler takes its target back and swings on the next tick) or client15535_two_tick_hold (it is held SIEGE_RESET_HOLD_TICKS 2 more, scan and swing waiting as a stun's do, and swings on the reset + 3). Measured on client 15.535.29's two sieges (sp-bowler-siege-s0, sp-form-Bowler-hero-s0): the cast ends on the press + 50 (the reset), the hero stands two ticks holding its Knight, swings on P + 53 (progress 2065, as SiegeDef's own measured first swing) and makes its first shell on P + 60; the engine swung on P + 51 and made every shell 2 ticks early. replay_parity runs a 15.535.29 capture at the new arm. Plant siege_reset_unheld; test hero_bowler"
+      },
+      {
+        "commit": "dbc75e0d5de67b8683d97f4d77eac010eca41b12",
+        "date": "2026-10-06",
+        "subject": "sim: combat.GUARD_CHARGE_STEP (new, per client): rescaled (shipped: the Little Prince's guard steps GUARD_STEP 398 along the line to his point + GUARD_END_OFFSET, snapped there) or client15535_substeps_to_aim (each tick its JumpSpeed 400 in pieces of 250 and 150, each re-aimed at his point + GUARD_AIM_OFFSET (250, 3250) through move16402::tunnel_step, the charge ending before a piece that starts within GUARD_STOP 250 of it). Measured on client 15.535.29's six guard charges (sp-champ-LittlePrince-s0 and the sp-lp-* runs): 78 of 78 steps exact, (16, 398) x4, (17, 398), (18, 398) x6, (19, 399), (13, 250), ending on his point + (239, 3083) as measured; the rescaled line steps (17, 397). replay_parity runs a 15.535.29 capture at the new arm. Plant guard_charge_rescaled; test little_prince"
+      },
+      {
+        "commit": "0b1d91f4ecef6d6f534753f781ac8a7f5c507e0b",
+        "date": "2026-10-06",
+        "subject": "sim: combat.CAGE_RELEASE_SCAN (new, per client): stunned (shipped: an Evo Goblin Cage's freed captive is stunned through its hold and scans nothing) or client15535_scans_while_held (the hold stops its move alone, EvoBoard freed: it takes its target on the tick after the cage's death, standing, and walks the tick after). Measured on client 15.535.29 (every scenario truth): 4 of 4 captives let go (sp-form-GoblinCage-evo-s0 t1325 and sp-f2-cageknfb-s0 t1568, Knights; sp-f2-cagefb-s0 t1795 and sp-f2-cagegolem-s0 t2270, Golems) took the princess tower on K + 1 and walked from K + 2; the engine's took it on K + 3, a tick late, where only the Brawler's push moved it on K + 2 (the release tests read that push as the walk). replay_parity runs a 15.535.29 capture at the new arm. Plant cage_release_stunned; test evo_goblin_cage"
+      },
+      {
+        "commit": "142e9c0420112cc4d21c17b39cbd3d641b27eb17",
+        "date": "2026-10-06",
+        "subject": "sim: targeting.CHASE_RESCAN_PASS_OVER gains client15535_receding_or_behind: client15535_receding_lane_walk, and also every rescan that is not a chase drop's own passes over every troop past the chase-drop limit that stands behind the unit (toward its own side along y), whatever either does (target.rs behind_on_rescan). Measured on client 15.535.29 (receding_behind_census.py over every scenario truth): a troop behind past the limit was taken in 0 of 1,326 rescans, 497 of them where its |dy| fell or held, which the receding arm takes; ahead ones 892 of 1,756. sp-il-04cb t1222: Skeleton Army skeletons whose Hero Musketeer died passed over the Ice Golem behind them at |dy| 5,865 (limit 5,700) and took it at 5,693; t2931, skeletons out of their deploy took a Hog Rider behind at 5,160 to 5,492 (limit 5,600) and passed over it at 5,660 and beyond. replay_parity runs a 15.535.29 capture at the new arm. Plant rescan_behind_taken; tests chase_rescan_pass_over"
+      },
+      {
+        "commit": "938ff737d8e11c4af2eeb1b4f0cdf8e6d3bd62c5",
+        "date": "2026-10-06",
+        "subject": "sim: placement.RELOCATION_TIE_ORDER gains client15535_interleaved_ring: a relocated building tap's ring visited in the client's order in arena coordinates (state.rs client_ring_offsets: for i in 0..2r the four sides in turn, the order formation.LINE_CENTRE_SEARCH's client arm walks), the first of equals kept. Read by Oracle on client 15.535.29 (2026-10-05: every relocated tap takes the one search) and measured there: it keeps client15535_arena_clockwise's 5 ties and settles sp-form-Tesla-evo-s0, whose second Tesla, tapped on (15500, 2500) with the first on (15000, 2000), stood on (16000, 4000), where the arena order takes (15000, 4000) (four ring-2 fits tie at 2,500,000 from the tap). replay_parity runs a 15.535.29 capture at the new arm. Plant relocation_ties_clockwise; tests relocation_ties"
+      },
+      {
+        "commit": "860bdee9592e672f7d0c64d7135e3ea5bdbada68",
+        "date": "2026-10-06",
+        "subject": "sim: formation.LINE_CENTRE_SEARCH (new, per client): ring_corner_walk (shipped, the engine's formation.rs line_centre) or client15535_interleaved_first_ring (formation.rs line_centre_client: the client's search in absolute arena coordinates on the clamped tap, each ring's four sides interleaved ((i - r, -r), (-r, r - i), (r - i, r), (r, i - r) for i in 0..2r), the first of equals kept, the first ring holding a place finished and the search stopped, rings 0 to 30, the king's zone judged on the centre tile (columns 7 to 10, rows below 5); state.rs formation_members_with, for side 0 and side 1's y-reflected frame). Read by Oracle on client 15.535.29 (2026-10-05; it reads the same rule in 16.402) and checked on the Royal Recruits tap sweep (client 15.535.29, 246 runs): 245 reproduced, where ring_corner_walk misses the 13 exact ties ((4000 to 5750, 6500) up on (6499, 8500); (13000 to 13750, 6500) down on (11500, 4500); (10000, 6250) on (10500, 8500)); the miss, (9000, 4000), refused by the client before any search. replay_parity runs a 15.535.29 capture at the new arm. Plant line_centre_ring_walk; tests line_placement (the 13 ties, the 57 measured taps, side 1's two taps)"
+      },
+      {
+        "commit": "e0a0ac310ca78f706837854637c2b5a5cd6df491",
+        "date": "2026-10-06",
+        "subject": "sim: combat.RETARGET_WAIT_REACH_LOSS = client15535_after_reach_loss_combo (243) reaches the Monk: his knocked target past his reach is lost though the decision holds it through its slide (targeting.CHASE_DROP_KNOCKED_TARGET) or re-picks it as the only enemy in sight (r47b: the arm moved nothing, its test saw no gap). Plant reach_loss_combo_kept"
+      },
+      {
+        "commit": "2f3313f70701a9f49ee5aeb84d3ad2c039494665",
+        "date": "2026-10-06",
+        "subject": "sim: combat.RETARGET_WAIT_REACH_LOSS gains client15535_after_reach_loss_combo: client_after_reach_loss with its scope read on a row whose VariableDamage columns the engine loads as a combo (the Monk; card.rs ComboDef) as well as on the inferno's ramp (state.rs phase_target). Client 15.535.29 (monk_drop.py, every Monk third-hit knock in the captures, 7): he lets his knocked target go on the first tick its start-of-tick centre distance passes his reach (Range 1,200 + both radii: Knight kept 2,192 / let go 2,355, Giant 2,422 / 2,478, Ice Golemite 2,295 / 2,444), progress 0, no target for five ticks and the next on the sixth, 7 of 7 (sp-champ-Monk-recharge-q20-s0 t306 to t310, the Giant again on t311); the engine's Monk kept the Giant and stood. replay_parity runs a 15.535.29 capture at the new arm. Plant reach_loss_combo_unread; test monk_combo (6)"
+      },
+      {
+        "commit": "4c26600836d2e774ad3c6cc7581e55be67d88562",
+        "date": "2026-10-06",
+        "subject": "sim: tests/monk_combo.rs (5): straight away from the Monk within 2 either way of the step (r47a: the step 248, the distance gained 249, by the rounding of both points)"
+      },
+      {
+        "commit": "8464dea140f778707f9b18009b84cf4d1a3bd4f4",
+        "date": "2026-10-06",
+        "subject": "sim: knockback.COMBO_PUSHBACK = client15535_ladder_armed_at_hit (242) pushes: combat.rs fire matched the measured arm alone, so the new arm pushed nothing (r46a: the walking-victim test moved a walk step, the Monk scenes -521 within under it); monk_combo (5)'s config needs no mut (clippy)"
+      },
+      {
+        "commit": "bf166daa979385a619804357353d08f3b68e9df8",
+        "date": "2026-10-06",
+        "subject": "sim: knockback.COMBO_PUSHBACK gains client15535_ladder_armed_at_hit: client15535_ladder_from_attacker_hit_tick with the hit landing in the attack pass before the move: a victim walking on the hit's tick takes no walk there, its ladder armed from its start-of-move point and its first step the tick's only move (state.rs apply_effects undoes the walk of a `now` push's victim from Scratch::pre before arming). Client 15.535.29 (monk_knock_census.py, every Monk third-hit knock in the captures): the 2 walking victims moved a pure first step of 249 straight away from the Monk out of their start-of-tick point with no walk (sp-champ-Monk-recharge-q20-s0 t302, a Giant walking (10, -50): (-164, -187), where the engine stepped (-153, -242), its walk plus a step off its walked point, the scene's first divergence; t831 the same); the 6 standing victims fit both arms. replay_parity runs a 15.535.29 capture at client15535_ladder_armed_at_hit. Plant combo_push_after_walk; test monk_combo (5)"
+      },
+      {
+        "commit": "4b9af8de17ee44cb72df93554d7ca08d9ea2394c",
+        "date": "2026-10-05",
+        "subject": "docs: the Discord links and badge point at the merged server (RoyaleGym & ClashAI, 2026-10-05): GitHub invite 8BxaHHVT2u, guild 1534663823204552886"
+      },
+      {
+        "commit": "bc962281b88f5e86836b2e89548c17c6d74d49bb",
+        "date": "2026-10-05",
+        "subject": "docs: the Discord links use the server's GitHub invite (discord.gg/cvRu4nEGXY), so it can tell where people find it (owner, 2026-10-05)"
+      },
+      {
+        "commit": "e6fb76470c7227d6e795aabb556dbe146a5e7661",
+        "date": "2026-10-05",
+        "subject": "0.1.16: changelog and version"
+      },
+      {
+        "commit": "0020c30d772391029b2d8cdbfb196b87a05f5dcb",
+        "date": "2026-10-05",
+        "subject": "sim: tests/spectral_parent_blocker.rs (4) pinned on placements read off the engine: with the second soldier at (5850, y + 600) and (5900, y + 500) client15535_static meets its blocker last (-190) and client15535_static_walker_group the Cannon (+190); (5750, y + 800) the control (+190 under both). A sweep (dx 650 to 900, dy 500 to 900) parted the arms on 6 of 22 placements, all this way; the r45/r46 geometry (one placement, predicted by hand) parted none"
+      },
+      {
+        "commit": "05023d25700bd4e5b20fd82d902f93cd1b60de63",
+        "date": "2026-10-05",
+        "subject": "sim: knockback.LADDER_PATH_REQUEST: replay_parity runs a 15.535.29 capture at client15535_on_ladder again; client15535_on_release (232, with 241's default-tower fallback) stays a candidate. The r45 stack's iso (formsR45a nlad): on_ladder +34 within 250 and +227 hp exact on sp-il-925e, +2 on two scenes, -1 hp on one"
+      },
+      {
+        "commit": "8c144b23721e0b014d252c4fd8acd392588fbe60",
+        "date": "2026-10-05",
+        "subject": "sim: tests/spectral_parent_blocker.rs (4): the pair scene's second soldier set 1,135 from the first (y + 856), so no push between them on their death tick moves the first off its point (the r45 build's scene drifted 243 off)"
+      },
+      {
+        "commit": "ad1b99cb77cf5fcbc744d4ccc94ad9f3fea0f3b6",
+        "date": "2026-10-05",
+        "subject": "sim: spells.CLONE_HOLD_DEPLOY = client15535_covers_deploy (238) completed: the Clone's hold keeps its pair out of the contact law for as long as it lasts (the hold's buff slot extended with the hold timer; the move pass's clone_held skips a held unit's speed-0 contact update, collision.HELD_UNIT_CONTACT). Client 15.535.29 (sp-m5-clone-s0): the deploying pair stood unpushed beside an enemy Giant through C + 14; the r45 build, holding them by the timer alone, still let the Giant push the original from C + 11 (tests/clone.rs (16) red)"
+      },
+      {
+        "commit": "38aefabc60295e665f5684cfc0904a5417bc4b06",
+        "date": "2026-10-05",
+        "subject": "sim: knockback.LADDER_PATH_REQUEST = client15535_on_release (r44's 232, unshipped) amended: a unit on its ladder holding no live target asks for its default tower, as it asks against a target other than the one it last asked for (state.rs phase_path16402_for's pushback tick). The client's targeting takes the tower during the ladder, the engine's holds none until the ladder ends: sp-form-Bowler-hero-s0 t228, a Musketeer knocked off the Hero Bowler turned its target to Red's tower and held a 14-node route that tick (client15535_on_ladder's tower fallback planned the same route, the scene exact); without the fallback the engine planned on t234 and walked off the client's line (r44's pre-score formsR44a: sp-form-Bowler-hero-s0 and -nopress-s0 -243 within 250, off the bar). Plant ladder_release_no_tower; test ladder_release_request (4)"
+      },
+      {
+        "commit": "356f30ddf312a38495611848ed3f9529564face2",
+        "date": "2026-10-05",
+        "subject": "sim: status.FIRST_HIT_BUFF_COUNTDOWN (new, per client): landing_tick (shipped, the engine's: state.rs first_hit lands the Evo Minion Horde ghost in Resolve before the tick's own countdown, status.BUFF_EXPIRY_TICK_ALIGNMENT = ceil_from_next_tick, so a D-ms ghost on tick H holds H + 1 .. H + D / 50 - 1) or client15535_from_next_tick (counted down from the next tick, H + 1 .. H + D / 50, as a projectile's buff landing in Resolve is; first_hit lands it one tick longer). Client 15.535.29 (ghost_census.py, sp-form-MinionHorde-evo-s0, every evolved minion's first damage H): the minion's attack progress rising 33 a tick (or its step 60) through H + 60 and 50 (90) from H + 61, 6 of 6; the engine's through H + 59 (minion 26: H = t687, its shot one tick early on t762, gone on t786, the scene's first error). replay_parity runs a 15.535.29 capture at client15535_from_next_tick. Plant ghost_counted_on_landing; test evo_minion_horde"
+      },
+      {
+        "commit": "431a7a49d764abb0c39c5c2a3e77ce692be08b4c",
+        "date": "2026-10-05",
+        "subject": "sim: combat.TIMED_JUMP_BLOW_STOP (new, per client): flies_to_goal (shipped, the engine's: a timed jump, DashConstantTime, moves JumpSpeed a tick on to its goal after its blow, a ground jumper over water put on land on the jump's end) or client15535_stops_at_blow (the blow, the entry + DashConstantTime / 50, ends the motion where it struck after that tick's step; a ground jumper over water is put on land on that tick by the grid rule and holds there to the jump's end; state.rs phase_path16402_for, the dash's DashConstantTime arm). Client 15.535.29 (mk_jump_census.py, every Mega Knight jump in the captures, 6): steps of 250, the blow on the entry + 16 in 5 of 5 that struck, no move after it in any; 5 reached their goal by the blow, where the arms agree; sp-form-MegaKnight-evo-s0 t1025, a goal 4,591 off beyond 17 steps: the blow on t1041 at (11608, 15914) over the river and the jumper on (11358, 14664) that tick, standing to t1044, where the engine flew on to (11749, 16249) and landed on t1045 (1,274 off on t1041, the scene's first divergence). replay_parity runs a 15.535.29 capture at client15535_stops_at_blow. Plant timed_jump_flies_past_blow; test timed_jump_blow"
+      },
+      {
+        "commit": "459bd911d707215b2f668ee5ac3c7afcf892461c",
+        "date": "2026-10-05",
+        "subject": "sim: spells.CLONE_HOLD_DEPLOY (new, per client): hold_time (shipped, the engine's: the Clone holds its pair the hold's 500 ms whatever the original's deploy, after which a pair still deploying is an unheld body the contact law pushes) or client15535_covers_deploy (the pair is held max(the hold's time, the original's deploy left on the cast tick), both of them, through the hold timer; state.rs materialise_clones). Client 15.535.29 (sp-m5-clone-s0: a Clone on three Skeletons 5 ticks into their deploy, 700 ms left): all three and their two copies in the Clone's state 8 from C to C + 14, released together on C + 15 (a target on C + 16, first steps C + 17), standing on their slide's last points through C + 14 beside an enemy Giant that the engine's arm pushed the original off from C + 11 (539 off by C + 14, the scene's first error); every pair of a deployed original released on C + 11 as before. replay_parity runs a 15.535.29 capture at client15535_covers_deploy. Plant clone_hold_ends_in_deploy; test clone (16)"
+      },
+      {
+        "commit": "fe6e735ed30327a7be65fc956af0ee011c444c1f",
+        "date": "2026-10-05",
+        "subject": "sim: the Evo Skeleton Army Spectral's birth and first update, three client 15.535.29 laws: spawner.SPECTRAL_BIRTH_POINT (new, per client: soldier_point shipped | client15535_water_nudge, a Spectral whose soldier died on a WATER half-tile cell is made 1 native unit to its right, its soldier's blocker staying on the death point); spawner.SPECTRAL_PARENT_BLOCKER gains client15535_static_walker_group (the dying soldiers static to the avoidance vote but grouped in the 1024 index as the walkers they were, span r + 250: move16402 Body::group_walker, Index::span); spawner.SPECTRAL_FIRST_UPDATE gains client15535_same_tick_apart (each Spectral's first update hides the tick's other new Spectrals from both its scans: first_update apart). state.rs army_spectrals; the dying-blocker tuple carries the grouping. Client 15.535.29 (the 43 Spectrals of sp-form-SkeletonArmy-evo-s0, sp-esa-spectrals-s0, sp-il-b5e2; a spawned unit's first frame's x2/y2 is its birth point): birth - death point (1, 0) for the 8 over water, (0, 0) for the 33 over land; the first-frame avoidance sign 36 of 37 with the walker grouping (35 by radius, 32 as movers); the first-frame displacement beside another newborn 16 of 17 with the newborns unseen (6 of 17 seen). replay_parity runs a 15.535.29 capture at client15535_water_nudge, client15535_static_walker_group and client15535_same_tick_apart. Plants spectral_born_on_water_point, spectral_blocker_static_span, spectral_newborns_seen, group_walker_unread; tests spectral_birth_point, spectral_parent_blocker (4), spectral_first_update (2), avoidance_tie_order (5)"
+      },
+      {
+        "commit": "81d639d4f9bba59b9e778ff3a31a4cc8513425e7",
+        "date": "2026-10-05",
+        "subject": "sim: spells.CLONE_OFFSET becomes a per-client key: owner_axis_slide_over_hold (shipped, the engine's: the pair slides CLONE_DISTANCE_Y / 2 a tick each along the owner's y axis over the hold) or client15535_column_edge_slide (each of the two walks that 125 a tick toward the centre of the edge cell of its own 500 path-grid column, the original the enemy's edge row and the copy its own side's, the step fixed on C in the walk arithmetic: heading to 256 truncated, times 125 / 256 truncated; state.rs materialise_clones, through the knockback slide; the only() rule becomes Calib::clone_offset). Client 15.535.29 (slide_law.py, every Clone pair in the captures, 35 pairs, 70 units, side 0): each unit's path node on C is that edge cell and its segment direction that heading, 70 of 70; its 692 slide steps all that step, where the axis slide places 542 (ub-cl2-band C125: the copy at (7502, 8429) stepped (3, -124) a tick; sp-m5-clone-s0 C812: the original at (3499, 11307) (-1, 124)). replay_parity runs a 15.535.29 capture at client15535_column_edge_slide. Plant clone_slide_on_axis; test clone (15)"
+      },
+      {
+        "commit": "a93f51bec779482579816ceb1d27d166580a2a76",
+        "date": "2026-10-05",
+        "subject": "sim: pathfinding.PRESS_ROUTE gains client15535_replanned_with_dash: client15535_replanned's law with no dash-chain exemption: a Golden Knight's press drops his route too, so the press tick's Path phase plans afresh from where he stands (the goal cell around his target on that tick) and his walk step on the press tick heads at the fresh route's first node (state.rs start_ability). Client 15.535.29 (press_census.py, every Golden Knight press in the captures, his step on the press tick walked in the engine's arithmetic): the fresh route's first node 15 of 15, the kept route's 3 of 15; sp-champ-GoldenKnight-recharge-q800-s0 t170 from (3277, 12399): the client stepped (-4, 59), the engine (-1, 60) at its kept waypoint (3250, 14750), the offset his dash carries to its landing; from the client's press-tick point the engine's dash reproduces 46 of 46 dash ticks and 12 of 12 landings. replay_parity runs a 15.535.29 capture at client15535_replanned_with_dash (was client15535_replanned). Plant press_route_dash_exempt; test press_route"
+      },
+      {
+        "commit": "9e74dc63101e3475abc3f25693ebf4fc363580a6",
+        "date": "2026-10-05",
+        "subject": "sim: movement.STRUCK_CONTACT_ORDER gains client15535_before_pass: a troop a direct strike takes to 0 hp in the sequential pass (match.TICK_ORDER = client_sequential_strike) is a body to NO mover's separation in the move pass, whatever the mover's creation order against its striker (every direct strike of the pass lands before the move pass, which reads the troop as dead); its own update and its avoidance reading as client15535_after_striker's (state.rs phase_path16402_for's struck release). Client 15.535.29 (the separation law emulated on client bodies over every capture with a fixture): of the movers overlapping a troop struck to 0 hp on its tick, 102 took no push from it and 0 did, in 29 scenes; 14 of them were created before the first striker, which client15535_after_striker pushes: sp-il-04cb t1221 (Skeleton Army member 46, 71 off, the scene's first error), sp-il-2142 t1907 (80 off), sp-rage-4000-s0 / -5000-s0 t304 (3 off, those scenes' first errors). replay_parity runs a 15.535.29 capture at client15535_before_pass (was client15535_after_striker). Plant struck_met_before_striker; test struck_contact_order"
+      },
+      {
+        "commit": "63f6ce235ff975160b6f6e655812077d211a5f60",
+        "date": "2026-10-05",
+        "subject": "sim: transform.DISMOUNT_MOUNT_BIRTH (new, per client): fitted_offset (shipped, the engine's: the Hero Dark Prince's mount is put down on the trigger at the hero's start-of-tick point + card.rs DISMOUNT_MOUNT_OFFSET, with no update until its second frame) or client15535_hero_point (born on the hero's point after the hero's own move on the trigger tick and before its first hop, taking its first full update that tick, whose scans meet the hero's body standing there, a mover of its walking row with its heading not counted, unless the hero leapt on that tick; state.rs the Dismount effect, dismount_hops, Scratch::mount_bodies read by phase_path16402_for's first update; DismountRun::mount_due, set and spent inside the trigger's tick). Client 15.535.29 (dismount_birth_census.py, dp_mount_law.py, dp_mount_frame2.py, the 6 mounts of the captures): every mount's first frame exact to the native unit ((-49, -86) twice, (-57, -101), (-45, -82), (60, 119) red: the separation push off the coincident hero, (0, -121) / (0, +121) by the side fallback with masses 6 and 15, plus a 60 step turned by the -190 avoidance offset off it; (36, 47) for the hero freed on its leap's last tick, not met), and every second frame (a plain step on the -180 turn); the fitted offset fits the 3 runs it was fitted on. sp-form-DarkPrince-hero-s0 t213: the mount born on (10676, 17011) where the engine put it 313 off. replay_parity runs a 15.535.29 capture at the new arm. Plants mount_meets_no_hero and mount_born_on_trigger; test dismount_mount_birth"
+      },
+      {
+        "commit": "a4b341f4bfcd223a505174acc4d797979f6ab378",
+        "date": "2026-10-05",
+        "subject": "sim: knockback.LADDER_PATH_REQUEST gains client15535_on_release: a ground unit holding no route whose fight a knock ends (knockback.ATTACK_RESET's release of its attack, a locked target, or its own attack's recoil) asks for a path ONCE, on its first update with the ladder armed, from where it stands (the replan gate's goal cell around its target, and its search when that cell is not its own cell), and again only when it holds a target other than the one it last asked for; no reach test, no default-tower fallback (BattleState::ladder_asks, kept while the unit's ladder runs, hashed only when some; state.rs phase_path16402_for's pushback tick, apply_effects, attack_recoil). Client 15.535.29 (ladders.py, census_final.py over every truth: 166 ladders of ground units holding no route going in, 82 scenes): the first route's tick 165 of 166, where client15535_on_ladder places 123; the goal cell decides the route at every one of 121 release requests (89 routes, 32 none); 33 planned within Range + both radii (sp-champ-Monk-nopress-s0 t252: the Monk's Knight, 1,882 from him, held a 1-cell route from t253 where the engine planned on t255, the scene's first divergence t265); 104 of 109 routes equal the engine's search cell for cell. replay_parity runs a 15.535.29 capture at client15535_on_release (was client15535_on_ladder). Plant ladder_release_reach_gated; test ladder_release_request"
+      },
+      {
+        "commit": "ee8dbb09e0e038f70ba75cbd7994588deb12d1b1",
+        "date": "2026-10-05",
+        "subject": "sim: combat.HELD_SHOT_TEST (new, per client): tested (shipped, the engine's: a pellet held at its launch point by its row's RandomDelay tests for hits there on each stand tick, a hit consuming it) or client15535_untested (a RandomDelay pellet, a CheckCollisions row's shot with stop_on_hit, tests nothing while it stands: tested on its creation tick as before and from its first step on; a power shot's side copies are unaffected; combat.rs step_straight's hold branch). Client 15.535.29 (stand_rule_census.py over every Hunter and evolved Hunter pellet with frames, 647 in 83 volleys): the rule predicts each pellet's end (its hit tick or its range end) 647 of 647, the engine's 638; the 9 that separate them are standing pellets with a newborn Golemite in reach. sp-f4-hunterG40-s0 t1181: the evolved Hunter's 3 surviving pellets stood at (14858, 13247) until t1184-85 and flew to range end without a hit, where the engine's hit both Golemites on t1182 for 3 x 84 (1,039 -> 787; the scene's first divergence, t1224). sp-f4-hunterG80-s0 t1177: Golemite 22 lost 84 on t1179 to a pellet released that tick while three nearer standing ones did not hit it; the engine's took 6 x 84 on t1178. MEDIUM: 2 separating volleys, both the evolved Hunter on a Golem's death. replay_parity runs a 15.535.29 capture at the new arm. Plant held_shot_tested; test held_shot_test"
+      },
+      {
+        "commit": "4e314a331676dfe05f854a4cdc49d261f700c6be",
+        "date": "2026-10-05",
+        "subject": "0.1.15: changelog and version"
+      },
+      {
+        "commit": "344879cc48462d4d852afa71771e37ec00d01a2a",
+        "date": "2026-10-05",
+        "subject": "tests: re-vendor _doc_links.py and _figure_provenance.py from their RoyaleLive sources (d534b60d)"
+      },
+      {
+        "commit": "49bc4dea48a5a44725da4c6f73e6c559d0db4652",
+        "date": "2026-10-05",
+        "subject": "sim: spawner.DEATH_SPAWN_SEGMENT ships client_birth_frozen on both clients (Sim's ruling on parity's r43 proposal, 2026-10-05): the birth plan of a sliding death-spawn member (the Golem's Golemites) freezes its route's first segment from the death point toward the route's next node and the slide keeps it, so the first walking tick's reached test pops a node the member slid across. Both clients' frames carry the birth segment (20260919-143305 t3083 (-174, 187), sp-f2-cagegolem-s0 t1255 (6, -256)); client 15.535.29 25 of 25 pops where the node projected within 1,000 along it; client 16.402 20260919-143305 t3089's pair (39 popped, 40 kept). On the ship41 stack: the 15.535.29 scenarios +357 within; by override on the 16.402 corpus +174 (20260919-143305-A +106, -B +68). The ledger keeps its open item (sp-f4-hunterG40-s0's Golemite 23, about 994 along it, kept its node; slide death spawns other than Golemites). The harness's 15.535.29 line dropped (every capture runs the shipped arm); tests/replay_parity.rs pins it on both clients; tests/death_spawn_segment.rs pins the shipped arm. The serde default stays refrozen (a snapshot saved before the key)."
+      },
+      {
+        "commit": "f746a7c373388623083e23cdb3b7694752379b44",
+        "date": "2026-10-05",
+        "subject": "sim: movement.DEFLECT_STAY_TIME (new, per client): active_time (shipped, the engine's: the Monk's Deflect keeps him unpushed by his own separation, its `stay`, his ability's NO_MOVE_ALLOW_ATTRACT, for the Deflect's active time from its trigger) or client15535_tick_short (a tick less: his own separation first moves him on P + 97, the tick after his deflect state ends; the Deflect effect's stay buff lands for the active time less a tick). Client 15.535.29 (sp-champ-Monk-recharge-q20-s0, press t170): a Giant 85 inside both radii of him through the end of his active window; his deflect state read to t265 (P + 95) and 0 on t266, and the Giant's push moved him (+147, -32) on t267 (P + 97), where the engine's stood and took it on t268 (the scene's first divergence, 756 unit-ticks lost). LOW: one deflect end with a unit on him. replay_parity runs a 15.535.29 capture at the new arm. Plant deflect_stay_full_time; test deflect_stay_time"
+      },
+      {
+        "commit": "4ae8dd46d01b3f09db136eac9dfda5890b2767db",
+        "date": "2026-10-05",
+        "subject": "sim: spawner.DEATH_SPAWN_SEGMENT (new, per client): refrozen (shipped, the engine's: the birth plan of spawner.DEATH_SPAWN_ROUTE = client_at_birth leaves the segment unset, and the member's first walking step freezes it from where the slide left it) or client_birth_frozen (the birth plan freezes the route's first segment from the death point toward its next node and the slide keeps it, so the first walking tick's reached test, move16402 `move_towards`'s node within 1,000 along the segment, pops a node the member slid across; state.rs phase_path16402's slide branch). Both clients' frames carry that segment on the birth frame (path_segment_direction: 20260919-143305 t3083 (-174, 187), sp-f2-cagegolem-s0 t1255 (6, -256)). Client 15.535.29 (slide_end_route_census15535_goal.py, slide_end_pop_probe.py): one tick after its slide every sliding Golemite whose goal cell moved replanned (29 of 29, the engine's gate already does) and every one whose goal cell held popped its next node where it projected within 1,000 along the birth segment (25 of 25) and kept it where it projected about 1,700 (4 of 5; one borderline at about 994). Client 16.402 (20260919-143305 t3089, both seats): Golemite 39 popped its next node (-90 along the segment) and three more on the next three ticks along refrozen segments; Golemite 40 kept it (1,949). sp-f2-cagegolem-s0 t1261: Golemite 24 popped (675) and turned toward (14750, 7750); the engine, freezing from its own point, measured 1,600, walked on toward (14750, 8250), stopped 77 off and hit Blue's tower later (the client's hit on t1310). replay_parity runs a 15.535.29 capture at the new arm; proposed to ship it on both clients. Plant death_spawn_segment_refrozen; test death_spawn_segment"
+      },
+      {
+        "commit": "0b559013c5dc42f5bbbf6b4f7b6946d74ed95252",
+        "date": "2026-10-04",
+        "subject": "0.1.14: changelog and version"
+      },
+      {
+        "commit": "68530c7d3d575f83607ab8fc924bbc7bdf422d4f",
+        "date": "2026-10-04",
+        "subject": "sim: spawner.DEATH_SPAWN_ROUTE ships client_at_birth on both clients (Sim's ruling on parity's r42 proposal, 2026-10-04): a sliding death-spawn member (the Golem's Golemites) plans its route on its first slide tick from the death point, keeps it through the slide and walks it from where the slide leaves it; a container's release (root card a building or a flyer) keeps the engine's. Both clients' raw frames: the Golemites carry the death point's route from their first frame, 6 of 6 on the 16.402 corpus and 50 of 50 on client 15.535.29. On the 16.402 corpus by override +672 within (20260920-071744-A +283, -B +168, 20260919-143305-A +130, -B +91); on the 15.535.29 scenarios +23 within and +2 bars against ship40. The ledger keeps its open item (the slide's end: 53 of 60 sliding Golemites read a new route one tick after their slide, which a replan from the member's point does not reproduce; sp-f2-cagegolem-s0 -255 and sp-f2-cagefb-s0 -144, where a Golemite goes on toward its birth route's next node after the slide, where the client's turned toward the following one). The harness's 15.535.29 line dropped (every capture runs the shipped arm); tests/replay_parity.rs pins it on both clients; tests/death_spawn_route.rs pins the shipped arm. The serde default stays slide_end (a snapshot saved before the key)."
+      },
+      {
+        "commit": "117efa4762145ac45c8c0be78fff8d4e1f54e3f4",
+        "date": "2026-10-04",
+        "subject": "sim: spawner.DEATH_SPAWN_ROUTE (new, per client): slide_end (shipped, the engine's: a sliding death-spawn member, a DeathSpawnPushback row's under spawner.DEATH_SPAWN_PUSHBACK = client_ring_slide, the Golem's Golemites, asks for no path until its slide ends and plans then from where the slide left it) or client_at_birth (a member holding no route plans on its slide tick, before the step, from the death point (the slide's centre, the same for every member of one death: the pair carries one route), as a ladder's unit does under knockback.LADDER_PATH_REQUEST = client15535_on_ladder: the replan gate's goal cell and its search; the slide keeps the route and the member walks it from where the slide leaves it; state.rs phase_path16402's slide branch `at_birth`). Both clients' raw frames, the routes they record (death_spawn_route_census16402.py over the corpus recordings, death_spawn_route_census15535.py over the scenario captures): a Golem's Golemites carry one route from their first frame, the same list for the pair and not the parent's, 6 of 6 on 16.402 (20260919-143305 t3083, both seats: 7 cells against the Golem's 3) and 50 of 50 on 15.535.29 (sp-champ-GK-recharge2-s0 t1078: 5 against 1). 20260919-143305-A t3089: Golemite 40 slid to (12884, 26567) and stepped (-42, +13) toward its route's next cell (10750, 27250), where the engine's, planned there on its first walking tick, headed for (11750, 27750) with (-31, +32) (the battle's first divergence, t3131; 238 and 161 unit-ticks on the two seats). A container's release keeps the engine's route under both arms: a member whose root card (entity.rs `source`, the play that put it on the board) is a building or a flyer, the Evo Goblin Cage's Brawler or the Evo Skeleton Balloon's Skeletons (the censuses measured Golem deaths; without the test the arm lost sp-form-SkeletonBalloon-evo-s0 610; the slide's cap cannot tell them, a Golemite's is capped too). By override on the ship39 stack: the 16.402 corpus +672 within (20260920-071744-A +283 and to the bar, -B +168, 20260919-143305-A +130, -B +91); 15.535.29 scenarios +23 within and +2 bars (Golem deaths: sp-f4-hunterG40-s0 +202, sp-f4-hunterG80-s0 +73, the sp-mph-hits Golems +86; against sp-f2-cagegolem-s0 -255 and sp-f2-cagefb-s0 -144, open in the ledger: the slide's end, cagegolem's Golemite 24 going on toward its birth route's next node where the client's turned toward the following one, and hitting Blue's tower later), il and sweep 0. The slide's end: 53 of 60 sliding Golemites on client 15.535.29 read a new route one tick after their slide (slide_end_route_census15535.py); replanning there from the member's own point, as the engine plans, lost the Golem scenes (-394 within), so the arm keeps the birth route and the ledger names the change as open. replay_parity runs a 15.535.29 capture at the new arm; proposed to ship it on both clients. Plant death_spawn_route_at_slide_end; test death_spawn_route"
+      }
+    ],
+    "tracked_local_changes": "",
+    "changed_files": [
+      "M\t.github/ISSUE_TEMPLATE/config.yml",
+      "M\tCHANGELOG.md",
+      "M\tREADME.md",
+      "M\tcrates/royalesim/Cargo.lock",
+      "M\tcrates/royalesim/Cargo.toml",
+      "M\tcrates/royalesim/examples/replay_parity/harness.rs",
+      "M\tcrates/royalesim/src/card.rs",
+      "M\tcrates/royalesim/src/combat.rs",
+      "M\tcrates/royalesim/src/entity.rs",
+      "M\tcrates/royalesim/src/formation.rs",
+      "M\tcrates/royalesim/src/move16402.rs",
+      "M\tcrates/royalesim/src/py.rs",
+      "M\tcrates/royalesim/src/state.rs",
+      "M\tcrates/royalesim/src/target.rs",
+      "M\tcrates/royalesim/tests/avoidance_tie_order.rs",
+      "M\tcrates/royalesim/tests/chase_rescan_pass_over.rs",
+      "M\tcrates/royalesim/tests/clone.rs",
+      "M\tcrates/royalesim/tests/common/mod.rs",
+      "M\tcrates/royalesim/tests/death_ring_axis.rs",
+      "A\tcrates/royalesim/tests/death_spawn_route.rs",
+      "A\tcrates/royalesim/tests/death_spawn_segment.rs",
+      "A\tcrates/royalesim/tests/deflect_stay_time.rs",
+      "A\tcrates/royalesim/tests/dismount_mount_birth.rs",
+      "M\tcrates/royalesim/tests/entity_level.rs",
+      "M\tcrates/royalesim/tests/evo_goblin_cage.rs",
+      "M\tcrates/royalesim/tests/evo_minion_horde.rs",
+      "A\tcrates/royalesim/tests/held_shot_test.rs",
+      "M\tcrates/royalesim/tests/hero_bowler.rs",
+      "M\tcrates/royalesim/tests/hero_goblins.rs",
+      "M\tcrates/royalesim/tests/hero_mega_minion.rs",
+      "M\tcrates/royalesim/tests/hero_tombstone.rs",
+      "A\tcrates/royalesim/tests/ladder_release_request.rs",
+      "M\tcrates/royalesim/tests/line_placement.rs",
+      "M\tcrates/royalesim/tests/little_prince.rs",
+      "M\tcrates/royalesim/tests/monk_combo.rs",
+      "M\tcrates/royalesim/tests/press_route.rs",
+      "M\tcrates/royalesim/tests/relocation_ties.rs",
+      "M\tcrates/royalesim/tests/replay_parity.rs",
+      "A\tcrates/royalesim/tests/spectral_birth_point.rs",
+      "M\tcrates/royalesim/tests/spectral_first_update.rs",
+      "M\tcrates/royalesim/tests/spectral_parent_blocker.rs",
+      "M\tcrates/royalesim/tests/struck_contact_order.rs",
+      "A\tcrates/royalesim/tests/timed_jump_blow.rs",
+      "M\tdata/calibration.json",
+      "M\tdocs/api.md",
+      "M\tdocs/architecture.md",
+      "M\tdocs/calibration.md",
+      "M\tdocs/contributing.md",
+      "M\tdocs/engine.md",
+      "M\tpyproject.toml",
+      "M\ttests/_doc_links.py",
+      "M\ttests/_figure_provenance.py",
+      "M\ttests/test_doc_links.py",
+      "M\ttests/test_entity_level.py",
+      "A\ttests/test_unit_type.py",
+      "M\ttests/vendored_sources.json"
+    ]
+  },
+  "RoyaleGym": {
+    "old": "3117816366b00754da1b56c9543412e4706de62a",
+    "new": "75adf8b396c2d10a85fbaa33a58f6940ca2f53fc",
+    "commits": [
+      {
+        "commit": "75adf8b396c2d10a85fbaa33a58f6940ca2f53fc",
+        "date": "2026-10-06",
+        "subject": "docs site for 0.1.18: Observation Builders lists unit_identity (unit_ids) and button_index; It Doesn't Work's \"engine refused ... the mask allowed\" entry adds the Hero Mega Minion's early ability press, fixed in 0.1.18"
+      },
+      {
+        "commit": "03c48d901d1f7d08f60f88ccd4941f61218a3520",
+        "date": "2026-10-06",
+        "subject": "0.1.18: royalesim>=0.1.17 (each unit's own type, EntityState.unit_type; the ability row's available is the engine's verdict), royalelearn[torch]>=0.5.10, royaleimitate[replays]>=0.2.9 (both store unit_ids), the newest of each on PyPI; the real-engine unit_ids test (the Witch's and the Skeletons card's skeletons give one Skeleton type, towers their rows, the vocabulary sorted); CHANGELOG 0.1.18"
+      },
+      {
+        "commit": "61f29258061bc3366befaacb2694c8b10e430e19",
+        "date": "2026-10-06",
+        "subject": "test_button_mask_engine: the guard counts the ticks the ENGINE refuses the warp press while the hero stands, whatever the row says. From royalesim 0.1.17 the row's available is the engine's own verdict (Sim's button_verdict), so the old guard (row available while the engine waits) found nothing and called the test vacuous; the mask-vs-engine check every tick is unchanged and passes on 0.1.16 and 0.1.17 (found by Sim's ship44 gate)"
+      },
+      {
+        "commit": "536445ac60006c19de3879811569e5827758f940",
+        "date": "2026-10-06",
+        "subject": "button_index (observation row 23, Train 10-06): SpatialObsBuilder(button_index=True) appends own_button_cards [K x (n+1)] one-hot per button index (like own_hand_cards; n = no button) and own_button_{available,spent,cooldown}_by_index [K], after the card_status fields and before any reveal, K = the parser's buttons; refused without buttons or with rows that do not name the card. The card-keyed button fields could not say which card button k is, and a network learned it from deck order. Tested on RustEngine with two heroes dealt in both orders (button 0 follows the order) and on hand-made rows; nothing moves with it off; two plants caught"
+      },
+      {
+        "commit": "0364a35f2f13f973fb4e1ab9c1362d9e45b0bed4",
+        "date": "2026-10-05",
+        "subject": "unit_aliases (Train's ruling 10-05): SpatialObsBuilder(unit_aliases=...) writes a row as its base type before the planes are built; obs.SAME_UNIT_ALIASES holds the 7 rows that are one unit to a player (Graveyard_rework_Skeleton, SkeletonKingSkeleton -> Skeleton; GoblinCurseGoblin -> Goblin; DeliveryRecruit -> Recruit; TriWizard -> Wizard; Ghost_EV1_Summon_Right -> _Left; ThreeMusketeer_Rework_Character_3 -> _1). The aliased names leave the vocabulary; config() records unit_aliases; builder.unit_ids_digest names the effective vocabulary. Refuses unknown names, chains and self-aliases. A test checks every shipped pair has identical stats in the engine's card table (green on Sim's ut-407f818 build; Goblin_Stab and SpearGoblin_Dummy differ and stay out). Corrects the docs: the Graveyard's skeletons keep their own row unless aliased. Two plants caught"
+      },
+      {
+        "commit": "fa556eabea3e8ad16dd3383ebbabebc9258b6e59",
+        "date": "2026-10-05",
+        "subject": "The mask asks the engine about every ability button its row calls usable (GridActionParser._button_judge = engine.check_deploy), as it asks where a building lands: the Hero Mega Minion's warp is taken only available_after_ms after the hero appears and only with a pick (state.rs check_ability_button, AbilityNotReady), which the row's available column does not carry, so the mask offered presses the engine refused. Found by Train (rl2-c illegal_actions, ~1 in 52 000); a 500-battle repro of its env with the field decks found 10 ABILITY_NOT_READY, all the hero Mega Minion. Test against a real battle (mask_disagreements empty every tick from the hero's spawn until the press is taken), plant caught; the row-reading test now isolates the rows"
+      },
+      {
+        "commit": "237a248dcfe34a00816cafc3cbb8c82fd75fa1f6",
+        "date": "2026-10-05",
+        "subject": "docs: Discord links and the member-count widget/badges point at the merged server (RoyaleGym & ClashAI, 2026-10-05): site invite we3z5SWdNj, GitHub invite 8BxaHHVT2u, guild 1534663823204552886"
+      },
+      {
+        "commit": "7f61a025ec5b3feb02a518a36e800b19e381f6cc",
+        "date": "2026-10-05",
+        "subject": "docs site Cloning a Bot: a clone for one deck (a specialist) with royaleimitate 0.2.8's from_replays(keep=...), Learn's tested example; without it the clone learns from every deck (a generalist). Tried on 20 Hog 2.6 matches: 733 not kept, 34 s"
+      },
+      {
+        "commit": "cc0d36f3786db998f3cd7c394443b7cc70c7d4d4",
+        "date": "2026-10-05",
+        "subject": "unit_ids (observation row 22, owner 10-05): SpatialObsBuilder(unit_identity=True) adds uint8 [2,ty,tx] planes of each unit's OWN type (EntityState.unit_type into Engine.unit_types(), royalesim 0.1.17's interface agreed with Sim), beside card_ids' producer; lowest uid per tile as card_ids; unit_names pins the vocabulary; refuses an engine that says none or a unit whose type is -1. EntityState.unit_type trails ability_ticks (-1 = not said; MockEngine unreported); RustEngine.unit_types() reads Battle.unit_types_json; trace header unit_types. Off by default: no key and no config field. Tested on a MockEngine that says types (Goblins and Goblin Barrel: two producers, one type); two plants caught"
+      },
+      {
+        "commit": "f4b75a895ecb97a2fc0e08094813302e4fb41972",
+        "date": "2026-10-05",
+        "subject": "docs site: start from a clone (owner 2026-10-05: new users should start with cloning; release approved 'all ok on cloning release'). Cloning a Bot rewritten human-first: the games, make (clone_humans.py, measured output and times), watch (seeded), test (test_clone.py with the default path's measured lines: beats every scripted bot), train from it, what a clone can't do; three simple example decks (Hog 2.6, Balloon, Royal Giant); load the default way, never greedy=True (a greedy clone plays no card). Introduction, Quick Start, FAQ, home (Cloning card), README, llms.txt, RoyaleImitate, Training an Agent, rl-terms (Cloning, Warm start) and build-from-source say a bot that learns only by trial and error from nothing doesn't get far; nav puts Cloning before Training. test_site_examples EXEMPT: test_clone.py"
+      },
+      {
+        "commit": "24a554d1b4731c39150c4f67f66d38b64c54294e",
+        "date": "2026-10-05",
+        "subject": "docs: a Discord invite of its own for each place the server is linked from: the site's pages use cuPQwyB7pd, the README, guide and issue templates (GitHub and PyPI) use cvRu4nEGXY, so the server can tell where people found it (owner, 2026-10-05)"
+      },
+      {
+        "commit": "c85e68b992631ab793d00df892e47cdf79acfba4",
+        "date": "2026-10-05",
+        "subject": "docs site It Doesn't Work: 'the engine refused ... command(s) the mask allowed' (DeployRefused): RoyaleGym 0.1.16 and older offered plays after a tied overtime ran out, which the engine refuses; 0.1.17 fixes it via pip install --upgrade \"royalegym[all]\", then a new save_dir"
+      },
+      {
+        "commit": "e3824b57513b82d9fecd844ba2ab0cd7f8dd0832",
+        "date": "2026-10-05",
+        "subject": "0.1.17: royalesim>=0.1.14 (a death spawn's units route from where they appear), the newest on PyPI; CHANGELOG 0.1.17 (the mask's tiebreak freeze)"
+      },
+      {
+        "commit": "bf9f5f814aac5fe45db65a7a1ba6d13bf3500e5f",
+        "date": "2026-10-05",
+        "subject": "The mask offers no play during the tiebreak's freeze: DeployRules reads match.OVERTIME_TIEBREAK and plays_stopped(state) is the engine's tiebreak_frozen (client_hp_drain, overtime, not over, tick >= regular + overtime ticks); the mask read only game_over, set at the drain's end, so every play of a tied level overtime's tiebreak was refused GAME_OVER. Found by Train: rl2-a (delay 24, mirror decks) halted twice on DeployRefused; a 400-battle repro of its env found 1337 refusals among 60717 commands, all GAME_OVER at t>=6000. Test on both engines (mask_disagreements empty at t6000, plays offered at t5999); plant caught on both"
+      },
+      {
+        "commit": "77f8cdcc423bbddf08c1437bdcd37f69815a5664",
+        "date": "2026-10-05",
+        "subject": "docs site header: Discord and Ko-fi fade to 0.7 on hover like every other control in the bar (they brightened from 0.85), are drawn in a 1.4rem box so the wide marks stand about as tall as the GitHub icon's round one, and sit 1.2rem apart from each other and from the GitHub mark (owner, 2026-10-05)"
+      },
+      {
+        "commit": "3ffaf1bb76f3bcf15bcfa129407fe3575e56aa2d",
+        "date": "2026-10-04",
+        "subject": "docs site It Doesn't Work: 'too many values to unpack' with an evolved card (the viewer feed and saved-battle playback read three of the engine's four evo columns; training stops with the viewer open, opening a saved battle stops the viewer); RoyaleGym 0.1.16 and RoyaleViser 0.1.2 fix it via pip install --upgrade \"royalegym[all]\" (reproduced on main 3117816 with royalesim 0.1.13: make_env(evolved=['Knight']) -> frame_dict raises at reset)"
+      },
+      {
+        "commit": "6c794e7bbee7f2700ce65161b68eb48789a6dacd",
+        "date": "2026-10-04",
+        "subject": "0.1.16: royalesim>=0.1.13, royalelearn[torch]>=0.5.9, royaleviser[media]>=0.1.2 (the newest of each on PyPI; royaleviser 0.1.2 plays back battles with evolved cards); CHANGELOG 0.1.16 (the viewer feed's four-column evo rows)"
+      },
+      {
+        "commit": "9d953eef35df3b8189adce3bf749b14e713c4c1c",
+        "date": "2026-10-04",
+        "subject": "viser.frame_dict reads the engine's four-column evo rows (card, plays, next evolved, cycle length; RoyaleSim d925aa8 on): it unpacked three, so every battle with an evolved card crashed the live viewer on every published release. The test that covered it built a three-column row by hand; a new test takes the engine's own rows and pins their length at 4 (found by Sim)"
+      }
+    ],
+    "tracked_local_changes": "",
+    "changed_files": [
+      "M\t.github/ISSUE_TEMPLATE/config.yml",
+      "M\t.github/ISSUE_TEMPLATE/question.md",
+      "M\tCHANGELOG.md",
+      "M\tREADME.md",
+      "M\tdocs/guide.md",
+      "M\tdocs/observation-spec.md",
+      "M\tdocs/site/mkdocs.yml",
+      "M\tdocs/site/overrides/home.html",
+      "M\tdocs/site/pages/build-from-source.md",
+      "M\tdocs/site/pages/cheatsheets/rl-terms.md",
+      "M\tdocs/site/pages/clash-royale/cloning-a-bot.md",
+      "M\tdocs/site/pages/clash-royale/configuration-objects/observation-builders.md",
+      "M\tdocs/site/pages/clash-royale/training-an-agent.md",
+      "M\tdocs/site/pages/faq.md",
+      "M\tdocs/site/pages/index.md",
+      "M\tdocs/site/pages/introduction.md",
+      "M\tdocs/site/pages/it-doesnt-work.md",
+      "M\tdocs/site/pages/javascripts/discord-online.js",
+      "M\tdocs/site/pages/llms.txt",
+      "M\tdocs/site/pages/pieces/engine.md",
+      "M\tdocs/site/pages/pieces/learner.md",
+      "M\tdocs/site/pages/quickstart.md",
+      "M\tdocs/site/pages/resources/royaleimitate.md",
+      "M\tdocs/site/pages/stylesheets/extra.css",
+      "M\tdocs/site/pages/troubleshooting.md",
+      "M\tpyproject.toml",
+      "M\troyalegym/action.py",
+      "M\troyalegym/mock_engine.py",
+      "M\troyalegym/obs.py",
+      "M\troyalegym/protocol.py",
+      "M\troyalegym/replay.py",
+      "M\troyalegym/rust_engine.py",
+      "M\troyalegym/viser.py",
+      "M\ttests/test_ability_buttons.py",
+      "A\ttests/test_button_index.py",
+      "A\ttests/test_button_mask_engine.py",
+      "M\ttests/test_overtime_play_stops.py",
+      "M\ttests/test_packaging.py",
+      "M\ttests/test_site_examples.py",
+      "A\ttests/test_unit_ids.py",
+      "M\ttests/test_unit_status_and_projectiles.py",
+      "M\ttests/test_viser.py"
+    ]
+  },
+  "old_runtime_data": {
+    "data\\calibration.json": "18d074b2b33e4efccb426b5862db221c249da9934f32d383909dd078a73c273f",
+    "data\\derived\\cards.json": "3866265aa0bd12e950ed02d2268bb5f0f15602b39ce6fccb5ade1c3000d593d3",
+    "data\\derived\\globals.json": "16fed1f222b4555e571cf3431d13efd2edfd0bf04e3a2042fde07888e11db217",
+    "data\\derived\\arena.json": "7fbe4b0dce373d49ec69f1cdaeb65047b1602ea58dd6ce3a79dfe9be03fe7169"
+  }
+}

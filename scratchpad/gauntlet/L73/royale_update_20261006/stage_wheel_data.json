@@ -1,0 +1,10 @@
+{
+  "command": [
+    "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe",
+    "tools/stage_wheel_data.py"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale-20261006\\RoyaleSim",
+  "exit_code": 0,
+  "output_sha256": "607467dd908a45c18e7f5dbf765c7679451359097707643c9573e83e1312d7ac",
+  "seconds": 0.3385779857635498
+}

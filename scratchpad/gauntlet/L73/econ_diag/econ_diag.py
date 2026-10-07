@@ -35,7 +35,8 @@ from pipeline.eval_gen import GenRows, load_model                      # noqa: E
 from pipeline.opp_elixir_count import card_cost                         # noqa: E402
 
 NPZ = REPO / "icebow/data/pipeline/gen_dataset_v31_public.npz"
-CKPT = REPO / "icebow/data/bench/rl_royale/rseries_r1e31/rseries_r1e31_u0155.pt"
+import os
+CKPT = REPO / os.environ.get("ECON_CKPT", "icebow/data/bench/rl_royale/rseries_r1e31/rseries_r1e31_u0155.pt")
 LABELS = REPO / ".foreman/codex_autopilot/runs/public_labels_full_reconstructed/labels.jsonl"
 DECK_ID = 90
 TAUS = (0.27, 0.35)
@@ -225,7 +226,7 @@ for P in ("1x", "2x", "OT", "all"):
     target = pro_play[m].mean()
     pp = np.where(any_aff[m], p_play[m], 0.0)
     res[f"tau_matching_pro_rate_{P}"] = float(np.quantile(pp, 1 - target))
-(OUT / "results.json").write_text(json.dumps(res, indent=1))
+(OUT / os.environ.get("ECON_OUT", "results.json")).write_text(json.dumps(res, indent=1))
 for k, v in res.items():
     if isinstance(v, dict):
         print(k, {kk: (vv if not isinstance(vv, list) else [round(x, 3) if x is not None else None for x in vv]) for kk, vv in v.items()})

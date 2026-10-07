@@ -3791,6 +3791,17 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   body_identity 18 + obs_contract/hero_dedupe 26 pass. dataset_gen contract -> catalog_spawner_bodies_v2_l73
 >   (expert_context accepts v1|v2). Open: Goblin Brawler / Phoenix egg have no vocab class (keep parent class, form 0);
 >   SIM never produced a Phoenix egg or Skeleton King summons; hero Tombstone 4224/5593-HP body unchanged.
+> * **21:xx -- OVERPLAY SOURCE + NEW ENGINE.** econ_diag on gen_v3.1c (IL, before RL) vs R1e at tau .35 on 38,317 val pro
+>   rows: model PLAY rate 38.6% (IL) / 41.8% (RL) vs pros 31.1%; by phase IL .231/.468/.587, RL .279/.489/.600 vs pros
+>   .205/.373/.446 (1x/2x/OT); played-when-pro-waited IL 20.6%, RL 24.2% -> mostly the IL gate at tau .35 (P is
+>   calibrated; pro-rate tau ~.49/.54/.59), RL adds ~3 pp; worst in 2x/OT. Next: phase-wise tau on the new model.
+>   ENGINE 20261006 BUILT (worker; `research/ext/Royale-20261006`, manifest `L73/royale_update_20261006/`): RoyaleSim
+>   0.1.17 @d088f53 + RoyaleGym 0.1.18 @75adf8b; opt-in `ROYALE_RUNTIME=20261006` in pipeline/royale_runtime.py (unset
+>   = 20261005 exactly; tests also need PYTHONPATH=research/ext/Royale-<id>/runtime). unit_type correct (Witch ->
+>   Skeleton + Witch). test_ability_policy_sim + test_rl_royale 46/46 on both runtimes. maturin.exe now BLOCKED by
+>   Windows Application Control (os error 4551) -> royalesim wheel hand-assembled from cargo's dll (assemble script hashed
+>   in the manifest); owner may clear the block for a standard build. Ability-button `available` semantics changed for
+>   Hero Mega Minion / Tombstone / Goblins (own-ability features differ by runtime; unmeasured).
 > * Hero Ice Wizard crawl BLOCKED on login (Cloudflare cleared; /data/replay needs a RoyaleAPI session; saved tokens
 >   from Aug 30 expired). Owner: `cd /c/Users/benpe/clash-replay-scraper && python crawl_deck.py --deck icebow probe`,
 >   log in in its Chrome window; then rerun `scratchpad/gauntlet/L70/abilities/ice_wizard_hero/crawl_hero_iw.py`

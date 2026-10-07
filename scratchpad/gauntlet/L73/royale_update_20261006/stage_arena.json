@@ -1,0 +1,10 @@
+{
+  "command": [
+    "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe",
+    "tools/extract_arena.py"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale-20261006\\RoyaleSim",
+  "exit_code": 0,
+  "output_sha256": "96b3c2d0cb90099ba889097819b5d15e03ac206186b0d6891f1ea14e599c4bec",
+  "seconds": 0.4258272647857666
+}

@@ -1,0 +1,10 @@
+{
+  "command": [
+    "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe",
+    "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L73\\royale_update_20261006\\assemble_sim_wheel.py"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale-20261006\\RoyaleSim",
+  "exit_code": 0,
+  "output_sha256": "99ce74fe4c62dd182432ad8fca9d4bc9043f9232a6ae7c330d8c8ec1c7c8481e",
+  "seconds": 1.153090238571167
+}

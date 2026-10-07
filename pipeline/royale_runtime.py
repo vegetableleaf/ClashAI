@@ -15,6 +15,16 @@ import sys
 REPO = Path(__file__).resolve().parents[1]
 MANIFEST = REPO / "scratchpad/gauntlet/L71/royale_update_20261005/build_manifest.json"
 RUNTIME = REPO / "research/ext/Royale-20261005/runtime"
+# Opt-in upgrade: ROYALE_RUNTIME=20261006 selects the newer pinned build. Unset = the pin above, unchanged
+# (its stamp carries no runtime_id, so existing checkpoints' recorded stamps still compare equal).
+RUNTIME_ID = None
+_selected = os.environ.get("ROYALE_RUNTIME", "").strip()
+if _selected:
+    if _selected != "20261006":
+        raise RuntimeError(f"Unknown ROYALE_RUNTIME={_selected!r}; only '20261006' is a known opt-in runtime")
+    RUNTIME_ID = _selected
+    MANIFEST = REPO / "scratchpad/gauntlet/L73/royale_update_20261006/build_manifest.json"
+    RUNTIME = REPO / "research/ext/Royale-20261006/runtime"
 _STAMP = None
 
 
@@ -67,6 +77,8 @@ def activate() -> dict:
         _STAMP = dict(schema=1, pins=manifest["pins"], wheels=manifest["wheels"],
                       manifest_sha256=hashlib.sha256(contents).hexdigest(),
                       card_table=RustEngine().card_table_stamp())
+        if RUNTIME_ID:
+            _STAMP["runtime_id"] = RUNTIME_ID
     return json.loads(json.dumps(_STAMP))
 
 

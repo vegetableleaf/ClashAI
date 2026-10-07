@@ -1,0 +1,12 @@
+{
+  "command": [
+    "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe",
+    "tools/extract_cards.py",
+    "--vintage",
+    "2018"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale-20261006\\RoyaleSim",
+  "exit_code": 0,
+  "output_sha256": "550afcb0d63832ce42b8e6ef233318f3f397c35a18098272e145ad7393024d45",
+  "seconds": 0.7463877201080322
+}
