@@ -4049,6 +4049,11 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   both significant -> alternate R2 vs R3 (tau .35), compare with R1e data on disk; one passes + significant -> it
 >   alone, tau .35/.45 alternating; one passes + barely -> alternate it vs R1e at tau .35; neither -> R1e tau .35/.45
 >   alternating. Unspecified case (both pass, both barely) -> lead: alternate the higher-reactive one vs R1e at .35.
+> * **OWNER 10-07 ~13:3x:** morning live test on the MAIN account (11k). Second account ("ClashAI") to be ground
+>   later: R1e reads the deck from memory (124-card vocab; RL was icebow-only, other decks untested); Tesla is the ONLY
+>   2x2 building (owner; others 3x3 -> no offset list needed). Trophy-road "Choose" -> "Choose your reward" (2 cards,
+>   pick at random) handler being built (worker opus, worktree; owner screenshots in the session images dir), unknown
+>   screens in that flow -> stop + Discord screenshot. Tell the owner when the second account is ready to grind.
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
