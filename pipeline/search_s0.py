@@ -678,7 +678,7 @@ def main(argv=None) -> int:
     ap.add_argument("--seeds", default="0:2", help="a:b range or comma list; learner_side = seed %% 2")
     ap.add_argument("--opps", default="gen,s1")
     ap.add_argument("--arms", default=",".join(ARMS))
-    from pipeline.decision_options import add_arguments, config_from_args
+    from pipeline.decision_options import add_arguments, config_from_args, options_from_config
     add_arguments(ap)
     ap.add_argument("--gen", default=GEN_CKPT)
     ap.add_argument("--opp-gen", default=None,
@@ -716,7 +716,7 @@ def main(argv=None) -> int:
                     help="0 = none; else no match starts after this and running matches stop (wall_truncated)")
     a = ap.parse_args(argv)
     decision_cfg = config_from_args(a)
-    decision_active = decision_cfg['card_choice'] != 'argmax' or decision_cfg['spell_aim'] != 'argmax'
+    decision_active = options_from_config(decision_cfg).active
     if decision_active and a.arms != 'plain':
         ap.error('decision options require --arms plain; search experiments are separate')
     if a.ability_policy == "v2" and not a.hero_abilities:
