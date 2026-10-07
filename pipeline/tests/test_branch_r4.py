@@ -567,13 +567,16 @@ class TestPoolCarriesKinds(unittest.TestCase):
 
 
 # ------------------------------------------------------------------------------------------------------
+_REAL_WORKER = RL.branch_worker_main          # captured before the smoke driver patches rl_royale's name
+
+
 def r4_smoke_worker_main(*a, **k):
     """The R4 CPU smoke's branch-worker target (spawn child): fake T1/T2 -- a pair costs R4_SMOKE_SLEEP s and the
     label is test_rl_branch's +-0.5 -- then the real worker (selection by fork_alt on the real model)."""
     import os
     RL.branch_impl = TB.fake_impl
     TB.BranchRunner.sleep_s = float(os.environ.get("R4_SMOKE_SLEEP", "2"))
-    return RL.branch_worker_main(*a, **k)
+    return _REAL_WORKER(*a, **k)
 
 
 if __name__ == "__main__":
