@@ -3768,6 +3768,18 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   P*(V=4) = 0.0196; `live_play --no-iw-pro-gate` turns it off; deploy tick from pilot.public.own_events. Blocks e.g.
 >   presses 0.3 s after deploy (seen live). Distribution shift caveat: live own elixir 4.0 vs pro 6.7 inflates hazard.
 >   Next live start loads it. Spawner fix re-check on pro recordings: Witch phantom plays gone (were 232).
+> * **20:1x -- EXP 1 VERDICT (play threshold, R1e, engine 20261005, `L73/econ_tau/`).** Pre-registered rule: adopt iff
+>   ghost vs .35 >= 0 AND reactive (96) not lower by > 3 AND 2x/OT elixir-at-play +0.5 AND Rocket up.
+>   tau .45: ghost -0.7 [-3.0, +1.7] (FAILS by 2 games of 299; R1e is at 285/299 = near ceiling), reactive 75/96 vs 64
+>   (16+24, 11+24 vs 14+21, 8+21), elixir at play 7.24/6.04/5.69 vs 6.75/5.34/5.13, Rocket .87% vs .70%, pre-log 111
+>   vs 124/274. tau .54: ghost -2.7 [-5.4, -0.3] FAIL. => live stays .35. Threshold does not transfer between checkpoints:
+>   re-test .35 vs .45 on the retrained checkpoint under a rule declared NOW (before results): adopt .45 iff reactive
+>   +3 of 96 or more AND ghost CI includes 0 or better AND elixir at play up (looser ghost term because of the ceiling).
+> * **RETRAIN WITH IDENTITY CORRECTIONS (owner: then stop/restart live with all changes + the new checkpoint).**
+>   Running: (1) fv5 identity implementation for all spawner families, level-aware, Evo Witch kept, hogs, child form 0,
+>   consistent native/SIM/live (`L73/identity_fix/`); (2) engine upgrade build RoyaleSim 0.1.17 + RoyaleGym 0.1.18 ->
+>   research/ext/Royale-20261006, opt-in ROYALE_RUNTIME=20261006 (default unchanged). Then: fv5 dataset rebuild ->
+>   IL (gen_v3.1c recipe, weight 4.0, fv5) -> RL R1e-style on the new engine -> acceptance -> live restart (owner OK).
 > * Hero Ice Wizard crawl BLOCKED on login (Cloudflare cleared; /data/replay needs a RoyaleAPI session; saved tokens
 >   from Aug 30 expired). Owner: `cd /c/Users/benpe/clash-replay-scraper && python crawl_deck.py --deck icebow probe`,
 >   log in in its Chrome window; then rerun `scratchpad/gauntlet/L70/abilities/ice_wizard_hero/crawl_hero_iw.py`
