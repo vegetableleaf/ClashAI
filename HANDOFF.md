@@ -4301,6 +4301,17 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   PPO's Adam -> mostly leftover PPO momentum after the leash was measured, coef ineffective -> own Adam, branch_lr;
 >   (3) buffer rows never aged -> branch_buffer_max_age 20; (4) config: staleness 6 (1x pairs median 522 s / max 1086 s),
 >   band [.2,.55] so HOLD never plays at the root, exclude stalled points. R4 worker told to merge these.
+> * **R2 DONE on the VM (120 updates, 22:5x UTC); acceptance running (`~/eval_r2.sh`: u0080 + u0120, ghost + 48-seed
+>   reactive on census AND ladder, paired vs the VM R1e screen).** R3 VM smoke: branch labels flow (24/24 workers,
+>   k=16 outcome, lag 4.6-7.2 updates at smoke speed), value_phi logs, clean process exit; the smoke's own stop rule
+>   fired on its tiny 8-match screen ("outlived the script" 0.2 vs 0, 1 of 5) -- noise at n=8, the real run screens 234.
+>   **R3 LAUNCHED 18:58 EDT on the VM** (`~/run_r3_vm.sh rseries_r3 max_updates=80`; log
+>   `~/ClashBot/scratchpad/gauntlet/L68/rl/rseries_r3/train.log`). 80 not 120: R1f u0080 beat u0105 (74 vs 65 of 96)
+>   and R1e u0080 ~ u0155 -> the second half added nothing in either run; R2's u0080 vs u0120 will test it for this
+>   recipe. Override file reached the VM with CRLF; the launcher now strips \r (argv verified clean).
+> * **OWNER 18:5x: Log vs Skeleton Barrel drops too early ("does not account for the barrel's drop time after it is
+>   defeated").** Audit worker (opus, `L73/skeleton_barrel/`): live timing vs balloon death / drop / skeleton spawn,
+>   what the model sees (falling barrel as projectile/entity/invisible; fv4 vs fv5 identity), pro timing, counterfactual.
 >   ~15:40" (Q1 card sampling flag, Q2 area-aware spell aim, Q3 GPU A/Bs after R1e, Q4 R1e approval ping, Q5 fixes);
 >   launcher `.foreman/codex_autopilot/codex_loop.sh` (back-to-back runs to 10-06; STOP_LOOP file stops it).
 > * **15:5x -- owner plan: after the R1e verdict the lead starts LIVE on the winner, then hands over to Codex via
