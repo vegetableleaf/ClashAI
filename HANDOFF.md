@@ -4054,6 +4054,10 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   2x2 building (owner; others 3x3 -> no offset list needed). Trophy-road "Choose" -> "Choose your reward" (2 cards,
 >   pick at random) handler being built (worker opus, worktree; owner screenshots in the session images dir), unknown
 >   screens in that flow -> stop + Discord screenshot. Tell the owner when the second account is ready to grind.
+> * **OWNER 10-07 ~14:xx started live himself (second account, R1e, OLD navigator) while the trophy-road handler is
+>   reviewed.** Owner: when the handler is merged, STOP and RESTART the live run (stop_live.sh / STOP file between
+>   matches, then start_live.sh). Data hygiene: second-account matches (low trophies) must be EXCLUDED from R1e's
+>   main-account baseline (use --since/--until windows or the logged trophy totals) in every live_eval comparison.
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
