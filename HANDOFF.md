@@ -3820,6 +3820,15 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   not affordability); Codex v4_rocket upweighting -> more Rocket, ghost -3.68 [-7.02,-0.33]. NOT acted on (one change
 >   per experiment: gen_v3.2 identity first). Candidate next single changes in HANDOFF order: phase-wise tau (econ),
 >   then a Rocket lever measured on pro Rocket rows + reactive, never weight alone.
+> * **OWNER 22:xx -- X-Bow into available counters / abandon bad X-Bows (learned habits, not rules; "measured, not
+>   assumed").** Facts already true: since gen_v3.1 (fv4+, incl. live R1e) the model gets the opponent's PUBLIC cycle
+>   (`opp_cycle`: 8 seen cards, plays_since; >=4 = back in hand) and the public elixir estimate (sc[:,5]). Codex's
+>   explicit hand-reader input (hand-v5, 13:41 block) gave all-action agreement 32,815 vs matched blind control 33,236
+>   of 54,723 (-421) -- weak evidence (1000x128 fine-tune, agreement only, no games). Live HAND_READER_ENABLED=0.
+>   Measurement ticket (same sonnet worker, `L73/xbow_counter/`): empirical counter set from pro fail lift; do pros
+>   avoid offensive X-Bows when a counter is publicly in hand + affordable, and does the live model condition likewise
+>   (teacher-forced); outcome cost within-source; support spend on no-lock X-Bows and the counterpush that follows.
+> * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 
 > ## ⟳ 2026-10-04 00:0x -- OWNER CHANGE OF PLAN (owner bought usage; lead active again)
 > Owner: every Tuesday-deferred item is unblocked now; FULL native re-drive NOW with spell effects + projectile

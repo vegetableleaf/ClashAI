@@ -1,0 +1,897 @@
+{
+ "runtime": {
+  "schema": 1,
+  "pins": {
+   "RoyaleSim": "d088f53162c3d3349f192276621a372826653fb3",
+   "RoyaleGym": "75adf8b396c2d10a85fbaa33a58f6940ca2f53fc"
+  },
+  "wheels": {
+   "royalegym-0.1.18-py3-none-any.whl": "b6fd4bc88bb7506bb088ca55026f9c332a0416a6631098ae5547d491cc67c940",
+   "royalesim-0.1.17-cp310-abi3-win_amd64.whl": "9c5ba7237983b232c11504b8a2c292a893b65205e8d9573f2bc70c82ca340945"
+  },
+  "manifest_sha256": "94f52410de33d903d7873a391ef2887d7dbcae8e2c6b3f7b27228174fdf5bdaa",
+  "card_table": {
+   "cards_json_fnv1a64": "21935265e615e337",
+   "cards_vintage": "15.535.29 client (2026, LIVE build family)",
+   "cards_json_hash_source": "embedded"
+  },
+  "runtime_id": "20261006"
+ },
+ "families": {
+  "Witch": {
+   "loaded_form": 0,
+   "issued": 4,
+   "bodies": [
+    {
+     "name": "Witch",
+     "max_hp": 81,
+     "status_flags": 0,
+     "native_role": "child",
+     "native_class": "skeletons",
+     "fv4": {
+      "witch/f0": 919
+     },
+     "fv5": {
+      "skeletons/f0": 919
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "Witch",
+     "max_hp": 839,
+     "status_flags": 0,
+     "native_role": "parent",
+     "native_class": "witch",
+     "fv4": {
+      "witch/f0": 265
+     },
+     "fv5": {
+      "witch/f0": 265
+     },
+     "fv5_matches_native": true
+    }
+   ],
+   "unnamed_sim_bodies": {}
+  },
+  "Witch@evolution": {
+   "loaded_form": 1,
+   "issued": 4,
+   "bodies": [
+    {
+     "name": "Witch",
+     "max_hp": 81,
+     "status_flags": 0,
+     "native_role": "child",
+     "native_class": "skeletons",
+     "fv4": {
+      "witch/f0": 691
+     },
+     "fv5": {
+      "skeletons/f0": 691
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "Witch",
+     "max_hp": 839,
+     "status_flags": 0,
+     "native_role": "parent",
+     "native_class": "witch",
+     "fv4": {
+      "witch/f0": 74
+     },
+     "fv5": {
+      "witch/f0": 74
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "Witch",
+     "max_hp": 839,
+     "status_flags": 8,
+     "native_role": "parent",
+     "native_class": "witch",
+     "fv4": {
+      "witch/f1": 126
+     },
+     "fv5": {
+      "witch/f1": 126
+     },
+     "fv5_matches_native": true
+    }
+   ],
+   "unnamed_sim_bodies": {}
+  },
+  "DarkWitch": {
+   "loaded_form": 0,
+   "issued": 4,
+   "bodies": [
+    {
+     "name": "DarkWitch",
+     "max_hp": 81,
+     "status_flags": 0,
+     "native_role": "child",
+     "native_class": "bats",
+     "fv4": {
+      "night_witch/f0": 480
+     },
+     "fv5": {
+      "bats/f0": 480
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "DarkWitch",
+     "max_hp": 906,
+     "status_flags": 0,
+     "native_role": "parent",
+     "native_class": "night_witch",
+     "fv4": {
+      "night_witch/f0": 231
+     },
+     "fv5": {
+      "night_witch/f0": 231
+     },
+     "fv5_matches_native": true
+    }
+   ],
+   "unnamed_sim_bodies": {}
+  },
+  "FirespiritHut": {
+   "loaded_form": 0,
+   "issued": 4,
+   "bodies": [
+    {
+     "name": "FirespiritHut",
+     "max_hp": 215,
+     "status_flags": 0,
+     "native_role": "child",
+     "native_class": "fire_spirit",
+     "fv4": {
+      "furnace/f0": 58
+     },
+     "fv5": {
+      "fire_spirit/f0": 58
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "FirespiritHut",
+     "max_hp": 727,
+     "status_flags": 0,
+     "native_role": "parent",
+     "native_class": "furnace",
+     "fv4": {
+      "furnace/f0": 192
+     },
+     "fv5": {
+      "furnace/f0": 192
+     },
+     "fv5_matches_native": true
+    }
+   ],
+   "unnamed_sim_bodies": {}
+  },
+  "FirespiritHut@evolution": {
+   "loaded_form": 1,
+   "issued": 4,
+   "bodies": [
+    {
+     "name": "FirespiritHut",
+     "max_hp": 215,
+     "status_flags": 0,
+     "native_role": "child",
+     "native_class": "fire_spirit",
+     "fv4": {
+      "furnace/f0": 67
+     },
+     "fv5": {
+      "fire_spirit/f0": 67
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "FirespiritHut",
+     "max_hp": 727,
+     "status_flags": 0,
+     "native_role": "parent",
+     "native_class": "furnace",
+     "fv4": {
+      "furnace/f0": 129
+     },
+     "fv5": {
+      "furnace/f0": 129
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "FirespiritHut",
+     "max_hp": 727,
+     "status_flags": 8,
+     "native_role": "parent",
+     "native_class": "furnace",
+     "fv4": {
+      "furnace/f1": 50
+     },
+     "fv5": {
+      "furnace/f1": 50
+     },
+     "fv5_matches_native": true
+    }
+   ],
+   "unnamed_sim_bodies": {}
+  },
+  "Tombstone": {
+   "loaded_form": 0,
+   "issued": 5,
+   "bodies": [
+    {
+     "name": "Tombstone",
+     "max_hp": 81,
+     "status_flags": 0,
+     "native_role": "child",
+     "native_class": "skeletons",
+     "fv4": {
+      "tombstone/f0": 1157
+     },
+     "fv5": {
+      "skeletons/f0": 1157
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "Tombstone",
+     "max_hp": 529,
+     "status_flags": 0,
+     "native_role": "parent",
+     "native_class": "tombstone",
+     "fv4": {
+      "tombstone/f0": 139
+     },
+     "fv5": {
+      "tombstone/f0": 139
+     },
+     "fv5_matches_native": true
+    }
+   ],
+   "unnamed_sim_bodies": {}
+  },
+  "Tombstone@hero": {
+   "loaded_form": 2,
+   "issued": 5,
+   "bodies": [
+    {
+     "name": "Tombstone",
+     "max_hp": 81,
+     "status_flags": 0,
+     "native_role": "child",
+     "native_class": "skeletons",
+     "fv4": {
+      "tombstone/f0": 1032
+     },
+     "fv5": {
+      "skeletons/f0": 1032
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "Tombstone",
+     "max_hp": 529,
+     "status_flags": 16,
+     "native_role": "parent",
+     "native_class": "tombstone",
+     "fv4": {
+      "tombstone/f2": 147
+     },
+     "fv5": {
+      "tombstone/f2": 147
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "Tombstone",
+     "max_hp": 529,
+     "status_flags": 18,
+     "native_role": "parent",
+     "native_class": "tombstone",
+     "fv4": {
+      "tombstone/f2": 187
+     },
+     "fv5": {
+      "tombstone/f2": 187
+     },
+     "fv5_matches_native": true
+    }
+   ],
+   "unnamed_sim_bodies": {}
+  },
+  "GoblinHut": {
+   "loaded_form": 0,
+   "issued": 4,
+   "bodies": [
+    {
+     "name": "GoblinHut",
+     "max_hp": 133,
+     "status_flags": 0,
+     "native_role": "child",
+     "native_class": "spear_goblins",
+     "fv4": {
+      "goblin_hut/f0": 89
+     },
+     "fv5": {
+      "spear_goblins/f0": 89
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "GoblinHut",
+     "max_hp": 1180,
+     "status_flags": 0,
+     "native_role": "parent",
+     "native_class": "goblin_hut",
+     "fv4": {
+      "goblin_hut/f0": 336
+     },
+     "fv5": {
+      "goblin_hut/f0": 336
+     },
+     "fv5_matches_native": true
+    }
+   ],
+   "unnamed_sim_bodies": {}
+  },
+  "BarbarianHut": {
+   "loaded_form": 0,
+   "issued": 4,
+   "bodies": [
+    {
+     "name": "BarbarianHut",
+     "max_hp": 716,
+     "status_flags": 0,
+     "native_role": "child",
+     "native_class": "barbarians",
+     "fv4": {
+      "barbarian_hut/f0": 1075
+     },
+     "fv5": {
+      "barbarians/f0": 1075
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "BarbarianHut",
+     "max_hp": 1164,
+     "status_flags": 0,
+     "native_role": "parent",
+     "native_class": "barbarian_hut",
+     "fv4": {
+      "barbarian_hut/f0": 232
+     },
+     "fv5": {
+      "barbarian_hut/f0": 232
+     },
+     "fv5_matches_native": true
+    }
+   ],
+   "unnamed_sim_bodies": {}
+  },
+  "Graveyard": {
+   "loaded_form": 0,
+   "issued": 4,
+   "bodies": [
+    {
+     "name": "Graveyard",
+     "max_hp": 81,
+     "status_flags": 0,
+     "native_role": "child",
+     "native_class": "skeletons",
+     "fv4": {
+      "skeletons/f0": 244
+     },
+     "fv5": {
+      "skeletons/f0": 244
+     },
+     "fv5_matches_native": true
+    }
+   ],
+   "unnamed_sim_bodies": {}
+  },
+  "GoblinDrill": {
+   "loaded_form": 0,
+   "issued": 4,
+   "bodies": [
+    {
+     "name": "GoblinDrill",
+     "max_hp": 202,
+     "status_flags": 0,
+     "native_role": "child",
+     "native_class": "goblins",
+     "fv4": {
+      "goblin_drill/f0": 98
+     },
+     "fv5": {
+      "goblins/f0": 98
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "GoblinDrill",
+     "max_hp": 1313,
+     "status_flags": 0,
+     "native_role": "parent",
+     "native_class": "goblin_drill",
+     "fv4": {
+      "goblin_drill/f0": 63
+     },
+     "fv5": {
+      "goblin_drill/f0": 63
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "GoblinDrill",
+     "max_hp": 2560,
+     "status_flags": 1,
+     "native_role": "parent",
+     "native_class": "goblin_drill",
+     "fv4": {
+      "goblin_drill/f0": 56
+     },
+     "fv5": {
+      "goblin_drill/f0": 56
+     },
+     "fv5_matches_native": true
+    }
+   ],
+   "unnamed_sim_bodies": {}
+  },
+  "GoblinDrill@evolution": {
+   "loaded_form": 1,
+   "issued": 4,
+   "bodies": [
+    {
+     "name": "GoblinDrill",
+     "max_hp": 202,
+     "status_flags": 0,
+     "native_role": "child",
+     "native_class": "goblins",
+     "fv4": {
+      "goblin_drill/f0": 118
+     },
+     "fv5": {
+      "goblins/f0": 118
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "GoblinDrill",
+     "max_hp": 1313,
+     "status_flags": 0,
+     "native_role": "parent",
+     "native_class": "goblin_drill",
+     "fv4": {
+      "goblin_drill/f0": 51
+     },
+     "fv5": {
+      "goblin_drill/f0": 51
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "GoblinDrill",
+     "max_hp": 1313,
+     "status_flags": 8,
+     "native_role": "parent",
+     "native_class": "goblin_drill",
+     "fv4": {
+      "goblin_drill/f1": 15
+     },
+     "fv5": {
+      "goblin_drill/f1": 15
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "GoblinDrill",
+     "max_hp": 1313,
+     "status_flags": 12,
+     "native_role": "parent",
+     "native_class": "goblin_drill",
+     "fv4": {
+      "goblin_drill/f1": 15
+     },
+     "fv5": {
+      "goblin_drill/f1": 15
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "GoblinDrill",
+     "max_hp": 2560,
+     "status_flags": 1,
+     "native_role": "parent",
+     "native_class": "goblin_drill",
+     "fv4": {
+      "goblin_drill/f0": 42
+     },
+     "fv5": {
+      "goblin_drill/f0": 42
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "GoblinDrill",
+     "max_hp": 2560,
+     "status_flags": 9,
+     "native_role": "parent",
+     "native_class": "goblin_drill",
+     "fv4": {
+      "goblin_drill/f1": 14
+     },
+     "fv5": {
+      "goblin_drill/f1": 14
+     },
+     "fv5_matches_native": true
+    }
+   ],
+   "unnamed_sim_bodies": {}
+  },
+  "SkeletonBalloon": {
+   "loaded_form": 0,
+   "issued": 5,
+   "bodies": [
+    {
+     "name": "SkeletonBalloon",
+     "max_hp": 81,
+     "status_flags": 0,
+     "native_role": "child",
+     "native_class": "skeletons",
+     "fv4": {
+      "skeleton_barrel/f0": 477
+     },
+     "fv5": {
+      "skeletons/f0": 477
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "SkeletonBalloon",
+     "max_hp": 532,
+     "status_flags": 0,
+     "native_role": "parent",
+     "native_class": "skeleton_barrel",
+     "fv4": {
+      "skeleton_barrel/f0": 181
+     },
+     "fv5": {
+      "skeleton_barrel/f0": 181
+     },
+     "fv5_matches_native": true
+    }
+   ],
+   "unnamed_sim_bodies": {}
+  },
+  "SkeletonBalloon@evolution": {
+   "loaded_form": 1,
+   "issued": 5,
+   "bodies": [
+    {
+     "name": "SkeletonBalloon",
+     "max_hp": 81,
+     "status_flags": 0,
+     "native_role": "child",
+     "native_class": "skeletons",
+     "fv4": {
+      "skeleton_barrel/f0": 489
+     },
+     "fv5": {
+      "skeletons/f0": 489
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "SkeletonBalloon",
+     "max_hp": 532,
+     "status_flags": 0,
+     "native_role": "parent",
+     "native_class": "skeleton_barrel",
+     "fv4": {
+      "skeleton_barrel/f0": 137
+     },
+     "fv5": {
+      "skeleton_barrel/f0": 137
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "SkeletonBalloon",
+     "max_hp": 665,
+     "status_flags": 8,
+     "native_role": "parent",
+     "native_class": "skeleton_barrel",
+     "fv4": {
+      "skeleton_barrel/f1": 45
+     },
+     "fv5": {
+      "skeleton_barrel/f1": 45
+     },
+     "fv5_matches_native": true
+    }
+   ],
+   "unnamed_sim_bodies": {}
+  },
+  "GoblinGiant": {
+   "loaded_form": 0,
+   "issued": 4,
+   "bodies": [
+    {
+     "name": "GoblinGiant",
+     "max_hp": 133,
+     "status_flags": 0,
+     "native_role": "child",
+     "native_class": "spear_goblins",
+     "fv4": {
+      "goblin_giant/f0": 503
+     },
+     "fv5": {
+      "spear_goblins/f0": 503
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "GoblinGiant",
+     "max_hp": 3110,
+     "status_flags": 0,
+     "native_role": "parent",
+     "native_class": "goblin_giant",
+     "fv4": {
+      "goblin_giant/f0": 233
+     },
+     "fv5": {
+      "goblin_giant/f0": 233
+     },
+     "fv5_matches_native": true
+    }
+   ],
+   "unnamed_sim_bodies": {}
+  },
+  "GoblinGiant@evolution": {
+   "loaded_form": 1,
+   "issued": 4,
+   "bodies": [
+    {
+     "name": "GoblinGiant",
+     "max_hp": 133,
+     "status_flags": 0,
+     "native_role": "child",
+     "native_class": "spear_goblins",
+     "fv4": {
+      "goblin_giant/f0": 514
+     },
+     "fv5": {
+      "spear_goblins/f0": 514
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "GoblinGiant",
+     "max_hp": 202,
+     "status_flags": 0,
+     "native_role": "child",
+     "native_class": "goblins",
+     "fv4": {
+      "goblin_giant/f0": 14
+     },
+     "fv5": {
+      "goblins/f0": 14
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "GoblinGiant",
+     "max_hp": 3110,
+     "status_flags": 0,
+     "native_role": "parent",
+     "native_class": "goblin_giant",
+     "fv4": {
+      "goblin_giant/f0": 147
+     },
+     "fv5": {
+      "goblin_giant/f0": 147
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "GoblinGiant",
+     "max_hp": 3110,
+     "status_flags": 8,
+     "native_role": "parent",
+     "native_class": "goblin_giant",
+     "fv4": {
+      "goblin_giant/f1": 85
+     },
+     "fv5": {
+      "goblin_giant/f1": 85
+     },
+     "fv5_matches_native": true
+    }
+   ],
+   "unnamed_sim_bodies": {}
+  },
+  "GoblinCage": {
+   "loaded_form": 0,
+   "issued": 4,
+   "bodies": [
+    {
+     "name": "GoblinCage",
+     "max_hp": 780,
+     "status_flags": 0,
+     "native_role": "parent",
+     "native_class": "goblin_cage",
+     "fv4": {
+      "goblin_cage/f0": 92
+     },
+     "fv5": {
+      "goblin_cage/f0": 92
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "GoblinCage",
+     "max_hp": 1121,
+     "status_flags": 0,
+     "native_role": "child_no_class",
+     "native_class": "goblin_cage",
+     "fv4": {
+      "goblin_cage/f0": 200
+     },
+     "fv5": {
+      "goblin_cage/f0": 200
+     },
+     "fv5_matches_native": true
+    }
+   ],
+   "unnamed_sim_bodies": {}
+  },
+  "GoblinCage@evolution": {
+   "loaded_form": 1,
+   "issued": 4,
+   "bodies": [
+    {
+     "name": "GoblinCage",
+     "max_hp": 780,
+     "status_flags": 0,
+     "native_role": "parent",
+     "native_class": "goblin_cage",
+     "fv4": {
+      "goblin_cage/f0": 79
+     },
+     "fv5": {
+      "goblin_cage/f0": 79
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "GoblinCage",
+     "max_hp": 780,
+     "status_flags": 8,
+     "native_role": "parent",
+     "native_class": "goblin_cage",
+     "fv4": {
+      "goblin_cage/f1": 13
+     },
+     "fv5": {
+      "goblin_cage/f1": 13
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "GoblinCage",
+     "max_hp": 1080,
+     "status_flags": 0,
+     "native_role": "child_no_class",
+     "native_class": "goblin_cage",
+     "fv4": {
+      "goblin_cage/f0": 57
+     },
+     "fv5": {
+      "goblin_cage/f0": 57
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "GoblinCage",
+     "max_hp": 1121,
+     "status_flags": 0,
+     "native_role": "child_no_class",
+     "native_class": "goblin_cage",
+     "fv4": {
+      "goblin_cage/f0": 139
+     },
+     "fv5": {
+      "goblin_cage/f0": 139
+     },
+     "fv5_matches_native": true
+    }
+   ],
+   "unnamed_sim_bodies": {}
+  },
+  "Phoenix": {
+   "loaded_form": 0,
+   "issued": 4,
+   "bodies": [
+    {
+     "name": "Phoenix",
+     "max_hp": 1052,
+     "status_flags": 0,
+     "native_role": "parent",
+     "native_class": "phoenix",
+     "fv4": {
+      "phoenix/f0": 274
+     },
+     "fv5": {
+      "phoenix/f0": 274
+     },
+     "fv5_matches_native": true
+    }
+   ],
+   "unnamed_sim_bodies": {}
+  },
+  "WitchMother": {
+   "loaded_form": 0,
+   "issued": 4,
+   "bodies": [
+    {
+     "name": "WitchMother",
+     "max_hp": 529,
+     "status_flags": 0,
+     "native_role": "parent",
+     "native_class": "mother_witch",
+     "fv4": {
+      "mother_witch/f0": 241
+     },
+     "fv5": {
+      "mother_witch/f0": 241
+     },
+     "fv5_matches_native": true
+    },
+    {
+     "name": "WitchMother",
+     "max_hp": 629,
+     "status_flags": 0,
+     "native_role": "child",
+     "native_class": "mother_witch_hog",
+     "fv4": {
+      "mother_witch/f0": 49
+     },
+     "fv5": {
+      "mother_witch_hog/f0": 49
+     },
+     "fv5_matches_native": true
+    }
+   ],
+   "unnamed_sim_bodies": {}
+  },
+  "SkeletonKing": {
+   "loaded_form": 0,
+   "issued": 4,
+   "bodies": [
+    {
+     "name": "SkeletonKing",
+     "max_hp": 2298,
+     "status_flags": 16,
+     "native_role": "parent",
+     "native_class": "skeleton_king",
+     "fv4": {
+      "skeleton_king/f2": 309
+     },
+     "fv5": {
+      "skeleton_king/f2": 309
+     },
+     "fv5_matches_native": true
+    }
+   ],
+   "unnamed_sim_bodies": {}
+  }
+ }
+}
