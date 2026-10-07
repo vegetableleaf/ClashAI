@@ -4112,6 +4112,14 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   run if its curve is still rising; (4) bigger branching label-quality check (k=32, 300+ points); (5) Golem /
 >   heavy-tank 1x-collapse analysis vs pro icebow play. Laptop: code-only work (branching for Rocket-vs-top-card and
 >   X-Bow side for R4). Passing candidates wait for the next live slot after the 24 h cap.
+> * **CHECKPOINT ALTERNATION MERGED** (`live_play.py --ckpt-alternate A B`, state `L70/live/ckpt_alternate.json`).
+>   Blind verifier (opus) PASS_WITH_NOTES: default path identical; per-match pilot swap complete; fv4 + fv5 pilots side by
+>   side identical to each alone on 400 real reader frames. MORNING RULES: (1) `unset CKPT` before start_live (CKPT +
+>   --ckpt-alternate is refused -> 10 supervisor restarts + stale Discord reasons); (2) delete the alternate state file
+>   for a NEW pair (the counter is never reset); (3) a match that never starts still consumes an arm (same as tau);
+>   (4) start_live prints CKPT_OVERRIDE even when alternating (cosmetic); check the pair with
+>   `live_play.py --ckpt-alternate A B --check`. Command: `LIVE_ARGS="--ckpt-alternate <abs A.pt> <abs B.pt>" bash
+>   scratchpad/gauntlet/L70/live/start_live.sh`.
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
