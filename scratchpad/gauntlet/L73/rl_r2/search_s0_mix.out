@@ -1,0 +1,32 @@
+scratchpad/gauntlet/L70/pool_forms/loadable_decks.json
+  Hog (incl. Royal Hogs)         dist  15.8%  seeds0:48 first draw  4/48
+  Ram/Bridge spam                dist  14.5%  seeds0:48 first draw  7/48
+  Giant (incl. Goblin/Electro)   dist  13.4%  seeds0:48 first draw  3/48
+  Golem                          dist  10.2%  seeds0:48 first draw  5/48
+  X-Bow/Mortar                   dist   7.9%  seeds0:48 first draw  1/48
+  Balloon                        dist   7.5%  seeds0:48 first draw  3/48
+  Spawners (Witch/huts)          dist   6.1%  seeds0:48 first draw  6/48
+  Graveyard                      dist   5.5%  seeds0:48 first draw  3/48
+  Lava Hound                     dist   4.5%  seeds0:48 first draw  2/48
+  Other/no clear wincon          dist   4.1%  seeds0:48 first draw  5/48
+  Royal Giant                    dist   3.5%  seeds0:48 first draw  4/48
+  Bait                           dist   3.4%  seeds0:48 first draw  2/48
+  Miner                          dist   3.1%  seeds0:48 first draw  3/48
+  Mega Knight                    dist   0.6%  seeds0:48 first draw  0/48
+  traits (dist): {'has Witch/Night Witch': np.float64(10.2), 'heavy tank': np.float64(44.9), 'MegaKnight card': np.float64(3.3)}
+scratchpad/gauntlet/L73/rl_r2/loadable_decks_ladder.json
+  Hog (incl. Royal Hogs)         dist  16.4%  seeds0:48 first draw  9/48
+  Golem                          dist  14.6%  seeds0:48 first draw  4/48
+  Giant (incl. Goblin/Electro)   dist  13.5%  seeds0:48 first draw  8/48
+  Ram/Bridge spam                dist  12.9%  seeds0:48 first draw 10/48
+  Other/no clear wincon          dist   6.9%  seeds0:48 first draw  4/48
+  Spawners (Witch/huts)          dist   6.7%  seeds0:48 first draw  1/48
+  Balloon                        dist   6.5%  seeds0:48 first draw  0/48
+  Graveyard                      dist   4.4%  seeds0:48 first draw  2/48
+  Royal Giant                    dist   4.2%  seeds0:48 first draw  1/48
+  X-Bow/Mortar                   dist   3.8%  seeds0:48 first draw  4/48
+  Lava Hound                     dist   2.9%  seeds0:48 first draw  1/48
+  Miner                          dist   2.8%  seeds0:48 first draw  0/48
+  Bait                           dist   2.6%  seeds0:48 first draw  2/48
+  Mega Knight                    dist   2.0%  seeds0:48 first draw  2/48
+  traits (dist): {'has Witch/Night Witch': np.float64(13.8), 'heavy tank': np.float64(48.8), 'MegaKnight card': np.float64(4.5)}

@@ -3993,6 +3993,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   branch `opt3-branching`, contract `scratchpad/gauntlet/L73/opt3/INTERFACE.md`): T1 fork + paired rollouts
 >   (pipeline/branching.py, reuses search_s0 fork_into), T2 scoring + validation gate (pipeline/branch_score.py,
 >   L73/opt3/validate.py), T3 rl_royale integration (opt-in, default byte-identical). Blind verify before R3.
+> * **R2 PREP DONE (worker opus, `L73/rl_r2/`):** ladder deck file (same 1,000 decks, `sides` = target weight,
+>   class shares within 1e-4 of target; Golem 18.3% and Mega Knight 4.4% incl. x1.5; X-Bow/Mortar incl. mirror 4.4%,
+>   icebow mirror 4.3% vs 34% in R1e training). tau/T are one knob for learner, opponents and loss (verified in code +
+>   dry run). run_r2.sh (bash array for the league_mix dict) waits for `L73/rl_r2/GO`; acceptance re-runs R1e at 48
+>   seeds on both deck files. Dry validation through Learner.__init__ PASS; a real 1-update smoke is owed (CPU was
+>   saturated). search_s0 --census hard-codes alpha .5/floor .5 (flattens the ladder mix in acceptance games). Witch
+>   trait realized 16.9% vs live 23.4% -> follow-up raking over class x trait margins requested.
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
