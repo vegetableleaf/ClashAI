@@ -3886,6 +3886,16 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   vs a same-script control): adopt iff reactive total >= control +3 of 96 AND ghost ci_hi >= 0 AND behaviour toward
 >   pros (tau_phase: 2x/OT elixir at play up; xbow_class: defensive share up). If tau .45 (chain2) and B both pass,
 >   keep the higher reactive total (tie: higher ghost delta). Two adopted options -> one combined confirmation run.
+> * **OWNER 23:0x (going to sleep): keep training + live wiring overnight; deploy a checkpoint ONLY if "genuinely
+>   improved over R1e in the metrics we care about", then evaluate it live (win rate, damage dealt/taken, crowns
+>   taken/lost, strong/weak matchups; preserve strengths, fix weaknesses). Goal: 11k -> 14k trophies unaided. Pause
+>   GPU-heavy jobs if battery < 10%.** Lead's pre-registered bar (stricter than chain2's "not worse"): deploy iff, on
+>   engine 20261006 vs R1e, reactive total >= R1e + 3 of 96 AND ghost ci_hi >= 0 AND >= 1 measured behaviour gap moves
+>   toward pros (Rocket, elixir at play, barrel lane) with none moving away. Live REVERT to R1e if after >= 40 matches
+>   the win-rate 95% CI upper bound is below R1e's live 50%. Battery guard RUNNING (`L73/battery_guard.py`, log
+>   battery_guard.log): suspends training/sim python below 10% on battery, resumes at 25% or plugged in, live STOP below
+>   5%; AC idle-sleep is "never". Overnight workers: live evaluation report (`L73/live_eval/`, sonnet) and live wiring
+>   for fv5/fv6 + decode options (worktree, opus).
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
