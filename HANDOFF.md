@@ -4074,6 +4074,12 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   royalegym 0.1.18 + data-hash parity vs the pinned Windows runtime, git-archive code, minimal untracked data (NO
 >   secrets), R2 recipe with CPU actors/learner at several actor/thread counts vs laptop (roll 195-250 s + upd 45-70 s
 >   per 64 matches).
+> * **OWNER 10-07 ~16:1x:** owner switches MuMu back to the MAIN account before sleeping (morning test). Approved:
+>   move the rest of R2 to the VM (resume from its latest checkpoint) once the VM verdict shows it faster. Notify the
+>   owner when the VM verdict lands. Lead's VM queue proposal: all sim evaluations (ghost screens, reactive games),
+>   option-3 branch scoring/validation, dataset builds, heavy offline teacher-forced analyses; keep on the laptop:
+>   live play, GPU learning (unless the VM CPU learner is fast enough), IL training (GPU); stop the VM when its queue
+>   is empty (credits).
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
