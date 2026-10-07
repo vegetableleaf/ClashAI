@@ -3840,6 +3840,12 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   goes with LESS own damage in 30 s (-1.1 pp [-1.9,-0.3]); bot spends the same as pros (-0.31 [-1.13,+0.43]).
 >   Parked candidate (one change at a time): an explicit public "opponent card known in hand + affordable" input, or
 >   RL against opponents that hold counters; small expected effect (~5% of offensive X-Bows).
+> * **gen_v3.2 TRAINING since 21:27** (chain_b.sh after the context-fit fv5 fix; ~55 min/epoch x 4 -> ~01:15 10-07).
+>   **chain2 RUNNING** (`L73/chain2/chain2.sh`, rules pre-registered in its header, log chain2.log): branch on v3.2 ->
+>   counterfactual -> fresh baselines on engine 20261006 (R1e, 3.1c, 3.2, 3.2+branch; ghost tau .35 + 96 reactive) ->
+>   identity/branch rules -> RL R1f (rseries_r1f32) -> acceptance vs R1e + tau .45 test -> Discord. ETA ~11:00 10-07.
+>   Deploy (owner-authorized restart with the new checkpoint): R1f ckpt iff ghost vs R1e ci_hi >= 0 AND reactive total
+>   >= R1e - 3. Turtle/Rocket-switch re-test (owner pushback; icebow-only, time-matched) running: `L73/xbow_turtle/`.
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
