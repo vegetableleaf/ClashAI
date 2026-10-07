@@ -3935,6 +3935,16 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   0 false reads on 169 other screens, ~1 ms per read. Sign from the existing WINNER flag. Events: outcome gains
 >   trophies_delta/trophies_abs/trophy_ms; new event "trophies" with trophies_total. Opt-out --no-trophy-log (5-line
 >   live_play.py edit). Account total read 00:2x 10-07: **11,222**. Blind verifier (opus): trophies PASS_WITH_NOTES (nav taps/events identical old vs new on 5 harness sequences; opt-out byte-identical; accuracy in-sample, results digits 4-7 never seen); hero dedupe PASS_WITH_NOTES (12,740 shuffled groups: heroes always kept, cubes never); its defect 1 (radius fallback also fired with categories present) fixed by the lead @ee97600.
+> * **10-07 ~09:40 OWNER STOPPED R1f** (learner + 5 actors killed by exact PID; last checkpoint u0105). Owner asks
+>   whether RL helps at all and wants the RL design rethought. Measured answer: R1e vs its base gen_v3.1c on engine
+>   20261006 ghost +4.35 pp [+1.34,+7.69]; reactive 64 vs 57/96 (paired discordant 20 vs 13, sign test p ~ .30);
+>   R1e's own u0080 ~ u0155. Live win rate cannot separate models: every checkpoint sits ~50% (R1 51.2% n=303,
+>   league1c 50.7% n=201, R1e 50.6% n=231, 3.1b 50.0% n=18, 3.1a 45.9% n=37) because ladder matchmaking equalises at
+>   the held trophy level -> compare by trophies or interleaved A/B. RL facts from config: rollouts sample at T=0.5,
+>   deploy is greedy; reward terminal win/loss, shaping off (tower_crown implemented); opponents = learner snapshots
+>   + init + S1 (self-play); KL ~.05 vs target .10 (leash not binding -> weak signal). chain2b running (R1f u0080/u0105
+>   vs R1e + tau .45); RL diagnosis worker (`L73/rl_diag/`) measuring: does the sim punish overspending like live,
+>   are sim opponents competent in the live-weak matchups, does RL's soft change survive argmax, signal size.
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
