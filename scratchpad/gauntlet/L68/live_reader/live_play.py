@@ -114,7 +114,7 @@ def wait_inputs_quiet(quiet_s: float | None = None) -> None:
         time.sleep(wait)
 
 
-EVEN_BUILDINGS = {"Tesla"}   # ponytail: the icebow deck's only 2x2 building; add Cannon etc. for other decks
+EVEN_BUILDINGS = {"Tesla"}   # owner 2026-10-07: Tesla is the ONLY 2x2 building; all others are 3x3 -> no more offsets
 
 
 class Layout:
@@ -352,6 +352,8 @@ def main() -> int:
                         # owner 2026-10-06: restore the Discord pause alert (Codex had removed it)
                         subprocess.run([sys.executable, str(REPO / "scratchpad/gauntlet/L69/discord/post.py"), str(msg)],
                                        capture_output=True, timeout=60)
+                    elif why.startswith("TROPHY_ROAD_ALERT") and a.stop_file:   # the nav already posted its screenshot:
+                        a.stop_file.touch()                     # pause, don't let the supervisor retry an unknown screen
                     break
                 pilot.reset_match()                      # same loaded model, fresh history / opp counter
             record, caption, prev_clip = not a.no_record, None, last_clip

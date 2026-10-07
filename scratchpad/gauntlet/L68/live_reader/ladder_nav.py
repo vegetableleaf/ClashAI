@@ -7,6 +7,12 @@ Screens (template matching on `adb exec-out screencap` frames vs scratchpad/gaun
   popup_x  any popup with the red X close button (promos like "Upgrade your Pass Royale" -- never its GO! button).
   modes    the Game Modes sheet (opened by a stray tap) -> its close arrow.
   trophy_road  the Trophy Road rewards screen the game opens at a milestone: Collect (free reward), then its OK.
+           A green "Choose" button (a pick-one-of-two card reward, owner 2026-10-07) is tapped too -> choose_reward.
+  choose_reward  "Choose your reward": two card tiles side by side -> tap ONE at random (seeded, logged). From the
+           Choose tap until the next known screen, an unrecognised screen is never tapped through: after
+           FLOW_UNKNOWN_S the run STOPs with a TROPHY_ROAD_ALERT and a Discord alert carrying the screenshot.
+           Both are colour/shape features in RELATIVE coordinates (built from the owner's phone screenshots, a
+           different resolution than MuMu): see reward_cards() / green_buttons() / blue_ok().
   conn_lost  "Connection lost" dialog: "Another device is connecting" -> STOP the run (never kick the owner's phone);
            any other connection loss -> RELOAD.
   loading  the Clash Royale logo screen (app start / battle loading).
@@ -24,8 +30,11 @@ through at one fixed neutral point (reward / chest screens are "tap to continue"
 from __future__ import annotations
 
 import json
+import random
 import subprocess
 import time
+import urllib.request
+import uuid
 from pathlib import Path
 
 import cv2
@@ -45,11 +54,15 @@ TARGETS = {                                     # rectangle the tap point must l
     "tap_through": (440, 440, 460, 460),
     "collect": (0, 150, 900, 1480),             # Trophy Road: claim a free reward (green Collect)
     "bottom_ok": (340, 1490, 560, 1595),        # Trophy Road: close (blue OK in the bottom bar)
+    "choose": (0, 150, 900, 1480),              # Trophy Road: green Choose (a pick-one-of-two card reward)
+    "reward_card": (0, 60, 900, 1100),          # "Choose your reward": one of the two card tiles
     "reload": (100, 700, 400, 1100),            # "Connection lost" dialog, NOT the another-device kind        # neutral point: top-centre art on every popup seen so far
 }
 FORBIDDEN = {"shop_tab": (0, 1440, 170, 1600)}
 SWIPES = {"tr_scroll": (450, 1150, 450, 550, 700)}   # Trophy Road: slow drag up = show LOWER (already reached) rewards
 TAP_THROUGH_PT = (450, 450)
+ALERT = "TROPHY_ROAD_ALERT"                     # stop-reason prefix: the runner posts the screenshot to Discord
+WEBHOOK = HERE.parents[3] / "icebow" / "data" / "discord_webhook.txt"   # git-ignored secret: never printed
 
 
 class NavViolation(RuntimeError):
@@ -72,6 +85,90 @@ def command_for(target: str, pt) -> str:
     if not _inside((x, y), TARGETS[target]) or any(_inside((x, y), f) for f in FORBIDDEN.values()):
         raise NavViolation(f"{target} tap {(x, y)} outside its region or inside a forbidden rectangle")
     return f"input tap {x} {y}"
+
+
+def _boxes(mask, min_w: float, min_h: float) -> list:
+    """Outer contours of a binary mask -> [(x, y, w, h, fill)]; fill = convex-hull area / bounding-box area
+    (~1 for a solid or outlined rectangle, also when its outline has a gap)."""
+    cs, _ = cv2.findContours(mask.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    out = []
+    for c in cs:
+        x, y, w, h = cv2.boundingRect(c)
+        if w >= min_w and h >= min_h:
+            out.append((x, y, w, h, cv2.contourArea(cv2.convexHull(c)) / (w * h)))
+    return out
+
+
+def _framed(mask, b) -> tuple:
+    """How completely a box is outlined -> (top, bottom, left, right): per side (corners excluded, they are rounded),
+    the fraction of positions with a set pixel within 3 % of the box width of that edge. ~1 for a card frame side."""
+    x, y, w, h = b[:4]
+    t = max(3, round(0.03 * w))
+    s = mask[y:y + h, x:x + w].astype(bool)
+    c0, c1, r0, r1 = int(0.15 * w), int(0.85 * w), int(0.15 * h), int(0.85 * h)
+    return tuple(float(v.mean()) for v in (s[:t, c0:c1].any(0), s[-t:, c0:c1].any(0),
+                                           s[r0:r1, :t].any(1), s[r0:r1, -t:].any(1)))
+
+
+def _range(hsv, h, s, v):
+    """HSV box mask (OpenCV units: H 0-179)."""
+    return cv2.inRange(hsv, (h[0], s[0], v[0]), (h[1], s[1], v[1])) > 0
+
+
+def _closed(mask):
+    return cv2.morphologyEx(mask.astype(np.uint8), cv2.MORPH_CLOSE, np.ones((9, 9), np.uint8))
+
+
+# Colour ranges measured on the owner's phone screenshots and the MuMu trophy_road.png (2026-10-07):
+#   reward-choice background tiles H 103-111 S 160-210 V 95-180; title text H 98-101 S 145-155 V 249-255;
+#   card-tile frame V 36-118 (dark on the outer sides, lit by the glow on the two inner sides);
+#   Choose / Collect green H 56-63 S 90-160 V 227-255; bottom OK blue H 103-106 V 248-255.
+BG_BLUE = ((100, 116), (110, 255), (50, 215))
+TITLE_BLUE = ((92, 106), (90, 210), (225, 255))
+BUTTON_GREEN = ((50, 70), (80, 255), (200, 255))
+OK_BLUE = ((98, 110), (120, 255), (220, 255))
+
+
+def reward_cards(img, hsv) -> list | None:
+    """"Choose your reward" -> [left card centre, right card centre] or None. Relative-coordinate shape test: two
+    dark-framed card tiles of equal size side by side, centred, in the top 60 %; light-blue title text just above
+    them; nothing but the blue tile background below them (the one-card chest / reward screens fail the pair).
+    Each tile's frame must be dark along its top, bottom and OUTER side (the inner sides are lit by the glow)."""
+    H, W = img.shape[:2]
+    dark = hsv[..., 2] < 60
+    tiles = []
+    for b in _boxes(dark, 0.2 * W, 0.2 * W):
+        if b[2] <= 0.42 * W and 1.1 <= b[3] / b[2] <= 1.4 and b[4] >= 0.85 and b[1] + b[3] < 0.6 * H:
+            tiles.append((*b[:4], _framed(dark, b)))
+    tiles.sort()
+    for i, a in enumerate(tiles):
+        for b in tiles[i + 1:]:
+            gap = b[0] - (a[0] + a[2])
+            if not (abs(a[1] - b[1]) <= 0.02 * H and abs(a[2] - b[2]) <= 0.1 * a[2] and abs(a[3] - b[3]) <= 0.1 * a[3]
+                    and 0 <= gap <= 0.15 * W and abs(a[0] + b[0] + b[2] - W) <= 0.1 * W   # pair centred on W/2
+                    and min(a[4][0], a[4][1], a[4][2], b[4][0], b[4][1], b[4][3]) >= 0.9):
+                continue
+            top, bottom = a[1], max(a[1] + a[3], b[1] + b[3])
+            title = _range(hsv[max(0, top - int(0.12 * H)):max(0, top - int(0.01 * H)), a[0]:b[0] + b[2]], *TITLE_BLUE)
+            below = _range(hsv[bottom + int(0.12 * H):int(0.95 * H)], *BG_BLUE)
+            if title.size and title.mean() >= 0.015 and below.size and below.mean() >= 0.85:
+                return [(a[0] + a[2] / 2, a[1] + a[3] / 2), (b[0] + b[2] / 2, b[1] + b[3] / 2)]
+    return None
+
+
+def green_buttons(hsv) -> list:
+    """Centres of solid green buttons (Trophy Road Collect / Choose shape: about 0.19 W x 0.1 W)."""
+    W = hsv.shape[1]
+    return [(x + w / 2, y + h / 2) for x, y, w, h, f in _boxes(_closed(_range(hsv, *BUTTON_GREEN)), 0.1 * W, 0.04 * W)
+            if w <= 0.26 * W and 1.5 <= w / h <= 2.3 and f >= 0.85]
+
+
+def blue_ok(hsv) -> bool:
+    """The Trophy Road's centred blue OK button in the bottom 20 % of the frame."""
+    H, W = hsv.shape[:2]
+    y0 = int(0.8 * H)
+    return any(0.13 * W <= w <= 0.28 * W and 1.8 <= w / h <= 3.2 and f >= 0.85 and abs(x + w / 2 - W / 2) <= 0.06 * W
+               for x, y, w, h, f in _boxes(_closed(_range(hsv[y0:], *OK_BLUE)), 0.13 * W, 0.03 * W))
 
 
 class Classifier:
@@ -108,8 +205,15 @@ class Classifier:
             return {"screen": "popup_x", "x": hit["red_x"], "scores": sc}
         if "modes_hdr" in hit:
             return {"screen": "modes", "scores": sc}
-        if "bottom_ok" in hit or "collect" in hit:     # Trophy Road: Collect each free reward, then OK
-            return {"screen": "trophy_road", "collect": hit.get("collect"), "ok": hit.get("bottom_ok"), "scores": sc,
+        hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+        cards = reward_cards(img, hsv)
+        if cards:                                       # "Choose your reward": two cards, pick one
+            return {"screen": "choose_reward", "cards": cards, "scores": sc}
+        col = hit.get("collect")                        # a green button that is not the Collect hit = Choose
+        choose = next((g for g in green_buttons(hsv) if col is None or max(abs(g[0] - col[0]), abs(g[1] - col[1])) > 30),
+                      None)
+        if "bottom_ok" in hit or "collect" in hit or (choose and blue_ok(hsv)):   # Trophy Road: Collect / Choose, OK
+            return {"screen": "trophy_road", "collect": col, "choose": choose, "ok": hit.get("bottom_ok"), "scores": sc,
                     "sig": cv2.resize(cv2.cvtColor(img[150:1450], cv2.COLOR_BGR2GRAY), (45, 65),
                                       interpolation=cv2.INTER_AREA)}
         if "battle" in hit:
@@ -131,9 +235,15 @@ class LadderNav:
     """Pure planner for ONE transition (results -> ... -> battle loading). No I/O; time passed in."""
     UNKNOWN_S, TRANSITION_S, HANDOFF_S, TAP_WAIT_S, TAP_MAX, STABLE_N, PROBE_S = 60.0, 300.0, 3.0, 2.5, 40, 3, 1800.0
     TR_SWIPES = 8                                 # Trophy Road scan: at most this many drags down the tree
+    CHOOSE_MAX, FLOW_UNKNOWN_S, CARD_WAIT_S = 3, 10.0, 8.0   # reward choice: Choose taps; unknown / stuck limits
 
-    def __init__(self, t0: float, state: dict):
+    def __init__(self, t0: float, state: dict, rng: random.Random | None = None):
         self.t0, self.st = t0, state
+        self.rng = rng or random.Random()
+        self.choose_flow = False                  # Choose tapped / choice screen seen, no known screen since
+        self.chooses = 0                          # Choose taps this transition
+        self.pick: int | None = None              # 0 = left card, 1 = right card (drawn once per choice screen)
+        self.picked_at: float | None = None       # when the card was tapped
         self.committed = False                    # Play Again / Battle tapped: the next unknown/loading = handoff
         self.via_main = False                     # OK tapped: chests / probe until a stable main screen
         self.counted = False                      # this transition's results screen already scored
@@ -155,6 +265,11 @@ class LadderNav:
         if s in ("unknown", "loading"):
             self.unknown_since = self.unknown_since if self.unknown_since is not None else now
             idle = now - self.unknown_since
+            if self.choose_flow:                  # owner 2026-10-07: never tap blind inside the reward choice
+                if idle > self.FLOW_UNKNOWN_S:
+                    return ("stop", f"{ALERT}: {s} screen for {self.FLOW_UNKNOWN_S:.0f} s after the trophy-road "
+                                    f"Choose / card tap -- not tapping blind")
+                return ("wait", f"{s} (trophy-road reward choice)")
             if self.committed and idle >= self.HANDOFF_S:
                 return ("handoff", "menus left after Battle / Play Again: battle loading")
             if s == "unknown" and not self.committed and idle >= self.TAP_WAIT_S:
@@ -167,6 +282,20 @@ class LadderNav:
         self.unknown_since = None
         if s != "main":
             self.main_n, self.main_sig = 0, None
+        if s == "choose_reward":   # owner 2026-10-07: "the model can randomly choose" -- one random card, tapped once
+            self.choose_flow = True
+            if self.picked_at is None:
+                self.pick = self.rng.randrange(2) if self.pick is None else self.pick
+                return ("act", "reward_card", scr["cards"][self.pick])
+            if now - self.picked_at > self.CARD_WAIT_S:
+                return ("stop", f"{ALERT}: still on 'Choose your reward' {self.CARD_WAIT_S:.0f} s after tapping the "
+                                f"{('left', 'right')[self.pick]} card")
+            return ("wait", "reward card tapped")
+        if not (s == "trophy_road" and self.chooses and self.picked_at is None):
+            # verifier F1: while a Choose is tapped and no card picked yet, the path (tap latency) keeps the flow on
+            if self.picked_at is not None:     # verifier F4: a pick landed -> the next Choose gets a fresh budget
+                self.chooses = 0
+            self.choose_flow, self.pick, self.picked_at = False, None, None   # a known screen: the choice is over
         if s == "conn_lost":   # owner's phone took the account: never kick it -- pause the run (live_play: STOP + Discord)
             if scr["other_device"]:
                 return ("stop", "ANOTHER_DEVICE: the account was opened on another device (Connection lost)")
@@ -178,6 +307,10 @@ class LadderNav:
         if s == "trophy_road":   # owner 2026-10-02: collect EVERY collectible reward (lower ones may be off-screen)
             if scr["collect"]:
                 return ("act", "collect", scr["collect"])
+            if scr.get("choose"):
+                if self.chooses >= self.CHOOSE_MAX:
+                    return ("stop", f"{ALERT}: Choose tapped {self.CHOOSE_MAX} times and the trophy road is still shown")
+                return ("act", "choose", scr["choose"])
             self.tr_sig = scr.get("sig")
             unmoved = (self.tr_sig is not None and self.tr_sig_before is not None
                        and float(np.abs(self.tr_sig.astype(int) - self.tr_sig_before).mean()) < 2.0)
@@ -226,6 +359,35 @@ class LadderNav:
         elif target == "tap_through":
             self.taps += 1
             self.unknown_since = now              # wait TAP_WAIT_S again before the next one
+        elif target == "choose":
+            self.chooses += 1
+            self.choose_flow = True
+        elif target == "reward_card":
+            self.picked_at = now
+
+
+def discord_alert(text: str, png: Path | None) -> bool:
+    """Post text (+ the PNG) to the owner's Discord webhook, like discord_clip.post_clip. Never prints the URL, the
+    server's reply or exception text; never raises."""
+    try:
+        url = WEBHOOK.read_text(encoding="utf-8").strip()
+        if not url.startswith("https://"):
+            raise ValueError
+        b = "ClashBot" + uuid.uuid4().hex
+        body = (f"--{b}\r\nContent-Disposition: form-data; name=\"payload_json\"\r\nContent-Type: application/json"
+                f"\r\n\r\n").encode() + json.dumps({"content": text[:1900]}).encode()
+        if png is not None and png.exists():
+            body += (f"\r\n--{b}\r\nContent-Disposition: form-data; name=\"files[0]\"; filename=\"{png.name}\"\r\n"
+                     f"Content-Type: image/png\r\n\r\n").encode() + png.read_bytes()
+        body += f"\r\n--{b}--\r\n".encode()
+        req = urllib.request.Request(url, data=body, headers={"Content-Type": f"multipart/form-data; boundary={b}",
+                                                              "User-Agent": "ClashBot-updates/1.0"})
+        with urllib.request.urlopen(req, timeout=30) as r:
+            ok = r.status in (200, 204)
+    except Exception:                                    # noqa: BLE001 -- an alert failure must not hide the stop
+        ok = False
+    print(f"[ladder] Discord alert {'posted' if ok else 'FAILED'}", flush=True)
+    return ok
 
 
 def grab(adb: list[str]):
@@ -240,11 +402,13 @@ def grab(adb: list[str]):
 class LadderNavRunner:
     """Device side, same interface as friend_nav.FriendNav: probe() before match 1, run() between matches."""
     POLL_S, COOLDOWN_S = 0.5, 1.5
-    NAV_SCREENS = {"results", "main", "popup_x", "modes", "trophy_road", "conn_lost"}
+    NAV_SCREENS = {"results", "main", "popup_x", "modes", "trophy_road", "choose_reward", "conn_lost"}
 
     def __init__(self, adb: list[str], dry_run: bool = False, log_dir: Path = HERE, state_path: Path = STATE,
-                 wins_today: int | None = None, trophy_log: bool = True):
+                 wins_today: int | None = None, trophy_log: bool = True, seed: int | None = None, alert=discord_alert):
         self.adb, self.dry_run, self.log_dir, self.state_path = adb, dry_run, log_dir, state_path
+        self.seed = seed if seed is not None else random.SystemRandom().randrange(2**31)   # verifier F2: logged
+        self.rng, self.alert = random.Random(self.seed), alert   # reward-card pick; TROPHY_ROAD_ALERT poster(text, png)
         self.clf = Classifier()
         self.trophy = None                       # passive trophy reader (trophy_read.py); None = off or digit bank missing
         self.trophies_total: int | None = None   # last main-menu trophy counter read
@@ -296,7 +460,7 @@ class LadderNavRunner:
         def W(**k):
             log.write(json.dumps({"t": round(time.time(), 2), **k}, default=str) + "\n")
             log.flush()
-        nav, prev, last, reported = LadderNav(time.time(), self.st), None, None, False
+        nav, prev, last, reported = LadderNav(time.time(), self.st, self.rng), None, None, False
         d_pending, d_tries, total_tries, total_done = False, 0, 0, False   # passive trophy reads (see read_trophy)
         W(event="nav_start", dry_run=self.dry_run, state={k: v for k, v in self.st.items()})
         try:
@@ -340,10 +504,16 @@ class LadderNavRunner:
                     print(f"[ladder] {scr['screen']}: {p}", flush=True)
                     last = (scr["screen"], p[:2])
                 if p[0] in ("handoff", "stop"):
+                    png = self.log_dir / f"ladder_stop_{stamp}.png"
                     if p[0] == "stop" and img is not None:
-                        cv2.imwrite(str(self.log_dir / f"ladder_stop_{stamp}.png"), img)
+                        cv2.imwrite(str(png), img)
                     W(event=p[0], why=p[1], state=dict(self.st))
                     print(f"[ladder] {p[0].upper()}: {p[1]}", flush=True)
+                    if p[0] == "stop" and p[1].startswith(ALERT):   # owner 2026-10-07: stop + alert, never tap blind
+                        text = (f"ClashAI ladder STOPPED {time.strftime('%H:%M')} in the trophy-road reward choice: "
+                                f"{p[1]}. Screenshot attached. Navigate it by hand, then restart the run.")
+                        sent = False if self.dry_run else self.alert(text, png if png.exists() else None)
+                        W(event="alert", text=text, sent=sent, png=str(png) if png.exists() else None)
                     self.save()
                     return p[0] == "handoff", p[1]
                 if p[0] == "act":
@@ -351,10 +521,16 @@ class LadderNavRunner:
                                                                           abs(prev[2][1] - p[2][1])) <= 8)
                     if same:
                         cmd = command_for(p[1], p[2])
-                        if (p[1] == "tap_through" or (p[1] == "battle" and nav.via_main)) and img is not None:
-                            # evidence: unknown (chest?) screens, and the main screen we requeue from after OK
+                        if (p[1] in ("tap_through", "choose", "reward_card") or (p[1] == "battle" and nav.via_main)) \
+                                and img is not None:
+                            # evidence: unknown (chest?) screens, the main screen we requeue from after OK, and the
+                            # first real MuMu frames of the trophy-road reward choice
                             shots.mkdir(exist_ok=True)
-                            cv2.imwrite(str(shots / f"{stamp}_{nav.taps:02d}.png"), img)
+                            tag = "" if p[1] in ("tap_through", "battle") else f"_{p[1]}"
+                            cv2.imwrite(str(shots / f"{stamp}_{nav.taps:02d}{tag}_{int(time.time() * 1000) % 10**6:06d}.png"), img)
+                        if p[1] == "reward_card":
+                            W(event="reward_pick", side=("left", "right")[nav.pick], point=p[2], seed=self.seed)
+                            print(f"[ladder] reward choice: random pick = {('left', 'right')[nav.pick]} card", flush=True)
                         W(event="input", target=p[1], cmd=cmd, dry_run=self.dry_run)
                         print(f"[ladder] {'WOULD ' if self.dry_run else ''}{p[1]}: {cmd}", flush=True)
                         if not self.dry_run:
