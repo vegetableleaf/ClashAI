@@ -62,7 +62,7 @@ def load_contexts(path, dataset, source_dataset, corrected_manifest=None):
         correction = json.loads(Path(corrected_manifest).read_text())
         if (not correction.get('trainable') or correction['output_sha256'] != binding['dataset_sha256'] or
                 correction['hashes']['dataset'] != manifest['source_dataset_sha256'] or
-                meta.get('body_identity_contract') != 'catalog_spawner_bodies_v1' or
+                meta.get('body_identity_contract') not in ('catalog_spawner_bodies_v1', 'catalog_spawner_bodies_v2_l73') or
                 correction['stats']['reproduced_rows'] != correction['expected_affected_rows']):
             raise ValueError('Incomplete or mismatched corrected dataset')
         with ZipFile(source_dataset) as original, ZipFile(dataset) as new:
