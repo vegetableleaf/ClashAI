@@ -20,17 +20,23 @@ RUNTIME = REPO / "research/ext/Royale-20261005/runtime"
 RUNTIME_ID = None
 _selected = os.environ.get("ROYALE_RUNTIME", "").strip()
 if _selected:
-    if _selected != "20261006":
-        raise RuntimeError(f"Unknown ROYALE_RUNTIME={_selected!r}; only '20261006' is a known opt-in runtime")
+    if _selected not in ("20261006", "20261006-linux"):
+        raise RuntimeError(f"Unknown ROYALE_RUNTIME={_selected!r}; known opt-in runtimes: '20261006', '20261006-linux'")
     RUNTIME_ID = _selected
     MANIFEST = REPO / "scratchpad/gauntlet/L73/royale_update_20261006/build_manifest.json"
     RUNTIME = REPO / "research/ext/Royale-20261006/runtime"
+    if _selected == "20261006-linux":   # PyPI royalesim 0.1.17 / royalegym 0.1.18 in this venv (Linux VM, benchmark)
+        import sysconfig
+        RUNTIME = Path(sysconfig.get_paths()["purelib"])
 _STAMP = None
 
 
 def _verify_files(runtime: Path, manifest: dict) -> None:
     runtime = runtime.resolve()
     for name, expected in manifest["files"].items():
+        name = name.replace("\\", "/")
+        if RUNTIME_ID == "20261006-linux" and (".dist-info/" in name or name.endswith(".pyd")):
+            continue   # platform-specific (Windows binary, wheel metadata); provenance is checked in activate()
         path = (runtime / name).resolve()
         if not path.is_relative_to(runtime) or not path.is_file():
             raise RuntimeError(f"Pinned Royale runtime file missing or outside runtime: {name}")
@@ -82,10 +88,22 @@ def activate() -> dict:
     return json.loads(json.dumps(_STAMP))
 
 
+def _same_engine(stamp: dict | None):
+    """20261006 (Windows, hand-assembled wheel) and 20261006-linux (PyPI abi3 wheel) are ONE engine: the same manifest,
+    compiled provenance d088f53 clean and embedded card table (verified L73 VM bring-up 2026-10-07: identical init pro
+    agreement, init screen and u0000 rollouts). Only the platform binary differs, so a run may resume across them."""
+    if not stamp:
+        return stamp
+    s = dict(stamp)
+    if s.get("runtime_id") in ("20261006", "20261006-linux"):
+        s["runtime_id"] = "20261006"
+    return s
+
+
 def require_same(expected: dict | None) -> dict:
     """Actors and exact resumes must match the learner's recorded runtime."""
     actual = activate()
-    if actual != expected:
+    if _same_engine(actual) != _same_engine(expected):
         raise RuntimeError("Royale runtime differs from the learner/checkpoint (or was not recorded). "
                            "Use the checkpoint as init for a new run, rather than resuming across engines.")
     return actual
