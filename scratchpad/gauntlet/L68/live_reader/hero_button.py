@@ -119,7 +119,7 @@ def ice_wizard_should_press(f: dict, side: int, hero: dict | None, names: dict |
     return False, f"iw_hold frozen={len(frozen)}"
 
 
-def should_press(f: dict, side: int, hero_card_ids: set[int], reach_tiles: float = 5.5) -> tuple[bool, str]:
+def should_press(f: dict, side: int, hero_card_ids: set[int], reach_tiles: float = 5.5, pilot=None) -> tuple[bool, str]:
     """PLACEHOLDER policy (the RL ability head's slot): press when an enemy troop is within ``reach_tiles`` of my hero
     (reader positions, 1000 units per tile); if the hero entity cannot be found, when an enemy troop is on my half.
     Deliberately generic -- no per-hero stats -- so it only guarantees the button is USED, not used well.
@@ -128,8 +128,20 @@ def should_press(f: dict, side: int, hero_card_ids: set[int], reach_tiles: float
     f = dedupe_hero_bodies(f)                  # 2026-10-06: a hero + its FloatingCube share 203000023
     ids = hero_card_ids | hero_form_ids(hero_card_ids)
     if ICE_WIZARD in hero_card_ids:
-        return ice_wizard_should_press(f, side, next((e for e in f["entities"] if e["side"] == side
-                                                     and int(e["card_id"]) in ids), None))
+        ok, why = ice_wizard_should_press(f, side, next((e for e in f["entities"] if e["side"] == side
+                                                         and int(e["card_id"]) in ids), None))
+        pub = getattr(pilot, "public", None) if pilot is not None else None
+        if pub is None:
+            return ok, why
+        # lead 2026-10-06: PRO TIMING GATE (L70/abilities/ice_wizard_hero: 1,320 pro deployments, hold-out AUC .82) --
+        # press only when pros would (hazard >= P*(V=4)) AND the freeze check above passes. Off: --no-iw-pro-gate.
+        dep = [int(e["tick"]) for e in pub.own_events if e.get("card") == "ice-wizard" and not e.get("ability")
+               and e.get("accepted", True)]
+        if not dep:
+            return ok, why + " (pro gate: no deploy tick)"
+        from ability_ice_wizard import should_press_pro
+        ok2, why2 = should_press_pro(pilot, f, side, dep[-1], geometry_ok=ok, v_min=CLUMP_VALUE_MIN)
+        return ok2, why + " | " + why2
     hero = next((e for e in f["entities"] if e["side"] == side and int(e["card_id"]) in ids), None)
     foes = [e for e in f["entities"] if e["side"] != side and int(e["card_id"]) >= 0]
     if hero is not None:

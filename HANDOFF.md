@@ -3757,6 +3757,17 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   (c) `obs_contract` sub-spawn HP splits divided by the side's tower level factor (max_hp / 3052 princess, / 4824
 >   king; exactly 1.0 for native/SIM): live Elixir Golem 524/576 -> blob, 1108/1218 -> golemite, 2280/2507 -> golem
 >   (before: golemites as Elixir Golems, blobs as golemites).
+> * **20:xx -- HERO ICE WIZARD PRO MODEL + LIVE PRO-TIMING GATE.** Crawl (owner login 18:48): 164 Path-of-Legends battles,
+>   1,320 hero deployments, 14 history-owner pros / 31 hero holders (Cloudflare expired mid-crawl 19:34). Pros press
+>   31.6% [28.8, 34.4] of deployments, median delay 4.15 s [3.7, 4.55], 65% within 6 s. Press moments: opponent on my
+>   half in the last 6 s 54% vs 27% (live-visible counter refit), win-con on my half 19.5% vs 9.0%. 1-s hazard logistic
+>   (`L68/live_reader/ability_ice_wizard.py` + `_model.json`): hold-out AUC .822 [.779, .861] (+.050 over timing-only),
+>   player-grouped .802, share error +0.7 pp. Interim rule proxy fires 41% of deploys vs pros 32%, recall 48%. Combined
+>   policy calibrated (hazard >= P*(V) AND freeze check): same recall as the rule at matched share, better timing (within
+>   2 s of the pro press 26% vs 17%). WIRED: `hero_button.should_press(..., pilot=)` gates the freeze-value rule with
+>   P*(V=4) = 0.0196; `live_play --no-iw-pro-gate` turns it off; deploy tick from pilot.public.own_events. Blocks e.g.
+>   presses 0.3 s after deploy (seen live). Distribution shift caveat: live own elixir 4.0 vs pro 6.7 inflates hazard.
+>   Next live start loads it. Spawner fix re-check on pro recordings: Witch phantom plays gone (were 232).
 > * Hero Ice Wizard crawl BLOCKED on login (Cloudflare cleared; /data/replay needs a RoyaleAPI session; saved tokens
 >   from Aug 30 expired). Owner: `cd /c/Users/benpe/clash-replay-scraper && python crawl_deck.py --deck icebow probe`,
 >   log in in its Chrome window; then rerun `scratchpad/gauntlet/L70/abilities/ice_wizard_hero/crawl_hero_iw.py`

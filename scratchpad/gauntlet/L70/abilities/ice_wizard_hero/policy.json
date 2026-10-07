@@ -1,0 +1,154 @@
+{
+ "pro_share_target": 0.316,
+ "chosen_on_train": {
+  "P_STAR": 0.044746336621534336,
+  "V_MIN": 2.0,
+  "train_metrics": {
+   "deploys": 1054,
+   "share": 0.3301707779886148,
+   "pro_share": 0.3159392789373814,
+   "recall": 0.45045045045045046,
+   "precision": 0.43103448275862066,
+   "timing_median_s": -1.55,
+   "timing_mad_s": 2.0250000000000004,
+   "within_2s_of_pro": 0.5,
+   "recall_within_2s": 0.22522522522522523
+  }
+ },
+ "holdout_policy": {
+  "deploys": 257,
+  "share": 0.3852140077821012,
+  "pro_share": 0.31906614785992216,
+  "recall": 0.4268292682926829,
+  "precision": 0.35353535353535354,
+  "timing_median_s": -1.9,
+  "timing_mad_s": 1.45,
+  "within_2s_of_pro": 0.6,
+  "recall_within_2s": 0.25609756097560976
+ },
+ "holdout_current_rule_geometry_only_V4": {
+  "deploys": 257,
+  "share": 0.39299610894941633,
+  "pro_share": 0.31906614785992216,
+  "recall": 0.45121951219512196,
+  "precision": 0.36633663366336633,
+  "timing_median_s": -1.9,
+  "timing_mad_s": 1.9,
+  "within_2s_of_pro": 0.3783783783783784,
+  "recall_within_2s": 0.17073170731707318
+ },
+ "train_current_rule": {
+  "deploys": 1054,
+  "share": 0.4098671726755218,
+  "pro_share": 0.3159392789373814,
+  "recall": 0.4924924924924925,
+  "precision": 0.37962962962962965,
+  "timing_median_s": -1.3000000000000003,
+  "timing_mad_s": 2.175,
+  "within_2s_of_pro": 0.4451219512195122,
+  "recall_within_2s": 0.21921921921921922
+ },
+ "holdout_hazard_only_same_P": {
+  "deploys": 257,
+  "share": 0.6770428015564203,
+  "pro_share": 0.31906614785992216,
+  "recall": 0.7804878048780488,
+  "precision": 0.367816091954023,
+  "timing_median_s": -1.9,
+  "timing_mad_s": 1.3499999999999999,
+  "within_2s_of_pro": 0.546875,
+  "recall_within_2s": 0.4268292682926829
+ },
+ "per_V_best_on_train": {
+  "2.0": {
+   "P": 0.044746336621534336,
+   "train": {
+    "deploys": 1054,
+    "share": 0.3301707779886148,
+    "pro_share": 0.3159392789373814,
+    "recall": 0.45045045045045046,
+    "precision": 0.43103448275862066,
+    "timing_median_s": -1.55,
+    "timing_mad_s": 2.0250000000000004,
+    "within_2s_of_pro": 0.5,
+    "recall_within_2s": 0.22522522522522523
+   },
+   "holdout": {
+    "deploys": 257,
+    "share": 0.3852140077821012,
+    "pro_share": 0.31906614785992216,
+    "recall": 0.4268292682926829,
+    "precision": 0.35353535353535354,
+    "timing_median_s": -1.9,
+    "timing_mad_s": 1.45,
+    "within_2s_of_pro": 0.6,
+    "recall_within_2s": 0.25609756097560976
+   }
+  },
+  "3.0": {
+   "P": 0.032585935277788476,
+   "train": {
+    "deploys": 1054,
+    "share": 0.325426944971537,
+    "pro_share": 0.3159392789373814,
+    "recall": 0.4444444444444444,
+    "precision": 0.4314868804664723,
+    "timing_median_s": -1.375,
+    "timing_mad_s": 1.8250000000000002,
+    "within_2s_of_pro": 0.5202702702702703,
+    "recall_within_2s": 0.23123123123123124
+   },
+   "holdout": {
+    "deploys": 257,
+    "share": 0.31906614785992216,
+    "pro_share": 0.31906614785992216,
+    "recall": 0.3902439024390244,
+    "precision": 0.3902439024390244,
+    "timing_median_s": -2.075,
+    "timing_mad_s": 1.85,
+    "within_2s_of_pro": 0.46875,
+    "recall_within_2s": 0.18292682926829268
+   }
+  },
+  "4.0": {
+   "P": 0.019618532522310172,
+   "train": {
+    "deploys": 1054,
+    "share": 0.34535104364326374,
+    "pro_share": 0.3159392789373814,
+    "recall": 0.44144144144144143,
+    "precision": 0.40384615384615385,
+    "timing_median_s": -1.4000000000000004,
+    "timing_mad_s": 1.7999999999999998,
+    "within_2s_of_pro": 0.5034013605442177,
+    "recall_within_2s": 0.2222222222222222
+   },
+   "holdout": {
+    "deploys": 257,
+    "share": 0.3424124513618677,
+    "pro_share": 0.31906614785992216,
+    "recall": 0.3902439024390244,
+    "precision": 0.36363636363636365,
+    "timing_median_s": -2.075,
+    "timing_mad_s": 1.8249999999999993,
+    "within_2s_of_pro": 0.4375,
+    "recall_within_2s": 0.17073170731707318
+   }
+  }
+ },
+ "shipped": {
+  "P_STAR": 0.044746336621534336,
+  "V_MIN": 2.0,
+  "all_data_metrics": {
+   "deploys": 1311,
+   "share": 0.34401220442410374,
+   "pro_share": 0.3165522501906941,
+   "recall": 0.45542168674698796,
+   "precision": 0.4190687361419069,
+   "timing_median_s": -1.6,
+   "timing_mad_s": 1.75,
+   "within_2s_of_pro": 0.5291005291005291,
+   "recall_within_2s": 0.24096385542168675
+  }
+ }
+}

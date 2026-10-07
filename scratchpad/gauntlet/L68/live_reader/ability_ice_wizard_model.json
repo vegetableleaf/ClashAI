@@ -1,0 +1,885 @@
+{
+ "description": "Frosty Fella press hazard (P press within next 1 s | alive, unspent); numpy logistic, L2 on standardized features",
+ "fit": {
+  "fit_on": "all 22892 at-risk rows (415 positives)",
+  "penalty": 0.1,
+  "in_sample_mean_pred": 0.01812860387908439,
+  "in_sample_mean_obs": 0.018128603879084396
+ },
+ "feature_names": [
+  "t_min",
+  "overtime",
+  "own_elixir",
+  "opp_elixir",
+  "opp_n3",
+  "opp_cost3",
+  "opp_n6",
+  "opp_cost6",
+  "opp_troop6",
+  "opp_spell6",
+  "opp_bld6",
+  "opp_mine_cost6",
+  "opp_theirs_cost6",
+  "opp_mine_cost10",
+  "opp_since_mine",
+  "opp_wincon_mine10",
+  "own_n3",
+  "own_n6",
+  "own_cost6",
+  "age_hat_1",
+  "age_hat_2",
+  "age_hat_3",
+  "age_hat_4",
+  "age_hat_6",
+  "age_hat_8",
+  "age_hat_11",
+  "age_hat_15",
+  "age_hat_20",
+  "age_hat_30"
+ ],
+ "mean": [
+  2.66257706476788,
+  0.4168705224532588,
+  6.674886270312731,
+  7.272748973440472,
+  0.5900751354184868,
+  1.7533199370959287,
+  1.1670015726017824,
+  3.4740957539751878,
+  2.8232133496417964,
+  0.24370959287087193,
+  0.40717281146251966,
+  0.9217630613314695,
+  2.552332692643718,
+  2.153110256858291,
+  10.786460335488332,
+  0.09304560545168618,
+  0.6219640048925389,
+  1.2245762711864407,
+  3.196007338808317,
+  0.05713786475624672,
+  0.05416739472304735,
+  0.05054167394723048,
+  0.07098549711689674,
+  0.08891752577319588,
+  0.10359514240782808,
+  0.13149790319762367,
+  0.1412174558797835,
+  0.16823781233618762,
+  0.07643281495719019
+ ],
+ "scale": [
+  1.2550305626131726,
+  0.4930410631607997,
+  2.1991603622024303,
+  2.3200544067924005,
+  0.6825649106047296,
+  2.157906657612188,
+  0.9628462530640428,
+  2.886667905740191,
+  2.66832057074652,
+  0.7067157498101625,
+  1.234085166778736,
+  1.7892753002465593,
+  2.5922968306865903,
+  2.7218155929202763,
+  5.944410860826124,
+  0.2904963351883073,
+  0.6913786155988463,
+  0.9663311012350467,
+  2.6553227501591645,
+  0.2321058576756133,
+  0.2263477149696124,
+  0.21905983918066896,
+  0.23336200768058876,
+  0.24232571734935354,
+  0.25355115728918276,
+  0.27293712229117006,
+  0.2772113580949306,
+  0.2952619405686794,
+  0.20081907933272608
+ ],
+ "intercept": -4.861187822707245,
+ "coefficients": [
+  0.12714037125474792,
+  -0.007817826838208386,
+  -0.24320880833006822,
+  -0.234943962507484,
+  0.15772396349528586,
+  -0.1585219316972607,
+  -0.0936920219901998,
+  0.07201846989925148,
+  0.12019953430372,
+  0.03992781609950286,
+  -0.11429932437958698,
+  0.11083779514020654,
+  0.0036932794072417363,
+  0.01392476226832483,
+  -0.3285016127014623,
+  -0.026157881795352465,
+  -0.48247679320705,
+  0.37273257934431026,
+  -0.1421201192327227,
+  1.2052537324322583,
+  1.2556424029723414,
+  1.1945550834387872,
+  1.2607271026491502,
+  1.1638043614561782,
+  1.0716472042996104,
+  1.18559557363984,
+  1.0495213914420736,
+  1.0508695115698645,
+  0.4497597602090326
+ ],
+ "calibration_shift": 0.0,
+ "heldout_report": {
+  "holdout_auc": 0.8223368657381795,
+  "share_error_pp": 0.694699177890612,
+  "delay_error_s": {
+   "0.25": 0.35095352835873284,
+   "0.5": 0.4405885450294109,
+   "0.75": 1.6207512709338268
+  },
+  "hazard_ECE": 0.0024784480928434537
+ },
+ "knots_s": [
+  0.0,
+  1.0,
+  2.0,
+  3.0,
+  4.0,
+  6.0,
+  8.0,
+  11.0,
+  15.0,
+  20.0,
+  30.0
+ ],
+ "policy": {
+  "P_STAR": 0.044746336621534336,
+  "V_MIN": 2.0
+ },
+ "cards": {
+  "archer-queen": [
+   5,
+   "troop",
+   1,
+   1.0
+  ],
+  "archers": [
+   3,
+   "troop",
+   2,
+   1.0
+  ],
+  "arrows": [
+   3,
+   "spell",
+   1,
+   0.0
+  ],
+  "baby-dragon": [
+   4,
+   "troop",
+   1,
+   1.5
+  ],
+  "balloon": [
+   5,
+   "troop",
+   1,
+   1.0
+  ],
+  "bandit": [
+   3,
+   "troop",
+   1,
+   1.5
+  ],
+  "barbarian-barrel": [
+   2,
+   "spell",
+   1,
+   0.0
+  ],
+  "barbarian-hut": [
+   6,
+   "building",
+   1,
+   0.0
+  ],
+  "barbarians": [
+   5,
+   "troop",
+   5,
+   1.0
+  ],
+  "bats": [
+   2,
+   "troop",
+   5,
+   2.0
+  ],
+  "battle-healer": [
+   4,
+   "troop",
+   1,
+   1.0
+  ],
+  "battle-ram": [
+   4,
+   "troop",
+   1,
+   1.0
+  ],
+  "berserker": [
+   2,
+   "troop",
+   1,
+   1.5
+  ],
+  "bomb-tower": [
+   4,
+   "building",
+   1,
+   0.0
+  ],
+  "bomber": [
+   2,
+   "troop",
+   1,
+   1.0
+  ],
+  "boss-bandit": [
+   6,
+   "troop",
+   1,
+   1.5
+  ],
+  "bowler": [
+   5,
+   "troop",
+   1,
+   0.75
+  ],
+  "cannon": [
+   3,
+   "building",
+   1,
+   0.0
+  ],
+  "cannon-cart": [
+   5,
+   "troop",
+   1,
+   1.0
+  ],
+  "clone": [
+   3,
+   "spell",
+   1,
+   0.0
+  ],
+  "dark-prince": [
+   4,
+   "troop",
+   1,
+   1.0
+  ],
+  "dart-goblin": [
+   3,
+   "troop",
+   1,
+   2.0
+  ],
+  "earthquake": [
+   3,
+   "spell",
+   1,
+   0.0
+  ],
+  "electro-dragon": [
+   5,
+   "troop",
+   1,
+   1.0
+  ],
+  "electro-giant": [
+   7,
+   "troop",
+   1,
+   0.75
+  ],
+  "electro-spirit": [
+   1,
+   "troop",
+   1,
+   2.0
+  ],
+  "electro-wizard": [
+   4,
+   "troop",
+   1,
+   1.5
+  ],
+  "elite-barbarians": [
+   6,
+   "troop",
+   2,
+   1.5
+  ],
+  "elixir-collector": [
+   6,
+   "building",
+   1,
+   0.0
+  ],
+  "elixir-golem": [
+   3,
+   "troop",
+   1,
+   0.75
+  ],
+  "executioner": [
+   5,
+   "troop",
+   1,
+   1.0
+  ],
+  "fire-spirit": [
+   1,
+   "troop",
+   1,
+   2.0
+  ],
+  "fireball": [
+   4,
+   "spell",
+   1,
+   0.0
+  ],
+  "firecracker": [
+   3,
+   "troop",
+   1,
+   1.5
+  ],
+  "fisherman": [
+   3,
+   "troop",
+   1,
+   1.0
+  ],
+  "flying-machine": [
+   4,
+   "troop",
+   1,
+   1.5
+  ],
+  "freeze": [
+   4,
+   "spell",
+   1,
+   0.0
+  ],
+  "furnace": [
+   4,
+   "troop",
+   1,
+   1.0
+  ],
+  "giant": [
+   5,
+   "troop",
+   1,
+   0.75
+  ],
+  "giant-skeleton": [
+   6,
+   "troop",
+   1,
+   1.0
+  ],
+  "giant-snowball": [
+   2,
+   "spell",
+   1,
+   0.0
+  ],
+  "goblin-barrel": [
+   3,
+   "spell",
+   1,
+   0.0
+  ],
+  "goblin-cage": [
+   4,
+   "building",
+   1,
+   0.0
+  ],
+  "goblin-curse": [
+   2,
+   "spell",
+   1,
+   0.0
+  ],
+  "goblin-demolisher": [
+   4,
+   "troop",
+   1,
+   1.0
+  ],
+  "goblin-drill": [
+   4,
+   "building",
+   1,
+   0.0
+  ],
+  "goblin-gang": [
+   3,
+   "troop",
+   6,
+   2.0
+  ],
+  "goblin-giant": [
+   6,
+   "troop",
+   1,
+   1.0
+  ],
+  "goblin-hut": [
+   4,
+   "building",
+   1,
+   0.0
+  ],
+  "goblin-machine": [
+   5,
+   "troop",
+   1,
+   1.0
+  ],
+  "goblins": [
+   2,
+   "troop",
+   4,
+   2.0
+  ],
+  "goblinstein": [
+   5,
+   "troop",
+   2,
+   1.0
+  ],
+  "golden-knight": [
+   4,
+   "troop",
+   1,
+   1.0
+  ],
+  "golem": [
+   8,
+   "troop",
+   1,
+   0.75
+  ],
+  "graveyard": [
+   5,
+   "spell",
+   1,
+   0.0
+  ],
+  "guards": [
+   3,
+   "troop",
+   3,
+   1.5
+  ],
+  "heal-spirit": [
+   1,
+   "troop",
+   1,
+   2.0
+  ],
+  "hog-rider": [
+   4,
+   "troop",
+   1,
+   2.0
+  ],
+  "hunter": [
+   4,
+   "troop",
+   1,
+   1.0
+  ],
+  "ice-golem": [
+   2,
+   "troop",
+   1,
+   0.75
+  ],
+  "ice-spirit": [
+   1,
+   "troop",
+   1,
+   2.0
+  ],
+  "ice-wizard": [
+   3,
+   "troop",
+   1,
+   1.0
+  ],
+  "inferno-dragon": [
+   4,
+   "troop",
+   1,
+   1.0
+  ],
+  "inferno-tower": [
+   5,
+   "building",
+   1,
+   0.0
+  ],
+  "knight": [
+   3,
+   "troop",
+   1,
+   1.0
+  ],
+  "lava-hound": [
+   7,
+   "troop",
+   1,
+   0.75
+  ],
+  "lightning": [
+   6,
+   "spell",
+   1,
+   0.0
+  ],
+  "little-prince": [
+   3,
+   "troop",
+   1,
+   1.0
+  ],
+  "lumberjack": [
+   4,
+   "troop",
+   1,
+   2.0
+  ],
+  "magic-archer": [
+   4,
+   "troop",
+   1,
+   1.0
+  ],
+  "mega-knight": [
+   7,
+   "troop",
+   1,
+   1.0
+  ],
+  "mega-minion": [
+   3,
+   "troop",
+   1,
+   1.0
+  ],
+  "mighty-miner": [
+   4,
+   "troop",
+   1,
+   1.0
+  ],
+  "miner": [
+   3,
+   "troop",
+   1,
+   1.5
+  ],
+  "mini-pekka": [
+   4,
+   "troop",
+   1,
+   1.5
+  ],
+  "minion-horde": [
+   5,
+   "troop",
+   6,
+   1.5
+  ],
+  "minions": [
+   3,
+   "troop",
+   3,
+   1.5
+  ],
+  "monk": [
+   5,
+   "troop",
+   1,
+   1.0
+  ],
+  "mortar": [
+   4,
+   "building",
+   1,
+   0.0
+  ],
+  "mother-witch": [
+   4,
+   "troop",
+   1,
+   1.0
+  ],
+  "musketeer": [
+   4,
+   "troop",
+   1,
+   1.0
+  ],
+  "night-witch": [
+   4,
+   "troop",
+   1,
+   1.0
+  ],
+  "pekka": [
+   7,
+   "troop",
+   1,
+   0.75
+  ],
+  "phoenix": [
+   4,
+   "troop",
+   1,
+   1.0
+  ],
+  "poison": [
+   4,
+   "spell",
+   1,
+   0.0
+  ],
+  "prince": [
+   5,
+   "troop",
+   1,
+   1.0
+  ],
+  "princess": [
+   3,
+   "troop",
+   1,
+   1.0
+  ],
+  "rage": [
+   2,
+   "spell",
+   1,
+   0.0
+  ],
+  "ram-rider": [
+   5,
+   "troop",
+   1,
+   1.0
+  ],
+  "rascals": [
+   5,
+   "troop",
+   3,
+   1.0
+  ],
+  "rocket": [
+   6,
+   "spell",
+   1,
+   0.0
+  ],
+  "ronin": [
+   5,
+   "troop",
+   1,
+   1.5
+  ],
+  "royal-delivery": [
+   3,
+   "spell",
+   1,
+   0.0
+  ],
+  "royal-ghost": [
+   3,
+   "troop",
+   1,
+   1.5
+  ],
+  "royal-giant": [
+   6,
+   "troop",
+   1,
+   0.75
+  ],
+  "royal-hogs": [
+   5,
+   "troop",
+   4,
+   2.0
+  ],
+  "royal-recruits": [
+   7,
+   "troop",
+   6,
+   1.0
+  ],
+  "rune-giant": [
+   4,
+   "troop",
+   1,
+   1.0
+  ],
+  "skeleton-army": [
+   3,
+   "troop",
+   15,
+   1.5
+  ],
+  "skeleton-barrel": [
+   3,
+   "troop",
+   1,
+   1.5
+  ],
+  "skeleton-dragons": [
+   4,
+   "troop",
+   2,
+   1.5
+  ],
+  "skeleton-king": [
+   4,
+   "troop",
+   1,
+   1.0
+  ],
+  "skeletons": [
+   1,
+   "troop",
+   3,
+   1.5
+  ],
+  "sparky": [
+   6,
+   "troop",
+   1,
+   0.75
+  ],
+  "spear-goblins": [
+   2,
+   "troop",
+   3,
+   2.0
+  ],
+  "suspicious-bush": [
+   2,
+   "troop",
+   1,
+   1.0
+  ],
+  "tesla": [
+   4,
+   "building",
+   1,
+   0.0
+  ],
+  "the-log": [
+   2,
+   "spell",
+   1,
+   0.0
+  ],
+  "three-musketeers": [
+   9,
+   "troop",
+   3,
+   1.0
+  ],
+  "tombstone": [
+   3,
+   "building",
+   1,
+   0.0
+  ],
+  "tornado": [
+   3,
+   "spell",
+   1,
+   0.0
+  ],
+  "valkyrie": [
+   4,
+   "troop",
+   1,
+   1.0
+  ],
+  "vines": [
+   3,
+   "spell",
+   3,
+   0.0
+  ],
+  "void": [
+   5,
+   "spell",
+   1,
+   0.0
+  ],
+  "wall-breakers": [
+   2,
+   "troop",
+   2,
+   2.0
+  ],
+  "witch": [
+   5,
+   "troop",
+   1,
+   1.0
+  ],
+  "wizard": [
+   5,
+   "troop",
+   1,
+   1.0
+  ],
+  "x-bow": [
+   6,
+   "building",
+   1,
+   0.0
+  ],
+  "zap": [
+   2,
+   "spell",
+   1,
+   0.0
+  ],
+  "zappies": [
+   4,
+   "troop",
+   3,
+   1.0
+  ]
+ },
+ "data": "crawl/ battles.csv plays.csv, 161 battles"
+}

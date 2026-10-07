@@ -265,6 +265,8 @@ def main() -> int:
                     help="seconds; > 0: record ONLY the first match and then one match every this many seconds, and post a 60-s "
                          "overlaid clip of it to Discord (discord_clip.py) -- all other matches unrecorded")
     ap.add_argument("--stop-file", type=Path, help="stop the run between matches once this file exists")
+    ap.add_argument("--no-iw-pro-gate", action="store_true",
+                    help="Hero Ice Wizard: skip the pro-timing gate (ability_ice_wizard.py) and use the freeze-value rule alone")
     ap.add_argument("--ckpt-override-file", type=Path, default=REPO / "scratchpad/gauntlet/L70/live/CKPT_OVERRIDE",
                     help="default checkpoint selection; explicit --ckpt wins. A changed selection ends a default-selected run between matches")
     ap.add_argument("--nav-dry-run", action="store_true",
@@ -588,7 +590,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                         W(event="ability_unconfirmed", tick=tick, button_after=st)
                         ab_pending = None
                 elif st == "ready" and not pending and newest and advanced and guard_clear():
-                    press, why = should_press(f, side, hids)
+                    press, why = should_press(f, side, hids, pilot=None if a.no_iw_pro_gate else pilot)
                     if press:
                         W(event="ability", tick=tick, t_dev=t_dev, why=why, tap=list(button.point),
                           elixir=me["elixir_raw"] / 1e4)
