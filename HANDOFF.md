@@ -3934,7 +3934,7 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   matcher (numpy/cv2, 34 exemplars, no OCR dependency): main-menu total 65/65 (leave-one-out), results delta 15/15,
 >   0 false reads on 169 other screens, ~1 ms per read. Sign from the existing WINNER flag. Events: outcome gains
 >   trophies_delta/trophies_abs/trophy_ms; new event "trophies" with trophies_total. Opt-out --no-trophy-log (5-line
->   live_play.py edit). Account total read 00:2x 10-07: **11,222**. Blind verifier (trophies + hero dedupe) running.
+>   live_play.py edit). Account total read 00:2x 10-07: **11,222**. Blind verifier (opus): trophies PASS_WITH_NOTES (nav taps/events identical old vs new on 5 harness sequences; opt-out byte-identical; accuracy in-sample, results digits 4-7 never seen); hero dedupe PASS_WITH_NOTES (12,740 shuffled groups: heroes always kept, cubes never); its defect 1 (radius fallback also fired with categories present) fixed by the lead @ee97600.
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
