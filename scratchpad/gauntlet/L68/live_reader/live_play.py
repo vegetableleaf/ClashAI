@@ -352,6 +352,8 @@ def main() -> int:
                         # owner 2026-10-06: restore the Discord pause alert (Codex had removed it)
                         subprocess.run([sys.executable, str(REPO / "scratchpad/gauntlet/L69/discord/post.py"), str(msg)],
                                        capture_output=True, timeout=60)
+                    elif why.startswith("TROPHY_ROAD_ALERT") and a.stop_file:   # the nav already posted its screenshot:
+                        a.stop_file.touch()                     # pause, don't let the supervisor retry an unknown screen
                     break
                 pilot.reset_match()                      # same loaded model, fresh history / opp counter
             record, caption, prev_clip = not a.no_record, None, last_clip
