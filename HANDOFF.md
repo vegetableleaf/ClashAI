@@ -3780,6 +3780,17 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   consistent native/SIM/live (`L73/identity_fix/`); (2) engine upgrade build RoyaleSim 0.1.17 + RoyaleGym 0.1.18 ->
 >   research/ext/Royale-20261006, opt-in ROYALE_RUNTIME=20261006 (default unchanged). Then: fv5 dataset rebuild ->
 >   IL (gen_v3.1c recipe, weight 4.0, fv5) -> RL R1e-style on the new engine -> acceptance -> live restart (owner OK).
+> * **21:xx -- IDENTITY CORRECTIONS IMPLEMENTED (fv5 only; worker opus, `L73/identity_fix/`).** body_identity extended to 13
+>   families (Witch, Night Witch, Furnace, Tombstone, Goblin Hut, Barbarian Hut, Goblin Drill, Skeleton Barrel, Goblin
+>   Giant, Skeleton King summons, Graveyard, Mother Witch hogs/goblins via card_id -1 HP, Goblin Cage/Phoenix forms),
+>   level-aware HP matching (parent-on-board level first, then tower level), unreadable Evo Witch / Hero Tombstone kept
+>   with hp_known 0, children form 0. Child bodies correctly classed fv4 -> fv5: 0% -> 100% in native (300 replays),
+>   live (164 logs) and SIM for every family with a vocab class; live parent tokens per real parent 4.12 -> 1.00
+>   (Witch), 3.31 -> 1.00 (Night Witch) etc. fv1-fv4 from_engine/to_tokens BYTE-IDENTICAL (400 native + 200 live
+>   frames; lead re-ran after adding live card_id -1 troop forwarding in live_mem.to_observe). Tests: identity_fv5 27 +
+>   body_identity 18 + obs_contract/hero_dedupe 26 pass. dataset_gen contract -> catalog_spawner_bodies_v2_l73
+>   (expert_context accepts v1|v2). Open: Goblin Brawler / Phoenix egg have no vocab class (keep parent class, form 0);
+>   SIM never produced a Phoenix egg or Skeleton King summons; hero Tombstone 4224/5593-HP body unchanged.
 > * Hero Ice Wizard crawl BLOCKED on login (Cloudflare cleared; /data/replay needs a RoyaleAPI session; saved tokens
 >   from Aug 30 expired). Owner: `cd /c/Users/benpe/clash-replay-scraper && python crawl_deck.py --deck icebow probe`,
 >   log in in its Chrome window; then rerun `scratchpad/gauntlet/L70/abilities/ice_wizard_hero/crawl_hero_iw.py`

@@ -304,12 +304,14 @@ def from_engine(obs: Mapping[str, Any], my_side: int, deck: Deck, *, history: Op
 
     # --- units ---
     units: list[Unit] = []
+    pend: list[tuple] = []          # feature_version >= 5: bodies resolved together after the loop (body_identity)
     for ei, e in enumerate(ents):
         form = 0
         if feature_version >= 3:
             form = entity_form(e) if raw else int((obs.get("unit_forms") or [0] * len(ents))[ei])
         if raw:
-            if int(e.get("card_id", -1)) < 0 or str(e.get("name", "")) == "-1":
+            unnamed = int(e.get("card_id", -1)) < 0 or str(e.get("name", "")) == "-1"
+            if unnamed and feature_version < 5:
                 continue
             s, X, Y, name, hp, mhp = e["side"], e["x"], e["y"], e.get("name", str(e.get("card_id"))), e["hp"], e["max_hp"]
             kind = int(e.get("kind", -1))
@@ -318,20 +320,24 @@ def from_engine(obs: Mapping[str, Any], my_side: int, deck: Deck, *, history: Op
             s, X, Y, name, hp, mhp = e[:6]
             kind = int(e[6]) if len(e) > 6 else -1
             eid = None
-            if str(name) == "-1":
+            unnamed = str(name) == "-1"
+            if unnamed and feature_version < 5:
                 continue
+        if feature_version >= 5:
+            # fv5 keeps UNREADABLE bodies (hp = max_hp = -1: Evo Witch, Hero Tombstone; IDENTITY_AUDIT #2) with an
+            # unknown hp, and card_id -1 TROOPS (cursed hogs / goblins, #4; crown towers are kind 12/13 or match no
+            # troop HP). Dead bodies (hp <= 0 with a known max) are still dropped.
+            if (hp <= 0 and (mhp > 0 or unnamed)) or (unnamed and kind in (12, 13)):
+                continue
+            pend.append((s, X, Y, name, hp, mhp, kind, eid, form, unnamed))
+            continue
         if hp <= 0:
             continue
-        if feature_version >= 5:
-            from .body_identity import resolve
-            identity = resolve(str(name), float(mhp), form)
-            cid, form = identity.cls, identity.form
-        else:
-            # sub-spawn HP splits (Elixir Golem / Golem / Lava / Mother Witch) were measured at level 11; live opponents
-            # are higher level, so golemites read as Elixir Golems (IDENTITY_AUDIT #5). Normalise by the side's tower
-            # level factor; level-11 sources (native, SIM) give factor 1.0 exactly -> unchanged.
-            f = lvl_factor.get(int(s), 1.0)
-            cid = vocab.engine_unit_id(str(name), float(mhp) / f if abs(f - 1.0) > 0.02 else float(mhp))
+        # sub-spawn HP splits (Elixir Golem / Golem / Lava / Mother Witch) were measured at level 11; live opponents
+        # are higher level, so golemites read as Elixir Golems (IDENTITY_AUDIT #5). Normalise by the side's tower
+        # level factor; level-11 sources (native, SIM) give factor 1.0 exactly -> unchanged.
+        f = lvl_factor.get(int(s), 1.0)
+        cid = vocab.engine_unit_id(str(name), float(mhp) / f if abs(f - 1.0) > 0.02 else float(mhp))
         if cid is None:
             if unmapped is None:
                 raise UnmappedName(str(name))
@@ -344,6 +350,25 @@ def from_engine(obs: Mapping[str, Any], my_side: int, deck: Deck, *, history: Op
             age = (tick - int(first)) * TICK_S
         units.append(Unit(cid, side_of(s), x, y, float(hp) / float(mhp) if mhp else None,
                           kind in DEPLOYING_KINDS if kind >= 0 else None, age, 1.0, form))
+    if pend:
+        from .body_identity import resolve_board
+        identities = resolve_board([(p[0], p[3], p[5], p[8], p[9]) for p in pend], lvl_factor)
+        for (s, X, Y, name, hp, mhp, kind, eid, _form, unnamed), identity in zip(pend, identities):
+            cid = identity.cls
+            if cid is None:
+                if unnamed:
+                    continue                 # an unrecognised card_id -1 body stays dropped, as before fv5
+                if unmapped is None:
+                    raise UnmappedName(str(name))
+                unmapped.add(str(name))
+                continue
+            x, y = _engine_xy(float(X), float(Y), mirror)
+            age = None
+            if history is not None and eid is not None:
+                first = history.setdefault(eid, tick)
+                age = (tick - int(first)) * TICK_S
+            units.append(Unit(cid, side_of(s), x, y, float(hp) / float(mhp) if mhp > 0 else None,
+                              kind in DEPLOYING_KINDS if kind >= 0 else None, age, 1.0, identity.form))
 
     # --- spells: engine effects whose card is a spell (unit-attack effects and tower shots are not) ---
     spells: list[Unit] = []

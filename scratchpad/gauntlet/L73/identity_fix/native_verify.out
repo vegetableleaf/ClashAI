@@ -1,0 +1,36 @@
+name               hp role           | fv4 seen cls_ok form_ok drop | fv5 seen cls_ok form_ok hp_unk drop
+-1                202 child          |       0      0       0   186 |     186    186     186      0     0
+-1                629 child          |       0      0       0  1330 |    1329   1329    1329      0     1
+BarbarianHut      716 child          |     794      0       0     0 |     794    794     794      0     0
+BarbarianHut     1164 parent         |     287    287     287     0 |     287    287     287      0     0
+DarkWitch          81 child          |    4671      0       0     0 |    4671   4671    4671      0     0
+DarkWitch         906 parent         |    1921   1921    1921     0 |    1921   1921    1921      0     0
+FirespiritHut     217 child          |    2808      0       0     0 |    2808   2808    2808      0     0
+FirespiritHut     727 parent         |    4460   4460    4460     0 |    4460   4460    4460      0     0
+GoblinCage        780 parent         |     948    948     948     0 |     948    948     948      0     0
+GoblinCage       1080 child_no_class |     850    850     746     0 |     850    850     850      0     0
+GoblinDrill       202 child          |    1416      0       0     0 |    1416   1416    1416      0     0
+GoblinDrill      1313 parent         |    1100   1100    1100     0 |    1100   1100    1100      0     0
+GoblinDrill      2560 parent         |     756    756     756     0 |     756    756     756      0     0
+GoblinGiant       133 child          |    2322      0       0     0 |    2322   2322    2322      0     0
+GoblinGiant       202 child          |     108      0       0     0 |     108    108     108      0     0
+GoblinGiant      3110 parent         |    1031   1031    1031     0 |    1031   1031    1031      0     0
+GoblinHut         133 child          |    2913      0       0     0 |    2913   2913    2913      0     0
+GoblinHut        1180 parent         |    1727   1727    1727     0 |    1727   1727    1727      0     0
+Graveyard          81 child          |    2157   2157    2157     0 |    2157   2157    2157      0     0
+Phoenix           317 child_no_class |     116    116     116     0 |     116    116     116      0     0
+Phoenix          1052 parent         |    1000   1000    1000     0 |    1000   1000    1000      0     0
+SkeletonBalloon    81 child          |    2851      0       0     0 |    2851   2851    2851      0     0
+SkeletonBalloon   532 parent         |     845    845     845     0 |     845    845     845      0     0
+SkeletonBalloon   665 parent         |     237    237     237     0 |     237    237     237      0     0
+SkeletonKing        1 child          |    1854      0       0     0 |    1854   1854    1854      0     0
+SkeletonKing     2298 parent         |    1273   1273    1273     0 |    1273   1273    1273      0     0
+Tombstone          -1 unreadable     |       0      0       0   701 |     701    701     701     13     0
+Tombstone          81 child          |    5608      0       0     0 |    5608   5608    5608      0     0
+Tombstone         529 parent         |    2134   2134    2134     0 |    2134   2134    2134    688     0
+Witch              -1 unreadable     |       0      0       0   204 |     204    204     204    204     0
+Witch              81 child          |    4654      0       0     0 |    4654   4654    4654      0     0
+Witch             839 parent         |    1266   1266    1266     0 |    1266   1266    1266      0     0
+WitchMother       529 parent         |    1226   1226    1226     0 |    1226   1226    1226      0     0
+unmapped {4: [], 5: []}
+family bodies with an HP outside EXPECT (top 15): [(('Tombstone', 4224), 180)]

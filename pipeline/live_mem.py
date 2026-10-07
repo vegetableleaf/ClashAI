@@ -55,6 +55,10 @@ def to_observe(frame: Mapping[str, Any], my_side: int, names: list[str]) -> dict
                 is_king = abs(float(e["x"]) - 9000.0) < 1500.0
                 towers.append({"side": e["side"], "type": "king" if is_king else "princess",
                                "x": e["x"], "y": e["y"], "hp": e["hp"], "max_hp": e["max_hp"]})
+            else:   # lead 2026-10-06: card_id -1 TROOPS (Mother Witch cursed hogs / goblins) go to from_engine, which maps
+                    # them by HP at feature version >= 5 and drops them below 5 (unchanged for the fv4 live model)
+                ents.append({"side": e["side"], "x": e["x"], "y": e["y"], "name": "-1", "card_id": -1, "hp": e["hp"],
+                             "max_hp": e["max_hp"], "kind": e["kind"], "entity_id": e["address"]})
             continue
         name = _catalog_names().get(int(e["card_id"]), str(e["card_id"]))
         ents.append({"side": e["side"], "x": e["x"], "y": e["y"], "name": name, "card_id": e["card_id"],

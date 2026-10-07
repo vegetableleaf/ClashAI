@@ -504,7 +504,7 @@ def build(corpora: list[Path], out: Path, *, grid: str = "lattice", limit: int =
                     opp_cycle_shape=list(arrs['opp_cycle'].shape))
     if feature_version >= 5:
         from .body_identity import FAMILIES
-        meta.update(body_identity_contract='catalog_spawner_bodies_v1', body_identity_families=sorted(FAMILIES))
+        meta.update(body_identity_contract='catalog_spawner_bodies_v2_l73', body_identity_families=sorted(FAMILIES))
     out.parent.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(out, tags=np.asarray(tags), meta=json.dumps(meta), **arrs)
     out.with_suffix(".json").write_text(json.dumps(meta, indent=1), encoding="utf-8")

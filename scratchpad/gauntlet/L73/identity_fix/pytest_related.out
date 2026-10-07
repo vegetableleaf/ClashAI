@@ -1,0 +1,47 @@
+== test_public_observation
+..........                                                               [100%]
+10 passed in 1.40s
+== test_native_recording
+....                                                                 [100%]
+4 passed, 4 subtests passed in 0.74s
+== test_expert_context
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+9 passed, 1 warning in 6.12s
+== test_gen_v31
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+10 passed, 6 warnings in 24.54s
+== test_live_mem
+..                                                                       [100%]
+2 passed in 0.60s
+== test_extrapolate
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+14 passed, 2 warnings in 12.03s
+== test_public_decision_audit
+.....                                                                    [100%]
+5 passed in 5.76s
+== test_spatial_projectiles
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+3 passed, 4 warnings in 8.01s
+== test_royale_selfplay
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+9 passed, 1 warning in 50.38s
+== test_royale_port
+........                                                                 [100%]
+8 passed in 4.39s
+== test_e1_eval_gen
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+6 passed, 5 warnings in 8.97s
+== test_e1_baseline
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+23 passed, 1 warning in 13.08s
+== test_e1_noise_arms
+FAILED pipeline/tests/test_e1_noise_arms.py::TestGoldenSplitMatchesPreO5Scalars::test_damaged_kings_matches_scalars_off_golden
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 2 passed in 6.58s

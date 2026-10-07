@@ -1,0 +1,73 @@
+Witch form 0 issued 4 unnamed {}
+    81 flags 0 child skeletons | fv4 {'witch/f0': 919} | fv5 {'skeletons/f0': 919} OK
+    839 flags 0 parent witch | fv4 {'witch/f0': 265} | fv5 {'witch/f0': 265} OK
+Witch@evolution form 1 issued 4 unnamed {}
+    81 flags 0 child skeletons | fv4 {'witch/f0': 691} | fv5 {'skeletons/f0': 691} OK
+    839 flags 0 parent witch | fv4 {'witch/f0': 74} | fv5 {'witch/f0': 74} OK
+    839 flags 8 parent witch | fv4 {'witch/f1': 126} | fv5 {'witch/f1': 126} OK
+DarkWitch form 0 issued 4 unnamed {}
+    81 flags 0 child bats | fv4 {'night_witch/f0': 480} | fv5 {'bats/f0': 480} OK
+    906 flags 0 parent night_witch | fv4 {'night_witch/f0': 231} | fv5 {'night_witch/f0': 231} OK
+FirespiritHut form 0 issued 4 unnamed {}
+    215 flags 0 child fire_spirit | fv4 {'furnace/f0': 58} | fv5 {'fire_spirit/f0': 58} OK
+    727 flags 0 parent furnace | fv4 {'furnace/f0': 192} | fv5 {'furnace/f0': 192} OK
+FirespiritHut@evolution form 1 issued 4 unnamed {}
+    215 flags 0 child fire_spirit | fv4 {'furnace/f0': 67} | fv5 {'fire_spirit/f0': 67} OK
+    727 flags 0 parent furnace | fv4 {'furnace/f0': 129} | fv5 {'furnace/f0': 129} OK
+    727 flags 8 parent furnace | fv4 {'furnace/f1': 50} | fv5 {'furnace/f1': 50} OK
+Tombstone form 0 issued 5 unnamed {}
+    81 flags 0 child skeletons | fv4 {'tombstone/f0': 1157} | fv5 {'skeletons/f0': 1157} OK
+    529 flags 0 parent tombstone | fv4 {'tombstone/f0': 139} | fv5 {'tombstone/f0': 139} OK
+Tombstone@hero form 2 issued 5 unnamed {}
+    81 flags 0 child skeletons | fv4 {'tombstone/f0': 1032} | fv5 {'skeletons/f0': 1032} OK
+    529 flags 16 parent tombstone | fv4 {'tombstone/f2': 147} | fv5 {'tombstone/f2': 147} OK
+    529 flags 18 parent tombstone | fv4 {'tombstone/f2': 187} | fv5 {'tombstone/f2': 187} OK
+GoblinHut form 0 issued 4 unnamed {}
+    133 flags 0 child spear_goblins | fv4 {'goblin_hut/f0': 89} | fv5 {'spear_goblins/f0': 89} OK
+    1180 flags 0 parent goblin_hut | fv4 {'goblin_hut/f0': 336} | fv5 {'goblin_hut/f0': 336} OK
+BarbarianHut form 0 issued 4 unnamed {}
+    716 flags 0 child barbarians | fv4 {'barbarian_hut/f0': 1075} | fv5 {'barbarians/f0': 1075} OK
+    1164 flags 0 parent barbarian_hut | fv4 {'barbarian_hut/f0': 232} | fv5 {'barbarian_hut/f0': 232} OK
+Graveyard form 0 issued 4 unnamed {}
+    81 flags 0 child skeletons | fv4 {'skeletons/f0': 244} | fv5 {'skeletons/f0': 244} OK
+GoblinDrill form 0 issued 4 unnamed {}
+    202 flags 0 child goblins | fv4 {'goblin_drill/f0': 98} | fv5 {'goblins/f0': 98} OK
+    1313 flags 0 parent goblin_drill | fv4 {'goblin_drill/f0': 63} | fv5 {'goblin_drill/f0': 63} OK
+    2560 flags 1 parent goblin_drill | fv4 {'goblin_drill/f0': 56} | fv5 {'goblin_drill/f0': 56} OK
+GoblinDrill@evolution form 1 issued 4 unnamed {}
+    202 flags 0 child goblins | fv4 {'goblin_drill/f0': 118} | fv5 {'goblins/f0': 118} OK
+    1313 flags 0 parent goblin_drill | fv4 {'goblin_drill/f0': 51} | fv5 {'goblin_drill/f0': 51} OK
+    1313 flags 8 parent goblin_drill | fv4 {'goblin_drill/f1': 15} | fv5 {'goblin_drill/f1': 15} OK
+    1313 flags 12 parent goblin_drill | fv4 {'goblin_drill/f1': 15} | fv5 {'goblin_drill/f1': 15} OK
+    2560 flags 1 parent goblin_drill | fv4 {'goblin_drill/f0': 42} | fv5 {'goblin_drill/f0': 42} OK
+    2560 flags 9 parent goblin_drill | fv4 {'goblin_drill/f1': 14} | fv5 {'goblin_drill/f1': 14} OK
+SkeletonBalloon form 0 issued 5 unnamed {}
+    81 flags 0 child skeletons | fv4 {'skeleton_barrel/f0': 477} | fv5 {'skeletons/f0': 477} OK
+    532 flags 0 parent skeleton_barrel | fv4 {'skeleton_barrel/f0': 181} | fv5 {'skeleton_barrel/f0': 181} OK
+SkeletonBalloon@evolution form 1 issued 5 unnamed {}
+    81 flags 0 child skeletons | fv4 {'skeleton_barrel/f0': 489} | fv5 {'skeletons/f0': 489} OK
+    532 flags 0 parent skeleton_barrel | fv4 {'skeleton_barrel/f0': 137} | fv5 {'skeleton_barrel/f0': 137} OK
+    665 flags 8 parent skeleton_barrel | fv4 {'skeleton_barrel/f1': 45} | fv5 {'skeleton_barrel/f1': 45} OK
+GoblinGiant form 0 issued 4 unnamed {}
+    133 flags 0 child spear_goblins | fv4 {'goblin_giant/f0': 503} | fv5 {'spear_goblins/f0': 503} OK
+    3110 flags 0 parent goblin_giant | fv4 {'goblin_giant/f0': 233} | fv5 {'goblin_giant/f0': 233} OK
+GoblinGiant@evolution form 1 issued 4 unnamed {}
+    133 flags 0 child spear_goblins | fv4 {'goblin_giant/f0': 514} | fv5 {'spear_goblins/f0': 514} OK
+    202 flags 0 child goblins | fv4 {'goblin_giant/f0': 14} | fv5 {'goblins/f0': 14} OK
+    3110 flags 0 parent goblin_giant | fv4 {'goblin_giant/f0': 147} | fv5 {'goblin_giant/f0': 147} OK
+    3110 flags 8 parent goblin_giant | fv4 {'goblin_giant/f1': 85} | fv5 {'goblin_giant/f1': 85} OK
+GoblinCage form 0 issued 4 unnamed {}
+    780 flags 0 parent goblin_cage | fv4 {'goblin_cage/f0': 92} | fv5 {'goblin_cage/f0': 92} OK
+    1121 flags 0 child_no_class goblin_cage | fv4 {'goblin_cage/f0': 200} | fv5 {'goblin_cage/f0': 200} OK
+GoblinCage@evolution form 1 issued 4 unnamed {}
+    780 flags 0 parent goblin_cage | fv4 {'goblin_cage/f0': 79} | fv5 {'goblin_cage/f0': 79} OK
+    780 flags 8 parent goblin_cage | fv4 {'goblin_cage/f1': 13} | fv5 {'goblin_cage/f1': 13} OK
+    1080 flags 0 child_no_class goblin_cage | fv4 {'goblin_cage/f0': 57} | fv5 {'goblin_cage/f0': 57} OK
+    1121 flags 0 child_no_class goblin_cage | fv4 {'goblin_cage/f0': 139} | fv5 {'goblin_cage/f0': 139} OK
+Phoenix form 0 issued 4 unnamed {}
+    1052 flags 0 parent phoenix | fv4 {'phoenix/f0': 274} | fv5 {'phoenix/f0': 274} OK
+WitchMother form 0 issued 4 unnamed {}
+    529 flags 0 parent mother_witch | fv4 {'mother_witch/f0': 241} | fv5 {'mother_witch/f0': 241} OK
+    629 flags 0 child mother_witch_hog | fv4 {'mother_witch/f0': 49} | fv5 {'mother_witch_hog/f0': 49} OK
+SkeletonKing form 0 issued 4 unnamed {}
+    2298 flags 16 parent skeleton_king | fv4 {'skeleton_king/f2': 309} | fv5 {'skeleton_king/f2': 309} OK

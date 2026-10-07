@@ -1,0 +1,75 @@
+unnamed troop rows logged (dropped by to_observe): 218
+fv5 with forwarded -1 rows, mapped: {'goblins': 166, 'mother_witch_hog': 52}
+name            role       | fv4 seen     ok as_par  drop | fv5 seen     ok as_par  form0 hp_unk  drop
+BarbarianHut    child      |    10011      0  10011     0 |    10011  10011      0  10011      0     0
+BarbarianHut    parent     |     3819   3819   3819     0 |     3819   3819   3819   3819      0     0
+DarkWitch       child      |     4015      0   4015     0 |     4015   4015      0   4015      0     0
+DarkWitch       parent     |     1740   1740   1740     0 |     1740   1740   1740   1740      0     0
+FirespiritHut   child      |     2925      0   2925     0 |     2925   2925      0   2925      0     0
+FirespiritHut   parent     |     4745   4745   4745     0 |     4745   4745   4745   4699      0     0
+GoblinDrill     child      |      519      0    519     0 |      519    519      0    519      0     0
+GoblinDrill     parent     |      882    882    882     0 |      882    882    882    785      0     0
+GoblinGiant     child      |     6325      0   6325     0 |     6325   6325      0   6325      0     0
+GoblinGiant     parent     |     2844   2844   2844     0 |     2844   2844   2844   2523      0     0
+GoblinHut       child      |     3677      0   3677     0 |     3677   3677      0   3677      0     0
+GoblinHut       parent     |     2951   2951   2951     0 |     2951   2951   2951   2951      0     0
+GoblinHut       unreadable |        0      0      0     1 |        1      1      1      1      1     0
+Graveyard       child      |     4989   4989      0     0 |     4989   4989      0   4989      0     0
+Phoenix         child      |      518    518    518     0 |      518    518    518    518      0     0
+Phoenix         parent     |     3690   3690   3690     0 |     3690   3690   3690   3690      0     0
+SkeletonBalloon child      |     7022      0   7022     0 |     7022   7022      0   7022      0     0
+SkeletonBalloon parent     |     2188   2188   2188     0 |     2188   2188   2188   1959      0     0
+SkeletonKing    child      |     3214      0   3214     0 |     3214   3214      0   3214      0     0
+SkeletonKing    parent     |     6532   6532   6532     0 |     6532   6532   6532   6532      0     0
+Tombstone       child      |    15651      0  15651     0 |    15651  15651      0  15651      0     0
+Tombstone       parent     |     6658   6658   6658     0 |     6658   6658   6658   3592   1564     0
+Tombstone       unreadable |        0      0      0  1572 |     1572   1572   1572      1      8     0
+Witch           child      |    47796      0  47796     0 |    47796  47796      0  47796      0     0
+Witch           parent     |    15325  15325  15325     0 |    15325  15325  15325  13795      0     0
+Witch           unreadable |        0      0      0  1214 |     1214   1214   1214      0   1214     0
+WitchMother     parent     |      660    660    660     0 |      660    660    660    660      0     0
+parent-class tokens per readable parent body-frame (fv4 -> fv5):
+  BarbarianHut     3.62 ->  1.00  (readable parent body-frames 3819)
+  DarkWitch        3.31 ->  1.00  (readable parent body-frames 1740)
+  FirespiritHut    1.62 ->  1.00  (readable parent body-frames 4745)
+  GoblinDrill      1.59 ->  1.00  (readable parent body-frames 882)
+  GoblinGiant      3.22 ->  1.00  (readable parent body-frames 2844)
+  GoblinHut        2.25 ->  1.00  (readable parent body-frames 2951)
+  Phoenix          1.14 ->  1.14  (readable parent body-frames 3690)
+  SkeletonBalloon  4.21 ->  1.00  (readable parent body-frames 2188)
+  SkeletonKing     1.49 ->  1.00  (readable parent body-frames 6532)
+  Tombstone        3.35 ->  1.00  (readable parent body-frames 6658)
+  Witch            4.12 ->  1.00  (readable parent body-frames 15325)
+  WitchMother      1.00 ->  1.00  (readable parent body-frames 660)
+resolve reason/how (body-frames):
+   ('BarbarianHut', 'child', 'exact') 10011
+   ('BarbarianHut', 'parent', 'exact') 3819
+   ('DarkWitch', 'child', 'exact') 4015
+   ('DarkWitch', 'parent', 'exact') 1740
+   ('FirespiritHut', 'child', 'exact') 2388
+   ('FirespiritHut', 'child', 'parent_level') 526
+   ('FirespiritHut', 'child', 'tower_level') 11
+   ('FirespiritHut', 'parent', 'exact') 4745
+   ('GoblinDrill', 'child', 'exact') 519
+   ('GoblinDrill', 'parent', 'exact') 882
+   ('GoblinGiant', 'child', 'exact') 6325
+   ('GoblinGiant', 'parent', 'exact') 2844
+   ('GoblinHut', 'child', 'exact') 3677
+   ('GoblinHut', 'parent', 'exact') 2951
+   ('GoblinHut', 'unreadable', 'exact') 1
+   ('Graveyard', 'legacy', 'exact') 4989
+   ('Phoenix', 'child_no_class', 'exact') 518
+   ('Phoenix', 'parent', 'exact') 3690
+   ('SkeletonBalloon', 'child', 'exact') 7022
+   ('SkeletonBalloon', 'parent', 'exact') 2188
+   ('SkeletonKing', 'child', 'exact') 3214
+   ('SkeletonKing', 'parent', 'exact') 6532
+   ('Tombstone', 'child', 'exact') 15651
+   ('Tombstone', 'parent', 'exact') 6472
+   ('Tombstone', 'unknown_hp', 'exact') 186
+   ('Tombstone', 'unreadable', 'exact') 1572
+   ('Witch', 'child', 'exact') 47796
+   ('Witch', 'parent', 'exact') 15325
+   ('Witch', 'unreadable', 'exact') 1214
+   ('WitchMother', 'parent', 'exact') 660
+unmapped {4: ['13000043', '203000042'], 5: ['13000043', '203000042']}
