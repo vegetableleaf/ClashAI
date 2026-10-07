@@ -3873,6 +3873,19 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   14.2->14.7% and lost ghost 285->279/278 -> rejected; area aim neutral. => levers in evidence order: (1) elixir
 >   banking via phase-wise tau (OT Rocket gap ~all eligibility); (2) X-Bow placement CLASS decision (sample defensive vs
 >   offensive by the model's own class mass, argmax cell within class) for lead protection; (3) Rocket card ranking.
+> * **DECODE OPTIONS BUILT, NOT MERGED (worker opus; branch `worktree-agent-a702c1f709275e407` @d359296, worktree
+>   `.claude/worktrees/agent-a702c1f709275e407`).** pipeline/decision_options.py: `tau_phase` (1x/2x/OT gate) and
+>   `xbow_class class_sample` (floor f: draw defensive-vs-offensive by the model's own class mass only if
+>   min(D,1-D) >= f, then argmax cell within the class); e1_eval/search_s0 `decision_active` = options.active; 15 new
+>   tests pass, test_rl_royale 37/37; 9 pre-existing decision_options tests need untracked data (run after merge, incl.
+>   the real-sim path). Offline (R1e, 38,317 val rows): tau_phase B (.35/.45/.55) cuts OT over-play +15.5 -> +2.8 pp vs
+>   pros, agreement +1.1 pp; xbow_class f=.3 -> defensive 12.6% -> 25.0% (pros 27.2%), class agreement -0.5 [-2.7,+1.9]
+>   pp, never draws a class with mass < .3. Blind verifier running. MERGE ONLY AFTER chain2 FINISHES (chain2 launches
+>   e1_eval/search_s0 processes). Ghost A/B needs `L71/decision_options/run_screen_v2.py` with its line-88 activation
+>   switched to options.active. PRE-REGISTERED chain3 (on the deployed checkpoint, engine 20261006, each option alone
+>   vs a same-script control): adopt iff reactive total >= control +3 of 96 AND ghost ci_hi >= 0 AND behaviour toward
+>   pros (tau_phase: 2x/OT elixir at play up; xbow_class: defensive share up). If tau .45 (chain2) and B both pass,
+>   keep the higher reactive total (tie: higher ghost delta). Two adopted options -> one combined confirmation run.
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
