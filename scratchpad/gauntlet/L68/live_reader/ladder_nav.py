@@ -266,7 +266,8 @@ class LadderNav:
         if s in ("unknown", "loading"):
             self.unknown_since = self.unknown_since if self.unknown_since is not None else now
             idle = now - self.unknown_since
-            if self.choose_flow:                  # owner 2026-10-07: never tap blind inside the reward choice
+            if self.choose_flow and self.picked_at is None:   # owner 2026-10-07: never tap blind until a card is
+                # picked; after the pick only the card reveal ('tap to continue', live 17:23) follows -> normal tap-through
                 if idle > self.FLOW_UNKNOWN_S:
                     return ("stop", f"{ALERT}: {s} screen for {self.FLOW_UNKNOWN_S:.0f} s after the trophy-road "
                                     f"Choose / card tap -- not tapping blind")

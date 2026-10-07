@@ -86,7 +86,9 @@ nav.acted("reward_card", 2)
 assert nav.plan(CHOICE, 5)[0] == "wait" and nav.choose_flow
 p = nav.plan(CHOICE, 10.5)                                # still on the choice 8 s after the tap: stop + alert
 assert p[0] == "stop" and p[1].startswith(ALERT) and ("left", "right")[nav.pick] in p[1]
-assert all(nav.plan(UNK, t)[0] == "wait" for t in (11, 15)) and nav.plan(UNK, 21.5)[0] == "stop"
+# after the pick: the card reveal ("tap to continue", live MuMu 2026-10-07) is tapped through normally
+p = nav.plan(UNK, 11)
+assert p[0] == "wait" and nav.plan(UNK, 13.6)[1] == "tap_through", p
 # back on the path after the pick: the flow is over, the normal Trophy Road scan / OK continues
 nav = LadderNav(0, {}, random.Random(3))
 nav.acted("choose", 1)
@@ -106,7 +108,7 @@ nav = LadderNav(0, {})
 assert nav.plan(UNK, 1)[0] == "wait" and nav.plan(UNK, 3.6)[1] == "tap_through"
 print("planner ok")
 
-# 4. runner end to end on real frames, fake device: path -> Choose -> choice -> card -> unrecognised -> stop + alert
+# 4. runner end to end on real frames, fake device: path -> Choose -> unrecognised (no choice screen) -> stop + alert
 frames = {"path": POS["path_fith_s100"], "choice": POS["choice_fith_s100"],
           "unknown": cv2.imread(str(RAW / "s_c.png"))}
 screen, taps, alerts, clock = ["path"], [], [], [1000.0]
@@ -114,7 +116,7 @@ screen, taps, alerts, clock = ["path"], [], [], [1000.0]
 
 def fake_run(cmd, **k):
     taps.append(cmd[-1])
-    screen[0] = {"path": "choice", "choice": "unknown"}[screen[0]]
+    screen[0] = {"path": "unknown"}[screen[0]]
     return types.SimpleNamespace(stdout=b"", returncode=0)
 
 
@@ -131,14 +133,13 @@ try:
 finally:
     ladder_nav.grab, ladder_nav.subprocess, ladder_nav.time = saved
 log = [json.loads(x) for x in next(d.glob("ladder_nav_*.jsonl")).read_text().splitlines()]
-pick = next(e for e in log if e["event"] == "reward_pick")
-card = clf.classify(frames["choice"])["cards"][("left", "right").index(pick["side"])]
+assert not any(e["event"] == "reward_pick" for e in log)
 assert not ok and why.startswith(ALERT), why
-assert len(taps) == 2 and taps[0].startswith("input tap") and taps[1] == "input tap {} {}".format(*map(round, card)), taps
+assert len(taps) == 1 and taps[0].startswith("input tap"), taps
 assert len(alerts) == 1 and alerts[0][1] is not None and alerts[0][1].exists() and ALERT in alerts[0][0]
 assert any(e["event"] == "alert" and e["sent"] for e in log)
-assert sorted(x.name[:-len("_000000.png")].split("_", 3)[-1] for x in (d / "ladder_unknown").glob("*.png")) == ["choose", "reward_card"]
-print(f"runner ok: seed 11 picked the {pick['side']} card at {pick['point']}; taps {taps}; stop: {why}")
+assert sorted(x.name[:-len("_000000.png")].split("_", 3)[-1] for x in (d / "ladder_unknown").glob("*.png")) == ["choose"]
+print(f"runner ok: Choose then an unknown screen -> taps {taps}; stop: {why}")
 
 # 5. the alert poster never raises and never prints the webhook (missing secret -> False)
 ladder_nav.WEBHOOK, w0 = Path("/nonexistent/discord_webhook.txt"), ladder_nav.WEBHOOK
