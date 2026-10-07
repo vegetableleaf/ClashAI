@@ -3930,6 +3930,11 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   pass. OPEN: IceCube (third 203000023 object, behaviour_state_raw 0 in 31/31 vs 0/652 heroes) still reads as a hero;
 >   absent from the 1,095 recorded frames; a fix needs the test_reader_identity_aliases fixture changed (hero there has
 >   behaviour 0). hero_button picks the first of two real heroes (which one the ability uses is unmeasured).
+> * **TROPHY LOGGING READY, NOT MERGED (worker sonnet; branch `worktree-agent-a5f1f218347226bfc` @9dbaf84).** Digit
+>   matcher (numpy/cv2, 34 exemplars, no OCR dependency): main-menu total 65/65 (leave-one-out), results delta 15/15,
+>   0 false reads on 169 other screens, ~1 ms per read. Sign from the existing WINNER flag. Events: outcome gains
+>   trophies_delta/trophies_abs/trophy_ms; new event "trophies" with trophies_total. Opt-out --no-trophy-log (5-line
+>   live_play.py edit). Account total read 00:2x 10-07: **11,222**. Blind verifier (trophies + hero dedupe) running.
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
