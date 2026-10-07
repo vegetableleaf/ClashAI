@@ -4091,6 +4091,10 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   SAMPLE or the k continuations are identical. Cost ~350 s per k=16 label per contended laptop worker -> on the VM:
 >   branch workers must run CONTINUOUSLY (also during the 95-117 s CPU learner step), not only in the ~20-30 s rollout
 >   window -> T3 redesign requested (async branch workers, outcome k=16).
+> * **VM PARITY CONFIRMED end to end:** R1e's 299-replay ghost screen on the VM (20261006-linux, CPU) vs the laptop
+>   (20261006, CUDA): 299/299 identical outcome + crowns (292 wins each). VM R1e baselines (48 seeds): census 23+41 =
+>   64/96, ladder 27+41 = 68/96 (`~/eval/` on the VM, `~/eval_vm.sh` helpers: react/screen, CPU, 16-24 workers).
+>   A single-process screen takes ~15 min on the VM; 192 reactive games take ~1 min.
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
