@@ -261,6 +261,8 @@ def main() -> int:
                          "day's 4th win OK -> open the chests -> Battle) instead of friendlies")
     ap.add_argument("--wins-today", type=int, default=None,
                     help="ladder: set today's win count (daily chests come with wins 1-4); default = ladder_state.json")
+    ap.add_argument("--no-trophy-log", action="store_true",
+                    help="ladder: do not read the trophy counter / per-match trophy change (passive logging, default on)")
     ap.add_argument("--clip-every", type=float, default=0.0,
                     help="seconds; > 0: record ONLY the first match and then one match every this many seconds, and post a 60-s "
                          "overlaid clip of it to Discord (discord_clip.py) -- all other matches unrecorded")
@@ -298,7 +300,8 @@ def main() -> int:
     if a.matches > 1 or a.nav_dry_run:
         if a.ladder:
             from ladder_nav import LadderNavRunner
-            nav = LadderNavRunner(ADB, dry_run=a.nav_dry_run, wins_today=a.wins_today)
+            nav = LadderNavRunner(ADB, dry_run=a.nav_dry_run, wins_today=a.wins_today,
+                                  trophy_log=not a.no_trophy_log)
         else:
             from friend_nav import FriendNav
             nav = FriendNav(ADB, a.friend, dry_run=a.nav_dry_run,   # validates the template-bound friend name

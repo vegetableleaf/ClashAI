@@ -243,9 +243,17 @@ class LadderNavRunner:
     NAV_SCREENS = {"results", "main", "popup_x", "modes", "trophy_road", "conn_lost"}
 
     def __init__(self, adb: list[str], dry_run: bool = False, log_dir: Path = HERE, state_path: Path = STATE,
-                 wins_today: int | None = None):
+                 wins_today: int | None = None, trophy_log: bool = True):
         self.adb, self.dry_run, self.log_dir, self.state_path = adb, dry_run, log_dir, state_path
         self.clf = Classifier()
+        self.trophy = None                       # passive trophy reader (trophy_read.py); None = off or digit bank missing
+        self.trophies_total: int | None = None   # last main-menu trophy counter read
+        if trophy_log:
+            try:
+                import trophy_read
+                self.trophy = trophy_read.load()
+            except Exception:                    # noqa: BLE001 -- passive logging never blocks navigation
+                self.trophy = None
         self.st = load_state(state_path)
         if wins_today is not None:
             self.st["wins_today"] = wins_today
@@ -256,6 +264,18 @@ class LadderNavRunner:
             tmp = self.state_path.with_suffix(".tmp")
             tmp.write_text(json.dumps(self.st))
             tmp.replace(self.state_path)
+
+    def read_trophy(self, kind: str, img):
+        """Passive, timed read: kind 'total' (main menu counter) or 'delta' (results-screen change, magnitude).
+        -> (value | None, ms). Any failure is None; never raises."""
+        if self.trophy is None or img is None:
+            return None, 0.0
+        t0 = time.perf_counter()
+        try:
+            v = getattr(self.trophy, kind)(img)
+        except Exception:                        # noqa: BLE001
+            v = None
+        return v, round(1000 * (time.perf_counter() - t0), 2)
 
     def probe(self, seconds: float = 8.0) -> str | None:
         t_end = time.time() + seconds
@@ -277,6 +297,7 @@ class LadderNavRunner:
             log.write(json.dumps({"t": round(time.time(), 2), **k}, default=str) + "\n")
             log.flush()
         nav, prev, last, reported = LadderNav(time.time(), self.st), None, None, False
+        d_pending, d_tries, total_tries, total_done = False, 0, 0, False   # passive trophy reads (see read_trophy)
         W(event="nav_start", dry_run=self.dry_run, state={k: v for k, v in self.st.items()})
         try:
             while True:
@@ -286,10 +307,33 @@ class LadderNavRunner:
                 if scr["screen"] == "results" and nav.counted and not reported:
                     reported, outcome = True, scr["won"]
                     self.last_outcome = outcome
-                    W(event="outcome", won=outcome, state=dict(self.st))
+                    mag, ms = self.read_trophy("delta", img)
+                    delta = None if mag is None or outcome is None else (mag if outcome else -mag)   # sign = WINNER banner
+                    d_pending = self.trophy is not None and delta is None and outcome is not None
+                    extra = {} if self.trophy is None else {"trophies_delta": delta, "trophies_abs": mag,
+                                                            "trophy_ms": ms}     # --no-trophy-log: event unchanged
+                    W(event="outcome", won=outcome, **extra, state=dict(self.st))
+                    tro = "" if self.trophy is None else f"  trophies {delta:+d}" if delta is not None else "  trophies n/a"
                     print(f"[ladder] result: {'WIN' if outcome else 'LOSS' if outcome is False else 'draw/unread'}"
                           f"  (session W{self.st.get('W', 0)} L{self.st.get('L', 0)} D{self.st.get('D', 0)}, "
-                          f"wins today {self.st.get('wins_today', 0)})", flush=True)
+                          f"wins today {self.st.get('wins_today', 0)}){tro}", flush=True)
+                elif d_pending and scr["screen"] == "results" and d_tries < 4:
+                    # the banner may still be animating on the first results frame: retry on the next few (we are
+                    # still on this screen until the Play Again tap), then give up with the null already logged
+                    d_tries += 1
+                    mag, ms = self.read_trophy("delta", img)
+                    if mag is not None and self.last_outcome is not None:
+                        d_pending, delta = False, mag if self.last_outcome else -mag
+                        W(event="trophies", trophies_delta=delta, trophies_abs=mag, trophy_ms=ms, retry=d_tries)
+                        print(f"[ladder] trophies: {delta:+d}", flush=True)
+                if scr["screen"] == "main" and p[:2] == ("act", "battle") and not total_done and total_tries < 3:
+                    total_tries += 1       # the main screen is stable here (planner waited STABLE_N frames)
+                    tot, ms = self.read_trophy("total", img)
+                    if self.trophy is not None:
+                        W(event="trophies", trophies_total=tot, trophy_ms=ms)     # null = failed read
+                    if tot is not None:
+                        total_done, self.trophies_total = True, tot
+                        print(f"[ladder] trophies: {tot} total", flush=True)
                 if (scr["screen"], p[:2]) != last:
                     W(event="screen", screen=scr["screen"], plan=p, scores=scr["scores"],
                       bonus=scr.get("bonus"), won=scr.get("won"))

@@ -1,0 +1,407 @@
+{
+ "main_00.png": {
+  "kind": "main",
+  "value": 10793,
+  "src": "20261003_155610_00.png"
+ },
+ "main_01.png": {
+  "kind": "main",
+  "value": 10815,
+  "src": "20261003_162856_00.png"
+ },
+ "main_02.png": {
+  "kind": "main",
+  "value": 10904,
+  "src": "20261003_170012_06.png"
+ },
+ "main_03.png": {
+  "kind": "main",
+  "value": 11000,
+  "src": "20261003_173647_06.png"
+ },
+ "main_04.png": {
+  "kind": "main",
+  "value": 11000,
+  "src": "20261003_181042_00.png"
+ },
+ "main_05.png": {
+  "kind": "main",
+  "value": 11031,
+  "src": "20261003_184128_05.png"
+ },
+ "main_06.png": {
+  "kind": "main",
+  "value": 11178,
+  "src": "20261003_191353_07.png"
+ },
+ "main_07.png": {
+  "kind": "main",
+  "value": 11086,
+  "src": "20261003_194650_00.png"
+ },
+ "main_08.png": {
+  "kind": "main",
+  "value": 11118,
+  "src": "20261003_201808_00.png"
+ },
+ "main_09.png": {
+  "kind": "main",
+  "value": 11000,
+  "src": "20261003_205038_00.png"
+ },
+ "main_10.png": {
+  "kind": "main",
+  "value": 11011,
+  "src": "20261003_212320_00.png"
+ },
+ "main_11.png": {
+  "kind": "main",
+  "value": 11030,
+  "src": "20261003_215523_00.png"
+ },
+ "main_12.png": {
+  "kind": "main",
+  "value": 11000,
+  "src": "20261003_222731_00.png"
+ },
+ "main_13.png": {
+  "kind": "main",
+  "value": 11014,
+  "src": "20261003_230030_00.png"
+ },
+ "main_14.png": {
+  "kind": "main",
+  "value": 11119,
+  "src": "20261003_233413_00.png"
+ },
+ "main_15.png": {
+  "kind": "main",
+  "value": 11092,
+  "src": "20261004_000429_00.png"
+ },
+ "main_16.png": {
+  "kind": "main",
+  "value": 11152,
+  "src": "20261004_002548_24.png"
+ },
+ "main_17.png": {
+  "kind": "main",
+  "value": 11152,
+  "src": "20261004_010015_00.png"
+ },
+ "main_18.png": {
+  "kind": "main",
+  "value": 11128,
+  "src": "20261004_013234_00.png"
+ },
+ "main_19.png": {
+  "kind": "main",
+  "value": 11157,
+  "src": "20261004_020439_00.png"
+ },
+ "main_20.png": {
+  "kind": "main",
+  "value": 11190,
+  "src": "20261004_023718_00.png"
+ },
+ "main_21.png": {
+  "kind": "main",
+  "value": 11166,
+  "src": "20261004_030941_00.png"
+ },
+ "main_22.png": {
+  "kind": "main",
+  "value": 11167,
+  "src": "20261004_094308_00.png"
+ },
+ "main_23.png": {
+  "kind": "main",
+  "value": 11109,
+  "src": "20261004_101611_00.png"
+ },
+ "main_24.png": {
+  "kind": "main",
+  "value": 11107,
+  "src": "20261004_110530_00.png"
+ },
+ "main_25.png": {
+  "kind": "main",
+  "value": 11136,
+  "src": "20261004_113610_00.png"
+ },
+ "main_26.png": {
+  "kind": "main",
+  "value": 11084,
+  "src": "20261004_120935_00.png"
+ },
+ "main_27.png": {
+  "kind": "main",
+  "value": 11122,
+  "src": "20261004_124135_00.png"
+ },
+ "main_28.png": {
+  "kind": "main",
+  "value": 11003,
+  "src": "20261004_131201_00.png"
+ },
+ "main_29.png": {
+  "kind": "main",
+  "value": 11130,
+  "src": "20261004_211843_00.png"
+ },
+ "main_30.png": {
+  "kind": "main",
+  "value": 11132,
+  "src": "20261004_215052_00.png"
+ },
+ "main_31.png": {
+  "kind": "main",
+  "value": 11164,
+  "src": "20261004_222404_00.png"
+ },
+ "main_32.png": {
+  "kind": "main",
+  "value": 11132,
+  "src": "20261004_225902_00.png"
+ },
+ "main_33.png": {
+  "kind": "main",
+  "value": 11030,
+  "src": "20261005_071639_18.png"
+ },
+ "main_34.png": {
+  "kind": "main",
+  "value": 11030,
+  "src": "20261005_074822_00.png"
+ },
+ "main_35.png": {
+  "kind": "main",
+  "value": 11038,
+  "src": "20261005_081841_00.png"
+ },
+ "main_36.png": {
+  "kind": "main",
+  "value": 11223,
+  "src": "20261005_085139_00.png"
+ },
+ "main_37.png": {
+  "kind": "main",
+  "value": 11141,
+  "src": "20261005_092427_00.png"
+ },
+ "main_38.png": {
+  "kind": "main",
+  "value": 11117,
+  "src": "20261005_095732_00.png"
+ },
+ "main_39.png": {
+  "kind": "main",
+  "value": 11057,
+  "src": "20261005_102900_00.png"
+ },
+ "main_40.png": {
+  "kind": "main",
+  "value": 11146,
+  "src": "20261005_110227_00.png"
+ },
+ "main_41.png": {
+  "kind": "main",
+  "value": 11000,
+  "src": "20261005_113359_00.png"
+ },
+ "main_42.png": {
+  "kind": "main",
+  "value": 11067,
+  "src": "20261005_120513_00.png"
+ },
+ "main_43.png": {
+  "kind": "main",
+  "value": 11102,
+  "src": "20261005_123641_00.png"
+ },
+ "main_44.png": {
+  "kind": "main",
+  "value": 11155,
+  "src": "20261005_130710_00.png"
+ },
+ "main_45.png": {
+  "kind": "main",
+  "value": 11062,
+  "src": "20261006_153917_00.png"
+ },
+ "main_46.png": {
+  "kind": "main",
+  "value": 11060,
+  "src": "20261006_161112_00.png"
+ },
+ "main_47.png": {
+  "kind": "main",
+  "value": 11062,
+  "src": "20261006_164332_00.png"
+ },
+ "main_48.png": {
+  "kind": "main",
+  "value": 11121,
+  "src": "20261006_171403_00.png"
+ },
+ "main_49.png": {
+  "kind": "main",
+  "value": 11159,
+  "src": "20261006_201417_00.png"
+ },
+ "main_50.png": {
+  "kind": "main",
+  "value": 11189,
+  "src": "20261006_204622_00.png"
+ },
+ "main_51.png": {
+  "kind": "main",
+  "value": 11248,
+  "src": "20261006_212353_00.png"
+ },
+ "main_52.png": {
+  "kind": "main",
+  "value": 10132,
+  "src": "after_ok_131638.png"
+ },
+ "main_53.png": {
+  "kind": "main",
+  "value": 10132,
+  "src": "test_now_125953.png"
+ },
+ "main_54.png": {
+  "kind": "main",
+  "value": 10189,
+  "src": "main2.png"
+ },
+ "main_55.png": {
+  "kind": "main",
+  "value": 10159,
+  "src": "main3.png"
+ },
+ "main_56.png": {
+  "kind": "main",
+  "value": 10159,
+  "src": "main4.png"
+ },
+ "main_57.png": {
+  "kind": "main",
+  "value": 10159,
+  "src": "ok_1.png"
+ },
+ "main_58.png": {
+  "kind": "main",
+  "value": 10159,
+  "src": "ok_2.png"
+ },
+ "main_59.png": {
+  "kind": "main",
+  "value": 10159,
+  "src": "ok_3.png"
+ },
+ "main_60.png": {
+  "kind": "main",
+  "value": 10159,
+  "src": "ok_4.png"
+ },
+ "main_61.png": {
+  "kind": "main",
+  "value": 10159,
+  "src": "ok_5.png"
+ },
+ "main_62.png": {
+  "kind": "main",
+  "value": 10159,
+  "src": "ok_6.png"
+ },
+ "main_63.png": {
+  "kind": "main",
+  "value": 10189,
+  "src": "pre_battle.png"
+ },
+ "main_live_idle.png": {
+  "kind": "main",
+  "value": 11222,
+  "src": "adb screencap 2026-10-07 (read-only)"
+ },
+ "result_00.png": {
+  "kind": "result",
+  "value": 30,
+  "src": "L70/ladder_nav/raw/res_1.png"
+ },
+ "result_01.png": {
+  "kind": "result",
+  "value": 30,
+  "src": "L70/ladder_nav/raw/res_2.png"
+ },
+ "result_02.png": {
+  "kind": "result",
+  "value": 30,
+  "src": "L70/ladder_nav/raw/res_3.png"
+ },
+ "result_03.png": {
+  "kind": "result",
+  "value": 30,
+  "src": "L70/ladder_nav/raw/res_4.png"
+ },
+ "result_04.png": {
+  "kind": "result",
+  "value": 30,
+  "src": "L70/ladder_nav/raw/res_5.png"
+ },
+ "result_05.png": {
+  "kind": "result",
+  "value": 30,
+  "src": "L70/ladder_nav/raw/res_6.png"
+ },
+ "result_06.png": {
+  "kind": "result",
+  "value": 30,
+  "src": "L70/ladder_nav/raw/res_7.png"
+ },
+ "result_07.png": {
+  "kind": "result",
+  "value": 30,
+  "src": "L70/ladder_nav/raw/res_8.png"
+ },
+ "result_08.png": {
+  "kind": "result",
+  "value": 28,
+  "src": "L69/nav/raw_ranked/ranked_results_105635_1_last.png"
+ },
+ "result_09.png": {
+  "kind": "result",
+  "value": 31,
+  "src": "L69/nav/raw_ranked/ranked_results_120517_1_last.png"
+ },
+ "result_10.png": {
+  "kind": "result",
+  "value": 30,
+  "src": "L69/nav/raw_ranked/ranked_results_121534_1_last.png"
+ },
+ "result_11.png": {
+  "kind": "result",
+  "value": 30,
+  "src": "L69/nav/raw_ranked/ranked_results_121856_1_last.png"
+ },
+ "result_12.png": {
+  "kind": "result",
+  "value": 29,
+  "src": "L69/nav/raw_ranked/ranked_results_122228_1_last.png"
+ },
+ "result_13.png": {
+  "kind": "result",
+  "value": 30,
+  "src": "L69/nav/raw_ranked/ranked_results_122643_1_last.png"
+ },
+ "result_14.png": {
+  "kind": "result",
+  "value": 30,
+  "src": "L69/nav/raw_ranked/ranked_results_150349_1_last.png"
+ },
+ "result_none_friendly.png": {
+  "kind": "result",
+  "value": null,
+  "src": "L69/nav/raw/results_131619.png"
+ }
+}
