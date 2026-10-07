@@ -1,0 +1,16 @@
+﻿[     0s] val rows 38317 pro X-Bow rows 1098
+python.exe : C:\Users\benpe\ClashBot\.claude\worktrees\agent-a702c1f709275e407\pipeline\model_v3.py:92: UserWarning: 
+enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+At line:1 char:302
++ ... tch {} } }; & C:\Users\benpe\ClashBot\icebow\.venv\Scripts\python.exe ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C:\Users\benpe\..._first was True:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  self.encoder = nn.TransformerEncoder(enc, layers)
+[    69s] fwd 0 / 1098
+[    71s] fwd 256 / 1098
+[    73s] fwd 512 / 1098
+[    75s] fwd 768 / 1098
+[    76s] fwd 1024 / 1098
+[    77s] saved C:/Users/benpe/AppData/Local/Temp/claude/C--Users-benpe-ClashBot/f4e7cd66-2122-4134-a1d2-d45291b5bc2a/scratchpad/xbow_logits.npz

@@ -295,7 +295,7 @@ def random_decide(rng: random.Random, allowed: np.ndarray, p_random: float) -> d
 
 
 def live_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.ndarray, *, tau: float,
-                       device: str = "cpu", decision_options=None, rngs=None, card_names=None) -> list[dict]:
+                       device: str = "cpu", decision_options=None, rngs=None, card_names=None, **context) -> list[dict]:
     """``live_decide`` over every row of a shared forward at once. The card argmax and the p-vs-tau compare are
     elementwise (bit-identical to a per-row loop); ONE ``cell_logits`` call covers every row that plays, so this
     is O(1) GPU calls per round, not O(matches) (L68e)."""
@@ -303,7 +303,8 @@ def live_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.nda
     if decision_options is not None and decision_options.active:
         from .decision_options import decide_batch
         return decide_batch(model, enc, heads, p, allowed, stalled, tau=tau, device=device,
-                            options=decision_options, rngs=rngs or [None] * len(allowed), card_names=card_names)
+                            options=decision_options, rngs=rngs or [None] * len(allowed), card_names=card_names,
+                            **context)
     B = allowed.shape[0]
     p = np.asarray(p, dtype=np.float64)
     any_allowed = allowed.any(axis=1)
@@ -1392,9 +1393,9 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv=None) -> int:
     a = build_parser().parse_args(argv)
     refuse_existing_out(a.out, a.resume)                 # FIRST: nothing is loaded or connected before this check
-    from .decision_options import config_from_args
+    from .decision_options import config_from_args, options_from_config
     decision_cfg = config_from_args(a)
-    decision_active = decision_cfg['card_choice'] != 'argmax' or decision_cfg['spell_aim'] != 'argmax'
+    decision_active = options_from_config(decision_cfg).active
     if decision_active and a.policy != 'live':
         raise ValueError('decision options require --policy live')
     if a.mode == "eval" and a.ckpt is None:
