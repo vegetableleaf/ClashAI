@@ -48,7 +48,7 @@ for i in range(n):
             s.prepare()
         dec = {}
         if L in ds:
-            p, d, allowed, enc, heads = RL.side_decide(L, fwd=True)
+            p, d, allowed, _, enc, heads = RL.side_decide(L, fwd=True)
             dec[id(L)] = (p, d, allowed)
             c["decisions"] += 1
             c["plays"] += int(d["play"])

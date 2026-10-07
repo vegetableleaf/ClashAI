@@ -11,6 +11,9 @@
 # them once per update (never waits), drops labels more than branch_max_staleness updates old, keeps a FIFO buffer of
 # branch_buffer and takes ONE gate step on it per update after PPO. Branch-match opponents SAMPLE (league_opp_policy
 # sample at T 0.3; branch_cfg refuses a greedy one). Not applied during critic warm-up (labels are still buffered).
+# Pre-launch fixes (verifier @af5379f): staleness 6 (1x pairs: median ~522 s, max ~1086 s vs ~115-150 s VM updates);
+# band top 0.55 = branch_hold_tau, so HOLD never also plays at the root; stalled points are skipped; the gate step has
+# its OWN Adam (branch_lr null = lr); buffer rows older than branch_buffer_max_age updates are evicted.
 # ---- argv
 init=icebow/data/pipeline/gen_v32_s0/gen_s0.pt
 proagree_data_gen=icebow/data/pipeline/gen_dataset_v32_fv5.npz
@@ -45,16 +48,18 @@ branch_gate=true
 branch_actors=24
 branch_threads=1
 branch_points_per_match=6
-branch_band=[0.2, 0.65]
+branch_band=[0.2, 0.55]
 branch_hold_s=[2, 4, 8]
 branch_hold_tau=0.55
 branch_horizon_s=null
 branch_k=16
 branch_score=outcome
 branch_min_abs_delta=0.25
-branch_max_staleness=3
+branch_max_staleness=6
 branch_buffer=512
 branch_coef=0.1
+branch_lr=2.0e-6
+branch_buffer_max_age=20
 # lever C: potential shaping, Phi = shaping_w_value x the 10 s causal trailing mean of the FROZEN init's (shaping_phi_ckpt
 # unset = init) P(win) - P(loss); residual critic needs shaping_critic_scale >= 1 + w_value (adv_cfg enforces it).
 shaping=value_phi

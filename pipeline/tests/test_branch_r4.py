@@ -30,7 +30,7 @@ from pipeline.decision_options import is_xbow, xbow_offensive_cells
 from pipeline.tests import test_rl_branch as TB
 
 REPO = Path(__file__).resolve().parents[2]
-OPT3_BASE = "af5379f"                       # opt3-branching head R4 is built on (hold-only parity reference)
+OPT3_BASE = "f4621b6"                       # opt3-branching head R4 is built on (hold-only parity reference)
 GRID_X = 36
 
 

@@ -114,10 +114,12 @@ class TestBranchConfig(unittest.TestCase):
         self.assertEqual(c, RL.BRANCH_DEFAULTS)
         self.assertEqual({k: c[k] for k in ("branch_actors", "branch_threads", "branch_k", "branch_score",
                                             "branch_horizon_s", "branch_min_abs_delta", "branch_max_staleness",
-                                            "branch_buffer", "branch_coef", "branch_points_per_match")},
+                                            "branch_buffer", "branch_coef", "branch_points_per_match", "branch_lr",
+                                            "branch_buffer_max_age", "branch_band")},
                          {"branch_actors": 24, "branch_threads": 1, "branch_k": 16, "branch_score": "outcome",
                           "branch_horizon_s": None, "branch_min_abs_delta": 0.25, "branch_max_staleness": 3,
-                          "branch_buffer": 512, "branch_coef": 0.1, "branch_points_per_match": 6})
+                          "branch_buffer": 512, "branch_coef": 0.1, "branch_points_per_match": 6, "branch_lr": None,
+                          "branch_buffer_max_age": 20, "branch_band": [0.2, 0.55]})
         RL.branch_cfg(_gate_cfg())                              # a valid "on" config passes
 
     def test_every_key_rejects_bad_values(self):
@@ -128,6 +130,7 @@ class TestBranchConfig(unittest.TestCase):
                "branch_phi_ckpt": [None, ""], "branch_coef": [-0.1, float("nan"), True],
                "branch_min_abs_delta": [-1, float("inf")], "branch_buffer": [0, 1.5, "512", None],
                "branch_threads": [0, 2.5, None], "branch_max_staleness": [-1, 1.5, None],
+               "branch_lr": [-1e-4, "x", float("nan")], "branch_buffer_max_age": [-1, 2.5, None],
                "branch_kinds": [[], ["play"], ["hold", "hold"], "hold", None], "branch_card_points": [0, 1.5, "6"],
                "branch_xbow_points": [0, None], "branch_card_coef": [-1, float("nan")], "branch_xbow_coef": [-0.5, "x"],
                "branch_rocket_band": [0, 1.5, float("nan"), None], "branch_xbow_floor": [0, 0.6, None]}
@@ -153,6 +156,14 @@ class TestBranchConfig(unittest.TestCase):
                 RL.branch_cfg(_gate_cfg(T=T))
         RL.branch_cfg(_gate_cfg(league_opp_policy="sample"))
         RL.branch_cfg({"league_opp_policy": "live"})             # off: not checked
+
+    def test_band_top_must_not_exceed_hold_tau(self):
+        """band hi > hold_tau: at the root the HOLD branch (gate hold_tau) would also play -- a pair with no
+        difference; refused when the gate is on."""
+        with self.assertRaisesRegex(SystemExit, "branch_band upper edge 0.65 must be <= branch_hold_tau 0.55"):
+            RL.branch_cfg(_gate_cfg(branch_band=[0.2, 0.65]))
+        RL.branch_cfg(_gate_cfg(branch_band=[0.2, 0.55]))
+        RL.branch_cfg({"branch_band": [0.2, 0.65]})               # off: not checked
 
     def test_hold_tau_must_be_stricter_and_outcome_needs_no_ckpt(self):
         with self.assertRaisesRegex(SystemExit, "branch_hold_tau 0.35 must be > tau 0.35"):
@@ -443,10 +454,14 @@ class TestUpdateWithBranch(_UpdateHarness):
         off.one_update(0)
         self.assertFalse(crash)
         self.assertEqual((L.sent, L.branch_pool.drains), ([0], 1))   # weights out at the start, ONE drain
-        # PPO untouched: the same steps with bit-identical gradients, then exactly ONE extra (branch) step
-        self.assertEqual(len(L.grads), len(off.grads) + 1)
+        # PPO untouched: the same steps with bit-identical gradients, its Adam state bit-identical; the ONE branch
+        # step went through the branch's own Adam (one step in its state)
+        self.assertEqual(len(L.grads), len(off.grads))
         for go, gn in zip(off.grads, L.grads):
             self.assertTrue(all(torch.equal(a, b) for a, b in zip(go, gn)))
+        _same_opt_state(self, L.opt, off.opt)
+        self.assertEqual({float(v["step"]) for v in L.branch_opt.state_dict()["state"].values()}, {1.0})
+        self.assertTrue(any(not torch.equal(a, b) for a, b in zip(L.model.parameters(), off.model.parameters())))
         self.assertEqual(rec["first_minibatch"], off.log.recs[-1]["first_minibatch"])
         self.assertEqual((rec["kl_gate"], rec["beta_next"]), (off.log.recs[-1]["kl_gate"], off.log.recs[-1]["beta_next"]))
         b = rec["branch"]
@@ -462,7 +477,7 @@ class TestUpdateWithBranch(_UpdateHarness):
         line = L.log.lines[-1]
         self.assertIn("| branch n 5/6 hold+ 0.600", line)
         self.assertIn("[single 2 0.500", line)
-        self.assertIn(" buf 5 bce ", line)
+        self.assertIn(" buf 5 aged-0 bce ", line)
         self.assertIn("| drained 6 stale-0 lag 0.0 workers 24/24 err 0", line)
 
     def test_staleness_drop(self):
@@ -495,8 +510,72 @@ class TestUpdateWithBranch(_UpdateHarness):
         self.assertEqual(rec["branch"]["buffer"], 0)
         self.assertIn("(no step)", L.log.lines[-1])
         self.assertEqual(len(L.grads), len(off.grads))         # no extra optimizer step
+        self.assertTrue(all(torch.equal(a, b) for a, b in zip(L.model.parameters(), off.model.parameters())))
         st = L._branch_update(self._samples([0.5, -0.5]), RL.branch_cfg(L.cfg), apply=False, u=0)   # warm-up
         self.assertEqual((st["buffer"], st["step"]), (2, None))
+
+    def _after_ppo(self, name, **extra):
+        """A learner after one gate-off update (PPO's Adam holds momentum), with a 5-row buffer ready."""
+        L = self._learner(RL, {**ON, **extra}, name=name)
+        L.branch_pool, L._branch_send = _FakePool(), (lambda u, bc: None)
+        L.one_update(0)
+        return L
+
+    def test_own_optimizer_zero_coef_or_lr_is_bit_identical(self):
+        """The verifier's case: with the SHARED Adam a coef-0 branch step still moved the params by PPO's leftover
+        momentum. Own Adam: coef 0 or branch_lr 0 -> parameters and PPO's Adam state bit-identical."""
+        for extra in ({"branch_coef": 0.0}, {"branch_lr": 0.0}):
+            L = self._after_ppo(f"zero{len(extra)}{list(extra)[0]}", **extra)
+            before = [p.detach().clone() for p in L.model.parameters()]
+            opt_before = copy.deepcopy(L.opt.state_dict())
+            st = L._branch_update(self._samples([0.5, -0.4, 0.3, -0.6, 0.7], version=1), RL.branch_cfg(L.cfg),
+                                  apply=True, u=1)
+            self.assertIsNotNone(st["step"])
+            self.assertIsNone(st["step"]["skipped"])
+            self.assertTrue(all(torch.equal(a, b) for a, b in zip(before, L.model.parameters())), extra)
+            self.assertEqual(st["step"]["dp_abs_mean"], 0.0)
+            _same_opt_state(self, L.opt, SimpleNamespace(state_dict=lambda: opt_before))
+
+    def test_own_optimizer_sign_and_ppo_state_untouched(self):
+        for delta, sign in ((0.6, 1.0), (-0.6, -1.0)):
+            L = self._after_ppo(f"sign{int(sign)}", branch_lr=1e-2, branch_coef=1.0)
+            smp = self._samples([delta] * 4, version=1)
+            Bb = RL.to_device(RL.branch_batch(smp, 0.0), "cpu")
+            p0 = _p_play(L.model, Bb, L.cfg["tau"], L.cfg["T"])
+            opt_before = copy.deepcopy(L.opt.state_dict())
+            L._branch_update(smp, RL.branch_cfg(L.cfg), apply=True, u=1)
+            dp = (_p_play(L.model, Bb, L.cfg["tau"], L.cfg["T"]) - p0).numpy()
+            self.assertTrue((sign * dp > 0).all(), (delta, dp))
+            _same_opt_state(self, L.opt, SimpleNamespace(state_dict=lambda: opt_before))
+
+    def test_branch_optimizer_rides_the_checkpoint(self):
+        L = self._after_ppo("ck", branch_lr=1e-3)
+        L._branch_update(self._samples([0.6, -0.6], version=1), RL.branch_cfg(L.cfg), apply=True, u=1)
+        rl = L._rl_state()
+        self.assertIn("branch_optimizer", rl)
+        path = L.save(None, numbered=False)                     # _latest only (returns None)
+        L2 = self._learner(RL, {**ON, "branch_lr": 1e-3}, name="ck2")
+        L2.branch_opt = L2._branch_optimizer(RL.branch_cfg(L2.cfg))
+        L2._restore(L.ck_dir / "unit_latest.pt")
+        _same_opt_state(self, L2.branch_opt, L.branch_opt)
+        _same_opt_state(self, L2.opt, L.opt)
+        self.assertIsNone(path)
+        off = self._learner(RL, {}, name="ckoff")
+        self.assertNotIn("branch_optimizer", off._rl_state())    # gate off: the checkpoint layout is unchanged
+
+    def test_buffer_rows_age_out(self):
+        """Rows labelled under weights older than u - branch_buffer_max_age are evicted at each drain."""
+        L = self._learner(RL, {**ON, "branch_buffer_max_age": 20, "branch_max_staleness": 100}, name="age")
+        bc = RL.branch_cfg(L.cfg)
+        L._branch_update(self._samples([0.5, -0.5], version=0) + self._samples([0.4], seed=23, version=5), bc,
+                         apply=False, u=5)
+        st = L._branch_update(self._samples([0.3], seed=24, version=21), bc, apply=False, u=21)
+        self.assertEqual((st["buffer"], st["buffer_aged_out"]), (2, 2))      # v0 rows: 21 - 0 > 20
+        self.assertEqual(sorted(x["version"] for x in L.branch_buf), [5, 21])
+        st = L._branch_update([], bc, apply=False, u=25)
+        self.assertEqual((st["buffer"], st["buffer_aged_out"]), (2, 0))      # 25 - 5 = 20: kept at the limit
+        st = L._branch_update([], bc, apply=False, u=26)
+        self.assertEqual((st["buffer"], st["buffer_aged_out"]), (1, 1))
 
 
     def test_learner_update_does_not_wait(self):
@@ -509,6 +588,16 @@ class TestUpdateWithBranch(_UpdateHarness):
         rec, _, _ = L.one_update(0)
         self.assertLess(time.perf_counter() - t, 15.0)
         self.assertEqual(rec["branch"]["drained"], 0)
+
+
+def _same_opt_state(test, a, b):
+    sa, sb = a.state_dict(), b.state_dict()
+    test.assertEqual(sa["param_groups"], sb["param_groups"])
+    test.assertEqual(set(sa["state"]), set(sb["state"]))
+    for k in sa["state"]:
+        for n, v in sa["state"][k].items():
+            w = sb["state"][k][n]
+            test.assertTrue(torch.equal(v, w) if torch.is_tensor(v) else v == w, (k, n))
 
 
 # ------------------------------------------------------------------------------------------------------
@@ -542,6 +631,40 @@ def _slow_worker(wid, in_q, out_q, base):
             return
         time.sleep(base["slow_s"])
         out_q.put(("sample", wid, {"version": msg[0], "worker": wid, "delta": 0.5}))
+
+
+def _never_reads(wid, in_q, out_q, base):
+    """A worker stuck mid-pair: never reads its queue."""
+    time.sleep(3600)
+
+
+def _exit_scenario():
+    """Child-process scenario for TestPoolExit: 2 workers that never read, 3 x 6 MB weights messages each, close()
+    twice (idempotent), then return -- the interpreter must exit promptly."""
+    P = RL.BranchPool({}, 2, lambda m: None, target=_never_reads)
+    for v in range(3):
+        P.send(v, b"x" * 6_000_000, [[], []])
+    time.sleep(2)
+    P.close()
+    P.close()
+    print(f"CLOSED {time.time():.3f}", flush=True)
+
+
+class TestPoolExit(unittest.TestCase):
+    """Verifier [must]: terminate() with ~6 MB unread weights in the workers' queues made the learner wait forever at
+    interpreter exit. close() cancels every queue's feeder first; the parent exits within 10 s of close()."""
+
+    def test_parent_exits_after_close_with_unread_weights(self):
+        code = "from pipeline.tests.test_rl_branch import _exit_scenario; _exit_scenario()"
+        try:
+            r = subprocess.run([sys.executable, "-c", code], cwd=REPO, capture_output=True, text=True, timeout=180)
+        except subprocess.TimeoutExpired:
+            self.fail("the learner-like parent did not exit within 180 s after close()")
+        end = time.time()
+        closed = [float(x.split()[1]) for x in r.stdout.splitlines() if x.startswith("CLOSED ")]
+        self.assertEqual(len(closed), 1, r.stdout + r.stderr[-2000:])
+        self.assertEqual(r.returncode, 0, r.stderr[-2000:])
+        self.assertLess(end - closed[0], 10.0)
 
 
 class TestBranchPool(unittest.TestCase):
@@ -664,6 +787,17 @@ class TestBranchMatch(unittest.TestCase):
         out, _ = RL.branch_jobs(self._env, gen, {"o": (opp_gen, ocfg)}, specs, lcfg, bc, 0)
         self.assertGreater(len(out), 0)
         self.assertTrue(all(s["p_gate"] <= 0.97 for s in out))
+
+    def test_stalled_points_are_not_branched(self):
+        """Anti-stall firing at every decision (stall_elixir 0, 0 s): every play is forced -> no branch point; the
+        same match without the stall rule does branch."""
+        gen, opp_gen, lcfg, ocfg, specs, bc = _engine_setup("live")
+        out, _ = RL.branch_jobs(self._env, gen, {"o": (opp_gen, ocfg)}, specs,
+                                {**lcfg, "stall_elixir": 0, "stall_seconds": 0.0}, bc, 0)
+        self.assertEqual(out, [])
+        out, _ = RL.branch_jobs(self._env, gen, {"o": (opp_gen, ocfg)}, specs, lcfg, bc, 0)
+        self.assertGreater(len(out), 0)
+        self.assertTrue(all(s["row"]["stalled"] is False for s in out))
 
     def test_band_excludes(self):
         gen, opp_gen, lcfg, ocfg, specs, bc = _engine_setup("live")

@@ -267,9 +267,10 @@ def adv_cfg(cfg: dict) -> dict:
 # ---- counterfactual gate branching (opt3, scratchpad/gauntlet/L73/opt3/INTERFACE.md T3): opt-in ``branch_gate`` ------
 # Off (the default, and any config without the keys) = the trainer exactly as before: no branch actor, no extra loss.
 BRANCH_DEFAULTS = {"branch_gate": False, "branch_actors": 24, "branch_threads": 1, "branch_points_per_match": 6,
-                   "branch_band": [0.2, 0.65], "branch_hold_s": [2, 4, 8], "branch_hold_tau": 0.55,
+                   "branch_band": [0.2, 0.55], "branch_hold_s": [2, 4, 8], "branch_hold_tau": 0.55,
                    "branch_horizon_s": None, "branch_k": 16, "branch_score": "outcome", "branch_phi_ckpt": None,
-                   "branch_coef": 0.1, "branch_min_abs_delta": 0.25, "branch_buffer": 512, "branch_max_staleness": 3,
+                   "branch_coef": 0.1, "branch_lr": None, "branch_min_abs_delta": 0.25, "branch_buffer": 512,
+                   "branch_max_staleness": 3, "branch_buffer_max_age": 20,
                    # R4: more fork kinds (pipeline.branching.ALT_KINDS). Default hold-only = opt3 exactly.
                    "branch_kinds": ["hold"], "branch_card_points": 6, "branch_xbow_points": 6,
                    "branch_card_coef": 0.1, "branch_xbow_coef": 0.1, "branch_rocket_band": 0.5,
@@ -288,8 +289,9 @@ def branch_cfg(cfg: dict) -> dict:
     """The branch keys of a config (``BRANCH_DEFAULTS`` for missing ones), validated: SystemExit naming the bad key.
     ``branch_gate`` on also needs ``league`` (branch workers play self-play matches, T1's ``SelfPlayMatch`` fork), a
     SAMPLING league opponent (``league_opp_policy: sample``, T > 0: with a greedy opponent all k continuations of a
-    branch are identical), branch_hold_tau > tau (HOLD = a STRICTER gate) and, for ``branch_score: phi``, a
-    ``branch_phi_ckpt`` (``outcome``: branch_horizon_s null)."""
+    branch are identical), branch_hold_tau > tau (HOLD = a STRICTER gate), branch_band's upper edge <= branch_hold_tau
+    (so the HOLD branch never also plays at the root) and, for ``branch_score: phi``, a ``branch_phi_ckpt``
+    (``outcome``: branch_horizon_s null). ``branch_lr`` null = the PPO ``lr`` (the branch step's OWN Adam)."""
     c = {k: cfg.get(k, v) for k, v in BRANCH_DEFAULTS.items()}
     num = (lambda v: isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v))
     intk = (lambda v, lo: isinstance(v, int) and not isinstance(v, bool) and v >= lo)
@@ -300,8 +302,11 @@ def branch_cfg(cfg: dict) -> dict:
     for k in ("branch_actors", "branch_threads"):
         if not intk(c[k], 1):
             bad.append(f"{k} must be an integer >= 1, got {c[k]!r}")
-    if not intk(c["branch_max_staleness"], 0):
-        bad.append(f"branch_max_staleness must be an integer >= 0, got {c['branch_max_staleness']!r}")
+    for k in ("branch_max_staleness", "branch_buffer_max_age"):
+        if not intk(c[k], 0):
+            bad.append(f"{k} must be an integer >= 0, got {c[k]!r}")
+    if not (c["branch_lr"] is None or (num(c["branch_lr"]) and c["branch_lr"] >= 0.0)):
+        bad.append(f"branch_lr must be null (= lr) or a finite number >= 0, got {c['branch_lr']!r}")
     if on and cfg.get("league_opp_policy", "sample") != "sample":
         bad.append(f"branch_gate true needs league_opp_policy sample, got {cfg.get('league_opp_policy')!r}: a greedy "
                    f"branch-match opponent makes all branch_k continuations identical")
@@ -322,6 +327,9 @@ def branch_cfg(cfg: dict) -> dict:
         bad.append(f"branch_hold_tau must be in (0, 1), got {ht!r}")
     elif on and num(cfg.get("tau")) and ht <= cfg["tau"]:
         bad.append(f"branch_hold_tau {ht} must be > tau {cfg['tau']} (HOLD is the stricter gate)")
+    elif on and isinstance(b, (list, tuple)) and len(b) == 2 and num(b[1]) and b[1] > ht:
+        bad.append(f"branch_band upper edge {b[1]} must be <= branch_hold_tau {ht} (else the HOLD branch also plays "
+                   f"at the root: a pair with no difference)")
     hz = c["branch_horizon_s"]
     if not (hz is None or (num(hz) and hz > 0)):
         bad.append(f"branch_horizon_s must be null (play to the end) or a number > 0, got {hz!r}")
@@ -390,7 +398,7 @@ def branch_impl():
 def side_decide(s, fwd: bool = False) -> tuple:
     """One PREPARED self-play side's forward + decision under its own model and cfg -- ``run_selfplay_batch``'s
     per-policy rule (live: greedy ``live_decide_batch``; sample: ``sample_decide_batch`` on the side's own RNG) on one
-    row. -> (p_gate, decision, allowed), + (enc, heads) with ``fwd``."""
+    row. -> (p_gate, decision, allowed, stalled = anti-stall forces a play now), + (enc, heads) with ``fwd``."""
     from pipeline.decision_options import match_kwargs
     from pipeline.search_s0 import forward
     p, enc, heads, hand = forward(s)
@@ -400,7 +408,8 @@ def side_decide(s, fwd: bool = False) -> tuple:
                                 device=s.cfg["device"], **match_kwargs([s]))[0]
     else:
         d = E.sample_decide_batch(s.model, enc, heads, [p], allowed[None], np.array([stalled]), [s], s.cfg)[0]
-    return (float(p), d, allowed, enc, heads) if fwd else (float(p), d, allowed)
+    out = (float(p), d, allowed, bool(stalled))
+    return out + (enc, heads) if fwd else out
 
 
 def fork_alt(kind: str, s, enc, heads, d: dict, allowed: np.ndarray, bc: dict) -> Optional[dict]:
@@ -445,7 +454,7 @@ def fork_alt(kind: str, s, enc, heads, d: dict, allowed: np.ndarray, bc: dict) -
     raise ValueError(f"unknown fork kind {kind!r}")
 
 
-def branch_row(s, allowed: np.ndarray, p: float, T: float) -> dict:
+def branch_row(s, allowed: np.ndarray, p: float, T: float, stalled: bool = False) -> dict:
     """The deciding side's input row in ``Match._record``'s format (the generalist's ``gen_row`` keys, else
     tok/mask/sc/past), with the trajectory fields ``Match._traj_arrays`` stacks: a gate-only row (gate_sampled, not
     played), so ``policy_terms`` recomputes exactly the gate logit x the PPO loss uses."""
@@ -454,15 +463,17 @@ def branch_row(s, allowed: np.ndarray, p: float, T: float) -> dict:
     else:
         tok, mask, sc, past = s._obs
         row = {"tok": tok, "mask": mask, "sc": sc, "past": past}
-    return {**row, "allowed": np.asarray(allowed, bool).copy(), "stalled": False, "gate_sampled": True, "played": False,
+    return {**row, "allowed": np.asarray(allowed, bool).copy(), "stalled": bool(stalled), "gate_sampled": True,
+            "played": False,
             "slot": -1, "cell": -1, "lp_gate": 0.0, "lp_card": 0.0, "lp_cell": 0.0, "p_gate": float(p), "T": float(T)}
 
 
 def play_branch_match(m, runner, impl: tuple, bc: dict, phi=None, sync=(lambda: True), emit=None) -> list[dict]:
     """Play SelfPlayMatch ``m`` to the end as ``run_selfplay_batch`` would (every side prepared, then decided on its
     own model / cfg, then applied in side order) with the learner on the GREEDY live rule. At an eligible learner
-    decision -- an affordable card, no anti-stall, p_gate in ``branch_band`` (which straddles tau: above it PLAY is the
-    live rule's own play, below it T1 forces the play) and a ``branch_targets`` tick reached -- call ``runner.pair(m, ds, spec)`` (T1) BEFORE any side's decision draws an RNG
+    decision -- an affordable card, anti-stall NOT firing (a forced play has no HOLD alternative), p_gate in
+    ``branch_band`` (which straddles tau: above it PLAY is the live rule's own play, below it T1 forces the play) and
+    a ``branch_targets`` tick reached -- call ``runner.pair(m, ds, spec)`` (T1) BEFORE any side's decision draws an RNG
     (the learner's live rule draws none) and ``branch_label(result, branch_score[, phi=])`` (T2) -> one sample: the row
     (``branch_row``), delta, weight, phase, tick. The main trajectory is unchanged by the branching (pair leaves ``m``
     untouched, T1 contract). ``sync()`` runs at the top of every round (a branch worker loads the newest weights
@@ -490,10 +501,10 @@ def play_branch_match(m, runner, impl: tuple, bc: dict, phi=None, sync=(lambda: 
         dec = {}
         if L in ds:
             if extra:
-                p, d, allowed, enc, heads = side_decide(L, fwd=True)
-                dec[id(L)] = (p, d, allowed)
+                p, d, allowed, stalled, enc, heads = side_decide(L, fwd=True)
+                dec[id(L)] = (p, d, allowed, stalled)
             else:
-                p, d, allowed = dec[id(L)] = side_decide(L)
+                p, d, allowed, stalled = dec[id(L)] = side_decide(L)
             tick = int(m.env.tick)
             for kind, tg in extra.items():
                 if not (tg and tick >= tg[0]):
@@ -514,10 +525,10 @@ def play_branch_match(m, runner, impl: tuple, bc: dict, phi=None, sync=(lambda: 
                             "p_play": getattr(res, "p_play", None), "hold_s": None, "delta": float(delta),
                             "weight": float(w), "wall_s": time.perf_counter() - t0,
                             "alt": {"a": list(alt["a"]), "b": list(alt["b"]), **alt["info"]},
-                            "row": {**branch_row(L, allowed, p, L.cfg["T"]), **alt["row"]}})
+                            "row": {**branch_row(L, allowed, p, L.cfg["T"], stalled), **alt["row"]}})
                 if emit is not None:
                     emit(out[-1])
-            if targets and tick >= targets[0] and d["why"] in ("gate", "wait") and lo <= p <= hi:
+            if targets and tick >= targets[0] and not stalled and d["why"] in ("gate", "wait") and lo <= p <= hi:
                 targets.pop(0)
                 j = len(out)
                 spec = Spec(hold_s=float(rng.choice(bc["branch_hold_s"])), hold_tau=float(bc["branch_hold_tau"]),
@@ -531,14 +542,14 @@ def play_branch_match(m, runner, impl: tuple, bc: dict, phi=None, sync=(lambda: 
                             "phase": getattr(res, "phase", None) or phase_of(tick), "p_gate": p,
                             "p_play": getattr(res, "p_play", None), "hold_s": spec.hold_s, "delta": float(delta),
                             "weight": float(w), "wall_s": time.perf_counter() - t0,
-                            "row": branch_row(L, allowed, p, L.cfg["T"])})
+                            "row": branch_row(L, allowed, p, L.cfg["T"], stalled)})
                 if emit is not None:
                     emit(out[-1])
         for s in ds:
             if id(s) not in dec:
                 dec[id(s)] = side_decide(s)
         for s in ds:
-            p, d, _ = dec[id(s)]
+            p, d = dec[id(s)][:2]
             s.apply(p, d)
 
 
@@ -650,7 +661,10 @@ def branch_terms(model, Bb: dict, idx, tau: float, T: float, kind: str = "hold")
 def branch_step(model, opt, Bb: dict, cfg: dict, coef) -> dict:
     """ONE optimizer step on sum over kinds of coef_k x mean_i weight_i loss_i over the whole replay buffer (gradients
     accumulated over chunks of ``minibatch`` rows; clipped at ``grad_clip`` like PPO's), after the PPO epochs. ``Bb`` =
-    one hold batch + a scalar ``coef`` (opt3), or {kind: batch} + {kind: coef} (R4; each kind's loss is ITS mean). ->
+    one hold batch + a scalar ``coef`` (opt3), or {kind: batch} + {kind: coef} (R4; each kind's loss is ITS mean).
+    ``opt`` is the branch's OWN Adam (``Learner.branch_opt``) -- all kinds share it and its one step. Adam divides by the
+    gradient's running RMS, so the coefs barely scale the step: they are loss weights (they set the kinds' RELATIVE
+    gradient share and where ``grad_clip`` bites; all 0 = no gradient = no step); the step size is ``branch_lr``. ->
     monitors: buffer rows, BCE (the unscaled weighted mean over all rows) before / after, mean and max |dP| on the
     buffer rows with P = sigmoid(x) (hold: P(play); card / xbow_class: P(prefer A)), grad norm; ``skipped`` (no step
     taken) on a non-finite loss or gradient norm; a non-hold kind adds ``by_kind`` {rows, bce_before, bce_after}."""
@@ -1911,6 +1925,7 @@ class BranchPool:
         self.max_restarts, self.restarts, self.errors = int(max_restarts), Counter(), Counter()
         self.out_q = ctx.Queue()
         self.in_qs, self.procs, self.pids, self.last = {}, {}, {}, None
+        self._queues = [self.out_q]                            # EVERY queue this pool made (close cancels them all)
         # a reader thread keeps the workers' pipe flowing: a sample carries its observation row, so between drains the
         # pipe fills and a get_nowait drain alone saw samples 1-2 updates late (measured, laptop smoke 2026-10-07)
         import threading
@@ -1932,7 +1947,11 @@ class BranchPool:
                 self._got.append(msg)
 
     def _start(self, w: int) -> None:
+        old = self.in_qs.get(w)
+        if old is not None:                                    # a dead worker's queue: nobody will read it again
+            _cancel_join(old)
         self.in_qs[w] = self.ctx.Queue()
+        self._queues.append(self.in_qs[w])
         p = self.ctx.Process(target=self.target, args=(w, self.in_qs[w], self.out_q, self.base), daemon=True)
         p.start()
         self.procs[w], self.pids[w] = p, p.pid
@@ -1972,17 +1991,34 @@ class BranchPool:
         return out, {"errors": errs, "restarted": restarted, "alive": sum(p.is_alive() for p in self.procs.values())}
 
     def close(self) -> None:
+        """Idempotent. Every queue's feeder thread is cancelled FIRST: a worker mid-pair never reads its ~6 MB weights
+        messages, and an uncancelled feeder makes the learner wait for them forever at interpreter exit (verifier,
+        Windows). Then None to each worker, join, terminate the ones mid-label."""
+        if getattr(self, "_closed_all", False):
+            return
+        self._closed_all = True
+        for q in self._queues:
+            _cancel_join(q)
         for q in self.in_qs.values():
             try:
                 q.put(None)
             except Exception:
                 pass
+        deadline = time.time() + 5.0                           # one shared budget (24 workers x 5 s would be 2 min)
         for p in self.procs.values():
-            p.join(5)
+            p.join(max(0.0, deadline - time.time()))
+        for p in self.procs.values():
             if p.is_alive():
                 p.terminate()                                  # mid-pair: a label is minutes long
                 p.join(5)
         self._closed = True
+
+
+def _cancel_join(q) -> None:
+    """``q.cancel_join_thread()`` where the queue has one (mp queues; test doubles may not)."""
+    f = getattr(q, "cancel_join_thread", None)
+    if f is not None:
+        f()
 
 
 # ------------------------------------------------------------------------------------------------------
@@ -2114,6 +2150,8 @@ class Learner:
             self.phi_net = self._load_phi_net(ick)            # (never self.model / a resumed one), never trained
         self.model.eval()                                     # eval() for rollout AND update (E1 3.3 dropout trap)
         self.opt = torch.optim.Adam(self.model.parameters(), lr=float(cfg["lr"]))
+        if branch_cfg(cfg)["branch_gate"]:                    # opt3: the branch step's OWN Adam (never PPO's state)
+            self.branch_opt = self._branch_optimizer(branch_cfg(cfg))
         self.beta, self.update = float(cfg["beta0"]), 0
         self.rng = np.random.default_rng(int(cfg["seed"]))
         self.train, self.heldout = self._entries()
@@ -2309,6 +2347,8 @@ class Learner:
     # ---- checkpoints -----------------------------------------------------------------------------
     def _rl_state(self) -> dict:
         return {"update": int(self.update), "beta": float(self.beta), "optimizer": self.opt.state_dict(),
+                **({"branch_optimizer": self.branch_opt.state_dict()}
+                   if getattr(self, "branch_opt", None) is not None else {}),
                 "rng": _py(self.rng.bit_generator.state), "visits": list(map(int, self.visits)),
                 "config": _py(self.cfg), "config_sha256": config_sha(self.cfg), "run": self.run,
                 "init": str(self.cfg["init"]), "pool_sha256": self.pool_sha,
@@ -2361,6 +2401,8 @@ class Learner:
         self.model.load_state_dict(ck["model"])
         self.model.eval()
         self.opt.load_state_dict(rl["optimizer"])
+        if getattr(self, "branch_opt", None) is not None and "branch_optimizer" in rl:
+            self.branch_opt.load_state_dict(rl["branch_optimizer"])
         self.update, self.beta = int(rl["update"]), float(rl["beta"])
         self.rng.bit_generator.state = rl["rng"]
         self.visits = list(rl["visits"])
@@ -2409,11 +2451,19 @@ class Learner:
                                 self.census_p)
         self.branch_pool.send(u, state_bytes(self.model), [specs[w::n] for w in range(n)])
 
+    def _branch_optimizer(self, bc: dict):
+        """The branch step's OWN Adam over the same parameters, lr ``branch_lr`` (null = the PPO lr): PPO's Adam
+        moments never move the policy outside PPO's steps (with the shared Adam, coef 0 still moved the params by the
+        leftover PPO momentum -- verifier), and they stay untouched by the branch step."""
+        lr = bc["branch_lr"] if bc["branch_lr"] is not None else self.cfg["lr"]
+        return torch.optim.Adam(self.model.parameters(), lr=float(lr))
+
     def _branch_update(self, samples: list[dict], bc: dict, apply: bool, u: int) -> dict:
         """The samples drained this update: those labelled under weights older than ``branch_max_staleness`` updates
         (u - version) are dropped; the rest -> monitors (``branch_stats``), and the kept ones (|delta| >= min) join the
-        FIFO replay buffer (last ``branch_buffer``); ``apply`` (not warm-up, no crash) -> ONE ``branch_step`` on the
-        whole buffer. ponytail: the buffer is not checkpointed -- a --resume starts it empty."""
+        FIFO replay buffer (last ``branch_buffer``); buffer rows whose version is older than u - branch_buffer_max_age
+        are evicted; ``apply`` (not warm-up, no crash) -> ONE ``branch_step`` on the whole buffer with the branch's own
+        Adam (``branch_opt``). ponytail: the buffer is not checkpointed -- a --resume starts it empty."""
         lag = [int(u) - int(x["version"]) for x in samples]
         fresh = [x for x, g in zip(samples, lag) if g <= int(bc["branch_max_staleness"])]
         st = branch_stats(fresh, bc["branch_min_abs_delta"], bc["branch_kinds"])
@@ -2423,11 +2473,16 @@ class Learner:
         samples = fresh
         buf = self.__dict__.setdefault("branch_buf", [])
         buf += [x for x in samples if abs(x["delta"]) >= bc["branch_min_abs_delta"]]
+        n0 = len(buf)
+        buf[:] = [x for x in buf if int(u) - int(x["version"]) <= int(bc["branch_buffer_max_age"])]
+        aged = n0 - len(buf)
         del buf[:-int(bc["branch_buffer"])]
-        st.update({"buffer": len(buf), "step": None})
+        st.update({"buffer": len(buf), "buffer_aged_out": aged, "step": None})
         if apply and buf:
+            if getattr(self, "branch_opt", None) is None:
+                self.branch_opt = self._branch_optimizer(bc)
             t = time.perf_counter()
-            st["step"] = branch_step(self.model, self.opt, branch_batches(buf, self.dev), self.cfg,
+            st["step"] = branch_step(self.model, self.branch_opt, branch_batches(buf, self.dev), self.cfg,
                                      {k: bc[BRANCH_KIND_KEYS[k][1]] for k in BRANCH_KIND_KEYS})
             st["step"]["wall_s"] = time.perf_counter() - t
         return st
@@ -2614,7 +2669,7 @@ class Learner:
                                  f"{f(brst['step']['by_kind'][k]['bce_after'], '{:.4f}')}"
                                  if brst["step"] and k in brst["step"].get("by_kind", {}) else "") + ">"
                               for k, v in brst.get("by_kind", {}).items())
-                    + f" buf {brst['buffer']}"
+                    + f" buf {brst['buffer']} aged-{brst['buffer_aged_out']}"
                     + (f" bce {f(brst['step']['bce_before'], '{:.4f}')}->{f(brst['step']['bce_after'], '{:.4f}')} "
                        f"|dP| {f(brst['step']['dp_abs_mean'], '{:.5f}')}"
                        + (f" SKIPPED {brst['step']['skipped']}" if brst["step"]["skipped"] else "")
