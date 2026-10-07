@@ -4104,6 +4104,14 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   Build worker (opus) on opt3-branching: shaping=value_phi, Phi = w * trailing-10s mean of the FROZEN init value
 >   head, w .5, potential-based with the residual critic, pro-agreement guard kept. opt3 branch now has T1/T2
 >   committed (f639593) + T3 async workers (94f2f18).
+> * **OWNER 10-07 ~18:xx: minimise overnight idling.** Plan: R3 + R2/R3 evaluation on the VM -> owner's decision tree ->
+>   24 h alternating live test (no mid-test changes). Built tonight first: live CHECKPOINT alternation (`--ckpt-alternate
+>   A B`, worker sonnet, worktree) -- two tree branches need it. VM queue DURING the live test (VM is independent of the
+>   laptop): (1) barrel add-on on the best R2/R3 checkpoint (fv5+ only) + its pre-registered check; (2) decode-option
+>   A/Bs (tau_phase B, xbow_class f=.3) on the deployed checkpoint vs a same-script control; (3) continue the better RL
+>   run if its curve is still rising; (4) bigger branching label-quality check (k=32, 300+ points); (5) Golem /
+>   heavy-tank 1x-collapse analysis vs pro icebow play. Laptop: code-only work (branching for Rocket-vs-top-card and
+>   X-Bow side for R4). Passing candidates wait for the next live slot after the 24 h cap.
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
