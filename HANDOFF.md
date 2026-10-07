@@ -3945,6 +3945,15 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   + init + S1 (self-play); KL ~.05 vs target .10 (leash not binding -> weak signal). chain2b running (R1f u0080/u0105
 >   vs R1e + tau .45); RL diagnosis worker (`L73/rl_diag/`) measuring: does the sim punish overspending like live,
 >   are sim opponents competent in the live-weak matchups, does RL's soft change survive argmax, signal size.
+> * **OWNER 10-07 ~10:0x: reward shaping REINTRODUCED as a lever** ("most potential ... but incredibly hard to create
+>   non-exploitable reward parameters"). Prior evidence: R2 (10-02, tower_crown w .3/.3) added nothing (ghost R2-R1
+>   -0.7 [-4.0,+2.7]) and drifted the gate from pros (gate_bal .767 -> .712; stopped by the pro-agreement guard).
+>   Lead design rules for any shaping arm: (1) potential-based on STATE only, never pay for behaviours (Rocket played,
+>   elixir held = farmable); (2) Phi should estimate P(win) itself (learned from pro outcomes on public inputs), not a
+>   single proxy that tilts short runs toward damage; (3) exploit detectors: shaped return up while unshaped win rate
+>   flat, behaviour guardrails, pro-agreement guard, acceptance always on unshaped wins. Offline Phi check running
+>   (`L73/phi_eval/`, opus): value-head Phi vs tower_crown Phi on AUC/Brier by phase, elixir dependence vs pro outcomes,
+>   per-decision dPhi of overspends, transfer to live states, step noise.
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
