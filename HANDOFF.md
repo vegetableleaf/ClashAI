@@ -3861,6 +3861,18 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 > * Upstream 21:35: RoyaleSim 0.1.18 (7955de6, 10 commits past the 20261006 pin): new per-client parity switches for
 >   client 15535 with the shipped behaviour unchanged by default; RoyaleGym unchanged. Not rebuilt (chain2 pinned to
 >   20261006; no default-behaviour change listed).
+> * **ROCKET + LEAD-PROTECTION DECOMPOSED (worker sonnet, `L73/rocket_lead/`, show_out.txt).** Rocket gap (all Rockets,
+>   per match-minute pros .623 vs bot .101): ln gap 1.81 = ELIGIBILITY .74 (Rocket in hand AND >=6 elixir: pros 45% vs
+>   bot 22% of time; Rocket in hand 82% vs 93%, so it is ELIXIR: P(>=6 | Rocket in hand) 55% vs 23%; OT 43% vs 7%) +
+>   RATE when eligible 1.07 (1.378 vs .471/min). Eligibility share 41% [34,48] overall, OT 95% (eligible bot Rockets at
+>   the pro rate in OT: 3.8 vs 4.1/min, n small), HP-deficit 26%. Rate factor = model choice: on pro eligible rows R1e
+>   soft P(Rocket) .75x pros, live-like (gate+argmax) .40x [.33,.48] = bot's .34x; gate passes 89% of pro Rocket rows;
+>   Rocket is the argmax card on only 14% (3.1a: 22%). Lead protection: R1e soft defensive X-Bow mass on pro rows is
+>   pro-like (30% even vs pros 28%; rises ~9 pp with lead) but the ARGMAX cell is defensive only 12% -> bot even-state
+>   13% vs pros 30%, OT-with-lead 9% vs 51%. Codex Q3 (10-05): confidence-filtered CARD sampling r.7 moved Rocket recall
+>   14.2->14.7% and lost ghost 285->279/278 -> rejected; area aim neutral. => levers in evidence order: (1) elixir
+>   banking via phase-wise tau (OT Rocket gap ~all eligibility); (2) X-Bow placement CLASS decision (sample defensive vs
+>   offensive by the model's own class mass, argmax cell within class) for lead protection; (3) Rocket card ranking.
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
