@@ -1,0 +1,176 @@
+{
+ "note": "Probe machine loaded (GPU chain running); below-normal priority, 4 threads, pilots interleaved per frame: read latencies RELATIVE to R1e.",
+ "partA": {
+  "frames": 1095,
+  "latency_ms": {
+   "R1e_fv4": {
+    "median": 125.3,
+    "p95": 298.1,
+    "max": 995.9,
+    "mean": 148.5
+   },
+   "fv5": {
+    "median": 127.0,
+    "p95": 305.5,
+    "max": 999.6,
+    "mean": 150.2
+   },
+   "fv6_smoke": {
+    "median": 139.6,
+    "p95": 313.8,
+    "max": 940.8,
+    "mean": 161.2
+   },
+   "fv6_smoke+options": {
+    "median": 140.2,
+    "p95": 329.1,
+    "max": 1601.3,
+    "mean": 166.5
+   }
+  },
+  "median_ratio_vs_R1e": {
+   "R1e_fv4": 1.0,
+   "fv5": 1.014,
+   "fv6_smoke": 1.114,
+   "fv6_smoke+options": 1.119
+  },
+  "live_reference_20261006_logs": {
+   "logs": 99,
+   "decisions": 30821,
+   "median": 44.0,
+   "p95": 144.0,
+   "max": 3319
+  },
+  "fv5_identity": {
+   "from_engine_feature_versions": {
+    "R1e_fv4": [
+     4
+    ],
+    "fv5": [
+     5
+    ],
+    "fv6_smoke": [
+     6
+    ],
+    "fv6_smoke+options": [
+     6
+    ]
+   },
+   "injected_card_id_minus1_cursed_hog": {
+    "R1e_fv4": [],
+    "fv5": [
+     "mother_witch_hog"
+    ],
+    "fv6_smoke": [
+     "mother_witch_hog"
+    ]
+   },
+   "raw_hero_duplicate_objects": 621,
+   "hero_duplicates_reaching_from_engine": {
+    "R1e_fv4": 1,
+    "fv5": 1,
+    "fv6_smoke": 1,
+    "fv6_smoke+options": 1
+   },
+   "hero_duplicates_reaching_public_observer": {
+    "R1e_fv4": 0,
+    "fv5": 0,
+    "fv6_smoke": 0,
+    "fv6_smoke+options": 0
+   },
+   "residual": "21/1095 frames (passive_v2_raw 10-06, ticks 3148+) hold two same-side 203000023 objects ~2.8 tiles apart (hp 482/911 and 911/911, kind 15/14): outside the 500-unit dedupe radius; one pair came within 500 after extrapolation"
+  },
+  "fv6_projectiles": {
+   "fv6_smoke": {
+    "decisions_with_raw_projectiles": 633,
+    "decisions_with_raw_named_projectiles": 485,
+    "decisions_with_model_projectile_tokens": 485,
+    "decisions_with_known_target_tokens": 485,
+    "decisions_branch_saw_valid_projectiles": 485,
+    "decisions_branch_valid_count_equals_known_target_tokens": 1095,
+    "spread_weight_abs_sum": 5.105679988861084
+   },
+   "fv6_smoke+options": {
+    "decisions_with_raw_projectiles": 633,
+    "decisions_with_raw_named_projectiles": 485,
+    "decisions_with_model_projectile_tokens": 485,
+    "decisions_with_known_target_tokens": 485,
+    "decisions_branch_saw_valid_projectiles": 485,
+    "decisions_branch_valid_count_equals_known_target_tokens": 1095,
+    "spread_weight_abs_sum": 5.105679988861084
+   }
+  }
+ },
+ "partB_recorded": {
+  "default_compared": 1095,
+  "default_mismatches": 0,
+  "options": [
+   "--tau-phase",
+   "0.35",
+   "0.45",
+   "0.55",
+   "--xbow-class",
+   "class_sample",
+   "--xbow-class-floor",
+   "0.3"
+  ],
+  "pilots": {
+   "old_default": {
+    "decisions": 1095,
+    "plays": 919,
+    "errors": {},
+    "xbow_plays": 106,
+    "plays_p_le_phase_tau": 84,
+    "phase_rows": [
+     0,
+     412,
+     683
+    ]
+   },
+   "new_default": {
+    "decisions": 1095,
+    "plays": 919,
+    "errors": {},
+    "xbow_plays": 106,
+    "plays_p_le_phase_tau": 84,
+    "phase_rows": [
+     0,
+     412,
+     683
+    ]
+   },
+   "old_options": {
+    "decisions": 987,
+    "plays": 813,
+    "errors": {
+     "xbow class_sample requires enemy tower states, the grid and per-row RNGs": 108
+    },
+    "xbow_plays": 0,
+    "plays_p_le_phase_tau": 82,
+    "phase_rows": [
+     0,
+     312,
+     675
+    ]
+   },
+   "new_options": {
+    "decisions": 1095,
+    "plays": 835,
+    "errors": {},
+    "xbow_plays": 104,
+    "plays_p_le_phase_tau": 0,
+    "phase_rows": [
+     0,
+     412,
+     683
+    ]
+   }
+  },
+  "note": "old = live_gen_v2.py at 821ac34 (= main checkout); recorded frames hold only 2x/OT ticks (phase_rows); 1x is covered by unit tests"
+ },
+ "tests": [
+  "FAILED pipeline/tests/test_decision_options.py::test_active_options_follow_real_reactive_path_and_match_batched_engine",
+  "FAILED pipeline/tests/test_decision_options.py::test_reactive_cli_forwards_telemetry_and_options_to_worker",
+  "2 failed, 185 passed, 6 warnings in 46.68s"
+ ]
+}

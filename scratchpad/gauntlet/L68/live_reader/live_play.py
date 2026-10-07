@@ -651,7 +651,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
             if a.public_audit and (d['play'] or tick-last_audit_tick >= 10):
                 W(event='decision', tick=tick, t_dev=t_dev, decide_ms=decide_ms,
                   backlog=q.qsize(), forced=forced,
-                  decision={k:d[k] for k in ('play','p_play','no_affordable','hand_pos','name','card','form','xy') if k in d},
+                  decision={k:d[k] for k in ('play','p_play','no_affordable','hand_pos','name','card','form','xy','gate_tau') if k in d},
                   public=d['public_audit'])
                 last_audit_tick = tick
             if not d["play"]:

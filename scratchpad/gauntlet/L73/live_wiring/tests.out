@@ -1,0 +1,25 @@
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\benpe\\ClashBot\\.claude\\worktrees\\agent-ac3364d1e90635c51\\icebow\\data\\pipeline\\gen_v1_s0\\gen_s0.pt'
+
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\pathlib\_local.py:537: FileNotFoundError
+============================== warnings summary ===============================
+pipeline/tests/test_rl_royale.py::TestLooAdvantage::test_collate_assigns_group_advantage
+pipeline/tests/test_rl_royale.py::TestOnPolicy::test_ppo_update_first_minibatch_is_on_policy
+pipeline/tests/test_rl_royale.py::TestPerMatchWeighting::test_long_loss_does_not_outweigh_short_win
+pipeline/tests/test_rl_royale.py::TestCheckpointRoundTrip::test_restore_old_format_checkpoint
+pipeline/tests/test_rl_royale.py::TestCheckpointRoundTrip::test_round_trip
+pipeline/tests/test_rl_royale.py::TestOneUpdate::test_existing_numbered_checkpoint_is_kept
+  C:\Users\benpe\ClashBot\.claude\worktrees\agent-ac3364d1e90635c51\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+    self.encoder = nn.TransformerEncoder(enc, layers)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED pipeline/tests/test_decision_options.py::test_active_options_follow_real_reactive_path_and_match_batched_engine
+FAILED pipeline/tests/test_decision_options.py::test_reactive_cli_forwards_telemetry_and_options_to_worker
+2 failed, 185 passed, 6 warnings in 46.68s

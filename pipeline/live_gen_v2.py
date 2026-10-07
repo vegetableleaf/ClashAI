@@ -9,7 +9,9 @@ import torch
 from .live_gen import GenPilot as LegacyGenPilot, FORM_PAD
 from .e1_eval import allowed_slots
 from .model_v3 import cell_xy
-from .decision_options import DecisionOptions, choose_cells, choose_slot
+from dataclasses import replace
+
+from .decision_options import DecisionOptions, choose_cells, choose_slot, gate_taus
 
 
 class GenPilot(LegacyGenPilot):
@@ -56,13 +58,27 @@ class GenPilot(LegacyGenPilot):
         if not allowed.any():
             return self._audited(dict(play=False, no_affordable=True, p_play=p, hand_pos=-1, deck_index=-1, card=0,
                         form=FORM_PAD, bs=info['bs'], name=None, el_int=info['el_int'], **lookahead))
-        pos = choose_slot(out['card'][0], allowed, options, self.rng_decisions, playing=p > self.gate_tau)
+        # tau_phase: the gate threshold of the phase of the board the model sees (bs.t_sec, tick + extrapolation),
+        # as SIM's match_kwargs reads it from the prepared (extrapolated) BoardState.
+        bs = info['bs']
+        tau = (float(gate_taus(options, self.gate_tau, [bs.t_sec], 1)[0]) if options.tau_phase is not None
+               else self.gate_tau)
+        playing = p > tau
+        pos = choose_slot(out['card'][0], allowed, options, self.rng_decisions, playing=playing)
         card, form = info['hand'][pos]
         name = info['names'][info['hand_deck_indices'][pos]] if card > 0 else None
-        d = dict(play=p > self.gate_tau and card > 0, p_play=p, hand_pos=pos, no_affordable=False,
-                 deck_index=info['hand_deck_indices'][pos], card=card, form=form, bs=info['bs'], name=name, **lookahead)
+        d = dict(play=playing and card > 0, p_play=p, hand_pos=pos, no_affordable=False,
+                 deck_index=info['hand_deck_indices'][pos], card=card, form=form, bs=bs, name=name, **lookahead)
+        if options.tau_phase is not None:
+            d['gate_tau'] = tau
         if card > 0:
             logits = self.model(b, card=torch.tensor([card], device=self.dev),
                                 form=torch.tensor([form], device=self.dev))['cell']
-            d['xy'] = cell_xy(int(choose_cells(logits, [name], options)[0]), self.grid)
+            # SIM aims only playing rows: a WAIT's logged xy keeps the plain X-Bow argmax and draws no RNG.
+            cell_options = options if d['play'] else replace(options, xbow_class='argmax')
+            context = {}
+            if cell_options.xbow_class != 'argmax':     # enemy K, L, R alive in my board frame, as SIM's match_kwargs
+                context = dict(rngs=[self.rng_decisions], grid=self.grid,
+                               enemy_alive=[tuple(bool(t.alive) for t in bs.towers[3:6])])
+            d['xy'] = cell_xy(int(choose_cells(logits, [name], cell_options, **context)[0]), self.grid)
         return self._audited(d)

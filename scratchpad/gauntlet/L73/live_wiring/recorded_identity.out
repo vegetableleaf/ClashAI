@@ -1,0 +1,74 @@
+C:\Users\benpe\ClashBot\.claude\worktrees\agent-ac3364d1e90635c51\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+{
+ "checkpoint": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\rl_royale\\rseries_r1e31\\rseries_r1e31_u0155.pt",
+ "frames": [
+  "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L70\\reader\\sidebyside\\re_v2xb.jsonl",
+  "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L72\\improvement_loop\\reader_character_identity\\passive_v2_raw.jsonl"
+ ],
+ "default_compared": 1095,
+ "default_mismatches": 0,
+ "first_mismatches": [],
+ "options": [
+  "--tau-phase",
+  "0.35",
+  "0.45",
+  "0.55",
+  "--xbow-class",
+  "class_sample",
+  "--xbow-class-floor",
+  "0.3"
+ ],
+ "pilots": {
+  "old_default": {
+   "decisions": 1095,
+   "plays": 919,
+   "errors": {},
+   "xbow_plays": 106,
+   "plays_p_le_phase_tau": 84,
+   "phase_rows": [
+    0,
+    412,
+    683
+   ]
+  },
+  "new_default": {
+   "decisions": 1095,
+   "plays": 919,
+   "errors": {},
+   "xbow_plays": 106,
+   "plays_p_le_phase_tau": 84,
+   "phase_rows": [
+    0,
+    412,
+    683
+   ]
+  },
+  "old_options": {
+   "decisions": 987,
+   "plays": 813,
+   "errors": {
+    "xbow class_sample requires enemy tower states, the grid and per-row RNGs": 108
+   },
+   "xbow_plays": 0,
+   "plays_p_le_phase_tau": 82,
+   "phase_rows": [
+    0,
+    312,
+    675
+   ]
+  },
+  "new_options": {
+   "decisions": 1095,
+   "plays": 835,
+   "errors": {},
+   "xbow_plays": 104,
+   "plays_p_le_phase_tau": 0,
+   "phase_rows": [
+    0,
+    412,
+    683
+   ]
+  }
+ }
+}
