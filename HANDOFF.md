@@ -3846,6 +3846,21 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   identity/branch rules -> RL R1f (rseries_r1f32) -> acceptance vs R1e + tau .45 test -> Discord. ETA ~11:00 10-07.
 >   Deploy (owner-authorized restart with the new checkpoint): R1f ckpt iff ghost vs R1e ci_hi >= 0 AND reactive total
 >   >= R1e - 3. Turtle/Rocket-switch re-test (owner pushback; icebow-only, time-matched) running: `L73/xbow_turtle/`.
+> * **TURTLE / ROCKET-SWITCH RE-TEST (owner pushback; worker opus, `L73/xbow_turtle/`, show_out.txt).** Icebow pros,
+>   rest of match, time-matched (30 s bins), failed (n=1203) vs succeeded (n=840) first offensive X-Bow: CONTRADICTED.
+>   After failure pros attack MORE: offensive X-Bows/min +0.20 [0.15,0.25], defensive share 27% vs 40% (-13.1 pts
+>   [-16.4,-9.5]), less banked elixir (time at full -2.7 pts); tower Rockets +0.03/min [0.004,0.06] and Rocket damage
+>   share 7.0% vs 5.4% -- small and NOT robust (engine-agrees subset CI includes 0; within-match diff-in-diff -0.004).
+>   Rocket >50% of tower damage: 3.5% vs 3.4% of sides. Turtle-like rest-of-match (no offensive X-Bow, >=1 defensive
+>   or tower Rocket) is MORE common after SUCCESS (17.6% vs 8.0%; after 2 successes 29.8% vs 10.2%). Strict split,
+>   0-0 towers, K=2 all agree. Bot matches pros on the failure response (gaps n.s.). Player identity absent (corpus
+>   anonymized) -> no per-player test. Reading: icebow turtling is LEAD PROTECTION (defensive share 43% when ahead on
+>   tower HP, 48% at t>=120 s; bot 25%/29%), not a failure response. Remaining real gaps: Rocket rate in every context
+>   (pros 0.19-0.22 tower Rockets/min vs bot 0.02-0.04) and defending a tower-HP lead. Untested confound: failing sides
+>   may face X-Bow-counter decks all match.
+> * Upstream 21:35: RoyaleSim 0.1.18 (7955de6, 10 commits past the 20261006 pin): new per-client parity switches for
+>   client 15535 with the shipped behaviour unchanged by default; RoyaleGym unchanged. Not rebuilt (chain2 pinned to
+>   20261006; no default-behaviour change listed).
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
