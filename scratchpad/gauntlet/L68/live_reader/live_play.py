@@ -213,6 +213,10 @@ def main() -> int:
     ap.add_argument("--ckpt", help="explicit checkpoint; otherwise use the selected CKPT_OVERRIDE (never newest file)")
     ap.add_argument("--check", action="store_true", help="load the selected model and report settings offline, without ADB or taps")
     ap.add_argument("--tau", type=float, default=0.35)
+    ap.add_argument("--tau-alternate", type=float, nargs=2, default=None, metavar=("TAU_A", "TAU_B"),
+                    help="owner 2026-10-07: A/B the play threshold match by match (counter in --tau-alternate-state "
+                         "survives supervisor restarts; each match logs its tau in the start event)")
+    ap.add_argument("--tau-alternate-state", default=str(REPO / "scratchpad/gauntlet/L70/live/tau_alternate.json"))
     ap.add_argument("--leak", type=float, default=9.5, help=argparse.SUPPRESS)
     ap.add_argument("--no-anti-leak", action="store_true", default=True,
                     help="compatibility flag: forced anti-leak spending has been removed")
@@ -359,6 +363,8 @@ def main() -> int:
                     caption = (f"ClashAI live ladder clip -- match {k + 1}, {time.strftime('%H:%M')} -- "
                                f"{Path(a.ckpt).stem}, tau {a.tau} -- session W{st.get('W', 0)} L{st.get('L', 0)} "
                                f"D{st.get('D', 0)} before this match")
+            if a.tau_alternate:                          # owner 2026-10-07 threshold A/B: alternate per match
+                a.tau = pilot.gate_tau = next_alternate_tau(Path(a.tau_alternate_state), a.tau_alternate)
             why = play_match(a, pilot, lay, device, renders if k + 1 < a.matches else None,
                              start_timeout=180 if a.ladder else (60 if navigated else None),   # ladder: matchmaking;
                              # also on launch: an unrecognised screen then goes back to the nav, not a 600-s wait
@@ -385,6 +391,13 @@ def main() -> int:
                 print(f"[overlay] render failed (exit {p.returncode}); re-render with overlay_replay.py {name}")
                 rc = 1
     return rc
+
+
+def next_alternate_tau(state: Path, arms) -> float:
+    """The next arm of a match-by-match A/B; the counter lives in ``state`` so a restarted supervisor keeps alternating."""
+    n = json.loads(state.read_text()).get("n", 0) if state.exists() else 0
+    state.write_text(json.dumps({"n": n + 1}))
+    return float(arms[n % 2])
 
 
 def load_pilot(a, decision_cfg):

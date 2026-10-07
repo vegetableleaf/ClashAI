@@ -4021,6 +4021,14 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   NOT in R2 (phi_eval still running; R2 could not wait) -> bundled into R3 if the offline check supports it. Owner
 >   wants R3 (R2 recipe + branching) started tonight: when R2 TRAINING ends, R3 takes the GPU; R2's acceptance may be
 >   deferred (stop run_r2.sh after training; never rewrite it while running).
+> * **OWNER 10-07 ~13:xx: live tau .45 A/B in the MORNING (after R2/R3), alternating .35/.45 match by match.** Merged into
+>   main (c0a5ee8/c9e67e2/f0eb146): decode options + live wiring, hero dedupe (+ lead fix ee97600), trophy logging; tests
+>   in main 138 + 28 pass incl. the 9 data-dependent decision_options tests; trophy/ladder_nav self-checks pass. New:
+>   live_play `--tau-alternate A B` (counter file `L70/live/tau_alternate.json` survives restarts; each match logs its
+>   tau), run_live.sh passes `${LIVE_ARGS:-}`, live_eval `--tau X` filter. Morning command:
+>   `LIVE_ARGS="--tau-alternate 0.35 0.45" bash scratchpad/gauntlet/L70/live/start_live.sh`; analysis:
+>   `live_eval.py --since <start> --ckpt-sha 76fdfaac --tau 0.35 --label t35` / `--tau 0.45 --label t45` / `--compare t35 t45`.
+>   Power: ~400 matches per arm for a 10-pt win-rate gap, ~170 for 15 pts; trophies logged per match.
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
