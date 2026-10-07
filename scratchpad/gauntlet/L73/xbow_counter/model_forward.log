@@ -1,0 +1,12 @@
+[     0s] val rows 38317
+C:\Users/benpe/ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+[    83s] fwd 0 / 38317
+[   130s] fwd 5120 / 38317
+[   177s] fwd 10240 / 38317
+[   221s] fwd 15360 / 38317
+[   273s] fwd 20480 / 38317
+[   328s] fwd 25600 / 38317
+[   378s] fwd 30720 / 38317
+[   420s] fwd 35840 / 38317
+[   438s] saved

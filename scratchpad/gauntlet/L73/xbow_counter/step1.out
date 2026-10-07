@@ -1,0 +1,110 @@
+offensive resolved X-Bows 5912
+base fail 65% [64%,67%] n=5912
+== post10s cards tested 91 sig+ 25 sig- 15
+  class heavy_tanks 871 76% [74%,79%] n=871 vs 63% [62%,65%] n=5041 diff [0.13  0.1   0.162]
+  class royal_recruits 72 76% [65%,86%] n=72 vs 65% [64%,66%] n=5840 diff [0.113 0.012 0.21 ]
+  class owner_union 943 76% [74%,79%] n=943 vs 63% [62%,65%] n=4969 diff [0.132 0.103 0.161]
+  top electrogiant 88 91% [85%,97%] n=88 diff [0.261 0.193 0.316]
+  top rocket 239 89% [85%,92%] n=239 diff [0.245 0.204 0.284]
+  top pekka 159 84% [78%,89%] n=159 diff [0.189 0.128 0.247]
+  top goblinstein 151 82% [75%,88%] n=151 diff [0.173 0.111 0.234]
+  top firecracker 95 82% [73%,90%] n=95 diff [0.171 0.086 0.249]
+  top royalhogs 150 81% [75%,87%] n=150 diff [0.165 0.104 0.227]
+  top giant 171 81% [75%,86%] n=171 diff [0.159 0.095 0.216]
+  top bowler 335 79% [74%,83%] n=335 diff [0.141 0.098 0.183]
+  top icegolem 366 78% [74%,82%] n=366 diff [0.138 0.092 0.181]
+  top mightyminer 141 78% [71%,84%] n=141 diff [0.131 0.061 0.195]
+  top elixirgolem 50 78% [64%,91%] n=50 diff [ 0.129 -0.014  0.251]
+  top hogrider 287 77% [72%,82%] n=287 diff [0.127 0.077 0.176]
+  top royalgiant 72 78% [67%,88%] n=72 diff [0.127 0.02  0.225]
+  top goblinhut 92 77% [70%,84%] n=92 diff [0.121 0.04  0.194]
+  top archers 165 77% [70%,83%] n=165 diff [0.121 0.05  0.186]
+  bot vines 64 47% [33%,59%] n=64 diff [-0.186 -0.327 -0.054]
+  bot zap 115 46% [37%,55%] n=115 diff [-0.195 -0.286 -0.106]
+  bot skeletonarmy 203 45% [38%,53%] n=203 diff [-0.206 -0.278 -0.131]
+  bot electrodragon 43 44% [27%,61%] n=43 diff [-0.212 -0.38  -0.043]
+  bot minionhorde 43 44% [31%,59%] n=43 diff [-0.212 -0.345 -0.063]
+  bot skeletondragons 64 44% [33%,54%] n=64 diff [-0.217 -0.328 -0.117]
+   owner-list golem (41, '56% [38%,71%] n=41', array([-0.092, -0.264,  0.064]))
+   owner-list giant (171, '81% [75%,86%] n=171', array([0.159, 0.095, 0.216]))
+   owner-list electrogiant (88, '91% [85%,97%] n=88', array([0.261, 0.193, 0.316]))
+   owner-list goblingiant ('n<40', 15)
+   owner-list pekka (159, '84% [78%,89%] n=159', array([0.189, 0.128, 0.247]))
+   owner-list megaknight (133, '71% [63%,78%] n=133', array([ 0.056, -0.028,  0.128]))
+   owner-list lavahound ('n<40', 15)
+   owner-list royalgiant (72, '78% [67%,88%] n=72', array([0.127, 0.02 , 0.225]))
+   owner-list runegiant ('n<40', 31)
+   owner-list giantskeleton (146, '77% [70%,83%] n=146', array([0.118, 0.048, 0.186]))
+   owner-list royalrecruits (72, '76% [66%,86%] n=72', array([0.113, 0.006, 0.203]))
+== pre5s_post10s cards tested 98 sig+ 27 sig- 16
+  class heavy_tanks 1259 65% [62%,68%] n=1259 vs 65% [64%,67%] n=4653 diff [-0.004 -0.035  0.027]
+  class royal_recruits 81 75% [66%,85%] n=81 vs 65% [64%,67%] n=5831 diff [0.102 0.001 0.195]
+  class owner_union 1340 66% [63%,68%] n=1340 vs 65% [64%,67%] n=4572 diff [ 0.004 -0.026  0.035]
+  top rocket 278 84% [80%,88%] n=278 diff [0.195 0.152 0.236]
+  top electrogiant 117 84% [76%,91%] n=117 diff [0.189 0.111 0.258]
+  top goblinstein 174 83% [77%,89%] n=174 diff [0.186 0.126 0.241]
+  top firecracker 126 83% [76%,90%] n=126 diff [0.185 0.111 0.25 ]
+  top royalhogs 164 82% [76%,88%] n=164 diff [0.176 0.114 0.231]
+  top hunter 42 81% [67%,95%] n=42 diff [0.158 0.003 0.298]
+  top goblinhut 127 80% [74%,86%] n=127 diff [0.154 0.089 0.218]
+  top icegolem 417 78% [74%,82%] n=417 diff [0.139 0.098 0.183]
+  top mightyminer 195 78% [73%,84%] n=195 diff [0.137 0.081 0.19 ]
+  top hogrider 342 78% [73%,82%] n=342 diff [0.133 0.081 0.177]
+  top furnace 159 78% [70%,85%] n=159 diff [0.131 0.055 0.197]
+  top archers 229 77% [71%,83%] n=229 diff [0.125 0.061 0.186]
+  top earthquake 176 77% [70%,84%] n=176 diff [0.124 0.054 0.186]
+  top royalrecruits 81 75% [65%,85%] n=81 diff [0.102 0.004 0.203]
+  top skeletons 1212 73% [70%,76%] n=1212 diff [0.098 0.067 0.128]
+  bot skeletonarmy 227 48% [40%,55%] n=227 diff [-0.184 -0.256 -0.111]
+  bot infernodragon 233 47% [41%,53%] n=233 diff [-0.192 -0.255 -0.127]
+  bot skeletondragons 70 44% [34%,55%] n=70 diff [-0.212 -0.313 -0.114]
+  bot electrodragon 51 41% [26%,55%] n=51 diff [-0.243 -0.391 -0.098]
+  bot golem 90 38% [27%,49%] n=90 diff [-0.279 -0.397 -0.168]
+  bot lavahound 98 15% [8%,22%] n=98 diff [-0.508 -0.577 -0.43 ]
+   owner-list golem (90, '38% [27%,49%] n=90', array([-0.279, -0.397, -0.168]))
+   owner-list giant (207, '74% [68%,79%] n=207', array([0.09 , 0.026, 0.15 ]))
+   owner-list electrogiant (117, '84% [76%,91%] n=117', array([0.189, 0.111, 0.258]))
+   owner-list goblingiant ('n<40', 20)
+   owner-list pekka (227, '70% [63%,76%] n=227', array([ 0.045, -0.02 ,  0.107]))
+   owner-list megaknight (171, '64% [57%,71%] n=171', array([-0.009, -0.082,  0.06 ]))
+   owner-list lavahound (98, '15% [8%,22%] n=98', array([-0.508, -0.577, -0.43 ]))
+   owner-list royalgiant (98, '74% [66%,83%] n=98', array([0.094, 0.005, 0.175]))
+   owner-list runegiant (41, '66% [55%,76%] n=41', array([ 0.006, -0.109,  0.119]))
+   owner-list giantskeleton (200, '72% [65%,78%] n=200', array([ 0.065, -0.003,  0.122]))
+   owner-list royalrecruits (81, '75% [65%,85%] n=81', array([0.102, 0.004, 0.203]))
+== life cards tested 98 sig+ 24 sig- 33
+  class heavy_tanks 974 74% [71%,77%] n=974 vs 64% [62%,65%] n=4938 diff [0.103 0.07  0.134]
+  class royal_recruits 75 77% [68%,87%] n=75 vs 65% [64%,66%] n=5837 diff [0.122 0.021 0.212]
+  class owner_union 1048 74% [71%,77%] n=1048 vs 63% [62%,65%] n=4864 diff [0.107 0.076 0.137]
+  top electrogiant 102 89% [83%,95%] n=102 diff [0.244 0.182 0.3  ]
+  top rocket 269 84% [80%,89%] n=269 diff [0.201 0.153 0.244]
+  top goblinstein 178 83% [77%,88%] n=178 diff [0.179 0.116 0.233]
+  top pekka 167 81% [74%,87%] n=167 diff [0.161 0.092 0.221]
+  top giant 198 79% [74%,84%] n=198 diff [0.145 0.091 0.194]
+  top bowler 381 77% [73%,81%] n=381 diff [0.127 0.085 0.167]
+  top icegolem 414 77% [73%,81%] n=414 diff [0.124 0.079 0.168]
+  top royalgiant 80 78% [67%,86%] n=80 diff [0.124 0.015 0.217]
+  top royalhogs 189 77% [71%,83%] n=189 diff [0.124 0.062 0.183]
+  top royalrecruits 75 77% [67%,86%] n=75 diff [0.122 0.02  0.215]
+  top archers 216 76% [70%,83%] n=216 diff [0.116 0.055 0.172]
+  top firecracker 135 76% [68%,84%] n=135 diff [0.113 0.028 0.19 ]
+  top mightyminer 159 76% [70%,82%] n=159 diff [0.112 0.049 0.172]
+  top void 45 76% [62%,87%] n=45 diff [ 0.104 -0.019  0.214]
+  top giantskeleton 156 75% [68%,81%] n=156 diff [0.1   0.029 0.167]
+  bot minions 166 45% [37%,54%] n=166 diff [-0.206 -0.293 -0.124]
+  bot infernodragon 206 45% [38%,52%] n=206 diff [-0.208 -0.278 -0.142]
+  bot skeletonarmy 279 45% [39%,51%] n=279 diff [-0.214 -0.276 -0.149]
+  bot electrodragon 56 43% [29%,56%] n=56 diff [-0.226 -0.372 -0.097]
+  bot megaminion 100 42% [31%,52%] n=100 diff [-0.236 -0.344 -0.127]
+  bot skeletondragons 91 40% [30%,49%] n=91 diff [-0.261 -0.361 -0.158]
+   owner-list golem (46, '52% [36%,68%] n=46', array([-0.132, -0.313,  0.026]))
+   owner-list giant (198, '79% [74%,84%] n=198', array([0.145, 0.091, 0.194]))
+   owner-list electrogiant (102, '89% [83%,95%] n=102', array([0.244, 0.182, 0.3  ]))
+   owner-list goblingiant ('n<40', 18)
+   owner-list pekka (167, '81% [74%,87%] n=167', array([0.161, 0.092, 0.221]))
+   owner-list megaknight (148, '70% [62%,77%] n=148', array([ 0.052, -0.026,  0.126]))
+   owner-list lavahound ('n<40', 26)
+   owner-list royalgiant (80, '78% [67%,86%] n=80', array([0.124, 0.015, 0.217]))
+   owner-list runegiant ('n<40', 36)
+   owner-list giantskeleton (156, '75% [68%,81%] n=156', array([0.1  , 0.029, 0.167]))
+   owner-list royalrecruits (75, '77% [67%,86%] n=75', array([0.122, 0.02 , 0.215]))

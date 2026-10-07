@@ -3828,6 +3828,18 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   Measurement ticket (same sonnet worker, `L73/xbow_counter/`): empirical counter set from pro fail lift; do pros
 >   avoid offensive X-Bows when a counter is publicly in hand + affordable, and does the live model condition likewise
 >   (teacher-forced); outcome cost within-source; support spend on no-lock X-Bows and the counterpush that follows.
+> * **COUNTER-IN-HAND / ABANDONMENT MEASURED (worker sonnet, `L73/xbow_counter/`, show_out.txt, C_set.json).** Public
+>   availability only (opp_cycle plays_since>=4 + public elixir >= cost; recall vs true hand 68%, precision 88%).
+>   Counter set C_main (owner-named, >=40 exposures, lift CI>0): E-Giant, Giant, Giant Skeleton, PEKKA, Royal Giant,
+>   Royal Recruits (Golem, Mega Knight NOT shown to counter). (1) Pros AVOID modestly: offensive X-Bow 5.3% vs 7.1% of
+>   X-Bow-affordable rows, RR 0.71 [0.63,0.79]; defensive X-Bow RR 1.48. (2) It is COSTLY for pros: fail 80.6% vs 64.4%
+>   (+16.2 pp [+11.7,+20.5], cross-fit +15.8), tower damage dealt 7.2% vs 14.0%, own tower lost within 30 s 15.4% vs
+>   7.1%. (3) The live model does NOT condition on it: teacher-forced RR 1.09 [0.89,1.31] (pros on same val rows .62).
+>   (4) But the bot X-Bows into an available C_main no more than pros (4.8% vs 5.4% of offensive X-Bows) -> small slice.
+>   (5) Abandonment hypothesis CONTRADICTED in pros: on never-locking X-Bows, 4+ elixir support after the counter lands
+>   goes with LESS own damage in 30 s (-1.1 pp [-1.9,-0.3]); bot spends the same as pros (-0.31 [-1.13,+0.43]).
+>   Parked candidate (one change at a time): an explicit public "opponent card known in hand + affordable" input, or
+>   RL against opponents that hold counters; small expected effect (~5% of offensive X-Bows).
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live

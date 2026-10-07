@@ -1,0 +1,88 @@
+{
+ "C_main": [
+  "electrogiant",
+  "giant",
+  "giantskeleton",
+  "pekka",
+  "royalgiant",
+  "royalrecruits"
+ ],
+ "C_wide": [
+  "electrogiant",
+  "giant",
+  "giantskeleton",
+  "goblingiant",
+  "golem",
+  "lavahound",
+  "megaknight",
+  "pekka",
+  "royalgiant",
+  "royalrecruits",
+  "runegiant"
+ ],
+ "C_emp": [
+  "archers",
+  "bowler",
+  "electrogiant",
+  "firecracker",
+  "giant",
+  "goblinstein",
+  "hogrider",
+  "icegolem",
+  "mightyminer",
+  "pekka",
+  "rocket",
+  "royalhogs"
+ ],
+ "rule": {
+  "C_main": "owner-named classes with >=40 exposed X-Bows in the post-10s window and a 95% CI for (fail|exposed - fail|unexposed) above 0",
+  "C_wide": "the owner's whole named list, unfiltered",
+  "C_emp": "any card, >=60 exposed, CI lower bound of the fail lift >= +5 pp"
+ },
+ "crossfit_selected_on_fold": {
+  "0": {
+   "C_main": [
+    "electrogiant",
+    "giant",
+    "pekka",
+    "royalgiant"
+   ],
+   "C_emp": [
+    "bowler",
+    "electrogiant",
+    "firecracker",
+    "giant",
+    "goblinstein",
+    "hogrider",
+    "icegolem",
+    "mightyminer",
+    "pekka",
+    "rocket",
+    "royalhogs"
+   ]
+  },
+  "1": {
+   "C_main": [
+    "electrogiant",
+    "giant",
+    "giantskeleton",
+    "pekka",
+    "royalrecruits"
+   ],
+   "C_emp": [
+    "earthquake",
+    "electrogiant",
+    "giant",
+    "goblinhut",
+    "goblinstein",
+    "icegolem",
+    "knight",
+    "pekka",
+    "rocket",
+    "royalrecruits",
+    "skeletons"
+   ]
+  }
+ },
+ "fold_of_cluster_rule": "sorted unique replay file names, alternating 0/1"
+}

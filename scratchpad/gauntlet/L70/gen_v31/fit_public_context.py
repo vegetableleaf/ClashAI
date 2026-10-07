@@ -54,7 +54,7 @@ def main():
     torch.set_num_threads(1);torch.manual_seed(20261004)
     with np.load(a.data,allow_pickle=False) as z:
         meta=json.loads(str(z['meta']));tags=z['tags'];arrays={k:z[k] for k in ('sc','hand_card','rep','split','tick','side','y_gate','y_card')}
-    if meta.get('feature_version')!=4:raise ValueError('Requires public v4')
+    if meta.get('feature_version') not in (4,5):raise ValueError('Requires public v4 or v5 (fv5 changes only body identity; these features are sc+hand)')
     if any('_public_v1' not in p and 'public_preflight_remaining' not in p for p in meta['corpora']):raise ValueError('Cancelled proxy corpus')
     events=[json.loads(s) for s in a.labels.open()];y,k=labels(arrays,tags,meta,events)
     x=C.public_features(arrays,meta)

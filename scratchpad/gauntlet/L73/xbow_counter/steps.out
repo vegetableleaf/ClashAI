@@ -1,0 +1,44 @@
+pros X-Bow-eligible rows 89328 x-bow play rows 8758 unmatched play 0
+step2 pros C_main A1 share 7% [7%,8%] n=89328 | offX|A1 5% [5%,6%] n=6421 | offX|notA1 7% [7%,7%] n=82907 | std diff [-0.0222 -0.0284 -0.0159]
+step2 pros C_wide A1 share 9% [9%,10%] n=89328 | offX|A1 6% [6%,7%] n=8427 | offX|notA1 7% [7%,7%] n=80901 | std diff [-0.0119 -0.0179 -0.0054]
+step2 pros C_emp A1 share 24% [23%,25%] n=89328 | offX|A1 7% [6%,7%] n=21247 | offX|notA1 7% [7%,7%] n=68081 | std diff [-0.0063 -0.0106 -0.0019]
+step2 model C_main pro_offX A1 5% [3%,7%] n=779 notA1 7% [6%,8%] n=10506 stddiff [-0.0306 -0.046  -0.0094]
+step2 model C_main model_soft_P(offX) A1 7% [6%,9%] n=779 notA1 6% [6%,7%] n=10506 stddiff [ 0.0055 -0.0083  0.0208]
+step2 model C_main model_live(tau.35)_offX A1 12% [9%,15%] n=779 notA1 9% [8%,10%] n=10506 stddiff [ 0.0149 -0.0193  0.0548]
+step2 model C_main model_soft_P(anyX) A1 12% [10%,14%] n=779 notA1 9% [9%,10%] n=10506 stddiff [ 0.0154 -0.0016  0.0338]
+step2 model C_main model_live(tau.35)_anyX A1 14% [11%,18%] n=779 notA1 10% [9%,11%] n=10506 stddiff [ 0.0249 -0.0087  0.0628]
+step2 model C_main pro_anyX A1 10% [7%,13%] n=779 notA1 9% [9%,10%] n=10506 stddiff [-0.0115 -0.0334  0.0161]
+step2 model C_wide pro_offX A1 6% [4%,9%] n=1083 notA1 7% [6%,8%] n=10202 stddiff [-0.0152 -0.0308  0.0039]
+step2 model C_wide model_soft_P(offX) A1 8% [7%,9%] n=1083 notA1 6% [6%,7%] n=10202 stddiff [ 0.0068 -0.0037  0.0183]
+step2 model C_wide model_live(tau.35)_offX A1 12% [9%,15%] n=1083 notA1 9% [8%,10%] n=10202 stddiff [ 0.0155 -0.0149  0.047 ]
+step2 model C_wide model_soft_P(anyX) A1 12% [11%,14%] n=1083 notA1 9% [9%,10%] n=10202 stddiff [0.0163 0.0021 0.0316]
+step2 model C_wide model_live(tau.35)_anyX A1 14% [12%,18%] n=1083 notA1 10% [9%,11%] n=10202 stddiff [ 0.0223 -0.006   0.0527]
+step2 model C_wide pro_anyX A1 12% [9%,14%] n=1083 notA1 9% [9%,10%] n=10202 stddiff [ 0.0042 -0.0171  0.0278]
+step2 model C_emp pro_offX A1 7% [6%,8%] n=2376 notA1 7% [6%,8%] n=8909 stddiff [-0.0036 -0.017   0.0107]
+step2 model C_emp model_soft_P(offX) A1 8% [7%,9%] n=2376 notA1 6% [6%,7%] n=8909 stddiff [0.011  0.0038 0.0185]
+step2 model C_emp model_live(tau.35)_offX A1 12% [11%,14%] n=2376 notA1 8% [7%,9%] n=8909 stddiff [0.0231 0.0054 0.0427]
+step2 model C_emp model_soft_P(anyX) A1 11% [10%,12%] n=2376 notA1 9% [8%,9%] n=8909 stddiff [0.0123 0.0026 0.022 ]
+step2 model C_emp model_live(tau.35)_anyX A1 14% [12%,16%] n=2376 notA1 10% [9%,11%] n=8909 stddiff [0.0237 0.0043 0.0437]
+step2 model C_emp pro_anyX A1 9% [8%,11%] n=2376 notA1 10% [9%,10%] n=8909 stddiff [-0.0102 -0.0234  0.0055]
+instances pros 5912 bot 539
+step3 pros C_main share A1 5% [5%,6%] n=5912 | fail A1 81% [76%,85%] n=319 notA1 64% [63%,66%] n=5593 diff [0.162 0.117 0.205] std [0.162 0.11  0.21 ] | own30 diff [0.0164 0.0032 0.031 ]
+step3 pros C_wide share A1 9% [8%,9%] n=5912 | fail A1 73% [69%,77%] n=503 notA1 65% [63%,66%] n=5409 diff [0.084 0.045 0.124] std [0.09  0.044 0.129] | own30 diff [0.015  0.0048 0.0259]
+step3 pros C_emp share A1 23% [22%,25%] n=5912 | fail A1 79% [77%,81%] n=1375 notA1 61% [60%,63%] n=4537 diff [0.176 0.148 0.202] std [0.166 0.135 0.194] | own30 diff [-0.0065 -0.0122 -0.0009]
+step3 bot C_main share A1 5% [3%,7%] n=539 | fail A1 58% [41%,73%] n=26 notA1 29% [25%,34%] n=513 diff [0.283 0.106 0.441] std [ 0.112 -0.076  0.389] | own30 diff [-0.0342 -0.0782  0.0206]
+step3 bot C_wide share A1 9% [6%,13%] n=539 | fail A1 56% [42%,69%] n=50 notA1 28% [23%,33%] n=489 diff [0.278 0.127 0.421] std [0.225 0.053 0.387] | own30 diff [-0.0251 -0.0585  0.0103]
+step3 bot C_emp share A1 17% [14%,21%] n=539 | fail A1 43% [32%,52%] n=94 notA1 28% [23%,33%] n=445 diff [0.142 0.028 0.251] std [ 0.099 -0.018  0.212] | own30 diff [-0.0361 -0.0622 -0.008 ]
+crossfit C_main 254 5658 80% [75%,85%] n=254 65% [63%,66%] n=5658 [0.158 0.108 0.205]
+crossfit C_emp 1466 4446 75% [72%,77%] n=1466 62% [60%,64%] n=4446 [0.126 0.1   0.154]
+reader accuracy C_main {'n': 8758, 'public_A1&true_A1': 560, 'public_A1_only': 80, 'true_A1_only': 266, 'neither': 7852, 'precision': 0.875, 'recall': 0.6779661016949152}
+reader accuracy C_wide {'n': 8758, 'public_A1&true_A1': 770, 'public_A1_only': 155, 'true_A1_only': 380, 'neither': 7453, 'precision': 0.8324324324324325, 'recall': 0.6695652173913044}
+reader accuracy C_emp {'n': 8758, 'public_A1&true_A1': 1555, 'public_A1_only': 541, 'true_A1_only': 594, 'neither': 6068, 'precision': 0.7418893129770993, 'recall': 0.7235923685435086}
+step3b bot C_main offX/opp-min A1 6.74 [4.42,9.52] n=4 notA1 5.00 [4.55,5.51] n=112 std diff [-0.169 -2.151  4.232] opp-min share A1 4% [3%,5%] n=117
+step3b bot C_wide offX/opp-min A1 6.02 [4.36,8.05] n=9 notA1 4.98 [4.55,5.49] n=107 std diff [-0.046 -1.475  2.446] opp-min share A1 8% [6%,10%] n=117
+step3b bot C_emp offX/opp-min A1 6.94 [5.81,8.41] n=15 notA1 4.78 [4.29,5.27] n=101 std diff [ 0.063 -1.091  1.382] opp-min share A1 13% [11%,16%] n=117
+step4 pros dmg==0 nolock n(all/commit) 2310 388 spend 4.05 [3.70,4.39] n=388 lock-spend 5.67 [5.23,6.12] n=389 P>=4 57% [52%,62%] n=388 | own30 by bucket {'0': (66, 0.086), '1-3': (89, 0.082), '4-6': (137, 0.053), '7+': (76, 0.062)}
+step4 pros dmg<1% nolock n(all/commit) 2501 421 spend 4.04 [3.69,4.38] n=421 lock-spend 5.82 [5.37,6.25] n=356 P>=4 56% [50%,61%] n=421 | own30 by bucket {'0': (77, 0.095), '1-3': (96, 0.09), '4-6': (142, 0.052), '7+': (85, 0.06)}
+step4 pros dmg<5% nolock n(all/commit) 3584 595 spend 4.68 [4.37,4.99] n=595 lock-spend 5.45 [4.85,6.11] n=182 P>=4 61% [57%,65%] n=595 | own30 by bucket {'0': (87, 0.095), '1-3': (126, 0.08), '4-6': (197, 0.047), '7+': (153, 0.053)}
+step4 bot dmg==0 nolock n(all/commit) 78 13 spend 4.08 [2.69,5.57] n=13 lock-spend 4.52 [3.62,5.40] n=56 P>=4 69% [33%,100%] n=13 | own30 by bucket {'0': (2, 0.057), '1-3': (2, 0.002), '4-6': (7, 0.032), '7+': (1, 0.042)}
+step4 bot dmg<1% nolock n(all/commit) 87 14 spend 3.79 [2.44,5.29] n=14 lock-spend 4.60 [3.73,5.55] n=55 P>=4 64% [33%,100%] n=14 | own30 by bucket {'0': (3, 0.043), '1-3': (2, 0.002), '4-6': (7, 0.032), '7+': (1, 0.042)}
+step4 bot dmg<5% nolock n(all/commit) 151 27 spend 4.85 [3.86,5.82] n=27 lock-spend 4.17 [3.12,5.29] n=42 P>=4 74% [54%,93%] n=27 | own30 by bucket {'0': (3, 0.043), '1-3': (4, 0.096), '4-6': (13, 0.053), '7+': (4, 0.019)}
+saved
