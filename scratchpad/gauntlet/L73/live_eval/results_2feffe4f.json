@@ -1,0 +1,2152 @@
+{
+ "label": "2feffe4f",
+ "generated": "2026-10-06T23:25:14",
+ "params": {
+  "since": "20261004_205129",
+  "until": null,
+  "ckpt_sha": null
+ },
+ "info": {
+  "logs_in_window": 252,
+  "in_progress_skipped": 2,
+  "parsed_now": 0
+ },
+ "excluded_logs": [],
+ "sha8": [
+  "2feffe4f"
+ ],
+ "sha_src": {
+  "log": 17
+ },
+ "cfg": {
+  "tau=0.35 card=argmax/0.7/1.0 spell=argmax opp_counter=True anti_leak=False": 17
+ },
+ "ts_range": [
+  "20261006_124440",
+  "20261006_180120"
+ ],
+ "result_src": {
+  "derived": 9,
+  "ladder": 8
+ },
+ "derived_vs_ladder": [
+  8,
+  8
+ ],
+ "overall": {
+  "wr": {
+   "n": 17,
+   "W": 6,
+   "L": 11,
+   "D": 0,
+   "wr": 0.35294117647058826,
+   "ci": [
+    0.17309486143904904,
+    0.5870003327878818
+   ]
+  },
+  "n_state": 17,
+  "crowns_me_mean": [
+   0.4117647058823529,
+   0.24115494882452765
+  ],
+  "crowns_opp_mean": [
+   0.8235294117647058,
+   0.41967692302911225
+  ],
+  "crowns_me_dist": [
+   10,
+   7,
+   0,
+   0
+  ],
+  "crowns_opp_dist": [
+   7,
+   7,
+   2,
+   1
+  ],
+  "first_crown": {
+   "me": 6,
+   "opp": 7,
+   "null": 4
+  },
+  "wr_given_first": {
+   "me": {
+    "n": 6,
+    "W": 4,
+    "L": 2,
+    "D": 0,
+    "wr": 0.6666666666666666,
+    "ci": [
+     0.2999883213415286,
+     0.903230667440783
+    ]
+   },
+   "opp": {
+    "n": 7,
+    "W": 0,
+    "L": 7,
+    "D": 0,
+    "wr": 0.0,
+    "ci": [
+     0.0,
+     0.35433884297520657
+    ]
+   },
+   "null": {
+    "n": 4,
+    "W": 2,
+    "L": 2,
+    "D": 0,
+    "wr": 0.5,
+    "ci": [
+     0.15003570882017145,
+     0.8499642911798285
+    ]
+   }
+  },
+  "three_crown_losses": [
+   1,
+   11
+  ],
+  "three_crown_wins": [
+   0,
+   6
+  ],
+  "king_inferred": 0,
+  "dur_mean": 212.3470588235294,
+  "dur_median": 187.1,
+  "ot_share": [
+   9,
+   17
+  ],
+  "ot_wr": {
+   "n": 9,
+   "W": 3,
+   "L": 6,
+   "D": 0,
+   "wr": 0.3333333333333333,
+   "ci": [
+    0.12058159868274292,
+    0.6458026525009103
+   ]
+  },
+  "n_dmg": 17,
+  "damage": {
+   "dealt": {
+    "ALL": {
+     "n": 17,
+     "pct_of_total": 0.36173252136885936,
+     "mean_pct": [
+      0.3545476798747598,
+      0.11161897537941971
+     ],
+     "mean_hp": 5436.882352941177,
+     "pct_per_min": 0.1022098040932537
+    },
+    "1x": {
+     "n": 17,
+     "pct_of_total": 0.16042299383199224,
+     "mean_pct": [
+      0.1583851727554364,
+      0.0729530320721231
+     ],
+     "mean_hp": 2411.176470588235,
+     "pct_per_min": 0.0802114969159961
+    },
+    "2x": {
+     "n": 17,
+     "pct_of_total": 0.13050267697798928,
+     "mean_pct": [
+      0.12556593560808357,
+      0.06022361490381679
+     ],
+     "mean_hp": 1961.4705882352941,
+     "pct_per_min": 0.13706006025283057
+    },
+    "OT": {
+     "n": 16,
+     "pct_of_total": 0.07510294899043571,
+     "mean_pct": [
+      0.07500885723069234,
+      0.06572223128757076
+     ],
+     "mean_hp": 1130.75,
+     "pct_per_min": 0.12042564060601016
+    }
+   },
+   "taken": {
+    "ALL": {
+     "n": 17,
+     "pct_of_total": 0.43227997046789923,
+     "mean_pct": [
+      0.4348919811774078,
+      0.11936434255492254
+     ],
+     "mean_hp": 6612.764705882353,
+     "pct_per_min": 0.12214343053194193
+    },
+    "1x": {
+     "n": 17,
+     "pct_of_total": 0.24939628387731874,
+     "mean_pct": [
+      0.24815278745270436,
+      0.10341781669671088
+     ],
+     "mean_hp": 3815.1176470588234,
+     "pct_per_min": 0.12469814193865937
+    },
+    "2x": {
+     "n": 17,
+     "pct_of_total": 0.09257236902820931,
+     "mean_pct": [
+      0.09169067832184671,
+      0.04764627032429161
+     ],
+     "mean_hp": 1416.1176470588234,
+     "pct_per_min": 0.09722386368283926
+    },
+    "OT": {
+     "n": 16,
+     "pct_of_total": 0.09618471921892406,
+     "mean_pct": [
+      0.10098904761553526,
+      0.05841211246642937
+     ],
+     "mean_hp": 1467.875,
+     "pct_per_min": 0.1542297151330668
+    }
+   }
+  },
+  "elixir": {
+   "1x": {
+    "state_mean_elixir": 4.909436743005237,
+    "pct_time_ge_9.5": 0.05725392711694082,
+    "elixir_at_play": 5.650244881889764,
+    "plays": 254,
+    "plays_per_min": 7.470588235294118
+   },
+   "2x": {
+    "state_mean_elixir": 3.831061113149207,
+    "pct_time_ge_9.5": 0.006498611183900216,
+    "elixir_at_play": 4.273272653061224,
+    "plays": 245,
+    "plays_per_min": 15.135914332784184
+   },
+   "OT": {
+    "state_mean_elixir": 2.900361860336227,
+    "pct_time_ge_9.5": 0.0,
+    "elixir_at_play": 3.0940329113924046,
+    "plays": 158,
+    "plays_per_min": 15.83430766661099
+   }
+  }
+ },
+ "class_rules": "primary class = first match in: X-Bow/Mortar=['Mortar', 'Xbow']; Lava Hound=['LavaHound']; Golem=['ElixirGolem', 'Golem']; Giant (incl. Goblin/Electro)=['ElectroGiant', 'Giant', 'GoblinGiant']; Royal Giant=['RoyalGiant']; Balloon=['Balloon']; Graveyard=['Graveyard']; Hog (incl. Royal Hogs)=['HogRider', 'RoyalHogs']; Ram/Bridge spam = BattleRam|RamRider or >=2 of ['Assassin', 'Berserker', 'BossBandit', 'DarkPrince', 'Ghost', 'Prince', 'Wallbreakers']; Miner = Miner|MightyMiner; Mega Knight; P.E.K.K.A; Spawners = any of ['BarbarianHut', 'BarbarianLauncher', 'DarkWitch', 'FirespiritHut', 'GoblinDrill', 'GoblinHut', 'Tombstone', 'Witch', 'WitchMother']; Bait = >=3 of ['DartBarrell', 'GoblinBarrel', 'GoblinGang', 'Goblins', 'Princess', 'Rascals', 'SkeletonArmy', 'SkeletonBalloon']; else 'Other/no clear wincon'. Ignored spawn tokens: ['Bats', 'SkeletonWarriors', 'Skeletons', 'SpearGoblins']. Traits (non-exclusive): spawner-heavy = >=2 spawner cards, heavy tank = any of ['ElectroGiant', 'ElixirGolem', 'Giant', 'GiantSkeleton', 'GoblinGiant', 'Golem', 'LavaHound', 'MegaKnight', 'Pekka', 'RoyalGiant'], air = >=2 of ['BabyDragon', 'Balloon', 'ElectroDragon', 'InfernoDragon', 'LavaHound', 'MegaMinion', 'MinionHorde', 'Minions', 'Phoenix', 'SkeletonDragons'], spell-bait = >=3 bait cards, bridge spam = class rule above, has building = Cannon/Tesla/BombTower/InfernoTower.",
+ "trophies": "NOT LOGGED (see report footer)",
+ "trajectory": [
+  {
+   "from": "20261006_124440",
+   "to": "20261006_180120",
+   "n": 17,
+   "W": 6,
+   "L": 11,
+   "wr": 0.35294117647058826,
+   "net_cum": -5
+  }
+ ],
+ "matchups": {
+  "n": 17,
+  "classes": {
+   "Giant (incl. Goblin/Electro)": {
+    "n": 1,
+    "W": 0,
+    "L": 1,
+    "D": 0,
+    "wr": 0.0,
+    "ci": [
+     0.0,
+     0.7934567085261071
+    ],
+    "vs_rest": [
+     -0.375,
+     -0.6135935290206519,
+     0.4409325038036819
+    ],
+    "flag": "small n"
+   },
+   "Golem": {
+    "n": 1,
+    "W": 0,
+    "L": 1,
+    "D": 0,
+    "wr": 0.0,
+    "ci": [
+     0.0,
+     0.7934567085261071
+    ],
+    "vs_rest": [
+     -0.375,
+     -0.6135935290206519,
+     0.4409325038036819
+    ],
+    "flag": "small n"
+   },
+   "Hog (incl. Royal Hogs)": {
+    "n": 6,
+    "W": 2,
+    "L": 4,
+    "D": 0,
+    "wr": 0.3333333333333333,
+    "ci": [
+     0.09676933255921684,
+     0.7000116786584712
+    ],
+    "vs_rest": [
+     -0.03030303030303033,
+     -0.39882244164268377,
+     0.3932368611566393
+    ],
+    "flag": "small n"
+   },
+   "Mega Knight": {
+    "n": 2,
+    "W": 1,
+    "L": 1,
+    "D": 0,
+    "wr": 0.5,
+    "ci": [
+     0.09452865480086611,
+     0.905471345199134
+    ],
+    "vs_rest": [
+     0.16666666666666669,
+     -0.30943724551421664,
+     0.6109363161893099
+    ],
+    "flag": "small n"
+   },
+   "Other/no clear wincon": {
+    "n": 1,
+    "W": 1,
+    "L": 0,
+    "D": 0,
+    "wr": 1.0,
+    "ci": [
+     0.20654329147389294,
+     1.0
+    ],
+    "vs_rest": [
+     0.6875,
+     -0.14246786182360482,
+     0.8583556494803894
+    ],
+    "flag": "small n"
+   },
+   "Ram/Bridge spam": {
+    "n": 2,
+    "W": 0,
+    "L": 2,
+    "D": 0,
+    "wr": 0.0,
+    "ci": [
+     0.0,
+     0.6576280471103807
+    ],
+    "vs_rest": [
+     -0.4,
+     -0.6425355724349229,
+     0.28788140372634674
+    ],
+    "flag": "small n"
+   },
+   "Spawners (Witch/huts)": {
+    "n": 1,
+    "W": 0,
+    "L": 1,
+    "D": 0,
+    "wr": 0.0,
+    "ci": [
+     0.0,
+     0.7934567085261071
+    ],
+    "vs_rest": [
+     -0.375,
+     -0.6135935290206519,
+     0.4409325038036819
+    ],
+    "flag": "small n"
+   },
+   "X-Bow/Mortar": {
+    "n": 3,
+    "W": 2,
+    "L": 1,
+    "D": 0,
+    "wr": 0.6666666666666666,
+    "ci": [
+     0.20765495512648788,
+     0.9385096847238393
+    ],
+    "vs_rest": [
+     0.38095238095238093,
+     -0.14696669145775554,
+     0.7007830978963148
+    ],
+    "flag": "small n"
+   }
+  },
+  "traits": {
+   "spawner-heavy": {
+    "n": 0,
+    "W": 0,
+    "L": 0,
+    "D": 0,
+    "wr": null,
+    "ci": [
+     NaN,
+     NaN
+    ],
+    "vs_rest": [
+     NaN,
+     NaN,
+     NaN
+    ],
+    "flag": "small n"
+   },
+   "heavy tank": {
+    "n": 5,
+    "W": 1,
+    "L": 4,
+    "D": 0,
+    "wr": 0.2,
+    "ci": [
+     0.036223160969787456,
+     0.6244717358814612
+    ],
+    "vs_rest": [
+     -0.21666666666666667,
+     -0.5271936543078366,
+     0.26300814748803863
+    ],
+    "flag": "small n"
+   },
+   "air (>=2)": {
+    "n": 0,
+    "W": 0,
+    "L": 0,
+    "D": 0,
+    "wr": null,
+    "ci": [
+     NaN,
+     NaN
+    ],
+    "vs_rest": [
+     NaN,
+     NaN,
+     NaN
+    ],
+    "flag": "small n"
+   },
+   "spell-bait (>=3)": {
+    "n": 0,
+    "W": 0,
+    "L": 0,
+    "D": 0,
+    "wr": null,
+    "ci": [
+     NaN,
+     NaN
+    ],
+    "vs_rest": [
+     NaN,
+     NaN,
+     NaN
+    ],
+    "flag": "small n"
+   },
+   "bridge spam": {
+    "n": 4,
+    "W": 1,
+    "L": 3,
+    "D": 0,
+    "wr": 0.25,
+    "ci": [
+     0.045586062644636216,
+     0.6993639475573634
+    ],
+    "vs_rest": [
+     -0.13461538461538464,
+     -0.46547514685185815,
+     0.3603521790745859
+    ],
+    "flag": "small n"
+   },
+   "has building": {
+    "n": 5,
+    "W": 3,
+    "L": 2,
+    "D": 0,
+    "wr": 0.6,
+    "ci": [
+     0.23071993220883702,
+     0.8823817688407467
+    ],
+    "vs_rest": [
+     0.35,
+     -0.11482996465618256,
+     0.6750842570909108
+    ],
+    "flag": "small n"
+   },
+   "has Witch/Night Witch": {
+    "n": 4,
+    "W": 1,
+    "L": 3,
+    "D": 0,
+    "wr": 0.25,
+    "ci": [
+     0.045586062644636216,
+     0.6993639475573634
+    ],
+    "vs_rest": [
+     -0.13461538461538464,
+     -0.46547514685185815,
+     0.3603521790745859
+    ],
+    "flag": "small n"
+   }
+  },
+  "cards": {},
+  "overall_wr": 0.35294117647058826
+ },
+ "how_lost": {
+  "ALL MATCHES": {
+   "n_matches": 17,
+   "wr": 0.35294117647058826,
+   "n_losses": 11,
+   "first_crown_lost_phase": {
+    "OT": 2,
+    "1x": 3,
+    "2x": 2,
+    "bot_first": 2,
+    "none": 2
+   },
+   "opp_first_crown_before_120s": 3,
+   "bot_scored_any": 3,
+   "three_crowned": 1,
+   "ot_losses": 6,
+   "dur_mean": 205.6818181818182,
+   "crowns_me_mean": 0.2727272727272727,
+   "crowns_opp_mean": 1.1818181818181819,
+   "phase_damage_in_losses": {
+    "1x": {
+     "n": 11,
+     "taken_pct_of_total": 0.30427974947807934,
+     "dealt_pct_of_total": 0.12556168555594388
+    },
+    "2x": {
+     "n": 11,
+     "taken_pct_of_total": 0.12223867553527212,
+     "dealt_pct_of_total": 0.07866094163462979
+    },
+    "OT": {
+     "n": 10,
+     "taken_pct_of_total": 0.12575891897700409,
+     "dealt_pct_of_total": 0.0434361608614438
+    }
+   }
+  }
+ },
+ "matches": [
+  {
+   "file": "live_play_20261006_124440.jsonl",
+   "ts": "20261006_124440",
+   "sha8": "2feffe4f",
+   "sha_src": "log",
+   "ckpt": "candidate.pt",
+   "cfg": "tau=0.35 card=argmax/0.7/1.0 spell=argmax opp_counter=True anti_leak=False",
+   "ladder": null,
+   "derived": "WIN",
+   "state_src": "decision",
+   "n_plays": 31,
+   "n_conf": 30,
+   "dur_s": 180.95,
+   "end_tick": 3619,
+   "crown_fix": null,
+   "crowns_me": 1,
+   "crowns_opp": 0,
+   "first_crown": "me",
+   "first_crown_s": 103.35,
+   "dead_s": {
+    "eL": 103.35,
+    "eR": null,
+    "mL": null,
+    "mR": null,
+    "eK": null,
+    "mK": null
+   },
+   "dmg": {
+    "dealt": {
+     "1x": 6972.0,
+     "2x": 2646.0,
+     "OT": 0.0
+    },
+    "taken": {
+     "1x": 3917.0,
+     "2x": 1370.0,
+     "OT": 0.0
+    }
+   },
+   "hp_total": {
+    "dealt": 15880.0,
+    "taken": 15880.0
+   },
+   "towers_seen": [
+    "eL",
+    "eR",
+    "eK",
+    "mL",
+    "mR",
+    "mK"
+   ],
+   "el_state": {
+    "1x": [
+     431.91301000000004,
+     112.79999999999998,
+     3.25
+    ],
+    "2x": [
+     205.337445,
+     59.399999999999984,
+     0.0
+    ],
+    "OT": [
+     1.30212,
+     0.6,
+     0.0
+    ]
+   },
+   "opp_cards": [
+    "AxeMan",
+    "BossBandit",
+    "FirespiritHut",
+    "Ghost",
+    "HogRider",
+    "Snowball"
+   ],
+   "plays_phase": {
+    "1x": [
+     14,
+     65.2576
+    ],
+    "2x": [
+     16,
+     61.472800000000014
+    ],
+    "OT": [
+     0,
+     0.0
+    ]
+   },
+   "result": "WIN",
+   "result_src": "derived"
+  },
+  {
+   "file": "live_play_20261006_125159.jsonl",
+   "ts": "20261006_125159",
+   "sha8": "2feffe4f",
+   "sha_src": "log",
+   "ckpt": "candidate.pt",
+   "cfg": "tau=0.35 card=argmax/0.7/1.0 spell=argmax opp_counter=True anti_leak=False",
+   "ladder": null,
+   "derived": "WIN",
+   "state_src": "decision",
+   "n_plays": 29,
+   "n_conf": 27,
+   "dur_s": 183.25,
+   "end_tick": 3665,
+   "crown_fix": null,
+   "crowns_me": 1,
+   "crowns_opp": 0,
+   "first_crown": "me",
+   "first_crown_s": 163.75,
+   "dead_s": {
+    "eL": 163.75,
+    "eR": null,
+    "mL": null,
+    "mR": null,
+    "eK": null,
+    "mK": null
+   },
+   "dmg": {
+    "dealt": {
+     "1x": 548.0,
+     "2x": 4778.0,
+     "OT": 0.0
+    },
+    "taken": {
+     "1x": 1831.0,
+     "2x": 60.0,
+     "OT": 0.0
+    }
+   },
+   "hp_total": {
+    "dealt": 15880.0,
+    "taken": 15880.0
+   },
+   "towers_seen": [
+    "eL",
+    "eR",
+    "eK",
+    "mL",
+    "mR",
+    "mK"
+   ],
+   "el_state": {
+    "1x": [
+     661.5115900000001,
+     112.24999999999999,
+     4.5
+    ],
+    "2x": [
+     296.14323500000006,
+     59.59999999999998,
+     0.0
+    ],
+    "OT": [
+     12.73065,
+     1.5,
+     0.0
+    ]
+   },
+   "opp_cards": [
+    "AxeMan",
+    "ElectroWizard",
+    "GoblinBarrel",
+    "InfernoTower",
+    "Knight",
+    "Log",
+    "MegaKnight",
+    "Valkyrie"
+   ],
+   "plays_phase": {
+    "1x": [
+     15,
+     101.586
+    ],
+    "2x": [
+     12,
+     65.27329999999999
+    ],
+    "OT": [
+     0,
+     0.0
+    ]
+   },
+   "result": "WIN",
+   "result_src": "derived"
+  },
+  {
+   "file": "live_play_20261006_125740.jsonl",
+   "ts": "20261006_125740",
+   "sha8": "2feffe4f",
+   "sha_src": "log",
+   "ckpt": "candidate.pt",
+   "cfg": "tau=0.35 card=argmax/0.7/1.0 spell=argmax opp_counter=True anti_leak=False",
+   "ladder": null,
+   "derived": "LOSS",
+   "state_src": "decision",
+   "n_plays": 50,
+   "n_conf": 48,
+   "dur_s": 240.5,
+   "end_tick": 4810,
+   "crown_fix": null,
+   "crowns_me": 0,
+   "crowns_opp": 1,
+   "first_crown": "opp",
+   "first_crown_s": 239.8,
+   "dead_s": {
+    "eL": null,
+    "eR": null,
+    "mL": 239.8,
+    "mR": null,
+    "eK": null,
+    "mK": null
+   },
+   "dmg": {
+    "dealt": {
+     "1x": 213.0,
+     "2x": 415.0,
+     "OT": 70.0
+    },
+    "taken": {
+     "1x": 1316.0,
+     "2x": 814.0,
+     "OT": 1830.0
+    }
+   },
+   "hp_total": {
+    "dealt": 10360.0,
+    "taken": 10928.0
+   },
+   "towers_seen": [
+    "eL",
+    "eR",
+    "eK",
+    "mL",
+    "mR",
+    "mK"
+   ],
+   "el_state": {
+    "1x": [
+     596.6901800000004,
+     112.50000000000001,
+     9.4
+    ],
+    "2x": [
+     221.51139499999996,
+     57.44999999999998,
+     0.0
+    ],
+    "OT": [
+     207.01252000000002,
+     56.15,
+     0.0
+    ]
+   },
+   "opp_cards": [
+    "Bomber",
+    "Giant",
+    "Phoenix",
+    "Prince",
+    "RageBarbarian"
+   ],
+   "plays_phase": {
+    "1x": [
+     13,
+     78.6836
+    ],
+    "2x": [
+     17,
+     71.7254
+    ],
+    "OT": [
+     18,
+     73.11929999999998
+    ]
+   },
+   "result": "LOSS",
+   "result_src": "derived"
+  },
+  {
+   "file": "live_play_20261006_130342.jsonl",
+   "ts": "20261006_130342",
+   "sha8": "2feffe4f",
+   "sha_src": "log",
+   "ckpt": "candidate.pt",
+   "cfg": "tau=0.35 card=argmax/0.7/1.0 spell=argmax opp_counter=True anti_leak=False",
+   "ladder": null,
+   "derived": "WIN",
+   "state_src": "decision",
+   "n_plays": 43,
+   "n_conf": 41,
+   "dur_s": 242.05,
+   "end_tick": 4841,
+   "crown_fix": null,
+   "crowns_me": 0,
+   "crowns_opp": 0,
+   "first_crown": null,
+   "first_crown_s": null,
+   "dead_s": {
+    "eL": null,
+    "eR": null,
+    "mL": null,
+    "mR": null,
+    "eK": null,
+    "mK": null
+   },
+   "dmg": {
+    "dealt": {
+     "1x": 610.0,
+     "2x": 1129.0,
+     "OT": 5403.0
+    },
+    "taken": {
+     "1x": 2728.0,
+     "2x": 1092.0,
+     "OT": 1940.0
+    }
+   },
+   "hp_total": {
+    "dealt": 15880.0,
+    "taken": 15880.0
+   },
+   "towers_seen": [
+    "eL",
+    "eR",
+    "eK",
+    "mL",
+    "mR",
+    "mK"
+   ],
+   "el_state": {
+    "1x": [
+     729.8449300000007,
+     112.75,
+     27.4
+    ],
+    "2x": [
+     268.66315999999995,
+     60.8,
+     0.0
+    ],
+    "OT": [
+     192.33712499999996,
+     56.64999999999999,
+     0.0
+    ]
+   },
+   "opp_cards": [
+    "AngryBarbarians",
+    "Arrows",
+    "GoblinBarrel",
+    "Knight",
+    "Tesla",
+    "Valkyrie"
+   ],
+   "plays_phase": {
+    "1x": [
+     14,
+     93.20799999999998
+    ],
+    "2x": [
+     14,
+     71.2377
+    ],
+    "OT": [
+     13,
+     48.725199999999994
+    ]
+   },
+   "result": "WIN",
+   "result_src": "derived"
+  },
+  {
+   "file": "live_play_20261006_130809.jsonl",
+   "ts": "20261006_130809",
+   "sha8": "2feffe4f",
+   "sha_src": "log",
+   "ckpt": "candidate.pt",
+   "cfg": "tau=0.35 card=argmax/0.7/1.0 spell=argmax opp_counter=True anti_leak=False",
+   "ladder": null,
+   "derived": "LOSS",
+   "state_src": "decision",
+   "n_plays": 30,
+   "n_conf": 30,
+   "dur_s": 187.1,
+   "end_tick": 3742,
+   "crown_fix": null,
+   "crowns_me": 0,
+   "crowns_opp": 1,
+   "first_crown": "opp",
+   "first_crown_s": 183.55,
+   "dead_s": {
+    "eL": null,
+    "eR": null,
+    "mL": null,
+    "mR": 183.55,
+    "eK": null,
+    "mK": null
+   },
+   "dmg": {
+    "dealt": {
+     "1x": 700.0,
+     "2x": 123.0,
+     "OT": 0.0
+    },
+    "taken": {
+     "1x": 546.0,
+     "2x": 1165.0,
+     "OT": 2843.0
+    }
+   },
+   "hp_total": {
+    "dealt": 13168.0,
+    "taken": 15880.0
+   },
+   "towers_seen": [
+    "eL",
+    "eR",
+    "eK",
+    "mL",
+    "mR",
+    "mK"
+   ],
+   "el_state": {
+    "1x": [
+     686.8694300000001,
+     112.44999999999996,
+     9.700000000000001
+    ],
+    "2x": [
+     230.62647999999993,
+     59.60000000000001,
+     0.0
+    ],
+    "OT": [
+     12.971085,
+     5.1,
+     0.0
+    ]
+   },
+   "opp_cards": [
+    "ElectroWizard",
+    "GoblinBarrel",
+    "GoblinGang",
+    "HogRider",
+    "Monk",
+    "Ronin",
+    "Wizard"
+   ],
+   "plays_phase": {
+    "1x": [
+     13,
+     98.17960000000001
+    ],
+    "2x": [
+     17,
+     72.0003
+    ],
+    "OT": [
+     0,
+     0.0
+    ]
+   },
+   "result": "LOSS",
+   "result_src": "derived"
+  },
+  {
+   "file": "live_play_20261006_131142.jsonl",
+   "ts": "20261006_131142",
+   "sha8": "2feffe4f",
+   "sha_src": "log",
+   "ckpt": "candidate.pt",
+   "cfg": "tau=0.35 card=argmax/0.7/1.0 spell=argmax opp_counter=True anti_leak=False",
+   "ladder": null,
+   "derived": "WIN",
+   "state_src": "decision",
+   "n_plays": 54,
+   "n_conf": 52,
+   "dur_s": 259.15,
+   "end_tick": 5183,
+   "crown_fix": null,
+   "crowns_me": 0,
+   "crowns_opp": 0,
+   "first_crown": null,
+   "first_crown_s": null,
+   "dead_s": {
+    "eL": null,
+    "eR": null,
+    "mL": null,
+    "mR": null,
+    "eK": null,
+    "mK": null
+   },
+   "dmg": {
+    "dealt": {
+     "1x": 7307.0,
+     "2x": 911.0,
+     "OT": 287.0
+    },
+    "taken": {
+     "1x": 163.0,
+     "2x": 47.0,
+     "OT": 2821.0
+    }
+   },
+   "hp_total": {
+    "dealt": 15880.0,
+    "taken": 15880.0
+   },
+   "towers_seen": [
+    "eL",
+    "eR",
+    "eK",
+    "mL",
+    "mR",
+    "mK"
+   ],
+   "el_state": {
+    "1x": [
+     544.1683500000001,
+     111.29999999999998,
+     9.700000000000001
+    ],
+    "2x": [
+     204.39273,
+     59.74999999999998,
+     0.0
+    ],
+    "OT": [
+     169.3828200000001,
+     71.15000000000003,
+     0.0
+    ]
+   },
+   "opp_cards": [
+    "Archer",
+    "ElectroSpirit",
+    "Fireball",
+    "Knight",
+    "Log",
+    "Tesla",
+    "Xbow"
+   ],
+   "plays_phase": {
+    "1x": [
+     14,
+     72.392
+    ],
+    "2x": [
+     17,
+     66.81659999999998
+    ],
+    "OT": [
+     21,
+     56.98780000000001
+    ]
+   },
+   "result": "WIN",
+   "result_src": "derived"
+  },
+  {
+   "file": "live_play_20261006_131641.jsonl",
+   "ts": "20261006_131641",
+   "sha8": "2feffe4f",
+   "sha_src": "log",
+   "ckpt": "candidate.pt",
+   "cfg": "tau=0.35 card=argmax/0.7/1.0 spell=argmax opp_counter=True anti_leak=False",
+   "ladder": null,
+   "derived": "WIN",
+   "state_src": "decision",
+   "n_plays": 71,
+   "n_conf": 69,
+   "dur_s": 300.1,
+   "end_tick": 6002,
+   "crown_fix": null,
+   "crowns_me": 1,
+   "crowns_opp": 1,
+   "first_crown": "me",
+   "first_crown_s": 160.8,
+   "dead_s": {
+    "eL": null,
+    "eR": 160.8,
+    "mL": 165.7,
+    "mR": null,
+    "eK": null,
+    "mK": null
+   },
+   "dmg": {
+    "dealt": {
+     "1x": 3635.0,
+     "2x": 4517.0,
+     "OT": 6077.0
+    },
+    "taken": {
+     "1x": 3881.0,
+     "2x": 788.0,
+     "OT": 0.0
+    }
+   },
+   "hp_total": {
+    "dealt": 15880.0,
+    "taken": 15880.0
+   },
+   "towers_seen": [
+    "eL",
+    "eR",
+    "eK",
+    "mL",
+    "mR",
+    "mK"
+   ],
+   "el_state": {
+    "1x": [
+     590.6713199999999,
+     112.94999999999996,
+     2.8
+    ],
+    "2x": [
+     192.03639000000007,
+     58.39999999999996,
+     0.0
+    ],
+    "OT": [
+     335.3287799999999,
+     109.60000000000001,
+     0.0
+    ]
+   },
+   "opp_cards": [
+    "AxeMan",
+    "GoldenKnight",
+    "IceWizard",
+    "MiniPekka",
+    "SkeletonArmy",
+    "Xbow"
+   ],
+   "plays_phase": {
+    "1x": [
+     16,
+     97.01099999999998
+    ],
+    "2x": [
+     16,
+     62.75079999999999
+    ],
+    "OT": [
+     37,
+     121.3253
+    ]
+   },
+   "result": "WIN",
+   "result_src": "derived"
+  },
+  {
+   "file": "live_play_20261006_140419.jsonl",
+   "ts": "20261006_140419",
+   "sha8": "2feffe4f",
+   "sha_src": "log",
+   "ckpt": "candidate.pt",
+   "cfg": "tau=0.35 card=argmax/0.7/1.0 spell=argmax opp_counter=True anti_leak=False",
+   "ladder": "LOSS",
+   "derived": "LOSS",
+   "state_src": "decision",
+   "n_plays": 31,
+   "n_conf": 28,
+   "dur_s": 183.8,
+   "end_tick": 3676,
+   "crown_fix": null,
+   "crowns_me": 0,
+   "crowns_opp": 1,
+   "first_crown": "opp",
+   "first_crown_s": 97.9,
+   "dead_s": {
+    "eL": null,
+    "eR": null,
+    "mL": 97.9,
+    "mR": null,
+    "eK": null,
+    "mK": null
+   },
+   "dmg": {
+    "dealt": {
+     "1x": 3622.0,
+     "2x": 492.0,
+     "OT": 0.0
+    },
+    "taken": {
+     "1x": 6773.0,
+     "2x": 613.0,
+     "OT": 0.0
+    }
+   },
+   "hp_total": {
+    "dealt": 15880.0,
+    "taken": 15880.0
+   },
+   "towers_seen": [
+    "eL",
+    "eR",
+    "eK",
+    "mL",
+    "mR",
+    "mK"
+   ],
+   "el_state": {
+    "1x": [
+     445.61380000000014,
+     109.09999999999994,
+     0.0
+    ],
+    "2x": [
+     327.68443,
+     59.64999999999999,
+     0.0
+    ],
+    "OT": [
+     13.717099999999999,
+     2.0,
+     0.0
+    ]
+   },
+   "opp_cards": [
+    "AngryBarbarians",
+    "BlowdartGoblin",
+    "Cannon",
+    "Firecracker",
+    "FirespiritHut",
+    "HogRider",
+    "Knight"
+   ],
+   "plays_phase": {
+    "1x": [
+     14,
+     66.4672
+    ],
+    "2x": [
+     14,
+     92.4465
+    ],
+    "OT": [
+     0,
+     0.0
+    ]
+   },
+   "result": "LOSS",
+   "result_src": "ladder"
+  },
+  {
+   "file": "live_play_20261006_140737.jsonl",
+   "ts": "20261006_140737",
+   "sha8": "2feffe4f",
+   "sha_src": "log",
+   "ckpt": "candidate.pt",
+   "cfg": "tau=0.35 card=argmax/0.7/1.0 spell=argmax opp_counter=True anti_leak=False",
+   "ladder": "LOSS",
+   "derived": "LOSS",
+   "state_src": "decision",
+   "n_plays": 31,
+   "n_conf": 29,
+   "dur_s": 181.2,
+   "end_tick": 3624,
+   "crown_fix": null,
+   "crowns_me": 0,
+   "crowns_opp": 1,
+   "first_crown": "opp",
+   "first_crown_s": 153.35,
+   "dead_s": {
+    "eL": null,
+    "eR": null,
+    "mL": 153.35,
+    "mR": null,
+    "eK": null,
+    "mK": null
+   },
+   "dmg": {
+    "dealt": {
+     "1x": 101.0,
+     "2x": 3488.0,
+     "OT": 0.0
+    },
+    "taken": {
+     "1x": 4160.0,
+     "2x": 1446.0,
+     "OT": 0.0
+    }
+   },
+   "hp_total": {
+    "dealt": 15880.0,
+    "taken": 15880.0
+   },
+   "towers_seen": [
+    "eL",
+    "eR",
+    "eK",
+    "mL",
+    "mR",
+    "mK"
+   ],
+   "el_state": {
+    "1x": [
+     689.72121,
+     112.84999999999997,
+     4.3
+    ],
+    "2x": [
+     195.5213899999999,
+     56.099999999999994,
+     0.0
+    ],
+    "OT": [
+     4.2138599999999995,
+     1.1,
+     0.0
+    ]
+   },
+   "opp_cards": [
+    "GoblinBarrel",
+    "Knight",
+    "Log",
+    "MiniPekka",
+    "Princess",
+    "Snowball",
+    "Witch"
+   ],
+   "plays_phase": {
+    "1x": [
+     17,
+     121.69780000000002
+    ],
+    "2x": [
+     12,
+     45.4896
+    ],
+    "OT": [
+     0,
+     0.0
+    ]
+   },
+   "result": "LOSS",
+   "result_src": "ladder"
+  },
+  {
+   "file": "live_play_20261006_141053.jsonl",
+   "ts": "20261006_141053",
+   "sha8": "2feffe4f",
+   "sha_src": "log",
+   "ckpt": "candidate.pt",
+   "cfg": "tau=0.35 card=argmax/0.7/1.0 spell=argmax opp_counter=True anti_leak=False",
+   "ladder": "LOSS",
+   "derived": "LOSS",
+   "state_src": "decision",
+   "n_plays": 25,
+   "n_conf": 25,
+   "dur_s": 183.85,
+   "end_tick": 3677,
+   "crown_fix": null,
+   "crowns_me": 1,
+   "crowns_opp": 2,
+   "first_crown": "opp",
+   "first_crown_s": 49.5,
+   "dead_s": {
+    "eL": 152.35,
+    "eR": null,
+    "mL": 49.5,
+    "mR": 108.25,
+    "eK": null,
+    "mK": null
+   },
+   "dmg": {
+    "dealt": {
+     "1x": 4519.0,
+     "2x": 992.0,
+     "OT": 0.0
+    },
+    "taken": {
+     "1x": 12339.0,
+     "2x": 3198.0,
+     "OT": 0.0
+    }
+   },
+   "hp_total": {
+    "dealt": 15880.0,
+    "taken": 15880.0
+   },
+   "towers_seen": [
+    "eL",
+    "eR",
+    "eK",
+    "mL",
+    "mR",
+    "mK"
+   ],
+   "el_state": {
+    "1x": [
+     493.03441,
+     111.25,
+     7.3999999999999995
+    ],
+    "2x": [
+     278.65978999999993,
+     59.7,
+     6.199999999999999
+    ],
+    "OT": [
+     9.566085000000001,
+     3.5999999999999996,
+     0.0
+    ]
+   },
+   "opp_cards": [
+    "BarbLog",
+    "BattleRam",
+    "Ghost",
+    "GiantSkeleton",
+    "MiniSparkys",
+    "Wizard"
+   ],
+   "plays_phase": {
+    "1x": [
+     12,
+     56.09780000000001
+    ],
+    "2x": [
+     13,
+     67.77
+    ],
+    "OT": [
+     0,
+     0.0
+    ]
+   },
+   "result": "LOSS",
+   "result_src": "ladder"
+  },
+  {
+   "file": "live_play_20261006_141406.jsonl",
+   "ts": "20261006_141406",
+   "sha8": "2feffe4f",
+   "sha_src": "log",
+   "ckpt": "candidate.pt",
+   "cfg": "tau=0.35 card=argmax/0.7/1.0 spell=argmax opp_counter=True anti_leak=False",
+   "ladder": "LOSS",
+   "derived": "LOSS",
+   "state_src": "decision",
+   "n_plays": 37,
+   "n_conf": 34,
+   "dur_s": 205.3,
+   "end_tick": 4106,
+   "crown_fix": null,
+   "crowns_me": 1,
+   "crowns_opp": 1,
+   "first_crown": "me",
+   "first_crown_s": 45.1,
+   "dead_s": {
+    "eL": 45.1,
+    "eR": null,
+    "mL": null,
+    "mR": 48.8,
+    "eK": null,
+    "mK": null
+   },
+   "dmg": {
+    "dealt": {
+     "1x": 4747.0,
+     "2x": 2014.0,
+     "OT": 0.0
+    },
+    "taken": {
+     "1x": 7640.0,
+     "2x": 1210.0,
+     "OT": 1434.0
+    }
+   },
+   "hp_total": {
+    "dealt": 15880.0,
+    "taken": 15880.0
+   },
+   "towers_seen": [
+    "eL",
+    "eR",
+    "eK",
+    "mL",
+    "mR",
+    "mK"
+   ],
+   "el_state": {
+    "1x": [
+     473.35446999999965,
+     109.8,
+     4.5
+    ],
+    "2x": [
+     194.82965999999993,
+     57.549999999999976,
+     0.0
+    ],
+    "OT": [
+     68.24278000000001,
+     22.400000000000002,
+     0.0
+    ]
+   },
+   "opp_cards": [
+    "DarkPrince",
+    "EliteArcher",
+    "Fireball",
+    "GoblinCage",
+    "Phoenix",
+    "Wallbreakers"
+   ],
+   "plays_phase": {
+    "1x": [
+     14,
+     67.0616
+    ],
+    "2x": [
+     16,
+     56.108
+    ],
+    "OT": [
+     4,
+     10.9858
+    ]
+   },
+   "result": "LOSS",
+   "result_src": "ladder"
+  },
+  {
+   "file": "live_play_20261006_141745.jsonl",
+   "ts": "20261006_141745",
+   "sha8": "2feffe4f",
+   "sha_src": "log",
+   "ckpt": "candidate.pt",
+   "cfg": "tau=0.35 card=argmax/0.7/1.0 spell=argmax opp_counter=True anti_leak=False",
+   "ladder": "WIN",
+   "derived": "WIN",
+   "state_src": "decision",
+   "n_plays": 31,
+   "n_conf": 29,
+   "dur_s": 181.9,
+   "end_tick": 3638,
+   "crown_fix": null,
+   "crowns_me": 1,
+   "crowns_opp": 0,
+   "first_crown": "me",
+   "first_crown_s": 159.65,
+   "dead_s": {
+    "eL": 159.65,
+    "eR": null,
+    "mL": null,
+    "mR": null,
+    "eK": null,
+    "mK": null
+   },
+   "dmg": {
+    "dealt": {
+     "1x": 1799.0,
+     "2x": 6760.0,
+     "OT": 0.0
+    },
+    "taken": {
+     "1x": 2199.0,
+     "2x": 575.0,
+     "OT": 0.0
+    }
+   },
+   "hp_total": {
+    "dealt": 15880.0,
+    "taken": 15880.0
+   },
+   "towers_seen": [
+    "eL",
+    "eR",
+    "eK",
+    "mL",
+    "mR",
+    "mK"
+   ],
+   "el_state": {
+    "1x": [
+     525.4258699999999,
+     109.49999999999999,
+     6.699999999999999
+    ],
+    "2x": [
+     180.1942049999998,
+     59.599999999999994,
+     0.0
+    ],
+    "OT": [
+     6.279935,
+     1.45,
+     0.0
+    ]
+   },
+   "opp_cards": [
+    "EliteArcher",
+    "Firecracker",
+    "HogRider",
+    "Knight",
+    "MiniPekka",
+    "Valkyrie",
+    "Witch"
+   ],
+   "plays_phase": {
+    "1x": [
+     14,
+     76.36979999999998
+    ],
+    "2x": [
+     15,
+     51.49009999999999
+    ],
+    "OT": [
+     0,
+     0.0
+    ]
+   },
+   "result": "WIN",
+   "result_src": "ladder"
+  },
+  {
+   "file": "live_play_20261006_142102.jsonl",
+   "ts": "20261006_142102",
+   "sha8": "2feffe4f",
+   "sha_src": "log",
+   "ckpt": "candidate.pt",
+   "cfg": "tau=0.35 card=argmax/0.7/1.0 spell=argmax opp_counter=True anti_leak=False",
+   "ladder": "LOSS",
+   "derived": "LOSS",
+   "state_src": "decision",
+   "n_plays": 40,
+   "n_conf": 34,
+   "dur_s": 183.15,
+   "end_tick": 3663,
+   "crown_fix": null,
+   "crowns_me": 0,
+   "crowns_opp": 1,
+   "first_crown": "opp",
+   "first_crown_s": 162.85,
+   "dead_s": {
+    "eL": null,
+    "eR": null,
+    "mL": null,
+    "mR": 162.85,
+    "eK": null,
+    "mK": null
+   },
+   "dmg": {
+    "dealt": {
+     "1x": 1096.0,
+     "2x": 3913.0,
+     "OT": 0.0
+    },
+    "taken": {
+     "1x": 1580.0,
+     "2x": 4395.0,
+     "OT": 0.0
+    }
+   },
+   "hp_total": {
+    "dealt": 15880.0,
+    "taken": 15880.0
+   },
+   "towers_seen": [
+    "eL",
+    "eR",
+    "eK",
+    "mL",
+    "mR",
+    "mK"
+   ],
+   "el_state": {
+    "1x": [
+     434.0584699999996,
+     105.95,
+     9.0
+    ],
+    "2x": [
+     193.80473500000002,
+     58.89999999999998,
+     0.0
+    ],
+    "OT": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "opp_cards": [
+    "Barbarians",
+    "BossBandit",
+    "ElixirGolem",
+    "MiniPekka",
+    "Prince",
+    "ThreeMusketeers",
+    "Witch"
+   ],
+   "plays_phase": {
+    "1x": [
+     17,
+     81.6858
+    ],
+    "2x": [
+     17,
+     55.9828
+    ],
+    "OT": [
+     0,
+     0.0
+    ]
+   },
+   "result": "LOSS",
+   "result_src": "ladder"
+  },
+  {
+   "file": "live_play_20261006_142420.jsonl",
+   "ts": "20261006_142420",
+   "sha8": "2feffe4f",
+   "sha_src": "log",
+   "ckpt": "candidate.pt",
+   "cfg": "tau=0.35 card=argmax/0.7/1.0 spell=argmax opp_counter=True anti_leak=False",
+   "ladder": "LOSS",
+   "derived": "LOSS",
+   "state_src": "decision",
+   "n_plays": 46,
+   "n_conf": 44,
+   "dur_s": 224.8,
+   "end_tick": 4496,
+   "crown_fix": null,
+   "crowns_me": 0,
+   "crowns_opp": 0,
+   "first_crown": null,
+   "first_crown_s": null,
+   "dead_s": {
+    "eL": null,
+    "eR": null,
+    "mL": null,
+    "mR": null,
+    "eK": null,
+    "mK": null
+   },
+   "dmg": {
+    "dealt": {
+     "1x": 138.0,
+     "2x": 389.0,
+     "OT": 256.0
+    },
+    "taken": {
+     "1x": 168.0,
+     "2x": 252.0,
+     "OT": 5464.0
+    }
+   },
+   "hp_total": {
+    "dealt": 15880.0,
+    "taken": 15880.0
+   },
+   "towers_seen": [
+    "eL",
+    "eR",
+    "eK",
+    "mL",
+    "mR",
+    "mK"
+   ],
+   "el_state": {
+    "1x": [
+     512.3529699999998,
+     112.64999999999999,
+     3.9000000000000004
+    ],
+    "2x": [
+     241.103835,
+     59.14999999999998,
+     0.0
+    ],
+    "OT": [
+     77.69120000000001,
+     39.09999999999999,
+     0.0
+    ]
+   },
+   "opp_cards": [
+    "Assassin",
+    "Barbarians",
+    "Firecracker",
+    "HogRider",
+    "InfernoDragon",
+    "SkeletonArmy",
+    "SkeletonKing"
+   ],
+   "plays_phase": {
+    "1x": [
+     17,
+     92.8648
+    ],
+    "2x": [
+     15,
+     75.72169999999998
+    ],
+    "OT": [
+     12,
+     27.801900000000003
+    ]
+   },
+   "result": "LOSS",
+   "result_src": "ladder"
+  },
+  {
+   "file": "live_play_20261006_142820.jsonl",
+   "ts": "20261006_142820",
+   "sha8": "2feffe4f",
+   "sha_src": "log",
+   "ckpt": "candidate.pt",
+   "cfg": "tau=0.35 card=argmax/0.7/1.0 spell=argmax opp_counter=True anti_leak=False",
+   "ladder": "LOSS",
+   "derived": "LOSS",
+   "state_src": "decision",
+   "n_plays": 47,
+   "n_conf": 45,
+   "dur_s": 232.1,
+   "end_tick": 4642,
+   "crown_fix": null,
+   "crowns_me": 0,
+   "crowns_opp": 0,
+   "first_crown": null,
+   "first_crown_s": null,
+   "dead_s": {
+    "eL": null,
+    "eR": null,
+    "mL": null,
+    "mR": null,
+    "eK": null,
+    "mK": null
+   },
+   "dmg": {
+    "dealt": {
+     "1x": 1514.0,
+     "2x": 102.0,
+     "OT": 3949.0
+    },
+    "taken": {
+     "1x": 2264.0,
+     "2x": 443.0,
+     "OT": 4188.0
+    }
+   },
+   "hp_total": {
+    "dealt": 15880.0,
+    "taken": 15880.0
+   },
+   "towers_seen": [
+    "eL",
+    "eR",
+    "eK",
+    "mL",
+    "mR",
+    "mK"
+   ],
+   "el_state": {
+    "1x": [
+     539.0042400000001,
+     111.1,
+     2.4000000000000004
+    ],
+    "2x": [
+     225.9250000000001,
+     59.69999999999998,
+     0.0
+    ],
+    "OT": [
+     116.39804499999991,
+     45.99999999999999,
+     0.0
+    ]
+   },
+   "opp_cards": [
+    "Assassin",
+    "Barbarians",
+    "Firecracker",
+    "HogRider",
+    "SkeletonArmy",
+    "SkeletonKing"
+   ],
+   "plays_phase": {
+    "1x": [
+     17,
+     96.11160000000001
+    ],
+    "2x": [
+     16,
+     69.64089999999999
+    ],
+    "OT": [
+     12,
+     32.6614
+    ]
+   },
+   "result": "LOSS",
+   "result_src": "ladder"
+  },
+  {
+   "file": "live_play_20261006_143227.jsonl",
+   "ts": "20261006_143227",
+   "sha8": "2feffe4f",
+   "sha_src": "log",
+   "ckpt": "candidate.pt",
+   "cfg": "tau=0.35 card=argmax/0.7/1.0 spell=argmax opp_counter=True anti_leak=False",
+   "ladder": null,
+   "derived": "LOSS",
+   "state_src": "decision",
+   "n_plays": 22,
+   "n_conf": 20,
+   "dur_s": 131.2,
+   "end_tick": 2624,
+   "crown_fix": null,
+   "crowns_me": 0,
+   "crowns_opp": 3,
+   "first_crown": "opp",
+   "first_crown_s": 57.45,
+   "dead_s": {
+    "eL": null,
+    "eR": null,
+    "mL": 57.45,
+    "mR": 116.9,
+    "eK": null,
+    "mK": 128.9
+   },
+   "dmg": {
+    "dealt": {
+     "1x": 169.0,
+     "2x": 0.0,
+     "OT": 0.0
+    },
+    "taken": {
+     "1x": 9958.0,
+     "2x": 5922.0,
+     "OT": 0.0
+    }
+   },
+   "hp_total": {
+    "dealt": 14616.0,
+    "taken": 15880.0
+   },
+   "towers_seen": [
+    "eL",
+    "eR",
+    "eK",
+    "mL",
+    "mR",
+    "mK"
+   ],
+   "el_state": {
+    "1x": [
+     388.1633900000003,
+     109.35000000000001,
+     1.9
+    ],
+    "2x": [
+     27.183720000000005,
+     10.4,
+     0.0
+    ],
+    "OT": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "opp_cards": [
+    "Bomber",
+    "Firecracker",
+    "MegaKnight",
+    "MiniPekka",
+    "Valkyrie",
+    "Witch"
+   ],
+   "plays_phase": {
+    "1x": [
+     18,
+     80.22259999999999
+    ],
+    "2x": [
+     2,
+     6.6072
+    ],
+    "OT": [
+     0,
+     0.0
+    ]
+   },
+   "result": "LOSS",
+   "result_src": "derived"
+  },
+  {
+   "file": "live_play_20261006_180120.jsonl",
+   "ts": "20261006_180120",
+   "sha8": "2feffe4f",
+   "sha_src": "log",
+   "ckpt": "candidate.pt",
+   "cfg": "tau=0.35 card=argmax/0.7/1.0 spell=argmax opp_counter=True anti_leak=False",
+   "ladder": null,
+   "derived": "LOSS",
+   "state_src": "decision",
+   "n_plays": 73,
+   "n_conf": 72,
+   "dur_s": 309.5,
+   "end_tick": 6190,
+   "crown_fix": null,
+   "crowns_me": 1,
+   "crowns_opp": 2,
+   "first_crown": "me",
+   "first_crown_s": 61.95,
+   "dead_s": {
+    "eL": null,
+    "eR": 61.95,
+    "mL": 76.7,
+    "mR": 306.4,
+    "eK": null,
+    "mK": null
+   },
+   "dmg": {
+    "dealt": {
+     "1x": 3300.0,
+     "2x": 676.0,
+     "OT": 2050.0
+    },
+    "taken": {
+     "1x": 3394.0,
+     "2x": 684.0,
+     "OT": 2966.0
+    }
+   },
+   "hp_total": {
+    "dealt": 10928.0,
+    "taken": 10928.0
+   },
+   "towers_seen": [
+    "eL",
+    "eR",
+    "eK",
+    "mL",
+    "mR",
+    "mK"
+   ],
+   "el_state": {
+    "1x": [
+     539.8744100000006,
+     112.14999999999993,
+     1.4
+    ],
+    "2x": [
+     171.406255,
+     58.29999999999998,
+     0.0
+    ],
+    "OT": [
+     342.79177000000004,
+     124.90000000000003,
+     0.0
+    ]
+   },
+   "opp_cards": [
+    "IceWizard",
+    "Knight",
+    "Log",
+    "Rocket",
+    "Tesla",
+    "Xbow"
+   ],
+   "plays_phase": {
+    "1x": [
+     15,
+     90.26540000000001
+    ],
+    "2x": [
+     16,
+     54.418099999999995
+    ],
+    "OT": [
+     41,
+     117.25049999999996
+    ]
+   },
+   "result": "LOSS",
+   "result_src": "derived"
+  }
+ ]
+}

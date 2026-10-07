@@ -3896,6 +3896,20 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   battery_guard.log): suspends training/sim python below 10% on battery, resumes at 25% or plugged in, live STOP below
 >   5%; AC idle-sleep is "never". Overnight workers: live evaluation report (`L73/live_eval/`, sonnet) and live wiring
 >   for fv5/fv6 + decode options (worktree, opus).
+> * **LIVE STATE 23:3x: STOPPED, not by the lead.** STOP file created 21:29:58 (2 min after gen_v3.2 training began;
+>   the supervisor ended the run after its 21:30 match; no supervisor/live_play process now). A separate manual live
+>   run of Codex's tower_spatial_v7 candidate (sha 2feffe4f) played one match 22:16:58-22:20 outside the supervisor
+>   (not in overnight.out); source unknown (lead did not start it). The last R1e matches logged CPU-STARVED: median
+>   decision 101-120 ms vs normal ~40 ms while training ran. Lead decision: leave live STOPPED while GPU/CPU-heavy jobs
+>   run (degraded play costs trophies); resume only with a deploy-worthy checkpoint and nothing heavy running, so the
+>   live evaluation is not confounded by CPU starvation.
+> * **R1e LIVE BASELINE (worker sonnet, `L73/live_eval/`, report_R1e.txt):** 231 matches 117-114 (50.6% [44,57]);
+>   crowns taken/lost 0.66/0.76; first crown decides it (bot first 84% win, opponent first 7%); 3-crown losses 17/100;
+>   OT reached 44%. Tower damage dealt/taken % : 1x 17.6/21.4 (LOSES 1x), 2x 13.2/13.1, OT 7.8/6.8. Elixir at play
+>   1x 5.7, 2x 4.2, OT 3.5. WEAK: Golem class 7-19 (27% [14,46]; early 1x collapse, 1x taken 45% vs dealt 12%), heavy
+>   tank trait 38% [29,48], Witch/Night Witch 34% [22,48], Mega Knight 3-15 (17%), Elixir Golem 21%, Goblin Barrel 28%.
+>   Strong-ish: buildings in opp deck 62%, Miner 77%, Spawner class 73% (n=15, not flagged). Trophies are NOT logged
+>   (capture point: ladder_nav.py ~286-292 results screen, or main-menu counter).
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live

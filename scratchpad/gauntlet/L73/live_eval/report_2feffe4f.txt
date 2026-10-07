@@ -1,0 +1,67 @@
+=== LIVE EVAL  2feffe4f  (sha 2feffe4f; sha_src {'log': 17}) ===
+logs 20261006_124440 .. 20261006_180120; in window 252, in-progress skipped 2, excluded (<5 plays / no result) 0; result source {'derived': 9, 'ladder': 8} (crown-derived result agrees with the ladder result in 8/8 matches that have both); with board state 17/17
+config variants: {'tau=0.35 card=argmax/0.7/1.0 spell=argmax opp_counter=True anti_leak=False': 17}
+
+OVERALL  matches 17  W/L/D 6/11/0  win rate 35.3% 95% CI [17,59]  (draws count as non-wins)
+crowns taken/match 0.41 +-0.24   lost/match 0.82 +-0.42   (n=17)
+crown distribution (share of matches with 0/1/2/3 crowns):  taken 59% / 41% / 0% / 0%   lost 41% / 41% / 12% / 6%
+first crown: bot took it 35.3% (6), opponent took it 41.2% (7), nobody 23.5% (4)
+   win rate when bot first: 66.7% [30,90]  n=6
+   win rate when opp first: 0.0% [0,35]  n=7
+   win rate when no crown : 50.0% [15,85]  n=4
+three-crown losses 1/11 losses (9.1%) | three-crown wins 0/6 | king-kill inferred from early end: 0
+match length mean 212s median 187s | reached OT (>= 186s) 9/17 = 52.9%; win rate in OT matches 33.3% [12,65] n=9
+
+TOWER DAMAGE (% of that side's total tower HP, ratio of sums; matches with >=5 towers sighted: n=17); per-min = % of total per match-minute in that phase
+  phase     n |  dealt %    /min  abs HP |  taken %    /min  abs HP | net(dealt-taken)
+  ALL      17 |    36.2%   10.2%    5437 |    43.2%   12.2%    6613 | -7.1pp
+  1x       17 |    16.0%    8.0%    2411 |    24.9%   12.5%    3815 | -8.9pp
+  2x       17 |    13.1%   13.7%    1961 |     9.3%    9.7%    1416 | +3.8pp
+  OT       16 |     7.5%   12.0%    1131 |     9.6%   15.4%    1468 | -2.1pp
+  (whole-match mean per-match dealt %  35.5% +-11.2   taken 43.5% +-11.9)
+
+ELIXIR ECONOMY (own elixir from the decision states; 'at play' = elixir when a confirmed card was played)
+  phase  mean elixir  % time >=9.5  at play  plays plays/min
+  1x            4.91          5.7%     5.65    254      7.47
+  2x            3.83          0.6%     4.27    245     15.14
+  OT            2.90          0.0%     3.09    158     15.83
+
+TRAJECTORY (chronological blocks of 25 matches; trophies are NOT logged, so this is win rate and cumulative net wins W-L)
+  20261006_124440..20261006_180120  n= 17  W-L 6-11  wr 35.3%  net wins so far -5
+
+MATCHUPS by opponent primary class (public cards seen; n=17; overall 35.3%). flag = class 95% CI excludes the overall rate; 'vs rest' = Newcombe diff CI. 8+ matches needed to flag.
+  class                              n    W-L-D win rate     95% CI             vs rest  flag
+  Giant (incl. Goblin/Electro)       1    0-1-0     0.0%     [0,79]  -37.5pp   [-61,44]  small n
+  Golem                              1    0-1-0     0.0%     [0,79]  -37.5pp   [-61,44]  small n
+  Ram/Bridge spam                    2    0-2-0     0.0%     [0,66]  -40.0pp   [-64,29]  small n
+  Spawners (Witch/huts)              1    0-1-0     0.0%     [0,79]  -37.5pp   [-61,44]  small n
+  Hog (incl. Royal Hogs)             6    2-4-0    33.3%    [10,70]   -3.0pp   [-40,39]  small n
+  Mega Knight                        2    1-1-0    50.0%     [9,91]  +16.7pp   [-31,61]  small n
+  X-Bow/Mortar                       3    2-1-0    66.7%    [21,94]  +38.1pp   [-15,70]  small n
+  Other/no clear wincon              1    1-0-0   100.0%   [21,100]  +68.8pp   [-14,86]  small n
+
+TRAITS (non-exclusive; same flagging)
+  heavy tank                         5    1-4-0    20.0%     [4,62]  -21.7pp   [-53,26]  small n
+  bridge spam                        4    1-3-0    25.0%     [5,70]  -13.5pp   [-47,36]  small n
+  has Witch/Night Witch              4    1-3-0    25.0%     [5,70]  -13.5pp   [-47,36]  small n
+  has building                       5    3-2-0    60.0%    [23,88]  +35.0pp   [-11,68]  small n
+  spawner-heavy                      0    0-0-0      n/a      [n/a]      n/a             small n
+  air (>=2)                          0    0-0-0      n/a      [n/a]      n/a             small n
+  spell-bait (>=3)                   0    0-0-0      n/a      [n/a]      n/a             small n
+
+PER-CARD PRESENCE EFFECT (win rate when opponent shows the card minus when not; cards with >=8 present and >=8 absent; 0 cards tested, so ~0 CI-excluding-0 hits are expected by chance)
+  card               present n wr present wr absent    delta        95% CI  sig
+  -- worst 12 (bot wins less when present)
+  -- best 8 (bot wins more when present)
+  Caveat: cards are only counted once SEEN, so presence correlates with match length (short 3-crown losses reveal fewer cards); treat as association, not cause.
+
+HOW THE WEAK SPOTS ARE LOST (5 worst classes with n>=8, every BELOW-flagged trait, up to 4 BELOW-flagged cards; losses only; phases 1x <120s, 2x 120-180s, OT >=180s)
+  [ALL MATCHES]  matches 17  win rate 35.3%  losses (with state) 11
+     first crown lost: 1x=3, 2x=2, OT=2, bot_first=2, none=2  | opp first crown before 120s: 3/11  | bot scored >=1 crown in 3/11  | three-crowned 1  | OT losses 6  | mean length 206s | crowns for/against 0.27/1.18
+     tower damage in these losses (% of total): 1x: taken 30.4% dealt 12.6% (n=11); 2x: taken 12.2% dealt 7.9% (n=11); OT: taken 12.6% dealt 4.3% (n=10)
+
+TROPHIES: not recorded anywhere in the logs (live_play_*.jsonl start/end events, overnight.out, ladder_state.json carry only W/L/D tallies). Capture points:
+  (a) scratchpad/gauntlet/L68/live_reader/ladder_nav.py ~line 286-292: on the 'results' screen the classifier already runs once per match; OCR the trophy delta (+/-) under the WINNER banner
+      there, add it to the outcome event W(event='outcome', ...) and to the '[ladder] result:' print; (b) the main-menu screen (ladder_nav 'main') shows the total trophy counter top-left:
+      OCR it each time the planner passes through 'main' and write it to the nav jsonl. Not built here (read-only task).
+CLASS RULES: primary class = first match in: X-Bow/Mortar=['Mortar', 'Xbow']; Lava Hound=['LavaHound']; Golem=['ElixirGolem', 'Golem']; Giant (incl. Goblin/Electro)=['ElectroGiant', 'Giant', 'GoblinGiant']; Royal Giant=['RoyalGiant']; Balloon=['Balloon']; Graveyard=['Graveyard']; Hog (incl. Royal Hogs)=['HogRider', 'RoyalHogs']; Ram/Bridge spam = BattleRam|RamRider or >=2 of ['Assassin', 'Berserker', 'BossBandit', 'DarkPrince', 'Ghost', 'Prince', 'Wallbreakers']; Miner = Miner|MightyMiner; Mega Knight; P.E.K.K.A; Spawners = any of ['BarbarianHut', 'BarbarianLauncher', 'DarkWitch', 'FirespiritHut', 'GoblinDrill', 'GoblinHut', 'Tombstone', 'Witch', 'WitchMother']; Bait = >=3 of ['DartBarrell', 'GoblinBarrel', 'GoblinGang', 'Goblins', 'Princess', 'Rascals', 'SkeletonArmy', 'SkeletonBalloon']; else 'Other/no clear wincon'. Ignored spawn tokens: ['Bats', 'SkeletonWarriors', 'Skeletons', 'SpearGoblins']. Traits (non-exclusive): spawner-heavy = >=2 spawner cards, heavy tank = any of ['ElectroGiant', 'ElixirGolem', 'Giant', 'GiantSkeleton', 'GoblinGiant', 'Golem', 'LavaHound', 'MegaKnight', 'Pekka', 'RoyalGiant'], air = >=2 of ['BabyDragon', 'Balloon', 'ElectroDragon', 'InfernoDragon', 'LavaHound', 'MegaMinion', 'MinionHorde', 'Minions', 'Phoenix', 'SkeletonDragons'], spell-bait = >=3 bait cards, bridge spam = class rule above, has building = Cannon/Tesla/BombTower/InfernoTower.
