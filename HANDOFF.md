@@ -3973,6 +3973,14 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   heavy tank 30.4% vs 49.3%; Mega Knight 2.4% vs 9.0%; Golem 7.0% vs 12.9%. (3) reward signal thin (est. SNR ~0.2
 >   per update for a 1 pp gate effect; GAE lambda .95 looks ~10 s ahead, overspend costs 20-40 s later). (4) leash NOT
 >   binding (beta at floor .03 from u8; KL .073/.048/.059 vs .10; step size lr 1e-5 x 2 epochs is the brake).
+> * **OWNER 10-07 ~11:3x: next RL = A + B bundled (+ C if the offline Phi check supports it); "I don't care about
+>   confounding"; B is needed regardless (mirror-heavy training only learns mirrors).** A = train as deployed (tau .35,
+>   T .5 -> .3, opponents too). B = ladder-matched opponent decks (live class shares, weak classes x1.5, icebow mirror
+>   ~2%, S1 specialist 2%) via a weighted copy of the census (`sides` = target weight, alpha 1). Run `rseries_r2l`,
+>   120 updates, base gen_v3.2 (rule-chosen; the barrel branch can be added after RL -- aim-only), engine 20261006.
+>   Acceptance: ghost as regression guard only (saturated 98%); reactive 48 seeds on the census AND the ladder decks;
+>   then interleaved live A/B with trophies. Prep worker (opus) building `L73/rl_r2/` (deck file, run_r2.sh gated on a
+>   GO file, smoke).
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
