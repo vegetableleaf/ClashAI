@@ -3910,6 +3910,18 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   tank trait 38% [29,48], Witch/Night Witch 34% [22,48], Mega Knight 3-15 (17%), Elixir Golem 21%, Goblin Barrel 28%.
 >   Strong-ish: buildings in opp deck 62%, Miner 77%, Spawner class 73% (n=15, not flagged). Trophies are NOT logged
 >   (capture point: ladder_nav.py ~286-292 results screen, or main-menu counter).
+> * **LIVE WIRING READY, NOT MERGED (worker opus; branch `worktree-agent-ac3364d1e90635c51` @0bcfd73 = decode branch
+>   merged + live).** live_gen_v2 GenPilot: tau_phase by the extrapolated board's t_sec, xbow_class with enemy towers
+>   bs.towers[3:6] + grid + per-match seeded RNG; decision log adds gate_tau. 1,095 recorded reader-v2 frames: defaults
+>   byte-identical to the pre-change pilot on R1e (exact floats); options on: 0 errors (old pilot raised on 108 X-Bow
+>   decisions). fv5 identity and fv6 projectile branch confirmed on live inputs (485/485 targeted projectiles reach
+>   target_patches). 185 tests pass (2 need the Royale runtime/gen_v1 in a worktree). Latency under load (3x live):
+>   fv6 median 1.11x / p95 1.05x R1e -> MEASURE ON AN IDLE CPU BEFORE DEPLOY (live today median 44 / p95 144 ms over
+>   30,821 decisions). Deploy flags: `--tau-phase A B C --xbow-class class_sample --xbow-class-floor 0.3
+>   --decision-seed <distinct N>` on the live_play line + CKPT_OVERRIDE. Residual Hero Ice Wizard duplicate: 21/1,095
+>   frames have two same-side 203000023 objects 2.8 tiles apart (outside the 500-unit dedupe radius) -- open; fix in
+>   reader_identity_aliases (needs which-is-the-cube evidence; Codex's named reader distinguishes them). Blind
+>   verifier running.
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
