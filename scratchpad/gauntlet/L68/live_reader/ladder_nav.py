@@ -291,7 +291,11 @@ class LadderNav:
                 return ("stop", f"{ALERT}: still on 'Choose your reward' {self.CARD_WAIT_S:.0f} s after tapping the "
                                 f"{('left', 'right')[self.pick]} card")
             return ("wait", "reward card tapped")
-        self.choose_flow, self.pick, self.picked_at = False, None, None   # a known screen: the choice is over
+        if not (s == "trophy_road" and self.chooses and self.picked_at is None):
+            # verifier F1: while a Choose is tapped and no card picked yet, the path (tap latency) keeps the flow on
+            if self.picked_at is not None:     # verifier F4: a pick landed -> the next Choose gets a fresh budget
+                self.chooses = 0
+            self.choose_flow, self.pick, self.picked_at = False, None, None   # a known screen: the choice is over
         if s == "conn_lost":   # owner's phone took the account: never kick it -- pause the run (live_play: STOP + Discord)
             if scr["other_device"]:
                 return ("stop", "ANOTHER_DEVICE: the account was opened on another device (Connection lost)")
@@ -403,7 +407,8 @@ class LadderNavRunner:
     def __init__(self, adb: list[str], dry_run: bool = False, log_dir: Path = HERE, state_path: Path = STATE,
                  wins_today: int | None = None, trophy_log: bool = True, seed: int | None = None, alert=discord_alert):
         self.adb, self.dry_run, self.log_dir, self.state_path = adb, dry_run, log_dir, state_path
-        self.rng, self.alert = random.Random(seed), alert     # reward-card pick; TROPHY_ROAD_ALERT poster(text, png)
+        self.seed = seed if seed is not None else random.SystemRandom().randrange(2**31)   # verifier F2: logged
+        self.rng, self.alert = random.Random(self.seed), alert   # reward-card pick; TROPHY_ROAD_ALERT poster(text, png)
         self.clf = Classifier()
         self.trophy = None                       # passive trophy reader (trophy_read.py); None = off or digit bank missing
         self.trophies_total: int | None = None   # last main-menu trophy counter read
@@ -522,9 +527,9 @@ class LadderNavRunner:
                             # first real MuMu frames of the trophy-road reward choice
                             shots.mkdir(exist_ok=True)
                             tag = "" if p[1] in ("tap_through", "battle") else f"_{p[1]}"
-                            cv2.imwrite(str(shots / f"{stamp}_{nav.taps:02d}{tag}.png"), img)
+                            cv2.imwrite(str(shots / f"{stamp}_{nav.taps:02d}{tag}_{int(time.time() * 1000) % 10**6:06d}.png"), img)
                         if p[1] == "reward_card":
-                            W(event="reward_pick", side=("left", "right")[nav.pick], point=p[2])
+                            W(event="reward_pick", side=("left", "right")[nav.pick], point=p[2], seed=self.seed)
                             print(f"[ladder] reward choice: random pick = {('left', 'right')[nav.pick]} card", flush=True)
                         W(event="input", target=p[1], cmd=cmd, dry_run=self.dry_run)
                         print(f"[ladder] {'WOULD ' if self.dry_run else ''}{p[1]}: {cmd}", flush=True)

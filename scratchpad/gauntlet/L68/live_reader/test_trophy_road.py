@@ -137,7 +137,7 @@ assert not ok and why.startswith(ALERT), why
 assert len(taps) == 2 and taps[0].startswith("input tap") and taps[1] == "input tap {} {}".format(*map(round, card)), taps
 assert len(alerts) == 1 and alerts[0][1] is not None and alerts[0][1].exists() and ALERT in alerts[0][0]
 assert any(e["event"] == "alert" and e["sent"] for e in log)
-assert sorted(x.name.split("_", 3)[-1] for x in (d / "ladder_unknown").glob("*.png")) == ["choose.png", "reward_card.png"]
+assert sorted(x.name[:-len("_000000.png")].split("_", 3)[-1] for x in (d / "ladder_unknown").glob("*.png")) == ["choose", "reward_card"]
 print(f"runner ok: seed 11 picked the {pick['side']} card at {pick['point']}; taps {taps}; stop: {why}")
 
 # 5. the alert poster never raises and never prints the webhook (missing secret -> False)
@@ -145,3 +145,17 @@ ladder_nav.WEBHOOK, w0 = Path("/nonexistent/discord_webhook.txt"), ladder_nav.WE
 assert ladder_nav.discord_alert("x", None) is False
 ladder_nav.WEBHOOK = w0
 print("trophy-road reward-choice checks passed")
+
+# verifier 2026-10-07 F1: the path still shown one frame after the Choose tap must NOT end the flow
+nav = LadderNav(0, {}, random.Random(1))
+assert nav.plan(PATH, 1)[1] == "choose"
+nav.acted("choose", 1.5)
+nav.plan(PATH, 3.0)                                       # tap latency: the path is still on screen
+assert nav.choose_flow
+assert all(nav.plan(UNK, t)[0] == "wait" for t in (3.5, 6.5, 12.0)) and nav.plan(UNK, 13.6)[0] == "stop"
+# F4: after a completed pick, a second Choose reward gets the full budget again
+nav = LadderNav(0, {}, random.Random(1))
+nav.plan(PATH, 1); nav.acted("choose", 1.5); nav.plan(CHOICE, 3); nav.acted("reward_card", 3.5)
+nav.plan(PATH, 5)
+assert nav.chooses == 0 and not nav.choose_flow
+print("verifier F1/F4 regressions ok")
