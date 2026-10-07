@@ -31,20 +31,31 @@ def extend_forms(forms):
 
 def dedupe_hero_bodies(frame, radius=500):
     """
-    1,702/1,702 sidebyside frames carry them as a pair, same kind/hp/max_hp/position, the Hero listed first; the cube's
-    hp stays at max while the Hero's drops). The alias above made the model see TWO heroes. Keep the first such object
-    unchanged (same object)."""
+    category == owner category + 1. Drop such a cube, whatever the list order. TWO real Heroes on one side do occur
+    (49 named frame-sides, e.g. 10-06 ticks 3148-3348, 2.8 tiles apart, each with its own cube) and both are kept.
+    Fallback when the category rule does not decide (no category field): the old rule, drop a later 203000023 within
+    returned unchanged (same object)."""
     ents = frame.get('entities') or ()
-    kept, drop = [], False
-    for e in ents:
-        if int(e.get('card_id', -1)) == HERO_ICE_WIZARD_ID and any(
-                int(k.get('card_id', -1)) == HERO_ICE_WIZARD_ID and k.get('side') == e.get('side')
-                and abs(k['x'] - e['x']) <= radius and abs(k['y'] - e['y']) <= radius for k in kept):
-            drop = True
-            continue
-        kept.append(e)
+    hero = [e for e in ents if int(e.get('card_id', -1)) == HERO_ICE_WIZARD_ID]
+    if not hero:
+        return frame
+
+    def near(k, e):
+        return k is not e and k.get('side') == e.get('side') and \
+            abs(k['x'] - e['x']) <= radius and abs(k['y'] - e['y']) <= radius
+
+    def cube(e):
+        c = e.get('category')
+        return c is not None and any(k.get('category') == c - 1 and near(k, e) for k in hero)
+
+    kept_hero, drop = [], set()
+    for e in hero:
+        if cube(e) or (e.get('category') is None and any(near(k, e) for k in kept_hero)):
+            drop.add(id(e))
+        else:
+            kept_hero.append(e)
     if not drop:
         return frame
     out = dict(frame)
-    out['entities'] = kept
+    out['entities'] = [e for e in ents if id(e) not in drop]
     return out
