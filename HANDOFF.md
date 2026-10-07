@@ -3960,6 +3960,8 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   (RL made overspending WORSE again); defensive Rockets 26 vs v3.2 56; defensive X-Bows 340 vs 252. Reading (b): RL
 >   vs our own models learns play that beats our models (reactive) but not pro sequences (ghost), and moves elixir away
 >   from pros -- consistent with the self-play-opponent hypothesis under test in `L73/rl_diag/`.
+> * **R1f u0105:** reactive 65/96 (u0080: 74), ghost vs R1e -3.0 [-5.7,-0.7] -> later RL updates LOST the reactive
+>   gain; neither R1f checkpoint clears the deploy bar (ghost guard). Tau .45 test running on u0080.
 > * **RL DIAGNOSIS (worker opus, `L73/rl_diag/`, q12_report.txt, q3_softdiff.out).** Lead hypotheses tested:
 >   "sim does not punish overspending" CONTRADICTED (elixir-at-play odds ratio for winning: live 1.54/elixir in 1x;
 >   sim ghost 2.05; RL training +0.156 win prob per elixir per update; econ_tau causal arm: fewer plays -> reactive +12/96).
