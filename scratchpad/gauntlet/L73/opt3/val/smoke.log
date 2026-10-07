@@ -1,0 +1,710 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+[val] s0:gen:0 dec 189 tick 2290 1x p 0.466 wall 56.7s
+[val] 1 points, 97s
+{
+ "n_points": 1,
+ "n_matches": 1,
+ "k": 2,
+ "n_items": 3,
+ "points_per_stratum": {
+  "1x": 1,
+  "2x": 0,
+  "3x+": 0
+ },
+ "wall_per_point_s": 56.7,
+ "scores_pooled_over_holds": {
+  "phi@10": {
+   "n": 3,
+   "spearman": null,
+   "spearman_ci95": [
+    null,
+    null
+   ],
+   "n_big": 3,
+   "sign_agree_big": 1.0,
+   "sign_agree_big_ci95": [
+    null,
+    null
+   ],
+   "n_nonzero": 3,
+   "sign_agree_nonzero": 1.0,
+   "sign_agree_nonzero_ci95": [
+    null,
+    null
+   ],
+   "horizon_delta_se_mean": 0.0176,
+   "GATE": "FAIL"
+  },
+  "towers@10": {
+   "n": 3,
+   "spearman": null,
+   "spearman_ci95": [
+    null,
+    null
+   ],
+   "n_big": 3,
+   "sign_agree_big": 1.0,
+   "sign_agree_big_ci95": [
+    null,
+    null
+   ],
+   "n_nonzero": 3,
+   "sign_agree_nonzero": 1.0,
+   "sign_agree_nonzero_ci95": [
+    null,
+    null
+   ],
+   "horizon_delta_se_mean": 0.0,
+   "GATE": "FAIL"
+  },
+  "phi@20": {
+   "n": 3,
+   "spearman": null,
+   "spearman_ci95": [
+    null,
+    null
+   ],
+   "n_big": 3,
+   "sign_agree_big": 1.0,
+   "sign_agree_big_ci95": [
+    null,
+    null
+   ],
+   "n_nonzero": 3,
+   "sign_agree_nonzero": 1.0,
+   "sign_agree_nonzero_ci95": [
+    null,
+    null
+   ],
+   "horizon_delta_se_mean": 0.093,
+   "GATE": "FAIL"
+  },
+  "towers@20": {
+   "n": 3,
+   "spearman": null,
+   "spearman_ci95": [
+    null,
+    null
+   ],
+   "n_big": 3,
+   "sign_agree_big": 1.0,
+   "sign_agree_big_ci95": [
+    null,
+    null
+   ],
+   "n_nonzero": 3,
+   "sign_agree_nonzero": 1.0,
+   "sign_agree_nonzero_ci95": [
+    null,
+    null
+   ],
+   "horizon_delta_se_mean": 0.0156,
+   "GATE": "FAIL"
+  },
+  "phi@40": {
+   "n": 3,
+   "spearman": null,
+   "spearman_ci95": [
+    null,
+    null
+   ],
+   "n_big": 3,
+   "sign_agree_big": 0.0,
+   "sign_agree_big_ci95": [
+    null,
+    null
+   ],
+   "n_nonzero": 3,
+   "sign_agree_nonzero": 0.0,
+   "sign_agree_nonzero_ci95": [
+    null,
+    null
+   ],
+   "horizon_delta_se_mean": 0.2814,
+   "GATE": "FAIL"
+  },
+  "towers@40": {
+   "n": 3,
+   "spearman": null,
+   "spearman_ci95": [
+    null,
+    null
+   ],
+   "n_big": 3,
+   "sign_agree_big": 0.0,
+   "sign_agree_big_ci95": [
+    null,
+    null
+   ],
+   "n_nonzero": 3,
+   "sign_agree_nonzero": 0.0,
+   "sign_agree_nonzero_ci95": [
+    null,
+    null
+   ],
+   "horizon_delta_se_mean": 0.0249,
+   "GATE": "FAIL"
+  }
+ },
+ "scores_hold2": {
+  "phi@10": {
+   "n": 1,
+   "spearman": null,
+   "spearman_ci95": [
+    null,
+    null
+   ],
+   "n_big": 1,
+   "sign_agree_big": 1.0,
+   "sign_agree_big_ci95": [
+    null,
+    null
+   ],
+   "n_nonzero": 1,
+   "sign_agree_nonzero": 1.0,
+   "sign_agree_nonzero_ci95": [
+    null,
+    null
+   ],
+   "horizon_delta_se_mean": 0.0176,
+   "GATE": "FAIL"
+  },
+  "towers@10": {
+   "n": 1,
+   "spearman": null,
+   "spearman_ci95": [
+    null,
+    null
+   ],
+   "n_big": 1,
+   "sign_agree_big": 1.0,
+   "sign_agree_big_ci95": [
+    null,
+    null
+   ],
+   "n_nonzero": 1,
+   "sign_agree_nonzero": 1.0,
+   "sign_agree_nonzero_ci95": [
+    null,
+    null
+   ],
+   "horizon_delta_se_mean": 0.0,
+   "GATE": "FAIL"
+  },
+  "phi@20": {
+   "n": 1,
+   "spearman": null,
+   "spearman_ci95": [
+    null,
+    null
+   ],
+   "n_big": 1,
+   "sign_agree_big": 1.0,
+   "sign_agree_big_ci95": [
+    null,
+    null
+   ],
+   "n_nonzero": 1,
+   "sign_agree_nonzero": 1.0,
+   "sign_agree_nonzero_ci95": [
+    null,
+    null
+   ],
+   "horizon_delta_se_mean": 0.093,
+   "GATE": "FAIL"
+  },
+  "towers@20": {
+   "n": 1,
+   "spearman": null,
+   "spearman_ci95": [
+    null,
+    null
+   ],
+   "n_big": 1,
+   "sign_agree_big": 1.0,
+   "sign_agree_big_ci95": [
+    null,
+    null
+   ],
+   "n_nonzero": 1,
+   "sign_agree_nonzero": 1.0,
+   "sign_agree_nonzero_ci95": [
+    null,
+    null
+   ],
+   "horizon_delta_se_mean": 0.0156,
+   "GATE": "FAIL"
+  },
+  "phi@40": {
+   "n": 1,
+   "spearman": null,
+   "spearman_ci95": [
+    null,
+    null
+   ],
+   "n_big": 1,
+   "sign_agree_big": 0.0,
+   "sign_agree_big_ci95": [
+    null,
+    null
+   ],
+   "n_nonzero": 1,
+   "sign_agree_nonzero": 0.0,
+   "sign_agree_nonzero_ci95": [
+    null,
+    null
+   ],
+   "horizon_delta_se_mean": 0.2814,
+   "GATE": "FAIL"
+  },
+  "towers@40": {
+   "n": 1,
+   "spearman": null,
+   "spearman_ci95": [
+    null,
+    null
+   ],
+   "n_big": 1,
+   "sign_agree_big": 0.0,
+   "sign_agree_big_ci95": [
+    null,
+    null
+   ],
+   "n_nonzero": 1,
+   "sign_agree_nonzero": 0.0,
+   "sign_agree_nonzero_ci95": [
+    null,
+    null
+   ],
+   "horizon_delta_se_mean": 0.0249,
+   "GATE": "FAIL"
+  }
+ },
+ "scores_hold4": {
+  "phi@10": {
+   "n": 1,
+   "spearman": null,
+   "spearman_ci95": [
+    null,
+    null
+   ],
+   "n_big": 1,
+   "sign_agree_big": 1.0,
+   "sign_agree_big_ci95": [
+    null,
+    null
+   ],
+   "n_nonzero": 1,
+   "sign_agree_nonzero": 1.0,
+   "sign_agree_nonzero_ci95": [
+    null,
+    null
+   ],
+   "horizon_delta_se_mean": 0.0176,
+   "GATE": "FAIL"
+  },
+  "towers@10": {
+   "n": 1,
+   "spearman": null,
+   "spearman_ci95": [
+    null,
+    null
+   ],
+   "n_big": 1,
+   "sign_agree_big": 1.0,
+   "sign_agree_big_ci95": [
+    null,
+    null
+   ],
+   "n_nonzero": 1,
+   "sign_agree_nonzero": 1.0,
+   "sign_agree_nonzero_ci95": [
+    null,
+    null
+   ],
+   "horizon_delta_se_mean": 0.0,
+   "GATE": "FAIL"
+  },
+  "phi@20": {
+   "n": 1,
+   "spearman": null,
+   "spearman_ci95": [
+    null,
+    null
+   ],
+   "n_big": 1,
+   "sign_agree_big": 1.0,
+   "sign_agree_big_ci95": [
+    null,
+    null
+   ],
+   "n_nonzero": 1,
+   "sign_agree_nonzero": 1.0,
+   "sign_agree_nonzero_ci95": [
+    null,
+    null
+   ],
+   "horizon_delta_se_mean": 0.093,
+   "GATE": "FAIL"
+  },
+  "towers@20": {
+   "n": 1,
+   "spearman": null,
+   "spearman_ci95": [
+    null,
+    null
+   ],
+   "n_big": 1,
+   "sign_agree_big": 1.0,
+   "sign_agree_big_ci95": [
+    null,
+    null
+   ],
+   "n_nonzero": 1,
+   "sign_agree_nonzero": 1.0,
+   "sign_agree_nonzero_ci95": [
+    null,
+    null
+   ],
+   "horizon_delta_se_mean": 0.0156,
+   "GATE": "FAIL"
+  },
+  "phi@40": {
+   "n": 1,
+   "spearman": null,
+   "spearman_ci95": [
+    null,
+    null
+   ],
+   "n_big": 1,
+   "sign_agree_big": 0.0,
+   "sign_agree_big_ci95": [
+    null,
+    null
+   ],
+   "n_nonzero": 1,
+   "sign_agree_nonzero": 0.0,
+   "sign_agree_nonzero_ci95": [
+    null,
+    null
+   ],
+   "horizon_delta_se_mean": 0.2814,
+   "GATE": "FAIL"
+  },
+  "towers@40": {
+   "n": 1,
+   "spearman": null,
+   "spearman_ci95": [
+    null,
+    null
+   ],
+   "n_big": 1,
+   "sign_agree_big": 0.0,
+   "sign_agree_big_ci95": [
+    null,
+    null
+   ],
+   "n_nonzero": 1,
+   "sign_agree_nonzero": 0.0,
+   "sign_agree_nonzero_ci95": [
+    null,
+    null
+   ],
+   "horizon_delta_se_mean": 0.0249,
+   "GATE": "FAIL"
+  }
+ },
+ "scores_hold8": {
+  "phi@10": {
+   "n": 1,
+   "spearman": null,
+   "spearman_ci95": [
+    null,
+    null
+   ],
+   "n_big": 1,
+   "sign_agree_big": 1.0,
+   "sign_agree_big_ci95": [
+    null,
+    null
+   ],
+   "n_nonzero": 1,
+   "sign_agree_nonzero": 1.0,
+   "sign_agree_nonzero_ci95": [
+    null,
+    null
+   ],
+   "horizon_delta_se_mean": 0.0176,
+   "GATE": "FAIL"
+  },
+  "towers@10": {
+   "n": 1,
+   "spearman": null,
+   "spearman_ci95": [
+    null,
+    null
+   ],
+   "n_big": 1,
+   "sign_agree_big": 1.0,
+   "sign_agree_big_ci95": [
+    null,
+    null
+   ],
+   "n_nonzero": 1,
+   "sign_agree_nonzero": 1.0,
+   "sign_agree_nonzero_ci95": [
+    null,
+    null
+   ],
+   "horizon_delta_se_mean": 0.0,
+   "GATE": "FAIL"
+  },
+  "phi@20": {
+   "n": 1,
+   "spearman": null,
+   "spearman_ci95": [
+    null,
+    null
+   ],
+   "n_big": 1,
+   "sign_agree_big": 1.0,
+   "sign_agree_big_ci95": [
+    null,
+    null
+   ],
+   "n_nonzero": 1,
+   "sign_agree_nonzero": 1.0,
+   "sign_agree_nonzero_ci95": [
+    null,
+    null
+   ],
+   "horizon_delta_se_mean": 0.093,
+   "GATE": "FAIL"
+  },
+  "towers@20": {
+   "n": 1,
+   "spearman": null,
+   "spearman_ci95": [
+    null,
+    null
+   ],
+   "n_big": 1,
+   "sign_agree_big": 1.0,
+   "sign_agree_big_ci95": [
+    null,
+    null
+   ],
+   "n_nonzero": 1,
+   "sign_agree_nonzero": 1.0,
+   "sign_agree_nonzero_ci95": [
+    null,
+    null
+   ],
+   "horizon_delta_se_mean": 0.0156,
+   "GATE": "FAIL"
+  },
+  "phi@40": {
+   "n": 1,
+   "spearman": null,
+   "spearman_ci95": [
+    null,
+    null
+   ],
+   "n_big": 1,
+   "sign_agree_big": 0.0,
+   "sign_agree_big_ci95": [
+    null,
+    null
+   ],
+   "n_nonzero": 1,
+   "sign_agree_nonzero": 0.0,
+   "sign_agree_nonzero_ci95": [
+    null,
+    null
+   ],
+   "horizon_delta_se_mean": 0.2814,
+   "GATE": "FAIL"
+  },
+  "towers@40": {
+   "n": 1,
+   "spearman": null,
+   "spearman_ci95": [
+    null,
+    null
+   ],
+   "n_big": 1,
+   "sign_agree_big": 0.0,
+   "sign_agree_big_ci95": [
+    null,
+    null
+   ],
+   "n_nonzero": 1,
+   "sign_agree_nonzero": 0.0,
+   "sign_agree_nonzero_ci95": [
+    null,
+    null
+   ],
+   "horizon_delta_se_mean": 0.0249,
+   "GATE": "FAIL"
+  }
+ },
+ "hold_better_by_stratum": {
+  "1x|hold2.0": {
+   "n": 1,
+   "hold_better": 1.0,
+   "hold_better_ci95": [
+    null,
+    null
+   ],
+   "play_better": 0.0,
+   "tie": 0.0,
+   "mean_D": -1.0,
+   "mean_D_ci95": [
+    null,
+    null
+   ],
+   "big_hold_better": 1.0,
+   "big_play_better": 0.0
+  },
+  "1x|hold4.0": {
+   "n": 1,
+   "hold_better": 1.0,
+   "hold_better_ci95": [
+    null,
+    null
+   ],
+   "play_better": 0.0,
+   "tie": 0.0,
+   "mean_D": -1.0,
+   "mean_D_ci95": [
+    null,
+    null
+   ],
+   "big_hold_better": 1.0,
+   "big_play_better": 0.0
+  },
+  "1x|hold8.0": {
+   "n": 1,
+   "hold_better": 1.0,
+   "hold_better_ci95": [
+    null,
+    null
+   ],
+   "play_better": 0.0,
+   "tie": 0.0,
+   "mean_D": -1.0,
+   "mean_D_ci95": [
+    null,
+    null
+   ],
+   "big_hold_better": 1.0,
+   "big_play_better": 0.0
+  },
+  "1x|holdall": {
+   "n": 3,
+   "hold_better": 1.0,
+   "hold_better_ci95": [
+    null,
+    null
+   ],
+   "play_better": 0.0,
+   "tie": 0.0,
+   "mean_D": -1.0,
+   "mean_D_ci95": [
+    null,
+    null
+   ],
+   "big_hold_better": 1.0,
+   "big_play_better": 0.0
+  },
+  "all|hold2.0": {
+   "n": 1,
+   "hold_better": 1.0,
+   "hold_better_ci95": [
+    null,
+    null
+   ],
+   "play_better": 0.0,
+   "tie": 0.0,
+   "mean_D": -1.0,
+   "mean_D_ci95": [
+    null,
+    null
+   ],
+   "big_hold_better": 1.0,
+   "big_play_better": 0.0
+  },
+  "all|hold4.0": {
+   "n": 1,
+   "hold_better": 1.0,
+   "hold_better_ci95": [
+    null,
+    null
+   ],
+   "play_better": 0.0,
+   "tie": 0.0,
+   "mean_D": -1.0,
+   "mean_D_ci95": [
+    null,
+    null
+   ],
+   "big_hold_better": 1.0,
+   "big_play_better": 0.0
+  },
+  "all|hold8.0": {
+   "n": 1,
+   "hold_better": 1.0,
+   "hold_better_ci95": [
+    null,
+    null
+   ],
+   "play_better": 0.0,
+   "tie": 0.0,
+   "mean_D": -1.0,
+   "mean_D_ci95": [
+    null,
+    null
+   ],
+   "big_hold_better": 1.0,
+   "big_play_better": 0.0
+  },
+  "all|holdall": {
+   "n": 3,
+   "hold_better": 1.0,
+   "hold_better_ci95": [
+    null,
+    null
+   ],
+   "play_better": 0.0,
+   "tie": 0.0,
+   "mean_D": -1.0,
+   "mean_D_ci95": [
+    null,
+    null
+   ],
+   "big_hold_better": 1.0,
+   "big_play_better": 0.0
+  }
+ },
+ "noise": {
+  "k": 2,
+  "D_se_mean": 1.0,
+  "D_se_median": 1.0,
+  "D_se_projected": {
+   "k4": 0.7071,
+   "k8": 0.5,
+   "k16": 0.3536,
+   "k32": 0.25
+  },
+  "share_abs_D_ge_0.25": 1.0,
+  "share_D_zero": 0.0,
+  "split_half_sign_agree": null,
+  "split_half_n": 0,
+  "note": "split halves are k/2 means each; sign agreement between two k/2 means"
+ },
+ "wall_total_s": 96.7,
+ "crn_ok": [
+  false
+ ]
+}

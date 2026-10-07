@@ -1,0 +1,8 @@
+horizon 10.0: tick 1000 p 0.384 outcomes [None, None] [None, None] wall 3.2s
+  outcome: ValueError kind 'outcome' needs a finished match (outcome None = horizon reached)
+  phi: label (-0.01800574320696513, 0.021809353288212197)  play scores [-0.0442, -0.0455]
+  towers: label (0.0212298682284041, 0.5)  play scores [-0.0558, -0.0391]
+horizon None: tick 1000 p 0.384 outcomes [1, 1] [1, 1] wall 39.9s
+  outcome: label (0.0, 0.0)  play scores [1.0, 1.0]
+  phi: label (0.0, 0.0)  play scores [1.0, 1.0]
+  towers: label (0.0, 0.0)  play scores [1.0, 1.0]
