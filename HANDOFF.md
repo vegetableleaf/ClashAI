@@ -3960,6 +3960,12 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   (RL made overspending WORSE again); defensive Rockets 26 vs v3.2 56; defensive X-Bows 340 vs 252. Reading (b): RL
 >   vs our own models learns play that beats our models (reactive) but not pro sequences (ghost), and moves elixir away
 >   from pros -- consistent with the self-play-opponent hypothesis under test in `L73/rl_diag/`.
+> * **R1f u0105:** reactive 65/96 (u0080: 74), ghost vs R1e -3.0 [-5.7,-0.7] -> later RL updates LOST the reactive
+>   gain; neither R1f checkpoint clears the deploy bar (ghost guard). Tau .45 test running on u0080.
+> * **TAU .45 on R1f u0080 (pre-registered rule: adopt iff reactive +3/96 AND ghost ci_hi >= 0 AND elixir up):** reactive
+>   73 vs 74 (FAIL), ghost +1.0 [-2.0,+4.0], elixir at play 1x/2x/OT 7.12/5.70/5.64 vs 6.53/5.03/4.44 (pros 6.2-7.2),
+>   defensive Rockets 42 vs 26. Not adopted by the rule; informative: .45 moves the economy to pro levels at no
+>   measurable cost in games or ghost.
 > * **RL DIAGNOSIS (worker opus, `L73/rl_diag/`, q12_report.txt, q3_softdiff.out).** Lead hypotheses tested:
 >   "sim does not punish overspending" CONTRADICTED (elixir-at-play odds ratio for winning: live 1.54/elixir in 1x;
 >   sim ghost 2.05; RL training +0.156 win prob per elixir per update; econ_tau causal arm: fewer plays -> reactive +12/96).
@@ -3981,6 +3987,110 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   Acceptance: ghost as regression guard only (saturated 98%); reactive 48 seeds on the census AND the ladder decks;
 >   then interleaved live A/B with trophies. Prep worker (opus) building `L73/rl_r2/` (deck file, run_r2.sh gated on a
 >   GO file, smoke).
+> * **OPTION 3 (counterfactual branching for the play/wait gate) -- owner 10-07 ~12:xx: brainstorm, tweak, build with a
+>   Foreman team; target R3 (R2 recipe + branching) tonight.** Prior evidence that shapes it: S0 decision-time search
+>   (09-30) was NULL (12 s horizon, hand scorer charging spent elixir -> chose WAIT 78%, no more wins); the 12 s scorer
+>   did not track full-match outcomes (Spearman ~0.06-0.10, CIs include 0; outcome measurable at K=16). Tweaks: main game
+>   greedy at tau .35 (as live); HOLD = stricter gate tau .55 for 2/4/8 s (model still plays if confident; no hand
+>   "forced wait"); real opponent policy in branches (no self-model mismatch); common random numbers; NEVER charge elixir
+>   in the score; score = full outcome or a horizon score only if it passes a pre-set gate (sign agreement >= 65%, CI
+>   lower bound > 50% on |delta| >= .25); branch points in the overplay band p .2-.65, more in 2x/OT; loss on branch rows
+>   only + KL leash; one branch actor of five. Team (opus, fable-foreman, shared worktree `.claude/worktrees/opt3`,
+>   branch `opt3-branching`, contract `scratchpad/gauntlet/L73/opt3/INTERFACE.md`): T1 fork + paired rollouts
+>   (pipeline/branching.py, reuses search_s0 fork_into), T2 scoring + validation gate (pipeline/branch_score.py,
+>   L73/opt3/validate.py), T3 rl_royale integration (opt-in, default byte-identical). Blind verify before R3.
+> * **R2 PREP DONE (worker opus, `L73/rl_r2/`):** ladder deck file (same 1,000 decks, `sides` = target weight,
+>   class shares within 1e-4 of target; Golem 18.3% and Mega Knight 4.4% incl. x1.5; X-Bow/Mortar incl. mirror 4.4%,
+>   icebow mirror 4.3% vs 34% in R1e training). tau/T are one knob for learner, opponents and loss (verified in code +
+>   dry run). run_r2.sh (bash array for the league_mix dict) waits for `L73/rl_r2/GO`; acceptance re-runs R1e at 48
+>   seeds on both deck files. Dry validation through Learner.__init__ PASS; a real 1-update smoke is owed (CPU was
+>   saturated). search_s0 --census hard-codes alpha .5/floor .5 (flattens the ladder mix in acceptance games). Witch
+>   trait raked (capped IPF, 3x per-deck cap, class shares unchanged): Witch/Night Witch 30.8% (live 23.4%, x1.5 target 31.4%), Mega Knight card 10.2% (target 12.9%, cap-limited), heavy tank 49.8% (live 49.3%); 157 decks carry 50% of mass.
+> * **OPT3 T1 + T3 DELIVERED (not committed, worktree `.claude/worktrees/opt3`).** T1 branching.py: BranchSpec/
+>   BranchRunner.pair/BranchResult via search_s0.fork_into; CRN reseeds rng_behave/obs/rand/decision_options/env.seed
+>   per continuation j (engine RNG lives in save_state -> identical across j; continuations vary only through
+>   sampling opponents); tests (a)-(e) pass incl. 8/8 shared-state mutations caught; PLAY branch forces the gate open
+>   when p <= tau. Cost (loaded laptop): horizon 30 s k 2 = 13-71 s/pair; to the end 114-285 s. Found: obs_contract
+>   _catalog_names returns an EMPTY table when the catalog file is missing (silent degradation) -> T1 fixing (raise).
+>   T3 rl_royale: branch keys + validator, branch actor kind, BCE on (z - logit tau)/T, default bit-identical (gradients/
+>   params/beta/rng/log vs base), tests 37+23+33 OK, smoke OK. Lead fixes requested: replay buffer (512) + ONE branch
+>   step per update at coef 0.1 (the per-minibatch term overfit: BCE 1.06 -> 0.014 in one update), time-budgeted branch
+>   actor (6 points/match) for more samples (was ~3/update). T2 (score gate) still running. R2 CPU smoke in progress.
+> * **R2 LAUNCHED 12:20 10-07** (`L73/rl_r2/run_r2.sh`, run rseries_r2l, log `L73/rl_r2/r2.log`, 120 updates, then
+>   acceptance u0080/u0120 vs R1e at 48 seeds on census + ladder decks). CPU smoke PASS first. C (learned-Phi shaping)
+>   NOT in R2 (phi_eval still running; R2 could not wait) -> bundled into R3 if the offline check supports it. Owner
+>   wants R3 (R2 recipe + branching) started tonight: when R2 TRAINING ends, R3 takes the GPU; R2's acceptance may be
+>   deferred (stop run_r2.sh after training; never rewrite it while running).
+> * **OWNER 10-07 ~13:xx: live tau .45 A/B in the MORNING (after R2/R3), alternating .35/.45 match by match.** Merged into
+>   main (c0a5ee8/c9e67e2/f0eb146): decode options + live wiring, hero dedupe (+ lead fix ee97600), trophy logging; tests
+>   in main 138 + 28 pass incl. the 9 data-dependent decision_options tests; trophy/ladder_nav self-checks pass. New:
+>   live_play `--tau-alternate A B` (counter file `L70/live/tau_alternate.json` survives restarts; each match logs its
+>   tau), run_live.sh passes `${LIVE_ARGS:-}`, live_eval `--tau X` filter. Morning command:
+>   `LIVE_ARGS="--tau-alternate 0.35 0.45" bash scratchpad/gauntlet/L70/live/start_live.sh`; analysis:
+>   `live_eval.py --since <start> --ckpt-sha 76fdfaac --tau 0.35 --label t35` / `--tau 0.45 --label t45` / `--compare t35 t45`.
+>   Power: ~400 matches per arm for a 10-pt win-rate gap, ~170 for 15 pts; trophies logged per match.
+> * **OPT3 T3 follow-up DONE (not committed):** FIFO branch buffer (512) + ONE branch step per update after PPO (coef
+>   0.1, chunked over the buffer, non-finite skipped; none during critic warm-up); branch actor plays until the PPO
+>   actors report (mp.Event), delaying the update by at most one in-flight pair; env hook removed. Default parity
+>   bit-identical; gate-on PPO gradients bit-identical to gate-off + one extra step. Tests 37 + 27 + 33 OK; smoke 2
+>   updates OK (branch actor finished 1-2 s after the slowest PPO actor). Expected ~3-36 (typ ~10) samples/update.
+>   Open: coef 0.1 moves P(play) only ~0.002-0.008 per step on buffer rows (raise if T2's labels are trustworthy);
+>   buffer not checkpointed (resume starts empty); gate-on runs not bit-reproducible (sample count depends on timing).
+> * **13:xx owner 1v1 vs a friend -> lead SUSPENDED 11 heavy processes** (R2 learner + 5 actors, T2 validate + 2
+>   workers; PIDs in `L73/paused_pids.json`). Resume on the owner's word; R2's actor_timeout_s 3600 means a pause much
+>   over ~45 min risks an actor "crash" restart. RESUMED 12:54 (paused 12:48:33, ~6 min; all 11 running).
+> * **OWNER 10-07 ~13:1x -- R3 + morning live plan (PRE-REGISTERED by the lead before any R2/R3 result).** R3 waits for
+>   C's code to be BUILT AND CHECKED if the offline Phi check passes (never launch without a passing lever). Live test
+>   capped at 24 h; the decision + reasoning goes to Discord. Definitions (vs R1e, engine 20261006, 48 seeds x gen/S1 on
+>   census AND ladder decks = 192 games): PASS = reactive >= R1e + 6 of 192 AND ghost ci_hi >= 0 AND >= 1 behaviour gap
+>   toward pros (elixir at play 2x/OT, Rocket rate, defensive X-Bow share) with none away. SIGNIFICANTLY BETTER = PASS
+>   AND paired game-level gain with sign-test p < .05 on the 192 paired games AND >= 2 behaviour gaps toward pros.
+>   BARELY = PASS but not significant. Tree (owner): both pass, one significant -> that one, tau .35/.45 alternating;
+>   both significant -> alternate R2 vs R3 (tau .35), compare with R1e data on disk; one passes + significant -> it
+>   alone, tau .35/.45 alternating; one passes + barely -> alternate it vs R1e at tau .35; neither -> R1e tau .35/.45
+>   alternating. Unspecified case (both pass, both barely) -> lead: alternate the higher-reactive one vs R1e at .35.
+> * **OWNER 10-07 ~13:3x:** morning live test on the MAIN account (11k). Second account ("ClashAI") to be ground
+>   later: R1e reads the deck from memory (124-card vocab; RL was icebow-only, other decks untested); Tesla is the ONLY
+>   2x2 building (owner; others 3x3 -> no offset list needed). Trophy-road "Choose" -> "Choose your reward" (2 cards,
+>   pick at random) handler being built (worker opus, worktree; owner screenshots in the session images dir), unknown
+>   screens in that flow -> stop + Discord screenshot. Tell the owner when the second account is ready to grind.
+> * **OWNER 10-07 ~14:xx started live himself (second account, R1e, OLD navigator) while the trophy-road handler is
+>   reviewed.** Owner: when the handler is merged, STOP and RESTART the live run (stop_live.sh / STOP file between
+>   matches, then start_live.sh). Data hygiene: second-account matches (low trophies) must be EXCLUDED from R1e's
+>   main-account baseline (use --since/--until windows or the logged trophy totals) in every live_eval comparison.
+> * **TROPHY-ROAD HANDLER MERGED (03a1ee1).** Blind verifier (opus) PASS_WITH_NOTES: 520 saved frames + 126 clip
+>   frames classify identically old vs new (0 mismatches), no false Choose/choice detections, timing unchanged, alert
+>   never prints the webhook and never raises. Lead fixed its findings: F1 (a path frame right after a Choose tap ended
+>   the no-blind-tap guard) -- the guard now holds while a Choose is tapped and no card picked; F2 production seed drawn
+>   and logged in reward_pick; F4 Choose budget resets after a pick; F5 unique evidence file names. F3 (a stop at the
+>   300 s transition limit inside the flow sends no alert/pause) left open (needs a flow starting ~290 s in). A
+>   TROPHY_ROAD_ALERT stop now sets the STOP file (pause). Live (owner's second-account run) stopped between matches and
+>   restarted on the merged code; it was CPU-STARVED at 258-511 ms per decision under R2.
+> * **OWNER 10-07 ~16:xx: new VM clashbot-s3c (n2, 128 vCPU = 64 cores x2 sockets, 503 GB RAM, Debian 13, Python 3.13,
+>   disk 9.7 GB!), external IP 34.148.91.90, `ssh -i ~/.ssh/clashbot_gcp clashbot-gauntlet@34.148.91.90`. Owner: move
+>   ALL training there while the free credits last; use every VM minute; if the VM is faster at games AND learning, run
+>   everything there (no split). Live play gets AboveNormal priority (live_play self-raises; start_live raises MuMu;
+>   running training lowered to BelowNormal). Bring-up + benchmark worker (opus) running: PyPI royalesim 0.1.17 /
+>   royalegym 0.1.18 + data-hash parity vs the pinned Windows runtime, git-archive code, minimal untracked data (NO
+>   secrets), R2 recipe with CPU actors/learner at several actor/thread counts vs laptop (roll 195-250 s + upd 45-70 s
+>   per 64 matches).
+> * **OWNER 10-07 ~16:1x:** owner switches MuMu back to the MAIN account before sleeping (morning test). Approved:
+>   move the rest of R2 to the VM (resume from its latest checkpoint) once the VM verdict shows it faster. Notify the
+>   owner when the VM verdict lands. Lead's VM queue proposal: all sim evaluations (ghost screens, reactive games),
+>   option-3 branch scoring/validation, dataset builds, heavy offline teacher-forced analyses; keep on the laptop:
+>   live play, GPU learning (unless the VM CPU learner is fast enough), IL training (GPU); stop the VM when its queue
+>   is empty (credits).
+> * **OPT3 SCORE GATE (T2, opus; worktree opt3, `L73/opt3/val/`):** gate AS WRITTEN passes phi@40 (76.8% [65.9,86.7])
+>   and towers@40/@20 -- but only because horizon score and outcome came from the SAME continuations (shared luck).
+>   Independent halves (no shared luck): every horizon score FAILS (phi@40 60.0% [48.8,70.4]; towers@40 61.0%), and the
+>   full outcome itself reproduces only 55.9% at k=4 (reliability .39 at k=8; modelled .56 at k=16, .72 at k=32).
+>   LEAD RULING: the shared-luck-free reading governs (the written gate failed to require independence) -> R3 labels =
+>   FULL-MATCH OUTCOME, k=16, keep |delta| >= .25 (modelled ~9% wrong signs, ~half the labels kept). HOLD vs PLAY by
+>   phase (k=8, 71 points): 1x 34/31%, 2x 32/16% (mean D -.09), 3x+ 3/27% (+.10, n=11) -- holding helps in 2x,
+>   playing helps in 3x+ (small n). CRN not exact (batched float noise; noise, no bias); branch-match opponents must
+>   SAMPLE or the k continuations are identical. Cost ~350 s per k=16 label per contended laptop worker -> on the VM:
+>   branch workers must run CONTINUOUSLY (also during the 95-117 s CPU learner step), not only in the ~20-30 s rollout
+>   window -> T3 redesign requested (async branch workers, outcome k=16).
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live

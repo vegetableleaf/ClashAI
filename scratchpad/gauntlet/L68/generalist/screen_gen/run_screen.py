@@ -86,6 +86,8 @@ def play(a) -> int:
            "decide_every": int(rc["decide_every"]), "slot": 0, "port": 0, "T": float(rc["T"]), "record": False}
     if a.opp_elixir in E.OPP_ELIXIR_MODES:
         cfg["opp_elixir"] = a.opp_elixir
+    if getattr(a, 'behaviour_telemetry', False):
+        cfg['behaviour_telemetry'] = True
     if a.action_delay:                           # unset/0 -> cfg unchanged (today's lines)
         cfg["action_delay_ticks"] = int(a.action_delay)
     if a.extrapolate:                            # unset/0 -> cfg unchanged (today's lines)
@@ -136,6 +138,7 @@ def main(argv=None) -> int:
     ap.add_argument("--pair", nargs=2, type=Path, metavar=("A", "B"), help="score B vs A (A = the reference)")
     ap.add_argument("--device", default="cpu")
     ap.add_argument("--threads", type=int, default=2)
+    ap.add_argument('--behaviour-telemetry', action='store_true', help='Public per-tick behaviour metrics; defaults unchanged.')
     ap.add_argument("--batch", type=int, default=16, help="matches in flight sharing one forward (actors: in_flight 16)")
     ap.add_argument("--max-matches", type=int, default=0, help="smoke: stop after N matches")
     ap.add_argument("--split", choices=("heldout", "train"), default="heldout")

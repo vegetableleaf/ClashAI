@@ -1,0 +1,3070 @@
+{
+ "positives": {
+  "choice_fith_s100": {
+   "screen": "choose_reward",
+   "choose": null,
+   "cards": [
+    [
+     295.0,
+     420.5
+    ],
+    [
+     603.5,
+     421.0
+    ]
+   ],
+   "bottom_ok_template": 0.121,
+   "collect_template": 0.257
+  },
+  "choice_fith_s90": {
+   "screen": "choose_reward",
+   "choose": null,
+   "cards": [
+    [
+     311.0,
+     458.5
+    ],
+    [
+     587.5,
+     459.0
+    ]
+   ],
+   "bottom_ok_template": 0.137,
+   "collect_template": 0.373
+  },
+  "choice_fith_s80": {
+   "screen": "choose_reward",
+   "choose": null,
+   "cards": [
+    [
+     325.5,
+     496.5
+    ],
+    [
+     572.0,
+     497.0
+    ]
+   ],
+   "bottom_ok_template": 0.086,
+   "collect_template": 0.382
+  },
+  "choice_fitw_top": {
+   "screen": "choose_reward",
+   "choose": null,
+   "cards": [
+    [
+     274.5,
+     477.0
+    ],
+    [
+     623.0,
+     477.0
+    ]
+   ],
+   "bottom_ok_template": 0.105,
+   "collect_template": 0.275
+  },
+  "choice_fitw_mid": {
+   "screen": "choose_reward",
+   "choose": null,
+   "cards": [
+    [
+     274.5,
+     370.0
+    ],
+    [
+     623.0,
+     370.0
+    ]
+   ],
+   "bottom_ok_template": 0.105,
+   "collect_template": 0.275
+  },
+  "choice_fitw_bot": {
+   "screen": "unknown",
+   "choose": null,
+   "cards": null,
+   "bottom_ok_template": 0.112,
+   "collect_template": 0.275
+  },
+  "path_fith_s100": {
+   "screen": "trophy_road",
+   "choose": [
+    658.0,
+    928.5
+   ],
+   "cards": null,
+   "bottom_ok_template": 0.59,
+   "collect_template": 0.359
+  },
+  "path_fith_s90": {
+   "screen": "trophy_road",
+   "choose": [
+    637.0,
+    916.0
+   ],
+   "cards": null,
+   "bottom_ok_template": 0.116,
+   "collect_template": 0.331
+  },
+  "path_fith_s80": {
+   "screen": "trophy_road",
+   "choose": [
+    616.0,
+    903.0
+   ],
+   "cards": null,
+   "bottom_ok_template": 0.0,
+   "collect_template": 0.336
+  },
+  "path_fitw_top": {
+   "screen": "unknown",
+   "choose": null,
+   "cards": null,
+   "bottom_ok_template": 0.126,
+   "collect_template": 0.63
+  },
+  "path_fitw_mid": {
+   "screen": "unknown",
+   "choose": null,
+   "cards": null,
+   "bottom_ok_template": 0.234,
+   "collect_template": 0.63
+  },
+  "path_fitw_bot": {
+   "screen": "trophy_road",
+   "choose": [
+    690.5,
+    824.0
+   ],
+   "cards": null,
+   "bottom_ok_template": 0.18,
+   "collect_template": 0.63
+  }
+ },
+ "negatives": {
+  "L70\\ladder_nav\\raw\\conn_lost.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\main1.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\main2.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\main3.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\main4.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\ok_1.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\ok_2.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\ok_3.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\ok_4.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\ok_5.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\ok_6.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\pre_battle.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\promo_pass_x.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\queue1.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\queue2.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\res_1.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\res_2.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\res_3.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\res_4.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\res_5.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\res_6.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\res_7.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\res_8.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\s_201006.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\s_b.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\s_c.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\s_d.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\s_e.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\tab_left.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\trophy_btn.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L70\\ladder_nav\\raw\\trophy_road.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.5
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_01.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_02.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_03.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_04.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_05.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_06.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_07.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_08.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_09.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_10.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_11.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_12.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_13.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_14.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_15.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_16.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_17.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_18.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_19.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_20.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_21.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_22.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_23.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_24.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_25.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_26.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_27.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_28.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_29.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_205316_30.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_00.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1316.5
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_01.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.5
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_02.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.0
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_03.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1316.5
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_04.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.5
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_05.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1316.5
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_06.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.5
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_07.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.5
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_08.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1316.5
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_09.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.5
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_10.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.0
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_11.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.0
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_12.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.5
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_13.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.0
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_14.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.0
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_15.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.5
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_16.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.0
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_17.png": {
+   "cards": null,
+   "green": [
+    [
+     348.0,
+     1317.5
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_18.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1316.5
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_19.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.5
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_20.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.0
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_21.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.0
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_22.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.5
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_23.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.0
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_24.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.0
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_25.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.5
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_26.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.0
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_27.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.5
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_28.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.0
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_29.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.5
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_30.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.0
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_31.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1316.5
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_32.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.5
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_33.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.0
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_34.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.0
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_35.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.5
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_36.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1316.5
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_37.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.5
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_38.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.0
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_212649_39.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.0
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_213820_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_213820_01.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_213820_02.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_213820_03.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_213820_04.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_213820_05.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_01.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_02.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_03.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_04.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_05.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_06.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_07.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_08.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_09.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_10.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_11.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_12.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_13.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_14.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_15.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_16.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_17.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_18.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_19.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_20.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_21.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_22.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_23.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_24.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_25.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_26.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_27.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_28.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_29.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_30.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_31.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_32.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_33.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_34.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_35.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_36.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_37.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_38.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_214622_39.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_01.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_02.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_03.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_04.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_05.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_06.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_07.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_08.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_09.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_10.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_11.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_12.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_13.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_14.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_15.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_16.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_17.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_18.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_19.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_20.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_21.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_22.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_23.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_24.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_25.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_26.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_27.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_28.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_29.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_30.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_31.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_32.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_33.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_34.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_35.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_36.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_37.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_38.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_215335_39.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_223043_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_230240_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261002_233424_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_000444_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_000444_01.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_000444_02.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_000444_03.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_000444_04.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_000444_05.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_000444_06.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_002811_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_002811_01.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_002811_02.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_002811_03.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_002811_04.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_002811_05.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_002811_06.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_002811_07.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_002811_08.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_002811_09.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_002811_10.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_002811_11.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_002811_12.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_002811_13.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_002811_14.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_002811_15.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_002811_16.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_002811_17.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_002811_18.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_010034_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_013321_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_020504_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_023627_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_030916_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_034100_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_041546_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_041546_01.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_044928_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_052005_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_055102_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_062127_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_065254_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_072408_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_075706_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_082739_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_085817_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_092925_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_100147_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_100147_01.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_100147_02.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_100147_03.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_100147_04.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_100147_05.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_100147_06.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_103315_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_110544_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_113703_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_113703_01.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_113703_02.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_113703_03.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_113703_04.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_113703_05.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_120943_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_120943_01.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_124206_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_131430_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_134533_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_141733_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_141733_01.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_141733_02.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_141733_03.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_141733_04.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_141733_05.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_141733_06.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_141733_07.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_145001_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_152250_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_155610_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_162856_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_170012_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_170012_01.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_170012_02.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_170012_03.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_170012_04.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_170012_05.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_170012_06.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_173647_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_173647_01.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_173647_02.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_173647_03.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_173647_04.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_173647_05.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_173647_06.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_181042_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_184128_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_184128_01.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_184128_02.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_184128_03.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_184128_04.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_184128_05.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_191353_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_191353_01.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_191353_02.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_191353_03.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_191353_04.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_191353_05.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_191353_06.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_191353_07.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_194650_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_201808_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_205038_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_212320_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_215523_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_222731_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_230030_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261003_233413_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_000429_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_002548_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_002548_01.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_002548_02.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_002548_03.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_002548_04.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_002548_05.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_002548_06.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_002548_07.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_002548_08.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_002548_09.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_002548_10.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_002548_11.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_002548_12.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_002548_13.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_002548_14.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_002548_15.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_002548_16.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_002548_17.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_002548_18.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_002548_19.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_002548_20.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_002548_21.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_002548_22.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_002548_23.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_002548_24.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_010015_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_013234_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_020439_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_023718_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_030941_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_094308_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_101611_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_110530_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_113610_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_120935_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_124135_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_131201_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_211843_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_215052_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_222404_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261004_225902_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_071639_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_071639_01.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_071639_02.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_071639_03.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_071639_04.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_071639_05.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_071639_06.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_071639_07.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_071639_08.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_071639_09.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_071639_10.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_071639_11.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_071639_12.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_071639_13.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_071639_14.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_071639_15.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_071639_16.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_071639_17.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_071639_18.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_074822_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_081841_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_085139_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_092427_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_095732_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_102900_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_110227_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_113359_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_120513_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_123641_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261005_130710_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261006_150019_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261006_150019_01.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261006_150019_02.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261006_150019_03.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261006_150019_04.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261006_150019_05.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261006_150019_06.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261006_150019_07.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261006_150019_08.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261006_150019_09.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261006_150019_10.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261006_150019_11.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261006_150019_12.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261006_150019_13.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261006_150019_14.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261006_153917_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261006_161112_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261006_164332_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261006_171403_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261006_201417_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261006_204622_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\20261006_212353_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\after_reload.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\now_2134.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.5
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_unknown\\now_2151.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_unknown\\now_r2.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_stop_20261002_212649.png": {
+   "cards": null,
+   "green": [
+    [
+     348.5,
+     1317.5
+    ]
+   ],
+   "blue_ok": true,
+   "screen": "trophy_road",
+   "collect": [
+    352.5,
+    1321.0
+   ],
+   "choose": null
+  },
+  "L68\\live_reader\\ladder_stop_20261002_214622.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_stop_20261002_215335.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_stop_20261002_215737.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_stop_20261004_204147.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\ladder_stop_20261006_140213.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L68\\live_reader\\nav_stop_20260930_171942.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_01.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_02.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_03.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_04.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_05.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_06.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_07.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_08.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_09.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_10.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_11.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_12.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_13.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_14.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_15.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_16.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_17.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_18.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_19.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_20.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_21.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_22.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_23.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_24.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_25.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_26.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_27.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_28.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_29.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_30.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_31.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_32.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_33.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_34.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_35.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_36.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_37.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_38.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_39.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_40.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_41.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_42.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_43.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_44.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_45.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_46.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_47.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_48.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_49.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_50.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_51.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_52.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_53.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_54.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_55.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_56.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_57.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_58.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_59.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_60.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_61.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_62.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_63.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\main_live_idle.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\result_00.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\result_01.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\result_02.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\result_03.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\result_04.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\result_05.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\result_06.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\result_07.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\result_08.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\result_09.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\result_10.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\result_11.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\result_12.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\result_13.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\result_14.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  },
+  "L73\\trophies\\img\\result_none_friendly.png": {
+   "cards": null,
+   "green": [],
+   "blue_ok": null
+  }
+ }
+}

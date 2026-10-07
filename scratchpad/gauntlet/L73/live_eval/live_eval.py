@@ -214,8 +214,13 @@ def load_records(args, results):
         if ent is None:
             st, has_end = peek_start(f); st = st or {}
             sha = (st.get("ckpt_sha256") or sha_of((st.get("ckpt") or "").replace("\\", "/")))[:8] or "unknown"
-            ent = {"size": size, "sha8": sha, "has_end": has_end, "parsed": False, "rec": None}; dirty = True
+            ent = {"size": size, "sha8": sha, "has_end": has_end, "parsed": False, "rec": None, "tau": st.get("tau")}; dirty = True
+        if "tau" not in ent:                         # cache entries from before --tau existed
+            ent["tau"] = (peek_start(f)[0] or {}).get("tau"); dirty = True
         if args.ckpt_sha and not ent["sha8"].startswith(args.ckpt_sha[:8]):
+            if dirty: pickle.dump(ent, open(cp, "wb"))
+            continue
+        if args.tau is not None and (ent["tau"] is None or abs(float(ent["tau"]) - args.tau) > 1e-9):
             if dirty: pickle.dump(ent, open(cp, "wb"))
             continue
         info["logs_in_window"] += 1
@@ -512,6 +517,7 @@ def main():
     ap.add_argument("--since", default="20261004_205129", help="log start >= this local time (YYYYMMDD_HHMMSS | 'YYYY-MM-DD HH:MM'); default = first R1e live log")
     ap.add_argument("--until", help="log start <= this local time")
     ap.add_argument("--ckpt-sha", help="sha256 prefix of the checkpoint to evaluate (default: group every checkpoint found)")
+    ap.add_argument("--tau", type=float, help="only matches whose start event logged this play threshold (owner A/B, --tau-alternate)")
     ap.add_argument("--label", help="output label (default: first 8 chars of the sha)")
     ap.add_argument("--compare", nargs=2, metavar=("A", "B"), help="print two saved labels side by side (reads results_<label>.json)")
     ap.add_argument("--rebuild", action="store_true", help="ignore the per-log cache")

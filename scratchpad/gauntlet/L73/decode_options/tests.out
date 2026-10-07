@@ -1,0 +1,18 @@
+﻿
+  C:\Users\benpe\ClashBot\.claude\worktrees\agent-a702c1f709275e407\pipeline\model_v3.py:92: UserWarning: 
+enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+    self.encoder = nn.TransformerEncoder(enc, layers)
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED pipeline/tests/test_decision_options.py::test_area_mass_selects_broad_cluster_without_tower_prior
+FAILED pipeline/tests/test_decision_options.py::test_disk_uses_physical_tiles_and_cannot_wrap_edges
+FAILED pipeline/tests/test_decision_options.py::test_equal_mass_prefers_learned_local_mode
+FAILED pipeline/tests/test_decision_options.py::test_candidate_live_default_is_exact_legacy[1.9]
+FAILED pipeline/tests/test_decision_options.py::test_candidate_live_default_is_exact_legacy[3.5]
+FAILED pipeline/tests/test_decision_options.py::test_candidate_live_default_is_exact_legacy[10]
+FAILED pipeline/tests/test_decision_options.py::test_candidate_live_and_sim_share_selected_rocket_aim
+FAILED pipeline/tests/test_decision_options.py::test_active_options_follow_real_reactive_path_and_match_batched_engine
+FAILED pipeline/tests/test_decision_options.py::test_reactive_cli_forwards_telemetry_and_options_to_worker
+9 failed, 67 passed, 6 warnings in 30.46s
+
+

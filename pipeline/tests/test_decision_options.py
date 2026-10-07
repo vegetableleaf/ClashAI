@@ -249,3 +249,136 @@ def test_reactive_cli_forwards_telemetry_and_options_to_worker(tmp_path, monkeyp
             '--behaviour-telemetry','--card-choice','filtered','--card-ratio','.7'])
     assert seen[0]['behaviour_telemetry'] is True
     assert seen[0]['decision_options']['card_choice']=='filtered'
+
+
+# ---- tau_phase and xbow_class (L73 decode options) -------------------------------------------------------
+from pipeline.decision_options import (add_arguments, config_from_args, options_from_config, phase_index,
+                                      xbow_offensive_cells, xbow_class_choice, decide_batch)
+
+
+def test_new_options_default_off_and_cli_defaults_are_inert():
+    import argparse
+    ap = argparse.ArgumentParser(); add_arguments(ap)
+    cfg = config_from_args(ap.parse_args([]))
+    assert options_from_config(cfg) == DecisionOptions() and not DecisionOptions().active
+    assert cfg['tau_phase'] is None and cfg['xbow_class'] == 'argmax' and cfg['xbow_class_floor'] == .2
+    on = options_from_config(config_from_args(ap.parse_args(['--tau-phase', '.4', '.45', '.5'])))
+    assert on.active and on.tau_phase == (.4, .45, .5)
+    assert options_from_config({'tau_phase': [.4, .45, .5]}) == on       # JSON lists compare equal to tuples
+    assert DecisionOptions(xbow_class='class_sample').active
+
+
+@pytest.mark.parametrize('kwargs', [{'tau_phase': (.4, .5)}, {'tau_phase': (.4, .5, 1.2)},
+                                    {'tau_phase': (.4, float('nan'), .5)}, {'xbow_class': 'sample'},
+                                    {'xbow_class_floor': .6}, {'xbow_class_floor': -.1}])
+def test_invalid_new_options_fail(kwargs):
+    with pytest.raises(ValueError):
+        DecisionOptions(**kwargs)
+
+
+def test_phase_boundaries_follow_tick_seconds():
+    t = [0, 119.95, 120, 179.95, 180, 400, 2399 * 0.05, 2400 * 0.05, 3599 * 0.05, 3600 * 0.05]
+    np.testing.assert_array_equal(phase_index(t), [0, 0, 1, 1, 2, 2, 0, 1, 1, 2])
+
+
+def test_tau_phase_gate_uses_the_row_phase_and_keeps_anti_stall():
+    enc = {'g': torch.zeros(4, 2)}
+    heads = {'card': torch.tensor([[1., 0, 0, 0]] * 4)}
+    allowed = np.ones((4, 4), bool)
+    p = np.array([.5, .5, .5, .3])
+    stalled = np.array([0, 0, 0, 1], bool)
+    out = decide_batch(Model(), enc, heads, p, allowed, stalled, tau=.35, device='cpu',
+                       options=DecisionOptions(tau_phase=(.45, .55, .45)), rngs=[None] * 4, card_names=None,
+                       t_sec=[119.95, 120.0, 180.0, 120.0])
+    assert [d['play'] for d in out] == [True, False, True, True]
+    assert [d['why'] for d in out] == ['gate', 'wait', 'gate', 'stall']
+    with pytest.raises(ValueError, match='decision time'):
+        decide_batch(Model(), enc, heads, p, allowed, stalled, tau=.35, device='cpu',
+                     options=DecisionOptions(tau_phase=(.45, .55, .45)), rngs=[None] * 4, card_names=None)
+
+
+def test_uniform_tau_phase_and_confident_xbow_reproduce_default_decisions():
+    enc, heads, p, allowed, stalled = tensors()
+    base = E.live_decide_batch(Model(), enc, heads, p, allowed, stalled, tau=.35)
+    names = [['Rocket', 'Knight', 'Log', 'x_bow']] * len(p)
+    same = E.live_decide_batch(Model(), enc, heads, p, allowed, stalled, tau=.35,
+                               decision_options=DecisionOptions(tau_phase=(.35, .35, .35)),
+                               rngs=[np.random.default_rng(1)] * len(p), card_names=names, t_sec=[10, 130, 200, 0, 5])
+    assert same == base
+
+
+def test_xbow_geometry_uses_alive_towers_and_exact_reach():
+    all_alive = xbow_offensive_cells((True, True, True), 'lattice')
+    assert not xbow_offensive_cells((False, False, False), 'lattice').any()
+    # (+1, +13) tiles from the left princess (3.5, 6.5) is the validated reach sqrt(170) = 13.03840
+    edge, past = 39 * 36 + 9, 40 * 36 + 9                     # lattice (4.5, 19.5) / (4.5, 20.0)
+    assert all_alive[edge] and not all_alive[past]
+    assert xbow_offensive_cells((False, True, False), 'lattice')[edge]
+    assert not xbow_offensive_cells((True, False, True), 'lattice')[edge]
+    assert all_alive[18 * 36 + 18]                             # own half next to the river reaches the king
+    assert not all_alive[63 * 36 + 18]                         # behind my king: defensive
+
+
+def two_class_logits(d_mass, off_cells=(100, 101), def_cells=(2000, 2001)):
+    p = torch.full((2304,), 1e-12)
+    p[off_cells[0]], p[off_cells[1]] = (1 - d_mass) * .6, (1 - d_mass) * .4
+    p[def_cells[0]], p[def_cells[1]] = d_mass * .3, d_mass * .7
+    off = np.zeros(2304, bool); off[list(off_cells)] = True
+    return p.log(), off
+
+
+def test_floor_keeps_confident_class_deterministic_and_draws_only_near_balance():
+    rng = np.random.default_rng(5); before = copy.deepcopy(rng.bit_generator.state)
+    logits, off = two_class_logits(.25)
+    assert xbow_class_choice(logits, off, .3, rng) == (100, False, False)      # minority .25 < floor .3: majority
+    assert rng.bit_generator.state == before                                   # and no RNG consumed
+    logits, off = two_class_logits(.9)
+    assert xbow_class_choice(logits, off, .2, rng) == (2001, True, False)      # argmax INSIDE the defensive class
+    assert rng.bit_generator.state == before
+    logits, off = two_class_logits(.25)
+    draws = [xbow_class_choice(logits, off, .2, rng) for _ in range(4000)]
+    assert {c for c, _, s in draws} == {100, 2001} and all(s for _, _, s in draws)
+    assert abs(np.mean([dfn for _, dfn, _ in draws]) - .25) < .025          # Bernoulli(D)
+
+
+def test_xbow_class_sample_is_seeded_and_touches_only_xbow_rows():
+    logits, off = two_class_logits(.4, off_cells=(5 * 36 + 9, 5 * 36 + 10))   # near the enemy king: offensive
+    class XModel:
+        def cell_logits(self, enc, slot):
+            return logits.repeat(len(slot), 1)
+    enc = {'g': torch.zeros(3, 2)}
+    heads = {'card': torch.tensor([[0., 9, 0, 0], [9., 0, 0, 0], [0., 9, 0, 0]])}
+    names = [['Rocket', 'x_bow', 'Log', 'Knight']] * 3
+    opts = DecisionOptions(xbow_class='class_sample', xbow_class_floor=.2)
+    def run(seed):
+        return [decide_batch(XModel(), enc, heads, np.full(3, .9), np.ones((3, 4), bool), np.zeros(3, bool),
+                             tau=.35, device='cpu', options=opts, rngs=[np.random.default_rng([seed, r]) for r in range(3)],
+                             card_names=names, enemy_alive=[(True, True, True)] * 3, grid='lattice') for _ in range(1)][0]
+    a, b = run(3), run(3)
+    assert a == b
+    assert a[1]['cell'] == int(logits.argmax())                               # Rocket row: plain argmax
+    cells = {d['cell'] for s in range(40) for d in run(s) if d['slot'] == 1}
+    assert cells == {5 * 36 + 9, 2001}                                        # both classes, argmax inside each
+    with pytest.raises(ValueError, match='enemy tower'):
+        decide_batch(XModel(), enc, heads, np.full(3, .9), np.ones((3, 4), bool), np.zeros(3, bool), tau=.35,
+                     device='cpu', options=opts, rngs=[np.random.default_rng(0)] * 3, card_names=names)
+
+
+def test_match_kwargs_supplies_phase_time_and_enemy_towers_from_the_prepared_board():
+    from pipeline.obs_contract import Tower
+    towers = tuple(Tower(s, k, l, 1., a) for s, k, l, a in
+                   [(0, 'king', None, 1), (0, 'princess', 'L', 1), (0, 'princess', 'R', 1),
+                    (1, 'king', None, 1), (1, 'princess', 'L', 0), (1, 'princess', 'R', 1)])
+    m = SimpleNamespace(tag='a', k=1, cfg={'xbow_class': 'class_sample', 'grid': 'lattice'},
+                        deck=SimpleNamespace(cards=['x_bow']), _cur=(2400, SimpleNamespace(t_sec=120.0, towers=towers), None))
+    kw = match_kwargs([m])
+    assert kw['t_sec'] == [120.0] and kw['enemy_alive'] == [(True, False, True)] and kw['grid'] == 'lattice'
+    assert 't_sec' not in match_kwargs([SimpleNamespace(tag='b', k=1, cfg={'card_choice': 'filtered'},
+                                                        deck=SimpleNamespace(cards=['x_bow']))])
+
+
+def test_e1_cli_rejects_invalid_new_options_before_loading(tmp_path):
+    with pytest.raises(ValueError, match='xbow_class_floor'):
+        E.main(['--port', '0', '--out', str(tmp_path / 'u'), '--xbow-class', 'class_sample', '--xbow-class-floor', '.7'])
+    with pytest.raises(ValueError, match='policy live'):
+        E.main(['--port', '0', '--out', str(tmp_path / 'u2'), '--policy', 'sample', '--tau-phase', '.4', '.45', '.5'])

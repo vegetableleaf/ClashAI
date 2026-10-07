@@ -1,0 +1,25 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+overrides: ['init=icebow/data/pipeline/gen_v32_s0/gen_s0.pt', 'proagree_data_gen=icebow/data/pipeline/gen_dataset_v32_fv5.npz', 'league=true', 'noise_off=all', 'opp_elixir=counter', 'action_delay_ticks=26', 'extrapolate_ticks=26', 'max_updates=120', 'screen_seeds=[0]', 'league_learner_icebow_share=1.0', 'forms_mode=deck', 'advantage=gae', 'gae_gamma_unit=tick', 'critic_warmup_updates=5', 'hero_abilities=true', 'ability_policy=v2', 'n_actors=5', 'tau=0.35', 'T=0.3', 'league_decks=scratchpad/gauntlet/L73/rl_r2/loadable_decks_ladder.json', 'league_deck_alpha=1.0', 'league_deck_floor=0', 'league_icebow_share=0.02', 'league_mix={latest: 0.35, older: 0.25, init: 0.2, s1: 0.02}', 'learner_device=cpu', 'actor_device=cpu']
+{'tau': 0.35, 'T': 0.3, 'league_mix': {'latest': 0.35, 'older': 0.25, 'init': 0.2, 's1': 0.02}, 'league_icebow_share': 0.02, 'league_learner_icebow_share': 1.0, 'league_decks': 'scratchpad/gauntlet/L73/rl_r2/loadable_decks_ladder.json', 'league_deck_alpha': 1.0, 'league_deck_floor': 0, 'max_updates': 120, 'league_opp_policy': 'sample', 'n_actors': 5, 'init': 'icebow/data/pipeline/gen_v32_s0/gen_s0.pt'}
+Learner init OK: gen True grid lattice census decks 1000 p sum 1.0
+  sp0000_00 opp init  learner icebow  opp deck r3     ['BarbLog', 'Berserker@hero', 'ElectroDragon@evolution', 'AngryBarbarians@evolution', 'Elixir Collector', 'Golem', 'SkeletonDragons', 'Tornado']
+  sp0000_01 opp init  learner icebow  opp deck r353   ['Cannon@evolution', 'ElectroSpirit', 'HogRider', 'IceGolemite', 'Lightning', 'Musketeer@hero', 'Skeletons@evolution', 'Log']
+  sp0000_02 opp init  learner icebow  opp deck r5     ['Cannon@evolution', 'Earthquake', 'ElectroSpirit', 'Firecracker@evolution', 'HogRider', 'MightyMiner', 'Skeletons', 'Log']
+  sp0000_03 opp init  learner icebow  opp deck r145   ['BabyDragon@evolution', 'BarbLog', 'DarkPrince@hero', 'ElectroWizard', 'Lightning', 'GiantBuffer', 'Tombstone@hero', 'Tornado']
+  sp0000_04 opp init  learner icebow  opp deck r455   ['Fireball', 'LavaHound', 'SkeletonDragons', 'Skeletons', 'MergeMaiden', 'Tombstone@hero', 'Valkyrie@hero', 'Zap@evolution']
+  sp0000_05 opp init  learner icebow  opp deck r493   ['AngryBarbarians@evolution', 'Firecracker', 'GoblinGang', 'MightyMiner', 'Minions', 'Rocket', 'GiantBuffer', 'SkeletonBalloon@evolution']
+  sp0000_06 opp init  learner icebow  opp deck r536   ['Arrows', 'AngryBarbarians@evolution', 'GoldenKnight', 'MegaKnight@evolution', 'WitchMother', 'Ghost', 'SkeletonDragons', 'MiniSparkys']
+  sp0000_07 opp init  learner icebow  opp deck r868   ['Clone', 'GiantSkeleton', 'MegaKnight@evolution', 'MinionHorde@evolution', 'Prince', 'SkeletonArmy', 'Wizard@hero', 'Zap']
+  sp0000_08 opp init  learner icebow  opp deck r171   ['BombTower', 'GoblinDemolisher', 'GoblinDrill@evolution', 'Knight', 'EliteArcher@hero', 'Skeletons@evolution', 'Log', 'Tornado']
+  sp0000_09 opp init  learner icebow  opp deck r21    ['Arrows', 'Bomber', 'AngryBarbarians@evolution', 'Golem', 'RageBarbarian', 'MegaMinion@hero', 'DarkWitch', 'Zap@evolution']
+  sp0000_10 opp init  learner icebow  opp deck r14    ['Archer@evolution', 'BarbLog', 'BombTower', 'ElectroSpirit', 'Goblinstein', 'Lightning', 'RoyalHogs@evolution', 'Skeletons']
+  sp0000_11 opp init  learner icebow  opp deck r95    ['AngryBarbarians@evolution', 'Elixir Collector', 'GoldenKnight', 'Heal', 'IceGolemite', 'Ghost@evolution', 'ThreeMusketeers', 'Zap']
+  sp0000_12 opp init  learner icebow  opp deck r387   ['BarbLog', 'Bats', 'GoblinGang', 'Goblinstein', 'Lightning', 'MegaKnight@evolution', 'SkeletonBalloon@evolution', 'SuspiciousBush']
+  sp0000_13 opp init  learner icebow  opp deck r193   ['BossBandit', 'AxeMan@evolution', 'Freeze', 'FirespiritHut', 'Snowball@evolution', 'HogRider', 'Ronin', 'Ghost']
+  sp0000_14 opp init  learner icebow  opp deck r899   ['BabyDragon@evolution', 'Bowler@hero', 'Cannon@evolution', 'ElectroGiant', 'SkeletonWarriors', 'Lightning', 'WitchMother', 'Tornado']
+  sp0000_15 opp init  learner icebow  opp deck r889   ['Barbarians', 'Berserker@hero', 'ElectroSpirit', 'GoblinDemolisher', 'MegaMinion@hero', 'WitchMother', 'Ghost', 'RoyalHogs@evolution']
+learner actor cfg: policy sample tau 0.35 T 0.3 | opponent cfg: policy sample tau 0.35 T 0.3
+held-out screen cfg: policy live tau 0.35
+DRY VALIDATION PASS
+exit 0

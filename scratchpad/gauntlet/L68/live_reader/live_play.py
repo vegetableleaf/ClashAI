@@ -114,7 +114,7 @@ def wait_inputs_quiet(quiet_s: float | None = None) -> None:
         time.sleep(wait)
 
 
-EVEN_BUILDINGS = {"Tesla"}   # ponytail: the icebow deck's only 2x2 building; add Cannon etc. for other decks
+EVEN_BUILDINGS = {"Tesla"}   # owner 2026-10-07: Tesla is the ONLY 2x2 building; all others are 3x3 -> no more offsets
 
 
 class Layout:
@@ -213,6 +213,10 @@ def main() -> int:
     ap.add_argument("--ckpt", help="explicit checkpoint; otherwise use the selected CKPT_OVERRIDE (never newest file)")
     ap.add_argument("--check", action="store_true", help="load the selected model and report settings offline, without ADB or taps")
     ap.add_argument("--tau", type=float, default=0.35)
+    ap.add_argument("--tau-alternate", type=float, nargs=2, default=None, metavar=("TAU_A", "TAU_B"),
+                    help="owner 2026-10-07: A/B the play threshold match by match (counter in --tau-alternate-state "
+                         "survives supervisor restarts; each match logs its tau in the start event)")
+    ap.add_argument("--tau-alternate-state", default=str(REPO / "scratchpad/gauntlet/L70/live/tau_alternate.json"))
     ap.add_argument("--leak", type=float, default=9.5, help=argparse.SUPPRESS)
     ap.add_argument("--no-anti-leak", action="store_true", default=True,
                     help="compatibility flag: forced anti-leak spending has been removed")
@@ -261,6 +265,8 @@ def main() -> int:
                          "day's 4th win OK -> open the chests -> Battle) instead of friendlies")
     ap.add_argument("--wins-today", type=int, default=None,
                     help="ladder: set today's win count (daily chests come with wins 1-4); default = ladder_state.json")
+    ap.add_argument("--no-trophy-log", action="store_true",
+                    help="ladder: do not read the trophy counter / per-match trophy change (passive logging, default on)")
     ap.add_argument("--clip-every", type=float, default=0.0,
                     help="seconds; > 0: record ONLY the first match and then one match every this many seconds, and post a 60-s "
                          "overlaid clip of it to Discord (discord_clip.py) -- all other matches unrecorded")
@@ -273,6 +279,11 @@ def main() -> int:
                     help="play nothing: run ONE between-match navigation that classifies the live screens and logs "
                          "the tap it WOULD make, never tapping (navigate by hand to test it)")
     a = ap.parse_args()
+    try:                                     # owner 2026-10-07: live play gets the CPU before training / sim jobs
+        import psutil
+        psutil.Process().nice(psutil.ABOVE_NORMAL_PRIORITY_CLASS)
+    except Exception as exc:                 # never block live play on a priority call
+        print(f"[live] priority not raised: {exc}", flush=True)
     decision_cfg = config_from_args(a)
     if a.matches < 1:
         print("refusing: --matches must be >= 1")
@@ -298,7 +309,8 @@ def main() -> int:
     if a.matches > 1 or a.nav_dry_run:
         if a.ladder:
             from ladder_nav import LadderNavRunner
-            nav = LadderNavRunner(ADB, dry_run=a.nav_dry_run, wins_today=a.wins_today)
+            nav = LadderNavRunner(ADB, dry_run=a.nav_dry_run, wins_today=a.wins_today,
+                                  trophy_log=not a.no_trophy_log)
         else:
             from friend_nav import FriendNav
             nav = FriendNav(ADB, a.friend, dry_run=a.nav_dry_run,   # validates the template-bound friend name
@@ -345,6 +357,8 @@ def main() -> int:
                         # owner 2026-10-06: restore the Discord pause alert (Codex had removed it)
                         subprocess.run([sys.executable, str(REPO / "scratchpad/gauntlet/L69/discord/post.py"), str(msg)],
                                        capture_output=True, timeout=60)
+                    elif why.startswith("TROPHY_ROAD_ALERT") and a.stop_file:   # the nav already posted its screenshot:
+                        a.stop_file.touch()                     # pause, don't let the supervisor retry an unknown screen
                     break
                 pilot.reset_match()                      # same loaded model, fresh history / opp counter
             record, caption, prev_clip = not a.no_record, None, last_clip
@@ -356,6 +370,8 @@ def main() -> int:
                     caption = (f"ClashAI live ladder clip -- match {k + 1}, {time.strftime('%H:%M')} -- "
                                f"{Path(a.ckpt).stem}, tau {a.tau} -- session W{st.get('W', 0)} L{st.get('L', 0)} "
                                f"D{st.get('D', 0)} before this match")
+            if a.tau_alternate:                          # owner 2026-10-07 threshold A/B: alternate per match
+                a.tau = pilot.gate_tau = next_alternate_tau(Path(a.tau_alternate_state), a.tau_alternate)
             why = play_match(a, pilot, lay, device, renders if k + 1 < a.matches else None,
                              start_timeout=180 if a.ladder else (60 if navigated else None),   # ladder: matchmaking;
                              # also on launch: an unrecognised screen then goes back to the nav, not a 600-s wait
@@ -382,6 +398,13 @@ def main() -> int:
                 print(f"[overlay] render failed (exit {p.returncode}); re-render with overlay_replay.py {name}")
                 rc = 1
     return rc
+
+
+def next_alternate_tau(state: Path, arms) -> float:
+    """The next arm of a match-by-match A/B; the counter lives in ``state`` so a restarted supervisor keeps alternating."""
+    n = json.loads(state.read_text()).get("n", 0) if state.exists() else 0
+    state.write_text(json.dumps({"n": n + 1}))
+    return float(arms[n % 2])
 
 
 def load_pilot(a, decision_cfg):
@@ -651,7 +674,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
             if a.public_audit and (d['play'] or tick-last_audit_tick >= 10):
                 W(event='decision', tick=tick, t_dev=t_dev, decide_ms=decide_ms,
                   backlog=q.qsize(), forced=forced,
-                  decision={k:d[k] for k in ('play','p_play','no_affordable','hand_pos','name','card','form','xy') if k in d},
+                  decision={k:d[k] for k in ('play','p_play','no_affordable','hand_pos','name','card','form','xy','gate_tau') if k in d},
                   public=d['public_audit'])
                 last_audit_tick = tick
             if not d["play"]:

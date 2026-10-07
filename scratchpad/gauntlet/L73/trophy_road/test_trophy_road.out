@@ -1,0 +1,14 @@
+positives ok
+negatives ok
+planner ok
+[ladder] trophy_road: ('act', 'choose', (658.0, 928.5))
+[ladder] choose: input tap 658 928
+[ladder] choose_reward: ('act', 'reward_card', (603.5, 421.0))
+[ladder] reward choice: random pick = right card
+[ladder] reward_card: input tap 604 421
+[ladder] unknown: ('wait', 'unknown (trophy-road reward choice)')
+[ladder] unknown: ('stop', 'TROPHY_ROAD_ALERT: unknown screen for 10 s after the trophy-road Choose / card tap -- not tapping blind')
+[ladder] STOP: TROPHY_ROAD_ALERT: unknown screen for 10 s after the trophy-road Choose / card tap -- not tapping blind
+runner ok: seed 11 picked the right card at [603.5, 421.0]; taps ['input tap 658 928', 'input tap 604 421']; stop: TROPHY_ROAD_ALERT: unknown screen for 10 s after the trophy-road Choose / card tap -- not tapping blind
+[ladder] Discord alert FAILED
+trophy-road reward-choice checks passed

@@ -8,6 +8,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from ladder_nav import Classifier, LadderNav, NavViolation, command_for  # noqa: E402
 
 RAW = Path(__file__).resolve().parents[2] / "L70" / "ladder_nav" / "raw"
+if not RAW.exists():                                      # raw captures are untracked: a worktree reads the main checkout's
+    RAW = Path("C:/Users/benpe/ClashBot/scratchpad/gauntlet/L70/ladder_nav/raw")
 clf = Classifier()
 want = {"res_1": "results", "res_8": "results", "main2": "main", "main4": "main", "promo_pass_x": "popup_x",
         "trophy_btn": "modes", "queue1": "loading", "queue2": "unknown", "tab_left": "unknown", "s_c": "unknown"}

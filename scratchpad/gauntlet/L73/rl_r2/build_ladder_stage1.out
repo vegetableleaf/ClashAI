@@ -1,0 +1,24 @@
+weak classes x1.5: ['Golem', 'Mega Knight'] (overall live 0.502); expected mirror share 0.0439; census decks 1000; live classes absent from census ['P.E.K.K.A']; census classes absent live []
+class                          decks   cen# cenSides R1eTrain   live  target   R2 s8   R2 s0
+Hog (incl. Royal Hogs)           143   14.3%    19.6%    10.2%  18.4%   17.2%   17.2%   16.9%
+Giant (incl. Goblin/Electro)     127   12.7%    12.3%     8.3%  13.4%   12.6%   12.9%   12.4%
+Golem                            104   10.4%    10.0%     6.5%  12.9%   18.2%   18.3%   18.0%
+Ram/Bridge spam                  152   15.2%    15.2%     9.4%  10.4%    9.8%    9.5%    9.4%
+Other/no clear wincon             46    4.6%     3.0%     2.7%   9.5%    8.9%    8.8%    8.7%
+Spawners (Witch/huts)             56    5.6%     5.7%     3.7%   7.5%    7.0%    6.8%    7.0%
+Balloon                           69    6.9%     8.2%     5.2%   6.0%    5.6%    5.4%    5.5%
+X-Bow/Mortar                      78    7.8%     8.5%    41.0%   4.5%    4.5%    4.4%    5.5%
+Royal Giant                       37    3.7%     3.6%     2.2%   4.5%    4.2%    4.4%    4.0%
+Graveyard                         61    6.1%     4.4%     3.4%   3.0%    2.8%    2.8%    3.0%
+Mega Knight                        8    0.8%     0.3%     0.4%   3.0%    4.2%    4.4%    4.2%
+Bait                              33    3.3%     3.4%     2.1%   2.0%    1.9%    1.9%    1.9%
+Miner                             36    3.6%     2.3%     2.0%   2.0%    1.9%    1.9%    2.0%
+Lava Hound                        50    5.0%     3.5%     2.7%   1.5%    1.4%    1.3%    1.4%
+P.E.K.K.A                          0    0.0%     0.0%     0.0%   1.5%    0.0%    0.0%    0.0%
+trait                                   cen#            R1eTrain   live           R2 s8   R2 s0
+has Witch/Night Witch                  10.3%               6.7%  23.4%           16.9%   16.5%
+heavy tank                             45.7%              28.5%  49.3%           50.7%   49.2%
+MegaKnight card                         3.6%               2.2%   9.0%            6.3%    6.1%
+snaps0: icebow mirror 0.0543  opp s1 0.0335  learner icebow 1.000
+snaps1: icebow mirror 0.0543  opp s1 0.0335  learner icebow 1.000
+snaps8: icebow mirror 0.0430  opp s1 0.0237  learner icebow 1.000
