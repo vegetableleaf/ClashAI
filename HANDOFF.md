@@ -4095,6 +4095,15 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   (20261006, CUDA): 299/299 identical outcome + crowns (292 wins each). VM R1e baselines (48 seeds): census 23+41 =
 >   64/96, ladder 27+41 = 68/96 (`~/eval/` on the VM, `~/eval_vm.sh` helpers: react/screen, CPU, 16-24 workers).
 >   A single-process screen takes ~15 min on the VM; 192 reactive games take ~1 min.
+> * **C VERDICT (lead, from `L73/phi_eval/` results; the worker never sent its report):** frozen gen_v3.2 value-head
+>   Phi (P(win)-P(loss)) on 45,431 pro rows: AUC .70 [.65,.75] vs tower_crown .68 (diff +.027 [-.020,+.086]); 1x
+>   +.057 [+.002,+.105]; first 30 s +.068; well calibrated. Flags 2x/OT overspends at one step (dPhi -.0165 vs -.0014);
+>   pro outcome after an overspend -.059 [-.097,-.022]. Live R1e states (10 matches) AUC .93 vs .80. BUT raw Phi is
+>   jittery (step std .12, total variation 9.1 per match vs a +-1 terminal) -> trailing 10 s mean keeps AUC (.704)
+>   with step std .036. Ruling: C SUPPORTED in smoothed form -> per the owner, R3 waits for C to be built + checked.
+>   Build worker (opus) on opt3-branching: shaping=value_phi, Phi = w * trailing-10s mean of the FROZEN init value
+>   head, w .5, potential-based with the residual critic, pro-agreement guard kept. opt3 branch now has T1/T2
+>   committed (f639593) + T3 async workers (94f2f18).
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
