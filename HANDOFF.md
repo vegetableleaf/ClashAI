@@ -4312,6 +4312,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 > * **OWNER 18:5x: Log vs Skeleton Barrel drops too early ("does not account for the barrel's drop time after it is
 >   defeated").** Audit worker (opus, `L73/skeleton_barrel/`): live timing vs balloon death / drop / skeleton spawn,
 >   what the model sees (falling barrel as projectile/entity/invisible; fv4 vs fv5 identity), pro timing, counterfactual.
+> * **R2 ACCEPTANCE (VM, engine 20261006-linux; R1e baseline on the same VM: census 64/96, ladder 68/96 = 132/192,
+>   ghost 292/299).** u0080: census 24+38 = 62, ladder 30+38 = 68 -> 130/192 (-2), ghost -1.0 [-3.3,+1.3].
+>   u0120: census 25+42 = 67, ladder 27+42 = 69 -> 136/192 (+4), ghost -1.3 [-4.0,+1.3]. Pre-registered PASS needs >= +6
+>   of 192 -> R2 does NOT pass (u0120 misses by 2). Behaviour (299-replay telemetry): elixir at play 1x/2x/OT R1e
+>   6.76/5.35/5.13 -> R2 u0120 7.22/5.47/5.27 (toward pros, unlike R1f which lowered it); defensive X-Bows 350 -> 246
+>   (away from pros); defensive Rockets 33 -> 34. For this recipe u0120 > u0080 (+6/192, n.s.) -- the "80 is enough"
+>   rule did not hold for R2; R3 runs 80 and can be resumed to 120 from the VM queue if its curve is still rising.
 >   ~15:40" (Q1 card sampling flag, Q2 area-aware spell aim, Q3 GPU A/Bs after R1e, Q4 R1e approval ping, Q5 fixes);
 >   launcher `.foreman/codex_autopilot/codex_loop.sh` (back-to-back runs to 10-06; STOP_LOOP file stops it).
 > * **15:5x -- owner plan: after the R1e verdict the lead starts LIVE on the winner, then hands over to Codex via
