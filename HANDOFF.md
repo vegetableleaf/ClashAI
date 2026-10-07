@@ -4029,6 +4029,16 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   `LIVE_ARGS="--tau-alternate 0.35 0.45" bash scratchpad/gauntlet/L70/live/start_live.sh`; analysis:
 >   `live_eval.py --since <start> --ckpt-sha 76fdfaac --tau 0.35 --label t35` / `--tau 0.45 --label t45` / `--compare t35 t45`.
 >   Power: ~400 matches per arm for a 10-pt win-rate gap, ~170 for 15 pts; trophies logged per match.
+> * **OPT3 T3 follow-up DONE (not committed):** FIFO branch buffer (512) + ONE branch step per update after PPO (coef
+>   0.1, chunked over the buffer, non-finite skipped; none during critic warm-up); branch actor plays until the PPO
+>   actors report (mp.Event), delaying the update by at most one in-flight pair; env hook removed. Default parity
+>   bit-identical; gate-on PPO gradients bit-identical to gate-off + one extra step. Tests 37 + 27 + 33 OK; smoke 2
+>   updates OK (branch actor finished 1-2 s after the slowest PPO actor). Expected ~3-36 (typ ~10) samples/update.
+>   Open: coef 0.1 moves P(play) only ~0.002-0.008 per step on buffer rows (raise if T2's labels are trustworthy);
+>   buffer not checkpointed (resume starts empty); gate-on runs not bit-reproducible (sample count depends on timing).
+> * **13:xx owner 1v1 vs a friend -> lead SUSPENDED 11 heavy processes** (R2 learner + 5 actors, T2 validate + 2
+>   workers; PIDs in `L73/paused_pids.json`). Resume on the owner's word; R2's actor_timeout_s 3600 means a pause much
+>   over ~45 min risks an actor "crash" restart.
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
