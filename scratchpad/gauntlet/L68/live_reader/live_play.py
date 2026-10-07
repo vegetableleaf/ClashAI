@@ -114,7 +114,7 @@ def wait_inputs_quiet(quiet_s: float | None = None) -> None:
         time.sleep(wait)
 
 
-EVEN_BUILDINGS = {"Tesla"}   # ponytail: the icebow deck's only 2x2 building; add Cannon etc. for other decks
+EVEN_BUILDINGS = {"Tesla"}   # owner 2026-10-07: Tesla is the ONLY 2x2 building; all others are 3x3 -> no more offsets
 
 
 class Layout:
