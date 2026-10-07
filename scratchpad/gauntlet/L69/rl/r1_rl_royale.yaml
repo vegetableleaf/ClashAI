@@ -56,6 +56,7 @@ gae_gamma_unit: row         # gae: row = gae_gamma per kept row; tick = gae_gamm
                             # kept rows), in GAE AND the shaping F (actors then record each row's decision tick)
 gae_gamma_tick: 0.99994     # gae, unit tick: league1c kept 279 rows / ~4330 ticks a match (15.5 ticks a row);
                             # 0.99994^15.5 = 0.99907 ~ 0.999 per row (whole match 0.77 vs 0.76)
+gae_terminal_gap: false    # R1 default; R1t explicitly overrides true (required in this copied config for CLI parsing)
 gae_lambda: 0.95            # gae: GAE lambda
 vf_coef: 0.5                # gae: value-loss coefficient
 vf_clip: 0.2                # gae: PPO value clip around the update's starting V (V in [-1, 1])

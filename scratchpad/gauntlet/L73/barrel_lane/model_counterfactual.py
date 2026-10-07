@@ -27,6 +27,14 @@ else:
     CKPTS = {'R1e_u0155': 'icebow/data/bench/rl_royale/rseries_r1e31/rseries_r1e31_u0155.pt',
              'R1e_u0000': 'icebow/data/bench/rl_royale/rseries_r1e31/rseries_r1e31_u0000.pt'}
     OUT = 'model_counterfactual.json'
+# lead L73: --data X --out Y --ckpt name=path [--ckpt ...] overrides the presets (e.g. gen_v3.2 vs gen_v3.2+branch)
+_a = sys.argv[1:]
+if '--data' in _a:
+    DATA = os.path.join(ROOT, _a[_a.index('--data') + 1])
+if '--out' in _a:
+    OUT = _a[_a.index('--out') + 1]
+if '--ckpt' in _a:
+    CKPTS = dict(_a[i + 1].split('=', 1) for i, x in enumerate(_a) if x == '--ckpt')
 with np.load(DATA) as z:
     cv = json.loads(str(z['meta']))['card_vocab']
 GB, LOG = cv.index('goblin-barrel'), cv.index('the-log')
