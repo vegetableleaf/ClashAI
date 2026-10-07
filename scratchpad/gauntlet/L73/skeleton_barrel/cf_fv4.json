@@ -1,0 +1,180 @@
+{
+ "data": "icebow\\data\\pipeline\\gen_dataset_v31_public.npz",
+ "feature_version": 4,
+ "rows": 8839,
+ "eligible_balloon_rows": 5335,
+ "bins": {
+  "-999..-60": {
+   "n": 3414,
+   "phases": {
+    "balloon": 3414,
+    "drop": 0,
+    "skeletons": 0
+   },
+   "pro_log_rate": 0.0627
+  },
+  "-60..-40": {
+   "n": 937,
+   "phases": {
+    "balloon": 937,
+    "drop": 0,
+    "skeletons": 0
+   },
+   "pro_log_rate": 0.0416
+  },
+  "-40..-20": {
+   "n": 896,
+   "phases": {
+    "balloon": 895,
+    "drop": 1,
+    "skeletons": 0
+   },
+   "pro_log_rate": 0.0748
+  },
+  "-20..0": {
+   "n": 1086,
+   "phases": {
+    "balloon": 351,
+    "drop": 735,
+    "skeletons": 0
+   },
+   "pro_log_rate": 0.4199
+  },
+  "0..20": {
+   "n": 1026,
+   "phases": {
+    "balloon": 0,
+    "drop": 0,
+    "skeletons": 1026
+   },
+   "pro_log_rate": 0.3723
+  },
+  "20..40": {
+   "n": 708,
+   "phases": {
+    "balloon": 0,
+    "drop": 0,
+    "skeletons": 708
+   },
+   "pro_log_rate": 0.1299
+  },
+  "40..61": {
+   "n": 772,
+   "phases": {
+    "balloon": 0,
+    "drop": 0,
+    "skeletons": 772
+   },
+   "pro_log_rate": 0.0829
+  }
+ },
+ "models": {
+  "R1e_u0155": {
+   "bins": {
+    "-999..-60": {
+     "p_play": 0.5516,
+     "p_log_given_play": 0.1757,
+     "p_log_now": 0.0779
+    },
+    "-60..-40": {
+     "p_play": 0.5241,
+     "p_log_given_play": 0.238,
+     "p_log_now": 0.1054
+    },
+    "-40..-20": {
+     "p_play": 0.5062,
+     "p_log_given_play": 0.3061,
+     "p_log_now": 0.1449
+    },
+    "-20..0": {
+     "p_play": 0.4552,
+     "p_log_given_play": 0.3494,
+     "p_log_now": 0.1729
+    },
+    "0..20": {
+     "p_play": 0.5802,
+     "p_log_given_play": 0.5113,
+     "p_log_now": 0.3132
+    },
+    "20..40": {
+     "p_play": 0.4222,
+     "p_log_given_play": 0.3884,
+     "p_log_now": 0.167
+    },
+    "40..61": {
+     "p_play": 0.3999,
+     "p_log_given_play": 0.3193,
+     "p_log_now": 0.1252
+    }
+   },
+   "interventions_on_eligible_balloon_rows": {
+    "real": {
+     "p_play": 0.5316,
+     "p_log_given_play": 0.2068,
+     "p_log_now": 0.0916
+    },
+    "hp_low": {
+     "p_play": 0.5078,
+     "p_log_given_play": 0.2929,
+     "p_log_now": 0.1375
+    },
+    "to_skel": {
+     "p_play": 0.5635,
+     "p_log_given_play": 0.3069,
+     "p_log_now": 0.165
+    },
+    "removed": {
+     "p_play": 0.4442,
+     "p_log_given_play": 0.2811,
+     "p_log_now": 0.117
+    },
+    "drop_to_skel": {
+     "p_play": 0.5316,
+     "p_log_given_play": 0.2068,
+     "p_log_now": 0.0916
+    }
+   },
+   "balloon_rows_d-999..-40": {
+    "n": 4248,
+    "pro_log_rate": 0.0586,
+    "p_log_now": 0.0805,
+    "p_log_now_to_skel": 0.139
+   },
+   "balloon_rows_d-40..-14": {
+    "n": 1077,
+    "pro_log_rate": 0.1077,
+    "p_log_now": 0.1345,
+    "p_log_now_to_skel": 0.2658
+   },
+   "balloon_rows_d-14..0": {
+    "n": 10,
+    "pro_log_rate": 0.2,
+    "p_log_now": 0.1752,
+    "p_log_now_to_skel": 0.3485
+   },
+   "by_phase": {
+    "balloon": {
+     "n": 5597,
+     "pro_log_rate": 0.0713,
+     "p_log_now_real": 0.1008,
+     "p_log_now_drop_to_skel": 0.1008,
+     "p_play_real": 0.5355
+    },
+    "drop": {
+     "n": 736,
+     "pro_log_rate": 0.5122,
+     "p_log_now_real": 0.1604,
+     "p_log_now_drop_to_skel": 0.4168,
+     "p_play_real": 0.4417
+    },
+    "skeletons": {
+     "n": 2506,
+     "pro_log_rate": 0.2147,
+     "p_log_now_real": 0.214,
+     "p_log_now_drop_to_skel": 0.214,
+     "p_play_real": 0.48
+    }
+   }
+  }
+ }
+}

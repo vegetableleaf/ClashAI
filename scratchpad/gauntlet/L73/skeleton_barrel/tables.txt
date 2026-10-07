@@ -1,0 +1,92 @@
+
+## LIVE R1e (rseries_r1e31_u0155): aimed Logs n=22
+by phase (rows) x outcome (cols ['killed>=1', 'passed_before_spawn', 'no_kill_other', 'no_skel_tracked', 'no_roll_data'])
+  balloon_alive           4     4     0     2     2   total 12
+  drop_pending            1     0     0     2     0   total 3
+  skeletons_on_ground     4     0     2     0     1   total 7
+by phase_at_rs (rows) x outcome (cols ['killed>=1', 'passed_before_spawn', 'no_kill_other', 'no_skel_tracked', 'no_roll_data'])
+  balloon_alive           0     3     0     1     0   total 4
+  drop_pending            0     1     0     3     0   total 4
+  skeletons_on_ground     9     0     2     0     0   total 11
+roll band crosses the drop point BEFORE first skeleton sighting: 4/15
+  outcome | crossed after spawn: {'killed>=1': 9, 'no_kill_other': 2};  before: {'passed_before_spawn': 4}
+  tp_minus_balloon_last    n=16 median=5 p10=-50 p90=28
+  rs_minus_balloon_last    n=15 median=37 p10=-17 p90=62
+  rs_minus_spawn_hi        n=15 median=15 p10=-45 p90=39
+  cross_minus_spawn_hi     n=15 median=19 p10=-37 p90=57
+  band crosses drop point at death-999..+0 ticks: n=3 {'passed_before_spawn': 3}
+  band crosses drop point at death+0..+12 ticks: n=0 {}
+  band crosses drop point at death+12..+999 ticks: n=12 {'killed>=1': 9, 'no_kill_other': 2, 'passed_before_spawn': 1}
+  balloon-alive R1e decisions, model view of the balloon token (cls, x, y, hp_frac): 20261005_080525@2983 [[111, 0.867, 0.607, 1.0]] other_in_corridor=['Monk', 'Wizard'] -> passed_before_spawn; 20261005_082252@5274 [[111, 0.862, 0.61, 0.856]] other_in_corridor=['Berserker'] -> killed>=1; 20261005_130339@2654 [[111, 0.861, 0.453, 1.0]] other_in_corridor=['BlowdartGoblin'] -> no_skel_tracked; 20261005_130339@3473 [[111, 0.257, 0.395, 1.0]] other_in_corridor=['GoblinGang', 'Knight'] -> no_skel_tracked; 20261006_153607@3450 [[111, 0.641, 0.573, 1.0]] other_in_corridor=['MovingCannon'] -> passed_before_spawn; 20261006_164712@3917 [[111, 0.671, 0.911, 1.0]] other_in_corridor=['Knight', 'MegaKnight'] -> no_roll_data; 20261006_164712@3981 [[111, 0.543, 0.841, 0.603]] other_in_corridor=['DarkPrince', 'Firecracker', 'MegaKnight'] -> no_roll_data; 20261006_201754@3191 [[111, 0.139, 0.612, 0.674]] other_in_corridor=['IceSpirits', 'SkeletonKing'] -> killed>=1; 20261007_184432@1534 [[111, 0.875, 0.582, 1.0]] other_in_corridor=['ElectroGiant', 'Skeletons'] -> passed_before_spawn; 20261007_184432@2375 [[111, 0.139, 0.514, 1.0]] other_in_corridor=['Knight'] -> passed_before_spawn
+
+## LIVE all models: aimed Logs n=35
+by phase (rows) x outcome (cols ['killed>=1', 'passed_before_spawn', 'no_kill_other', 'no_skel_tracked', 'no_roll_data'])
+  balloon_alive           6     7     0     2     3   total 18
+  drop_pending            1     0     0     2     0   total 3
+  skeletons_on_ground    10     0     2     0     2   total 14
+by phase_at_rs (rows) x outcome (cols ['killed>=1', 'passed_before_spawn', 'no_kill_other', 'no_skel_tracked', 'no_roll_data'])
+  balloon_alive           0     6     0     1     0   total 7
+  drop_pending            0     1     0     3     0   total 4
+  skeletons_on_ground    17     0     2     0     0   total 19
+roll band crosses the drop point BEFORE first skeleton sighting: 6/25
+  outcome | crossed after spawn: {'killed>=1': 17, 'no_kill_other': 2};  before: {'passed_before_spawn': 6}
+  tp_minus_balloon_last    n=29 median=10 p10=-58 p90=30
+  rs_minus_balloon_last    n=26 median=40 p10=-24 p90=65
+  rs_minus_spawn_hi        n=26 median=21 p10=-45 p90=51
+  cross_minus_spawn_hi     n=25 median=28 p10=-30 p90=65
+  band crosses drop point at death-999..+0 ticks: n=6 {'passed_before_spawn': 6}
+  band crosses drop point at death+0..+12 ticks: n=0 {}
+  band crosses drop point at death+12..+999 ticks: n=20 {'killed>=1': 17, 'no_kill_other': 2, 'passed_before_spawn': 1}
+  balloon-alive R1e decisions, model view of the balloon token (cls, x, y, hp_frac): 20261005_080525@2983 [[111, 0.867, 0.607, 1.0]] other_in_corridor=['Monk', 'Wizard'] -> passed_before_spawn; 20261005_082252@5274 [[111, 0.862, 0.61, 0.856]] other_in_corridor=['Berserker'] -> killed>=1; 20261005_130339@2654 [[111, 0.861, 0.453, 1.0]] other_in_corridor=['BlowdartGoblin'] -> no_skel_tracked; 20261005_130339@3473 [[111, 0.257, 0.395, 1.0]] other_in_corridor=['GoblinGang', 'Knight'] -> no_skel_tracked; 20261006_153607@3450 [[111, 0.641, 0.573, 1.0]] other_in_corridor=['MovingCannon'] -> passed_before_spawn; 20261006_164712@3917 [[111, 0.671, 0.911, 1.0]] other_in_corridor=['Knight', 'MegaKnight'] -> no_roll_data; 20261006_164712@3981 [[111, 0.543, 0.841, 0.603]] other_in_corridor=['DarkPrince', 'Firecracker', 'MegaKnight'] -> no_roll_data; 20261006_201754@3191 [[111, 0.139, 0.612, 0.674]] other_in_corridor=['IceSpirits', 'SkeletonKing'] -> killed>=1; 20261007_184432@1534 [[111, 0.875, 0.582, 1.0]] other_in_corridor=['ElectroGiant', 'Skeletons'] -> passed_before_spawn; 20261007_184432@2375 [[111, 0.139, 0.514, 1.0]] other_in_corridor=['Knight'] -> passed_before_spawn
+
+## NATIVE pros (re-drive): aimed Logs n=1216
+by phase (rows) x outcome (cols ['killed>=1', 'passed_before_spawn', 'no_kill_other', 'no_skel_tracked', 'no_roll_data'])
+  balloon_alive          67   134    19    52     0   total 272
+  drop_pending          359     2    11    45     0   total 417
+  skeletons_on_ground   443     0    84     0     0   total 527
+by phase_at_rs (rows) x outcome (cols ['killed>=1', 'passed_before_spawn', 'no_kill_other', 'no_skel_tracked', 'no_roll_data'])
+  balloon_alive          15   104    18    11     0   total 148
+  drop_pending          400    32    12    86     0   total 530
+  skeletons_on_ground   454     0    84     0     0   total 538
+roll band crosses the drop point BEFORE first skeleton sighting: 124/1042
+  outcome | crossed after spawn: {'killed>=1': 858, 'no_kill_other': 60};  before: {'passed_before_spawn': 106, 'no_kill_other': 14, 'killed>=1': 4}
+  tp_minus_balloon_last    n=1119 median=16 p10=-10 p90=52
+  rs_minus_balloon_last    n=1119 median=25 p10=-1 p90=61
+  rs_minus_spawn_hi        n=1119 median=-1 p10=-27 p90=41
+  cross_minus_spawn_hi     n=1042 median=14 p10=-7 p90=53
+  band crosses drop point at death-999..+0 ticks: n=102 {'passed_before_spawn': 85, 'no_kill_other': 17}
+  band crosses drop point at death+0..+12 ticks: n=24 {'passed_before_spawn': 22, 'killed>=1': 1, 'no_kill_other': 1}
+  band crosses drop point at death+12..+999 ticks: n=993 {'killed>=1': 868, 'no_kill_other': 96, 'passed_before_spawn': 29}
+
+## drop timing (live, 2-tick frame logs): first frame without the balloon -> first skeleton frame (ticks): {'n': 39, 'last_seen_to_first_skeleton': {'14': 28, '13': 1, '15': 6, '16': 1, '17': 2, '10': 1}, 'first_absent_to_first_skeleton': {'12': 30, '10': 1, '13': 4, '14': 2, '15': 1, '8': 1}}
+decision -> Log roll start (ticks, audited): {'n': 77, 'median': 34.0, 'p10': 32.0, 'p90': 44.0}
+
+## counterfactual cf_fv4.json: rows=8839 eligible balloon rows=5335
+bin d=tick-spawn | n | phases | pro P(Log now) | R1e_u0155 P(Log now)
+  -999..-60   3414 {'balloon': 3414, 'drop': 0, 'skeletons': 0} pro=0.0627 R1e_u0155=0.0779
+  -60..-40     937 {'balloon': 937, 'drop': 0, 'skeletons': 0} pro=0.0416 R1e_u0155=0.1054
+  -40..-20     896 {'balloon': 895, 'drop': 1, 'skeletons': 0} pro=0.0748 R1e_u0155=0.1449
+  -20..0      1086 {'balloon': 351, 'drop': 735, 'skeletons': 0} pro=0.4199 R1e_u0155=0.1729
+  0..20       1026 {'balloon': 0, 'drop': 0, 'skeletons': 1026} pro=0.3723 R1e_u0155=0.3132
+  20..40       708 {'balloon': 0, 'drop': 0, 'skeletons': 708} pro=0.1299 R1e_u0155=0.167
+  40..61       772 {'balloon': 0, 'drop': 0, 'skeletons': 772} pro=0.0829 R1e_u0155=0.1252
+  R1e_u0155 interventions (eligible balloon rows): {'real': {'p_play': 0.5316, 'p_log_given_play': 0.2068, 'p_log_now': 0.0916}, 'hp_low': {'p_play': 0.5078, 'p_log_given_play': 0.2929, 'p_log_now': 0.1375}, 'to_skel': {'p_play': 0.5635, 'p_log_given_play': 0.3069, 'p_log_now': 0.165}, 'removed': {'p_play': 0.4442, 'p_log_given_play': 0.2811, 'p_log_now': 0.117}, 'drop_to_skel': {'p_play': 0.5316, 'p_log_given_play': 0.2068, 'p_log_now': 0.0916}}
+  R1e_u0155 by phase: {'balloon': {'n': 5597, 'pro_log_rate': 0.0713, 'p_log_now_real': 0.1008, 'p_log_now_drop_to_skel': 0.1008, 'p_play_real': 0.5355}, 'drop': {'n': 736, 'pro_log_rate': 0.5122, 'p_log_now_real': 0.1604, 'p_log_now_drop_to_skel': 0.4168, 'p_play_real': 0.4417}, 'skeletons': {'n': 2506, 'pro_log_rate': 0.2147, 'p_log_now_real': 0.214, 'p_log_now_drop_to_skel': 0.214, 'p_play_real': 0.48}}
+  R1e_u0155 balloon_rows_d-999..-40: {'n': 4248, 'pro_log_rate': 0.0586, 'p_log_now': 0.0805, 'p_log_now_to_skel': 0.139}
+  R1e_u0155 balloon_rows_d-40..-14: {'n': 1077, 'pro_log_rate': 0.1077, 'p_log_now': 0.1345, 'p_log_now_to_skel': 0.2658}
+  R1e_u0155 balloon_rows_d-14..0: {'n': 10, 'pro_log_rate': 0.2, 'p_log_now': 0.1752, 'p_log_now_to_skel': 0.3485}
+
+## counterfactual cf_fv5.json: rows=8839 eligible balloon rows=5595
+bin d=tick-spawn | n | phases | pro P(Log now) | gen_v32_s0 P(Log now)
+  -999..-60   3414 {'balloon': 3414, 'drop': 0, 'skeletons': 0} pro=0.0627 gen_v32_s0=0.0744
+  -60..-40     937 {'balloon': 937, 'drop': 0, 'skeletons': 0} pro=0.0416 gen_v32_s0=0.0897
+  -40..-20     896 {'balloon': 895, 'drop': 1, 'skeletons': 0} pro=0.0748 gen_v32_s0=0.1374
+  -20..0      1086 {'balloon': 351, 'drop': 735, 'skeletons': 0} pro=0.4199 gen_v32_s0=0.1737
+  0..20       1026 {'balloon': 0, 'drop': 0, 'skeletons': 1026} pro=0.3723 gen_v32_s0=0.3482
+  20..40       708 {'balloon': 0, 'drop': 0, 'skeletons': 708} pro=0.1299 gen_v32_s0=0.1842
+  40..61       772 {'balloon': 0, 'drop': 0, 'skeletons': 772} pro=0.0829 gen_v32_s0=0.134
+  gen_v32_s0 interventions (eligible balloon rows): {'real': {'p_play': 0.4799, 'p_log_given_play': 0.2337, 'p_log_now': 0.0943}, 'hp_low': {'p_play': 0.4639, 'p_log_given_play': 0.3494, 'p_log_now': 0.1497}, 'to_skel': {'p_play': 0.5611, 'p_log_given_play': 0.5237, 'p_log_now': 0.2912}, 'removed': {'p_play': 0.4298, 'p_log_given_play': 0.3196, 'p_log_now': 0.1268}, 'drop_to_skel': {'p_play': 0.4799, 'p_log_given_play': 0.2337, 'p_log_now': 0.0943}}
+  gen_v32_s0 by phase: {'balloon': {'n': 5597, 'pro_log_rate': 0.0713, 'p_log_now_real': 0.0943, 'p_log_now_drop_to_skel': 0.0943, 'p_play_real': 0.48}, 'drop': {'n': 736, 'pro_log_rate': 0.5122, 'p_log_now_real': 0.1655, 'p_log_now_drop_to_skel': 0.4476, 'p_play_real': 0.4248}, 'skeletons': {'n': 2506, 'pro_log_rate': 0.2147, 'p_log_now_real': 0.2359, 'p_log_now_drop_to_skel': 0.2359, 'p_play_real': 0.4671}}
+  gen_v32_s0 balloon_rows_d-999..-40: {'n': 4350, 'pro_log_rate': 0.0582, 'p_log_now': 0.0777, 'p_log_now_to_skel': 0.2722}
+  gen_v32_s0 balloon_rows_d-40..-14: {'n': 1234, 'pro_log_rate': 0.1159, 'p_log_now': 0.152, 'p_log_now_to_skel': 0.3575}
+  gen_v32_s0 balloon_rows_d-14..0: {'n': 11, 'pro_log_rate': 0.1818, 'p_log_now': 0.1648, 'p_log_now_to_skel': 0.3986}

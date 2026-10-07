@@ -1,0 +1,7015 @@
+{
+ "summary": {
+  "files": 23,
+  "episodes": 109,
+  "episodes_with_skeletons": 97,
+  "episodes_by_ckpt": {
+   "gen_s0.pt": 7,
+   "league1c_u0075.pt": 7,
+   "rseries_r1_u0155.pt": 14,
+   "rseries_r1e31_u0155.pt": 81
+  },
+  "all_bot_logs_in_these_files": 139,
+  "log_episode_pairs_not_aimed": 11,
+  "aimed_logs": 35,
+  "decision_to_roll_start_ticks": {
+   "n": 77,
+   "median": 34.0,
+   "p10": 32.0,
+   "p90": 44.0
+  },
+  "confirmed_to_roll_start_ticks": {
+   "n": 77,
+   "median": 7.0,
+   "p10": 7.0,
+   "p90": 8.0
+  },
+  "balloon_gone_to_skeletons_seen_ticks_2tick_frames": {
+   "n": 39,
+   "last_seen_to_first_skeleton": {
+    "14": 28,
+    "13": 1,
+    "15": 6,
+    "16": 1,
+    "17": 2,
+    "10": 1
+   },
+   "first_absent_to_first_skeleton": {
+    "12": 30,
+    "10": 1,
+    "13": 4,
+    "14": 2,
+    "15": 1,
+    "8": 1
+   }
+  },
+  "balloon_end_near_own_building_le2tiles": {
+   "n": 109,
+   "near": 45
+  },
+  "aimed_logs_phase_x_outcome": {
+   "R1e|balloon_alive": {
+    "killed>=1": 4,
+    "band_passed_before_spawn": 4,
+    "no_skeletons_tracked": 2,
+    "no_roll_data": 2
+   },
+   "R1e|drop_pending": {
+    "killed>=1": 1,
+    "no_skeletons_tracked": 2
+   },
+   "R1e|skeletons_on_ground": {
+    "no_kill_other": 2,
+    "killed>=1": 4,
+    "no_roll_data": 1
+   },
+   "other|balloon_alive": {
+    "band_passed_before_spawn": 3,
+    "no_roll_data": 1,
+    "killed>=1": 2
+   },
+   "other|skeletons_on_ground": {
+    "killed>=1": 6,
+    "no_roll_data": 1
+   }
+  },
+  "aimed_logs_phase_at_roll_start_x_outcome": {
+   "R1e|balloon_alive": {
+    "band_passed_before_spawn": 3,
+    "no_skeletons_tracked": 1
+   },
+   "R1e|drop_pending": {
+    "no_skeletons_tracked": 3,
+    "band_passed_before_spawn": 1
+   },
+   "R1e|skeletons_on_ground": {
+    "killed>=1": 9,
+    "no_kill_other": 2
+   },
+   "other|balloon_alive": {
+    "band_passed_before_spawn": 3
+   },
+   "other|skeletons_on_ground": {
+    "killed>=1": 8
+   }
+  },
+  "q_rs_minus_balloon_last": {
+   "n": 26,
+   "median": 40.5,
+   "p10": -24.0,
+   "p90": 65
+  },
+  "q_rs_minus_spawn_hi": {
+   "n": 26,
+   "median": 21.0,
+   "p10": -45.0,
+   "p90": 51
+  },
+  "q_cross_minus_spawn_hi": {
+   "n": 25,
+   "median": 27.903999999999996,
+   "p10": -30.21600000000035,
+   "p90": 64.8789999999999
+  },
+  "q_tp_minus_balloon_last": {
+   "n": 29,
+   "median": 10,
+   "p10": -58,
+   "p90": 30
+  },
+  "cross_before_spawn": {
+   "n": 25,
+   "before": 6
+  },
+  "skeleton_level_outcomes_by_phase": {
+   "skeletons_on_ground": {
+    "killed_at_crossing": 42,
+    "dead_before_crossing": 36,
+    "lateral_miss": 2,
+    "behind_start": 3
+   },
+   "balloon_alive": {
+    "band_passed_before_spawn": 45,
+    "killed_at_crossing": 37,
+    "behind_start": 11,
+    "survived_crossing": 1
+   },
+   "drop_pending": {
+    "lateral_miss": 4,
+    "behind_start": 2,
+    "killed_at_crossing": 1
+   }
+  },
+  "balloon_alive_timing": [
+   {
+    "file": "20261004_021126",
+    "ckpt": "rseries_r1_u01",
+    "src": "frame",
+    "decision_minus_balloon_last": -74,
+    "cross_minus_balloon_last": -41.0,
+    "cross_minus_spawn": null,
+    "balloon_hp_at_last": "215/705",
+    "outcome": "band_passed_before_spawn",
+    "skel": {
+     "band_passed_before_spawn": 7
+    }
+   },
+   {
+    "file": "20261007_184432",
+    "ckpt": "rseries_r1e31_",
+    "src": "decision",
+    "decision_minus_balloon_last": -60,
+    "cross_minus_balloon_last": -16.1,
+    "cross_minus_spawn": -37.1,
+    "balloon_hp_at_last": "181/773",
+    "outcome": "band_passed_before_spawn",
+    "skel": {
+     "band_passed_before_spawn": 7
+    }
+   },
+   {
+    "file": "20261003_165342",
+    "ckpt": "rseries_r1_u01",
+    "src": "frame",
+    "decision_minus_balloon_last": -58,
+    "cross_minus_balloon_last": -6.2,
+    "cross_minus_spawn": -20.2,
+    "balloon_hp_at_last": "73/705",
+    "outcome": "band_passed_before_spawn",
+    "skel": {
+     "band_passed_before_spawn": 7
+    }
+   },
+   {
+    "file": "20261003_081246",
+    "ckpt": "league1c_u0075",
+    "src": "frame",
+    "decision_minus_balloon_last": -53,
+    "cross_minus_balloon_last": -14.2,
+    "cross_minus_spawn": -30.2,
+    "balloon_hp_at_last": "101/705",
+    "outcome": "band_passed_before_spawn",
+    "skel": {
+     "band_passed_before_spawn": 7
+    }
+   },
+   {
+    "file": "20261005_080525",
+    "ckpt": "rseries_r1e31_",
+    "src": "decision",
+    "decision_minus_balloon_last": -50,
+    "cross_minus_balloon_last": -7.2,
+    "cross_minus_spawn": -61.2,
+    "balloon_hp_at_last": "850/850",
+    "outcome": "band_passed_before_spawn",
+    "skel": {
+     "band_passed_before_spawn": 6,
+     "behind_start": 1
+    }
+   },
+   {
+    "file": "20261007_184432",
+    "ckpt": "rseries_r1e31_",
+    "src": "decision",
+    "decision_minus_balloon_last": -40,
+    "cross_minus_balloon_last": -5.0,
+    "cross_minus_spawn": -23.0,
+    "balloon_hp_at_last": "487/967",
+    "outcome": "band_passed_before_spawn",
+    "skel": {
+     "band_passed_before_spawn": 10,
+     "behind_start": 4
+    }
+   },
+   {
+    "file": "20261003_165342",
+    "ckpt": "rseries_r1_u01",
+    "src": "frame",
+    "decision_minus_balloon_last": -28,
+    "cross_minus_balloon_last": 26.4,
+    "cross_minus_spawn": 11.4,
+    "balloon_hp_at_last": "155/881",
+    "outcome": "killed>=1",
+    "skel": {
+     "killed_at_crossing": 7
+    }
+   },
+   {
+    "file": "20261004_222423",
+    "ckpt": "rseries_r1e31_",
+    "src": "frame",
+    "decision_minus_balloon_last": -22,
+    "cross_minus_balloon_last": 26.9,
+    "cross_minus_spawn": 12.9,
+    "balloon_hp_at_last": "141/773",
+    "outcome": "killed>=1",
+    "skel": {
+     "killed_at_crossing": 7
+    }
+   },
+   {
+    "file": "20261004_021126",
+    "ckpt": "rseries_r1_u01",
+    "src": "frame",
+    "decision_minus_balloon_last": -16,
+    "cross_minus_balloon_last": 20.8,
+    "cross_minus_spawn": 6.8,
+    "balloon_hp_at_last": "57/705",
+    "outcome": "killed>=1",
+    "skel": {
+     "killed_at_crossing": 7
+    }
+   },
+   {
+    "file": "20261004_222423",
+    "ckpt": "rseries_r1e31_",
+    "src": "frame",
+    "decision_minus_balloon_last": -4,
+    "cross_minus_balloon_last": 32.8,
+    "cross_minus_spawn": 18.8,
+    "balloon_hp_at_last": "80/773",
+    "outcome": "killed>=1",
+    "skel": {
+     "killed_at_crossing": 7
+    }
+   },
+   {
+    "file": "20261005_082252",
+    "ckpt": "rseries_r1e31_",
+    "src": "decision",
+    "decision_minus_balloon_last": 0,
+    "cross_minus_balloon_last": 34.0,
+    "cross_minus_spawn": 6.0,
+    "balloon_hp_at_last": "662/773",
+    "outcome": "killed>=1",
+    "skel": {
+     "killed_at_crossing": 4,
+     "behind_start": 2,
+     "survived_crossing": 1
+    }
+   },
+   {
+    "file": "20261006_153607",
+    "ckpt": "rseries_r1e31_",
+    "src": "decision",
+    "decision_minus_balloon_last": 0,
+    "cross_minus_balloon_last": 35.9,
+    "cross_minus_spawn": -20.1,
+    "balloon_hp_at_last": "773/773",
+    "outcome": "band_passed_before_spawn",
+    "skel": {
+     "band_passed_before_spawn": 1,
+     "behind_start": 2
+    }
+   },
+   {
+    "file": "20261006_201754",
+    "ckpt": "rseries_r1e31_",
+    "src": "decision",
+    "decision_minus_balloon_last": 0,
+    "cross_minus_balloon_last": 37.0,
+    "cross_minus_spawn": 6.0,
+    "balloon_hp_at_last": "521/773",
+    "outcome": "killed>=1",
+    "skel": {
+     "killed_at_crossing": 5,
+     "behind_start": 2
+    }
+   }
+  ],
+  "hit_vs_cross_sign": {
+   "after_spawn": {
+    "killed>=1": 17,
+    "no_kill_other": 2
+   },
+   "before_spawn": {
+    "band_passed_before_spawn": 6
+   }
+  }
+ },
+ "logs": [
+  {
+   "file": "live_play_20260925_183254.jsonl",
+   "ckpt": "gen_s0.pt",
+   "fv": null,
+   "src": "frame",
+   "side": 1,
+   "tick": 1355,
+   "xy": [
+    0.8056,
+    0.7656
+   ],
+   "p_play": 0.658,
+   "confirmed": 1383,
+   "t_rs": 1390,
+   "first_row": null,
+   "roll_from": "confirmed+7",
+   "x0": 3499.2000000000003,
+   "y0": 24499.199999999997,
+   "ep_first": 1191,
+   "balloon_last": 1325,
+   "gone_by": 1327,
+   "spawn_lo": 1337,
+   "spawn_hi": 1339,
+   "last_hp": 5,
+   "max_hp": 705,
+   "evo": false,
+   "dist_own_building_tiles": 1.79,
+   "n_skel": 7,
+   "phase": "skeletons_on_ground",
+   "tp_minus_balloon_last": 30,
+   "phase_at_rs": "skeletons_on_ground",
+   "aimed": true,
+   "other_enemy_in_corridor": [
+    "SkeletonKing"
+   ],
+   "tp_minus_spawn_hi": 16,
+   "drop_along_tiles": 0.76,
+   "drop_dx_tiles": 0.33,
+   "rs_minus_balloon_last": 65,
+   "rs_minus_spawn_hi": 51,
+   "cross_minus_balloon_last": 68.79600000000005,
+   "t_cross_drop": 1393.796,
+   "cross_minus_spawn_hi": 54.79600000000005,
+   "cross_minus_spawn_lo": 56.79600000000005,
+   "skeletons": [
+    {
+     "first": 1339,
+     "last": 1389,
+     "died_by": 1391,
+     "along": 0.69,
+     "dx": 0.86,
+     "t_cross": 1393.456,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 1339,
+     "last": 1357,
+     "died_by": 1359,
+     "along": 0.63,
+     "dx": 0.09,
+     "t_cross": 1393.161,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 1339,
+     "last": 1357,
+     "died_by": 1359,
+     "along": 0.61,
+     "dx": 1.55,
+     "t_cross": 1393.056,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 1339,
+     "last": 1363,
+     "died_by": 1365,
+     "along": -0.35,
+     "dx": 3.14,
+     "outcome": "lateral_miss"
+    },
+    {
+     "first": 1339,
+     "last": 1357,
+     "died_by": 1359,
+     "along": 0.42,
+     "dx": 0.81,
+     "t_cross": 1392.076,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 1339,
+     "last": 1389,
+     "died_by": 1391,
+     "along": -0.22,
+     "dx": 1.31,
+     "t_cross": 1390.0,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 1339,
+     "last": 1389,
+     "died_by": 1391,
+     "along": -1.0,
+     "dx": 1.97,
+     "t_cross": 1390.0,
+     "outcome": "killed_at_crossing"
+    }
+   ],
+   "skel_outcomes": {
+    "killed_at_crossing": 3,
+    "dead_before_crossing": 3,
+    "lateral_miss": 1
+   }
+  },
+  {
+   "file": "live_play_20260926_174450.jsonl",
+   "ckpt": "gen_s0.pt",
+   "fv": null,
+   "src": "frame",
+   "side": 1,
+   "tick": 2698,
+   "xy": [
+    0.1944,
+    0.7656
+   ],
+   "p_play": 0.7711,
+   "confirmed": null,
+   "x0": 14500.8,
+   "y0": 24499.199999999997,
+   "ep_first": 2559,
+   "balloon_last": 2681,
+   "gone_by": 2683,
+   "spawn_lo": 2694,
+   "spawn_hi": 2696,
+   "last_hp": 222,
+   "max_hp": 773,
+   "evo": false,
+   "dist_own_building_tiles": 1.83,
+   "n_skel": 7,
+   "phase": "skeletons_on_ground",
+   "tp_minus_balloon_last": 17,
+   "aimed": true,
+   "other_enemy_in_corridor": [
+    "Clone"
+   ],
+   "tp_minus_spawn_hi": 2,
+   "drop_along_tiles": 0.78,
+   "drop_dx_tiles": 0.43
+  },
+  {
+   "file": "live_play_20261003_081246.jsonl",
+   "ckpt": "league1c_u0075.pt",
+   "fv": null,
+   "src": "frame",
+   "side": 1,
+   "tick": 4328,
+   "xy": [
+    0.1944,
+    0.7344
+   ],
+   "p_play": 0.667,
+   "confirmed": 4356,
+   "t_rs": 4363,
+   "first_row": null,
+   "roll_from": "confirmed+7",
+   "x0": 14500.8,
+   "y0": 23500.800000000003,
+   "ep_first": 4264,
+   "balloon_last": 4381,
+   "gone_by": 4383,
+   "spawn_lo": 4394,
+   "spawn_hi": 4397,
+   "last_hp": 101,
+   "max_hp": 705,
+   "evo": false,
+   "dist_own_building_tiles": 2.77,
+   "n_skel": 7,
+   "phase": "balloon_alive",
+   "tp_minus_balloon_last": -53,
+   "phase_at_rs": "balloon_alive",
+   "aimed": true,
+   "other_enemy_in_corridor": [
+    "Firecracker",
+    "Witch"
+   ],
+   "tp_minus_spawn_hi": -69,
+   "drop_along_tiles": 0.76,
+   "drop_dx_tiles": 0.27,
+   "rs_minus_balloon_last": -18,
+   "rs_minus_spawn_hi": -34,
+   "cross_minus_balloon_last": -14.21600000000035,
+   "t_cross_drop": 4366.784,
+   "cross_minus_spawn_hi": -30.21600000000035,
+   "cross_minus_spawn_lo": -27.21600000000035,
+   "skeletons": [
+    {
+     "first": 4397,
+     "last": 4445,
+     "died_by": 4447,
+     "along": 1.48,
+     "dx": 0.85,
+     "t_cross": 4370.414,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 4397,
+     "last": 4445,
+     "died_by": 4447,
+     "along": 1.63,
+     "dx": 0.05,
+     "t_cross": 4371.139,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 4397,
+     "last": 4445,
+     "died_by": 4447,
+     "along": 1.13,
+     "dx": 0.58,
+     "t_cross": 4368.629,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 4397,
+     "last": 4445,
+     "died_by": 4447,
+     "along": 0.33,
+     "dx": 0.59,
+     "t_cross": 4364.634,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 4397,
+     "last": 4411,
+     "died_by": 4413,
+     "along": -0.18,
+     "dx": 0.05,
+     "t_cross": 4363.0,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 4397,
+     "last": 4411,
+     "died_by": 4413,
+     "along": 0.05,
+     "dx": 0.82,
+     "t_cross": 4363.239,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 4397,
+     "last": 4445,
+     "died_by": 4447,
+     "along": 0.79,
+     "dx": 1.05,
+     "t_cross": 4366.964,
+     "outcome": "band_passed_before_spawn"
+    }
+   ],
+   "skel_outcomes": {
+    "band_passed_before_spawn": 7
+   }
+  },
+  {
+   "file": "live_play_20261003_100316.jsonl",
+   "ckpt": "rseries_r1_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "side": 1,
+   "tick": 2105,
+   "xy": [
+    0.8056,
+    0.7656
+   ],
+   "p_play": 0.3516,
+   "confirmed": null,
+   "x0": 3499.2000000000003,
+   "y0": 24499.199999999997,
+   "ep_first": 2013,
+   "balloon_last": 2137,
+   "gone_by": 2139,
+   "spawn_lo": 2149,
+   "spawn_hi": 2151,
+   "last_hp": 141,
+   "max_hp": 773,
+   "evo": false,
+   "dist_own_building_tiles": 1.79,
+   "n_skel": 7,
+   "phase": "balloon_alive",
+   "tp_minus_balloon_last": -32,
+   "aimed": true,
+   "other_enemy_in_corridor": [],
+   "tp_minus_spawn_hi": -46,
+   "drop_along_tiles": 0.76,
+   "drop_dx_tiles": 0.33
+  },
+  {
+   "file": "live_play_20261003_100316.jsonl",
+   "ckpt": "rseries_r1_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "side": 1,
+   "tick": 2169,
+   "xy": [
+    0.8056,
+    0.7656
+   ],
+   "p_play": 0.7432,
+   "confirmed": 2213,
+   "t_rs": 2220,
+   "first_row": null,
+   "roll_from": "confirmed+7",
+   "x0": 3499.2000000000003,
+   "y0": 24499.199999999997,
+   "ep_first": 2013,
+   "balloon_last": 2137,
+   "gone_by": 2139,
+   "spawn_lo": 2149,
+   "spawn_hi": 2151,
+   "last_hp": 141,
+   "max_hp": 773,
+   "evo": false,
+   "dist_own_building_tiles": 1.79,
+   "n_skel": 7,
+   "phase": "skeletons_on_ground",
+   "tp_minus_balloon_last": 32,
+   "phase_at_rs": "skeletons_on_ground",
+   "aimed": true,
+   "other_enemy_in_corridor": [
+    "BossBandit"
+   ],
+   "tp_minus_spawn_hi": 18,
+   "drop_along_tiles": 0.76,
+   "drop_dx_tiles": 0.33,
+   "rs_minus_balloon_last": 83,
+   "rs_minus_spawn_hi": 69,
+   "cross_minus_balloon_last": 86.79599999999982,
+   "t_cross_drop": 2223.796,
+   "cross_minus_spawn_hi": 72.79599999999982,
+   "cross_minus_spawn_lo": 74.79599999999982,
+   "skeletons": [
+    {
+     "first": 2151,
+     "last": 2219,
+     "died_by": 2221,
+     "along": 0.81,
+     "dx": 0.79,
+     "t_cross": 2224.061,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 2151,
+     "last": 2219,
+     "died_by": 2221,
+     "along": 0.99,
+     "dx": 0.2,
+     "t_cross": 2224.941,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 2151,
+     "last": 2219,
+     "died_by": 2221,
+     "along": 0.68,
+     "dx": 1.15,
+     "t_cross": 2223.391,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 2151,
+     "last": 2207,
+     "died_by": 2209,
+     "along": -0.17,
+     "dx": 1.41,
+     "t_cross": 2220.0,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 2151,
+     "last": 2175,
+     "died_by": 2177,
+     "along": 0.51,
+     "dx": 0.03,
+     "t_cross": 2222.571,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 2151,
+     "last": 2191,
+     "died_by": 2193,
+     "along": -1.25,
+     "dx": 1.52,
+     "outcome": "behind_start"
+    },
+    {
+     "first": 2151,
+     "last": 2219,
+     "died_by": 2221,
+     "along": -0.08,
+     "dx": 1.72,
+     "t_cross": 2220.0,
+     "outcome": "killed_at_crossing"
+    }
+   ],
+   "skel_outcomes": {
+    "killed_at_crossing": 4,
+    "dead_before_crossing": 2,
+    "behind_start": 1
+   }
+  },
+  {
+   "file": "live_play_20261003_100316.jsonl",
+   "ckpt": "rseries_r1_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "side": 1,
+   "tick": 3001,
+   "xy": [
+    0.1944,
+    0.6719
+   ],
+   "p_play": 0.6987,
+   "confirmed": 3027,
+   "t_rs": 3034,
+   "first_row": null,
+   "roll_from": "confirmed+7",
+   "x0": 14500.8,
+   "y0": 21500.800000000003,
+   "ep_first": 2911,
+   "balloon_last": 2987,
+   "gone_by": 2989,
+   "spawn_lo": 2999,
+   "spawn_hi": 3001,
+   "last_hp": 100,
+   "max_hp": 773,
+   "evo": false,
+   "dist_own_building_tiles": 1.37,
+   "n_skel": 7,
+   "phase": "skeletons_on_ground",
+   "tp_minus_balloon_last": 14,
+   "phase_at_rs": "skeletons_on_ground",
+   "aimed": true,
+   "other_enemy_in_corridor": [
+    "BabyDragon"
+   ],
+   "tp_minus_spawn_hi": 0,
+   "drop_along_tiles": 3.34,
+   "drop_dx_tiles": 1.3,
+   "rs_minus_balloon_last": 47,
+   "rs_minus_spawn_hi": 33,
+   "cross_minus_balloon_last": 63.67900000000009,
+   "t_cross_drop": 3050.679,
+   "cross_minus_spawn_hi": 49.67900000000009,
+   "cross_minus_spawn_lo": 51.67900000000009,
+   "skeletons": [
+    {
+     "first": 3001,
+     "last": 3043,
+     "died_by": 3045,
+     "along": 2.78,
+     "dx": 2.27,
+     "t_cross": 3047.879,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 3001,
+     "last": 3045,
+     "died_by": 3047,
+     "along": 3.55,
+     "dx": 1.58,
+     "t_cross": 3051.749,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 3001,
+     "last": 3043,
+     "died_by": 3045,
+     "along": 2.88,
+     "dx": 0.07,
+     "t_cross": 3048.414,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 3001,
+     "last": 3039,
+     "died_by": 3041,
+     "along": 2.14,
+     "dx": 0.18,
+     "t_cross": 3044.689,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 3001,
+     "last": 3043,
+     "died_by": 3045,
+     "along": 2.95,
+     "dx": 0.98,
+     "t_cross": 3048.734,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 3001,
+     "last": 3031,
+     "died_by": 3033,
+     "along": 1.45,
+     "dx": 1.96,
+     "t_cross": 3041.239,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 3001,
+     "last": 3045,
+     "died_by": 3047,
+     "along": 1.83,
+     "dx": 2.64,
+     "outcome": "lateral_miss"
+    }
+   ],
+   "skel_outcomes": {
+    "killed_at_crossing": 6,
+    "lateral_miss": 1
+   }
+  },
+  {
+   "file": "live_play_20261003_165342.jsonl",
+   "ckpt": "rseries_r1_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "side": 1,
+   "tick": 278,
+   "xy": [
+    0.8056,
+    0.8594
+   ],
+   "p_play": 0.3517,
+   "confirmed": 304,
+   "t_rs": 311,
+   "first_row": null,
+   "roll_from": "confirmed+7",
+   "x0": 3499.2000000000003,
+   "y0": 27500.800000000003,
+   "ep_first": 212,
+   "balloon_last": 336,
+   "gone_by": 338,
+   "spawn_lo": 348,
+   "spawn_hi": 350,
+   "last_hp": 73,
+   "max_hp": 705,
+   "evo": false,
+   "dist_own_building_tiles": 1.79,
+   "n_skel": 7,
+   "phase": "balloon_alive",
+   "tp_minus_balloon_last": -58,
+   "phase_at_rs": "balloon_alive",
+   "aimed": true,
+   "other_enemy_in_corridor": [],
+   "tp_minus_spawn_hi": -72,
+   "drop_along_tiles": 3.76,
+   "drop_dx_tiles": 0.33,
+   "rs_minus_balloon_last": -25,
+   "rs_minus_spawn_hi": -39,
+   "cross_minus_balloon_last": -6.1959999999999695,
+   "t_cross_drop": 329.80400000000003,
+   "cross_minus_spawn_hi": -20.19599999999997,
+   "cross_minus_spawn_lo": -18.19599999999997,
+   "skeletons": [
+    {
+     "first": 350,
+     "last": 438,
+     "died_by": 440,
+     "along": 3.96,
+     "dx": 0.48,
+     "t_cross": 330.784,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 350,
+     "last": 468,
+     "died_by": 471,
+     "along": 4.0,
+     "dx": 0.27,
+     "t_cross": 331.019,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 350,
+     "last": 452,
+     "died_by": 455,
+     "along": 3.87,
+     "dx": 0.1,
+     "t_cross": 330.329,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 350,
+     "last": 406,
+     "died_by": 408,
+     "along": 3.65,
+     "dx": 0.1,
+     "t_cross": 329.259,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 350,
+     "last": 374,
+     "died_by": 376,
+     "along": 3.52,
+     "dx": 0.28,
+     "t_cross": 328.584,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 350,
+     "last": 390,
+     "died_by": 392,
+     "along": 3.57,
+     "dx": 0.48,
+     "t_cross": 328.834,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 350,
+     "last": 422,
+     "died_by": 424,
+     "along": 3.76,
+     "dx": 0.58,
+     "t_cross": 329.80400000000003,
+     "outcome": "band_passed_before_spawn"
+    }
+   ],
+   "skel_outcomes": {
+    "band_passed_before_spawn": 7
+   }
+  },
+  {
+   "file": "live_play_20261003_165342.jsonl",
+   "ckpt": "rseries_r1_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "side": 1,
+   "tick": 1375,
+   "xy": [
+    0.1944,
+    0.7656
+   ],
+   "p_play": 0.803,
+   "confirmed": 1403,
+   "t_rs": 1410,
+   "first_row": null,
+   "roll_from": "confirmed+7",
+   "x0": 14500.8,
+   "y0": 24499.199999999997,
+   "ep_first": 1235,
+   "balloon_last": 1361,
+   "gone_by": 1363,
+   "spawn_lo": 1373,
+   "spawn_hi": 1375,
+   "last_hp": 3,
+   "max_hp": 705,
+   "evo": false,
+   "dist_own_building_tiles": 1.79,
+   "n_skel": 7,
+   "phase": "skeletons_on_ground",
+   "tp_minus_balloon_last": 14,
+   "phase_at_rs": "skeletons_on_ground",
+   "aimed": true,
+   "other_enemy_in_corridor": [],
+   "tp_minus_spawn_hi": 0,
+   "drop_along_tiles": 0.76,
+   "drop_dx_tiles": 0.33,
+   "rs_minus_balloon_last": 49,
+   "rs_minus_spawn_hi": 35,
+   "cross_minus_balloon_last": 52.79600000000005,
+   "t_cross_drop": 1413.796,
+   "cross_minus_spawn_hi": 38.79600000000005,
+   "cross_minus_spawn_lo": 40.79600000000005,
+   "skeletons": [
+    {
+     "first": 1375,
+     "last": 1409,
+     "died_by": 1411,
+     "along": 0.33,
+     "dx": 1.47,
+     "t_cross": 1411.631,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 1375,
+     "last": 1409,
+     "died_by": 1411,
+     "along": 0.84,
+     "dx": 0.61,
+     "t_cross": 1414.186,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 1375,
+     "last": 1409,
+     "died_by": 1411,
+     "along": 0.65,
+     "dx": 0.97,
+     "t_cross": 1413.231,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 1375,
+     "last": 1395,
+     "died_by": 1397,
+     "along": -0.03,
+     "dx": 1.22,
+     "t_cross": 1410.0,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 1375,
+     "last": 1397,
+     "died_by": 1399,
+     "along": 0.49,
+     "dx": 0.04,
+     "t_cross": 1412.431,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 1375,
+     "last": 1413,
+     "died_by": 1415,
+     "along": -1.31,
+     "dx": 1.51,
+     "outcome": "behind_start"
+    },
+    {
+     "first": 1375,
+     "last": 1409,
+     "died_by": 1411,
+     "along": -0.48,
+     "dx": 2.06,
+     "t_cross": 1410.0,
+     "outcome": "killed_at_crossing"
+    }
+   ],
+   "skel_outcomes": {
+    "killed_at_crossing": 4,
+    "dead_before_crossing": 2,
+    "behind_start": 1
+   }
+  },
+  {
+   "file": "live_play_20261003_165342.jsonl",
+   "ckpt": "rseries_r1_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "side": 1,
+   "tick": 2286,
+   "xy": [
+    0.1944,
+    0.7656
+   ],
+   "p_play": 0.5065,
+   "confirmed": 2325,
+   "t_rs": 2332,
+   "first_row": null,
+   "roll_from": "confirmed+7",
+   "x0": 14500.8,
+   "y0": 24499.199999999997,
+   "ep_first": 2186,
+   "balloon_last": 2314,
+   "gone_by": 2316,
+   "spawn_lo": 2326,
+   "spawn_hi": 2329,
+   "last_hp": 155,
+   "max_hp": 881,
+   "evo": true,
+   "dist_own_building_tiles": 2.72,
+   "n_skel": 7,
+   "phase": "balloon_alive",
+   "tp_minus_balloon_last": -28,
+   "phase_at_rs": "skeletons_on_ground",
+   "aimed": true,
+   "other_enemy_in_corridor": [
+    "Rascals"
+   ],
+   "tp_minus_spawn_hi": -43,
+   "drop_along_tiles": 1.68,
+   "drop_dx_tiles": 0.5,
+   "rs_minus_balloon_last": 18,
+   "rs_minus_spawn_hi": 3,
+   "cross_minus_balloon_last": 26.380999999999858,
+   "t_cross_drop": 2340.381,
+   "cross_minus_spawn_hi": 11.380999999999858,
+   "cross_minus_spawn_lo": 14.380999999999858,
+   "skeletons": [
+    {
+     "first": 2329,
+     "last": 2340,
+     "died_by": 2342,
+     "along": 2.65,
+     "dx": 1.62,
+     "t_cross": 2345.256,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 2329,
+     "last": 2336,
+     "died_by": 2338,
+     "along": 2.29,
+     "dx": 0.7,
+     "t_cross": 2343.446,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 2329,
+     "last": 2336,
+     "died_by": 2338,
+     "along": 1.89,
+     "dx": 0.29,
+     "t_cross": 2341.466,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 2329,
+     "last": 2332,
+     "died_by": 2334,
+     "along": 0.93,
+     "dx": 0.49,
+     "t_cross": 2336.661,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 2329,
+     "last": 2332,
+     "died_by": 2334,
+     "along": 0.29,
+     "dx": 0.55,
+     "t_cross": 2333.441,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 2329,
+     "last": 2332,
+     "died_by": 2334,
+     "along": 0.47,
+     "dx": 1.76,
+     "t_cross": 2334.346,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 2329,
+     "last": 2334,
+     "died_by": 2336,
+     "along": 1.63,
+     "dx": 2.14,
+     "t_cross": 2340.136,
+     "outcome": "killed_at_crossing"
+    }
+   ],
+   "skel_outcomes": {
+    "killed_at_crossing": 7
+   }
+  },
+  {
+   "file": "live_play_20261003_165342.jsonl",
+   "ckpt": "rseries_r1_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "side": 1,
+   "tick": 2877,
+   "xy": [
+    0.1944,
+    0.7344
+   ],
+   "p_play": 0.787,
+   "confirmed": 2904,
+   "t_rs": 2911,
+   "first_row": null,
+   "roll_from": "confirmed+7",
+   "x0": 14500.8,
+   "y0": 23500.800000000003,
+   "ep_first": 2787,
+   "balloon_last": 2858,
+   "gone_by": 2860,
+   "spawn_lo": 2871,
+   "spawn_hi": 2873,
+   "last_hp": 233,
+   "max_hp": 705,
+   "evo": false,
+   "dist_own_building_tiles": 1.41,
+   "n_skel": 7,
+   "phase": "skeletons_on_ground",
+   "tp_minus_balloon_last": 19,
+   "phase_at_rs": "skeletons_on_ground",
+   "aimed": true,
+   "other_enemy_in_corridor": [
+    "Minions"
+   ],
+   "tp_minus_spawn_hi": 4,
+   "drop_along_tiles": 5.38,
+   "drop_dx_tiles": 1.31,
+   "rs_minus_balloon_last": 53,
+   "rs_minus_spawn_hi": 38,
+   "cross_minus_balloon_last": 79.8789999999999,
+   "t_cross_drop": 2937.879,
+   "cross_minus_spawn_hi": 64.8789999999999,
+   "cross_minus_spawn_lo": 66.8789999999999,
+   "skeletons": [
+    {
+     "first": 2873,
+     "last": 2900,
+     "died_by": 2902,
+     "along": 5.89,
+     "dx": 1.84,
+     "t_cross": 2940.444,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 2873,
+     "last": 2900,
+     "died_by": 2902,
+     "along": 6.56,
+     "dx": 1.12,
+     "t_cross": 2943.824,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 2873,
+     "last": 2927,
+     "died_by": 2930,
+     "along": 4.1,
+     "dx": 0.33,
+     "t_cross": 2931.514,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 2873,
+     "last": 2924,
+     "died_by": 2926,
+     "along": 3.97,
+     "dx": 0.59,
+     "t_cross": 2930.829,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 2873,
+     "last": 2920,
+     "died_by": 2922,
+     "along": 3.18,
+     "dx": 1.03,
+     "t_cross": 2926.899,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 2873,
+     "last": 2924,
+     "died_by": 2926,
+     "along": 3.69,
+     "dx": 1.46,
+     "t_cross": 2929.469,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 2873,
+     "last": 2927,
+     "died_by": 2930,
+     "along": 4.31,
+     "dx": 1.8,
+     "t_cross": 2932.549,
+     "outcome": "killed_at_crossing"
+    }
+   ],
+   "skel_outcomes": {
+    "dead_before_crossing": 2,
+    "killed_at_crossing": 5
+   }
+  },
+  {
+   "file": "live_play_20261004_021126.jsonl",
+   "ckpt": "rseries_r1_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "side": 0,
+   "tick": 3908,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "p_play": 0.4339,
+   "confirmed": 3944,
+   "t_rs": 3951,
+   "first_row": null,
+   "roll_from": "confirmed+7",
+   "x0": 3499.2,
+   "y0": 14499.199999999999,
+   "ep_first": 3814,
+   "balloon_last": 3894,
+   "gone_by": 3896,
+   "spawn_lo": 3906,
+   "spawn_hi": 3908,
+   "last_hp": 77,
+   "max_hp": 705,
+   "evo": false,
+   "dist_own_building_tiles": 1.42,
+   "n_skel": 7,
+   "phase": "skeletons_on_ground",
+   "tp_minus_balloon_last": 14,
+   "phase_at_rs": "skeletons_on_ground",
+   "aimed": true,
+   "other_enemy_in_corridor": [
+    "Witch"
+   ],
+   "tp_minus_spawn_hi": 0,
+   "drop_along_tiles": -0.58,
+   "drop_dx_tiles": 1.0,
+   "rs_minus_balloon_last": 57,
+   "rs_minus_spawn_hi": 43,
+   "cross_minus_balloon_last": 57.0,
+   "t_cross_drop": 3951.0,
+   "cross_minus_spawn_hi": 43.0,
+   "cross_minus_spawn_lo": 45.0,
+   "skeletons": [
+    {
+     "first": 3908,
+     "last": 3950,
+     "died_by": 3952,
+     "along": 0.78,
+     "dx": 1.97,
+     "t_cross": 3954.909,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 3908,
+     "last": 3950,
+     "died_by": 3952,
+     "along": 0.31,
+     "dx": 0.61,
+     "t_cross": 3952.564,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 3908,
+     "last": 3950,
+     "died_by": 3952,
+     "along": 1.15,
+     "dx": 0.23,
+     "t_cross": 3956.744,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 3908,
+     "last": 3950,
+     "died_by": 3952,
+     "along": 0.04,
+     "dx": 0.28,
+     "t_cross": 3951.214,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 3908,
+     "last": 3940,
+     "died_by": 3942,
+     "along": -0.81,
+     "dx": 0.17,
+     "t_cross": 3951.0,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 3908,
+     "last": 3950,
+     "died_by": 3952,
+     "along": -0.76,
+     "dx": 0.19,
+     "t_cross": 3951.0,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 3908,
+     "last": 3950,
+     "died_by": 3952,
+     "along": -0.38,
+     "dx": 1.2,
+     "t_cross": 3951.0,
+     "outcome": "killed_at_crossing"
+    }
+   ],
+   "skel_outcomes": {
+    "killed_at_crossing": 7
+   }
+  },
+  {
+   "file": "live_play_20261004_021126.jsonl",
+   "ckpt": "rseries_r1_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "side": 0,
+   "tick": 4893,
+   "xy": [
+    0.1944,
+    0.7656
+   ],
+   "p_play": 0.7469,
+   "confirmed": 4919,
+   "t_rs": 4926,
+   "first_row": null,
+   "roll_from": "confirmed+7",
+   "x0": 3499.2,
+   "y0": 7500.800000000002,
+   "ep_first": 4777,
+   "balloon_last": 4909,
+   "gone_by": 4911,
+   "spawn_lo": 4921,
+   "spawn_hi": 4923,
+   "last_hp": 57,
+   "max_hp": 705,
+   "evo": false,
+   "dist_own_building_tiles": 1.79,
+   "n_skel": 7,
+   "phase": "balloon_alive",
+   "tp_minus_balloon_last": -16,
+   "phase_at_rs": "skeletons_on_ground",
+   "aimed": true,
+   "other_enemy_in_corridor": [
+    "Witch"
+   ],
+   "tp_minus_spawn_hi": -30,
+   "drop_along_tiles": 0.76,
+   "drop_dx_tiles": 0.33,
+   "rs_minus_balloon_last": 17,
+   "rs_minus_spawn_hi": 3,
+   "cross_minus_balloon_last": 20.796000000000276,
+   "t_cross_drop": 4929.796,
+   "cross_minus_spawn_hi": 6.7960000000002765,
+   "cross_minus_spawn_lo": 8.796000000000276,
+   "skeletons": [
+    {
+     "first": 4923,
+     "last": 4931,
+     "died_by": 4933,
+     "along": 1.92,
+     "dx": 1.25,
+     "t_cross": 4935.611,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 4923,
+     "last": 4931,
+     "died_by": 4933,
+     "along": 2.2,
+     "dx": 0.0,
+     "t_cross": 4937.001,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 4923,
+     "last": 4927,
+     "died_by": 4929,
+     "along": 1.39,
+     "dx": 1.01,
+     "t_cross": 4932.926,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 4923,
+     "last": 4925,
+     "died_by": 4927,
+     "along": 0.37,
+     "dx": 0.82,
+     "t_cross": 4927.851,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 4923,
+     "last": 4925,
+     "died_by": 4927,
+     "along": -0.18,
+     "dx": 0.04,
+     "t_cross": 4926.0,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 4923,
+     "last": 4925,
+     "died_by": 4927,
+     "along": -0.15,
+     "dx": 1.06,
+     "t_cross": 4926.0,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 4923,
+     "last": 4925,
+     "died_by": 4927,
+     "along": 0.84,
+     "dx": 1.37,
+     "t_cross": 4930.176,
+     "outcome": "killed_at_crossing"
+    }
+   ],
+   "skel_outcomes": {
+    "killed_at_crossing": 7
+   }
+  },
+  {
+   "file": "live_play_20261004_021126.jsonl",
+   "ckpt": "rseries_r1_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "side": 0,
+   "tick": 5389,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "p_play": 0.53,
+   "confirmed": 5415,
+   "t_rs": 5422,
+   "first_row": null,
+   "roll_from": "confirmed+7",
+   "x0": 3499.2,
+   "y0": 14499.199999999999,
+   "ep_first": 5389,
+   "balloon_last": 5463,
+   "gone_by": 5465,
+   "spawn_lo": 5475,
+   "spawn_hi": 5477,
+   "last_hp": 215,
+   "max_hp": 705,
+   "evo": false,
+   "dist_own_building_tiles": 1.4,
+   "n_skel": 7,
+   "phase": "balloon_alive",
+   "tp_minus_balloon_last": -74,
+   "phase_at_rs": "balloon_alive",
+   "aimed": true,
+   "other_enemy_in_corridor": [
+    "Bats",
+    "MegaKnight",
+    "Witch"
+   ],
+   "tp_minus_spawn_hi": -88,
+   "drop_along_tiles": -0.7,
+   "drop_dx_tiles": 1.53,
+   "rs_minus_balloon_last": -41,
+   "rs_minus_spawn_hi": -55,
+   "cross_minus_balloon_last": -41.0,
+   "skeletons": [
+    {
+     "first": 5477,
+     "last": 5505,
+     "died_by": 5507,
+     "along": -0.51,
+     "dx": 1.68,
+     "t_cross": 5422.0,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 5477,
+     "last": 5495,
+     "died_by": 5497,
+     "along": -0.46,
+     "dx": 1.48,
+     "t_cross": 5422.0,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 5477,
+     "last": 5505,
+     "died_by": 5507,
+     "along": -0.6,
+     "dx": 1.3,
+     "t_cross": 5422.0,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 5477,
+     "last": 5505,
+     "died_by": 5507,
+     "along": -0.81,
+     "dx": 1.31,
+     "t_cross": 5422.0,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 5477,
+     "last": 5499,
+     "died_by": 5501,
+     "along": -0.95,
+     "dx": 1.48,
+     "t_cross": 5422.0,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 5477,
+     "last": 5515,
+     "died_by": 5517,
+     "along": -0.9,
+     "dx": 1.69,
+     "t_cross": 5422.0,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 5477,
+     "last": 5525,
+     "died_by": 5527,
+     "along": -0.7,
+     "dx": 1.78,
+     "t_cross": 5422.0,
+     "outcome": "band_passed_before_spawn"
+    }
+   ],
+   "skel_outcomes": {
+    "band_passed_before_spawn": 7
+   }
+  },
+  {
+   "file": "live_play_20261004_222423.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "side": 1,
+   "tick": 422,
+   "xy": [
+    0.8056,
+    0.7656
+   ],
+   "p_play": 0.39,
+   "confirmed": 448,
+   "t_rs": 455,
+   "first_row": null,
+   "roll_from": "confirmed+7",
+   "x0": 3499.2000000000003,
+   "y0": 24499.199999999997,
+   "ep_first": 292,
+   "balloon_last": 426,
+   "gone_by": 428,
+   "spawn_lo": 438,
+   "spawn_hi": 440,
+   "last_hp": 80,
+   "max_hp": 773,
+   "evo": false,
+   "dist_own_building_tiles": 1.79,
+   "n_skel": 7,
+   "phase": "balloon_alive",
+   "tp_minus_balloon_last": -4,
+   "phase_at_rs": "skeletons_on_ground",
+   "aimed": true,
+   "other_enemy_in_corridor": [
+    "GiantSkeleton"
+   ],
+   "tp_minus_spawn_hi": -18,
+   "drop_along_tiles": 0.76,
+   "drop_dx_tiles": 0.33,
+   "rs_minus_balloon_last": 29,
+   "rs_minus_spawn_hi": 15,
+   "cross_minus_balloon_last": 32.79599999999999,
+   "t_cross_drop": 458.796,
+   "cross_minus_spawn_hi": 18.795999999999992,
+   "cross_minus_spawn_lo": 20.795999999999992,
+   "skeletons": [
+    {
+     "first": 440,
+     "last": 456,
+     "died_by": 458,
+     "along": 1.45,
+     "dx": 1.0,
+     "t_cross": 462.251,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 440,
+     "last": 456,
+     "died_by": 458,
+     "along": 1.68,
+     "dx": 0.11,
+     "t_cross": 463.416,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 440,
+     "last": 454,
+     "died_by": 456,
+     "along": 1.08,
+     "dx": 1.17,
+     "t_cross": 460.376,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 440,
+     "last": 454,
+     "died_by": 456,
+     "along": 0.1,
+     "dx": 0.95,
+     "t_cross": 455.501,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 440,
+     "last": 454,
+     "died_by": 456,
+     "along": 0.62,
+     "dx": 0.09,
+     "t_cross": 458.121,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 440,
+     "last": 454,
+     "died_by": 456,
+     "along": -0.32,
+     "dx": 1.43,
+     "t_cross": 455.0,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 440,
+     "last": 454,
+     "died_by": 456,
+     "along": 0.58,
+     "dx": 1.63,
+     "t_cross": 457.88599999999997,
+     "outcome": "killed_at_crossing"
+    }
+   ],
+   "skel_outcomes": {
+    "killed_at_crossing": 7
+   }
+  },
+  {
+   "file": "live_play_20261004_222423.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "side": 1,
+   "tick": 3108,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "p_play": 0.5776,
+   "confirmed": 3135,
+   "t_rs": 3142,
+   "first_row": null,
+   "roll_from": "confirmed+7",
+   "x0": 3499.2000000000003,
+   "y0": 17500.800000000003,
+   "ep_first": 3014,
+   "balloon_last": 3098,
+   "gone_by": 3100,
+   "spawn_lo": 3112,
+   "spawn_hi": 3115,
+   "last_hp": 168,
+   "max_hp": 967,
+   "evo": true,
+   "dist_own_building_tiles": 1.27,
+   "n_skel": 7,
+   "phase": "drop_pending",
+   "tp_minus_balloon_last": 10,
+   "phase_at_rs": "skeletons_on_ground",
+   "aimed": true,
+   "other_enemy_in_corridor": [
+    "EliteArcher"
+   ],
+   "tp_minus_spawn_hi": -7,
+   "drop_along_tiles": 0.18,
+   "drop_dx_tiles": 3.43,
+   "rs_minus_balloon_last": 44,
+   "rs_minus_spawn_hi": 27,
+   "cross_minus_balloon_last": 44.903999999999996,
+   "t_cross_drop": 3142.904,
+   "cross_minus_spawn_hi": 27.903999999999996,
+   "cross_minus_spawn_lo": 30.903999999999996,
+   "skeletons": [
+    {
+     "first": 3115,
+     "last": 3193,
+     "died_by": 3195,
+     "along": 0.0,
+     "dx": 3.58,
+     "outcome": "lateral_miss"
+    },
+    {
+     "first": 3115,
+     "last": 3203,
+     "died_by": 3205,
+     "along": 0.49,
+     "dx": 4.24,
+     "outcome": "lateral_miss"
+    },
+    {
+     "first": 3115,
+     "last": 3203,
+     "died_by": 3205,
+     "along": 0.5,
+     "dx": 5.22,
+     "outcome": "lateral_miss"
+    },
+    {
+     "first": 3115,
+     "last": 3168,
+     "died_by": 3170,
+     "along": -0.57,
+     "dx": 5.73,
+     "outcome": "lateral_miss"
+    },
+    {
+     "first": 3115,
+     "last": 3156,
+     "died_by": 3158,
+     "along": -1.71,
+     "dx": 5.01,
+     "outcome": "behind_start"
+    },
+    {
+     "first": 3115,
+     "last": 3176,
+     "died_by": 3178,
+     "along": -1.44,
+     "dx": 4.12,
+     "outcome": "behind_start"
+    },
+    {
+     "first": 3115,
+     "last": 3141,
+     "died_by": 3142,
+     "along": -0.19,
+     "dx": 2.27,
+     "t_cross": 3142.0,
+     "outcome": "killed_at_crossing"
+    }
+   ],
+   "skel_outcomes": {
+    "lateral_miss": 4,
+    "behind_start": 2,
+    "killed_at_crossing": 1
+   }
+  },
+  {
+   "file": "live_play_20261004_222423.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "side": 1,
+   "tick": 4201,
+   "xy": [
+    0.8056,
+    0.7656
+   ],
+   "p_play": 0.3644,
+   "confirmed": 4239,
+   "t_rs": 4246,
+   "first_row": null,
+   "roll_from": "confirmed+7",
+   "x0": 3499.2000000000003,
+   "y0": 24499.199999999997,
+   "ep_first": 4103,
+   "balloon_last": 4223,
+   "gone_by": 4225,
+   "spawn_lo": 4235,
+   "spawn_hi": 4237,
+   "last_hp": 141,
+   "max_hp": 773,
+   "evo": false,
+   "dist_own_building_tiles": 1.84,
+   "n_skel": 7,
+   "phase": "balloon_alive",
+   "tp_minus_balloon_last": -22,
+   "phase_at_rs": "skeletons_on_ground",
+   "aimed": true,
+   "other_enemy_in_corridor": [
+    "Clone",
+    "Wizard"
+   ],
+   "tp_minus_spawn_hi": -36,
+   "drop_along_tiles": 0.79,
+   "drop_dx_tiles": 0.41,
+   "rs_minus_balloon_last": 23,
+   "rs_minus_spawn_hi": 9,
+   "cross_minus_balloon_last": 26.940999999999804,
+   "t_cross_drop": 4249.941,
+   "cross_minus_spawn_hi": 12.940999999999804,
+   "cross_minus_spawn_lo": 14.940999999999804,
+   "skeletons": [
+    {
+     "first": 4237,
+     "last": 4249,
+     "died_by": 4251,
+     "along": 1.8,
+     "dx": 1.23,
+     "t_cross": 4255.006,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 4237,
+     "last": 4249,
+     "died_by": 4251,
+     "along": 2.06,
+     "dx": 0.12,
+     "t_cross": 4256.286,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 4237,
+     "last": 4247,
+     "died_by": 4249,
+     "along": 1.41,
+     "dx": 0.93,
+     "t_cross": 4253.071,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 4237,
+     "last": 4245,
+     "died_by": 4247,
+     "along": 0.31,
+     "dx": 0.98,
+     "t_cross": 4247.526,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 4237,
+     "last": 4245,
+     "died_by": 4247,
+     "along": 0.35,
+     "dx": 0.22,
+     "t_cross": 4247.746,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 4237,
+     "last": 4245,
+     "died_by": 4247,
+     "along": -0.28,
+     "dx": 1.46,
+     "t_cross": 4246.0,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 4237,
+     "last": 4245,
+     "died_by": 4247,
+     "along": 0.83,
+     "dx": 1.7,
+     "t_cross": 4250.131,
+     "outcome": "killed_at_crossing"
+    }
+   ],
+   "skel_outcomes": {
+    "killed_at_crossing": 7
+   }
+  },
+  {
+   "file": "live_play_20261005_080525.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "side": 1,
+   "tick": 571,
+   "xy": [
+    0.8056,
+    0.7656
+   ],
+   "p_play": 0.3614,
+   "confirmed": 597,
+   "t_rs": 604.0,
+   "first_row": 599,
+   "x0": 3500,
+   "y0": 24500,
+   "ep_first": 405,
+   "balloon_last": 485,
+   "gone_by": 511,
+   "spawn_lo": 521,
+   "spawn_hi": 531,
+   "last_hp": 534,
+   "max_hp": 850,
+   "evo": false,
+   "dist_own_building_tiles": 5.01,
+   "n_skel": 6,
+   "phase": "skeletons_on_ground",
+   "tp_minus_balloon_last": 86,
+   "phase_at_rs": "skeletons_on_ground",
+   "aimed": true,
+   "other_enemy_in_corridor": [],
+   "tp_minus_spawn_hi": 40,
+   "drop_along_tiles": 3.93,
+   "drop_dx_tiles": 0.9,
+   "rs_minus_balloon_last": 119.0,
+   "rs_minus_spawn_hi": 73.0,
+   "cross_minus_balloon_last": 138.64,
+   "t_cross_drop": 623.64,
+   "cross_minus_spawn_hi": 92.63999999999999,
+   "cross_minus_spawn_lo": 102.63999999999999,
+   "skeletons": [
+    {
+     "first": 531,
+     "last": 571,
+     "died_by": 599,
+     "along": 0.97,
+     "dx": 0.07,
+     "t_cross": 608.83,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 531,
+     "last": 551,
+     "died_by": 561,
+     "along": 0.77,
+     "dx": 1.1,
+     "t_cross": 607.83,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 531,
+     "last": 531,
+     "died_by": 541,
+     "along": 1.46,
+     "dx": 2.11,
+     "t_cross": 611.315,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 531,
+     "last": 541,
+     "died_by": 551,
+     "along": 0.34,
+     "dx": 1.35,
+     "t_cross": 605.725,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 531,
+     "last": 561,
+     "died_by": 571,
+     "along": -0.15,
+     "dx": 1.62,
+     "t_cross": 604.0,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 531,
+     "last": 571,
+     "died_by": 599,
+     "along": 0.46,
+     "dx": 0.93,
+     "t_cross": 606.29,
+     "outcome": "dead_before_crossing"
+    }
+   ],
+   "skel_outcomes": {
+    "dead_before_crossing": 6
+   },
+   "model_sb_tokens": [
+    [
+     111,
+     0.808,
+     0.743,
+     1.0
+    ],
+    [
+     111,
+     0.863,
+     0.753,
+     1.0
+    ]
+   ],
+   "model_enemy_tokens": 3
+  },
+  {
+   "file": "live_play_20261005_080525.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "side": 1,
+   "tick": 1761,
+   "xy": [
+    0.8056,
+    0.7656
+   ],
+   "p_play": 0.595,
+   "confirmed": 1787,
+   "t_rs": 1794.0,
+   "first_row": 1789,
+   "x0": 3500,
+   "y0": 24500,
+   "ep_first": 1624,
+   "balloon_last": 1747,
+   "gone_by": 1757,
+   "spawn_lo": 1757,
+   "spawn_hi": 1761,
+   "last_hp": 170,
+   "max_hp": 850,
+   "evo": false,
+   "dist_own_building_tiles": 1.79,
+   "n_skel": 7,
+   "phase": "skeletons_on_ground",
+   "tp_minus_balloon_last": 14,
+   "phase_at_rs": "skeletons_on_ground",
+   "aimed": true,
+   "other_enemy_in_corridor": [],
+   "tp_minus_spawn_hi": 0,
+   "drop_along_tiles": 0.76,
+   "drop_dx_tiles": 0.33,
+   "rs_minus_balloon_last": 47.0,
+   "rs_minus_spawn_hi": 33.0,
+   "cross_minus_balloon_last": 50.799999999999955,
+   "t_cross_drop": 1797.8,
+   "cross_minus_spawn_hi": 36.799999999999955,
+   "cross_minus_spawn_lo": 40.799999999999955,
+   "skeletons": [
+    {
+     "first": 1761,
+     "last": 1789,
+     "died_by": 1799,
+     "along": 0.44,
+     "dx": 1.33,
+     "t_cross": 1796.205,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 1761,
+     "last": 1789,
+     "died_by": 1799,
+     "along": 1.08,
+     "dx": 0.66,
+     "t_cross": 1799.425,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 1761,
+     "last": 1789,
+     "died_by": 1799,
+     "along": 0.75,
+     "dx": 1.08,
+     "t_cross": 1797.76,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 1761,
+     "last": 1789,
+     "died_by": 1799,
+     "along": -0.19,
+     "dx": 1.42,
+     "t_cross": 1794.0,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 1761,
+     "last": 1789,
+     "died_by": 1799,
+     "along": 0.49,
+     "dx": 0.15,
+     "t_cross": 1796.47,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 1761,
+     "last": 1829,
+     "died_by": 1839,
+     "along": -1.27,
+     "dx": 1.5,
+     "outcome": "behind_start"
+    },
+    {
+     "first": 1761,
+     "last": 1789,
+     "died_by": 1799,
+     "along": -0.31,
+     "dx": 1.99,
+     "t_cross": 1794.0,
+     "outcome": "killed_at_crossing"
+    }
+   ],
+   "skel_outcomes": {
+    "killed_at_crossing": 6,
+    "behind_start": 1
+   },
+   "model_sb_tokens": [
+    [
+     111,
+     0.832,
+     0.736,
+     1.0
+    ],
+    [
+     111,
+     0.821,
+     0.734,
+     1.0
+    ],
+    [
+     111,
+     0.811,
+     0.739,
+     1.0
+    ],
+    [
+     111,
+     0.811,
+     0.745,
+     1.0
+    ],
+    [
+     111,
+     0.821,
+     0.75,
+     1.0
+    ],
+    [
+     111,
+     0.833,
+     0.748,
+     1.0
+    ],
+    [
+     111,
+     0.838,
+     0.742,
+     1.0
+    ]
+   ],
+   "model_enemy_tokens": 8
+  },
+  {
+   "file": "live_play_20261005_080525.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "side": 1,
+   "tick": 2983,
+   "xy": [
+    0.8056,
+    0.7344
+   ],
+   "p_play": 0.3536,
+   "confirmed": 3009,
+   "t_rs": 3016.0,
+   "first_row": 3011,
+   "x0": 3500,
+   "y0": 23500,
+   "ep_first": 2949,
+   "balloon_last": 3033,
+   "gone_by": 3077,
+   "spawn_lo": 3077,
+   "spawn_hi": 3087,
+   "last_hp": 850,
+   "max_hp": 850,
+   "evo": false,
+   "dist_own_building_tiles": 4.03,
+   "n_skel": 7,
+   "phase": "balloon_alive",
+   "tp_minus_balloon_last": -50,
+   "phase_at_rs": "balloon_alive",
+   "aimed": true,
+   "other_enemy_in_corridor": [
+    "Monk",
+    "Wizard"
+   ],
+   "tp_minus_spawn_hi": -104,
+   "drop_along_tiles": 1.96,
+   "drop_dx_tiles": 0.73,
+   "rs_minus_balloon_last": -17.0,
+   "rs_minus_spawn_hi": -71.0,
+   "cross_minus_balloon_last": -7.199999999999818,
+   "t_cross_drop": 3025.8,
+   "cross_minus_spawn_hi": -61.19999999999982,
+   "cross_minus_spawn_lo": -51.19999999999982,
+   "skeletons": [
+    {
+     "first": 3087,
+     "last": 3195,
+     "died_by": 3245,
+     "along": 2.32,
+     "dx": 0.74,
+     "t_cross": 3027.595,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 3087,
+     "last": 3195,
+     "died_by": 3245,
+     "along": 1.85,
+     "dx": 0.17,
+     "t_cross": 3025.26,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 3087,
+     "last": 3111,
+     "died_by": 3161,
+     "along": 1.59,
+     "dx": 1.06,
+     "t_cross": 3023.975,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 3087,
+     "last": 3097,
+     "died_by": 3107,
+     "along": 0.83,
+     "dx": 0.94,
+     "t_cross": 3020.15,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 3087,
+     "last": 3111,
+     "died_by": 3161,
+     "along": -0.15,
+     "dx": 0.06,
+     "t_cross": 3016.0,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 3087,
+     "last": 3097,
+     "died_by": 3107,
+     "along": -1.21,
+     "dx": 1.3,
+     "outcome": "behind_start"
+    },
+    {
+     "first": 3087,
+     "last": 3111,
+     "died_by": 3161,
+     "along": 1.47,
+     "dx": 0.72,
+     "t_cross": 3023.355,
+     "outcome": "band_passed_before_spawn"
+    }
+   ],
+   "skel_outcomes": {
+    "band_passed_before_spawn": 6,
+    "behind_start": 1
+   },
+   "model_sb_tokens": [
+    [
+     111,
+     0.867,
+     0.607,
+     1.0
+    ]
+   ],
+   "model_enemy_tokens": 5
+  },
+  {
+   "file": "live_play_20261005_082252.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "side": 0,
+   "tick": 2008,
+   "xy": [
+    0.8056,
+    0.7656
+   ],
+   "p_play": 0.3897,
+   "confirmed": null,
+   "x0": 14500.8,
+   "y0": 7500.800000000002,
+   "ep_first": 1880,
+   "balloon_last": 1982,
+   "gone_by": 1992,
+   "spawn_lo": 2002,
+   "spawn_hi": 2008,
+   "last_hp": 181,
+   "max_hp": 773,
+   "evo": false,
+   "dist_own_building_tiles": 3.76,
+   "n_skel": 7,
+   "phase": "skeletons_on_ground",
+   "tp_minus_balloon_last": 26,
+   "aimed": true,
+   "other_enemy_in_corridor": [],
+   "tp_minus_spawn_hi": 0,
+   "drop_along_tiles": 2.7,
+   "drop_dx_tiles": 0.68,
+   "model_sb_tokens": [
+    [
+     111,
+     0.888,
+     0.664,
+     1.0
+    ],
+    [
+     111,
+     0.819,
+     0.655,
+     1.0
+    ],
+    [
+     111,
+     0.763,
+     0.681,
+     1.0
+    ],
+    [
+     111,
+     0.763,
+     0.721,
+     1.0
+    ],
+    [
+     111,
+     0.819,
+     0.744,
+     1.0
+    ],
+    [
+     111,
+     0.88,
+     0.733,
+     1.0
+    ],
+    [
+     111,
+     0.898,
+     0.699,
+     1.0
+    ]
+   ],
+   "model_enemy_tokens": 8
+  },
+  {
+   "file": "live_play_20261005_082252.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "side": 0,
+   "tick": 5000,
+   "xy": [
+    0.8056,
+    0.7656
+   ],
+   "p_play": 0.4427,
+   "confirmed": 5026,
+   "t_rs": 5034.0,
+   "first_row": 5028,
+   "x0": 14500,
+   "y0": 7500,
+   "ep_first": 4866,
+   "balloon_last": 4972,
+   "gone_by": 5000,
+   "spawn_lo": 4972,
+   "spawn_hi": 5000,
+   "last_hp": 70,
+   "max_hp": 773,
+   "evo": false,
+   "dist_own_building_tiles": 4.55,
+   "n_skel": 7,
+   "phase": "skeletons_on_ground",
+   "tp_minus_balloon_last": 28,
+   "phase_at_rs": "skeletons_on_ground",
+   "aimed": true,
+   "other_enemy_in_corridor": [],
+   "tp_minus_spawn_hi": 0,
+   "drop_along_tiles": 3.47,
+   "drop_dx_tiles": 0.82,
+   "rs_minus_balloon_last": 62.0,
+   "rs_minus_spawn_hi": 34.0,
+   "cross_minus_balloon_last": 79.35499999999956,
+   "t_cross_drop": 5051.355,
+   "cross_minus_spawn_hi": 51.35499999999956,
+   "cross_minus_spawn_lo": 79.35499999999956,
+   "skeletons": [
+    {
+     "first": 5000,
+     "last": 5000,
+     "died_by": 5028,
+     "along": 4.16,
+     "dx": 1.37,
+     "t_cross": 5054.805,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 5000,
+     "last": 5000,
+     "died_by": 5028,
+     "along": 4.37,
+     "dx": 0.27,
+     "t_cross": 5055.84,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 5000,
+     "last": 5000,
+     "died_by": 5028,
+     "along": 3.75,
+     "dx": 0.68,
+     "t_cross": 5052.73,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 5000,
+     "last": 5000,
+     "died_by": 5028,
+     "along": 2.48,
+     "dx": 0.65,
+     "t_cross": 5046.415,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 5000,
+     "last": 5000,
+     "died_by": 5028,
+     "along": 1.69,
+     "dx": 0.29,
+     "t_cross": 5042.435,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 5000,
+     "last": 5000,
+     "died_by": 5028,
+     "along": 1.93,
+     "dx": 1.46,
+     "t_cross": 5043.655,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 5000,
+     "last": 5000,
+     "died_by": 5028,
+     "along": 3.05,
+     "dx": 1.78,
+     "t_cross": 5049.235,
+     "outcome": "dead_before_crossing"
+    }
+   ],
+   "skel_outcomes": {
+    "dead_before_crossing": 7
+   },
+   "model_sb_tokens": [
+    [
+     111,
+     0.882,
+     0.636,
+     1.0
+    ],
+    [
+     111,
+     0.821,
+     0.629,
+     1.0
+    ],
+    [
+     111,
+     0.768,
+     0.649,
+     1.0
+    ],
+    [
+     111,
+     0.769,
+     0.688,
+     1.0
+    ],
+    [
+     111,
+     0.822,
+     0.713,
+     1.0
+    ],
+    [
+     111,
+     0.887,
+     0.705,
+     1.0
+    ],
+    [
+     111,
+     0.905,
+     0.67,
+     1.0
+    ]
+   ],
+   "model_enemy_tokens": 8
+  },
+  {
+   "file": "live_play_20261005_082252.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "side": 0,
+   "tick": 5274,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "p_play": 0.3579,
+   "confirmed": 5300,
+   "t_rs": 5308.0,
+   "first_row": 5302,
+   "x0": 14500,
+   "y0": 14500,
+   "ep_first": 5218,
+   "balloon_last": 5274,
+   "gone_by": 5302,
+   "spawn_lo": 5274,
+   "spawn_hi": 5302,
+   "last_hp": 662,
+   "max_hp": 773,
+   "evo": false,
+   "dist_own_building_tiles": 1.6,
+   "n_skel": 7,
+   "phase": "balloon_alive",
+   "tp_minus_balloon_last": 0,
+   "phase_at_rs": "skeletons_on_ground",
+   "aimed": true,
+   "other_enemy_in_corridor": [
+    "Berserker"
+   ],
+   "tp_minus_spawn_hi": -28,
+   "drop_along_tiles": -0.44,
+   "drop_dx_tiles": 1.33,
+   "rs_minus_balloon_last": 34.0,
+   "rs_minus_spawn_hi": 6.0,
+   "cross_minus_balloon_last": 34.0,
+   "t_cross_drop": 5308.0,
+   "cross_minus_spawn_hi": 6.0,
+   "cross_minus_spawn_lo": 34.0,
+   "skeletons": [
+    {
+     "first": 5302,
+     "last": 5302,
+     "died_by": 5330,
+     "along": 0.17,
+     "dx": 1.91,
+     "t_cross": 5308.845,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 5302,
+     "last": 5302,
+     "died_by": 5330,
+     "along": 0.31,
+     "dx": 1.08,
+     "t_cross": 5309.565,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 5302,
+     "last": 5302,
+     "died_by": 5330,
+     "along": -0.21,
+     "dx": 0.43,
+     "t_cross": 5308.0,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 5302,
+     "last": 5302,
+     "died_by": 5330,
+     "along": -1.03,
+     "dx": 0.44,
+     "t_cross": 5308.0,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 5302,
+     "last": 5302,
+     "died_by": 5330,
+     "along": -1.44,
+     "dx": 1.11,
+     "outcome": "behind_start"
+    },
+    {
+     "first": 5302,
+     "last": 5330,
+     "died_by": 5340,
+     "along": -1.33,
+     "dx": 1.89,
+     "outcome": "behind_start"
+    },
+    {
+     "first": 5302,
+     "last": 5330,
+     "died_by": 5340,
+     "along": -0.58,
+     "dx": 2.09,
+     "t_cross": 5308.0,
+     "outcome": "survived_crossing"
+    }
+   ],
+   "skel_outcomes": {
+    "killed_at_crossing": 4,
+    "behind_start": 2,
+    "survived_crossing": 1
+   },
+   "model_sb_tokens": [
+    [
+     111,
+     0.862,
+     0.61,
+     0.856
+    ]
+   ],
+   "model_enemy_tokens": 4
+  },
+  {
+   "file": "live_play_20261005_104436.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "side": 1,
+   "tick": 3205,
+   "xy": [
+    0.1944,
+    0.8594
+   ],
+   "p_play": 0.9079,
+   "confirmed": 3233,
+   "t_rs": 3240.0,
+   "first_row": 3235,
+   "x0": 14500,
+   "y0": 27500,
+   "ep_first": 3029,
+   "balloon_last": 3111,
+   "gone_by": 3175,
+   "spawn_lo": null,
+   "spawn_hi": null,
+   "last_hp": 374,
+   "max_hp": 1063,
+   "evo": true,
+   "dist_own_building_tiles": 4.38,
+   "n_skel": 0,
+   "phase": "drop_pending",
+   "tp_minus_balloon_last": 94,
+   "phase_at_rs": "drop_pending",
+   "aimed": true,
+   "other_enemy_in_corridor": [
+    "Musketeer"
+   ],
+   "drop_along_tiles": 6.31,
+   "drop_dx_tiles": 0.79,
+   "rs_minus_balloon_last": 129.0,
+   "cross_minus_balloon_last": 160.55999999999995,
+   "t_cross_drop": 3271.56,
+   "skeletons": [],
+   "skel_outcomes": {},
+   "model_sb_tokens": [
+    [
+     111,
+     0.237,
+     0.747,
+     1.0
+    ],
+    [
+     111,
+     0.271,
+     0.668,
+     1.0
+    ],
+    [
+     111,
+     0.108,
+     0.779,
+     1.0
+    ],
+    [
+     111,
+     0.159,
+     0.761,
+     1.0
+    ],
+    [
+     111,
+     0.265,
+     0.743,
+     1.0
+    ],
+    [
+     111,
+     0.078,
+     0.826,
+     1.0
+    ]
+   ],
+   "model_enemy_tokens": 9
+  },
+  {
+   "file": "live_play_20261005_130339.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "side": 1,
+   "tick": 2654,
+   "xy": [
+    0.75,
+    0.5469
+   ],
+   "p_play": 0.4067,
+   "confirmed": 2682,
+   "t_rs": 2690.0,
+   "first_row": 2684,
+   "x0": 4500,
+   "y0": 17500,
+   "ep_first": 2650,
+   "balloon_last": 2718,
+   "gone_by": 2782,
+   "spawn_lo": null,
+   "spawn_hi": null,
+   "last_hp": 537,
+   "max_hp": 773,
+   "evo": false,
+   "dist_own_building_tiles": 1.41,
+   "n_skel": 0,
+   "phase": "balloon_alive",
+   "tp_minus_balloon_last": -64,
+   "phase_at_rs": "balloon_alive",
+   "aimed": true,
+   "other_enemy_in_corridor": [
+    "BlowdartGoblin"
+   ],
+   "drop_along_tiles": -0.59,
+   "drop_dx_tiles": 2.0,
+   "rs_minus_balloon_last": -28.0,
+   "cross_minus_balloon_last": -28.0,
+   "t_cross_drop": 2690.0,
+   "skeletons": [],
+   "skel_outcomes": {},
+   "model_sb_tokens": [
+    [
+     111,
+     0.861,
+     0.453,
+     1.0
+    ]
+   ],
+   "model_enemy_tokens": 3
+  },
+  {
+   "file": "live_play_20261005_130339.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "side": 1,
+   "tick": 3473,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "p_play": 0.3697,
+   "confirmed": 3499,
+   "t_rs": 3506,
+   "first_row": null,
+   "roll_from": "confirmed+7",
+   "x0": 14500.8,
+   "y0": 17500.800000000003,
+   "ep_first": 3361,
+   "balloon_last": 3503,
+   "gone_by": 3567,
+   "spawn_lo": null,
+   "spawn_hi": null,
+   "last_hp": 773,
+   "max_hp": 773,
+   "evo": false,
+   "dist_own_building_tiles": 6.82,
+   "n_skel": 0,
+   "phase": "balloon_alive",
+   "tp_minus_balloon_last": -30,
+   "phase_at_rs": "drop_pending",
+   "aimed": true,
+   "other_enemy_in_corridor": [
+    "GoblinGang",
+    "Knight"
+   ],
+   "drop_along_tiles": 4.59,
+   "drop_dx_tiles": 0.76,
+   "rs_minus_balloon_last": 3,
+   "cross_minus_balloon_last": 25.929000000000087,
+   "t_cross_drop": 3528.929,
+   "skeletons": [],
+   "skel_outcomes": {},
+   "model_sb_tokens": [
+    [
+     111,
+     0.257,
+     0.395,
+     1.0
+    ]
+   ],
+   "model_enemy_tokens": 9
+  },
+  {
+   "file": "live_play_20261006_153607.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "side": 1,
+   "tick": 3450,
+   "xy": [
+    0.8056,
+    0.5469
+   ],
+   "p_play": 0.356,
+   "confirmed": 3476,
+   "t_rs": 3483.0,
+   "first_row": 3478,
+   "x0": 3500,
+   "y0": 17500,
+   "ep_first": 3396,
+   "balloon_last": 3450,
+   "gone_by": 3478,
+   "spawn_lo": 3478,
+   "spawn_hi": 3506,
+   "last_hp": 773,
+   "max_hp": 773,
+   "evo": false,
+   "dist_own_building_tiles": 1.76,
+   "n_skel": 3,
+   "phase": "balloon_alive",
+   "tp_minus_balloon_last": 0,
+   "phase_at_rs": "drop_pending",
+   "aimed": true,
+   "other_enemy_in_corridor": [
+    "MovingCannon"
+   ],
+   "tp_minus_spawn_hi": -56,
+   "drop_along_tiles": 0.58,
+   "drop_dx_tiles": 1.11,
+   "rs_minus_balloon_last": 33.0,
+   "rs_minus_spawn_hi": -23.0,
+   "cross_minus_balloon_last": 35.90000000000009,
+   "t_cross_drop": 3485.9,
+   "cross_minus_spawn_hi": -20.09999999999991,
+   "cross_minus_spawn_lo": 7.900000000000091,
+   "skeletons": [
+    {
+     "first": 3506,
+     "last": 3538,
+     "died_by": 3548,
+     "along": -0.72,
+     "dx": 2.13,
+     "t_cross": 3483.0,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 3506,
+     "last": 3506,
+     "died_by": 3538,
+     "along": -1.74,
+     "dx": 2.31,
+     "outcome": "behind_start"
+    },
+    {
+     "first": 3506,
+     "last": 3506,
+     "died_by": 3538,
+     "along": -2.16,
+     "dx": 1.49,
+     "outcome": "behind_start"
+    }
+   ],
+   "skel_outcomes": {
+    "band_passed_before_spawn": 1,
+    "behind_start": 2
+   },
+   "model_sb_tokens": [
+    [
+     111,
+     0.641,
+     0.573,
+     1.0
+    ]
+   ],
+   "model_enemy_tokens": 3
+  },
+  {
+   "file": "live_play_20261006_161450.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "side": 1,
+   "tick": 3543,
+   "xy": [
+    0.8056,
+    0.7656
+   ],
+   "p_play": 0.6602,
+   "confirmed": 3570,
+   "t_rs": 3577.0,
+   "first_row": 3572,
+   "x0": 3500,
+   "y0": 24500,
+   "ep_first": 3403,
+   "balloon_last": 3527,
+   "gone_by": 3537,
+   "spawn_lo": 3537,
+   "spawn_hi": 3543,
+   "last_hp": 30,
+   "max_hp": 773,
+   "evo": false,
+   "dist_own_building_tiles": 2.42,
+   "n_skel": 7,
+   "phase": "skeletons_on_ground",
+   "tp_minus_balloon_last": 16,
+   "phase_at_rs": "skeletons_on_ground",
+   "aimed": true,
+   "other_enemy_in_corridor": [],
+   "tp_minus_spawn_hi": 0,
+   "drop_along_tiles": 1.38,
+   "drop_dx_tiles": 0.44,
+   "rs_minus_balloon_last": 50.0,
+   "rs_minus_spawn_hi": 34.0,
+   "cross_minus_balloon_last": 56.9050000000002,
+   "t_cross_drop": 3583.905,
+   "cross_minus_spawn_hi": 40.9050000000002,
+   "cross_minus_spawn_lo": 46.9050000000002,
+   "skeletons": [
+    {
+     "first": 3543,
+     "last": 3572,
+     "died_by": 3600,
+     "along": 1.52,
+     "dx": 0.44,
+     "t_cross": 3584.585,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 3543,
+     "last": 3572,
+     "died_by": 3600,
+     "along": 2.5,
+     "dx": 0.25,
+     "t_cross": 3589.5,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 3543,
+     "last": 3572,
+     "died_by": 3600,
+     "along": 1.36,
+     "dx": 0.81,
+     "t_cross": 3583.82,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 3543,
+     "last": 3543,
+     "died_by": 3572,
+     "along": 0.89,
+     "dx": 0.22,
+     "t_cross": 3581.43,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 3543,
+     "last": 3543,
+     "died_by": 3572,
+     "along": 0.75,
+     "dx": 0.4,
+     "t_cross": 3580.755,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 3543,
+     "last": 3572,
+     "died_by": 3600,
+     "along": 0.0,
+     "dx": 1.24,
+     "t_cross": 3577.015,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 3543,
+     "last": 3572,
+     "died_by": 3600,
+     "along": -0.16,
+     "dx": 2.16,
+     "t_cross": 3577.0,
+     "outcome": "killed_at_crossing"
+    }
+   ],
+   "skel_outcomes": {
+    "dead_before_crossing": 4,
+    "killed_at_crossing": 3
+   },
+   "model_sb_tokens": [
+    [
+     111,
+     0.839,
+     0.728,
+     1.0
+    ],
+    [
+     111,
+     0.827,
+     0.727,
+     1.0
+    ],
+    [
+     111,
+     0.818,
+     0.731,
+     1.0
+    ],
+    [
+     111,
+     0.818,
+     0.738,
+     1.0
+    ],
+    [
+     111,
+     0.828,
+     0.742,
+     1.0
+    ],
+    [
+     111,
+     0.839,
+     0.741,
+     1.0
+    ],
+    [
+     111,
+     0.844,
+     0.735,
+     1.0
+    ]
+   ],
+   "model_enemy_tokens": 8
+  },
+  {
+   "file": "live_play_20261006_164712.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "side": 1,
+   "tick": 3917,
+   "xy": [
+    0.6389,
+    0.7656
+   ],
+   "p_play": 0.7631,
+   "confirmed": null,
+   "x0": 6499.799999999999,
+   "y0": 24499.199999999997,
+   "ep_first": 3885,
+   "balloon_last": 3917,
+   "gone_by": 3981,
+   "spawn_lo": null,
+   "spawn_hi": null,
+   "last_hp": 705,
+   "max_hp": 705,
+   "evo": false,
+   "dist_own_building_tiles": 5.91,
+   "n_skel": 0,
+   "phase": "balloon_alive",
+   "tp_minus_balloon_last": 0,
+   "aimed": true,
+   "other_enemy_in_corridor": [
+    "Knight",
+    "MegaKnight"
+   ],
+   "drop_along_tiles": 1.35,
+   "drop_dx_tiles": 3.38,
+   "model_sb_tokens": [
+    [
+     111,
+     0.671,
+     0.911,
+     1.0
+    ]
+   ],
+   "model_enemy_tokens": 5
+  },
+  {
+   "file": "live_play_20261006_164712.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "side": 1,
+   "tick": 3981,
+   "xy": [
+    0.5278,
+    0.8281
+   ],
+   "p_play": 0.3931,
+   "confirmed": null,
+   "x0": 8499.599999999999,
+   "y0": 26499.199999999997,
+   "ep_first": 3981,
+   "balloon_last": 3981,
+   "gone_by": null,
+   "spawn_lo": null,
+   "spawn_hi": null,
+   "last_hp": 425,
+   "max_hp": 705,
+   "evo": false,
+   "dist_own_building_tiles": 2.22,
+   "n_skel": 0,
+   "phase": "balloon_alive",
+   "tp_minus_balloon_last": 0,
+   "aimed": true,
+   "other_enemy_in_corridor": [
+    "DarkPrince",
+    "Firecracker",
+    "MegaKnight"
+   ],
+   "drop_along_tiles": -0.42,
+   "drop_dx_tiles": 0.27,
+   "model_sb_tokens": [
+    [
+     111,
+     0.543,
+     0.841,
+     0.603
+    ]
+   ],
+   "model_enemy_tokens": 4
+  },
+  {
+   "file": "live_play_20261006_201754.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "side": 1,
+   "tick": 2805,
+   "xy": [
+    0.1944,
+    0.7656
+   ],
+   "p_play": 0.5137,
+   "confirmed": 2833,
+   "t_rs": 2840.0,
+   "first_row": 2835,
+   "x0": 14500,
+   "y0": 24500,
+   "ep_first": 2673,
+   "balloon_last": 2787,
+   "gone_by": 2797,
+   "spawn_lo": 2797,
+   "spawn_hi": 2805,
+   "last_hp": 141,
+   "max_hp": 773,
+   "evo": false,
+   "dist_own_building_tiles": 2.6,
+   "n_skel": 7,
+   "phase": "skeletons_on_ground",
+   "tp_minus_balloon_last": 18,
+   "phase_at_rs": "skeletons_on_ground",
+   "aimed": true,
+   "other_enemy_in_corridor": [],
+   "tp_minus_spawn_hi": 0,
+   "drop_along_tiles": 1.55,
+   "drop_dx_tiles": 0.47,
+   "rs_minus_balloon_last": 53.0,
+   "rs_minus_spawn_hi": 35.0,
+   "cross_minus_balloon_last": 60.76000000000022,
+   "t_cross_drop": 2847.76,
+   "cross_minus_spawn_hi": 42.76000000000022,
+   "cross_minus_spawn_lo": 50.76000000000022,
+   "skeletons": [
+    {
+     "first": 2805,
+     "last": 2805,
+     "died_by": 2835,
+     "along": 1.62,
+     "dx": 0.79,
+     "t_cross": 2848.11,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 2805,
+     "last": 2835,
+     "died_by": 2845,
+     "along": 1.36,
+     "dx": 0.69,
+     "t_cross": 2846.8,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 2805,
+     "last": 2805,
+     "died_by": 2835,
+     "along": 1.38,
+     "dx": 0.2,
+     "t_cross": 2846.89,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 2805,
+     "last": 2805,
+     "died_by": 2835,
+     "along": 0.83,
+     "dx": 0.18,
+     "t_cross": 2844.16,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 2805,
+     "last": 2805,
+     "died_by": 2835,
+     "along": 0.52,
+     "dx": 0.28,
+     "t_cross": 2842.585,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 2805,
+     "last": 2805,
+     "died_by": 2835,
+     "along": 0.66,
+     "dx": 0.77,
+     "t_cross": 2843.28,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 2805,
+     "last": 2805,
+     "died_by": 2835,
+     "along": 1.12,
+     "dx": 0.95,
+     "t_cross": 2845.6,
+     "outcome": "dead_before_crossing"
+    }
+   ],
+   "skel_outcomes": {
+    "dead_before_crossing": 6,
+    "killed_at_crossing": 1
+   },
+   "model_sb_tokens": [
+    [
+     111,
+     0.151,
+     0.715,
+     1.0
+    ],
+    [
+     111,
+     0.181,
+     0.711,
+     1.0
+    ],
+    [
+     111,
+     0.205,
+     0.723,
+     1.0
+    ],
+    [
+     111,
+     0.204,
+     0.74,
+     1.0
+    ],
+    [
+     111,
+     0.179,
+     0.749,
+     1.0
+    ],
+    [
+     111,
+     0.152,
+     0.745,
+     1.0
+    ],
+    [
+     111,
+     0.141,
+     0.731,
+     1.0
+    ]
+   ],
+   "model_enemy_tokens": 7
+  },
+  {
+   "file": "live_play_20261006_201754.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "side": 1,
+   "tick": 3191,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "p_play": 0.3565,
+   "confirmed": 3220,
+   "t_rs": 3228.0,
+   "first_row": 3222,
+   "x0": 14500,
+   "y0": 17500,
+   "ep_first": 3119,
+   "balloon_last": 3191,
+   "gone_by": 3222,
+   "spawn_lo": 3191,
+   "spawn_hi": 3222,
+   "last_hp": 521,
+   "max_hp": 773,
+   "evo": false,
+   "dist_own_building_tiles": 1.53,
+   "n_skel": 7,
+   "phase": "balloon_alive",
+   "tp_minus_balloon_last": 0,
+   "phase_at_rs": "skeletons_on_ground",
+   "aimed": true,
+   "other_enemy_in_corridor": [
+    "IceSpirits",
+    "SkeletonKing"
+   ],
+   "tp_minus_spawn_hi": -31,
+   "drop_along_tiles": -0.5,
+   "drop_dx_tiles": 1.31,
+   "rs_minus_balloon_last": 37.0,
+   "rs_minus_spawn_hi": 6.0,
+   "cross_minus_balloon_last": 37.0,
+   "t_cross_drop": 3228.0,
+   "cross_minus_spawn_hi": 6.0,
+   "cross_minus_spawn_lo": 37.0,
+   "skeletons": [
+    {
+     "first": 3222,
+     "last": 3222,
+     "died_by": 3252,
+     "along": 0.13,
+     "dx": 1.64,
+     "t_cross": 3228.65,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 3222,
+     "last": 3222,
+     "died_by": 3252,
+     "along": 0.9,
+     "dx": 1.0,
+     "t_cross": 3232.52,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 3222,
+     "last": 3222,
+     "died_by": 3252,
+     "along": -0.27,
+     "dx": 0.12,
+     "t_cross": 3228.0,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 3222,
+     "last": 3222,
+     "died_by": 3252,
+     "along": -1.27,
+     "dx": 0.17,
+     "outcome": "behind_start"
+    },
+    {
+     "first": 3222,
+     "last": 3222,
+     "died_by": 3252,
+     "along": -0.83,
+     "dx": 0.76,
+     "t_cross": 3228.0,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 3222,
+     "last": 3222,
+     "died_by": 3252,
+     "along": -1.75,
+     "dx": 2.36,
+     "outcome": "behind_start"
+    },
+    {
+     "first": 3222,
+     "last": 3222,
+     "died_by": 3252,
+     "along": -0.67,
+     "dx": 2.4,
+     "t_cross": 3228.0,
+     "outcome": "killed_at_crossing"
+    }
+   ],
+   "skel_outcomes": {
+    "killed_at_crossing": 5,
+    "behind_start": 2
+   },
+   "model_sb_tokens": [
+    [
+     111,
+     0.139,
+     0.612,
+     0.674
+    ]
+   ],
+   "model_enemy_tokens": 5
+  },
+  {
+   "file": "live_play_20261006_201754.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "side": 1,
+   "tick": 4415,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "p_play": 0.3569,
+   "confirmed": 4443,
+   "t_rs": 4451.0,
+   "first_row": 4445,
+   "x0": 14500,
+   "y0": 17500,
+   "ep_first": 4271,
+   "balloon_last": 4345,
+   "gone_by": 4375,
+   "spawn_lo": null,
+   "spawn_hi": null,
+   "last_hp": 109,
+   "max_hp": 773,
+   "evo": false,
+   "dist_own_building_tiles": 3.54,
+   "n_skel": 0,
+   "phase": "drop_pending",
+   "tp_minus_balloon_last": 70,
+   "phase_at_rs": "drop_pending",
+   "aimed": true,
+   "other_enemy_in_corridor": [
+    "SkeletonArmy",
+    "SkeletonKing"
+   ],
+   "drop_along_tiles": 0.69,
+   "drop_dx_tiles": 0.17,
+   "rs_minus_balloon_last": 106.0,
+   "cross_minus_balloon_last": 109.44999999999982,
+   "t_cross_drop": 4454.45,
+   "skeletons": [],
+   "skel_outcomes": {},
+   "model_sb_tokens": [],
+   "model_enemy_tokens": 17
+  },
+  {
+   "file": "live_play_20261006_212743.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "side": 0,
+   "tick": 263,
+   "xy": [
+    0.1944,
+    0.7656
+   ],
+   "p_play": 0.3792,
+   "confirmed": 292,
+   "t_rs": 300.0,
+   "first_row": 294,
+   "x0": 3500,
+   "y0": 7500,
+   "ep_first": 151,
+   "balloon_last": 241,
+   "gone_by": 251,
+   "spawn_lo": 251,
+   "spawn_hi": 261,
+   "last_hp": 457,
+   "max_hp": 773,
+   "evo": false,
+   "dist_own_building_tiles": 4.74,
+   "n_skel": 7,
+   "phase": "skeletons_on_ground",
+   "tp_minus_balloon_last": 22,
+   "phase_at_rs": "skeletons_on_ground",
+   "aimed": true,
+   "other_enemy_in_corridor": [],
+   "tp_minus_spawn_hi": 2,
+   "drop_along_tiles": 3.66,
+   "drop_dx_tiles": 0.86,
+   "rs_minus_balloon_last": 59.0,
+   "rs_minus_spawn_hi": 39.0,
+   "cross_minus_balloon_last": 77.32,
+   "t_cross_drop": 318.32,
+   "cross_minus_spawn_hi": 57.31999999999999,
+   "cross_minus_spawn_lo": 67.32,
+   "skeletons": [
+    {
+     "first": 261,
+     "last": 294,
+     "died_by": 305,
+     "along": 2.3,
+     "dx": 1.01,
+     "t_cross": 311.485,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 261,
+     "last": 294,
+     "died_by": 305,
+     "along": 2.43,
+     "dx": 0.05,
+     "t_cross": 312.15,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 261,
+     "last": 263,
+     "died_by": 294,
+     "along": 3.37,
+     "dx": 0.13,
+     "t_cross": 316.855,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 261,
+     "last": 294,
+     "died_by": 305,
+     "along": 0.74,
+     "dx": 0.96,
+     "t_cross": 303.69,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 261,
+     "last": 263,
+     "died_by": 294,
+     "along": 2.06,
+     "dx": 0.52,
+     "t_cross": 310.275,
+     "outcome": "dead_before_crossing"
+    },
+    {
+     "first": 261,
+     "last": 294,
+     "died_by": 305,
+     "along": 0.29,
+     "dx": 1.23,
+     "t_cross": 301.45,
+     "outcome": "killed_at_crossing"
+    },
+    {
+     "first": 261,
+     "last": 294,
+     "died_by": 305,
+     "along": 1.2,
+     "dx": 1.35,
+     "t_cross": 305.975,
+     "outcome": "killed_at_crossing"
+    }
+   ],
+   "skel_outcomes": {
+    "dead_before_crossing": 4,
+    "killed_at_crossing": 3
+   },
+   "model_sb_tokens": [
+    [
+     111,
+     0.12,
+     0.648,
+     1.0
+    ],
+    [
+     111,
+     0.166,
+     0.644,
+     1.0
+    ],
+    [
+     111,
+     0.202,
+     0.66,
+     1.0
+    ],
+    [
+     111,
+     0.202,
+     0.686,
+     1.0
+    ],
+    [
+     111,
+     0.166,
+     0.701,
+     1.0
+    ],
+    [
+     111,
+     0.122,
+     0.695,
+     1.0
+    ],
+    [
+     111,
+     0.109,
+     0.672,
+     1.0
+    ]
+   ],
+   "model_enemy_tokens": 7
+  },
+  {
+   "file": "live_play_20261007_184432.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "side": 1,
+   "tick": 1534,
+   "xy": [
+    0.8056,
+    0.7031
+   ],
+   "p_play": 0.8498,
+   "confirmed": 1562,
+   "t_rs": 1570.0,
+   "first_row": 1564,
+   "x0": 3500,
+   "y0": 22500,
+   "ep_first": 1504,
+   "balloon_last": 1594,
+   "gone_by": 1605,
+   "spawn_lo": 1605,
+   "spawn_hi": 1615,
+   "last_hp": 181,
+   "max_hp": 773,
+   "evo": false,
+   "dist_own_building_tiles": 4.65,
+   "n_skel": 7,
+   "phase": "balloon_alive",
+   "tp_minus_balloon_last": -60,
+   "phase_at_rs": "balloon_alive",
+   "aimed": true,
+   "other_enemy_in_corridor": [
+    "ElectroGiant",
+    "Skeletons"
+   ],
+   "tp_minus_spawn_hi": -81,
+   "drop_along_tiles": 1.57,
+   "drop_dx_tiles": 0.84,
+   "rs_minus_balloon_last": -24.0,
+   "rs_minus_spawn_hi": -45.0,
+   "cross_minus_balloon_last": -16.13000000000011,
+   "t_cross_drop": 1577.87,
+   "cross_minus_spawn_hi": -37.13000000000011,
+   "cross_minus_spawn_lo": -27.13000000000011,
+   "skeletons": [
+    {
+     "first": 1615,
+     "last": 1707,
+     "died_by": 1717,
+     "along": 1.6,
+     "dx": 1.15,
+     "t_cross": 1577.98,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 1615,
+     "last": 1646,
+     "died_by": 1657,
+     "along": 1.72,
+     "dx": 0.61,
+     "t_cross": 1578.585,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 1615,
+     "last": 1657,
+     "died_by": 1667,
+     "along": 1.35,
+     "dx": 0.16,
+     "t_cross": 1576.76,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 1615,
+     "last": 1636,
+     "died_by": 1646,
+     "along": 0.81,
+     "dx": 0.19,
+     "t_cross": 1574.03,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 1615,
+     "last": 1625,
+     "died_by": 1636,
+     "along": 0.49,
+     "dx": 0.64,
+     "t_cross": 1572.455,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 1615,
+     "last": 1677,
+     "died_by": 1687,
+     "along": 0.63,
+     "dx": 1.13,
+     "t_cross": 1573.15,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 1615,
+     "last": 1727,
+     "died_by": 1737,
+     "along": 1.09,
+     "dx": 1.32,
+     "t_cross": 1575.47,
+     "outcome": "band_passed_before_spawn"
+    }
+   ],
+   "skel_outcomes": {
+    "band_passed_before_spawn": 7
+   },
+   "model_sb_tokens": [
+    [
+     7,
+     0.767,
+     0.508,
+     1.0
+    ],
+    [
+     7,
+     0.803,
+     0.626,
+     1.0
+    ],
+    [
+     111,
+     0.875,
+     0.582,
+     1.0
+    ]
+   ],
+   "model_enemy_tokens": 4
+  },
+  {
+   "file": "live_play_20261007_184432.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "side": 1,
+   "tick": 2375,
+   "xy": [
+    0.1944,
+    0.5469
+   ],
+   "p_play": 0.4204,
+   "confirmed": 2403,
+   "t_rs": 2410.0,
+   "first_row": 2405,
+   "x0": 14500,
+   "y0": 17500,
+   "ep_first": 2359,
+   "balloon_last": 2415,
+   "gone_by": 2425,
+   "spawn_lo": 2425,
+   "spawn_hi": 2433,
+   "last_hp": 487,
+   "max_hp": 967,
+   "evo": true,
+   "dist_own_building_tiles": 1.4,
+   "n_skel": 14,
+   "phase": "balloon_alive",
+   "tp_minus_balloon_last": -40,
+   "phase_at_rs": "balloon_alive",
+   "aimed": true,
+   "other_enemy_in_corridor": [
+    "Knight"
+   ],
+   "tp_minus_spawn_hi": -58,
+   "drop_along_tiles": -0.6,
+   "drop_dx_tiles": 1.0,
+   "rs_minus_balloon_last": -5.0,
+   "rs_minus_spawn_hi": -23.0,
+   "cross_minus_balloon_last": -5.0,
+   "t_cross_drop": 2410.0,
+   "cross_minus_spawn_hi": -23.0,
+   "cross_minus_spawn_lo": -15.0,
+   "skeletons": [
+    {
+     "first": 2433,
+     "last": 2495,
+     "died_by": 2505,
+     "along": -0.48,
+     "dx": 0.86,
+     "t_cross": 2410.0,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 2433,
+     "last": 2535,
+     "died_by": 2545,
+     "along": -0.34,
+     "dx": 0.39,
+     "t_cross": 2410.0,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 2433,
+     "last": 2525,
+     "died_by": 2535,
+     "along": -0.7,
+     "dx": 0.01,
+     "t_cross": 2410.0,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 2433,
+     "last": 2485,
+     "died_by": 2495,
+     "along": -1.22,
+     "dx": 0.05,
+     "outcome": "behind_start"
+    },
+    {
+     "first": 2433,
+     "last": 2433,
+     "died_by": 2475,
+     "along": -1.49,
+     "dx": 0.44,
+     "outcome": "behind_start"
+    },
+    {
+     "first": 2433,
+     "last": 2475,
+     "died_by": 2485,
+     "along": -1.38,
+     "dx": 0.87,
+     "outcome": "behind_start"
+    },
+    {
+     "first": 2433,
+     "last": 2495,
+     "died_by": 2505,
+     "along": -1.0,
+     "dx": 1.03,
+     "t_cross": 2410.0,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 2433,
+     "last": 2495,
+     "died_by": 2505,
+     "along": -0.1,
+     "dx": 1.76,
+     "t_cross": 2410.0,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 2433,
+     "last": 2495,
+     "died_by": 2505,
+     "along": 0.04,
+     "dx": 1.26,
+     "t_cross": 2410.175,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 2433,
+     "last": 2495,
+     "died_by": 2505,
+     "along": -0.32,
+     "dx": 0.86,
+     "t_cross": 2410.0,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 2433,
+     "last": 2535,
+     "died_by": 2545,
+     "along": -0.83,
+     "dx": 0.88,
+     "t_cross": 2410.0,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 2433,
+     "last": 2495,
+     "died_by": 2505,
+     "along": -1.15,
+     "dx": 1.31,
+     "outcome": "behind_start"
+    },
+    {
+     "first": 2433,
+     "last": 2505,
+     "died_by": 2515,
+     "along": -1.03,
+     "dx": 1.78,
+     "t_cross": 2410.0,
+     "outcome": "band_passed_before_spawn"
+    },
+    {
+     "first": 2433,
+     "last": 2535,
+     "died_by": 2545,
+     "along": -0.58,
+     "dx": 1.97,
+     "t_cross": 2410.0,
+     "outcome": "band_passed_before_spawn"
+    }
+   ],
+   "skel_outcomes": {
+    "band_passed_before_spawn": 10,
+    "behind_start": 4
+   },
+   "model_sb_tokens": [
+    [
+     111,
+     0.139,
+     0.514,
+     1.0
+    ]
+   ],
+   "model_enemy_tokens": 9
+  }
+ ],
+ "episodes": [
+  {
+   "addr": [
+    "0x7a5877059020",
+    287
+   ],
+   "cid": 26000056,
+   "first_seen": 287,
+   "last_seen": 411,
+   "gone_by": 413,
+   "last_hp": 3,
+   "max_hp": 705,
+   "last_pos": [
+    3172,
+    23740
+   ],
+   "dist_own_building_tiles": 1.79,
+   "spawn_hi": 425,
+   "spawn_lo": 423,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20260925_183254.jsonl",
+   "ckpt": "gen_s0.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7a587704b220",
+    1191
+   ],
+   "cid": 26000056,
+   "first_seen": 1191,
+   "last_seen": 1325,
+   "gone_by": 1327,
+   "last_hp": 5,
+   "max_hp": 705,
+   "last_pos": [
+    3172,
+    23740
+   ],
+   "dist_own_building_tiles": 1.79,
+   "spawn_hi": 1339,
+   "spawn_lo": 1337,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20260925_183254.jsonl",
+   "ckpt": "gen_s0.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7a5877086d30",
+    2057
+   ],
+   "cid": 26000056,
+   "first_seen": 2057,
+   "last_seen": 2181,
+   "gone_by": 2183,
+   "last_hp": 73,
+   "max_hp": 705,
+   "last_pos": [
+    14828,
+    23740
+   ],
+   "dist_own_building_tiles": 1.79,
+   "spawn_hi": 2195,
+   "spawn_lo": 2193,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20260925_183254.jsonl",
+   "ckpt": "gen_s0.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7a58771c0500",
+    1298
+   ],
+   "cid": 26000056,
+   "first_seen": 1298,
+   "last_seen": 1423,
+   "gone_by": 1426,
+   "last_hp": 10,
+   "max_hp": 642,
+   "last_pos": [
+    14828,
+    23740
+   ],
+   "dist_own_building_tiles": 1.79,
+   "spawn_hi": 1436,
+   "spawn_lo": 1434,
+   "drop_to_spawn_ticks": [
+    11,
+    13
+   ],
+   "file": "live_play_20260926_174450.jsonl",
+   "ckpt": "gen_s0.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7a5877156f30",
+    2409
+   ],
+   "cid": 26000056,
+   "first_seen": 2409,
+   "last_seen": 2533,
+   "gone_by": 2535,
+   "last_hp": 10,
+   "max_hp": 642,
+   "last_pos": [
+    14828,
+    23740
+   ],
+   "dist_own_building_tiles": 1.79,
+   "spawn_hi": 2547,
+   "spawn_lo": 2545,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20260926_174450.jsonl",
+   "ckpt": "gen_s0.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7a5877102fa0",
+    2559
+   ],
+   "cid": 26000056,
+   "first_seen": 2559,
+   "last_seen": 2681,
+   "gone_by": 2683,
+   "last_hp": 222,
+   "max_hp": 773,
+   "last_pos": [
+    14930,
+    23719
+   ],
+   "dist_own_building_tiles": 1.83,
+   "spawn_hi": 2696,
+   "spawn_lo": 2694,
+   "drop_to_spawn_ticks": [
+    13,
+    15
+   ],
+   "file": "live_play_20260926_174450.jsonl",
+   "ckpt": "gen_s0.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7a587719a280",
+    2820
+   ],
+   "cid": 26000056,
+   "first_seen": 2820,
+   "last_seen": 2947,
+   "gone_by": 2950,
+   "last_hp": 134,
+   "max_hp": 642,
+   "last_pos": [
+    3167,
+    23696
+   ],
+   "dist_own_building_tiles": 1.83,
+   "spawn_hi": 2962,
+   "spawn_lo": 2961,
+   "drop_to_spawn_ticks": [
+    14,
+    15
+   ],
+   "file": "live_play_20260926_174450.jsonl",
+   "ckpt": "gen_s0.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x74b519c318c0",
+    736
+   ],
+   "cid": 26000056,
+   "first_seen": 736,
+   "last_seen": 886,
+   "gone_by": 888,
+   "last_hp": 122,
+   "max_hp": 642,
+   "last_pos": [
+    15587,
+    19571
+   ],
+   "dist_own_building_tiles": 6.03,
+   "spawn_hi": 900,
+   "spawn_lo": 898,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20261003_000535.jsonl",
+   "ckpt": "league1c_u0075.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x74b519bfa7b0",
+    1955
+   ],
+   "cid": 26000056,
+   "first_seen": 1955,
+   "last_seen": 2031,
+   "gone_by": 2033,
+   "last_hp": 269,
+   "max_hp": 642,
+   "last_pos": [
+    14501,
+    18719
+   ],
+   "dist_own_building_tiles": 6.78,
+   "spawn_hi": 2045,
+   "spawn_lo": 2043,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20261003_000535.jsonl",
+   "ckpt": "league1c_u0075.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x74b519bce410",
+    3346
+   ],
+   "cid": 26000056,
+   "first_seen": 3346,
+   "last_seen": 3458,
+   "gone_by": 3460,
+   "last_hp": 38,
+   "max_hp": 642,
+   "last_pos": [
+    2970,
+    22630
+   ],
+   "dist_own_building_tiles": 2.92,
+   "spawn_hi": 3472,
+   "spawn_lo": 3470,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20261003_000535.jsonl",
+   "ckpt": "league1c_u0075.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x74b519d7c170",
+    3771
+   ],
+   "cid": 26000056,
+   "first_seen": 3771,
+   "last_seen": 3895,
+   "gone_by": 3897,
+   "last_hp": 10,
+   "max_hp": 642,
+   "last_pos": [
+    3172,
+    23740
+   ],
+   "dist_own_building_tiles": 1.79,
+   "spawn_hi": 3909,
+   "spawn_lo": 3907,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20261003_000535.jsonl",
+   "ckpt": "league1c_u0075.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x74b519d3d130",
+    702
+   ],
+   "cid": 26000056,
+   "first_seen": 702,
+   "last_seen": 798,
+   "gone_by": 800,
+   "last_hp": 70,
+   "max_hp": 705,
+   "last_pos": [
+    5215,
+    19771
+   ],
+   "dist_own_building_tiles": 3.57,
+   "spawn_hi": 812,
+   "spawn_lo": 811,
+   "drop_to_spawn_ticks": [
+    13,
+    14
+   ],
+   "file": "live_play_20261003_081246.jsonl",
+   "ckpt": "league1c_u0075.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x74b519cfc2e0",
+    3649
+   ],
+   "cid": 26000056,
+   "first_seen": 3649,
+   "last_seen": 3753,
+   "gone_by": 3755,
+   "last_hp": 124,
+   "max_hp": 705,
+   "last_pos": [
+    9746,
+    19936
+   ],
+   "dist_own_building_tiles": 7.32,
+   "spawn_hi": 3767,
+   "spawn_lo": 3765,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20261003_081246.jsonl",
+   "ckpt": "league1c_u0075.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x74b519c92180",
+    4264
+   ],
+   "cid": 26000056,
+   "first_seen": 4264,
+   "last_seen": 4381,
+   "gone_by": 4383,
+   "last_hp": 101,
+   "max_hp": 705,
+   "last_pos": [
+    14770,
+    22744
+   ],
+   "dist_own_building_tiles": 2.77,
+   "spawn_hi": 4397,
+   "spawn_lo": 4394,
+   "drop_to_spawn_ticks": [
+    13,
+    16
+   ],
+   "file": "live_play_20261003_081246.jsonl",
+   "ckpt": "league1c_u0075.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x74b519d26ac0",
+    691
+   ],
+   "cid": 26000056,
+   "first_seen": 691,
+   "last_seen": 789,
+   "gone_by": 791,
+   "last_hp": 138,
+   "max_hp": 773,
+   "last_pos": [
+    5014,
+    20050
+   ],
+   "dist_own_building_tiles": 3.57,
+   "spawn_hi": 803,
+   "spawn_lo": 801,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20261003_100316.jsonl",
+   "ckpt": "rseries_r1_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x74b519cda370",
+    2013
+   ],
+   "cid": 26000056,
+   "first_seen": 2013,
+   "last_seen": 2137,
+   "gone_by": 2139,
+   "last_hp": 141,
+   "max_hp": 773,
+   "last_pos": [
+    3172,
+    23740
+   ],
+   "dist_own_building_tiles": 1.79,
+   "spawn_hi": 2151,
+   "spawn_lo": 2149,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20261003_100316.jsonl",
+   "ckpt": "rseries_r1_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x74b519cb8af0",
+    2911
+   ],
+   "cid": 26000056,
+   "first_seen": 2911,
+   "last_seen": 2987,
+   "gone_by": 2989,
+   "last_hp": 100,
+   "max_hp": 773,
+   "last_pos": [
+    15805,
+    18165
+   ],
+   "dist_own_building_tiles": 1.37,
+   "spawn_hi": 3001,
+   "spawn_lo": 2999,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20261003_100316.jsonl",
+   "ckpt": "rseries_r1_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x74b519d6ded0",
+    3752
+   ],
+   "cid": 26000056,
+   "first_seen": 3752,
+   "last_seen": 3845,
+   "gone_by": null,
+   "last_hp": 773,
+   "max_hp": 773,
+   "last_pos": [
+    2660,
+    20924
+   ],
+   "dist_own_building_tiles": 4.65,
+   "file": "live_play_20261003_100316.jsonl",
+   "ckpt": "rseries_r1_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 0
+  },
+  {
+   "addr": [
+    "0x74b519cf53e0",
+    212
+   ],
+   "cid": 26000056,
+   "first_seen": 212,
+   "last_seen": 336,
+   "gone_by": 338,
+   "last_hp": 73,
+   "max_hp": 705,
+   "last_pos": [
+    3172,
+    23740
+   ],
+   "dist_own_building_tiles": 1.79,
+   "spawn_hi": 350,
+   "spawn_lo": 348,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20261003_165342.jsonl",
+   "ckpt": "rseries_r1_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x74b519ce40b0",
+    1235
+   ],
+   "cid": 26000056,
+   "first_seen": 1235,
+   "last_seen": 1361,
+   "gone_by": 1363,
+   "last_hp": 3,
+   "max_hp": 705,
+   "last_pos": [
+    14828,
+    23740
+   ],
+   "dist_own_building_tiles": 1.79,
+   "spawn_hi": 1375,
+   "spawn_lo": 1373,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20261003_165342.jsonl",
+   "ckpt": "rseries_r1_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x74b519d3dcc0",
+    2186
+   ],
+   "cid": 13000056,
+   "first_seen": 2186,
+   "last_seen": 2314,
+   "gone_by": 2316,
+   "last_hp": 155,
+   "max_hp": 881,
+   "last_pos": [
+    14999,
+    22823
+   ],
+   "dist_own_building_tiles": 2.72,
+   "spawn_hi": 2329,
+   "spawn_lo": 2326,
+   "drop_to_spawn_ticks": [
+    12,
+    15
+   ],
+   "file": "live_play_20261003_165342.jsonl",
+   "ckpt": "rseries_r1_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x74b519ce5330",
+    2787
+   ],
+   "cid": 26000056,
+   "first_seen": 2787,
+   "last_seen": 2858,
+   "gone_by": 2860,
+   "last_hp": 233,
+   "max_hp": 705,
+   "last_pos": [
+    15811,
+    18125
+   ],
+   "dist_own_building_tiles": 1.41,
+   "spawn_hi": 2873,
+   "spawn_lo": 2871,
+   "drop_to_spawn_ticks": [
+    13,
+    15
+   ],
+   "file": "live_play_20261003_165342.jsonl",
+   "ckpt": "rseries_r1_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x74b519d5d4e0",
+    847
+   ],
+   "cid": 26000056,
+   "first_seen": 847,
+   "last_seen": 969,
+   "gone_by": 971,
+   "last_hp": 73,
+   "max_hp": 705,
+   "last_pos": [
+    14676,
+    8333
+   ],
+   "dist_own_building_tiles": 1.84,
+   "spawn_hi": 983,
+   "spawn_lo": 981,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20261004_021126.jsonl",
+   "ckpt": "rseries_r1_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x74b519e70ed0",
+    3171
+   ],
+   "cid": 26000056,
+   "first_seen": 3171,
+   "last_seen": 3249,
+   "gone_by": 3251,
+   "last_hp": 225,
+   "max_hp": 705,
+   "last_pos": [
+    2500,
+    13936
+   ],
+   "dist_own_building_tiles": 1.44,
+   "spawn_hi": 3263,
+   "spawn_lo": 3261,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20261004_021126.jsonl",
+   "ckpt": "rseries_r1_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x74b519e08490",
+    3814
+   ],
+   "cid": 26000056,
+   "first_seen": 3814,
+   "last_seen": 3894,
+   "gone_by": 3896,
+   "last_hp": 77,
+   "max_hp": 705,
+   "last_pos": [
+    2500,
+    13918
+   ],
+   "dist_own_building_tiles": 1.42,
+   "spawn_hi": 3908,
+   "spawn_lo": 3906,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20261004_021126.jsonl",
+   "ckpt": "rseries_r1_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x74b519e2aaf0",
+    4777
+   ],
+   "cid": 26000056,
+   "first_seen": 4777,
+   "last_seen": 4909,
+   "gone_by": 4911,
+   "last_hp": 57,
+   "max_hp": 705,
+   "last_pos": [
+    3172,
+    8260
+   ],
+   "dist_own_building_tiles": 1.79,
+   "spawn_hi": 4923,
+   "spawn_lo": 4921,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20261004_021126.jsonl",
+   "ckpt": "rseries_r1_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x74b519d44030",
+    5389
+   ],
+   "cid": 26000056,
+   "first_seen": 5389,
+   "last_seen": 5463,
+   "gone_by": 5465,
+   "last_hp": 215,
+   "max_hp": 705,
+   "last_pos": [
+    1969,
+    13797
+   ],
+   "dist_own_building_tiles": 1.4,
+   "spawn_hi": 5477,
+   "spawn_lo": 5475,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20261004_021126.jsonl",
+   "ckpt": "rseries_r1_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x74b519dc9200",
+    5749
+   ],
+   "cid": 26000056,
+   "first_seen": 5749,
+   "last_seen": 5860,
+   "gone_by": null,
+   "last_hp": 705,
+   "max_hp": 705,
+   "last_pos": [
+    1274,
+    9393
+   ],
+   "dist_own_building_tiles": 1.42,
+   "file": "live_play_20261004_021126.jsonl",
+   "ckpt": "rseries_r1_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 0
+  },
+  {
+   "addr": [
+    "0x7283c7192630",
+    292
+   ],
+   "cid": 26000056,
+   "first_seen": 292,
+   "last_seen": 426,
+   "gone_by": 428,
+   "last_hp": 80,
+   "max_hp": 773,
+   "last_pos": [
+    3172,
+    23740
+   ],
+   "dist_own_building_tiles": 1.79,
+   "spawn_hi": 440,
+   "spawn_lo": 438,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20261004_222423.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c731e8c0",
+    2153
+   ],
+   "cid": 26000056,
+   "first_seen": 2153,
+   "last_seen": 2233,
+   "gone_by": 2235,
+   "last_hp": 81,
+   "max_hp": 773,
+   "last_pos": [
+    5088,
+    19303
+   ],
+   "dist_own_building_tiles": 3.97,
+   "file": "live_play_20261004_222423.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 0
+  },
+  {
+   "addr": [
+    "0x7283c7186f80",
+    3014
+   ],
+   "cid": 13000056,
+   "first_seen": 3014,
+   "last_seen": 3098,
+   "gone_by": 3100,
+   "last_hp": 168,
+   "max_hp": 967,
+   "last_pos": [
+    6925,
+    17320
+   ],
+   "dist_own_building_tiles": 1.27,
+   "spawn_hi": 3115,
+   "spawn_lo": 3112,
+   "drop_to_spawn_ticks": [
+    14,
+    17
+   ],
+   "file": "live_play_20261004_222423.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c7333f00",
+    3603
+   ],
+   "cid": 26000056,
+   "first_seen": 3603,
+   "last_seen": 3704,
+   "gone_by": 3706,
+   "last_hp": 80,
+   "max_hp": 773,
+   "last_pos": [
+    7708,
+    17714
+   ],
+   "dist_own_building_tiles": 8.85,
+   "spawn_hi": 3718,
+   "spawn_lo": 3716,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20261004_222423.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c727dd40",
+    4103
+   ],
+   "cid": 26000056,
+   "first_seen": 4103,
+   "last_seen": 4223,
+   "gone_by": 4225,
+   "last_hp": 141,
+   "max_hp": 773,
+   "last_pos": [
+    3091,
+    23711
+   ],
+   "dist_own_building_tiles": 1.84,
+   "spawn_hi": 4237,
+   "spawn_lo": 4235,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20261004_222423.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c72f2520",
+    5273
+   ],
+   "cid": 13000056,
+   "first_seen": 5273,
+   "last_seen": 5334,
+   "gone_by": 5337,
+   "last_hp": 311,
+   "max_hp": 967,
+   "last_pos": [
+    3736,
+    16375
+   ],
+   "dist_own_building_tiles": 4.56,
+   "spawn_hi": 5351,
+   "spawn_lo": 5348,
+   "drop_to_spawn_ticks": [
+    14,
+    17
+   ],
+   "file": "live_play_20261004_222423.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": null,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c72090c0/5000012",
+    405
+   ],
+   "cid": 26000056,
+   "first_seen": 405,
+   "last_seen": 485,
+   "gone_by": 511,
+   "last_hp": 534,
+   "max_hp": 850,
+   "last_pos": [
+    2596,
+    20572
+   ],
+   "dist_own_building_tiles": 5.01,
+   "spawn_hi": 531,
+   "spawn_lo": 521,
+   "drop_to_spawn_ticks": [
+    36,
+    46
+   ],
+   "file": "live_play_20261005_080525.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 6
+  },
+  {
+   "addr": [
+    "0x7283c7238e30/5000041",
+    1624
+   ],
+   "cid": 26000056,
+   "first_seen": 1624,
+   "last_seen": 1747,
+   "gone_by": 1757,
+   "last_hp": 170,
+   "max_hp": 850,
+   "last_pos": [
+    3172,
+    23740
+   ],
+   "dist_own_building_tiles": 1.79,
+   "spawn_hi": 1761,
+   "spawn_lo": 1757,
+   "drop_to_spawn_ticks": [
+    10,
+    14
+   ],
+   "file": "live_play_20261005_080525.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c71e1030/5000076",
+    2949
+   ],
+   "cid": 26000056,
+   "first_seen": 2949,
+   "last_seen": 3033,
+   "gone_by": 3077,
+   "last_hp": 850,
+   "max_hp": 850,
+   "last_pos": [
+    2772,
+    21540
+   ],
+   "dist_own_building_tiles": 4.03,
+   "spawn_hi": 3087,
+   "spawn_lo": 3077,
+   "drop_to_spawn_ticks": [
+    44,
+    54
+   ],
+   "file": "live_play_20261005_080525.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c7663180/5000006",
+    189
+   ],
+   "cid": 26000056,
+   "first_seen": 189,
+   "last_seen": 313,
+   "gone_by": 361,
+   "last_hp": 19,
+   "max_hp": 773,
+   "last_pos": [
+    13694,
+    13581
+   ],
+   "dist_own_building_tiles": 7.13,
+   "spawn_hi": 361,
+   "spawn_lo": 313,
+   "drop_to_spawn_ticks": [
+    0,
+    48
+   ],
+   "file": "live_play_20261005_082252.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 6
+  },
+  {
+   "addr": [
+    "0x7283c7224f10/5000025",
+    545
+   ],
+   "cid": 26000056,
+   "first_seen": 545,
+   "last_seen": 628,
+   "gone_by": 638,
+   "last_hp": 138,
+   "max_hp": 773,
+   "last_pos": [
+    12819,
+    12841
+   ],
+   "dist_own_building_tiles": 3.37,
+   "spawn_hi": 648,
+   "spawn_lo": 638,
+   "drop_to_spawn_ticks": [
+    10,
+    20
+   ],
+   "file": "live_play_20261005_082252.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c7202410/5000049",
+    1409
+   ],
+   "cid": 13000056,
+   "first_seen": 1409,
+   "last_seen": 1503,
+   "gone_by": 1531,
+   "last_hp": 13,
+   "max_hp": 967,
+   "last_pos": [
+    12219,
+    12449
+   ],
+   "dist_own_building_tiles": 2.65,
+   "spawn_hi": 1531,
+   "spawn_lo": 1503,
+   "drop_to_spawn_ticks": [
+    0,
+    28
+   ],
+   "file": "live_play_20261005_082252.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c7214520/5000075",
+    1880
+   ],
+   "cid": 26000056,
+   "first_seen": 1880,
+   "last_seen": 1982,
+   "gone_by": 1992,
+   "last_hp": 181,
+   "max_hp": 773,
+   "last_pos": [
+    15183,
+    10201
+   ],
+   "dist_own_building_tiles": 3.76,
+   "spawn_hi": 2008,
+   "spawn_lo": 2002,
+   "drop_to_spawn_ticks": [
+    20,
+    26
+   ],
+   "file": "live_play_20261005_082252.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c71c7240/5000098",
+    2492
+   ],
+   "cid": 26000056,
+   "first_seen": 2492,
+   "last_seen": 2606,
+   "gone_by": 2616,
+   "last_hp": 70,
+   "max_hp": 773,
+   "last_pos": [
+    15303,
+    10841
+   ],
+   "dist_own_building_tiles": 4.41,
+   "spawn_hi": 2626,
+   "spawn_lo": 2616,
+   "drop_to_spawn_ticks": [
+    10,
+    20
+   ],
+   "file": "live_play_20261005_082252.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c724f4a0/5000119",
+    2875
+   ],
+   "cid": 13000056,
+   "first_seen": 2875,
+   "last_seen": 2995,
+   "gone_by": 3023,
+   "last_hp": 78,
+   "max_hp": 967,
+   "last_pos": [
+    14828,
+    8260
+   ],
+   "dist_own_building_tiles": 1.79,
+   "spawn_hi": 3023,
+   "spawn_lo": 2995,
+   "drop_to_spawn_ticks": [
+    0,
+    28
+   ],
+   "file": "live_play_20261005_082252.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c7210b50/5000146",
+    3257
+   ],
+   "cid": 26000056,
+   "first_seen": 3257,
+   "last_seen": 3301,
+   "gone_by": 3311,
+   "last_hp": 773,
+   "max_hp": 773,
+   "last_pos": [
+    15777,
+    13836
+   ],
+   "dist_own_building_tiles": 1.36,
+   "spawn_hi": 3331,
+   "spawn_lo": 3321,
+   "drop_to_spawn_ticks": [
+    20,
+    30
+   ],
+   "file": "live_play_20261005_082252.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c72d3ae0/5000174",
+    3935
+   ],
+   "cid": 26000056,
+   "first_seen": 3935,
+   "last_seen": 4031,
+   "gone_by": 4041,
+   "last_hp": 138,
+   "max_hp": 773,
+   "last_pos": [
+    12788,
+    13507
+   ],
+   "dist_own_building_tiles": 2.83,
+   "spawn_hi": 4051,
+   "spawn_lo": 4041,
+   "drop_to_spawn_ticks": [
+    10,
+    20
+   ],
+   "file": "live_play_20261005_082252.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c71cd5b0/5000196",
+    4285
+   ],
+   "cid": 13000056,
+   "first_seen": 4285,
+   "last_seen": 4389,
+   "gone_by": 4399,
+   "last_hp": 160,
+   "max_hp": 967,
+   "last_pos": [
+    14730,
+    12680
+   ],
+   "dist_own_building_tiles": 3.03,
+   "spawn_hi": 4409,
+   "spawn_lo": 4399,
+   "drop_to_spawn_ticks": [
+    10,
+    20
+   ],
+   "file": "live_play_20261005_082252.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c7368b10/5000237",
+    4866
+   ],
+   "cid": 26000056,
+   "first_seen": 4866,
+   "last_seen": 4972,
+   "gone_by": 5000,
+   "last_hp": 70,
+   "max_hp": 773,
+   "last_pos": [
+    15325,
+    10971
+   ],
+   "dist_own_building_tiles": 4.55,
+   "spawn_hi": 5000,
+   "spawn_lo": 4972,
+   "drop_to_spawn_ticks": [
+    0,
+    28
+   ],
+   "file": "live_play_20261005_082252.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c730f150/5000261",
+    5218
+   ],
+   "cid": 26000056,
+   "first_seen": 5218,
+   "last_seen": 5274,
+   "gone_by": 5302,
+   "last_hp": 662,
+   "max_hp": 773,
+   "last_pos": [
+    15829,
+    14061
+   ],
+   "dist_own_building_tiles": 1.6,
+   "spawn_hi": 5302,
+   "spawn_lo": 5274,
+   "drop_to_spawn_ticks": [
+    0,
+    28
+   ],
+   "file": "live_play_20261005_082252.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c723a0b0/5000011",
+    391
+   ],
+   "cid": 26000056,
+   "first_seen": 391,
+   "last_seen": 457,
+   "gone_by": 467,
+   "last_hp": 215,
+   "max_hp": 705,
+   "last_pos": [
+    15777,
+    18164
+   ],
+   "dist_own_building_tiles": 1.36,
+   "spawn_hi": 477,
+   "spawn_lo": 467,
+   "drop_to_spawn_ticks": [
+    10,
+    20
+   ],
+   "file": "live_play_20261005_093120.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c719b0f0/5000048",
+    1314
+   ],
+   "cid": 26000056,
+   "first_seen": 1314,
+   "last_seen": 1376,
+   "gone_by": 1386,
+   "last_hp": 231,
+   "max_hp": 705,
+   "last_pos": [
+    4508,
+    20324
+   ],
+   "dist_own_building_tiles": 3.56,
+   "spawn_hi": 1396,
+   "spawn_lo": 1386,
+   "drop_to_spawn_ticks": [
+    10,
+    20
+   ],
+   "file": "live_play_20261005_093120.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c72c3ed0/5000077",
+    2284
+   ],
+   "cid": 13000056,
+   "first_seen": 2284,
+   "last_seen": 2404,
+   "gone_by": 2406,
+   "last_hp": 89,
+   "max_hp": 881,
+   "last_pos": [
+    7032,
+    21074
+   ],
+   "dist_own_building_tiles": 1.34,
+   "spawn_hi": 2434,
+   "spawn_lo": 2406,
+   "drop_to_spawn_ticks": [
+    2,
+    30
+   ],
+   "file": "live_play_20261005_093120.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 13
+  },
+  {
+   "addr": [
+    "0x7283c7262cd0/5000123",
+    2915
+   ],
+   "cid": 26000056,
+   "first_seen": 2915,
+   "last_seen": 3015,
+   "gone_by": 3025,
+   "last_hp": 2,
+   "max_hp": 705,
+   "last_pos": [
+    2761,
+    20247
+   ],
+   "dist_own_building_tiles": 3.94,
+   "spawn_hi": 3035,
+   "spawn_lo": 3025,
+   "drop_to_spawn_ticks": [
+    10,
+    20
+   ],
+   "file": "live_play_20261005_093120.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c732e280/5000022",
+    1018
+   ],
+   "cid": 26000056,
+   "first_seen": 1018,
+   "last_seen": 1086,
+   "gone_by": 1096,
+   "last_hp": 138,
+   "max_hp": 773,
+   "last_pos": [
+    5059,
+    19648
+   ],
+   "dist_own_building_tiles": 3.77,
+   "spawn_hi": 1106,
+   "spawn_lo": 1096,
+   "drop_to_spawn_ticks": [
+    10,
+    20
+   ],
+   "file": "live_play_20261005_100757.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c733cc10/5000045",
+    2290
+   ],
+   "cid": 26000056,
+   "first_seen": 2290,
+   "last_seen": 2380,
+   "gone_by": 2390,
+   "last_hp": 138,
+   "max_hp": 773,
+   "last_pos": [
+    2692,
+    21100
+   ],
+   "dist_own_building_tiles": 4.47,
+   "spawn_hi": 2400,
+   "spawn_lo": 2390,
+   "drop_to_spawn_ticks": [
+    10,
+    20
+   ],
+   "file": "live_play_20261005_100757.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 5
+  },
+  {
+   "addr": [
+    "0x7283c7339490/5000076",
+    2834
+   ],
+   "cid": 13000056,
+   "first_seen": 2834,
+   "last_seen": 2865,
+   "gone_by": 2875,
+   "last_hp": 329,
+   "max_hp": 967,
+   "last_pos": [
+    14043,
+    16957
+   ],
+   "dist_own_building_tiles": 1.48,
+   "spawn_hi": 2885,
+   "spawn_lo": 2875,
+   "drop_to_spawn_ticks": [
+    10,
+    20
+   ],
+   "file": "live_play_20261005_100757.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c724a160/5000006",
+    190
+   ],
+   "cid": 26000056,
+   "first_seen": 190,
+   "last_seen": 309,
+   "gone_by": 321,
+   "last_hp": 96,
+   "max_hp": 850,
+   "last_pos": [
+    8653,
+    24549
+   ],
+   "dist_own_building_tiles": 4.46,
+   "spawn_hi": 331,
+   "spawn_lo": 321,
+   "drop_to_spawn_ticks": [
+    12,
+    22
+   ],
+   "file": "live_play_20261005_104436.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c7204470/5000043",
+    1584
+   ],
+   "cid": 26000056,
+   "first_seen": 1584,
+   "last_seen": 1672,
+   "gone_by": 1682,
+   "last_hp": 57,
+   "max_hp": 850,
+   "last_pos": [
+    15132,
+    22068
+   ],
+   "dist_own_building_tiles": 3.49,
+   "spawn_hi": 1692,
+   "spawn_lo": 1682,
+   "drop_to_spawn_ticks": [
+    10,
+    20
+   ],
+   "file": "live_play_20261005_104436.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c731d1a0/5000094",
+    3029
+   ],
+   "cid": 13000056,
+   "first_seen": 3029,
+   "last_seen": 3111,
+   "gone_by": 3175,
+   "last_hp": 374,
+   "max_hp": 1063,
+   "last_pos": [
+    15292,
+    21188
+   ],
+   "dist_own_building_tiles": 4.38,
+   "file": "live_play_20261005_104436.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 0
+  },
+  {
+   "addr": [
+    "0x7283c72056f0/5000148",
+    3984
+   ],
+   "cid": 26000056,
+   "first_seen": 3984,
+   "last_seen": 3984,
+   "gone_by": 4048,
+   "last_hp": 850,
+   "max_hp": 850,
+   "last_pos": [
+    13500,
+    14500
+   ],
+   "dist_own_building_tiles": 3.54,
+   "file": "live_play_20261005_104436.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 0
+  },
+  {
+   "addr": [
+    "0x7283c72fa6a0/5000008",
+    277
+   ],
+   "cid": 26000056,
+   "first_seen": 277,
+   "last_seen": 333,
+   "gone_by": 360,
+   "last_hp": 542,
+   "max_hp": 773,
+   "last_pos": [
+    15777,
+    18164
+   ],
+   "dist_own_building_tiles": 1.36,
+   "spawn_hi": 360,
+   "spawn_lo": 333,
+   "drop_to_spawn_ticks": [
+    0,
+    27
+   ],
+   "file": "live_play_20261005_122154.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c7218cd0/5000059",
+    1081
+   ],
+   "cid": 26000056,
+   "first_seen": 1081,
+   "last_seen": 1169,
+   "gone_by": 1179,
+   "last_hp": 138,
+   "max_hp": 773,
+   "last_pos": [
+    5130,
+    19630
+   ],
+   "dist_own_building_tiles": 3.72,
+   "spawn_hi": 1189,
+   "spawn_lo": 1179,
+   "drop_to_spawn_ticks": [
+    10,
+    20
+   ],
+   "file": "live_play_20261005_122154.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c7360050/5000096",
+    1955
+   ],
+   "cid": 13000056,
+   "first_seen": 1955,
+   "last_seen": 2061,
+   "gone_by": 2105,
+   "last_hp": 382,
+   "max_hp": 967,
+   "last_pos": [
+    2998,
+    22786
+   ],
+   "dist_own_building_tiles": 2.76,
+   "spawn_hi": 2105,
+   "spawn_lo": 2061,
+   "drop_to_spawn_ticks": [
+    0,
+    44
+   ],
+   "file": "live_play_20261005_122154.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c71c94f0/5000026",
+    730
+   ],
+   "cid": 26000056,
+   "first_seen": 730,
+   "last_seen": 843,
+   "gone_by": 853,
+   "last_hp": 141,
+   "max_hp": 773,
+   "last_pos": [
+    3500,
+    23410
+   ],
+   "dist_own_building_tiles": 2.09,
+   "spawn_hi": 861,
+   "spawn_lo": 853,
+   "drop_to_spawn_ticks": [
+    10,
+    18
+   ],
+   "file": "live_play_20261005_130339.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c71c94f0/5000059",
+    1922
+   ],
+   "cid": 26000056,
+   "first_seen": 1922,
+   "last_seen": 1994,
+   "gone_by": 2004,
+   "last_hp": 17,
+   "max_hp": 773,
+   "last_pos": [
+    5747,
+    15020
+   ],
+   "dist_own_building_tiles": 2.99,
+   "spawn_hi": 2014,
+   "spawn_lo": 2004,
+   "drop_to_spawn_ticks": [
+    10,
+    20
+   ],
+   "file": "live_play_20261005_130339.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c72b4510/5000091",
+    2650
+   ],
+   "cid": 26000056,
+   "first_seen": 2650,
+   "last_seen": 2718,
+   "gone_by": 2782,
+   "last_hp": 537,
+   "max_hp": 773,
+   "last_pos": [
+    2500,
+    18091
+   ],
+   "dist_own_building_tiles": 1.41,
+   "file": "live_play_20261005_130339.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 0
+  },
+  {
+   "addr": [
+    "0x7283c72aed30/5000118",
+    3361
+   ],
+   "cid": 26000056,
+   "first_seen": 3361,
+   "last_seen": 3503,
+   "gone_by": 3567,
+   "last_hp": 773,
+   "max_hp": 773,
+   "last_pos": [
+    13743,
+    12915
+   ],
+   "dist_own_building_tiles": 6.82,
+   "file": "live_play_20261005_130339.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 0
+  },
+  {
+   "addr": [
+    "0x7283c72aed30/5000118",
+    3567
+   ],
+   "cid": 26000056,
+   "first_seen": 3567,
+   "last_seen": 3567,
+   "gone_by": 3595,
+   "last_hp": 655,
+   "max_hp": 773,
+   "last_pos": [
+    15044,
+    17795
+   ],
+   "dist_own_building_tiles": 1.76,
+   "spawn_hi": 3595,
+   "spawn_lo": 3567,
+   "drop_to_spawn_ticks": [
+    0,
+    28
+   ],
+   "file": "live_play_20261005_130339.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c72f37a0/5000146",
+    3817
+   ],
+   "cid": 26000056,
+   "first_seen": 3817,
+   "last_seen": 3877,
+   "gone_by": 3905,
+   "last_hp": 662,
+   "max_hp": 773,
+   "last_pos": [
+    2844,
+    17861
+   ],
+   "dist_own_building_tiles": 1.67,
+   "spawn_hi": 3905,
+   "spawn_lo": 3877,
+   "drop_to_spawn_ticks": [
+    0,
+    28
+   ],
+   "file": "live_play_20261005_130339.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c722be10/5000009",
+    375
+   ],
+   "cid": 26000056,
+   "first_seen": 375,
+   "last_seen": 465,
+   "gone_by": 473,
+   "last_hp": 70,
+   "max_hp": 705,
+   "last_pos": [
+    15276,
+    21276
+   ],
+   "dist_own_building_tiles": 4.29,
+   "spawn_hi": 509,
+   "spawn_lo": 473,
+   "drop_to_spawn_ticks": [
+    8,
+    44
+   ],
+   "file": "live_play_20261005_132429.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 5
+  },
+  {
+   "addr": [
+    "0x7283c7314dd0/5000051",
+    1165
+   ],
+   "cid": 26000056,
+   "first_seen": 1165,
+   "last_seen": 1239,
+   "gone_by": 1266,
+   "last_hp": 389,
+   "max_hp": 705,
+   "last_pos": [
+    15324,
+    21012
+   ],
+   "dist_own_building_tiles": 4.56,
+   "spawn_hi": 1266,
+   "spawn_lo": 1239,
+   "drop_to_spawn_ticks": [
+    0,
+    27
+   ],
+   "file": "live_play_20261005_132429.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c72986c0/5000076",
+    1964
+   ],
+   "cid": 13000056,
+   "first_seen": 1964,
+   "last_seen": 2060,
+   "gone_by": 2070,
+   "last_hp": 31,
+   "max_hp": 881,
+   "last_pos": [
+    4275,
+    18364
+   ],
+   "dist_own_building_tiles": 3.74,
+   "spawn_hi": 2070,
+   "spawn_lo": 2060,
+   "drop_to_spawn_ticks": [
+    0,
+    10
+   ],
+   "file": "live_play_20261005_132429.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 14
+  },
+  {
+   "addr": [
+    "0x7283c71e3090/5000125",
+    2994
+   ],
+   "cid": 26000056,
+   "first_seen": 2994,
+   "last_seen": 3078,
+   "gone_by": 3088,
+   "last_hp": 70,
+   "max_hp": 705,
+   "last_pos": [
+    4990,
+    19593
+   ],
+   "dist_own_building_tiles": 3.85,
+   "spawn_hi": 3098,
+   "spawn_lo": 3088,
+   "drop_to_spawn_ticks": [
+    10,
+    20
+   ],
+   "file": "live_play_20261005_132429.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c732a410/5000171",
+    3617
+   ],
+   "cid": 26000056,
+   "first_seen": 3617,
+   "last_seen": 3677,
+   "gone_by": 3687,
+   "last_hp": 153,
+   "max_hp": 705,
+   "last_pos": [
+    13630,
+    18908
+   ],
+   "dist_own_building_tiles": 4.76,
+   "spawn_hi": 3707,
+   "spawn_lo": 3697,
+   "drop_to_spawn_ticks": [
+    20,
+    30
+   ],
+   "file": "live_play_20261005_132429.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7283c72dff70/5000200",
+    4214
+   ],
+   "cid": 13000056,
+   "first_seen": 4214,
+   "last_seen": 4262,
+   "gone_by": 4298,
+   "last_hp": 529,
+   "max_hp": 881,
+   "last_pos": [
+    2223,
+    18164
+   ],
+   "dist_own_building_tiles": 1.36,
+   "file": "live_play_20261005_132429.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 0
+  },
+  {
+   "addr": [
+    "0x7cf7ddbef690/5000006",
+    231
+   ],
+   "cid": 26000056,
+   "first_seen": 231,
+   "last_seen": 345,
+   "gone_by": 355,
+   "last_hp": 63,
+   "max_hp": 773,
+   "last_pos": [
+    2767,
+    21537
+   ],
+   "dist_own_building_tiles": 4.03,
+   "spawn_hi": 359,
+   "spawn_lo": 355,
+   "drop_to_spawn_ticks": [
+    10,
+    14
+   ],
+   "file": "live_play_20261006_153607.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddb18340/5000029",
+    1022
+   ],
+   "cid": 26000056,
+   "first_seen": 1022,
+   "last_seen": 1132,
+   "gone_by": 1142,
+   "last_hp": 63,
+   "max_hp": 773,
+   "last_pos": [
+    2784,
+    21624
+   ],
+   "dist_own_building_tiles": 3.94,
+   "spawn_hi": 1146,
+   "spawn_lo": 1142,
+   "drop_to_spawn_ticks": [
+    10,
+    14
+   ],
+   "file": "live_play_20261006_153607.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddbbc890/5000074",
+    2732
+   ],
+   "cid": 13000056,
+   "first_seen": 2732,
+   "last_seen": 2810,
+   "gone_by": 2822,
+   "last_hp": 4,
+   "max_hp": 967,
+   "last_pos": [
+    13941,
+    17059
+   ],
+   "dist_own_building_tiles": 1.33,
+   "spawn_hi": 2825,
+   "spawn_lo": 2822,
+   "drop_to_spawn_ticks": [
+    12,
+    15
+   ],
+   "file": "live_play_20261006_153607.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddb0f190/5000115",
+    3396
+   ],
+   "cid": 26000056,
+   "first_seen": 3396,
+   "last_seen": 3450,
+   "gone_by": 3478,
+   "last_hp": 773,
+   "max_hp": 773,
+   "last_pos": [
+    4615,
+    16920
+   ],
+   "dist_own_building_tiles": 1.76,
+   "spawn_hi": 3506,
+   "spawn_lo": 3478,
+   "drop_to_spawn_ticks": [
+    28,
+    56
+   ],
+   "file": "live_play_20261006_153607.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 3
+  },
+  {
+   "addr": [
+    "0x7cf7ddb80690/5000021",
+    882
+   ],
+   "cid": 26000056,
+   "first_seen": 882,
+   "last_seen": 966,
+   "gone_by": 976,
+   "last_hp": 457,
+   "max_hp": 773,
+   "last_pos": [
+    15372,
+    20748
+   ],
+   "dist_own_building_tiles": 4.83,
+   "spawn_hi": 990,
+   "spawn_lo": 986,
+   "drop_to_spawn_ticks": [
+    20,
+    24
+   ],
+   "file": "live_play_20261006_161450.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddc0cc00/5000052",
+    2042
+   ],
+   "cid": 26000056,
+   "first_seen": 2042,
+   "last_seen": 2180,
+   "gone_by": 2190,
+   "last_hp": 80,
+   "max_hp": 773,
+   "last_pos": [
+    14318,
+    23671
+   ],
+   "dist_own_building_tiles": 1.84,
+   "spawn_hi": 2200,
+   "spawn_lo": 2190,
+   "drop_to_spawn_ticks": [
+    10,
+    20
+   ],
+   "file": "live_play_20261006_161450.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddb21e30/5000089",
+    3403
+   ],
+   "cid": 26000056,
+   "first_seen": 3403,
+   "last_seen": 3527,
+   "gone_by": 3537,
+   "last_hp": 30,
+   "max_hp": 773,
+   "last_pos": [
+    3057,
+    23119
+   ],
+   "dist_own_building_tiles": 2.42,
+   "spawn_hi": 3543,
+   "spawn_lo": 3537,
+   "drop_to_spawn_ticks": [
+    10,
+    16
+   ],
+   "file": "live_play_20261006_161450.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddb5c6c0/5000113",
+    3832
+   ],
+   "cid": 26000056,
+   "first_seen": 3832,
+   "last_seen": 3942,
+   "gone_by": 3952,
+   "last_hp": 311,
+   "max_hp": 773,
+   "last_pos": [
+    3172,
+    23740
+   ],
+   "dist_own_building_tiles": 1.79,
+   "spawn_hi": 3960,
+   "spawn_lo": 3952,
+   "drop_to_spawn_ticks": [
+    10,
+    18
+   ],
+   "file": "live_play_20261006_161450.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddb56ee0/5000006",
+    243
+   ],
+   "cid": 26000056,
+   "first_seen": 243,
+   "last_seen": 319,
+   "gone_by": 329,
+   "last_hp": 386,
+   "max_hp": 705,
+   "last_pos": [
+    4948,
+    18176
+   ],
+   "dist_own_building_tiles": 4.16,
+   "spawn_hi": 339,
+   "spawn_lo": 329,
+   "drop_to_spawn_ticks": [
+    10,
+    20
+   ],
+   "file": "live_play_20261006_164712.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddcb5da0/5000061",
+    2787
+   ],
+   "cid": 26000056,
+   "first_seen": 2787,
+   "last_seen": 2871,
+   "gone_by": 2882,
+   "last_hp": 495,
+   "max_hp": 705,
+   "last_pos": [
+    14828,
+    23740
+   ],
+   "dist_own_building_tiles": 1.79,
+   "spawn_hi": 2892,
+   "spawn_lo": 2882,
+   "drop_to_spawn_ticks": [
+    11,
+    21
+   ],
+   "file": "live_play_20261006_164712.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddb13b90/5000080",
+    3172
+   ],
+   "cid": 13000056,
+   "first_seen": 3172,
+   "last_seen": 3310,
+   "gone_by": 3320,
+   "last_hp": 16,
+   "max_hp": 881,
+   "last_pos": [
+    10552,
+    25472
+   ],
+   "dist_own_building_tiles": 3.85,
+   "spawn_hi": 3328,
+   "spawn_lo": 3320,
+   "drop_to_spawn_ticks": [
+    10,
+    18
+   ],
+   "file": "live_play_20261006_164712.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddc67840/5000117",
+    3885
+   ],
+   "cid": 26000056,
+   "first_seen": 3885,
+   "last_seen": 3917,
+   "gone_by": 3981,
+   "last_hp": 705,
+   "max_hp": 705,
+   "last_pos": [
+    9880,
+    23152
+   ],
+   "dist_own_building_tiles": 5.91,
+   "file": "live_play_20261006_164712.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 0
+  },
+  {
+   "addr": [
+    "0x7cf7ddc67840/5000117",
+    3981
+   ],
+   "cid": 26000056,
+   "first_seen": 3981,
+   "last_seen": 3981,
+   "gone_by": null,
+   "last_hp": 425,
+   "max_hp": 705,
+   "last_pos": [
+    8232,
+    26917
+   ],
+   "dist_own_building_tiles": 2.22,
+   "file": "live_play_20261006_164712.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 0
+  },
+  {
+   "addr": [
+    "0x7cf7ddb661b0/5000009",
+    298
+   ],
+   "cid": 26000056,
+   "first_seen": 298,
+   "last_seen": 372,
+   "gone_by": 382,
+   "last_hp": 296,
+   "max_hp": 773,
+   "last_pos": [
+    4857,
+    18744
+   ],
+   "dist_own_building_tiles": 3.87,
+   "spawn_hi": 396,
+   "spawn_lo": 382,
+   "drop_to_spawn_ticks": [
+    10,
+    24
+   ],
+   "file": "live_play_20261006_201754.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddb180f0/5000046",
+    1093
+   ],
+   "cid": 26000056,
+   "first_seen": 1093,
+   "last_seen": 1207,
+   "gone_by": 1217,
+   "last_hp": 65,
+   "max_hp": 773,
+   "last_pos": [
+    7002,
+    20138
+   ],
+   "dist_own_building_tiles": 1.32,
+   "spawn_hi": 1227,
+   "spawn_lo": 1217,
+   "drop_to_spawn_ticks": [
+    10,
+    20
+   ],
+   "file": "live_play_20261006_201754.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddb8f710/5000084",
+    2074
+   ],
+   "cid": 13000056,
+   "first_seen": 2074,
+   "last_seen": 2190,
+   "gone_by": 2220,
+   "last_hp": 16,
+   "max_hp": 967,
+   "last_pos": [
+    14924,
+    23212
+   ],
+   "dist_own_building_tiles": 2.33,
+   "file": "live_play_20261006_201754.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 0
+  },
+  {
+   "addr": [
+    "0x7cf7ddb86ea0/5000127",
+    2673
+   ],
+   "cid": 26000056,
+   "first_seen": 2673,
+   "last_seen": 2787,
+   "gone_by": 2797,
+   "last_hp": 141,
+   "max_hp": 773,
+   "last_pos": [
+    14972,
+    22948
+   ],
+   "dist_own_building_tiles": 2.6,
+   "spawn_hi": 2805,
+   "spawn_lo": 2797,
+   "drop_to_spawn_ticks": [
+    10,
+    18
+   ],
+   "file": "live_play_20261006_201754.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddb3fa90/5000179",
+    3119
+   ],
+   "cid": 26000056,
+   "first_seen": 3119,
+   "last_seen": 3191,
+   "gone_by": 3222,
+   "last_hp": 521,
+   "max_hp": 773,
+   "last_pos": [
+    15814,
+    18002
+   ],
+   "dist_own_building_tiles": 1.53,
+   "spawn_hi": 3222,
+   "spawn_lo": 3191,
+   "drop_to_spawn_ticks": [
+    0,
+    31
+   ],
+   "file": "live_play_20261006_201754.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddb7c380/5000215",
+    3500
+   ],
+   "cid": 13000056,
+   "first_seen": 3500,
+   "last_seen": 3634,
+   "gone_by": 3644,
+   "last_hp": 83,
+   "max_hp": 967,
+   "last_pos": [
+    15041,
+    22609
+   ],
+   "dist_own_building_tiles": 2.94,
+   "spawn_hi": 3654,
+   "spawn_lo": 3644,
+   "drop_to_spawn_ticks": [
+    10,
+    20
+   ],
+   "file": "live_play_20261006_201754.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddc1faf0/5000258",
+    3922
+   ],
+   "cid": 26000056,
+   "first_seen": 3922,
+   "last_seen": 4001,
+   "gone_by": 4029,
+   "last_hp": 615,
+   "max_hp": 773,
+   "last_pos": [
+    15500,
+    20044
+   ],
+   "dist_own_building_tiles": 5.55,
+   "spawn_hi": 4031,
+   "spawn_lo": 4029,
+   "drop_to_spawn_ticks": [
+    28,
+    30
+   ],
+   "file": "live_play_20261006_201754.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddb23c40/5000291",
+    4271
+   ],
+   "cid": 26000056,
+   "first_seen": 4271,
+   "last_seen": 4345,
+   "gone_by": 4375,
+   "last_hp": 109,
+   "max_hp": 773,
+   "last_pos": [
+    14335,
+    16810
+   ],
+   "dist_own_building_tiles": 3.54,
+   "file": "live_play_20261006_201754.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 0
+  },
+  {
+   "addr": [
+    "0x7cf7ddb19f00",
+    281
+   ],
+   "cid": 26000056,
+   "first_seen": 281,
+   "last_seen": 365,
+   "gone_by": 367,
+   "last_hp": 174,
+   "max_hp": 773,
+   "last_pos": [
+    7142,
+    18238
+   ],
+   "dist_own_building_tiles": 3.33,
+   "spawn_hi": 379,
+   "spawn_lo": 377,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20261006_202155.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddb3b090",
+    904
+   ],
+   "cid": 26000056,
+   "first_seen": 904,
+   "last_seen": 972,
+   "gone_by": 974,
+   "last_hp": 112,
+   "max_hp": 773,
+   "last_pos": [
+    15777,
+    18164
+   ],
+   "dist_own_building_tiles": 7.45,
+   "spawn_hi": 986,
+   "spawn_lo": 984,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20261006_202155.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddbcd970",
+    1837
+   ],
+   "cid": 13000056,
+   "first_seen": 1837,
+   "last_seen": 1951,
+   "gone_by": 1953,
+   "last_hp": 16,
+   "max_hp": 967,
+   "last_pos": [
+    14988,
+    22860
+   ],
+   "dist_own_building_tiles": 2.68,
+   "spawn_hi": 1965,
+   "spawn_lo": 1963,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20261006_202155.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddc1dce0",
+    2760
+   ],
+   "cid": 26000056,
+   "first_seen": 2760,
+   "last_seen": 2831,
+   "gone_by": 2833,
+   "last_hp": 3,
+   "max_hp": 773,
+   "last_pos": [
+    15777,
+    18164
+   ],
+   "dist_own_building_tiles": 1.36,
+   "spawn_hi": 2845,
+   "spawn_lo": 2843,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20261006_202155.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddbfb680",
+    3111
+   ],
+   "cid": 26000056,
+   "first_seen": 3111,
+   "last_seen": 3219,
+   "gone_by": 3221,
+   "last_hp": 67,
+   "max_hp": 773,
+   "last_pos": [
+    15520,
+    19949
+   ],
+   "dist_own_building_tiles": 5.64,
+   "spawn_hi": 3234,
+   "spawn_lo": 3232,
+   "drop_to_spawn_ticks": [
+    13,
+    15
+   ],
+   "file": "live_play_20261006_202155.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddb67fc0",
+    3492
+   ],
+   "cid": 13000056,
+   "first_seen": 3492,
+   "last_seen": 3552,
+   "gone_by": 3554,
+   "last_hp": 108,
+   "max_hp": 967,
+   "last_pos": [
+    16095,
+    16770
+   ],
+   "dist_own_building_tiles": 1.23,
+   "spawn_hi": 3562,
+   "spawn_lo": 3560,
+   "drop_to_spawn_ticks": [
+    8,
+    10
+   ],
+   "file": "live_play_20261006_202155.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "frame",
+   "n_skel": 14
+  },
+  {
+   "addr": [
+    "0x7cf7ddbf0220",
+    4043
+   ],
+   "cid": 26000056,
+   "first_seen": 4043,
+   "last_seen": 4138,
+   "gone_by": 4141,
+   "last_hp": 278,
+   "max_hp": 773,
+   "last_pos": [
+    15697,
+    18953
+   ],
+   "dist_own_building_tiles": 1.0,
+   "spawn_hi": 4153,
+   "spawn_lo": 4151,
+   "drop_to_spawn_ticks": [
+    13,
+    15
+   ],
+   "file": "live_play_20261006_202155.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddb26f20",
+    4367
+   ],
+   "cid": 26000056,
+   "first_seen": 4367,
+   "last_seen": 4419,
+   "gone_by": 4421,
+   "last_hp": 258,
+   "max_hp": 773,
+   "last_pos": [
+    10184,
+    27105
+   ],
+   "dist_own_building_tiles": 2.23,
+   "spawn_hi": 4433,
+   "spawn_lo": 4431,
+   "drop_to_spawn_ticks": [
+    12,
+    14
+   ],
+   "file": "live_play_20261006_202155.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "frame",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddb0d820/5000006",
+    151
+   ],
+   "cid": 26000056,
+   "first_seen": 151,
+   "last_seen": 241,
+   "gone_by": 251,
+   "last_hp": 457,
+   "max_hp": 773,
+   "last_pos": [
+    2644,
+    11164
+   ],
+   "dist_own_building_tiles": 4.74,
+   "spawn_hi": 261,
+   "spawn_lo": 251,
+   "drop_to_spawn_ticks": [
+    10,
+    20
+   ],
+   "file": "live_play_20261006_212743.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddbc2070/5000032",
+    946
+   ],
+   "cid": 26000056,
+   "first_seen": 946,
+   "last_seen": 1100,
+   "gone_by": 1136,
+   "last_hp": 773,
+   "max_hp": 773,
+   "last_pos": [
+    10884,
+    6439
+   ],
+   "dist_own_building_tiles": 3.92,
+   "spawn_hi": 1146,
+   "spawn_lo": 1136,
+   "drop_to_spawn_ticks": [
+    36,
+    46
+   ],
+   "file": "live_play_20261006_212743.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddbe36a0/5000064",
+    2267
+   ],
+   "cid": 13000056,
+   "first_seen": 2267,
+   "last_seen": 2381,
+   "gone_by": 2392,
+   "last_hp": 81,
+   "max_hp": 967,
+   "last_pos": [
+    10364,
+    4755
+   ],
+   "dist_own_building_tiles": 2.22,
+   "spawn_hi": 2402,
+   "spawn_lo": 2392,
+   "drop_to_spawn_ticks": [
+    11,
+    21
+   ],
+   "file": "live_play_20261006_212743.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddbdf390/5000007",
+    315
+   ],
+   "cid": 26000056,
+   "first_seen": 315,
+   "last_seen": 437,
+   "gone_by": 447,
+   "last_hp": 19,
+   "max_hp": 773,
+   "last_pos": [
+    6690,
+    18801
+   ],
+   "dist_own_building_tiles": 3.19,
+   "spawn_hi": 457,
+   "spawn_lo": 447,
+   "drop_to_spawn_ticks": [
+    10,
+    20
+   ],
+   "file": "live_play_20261007_184432.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddb678d0/5000048",
+    1504
+   ],
+   "cid": 26000056,
+   "first_seen": 1504,
+   "last_seen": 1594,
+   "gone_by": 1605,
+   "last_hp": 181,
+   "max_hp": 773,
+   "last_pos": [
+    2658,
+    20926
+   ],
+   "dist_own_building_tiles": 4.65,
+   "spawn_hi": 1615,
+   "spawn_lo": 1605,
+   "drop_to_spawn_ticks": [
+    11,
+    21
+   ],
+   "file": "live_play_20261007_184432.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 7
+  },
+  {
+   "addr": [
+    "0x7cf7ddc0eeb0/5000077",
+    2359
+   ],
+   "cid": 13000056,
+   "first_seen": 2359,
+   "last_seen": 2415,
+   "gone_by": 2425,
+   "last_hp": 487,
+   "max_hp": 967,
+   "last_pos": [
+    15500,
+    18100
+   ],
+   "dist_own_building_tiles": 1.4,
+   "spawn_hi": 2433,
+   "spawn_lo": 2425,
+   "drop_to_spawn_ticks": [
+    10,
+    18
+   ],
+   "file": "live_play_20261007_184432.jsonl",
+   "ckpt": "rseries_r1e31_u0155.pt",
+   "fv": 4,
+   "src": "decision",
+   "n_skel": 14
+  }
+ ]
+}

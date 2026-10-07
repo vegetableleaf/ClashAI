@@ -4319,6 +4319,18 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   6.76/5.35/5.13 -> R2 u0120 7.22/5.47/5.27 (toward pros, unlike R1f which lowered it); defensive X-Bows 350 -> 246
 >   (away from pros); defensive Rockets 33 -> 34. For this recipe u0120 > u0080 (+6/192, n.s.) -- the "80 is enough"
 >   rule did not hold for R2; R3 runs 80 and can be resumed to 120 from the VM queue if its curve is still rising.
+> * **SKELETON BARREL LOG AUDIT (worker opus, `L73/skeleton_barrel/`, tables.txt).** Owner: "drops the Log too early;
+>   does not account for the drop time after the barrel is defeated." Symptom (a) real but a minority: R1e 4/15 aimed
+>   Logs crossed the drop before the first skeleton (all 4 killed 0); all live models 6/25; pros 124/1,042 (11.9%;
+>   Fisher p .10). R1e median is LATER than pros (+15 vs -1 ticks after the skeletons appear); the problem is an early
+>   tail. Cause (c) CONTRADICTED: all 6 live misses crossed 5-41 ticks BEFORE the balloon died (decided while a full-HP
+>   balloon was alive, 2-3.7 s before death); 0 crossings inside the 12-tick fall. Real gap: the falling barrel is
+>   INVISIBLE (no reader entity, not in recordings, no projectile token; the look-ahead never kills/spawns), so the
+>   pro cue "Log the moment it pops" is absent: Log-now in the fall window pros 51.2% vs R1e 16.0% / fv5 16.6%;
+>   adding the 7 skeletons there -> 41.7% / 44.8%. Models also over-Log live balloons (1.9-2.5x pros). Fix proposed:
+>   extrapolate.py records a pending drop when an enemy Skeleton Barrel balloon disappears and places 7 skeleton bodies
+>   (1.3-tile ring) in the look-ahead board once T+12 <= t+26 -- opt-in, live and SIM. Later: a "balloon popped" token
+>   (new fv + retrain).
 >   ~15:40" (Q1 card sampling flag, Q2 area-aware spell aim, Q3 GPU A/Bs after R1e, Q4 R1e approval ping, Q5 fixes);
 >   launcher `.foreman/codex_autopilot/codex_loop.sh` (back-to-back runs to 10-06; STOP_LOOP file stops it).
 > * **15:5x -- owner plan: after the R1e verdict the lead starts LIVE on the winner, then hands over to Codex via
