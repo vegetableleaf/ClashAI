@@ -3880,7 +3880,7 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   tests pass, test_rl_royale 37/37; 9 pre-existing decision_options tests need untracked data (run after merge, incl.
 >   the real-sim path). Offline (R1e, 38,317 val rows): tau_phase B (.35/.45/.55) cuts OT over-play +15.5 -> +2.8 pp vs
 >   pros, agreement +1.1 pp; xbow_class f=.3 -> defensive 12.6% -> 25.0% (pros 27.2%), class agreement -0.5 [-2.7,+1.9]
->   pp, never draws a class with mass < .3. Blind verifier running. MERGE ONLY AFTER chain2 FINISHES (chain2 launches
+>   pp, never draws a class with mass < .3. Blind verifier (opus): PASS_WITH_NOTES -- off-path unchanged (match_kwargs {} when off; legacy-parity test passes), phase boundaries, reach geometry (2304 cells x 4 tower sets, 0 mismatches vs label rule), floor and seeding correct; F1 xbow_class and filtered card choice share one RNG stream (irrelevant unless combined; filtered is rejected); F2 live GenPilot would ignore tau_phase (live wiring is out of scope until adoption). MERGE ONLY AFTER chain2 FINISHES (chain2 launches
 >   e1_eval/search_s0 processes). Ghost A/B needs `L71/decision_options/run_screen_v2.py` with its line-88 activation
 >   switched to options.active. PRE-REGISTERED chain3 (on the deployed checkpoint, engine 20261006, each option alone
 >   vs a same-script control): adopt iff reactive total >= control +3 of 96 AND ghost ci_hi >= 0 AND behaviour toward
