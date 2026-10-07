@@ -54,7 +54,7 @@ def dedupe_hero_bodies(frame, radius=500):
 
     kept_hero, drop = [], set()
     for e in hero:
-        if cube(e) or any(near(k, e) for k in kept_hero):
+        if cube(e) or (e.get('category') is None and any(near(k, e) for k in kept_hero)):
             drop.add(id(e))
         else:
             kept_hero.append(e)
