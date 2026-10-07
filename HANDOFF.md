@@ -4066,6 +4066,14 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   300 s transition limit inside the flow sends no alert/pause) left open (needs a flow starting ~290 s in). A
 >   TROPHY_ROAD_ALERT stop now sets the STOP file (pause). Live (owner's second-account run) stopped between matches and
 >   restarted on the merged code; it was CPU-STARVED at 258-511 ms per decision under R2.
+> * **OWNER 10-07 ~16:xx: new VM clashbot-s3c (n2, 128 vCPU = 64 cores x2 sockets, 503 GB RAM, Debian 13, Python 3.13,
+>   disk 9.7 GB!), external IP 34.148.91.90, `ssh -i ~/.ssh/clashbot_gcp clashbot-gauntlet@34.148.91.90`. Owner: move
+>   ALL training there while the free credits last; use every VM minute; if the VM is faster at games AND learning, run
+>   everything there (no split). Live play gets AboveNormal priority (live_play self-raises; start_live raises MuMu;
+>   running training lowered to BelowNormal). Bring-up + benchmark worker (opus) running: PyPI royalesim 0.1.17 /
+>   royalegym 0.1.18 + data-hash parity vs the pinned Windows runtime, git-archive code, minimal untracked data (NO
+>   secrets), R2 recipe with CPU actors/learner at several actor/thread counts vs laptop (roll 195-250 s + upd 45-70 s
+>   per 64 matches).
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
