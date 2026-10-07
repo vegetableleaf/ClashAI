@@ -1,0 +1,57 @@
+# R3 = the R2 recipe (scratchpad/gauntlet/L73/rl_r2/run_r2.sh OVR: chain2.sh step 5 + tau 0.35, T 0.3, ladder decks)
+# + counterfactual gate branching (opt3 T3, pipeline/rl_royale.py branch_* keys), sized for the 128-vCPU VM.
+# One argv per line below the marker, for a bash array:
+#   mapfile -t OVR < <(sed -n '/^# ---- argv/,$p' r3_overrides.txt | grep -v '^#')
+# Config: --config scratchpad/gauntlet/L69/rl/r1_rl_royale.yaml   Run name (proposal): rseries_r3
+# Environment (VM): ROYALE_RUNTIME=20261006-linux, OMP_NUM_THREADS=32 for the learner (CPU learner step 95-117 s).
+#
+# Labels (T2 score gate, L73/opt3/val/): FULL-MATCH OUTCOME, k=16 CRN pairs, |delta| >= 0.25 kept, weight = T2's
+# branch_label weight. Branch workers: 24 processes x 1 thread, separate from the 32 PPO actors (32 x in_flight 2 x 2
+# threads); they run continuously, take the newest weights between rounds, and stream labels back; the learner drains
+# them once per update (never waits), drops labels more than branch_max_staleness updates old, keeps a FIFO buffer of
+# branch_buffer and takes ONE gate step on it per update after PPO. Branch-match opponents SAMPLE (league_opp_policy
+# sample at T 0.3; branch_cfg refuses a greedy one). Not applied during critic warm-up (labels are still buffered).
+# ---- argv
+init=icebow/data/pipeline/gen_v32_s0/gen_s0.pt
+proagree_data_gen=icebow/data/pipeline/gen_dataset_v32_fv5.npz
+league=true
+noise_off=all
+opp_elixir=counter
+action_delay_ticks=26
+extrapolate_ticks=26
+max_updates=120
+screen_seeds=[0]
+league_learner_icebow_share=1.0
+forms_mode=deck
+advantage=gae
+gae_gamma_unit=tick
+critic_warmup_updates=5
+hero_abilities=true
+ability_policy=v2
+tau=0.35
+T=0.3
+league_decks=scratchpad/gauntlet/L73/rl_r2/loadable_decks_ladder.json
+league_deck_alpha=1.0
+league_deck_floor=0
+league_icebow_share=0.02
+league_mix={latest: 0.35, older: 0.25, init: 0.2, s1: 0.02}
+league_opp_policy=sample
+n_actors=32
+in_flight=2
+actor_threads=2
+actor_device=cpu
+learner_device=cpu
+branch_gate=true
+branch_actors=24
+branch_threads=1
+branch_points_per_match=6
+branch_band=[0.2, 0.65]
+branch_hold_s=[2, 4, 8]
+branch_hold_tau=0.55
+branch_horizon_s=null
+branch_k=16
+branch_score=outcome
+branch_min_abs_delta=0.25
+branch_max_staleness=3
+branch_buffer=512
+branch_coef=0.1

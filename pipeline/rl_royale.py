@@ -16,7 +16,16 @@ icebow specialist (icebow only) or a learner snapshot (``<run>_snap_u{NNNN}.pt``
 updates, newest ``league_snapshot_keep`` in the pool) -- on decks drawn from the census pool (``sample_matchups``); E
 matchups = the LOO groups, G rollouts each; both sides under the condition keys. Pool + sampling rng ride in the
 checkpoint (--resume continues them). The held-out ghost screen, pro agreement and guards are unchanged.
-LEASH (T12b, owner ruling): ``leash: max`` steers beta on max(KL_gate, KL_card, KL_cell) (``leash_kl``); ``cell`` = the
+BRANCH (opt3, ``branch_gate: true``, league only; scratchpad/gauntlet/L73/opt3/INTERFACE.md T3 + the lead's async
+redesign): ``branch_actors`` worker processes (``BranchPool``, separate from the PPO actors, which are untouched) run
+CONTINUOUSLY: self-play matches with the newest learner weights (picked up between rounds, never waited for) on the
+GREEDY live rule against a SAMPLING league opponent; at up to ``branch_points_per_match`` decisions with p_gate in
+``branch_band`` they compare PLAY now vs HOLD from the identical state (T1 ``BranchRunner.pair``, T2 ``branch_label``:
+full-match outcome, k continuations) and stream each labelled sample, tagged with its weights version, back. Once per
+update the learner drains the stream (never blocking), drops samples staler than ``branch_max_staleness`` updates and
+|delta| < branch_min_abs_delta, keeps a FIFO buffer (``branch_buffer``) and takes ONE optimizer step on branch_coef x the
+weighted BCE of the live gate x = (z - logit(tau)) / T toward 1[delta > 0] (``branch_step``). Off = no worker, no step.
+LEASH (T12b, owner ruling):``leash: max`` steers beta on max(KL_gate, KL_card, KL_cell) (``leash_kl``); ``cell`` = the
 old KL_cell rule exactly (and what a run resumed from before the key keeps).
 
     research/ext/Royale/.venv/Scripts/python.exe -m pipeline.rl_royale --config pipeline/rl_royale.yaml --run NAME
@@ -227,6 +236,291 @@ def adv_cfg(cfg: dict) -> dict:
     if bad:
         raise SystemExit("bad advantage config: " + "; ".join(bad))
     return c
+
+
+# ---- counterfactual gate branching (opt3, scratchpad/gauntlet/L73/opt3/INTERFACE.md T3): opt-in ``branch_gate`` ------
+# Off (the default, and any config without the keys) = the trainer exactly as before: no branch actor, no extra loss.
+BRANCH_DEFAULTS = {"branch_gate": False, "branch_actors": 24, "branch_threads": 1, "branch_points_per_match": 6,
+                   "branch_band": [0.2, 0.65], "branch_hold_s": [2, 4, 8], "branch_hold_tau": 0.55,
+                   "branch_horizon_s": None, "branch_k": 16, "branch_score": "outcome", "branch_phi_ckpt": None,
+                   "branch_coef": 0.1, "branch_min_abs_delta": 0.25, "branch_buffer": 512, "branch_max_staleness": 3}
+BRANCH_SPECS_PER_SEND = 2      # fresh matchups per worker per update (a branch match spans many updates)
+BRANCH_SCORES = ("phi", "outcome")
+
+
+def branch_cfg(cfg: dict) -> dict:
+    """The branch keys of a config (``BRANCH_DEFAULTS`` for missing ones), validated: SystemExit naming the bad key.
+    ``branch_gate`` on also needs ``league`` (branch workers play self-play matches, T1's ``SelfPlayMatch`` fork), a
+    SAMPLING league opponent (``league_opp_policy: sample``, T > 0: with a greedy opponent all k continuations of a
+    branch are identical), branch_hold_tau > tau (HOLD = a STRICTER gate) and, for ``branch_score: phi``, a
+    ``branch_phi_ckpt`` (``outcome``: branch_horizon_s null)."""
+    c = {k: cfg.get(k, v) for k, v in BRANCH_DEFAULTS.items()}
+    num = (lambda v: isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v))
+    intk = (lambda v, lo: isinstance(v, int) and not isinstance(v, bool) and v >= lo)
+    on, bad = c["branch_gate"], []
+    if not isinstance(on, bool):
+        bad.append(f"branch_gate must be true or false, got {on!r}")
+        on = False
+    for k in ("branch_actors", "branch_threads"):
+        if not intk(c[k], 1):
+            bad.append(f"{k} must be an integer >= 1, got {c[k]!r}")
+    if not intk(c["branch_max_staleness"], 0):
+        bad.append(f"branch_max_staleness must be an integer >= 0, got {c['branch_max_staleness']!r}")
+    if on and cfg.get("league_opp_policy", "sample") != "sample":
+        bad.append(f"branch_gate true needs league_opp_policy sample, got {cfg.get('league_opp_policy')!r}: a greedy "
+                   f"branch-match opponent makes all branch_k continuations identical")
+    elif on and not (num(cfg.get("T")) and cfg["T"] > 0):
+        bad.append(f"branch_gate true needs T > 0 (the sampling opponent's temperature), got {cfg.get('T')!r}")
+    if not intk(c["branch_buffer"], 1):
+        bad.append(f"branch_buffer must be an integer >= 1, got {c['branch_buffer']!r}")
+    if not intk(c["branch_points_per_match"], 1):
+        bad.append(f"branch_points_per_match must be an integer >= 1, got {c['branch_points_per_match']!r}")
+    b = c["branch_band"]
+    if not (isinstance(b, (list, tuple)) and len(b) == 2 and all(num(x) for x in b) and 0.0 <= b[0] < b[1] <= 1.0):
+        bad.append(f"branch_band must be [lo, hi] with 0 <= lo < hi <= 1, got {b!r}")
+    h = c["branch_hold_s"]
+    if not (isinstance(h, (list, tuple)) and h and all(num(x) and x > 0 for x in h)):
+        bad.append(f"branch_hold_s must be a non-empty list of numbers > 0, got {h!r}")
+    ht = c["branch_hold_tau"]
+    if not (num(ht) and 0.0 < ht < 1.0):
+        bad.append(f"branch_hold_tau must be in (0, 1), got {ht!r}")
+    elif on and num(cfg.get("tau")) and ht <= cfg["tau"]:
+        bad.append(f"branch_hold_tau {ht} must be > tau {cfg['tau']} (HOLD is the stricter gate)")
+    hz = c["branch_horizon_s"]
+    if not (hz is None or (num(hz) and hz > 0)):
+        bad.append(f"branch_horizon_s must be null (play to the end) or a number > 0, got {hz!r}")
+    if not intk(c["branch_k"], 1):
+        bad.append(f"branch_k must be an integer >= 1, got {c['branch_k']!r}")
+    if c["branch_score"] not in BRANCH_SCORES:
+        bad.append(f"branch_score must be one of {BRANCH_SCORES}, got {c['branch_score']!r}")
+    elif on and c["branch_score"] == "phi" and not (isinstance(c["branch_phi_ckpt"], str) and c["branch_phi_ckpt"]):
+        bad.append(f"branch_score phi needs branch_phi_ckpt (a frozen gen checkpoint), got {c['branch_phi_ckpt']!r}")
+    elif on and c["branch_score"] == "outcome" and c["branch_horizon_s"] is not None:
+        bad.append("branch_score outcome needs branch_horizon_s null (an outcome exists only at the match end)")
+    for k in ("branch_coef", "branch_min_abs_delta"):
+        if not (num(c[k]) and c[k] >= 0.0):
+            bad.append(f"{k} must be a finite number >= 0, got {c[k]!r}")
+    if on and not cfg.get("league"):
+        bad.append("branch_gate true needs league true (branch actors play self-play matches)")
+    if bad:
+        raise SystemExit("bad branch config: " + "; ".join(bad))
+    return c
+
+
+# RoyaleSim phases (royale_env.REGEN_SCHEDULE): 1x to 120 s, 2x to 180 s (regulation end), overtime to tick 6000
+PHASES = ((0, "single"), (2400, "double"), (3600, "overtime"))   # = branching.BranchResult.phase
+BRANCH_TARGET_END = 4800       # targets drawn on [0, 4800): 1x / 2x / first 60 s of OT, 1/3 of the points each
+
+
+def phase_of(tick: int) -> str:
+    return [name for t0, name in PHASES if int(tick) >= t0][-1]
+
+
+def branch_targets(rng: np.random.Generator, n: int) -> list[int]:
+    """``n`` sorted target ticks for one match's branch points, stratified toward 2x / OT: density 1 per single-elixir
+    tick, 2 per double / overtime tick on [0, BRANCH_TARGET_END) (equal mass per phase). A target fires at the first ELIGIBLE learner
+    decision at or after it (``play_branch_match``); OT targets of a match that ends in regulation never fire.
+    ponytail: fixed density, no per-match length model -- a regulation-only match gets ~2/3 of its points."""
+    segs = [(0, 2400, 1.0), (2400, 3600, 2.0), (3600, BRANCH_TARGET_END, 2.0)]
+    mass = np.array([(b - a) * d for a, b, d in segs])
+    out = []
+    for _ in range(int(n)):
+        a, b, _d = segs[int(rng.choice(len(segs), p=mass / mass.sum()))]
+        out.append(int(rng.integers(a, b)))
+    return sorted(out)
+
+
+def branch_impl():
+    """(BranchSpec, BranchRunner, branch_label): T1's ``pipeline.branching`` + T2's ``pipeline.branch_score`` (tests
+    monkeypatch this function; the smoke patches it inside the spawn workers via a wrapped ``branch_worker_main``)."""
+    from pipeline.branching import BranchRunner, BranchSpec
+    from pipeline.branch_score import branch_label
+    return BranchSpec, BranchRunner, branch_label
+
+
+def side_decide(s) -> tuple[float, dict, np.ndarray]:
+    """One PREPARED self-play side's forward + decision under its own model and cfg -- ``run_selfplay_batch``'s
+    per-policy rule (live: greedy ``live_decide_batch``; sample: ``sample_decide_batch`` on the side's own RNG) on one
+    row. -> (p_gate, decision, allowed)."""
+    from pipeline.decision_options import match_kwargs
+    from pipeline.search_s0 import forward
+    p, enc, heads, hand = forward(s)
+    _, allowed, stalled = s.pre(hand)
+    if s.cfg["policy"] == "live":
+        d = E.live_decide_batch(s.model, enc, heads, [p], allowed[None], np.array([stalled]), tau=s.cfg["tau"],
+                                device=s.cfg["device"], **match_kwargs([s]))[0]
+    else:
+        d = E.sample_decide_batch(s.model, enc, heads, [p], allowed[None], np.array([stalled]), [s], s.cfg)[0]
+    return float(p), d, allowed
+
+
+def branch_row(s, allowed: np.ndarray, p: float, T: float) -> dict:
+    """The deciding side's input row in ``Match._record``'s format (the generalist's ``gen_row`` keys, else
+    tok/mask/sc/past), with the trajectory fields ``Match._traj_arrays`` stacks: a gate-only row (gate_sampled, not
+    played), so ``policy_terms`` recomputes exactly the gate logit x the PPO loss uses."""
+    if s._gen_row is not None:
+        row = {k: s._gen_row[k] for k in s._gen_row if k in E.GEN_ROW_KEYS + E.GEN_V3_KEYS + E.GEN_V31_KEYS}
+    else:
+        tok, mask, sc, past = s._obs
+        row = {"tok": tok, "mask": mask, "sc": sc, "past": past}
+    return {**row, "allowed": np.asarray(allowed, bool).copy(), "stalled": False, "gate_sampled": True, "played": False,
+            "slot": -1, "cell": -1, "lp_gate": 0.0, "lp_card": 0.0, "lp_cell": 0.0, "p_gate": float(p), "T": float(T)}
+
+
+def play_branch_match(m, runner, impl: tuple, bc: dict, phi=None, sync=(lambda: True), emit=None) -> list[dict]:
+    """Play SelfPlayMatch ``m`` to the end as ``run_selfplay_batch`` would (every side prepared, then decided on its
+    own model / cfg, then applied in side order) with the learner on the GREEDY live rule. At an eligible learner
+    decision -- an affordable card, no anti-stall, p_gate in ``branch_band`` (which straddles tau: above it PLAY is the
+    live rule's own play, below it T1 forces the play) and a ``branch_targets`` tick reached -- call ``runner.pair(m, ds, spec)`` (T1) BEFORE any side's decision draws an RNG
+    (the learner's live rule draws none) and ``branch_label(result, branch_score[, phi=])`` (T2) -> one sample: the row
+    (``branch_row``), delta, weight, phase, tick. The main trajectory is unchanged by the branching (pair leaves ``m``
+    untouched, T1 contract). ``sync()`` runs at the top of every round (a branch worker loads the newest weights
+    there, so a round -- decision and pair -- uses ONE set of weights); False = stop now. ``emit(sample)`` (optional)
+    gets each sample as soon as it is labelled."""
+    Spec, _, label = impl
+    tag = str(m.spec["tag"])
+    rng = np.random.default_rng(zlib.crc32(f"{tag}:branch".encode()))
+    targets = branch_targets(rng, bc["branch_points_per_match"])
+    lo, hi = bc["branch_band"]
+    L, out = m.learner, []
+    while True:
+        if not sync():
+            return out
+        ds = m.due()
+        if not ds:
+            return out
+        for s in ds:
+            s.prepare()
+        dec = {}
+        if L in ds:
+            p, d, allowed = dec[id(L)] = side_decide(L)
+            tick = int(m.env.tick)
+            if targets and tick >= targets[0] and d["why"] in ("gate", "wait") and lo <= p <= hi:
+                targets.pop(0)
+                j = len(out)
+                spec = Spec(hold_s=float(rng.choice(bc["branch_hold_s"])), hold_tau=float(bc["branch_hold_tau"]),
+                            horizon_s=bc["branch_horizon_s"], k=int(bc["branch_k"]),
+                            seed=zlib.crc32(f"{tag}:branch:{j}".encode()))
+                t0 = time.perf_counter()
+                res = runner.pair(m, ds, spec)
+                delta, w = label(res, bc["branch_score"], **({"phi": phi} if phi is not None else {}))
+                out.append({"branch": True, "tag": tag, "k": j, "entry_index": -1, "side": L.side, "tick": tick,
+                            "phase": getattr(res, "phase", None) or phase_of(tick), "p_gate": p,
+                            "p_play": getattr(res, "p_play", None), "hold_s": spec.hold_s, "delta": float(delta),
+                            "weight": float(w), "wall_s": time.perf_counter() - t0,
+                            "row": branch_row(L, allowed, p, L.cfg["T"])})
+                if emit is not None:
+                    emit(out[-1])
+        for s in ds:
+            if id(s) not in dec:
+                dec[id(s)] = side_decide(s)
+        for s in ds:
+            p, d, _ = dec[id(s)]
+            s.apply(p, d)
+
+
+def branch_jobs(make_env, learner, opps: dict, jobs, lcfg: dict, bc: dict, update: int,
+                on_skip=None, skip=(), sync=(lambda: True), emit=None, phi=None) -> tuple[list[dict], dict]:
+    """Branch matches IN ORDER until ``sync()`` returns False or the list ends: one ``play_branch_match`` per (i, league
+    spec, k), the learner under ``lcfg`` (live rule, unrecorded) with the PPO rollout's per-match seeds
+    (``rollout_jobs``' overrides), the spec's real opponent ``opps[id] = (policy, cfg)`` (``run_selfplay_batch``'s
+    format; also what BranchRunner gets). ``branch_score: phi``: T2's frozen phi model from ``branch_phi_ckpt``
+    (REPO-relative or absolute), loaded here unless passed. -> (all samples, {matches started, pairs, stopped})."""
+    impl = branch_impl()
+    if phi is None and bc["branch_score"] == "phi":
+        from pipeline.branch_score import load_phi
+        phi = load_phi(str(REPO / bc["branch_phi_ckpt"]), lcfg["device"])
+    runner = impl[1](make_env, learner, opps, lcfg, device=lcfg["device"])
+    env, out, n = make_env(), [], 0
+    stopped = False
+    for i, spec, k, over in rollout_jobs(jobs, update):
+        if not sync():
+            stopped = True
+            break
+        opp, ocfg = opps[spec["opp"]["id"]]
+        try:
+            m = E.SelfPlayMatch(env, spec, k, {**lcfg, **over, "entry_index": i},
+                                {**ocfg, **{x: v for x, v in over.items() if x != "obs_seed"}, "entry_index": i},
+                                learner, opp)
+        except skip as exc:
+            if on_skip:
+                on_skip(spec, exc)
+            continue
+        n += 1
+        live = [True]
+
+        def sync_once():
+            live[0] = sync()
+            return live[0]
+        out += play_branch_match(m, runner, impl, bc, phi, sync_once, emit)
+        if not live[0]:
+            stopped = True
+            break
+    return out, {"matches": n, "pairs": len(out), "stopped": stopped}
+
+
+def branch_stats(samples: list[dict], min_abs: float) -> dict:
+    """Per-update branch monitors: samples emitted, dropped (|delta| < min_abs), and over the KEPT samples n, share
+    HOLD-better (delta < 0) and mean delta -- overall and by phase."""
+    kept = [s for s in samples if abs(s["delta"]) >= min_abs]
+
+    def agg(ss):
+        d = np.array([s["delta"] for s in ss], dtype=np.float64)
+        return {"n": len(ss), "hold_better_share": float((d < 0).mean()) if len(d) else None,
+                "mean_delta": float(d.mean()) if len(d) else None}
+    return {"emitted": len(samples), "dropped": len(samples) - len(kept), **agg(kept),
+            "by_phase": {ph: agg([s for s in kept if s["phase"] == ph]) for ph in sorted({s["phase"] for s in samples})},
+            "pair_wall_s_mean": float(np.mean([s["wall_s"] for s in samples])) if samples else None}
+
+
+def branch_batch(samples: list[dict], min_abs: float) -> Optional[dict]:
+    """Kept samples (|delta| >= min_abs) -> numpy batch: the rows stacked by ``Match._traj_arrays`` (the PPO batch's
+    own layout) + ``target`` (1.0 = PLAY better, delta > 0; 0.0 = HOLD, ties included) and ``weight``. None if empty."""
+    from types import SimpleNamespace
+    kept = [s for s in samples if abs(s["delta"]) >= min_abs]
+    if not kept:
+        return None
+    B = E.Match._traj_arrays(SimpleNamespace(traj=[s["row"] for s in kept]))
+    B["target"] = np.array([float(s["delta"] > 0) for s in kept], dtype=np.float64)
+    B["weight"] = np.array([s["weight"] for s in kept], dtype=np.float64)
+    return B
+
+
+def branch_terms(model, Bb: dict, idx, tau: float, T: float) -> tuple[torch.Tensor, torch.Tensor]:
+    """Rows ``idx``: (x, weight x BCE(sigmoid(x), target)), x = (z - logit(tau)) / T -- the live gate's
+    parameterisation (play iff x > 0), recomputed by ``policy_terms`` exactly as the PPO gate term."""
+    x = policy_terms(model, Bb, idx, tau, T)["x"]
+    return x, Bb["weight"][idx] * Fn.binary_cross_entropy_with_logits(x, Bb["target"][idx], reduction="none")
+
+
+def branch_step(model, opt, Bb: dict, cfg: dict, coef: float) -> dict:
+    """ONE optimizer step on coef x mean_i weight_i BCE_i over the whole replay buffer ``Bb`` (gradients accumulated
+    over chunks of ``minibatch`` rows; clipped at ``grad_clip`` like PPO's), after the PPO epochs. -> monitors: buffer
+    rows, BCE (the unscaled weighted mean) before / after, mean and max |dP(play)| on the buffer rows with P(play) =
+    sigmoid(x), grad norm; ``skipped`` (no step taken) on a non-finite loss or gradient norm."""
+    N, mb = len(Bb["target"]), int(cfg["minibatch"])
+    chunks = [torch.arange(s, min(s + mb, N), device=Bb["target"].device) for s in range(0, N, mb)]
+
+    def probe():
+        with torch.no_grad():
+            xs, ls = zip(*(branch_terms(model, Bb, i, cfg["tau"], cfg["T"]) for i in chunks))
+            return torch.sigmoid(torch.cat(xs)), float(torch.cat(ls).mean())
+    p0, bce0 = probe()
+    opt.zero_grad(set_to_none=True)
+    for i in chunks:
+        (float(coef) * branch_terms(model, Bb, i, cfg["tau"], cfg["T"])[1].sum() / N).backward()
+    gn = torch.nn.utils.clip_grad_norm_(model.parameters(), float(cfg["grad_clip"]))
+    out = {"rows": N, "bce_before": bce0, "grad_norm": float(gn), "skipped": None, "p_play_mean": float(p0.mean())}
+    if not (math.isfinite(bce0) and torch.isfinite(gn)):
+        opt.zero_grad(set_to_none=True)
+        out.update({"skipped": f"non-finite bce {bce0} / grad norm {float(gn)}", "bce_after": bce0,
+                    "dp_abs_mean": 0.0, "dp_abs_max": 0.0})
+        return out
+    opt.step()
+    p1, bce1 = probe()
+    dp = (p1 - p0).abs()
+    out.update({"bce_after": bce1, "dp_abs_mean": float(dp.mean()), "dp_abs_max": float(dp.max())})
+    return out
 
 
 def value_scalar(logits: torch.Tensor) -> torch.Tensor:
@@ -1275,6 +1569,196 @@ class ActorPool:
 
 
 # ------------------------------------------------------------------------------------------------------
+# opt3: asynchronous branch workers (never on the PPO path)
+# ------------------------------------------------------------------------------------------------------
+BRANCH_MAX_ERRORS = 5          # consecutive failed matches before a worker gives up (reported, restarted by the pool)
+
+
+def branch_worker_main(wid: int, in_q, out_q, base: dict) -> None:
+    """One branch worker, for the whole run. In: (version, state_dict bytes, [league specs]) per update, None = exit;
+    only the NEWEST message counts (older ones are skipped), read between rounds without waiting -- it waits only for
+    its first weights, or for specs when it has none. Each spec is one branch match (``branch_jobs``) with the weights
+    of the round; every labelled sample goes out at once as ("sample", wid, sample + version, worker). Out also:
+    ("ready", wid, pid), ("error", wid, traceback) -- one failed match is reported and skipped; BRANCH_MAX_ERRORS in a
+    row end the worker."""
+    import multiprocessing as mp
+    send = actor_sender(out_q)
+    bc = base["branch"]
+    torch.set_num_threads(int(bc["branch_threads"]))
+    try:
+        from pipeline.royale_runtime import require_same
+        require_same(base.get("runtime"))
+        from pipeline.model_v3 import S1Model
+        from pipeline.royale_env import RoyaleSelfPlayEnv, UnsupportedDeck
+        dev = base["actor_device"]
+        g = base.get("gen")
+        if g:
+            from pipeline.model_gen import GenModel
+            net = GenModel(d=int(base["d"]), layers=int(base["layers"]), d_c=int(g["d_c"]),
+                           n_cards=len(g["card_vocab"]), feature_version=int(g.get("feature_version", 1))).to(dev).eval()
+            model = E.GenPolicy(net, g["card_vocab"])
+        else:
+            net = model = S1Model(d=int(base["d"]), layers=int(base["layers"])).to(dev).eval()
+        phi = None
+        if bc["branch_score"] == "phi":
+            from pipeline.branch_score import load_phi
+            phi = load_phi(str(REPO / bc["branch_phi_ckpt"]), dev)
+        send(("ready", wid, os.getpid()))
+    except Exception:
+        send(("error", wid, traceback.format_exc()))
+        return
+    parent = mp.parent_process()
+    st = {"version": None, "specs": [], "exit": False}
+
+    def sync(block: bool = False) -> bool:
+        """Drain ``in_q`` to its newest message and load it; ``block``: wait until one exists. False = exit."""
+        got = None
+        while True:
+            try:
+                msg = in_q.get(timeout=30) if (block and got is None) else in_q.get_nowait()
+            except queue.Empty:
+                if block and got is None:
+                    if parent is not None and not parent.is_alive():
+                        st["exit"] = True
+                        return False
+                    continue
+                break
+            if msg is None:
+                st["exit"] = True
+                return False
+            got = msg
+        if got is not None:
+            version, sd, specs = got
+            net.load_state_dict(torch.load(io.BytesIO(sd), map_location=dev))
+            net.eval()
+            st.update(version=int(version), specs=list(specs))
+        return True
+
+    lcfg = actor_cfg(base, "screen", wid, dev)                # the greedy live rule, unrecorded
+    ocfg = {**actor_cfg(base, "rollout", wid, dev), "policy": base["league_opp_policy"], "record": False}
+    sp_env = (lambda: RoyaleSelfPlayEnv(decision_ticks=int(base["decide_every"]), forms_mode=base.get("forms_mode", "base"),
+                                        hero_abilities=base.get("hero_abilities", False),
+                                        ability_policy=base.get("ability_policy", "generic")))
+    emit = (lambda smp: send(("sample", wid, {**smp, "version": st["version"], "worker": wid})))
+    opp_cache: dict = {}
+    n_match = errors = 0
+    if not sync(block=True):
+        return
+    while not st["exit"]:
+        if not st["specs"]:
+            if not sync(block=True):
+                return
+            continue
+        spec = st["specs"].pop(0)
+        try:
+            pth = spec["opp"]["path"]
+            if pth not in opp_cache:
+                if len(opp_cache) >= 8:                         # bounded: snapshots churn over a run
+                    opp_cache.pop(next(iter(opp_cache)))
+                pol, mi = E.load_policy(REPO / pth, dev)
+                opp_cache[pth] = (pol, str(mi.get("grid", "floor")))
+            pol, grid = opp_cache[pth]
+            tag = f"bw{wid:02d}_{n_match:05d}"
+            n_match += 1
+            branch_jobs(sp_env, model, {spec["opp"]["id"]: (pol, {**ocfg, "grid": grid})}, [(n_match, {**spec, "tag": tag}, 0)],
+                        lcfg, bc, st["version"], skip=(UnsupportedDeck,), sync=sync, emit=emit, phi=phi)
+            errors = 0
+        except Exception:
+            errors += 1
+            if not send(("error", wid, traceback.format_exc())) or errors >= BRANCH_MAX_ERRORS:
+                return
+
+
+class BranchPool:
+    """``n`` branch worker processes for the whole run (spawn, like ``ActorPool``, but never waited on after startup):
+    ``send`` puts (version, weights, specs) on every worker's queue (non-blocking); ``drain`` takes everything that has
+    arrived (non-blocking), logs worker errors, restarts a dead worker (``max_restarts`` each, then it stays down)."""
+
+    def __init__(self, base: dict, n: int, log, pid_file: Optional[Path] = None, max_restarts: int = 3,
+                 target=None, ctx=None):
+        if ctx is None:
+            import torch.multiprocessing as tmp
+            ctx = tmp.get_context("spawn")
+        self.ctx, self.base, self.n, self.log, self.pid_file = ctx, base, int(n), log, pid_file
+        self.target = target or branch_worker_main
+        self.max_restarts, self.restarts, self.errors = int(max_restarts), Counter(), Counter()
+        self.out_q = ctx.Queue()
+        self.in_qs, self.procs, self.pids, self.last = {}, {}, {}, None
+        # a reader thread keeps the workers' pipe flowing: a sample carries its observation row, so between drains the
+        # pipe fills and a get_nowait drain alone saw samples 1-2 updates late (measured, laptop smoke 2026-10-07)
+        import threading
+        self._got, self._lock, self._closed = [], threading.Lock(), False
+        self._reader = threading.Thread(target=self._read, daemon=True)
+        self._reader.start()
+        for w in range(self.n):
+            self._start(w)
+
+    def _read(self) -> None:
+        while not self._closed:
+            try:
+                msg = self.out_q.get(timeout=1.0)
+            except queue.Empty:
+                continue
+            except (EOFError, OSError, ValueError):
+                return
+            with self._lock:
+                self._got.append(msg)
+
+    def _start(self, w: int) -> None:
+        self.in_qs[w] = self.ctx.Queue()
+        p = self.ctx.Process(target=self.target, args=(w, self.in_qs[w], self.out_q, self.base), daemon=True)
+        p.start()
+        self.procs[w], self.pids[w] = p, p.pid
+        if self.pid_file is not None:
+            self.pid_file.write_text("".join(f"{pid}\n" for pid in self.pids.values()), encoding="utf-8")
+        if self.last is not None:                              # a restarted worker gets the newest weights at once
+            self.in_qs[w].put(self.last[w])
+
+    def send(self, version: int, sd: bytes, specs: list) -> None:
+        """Worker w gets (version, sd, specs[w]); nothing here waits on a worker."""
+        self.last = {w: (int(version), sd, list(specs[w])) for w in range(self.n)}
+        for w in range(self.n):
+            self.in_qs[w].put(self.last[w])
+
+    def drain(self) -> tuple[list[dict], dict]:
+        """Every sample that has arrived since the last drain (non-blocking) + {errors, restarts, alive}."""
+        out, errs = [], 0
+        with self._lock:
+            msgs, self._got = self._got, []
+        for msg in msgs:
+            if msg[0] == "sample":
+                out.append(msg[2])
+            elif msg[0] == "ready":
+                self.pids[msg[1]] = msg[2]
+            elif msg[0] == "error":
+                errs += 1
+                self.errors[msg[1]] += 1
+                tb = str(msg[2]).strip().splitlines()
+                self.log(f"[rl] BRANCH WORKER {msg[1]} error: {tb[-1] if tb else '?'}")
+        restarted = []
+        for w, p in list(self.procs.items()):
+            if not p.is_alive() and self.restarts[w] < self.max_restarts:
+                self.restarts[w] += 1
+                self.log(f"[rl] BRANCH WORKER {w} exited ({p.exitcode}); restart {self.restarts[w]}/{self.max_restarts}")
+                self._start(w)
+                restarted.append(w)
+        return out, {"errors": errs, "restarted": restarted, "alive": sum(p.is_alive() for p in self.procs.values())}
+
+    def close(self) -> None:
+        for q in self.in_qs.values():
+            try:
+                q.put(None)
+            except Exception:
+                pass
+        for p in self.procs.values():
+            p.join(5)
+            if p.is_alive():
+                p.terminate()                                  # mid-pair: a label is minutes long
+                p.join(5)
+        self._closed = True
+
+
+# ------------------------------------------------------------------------------------------------------
 # config, paths, logging
 # ------------------------------------------------------------------------------------------------------
 def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
@@ -1287,7 +1771,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
         if "=" not in ov:
             raise SystemExit(f"bad override {ov!r} (want key=value)")
         k, v = ov.split("=", 1)
-        if k not in cfg and k != "ability_policy":       # optional: absent = generic (the historical hash / config)
+        if k not in cfg and k != "ability_policy" and k not in BRANCH_DEFAULTS:   # optional: absent = generic / off
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
         cfg[k] = yaml.safe_load(v)
     if type(cfg["hero_abilities"]) is not bool:
@@ -1373,6 +1857,14 @@ class Learner:
         self.init_path = REPO / cfg["init"]
         condition_cfg(cfg)                                    # validate the condition keys before anything runs
         adv_cfg(cfg)                                          # ... and the advantage (R1) keys
+        bc = branch_cfg(cfg)                                  # ... and the branch (opt3) keys
+        if bc["branch_gate"]:
+            try:
+                branch_impl()
+            except ImportError as exc:
+                raise SystemExit(f"branch_gate true but the branch modules do not import: {exc!r}")
+            if bc["branch_score"] == "phi" and not (REPO / bc["branch_phi_ckpt"]).exists():
+                raise SystemExit(f"branch_phi_ckpt {bc['branch_phi_ckpt']} not found")
         ick = torch.load(self.init_path, map_location="cpu")
         self.gen = {"d_c": int(ick["d_c"]), "card_vocab": list(ick["card_vocab"])} if ick.get("gen") else None
         if self.gen and int(ick["args"].get("feature_version", 1)) >= 3:
@@ -1401,6 +1893,7 @@ class Learner:
         self.latest_pa: Optional[dict] = None
         self._rows = None
         self.actors: Optional[ActorPool] = None
+        self.branch_pool: Optional[BranchPool] = None
         self.resumed = resume
         if resume:
             self._restore(self.ck_dir / f"{run}_latest.pt")
@@ -1650,10 +2143,45 @@ class Learner:
             self.log(f"[rl] WARNING {len(skipped)} rollout(s) skipped as unsupported: {skipped[:3]}")
         return res, {"picked": [int(i) for i in pick], "actors": st, "skipped": len(skipped)}
 
+    def _branch_send(self, u: int, bc: dict) -> None:
+        """Start of update u: the weights the PPO actors get (version u) + BRANCH_SPECS_PER_SEND fresh matchups per
+        worker, drawn like the PPO matchups (``sample_matchups``) from an rng of their own (seed, update): the learner's
+        rng -- PPO's matchups, minibatch order -- is not touched. Non-blocking."""
+        rng = np.random.default_rng(zlib.crc32(f"branch:{int(self.cfg['seed'])}:{int(u)}".encode()))
+        n = int(bc["branch_actors"])
+        specs = sample_matchups(rng, BRANCH_SPECS_PER_SEND * n, u, self.league["snapshots"], self.cfg, self.census,
+                                self.census_p)
+        self.branch_pool.send(u, state_bytes(self.model), [specs[w::n] for w in range(n)])
+
+    def _branch_update(self, samples: list[dict], bc: dict, apply: bool, u: int) -> dict:
+        """The samples drained this update: those labelled under weights older than ``branch_max_staleness`` updates
+        (u - version) are dropped; the rest -> monitors (``branch_stats``), and the kept ones (|delta| >= min) join the
+        FIFO replay buffer (last ``branch_buffer``); ``apply`` (not warm-up, no crash) -> ONE ``branch_step`` on the
+        whole buffer. ponytail: the buffer is not checkpointed -- a --resume starts it empty."""
+        lag = [int(u) - int(x["version"]) for x in samples]
+        fresh = [x for x, g in zip(samples, lag) if g <= int(bc["branch_max_staleness"])]
+        st = branch_stats(fresh, bc["branch_min_abs_delta"])
+        st.update({"drained": len(samples), "stale_dropped": len(samples) - len(fresh),
+                   "staleness_mean": float(np.mean(lag)) if lag else None,
+                   "by_worker": dict(Counter(int(x.get("worker", -1)) for x in samples))})
+        samples = fresh
+        buf = self.__dict__.setdefault("branch_buf", [])
+        buf += [x for x in samples if abs(x["delta"]) >= bc["branch_min_abs_delta"]]
+        del buf[:-int(bc["branch_buffer"])]
+        st.update({"buffer": len(buf), "step": None})
+        if apply and buf:
+            t = time.perf_counter()
+            st["step"] = branch_step(self.model, self.opt, to_device(branch_batch(buf, 0.0), self.dev), self.cfg,
+                                     bc["branch_coef"])
+            st["step"]["wall_s"] = time.perf_counter() - t
+        return st
+
     def one_update(self, u: int) -> tuple[dict, list[str], bool]:
         cfg, t0 = self.cfg, time.perf_counter()
         if self.dev.type == "cuda":
             torch.cuda.reset_peak_memory_stats(self.dev)
+        if branch_cfg(cfg)["branch_gate"]:                    # opt3: this update's weights to the branch workers
+            self._branch_send(u, branch_cfg(cfg))
         results, rinfo = self.rollout(u)
         t_roll = time.perf_counter() - t0
         mon = rollout_monitors(results, cfg["tau"], cfg["T"])
@@ -1696,6 +2224,14 @@ class Learner:
         elif not all(bool(torch.isfinite(p).all()) for p in self.model.parameters()):
             reasons.append("non-finite parameters after the update")
             crash = True
+        bc, brst = branch_cfg(cfg), None
+        if bc["branch_gate"]:                                   # opt3: drain (never waits), ONE gate-BCE step, after PPO
+            drained, pinfo = self.branch_pool.drain()
+            brst = self._branch_update(drained, bc, apply=not crash and not warm, u=u)
+            brst["pool"] = pinfo
+            if brst["step"] and not all(bool(torch.isfinite(p).all()) for p in self.model.parameters()):
+                reasons.append("non-finite parameters after the branch step")
+                crash = True
         leash = cfg.get("leash", "cell")
         kl_leash, kl_driver = leash_kl(upd, leash)
         if not crash:
@@ -1732,6 +2268,9 @@ class Learner:
             if tick_unit:
                 rec["gae"].update({"gamma_unit": "tick", "gamma_tick": ac["gae_gamma_tick"],
                                    "gamma_row_mean": gamma_row_mean})
+        if brst is not None:
+            rec["branch"] = {**brst, "coef": bc["branch_coef"], "min_abs_delta": bc["branch_min_abs_delta"],
+                             "buffer_cap": bc["branch_buffer"], "max_staleness": bc["branch_max_staleness"]}
         del B, R
         if not crash:
             u1 = self.update
@@ -1800,6 +2339,19 @@ class Learner:
                  + (f" | shape |F| {f(shs['mean_abs_F'], '{:.4f}')} (t {f(shs['mean_abs_tower'], '{:.4f}')} c "
                     f"{f(shs['mean_abs_crown'], '{:.4f}')}) |Phi| {f(shs['mean_abs_phi'], '{:.4f}')} dom "
                     f"{f(shs['shaping_dominates'])}" if shs else "")
+                 + (f" | branch n {brst['n']}/{brst['emitted']} hold+ {f(brst['hold_better_share'])} d "
+                    f"{f(brst['mean_delta'], '{:+.3f}')}"
+                    + "".join(f" [{ph} {v['n']} {f(v['hold_better_share'])} {f(v['mean_delta'], '{:+.3f}')}]"
+                              for ph, v in brst["by_phase"].items())
+                    + f" buf {brst['buffer']}"
+                    + (f" bce {f(brst['step']['bce_before'], '{:.4f}')}->{f(brst['step']['bce_after'], '{:.4f}')} "
+                       f"|dP| {f(brst['step']['dp_abs_mean'], '{:.5f}')}"
+                       + (f" SKIPPED {brst['step']['skipped']}" if brst["step"]["skipped"] else "")
+                       if brst["step"] else " (no step)")
+                    + f" | drained {brst['drained']} stale-{brst['stale_dropped']} lag {f(brst['staleness_mean'], '{:.1f}')}"
+                    f" workers {brst['pool']['alive']}/{bc['branch_actors']} err {brst['pool']['errors']}"
+                    + (f" restarted {brst['pool']['restarted']}" if brst["pool"]["restarted"] else "")
+                    if brst is not None else "")
                  + (" | league wr " + " ".join(f"{t} {f(v['winrate'], '{:.2f}')}/{v['n']}"
                                                for t, v in mon["league"]["by_opp"].items())
                     + f" D {mon['league']['draws']}" + (f" +{rec['snapshot']}" if "snapshot" in rec else "")
@@ -1863,6 +2415,10 @@ class Learner:
                                 pid_file=self.run_dir / "actors.pid")
         (self.run_dir / "pid.json").write_text(json.dumps({"learner": os.getpid(), "actors": self.actors.pids}),
                                                encoding="utf-8")
+        bc = branch_cfg(self.cfg)
+        if bc["branch_gate"]:                                   # opt3: the branch workers (their own pids file)
+            self.branch_pool = BranchPool({**base, "branch": bc}, bc["branch_actors"], self.log,
+                                          pid_file=self.run_dir / "branch_workers.pid")
 
     def startup(self, smoke: bool) -> None:
         """Fresh run: init pro agreement, init held-out screen (both cached in the run dir), u0000 before any update."""
@@ -1872,7 +2428,9 @@ class Learner:
             f"grid {self.grid}; conditions (rollouts + screens): "
             + " ".join(f"{k}={cfg.get(k)}" for k in COND_KEYS) + f"; leash {cfg.get('leash', 'cell')}"
             + ("; advantage gae " + " ".join(f"{k}={v}" for k, v in adv_cfg(cfg).items() if k != "advantage")
-               if adv_cfg(cfg)["advantage"] == "gae" else ""))
+               if adv_cfg(cfg)["advantage"] == "gae" else "")
+            + ("; BRANCH " + " ".join(f"{k}={v}" for k, v in branch_cfg(cfg).items() if k != "branch_gate")
+               if branch_cfg(cfg)["branch_gate"] else ""))
         if self.league is not None:
             log(f"[rl] LEAGUE: {len(self.census)} census decks + icebow (share {cfg['league_icebow_share']}), weights "
                 f"sides^{cfg['league_deck_alpha']} floor {cfg['league_deck_floor']}x mean (max p {self.census_p.max():.4f}, "
@@ -2016,6 +2574,9 @@ def main(argv=None) -> int:
     finally:
         if L is not None and L.actors is not None:
             L.actors.close()
+        if L is not None and getattr(L, "branch_pool", None) is not None:
+            L.branch_pool.close()
+            (run_dir / "branch_workers.pid").unlink(missing_ok=True)
         (run_dir / "pid.json").unlink(missing_ok=True)
         (run_dir / "actors.pid").unlink(missing_ok=True)       # left in place only if the learner is killed hard
 
