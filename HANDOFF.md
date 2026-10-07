@@ -4080,6 +4080,17 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   option-3 branch scoring/validation, dataset builds, heavy offline teacher-forced analyses; keep on the laptop:
 >   live play, GPU learning (unless the VM CPU learner is fast enough), IL training (GPU); stop the VM when its queue
 >   is empty (credits).
+> * **OPT3 SCORE GATE (T2, opus; worktree opt3, `L73/opt3/val/`):** gate AS WRITTEN passes phi@40 (76.8% [65.9,86.7])
+>   and towers@40/@20 -- but only because horizon score and outcome came from the SAME continuations (shared luck).
+>   Independent halves (no shared luck): every horizon score FAILS (phi@40 60.0% [48.8,70.4]; towers@40 61.0%), and the
+>   full outcome itself reproduces only 55.9% at k=4 (reliability .39 at k=8; modelled .56 at k=16, .72 at k=32).
+>   LEAD RULING: the shared-luck-free reading governs (the written gate failed to require independence) -> R3 labels =
+>   FULL-MATCH OUTCOME, k=16, keep |delta| >= .25 (modelled ~9% wrong signs, ~half the labels kept). HOLD vs PLAY by
+>   phase (k=8, 71 points): 1x 34/31%, 2x 32/16% (mean D -.09), 3x+ 3/27% (+.10, n=11) -- holding helps in 2x,
+>   playing helps in 3x+ (small n). CRN not exact (batched float noise; noise, no bias); branch-match opponents must
+>   SAMPLE or the k continuations are identical. Cost ~350 s per k=16 label per contended laptop worker -> on the VM:
+>   branch workers must run CONTINUOUSLY (also during the 95-117 s CPU learner step), not only in the ~20-30 s rollout
+>   window -> T3 redesign requested (async branch workers, outcome k=16).
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
