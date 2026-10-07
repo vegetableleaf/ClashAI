@@ -1,0 +1,140 @@
+{
+ "frames": 1095,
+ "raw_frames_with_projectiles": 633,
+ "raw_hero_duplicate_objects": 621,
+ "injected_cursed_hog_opponent_units_at_x_0_5": {
+  "R1e_fv4": [],
+  "fv5": [
+   "mother_witch_hog"
+  ],
+  "fv6_smoke": [
+   "mother_witch_hog"
+  ]
+ },
+ "checkpoints": {
+  "R1e_fv4": {
+   "feature_version": 4,
+   "from_engine_feature_versions": [
+    4
+   ],
+   "from_engine_calls": 1095,
+   "hero_dupes_reaching_to_observe": 1,
+   "hero_dupes_reaching_public_observer": 0,
+   "decisions": 1095,
+   "plays": 919,
+   "errors": {},
+   "xbow_plays": 106,
+   "plays_with_p_at_or_below_phase_tau": 0,
+   "latency_ms": {
+    "median": 125.3,
+    "p95": 298.1,
+    "max": 995.9,
+    "mean": 148.5
+   },
+   "decisions_with_raw_projectiles": 633,
+   "decisions_with_raw_named_projectiles": 485,
+   "decisions_with_model_projectile_tokens": 485,
+   "decisions_with_known_target_tokens": 485,
+   "decisions_branch_saw_valid_projectiles": 0,
+   "decisions_branch_valid_count_equals_known_target_tokens": 0,
+   "branch_calls": 0,
+   "branch_rows_with_valid_projectiles": 0,
+   "decided_frames_with_raw_projectiles": 633,
+   "branch_output_abs_sum_nonzero": 0,
+   "spread_weight_abs_sum": null
+  },
+  "fv5": {
+   "feature_version": 5,
+   "from_engine_feature_versions": [
+    5
+   ],
+   "from_engine_calls": 1095,
+   "hero_dupes_reaching_to_observe": 1,
+   "hero_dupes_reaching_public_observer": 0,
+   "decisions": 1095,
+   "plays": 909,
+   "errors": {},
+   "xbow_plays": 93,
+   "plays_with_p_at_or_below_phase_tau": 0,
+   "latency_ms": {
+    "median": 127.0,
+    "p95": 305.5,
+    "max": 999.6,
+    "mean": 150.2
+   },
+   "decisions_with_raw_projectiles": 633,
+   "decisions_with_raw_named_projectiles": 485,
+   "decisions_with_model_projectile_tokens": 485,
+   "decisions_with_known_target_tokens": 485,
+   "decisions_branch_saw_valid_projectiles": 0,
+   "decisions_branch_valid_count_equals_known_target_tokens": 0,
+   "branch_calls": 0,
+   "branch_rows_with_valid_projectiles": 0,
+   "decided_frames_with_raw_projectiles": 633,
+   "branch_output_abs_sum_nonzero": 0,
+   "spread_weight_abs_sum": null
+  },
+  "fv6_smoke": {
+   "feature_version": 6,
+   "from_engine_feature_versions": [
+    6
+   ],
+   "from_engine_calls": 1095,
+   "hero_dupes_reaching_to_observe": 1,
+   "hero_dupes_reaching_public_observer": 0,
+   "decisions": 1095,
+   "plays": 909,
+   "errors": {},
+   "xbow_plays": 93,
+   "plays_with_p_at_or_below_phase_tau": 0,
+   "latency_ms": {
+    "median": 139.6,
+    "p95": 313.8,
+    "max": 940.8,
+    "mean": 161.2
+   },
+   "decisions_with_raw_projectiles": 633,
+   "decisions_with_raw_named_projectiles": 485,
+   "decisions_with_model_projectile_tokens": 485,
+   "decisions_with_known_target_tokens": 485,
+   "decisions_branch_saw_valid_projectiles": 485,
+   "decisions_branch_valid_count_equals_known_target_tokens": 1095,
+   "branch_calls": 2149,
+   "branch_rows_with_valid_projectiles": 937,
+   "decided_frames_with_raw_projectiles": 633,
+   "branch_output_abs_sum_nonzero": 937,
+   "spread_weight_abs_sum": 5.105679988861084
+  },
+  "fv6_smoke+options": {
+   "feature_version": 6,
+   "from_engine_feature_versions": [
+    6
+   ],
+   "from_engine_calls": 1095,
+   "hero_dupes_reaching_to_observe": 1,
+   "hero_dupes_reaching_public_observer": 0,
+   "decisions": 1095,
+   "plays": 794,
+   "errors": {},
+   "xbow_plays": 93,
+   "plays_with_p_at_or_below_phase_tau": 0,
+   "latency_ms": {
+    "median": 140.2,
+    "p95": 329.1,
+    "max": 1601.3,
+    "mean": 166.5
+   },
+   "decisions_with_raw_projectiles": 633,
+   "decisions_with_raw_named_projectiles": 485,
+   "decisions_with_model_projectile_tokens": 485,
+   "decisions_with_known_target_tokens": 485,
+   "decisions_branch_saw_valid_projectiles": 485,
+   "decisions_branch_valid_count_equals_known_target_tokens": 1095,
+   "branch_calls": 2149,
+   "branch_rows_with_valid_projectiles": 937,
+   "decided_frames_with_raw_projectiles": 633,
+   "branch_output_abs_sum_nonzero": 937,
+   "spread_weight_abs_sum": 5.105679988861084
+  }
+ }
+}
