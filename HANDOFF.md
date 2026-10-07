@@ -4287,6 +4287,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   R1e (`L71/rl/run_r1e_v3.sh`, base 3.1c, 5 actors) since 15:06, ~96 s/update (R1t 144) -> train ends ~19:15, own
 >   acceptance + Discord ~20:15. LIVE stays STOPPED; CKPT_OVERRIDE = gen_v3.1c. OWNER starts live with
 >   `bash scratchpad/gauntlet/L70/live/start_live.sh` (stop: stop_live.sh). Codex brief = TICKET.md "HANDOFF 2026-10-04
+> * **C BUILT (af5379f on opt3-branching):** `shaping=value_phi` -- Phi computed in the LEARNER from a frozen init
+>   value head (loaded from file, never the learner), causal trailing 10 s mean over kept rows, w .5, critic-scale
+>   bound >= 1 + w; F/residual critic via the existing RS.shaping_from_parts + gae_batch; logs |F|, |Phi|, phi_share,
+>   dPhi std (smoothed vs raw), phi_end_corr. 192 tests OK; parity break caught by the test (x1.0000001 Phi); smoke OK.
+>   Open: smoothing over KEPT rows only (sparser than the pro-data eval); learner cost on the VM unmeasured.
+>   R3 change set (T1+T2+T3+C, 2,495 lines) under blind verification (opus); R4 build (Rocket-vs-top-card + X-Bow class
+>   branching, new worktree `.claude/worktrees/r4`, branch r4-branching) started in parallel.
 >   ~15:40" (Q1 card sampling flag, Q2 area-aware spell aim, Q3 GPU A/Bs after R1e, Q4 R1e approval ping, Q5 fixes);
 >   launcher `.foreman/codex_autopilot/codex_loop.sh` (back-to-back runs to 10-06; STOP_LOOP file stops it).
 > * **15:5x -- owner plan: after the R1e verdict the lead starts LIVE on the winner, then hands over to Codex via
