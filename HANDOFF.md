@@ -3981,6 +3981,18 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   Acceptance: ghost as regression guard only (saturated 98%); reactive 48 seeds on the census AND the ladder decks;
 >   then interleaved live A/B with trophies. Prep worker (opus) building `L73/rl_r2/` (deck file, run_r2.sh gated on a
 >   GO file, smoke).
+> * **OPTION 3 (counterfactual branching for the play/wait gate) -- owner 10-07 ~12:xx: brainstorm, tweak, build with a
+>   Foreman team; target R3 (R2 recipe + branching) tonight.** Prior evidence that shapes it: S0 decision-time search
+>   (09-30) was NULL (12 s horizon, hand scorer charging spent elixir -> chose WAIT 78%, no more wins); the 12 s scorer
+>   did not track full-match outcomes (Spearman ~0.06-0.10, CIs include 0; outcome measurable at K=16). Tweaks: main game
+>   greedy at tau .35 (as live); HOLD = stricter gate tau .55 for 2/4/8 s (model still plays if confident; no hand
+>   "forced wait"); real opponent policy in branches (no self-model mismatch); common random numbers; NEVER charge elixir
+>   in the score; score = full outcome or a horizon score only if it passes a pre-set gate (sign agreement >= 65%, CI
+>   lower bound > 50% on |delta| >= .25); branch points in the overplay band p .2-.65, more in 2x/OT; loss on branch rows
+>   only + KL leash; one branch actor of five. Team (opus, fable-foreman, shared worktree `.claude/worktrees/opt3`,
+>   branch `opt3-branching`, contract `scratchpad/gauntlet/L73/opt3/INTERFACE.md`): T1 fork + paired rollouts
+>   (pipeline/branching.py, reuses search_s0 fork_into), T2 scoring + validation gate (pipeline/branch_score.py,
+>   L73/opt3/validate.py), T3 rl_royale integration (opt-in, default byte-identical). Blind verify before R3.
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
