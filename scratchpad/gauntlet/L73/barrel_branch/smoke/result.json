@@ -1,0 +1,66 @@
+{
+ "checks": {
+  "a_zero_init_equals_base": {
+   "max_abs_diff": {
+    "gate": 0.0,
+    "card": 0.0,
+    "wait": 0.0,
+    "value": 0.0,
+    "cell": 0.0
+   },
+   "rows": 256,
+   "rows_with_valid_target": 66,
+   "cell_mean_abs_diff": 0.0,
+   "cell_argmax_changed_rows": 0,
+   "ok": true
+  },
+  "b_base_byte_identical": {
+   "base_tensors": 98,
+   "mismatched": [],
+   "added_keys": [
+    "projectile_target_in.0.bias",
+    "projectile_target_in.0.weight",
+    "projectile_target_in.2.bias",
+    "projectile_target_in.2.weight",
+    "projectile_target_spread.weight"
+   ],
+   "ok": true
+  },
+  "c_gate_card_unchanged": {
+   "max_abs_diff": {
+    "gate": 0.0,
+    "card": 0.0,
+    "wait": 0.0,
+    "value": 0.0,
+    "cell": 0.12205886840820312
+   },
+   "rows": 1000,
+   "rows_with_valid_target": 271,
+   "cell_mean_abs_diff": 0.00021295084746088833,
+   "cell_argmax_changed_rows": 1,
+   "ok": true
+  },
+  "d_branch_changed_finite": {
+   "max_abs_change": {
+    "projectile_target_in.0.weight": 0.015497319400310516,
+    "projectile_target_in.0.bias": 0.011115200817584991,
+    "projectile_target_in.2.weight": 0.01619107276201248,
+    "projectile_target_in.2.bias": 0.010950595140457153,
+    "projectile_target_spread.weight": 0.014814147725701332
+   },
+   "finite": true,
+   "ok": true
+  }
+ },
+ "checkpoint": "scratchpad\\gauntlet\\L73\\barrel_branch\\smoke\\gen_branch_s0.pt",
+ "checkpoint_sha256": "0748dca5f91665ffdb35d63cc96d7750068e4a981692343fa35ae9e60d53389b",
+ "updates": 20,
+ "batch": 128,
+ "lr": 0.001,
+ "seed": 0,
+ "device": "cpu",
+ "train_pool_rows": 2560,
+ "val_rows": 1000,
+ "final_loss": 5.283913612365723,
+ "pass_all": true
+}

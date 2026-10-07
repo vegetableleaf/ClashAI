@@ -3841,6 +3841,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   Rocket -2/955 and 1e-6 exact-logit floors). End-to-end v6 lost games (39/64 vs R1e 45/64) -> branch-only.
 >   PLAN: after gen_v3.2 trains, branch-only on gen_v3.2 (worker preparing `L73/barrel_branch/train_branch.py`), A/B
 >   v3.2+branch vs v3.2 (counterfactual held-out >=115/126 lane, ghost + reactive no worse), then RL from the winner.
+>   READY: `L73/barrel_branch/train_branch.py` (worker sonnet; CPU smoke on ordinary_v5 PASS: zero-init outputs equal
+>   base, 98/98 base tensors byte-identical, gate/card/wait/value logits diff 0.0 after training, cell logits move).
+>   Run: `icebow/.venv/Scripts/python.exe -u scratchpad/gauntlet/L73/barrel_branch/train_branch.py --base
+>   icebow/data/pipeline/gen_v32_s0/gen_s0.pt --data icebow/data/pipeline/gen_dataset_v32_fv5.npz --out-dir
+>   scratchpad/gauntlet/L73/barrel_branch/v32 --device cuda`. Loaders (run_screen, search_s0, rl_royale, live_gen) read
+>   fv6 from ckpt args. FIXED rl_royale.py pro-agreement guard: it demanded fv4 data for every fv>=4 model (blocked RL
+>   from gen_v3.2 too); now fv4->4, fv5->5, fv6->5 (test_rl_royale 37/37). model_counterfactual.py needs a ckpt entry.
 
 > ## ⟳ 2026-10-04 00:0x -- OWNER CHANGE OF PLAN (owner bought usage; lead active again)
 > Owner: every Tuesday-deferred item is unblocked now; FULL native re-drive NOW with spell effects + projectile

@@ -1531,8 +1531,10 @@ class Learner:
                     raise SystemExit("proagree_data_gen card_vocab differs from the init checkpoint's")
                 if getattr(model, "feature_version", 1) >= 3 and not all(k in arrs for k in E.GEN_V3_KEYS):
                     raise SystemExit("v3 pro-agreement requires a v3 proagree_data_gen with unit_form and opp_past")
-                if getattr(model, 'feature_version', 1) >= 4 and int(meta.get('feature_version', 1)) != 4:
-                    raise SystemExit('v3.1 pro-agreement requires public-only v3.1 data')
+                fv = int(getattr(model, 'feature_version', 1))
+                want = 5 if fv == 6 else fv          # fv6 reads fv5 data (train_gen.py expected_data_version)
+                if fv >= 4 and int(meta.get('feature_version', 1)) != want:
+                    raise SystemExit(f'v3.1+ pro-agreement for an fv{fv} model requires public-only fv{want} data')
                 self._rows = GenRows(arrs, np.arange(len(arrs["y_gate"])), self.dev)
             ev = evaluate_gen(model, self._rows, grid=self.grid)
             model.eval()
