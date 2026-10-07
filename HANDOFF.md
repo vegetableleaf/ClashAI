@@ -3962,6 +3962,10 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   from pros -- consistent with the self-play-opponent hypothesis under test in `L73/rl_diag/`.
 > * **R1f u0105:** reactive 65/96 (u0080: 74), ghost vs R1e -3.0 [-5.7,-0.7] -> later RL updates LOST the reactive
 >   gain; neither R1f checkpoint clears the deploy bar (ghost guard). Tau .45 test running on u0080.
+> * **TAU .45 on R1f u0080 (pre-registered rule: adopt iff reactive +3/96 AND ghost ci_hi >= 0 AND elixir up):** reactive
+>   73 vs 74 (FAIL), ghost +1.0 [-2.0,+4.0], elixir at play 1x/2x/OT 7.12/5.70/5.64 vs 6.53/5.03/4.44 (pros 6.2-7.2),
+>   defensive Rockets 42 vs 26. Not adopted by the rule; informative: .45 moves the economy to pro levels at no
+>   measurable cost in games or ghost.
 > * **RL DIAGNOSIS (worker opus, `L73/rl_diag/`, q12_report.txt, q3_softdiff.out).** Lead hypotheses tested:
 >   "sim does not punish overspending" CONTRADICTED (elixir-at-play odds ratio for winning: live 1.54/elixir in 1x;
 >   sim ghost 2.05; RL training +0.156 win prob per elixir per update; econ_tau causal arm: fewer plays -> reactive +12/96).
@@ -4002,6 +4006,16 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   seeds on both deck files. Dry validation through Learner.__init__ PASS; a real 1-update smoke is owed (CPU was
 >   saturated). search_s0 --census hard-codes alpha .5/floor .5 (flattens the ladder mix in acceptance games). Witch
 >   trait raked (capped IPF, 3x per-deck cap, class shares unchanged): Witch/Night Witch 30.8% (live 23.4%, x1.5 target 31.4%), Mega Knight card 10.2% (target 12.9%, cap-limited), heavy tank 49.8% (live 49.3%); 157 decks carry 50% of mass.
+> * **OPT3 T1 + T3 DELIVERED (not committed, worktree `.claude/worktrees/opt3`).** T1 branching.py: BranchSpec/
+>   BranchRunner.pair/BranchResult via search_s0.fork_into; CRN reseeds rng_behave/obs/rand/decision_options/env.seed
+>   per continuation j (engine RNG lives in save_state -> identical across j; continuations vary only through
+>   sampling opponents); tests (a)-(e) pass incl. 8/8 shared-state mutations caught; PLAY branch forces the gate open
+>   when p <= tau. Cost (loaded laptop): horizon 30 s k 2 = 13-71 s/pair; to the end 114-285 s. Found: obs_contract
+>   _catalog_names returns an EMPTY table when the catalog file is missing (silent degradation) -> T1 fixing (raise).
+>   T3 rl_royale: branch keys + validator, branch actor kind, BCE on (z - logit tau)/T, default bit-identical (gradients/
+>   params/beta/rng/log vs base), tests 37+23+33 OK, smoke OK. Lead fixes requested: replay buffer (512) + ONE branch
+>   step per update at coef 0.1 (the per-minibatch term overfit: BCE 1.06 -> 0.014 in one update), time-budgeted branch
+>   actor (6 points/match) for more samples (was ~3/update). T2 (score gate) still running. R2 CPU smoke in progress.
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
