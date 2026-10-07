@@ -1,0 +1,68 @@
+Q1  win ~ feature (logistic; OR>1 = more of x -> more wins). elixir features = mean own elixir at accepted plays.
+ [live] n=231 wins=117
+  e1x                                n= 231 L=114  mean W/L 5.93/5.55  OR/unit 1.54 [1.16,2.04]  OR/SD 1.52 [1.15,2.00]  p=0.00288
+  e2x                                n= 223 L=106  mean W/L 4.33/4.01  OR/unit 1.54 [1.12,2.10]  OR/SD 1.45 [1.11,1.91]  p=0.00748
+  eOT                                n=  93 L= 42  mean W/L 3.70/3.35  OR/unit 1.78 [1.00,3.16]  OR/SD 1.60 [1.00,2.55]  p=0.0491
+  eall                               n= 231 L=114  mean W/L 4.90/4.61  OR/unit 1.93 [1.29,2.90]  OR/SD 1.57 [1.19,2.07]  p=0.00153
+  ppm                                n= 231 L=114  mean W/L 10.20/10.22  OR/unit 0.99 [0.84,1.17]  OR/SD 0.99 [0.76,1.28]  p=0.914
+  net1x                              n= 201 L=100  mean W/L 0.09/-0.17  OR/unit 18832.37 [944.92,375331.97]  OR/SD 9.83 [4.91,19.68]  p=1.14e-10
+ [ghost_r1e_tau035] n=598 wins=584
+  e1x                                n= 598 L= 14  mean W/L 6.30/6.24  OR/unit 1.10 [0.58,2.08]  OR/SD 1.08 [0.63,1.84]  p=0.779
+  e2x                                n= 592 L= 12  mean W/L 4.95/4.68  OR/unit 1.24 [0.72,2.12]  OR/SD 1.29 [0.67,2.48]  p=0.44
+  eOT                                n=  42 L=  8  mean W/L 5.16/3.73  OR/unit 10.82 [1.86,62.90]  OR/SD 25.33 [2.32,276.06]  p=0.00801
+  eall                               n= 598 L= 14  mean W/L 5.62/5.12  OR/unit 2.81 [1.19,6.65]  OR/SD 2.26 [1.15,4.47]  p=0.0184
+  ppm                                n= 598 L= 14  mean W/L 9.79/10.98  OR/unit 0.43 [0.29,0.63]  OR/SD 0.40 [0.26,0.61]  p=2.17e-05
+ [ghost_all_fe] n=2172 wins=2074
+  e1x                                n=2172 L= 98  mean W/L 6.65/6.23  OR/unit 2.06 [1.59,2.67]  OR/SD 1.90 [1.51,2.39]  p=5.34e-08
+  e2x                                n=2149 L= 84  mean W/L 5.22/4.65  OR/unit 1.65 [1.30,2.09]  OR/SD 1.90 [1.40,2.58]  p=3.45e-05
+  eOT                                n= 191 L= 34  mean W/L 5.24/4.24  OR/unit 1.92 [1.27,2.90]  OR/SD 2.81 [1.46,5.40]  p=0.00194
+  eall                               n=2172 L= 98  mean W/L 5.92/5.37  OR/unit 3.15 [2.27,4.38]  OR/SD 2.78 [2.07,3.72]  p=6.66e-12
+  ppm                                n=2172 L= 98  mean W/L 9.72/10.05  OR/unit 0.76 [0.63,0.92]  OR/SD 0.74 [0.60,0.92]  p=0.00573
+ [reactive_all_fe] n=672 wins=457
+  ppm (own plays/min)                n= 672 L=215  mean W/L 10.34/11.05  OR/unit 0.85 [0.76,0.95]  OR/SD 0.76 [0.62,0.92]  p=0.0046
+  ppm - opp ppm                      n= 672 L=215  mean W/L 0.42/1.59  OR/unit 0.78 [0.71,0.87]  OR/SD 0.64 [0.53,0.77]  p=2.77e-06
+ [econ_tau intervention, R1e, only tau changes]
+  tau 0.35: reactive 64/96 (gen-opp 22/48) ppm 10.39 | ghost 292/299 ppm 9.81 e@play 1x/2x/OT 6.30/4.95/4.89
+  tau 0.45: reactive 75/96 (gen-opp 27/48) ppm 10.40 | ghost 290/299 ppm 9.40 e@play 1x/2x/OT 6.82/5.63/5.78
+  tau 0.54: reactive 76/96 (gen-opp 34/48) ppm 9.74 | ghost 284/299 ppm 9.25 e@play 1x/2x/OT 7.20/6.16/5.87
+ [ghost by source]
+  chain2 r1e           292/299 e1x 6.30 e2x 4.95 eall 5.61 ppm 9.81
+  econ t0.35 (r1e)     292/299 e1x 6.30 e2x 4.95 eall 5.60 ppm 9.81
+  econ t0.45 (r1e)     290/299 e1x 6.82 e2x 5.63 eall 6.23 ppm 9.40
+  econ t0.54 (r1e)     284/299 e1x 7.20 e2x 6.16 eall 6.66 ppm 9.25
+  chain2 v31c          279/299 e1x 6.67 e2x 4.95 eall 5.79 ppm 9.95
+  chain2 v32           280/299 e1x 6.62 e2x 4.95 eall 5.75 ppm 9.93
+  chain2 v32b          280/299 e1x 6.63 e2x 4.95 eall 5.76 ppm 9.92
+  chain2 r1f_u0080     77/79 e1x 6.14 e2x 4.59 eall 5.37 ppm 9.95
+ [rl train per update] {"updates": 155, "corr_wr_elixir": 0.24962668256468137, "corr_wr_ppm": -0.2252715155101885, "ols_dwr_per_elixir_ctrl_mix_time": [0.1560090232201056, 0.07580750084855897, 0.23621054559165222], "elixir_at_play_mean": [4.063873410518438, 4.294842093100632], "ppm": [12.743245945481842, 12.363350914672107], "note": "64-match aggregates; between-update elixir sd 0.165"}
+
+Q2  win rate by opponent group (W/n, Wilson 95%)
+  group                                             live                reactive_r1e         reactive_all_models                   ghost_r1e              ghost_real_pro
+  ALL                                101/201 50% [43,57]           44/96 46% [36,56]         165/336 49% [44,54]         584/598 98% [96,99]         179/299 60% [54,65]
+  class Golem                           7/26 27% [14,46]             4/6 67% [30,90]            8/21 38% [21,59]           8/8 100% [68,100]           4/4 100% [51,100]
+  trait heavy tank                     38/99 38% [29,48]           18/40 45% [31,60]          58/140 41% [34,50]         228/238 96% [92,98]          65/119 55% [46,63]
+  trait Witch/Night Witch              16/47 34% [22,48]             2/6 33% [10,70]            6/21 29% [14,50]         30/30 100% [89,100]            9/15 60% [36,80]
+  class Mega Knight                        0/6 0% [0,39]               0/2 0% [0,66]              2/7 29% [8,64]           4/4 100% [51,100]              1/2 50% [9,91]
+  MegaKnight card                        3/18 17% [6,39]               0/4 0% [0,49]            4/14 29% [12,55]           56/58 97% [88,99]           17/29 59% [41,74]
+  class Lava Hound                       2/3 67% [21,94]             4/8 50% [22,78]           16/28 57% [39,73]           68/70 97% [90,99]           16/35 46% [30,62]
+  class Giant                          13/27 48% [31,66]           4/4 100% [51,100]           10/14 71% [45,88]           50/54 93% [82,97]           15/27 56% [37,72]
+  class Hog                            18/37 49% [33,64]            4/10 40% [17,69]           19/35 54% [38,70]         184/188 98% [95,99]           68/94 72% [63,80]
+  class X-Bow/Mortar                     4/9 44% [19,73]            6/10 60% [31,83]           22/35 63% [46,77]         60/60 100% [94,100]           13/30 43% [27,61]
+  exposure share (games in group / all): live vs RL training
+    class Golem                live 0.129   RL 0.070
+    trait heavy tank           live 0.493   RL 0.304
+    trait Witch/Night Witch    live 0.234   RL 0.060
+    class Mega Knight          live 0.030   RL 0.004
+    MegaKnight card            live 0.090   RL 0.024
+    class Lava Hound           live 0.015   RL 0.033
+    class Giant                live 0.134   RL 0.094
+    class Hog                  live 0.184   RL 0.107
+    class X-Bow/Mortar         live 0.045   RL 0.384
+  distinct decks per group: {"q2_live": {"ALL": 153, "class Golem": 17, "trait heavy tank": 79, "trait Witch/Night Witch": 39, "class Mega Knight": 5, "MegaKnight card": 16, "class Lava Hound": 3, "class Giant": 21, "class Hog": 32, "class X-Bow/Mortar": 5}, "q2_reactive_r1e": {"ALL": 46, "class Golem": 3, "trait heavy tank": 19, "trait Witch/Night Witch": 3, "class Mega Knight": 1, "MegaKnight card": 2, "class Lava Hound": 4, "class Giant": 2, "class Hog": 5, "class X-Bow/Mortar": 5}, "q2_reactive_all_models": {"ALL": 46, "class Golem": 3, "trait heavy tank": 19, "trait Witch/Night Witch": 3, "class Mega Knight": 1, "MegaKnight card": 2, "class Lava Hound": 4, "class Giant": 2, "class Hog": 5, "class X-Bow/Mortar": 5}, "q2_ghost_r1e": {"ALL": 119, "class Golem": 4, "trait heavy tank": 61, "trait Witch/Night Witch": 9, "class Mega Knight": 2, "MegaKnight card": 16, "class Lava Hound": 9, "class Giant": 11, "class Hog": 29, "class X-Bow/Mortar": 11}, "q2_ghost_real_pro": {"ALL": 119, "class Golem": 4, "trait heavy tank": 61, "trait Witch/Night Witch": 9, "class Mega Knight": 2, "MegaKnight card": 16, "class Lava Hound": 9, "class Giant": 11, "class Hog": 29, "class X-Bow/Mortar": 11}}
+  reactive vs S1 icebow mirror (all models): 292/336
+  RL opponent policy mix: {"init": {"games": 2448, "share": 0.2467741935483871, "learner_wr": 0.5044934640522876}, "snapshot": {"games": 5728, "share": 0.5774193548387097, "learner_wr": 0.38687150837988826}, "s1": {"games": 1744, "share": 0.17580645161290323, "learner_wr": 0.8159403669724771}}
+  RL deck exposure (games): {"ALL": 9920, "class X-Bow/Mortar": 3812, "icebow mirror": 3376, "trait heavy tank": 3016, "class Giant": 928, "class Golem": 692, "trait Witch/Night Witch": 592, "class Lava Hound": 324, "class Hog": 1060, "MegaKnight card": 236, "class Mega Knight": 36}
+
+Q3 sampled-play win rate vs fixed opponents across R1e training: {"init": {"u0000-0009": {"W": 177, "n": 484, "wr": 0.365702479338843, "ci": [0.32400767668881825, 0.409512383921019]}, "u0010-0049": {"W": 292, "n": 580, "wr": 0.503448275862069, "ci": [0.46286835558207884, 0.543982817749866]}, "u0050-0099": {"W": 342, "n": 648, "wr": 0.5277777777777778, "ci": [0.48928857703908146, 0.565939564276232]}, "u0100-0154": {"W": 424, "n": 736, "wr": 0.5760869565217391, "ci": [0.5400799211764464, 0.6113038344815215]}}, "s1": {"u0000-0009": {"W": 96, "n": 156, "wr": 0.6153846153846154, "ci": [0.5371385625844802, 0.6880844081565534]}, "u0010-0049": {"W": 362, "n": 452, "wr": 0.8008849557522124, "ci": [0.7616021881235316, 0.8350963141632276]}, "u0050-0099": {"W": 385, "n": 456, "wr": 0.8442982456140351, "ci": [0.8081577727058668, 0.8746860587352208]}, "u0100-0154": {"W": 580, "n": 680, "wr": 0.8529411764705882, "ci": [0.8243394832701755, 0.8775774518797188]}}}
+
+Q4 {"matches_per_update": 64.0, "updates": 155, "total_matches": 9920, "rows_per_update": 18124.212903225805, "rows_played_per_update": 3043.0387096774193, "rows_per_match": 283.1908266129032, "adv_std": [0.18510626188296062, 0.15619670229196983, 0.21971011783723765], "explained_var": [0.8710492761099654, 0.7936061447428898, 0.9337269067871729], "stochastic_share": 0.39495574381412984, "kl_gate_last10": 0.07310635167933595, "kl_card_last10": 0.04804102283596305, "kl_cell_last10": 0.059381906828973964, "kl_target": 0.1, "beta_last": 0.03, "beta_min": 0.03, "clip_frac_mean": 0.02833369883213484, "lr": 1e-05, "ppo_epochs": 2, "gae_lambda": 0.95, "gae_gamma_tick": 0.99994, "decide_every": 10, "p_gate_mean": [0.11269674579593662, 0.1150426963021766], "winrate_per_update_sd": 0.08947127708810976, "binomial_sd_at_64": 0.0625}

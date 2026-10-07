@@ -3960,6 +3960,19 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   (RL made overspending WORSE again); defensive Rockets 26 vs v3.2 56; defensive X-Bows 340 vs 252. Reading (b): RL
 >   vs our own models learns play that beats our models (reactive) but not pro sequences (ghost), and moves elixir away
 >   from pros -- consistent with the self-play-opponent hypothesis under test in `L73/rl_diag/`.
+> * **RL DIAGNOSIS (worker opus, `L73/rl_diag/`, q12_report.txt, q3_softdiff.out).** Lead hypotheses tested:
+>   "sim does not punish overspending" CONTRADICTED (elixir-at-play odds ratio for winning: live 1.54/elixir in 1x;
+>   sim ghost 2.05; RL training +0.156 win prob per elixir per update; econ_tau causal arm: fewer plays -> reactive +12/96).
+>   "sim opponents incompetent" CONTRADICTED for reactive (bot vs gen_v1 49% overall, Golem 38%, heavy tank 41%, Witch
+>   29%, ~live), TRUE for the ghost screen (R1e wins 584/598 = 98%; the real pro won 179/299 on the same replays ->
+>   ghost is SATURATED as an acceptance metric). "argmax hides RL" CONTRADICTED (R1e vs 3.1c greedy action flips 10.3%
+>   of pro rows) -- but the DIRECTION is wrong: P(play) +3.1 pp (play flips 1,897 vs wait 668), P(Rocket|play) 7.2% ->
+>   5.0%. Real limiters (ranked): (1) OBJECTIVE/DECODING MISMATCH: training samples at T=0.5 with gate tau 0.27 vs
+>   self-snapshots; deploy is greedy at tau 0.35; training win rate vs init +21 pp, vs S1 +24 pp, greedy only +4-8 pp.
+>   (2) TRAINING DECK MIX far from ladder: X-Bow/Mortar 38.4% (icebow mirror 34%) vs live 4.5%; Witch 6.0% vs 23.4%;
+>   heavy tank 30.4% vs 49.3%; Mega Knight 2.4% vs 9.0%; Golem 7.0% vs 12.9%. (3) reward signal thin (est. SNR ~0.2
+>   per update for a 1 pp gate effect; GAE lambda .95 looks ~10 s ahead, overspend costs 20-40 s later). (4) leash NOT
+>   binding (beta at floor .03 from u8; KL .073/.048/.059 vs .10; step size lr 1e-5 x 2 epochs is the brake).
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
