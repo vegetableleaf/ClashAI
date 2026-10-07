@@ -1,0 +1,41 @@
+IceWizardHero hp==max_hp:False hp_read:True: 59
+IceWizardHero hp==max_hp:True hp_read:False: 579
+IceWizardHero hp==max_hp:True hp_read:True: 14
+IceWizardHero kind=14: 11
+IceWizardHero kind=15: 641
+IceWizardHeroFloatingCube hp==max_hp:True hp_read:False: 534
+IceWizardHeroFloatingCube hp==max_hp:True hp_read:True: 73
+IceWizardHeroFloatingCube kind=14: 10
+IceWizardHeroFloatingCube kind=15: 597
+IceWizardHero_IceCube hp==max_hp:True hp_read:False: 31
+IceWizardHero_IceCube kind=15: 31
+UNNAMED hp==max_hp:True hp_read:False: 58
+UNNAMED kind=14: 5
+UNNAMED kind=15: 53
+capture_a.jsonl groups: 262
+capture_a.jsonl groups n_hero=0 n_obj=1: 6
+capture_a.jsonl groups n_hero=0 n_obj=2: 11
+capture_a.jsonl groups n_hero=1 n_obj=1: 15
+capture_a.jsonl groups n_hero=1 n_obj=2: 192
+capture_a.jsonl groups n_hero=1 n_obj=3: 13
+capture_a.jsonl groups n_hero=2 n_obj=3: 4
+capture_a.jsonl groups n_hero=2 n_obj=4: 20
+capture_a.jsonl groups n_hero=2 n_obj=5: 1
+capture_b.jsonl groups: 323
+capture_b.jsonl groups n_hero=0 n_obj=1: 12
+capture_b.jsonl groups n_hero=0 n_obj=2: 5
+capture_b.jsonl groups n_hero=1 n_obj=1: 19
+capture_b.jsonl groups n_hero=1 n_obj=2: 263
+capture_b.jsonl groups n_hero=1 n_obj=3: 21
+capture_b.jsonl groups n_hero=2 n_obj=3: 3
+cube category - owner category = 1: 607
+cube colocated with owner:True: 607
+cube hp>=owner hp:True: 607
+cube listed after owner:False: 534
+cube listed after owner:True: 73
+cube owner hero in group:True: 607
+icecube hp=-1/-1 kind=15 beh=0: 31
+icecube within 500 of a hero:False: 31
+passive_v2 groups: 52
+passive_v2 groups n_hero=1 n_obj=2: 31
+passive_v2 groups n_hero=2 n_obj=4: 21

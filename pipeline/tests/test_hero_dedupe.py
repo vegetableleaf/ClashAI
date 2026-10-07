@@ -22,3 +22,22 @@ def test_no_duplicate_returns_same_object():
 def test_far_apart_same_side_kept():
     f = {'entities': [e(1, 2000, 19000), e(1, 9000, 9000)]}
     assert dedupe_hero_bodies(f) is f
+
+
+def r(side, x, y, cat, hp=911, beh=2):
+    """reader-v2 row with the fields the identity rule reads (category, behavior_state_raw)."""
+    return dict(e(side, x, y, hp=hp), max_hp=911, category=cat, behavior_state_raw=beh)
+
+
+def test_cube_first_keeps_the_hero():
+    hero, cube = r(1, 4966, 20284, 5000056, hp=482), r(1, 4966, 20284, 5000057)
+    out = dedupe_hero_bodies({'entities': [cube, hero]})
+    assert out['entities'] == [hero]                     # old rule kept the cube (first listed, hp stuck at max)
+
+
+def test_two_real_heroes_2_8_tiles_apart():
+    # passive_v2_raw 10-06 tick 3168, all four objects NAMED by sampler3: two IceWizardHero, each with its cube.
+    h1, c1 = r(1, 4966, 20284, 5000056, hp=482), r(1, 4966, 20284, 5000057)
+    h2, c2 = r(1, 5499, 17499, 5000073), r(1, 5499, 17499, 5000074)
+    for ents in ([h1, c1, h2, c2], [c2, h2, c1, h1]):
+        assert dedupe_hero_bodies({'entities': ents})['entities'] == [x for x in ents if x is h1 or x is h2]

@@ -1,0 +1,344 @@
+{
+ "named_accuracy": {
+  "new all_named capture_a.jsonl as_listed exact": 228,
+  "new all_named capture_a.jsonl as_listed groups": 235,
+  "new all_named capture_a.jsonl reversed exact": 228,
+  "new all_named capture_a.jsonl reversed groups": 235,
+  "new all_named capture_b.jsonl as_listed exact": 284,
+  "new all_named capture_b.jsonl as_listed groups": 308,
+  "new all_named capture_b.jsonl reversed exact": 284,
+  "new all_named capture_b.jsonl reversed groups": 308,
+  "new all_named passive_v2 as_listed exact": 52,
+  "new all_named passive_v2 as_listed groups": 52,
+  "new objects IceWizardHero kept=True (as_listed)": 652,
+  "new objects IceWizardHero kept=True (reversed)": 579,
+  "new objects IceWizardHeroFloatingCube kept=False (as_listed)": 607,
+  "new objects IceWizardHeroFloatingCube kept=False (reversed)": 534,
+  "new objects IceWizardHero_IceCube kept=True (as_listed)": 31,
+  "new objects IceWizardHero_IceCube kept=True (reversed)": 31,
+  "new objects UNNAMED kept=False (as_listed)": 20,
+  "new objects UNNAMED kept=False (reversed)": 20,
+  "new objects UNNAMED kept=True (as_listed)": 38,
+  "new objects UNNAMED kept=True (reversed)": 38,
+  "new with_unnamed capture_a.jsonl as_listed exact": 3,
+  "new with_unnamed capture_a.jsonl as_listed groups": 27,
+  "new with_unnamed capture_a.jsonl reversed exact": 3,
+  "new with_unnamed capture_a.jsonl reversed groups": 27,
+  "new with_unnamed capture_b.jsonl as_listed exact": 1,
+  "new with_unnamed capture_b.jsonl as_listed groups": 15,
+  "new with_unnamed capture_b.jsonl reversed exact": 1,
+  "new with_unnamed capture_b.jsonl reversed groups": 15,
+  "old all_named capture_a.jsonl as_listed exact": 228,
+  "old all_named capture_a.jsonl as_listed groups": 235,
+  "old all_named capture_a.jsonl reversed exact": 15,
+  "old all_named capture_a.jsonl reversed groups": 235,
+  "old all_named capture_b.jsonl as_listed exact": 284,
+  "old all_named capture_b.jsonl as_listed groups": 308,
+  "old all_named capture_b.jsonl reversed exact": 19,
+  "old all_named capture_b.jsonl reversed groups": 308,
+  "old all_named passive_v2 as_listed exact": 52,
+  "old all_named passive_v2 as_listed groups": 52,
+  "old objects IceWizardHero kept=False (reversed)": 538,
+  "old objects IceWizardHero kept=True (as_listed)": 652,
+  "old objects IceWizardHero kept=True (reversed)": 41,
+  "old objects IceWizardHeroFloatingCube kept=False (as_listed)": 607,
+  "old objects IceWizardHeroFloatingCube kept=True (reversed)": 534,
+  "old objects IceWizardHero_IceCube kept=True (as_listed)": 31,
+  "old objects IceWizardHero_IceCube kept=True (reversed)": 31,
+  "old objects UNNAMED kept=False (as_listed)": 20,
+  "old objects UNNAMED kept=False (reversed)": 16,
+  "old objects UNNAMED kept=True (as_listed)": 38,
+  "old objects UNNAMED kept=True (reversed)": 42,
+  "old with_unnamed capture_a.jsonl as_listed exact": 3,
+  "old with_unnamed capture_a.jsonl as_listed groups": 27,
+  "old with_unnamed capture_a.jsonl reversed exact": 0,
+  "old with_unnamed capture_a.jsonl reversed groups": 27,
+  "old with_unnamed capture_b.jsonl as_listed exact": 1,
+  "old with_unnamed capture_b.jsonl as_listed groups": 15,
+  "old with_unnamed capture_b.jsonl reversed exact": 0,
+  "old with_unnamed capture_b.jsonl reversed groups": 15
+ },
+ "new_named_failures": [
+  {
+   "src": "capture_a.jsonl:32",
+   "order": "as_listed",
+   "truth": [
+    "0x74b519ce32d0",
+    "0x74b519d7ba80"
+   ],
+   "got": [
+    "0x74b519ce32d0",
+    "0x74b519d1ad20",
+    "0x74b519d7ba80"
+   ]
+  },
+  {
+   "src": "capture_a.jsonl:32",
+   "order": "reversed",
+   "truth": [
+    "0x74b519ce32d0",
+    "0x74b519d7ba80"
+   ],
+   "got": [
+    "0x74b519ce32d0",
+    "0x74b519d1ad20",
+    "0x74b519d7ba80"
+   ]
+  },
+  {
+   "src": "capture_a.jsonl:277",
+   "order": "as_listed",
+   "truth": [
+    "0x74b519d49120"
+   ],
+   "got": [
+    "0x74b519d49120",
+    "0x74b519d4d430"
+   ]
+  },
+  {
+   "src": "capture_a.jsonl:277",
+   "order": "reversed",
+   "truth": [
+    "0x74b519d49120"
+   ],
+   "got": [
+    "0x74b519d49120",
+    "0x74b519d4d430"
+   ]
+  },
+  {
+   "src": "capture_a.jsonl:298",
+   "order": "as_listed",
+   "truth": [
+    "0x74b519caeb60"
+   ],
+   "got": [
+    "0x74b519caeb60",
+    "0x74b519d19600"
+   ]
+  },
+  {
+   "src": "capture_a.jsonl:298",
+   "order": "reversed",
+   "truth": [
+    "0x74b519caeb60"
+   ],
+   "got": [
+    "0x74b519caeb60",
+    "0x74b519d19600"
+   ]
+  },
+  {
+   "src": "capture_a.jsonl:385",
+   "order": "as_listed",
+   "truth": [],
+   "got": [
+    "0x74b519c0aab0"
+   ]
+  },
+  {
+   "src": "capture_a.jsonl:385",
+   "order": "reversed",
+   "truth": [],
+   "got": [
+    "0x74b519c0aab0"
+   ]
+  },
+  {
+   "src": "capture_a.jsonl:418",
+   "order": "as_listed",
+   "truth": [
+    "0x74b519d64ad0"
+   ],
+   "got": [
+    "0x74b519d64ad0",
+    "0x74b519dc0be0"
+   ]
+  },
+  {
+   "src": "capture_a.jsonl:418",
+   "order": "reversed",
+   "truth": [
+    "0x74b519d64ad0"
+   ],
+   "got": [
+    "0x74b519d64ad0",
+    "0x74b519dc0be0"
+   ]
+  },
+  {
+   "src": "capture_a.jsonl:419",
+   "order": "as_listed",
+   "truth": [
+    "0x74b519d64ad0"
+   ],
+   "got": [
+    "0x74b519d64ad0",
+    "0x74b519dc0be0"
+   ]
+  },
+  {
+   "src": "capture_a.jsonl:419",
+   "order": "reversed",
+   "truth": [
+    "0x74b519d64ad0"
+   ],
+   "got": [
+    "0x74b519d64ad0",
+    "0x74b519dc0be0"
+   ]
+  },
+  {
+   "src": "capture_a.jsonl:541",
+   "order": "as_listed",
+   "truth": [
+    "0x74b519d1cb30"
+   ],
+   "got": [
+    "0x74b519d1cb30",
+    "0x74b519d51e30"
+   ]
+  },
+  {
+   "src": "capture_a.jsonl:541",
+   "order": "reversed",
+   "truth": [
+    "0x74b519d1cb30"
+   ],
+   "got": [
+    "0x74b519d1cb30",
+    "0x74b519d51e30"
+   ]
+  },
+  {
+   "src": "capture_b.jsonl:160",
+   "order": "as_listed",
+   "truth": [],
+   "got": [
+    "0x74b519cc9040"
+   ]
+  },
+  {
+   "src": "capture_b.jsonl:160",
+   "order": "reversed",
+   "truth": [],
+   "got": [
+    "0x74b519cc9040"
+   ]
+  },
+  {
+   "src": "capture_b.jsonl:161",
+   "order": "as_listed",
+   "truth": [],
+   "got": [
+    "0x74b519cc9040"
+   ]
+  },
+  {
+   "src": "capture_b.jsonl:161",
+   "order": "reversed",
+   "truth": [],
+   "got": [
+    "0x74b519cc9040"
+   ]
+  },
+  {
+   "src": "capture_b.jsonl:162",
+   "order": "as_listed",
+   "truth": [],
+   "got": [
+    "0x74b519cc9040"
+   ]
+  },
+  {
+   "src": "capture_b.jsonl:162",
+   "order": "reversed",
+   "truth": [],
+   "got": [
+    "0x74b519cc9040"
+   ]
+  }
+ ],
+ "recorded_frames": {
+  "frames": 1095,
+  "new frames with >1 same-side 203000023": 21,
+  "new of which named: all kept are IceWizardHero=True": 21,
+  "old frames with >1 same-side 203000023": 21,
+  "old of which named: all kept are IceWizardHero=True": 21,
+  "raw beh0 203000023 objects": 0,
+  "raw frames with >1 same-side 203000023": 600,
+  "raw of which named: all kept are IceWizardHero=False": 52
+ },
+ "new_multi_examples": [
+  {
+   "tick": 3148,
+   "objs": [
+    {
+     "native_name": "IceWizardHero",
+     "category": 5000056,
+     "x": 4966,
+     "y": 20284,
+     "hp": 482,
+     "max_hp": 911,
+     "behavior_state_raw": 2
+    },
+    {
+     "native_name": "IceWizardHero",
+     "category": 5000073,
+     "x": 5499,
+     "y": 17499,
+     "hp": 911,
+     "max_hp": 911,
+     "behavior_state_raw": 4
+    }
+   ]
+  },
+  {
+   "tick": 3158,
+   "objs": [
+    {
+     "native_name": "IceWizardHero",
+     "category": 5000056,
+     "x": 4966,
+     "y": 20284,
+     "hp": 482,
+     "max_hp": 911,
+     "behavior_state_raw": 2
+    },
+    {
+     "native_name": "IceWizardHero",
+     "category": 5000073,
+     "x": 5499,
+     "y": 17499,
+     "hp": 911,
+     "max_hp": 911,
+     "behavior_state_raw": 4
+    }
+   ]
+  },
+  {
+   "tick": 3168,
+   "objs": [
+    {
+     "native_name": "IceWizardHero",
+     "category": 5000056,
+     "x": 4966,
+     "y": 20284,
+     "hp": 482,
+     "max_hp": 911,
+     "behavior_state_raw": 2
+    },
+    {
+     "native_name": "IceWizardHero",
+     "category": 5000073,
+     "x": 5499,
+     "y": 17499,
+     "hp": 911,
+     "max_hp": 911,
+     "behavior_state_raw": 2
+    }
+   ]
+  }
+ ]
+}
