@@ -3954,6 +3954,12 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   flat, behaviour guardrails, pro-agreement guard, acceptance always on unshaped wins. Offline Phi check running
 >   (`L73/phi_eval/`, opus): value-head Phi vs tower_crown Phi on AUC/Brier by phase, elixir dependence vs pro outcomes,
 >   per-decision dPhi of overspends, transfer to live states, step noise.
+> * **R1f u0080 (RL from gen_v3.2, engine 20261006) vs R1e:** reactive 74/96 vs 64 (+10; vs its base v3.2 58, +16)
+>   BUT ghost -3.0 [-5.7,-0.3] vs R1e (vs v3.2 +1.0 [-2.7,+4.7]) -> FAILS the deploy bar (ghost ci_hi < 0). Behaviour
+>   (299-replay screen telemetry): elixir at play 1x/2x/OT 6.53/5.03/4.44 vs v3.2 7.06/5.39/4.99 and R1e 6.76/5.35/5.13
+>   (RL made overspending WORSE again); defensive Rockets 26 vs v3.2 56; defensive X-Bows 340 vs 252. Reading (b): RL
+>   vs our own models learns play that beats our models (reactive) but not pro sequences (ghost), and moves elixir away
+>   from pros -- consistent with the self-play-opponent hypothesis under test in `L73/rl_diag/`.
 > * SIM fv5 identity on engine 20261006: 52/52 OK, output identical to 20261005 (`L73/gen_v32/sim_verify_20261006/`).
 > * **GOBLIN BARREL WRONG-LANE LOGS (worker opus, `L73/barrel_lane/`, results.json).** Owner hypothesis "perception
 >   of the barrel's lane is wrong" CONTRADICTED; the behaviour is real, the cause is the model. Perception: 82 live
