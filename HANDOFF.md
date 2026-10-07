@@ -4294,6 +4294,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   Open: smoothing over KEPT rows only (sparser than the pro-data eval); learner cost on the VM unmeasured.
 >   R3 change set (T1+T2+T3+C, 2,495 lines) under blind verification (opus); R4 build (Rocket-vs-top-card + X-Bow class
 >   branching, new worktree `.claude/worktrees/r4`, branch r4-branching) started in parallel.
+> * **R3 SET BLIND-VERIFIED PASS_WITH_NOTES** (opus): parity vs main has teeth; label sign measured (+.5 -> P(play)
+>   +.0157, -.5 -> -.0143); branch rows = the decision row (gate max err 3.4e-8); value_phi frozen/causal/learner-side
+>   (value classes = crowns mine-theirs+3); catalog change fail-closed only when missing. Pre-launch FIXES sent to the
+>   T3 worker: (1) learner hangs at exit (unread 6 MB weight messages; cancel_join_thread); (2) branch step shared
+>   PPO's Adam -> mostly leftover PPO momentum after the leash was measured, coef ineffective -> own Adam, branch_lr;
+>   (3) buffer rows never aged -> branch_buffer_max_age 20; (4) config: staleness 6 (1x pairs median 522 s / max 1086 s),
+>   band [.2,.55] so HOLD never plays at the root, exclude stalled points. R4 worker told to merge these.
 >   ~15:40" (Q1 card sampling flag, Q2 area-aware spell aim, Q3 GPU A/Bs after R1e, Q4 R1e approval ping, Q5 fixes);
 >   launcher `.foreman/codex_autopilot/codex_loop.sh` (back-to-back runs to 10-06; STOP_LOOP file stops it).
 > * **15:5x -- owner plan: after the R1e verdict the lead starts LIVE on the winner, then hands over to Codex via
