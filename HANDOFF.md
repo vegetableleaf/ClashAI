@@ -4016,7 +4016,7 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   params/beta/rng/log vs base), tests 37+23+33 OK, smoke OK. Lead fixes requested: replay buffer (512) + ONE branch
 >   step per update at coef 0.1 (the per-minibatch term overfit: BCE 1.06 -> 0.014 in one update), time-budgeted branch
 >   actor (6 points/match) for more samples (was ~3/update). T2 (score gate) still running. R2 CPU smoke in progress.
-> * **R2 LAUNCHED ~13:2x 10-07** (`L73/rl_r2/run_r2.sh`, run rseries_r2l, log `L73/rl_r2/r2.log`, 120 updates, then
+> * **R2 LAUNCHED 12:20 10-07** (`L73/rl_r2/run_r2.sh`, run rseries_r2l, log `L73/rl_r2/r2.log`, 120 updates, then
 >   acceptance u0080/u0120 vs R1e at 48 seeds on census + ladder decks). CPU smoke PASS first. C (learned-Phi shaping)
 >   NOT in R2 (phi_eval still running; R2 could not wait) -> bundled into R3 if the offline check supports it. Owner
 >   wants R3 (R2 recipe + branching) started tonight: when R2 TRAINING ends, R3 takes the GPU; R2's acceptance may be
