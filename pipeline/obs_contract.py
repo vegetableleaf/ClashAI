@@ -187,13 +187,14 @@ def _catalog_names() -> dict[int, str]:
     global _CATALOG_NAMES
     if _CATALOG_NAMES is None:
         p = REPO / "research" / "ext" / "cr-native-sandbox" / "native_core" / "data" / "live_card_catalog.json"
+        if not p.is_file():          # fail closed, as catalog_card_form / public_observation._native_ids do
+            raise FileNotFoundError(f"live card catalog missing: {p} (card ids cannot be named without it)")
         names: dict[int, str] = {}
-        if p.exists():
-            for c in json.loads(p.read_text(encoding="utf-8")).get("cards", []):
-                names[int(c["card_id"])] = str(c["display_name"])
-                for k in ("evolution_form_id", "hero_form_id"):
-                    if c.get(k) is not None:
-                        names[int(c[k])] = str(c["display_name"])
+        for c in json.loads(p.read_text(encoding="utf-8")).get("cards", []):
+            names[int(c["card_id"])] = str(c["display_name"])
+            for k in ("evolution_form_id", "hero_form_id"):
+                if c.get(k) is not None:
+                    names[int(c[k])] = str(c["display_name"])
         from .reader_identity_aliases import extend_names
         _CATALOG_NAMES = extend_names(names)
     return _CATALOG_NAMES

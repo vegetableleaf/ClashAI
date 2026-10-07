@@ -1,0 +1,61 @@
+{
+ "gen": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\pipeline\\gen_v32_s0\\gen_s0.pt",
+ "opp_gen": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\pipeline\\gen_v1_s0\\gen_s0.pt",
+ "opp_gen_sha256": "05db85a0a141126223a892787aacc13f291de24a2adeab5c5875531094ce6c53",
+ "s1": "icebow/data/pipeline/s1_icebow_v6aug_s1.pt",
+ "opps": [
+  "gen"
+ ],
+ "threads": 2,
+ "tail_cap": 7200,
+ "horizon": 12.0,
+ "interval": 1,
+ "topk": 4,
+ "cells": 3,
+ "device": "cpu",
+ "search_min_p": 0.0,
+ "rollout_self": "idle",
+ "forms_mode": "deck",
+ "hero_abilities": true,
+ "ability_policy": "v2",
+ "census": "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L70\\pool_forms\\loadable_decks.json",
+ "tau_plain": 0.35,
+ "phi": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\pipeline\\gen_v32_s0\\gen_s0.pt",
+ "k": 8,
+ "band": [
+  0.2,
+  0.65
+ ],
+ "holds": [
+  2.0,
+  4.0,
+  8.0
+ ],
+ "hold_tau": 0.55,
+ "horizons": [
+  10.0,
+  20.0,
+  40.0
+ ],
+ "opp_T": 0.3,
+ "opp_tau": 0.35,
+ "per_stratum": [
+  1,
+  1,
+  1
+ ],
+ "crn_check": false,
+ "gen_sha256": "61011b6ce5e655c0f66c875ee844685373cc6370051f9eccba1e1d79de1a0569",
+ "phi_sha256": "61011b6ce5e655c0f66c875ee844685373cc6370051f9eccba1e1d79de1a0569",
+ "seeds": "10:40",
+ "code": {
+  "pipeline_from": "C:\\Users\\benpe\\ClashBot\\pipeline",
+  "differs_from_worktree": [
+   "obs_contract.py",
+   "rl_royale.py"
+  ],
+  "branch_score_from": "C:\\Users\\benpe\\ClashBot\\.claude\\worktrees\\opt3\\pipeline\\branch_score.py",
+  "branching_from": "C:\\Users\\benpe\\ClashBot\\.claude\\worktrees\\opt3\\pipeline\\branching.py"
+ },
+ "started": "2026-10-07 12:26:06"
+}

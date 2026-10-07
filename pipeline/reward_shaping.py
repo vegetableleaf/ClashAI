@@ -127,3 +127,19 @@ def returns_to_go(rewards: Sequence[float], gamma: float) -> list[float]:
         g = float(rewards[t]) + gamma * g
         out[t] = g
     return out
+
+
+def trailing_mean(values: Sequence[float], ticks: Sequence[int], window_ticks: int) -> np.ndarray:
+    """Causal trailing mean of one match's per-row ``values`` (time order, ``ticks`` non-decreasing): row t averages
+    the rows with tick in [tick_t - window_ticks, tick_t] up to and including itself, never a later row (``shaping:
+    value_phi``; the L73 phi_eval smooth.py rule). ``window_ticks`` 0 = the values unchanged."""
+    v = np.asarray(values, dtype=np.float64)
+    t = np.asarray(ticks, dtype=np.int64)
+    if len(v) != len(t):
+        raise ValueError(f"{len(v)} values for {len(t)} ticks")
+    if (np.diff(t) < 0).any():
+        raise ValueError("ticks must be non-decreasing")
+    c = np.r_[0.0, np.cumsum(v)]
+    hi = np.arange(1, len(v) + 1)
+    lo = np.searchsorted(t, t - int(window_ticks), side="left")
+    return (c[hi] - c[lo]) / (hi - lo)
