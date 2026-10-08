@@ -787,7 +787,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                 W(event='decision', tick=tick, t_dev=t_dev, decide_ms=decide_ms,
                   backlog=q.qsize(), forced=forced,
                   decision={k:d[k] for k in ('play','p_play','no_affordable','hand_pos','name','card','form','xy','gate_tau',
-                                             'xy_unguarded','stalled') if k in d},
+                                             'xy_unguarded','stalled','why','lethal_rocket') if k in d},
                   public=d['public_audit'])
                 last_audit_tick = tick
             if not d["play"]:
@@ -801,7 +801,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
             blocked_logged = False
             hand, board = lay.hand(d["hand_pos"]), lay.board(d["xy"], side, even=d["name"] in EVEN_BUILDINGS)
             W(event="play", tick=tick, t_dev=t_dev, name=d["name"], p_play=round(d["p_play"], 4), forced=forced, elixir=el,
-              hand_pos=d["hand_pos"], xy=[round(v, 4) for v in d["xy"]], tap_hand=hand, tap_board=board)
+              hand_pos=d["hand_pos"], xy=[round(v, 4) for v in d["xy"]], tap_hand=hand, tap_board=board,
+              **({"why": d["why"], "lethal_rocket": d["lethal_rocket"]} if d.get("why") == "lethal_rocket" else {}))
             played += 1
             if a.dry_run or not guard_clear():           # re-checked right before the input
                 continue

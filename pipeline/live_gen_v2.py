@@ -12,6 +12,8 @@ from .model_v3 import cell_xy
 from dataclasses import replace
 
 from .decision_options import BARREL_KEY, DecisionOptions, barrel_landings, choose_cells, choose_slot, gate_taus
+from .decision_options import lethal_rocket_choice
+from .live_mem import my_side_of
 
 
 class GenPilot(LegacyGenPilot):
@@ -46,6 +48,18 @@ class GenPilot(LegacyGenPilot):
             decision['public_audit'] = self._public_audit_snapshot
         return decision
 
+    def lethal_rocket(self, frame, info, allowed):
+        """decision_options.lethal_rocket_choice on the live frame: the decision board's time (bs.t_sec, as tau_phase),
+        the raw frame's absolute tower HP (public), my hand by position. live_play never decides with a card pending."""
+        options = self.decision_options
+        if getattr(options, 'lethal_rocket', 'off') == 'off':
+            return None
+        from .live_mem import to_observe
+        side = my_side_of(frame)
+        towers = to_observe(frame, side, info['names'])['episode']['crown_towers']
+        names = [info['names'][di] if di >= 0 else None for di in info['hand_deck_indices']]
+        return lethal_rocket_choice(options, info['bs'].t_sec, names, allowed, towers, side, self.grid)
+
     @torch.no_grad()
     def decide(self, frame):
         options = self.decision_options
@@ -68,6 +82,16 @@ class GenPilot(LegacyGenPilot):
         tau = (float(gate_taus(options, self.gate_tau, [bs.t_sec], 1)[0]) if options.tau_phase is not None
                else self.gate_tau)
         playing = p > tau or stalled                    # SIM decide_batch: (p > tau) | stalled
+        lethal = self.lethal_rocket(frame, info, allowed)
+        if lethal is not None:                          # SIM decide_batch: the same rule overrides gate, card and cell
+            pos, cell, target = lethal
+            card, form = info['hand'][pos]
+            d = dict(play=True, p_play=p, hand_pos=pos, no_affordable=False, stalled=stalled, why='lethal_rocket',
+                     lethal_rocket=target, deck_index=info['hand_deck_indices'][pos], card=card, form=form, bs=bs,
+                     name=info['names'][info['hand_deck_indices'][pos]], xy=cell_xy(cell, self.grid), **lookahead)
+            if options.tau_phase is not None:
+                d['gate_tau'] = tau
+            return self._audited(d)
         pos = choose_slot(out['card'][0], allowed, options, self.rng_decisions, playing=playing)
         card, form = info['hand'][pos]
         name = info['names'][info['hand_deck_indices'][pos]] if card > 0 else None
