@@ -4501,6 +4501,15 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **ROUND 4 (v2):** R3c vs R1e (neither with AL): u0030 tune 150 vs 133 (57/27, **p .0014**), fresh 137 vs 128 (49/29,
+>   **p .031**); u0020 fresh 148 vs 128 (52/22, **p .0006**), tune p .034 -> R3c beats R1e, replicated. Both with AL:
+>   u0030 tune 147 vs 159 (13/25, p .073), fresh 145 vs 147 (20/22); u0020 152 vs 159 / 158 vs 147 -> level: R3c's edge is
+>   that it learned to INITIATE (what the anti-leak does mechanically). Ghost r3c u0020 -1.5 [-4.5, +1.5], u0030 -1.5
+>   [-4.3, +1.3]. AL + tau_phase B (.35/.45/.55) vs AL: tune 149 vs 154 (10/15), fresh 156 vs 150 (14/8) -> pooled 305 vs
+>   304; elixir@play 2x/OT 6.56/6.17 & 6.37/6.19 (AL alone 5.66/4.83 & 5.47/4.67; pros 6.2-7.2), leak 2x .02 / OT .00
+>   -> tau_phase B PASSES with the anti-leak (the original goal). AL + (.35/.40/.45): 151 vs 154, 141 vs 150 -> fails.
+>   NEXT: CellRefine loader verification (branch a888, before merge + live), predict_drops SIM A/B on R3c + AL
+>   (`~/ab_pd.sh`), barrel2k retrain, then the FULL STACK on both seed sets vs R1e (as live ran it) and vs R1e + AL.
 > * **Spell aims (R3 u0050, val pro Log/Rocket, teacher-forced card):** the barrel branch changes non-barrel aims on
 >   0.88% (Log, n 4,748) / 0.54% (Rocket, n 1,118); with a barrel in flight (n 162) Log exact 28.4 -> 41.4%, distance
 >   4.50 -> 2.21 tiles. CellRefine moves spell aims toward pros: Log exact 31.6 -> 34.3%, Rocket 19.8 -> 23.1% (Rocket
