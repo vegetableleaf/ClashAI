@@ -1,0 +1,5 @@
+Hero IW lives (complete): 2825 | confirmed-or-not presses per life: {0: 2130, 1: 659, 2: 28, 3: 6, 4: 2}
+gap between presses in one life (s, min/p10/p50/p90/max): [1.2, 1.5, 20.4, 31.45, 62.3] n 46
+deploy (first sighting) -> first 'ready' button (s): [0.1, 2.2, 2.3, 6.2, 21.3] n 2269
+press -> button 'ready' again in the same life (s): [1.0, 1.4, 12.95, 24.95, 29.45] n 91
+elixir drop per confirmed press: median 1.1432 n 763 | button right after: {'stale': 632, 'absent': 100, 'grey': 24, 'ready': 7}

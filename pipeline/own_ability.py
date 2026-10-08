@@ -42,13 +42,26 @@ def observe(frame, side, source):
     return [(key, form, count, -1., 0.) for (key, form), count in sorted(groups.items())]
 
 
+# Hero forms the pinned RoyaleSim cards.json lacks (L74 econ2 parity fix). Without a spec, tokens() leaves a live controller
+# 'readiness unknown' (ready_known 0, charges -1, cooldown -1) -- a state absent from training (695,286 hero ability rows,
+# all ready_known 1) that measurably inflates the gate. Values: elixir drop per confirmed press 1.143 (n 763: 1 + regen
+# during confirmation) (a); <= 1 press per life in 98.6% of 2,825 lives and the button 'absent' after a press (a, max 1
+# charge, no cooldown -- as every other hero in cards.json); deploy -> first 'ready' <= 2.3 s at 2 s button sampling,
+# consistent with the 1000 ms deploy every hero form uses (b). Measured: scratchpad/gauntlet/L74/econ2/diag_hero.py.
+SUPPLEMENT = {('ice-wizard', 2): dict(name='IceWizardHero_Ability', mana_cost=1, max_charges=1, cooldown_ms=None,
+                                      deploy_ms=1000, source='L74 econ2 live record (diag_hero.py)')}
+
+
 @lru_cache(maxsize=1)
 def catalog():
     from .obs_contract import REPO
     from .dataset_gen import card_key
     data=json.loads((REPO/'research/ext/Royale/RoyaleSim/data/derived/cards.json').read_text())
-    return {(card_key(c.get('form_of',c['name'])),form):dict(c['ability'],deploy_ms=c.get('deploy_time_ms') or 0)
-            for form,source in ((0,'cards'),(2,'hero_forms')) for c in data[source] if c.get('ability')}
+    out = {(card_key(c.get('form_of',c['name'])),form):dict(c['ability'],deploy_ms=c.get('deploy_time_ms') or 0)
+           for form,source in ((0,'cards'),(2,'hero_forms')) for c in data[source] if c.get('ability')}
+    for k, spec in SUPPLEMENT.items():
+        out.setdefault(k, dict(spec))       # the engine's own data wins once RoyaleSim carries the form
+    return out
 
 
 def tokens(rows, gid, events=(), tick=0):
