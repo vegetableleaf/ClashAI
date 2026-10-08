@@ -4508,6 +4508,15 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   CellRefine + TowerRefine exactly. VM ~/ClashBot got pipeline/tower_refine.py + hooked model_gen.py (live ckpt
 >   byte-identical under it; backup ~/probe_rocket/model_gen.py.bak_pre_towerrefine). SIM A/B (v3, seeds 0:240 x 2, live
 >   options + rocket_area, base / w1 / w2) running ~1 h: ~/probe_rocket/vm_ab_towerref.sh.
+> * **OWNER 14:xx: "your rocket fixes did nothing ... never makes use of rocket or rocket tornado [on large pushes] ...
+>   lost 0-3 to every single beatdown deck ... sluggish and ignores huge threats ... completely stopped playing and gave
+>   up in the middle of one of its matches."** MEASURED (owner's afternoon live matches 121128/121357/121633, LIVE_OPTIONS
+>   config, anti-leak off): match 121357 last play at tick 1159, then NO play for 65 s to tick 2525 at 10 elixir with top
+>   card Rocket and p_play .20-.27 under tau .35/.45 (the threshold freeze; the anti-leak would have forced a play). In 13
+>   decisions with >= 5 enemy bodies + Rocket in hand + >= 6 elixir: top card Knight or X-Bow every time, never Rocket;
+>   p_play .14-.34 under the cutoff. Facts for the owner: only rocket_area (aim) is live; TowerRefine (Rocket choice) is
+>   not deployed; its SIM effect was OT, not 1x. Lead offered: anti-leak back on now (owner's call); dispatched a worker
+>   on Rocket vs big pushes / Rocket+Tornado / beatdown matchups / sluggishness (incl. tau_phase cost) + a learned fix.
 > * **TowerRefine SIM A/B (v3, 480 paired, live options + rocket_area):** wins base 312 | w1 287 (77/102, p .07) | w2 320
 >   (86/78, p .58); tower Rockets/match .52 | .69 | .89; OT tower Rockets per OT match .49 | .65 | .90 (pros .55 vs a
 >   different opponent -> watch overshoot live); Rocket share OT 3.8 | 4.7 | 6.6%; OT X-Bow share 9.0 | 8.9 | 7.7%; share of
