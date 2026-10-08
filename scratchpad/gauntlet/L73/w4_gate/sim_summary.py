@@ -41,7 +41,7 @@ def beh(r):
 
 for bench in ("v2", "v3"):
     base = load(f"{bench}_base")
-    for arm in ("base", "hbt", "haz"):
+    for arm in ("base", "hbt", "haz", "hbt9", "hbt9q"):
         R = load(f"{bench}_{arm}")
         if not R: continue
         n = len(R); w = sum(score(r) for r in R.values())
