@@ -4437,6 +4437,28 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   sim Log hit a Knight (1766 -> 1498) but not Skeletons (243) / Goblins (808) it seemed to roll through. Log worker
 >   re-scoped: veto OPT-IN (`--log-air-veto`), root cause first -- pro rates by corridor class, matched-state P(Log)
 >   probes (air vs ground push) on R1e and its imitation base, observation identity, the sim swarm oddity.
+> * **FRAME AUDIT (worker, H1-H4): NO frame offset.** Training labels sit in the real arena on both axes/sides (troop
+>   labels on tower footprints: 208/365k unshifted vs 5.7k-43.8k if shifted 1 tile); live modes == pro modes per card;
+>   obs and action use the same mapping; every mirror formula continuous; screen ground truth from a raw clip: cards
+>   and spells land on the tap (Log/Rocket/Fireball/Goblin Barrel: 1,672 casts, 0 >= 1-tile errors). The real "one tile"
+>   in the open centre: the model picks the WRONG one of the two centre columns (8.5 vs 9.5): lane-consistent
+>   (column on the enemy's side) live 51-62% vs pros 70-80% (Ice Wizard/Knight, both sides). Cause untested (cell head
+>   per 2x2-tile patch puts both centre columns in one patch; the worker's offline replay numbers were WITHDRAWN -- bug,
+>   re-running). Spells: aim, not placement (R2 Rocket vs a static X-Bow 0/9 within half a tile). `kind` in the obs
+>   path: towers by kind 12/13 then position -> correct; `deploying` cleared for fv>=4 -> model input unaffected.
+>   Guard repaired 25423d9 (towers by position, pocket y 17-21; 8 tests fail on eccd765 / 25 pass); re-verification running.
+> * **OWNER 22:3x (going to bed): "I expect to see a model that beats R1e SIGNIFICANTLY in both tests and in live by the
+>   time I wake up ... I don't care by what means ... I do not want to see R1e on live still when I wake up."**
+>   No-stall benchmark (192 paired, engine 20261006, tau .35; `~/paired.py`, draw = 1/2): R1e 105 wins + 41 draws;
+>   gen_v32 base 56 wins (S1 7/48 twice; p < .0001 WORSE); R2 u0120 92 (p .35); **old R3 u0050 120 wins, better 44 /
+>   worse 30, sign p .13** (PASS-level on wins, not significant; ghost screen running). Launched R3c = old R3 u0050
+>   trained on WITHOUT the stall (R3 recipe, 24 actors, 12 branch workers, 30 updates, `~/run_r3c.sh`).
+>   PRE-REGISTERED overnight rules: candidates R3n u0040/u0080, R4n u0040/u0080, R3c snapshots, old R3 u0050 (fallback,
+>   stall-trained). SIGNIFICANT = wins >= R1e + 6 AND paired sign p < .05 AND ghost ci_hi >= 0 AND leak share not above
+>   R1e AND >= 2 behaviour gaps toward pros; PASS = same without p and with >= 1 gap. Live: as soon as the guard is
+>   verified, the best PASSING candidate replaces R1e (tau .35); a better passing candidate replaces it; morning = best
+>   SIGNIFICANT, else best PASS (labelled unproven); nothing passes -> live STOPPED (no R1e, no weaker model).
+>   Caveat: ~8 checkpoints tested -> one p < .05 among them can be luck; the morning report says so.
 >   ~15:40" (Q1 card sampling flag, Q2 area-aware spell aim, Q3 GPU A/Bs after R1e, Q4 R1e approval ping, Q5 fixes);
 >   launcher `.foreman/codex_autopilot/codex_loop.sh` (back-to-back runs to 10-06; STOP_LOOP file stops it).
 > * **15:5x -- owner plan: after the R1e verdict the lead starts LIVE on the winner, then hands over to Codex via
