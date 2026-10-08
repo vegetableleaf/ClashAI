@@ -4501,6 +4501,22 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **CORRECTION 10:3x -- the v2 "beats R1e significantly" was driven by the S1 opponent.** S1 never initiates; R1e
+>   (and S1) idle -> draws, while R3c / AL initiate and win. Split by opponent (`~/paired_split.py`, idle = < 5 plays):
+>   vs GEN only: stack2k (AL) vs R1e 68 vs 59 (23/14, p .19) / 62 vs 57.5 (21/16, p .51); live2 (no AL) vs R1e 67 vs 59
+>   (25/17) / 61.5 vs 57.5 (24/20); R3c u0030 base vs R1e 61 vs 59 / 48 vs 57.5 -> R3c alone NOT better than R1e vs gen.
+>   vs S1 non-idle: small n, mostly n.s. So the realistic SIM edge of the live stack is ~+6 pp (n.s.), consistent with
+>   live +4 pp (73 matches, n.s.). Benchmark v3 = gen only, 480 seeds x 2 deck sets = 960 paired (`~/bench_gen.sh`):
+>   R1e, live, live + rocket_area, R3c base.
+> * **ab_live2 (v2, both seed sets) + measurement worker (scratchpad/gauntlet/L73/rocket_xbow_1008/):** live2 (= live
+>   now) vs R1e 149 vs 133 (p .013) / 144 vs 128 (p .047) [S1-inflated]; + rocket_area 146 vs 149 (1/4) / 144 vs 144
+>   (3/3) = neutral wins, but OT TOWER Rockets 0.10 -> 0.52/match (pros 0.55) -> PASSES the option rule; + card
+>   filtered 138 vs 149 (12/23, p .09) / 132 vs 144 (8/19, p .05) -> FAILS (worse); + AL +15/+14 (p .001) but mostly
+>   S1 idle draws (AL won 43/51 idle matches; non-idle 27/20). Same-definition check: SIM labeller = pro tool on 281 pro
+>   replays (X-Bow class 1,062/1,062, tower Rocket 669/669). LIVE defensive X-Bow (pro definition): stack 15/33/35%
+>   (1x/2x/OT) vs pros 15/33/38, R1e 11/25/15 -> live already pro-like (lead's earlier "8%" used a different rule).
+>   Rockets/match: pros 2.42, R1e 0.32, stack 0.77 (OT 0.84 vs pros 1.92; tower OT 0.12 vs 0.55). OT eligibility share of
+>   time: pros 32%, R1e 7%, stack 21%. OT Rocket gap now ~half eligibility, half choice; tower-Rocket gap mostly choice.
 > * **CHIP-ROCKET Q1-Q2 (worker checkpoint) -- owner's hypothesis MEASURED true.** Pure chip = tower Rocket with no enemy
 >   troop within 2 tiles of impact. Tower Rockets/match: pros 1.57 (chip 73% [72,75]; OT chip 0.87), R1e 0.18 (chip 44%;
 >   OT chip 0.05), live stack 0.60 (chip 39% [22,55]; OT chip 0.13). Rate ratio with vs without an enemy troop within 4

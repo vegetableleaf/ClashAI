@@ -1,0 +1,59 @@
+{
+ "replays": 281,
+ "sides_skipped_tick_mismatch": 0,
+ "xbow_confusion(phase|pro_cls|sim_cls)": {
+  "1x|def|def": 55,
+  "1x|off|off": 285,
+  "2x|def|def": 123,
+  "2x|off|off": 261,
+  "OT|def|def": 129,
+  "OT|off|off": 209
+ },
+ "rocket_confusion(phase|pro_tower_aim2tiles|sim_tower_rocket)": {
+  "1x|False|False": 108,
+  "1x|True|True": 26,
+  "2x|False|False": 141,
+  "2x|True|True": 38,
+  "OT|False|False": 258,
+  "OT|True|True": 98
+ },
+ "def_share|1x": {
+  "pro_def/(def+off)": 0.16176470588235295,
+  "sim_def/(def+off)": 0.16176470588235295,
+  "sim_def/n_all": 0.16176470588235295,
+  "n_all": 340,
+  "agree": 1.0
+ },
+ "tower_rockets|1x": {
+  "pro_aim_def": 26,
+  "sim_landing_def": 26,
+  "sim_unknown": 0,
+  "rockets": 134
+ },
+ "def_share|2x": {
+  "pro_def/(def+off)": 0.3203125,
+  "sim_def/(def+off)": 0.3203125,
+  "sim_def/n_all": 0.3203125,
+  "n_all": 384,
+  "agree": 1.0
+ },
+ "tower_rockets|2x": {
+  "pro_aim_def": 38,
+  "sim_landing_def": 38,
+  "sim_unknown": 0,
+  "rockets": 179
+ },
+ "def_share|OT": {
+  "pro_def/(def+off)": 0.3816568047337278,
+  "sim_def/(def+off)": 0.3816568047337278,
+  "sim_def/n_all": 0.3816568047337278,
+  "n_all": 338,
+  "agree": 1.0
+ },
+ "tower_rockets|OT": {
+  "pro_aim_def": 98,
+  "sim_landing_def": 98,
+  "sim_unknown": 0,
+  "rockets": 356
+ }
+}

@@ -1,0 +1,9 @@
+[eval] paired sb_live2 vs sb_t_r1e sb_live2 n=192 wins 149 vs 133 better 47 worse 25 sign p=0.0128 mean tower-hp diff delta +1022 2026-10-08 13:53:06
+[eval] paired sb_live2_rocket vs sb_live2 sb_live2_rocket n=192 wins 146 vs 149 better 1 worse 4 sign p=0.3750 mean tower-hp diff delta -134 2026-10-08 13:56:10
+[eval] paired sb_live2_filt vs sb_live2 sb_live2_filt n=192 wins 138 vs 149 better 12 worse 23 sign p=0.0895 mean tower-hp diff delta -430 2026-10-08 13:59:16
+[eval] paired sb_live2_al vs sb_live2 sb_live2_al n=192 wins 164 vs 149 better 34 worse 11 sign p=0.0008 mean tower-hp diff delta +1774 2026-10-08 14:01:50
+[eval] paired sc_live2 vs sc_t_r1e sc_live2 n=192 wins 144 vs 128 better 46 worse 28 sign p=0.0474 mean tower-hp diff delta +219 2026-10-08 14:07:18
+[eval] paired sc_live2_rocket vs sc_live2 sc_live2_rocket n=192 wins 144 vs 144 better 3 worse 3 sign p=1.0000 mean tower-hp diff delta +12 2026-10-08 14:10:21
+[eval] paired sc_live2_filt vs sc_live2 sc_live2_filt n=192 wins 132 vs 144 better 8 worse 19 sign p=0.0522 mean tower-hp diff delta -483 2026-10-08 14:13:27
+[eval] paired sc_live2_al vs sc_live2 sc_live2_al n=192 wins 158 vs 144 better 36 worse 9 sign p=0.0001 mean tower-hp diff delta +1706 2026-10-08 14:16:04
+[eval] ab_live2 DONE 2026-10-08 14:16:04
