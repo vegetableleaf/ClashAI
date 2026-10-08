@@ -4501,6 +4501,11 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **BARREL-HEAVY census (59 loadable ladder decks WITH Goblin Barrel, unmodified; gen opps sampling; R3 u0050; 96
+>   per arm):** in-flight Log lane vs barrel base 73.4% -> +barrel 88.5% -> +CellRefine 66.4% (worse alone: local cell
+>   preferences compete with the barrel target) -> +barrel+CellRefine 89.1%. Wins 52 / 57 / 62 / 58 (paired vs base
+>   17/12, 23/13, 19/13; none significant at 96); crowns against 48 / 42 / 39 / 40. -> barrel + CellRefine is the right
+>   shipping pair (barrel keeps the lane, CellRefine the columns). File VM centre_col/barrel_census.json, ~/barrel_sim.sh.
 > * **ROUND 3 (v2):** R1e + AL vs R1e: tune 159 vs 133 (48/8), fresh 147 vs 128 (46/16, p .0002). R3old + AL vs
 >   R1e + AL: tune 154 vs 159 (19/24, p .54), fresh 150 vs 147 (24/21, p .77) -> the anti-leak gain is model-
 >   independent; R3old = R1e. AL + xbow f .3 vs AL: tune 155 vs 154 (5/4), fresh 148 vs 150 (4/6); def X-Bow 19.4 ->
