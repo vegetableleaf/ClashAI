@@ -4357,6 +4357,17 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 > * **OWNER: plan for R4 live?** Lead answer: keep tonight's 24 h test intact; R4's sim evaluation (~04:45) gates a
 >   queued 24 h test R4 vs tonight's winner (bar: >= +6/192 vs R1e, ghost ci_hi >= 0, a gap toward pros); if R4 fails,
 >   the slot goes to the next passing candidate (barrel add-on / decode options / predict_drops), one change per test.
+> * **OWNER 21:0x: "separate tests"; switch live to R2 now to see the spawner identity fix; the decision-tree
+>   alternation starts once R3 lands.** Done 21:10:56: R2 u0120 copied from the VM (sha256 16305cc7... identical both
+>   sides), `live_play --check` PASS fv5, CKPT_OVERRIDE -> rseries_r2l_u0120.pt (R1e path kept in
+>   `L70/live/CKPT_OVERRIDE.r1e_backup`); the watcher ended the run between matches and the supervisor restarted on R2.
+>   This R2 stretch is a SHOWCASE (not part of the tree's A/B; live_eval splits by sha). Account: whichever the owner
+>   left in MuMu (owner switches to MAIN before sleeping).
+> * **predict_drops blind verification: FAIL (flag on).** Off-path identical in the real SIM (2,728 extrapolate
+>   outputs) and live (1,497 decides). Flag on: (HIGH) pending never clears when real children are already present in
+>   the first frame without the balloon -> 14 skeletons / phantoms after death in 10 of 36 SIM drops (10-tick cadence);
+>   (MED) a nearby barrel's children clear the other's entry; (LOW) evo child hp in SIM; silent no-op without
+>   extrapolation. The 1/40 "false positive" is a real balloon whose CURRENT hp was 81. Sent back to the worker.
 >   ~15:40" (Q1 card sampling flag, Q2 area-aware spell aim, Q3 GPU A/Bs after R1e, Q4 R1e approval ping, Q5 fixes);
 >   launcher `.foreman/codex_autopilot/codex_loop.sh` (back-to-back runs to 10-06; STOP_LOOP file stops it).
 > * **15:5x -- owner plan: after the R1e verdict the lead starts LIVE on the winner, then hands over to Codex via
