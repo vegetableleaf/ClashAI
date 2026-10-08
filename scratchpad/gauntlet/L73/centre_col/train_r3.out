@@ -1,0 +1,51 @@
+{"base": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\rl_royale\\rseries_r3\\rseries_r3_u0050.pt", "out": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\rl_royale\\rseries_r3\\rseries_r3_u0050_cellref.pt", "train_play_rows": 911987, "val_rows": 20000, "steps": 7124, "params": 45920, "val0": {"step": 0, "cell_nll": 3.066398910522461, "cell_half_top1": 0.21805, "cell_tile_top1": 0.2181, "card_top1": 0.6187, "n_play": 20000}}
+{"step": 200, "of": 7124, "cell_loss_ema": 3.0194, "rows_per_s": 1357, "min": 0.6}
+{"step": 400, "of": 7124, "cell_loss_ema": 3.0292, "rows_per_s": 1516, "min": 1.1}
+{"step": 600, "of": 7124, "cell_loss_ema": 3.0029, "rows_per_s": 1428, "min": 1.8}
+{"step": 800, "of": 7124, "cell_loss_ema": 2.9885, "rows_per_s": 1463, "min": 2.3}
+{"step": 1000, "of": 7124, "cell_loss_ema": 3.0115, "rows_per_s": 1381, "min": 3.1}
+{"val": {"step": 1000, "cell_nll": 3.0445501655578613, "cell_half_top1": 0.22795, "cell_tile_top1": 0.2279, "card_top1": 0.6187, "n_play": 20000}}
+{"saved": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\rl_royale\\rseries_r3\\rseries_r3_u0050_cellref.pt", "step": 1000, "cell_nll": 3.0445501655578613}
+{"step": 1200, "of": 7124, "cell_loss_ema": 2.9924, "rows_per_s": 1388, "min": 3.7}
+{"step": 1400, "of": 7124, "cell_loss_ema": 2.986, "rows_per_s": 1355, "min": 4.4}
+{"step": 1600, "of": 7124, "cell_loss_ema": 2.9739, "rows_per_s": 1387, "min": 4.9}
+{"step": 1800, "of": 7124, "cell_loss_ema": 2.979, "rows_per_s": 1428, "min": 5.4}
+{"step": 2000, "of": 7124, "cell_loss_ema": 2.961, "rows_per_s": 1475, "min": 5.8}
+{"val": {"step": 2000, "cell_nll": 3.029658667755127, "cell_half_top1": 0.22825, "cell_tile_top1": 0.2282, "card_top1": 0.6187, "n_play": 20000}}
+{"saved": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\rl_royale\\rseries_r3\\rseries_r3_u0050_cellref.pt", "step": 2000, "cell_nll": 3.029658667755127}
+{"step": 2200, "of": 7124, "cell_loss_ema": 2.9701, "rows_per_s": 1484, "min": 6.3}
+{"step": 2400, "of": 7124, "cell_loss_ema": 2.9877, "rows_per_s": 1510, "min": 6.8}
+{"step": 2600, "of": 7124, "cell_loss_ema": 2.9804, "rows_per_s": 1540, "min": 7.2}
+{"step": 2800, "of": 7124, "cell_loss_ema": 2.9807, "rows_per_s": 1562, "min": 7.6}
+{"step": 3000, "of": 7124, "cell_loss_ema": 2.9659, "rows_per_s": 1582, "min": 8.1}
+{"val": {"step": 3000, "cell_nll": 3.025220004272461, "cell_half_top1": 0.231, "cell_tile_top1": 0.2311, "card_top1": 0.6187, "n_play": 20000}}
+{"saved": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\rl_royale\\rseries_r3\\rseries_r3_u0050_cellref.pt", "step": 3000, "cell_nll": 3.025220004272461}
+{"step": 3200, "of": 7124, "cell_loss_ema": 2.9829, "rows_per_s": 1577, "min": 8.7}
+{"step": 3400, "of": 7124, "cell_loss_ema": 2.9802, "rows_per_s": 1593, "min": 9.1}
+{"step": 3600, "of": 7124, "cell_loss_ema": 2.9777, "rows_per_s": 1600, "min": 9.6}
+{"step": 3800, "of": 7124, "cell_loss_ema": 2.977, "rows_per_s": 1601, "min": 10.1}
+{"step": 4000, "of": 7124, "cell_loss_ema": 2.9626, "rows_per_s": 1615, "min": 10.6}
+{"val": {"step": 4000, "cell_nll": 3.0225009620666503, "cell_half_top1": 0.2316, "cell_tile_top1": 0.2316, "card_top1": 0.6187, "n_play": 20000}}
+{"saved": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\rl_royale\\rseries_r3\\rseries_r3_u0050_cellref.pt", "step": 4000, "cell_nll": 3.0225009620666503}
+{"step": 4200, "of": 7124, "cell_loss_ema": 2.9716, "rows_per_s": 1609, "min": 11.1}
+{"step": 4400, "of": 7124, "cell_loss_ema": 2.9503, "rows_per_s": 1622, "min": 11.6}
+{"step": 4600, "of": 7124, "cell_loss_ema": 2.9776, "rows_per_s": 1636, "min": 12.0}
+{"step": 4800, "of": 7124, "cell_loss_ema": 2.9676, "rows_per_s": 1646, "min": 12.4}
+{"step": 5000, "of": 7124, "cell_loss_ema": 2.9583, "rows_per_s": 1658, "min": 12.9}
+{"val": {"step": 5000, "cell_nll": 3.0194247234344482, "cell_half_top1": 0.2338, "cell_tile_top1": 0.23385, "card_top1": 0.6187, "n_play": 20000}}
+{"saved": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\rl_royale\\rseries_r3\\rseries_r3_u0050_cellref.pt", "step": 5000, "cell_nll": 3.0194247234344482}
+{"step": 5200, "of": 7124, "cell_loss_ema": 2.9639, "rows_per_s": 1653, "min": 13.4}
+{"step": 5400, "of": 7124, "cell_loss_ema": 2.9741, "rows_per_s": 1663, "min": 13.9}
+{"step": 5600, "of": 7124, "cell_loss_ema": 2.9631, "rows_per_s": 1673, "min": 14.3}
+{"step": 5800, "of": 7124, "cell_loss_ema": 2.9793, "rows_per_s": 1688, "min": 14.7}
+{"step": 6000, "of": 7124, "cell_loss_ema": 2.9698, "rows_per_s": 1697, "min": 15.1}
+{"val": {"step": 6000, "cell_nll": 3.0174169013977052, "cell_half_top1": 0.233, "cell_tile_top1": 0.2331, "card_top1": 0.6187, "n_play": 20000}}
+{"saved": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\rl_royale\\rseries_r3\\rseries_r3_u0050_cellref.pt", "step": 6000, "cell_nll": 3.0174169013977052}
+{"step": 6200, "of": 7124, "cell_loss_ema": 2.9436, "rows_per_s": 1693, "min": 15.6}
+{"step": 6400, "of": 7124, "cell_loss_ema": 2.947, "rows_per_s": 1700, "min": 16.1}
+{"step": 6600, "of": 7124, "cell_loss_ema": 2.9593, "rows_per_s": 1709, "min": 16.5}
+{"step": 6800, "of": 7124, "cell_loss_ema": 2.9615, "rows_per_s": 1719, "min": 16.9}
+{"step": 7000, "of": 7124, "cell_loss_ema": 2.9502, "rows_per_s": 1729, "min": 17.3}
+{"val": {"step": 7000, "cell_nll": 3.017464912033081, "cell_half_top1": 0.2331, "cell_tile_top1": 0.23315, "card_top1": 0.6187, "n_play": 20000}}
+{"val": {"step": 7124, "cell_nll": 3.0174636100769043, "cell_half_top1": 0.23325, "cell_tile_top1": 0.2332, "card_top1": 0.6187, "n_play": 20000}}
+{"done": true, "best_val_cell_nll": 3.0174169013977052, "base_val_cell_nll": 3.066398910522461, "minutes": 17.8}

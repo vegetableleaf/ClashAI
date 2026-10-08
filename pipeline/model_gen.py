@@ -22,9 +22,10 @@ from typing import Optional
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as Fn
 
 from .dataset import PAST_K
-from .model_v3 import S1Model, _fourier, mirror_batch, N_PATCHES, PATCH_X, PATCH_Y, cell_index
+from .model_v3 import S1Model, _fourier, mirror_batch, N_PATCHES, PATCH_X, PATCH_Y, GRID_X, GRID_Y, cell_index, cell_label
 from .obs_contract import S as SC_S
 
 N_CARDS = 123          # 122 base keys + pad 0 (dataset_gen card_vocab)
@@ -53,6 +54,43 @@ def _pool(e: torch.Tensor, m: torch.Tensor) -> torch.Tensor:
     mean = (e * mf).sum(1) / mf.sum(1).clamp(min=1)
     mx = e.masked_fill(~m.unsqueeze(-1), -1e4).max(1).values * (mf.sum(1) > 0)
     return torch.cat([mean, mx], -1)
+
+
+class CellRefine(nn.Module):
+    """Optional fine-resolution cell refinement (L73 centre-column fix). The base cell logit's board term is per
+    2x2-TILE patch (``cell_patch``), so the cells inside one patch -- e.g. both centre columns X 8.5 / 9.5 (cells 17,
+    19) -- differ only through the global query. This adds a per-CELL residual from LOCAL board features: the
+    encoder's output unit states (public tokens only) are projected, scattered onto the 36 x 64 half-tile lattice
+    (``cell_label(.., "lattice")`` so a left-right mirror maps cell x -> 36 - x exactly like the labels), passed
+    through dilated 3x3 convs (4 layers: receptive field +-15 half-cells = 7.5 tiles; 5: +-31) and
+    dotted with the cell query: residual_c = (W feat_c) . q / sqrt(d). ``W`` is zero-initialised, so a freshly
+    attached module leaves every logit byte-identical."""
+    def __init__(self, d: int, c: int = 32, layers: int = 4):
+        super().__init__()
+        self.C = c
+        self.inp = nn.Linear(d, c)
+        self.convs = nn.ModuleList(nn.Conv2d(c + 2 if i == 0 else c, c, 3, padding=2 ** i, dilation=2 ** i)
+                                   for i in range(layers))     # dilations 1, 2, 4, ...: RF +-(2^layers - 1) cells
+        self.out = nn.Linear(self.C, d)
+        nn.init.zeros_(self.out.weight); nn.init.zeros_(self.out.bias)
+        gy, gx = torch.meshgrid(torch.linspace(-1, 1, GRID_Y), torch.linspace(-1, 1, GRID_X), indexing="ij")
+        self.register_buffer("coords", torch.stack([gx, gy]), persistent=False)
+
+    def features(self, u: torch.Tensor, xy: torch.Tensor, mask: torch.Tensor) -> torch.Tensor:
+        """Unit states [B, U, d], their board xy [B, U, 2], mask [B, U] -> per-cell features [B, N_CELLS, C]."""
+        B = u.shape[0]
+        v = self.inp(u) * mask.unsqueeze(-1).to(u.dtype)
+        idx = cell_label(xy.clamp(0, 1), "lattice")
+        grid = v.new_zeros(B, GRID_X * GRID_Y, self.C).scatter_add_(1, idx.unsqueeze(-1).expand(-1, -1, self.C), v)
+        x = torch.cat([grid.transpose(1, 2).reshape(B, self.C, GRID_Y, GRID_X),
+                       self.coords.to(v.dtype).expand(B, -1, -1, -1)], 1)
+        for conv in self.convs:
+            x = Fn.gelu(conv(x))
+        return x.flatten(2).transpose(1, 2)
+
+    def residual(self, feat: torch.Tensor, q: torch.Tensor) -> torch.Tensor:
+        """(W feat_c + b) . q / sqrt(d) for every cell, without materialising [B, N_CELLS, d]."""
+        return ((feat * (q @ self.out.weight).unsqueeze(1)).sum(-1) + (q @ self.out.bias).unsqueeze(1)) / math.sqrt(q.shape[-1])
 
 
 class GenModel(S1Model):
@@ -149,7 +187,22 @@ class GenModel(S1Model):
         enc = self.encode(tok, b["mask"], self.global_features(b), empty)
         if self.feature_version >= 6:
             enc = dict(enc, p=enc['p'] + self.target_patches(b))
+        if getattr(self, "cell_refine", None) is not None:
+            enc = dict(enc, cell_feat=self.cell_refine.features(enc["u"], tok[..., 4:6], b["mask"]))
         return enc
+
+    def add_cell_refine(self, c: int = 32, layers: int = 4) -> "CellRefine":
+        """Attach a fresh (zero-output) ``CellRefine``; checkpoints holding ``cell_refine.*`` weights get it on load."""
+        self.cell_refine = CellRefine(self.d, c, layers).to(self.cell_emb.device)
+        return self.cell_refine
+
+    def load_state_dict(self, state_dict, strict: bool = True, assign: bool = False):
+        # Opt-in by checkpoint CONTENT: every loader (load_model, eval_gen, rl_royale actors, live) goes through here,
+        # so a state dict with the refinement builds it; one without leaves the model exactly as before.
+        if getattr(self, "cell_refine", None) is None and any(k.startswith("cell_refine.") for k in state_dict):
+            self.add_cell_refine(int(state_dict["cell_refine.inp.weight"].shape[0]),
+                                 sum(k.startswith("cell_refine.convs.") and k.endswith(".weight") for k in state_dict))
+        return super().load_state_dict(state_dict, strict=strict, assign=assign)
 
     def heads_gen(self, enc: dict, b: dict) -> dict:
         g = enc["g"]
@@ -166,7 +219,10 @@ class GenModel(S1Model):
         q = self.query(torch.cat([enc["g"], self.emb(card, form)], -1))
         kp = (self.cell_key(enc["p"]) * q.unsqueeze(1)).sum(-1)                        # same algebra as S1
         kc = q @ self.cell_key(self.cell_emb).t()
-        return (kp[:, self.cell_patch] + kc) / math.sqrt(self.d) + self.cell_bias
+        logits = (kp[:, self.cell_patch] + kc) / math.sqrt(self.d) + self.cell_bias
+        if "cell_feat" in enc:
+            logits = logits + self.cell_refine.residual(enc["cell_feat"], q)
+        return logits
 
     def forward(self, b: dict, card: Optional[torch.Tensor] = None, form: Optional[torch.Tensor] = None) -> dict:
         """``b``: tok, mask, sc, past + the IDENT arrays (tensors). ``card``/``form``: the card to place (cell head)."""

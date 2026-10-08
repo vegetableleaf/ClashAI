@@ -1,0 +1,59 @@
+{
+ "n": 561,
+ "pro": {
+  "centre9": 302,
+  "toward": 231,
+  "away": 28
+ },
+ "pro_by_card": {
+  "tesla": {
+   "centre9": 302,
+   "toward": 219,
+   "away": 20
+  },
+  "x-bow": {
+   "toward": 12,
+   "away": 8
+  }
+ },
+ "rseries_r3_u0050": {
+  "dir": {
+   "centre9": 407,
+   "toward": 137,
+   "away": 17
+  },
+  "exact_X": 0.6470588235294118
+ },
+ "rseries_r3_u0050_cellref5": {
+  "dir": {
+   "centre9": 385,
+   "toward": 162,
+   "away": 14
+  },
+  "exact_X": 0.6684491978609626
+ },
+ "cpu_bitcheck_vs_base": {
+  "rseries_r3_u0050_cellref5": {
+   "gate": {
+    "equal": true,
+    "max_abs": 0.0
+   },
+   "card": {
+    "equal": true,
+    "max_abs": 0.0
+   },
+   "wait": {
+    "equal": true,
+    "max_abs": 0.0
+   },
+   "value": {
+    "equal": true,
+    "max_abs": 0.0
+   },
+   "cell": {
+    "equal": false,
+    "max_abs": 5.48082160949707
+   }
+  }
+ }
+}

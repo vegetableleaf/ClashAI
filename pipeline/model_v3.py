@@ -126,7 +126,7 @@ class S1Model(nn.Module):
         x = torch.cat([g + self.type_emb.weight[0], p + self.type_emb.weight[1], u + self.type_emb.weight[2]], 1)
         pad = torch.cat([torch.zeros(B, 1 + N_PATCHES, dtype=torch.bool, device=tok.device), ~mask], 1)
         h = self.norm(self.encoder(x, src_key_padding_mask=pad))
-        return {"g": h[:, 0], "p": h[:, 1:1 + N_PATCHES]}
+        return {"g": h[:, 0], "p": h[:, 1:1 + N_PATCHES], "u": h[:, 1 + N_PATCHES:]}
 
     def heads(self, enc: dict, hand_mask: Optional[torch.Tensor] = None) -> dict:
         g = enc["g"]
