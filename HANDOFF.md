@@ -4368,6 +4368,24 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   the first frame without the balloon -> 14 skeletons / phantoms after death in 10 of 36 SIM drops (10-tick cadence);
 >   (MED) a nearby barrel's children clear the other's entry; (LOW) evo child hp in SIM; silent no-op without
 >   extrapolation. The 1/40 "false positive" is a real balloon whose CURRENT hp was 81. Sent back to the worker.
+> * **OWNER 21:2x: "Permanently remove the anti stall from training ... R2 is a failure ... Restart R3 without the anti
+>   stall, then do R4, then do the decision tree on R3/R4/R1e. R2 is completely incompatible for live."** Facts found:
+>   the training anti-stall (elixir >= 9 and 12 s without a play -> forced play) entered 2026-09-12 (552a559, E1 option
+>   B tooling, copying the then-live student anti-leak) and was never removed when live went `--no-anti-leak` (10-04).
+>   R1e was trained with it too (its saved rl cfg: stall_elixir 9, stall_seconds 12, T .5, tau .27), and every
+>   evaluation used it (search_s0.live_cfg hard-coded 9/12; run_screen reads the yaml) -> R2's 136 vs R1e 132 and the
+>   ghost screens were measured under a forced spend live does not have. Done 21:3x: `e1_eval.STALL_ELIXIR_LIVE = None`
+>   (CLI defaults of e1_eval/opp_est_audit follow), search_s0.live_cfg reads it, `stall_elixir: null` in
+>   pipeline/rl_royale.yaml + L69/rl r1/rseries/league1c yamls, and rl_royale.load_config REFUSES a non-null
+>   stall_elixir (permanent lock). Leak telemetry: behaviour_telemetry records my elixir per frame and reports
+>   `leak_ge_9_5` per phase (share of time at >= 9.5, live_eval.py's definition). Tests: 111 passed / 20 skipped
+>   (test_rl_branch, branching, rl_gen, league, e1_eval_gen, value_phi, branch_r4). Live: CKPT_OVERRIDE back to R1e
+>   (between matches). VM: R3 (rseries_r3, reached u0050) + chain_r3_r4.sh + 25 orphaned workers stopped by exact PID.
+>   Plan: R3n (= R3 recipe, no stall) + R1e no-stall baselines in ~/eval_ns -> R3n eval u0040/u0080 -> R4n (init R3n
+>   u0080) -> eval -> owner's decision tree on R3n/R4n/R1e. Lead addition (owner may veto): a candidate whose ghost-screen
+>   leak share exceeds R1e's (no-stall) by more than its paired CI counts as a behaviour gap AWAY from pros.
+>   Risk to watch (untested): value_phi's Phi rises with banked elixir, so without the forced spend the shaping could
+>   teach banking; the leak gate is how we would see it.
 >   ~15:40" (Q1 card sampling flag, Q2 area-aware spell aim, Q3 GPU A/Bs after R1e, Q4 R1e approval ping, Q5 fixes);
 >   launcher `.foreman/codex_autopilot/codex_loop.sh` (back-to-back runs to 10-06; STOP_LOOP file stops it).
 > * **15:5x -- owner plan: after the R1e verdict the lead starts LIVE on the winner, then hands over to Codex via

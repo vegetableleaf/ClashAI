@@ -2040,6 +2040,8 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
         cfg[k] = yaml.safe_load(v)
     if type(cfg["hero_abilities"]) is not bool:
         raise SystemExit("hero_abilities must be a bool")
+    if cfg.get("stall_elixir") is not None:   # owner 2026-10-07: no anti-stall in training, ever (live has none)
+        raise SystemExit("stall_elixir must be null: the anti-stall was removed permanently (owner 2026-10-07)")
     if cfg.get("ability_policy", "generic") not in ("generic", "v2"):
         raise SystemExit(f"ability_policy must be generic or v2, got {cfg['ability_policy']!r}")
     if cfg.get("ability_policy") == "v2" and not cfg["hero_abilities"]:

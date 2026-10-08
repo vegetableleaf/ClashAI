@@ -73,7 +73,7 @@ NOISE_ALIASES = {"scalars": ("my_elixir", "opp_elixir", "king_hp"),   # O5: pre-
                                                                         # all = every component (rl_royale's spelling)
 
 TAU_LIVE = 0.27
-STALL_ELIXIR_LIVE = 9.0
+STALL_ELIXIR_LIVE = None   # owner 2026-10-07: anti-stall removed permanently (live runs --no-anti-leak since 10-04)
 STALL_SECONDS_LIVE = 12.0
 DECIDE_EVERY = 10
 MAX_U = 64

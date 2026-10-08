@@ -326,7 +326,7 @@ def fork_into(m, env2, blob: bytes):
 # ------------------------------------------------------------------------------------------------------
 def live_cfg(tau: float, grid: str, device: str = "cpu") -> dict:
     """The measured live condition (rl_royale.yaml keys + noise_off=all, counter, delay 26, extrapolate 26)."""
-    return {"policy": "live", "tau": float(tau), "afford_mask": True, "stall_elixir": 9, "stall_seconds": 12.0,
+    return {"policy": "live", "tau": float(tau), "afford_mask": True, "stall_elixir": E.STALL_ELIXIR_LIVE, "stall_seconds": E.STALL_SECONDS_LIVE,
             "obs": "live", "noise": E.parse_noise_off(",".join(E.NOISE_NAMES)), "p_random": 0.0,
             "random_hand_only": False, "grid": grid, "device": device, "decide_every": 10, "slot": 0, "port": 0,
             "T": 0.5, "record": False, "opp_elixir": "counter", "action_delay_ticks": 26, "extrapolate_ticks": 26}
