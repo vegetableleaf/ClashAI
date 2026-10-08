@@ -4625,6 +4625,9 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   CellRefine flat; TowerRefine smooth, no step at the kill line. Pros (c to "always"): icebow OT lethal opportunities
 >   204 -> Rocket on the lethal tower within 3 s .436, any within 10 s .549 (all decks .407/.510); regulation .08-.10;
 >   live ckpt on those rows .147. Supports the queued tau_phase isolated A/B (C).
+> * **IW P* + GPU MERGED c9429c7** (re-verification PASS_WITH_NOTES on baed56e: live_reader 2 failed = the same 2 as
+>   main; open, pre-existing: the no-deploy-tick / no-public-state fallback press ignores P*;
+>   L72/.../LIVE_ENTRYPOINT_CORRECTION.md:19 still says --device cpu). Worktree cb_lead_small removed (links deleted first).
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
