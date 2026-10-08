@@ -4338,6 +4338,14 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   the ONE branch step on its own Adam; branch_kinds default hold-only (bit-identical to R3 code). 148 tests OK; smoke
 >   PASS. Expected labels per VM update: ~6-7 hold, ~2 card (band .5; ~3x at .2), ~4.5-5.5 X-Bow before the |delta|
 >   filter. `scratchpad/gauntlet/L73/opt3/r4_overrides.txt` = R3 + R4 keys. Blind verification running.
+> * **R4 MERGED (2f57ec8) after blind verification PASS_WITH_NOTES** (label sign per kind, engine acceptance of every
+>   A/B root play on 50 forks, stored rows reproduce decision-time logits to 1e-15). Lead rulings: card/X-Bow losses at
+>   the training T 0.3 (were T=1: kept pushing to ~5-logit gaps on noisy labels); hold points back to 6 (= R3).
+>   **VM OVERNIGHT CHAIN QUEUED** (`~/chain_r3_r4.sh`, log `~/eval/eval.log` + `~/chain_r3_r4.out`): waits for R3 ->
+>   eval R3 u0040 + u0080 (ghost + 48-seed census/ladder, paired vs VM R1e) -> copies the staged R4 code (`~/r4code`,
+>   main @2f57ec8) -> launches R4 (`rseries_r4`, r4_overrides, 80 updates, init = R3 u0080 if R3 finished cleanly
+>   else gen_v3.2; value_phi Phi from the VALIDATED gen_v3.2 head via shaping_phi_ckpt). Morning decision tree needs
+>   R2 (done: u0120 136/192, does not pass) + R3 results; computed by the lead when R3's eval lands.
 >   ~15:40" (Q1 card sampling flag, Q2 area-aware spell aim, Q3 GPU A/Bs after R1e, Q4 R1e approval ping, Q5 fixes);
 >   launcher `.foreman/codex_autopilot/codex_loop.sh` (back-to-back runs to 10-06; STOP_LOOP file stops it).
 > * **15:5x -- owner plan: after the R1e verdict the lead starts LIVE on the winner, then hands over to Codex via
