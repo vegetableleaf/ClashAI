@@ -4508,6 +4508,10 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   CellRefine + TowerRefine exactly. VM ~/ClashBot got pipeline/tower_refine.py + hooked model_gen.py (live ckpt
 >   byte-identical under it; backup ~/probe_rocket/model_gen.py.bak_pre_towerrefine). SIM A/B (v3, seeds 0:240 x 2, live
 >   options + rocket_area, base / w1 / w2) running ~1 h: ~/probe_rocket/vm_ab_towerref.sh.
+> * **W3 7bd5bb6 verification: FAIL (narrow)** -- core works (file options by default, explicit wins, run_live argv clean,
+>   scope live-only, 173 tests pass) but: missing file is silent; the file's tau_phase silently cancels --tau-alternate
+>   and plain --tau (live_gen_v2.py:68); parser accepts abbreviations/duplicates; log_barrel ignores time to impact
+>   (stays off). Fixes sent back to W3.
 > * **W3 DONE (worktree agent-a1de3f62 @7bd5bb6; blind verification running, then merge):** (b) LIVE_OPTIONS: new
 >   pipeline/live_options.py; live_play.py applies scratchpad/gauntlet/L70/live/LIVE_OPTIONS (`--xbow-class class_sample
 >   --xbow-class-floor 0.3 --tau-phase 0.35 0.45 0.55 --spell-aim rocket_area`) for every decision flag not typed;
