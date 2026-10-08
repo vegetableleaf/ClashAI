@@ -16,6 +16,7 @@ class BehaviourTelemetry:
         raw=env.raw()
         raw.update(sim_objects(env.core.state(),env.names,SCALE))
         frame=normalize(raw,source='sim')
+        frame['elixir']={int(p['side']):float(p['elixir_exact']) for p in raw.get('players',[])}
         if self.frames and self.frames[-1]['tick']==frame['tick']:self.frames[-1]=frame
         else:self.frames.append(frame)
 
@@ -36,4 +37,13 @@ class BehaviourTelemetry:
                 econ[name]=dict(plays=len(ps),minutes=round(dur,3),
                                 elixir_at_play=round(sum(q['elixir'] for q in ps)/len(ps),3) if ps else None)
             out['economy']=econ
+        # lead 2026-10-07: leak = share of time at >= 9.5 elixir (live_eval.py's pct_time_ge_9.5), per phase
+        fr=[(f['tick'],f['elixir'][side]) for f in self.frames if side in f.get('elixir',{})]
+        if len(fr)>1:
+            leak={}
+            for name,lo,hi in (('1x',0,2400),('2x',2400,3600),('OT',3600,10**9)):
+                dts=[(min(b[0]-a[0],30),a[1]) for a,b in zip(fr,fr[1:]) if lo<=a[0]<hi]
+                tot=sum(d for d,_ in dts)
+                leak[name]=round(sum(d for d,e in dts if e>=9.5)/tot,4) if tot else None
+            out['leak_ge_9_5']=leak
         return out

@@ -81,7 +81,7 @@ actor_timeout_s: 3600       # one actor job slower than this counts as a crash (
 T: 0.5                      # temperature of the gate / card / cell sampling (E1 3.3, plan default)
 tau: 0.27
 afford_mask: true           # allowed = in hand AND cost <= floored elixir (E1 2.3)
-stall_elixir: 9             # anti-stall: elixir >= 9 ... (E1 2.3)
+stall_elixir: null
 stall_seconds: 12           # ... and >= 12 s of engine time since my last accepted play (E1 2.3)
 obs: live                   # live_view observation (E1 3.1)
 decide_every: 10            # engine ticks per decision = 0.5 s (E1 2.3)
