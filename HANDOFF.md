@@ -4501,6 +4501,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **ROUND 3 (v2):** R1e + AL vs R1e: tune 159 vs 133 (48/8), fresh 147 vs 128 (46/16, p .0002). R3old + AL vs
+>   R1e + AL: tune 154 vs 159 (19/24, p .54), fresh 150 vs 147 (24/21, p .77) -> the anti-leak gain is model-
+>   independent; R3old = R1e. AL + xbow f .3 vs AL: tune 155 vs 154 (5/4), fresh 148 vs 150 (4/6); def X-Bow 19.4 ->
+>   25.7% (tune), 17.7 -> 21.3% (fresh), pros 27% -> PASSES. AL + tau (.25/.35/.45) vs AL: tune 147 vs 154, fresh 137
+>   vs 150 (20/33, p .098) -> with AL, lower thresholds HURT (they only compensated leaks). R3c u0020 (no AL) vs R1e:
+>   tune 139 vs 133 (46/27, **p .034**). R3n u0040 ghost -2.7 [-6.0, +0.7]. R3c DONE 30 updates.
+>   ROUND 4 (`~/ab_round4.sh`): R3c u0020/u0030 fresh, R3c + AL vs R1e + AL both sets; AL + tauB and AL + (.35/.40/.45).
 > * **Live anti-leak BUILT (worktree agent-a86bb640 @6a270a3, not merged; blind verification running):** opt-in
 >   `live_play --anti-leak [--anti-leak-elixir 9 --anti-leak-seconds 12]`; GenPilot.stalled() calls e1_eval.anti_stall
 >   (real tick, extrapolated elixir, last ACCEPTED play's landing tick); decide: play if p > tau OR stalled. Off =
