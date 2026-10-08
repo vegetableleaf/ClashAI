@@ -80,6 +80,7 @@ def adb(*args: str, timeout: float = 5, strict: bool = False) -> str:
 # input call returned + NAV_QUIET_S of quiet (+ a best-effort `pkill -f "input tap"` when one timed out).
 NAV_QUIET_S = 10.0
 INPUTS = {"in_flight": 0, "last_t": 0.0, "timed_out": False}
+FAST = {"shell": None}   # --fast-input: fast_input.PersistentShell for this match's inputs (None = adb.exe per input)
 
 
 def input_cmd(cmd: str, timeout: float = 5) -> bool:
@@ -87,7 +88,11 @@ def input_cmd(cmd: str, timeout: float = 5) -> bool:
     INPUTS["in_flight"] += 1
     INPUTS["last_t"] = time.time()
     try:
-        adb("shell", cmd, timeout=timeout, strict=True)
+        if FAST["shell"] is not None:
+            if not FAST["shell"].run(cmd, timeout=timeout):
+                raise subprocess.TimeoutExpired("adb shell (persistent)", timeout)
+        else:
+            adb("shell", cmd, timeout=timeout, strict=True)
         return True
     except subprocess.TimeoutExpired:
         INPUTS["timed_out"] = True
@@ -264,6 +269,13 @@ def main() -> int:
     ap.add_argument("--own-effects", action="store_true",
                     help="OPT-IN (W1, needs --extrapolate): my confirmed Log / Tornado / Rocket / hero IW freeze move the "
                          "enemy bodies they reach in the look-ahead board (pipeline/extrapolate.py). Off = unchanged")
+    ap.add_argument("--fast-input", action="store_true",
+                    help="OPT-IN (L74 latency): send in-match taps through one long-lived `adb shell` instead of one "
+                         "adb.exe per tap (~73 ms spawn each, scratchpad/gauntlet/L74/latency). Same commands; decisions "
+                         "unchanged. Falls back to adb.exe per tap if the shell does not answer at match start")
+    ap.add_argument("--tap-gap-ms", type=int, default=50,
+                    help="pause between the hand tap and the board tap (default 50 = unchanged). 0 drops the "
+                         "`sleep`; needs a live check that both taps still register (unconfirmed / err_tiles)")
     ap.add_argument("--no-opp-counter", action="store_true",
                     help="feed the model opponent elixir = unknown instead of the public-events counter")
     ap.add_argument("--menu-guard", action="store_true",
@@ -567,7 +579,10 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
       live_options=getattr(a, "live_options", None), iw_press_pstar=getattr(a, "iw_press_pstar", None),
       feature_version=pilot.feature_version, public_audit=a.public_audit, legal_guard=getattr(pilot, "legal_guard", None),
       **({"predict_drops": True} if getattr(a, "predict_drops", False) else {}),
-      **({"own_effects": True} if getattr(a, "own_effects", False) else {}))
+      **({"own_effects": True} if getattr(a, "own_effects", False) else {}),
+      fast_input=bool(getattr(a, "fast_input", False)), tap_gap_ms=getattr(a, "tap_gap_ms", 50))
+    tap_gap = getattr(a, "tap_gap_ms", 50)
+    tap_sleep = f" sleep {tap_gap / 1000:g};" if tap_gap > 0 else ""    # default 50 -> "...; sleep 0.05; ..." as before
     rec = ScreenRec(stamp) if record else None
     # Menu guard (2026-09-30 verifier): card taps are gated only by reader flags, and 249/1378 past board taps fall
     # inside the main screen's Battle button -> the SCREEN is classified every <= 2 s; any menu stops the match.
@@ -626,18 +641,28 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
 
     def pump():
         for ln in stream():
-            q.put(ln)
+            q.put((time.time(), ln))                     # host receive time: the L74 frame-age measurement
         q.put(None)
     pump_t = threading.Thread(target=pump, daemon=True)
     pump_t.start()
+    # min over frames of (host receive - device sample) = clock offset + the fastest transport; a frame's excess over
+    # it is its extra delivery delay, and host times minus it land on the device clock (t_dev) -- tap_timing fields
+    lag_min = float("inf")
     try:
+        if getattr(a, "fast_input", False) and not a.dry_run:
+            from fast_input import PersistentShell
+            FAST["shell"] = PersistentShell(ADB, ENV)
+            if not FAST["shell"].run("true"):        # opens the shell now, not on the first tap; no input sent
+                FAST["shell"] = None
+                W(event="fast_input_unavailable", why="persistent adb shell did not answer; adb.exe per tap")
         while True:
             try:
-                line = q.get(timeout=1.0)                # a silent reader must not hang the start / stall checks
+                item = q.get(timeout=1.0)                # a silent reader must not hang the start / stall checks
             except queue.Empty:
-                line = ""
-            if line is None:
+                item = (None, "")
+            if item is None:
                 break
+            t_recv, line = item
             newest = q.empty()                           # decide only on the newest frame available
             now = time.time()
             if guard and guard.menu:                     # the screen shows a menu: no further taps, ever
@@ -663,6 +688,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                 f = json.loads(line)
             except ValueError:
                 continue
+            if isinstance(f.get("sample_monotonic_us"), (int, float)):
+                lag_min = min(lag_min, t_recv - f["sample_monotonic_us"] / 1e6)
             if not (f.get("battle_active") and f.get("coherent")):
                 if seen_active and now - last_adv > 3:
                     W(event="stop", why="battle_inactive"); break
@@ -822,15 +849,24 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
             if a.dry_run or not guard_clear():           # re-checked right before the input
                 continue
             t_tap = time.time()
-            if not input_cmd(f"input tap {hand[0]} {hand[1]}; sleep 0.05; input tap {board[0]} {board[1]}"):
+            if not input_cmd(f"input tap {hand[0]} {hand[1]};{tap_sleep} input tap {board[0]} {board[1]}"):
                 print("[live] an input tap timed out -- no more taps this match (it may still land late)", flush=True)
                 W(event="stop", why="tap_timeout", tick=tick, tap_ms=round((time.time() - t_tap) * 1000)); break
-            W(event="tap_timing", tick=tick, decide_ms=decide_ms, tap_ms=round((time.time() - t_tap) * 1000),
-              frame_age_backlog=q.qsize())
+            t_done = time.time()
+            # L74: recv_age = frame receipt -> decide start (queue wait); sample_age = device sample -> decide start and
+            # tap_end = device sample -> board tap returned, both on the device clock minus the fastest transport
+            W(event="tap_timing", tick=tick, decide_ms=decide_ms, tap_ms=round((t_done - t_tap) * 1000),
+              frame_age_backlog=q.qsize(), recv_age_ms=round((t_dec - t_recv) * 1000),
+              **({"sample_age_ms": round((t_dec - lag_min - t_dev) * 1000),
+                  "tap_end_ms": round((t_done - lag_min - t_dev) * 1000)} if lag_min < float("inf") else {}),
+              fast_input=FAST["shell"] is not None)
             pending = {"d": d, "me": me, "t": now, "tick": tick, "addrs": {e["address"] for e in f["entities"]}}
     finally:
         with spawn_lock:
             stopping.set()                               # the pump may not start another sampler from here on
+        if FAST["shell"] is not None:                    # per match: no shell outlives its match
+            FAST["shell"].close()
+            FAST["shell"] = None
         if guard:
             guard.stop()
         for p in procs:

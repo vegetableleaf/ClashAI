@@ -1,0 +1,2 @@
+adb.exe version (local spawn only, no server/device) ms: [54.9, 55.3, 60.0, 62.2, 63.0, 66.5, 71.5, 72.9, 73.3, 74.2, 80.2, 83.3, 95.8, 107.9, 147.7] median 72.9
+python -c pass ms median 160.6
