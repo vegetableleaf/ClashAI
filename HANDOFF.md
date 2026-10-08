@@ -4560,7 +4560,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   .247, frames consistent with the raw arena towers). Archive 10-05..10-08 (L73/rocket_hp/stretch.py): OT lethal
 >   windows 29 -> Rocket on the lethal tower 15, Rocket elsewhere 6, no Rocket 8. Why = worker a0ff8a54 (re-run the
 >   state: which head / rocket_area chose R; HP ablation; pro lethal-row counts; learned-fix proposal, not built).
-> * Side note (a): live runs the model on CPU (start event device "cpu" in every log since >= 10-07), mean decide
+> * **OWNER ~14:0x: no learned/weighting fix for lethal Rockets** ("extra weighting has only partially shifted the
+>   model ... should always be rocketing a tower it can finish in one rocket if it's overtime"). Worker a0ff8a54
+>   redirected to BUILD opt-in `--lethal-rocket ot` (OT; Rocket in hand + affordable + no pending; alive enemy PRINCESS
+>   with HP <= my Rocket's catalog tower damage -> play Rocket now on that tower's centre cell; else no change), SIM +
+>   live, offline parity on 131352, v3 SIM; rebases onto W4's merge. Owner wants a bundled live restart: report when
+>   the bundle is ready.
+> * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
 >   flag (fixed: own_effects in both --check dicts). LIVE_OPTIONS may now deploy live-only flags (EXTRA_LIVE_FLAGS =
