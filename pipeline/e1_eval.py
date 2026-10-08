@@ -1466,6 +1466,8 @@ def main(argv=None) -> int:
            "decide_every": int(a.decide_every), "slot": slot, "port": int(a.port), "T": float(a.sample_T),
            "opp_elixir": a.opp_elixir, "action_delay_ticks": int(a.action_delay), "extrapolate_ticks": int(a.extrapolate)}
     if a.predict_drops:
+        if not a.extrapolate:
+            raise SystemExit("--predict-drops needs --extrapolate > 0 (the skeletons go into the look-ahead board)")
         cfg["predict_drops"] = True
     if decision_active:
         cfg.update(decision_cfg)

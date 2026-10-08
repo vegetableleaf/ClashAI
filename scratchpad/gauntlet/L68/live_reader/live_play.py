@@ -296,6 +296,10 @@ def main() -> int:
     if a.matches < 1:
         print("refusing: --matches must be >= 1")
         return 2
+    if a.predict_drops and not a.extrapolate:
+        print("refusing: --predict-drops adds its skeletons to the look-ahead board, which needs --extrapolate > 0 "
+              "(it would silently do nothing)")
+        return 2
     if (a.matches > 1 or a.nav_dry_run) and not (a.friend or a.ladder):
         print("refusing: --matches > 1 and --nav-dry-run need --friend NAME or --ladder")
         return 2
@@ -320,7 +324,8 @@ def main() -> int:
             print(json.dumps(dict(check='LIVE_CHECK_PASS', checkpoints=[
                 dict(checkpoint=path, sha256=sha, feature_version=pl.feature_version)
                 for (path, sha), (_, pl) in zip(arms, loaded)], device=loaded[0][0], tau=a.tau, anti_leak=False,
-                public_audit=a.public_audit, decision_options=vars(loaded[0][1].decision_options))))
+                public_audit=a.public_audit, predict_drops=a.predict_drops,
+                decision_options=vars(loaded[0][1].decision_options))))
             return 0
     else:
         from pipeline.live_checkpoint import resolve_checkpoint
@@ -335,7 +340,8 @@ def main() -> int:
         device, pilot = load_pilot(a, decision_cfg)
         print(json.dumps(dict(check='LIVE_CHECK_PASS', checkpoint=a.ckpt, sha256=a.ckpt_sha256,
               feature_version=pilot.feature_version, device=device, tau=a.tau, anti_leak=False,
-              public_audit=a.public_audit, decision_options=vars(pilot.decision_options))))
+              public_audit=a.public_audit, predict_drops=a.predict_drops,
+              decision_options=vars(pilot.decision_options))))
         return 0
     nav = None
     if a.matches > 1 or a.nav_dry_run:

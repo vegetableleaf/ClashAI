@@ -125,6 +125,82 @@ def test_new_match_resets_and_evo_and_level_hp():
     assert d.pending == []
 
 
+def _ring(prefix, x, y, n=7, r=1460):
+    return [ent("%s%d" % (prefix, i), x + r * math.cos(2 * math.pi * i / n), y + r * math.sin(2 * math.pi * i / n), hp=81, mhp=81)
+            for i in range(n)]
+
+
+def test_real_children_already_there_in_the_first_frame_without_the_balloon_register_nothing():
+    # SIM decision gap: balloon seen at 1000, next observation 1020 already shows the balloon gone AND its 7 skeletons
+    d = DropTracker()
+    d.observe(fr(1000, [ent("0xb", 5000, 9000)]), 1)
+    for t in (1020, 1030, 1040, 1050, 1060):
+        f = fr(t, _ring("0xc", 5000, 9000))
+        d.observe(f, 1)
+        assert d.pending == []
+        out = extrapolate(f, None, H, 1, drops=d.pending)
+        assert kids(out) == [] and len(out["entities"]) == len(f["entities"])        # 7 real, no 7 phantom (never 14)
+    # the real children die later: still nothing predicted afterwards
+    d.observe(fr(1070, []), 1)
+    assert d.pending == [] and kids(extrapolate(fr(1070, []), None, H, 1, drops=d.pending)) == []
+
+
+def test_two_nearby_barrels_each_clear_only_on_their_own_children():
+    d = DropTracker()
+    a, b = ent("0xa", 5000, 9000), ent("0xbb", 6000, 9000)
+    d.observe(fr(1000, [a, b]), 1)
+    d.observe(fr(1002, [b]), 1)                                       # A dies
+    d.observe(fr(1006, []), 1)                                        # B dies
+    assert [(p["t0"], p["x"]) for p in d.pending] == [(1002, 5000.0), (1006, 6000.0)]
+    d.observe(fr(1014, _ring("0xa", 5000, 9000)), 1)                  # A's children (B's not due before 1016)
+    assert [(p["t0"], p["x"]) for p in d.pending] == [(1006, 6000.0)]
+    d.observe(fr(1018, _ring("0xa", 5000, 9000) + _ring("0xq", 6000, 9000)), 1)
+    assert d.pending == []
+    # both die in one 30-tick gap and both groups are already there: neither is registered
+    d.reset()
+    d.observe(fr(2000, [a, b]), 1)
+    d.observe(fr(2030, _ring("0xa", 5000, 9000) + _ring("0xq", 6000, 9000)), 1)
+    assert d.pending == []
+    # A's 7 children alone must not clear a barrel that died later and farther away
+    d.reset()
+    d.observe(fr(3000, [a, ent("0xz", 12000, 20000)]), 1)
+    d.observe(fr(3002, [ent("0xz", 12000, 20000)]), 1)
+    d.observe(fr(3004, []), 1)
+    d.observe(fr(3014, _ring("0xa", 5000, 9000)), 1)
+    assert [p["x"] for p in d.pending] == [12000.0]
+
+
+def test_evo_barrel_second_wave_is_predicted_after_the_lingering_first_wave():
+    # live (4/4 evo drops) and SIM probe match 1830: the evo balloon drops 7 skeletons while its body lingers, then 7 MORE
+    # 12 ticks after it vanishes -> the older children near the vanishing balloon must not suppress the prediction
+    d = DropTracker()
+    b = ent("0xb", 5000, 9000, cid=SB_EVO, hp=881, mhp=881)
+    d.observe(fr(1810, [b]), 1)
+    d.observe(fr(1820, [b] + _ring("0xc", 5000, 9000)), 1)
+    d.observe(fr(1830, _ring("0xc", 5000, 9000)), 1)                  # balloon gone, the first wave still there
+    assert [p["t0"] for p in d.pending] == [1830]
+    assert len(kids(extrapolate(fr(1830, _ring("0xc", 5000, 9000)), None, H, 1, drops=d.pending))) == 7
+    d.observe(fr(1840, _ring("0xc", 5000, 9000) + _ring("0xw", 5000, 9000, r=1300)), 1)       # the second wave arrives
+    assert d.pending == []
+
+
+def test_sim_ids_and_evo_child_hp_and_kinds():
+    def sim(eid, card, mhp, flags, x=5000, y=9000, kind=0):
+        return {"entity_id": eid, "side": 1, "x": x, "y": y, "card_id": card, "name": "SkeletonBalloon", "hp": mhp,
+                "max_hp": mhp, "kind": kind, "status_flags": flags}
+    for card, mhp, flags, want in ((56, 532, 0, 81.0), (56, 665, 8, 81.0), (56, 705, 0, 108.0), (56, 881, 8, 108.0)):
+        d = DropTracker()
+        d.observe({"tick": 100, "entities": [sim(77, card, mhp, flags)]}, 0)
+        d.observe({"tick": 110, "entities": []}, 0)
+        assert len(d.pending) == 1
+        out = extrapolate({"tick": 110, "entities": []}, None, H, 0, drops=d.pending)
+        ks = [e for e in out["entities"] if str(e["entity_id"]).startswith("predicted_drop")]
+        assert {e["max_hp"] for e in ks} == {want} and len(ks) == 7 and {e["card_id"] for e in ks} == {56}
+        assert {e["status_flags"] for e in ks} == {flags} and {e["kind"] for e in ks} == {0}      # SIM kinds, age 24
+    out = extrapolate({"tick": 110, "entities": []}, None, 12, 0, drops=d.pending)
+    assert {e["kind"] for e in out["entities"]} == {12}                # age 0: the SIM's deploying kind
+
+
 def _pilot(drops):
     p = object.__new__(GenPilot)
     _, names = deck_of(FRAME, 1)

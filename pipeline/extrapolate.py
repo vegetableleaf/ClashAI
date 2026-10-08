@@ -43,15 +43,20 @@ from pipeline.opp_elixir_count import MAX_ELIXIR, regen_between
 
 BOARD_X, BOARD_Y = 18000.0, 32000.0
 
-# predict_drops: Skeleton Barrel (base / evo card id; the balloon AND its skeletons carry it, told apart by max_hp)
-SB_CARDS = {26000056: 532.0, 13000056: 665.0}        # card id -> balloon max_hp at level 11
+# predict_drops: Skeleton Barrel (the balloon AND its skeletons carry the id, told apart by max_hp). Ids: reader / native
+# base and evo card ids; the SIM (RoyaleSim) uses 56 for both forms (evo = status bit 8, or the level-11 evo hp 665).
+SB_CARDS = {26000056: 532.0, 13000056: 665.0, 56: 532.0}        # card id -> balloon max_hp at level 11
+EVO_CARD, EVO_HP11 = 13000056, 665.0
 BALLOON_MIN_HP = 300                                  # balloon 532..967; its skeletons 81..130
 CHILD_HP11, N_CHILD = 81.0, 7                         # skeleton max_hp at level 11, count
 # Live-measured (30 exact drops, 210 children, 2-tick frames; fix/age_profile.py): the 7 spawn near the drop point and
 # jump out to a ring in ~3 ticks -- median radius by age 0 / 1 / 2 / >= 3 ticks since spawn, millitiles; body kind 14
 # (deploying) until age 9, then 15. (The audit's hand-placed counterfactual used a 1.3-tile ring at every age.)
 CHILD_RING, CHILD_DEPLOY_TICKS = (250.0, 630.0, 960.0, 1460.0), 9
-DROP_DELAY, DROP_TTL = 12, 40                         # skeletons appear T + 12 (T = first absent tick); pending kept to T + 40
+# skeletons appear T + 12 (T = first absent tick; first sighting up to T + 15 live). A drop whose skeletons are not on the board
+# by T + 18 has none alive to show (killed at once / never spawned: SIM probe, 2 of 32), so the pending entry ends there.
+DROP_DELAY, DROP_TTL = 12, 18
+DROP_FIRST, CLAIM_RADIUS = DROP_DELAY - 2, 4500.0     # an old drop can claim children from T + 10 (12 +- 2); children within 4.5 tiles
 
 
 def _tick_key(obs: Mapping[str, Any]) -> str:
@@ -74,10 +79,19 @@ def _sig(e: Mapping[str, Any]) -> tuple:
     return (_eid(e), e.get("side"), e.get("card_id"), e.get("max_hp"))
 
 
+def _is_evo(e: Mapping[str, Any]) -> bool:
+    if int(e.get("card_id", -1)) == EVO_CARD:
+        return True
+    flags = e.get("status_flags")
+    if flags is not None and int(flags) >= 0:          # SIM: bit 8 = evolution, 16 = hero
+        return bool(int(flags) & 8)
+    return float(e.get("max_hp") or 0) == EVO_HP11
+
+
 def _child_hp(balloon: Mapping[str, Any]) -> float:
     """Skeleton max_hp at the balloon's card level: CR scales +10% per level (balloon 532/586/642/705/773 -> skeleton
     81/89/98/108/119, live-measured; the evo balloon starts at 665 but drops the same 81-hp skeletons)."""
-    base = SB_CARDS.get(int(balloon.get("card_id", -1)), SB_CARDS[26000056])
+    base = EVO_HP11 if _is_evo(balloon) else SB_CARDS[26000056]
     level = round(math.log(float(balloon["max_hp"]) / base) / math.log(1.1))
     return float(round(CHILD_HP11 * 1.1 ** max(level, 0)))
 
@@ -86,9 +100,13 @@ class DropTracker:
     """Observed-only memory of enemy Skeleton Barrel balloons that left the board (see the module docstring).
 
     ``observe(obs, my_side)`` once per observation in ascending tick order (a smaller tick = a new match: reset);
-    ``pending`` is what ``extrapolate(drops=...)`` reads. A pending drop ends when its real skeletons are observed
-    (new Skeleton Barrel bodies below balloon hp within 4.5 tiles), when the same balloon reappears (a one-frame
-    flicker, not a death), or after T + 40."""
+    ``pending`` is what ``extrapolate(drops=...)`` reads. A pending drop ends when its own real skeletons are observed
+    ("fresh" Skeleton Barrel bodies below balloon hp, matched one-to-one to the NEAREST drop within 4.5 tiles, at most 7
+    per drop, an older drop only from T + 10 on), when the same balloon reappears (a one-frame flicker, not a death), or
+    after T + 18. Children already on the board in the first observation without the balloon (a SIM decision gap of up
+    to 30 ticks) satisfy the drop at once: it is never registered. (An EVO barrel drops twice -- 7 skeletons while its body
+    lingers on arrival, 7 more 12-15 ticks after it vanishes, live 4 of 4 and SIM -- so older children near a vanishing
+    balloon are not a reason to skip the drop.)"""
 
     def __init__(self):
         self.reset()
@@ -105,16 +123,21 @@ class DropTracker:
         ents = {_eid(e): e for e in obs.get("entities") or () if _eid(e) is not None}
         last = self._last
         if last is not None:
-            for k, e in last.items():
-                if _is_balloon(e) and int(e["side"]) != int(my_side) and (k not in ents or _sig(ents[k]) != _sig(e)):
-                    self.pending.append(dict(t0=tick, x=float(e["x"]), y=float(e["y"]), parent=dict(e)))
-            fresh = [e for k, e in ents.items() if k not in last and _is_sb(e) and not _is_balloon(e)]
-            self.pending = [d for d in self.pending if tick <= d["t0"] + DROP_TTL
-                            and not (d["t0"] < tick and any(
-                                int(f["side"]) == int(d["parent"]["side"]) and
-                                math.hypot(f["x"] - d["x"], f["y"] - d["y"]) <= 4500 for f in fresh))
-                            and not (d["t0"] < tick and _eid(d["parent"]) in ents
-                                     and _sig(ents[_eid(d["parent"])]) == _sig(d["parent"]))]
+            old = [d for d in self.pending if tick <= d["t0"] + DROP_TTL
+                   and not (_eid(d["parent"]) in ents and _sig(ents[_eid(d["parent"])]) == _sig(d["parent"]))]
+            new = [dict(t0=tick, x=float(e["x"]), y=float(e["y"]), parent=dict(e)) for k, e in last.items()
+                   if _is_balloon(e) and int(e["side"]) != int(my_side) and (k not in ents or _sig(ents[k]) != _sig(e))]
+            fresh = [e for k, e in ents.items() if _is_sb(e) and not _is_balloon(e) and (k not in last or _sig(last[k]) != _sig(e))]
+            cands = [d for d in old if tick >= d["t0"] + DROP_FIRST] + new
+            pairs = sorted((math.hypot(f["x"] - d["x"], f["y"] - d["y"]), fi, di) for fi, f in enumerate(fresh)
+                           for di, d in enumerate(cands) if int(f["side"]) == int(d["parent"]["side"]))
+            used, got = set(), Counter()
+            for dist, fi, di in pairs:
+                if dist <= CLAIM_RADIUS and fi not in used and got[di] < N_CHILD:
+                    used.add(fi)
+                    got[di] += 1
+            done = {id(cands[di]) for di in got}
+            self.pending = [d for d in old + new if id(d) not in done]
         self._last, self._tick = ents, tick
 
 
@@ -123,7 +146,9 @@ def predicted_children(d: Mapping[str, Any], age: int) -> list[dict]:
     reader frame and the engine ``observe()`` dict both accept them) re-positioned on the ring with the children's
     hp, deploying kind while fresh, and a synthetic id."""
     p, hp = d["parent"], _child_hp(d["parent"])
-    r, kind = CHILD_RING[min(max(age, 0), len(CHILD_RING) - 1)], 14 if age < CHILD_DEPLOY_TICKS else 15
+    r = CHILD_RING[min(max(age, 0), len(CHILD_RING) - 1)]
+    kinds = (14, 15) if int(p.get("kind", 15)) >= 14 else (12, 0)      # reader kinds vs the SIM's (12 = deploying)
+    kind = kinds[age >= CHILD_DEPLOY_TICKS]
     key = "entity_id" if "entity_id" in p else "address"
     out = []
     for k in range(N_CHILD):

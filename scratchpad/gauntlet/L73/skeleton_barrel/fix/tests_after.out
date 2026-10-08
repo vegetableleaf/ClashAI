@@ -1,7 +1,7 @@
 ......................F................................................. [ 29%]
-............................................................ssssssssssss [ 59%]
-ssssss...................................FFFFFFFFFFFFF..FFF..FF..F...... [ 89%]
-Fs.....FFFF..s.F.........F                                               [100%]
+................................................................ssssssss [ 58%]
+ssssssssss.....................................FFFFFFFFFFFFF..FFF..FF..F [ 87%]
+......Fs.....FFFF..s.F.........F                                         [100%]
 ================================== FAILURES ===================================
 ____________ test_sim_prepare_and_live_decide_use_advanced_tokens _____________
 
@@ -364,8 +364,8 @@ scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:178: TypeError
 _____________________ test_end_to_end_fake_device[False] ______________________
 
 dry = False
-monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000027D0CCC20D0>
-tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-128/test_end_to_end_fake_device_Fa0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000029B2D12C280>
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-134/test_end_to_end_fake_device_Fa0')
 
     @pytest.mark.parametrize("dry", [False, True])
     def test_end_to_end_fake_device(dry, monkeypatch, tmp_path):
@@ -394,7 +394,7 @@ E       assert False
 
 scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:285: AssertionError
 ---------------------------- Captured stdout call -----------------------------
-[nav] start (log C:\Users\benpe\AppData\Local\Temp\pytest-of-benpe\pytest-128\test_end_to_end_fake_device_Fa0\nav_20261007_204246.jsonl); friend-invite wait 5.0 s
+[nav] start (log C:\Users\benpe\AppData\Local\Temp\pytest-of-benpe\pytest-134\test_end_to_end_fake_device_Fa0\nav_20261007_214329.jsonl); friend-invite wait 5.0 s
 [nav] unknown: ('wait', 'unknown')
 [nav] unknown: ('stop', 'transition over 20 s')
 [nav] STOP: transition over 20 s
@@ -417,13 +417,13 @@ _______ test_menu_guard_arms_only_when_the_clock_runs_and_fails_closed ________
         g.feed(img("after_ok_131638"))
 >       assert g.menu == "main" and not g.clear(_time.time())
 E       AssertionError: assert (None == 'main')
-E        +  where None = <friend_nav.MenuGuard object at 0x0000027D0CC1D400>.menu
+E        +  where None = <friend_nav.MenuGuard object at 0x0000029B31736CF0>.menu
 
 scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:477: AssertionError
 _________ test_list_search_goes_to_top_then_finds_row_below_the_fold __________
 
-monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000027D081119B0>
-tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-128/test_list_search_goes_to_top_t0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000029B2CFDDBE0>
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-134/test_list_search_goes_to_top_t0')
 
     def test_list_search_goes_to_top_then_finds_row_below_the_fold(monkeypatch, tmp_path):
         top, row = img("friends_list_130251"), img("friends_list_130915")
@@ -434,14 +434,14 @@ E       assert False
 
 scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:611: AssertionError
 ---------------------------- Captured stdout call -----------------------------
-[nav] start (log C:\Users\benpe\AppData\Local\Temp\pytest-of-benpe\pytest-128\test_list_search_goes_to_top_t0\nav_20261007_204341.jsonl); friend-invite wait 5.0 s
+[nav] start (log C:\Users\benpe\AppData\Local\Temp\pytest-of-benpe\pytest-134\test_list_search_goes_to_top_t0\nav_20261007_214425.jsonl); friend-invite wait 5.0 s
 [nav] unknown: ('wait', 'unknown')
 [nav] unknown: ('stop', 'unrecognised screen (unknown) for 20 s')
 [nav] STOP: unrecognised screen (unknown) for 20 s
 ______________ test_list_search_from_below_scrolls_up_to_the_row ______________
 
-monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000027D08416350>
-tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-128/test_list_search_from_below_sc0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000029B31A850F0>
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-134/test_list_search_from_below_sc0')
 
     def test_list_search_from_below_scrolls_up_to_the_row(monkeypatch, tmp_path):
         top, row = img("friends_list_130251"), img("friends_list_130915")
@@ -460,8 +460,8 @@ E       TypeError: 'NoneType' object is not subscriptable
 scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:562: TypeError
 ____________________ test_friend_not_in_list_stops_cleanly ____________________
 
-monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000027D08417540>
-tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-128/test_friend_not_in_list_stops_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000029B31A854E0>
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-134/test_friend_not_in_list_stops_0')
 
     def test_friend_not_in_list_stops_cleanly(monkeypatch, tmp_path):
 >       (ok, why), dev = run_list(monkeypatch, tmp_path, [img("friends_list_130251"), _norow()], 0)
@@ -479,7 +479,7 @@ E       TypeError: 'NoneType' object is not subscriptable
 scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:562: TypeError
 ___________________ test_probe_sees_menu_or_assumes_battle ____________________
 
-monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000027D08E983D0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000029B31A858D0>
 
     def test_probe_sees_menu_or_assumes_battle(monkeypatch):
         now = [0.0]
@@ -490,15 +490,15 @@ monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000027D08E983D0>
 >       assert nav.probe() == "main"
 E       AssertionError: assert None == 'main'
 E        +  where None = probe()
-E        +    where probe = <friend_nav.FriendNav object at 0x0000027D0ECE9350>.probe
+E        +    where probe = <friend_nav.FriendNav object at 0x0000029B31AFCFC0>.probe
 
 scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:638: AssertionError
 ---------------------------- Captured stdout call -----------------------------
 [nav] no menu screen in 8 s -- assuming a battle is running: playing it
 ______________ test_list_search_restarts_after_an_expired_invite ______________
 
-monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000027D08E9A350>
-tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-128/test_list_search_restarts_afte0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000029B2D12E900>
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-134/test_list_search_restarts_afte0')
 
     def test_list_search_restarts_after_an_expired_invite(monkeypatch, tmp_path):
         dev = ExpireDevice([img("friends_list_130251"), img("friends_list_130915")], 0)
@@ -516,7 +516,7 @@ E       assert False
 
 scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:746: AssertionError
 ---------------------------- Captured stdout call -----------------------------
-[nav] start (log C:\Users\benpe\AppData\Local\Temp\pytest-of-benpe\pytest-128\test_list_search_restarts_afte0\nav_20261007_204341.jsonl); friend-invite wait 5.0 s
+[nav] start (log C:\Users\benpe\AppData\Local\Temp\pytest-of-benpe\pytest-134\test_list_search_restarts_afte0\nav_20261007_214425.jsonl); friend-invite wait 5.0 s
 [nav] unknown: ('wait', 'unknown')
 [nav] unknown: ('stop', 'unrecognised screen (unknown) for 20 s')
 [nav] STOP: unrecognised screen (unknown) for 20 s
@@ -571,4 +571,4 @@ FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_friend_not_i
 FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_probe_sees_menu_or_assumes_battle
 FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_list_search_restarts_after_an_expired_invite
 FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_invite_wait_fixed_20s_and_random_only_after_a_cross
-27 failed, 195 passed, 20 skipped, 16 warnings in 141.37s (0:02:21)
+27 failed, 201 passed, 20 skipped, 16 warnings in 134.94s (0:02:14)

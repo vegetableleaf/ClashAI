@@ -93,6 +93,8 @@ def play(a) -> int:
     if a.extrapolate:                            # unset/0 -> cfg unchanged (today's lines)
         cfg["extrapolate_ticks"] = int(a.extrapolate)
     if getattr(a, "predict_drops", False):       # opt-in look-ahead Skeleton Barrel drop (needs --extrapolate)
+        if not a.extrapolate:
+            raise SystemExit("--predict-drops needs --extrapolate > 0 (the skeletons go into the look-ahead board)")
         cfg["predict_drops"] = True
     meta = {"ckpt": str(a.ckpt), "ckpt_sha256": sha256_file(Path(a.ckpt)), "model": minfo,
             "cfg": {k: v for k, v in cfg.items() if k != "noise"}, "noise_off": E.noise_off_names(cfg["noise"]),

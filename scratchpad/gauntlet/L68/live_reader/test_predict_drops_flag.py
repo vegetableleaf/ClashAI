@@ -57,3 +57,21 @@ def test_start_event_key_only_when_on(monkeypatch, tmp_path):
         lp.play_match(args, pilot, SimpleNamespace(w=900, h=1600), "cpu", None, record=False)
         starts.append(json.loads(next(tmp_path.glob("live_play_*.jsonl")).read_text().splitlines()[0]))
     assert "predict_drops" not in starts[0] and starts[1]["predict_drops"] is True
+
+
+def test_flag_without_extrapolation_is_refused(monkeypatch, capsys):
+    monkeypatch.setattr(sys, "argv", ["live_play.py", "--check", "--predict-drops", "--extrapolate", "0"])
+    assert lp.main() == 2 and "needs --extrapolate" in capsys.readouterr().out
+
+
+def test_check_json_reports_predict_drops(monkeypatch, tmp_path, capsys):
+    ck = tmp_path / "x.pt"
+    ck.write_bytes(b"x")
+    monkeypatch.setattr(lp, "load_pilot", lambda args, cfg, ckpt=None: ("cpu", SimpleNamespace(
+        feature_version=5, decision_options=SimpleNamespace())))
+    seen = []
+    for extra in ([], ["--predict-drops"]):
+        monkeypatch.setattr(sys, "argv", ["live_play.py", "--check", "--ckpt", str(ck), *extra])
+        assert lp.main() == 0
+        seen.append(json.loads(capsys.readouterr().out.strip().splitlines()[-1])["predict_drops"])
+    assert seen == [False, True]
