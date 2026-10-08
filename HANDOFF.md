@@ -4501,6 +4501,11 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **Nav loading recovery (worktree agent-a8778135 @37cbefe, not merged):** content_update screen (2 templates, both
+>   >= .85; 0 false positives on 639 frames, max .666 on conn_lost) -> tap RESTART at once; 60 s pure loading with no
+>   modal -> force-stop mumu.store/vending/clashroyale + monkey launch, once per episode. Verifier PASS_WITH_NOTES; fix
+>   requested: keep unknown-screen tap-throughs after a recovery (else post-update popups end in a stop). Untested on
+>   device; a force-stop right after an opponent is found would count as a loss (game rule), never seen in 998 logs.
 > * **R4c u0040 (v2):** vs R1e tune 143 vs 133 (42/23, p .025), fresh 146 vs 128 (52/23, p .001); vs R3c u0030 289 vs
 >   287 pooled (level); WITH AL vs R3c + AL: 156 vs 147 (27/18), 157 vs 145 (30/18) -> pooled 313 vs 292 (57/36, p ~.04).
 >   Ghost pending. Add-ons on R4c u0040 started on the laptop GPU (`cand.sh r4c_u0040 ...`, barrel 2k + CellRefine 2ep,
