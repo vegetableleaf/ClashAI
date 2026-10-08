@@ -31,6 +31,10 @@ def constants():
     rocket=next(c for c in data['cards'] if c['name']=='Rocket')
     return dict(source=str(path.relative_to(REPO)),xbow_range=bow['range_milli'],xbow_lifetime_ms=bow['lifetime_ms'],
         rocket_radius=rocket['area_damage_radius_milli'],
+        # rolling spells: (half-width, half-depth, roll range) of the rolling projectile, milli
+        rolling={c['name']:tuple((r:=c['projectile']['spawn_projectile'])[k] for k in
+                 ('projectile_radius_milli','projectile_radius_y_milli','projectile_range_milli'))
+                 for c in data['cards'] if c['name'] in ('Log','BarbLog')},
         tower_radius={c['name']:c['collision_radius_milli'] for c in data['towers']})
 
 def in_xbow_range(p,t,reach=None):
