@@ -4516,6 +4516,19 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   Watch live: OT tower Rockets (SIM .49 -> .90/OT match vs pros .55: overshoot risk); defensive Rockets fell .38 ->
 >   .33/match in SIM; it also changes some non-Rocket card/cell choices. Rollback: cp CKPT_OVERRIDE.stack2k_backup
 >   CKPT_OVERRIDE.
+> * **PUSH-ROCKET WORKER CHECKPOINT (a8aad346, Q1-Q3 measured; files in its worktree L73/push_rocket/, not merged).**
+>   Push Rocket = impact hits >= 2 enemy bodies at own y <= 18 (impact model vs 1,544 pro labels: median +0.6 tick).
+>   Q1: push Rockets/match pros 0.25 [.23,.28] (11% of their Rockets) vs R1e 0.01, stack 0.01. Pros Rocket only ~1 in
+>   14 eligible big pushes (P(Rocket | in hand, >= 6 elixir, 10+ elixir push) .07; bot 1/179). Bigger gap = ELIGIBILITY:
+>   eligible share pros .52 vs R1e .13 / stack .25; my elixir at big-push start median pros 6.0 vs R1e 2.2 / stack 2.7;
+>   Rocket is in the bot's hand 92-96% of big pushes. Q2: win vs beatdown R1e .41 (51/123) vs other .59; stack .38
+>   (11/29) vs .62 -> "0-3 to every beatdown deck" contradicted as stated, gap real (-18/-24 pp); pros also weaker vs
+>   beatdown (.38 vs .46). Q3: gate is NOT the blocker in push states (gate .79-.86); CARD RANKING is (Rocket top card
+>   on pro push rows .15-.25; Giant+Musketeer insert .01); aim fine at the bridge (.75-.97 within 2.5 t) but in OT near
+>   my tower rocket_area aims at the enemy tower (median 13.5 t) -- separate finding, not fixed. Lead's estimate (b,
+>   untested): ranking alone closes at most ~half the gap (.06-.12/match) unless elixir at push start rises. Lead told
+>   the worker: stack PushRefine on towerref_w2 (the live base), measure the pre-push elixir spending vs pros as its own
+>   finding, and fail PushRefine if it drains elixir or kills tower Rockets.
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
 >   flag (fixed: own_effects in both --check dicts). LIVE_OPTIONS may now deploy live-only flags (EXTRA_LIVE_FLAGS =
 >   --own-effects) and the file holds `... --spell-aim rocket_area --own-effects`. Merged-tree tests 152 passed; plain
