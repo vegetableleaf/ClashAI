@@ -4659,6 +4659,15 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   delete its flags from LIVE_OPTIONS (and update DEPLOYED_FILE). Merge worktrees removed (links deleted first).
 > * **Overspending (owner's top issue):** economy decomposition worker (a3a6e12e) also runs a SIM decide_every 10 vs 4
 >   arm (live decides on every fresh frame; threshold decoding fires on the first flicker above tau).
+> * **PIPELINED SECOND PLAYS: FAIL, NOT merged, NOT deployed (a613a395, branch worktree-agent-a613a3951c4d5dae9
+>   3b43bb2/2306b87; L74/pipeline_plays/).** --pipeline-plays built per spec (SIM + live, off = byte-identical; tests no
+>   new failures). SIM v3 960 paired, full live config: OFF 628 vs ON 487 (114/255, p<1e-4); ON + pending bodies on the
+>   look-ahead board (diagnostic patch) 534 (114/208). Play gaps <= 20 ticks: bot ON .195 vs pros .044 (4.4x); second
+>   cards Tornado 25%, Log 20%; elixir at play 7.14/6.59/6.64 -> 6.79/6.11/6.06, at big-push start 5.13 -> 4.81.
+>   Rocket -> Tornado <= 35 ticks per match .008 OFF / .007 ON vs pros .141 = a CARD-CHOICE gap, not latency. Reading:
+>   the pending lockout was acting as a rate limiter on the threshold gate; removing it lets the gate fire on quick
+>   cheap follow-ups -> supports the overspending/cadence hypothesis (economy worker's decide_every arm). Pros DO pair
+>   fast (15.2% of consecutive plays within 35 ticks), so the latency handicap is real but the model cannot use it yet.
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
