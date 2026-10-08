@@ -4600,6 +4600,19 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 > * **STANDING LOSS-REVIEW LOOP (owner order, memory live-loss-review-loop.md):** ledger scratchpad/gauntlet/L74/
 >   loss_review/analyzed.txt; first pass worker a3a6e12e building review.py + report.md over 1,170 logs; session cron
 >   6e044f37 every 4 h at :17 (session-only, expires 7 days).
+> * **W4 MERGED 855f180** (blind PASS_WITH_NOTES on 5b36b8d: 0 NEW test failures; notes: warm-up decision can seed up
+>   to 2 s of hazard step when no min-elixir scope (deployed scope 9 blocks it), SIM step constant vs live 0 after a
+>   play, pure-hazard why label). Still OFF live until the bundle LIVE_OPTIONS edit.
+> * **lead-iw-pstar-gpu: first verification FAIL** (lead's fault: play_match read a.iw_press_pstar bare -> 24
+>   live_reader harness tests crashed; test_live_entry expected cpu). Fixed (baed56e, rebased on 855f180: getattr reads,
+>   note when --no-iw-pro-gate makes P* moot, device test expects auto). Lead run with env parity (junction L69/nav/raw,
+>   copied CKPT_OVERRIDE): friend_nav + live_entry 2 failed / 57 passed = the same 2 as main (deployed LIVE_OPTIONS makes
+>   the preflight test's options active; stub pilot lacks legal_guard; chip offered to fix the tests). Re-verification
+>   running. Worktree C:/Users/benpe/cb_lead_small holds junctions (icebow/data, research/ext/*, L69/nav/raw).
+> * **OWNER ~16:xx: implement pipelined second plays** ("1.3 seconds between 2 consecutive plays is a huge handicap").
+>   Worker a613a395 (opus): --pipeline-plays (default off), decide while A is pending on my own state (elixir - cost(A),
+>   A's slot excluded, <= 2 outstanding, per-slot confirmation), pending plays in the look-ahead, SIM + live, v3 960
+>   paired A/B incl. elixir drain / cheap share / pair gaps vs pros.
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
