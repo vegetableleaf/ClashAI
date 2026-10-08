@@ -1,5 +1,5 @@
 # R4 = R3 (r3_overrides.txt beside this file, opt3 f4621b6) + two more counterfactual fork kinds (branch r4-branching):
-#   card        Rocket vs the live rule's top card where Rocket is affordable, not the argmax and P(Rocket) >= 0.5 x P(top)
+#   card        Rocket vs the live rule's top card where Rocket is affordable, not the argmax and P(Rocket) >= 0.2 x P(top) (branch_rocket_band; lead set 0.2)
 #               (card-head softmax, T 1); A = live card + cell, B = Rocket at its argmax cell; pairwise logistic loss on
 #               the two card logits.
 #   xbow_class  the live rule plays X-Bow and the minority reach class (decision_options.xbow_offensive_cells) holds
@@ -20,7 +20,7 @@
 # while leaving most label time to the new kinds.
 # Expected per match ~2 hold + ~0.6 card + ~1.5 xbow labels; VM label rate 24 workers / ~233 s per k=16 label = 0.103/s
 # = 12-15 labels per 115-150 s update -> ~6-7 hold, ~2 card, ~4.5-5.5 xbow per update (before the |delta| drop).
-# Alternative (not set): branch_rocket_band=0.2 roughly triples card points (ratio >= 0.2 on 43/260 vs 14/260).
+# branch_rocket_band=0.2 (lead): ~3x the card points of 0.5 (ratio >= 0.2 on 43/260 vs 14/260). Hold points stay at 6 (= R3).
 # ---- argv
 init=icebow/data/pipeline/gen_v32_s0/gen_s0.pt
 proagree_data_gen=icebow/data/pipeline/gen_dataset_v32_fv5.npz
@@ -54,7 +54,7 @@ learner_device=cpu
 branch_gate=true
 branch_actors=24
 branch_threads=1
-branch_points_per_match=2
+branch_points_per_match=6
 branch_band=[0.2, 0.55]
 branch_hold_s=[2, 4, 8]
 branch_hold_tau=0.55

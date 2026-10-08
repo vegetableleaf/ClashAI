@@ -5,7 +5,7 @@
         -m unittest pipeline.tests.test_branch_r4 -v
 
 Default parity: hold-only against rl_royale.py / branching.py at OPT3_BASE (git show); everything off against main is
-test_rl_branch.TestDefaultParity (its BASE_COMMIT 4b462c5 has main's rl_royale.py byte for byte).
+test_rl_branch.TestDefaultParity (BASE_COMMIT 4b462c5; the R4 verifier also re-ran it with BASE_COMMIT=main: OK).
 """
 from __future__ import annotations
 
@@ -196,7 +196,8 @@ class TestPerKindSign(unittest.TestCase):
         with torch.no_grad():
             x, _ = RL.branch_terms(model, Bb, torch.arange(3), 0.35, 0.3, "card")
         z = _card_z(model, Bb)
-        torch.testing.assert_close(x, torch.stack([z[i, a] - z[i, b] for i, (a, b) in enumerate(ab)]))
+        # lead ruling 2026-10-07: card/X-Bow losses at the training T (0.3), like the hold gate term
+        torch.testing.assert_close(x, torch.stack([z[i, a] - z[i, b] for i, (a, b) in enumerate(ab)]) / 0.3)
 
     def _xbow(self, delta):
         model = TB._tiny(4)

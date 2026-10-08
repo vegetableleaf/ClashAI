@@ -640,18 +640,18 @@ def branch_terms(model, Bb: dict, idx, tau: float, T: float, kind: str = "hold")
     """Rows ``idx``: (x, weight x BCE(sigmoid(x), target)), x > 0 = prefer A:
       hold        x = (z - logit(tau)) / T -- the live gate's parameterisation (play iff x > 0), recomputed by
                   ``policy_terms`` exactly as the PPO gate term
-      card        x = z_card[slot_a] - z_card[slot_b] (the card head's logits, temperature 1, ``policy_terms``' hand-masked
+      card        x = z_card[slot_a] - z_card[slot_b] (the card head's logits at the training T, ``policy_terms``' hand-masked
                   card log-softmax: the normaliser cancels)
       xbow_class  x = logsumexp(cell logits over the A class) - logsumexp(over the B class), for the row's X-Bow slot."""
     if kind == "hold":
         x = policy_terms(model, Bb, idx, tau, T)["x"]
     elif kind == "card":
-        cl = policy_terms(model, Bb, idx, tau, 1.0)["card_lp"]
+        cl = policy_terms(model, Bb, idx, tau, T)["card_lp"]          # lead ruling: the training T, like hold
         x = cl.gather(1, Bb["slot_a"][idx].unsqueeze(1)).squeeze(1) - cl.gather(1, Bb["slot_b"][idx].unsqueeze(1)).squeeze(1)
     elif kind == "xbow_class":
         if not bool(Bb["played"][idx].all()):
             raise ValueError("xbow_class rows must be played rows (the X-Bow slot's cell logits)")
-        lp, m = policy_terms(model, Bb, idx, tau, 1.0)["cell_lp"], Bb["cls_a"][idx]
+        lp, m = policy_terms(model, Bb, idx, tau, T)["cell_lp"], Bb["cls_a"][idx]   # lead ruling: training T
         x = torch.logsumexp(lp.masked_fill(~m, float("-inf")), -1) - torch.logsumexp(lp.masked_fill(m, float("-inf")), -1)
     else:
         raise ValueError(f"unknown branch kind {kind!r}")
