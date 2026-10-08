@@ -4429,6 +4429,14 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   kind 13; own king 13 in 3,224) -> wrongly shuts an open right pocket in ~12% of decisions (re-aimed 2 accepted X-Bow
 >   pocket pushes); pocket depth unrestricted (Y >= 15). Back to the builder: position-based towers, real pocket bound,
 >   fixture with real kinds. NEW LEAD for the frame audit: does the live OBSERVATION path key anything on `kind`?
+> * **OWNER 22:2x: "A veto shouldn't be required ... Do pro players cast log on air troops? Does RL reward logging air
+>   troops? ... why would the model develop this behavior?"** MEASURED (VM, engine 20261006, same seed with/without a
+>   Log rolled through them): the SIM's Log does NOT damage air -- Minions 690, Bats 405, Baby Dragon 1152, Balloon 1676
+>   hp identical -> RL gets no reward for it; its cost (2 elixir) is a tiny win/loss signal. Live decode is greedy
+>   (decision_options card_choice default argmax) -> not sampling noise. ODDITY (one setup, untested further): the same
+>   sim Log hit a Knight (1766 -> 1498) but not Skeletons (243) / Goblins (808) it seemed to roll through. Log worker
+>   re-scoped: veto OPT-IN (`--log-air-veto`), root cause first -- pro rates by corridor class, matched-state P(Log)
+>   probes (air vs ground push) on R1e and its imitation base, observation identity, the sim swarm oddity.
 >   ~15:40" (Q1 card sampling flag, Q2 area-aware spell aim, Q3 GPU A/Bs after R1e, Q4 R1e approval ping, Q5 fixes);
 >   launcher `.foreman/codex_autopilot/codex_loop.sh` (back-to-back runs to 10-06; STOP_LOOP file stops it).
 > * **15:5x -- owner plan: after the R1e verdict the lead starts LIVE on the winner, then hands over to Codex via
