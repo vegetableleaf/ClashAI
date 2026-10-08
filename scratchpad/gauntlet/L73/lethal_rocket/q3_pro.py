@@ -83,6 +83,26 @@ for label, sel in (("all decks", lambda o: True), ("deck 90 (icebow)", lambda o:
               f"any lethal Rocket within 10 s {sum(o[7] for o in rows) / max(1, len(rows)):.3f}; "
               f"other first cards {other.most_common(6)}")
 
+# ---- when pros do NOT Rocket the lethal tower within 10 s: did it fall anyway (within 10 / 20 s), and outcomes ----
+ycr = z["y_crowns"]
+alive_col = {"L": 68, "R": 69}
+for label, sel in (("all decks", lambda o: True), ("deck 90 (icebow)", lambda o: o[6] == ICEBOW)):
+    for ph in ("OT",):
+        rows = [o for o in opps if o[1] == ph and sel(o)]
+        for grp_name, grp in (("lethal Rocket <=10 s", [o for o in rows if o[7]]),
+                              ("no lethal Rocket <=10 s", [o for o in rows if not o[7]])):
+            fell10 = fell20 = won = 0
+            for o in grp:      # OT = sudden death: the first tower down ends the match, so no later rows exist;
+                r = o[0]       # proxy = the pro WON and the replay side's rows end within 10 / 20 s
+                last = tick[(rep == rep[r]) & (side == side[r])].max()
+                w = ycr[r, 0] > ycr[r, 1]
+                won += w
+                fell10 += w and last - tick[r] <= 200
+                fell20 += w and last - tick[r] <= 400
+            n_ = max(1, len(grp))
+            print(f"[{label}] OT {grp_name}: n {len(grp)}; pro won with the match ending within 10 s {fell10 / n_:.3f}, "
+                  f"20 s {fell20 / n_:.3f}; pro won the match {won / n_:.3f}")
+
 # ---- live checkpoint on the OT opportunity rows (all decks with Rocket; deck 90 reported separately) ----
 sys.path.insert(0, os.environ.get("CB_REPO", "."))
 from pipeline.model_gen import load_model
@@ -116,7 +136,7 @@ def take(zf, name, idx):
     return out
 
 
-for ph in ("OT", "reg"):
+for ph in (() if os.environ.get("NO_MODEL") else ("OT", "reg")):
     sel = np.array(sorted(o[0] for o in opps if o[1] == ph))
     if not len(sel):
         continue

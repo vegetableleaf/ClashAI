@@ -178,3 +178,22 @@ def test_check_json_reports_gate_decode(tmp_path):
     assert {k: check['decision_options'][k] for k in ('gate_decode', 'gate_hazard_min_elixir', 'gate_hazard_quiet')} \
         == dict(gate_decode='hazard_below_tau', gate_hazard_min_elixir=9.0, gate_hazard_quiet=True)
     assert check['live_options']['from_file']['gate_decode'] == 'hazard_below_tau'
+
+
+def test_lethal_rocket_deployable_from_the_file(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + '--lethal-rocket ot\n')
+    opts, rec = parse([], f)
+    assert opts.lethal_rocket == 'ot' and rec['from_file']['lethal_rocket'] == 'ot'
+    opts, rec = parse(['--lethal-rocket', 'off'], f)                           # explicit wins
+    assert opts.lethal_rocket == 'off' and rec['explicit'] == ['lethal_rocket']
+    assert parse([], tmp_path / 'missing')[0].lethal_rocket == 'off'
+
+
+@pytest.mark.skipif(not CKPT.is_file(), reason='live checkpoint not present')
+def test_check_json_reports_lethal_rocket(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + '--lethal-rocket ot\n')
+    out = run_live_play('--check', '--ckpt', str(CKPT), '--live-options-file', str(f))
+    assert out.returncode == 0, out.stdout + out.stderr
+    check = json.loads(out.stdout.strip().splitlines()[-1])
+    assert check['decision_options']['lethal_rocket'] == 'ot'
+    assert check['live_options']['from_file']['lethal_rocket'] == 'ot'
