@@ -4501,6 +4501,12 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **cell_shift branch kind: NOT viable as built (worktree commit 9ef8c5c, not merged).** Census (R3 u0050 vs ladder,
+>   sampling opps, no stall): 35.1 eligible points/match (6.05 centre). 40 points x k=16 CRN full-match outcome:
+>   37.5% with |delta| >= .25 vs 44% under a sign-flip null; spread across points (sd .28) = per-point SE (.27) ->
+>   real signal variance ~0 (-.0015); 5% beyond 2 SE (= chance). Centre-only +.022 (n 20, n.s.). One-tile shifts do not
+>   move full-match outcomes measurably at k=16 -> outcome labels can't teach the column; CellRefine (imitation,
+>   local features) stays the column fix.
 > * **R3 u0050 add-on combos on benchmark v2 (192 paired vs base 127 wins):** +barrel 129 (8/6, p .79; gen 59 vs 53,
 >   S1 70 vs 74; lane 117/126 vs 82); +barrel+CellRefine v2 (1 epoch) 130 (25/22, p .77; lane 79.2%; Log lane kept
 >   117/126); +CellRefine only (2 epochs) 140 (30/17, p .079). 140 vs 130 differs only vs gen and confounds barrel with
