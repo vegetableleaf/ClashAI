@@ -96,6 +96,10 @@ def play(a) -> int:
         if not a.extrapolate:
             raise SystemExit("--predict-drops needs --extrapolate > 0 (the skeletons go into the look-ahead board)")
         cfg["predict_drops"] = True
+    if getattr(a, "own_effects", False):         # W1 opt-in: my own Log / Tornado / Rocket / IW freeze in the look-ahead
+        if not a.extrapolate:
+            raise SystemExit("--own-effects needs --extrapolate > 0 (the effects act on the look-ahead board)")
+        cfg["own_effects"] = True
     meta = {"ckpt": str(a.ckpt), "ckpt_sha256": sha256_file(Path(a.ckpt)), "model": minfo,
             "cfg": {k: v for k, v in cfg.items() if k != "noise"}, "noise_off": E.noise_off_names(cfg["noise"]),
             "opp_elixir_arg": a.opp_elixir, "action_delay_ticks": int(a.action_delay),
@@ -165,6 +169,9 @@ def main(argv=None) -> int:
     ap.add_argument("--predict-drops", action="store_true",
                     help="with --extrapolate: add an observed Skeleton Barrel balloon's 7 skeletons to the look-ahead 12 "
                          "ticks after its death (cfg 'predict_drops'). Off = today")
+    ap.add_argument("--own-effects", action="store_true",
+                    help="W1, with --extrapolate: the look-ahead applies my own recent Log / Tornado / Rocket / hero IW "
+                         "freeze to the enemy bodies they reach (cfg 'own_effects'). Off = today")
     ap.add_argument("--forms-mode", default="base", choices=("base", "deck"),
                     help="RoyaleSim card forms: base = every card as its base card (today); deck = decked evolutions / "
                          "heroes the engine loads, refused forms fall back to base (pipeline/royale_env.py docstring)")

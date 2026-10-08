@@ -96,6 +96,7 @@ BODY_SPELLS = frozenset({"graveyard", "goblin_barrel", "barbarian_barrel", "roya
 GEN_ROW_KEYS = ("tok", "mask", "sc", "past", "hand_card", "hand_form", "next_card", "next_form", "deck_card",
                 "deck_form", "hand_slot", "slot_card", "slot_form")
 GEN_IDENT_KEYS = GEN_ROW_KEYS[4:]             # the integer identity / slot arrays (int64 in the trajectory)
+OWN_FX_TICKS = 150                            # cfg["own_effects"]: plays older than this (7.5 s) act on nothing
 OPP_TRACE_EVERY = 20                          # result()["opp_counter"]["trace"]: one (tick, est, truth) per N decisions
 # cfg["action_delay_ticks"] D (L68 T9; unset/0 = today, byte-identical): live deploy lag. A play decided on the board
 # at tick T enters the engine at T + D (live_play.py: tap -> registered ~24-27 ticks later) at the cell chosen at T.
@@ -624,6 +625,9 @@ class Match:
         if cfg.get("predict_drops") and self.extrap:
             from pipeline.extrapolate import DropTracker
             self.drops = DropTracker()
+        # cfg["own_effects"] (W1, opt-in, needs extrapolate_ticks): my accepted plays (card, engine tap, landing tick)
+        # -> extrapolate(own_effects=...), the enemy bodies my Log / Tornado / Rocket reach move in the look-ahead
+        self.own_fx = [] if cfg.get("own_effects") and self.extrap else None
         self.opp_mode = cfg.get("opp_elixir")
         if self.opp_mode:
             if self.opp_mode not in OPP_ELIXIR_MODES:
@@ -686,6 +690,8 @@ class Match:
                 object_context = self.public.object_context(tick) if self.feature_version >= 4 else {}
                 if self.drops is not None:
                     object_context = dict(object_context, drops=self.drops.pending)
+                if self.own_fx is not None:
+                    object_context = dict(object_context, own_effects=self._own_effects(tick))
                 raw = extrapolate(self.state, self._prev_raw, h, self.side, **object_context)
             self._prev_raw = self.state
         if self.feature_version >= 4:
@@ -719,6 +725,12 @@ class Match:
         self._view_tick = tick + h
         self._obs = (tok, mask, sc, past)                    # kept for cfg["record"] (see apply())
         return tok, mask, sc, past
+
+    def _own_effects(self, tick: int) -> list:
+        """cfg["own_effects"]: my accepted plays and my side's confirmed ability presses of the last OWN_FX_TICKS."""
+        abil = [dict(card=e["card"], tick=int(e["tick"]), x=0, y=0, ability=True)
+                for e in getattr(self.env, "own_ability_events", ()) if e["side"] == self.side]
+        return [p for p in self.own_fx + abil if tick - OWN_FX_TICKS <= p["tick"]]
 
     def opp_estimate(self, tick: int) -> float:
         """cfg["opp_elixir"]: feed the counter the ghost plays delivered at ticks <= ``tick`` not yet fed (kept per
@@ -853,6 +865,8 @@ class Match:
             self.mix_acc[card] += 1
             self.done_plays.append((land, d["slot"], x, y))  # past: LANDING tick + position, as training's rows
             self.last_play_tick = land
+            if self.own_fx is not None:                       # cfg["own_effects"]: the engine tap, landing tick
+                self.own_fx.append(dict(card=card, x=X, y=Y, tick=int(land)))
         elif not landed:
             self.n_unlanded += 1
             self.refuse["match_over_before_landing"] += 1
@@ -908,6 +922,7 @@ class Match:
                 "plays_refused_at_landing": n_att - n_acc - self.n_unlanded} if self.delay else {}),
             **({"extrapolate_ticks": self.extrap} if self.extrap else {}),
             **({"predict_drops": True} if self.drops is not None else {}),
+            **({"own_effects": True} if self.own_fx is not None else {}),
             **({"hero_abilities": True, "ability_presses": {s: dict(c) for s, c in env.ability_presses.items()}}
                if getattr(env, "hero_abilities", False) else {}),
             **({"ability_policy": "v2", "ability_fallback_generic": dict(env.ability_fallback_generic),
@@ -1393,6 +1408,9 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--predict-drops", action="store_true",
                     help="with --extrapolate: add the 7 skeletons of an observed Skeleton Barrel balloon death 12 ticks "
                          "after it (cfg 'predict_drops'); default off = unchanged")
+    ap.add_argument("--own-effects", action="store_true",
+                    help="W1, with --extrapolate: the look-ahead applies my own recent Log / Tornado / Rocket / hero IW "
+                         "freeze to the enemy bodies they reach (cfg 'own_effects'); default off = unchanged")
     ap.add_argument("--decide-every", type=int, default=DECIDE_EVERY)
     ap.add_argument("--device", default="cpu")
     ap.add_argument("--threads", type=int, default=2)
@@ -1469,6 +1487,10 @@ def main(argv=None) -> int:
         if not a.extrapolate:
             raise SystemExit("--predict-drops needs --extrapolate > 0 (the skeletons go into the look-ahead board)")
         cfg["predict_drops"] = True
+    if a.own_effects:
+        if not a.extrapolate:
+            raise SystemExit("--own-effects needs --extrapolate > 0 (the effects act on the look-ahead board)")
+        cfg["own_effects"] = True
     if decision_active:
         cfg.update(decision_cfg)
     print(json.dumps({"e1_eval": a.mode, "policy": a.policy, "port": a.port, "tasks": len(tasks),

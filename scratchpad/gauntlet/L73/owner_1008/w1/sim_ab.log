@@ -1,0 +1,9 @@
+react w1_base: gen 159/240 2026-10-08 15:58:18
+react w1_ownfx: gen 162/240 2026-10-08 15:58:21
+reactlad w1_ownfx: gen 158/240 2026-10-08 16:02:35
+reactlad w1_base: gen 151/240 2026-10-08 16:02:36
+w1_ownfx       n=480 wins 322 vs 312  better 38 worse 28  sign p=0.2678  mean tower-hp diff delta +41
+w1_base        n=480 wins 312 vs 312  better 0 worse 0  sign p=1.0000  mean tower-hp diff delta +0
+W1 AB DONE 2026-10-08 16:02:36
+w1_ownfx480    n=960 wins 621 vs 619  better 60 worse 58  sign p=0.9267  mean tower-hp diff delta -17
+W1 AB2 DONE 2026-10-08 16:07:39
