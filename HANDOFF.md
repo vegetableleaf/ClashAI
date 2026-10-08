@@ -4508,6 +4508,14 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   CellRefine + TowerRefine exactly. VM ~/ClashBot got pipeline/tower_refine.py + hooked model_gen.py (live ckpt
 >   byte-identical under it; backup ~/probe_rocket/model_gen.py.bak_pre_towerrefine). SIM A/B (v3, seeds 0:240 x 2, live
 >   options + rocket_area, base / w1 / w2) running ~1 h: ~/probe_rocket/vm_ab_towerref.sh.
+> * **W4 SIM (isolated ~/w4/repo @68c8032; VM ~/w4/sim/summary.txt):** vs S1 (192): base 160 wins, idle 26% -> hbt 184,
+>   idle 0 (50/6, p<1e-4); pure hazard 176. vs GEN v3 (960): base 619 -> **hbt 532 (142/230, p<1e-4, LOSES)**; pure hazard
+>   340. Economy v3 1x/2x/OT: plays/min base 6.30/13.67/15.20, hbt 7.29/14.53/16.84, pros 6.9/13.5/16.8; elixir@play base
+>   7.12/6.59/6.70, hbt 6.55/5.92/5.91, pros 7.6/7.0/6.6 -> hbt spends ~0.6-0.8 earlier in every phase and that costs
+>   games vs an initiating opponent; cheap-spam share unchanged (+1 pp). NOT deployable. Freeze replay (121357): elixir
+>   >= 9 for 44 s, p .09-.35; under hbt median 9.2 s to a play, card X-Bow 88% / Tesla 10% / Rocket 1%. W4 proposes hbt
+>   scoped to elixir >= 9 (decoding scope, the model's own draw/card/cell) -- flagged as close to the rejected narrowed
+>   rule -> OWNER decides.
 > * **OWNER 14:xx: "don't turn antileak back on. it creates more problems than it solves."** -> live AL stays OFF; the freeze is
 >   W4's job (hazard_below_tau decoding).
 > * **OWNER 14:xx: "your rocket fixes did nothing ... never makes use of rocket or rocket tornado [on large pushes] ...
