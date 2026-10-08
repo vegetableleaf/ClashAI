@@ -4501,6 +4501,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **R4c u0040 + barrel2k + CellRefine (stackr4c, same live options), v2:** vs R1e 160 vs 133 (53/12), 164 vs 128 (62/13);
+>   vs R1e + AL 160 vs 159, 164 vs 147 (29/12, p .012); vs the LIVE stack2k 160 vs 164 (15/19), 164 vs 158 (18/12) ->
+>   pooled 324 vs 322 = identical. Ghost -0.8 [-3.7, +2.0] (= stack2k). Held-out Log lane 118/126; base R4c u0040 ghost
+>   -3.2 [-6.7, +0.2]. Decision: NO switch (equal; switching would reset the live sample). R4c continues to u0080.
+> * **Live read 08:0x (stack2k, 49 matches):** win 55.1% vs R1e 50.6% (+4.5 pp, CI -10.7 to +19.0); first crown 53% vs
+>   47%; 3-crown losses 36% of losses vs 17% (sig, n small); mean own elixir higher in every phase; trophies 11,127 ->
+>   11,216 (latest reading).
 > * **Nav loading recovery MERGED (37cbefe + 22994f8 tap-throughs kept after recovery + fae5160 15 s pause after a relaunch; was
 >   worktree agent-a8778135):** content_update screen (2 templates, both
 >   >= .85; 0 false positives on 639 frames, max .666 on conn_lost) -> tap RESTART at once; 60 s pure loading with no
