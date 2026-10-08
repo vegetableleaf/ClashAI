@@ -4808,6 +4808,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   electro-wizard hero (reader + RoyaleSim; new season 10-05), elite-barbarians evo (reader), ice-wizard hero
 >   (RoyaleSim). card_vocab has no -ev1/-hero keys (forms are a separate input). Previous balance wave 2026-09-16 (Hero IW
 >   freeze 7 s -> 5 s).
+> * **lethal ot_behind BUILT (branch lethal-ot-behind ee78505; merge candidate 1cb2907 in C:/Users/benpe/cb_merge_otb,
+>   junctions inside; blind verification running).** Regulation fire when behind on crowns + finishable princess +
+>   model-board tick + 66 <= 3600 (cutoff model 176.7 s ~ raw 3508). Live archive (537 matches): fires in 26 (15
+>   regulation-end losses, 4 wins, 3 OT losses, 4 three-crown losses); 10 of 19 regulation-end losses with a finishable
+>   tower. SIM v3 960 paired: ot 634 vs ot_behind 633 (0/1); 12 regulation fires; 4 matches reached OT only via the fire
+>   (none won); 1 loss caused (fired at 77 s, lost 1-2 at 3:00 where ot won in OT); 1 unexplained (gen:433 fired at 153 s,
+>   crowns unchanged) -> verifier checks. Next bundle candidate (owner-requested).
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
