@@ -4668,6 +4668,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   the pending lockout was acting as a rate limiter on the threshold gate; removing it lets the gate fire on quick
 >   cheap follow-ups -> supports the overspending/cadence hypothesis (economy worker's decide_every arm). Pros DO pair
 >   fast (15.2% of consecutive plays within 35 ticks), so the latency handicap is real but the model cannot use it yet.
+> * **OWNER ~17:xx (testing the bundle live): keep working on overspending + other tasks; "see if you can lower the 1.3
+>   second gap to a fraction of a second without negatively impacting match performance."** Lines: (1) economy
+>   decomposition + decide_every arm (a3a6e12e); (2) pipelining v2 (a613a395 resumed): complete pending view (A's bodies
+>   + projectile) and cadence-invariant hazard decoding WHILE pending only; target non-inferior to OFF 628/960; (3) live
+>   latency budget + cuts in our own code (new worker a19b2927: persistent input path, freshest frame; horizon change
+>   = separate owner step). Sample (131820): decide ~90 ms, tap ~130-150 ms, backlog 2 frames, confirm 1.3-1.4 s ->
+>   ~1 s is outside our code (game sync / reader delivery, to be measured).
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
