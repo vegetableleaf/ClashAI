@@ -4501,6 +4501,18 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **BENCHMARK FLAW FOUND 04:3x (MEASURED): the no-stall reactive set is a mutual STANDOFF.** With the stall gone from
+>   BOTH sides, the greedy-gate opponents (gen_v1 / S1, live policy) and our greedy learner wait: in r3old_ctl 133 of 192
+>   games had ZERO learner plays in 1x (leak share .95 in those). First A/B results on that benchmark (VOID for live
+>   decisions): tau_phase B (.35/.45/.55) 92 vs 134 wins (17 better / 78 worse); xbow f .3 130 vs 134 (3/7, p .34;
+>   defensive X-Bow 5.6% -> 14.4%); tau (.35/.40/.45) 116 vs 134. FIX: `search_s0 --opp-policy sample --opp-T 0.3`
+>   (opponents sample like the RL league; default path byte-identical: 16/16 matches identical to r3old_ctl). Sampling
+>   ends the standoff vs gen (0 zero-1x games of 8) but NOT vs S1 (6/8 for R3old, 5/8 R1e, 6/8 gen_v32): S1 never
+>   initiates and neither does our model -> a real weakness (pros initiate vs a waiting opponent; it is why the forced
+>   spend was worth +46/192 to R1e). Benchmark v2 = sampling opponents; report vs-gen and vs-S1 splits. Grid relaunched
+>   (`~/ab_grid2.sh r3old`): R1e + control + tau_phase B, (.30/.40/.45), (.25/.35/.45), (.30/.35/.40), (.25/.35/.35),
+>   (.30/.30/.30) + xbow floors .3/.2/.4, tune seeds 0:48. Old-benchmark numbers tonight (R1e 105, R3old 120, chain
+>   evals of R3c/R3n/R4n) must be re-run on v2 before any decision.
 > * **CENTRE-COLUMN FIX MEASURED: CellRefine v2 (5 dilated layers, RF +-15.5 tiles, 48 ch; base R3 u0050 frozen).**
 >   OFFLINE (100,463 val play rows; base -> v1 -> v2): lane consistency of the model's centre picks 49.9 -> 51.7 ->
 >   **65.2% (pros on the same rows 64.8%)**; same column as the pro 48.3/49.1 -> 58.9/58.5%; cell top-1 21.87 ->

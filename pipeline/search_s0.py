@@ -500,8 +500,11 @@ class Runner:
         for s in ds:
             p, enc, heads, hand = forward(s)
             _, allowed, stalled = s.pre(hand)
-            d = live_decide_batch(s.model, enc, heads, [p], allowed[None], np.array([stalled]), tau=s.cfg["tau"],
-                                  device=s.cfg["device"], **decision_match_kwargs([s]))[0]
+            if s is not m.learner and s.cfg.get("policy") == "sample":   # --opp-policy sample (lead 2026-10-08)
+                d = E.sample_decide_batch(s.model, enc, heads, [p], allowed[None], np.array([stalled]), [s], s.cfg)[0]
+            else:
+                d = live_decide_batch(s.model, enc, heads, [p], allowed[None], np.array([stalled]), tau=s.cfg["tau"],
+                                      device=s.cfg["device"], **decision_match_kwargs([s]))[0]
             if s is m.learner and arm == "never":
                 d = NEVER_PLAY                              # our side never plays (stall rule included)
             elif s is m.learner and arm != "plain" and allowed.any():
@@ -571,6 +574,9 @@ def _init_worker(args: dict) -> None:
     if "s1" in args["opps"]:
         s1, si = E.load_policy(REPO / args["s1"], dev)
         opps["s1"] = (s1, live_cfg(TAU_OPP, str(si.get("grid", "floor")), dev))
+    if args.get("opp_policy", "live") == "sample":   # lead 2026-10-08: the training league's sampling opponents (T),
+        for o in opps.values():                       # so no-stall matches don't freeze in a mutual standoff
+            o[1].update(policy="sample", T=float(args["opp_T"]))
     cap, fm = int(args["tail_cap"]), args.get("forms_mode", "base")
     learner_cfg = live_cfg(args.get('tau_plain', TAU_PLAIN), gi['grid'], dev)
     if args.get('decision_options'):
@@ -702,6 +708,10 @@ def main(argv=None) -> int:
     ap.add_argument("--workers", type=int, default=1, help="parallel matches (processes)")
     ap.add_argument('--behaviour-telemetry', action='store_true', help='Record public per-tick behaviour metrics; defaults unchanged.')
     ap.add_argument("--tail-cap", type=int, default=7200, help="match end tick cap (RoyaleSelfPlayEnv tail_cap)")
+    ap.add_argument("--opp-policy", choices=("live", "sample"), default="live",
+                    help="sample: opponents draw the gate/card/cell like rl_royale's league (tempered at --opp-T, "
+                         "per-match seeded RNG); live (default, unchanged) = the greedy gate, which can stand off")
+    ap.add_argument("--opp-T", type=float, default=0.3)
     ap.add_argument("--tau-plain", type=float, default=None,
                     help="lead 2026-10-06: the plain arm's gate threshold (default None = TAU_PLAIN 0.35, unchanged)")
     ap.add_argument("--hero-abilities", action="store_true",
@@ -748,9 +758,11 @@ def main(argv=None) -> int:
         wargs['decision_options'] = decision_cfg
     if a.behaviour_telemetry:
         wargs['behaviour_telemetry'] = True
+    if a.opp_policy != "live":
+        wargs['opp_policy'], wargs['opp_T'] = a.opp_policy, float(a.opp_T)
     if a.tau_plain is not None:
         wargs['tau_plain'] = float(a.tau_plain)
-    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
+    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
                                                 "gen_sha256": sha256(REPO / a.gen), "opp_gen_sha256": opp_sha,
                                                 "s1_sha256": sha256(REPO / a.s1),
                                                 "tau_plain": TAU_PLAIN, "tau_opp": TAU_OPP, "crown_w": CROWN_W,
