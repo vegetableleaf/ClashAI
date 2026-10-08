@@ -1,0 +1,3 @@
+{"base": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\rl_royale\\rseries_r3\\barrel_u0050\\gen_branch_s0.pt", "out": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\rl_royale\\rseries_r3\\rseries_r3_u0050_barrel_cellref5.pt", "train_play_rows": 911987, "val_rows": 20000, "steps": 3562, "params": 117248, "val0": {"step": 0, "cell_nll": 3.064446883010864, "cell_half_top1": 0.21855, "cell_tile_top1": 0.21855, "card_top1": 0.6187, "n_play": 20000}}
+{"step": 200, "of": 3562, "cell_loss_ema": 3.0185, "rows_per_s": 356, "min": 2.4}
+{"step": 400, "of": 3562, "cell_loss_ema": 3.0267, "rows_per_s": 389, "min": 4.4}
