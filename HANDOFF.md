@@ -4501,6 +4501,11 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **Live anti-leak MERGED (02da20e; 6a270a3 + clock fix ac65fe9: SIM_START_TICK 90).** Opt-in `--anti-leak`; merged
+>   in a separate worktree (clean), 136 live tests pass on the merged tree. Note: joining a match mid-way measures
+>   from tick 90 (no record of earlier plays), so a stall can fire on the first decision at >= 9 elixir. To enable live,
+>   run_live.sh's `--no-anti-leak` must be swapped for `--anti-leak` -- ONLY while the supervisor is stopped (never edit
+>   a running bash script).
 > * **ROUND 4 (v2):** R3c vs R1e (neither with AL): u0030 tune 150 vs 133 (57/27, **p .0014**), fresh 137 vs 128 (49/29,
 >   **p .031**); u0020 fresh 148 vs 128 (52/22, **p .0006**), tune p .034 -> R3c beats R1e, replicated. Both with AL:
 >   u0030 tune 147 vs 159 (13/25, p .073), fresh 145 vs 147 (20/22); u0020 152 vs 159 / 158 vs 147 -> level: R3c's edge is
