@@ -4501,6 +4501,11 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **R3 u0050 add-on combos on benchmark v2 (192 paired vs base 127 wins):** +barrel 129 (8/6, p .79; gen 59 vs 53,
+>   S1 70 vs 74; lane 117/126 vs 82); +barrel+CellRefine v2 (1 epoch) 130 (25/22, p .77; lane 79.2%; Log lane kept
+>   117/126); +CellRefine only (2 epochs) 140 (30/17, p .079). 140 vs 130 differs only vs gen and confounds barrel with
+>   1-vs-2 epochs -> cand.sh now trains CellRefine 2 epochs on top of the barrel; an R3 u0050 barrel+CellRefine-2ep
+>   run settles it when the GPU is idle. vs R1e (sb_r1e 126): base 127 (40/34, p .56), +barrel+CellRefine 130 (p .19).
 > * **05:0x VM queues:** `~/ab_grid2.sh r3old` (benchmark v2 tuning grid; so far tau (.30/.40/.45) 126 vs 127 p .89,
 >   tau (.25/.35/.45) 131 vs 127 p .58); `~/eval_v2_queue.sh` = candidates on v2 in order r3n_u0040 (now), r3c_u0020,
 >   r3c_u0030 (after R3c ends), r3n_u0080, r4n_u0040, r4n_u0080 -> eval.log "v2 paired sb_<name> vs sb_r1e" + ghost.
