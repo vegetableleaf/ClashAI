@@ -1,0 +1,159 @@
+## F2 PRO threatened play rows: what pros played vs the model's top card (affordable hand), by model elixir
+value>=3 el <2  pros      : Tornado 0.00  Log 0.00  Skeletons 1.00  Knight 0.00  IceWizard 0.00  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 60)
+value>=3 el <2  towerref  : Tornado 0.00  Log 0.00  Skeletons 1.00  Knight 0.00  IceWizard 0.00  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 60)  card top-1 1.000
+value>=3 el <2  stack2k   : Tornado 0.00  Log 0.00  Skeletons 1.00  Knight 0.00  IceWizard 0.00  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 60)  card top-1 1.000
+value>=3 el 2-4 pros      : Tornado 0.11  Log 0.29  Skeletons 0.32  Knight 0.14  IceWizard 0.14  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 917)
+value>=3 el 2-4 towerref  : Tornado 0.08  Log 0.30  Skeletons 0.33  Knight 0.15  IceWizard 0.14  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 917)  card top-1 0.820
+value>=3 el 2-4 stack2k   : Tornado 0.08  Log 0.28  Skeletons 0.36  Knight 0.14  IceWizard 0.15  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 917)  card top-1 0.820
+      Tornado affordable: rows 400 mean P(towerref) 0.235  pro played it 0.263
+      Log affordable: rows 495 mean P(towerref) 0.558  pro played it 0.529
+value>=3 el 4-6 pros      : Tornado 0.13  Log 0.14  Skeletons 0.19  Knight 0.18  IceWizard 0.18  Tesla 0.18  Xbow 0.00  Rocket 0.00  (n 1632)
+value>=3 el 4-6 towerref  : Tornado 0.10  Log 0.12  Skeletons 0.20  Knight 0.22  IceWizard 0.20  Tesla 0.17  Xbow 0.00  Rocket 0.00  (n 1632)  card top-1 0.695
+value>=3 el 4-6 stack2k   : Tornado 0.09  Log 0.12  Skeletons 0.22  Knight 0.19  IceWizard 0.22  Tesla 0.16  Xbow 0.00  Rocket 0.00  (n 1632)  card top-1 0.688
+      Tornado affordable: rows 1019 mean P(towerref) 0.203  pro played it 0.208
+      Log affordable: rows 755 mean P(towerref) 0.293  pro played it 0.302
+value>=3 el 6+  pros      : Tornado 0.10  Log 0.12  Skeletons 0.13  Knight 0.17  IceWizard 0.15  Tesla 0.17  Xbow 0.07  Rocket 0.08  (n 3278)
+value>=3 el 6+  towerref  : Tornado 0.07  Log 0.11  Skeletons 0.14  Knight 0.22  IceWizard 0.17  Tesla 0.19  Xbow 0.05  Rocket 0.06  (n 3278)  card top-1 0.651
+value>=3 el 6+  stack2k   : Tornado 0.06  Log 0.12  Skeletons 0.15  Knight 0.18  IceWizard 0.21  Tesla 0.19  Xbow 0.05  Rocket 0.03  (n 3278)  card top-1 0.635
+      Tornado affordable: rows 2253 mean P(towerref) 0.142  pro played it 0.142
+      Log affordable: rows 1344 mean P(towerref) 0.282  pro played it 0.299
+value>=5 el <2  pros      : Tornado 0.00  Log 0.00  Skeletons 1.00  Knight 0.00  IceWizard 0.00  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 35)
+value>=5 el <2  towerref  : Tornado 0.00  Log 0.00  Skeletons 1.00  Knight 0.00  IceWizard 0.00  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 35)  card top-1 1.000
+value>=5 el <2  stack2k   : Tornado 0.00  Log 0.00  Skeletons 1.00  Knight 0.00  IceWizard 0.00  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 35)  card top-1 1.000
+value>=5 el 2-4 pros      : Tornado 0.12  Log 0.28  Skeletons 0.31  Knight 0.15  IceWizard 0.14  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 600)
+value>=5 el 2-4 towerref  : Tornado 0.10  Log 0.28  Skeletons 0.32  Knight 0.15  IceWizard 0.15  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 600)  card top-1 0.833
+value>=5 el 2-4 stack2k   : Tornado 0.09  Log 0.28  Skeletons 0.34  Knight 0.14  IceWizard 0.16  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 600)  card top-1 0.842
+      Tornado affordable: rows 263 mean P(towerref) 0.267  pro played it 0.274
+      Log affordable: rows 324 mean P(towerref) 0.544  pro played it 0.522
+value>=5 el 4-6 pros      : Tornado 0.15  Log 0.14  Skeletons 0.18  Knight 0.17  IceWizard 0.18  Tesla 0.18  Xbow 0.00  Rocket 0.00  (n 1040)
+value>=5 el 4-6 towerref  : Tornado 0.11  Log 0.11  Skeletons 0.18  Knight 0.21  IceWizard 0.21  Tesla 0.17  Xbow 0.00  Rocket 0.00  (n 1040)  card top-1 0.706
+value>=5 el 4-6 stack2k   : Tornado 0.10  Log 0.10  Skeletons 0.21  Knight 0.18  IceWizard 0.24  Tesla 0.17  Xbow 0.00  Rocket 0.00  (n 1040)  card top-1 0.702
+      Tornado affordable: rows 652 mean P(towerref) 0.225  pro played it 0.232
+      Log affordable: rows 485 mean P(towerref) 0.271  pro played it 0.291
+value>=5 el 6+  pros      : Tornado 0.11  Log 0.11  Skeletons 0.12  Knight 0.18  IceWizard 0.15  Tesla 0.19  Xbow 0.04  Rocket 0.10  (n 1837)
+value>=5 el 6+  towerref  : Tornado 0.08  Log 0.10  Skeletons 0.12  Knight 0.23  IceWizard 0.17  Tesla 0.21  Xbow 0.03  Rocket 0.07  (n 1837)  card top-1 0.649
+value>=5 el 6+  stack2k   : Tornado 0.07  Log 0.11  Skeletons 0.13  Knight 0.19  IceWizard 0.21  Tesla 0.21  Xbow 0.03  Rocket 0.04  (n 1837)  card top-1 0.641
+      Tornado affordable: rows 1317 mean P(towerref) 0.152  pro played it 0.147
+      Log affordable: rows 785 mean P(towerref) 0.263  pro played it 0.268
+
+## F3 PRO defensive rows (threatened, pro placement own y <= 18): card top-1 and cell within 1 tile of the pro (cell for the pro's card)
+  all defensive      towerref       n=5677 card top-1 0.705  cell <= 1 tile 0.283  median dist 2.00
+  all defensive      towerref_noTR  n=5677 card top-1 0.701  cell <= 1 tile 0.283  median dist 2.00
+  all defensive      stack2k        n=5677 card top-1 0.701  cell <= 1 tile 0.283  median dist 2.00
+  defensive el < 4   towerref       n=954 card top-1 0.843  cell <= 1 tile 0.269  median dist 1.41
+  defensive el < 4   towerref_noTR  n=954 card top-1 0.843  cell <= 1 tile 0.267  median dist 1.41
+  defensive el < 4   stack2k        n=954 card top-1 0.843  cell <= 1 tile 0.267  median dist 1.41
+  defensive el >= 4  towerref       n=4723 card top-1 0.678  cell <= 1 tile 0.286  median dist 2.00
+  defensive el >= 4  towerref_noTR  n=4723 card top-1 0.672  cell <= 1 tile 0.286  median dist 2.00
+  defensive el >= 4  stack2k        n=4723 card top-1 0.672  cell <= 1 tile 0.286  median dist 2.00
+  per card (pro's card), cell <= 1 tile  towerref / noTR / stack2k:
+    Tornado    n=  553 0.244 / 0.235 / 0.235   median dist 1.41 / 2.00 / 2.00
+    Log        n=  892 0.378 / 0.381 / 0.381   median dist 1.00 / 1.00 / 1.00
+    Skeletons  n= 1083 0.223 / 0.238 / 0.238   median dist 2.23 / 2.00 / 2.00
+    Knight     n=  991 0.216 / 0.221 / 0.221   median dist 2.24 / 2.24 / 2.24
+    IceWizard  n=  923 0.194 / 0.182 / 0.182   median dist 2.24 / 2.24 / 2.24
+    Tesla      n=  868 0.414 / 0.403 / 0.403   median dist 1.41 / 1.41 / 1.41
+    Xbow       n=  223 0.430 / 0.408 / 0.408   median dist 3.16 / 5.00 / 5.00
+    Rocket     n=  144 0.326 / 0.354 / 0.354   median dist 1.00 / 1.00 / 1.00
+  Ice Wizard (pro's defensive IW rows): model cell minus pro placement, own frame (dY > 0 = further from my towers), |dX|
+    towerref       dY median +0.00 mean +0.02  |dX| median 1.00  share dY > +1 0.237  dY < -1 0.223
+    towerref_noTR  dY median +0.00 mean +0.21  |dX| median 1.00  share dY > +1 0.252  dY < -1 0.202
+    stack2k        dY median +0.00 mean +0.21  |dX| median 1.00  share dY > +1 0.252  dY < -1 0.202
+  top card differs towerref vs stack2k on 644/5677 defensive rows; on those: towerref right 0.449, stack2k right 0.407
+  changes (stack2k -> towerref): [(('Skeletons', 'Knight'), 71), (('IceWizard', 'Knight'), 65), (('IceWizard', 'Skeletons'), 33), (('IceWizard', 'Log'), 32), (('Log', 'Knight'), 32), (('Skeletons', 'Log'), 29), (('IceWizard', 'Tesla'), 27), (('Log', 'Tesla'), 23)]
+
+## F2 LIVE threatened decisions (towerref_w2 logs, rebuild via repo_dep): model top card over the allowed hand, by model elixir
+value>=3 el <2  towerref   all states : Tornado 0.23  Log 0.04  Skeletons 0.20  Knight 0.06  IceWizard 0.05  Tesla 0.14  Xbow 0.07  Rocket 0.22  (n 449)
+value>=3 el <2  stack2k    all states : Tornado 0.23  Log 0.04  Skeletons 0.20  Knight 0.06  IceWizard 0.05  Tesla 0.14  Xbow 0.07  Rocket 0.22  (n 449)
+value>=3 el <2  towerref   play states: Tornado 0.00  Log 0.00  Skeletons 1.00  Knight 0.00  IceWizard 0.00  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 14)
+value>=3 el <2  bot PLAYED            : Tornado 0.00  Log 0.00  Skeletons 1.00  Knight 0.00  IceWizard 0.00  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 14)
+value>=3 el 2-4 towerref   all states : Tornado 0.17  Log 0.22  Skeletons 0.23  Knight 0.13  IceWizard 0.14  Tesla 0.03  Xbow 0.03  Rocket 0.06  (n 1577)
+value>=3 el 2-4 stack2k    all states : Tornado 0.18  Log 0.21  Skeletons 0.23  Knight 0.13  IceWizard 0.12  Tesla 0.03  Xbow 0.03  Rocket 0.06  (n 1577)
+value>=3 el 2-4 towerref   play states: Tornado 0.12  Log 0.25  Skeletons 0.24  Knight 0.20  IceWizard 0.18  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 186)
+value>=3 el 2-4 bot PLAYED            : Tornado 0.11  Log 0.25  Skeletons 0.25  Knight 0.21  IceWizard 0.17  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 186)
+      Tornado affordable: states 618 mean P(towerref) 0.295
+      Log affordable: states 491 mean P(towerref) 0.717
+value>=3 el 4-6 towerref   all states : Tornado 0.15  Log 0.14  Skeletons 0.17  Knight 0.19  IceWizard 0.22  Tesla 0.14  Xbow 0.00  Rocket 0.00  (n 1248)
+value>=3 el 4-6 stack2k    all states : Tornado 0.13  Log 0.14  Skeletons 0.19  Knight 0.19  IceWizard 0.20  Tesla 0.15  Xbow 0.00  Rocket 0.00  (n 1248)
+value>=3 el 4-6 towerref   play states: Tornado 0.10  Log 0.18  Skeletons 0.16  Knight 0.17  IceWizard 0.21  Tesla 0.19  Xbow 0.00  Rocket 0.00  (n 135)
+value>=3 el 4-6 bot PLAYED            : Tornado 0.10  Log 0.19  Skeletons 0.16  Knight 0.17  IceWizard 0.21  Tesla 0.19  Xbow 0.00  Rocket 0.00  (n 135)
+      Tornado affordable: states 964 mean P(towerref) 0.240
+      Log affordable: states 464 mean P(towerref) 0.404
+value>=3 el 6+  towerref   all states : Tornado 0.10  Log 0.08  Skeletons 0.17  Knight 0.20  IceWizard 0.11  Tesla 0.13  Xbow 0.18  Rocket 0.02  (n 1229)
+value>=3 el 6+  stack2k    all states : Tornado 0.09  Log 0.10  Skeletons 0.18  Knight 0.17  IceWizard 0.14  Tesla 0.13  Xbow 0.18  Rocket 0.02  (n 1229)
+value>=3 el 6+  towerref   play states: Tornado 0.05  Log 0.12  Skeletons 0.17  Knight 0.23  IceWizard 0.13  Tesla 0.17  Xbow 0.07  Rocket 0.04  (n 161)
+value>=3 el 6+  bot PLAYED            : Tornado 0.04  Log 0.12  Skeletons 0.16  Knight 0.24  IceWizard 0.12  Tesla 0.18  Xbow 0.07  Rocket 0.06  (n 161)
+      Tornado affordable: states 1031 mean P(towerref) 0.158
+      Log affordable: states 451 mean P(towerref) 0.294
+value>=5 el <2  towerref   all states : Tornado 0.25  Log 0.03  Skeletons 0.16  Knight 0.07  IceWizard 0.06  Tesla 0.11  Xbow 0.08  Rocket 0.25  (n 358)
+value>=5 el <2  stack2k    all states : Tornado 0.25  Log 0.03  Skeletons 0.16  Knight 0.07  IceWizard 0.06  Tesla 0.11  Xbow 0.08  Rocket 0.25  (n 358)
+value>=5 el <2  towerref   play states: Tornado 0.00  Log 0.00  Skeletons 1.00  Knight 0.00  IceWizard 0.00  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 11)
+value>=5 el <2  bot PLAYED            : Tornado 0.00  Log 0.00  Skeletons 1.00  Knight 0.00  IceWizard 0.00  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 11)
+value>=5 el 2-4 towerref   all states : Tornado 0.17  Log 0.22  Skeletons 0.21  Knight 0.13  IceWizard 0.13  Tesla 0.03  Xbow 0.03  Rocket 0.07  (n 1104)
+value>=5 el 2-4 stack2k    all states : Tornado 0.18  Log 0.22  Skeletons 0.22  Knight 0.14  IceWizard 0.11  Tesla 0.03  Xbow 0.03  Rocket 0.07  (n 1104)
+value>=5 el 2-4 towerref   play states: Tornado 0.14  Log 0.21  Skeletons 0.23  Knight 0.20  IceWizard 0.22  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 136)
+value>=5 el 2-4 bot PLAYED            : Tornado 0.12  Log 0.22  Skeletons 0.24  Knight 0.21  IceWizard 0.21  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 136)
+      Tornado affordable: states 420 mean P(towerref) 0.314
+      Log affordable: states 339 mean P(towerref) 0.729
+value>=5 el 4-6 towerref   all states : Tornado 0.16  Log 0.15  Skeletons 0.17  Knight 0.19  IceWizard 0.20  Tesla 0.14  Xbow 0.00  Rocket 0.00  (n 755)
+value>=5 el 4-6 stack2k    all states : Tornado 0.13  Log 0.15  Skeletons 0.18  Knight 0.19  IceWizard 0.19  Tesla 0.15  Xbow 0.00  Rocket 0.00  (n 755)
+value>=5 el 4-6 towerref   play states: Tornado 0.12  Log 0.15  Skeletons 0.16  Knight 0.14  IceWizard 0.20  Tesla 0.23  Xbow 0.00  Rocket 0.00  (n 92)
+value>=5 el 4-6 bot PLAYED            : Tornado 0.12  Log 0.16  Skeletons 0.16  Knight 0.14  IceWizard 0.20  Tesla 0.22  Xbow 0.00  Rocket 0.00  (n 92)
+      Tornado affordable: states 572 mean P(towerref) 0.247
+      Log affordable: states 294 mean P(towerref) 0.406
+value>=5 el 6+  towerref   all states : Tornado 0.14  Log 0.07  Skeletons 0.20  Knight 0.17  IceWizard 0.11  Tesla 0.16  Xbow 0.14  Rocket 0.02  (n 612)
+value>=5 el 6+  stack2k    all states : Tornado 0.13  Log 0.09  Skeletons 0.19  Knight 0.15  IceWizard 0.13  Tesla 0.14  Xbow 0.16  Rocket 0.02  (n 612)
+value>=5 el 6+  towerref   play states: Tornado 0.07  Log 0.11  Skeletons 0.19  Knight 0.21  IceWizard 0.15  Tesla 0.20  Xbow 0.04  Rocket 0.04  (n 81)
+value>=5 el 6+  bot PLAYED            : Tornado 0.06  Log 0.11  Skeletons 0.17  Knight 0.22  IceWizard 0.15  Tesla 0.20  Xbow 0.05  Rocket 0.04  (n 81)
+      Tornado affordable: states 497 mean P(towerref) 0.183
+      Log affordable: states 241 mean P(towerref) 0.264
+  gate p (towerref) median by elixir: {'<2': 0.083, '2-4': 0.192, '4-6': 0.186, '6+': 0.234}
+  rebuild check: |rebuilt p - logged p| median 0.0028; logged top card == rebuilt top 0.811
+
+## F2 LIVE threatened decisions (towerref_w2 logs, rebuild via repo_hero): model top card over the allowed hand, by model elixir
+value>=3 el <2  towerref   all states : Tornado 0.23  Log 0.04  Skeletons 0.20  Knight 0.06  IceWizard 0.05  Tesla 0.14  Xbow 0.07  Rocket 0.22  (n 449)
+value>=3 el <2  stack2k    all states : Tornado 0.23  Log 0.04  Skeletons 0.20  Knight 0.06  IceWizard 0.05  Tesla 0.14  Xbow 0.07  Rocket 0.22  (n 449)
+value>=3 el <2  towerref   play states: Tornado 0.00  Log 0.00  Skeletons 1.00  Knight 0.00  IceWizard 0.00  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 14)
+value>=3 el <2  bot PLAYED            : Tornado 0.00  Log 0.00  Skeletons 1.00  Knight 0.00  IceWizard 0.00  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 14)
+value>=3 el 2-4 towerref   all states : Tornado 0.17  Log 0.22  Skeletons 0.23  Knight 0.12  IceWizard 0.14  Tesla 0.03  Xbow 0.03  Rocket 0.06  (n 1577)
+value>=3 el 2-4 stack2k    all states : Tornado 0.18  Log 0.21  Skeletons 0.23  Knight 0.13  IceWizard 0.12  Tesla 0.03  Xbow 0.03  Rocket 0.06  (n 1577)
+value>=3 el 2-4 towerref   play states: Tornado 0.12  Log 0.25  Skeletons 0.24  Knight 0.20  IceWizard 0.18  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 186)
+value>=3 el 2-4 bot PLAYED            : Tornado 0.11  Log 0.25  Skeletons 0.25  Knight 0.21  IceWizard 0.17  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 186)
+      Tornado affordable: states 618 mean P(towerref) 0.298
+      Log affordable: states 491 mean P(towerref) 0.708
+value>=3 el 4-6 towerref   all states : Tornado 0.15  Log 0.13  Skeletons 0.17  Knight 0.19  IceWizard 0.22  Tesla 0.14  Xbow 0.00  Rocket 0.00  (n 1248)
+value>=3 el 4-6 stack2k    all states : Tornado 0.13  Log 0.14  Skeletons 0.19  Knight 0.19  IceWizard 0.20  Tesla 0.14  Xbow 0.00  Rocket 0.00  (n 1248)
+value>=3 el 4-6 towerref   play states: Tornado 0.10  Log 0.18  Skeletons 0.16  Knight 0.17  IceWizard 0.21  Tesla 0.19  Xbow 0.00  Rocket 0.00  (n 135)
+value>=3 el 4-6 bot PLAYED            : Tornado 0.10  Log 0.19  Skeletons 0.16  Knight 0.17  IceWizard 0.21  Tesla 0.19  Xbow 0.00  Rocket 0.00  (n 135)
+      Tornado affordable: states 964 mean P(towerref) 0.242
+      Log affordable: states 464 mean P(towerref) 0.396
+value>=3 el 6+  towerref   all states : Tornado 0.10  Log 0.08  Skeletons 0.17  Knight 0.20  IceWizard 0.11  Tesla 0.13  Xbow 0.18  Rocket 0.02  (n 1229)
+value>=3 el 6+  stack2k    all states : Tornado 0.09  Log 0.09  Skeletons 0.18  Knight 0.17  IceWizard 0.14  Tesla 0.13  Xbow 0.18  Rocket 0.02  (n 1229)
+value>=3 el 6+  towerref   play states: Tornado 0.05  Log 0.12  Skeletons 0.18  Knight 0.23  IceWizard 0.13  Tesla 0.17  Xbow 0.08  Rocket 0.04  (n 161)
+value>=3 el 6+  bot PLAYED            : Tornado 0.04  Log 0.12  Skeletons 0.16  Knight 0.24  IceWizard 0.12  Tesla 0.18  Xbow 0.07  Rocket 0.06  (n 161)
+      Tornado affordable: states 1031 mean P(towerref) 0.156
+      Log affordable: states 451 mean P(towerref) 0.288
+value>=5 el <2  towerref   all states : Tornado 0.25  Log 0.03  Skeletons 0.16  Knight 0.07  IceWizard 0.06  Tesla 0.11  Xbow 0.08  Rocket 0.25  (n 358)
+value>=5 el <2  stack2k    all states : Tornado 0.25  Log 0.03  Skeletons 0.16  Knight 0.07  IceWizard 0.06  Tesla 0.11  Xbow 0.08  Rocket 0.25  (n 358)
+value>=5 el <2  towerref   play states: Tornado 0.00  Log 0.00  Skeletons 1.00  Knight 0.00  IceWizard 0.00  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 11)
+value>=5 el <2  bot PLAYED            : Tornado 0.00  Log 0.00  Skeletons 1.00  Knight 0.00  IceWizard 0.00  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 11)
+value>=5 el 2-4 towerref   all states : Tornado 0.17  Log 0.22  Skeletons 0.22  Knight 0.13  IceWizard 0.13  Tesla 0.03  Xbow 0.03  Rocket 0.07  (n 1104)
+value>=5 el 2-4 stack2k    all states : Tornado 0.18  Log 0.22  Skeletons 0.22  Knight 0.14  IceWizard 0.11  Tesla 0.03  Xbow 0.03  Rocket 0.07  (n 1104)
+value>=5 el 2-4 towerref   play states: Tornado 0.14  Log 0.21  Skeletons 0.23  Knight 0.20  IceWizard 0.22  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 136)
+value>=5 el 2-4 bot PLAYED            : Tornado 0.12  Log 0.22  Skeletons 0.24  Knight 0.21  IceWizard 0.21  Tesla 0.00  Xbow 0.00  Rocket 0.00  (n 136)
+      Tornado affordable: states 420 mean P(towerref) 0.318
+      Log affordable: states 339 mean P(towerref) 0.718
+value>=5 el 4-6 towerref   all states : Tornado 0.16  Log 0.14  Skeletons 0.17  Knight 0.19  IceWizard 0.20  Tesla 0.14  Xbow 0.00  Rocket 0.00  (n 755)
+value>=5 el 4-6 stack2k    all states : Tornado 0.14  Log 0.15  Skeletons 0.18  Knight 0.19  IceWizard 0.20  Tesla 0.15  Xbow 0.00  Rocket 0.00  (n 755)
+value>=5 el 4-6 towerref   play states: Tornado 0.12  Log 0.15  Skeletons 0.16  Knight 0.14  IceWizard 0.20  Tesla 0.23  Xbow 0.00  Rocket 0.00  (n 92)
+value>=5 el 4-6 bot PLAYED            : Tornado 0.12  Log 0.16  Skeletons 0.16  Knight 0.14  IceWizard 0.20  Tesla 0.22  Xbow 0.00  Rocket 0.00  (n 92)
+      Tornado affordable: states 572 mean P(towerref) 0.249
+      Log affordable: states 294 mean P(towerref) 0.398
+value>=5 el 6+  towerref   all states : Tornado 0.13  Log 0.06  Skeletons 0.20  Knight 0.17  IceWizard 0.11  Tesla 0.16  Xbow 0.14  Rocket 0.02  (n 612)
+value>=5 el 6+  stack2k    all states : Tornado 0.14  Log 0.08  Skeletons 0.19  Knight 0.15  IceWizard 0.13  Tesla 0.13  Xbow 0.17  Rocket 0.02  (n 612)
+value>=5 el 6+  towerref   play states: Tornado 0.07  Log 0.11  Skeletons 0.19  Knight 0.21  IceWizard 0.15  Tesla 0.19  Xbow 0.05  Rocket 0.04  (n 81)
+value>=5 el 6+  bot PLAYED            : Tornado 0.06  Log 0.11  Skeletons 0.17  Knight 0.22  IceWizard 0.15  Tesla 0.20  Xbow 0.05  Rocket 0.04  (n 81)
+      Tornado affordable: states 497 mean P(towerref) 0.180
+      Log affordable: states 241 mean P(towerref) 0.258
+  gate p (towerref) median by elixir: {'<2': 0.068, '2-4': 0.161, '4-6': 0.16, '6+': 0.223}
+  rebuild check: |rebuilt p - logged p| median 0.0152; logged top card == rebuilt top 0.808
