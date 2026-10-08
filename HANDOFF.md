@@ -4501,6 +4501,10 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **Spell aims (R3 u0050, val pro Log/Rocket, teacher-forced card):** the barrel branch changes non-barrel aims on
+>   0.88% (Log, n 4,748) / 0.54% (Rocket, n 1,118); with a barrel in flight (n 162) Log exact 28.4 -> 41.4%, distance
+>   4.50 -> 2.21 tiles. CellRefine moves spell aims toward pros: Log exact 31.6 -> 34.3%, Rocket 19.8 -> 23.1% (Rocket
+>   distance 3.04 -> 2.90 tiles) -- partial progress on the owner's "spells are ineffective" (aim) complaint.
 > * **CANDIDATE R3c u0030 (sha f8d23eaa; old R3 u0050 + 30 no-stall updates) + add-ons, v2 192 (worker's sim_lane runs):**
 >   base 150 vs R1e 126 (64/24); +barrel 154 (5/1); **+barrel+CellRefine 2ep 163 (27/14, p .060; vs R1e 163 vs 126,
 >   70/17)**; centre lane 55.3 -> 72.5%; offline centre-pick lane 49.6 -> 64.8% (pros 64.8%). Held-out Log lane base 82,
