@@ -80,5 +80,6 @@ class GenPilot(LegacyGenPilot):
             if cell_options.xbow_class != 'argmax':     # enemy K, L, R alive in my board frame, as SIM's match_kwargs
                 context = dict(rngs=[self.rng_decisions], grid=self.grid,
                                enemy_alive=[tuple(bool(t.alive) for t in bs.towers[3:6])])
+            logits = self.guard_cells(frame, d, logits)
             d['xy'] = cell_xy(int(choose_cells(logits, [name], cell_options, **context)[0]), self.grid)
         return self._audited(d)
