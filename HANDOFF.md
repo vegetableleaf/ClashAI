@@ -4508,6 +4508,12 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   CellRefine + TowerRefine exactly. VM ~/ClashBot got pipeline/tower_refine.py + hooked model_gen.py (live ckpt
 >   byte-identical under it; backup ~/probe_rocket/model_gen.py.bak_pre_towerrefine). SIM A/B (v3, seeds 0:240 x 2, live
 >   options + rocket_area, base / w1 / w2) running ~1 h: ~/probe_rocket/vm_ab_towerref.sh.
+> * **TowerRefine SIM A/B (v3, 480 paired, live options + rocket_area):** wins base 312 | w1 287 (77/102, p .07) | w2 320
+>   (86/78, p .58); tower Rockets/match .52 | .69 | .89; OT tower Rockets per OT match .49 | .65 | .90 (pros .55 vs a
+>   different opponent -> watch overshoot live); Rocket share OT 3.8 | 4.7 | 6.6%; OT X-Bow share 9.0 | 8.9 | 7.7%; share of
+>   Rockets hitting a tower .57 | .66 | .71. w2 = built-for behaviour, win-neutral. Folded w2 ckpt in the chip worktree
+>   (scratchpad/gauntlet/L73/chip_rocket/rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt) + VM ~/probe_rocket/.
+>   Branch commits f8df9ff / 2f13b49 / fba7c72; blind verification running (merge needed before any live use).
 > * **OWNER 13:xx: "if the forecast review passes, switch it on then let me know so i can test it live."** Blind
 >   verification of W1 (d4e8103/524293e/7535b43) running incl. a trial merge into main. If PASS: merge, then let
 >   LIVE_OPTIONS accept `--own-effects` (a live flag, not a decision option) and add it to the file, `--check`, tell owner.
