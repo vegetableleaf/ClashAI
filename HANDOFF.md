@@ -4501,6 +4501,7 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **OWNER 12:4x: "the agents are allowed to update the shared code folder."** (memory agents-may-update-vm-code)
 > * **W4 blocked by the permission classifier:** copying its backward-compatible pipeline/decision_options.py (gate_decode
 >   = threshold | hazard | hazard_below_tau; gate_rate inverts the 2-s WAIT sampling; hazard_play draws per decision with
 >   the match RNG) into the VM's shared ~/ClashBot was denied ("Modify Shared Resources"), as was a read-only ls there.
