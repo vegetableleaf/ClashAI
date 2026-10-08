@@ -4574,7 +4574,7 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   .42/.41); no play 10 s in 1x .11 vs .20; tau_phase (stack) delayed the first play in 73/143 (2x) and 54/92 (OT)
 >   episodes by a median .5-.7 s, almost always a cheap card, never Rocket. Model belief (a): Rocket top card on the 420
 >   pro push-Rocket rows stack .22 / R1e .15 / gen_v32 .25 / towerref_w2 .30; live decisions in eligible >= 7 clump
->   states Rocket top 0/1,364 vs .02-.05 offline (cause UNTESTED: state or input path). OT aim near my tower: Giant+Wiz
+>   states Rocket top 0/1,364 -- RETRACTED by the worker (bf35787): q4 printed only the top 6 cards; real R1e 16/762 (2.1%), stack 12/623 (1.9%), matching the offline rate re-weighted to the live state mix (10.7 / 11.9 predicted); exact live-path test on 405 pro rows through GenPilot: tokens 405/405, top card 405/405 identical (after the reader; raw reader fields not covered); extrapolation raises Rocket top 9 -> 19/200. OT aim near my tower: Giant+Wiz
 >   .06 within 2.5 t (median miss 13.5 t), towerref_w2 .17. PushRefine (pipeline/push_refine.py, card residual from
 >   visible enemy tokens, gated on a >= 4-elixir clump on my half, stacked on towerref_w2): SIM v3 480 paired vs
 >   towerref_w2 328.5 -> all-card w8 300.5 (31/59, p .004) FAIL; Rocket-only w16 320.5 (8/16, p .15), push Rockets
@@ -4584,6 +4584,22 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   ~/probe_push/backup) -> merge (with verification) before any main -> VM sync. Follow-ups sent: (A) live-vs-offline
 >   ranking gap (possible live input-path issue), (B) w16 to 960 paired seeds, (C) tau_phase isolated A/B (flat .35 vs
 >   .35/.45/.55) with the hbt9 bundle -- its only isolated test was on the void standoff benchmark (92 vs 134).
+> * **OWNER ~15:xx: switch on (1) Hero IW higher bar, (2) log_barrel, (3) GPU.** (1)+(3) built by the lead: branch
+>   lead-iw-pstar-gpu 0b3f907 (worktree C:/Users/benpe/cb_lead_small, junctions inside!): live_play --iw-press-pstar
+>   (EXTRA_LIVE_FLAGS, deploy 0.03 = W2's sweep: keeps 69% of presses, overspend .29 -> .22, offline approximation,
+>   live-only) + --device default auto; check passes on cuda; blind verification running. (2) code already in main
+>   (W3: SIM barrel census covering .882 -> 1.000, wins 145 vs 143 n.s.). Bundle LIVE_OPTIONS line to add after merges:
+>   --gate-decode hazard_below_tau --gate-hazard-min-elixir 9 --iw-press-pstar 0.03 --log-aim log_barrel (+ lethal).
+>   Update pipeline/tests/test_live_options.py DEPLOYED in the same commit.
+> * **Owner Q: minimum time between decisions (a, play_gaps.py, 190 logs 10-08):** decision -> confirmation median 28
+>   ticks (p5 25, p95 44); play -> next play min 26 / p5 28 / median 74; tap_ms median 151. The pending lock (no decision
+>   until the hand slot rotates) sets the ~1.3-1.4 s floor. Rocket flies 350 milli/tick = 7 tiles/s from my king;
+>   Tornado active 21 ticks from landing + 1. Owner wants Rocket -> Tornado on clumps: needs PIPELINED second plays
+>   (decide while pending on my own known state: elixir minus the pending cost, slot = my next card) in live AND SIM
+>   (parity rule). Queued after the bundle merges (live_play.py has 3 writers now).
+> * **STANDING LOSS-REVIEW LOOP (owner order, memory live-loss-review-loop.md):** ledger scratchpad/gauntlet/L74/
+>   loss_review/analyzed.txt; first pass worker a3a6e12e building review.py + report.md over 1,170 logs; session cron
+>   6e044f37 every 4 h at :17 (session-only, expires 7 days).
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
