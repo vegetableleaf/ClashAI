@@ -4695,6 +4695,11 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   (fast_input.py --selftest between matches; --fast-input 5+ matches; then --tap-gap-ms 0: watch unconfirmed/err_tiles).
 >   Horizon: --extrapolate 26 is ~1 tick short of today's 28-tick median; new value = 26 + (new median gap - 28), SIM
 >   action_delay shifts equally + SIM paired eval (owner step).
+> * **--fast-input / --tap-gap-ms MERGED 8cf3b9b + a00ef53** (blind PASS_WITH_NOTES on 39077b3: defaults byte-identical;
+>   notes: a dead persistent shell mid-match counts as tap_timeout -> no more taps that match (stricter than the old
+>   path); marker framing assumes newline-terminated output (true for `input tap`); --tap-gap-ms now refused outside
+>   [0, 500]). OFF by default -- owner live test pending (selftest between matches, then --fast-input, then
+>   --tap-gap-ms 0). Not in LIVE_OPTIONS (live-only flags; pass on the command line or add to EXTRA_LIVE_FLAGS).
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
