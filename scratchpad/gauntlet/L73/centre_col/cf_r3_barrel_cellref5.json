@@ -1,0 +1,25 @@
+{
+ "rows": 1405,
+ "pro_same_lane": 1361,
+ "r3_barrel_cellref5": {
+  "feature_version": 6,
+  "A_real": {
+   "log_lane_eq_real_target": 1311,
+   "log_lane_eq_pro": 1339
+  },
+  "B_barrel_x_mirrored": {
+   "log_lane_eq_real_target": 276,
+   "log_lane_eq_pro": 308
+  },
+  "C_barrel_removed": {
+   "log_lane_eq_real_target": 800,
+   "log_lane_eq_pro": 836
+  },
+  "val_only": {
+   "rows": 126,
+   "A_log_lane_eq_target": 117,
+   "flips_when_barrel_mirrored": 85
+  },
+  "lane_flips_when_barrel_mirrored": 1035
+ }
+}
