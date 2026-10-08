@@ -4423,6 +4423,12 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   verifier findings fixed; SIM probe "14 skeletons" 8 -> 0, phantoms 7 -> 0 (one 14-token board = evo second wave,
 >   correct); flag-off digests identical (sim ext/tok, live 1,497 decides). Own decisions: pending TTL T+18. PARKED:
 >   needs re-verification + a SIM A/B, and no live deploy until the placement/spell question is closed.
+> * **Legal-cell guard eccd765: blind verifier FAIL.** Tap mapping/SIM/guard-off identity PASS, audit numbers reproduce
+>   (3465/3465; 78 of 82 flagged moved; 12 of 3383 other). FAIL: `legal_cells` decides standing princesses by reader
+>   `kind==13`, but real-frame `kind` is not tower type (enemy king kind 13 in 2,482/11,196 play decisions; own X-Bow
+>   kind 13; own king 13 in 3,224) -> wrongly shuts an open right pocket in ~12% of decisions (re-aimed 2 accepted X-Bow
+>   pocket pushes); pocket depth unrestricted (Y >= 15). Back to the builder: position-based towers, real pocket bound,
+>   fixture with real kinds. NEW LEAD for the frame audit: does the live OBSERVATION path key anything on `kind`?
 >   ~15:40" (Q1 card sampling flag, Q2 area-aware spell aim, Q3 GPU A/Bs after R1e, Q4 R1e approval ping, Q5 fixes);
 >   launcher `.foreman/codex_autopilot/codex_loop.sh` (back-to-back runs to 10-06; STOP_LOOP file stops it).
 > * **15:5x -- owner plan: after the R1e verdict the lead starts LIVE on the winner, then hands over to Codex via
