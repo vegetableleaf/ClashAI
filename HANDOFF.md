@@ -4508,6 +4508,17 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   CellRefine + TowerRefine exactly. VM ~/ClashBot got pipeline/tower_refine.py + hooked model_gen.py (live ckpt
 >   byte-identical under it; backup ~/probe_rocket/model_gen.py.bak_pre_towerrefine). SIM A/B (v3, seeds 0:240 x 2, live
 >   options + rocket_area, base / w1 / w2) running ~1 h: ~/probe_rocket/vm_ab_towerref.sh.
+> * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
+>   flag (fixed: own_effects in both --check dicts). LIVE_OPTIONS may now deploy live-only flags (EXTRA_LIVE_FLAGS =
+>   --own-effects) and the file holds `... --spell-aim rocket_area --own-effects`. Merged-tree tests 152 passed; plain
+>   `live_play.py --check` from main: LIVE_OPTIONS applied [own_effects, spell_aim, tau_phase, xbow_class, floor],
+>   own_effects True, anti_leak False, guard True. Verifier risks: freeze window/radius fitted on the same live logs
+>   as the offline score; "Log + ability" category .00 -> .12 (n 17); SIM Tornado onset +1 tick vs engine. Owner tests live.
+> * **TowerRefine verification: PASS_WITH_NOTES** (old ckpts torch.equal on 800 rows; w2 loads strictly, malformed copies
+>   fail loudly; reproduced top-card Rocket 5.2 -> 8.0% (pros 10.4), OT 7.8 -> 16.2% (18.1), troop ratio 3.25 -> 1.52;
+>   SIM 319.5 vs 311.5, 86/78). Notes: not Rocket-only (cell argmax changes on 35% of non-Rocket placements, card argmax
+>   16.6% of rows; defensive Rockets/match .383 -> .327); the card residual also reads sc[:7] (incl. opp elixir estimate).
+>   Not merged yet: separate live test after own_effects (owner's call).
 > * **OWNER 14:xx (AskUserQuestion): "Test the 9+ elixir version"** of hazard_below_tau -> W4 running it.
 > * **W4 SIM (isolated ~/w4/repo @68c8032; VM ~/w4/sim/summary.txt):** vs S1 (192): base 160 wins, idle 26% -> hbt 184,
 >   idle 0 (50/6, p<1e-4); pure hazard 176. vs GEN v3 (960): base 619 -> **hbt 532 (142/230, p<1e-4, LOSES)**; pure hazard
