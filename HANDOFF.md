@@ -4486,6 +4486,14 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   val rows the PROS' own centre picks are enemy-side only 64.8% (80% was Ice Wizard alone) -> the 8.5/9.5 unit
 >   choice is mostly not board-predictable in imitation labels. SIM base lane consistency 219/395 = 55.4%. Next: v2
 >   (RF +-15.5), SIM A/Bs, pro-choice determinants by slice (building pulls vs building-targeters), modules on R3c/R3n.
+> * **OWNER 00:5x: "why aren't we testing the two tuning options? ... test them and add them. I've been telling you
+>   about these issues for multiple days and you've never addressed them directly."** Launched `~/ab_opts.sh r3old
+>   <R3 u0050>` on the VM: same-script control vs tau_phase (.35/.45/.55) alone vs xbow_class class_sample floor .3
+>   alone; 192 paired reactive each, no stall, behaviour telemetry; `~/ab_behaviour.py` reports elixir at play / leak
+>   per phase, defensive X-Bow share, plays/min, Rocket share; paired sign tests vs control in eval.log. Rule: an
+>   option goes on with the promoted model if its wins are not worse (paired) AND its target behaviour moves toward
+>   pros (tau_phase: 2x/OT elixir at play up / OT over-play down without more leak; xbow_class: defensive X-Bow share
+>   toward the pros' 27%); re-checked on the winner.
 > * **CENTRE-COLUMN FIX MEASURED: CellRefine v2 (5 dilated layers, RF +-15.5 tiles, 48 ch; base R3 u0050 frozen).**
 >   OFFLINE (100,463 val play rows; base -> v1 -> v2): lane consistency of the model's centre picks 49.9 -> 51.7 ->
 >   **65.2% (pros on the same rows 64.8%)**; same column as the pro 48.3/49.1 -> 58.9/58.5%; cell top-1 21.87 ->
