@@ -1,0 +1,82 @@
+plays with an outcome 19361
+
+(a) game behaviour, all modes: refused when affordable at the decision frame 283/15523 (2%)
+    not affordable at the decision frame, by wait = need - arrival (ticks):
+      [ -2, -1): refused 5/136 (4%)       accepted: confirm tick - decision tick - need, median 24
+      [ -1,  0): refused 5/152 (3%)       accepted: confirm tick - decision tick - need, median 23
+      [  0,  1): refused 4/162 (2%)       accepted: confirm tick - decision tick - need, median 22
+      [  1,  2): refused 7/149 (5%)       accepted: confirm tick - decision tick - need, median 21
+      [  2,  3): refused 5/120 (4%)       accepted: confirm tick - decision tick - need, median 22
+      [  3,  4): refused 7/110 (6%)       accepted: confirm tick - decision tick - need, median 21
+      [  4,  5): refused 6/127 (5%)       accepted: confirm tick - decision tick - need, median 22
+      [  5,  6): refused 4/122 (3%)       accepted: confirm tick - decision tick - need, median 21
+      [  6,  7): refused 7/113 (6%)       accepted: confirm tick - decision tick - need, median 22
+      [  7,  8): refused 7/96 (7%)        accepted: confirm tick - decision tick - need, median 22
+      [  8,  9): refused 6/127 (5%)       accepted: confirm tick - decision tick - need, median 22
+      [  9, 10): refused 1/92 (1%)        accepted: confirm tick - decision tick - need, median 21
+      [ 10, 11): refused 8/110 (7%)       accepted: confirm tick - decision tick - need, median 22
+      [ 11, 12): refused 5/89 (6%)        accepted: confirm tick - decision tick - need, median 21
+      [ 12, 13): refused 6/105 (6%)       accepted: confirm tick - decision tick - need, median 22
+      [ 13, 14): refused 5/103 (5%)       accepted: confirm tick - decision tick - need, median 22
+      [ 14, 15): refused 7/110 (6%)       accepted: confirm tick - decision tick - need, median 22
+      [ 15, 16): refused 6/109 (6%)       accepted: confirm tick - decision tick - need, median 21
+      [ 16, 17): refused 4/92 (4%)        accepted: confirm tick - decision tick - need, median 22
+      [ 17, 18): refused 5/97 (5%)        accepted: confirm tick - decision tick - need, median 22
+      [ 18, 19): refused 6/107 (6%)       accepted: confirm tick - decision tick - need, median 22
+      [ 19, 20): refused 9/159 (6%)       accepted: confirm tick - decision tick - need, median 22
+      [ 20, 21): refused 16/236 (7%)      accepted: confirm tick - decision tick - need, median 21
+      [ 21, 22): refused 45/420 (11%)     accepted: confirm tick - decision tick - need, median 22
+      [ 22, 23): refused 144/295 (49%)    accepted: confirm tick - decision tick - need, median 22
+      [ 23, 24): refused 32/32 (100%)     accepted: confirm tick - decision tick - need, median None
+      [ 24, 25): refused 1/1 (100%)       accepted: confirm tick - decision tick - need, median None
+
+(b) 'affordable at arrival' rule (block iff need > arrival):
+    default/gap50: blocks 3237/19035 plays, of which refused 342 / accepted 2895
+    fast/gap0: blocks 22/159 plays, of which refused 7 / accepted 15
+    fast/gap50: blocks 16/167 plays, of which refused 4 / accepted 12
+
+(c) afford horizon A (allowed iff need <= A); today's rule = A 26 (the look-ahead elixir):
+  default/gap50: plays 19035, arrival ticks p5 3.0 p50 4.0 p95 7.2; refused now 651/19035 (3%)
+     A 20: blocks 1398 (refused 251, accepted 1147); kept plays refused 400/17637 (2%); lock ticks saved ~15060
+     A 21: blocks 1316 (refused 249, accepted 1067); kept plays refused 402/17719 (2%); lock ticks saved ~14940
+     A 22: blocks 1234 (refused 245, accepted 989); kept plays refused 406/17801 (2%); lock ticks saved ~14700
+     A 23: blocks 1124 (refused 242, accepted 882); kept plays refused 409/17911 (2%); lock ticks saved ~14520
+     A 24: blocks 1020 (refused 239, accepted 781); kept plays refused 412/18015 (2%); lock ticks saved ~14340
+     A 25: blocks  481 (refused 183, accepted 298); kept plays refused 468/18554 (3%); lock ticks saved ~10980
+     A 26: blocks    0 (refused   0, accepted   0); kept plays refused 651/19035 (3%); lock ticks saved ~0
+  fast/gap0: plays 159, arrival ticks p5 1.9 p50 2.1 p95 2.9; refused now 8/159 (5%)
+     A 20: blocks    8 (refused   6, accepted   2); kept plays refused 2/151 (1%); lock ticks saved ~360
+     A 21: blocks    7 (refused   6, accepted   1); kept plays refused 2/152 (1%); lock ticks saved ~360
+     A 22: blocks    7 (refused   6, accepted   1); kept plays refused 2/152 (1%); lock ticks saved ~360
+     A 23: blocks    7 (refused   6, accepted   1); kept plays refused 2/152 (1%); lock ticks saved ~360
+     A 24: blocks    6 (refused   6, accepted   0); kept plays refused 2/153 (1%); lock ticks saved ~360
+     A 25: blocks    3 (refused   3, accepted   0); kept plays refused 5/156 (3%); lock ticks saved ~180
+     A 26: blocks    0 (refused   0, accepted   0); kept plays refused 8/159 (5%); lock ticks saved ~0
+  fast/gap50: plays 167, arrival ticks p5 2.9 p50 3.2 p95 4.1; refused now 6/167 (4%)
+     A 20: blocks    7 (refused   4, accepted   3); kept plays refused 2/160 (1%); lock ticks saved ~240
+     A 21: blocks    6 (refused   3, accepted   3); kept plays refused 3/161 (2%); lock ticks saved ~180
+     A 22: blocks    6 (refused   3, accepted   3); kept plays refused 3/161 (2%); lock ticks saved ~180
+     A 23: blocks    5 (refused   3, accepted   2); kept plays refused 3/162 (2%); lock ticks saved ~180
+     A 24: blocks    5 (refused   3, accepted   2); kept plays refused 3/162 (2%); lock ticks saved ~180
+     A 25: blocks    2 (refused   2, accepted   0); kept plays refused 4/165 (2%); lock ticks saved ~120
+     A 26: blocks    0 (refused   0, accepted   0); kept plays refused 6/167 (4%); lock ticks saved ~0
+
+(d) early release: confirmed plays' residual = (confirm tick - decision tick) - (max(arrival, need) + 22)
+  default/gap50: n 18384  p50 0.4 p90 2.0 p99 3.9 p99.9 14.7 max 35.0
+     margin  6: confirmations after the release 62/18384; refused plays released at median tick 41.0 instead of 60 (saves 19.0 ticks each, 651 refusals)
+     margin  8: confirmations after the release 49/18384; refused plays released at median tick 43.0 instead of 60 (saves 17.0 ticks each, 651 refusals)
+     margin 10: confirmations after the release 35/18384; refused plays released at median tick 45.0 instead of 60 (saves 15.0 ticks each, 651 refusals)
+     margin 12: confirmations after the release 28/18384; refused plays released at median tick 47.0 instead of 60 (saves 13.0 ticks each, 651 refusals)
+     margin 15: confirmations after the release 19/18384; refused plays released at median tick 50.0 instead of 60 (saves 10.0 ticks each, 651 refusals)
+  fast/gap0: n 151  p50 0.0 p90 2.0 p99 3.1 p99.9 3.1 max 4.1
+     margin  6: confirmations after the release 0/151; refused plays released at median tick 53.0 instead of 60 (saves 7.0 ticks each, 8 refusals)
+     margin  8: confirmations after the release 0/151; refused plays released at median tick 55.0 instead of 60 (saves 5.0 ticks each, 8 refusals)
+     margin 10: confirmations after the release 0/151; refused plays released at median tick 57.0 instead of 60 (saves 3.0 ticks each, 8 refusals)
+     margin 12: confirmations after the release 0/151; refused plays released at median tick 59.0 instead of 60 (saves 1.0 ticks each, 8 refusals)
+     margin 15: confirmations after the release 0/151; refused plays released at median tick 60.0 instead of 60 (saves 0.0 ticks each, 8 refusals)
+  fast/gap50: n 161  p50 0.7 p90 1.9 p99 3.0 p99.9 3.1 max 3.1
+     margin  6: confirmations after the release 0/161; refused plays released at median tick 49.0 instead of 60 (saves 11.0 ticks each, 6 refusals)
+     margin  8: confirmations after the release 0/161; refused plays released at median tick 51.0 instead of 60 (saves 9.0 ticks each, 6 refusals)
+     margin 10: confirmations after the release 0/161; refused plays released at median tick 53.0 instead of 60 (saves 7.0 ticks each, 6 refusals)
+     margin 12: confirmations after the release 0/161; refused plays released at median tick 55.0 instead of 60 (saves 5.0 ticks each, 6 refusals)
+     margin 15: confirmations after the release 0/161; refused plays released at median tick 58.0 instead of 60 (saves 2.0 ticks each, 6 refusals)

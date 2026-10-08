@@ -53,6 +53,21 @@ GUARD_BLIND_S = 30.0     # menu guard without a successful screen classification
                          # 10 -> 30 s: live_play_20260930_184048 stopped guard_blind after 16 s with adb saturated
 
 
+CONFIRM_BASE = 22        # L74 (afford_arrival.txt): an accepted tap's slot rotates ~22 ticks after it can be paid
+
+
+def release_ticks(elixir: float, name: str, tick: int, arrival_ticks: float, margin: int) -> int:
+    """--early-release-margin: ticks after the decision frame at which a tap still not confirmed is declared refused =
+    max(arrival, ticks until my elixir covers the card) + CONFIRM_BASE + margin, capped at CONFIRM_TICKS. Measured on
+    18,696 confirmed live plays: confirmation - that expectation (without the margin) has p99 3-4 ticks."""
+    import math
+    from pipeline import vocab
+    from pipeline.opp_elixir_count import card_cost, regen_between
+    cost = card_cost(vocab.engine_key(name)) or 0.0
+    need = next((k for k in range(CONFIRM_TICKS + 1) if elixir + regen_between(tick, tick + k) >= cost), CONFIRM_TICKS)
+    return min(CONFIRM_TICKS, math.ceil(max(arrival_ticks, need)) + CONFIRM_BASE + int(margin))
+
+
 def clock_verdict(tick: int, last_tick: int, idle_s: float) -> str:
     """wait | stall | proceed. 2026-09-30: the reader emits active+coherent frames at game_tick 0 (loading screen /
     countdown); the old guard counted that flat 0 as a stall and exited after 3 s. Tick 0 = the clock has not
@@ -276,6 +291,16 @@ def main() -> int:
     ap.add_argument("--tap-gap-ms", type=int, default=50,
                     help="pause between the hand tap and the board tap (default 50 = unchanged). 0 drops the "
                          "`sleep`; needs a live check that both taps still register (unconfirmed / err_tiles)")
+    ap.add_argument("--afford-ticks", type=int, default=None,
+                    help="OPT-IN (L74): a card is affordable iff my elixir this many ticks after the decision frame "
+                         "(raw reader elixir + regen) covers it, instead of the look-ahead (--extrapolate) elixir. The "
+                         "game holds an unpaid tap ~22 ticks after it arrives, then refuses it (afford_arrival.txt): "
+                         "use the tap's arrival + 21 (fast-input gap 0: 23, gap 50: 24, default input: 24). Model "
+                         "inputs unchanged; SIM twin: e1_eval cfg 'afford_ticks'")
+    ap.add_argument("--early-release-margin", type=int, default=None,
+                    help="OPT-IN (L74): declare a tap unconfirmed this many ticks after its EXPECTED confirmation "
+                         "(max(tap arrival, ticks until affordable) + 22) instead of after a flat 60 ticks (capped at "
+                         "60). 8 = p99 + 4 of the measured residual (afford_arrival.txt (d))")
     ap.add_argument("--no-opp-counter", action="store_true",
                     help="feed the model opponent elixir = unknown instead of the public-events counter")
     ap.add_argument("--menu-guard", action="store_true",
@@ -349,6 +374,12 @@ def main() -> int:
         return 2
     if not 0 <= a.tap_gap_ms <= 500:
         print("refusing: --tap-gap-ms must be in [0, 500]")
+        return 2
+    if a.afford_ticks is not None and not 0 <= a.afford_ticks <= 60:
+        print("refusing: --afford-ticks must be in [0, 60]")
+        return 2
+    if a.early_release_margin is not None and not 0 <= a.early_release_margin <= CONFIRM_TICKS:
+        print(f"refusing: --early-release-margin must be in [0, {CONFIRM_TICKS}]")
         return 2
     if a.iw_press_pstar is not None and a.no_iw_pro_gate:
         print("[live] note: --no-iw-pro-gate skips the pro gate, so --iw-press-pstar %g has no effect" % a.iw_press_pstar,
@@ -541,6 +572,8 @@ def load_pilot(a, decision_cfg, ckpt=None):
                      **({"predict_drops": True} if getattr(a, "predict_drops", False) else {}),
                      **({"own_effects": True} if getattr(a, "own_effects", False) else {}))
     pilot.legal_guard = not getattr(a, 'no_legal_guard', False)
+    if getattr(a, "afford_ticks", None) is not None:   # default: the class's None = the look-ahead elixir, unchanged
+        pilot.afford_ticks = int(a.afford_ticks)
     if getattr(a, "anti_leak", False):          # default: the class's None = off, the decision rule unchanged
         pilot.anti_leak_elixir, pilot.anti_leak_seconds = a.anti_leak_elixir, a.anti_leak_seconds
     return device, pilot
@@ -583,7 +616,9 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
       feature_version=pilot.feature_version, public_audit=a.public_audit, legal_guard=getattr(pilot, "legal_guard", None),
       **({"predict_drops": True} if getattr(a, "predict_drops", False) else {}),
       **({"own_effects": True} if getattr(a, "own_effects", False) else {}),
-      fast_input=bool(getattr(a, "fast_input", False)), tap_gap_ms=getattr(a, "tap_gap_ms", 50))
+      fast_input=bool(getattr(a, "fast_input", False)), tap_gap_ms=getattr(a, "tap_gap_ms", 50),
+      afford_ticks=getattr(pilot, "afford_ticks", None), early_release_margin=getattr(a, "early_release_margin", None))
+    release_margin = getattr(a, "early_release_margin", None)
     tap_gap = getattr(a, "tap_gap_ms", 50)
     tap_sleep = f" sleep {tap_gap / 1000:g};" if tap_gap > 0 else ""    # default 50 -> "...; sleep 0.05; ..." as before
     rec = ScreenRec(stamp) if record else None
@@ -630,6 +665,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
         W(event="stop", why="reader_closed_4x")
 
     t0, pending, fails, played, confirmed, last_tick, last_adv = time.time(), None, 0, 0, 0, -1, time.time()
+    released = None   # --early-release-margin: the last early-released tap, until it lands late or CONFIRM_TICKS pass
     fails_run = 0   # CONSECUTIVE unconfirmed taps: 5 in a row = real malfunction (5 slow taps over a match under load is not)
     seen_active, both_vis, warmed, waiting_logged = False, 0, False, False
     from collections import deque
@@ -775,6 +811,17 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                             if not input_cmd(f"input tap {button.point[0]} {button.point[1]}"):
                                 W(event="stop", why="tap_timeout", tick=tick, input="ability"); break
                             ab_pending = {"t": now, "tick": tick, "elixir_raw": me["elixir_raw"]}
+            if released is not None:                     # --early-release-margin: a released tap that lands late
+                rp = released["d"]["hand_pos"]
+                if (me["hand_deck_indices"][rp] != released["me"]["hand_deck_indices"][rp]
+                        and not (pending and pending["d"]["hand_pos"] == rp)):
+                    rd = released["d"]
+                    pilot.record_play(rd["card"], rd["form"], rd["xy"], tick * 0.05)
+                    W(event="late_landing", tick=tick, name=rd["name"], after_ticks=tick - released["tick"],
+                      release_ticks=released["release"])
+                    released = None
+                elif tick - released["tick"] > CONFIRM_TICKS:
+                    released = None
             if pending:
                 old = pending["me"]
                 pos = pending["d"]["hand_pos"]
@@ -798,11 +845,14 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                     W(event="confirmed", tick=tick, name=d["name"], intended=d["xy"], elixir_drop=dropped / 1e4,
                       spawn=[my_frame_xy(e, side) for e in new[:1]], err_tiles=err, latency_s=round(now - pending["t"], 3))
                     pending = None
-                elif tick - pending["tick"] > CONFIRM_TICKS:
+                elif tick - pending["tick"] > pending.get("release", CONFIRM_TICKS):
                     fails += 1
                     fails_run += 1
                     W(event="unconfirmed", tick=tick, name=pending["d"]["name"], intended=pending["d"]["xy"],
-                      p_play=pending["d"]["p_play"], elixir=old["elixir_raw"] / 1e4, fails=fails)
+                      p_play=pending["d"]["p_play"], elixir=old["elixir_raw"] / 1e4, fails=fails,
+                      **({"release_ticks": pending["release"]} if "release" in pending else {}))
+                    if pending.get("release", CONFIRM_TICKS) < CONFIRM_TICKS:
+                        released = pending                   # an early release: watch for a late landing
                     pending = None
                     if fails_run >= 5:
                         W(event="stop", why="5_unconfirmed"); break
@@ -864,6 +914,10 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                   "tap_end_ms": round((t_done - lag_min - t_dev) * 1000)} if lag_min < float("inf") else {}),
               fast_input=FAST["shell"] is not None)
             pending = {"d": d, "me": me, "t": now, "tick": tick, "addrs": {e["address"] for e in f["entities"]}}
+            if release_margin is not None:               # --early-release-margin: expected confirmation + margin
+                pending["release"] = release_ticks(el, d["name"], tick, (t_done - t_recv) * 20, release_margin)
+            if released is not None and released["d"]["hand_pos"] == d["hand_pos"]:
+                released = None                          # the same slot tapped again: its rotation is this tap's
     finally:
         with spawn_lock:
             stopping.set()                               # the pump may not start another sampler from here on

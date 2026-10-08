@@ -101,15 +101,15 @@ class Pilot:
     def record_play(self, *a):
         pass
 
-
-def play(monkeypatch, tmp_path, **extra):
+    """One fake match (default frames: rframe, hand slot 0 cycling every 20 ticks); -> (adb shell commands, log events)."""
+def play(monkeypatch, tmp_path, frames=None, pilot=None, pace=0.01, **extra):
     """One fake match (hand never rotates -> a play every CONFIRM_TICKS); -> (adb shell commands, log events)."""
     cmds = []
 
     def lines():
-        for t in range(150, 330, 2):
-            threading.Event().wait(0.01)
-            yield rframe(t)
+        for t, ln in frames or [(t, rframe(t)) for t in range(150, 330, 2)]:
+            threading.Event().wait(pace)
+            yield ln
     stream = lines()
     monkeypatch.setattr(lp, "HERE", tmp_path)
     monkeypatch.setattr(lp, "adb", lambda *a, **k: cmds.append(a[-1]) or "")
@@ -120,7 +120,7 @@ def play(monkeypatch, tmp_path, **extra):
     a = SimpleNamespace(tau=.35, leak=9.5, dry_run=False, ckpt="x", extrapolate=0, no_opp_counter=True,
                         ckpt_source="t", ckpt_sha256="t", public_audit=False, menu_guard=False, no_ability=True,
                         reader="v2", interval_ms=100, max_seconds=60, **extra)
-    lp.play_match(a, Pilot(), lp.Layout(900, 1600), "cpu", None, record=False)
+    lp.play_match(a, pilot or Pilot(), lp.Layout(900, 1600), "cpu", None, record=False)
     ev = [json.loads(x) for x in next(tmp_path.glob("live_play_*.jsonl")).read_text().splitlines()]
     return [c for c in cmds if "input tap" in c], ev
 

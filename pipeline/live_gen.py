@@ -114,6 +114,9 @@ class GenPilot:
     # OPT-IN live anti-leak (live_play.py --anti-leak): the SIM's anti-stall rule (e1_eval.anti_stall), None = off.
     anti_leak_elixir: Optional[float] = None
     anti_leak_seconds = 12.0
+    # OPT-IN (live_play.py --afford-ticks, L74): the afford mask uses my elixir this many ticks after the decision
+    # frame (e1_eval.afford_elixir, raw frame) instead of the look-ahead board's. None = off = unchanged.
+    afford_ticks: Optional[int] = None
 
     def __init__(self, ckpt, device: str = "cpu", gate_tau: float = 0.5, use_counter: bool = True,
                  extrapolate_ticks: int = 0, predict_drops: bool = False, own_effects: bool = False):
@@ -222,6 +225,7 @@ class GenPilot:
     def row(self, frame: Mapping[str, Any]) -> tuple[dict, dict]:
         from .reader_identity_aliases import dedupe_hero_bodies
         frame = dedupe_hero_bodies(frame)        # lead 2026-10-06: the 203000023 Hero + FloatingCube pair -> one Hero
+        raw_tick = frame["game_tick"]
         side = my_side_of(frame)
         _, names = deck_of(frame, side)
         me = next(p for p in frame["players"] if int(p["side"]) == side)
@@ -289,6 +293,10 @@ class GenPilot:
         costs = [(card_cost(vocab.engine_key(names[d])) or 0.0) if d >= 0 else 0.0 for d in me["hand_deck_indices"]]
         info = {"bs": bs, "hand": hand, "hand_deck_indices": list(me["hand_deck_indices"]), "names": names,
                 "costs": costs, "el_int": int(bs.my_elixir)}
+        info["el_afford"] = info["el_int"]
+        if getattr(self, "afford_ticks", None) is not None:    # raw frame `me` (before extrapolation)
+            from .e1_eval import afford_elixir
+            info["el_afford"] = int(afford_elixir([me], side, int(raw_tick), int(self.afford_ticks)))
         if 'public_lookahead_counts' in frame:
             info['public_lookahead_counts'] = frame['public_lookahead_counts']
         return b, info
@@ -303,7 +311,8 @@ class GenPilot:
         p = float(torch.sigmoid(out["gate"][0]))
         stalled = self.stalled(frame, info["el_int"])
         # sim rule (e1_eval.live_decide): argmax over hand slots we can afford; none affordable -> wait
-        allowed = allowed_slots(np.array([h[0] > 0 for h in info["hand"]]), info["costs"], info["el_int"])
+        allowed = allowed_slots(np.array([h[0] > 0 for h in info["hand"]]), info["costs"],
+                                info.get("el_afford", info["el_int"]))
         if not allowed.any():
             return {"play": False, "no_affordable": True, "p_play": p, "hand_pos": -1, "deck_index": -1, "card": 0,
                     "form": FORM_PAD, "bs": info["bs"], "name": None, "el_int": info["el_int"], "stalled": stalled,
