@@ -68,10 +68,13 @@ def ent(side, cid, x, y, kind=15, hp=100):
     return dict(side=side, card_id=cid, x=x, y=y, kind=kind, hp=hp)
 
 
-def towers():
-    """Six standing towers, native coordinates (side 0 at the native bottom)."""
-    return [ent(0, -1, 9000, 3000, 12), ent(0, -1, 3500, 6500, 13), ent(0, -1, 14500, 6500, 13),
-            ent(1, -1, 9000, 29000, 12), ent(1, -1, 3500, 25500, 13), ent(1, -1, 14500, 25500, 13)]
+def towers(king_kind=13, princess_kind=13):
+    """Six standing towers, native coordinates (side 0 at the native bottom). The reader's `kind` is a STATE, not a
+    tower type (10-05..07 play decisions: kings read 12 asleep / 13 awake -- 2,505 + 3,252 x 13 -- princesses 13, and
+    12 in 63): default = both kings awake (13), the case a kind-keyed guard reads as a third princess."""
+    return [ent(0, -1, 9000, 3000, king_kind), ent(0, -1, 3500, 6500, princess_kind),
+            ent(0, -1, 14500, 6500, princess_kind), ent(1, -1, 9000, 29000, king_kind),
+            ent(1, -1, 3500, 25500, princess_kind), ent(1, -1, 14500, 25500, princess_kind)]
 
 
 def test_spells_and_deploy_anywhere_cards_are_never_restricted():
@@ -104,10 +107,39 @@ def test_river_and_enemy_half_only_through_an_open_pocket(side):
     assert ok_at(m, 8.5, 14.5) and not ok_at(m, 8.5, 15.5) and not ok_at(m, 8.5, 20.5)
     # enemy princess on MY-frame right (X 14.5) destroyed: its pocket opens, the left one stays shut
     right_native_x = 3500 if side == 1 else 14500
-    ents = [e for e in towers() if not (e["side"] != side and e["kind"] == 13 and e["x"] == right_native_x)]
+    ents = [e for e in towers() if not (e["side"] != side and e["y"] in (6500, 25500) and e["x"] == right_native_x)]
     m = legal_cells(ents, side, KNIGHT, "Knight")
     assert ok_at(m, 9.5, 20.5) and not ok_at(m, 8.5, 20.5)            # the live 2026-10-07 (8.5, 20.5) -> 9.5 case
     assert not legal_cells(ents, side, TESLA, "Tesla")[round((1 - 20 / 32) * 64) * 36 + 18]   # centre line: shut
+
+
+@pytest.mark.parametrize("side", (0, 1))
+@pytest.mark.parametrize("king_kind,princess_kind", ((12, 13), (13, 13), (13, 12)))
+def test_towers_are_told_apart_by_position_not_by_reader_kind(side, king_kind, princess_kind):
+    """An awake king (kind 13) is not a third princess, an asleep princess (kind 12) still stands, and my king keeps
+    its 4x4 footprint whatever its kind (live verifier 2026-10-07: the kind-keyed guard shut an open pocket in 1,370
+    of 11,425 play decisions)."""
+    right_native_x = 3500 if side == 1 else 14500
+    ents = [e for e in towers(king_kind, princess_kind)
+            if not (e["side"] != side and e["y"] in (6500, 25500) and e["x"] == right_native_x)]
+    m = legal_cells(ents, side, KNIGHT, "Knight")
+    assert ok_at(m, 9.5, 20.5) and ok_at(m, 14.5, 18.5)               # right pocket open
+    assert not ok_at(m, 3.5, 20.5) and not ok_at(m, 8.5, 18.5)        # left princess (any kind) still stands
+    assert not ok_at(m, 9.5, 4.5) and not ok_at(m, 7.5, 1.5)          # my king's 4x4 footprint (x 7-11, y 1-5)
+
+
+@pytest.mark.parametrize("side", (0, 1))
+def test_an_open_pocket_ends_at_y_21_and_starts_past_the_river(side):
+    right_native_x = 3500 if side == 1 else 14500
+    ents = [e for e in towers() if not (e["side"] != side and e["y"] in (6500, 25500) and e["x"] == right_native_x)]
+    m = legal_cells(ents, side, KNIGHT, "Knight")
+    assert ok_at(m, 12.5, 17.5) and ok_at(m, 12.5, 20.5)              # live: 27/27 troops at y 20.5 landed as aimed
+    assert not ok_at(m, 12.5, 21.5) and not ok_at(m, 12.5, 15.5) and not ok_at(m, 12.5, 16.5)
+    t = legal_cells(ents, side, TESLA, "Tesla")
+    assert ok_at(t, 12.0, 20.0) and not ok_at(t, 12.0, 23.0)          # live: a Tesla corner at 23.0 was moved to 20.0
+    assert not ok_at(t, 12.0, 17.0) and ok_at(t, 12.0, 18.0)          # footprint must clear the river (y < 17)
+    x = legal_cells(ents, side, XBOW, "Xbow")
+    assert ok_at(x, 12.5, 18.5) and not ok_at(x, 12.5, 20.5)          # live: X-Bows at 18.5 accepted 2/2
 
 
 def guarded(cell_first, cell_second, legal_guard=True, gate_p=.6, options=None):

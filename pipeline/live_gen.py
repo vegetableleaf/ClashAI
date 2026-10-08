@@ -39,11 +39,15 @@ ANYWHERE = {"Miner", "GoblinDrill"}  # deploy anywhere on the arena: never restr
 def legal_cells(entities, side: int, card_id: int, name: str, grid: str = "lattice", gx: int = 36, gy: int = 64):
     """[gx*gy] bool, True where this troop / building lands AS TAPPED; None = no restriction (spells, Miner, ...).
 
-    Rejects (1) a footprint overlapping an OWN building / tower footprint, (2) y >= 15 tiles (river / enemy half) in a
-    lane whose enemy princess still stands. Replayed on live logs 2026-10-05..07 (L68 tap_audit.py, 3,421 single-body
-    plays): the game moved 77 of the 81 targets these rules reject by >= 1 tile, and 12 of the 3,340 others.
-    Footprints: troop = a point, Tesla 2x2, other buildings 3x3, princess 3x3, king 4x4. Pocket depth and enemy
-    footprints (2/12 moved) are not restricted."""
+    Rejects (1) a footprint overlapping an OWN building / tower footprint, (2) a footprint reaching y >= 15 tiles
+    (river / enemy half) unless it lies wholly inside an OPEN pocket: the lane half (x 0-9 / 9-18) behind a destroyed
+    enemy princess, y 17-21. Crown towers are told apart by POSITION (king x = 9; princess x = 3.5 / 14.5): the
+    reader's `kind` is a state (12 asleep, 13 active), not a type -- an awake king reads 13 like a princess.
+    Pocket depth (live logs 10-05..07, L68 tap_audit / pocket audit): troops aimed at y 20.5 in an open pocket landed
+    as aimed 27/27, X-Bows at 18.5 2/2, a Tesla corner at 23.0 was moved to 20.0 (footprint 19-21); y 17 (the far
+    river bank) is RoyaleSim arena.rs's bound, untested live (no plays aimed at y 15-17).
+    Footprints: troop = a point, Tesla 2x2, other buildings 3x3, princess 3x3, king 4x4. Enemy footprints (2/12
+    moved) are not restricted."""
     kind = int(card_id) // 1_000_000                  # 26 troop, 27 building, 28 spell
     if kind not in (26, 27) or name in ANYWHERE:
         return None
@@ -61,21 +65,24 @@ def legal_cells(entities, side: int, card_id: int, name: str, grid: str = "latti
             continue
         bx, by = ((18000 - e["x"]) / 1000, (32000 - e["y"]) / 1000) if side == 1 else (e["x"] / 1000, e["y"] / 1000)
         cid = int(e["card_id"])
+        # crown towers by POSITION only (card_id -1 also marks cursed troops): king x 9, princess x 3.5 / 14.5
+        king = cid == -1 and abs(bx - 9) < 1 and min(abs(by - 3), abs(by - 29)) < 1
+        princess = cid == -1 and min(abs(bx - 3.5), abs(bx - 14.5)) < 1 and min(abs(by - 6.5), abs(by - 25.5)) < 1
         if int(e["side"]) != side:
-            if cid == -1 and int(e["kind"]) == 13:
+            if princess:
                 standing[3.5 if bx < 9 else 14.5] = True
             continue
-        if cid == -1:
-            hb = 2.0 if int(e["kind"]) == 12 else 1.5
+        if king or princess:
+            hb = 2.0 if king else 1.5
         elif names.get(cid) in buildings and all(abs(v / 500 - round(v / 500)) < .01 for v in (e["x"], e["y"])):
             # a placed building sits on the 500-unit lattice; a hut's walking spawn carries the hut's id off it
             hb = 1.0 if names[cid] in EVEN_BUILDINGS else 1.5
         else:
             continue
         ok &= ~((np.abs(X - bx) < hb + h) & (np.abs(Y - by) < hb + h))
-    pocket = np.where(X < 9, not standing[3.5], np.where(X > 9, not standing[14.5],
-                                                          not (standing[3.5] or standing[14.5])))
-    ok &= (Y < 15) | pocket
+    lane_open = np.where(X + h <= 9, not standing[3.5], np.where(X - h >= 9, not standing[14.5],
+                                                                not (standing[3.5] or standing[14.5])))
+    ok &= (Y < 15) | (lane_open & (Y - h >= 17) & (Y + h <= 21))
     return ok if ok.any() else None
 
 
