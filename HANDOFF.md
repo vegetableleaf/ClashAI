@@ -4684,6 +4684,17 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   push start 4.50 vs 4.00, wins 314 vs 303 (p .40) -> any decision-rate increase must be checked (pipelining). Next
 >   (worker ae78edcc): Q1 do live opponents start pushes when I'm low (selection)?; Q2 rebuilt live pre-push sequences;
 >   Q3 calibrate SIM opponents to live pressure (test bed); Q4 learned-fix proposal.
+> * **LATENCY BUDGET (a19b2927, branch worktree-agent-a19b2927509695417 39077b3; L74/latency/budget_20261008.txt; 6,721
+>   confirmed plays):** decision -> confirmation median 28 ticks; after our board tap returns, median 22.6 ticks (1.13 s;
+>   p1 19.9) = game/emulator/server, NOT ours; elixir drop, slot rotation and spawn land on the same tick. Ours ~0.3 s:
+>   reader sample wait ~50 ms, decide median 72 ms (GPU 76, n=449 -- the lead's "~40 ms on GPU" is CONTRADICTED: the
+>   Python feature/look-ahead code dominates), tap median 150 ms (adb.exe start alone 73 ms). Gap rises ~1:1 with host
+>   time. "A fraction of a second" per play is impossible from our side; only pipelined second plays can shorten the
+>   play-to-play gap. Built (opt-in, off): --fast-input (persistent adb shell, ~70 ms/play est.) and --tap-gap-ms (0
+>   drops the 50 ms sleep); tap_timing logs recv/sample/tap_end ages. Blind verification running; then owner live tests
+>   (fast_input.py --selftest between matches; --fast-input 5+ matches; then --tap-gap-ms 0: watch unconfirmed/err_tiles).
+>   Horizon: --extrapolate 26 is ~1 tick short of today's 28-tick median; new value = 26 + (new median gap - 28), SIM
+>   action_delay shifts equally + SIM paired eval (owner step).
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
