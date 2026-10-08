@@ -191,7 +191,17 @@ class GenModel(S1Model):
             enc = dict(enc, p=enc['p'] + self.target_patches(b))
         if getattr(self, "cell_refine", None) is not None:
             enc = dict(enc, cell_feat=self.cell_refine.features(enc["u"], tok[..., 4:6], b["mask"]))
+        tr = getattr(self, "tower_refine", None)
+        if tr is not None and tr.use_cell:
+            enc = dict(enc, tower_cell_feat=tr.cell_feat(b["sc"]))
         return enc
+
+    def add_tower_refine(self, **cfg):
+        """Attach a fresh (zero-output) ``TowerRefine`` (pipeline/tower_refine.py); checkpoints holding
+        ``tower_refine.*`` weights get it on load."""
+        from .tower_refine import TowerRefine
+        self.tower_refine = TowerRefine(self.d, self.d_c, **cfg).to(self.cell_emb.device)
+        return self.tower_refine
 
     def add_cell_refine(self, c: int = 32, layers: int = 4) -> "CellRefine":
         """Attach a fresh (zero-output) ``CellRefine``; checkpoints holding ``cell_refine.*`` weights get it on load."""
@@ -209,6 +219,9 @@ class GenModel(S1Model):
                 layers = sum(k.startswith("cell_refine.convs.") and k.endswith(".weight") for k in state_dict)
                 state_dict = {**state_dict, "cell_refine.cfg": torch.tensor([c, layers])}
             self.add_cell_refine(c, layers)
+        if getattr(self, "tower_refine", None) is None and "tower_refine.cfg" in state_dict:
+            c, layers, hidden, card, cell = (int(v) for v in state_dict["tower_refine.cfg"])
+            self.add_tower_refine(c=c, layers=layers, hidden=hidden, card=bool(card), cell=bool(cell))
         return super().load_state_dict(state_dict, strict=strict, assign=assign)
 
     def heads_gen(self, enc: dict, b: dict) -> dict:
@@ -217,6 +230,9 @@ class GenModel(S1Model):
         card = (hand * self.card_q(g).unsqueeze(1)).sum(-1) + self.card_b(b["hand_card"].long()).squeeze(-1)
         deck = self.emb(b["deck_card"], b["deck_form"])
         wait = (deck * self.wait_q(g).unsqueeze(1)).sum(-1) + self.wait_b(b["deck_card"].long()).squeeze(-1)
+        tr = getattr(self, "tower_refine", None)
+        if tr is not None and tr.use_card:
+            card = card + tr.card_residual(g, b["sc"], hand)
         return {"gate": self.gate_head(g).squeeze(-1), "value": self.value_head(g),
                 "card": card.masked_fill(b["hand_card"] == CARD_PAD, float("-inf")),
                 "wait": wait.masked_fill(b["deck_card"] == CARD_PAD, float("-inf"))}
@@ -229,6 +245,8 @@ class GenModel(S1Model):
         logits = (kp[:, self.cell_patch] + kc) / math.sqrt(self.d) + self.cell_bias
         if "cell_feat" in enc:
             logits = logits + self.cell_refine.residual(enc["cell_feat"], q)
+        if "tower_cell_feat" in enc:
+            logits = logits + self.tower_refine.cell.residual(enc["tower_cell_feat"], q)
         return logits
 
     def forward(self, b: dict, card: Optional[torch.Tensor] = None, form: Optional[torch.Tensor] = None) -> dict:

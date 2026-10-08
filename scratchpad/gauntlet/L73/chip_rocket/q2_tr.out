@@ -1,0 +1,48 @@
+== tw1 | CHIP all n=2582
+  control                  gate 0.607[0.597,0.618] P(Rk|aff) 0.266[0.257,0.275] rank1 0.263[0.244,0.282] LIVE play 0.679[0.658,0.697] LIVE Rocket 0.168[0.152,0.184] Rk-cell-on-tower 0.747[0.733,0.759] P(Rk on tower) 0.124[0.119,0.129] offX-top 0.154[0.140,0.167]
+     live-rule card when playing: {'rocket': '0.25', 'ice-wizard': '0.19', 'x-bow': '0.14', 'knight': '0.13', 'the-log': '0.10', 'skeletons': '0.10', 'tesla': '0.08', 'tornado': '0.02'}
+  wizard_behind_tower      gate 0.608[0.598,0.618] P(Rk|aff) 0.446[0.435,0.456] rank1 0.608[0.588,0.631] LIVE play 0.660[0.641,0.681] LIVE Rocket 0.383[0.361,0.404] Rk-cell-on-tower 0.946[0.941,0.951] P(Rk on tower) 0.252[0.244,0.260] offX-top 0.042[0.034,0.050]
+  wizard_behind_king       gate 0.576[0.565,0.586] P(Rk|aff) 0.294[0.286,0.302] rank1 0.308[0.289,0.328] LIVE play 0.624[0.603,0.644] LIVE Rocket 0.181[0.163,0.198] Rk-cell-on-tower 0.691[0.678,0.705] P(Rk on tower) 0.122[0.117,0.128] offX-top 0.206[0.190,0.222]
+     delta wizard_behind_tower      dP(Rk|aff) 0.180[0.174,0.186] dLIVE-Rocket 0.215[0.198,0.233] dP(Rk on tower) 0.128[0.123,0.132] ratio P(Rk on tower) 2.03
+     delta wizard_behind_king       dP(Rk|aff) 0.028[0.026,0.030] dLIVE-Rocket 0.013[0.005,0.022] dP(Rk on tower) -0.002[-0.003,-0.001] ratio P(Rk on tower) 0.99
+== tw1 | CHIP OT n=1948
+  control                  gate 0.629[0.619,0.641] P(Rk|aff) 0.299[0.289,0.310] rank1 0.316[0.295,0.338] LIVE play 0.676[0.653,0.700] LIVE Rocket 0.201[0.181,0.220] Rk-cell-on-tower 0.775[0.761,0.787] P(Rk on tower) 0.145[0.139,0.152] offX-top 0.137[0.122,0.151]
+     live-rule card when playing: {'rocket': '0.30', 'ice-wizard': '0.17', 'x-bow': '0.12', 'knight': '0.12', 'the-log': '0.10', 'skeletons': '0.09', 'tesla': '0.09', 'tornado': '0.02'}
+  wizard_behind_tower      gate 0.623[0.612,0.634] P(Rk|aff) 0.448[0.436,0.460] rank1 0.610[0.585,0.636] LIVE play 0.655[0.631,0.677] LIVE Rocket 0.379[0.355,0.403] Rk-cell-on-tower 0.949[0.943,0.954] P(Rk on tower) 0.260[0.251,0.268] offX-top 0.041[0.032,0.049]
+  wizard_behind_king       gate 0.599[0.587,0.610] P(Rk|aff) 0.321[0.311,0.332] rank1 0.353[0.330,0.376] LIVE play 0.621[0.598,0.644] LIVE Rocket 0.207[0.186,0.227] Rk-cell-on-tower 0.726[0.710,0.741] P(Rk on tower) 0.141[0.134,0.147] offX-top 0.177[0.159,0.194]
+     delta wizard_behind_tower      dP(Rk|aff) 0.149[0.143,0.154] dLIVE-Rocket 0.178[0.159,0.196] dP(Rk on tower) 0.115[0.111,0.119] ratio P(Rk on tower) 1.79
+     delta wizard_behind_king       dP(Rk|aff) 0.022[0.020,0.023] dLIVE-Rocket 0.006[-0.004,0.016] dP(Rk on tower) -0.004[-0.005,-0.003] ratio P(Rk on tower) 0.97
+== tw1 | CHIP val n=302
+  control                  gate 0.608[0.581,0.636] P(Rk|aff) 0.275[0.252,0.297] rank1 0.275[0.220,0.330] LIVE play 0.689[0.639,0.741] LIVE Rocket 0.175[0.136,0.221] Rk-cell-on-tower 0.729[0.688,0.766] P(Rk on tower) 0.128[0.110,0.143] offX-top 0.175[0.134,0.220]
+     live-rule card when playing: {'rocket': '0.25', 'x-bow': '0.16', 'ice-wizard': '0.16', 'knight': '0.12', 'skeletons': '0.12', 'tesla': '0.10', 'the-log': '0.08', 'tornado': '0.01'}
+  wizard_behind_tower      gate 0.607[0.580,0.631] P(Rk|aff) 0.450[0.420,0.479] rank1 0.623[0.556,0.686] LIVE play 0.662[0.608,0.715] LIVE Rocket 0.384[0.315,0.451] Rk-cell-on-tower 0.941[0.921,0.957] P(Rk on tower) 0.255[0.234,0.277] offX-top 0.053[0.030,0.081]
+  wizard_behind_king       gate 0.577[0.552,0.605] P(Rk|aff) 0.300[0.274,0.324] rank1 0.325[0.267,0.378] LIVE play 0.623[0.569,0.671] LIVE Rocket 0.189[0.142,0.236] Rk-cell-on-tower 0.676[0.631,0.714] P(Rk on tower) 0.123[0.107,0.137] offX-top 0.209[0.165,0.254]
+     delta wizard_behind_tower      dP(Rk|aff) 0.175[0.158,0.192] dLIVE-Rocket 0.209[0.155,0.261] dP(Rk on tower) 0.128[0.116,0.140] ratio P(Rk on tower) 2.00
+     delta wizard_behind_king       dP(Rk|aff) 0.025[0.019,0.030] dLIVE-Rocket 0.013[-0.011,0.037] dP(Rk on tower) -0.005[-0.008,-0.002] ratio P(Rk on tower) 0.96
+== tw1 | CATCH all n=940
+  control                  gate 0.592[0.576,0.609] P(Rk|aff) 0.346[0.330,0.363] rank1 0.395[0.364,0.426] LIVE play 0.730[0.700,0.757] LIVE Rocket 0.282[0.253,0.310] Rk-cell-on-tower 0.870[0.857,0.883] P(Rk on tower) 0.177[0.166,0.187] offX-top 0.098[0.079,0.118]
+     live-rule card when playing: {'rocket': '0.39', 'ice-wizard': '0.15', 'x-bow': '0.14', 'knight': '0.12', 'tesla': '0.08', 'the-log': '0.07', 'skeletons': '0.04', 'tornado': '0.00'}
+== tw4 | CHIP all n=2582
+  control                  gate 0.607[0.597,0.617] P(Rk|aff) 0.611[0.601,0.620] rank1 0.790[0.774,0.807] LIVE play 0.679[0.659,0.699] LIVE Rocket 0.529[0.508,0.551] Rk-cell-on-tower 0.818[0.807,0.829] P(Rk on tower) 0.308[0.299,0.317] offX-top 0.031[0.024,0.038]
+     live-rule card when playing: {'rocket': '0.78', 'ice-wizard': '0.05', 'knight': '0.05', 'the-log': '0.04', 'tesla': '0.03', 'skeletons': '0.03', 'x-bow': '0.02', 'tornado': '0.01'}
+  wizard_behind_tower      gate 0.608[0.598,0.618] P(Rk|aff) 0.659[0.651,0.668] rank1 0.880[0.866,0.893] LIVE play 0.660[0.640,0.680] LIVE Rocket 0.572[0.552,0.594] Rk-cell-on-tower 0.965[0.961,0.969] P(Rk on tower) 0.384[0.374,0.392] offX-top 0.008[0.005,0.012]
+  wizard_behind_king       gate 0.576[0.566,0.587] P(Rk|aff) 0.630[0.620,0.639] rank1 0.817[0.802,0.833] LIVE play 0.624[0.604,0.645] LIVE Rocket 0.509[0.488,0.531] Rk-cell-on-tower 0.776[0.764,0.787] P(Rk on tower) 0.288[0.279,0.297] offX-top 0.045[0.037,0.053]
+     delta wizard_behind_tower      dP(Rk|aff) 0.048[0.044,0.053] dLIVE-Rocket 0.043[0.031,0.055] dP(Rk on tower) 0.076[0.072,0.080] ratio P(Rk on tower) 1.25
+     delta wizard_behind_king       dP(Rk|aff) 0.019[0.017,0.021] dLIVE-Rocket -0.020[-0.031,-0.009] dP(Rk on tower) -0.020[-0.021,-0.019] ratio P(Rk on tower) 0.94
+== tw4 | CHIP OT n=1948
+  control                  gate 0.629[0.620,0.640] P(Rk|aff) 0.660[0.649,0.670] rank1 0.849[0.832,0.866] LIVE play 0.676[0.652,0.700] LIVE Rocket 0.560[0.537,0.585] Rk-cell-on-tower 0.848[0.835,0.859] P(Rk on tower) 0.347[0.338,0.357] offX-top 0.013[0.009,0.019]
+     live-rule card when playing: {'rocket': '0.83', 'knight': '0.04', 'ice-wizard': '0.03', 'tesla': '0.03', 'the-log': '0.03', 'skeletons': '0.02', 'x-bow': '0.01', 'tornado': '0.01'}
+  wizard_behind_tower      gate 0.623[0.612,0.634] P(Rk|aff) 0.680[0.671,0.689] rank1 0.906[0.892,0.919] LIVE play 0.655[0.631,0.677] LIVE Rocket 0.585[0.562,0.609] Rk-cell-on-tower 0.969[0.965,0.974] P(Rk on tower) 0.406[0.396,0.414] offX-top 0.005[0.002,0.008]
+  wizard_behind_king       gate 0.599[0.589,0.610] P(Rk|aff) 0.670[0.659,0.680] rank1 0.870[0.855,0.887] LIVE play 0.621[0.597,0.645] LIVE Rocket 0.535[0.512,0.556] Rk-cell-on-tower 0.815[0.802,0.828] P(Rk on tower) 0.325[0.316,0.335] offX-top 0.022[0.015,0.030]
+     delta wizard_behind_tower      dP(Rk|aff) 0.021[0.017,0.025] dLIVE-Rocket 0.025[0.012,0.038] dP(Rk on tower) 0.059[0.054,0.063] ratio P(Rk on tower) 1.17
+     delta wizard_behind_king       dP(Rk|aff) 0.010[0.009,0.012] dLIVE-Rocket -0.025[-0.037,-0.012] dP(Rk on tower) -0.022[-0.024,-0.021] ratio P(Rk on tower) 0.94
+== tw4 | CHIP val n=302
+  control                  gate 0.608[0.583,0.632] P(Rk|aff) 0.616[0.584,0.646] rank1 0.755[0.697,0.804] LIVE play 0.689[0.634,0.739] LIVE Rocket 0.533[0.473,0.591] Rk-cell-on-tower 0.795[0.762,0.830] P(Rk on tower) 0.309[0.283,0.335] offX-top 0.046[0.024,0.072]
+     live-rule card when playing: {'rocket': '0.77', 'tesla': '0.06', 'ice-wizard': '0.04', 'knight': '0.03', 'skeletons': '0.03', 'the-log': '0.03', 'x-bow': '0.02', 'tornado': '0.01'}
+  wizard_behind_tower      gate 0.607[0.582,0.631] P(Rk|aff) 0.660[0.632,0.687] rank1 0.868[0.828,0.902] LIVE play 0.662[0.607,0.716] LIVE Rocket 0.570[0.513,0.630] Rk-cell-on-tower 0.953[0.936,0.967] P(Rk on tower) 0.383[0.359,0.408] offX-top 0.007[0.000,0.018]
+  wizard_behind_king       gate 0.577[0.552,0.603] P(Rk|aff) 0.629[0.598,0.658] rank1 0.785[0.731,0.830] LIVE play 0.623[0.570,0.675] LIVE Rocket 0.500[0.444,0.555] Rk-cell-on-tower 0.754[0.716,0.790] P(Rk on tower) 0.286[0.259,0.312] offX-top 0.053[0.030,0.082]
+     delta wizard_behind_tower      dP(Rk|aff) 0.044[0.030,0.059] dLIVE-Rocket 0.036[-0.003,0.076] dP(Rk on tower) 0.074[0.063,0.086] ratio P(Rk on tower) 1.24
+     delta wizard_behind_king       dP(Rk|aff) 0.013[0.008,0.018] dLIVE-Rocket -0.033[-0.065,0.000] dP(Rk on tower) -0.023[-0.026,-0.019] ratio P(Rk on tower) 0.93
+== tw4 | CATCH all n=940
+  control                  gate 0.592[0.575,0.610] P(Rk|aff) 0.520[0.503,0.538] rank1 0.656[0.624,0.686] LIVE play 0.730[0.700,0.761] LIVE Rocket 0.483[0.453,0.514] Rk-cell-on-tower 0.911[0.901,0.922] P(Rk on tower) 0.280[0.267,0.292] offX-top 0.054[0.041,0.068]
+     live-rule card when playing: {'rocket': '0.66', 'tesla': '0.08', 'knight': '0.08', 'ice-wizard': '0.07', 'x-bow': '0.06', 'the-log': '0.04', 'skeletons': '0.02'}
