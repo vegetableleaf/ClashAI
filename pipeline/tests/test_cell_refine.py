@@ -124,6 +124,23 @@ class TestCellRefine(unittest.TestCase):
         m2.load_state_dict(no_branch)
         self.assertFalse(torch.equal(_fwd(m2.eval(), b)["cell"], ref["cell"]))     # the branch still acts
 
+    def test_saved_shape_is_enforced_on_load(self):
+        """The module is built from the stored (width, depth): a state dict missing its last conv layer must FAIL a
+        strict load instead of loading silently as a shallower module; pre-cfg files still load by key inference."""
+        m = _model()
+        m.add_cell_refine(16, 5)
+        torch.nn.init.normal_(m.cell_refine.out.weight, std=0.5)
+        sd = m.state_dict()
+        self.assertEqual(sd["cell_refine.cfg"].tolist(), [16, 5])
+        truncated = {k: v for k, v in sd.items() if not k.startswith("cell_refine.convs.4.")}
+        with self.assertRaises(RuntimeError):
+            _model().load_state_dict(truncated)
+        legacy = {k: v for k, v in sd.items() if k != "cell_refine.cfg"}         # written before the cfg buffer
+        m2 = _model()
+        m2.load_state_dict(legacy)
+        self.assertEqual((m2.cell_refine.C, len(m2.cell_refine.convs)), (16, 5))
+        self.assertTrue(torch.equal(_fwd(m2, self.b)["cell"], _fwd(m, self.b)["cell"]))
+
     def test_unit_scatter_mirrors_like_labels(self):
         x = torch.tensor([[17 / 36, 0.7], [19 / 36, 0.7], [3.4 / 36, 0.2]])
         mx = x.clone(); mx[:, 0] = 1 - mx[:, 0]
