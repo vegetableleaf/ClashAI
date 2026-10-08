@@ -4501,6 +4501,14 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **ROUND 2 RESULTS (v2; score = wins + draws/2):** LIVE ANTI-LEAK (learner-only forced spend 9/12) on R3 u0050:
+>   tune 154 vs 127 (49/14, p<1e-6), FRESH 150 vs 120 (46/11, p<1e-6); leak 1x .52 -> .11, 2x/OT -> 0; def X-Bow 9 ->
+>   19%; tower-hp delta +1,753 / +1,909. tau (.25/.35/.45) fresh 135 vs 120 (45/29, p .08; tune +4) -- replicated
+>   direction, leak .46/.28/.15 -> .28/.11/.12. tau (.30/.30/.30) fresh 118 vs 120 (did not replicate). xbow f .3 fresh
+>   120 vs 120 (6/6), def X-Bow 6.3 -> 11.9% -> passes (no loss, toward pros). R3old ctl vs R1e fresh 120 vs 128 (38/39).
+>   The anti-leak is the owner's own request ("I've only ever asked for it to be installed live"); live build worker
+>   dispatched (opt-in `--anti-leak`, SIM parity via e1_eval.anti_stall). ROUND 3 (`~/ab_round3.sh`): R1e + AL (fair
+>   model-vs-model), AL + xbow f .3, AL + tau (.25/.35/.45), both seed sets.
 > * **Ablation R3 u0050 + barrel + CellRefine 2 epochs (v2, 192):** 133 vs base 127 (24/18, p .44); vs CellRefine-only
 >   (140) 133 vs 140 (15/22, p .32); Log lane 119/126; lane 75.2%. Epochs explain 130 -> 133; the remaining gap (all vs
 >   gen) is not significant; a barrel cost is not ruled out -> fresh seeds 48:96 + pooled 384 + Goblin-Barrel-deck split
