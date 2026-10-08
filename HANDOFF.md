@@ -4501,6 +4501,12 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **W1 own_effects offline (worktree agent-aca294b6 @d4e8103):** 82 live matches, live velocity rule (newest frame <=
+>   t-10): share of moving enemy bodies off >= 1.5 tiles at +26 ticks inside my own effect zone 0.36 -> 0.21 (median 1.08
+>   -> 0.76 tiles); Log 0.19 -> 0.13, Tornado 0.61 -> 0.33, IW ability 0.20 -> 0.18 (n 152); at second-play decisions
+>   0.24 -> 0.14; no category worse (baseline 0.11 unchanged). (q3's 0.41 used 2-tick frames; live rule gives 0.36.)
+>   Live calibration: Log rolls 0.2 tile/tick from ~8 ticks after confirm; IW freeze holds 65% of bodies still by +70
+>   ticks (no Frosty Fella catalog numbers). Next: SIM/live plumbing + SIM A/B.
 > * **BENCHMARK v3 RESULT (gen opponent sampling T .3, 480 seeds x census + ladder = 960 paired, no AL anywhere):**
 >   live setup (stack2k + xbow .3 + tau_phase B) vs R1e **626 vs 548 (234 better / 157 worse, p = .0001)** = +8.1 pp;
 >   live + rocket_area vs R1e 619 vs 548 (p .0004); rocket_area vs live 619 vs 626 (18/25, p .36, n.s.); R3c u0030 BASE
