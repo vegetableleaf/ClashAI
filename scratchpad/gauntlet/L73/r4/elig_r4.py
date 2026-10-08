@@ -3,7 +3,7 @@ quotas can be sized. Learner = icebow on the GREEDY live rule (tau 0.35, R3 cond
 (T 0.3) on the top ladder decks, as the branch workers play. No branching: only rl_royale.fork_alt / the hold rule
 are evaluated at every learner decision.
 
-    python scratchpad/gauntlet/L73/r4/elig_r4.py <init.pt> <n_matches> <out.json>
+    python scratchpad/gauntlet/L73/r4/elig_r4.py <init.pt> <n_matches> <out.json> [shard]
 """
 import json
 import sys
@@ -23,6 +23,7 @@ from pipeline.royale_env import RoyaleSelfPlayEnv           # noqa: E402
 
 torch.set_num_threads(1)
 ckpt, n, out = sys.argv[1], int(sys.argv[2]), Path(sys.argv[3])
+shard = int(sys.argv[4]) if len(sys.argv) > 4 else 0       # match indices shard * n .. shard * n + n - 1
 pol, info = E.load_policy(ckpt, "cpu")
 grid = str(info.get("grid", "floor"))
 bc = {**RL.BRANCH_DEFAULTS, "branch_kinds": ["hold", "card", "xbow_class"]}
@@ -30,7 +31,7 @@ lcfg = {**S.live_cfg(0.35, grid), "T": 0.3}
 ocfg = {**S.live_cfg(0.35, grid), "policy": "sample", "T": 0.3}
 decks = RL.league_decks(REPO / "scratchpad/gauntlet/L73/rl_r2/loadable_decks_ladder.json")
 rows = []
-for i in range(n):
+for i in range(shard * n, shard * n + n):
     t0 = time.time()
     env = RoyaleSelfPlayEnv(decision_ticks=10, forms_mode="deck", hero_abilities=True, ability_policy="v2")
     spec = {"tag": f"elig{i:03d}", "opp": {"id": "init"}, "learner_deck": list(E.ICEBOW_ENGINE_DECK),
@@ -38,7 +39,7 @@ for i in range(n):
     m = E.SelfPlayMatch(env, spec, 0, {**lcfg, "entry_index": i}, {**ocfg, "entry_index": i}, pol, pol)
     L = m.learner
     c = {"decisions": 0, "plays": 0, "hold": 0, "card": 0, "xbow_class": 0, "rocket_plays": 0, "xbow_plays": 0,
-         "rocket_affordable_not_top": 0, "xbow_def_mass": []}
+         "rocket_affordable_not_top": 0, "xbow_def_mass": [], "rocket_ratio": []}
     names = [str(x) for x in L.deck.cards]
     while True:
         ds = m.due()
@@ -62,11 +63,14 @@ for i in range(n):
                 if k == "xbow_class" and d["play"] and names[d["slot"]] == "x_bow":
                     from pipeline.decision_options import xbow_offensive_cells
                     alive = tuple(bool(t.alive) for t in L._cur[1].towers[3:6])
-                    cl = L.model.cell_logits(enc, torch.tensor([d["slot"]]))[0].double()
+                    cl = L.model.cell_logits(enc, torch.tensor([d["slot"]]))[0].detach().double()
                     off = torch.as_tensor(xbow_offensive_cells(alive, grid))
                     c["xbow_def_mass"].append(round(float(torch.softmax(cl, -1)[~off].sum()), 4))
             r = [j for j, x in enumerate(names) if x == "rocket"][0]
-            c["rocket_affordable_not_top"] += int(d["play"] and allowed[r] and d["slot"] != r)
+            if d["play"] and allowed[r] and d["slot"] != r:
+                c["rocket_affordable_not_top"] += 1
+                z = heads["card"][0].detach().double()
+                c["rocket_ratio"].append(round(float(torch.exp(z[r] - z[d["slot"]])), 4))   # P(Rocket) / P(top)
         for s in ds:
             if id(s) not in dec:
                 dec[id(s)] = RL.side_decide(s)
@@ -79,8 +83,11 @@ for i in range(n):
 tot = {k: int(sum(r[k] for r in rows)) for k in ("decisions", "plays", "hold", "card", "xbow_class", "rocket_plays",
                                                   "xbow_plays", "rocket_affordable_not_top")}
 dm = [x for r in rows for x in r["xbow_def_mass"]]
+rr = [x for r in rows for x in r["rocket_ratio"]]
 summary = {"matches": len(rows), "per_match": {k: v / len(rows) for k, v in tot.items()}, "totals": tot,
            "xbow_def_mass_mean": float(np.mean(dm)) if dm else None,
-           "xbow_minority_ge_0.2": float(np.mean([min(x, 1 - x) >= 0.2 for x in dm])) if dm else None}
+           "xbow_minority_ge_0.2": float(np.mean([min(x, 1 - x) >= 0.2 for x in dm])) if dm else None,
+           "rocket_ratio_n": len(rr), "rocket_ratio_quantiles": [float(np.quantile(rr, q)) for q in (.5, .75, .9, .95, 1)]
+           if rr else None, "rocket_ratio_ge": {b: int(sum(x >= b for x in rr)) for b in (0.5, 0.3, 0.2, 0.1, 0.05)}}
 print("SUMMARY " + json.dumps(summary), flush=True)
 out.write_text(json.dumps({"summary": summary, "rows": rows}, indent=1), encoding="utf-8")
