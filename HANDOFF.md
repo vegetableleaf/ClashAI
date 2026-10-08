@@ -4797,6 +4797,17 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   tighter spawn spread, Hero Ice Wizard freeze damage 89 -> 46 (affects the IW press value model), Minion Giant (live
 >   card; missing from the checkpoint vocab AND the reader catalog; present in RoyaleSim), Royal Ghost, Cannon evo, Golden
 >   Knight rework, Elite Barbarians evo fix. Hero IW id 203000023 is covered only by the reader alias patch.
+> * **Polite replay crawler READY (repo C:/Users/benpe/clash-replay-scraper, branch polite-browser-crawl 912a7bd, not
+>   pushed; owner's uncommitted royale/ui.py untouched).** royale/browser.py: one visible Chrome window the OWNER passes
+>   Cloudflare + logs into; every request = in-page fetch() (browser's own cookies; no cookie reads, no curl, no session
+>   file), MIN_INTERVAL 1.0 s, one in flight, any challenge/403/429/5xx pauses at an Enter prompt. crawl_polite.py plan |
+>   crawl: icebow variations top 50 + Hubert, then ladder top 50 (--ladder-url /players untested: check
+>   out_20261008/ladder/roster.json); histories from 2026-09-07, tier 1 = on/after 2026-10-07 first; output
+>   out_20261008/<target>/ (crawl2 schema). Lead audit: no cookie/curl/subprocess use in the new path. Card gap merged
+>   (L74/crawl/card_gap.*): 123 cards / 43 evos / 18 heroes; missing minion-giant (vocab + reader), electro-giant evo +
+>   electro-wizard hero (reader + RoyaleSim; new season 10-05), elite-barbarians evo (reader), ice-wizard hero
+>   (RoyaleSim). card_vocab has no -ev1/-hero keys (forms are a separate input). Previous balance wave 2026-09-16 (Hero IW
+>   freeze 7 s -> 5 s).
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
