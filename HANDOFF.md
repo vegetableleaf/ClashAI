@@ -4386,6 +4386,15 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   leak share exceeds R1e's (no-stall) by more than its paired CI counts as a behaviour gap AWAY from pros.
 >   Risk to watch (untested): value_phi's Phi rises with banked elixir, so without the forced spend the shaping could
 >   teach banking; the leak gate is how we would see it.
+> * **21:4x launched on the VM: `~/chain_ns.sh`** (code 1a13c6c, log `~/eval_ns/eval.log`): R3n = `run_r3_vm.sh rseries_r3n
+>   max_updates=80` (config.yaml stall_elixir null; plays/min baseline 11.97 vs R3's 12.24 with the stall) + R1e no-stall
+>   baselines beside it -> R4n (r4_overrides, init R3n u0080) launched the moment R3n ends, R3n u0040/u0080 evals beside
+>   it -> R4n evals -> "chain_ns DONE". ETA R3n ~01:40 EDT, R4n ~06:00, all evals ~07:00.
+> * **MEASURED: R1e depends on the forced spend** (reactive, 48 seeds x gen/S1 x census+ladder = 192, engine 20261006,
+>   tau .35; split runs in `~/eval_split/`, stall kept on one side by patching search_s0.live_cfg by call order):
+>   both sides stall (old benchmark) 132 | R1e only 151 | opponents only 121 | neither (new benchmark) **105**.
+>   S1 column: 41 / 47 / 39 / 27. So without the forced spend R1e loses 46 of 192 vs unforced opponents. Live has had
+>   no forced spend since 10-04 -> R1e live runs in the 105 condition. New decision-tree baseline: R1e = 105/192.
 >   ~15:40" (Q1 card sampling flag, Q2 area-aware spell aim, Q3 GPU A/Bs after R1e, Q4 R1e approval ping, Q5 fixes);
 >   launcher `.foreman/codex_autopilot/codex_loop.sh` (back-to-back runs to 10-06; STOP_LOOP file stops it).
 > * **15:5x -- owner plan: after the R1e verdict the lead starts LIVE on the winner, then hands over to Codex via
