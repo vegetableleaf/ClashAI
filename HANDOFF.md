@@ -4501,6 +4501,17 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **predict_drops MERGED (6630e9e)** after blind re-verify PASS_WITH_NOTES (flag-off identical: digests match at the
+>   same batch size -- the old `cf903d26` was --batch 1 vs the worker's 16, an ordering artefact, sorted digests equal;
+>   flag-on SIM probe byte-identical to the committed output, 0 double boards / phantoms; evo barrels drop 14 = two
+>   waves, 8/8 live). Merge done in a separate worktree (conflicts in search_s0 run.json line + 5 live_play kwarg
+>   sites, kept both; legal_guard read via getattr) -> 138 live/predict tests pass; main 55; VM test_search_s0 +
+>   test_predict_drops 31 passed (pytest installed in ~/venv). VM synced (CODE_COMMIT 6630e9e+cellrefine). Still
+>   OPT-IN (`--predict-drops`); a SIM A/B on benchmark v2 is owed before live.
+> * **CellRefine v2 on benchmark v2 (opp sample T .3), R3 u0050: 127 -> 140 wins (30 better / 17 worse, p .079)**; vs
+>   gen 53 -> 62, vs S1 74 -> 78; lane consistency 54.4 -> 77.1%. Barrel branch on R3 u0050 (dry run): held-out Log
+>   lane 117/126 (base 82/126; bar 115) PASS; SIM (old benchmark) 130 vs 134 (3/6, p .51) -> re-run on v2 owed.
+>   Pull slice (Tesla/X-Bow vs a building-targeter, n=561): both models over-centre vs pros; v2 slightly toward pros.
 > * **BENCHMARK FLAW FOUND 04:3x (MEASURED): the no-stall reactive set is a mutual STANDOFF.** With the stall gone from
 >   BOTH sides, the greedy-gate opponents (gen_v1 / S1, live policy) and our greedy learner wait: in r3old_ctl 133 of 192
 >   games had ZERO learner plays in 1x (leak share .95 in those). First A/B results on that benchmark (VOID for live
