@@ -4501,6 +4501,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **BENCHMARK v3 RESULT (gen opponent sampling T .3, 480 seeds x census + ladder = 960 paired, no AL anywhere):**
+>   live setup (stack2k + xbow .3 + tau_phase B) vs R1e **626 vs 548 (234 better / 157 worse, p = .0001)** = +8.1 pp;
+>   live + rocket_area vs R1e 619 vs 548 (p .0004); rocket_area vs live 619 vs 626 (18/25, p .36, n.s.); R3c u0030 BASE
+>   (no add-ons, no options) vs R1e 542 vs 548 (p .76) -> the gain comes from the add-ons + decode options, not RL.
+> * **OWNER 12:xx:** stopped the leftover processes; keep live OFF (owner starts it later); resume unfinished agents.
+>   Resumed: TowerRefine w2 training (48716/67392), chip-Rocket worker (finish w2 + SIM A/B), W1, W3 (LIVE_OPTIONS first),
+>   W4. Owner wants a ping when live_play.py loads the full live config.
 > * **W2 Ice Wizard press (worktree agent-a741e3b2 @4113ff9, not merged; flag `--iw-press {rule,learned}`, default rule):**
 >   (1) the SIM has NO Hero Ice Wizard (RoyaleSim 20261006 refuses it: form_fallbacks IceWizard 2 -> base; 0 ability
 >   presses for the learner in 960 games) -> the press is live-only, never trained or evaluated in SIM. (2) CORRECTION:
