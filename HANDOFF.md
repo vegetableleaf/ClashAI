@@ -4346,6 +4346,17 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   main @2f57ec8) -> launches R4 (`rseries_r4`, r4_overrides, 80 updates, init = R3 u0080 if R3 finished cleanly
 >   else gen_v3.2; value_phi Phi from the VALIDATED gen_v3.2 head via shaping_phi_ckpt). Morning decision tree needs
 >   R2 (done: u0120 136/192, does not pass) + R3 results; computed by the lead when R3's eval lands.
+> * **SKELETON BARREL FIX BUILT, NOT MERGED (worker sonnet; branch worktree-agent-a7aad0cb551876164 @5e688ef):**
+>   `predict_drops` (live `--predict-drops`, SIM cfg key; default off). DropTracker sees an enemy balloon vanish ->
+>   7 children (barrel's own card id + level hp, age-growing ring) in the look-ahead from T+12. Replay on 40 live
+>   drops: spawn tick exact 30/39, within 2 ticks 37/39; drop point median 17 mm; 1/40 false positive (balloon read
+>   hp 81, vanished, no skeletons); 4/43 arrival drops unseen (balloon still on board). Real-path counterfactual on 736
+>   drop-phase pro rows: Log-now R1e 16.0 -> 41.7%, fv5 16.6 -> 44.7% (pros 51.2%). Live default-off identity on 3,773
+>   frames; SIM identity only on a fake env -> blind verifier (opus) running a REAL SIM identity check. Plan: not in
+>   tonight's live test (keeps it clean); queue as a later live candidate after a SIM A/B on the VM.
+> * **OWNER: plan for R4 live?** Lead answer: keep tonight's 24 h test intact; R4's sim evaluation (~04:45) gates a
+>   queued 24 h test R4 vs tonight's winner (bar: >= +6/192 vs R1e, ghost ci_hi >= 0, a gap toward pros); if R4 fails,
+>   the slot goes to the next passing candidate (barrel add-on / decode options / predict_drops), one change per test.
 >   ~15:40" (Q1 card sampling flag, Q2 area-aware spell aim, Q3 GPU A/Bs after R1e, Q4 R1e approval ping, Q5 fixes);
 >   launcher `.foreman/codex_autopilot/codex_loop.sh` (back-to-back runs to 10-06; STOP_LOOP file stops it).
 > * **15:5x -- owner plan: after the R1e verdict the lead starts LIVE on the winner, then hands over to Codex via
