@@ -1,0 +1,51 @@
+rseries_r3n_u0080.pt
+  VAL n=100463 cell top1 0.2198 top3 0.4564 NLL 3.0609 card top1 0.6113 card max|diff| vs first None inf-equal None refine False
+  centre val       side0 same 2265 other 2305 (49.6%) | side1 same 2233 other 2214 (50.2%)
+    unit  exact 16908 x1 inside 7727 across 3054 ratio 2.53
+    spell exact 5172 x1 inside 2001 across 1376 ratio 1.45
+    lane consistency (model centre picks) 1805/3572 = 50.5%
+    lane consistency (pro centre picks) 1917/2958 = 64.8%
+  centre sub_val   side0 same 138 other 151 (47.8%) | side1 same 149 other 140 (51.6%)
+    unit  exact 1066 x1 inside 486 across 203 ratio 2.39
+    spell exact 308 x1 inside 115 across 65 ratio 1.77
+    lane consistency (model centre picks) 87/169 = 51.5%
+    lane consistency (pro centre picks) 79/128 = 61.7%
+  centre sub_train side0 same 1518 other 1431 (51.5%) | side1 same 1644 other 1632 (50.2%)
+    unit  exact 11923 x1 inside 5374 across 2051 ratio 2.62
+    spell exact 3863 x1 inside 1340 across 822 ratio 1.63
+    lane consistency (model centre picks) 829/1638 = 50.6%
+    lane consistency (pro centre picks) 786/1287 = 61.1%
+rseries_r3n_u0080_barrel.pt
+  VAL n=100463 cell top1 0.2201 top3 0.4566 NLL 3.0590 card top1 0.6113 card max|diff| vs first 3.814697265625e-06 inf-equal True refine False
+  centre val       side0 same 2267 other 2307 (49.6%) | side1 same 2233 other 2211 (50.2%)
+    unit  exact 16927 x1 inside 7733 across 3049 ratio 2.54
+    spell exact 5189 x1 inside 2000 across 1384 ratio 1.45
+    lane consistency (model centre picks) 1807/3575 = 50.5%
+    lane consistency (pro centre picks) 1917/2958 = 64.8%
+  centre sub_val   side0 same 139 other 152 (47.8%) | side1 same 149 other 140 (51.6%)
+    unit  exact 1066 x1 inside 489 across 202 ratio 2.42
+    spell exact 304 x1 inside 115 across 66 ratio 1.74
+    lane consistency (model centre picks) 87/169 = 51.5%
+    lane consistency (pro centre picks) 79/128 = 61.7%
+  centre sub_train side0 same 1514 other 1433 (51.4%) | side1 same 1644 other 1631 (50.2%)
+    unit  exact 11955 x1 inside 5381 across 2054 ratio 2.62
+    spell exact 3908 x1 inside 1347 across 818 ratio 1.65
+    lane consistency (model centre picks) 828/1632 = 50.7%
+    lane consistency (pro centre picks) 786/1287 = 61.1%
+rseries_r3n_u0080_barrel_cellref5.pt
+  VAL n=100463 cell top1 0.2397 top3 0.4778 NLL 2.9911 card top1 0.6113 card max|diff| vs first 3.814697265625e-06 inf-equal True refine True
+  centre val       side0 same 2904 other 1957 (59.7%) | side1 same 2860 other 1844 (60.8%)
+    unit  exact 18276 x1 inside 6844 across 3254 ratio 2.10
+    spell exact 5808 x1 inside 1618 across 1588 ratio 1.02
+    lane consistency (model centre picks) 2495/3863 = 64.6%
+    lane consistency (pro centre picks) 1917/2958 = 64.8%
+  centre sub_val   side0 same 187 other 125 (59.9%) | side1 same 183 other 118 (60.8%)
+    unit  exact 1177 x1 inside 421 across 220 ratio 1.91
+    spell exact 349 x1 inside 89 across 81 ratio 1.10
+    lane consistency (model centre picks) 111/166 = 66.9%
+    lane consistency (pro centre picks) 79/128 = 61.7%
+  centre sub_train side0 same 1862 other 1276 (59.3%) | side1 same 2122 other 1394 (60.4%)
+    unit  exact 12881 x1 inside 4833 across 2167 ratio 2.23
+    spell exact 4368 x1 inside 1064 across 946 ratio 1.12
+    lane consistency (model centre picks) 1020/1717 = 59.4%
+    lane consistency (pro centre picks) 786/1287 = 61.1%

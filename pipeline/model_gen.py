@@ -75,6 +75,8 @@ class CellRefine(nn.Module):
         nn.init.zeros_(self.out.weight); nn.init.zeros_(self.out.bias)
         gy, gx = torch.meshgrid(torch.linspace(-1, 1, GRID_Y), torch.linspace(-1, 1, GRID_X), indexing="ij")
         self.register_buffer("coords", torch.stack([gx, gy]), persistent=False)
+        # saved shape (width, depth): load builds the module FROM it, so a state dict missing a layer fails strict load
+        self.register_buffer("cfg", torch.tensor([c, layers]))
 
     def features(self, u: torch.Tensor, xy: torch.Tensor, mask: torch.Tensor) -> torch.Tensor:
         """Unit states [B, U, d], their board xy [B, U, 2], mask [B, U] -> per-cell features [B, N_CELLS, C]."""
@@ -200,8 +202,13 @@ class GenModel(S1Model):
         # Opt-in by checkpoint CONTENT: every loader (load_model, eval_gen, rl_royale actors, live) goes through here,
         # so a state dict with the refinement builds it; one without leaves the model exactly as before.
         if getattr(self, "cell_refine", None) is None and any(k.startswith("cell_refine.") for k in state_dict):
-            self.add_cell_refine(int(state_dict["cell_refine.inp.weight"].shape[0]),
-                                 sum(k.startswith("cell_refine.convs.") and k.endswith(".weight") for k in state_dict))
+            if "cell_refine.cfg" in state_dict:
+                c, layers = (int(v) for v in state_dict["cell_refine.cfg"])
+            else:   # files written before the cfg buffer: shape inferred from the keys, cfg filled in for strict load
+                c = int(state_dict["cell_refine.inp.weight"].shape[0])
+                layers = sum(k.startswith("cell_refine.convs.") and k.endswith(".weight") for k in state_dict)
+                state_dict = {**state_dict, "cell_refine.cfg": torch.tensor([c, layers])}
+            self.add_cell_refine(c, layers)
         return super().load_state_dict(state_dict, strict=strict, assign=assign)
 
     def heads_gen(self, enc: dict, b: dict) -> dict:
