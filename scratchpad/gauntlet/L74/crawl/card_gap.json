@@ -1,0 +1,1677 @@
+{
+ "roster_counts": {
+  "card": 123,
+  "evo": 43,
+  "hero": 18
+ },
+ "a_vocab_size": 124,
+ "a_form_keys": [],
+ "a_not_in_roster": [
+  "spirit-empress-air"
+ ],
+ "b_ids": 210,
+ "c_counts": {
+  "cards": 145,
+  "evolutions": 42,
+  "hero_forms": 16
+ },
+ "wiki_fetched_utc": "2026-10-08T23:17:14Z",
+ "rows": [
+  {
+   "slug": "archer-queen",
+   "kind": "card",
+   "catalog_internal": "ArcherQueen",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "archers",
+   "kind": "card",
+   "catalog_internal": "Archer",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "archers",
+   "kind": "evo",
+   "catalog_internal": "Archer",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "arrows",
+   "kind": "card",
+   "catalog_internal": "Arrows",
+   "source": "wiki category Spell Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "baby-dragon",
+   "kind": "card",
+   "catalog_internal": "BabyDragon",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "baby-dragon",
+   "kind": "evo",
+   "catalog_internal": "BabyDragon",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "balloon",
+   "kind": "card",
+   "catalog_internal": "Balloon",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "balloon",
+   "kind": "hero",
+   "catalog_internal": "Balloon",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "bandit",
+   "kind": "card",
+   "catalog_internal": "Assassin",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "barbarian-barrel",
+   "kind": "card",
+   "catalog_internal": "BarbLog",
+   "source": "wiki category Spell Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "barbarian-barrel",
+   "kind": "hero",
+   "catalog_internal": "BarbLog",
+   "source": "wiki category Spell Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "barbarian-hut",
+   "kind": "card",
+   "catalog_internal": "BarbarianHut",
+   "source": "wiki category Building Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "barbarians",
+   "kind": "card",
+   "catalog_internal": "Barbarians",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "barbarians",
+   "kind": "evo",
+   "catalog_internal": "Barbarians",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "bats",
+   "kind": "card",
+   "catalog_internal": "Bats",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "bats",
+   "kind": "evo",
+   "catalog_internal": "Bats",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "battle-healer",
+   "kind": "card",
+   "catalog_internal": "BattleHealer",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "battle-ram",
+   "kind": "card",
+   "catalog_internal": "BattleRam",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "battle-ram",
+   "kind": "evo",
+   "catalog_internal": "BattleRam",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "berserker",
+   "kind": "card",
+   "catalog_internal": "Berserker",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "berserker",
+   "kind": "hero",
+   "catalog_internal": "Berserker",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "bomb-tower",
+   "kind": "card",
+   "catalog_internal": "BombTower",
+   "source": "wiki category Building Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "bomber",
+   "kind": "card",
+   "catalog_internal": "Bomber",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "bomber",
+   "kind": "evo",
+   "catalog_internal": "Bomber",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "boss-bandit",
+   "kind": "card",
+   "catalog_internal": "BossBandit",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "bowler",
+   "kind": "card",
+   "catalog_internal": "Bowler",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "bowler",
+   "kind": "hero",
+   "catalog_internal": "Bowler",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "cannon",
+   "kind": "card",
+   "catalog_internal": "Cannon",
+   "source": "wiki category Building Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "cannon",
+   "kind": "evo",
+   "catalog_internal": "Cannon",
+   "source": "wiki category Building Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "cannon-cart",
+   "kind": "card",
+   "catalog_internal": "MovingCannon",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "clone",
+   "kind": "card",
+   "catalog_internal": "Clone",
+   "source": "wiki category Spell Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "dark-prince",
+   "kind": "card",
+   "catalog_internal": "DarkPrince",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "dark-prince",
+   "kind": "hero",
+   "catalog_internal": "DarkPrince",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "dart-goblin",
+   "kind": "card",
+   "catalog_internal": "BlowdartGoblin",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "dart-goblin",
+   "kind": "evo",
+   "catalog_internal": "BlowdartGoblin",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "earthquake",
+   "kind": "card",
+   "catalog_internal": "Earthquake",
+   "source": "wiki category Spell Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "electro-dragon",
+   "kind": "card",
+   "catalog_internal": "ElectroDragon",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "electro-dragon",
+   "kind": "evo",
+   "catalog_internal": "ElectroDragon",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "electro-giant",
+   "kind": "card",
+   "catalog_internal": "ElectroGiant",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "electro-giant",
+   "kind": "evo",
+   "catalog_internal": "ElectroGiant",
+   "source": "official 2026-10-05 Shocktober post (Album Event 10-06..11-02)",
+   "in_a_vocab": null,
+   "in_b_reader": false,
+   "in_c_royalesim": false
+  },
+  {
+   "slug": "electro-spirit",
+   "kind": "card",
+   "catalog_internal": "ElectroSpirit",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "electro-wizard",
+   "kind": "card",
+   "catalog_internal": "ElectroWizard",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "electro-wizard",
+   "kind": "hero",
+   "catalog_internal": "ElectroWizard",
+   "source": "official 2026-10-05 Shocktober post",
+   "in_a_vocab": null,
+   "in_b_reader": false,
+   "in_c_royalesim": false
+  },
+  {
+   "slug": "elite-barbarians",
+   "kind": "card",
+   "catalog_internal": "AngryBarbarians",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "elite-barbarians",
+   "kind": "evo",
+   "catalog_internal": "AngryBarbarians",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": false,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "elixir-collector",
+   "kind": "card",
+   "catalog_internal": "Elixir Collector",
+   "source": "wiki category Building Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "elixir-golem",
+   "kind": "card",
+   "catalog_internal": "ElixirGolem",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "executioner",
+   "kind": "card",
+   "catalog_internal": "AxeMan",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "executioner",
+   "kind": "evo",
+   "catalog_internal": "AxeMan",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "fire-spirit",
+   "kind": "card",
+   "catalog_internal": "FireSpirits",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "fireball",
+   "kind": "card",
+   "catalog_internal": "Fireball",
+   "source": "wiki category Spell Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "firecracker",
+   "kind": "card",
+   "catalog_internal": "Firecracker",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "firecracker",
+   "kind": "evo",
+   "catalog_internal": "Firecracker",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "fisherman",
+   "kind": "card",
+   "catalog_internal": "Fisherman",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "flying-machine",
+   "kind": "card",
+   "catalog_internal": "DartBarrell",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "freeze",
+   "kind": "card",
+   "catalog_internal": "Freeze",
+   "source": "wiki category Spell Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "furnace",
+   "kind": "card",
+   "catalog_internal": "FirespiritHut",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "furnace",
+   "kind": "evo",
+   "catalog_internal": "FirespiritHut",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "giant",
+   "kind": "card",
+   "catalog_internal": "Giant",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "giant",
+   "kind": "hero",
+   "catalog_internal": "Giant",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "giant-skeleton",
+   "kind": "card",
+   "catalog_internal": "GiantSkeleton",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "giant-snowball",
+   "kind": "card",
+   "catalog_internal": "Snowball",
+   "source": "wiki category Spell Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "giant-snowball",
+   "kind": "evo",
+   "catalog_internal": "Snowball",
+   "source": "wiki category Spell Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "goblin-barrel",
+   "kind": "card",
+   "catalog_internal": "GoblinBarrel",
+   "source": "wiki category Spell Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "goblin-barrel",
+   "kind": "evo",
+   "catalog_internal": "GoblinBarrel",
+   "source": "wiki category Spell Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "goblin-cage",
+   "kind": "card",
+   "catalog_internal": "GoblinCage",
+   "source": "wiki category Building Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "goblin-cage",
+   "kind": "evo",
+   "catalog_internal": "GoblinCage",
+   "source": "wiki category Building Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "goblin-curse",
+   "kind": "card",
+   "catalog_internal": "GoblinCurse",
+   "source": "wiki category Spell Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "goblin-demolisher",
+   "kind": "card",
+   "catalog_internal": "GoblinDemolisher",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "goblin-drill",
+   "kind": "card",
+   "catalog_internal": "GoblinDrill",
+   "source": "wiki category Building Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "goblin-drill",
+   "kind": "evo",
+   "catalog_internal": "GoblinDrill",
+   "source": "wiki category Building Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "goblin-gang",
+   "kind": "card",
+   "catalog_internal": "GoblinGang",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "goblin-giant",
+   "kind": "card",
+   "catalog_internal": "GoblinGiant",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "goblin-giant",
+   "kind": "evo",
+   "catalog_internal": "GoblinGiant",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "goblin-hut",
+   "kind": "card",
+   "catalog_internal": "GoblinHut",
+   "source": "wiki category Building Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "goblin-machine",
+   "kind": "card",
+   "catalog_internal": "GoblinMachine",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "goblins",
+   "kind": "card",
+   "catalog_internal": "Goblins",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "goblins",
+   "kind": "hero",
+   "catalog_internal": "Goblins",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "goblinstein",
+   "kind": "card",
+   "catalog_internal": "Goblinstein",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "golden-knight",
+   "kind": "card",
+   "catalog_internal": "GoldenKnight",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "golem",
+   "kind": "card",
+   "catalog_internal": "Golem",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "graveyard",
+   "kind": "card",
+   "catalog_internal": "Graveyard",
+   "source": "wiki category Spell Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "guards",
+   "kind": "card",
+   "catalog_internal": "SkeletonWarriors",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "heal-spirit",
+   "kind": "card",
+   "catalog_internal": "Heal",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "hog-rider",
+   "kind": "card",
+   "catalog_internal": "HogRider",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "hunter",
+   "kind": "card",
+   "catalog_internal": "Hunter",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "hunter",
+   "kind": "evo",
+   "catalog_internal": "Hunter",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "ice-golem",
+   "kind": "card",
+   "catalog_internal": "IceGolemite",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "ice-golem",
+   "kind": "hero",
+   "catalog_internal": "IceGolemite",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "ice-spirit",
+   "kind": "card",
+   "catalog_internal": "IceSpirits",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "ice-spirit",
+   "kind": "evo",
+   "catalog_internal": "IceSpirits",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "ice-wizard",
+   "kind": "card",
+   "catalog_internal": "IceWizard",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "ice-wizard",
+   "kind": "hero",
+   "catalog_internal": "IceWizard",
+   "source": "wiki Version History",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": false
+  },
+  {
+   "slug": "inferno-dragon",
+   "kind": "card",
+   "catalog_internal": "InfernoDragon",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "inferno-dragon",
+   "kind": "evo",
+   "catalog_internal": "InfernoDragon",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "inferno-tower",
+   "kind": "card",
+   "catalog_internal": "InfernoTower",
+   "source": "wiki category Building Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "knight",
+   "kind": "card",
+   "catalog_internal": "Knight",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "knight",
+   "kind": "evo",
+   "catalog_internal": "Knight",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "knight",
+   "kind": "hero",
+   "catalog_internal": "Knight",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "lava-hound",
+   "kind": "card",
+   "catalog_internal": "LavaHound",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "lightning",
+   "kind": "card",
+   "catalog_internal": "Lightning",
+   "source": "wiki category Spell Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "little-prince",
+   "kind": "card",
+   "catalog_internal": "LittlePrince",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "lumberjack",
+   "kind": "card",
+   "catalog_internal": "RageBarbarian",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "lumberjack",
+   "kind": "evo",
+   "catalog_internal": "RageBarbarian",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "magic-archer",
+   "kind": "card",
+   "catalog_internal": "EliteArcher",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "magic-archer",
+   "kind": "hero",
+   "catalog_internal": "EliteArcher",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "mega-knight",
+   "kind": "card",
+   "catalog_internal": "MegaKnight",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "mega-knight",
+   "kind": "evo",
+   "catalog_internal": "MegaKnight",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "mega-minion",
+   "kind": "card",
+   "catalog_internal": "MegaMinion",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "mega-minion",
+   "kind": "hero",
+   "catalog_internal": "MegaMinion",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "mighty-miner",
+   "kind": "card",
+   "catalog_internal": "MightyMiner",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "miner",
+   "kind": "card",
+   "catalog_internal": "Miner",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "mini-pekka",
+   "kind": "card",
+   "catalog_internal": "MiniPekka",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "mini-pekka",
+   "kind": "hero",
+   "catalog_internal": "MiniPekka",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "minion-giant",
+   "kind": "card",
+   "catalog_internal": null,
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": false,
+   "in_b_reader": false,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "minion-horde",
+   "kind": "card",
+   "catalog_internal": "MinionHorde",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "minion-horde",
+   "kind": "evo",
+   "catalog_internal": "MinionHorde",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "minions",
+   "kind": "card",
+   "catalog_internal": "Minions",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "mirror",
+   "kind": "card",
+   "catalog_internal": "Mirror",
+   "source": "wiki category Spell Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "monk",
+   "kind": "card",
+   "catalog_internal": "Monk",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "mortar",
+   "kind": "card",
+   "catalog_internal": "Mortar",
+   "source": "wiki category Building Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "mortar",
+   "kind": "evo",
+   "catalog_internal": "Mortar",
+   "source": "wiki category Building Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "mother-witch",
+   "kind": "card",
+   "catalog_internal": "WitchMother",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "musketeer",
+   "kind": "card",
+   "catalog_internal": "Musketeer",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "musketeer",
+   "kind": "evo",
+   "catalog_internal": "Musketeer",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "musketeer",
+   "kind": "hero",
+   "catalog_internal": "Musketeer",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "night-witch",
+   "kind": "card",
+   "catalog_internal": "DarkWitch",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "pekka",
+   "kind": "card",
+   "catalog_internal": "Pekka",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "pekka",
+   "kind": "evo",
+   "catalog_internal": "Pekka",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "phoenix",
+   "kind": "card",
+   "catalog_internal": "Phoenix",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "poison",
+   "kind": "card",
+   "catalog_internal": "Poison",
+   "source": "wiki category Spell Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "prince",
+   "kind": "card",
+   "catalog_internal": "Prince",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "princess",
+   "kind": "card",
+   "catalog_internal": "Princess",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "princess",
+   "kind": "evo",
+   "catalog_internal": "Princess",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "rage",
+   "kind": "card",
+   "catalog_internal": "Rage",
+   "source": "wiki category Spell Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "ram-rider",
+   "kind": "card",
+   "catalog_internal": "RamRider",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "rascals",
+   "kind": "card",
+   "catalog_internal": "Rascals",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "rocket",
+   "kind": "card",
+   "catalog_internal": "Rocket",
+   "source": "wiki category Spell Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "ronin",
+   "kind": "card",
+   "catalog_internal": "Ronin",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "royal-delivery",
+   "kind": "card",
+   "catalog_internal": "RoyalDelivery",
+   "source": "wiki category Spell Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "royal-ghost",
+   "kind": "card",
+   "catalog_internal": "Ghost",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "royal-ghost",
+   "kind": "evo",
+   "catalog_internal": "Ghost",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "royal-giant",
+   "kind": "card",
+   "catalog_internal": "RoyalGiant",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "royal-giant",
+   "kind": "evo",
+   "catalog_internal": "RoyalGiant",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "royal-hogs",
+   "kind": "card",
+   "catalog_internal": "RoyalHogs",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "royal-hogs",
+   "kind": "evo",
+   "catalog_internal": "RoyalHogs",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "royal-recruits",
+   "kind": "card",
+   "catalog_internal": "RoyalRecruits",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "royal-recruits",
+   "kind": "evo",
+   "catalog_internal": "RoyalRecruits",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "rune-giant",
+   "kind": "card",
+   "catalog_internal": "GiantBuffer",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "skeleton-army",
+   "kind": "card",
+   "catalog_internal": "SkeletonArmy",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "skeleton-army",
+   "kind": "evo",
+   "catalog_internal": "SkeletonArmy",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "skeleton-barrel",
+   "kind": "card",
+   "catalog_internal": "SkeletonBalloon",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "skeleton-barrel",
+   "kind": "evo",
+   "catalog_internal": "SkeletonBalloon",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "skeleton-dragons",
+   "kind": "card",
+   "catalog_internal": "SkeletonDragons",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "skeleton-king",
+   "kind": "card",
+   "catalog_internal": "SkeletonKing",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "skeletons",
+   "kind": "card",
+   "catalog_internal": "Skeletons",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "skeletons",
+   "kind": "evo",
+   "catalog_internal": "Skeletons",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "sparky",
+   "kind": "card",
+   "catalog_internal": "ZapMachine",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "spear-goblins",
+   "kind": "card",
+   "catalog_internal": "SpearGoblins",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "spirit-empress",
+   "kind": "card",
+   "catalog_internal": "MergeMaiden",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "suspicious-bush",
+   "kind": "card",
+   "catalog_internal": "SuspiciousBush",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "tesla",
+   "kind": "card",
+   "catalog_internal": "Tesla",
+   "source": "wiki category Building Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "tesla",
+   "kind": "evo",
+   "catalog_internal": "Tesla",
+   "source": "wiki category Building Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "the-log",
+   "kind": "card",
+   "catalog_internal": "Log",
+   "source": "wiki category Spell Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "three-musketeers",
+   "kind": "card",
+   "catalog_internal": "ThreeMusketeers",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "tombstone",
+   "kind": "card",
+   "catalog_internal": "Tombstone",
+   "source": "wiki category Building Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "tombstone",
+   "kind": "hero",
+   "catalog_internal": "Tombstone",
+   "source": "wiki category Building Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "tornado",
+   "kind": "card",
+   "catalog_internal": "Tornado",
+   "source": "wiki category Spell Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "valkyrie",
+   "kind": "card",
+   "catalog_internal": "Valkyrie",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "valkyrie",
+   "kind": "evo",
+   "catalog_internal": "Valkyrie",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "valkyrie",
+   "kind": "hero",
+   "catalog_internal": "Valkyrie",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "vines",
+   "kind": "card",
+   "catalog_internal": "Vines",
+   "source": "wiki category Spell Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "void",
+   "kind": "card",
+   "catalog_internal": "DarkMagic",
+   "source": "wiki category Spell Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "wall-breakers",
+   "kind": "card",
+   "catalog_internal": "Wallbreakers",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "wall-breakers",
+   "kind": "evo",
+   "catalog_internal": "Wallbreakers",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "witch",
+   "kind": "card",
+   "catalog_internal": "Witch",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "witch",
+   "kind": "evo",
+   "catalog_internal": "Witch",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "wizard",
+   "kind": "card",
+   "catalog_internal": "Wizard",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "wizard",
+   "kind": "evo",
+   "catalog_internal": "Wizard",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "wizard",
+   "kind": "hero",
+   "catalog_internal": "Wizard",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "x-bow",
+   "kind": "card",
+   "catalog_internal": "Xbow",
+   "source": "wiki category Building Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "zap",
+   "kind": "card",
+   "catalog_internal": "Zap",
+   "source": "wiki category Spell Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "zap",
+   "kind": "evo",
+   "catalog_internal": "Zap",
+   "source": "wiki category Spell Cards",
+   "in_a_vocab": null,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  },
+  {
+   "slug": "zappies",
+   "kind": "card",
+   "catalog_internal": "MiniSparkys",
+   "source": "wiki category Troop Cards",
+   "in_a_vocab": true,
+   "in_b_reader": true,
+   "in_c_royalesim": true
+  }
+ ]
+}
