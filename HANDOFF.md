@@ -4486,6 +4486,16 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   val rows the PROS' own centre picks are enemy-side only 64.8% (80% was Ice Wizard alone) -> the 8.5/9.5 unit
 >   choice is mostly not board-predictable in imitation labels. SIM base lane consistency 219/395 = 55.4%. Next: v2
 >   (RF +-15.5), SIM A/Bs, pro-choice determinants by slice (building pulls vs building-targeters), modules on R3c/R3n.
+> * **CENTRE-COLUMN FIX MEASURED: CellRefine v2 (5 dilated layers, RF +-15.5 tiles, 48 ch; base R3 u0050 frozen).**
+>   OFFLINE (100,463 val play rows; base -> v1 -> v2): lane consistency of the model's centre picks 49.9 -> 51.7 ->
+>   **65.2% (pros on the same rows 64.8%)**; same column as the pro 48.3/49.1 -> 58.9/58.5%; cell top-1 21.87 ->
+>   23.86%, NLL 3.060 -> 2.990, card top-1 61.41% unchanged; x1 inside/across units 2.62 -> 2.11x, spells 1.46 -> 1.02x.
+>   The base had a fixed 8.5 bias (enemy-side 75% for left-lane threats, 24% right); v2 68% / 73%. Building vs
+>   building-targeter: pros .72, base .49, v2 .86. SIM 192 reactive (sim_lane.py; base rerun exact): base 134 wins,
+>   lane 219/395 = 55.4%; v2 134 wins (19 better / 18 worse, p 1.0), **lane 322/411 = 78.3%** (z ~6.9). No win gain in
+>   SIM, no loss. Determinants: no slice ~90% predictable; previous own play's column and the damaged princess shift
+>   pros' choice. Live latency with GPU training: decide_ms median 106, 0 > 300 ms. Composition test fv6 barrel +
+>   CellRefine passes.
 > * **OWNER 00:1x (going to bed): "once the live verdict arrives, if a new model is promoted you should flip on the
 >   goblin barrel addon as well as everything else that was queued ... the wrong lane issue is literally causing the
 >   model to lose every match against goblin barrel ... Keep working on the tile fixes, as well as model training and
