@@ -4501,6 +4501,10 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **Ablation R3 u0050 + barrel + CellRefine 2 epochs (v2, 192):** 133 vs base 127 (24/18, p .44); vs CellRefine-only
+>   (140) 133 vs 140 (15/22, p .32); Log lane 119/126; lane 75.2%. Epochs explain 130 -> 133; the remaining gap (all vs
+>   gen) is not significant; a barrel cost is not ruled out -> fresh seeds 48:96 + pooled 384 + Goblin-Barrel-deck split
+>   requested. Shipping config (owner wants the barrel add-on): barrel + CellRefine 2 epochs.
 > * **Benchmark-v2 tuning grid, R3 u0050 (192 paired, tune seeds 0:48; score = wins + draws/2; ctl 127, R1e 133):**
 >   tau_phase B (.35/.45/.55) 104 (14/47, p<.0001) FAIL; (.30/.40/.45) 126; (.25/.35/.45) 131 (28/23, p .58);
 >   (.30/.35/.40) 126; (.25/.35/.35) 121; (.30/.30/.30) 133 (33/23, p .23). xbow f .3 125 (7/9), f .2 124 (7/10),
