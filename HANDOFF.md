@@ -4501,6 +4501,11 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **Live anti-leak BUILT (worktree agent-a86bb640 @6a270a3, not merged; blind verification running):** opt-in
+>   `live_play --anti-leak [--anti-leak-elixir 9 --anti-leak-seconds 12]`; GenPilot.stalled() calls e1_eval.anti_stall
+>   (real tick, extrapolated elixir, last ACCEPTED play's landing tick); decide: play if p > tau OR stalled. Off =
+>   identical to main on 995 frames; SIM parity same slot/cell on 240 rows with stalled forced; 21 tests. To enable,
+>   run_live.sh must swap `--no-anti-leak` for `--anti-leak` (both together is refused).
 > * **CellRefine pooled (R3 u0050, v2, seeds 0:96 = 384 paired):** CellRefine-only 2ep vs base 272.5 vs 247.5
 >   (63/38, **p .017**; gen 43/28, S1 20/10); barrel+CellRefine 260.5 (54/41, p .22); barrel+CR vs CR-only 38/50
 >   (p .24). Lane consistency fresh: 53.7 -> 74.0% (CR) / 72.2% (barrel+CR). Goblin Barrel in only 8/384 opponent decks
