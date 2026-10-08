@@ -94,3 +94,62 @@ def test_reader_frames_resolve_bodies_by_card_id():
     log = [dict(card="the-log", x=9000, y=16000, tick=1000)]           # my side 0: rolls toward +y
     out = extrapolate(f(1000, 18000.0), f(990, 19200.0), H, 0, own_effects=log)
     assert out["entities"][0]["y"] == pytest.approx(18000 - 120 * 18 + 500)   # as the SIM-shaped Hog above
+
+
+# ---------------------------------------------------------------- SIM plumbing (e1_eval cfg "own_effects")
+def test_sim_cfg_off_is_identical_and_on_feeds_my_landed_plays(monkeypatch):
+    from pipeline import extrapolate as X
+    from pipeline.tests.test_e1_action_delay import D, PLAY, WAIT, _scripted
+    a, _, ta = _scripted([PLAY, WAIT, PLAY], D, extrapolate_ticks=H)
+    b, _, tb = _scripted([PLAY, WAIT, PLAY], D, extrapolate_ticks=H, own_effects=False)
+    assert ta == tb and a.views == b.views and a.result().keys() == b.result().keys()
+    assert "own_effects" not in a.result() and a.own_fx is None and b.own_fx is None
+    seen, real = [], X.extrapolate
+    monkeypatch.setattr(X, "extrapolate", lambda *p, **k: (seen.append(k.get("own_effects")), real(*p, **k))[1])
+    c, env, tc = _scripted([PLAY, WAIT, PLAY], D, extrapolate_ticks=H, own_effects=True)
+    assert c.result()["own_effects"] is True and tc == ta
+    calls = env.eng.calls                                             # (landing tick, deck index, engine x, y)
+    assert [(p["tick"], p["x"], p["y"]) for p in c.own_fx] == [(t, x, y) for t, _, x, y in calls]
+    assert [p["card"] for p in c.own_fx] == [c.deck.cards[PLAY["slot"]]] * 2
+    assert seen[0] == c.own_fx[:1] and seen[-1] == c.own_fx          # (decision 1 is not extrapolated) the plays so far
+    assert _scripted([], None, own_effects=True)[0].own_fx is None    # no extrapolation -> off
+
+
+# ---------------------------------------------------------------- live plumbing (GenPilot own_effects)
+def test_live_pilot_passes_confirmed_plays_only_with_the_flag(monkeypatch):
+    from collections import deque
+    import torch
+    from pipeline import live_gen
+    from pipeline.dataset_gen import card_key
+    from pipeline.live_gen import GenPilot
+    from pipeline.live_mem import deck_of
+    from pipeline.tests.test_predict_drops import fr
+
+    def pilot(on):
+        p = object.__new__(GenPilot)
+        p.gid = {card_key(n): i + 1 for i, n in enumerate(deck_of(fr(0, []), 1)[1])}
+        p.grid, p.dev, p.gate_tau = "lattice", torch.device("cpu"), 0.5
+        p.past, p.history, p.opp, p.opp_est, p.drops = [], {}, None, None, None
+        p.ext_h, p.frames = H, deque(maxlen=30)
+        p.own_fx = [] if on else None
+        return p
+
+    def k(y):                                                         # an enemy (side 0) Knight
+        return {"address": "0xk", "side": 0, "x": 9000.0, "y": y, "card_id": 26000000, "kind": 15, "hp": 1, "max_hp": 1}
+
+    out, real = [], live_gen.extrapolate
+    monkeypatch.setattr(live_gen, "extrapolate", lambda *a, **kw: (out.append(real(*a, **kw)), out[-1])[1])
+    ys = []
+    for on in (False, True):
+        p = pilot(on)
+        p.observe(fr(990, [k(16000.0)]))
+        f = fr(1000, [k(16600.0)])                                    # walks toward me (my side 1): +y raw
+        p.observe(f)
+        if on:   # my Log tapped 2 tiles in front of it in MY frame (own y = 32 - raw y), confirmed now
+            p.own_fx.append(dict(card="the-log", xy=(0.5, 1 - (32 - 16.6 - 2.0) / 32), tick=1000))
+        p.row(f)
+        ys.append(next(e["y"] for e in out[-1]["entities"] if e["address"] == "0xk"))
+    assert ys[0] == pytest.approx(16600 + 60 * H)                     # off: plain dead reckoning
+    assert ys[1] < ys[0] - 500                                        # on: pushed back toward its side, walk lost
+    assert live_gen.own_effects_raw([dict(card="x", xy=(0.25, 0.75), tick=5)], 1, 10) == [
+        dict(card="x", x=13500.0, y=24000.0, tick=5, ability=False)]

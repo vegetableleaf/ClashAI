@@ -260,6 +260,9 @@ def main() -> int:
     ap.add_argument("--predict-drops", action="store_true",
                     help="OPT-IN (needs --extrapolate): an observed enemy Skeleton Barrel balloon disappearance adds its 7 "
                          "skeletons to the look-ahead board 12 ticks later (pipeline/extrapolate.py DropTracker). Off = unchanged")
+    ap.add_argument("--own-effects", action="store_true",
+                    help="OPT-IN (W1, needs --extrapolate): my confirmed Log / Tornado / Rocket / hero IW freeze move the "
+                         "enemy bodies they reach in the look-ahead board (pipeline/extrapolate.py). Off = unchanged")
     ap.add_argument("--no-opp-counter", action="store_true",
                     help="feed the model opponent elixir = unknown instead of the public-events counter")
     ap.add_argument("--menu-guard", action="store_true",
@@ -311,6 +314,9 @@ def main() -> int:
     if a.predict_drops and not a.extrapolate:
         print("refusing: --predict-drops adds its skeletons to the look-ahead board, which needs --extrapolate > 0 "
               "(it would silently do nothing)")
+        return 2
+    if a.own_effects and not a.extrapolate:
+        print("refusing: --own-effects acts on the look-ahead board, which needs --extrapolate > 0")
         return 2
     if (a.matches > 1 or a.nav_dry_run) and not (a.friend or a.ladder):
         print("refusing: --matches > 1 and --nav-dry-run need --friend NAME or --ladder")
@@ -495,7 +501,8 @@ def load_pilot(a, decision_cfg, ckpt=None):
     pilot = GenPilot(ckpt or a.ckpt, device=device, gate_tau=a.tau, use_counter=not a.no_opp_counter,
                      extrapolate_ticks=a.extrapolate, decision_options=options_from_config(decision_cfg),
                      decision_seed=a.decision_seed, public_audit=a.public_audit,
-                     **({"predict_drops": True} if getattr(a, "predict_drops", False) else {}))
+                     **({"predict_drops": True} if getattr(a, "predict_drops", False) else {}),
+                     **({"own_effects": True} if getattr(a, "own_effects", False) else {}))
     pilot.legal_guard = not getattr(a, 'no_legal_guard', False)
     if getattr(a, "anti_leak", False):          # default: the class's None = off, the decision rule unchanged
         pilot.anti_leak_elixir, pilot.anti_leak_seconds = a.anti_leak_elixir, a.anti_leak_seconds
@@ -536,7 +543,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
       ckpt_source=a.ckpt_source, ckpt_sha256=a.ckpt_sha256,
       decision_options=vars(pilot.decision_options), decision_seed=pilot.match_seed,
       feature_version=pilot.feature_version, public_audit=a.public_audit, legal_guard=getattr(pilot, "legal_guard", None),
-      **({"predict_drops": True} if getattr(a, "predict_drops", False) else {}))
+      **({"predict_drops": True} if getattr(a, "predict_drops", False) else {}),
+      **({"own_effects": True} if getattr(a, "own_effects", False) else {}))
     rec = ScreenRec(stamp) if record else None
     # Menu guard (2026-09-30 verifier): card taps are gated only by reader flags, and 249/1378 past board taps fall
     # inside the main screen's Battle button -> the SCREEN is classified every <= 2 s; any menu stops the match.
