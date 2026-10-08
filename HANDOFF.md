@@ -4467,6 +4467,10 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   cell head (model_v3.cell_logits: board term per 2x2-tile patch; within a patch only q.key(cell_emb)). Worker
 >   (opus, worktree) building a zero-init 1-tile local refinement module trained with the base frozen on
 >   gen_dataset_v32_fv5 (laptop GPU), on old R3 u0050 + gen_v32, loadable in SIM + live, offline + 192-game SIM A/B.
+> * **Old R3 u0050, no-stall ghost screen vs R1e: -0.7 pp [-3.7, +2.3]** (ci_hi >= 0). Telemetry (299 ghost games,
+>   mean per game): leak share (time >= 9.5 elixir) 1x/2x/OT R1e .063/.046/.095 vs R3old .069/.032/.125 (OT n 34/30);
+>   elixir at play R1e 6.77/5.37/5.05 vs R3old 7.01/5.04/4.68 (pros 6.2-7.2): 1x toward pros, 2x/OT away. A paired
+>   leak CI is still owed before any leak verdict. R3old stays the stall-trained fallback only.
 >   Guard 25423d9 re-verification PASS_WITH_NOTES (kind-15 cursed troop, X-Bow footprint own-half, enemy buildings
 >   unchecked) -> builder fixing; not merged.
 > * **Log-on-air worker DONE_WITH_CONCERNS (worktree commit 16f667d, not merged; veto OPT-IN `--log-air-veto`).**
