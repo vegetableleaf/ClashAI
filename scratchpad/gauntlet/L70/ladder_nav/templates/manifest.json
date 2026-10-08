@@ -224,6 +224,40 @@
     1300
    ],
    "threshold": 0.85
+  },
+  "cu_title": {
+   "file": "cu_title.png",
+   "source": "content_update.png",
+   "box": [
+    92,
+    706,
+    314,
+    750
+   ],
+   "region": [
+    0,
+    400,
+    900,
+    1200
+   ],
+   "threshold": 0.85
+  },
+  "cu_restart": {
+   "file": "cu_restart.png",
+   "source": "content_update.png",
+   "box": [
+    94,
+    860,
+    194,
+    893
+   ],
+   "region": [
+    0,
+    600,
+    900,
+    1300
+   ],
+   "threshold": 0.85
   }
  }
 }
