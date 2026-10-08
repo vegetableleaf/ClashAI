@@ -1,0 +1,27 @@
+{"base": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\pipeline\\gen_v32_s0\\gen_s0.pt", "out": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\pipeline\\gen_v32_s0\\gen_s0_cellref5.pt", "train_play_rows": 911987, "val_rows": 20000, "steps": 3562, "params": 117248, "val0": {"step": 0, "cell_nll": 3.0538088203430176, "cell_half_top1": 0.2205, "cell_tile_top1": 0.22075, "card_top1": 0.62185, "n_play": 20000}}
+{"step": 200, "of": 3562, "cell_loss_ema": 3.0088, "rows_per_s": 941, "min": 0.9}
+{"step": 400, "of": 3562, "cell_loss_ema": 3.0196, "rows_per_s": 908, "min": 1.9}
+{"step": 600, "of": 3562, "cell_loss_ema": 2.9904, "rows_per_s": 870, "min": 2.9}
+{"step": 800, "of": 3562, "cell_loss_ema": 2.981, "rows_per_s": 842, "min": 4.1}
+{"step": 1000, "of": 3562, "cell_loss_ema": 3.0056, "rows_per_s": 851, "min": 5.0}
+{"val": {"step": 1000, "cell_nll": 3.0373459533691407, "cell_half_top1": 0.22705, "cell_tile_top1": 0.22705, "card_top1": 0.62185, "n_play": 20000}}
+{"saved": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\pipeline\\gen_v32_s0\\gen_s0_cellref5.pt", "step": 1000, "cell_nll": 3.0373459533691407}
+{"step": 1200, "of": 3562, "cell_loss_ema": 2.987, "rows_per_s": 862, "min": 5.9}
+{"step": 1400, "of": 3562, "cell_loss_ema": 2.9783, "rows_per_s": 894, "min": 6.7}
+{"step": 1600, "of": 3562, "cell_loss_ema": 2.9612, "rows_per_s": 920, "min": 7.4}
+{"step": 1800, "of": 3562, "cell_loss_ema": 2.9653, "rows_per_s": 944, "min": 8.1}
+{"step": 2000, "of": 3562, "cell_loss_ema": 2.9446, "rows_per_s": 965, "min": 8.8}
+{"val": {"step": 2000, "cell_nll": 3.013672427368164, "cell_half_top1": 0.234, "cell_tile_top1": 0.2341, "card_top1": 0.62185, "n_play": 20000}}
+{"saved": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\pipeline\\gen_v32_s0\\gen_s0_cellref5.pt", "step": 2000, "cell_nll": 3.013672427368164}
+{"step": 2200, "of": 3562, "cell_loss_ema": 2.9529, "rows_per_s": 960, "min": 9.8}
+{"step": 2400, "of": 3562, "cell_loss_ema": 2.9666, "rows_per_s": 971, "min": 10.5}
+{"step": 2600, "of": 3562, "cell_loss_ema": 2.9614, "rows_per_s": 983, "min": 11.3}
+{"step": 2800, "of": 3562, "cell_loss_ema": 2.9637, "rows_per_s": 996, "min": 12.0}
+{"step": 3000, "of": 3562, "cell_loss_ema": 2.9479, "rows_per_s": 1005, "min": 12.7}
+{"val": {"step": 3000, "cell_nll": 3.005193600845337, "cell_half_top1": 0.23615, "cell_tile_top1": 0.23615, "card_top1": 0.62185, "n_play": 20000}}
+{"saved": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\pipeline\\gen_v32_s0\\gen_s0_cellref5.pt", "step": 3000, "cell_nll": 3.005193600845337}
+{"step": 3200, "of": 3562, "cell_loss_ema": 2.9646, "rows_per_s": 996, "min": 13.7}
+{"step": 3400, "of": 3562, "cell_loss_ema": 2.9602, "rows_per_s": 1000, "min": 14.5}
+{"val": {"step": 3562, "cell_nll": 3.0045981304168703, "cell_half_top1": 0.23505, "cell_tile_top1": 0.23505, "card_top1": 0.62185, "n_play": 20000}}
+{"saved": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\pipeline\\gen_v32_s0\\gen_s0_cellref5.pt", "step": 3562, "cell_nll": 3.0045981304168703}
+{"done": true, "best_val_cell_nll": 3.0045981304168703, "base_val_cell_nll": 3.0538088203430176, "minutes": 15.3}

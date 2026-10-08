@@ -1,0 +1,2 @@
+[cand r3c_u0030] fetched f8d23eaa4ec87d30 2026-10-08 01:56:17
+[cand r3c_u0030] barrel done: {"RESULT": true, "a_zero_init_equals_base": true, "b_base_byte_identical": true, "c_gate_card_unchanged": true, "d_branch_changed_finite": true} 2026-10-08 01:58:58

@@ -1,0 +1,66 @@
+{
+ "checks": {
+  "a_zero_init_equals_base": {
+   "max_abs_diff": {
+    "gate": 0.0,
+    "card": 0.0,
+    "wait": 0.0,
+    "value": 0.0,
+    "cell": 0.0
+   },
+   "rows": 256,
+   "rows_with_valid_target": 69,
+   "cell_mean_abs_diff": 0.0,
+   "cell_argmax_changed_rows": 0,
+   "ok": true
+  },
+  "b_base_byte_identical": {
+   "base_tensors": 98,
+   "mismatched": [],
+   "added_keys": [
+    "projectile_target_in.0.bias",
+    "projectile_target_in.0.weight",
+    "projectile_target_in.2.bias",
+    "projectile_target_in.2.weight",
+    "projectile_target_spread.weight"
+   ],
+   "ok": true
+  },
+  "c_gate_card_unchanged": {
+   "max_abs_diff": {
+    "gate": 2.980232238769531e-07,
+    "card": 9.5367431640625e-07,
+    "wait": 9.5367431640625e-07,
+    "value": 9.5367431640625e-07,
+    "cell": 1.368391990661621
+   },
+   "rows": 2000,
+   "rows_with_valid_target": 548,
+   "cell_mean_abs_diff": 0.002041210047900677,
+   "cell_argmax_changed_rows": 20,
+   "ok": true
+  },
+  "d_branch_changed_finite": {
+   "max_abs_change": {
+    "projectile_target_in.0.weight": 0.14765597879886627,
+    "projectile_target_in.0.bias": 0.07463497668504715,
+    "projectile_target_in.2.weight": 0.17608806490898132,
+    "projectile_target_in.2.bias": 0.13143673539161682,
+    "projectile_target_spread.weight": 0.1178671345114708
+   },
+   "finite": true,
+   "ok": true
+  }
+ },
+ "checkpoint": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\rl_royale\\rseries_r3c\\barrel_rseries_r3c_u0030\\gen_branch_s0.pt",
+ "checkpoint_sha256": "1878f2420d0ab6c9f59a5acb69a14ef5716a0181bb87dca8b07d63400ea06010",
+ "updates": 1000,
+ "batch": 128,
+ "lr": 0.001,
+ "seed": 0,
+ "device": "cuda",
+ "train_pool_rows": 128000,
+ "val_rows": 2000,
+ "final_loss": 5.570426940917969,
+ "pass_all": true
+}
