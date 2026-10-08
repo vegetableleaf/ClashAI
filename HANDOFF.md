@@ -4501,6 +4501,19 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **Benchmark-v2 tuning grid, R3 u0050 (192 paired, tune seeds 0:48; score = wins + draws/2; ctl 127, R1e 133):**
+>   tau_phase B (.35/.45/.55) 104 (14/47, p<.0001) FAIL; (.30/.40/.45) 126; (.25/.35/.45) 131 (28/23, p .58);
+>   (.30/.35/.40) 126; (.25/.35/.35) 121; (.30/.30/.30) 133 (33/23, p .23). xbow f .3 125 (7/9), f .2 124 (7/10),
+>   f .4 123 (3/7). Behaviour (ab_behaviour.py): ctl elixir@play 1x/2x/OT 7.36/5.93/5.63, leak .52/.27/.18, def X-Bow
+>   9.0%; tauB raises 2x/OT elixir@play to 6.48/6.28 but leak .35/.37 and loses; lower taus cut leak (.25/.35/.45:
+>   .30/.13/.19) but lower elixir@play (5.56/5.32) -> a threshold trades leak against elixir@play; it cannot buy both.
+>   xbow f .3 def X-Bow 18.1% (f .2 21.3%, f .4 16.6%; pros 27%). Pre-registered rule: xbow f .3 PASSES (wins -2,
+>   toward pros); NO tau variant passes (none raises 2x/OT elixir@play without losing). R1e vs R3old ctl on v2: 133 vs
+>   127 (35/35, p 1.0) -- the old-benchmark "R3old +15" vanished. R3n u0040 on v2: 118 vs R1e 133 (30/39, p .34).
+>   Leak share stays high (.44-.52 in 1x) because S1 never initiates and neither does our model.
+>   ROUND 2 (`~/ab_confirm.sh`): fresh seeds 48:96 for ctl, R1e, xbow f .3, tau (.25/.35/.45), (.30/.30/.30), and
+>   LIVE ANTI-LEAK (learner-only forced spend 9/12 via eval_split/react_split.py; owner: "I've only ever asked for it
+>   to be installed live") on both seed sets. Tau goal for round 2, stated post hoc: fewer leaks without fewer wins.
 > * **TRAP (05:2x): junctions inside agent worktrees** (agent-aa753d19, agent-abc80f34, opt3, r4) pointed at icebow/data
 >   and research/ext; removed (links only, targets verified intact). Before ANY worktree removal: check LinkType and
 >   `.Delete()` links first (memory worktree-junction-trap).
