@@ -4777,6 +4777,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   and spend match pros. (a) Tornado as first answer when broke +25.6 pp failure. (b) TowerRefine may hurt IW defence
 >   (n small). Fixes: F1 economy (= Hero IW parity fix in progress), F2 low-elixir card choice and F3 TowerRefine side
 >   effect: measurements dispatched (same worker), F4 pipelining (parked).
+> * **Defense F2/F3 (c), merged:** at 2-4 elixir threatened, pros played Tornado .11 / Log .29; model top card on the same pro
+>   rows .08 / .30 (top-1 agreement .82); live played .11 / .25 -> no card over-pick; Tornado-first failure = being broke
+>   (F1). TowerRefine vs stack2k on 5,677 pro defensive rows: card .705/.701, cell within 1 tile .283/.283, IW .194/.182
+>   -> no regression; the live IW damage gap is noise/opponent mix at 52 matches (recheck at 100+). With the Hero IW
+>   fix the gate p median at 2-4 elixir falls .192 -> .161 (card choice unchanged). VM DRIFT: ~/ClashBot/pipeline/
+>   own_ability.py md5 d43619cc != main ff746a44 (plus the push_refine.py/model_gen.py/behaviour_telemetry.py drift) ->
+>   reconcile before the next VM sync.
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
