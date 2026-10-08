@@ -33,6 +33,7 @@ class DecisionOptions:
     gate_decode: str = 'threshold'          # 'hazard' / 'hazard_below_tau': execute the gate's learned play RATE (W4)
     gate_hazard_min_elixir: float = 0.0     # hazard draws only at own elixir >= this (0 = everywhere)
     gate_hazard_quiet: bool = False         # hazard draws only with no enemy unit on the board (public bodies)
+    lethal_rocket: str = 'off'
 
     def __post_init__(self):
         if self.card_choice not in ('argmax', 'filtered'):
@@ -58,11 +59,14 @@ class DecisionOptions:
             raise ValueError('gate_decode must be threshold, hazard or hazard_below_tau')
         if not math.isfinite(self.gate_hazard_min_elixir) or not 0 <= self.gate_hazard_min_elixir <= 10:
             raise ValueError('gate_hazard_min_elixir must be in [0, 10]')
+        if self.lethal_rocket not in ('off', 'ot'):
+            raise ValueError('lethal_rocket must be off or ot')
 
     @property
     def active(self):
         return (self.card_choice != 'argmax' or self.spell_aim != 'argmax' or self.tau_phase is not None
-                or self.xbow_class != 'argmax' or self.log_aim != 'argmax' or self.gate_decode != 'threshold')
+                or self.xbow_class != 'argmax' or self.log_aim != 'argmax' or self.gate_decode != 'threshold'
+                or self.lethal_rocket != 'off')
 
 
 def options_from_config(cfg=None):
@@ -95,6 +99,10 @@ def add_arguments(parser):
                         help='hazard draws only when my elixir >= this (0 = at any elixir)')
     parser.add_argument('--gate-hazard-quiet', action='store_true',
                         help='hazard draws only when no enemy unit is on the board')
+    parser.add_argument('--lethal-rocket', choices=('off', 'ot'), default='off',
+                        help='ot: in overtime (t >= 180 s, the tau_phase edge) play Rocket NOW, whatever the gate, at the '
+                             'centre of an alive enemy PRINCESS tower whose HP <= my Rocket crown-tower damage (lower HP '
+                             'first; never the king), when Rocket is in hand and affordable; else unchanged')
     parser.add_argument('--decision-seed', type=int, default=0,
                         help='separate seeded card-choice stream; recorded with each experiment')
 
@@ -374,13 +382,82 @@ def choose_cells(logits, card_names, options, *, rngs=None, enemy_alive=None, gr
     return result
 
 
+# ---- lethal_rocket (owner 2026-10-08: "always be rocketing a tower it can finish in one rocket if it's overtime") ----
+@lru_cache(maxsize=1)
+def _rocket_catalog():
+    import json
+    from .body_identity import CATALOG, CALIBRATION
+    rocket = next(c for c in json.loads(CATALOG.read_text(encoding='utf-8'))['cards'] if c['name'] == 'Rocket')
+    rounding = json.loads(CALIBRATION.read_text(encoding='utf-8'))['combat']['CROWN_TOWER_DAMAGE_ROUNDING']['value']
+    return int(rocket['damage']), int(rocket['crown_tower_damage_percent']), rocket['level_scaling'], rounding
+
+
+@lru_cache(maxsize=32)
+def rocket_tower_damage(level):
+    """My Rocket's crown-tower damage at unified card ``level``: RoyaleSim catalog damage floor(580 x ladder / 100)
+    (rocket_teaching.scaled_stat's table), then its 23 % under calibration combat.CROWN_TOWER_DAMAGE_ROUNDING
+    (ceil_kept_share). Level 15 = 497 = MEASURED live (live_play_20261008_131352 t4304: 1092 -> 595); level 11 = 342."""
+    base, pct, ls, rounding = _rocket_catalog()
+    local, step = int(level) - ls['relative_level'], int(level) - ls['base_level']
+    if not 1 <= local <= ls['level_count'] or not 0 <= step < len(ls['multiplier_percent_by_level']):
+        raise ValueError(f'Rocket has no level {level}')
+    n = base * int(ls['multiplier_percent_by_level'][step]) // 100 * pct
+    if rounding == 'ceil_kept_share':
+        return -(-n // 100)
+    if rounding == 'floor':
+        return n // 100
+    raise ValueError(f'unknown crown-tower rounding {rounding!r}')
+
+
+def lethal_rocket_target(crown_towers, side):
+    """The alive ENEMY PRINCESS my Rocket finishes in one hit, lowest HP first -> dict(lane (my frame), hp, damage,
+    level), else None. ``crown_towers``: raw ``episode.crown_towers`` rows (side, type, x, y in 1/1000 tile, hp, max_hp;
+    live_mem.to_observe / RoyaleSim raw()). My card level = my own tower max HP (from_engine's level factor: level 11
+    = 3052 princess / 4824 king -> body_identity.level_of_factor); Rocket assumed at that level. Kings never qualify."""
+    from .body_identity import level_of_factor
+    from .obs_contract import _engine_xy
+    mine = next((t for t in crown_towers if int(t['side']) == side and t.get('max_hp')), None)
+    level = mine and level_of_factor(float(mine['max_hp']) / (4824.0 if mine.get('type') == 'king' else 3052.0))
+    if level is None:
+        return None
+    damage, best = rocket_tower_damage(level), None
+    for t in crown_towers:
+        if int(t['side']) == side or t.get('type') != 'princess' or t.get('destroyed') or not 0 < t['hp'] <= damage:
+            continue
+        x, _ = _engine_xy(float(t['x']), float(t['y']), side == 1)
+        if best is None or t['hp'] < best['hp']:
+            best = dict(lane='L' if x < .5 else 'R', hp=int(t['hp']), damage=damage, level=level)
+    return best
+
+
+@lru_cache(maxsize=8)
+def lethal_rocket_cell(lane, grid):
+    """The ``grid`` cell at the enemy princess tower's centre, my frame (model_tower.anchors(): opp L = 4, opp R = 5)."""
+    from .model_tower import anchors
+    from .model_v3 import cell_label
+    return int(cell_label(torch.tensor(anchors()[4 if lane == 'L' else 5]), grid))
+
+
+def lethal_rocket_choice(options, t_sec, names, allowed, crown_towers, side, grid, pending=False):
+    """-> (slot, cell, target) when lethal_rocket fires, else None: overtime (phase_index 2, the tau_phase edge), no
+    card pending, an affordable Rocket slot (``allowed``: in hand and cost <= integer elixir), a lethal princess."""
+    if options.lethal_rocket == 'off' or pending or phase_index([t_sec])[0] != 2:
+        return None
+    slots = [i for i, n in enumerate(names) if n is not None and str(n).lower() == 'rocket' and allowed[i]]
+    target = lethal_rocket_target(crown_towers, side) if slots else None
+    if target is None:
+        return None
+    return slots[0], lethal_rocket_cell(target['lane'], grid), target
+
+
 @torch.no_grad()
 def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options, rngs, card_names,
                  t_sec=None, enemy_alive=None, grid=None, projectiles=None, step_s=None, elixir=None,
-                 enemy_units=None):
+                 enemy_units=None, lethal=None):
     """Optional branch of e1_eval's live decision; default branch remains untouched.
     ``t_sec`` (tau_phase) and ``enemy_alive`` [(K, L, R) alive] + ``grid`` (xbow_class) are per-row match context;
-    ``projectiles`` (log_aim) = each row's model projectile tokens, decoded with the model's own card vocabulary."""
+    ``projectiles`` (log_aim) = each row's model projectile tokens, decoded with the model's own card vocabulary.
+    ``lethal`` (lethal_rocket) = per row (raw crown towers, my side, a card pending) for ``lethal_rocket_choice``."""
     tau = gate_taus(options, tau, t_sec, len(allowed))
     playing = allowed.any(axis=1) & ((np.asarray(p) > tau) | stalled)
     if options.gate_decode != 'threshold':
@@ -414,10 +491,19 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
                                   enemy_alive=None if enemy_alive is None else [enemy_alive[r] for r in ids]
                                   ).cpu().numpy()
     tau = np.broadcast_to(tau, len(slots))
-    return [dict(play=bool(playing[r]), slot=slots[r], cell=int(cells[r]),
-                 why=('no_affordable' if slots[r] < 0 else 'wait' if not playing[r]
-                      else 'stall' if stalled[r] and p[r] <= tau[r] else 'gate' if p[r] > tau[r] else 'hazard'))
-            for r in range(len(slots))]
+    out = [dict(play=bool(playing[r]), slot=slots[r], cell=int(cells[r]),
+                why=('no_affordable' if slots[r] < 0 else 'wait' if not playing[r]
+                     else 'stall' if stalled[r] and p[r] <= tau[r] else 'gate' if p[r] > tau[r] else 'hazard'))
+           for r in range(len(slots))]
+    if options.lethal_rocket != 'off':
+        if lethal is None or t_sec is None or grid is None or card_names is None:
+            raise ValueError('lethal_rocket requires per-row crown towers, decision times, the grid and card names')
+        for r in range(len(out)):
+            towers, side, pending = lethal[r]
+            hit = lethal_rocket_choice(options, t_sec[r], card_names[r], allowed[r], towers, side, grid, pending=pending)
+            if hit is not None:
+                out[r] = dict(play=True, slot=hit[0], cell=hit[1], why='lethal_rocket')
+    return out
 
 
 def match_kwargs(matches):
@@ -445,6 +531,10 @@ def match_kwargs(matches):
         boards = [m._cur[1] for m in matches]    # the prepared decision's engine BoardState (my frame)
         out.update(t_sec=[float(b.t_sec) for b in boards], grid=cfg['grid'],
                    enemy_alive=[tuple(bool(t.alive) for t in b.towers[3:6]) for b in boards])
+    if options.lethal_rocket != 'off':  # the model board's time (as tau_phase); tower HP from the decision tick's raw state
+        out.update(t_sec=[float(m._cur[1].t_sec) for m in matches], grid=cfg['grid'],
+                   lethal=[(((m.state or {}).get('episode') or {}).get('crown_towers', []), int(m.side),
+                            getattr(m, 'pending', None) is not None) for m in matches])
     if options.log_aim != 'argmax':     # the very projectile tokens the model saw (gen_row, fv >= 4), as live's batch
         rows = [getattr(m, '_gen_row', None) for m in matches]
         if any(r is None or 'projectiles' not in r for r in rows):

@@ -12,7 +12,8 @@ from .model_v3 import cell_xy
 from dataclasses import replace
 
 from .decision_options import (BARREL_KEY, DecisionOptions, barrel_landings, choose_cells, choose_slot, enemy_unit_count,
-                               gate_taus, hazard_draw)
+                               gate_taus, hazard_draw, lethal_rocket_choice)
+from .live_mem import my_side_of
 
 # W4 hazard gate decoding: game seconds one live decision may accrue. Live decides every reader frame (logged decisions
 # ~10 ticks apart, SIM every 10); a CPU-starved loop reaches ~30 ticks (1.5 s). 2.0 s = the WAIT-row stride the gate was
@@ -66,6 +67,18 @@ class GenPilot(LegacyGenPilot):
             decision['public_audit'] = self._public_audit_snapshot
         return decision
 
+    def lethal_rocket(self, frame, info, allowed):
+        """decision_options.lethal_rocket_choice on the live frame: the decision board's time (bs.t_sec, as tau_phase),
+        the raw frame's absolute tower HP (public), my hand by position. live_play never decides with a card pending."""
+        options = self.decision_options
+        if getattr(options, 'lethal_rocket', 'off') == 'off':
+            return None
+        from .live_mem import to_observe
+        side = my_side_of(frame)
+        towers = to_observe(frame, side, info['names'])['episode']['crown_towers']
+        names = [info['names'][di] if di >= 0 else None for di in info['hand_deck_indices']]
+        return lethal_rocket_choice(options, info['bs'].t_sec, names, allowed, towers, side, self.grid)
+
     @torch.no_grad()
     def decide(self, frame):
         options = self.decision_options
@@ -101,6 +114,19 @@ class GenPilot(LegacyGenPilot):
             if not playing:
                 playing = hazard = hazard_draw(options, p, step, self.rng_decisions, elixir=bs.my_elixir,
                                                enemy_units=enemy_unit_count(bs))
+        lethal = self.lethal_rocket(frame, info, allowed)
+        if lethal is not None:                          # SIM decide_batch: the same rule overrides gate, card and cell
+            pos, cell, target = lethal
+            card, form = info['hand'][pos]
+            d = dict(play=True, p_play=p, hand_pos=pos, no_affordable=False, stalled=stalled, why='lethal_rocket',
+                     lethal_rocket=target, deck_index=info['hand_deck_indices'][pos], card=card, form=form, bs=bs,
+                     name=info['names'][info['hand_deck_indices'][pos]], xy=cell_xy(cell, self.grid), **lookahead)
+            if options.tau_phase is not None:
+                d['gate_tau'] = tau
+            if hazard_on:                               # a play was made: no hazard accrues over its landing
+                d.update(hazard_step_s=step, hazard_play=False)
+                self._hazard_prev = (tick, False)
+            return self._audited(d)
         pos = choose_slot(out['card'][0], allowed, options, self.rng_decisions, playing=playing)
         card, form = info['hand'][pos]
         name = info['names'][info['hand_deck_indices'][pos]] if card > 0 else None

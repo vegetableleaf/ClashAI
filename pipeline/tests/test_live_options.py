@@ -29,8 +29,23 @@ def parse(argv, path):
     return options_from_config(config_from_args(a)), record
 
 
+# owner 2026-10-08 bundle: 9+ elixir hazard gate (W4), Hero IW higher bar, Log at the Goblin Barrel, OT lethal Rocket
+BUNDLE = '--gate-decode hazard_below_tau --gate-hazard-min-elixir 9 --iw-press-pstar 0.03 --log-aim log_barrel --lethal-rocket ot'
+DEPLOYED_FILE = DEPLOYED.rstrip('\n') + ' ' + BUNDLE + '\n'
+
+
 def test_checked_in_file_holds_the_deployed_options():
-    assert (REPO / 'scratchpad/gauntlet/L70/live/LIVE_OPTIONS').read_text() == DEPLOYED
+    assert (REPO / 'scratchpad/gauntlet/L70/live/LIVE_OPTIONS').read_text() == DEPLOYED_FILE
+
+
+def test_checked_in_file_applies_every_bundle_option():
+    f = REPO / 'scratchpad/gauntlet/L70/live/LIVE_OPTIONS'
+    ap = parser(f); ap.add_argument('--own-effects', action='store_true'); ap.add_argument('--iw-press-pstar', type=float)
+    a, rec = parse_with_live_options(ap, [])
+    opts = options_from_config(config_from_args(a))
+    assert (opts.gate_decode, opts.gate_hazard_min_elixir, opts.log_aim, opts.lethal_rocket) == \
+        ('hazard_below_tau', 9.0, 'log_barrel', 'ot')
+    assert a.iw_press_pstar == 0.03 and a.own_effects is True and rec['explicit'] == []
 
 
 def test_file_present_applies_it(tmp_path):
@@ -189,3 +204,22 @@ def test_iw_press_pstar_deployable_from_the_file_and_explicit_wins(tmp_path):
     assert a.iw_press_pstar is None and rec['status'] == 'ignored'
     a, rec = parse_with_live_options(ap, ['--iw-press-pstar', '0.05'])
     assert a.iw_press_pstar == 0.05 and rec['explicit'] == ['iw_press_pstar'] and rec['from_file'] == {}
+
+
+def test_lethal_rocket_deployable_from_the_file(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + '--lethal-rocket ot\n')
+    opts, rec = parse([], f)
+    assert opts.lethal_rocket == 'ot' and rec['from_file']['lethal_rocket'] == 'ot'
+    opts, rec = parse(['--lethal-rocket', 'off'], f)                           # explicit wins
+    assert opts.lethal_rocket == 'off' and rec['explicit'] == ['lethal_rocket']
+    assert parse([], tmp_path / 'missing')[0].lethal_rocket == 'off'
+
+
+@pytest.mark.skipif(not CKPT.is_file(), reason='live checkpoint not present')
+def test_check_json_reports_lethal_rocket(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + '--lethal-rocket ot\n')
+    out = run_live_play('--check', '--ckpt', str(CKPT), '--live-options-file', str(f))
+    assert out.returncode == 0, out.stdout + out.stderr
+    check = json.loads(out.stdout.strip().splitlines()[-1])
+    assert check['decision_options']['lethal_rocket'] == 'ot'
+    assert check['live_options']['from_file']['lethal_rocket'] == 'ot'
