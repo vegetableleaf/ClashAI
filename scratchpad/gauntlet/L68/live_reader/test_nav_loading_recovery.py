@@ -28,12 +28,17 @@ nav = LadderNav(0.0, {})
 assert nav.plan(LOAD, 1)[0] == "wait" and nav.plan(CU, 20)[:2] == ("act", "restart")
 nav.acted("restart", 21)
 assert nav.plan(CU, 22)[0] == "wait" and nav.plan(LOAD, 80)[0] == "wait" and nav.plan(LOAD, 82)[0] == "stop"
-# planner: loading 60 s, no modal -> relaunch; then no blind tap-through on unknown frames while the app restarts
+# planner: loading 60 s, no modal -> relaunch; after it unknown screens are tapped through as before (coordinator
+# 2026-10-08: post-update news / season popups), and loading another 60 s is a stop, never a 2nd relaunch
 nav = LadderNav(0.0, {})
 assert nav.plan(LOAD, 1)[0] == "wait" and nav.plan(LOAD, 61.5) == ("act", "relaunch", None)
 nav.acted("relaunch", 62)
-assert all(nav.plan(UNK, t)[0] == "wait" for t in (63, 70, 100))
-assert nav.plan(main(), 101)[0] == "wait" and not nav.recovered          # a known screen ends the episode
+assert nav.plan(UNK, 63)[0] == "wait" and nav.plan(UNK, 65)[:2] == ("act", "tap_through")
+nav.acted("tap_through", 65)
+assert nav.plan(LOAD, 100)[0] == "wait" and nav.plan(LOAD, 126)[0] == "stop"
+nav = LadderNav(0.0, {})
+nav.acted("relaunch", 1)
+assert nav.plan(main(), 2)[0] == "wait" and not nav.recovered            # a known screen ends the episode
 # planner: a committed transition (Play Again tapped) does not hand off on the modal; the restart un-commits it
 nav = LadderNav(0.0, {})
 nav.acted("play_again", 0.5)
@@ -91,11 +96,21 @@ def s2(t, sent):
         return UNK
     if RELAUNCH[-1] in sent:
         st.setdefault("r", t)
-        return UNK if t - st["r"] < 20 else main()     # launcher / splash frames: waited out, never tapped
+        return LOAD if t - st["r"] < 20 else main()    # the relaunched game's splash, then the menu
     return LOAD
 res, sent, out = run(s2)
 assert res[0] and sent == [*RELAUNCH, "input tap 455 1220"], (res, sent)
 assert "[ladder] loading stuck -> relaunched app" in out, out
+
+# 2b) modal -> RESTART -> two unknown post-update popups (tapped through, as before the recovery) -> menu -> Battle
+def s2b(t, sent):
+    if "input tap 455 1220" in sent:
+        return UNK
+    if "input tap 144 876" in sent:
+        return UNK if sent.count("input tap 450 450") < 2 else main()
+    return CU
+res, sent, out = run(s2b)
+assert res[0] and sent == ["input tap 144 876", "input tap 450 450", "input tap 450 450", "input tap 455 1220"], sent
 
 # 3) relaunch does not help -> exactly one recovery, then STOP as before (no loop)
 res, sent, out = run(lambda t, sent: LOAD)

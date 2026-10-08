@@ -18,7 +18,8 @@ Screens (template matching on `adb exec-out screencap` frames vs scratchpad/gaun
   loading  the Clash Royale logo screen (app start / battle loading).
   content_update  the game's own "Content Update ... Restart the game" modal (it froze the 94 % loading screen for an
            hour, 2026-10-08): tap its RESTART at once. A loading screen stuck UNKNOWN_S with no modal -> force-stop
-           and relaunch the app. ONE such recovery per stuck episode; still no menu UNKNOWN_S later -> STOP as before.
+           and relaunch the app. ONE such recovery per stuck episode; after it the old rules apply (unknown screens,
+           e.g. post-update news popups, are tapped through; UNKNOWN_S of pure loading -> STOP as before).
 Policy: after a results screen tap Play Again, EXCEPT after the day's 4th win (counted here, persisted in
 ladder_state.json): tap OK, tap through the chest-opening screens until the main screen is stable, tap Battle. The
 win count is re-synced from the main screen whenever we are on it: no "Daily Bonus" -> 4 done; "Daily Bonus" back
@@ -62,7 +63,9 @@ TARGETS = {                                     # rectangle the tap point must l
     "restart": (60, 820, 420, 940),             # "Content Update" modal: its only button (RESTART ~ (144, 876))
     "reload": (100, 700, 400, 1100),           # "Connection lost" dialog, NOT the another-device kind        # neutral point: top-centre art on every popup seen so far
 }
-RELAUNCH = ("am force-stop com.mumu.store", "am force-stop com.android.vending",   # store overlays (start_live.sh)
+# com.mumu.store is stopped as start_live.sh does (its advert overlay). Stopping com.android.vending (Play Store) is
+# NEW here, not in start_live.sh: it closes a store overlay / pending store job over the game; force-stop never installs.
+RELAUNCH = ("am force-stop com.mumu.store", "am force-stop com.android.vending",
             "am force-stop com.supercell.clashroyale",
             "monkey -p com.supercell.clashroyale -c android.intent.category.LAUNCHER 1")
 FORBIDDEN = {"shop_tab": (0, 1440, 170, 1600)}
@@ -276,11 +279,7 @@ class LadderNav:
         if s in ("unknown", "loading", "content_update"):
             self.unknown_since = self.unknown_since if self.unknown_since is not None else now
             idle = now - self.unknown_since
-            if self.recovered:                    # 2026-10-08: after RESTART / relaunch, no blind tap and no handoff
-                if idle > self.UNKNOWN_S:
-                    return ("stop", f"{s} screen for {self.UNKNOWN_S:.0f} s after the loading-stuck recovery")
-                return ("wait", f"{s} (app restarting)")
-            if s == "content_update":
+            if s == "content_update" and not self.recovered:   # 2026-10-08: ONE recovery per stuck episode
                 return ("act", "restart", scr["restart"])
             if self.choose_flow and self.picked_at is None:   # owner 2026-10-07: never tap blind until a card is
                 # picked; after the pick only the card reveal ('tap to continue', live 17:23) follows -> normal tap-through
@@ -295,7 +294,10 @@ class LadderNav:
                     return ("stop", f"{self.TAP_MAX} tap-throughs and still no known screen")
                 return ("act", "tap_through", TAP_THROUGH_PT)
             if idle > self.UNKNOWN_S:
-                return ("act", "relaunch", None) if s == "loading" else ("stop", f"{s} screen for {self.UNKNOWN_S:.0f} s")
+                if s == "loading" and not self.recovered:
+                    return ("act", "relaunch", None)
+                return ("stop", f"{s} screen for {self.UNKNOWN_S:.0f} s"
+                                + (" after the loading-stuck recovery" if self.recovered else ""))
             return ("wait", s)
         self.unknown_since, self.recovered = None, False   # a known screen ends the stuck episode
         if s != "main":
@@ -382,7 +384,7 @@ class LadderNav:
             self.choose_flow = True
         elif target == "reward_card":
             self.picked_at = now
-        elif target in ("restart", "relaunch"):  # the app restarts: any queue is gone; wait UNKNOWN_S for a menu
+        elif target in ("restart", "relaunch"):  # the app restarts: any queue is gone; no 2nd recovery this episode
             self.recovered, self.committed, self.unknown_since = True, False, now
 
 
