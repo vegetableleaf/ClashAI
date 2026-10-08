@@ -4501,6 +4501,12 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **CANDIDATE R3c u0030 (sha f8d23eaa; old R3 u0050 + 30 no-stall updates) + add-ons, v2 192 (worker's sim_lane runs):**
+>   base 150 vs R1e 126 (64/24); +barrel 154 (5/1); **+barrel+CellRefine 2ep 163 (27/14, p .060; vs R1e 163 vs 126,
+>   70/17)**; centre lane 55.3 -> 72.5%; offline centre-pick lane 49.6 -> 64.8% (pros 64.8%). Held-out Log lane base 82,
+>   +barrel 112 (FAILS 115 by 3), +barrel+CR 115 (at the bar). Barrel-heavy (96 gen): Log lane vs barrel 69.3 -> 84.9 ->
+>   80.5%; wins 60/63/61; crowns against 41/37/39. Files rseries_r3c_u0030_barrel.pt / _barrel_cellref5.pt (laptop + VM).
+>   Retraining the barrel branch with 2,000 updates for margin (owner priority), then re-stack CR.
 > * **Live anti-leak verification: PASS_WITH_NOTES.** Elixir read, tick, last-accepted-play semantics = SIM; default OFF
 >   identical (decisions + RNG) on 995 frames; no double-fire (decisions skipped while a tap is pending); alternation
 >   resets per match; trial merge clean, 135 live tests pass. Mismatch: clock start -- SIM at warmup tick 90, live at
