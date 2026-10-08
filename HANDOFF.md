@@ -4501,6 +4501,9 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **TRAP (05:2x): junctions inside agent worktrees** (agent-aa753d19, agent-abc80f34, opt3, r4) pointed at icebow/data
+>   and research/ext; removed (links only, targets verified intact). Before ANY worktree removal: check LinkType and
+>   `.Delete()` links first (memory worktree-junction-trap).
 > * **cell_shift branch kind: NOT viable as built (worktree commit 9ef8c5c, not merged).** Census (R3 u0050 vs ladder,
 >   sampling opps, no stall): 35.1 eligible points/match (6.05 centre). 40 points x k=16 CRN full-match outcome:
 >   37.5% with |delta| >= .25 vs 44% under a sign-flip null; spread across points (sd .28) = per-point SE (.27) ->
