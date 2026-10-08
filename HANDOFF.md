@@ -4469,6 +4469,18 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   gen_dataset_v32_fv5 (laptop GPU), on old R3 u0050 + gen_v32, loadable in SIM + live, offline + 192-game SIM A/B.
 >   Guard 25423d9 re-verification PASS_WITH_NOTES (kind-15 cursed troop, X-Bow footprint own-half, enemy buildings
 >   unchecked) -> builder fixing; not merged.
+> * **Log-on-air worker DONE_WITH_CONCERNS (worktree commit 16f667d, not merged; veto OPT-IN `--log-air-veto`).**
+>   MEASURED: pros Log an air-only corridor 0.78% of 47,703 Logs (air-only pushes = 3.6% of rows; pros answer them with
+>   Skeletons 8.0%, Electro Spirit 4.0%, Tesla 3.5%, Log 1.8%); bot at cast 1.7% (38/2,182 classifiable live Logs) =
+>   2.2x pros, the rest pro-like. Model probe (300 states, push inserted): P(Log) Minions 0.070 vs Knight 0.071 (base),
+>   0.062 vs 0.070 (R1e) = no distinction; Bats 0.081 vs Goblins 0.298; Log cell mass in the corridor air 0.72 vs ground
+>   0.90. RL did NOT raise it (0.054 -> 0.048). Habit: 55% of live Logs go to the two bridge cells and 54% have
+>   p_play < 0.40 at tau 0.35 (air-only Logs: 76% marginal) -> low-confidence gate plays. Reader identity exact
+>   (22,775 air bodies = model batch). **SIM BUG CONFIRMED: RoyaleSim's Log does 0 damage to Skeletons, Goblins,
+>   Barbarians (4/4 seeds, several distances) while single units lose exactly 268; Arrows hits Barbarians (-732)** ->
+>   RL cannot learn the Log beats swarms. Untested: whether newer RoyaleSim (0.1.20/0.1.21) fixed it. Inventory of
+>   old-system fixes missing now: Log corridor lateral aim, Tornado never targets buildings, dead-lane X-Bow latch
+>   (owner-reported twice), Tornado king-pull; air veto now opt-in. Outputs scratchpad/gauntlet/L73/log_air/ (worktree).
 >   ~15:40" (Q1 card sampling flag, Q2 area-aware spell aim, Q3 GPU A/Bs after R1e, Q4 R1e approval ping, Q5 fixes);
 >   launcher `.foreman/codex_autopilot/codex_loop.sh` (back-to-back runs to 10-06; STOP_LOOP file stops it).
 > * **15:5x -- owner plan: after the R1e verdict the lead starts LIVE on the winner, then hands over to Codex via
