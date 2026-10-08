@@ -4501,6 +4501,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **FULL STACK (stack5 = R3c u0030 + barrel + CellRefine 2ep [_barrel_cellref5.pt] + anti-leak 9/12 + xbow f .3 +
+>   tau_phase .35/.45/.55), v2:** vs R1e AS IT RAN LIVE: tune **161 vs 133 (58/16, p<1e-6)**, fresh **152 vs 128 (57/21,
+>   p .0001)**; vs R1e + AL: 161 vs 159 (17/15), 152 vs 147 (28/23) -> level. Behaviour vs R1e: elixir@play 2x/OT
+>   6.99/6.72 & 6.88/6.53 vs 5.62/5.35 & 5.65/4.90 (pros 6.2-7.2); leak 1x/2x/OT .12/.04/.01 vs .44/.31/.30; def X-Bow
+>   27.5% / 25.0% vs 13.3% / 9.2% (pros 27%); Rocket share 3.5% vs 1.2%. Owner tree: SIGNIFICANT pending the ghost
+>   (`ghost r3c30_stack5`, running). Skeleton-Barrel census (79 decks, 96 gen games): predict_drops 47 vs 42 (15/10),
+>   pre-emptive Log 358/709 vs 378/752 (unchanged), crowns against 63 vs 61 -> target behaviour not moved -> OFF.
 > * **predict_drops SIM A/B (R3c u0030 + AL, v2):** tune 147 vs 147 (1/1), fresh 143 vs 145 (0/2) -> no harm, but the
 >   benchmark has almost no Skeleton Barrel decks. Skeleton-Barrel-heavy census built (79 loadable ladder decks with
 >   `SkeletonBalloon` = Skeleton Barrel; centre_col/sbarrel_census.json): `~/sb_ab.sh` AL vs AL + --predict-drops, 96
