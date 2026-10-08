@@ -7,6 +7,7 @@
 # Owner 2026-10-04: --no-anti-leak tests R1e's learned play/wait gate without forced spending. All other settings stay.
 # Lead 2026-10-08 04:0x (owner: anti-stall "installed live" only): --anti-leak = the SIM's anti_stall rule (9 elixir,
 # 12 s since my last accepted play, clock from tick 90). SIM v2: R1e 133 -> 159 / 128 -> 147 with it. Revert: --no-anti-leak.
+# Owner 2026-10-08 09:4x: "Keep the current setup live, but disable the anti-leak in live matches" -> --no-anti-leak.
 # If a ladder live_play is ALREADY running when this starts (a supervisor swap), it is adopted: waited for, and its stop
 # counts as the first restart -- never a second live_play beside it.
 cd /c/Users/benpe/ClashBot
@@ -38,7 +39,7 @@ fi
 while [ ! -e $L/STOP ]; do
   echo "[sup] start (restarts used $restarts/$MAX) $(date)" >> $L/supervisor.log
   $PY -u "$LIVE_ENTRY" --ladder --matches 400 \
-    "${CKPT_ARGS[@]}" --tau 0.35 --anti-leak --max-seconds 600 \
+    "${CKPT_ARGS[@]}" --tau 0.35 --no-anti-leak --max-seconds 600 \
     --clip-every 1800 --overlay reader --stop-file $L/STOP ${LIVE_ARGS:-} >> $L/overnight.out 2>&1   # LIVE_ARGS: owner A/Bs, e.g. "--tau-alternate 0.35 0.45"
   rc=$?
   why=$(last_stop)

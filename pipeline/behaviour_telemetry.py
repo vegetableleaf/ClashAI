@@ -46,4 +46,20 @@ class BehaviourTelemetry:
                 tot=sum(d for d,_ in dts)
                 leak[name]=round(sum(d for d,e in dts if e>=9.5)/tot,4) if tot else None
             out['leak_ge_9_5']=leak
+        # lead 2026-10-08: per-phase card counts and X-Bow class (lead rule defensive / reach lock), as the pro comparison
+        from collections import Counter
+        from .public_outcomes import label_recording
+        ph=lambda t:'1x' if t<2400 else ('2x' if t<3600 else 'OT')
+        cards={p:Counter() for p in ('1x','2x','OT')}
+        for q in self.plays:
+            if q['side']==side and not q['ability']:cards[ph(q['tick'])][q['card']]+=1
+        out['phase_cards']={p:dict(c) for p,c in cards.items()}
+        lab=label_recording(dict(frames=self.frames,log=self.plays,final=final or {}),normalized=True)
+        xb={p:dict(n=0,defensive=0,offensive_lock=0) for p in ('1x','2x','OT')}
+        for b in lab['xbows']:
+            if b['side']!=side:continue
+            d=xb[ph(b['tick'])];d['n']+=1;d['defensive']+=bool(b['defensive_xbow']);d['offensive_lock']+=bool(b['offensive_xbow'])
+        out['xbow_phase']=xb
+        out['tower_rockets_phase']={p:sum(1 for r in lab['rockets'] if r['side']==side and ph(r['tick'])==p and r.get('tower_rocket'))
+                                    for p in ('1x','2x','OT')}
         return out
