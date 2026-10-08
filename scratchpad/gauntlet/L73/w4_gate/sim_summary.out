@@ -1,0 +1,40 @@
+v2 base n=192 wins 160 (0.833)  idle(<5 plays) 50/192 = 0.260 [0.20,0.33]
+    1x: plays/min 1.52  elixir@play 8.45  time at >=9.5 0.547  cheap(Skel+Log) 0.346  Skeletons 0.19, Xbow 0.18, Knight 0.17, Log 0.15, IceWizard 0.14, Tesla 0.08, Rocket 0.08, Tornado 0.01
+    2x: plays/min 8.07  elixir@play 7.15  time at >=9.5 0.226  cheap(Skel+Log) 0.306  Knight 0.19, IceWizard 0.18, Skeletons 0.17, Xbow 0.14, Log 0.13, Tesla 0.12, Rocket 0.05, Tornado 0.01
+    OT: plays/min 7.46  elixir@play 6.72  time at >=9.5 0.119  cheap(Skel+Log) 0.300  Knight 0.18, IceWizard 0.16, Skeletons 0.16, Tesla 0.14, Log 0.14, Xbow 0.12, Rocket 0.08, Tornado 0.02
+v2 hbt  n=192 wins 184 (0.958)  idle(<5 plays) 0/192 = 0.000 [0.00,0.02]  | paired vs base n=192 better 50 worse 6 sign p=0.0000 tower-hp delta +2798
+    1x: plays/min 6.44  elixir@play 7.63  time at >=9.5 0.132  cheap(Skel+Log) 0.365  Skeletons 0.20, Knight 0.18, Log 0.17, Xbow 0.17, IceWizard 0.16, Tesla 0.07, Rocket 0.04, Tornado 0.02
+    2x: plays/min 13.72  elixir@play 5.80  time at >=9.5 0.034  cheap(Skel+Log) 0.319  Knight 0.19, Skeletons 0.18, IceWizard 0.18, Log 0.13, Tesla 0.11, Xbow 0.11, Rocket 0.05, Tornado 0.04
+    OT: plays/min 15.67  elixir@play 5.52  time at >=9.5 0.001  cheap(Skel+Log) 0.333  Knight 0.19, Skeletons 0.18, IceWizard 0.17, Log 0.15, Tesla 0.13, Xbow 0.09, Rocket 0.05, Tornado 0.05
+v2 haz  n=192 wins 176 (0.917)  idle(<5 plays) 0/192 = 0.000 [0.00,0.02]  | paired vs base n=192 better 50 worse 14 sign p=0.0000 tower-hp delta +2652
+    1x: plays/min 5.69  elixir@play 8.24  time at >=9.5 0.227  cheap(Skel+Log) 0.354  Skeletons 0.19, Knight 0.18, Log 0.16, IceWizard 0.16, Xbow 0.15, Tesla 0.09, Rocket 0.05, Tornado 0.02
+    2x: plays/min 11.76  elixir@play 7.64  time at >=9.5 0.140  cheap(Skel+Log) 0.277  Knight 0.19, IceWizard 0.19, Skeletons 0.17, Tesla 0.13, Xbow 0.12, Log 0.10, Rocket 0.07, Tornado 0.01
+    OT: plays/min 14.26  elixir@play 6.56  time at >=9.5 0.035  cheap(Skel+Log) 0.269  Knight 0.18, IceWizard 0.17, Skeletons 0.16, Tesla 0.14, Log 0.11, Xbow 0.11, Rocket 0.10, Tornado 0.02
+v2 hbt9 n=192 wins 184 (0.958)  idle(<5 plays) 0/192 = 0.000 [0.00,0.02]  | paired vs base n=192 better 48 worse 6 sign p=0.0000 tower-hp delta +2634
+    1x: plays/min 6.08  elixir@play 8.64  time at >=9.5 0.143  cheap(Skel+Log) 0.358  Skeletons 0.19, Knight 0.18, Xbow 0.17, Log 0.16, IceWizard 0.16, Tesla 0.07, Rocket 0.05, Tornado 0.01
+    2x: plays/min 13.24  elixir@play 6.95  time at >=9.5 0.061  cheap(Skel+Log) 0.310  Knight 0.19, IceWizard 0.18, Skeletons 0.18, Xbow 0.13, Log 0.13, Tesla 0.12, Rocket 0.05, Tornado 0.02
+    OT: plays/min 15.29  elixir@play 6.55  time at >=9.5 0.005  cheap(Skel+Log) 0.295  Knight 0.18, IceWizard 0.17, Skeletons 0.16, Tesla 0.13, Log 0.13, Xbow 0.11, Rocket 0.09, Tornado 0.02
+v2 hbt9q n=192 wins 186 (0.969)  idle(<5 plays) 0/192 = 0.000 [0.00,0.02]  | paired vs base n=192 better 48 worse 4 sign p=0.0000 tower-hp delta +2709
+    1x: plays/min 6.05  elixir@play 8.65  time at >=9.5 0.145  cheap(Skel+Log) 0.359  Skeletons 0.19, Knight 0.18, Xbow 0.18, Log 0.16, IceWizard 0.16, Tesla 0.07, Rocket 0.05, Tornado 0.01
+    2x: plays/min 13.04  elixir@play 7.11  time at >=9.5 0.062  cheap(Skel+Log) 0.302  Knight 0.19, IceWizard 0.18, Skeletons 0.18, Xbow 0.13, Log 0.12, Tesla 0.12, Rocket 0.06, Tornado 0.02
+    OT: plays/min 15.69  elixir@play 6.26  time at >=9.5 0.004  cheap(Skel+Log) 0.304  Knight 0.18, IceWizard 0.17, Skeletons 0.17, Tesla 0.14, Log 0.14, Xbow 0.11, Rocket 0.07, Tornado 0.02
+v3 base n=960 wins 619 (0.645)  idle(<5 plays) 10/960 = 0.010 [0.01,0.02]
+    1x: plays/min 6.30  elixir@play 7.12  time at >=9.5 0.175  cheap(Skel+Log) 0.356  Skeletons 0.19, IceWizard 0.18, Log 0.17, Knight 0.16, Tesla 0.14, Xbow 0.10, Tornado 0.05, Rocket 0.01
+    2x: plays/min 13.67  elixir@play 6.59  time at >=9.5 0.043  cheap(Skel+Log) 0.321  IceWizard 0.18, Skeletons 0.18, Knight 0.17, Tesla 0.15, Log 0.14, Xbow 0.12, Tornado 0.05, Rocket 0.02
+    OT: plays/min 15.20  elixir@play 6.70  time at >=9.5 0.063  cheap(Skel+Log) 0.326  IceWizard 0.18, Skeletons 0.17, Knight 0.16, Tesla 0.16, Log 0.15, Xbow 0.09, Tornado 0.05, Rocket 0.04
+v3 hbt  n=960 wins 532 (0.554)  idle(<5 plays) 0/960 = 0.000 [-0.00,0.00]  | paired vs base n=960 better 142 worse 230 sign p=0.0000 tower-hp delta -573
+    1x: plays/min 7.29  elixir@play 6.55  time at >=9.5 0.066  cheap(Skel+Log) 0.364  Skeletons 0.19, Log 0.17, IceWizard 0.17, Knight 0.17, Tesla 0.12, Xbow 0.11, Tornado 0.05, Rocket 0.01
+    2x: plays/min 14.53  elixir@play 5.92  time at >=9.5 0.011  cheap(Skel+Log) 0.333  Skeletons 0.18, IceWizard 0.18, Knight 0.17, Log 0.15, Tesla 0.14, Xbow 0.10, Tornado 0.06, Rocket 0.01
+    OT: plays/min 16.84  elixir@play 5.91  time at >=9.5 0.008  cheap(Skel+Log) 0.338  Skeletons 0.18, IceWizard 0.17, Knight 0.17, Log 0.16, Tesla 0.15, Xbow 0.07, Tornado 0.07, Rocket 0.03
+v3 haz  n=960 wins 340 (0.354)  idle(<5 plays) 0/960 = 0.000 [-0.00,0.00]  | paired vs base n=960 better 96 worse 375 sign p=0.0000 tower-hp delta -2458
+    1x: plays/min 6.57  elixir@play 7.59  time at >=9.5 0.136  cheap(Skel+Log) 0.343  Skeletons 0.19, IceWizard 0.17, Knight 0.16, Log 0.16, Tesla 0.13, Xbow 0.11, Tornado 0.07, Rocket 0.02
+    2x: plays/min 12.91  elixir@play 7.64  time at >=9.5 0.092  cheap(Skel+Log) 0.304  IceWizard 0.18, Skeletons 0.17, Knight 0.17, Tesla 0.15, Log 0.13, Xbow 0.11, Tornado 0.06, Rocket 0.03
+    OT: plays/min 15.39  elixir@play 7.35  time at >=9.5 0.066  cheap(Skel+Log) 0.307  IceWizard 0.17, Skeletons 0.17, Knight 0.16, Tesla 0.16, Log 0.14, Xbow 0.08, Tornado 0.07, Rocket 0.06
+v3 hbt9 n=960 wins 609 (0.634)  idle(<5 plays) 0/960 = 0.000 [-0.00,0.00]  | paired vs base n=960 better 147 worse 158 sign p=0.5670 tower-hp delta -68
+    1x: plays/min 7.03  elixir@play 7.12  time at >=9.5 0.075  cheap(Skel+Log) 0.355  Skeletons 0.19, IceWizard 0.17, Log 0.17, Knight 0.17, Tesla 0.13, Xbow 0.11, Tornado 0.04, Rocket 0.02
+    2x: plays/min 14.08  elixir@play 6.61  time at >=9.5 0.021  cheap(Skel+Log) 0.319  IceWizard 0.18, Skeletons 0.18, Knight 0.17, Tesla 0.15, Log 0.14, Xbow 0.11, Tornado 0.05, Rocket 0.02
+    OT: plays/min 16.23  elixir@play 6.71  time at >=9.5 0.019  cheap(Skel+Log) 0.325  IceWizard 0.18, Skeletons 0.17, Knight 0.16, Tesla 0.16, Log 0.15, Xbow 0.09, Tornado 0.05, Rocket 0.04
+v3 hbt9q n=960 wins 611 (0.636)  idle(<5 plays) 0/960 = 0.000 [-0.00,0.00]  | paired vs base n=960 better 133 worse 141 sign p=0.6725 tower-hp delta -61
+    1x: plays/min 7.00  elixir@play 7.13  time at >=9.5 0.080  cheap(Skel+Log) 0.354  Skeletons 0.19, IceWizard 0.17, Knight 0.17, Log 0.16, Tesla 0.13, Xbow 0.11, Tornado 0.05, Rocket 0.02
+    2x: plays/min 14.04  elixir@play 6.56  time at >=9.5 0.025  cheap(Skel+Log) 0.321  IceWizard 0.18, Skeletons 0.18, Knight 0.17, Tesla 0.15, Log 0.14, Xbow 0.11, Tornado 0.05, Rocket 0.02
+    OT: plays/min 16.23  elixir@play 6.66  time at >=9.5 0.021  cheap(Skel+Log) 0.326  IceWizard 0.18, Skeletons 0.17, Knight 0.16, Tesla 0.16, Log 0.15, Xbow 0.08, Tornado 0.05, Rocket 0.04
