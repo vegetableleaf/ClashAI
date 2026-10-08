@@ -1,0 +1,82 @@
+# R4 = R3 (r3_overrides.txt beside this file, opt3 f4621b6) + two more counterfactual fork kinds (branch r4-branching):
+#   card        Rocket vs the live rule's top card where Rocket is affordable, not the argmax and P(Rocket) >= 0.2 x P(top) (branch_rocket_band; lead set 0.2)
+#               (card-head softmax, T 1); A = live card + cell, B = Rocket at its argmax cell; pairwise logistic loss on
+#               the two card logits.
+#   xbow_class  the live rule plays X-Bow and the minority reach class (decision_options.xbow_offensive_cells) holds
+#               >= 0.2 of the cell mass; A / B = majority / minority class argmax cell; pairwise logistic loss on the two
+#               classes' cell log-mass.
+# Same labels (FULL-MATCH OUTCOME, k=16 CRN pairs, |delta| >= 0.25), same buffer, ONE branch step per update after PPO
+# on the branch's own Adam (branch_lr), loss = sum over kinds of coef_k x kind k's weighted mean.
+# One argv per line below the marker, for a bash array:
+#   mapfile -t OVR < <(sed -n '/^# ---- argv/,$p' r4_overrides.txt | grep -v '^#')
+# Config: --config scratchpad/gauntlet/L69/rl/r1_rl_royale.yaml   Run name (proposal): rseries_r4
+# Environment (VM): ROYALE_RUNTIME=20261006-linux, OMP_NUM_THREADS=32 for the learner.
+#
+# Fork-point census (laptop, 2026-10-07, scratchpad/gauntlet/L73/r4/elig_r4.py, gen_s0 greedy icebow vs gen_s0
+# sampling T 0.3 on ladder decks, 30 matches): ELIGIBLE decisions per match -- card 0.70 (21/30; Rocket/top ratio >= 0.5
+# on 14 of 260 affordable-not-top plays, >= 0.2 on 43, >= 0.1 on 79), xbow_class 1.70 (51/30; X-Bow plays 3.6/match,
+# defensive mass mean 0.24-0.32, minority >= 0.2 on ~50%), hold ~124. So card / xbow are ELIGIBILITY-limited (their
+# quota 6 = "take every eligible point after a target"), hold is quota-limited: hold points 2 keeps the gate signal
+# while leaving most label time to the new kinds.
+# Expected per match ~2 hold + ~0.6 card + ~1.5 xbow labels; VM label rate 24 workers / ~233 s per k=16 label = 0.103/s
+# = 12-15 labels per 115-150 s update -> ~6-7 hold, ~2 card, ~4.5-5.5 xbow per update (before the |delta| drop).
+# branch_rocket_band=0.2 (lead): ~3x the card points of 0.5 (ratio >= 0.2 on 43/260 vs 14/260). Hold points stay at 6 (= R3).
+# ---- argv
+init=icebow/data/pipeline/gen_v32_s0/gen_s0.pt
+proagree_data_gen=icebow/data/pipeline/gen_dataset_v32_fv5.npz
+league=true
+noise_off=all
+opp_elixir=counter
+action_delay_ticks=26
+extrapolate_ticks=26
+max_updates=120
+screen_seeds=[0]
+league_learner_icebow_share=1.0
+forms_mode=deck
+advantage=gae
+gae_gamma_unit=tick
+critic_warmup_updates=5
+hero_abilities=true
+ability_policy=v2
+tau=0.35
+T=0.3
+league_decks=scratchpad/gauntlet/L73/rl_r2/loadable_decks_ladder.json
+league_deck_alpha=1.0
+league_deck_floor=0
+league_icebow_share=0.02
+league_mix={latest: 0.35, older: 0.25, init: 0.2, s1: 0.02}
+league_opp_policy=sample
+n_actors=32
+in_flight=2
+actor_threads=2
+actor_device=cpu
+learner_device=cpu
+branch_gate=true
+branch_actors=24
+branch_threads=1
+branch_points_per_match=6
+branch_band=[0.2, 0.55]
+branch_hold_s=[2, 4, 8]
+branch_hold_tau=0.55
+branch_horizon_s=null
+branch_k=16
+branch_score=outcome
+branch_min_abs_delta=0.25
+branch_max_staleness=6
+branch_buffer=512
+branch_coef=0.1
+branch_lr=2.0e-6
+branch_buffer_max_age=20
+branch_kinds=[hold, card, xbow_class]
+branch_card_points=6
+branch_xbow_points=6
+branch_card_coef=0.1
+branch_xbow_coef=0.1
+branch_rocket_band=0.2
+branch_xbow_floor=0.2
+# lever C: potential shaping, Phi = shaping_w_value x the 10 s causal trailing mean of the FROZEN init's (shaping_phi_ckpt
+# unset = init) P(win) - P(loss); residual critic needs shaping_critic_scale >= 1 + w_value (adv_cfg enforces it).
+shaping=value_phi
+shaping_w_value=0.5
+shaping_phi_window_s=10
+shaping_critic_scale=1.5

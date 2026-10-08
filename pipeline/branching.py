@@ -10,6 +10,11 @@ ability state) into
         live rule (tau from learner_cfg).
   HOLD  for hold_s seconds from the root (root decision included) our side plays only if p > hold_tau OR anti-stall
         fires (the same live_decide_batch path, tau = hold_tau); afterwards the live rule (tau from learner_cfg).
+R4 alternative-action kinds (``BranchSpec.alt``): "card" (A = the live rule's card and cell, B = Rocket at its own
+argmax cell; ``card_alt`` selects) and "xbow_class" (A / B = the X-Bow's argmax cell within the majority / minority
+reach class; ``xbow_alt`` selects): both branches PLAY their given root action, then run the live rule. In
+BranchResult the A branch fills play_end / play_outcome and B hold_end / hold_outcome, so branch_label's delta > 0
+always means "A (the live rule's side) better".
 Both: our side = the live rule on its own model (argmax, afford mask, anti-stall, delay, extrapolation, counter, all
 from the side's cfg); the opponent = the REAL opponent of ``m`` (its own model and cfg, live or sample), never a
 self-model. k continuations per branch, run to the end of the match or ``horizon_s``, all 2k forks in LOCKSTEP rounds
@@ -33,6 +38,7 @@ Outcome: +1 win / -1 loss / 0 draw when the match ended (game over, or the match
 """
 from __future__ import annotations
 
+import math
 import random
 import time
 from dataclasses import dataclass
@@ -47,6 +53,9 @@ from pipeline.search_s0 import fork_into
 OUTCOME = {"win": 1, "loss": -1, "draw": 0}
 
 
+ALT_KINDS = ("hold", "card", "xbow_class")
+
+
 @dataclass(kw_only=True)
 class BranchSpec:
     hold_s: float
@@ -54,6 +63,44 @@ class BranchSpec:
     horizon_s: Optional[float]          # None = play to the end of the match
     k: int
     seed: int
+    # R4: the alternative action. "hold" = PLAY vs HOLD (above). "card" / "xbow_class": both branches PLAY at the root,
+    # branch A ("play" side of BranchResult) plays ``a`` = (slot, cell), branch B ("hold" side) plays ``b``; then both
+    # run the live rule (no hold window). ``alt_actions`` picks a / b.
+    alt: str = "hold"
+    a: Optional[tuple] = None
+    b: Optional[tuple] = None
+
+
+def card_alt(card_logits, allowed, names, d: dict, band: float) -> Optional[tuple]:
+    """Rocket vs the top card. ``d`` = the live rule's decision. Eligible iff the live rule PLAYS, Rocket is affordable
+    and not the argmax allowed card, and P(Rocket) >= band x P(top) under the card head's own softmax over the allowed
+    slots (temperature 1: the ratio is exp(z_rocket - z_top)). -> (top slot, rocket slot) or None."""
+    if not d.get("play"):
+        return None
+    z = np.asarray(card_logits, np.float64)
+    al = np.asarray(allowed, bool)
+    rk = [i for i, n in enumerate(names) if str(n).lower() == "rocket" and al[i]]
+    if not rk:
+        return None
+    top = int(np.where(al, z, -np.inf).argmax())
+    r = rk[0]
+    if r == top or r == int(d["slot"]) or not z[r] - z[top] >= math.log(band):
+        return None
+    return int(d["slot"]), r
+
+
+def xbow_alt(cell_logits, offensive, floor: float) -> Optional[tuple]:
+    """X-Bow side. ``offensive`` [2304] bool (decision_options.xbow_offensive_cells). D = defensive cell mass (softmax,
+    temperature 1). Eligible iff min(D, 1 - D) >= floor. -> (majority-class argmax cell, minority-class argmax cell,
+    A-class mask [2304] bool, D) or None. Majority = defensive iff D > 0.5 (decision_options.xbow_class_choice)."""
+    x = np.asarray(cell_logits, np.float64)
+    off = np.asarray(offensive, bool)
+    pr = np.exp(x - x.max())
+    dmass = float(pr[~off].sum() / pr.sum())
+    if not min(dmass, 1.0 - dmass) >= floor:
+        return None
+    a_cls = ~off if dmass > 0.5 else off
+    return int(np.where(a_cls, x, -np.inf).argmax()), int(np.where(~a_cls, x, -np.inf).argmax()), a_cls, dmass
 
 
 @dataclass
@@ -109,6 +156,12 @@ class BranchRunner:
         _, bs, view = L._cur
         if spec.k < 1:
             raise ValueError("spec.k must be >= 1")
+        if spec.alt not in ALT_KINDS:
+            raise ValueError(f"spec.alt {spec.alt!r} not in {ALT_KINDS}")
+        alt = spec.alt != "hold"
+        if alt and (spec.a is None or spec.b is None or tuple(spec.a) == tuple(spec.b)):
+            raise ValueError(f"alt {spec.alt!r} needs two different root actions a / b, got {spec.a} / {spec.b}")
+        root_act = {"play": tuple(spec.a), "hold": tuple(spec.b)} if alt else None
         cap = env.tail_cap if spec.horizon_s is None else min(env.tail_cap, tick + int(round(spec.horizon_s / E.TICK_S)))
         hold_until = tick + int(round(spec.hold_s / E.TICK_S))
         blob, n0 = env.core.save_state(), len(L.p_gates)
@@ -121,12 +174,12 @@ class BranchRunner:
             forks.append(f)
 
         def our_tau(f, b, t, root):
-            if b == "play" and root:
+            if root and (b == "play" or alt):
                 return float("-inf")                       # gate forced open: play the argmax card at the argmax cell
-            return float(spec.hold_tau) if b == "hold" and t < hold_until else self.tau
+            return float(spec.hold_tau) if not alt and b == "hold" and t < hold_until else self.tau
 
         self._round([(f, b, f.learner if s is L else f.opp) for f, (b, _) in zip(forks, runs) for s in ds],
-                    our_tau, True)
+                    our_tau, True, root_act)
         if forks[0].learner.pending is None and len(forks[0].learner.plays) == len(L.plays):
             raise ValueError("no affordable card at the root: nothing to branch")
         while True:
@@ -148,9 +201,10 @@ class BranchRunner:
                             play_outcome=[o for _, o in ends[:k]], hold_outcome=[o for _, o in ends[k:]],
                             wall_s=time.perf_counter() - t0)
 
-    def _round(self, due, our_tau, root: bool) -> None:
+    def _round(self, due, our_tau, root: bool, root_act: Optional[dict] = None) -> None:
         """Prepared due sides across forks: one forward + one batched decide per group, then apply in due order
-        (run_selfplay_batch's order). Our side: live rule at its branch's tau; the opponent: its own policy and cfg."""
+        (run_selfplay_batch's order). Our side: live rule at its branch's tau; the opponent: its own policy and cfg.
+        ``root_act`` {branch: (slot, cell)}: our side's decision is replaced by that play (alt kinds, root only)."""
         groups: dict = {}
         for f, b, s in due:
             if s is f.learner:
@@ -174,6 +228,11 @@ class BranchRunner:
             else:
                 dec = E.sample_decide_batch(model, enc, heads, p, allowed, stalled, sides, cfg)
             todo.update({id(s): (p[r], dec[r]) for r, s in enumerate(sides)})
+        if root_act is not None:
+            for f, b, s in due:
+                if s is f.learner:
+                    slot, cell = root_act[b]
+                    todo[id(s)] = (todo[id(s)][0], {"play": True, "slot": int(slot), "cell": int(cell), "why": "gate"})
         for _, _, s in due:
             s.apply(*todo[id(s)])
 

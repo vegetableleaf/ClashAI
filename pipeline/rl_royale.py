@@ -25,6 +25,12 @@ full-match outcome, k continuations) and stream each labelled sample, tagged wit
 update the learner drains the stream (never blocking), drops samples staler than ``branch_max_staleness`` updates and
 |delta| < branch_min_abs_delta, keeps a FIFO buffer (``branch_buffer``) and takes ONE optimizer step on branch_coef x the
 weighted BCE of the live gate x = (z - logit(tau)) / T toward 1[delta > 0] (``branch_step``). Off = no worker, no step.
+R4 (``branch_kinds``, default ["hold"] = the above exactly): "card" forks Rocket vs the live rule's card where Rocket is
+affordable, not the argmax and P(Rocket) >= branch_rocket_band x P(top), and trains a pairwise logistic loss on the two
+card logits; "xbow_class" forks the X-Bow's majority vs minority reach class (minority mass >= branch_xbow_floor) and
+trains a pairwise logistic loss on the two classes' cell log-mass. Each kind has its own per-match quota
+(branch_points_per_match / branch_card_points / branch_xbow_points) and coefficient (branch_coef / branch_card_coef /
+branch_xbow_coef); the one branch step sums coef_k x kind k's weighted mean loss.
 LEASH (T12b, owner ruling):``leash: max`` steers beta on max(KL_gate, KL_card, KL_cell) (``leash_kl``); ``cell`` = the
 old KL_cell rule exactly (and what a run resumed from before the key keeps).
 
@@ -264,9 +270,19 @@ BRANCH_DEFAULTS = {"branch_gate": False, "branch_actors": 24, "branch_threads": 
                    "branch_band": [0.2, 0.55], "branch_hold_s": [2, 4, 8], "branch_hold_tau": 0.55,
                    "branch_horizon_s": None, "branch_k": 16, "branch_score": "outcome", "branch_phi_ckpt": None,
                    "branch_coef": 0.1, "branch_lr": None, "branch_min_abs_delta": 0.25, "branch_buffer": 512,
-                   "branch_max_staleness": 3, "branch_buffer_max_age": 20}
+                   "branch_max_staleness": 3, "branch_buffer_max_age": 20,
+                   # R4: more fork kinds (pipeline.branching.ALT_KINDS). Default hold-only = opt3 exactly.
+                   "branch_kinds": ["hold"], "branch_card_points": 6, "branch_xbow_points": 6,
+                   "branch_card_coef": 0.1, "branch_xbow_coef": 0.1, "branch_rocket_band": 0.5,
+                   "branch_xbow_floor": 0.2}
 BRANCH_SPECS_PER_SEND = 2      # fresh matchups per worker per update (a branch match spans many updates)
 BRANCH_SCORES = ("phi", "outcome")
+# per kind: (points-per-match quota key, loss coefficient key)
+BRANCH_KIND_KEYS = {"hold": ("branch_points_per_match", "branch_coef"),
+                    "card": ("branch_card_points", "branch_card_coef"),
+                    "xbow_class": ("branch_xbow_points", "branch_xbow_coef")}
+R4_KEYS = ("branch_kinds", "branch_card_points", "branch_xbow_points", "branch_card_coef", "branch_xbow_coef",
+           "branch_rocket_band", "branch_xbow_floor")
 
 
 def branch_cfg(cfg: dict) -> dict:
@@ -325,9 +341,22 @@ def branch_cfg(cfg: dict) -> dict:
         bad.append(f"branch_score phi needs branch_phi_ckpt (a frozen gen checkpoint), got {c['branch_phi_ckpt']!r}")
     elif on and c["branch_score"] == "outcome" and c["branch_horizon_s"] is not None:
         bad.append("branch_score outcome needs branch_horizon_s null (an outcome exists only at the match end)")
-    for k in ("branch_coef", "branch_min_abs_delta"):
+    for k in ("branch_coef", "branch_min_abs_delta", "branch_card_coef", "branch_xbow_coef"):
         if not (num(c[k]) and c[k] >= 0.0):
             bad.append(f"{k} must be a finite number >= 0, got {c[k]!r}")
+    kd = c["branch_kinds"]
+    if not (isinstance(kd, (list, tuple)) and kd and len(set(map(str, kd))) == len(kd)
+            and all(x in BRANCH_KIND_KEYS for x in kd)):
+        bad.append(f"branch_kinds must be a non-empty list of distinct kinds from {list(BRANCH_KIND_KEYS)}, got {kd!r}")
+    else:
+        c["branch_kinds"] = list(kd)
+    for k in ("branch_card_points", "branch_xbow_points"):
+        if not intk(c[k], 1):
+            bad.append(f"{k} must be an integer >= 1, got {c[k]!r}")
+    if not (num(c["branch_rocket_band"]) and 0.0 < c["branch_rocket_band"] <= 1.0):
+        bad.append(f"branch_rocket_band must be in (0, 1], got {c['branch_rocket_band']!r}")
+    if not (num(c["branch_xbow_floor"]) and 0.0 < c["branch_xbow_floor"] <= 0.5):
+        bad.append(f"branch_xbow_floor must be in (0, 0.5], got {c['branch_xbow_floor']!r}")
     if on and not cfg.get("league"):
         bad.append("branch_gate true needs league true (branch actors play self-play matches)")
     if bad:
@@ -366,10 +395,10 @@ def branch_impl():
     return BranchSpec, BranchRunner, branch_label
 
 
-def side_decide(s) -> tuple[float, dict, np.ndarray, bool]:
+def side_decide(s, fwd: bool = False) -> tuple:
     """One PREPARED self-play side's forward + decision under its own model and cfg -- ``run_selfplay_batch``'s
     per-policy rule (live: greedy ``live_decide_batch``; sample: ``sample_decide_batch`` on the side's own RNG) on one
-    row. -> (p_gate, decision, allowed, stalled = anti-stall forces a play now)."""
+    row. -> (p_gate, decision, allowed, stalled = anti-stall forces a play now), + (enc, heads) with ``fwd``."""
     from pipeline.decision_options import match_kwargs
     from pipeline.search_s0 import forward
     p, enc, heads, hand = forward(s)
@@ -379,7 +408,50 @@ def side_decide(s) -> tuple[float, dict, np.ndarray, bool]:
                                 device=s.cfg["device"], **match_kwargs([s]))[0]
     else:
         d = E.sample_decide_batch(s.model, enc, heads, [p], allowed[None], np.array([stalled]), [s], s.cfg)[0]
-    return float(p), d, allowed, bool(stalled)
+    out = (float(p), d, allowed, bool(stalled))
+    return out + (enc, heads) if fwd else out
+
+
+def fork_alt(kind: str, s, enc, heads, d: dict, allowed: np.ndarray, bc: dict) -> Optional[dict]:
+    """R4: is our PREPARED side's decision ``d`` a fork point of ``kind`` ("card" / "xbow_class"), and with which root
+    actions? -> {"a": (slot, cell), "b": (slot, cell), "row": the extra learner-row fields, "info"} or None.
+      card        ``branching.card_alt`` (live rule plays, Rocket affordable, not argmax, P(Rocket) >= branch_rocket_band
+                  x P(top)): A = the live rule's (slot, cell), B = Rocket at its own argmax cell. Row: slot_a, slot_b.
+      xbow_class  the live rule plays X-Bow, ``branching.xbow_alt`` on its cell logits with the reach rule
+                  ``decision_options.xbow_offensive_cells`` (alive enemy towers of the prepared board, the side's grid)
+                  and branch_xbow_floor: A / B = the majority / minority class argmax cell. Row: played, slot, cell
+                  (= A), cls_a (the A class's cells)."""
+    from pipeline.branching import card_alt, xbow_alt
+    from pipeline.decision_options import is_xbow, xbow_offensive_cells
+    if not d.get("play"):
+        return None
+    names = list(s.deck.cards)
+    with torch.no_grad():
+        if kind == "card":
+            got = card_alt(heads["card"][0].detach().double().cpu().numpy(), allowed, names, d,
+                           float(bc["branch_rocket_band"]))
+            if got is None:
+                return None
+            top, rk = got
+            z = heads["card"][0].detach().double().cpu().numpy()
+            cell_b = int(s.model.cell_logits(enc, torch.tensor([rk], device=heads["card"].device))[0].argmax())
+            return {"a": (int(d["slot"]), int(d["cell"])), "b": (rk, cell_b), "row": {"slot_a": top, "slot_b": rk},
+                    "info": {"ratio": float(math.exp(z[rk] - z[top]))}}
+        if kind == "xbow_class":
+            slot = int(d["slot"])
+            if not is_xbow(names[slot]):
+                return None
+            alive = tuple(bool(t.alive) for t in s._cur[1].towers[3:6])
+            cl = s.model.cell_logits(enc, torch.tensor([slot], device=heads["card"].device))[0]
+            got = xbow_alt(cl.detach().double().cpu().numpy(), xbow_offensive_cells(alive, s.cfg["grid"]),
+                           float(bc["branch_xbow_floor"]))
+            if got is None:
+                return None
+            ca, cb, a_cls, dmass = got
+            return {"a": (slot, ca), "b": (slot, cb),
+                    "row": {"played": True, "slot": slot, "cell": ca, "cls_a": a_cls.copy()},
+                    "info": {"def_mass": dmass, "a_defensive": bool(dmass > 0.5)}}
+    raise ValueError(f"unknown fork kind {kind!r}")
 
 
 def branch_row(s, allowed: np.ndarray, p: float, T: float, stalled: bool = False) -> dict:
@@ -410,7 +482,12 @@ def play_branch_match(m, runner, impl: tuple, bc: dict, phi=None, sync=(lambda: 
     Spec, _, label = impl
     tag = str(m.spec["tag"])
     rng = np.random.default_rng(zlib.crc32(f"{tag}:branch".encode()))
-    targets = branch_targets(rng, bc["branch_points_per_match"])
+    kinds = bc.get("branch_kinds", ["hold"])
+    targets = branch_targets(rng, bc["branch_points_per_match"]) if "hold" in kinds else []
+    # R4 kinds: their own target streams (the hold stream above is untouched); a target fires at the first decision at
+    # or after it that ``fork_alt`` accepts
+    extra = {k: branch_targets(np.random.default_rng(zlib.crc32(f"{tag}:branch:{k}".encode())),
+                               bc[BRANCH_KIND_KEYS[k][0]]) for k in kinds if k != "hold"}
     lo, hi = bc["branch_band"]
     L, out = m.learner, []
     while True:
@@ -423,8 +500,34 @@ def play_branch_match(m, runner, impl: tuple, bc: dict, phi=None, sync=(lambda: 
             s.prepare()
         dec = {}
         if L in ds:
-            p, d, allowed, stalled = dec[id(L)] = side_decide(L)
+            if extra:
+                p, d, allowed, stalled, enc, heads = side_decide(L, fwd=True)
+                dec[id(L)] = (p, d, allowed, stalled)
+            else:
+                p, d, allowed, stalled = dec[id(L)] = side_decide(L)
             tick = int(m.env.tick)
+            for kind, tg in extra.items():
+                if not (tg and tick >= tg[0]):
+                    continue
+                alt = fork_alt(kind, L, enc, heads, d, allowed, bc)
+                if alt is None:
+                    continue
+                tg.pop(0)
+                j = len(out)
+                spec = Spec(hold_s=0.0, hold_tau=float(bc["branch_hold_tau"]), horizon_s=bc["branch_horizon_s"],
+                            k=int(bc["branch_k"]), seed=zlib.crc32(f"{tag}:branch:{kind}:{j}".encode()), alt=kind,
+                            a=alt["a"], b=alt["b"])
+                t0 = time.perf_counter()
+                res = runner.pair(m, ds, spec)
+                delta, w = label(res, bc["branch_score"], **({"phi": phi} if phi is not None else {}))
+                out.append({"branch": True, "kind": kind, "tag": tag, "k": j, "entry_index": -1, "side": L.side,
+                            "tick": tick, "phase": getattr(res, "phase", None) or phase_of(tick), "p_gate": p,
+                            "p_play": getattr(res, "p_play", None), "hold_s": None, "delta": float(delta),
+                            "weight": float(w), "wall_s": time.perf_counter() - t0,
+                            "alt": {"a": list(alt["a"]), "b": list(alt["b"]), **alt["info"]},
+                            "row": {**branch_row(L, allowed, p, L.cfg["T"], stalled), **alt["row"]}})
+                if emit is not None:
+                    emit(out[-1])
             if targets and tick >= targets[0] and not stalled and d["why"] in ("gate", "wait") and lo <= p <= hi:
                 targets.pop(0)
                 j = len(out)
@@ -434,7 +537,8 @@ def play_branch_match(m, runner, impl: tuple, bc: dict, phi=None, sync=(lambda: 
                 t0 = time.perf_counter()
                 res = runner.pair(m, ds, spec)
                 delta, w = label(res, bc["branch_score"], **({"phi": phi} if phi is not None else {}))
-                out.append({"branch": True, "tag": tag, "k": j, "entry_index": -1, "side": L.side, "tick": tick,
+                out.append({"branch": True, "kind": "hold", "tag": tag, "k": j, "entry_index": -1, "side": L.side,
+                            "tick": tick,
                             "phase": getattr(res, "phase", None) or phase_of(tick), "p_gate": p,
                             "p_play": getattr(res, "p_play", None), "hold_s": spec.hold_s, "delta": float(delta),
                             "weight": float(w), "wall_s": time.perf_counter() - t0,
@@ -489,70 +593,128 @@ def branch_jobs(make_env, learner, opps: dict, jobs, lcfg: dict, bc: dict, updat
     return out, {"matches": n, "pairs": len(out), "stopped": stopped}
 
 
-def branch_stats(samples: list[dict], min_abs: float) -> dict:
+def branch_stats(samples: list[dict], min_abs: float, kinds=None) -> dict:
     """Per-update branch monitors: samples emitted, dropped (|delta| < min_abs), and over the KEPT samples n, share
-    HOLD-better (delta < 0) and mean delta -- overall and by phase."""
+    HOLD-better (delta < 0; for the R4 kinds: B-better) and mean delta -- overall and by phase; with ``kinds`` other
+    than hold-only also ``by_kind`` (emitted, n, b_better_share, mean_delta)."""
     kept = [s for s in samples if abs(s["delta"]) >= min_abs]
 
     def agg(ss):
         d = np.array([s["delta"] for s in ss], dtype=np.float64)
         return {"n": len(ss), "hold_better_share": float((d < 0).mean()) if len(d) else None,
                 "mean_delta": float(d.mean()) if len(d) else None}
-    return {"emitted": len(samples), "dropped": len(samples) - len(kept), **agg(kept),
-            "by_phase": {ph: agg([s for s in kept if s["phase"] == ph]) for ph in sorted({s["phase"] for s in samples})},
-            "pair_wall_s_mean": float(np.mean([s["wall_s"] for s in samples])) if samples else None}
+    out = {"emitted": len(samples), "dropped": len(samples) - len(kept), **agg(kept),
+           "by_phase": {ph: agg([s for s in kept if s["phase"] == ph]) for ph in sorted({s["phase"] for s in samples})},
+           "pair_wall_s_mean": float(np.mean([s["wall_s"] for s in samples])) if samples else None}
+    if kinds is not None and list(kinds) != ["hold"]:
+        kd = (lambda s: s.get("kind", "hold"))
+        out["by_kind"] = {}
+        for k in kinds:
+            a = agg([s for s in kept if kd(s) == k])
+            out["by_kind"][k] = {"emitted": sum(kd(s) == k for s in samples), "n": a["n"],
+                                 "b_better_share": a["hold_better_share"], "mean_delta": a["mean_delta"]}
+    return out
 
 
 def branch_batch(samples: list[dict], min_abs: float) -> Optional[dict]:
-    """Kept samples (|delta| >= min_abs) -> numpy batch: the rows stacked by ``Match._traj_arrays`` (the PPO batch's
-    own layout) + ``target`` (1.0 = PLAY better, delta > 0; 0.0 = HOLD, ties included) and ``weight``. None if empty."""
+    """Kept samples (|delta| >= min_abs, all of ONE kind) -> numpy batch: the rows stacked by ``Match._traj_arrays``
+    (the PPO batch's own layout) + ``target`` (1.0 = A better, delta > 0 -- hold kind: PLAY; 0.0 = B, ties included)
+    and ``weight``; card rows add slot_a / slot_b, xbow_class rows cls_a [N, 2304] bool. None if empty."""
     from types import SimpleNamespace
     kept = [s for s in samples if abs(s["delta"]) >= min_abs]
     if not kept:
         return None
-    B = E.Match._traj_arrays(SimpleNamespace(traj=[s["row"] for s in kept]))
+    rows = [s["row"] for s in kept]
+    B = E.Match._traj_arrays(SimpleNamespace(traj=rows))
     B["target"] = np.array([float(s["delta"] > 0) for s in kept], dtype=np.float64)
     B["weight"] = np.array([s["weight"] for s in kept], dtype=np.float64)
+    if "slot_a" in rows[0]:
+        B["slot_a"] = np.array([r["slot_a"] for r in rows], dtype=np.int64)
+        B["slot_b"] = np.array([r["slot_b"] for r in rows], dtype=np.int64)
+    if "cls_a" in rows[0]:
+        B["cls_a"] = np.stack([r["cls_a"] for r in rows]).astype(bool)
     return B
 
 
-def branch_terms(model, Bb: dict, idx, tau: float, T: float) -> tuple[torch.Tensor, torch.Tensor]:
-    """Rows ``idx``: (x, weight x BCE(sigmoid(x), target)), x = (z - logit(tau)) / T -- the live gate's
-    parameterisation (play iff x > 0), recomputed by ``policy_terms`` exactly as the PPO gate term."""
-    x = policy_terms(model, Bb, idx, tau, T)["x"]
+def branch_terms(model, Bb: dict, idx, tau: float, T: float, kind: str = "hold") -> tuple[torch.Tensor, torch.Tensor]:
+    """Rows ``idx``: (x, weight x BCE(sigmoid(x), target)), x > 0 = prefer A:
+      hold        x = (z - logit(tau)) / T -- the live gate's parameterisation (play iff x > 0), recomputed by
+                  ``policy_terms`` exactly as the PPO gate term
+      card        x = z_card[slot_a] - z_card[slot_b] (the card head's logits at the training T, ``policy_terms``' hand-masked
+                  card log-softmax: the normaliser cancels)
+      xbow_class  x = logsumexp(cell logits over the A class) - logsumexp(over the B class), for the row's X-Bow slot."""
+    if kind == "hold":
+        x = policy_terms(model, Bb, idx, tau, T)["x"]
+    elif kind == "card":
+        cl = policy_terms(model, Bb, idx, tau, T)["card_lp"]          # lead ruling: the training T, like hold
+        x = cl.gather(1, Bb["slot_a"][idx].unsqueeze(1)).squeeze(1) - cl.gather(1, Bb["slot_b"][idx].unsqueeze(1)).squeeze(1)
+    elif kind == "xbow_class":
+        if not bool(Bb["played"][idx].all()):
+            raise ValueError("xbow_class rows must be played rows (the X-Bow slot's cell logits)")
+        lp, m = policy_terms(model, Bb, idx, tau, T)["cell_lp"], Bb["cls_a"][idx]   # lead ruling: training T
+        x = torch.logsumexp(lp.masked_fill(~m, float("-inf")), -1) - torch.logsumexp(lp.masked_fill(m, float("-inf")), -1)
+    else:
+        raise ValueError(f"unknown branch kind {kind!r}")
     return x, Bb["weight"][idx] * Fn.binary_cross_entropy_with_logits(x, Bb["target"][idx], reduction="none")
 
 
-def branch_step(model, opt, Bb: dict, cfg: dict, coef: float) -> dict:
-    """ONE optimizer step on coef x mean_i weight_i BCE_i over the whole replay buffer ``Bb`` (gradients accumulated
-    over chunks of ``minibatch`` rows; clipped at ``grad_clip`` like PPO's), after the PPO epochs. ``opt`` is the
-    branch's OWN Adam (``Learner.branch_opt``). Adam divides by the gradient's running RMS, so ``coef`` barely scales
-    the step: it is the loss weight (sets where ``grad_clip`` bites; 0 = no gradient = no step); the step size is
-    ``branch_lr``. -> monitors: buffer
-    rows, BCE (the unscaled weighted mean) before / after, mean and max |dP(play)| on the buffer rows with P(play) =
-    sigmoid(x), grad norm; ``skipped`` (no step taken) on a non-finite loss or gradient norm."""
-    N, mb = len(Bb["target"]), int(cfg["minibatch"])
-    chunks = [torch.arange(s, min(s + mb, N), device=Bb["target"].device) for s in range(0, N, mb)]
+def branch_step(model, opt, Bb: dict, cfg: dict, coef) -> dict:
+    """ONE optimizer step on sum over kinds of coef_k x mean_i weight_i loss_i over the whole replay buffer (gradients
+    accumulated over chunks of ``minibatch`` rows; clipped at ``grad_clip`` like PPO's), after the PPO epochs. ``Bb`` =
+    one hold batch + a scalar ``coef`` (opt3), or {kind: batch} + {kind: coef} (R4; each kind's loss is ITS mean).
+    ``opt`` is the branch's OWN Adam (``Learner.branch_opt``) -- all kinds share it and its one step. Adam divides by the
+    gradient's running RMS, so the coefs barely scale the step: they are loss weights (they set the kinds' RELATIVE
+    gradient share and where ``grad_clip`` bites; all 0 = no gradient = no step); the step size is ``branch_lr``. ->
+    monitors: buffer rows, BCE (the unscaled weighted mean over all rows) before / after, mean and max |dP| on the
+    buffer rows with P = sigmoid(x) (hold: P(play); card / xbow_class: P(prefer A)), grad norm; ``skipped`` (no step
+    taken) on a non-finite loss or gradient norm; a non-hold kind adds ``by_kind`` {rows, bce_before, bce_after}."""
+    groups = [("hold", Bb, float(coef))] if "target" in Bb else [(k, b, float(coef[k])) for k, b in Bb.items()]
+    mb = int(cfg["minibatch"])
+    groups = [(k, b, c, [torch.arange(s, min(s + mb, len(b["target"])), device=b["target"].device)
+                         for s in range(0, len(b["target"]), mb)]) for k, b, c in groups]
+    N = sum(len(b["target"]) for _, b, _, _ in groups)
 
     def probe():
         with torch.no_grad():
-            xs, ls = zip(*(branch_terms(model, Bb, i, cfg["tau"], cfg["T"]) for i in chunks))
-            return torch.sigmoid(torch.cat(xs)), float(torch.cat(ls).mean())
-    p0, bce0 = probe()
+            per = {}
+            for k, b, _, chunks in groups:
+                xs, ls = zip(*(branch_terms(model, b, i, cfg["tau"], cfg["T"], k) for i in chunks))
+                per[k] = (torch.cat(xs), torch.cat(ls))
+            return (torch.sigmoid(torch.cat([v[0] for v in per.values()])),
+                    float(torch.cat([v[1] for v in per.values()]).mean()), {k: float(v[1].mean()) for k, v in per.items()})
+    p0, bce0, k0 = probe()
     opt.zero_grad(set_to_none=True)
-    for i in chunks:
-        (float(coef) * branch_terms(model, Bb, i, cfg["tau"], cfg["T"])[1].sum() / N).backward()
+    for k, b, c, chunks in groups:
+        n = len(b["target"])
+        for i in chunks:
+            (c * branch_terms(model, b, i, cfg["tau"], cfg["T"], k)[1].sum() / n).backward()
     gn = torch.nn.utils.clip_grad_norm_(model.parameters(), float(cfg["grad_clip"]))
     out = {"rows": N, "bce_before": bce0, "grad_norm": float(gn), "skipped": None, "p_play_mean": float(p0.mean())}
+    multi = [k for k, *_ in groups] != ["hold"]
     if not (math.isfinite(bce0) and torch.isfinite(gn)):
         opt.zero_grad(set_to_none=True)
         out.update({"skipped": f"non-finite bce {bce0} / grad norm {float(gn)}", "bce_after": bce0,
                     "dp_abs_mean": 0.0, "dp_abs_max": 0.0})
+        if multi:
+            out["by_kind"] = {k: {"rows": len(b["target"]), "bce_before": k0[k], "bce_after": k0[k]}
+                              for k, b, *_ in groups}
         return out
     opt.step()
-    p1, bce1 = probe()
+    p1, bce1, k1 = probe()
     dp = (p1 - p0).abs()
     out.update({"bce_after": bce1, "dp_abs_mean": float(dp.mean()), "dp_abs_max": float(dp.max())})
+    if multi:
+        out["by_kind"] = {k: {"rows": len(b["target"]), "bce_before": k0[k], "bce_after": k1[k]} for k, b, *_ in groups}
+    return out
+
+
+def branch_batches(buf: list[dict], dev) -> dict:
+    """The replay buffer -> {kind: device batch} in BRANCH_KIND_KEYS order (one hold batch = opt3's exactly)."""
+    out = {}
+    for k in BRANCH_KIND_KEYS:
+        b = branch_batch([x for x in buf if x.get("kind", "hold") == k], 0.0)
+        if b is not None:
+            out[k] = to_device(b, dev)
     return out
 
 
@@ -2304,7 +2466,7 @@ class Learner:
         Adam (``branch_opt``). ponytail: the buffer is not checkpointed -- a --resume starts it empty."""
         lag = [int(u) - int(x["version"]) for x in samples]
         fresh = [x for x, g in zip(samples, lag) if g <= int(bc["branch_max_staleness"])]
-        st = branch_stats(fresh, bc["branch_min_abs_delta"])
+        st = branch_stats(fresh, bc["branch_min_abs_delta"], bc["branch_kinds"])
         st.update({"drained": len(samples), "stale_dropped": len(samples) - len(fresh),
                    "staleness_mean": float(np.mean(lag)) if lag else None,
                    "by_worker": dict(Counter(int(x.get("worker", -1)) for x in samples))})
@@ -2320,8 +2482,8 @@ class Learner:
             if getattr(self, "branch_opt", None) is None:
                 self.branch_opt = self._branch_optimizer(bc)
             t = time.perf_counter()
-            st["step"] = branch_step(self.model, self.branch_opt, to_device(branch_batch(buf, 0.0), self.dev), self.cfg,
-                                     bc["branch_coef"])
+            st["step"] = branch_step(self.model, self.branch_opt, branch_batches(buf, self.dev), self.cfg,
+                                     {k: bc[BRANCH_KIND_KEYS[k][1]] for k in BRANCH_KIND_KEYS})
             st["step"]["wall_s"] = time.perf_counter() - t
         return st
 
@@ -2422,7 +2584,9 @@ class Learner:
                                    "gamma_row_mean": gamma_row_mean})
         if brst is not None:
             rec["branch"] = {**brst, "coef": bc["branch_coef"], "min_abs_delta": bc["branch_min_abs_delta"],
-                             "buffer_cap": bc["branch_buffer"], "max_staleness": bc["branch_max_staleness"]}
+                             "buffer_cap": bc["branch_buffer"], "max_staleness": bc["branch_max_staleness"],
+                             **({"kinds": bc["branch_kinds"], "card_coef": bc["branch_card_coef"],
+                                 "xbow_coef": bc["branch_xbow_coef"]} if bc["branch_kinds"] != ["hold"] else {})}
         del B, R
         if not crash:
             u1 = self.update
@@ -2499,6 +2663,12 @@ class Learner:
                     f"{f(brst['mean_delta'], '{:+.3f}')}"
                     + "".join(f" [{ph} {v['n']} {f(v['hold_better_share'])} {f(v['mean_delta'], '{:+.3f}')}]"
                               for ph, v in brst["by_phase"].items())
+                    + "".join(f" <{k} {v['n']}/{v['emitted']} b+ {f(v['b_better_share'])} d "
+                              f"{f(v['mean_delta'], '{:+.3f}')}"
+                              + (f" bce {f(brst['step']['by_kind'][k]['bce_before'], '{:.4f}')}->"
+                                 f"{f(brst['step']['by_kind'][k]['bce_after'], '{:.4f}')}"
+                                 if brst["step"] and k in brst["step"].get("by_kind", {}) else "") + ">"
+                              for k, v in brst.get("by_kind", {}).items())
                     + f" buf {brst['buffer']} aged-{brst['buffer_aged_out']}"
                     + (f" bce {f(brst['step']['bce_before'], '{:.4f}')}->{f(brst['step']['bce_after'], '{:.4f}')} "
                        f"|dP| {f(brst['step']['dp_abs_mean'], '{:.5f}')}"
@@ -2585,7 +2755,8 @@ class Learner:
             + " ".join(f"{k}={cfg.get(k)}" for k in COND_KEYS) + f"; leash {cfg.get('leash', 'cell')}"
             + ("; advantage gae " + " ".join(f"{k}={v}" for k, v in adv_cfg(cfg).items() if k != "advantage")
                if adv_cfg(cfg)["advantage"] == "gae" else "")
-            + ("; BRANCH " + " ".join(f"{k}={v}" for k, v in branch_cfg(cfg).items() if k != "branch_gate")
+            + ("; BRANCH " + " ".join(f"{k}={v}" for k, v in branch_cfg(cfg).items() if k != "branch_gate"
+                                      and (k not in R4_KEYS or branch_cfg(cfg)["branch_kinds"] != ["hold"]))
                if branch_cfg(cfg)["branch_gate"] else ""))
         if self.league is not None:
             log(f"[rl] LEAGUE: {len(self.census)} census decks + icebow (share {cfg['league_icebow_share']}), weights "
