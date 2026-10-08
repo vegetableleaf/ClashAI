@@ -4744,6 +4744,17 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   countdown finishes (3 minute mark), so that the match actually advances to overtime"). Worker a0ff8a54 resumed:
 >   --lethal-rocket ot_behind (regulation + behind on crowns + finishable princess; fire when it can still land before
 >   tick 3600); archive replay vs the loss review's 15/250 regulation-end losses; SIM v3 A/B ot vs ot_behind.
+> * **OVERSPENDING ROOT CAUSE FOUND (econ2 swap diagnostic a64e5b4, (a)):** the live gate is more eager than SIM in matched
+>   states (P(p > tau) tank-at-back .122 vs .081, formation .168 vs .121, all 2-6.9 elixir .098 vs .081) mostly because my
+>   HERO ICE WIZARD ability token is encoded live as readiness UNKNOWN (ready_known 0, charges -1, cooldown -1: pipeline/
+>   own_ability.catalog() comes from RoyaleSim cards.json, which has no Hero IW) -- a state absent from training (1.01M
+>   ability rows all ready_known=1). Token -> 0 removes 66-130% of the excess; re-encoding as known+ready removes 81-87%.
+>   Opposing: hero forms -> base (-37..-64%). Projectiles secondary (b). Opp counter, effects, unit age, HP scale (c).
+>   Parity fix dispatched (same worker): encode my Hero IW readiness like training (button state + my press times),
+>   verify the spec against live logs, SIM arms A/B/C, offline re-encode check; owner live A/B decides.
+>   Loss review rebuilt with the body-value fix (review.py --rebuild, 1,206 logs). Lead killed 32 orphaned waiter
+>   shells (10-07 phi_eval waiters; 2 econ2 ssh waiters that self-matched pgrep). Note: the permission system blocked a
+>   worker bulk-copying all live logs to the VM; workers run log passes locally at low priority instead.
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
