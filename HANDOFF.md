@@ -4755,6 +4755,18 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   Loss review rebuilt with the body-value fix (review.py --rebuild, 1,206 logs). Lead killed 32 orphaned waiter
 >   shells (10-07 phi_eval waiters; 2 econ2 ssh waiters that self-matched pgrep). Note: the permission system blocked a
 >   worker bulk-copying all live logs to the VM; workers run log passes locally at low priority instead.
+> * **Owner Q: can the model see Minion Giant? NO (a).** The live checkpoint card_vocab (124 keys) has no minion-giant
+>   (RoyaleSim cards.json has MinionGiant, 4 elixir); live from_engine(unmapped=set()) silently DROPS any opponent body
+>   whose card_id has no catalog name or whose name has no model unit id. Today (230 logs, L74/latency/invisible_scan.py):
+>   216 of 151,399 opponent sightings dropped (0.14%): id 13000043 (max_hp 1949, 3 matches), 13000075 (6314, 1),
+>   26000107 (1817, 1 match at 18:38 -- a troop id, possibly Minion Giant). Real fix = newer replay data + vocab
+>   extension; reader ids must be added to the catalog too.
+> * **Owner asked for RoyaleAPI crawls on the VM (stale replay data).** NOT set up: the crawler (C:/Users/benpe/
+>   clash-replay-scraper) needs a headful browser to pass Cloudflare + the owner's RoyaleAPI login cookie for /data/replay;
+>   automating that on a display-less VM = bot-detection workaround + moving the owner's session token -> declined.
+>   Options put to the owner: laptop crawl after the owner clears Cloudflare, fetched through the real browser at a
+>   fixed polite rate (not curl with a copied cf_clearance at the 429 ceiling); official Clash Royale API on the VM for
+>   decks/results/meta (owner creates the key and places it); ask RoyaleAPI for data access.
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
