@@ -4501,6 +4501,19 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **OWNER 09:4x: "run sim tests for area aware rocket aim and card choice filtering. Keep the current setup live, but
+>   disable the anti-leak in live matches. Test the xbow measurement in the sim as well ... the model hasnt exactly
+>   increased rocket use to the point that pros use it, especially during overtime."** Done: live stopped between matches
+>   09:44, run_live.sh `--anti-leak` -> `--no-anti-leak`, restarted 09:45 (same ckpt + xbow .3 + tau_phase B; one
+>   supervisor chain). Flagged risk: tau_phase B WITHOUT the anti-leak lost in SIM (104 vs 127, standoff-driven). Live
+>   at the switch: 73 matches 54.8% (R1e 50.6%), trophies 11,127 -> 11,272; live X-Bow out-of-reach share 8.3% (R1e
+>   8.1%); Rocket 2.2% of plays (R1e 1.0%; pros 5.7%); 108 forced plays (22 in the first 30 s incl. 5 Logs, 1 Rocket).
+>   Prior evidence: card filtering r .7 (Codex 10-05) Rocket recall 14.2 -> 14.7%, ghost 285 -> 279 -> rejected; area
+>   aim neutral; OT Rocket gap = eligibility (Rocket in hand AND >= 6 elixir: pros 43% vs bot 7% in OT).
+>   Telemetry extended (3585ace): phase_cards, xbow_phase (lead-rule defensive / reach lock), tower_rockets_phase.
+>   `~/ab_live2.sh`: R1e, live2 (= live now), + rocket_area, + card filtered, + AL (reference), both seed sets.
+>   Worker: X-Bow/Rocket by phase with the PRO definitions (xbow_switch / rocket_lead tools) for live R1e / stack AL-on /
+>   AL-off and the SIM arms -> scratchpad/gauntlet/L73/rocket_xbow_1008/.
 > * **R4c u0040 + barrel2k + CellRefine (stackr4c, same live options), v2:** vs R1e 160 vs 133 (53/12), 164 vs 128 (62/13);
 >   vs R1e + AL 160 vs 159, 164 vs 147 (29/12, p .012); vs the LIVE stack2k 160 vs 164 (15/19), 164 vs 158 (18/12) ->
 >   pooled 324 vs 322 = identical. Ghost -0.8 [-3.7, +2.0] (= stack2k). Held-out Log lane 118/126; base R4c u0040 ghost
