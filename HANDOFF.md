@@ -4395,6 +4395,18 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   both sides stall (old benchmark) 132 | R1e only 151 | opponents only 121 | neither (new benchmark) **105**.
 >   S1 column: 41 / 47 / 39 / 27. So without the forced spend R1e loses 46 of 192 vs unforced opponents. Live has had
 >   no forced spend since 10-04 -> R1e live runs in the 105 condition. New decision-tree baseline: R1e = 105/192.
+> * **One-tile placement (worker, commit eccd765 on worktree-agent-ad69e34410423e2a4, NOT merged; blind verifier
+>   running).** Owner's "grid resolution" cause CONTRADICTED: logged tap == Layout.board 3421/3421; troops/3x3 always
+>   aimed at tile centres (as the pros' labels); Tesla nudge correct both sides. Real cause MEASURED: the model picks an
+>   ILLEGAL tile (on my own building/tower 67/69 moved; across the river in a lane whose princess stands 10/11) and the
+>   game moves it to the nearest legal tile; every other target 10/3315. Fix: live legal-cell guard (best LEGAL cell,
+>   default ON in live_play, `--no-legal-guard`; pipeline default OFF). SIM differs: RoyaleSim REFUSES such plays
+>   (R1e ghost screen: 428/9475 = 4.5% refused out_of_territory, 0 occupied -- the sim does not block troops on my own
+>   buildings) -> a sim-side guard is a separate, later training change (one change per experiment; R3n running).
+> * **OWNER 21:5x: "the one tile placement issue also applies to spells ... must be fixed immediately before you deploy
+>   anything live."** Not measured yet (the audit scored only unit-spawning plays). Same worker sent to measure spell
+>   impact point vs tap per spell/side, tile quantization of spells, and placement-vs-aim (hits at the actual point vs
+>   the best tile within +-1); scratch only until the verifier finishes. No new live deploy until it reports.
 >   ~15:40" (Q1 card sampling flag, Q2 area-aware spell aim, Q3 GPU A/Bs after R1e, Q4 R1e approval ping, Q5 fixes);
 >   launcher `.foreman/codex_autopilot/codex_loop.sh` (back-to-back runs to 10-06; STOP_LOOP file stops it).
 > * **15:5x -- owner plan: after the R1e verdict the lead starts LIVE on the winner, then hands over to Codex via
