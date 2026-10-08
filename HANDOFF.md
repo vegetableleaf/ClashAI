@@ -4501,6 +4501,11 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **Live anti-leak verification: PASS_WITH_NOTES.** Elixir read, tick, last-accepted-play semantics = SIM; default OFF
+>   identical (decisions + RNG) on 995 frames; no double-fire (decisions skipped while a tap is pending); alternation
+>   resets per match; trial merge clean, 135 live tests pass. Mismatch: clock start -- SIM at warmup tick 90, live at
+>   the first real decision >= 150 -> first forced play 60 ticks later (~1 elixir). Sent back: start the live clock at
+>   tick 90 + a test; then merge.
 > * **BARREL-HEAVY census (59 loadable ladder decks WITH Goblin Barrel, unmodified; gen opps sampling; R3 u0050; 96
 >   per arm):** in-flight Log lane vs barrel base 73.4% -> +barrel 88.5% -> +CellRefine 66.4% (worse alone: local cell
 >   preferences compete with the barrel target) -> +barrel+CellRefine 89.1%. Wins 52 / 57 / 62 / 58 (paired vs base
