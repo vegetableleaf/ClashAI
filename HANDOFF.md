@@ -4508,6 +4508,7 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   CellRefine + TowerRefine exactly. VM ~/ClashBot got pipeline/tower_refine.py + hooked model_gen.py (live ckpt
 >   byte-identical under it; backup ~/probe_rocket/model_gen.py.bak_pre_towerrefine). SIM A/B (v3, seeds 0:240 x 2, live
 >   options + rocket_area, base / w1 / w2) running ~1 h: ~/probe_rocket/vm_ab_towerref.sh.
+> * **OWNER 14:xx (AskUserQuestion): "Test the 9+ elixir version"** of hazard_below_tau -> W4 running it.
 > * **W4 SIM (isolated ~/w4/repo @68c8032; VM ~/w4/sim/summary.txt):** vs S1 (192): base 160 wins, idle 26% -> hbt 184,
 >   idle 0 (50/6, p<1e-4); pure hazard 176. vs GEN v3 (960): base 619 -> **hbt 532 (142/230, p<1e-4, LOSES)**; pure hazard
 >   340. Economy v3 1x/2x/OT: plays/min base 6.30/13.67/15.20, hbt 7.29/14.53/16.84, pros 6.9/13.5/16.8; elixir@play base
