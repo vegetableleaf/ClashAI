@@ -34,6 +34,7 @@ from .train_s1 import MAX_U
 FORM_PAD = 3
 EVEN_BUILDINGS = {"Tesla"}           # owner 2026-10-07: Tesla is the ONLY 2x2 building; all others are 3x3
 ANYWHERE = {"Miner", "GoblinDrill"}  # deploy anywhere on the arena: never restricted
+SIM_START_TICK = 90                  # royale_env warmup_ticks: the SIM's first decision = its anti-stall clock start
 
 
 def legal_cells(entities, side: int, card_id: int, name: str, grid: str = "lattice", gx: int = 36, gy: int = 64):
@@ -109,7 +110,7 @@ class GenPilot:
         self.grid = str(st["args"].get("grid", "lattice"))
         self.dev, self.gate_tau = torch.device(device), float(gate_tau)
         self.past: list[tuple[int, int, float, float, float]] = []       # (card gid, form, x, y, t_sec) confirmed
-        self.last_play_tick: Optional[int] = None       # anti-leak clock: last CONFIRMED play (or first decision)
+        self.last_play_tick: Optional[int] = None       # anti-leak clock: last CONFIRMED play (None = SIM_START_TICK)
         self.history: dict = {}
         self.use_counter = use_counter
         self.opp = LiveOppElixir() if use_counter or self.feature_version >= 3 else None
@@ -178,12 +179,13 @@ class GenPilot:
 
     def stalled(self, frame: Mapping[str, Any], el_int: float) -> bool:
         """e1_eval.anti_stall on the REAL frame tick (SIM: the decision / landing clock stays real) and the elixir of
-        the board the model sees (SIM: tick + H). The clock starts at the match's first decision, as Match.prepare."""
+        the board the model sees (SIM: tick + H). With no confirmed play yet the clock runs from SIM_START_TICK, the
+        SIM's first decision (Match.prepare), whatever tick live first decides at (>= UI_READY_MIN_TICK 150)."""
         if self.anti_leak_elixir is None:               # off: the frame / clock are not even read
             return False
         tick = int(frame["game_tick"])
         if getattr(self, "last_play_tick", None) is None:
-            self.last_play_tick = tick
+            self.last_play_tick = SIM_START_TICK
         return anti_stall(el_int, tick, self.last_play_tick, self.anti_leak_elixir, self.anti_leak_seconds)
 
     def _card(self, name: str) -> int:

@@ -124,13 +124,19 @@ def test_threshold_after_a_confirmed_play(dt_ticks, elixir, stalled):
         assert d['name'] == 'Knight' and d['xy'] is not None
 
 
-def test_clock_starts_at_the_first_decision_and_off_never_stalls():
+def test_clock_starts_at_the_sim_first_decision_tick_90_and_off_never_stalls():
+    """No play yet: SIM's clock starts at its first decision, tick 90 (royale_env warmup_ticks), so the first forced
+    play is eligible at 90 + 240 = 330 -- not 150 + 240 = 390 (live's first decision, UI_READY_MIN_TICK)."""
     p = stall_pilot()
-    assert not p.decide(at(1000, 10.0))['play']            # first decision: starts the clock
-    assert not p.decide(at(1239, 10.0))['play']            # 11.95 s
-    assert p.decide(at(1240, 10.0))['play']                # 12.0 s
+    assert not p.decide(at(150, 10.0))['play']             # live's first decision does NOT start the clock
+    assert not p.decide(at(329, 10.0))['play']             # 11.95 s after tick 90
+    assert p.decide(at(330, 10.0))['play']                 # 12.0 s after tick 90
+    p.record_play(1, 0, (.5, .8), 400 * .05)
+    assert not p.decide(at(500, 10.0))['play']
     p.reset_match()
-    assert not p.decide(at(5000, 10.0))['play']            # a new match restarts the clock
+    assert p.last_play_tick is None and p.decide(at(330, 10.0))['play']   # a new match: from tick 90 again
+    late = stall_pilot()
+    assert late.decide(at(2000, 10.0))['play']             # first decision mid-match: still measured from tick 90
     off = pilot(DecisionOptions(), .2, card_logits=(9., 0., 0., 0.))
     off.decide(at(1000, 10.0))
     assert not off.decide(at(3000, 10.0))['play'] and off.decide(at(3000, 10.0))['stalled'] is False
@@ -142,7 +148,7 @@ def test_stall_elixir_is_the_extrapolated_board_elixir_and_the_clock_the_real_ti
     for p in (on, off):
         p.record_play(1, 0, (.5, .8), 1000 * .05)
     assert on.decide(at(1240, 8.6))['stalled'] and not off.decide(at(1240, 8.6))['stalled']
-    assert not stall_pilot(ext_h=26).decide(at(1000, 10.0))['stalled']   # +26 ticks of look-ahead never ages the clock
+    assert not stall_pilot(ext_h=26).decide(at(329, 10.0))['stalled']    # +26 ticks of look-ahead never ages the clock
 
 
 # ---------------------------------------------------------------------------------------------------------- (c)

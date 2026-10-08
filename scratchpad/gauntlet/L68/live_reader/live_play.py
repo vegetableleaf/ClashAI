@@ -226,8 +226,8 @@ def main() -> int:
     leak = ap.add_mutually_exclusive_group()
     leak.add_argument("--anti-leak", action="store_true",
                       help="OPT-IN forced spend, the SIM's anti-stall rule (e1_eval.anti_stall): at int(elixir) >= "
-                           "--anti-leak-elixir and >= --anti-leak-seconds of game time since my last CONFIRMED play (or the "
-                           "first decision), play the model's card + cell even when the gate says wait. Off by default")
+                           "--anti-leak-elixir and >= --anti-leak-seconds of game time since my last CONFIRMED play (or game "
+                           "tick 90, the SIM's first decision), play the model's card + cell even when the gate says wait. Off by default")
     leak.add_argument("--no-anti-leak", action="store_true", default=True,
                       help="compatibility no-op: anti-leak is off unless --anti-leak")
     ap.add_argument("--anti-leak-elixir", type=float, default=9.0)
@@ -669,7 +669,6 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                     pilot.decide(f)
                 except Exception:                        # noqa: BLE001 -- warm-up only; the real decision retries
                     pass
-                pilot.last_play_tick = None              # the anti-leak clock starts at the first REAL decision
                 warmed = True
             if tick < UI_READY_MIN_TICK:
                 continue

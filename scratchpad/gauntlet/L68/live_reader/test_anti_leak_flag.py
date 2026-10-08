@@ -76,3 +76,46 @@ def test_start_event_carries_anti_leak(monkeypatch, tmp_path):
         starts.append(json.loads(next(tmp_path.glob("live_play_*.jsonl")).read_text().splitlines()[0]))
     assert (starts[0]["anti_leak"], starts[0]["anti_leak_elixir"], starts[0]["anti_leak_seconds"]) == (False, None, None)
     assert (starts[1]["anti_leak"], starts[1]["anti_leak_elixir"], starts[1]["anti_leak_seconds"]) == (True, 9.0, 12.0)
+
+
+def test_play_match_confirmation_resets_the_anti_leak_clock(monkeypatch, tmp_path):
+    """The real pending -> confirmation -> record_play path with the flag on (fake model, gate .2 < tau: only the
+    anti-leak plays). Forced play at 340 (>= 90 + 240), confirmed at 360 when hand slot 0 rotates; the next forced
+    play waits for 360 + 240 = 600 (none at 500)."""
+    import copy
+    import threading
+    from pipeline.decision_options import DecisionOptions
+    from pipeline.tests.test_live_anti_leak import stall_pilot
+    from pipeline.tests.test_live_decision_options import icebow_frame
+
+    def frame(tick, rotated=False):
+        f = copy.deepcopy(icebow_frame(tick))
+        f.update(coherent=True, sample_monotonic_us=tick * 50_000)
+        if rotated:                                       # Knight (deck 0, hand pos 0) played -> deck 6 cycles in
+            f["players"][1]["hand_deck_indices"] = [6, 4, 5, 2]
+        return json.dumps(f) + "\n"
+    script = [frame(200), frame(300), frame(340), frame(360, True), frame(500, True), frame(600, True)]
+
+    def lines():
+        for ln in script:
+            threading.Event().wait(.3)                    # one frame at a time (time.sleep is patched out below)
+            yield ln
+    monkeypatch.setattr(lp, "HERE", tmp_path)
+    monkeypatch.setattr(lp, "adb", lambda *a, **k: "")
+    monkeypatch.setattr(lp, "input_cmd", lambda *a, **k: True)
+    stream = lines()                                      # one stream: a reader restart replays nothing
+    monkeypatch.setattr(lp.time, "sleep", lambda s: None)
+    monkeypatch.setattr(lp.subprocess, "Popen", lambda *a, **k: SimpleNamespace(
+        stdout=stream, stderr=SimpleNamespace(read=lambda: ""), wait=lambda timeout=None: 0, terminate=lambda: None))
+    pilot = stall_pilot()
+    pilot.match_seed, pilot.feature_version = 0, 1
+    args = SimpleNamespace(tau=.35, leak=9.5, dry_run=False, ckpt="/x/b.pt", extrapolate=0, no_opp_counter=False,
+                           ckpt_source="--ckpt", ckpt_sha256="b" * 64, public_audit=False, menu_guard=False,
+                           no_ability=True, reader="v2", interval_ms=100, max_seconds=60, anti_leak=True,
+                           anti_leak_elixir=9.0, anti_leak_seconds=12.0)
+    lp.play_match(args, pilot, lp.Layout(900, 1600), "cpu", None, record=False)
+    ev = [json.loads(ln) for ln in next(tmp_path.glob("live_play_*.jsonl")).read_text().splitlines()]
+    plays = [(e["tick"], e["forced"]) for e in ev if e["event"] == "play"]
+    assert plays == [(340, True), (600, True)], ev
+    assert [e["tick"] for e in ev if e["event"] == "confirmed"] == [360]
+    assert pilot.last_play_tick == 360
