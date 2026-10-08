@@ -1,2 +1,7 @@
 [cand r3c_u0030] fetched f8d23eaa4ec87d30 2026-10-08 01:56:17
 [cand r3c_u0030] barrel done: {"RESULT": true, "a_zero_init_equals_base": true, "b_base_byte_identical": true, "c_gate_card_unchanged": true, "d_branch_changed_finite": true} 2026-10-08 01:58:58
+[cand r3c_u0030] SIM A/Bs started on the VM (base, barrel; sequential) 2026-10-08 02:03:19
+[cand r3c_u0030] cellref done: {"done": true, "best_val_cell_nll": 3.003029447555542, "base_val_cell_nll": 3.07700805015564, "minutes": 29.0} 2026-10-08 02:33:58
+[cand r3c_u0030] SIM A/B started on the VM (barrel+cellref5) 2026-10-08 02:36:41
+[cand r3c_u0030] counterfactual done 2026-10-08 02:41:02
+[cand r3c_u0030] CAND_DONE 2026-10-08 02:45:57

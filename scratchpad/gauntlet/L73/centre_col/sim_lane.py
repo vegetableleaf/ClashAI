@@ -40,8 +40,13 @@ def _dec(model, enc, *a, **k):
             d = Path(os.environ.get("CENTRE_LOG_DIR", "."))
             d.mkdir(parents=True, exist_ok=True)
             _S["fh"] = open(d / f"lane_{os.getpid()}.jsonl", "a")
-        _S["fh"].write(json.dumps({"card": model._vocab[int(r["slot_card"][out[0]["slot"]])], "cell": out[0]["cell"],
-                                   "enemy": [[round(float(t[4]) * 18, 3), round((1 - float(t[5])) * 32, 3)] for t in en]}) + "\n")
+        rec = {"card": model._vocab[int(r["slot_card"][out[0]["slot"]])], "cell": out[0]["cell"],
+               "enemy": [[round(float(t[4]) * 18, 3), round((1 - float(t[5])) * 32, 3)] for t in en]}
+        if "projectiles" in r:      # enemy (col 1 == 1) Goblin Barrels in flight: x, y, target x, target y (board 0..1)
+            gb = model.gid.get("goblin-barrel")
+            rec["barrels"] = [[round(float(p[2]), 4), round(float(p[3]), 4), round(float(p[4]), 4), round(float(p[5]), 4)]
+                              for p in r["projectiles"] if int(p[0]) == gb and int(p[1]) == 1]
+        _S["fh"].write(json.dumps(rec) + "\n")
         _S["fh"].flush()
         _S["row"] = None
     return out
@@ -66,6 +71,18 @@ def summarise(dirs):
                     c["centre"] += 1
                     c["enemy_side"] += (X - 9) * (ex - 9) > 0
         print(d, json.dumps(c), f"lane consistency {100 * c['enemy_side'] / max(c['centre'], 1):.1f}%")
+        # in-flight Log vs Goblin Barrel (model_counterfactual's selection: one enemy barrel, target known, non-centre,
+        # aimed at our half): Log lane == barrel target lane
+        n = ok = 0
+        for fn in Path(d).glob("lane_*.jsonl"):
+            for l in open(fn):
+                e = json.loads(l)
+                b = [p for p in e.get("barrels", []) if p[2] >= 0]
+                if e["card"] != "the-log" or len(b) != 1 or abs(b[0][2] - .5) <= 1.5 / 18 or b[0][3] <= .5:
+                    continue
+                n += 1
+                ok += ((e["cell"] % 36) / 36 < .5) == (b[0][2] < .5)
+        print(d, f"in-flight Log vs barrel: lane correct {ok}/{n}")
 
 
 if __name__ == "__main__":

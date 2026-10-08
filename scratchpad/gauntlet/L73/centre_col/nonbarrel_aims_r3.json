@@ -1,0 +1,54 @@
+{
+ "log | barrel in flight=False": {
+  "n": 4748,
+  "base: exact": 0.3166,
+  "barrel: exact": 0.3157,
+  "barrel_cellref5e2: exact": 0.3433,
+  "base: mean dist tiles": 2.116,
+  "barrel: mean dist tiles": 2.12,
+  "barrel_cellref5e2: mean dist tiles": 2.057,
+  "changed base->barrel": 0.0088,
+  "changed barrel->barrel_cellref5e2": 0.3174,
+  "changed >1 tile base->barrel": 0.0048,
+  "changed >1 tile barrel->barrel_cellref5e2": 0.1192
+ },
+ "log | barrel in flight=True": {
+  "n": 162,
+  "base: exact": 0.284,
+  "barrel: exact": 0.4136,
+  "barrel_cellref5e2: exact": 0.4198,
+  "base: mean dist tiles": 4.501,
+  "barrel: mean dist tiles": 2.206,
+  "barrel_cellref5e2: mean dist tiles": 2.036,
+  "changed base->barrel": 0.216,
+  "changed barrel->barrel_cellref5e2": 0.0679,
+  "changed >1 tile base->barrel": 0.216,
+  "changed >1 tile barrel->barrel_cellref5e2": 0.0494
+ },
+ "rocket | barrel in flight=False": {
+  "n": 1118,
+  "base: exact": 0.1986,
+  "barrel: exact": 0.1977,
+  "barrel_cellref5e2: exact": 0.2308,
+  "base: mean dist tiles": 3.051,
+  "barrel: mean dist tiles": 3.044,
+  "barrel_cellref5e2: mean dist tiles": 2.899,
+  "changed base->barrel": 0.0054,
+  "changed barrel->barrel_cellref5e2": 0.381,
+  "changed >1 tile base->barrel": 0.0054,
+  "changed >1 tile barrel->barrel_cellref5e2": 0.1538
+ },
+ "rocket | barrel in flight=True": {
+  "n": 4,
+  "base: exact": 0.0,
+  "barrel: exact": 0.0,
+  "barrel_cellref5e2: exact": 0.0,
+  "base: mean dist tiles": 2.518,
+  "barrel: mean dist tiles": 2.518,
+  "barrel_cellref5e2: mean dist tiles": 2.518,
+  "changed base->barrel": 0.0,
+  "changed barrel->barrel_cellref5e2": 0.0,
+  "changed >1 tile base->barrel": 0.0,
+  "changed >1 tile barrel->barrel_cellref5e2": 0.0
+ }
+}

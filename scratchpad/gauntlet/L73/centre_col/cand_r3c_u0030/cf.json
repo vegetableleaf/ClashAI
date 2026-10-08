@@ -1,0 +1,67 @@
+{
+ "rows": 1405,
+ "pro_same_lane": 1361,
+ "base": {
+  "feature_version": 5,
+  "A_real": {
+   "log_lane_eq_real_target": 876,
+   "log_lane_eq_pro": 904
+  },
+  "B_barrel_x_mirrored": {
+   "log_lane_eq_real_target": 865,
+   "log_lane_eq_pro": 893
+  },
+  "C_barrel_removed": {
+   "log_lane_eq_real_target": 810,
+   "log_lane_eq_pro": 842
+  },
+  "val_only": {
+   "rows": 126,
+   "A_log_lane_eq_target": 82,
+   "flips_when_barrel_mirrored": 0
+  },
+  "lane_flips_when_barrel_mirrored": 11
+ },
+ "barrel": {
+  "feature_version": 6,
+  "A_real": {
+   "log_lane_eq_real_target": 1265,
+   "log_lane_eq_pro": 1287
+  },
+  "B_barrel_x_mirrored": {
+   "log_lane_eq_real_target": 392,
+   "log_lane_eq_pro": 422
+  },
+  "C_barrel_removed": {
+   "log_lane_eq_real_target": 812,
+   "log_lane_eq_pro": 844
+  },
+  "val_only": {
+   "rows": 126,
+   "A_log_lane_eq_target": 112,
+   "flips_when_barrel_mirrored": 72
+  },
+  "lane_flips_when_barrel_mirrored": 873
+ },
+ "barrel_cellref5": {
+  "feature_version": 6,
+  "A_real": {
+   "log_lane_eq_real_target": 1283,
+   "log_lane_eq_pro": 1309
+  },
+  "B_barrel_x_mirrored": {
+   "log_lane_eq_real_target": 361,
+   "log_lane_eq_pro": 391
+  },
+  "C_barrel_removed": {
+   "log_lane_eq_real_target": 798,
+   "log_lane_eq_pro": 830
+  },
+  "val_only": {
+   "rows": 126,
+   "A_log_lane_eq_target": 115,
+   "flips_when_barrel_mirrored": 74
+  },
+  "lane_flips_when_barrel_mirrored": 922
+ }
+}
