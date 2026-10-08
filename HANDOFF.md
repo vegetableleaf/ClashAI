@@ -4566,6 +4566,24 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   with HP <= my Rocket's catalog tower damage -> play Rocket now on that tower's centre cell; else no change), SIM +
 >   live, offline parity on 131352, v3 SIM; rebases onto W4's merge. Owner wants a bundled live restart: report when
 >   the bundle is ready.
+> * **PUSH-ROCKET WORKER DONE (a8aad346, branch worktree-agent-a8aad346ac44709a7 b4d2554/bfd97e4; NOT merged, NOT
+>   deployed).** Pre-push elixir (a): my elixir 10 s before a big push pros 6.2 / R1e 4.1 / stack 4.8; spent in those
+>   10 s 6.7 vs 7.2-7.3 (extra Knight +.4, IW +.3-.5, Log +.3, offensive X-Bow +.3, IW ability .12-.14; fewer Rockets
+>   on their half); at push start pros 5.9 vs bot 3.0-3.6. LIVE-ONLY: SIM eligibility .48, elixir at push start 5.2.
+>   Sluggishness (a): threats >= 7 elixir on my half answered within 2 s pros .64 / R1e .58 / stack .52 (1x .56 vs
+>   .42/.41); no play 10 s in 1x .11 vs .20; tau_phase (stack) delayed the first play in 73/143 (2x) and 54/92 (OT)
+>   episodes by a median .5-.7 s, almost always a cheap card, never Rocket. Model belief (a): Rocket top card on the 420
+>   pro push-Rocket rows stack .22 / R1e .15 / gen_v32 .25 / towerref_w2 .30; live decisions in eligible >= 7 clump
+>   states Rocket top 0/1,364 vs .02-.05 offline (cause UNTESTED: state or input path). OT aim near my tower: Giant+Wiz
+>   .06 within 2.5 t (median miss 13.5 t), towerref_w2 .17. PushRefine (pipeline/push_refine.py, card residual from
+>   visible enemy tokens, gated on a >= 4-elixir clump on my half, stacked on towerref_w2): SIM v3 480 paired vs
+>   towerref_w2 328.5 -> all-card w8 300.5 (31/59, p .004) FAIL; Rocket-only w16 320.5 (8/16, p .15), push Rockets
+>   .044 -> .119/match, P(Rk|eligible big push) .009 -> .044 (pros .07), eligible .48 and elixir at push start 5.24
+>   unchanged, OT tower Rockets .99 vs 1.01, beatdown census 161 vs 157 (n.s.). Win effect unproven, negative trend.
+>   VM ~/ClashBot now holds push_refine.py + model_gen.py/behaviour_telemetry.py changes NOT in main (backups
+>   ~/probe_push/backup) -> merge (with verification) before any main -> VM sync. Follow-ups sent: (A) live-vs-offline
+>   ranking gap (possible live input-path issue), (B) w16 to 960 paired seeds, (C) tau_phase isolated A/B (flat .35 vs
+>   .35/.45/.55) with the hbt9 bundle -- its only isolated test was on the void standoff benchmark (92 vs 134).
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
