@@ -1,0 +1,20 @@
+smoke32 lad rc=0 T=0.3 tau=0.27 gen=icebow/data/pipeline/gen_v32_s0/gen_s0.pt pol=sample 20:38:05
+c_T15 evo rc=0 T=0.15 tau=0.27 gen=icebow/data/pipeline/gen_v1_s0/gen_s0.pt pol=sample 20:41:30
+c_tau20 evo rc=0 T=0.3 tau=0.20 gen=icebow/data/pipeline/gen_v1_s0/gen_s0.pt pol=sample 20:41:39
+c_T15 lad rc=0 T=0.15 tau=0.27 gen=icebow/data/pipeline/gen_v1_s0/gen_s0.pt pol=sample 20:44:48
+c_tau20 lad rc=0 T=0.3 tau=0.20 gen=icebow/data/pipeline/gen_v1_s0/gen_s0.pt pol=sample 20:44:51
+c_T60 evo rc=0 T=0.6 tau=0.27 gen=icebow/data/pipeline/gen_v1_s0/gen_s0.pt pol=sample 20:48:00
+c_tau35 evo rc=0 T=0.3 tau=0.35 gen=icebow/data/pipeline/gen_v1_s0/gen_s0.pt pol=sample 20:48:05
+c_T60 lad rc=0 T=0.6 tau=0.27 gen=icebow/data/pipeline/gen_v1_s0/gen_s0.pt pol=sample 20:51:05
+c_tau35 lad rc=0 T=0.3 tau=0.35 gen=icebow/data/pipeline/gen_v1_s0/gen_s0.pt pol=sample 20:51:09
+c_T100 evo rc=0 T=1.0 tau=0.27 gen=icebow/data/pipeline/gen_v1_s0/gen_s0.pt pol=sample 20:54:06
+c_v32 evo rc=0 T=0.3 tau=0.27 gen=icebow/data/pipeline/gen_v32_s0/gen_s0.pt pol=sample 20:54:32
+c_T100 lad rc=0 T=1.0 tau=0.27 gen=icebow/data/pipeline/gen_v1_s0/gen_s0.pt pol=sample 20:57:01
+c_v32 lad rc=0 T=0.3 tau=0.27 gen=icebow/data/pipeline/gen_v32_s0/gen_s0.pt pol=sample 20:57:53
+c_live evo rc=0 T=0.3 tau=0.27 gen=icebow/data/pipeline/gen_v1_s0/gen_s0.pt pol=live 21:00:10
+c_v32T60 evo rc=0 T=0.6 tau=0.27 gen=icebow/data/pipeline/gen_v32_s0/gen_s0.pt pol=sample 21:00:51
+c_live lad rc=0 T=0.3 tau=0.27 gen=icebow/data/pipeline/gen_v1_s0/gen_s0.pt pol=live 21:03:22
+c_v32T60 lad rc=0 T=0.6 tau=0.27 gen=icebow/data/pipeline/gen_v32_s0/gen_s0.pt pol=sample 21:04:00
+SCREEN_DONE
+c_v32b evo rc=0 T=0.3 tau=0.27 gen=icebow/data/pipeline/gen_v32_s0/gen_s0.pt pol=sample 21:16:28
+c_v32b lad rc=0 T=0.3 tau=0.27 gen=icebow/data/pipeline/gen_v32_s0/gen_s0.pt pol=sample 21:18:33
