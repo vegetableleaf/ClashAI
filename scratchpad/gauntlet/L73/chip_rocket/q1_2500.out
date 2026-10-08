@@ -1,0 +1,46 @@
+===== pros: matches 2244 rockets 5426 tower 3522 (troops unknown 0) king-targeted 61; princess-only 3461
+  per match: all 2.418 [2.342,2.492] (5426/2244) | tower 1.570 [1.504,1.638] (3522/2244) | CHIP 1.151 [1.090,1.213] (2582/2244) | CATCH 0.419 [0.392,0.445] (940/2244)
+  chip share of tower Rockets (troops known): 73% [72,75] (2582/3522)
+    phase=1x        chip/match 0.060 [0.050,0.070] (135/2244)  catch/match 0.156 [0.141,0.172] (349/2244)  chip share 28% [24,32] (135/484)
+    phase=2x        chip/match 0.222 [0.202,0.243] (499/2244)  catch/match 0.124 [0.110,0.139] (279/2244)  chip share 64% [61,68] (499/778)
+    phase=OT        chip/match 0.868 [0.818,0.919] (1948/2244)  catch/match 0.139 [0.123,0.156] (312/2244)  chip share 86% [85,88] (1948/2260)
+    tower hp=hp25-50%  chip/match 0.253 [0.229,0.277] (568/2244)  catch/match 0.040 [0.032,0.049] (90/2244)  chip share 86% [84,89] (568/658)
+    tower hp=hp<=25%   chip/match 0.171 [0.152,0.190] (384/2244)  catch/match 0.020 [0.014,0.026] (44/2244)  chip share 90% [87,93] (384/428)
+    tower hp=hp>50%    chip/match 0.726 [0.680,0.775] (1630/2244)  catch/match 0.359 [0.334,0.385] (806/2244)  chip share 67% [65,69] (1630/2436)
+    lead=deficit   chip/match 0.448 [0.409,0.488] (1005/2244)  catch/match 0.102 [0.089,0.117] (230/2244)  chip share 81% [79,84] (1005/1235)
+    lead=even      chip/match 0.607 [0.560,0.652] (1363/2244)  catch/match 0.291 [0.268,0.316] (654/2244)  chip share 68% [65,70] (1363/2017)
+    lead=lead      chip/match 0.095 [0.081,0.111] (214/2244)  catch/match 0.025 [0.018,0.033] (56/2244)  chip share 79% [74,84] (214/270)
+    target=king      chip/match 0.026 [0.020,0.033] (58/2244)  catch/match 0.001 [0.000,0.003] (3/2244)  chip share 95% [89,100] (58/61)
+    target=princess  chip/match 1.125 [1.064,1.184] (2524/2244)  catch/match 0.418 [0.390,0.447] (937/2244)  chip share 73% [71,74] (2524/3461)
+  [princess, troop within 2.5 t] eligible-time share with troop near 8% [8,8] (341/4255) | tower Rockets/elig-min WITH troop 1.027 [0.918,1.142] (350/341) WITHOUT 0.810 [0.774,0.846] (3172/3914) | ratio 1.27 [1.13,1.42]
+  [any tower, troop within 2.5 t] eligible-time share with troop near 13% [13,13] (547/4255) | tower Rockets/elig-min WITH troop 1.159 [1.068,1.254] (634/547) WITHOUT 0.779 [0.742,0.816] (2888/3708) | ratio 1.49 [1.35,1.63]
+===== R1e(76fdfaac): matches 355 rockets 111 tower 64 (troops unknown 0) king-targeted 0; princess-only 64
+  per match: all 0.313 [0.248,0.383] (111/355) | tower 0.180 [0.130,0.231] (64/355) | CHIP 0.079 [0.051,0.113] (28/355) | CATCH 0.101 [0.065,0.144] (36/355)
+  chip share of tower Rockets (troops known): 44% [31,57] (28/64)
+    phase=1x        chip/match 0.017 [0.006,0.031] (6/355)  catch/match 0.045 [0.023,0.070] (16/355)  chip share 27% [9,48] (6/22)
+    phase=2x        chip/match 0.011 [0.003,0.023] (4/355)  catch/match 0.037 [0.017,0.059] (13/355)  chip share 24% [5,46] (4/17)
+    phase=OT        chip/match 0.051 [0.028,0.076] (18/355)  catch/match 0.020 [0.006,0.034] (7/355)  chip share 72% [53,89] (18/25)
+    tower hp=hp25-50%  chip/match 0.014 [0.003,0.028] (5/355)  catch/match 0.028 [0.011,0.048] (10/355)  chip share 33% [10,62] (5/15)
+    tower hp=hp<=25%   chip/match 0.020 [0.006,0.039] (7/355)  catch/match 0.008 [0.000,0.020] (3/355)  chip share 70% [33,100] (7/10)
+    tower hp=hp>50%    chip/match 0.045 [0.025,0.068] (16/355)  catch/match 0.065 [0.039,0.093] (23/355)  chip share 41% [26,56] (16/39)
+    lead=deficit   chip/match 0.008 [0.000,0.020] (3/355)  catch/match 0.023 [0.008,0.042] (8/355)  chip share 27% [0,60] (3/11)
+    lead=even      chip/match 0.034 [0.017,0.054] (12/355)  catch/match 0.048 [0.025,0.070] (17/355)  chip share 41% [24,59] (12/29)
+    lead=lead      chip/match 0.037 [0.017,0.059] (13/355)  catch/match 0.031 [0.011,0.054] (11/355)  chip share 54% [33,79] (13/24)
+    target=princess  chip/match 0.079 [0.051,0.110] (28/355)  catch/match 0.101 [0.065,0.141] (36/355)  chip share 44% [31,57] (28/64)
+  [princess, troop within 2.5 t] eligible-time share with troop near 9% [8,10] (20/228) | tower Rockets/elig-min WITH troop 0.768 [0.404,1.157] (15/20) WITHOUT 0.235 [0.163,0.312] (49/208) | ratio 3.27 [1.72,5.44]
+  [any tower, troop within 2.5 t] eligible-time share with troop near 15% [14,17] (35/228) | tower Rockets/elig-min WITH troop 1.065 [0.693,1.502] (37/35) WITHOUT 0.140 [0.092,0.195] (27/193) | ratio 7.62 [4.53,13.12]
+===== live(e7359f2b): matches 82 rockets 64 tower 49 (troops unknown 0) king-targeted 0; princess-only 49
+  per match: all 0.780 [0.549,1.024] (64/82) | tower 0.598 [0.402,0.829] (49/82) | CHIP 0.232 [0.098,0.390] (19/82) | CATCH 0.366 [0.244,0.500] (30/82)
+  chip share of tower Rockets (troops known): 39% [22,55] (19/49)
+    phase=1x        chip/match 0.049 [0.012,0.098] (4/82)  catch/match 0.195 [0.110,0.293] (16/82)  chip share 20% [5,39] (4/20)
+    phase=2x        chip/match 0.049 [0.012,0.098] (4/82)  catch/match 0.122 [0.061,0.195] (10/82)  chip share 29% [7,55] (4/14)
+    phase=OT        chip/match 0.134 [0.037,0.256] (11/82)  catch/match 0.049 [0.012,0.098] (4/82)  chip share 73% [43,94] (11/15)
+    tower hp=hp25-50%  chip/match 0.073 [0.012,0.159] (6/82)  catch/match 0.037 [0.000,0.085] (3/82)  chip share 67% [20,100] (6/9)
+    tower hp=hp<=25%   chip/match 0.073 [0.012,0.146] (6/82)  catch/match 0.061 [0.012,0.122] (5/82)  chip share 55% [21,83] (6/11)
+    tower hp=hp>50%    chip/match 0.085 [0.037,0.146] (7/82)  catch/match 0.268 [0.159,0.402] (22/82)  chip share 24% [11,40] (7/29)
+    lead=deficit   chip/match 0.000 [0.000,0.000] (0/82)  catch/match 0.024 [0.000,0.061] (2/82)  chip share 0% [0,0] (0/2)
+    lead=even      chip/match 0.098 [0.012,0.220] (8/82)  catch/match 0.220 [0.122,0.329] (18/82)  chip share 31% [8,56] (8/26)
+    lead=lead      chip/match 0.134 [0.037,0.256] (11/82)  catch/match 0.122 [0.049,0.220] (10/82)  chip share 52% [27,77] (11/21)
+    target=princess  chip/match 0.232 [0.110,0.390] (19/82)  catch/match 0.366 [0.232,0.512] (30/82)  chip share 39% [23,54] (19/49)
+  [princess, troop within 2.5 t] eligible-time share with troop near 6% [5,8] (5/75) | tower Rockets/elig-min WITH troop 1.775 [0.567,3.365] (8/5) WITHOUT 0.585 [0.379,0.838] (41/70) | ratio 3.03 [0.89,6.04]
+  [any tower, troop within 2.5 t] eligible-time share with troop near 12% [10,14] (9/75) | tower Rockets/elig-min WITH troop 2.989 [1.872,4.296] (26/9) WITHOUT 0.349 [0.164,0.564] (23/66) | ratio 8.56 [4.69,17.97]

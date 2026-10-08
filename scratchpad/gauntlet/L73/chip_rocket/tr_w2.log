@@ -1,0 +1,14 @@
+[   53s] deck-90 play rows 96232
+C:\Users/benpe/ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+[   65s] BASE {"top1": 0.6433, "card_nll": 0.8233, "cell_nll": 2.987, "chip_val_live_rocket": 0.1689, "chip_val_rank1": 0.2219, "chip_val_p_rk": 0.2472, "chip_val_mass_tower": 0.4845, "chip_val_n": 302, "chip_train_live_rocket": 0.1412, "chip_train_rank1": 0.2114, "chip_train_p_rk": 0.2401, "chip_train_mass_tower": 0.5003, "chip_train_n": 2280}
+[  186s] step 500 card 0.7865 cell 2.8952
+[  346s] step 1000 card 0.7779 cell 2.8643
+[  486s] step 1500 card 0.8406 cell 2.9149
+[  635s] step 2000 card 0.6986 cell 2.7409
+[  843s] step 2500 card 0.7582 cell 2.7632
+[ 1798s] step 3000 card 0.7571 cell 2.8056
+[ 1917s] step 3500 card 0.7315 cell 2.7928
+[ 2031s] step 4000 card 0.8660 cell 2.8911
+[ 2041s] TOWER_REFINE {"top1": 0.6555, "card_nll": 0.7969, "cell_nll": 2.9672, "chip_val_live_rocket": 0.3444, "chip_val_rank1": 0.4934, "chip_val_p_rk": 0.3816, "chip_val_mass_tower": 0.7679, "chip_val_n": 302, "chip_train_live_rocket": 0.275, "chip_train_rank1": 0.4263, "chip_train_p_rk": 0.3702, "chip_train_mass_tower": 0.7871, "chip_train_n": 2280}
+[ 2041s] saved tr_w2.pt

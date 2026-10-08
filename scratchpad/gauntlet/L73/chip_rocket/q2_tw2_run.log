@@ -1,0 +1,8 @@
+rows 3522 Rocket affordable 3522
+sanity chip median min enemy-token distance to aim (tiles) 6.708651530478782 share <=3: 0.07591014717273431
+sanity catch median min enemy-token distance to aim (tiles) 3.4843124193743824 share <=3: 0.3638297872340426
+C:\Users/benpe/ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+tw2 control done
+tw2 wizard_behind_tower done
+tw2 wizard_behind_king done
