@@ -12,7 +12,7 @@ load_live_config || exit 2
 if [ "${1:-}" = --check ]; then
   [ "$#" = 1 ] || { echo "usage: start_live.sh [--check]"; exit 2; }
   echo "hand-reader model input: $HAND_READER_EFFECTIVE"
-  "$PY" "$LIVE_ENTRY" "${CKPT_ARGS[@]}" --tau 0.35 --no-anti-leak --device cpu --check
+  "$PY" "$LIVE_ENTRY" "${CKPT_ARGS[@]}" --tau 0.35 --no-anti-leak --check
   exit $?
 fi
 [ "$#" = 0 ] || { echo "usage: start_live.sh [--check]"; exit 2; }

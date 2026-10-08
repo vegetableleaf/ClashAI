@@ -178,3 +178,14 @@ def test_check_json_reports_gate_decode(tmp_path):
     assert {k: check['decision_options'][k] for k in ('gate_decode', 'gate_hazard_min_elixir', 'gate_hazard_quiet')} \
         == dict(gate_decode='hazard_below_tau', gate_hazard_min_elixir=9.0, gate_hazard_quiet=True)
     assert check['live_options']['from_file']['gate_decode'] == 'hazard_below_tau'
+
+
+def test_iw_press_pstar_deployable_from_the_file_and_explicit_wins(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text('--iw-press-pstar 0.03\n')
+    ap = parser(f); ap.add_argument('--iw-press-pstar', type=float, default=None)
+    a, rec = parse_with_live_options(ap, [])
+    assert a.iw_press_pstar == 0.03 and rec['from_file'] == {'iw_press_pstar': 0.03}
+    a, rec = parse_with_live_options(ap, ['--no-live-options'])
+    assert a.iw_press_pstar is None and rec['status'] == 'ignored'
+    a, rec = parse_with_live_options(ap, ['--iw-press-pstar', '0.05'])
+    assert a.iw_press_pstar == 0.05 and rec['explicit'] == ['iw_press_pstar'] and rec['from_file'] == {}

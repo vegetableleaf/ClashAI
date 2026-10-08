@@ -119,7 +119,8 @@ def ice_wizard_should_press(f: dict, side: int, hero: dict | None, names: dict |
     return False, f"iw_hold frozen={len(frozen)}"
 
 
-def should_press(f: dict, side: int, hero_card_ids: set[int], reach_tiles: float = 5.5, pilot=None) -> tuple[bool, str]:
+def should_press(f: dict, side: int, hero_card_ids: set[int], reach_tiles: float = 5.5, pilot=None,
+                 p_star: float | None = None) -> tuple[bool, str]:
     """PLACEHOLDER policy (the RL ability head's slot): press when an enemy troop is within ``reach_tiles`` of my hero
     (reader positions, 1000 units per tile); if the hero entity cannot be found, when an enemy troop is on my half.
     Deliberately generic -- no per-hero stats -- so it only guarantees the button is USED, not used well.
@@ -140,7 +141,7 @@ def should_press(f: dict, side: int, hero_card_ids: set[int], reach_tiles: float
         if not dep:
             return ok, why + " (pro gate: no deploy tick)"
         from ability_ice_wizard import should_press_pro
-        ok2, why2 = should_press_pro(pilot, f, side, dep[-1], geometry_ok=ok, v_min=CLUMP_VALUE_MIN)
+        ok2, why2 = should_press_pro(pilot, f, side, dep[-1], geometry_ok=ok, v_min=CLUMP_VALUE_MIN, p_star=p_star)
         return ok2, why + " | " + why2
     hero = next((e for e in f["entities"] if e["side"] == side and int(e["card_id"]) in ids), None)
     foes = [e for e in f["entities"] if e["side"] != side and int(e["card_id"]) >= 0]
