@@ -21,3 +21,10 @@ def test_hazard_draw_frequency():
 def test_threshold_is_default_and_inactive():
     assert DecisionOptions().gate_decode == 'threshold' and not DecisionOptions().active
     assert DecisionOptions(gate_decode='hazard_below_tau').active
+
+
+def test_min_elixir_bounds():
+    import pytest
+    assert DecisionOptions(gate_decode='hazard_below_tau', gate_hazard_min_elixir=9.0).gate_hazard_min_elixir == 9.0
+    with pytest.raises(ValueError):
+        DecisionOptions(gate_hazard_min_elixir=11.0)

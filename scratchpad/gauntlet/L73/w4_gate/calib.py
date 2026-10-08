@@ -80,7 +80,8 @@ def ep_times(ep, R, p, tau):
         haz = (t[k] + (u - cum[k]) / max(lam[k], 1e-9), True)
     else:
         haz = (end, False)
-    return (end, pro_ev), thr, haz
+    both = min(thr, haz, key=lambda x: (x[0], not x[1])) if thr[1] or haz[1] else (end, False)
+    return (end, pro_ev), thr, haz, both
 
 
 def report(path):
@@ -102,12 +103,12 @@ def report(path):
                     eps = episodes(R, ctx); T = [ep_times(e, R, p, tau) for e in eps]
                     def P5(col):
                         return lambda es: km(np.array([x[col][0] for x in es]), np.array([x[col][1] for x in es]))
-                    pro5, thr5, haz5 = (boot(T, P5(c)) for c in range(3))
-                    med = [km_med(np.array([x[c][0] for x in T]), np.array([x[c][1] for x in T])) for c in range(3)]
+                    pro5, thr5, haz5, both5 = (boot(T, P5(c)) for c in range(4))
+                    med = [km_med(np.array([x[c][0] for x in T]), np.array([x[c][1] for x in T])) for c in range(4)]
                     print(f"{key:11s} E>={E} {nm} rows {n:6d} f {f:.3f} p {mp:.3f} p>tau {np.mean(p[ctx] > tau[ctx]):.3f}"
                           f" | lam pro {lam_pro:.3f}/s model {lam_mod:.3f}/s | eps {len(eps):5d} P5 pro {pro5[0]:.2f} [{pro5[1]:.2f},{pro5[2]:.2f}]"
-                          f" thr {thr5[0]:.2f} [{thr5[1]:.2f},{thr5[2]:.2f}] haz {haz5[0]:.2f} [{haz5[1]:.2f},{haz5[2]:.2f}]"
-                          f" | med s pro {med[0]:.1f} thr {med[1]:.1f} haz {med[2]:.1f}")
+                          f" thr {thr5[0]:.2f} [{thr5[1]:.2f},{thr5[2]:.2f}] haz {haz5[0]:.2f} [{haz5[1]:.2f},{haz5[2]:.2f}] thr+haz {both5[0]:.2f} [{both5[1]:.2f},{both5[2]:.2f}]"
+                          f" | med s pro {med[0]:.1f} thr {med[1]:.1f} haz {med[2]:.1f} thr+haz {med[3]:.1f}")
         # reliability by p bin (all contexts)
         bins = np.array([0, .05, .1, .2, .3, .35, .45, .55, .7, .85, 1.0])
         b = np.digitize(p[sm], bins) - 1

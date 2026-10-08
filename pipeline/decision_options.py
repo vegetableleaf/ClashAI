@@ -30,6 +30,7 @@ class DecisionOptions:
     xbow_class: str = 'argmax'
     xbow_class_floor: float = 0.2
     gate_decode: str = 'threshold'          # 'hazard' / 'hazard_below_tau': execute the gate's learned play RATE (W4)
+    gate_hazard_min_elixir: float = 0.0     # hazard draws only at own elixir >= this (0 = everywhere)
 
     def __post_init__(self):
         if self.card_choice not in ('argmax', 'filtered'):
@@ -51,6 +52,8 @@ class DecisionOptions:
             raise ValueError('xbow_class_floor must be in [0, 0.5]')
         if self.gate_decode not in ('threshold', 'hazard', 'hazard_below_tau'):
             raise ValueError('gate_decode must be threshold, hazard or hazard_below_tau')
+        if not math.isfinite(self.gate_hazard_min_elixir) or not 0 <= self.gate_hazard_min_elixir <= 10:
+            raise ValueError('gate_hazard_min_elixir must be in [0, 10]')
 
     @property
     def active(self):
@@ -80,6 +83,8 @@ def add_arguments(parser):
                         help='hazard: per decision play with probability 1 - exp(-rate(p) * step), rate = the play '
                              'rate the gate learned on 2-s WAIT rows (gate_rate); hazard_below_tau: play iff p > tau '
                              'as before, else the same draw')
+    parser.add_argument('--gate-hazard-min-elixir', type=float, default=0.0,
+                        help='hazard draws only when my elixir >= this (0 = at any elixir)')
     parser.add_argument('--decision-seed', type=int, default=0,
                         help='separate seeded card-choice stream; recorded with each experiment')
 
@@ -268,7 +273,7 @@ def choose_cells(logits, card_names, options, *, rngs=None, enemy_alive=None, gr
 
 @torch.no_grad()
 def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options, rngs, card_names,
-                 t_sec=None, enemy_alive=None, grid=None, step_s=None):
+                 t_sec=None, enemy_alive=None, grid=None, step_s=None, elixir=None):
     """Optional branch of e1_eval's live decision; default branch remains untouched.
     ``t_sec`` (tau_phase) and ``enemy_alive`` [(K, L, R) alive] + ``grid`` (xbow_class) are per-row match context."""
     tau = gate_taus(options, tau, t_sec, len(allowed))
@@ -278,7 +283,12 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
             raise ValueError('hazard gate decoding requires the decision step (seconds)')
         if options.gate_decode == 'hazard':
             playing = allowed.any(axis=1) & stalled
-        for r in np.flatnonzero(allowed.any(axis=1) & ~playing):   # a draw only where a play is possible
+        draw = allowed.any(axis=1) & ~playing                   # a draw only where a play is possible
+        if options.gate_hazard_min_elixir > 0:
+            if elixir is None:
+                raise ValueError('gate_hazard_min_elixir requires each row's own elixir')
+            draw &= np.asarray(elixir, dtype=np.float64) >= options.gate_hazard_min_elixir
+        for r in np.flatnonzero(draw):
             playing[r] = hazard_play(p[r], step_s, rngs[r])
     slots = [choose_slot(heads['card'][r], allowed[r], options, rngs[r], playing=bool(playing[r]))
              for r in range(len(allowed))]
@@ -321,6 +331,7 @@ def match_kwargs(matches):
     out = dict(decision_options=options, rngs=rngs, card_names=[list(m.deck.cards) for m in matches])
     if options.gate_decode != 'threshold':
         out['step_s'] = 0.05 * int(cfg['decide_every'])   # the SIM decides every decide_every ticks
+        out['elixir'] = [float(m._cur[1].my_elixir) for m in matches]
     if options.tau_phase is not None or options.xbow_class != 'argmax':
         boards = [m._cur[1] for m in matches]    # the prepared decision's engine BoardState (my frame)
         out.update(t_sec=[float(b.t_sec) for b in boards], grid=cfg['grid'],
