@@ -1,0 +1,12 @@
+rows without my Hero IW: byte-identical 4971, different 0 {}
+hero rows card: {62.0: 3322}
+hero rows form: {2.0: 3322}
+hero rows living: {2.0: 2986, 3.0: 178, 4.0: 147, 1.0: 10, 5.0: 1}
+hero rows ready: {1.0: 2702, 0.0: 619, -1.0: 1}
+hero rows ready_known: {1.0: 3321, 0.0: 1}
+hero rows charges: {1.0: 2702, 0.0: 619, -1.0: 1}
+hero rows cooldown_s: {0.0: 3321, -1.0: 1}
+## [tank] P(p>tau) matched: SIM 0.0812 | live before 0.1222 (excess +0.0410) -> after 0.0883 (excess +0.0072); removed 82% of the excess (n 1449) | hero-present rows: 0.1677 -> 0.0675 vs SIM 0.0841 (n 489)
+## [form] P(p>tau) matched: SIM 0.1213 | live before 0.1675 (excess +0.0462) -> after 0.1260 (excess +0.0047); removed 90% of the excess (n 1564) | hero-present rows: 0.2234 -> 0.1134 vs SIM 0.1392 (n 591)
+## [all 2-7] P(p>tau) matched: SIM 0.0814 | live before 0.0983 (excess +0.0169) -> after 0.0717 (excess -0.0097); removed 157% of the excess (n 8293) | hero-present rows: 0.1147 -> 0.0485 vs SIM 0.0869 (n 3322)
+rebuilt |p - logged p| median 0.0103 (logged = pre-fix live)

@@ -545,6 +545,24 @@ def load_named(n):
     return [m for m in load(n) if not cut or m.get("seed") is None or m["seed"] < int(cut)]
 
 
+def paired_econ(a, b):
+    """Paired (census, seed) differences a - b: per-match mean push-start elixir, taps at < 5 elixir per minute, mean
+    elixir; bootstrap 95% CI over matches."""
+    import random
+    def per(n):
+        out = {}
+        for m in load(n):
+            T, el = m["T"], m["el"]; mins = m["end"] / 1200.0
+            pe = [el[T.index(t)] for t in m["ps"] if el[T.index(t)] is not None]
+            out[(m["cen"], m["seed"])] = (mean(pe), sum(1 for p in m["pl"] if p[2] is not None and p[2] < 5) / mins, mean([e for e in el if e is not None]))
+        return out
+    A, B = per(a), per(b); k = sorted(set(A) & set(B)); rng = random.Random(3)
+    for j, lab in enumerate(("push-start elixir (per-match mean)", "taps < 5 elixir /min", "mean elixir")):
+        d = [A[x][j] - B[x][j] for x in k if A[x][j] is not None and B[x][j] is not None]
+        bs = sorted(sum(d[rng.randrange(len(d))] for _ in d) / len(d) for _ in range(1000))
+        print(f"{a} - {b}: {lab} {sum(d) / len(d):+.3f} [{bs[25]:+.3f}, {bs[974]:+.3f}] (n {len(d)})")
+
+
 def paired(a, b, cut=None):
     """Paired outcomes of two SIM arms on (census, seed): score 1 / .5 / 0, better / worse counts, two-sided sign test."""
     sc = {"win": 1.0, "draw": .5, "loss": 0.0}
@@ -630,7 +648,7 @@ if __name__ == "__main__":
     elif mode == "deploys": deploys(sys.argv[2:])
     elif mode == "hazard": hazard([a.split(":") for a in sys.argv[2:]])
     elif mode == "depcards": dep_cards(sys.argv[2], sys.argv[3])
-    elif mode == "paired": paired(sys.argv[2], sys.argv[3], int(sys.argv[4]) if len(sys.argv) > 4 else None)
+    elif mode == "paired": paired(sys.argv[2], sys.argv[3], int(sys.argv[4]) if len(sys.argv) > 4 else None); paired_econ(sys.argv[2], sys.argv[3])
     elif mode == "report":
         R = report(sys.argv[2:]); tables(R)
         PRS = [(x, y) for x, y in (("live_r1e", "sim_r1e"), ("live_towerref", "sim_de10"), ("live_stack", "sim_stack"), ("pros", "sim_de10")) if x in R and y in R]
