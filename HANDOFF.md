@@ -4501,6 +4501,25 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **LAG INCIDENT 11:3x:** owner lost a live match to lag. Causes: 4 workers' local jobs (GPU TowerRefine training, row
+>   extraction, verification) + 5 ORPHANED `python -` scripts from earlier sessions (pids 64148/61016, 50212, 28348, 6280;
+>   parents bash 56996, 26916, 60040, 70116), each ~0.6 core for 1-3 days. Lead suspended the worker jobs (48716/67392
+>   TowerRefine w2, 70148/72096 extract.py); killing the orphans was BLOCKED by the permission classifier -> owner given
+>   the Stop-Process command. All workers told: no heavy local compute; VM only. gpu.lock held by the suspended w2 job.
+>   Overlay: the owner's 11:05 run ended ~1 s after the match, before the `recording` event -> 0 segments; the raw mp4
+>   is unfinalised (moov atom missing). Planned: log segment timing at recording START (after W3's live_play changes).
+> * **CHIP-ROCKET FINAL (worktree agent-a5e4612a @f8df9ff, not merged):** Q1 measured (above). Q2: Wizard behind the KING
+>   x1.03 (owner's literal "behind the king" contradicted; it's the princess). Tower-token test: null token at the tower
+>   moves AIM 0.50 -> 0.85 but P(Rocket) only +2.6 pp (Wizard +19.6) -> missing tower token explains aim, not card choice.
+>   Q3 after a failed offensive X-Bow in OT: next offensive X-Bow pros 50% / R1e 48% / live 46% (n 13) -> re-offending is
+>   pro-like; tower Rocket pros 14% vs R1e 3% / live 0% -> the missing piece. Q4: pro chip Rockets are 4.9% of
+>   Rocket-affordable plays (OT 11%); argmax picks Rocket on 5.4% of those rows vs pros' 10.3% Rocket rate (OT 8.9 vs
+>   17.7). SIM Rocket tower damage = real game (11.2% of tower HP both) -> fidelity fine. R4c `card` branch: 367 labels,
+>   Rocket judged better 32% (its Rocket fires at its top cell, on the tower only ~50%) -> RL pushes AGAINST Rocket.
+>   Q5 TowerRefine (pipeline/tower_refine.py + 15-line hook; zero-init, base frozen, opt-in by content): w_chip=1 card
+>   top-1 .643 -> .648, chip-row aim .48 -> .73, troop ratio 3.2 -> 2.0, top-card Rocket 5.4 -> 5.7% (OT 8.9 -> 10.1);
+>   w_chip=4 overshoots (20% / OT 40%; top-1 .631). w_chip=2 suspended at step 2,500/4,000 (tr_w2.log). Folded ckpt
+>   rseries_r3c_u0030_barrel2k_cellref_towerref_w1.pt; byte-identical without the module; 19 tests pass.
 > * **OWNER 11:1x:** rocket_area ON live since 10:36 (owner request); owner then stopped live (STOP 10:54, not by lead)
 >   and ran live_play.py DIRECTLY at 11:05 with the plain defaults (flat tau .35, no tau_phase, xbow argmax, spell
 >   argmax): 73 plays, 0 Rockets, OT spent every 1.5-2 s at 1-3 elixir with p_play .35-.45 -> 3-crown loss ("collapsed
