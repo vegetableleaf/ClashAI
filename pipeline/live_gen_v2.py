@@ -11,13 +11,15 @@ from .e1_eval import allowed_slots
 from .model_v3 import cell_xy
 from dataclasses import replace
 
-from .decision_options import DecisionOptions, choose_cells, choose_slot, gate_taus
+from .decision_options import BARREL_KEY, DecisionOptions, barrel_landings, choose_cells, choose_slot, gate_taus
 
 
 class GenPilot(LegacyGenPilot):
     def __init__(self, *args, decision_options=None, decision_seed=0, public_audit=False, **kwargs):
         super().__init__(*args, **kwargs)
         self.decision_options = decision_options or DecisionOptions()
+        if self.decision_options.log_aim != 'argmax' and getattr(self, 'feature_version', 1) < 4:
+            raise ValueError('log_aim needs a feature_version >= 4 checkpoint (public projectile tokens)')
         self.decision_seed = int(decision_seed)
         self.match_index = -1
         self.match_seed = self.decision_seed
@@ -82,6 +84,8 @@ class GenPilot(LegacyGenPilot):
             if cell_options.xbow_class != 'argmax':     # enemy K, L, R alive in my board frame, as SIM's match_kwargs
                 context = dict(rngs=[self.rng_decisions], grid=self.grid,
                                enemy_alive=[tuple(bool(t.alive) for t in bs.towers[3:6])])
+            if cell_options.log_aim != 'argmax':       # the model's own projectile tokens, as SIM's match_kwargs
+                context.update(grid=self.grid, barrels=[barrel_landings(b['projectiles'][0], self.gid.get(BARREL_KEY))])
             logits = self.guard_cells(frame, d, logits)
             d['xy'] = cell_xy(int(choose_cells(logits, [name], cell_options, **context)[0]), self.grid)
         return self._audited(d)

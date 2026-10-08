@@ -298,7 +298,11 @@ def main() -> int:
     ap.add_argument("--nav-dry-run", action="store_true",
                     help="play nothing: run ONE between-match navigation that classifies the live screens and logs "
                          "the tap it WOULD make, never tapping (navigate by hand to test it)")
-    a = ap.parse_args()
+    from pipeline.live_options import add_live_options_arguments, parse_with_live_options
+    add_live_options_arguments(ap, REPO / "scratchpad/gauntlet/L70/live/LIVE_OPTIONS")
+    a, live_options = parse_with_live_options(ap)       # deployed decision options; explicit flags win
+    a.live_options = live_options
+    print(f"[live] decision options: {json.dumps(live_options)}", flush=True)
     try:                                     # owner 2026-10-07: live play gets the CPU before training / sim jobs
         import psutil
         psutil.Process().nice(psutil.ABOVE_NORMAL_PRIORITY_CLASS)
@@ -337,7 +341,7 @@ def main() -> int:
                 dict(checkpoint=path, sha256=sha, feature_version=pl.feature_version)
                 for (path, sha), (_, pl) in zip(arms, loaded)], device=loaded[0][0], tau=a.tau, **anti_leak_log(a),
                 public_audit=a.public_audit, legal_guard=not getattr(a, 'no_legal_guard', False), predict_drops=a.predict_drops,
-                decision_options=vars(loaded[0][1].decision_options))))
+                decision_options=vars(loaded[0][1].decision_options), live_options=a.live_options)))
             return 0
     else:
         from pipeline.live_checkpoint import resolve_checkpoint
@@ -353,7 +357,7 @@ def main() -> int:
         print(json.dumps(dict(check='LIVE_CHECK_PASS', checkpoint=a.ckpt, sha256=a.ckpt_sha256,
               feature_version=pilot.feature_version, device=device, tau=a.tau, **anti_leak_log(a),
               public_audit=a.public_audit, legal_guard=getattr(pilot, 'legal_guard', None), predict_drops=a.predict_drops,
-              decision_options=vars(pilot.decision_options))))
+              decision_options=vars(pilot.decision_options), live_options=a.live_options)))
         return 0
     nav = None
     if a.matches > 1 or a.nav_dry_run:
@@ -535,6 +539,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
       extrapolate=a.extrapolate, opp_counter=not a.no_opp_counter, device=device, **anti_leak_log(a),
       ckpt_source=a.ckpt_source, ckpt_sha256=a.ckpt_sha256,
       decision_options=vars(pilot.decision_options), decision_seed=pilot.match_seed,
+      live_options=getattr(a, "live_options", None),
       feature_version=pilot.feature_version, public_audit=a.public_audit, legal_guard=getattr(pilot, "legal_guard", None),
       **({"predict_drops": True} if getattr(a, "predict_drops", False) else {}))
     rec = ScreenRec(stamp) if record else None
