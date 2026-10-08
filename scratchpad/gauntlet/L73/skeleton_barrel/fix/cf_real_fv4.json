@@ -1,0 +1,53 @@
+{
+ "data": "icebow\\data\\pipeline\\gen_dataset_v31_public.npz",
+ "feature_version": 4,
+ "rows": 8839,
+ "drop_rows": 736,
+ "drop_rows_with_predicted_children": 736,
+ "extrap_stats": {
+  "predicted": 731,
+  "units_added_7": 731,
+  "rows_with_children": 736
+ },
+ "pro_log_rate_drop_rows": 0.5122,
+ "pro_log_rate_drop_rows_with_prediction": 0.5122,
+ "models": {
+  "R1e_u0155": {
+   "drop_rows": {
+    "real": {
+     "p_play": 0.4417,
+     "p_log_given_play": 0.3345,
+     "p_log_now": 0.1604
+    },
+    "hand": {
+     "p_play": 0.6406,
+     "p_log_given_play": 0.5928,
+     "p_log_now": 0.4168
+    },
+    "extrap": {
+     "p_play": 0.6458,
+     "p_log_given_play": 0.593,
+     "p_log_now": 0.4166
+    }
+   },
+   "drop_rows_with_prediction": {
+    "real": {
+     "p_play": 0.4417,
+     "p_log_given_play": 0.3345,
+     "p_log_now": 0.1604
+    },
+    "hand": {
+     "p_play": 0.6406,
+     "p_log_given_play": 0.5928,
+     "p_log_now": 0.4168
+    },
+    "extrap": {
+     "p_play": 0.6458,
+     "p_log_given_play": 0.593,
+     "p_log_now": 0.4166
+    }
+   },
+   "non_drop_rows_unchanged": true
+  }
+ }
+}

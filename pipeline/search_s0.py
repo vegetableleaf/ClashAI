@@ -583,6 +583,8 @@ def _init_worker(args: dict) -> None:
         learner_cfg.update(args['decision_options'])
     if args.get('behaviour_telemetry'):
         learner_cfg['behaviour_telemetry'] = True
+    if args.get('predict_drops'):
+        learner_cfg['predict_drops'] = True
     _W["runner"] = Runner(gen, opps, learner_cfg,
                           lambda: RoyaleSelfPlayEnv(decision_ticks=10, tail_cap=cap, forms_mode=fm,
                                                     hero_abilities=args.get("hero_abilities", False),
@@ -714,6 +716,9 @@ def main(argv=None) -> int:
     ap.add_argument("--opp-T", type=float, default=0.3)
     ap.add_argument("--tau-plain", type=float, default=None,
                     help="lead 2026-10-06: the plain arm's gate threshold (default None = TAU_PLAIN 0.35, unchanged)")
+    ap.add_argument("--predict-drops", action="store_true",
+                    help="learner look-ahead adds an observed Skeleton Barrel balloon's 7 skeletons 12 ticks after its "
+                         "death (cfg 'predict_drops', pipeline/extrapolate.py); default off = unchanged")
     ap.add_argument("--hero-abilities", action="store_true",
                     help="press ready, affordable hero buttons within attack range + 1.5 tiles of enemies")
     ap.add_argument("--ability-policy", default="generic", choices=("generic", "v2"),
@@ -762,7 +767,9 @@ def main(argv=None) -> int:
         wargs['opp_policy'], wargs['opp_T'] = a.opp_policy, float(a.opp_T)
     if a.tau_plain is not None:
         wargs['tau_plain'] = float(a.tau_plain)
-    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
+    if a.predict_drops:
+        wargs['predict_drops'] = True
+    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k != 'predict_drops' or v) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
                                                 "gen_sha256": sha256(REPO / a.gen), "opp_gen_sha256": opp_sha,
                                                 "s1_sha256": sha256(REPO / a.s1),
                                                 "tau_plain": TAU_PLAIN, "tau_opp": TAU_OPP, "crown_w": CROWN_W,

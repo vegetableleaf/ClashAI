@@ -1,0 +1,53 @@
+{
+ "data": "icebow\\data\\pipeline\\gen_dataset_v32_fv5.npz",
+ "feature_version": 5,
+ "rows": 8839,
+ "drop_rows": 736,
+ "drop_rows_with_predicted_children": 736,
+ "extrap_stats": {
+  "predicted": 731,
+  "units_added_7": 731,
+  "rows_with_children": 736
+ },
+ "pro_log_rate_drop_rows": 0.5122,
+ "pro_log_rate_drop_rows_with_prediction": 0.5122,
+ "models": {
+  "gen_v32_s0": {
+   "drop_rows": {
+    "real": {
+     "p_play": 0.4248,
+     "p_log_given_play": 0.3703,
+     "p_log_now": 0.1655
+    },
+    "hand": {
+     "p_play": 0.6317,
+     "p_log_given_play": 0.671,
+     "p_log_now": 0.4476
+    },
+    "extrap": {
+     "p_play": 0.6311,
+     "p_log_given_play": 0.6713,
+     "p_log_now": 0.4465
+    }
+   },
+   "drop_rows_with_prediction": {
+    "real": {
+     "p_play": 0.4248,
+     "p_log_given_play": 0.3703,
+     "p_log_now": 0.1655
+    },
+    "hand": {
+     "p_play": 0.6317,
+     "p_log_given_play": 0.671,
+     "p_log_now": 0.4476
+    },
+    "extrap": {
+     "p_play": 0.6311,
+     "p_log_given_play": 0.6713,
+     "p_log_now": 0.4465
+    }
+   },
+   "non_drop_rows_unchanged": true
+  }
+ }
+}

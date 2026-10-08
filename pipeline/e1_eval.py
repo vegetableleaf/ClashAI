@@ -620,6 +620,10 @@ class Match:
         if self.extrap < 0:
             raise ValueError(f"cfg['extrapolate_ticks'] {self.extrap} < 0")
         self._prev_raw = None                                # cfg["extrapolate_ticks"]: last decision's raw state
+        self.drops = None                                    # cfg["predict_drops"] (opt-in, needs extrapolate_ticks)
+        if cfg.get("predict_drops") and self.extrap:
+            from pipeline.extrapolate import DropTracker
+            self.drops = DropTracker()
         self.opp_mode = cfg.get("opp_elixir")
         if self.opp_mode:
             if self.opp_mode not in OPP_ELIXIR_MODES:
@@ -676,8 +680,12 @@ class Match:
             self.public.update(self.state, source='sim')
         if self.extrap:                                      # cfg["extrapolate_ticks"]; 0 -> this block is skipped
             from pipeline.extrapolate import extrapolate
+            if self.drops is not None:                       # observed balloon disappearances (every decision's state)
+                self.drops.observe(self.state, self.side)
             if h:
                 object_context = self.public.object_context(tick) if self.feature_version >= 4 else {}
+                if self.drops is not None:
+                    object_context = dict(object_context, drops=self.drops.pending)
                 raw = extrapolate(self.state, self._prev_raw, h, self.side, **object_context)
             self._prev_raw = self.state
         if self.feature_version >= 4:
@@ -899,6 +907,7 @@ class Match:
             **({"action_delay_ticks": self.delay, "plays_unlanded": self.n_unlanded,
                 "plays_refused_at_landing": n_att - n_acc - self.n_unlanded} if self.delay else {}),
             **({"extrapolate_ticks": self.extrap} if self.extrap else {}),
+            **({"predict_drops": True} if self.drops is not None else {}),
             **({"hero_abilities": True, "ability_presses": {s: dict(c) for s, c in env.ability_presses.items()}}
                if getattr(env, "hero_abilities", False) else {}),
             **({"ability_policy": "v2", "ability_fallback_generic": dict(env.ability_fallback_generic),
@@ -1381,6 +1390,9 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--extrapolate", type=int, default=0,
                     help="each decision sees the raw board advanced H ticks (cfg 'extrapolate_ticks'; 26 with the "
                          "live condition's delay)")
+    ap.add_argument("--predict-drops", action="store_true",
+                    help="with --extrapolate: add the 7 skeletons of an observed Skeleton Barrel balloon death 12 ticks "
+                         "after it (cfg 'predict_drops'); default off = unchanged")
     ap.add_argument("--decide-every", type=int, default=DECIDE_EVERY)
     ap.add_argument("--device", default="cpu")
     ap.add_argument("--threads", type=int, default=2)
@@ -1453,6 +1465,10 @@ def main(argv=None) -> int:
            "random_hand_only": bool(a.random_hand_only), "grid": minfo.get("grid", "floor"), "device": a.device,
            "decide_every": int(a.decide_every), "slot": slot, "port": int(a.port), "T": float(a.sample_T),
            "opp_elixir": a.opp_elixir, "action_delay_ticks": int(a.action_delay), "extrapolate_ticks": int(a.extrapolate)}
+    if a.predict_drops:
+        if not a.extrapolate:
+            raise SystemExit("--predict-drops needs --extrapolate > 0 (the skeletons go into the look-ahead board)")
+        cfg["predict_drops"] = True
     if decision_active:
         cfg.update(decision_cfg)
     print(json.dumps({"e1_eval": a.mode, "policy": a.policy, "port": a.port, "tasks": len(tasks),

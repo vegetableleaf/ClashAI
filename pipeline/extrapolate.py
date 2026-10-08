@@ -23,15 +23,40 @@ towers are never moved: ``episode.crown_towers`` is not touched and card_id < 0 
 spawns, targets and retargeting (a unit that stops to attack mid-window overshoots), hand / next card, and the
 OPPONENT's elixir (left to the caller, which must not read the true value). Public objects are unchanged unless
 the caller explicitly supplies the v4 snapshot; H=0 and legacy calls retain their previous output.
+
+OPT-IN ``drops`` (``predict_drops``; L73 Skeleton Barrel audit; absent = byte-identical): the one spawn that IS simulated.
+An enemy Skeleton Barrel balloon that VANISHES from the observed board (``DropTracker.observe``: present in the last
+observation, absent now; killed or arrived) drops its 7 skeletons 12 ticks after the first absent observation (live
+2-tick frames: 30 / 39 exactly 12; the engine's spec). ``extrapolate(..., drops=tracker.pending)`` adds those 7 bodies on
+the measured spawn ring (CHILD_RING: tight at the drop point, ~1.46 tiles by 3 ticks) around the balloon's last observed position once T + 12 <= tick + h, shaped exactly like the real
+children (the parent's card id / name -- the reader and the engine give a barrel's skeletons the BARREL's id, max_hp 81 at
+level 11 scaled to the balloon's level), so fv4 and fv5 classify them as they classify the real ones. Only observed
+disappearances count; no hidden state.
 """
 from __future__ import annotations
 
+import math
 from typing import Any, Mapping, Optional
 from collections import Counter
 
 from pipeline.opp_elixir_count import MAX_ELIXIR, regen_between
 
 BOARD_X, BOARD_Y = 18000.0, 32000.0
+
+# predict_drops: Skeleton Barrel (the balloon AND its skeletons carry the id, told apart by max_hp). Ids: reader / native
+# base and evo card ids; the SIM (RoyaleSim) uses 56 for both forms (evo = status bit 8, or the level-11 evo hp 665).
+SB_CARDS = {26000056: 532.0, 13000056: 665.0, 56: 532.0}        # card id -> balloon max_hp at level 11
+EVO_CARD, EVO_HP11 = 13000056, 665.0
+BALLOON_MIN_HP = 300                                  # balloon 532..967; its skeletons 81..130
+CHILD_HP11, N_CHILD = 81.0, 7                         # skeleton max_hp at level 11, count
+# Live-measured (30 exact drops, 210 children, 2-tick frames; fix/age_profile.py): the 7 spawn near the drop point and
+# jump out to a ring in ~3 ticks -- median radius by age 0 / 1 / 2 / >= 3 ticks since spawn, millitiles; body kind 14
+# (deploying) until age 9, then 15. (The audit's hand-placed counterfactual used a 1.3-tile ring at every age.)
+CHILD_RING, CHILD_DEPLOY_TICKS = (250.0, 630.0, 960.0, 1460.0), 9
+# skeletons appear T + 12 (T = first absent tick; first sighting up to T + 15 live). A drop whose skeletons are not on the board
+# by T + 18 has none alive to show (killed at once / never spawned: SIM probe, 2 of 32), so the pending entry ends there.
+DROP_DELAY, DROP_TTL = 12, 18
+DROP_FIRST, CLAIM_RADIUS = DROP_DELAY - 2, 4500.0     # an old drop can claim children from T + 10 (12 +- 2); children within 4.5 tiles
 
 
 def _tick_key(obs: Mapping[str, Any]) -> str:
@@ -40,6 +65,99 @@ def _tick_key(obs: Mapping[str, Any]) -> str:
 
 def _eid(e: Mapping[str, Any]):
     return e.get("entity_id", e.get("address"))
+
+
+def _is_sb(e: Mapping[str, Any]) -> bool:
+    return int(e.get("card_id", -1)) in SB_CARDS or e.get("name") == "SkeletonBalloon"
+
+
+def _is_balloon(e: Mapping[str, Any]) -> bool:
+    return _is_sb(e) and float(e.get("max_hp") or 0) >= BALLOON_MIN_HP
+
+
+def _sig(e: Mapping[str, Any]) -> tuple:
+    return (_eid(e), e.get("side"), e.get("card_id"), e.get("max_hp"))
+
+
+def _is_evo(e: Mapping[str, Any]) -> bool:
+    if int(e.get("card_id", -1)) == EVO_CARD:
+        return True
+    flags = e.get("status_flags")
+    if flags is not None and int(flags) >= 0:          # SIM: bit 8 = evolution, 16 = hero
+        return bool(int(flags) & 8)
+    return float(e.get("max_hp") or 0) == EVO_HP11
+
+
+def _child_hp(balloon: Mapping[str, Any]) -> float:
+    """Skeleton max_hp at the balloon's card level: CR scales +10% per level (balloon 532/586/642/705/773 -> skeleton
+    81/89/98/108/119, live-measured; the evo balloon starts at 665 but drops the same 81-hp skeletons)."""
+    base = EVO_HP11 if _is_evo(balloon) else SB_CARDS[26000056]
+    level = round(math.log(float(balloon["max_hp"]) / base) / math.log(1.1))
+    return float(round(CHILD_HP11 * 1.1 ** max(level, 0)))
+
+
+class DropTracker:
+    """Observed-only memory of enemy Skeleton Barrel balloons that left the board (see the module docstring).
+
+    ``observe(obs, my_side)`` once per observation in ascending tick order (a smaller tick = a new match: reset);
+    ``pending`` is what ``extrapolate(drops=...)`` reads. A pending drop ends when its own real skeletons are observed
+    ("fresh" Skeleton Barrel bodies below balloon hp, matched one-to-one to the NEAREST drop within 4.5 tiles, at most 7
+    per drop, an older drop only from T + 10 on), when the same balloon reappears (a one-frame flicker, not a death), or
+    after T + 18. Children already on the board in the first observation without the balloon (a SIM decision gap of up
+    to 30 ticks) satisfy the drop at once: it is never registered. (An EVO barrel drops twice -- 7 skeletons while its body
+    lingers on arrival, 7 more 12-15 ticks after it vanishes, live 4 of 4 and SIM -- so older children near a vanishing
+    balloon are not a reason to skip the drop.)"""
+
+    def __init__(self):
+        self.reset()
+
+    def reset(self) -> None:
+        self.pending: list[dict] = []
+        self._last: Optional[dict] = None
+        self._tick: Optional[int] = None
+
+    def observe(self, obs: Mapping[str, Any], my_side: int) -> None:
+        tick = int(obs[_tick_key(obs)])
+        if self._tick is not None and tick < self._tick:
+            self.reset()
+        ents = {_eid(e): e for e in obs.get("entities") or () if _eid(e) is not None}
+        last = self._last
+        if last is not None:
+            old = [d for d in self.pending if tick <= d["t0"] + DROP_TTL
+                   and not (_eid(d["parent"]) in ents and _sig(ents[_eid(d["parent"])]) == _sig(d["parent"]))]
+            new = [dict(t0=tick, x=float(e["x"]), y=float(e["y"]), parent=dict(e)) for k, e in last.items()
+                   if _is_balloon(e) and int(e["side"]) != int(my_side) and (k not in ents or _sig(ents[k]) != _sig(e))]
+            fresh = [e for k, e in ents.items() if _is_sb(e) and not _is_balloon(e) and (k not in last or _sig(last[k]) != _sig(e))]
+            cands = [d for d in old if tick >= d["t0"] + DROP_FIRST] + new
+            pairs = sorted((math.hypot(f["x"] - d["x"], f["y"] - d["y"]), fi, di) for fi, f in enumerate(fresh)
+                           for di, d in enumerate(cands) if int(f["side"]) == int(d["parent"]["side"]))
+            used, got = set(), Counter()
+            for dist, fi, di in pairs:
+                if dist <= CLAIM_RADIUS and fi not in used and got[di] < N_CHILD:
+                    used.add(fi)
+                    got[di] += 1
+            done = {id(cands[di]) for di in got}
+            self.pending = [d for d in old + new if id(d) not in done]
+        self._last, self._tick = ents, tick
+
+
+def predicted_children(d: Mapping[str, Any], age: int) -> list[dict]:
+    """The 7 skeleton bodies of one pending drop ``age`` ticks after they spawn: the parent's own entity dict (so the
+    reader frame and the engine ``observe()`` dict both accept them) re-positioned on the ring with the children's
+    hp, deploying kind while fresh, and a synthetic id."""
+    p, hp = d["parent"], _child_hp(d["parent"])
+    r = CHILD_RING[min(max(age, 0), len(CHILD_RING) - 1)]
+    kinds = (14, 15) if int(p.get("kind", 15)) >= 14 else (12, 0)      # reader kinds vs the SIM's (12 = deploying)
+    kind = kinds[age >= CHILD_DEPLOY_TICKS]
+    key = "entity_id" if "entity_id" in p else "address"
+    out = []
+    for k in range(N_CHILD):
+        a = 2 * math.pi * k / N_CHILD
+        c = dict(p, x=min(max(d["x"] + r * math.cos(a), 0.0), BOARD_X),
+                 y=min(max(d["y"] + r * math.sin(a), 0.0), BOARD_Y), hp=hp, max_hp=hp, kind=kind)
+        c[key] = f"predicted_drop_{d['t0']}_{k}"
+        out.append(c)
+    return out
 
 
 def advance_public_objects(observed, previous, gap, h):
@@ -90,7 +208,7 @@ def advance_public_objects(observed, previous, gap, h):
 
 
 def extrapolate(obs: Mapping[str, Any], prev: Optional[Mapping[str, Any]], h: int, my_side: int, *,
-                public_objects=None, previous_objects=None, object_gap_ticks=0) -> dict:
+                public_objects=None, previous_objects=None, object_gap_ticks=0, drops=None) -> dict:
     """``obs`` advanced ``h`` ticks (a new dict; the inputs are not modified). ``prev`` = an earlier observation of
     the same match (None -> no motion, clock + my elixir still advance). See the module docstring."""
     h = int(h)
@@ -110,6 +228,9 @@ def extrapolate(obs: Mapping[str, Any], prev: Optional[Mapping[str, Any]], h: in
             e["x"] = min(max(e["x"] + (e["x"] - p["x"]) * h / gap, 0.0), BOARD_X)
             e["y"] = min(max(e["y"] + (e["y"] - p["y"]) * h / gap, 0.0), BOARD_Y)
         ents.append(e)
+    if drops:                                          # opt-in predict_drops: simulate the (invisible) 12-tick fall
+        ents += [c for d in drops if d["t0"] + DROP_DELAY <= tick + h
+                 for c in predicted_children(d, tick + h - d["t0"] - DROP_DELAY)]
     if "entities" in obs:
         out["entities"] = ents
     g = regen_between(tick, tick + h)

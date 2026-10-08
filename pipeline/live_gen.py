@@ -26,7 +26,7 @@ from .live_mem import board_state, deck_of, my_side_of
 from .model_v3 import cell_xy
 from collections import deque
 
-from .extrapolate import extrapolate
+from .extrapolate import DropTracker, extrapolate
 from .opp_elixir_count import LiveOppElixir, card_cost, regen_between
 from .obs_contract import to_tokens
 from .train_s1 import MAX_U
@@ -98,7 +98,7 @@ class GenPilot:
     legal_guard = False
 
     def __init__(self, ckpt, device: str = "cpu", gate_tau: float = 0.5, use_counter: bool = True,
-                 extrapolate_ticks: int = 0):
+                 extrapolate_ticks: int = 0, predict_drops: bool = False):
         self.model, st = load_model(ckpt, torch.device(device))
         self.model.eval()
         self.feature_version = int(st["args"].get("feature_version", 1))
@@ -116,11 +116,16 @@ class GenPilot:
         # card will land (~26 ticks after the decision frame live). Velocity window ~10 ticks, as the screen arm.
         self.ext_h = int(extrapolate_ticks)
         self.frames: deque = deque(maxlen=30)            # (tick, raw reader frame), fed by observe()
+        # OPT-IN predict_drops (extrapolate.py docstring): observed Skeleton Barrel balloon disappearances -> the 7 skeletons
+        # appear in the look-ahead 12 ticks later. None = off = the look-ahead is byte-identical.
+        self.drops = DropTracker() if predict_drops and self.ext_h else None
 
     def reset_match(self) -> None:
         self.past.clear()
         self.history.clear()
         self.frames.clear()
+        if getattr(self, 'drops', None) is not None:
+            self.drops.reset()
         if self.opp:
             self.opp.reset()
         self.opp_est = None
@@ -147,6 +152,11 @@ class GenPilot:
         if self.frames and int(frame["game_tick"]) < self.frames[-1][0]:
             self.frames.clear()                          # tick went backwards: a new match
         self.frames.append((int(frame["game_tick"]), frame))
+        if getattr(self, 'drops', None) is not None:
+            try:
+                self.drops.observe(frame, my_side_of(frame))
+            except ValueError:                           # hand unreadable this frame (my_side_of): skip, keep the tracker
+                pass
         return self.opp_est
 
     def record_play(self, card: int, form: int, xy: tuple[float, float], t_sec: float) -> None:
@@ -180,6 +190,8 @@ class GenPilot:
             prev = next((f for t, f in reversed(self.frames) if t <= tick - 10), None)
             object_context = (self.public.object_context(tick)
                               if getattr(self, 'feature_version', 1) >= 4 and self.public is not None else {})
+            if getattr(self, 'drops', None) is not None:
+                object_context = dict(object_context, drops=self.drops.pending)
             frame = extrapolate(frame, prev, self.ext_h, side, **object_context)
             if opp is not None:
                 opp = min(10.0, opp + regen_between(tick, tick + self.ext_h))
