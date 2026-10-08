@@ -4501,6 +4501,12 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **predict_drops SIM A/B (R3c u0030 + AL, v2):** tune 147 vs 147 (1/1), fresh 143 vs 145 (0/2) -> no harm, but the
+>   benchmark has almost no Skeleton Barrel decks. Skeleton-Barrel-heavy census built (79 loadable ladder decks with
+>   `SkeletonBalloon` = Skeleton Barrel; centre_col/sbarrel_census.json): `~/sb_ab.sh` AL vs AL + --predict-drops, 96
+>   gen games, reports pre-emptive Log share + crowns against (eval.log "sbarrel"; ignore the two 0/96 lines from a
+>   wrong-name first attempt). FULL STACK running: `~/ab_stack.sh stack5 <r3c_u0030_barrel_cellref5>` (AL + xbow .3 +
+>   tau_phase .35/.45/.55) vs sb/sc_r1e and vs R1e + AL; repeat with the barrel2k checkpoint when it lands.
 > * **Live anti-leak MERGED (02da20e; 6a270a3 + clock fix ac65fe9: SIM_START_TICK 90).** Opt-in `--anti-leak`; merged
 >   in a separate worktree (clean), 136 live tests pass on the merged tree. Note: joining a match mid-way measures
 >   from tick 90 (no record of earlier plays), so a stall can fire on the first decision at >= 9 elixir. To enable live,
