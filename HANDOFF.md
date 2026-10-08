@@ -4675,6 +4675,15 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   latency budget + cuts in our own code (new worker a19b2927: persistent input path, freshest frame; horizon change
 >   = separate owner step). Sample (131820): decide ~90 ms, tap ~130-150 ms, backlog 2 frames, confirm 1.3-1.4 s ->
 >   ~1 s is outside our code (game sync / reader delivery, to be measured).
+> * **ECONOMY DECOMPOSITION MERGED 31cdf2e (L74/loss_review/econ_gap.md).** Live minus SIM push-start elixir: stack2k
+>   -1.60 [-1.87, -1.34], R1e -1.00. (c) cadence: live 1.57-1.62 decisions/s = SIM 1.60, live p less jumpy (the lead's
+>   "decision speed" guess is CONTRADICTED); (c) per-decision play prob matched on state: R1e 11.7 vs 11.8%, stack 11.0
+>   vs 10.6%; (c) counter over-read / duplicate bodies; (a) small: IW ability ~0.1; (b) live anti-leak (on in 77/102
+>   stack2k matches, now OFF) ~0.4; (a) live opponents press harder (1x 28.8 vs 18.3 elixir/min reaching my half; pushes
+>   1.32 vs 1.02/min) but explain only 4-8% of the push-start gap; ~1.0 UNEXPLAINED. Cadence arm (decide 10 vs 4, SIM):
+>   push start 4.50 vs 4.00, wins 314 vs 303 (p .40) -> any decision-rate increase must be checked (pipelining). Next
+>   (worker ae78edcc): Q1 do live opponents start pushes when I'm low (selection)?; Q2 rebuilt live pre-push sequences;
+>   Q3 calibrate SIM opponents to live pressure (test bed); Q4 learned-fix proposal.
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
