@@ -335,6 +335,9 @@ def main() -> int:
     if a.iw_press_pstar is not None and not 0.0 < a.iw_press_pstar < 1.0:
         print("refusing: --iw-press-pstar must be in (0, 1)")
         return 2
+    if a.iw_press_pstar is not None and a.no_iw_pro_gate:
+        print("[live] note: --no-iw-pro-gate skips the pro gate, so --iw-press-pstar %g has no effect" % a.iw_press_pstar,
+              flush=True)
     if (a.matches > 1 or a.nav_dry_run) and not (a.friend or a.ladder):
         print("refusing: --matches > 1 and --nav-dry-run need --friend NAME or --ladder")
         return 2
@@ -561,7 +564,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
       extrapolate=a.extrapolate, opp_counter=not a.no_opp_counter, device=device, **anti_leak_log(a),
       ckpt_source=a.ckpt_source, ckpt_sha256=a.ckpt_sha256,
       decision_options=vars(pilot.decision_options), decision_seed=pilot.match_seed,
-      live_options=getattr(a, "live_options", None), iw_press_pstar=a.iw_press_pstar,
+      live_options=getattr(a, "live_options", None), iw_press_pstar=getattr(a, "iw_press_pstar", None),
       feature_version=pilot.feature_version, public_audit=a.public_audit, legal_guard=getattr(pilot, "legal_guard", None),
       **({"predict_drops": True} if getattr(a, "predict_drops", False) else {}),
       **({"own_effects": True} if getattr(a, "own_effects", False) else {}))
@@ -734,7 +737,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                         ab_pending = None
                 elif st == "ready" and not pending and newest and advanced and guard_clear():
                     press, why = should_press(f, side, hids, pilot=None if a.no_iw_pro_gate else pilot,
-                                              p_star=a.iw_press_pstar)
+                                              p_star=getattr(a, "iw_press_pstar", None))
                     if press:
                         W(event="ability", tick=tick, t_dev=t_dev, why=why, tap=list(button.point),
                           elixir=me["elixir_raw"] / 1e4)
