@@ -4473,6 +4473,12 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   leak CI is still owed before any leak verdict. R3old stays the stall-trained fallback only.
 >   Guard 25423d9 re-verification PASS_WITH_NOTES (kind-15 cursed troop, X-Bow footprint own-half, enemy buildings
 >   unchecked) -> builder fixing; not merged.
+> * **Legal-cell guard MERGED (121f4bc; eccd765 -> 25423d9 -> 316a4a5 -> 5a7aa83).** Two blind verifications
+>   PASS_WITH_NOTES, notes fixed: towers by position + kind 12/13; enemy buildings block only at kind 12/13 (walking
+>   kind-14/15 bodies with building ids skipped); buildings need the whole footprint on my half, troops Y < 15; open
+>   pocket y 17-21. Replay (3,633 live plays): redirected 87, game had moved 85, wrong 2 (X-Bow on an expiring own
+>   X-Bow; a 0.8-tile Mini PEKKA), moved-but-missed 9. Live default ON, `--no-legal-guard`; SIM unchanged. Live
+>   still STOPPED (owner gate: centre-column fix first). Open: guard reads the decision-time board, not landing time.
 > * **Log-on-air worker DONE_WITH_CONCERNS (worktree commit 16f667d, not merged; veto OPT-IN `--log-air-veto`).**
 >   MEASURED: pros Log an air-only corridor 0.78% of 47,703 Logs (air-only pushes = 3.6% of rows; pros answer them with
 >   Skeletons 8.0%, Electro Spirit 4.0%, Tesla 3.5%, Log 1.8%); bot at cast 1.7% (38/2,182 classifiable live Logs) =
