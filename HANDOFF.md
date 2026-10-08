@@ -4739,6 +4739,11 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   (D1 lane triage, D2 response timing incl. the 1.3 s share, D3 non-responses, D4 defensive quality, D5 damage
 >   accounting; learned-fix proposals); dead-lane X-Bow a1f8484f (measure live; opt-in --xbow-dead-lane block =
 >   owner-requested placement constraint backed by the "never the king tower" doctrine; SIM v3 A/B).
+> * **OWNER ~18:xx: lethal-Rocket extension for the next bundle** ("If the opponent is up by one tower but one of its
+>   towers is low enough to finish with rocket, the model should try to take that tower with rocket before the standard
+>   countdown finishes (3 minute mark), so that the match actually advances to overtime"). Worker a0ff8a54 resumed:
+>   --lethal-rocket ot_behind (regulation + behind on crowns + finishable princess; fire when it can still land before
+>   tick 3600); archive replay vs the loss review's 15/250 regulation-end losses; SIM v3 A/B ot vs ot_behind.
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
