@@ -423,7 +423,7 @@ def grab(adb: list[str]):
 
 class LadderNavRunner:
     """Device side, same interface as friend_nav.FriendNav: probe() before match 1, run() between matches."""
-    POLL_S, COOLDOWN_S = 0.5, 1.5
+    POLL_S, COOLDOWN_S, RELAUNCH_WAIT_S = 0.5, 1.5, 15.0
     NAV_SCREENS = {"results", "main", "popup_x", "modes", "trophy_road", "choose_reward", "conn_lost",
                    "content_update"}
 
@@ -563,6 +563,8 @@ class LadderNavRunner:
                         if not self.dry_run:
                             for c in cmds:
                                 subprocess.run(self.adb + ["shell", c], capture_output=True, timeout=5)
+                        if p[1] == "relaunch":   # no polling (so no tap-through on the Android home screen) while
+                            time.sleep(self.RELAUNCH_WAIT_S)   # the game starts; start_live.sh waits 15 s too
                         nav.acted(p[1], time.time())
                         prev = None
                         time.sleep(self.COOLDOWN_S)

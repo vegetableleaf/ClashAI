@@ -57,18 +57,29 @@ class Clock:                                    # fake time: sleep() advances it
     strftime, perf_counter = staticmethod(_time.strftime), staticmethod(_time.perf_counter)
 
 
+STAMPS, POLLS = [], []                          # (elapsed s, shell cmd) sent; elapsed s of every screen read
+
+
 def run(screen_of):
     """screen_of(elapsed_s, shell_cmds) -> screen dict. -> (run() result, shell commands sent, stdout lines)."""
     clk, sent, out = Clock(), [], []
+    STAMPS.clear()
+    POLLS.clear()
     real = (ladder_nav.time, ladder_nav.subprocess, ladder_nav.grab)
     ladder_nav.time, ladder_nav.grab = clk, (lambda adb: None)
-    ladder_nav.subprocess = SimpleNamespace(run=lambda a, **k: sent.append(a[-1]))   # records `adb shell <cmd>`
+    def shell(a, **k):                          # records `adb shell <cmd>` and when it was sent
+        sent.append(a[-1])
+        STAMPS.append((clk.t - 1000.0, a[-1]))
+    def classify(img):
+        POLLS.append(clk.t - 1000.0)
+        return screen_of(clk.t - 1000.0, sent)
+    ladder_nav.subprocess = SimpleNamespace(run=shell)
     ladder_nav.print = lambda *a, **k: out.append(" ".join(map(str, a)))            # shadows the builtin
     try:
         with tempfile.TemporaryDirectory() as d:
             r = LadderNavRunner(["adb"], log_dir=Path(d), state_path=Path(d) / "st.json", trophy_log=False, seed=1,
                                 alert=lambda *a: False)
-            r.clf = SimpleNamespace(classify=lambda img: screen_of(clk.t - 1000.0, sent))
+            r.clf = SimpleNamespace(classify=classify)
             res = r.run()
     finally:
         ladder_nav.time, ladder_nav.subprocess, ladder_nav.grab = real
@@ -88,6 +99,8 @@ def s1(t, sent):
 res, sent, out = run(s1)
 assert res[0] and sent == ["input tap 144 876", "input tap 455 1220"], (res, sent)
 assert "[ladder] loading stuck -> content-update RESTART tapped" in out, out
+t_r = STAMPS[0][0]                              # RESTART: the game stays in front, no relaunch pause
+assert min(p for p in POLLS if p > t_r) - t_r <= LadderNavRunner.COOLDOWN_S + 0.01, POLLS
 
 # 2) loading with no modal -> relaunch after 60 s (store overlays + game force-stopped, launcher intent) -> menu
 st = {}
@@ -101,6 +114,19 @@ def s2(t, sent):
 res, sent, out = run(s2)
 assert res[0] and sent == [*RELAUNCH, "input tap 455 1220"], (res, sent)
 assert "[ladder] loading stuck -> relaunched app" in out, out
+
+# 2a) relaunch -> the Android home screen (unknown) for 14 s: polling paused 15 s, so no tap lands on it
+def s2a(t, sent):
+    if "input tap 455 1220" in sent:
+        return UNK
+    if RELAUNCH[-1] in sent:                    # home screen until 14 s after the launch was SENT, then the menu
+        return UNK if t - next(s for s, c in STAMPS if c == RELAUNCH[-1]) < 14 else main()
+    return LOAD
+res, sent, out = run(s2a)
+t_r = next(t for t, c in STAMPS if c == RELAUNCH[-1])
+assert res[0] and sent == [*RELAUNCH, "input tap 455 1220"], (res, sent)        # no tap-through at all
+assert min(p for p in POLLS if p > t_r) - t_r >= LadderNavRunner.RELAUNCH_WAIT_S, POLLS
+assert not any(t_r < t <= t_r + LadderNavRunner.RELAUNCH_WAIT_S for t, _ in STAMPS), STAMPS
 
 # 2b) modal -> RESTART -> two unknown post-update popups (tapped through, as before the recovery) -> menu -> Battle
 def s2b(t, sent):
