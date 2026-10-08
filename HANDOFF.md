@@ -4459,6 +4459,16 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   verified, the best PASSING candidate replaces R1e (tau .35); a better passing candidate replaces it; morning = best
 >   SIGNIFICANT, else best PASS (labelled unproven); nothing passes -> live STOPPED (no R1e, no weaker model).
 >   Caveat: ~8 checkpoints tested -> one p < .05 among them can be luck; the morning report says so.
+> * **OWNER 22:4x: "Nothing goes live until the center column issue is fixed."** -> overrides the rule above: no
+>   deploy until a centre-column fix is MEASURED (offline same-column rate near pros' 70-80% lane consistency + SIM not
+>   worse). Live STOP file set 22:43 (R1e ends between matches; laptop GPU freed). MEASURED (corrected head_res,
+>   teacher-forced on pro rows): model picks the pro's centre column ~50% even on TRAINING rows (1560/1456, 1681/1649;
+>   val 137/150, 151/155); val one-tile x misses 521 inside a 2-tile patch vs 206 across -> capacity limit of the
+>   cell head (model_v3.cell_logits: board term per 2x2-tile patch; within a patch only q.key(cell_emb)). Worker
+>   (opus, worktree) building a zero-init 1-tile local refinement module trained with the base frozen on
+>   gen_dataset_v32_fv5 (laptop GPU), on old R3 u0050 + gen_v32, loadable in SIM + live, offline + 192-game SIM A/B.
+>   Guard 25423d9 re-verification PASS_WITH_NOTES (kind-15 cursed troop, X-Bow footprint own-half, enemy buildings
+>   unchecked) -> builder fixing; not merged.
 >   ~15:40" (Q1 card sampling flag, Q2 area-aware spell aim, Q3 GPU A/Bs after R1e, Q4 R1e approval ping, Q5 fixes);
 >   launcher `.foreman/codex_autopilot/codex_loop.sh` (back-to-back runs to 10-06; STOP_LOOP file stops it).
 > * **15:5x -- owner plan: after the R1e verdict the lead starts LIVE on the winner, then hands over to Codex via
