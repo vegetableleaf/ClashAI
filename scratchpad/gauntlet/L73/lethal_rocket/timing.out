@@ -1,0 +1,7 @@
+tap -> confirm (all cards, n 18623): median 26, p90 36, p99 48, max 60 ticks
+Rocket tower hits n 171: confirm-tap median 27; impact-confirm median 63 (p90 78, max 112); impact-tap median 92 (p90 108, max 150) ticks (impact is the first ~10-tick snapshot after the hit: upper bound)
+  confirm-tap: min 24 p1 24 p10 26 median 27 p90 33
+  impact-confirm: min 2 p1 2 p10 12 median 63 p90 78
+  impact-tap: min 26 p1 28 p10 40 median 92 p90 108
+  impact-confirm histogram (10-tick bins from 0): [6, 19, 6, 4, 1, 2, 72, 45, 12, 0, 3]
+  distances king->tower (tiles): [np.float64(23.16), np.float64(26.0)] dmg/max: [(305, 3052), (342, 3052), (366, 3052), (376, 4032), (377, 3052), (392, 4013), (406, 4424), (441, 4424)]

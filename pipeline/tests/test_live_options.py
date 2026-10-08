@@ -206,20 +206,22 @@ def test_iw_press_pstar_deployable_from_the_file_and_explicit_wins(tmp_path):
     assert a.iw_press_pstar == 0.05 and rec['explicit'] == ['iw_press_pstar'] and rec['from_file'] == {}
 
 
-def test_lethal_rocket_deployable_from_the_file(tmp_path):
-    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + '--lethal-rocket ot\n')
+@pytest.mark.parametrize('mode', ['ot', 'ot_behind'])
+def test_lethal_rocket_deployable_from_the_file(tmp_path, mode):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + f'--lethal-rocket {mode}\n')
     opts, rec = parse([], f)
-    assert opts.lethal_rocket == 'ot' and rec['from_file']['lethal_rocket'] == 'ot'
+    assert opts.lethal_rocket == mode and rec['from_file']['lethal_rocket'] == mode
     opts, rec = parse(['--lethal-rocket', 'off'], f)                           # explicit wins
     assert opts.lethal_rocket == 'off' and rec['explicit'] == ['lethal_rocket']
     assert parse([], tmp_path / 'missing')[0].lethal_rocket == 'off'
 
 
 @pytest.mark.skipif(not CKPT.is_file(), reason='live checkpoint not present')
-def test_check_json_reports_lethal_rocket(tmp_path):
-    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + '--lethal-rocket ot\n')
+@pytest.mark.parametrize('mode', ['ot', 'ot_behind'])
+def test_check_json_reports_lethal_rocket(tmp_path, mode):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + f'--lethal-rocket {mode}\n')
     out = run_live_play('--check', '--ckpt', str(CKPT), '--live-options-file', str(f))
     assert out.returncode == 0, out.stdout + out.stderr
     check = json.loads(out.stdout.strip().splitlines()[-1])
-    assert check['decision_options']['lethal_rocket'] == 'ot'
-    assert check['live_options']['from_file']['lethal_rocket'] == 'ot'
+    assert check['decision_options']['lethal_rocket'] == mode
+    assert check['live_options']['from_file']['lethal_rocket'] == mode
