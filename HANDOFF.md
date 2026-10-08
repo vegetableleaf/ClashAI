@@ -4638,6 +4638,17 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   errors. Lead correction to its P1: the SIM ALSO extrapolates 26 ticks and its economy is near pros (W4 v3 base),
 >   so extrapolation cannot explain the LIVE-only gap -> follow-up sent: decompose live vs SIM spending (decision cadence
 >   / p noise, IW ability, opponent pressure, matched-state gate, reader artefacts). No fix dispatched until it lands.
+> * **PUSH WORKER FOLLOW-UPS DONE (branch worktree-agent-a8aad346ac44709a7 bf35787/bc70cf4; L73/push_rocket/).**
+>   (B) PushRefine Rocket-only w16 vs towerref_w2, v3 960 paired: 644 vs 652 (15/23, p .26; the earlier -8 was all in
+>   seeds 0:240, 240:480 tied 323.5/323.5); push Rockets .056 -> .116/match, P(Rk|eligible big push) .014 -> .040 (pros
+>   .07), OT tower Rockets .953/.945, elixir at push start 5.27/5.25, cheap share .321/.320, threats answered 2 s .632
+>   both; beatdown census 306.5 vs 308.5 (p .86). = behaviour on target, no measured win effect, no harm detected. NOT
+>   deployed (owner's call). (C) tau_phase isolated, both arms with hbt9 (W4 tip): flat .35 582.5 vs tau_phase 628
+>   (154/109, p .0066) -> KEEP tau_phase; flat .35 over-plays cheap cards in 2x/OT (.334/.344 vs .317/.306) and meets
+>   pushes with less elixir (4.45 vs 5.13; eligible .35 vs .47), OT tower Rockets .66 vs .95; tau_phase costs 2-3.5 pp of
+>   threats answered within 2 s in 2x/OT. This CONTRADICTS the lead's lean against tau_phase (the lethal case is now
+>   handled by --lethal-rocket). VM ~/ClashBot drift: push_refine.py (sha dd3ebbd3), model_gen.py (95ba91d4),
+>   behaviour_telemetry.py (b7617809) = the branch HEAD, NOT in main -> merge with verification (queued).
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
