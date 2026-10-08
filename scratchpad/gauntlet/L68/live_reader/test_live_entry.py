@@ -30,7 +30,9 @@ def test_preflight_loads_default_without_adb(monkeypatch, tmp_path, capsys):
     assert lp.main() == 0
     assert loaded[0][0] == str(checkpoint)
     kw = loaded[0][1]
-    assert kw['device'] == 'cpu' and kw['gate_tau'] == .35 and kw['public_audit']
+    import torch                                    # owner 2026-10-08: default --device auto (GPU when available)
+    assert kw['device'] == ('cuda' if torch.cuda.is_available() else 'cpu')
+    assert kw['gate_tau'] == .35 and kw['public_audit']
     assert not kw['decision_options'].active
     assert 'LIVE_CHECK_PASS' in capsys.readouterr().out
 

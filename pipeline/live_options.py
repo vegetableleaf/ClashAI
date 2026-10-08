@@ -16,7 +16,8 @@ _UNSET = object()
 
 # Live-only switches the file may also deploy (owner 2026-10-08: "switch it on" for own_effects). Each must also be a
 # live_play.py flag with the same name and action; explicit command-line use still wins.
-EXTRA_LIVE_FLAGS = (('--own-effects', dict(action='store_true')),)
+EXTRA_LIVE_FLAGS = (('--own-effects', dict(action='store_true')),
+                    ('--iw-press-pstar', dict(type=float, default=None)))   # owner 2026-10-08: IW higher bar
 
 
 def _decision_parser(prog, allow_abbrev=True):

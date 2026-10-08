@@ -149,13 +149,16 @@ def live_features(pilot, frame, side: int, hero_deploy_tick: int, tick: int | No
     return build_features((now - int(hero_deploy_tick)) * TICK_S, now * TICK_S, own_el, float(pub.estimate_at(now)), opp, own)
 
 
-def should_press_pro(pilot, frame, side: int, hero_deploy_tick: int, geometry_ok: bool, v_min: float = V_MIN) -> tuple[bool, str]:
+def should_press_pro(pilot, frame, side: int, hero_deploy_tick: int, geometry_ok: bool, v_min: float = V_MIN,
+                     p_star: float | None = None) -> tuple[bool, str]:
     """Combined policy. Features are taken at the whole second since the hero deploy (the 1 s grid P_STAR was calibrated on),
     so calling this every frame does not raise the press rate."""
     tick = int(frame["game_tick"])
     grid = int(hero_deploy_tick) + 20 * ((tick - int(hero_deploy_tick)) // 20)
     p = frosty_fella_press_probability(live_features(pilot, frame, side, hero_deploy_tick, tick=grid))
-    p_star = P_STAR_BY_V[float(v_min)]
+    # owner 2026-10-08 "switch on the higher bar": live_play --iw-press-pstar overrides the fitted P*(V) (W2 sweep:
+    # P* .03 keeps 69% of presses, overspend .29 -> .22; offline approximation, live-only -- the SIM has no hero IW)
+    p_star = P_STAR_BY_V[float(v_min)] if p_star is None else float(p_star)
     why = "pro_hazard p=%.4f %s P*=%.4f(V>=%g) geometry=%s age=%.1fs" % (
         p, ">=" if p >= p_star else "<", p_star, v_min, geometry_ok, (tick - hero_deploy_tick) * TICK_S)
     return bool(p >= p_star and geometry_ok), why

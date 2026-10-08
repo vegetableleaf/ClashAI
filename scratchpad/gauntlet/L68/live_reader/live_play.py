@@ -247,8 +247,9 @@ def main() -> int:
     ap.add_argument("--no-record", action="store_true",
                     help="skip the overlaid replay (default: screenrecord + reader boxes -> "
                          "icebow/data/overlayed_replays/live_<stamp>.mp4)")
-    ap.add_argument("--device", default="cpu", choices=("auto", "cuda", "cpu"),
-                    help="default CPU with four threads, leaving the GPU for training; auto selects CUDA when available")
+    ap.add_argument("--device", default="auto", choices=("auto", "cuda", "cpu"),
+                    help="auto (default; owner 2026-10-08 'run the model on GPU') selects CUDA when available, else CPU "
+                         "with four threads; training runs on the VM")
     ap.add_argument("--extrapolate", type=int, default=26,
                     help="decide on the board this many ticks ahead, where the card lands (~26 live; 0 = off). "
                          "Screen (HANDOFF L68as): +3.4 pp gen / +6.9 pp v6lat vs no extrapolation at delay 26")
@@ -296,6 +297,9 @@ def main() -> int:
     ap.add_argument("--stop-file", type=Path, help="stop the run between matches once this file exists")
     ap.add_argument("--no-iw-pro-gate", action="store_true",
                     help="Hero Ice Wizard: skip the pro-timing gate (ability_ice_wizard.py) and use the freeze-value rule alone")
+    ap.add_argument("--iw-press-pstar", type=float, default=None,
+                    help="Hero Ice Wizard pro gate: press only at hazard >= this P* (default: the fitted P*(V=4) .0196); "
+                         "deployable from LIVE_OPTIONS")
     ap.add_argument("--ckpt-override-file", type=Path, default=REPO / "scratchpad/gauntlet/L70/live/CKPT_OVERRIDE",
                     help="default checkpoint selection; explicit --ckpt wins. A changed selection ends a default-selected run between matches")
     ap.add_argument("--nav-dry-run", action="store_true",
@@ -328,6 +332,12 @@ def main() -> int:
     if a.own_effects and not a.extrapolate:
         print("refusing: --own-effects acts on the look-ahead board, which needs --extrapolate > 0")
         return 2
+    if a.iw_press_pstar is not None and not 0.0 < a.iw_press_pstar < 1.0:
+        print("refusing: --iw-press-pstar must be in (0, 1)")
+        return 2
+    if a.iw_press_pstar is not None and a.no_iw_pro_gate:
+        print("[live] note: --no-iw-pro-gate skips the pro gate, so --iw-press-pstar %g has no effect" % a.iw_press_pstar,
+              flush=True)
     if (a.matches > 1 or a.nav_dry_run) and not (a.friend or a.ladder):
         print("refusing: --matches > 1 and --nav-dry-run need --friend NAME or --ladder")
         return 2
@@ -353,6 +363,7 @@ def main() -> int:
                 dict(checkpoint=path, sha256=sha, feature_version=pl.feature_version)
                 for (path, sha), (_, pl) in zip(arms, loaded)], device=loaded[0][0], tau=a.tau, **anti_leak_log(a),
                 public_audit=a.public_audit, legal_guard=not getattr(a, 'no_legal_guard', False), predict_drops=a.predict_drops, own_effects=bool(getattr(a, 'own_effects', False)),
+                iw_press_pstar=a.iw_press_pstar,
                 decision_options=vars(loaded[0][1].decision_options), live_options=a.live_options)))
             return 0
     else:
@@ -369,6 +380,7 @@ def main() -> int:
         print(json.dumps(dict(check='LIVE_CHECK_PASS', checkpoint=a.ckpt, sha256=a.ckpt_sha256,
               feature_version=pilot.feature_version, device=device, tau=a.tau, **anti_leak_log(a),
               public_audit=a.public_audit, legal_guard=getattr(pilot, 'legal_guard', None), predict_drops=a.predict_drops, own_effects=bool(getattr(a, 'own_effects', False)),
+                iw_press_pstar=a.iw_press_pstar,
               decision_options=vars(pilot.decision_options), live_options=a.live_options)))
         return 0
     nav = None
@@ -552,7 +564,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
       extrapolate=a.extrapolate, opp_counter=not a.no_opp_counter, device=device, **anti_leak_log(a),
       ckpt_source=a.ckpt_source, ckpt_sha256=a.ckpt_sha256,
       decision_options=vars(pilot.decision_options), decision_seed=pilot.match_seed,
-      live_options=getattr(a, "live_options", None),
+      live_options=getattr(a, "live_options", None), iw_press_pstar=getattr(a, "iw_press_pstar", None),
       feature_version=pilot.feature_version, public_audit=a.public_audit, legal_guard=getattr(pilot, "legal_guard", None),
       **({"predict_drops": True} if getattr(a, "predict_drops", False) else {}),
       **({"own_effects": True} if getattr(a, "own_effects", False) else {}))
@@ -724,7 +736,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                         W(event="ability_unconfirmed", tick=tick, button_after=st)
                         ab_pending = None
                 elif st == "ready" and not pending and newest and advanced and guard_clear():
-                    press, why = should_press(f, side, hids, pilot=None if a.no_iw_pro_gate else pilot)
+                    press, why = should_press(f, side, hids, pilot=None if a.no_iw_pro_gate else pilot,
+                                              p_star=getattr(a, "iw_press_pstar", None))
                     if press:
                         W(event="ability", tick=tick, t_dev=t_dev, why=why, tap=list(button.point),
                           elixir=me["elixir_raw"] / 1e4)
