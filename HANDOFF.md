@@ -4508,6 +4508,8 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   CellRefine + TowerRefine exactly. VM ~/ClashBot got pipeline/tower_refine.py + hooked model_gen.py (live ckpt
 >   byte-identical under it; backup ~/probe_rocket/model_gen.py.bak_pre_towerrefine). SIM A/B (v3, seeds 0:240 x 2, live
 >   options + rocket_area, base / w1 / w2) running ~1 h: ~/probe_rocket/vm_ab_towerref.sh.
+> * **OWNER 14:xx: "don't turn antileak back on. it creates more problems than it solves."** -> live AL stays OFF; the freeze is
+>   W4's job (hazard_below_tau decoding).
 > * **OWNER 14:xx: "your rocket fixes did nothing ... never makes use of rocket or rocket tornado [on large pushes] ...
 >   lost 0-3 to every single beatdown deck ... sluggish and ignores huge threats ... completely stopped playing and gave
 >   up in the middle of one of its matches."** MEASURED (owner's afternoon live matches 121128/121357/121633, LIVE_OPTIONS
