@@ -4613,6 +4613,18 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   Worker a613a395 (opus): --pipeline-plays (default off), decide while A is pending on my own state (elixir - cost(A),
 >   A's slot excluded, <= 2 outstanding, per-slot confirmation), pending plays in the look-ahead, SIM + live, v3 960
 >   paired A/B incl. elixir drain / cheap share / pair gaps vs pros.
+> * **LETHAL ROCKET BUILT (a0ff8a54, branch tip d23149a; merge candidate a613d65 in C:/Users/benpe/cb_merge_lethal,
+>   junctions inside; blind verification running).** Damage = floor(580 x level factor / 100) at 23% (level 15 -> 497 =
+>   the measured live hit; level 11 -> 342 = SIM); my level from my own tower max HP (assumes Rocket level = tower
+>   level). SIM v3 960 paired (live ckpt 41b52a83 + live options): wins 652 -> 660 (8 better / 0 worse, p .008), 349
+>   fires all >= 180.3 s. Replay of 131352: first fire tick 3851 on the 453-HP tower (model L). Archive 10-05..10-08:
+>   would fire in 54 of 498 matches, 0 in regulation. WHY it missed (a, rebuilt states, gate p median err .008):
+>   ticks 3988-4028 the model's top card WAS Rocket aimed at the lethal tower (P(Rocket) .459, Rocket-radius mass L .556
+>   vs R .422; TowerRefine's card residual put Rocket on top) but p .26-.38 < the OT tau .55 -> the tau_phase OT
+>   threshold held it; at 4304 the cell mass favoured R (.550 vs .405; rocket_area has no HP term). HP response: base and
+>   CellRefine flat; TowerRefine smooth, no step at the kill line. Pros (c to "always"): icebow OT lethal opportunities
+>   204 -> Rocket on the lethal tower within 3 s .436, any within 10 s .549 (all decks .407/.510); regulation .08-.10;
+>   live ckpt on those rows .147. Supports the queued tau_phase isolated A/B (C).
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
