@@ -114,7 +114,7 @@ def wait_inputs_quiet(quiet_s: float | None = None) -> None:
         time.sleep(wait)
 
 
-EVEN_BUILDINGS = {"Tesla"}   # owner 2026-10-07: Tesla is the ONLY 2x2 building; all others are 3x3 -> no more offsets
+from pipeline.live_gen import EVEN_BUILDINGS  # noqa: E402  {"Tesla"}: the only 2x2 building -> the only tap offset
 
 
 class Layout:
@@ -245,6 +245,11 @@ def main() -> int:
     ap.add_argument("--extrapolate", type=int, default=26,
                     help="decide on the board this many ticks ahead, where the card lands (~26 live; 0 = off). "
                          "Screen (HANDOFF L68as): +3.4 pp gen / +6.9 pp v6lat vs no extrapolation at delay 26")
+    ap.add_argument("--no-legal-guard", action="store_true",
+                    help="owner 2026-10-07 'one tile left/right': by default the model's cell is chosen only among cells "
+                         "the card lands on AS TAPPED (not on my own building/tower, not across the river in a lane "
+                         "whose enemy princess stands -- the game moved such taps >= 1 tile 77/81 times, tap_audit.py). "
+                         "This flag restores the plain argmax (= SIM's rule)")
     ap.add_argument("--no-opp-counter", action="store_true",
                     help="feed the model opponent elixir = unknown instead of the public-events counter")
     ap.add_argument("--menu-guard", action="store_true",
@@ -317,7 +322,8 @@ def main() -> int:
             print(json.dumps(dict(check='LIVE_CHECK_PASS', checkpoints=[
                 dict(checkpoint=path, sha256=sha, feature_version=pl.feature_version)
                 for (path, sha), (_, pl) in zip(arms, loaded)], device=loaded[0][0], tau=a.tau, anti_leak=False,
-                public_audit=a.public_audit, decision_options=vars(loaded[0][1].decision_options))))
+                public_audit=a.public_audit, legal_guard=not a.no_legal_guard,
+                decision_options=vars(loaded[0][1].decision_options))))
             return 0
     else:
         from pipeline.live_checkpoint import resolve_checkpoint
@@ -332,7 +338,7 @@ def main() -> int:
         device, pilot = load_pilot(a, decision_cfg)
         print(json.dumps(dict(check='LIVE_CHECK_PASS', checkpoint=a.ckpt, sha256=a.ckpt_sha256,
               feature_version=pilot.feature_version, device=device, tau=a.tau, anti_leak=False,
-              public_audit=a.public_audit, decision_options=vars(pilot.decision_options))))
+              public_audit=a.public_audit, legal_guard=pilot.legal_guard, decision_options=vars(pilot.decision_options))))
         return 0
     nav = None
     if a.matches > 1 or a.nav_dry_run:
@@ -474,6 +480,7 @@ def load_pilot(a, decision_cfg, ckpt=None):
     pilot = GenPilot(ckpt or a.ckpt, device=device, gate_tau=a.tau, use_counter=not a.no_opp_counter,
                      extrapolate_ticks=a.extrapolate, decision_options=options_from_config(decision_cfg),
                      decision_seed=a.decision_seed, public_audit=a.public_audit)
+    pilot.legal_guard = not a.no_legal_guard
     return device, pilot
 
 
@@ -503,7 +510,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
       extrapolate=a.extrapolate, opp_counter=not a.no_opp_counter, device=device, anti_leak=False,
       ckpt_source=a.ckpt_source, ckpt_sha256=a.ckpt_sha256,
       decision_options=vars(pilot.decision_options), decision_seed=pilot.match_seed,
-      feature_version=pilot.feature_version, public_audit=a.public_audit)
+      feature_version=pilot.feature_version, public_audit=a.public_audit, legal_guard=getattr(pilot, "legal_guard", None))
     rec = ScreenRec(stamp) if record else None
     # Menu guard (2026-09-30 verifier): card taps are gated only by reader flags, and 249/1378 past board taps fall
     # inside the main screen's Battle button -> the SCREEN is classified every <= 2 s; any menu stops the match.
@@ -733,7 +740,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
             if a.public_audit and (d['play'] or tick-last_audit_tick >= 10):
                 W(event='decision', tick=tick, t_dev=t_dev, decide_ms=decide_ms,
                   backlog=q.qsize(), forced=forced,
-                  decision={k:d[k] for k in ('play','p_play','no_affordable','hand_pos','name','card','form','xy','gate_tau') if k in d},
+                  decision={k:d[k] for k in ('play','p_play','no_affordable','hand_pos','name','card','form','xy','gate_tau',
+                                             'xy_unguarded') if k in d},
                   public=d['public_audit'])
                 last_audit_tick = tick
             if not d["play"]:

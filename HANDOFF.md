@@ -4459,6 +4459,41 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   verified, the best PASSING candidate replaces R1e (tau .35); a better passing candidate replaces it; morning = best
 >   SIGNIFICANT, else best PASS (labelled unproven); nothing passes -> live STOPPED (no R1e, no weaker model).
 >   Caveat: ~8 checkpoints tested -> one p < .05 among them can be luck; the morning report says so.
+> * **OWNER 22:4x: "Nothing goes live until the center column issue is fixed."** -> overrides the rule above: no
+>   deploy until a centre-column fix is MEASURED (offline same-column rate near pros' 70-80% lane consistency + SIM not
+>   worse). Live STOP file set 22:43 (R1e ends between matches; laptop GPU freed). MEASURED (corrected head_res,
+>   teacher-forced on pro rows): model picks the pro's centre column ~50% even on TRAINING rows (1560/1456, 1681/1649;
+>   val 137/150, 151/155); val one-tile x misses 521 inside a 2-tile patch vs 206 across -> capacity limit of the
+>   cell head (model_v3.cell_logits: board term per 2x2-tile patch; within a patch only q.key(cell_emb)). Worker
+>   (opus, worktree) building a zero-init 1-tile local refinement module trained with the base frozen on
+>   gen_dataset_v32_fv5 (laptop GPU), on old R3 u0050 + gen_v32, loadable in SIM + live, offline + 192-game SIM A/B.
+> * **Old R3 u0050, no-stall ghost screen vs R1e: -0.7 pp [-3.7, +2.3]** (ci_hi >= 0). Telemetry (299 ghost games,
+>   mean per game): leak share (time >= 9.5 elixir) 1x/2x/OT R1e .063/.046/.095 vs R3old .069/.032/.125 (OT n 34/30);
+>   elixir at play R1e 6.77/5.37/5.05 vs R3old 7.01/5.04/4.68 (pros 6.2-7.2): 1x toward pros, 2x/OT away. A paired
+>   leak CI is still owed before any leak verdict. R3old stays the stall-trained fallback only.
+>   Guard 25423d9 re-verification PASS_WITH_NOTES (kind-15 cursed troop, X-Bow footprint own-half, enemy buildings
+>   unchecked) -> builder fixing; not merged.
+> * **Legal-cell guard MERGED (121f4bc; eccd765 -> 25423d9 -> 316a4a5 -> 5a7aa83).** Two blind verifications
+>   PASS_WITH_NOTES, notes fixed: towers by position + kind 12/13; enemy buildings block only at kind 12/13 (walking
+>   kind-14/15 bodies with building ids skipped); buildings need the whole footprint on my half, troops Y < 15; open
+>   pocket y 17-21. Replay (3,633 live plays): redirected 87, game had moved 85, wrong 2 (X-Bow on an expiring own
+>   X-Bow; a 0.8-tile Mini PEKKA), moved-but-missed 9. Live default ON, `--no-legal-guard`; SIM unchanged. Live
+>   still STOPPED (owner gate: centre-column fix first). Open: guard reads the decision-time board, not landing time.
+> * **Log-on-air worker DONE_WITH_CONCERNS (worktree commit 16f667d, not merged; veto OPT-IN `--log-air-veto`).**
+>   MEASURED: pros Log an air-only corridor 0.78% of 47,703 Logs (air-only pushes = 3.6% of rows; pros answer them with
+>   Skeletons 8.0%, Electro Spirit 4.0%, Tesla 3.5%, Log 1.8%); bot at cast 1.7% (38/2,182 classifiable live Logs) =
+>   2.2x pros, the rest pro-like. Model probe (300 states, push inserted): P(Log) Minions 0.070 vs Knight 0.071 (base),
+>   0.062 vs 0.070 (R1e) = no distinction; Bats 0.081 vs Goblins 0.298; Log cell mass in the corridor air 0.72 vs ground
+>   0.90. RL did NOT raise it (0.054 -> 0.048). Habit: 55% of live Logs go to the two bridge cells and 54% have
+>   p_play < 0.40 at tau 0.35 (air-only Logs: 76% marginal) -> low-confidence gate plays. Reader identity exact
+>   (22,775 air bodies = model batch). ~~SIM BUG~~ **RETRACTED 23:1x: the "Log misses swarms" result was a probe
+>   artifact** (Log aimed at the group's MEAN x; swarms split to both bridges, so the strip sat between lanes). Aimed at
+>   the lead body: Skeletons 81, Goblins 295, Barbarians 804, singles 268 -- identical on the pinned 20261006 runtime and
+>   royalesim 0.1.20 / royalegym 0.1.19 (isolated venv). spell.rs `roll` = swept rectangle, no target cap. The lead's
+>   own 22:2x probe had the same mean-x aim: its Skeletons/Goblins zeros are void; "Log does not hit air" still holds
+>   for the single bodies (Baby Dragon 1152, Balloon 1676 under the strip), Minions/Bats rows are unreliable. Inventory of
+>   old-system fixes missing now: Log corridor lateral aim, Tornado never targets buildings, dead-lane X-Bow latch
+>   (owner-reported twice), Tornado king-pull; air veto now opt-in. Outputs scratchpad/gauntlet/L73/log_air/ (worktree).
 >   ~15:40" (Q1 card sampling flag, Q2 area-aware spell aim, Q3 GPU A/Bs after R1e, Q4 R1e approval ping, Q5 fixes);
 >   launcher `.foreman/codex_autopilot/codex_loop.sh` (back-to-back runs to 10-06; STOP_LOOP file stops it).
 > * **15:5x -- owner plan: after the R1e verdict the lead starts LIVE on the winner, then hands over to Codex via

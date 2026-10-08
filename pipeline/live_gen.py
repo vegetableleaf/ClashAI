@@ -32,9 +32,71 @@ from .obs_contract import to_tokens
 from .train_s1 import MAX_U
 
 FORM_PAD = 3
+EVEN_BUILDINGS = {"Tesla"}           # owner 2026-10-07: Tesla is the ONLY 2x2 building; all others are 3x3
+ANYWHERE = {"Miner", "GoblinDrill"}  # deploy anywhere on the arena: never restricted
+
+
+def legal_cells(entities, side: int, card_id: int, name: str, grid: str = "lattice", gx: int = 36, gy: int = 64):
+    """[gx*gy] bool, True where this troop / building lands AS TAPPED; None = no restriction (spells, Miner, ...).
+
+    Rejects (1) a footprint overlapping a building / crown tower footprint of EITHER side, (2) a footprint not wholly
+    on my half (y <= 15 tiles) unless it lies wholly inside an OPEN pocket: the lane half (x 0-9 / 9-18) behind a
+    destroyed enemy princess, y 17-21. Crown towers: card_id -1 bodies of tower kind (12 / 13) at a tower POSITION
+    (king x 9, princess x 3.5 / 14.5); the kind only says asleep (12) / awake (13), so an awake king reads 13 like a
+    princess, and kind-15 card_id -1 bodies are cursed troops, never towers. A building's footprint follows its
+    position: tile corner (integer x and y) = 2x2 (Tesla, Goblin Drill), tile centre = 3x3; a mixed position is a
+    moving body carrying a building id (hut spawn, drill digging), not a building.
+    Evidence (live logs 10-05..07, L68 tap_audit / pocket audit): own building/tower overlap moved 67/69; troops at
+    y 20.5 in an open pocket landed as aimed 27/27, X-Bows at 18.5 2/2, a Tesla corner at 23.0 was moved to 20.0;
+    a Tesla on an ENEMY Goblin Drill (2x2, my half) was moved 5/5. Untested live: y 17 (RoyaleSim arena.rs bound; no
+    plays aimed at y 15-17) and footprints crossing y 15 from my half (arena.rs box_zone; 0 such plays logged)."""
+    kind = int(card_id) // 1_000_000                  # 26 troop, 27 building, 28 spell
+    if kind not in (26, 27) or name in ANYWHERE:
+        return None
+    from .obs_contract import _catalog_names
+    names = _catalog_names()
+    buildings = {n for i, n in names.items() if i // 1_000_000 == 27}
+    h = 0.0 if kind == 26 else (1.0 if name in EVEN_BUILDINGS else 1.5)
+    off = 0.5 if grid == "floor" else 0.0
+    c = np.arange(gx * gy)
+    X, Y = (c % gx + off) / gx * 18, (1 - (c // gx + off) / gy) * 32     # my frame, tiles; my king at Y = 3
+    ok = np.ones(gx * gy, bool)
+    standing = {3.5: False, 14.5: False}              # enemy princess alive per lane (my-frame x)
+    for e in entities:
+        if e.get("hp", 1) <= 0:
+            continue
+        bx, by = ((18000 - e["x"]) / 1000, (32000 - e["y"]) / 1000) if side == 1 else (e["x"] / 1000, e["y"] / 1000)
+        cid = int(e["card_id"])
+        tower = cid == -1 and int(e.get("kind", -1)) in (12, 13)
+        king = tower and abs(bx - 9) < 1 and min(abs(by - 3), abs(by - 29)) < 1
+        princess = tower and min(abs(bx - 3.5), abs(bx - 14.5)) < 1 and min(abs(by - 6.5), abs(by - 25.5)) < 1
+        if princess and int(e["side"]) != side:
+            standing[3.5 if bx < 9 else 14.5] = True
+        if king or princess:
+            hb = 2.0 if king else 1.5
+        elif names.get(cid) in buildings and int(e.get("kind", -1)) in (12, 13):
+            # kind 14/15 bodies with a building id walk (Furnace troop, hut / drill spawns): live 180632 t3467,
+            # 222521 t3464 -- a kind-15 spawn on a dead hut's tile centre blocked a legal Knight
+            q = [v / 500 for v in (e["x"], e["y"])]       # 500-unit lattice index; +-2 units of reader jitter
+            parity = {round(v) % 2 for v in q}
+            if any(abs(v - round(v)) > .004 for v in q) or len(parity) > 1:
+                continue                                  # moving body with a building id (hut spawn, digging drill)
+            hb = 1.0 if parity == {0} else 1.5            # tile corner: 2x2 / tile centre: 3x3
+        else:
+            continue
+        ok &= ~((np.abs(X - bx) < hb + h) & (np.abs(Y - by) < hb + h))
+    lane_open = np.where(X + h <= 9, not standing[3.5], np.where(X - h >= 9, not standing[14.5],
+                                                                not (standing[3.5] or standing[14.5])))
+    mine = (Y + h <= 15) if h else (Y < 15)          # buildings: whole footprint; troops: strictly off the y 15 line
+    ok &= mine | (lane_open & (Y - h >= 17) & (Y + h <= 21))
+    return ok if ok.any() else None
 
 
 class GenPilot:
+    # Live-only (live_play.py turns it on; --no-legal-guard): the cell argmax is taken over legal_cells. Off here so
+    # the SIM-parity tests keep checking the unguarded decision rule.
+    legal_guard = False
+
     def __init__(self, ckpt, device: str = "cpu", gate_tau: float = 0.5, use_counter: bool = True,
                  extrapolate_ticks: int = 0):
         self.model, st = load_model(ckpt, torch.device(device))
@@ -196,5 +258,22 @@ class GenPilot:
         if card > 0:
             enc_card = torch.tensor([card], device=self.dev)
             logits = self.model(b, card=enc_card, form=torch.tensor([form], device=self.dev))["cell"][0]
-            d["xy"] = cell_xy(int(logits.argmax()), self.grid)
+            d["xy"] = cell_xy(int(self.guard_cells(frame, d, logits).argmax()), self.grid)
         return d
+
+    def guard_cells(self, frame: Mapping[str, Any], d: dict, logits: torch.Tensor) -> torch.Tensor:
+        """``logits`` ([..., N_CELLS]) with the cells the card would not land on as tapped set to -inf (legal_cells);
+        unchanged when the guard is off, the row waits, or nothing is restricted. d['xy_unguarded'] = the plain argmax
+        it replaced."""
+        if not self.legal_guard or not d["play"]:
+            return logits
+        side = my_side_of(frame)
+        me = next(p for p in frame["players"] if int(p["side"]) == side)
+        ok = legal_cells(frame.get("entities", []), side, me["deck_card_ids"][d["deck_index"]], d["name"], self.grid)
+        if ok is None:
+            return logits
+        ok = torch.from_numpy(ok).to(logits.device)
+        raw = int(logits.reshape(-1, ok.numel())[0].argmax())
+        if not ok[raw]:
+            d["xy_unguarded"] = cell_xy(raw, self.grid)
+        return logits.masked_fill(~ok, float("-inf"))
