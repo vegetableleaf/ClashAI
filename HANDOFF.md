@@ -4529,6 +4529,22 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   untested): ranking alone closes at most ~half the gap (.06-.12/match) unless elixir at push start rises. Lead told
 >   the worker: stack PushRefine on towerref_w2 (the live base), measure the pre-push elixir spending vs pros as its own
 >   finding, and fail PushRefine if it drains elixir or kills tower Rockets.
+> * **W4 DONE (a513a91, branch worktree-agent-a513a91c79abfeb13, ae78cff; NOT merged, NOT wired live).** Owner chose
+>   "Test the 9+ elixir version". Calibration (a, scratchpad/gauntlet/L73/w4_gate/calib_live.out): the live gate IS
+>   calibrated (VAL bins .266/.346/.514 vs pro play fraction; quiet board, >= 9 elixir, 1x: p .236 vs pro .268 =
+>   0.151 vs 0.157 plays/s). The freeze is the THRESHOLD rule: tau .35 = ~0.21 plays/s, and a calibrated quiet-board p
+>   (~.27) never reaches it (only 23% of pros' own quiet rows have p > .35). Fix = opt-in `--gate-decode
+>   hazard_below_tau --gate-hazard-min-elixir 9` (play iff p > tau as before; else at >= 9 elixir play with probability
+>   1 - exp(-rate(p) * step), rate = the gate's learned play rate; card/cell = the usual argmax; nothing forced).
+>   SIM (VM ~/w4, live config): v3 vs gen 960 paired base 619 / hbt(all states) 532 (p<1e-4, worse) / hbt9 609
+>   (147/158 better/worse, p .57, n.s.) / hbt9+quiet 611; v2 vs S1 160 -> 184 (S1-idle-driven: idle share .26 -> 0).
+>   hbt9 economy (1x/2x/OT): plays/min 6.30/13.67/15.20 -> 7.03/14.08/16.23 (pros 6.9/13.5/16.8); elixir at play
+>   unchanged (7.12/6.59/6.70); time >= 9.5 elixir .175/.043/.063 -> .075/.021/.019; cheap share unchanged (.356 vs
+>   .355; pros .32). Freeze replay 121357 (44 s at >= 9): hbt9 P(play) .32/.52/.82 within 5/10/20 s, median 9.2 s
+>   (pros quiet board: median 3 s), the play X-Bow 88%. Lead sent W4 back to wire it into live (real game-time step,
+>   pending excluded, cadence-invariance test, offline parity on the freeze log); blind verify before merge; deploy
+>   via LIVE_OPTIONS is the owner's call. Open question for the push-Rocket line (b, untested): does hbt9 change my
+>   elixir at big-push start (bot 2.2-2.7 vs pros 6.0)?
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
 >   flag (fixed: own_effects in both --check dicts). LIVE_OPTIONS may now deploy live-only flags (EXTRA_LIVE_FLAGS =
 >   --own-effects) and the file holds `... --spell-aim rocket_area --own-effects`. Merged-tree tests 152 passed; plain
