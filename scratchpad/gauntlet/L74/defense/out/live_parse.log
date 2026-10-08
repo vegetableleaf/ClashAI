@@ -1,0 +1,14 @@
+[0/589] 0s kept 0
+[50/589] 1s kept 14
+[100/589] 4s kept 64
+[150/589] 8s kept 114
+[200/589] 13s kept 164
+[250/589] 17s kept 212
+[300/589] 21s kept 258
+[350/589] 25s kept 308
+[400/589] 29s kept 358
+[450/589] 33s kept 407
+[500/589] 36s kept 446
+[550/589] 41s kept 495
+live matches 532 Counter({'R1e (r1e31_u0155)': 355, 'stack2k_cellref': 102, 'towerref_bundle': 36, 'candidate': 17, 'towerref_pre': 16, 'rseries_r2l_u0120': 6}) Counter({'WIN': 269, 'LOSS': 262, 'DRAW': 1})
+live analysed 532

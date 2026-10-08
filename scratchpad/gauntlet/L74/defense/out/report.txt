@@ -1,0 +1,237 @@
+# L74 defense diagnosis -- tables (defense.py + dreport.py)
+TR: matches 52  W 26 L 26 D 0  episodes 378
+TRB: matches 36  W 20 L 16 D 0  episodes 276
+RL: matches 532  W 269 L 262 D 1  episodes 4031
+PRO: matches 2244  W 970 L 1273 D 1  episodes 20540
+live families: {'R1e (r1e31_u0155)': 355, 'candidate': 17, 'rseries_r2l_u0120': 6, 'stack2k_cellref': 102, 'towerref_pre': 16, 'towerref_bundle': 36}
+
+## D2 response timing (lane episodes: >= 3 elixir of enemy value in one lane on my half; first defensive play in that lane or the centre)
+rsp = seconds from the threat crossing to my first defensive card: tap (bot only) / land (bot = reader confirmation, pros = engine deploy).
+TR   3-5  n=  144 answered 0.74  land<=2s 0.53  land med -0.1  p75 2.5  tap med -1.4  commit->land med 4.2  lane dmg/ep 336
+TR   5-8  n=  119 answered 0.91  land<=2s 0.69  land med -0.1  p75 1.8  tap med -1.4  commit->land med 6.7  lane dmg/ep 499
+TR   8+   n=  115 answered 0.97  land<=2s 0.76  land med -0.1  p75 1.4  tap med -1.4  commit->land med 5.4  lane dmg/ep 1235
+TRB  3-5  n=  107 answered 0.76  land<=2s 0.55  land med -0.1  p75 2.5  tap med -1.4  commit->land med 4.2  lane dmg/ep 289
+TRB  5-8  n=   85 answered 0.91  land<=2s 0.72  land med -0.1  p75 1.4  tap med -1.4  commit->land med 5.6  lane dmg/ep 517
+TRB  8+   n=   84 answered 0.95  land<=2s 0.77  land med -0.1  p75 1.4  tap med -1.4  commit->land med 5.5  lane dmg/ep 1101
+RL   3-5  n= 1684 answered 0.81  land<=2s 0.60  land med -0.1  p75 2.2  tap med -1.4  commit->land med 4.0  lane dmg/ep 267
+RL   5-8  n= 1374 answered 0.90  land<=2s 0.69  land med -0.1  p75 1.9  tap med -1.4  commit->land med 5.1  lane dmg/ep 484
+RL   8+   n=  973 answered 0.97  land<=2s 0.73  land med -0.1  p75 2.05  tap med -1.4  commit->land med 5.75  lane dmg/ep 1256
+PRO  3-5  n= 8279 answered 0.82  land<=2s 0.52  land med 1.15  p75 2.95  tap med None  commit->land med 11.95  lane dmg/ep 182
+PRO  5-8  n= 6578 answered 0.90  land<=2s 0.63  land med 0.85  p75 2.45  tap med None  commit->land med 11.05  lane dmg/ep 322
+PRO  8+   n= 5683 answered 0.95  land<=2s 0.68  land med 0.9  p75 2.25  tap med None  commit->land med 11.4  lane dmg/ep 694
+
+Where the time and the lane-tower damage go, per episode, from the crossing to the end (+3 s). Labels (bot, at each decision state
+before the first defensive TAP): gate = affordable card, p_play < tau, no play; no_elixir = nothing affordable; played_other = a play
+that is not a defence of this lane; pending_other = locked by such a play; latency = tap -> land of the defence; defended = after it
+lands. Pros: had_elixir / no_elixir before the deploy, defended after.
+TR   all n=  378 sec/ep: d_gate 8.35  d_pending 3.36  gate 1.69  d_no_elixir 1.69  latency 1.29  no_elixir 0.25  pending_other 0.22
+          dmg/ep (live HP): d_gate 280 (39%)  d_pending 168 (23%)  d_no_elixir 140 (19%)  gate 80 (11%)  latency 41 (6%)  no_elixir 6 (1%)  pending_other 5 (1%)
+TR   5+  n=  234 sec/ep: d_gate 9.97  d_pending 4.46  d_no_elixir 2.37  latency 1.41  gate 1.09  pending_other 0.14  no_elixir 0.12
+          dmg/ep (live HP): d_gate 393 (41%)  d_pending 255 (27%)  d_no_elixir 210 (22%)  latency 49 (5%)  gate 45 (5%)  pending_other 4 (0%)  no_elixir 0 (0%)
+TR   8+  n=  115 sec/ep: d_gate 11.41  d_pending 5.97  d_no_elixir 3.28  latency 1.43  gate 1.13  pending_other 0.08  no_elixir 0.03
+          dmg/ep (live HP): d_gate 562 (42%)  d_pending 432 (32%)  d_no_elixir 289 (21%)  gate 52 (4%)  latency 6 (0%)  pending_other 2 (0%)  no_elixir 0 (0%)
+TRB  all n=  276 sec/ep: d_gate 8.14  d_pending 3.26  d_no_elixir 1.75  gate 1.63  latency 1.28  no_elixir 0.24  pending_other 0.22
+          dmg/ep (live HP): d_gate 233 (34%)  d_pending 185 (27%)  d_no_elixir 116 (17%)  gate 81 (12%)  latency 50 (7%)  no_elixir 6 (1%)  pending_other 6 (1%)
+TRB  5+  n=  169 sec/ep: d_gate 9.59  d_pending 4.42  d_no_elixir 2.46  latency 1.38  gate 1.05  pending_other 0.14  no_elixir 0.12
+          dmg/ep (live HP): d_gate 332 (36%)  d_pending 288 (31%)  d_no_elixir 180 (19%)  latency 62 (7%)  gate 58 (6%)  pending_other 5 (1%)  no_elixir 0 (0%)
+TRB  8+  n=   84 sec/ep: d_gate 10.66  d_pending 5.94  d_no_elixir 3.32  latency 1.39  gate 1.21  pending_other 0.10  no_elixir 0.05
+          dmg/ep (live HP): d_pending 500 (41%)  d_gate 444 (36%)  d_no_elixir 211 (17%)  gate 66 (5%)  latency 5 (0%)  pending_other 2 (0%)  no_elixir 0 (0%)
+RL   all n= 4031 sec/ep: d_gate 7.34  d_pending 3.80  d_no_elixir 2.05  latency 1.36  gate 1.25  pending_other 0.35  no_elixir 0.31  other 0.00  d_other 0.00
+          dmg/ep (live HP): d_gate 191 (30%)  d_pending 186 (29%)  d_no_elixir 149 (23%)  gate 41 (6%)  latency 37 (6%)  no_elixir 20 (3%)  pending_other 18 (3%)  other 0 (0%)  d_other 0 (0%)
+RL   5+  n= 2347 sec/ep: d_gate 8.69  d_pending 5.00  d_no_elixir 2.70  latency 1.44  gate 0.96  pending_other 0.28  no_elixir 0.25  d_other 0.00  other 0.00
+          dmg/ep (live HP): d_pending 281 (32%)  d_gate 264 (30%)  d_no_elixir 227 (26%)  latency 40 (5%)  gate 38 (4%)  no_elixir 19 (2%)  pending_other 14 (2%)  d_other 0 (0%)  other 0 (0%)
+RL   8+  n=  973 sec/ep: d_gate 10.12  d_pending 7.03  d_no_elixir 3.67  latency 1.51  gate 0.67  no_elixir 0.20  pending_other 0.19  d_other 0.00
+          dmg/ep (live HP): d_pending 519 (37%)  d_no_elixir 395 (28%)  d_gate 372 (27%)  latency 40 (3%)  gate 32 (2%)  no_elixir 19 (1%)  pending_other 10 (1%)  d_other 0 (0%)
+PRO  all n=20540 sec/ep: d_had_elixir 11.09  had_elixir 2.41  d_no_elixir 1.71  no_elixir 0.51
+          dmg/ep (live HP): d_had_elixir 234 (56%)  d_no_elixir 100 (24%)  no_elixir 43 (10%)  had_elixir 42 (10%)
+PRO  5+  n=12261 sec/ep: d_had_elixir 13.31  d_no_elixir 2.28  had_elixir 1.97  no_elixir 0.59
+          dmg/ep (live HP): d_had_elixir 326 (57%)  d_no_elixir 148 (26%)  no_elixir 56 (10%)  had_elixir 40 (7%)
+PRO  8+  n= 5683 sec/ep: d_had_elixir 15.94  d_no_elixir 3.06  had_elixir 1.64  no_elixir 0.77
+          dmg/ep (live HP): d_had_elixir 462 (57%)  d_no_elixir 239 (29%)  no_elixir 81 (10%)  had_elixir 30 (4%)
+
+Damage RATE in each interval type (live HP per second of that interval, all episodes):
+TR   d_gate 33.5/s (3155s)  d_no_elixir 82.8/s (638s)  d_pending 50.0/s (1271s)  gate 47.2/s (639s)  latency 31.6/s (487s)  no_elixir 25.7/s (93s)  pending_other 22.6/s (83s)
+TRB  d_gate 28.6/s (2248s)  d_no_elixir 66.4/s (482s)  d_pending 56.8/s (900s)  gate 49.6/s (451s)  latency 39.1/s (354s)  no_elixir 27.4/s (65s)  pending_other 29.6/s (59s)
+RL   d_gate 26.0/s (29605s)  d_no_elixir 72.5/s (8284s)  d_other 22.0/s (17s)  d_pending 48.9/s (15336s)  gate 32.5/s (5036s)  latency 27.4/s (5482s)  no_elixir 65.0/s (1241s)  other 27.7/s (18s)  pending_other 51.4/s (1429s)
+PRO  d_had_elixir 21.1/s (227805s)  d_no_elixir 58.5/s (35194s)  had_elixir 17.4/s (49445s)  no_elixir 84.9/s (10446s)
+
+Owner hypothesis '1.3 s gap': lane-tower damage per MATCH inside each window (live HP; CI = match bootstrap):
+  TR   latency        296 [114, 594]
+  TR   gate           580 [284, 932]
+  TR   no_elixir      46 [8, 96]
+  TR   pending_other  36 [11, 67]
+  TR   d_pending      1223 [742, 1713]
+  TR   d_gate         2034 [1403, 2676]
+  TR   d_no_elixir    1016 [690, 1401]
+  TR   d_other        0 [0, 0]
+  TRB  latency        385 [127, 802]
+  TRB  gate           622 [290, 1109]
+  TRB  no_elixir      49 [6, 98]
+  TRB  pending_other  49 [19, 91]
+  TRB  d_pending      1421 [882, 2126]
+  TRB  d_gate         1783 [1176, 2516]
+  TRB  d_no_elixir    889 [571, 1268]
+  TRB  d_other        0 [0, 0]
+  RL   latency        283 [232, 337]
+  RL   gate           307 [244, 369]
+  RL   no_elixir      152 [113, 191]
+  RL   pending_other  138 [97, 206]
+  RL   d_pending      1411 [1240, 1596]
+  RL   d_gate         1446 [1294, 1619]
+  RL   d_no_elixir    1128 [1012, 1252]
+  RL   d_other        1 [0, 2]
+
+Gate waits inside threat episodes (bot): states with an affordable card and p_play < tau before the first defensive tap
+  TR: states 1290  p median 0.193  tau-p median 0.201  share within .05 of tau 0.08  top card while waiting: [('Skeletons', 401), ('Knight', 197), ('IceWizard', 164), ('Log', 145), ('Xbow', 136), ('Tesla', 127), ('Tornado', 89), ('Rocket', 11)]
+  RL: states 10452  p median 0.136  tau-p median 0.225  share within .05 of tau 0.08  top card while waiting: [('Skeletons', 2050), ('Log', 1873), ('IceWizard', 1553), ('Knight', 1530), ('Xbow', 1149), ('Tesla', 831), ('Tornado', 696), ('MiniPekka', 54)]
+
+Lane damage per episode (live HP) by when the first defence LANDED (episodes >= 5 value). Association, not causation:
+  TR   <=0: n=148 746  0-2: n=21 1259  2-4: n=25 790  4-8: n=15 1051  >8: n=10 2231  none: n=15 451
+  RL   <=0: n=1339 637  0-2: n=321 796  2-4: n=255 1169  4-8: n=197 1288  >8: n=70 2096  none: n=165 478
+  PRO  <=0: n=2560 423  0-2: n=5494 448  2-4: n=1883 506  4-8: n=1048 530  >8: n=329 738  none: n=947 811
+
+## D3 non-responses: lane episodes whose lane tower lost >= 300 live HP with NO defensive card landed in that lane/centre
+TR   non-response with >= 300 dmg: 4.8% [2.8, 6.7] of episodes; dmg/match 470 [199, 785]; landed AFTER damage began (>= 300): 5.8% [3.7, 8.2]; no defence at all (any dmg) 14.0% [11.1, 16.8]
+TRB  non-response with >= 300 dmg: 4.7% [2.1, 7.4] of episodes; dmg/match 498 [174, 952]; landed AFTER damage began (>= 300): 6.5% [4.0, 9.4]; no defence at all (any dmg) 13.8% [10.5, 17.2]
+RL   non-response with >= 300 dmg: 3.3% [2.8, 3.8] of episodes; dmg/match 319 [252, 390]; landed AFTER damage began (>= 300): 5.9% [5.2, 6.7]; no defence at all (any dmg) 12.0% [10.9, 13.1]
+PRO  non-response with >= 300 dmg: 3.1% [2.8, 3.3] of episodes; dmg/match 483 [429, 534]; landed AFTER damage began (>= 300): 3.9% [3.6, 4.2]; no defence at all (any dmg) 11.9% [11.4, 12.3]
+  TR why (dominant interval label, n=18): gate 15 (22.8k HP)  no_elixir 2 (1.4k HP)  pending_other 1 (0.3k HP)
+     what it played instead during those episodes: [('Tornado(off)', 2), ('Log(other lane)', 2), ('Xbow(other lane)', 2), ('Knight(other lane)', 1), ('Tesla(other lane)', 1), ('IceWizard(off)', 1)]
+  RL why (dominant interval label, n=134): gate 90 (116.7k HP)  no_elixir 24 (28.8k HP)  pending_other 20 (24.5k HP)
+     what it played instead during those episodes: [('Knight(other lane)', 38), ('Log(other lane)', 34), ('IceWizard(other lane)', 29), ('Tesla(other lane)', 16), ('Skeletons(other lane)', 16), ('Tornado(other lane)', 14), ('Xbow(other lane)', 11), ('Tornado(off)', 4)]
+  PRO why (dominant interval label, n=628): no_elixir 345 (813.0k HP)  had_elixir 272 (248.2k HP)  no_air_answer_in_hand|no_elixir 11 (23.1k HP)
+     what it played instead during those episodes: [('Log(other lane)', 81), ('Knight(other lane)', 72), ('IceWizard(other lane)', 59), ('Skeletons(other lane)', 56), ('Rocket(off)', 50), ('Xbow(other lane)', 49), ('Tesla(other lane)', 37), ('Tornado(off)', 34)]
+  TR non-response threats (lead card): [('Musketeer', 2), ('GoblinBarrel', 2), ('Valkyrie', 1), ('IceWizard', 1), ('Hunter', 1), ('BlowdartGoblin', 1), ('Minions', 1), ('MegaKnight', 1), ('Assassin', 1), ('EliteArcher', 1), ('ElectroWizard', 1), ('Pekka', 1)]
+  RL non-response threats (lead card): [('GoblinBarrel', 18), ('Witch', 9), ('Firecracker', 9), ('ElectroWizard', 6), ('MiniPekka', 5), ('AxeMan', 5), ('Musketeer', 4), ('Knight', 4), ('SuspiciousBush', 4), ('EliteArcher', 4), ('BlowdartGoblin', 4), ('ElectroDragon', 3)]
+  PRO non-response threats (lead card): [('BabyDragon', 30), ('Knight', 29), ('Goblinstein', 23), ('BlowdartGoblin', 22), ('Musketeer', 22), ('HogRider', 19), ('RoyalRecruits', 18), ('Bowler', 17), ('RoyalGiant', 16), ('Ghost', 16), ('Valkyrie', 16), ('Archer', 15)]
+
+Triage of small threats (vmax 3-5): answered share, damage when answered / ignored (live HP per episode):
+  TR   n=144 answered 0.74  dmg answered 283  ignored 484  elixir spent when answered 4.92
+  TRB  n=107 answered 0.76  dmg answered 235  ignored 456  elixir spent when answered 4.53
+  RL   n=1684 answered 0.81  dmg answered 257  ignored 310  elixir spent when answered 4.95
+  PRO  n=8279 answered 0.82  dmg answered 171  ignored 232  elixir spent when answered 5.49
+
+## D1 lane triage: plays made while BOTH lanes hold enemy value (light >= 1, heavy >= 4 and >= 2x light); half = own y <= 16, approach = own y <= 20
+TR/half split plays 34 (0.65/match): heavy 0.44  centre 0.44  light 0.12  offence 0.00 | elixir share heavy 0.43  centre 0.46  light 0.11  offence 0.00
+     light-lane share 11.8% [0.0, 23.3]; light play with heavy unanswered in prior 5 s: n=3, heavy-lane dmg next 10 s 1271 vs 699 after a heavy/centre play; 'wrong-lane' episodes (heavy tower then >= 300) per match 0.019 [0.000, 0.058]
+     light-lane cards: [('Knight', 2), ('Log', 1)]
+RL/half split plays 514 (0.97/match): heavy 0.43  centre 0.40  light 0.17  offence 0.00 | elixir share heavy 0.40  centre 0.44  light 0.16  offence 0.00
+     light-lane share 16.5% [13.5, 19.8]; light play with heavy unanswered in prior 5 s: n=41, heavy-lane dmg next 10 s 1066 vs 833 after a heavy/centre play; 'wrong-lane' episodes (heavy tower then >= 300) per match 0.039 [0.023, 0.058]
+     light-lane cards: [('Log', 15), ('IceWizard', 7), ('Knight', 7), ('Tornado', 4), ('Skeletons', 4), ('Tesla', 2), ('Xbow', 2)]
+PRO/half split plays 3056 (1.36/match): heavy 0.45  centre 0.33  light 0.19  offence 0.03 | elixir share heavy 0.42  centre 0.35  light 0.18  offence 0.05
+     light-lane share 19.2% [17.5, 20.8]; light play with heavy unanswered in prior 5 s: n=174, heavy-lane dmg next 10 s 577 vs 436 after a heavy/centre play; 'wrong-lane' episodes (heavy tower then >= 300) per match 0.032 [0.024, 0.041]
+     light-lane cards: [('Log', 40), ('Skeletons', 34), ('Knight', 33), ('IceWizard', 23), ('Xbow', 20), ('Tesla', 16), ('Tornado', 6), ('Rocket', 2)]
+TR/approach split plays 104 (2.00/match): heavy 0.45  centre 0.41  light 0.13  offence 0.00 | elixir share heavy 0.42  centre 0.46  light 0.12  offence 0.00
+     light-lane share 13.5% [7.4, 20.7]; light play with heavy unanswered in prior 5 s: n=5, heavy-lane dmg next 10 s 1131 vs 488 after a heavy/centre play; 'wrong-lane' episodes (heavy tower then >= 300) per match 0.058 [0.000, 0.135]
+     light-lane cards: [('Skeletons', 2), ('Log', 1), ('Knight', 1), ('IceWizard', 1)]
+RL/approach split plays 1214 (2.28/match): heavy 0.47  centre 0.36  light 0.16  offence 0.01 | elixir share heavy 0.43  centre 0.40  light 0.15  offence 0.01
+     light-lane share 15.8% [13.7, 17.9]; light play with heavy unanswered in prior 5 s: n=92, heavy-lane dmg next 10 s 935 vs 527 after a heavy/centre play; 'wrong-lane' episodes (heavy tower then >= 300) per match 0.083 [0.055, 0.109]
+     light-lane cards: [('Log', 26), ('Knight', 23), ('IceWizard', 18), ('Skeletons', 12), ('Tesla', 6), ('Xbow', 5), ('Tornado', 2)]
+PRO/approach split plays 8557 (3.81/match): heavy 0.50  centre 0.32  light 0.14  offence 0.04 | elixir share heavy 0.46  centre 0.34  light 0.13  offence 0.07
+     light-lane share 14.3% [13.5, 15.2]; light play with heavy unanswered in prior 5 s: n=434, heavy-lane dmg next 10 s 365 vs 317 after a heavy/centre play; 'wrong-lane' episodes (heavy tower then >= 300) per match 0.054 [0.045, 0.066]
+     light-lane cards: [('Skeletons', 98), ('Log', 89), ('Knight', 76), ('IceWizard', 67), ('Xbow', 45), ('Tesla', 40), ('Tornado', 14), ('Rocket', 5)]
+
+## D4a defended episodes (>= 5 value): failure (lane dmg >= 1000 live HP) by my elixir at the crossing (el0), bot vs pros
+  TR   el0 <2: n=43 fail 0.53 dmg 1607 spent 7.5  el0 2-4: n=87 fail 0.32 dmg 744 spent 8.1  el0 4-6: n=59 fail 0.25 dmg 768 spent 8.0  el0 6-8: n=28 fail 0.11 dmg 342 spent 10.0  el0 8+: n=2 fail 0.50 dmg 2976 spent 4.5
+  RL   el0 <2: n=632 fail 0.39 dmg 1168 spent 7.8  el0 2-4: n=779 fail 0.28 dmg 808 spent 8.6  el0 4-6: n=537 fail 0.18 dmg 576 spent 9.0  el0 6-8: n=195 fail 0.18 dmg 509 spent 9.5  el0 8+: n=39 fail 0.23 dmg 788 spent 9.7
+  PRO  el0 <2: n=399 fail 0.19 dmg 545 spent 7.1  el0 2-4: n=1659 fail 0.18 dmg 511 spent 7.9  el0 4-6: n=2800 fail 0.16 dmg 480 spent 9.1  el0 6-8: n=3474 fail 0.15 dmg 455 spent 10.1  el0 8+: n=2982 fail 0.14 dmg 437 spent 10.8
+Gate waits AFTER the first defence landed, in intervals where the lane tower lost HP (bot): p_play, tau-p, top card, elixir
+  TR: states 1926 p med 0.141  tau-p med 0.250  elixir med 4.8586  share elixir >= 4 0.64  top [('Skeletons', 430), ('Xbow', 343), ('Knight', 283), ('IceWizard', 252), ('Log', 246), ('Tornado', 237)]
+  RL: states 15567 p med 0.094  tau-p med 0.269  elixir med 4.1496  share elixir >= 4 0.53  top [('Log', 2952), ('Skeletons', 2593), ('Knight', 2403), ('Xbow', 2400), ('IceWizard', 2018), ('Tornado', 1501)]
+Within-match (MH) differences in P(defended episode fails), live RL episodes >= 5 value, 95% match-cluster bootstrap:
+  el0 < 4                          n= 1411 MH +16.1 pp [+12.4, +20.2]  strata 348
+  spent < value                    n= 1145 MH +9.7 pp [+6.0, +14.0]  strata 366
+  one card only                    n=  397 MH -6.5 pp [-10.9, -1.7]  strata 259
+  first card Tornado               n=   94 MH +25.6 pp [+14.9, +38.5]  strata 80
+  first card Log                   n=  293 MH +8.6 pp [+2.6, +14.7]  strata 201
+  first card Skeletons             n=  499 MH +2.0 pp [-2.3, +7.1]  strata 295
+  first card Tesla                 n=  409 MH -9.6 pp [-14.7, -3.9]  strata 274
+  landed before crossing (<= 0 s)  n= 1339 MH -11.2 pp [-15.6, -6.6]  strata 365
+  landed > 2 s after crossing      n=  522 MH +16.7 pp [+11.7, +21.6]  strata 306
+  air in push                      n=  546 MH +1.1 pp [-6.2, +8.0]  strata 175
+
+## D4 defensive quality: landed defensive plays inside lane episodes (dmg10 = lane-tower damage in the 10 s after landing, live HP)
+TR: plays 877
+  Knight    n=  174 dmg10   403  fail(>=10% princess) 0.23  lane cleared at +10 s 0.62  dist to nearest threat 3.34  in front 0.77  d_tower 8.0  d_king 11.51
+  IceWizard n=  163 dmg10   562  fail(>=10% princess) 0.33  lane cleared at +10 s 0.56  dist to nearest threat 6.26  in front 0.88  d_tower 5.83  d_king 6.52
+  Tesla     n=  127 dmg10   232  fail(>=10% princess) 0.13  lane cleared at +10 s 0.58  dist to nearest threat 6.18  in front 0.91  d_tower 7.11  d_king 8.0
+  Skeletons n=  196 dmg10   426  fail(>=10% princess) 0.23  lane cleared at +10 s 0.57  dist to nearest threat 3.08  in front 0.76  d_tower 8.25  d_king 11.51
+  Tornado   n=   46 dmg10   934  fail(>=10% princess) 0.50  lane cleared at +10 s 0.59  dist to nearest threat 3.23  in front 0.46  d_tower 6.32  d_king 9.51
+  Log       n=  141 dmg10   506  fail(>=10% princess) 0.30  lane cleared at +10 s 0.55  dist to nearest threat 2.29  in front 0.88  d_tower 8.0  d_king 12.35
+  Xbow      n=   26 dmg10    18  fail(>=10% princess) 0.00  lane cleared at +10 s 0.58  dist to nearest threat 4.06  in front 0.42  d_tower 6.08  d_king 11.51
+RL: plays 9812
+  Knight    n= 1857 dmg10   352  fail(>=10% princess) 0.21  lane cleared at +10 s 0.60  dist to nearest threat 3.0  in front 0.75  d_tower 8.0  d_king 11.51
+  IceWizard n= 1776 dmg10   412  fail(>=10% princess) 0.26  lane cleared at +10 s 0.55  dist to nearest threat 4.47  in front 0.82  d_tower 6.08  d_king 7.78
+  Tesla     n= 1362 dmg10   229  fail(>=10% princess) 0.14  lane cleared at +10 s 0.61  dist to nearest threat 5.75  in front 0.84  d_tower 7.11  d_king 8.0
+  Skeletons n= 2023 dmg10   406  fail(>=10% princess) 0.25  lane cleared at +10 s 0.57  dist to nearest threat 2.93  in front 0.72  d_tower 8.06  d_king 11.51
+  Tornado   n=  706 dmg10   850  fail(>=10% princess) 0.47  lane cleared at +10 s 0.55  dist to nearest threat 3.77  in front 0.62  d_tower 6.08  d_king 4.53
+  Log       n= 1490 dmg10   502  fail(>=10% princess) 0.29  lane cleared at +10 s 0.56  dist to nearest threat 2.36  in front 0.83  d_tower 7.91  d_king 10.98
+  Xbow      n=  303 dmg10    50  fail(>=10% princess) 0.03  lane cleared at +10 s 0.62  dist to nearest threat 3.8  in front 0.35  d_tower 6.08  d_king 11.51
+  Rocket    n=   21 dmg10   765  fail(>=10% princess) 0.48  lane cleared at +10 s 0.52  dist to nearest threat 1.06  in front 0.43  d_tower 11.0  d_king 15.18
+PRO: plays 50760
+  Knight    n= 8636 dmg10   249  fail(>=10% princess) 0.17  lane cleared at +10 s 0.64  dist to nearest threat 3.15  in front 0.73  d_tower 7.28  d_king 10.51
+  IceWizard n= 8648 dmg10   252  fail(>=10% princess) 0.18  lane cleared at +10 s 0.62  dist to nearest threat 5.17  in front 0.79  d_tower 6.0  d_king 8.51
+  Tesla     n= 8290 dmg10   208  fail(>=10% princess) 0.14  lane cleared at +10 s 0.62  dist to nearest threat 5.23  in front 0.76  d_tower 7.65  d_king 9.06
+  Skeletons n= 9416 dmg10   279  fail(>=10% princess) 0.19  lane cleared at +10 s 0.64  dist to nearest threat 3.17  in front 0.69  d_tower 7.62  d_king 10.7
+  Tornado   n= 4838 dmg10   344  fail(>=10% princess) 0.23  lane cleared at +10 s 0.69  dist to nearest threat 4.17  in front 0.53  d_tower 7.21  d_king 10.51
+  Log       n= 7220 dmg10   286  fail(>=10% princess) 0.19  lane cleared at +10 s 0.64  dist to nearest threat 2.08  in front 0.82  d_tower 6.0  d_king 10.12
+  Xbow      n= 2691 dmg10    86  fail(>=10% princess) 0.06  lane cleared at +10 s 0.69  dist to nearest threat 4.48  in front 0.42  d_tower 6.08  d_king 10.98
+  Rocket    n= 1021 dmg10   356  fail(>=10% princess) 0.22  lane cleared at +10 s 0.64  dist to nearest threat 1.67  in front 0.73  d_tower 7.07  d_king 11.85
+
+Tesla vs building-targeting threats: placement (|X-9| = distance from the centre column; Y)
+  TR   n=51 |X-9| med 0.0 share<=1.5 0.86  Y med 11.0 (p25 10.0 p75 13.0)  dmg10 145  fail 0.10
+  RL   n=715 |X-9| med 0.0 share<=1.5 0.78  Y med 11.0 (p25 10.0 p75 14.0)  dmg10 218  fail 0.13
+  PRO  n=5239 |X-9| med 1.0 share<=1.5 0.69  Y med 12.0 (p25 10.0 p75 14.0)  dmg10 241  fail 0.16
+Tornado: distance from the king (9,3) and from the threat
+  TR   n=46 d_king med 9.5  share <= 6 0.43  d_near med 3.23  dmg10 934
+  RL   n=706 d_king med 4.5  share <= 6 0.55  d_near med 3.77  dmg10 850
+  PRO  n=4838 d_king med 10.5  share <= 6 0.36  d_near med 4.17  dmg10 344
+Episode-level: elixir spent on defence / threat value, and defended-episode failure (lane dmg >= 1000 live HP)
+  TR   3-5  defended n=  106 spend/value med 1.00  spent > value 0.43  cards/ep 1.83  fail(>=1000) 0.11
+  TR   5-8  defended n=  108 spend/value med 0.94  spent > value 0.44  cards/ep 2.48  fail(>=1000) 0.20
+  TR   8+   defended n=  111 spend/value med 0.85  spent > value 0.30  cards/ep 3.74  fail(>=1000) 0.43
+  TRB  3-5  defended n=   81 spend/value med 1.00  spent > value 0.40  cards/ep 1.70  fail(>=1000) 0.12
+  TRB  5-8  defended n=   77 spend/value med 1.00  spent > value 0.45  cards/ep 2.45  fail(>=1000) 0.22
+  TRB  8+   defended n=   80 spend/value med 0.89  spent > value 0.33  cards/ep 3.70  fail(>=1000) 0.41
+  RL   3-5  defended n= 1365 spend/value med 1.00  spent > value 0.48  cards/ep 1.89  fail(>=1000) 0.09
+  RL   5-8  defended n= 1235 spend/value med 1.00  spent > value 0.43  cards/ep 2.60  fail(>=1000) 0.18
+  RL   8+   defended n=  947 spend/value med 0.90  spent > value 0.39  cards/ep 4.25  fail(>=1000) 0.40
+  PRO  3-5  defended n= 6779 spend/value med 1.33  spent > value 0.57  cards/ep 1.89  fail(>=1000) 0.04
+  PRO  5-8  defended n= 5923 spend/value med 1.17  spent > value 0.53  cards/ep 2.60  fail(>=1000) 0.09
+  PRO  8+   defended n= 5391 spend/value med 1.06  spent > value 0.50  cards/ep 4.19  fail(>=1000) 0.22
+First defensive card by threat type (share):
+  TR   building-target n=   80 Tesla 0.26  Knight 0.20  Skeletons 0.19  IceWizard 0.17  Log 0.15  Tornado 0.01  Rocket 0.01
+  TR   air             n=   17 Skeletons 0.41  Log 0.18  Knight 0.18  Tesla 0.12  IceWizard 0.12
+  TR   other ground    n=  122 Skeletons 0.27  IceWizard 0.21  Tesla 0.18  Knight 0.14  Log 0.13  Tornado 0.04  Rocket 0.02  Xbow 0.01
+  RL   building-target n= 1134 Tesla 0.21  Skeletons 0.21  IceWizard 0.18  Knight 0.17  Log 0.13  Tornado 0.06  Cannon 0.01  MiniPekka 0.01
+  RL   air             n=  180 Skeletons 0.21  Knight 0.18  IceWizard 0.17  Log 0.16  Tesla 0.16  Tornado 0.05  Xbow 0.03  Goblins 0.02
+  RL   other ground    n=  868 Skeletons 0.26  Knight 0.20  IceWizard 0.18  Tesla 0.16  Log 0.14  Tornado 0.02  Xbow 0.01  Rocket 0.01
+  PRO  building-target n= 7398 Tesla 0.25  Knight 0.17  IceWizard 0.16  Skeletons 0.15  Log 0.12  Tornado 0.08  Rocket 0.06  Xbow 0.01
+  PRO  air             n= 1024 Knight 0.22  Skeletons 0.21  IceWizard 0.20  Tesla 0.13  Tornado 0.08  Log 0.08  Rocket 0.06  Xbow 0.02
+  PRO  other ground    n= 2892 Skeletons 0.23  Knight 0.22  IceWizard 0.20  Tesla 0.14  Log 0.13  Tornado 0.04  Rocket 0.03  Xbow 0.02
+
+## D5 damage accounting: every drop of my tower HP, labelled by the bot's response state in that lane at that moment
+TR   LOSS n=26 tower HP lost/match 19700
+     by response state: d_gate 8269 (42%)  d_no_elixir 4115 (21%)  no_episode 3072 (16%)  d_pending 2440 (12%)  gate 1365 (7%)  latency 402 (2%)  pending_other 22 (0%)  no_elixir 15 (0%)
+     by phase: 1x 11139  2x 4853  OT 3708
+     by enemy card: unseen 3455  MiniSparkys 2125  InfernoDragon 1344  Witch 1341  Pekka 1239  RoyalHogs 976  AngryBarbarians 910  Barbarians 578  MegaKnight 545  RoyalRecruits 538  ElixirGolem 504  GoldenKnight 426
+TR   WIN  n=26 tower HP lost/match 5654
+     by response state: d_gate 2058 (36%)  no_episode 1129 (20%)  d_no_elixir 820 (15%)  d_pending 707 (13%)  gate 561 (10%)  latency 252 (4%)  no_elixir 76 (1%)  pending_other 51 (1%)
+     by phase: 1x 2201  2x 2581  OT 872
+     by enemy card: unseen 1368  13000075 545  Prince 289  ElectroWizard 259  GoldenKnight 201  DarkPrince 170  IceSpirits(spell) 170  Monk 166  Witch 163  Hunter 161  Balloon 156  MegaKnight 142
+RL   LOSS n=262 tower HP lost/match 16032
+     by response state: d_gate 4894 (31%)  d_no_elixir 3695 (23%)  d_pending 2905 (18%)  no_episode 2494 (16%)  gate 812 (5%)  no_elixir 490 (3%)  latency 466 (3%)  pending_other 273 (2%)  other 2 (0%)  d_other 1 (0%)
+     by phase: 1x 9311  2x 3986  OT 2735
+     by enemy card: unseen 2369  ElectroGiant 1557  Witch 919  HogRider 424  ElectroWizard 422  MiniSparkys 393  Golem 369  ElectroDragon 366  MiniPekka 360  MegaKnight 320  Balloon 314  AngryBarbarians 314
+RL   WIN  n=269 tower HP lost/match 6082
+     by response state: d_gate 1999 (33%)  no_episode 1174 (19%)  d_no_elixir 1016 (17%)  d_pending 963 (16%)  gate 517 (9%)  latency 242 (4%)  pending_other 100 (2%)  no_elixir 71 (1%)
+     by phase: 1x 3040  2x 2235  OT 808
+     by enemy card: unseen 1888  ElectroGiant 342  HogRider 243  RoyalHogs 178  ElectroWizard 161  MiniSparkys 148  GoblinBarrel 142  ElectroDragon 128  Graveyard 127  Balloon 104  Miner 102  Pekka 99
+PRO  LOSS n=1273 tower HP lost/match 19279
+     by response state: d_had_elixir 8471 (44%)  no_episode 4679 (24%)  d_no_elixir 3001 (16%)  no_elixir 1690 (9%)  had_elixir 1437 (7%)
+     by phase: 1x 6628  2x 4943  OT 7707
+     by enemy card: unseen 6072  ElectroGiant 1426  Goblinstein 1109  MiniSparkys 779  RoyalHogs 609  HogRider 435  Balloon 416  BattleRam 415  Ghost 388  RoyalRecruits 354  BabyDragon 297  Giant 277
+PRO  WIN  n=970 tower HP lost/match 10209
+     by response state: d_had_elixir 5085 (50%)  no_episode 3333 (33%)  d_no_elixir 980 (10%)  had_elixir 681 (7%)  no_elixir 130 (1%)
+     by phase: 1x 3131  2x 2204  OT 4873
+     by enemy card: unseen 4735  ElectroGiant 496  Balloon 486  HogRider 451  RoyalHogs 200  MiniSparkys 173  BabyDragon 172  Miner 166  MiniPekka 149  Ghost 119  InfernoDragon 117  Golem 115
