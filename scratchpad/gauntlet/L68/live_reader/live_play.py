@@ -245,6 +245,9 @@ def main() -> int:
     ap.add_argument("--extrapolate", type=int, default=26,
                     help="decide on the board this many ticks ahead, where the card lands (~26 live; 0 = off). "
                          "Screen (HANDOFF L68as): +3.4 pp gen / +6.9 pp v6lat vs no extrapolation at delay 26")
+    ap.add_argument("--predict-drops", action="store_true",
+                    help="OPT-IN (needs --extrapolate): an observed enemy Skeleton Barrel balloon disappearance adds its 7 "
+                         "skeletons to the look-ahead board 12 ticks later (pipeline/extrapolate.py DropTracker). Off = unchanged")
     ap.add_argument("--no-opp-counter", action="store_true",
                     help="feed the model opponent elixir = unknown instead of the public-events counter")
     ap.add_argument("--menu-guard", action="store_true",
@@ -473,7 +476,8 @@ def load_pilot(a, decision_cfg, ckpt=None):
     device = ("cuda" if torch.cuda.is_available() else "cpu") if a.device == "auto" else a.device
     pilot = GenPilot(ckpt or a.ckpt, device=device, gate_tau=a.tau, use_counter=not a.no_opp_counter,
                      extrapolate_ticks=a.extrapolate, decision_options=options_from_config(decision_cfg),
-                     decision_seed=a.decision_seed, public_audit=a.public_audit)
+                     decision_seed=a.decision_seed, public_audit=a.public_audit,
+                     **({"predict_drops": True} if getattr(a, "predict_drops", False) else {}))
     return device, pilot
 
 
@@ -503,7 +507,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
       extrapolate=a.extrapolate, opp_counter=not a.no_opp_counter, device=device, anti_leak=False,
       ckpt_source=a.ckpt_source, ckpt_sha256=a.ckpt_sha256,
       decision_options=vars(pilot.decision_options), decision_seed=pilot.match_seed,
-      feature_version=pilot.feature_version, public_audit=a.public_audit)
+      feature_version=pilot.feature_version, public_audit=a.public_audit,
+      **({"predict_drops": True} if getattr(a, "predict_drops", False) else {}))
     rec = ScreenRec(stamp) if record else None
     # Menu guard (2026-09-30 verifier): card taps are gated only by reader flags, and 249/1378 past board taps fall
     # inside the main screen's Battle button -> the SCREEN is classified every <= 2 s; any menu stops the match.

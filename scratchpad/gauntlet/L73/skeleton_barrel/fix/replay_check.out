@@ -1,0 +1,83 @@
+{
+ "files": 9,
+ "drops_predicted": 40,
+ "with_children": 39,
+ "no_children": 1,
+ "balloon_reappeared_within_5_frames": 0,
+ "tick_error (actual first-seen tick - (T+12))": {
+  "hist": {
+   "-4": 1,
+   "-2": 1,
+   "0": 30,
+   "1": 4,
+   "2": 2,
+   "3": 1
+  },
+  "median": 0,
+  "exact": 30,
+  "within_2": 37,
+  "n": 39
+ },
+ "centroid_err_millitiles": {
+  "n": 39,
+  "median": 17,
+  "p10": 1,
+  "p90": 326,
+  "max": 604
+ },
+ "mean_radius_millitiles": {
+  "n": 39,
+  "median": 282,
+  "p10": 249,
+  "p90": 721,
+  "max": 908
+ },
+ "child_to_nearest_pred_millitiles": {
+  "n": 39,
+  "median": 109,
+  "p10": 2,
+  "p90": 406,
+  "max": 723
+ },
+ "max_child_to_nearest_pred_millitiles": {
+  "n": 39,
+  "median": 152,
+  "p10": 5,
+  "p90": 451,
+  "max": 1102
+ },
+ "tick_exact_only_centroid_err": {
+  "n": 30,
+  "median": 11,
+  "p90": 179
+ },
+ "tick_exact_only_child_to_nearest_pred": {
+  "n": 30,
+  "median": 109,
+  "p90": 400
+ },
+ "abs(mean actual radius - predicted radius)_millitiles": {
+  "median": 22,
+  "p90": 369
+ },
+ "kind_match": {
+  "match": 39,
+  "n": 39
+ },
+ "n_children": {
+  "7": 39
+ },
+ "hp_match": {
+  "match": 39,
+  "n": 39,
+  "mismatches": []
+ },
+ "first_seen_kinds": {
+  "14": 273
+ },
+ "enemy child groups with no predicted drop (misses)": {
+  "n": 4,
+  "balloon_body_still_on_board_when_they_appeared": 4
+ },
+ "recall: enemy drops predicted / (predicted with children + misses)": "39 / 43"
+}

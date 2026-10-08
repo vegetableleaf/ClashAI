@@ -92,6 +92,8 @@ def play(a) -> int:
         cfg["action_delay_ticks"] = int(a.action_delay)
     if a.extrapolate:                            # unset/0 -> cfg unchanged (today's lines)
         cfg["extrapolate_ticks"] = int(a.extrapolate)
+    if getattr(a, "predict_drops", False):       # opt-in look-ahead Skeleton Barrel drop (needs --extrapolate)
+        cfg["predict_drops"] = True
     meta = {"ckpt": str(a.ckpt), "ckpt_sha256": sha256_file(Path(a.ckpt)), "model": minfo,
             "cfg": {k: v for k, v in cfg.items() if k != "noise"}, "noise_off": E.noise_off_names(cfg["noise"]),
             "opp_elixir_arg": a.opp_elixir, "action_delay_ticks": int(a.action_delay),
@@ -158,6 +160,9 @@ def main(argv=None) -> int:
                     help="each decision sees the raw board advanced TICKS ticks (pipeline/extrapolate.py: units by "
                          "their velocity over the previous decision round, clock + my elixir regen; opp-elixir "
                          "counter read at tick + TICKS). 0 = today")
+    ap.add_argument("--predict-drops", action="store_true",
+                    help="with --extrapolate: add an observed Skeleton Barrel balloon's 7 skeletons to the look-ahead 12 "
+                         "ticks after its death (cfg 'predict_drops'). Off = today")
     ap.add_argument("--forms-mode", default="base", choices=("base", "deck"),
                     help="RoyaleSim card forms: base = every card as its base card (today); deck = decked evolutions / "
                          "heroes the engine loads, refused forms fall back to base (pipeline/royale_env.py docstring)")
