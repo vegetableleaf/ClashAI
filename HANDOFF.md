@@ -4700,6 +4700,17 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   path); marker framing assumes newline-terminated output (true for `input tap`); --tap-gap-ms now refused outside
 >   [0, 500]). OFF by default -- owner live test pending (selftest between matches, then --fast-input, then
 >   --tap-gap-ms 0). Not in LIVE_OPTIONS (live-only flags; pass on the command line or add to EXTRA_LIVE_FLAGS).
+> * **ECON2 MERGED 48e9727 (L74/econ2/).** (c) the earlier pressure numbers: spawned units were valued as their parent
+>   card (each Witch skeleton = 5 elixir; live Witch bodies 1.67/min vs SIM .45) and 25 SIM RoyaleAPI-form names fell to
+>   0.5 -> after the fix live and SIM pressure nearly match ("live opponents press harder" RETRACTED). (c) selection:
+>   opponents commit when I am ABOVE my mean (live +0.78); their play rate vs my elixir equals SIM's. (a) the push-start
+>   deficit = lower at commit + faster spending during the push's formation (R1e 1x -0.98 = -0.41 + -0.57; towerref 1x
+>   +0.59 at commit, -1.53 during formation); towerref spends .70/s vs SIM .57/s in tank-at-back states (Tesla, X-Bow,
+>   Rocket); matched on phase x board x elixir, live taps +7-22% more at 2-6 elixir (cause b). (a) no SIM opponent
+>   setting (11 tried; best gen_v32 T.3) reproduces live: SIM push start 4.4-4.7 vs live 2.9-3.1 -> bot-side, live-only.
+>   Next (same worker): input-swap diagnostic on rebuilt live states (forms incl. hero IW, tower/unit levels 15 vs 11,
+>   opp counter, own_ability, tokens, OT clock) to find what makes the live gate eager; port the body-value fix into
+>   the loss review (its pressure-based factors may change).
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
