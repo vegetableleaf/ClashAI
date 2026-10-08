@@ -4508,6 +4508,14 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   CellRefine + TowerRefine exactly. VM ~/ClashBot got pipeline/tower_refine.py + hooked model_gen.py (live ckpt
 >   byte-identical under it; backup ~/probe_rocket/model_gen.py.bak_pre_towerrefine). SIM A/B (v3, seeds 0:240 x 2, live
 >   options + rocket_area, base / w1 / w2) running ~1 h: ~/probe_rocket/vm_ab_towerref.sh.
+> * **OWNER 15:xx: forecast fix "seems really good now"; "You can implement the tower rocket add on now."** Done: TowerRefine
+>   merged (bb535c8; merged-tree tests 159 passed); checkpoint rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt (sha
+>   41b52a83..., same on the VM ~/probe_rocket/) copied to icebow/data/bench/rl_royale/rseries_r3c/; CKPT_OVERRIDE ->
+>   it (previous stack2k path in CKPT_OVERRIDE.stack2k_backup). Plain `live_play.py --check` from main: LIVE_CHECK_PASS,
+>   fv6, cell_refine + tower_refine loaded, own_effects True, anti_leak False, guard True, LIVE_OPTIONS applied.
+>   Watch live: OT tower Rockets (SIM .49 -> .90/OT match vs pros .55: overshoot risk); defensive Rockets fell .38 ->
+>   .33/match in SIM; it also changes some non-Rocket card/cell choices. Rollback: cp CKPT_OVERRIDE.stack2k_backup
+>   CKPT_OVERRIDE.
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
 >   flag (fixed: own_effects in both --check dicts). LIVE_OPTIONS may now deploy live-only flags (EXTRA_LIVE_FLAGS =
 >   --own-effects) and the file holds `... --spell-aim rocket_area --own-effects`. Merged-tree tests 152 passed; plain
