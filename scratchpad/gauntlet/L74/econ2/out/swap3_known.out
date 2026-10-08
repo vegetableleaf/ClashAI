@@ -1,0 +1,15 @@
+
+## [tank] live 0.1222 vs SIM 0.0812 (excess +0.0410)
+| known, ready (1 charge, cd 0) | live 0.1222 -> 0.0890 | excess left +0.0079 (19% of it) |
+| known, on cooldown 10 s (0 charges) | live 0.1222 -> 0.0656 | excess left -0.0156 (-38% of it) |
+| known, ready, 2 charges | live 0.1222 -> 0.0883 | excess left +0.0072 (18% of it) |
+
+## [form] live 0.1675 vs SIM 0.1213 (excess +0.0462)
+| known, ready (1 charge, cd 0) | live 0.1675 -> 0.1272 | excess left +0.0059 (13% of it) |
+| known, on cooldown 10 s (0 charges) | live 0.1675 -> 0.0831 | excess left -0.0382 (-83% of it) |
+| known, ready, 2 charges | live 0.1675 -> 0.1272 | excess left +0.0059 (13% of it) |
+
+## [all 2-7] live 0.0983 vs SIM 0.0814 (excess +0.0169)
+| known, ready (1 charge, cd 0) | live 0.0983 -> 0.0725 | excess left -0.0089 (-53% of it) |
+| known, on cooldown 10 s (0 charges) | live 0.0983 -> 0.0523 | excess left -0.0291 (-172% of it) |
+| known, ready, 2 charges | live 0.0983 -> 0.0725 | excess left -0.0089 (-53% of it) |

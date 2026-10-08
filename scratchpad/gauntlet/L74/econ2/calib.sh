@@ -3,7 +3,7 @@
 # + LR_OPP_TAU env (opponent gate threshold; default TAU_OPP .27 = unchanged). Learner = live checkpoint towerref_w2 (41b52a83) + the
 # deployed LIVE_OPTIONS decision flags (--iw-press-pstar is live-only), decide every 10 (= sim49 de10). CPU, nice; never ~/ClashBot.
 # usage: ARM=name SEEDS=0:120 [OPP_T=.3] [OPP_TAU=.27] [OPP_GEN=path] [OPP_POLICY=sample] [CENSUS=evo,lad] bash calib.sh
-cd ~/econ2/repo
+cd ${REPO:-~/econ2/repo}
 export ROYALE_RUNTIME=20261006-linux OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
 PY=~/venv/bin/python; O=~/econ2/sim; W=${WORKERS:-16}; LOG=$O/sim.log; mkdir -p $O
 CK=/home/clashbot-gauntlet/probe_rocket/rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt
