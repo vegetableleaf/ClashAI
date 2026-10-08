@@ -4784,6 +4784,12 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   fix the gate p median at 2-4 elixir falls .192 -> .161 (card choice unchanged). VM DRIFT: ~/ClashBot/pipeline/
 >   own_ability.py md5 d43619cc != main ff746a44 (plus the push_refine.py/model_gen.py/behaviour_telemetry.py drift) ->
 >   reconcile before the next VM sync.
+> * **OWNER ~19:xx: crawl options 1 AND 2** ("aiming for matches played after the most recent balance changes ... Report
+>   back on your findings (new cards, evos, heroes, etc)"; the owner will ask RoyaleAPI about data access). Workers:
+>   aca71ec4 = crawler browser-fetch mode on a new branch of C:/Users/benpe/clash-replay-scraper (all fetches through the
+>   owner-logged-in headful browser, <= 1 req/s, stop + ask on Cloudflare/403/429, no cf_clearance copying, no cookie-jar
+>   reading; owner starts the crawl) + public missing-card diff; aac6c816 = official API client on the VM (~/crapi/; key
+>   created and placed by the OWNER at ~/.cr_api/key, never printed/committed) -> /v1/cards diff + post-update census.
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
