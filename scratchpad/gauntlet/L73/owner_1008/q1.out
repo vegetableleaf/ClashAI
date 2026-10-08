@@ -1,0 +1,92 @@
+R1e         e_empty E>=7 1x m=193 exp=   2297s plays= 183 rate/s=0.08 [0.07, 0.09] P5(rate)=0.33 P10(rate)=0.55 eps= 464 KM P5=0.37 [0.32, 0.42] P10=0.57 [0.49, 0.66] med=6.5s
+R1e         e_empty E>=7 2x m= 70 exp=    110s plays=  83 rate/s=0.76 [0.66, 0.87] P5(rate)=0.98 P10(rate)=1.00 eps=  99 KM P5=1.00 [0.94, 1.00] P10=1.00 [0.94, 1.00] med=0.5s
+R1e         e_empty E>=7 OT m= 13 exp=     18s plays=  21 rate/s=1.18 [0.80, 1.62] P5(rate)=1.00 P10(rate)=1.00 eps=  19 KM P5=1.00 [1.00, 1.00] P10=1.00 [1.00, 1.00] med=0.1s
+R1e         e_empty E>=9 1x m=183 exp=   1144s plays=  78 rate/s=0.07 [0.05, 0.10] P5(rate)=0.29 P10(rate)=0.49 eps= 268 KM P5=0.30 [0.24, 0.36] P10=0.37 [0.27, 0.48] med=infs
+R1e         e_empty E>=9 2x m=  3 exp=      3s plays=   2 rate/s=0.61 [0.14, 1.67] P5(rate)=0.95 P10(rate)=1.00 eps=   3 KM P5=1.00 [0.00, 1.00] P10=1.00 [0.00, 1.00] med=1.4s
+R1e         e_empty E>=9 OT m=  2 exp=      1s plays=   2 rate/s=2.00 [2.00, 2.00] P5(rate)=1.00 P10(rate)=1.00 eps=   2 KM P5=1.00 [1.00, 1.00] P10=1.00 [1.00, 1.00] med=0.0s
+R1e         a_empty E>=7 1x m=192 exp=   1744s plays= 114 rate/s=0.07 [0.05, 0.08] P5(rate)=0.28 P10(rate)=0.48 eps= 338 KM P5=0.33 [0.27, 0.38] P10=0.48 [0.40, 0.56] med=10.6s
+R1e         a_empty E>=7 2x m= 17 exp=     18s plays=  15 rate/s=0.84 [0.62, 1.15] P5(rate)=0.98 P10(rate)=1.00 eps=  18 KM P5=1.00 [0.83, 1.00] P10=1.00 [0.83, 1.00] med=0.4s
+R1e         a_empty E>=7 OT m=  8 exp=      9s plays=   9 rate/s=1.00 [0.61, 1.95] P5(rate)=0.99 P10(rate)=1.00 eps=   8 KM P5=1.00 [1.00, 1.00] P10=1.00 [1.00, 1.00] med=0.0s
+R1e         a_empty E>=9 1x m=178 exp=   1046s plays=  53 rate/s=0.05 [0.04, 0.07] P5(rate)=0.22 P10(rate)=0.40 eps= 231 KM P5=0.24 [0.19, 0.30] P10=0.29 [0.22, 0.37] med=infs
+R1e         a_empty E>=9 2x m=  2 exp=      3s plays=   1 rate/s=0.37 [0.00, 0.50] P5(rate)=0.84 P10(rate)=0.98 eps=   2 KM P5=1.00 [0.00, 1.00] P10=1.00 [0.00, 1.00] med=1.4s
+R1e         a_empty E>=9 OT m=  2 exp=      1s plays=   2 rate/s=2.00 [2.00, 2.00] P5(rate)=1.00 P10(rate)=1.00 eps=   2 KM P5=1.00 [1.00, 1.00] P10=1.00 [1.00, 1.00] med=0.0s
+STACK_ALON  e_empty E>=7 1x m= 77 exp=    888s plays=  98 rate/s=0.11 [0.09, 0.13] P5(rate)=0.42 P10(rate)=0.67 eps= 224 KM P5=0.55 [0.47, 0.62] P10=0.95 [0.80, 1.00] med=4.3s
+STACK_ALON  e_empty E>=7 2x m= 42 exp=    110s plays=  49 rate/s=0.45 [0.28, 0.71] P5(rate)=0.89 P10(rate)=0.99 eps=  62 KM P5=0.80 [0.67, 0.94] P10=1.00 [0.76, 1.00] med=0.7s
+STACK_ALON  e_empty E>=7 OT m= 17 exp=     26s plays=  20 rate/s=0.78 [0.54, 1.10] P5(rate)=0.98 P10(rate)=1.00 eps=  25 KM P5=0.94 [0.79, 1.00] P10=0.94 [0.79, 1.00] med=0.3s
+STACK_ALON  e_empty E>=9 1x m= 75 exp=    381s plays=  40 rate/s=0.11 [0.08, 0.14] P5(rate)=0.41 P10(rate)=0.65 eps= 112 KM P5=0.32 [0.23, 0.40] P10=0.92 [0.75, 1.00] med=7.8s
+STACK_ALON  e_empty E>=9 2x m=  3 exp=     27s plays=   4 rate/s=0.15 [0.00, 0.98] P5(rate)=0.52 P10(rate)=0.77 eps=   6 KM P5=0.58 [0.00, 1.00] P10=1.00 [0.00, 1.00] med=4.9s
+STACK_ALON  e_empty E>=9 OT m=  3 exp=      5s plays=   2 rate/s=0.40 [0.00, 2.00] P5(rate)=0.86 P10(rate)=0.98 eps=   3 KM P5=0.67 [0.00, 1.00] P10=0.67 [0.00, 1.00] med=0.0s
+STACK_ALON  a_empty E>=7 1x m= 76 exp=    587s plays=  51 rate/s=0.09 [0.07, 0.11] P5(rate)=0.35 P10(rate)=0.58 eps= 144 KM P5=0.44 [0.33, 0.52] P10=0.92 [0.74, 1.00] med=7.8s
+STACK_ALON  a_empty E>=7 2x m= 10 exp=     14s plays=   7 rate/s=0.48 [0.23, 0.80] P5(rate)=0.91 P10(rate)=0.99 eps=  10 KM P5=0.73 [0.40, 1.00] P10=0.73 [0.40, 1.00] med=0.7s
+STACK_ALON  a_empty E>=7 OT m=  7 exp=      7s plays=   5 rate/s=0.73 [0.43, 1.29] P5(rate)=0.97 P10(rate)=1.00 eps=   7 KM P5=1.00 [0.79, 1.00] P10=1.00 [0.79, 1.00] med=0.8s
+STACK_ALON  a_empty E>=9 1x m= 73 exp=    331s plays=  20 rate/s=0.06 [0.04, 0.09] P5(rate)=0.26 P10(rate)=0.45 eps=  85 KM P5=0.17 [0.09, 0.25] P10=0.90 [0.66, 1.00] med=8.0s
+STACK_ALON  a_empty E>=9 2x m=  1 exp=      3s plays=   0 rate/s=0.00 [0.00, 0.00] P5(rate)=0.00 P10(rate)=0.00 eps=   1 KM P5=0.00 [0.00, 0.00] P10=0.00 [0.00, 0.00] med=infs
+STACK_ALON  a_empty E>=9 OT m=  0 exp=      0s plays=   0 rate/s=n/a P5(rate)=nan P10(rate)=nan eps=   0 KM P5=n/a P10=n/a med=nans
+STACK_ALOFF e_empty E>=7 1x m= 10 exp=    131s plays=   3 rate/s=0.02 [0.00, 0.06] P5(rate)=0.11 P10(rate)=0.20 eps=  30 KM P5=0.15 [0.00, 0.30] P10=0.15 [0.00, 0.30] med=infs
+STACK_ALOFF e_empty E>=7 2x m=  4 exp=     17s plays=   6 rate/s=0.35 [0.24, 0.65] P5(rate)=0.83 P10(rate)=0.97 eps=   7 KM P5=0.83 [0.57, 1.00] P10=0.83 [0.57, 1.00] med=1.2s
+STACK_ALOFF e_empty E>=7 OT m=  5 exp=      5s plays=   4 rate/s=0.82 [0.46, 1.48] P5(rate)=0.98 P10(rate)=1.00 eps=   5 KM P5=1.00 [0.60, 1.00] P10=1.00 [0.60, 1.00] med=0.7s
+STACK_ALOFF e_empty E>=9 1x m= 10 exp=     52s plays=   0 rate/s=0.00 [0.00, 0.00] P5(rate)=0.00 P10(rate)=0.00 eps=  18 KM P5=0.00 [0.00, 0.00] P10=0.00 [0.00, 0.00] med=infs
+STACK_ALOFF e_empty E>=9 2x m=  2 exp=      2s plays=   0 rate/s=0.00 [0.00, 0.00] P5(rate)=0.00 P10(rate)=0.00 eps=   2 KM P5=0.00 [0.00, 0.00] P10=0.00 [0.00, 0.00] med=infs
+STACK_ALOFF e_empty E>=9 OT m=  1 exp=      0s plays=   1 rate/s=2.00 [2.00, 2.00] P5(rate)=1.00 P10(rate)=1.00 eps=   1 KM P5=1.00 [1.00, 1.00] P10=1.00 [1.00, 1.00] med=0.0s
+STACK_ALOFF a_empty E>=7 1x m= 10 exp=    105s plays=   1 rate/s=0.01 [0.00, 0.03] P5(rate)=0.05 P10(rate)=0.09 eps=  27 KM P5=0.06 [0.00, 0.16] P10=0.06 [0.00, 0.16] med=infs
+STACK_ALOFF a_empty E>=7 2x m=  0 exp=      0s plays=   0 rate/s=n/a P5(rate)=nan P10(rate)=nan eps=   0 KM P5=n/a P10=n/a med=nans
+STACK_ALOFF a_empty E>=7 OT m=  2 exp=      2s plays=   1 rate/s=0.59 [0.00, 0.83] P5(rate)=0.95 P10(rate)=1.00 eps=   2 KM P5=1.00 [0.00, 1.00] P10=1.00 [0.00, 1.00] med=0.7s
+STACK_ALOFF a_empty E>=9 1x m= 10 exp=     45s plays=   0 rate/s=0.00 [0.00, 0.00] P5(rate)=0.00 P10(rate)=0.00 eps=  17 KM P5=0.00 [0.00, 0.00] P10=0.00 [0.00, 0.00] med=infs
+STACK_ALOFF a_empty E>=9 2x m=  0 exp=      0s plays=   0 rate/s=n/a P5(rate)=nan P10(rate)=nan eps=   0 KM P5=n/a P10=n/a med=nans
+STACK_ALOFF a_empty E>=9 OT m=  0 exp=      0s plays=   0 rate/s=n/a P5(rate)=nan P10(rate)=nan eps=   0 KM P5=n/a P10=n/a med=nans
+STACK_RA    e_empty E>=7 1x m=  2 exp=     29s plays=   6 rate/s=0.20 [0.19, 0.22] P5(rate)=0.64 P10(rate)=0.87 eps=   7 KM P5=0.62 [0.50, 0.67] P10=1.00 [0.67, 1.00] med=3.9s
+STACK_RA    e_empty E>=7 2x m=  1 exp=      2s plays=   0 rate/s=0.00 [0.00, 0.00] P5(rate)=0.00 P10(rate)=0.00 eps=   1 KM P5=0.00 [0.00, 0.00] P10=0.00 [0.00, 0.00] med=infs
+STACK_RA    e_empty E>=7 OT m=  1 exp=      3s plays=   2 rate/s=0.73 [0.73, 0.73] P5(rate)=0.97 P10(rate)=1.00 eps=   2 KM P5=1.00 [1.00, 1.00] P10=1.00 [1.00, 1.00] med=0.8s
+STACK_RA    e_empty E>=9 1x m=  2 exp=     10s plays=   4 rate/s=0.40 [0.21, 0.59] P5(rate)=0.87 P10(rate)=0.98 eps=   5 KM P5=0.80 [0.50, 1.00] P10=0.80 [0.50, 1.00] med=1.2s
+STACK_RA    e_empty E>=9 2x m=  0 exp=      0s plays=   0 rate/s=n/a P5(rate)=nan P10(rate)=nan eps=   0 KM P5=n/a P10=n/a med=nans
+STACK_RA    e_empty E>=9 OT m=  0 exp=      0s plays=   0 rate/s=n/a P5(rate)=nan P10(rate)=nan eps=   0 KM P5=n/a P10=n/a med=nans
+STACK_RA    a_empty E>=7 1x m=  2 exp=     15s plays=   3 rate/s=0.19 [0.00, 0.26] P5(rate)=0.62 P10(rate)=0.86 eps=   4 KM P5=0.50 [0.00, 0.67] P10=1.00 [0.00, 1.00] med=2.1s
+STACK_RA    a_empty E>=7 2x m=  1 exp=      2s plays=   0 rate/s=0.00 [0.00, 0.00] P5(rate)=0.00 P10(rate)=0.00 eps=   1 KM P5=0.00 [0.00, 0.00] P10=0.00 [0.00, 0.00] med=infs
+STACK_RA    a_empty E>=7 OT m=  1 exp=      1s plays=   1 rate/s=0.77 [0.77, 0.77] P5(rate)=0.98 P10(rate)=1.00 eps=   1 KM P5=1.00 [1.00, 1.00] P10=1.00 [1.00, 1.00] med=0.8s
+STACK_RA    a_empty E>=9 1x m=  2 exp=      5s plays=   2 rate/s=0.40 [0.00, 1.00] P5(rate)=0.86 P10(rate)=0.98 eps=   3 KM P5=0.67 [0.00, 1.00] P10=0.67 [0.00, 1.00] med=0.8s
+STACK_RA    a_empty E>=9 2x m=  0 exp=      0s plays=   0 rate/s=n/a P5(rate)=nan P10(rate)=nan eps=   0 KM P5=n/a P10=n/a med=nans
+STACK_RA    a_empty E>=9 OT m=  0 exp=      0s plays=   0 rate/s=n/a P5(rate)=nan P10(rate)=nan eps=   0 KM P5=n/a P10=n/a med=nans
+STACK_OFF_ALL e_empty E>=7 1x m= 12 exp=    160s plays=   9 rate/s=0.06 [0.01, 0.11] P5(rate)=0.24 P10(rate)=0.43 eps=  37 KM P5=0.26 [0.07, 0.45] P10=0.33 [0.07, 0.63] med=infs
+STACK_OFF_ALL e_empty E>=7 2x m=  5 exp=     19s plays=   6 rate/s=0.31 [0.18, 0.54] P5(rate)=0.79 P10(rate)=0.96 eps=   8 KM P5=0.71 [0.33, 1.00] P10=0.71 [0.33, 1.00] med=1.2s
+STACK_OFF_ALL e_empty E>=7 OT m=  6 exp=      8s plays=   6 rate/s=0.78 [0.53, 1.22] P5(rate)=0.98 P10(rate)=1.00 eps=   7 KM P5=1.00 [1.00, 1.00] P10=1.00 [1.00, 1.00] med=0.8s
+STACK_OFF_ALL e_empty E>=9 1x m= 12 exp=     62s plays=   4 rate/s=0.07 [0.00, 0.19] P5(rate)=0.28 P10(rate)=0.48 eps=  23 KM P5=0.23 [0.00, 0.56] P10=0.23 [0.00, 0.56] med=infs
+STACK_OFF_ALL e_empty E>=9 2x m=  2 exp=      2s plays=   0 rate/s=0.00 [0.00, 0.00] P5(rate)=0.00 P10(rate)=0.00 eps=   2 KM P5=0.00 [0.00, 0.00] P10=0.00 [0.00, 0.00] med=infs
+STACK_OFF_ALL e_empty E>=9 OT m=  1 exp=      0s plays=   1 rate/s=2.00 [2.00, 2.00] P5(rate)=1.00 P10(rate)=1.00 eps=   1 KM P5=1.00 [1.00, 1.00] P10=1.00 [1.00, 1.00] med=0.0s
+STACK_OFF_ALL a_empty E>=7 1x m= 12 exp=    120s plays=   4 rate/s=0.03 [0.00, 0.09] P5(rate)=0.15 P10(rate)=0.28 eps=  31 KM P5=0.13 [0.00, 0.28] P10=0.26 [0.00, 0.64] med=infs
+STACK_OFF_ALL a_empty E>=7 2x m=  1 exp=      2s plays=   0 rate/s=0.00 [0.00, 0.00] P5(rate)=0.00 P10(rate)=0.00 eps=   1 KM P5=0.00 [0.00, 0.00] P10=0.00 [0.00, 0.00] med=infs
+STACK_OFF_ALL a_empty E>=7 OT m=  3 exp=      3s plays=   2 rate/s=0.67 [0.21, 0.83] P5(rate)=0.96 P10(rate)=1.00 eps=   3 KM P5=1.00 [0.00, 1.00] P10=1.00 [0.00, 1.00] med=0.7s
+STACK_OFF_ALL a_empty E>=9 1x m= 12 exp=     50s plays=   2 rate/s=0.04 [0.00, 0.15] P5(rate)=0.18 P10(rate)=0.33 eps=  20 KM P5=0.11 [0.00, 0.35] P10=0.11 [0.00, 0.35] med=infs
+STACK_OFF_ALL a_empty E>=9 2x m=  0 exp=      0s plays=   0 rate/s=n/a P5(rate)=nan P10(rate)=nan eps=   0 KM P5=n/a P10=n/a med=nans
+STACK_OFF_ALL a_empty E>=9 OT m=  0 exp=      0s plays=   0 rate/s=n/a P5(rate)=nan P10(rate)=nan eps=   0 KM P5=n/a P10=n/a med=nans
+PRO         e_empty E>=7 1x m=2237 exp=  36819s plays=3188 rate/s=0.09 [0.08, 0.09] P5(rate)=0.35 P10(rate)=0.58 eps=7173 KM P5=0.31 [0.29, 0.32] P10=0.81 [0.79, 0.83] med=7.0s
+PRO         e_empty E>=7 2x m=1254 exp=   4341s plays=1136 rate/s=0.26 [0.25, 0.27] P5(rate)=0.73 P10(rate)=0.93 eps=2051 KM P5=0.92 [0.89, 0.94] P10=0.97 [0.94, 0.99] med=2.5s
+PRO         e_empty E>=7 OT m=924 exp=   3011s plays= 962 rate/s=0.32 [0.30, 0.34] P5(rate)=0.80 P10(rate)=0.96 eps=1637 KM P5=0.95 [0.92, 0.97] P10=0.98 [0.96, 1.00] med=2.1s
+PRO         e_empty E>=9 1x m=2155 exp=  16311s plays=2648 rate/s=0.16 [0.15, 0.17] P5(rate)=0.56 P10(rate)=0.80 eps=4797 KM P5=0.67 [0.65, 0.68] P10=0.82 [0.80, 0.84] med=3.0s
+PRO         e_empty E>=9 2x m=602 exp=   1016s plays= 584 rate/s=0.58 [0.53, 0.63] P5(rate)=0.94 P10(rate)=1.00 eps= 822 KM P5=0.93 [0.89, 0.97] P10=0.96 [0.92, 1.00] med=0.9s
+PRO         e_empty E>=9 OT m=424 exp=    680s plays= 429 rate/s=0.63 [0.57, 0.69] P5(rate)=0.96 P10(rate)=1.00 eps= 597 KM P5=0.97 [0.94, 1.00] P10=0.97 [0.94, 1.00] med=0.8s
+PRO         a_empty E>=7 1x m=2211 exp=  23845s plays=2265 rate/s=0.09 [0.09, 0.10] P5(rate)=0.38 P10(rate)=0.61 eps=4751 KM P5=0.34 [0.33, 0.36] P10=0.80 [0.78, 0.82] med=6.7s
+PRO         a_empty E>=7 2x m=507 exp=   1164s plays= 311 rate/s=0.27 [0.24, 0.29] P5(rate)=0.74 P10(rate)=0.93 eps= 573 KM P5=0.87 [0.82, 0.92] P10=0.91 [0.85, 0.98] med=2.4s
+PRO         a_empty E>=7 OT m=242 exp=    507s plays= 149 rate/s=0.29 [0.26, 0.33] P5(rate)=0.77 P10(rate)=0.95 eps= 263 KM P5=0.95 [0.88, 1.00] P10=0.97 [0.92, 1.00] med=2.3s
+PRO         a_empty E>=9 1x m=2114 exp=  13084s plays=2061 rate/s=0.16 [0.15, 0.17] P5(rate)=0.55 P10(rate)=0.79 eps=3784 KM P5=0.64 [0.62, 0.66] P10=0.81 [0.79, 0.83] med=3.1s
+PRO         a_empty E>=9 2x m=259 exp=    367s plays= 185 rate/s=0.50 [0.42, 0.59] P5(rate)=0.92 P10(rate)=0.99 eps= 278 KM P5=0.79 [0.72, 0.87] P10=0.90 [0.79, 1.00] med=0.9s
+PRO         a_empty E>=9 OT m=125 exp=    150s plays=  97 rate/s=0.65 [0.54, 0.77] P5(rate)=0.96 P10(rate)=1.00 eps= 134 KM P5=0.97 [0.92, 1.00] P10=0.97 [0.92, 1.00] med=0.7s
+
+WHAT IS PLAYED (enemy-empty board, elixir>=7, t>=150)
+R1e 1x n=183 forced=0 Xbow_off 33%, Skeletons 20%, Knight 19%, IceWizard 16%, Log 11%, Tesla 1%, Tornado 1%
+R1e 2x n=83 forced=0 Xbow_off 53%, Knight 13%, IceWizard 13%, Skeletons 13%, Log 4%, Tesla 2%, Rocket_tower 1%
+R1e OT n=21 forced=0 Xbow_off 43%, Knight 19%, IceWizard 19%, Rocket_tower 10%, Skeletons 5%, Tesla 5%
+STACK_ALON 1x n=98 forced=56 Xbow_off 51%, Skeletons 16%, Log 16%, Knight 9%, IceWizard 5%, Rocket_tower 1%, Tesla 1%
+STACK_ALON 2x n=49 forced=5 Xbow_off 55%, IceWizard 24%, Knight 12%, Skeletons 4%, Rocket_tower 2%, Log 2%
+STACK_ALON OT n=20 forced=0 Xbow_off 55%, IceWizard 20%, Tesla 10%, Rocket_tower 10%, Knight 5%
+STACK_ALOFF 1x n=3 forced=0 IceWizard 67%, Xbow_off 33%
+STACK_ALOFF 2x n=6 forced=0 Xbow_off 50%, IceWizard 17%, Tesla 17%, Skeletons 17%
+STACK_ALOFF OT n=4 forced=0 Xbow_off 50%, Xbow_def 25%, IceWizard 25%
+STACK_RA 1x n=6 forced=0 Xbow_off 33%, Skeletons 17%, IceWizard 17%, Log 17%, Knight 17%
+STACK_RA 2x n=0 forced=0 
+STACK_RA OT n=2 forced=0 Xbow_off 50%, Xbow_def 50%
+STACK_OFF_ALL 1x n=9 forced=0 IceWizard 33%, Xbow_off 33%, Skeletons 11%, Log 11%, Knight 11%
+STACK_OFF_ALL 2x n=6 forced=0 Xbow_off 50%, IceWizard 17%, Tesla 17%, Skeletons 17%
+STACK_OFF_ALL OT n=6 forced=0 Xbow_off 50%, Xbow_def 33%, IceWizard 17%
+PRO 1x n=3188 forced=0 Knight 26%, Skeletons 19%, IceWizard 17%, Xbow_off 17%, Log 14%, Tesla 6%, Rocket_tower 1%, Xbow_def 1%, Tornado 1%, Rocket_other 0%
+PRO 2x n=1136 forced=0 Xbow_off 27%, IceWizard 16%, Knight 16%, Skeletons 11%, Xbow_def 8%, Tesla 7%, Log 6%, Rocket_tower 6%, Tornado 1%, Rocket_other 0%
+PRO OT n=962 forced=0 Xbow_off 25%, Rocket_tower 17%, IceWizard 12%, Xbow_def 11%, Knight 11%, Skeletons 8%, Tesla 7%, Log 6%, Tornado 1%, Rocket_other 0%

@@ -1,0 +1,14 @@
+#!/bin/bash
+# W3 log_barrel A/B: barrel-heavy census, gen opps (--opp-policy sample --opp-T 0.3), live ckpt + live options. Usage: log_ab.sh NAME [extra flags]
+source ~/eval_vm.sh; cd ~/w3/ClashBot; O=~/w3/out; W=${WORKERS:-16}; N=$1; shift
+CK=icebow/data/bench/rl_royale/rseries_r3c/rseries_r3c_u0030_barrel2k_cellref.pt
+LIVEOPTS="--xbow-class class_sample --xbow-class-floor 0.3 --tau-phase 0.35 0.45 0.55 --spell-aim rocket_area"
+CENTRE_LOG_DIR=$O/lanegb_$N $PY scratchpad/gauntlet/L73/centre_col/sim_lane.py --out $O/reactgb_$N --seeds ${SEEDS:-0:192} --opps gen --arms plain --gen $CK --opp-gen $GEN1 --forms-mode deck \
+    --device cpu --workers $W --tail-cap 7200 --tau-plain 0.35 --census scratchpad/gauntlet/L73/centre_col/barrel_census.json --hero-abilities --ability-policy v2 --opp-policy sample --opp-T 0.3 $LIVEOPTS "$@" > $O/reactgb_$N.log 2>&1
+echo "$N rc=$? $(date)" >> $O/done.txt
+
+base                     n=192 wins 143.0  crowns against 56  crowns for 147  mean own tower hp 7451  mean hp diff +526
+logb                     n=192 wins 145.0  crowns against 54  crowns for 149  mean own tower hp 7360  mean hp diff +528
+logb vs base: better 9 worse 7 p=0.804  crowns-against delta -2
+out/lanegb_base: Logs 1365, with a barrel in flight 634; covers landing (q4) 559/634 = 0.882 [0.854, 0.905]; lane 549/634 = 0.866 [0.837, 0.890]
+out/lanegb_logb: Logs 1381, with a barrel in flight 649; covers landing (q4) 649/649 = 1.000 [0.994, 1.000]; lane 597/649 = 0.920 [0.896, 0.938]

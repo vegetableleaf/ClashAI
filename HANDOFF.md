@@ -4501,6 +4501,181 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **TowerRefine weight sweep (chip worker):** w_chip 1 / 2 / 4 vs base (deck-90 pro val rows): card top-1 .643 -> .648 /
+>   **.655** / .631; top-1 on non-Rocket rows .668 -> .670 / .671 / .632; top card Rocket on Rocket-affordable rows (pros
+>   10.3%) 5.4 -> 5.7 / **8.5** / 20.0%; OT (pros 17.7%) 8.9 -> 10.1 / **17.9** / 40.4%; chip-row aim on tower .50 -> .75 /
+>   .79 / .82; troop-insertion ratio (pros ~1.5) 3.2 -> 2.0 / **1.53** / 1.25. Pick w2. Folded w1/w2 checkpoints load fv6 +
+>   CellRefine + TowerRefine exactly. VM ~/ClashBot got pipeline/tower_refine.py + hooked model_gen.py (live ckpt
+>   byte-identical under it; backup ~/probe_rocket/model_gen.py.bak_pre_towerrefine). SIM A/B (v3, seeds 0:240 x 2, live
+>   options + rocket_area, base / w1 / w2) running ~1 h: ~/probe_rocket/vm_ab_towerref.sh.
+> * **OWNER 15:xx: forecast fix "seems really good now"; "You can implement the tower rocket add on now."** Done: TowerRefine
+>   merged (bb535c8; merged-tree tests 159 passed); checkpoint rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt (sha
+>   41b52a83..., same on the VM ~/probe_rocket/) copied to icebow/data/bench/rl_royale/rseries_r3c/; CKPT_OVERRIDE ->
+>   it (previous stack2k path in CKPT_OVERRIDE.stack2k_backup). Plain `live_play.py --check` from main: LIVE_CHECK_PASS,
+>   fv6, cell_refine + tower_refine loaded, own_effects True, anti_leak False, guard True, LIVE_OPTIONS applied.
+>   Watch live: OT tower Rockets (SIM .49 -> .90/OT match vs pros .55: overshoot risk); defensive Rockets fell .38 ->
+>   .33/match in SIM; it also changes some non-Rocket card/cell choices. Rollback: cp CKPT_OVERRIDE.stack2k_backup
+>   CKPT_OVERRIDE.
+> * **PUSH-ROCKET WORKER CHECKPOINT (a8aad346, Q1-Q3 measured; files in its worktree L73/push_rocket/, not merged).**
+>   Push Rocket = impact hits >= 2 enemy bodies at own y <= 18 (impact model vs 1,544 pro labels: median +0.6 tick).
+>   Q1: push Rockets/match pros 0.25 [.23,.28] (11% of their Rockets) vs R1e 0.01, stack 0.01. Pros Rocket only ~1 in
+>   14 eligible big pushes (P(Rocket | in hand, >= 6 elixir, 10+ elixir push) .07; bot 1/179). Bigger gap = ELIGIBILITY:
+>   eligible share pros .52 vs R1e .13 / stack .25; my elixir at big-push start median pros 6.0 vs R1e 2.2 / stack 2.7;
+>   Rocket is in the bot's hand 92-96% of big pushes. Q2: win vs beatdown R1e .41 (51/123) vs other .59; stack .38
+>   (11/29) vs .62 -> "0-3 to every beatdown deck" contradicted as stated, gap real (-18/-24 pp); pros also weaker vs
+>   beatdown (.38 vs .46). Q3: gate is NOT the blocker in push states (gate .79-.86); CARD RANKING is (Rocket top card
+>   on pro push rows .15-.25; Giant+Musketeer insert .01); aim fine at the bridge (.75-.97 within 2.5 t) but in OT near
+>   my tower rocket_area aims at the enemy tower (median 13.5 t) -- separate finding, not fixed. Lead's estimate (b,
+>   untested): ranking alone closes at most ~half the gap (.06-.12/match) unless elixir at push start rises. Lead told
+>   the worker: stack PushRefine on towerref_w2 (the live base), measure the pre-push elixir spending vs pros as its own
+>   finding, and fail PushRefine if it drains elixir or kills tower Rockets.
+> * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
+>   flag (fixed: own_effects in both --check dicts). LIVE_OPTIONS may now deploy live-only flags (EXTRA_LIVE_FLAGS =
+>   --own-effects) and the file holds `... --spell-aim rocket_area --own-effects`. Merged-tree tests 152 passed; plain
+>   `live_play.py --check` from main: LIVE_OPTIONS applied [own_effects, spell_aim, tau_phase, xbow_class, floor],
+>   own_effects True, anti_leak False, guard True. Verifier risks: freeze window/radius fitted on the same live logs
+>   as the offline score; "Log + ability" category .00 -> .12 (n 17); SIM Tornado onset +1 tick vs engine. Owner tests live.
+> * **TowerRefine verification: PASS_WITH_NOTES** (old ckpts torch.equal on 800 rows; w2 loads strictly, malformed copies
+>   fail loudly; reproduced top-card Rocket 5.2 -> 8.0% (pros 10.4), OT 7.8 -> 16.2% (18.1), troop ratio 3.25 -> 1.52;
+>   SIM 319.5 vs 311.5, 86/78). Notes: not Rocket-only (cell argmax changes on 35% of non-Rocket placements, card argmax
+>   16.6% of rows; defensive Rockets/match .383 -> .327); the card residual also reads sc[:7] (incl. opp elixir estimate).
+>   Not merged yet: separate live test after own_effects (owner's call).
+> * **OWNER 14:xx (AskUserQuestion): "Test the 9+ elixir version"** of hazard_below_tau -> W4 running it.
+> * **W4 SIM (isolated ~/w4/repo @68c8032; VM ~/w4/sim/summary.txt):** vs S1 (192): base 160 wins, idle 26% -> hbt 184,
+>   idle 0 (50/6, p<1e-4); pure hazard 176. vs GEN v3 (960): base 619 -> **hbt 532 (142/230, p<1e-4, LOSES)**; pure hazard
+>   340. Economy v3 1x/2x/OT: plays/min base 6.30/13.67/15.20, hbt 7.29/14.53/16.84, pros 6.9/13.5/16.8; elixir@play base
+>   7.12/6.59/6.70, hbt 6.55/5.92/5.91, pros 7.6/7.0/6.6 -> hbt spends ~0.6-0.8 earlier in every phase and that costs
+>   games vs an initiating opponent; cheap-spam share unchanged (+1 pp). NOT deployable. Freeze replay (121357): elixir
+>   >= 9 for 44 s, p .09-.35; under hbt median 9.2 s to a play, card X-Bow 88% / Tesla 10% / Rocket 1%. W4 proposes hbt
+>   scoped to elixir >= 9 (decoding scope, the model's own draw/card/cell) -- flagged as close to the rejected narrowed
+>   rule -> OWNER decides.
+> * **OWNER 14:xx: "don't turn antileak back on. it creates more problems than it solves."** -> live AL stays OFF; the freeze is
+>   W4's job (hazard_below_tau decoding).
+> * **OWNER 14:xx: "your rocket fixes did nothing ... never makes use of rocket or rocket tornado [on large pushes] ...
+>   lost 0-3 to every single beatdown deck ... sluggish and ignores huge threats ... completely stopped playing and gave
+>   up in the middle of one of its matches."** MEASURED (owner's afternoon live matches 121128/121357/121633, LIVE_OPTIONS
+>   config, anti-leak off): match 121357 last play at tick 1159, then NO play for 65 s to tick 2525 at 10 elixir with top
+>   card Rocket and p_play .20-.27 under tau .35/.45 (the threshold freeze; the anti-leak would have forced a play). In 13
+>   decisions with >= 5 enemy bodies + Rocket in hand + >= 6 elixir: top card Knight or X-Bow every time, never Rocket;
+>   p_play .14-.34 under the cutoff. Facts for the owner: only rocket_area (aim) is live; TowerRefine (Rocket choice) is
+>   not deployed; its SIM effect was OT, not 1x. Lead offered: anti-leak back on now (owner's call); dispatched a worker
+>   on Rocket vs big pushes / Rocket+Tornado / beatdown matchups / sluggishness (incl. tau_phase cost) + a learned fix.
+> * **TowerRefine SIM A/B (v3, 480 paired, live options + rocket_area):** wins base 312 | w1 287 (77/102, p .07) | w2 320
+>   (86/78, p .58); tower Rockets/match .52 | .69 | .89; OT tower Rockets per OT match .49 | .65 | .90 (pros .55 vs a
+>   different opponent -> watch overshoot live); Rocket share OT 3.8 | 4.7 | 6.6%; OT X-Bow share 9.0 | 8.9 | 7.7%; share of
+>   Rockets hitting a tower .57 | .66 | .71. w2 = built-for behaviour, win-neutral. Folded w2 ckpt in the chip worktree
+>   (scratchpad/gauntlet/L73/chip_rocket/rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt) + VM ~/probe_rocket/.
+>   Branch commits f8df9ff / 2f13b49 / fba7c72; blind verification running (merge needed before any live use).
+> * **OWNER 13:xx: "if the forecast review passes, switch it on then let me know so i can test it live."** Blind
+>   verification of W1 (d4e8103/524293e/7535b43) running incl. a trial merge into main. If PASS: merge, then let
+>   LIVE_OPTIONS accept `--own-effects` (a live flag, not a decision option) and add it to the file, `--check`, tell owner.
+> * **W1 own_effects DONE (worktree agent-aca294b6: d4e8103 core, 524293e plumbing+tests, 7535b43 A/B; NOT merged, not
+>   verified):** opt-in `--own-effects` (SIM e1_eval/search_s0/run_screen + live GenPilot/live_play); Log / Tornado /
+>   Fireball / Rocket knockback-pull from RoyaleSim cards.json + calibration.json (DISPLACEMENT_LAW, ATTRACT_LAW), hero IW
+>   freeze measured live (no catalog). Offline in-zone error .36 -> .21 (Tornado .61 -> .33, still 3x baseline, undiagnosed).
+>   SIM v3 960 paired vs g3_live_rocket: 621 vs 619 (60/58, p .93) -> no win effect (SIM has no hero IW; Log->Tornado pairs
+>   rare). VM ~/ClashBot got extrapolate.py / e1_eval.py / search_s0.py (default byte-identical; backups ~/w1/backup/).
+>   Lead: park as opt-in; merge only after a blind verification; live A/B is the owner's call.
+> * **LIVE_OPTIONS MERGED (c682877; fixes 5b36a66): plain `live_play.py` now loads the full live config** from
+>   scratchpad/gauntlet/L70/live/LIVE_OPTIONS (xbow class_sample .3, tau_phase .35/.45/.55, spell rocket_area); merged-tree
+>   tests 141 passed; `live_play.py --check` from main prints "LIVE_OPTIONS applied ... explicit flags: []" + the tau
+>   note + LIVE_CHECK_PASS (sha e7359f2b, anti_leak false). Missing file -> loud "running with PLAIN decision defaults";
+>   --tau-alternate + active tau_phase -> refuses (exit 2); strict file parser. --log-aim log_barrel exists, OFF.
+>   To change the deployed options, edit LIVE_OPTIONS (not run_live.sh); run_live.sh's LIVE_ARGS still win per flag.
+> * **W3 7bd5bb6 verification: FAIL (narrow)** -- core works (file options by default, explicit wins, run_live argv clean,
+>   scope live-only, 173 tests pass) but: missing file is silent; the file's tau_phase silently cancels --tau-alternate
+>   and plain --tau (live_gen_v2.py:68); parser accepts abbreviations/duplicates; log_barrel ignores time to impact
+>   (stays off). Fixes sent back to W3.
+> * **W3 DONE (worktree agent-a1de3f62 @7bd5bb6; blind verification running, then merge):** (b) LIVE_OPTIONS: new
+>   pipeline/live_options.py; live_play.py applies scratchpad/gauntlet/L70/live/LIVE_OPTIONS (`--xbow-class class_sample
+>   --xbow-class-floor 0.3 --tau-phase 0.35 0.45 0.55 --spell-aim rocket_area`) for every decision flag not typed;
+>   explicit flags win per flag; `--no-live-options`; `--live-options-file`; unknown flag in the file -> exit 2; logs
+>   {file, from_file, explicit, ignored}. (a) `--log-aim log_barrel` (new key, combines with rocket_area; catalog rolling
+>   geometry in public_geometry.constants()['rolling']): offline in-flight coverage of the landing 0.875 -> 1.000 (pros
+>   0.895), exact pro cell 0.428 -> 0.398; SIM barrel census 192: covering 0.882 -> 1.000, wins 145 vs 143 (9/7), crowns
+>   against 54 vs 56 -> no harm, small effect; the live 38% miss likely counts Logs after landing (untouched). VM shared
+>   ~/ClashBot got decision_options.py + public_geometry.py (backward-compatible).
+> * **W4 CALIBRATION VERDICT (VM, live ckpt on all 307,035 icebow deck-90 rows):** p_gate = probability per 2-s WAIT row
+>   and it is CALIBRATED (val bins .10-.20 -> pro play frac .159, .20-.30 -> .266, .30-.35 -> .346, .45-.55 -> .514,
+>   .85-1 -> .900; quiet 1x E>=9: mean p .236 vs pro .268 = 0.151 vs 0.157 plays/s). Cadence/step size does NOT enter
+>   (lead's earlier suspicion contradicted). The fault is THRESHOLD decoding of a rate: only 23% of the pros' own quiet
+>   rows have p > .35. Same-state KM P(play <= 5 s), pro quiet 1x E>=9 episodes: pro .76, threshold .52, pure hazard .42,
+>   threshold + hazard-below-tau .68 (median 3.1 s vs pro 2.3); 2x/OT: threshold .97/.90, threshold+hazard .97/1.00, pure
+>   hazard .67/1.00 (pure hazard DELAYS busy-phase plays). Plan: SIM arm `--gate-decode hazard_below_tau` (play iff
+>   p > tau, else with prob 1 - exp(-rate(p) * 0.5 s)), pure hazard secondary; a learned add-on has little to correct.
+>   W4 runs isolated in ~/w4/repo (it would not act on the relayed ruling; fine).
+> * **OWNER 12:4x: "the agents are allowed to update the shared code folder."** (memory agents-may-update-vm-code)
+> * **W4 blocked by the permission classifier:** copying its backward-compatible pipeline/decision_options.py (gate_decode
+>   = threshold | hazard | hazard_below_tau; gate_rate inverts the 2-s WAIT sampling; hazard_play draws per decision with
+>   the match RNG) into the VM's shared ~/ClashBot was denied ("Modify Shared Resources"), as was a read-only ls there.
+>   Lead did NOT do it on W4's behalf (laundering); told W4 to run from an isolated ~/w4/repo copy; surfaced to the owner.
+> * **W1 own_effects offline (worktree agent-aca294b6 @d4e8103):** 82 live matches, live velocity rule (newest frame <=
+>   t-10): share of moving enemy bodies off >= 1.5 tiles at +26 ticks inside my own effect zone 0.36 -> 0.21 (median 1.08
+>   -> 0.76 tiles); Log 0.19 -> 0.13, Tornado 0.61 -> 0.33, IW ability 0.20 -> 0.18 (n 152); at second-play decisions
+>   0.24 -> 0.14; no category worse (baseline 0.11 unchanged). (q3's 0.41 used 2-tick frames; live rule gives 0.36.)
+>   Live calibration: Log rolls 0.2 tile/tick from ~8 ticks after confirm; IW freeze holds 65% of bodies still by +70
+>   ticks (no Frosty Fella catalog numbers). Next: SIM/live plumbing + SIM A/B.
+> * **BENCHMARK v3 RESULT (gen opponent sampling T .3, 480 seeds x census + ladder = 960 paired, no AL anywhere):**
+>   live setup (stack2k + xbow .3 + tau_phase B) vs R1e **626 vs 548 (234 better / 157 worse, p = .0001)** = +8.1 pp;
+>   live + rocket_area vs R1e 619 vs 548 (p .0004); rocket_area vs live 619 vs 626 (18/25, p .36, n.s.); R3c u0030 BASE
+>   (no add-ons, no options) vs R1e 542 vs 548 (p .76) -> the gain comes from the add-ons + decode options, not RL.
+> * **OWNER 12:xx:** stopped the leftover processes; keep live OFF (owner starts it later); resume unfinished agents.
+>   Resumed: TowerRefine w2 training (48716/67392), chip-Rocket worker (finish w2 + SIM A/B), W1, W3 (LIVE_OPTIONS first),
+>   W4. Owner wants a ping when live_play.py loads the full live config.
+> * **W2 Ice Wizard press (worktree agent-a741e3b2 @4113ff9, not merged; flag `--iw-press {rule,learned}`, default rule):**
+>   (1) the SIM has NO Hero Ice Wizard (RoyaleSim 20261006 refuses it: form_fallbacks IceWizard 2 -> base; 0 ability
+>   presses for the learner in 960 games) -> the press is live-only, never trained or evaluated in SIM. (2) CORRECTION:
+>   "card in the last 3 s 87% vs 45%" was a definition mismatch (q2 counted the IW deploy itself); same definition: live
+>   rule 0.41 vs pros 0.45 (incl. deploy 0.71 vs 0.76). Pro elixir >= 5 at press 0.59. Sweep (2,593 live / 1,320 pro
+>   deploys): live rule presses/deploy .25, el>=5 .14, overspend .29; learned threshold .10 -> .31 / .06 / .38 (worse);
+>   sampled hazard -> overspend .52. Why: the bot has >= 5 elixir in only 30% of hero-alive seconds (pros 70%) and the
+>   hazard model has no board geometry. Best lever: raise P* inside the existing gate (P >= .03 keeps 69% of presses,
+>   overspend .22; approximation). Recommendation: keep the default; owner's call on a P* raise A/B.
+> * **W4 MECHANISM (code reading, measurement on the VM pending):** dataset.py samples WAIT rows every 40 ticks (2 s)
+>   and drops waits within 20 ticks before a play -> p_gate = probability per 2-s row. Live/SIM THRESHOLD it (play iff
+>   p > tau) at every decision, so nothing accumulates: tau .35 ~ a hazard of 0.21 plays/s; pros' quiet-board 1x hazard
+>   ~0.16/s -> p ~ .28 < tau -> even a perfectly calibrated gate never fires on a quiet board (the waiting problem), while
+>   any busy state with p barely > tau fires every decision (the cheap-card spam). Next: hazard-consistent decoding
+>   (play with prob 1-(1-p)^(dt/2 s), seeded) and a calibrated gate add-on; SIM checks incl. that 2x/OT spam doesn't
+>   return. W4's suspended extract chain killed by the lead (own job); gpu.lock restored to the chip_rocket content.
+> * **LAG INCIDENT 11:3x:** owner lost a live match to lag. Causes: 4 workers' local jobs (GPU TowerRefine training, row
+>   extraction, verification) + 5 ORPHANED `python -` scripts from earlier sessions (pids 64148/61016, 50212, 28348, 6280;
+>   parents bash 56996, 26916, 60040, 70116), each ~0.6 core for 1-3 days. Lead suspended the worker jobs (48716/67392
+>   TowerRefine w2, 70148/72096 extract.py); killing the orphans was BLOCKED by the permission classifier -> owner given
+>   the Stop-Process command. All workers told: no heavy local compute; VM only. gpu.lock held by the suspended w2 job.
+>   Overlay: the owner's 11:05 run ended ~1 s after the match, before the `recording` event -> 0 segments; the raw mp4
+>   is unfinalised (moov atom missing). Planned: log segment timing at recording START (after W3's live_play changes).
+> * **CHIP-ROCKET FINAL (worktree agent-a5e4612a @f8df9ff, not merged):** Q1 measured (above). Q2: Wizard behind the KING
+>   x1.03 (owner's literal "behind the king" contradicted; it's the princess). Tower-token test: null token at the tower
+>   moves AIM 0.50 -> 0.85 but P(Rocket) only +2.6 pp (Wizard +19.6) -> missing tower token explains aim, not card choice.
+>   Q3 after a failed offensive X-Bow in OT: next offensive X-Bow pros 50% / R1e 48% / live 46% (n 13) -> re-offending is
+>   pro-like; tower Rocket pros 14% vs R1e 3% / live 0% -> the missing piece. Q4: pro chip Rockets are 4.9% of
+>   Rocket-affordable plays (OT 11%); argmax picks Rocket on 5.4% of those rows vs pros' 10.3% Rocket rate (OT 8.9 vs
+>   17.7). SIM Rocket tower damage = real game (11.2% of tower HP both) -> fidelity fine. R4c `card` branch: 367 labels,
+>   Rocket judged better 32% (its Rocket fires at its top cell, on the tower only ~50%) -> RL pushes AGAINST Rocket.
+>   Q5 TowerRefine (pipeline/tower_refine.py + 15-line hook; zero-init, base frozen, opt-in by content): w_chip=1 card
+>   top-1 .643 -> .648, chip-row aim .48 -> .73, troop ratio 3.2 -> 2.0, top-card Rocket 5.4 -> 5.7% (OT 8.9 -> 10.1);
+>   w_chip=4 overshoots (20% / OT 40%; top-1 .631). w_chip=2 suspended at step 2,500/4,000 (tr_w2.log). Folded ckpt
+>   rseries_r3c_u0030_barrel2k_cellref_towerref_w1.pt; byte-identical without the module; 19 tests pass.
+> * **OWNER 11:1x:** rocket_area ON live since 10:36 (owner request); owner then stopped live (STOP 10:54, not by lead)
+>   and ran live_play.py DIRECTLY at 11:05 with the plain defaults (flat tau .35, no tau_phase, xbow argmax, spell
+>   argmax): 73 plays, 0 Rockets, OT spent every 1.5-2 s at 1-3 elixir with p_play .35-.45 -> 3-crown loss ("collapsed
+>   to cheap cards"). The phase thresholds (OT .55) are what bank elixir; they live in the decode options, not the model.
+>   Live is STOPPED (STOP file present; no live_play running) -- restart only on the owner's word.
+>   Owner rulings: initiative = learned fix only (no narrowed anti-leak) + the chip-Rocket add-on; start all 4 fixes.
+>   Workers (opus, worktrees): W1 extrapolate own_effects (Log knockback / Tornado pull / IW slow; offline forecast
+>   error 0.41 -> ?, then v3 SIM A/B); W2 Ice Wizard press = learned pro hazard model, threshold tuned to pro press
+>   context (elixir >= 5 at press 62% vs bot 16%), same in SIM and live; W3 `log_barrel` Log aim at the visible barrel
+>   target + LIVE_OPTIONS file so a direct live_play.py run uses the deployed options; W4 initiative: gate calibration
+>   (per-step hazard vs decision cadence) + learned gate add-on (new file pipeline/gate_refine.py). Chip-Rocket worker
+>   continues (tower features). GPU lock: scratchpad/gauntlet/L73/centre_col/gpu.lock.
+> * **Owner Q answers (owner_1008/, measured):** Q1 empty board 1x >= 9 elixir: stack AL-off 0 plays in 52 s / 18
+>   episodes vs pros P(5 s) .67; 2x/OT stack plays (n small) mostly offensive X-Bow 50-55% vs pros' mix. Q2 IW press from
+>   a hand rule + non-binding hazard gate; elixir >= 5 at press 16% vs pros 62%; card in last 3 s 87% vs 45%. Q3 conflicts:
+>   aggregate overspend = pros (.29 vs .27) and cadence fine (no decision while pending) -> contradicted; forecast error
+>   in my own Log/Tornado/IW zone .41 vs .11 baseline -> the look-ahead is the cause (measured). Q4 "answers at my own
+>   princess tower" contradicted (0/11 stack); Log misses barrels 38% (R1e) vs pros 18%; miner visible underground
+>   ~1.8 s early.
 > * **CORRECTION 10:3x -- the v2 "beats R1e significantly" was driven by the S1 opponent.** S1 never initiates; R1e
 >   (and S1) idle -> draws, while R3c / AL initiate and win. Split by opponent (`~/paired_split.py`, idle = < 5 plays):
 >   vs GEN only: stack2k (AL) vs R1e 68 vs 59 (23/14, p .19) / 62 vs 57.5 (21/16, p .51); live2 (no AL) vs R1e 67 vs 59

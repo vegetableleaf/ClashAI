@@ -93,6 +93,20 @@ def legal_cells(entities, side: int, card_id: int, name: str, grid: str = "latti
     return ok if ok.any() else None
 
 
+OWN_FX_TICKS = 150                   # as e1_eval: own plays older than 7.5 s act on nothing
+
+
+def own_effects_raw(own_fx, side: int, tick: int) -> list:
+    """GenPilot.own_fx (model-frame xy, live_play.my_frame_xy) -> extrapolate's own_effects (raw engine units)."""
+    out = []
+    for p in own_fx:
+        if tick - OWN_FX_TICKS <= p["tick"]:
+            x, y = p["xy"][0] * 18000.0, (1 - p["xy"][1]) * 32000.0
+            x, y = (18000.0 - x, 32000.0 - y) if side == 1 else (x, y)
+            out.append(dict(card=p["card"], x=x, y=y, tick=p["tick"], ability=p.get("ability", False)))
+    return out
+
+
 class GenPilot:
     # Live-only (live_play.py turns it on; --no-legal-guard): the cell argmax is taken over legal_cells. Off here so
     # the SIM-parity tests keep checking the unguarded decision rule.
@@ -102,7 +116,7 @@ class GenPilot:
     anti_leak_seconds = 12.0
 
     def __init__(self, ckpt, device: str = "cpu", gate_tau: float = 0.5, use_counter: bool = True,
-                 extrapolate_ticks: int = 0, predict_drops: bool = False):
+                 extrapolate_ticks: int = 0, predict_drops: bool = False, own_effects: bool = False):
         self.model, st = load_model(ckpt, torch.device(device))
         self.model.eval()
         self.feature_version = int(st["args"].get("feature_version", 1))
@@ -124,6 +138,9 @@ class GenPilot:
         # OPT-IN predict_drops (extrapolate.py docstring): observed Skeleton Barrel balloon disappearances -> the 7 skeletons
         # appear in the look-ahead 12 ticks later. None = off = the look-ahead is byte-identical.
         self.drops = DropTracker() if predict_drops and self.ext_h else None
+        # OPT-IN own_effects (W1, extrapolate.py docstring): my confirmed plays / ability presses (card, model xy, confirm
+        # tick) move the enemy bodies they reach in the look-ahead, as SIM's cfg "own_effects". None = off = unchanged.
+        self.own_fx = [] if own_effects and self.ext_h else None
 
     def reset_match(self) -> None:
         self.past.clear()
@@ -132,6 +149,8 @@ class GenPilot:
         self.frames.clear()
         if getattr(self, 'drops', None) is not None:
             self.drops.reset()
+        if getattr(self, 'own_fx', None) is not None:
+            self.own_fx.clear()
         if self.opp:
             self.opp.reset()
         self.opp_est = None
@@ -168,12 +187,18 @@ class GenPilot:
     def record_play(self, card: int, form: int, xy: tuple[float, float], t_sec: float) -> None:
         self.past.append((card, form, float(xy[0]), float(xy[1]), float(t_sec)))
         self.last_play_tick = round(t_sec / .05)        # the LANDING (confirmation) tick, as SIM's Match._land
+        if getattr(self, 'own_fx', None) is not None:
+            self.own_fx.append(dict(card=next(k for k, v in self.gid.items() if v == card), xy=tuple(xy),
+                                    tick=round(t_sec / .05)))
         if getattr(self,'feature_version',1)>=4 and self.public is not None:
             name=next(k for k,v in self.gid.items() if v==card)
             self.public.own_events.append(dict(card=name,tick=round(t_sec/.05),side=self.public.side,accepted=True,ability=False))
 
     def record_ability(self, card: str, tick: int, *, accepted: bool=True) -> None:
         """Feed the confirmed OWN live press log; never call on an attempted tap."""
+        if getattr(self, 'own_fx', None) is not None and accepted:   # own_effects: the CONFIRMATION frame's tick (the
+            self.own_fx.append(dict(card=card, xy=(0.0, 0.0), ability=True,     # freeze window is measured from it)
+                                    tick=self.frames[-1][0] if self.frames else int(tick)))
         if getattr(self,'feature_version',1)>=4 and self.public is not None and accepted:
             self.public.own_events.append(dict(card=card,tick=int(tick),side=self.public.side,accepted=True,ability=True))
 
@@ -210,6 +235,8 @@ class GenPilot:
                               if getattr(self, 'feature_version', 1) >= 4 and self.public is not None else {})
             if getattr(self, 'drops', None) is not None:
                 object_context = dict(object_context, drops=self.drops.pending)
+            if getattr(self, 'own_fx', None) is not None:
+                object_context = dict(object_context, own_effects=own_effects_raw(self.own_fx, side, tick))
             frame = extrapolate(frame, prev, self.ext_h, side, **object_context)
             if opp is not None:
                 opp = min(10.0, opp + regen_between(tick, tick + self.ext_h))

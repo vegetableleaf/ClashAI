@@ -1,0 +1,73 @@
+{
+ "princess centre": {
+  "seed": 0,
+  "aim": [
+   3500,
+   25500
+  ],
+  "drops": {
+   "1p3500": 342
+  },
+  "landing_ticks_after_accept": 70
+ },
+ "princess front +2t": {
+  "seed": 0,
+  "aim": [
+   3500,
+   23500
+  ],
+  "drops": {
+   "1p3500": 342
+  },
+  "landing_ticks_after_accept": 70
+ },
+ "princess front +2.9t": {
+  "seed": 0,
+  "aim": [
+   3500,
+   22600
+  ],
+  "drops": {},
+  "landing_ticks_after_accept": null
+ },
+ "princess front +3.2t": {
+  "seed": 0,
+  "aim": [
+   3500,
+   22300
+  ],
+  "drops": {},
+  "landing_ticks_after_accept": null
+ },
+ "king centre": {
+  "seed": 0,
+  "aim": [
+   9000,
+   29000
+  ],
+  "drops": {
+   "1k9000": 342
+  },
+  "landing_ticks_after_accept": 80
+ },
+ "between L-princess/king": {
+  "seed": 0,
+  "aim": [
+   6250,
+   27250
+  ],
+  "drops": {
+   "1k9000": 342
+  },
+  "landing_ticks_after_accept": 80
+ },
+ "golem": {
+  "seed": 5,
+  "hp_before": [
+   5120
+  ],
+  "hp_after": [
+   2873
+  ]
+ }
+}

@@ -1,0 +1,15 @@
+== tr_base: n=480 wins 312 vs base 312 | better 0 worse 0 sign p=1.0000 | mean tower-hp diff delta +0
+   Rocket share of plays: 1x 0.013 [0.010,0.016] 2x 0.015 [0.012,0.018] OT 0.038 [0.034,0.043]
+   X-Bow share of plays:  1x 0.105 [0.100,0.111] 2x 0.118 [0.112,0.123] OT 0.090 [0.085,0.096]
+   tower Rockets/match all 0.519 [0.440,0.602] | OT tower Rockets/match (all matches) 0.325 [0.258,0.390] | per OT match 0.489 [0.401,0.592] (n OT 319)
+   Rockets/match 0.929 [0.825,1.029] | defensive Rockets/match 0.383 [0.321,0.448] | tower share of Rockets 0.571 [0.522,0.621]
+== tr_w1: n=480 wins 287 vs base 312 | better 77 worse 102 sign p=0.0725 | mean tower-hp diff delta -460
+   Rocket share of plays: 1x 0.014 [0.011,0.018] 2x 0.018 [0.015,0.021] OT 0.047 [0.041,0.052]
+   X-Bow share of plays:  1x 0.104 [0.098,0.110] 2x 0.120 [0.115,0.125] OT 0.089 [0.083,0.095]
+   tower Rockets/match all 0.694 [0.598,0.794] | OT tower Rockets/match (all matches) 0.456 [0.377,0.535] | per OT match 0.646 [0.546,0.752] (n OT 339)
+   Rockets/match 1.069 [0.952,1.185] | defensive Rockets/match 0.406 [0.350,0.473] | tower share of Rockets 0.657 [0.604,0.702]
+== tr_w2: n=480 wins 320 vs base 312 | better 86 worse 78 sign p=0.5848 | mean tower-hp diff delta -163
+   Rocket share of plays: 1x 0.014 [0.012,0.017] 2x 0.018 [0.015,0.021] OT 0.066 [0.059,0.073]
+   X-Bow share of plays:  1x 0.106 [0.101,0.112] 2x 0.115 [0.110,0.120] OT 0.077 [0.071,0.082]
+   tower Rockets/match all 0.885 [0.767,1.002] | OT tower Rockets/match (all matches) 0.623 [0.529,0.725] | per OT match 0.898 [0.775,1.024] (n OT 333)
+   Rockets/match 1.275 [1.144,1.408] | defensive Rockets/match 0.327 [0.273,0.385] | tower share of Rockets 0.714 [0.674,0.752]

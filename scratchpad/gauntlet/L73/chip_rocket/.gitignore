@@ -1,0 +1,8 @@
+# regenerable bulk (extract_pros.py / extract_bot.py / probe_q2.py / convert_and_verify.py)
+pros_chip.pkl
+bot_chip.pkl
+bot_xbow.pkl
+q2_*.pkl
+ref.npz
+rseries_*_towerref_*.pt
+__pycache__/

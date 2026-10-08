@@ -1,0 +1,11 @@
+pros       all    n= 3653 new_offensive_Xbow 41% [39,43] n=3653 | defensive_Xbow 11% [10,12] n=3653 | tower_Rocket 8% [7,9] n=3653 | Tesla 68% [66,69] n=3653 | none_of_Xbow/Tesla/towerRocket 18% [16,19] n=3653
+pros       ph_OT  n= 1285 new_offensive_Xbow 50% [47,53] n=1285 | defensive_Xbow 13% [11,15] n=1285 | tower_Rocket 14% [12,17] n=1285 | Tesla 78% [76,80] n=1285 | none_of_Xbow/Tesla/towerRocket 7% [6,9] n=1285
+pros       ph_2x  n= 1206 new_offensive_Xbow 52% [49,55] n=1206 | defensive_Xbow 15% [13,17] n=1206 | tower_Rocket 7% [6,9] n=1206 | Tesla 80% [77,82] n=1206 | none_of_Xbow/Tesla/towerRocket 5% [4,7] n=1206
+R1e matches 355 rocket tower drop median 497.0 n 25 off X-Bows {'all': 1081, 'off': 883, 'def': 198, 'other': 0, 'off_status': {'ok': 543, 'fail': 266, 'alive': 69, 'unk': 5}}
+R1e        all    n=  249 new_offensive_Xbow 47% [40,52] n=249 | defensive_Xbow 4% [1,6] n=249 | tower_Rocket 1% [0,3] n=249 | Tesla 71% [66,77] n=249 | none_of_Xbow/Tesla/towerRocket 16% [11,21] n=249
+R1e        ph_OT  n=   66 new_offensive_Xbow 48% [38,58] n=66 | defensive_Xbow 5% [0,11] n=66 | tower_Rocket 3% [0,8] n=66 | Tesla 82% [73,91] n=66 | none_of_Xbow/Tesla/towerRocket 6% [1,12] n=66
+R1e        ph_2x  n=  102 new_offensive_Xbow 57% [47,66] n=102 | defensive_Xbow 5% [1,9] n=102 | tower_Rocket 0% [0,0] n=102 | Tesla 80% [73,88] n=102 | none_of_Xbow/Tesla/towerRocket 10% [4,16] n=102
+live matches 83 rocket tower drop median 497.0 n 14 off X-Bows {'all': 281, 'off': 212, 'def': 69, 'other': 0, 'off_status': {'ok': 130, 'fail': 65, 'alive': 16, 'unk': 1}}
+live       all    n=   61 new_offensive_Xbow 43% [28,57] n=61 | defensive_Xbow 7% [1,14] n=61 | tower_Rocket 5% [0,11] n=61 | Tesla 74% [63,84] n=61 | none_of_Xbow/Tesla/towerRocket 7% [2,13] n=61
+live       ph_OT  n=   13 new_offensive_Xbow 46% [14,78] n=13 | defensive_Xbow 8% [0,29] n=13 | tower_Rocket 0% [0,0] n=13 | Tesla 92% [78,100] n=13 | none_of_Xbow/Tesla/towerRocket 0% [0,0] n=13
+live       ph_2x  n=   31 new_offensive_Xbow 42% [26,58] n=31 | defensive_Xbow 10% [0,22] n=31 | tower_Rocket 6% [0,16] n=31 | Tesla 81% [64,96] n=31 | none_of_Xbow/Tesla/towerRocket 6% [0,16] n=31
