@@ -4508,6 +4508,12 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   CellRefine + TowerRefine exactly. VM ~/ClashBot got pipeline/tower_refine.py + hooked model_gen.py (live ckpt
 >   byte-identical under it; backup ~/probe_rocket/model_gen.py.bak_pre_towerrefine). SIM A/B (v3, seeds 0:240 x 2, live
 >   options + rocket_area, base / w1 / w2) running ~1 h: ~/probe_rocket/vm_ab_towerref.sh.
+> * **LIVE_OPTIONS MERGED (c682877; fixes 5b36a66): plain `live_play.py` now loads the full live config** from
+>   scratchpad/gauntlet/L70/live/LIVE_OPTIONS (xbow class_sample .3, tau_phase .35/.45/.55, spell rocket_area); merged-tree
+>   tests 141 passed; `live_play.py --check` from main prints "LIVE_OPTIONS applied ... explicit flags: []" + the tau
+>   note + LIVE_CHECK_PASS (sha e7359f2b, anti_leak false). Missing file -> loud "running with PLAIN decision defaults";
+>   --tau-alternate + active tau_phase -> refuses (exit 2); strict file parser. --log-aim log_barrel exists, OFF.
+>   To change the deployed options, edit LIVE_OPTIONS (not run_live.sh); run_live.sh's LIVE_ARGS still win per flag.
 > * **W3 7bd5bb6 verification: FAIL (narrow)** -- core works (file options by default, explicit wins, run_live argv clean,
 >   scope live-only, 173 tests pass) but: missing file is silent; the file's tau_phase silently cancels --tau-alternate
 >   and plain --tau (live_gen_v2.py:68); parser accepts abbreviations/duplicates; log_barrel ignores time to impact
