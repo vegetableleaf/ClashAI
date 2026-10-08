@@ -32,9 +32,58 @@ from .obs_contract import to_tokens
 from .train_s1 import MAX_U
 
 FORM_PAD = 3
+EVEN_BUILDINGS = {"Tesla"}           # owner 2026-10-07: Tesla is the ONLY 2x2 building; all others are 3x3
+ANYWHERE = {"Miner", "GoblinDrill"}  # deploy anywhere on the arena: never restricted
+
+
+def legal_cells(entities, side: int, card_id: int, name: str, grid: str = "lattice", gx: int = 36, gy: int = 64):
+    """[gx*gy] bool, True where this troop / building lands AS TAPPED; None = no restriction (spells, Miner, ...).
+
+    Rejects (1) a footprint overlapping an OWN building / tower footprint, (2) y >= 15 tiles (river / enemy half) in a
+    lane whose enemy princess still stands. Replayed on live logs 2026-10-05..07 (L68 tap_audit.py, 3,421 single-body
+    plays): the game moved 77 of the 81 targets these rules reject by >= 1 tile, and 12 of the 3,340 others.
+    Footprints: troop = a point, Tesla 2x2, other buildings 3x3, princess 3x3, king 4x4. Pocket depth and enemy
+    footprints (2/12 moved) are not restricted."""
+    kind = int(card_id) // 1_000_000                  # 26 troop, 27 building, 28 spell
+    if kind not in (26, 27) or name in ANYWHERE:
+        return None
+    from .obs_contract import _catalog_names
+    names = _catalog_names()
+    buildings = {n for i, n in names.items() if i // 1_000_000 == 27}
+    h = 0.0 if kind == 26 else (1.0 if name in EVEN_BUILDINGS else 1.5)
+    off = 0.5 if grid == "floor" else 0.0
+    c = np.arange(gx * gy)
+    X, Y = (c % gx + off) / gx * 18, (1 - (c // gx + off) / gy) * 32     # my frame, tiles; my king at Y = 3
+    ok = np.ones(gx * gy, bool)
+    standing = {3.5: False, 14.5: False}              # enemy princess alive per lane (my-frame x)
+    for e in entities:
+        if e.get("hp", 1) <= 0:
+            continue
+        bx, by = ((18000 - e["x"]) / 1000, (32000 - e["y"]) / 1000) if side == 1 else (e["x"] / 1000, e["y"] / 1000)
+        cid = int(e["card_id"])
+        if int(e["side"]) != side:
+            if cid == -1 and int(e["kind"]) == 13:
+                standing[3.5 if bx < 9 else 14.5] = True
+            continue
+        if cid == -1:
+            hb = 2.0 if int(e["kind"]) == 12 else 1.5
+        elif names.get(cid) in buildings and all(abs(v / 500 - round(v / 500)) < .01 for v in (e["x"], e["y"])):
+            # a placed building sits on the 500-unit lattice; a hut's walking spawn carries the hut's id off it
+            hb = 1.0 if names[cid] in EVEN_BUILDINGS else 1.5
+        else:
+            continue
+        ok &= ~((np.abs(X - bx) < hb + h) & (np.abs(Y - by) < hb + h))
+    pocket = np.where(X < 9, not standing[3.5], np.where(X > 9, not standing[14.5],
+                                                          not (standing[3.5] or standing[14.5])))
+    ok &= (Y < 15) | pocket
+    return ok if ok.any() else None
 
 
 class GenPilot:
+    # Live-only (live_play.py turns it on; --no-legal-guard): the cell argmax is taken over legal_cells. Off here so
+    # the SIM-parity tests keep checking the unguarded decision rule.
+    legal_guard = False
+
     def __init__(self, ckpt, device: str = "cpu", gate_tau: float = 0.5, use_counter: bool = True,
                  extrapolate_ticks: int = 0):
         self.model, st = load_model(ckpt, torch.device(device))
@@ -196,5 +245,22 @@ class GenPilot:
         if card > 0:
             enc_card = torch.tensor([card], device=self.dev)
             logits = self.model(b, card=enc_card, form=torch.tensor([form], device=self.dev))["cell"][0]
-            d["xy"] = cell_xy(int(logits.argmax()), self.grid)
+            d["xy"] = cell_xy(int(self.guard_cells(frame, d, logits).argmax()), self.grid)
         return d
+
+    def guard_cells(self, frame: Mapping[str, Any], d: dict, logits: torch.Tensor) -> torch.Tensor:
+        """``logits`` ([..., N_CELLS]) with the cells the card would not land on as tapped set to -inf (legal_cells);
+        unchanged when the guard is off, the row waits, or nothing is restricted. d['xy_unguarded'] = the plain argmax
+        it replaced."""
+        if not self.legal_guard or not d["play"]:
+            return logits
+        side = my_side_of(frame)
+        me = next(p for p in frame["players"] if int(p["side"]) == side)
+        ok = legal_cells(frame.get("entities", []), side, me["deck_card_ids"][d["deck_index"]], d["name"], self.grid)
+        if ok is None:
+            return logits
+        ok = torch.from_numpy(ok).to(logits.device)
+        raw = int(logits.reshape(-1, ok.numel())[0].argmax())
+        if not ok[raw]:
+            d["xy_unguarded"] = cell_xy(raw, self.grid)
+        return logits.masked_fill(~ok, float("-inf"))
