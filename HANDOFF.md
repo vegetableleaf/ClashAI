@@ -4494,6 +4494,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   option goes on with the promoted model if its wins are not worse (paired) AND its target behaviour moves toward
 >   pros (tau_phase: 2x/OT elixir at play up / OT over-play down without more leak; xbow_class: defensive X-Bow share
 >   toward the pros' 27%); re-checked on the winner.
+> * **OWNER 01:0x: "if either of those fail, you should tweak and retry until it works."** Queued `~/ab_grid.sh r3old`
+>   (starts after ab_opts): tau_phase (.35/.40/.45), (.35/.40/.50), (.30/.40/.50), (.35/.45/.45); xbow floor .2 / .25 /
+>   .4 -- all on the TUNE seeds 0:48. Selection (pre-registered): wins >= control - 2 and no paired worsening at p < .2;
+>   tau_phase: 2x+OT elixir at play >= control + 0.2 with leak (2x+OT) not above control + 1 pp, pick the largest gain;
+>   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
+>   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
+>   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
 > * **CENTRE-COLUMN FIX MEASURED: CellRefine v2 (5 dilated layers, RF +-15.5 tiles, 48 ch; base R3 u0050 frozen).**
 >   OFFLINE (100,463 val play rows; base -> v1 -> v2): lane consistency of the model's centre picks 49.9 -> 51.7 ->
 >   **65.2% (pros on the same rows 64.8%)**; same column as the pro 48.3/49.1 -> 58.9/58.5%; cell top-1 21.87 ->
