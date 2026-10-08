@@ -4718,6 +4718,11 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   (enemy on my half 72-84% vs pros 74%; 3.5-4.6% of pending decisions play) but the CARD is wrong: P(Tornado | Tornado
 >   affordable) at second plays .50 vs pros .16 (bot 30 ticks after a play .09-.12). Rocket->Tornado .007 -> .02-.03
 >   (pros .14). Next: offline diagnostic -- model on PRO second-play rows (model vs view problem), then component swaps.
+> * **Pipelining Tornado diagnostic (36d9ecb):** live ckpt on 14,289 PRO second-play rows (<= 35 ticks): P(top = Tornado |
+>   affordable) .111 vs pros .162 (top-card agreement 72%); through the pending view (synthetic bodies/objects, unknown next
+>   card, base forms) .111-.121 -> neither the model nor the view over-picks; after a pro Rocket, Tornado is top .59. The
+>   SIM .50 is SIM-specific (look-ahead with the pending effect, SIM board states, or a gate x card selection effect).
+>   Next: SIM-replay part removal + selection check.
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
