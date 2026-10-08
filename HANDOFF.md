@@ -4501,6 +4501,11 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **CellRefine pooled (R3 u0050, v2, seeds 0:96 = 384 paired):** CellRefine-only 2ep vs base 272.5 vs 247.5
+>   (63/38, **p .017**; gen 43/28, S1 20/10); barrel+CellRefine 260.5 (54/41, p .22); barrel+CR vs CR-only 38/50
+>   (p .24). Lane consistency fresh: 53.7 -> 74.0% (CR) / 72.2% (barrel+CR). Goblin Barrel in only 8/384 opponent decks
+>   -> barrel benefit unmeasurable here; barrel-heavy census requested (all opponent decks with Goblin Barrel). The fv6
+>   branch reads every projectile target, so it moves non-barrel games too.
 > * **ROUND 2 RESULTS (v2; score = wins + draws/2):** LIVE ANTI-LEAK (learner-only forced spend 9/12) on R3 u0050:
 >   tune 154 vs 127 (49/14, p<1e-6), FRESH 150 vs 120 (46/11, p<1e-6); leak 1x .52 -> .11, 2x/OT -> 0; def X-Bow 9 ->
 >   19%; tower-hp delta +1,753 / +1,909. tau (.25/.35/.45) fresh 135 vs 120 (45/29, p .08; tune +4) -- replicated
