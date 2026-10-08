@@ -4501,6 +4501,14 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **OWNER 10:0x: live model banks elixir in OT (good) but spends it on offensive X-Bows that get thwarted, not tower
+>   Rockets; "only confident about casting rocket on enemy tower IF the enemy places a troop behind the king tower ...
+>   no concept of chip damage ... worth doing an investigation into that and making adjustments."** Lead note: prior
+>   evidence partly contradicts "no concept" -- R1e's SOFT P(Rocket) on pro eligible rows is .75x pros, but Rocket is
+>   the ARGMAX card on only 14% of pro Rocket rows (a ranking problem). Worker (opus, worktree) dispatched: chip vs
+>   tower+troop Rocket rates (pros / R1e / live stack), matched-state probe (insert a troop behind the tower: does
+>   P(Rocket) jump?), X-Bow persistence after a thwarted X-Bow in OT, SIM fidelity of Rocket tower damage, R4 `card`
+>   branch labels, then a LEARNED adjustment prototype (opt-in by checkpoint content), offline only, no deploy.
 > * **OWNER 09:4x: "run sim tests for area aware rocket aim and card choice filtering. Keep the current setup live, but
 >   disable the anti-leak in live matches. Test the xbow measurement in the sim as well ... the model hasnt exactly
 >   increased rocket use to the point that pros use it, especially during overtime."** Done: live stopped between matches
