@@ -4628,6 +4628,16 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 > * **IW P* + GPU MERGED c9429c7** (re-verification PASS_WITH_NOTES on baed56e: live_reader 2 failed = the same 2 as
 >   main; open, pre-existing: the no-deploy-tick / no-public-state fallback press ignores P*;
 >   L72/.../LIVE_ENTRYPOINT_CORRECTION.md:19 still says --device cpu). Worktree cb_lead_small removed (links deleted first).
+> * **LOSS REVIEW PASS 1 MERGED 69cd91b (L74/loss_review/report.md; 1,169 logs, ledger full; R-lineage 501 matches
+>   251 W / 250 L, 2,254 threat episodes; within-match comparisons; "at stake" = association upper bounds).** Top: (1)
+>   push met with < 4 elixir 70% vs pros 24% (median 2.7 vs 6.0), lost-episode rate +16.5 pp [11.9, 20.4]; (2) cheap
+>   taps at < 5 elixir 2.53/3.29 per min (quiet/pressured) vs pros 0.89/1.53 at the SAME total play rate; (3) air in the
+>   push +14.6 pp; (4) 46/250 losses ended with an enemy princess <= 497 HP -- Rocket in hand 90% but affordable 6% of
+>   the final 20 s; (5) locked X-Bow placed while the public opp counter reads >= 7: -406 HP in 20 s; (7) Golem 31% vs
+>   53%. Contradicted: slow first answer (pros .64 vs bot .62 here), gate-below-tau while threatened, 1-tile placement
+>   errors. Lead correction to its P1: the SIM ALSO extrapolates 26 ticks and its economy is near pros (W4 v3 base),
+>   so extrapolation cannot explain the LIVE-only gap -> follow-up sent: decompose live vs SIM spending (decision cadence
+>   / p noise, IW ability, opponent pressure, matched-state gate, reader artefacts). No fix dispatched until it lands.
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
