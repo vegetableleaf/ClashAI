@@ -4501,6 +4501,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **TowerRefine weight sweep (chip worker):** w_chip 1 / 2 / 4 vs base (deck-90 pro val rows): card top-1 .643 -> .648 /
+>   **.655** / .631; top-1 on non-Rocket rows .668 -> .670 / .671 / .632; top card Rocket on Rocket-affordable rows (pros
+>   10.3%) 5.4 -> 5.7 / **8.5** / 20.0%; OT (pros 17.7%) 8.9 -> 10.1 / **17.9** / 40.4%; chip-row aim on tower .50 -> .75 /
+>   .79 / .82; troop-insertion ratio (pros ~1.5) 3.2 -> 2.0 / **1.53** / 1.25. Pick w2. Folded w1/w2 checkpoints load fv6 +
+>   CellRefine + TowerRefine exactly. VM ~/ClashBot got pipeline/tower_refine.py + hooked model_gen.py (live ckpt
+>   byte-identical under it; backup ~/probe_rocket/model_gen.py.bak_pre_towerrefine). SIM A/B (v3, seeds 0:240 x 2, live
+>   options + rocket_area, base / w1 / w2) running ~1 h: ~/probe_rocket/vm_ab_towerref.sh.
 > * **W3 DONE (worktree agent-a1de3f62 @7bd5bb6; blind verification running, then merge):** (b) LIVE_OPTIONS: new
 >   pipeline/live_options.py; live_play.py applies scratchpad/gauntlet/L70/live/LIVE_OPTIONS (`--xbow-class class_sample
 >   --xbow-class-floor 0.3 --tau-phase 0.35 0.45 0.55 --spell-aim rocket_area`) for every decision flag not typed;
