@@ -72,7 +72,7 @@ branch_card_points=6
 branch_xbow_points=6
 branch_card_coef=0.1
 branch_xbow_coef=0.1
-branch_rocket_band=0.5
+branch_rocket_band=0.2
 branch_xbow_floor=0.2
 # lever C: potential shaping, Phi = shaping_w_value x the 10 s causal trailing mean of the FROZEN init's (shaping_phi_ckpt
 # unset = init) P(win) - P(loss); residual critic needs shaping_critic_scale >= 1 + w_value (adv_cfg enforces it).
