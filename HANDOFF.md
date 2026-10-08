@@ -4767,6 +4767,16 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   Options put to the owner: laptop crawl after the owner clears Cloudflare, fetched through the real browser at a
 >   fixed polite rate (not curl with a copied cf_clearance at the 429 ceiling); official Clash Royale API on the VM for
 >   decks/results/meta (owner creates the key and places it); ask RoyaleAPI for data access.
+> * **DEFENSE ANALYSIS MERGED 5202d65 (L74/defense/out/report.txt).** (c) late in general: first defence lands median -0.1 s
+>   from the crossing vs pros +0.85-1.15 s (late > 2 s does hurt: +16.7 pp failure). (b) the 1.3 s lock: ~290 HP/match on
+>   the first defence (mostly the game's own delay) + ceiling 250-370 HP/match in follow-up locks = ~2% of the 16-20k
+>   lost per lost match; pros pair defensive cards < 1.3 s 9.7% vs bot 0.3%. (c) wrong lane as systematic (two-lane
+>   plays to the lighter lane 12-17% vs pros 14-19%). (c) no-defence overall (RL 3.3% vs pros 3.1%; TR 4.8% n=18): when
+>   it happens it is the gate holding with elixir; ignores ranged support / Goblin Barrel. (a) defended pushes fail more
+>   because 65% are met with < 4 elixir (pros 18%): pro elixir mix closes ~45% of the gap; at >= 6 elixir card damage
+>   and spend match pros. (a) Tornado as first answer when broke +25.6 pp failure. (b) TowerRefine may hurt IW defence
+>   (n small). Fixes: F1 economy (= Hero IW parity fix in progress), F2 low-elixir card choice and F3 TowerRefine side
+>   effect: measurements dispatched (same worker), F4 pipelining (parked).
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
