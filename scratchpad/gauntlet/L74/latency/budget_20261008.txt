@@ -1,0 +1,31 @@
+logs 208; confirmed plays with host timings 6721; in recorded logs 1256
+game ticks per device second (whole recorded matches): n=33 mean=19.94 p5=19.92 p25=19.94 p50=19.96 p75=19.98 p95=19.99
+frame spacing in ticks: n=69874 mean=2.01 p5=2 p25=2 p50=2 p75=2 p95=2
+
+== all confirmed plays ==
+T_rot - T0 (ticks):            n=6721 mean=28.94 p5=25 p25=26 p50=28 p75=29 p95=44
+latency_s (host, s):           n=6721 mean=1.44 p5=1.299 p25=1.301 p50=1.4 p75=1.406 p95=2.202
+decide_ms:                     n=6721 mean=77.16 p5=47 p25=64 p50=72 p75=89 p95=117
+tap_ms:                        n=6721 mean=168.58 p5=123 p25=136 p50=150 p75=177 p95=272
+frames queued during decide+tap: n=6721 mean=2.08 p5=1 p25=2 p50=2 p75=2 p95=3
+
+== recorded logs (frame-level) ==
+T_rot - T0:                    n=1256 mean=29.45 p5=26 p25=28 p50=28 p75=30 p95=38
+T_prev - T0 (rotation lower bound): n=1256 mean=27.44 p5=24 p25=26 p50=26 p75=28 p95=36
+(T_prev + T_rot)/2 - T0 (midpoint): n=1256 mean=28.44 p5=25.0 p25=27.0 p50=27.0 p75=29.0 p95=37.0
+T_el - T_rot (elixir charge vs rotation): n=1256 mean=-0.15 p5=0 p25=0 p50=0 p75=0 p95=0
+T_sp - T_rot (new own entity vs rotation): n=1115 mean=5.73 p5=0 p25=0 p50=0 p75=0 p95=42
+ticks/s inside play windows:   n=1256 mean=20.00 p5=19.27 p25=19.96 p50=19.98 p75=19.98 p95=20.69
+
+OLS gap_ticks = 25.97 + 12.09 ticks/s * (decide+tap s)   [1:1 host->game would be 20 ticks/s]; corr=0.189
+  decide+tap in [0,200) ms: n=1189 median gap 26 ticks, mean 28.16
+  decide+tap in [200,260) ms: n=3724 median gap 27.0 ticks, mean 28.56
+  decide+tap in [260,320) ms: n=1124 median gap 28.0 ticks, mean 29.51
+  decide+tap in [320,400) ms: n=455 median gap 30 ticks, mean 30.64
+  decide+tap in [400,1000000) ms: n=229 median gap 32 ticks, mean 32.98
+
+== by input configuration ==
+fast_input=False tap_gap_ms=50: gap ticks n=6721 mean=28.94 p5=25 p25=26 p50=28 p75=29 p95=44
+    tap_ms n=6721 mean=168.58 p5=123 p25=136 p50=150 p75=177 p95=272
+device=cpu: decide_ms n=6272 mean=77.49 p5=48 p25=64 p50=71 p75=89 p95=118
+device=cuda: decide_ms n=449 mean=72.64 p5=34 p25=66 p50=76 p75=83 p95=97
