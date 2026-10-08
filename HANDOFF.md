@@ -4476,9 +4476,12 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   0.062 vs 0.070 (R1e) = no distinction; Bats 0.081 vs Goblins 0.298; Log cell mass in the corridor air 0.72 vs ground
 >   0.90. RL did NOT raise it (0.054 -> 0.048). Habit: 55% of live Logs go to the two bridge cells and 54% have
 >   p_play < 0.40 at tau 0.35 (air-only Logs: 76% marginal) -> low-confidence gate plays. Reader identity exact
->   (22,775 air bodies = model batch). **SIM BUG CONFIRMED: RoyaleSim's Log does 0 damage to Skeletons, Goblins,
->   Barbarians (4/4 seeds, several distances) while single units lose exactly 268; Arrows hits Barbarians (-732)** ->
->   RL cannot learn the Log beats swarms. Untested: whether newer RoyaleSim (0.1.20/0.1.21) fixed it. Inventory of
+>   (22,775 air bodies = model batch). ~~SIM BUG~~ **RETRACTED 23:1x: the "Log misses swarms" result was a probe
+>   artifact** (Log aimed at the group's MEAN x; swarms split to both bridges, so the strip sat between lanes). Aimed at
+>   the lead body: Skeletons 81, Goblins 295, Barbarians 804, singles 268 -- identical on the pinned 20261006 runtime and
+>   royalesim 0.1.20 / royalegym 0.1.19 (isolated venv). spell.rs `roll` = swept rectangle, no target cap. The lead's
+>   own 22:2x probe had the same mean-x aim: its Skeletons/Goblins zeros are void; "Log does not hit air" still holds
+>   for the single bodies (Baby Dragon 1152, Balloon 1676 under the strip), Minions/Bats rows are unreliable. Inventory of
 >   old-system fixes missing now: Log corridor lateral aim, Tornado never targets buildings, dead-lane X-Bow latch
 >   (owner-reported twice), Tornado king-pull; air veto now opt-in. Outputs scratchpad/gauntlet/L73/log_air/ (worktree).
 >   ~15:40" (Q1 card sampling flag, Q2 area-aware spell aim, Q3 GPU A/Bs after R1e, Q4 R1e approval ping, Q5 fixes);
