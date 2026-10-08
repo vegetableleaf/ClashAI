@@ -78,10 +78,13 @@ class GenPilot(LegacyGenPilot):
         p = float(torch.sigmoid(out['gate'][0]))
         stalled = self.stalled(frame, info['el_int'])
         allowed = allowed_slots(np.array([h[0] > 0 for h in info['hand']]), info['costs'], info['el_int'])
-        tick = int(frame['game_tick'])
-        step = hazard_step_s(getattr(self, '_hazard_prev', None), tick)
+        hazard_on = options.gate_decode != 'threshold'  # off: the frame / pilot state are not even read
+        if hazard_on:
+            tick = int(frame['game_tick'])              # the reader's game clock; a frame without it raises
+            step = hazard_step_s(getattr(self, '_hazard_prev', None), tick)
         if not allowed.any():
-            self._hazard_prev = (tick, False)
+            if hazard_on:
+                self._hazard_prev = (tick, False)
             return self._audited(dict(play=False, no_affordable=True, p_play=p, hand_pos=-1, deck_index=-1, card=0,
                         form=FORM_PAD, bs=info['bs'], name=None, el_int=info['el_int'], stalled=stalled,
                         **lookahead))
@@ -92,7 +95,7 @@ class GenPilot(LegacyGenPilot):
                else self.gate_tau)
         playing = p > tau or stalled                    # SIM decide_batch: (p > tau) | stalled
         hazard = None
-        if options.gate_decode != 'threshold':          # SIM decide_batch: the same hazard_draw on the same context
+        if hazard_on:                                   # SIM decide_batch: the same hazard_draw on the same context
             if options.gate_decode == 'hazard':
                 playing = bool(stalled)
             if not playing:
@@ -105,9 +108,9 @@ class GenPilot(LegacyGenPilot):
                  deck_index=info['hand_deck_indices'][pos], card=card, form=form, bs=bs, name=name, **lookahead)
         if options.tau_phase is not None:
             d['gate_tau'] = tau
-        if options.gate_decode != 'threshold':
+        if hazard_on:
             d.update(hazard_step_s=step, hazard_play=bool(hazard and d['play']))
-        self._hazard_prev = (tick, not d['play'])
+            self._hazard_prev = (tick, not d['play'])
         if card > 0:
             logits = self.model(b, card=torch.tensor([card], device=self.dev),
                                 form=torch.tensor([form], device=self.dev))['cell']
