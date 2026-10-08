@@ -4501,6 +4501,10 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **W4 blocked by the permission classifier:** copying its backward-compatible pipeline/decision_options.py (gate_decode
+>   = threshold | hazard | hazard_below_tau; gate_rate inverts the 2-s WAIT sampling; hazard_play draws per decision with
+>   the match RNG) into the VM's shared ~/ClashBot was denied ("Modify Shared Resources"), as was a read-only ls there.
+>   Lead did NOT do it on W4's behalf (laundering); told W4 to run from an isolated ~/w4/repo copy; surfaced to the owner.
 > * **W1 own_effects offline (worktree agent-aca294b6 @d4e8103):** 82 live matches, live velocity rule (newest frame <=
 >   t-10): share of moving enemy bodies off >= 1.5 tiles at +26 ticks inside my own effect zone 0.36 -> 0.21 (median 1.08
 >   -> 0.76 tiles); Log 0.19 -> 0.13, Tornado 0.61 -> 0.33, IW ability 0.20 -> 0.18 (n 152); at second-play decisions
