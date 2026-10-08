@@ -34,25 +34,22 @@ for name, arm in (("base", base), ("lethal_rocket", lr)):
     print(f"  {name}: wins {sum(score(arm[k]) for k in keys):.1f} / {len(keys)}; outcomes {dict(Counter(arm[k]['outcome'] for k in keys))}")
 b = sum(score(lr[k]) > score(base[k]) for k in keys); c = sum(score(lr[k]) < score(base[k]) for k in keys)
 print(f"  paired: lr better {b} / worse {c} (sign test p {sign_p(b, c):.3f})")
-fires = [(k, p) for k in keys for p in lr[k].get("plays", []) if p.get("why") == "lethal_rocket"]
-print(f"lethal_rocket fires {len(fires)} in {len({k for k, _ in fires})} matches; accepted {sum(p['accepted'] for _, p in fires)}; "
-      f"earliest decision tick {min((p['tick'] for _, p in fires), default=None)} "
-      f"(OT edge: model-board time >= 180 s = decision tick + 26 >= 3600)")
-print(f"  fires at decision tick < 3574 (before the OT edge even with the 26-tick look-ahead): "
-      f"{sum(p['tick'] < 3574 for _, p in fires)}")
-fm = sorted({k for k, _ in fires})
-print(f"  matches with a fire: lr wins {sum(score(lr[k]) for k in fm):.1f} / {len(fm)}; same seeds in base: "
-      f"{sum(score(base[k]) for k in fm):.1f}")
+
+
+def beh(r):
+    b = r.get("behaviour") or {}
+    return b if isinstance(b, dict) else eval(b)          # older writers stored a repr string
+
+
 for name, arm in (("base", base), ("lethal_rocket", lr)):
-    rk = [p for k in keys for p in arm[k].get("plays", []) if str(p.get("card")).lower() == "rocket" and p["tick"] >= 3574]
-    print(f"  {name}: OT Rocket plays {len(rk)} ({Counter(p.get('why') for p in rk)})")
-if not any("plays" in base[k] for k in keys):
-    print("NOTE: search_s0 results carry no 'plays' list -- fires are counted by fire_log_s0.py (below)")
-for name, arm in (("base", base), ("lethal_rocket", lr)):
-    bh = [arm[k]["behaviour"] for k in keys]
-    rk = sum(b["phase_cards"].get("OT", {}).get("Rocket", 0) for b in bh)
-    print(f"  {name}: OT Rocket plays {rk}; finish_offs {sum(b.get('finish_offs', 0) for b in bh)}; OT matches "
-          f"{sum(b['economy']['OT']['minutes'] > 0 for b in bh)}")
+    bh = [beh(arm[k]) for k in keys]
+    rk = sum(((b.get("phase_cards") or {}).get("OT") or {}).get("Rocket", 0) for b in bh)
+    ot = sum(((b.get("economy") or {}).get("OT") or {}).get("minutes", 0) > 0 for b in bh)
+    print(f"  {name}: OT Rocket plays {rk}; finish_offs {sum(b.get('finish_offs', 0) for b in bh)}; matches reaching OT {ot}")
+print("(search_s0 results carry no per-play 'why'; fires are counted by fire_log_s0.py below)")
+ch = [k for k in keys if score(lr[k]) != score(base[k])]
+print("  changed outcomes (tag, base -> lr, end_tick base/lr):",
+      [(k, base[k]["outcome"], lr[k]["outcome"], base[k]["end_tick"], lr[k]["end_tick"]) for k in ch])
 
 # fires logged by fire_log_s0.py (sim_fires.sh) and the logged re-run's determinism vs the plain lr arm
 import glob

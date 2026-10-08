@@ -1,0 +1,16 @@
+v3_base evo rc=0 18:20:42
+v3_lr evo rc=0 18:21:35
+lrlog done 18:34:51
+v3_base lad rc=0 18:39:10
+v3_lr lad rc=0 18:40:38
+DONE
+paired games 960 (base 960, lr 960)
+  base: wins 652.0 / 960; outcomes {'win': 649, 'loss': 305, 'draw': 6}
+  lethal_rocket: wins 660.0 / 960; outcomes {'win': 657, 'loss': 297, 'draw': 6}
+  paired: lr better 8 / worse 0 (sign test p 0.008)
+  base: OT Rocket plays 789; finish_offs 0; matches reaching OT 626
+  lethal_rocket: OT Rocket plays 866; finish_offs 0; matches reaching OT 626
+(search_s0 results carry no per-play 'why'; fires are counted by fire_log_s0.py below)
+  changed outcomes (tag, base -> lr, end_tick base/lr): [(('evo', 's0:gen:217'), 'loss', 'win', 5318, 5073), (('evo', 's0:gen:353'), 'loss', 'win', 4120, 3753), (('evo', 's0:gen:381'), 'loss', 'win', 4081, 3673), (('evo', 's0:gen:402'), 'loss', 'win', 4413, 3673), (('lad', 's0:gen:104'), 'loss', 'win', 5217, 5043), (('lad', 's0:gen:426'), 'loss', 'win', 5594, 5393), (('lad', 's0:gen:454'), 'loss', 'win', 5228, 5113), (('lad', 's0:gen:48'), 'loss', 'win', 4779, 3823)]
+logged fires 349: model-board t_sec min 180.30 (OT edge 180.00), before 180 s: 0; lanes {'R': 188, 'L': 161}; target HP median 195; damage/level {(342, 11): 349}
+  logged re-run outcomes identical to the lr arm: 960 / 960
