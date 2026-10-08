@@ -29,6 +29,7 @@ class DecisionOptions:
     tau_phase: Optional[tuple] = None       # (1x, 2x, OT) gate thresholds; None = the single cfg tau
     xbow_class: str = 'argmax'
     xbow_class_floor: float = 0.2
+    log_aim: str = 'argmax'
 
     def __post_init__(self):
         if self.card_choice not in ('argmax', 'filtered'):
@@ -48,11 +49,13 @@ class DecisionOptions:
             raise ValueError('xbow_class must be argmax or class_sample')
         if not math.isfinite(self.xbow_class_floor) or not 0 <= self.xbow_class_floor <= 0.5:
             raise ValueError('xbow_class_floor must be in [0, 0.5]')
+        if self.log_aim not in ('argmax', 'log_barrel'):
+            raise ValueError('log_aim must be argmax or log_barrel')
 
     @property
     def active(self):
         return (self.card_choice != 'argmax' or self.spell_aim != 'argmax' or self.tau_phase is not None
-                or self.xbow_class != 'argmax')
+                or self.xbow_class != 'argmax' or self.log_aim != 'argmax')
 
 
 def options_from_config(cfg=None):
@@ -73,6 +76,10 @@ def add_arguments(parser):
                         help='class_sample: draw offensive/defensive X-Bow class from the cell mass, then argmax inside it')
     parser.add_argument('--xbow-class-floor', type=float, default=0.2,
                         help='class_sample draws only when the minority class mass >= this; else the majority class')
+    parser.add_argument('--log-aim', choices=('argmax', 'log_barrel'), default='argmax',
+                        help='log_barrel: with an enemy Goblin Barrel in flight (visible target), aim the Log / '
+                             'Barbarian Barrel at the cells whose rolling corridor covers its landing point, '
+                             'highest learned cell probability among them; else the plain argmax')
     parser.add_argument('--decision-seed', type=int, default=0,
                         help='separate seeded card-choice stream; recorded with each experiment')
 
@@ -208,8 +215,65 @@ def xbow_class_choice(logits, offensive, floor, rng):
     return int(x.masked_fill(~keep, -torch.inf).argmax()), defensive, sampled
 
 
-def choose_cells(logits, card_names, options, *, rngs=None, enemy_alive=None, grid=None):
-    """Aim only after card selection. Other cards retain exact argmax behaviour."""
+BARREL_KEY = 'goblin-barrel'      # vocab base key: the evolved barrel and its decoy share it
+ROLLING_CARDS = {'log': 'Log', 'thelog': 'Log', 'barblog': 'BarbLog', 'barbarianbarrel': 'BarbLog'}
+
+
+def rolling_corridor(name):
+    """(half-width, half-depth, roll range) in tiles for the Log / Barbarian Barrel, else None."""
+    card = ROLLING_CARDS.get(re.sub(r'[^a-z]', '', str(name).split('@')[0].lower()))
+    if card is None:
+        return None
+    from .public_geometry import constants
+    return tuple(float(v) / 1000.0 for v in constants()['rolling'][card])
+
+
+def barrel_landings(projectiles, barrel_id):
+    """Enemy Goblin Barrels in flight with a visible target, from the model's own projectile tokens
+    (projectile_observation.PROJECTILE_COLS: card, enemy, x, y, target_x, target_y, ...; board-normalised, my
+    frame) -> [(target_x, target_y)]. Unknown targets are -1 and are skipped."""
+    if barrel_id is None:
+        return []
+    p = projectiles.detach().cpu().numpy() if torch.is_tensor(projectiles) else np.asarray(projectiles)
+    p = p.astype(np.float64).reshape(-1, p.shape[-1])
+    keep = (p[:, 0] == barrel_id) & (p[:, 1] == 1) & ((p[:, 4:6] >= 0) & (p[:, 4:6] <= 1)).all(1)
+    return [tuple(t) for t in p[keep, 4:6]]
+
+
+@lru_cache(maxsize=4)
+def cell_centres_tiles(grid):
+    from .model_v3 import GRID_X, GRID_Y
+    if grid not in ('floor', 'lattice'):
+        raise ValueError(f'unknown grid {grid!r}')
+    off = 0.5 if grid == 'floor' else 0.0
+    c = np.arange(GRID_X * GRID_Y)
+    return (c % GRID_X + off) * 18.0 / GRID_X, (c // GRID_X + off) * 32.0 / GRID_Y
+
+
+def log_barrel_cell(logits, corridor, barrels, grid):
+    """The cell whose rolling corridor covers the most barrel landing points (covering: |dx| <= half-width and the
+    landing lies between half-depth behind the cell and the roll range ahead; my Log rolls toward decreasing board y),
+    highest logit among those. None (= keep the plain choice) without a barrel or a finite covering cell.
+    Static geometry only: it ignores the barrel's time to impact (tokens carry tti_s) and the Log's travel time.
+    UNVALIDATED live (recorded live logs carry no projectile arrays); SIM A/B 192 games: no win benefit. Off by default."""
+    if not barrels:
+        return None
+    half, depth, reach = corridor
+    x, y = cell_centres_tiles(grid)
+    count = np.zeros(len(x), dtype=np.int64)
+    for bx, by in barrels:
+        ahead = y - by * 32.0
+        count += (np.abs(x - bx * 18.0) <= half) & (ahead >= -depth) & (ahead <= reach)
+    if count.max() == 0:
+        return None
+    keep = torch.as_tensor(count == count.max(), device=logits.device)
+    masked = logits.masked_fill(~keep, -torch.inf)
+    return int(masked.argmax()) if bool(torch.isfinite(masked).any()) else None
+
+
+def choose_cells(logits, card_names, options, *, rngs=None, enemy_alive=None, grid=None, barrels=None):
+    """Aim only after card selection. Other cards retain exact argmax behaviour.
+    ``barrels`` (log_aim): per row, the enemy Goblin Barrel landing points from ``barrel_landings``."""
     result = logits.argmax(dim=-1)
     if options.xbow_class == 'class_sample':
         if len(card_names) != len(logits):
@@ -221,6 +285,18 @@ def choose_cells(logits, card_names, options, *, rngs=None, enemy_alive=None, gr
                 raise ValueError('xbow class_sample requires enemy tower states, the grid and per-row RNGs')
             offensive = xbow_offensive_cells(tuple(bool(a) for a in enemy_alive[i]), grid)
             result[i] = xbow_class_choice(logits[i], offensive, options.xbow_class_floor, rngs[i])[0]
+    if options.log_aim == 'log_barrel':
+        if len(card_names) != len(logits):
+            raise ValueError('one card identity required per cell-logit row')
+        for i, name in enumerate(card_names):
+            corridor = rolling_corridor(name)
+            if corridor is None:
+                continue
+            if barrels is None or grid is None:
+                raise ValueError('log_barrel requires the per-row barrel landing points and the grid')
+            cell = log_barrel_cell(logits[i], corridor, barrels[i], grid)
+            if cell is not None:
+                result[i] = cell
     if options.spell_aim == 'argmax':
         return result
     if len(card_names) != len(logits):
@@ -238,9 +314,10 @@ def choose_cells(logits, card_names, options, *, rngs=None, enemy_alive=None, gr
 
 @torch.no_grad()
 def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options, rngs, card_names,
-                 t_sec=None, enemy_alive=None, grid=None):
+                 t_sec=None, enemy_alive=None, grid=None, projectiles=None):
     """Optional branch of e1_eval's live decision; default branch remains untouched.
-    ``t_sec`` (tau_phase) and ``enemy_alive`` [(K, L, R) alive] + ``grid`` (xbow_class) are per-row match context."""
+    ``t_sec`` (tau_phase) and ``enemy_alive`` [(K, L, R) alive] + ``grid`` (xbow_class) are per-row match context;
+    ``projectiles`` (log_aim) = each row's model projectile tokens, decoded with the model's own card vocabulary."""
     tau = gate_taus(options, tau, t_sec, len(allowed))
     playing = allowed.any(axis=1) & ((np.asarray(p) > tau) | stalled)
     slots = [choose_slot(heads['card'][r], allowed[r], options, rngs[r], playing=bool(playing[r]))
@@ -253,9 +330,15 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
         slot_tensor = torch.tensor([slots[r] for r in ids], device=device)
         logits = model.cell_logits(sub_enc, slot_tensor)
         names = [card_names[r][slots[r]] for r in ids] if card_names is not None else [''] * len(ids)
-        if (options.spell_aim != 'argmax' or options.xbow_class != 'argmax') and card_names is None:
-            raise ValueError('Rocket aim / X-Bow class require explicit public card identities')
-        cells[ids] = choose_cells(logits, names, options, rngs=[rngs[r] for r in ids], grid=grid,
+        if (options.spell_aim != 'argmax' or options.xbow_class != 'argmax' or options.log_aim != 'argmax')                 and card_names is None:
+            raise ValueError('Rocket aim / X-Bow class / Log aim require explicit public card identities')
+        barrels = None
+        if options.log_aim != 'argmax':
+            if projectiles is None:
+                raise ValueError('log_barrel requires the model projectile tokens of every row')
+            barrel_id = getattr(model, 'gid', {}).get(BARREL_KEY)
+            barrels = [barrel_landings(projectiles[r], barrel_id) for r in ids]
+        cells[ids] = choose_cells(logits, names, options, rngs=[rngs[r] for r in ids], grid=grid, barrels=barrels,
                                   enemy_alive=None if enemy_alive is None else [enemy_alive[r] for r in ids]
                                   ).cpu().numpy()
     tau = np.broadcast_to(tau, len(slots))
@@ -285,4 +368,9 @@ def match_kwargs(matches):
         boards = [m._cur[1] for m in matches]    # the prepared decision's engine BoardState (my frame)
         out.update(t_sec=[float(b.t_sec) for b in boards], grid=cfg['grid'],
                    enemy_alive=[tuple(bool(t.alive) for t in b.towers[3:6]) for b in boards])
+    if options.log_aim != 'argmax':     # the very projectile tokens the model saw (gen_row, fv >= 4), as live's batch
+        rows = [getattr(m, '_gen_row', None) for m in matches]
+        if any(r is None or 'projectiles' not in r for r in rows):
+            raise ValueError('log_barrel requires generalist rows with public projectile tokens (feature_version >= 4)')
+        out.update(grid=cfg['grid'], projectiles=[r['projectiles'] for r in rows])
     return out
