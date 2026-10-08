@@ -1,0 +1,26 @@
+ot_behind lad rc=0 23:25:26
+ot lad rc=0 23:35:37
+ot evo rc=0 23:35:40
+ot_behind evo rc=0 23:36:31
+DONE
+paired games 960 (ot 960, ot_behind 960)
+  ot: wins 634.0; outcomes {'win': 634, 'loss': 326}; reached OT (end_tick > 3600) 623
+  ot_behind: wins 633.0; outcomes {'win': 633, 'loss': 327}; reached OT (end_tick > 3600) 625
+  paired: ot_behind better 0 / worse 1 (sign test p 1.000)
+ot_behind regulation fires 12 in 12 matches; model-board t_sec min 77.30000000000001 max 175.3 (cutoff 176.70); all behind=True; targets HP median 263
+  OT fires: ot 334, ot_behind 333
+  regulation-fire matches: reached OT under ot_behind but not under ot: 4; reached OT under both 4; neither 2
+  on those matches: ot wins 4.0 / 12, ot_behind 3.0; better 0, worse 1
+    ('evo', 's0:gen:10'): first fire t 165.80 R hp 205 | ot loss 1-2 end 4961 | ot_behind loss 1-2 end 6155
+    ('evo', 's0:gen:142'): first fire t 175.30 L hp 59 | ot loss 0-1 end 3600 | ot_behind loss 1-3 end 4667
+    ('evo', 's0:gen:239'): first fire t 172.80 R hp 82 | ot loss 0-1 end 3600 | ot_behind loss 1-2 end 6126
+    ('evo', 's0:gen:413'): first fire t 173.80 R hp 149 | ot loss 1-2 end 6113 | ot_behind loss 1-2 end 5332
+    ('evo', 's0:gen:431'): first fire t 90.80 L hp 322 | ot win 2-1 end 4375 | ot_behind win 3-1 end 3323
+    ('evo', 's0:gen:435'): first fire t 156.30 R hp 333 | ot loss 1-2 end 6142 | ot_behind loss 1-2 end 3978
+    ('evo', 's0:gen:87'): first fire t 168.80 L hp 324 | ot loss 0-1 end 3600 | ot_behind loss 1-2 end 4083
+    ('lad', 's0:gen:226'): first fire t 157.30 R hp 304 | ot win 2-1 end 3600 | ot_behind win 2-1 end 3600
+    ('lad', 's0:gen:280'): first fire t 77.30 L hp 230 | ot win 2-1 end 3673 | ot_behind loss 1-2 end 3600
+    ('lad', 's0:gen:288'): first fire t 134.80 R hp 326 | ot loss 0-1 end 3600 | ot_behind loss 1-2 end 4101
+    ('lad', 's0:gen:356'): first fire t 150.80 L hp 70 | ot win 2-1 end 3923 | ot_behind win 2-1 end 3983
+    ('lad', 's0:gen:433'): first fire t 153.30 L hp 263 | ot loss 1-2 end 3600 | ot_behind loss 1-2 end 3600
+  outcome changes on matches WITHOUT a regulation fire (OT-rule / randomness drift): 0 []
