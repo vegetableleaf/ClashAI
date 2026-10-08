@@ -4649,6 +4649,16 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   threats answered within 2 s in 2x/OT. This CONTRADICTS the lead's lean against tau_phase (the lethal case is now
 >   handled by --lethal-rocket). VM ~/ClashBot drift: push_refine.py (sha dd3ebbd3), model_gen.py (95ba91d4),
 >   behaviour_telemetry.py (b7617809) = the branch HEAD, NOT in main -> merge with verification (queued).
+> * **BUNDLE DEPLOYED 049772e (owner restarts live).** lethal-rocket merged (blind PASS_WITH_NOTES on a613d65; notes:
+>   Rocket level assumed = tower level -- live 497 = level 15 consistent; SIM/live RNG use differs after a fire; SIM
+>   finish_offs metric void). LIVE_OPTIONS now: `--xbow-class class_sample --xbow-class-floor 0.3 --tau-phase 0.35 0.45
+>   0.55 --spell-aim rocket_area --own-effects --gate-decode hazard_below_tau --gate-hazard-min-elixir 9 --iw-press-pstar
+>   0.03 --log-aim log_barrel --lethal-rocket ot`; CKPT_OVERRIDE unchanged (towerref_w2, 41b52a83); device default auto.
+>   Plain `live_play.py --check`: LIVE_CHECK_PASS, cuda, every option applied. Tests 88 passed (live_options, lethal,
+>   gate_decode, iw_pstar, decision_options). test_live_options pins the file (DEPLOYED_FILE). Rollback of any option:
+>   delete its flags from LIVE_OPTIONS (and update DEPLOYED_FILE). Merge worktrees removed (links deleted first).
+> * **Overspending (owner's top issue):** economy decomposition worker (a3a6e12e) also runs a SIM decide_every 10 vs 4
+>   arm (live decides on every fresh frame; threshold decoding fires on the first flicker above tau).
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
