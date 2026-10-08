@@ -1,0 +1,12 @@
+R1e         barrel threats=106 responded=103 | dist resp->landing median 4.0 p75 10.5, >3 tiles 57/103=0.55 [0.46,0.65] | landing >3t from tower: 17, responded AT tower (<=2t) 1/17=0.06 [0.01,0.27] | Log misses landing 13/34=0.38 [0.24,0.55] | resp cards {'Log': 34, 'Knight': 19, 'IceWizard': 19, 'Skeletons': 17}
+R1e         miner  threats= 71 responded= 68 | dist resp->landing median 6.0 p75 8.1, >3 tiles 47/68=0.69 [0.57,0.79] | landing >3t from tower: 20, responded AT tower (<=2t) 1/20=0.05 [0.01,0.24] | Log misses landing 6/12=0.50 [0.25,0.75] | resp cards {'IceWizard': 16, 'Knight': 12, 'Log': 12, 'Skeletons': 11}
+   barrel target present in raw projectile at first sighting: 107/107
+   miner visible before surfacing: lead median 1.8s (>=0.5 s: 72/74), first-seen distance to destination median 17.5 tiles
+STACK_since04 barrel threats= 34 responded= 32 | dist resp->landing median 2.6 p75 7.1, >3 tiles 16/32=0.50 [0.34,0.66] | landing >3t from tower: 2, responded AT tower (<=2t) 0/2=0.00 [0.00,0.66] | Log misses landing 3/9=0.33 [0.12,0.65] | resp cards {'Log': 9, 'Skeletons': 8, 'IceWizard': 5, 'Knight': 5}
+STACK_since04 miner  threats= 27 responded= 27 | dist resp->landing median 6.1 p75 8.2, >3 tiles 20/27=0.74 [0.55,0.87] | landing >3t from tower: 9, responded AT tower (<=2t) 0/9=0.00 [0.00,0.30] | Log misses landing 3/4=0.75 [0.30,0.95] | resp cards {'Skeletons': 7, 'Knight': 6, 'IceWizard': 5, 'Log': 4}
+   barrel target present in raw projectile at first sighting: 34/34
+   miner visible before surfacing: lead median 1.9s (>=0.5 s: 27/27), first-seen distance to destination median 17.2 tiles
+STACK_RA barrel n=0
+STACK_RA miner n=0
+PRO         barrel threats=988 responded=936 | dist resp->landing median 4.1 p75 7.8, >3 tiles 532/936=0.57 [0.54,0.60] | landing >3t from tower: 50, responded AT tower (<=2t) 6/50=0.12 [0.06,0.24] | Log misses landing 54/306=0.18 [0.14,0.22] | resp cards {'Log': 306, 'Skeletons': 166, 'Knight': 143, 'Tornado': 129}
+PRO         miner  threats=1012 responded=890 | dist resp->landing median 4.9 p75 7.8, >3 tiles 592/890=0.67 [0.63,0.70] | landing >3t from tower: 251, responded AT tower (<=2t) 7/251=0.03 [0.01,0.06] | Log misses landing 50/75=0.67 [0.55,0.76] | resp cards {'Skeletons': 216, 'Knight': 197, 'Tesla': 172, 'IceWizard': 151}

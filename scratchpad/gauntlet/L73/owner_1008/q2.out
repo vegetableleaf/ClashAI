@@ -1,0 +1,27 @@
+== R1e matches 195 presses 289 IW deploys 1185 presses/deploy 0.24 presses/match 1.48
+  by phase Counter({'1x': 134, '2x': 103, 'OT': 52})  branch Counter({'iw_clump': 160, 'iw_wincon': 129})
+  elixir at press median 3.1; own elixir>=5 46/289=0.16 [0.12,0.21]; <=2 5/289=0.02 [0.01,0.04]
+  delay since IW deploy median 5.0s
+  [pro analog] own played last 3s 213/289=0.74 [0.68,0.78] | opp played on my half last 6s 82/289=0.28 [0.23,0.34] | opp troop cost last 6s>=4 178/289=0.62 [0.56,0.67] | no opp play in 6s 62/289=0.21 [0.17,0.27]
+  threat value on my half at press: median 5.6; <=3 elixir 93/289=0.32 [0.27,0.38]; <=2 76/289=0.26 [0.22,0.32]
+  my non-IW elixir committed in last 5s >= threat 92/289=0.32 [0.27,0.37] ; OVERSPEND (threat<=3 OR committed>=threat) 109/289=0.38 [0.32,0.43]
+   branch iw_clump overspend 79/160=0.49 [0.42,0.57]
+   branch iw_wincon overspend 30/129=0.23 [0.17,0.31]
+== STACK_ALON matches 77 presses 149 IW deploys 495 presses/deploy 0.30 presses/match 1.94
+  by phase Counter({'1x': 54, '2x': 52, 'OT': 43})  branch Counter({'iw_clump': 95, 'iw_wincon': 54})
+  elixir at press median 3.3; own elixir>=5 24/149=0.16 [0.11,0.23]; <=2 1/149=0.01 [0.00,0.04]
+  delay since IW deploy median 3.3s
+  [pro analog] own played last 3s 129/149=0.87 [0.80,0.91] | opp played on my half last 6s 53/149=0.36 [0.28,0.44] | opp troop cost last 6s>=4 121/149=0.81 [0.74,0.87] | no opp play in 6s 15/149=0.10 [0.06,0.16]
+  threat value on my half at press: median 7.0; <=3 elixir 29/149=0.19 [0.14,0.27]; <=2 18/149=0.12 [0.08,0.18]
+  my non-IW elixir committed in last 5s >= threat 31/149=0.21 [0.15,0.28] ; OVERSPEND (threat<=3 OR committed>=threat) 38/149=0.26 [0.19,0.33]
+   branch iw_clump overspend 23/95=0.24 [0.17,0.34]
+   branch iw_wincon overspend 15/54=0.28 [0.18,0.41]
+== STACK_OFF matches 12 presses 24 IW deploys 79 presses/deploy 0.30 presses/match 2.00
+  by phase Counter({'1x': 9, '2x': 9, 'OT': 6})  branch Counter({'iw_clump': 14, 'iw_wincon': 10})
+  elixir at press median 3.4; own elixir>=5 3/24=0.12 [0.04,0.31]; <=2 0/24=0.00 [0.00,0.14]
+  delay since IW deploy median 4.4s
+  [pro analog] own played last 3s 21/24=0.88 [0.69,0.96] | opp played on my half last 6s 12/24=0.50 [0.31,0.69] | opp troop cost last 6s>=4 20/24=0.83 [0.64,0.93] | no opp play in 6s 1/24=0.04 [0.01,0.20]
+  threat value on my half at press: median 9.0; <=3 elixir 2/24=0.08 [0.02,0.26]; <=2 2/24=0.08 [0.02,0.26]
+  my non-IW elixir committed in last 5s >= threat 4/24=0.17 [0.07,0.36] ; OVERSPEND (threat<=3 OR committed>=threat) 4/24=0.17 [0.07,0.36]
+   branch iw_clump overspend 3/14=0.21 [0.08,0.48]
+   branch iw_wincon overspend 1/10=0.10 [0.02,0.40]

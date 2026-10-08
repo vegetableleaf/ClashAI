@@ -4501,6 +4501,25 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **OWNER 11:1x:** rocket_area ON live since 10:36 (owner request); owner then stopped live (STOP 10:54, not by lead)
+>   and ran live_play.py DIRECTLY at 11:05 with the plain defaults (flat tau .35, no tau_phase, xbow argmax, spell
+>   argmax): 73 plays, 0 Rockets, OT spent every 1.5-2 s at 1-3 elixir with p_play .35-.45 -> 3-crown loss ("collapsed
+>   to cheap cards"). The phase thresholds (OT .55) are what bank elixir; they live in the decode options, not the model.
+>   Live is STOPPED (STOP file present; no live_play running) -- restart only on the owner's word.
+>   Owner rulings: initiative = learned fix only (no narrowed anti-leak) + the chip-Rocket add-on; start all 4 fixes.
+>   Workers (opus, worktrees): W1 extrapolate own_effects (Log knockback / Tornado pull / IW slow; offline forecast
+>   error 0.41 -> ?, then v3 SIM A/B); W2 Ice Wizard press = learned pro hazard model, threshold tuned to pro press
+>   context (elixir >= 5 at press 62% vs bot 16%), same in SIM and live; W3 `log_barrel` Log aim at the visible barrel
+>   target + LIVE_OPTIONS file so a direct live_play.py run uses the deployed options; W4 initiative: gate calibration
+>   (per-step hazard vs decision cadence) + learned gate add-on (new file pipeline/gate_refine.py). Chip-Rocket worker
+>   continues (tower features). GPU lock: scratchpad/gauntlet/L73/centre_col/gpu.lock.
+> * **Owner Q answers (owner_1008/, measured):** Q1 empty board 1x >= 9 elixir: stack AL-off 0 plays in 52 s / 18
+>   episodes vs pros P(5 s) .67; 2x/OT stack plays (n small) mostly offensive X-Bow 50-55% vs pros' mix. Q2 IW press from
+>   a hand rule + non-binding hazard gate; elixir >= 5 at press 16% vs pros 62%; card in last 3 s 87% vs 45%. Q3 conflicts:
+>   aggregate overspend = pros (.29 vs .27) and cadence fine (no decision while pending) -> contradicted; forecast error
+>   in my own Log/Tornado/IW zone .41 vs .11 baseline -> the look-ahead is the cause (measured). Q4 "answers at my own
+>   princess tower" contradicted (0/11 stack); Log misses barrels 38% (R1e) vs pros 18%; miner visible underground
+>   ~1.8 s early.
 > * **CORRECTION 10:3x -- the v2 "beats R1e significantly" was driven by the S1 opponent.** S1 never initiates; R1e
 >   (and S1) idle -> draws, while R3c / AL initiate and win. Split by opponent (`~/paired_split.py`, idle = < 5 plays):
 >   vs GEN only: stack2k (AL) vs R1e 68 vs 59 (23/14, p .19) / 62 vs 57.5 (21/16, p .51); live2 (no AL) vs R1e 67 vs 59

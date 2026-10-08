@@ -1,0 +1,9 @@
+== forecast error: 26-tick dead reckoning vs real position, enemy units that moved, recorded-frame matches
+matches with frames 82
+no_recent_play       n= 11242  err>=1.5 tiles: 0.11 [0.09, 0.13]  median err 0.37
+my_other_play        n=  9863  err>=1.5 tiles: 0.15 [0.13, 0.16]  median err 0.48
+my_effect_elsewhere  n=  1625  err>=1.5 tiles: 0.19 [0.15, 0.22]  median err 0.56
+my_effect_hit        n=  2074  err>=1.5 tiles: 0.41 [0.38, 0.44]  median err 1.22
+  at SECOND-play decisions (<=0.2 s after a confirm) my_effect_hit    n=278 err>=1.5: 0.31 [0.22, 0.40]
+  at SECOND-play decisions (<=0.2 s after a confirm) my_other_play    n=796 err>=1.5: 0.14 [0.11, 0.17]
+  at SECOND-play decisions (<=0.2 s after a confirm) no_recent_play   n=0 err>=1.5: n/a

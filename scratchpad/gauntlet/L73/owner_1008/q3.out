@@ -1,0 +1,30 @@
+== consecutive defensive pairs (both plays aimed at my half, no X-Bow); threat = enemy play cost landing at Y<20 in the 8 s before
+R1e        3s: defensive pairs 2366 (32.2 per 100 plays) | spent>threat+1: 753/2366=0.32 [0.30,0.34] | median spent 4 vs threat 5 | Log->Tornado 22 (0.3/100 plays) | 2 spells on threat<=3: 5
+R1e        5s: defensive pairs 3814 (51.9 per 100 plays) | spent>threat+1: 1340/3814=0.35 [0.34,0.37] | median spent 5 vs threat 5 | Log->Tornado 39 (0.5/100 plays) | 2 spells on threat<=3: 17
+STACK_ALON 3s: defensive pairs 938 (33.6 per 100 plays) | spent>threat+1: 272/938=0.29 [0.26,0.32] | median spent 5 vs threat 5 | Log->Tornado 8 (0.3/100 plays) | 2 spells on threat<=3: 4
+STACK_ALON 5s: defensive pairs 1357 (48.6 per 100 plays) | spent>threat+1: 416/1357=0.31 [0.28,0.33] | median spent 5 vs threat 5 | Log->Tornado 12 (0.4/100 plays) | 2 spells on threat<=3: 6
+STACK_OFF  3s: defensive pairs 159 (34.9 per 100 plays) | spent>threat+1: 38/159=0.24 [0.18,0.31] | median spent 5 vs threat 5 | Log->Tornado 3 (0.7/100 plays) | 2 spells on threat<=3: 0
+STACK_OFF  5s: defensive pairs 220 (48.4 per 100 plays) | spent>threat+1: 63/220=0.29 [0.23,0.35] | median spent 5 vs threat 5 | Log->Tornado 5 (1.1/100 plays) | 2 spells on threat<=3: 1
+PRO        3s: defensive pairs 27371 (28.7 per 100 plays) | spent>threat+1: 7329/27371=0.27 [0.26,0.27] | median spent 5 vs threat 6 | Log->Tornado 251 (0.3/100 plays) | 2 spells on threat<=3: 92
+PRO        5s: defensive pairs 41895 (43.9 per 100 plays) | spent>threat+1: 14518/41895=0.35 [0.34,0.35] | median spent 5 vs threat 5 | Log->Tornado 410 (0.4/100 plays) | 2 spells on threat<=3: 198
+
+== live cadence: tap->confirm, confirm->next tap
+R1e tap->confirm median 1.30s p90 1.90s | next tap within 0.2 s of a confirm: 0.18 of confirms | median confirm->next tap 2.2s
+STACK_ALON tap->confirm median 1.40s p90 1.55s | next tap within 0.2 s of a confirm: 0.21 of confirms | median confirm->next tap 2.5s
+STACK_OFF tap->confirm median 1.40s p90 1.56s | next tap within 0.2 s of a confirm: 0.19 of confirms | median confirm->next tap 2.5s
+
+== IW ability pressed within 3 s after my Log/Tornado
+R1e 42/289=0.15 [0.11,0.19]
+STACK_ALON 27/149=0.18 [0.13,0.25]
+STACK_OFF 4/24=0.17 [0.07,0.36]
+PRO hero crawl (any own spell) 39/363=0.11 [0.08,0.14]
+
+== forecast error: 26-tick dead reckoning vs real position, enemy units that moved, recorded-frame matches
+Traceback (most recent call last):
+  File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L73\owner_1008\q3.py", line 148, in <module>
+    per = [forecast_rows(m) for m in rec]
+           ~~~~~~~~~~~~~^^^
+  File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L73\owner_1008\q3.py", line 104, in forecast_rows
+    fx = min(max(e[1] + (e[1] - p[1]) / g * H, 0), 18000); fy = min(max(e[2] + (e[2] - p[2]) / g * H, 0), 32000)
+                        ~~~~~~~~~~~~~~^~~
+ZeroDivisionError: division by zero

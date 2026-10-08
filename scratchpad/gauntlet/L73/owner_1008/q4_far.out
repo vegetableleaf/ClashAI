@@ -1,0 +1,6 @@
+R1e           landing at tower       n= 134 response >3 tiles from landing 80/134=0.60 [0.51,0.68], median 4.1
+R1e           landing FAR from tower n=  37 response >3 tiles from landing 24/37=0.65 [0.49,0.78], median 6.6
+STACK_since04 landing at tower       n=  48 response >3 tiles from landing 29/48=0.60 [0.46,0.73], median 4.1
+STACK_since04 landing FAR from tower n=  11 response >3 tiles from landing 7/11=0.64 [0.35,0.85], median 7.6
+PRO           landing at tower       n=1525 response >3 tiles from landing 931/1525=0.61 [0.59,0.63], median 4.3
+PRO           landing FAR from tower n= 301 response >3 tiles from landing 193/301=0.64 [0.59,0.69], median 4.5
