@@ -1,0 +1,3 @@
+# regenerable aggregates: econ_live_* (econ_gap.py, 16 s from the logs); econ_sim_* live on the VM ~/loss_review/sim*/ (econ_gap.py --sim)
+econ_live_*.json
+econ_sim_*.json
