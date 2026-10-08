@@ -1,0 +1,2 @@
+89 decisions, 3000 runs; WIRED live hazard_below_tau min-elixir 9 from tick 1637: P(play) within 5 s 0.336, 10 s 0.532, 20 s 0.815, ever 0.989; median 8.7 s
+card: {'Xbow': 0.873, 'Tesla': 0.109, 'Rocket': 0.007}

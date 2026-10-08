@@ -30,6 +30,9 @@ class DecisionOptions:
     xbow_class: str = 'argmax'
     xbow_class_floor: float = 0.2
     log_aim: str = 'argmax'
+    gate_decode: str = 'threshold'          # 'hazard' / 'hazard_below_tau': execute the gate's learned play RATE (W4)
+    gate_hazard_min_elixir: float = 0.0     # hazard draws only at own elixir >= this (0 = everywhere)
+    gate_hazard_quiet: bool = False         # hazard draws only with no enemy unit on the board (public bodies)
     lethal_rocket: str = 'off'
 
     def __post_init__(self):
@@ -52,13 +55,18 @@ class DecisionOptions:
             raise ValueError('xbow_class_floor must be in [0, 0.5]')
         if self.log_aim not in ('argmax', 'log_barrel'):
             raise ValueError('log_aim must be argmax or log_barrel')
+        if self.gate_decode not in ('threshold', 'hazard', 'hazard_below_tau'):
+            raise ValueError('gate_decode must be threshold, hazard or hazard_below_tau')
+        if not math.isfinite(self.gate_hazard_min_elixir) or not 0 <= self.gate_hazard_min_elixir <= 10:
+            raise ValueError('gate_hazard_min_elixir must be in [0, 10]')
         if self.lethal_rocket not in ('off', 'ot'):
             raise ValueError('lethal_rocket must be off or ot')
 
     @property
     def active(self):
         return (self.card_choice != 'argmax' or self.spell_aim != 'argmax' or self.tau_phase is not None
-                or self.xbow_class != 'argmax' or self.log_aim != 'argmax' or self.lethal_rocket != 'off')
+                or self.xbow_class != 'argmax' or self.log_aim != 'argmax' or self.gate_decode != 'threshold'
+                or self.lethal_rocket != 'off')
 
 
 def options_from_config(cfg=None):
@@ -83,6 +91,14 @@ def add_arguments(parser):
                         help='log_barrel: with an enemy Goblin Barrel in flight (visible target), aim the Log / '
                              'Barbarian Barrel at the cells whose rolling corridor covers its landing point, '
                              'highest learned cell probability among them; else the plain argmax')
+    parser.add_argument('--gate-decode', choices=('threshold', 'hazard', 'hazard_below_tau'), default='threshold',
+                        help='hazard: per decision play with probability 1 - exp(-rate(p) * step), rate = the play '
+                             'rate the gate learned on 2-s WAIT rows (gate_rate); hazard_below_tau: play iff p > tau '
+                             'as before, else the same draw')
+    parser.add_argument('--gate-hazard-min-elixir', type=float, default=0.0,
+                        help='hazard draws only when my elixir >= this (0 = at any elixir)')
+    parser.add_argument('--gate-hazard-quiet', action='store_true',
+                        help='hazard draws only when no enemy unit is on the board')
     parser.add_argument('--lethal-rocket', choices=('off', 'ot'), default='off',
                         help='ot: in overtime (t >= 180 s, the tau_phase edge) play Rocket NOW, whatever the gate, at the '
                              'centre of an alive enemy PRINCESS tower whose HP <= my Rocket crown-tower damage (lower HP '
@@ -183,6 +199,53 @@ def gate_taus(options, tau, t_sec, n):
     if t_sec is None or len(t_sec) != n:
         raise ValueError('tau_phase requires the decision time of every row')
     return np.asarray(options.tau_phase)[phase_index(t_sec)]
+
+
+# dataset.build_replay: one WAIT row per 40 ticks (2 s), none within 20 ticks (1 s) before a play.
+WAIT_STRIDE_S, PLAY_WINDOW_S = 2.0, 1.0
+
+
+def gate_rate(p):
+    """Play rate (1/s) implied by the gate's row probability. For a pro playing at rate r, the row odds are
+    plays / WAIT rows = r S exp(r W) (S = WAIT_STRIDE_S, W = PLAY_WINDOW_S): inverted by Newton (convex, monotone)."""
+    p = np.clip(np.asarray(p, dtype=np.float64), 1e-9, 1 - 1e-9)
+    o = p / (1 - p)
+    r = np.log1p(o / WAIT_STRIDE_S)                       # >= the root, so Newton descends monotonically
+    for _ in range(40):
+        e = np.exp(r * PLAY_WINDOW_S)
+        r = r - (WAIT_STRIDE_S * r * e - o) / (WAIT_STRIDE_S * e * (1 + PLAY_WINDOW_S * r))
+    return np.maximum(r, 0.0)
+
+
+def hazard_play(p, step_s, rng):
+    """One draw: play with probability 1 - exp(-gate_rate(p) * step_s)."""
+    if rng is None:
+        raise ValueError('hazard gate decoding requires a per-match RNG')
+    return bool(rng.random() < -math.expm1(-float(gate_rate(p)) * float(step_s)))
+
+
+def hazard_draw(options, p, step_s, rng, *, elixir=None, enemy_units=None):
+    """The ONE hazard decision for a row where a play is possible and the threshold said wait (SIM decide_batch and
+    live_gen_v2 both call it). Out of scope (elixir < gate_hazard_min_elixir, or an enemy unit on the board with
+    gate_hazard_quiet) -> False without drawing. Missing context for an active scope raises, never a silent no-op."""
+    if step_s is None:
+        raise ValueError('hazard gate decoding requires the decision step (seconds)')
+    if options.gate_hazard_min_elixir > 0:
+        if elixir is None:
+            raise ValueError('gate_hazard_min_elixir requires the own elixir of every row')
+        if float(elixir) < options.gate_hazard_min_elixir:
+            return False
+    if options.gate_hazard_quiet:
+        if enemy_units is None:
+            raise ValueError('gate_hazard_quiet requires the enemy unit count of every row')
+        if int(enemy_units):
+            return False
+    return hazard_play(p, step_s, rng)
+
+
+def enemy_unit_count(bs):
+    """Visible bodies not known to be mine (side 0) on a BoardState: public; an unknown team (-1, live only) counts."""
+    return sum(int(u.side) != 0 for u in bs.units)
 
 
 def is_xbow(name):
@@ -389,13 +452,23 @@ def lethal_rocket_choice(options, t_sec, names, allowed, crown_towers, side, gri
 
 @torch.no_grad()
 def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options, rngs, card_names,
-                 t_sec=None, enemy_alive=None, grid=None, projectiles=None, lethal=None):
+                 t_sec=None, enemy_alive=None, grid=None, projectiles=None, step_s=None, elixir=None,
+                 enemy_units=None, lethal=None):
     """Optional branch of e1_eval's live decision; default branch remains untouched.
     ``t_sec`` (tau_phase) and ``enemy_alive`` [(K, L, R) alive] + ``grid`` (xbow_class) are per-row match context;
     ``projectiles`` (log_aim) = each row's model projectile tokens, decoded with the model's own card vocabulary.
     ``lethal`` (lethal_rocket) = per row (raw crown towers, my side, a card pending) for ``lethal_rocket_choice``."""
     tau = gate_taus(options, tau, t_sec, len(allowed))
     playing = allowed.any(axis=1) & ((np.asarray(p) > tau) | stalled)
+    if options.gate_decode != 'threshold':
+        if step_s is None:
+            raise ValueError('hazard gate decoding requires the decision step (seconds)')
+        if options.gate_decode == 'hazard':
+            playing = allowed.any(axis=1) & stalled
+        for r in np.flatnonzero(allowed.any(axis=1) & ~playing):   # a draw only where a play is possible
+            playing[r] = hazard_draw(options, p[r], step_s, rngs[r],
+                                     elixir=None if elixir is None else elixir[r],
+                                     enemy_units=None if enemy_units is None else enemy_units[r])
     slots = [choose_slot(heads['card'][r], allowed[r], options, rngs[r], playing=bool(playing[r]))
              for r in range(len(allowed))]
     cells = np.full(len(slots), -1, dtype=np.int64)
@@ -420,7 +493,8 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
     tau = np.broadcast_to(tau, len(slots))
     out = [dict(play=bool(playing[r]), slot=slots[r], cell=int(cells[r]),
                 why=('no_affordable' if slots[r] < 0 else 'wait' if not playing[r]
-                     else 'stall' if p[r] <= tau[r] else 'gate')) for r in range(len(slots))]
+                     else 'stall' if stalled[r] and p[r] <= tau[r] else 'gate' if p[r] > tau[r] else 'hazard'))
+           for r in range(len(slots))]
     if options.lethal_rocket != 'off':
         if lethal is None or t_sec is None or grid is None or card_names is None:
             raise ValueError('lethal_rocket requires per-row crown towers, decision times, the grid and card names')
@@ -448,6 +522,10 @@ def match_kwargs(matches):
                 [seed, int(cfg.get('decision_seed', 0))]))
         rngs.append(match.rng_decision_options)
     out = dict(decision_options=options, rngs=rngs, card_names=[list(m.deck.cards) for m in matches])
+    if options.gate_decode != 'threshold':
+        out['step_s'] = 0.05 * int(cfg['decide_every'])   # the SIM decides every decide_every ticks
+        out['elixir'] = [float(m._cur[1].my_elixir) for m in matches]
+        out['enemy_units'] = [enemy_unit_count(m._cur[1]) for m in matches]
     if options.tau_phase is not None or options.xbow_class != 'argmax':
         boards = [m._cur[1] for m in matches]    # the prepared decision's engine BoardState (my frame)
         out.update(t_sec=[float(b.t_sec) for b in boards], grid=cfg['grid'],
