@@ -1,0 +1,1598 @@
+{
+ "note": "L73 centre_col: barrel-heavy census = the 59 loadable ladder decks (loadable_decks_ladder.json) containing GoblinBarrel, unmodified, ladder sides as weights",
+ "decks": [
+  {
+   "rank": 10,
+   "sides": 22188,
+   "engine": [
+    "Cannon",
+    "BlowdartGoblin",
+    "GoblinBarrel@evolution",
+    "IceSpirits",
+    "Princess",
+    "SkeletonArmy@evolution",
+    "Valkyrie@hero",
+    "Wallbreakers"
+   ],
+   "slugs": [
+    "cannon",
+    "dart-goblin",
+    "goblin-barrel-ev1",
+    "ice-spirit",
+    "princess",
+    "skeleton-army-ev1",
+    "valkyrie-hero",
+    "wall-breakers"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 3651,
+   "ladder_class": "Bait"
+  },
+  {
+   "rank": 30,
+   "sides": 14943,
+   "engine": [
+    "BlowdartGoblin",
+    "GoblinBarrel@evolution",
+    "IceSpirits",
+    "InfernoTower",
+    "Knight@hero",
+    "Princess",
+    "SkeletonArmy@evolution",
+    "Log"
+   ],
+   "slugs": [
+    "dart-goblin",
+    "goblin-barrel-ev1",
+    "ice-spirit",
+    "inferno-tower",
+    "knight-hero",
+    "princess",
+    "skeleton-army-ev1",
+    "the-log"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 1656,
+   "ladder_class": "Bait"
+  },
+  {
+   "rank": 39,
+   "sides": 11332,
+   "engine": [
+    "Cannon@evolution",
+    "GoblinBarrel",
+    "Goblins",
+    "IceSpirits",
+    "MightyMiner",
+    "Princess@evolution",
+    "Rocket",
+    "Log"
+   ],
+   "slugs": [
+    "cannon-ev1",
+    "goblin-barrel",
+    "goblins",
+    "ice-spirit",
+    "mighty-miner",
+    "princess-ev1",
+    "rocket",
+    "the-log"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 1507,
+   "ladder_class": "Miner"
+  },
+  {
+   "rank": 45,
+   "sides": 50219,
+   "engine": [
+    "ElectroSpirit",
+    "GoblinBarrel",
+    "Knight@hero",
+    "Princess@evolution",
+    "Rocket",
+    "Skeletons",
+    "Tesla@evolution",
+    "Log"
+   ],
+   "slugs": [
+    "electro-spirit",
+    "goblin-barrel",
+    "knight-hero",
+    "princess-ev1",
+    "rocket",
+    "skeletons",
+    "tesla-ev1",
+    "the-log"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 1214,
+   "ladder_class": "Other/no clear wincon"
+  },
+  {
+   "rank": 76,
+   "sides": 10763,
+   "engine": [
+    "GoblinBarrel@evolution",
+    "GoblinGang",
+    "IceSpirits",
+    "InfernoTower",
+    "Knight@hero",
+    "Princess@evolution",
+    "Rocket",
+    "Log"
+   ],
+   "slugs": [
+    "goblin-barrel-ev1",
+    "goblin-gang",
+    "ice-spirit",
+    "inferno-tower",
+    "knight-hero",
+    "princess-ev1",
+    "rocket",
+    "the-log"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 859,
+   "ladder_class": "Bait"
+  },
+  {
+   "rank": 91,
+   "sides": 39760,
+   "engine": [
+    "Berserker@hero",
+    "ElectroSpirit",
+    "GoblinBarrel",
+    "Princess@evolution",
+    "Rocket",
+    "Skeletons",
+    "Tesla@evolution",
+    "Log"
+   ],
+   "slugs": [
+    "berserker-hero",
+    "electro-spirit",
+    "goblin-barrel",
+    "princess-ev1",
+    "rocket",
+    "skeletons",
+    "tesla-ev1",
+    "the-log"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 761,
+   "ladder_class": "Other/no clear wincon"
+  },
+  {
+   "rank": 100,
+   "sides": 12335,
+   "engine": [
+    "Assassin",
+    "MovingCannon",
+    "DarkPrince@hero",
+    "Snowball@evolution",
+    "GoblinBarrel@evolution",
+    "Princess",
+    "Rascals",
+    "Rocket"
+   ],
+   "slugs": [
+    "bandit",
+    "cannon-cart",
+    "dark-prince-hero",
+    "giant-snowball-ev1",
+    "goblin-barrel-ev1",
+    "princess",
+    "rascals",
+    "rocket"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 694,
+   "ladder_class": "Ram/Bridge spam"
+  },
+  {
+   "rank": 107,
+   "sides": 60354,
+   "engine": [
+    "Bats",
+    "BlowdartGoblin@evolution",
+    "GoblinBarrel",
+    "MegaKnight",
+    "Prince",
+    "Princess@evolution",
+    "RoyalGiant",
+    "SkeletonArmy"
+   ],
+   "slugs": [
+    "bats",
+    "dart-goblin-ev1",
+    "goblin-barrel",
+    "mega-knight",
+    "prince",
+    "princess-ev1",
+    "royal-giant",
+    "skeleton-army"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 634,
+   "ladder_class": "Royal Giant"
+  },
+  {
+   "rank": 127,
+   "sides": 174,
+   "engine": [
+    "Barbarians",
+    "Bowler@hero",
+    "Fireball",
+    "GoblinBarrel",
+    "GoblinGang",
+    "MinionHorde@evolution",
+    "Mortar@evolution",
+    "Princess"
+   ],
+   "slugs": [
+    "barbarians",
+    "bowler-hero",
+    "fireball",
+    "goblin-barrel",
+    "goblin-gang",
+    "minion-horde-ev1",
+    "mortar-ev1",
+    "princess"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 557,
+   "ladder_class": "X-Bow/Mortar"
+  },
+  {
+   "rank": 146,
+   "sides": 8301,
+   "engine": [
+    "ElectroSpirit",
+    "GoblinBarrel",
+    "GoblinGang",
+    "Knight@hero",
+    "Princess@evolution",
+    "Rocket",
+    "Tesla@evolution",
+    "Log"
+   ],
+   "slugs": [
+    "electro-spirit",
+    "goblin-barrel",
+    "goblin-gang",
+    "knight-hero",
+    "princess-ev1",
+    "rocket",
+    "tesla-ev1",
+    "the-log"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 511,
+   "ladder_class": "Bait"
+  },
+  {
+   "rank": 204,
+   "sides": 28500,
+   "engine": [
+    "MovingCannon",
+    "AxeMan@evolution",
+    "GoblinBarrel@evolution",
+    "GoblinGang",
+    "Goblinstein",
+    "Knight",
+    "Rocket",
+    "Log"
+   ],
+   "slugs": [
+    "cannon-cart",
+    "executioner-ev1",
+    "goblin-barrel-ev1",
+    "goblin-gang",
+    "goblinstein",
+    "knight",
+    "rocket",
+    "the-log"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 391,
+   "ladder_class": "Other/no clear wincon"
+  },
+  {
+   "rank": 213,
+   "sides": 7121,
+   "engine": [
+    "Berserker@hero",
+    "BlowdartGoblin",
+    "ElectroSpirit",
+    "GoblinBarrel@evolution",
+    "InfernoTower",
+    "Princess",
+    "SkeletonArmy@evolution",
+    "Log"
+   ],
+   "slugs": [
+    "berserker-hero",
+    "dart-goblin",
+    "electro-spirit",
+    "goblin-barrel-ev1",
+    "inferno-tower",
+    "princess",
+    "skeleton-army-ev1",
+    "the-log"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 376,
+   "ladder_class": "Bait"
+  },
+  {
+   "rank": 235,
+   "sides": 6860,
+   "engine": [
+    "ElectroSpirit",
+    "GoblinBarrel@evolution",
+    "GoblinGang",
+    "InfernoTower",
+    "Knight@hero",
+    "Princess@evolution",
+    "Rocket",
+    "Log"
+   ],
+   "slugs": [
+    "electro-spirit",
+    "goblin-barrel-ev1",
+    "goblin-gang",
+    "inferno-tower",
+    "knight-hero",
+    "princess-ev1",
+    "rocket",
+    "the-log"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 349,
+   "ladder_class": "Bait"
+  },
+  {
+   "rank": 263,
+   "sides": 6424,
+   "engine": [
+    "BlowdartGoblin@evolution",
+    "GoblinBarrel@evolution",
+    "GoblinGang",
+    "Prince",
+    "Princess",
+    "Rascals",
+    "Rocket",
+    "Log"
+   ],
+   "slugs": [
+    "dart-goblin-ev1",
+    "goblin-barrel-ev1",
+    "goblin-gang",
+    "prince",
+    "princess",
+    "rascals",
+    "rocket",
+    "the-log"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 306,
+   "ladder_class": "Bait"
+  },
+  {
+   "rank": 283,
+   "sides": 24118,
+   "engine": [
+    "Berserker@hero",
+    "GoblinBarrel@evolution",
+    "IceSpirits",
+    "InfernoTower",
+    "Princess@evolution",
+    "Rocket",
+    "Skeletons",
+    "Log"
+   ],
+   "slugs": [
+    "berserker-hero",
+    "goblin-barrel-ev1",
+    "ice-spirit",
+    "inferno-tower",
+    "princess-ev1",
+    "rocket",
+    "skeletons",
+    "the-log"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 280,
+   "ladder_class": "Other/no clear wincon"
+  },
+  {
+   "rank": 305,
+   "sides": 23151,
+   "engine": [
+    "Cannon",
+    "BlowdartGoblin@evolution",
+    "GoblinBarrel",
+    "IceSpirits",
+    "Princess@evolution",
+    "Skeletons",
+    "Log",
+    "Valkyrie@hero"
+   ],
+   "slugs": [
+    "cannon",
+    "dart-goblin-ev1",
+    "goblin-barrel",
+    "ice-spirit",
+    "princess-ev1",
+    "skeletons",
+    "the-log",
+    "valkyrie-hero"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 258,
+   "ladder_class": "Other/no clear wincon"
+  },
+  {
+   "rank": 315,
+   "sides": 5806,
+   "engine": [
+    "BlowdartGoblin",
+    "ElectroSpirit",
+    "GoblinBarrel@evolution",
+    "InfernoTower",
+    "Knight@hero",
+    "Princess",
+    "SkeletonArmy@evolution",
+    "Log"
+   ],
+   "slugs": [
+    "dart-goblin",
+    "electro-spirit",
+    "goblin-barrel-ev1",
+    "inferno-tower",
+    "knight-hero",
+    "princess",
+    "skeleton-army-ev1",
+    "the-log"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 250,
+   "ladder_class": "Bait"
+  },
+  {
+   "rank": 350,
+   "sides": 5447,
+   "engine": [
+    "GoblinBarrel@evolution",
+    "GoblinGang",
+    "InfernoTower",
+    "Knight@hero",
+    "Princess",
+    "Rocket",
+    "Skeletons@evolution",
+    "Log"
+   ],
+   "slugs": [
+    "goblin-barrel-ev1",
+    "goblin-gang",
+    "inferno-tower",
+    "knight-hero",
+    "princess",
+    "rocket",
+    "skeletons-ev1",
+    "the-log"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 220,
+   "ladder_class": "Bait"
+  },
+  {
+   "rank": 351,
+   "sides": 5422,
+   "engine": [
+    "Cannon",
+    "BlowdartGoblin",
+    "ElectroSpirit",
+    "GoblinBarrel@evolution",
+    "Princess",
+    "SkeletonArmy@evolution",
+    "Valkyrie@hero",
+    "Wallbreakers"
+   ],
+   "slugs": [
+    "cannon",
+    "dart-goblin",
+    "electro-spirit",
+    "goblin-barrel-ev1",
+    "princess",
+    "skeleton-army-ev1",
+    "valkyrie-hero",
+    "wall-breakers"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 218,
+   "ladder_class": "Bait"
+  },
+  {
+   "rank": 361,
+   "sides": 20986,
+   "engine": [
+    "Cannon",
+    "BlowdartGoblin@evolution",
+    "GoblinBarrel",
+    "Knight@hero",
+    "Princess",
+    "Skeletons",
+    "Log",
+    "Wallbreakers@evolution"
+   ],
+   "slugs": [
+    "cannon",
+    "dart-goblin-ev1",
+    "goblin-barrel",
+    "knight-hero",
+    "princess",
+    "skeletons",
+    "the-log",
+    "wall-breakers-ev1"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 212,
+   "ladder_class": "Other/no clear wincon"
+  },
+  {
+   "rank": 395,
+   "sides": 5101,
+   "engine": [
+    "BlowdartGoblin",
+    "GoblinBarrel",
+    "GoblinGang",
+    "Princess",
+    "Rascals",
+    "RoyalRecruits@evolution",
+    "Log",
+    "Wallbreakers@evolution"
+   ],
+   "slugs": [
+    "dart-goblin",
+    "goblin-barrel",
+    "goblin-gang",
+    "princess",
+    "rascals",
+    "royal-recruits-ev1",
+    "the-log",
+    "wall-breakers-ev1"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 193,
+   "ladder_class": "Bait"
+  },
+  {
+   "rank": 402,
+   "sides": 19919,
+   "engine": [
+    "BlowdartGoblin",
+    "GoblinBarrel@evolution",
+    "GoblinCurse",
+    "GoblinGang",
+    "Prince",
+    "Rage",
+    "Skeletons@evolution",
+    "SuspiciousBush"
+   ],
+   "slugs": [
+    "dart-goblin",
+    "goblin-barrel-ev1",
+    "goblin-curse",
+    "goblin-gang",
+    "prince",
+    "rage",
+    "skeletons-ev1",
+    "suspicious-bush"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 191,
+   "ladder_class": "Other/no clear wincon"
+  },
+  {
+   "rank": 414,
+   "sides": 4995,
+   "engine": [
+    "Firecracker",
+    "GoblinBarrel",
+    "GoldenKnight",
+    "InfernoTower",
+    "RoyalDelivery",
+    "SkeletonArmy@evolution",
+    "SkeletonBalloon@evolution",
+    "Tornado"
+   ],
+   "slugs": [
+    "firecracker",
+    "goblin-barrel",
+    "golden-knight",
+    "inferno-tower",
+    "royal-delivery",
+    "skeleton-army-ev1",
+    "skeleton-barrel-ev1",
+    "tornado"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 185,
+   "ladder_class": "Bait"
+  },
+  {
+   "rank": 456,
+   "sides": 18626,
+   "engine": [
+    "Arrows",
+    "Cannon",
+    "MovingCannon",
+    "BlowdartGoblin",
+    "GoblinBarrel@evolution",
+    "Goblinstein",
+    "RoyalRecruits",
+    "SkeletonArmy@evolution"
+   ],
+   "slugs": [
+    "arrows",
+    "cannon",
+    "cannon-cart",
+    "dart-goblin",
+    "goblin-barrel-ev1",
+    "goblinstein",
+    "royal-recruits",
+    "skeleton-army-ev1"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 167,
+   "ladder_class": "Other/no clear wincon"
+  },
+  {
+   "rank": 484,
+   "sides": 4586,
+   "engine": [
+    "Cannon",
+    "BlowdartGoblin",
+    "GoblinBarrel@evolution",
+    "IceSpirits",
+    "Knight@hero",
+    "Princess",
+    "SkeletonArmy@evolution",
+    "Log"
+   ],
+   "slugs": [
+    "cannon",
+    "dart-goblin",
+    "goblin-barrel-ev1",
+    "ice-spirit",
+    "knight-hero",
+    "princess",
+    "skeleton-army-ev1",
+    "the-log"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 156,
+   "ladder_class": "Bait"
+  },
+  {
+   "rank": 485,
+   "sides": 18002,
+   "engine": [
+    "Cannon",
+    "BlowdartGoblin@evolution",
+    "GoblinBarrel@evolution",
+    "Knight@hero",
+    "Princess",
+    "Skeletons",
+    "Log",
+    "Wallbreakers"
+   ],
+   "slugs": [
+    "cannon",
+    "dart-goblin-ev1",
+    "goblin-barrel-ev1",
+    "knight-hero",
+    "princess",
+    "skeletons",
+    "the-log",
+    "wall-breakers"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 156,
+   "ladder_class": "Other/no clear wincon"
+  },
+  {
+   "rank": 486,
+   "sides": 17944,
+   "engine": [
+    "Berserker@hero",
+    "Cannon",
+    "BlowdartGoblin@evolution",
+    "FireSpirits",
+    "GoblinBarrel@evolution",
+    "Rocket",
+    "Skeletons",
+    "Log"
+   ],
+   "slugs": [
+    "berserker-hero",
+    "cannon",
+    "dart-goblin-ev1",
+    "fire-spirit",
+    "goblin-barrel-ev1",
+    "rocket",
+    "skeletons",
+    "the-log"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 155,
+   "ladder_class": "Other/no clear wincon"
+  },
+  {
+   "rank": 520,
+   "sides": 5619,
+   "engine": [
+    "Assassin",
+    "MovingCannon",
+    "DarkPrince@hero",
+    "Snowball@evolution",
+    "GoblinBarrel",
+    "Princess@evolution",
+    "Rascals",
+    "Rocket"
+   ],
+   "slugs": [
+    "bandit",
+    "cannon-cart",
+    "dark-prince-hero",
+    "giant-snowball-ev1",
+    "goblin-barrel",
+    "princess-ev1",
+    "rascals",
+    "rocket"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 144,
+   "ladder_class": "Ram/Bridge spam"
+  },
+  {
+   "rank": 522,
+   "sides": 5599,
+   "engine": [
+    "Berserker@hero",
+    "Cannon",
+    "GoblinBarrel@evolution",
+    "GoblinGang",
+    "IceSpirits",
+    "Princess@evolution",
+    "Rocket",
+    "Wallbreakers"
+   ],
+   "slugs": [
+    "berserker-hero",
+    "cannon",
+    "goblin-barrel-ev1",
+    "goblin-gang",
+    "ice-spirit",
+    "princess-ev1",
+    "rocket",
+    "wall-breakers"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 143,
+   "ladder_class": "Ram/Bridge spam"
+  },
+  {
+   "rank": 528,
+   "sides": 3408,
+   "engine": [
+    "BlowdartGoblin@evolution",
+    "GiantSkeleton",
+    "GoblinBarrel",
+    "GoblinGang",
+    "Rage",
+    "RoyalGiant",
+    "SkeletonArmy@evolution",
+    "Wizard@hero"
+   ],
+   "slugs": [
+    "dart-goblin-ev1",
+    "giant-skeleton",
+    "goblin-barrel",
+    "goblin-gang",
+    "rage",
+    "royal-giant",
+    "skeleton-army-ev1",
+    "wizard-hero"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 141,
+   "ladder_class": "Royal Giant"
+  },
+  {
+   "rank": 569,
+   "sides": 5297,
+   "engine": [
+    "Berserker@hero",
+    "Cannon",
+    "BlowdartGoblin",
+    "GoblinBarrel@evolution",
+    "IceSpirits",
+    "Princess",
+    "SkeletonArmy@evolution",
+    "Wallbreakers"
+   ],
+   "slugs": [
+    "berserker-hero",
+    "cannon",
+    "dart-goblin",
+    "goblin-barrel-ev1",
+    "ice-spirit",
+    "princess",
+    "skeleton-army-ev1",
+    "wall-breakers"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 128,
+   "ladder_class": "Ram/Bridge spam"
+  },
+  {
+   "rank": 575,
+   "sides": 3277,
+   "engine": [
+    "Cannon@evolution",
+    "GoblinBarrel",
+    "IceSpirits",
+    "MightyMiner",
+    "Princess@evolution",
+    "Rocket",
+    "Skeletons",
+    "Log"
+   ],
+   "slugs": [
+    "cannon-ev1",
+    "goblin-barrel",
+    "ice-spirit",
+    "mighty-miner",
+    "princess-ev1",
+    "rocket",
+    "skeletons",
+    "the-log"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 126,
+   "ladder_class": "Miner"
+  },
+  {
+   "rank": 585,
+   "sides": 152658,
+   "engine": [
+    "Arrows",
+    "Bats",
+    "GoblinBarrel",
+    "Lightning",
+    "MegaKnight@evolution",
+    "SkeletonArmy",
+    "Witch@evolution",
+    "Wizard@hero"
+   ],
+   "slugs": [
+    "arrows",
+    "bats",
+    "goblin-barrel",
+    "lightning",
+    "mega-knight-ev1",
+    "skeleton-army",
+    "witch-ev1",
+    "wizard-hero"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 122,
+   "ladder_class": "Mega Knight"
+  },
+  {
+   "rank": 586,
+   "sides": 152658,
+   "engine": [
+    "Cannon",
+    "Fireball",
+    "GoblinBarrel",
+    "InfernoDragon",
+    "MegaKnight@evolution",
+    "SkeletonArmy",
+    "Witch@evolution",
+    "Zap"
+   ],
+   "slugs": [
+    "cannon",
+    "fireball",
+    "goblin-barrel",
+    "inferno-dragon",
+    "mega-knight-ev1",
+    "skeleton-army",
+    "witch-ev1",
+    "zap"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 122,
+   "ladder_class": "Mega Knight"
+  },
+  {
+   "rank": 597,
+   "sides": 7995,
+   "engine": [
+    "Arrows",
+    "ElectroWizard",
+    "Fireball",
+    "GoblinBarrel",
+    "HogRider",
+    "InfernoTower",
+    "SkeletonArmy@evolution",
+    "Valkyrie@evolution"
+   ],
+   "slugs": [
+    "arrows",
+    "electro-wizard",
+    "fireball",
+    "goblin-barrel",
+    "hog-rider",
+    "inferno-tower",
+    "skeleton-army-ev1",
+    "valkyrie-ev1"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 119,
+   "ladder_class": "Hog (incl. Royal Hogs)"
+  },
+  {
+   "rank": 622,
+   "sides": 4977,
+   "engine": [
+    "Berserker@hero",
+    "BlowdartGoblin",
+    "GoblinBarrel@evolution",
+    "SkeletonWarriors",
+    "Prince",
+    "Princess@evolution",
+    "Rascals",
+    "Log"
+   ],
+   "slugs": [
+    "berserker-hero",
+    "dart-goblin",
+    "goblin-barrel-ev1",
+    "guards",
+    "prince",
+    "princess-ev1",
+    "rascals",
+    "the-log"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 113,
+   "ladder_class": "Ram/Bridge spam"
+  },
+  {
+   "rank": 629,
+   "sides": 15185,
+   "engine": [
+    "Arrows",
+    "Cannon",
+    "MovingCannon",
+    "BlowdartGoblin",
+    "GoblinBarrel@evolution",
+    "GoblinGang",
+    "Goblinstein",
+    "RoyalRecruits@evolution"
+   ],
+   "slugs": [
+    "arrows",
+    "cannon",
+    "cannon-cart",
+    "dart-goblin",
+    "goblin-barrel-ev1",
+    "goblin-gang",
+    "goblinstein",
+    "royal-recruits-ev1"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 111,
+   "ladder_class": "Other/no clear wincon"
+  },
+  {
+   "rank": 630,
+   "sides": 3869,
+   "engine": [
+    "Cannon",
+    "BlowdartGoblin",
+    "GoblinBarrel@evolution",
+    "IceSpirits",
+    "Princess",
+    "SkeletonArmy@evolution",
+    "Valkyrie",
+    "Wallbreakers"
+   ],
+   "slugs": [
+    "cannon",
+    "dart-goblin",
+    "goblin-barrel-ev1",
+    "ice-spirit",
+    "princess",
+    "skeleton-army-ev1",
+    "valkyrie",
+    "wall-breakers"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 111,
+   "ladder_class": "Bait"
+  },
+  {
+   "rank": 649,
+   "sides": 14909,
+   "engine": [
+    "Arrows",
+    "Berserker@hero",
+    "BombTower",
+    "BlowdartGoblin@evolution",
+    "GoblinBarrel",
+    "IceGolemite",
+    "Rocket",
+    "Skeletons@evolution"
+   ],
+   "slugs": [
+    "arrows",
+    "berserker-hero",
+    "bomb-tower",
+    "dart-goblin-ev1",
+    "goblin-barrel",
+    "ice-golem",
+    "rocket",
+    "skeletons-ev1"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 107,
+   "ladder_class": "Other/no clear wincon"
+  },
+  {
+   "rank": 663,
+   "sides": 4798,
+   "engine": [
+    "DarkPrince",
+    "Snowball@evolution",
+    "GoblinBarrel@evolution",
+    "GoldenKnight",
+    "Princess",
+    "Rascals",
+    "Skeletons",
+    "Wallbreakers"
+   ],
+   "slugs": [
+    "dark-prince",
+    "giant-snowball-ev1",
+    "goblin-barrel-ev1",
+    "golden-knight",
+    "princess",
+    "rascals",
+    "skeletons",
+    "wall-breakers"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 105,
+   "ladder_class": "Ram/Bridge spam"
+  },
+  {
+   "rank": 676,
+   "sides": 4729,
+   "engine": [
+    "Berserker@hero",
+    "BlowdartGoblin@evolution",
+    "GoblinBarrel@evolution",
+    "GoblinCurse",
+    "GoblinGang",
+    "Prince",
+    "Rage",
+    "SuspiciousBush"
+   ],
+   "slugs": [
+    "berserker-hero",
+    "dart-goblin-ev1",
+    "goblin-barrel-ev1",
+    "goblin-curse",
+    "goblin-gang",
+    "prince",
+    "rage",
+    "suspicious-bush"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 102,
+   "ladder_class": "Ram/Bridge spam"
+  },
+  {
+   "rank": 692,
+   "sides": 3672,
+   "engine": [
+    "Berserker@hero",
+    "ElectroSpirit",
+    "GoblinBarrel",
+    "Goblins",
+    "Princess@evolution",
+    "Rocket",
+    "Tesla@evolution",
+    "Log"
+   ],
+   "slugs": [
+    "berserker-hero",
+    "electro-spirit",
+    "goblin-barrel",
+    "goblins",
+    "princess-ev1",
+    "rocket",
+    "tesla-ev1",
+    "the-log"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 100,
+   "ladder_class": "Bait"
+  },
+  {
+   "rank": 696,
+   "sides": 2905,
+   "engine": [
+    "BlowdartGoblin",
+    "ElectroSpirit",
+    "GoblinBarrel@evolution",
+    "InfernoTower",
+    "MightyMiner",
+    "SkeletonArmy@evolution",
+    "Log",
+    "Wallbreakers"
+   ],
+   "slugs": [
+    "dart-goblin",
+    "electro-spirit",
+    "goblin-barrel-ev1",
+    "inferno-tower",
+    "mighty-miner",
+    "skeleton-army-ev1",
+    "the-log",
+    "wall-breakers"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 99,
+   "ladder_class": "Miner"
+  },
+  {
+   "rank": 717,
+   "sides": 4564,
+   "engine": [
+    "BossBandit",
+    "MovingCannon",
+    "DarkPrince",
+    "Snowball@evolution",
+    "GoblinBarrel@evolution",
+    "GoblinGang",
+    "Princess",
+    "Rascals"
+   ],
+   "slugs": [
+    "boss-bandit",
+    "cannon-cart",
+    "dark-prince",
+    "giant-snowball-ev1",
+    "goblin-barrel-ev1",
+    "goblin-gang",
+    "princess",
+    "rascals"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 95,
+   "ladder_class": "Ram/Bridge spam"
+  },
+  {
+   "rank": 802,
+   "sides": 4266,
+   "engine": [
+    "Assassin",
+    "MovingCannon",
+    "DarkPrince@hero",
+    "Snowball",
+    "GoblinBarrel@evolution",
+    "Princess@evolution",
+    "Rascals",
+    "Rocket"
+   ],
+   "slugs": [
+    "bandit",
+    "cannon-cart",
+    "dark-prince-hero",
+    "giant-snowball",
+    "goblin-barrel-ev1",
+    "princess-ev1",
+    "rascals",
+    "rocket"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 83,
+   "ladder_class": "Ram/Bridge spam"
+  },
+  {
+   "rank": 817,
+   "sides": 13052,
+   "engine": [
+    "BombTower",
+    "Firecracker",
+    "GoblinBarrel@evolution",
+    "GoldenKnight",
+    "SkeletonWarriors",
+    "RoyalDelivery",
+    "SkeletonBalloon@evolution",
+    "Tornado"
+   ],
+   "slugs": [
+    "bomb-tower",
+    "firecracker",
+    "goblin-barrel-ev1",
+    "golden-knight",
+    "guards",
+    "royal-delivery",
+    "skeleton-barrel-ev1",
+    "tornado"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 82,
+   "ladder_class": "Other/no clear wincon"
+  },
+  {
+   "rank": 825,
+   "sides": 2611,
+   "engine": [
+    "Barbarians",
+    "GoblinBarrel",
+    "GoblinGang",
+    "Miner",
+    "MinionHorde@evolution",
+    "Princess",
+    "Log",
+    "Wallbreakers@evolution"
+   ],
+   "slugs": [
+    "barbarians",
+    "goblin-barrel",
+    "goblin-gang",
+    "miner",
+    "minion-horde-ev1",
+    "princess",
+    "the-log",
+    "wall-breakers-ev1"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 80,
+   "ladder_class": "Miner"
+  },
+  {
+   "rank": 848,
+   "sides": 21033,
+   "engine": [
+    "Bats",
+    "BlowdartGoblin@evolution",
+    "GoblinBarrel",
+    "MegaKnight@evolution",
+    "Prince",
+    "Princess",
+    "RoyalGiant",
+    "SkeletonArmy"
+   ],
+   "slugs": [
+    "bats",
+    "dart-goblin-ev1",
+    "goblin-barrel",
+    "mega-knight-ev1",
+    "prince",
+    "princess",
+    "royal-giant",
+    "skeleton-army"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 77,
+   "ladder_class": "Royal Giant"
+  },
+  {
+   "rank": 874,
+   "sides": 4028,
+   "engine": [
+    "Berserker@hero",
+    "MovingCannon",
+    "DarkPrince@hero",
+    "Snowball",
+    "GoblinBarrel@evolution",
+    "Princess",
+    "Rascals",
+    "Rocket"
+   ],
+   "slugs": [
+    "berserker-hero",
+    "cannon-cart",
+    "dark-prince-hero",
+    "giant-snowball",
+    "goblin-barrel-ev1",
+    "princess",
+    "rascals",
+    "rocket"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 74,
+   "ladder_class": "Ram/Bridge spam"
+  },
+  {
+   "rank": 880,
+   "sides": 12314,
+   "engine": [
+    "BlowdartGoblin",
+    "GoblinBarrel@evolution",
+    "SkeletonWarriors",
+    "InfernoTower",
+    "Rocket",
+    "SkeletonBalloon@evolution",
+    "Log",
+    "Valkyrie@hero"
+   ],
+   "slugs": [
+    "dart-goblin",
+    "goblin-barrel-ev1",
+    "guards",
+    "inferno-tower",
+    "rocket",
+    "skeleton-barrel-ev1",
+    "the-log",
+    "valkyrie-hero"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 73,
+   "ladder_class": "Other/no clear wincon"
+  },
+  {
+   "rank": 903,
+   "sides": 3072,
+   "engine": [
+    "ElectroSpirit",
+    "GoblinBarrel",
+    "Goblins@hero",
+    "Knight@evolution",
+    "Princess",
+    "Rocket",
+    "Tesla@evolution",
+    "Log"
+   ],
+   "slugs": [
+    "electro-spirit",
+    "goblin-barrel",
+    "goblins-hero",
+    "knight-ev1",
+    "princess",
+    "rocket",
+    "tesla-ev1",
+    "the-log"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 70,
+   "ladder_class": "Bait"
+  },
+  {
+   "rank": 908,
+   "sides": 2442,
+   "engine": [
+    "BlowdartGoblin@evolution",
+    "ElectroSpirit",
+    "GoblinBarrel@evolution",
+    "Goblins",
+    "InfernoTower",
+    "MightyMiner",
+    "Log",
+    "Wallbreakers"
+   ],
+   "slugs": [
+    "dart-goblin-ev1",
+    "electro-spirit",
+    "goblin-barrel-ev1",
+    "goblins",
+    "inferno-tower",
+    "mighty-miner",
+    "the-log",
+    "wall-breakers"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 70,
+   "ladder_class": "Miner"
+  },
+  {
+   "rank": 915,
+   "sides": 3050,
+   "engine": [
+    "MovingCannon",
+    "DarkPrince@hero",
+    "Snowball",
+    "GoblinBarrel@evolution",
+    "GoblinGang",
+    "Princess@evolution",
+    "Rascals",
+    "Rocket"
+   ],
+   "slugs": [
+    "cannon-cart",
+    "dark-prince-hero",
+    "giant-snowball",
+    "goblin-barrel-ev1",
+    "goblin-gang",
+    "princess-ev1",
+    "rascals",
+    "rocket"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 69,
+   "ladder_class": "Bait"
+  },
+  {
+   "rank": 922,
+   "sides": 3889,
+   "engine": [
+    "DarkPrince@hero",
+    "BlowdartGoblin",
+    "GoblinBarrel@evolution",
+    "InfernoTower",
+    "Rascals",
+    "SkeletonArmy@evolution",
+    "Log",
+    "Wallbreakers"
+   ],
+   "slugs": [
+    "dark-prince-hero",
+    "dart-goblin",
+    "goblin-barrel-ev1",
+    "inferno-tower",
+    "rascals",
+    "skeleton-army-ev1",
+    "the-log",
+    "wall-breakers"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 69,
+   "ladder_class": "Ram/Bridge spam"
+  },
+  {
+   "rank": 939,
+   "sides": 3006,
+   "engine": [
+    "MovingCannon",
+    "DarkPrince",
+    "Snowball@evolution",
+    "GoblinBarrel@evolution",
+    "Princess",
+    "Rascals",
+    "Rocket",
+    "Valkyrie@hero"
+   ],
+   "slugs": [
+    "cannon-cart",
+    "dark-prince",
+    "giant-snowball-ev1",
+    "goblin-barrel-ev1",
+    "princess",
+    "rascals",
+    "rocket",
+    "valkyrie-hero"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 67,
+   "ladder_class": "Bait"
+  },
+  {
+   "rank": 946,
+   "sides": 3006,
+   "engine": [
+    "Berserker@hero",
+    "GoblinBarrel",
+    "IceSpirits",
+    "InfernoTower",
+    "Princess@evolution",
+    "Rocket",
+    "SkeletonArmy@evolution",
+    "Log"
+   ],
+   "slugs": [
+    "berserker-hero",
+    "goblin-barrel",
+    "ice-spirit",
+    "inferno-tower",
+    "princess-ev1",
+    "rocket",
+    "skeleton-army-ev1",
+    "the-log"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 67,
+   "ladder_class": "Bait"
+  },
+  {
+   "rank": 954,
+   "sides": 2372,
+   "engine": [
+    "Cannon@evolution",
+    "GoblinBarrel@evolution",
+    "Goblins",
+    "IceSpirits",
+    "MightyMiner",
+    "Princess",
+    "Rocket",
+    "Log"
+   ],
+   "slugs": [
+    "cannon-ev1",
+    "goblin-barrel-ev1",
+    "goblins",
+    "ice-spirit",
+    "mighty-miner",
+    "princess",
+    "rocket",
+    "the-log"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 66,
+   "ladder_class": "Miner"
+  },
+  {
+   "rank": 957,
+   "sides": 3804,
+   "engine": [
+    "Assassin",
+    "GoblinBarrel",
+    "EliteArcher@hero",
+    "Minions",
+    "Princess",
+    "Ghost@evolution",
+    "RoyalRecruits",
+    "Wallbreakers@evolution"
+   ],
+   "slugs": [
+    "bandit",
+    "goblin-barrel",
+    "magic-archer-hero",
+    "minions",
+    "princess",
+    "royal-ghost-ev1",
+    "royal-recruits",
+    "wall-breakers-ev1"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 66,
+   "ladder_class": "Ram/Bridge spam"
+  },
+  {
+   "rank": 991,
+   "sides": 11349,
+   "engine": [
+    "ElectroSpirit",
+    "GoblinBarrel",
+    "Princess@evolution",
+    "Rocket",
+    "Skeletons",
+    "Tesla@evolution",
+    "Log",
+    "Valkyrie@hero"
+   ],
+   "slugs": [
+    "electro-spirit",
+    "goblin-barrel",
+    "princess-ev1",
+    "rocket",
+    "skeletons",
+    "tesla-ev1",
+    "the-log",
+    "valkyrie-hero"
+   ],
+   "form_fallbacks": [],
+   "sides_census": 62,
+   "ladder_class": "Other/no clear wincon"
+  }
+ ]
+}

@@ -1,0 +1,17 @@
+{"loaded_rows": 258000, "train_pool": 256000, "val": 2000, "seconds": 66}
+C:\Users\benpe\ClashBot\.claude\worktrees\agent-a88842705e64e1272\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+{"check_a": {"max_abs_diff": {"gate": 0.0, "card": 0.0, "wait": 0.0, "value": 0.0, "cell": 0.0}, "rows": 256, "rows_with_valid_target": 69, "cell_mean_abs_diff": 0.0, "cell_argmax_changed_rows": 0, "ok": true}}
+{"update": 200, "loss": 5.144616603851318, "parts": {"cell": 2.8436388969421387, "card": 0.8923062682151794, "wait": 0.5472455024719238, "gate": 0.4059455394744873, "value": 0.45548009872436523}, "seconds": 18.2}
+{"update": 400, "loss": 5.018150329589844, "parts": {"cell": 2.577075958251953, "card": 1.0468769073486328, "wait": 0.5490558743476868, "gate": 0.38589411973953247, "value": 0.4592472314834595}, "seconds": 34.1}
+{"update": 600, "loss": 5.543839931488037, "parts": {"cell": 3.3695032596588135, "card": 0.7615411281585693, "wait": 0.5590634346008301, "gate": 0.4161299169063568, "value": 0.43760186433792114}, "seconds": 50.5}
+{"update": 800, "loss": 5.526833534240723, "parts": {"cell": 3.0624947547912598, "card": 0.959983229637146, "wait": 0.5874044299125671, "gate": 0.40625, "value": 0.5107013583183289}, "seconds": 65.9}
+{"update": 1000, "loss": 4.831601142883301, "parts": {"cell": 2.4868381023406982, "card": 0.8906616568565369, "wait": 0.6044744253158569, "gate": 0.4443700909614563, "value": 0.4052565097808838}, "seconds": 81.0}
+{"update": 1200, "loss": 5.044004440307617, "parts": {"cell": 2.6169044971466064, "card": 0.9494668245315552, "wait": 0.5991884469985962, "gate": 0.38103073835372925, "value": 0.49741387367248535}, "seconds": 94.8}
+{"update": 1400, "loss": 5.71444034576416, "parts": {"cell": 3.358173370361328, "card": 0.8935064673423767, "wait": 0.5804353356361389, "gate": 0.4203701615333557, "value": 0.46195507049560547}, "seconds": 110.9}
+{"update": 1600, "loss": 5.493967056274414, "parts": {"cell": 2.9847826957702637, "card": 0.9479402303695679, "wait": 0.5620459914207458, "gate": 0.5128589868545532, "value": 0.486339271068573}, "seconds": 128.6}
+{"update": 1800, "loss": 5.162672996520996, "parts": {"cell": 2.977587938308716, "card": 0.7859935760498047, "wait": 0.5550186038017273, "gate": 0.39435648918151855, "value": 0.4497166872024536}, "seconds": 147.7}
+{"update": 2000, "loss": 5.573318004608154, "parts": {"cell": 3.280796527862549, "card": 0.9307719469070435, "wait": 0.45078882575035095, "gate": 0.40397173166275024, "value": 0.5069890022277832}, "seconds": 164.8}
+C:\Users\benpe\ClashBot\.claude\worktrees\agent-a88842705e64e1272\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+{"RESULT": true, "a_zero_init_equals_base": true, "b_base_byte_identical": true, "c_gate_card_unchanged": true, "d_branch_changed_finite": true}

@@ -15,7 +15,7 @@ log() { echo "[cand $NAME] $* $(date '+%F %T')" | tee -a "$OUT/chain.log"; }
 log "fetched $(sha256sum "$BASE" | cut -c1-16)"
 cd "$WT"
 while [ -f "$HERE/gpu.lock" ]; do sleep 20; done          # another GPU job (gen_s0 extra) is running
-$PY scratchpad/gauntlet/L73/barrel_branch/train_branch.py --base "$BASE" --data "$DATA" --out-dir "$DIR/barrel_$STEM" --device cuda > "$OUT/barrel.out" 2>&1 || log "barrel checks FAILED (see barrel.out)"
+$PY scratchpad/gauntlet/L73/barrel_branch/train_branch.py --base "$BASE" --data "$DATA" --out-dir "$DIR/barrel_$STEM" --updates ${BARREL_UPDATES:-2000} --device cuda > "$OUT/barrel.out" 2>&1 || log "barrel checks FAILED (see barrel.out)"
 cp "$DIR/barrel_$STEM/result.json" "$OUT/barrel_result.json"
 BAR="$DIR/${STEM}_barrel.pt"; cp "$DIR/barrel_$STEM/gen_branch_s0.pt" "$BAR"
 log "barrel done: $(grep RESULT "$OUT/barrel.out")"

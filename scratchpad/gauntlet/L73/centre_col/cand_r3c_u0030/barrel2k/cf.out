@@ -1,0 +1,50 @@
+C:\Users\benpe\ClashBot\.claude\worktrees\agent-a88842705e64e1272\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+barrel2k {"feature_version": 6, "A_real": {"log_lane_eq_real_target": 1332, "log_lane_eq_pro": 1354}, "B_barrel_x_mirrored": {"log_lane_eq_real_target": 235, "log_lane_eq_pro": 265}, "C_barrel_removed": {"log_lane_eq_real_target": 810, "log_lane_eq_pro": 842}, "val_only": {"rows": 126, "A_log_lane_eq_target": 117, "flips_when_barrel_mirrored": 93}, "lane_flips_when_barrel_mirrored": 1097}
+barrel2k_cellref {"feature_version": 6, "A_real": {"log_lane_eq_real_target": 1340, "log_lane_eq_pro": 1360}, "B_barrel_x_mirrored": {"log_lane_eq_real_target": 202, "log_lane_eq_pro": 230}, "C_barrel_removed": {"log_lane_eq_real_target": 813, "log_lane_eq_pro": 843}, "val_only": {"rows": 126, "A_log_lane_eq_target": 117, "flips_when_barrel_mirrored": 96}, "lane_flips_when_barrel_mirrored": 1138}
+{
+ "rows": 1405,
+ "pro_same_lane": 1361,
+ "barrel2k": {
+  "feature_version": 6,
+  "A_real": {
+   "log_lane_eq_real_target": 1332,
+   "log_lane_eq_pro": 1354
+  },
+  "B_barrel_x_mirrored": {
+   "log_lane_eq_real_target": 235,
+   "log_lane_eq_pro": 265
+  },
+  "C_barrel_removed": {
+   "log_lane_eq_real_target": 810,
+   "log_lane_eq_pro": 842
+  },
+  "val_only": {
+   "rows": 126,
+   "A_log_lane_eq_target": 117,
+   "flips_when_barrel_mirrored": 93
+  },
+  "lane_flips_when_barrel_mirrored": 1097
+ },
+ "barrel2k_cellref": {
+  "feature_version": 6,
+  "A_real": {
+   "log_lane_eq_real_target": 1340,
+   "log_lane_eq_pro": 1360
+  },
+  "B_barrel_x_mirrored": {
+   "log_lane_eq_real_target": 202,
+   "log_lane_eq_pro": 230
+  },
+  "C_barrel_removed": {
+   "log_lane_eq_real_target": 813,
+   "log_lane_eq_pro": 843
+  },
+  "val_only": {
+   "rows": 126,
+   "A_log_lane_eq_target": 117,
+   "flips_when_barrel_mirrored": 96
+  },
+  "lane_flips_when_barrel_mirrored": 1138
+ }
+}
