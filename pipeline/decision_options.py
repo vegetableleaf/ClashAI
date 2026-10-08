@@ -31,6 +31,7 @@ class DecisionOptions:
     xbow_class_floor: float = 0.2
     gate_decode: str = 'threshold'          # 'hazard' / 'hazard_below_tau': execute the gate's learned play RATE (W4)
     gate_hazard_min_elixir: float = 0.0     # hazard draws only at own elixir >= this (0 = everywhere)
+    gate_hazard_quiet: bool = False         # hazard draws only with no enemy unit on the board (public bodies)
 
     def __post_init__(self):
         if self.card_choice not in ('argmax', 'filtered'):
@@ -85,6 +86,8 @@ def add_arguments(parser):
                              'as before, else the same draw')
     parser.add_argument('--gate-hazard-min-elixir', type=float, default=0.0,
                         help='hazard draws only when my elixir >= this (0 = at any elixir)')
+    parser.add_argument('--gate-hazard-quiet', action='store_true',
+                        help='hazard draws only when no enemy unit is on the board')
     parser.add_argument('--decision-seed', type=int, default=0,
                         help='separate seeded card-choice stream; recorded with each experiment')
 
@@ -273,7 +276,7 @@ def choose_cells(logits, card_names, options, *, rngs=None, enemy_alive=None, gr
 
 @torch.no_grad()
 def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options, rngs, card_names,
-                 t_sec=None, enemy_alive=None, grid=None, step_s=None, elixir=None):
+                 t_sec=None, enemy_alive=None, grid=None, step_s=None, elixir=None, enemy_units=None):
     """Optional branch of e1_eval's live decision; default branch remains untouched.
     ``t_sec`` (tau_phase) and ``enemy_alive`` [(K, L, R) alive] + ``grid`` (xbow_class) are per-row match context."""
     tau = gate_taus(options, tau, t_sec, len(allowed))
@@ -288,6 +291,10 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
             if elixir is None:
                 raise ValueError('gate_hazard_min_elixir requires the own elixir of every row')
             draw &= np.asarray(elixir, dtype=np.float64) >= options.gate_hazard_min_elixir
+        if options.gate_hazard_quiet:
+            if enemy_units is None:
+                raise ValueError('gate_hazard_quiet requires the enemy unit count of every row')
+            draw &= np.asarray(enemy_units) == 0
         for r in np.flatnonzero(draw):
             playing[r] = hazard_play(p[r], step_s, rngs[r])
     slots = [choose_slot(heads['card'][r], allowed[r], options, rngs[r], playing=bool(playing[r]))
@@ -332,6 +339,7 @@ def match_kwargs(matches):
     if options.gate_decode != 'threshold':
         out['step_s'] = 0.05 * int(cfg['decide_every'])   # the SIM decides every decide_every ticks
         out['elixir'] = [float(m._cur[1].my_elixir) for m in matches]
+        out['enemy_units'] = [sum(u.side == 1 for u in m._cur[1].units) for m in matches]
     if options.tau_phase is not None or options.xbow_class != 'argmax':
         boards = [m._cur[1] for m in matches]    # the prepared decision's engine BoardState (my frame)
         out.update(t_sec=[float(b.t_sec) for b in boards], grid=cfg['grid'],
