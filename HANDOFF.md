@@ -4501,6 +4501,15 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **W3 DONE (worktree agent-a1de3f62 @7bd5bb6; blind verification running, then merge):** (b) LIVE_OPTIONS: new
+>   pipeline/live_options.py; live_play.py applies scratchpad/gauntlet/L70/live/LIVE_OPTIONS (`--xbow-class class_sample
+>   --xbow-class-floor 0.3 --tau-phase 0.35 0.45 0.55 --spell-aim rocket_area`) for every decision flag not typed;
+>   explicit flags win per flag; `--no-live-options`; `--live-options-file`; unknown flag in the file -> exit 2; logs
+>   {file, from_file, explicit, ignored}. (a) `--log-aim log_barrel` (new key, combines with rocket_area; catalog rolling
+>   geometry in public_geometry.constants()['rolling']): offline in-flight coverage of the landing 0.875 -> 1.000 (pros
+>   0.895), exact pro cell 0.428 -> 0.398; SIM barrel census 192: covering 0.882 -> 1.000, wins 145 vs 143 (9/7), crowns
+>   against 54 vs 56 -> no harm, small effect; the live 38% miss likely counts Logs after landing (untouched). VM shared
+>   ~/ClashBot got decision_options.py + public_geometry.py (backward-compatible).
 > * **W4 CALIBRATION VERDICT (VM, live ckpt on all 307,035 icebow deck-90 rows):** p_gate = probability per 2-s WAIT row
 >   and it is CALIBRATED (val bins .10-.20 -> pro play frac .159, .20-.30 -> .266, .30-.35 -> .346, .45-.55 -> .514,
 >   .85-1 -> .900; quiet 1x E>=9: mean p .236 vs pro .268 = 0.151 vs 0.157 plays/s). Cadence/step size does NOT enter
