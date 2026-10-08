@@ -274,7 +274,7 @@ def choose_cells(logits, card_names, options, *, rngs=None, enemy_alive=None, gr
 @torch.no_grad()
 def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options, rngs, card_names,
                  t_sec=None, enemy_alive=None, grid=None, step_s=None, elixir=None):
-    """Optional branch of e1_eval's live decision; default branch remains untouched.
+    """
     ``t_sec`` (tau_phase) and ``enemy_alive`` [(K, L, R) alive] + ``grid`` (xbow_class) are per-row match context."""
     tau = gate_taus(options, tau, t_sec, len(allowed))
     playing = allowed.any(axis=1) & ((np.asarray(p) > tau) | stalled)
@@ -286,7 +286,7 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
         draw = allowed.any(axis=1) & ~playing                   # a draw only where a play is possible
         if options.gate_hazard_min_elixir > 0:
             if elixir is None:
-                raise ValueError('gate_hazard_min_elixir requires each row's own elixir')
+                raise ValueError('gate_hazard_min_elixir requires the own elixir of every row')
             draw &= np.asarray(elixir, dtype=np.float64) >= options.gate_hazard_min_elixir
         for r in np.flatnonzero(draw):
             playing[r] = hazard_play(p[r], step_s, rngs[r])
