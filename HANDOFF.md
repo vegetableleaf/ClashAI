@@ -4711,6 +4711,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   Next (same worker): input-swap diagnostic on rebuilt live states (forms incl. hero IW, tower/unit levels 15 vs 11,
 >   opp counter, own_ability, tokens, OT clock) to find what makes the live gate eager; port the body-value fix into
 >   the loss review (its pressure-based factors may change).
+> * **PIPELINING v2: FAIL, not merged (branch worktree-agent-a613a3951c4d5dae9 152bdef/36718a0).** SIM v3 960 paired,
+>   deployed bundle on all arms: OFF 634; p1 = pending view (A's bodies/projectile/area via extrapolate.pending_board)
+>   570 (121/185, p .0003); p2 = view + hazard decoding while pending (--pending-decode hazard) 584 (144/194, p .0076).
+>   Gaps <= 20 ticks .086/.077 (pros .044); elixir at push start 5.12 -> 5.03/4.97. Second plays are well timed
+>   (enemy on my half 72-84% vs pros 74%; 3.5-4.6% of pending decisions play) but the CARD is wrong: P(Tornado | Tornado
+>   affordable) at second plays .50 vs pros .16 (bot 30 ticks after a play .09-.12). Rocket->Tornado .007 -> .02-.03
+>   (pros .14). Next: offline diagnostic -- model on PRO second-play rows (model vs view problem), then component swaps.
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
