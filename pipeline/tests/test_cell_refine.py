@@ -100,6 +100,30 @@ class TestCellRefine(unittest.TestCase):
         self.assertIsNotNone(pilot.model.cell_refine)
         self.assertTrue(torch.equal(_fwd(pilot.model, self.b)["cell"], ref["cell"]))
 
+    def test_composes_with_fv6_barrel_branch(self):
+        """fv6 projectile-target branch (barrel add-on) + CellRefine in one checkpoint: both load, both act, and the
+        branch-only part is unchanged by the zero-init refinement."""
+        from pipeline.tests.test_spatial_projectiles import batch
+        b = batch()
+        torch.manual_seed(0)
+        m = GenModel(d=32, layers=1, d_c=16, n_cards=124, feature_version=6).eval()
+        torch.nn.init.normal_(m.projectile_target_spread.weight, std=0.5)       # a "trained" barrel branch
+        before = _fwd(m, b)
+        m.add_cell_refine(16, 5)
+        self.assertTrue(torch.equal(_fwd(m, b)["cell"], before["cell"]))
+        torch.nn.init.normal_(m.cell_refine.out.weight, std=0.5)
+        ref = _fwd(m, b)
+        p = self.tmp / "fv6_ref.pt"
+        torch.save({"model": m.state_dict(), "gen": True, "d_c": 16, "card_vocab": list(range(124)),
+                    "args": {"d": 32, "layers": 1, "feature_version": 6, "grid": "lattice"}, "cell_refine": True}, p)
+        m2, _ = load_model(p, torch.device("cpu"))
+        self.assertEqual((m2.cell_refine.C, len(m2.cell_refine.convs)), (16, 5))
+        self.assertTrue(torch.equal(_fwd(m2.eval(), b)["cell"], ref["cell"]))
+        no_branch = m2.state_dict()
+        no_branch["projectile_target_spread.weight"] = torch.zeros_like(no_branch["projectile_target_spread.weight"])
+        m2.load_state_dict(no_branch)
+        self.assertFalse(torch.equal(_fwd(m2.eval(), b)["cell"], ref["cell"]))     # the branch still acts
+
     def test_unit_scatter_mirrors_like_labels(self):
         x = torch.tensor([[17 / 36, 0.7], [19 / 36, 0.7], [3.4 / 36, 0.2]])
         mx = x.clone(); mx[:, 0] = 1 - mx[:, 0]

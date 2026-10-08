@@ -1,0 +1,27 @@
+{
+ "n_rows": 21585,
+ "ALL": {
+  "n": 21585,
+  "P_pro_8.5": 0.496,
+  "n_lane": 16579,
+  "P_enemy_side": 0.671,
+  "agree_rseries_r3_u0050": 0.494,
+  "enemy_side_rseries_r3_u0050": 0.498,
+  "agree_rseries_r3_u0050_cellref": 0.549,
+  "enemy_side_rseries_r3_u0050_cellref": 0.581,
+  "agree_rseries_r3_u0050_cellref5": 0.619,
+  "enemy_side_rseries_r3_u0050_cellref5": 0.708
+ },
+ "PULL tesla/x-bow vs building-targeter": {
+  "n": 15,
+  "P_pro_8.5": 0.467,
+  "n_lane": 14,
+  "P_enemy_side": 0.643,
+  "agree_rseries_r3_u0050": 0.467,
+  "enemy_side_rseries_r3_u0050": 0.429,
+  "agree_rseries_r3_u0050_cellref": 0.467,
+  "enemy_side_rseries_r3_u0050_cellref": 0.643,
+  "agree_rseries_r3_u0050_cellref5": 0.533,
+  "enemy_side_rseries_r3_u0050_cellref5": 0.786
+ }
+}
