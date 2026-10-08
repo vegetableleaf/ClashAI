@@ -4501,6 +4501,15 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **W2 Ice Wizard press (worktree agent-a741e3b2 @4113ff9, not merged; flag `--iw-press {rule,learned}`, default rule):**
+>   (1) the SIM has NO Hero Ice Wizard (RoyaleSim 20261006 refuses it: form_fallbacks IceWizard 2 -> base; 0 ability
+>   presses for the learner in 960 games) -> the press is live-only, never trained or evaluated in SIM. (2) CORRECTION:
+>   "card in the last 3 s 87% vs 45%" was a definition mismatch (q2 counted the IW deploy itself); same definition: live
+>   rule 0.41 vs pros 0.45 (incl. deploy 0.71 vs 0.76). Pro elixir >= 5 at press 0.59. Sweep (2,593 live / 1,320 pro
+>   deploys): live rule presses/deploy .25, el>=5 .14, overspend .29; learned threshold .10 -> .31 / .06 / .38 (worse);
+>   sampled hazard -> overspend .52. Why: the bot has >= 5 elixir in only 30% of hero-alive seconds (pros 70%) and the
+>   hazard model has no board geometry. Best lever: raise P* inside the existing gate (P >= .03 keeps 69% of presses,
+>   overspend .22; approximation). Recommendation: keep the default; owner's call on a P* raise A/B.
 > * **W4 MECHANISM (code reading, measurement on the VM pending):** dataset.py samples WAIT rows every 40 ticks (2 s)
 >   and drops waits within 20 ticks before a play -> p_gate = probability per 2-s row. Live/SIM THRESHOLD it (play iff
 >   p > tau) at every decision, so nothing accumulates: tau .35 ~ a hazard of 0.21 plays/s; pros' quiet-board 1x hazard
