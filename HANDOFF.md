@@ -4723,6 +4723,22 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   card, base forms) .111-.121 -> neither the model nor the view over-picks; after a pro Rocket, Tornado is top .59. The
 >   SIM .50 is SIM-specific (look-ahead with the pending effect, SIM board states, or a gate x card selection effect).
 >   Next: SIM-replay part removal + selection check.
+> * **OWNER LIVE TEST of --fast-input (a, L74/latency/fast_input_ab.py):** default 15 matches tap 132 ms, decision ->
+>   confirm median 27 (mean 28.08); fast/gap50 5 matches tap 83 ms, 26 (26.48); fast/gap0 5 matches tap 28 ms, 24
+>   (25.89). Affordable plays refused 1.1/1.3/0.7% (input path fine). Plays tapped with elixir at the decision < cost
+>   (trusting look-ahead regen) refused 10% -> 25% -> 32% (6/60, 4/16, 7/22): faster taps arrive before the regen; each
+>   refusal = 3-s lockout. NOT deployed yet. Sent back to a19b2927: afford at tap-ARRIVAL elixir (live + SIM parity: the
+>   SIM checks at landing), early refusal release, horizon 24 SIM A/B.
+> * **PIPELINING PARKED (diagnostic b976d79):** P(top = Tornado | affordable) in SIM pending decisions .452 (fired .460;
+>   gate fire rate flat across top cards -> selection (c)); at equal elixir pending .51-.54 vs not pending .12-.23 vs pro
+>   second-play rows .12-.20; no single view part fixes it (largest: no look-ahead .353; no elixir deduction .216 = bin
+>   shift). Remaining decisive check (not run): fork the SIM, land the pending card for real, re-score.
+> * **OWNER ~18:xx: defense + dead-lane X-Bow.** "the model isn't defending well enough ... defending a side that takes
+>   minor damage instead of ... a heavy push ... doesnt respond in time ... doesn't defend at all"; "dead lane xbows ...
+>   give little to no value ESPECIALLY in overtime ... i dont care if pros do it". Workers: defense analysis af3c232b
+>   (D1 lane triage, D2 response timing incl. the 1.3 s share, D3 non-responses, D4 defensive quality, D5 damage
+>   accounting; learned-fix proposals); dead-lane X-Bow a1f8484f (measure live; opt-in --xbow-dead-lane block =
+>   owner-requested placement constraint backed by the "never the king tower" doctrine; SIM v3 A/B).
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
