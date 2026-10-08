@@ -4545,6 +4545,23 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   pending excluded, cadence-invariance test, offline parity on the freeze log); blind verify before merge; deploy
 >   via LIVE_OPTIONS is the owner's call. Open question for the push-Rocket line (b, untested): does hbt9 change my
 >   elixir at big-push start (bot 2.2-2.7 vs pros 6.0)?
+> * **OWNER ~13:3x: "once it's verified, switch the 9+ elixir timing fix"** -> after W4's live wiring passes blind
+>   verification and merges, append `--gate-decode hazard_below_tau --gate-hazard-min-elixir 9` to
+>   scratchpad/gauntlet/L70/live/LIVE_OPTIONS (no --gate-hazard-quiet), run plain `live_play.py --check`, tell the owner.
+> * **INFERNO DRAGON LEAK (a, live_play_20261008_133745, towerref_w2):** 10 elixir from tick 202; enemy Inferno
+>   Dragon behind the king at 262; gate p .16 -> max .29 < tau .35; first play Tesla at 508 = 12.3 s at full (~4.4
+>   elixir); my left princess then fell. Again 1239-1427 (9.4 s at 10, ~3.4 elixir). hbt9 counterfactual on the logged
+>   p (scratchpad/gauntlet/L73/rocket_hp/hbt9_counterfactual.py): P(play) .66 within 5 s of the Inferno Dragon, .87
+>   before the logged play; the card would have been X-Bow 98% (untested whether an X-Bow into an incoming Inferno
+>   Dragon beats waiting).
+> * **LETHAL ROCKET MISSED (a, live_play_20261008_131352, towerref_w2):** OT 0-0 (sudden death), enemy princesses
+>   453 HP vs 1092 HP (of 4424); Rocket tower damage MEASURED 497 (1092 -> 595); the bot played Knight + IW first, then
+>   Rocketed the 1092 tower (tick 4304); its own tower fell ~4999 -> loss. Model inputs were correct (hp_frac .102 /
+>   .247, frames consistent with the raw arena towers). Archive 10-05..10-08 (L73/rocket_hp/stretch.py): OT lethal
+>   windows 29 -> Rocket on the lethal tower 15, Rocket elsewhere 6, no Rocket 8. Why = worker a0ff8a54 (re-run the
+>   state: which head / rocket_area chose R; HP ablation; pro lethal-row counts; learned-fix proposal, not built).
+> * Side note (a): live runs the model on CPU (start event device "cpu" in every log since >= 10-07), mean decide
+>   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
 >   flag (fixed: own_effects in both --check dicts). LIVE_OPTIONS may now deploy live-only flags (EXTRA_LIVE_FLAGS =
 >   --own-effects) and the file holds `... --spell-aim rocket_area --own-effects`. Merged-tree tests 152 passed; plain
