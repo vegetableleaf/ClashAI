@@ -4501,6 +4501,14 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **CellRefine follow-up MERGED (46ea0a8):** (width, depth) stored as a `cell_refine.cfg` buffer and used on load ->
+>   a truncated NEW checkpoint fails strict load; legacy files (incl. the live one, no cfg key) infer + fill -> live
+>   `--check` PASS on the merged code; 58 tests pass. NOTE: a checkpoint saved by the NEW code (with cfg) cannot be
+>   loaded by code older than 46ea0a8 (unexpected key) -- laptop main and VM model_gen/model_v3 are identical (md5).
+>   Centre-column worker DONE (final report: v2 module offline lane 65.2% vs pros 64.8%; SIM 72-80% = above pros,
+>   untested live; CellRefine without the barrel branch drops in-flight Log lane to 66% -> always ship together).
+>   R4c u0040 handoff: `bash scratchpad/gauntlet/L73/centre_col/cand.sh r4c_u0040 <ckpt>` (barrel 2k + CR 2ep, v2).
+>   No junctions left in .claude/worktrees (checked).
 > * **04:2x: R3n u0080 OUT** (v2 132 vs R1e 133, 45/38; ghost -4.3 [-7.7, -1.0] FAILS; u0040 ghost -2.7). R4n (init R3n
 >   u0080, started 03:55) STOPPED at u6 by exact PID (+ chain_ns.sh, eval_v2_queue.sh, 39 orphan workers). **R4c
 >   launched** (`~/chain_r4c.sh`): r4_overrides (R3 + card/xbow_class kinds), init R3c u0030 (the live base), value_phi on
