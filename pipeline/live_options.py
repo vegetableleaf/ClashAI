@@ -1,6 +1,6 @@
 """Deployed live decision options (the LIVE_OPTIONS file), applied the way CKPT_OVERRIDE selects the checkpoint.
 
-The file holds decision-option flags (pipeline.decision_options.add_arguments only), shell-quoted, '#' comments,
+The file holds decision-option flags (pipeline.decision_options.add_arguments) plus EXTRA_LIVE_FLAGS, shell-quoted, '#' comments,
 full flag names, each flag at most once. Every decision-option flag the command line sets explicitly wins;
 ``--no-live-options`` ignores the file; an ABSENT file runs the plain defaults and says so loudly (status 'ABSENT').
 An unknown, abbreviated or repeated flag in the file refuses the run (argparse exit 2).
@@ -14,9 +14,16 @@ from .decision_options import add_arguments
 _UNSET = object()
 
 
+# Live-only switches the file may also deploy (owner 2026-10-08: "switch it on" for own_effects). Each must also be a
+# live_play.py flag with the same name and action; explicit command-line use still wins.
+EXTRA_LIVE_FLAGS = (('--own-effects', dict(action='store_true')),)
+
+
 def _decision_parser(prog, allow_abbrev=True):
     parser = argparse.ArgumentParser(prog=prog, add_help=False, allow_abbrev=allow_abbrev)
     add_arguments(parser)
+    for flag, kw in EXTRA_LIVE_FLAGS:
+        parser.add_argument(flag, **kw)
     return parser
 
 

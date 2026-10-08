@@ -352,7 +352,7 @@ def main() -> int:
             print(json.dumps(dict(check='LIVE_CHECK_PASS', checkpoints=[
                 dict(checkpoint=path, sha256=sha, feature_version=pl.feature_version)
                 for (path, sha), (_, pl) in zip(arms, loaded)], device=loaded[0][0], tau=a.tau, **anti_leak_log(a),
-                public_audit=a.public_audit, legal_guard=not getattr(a, 'no_legal_guard', False), predict_drops=a.predict_drops,
+                public_audit=a.public_audit, legal_guard=not getattr(a, 'no_legal_guard', False), predict_drops=a.predict_drops, own_effects=bool(getattr(a, 'own_effects', False)),
                 decision_options=vars(loaded[0][1].decision_options), live_options=a.live_options)))
             return 0
     else:
@@ -368,7 +368,7 @@ def main() -> int:
         device, pilot = load_pilot(a, decision_cfg)
         print(json.dumps(dict(check='LIVE_CHECK_PASS', checkpoint=a.ckpt, sha256=a.ckpt_sha256,
               feature_version=pilot.feature_version, device=device, tau=a.tau, **anti_leak_log(a),
-              public_audit=a.public_audit, legal_guard=getattr(pilot, 'legal_guard', None), predict_drops=a.predict_drops,
+              public_audit=a.public_audit, legal_guard=getattr(pilot, 'legal_guard', None), predict_drops=a.predict_drops, own_effects=bool(getattr(a, 'own_effects', False)),
               decision_options=vars(pilot.decision_options), live_options=a.live_options)))
         return 0
     nav = None

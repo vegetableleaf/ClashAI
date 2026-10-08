@@ -11,7 +11,8 @@ from pipeline.decision_options import add_arguments, config_from_args, options_f
 from pipeline.live_options import add_live_options_arguments, parse_with_live_options, tau_check
 
 REPO = Path(__file__).resolve().parents[2]
-DEPLOYED = '--xbow-class class_sample --xbow-class-floor 0.3 --tau-phase 0.35 0.45 0.55 --spell-aim rocket_area\n'
+DEPLOYED = ('--xbow-class class_sample --xbow-class-floor 0.3 --tau-phase 0.35 0.45 0.55 --spell-aim rocket_area '
+            '--own-effects\n')
 
 
 def parser(path):
@@ -38,7 +39,7 @@ def test_file_present_applies_it(tmp_path):
     assert (opts.xbow_class, opts.xbow_class_floor, opts.tau_phase, opts.spell_aim) == \
         ('class_sample', .3, (.35, .45, .55), 'rocket_area')
     assert rec['file'] == str(f) and rec['explicit'] == [] and not rec['ignored']
-    assert sorted(rec['from_file']) == ['spell_aim', 'tau_phase', 'xbow_class', 'xbow_class_floor']
+    assert sorted(rec['from_file']) == ['own_effects', 'spell_aim', 'tau_phase', 'xbow_class', 'xbow_class_floor']
 
 
 def test_file_absent_gives_plain_defaults(tmp_path):
@@ -54,7 +55,7 @@ def test_explicit_flags_win_flag_by_flag(tmp_path):
     assert opts.spell_aim == 'argmax' and opts.tau_phase == (.3, .3, .3) and opts.log_aim == 'log_barrel'
     assert opts.xbow_class == 'class_sample' and opts.xbow_class_floor == .3      # still from the file
     assert rec['explicit'] == ['log_aim', 'spell_aim', 'tau_phase']
-    assert sorted(rec['from_file']) == ['xbow_class', 'xbow_class_floor']
+    assert sorted(rec['from_file']) == ['own_effects', 'xbow_class', 'xbow_class_floor']
     opts, _ = parse(['--spell-aim', 'rocket_area'], f)                          # explicit = file value: same result
     assert opts.spell_aim == 'rocket_area'
 
@@ -141,3 +142,14 @@ def test_live_play_refuses_tau_alternate_under_tau_phase(tmp_path):
     f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED)
     out = run_live_play('--check', '--tau-alternate', '.35', '.45', '--live-options-file', str(f))
     assert out.returncode == 2 and '[live] refusing: --tau-alternate' in out.stdout, out.stdout + out.stderr
+
+
+def test_own_effects_deployable_from_the_file_and_explicit_wins(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text('--own-effects\n')
+    ap = parser(f); ap.add_argument('--own-effects', action='store_true')
+    a, rec = parse_with_live_options(ap, [])
+    assert a.own_effects is True and rec['from_file'] == {'own_effects': True}
+    a, rec = parse_with_live_options(ap, ['--no-live-options'])
+    assert a.own_effects is False and rec['status'] == 'ignored'
+    a, rec = parse_with_live_options(ap, ['--own-effects'])
+    assert a.own_effects is True and rec['explicit'] == ['own_effects'] and rec['from_file'] == {}
