@@ -4501,6 +4501,17 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **CellRefine MERGED (c510411)** after blind verification PASS_WITH_NOTES: old checkpoints torch.equal (R1e, gen_v32,
+>   R3c, barrel) on 600 rows + 400 live decisions; deploy ckpt loads all keys, only cell logits change (argmax changed
+>   186/600 rows). NOTES: CellRefine also moves LANES (X-Bow cx 31 <-> 5 on 33 recorded frames; Tornado, Skeletons) --
+>   accepted on the SIM win numbers; CPU latency +40-70 ms median (live runs CPU: R1e 57 ms median, p95 76); a
+>   checkpoint missing its last conv layer would load silently shallower (fix queued); --check doesn't report modules.
+>   Merged tree: 141 tests pass; `live_play --check` with the full stack flags PASS (fv6, anti_leak, guard, tau_phase,
+>   xbow class_sample).
+> * **barrel2k (R3c u0030 barrel branch 2,000 updates):** held-out lane 117 (barrel2k) / 117 (+CR). v2 192: barrel2k 159
+>   vs base 150 (10/1, p .012); barrel2k+CR 160 (25/15) = barrel1k+CR 163 (14/17). Barrel-heavy (96): barrel2k+CR 71
+>   wins vs base 60 (22/11, p .08), crowns against 30 vs 41, in-flight Log lane 90.3% (base 69.3%, barrel2k alone 94.7%).
+>   SHIP FILE = rseries_r3c_u0030_barrel2k_cellref.pt; full-stack test (`stack2k`) + ghost running.
 > * **FULL STACK (stack5 = R3c u0030 + barrel + CellRefine 2ep [_barrel_cellref5.pt] + anti-leak 9/12 + xbow f .3 +
 >   tau_phase .35/.45/.55), v2:** vs R1e AS IT RAN LIVE: tune **161 vs 133 (58/16, p<1e-6)**, fresh **152 vs 128 (57/21,
 >   p .0001)**; vs R1e + AL: 161 vs 159 (17/15), 152 vs 147 (28/23) -> level. Behaviour vs R1e: elixir@play 2x/OT
