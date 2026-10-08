@@ -1,0 +1,44 @@
+
+=== towerref_w2: 54 matches, 24 with an enemy princess down
+per match (all matches) by phase 1x/2x/OT: KONLY [0, 0, 0] = 0.000; DL_LOCK [3, 6, 1] = 0.185; DL_BACK [1, 2, 0] = 0.056; OFF_P [2, 6, 0] = 0.148; DEF [0, 0, 0] = 0.000; ROCKET [1, 7, 4] = 0.222
+class   ph  n    life_s  king_dmg  enemy_tower_dmg  my_tower_dmg_20s  opp_spent_10s  king_awake  match_win
+DL_LOCK 1x     3    25.1      1692             1704                 0           4.01        1.00       1.00
+DL_LOCK 2x     6    20.9      1633             2520               219           5.41        1.00       0.83
+DL_LOCK OT     1    14.0         0                0                 0           9.00        1.00       0.00
+DL_LOCK all   10    21.5      1487             2023               131           5.35        1.00       0.80
+DL_BACK 1x     1    32.5         0               51                 0           4.01        1.00       1.00
+DL_BACK 2x     2    23.9         0              110                24           8.00        1.00       0.50
+DL_BACK all    3    26.8         0               90                16           6.67        1.00       0.67
+OFF_P   1x     2    12.0         0              245                84           5.51        1.00       0.50
+OFF_P   2x     6    15.5         6             1486               551           6.54        1.00       1.00
+OFF_P   all    8    14.6         4             1175               434           6.28        1.00       0.88
+ROCKET  1x     1     nan         0              497               591           0.01        1.00       1.00
+ROCKET  2x     7     nan         5              483               134           4.71        1.00       0.86
+ROCKET  OT     4     nan         0              195                34           1.84        1.00       0.50
+ROCKET  all   12     nan         3              388               139           3.36        1.00       0.75
+
+=== ALL: 537 matches, 308 with an enemy princess down
+per match (all matches) by phase 1x/2x/OT: KONLY [0, 3, 0] = 0.006; DL_LOCK [22, 105, 29] = 0.291; DL_BACK [2, 8, 2] = 0.022; OFF_P [10, 69, 28] = 0.199; DEF [2, 16, 1] = 0.035; ROCKET [5, 25, 14] = 0.082
+class   ph  n    life_s  king_dmg  enemy_tower_dmg  my_tower_dmg_20s  opp_spent_10s  king_awake  match_win
+KONLY   2x     3    11.8      4323             4323                 0           0.00        1.00       1.00
+KONLY   all    3    11.8      4323             4323                 0           0.00        1.00       1.00
+DL_LOCK 1x    22    22.4       583              594               462           4.48        1.00       0.64
+DL_LOCK 2x   105    19.8       402              537               343           6.34        0.97       0.68
+DL_LOCK OT    29    20.2       157              184               173           6.90        1.00       0.28
+DL_LOCK all  156    20.2       382              479               329           6.18        0.98       0.60
+DL_BACK 1x     2    30.4         0               26              1909           2.01        1.00       1.00
+DL_BACK 2x     8    18.3         0               63               772           7.53        1.00       0.38
+DL_BACK OT     2    14.8         0                0               115           7.36        1.00       0.50
+DL_BACK all   12    19.8         0               46               852           6.58        1.00       0.50
+OFF_P   1x    10    15.9         0             1517               526           4.54        1.00       0.50
+OFF_P   2x    69    14.8       312             1842               412           7.40        0.99       0.74
+OFF_P   OT    28    14.9       102             1039                90           6.95        1.00       0.57
+OFF_P   all  107    14.9       228             1601               339           7.01        0.99       0.67
+DEF     1x     2    17.2         0                0                 0           1.72        1.00       0.50
+DEF     2x    16    18.0        55              256               290           4.79        1.00       0.69
+DEF     OT     1    12.4         0             1615                 0          11.00        1.00       0.00
+DEF     all   19    17.6        46              301               244           4.80        1.00       0.63
+ROCKET  1x     5     nan         0              199               334           1.85        1.00       0.80
+ROCKET  2x    25     nan        51              244               470           5.77        1.00       0.68
+ROCKET  OT    14     nan        19              320               824           5.09        1.00       0.36
+ROCKET  all   44     nan        35              263               567           5.11        1.00       0.59
