@@ -216,6 +216,30 @@ def hazard_play(p, step_s, rng):
     return bool(rng.random() < -math.expm1(-float(gate_rate(p)) * float(step_s)))
 
 
+def hazard_draw(options, p, step_s, rng, *, elixir=None, enemy_units=None):
+    """The ONE hazard decision for a row where a play is possible and the threshold said wait (SIM decide_batch and
+    live_gen_v2 both call it). Out of scope (elixir < gate_hazard_min_elixir, or an enemy unit on the board with
+    gate_hazard_quiet) -> False without drawing. Missing context for an active scope raises, never a silent no-op."""
+    if step_s is None:
+        raise ValueError('hazard gate decoding requires the decision step (seconds)')
+    if options.gate_hazard_min_elixir > 0:
+        if elixir is None:
+            raise ValueError('gate_hazard_min_elixir requires the own elixir of every row')
+        if float(elixir) < options.gate_hazard_min_elixir:
+            return False
+    if options.gate_hazard_quiet:
+        if enemy_units is None:
+            raise ValueError('gate_hazard_quiet requires the enemy unit count of every row')
+        if int(enemy_units):
+            return False
+    return hazard_play(p, step_s, rng)
+
+
+def enemy_unit_count(bs):
+    """Visible bodies not known to be mine (side 0) on a BoardState: public; an unknown team (-1, live only) counts."""
+    return sum(int(u.side) != 0 for u in bs.units)
+
+
 def is_xbow(name):
     return re.sub(r'[^a-z]', '', str(name).split('@')[0].lower()) in ('xbow', 'xbowevo')
 
@@ -364,17 +388,10 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
             raise ValueError('hazard gate decoding requires the decision step (seconds)')
         if options.gate_decode == 'hazard':
             playing = allowed.any(axis=1) & stalled
-        draw = allowed.any(axis=1) & ~playing                   # a draw only where a play is possible
-        if options.gate_hazard_min_elixir > 0:
-            if elixir is None:
-                raise ValueError('gate_hazard_min_elixir requires the own elixir of every row')
-            draw &= np.asarray(elixir, dtype=np.float64) >= options.gate_hazard_min_elixir
-        if options.gate_hazard_quiet:
-            if enemy_units is None:
-                raise ValueError('gate_hazard_quiet requires the enemy unit count of every row')
-            draw &= np.asarray(enemy_units) == 0
-        for r in np.flatnonzero(draw):
-            playing[r] = hazard_play(p[r], step_s, rngs[r])
+        for r in np.flatnonzero(allowed.any(axis=1) & ~playing):   # a draw only where a play is possible
+            playing[r] = hazard_draw(options, p[r], step_s, rngs[r],
+                                     elixir=None if elixir is None else elixir[r],
+                                     enemy_units=None if enemy_units is None else enemy_units[r])
     slots = [choose_slot(heads['card'][r], allowed[r], options, rngs[r], playing=bool(playing[r]))
              for r in range(len(allowed))]
     cells = np.full(len(slots), -1, dtype=np.int64)
@@ -423,7 +440,7 @@ def match_kwargs(matches):
     if options.gate_decode != 'threshold':
         out['step_s'] = 0.05 * int(cfg['decide_every'])   # the SIM decides every decide_every ticks
         out['elixir'] = [float(m._cur[1].my_elixir) for m in matches]
-        out['enemy_units'] = [sum(u.side == 1 for u in m._cur[1].units) for m in matches]
+        out['enemy_units'] = [enemy_unit_count(m._cur[1]) for m in matches]
     if options.tau_phase is not None or options.xbow_class != 'argmax':
         boards = [m._cur[1] for m in matches]    # the prepared decision's engine BoardState (my frame)
         out.update(t_sec=[float(b.t_sec) for b in boards], grid=cfg['grid'],

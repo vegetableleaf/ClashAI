@@ -153,3 +153,28 @@ def test_own_effects_deployable_from_the_file_and_explicit_wins(tmp_path):
     assert a.own_effects is False and rec['status'] == 'ignored'
     a, rec = parse_with_live_options(ap, ['--own-effects'])
     assert a.own_effects is True and rec['explicit'] == ['own_effects'] and rec['from_file'] == {}
+
+
+GATE = '--gate-decode hazard_below_tau --gate-hazard-min-elixir 9 --gate-hazard-quiet\n'
+
+
+def test_gate_decode_flags_deployable_from_the_file(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + GATE)
+    opts, rec = parse([], f)
+    assert (opts.gate_decode, opts.gate_hazard_min_elixir, opts.gate_hazard_quiet) == ('hazard_below_tau', 9.0, True)
+    assert {'gate_decode', 'gate_hazard_min_elixir', 'gate_hazard_quiet'} <= set(rec['from_file'])
+    opts, rec = parse(['--gate-decode', 'threshold'], f)                       # explicit wins
+    assert opts.gate_decode == 'threshold' and rec['explicit'] == ['gate_decode']
+    opts, _ = parse([], tmp_path / 'missing')
+    assert (opts.gate_decode, opts.gate_hazard_min_elixir, opts.gate_hazard_quiet) == ('threshold', 0.0, False)
+
+
+@pytest.mark.skipif(not CKPT.is_file(), reason='live checkpoint not present')
+def test_check_json_reports_gate_decode(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + GATE)
+    out = run_live_play('--check', '--ckpt', str(CKPT), '--live-options-file', str(f))
+    assert out.returncode == 0, out.stdout + out.stderr
+    check = json.loads(out.stdout.strip().splitlines()[-1])
+    assert {k: check['decision_options'][k] for k in ('gate_decode', 'gate_hazard_min_elixir', 'gate_hazard_quiet')} \
+        == dict(gate_decode='hazard_below_tau', gate_hazard_min_elixir=9.0, gate_hazard_quiet=True)
+    assert check['live_options']['from_file']['gate_decode'] == 'hazard_below_tau'
