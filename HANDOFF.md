@@ -4501,6 +4501,14 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **LIVE OUTAGE 05:45-06:48 EDT:** a Supercell server CONTENT UPDATE modal ("New updates are here! Restart the game ...",
+>   RESTART at (143, 876) on 900x1600) sat over the 94% loading screen; ladder_nav stopped on "loading screen for 60 s";
+>   supervisor burned 10/10 restarts and quit at 06:46. Lead tapped RESTART via ADB (game's own content patch, not a store
+>   APK update); the game resumed straight into a running battle; supervisor restarted 06:49 with the same LIVE_ARGS.
+>   Worker dispatched: ladder_nav recovery (tap the modal's RESTART, else force-stop + relaunch, once per stuck episode).
+>   Live reads so far (stack2k, 29 matches, vs R1e's 231 from 10-04..06): win 48.3% vs 50.6% (-2.4 pp, CI -20 to +16);
+>   mean own elixir up in every phase (significant); 2x damage taken 20.5% vs 13.0% (n.s.). Trophies ~11,100 flat.
+>   R4c u0040 saved (05:xx); chain_r4c evaluating it.
 > * **CellRefine follow-up MERGED (46ea0a8):** (width, depth) stored as a `cell_refine.cfg` buffer and used on load ->
 >   a truncated NEW checkpoint fails strict load; legacy files (incl. the live one, no cfg key) infer + fill -> live
 >   `--check` PASS on the merged code; 58 tests pass. NOTE: a checkpoint saved by the NEW code (with cfg) cannot be
