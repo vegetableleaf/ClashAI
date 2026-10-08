@@ -4545,6 +4545,63 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   pending excluded, cadence-invariance test, offline parity on the freeze log); blind verify before merge; deploy
 >   via LIVE_OPTIONS is the owner's call. Open question for the push-Rocket line (b, untested): does hbt9 change my
 >   elixir at big-push start (bot 2.2-2.7 vs pros 6.0)?
+> * **OWNER ~13:3x: "once it's verified, switch the 9+ elixir timing fix"** -> after W4's live wiring passes blind
+>   verification and merges, append `--gate-decode hazard_below_tau --gate-hazard-min-elixir 9` to
+>   scratchpad/gauntlet/L70/live/LIVE_OPTIONS (no --gate-hazard-quiet), run plain `live_play.py --check`, tell the owner.
+> * **INFERNO DRAGON LEAK (a, live_play_20261008_133745, towerref_w2):** 10 elixir from tick 202; enemy Inferno
+>   Dragon behind the king at 262; gate p .16 -> max .29 < tau .35; first play Tesla at 508 = 12.3 s at full (~4.4
+>   elixir); my left princess then fell. Again 1239-1427 (9.4 s at 10, ~3.4 elixir). hbt9 counterfactual on the logged
+>   p (scratchpad/gauntlet/L73/rocket_hp/hbt9_counterfactual.py): P(play) .66 within 5 s of the Inferno Dragon, .87
+>   before the logged play; the card would have been X-Bow 98% (untested whether an X-Bow into an incoming Inferno
+>   Dragon beats waiting).
+> * **LETHAL ROCKET MISSED (a, live_play_20261008_131352, towerref_w2):** OT 0-0 (sudden death), enemy princesses
+>   453 HP vs 1092 HP (of 4424); Rocket tower damage MEASURED 497 (1092 -> 595); the bot played Knight + IW first, then
+>   Rocketed the 1092 tower (tick 4304); its own tower fell ~4999 -> loss. Model inputs were correct (hp_frac .102 /
+>   .247, frames consistent with the raw arena towers). Archive 10-05..10-08 (L73/rocket_hp/stretch.py): OT lethal
+>   windows 29 -> Rocket on the lethal tower 15, Rocket elsewhere 6, no Rocket 8. Why = worker a0ff8a54 (re-run the
+>   state: which head / rocket_area chose R; HP ablation; pro lethal-row counts; learned-fix proposal, not built).
+> * **OWNER ~14:0x: no learned/weighting fix for lethal Rockets** ("extra weighting has only partially shifted the
+>   model ... should always be rocketing a tower it can finish in one rocket if it's overtime"). Worker a0ff8a54
+>   redirected to BUILD opt-in `--lethal-rocket ot` (OT; Rocket in hand + affordable + no pending; alive enemy PRINCESS
+>   with HP <= my Rocket's catalog tower damage -> play Rocket now on that tower's centre cell; else no change), SIM +
+>   live, offline parity on 131352, v3 SIM; rebases onto W4's merge. Owner wants a bundled live restart: report when
+>   the bundle is ready.
+> * **PUSH-ROCKET WORKER DONE (a8aad346, branch worktree-agent-a8aad346ac44709a7 b4d2554/bfd97e4; NOT merged, NOT
+>   deployed).** Pre-push elixir (a): my elixir 10 s before a big push pros 6.2 / R1e 4.1 / stack 4.8; spent in those
+>   10 s 6.7 vs 7.2-7.3 (extra Knight +.4, IW +.3-.5, Log +.3, offensive X-Bow +.3, IW ability .12-.14; fewer Rockets
+>   on their half); at push start pros 5.9 vs bot 3.0-3.6. LIVE-ONLY: SIM eligibility .48, elixir at push start 5.2.
+>   Sluggishness (a): threats >= 7 elixir on my half answered within 2 s pros .64 / R1e .58 / stack .52 (1x .56 vs
+>   .42/.41); no play 10 s in 1x .11 vs .20; tau_phase (stack) delayed the first play in 73/143 (2x) and 54/92 (OT)
+>   episodes by a median .5-.7 s, almost always a cheap card, never Rocket. Model belief (a): Rocket top card on the 420
+>   pro push-Rocket rows stack .22 / R1e .15 / gen_v32 .25 / towerref_w2 .30; live decisions in eligible >= 7 clump
+>   states Rocket top 0/1,364 -- RETRACTED by the worker (bf35787): q4 printed only the top 6 cards; real R1e 16/762 (2.1%), stack 12/623 (1.9%), matching the offline rate re-weighted to the live state mix (10.7 / 11.9 predicted); exact live-path test on 405 pro rows through GenPilot: tokens 405/405, top card 405/405 identical (after the reader; raw reader fields not covered); extrapolation raises Rocket top 9 -> 19/200. OT aim near my tower: Giant+Wiz
+>   .06 within 2.5 t (median miss 13.5 t), towerref_w2 .17. PushRefine (pipeline/push_refine.py, card residual from
+>   visible enemy tokens, gated on a >= 4-elixir clump on my half, stacked on towerref_w2): SIM v3 480 paired vs
+>   towerref_w2 328.5 -> all-card w8 300.5 (31/59, p .004) FAIL; Rocket-only w16 320.5 (8/16, p .15), push Rockets
+>   .044 -> .119/match, P(Rk|eligible big push) .009 -> .044 (pros .07), eligible .48 and elixir at push start 5.24
+>   unchanged, OT tower Rockets .99 vs 1.01, beatdown census 161 vs 157 (n.s.). Win effect unproven, negative trend.
+>   VM ~/ClashBot now holds push_refine.py + model_gen.py/behaviour_telemetry.py changes NOT in main (backups
+>   ~/probe_push/backup) -> merge (with verification) before any main -> VM sync. Follow-ups sent: (A) live-vs-offline
+>   ranking gap (possible live input-path issue), (B) w16 to 960 paired seeds, (C) tau_phase isolated A/B (flat .35 vs
+>   .35/.45/.55) with the hbt9 bundle -- its only isolated test was on the void standoff benchmark (92 vs 134).
+> * **OWNER ~15:xx: switch on (1) Hero IW higher bar, (2) log_barrel, (3) GPU.** (1)+(3) built by the lead: branch
+>   lead-iw-pstar-gpu 0b3f907 (worktree C:/Users/benpe/cb_lead_small, junctions inside!): live_play --iw-press-pstar
+>   (EXTRA_LIVE_FLAGS, deploy 0.03 = W2's sweep: keeps 69% of presses, overspend .29 -> .22, offline approximation,
+>   live-only) + --device default auto; check passes on cuda; blind verification running. (2) code already in main
+>   (W3: SIM barrel census covering .882 -> 1.000, wins 145 vs 143 n.s.). Bundle LIVE_OPTIONS line to add after merges:
+>   --gate-decode hazard_below_tau --gate-hazard-min-elixir 9 --iw-press-pstar 0.03 --log-aim log_barrel (+ lethal).
+>   Update pipeline/tests/test_live_options.py DEPLOYED in the same commit.
+> * **Owner Q: minimum time between decisions (a, play_gaps.py, 190 logs 10-08):** decision -> confirmation median 28
+>   ticks (p5 25, p95 44); play -> next play min 26 / p5 28 / median 74; tap_ms median 151. The pending lock (no decision
+>   until the hand slot rotates) sets the ~1.3-1.4 s floor. Rocket flies 350 milli/tick = 7 tiles/s from my king;
+>   Tornado active 21 ticks from landing + 1. Owner wants Rocket -> Tornado on clumps: needs PIPELINED second plays
+>   (decide while pending on my own known state: elixir minus the pending cost, slot = my next card) in live AND SIM
+>   (parity rule). Queued after the bundle merges (live_play.py has 3 writers now).
+> * **STANDING LOSS-REVIEW LOOP (owner order, memory live-loss-review-loop.md):** ledger scratchpad/gauntlet/L74/
+>   loss_review/analyzed.txt; first pass worker a3a6e12e building review.py + report.md over 1,170 logs; session cron
+>   6e044f37 every 4 h at :17 (session-only, expires 7 days).
+> * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
+>   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
 >   flag (fixed: own_effects in both --check dicts). LIVE_OPTIONS may now deploy live-only flags (EXTRA_LIVE_FLAGS =
 >   --own-effects) and the file holds `... --spell-aim rocket_area --own-effects`. Merged-tree tests 152 passed; plain
