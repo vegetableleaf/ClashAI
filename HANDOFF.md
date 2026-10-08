@@ -4501,6 +4501,15 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **W4 CALIBRATION VERDICT (VM, live ckpt on all 307,035 icebow deck-90 rows):** p_gate = probability per 2-s WAIT row
+>   and it is CALIBRATED (val bins .10-.20 -> pro play frac .159, .20-.30 -> .266, .30-.35 -> .346, .45-.55 -> .514,
+>   .85-1 -> .900; quiet 1x E>=9: mean p .236 vs pro .268 = 0.151 vs 0.157 plays/s). Cadence/step size does NOT enter
+>   (lead's earlier suspicion contradicted). The fault is THRESHOLD decoding of a rate: only 23% of the pros' own quiet
+>   rows have p > .35. Same-state KM P(play <= 5 s), pro quiet 1x E>=9 episodes: pro .76, threshold .52, pure hazard .42,
+>   threshold + hazard-below-tau .68 (median 3.1 s vs pro 2.3); 2x/OT: threshold .97/.90, threshold+hazard .97/1.00, pure
+>   hazard .67/1.00 (pure hazard DELAYS busy-phase plays). Plan: SIM arm `--gate-decode hazard_below_tau` (play iff
+>   p > tau, else with prob 1 - exp(-rate(p) * 0.5 s)), pure hazard secondary; a learned add-on has little to correct.
+>   W4 runs isolated in ~/w4/repo (it would not act on the relayed ruling; fine).
 > * **OWNER 12:4x: "the agents are allowed to update the shared code folder."** (memory agents-may-update-vm-code)
 > * **W4 blocked by the permission classifier:** copying its backward-compatible pipeline/decision_options.py (gate_decode
 >   = threshold | hazard | hazard_below_tau; gate_rate inverts the 2-s WAIT sampling; hazard_play draws per decision with
