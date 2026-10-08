@@ -34,7 +34,7 @@ sub("e1_eval.py", "class GenPolicy:\n",
     "    if not n: m._iw_born = None; return\n"
     "    if getattr(m, '_iw_born', None) is None: m._iw_born = tick\n"
     "    ev = [dict(card='ice-wizard', tick=m._iw_born - 1, accepted=True, ability=False)] if mode == 'known' else []\n"
-    "    tok = tokens([('ice-wizard', 2, n, -1., 0.)], policy.gid, ev, tick)[0]\n"
+    "    tok = tokens([('ice-wizard', 2, n, -1., 0.)], policy.gid, ev, tick, hero_spec='supplement')[0]\n"   # the 49ac777 run used the then-unconditional supplement
     "    oa = row['own_ability'] = np.array(row['own_ability'], copy=True); k = int((np.abs(oa).sum(-1) > 0).sum())\n"
     "    if k < len(oa): oa[k] = tok\n\n\n"
     "class GenPolicy:\n")

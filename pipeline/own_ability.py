@@ -50,27 +50,33 @@ def observe(frame, side, source):
 # consistent with the 1000 ms deploy every hero form uses (b). Measured: scratchpad/gauntlet/L74/econ2/diag_hero.py.
 SUPPLEMENT = {('ice-wizard', 2): dict(name='IceWizardHero_Ability', mana_cost=1, max_charges=1, cooldown_ms=None,
                                       deploy_ms=1000, source='L74 econ2 live record (diag_hero.py)')}
+# The supplement is OPT-IN and passed explicitly (live-only flag --hero-ability-spec): 'off' (default, every SIM /
+# training / native path) = the pinned cards.json only, byte-identical to before; 'supplement' = + SUPPLEMENT.
+HERO_SPECS = ('off', 'supplement')
 
 
-@lru_cache(maxsize=1)
-def catalog():
+@lru_cache(maxsize=2)
+def catalog(hero_spec='off'):
+    if hero_spec not in HERO_SPECS:
+        raise ValueError(f'hero_spec {hero_spec!r} not in {HERO_SPECS}')
     from .obs_contract import REPO
     from .dataset_gen import card_key
     data=json.loads((REPO/'research/ext/Royale/RoyaleSim/data/derived/cards.json').read_text())
     out = {(card_key(c.get('form_of',c['name'])),form):dict(c['ability'],deploy_ms=c.get('deploy_time_ms') or 0)
            for form,source in ((0,'cards'),(2,'hero_forms')) for c in data[source] if c.get('ability')}
-    for k, spec in SUPPLEMENT.items():
-        out.setdefault(k, dict(spec))       # the engine's own data wins once RoyaleSim carries the form
+    if hero_spec == 'supplement':
+        for k, spec in SUPPLEMENT.items():
+            out.setdefault(k, dict(spec))   # the engine's own data wins once RoyaleSim carries the form
     return out
 
 
-def tokens(rows, gid, events=(), tick=0):
+def tokens(rows, gid, events=(), tick=0, *, hero_spec='off'):
     from .dataset_gen import card_key
     if len(rows) > ABILITY_K:
         raise ValueError('Own ability controller capacity exceeded')
     out = np.zeros((ABILITY_K, len(ABILITY_COLS)), np.float32)
     for i, (key, *values) in enumerate(rows):
-        spec=catalog().get((key,int(values[0])))
+        spec=catalog(hero_spec).get((key,int(values[0])))
         before=[e for e in events if e.get('accepted',True) and int(e.get('engine_tick',e['tick']))<tick and card_key(e.get('card',''))==key]
         deploys=[e for e in before if not e.get('ability')]
         charges=cd=-1.

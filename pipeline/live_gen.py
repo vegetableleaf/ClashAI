@@ -116,7 +116,8 @@ class GenPilot:
     anti_leak_seconds = 12.0
 
     def __init__(self, ckpt, device: str = "cpu", gate_tau: float = 0.5, use_counter: bool = True,
-                 extrapolate_ticks: int = 0, predict_drops: bool = False, own_effects: bool = False):
+                 extrapolate_ticks: int = 0, predict_drops: bool = False, own_effects: bool = False,
+                 hero_ability_spec: str = "off"):
         self.model, st = load_model(ckpt, torch.device(device))
         self.model.eval()
         self.feature_version = int(st["args"].get("feature_version", 1))
@@ -141,6 +142,13 @@ class GenPilot:
         # OPT-IN own_effects (W1, extrapolate.py docstring): my confirmed plays / ability presses (card, model xy, confirm
         # tick) move the enemy bodies they reach in the look-ahead, as SIM's cfg "own_effects". None = off = unchanged.
         self.own_fx = [] if own_effects and self.ext_h else None
+        # OPT-IN live-only own-ability catalog switch (live_play.py --hero-ability-spec, L74 econ2 parity fix): 'off' =
+        # the pinned catalog (my Hero Ice Wizard reads 'readiness unknown', unchanged); 'supplement' = own_ability.SUPPLEMENT
+        # (the training-style token). Only the own_ability token changes.
+        from .own_ability import HERO_SPECS
+        if hero_ability_spec not in HERO_SPECS:
+            raise ValueError(f"hero_ability_spec {hero_ability_spec!r} not in {HERO_SPECS}")
+        self.hero_ability_spec = hero_ability_spec
 
     def reset_match(self) -> None:
         self.past.clear()
@@ -282,6 +290,13 @@ class GenPilot:
                 for key, value in self.public.features(int(frame['game_tick']), self.gid,
                         objects_override=frame.get('extrapolated_public_objects')).items():
                     b[key] = T(value, torch.float32)
+                if getattr(self, "hero_ability_spec", "off") != "off":   # same rows / events / tick as features()
+                    from bisect import bisect_right
+                    from .own_ability import tokens
+                    pub, t = self.public, int(frame['game_tick'])
+                    ai = bisect_right(pub.ability_ticks, t) - 1
+                    b["own_ability"] = T(tokens(pub.ability_rows[ai] if ai >= 0 else [], self.gid, pub.own_events, t,
+                                                hero_spec=self.hero_ability_spec), torch.float32)
             else:
                 b["opp_past"] = T(opponent_past(self.opp.detected_plays, int(frame["game_tick"]), side, self.gid), torch.float32)
         # Affordability, as the sim's live rule (e1_eval.allowed_slots): int(elixir the model's own input shows, i.e. at
