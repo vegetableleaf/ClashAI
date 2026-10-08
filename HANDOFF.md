@@ -4331,6 +4331,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   extrapolate.py records a pending drop when an enemy Skeleton Barrel balloon disappears and places 7 skeleton bodies
 >   (1.3-tile ring) in the look-ahead board once T+12 <= t+26 -- opt-in, live and SIM. Later: a "balloon popped" token
 >   (new fv + retrain).
+> * **R4 CODE BUILT (worker opus; branch r4-branching @22f65be, worktree `.claude/worktrees/r4`):** BranchSpec.alt hold |
+>   card | xbow_class (A fills play_*, B hold_*; delta > 0 = A better); card fork when Rocket affordable, not argmax,
+>   z_rocket - z_top >= log(band) (band 0.2 set by the lead; 0.5 qualified 14/260 plays, 0.2 ~43/260); X-Bow fork when
+>   the minority reach class has mass >= .2; per-kind losses (gate BCE, card-logit pairwise, class log-mass pairwise) in
+>   the ONE branch step on its own Adam; branch_kinds default hold-only (bit-identical to R3 code). 148 tests OK; smoke
+>   PASS. Expected labels per VM update: ~6-7 hold, ~2 card (band .5; ~3x at .2), ~4.5-5.5 X-Bow before the |delta|
+>   filter. `scratchpad/gauntlet/L73/opt3/r4_overrides.txt` = R3 + R4 keys. Blind verification running.
 >   ~15:40" (Q1 card sampling flag, Q2 area-aware spell aim, Q3 GPU A/Bs after R1e, Q4 R1e approval ping, Q5 fixes);
 >   launcher `.foreman/codex_autopilot/codex_loop.sh` (back-to-back runs to 10-06; STOP_LOOP file stops it).
 > * **15:5x -- owner plan: after the R1e verdict the lead starts LIVE on the winner, then hands over to Codex via
