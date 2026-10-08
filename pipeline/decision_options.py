@@ -286,7 +286,7 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
         draw = allowed.any(axis=1) & ~playing                   # a draw only where a play is possible
         if options.gate_hazard_min_elixir > 0:
             if elixir is None:
-                raise ValueError('gate_hazard_min_elixir requires each row's own elixir')
+                raise ValueError('gate_hazard_min_elixir requires the own elixir of every row')
             draw &= np.asarray(elixir, dtype=np.float64) >= options.gate_hazard_min_elixir
         for r in np.flatnonzero(draw):
             playing[r] = hazard_play(p[r], step_s, rngs[r])
