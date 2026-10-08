@@ -29,6 +29,7 @@ class DecisionOptions:
     tau_phase: Optional[tuple] = None       # (1x, 2x, OT) gate thresholds; None = the single cfg tau
     xbow_class: str = 'argmax'
     xbow_class_floor: float = 0.2
+    gate_decode: str = 'threshold'          # 'hazard' / 'hazard_below_tau': execute the gate's learned play RATE (W4)
 
     def __post_init__(self):
         if self.card_choice not in ('argmax', 'filtered'):
@@ -48,11 +49,13 @@ class DecisionOptions:
             raise ValueError('xbow_class must be argmax or class_sample')
         if not math.isfinite(self.xbow_class_floor) or not 0 <= self.xbow_class_floor <= 0.5:
             raise ValueError('xbow_class_floor must be in [0, 0.5]')
+        if self.gate_decode not in ('threshold', 'hazard', 'hazard_below_tau'):
+            raise ValueError('gate_decode must be threshold, hazard or hazard_below_tau')
 
     @property
     def active(self):
         return (self.card_choice != 'argmax' or self.spell_aim != 'argmax' or self.tau_phase is not None
-                or self.xbow_class != 'argmax')
+                or self.xbow_class != 'argmax' or self.gate_decode != 'threshold')
 
 
 def options_from_config(cfg=None):
@@ -73,6 +76,10 @@ def add_arguments(parser):
                         help='class_sample: draw offensive/defensive X-Bow class from the cell mass, then argmax inside it')
     parser.add_argument('--xbow-class-floor', type=float, default=0.2,
                         help='class_sample draws only when the minority class mass >= this; else the majority class')
+    parser.add_argument('--gate-decode', choices=('threshold', 'hazard', 'hazard_below_tau'), default='threshold',
+                        help='hazard: per decision play with probability 1 - exp(-rate(p) * step), rate = the play '
+                             'rate the gate learned on 2-s WAIT rows (gate_rate); hazard_below_tau: play iff p > tau '
+                             'as before, else the same draw')
     parser.add_argument('--decision-seed', type=int, default=0,
                         help='separate seeded card-choice stream; recorded with each experiment')
 
@@ -171,6 +178,29 @@ def gate_taus(options, tau, t_sec, n):
     return np.asarray(options.tau_phase)[phase_index(t_sec)]
 
 
+# dataset.build_replay: one WAIT row per 40 ticks (2 s), none within 20 ticks (1 s) before a play.
+WAIT_STRIDE_S, PLAY_WINDOW_S = 2.0, 1.0
+
+
+def gate_rate(p):
+    """Play rate (1/s) implied by the gate's row probability. For a pro playing at rate r, the row odds are
+    plays / WAIT rows = r S exp(r W) (S = WAIT_STRIDE_S, W = PLAY_WINDOW_S): inverted by Newton (convex, monotone)."""
+    p = np.clip(np.asarray(p, dtype=np.float64), 1e-9, 1 - 1e-9)
+    o = p / (1 - p)
+    r = np.log1p(o / WAIT_STRIDE_S)                       # >= the root, so Newton descends monotonically
+    for _ in range(40):
+        e = np.exp(r * PLAY_WINDOW_S)
+        r = r - (WAIT_STRIDE_S * r * e - o) / (WAIT_STRIDE_S * e * (1 + PLAY_WINDOW_S * r))
+    return np.maximum(r, 0.0)
+
+
+def hazard_play(p, step_s, rng):
+    """One draw: play with probability 1 - exp(-gate_rate(p) * step_s)."""
+    if rng is None:
+        raise ValueError('hazard gate decoding requires a per-match RNG')
+    return bool(rng.random() < -math.expm1(-float(gate_rate(p)) * float(step_s)))
+
+
 def is_xbow(name):
     return re.sub(r'[^a-z]', '', str(name).split('@')[0].lower()) in ('xbow', 'xbowevo')
 
@@ -238,11 +268,18 @@ def choose_cells(logits, card_names, options, *, rngs=None, enemy_alive=None, gr
 
 @torch.no_grad()
 def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options, rngs, card_names,
-                 t_sec=None, enemy_alive=None, grid=None):
+                 t_sec=None, enemy_alive=None, grid=None, step_s=None):
     """Optional branch of e1_eval's live decision; default branch remains untouched.
     ``t_sec`` (tau_phase) and ``enemy_alive`` [(K, L, R) alive] + ``grid`` (xbow_class) are per-row match context."""
     tau = gate_taus(options, tau, t_sec, len(allowed))
     playing = allowed.any(axis=1) & ((np.asarray(p) > tau) | stalled)
+    if options.gate_decode != 'threshold':
+        if step_s is None:
+            raise ValueError('hazard gate decoding requires the decision step (seconds)')
+        if options.gate_decode == 'hazard':
+            playing = allowed.any(axis=1) & stalled
+        for r in np.flatnonzero(allowed.any(axis=1) & ~playing):   # a draw only where a play is possible
+            playing[r] = hazard_play(p[r], step_s, rngs[r])
     slots = [choose_slot(heads['card'][r], allowed[r], options, rngs[r], playing=bool(playing[r]))
              for r in range(len(allowed))]
     cells = np.full(len(slots), -1, dtype=np.int64)
@@ -261,7 +298,8 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
     tau = np.broadcast_to(tau, len(slots))
     return [dict(play=bool(playing[r]), slot=slots[r], cell=int(cells[r]),
                  why=('no_affordable' if slots[r] < 0 else 'wait' if not playing[r]
-                      else 'stall' if p[r] <= tau[r] else 'gate')) for r in range(len(slots))]
+                      else 'stall' if stalled[r] and p[r] <= tau[r] else 'gate' if p[r] > tau[r] else 'hazard'))
+            for r in range(len(slots))]
 
 
 def match_kwargs(matches):
@@ -281,6 +319,8 @@ def match_kwargs(matches):
                 [seed, int(cfg.get('decision_seed', 0))]))
         rngs.append(match.rng_decision_options)
     out = dict(decision_options=options, rngs=rngs, card_names=[list(m.deck.cards) for m in matches])
+    if options.gate_decode != 'threshold':
+        out['step_s'] = 0.05 * int(cfg['decide_every'])   # the SIM decides every decide_every ticks
     if options.tau_phase is not None or options.xbow_class != 'argmax':
         boards = [m._cur[1] for m in matches]    # the prepared decision's engine BoardState (my frame)
         out.update(t_sec=[float(b.t_sec) for b in boards], grid=cfg['grid'],
