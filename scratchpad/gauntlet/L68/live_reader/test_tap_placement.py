@@ -142,6 +142,45 @@ def test_an_open_pocket_ends_at_y_21_and_starts_past_the_river(side):
     assert ok_at(x, 12.5, 18.5) and not ok_at(x, 12.5, 20.5)          # live: X-Bows at 18.5 accepted 2/2
 
 
+def open_right(side):
+    """towers() with the enemy princess on MY-frame right destroyed."""
+    right_native_x = 3500 if side == 1 else 14500
+    return [e for e in towers() if not (e["side"] != side and e["y"] in (6500, 25500) and e["x"] == right_native_x)]
+
+
+@pytest.mark.parametrize("side", (0, 1))
+def test_a_cursed_troop_on_a_dead_princess_spot_is_not_a_standing_princess(side):
+    """card_id -1 + kind 15 = a cursed troop (live 20261007_132112 ticks 1997-2159 stood on a princess position)."""
+    right_native_x = 3500 if side == 1 else 14500
+    cursed = ent(1 - side, -1, right_native_x, 25500 if side == 0 else 6500, kind=15)
+    m = legal_cells(open_right(side) + [cursed], side, KNIGHT, "Knight")
+    assert ok_at(m, 14.5, 18.5) and ok_at(m, 9.5, 20.5)
+
+
+@pytest.mark.parametrize("side", (0, 1))
+def test_a_building_footprint_must_lie_wholly_on_my_half(side):
+    """arena.rs box_zone: an X-Bow centred at y 14.5 reaches y 16 (river); a Tesla corner at y 15 reaches 16."""
+    x = legal_cells(towers(), side, XBOW, "Xbow")
+    assert ok_at(x, 12.5, 13.5) and not ok_at(x, 12.5, 14.5)
+    t = legal_cells(towers(), side, TESLA, "Tesla")
+    assert ok_at(t, 12.0, 14.0) and not ok_at(t, 12.0, 15.0)
+    assert ok_at(legal_cells(towers(), side, KNIGHT, "Knight"), 12.5, 14.5)
+
+
+@pytest.mark.parametrize("side", (0, 1))
+def test_an_enemy_goblin_drill_blocks_its_2x2_but_a_digging_body_does_not(side):
+    """live: my Tesla on an enemy Goblin Drill (corner (16, 10) / (15, 9), my half) was moved 5/5 (151240 t1179,
+    155830 t3262, 222521 t3464 / t4922)."""
+    nat = (lambda X, Y: (18000 - X, 32000 - Y)) if side == 1 else (lambda X, Y: (X, Y))
+    drill = ent(1 - side, 27000013, *nat(16000, 10000), kind=12)
+    t = legal_cells(towers() + [drill], side, TESLA, "Tesla")
+    assert not ok_at(t, 15.0, 9.0) and not ok_at(t, 16.0, 11.0)       # 2x2 vs 2x2 overlap
+    assert ok_at(t, 14.0, 9.0) and ok_at(t, 16.0, 12.0)               # touching edges only
+    assert not ok_at(legal_cells(towers() + [drill], side, KNIGHT, "Knight"), 15.5, 9.5)
+    digging = ent(1 - side, 27000013, *nat(16000, 10500))              # mixed corner/centre position: not placed
+    assert ok_at(legal_cells(towers() + [digging], side, TESLA, "Tesla"), 15.0, 9.0)
+
+
 def guarded(cell_first, cell_second, legal_guard=True, gate_p=.6, options=None):
     logits = torch.full((36 * 64,), -5.0)
     logits[cell_first], logits[cell_second] = 9.0, 8.0
