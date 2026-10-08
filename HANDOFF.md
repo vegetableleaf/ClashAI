@@ -4501,6 +4501,16 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **LIVE SWITCHED 03:59 EDT 10-08 (owner: "at which you may stop the run and switch in whatever checkpoint wins").**
+>   Checkpoint R3c u0030 + barrel2k + CellRefine 2ep (`rseries_r3c_u0030_barrel2k_cellref.pt`, sha e7359f2b..., same on
+>   VM) via CKPT_OVERRIDE (R1e path kept in CKPT_OVERRIDE.r1e_backup); run_live.sh `--no-anti-leak` -> `--anti-leak`
+>   (edited while the supervisor was stopped); LIVE_ARGS="--xbow-class class_sample --xbow-class-floor 0.3 --tau-phase
+>   0.35 0.45 0.55"; legal guard on (default); predict_drops off; tau 0.35 base. Pre-flight `--check` PASS with that exact
+>   config. Owner's prior run ended between matches at 03:40 (W 367 / L 354 total). Evidence (SIM v2, 192 paired per
+>   cell): stack2k vs R1e as live ran it 164 vs 133 (59/14) tune, 158 vs 128 (59/16) fresh, p < 1e-6 both; vs R1e + AL
+>   322 vs 306 pooled (39/23, p ~.06); ghost -0.8 [-3.7, +2.0]; elixir@play 2x/OT ~7.1/6.6, def X-Bow 23-26%, Goblin
+>   Barrel decks 71 vs 60 wins, Log lane 90%. Rollback: STOP, cp CKPT_OVERRIDE.r1e_backup CKPT_OVERRIDE, swap
+>   --anti-leak back to --no-anti-leak in run_live.sh (only while stopped), start with LIVE_ARGS unset.
 > * **CellRefine MERGED (c510411)** after blind verification PASS_WITH_NOTES: old checkpoints torch.equal (R1e, gen_v32,
 >   R3c, barrel) on 600 rows + 400 live decisions; deploy ckpt loads all keys, only cell logits change (argmax changed
 >   186/600 rows). NOTES: CellRefine also moves LANES (X-Bow cx 31 <-> 5 on 33 recorded frames; Tornado, Skeletons) --
