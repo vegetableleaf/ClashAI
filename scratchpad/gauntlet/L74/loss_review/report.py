@@ -445,6 +445,9 @@ def limits(P, Q):
     P("")
     P("* Opponent card plays and their timing are inferred from first sightings of enemy bodies; spells without a projectile (Earthquake, Lightning, Poison, Freeze) "
       "are invisible, so 'X-Bow killed by a spell' and opponent spell cycles are not measured.")
+    P(f"* Enemy body values (threat episodes, spell hits): the reader labels spawned children with the parent card, so review.py values a body at "
+      f"card value x its max_hp / the card's largest max_hp in the match, and Graveyard / Goblin Barrel bodies per unit (L74 econ2 fix; "
+      f"REVIEW_BODY_FIX={'on' if V.BODY_FIX else 'OFF'}). Before the fix a Witch's skeletons counted 5 elixir each.")
     P("* Causality: every 'at stake' number is associational. Episode rows hold the match fixed (MH) but not the moment-to-moment situation; only an A/B can prove a fix.")
     P("* The 26-tick forecast's own error (model_bodies vs the next raw state) is not measured here (model bodies carry no entity address).")
     P("* Hand cycle / next card: logs carry the 4-card hand only; 'Rocket stuck' is measured as time in hand, not as cycle position.")

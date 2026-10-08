@@ -1,0 +1,67 @@
+SIM dump check |model p - logged p| median 0.00000
+
+[tank] input groups live vs SIM: hero_form 0.411/0.000, ability_rows 0.337/0.000, opp_el 5.507/5.716, proj 0.783/0.575, eff 0.055/0.019, units 4.715/5.326, deploying_known 0.000/0.000, deploying 0.000/0.000, age_known 0.000/0.000, age 0.000/0.000, conf 1.000/1.000, opp_past 3.000/3.000, past 2.923/2.958
+
+[form] input groups live vs SIM: hero_form 0.379/0.000, ability_rows 0.379/0.000, opp_el 5.760/6.012, proj 0.746/0.595, eff 0.113/0.051, units 5.257/5.917, deploying_known 0.000/0.000, deploying 0.000/0.000, age_known 0.000/0.000, age 0.000/0.000, conf 1.000/1.000, opp_past 3.000/3.000, past 2.903/2.960
+
+[all 2-7] input groups live vs SIM: hero_form 0.297/0.000, ability_rows 0.401/0.000, opp_el 6.132/6.483, proj 0.601/0.542, eff 0.094/0.048, units 4.281/5.029, deploying_known 0.000/0.000, deploying 0.000/0.000, age_known 0.000/0.000, age 0.000/0.000, conf 0.973/0.974, opp_past 3.000/3.000, past 2.954/2.968
+
+## [tank] matched P(p > tau): live 0.1222 vs SIM 0.0812 (n live 1449) -> excess +0.0410 (+50.5%)
+| swap | rows | P(p>tau) before -> after | change | share of the live excess | mean p change | top card changed |
+| LIVE: hero forms -> base | 1449 | 0.1222 -> 0.1373 | +0.0152 | -37% | +0.0060 | 8.5% |
+| LIVE: own_ability -> 0 | 1449 | 0.1222 -> 0.0952 | -0.0269 | +66% | -0.0137 | 1.9% |
+| LIVE: opp elixir -0.34 | 1449 | 0.1222 -> 0.1228 | +0.0007 | -2% | +0.0009 | 0.5% |
+| LIVE: projectiles <- SIM | 1449 | 0.1222 -> 0.1166 | -0.0055 | +13% | -0.0017 | 6.9% |
+| LIVE: effects <- SIM | 1449 | 0.1222 -> 0.1228 | +0.0007 | -2% | +0.0008 | 0.2% |
+| LIVE: opp_past+opp_cycle <- SIM | 1449 | 0.1222 -> 0.0787 | -0.0435 | +106% | -0.0223 | 19.8% |
+| LIVE: own past <- SIM | 1449 | 0.1222 -> 0.1249 | +0.0028 | -7% | +0.0031 | 17.9% |
+| LIVE: unit deploying/age/conf <- SIM mean | 1449 | 0.1222 -> 0.1222 | +0.0000 | -0% | +0.0000 | 0.0% |
+| LIVE: unit conf -> 1 | 1449 | 0.1222 -> 0.1222 | +0.0000 | -0% | +0.0000 | 0.0% |
+| SIM: Ice Wizard -> hero form | 3307 | 0.0844 -> 0.0756 | -0.0088 | -21% | -0.0046 | 8.4% |
+| SIM: opp elixir +0.34 | 3307 | 0.0844 -> 0.0826 | -0.0018 | -4% | -0.0007 | 0.3% |
+| SIM: projectiles <- live | 3307 | 0.0844 -> 0.0943 | +0.0100 | +24% | +0.0017 | 7.0% |
+| SIM: effects <- live | 3307 | 0.0844 -> 0.0819 | -0.0024 | -6% | -0.0009 | 0.3% |
+| SIM: opp_past+opp_cycle <- live | 3307 | 0.0844 -> 0.0804 | -0.0039 | -10% | +0.0015 | 18.2% |
+| SIM: own past <- live | 3307 | 0.0844 -> 0.1001 | +0.0157 | +38% | +0.0042 | 18.7% |
+| SIM: own_ability <- live | 3307 | 0.0844 -> 0.1149 | +0.0305 | +75% | +0.0143 | 1.1% |
+| SIM: unit deploying/age/conf <- live mean | 3307 | 0.0844 -> 0.0844 | +0.0000 | +0% | +0.0000 | 0.0% |
+
+## [form] matched P(p > tau): live 0.1675 vs SIM 0.1213 (n live 1564) -> excess +0.0462 (+38.1%)
+| swap | rows | P(p>tau) before -> after | change | share of the live excess | mean p change | top card changed |
+| LIVE: hero forms -> base | 1571 | 0.1668 -> 0.1852 | +0.0185 | -40% | +0.0092 | 7.8% |
+| LIVE: own_ability -> 0 | 1571 | 0.1668 -> 0.1343 | -0.0325 | +70% | -0.0181 | 1.7% |
+| LIVE: opp elixir -0.34 | 1571 | 0.1668 -> 0.1674 | +0.0006 | -1% | +0.0011 | 0.1% |
+| LIVE: projectiles <- SIM | 1571 | 0.1668 -> 0.1477 | -0.0191 | +41% | -0.0076 | 3.8% |
+| LIVE: effects <- SIM | 1571 | 0.1668 -> 0.1680 | +0.0013 | -3% | +0.0010 | 0.2% |
+| LIVE: opp_past+opp_cycle <- SIM | 1571 | 0.1668 -> 0.1426 | -0.0242 | +52% | -0.0098 | 14.5% |
+| LIVE: own past <- SIM | 1571 | 0.1668 -> 0.1808 | +0.0140 | -30% | +0.0100 | 15.2% |
+| LIVE: unit deploying/age/conf <- SIM mean | 1571 | 0.1668 -> 0.1668 | +0.0000 | -0% | +0.0000 | 0.0% |
+| LIVE: unit conf -> 1 | 1571 | 0.1668 -> 0.1668 | +0.0000 | -0% | +0.0000 | 0.0% |
+| SIM: Ice Wizard -> hero form | 5338 | 0.1293 -> 0.1156 | -0.0137 | -30% | -0.0070 | 8.2% |
+| SIM: opp elixir +0.34 | 5338 | 0.1293 -> 0.1270 | -0.0022 | -5% | -0.0010 | 0.2% |
+| SIM: projectiles <- live | 5338 | 0.1293 -> 0.1510 | +0.0217 | +47% | +0.0090 | 5.3% |
+| SIM: effects <- live | 5338 | 0.1293 -> 0.1278 | -0.0015 | -3% | -0.0013 | 0.5% |
+| SIM: opp_past+opp_cycle <- live | 5338 | 0.1293 -> 0.1019 | -0.0274 | -59% | -0.0144 | 15.5% |
+| SIM: own past <- live | 5338 | 0.1293 -> 0.1414 | +0.0122 | +26% | +0.0067 | 16.6% |
+| SIM: own_ability <- live | 5338 | 0.1293 -> 0.1637 | +0.0345 | +75% | +0.0189 | 1.0% |
+| SIM: unit deploying/age/conf <- live mean | 5338 | 0.1293 -> 0.1293 | +0.0000 | +0% | +0.0000 | 0.0% |
+
+## [all 2-7] matched P(p > tau): live 0.0983 vs SIM 0.0814 (n live 8293) -> excess +0.0169 (+20.7%)
+| swap | rows | P(p>tau) before -> after | change | share of the live excess | mean p change | top card changed |
+| LIVE: hero forms -> base | 8293 | 0.0983 -> 0.1090 | +0.0107 | -64% | +0.0059 | 7.7% |
+| LIVE: own_ability -> 0 | 8293 | 0.0983 -> 0.0763 | -0.0219 | +130% | -0.0146 | 1.2% |
+| LIVE: opp elixir -0.34 | 8293 | 0.0983 -> 0.1001 | +0.0018 | -11% | +0.0010 | 0.3% |
+| LIVE: projectiles <- SIM | 8293 | 0.0983 -> 0.0903 | -0.0080 | +47% | -0.0063 | 4.0% |
+| LIVE: effects <- SIM | 8293 | 0.0983 -> 0.0982 | -0.0001 | +1% | +0.0004 | 0.3% |
+| LIVE: opp_past+opp_cycle <- SIM | 8293 | 0.0983 -> 0.0948 | -0.0035 | +21% | -0.0002 | 15.0% |
+| LIVE: own past <- SIM | 8293 | 0.0983 -> 0.1027 | +0.0045 | -26% | +0.0028 | 14.3% |
+| LIVE: unit deploying/age/conf <- SIM mean | 8293 | 0.0983 -> 0.0983 | +0.0000 | -0% | +0.0000 | 0.0% |
+| LIVE: unit conf -> 1 | 8293 | 0.0983 -> 0.0983 | +0.0000 | -0% | +0.0000 | 0.0% |
+| SIM: Ice Wizard -> hero form | 25428 | 0.0886 -> 0.0778 | -0.0108 | -64% | -0.0067 | 9.0% |
+| SIM: opp elixir +0.34 | 25428 | 0.0886 -> 0.0873 | -0.0013 | -7% | -0.0009 | 0.3% |
+| SIM: projectiles <- live | 25428 | 0.0886 -> 0.1070 | +0.0184 | +109% | +0.0091 | 4.4% |
+| SIM: effects <- live | 25428 | 0.0886 -> 0.0873 | -0.0013 | -7% | -0.0006 | 0.4% |
+| SIM: opp_past+opp_cycle <- live | 25428 | 0.0886 -> 0.0769 | -0.0117 | -70% | -0.0117 | 16.2% |
+| SIM: own past <- live | 25428 | 0.0886 -> 0.1009 | +0.0123 | +73% | +0.0045 | 16.1% |
+| SIM: own_ability <- live | 25428 | 0.0886 -> 0.1167 | +0.0281 | +167% | +0.0174 | 1.2% |
+| SIM: unit deploying/age/conf <- live mean | 25428 | 0.0886 -> 0.0886 | +0.0000 | +0% | +0.0000 | 0.0% |

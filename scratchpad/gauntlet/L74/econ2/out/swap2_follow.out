@@ -1,0 +1,36 @@
+
+## [tank] live rows with my Hero Ice Wizard controller present vs absent (matched SIM, no swap)
+| present | n 489 | live 0.1677 vs SIM 0.0841 | excess +0.0836 (+99%) |
+| absent | n 960 | live 0.0990 vs SIM 0.0797 | excess +0.0193 (+24%) |
+| all | n 1449 | live 0.1222 vs SIM 0.0812 | excess +0.0410 |
+| LIVE: hero package off (forms base + ability 0) | 0.1222 -> 0.1132 | share +22% |
+| SIM: hero package on (IW hero form + live ability rows) | 0.0844 -> 0.1016 | share +42% |
+| LIVE: ability column 'living_controllers' -> 0 | 0.1222 -> 0.1228 | share -2% |
+| LIVE: ability column 'ready' -> 0 | 0.1222 -> 0.1228 | share -2% |
+| LIVE: ability column 'ready_known' -> 0 | 0.1222 -> 0.1222 | share +0% |
+| LIVE: ability column 'remaining_charges' -> 0 | 0.1222 -> 0.1222 | share +0% |
+| LIVE: ability column 'cooldown_s' -> 0 | 0.1222 -> 0.0787 | share +106% |
+
+## [form] live rows with my Hero Ice Wizard controller present vs absent (matched SIM, no swap)
+| present | n 591 | live 0.2234 vs SIM 0.1392 | excess +0.0842 (+60%) |
+| absent | n 973 | live 0.1336 vs SIM 0.1105 | excess +0.0232 (+21%) |
+| all | n 1564 | live 0.1675 vs SIM 0.1213 | excess +0.0462 |
+| LIVE: hero package off (forms base + ability 0) | 0.1668 -> 0.1515 | share +33% |
+| SIM: hero package on (IW hero form + live ability rows) | 0.1293 -> 0.1529 | share +51% |
+| LIVE: ability column 'living_controllers' -> 0 | 0.1668 -> 0.1661 | share +1% |
+| LIVE: ability column 'ready' -> 0 | 0.1668 -> 0.1693 | share -6% |
+| LIVE: ability column 'ready_known' -> 0 | 0.1668 -> 0.1668 | share +0% |
+| LIVE: ability column 'remaining_charges' -> 0 | 0.1668 -> 0.1636 | share +7% |
+| LIVE: ability column 'cooldown_s' -> 0 | 0.1668 -> 0.1120 | share +118% |
+
+## [all 2-7] live rows with my Hero Ice Wizard controller present vs absent (matched SIM, no swap)
+| present | n 3322 | live 0.1147 vs SIM 0.0869 | excess +0.0278 (+32%) |
+| absent | n 4971 | live 0.0873 vs SIM 0.0778 | excess +0.0095 (+12%) |
+| all | n 8293 | live 0.0983 vs SIM 0.0814 | excess +0.0169 |
+| LIVE: hero package off (forms base + ability 0) | 0.0983 -> 0.0865 | share +70% |
+| SIM: hero package on (IW hero form + live ability rows) | 0.0886 -> 0.1046 | share +95% |
+| LIVE: ability column 'living_controllers' -> 0 | 0.0983 -> 0.0984 | share -1% |
+| LIVE: ability column 'ready' -> 0 | 0.0983 -> 0.0994 | share -6% |
+| LIVE: ability column 'ready_known' -> 0 | 0.0983 -> 0.0983 | share +0% |
+| LIVE: ability column 'remaining_charges' -> 0 | 0.0983 -> 0.0957 | share +15% |
+| LIVE: ability column 'cooldown_s' -> 0 | 0.0983 -> 0.0640 | share +203% |

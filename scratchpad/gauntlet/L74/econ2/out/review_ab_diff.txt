@@ -1,0 +1,272 @@
+1c1
+< # Live loss review (L74, standing) -- generated 2026-10-08 17:43
+---
+> # Live loss review (L74, standing) -- generated 2026-10-08 17:42
+3c3
+< Ledger: 1196 logs analysed (analyzed.txt); rows in matches.jsonl; tool review.py + report.py (+ pro_baseline.py, run once). Valid matches (result known, >= 5 plays, not dry-run): 1163. **Factor population = R-lineage** (logs >= 20261004_205129: R1e and later) with board state: **528 matches, 268 W / 260 L / 0 D**; 2372 threat episodes; 1636 confirmed X-Bows.
+---
+> Ledger: 1195 logs analysed (analyzed.txt); rows in matches.jsonl; tool review.py + report.py (+ pro_baseline.py, run once). Valid matches (result known, >= 5 plays, not dry-run): 1162. **Factor population = R-lineage** (logs >= 20261004_205129: R1e and later) with board state: **527 matches, 267 W / 260 L / 0 D**; 1759 threat episodes; 1631 confirmed X-Bows.
+5c5
+< **Result rule:** the ladder line in L70/live/overnight.out after the log's 'played' line; else the ladder_nav 'outcome' event within [end-20 s, end+300 s]; else tower-derived (crowns; equal crowns -> lower minimum tower HP loses). Sources: {'derived': 111, 'ladder': 1047, 'nav': 5}. Agreement where both exist: nav vs ladder 1047/1047; tower-derived vs ladder 521/532 (error 2.1%, always toward WIN: the final blow is never in the log). Trophy deltas exist for 4 matches only -> not used.
+---
+> **Result rule:** the ladder line in L70/live/overnight.out after the log's 'played' line; else the ladder_nav 'outcome' event within [end-20 s, end+300 s]; else tower-derived (crowns; equal crowns -> lower minimum tower HP loses). Sources: {'derived': 111, 'ladder': 1047, 'nav': 4}. Agreement where both exist: nav vs ladder 1047/1047; tower-derived vs ladder 521/532 (error 2.1%, always toward WIN: the final blow is never in the log). Trophy deltas exist for 4 matches only -> not used.
+9c9
+< * **The economy is the main loss mechanism.** The bot meets 70% of pushes with < 4 elixir (pros 24%); median 2.7 vs pros 6.0. Within the same match, a push met with < 4 elixir is lost 17.4% [12.5%, 21.4%] more often (absolute); pros show no such penalty. Cause: cheap cards played at < 5 elixir 2-3x as often as pros (same total play rate).
+---
+> * **The economy is the main loss mechanism.** The bot meets 75% of pushes with < 4 elixir (pros 24%); median 2.5 vs pros 6.0. Within the same match, a push met with < 4 elixir is lost 18.1% [12.8%, 23.2%] more often (absolute); pros show no such penalty. Cause: cheap cards played at < 5 elixir 2-3x as often as pros (same total play rate).
+26c26
+< | towerref_w2 (current live) | 43 | 23-20-0 | 53% [39%, 67%] | 43 | 20261008_130524 | 20261008_172819 |
+---
+> | towerref_w2 (current live) | 42 | 22-20-0 | 52% [38%, 67%] | 42 | 20261008_130524 | 20261008_165034 |
+33,35c33,35
+< * Opponent's first crown came in: 1x 99, 2x 47, OT 45, bot first 37, none 32. 217/528 matches reach overtime (41%); OT win rate 45%.
+< * Win rate by crowns conceded: 0: 89% (n=279), 1: 14% (n=155), 2: 0% (n=46), 3: 0% (n=48). Value of the first conceded crown (used for 'wins at stake'): **0.75**. Value of the first crown TAKEN: 0.53.
+< * Tower HP per match (taken / dealt), losses vs wins: 1x: L 5084 / 2352 vs W 1636 / 3178; 2x: L 3103 / 1483 vs W 983 / 2509; OT: L 1912 / 1087 vs W 542 / 1279
+---
+> * Opponent's first crown came in: 1x 99, 2x 47, OT 45, bot first 37, none 32. 216/527 matches reach overtime (41%); OT win rate 45%.
+> * Win rate by crowns conceded: 0: 88% (n=278), 1: 14% (n=155), 2: 0% (n=46), 3: 0% (n=48). Value of the first conceded crown (used for 'wins at stake'): **0.75**. Value of the first crown TAKEN: 0.54.
+> * Tower HP per match (taken / dealt), losses vs wins: 1x: L 5084 / 2352 vs W 1630 / 3179; 2x: L 3103 / 1483 vs W 984 / 2518; OT: L 1912 / 1087 vs W 544 / 1269
+41,46c41,46
+< | own elixir when a push arrives (median) | **2.7** (losses 2.6, wins 2.8) | **6.0** |
+< | share of pushes met with < 4 elixir | **70%** | 24% |
+< | lost-episode rate at < 4 / >= 4 elixir | **38% / 24%** | 24% / 24% |
+< | lost-episode rate overall | 33% | 24% |
+< | first play within 2 s of a push | 61% (taps) | 64% (deploys) |
+< | >= 7 elixir spent in the 10 s before a push | 50% | 47% |
+---
+> | own elixir when a push arrives (median) | **2.5** (losses 2.4, wins 2.7) | **6.0** |
+> | share of pushes met with < 4 elixir | **75%** | 24% |
+> | lost-episode rate at < 4 / >= 4 elixir | **44% / 29%** | 24% / 24% |
+> | lost-episode rate overall | 40% | 24% |
+> | first play within 2 s of a push | 63% (taps) | 64% (deploys) |
+> | >= 7 elixir spent in the 10 s before a push | 51% | 47% |
+49,50c49,50
+< | plays/min with < 5 elixir: quiet / pressured | **2.47 / 3.24** | 0.89 / 1.53 |
+< | plays/min with >= 5 elixir: quiet / pressured | 3.45 / 1.13 | 4.29 / 3.55 |
+---
+> | plays/min with < 5 elixir: quiet / pressured | **2.73 / 2.99** | 0.89 / 1.53 |
+> | plays/min with >= 5 elixir: quiet / pressured | 3.59 / 0.98 | 4.29 / 3.55 |
+54c54
+< Biggest per-card excess over pros (plays/min, card|context|elixir<5=lo): Knight|press|lo +0.36, Knight|quiet|lo +0.35, Skeletons|press|lo +0.34, Skeletons|quiet|lo +0.34, IceWizard|press|lo +0.32, IceWizard|quiet|lo +0.31. Biggest deficits: Tesla|press|hi -0.43, Knight|press|hi -0.40, Skeletons|press|hi -0.37, IceWizard|press|hi -0.35, Tornado|press|hi -0.30.
+---
+> Biggest per-card excess over pros (plays/min, card|context|elixir<5=lo): Knight|quiet|lo +0.41, Skeletons|quiet|lo +0.39, IceWizard|quiet|lo +0.36, Knight|press|lo +0.31, Skeletons|press|lo +0.29, Log|quiet|lo +0.29. Biggest deficits: Tesla|press|hi -0.46, Knight|press|hi -0.42, Skeletons|press|hi -0.39, IceWizard|press|hi -0.38, Log|press|hi -0.32.
+60,61c60,61
+< | R1e (r1e31_u0155) | 360 | 0.35 | False | 51% | 2.6 | 73% | 5.8 / 4.2 / 3.5 | 6.20 |
+< | candidate | 17 | 0.35 | False | 29% | 2.7 | 74% | 5.7 / 4.3 / 3.1 | 6.98 |
+---
+> | R1e (r1e31_u0155) | 360 | 0.35 | False | 51% | 2.4 | 79% | 5.8 / 4.2 / 3.5 | 6.20 |
+> | candidate | 17 | 0.35 | False | 29% | 2.0 | 80% | 5.7 / 4.3 / 3.1 | 6.98 |
+63,64c63,64
+< | stack2k_cellref | 102 | [0.35, 0.45, 0.55] | True | 54% | 3.2 | 62% | 6.2 / 5.2 / 5.1 | 4.57 |
+< | towerref_w2 (current live) | 43 | [0.35, 0.45, 0.55] | False | 53% | 3.2 | 60% | 6.4 / 5.4 / 5.1 | 3.78 |
+---
+> | stack2k_cellref | 102 | [0.35, 0.45, 0.55] | True | 54% | 3.2 | 64% | 6.2 / 5.2 / 5.1 | 4.57 |
+> | towerref_w2 (current live) | 42 | [0.35, 0.45, 0.55] | False | 52% | 2.7 | 72% | 6.4 / 5.4 / 5.1 | 3.80 |
+76,100c76,100
+< | 1 | **Low elixir when a push arrives (< 4)** | 873/1251 eps (70%) | 788/1121 eps (70%) | MH P(lost episode) 17.4% [12.5%, 21.4%] | 138.8 | 104.1 | (a) |
+< | 2 | **Cheap low-elixir plays above the median (5.3/min at < 5 elixir)** | 153/260 (59%) | 110/268 (41%) | L-W 17.8% [9.3%, 26.0%]; WR with/without 42% / 60% | - | 46.8 | (a) |
+< | 3 | **Air unit in the push** | 433/1251 eps (35%) | 306/1121 eps (27%) | MH P(lost episode) 14.6% [8.3%, 20.4%] | 49.6 | 37.2 | (a) |
+< | 4 | **Lost while the enemy's lowest tower was within one Rocket (<= 497 HP) at the end** | 48/260 (18%) | n/a (end state of losses) | by ending: OT end 7, regulation end (Rocket -> tie -> OT) 17, OT sudden death 19, 3-crowned 5 | 43 | 30.2 | (a) |
+< | 5 | **Locked X-Bow placed into a full opponent elixir bar (public counter >= 7)** | 360/639 X-Bows | 404/691 | MH dealt20 -448 HP [-646, -263]; MH dud rate 12.6% [6.1%, 18.5%] | 48.5 (342k HP x 0.142 crowns/1k HP) | 25.8 | (a) |
+< | 6 | **Offence spending before a push (>= 3 elixir)** | 283/1251 eps (23%) | 186/1121 eps (17%) | MH P(lost episode) 6.6% [1.2%, 11.3%] | 29.3 | 21.9 | (a) |
+< | 7 | **Opponent archetype: Golem** | 41/260 (16%) | 19/268 (7%) | L-W 8.7% [3.3%, 14.2%]; WR with/without 32% / 53% | - | 12.9 | (a) |
+< | 8 | **Elixir wasted at the cap >= 5 in a match** | 33/260 (13%) | 15/268 (6%) | L-W 7.1% [2.2%, 12.2%]; WR with/without 31% / 53% | - | 10.3 | (a) |
+< | 9 | **Gate freeze >= 10 s at >= 9.5 elixir** | 28/257 (11%) | 15/265 (6%) | L-W 5.2% [0.5%, 10.2%]; WR with/without 35% / 52% | - | 7.4 | (a) |
+< | 10 | **Tornado as the first answer** | 108/1251 eps (9%) | 79/1121 eps (7%) | MH P(lost episode) 19.9% [12.0%, 26.4%] | 2.2 | 1.7 | (a) |
+< | 11 | **Slow first answer (> 2 s)** | 465/1251 eps (37%) | 456/1121 eps (41%) | MH P(lost episode) -7.4% [-11.1%, -3.7%] | 0.0 | 0.0 | (c) |
+< | 12 | **Gate below threshold >= 3 s while threatened** | 289/1227 eps (24%) | 328/1098 eps (30%) | MH P(lost episode) -16.4% [-21.0%, -12.5%] | 0.0 | 0.0 | (c) |
+< | 13 | **Placement error >= 1 tile** | 48/260 (18%) | 72/268 (27%) | L-W -8.4% [-15.4%, -1.2%]; WR with/without 60% / 48% | - | 0.0 | (c) |
+< | 14 | **X-Bow committed <= 10 s before a push** | 210/1251 eps (17%) | 128/1121 eps (11%) | MH P(lost episode) -0.2% [-6.0%, 5.6%] | 2.6 | - | (b) |
+< | 15 | **Opponent public elixir lead >= 3 at push start** | 441/1251 eps (35%) | 383/1121 eps (34%) | MH P(lost episode) 4.2% [-0.1%, 8.3%] | 34.4 | - | (b) |
+< | 16 | **Heavy spending in the 10 s before a push (>= 7)** | 616/1251 eps (49%) | 565/1121 eps (50%) | MH P(lost episode) 0.8% [-3.5%, 4.9%] | 23.6 | - | (b) |
+< | 17 | **Sat at full elixir just before a push** | 51/1251 eps (4%) | 42/1121 eps (4%) | MH P(lost episode) -10.6% [-20.8%, 1.1%] | 0.0 | - | (b) |
+< | 18 | **Opponent archetype: Lava Hound** | 10/260 (4%) | 3/268 (1%) | L-W 2.7% [-0.0%, 5.9%]; WR with/without 23% / 51% | - | - | (b) |
+< | 19 | **Opponent archetype: Balloon** | 15/260 (6%) | 11/268 (4%) | L-W 1.7% [-2.2%, 5.6%]; WR with/without 42% / 51% | - | - | (b) |
+< | 20 | **Lethal Rocket window not used (>= 3 s)** | 12/260 (5%) | 16/268 (6%) | L-W -1.4% [-5.4%, 2.6%]; WR with/without 57% / 50% | - | - | (b) |
+< | 21 | **Log or Tornado on nothing (>= 2 in a match)** | 58/260 (22%) | 59/268 (22%) | L-W 0.3% [-6.8%, 7.4%]; WR with/without 50% / 51% | - | - | (b) |
+< | 22 | **Unconfirmed play (>= 1 in a match)** | 188/260 (72%) | 208/268 (78%) | L-W -5.3% [-12.6%, 2.1%]; WR with/without 53% / 45% | - | - | (b) |
+< | 23 | **CPU starvation (>= 3 warnings)** | 29/260 (11%) | 34/268 (13%) | L-W -1.5% [-7.1%, 4.1%]; WR with/without 54% / 50% | - | - | (b) |
+< | 24 | **Rocket held >= 90% of the match** | 172/260 (66%) | 163/268 (61%) | L-W 5.3% [-2.9%, 13.4%]; WR with/without 49% / 54% | - | - | (b) |
+< | 25 | **Hero Ice Wizard ability pressed >= 3 times** | 51/260 (20%) | 50/268 (19%) | L-W 1.0% [-5.8%, 7.7%]; WR with/without 50% / 51% | - | - | (b) |
+---
+> | 1 | **Low elixir when a push arrives (< 4)** | 757/1013 eps (75%) | 564/746 eps (76%) | MH P(lost episode) 18.1% [12.8%, 23.2%] | 127.5 | 95.5 | (a) |
+> | 2 | **Cheap low-elixir plays above the median (5.3/min at < 5 elixir)** | 153/260 (59%) | 110/267 (41%) | L-W 17.6% [9.1%, 25.8%]; WR with/without 42% / 59% | - | 46.4 | (a) |
+> | 3 | **Lost while the enemy's lowest tower was within one Rocket (<= 497 HP) at the end** | 48/260 (18%) | n/a (end state of losses) | by ending: OT end 7, regulation end (Rocket -> tie -> OT) 17, OT sudden death 19, 3-crowned 5 | 43 | 30.1 | (a) |
+> | 4 | **Locked X-Bow placed into a full opponent elixir bar (public counter >= 7)** | 360/639 X-Bows | 400/686 | MH dealt20 -436 HP [-636, -255]; MH dud rate 12.4% [6.1%, 18.6%] | 47.1 (332k HP x 0.142 crowns/1k HP) | 25.2 | (a) |
+> | 5 | **Opponent public elixir lead >= 3 at push start** | 341/1013 eps (34%) | 246/746 eps (33%) | MH P(lost episode) 6.4% [0.8%, 11.9%] | 31.1 | 23.3 | (a) |
+> | 6 | **Air unit in the push** | 376/1013 eps (37%) | 236/746 eps (32%) | MH P(lost episode) 8.7% [0.9%, 16.7%] | 24.2 | 18.2 | (a) |
+> | 7 | **Opponent archetype: Golem** | 41/260 (16%) | 19/267 (7%) | L-W 8.7% [3.2%, 14.2%]; WR with/without 32% / 53% | - | 12.9 | (a) |
+> | 8 | **Elixir wasted at the cap >= 5 in a match** | 33/260 (13%) | 15/267 (6%) | L-W 7.1% [2.2%, 12.2%]; WR with/without 31% / 53% | - | 10.3 | (a) |
+> | 9 | **Gate freeze >= 10 s at >= 9.5 elixir** | 28/257 (11%) | 15/264 (6%) | L-W 5.2% [0.5%, 10.1%]; WR with/without 35% / 52% | - | 7.4 | (a) |
+> | 10 | **Tornado as the first answer** | 108/1013 eps (11%) | 59/746 eps (8%) | MH P(lost episode) 11.6% [2.8%, 20.8%] | 1.1 | 0.8 | (a) |
+> | 11 | **Slow first answer (> 2 s)** | 361/1013 eps (36%) | 289/746 eps (39%) | MH P(lost episode) -7.4% [-12.9%, -2.2%] | 0.0 | 0.0 | (c) |
+> | 12 | **Gate below threshold >= 3 s while threatened** | 215/994 eps (22%) | 219/734 eps (30%) | MH P(lost episode) -17.4% [-22.9%, -12.3%] | 0.0 | 0.0 | (c) |
+> | 13 | **Placement error >= 1 tile** | 48/260 (18%) | 72/267 (27%) | L-W -8.5% [-15.5%, -1.3%]; WR with/without 60% / 48% | - | 0.0 | (c) |
+> | 14 | **X-Bow committed <= 10 s before a push** | 133/1013 eps (13%) | 63/746 eps (8%) | MH P(lost episode) -7.1% [-15.4%, 1.2%] | 0.0 | - | (b) |
+> | 15 | **Offence spending before a push (>= 3 elixir)** | 196/1013 eps (19%) | 94/746 eps (13%) | MH P(lost episode) 5.5% [-0.9%, 13.4%] | 23.4 | - | (b) |
+> | 16 | **Heavy spending in the 10 s before a push (>= 7)** | 511/1013 eps (50%) | 391/746 eps (52%) | MH P(lost episode) -4.6% [-9.6%, 0.9%] | 0.0 | - | (b) |
+> | 17 | **Sat at full elixir just before a push** | 36/1013 eps (4%) | 21/746 eps (3%) | MH P(lost episode) -10.6% [-25.2%, 4.1%] | 0.0 | - | (b) |
+> | 18 | **Opponent archetype: Lava Hound** | 10/260 (4%) | 3/267 (1%) | L-W 2.7% [-0.0%, 5.9%]; WR with/without 23% / 51% | - | - | (b) |
+> | 19 | **Opponent archetype: Balloon** | 15/260 (6%) | 11/267 (4%) | L-W 1.6% [-2.2%, 5.6%]; WR with/without 42% / 51% | - | - | (b) |
+> | 20 | **Lethal Rocket window not used (>= 3 s)** | 12/260 (5%) | 16/267 (6%) | L-W -1.4% [-5.4%, 2.6%]; WR with/without 57% / 50% | - | - | (b) |
+> | 21 | **Log or Tornado on nothing (>= 2 in a match)** | 58/260 (22%) | 59/267 (22%) | L-W 0.2% [-6.9%, 7.3%]; WR with/without 50% / 51% | - | - | (b) |
+> | 22 | **Unconfirmed play (>= 1 in a match)** | 188/260 (72%) | 207/267 (78%) | L-W -5.2% [-12.6%, 2.2%]; WR with/without 52% / 45% | - | - | (b) |
+> | 23 | **CPU starvation (>= 3 warnings)** | 29/260 (11%) | 34/267 (13%) | L-W -1.6% [-7.2%, 4.0%]; WR with/without 54% / 50% | - | - | (b) |
+> | 24 | **Rocket held >= 90% of the match** | 172/260 (66%) | 163/267 (61%) | L-W 5.1% [-3.1%, 13.2%]; WR with/without 49% / 54% | - | - | (b) |
+> | 25 | **Hero Ice Wizard ability pressed >= 3 times** | 51/260 (20%) | 49/267 (18%) | L-W 1.3% [-5.4%, 8.0%]; WR with/without 49% / 51% | - | - | (b) |
+107c107
+<   * pooled lost-episode rate with/without: 38% / 24%; tower-fall MH difference 8.4% [5.1%, 11.3%]; informative matches 344
+---
+>   * pooled lost-episode rate with/without: 44% / 29%; tower-fall MH difference 9.7% [5.1%, 13.7%]; informative matches 250
+109,111c109,111
+<   * robustness, MH lost-episode difference in subsets: 1x only 21.0% [12.6%, 28.4%] (n=1121); pushes >= 13 elixir 21.3% [14.7%, 27.8%] (n=1080); no air 17.1% [11.7%, 22.4%] (n=1633); R1e 17.5% [12.1%, 22.7%] (n=1707); stack2k + towerref_w2 17.1% [8.7%, 25.9%] (n=665)
+<   * only 4% of pushes arrive after 10 s without a bot play (the bot is almost never banking when a push comes)
+<   * examples: 20261004_212221 t499-1025; 20261004_212221 t3198-3693; 20261004_225921 t857-1127
+---
+>   * robustness, MH lost-episode difference in subsets: 1x only 18.9% [8.1%, 29.4%] (n=813); pushes >= 13 elixir 20.1% [7.7%, 32.5%] (n=376); no air 18.7% [10.2%, 25.9%] (n=1147); R1e 19.6% [12.6%, 25.9%] (n=1236); stack2k + towerref_w2 15.4% [5.9%, 25.0%] (n=523)
+>   * only 3% of pushes arrive after 10 s without a bot play (the bot is almost never banking when a push comes)
+>   * examples: 20261004_212221 t499-953; 20261004_225921 t911-1127; 20261004_225921 t2044-2509
+114c114
+<   * mean per match L 5.78 vs W 5.11/min (diff 0.67 [0.31, 1.04]); pros 2.41/min
+---
+>   * mean per match L 5.78 vs W 5.11/min (diff 0.66 [0.30, 1.04]); pros 2.41/min
+117,121c117
+< **3. Air unit in the push** -- an air unit among the threat bodies
+<   * pooled lost-episode rate with/without: 43% / 29%; tower-fall MH difference 6.7% [2.3%, 11.5%]; informative matches 178
+<   * examples: 20261004_212221 t499-1025; 20261004_212221 t2055-2457; 20261005_061128 t901-1381
+< 
+< **4. Lost while the enemy's lowest tower was within one Rocket (<= 497 HP) at the end** -- final enemy lowest-tower HP <= measured Rocket tower damage 497; see section 4b for elixir/Rocket availability
+---
+> **3. Lost while the enemy's lowest tower was within one Rocket (<= 497 HP) at the end** -- final enemy lowest-tower HP <= measured Rocket tower damage 497; see section 4b for elixir/Rocket availability
+125c121
+< **5. Locked X-Bow placed into a full opponent elixir bar (public counter >= 7)** -- enemy tower HP lost in the 20 s after a locked X-Bow, opponent estimate >= 7 vs < 7, within matches
+---
+> **4. Locked X-Bow placed into a full opponent elixir bar (public counter >= 7)** -- enemy tower HP lost in the 20 s after a locked X-Bow, opponent estimate >= 7 vs < 7, within matches
+128,133c124,129
+<   * HP -> crowns uses the fitted slope of crowns taken on HP dealt per match (0.142 crowns per 1,000 HP, 528 matches); informative matches 246
+<   * all locked X-Bows 32% dud, mean 1538 HP (n=1330); in losses 41% dud, mean 1296 HP (n=639) vs wins 23% dud, mean 1762 HP (n=691)
+<   * enemy push on my half at placement 47% dud, mean 1149 HP (n=100) vs not 31% dud, mean 1570 HP (n=1230)
+<   * < 1 elixir left after placing 38% dud, mean 1207 HP (n=347) vs >= 1 30% dud, mean 1655 HP (n=983)
+<   * by phase: 1x 23% dud, mean 1932 HP (n=606); 2x 37% dud, mean 1264 HP (n=526); OT 45% dud, mean 1061 HP (n=198)
+<   * a hard counter seen near it before it died 38% dud, mean 1422 HP (n=461); X-Bow life median 16.2 s
+---
+>   * HP -> crowns uses the fitted slope of crowns taken on HP dealt per match (0.142 crowns per 1,000 HP, 527 matches); informative matches 245
+>   * all locked X-Bows 32% dud, mean 1539 HP (n=1325); in losses 41% dud, mean 1296 HP (n=639) vs wins 23% dud, mean 1765 HP (n=686)
+>   * enemy push on my half at placement 48% dud, mean 1216 HP (n=71) vs not 31% dud, mean 1558 HP (n=1254)
+>   * < 1 elixir left after placing 38% dud, mean 1203 HP (n=345) vs >= 1 29% dud, mean 1658 HP (n=980)
+>   * by phase: 1x 23% dud, mean 1931 HP (n=605); 2x 37% dud, mean 1267 HP (n=525); OT 45% dud, mean 1057 HP (n=195)
+>   * a hard counter seen near it before it died 37% dud, mean 1428 HP (n=459); X-Bow life median 16.2 s
+136,138c132,138
+< **6. Offence spending before a push (>= 3 elixir)** -- elixir on locked X-Bows or spells aimed past own y 18 in the 10 s before threat start
+<   * pooled lost-episode rate with/without: 41% / 32%; tower-fall MH difference 6.2% [2.8%, 9.9%]; informative matches 277
+<   * examples: 20261004_212221 t3198-3693; 20261005_052057 t5513-6062; 20261005_061128 t2994-3587
+---
+> **5. Opponent public elixir lead >= 3 at push start** -- opponent_elixir_estimate - own elixir >= 3
+>   * pooled lost-episode rate with/without: 43% / 39%; tower-fall MH difference 5.3% [1.0%, 8.7%]; informative matches 282
+>   * examples: 20261005_052057 t5513-6062; 20261005_061128 t2994-3587; 20261005_064528 t855-1158
+> 
+> **6. Air unit in the push** -- an air unit among the threat bodies
+>   * pooled lost-episode rate with/without: 48% / 36%; tower-fall MH difference 4.0% [-2.7%, 10.3%]; informative matches 149
+>   * examples: 20261004_212221 t499-953; 20261004_212221 t2055-2457; 20261005_061128 t901-1381
+151,152c151,152
+<   * pooled lost-episode rate with/without: 52% / 32%; tower-fall MH difference 1.2% [-4.2%, 6.5%]; informative matches 148
+<   * examples: 20261004_225921 t857-1127; 20261005_064528 t3180-3680; 20261005_070248 t731-1329
+---
+>   * pooled lost-episode rate with/without: 54% / 39%; tower-fall MH difference 0.6% [-6.1%, 7.8%]; informative matches 129
+>   * examples: 20261005_070248 t731-1329; 20261005_070510 t778-1224; 20261005_070510 t4059-4648
+155c155
+<   * pooled lost-episode rate with/without: 30% / 36%; tower-fall MH difference -2.4% [-5.4%, 0.5%]; informative matches 382
+---
+>   * pooled lost-episode rate with/without: 38% / 42%; tower-fall MH difference -1.4% [-5.4%, 2.5%]; informative matches 308
+157,158c157,158
+<   * by push size (pooled): push 7-10 elixir: lost 19% answered <= 2 s vs 17% slower; push 10-13 elixir: lost 29% answered <= 2 s vs 23% slower; push 13-+ elixir: lost 48% answered <= 2 s vs 48% slower. Slow answers are not worse at ANY size; the likely reading is that the bot waits on pushes its towers handle.
+<   * examples: 20261004_212221 t499-1025; 20261004_212221 t2055-2457; 20261004_225921 t857-1127
+---
+>   * by push size (pooled): push 7-10 elixir: lost 25% answered <= 2 s vs 23% slower; push 10-13 elixir: lost 43% answered <= 2 s vs 46% slower; push 13-+ elixir: lost 70% answered <= 2 s vs 78% slower. Slow answers are not worse at ANY size; the likely reading is that the bot waits on pushes its towers handle.
+>   * examples: 20261004_212221 t499-953; 20261004_212221 t2055-2457; 20261004_225921 t911-1127
+161,162c161,162
+<   * pooled lost-episode rate with/without: 21% / 38%; tower-fall MH difference -7.8% [-10.6%, -4.8%]; informative matches 320
+<   * examples: 20261005_061128 t2651-3246; 20261005_070248 t2180-2657; 20261005_070935 t2104-2675
+---
+>   * pooled lost-episode rate with/without: 28% / 45%; tower-fall MH difference -7.5% [-11.9%, -3.5%]; informative matches 252
+>   * examples: 20261005_061128 t2651-3246; 20261005_070248 t2180-2657; 20261005_070510 t474-666
+167,168c167,168
+<   * pooled lost-episode rate with/without: 36% / 33%; tower-fall MH difference 0.8% [-3.5%, 5.0%]; informative matches 228
+<   * examples: 20261004_212221 t3198-3693; 20261005_061128 t2994-3587; 20261005_065159 t2788-3361
+---
+>   * pooled lost-episode rate with/without: 39% / 40%; tower-fall MH difference -1.0% [-8.1%, 5.1%]; informative matches 135
+>   * examples: 20261005_061128 t2994-3587; 20261005_065159 t2788-3361; 20261005_071827 t3438-3995
+170,172c170,172
+< **15. Opponent public elixir lead >= 3 at push start** -- opponent_elixir_estimate - own elixir >= 3
+<   * pooled lost-episode rate with/without: 35% / 33%; tower-fall MH difference 4.2% [1.1%, 6.9%]; informative matches 358
+<   * examples: 20261004_212221 t3198-3693; 20261004_225921 t857-1127; 20261005_052057 t5513-6062
+---
+> **15. Offence spending before a push (>= 3 elixir)** -- elixir on locked X-Bows or spells aimed past own y 18 in the 10 s before threat start
+>   * pooled lost-episode rate with/without: 47% / 39%; tower-fall MH difference 8.1% [3.2%, 12.8%]; informative matches 180
+>   * examples: 20261005_052057 t5513-6062; 20261005_061128 t2994-3587; 20261005_065159 t2788-3361
+175c175
+<   * pooled lost-episode rate with/without: 31% / 36%; tower-fall MH difference 2.0% [-0.7%, 4.6%]; informative matches 370
+---
+>   * pooled lost-episode rate with/without: 35% / 46%; tower-fall MH difference -1.7% [-5.3%, 1.6%]; informative matches 293
+177c177
+<   * examples: 20261004_212221 t499-1025; 20261004_212221 t2055-2457; 20261004_212221 t3198-3693
+---
+>   * examples: 20261004_212221 t499-953; 20261004_212221 t2055-2457; 20261004_212221 t3975-4376
+180,181c180,181
+<   * pooled lost-episode rate with/without: 30% / 34%; tower-fall MH difference -10.5% [-17.5%, -3.6%]; informative matches 87
+<   * examples: 20261005_065159 t2788-3361; 20261005_072708 t2589-3186; 20261005_074149 t476-902
+---
+>   * pooled lost-episode rate with/without: 40% / 40%; tower-fall MH difference -10.7% [-19.6%, -2.0%]; informative matches 51
+>   * examples: 20261005_065159 t2788-3361; 20261005_072708 t2589-3186; 20261005_074149 t554-882
+188c188
+<   * windows 77: rocketed 25, Rocket elsewhere 7; OT windows 26 (rocketed 14)
+---
+>   * windows 76: rocketed 24, Rocket elsewhere 7; OT windows 25 (rocketed 13)
+192c192
+<   * Logs on nothing 10% of 2793; Tornadoes on nothing 16% of 1136; Tornado centre on the enemy side 48% (pros 38%)
+---
+>   * Logs on nothing 10% of 2786; Tornadoes on nothing 16% of 1135; Tornado centre on the enemy side 48% (pros 38%)
+211,225c211,225
+< | Hog (incl. Royal Hogs) | 102 | 47% [38%, 57%] | 4 | 37% |
+< | Giant (incl. Goblin/Electro) | 63 | 54% [42%, 66%] | 8 | 36% |
+< | Golem | 60 | 32% [21%, 44%] | 13 | 41% |
+< | Ram/Bridge spam | 58 | 50% [38%, 62%] | 5 | 30% |
+< | Spawners (Witch/huts) | 51 | 73% [59%, 83%] | 3 | 20% |
+< | Other/no clear wincon | 44 | 57% [42%, 70%] | 3 | 33% |
+< | X-Bow/Mortar | 31 | 48% [32%, 65%] | 1 | 26% |
+< | Balloon | 26 | 42% [26%, 61%] | 2 | 40% |
+< | Mega Knight | 22 | 50% [31%, 69%] | 2 | 33% |
+< | Royal Giant | 17 | 65% [41%, 83%] | 0 | 22% |
+< | Bait | 14 | 57% [33%, 79%] | 0 | 21% |
+< | Graveyard | 13 | 77% [50%, 92%] | 0 | 33% |
+< | Lava Hound | 13 | 23% [8%, 50%] | 4 | 60% |
+< | Miner | 10 | 60% [31%, 83%] | 2 | 36% |
+< | P.E.K.K.A | 4 | 25% [5%, 70%] | 1 | 31% |
+---
+> | Hog (incl. Royal Hogs) | 101 | 47% [37%, 56%] | 4 | 39% |
+> | Giant (incl. Goblin/Electro) | 63 | 54% [42%, 66%] | 8 | 41% |
+> | Golem | 60 | 32% [21%, 44%] | 13 | 48% |
+> | Ram/Bridge spam | 58 | 50% [38%, 62%] | 5 | 39% |
+> | Spawners (Witch/huts) | 51 | 73% [59%, 83%] | 3 | 30% |
+> | Other/no clear wincon | 44 | 57% [42%, 70%] | 3 | 42% |
+> | X-Bow/Mortar | 31 | 48% [32%, 65%] | 1 | 39% |
+> | Balloon | 26 | 42% [26%, 61%] | 2 | 44% |
+> | Mega Knight | 22 | 50% [31%, 69%] | 2 | 37% |
+> | Royal Giant | 17 | 65% [41%, 83%] | 0 | 20% |
+> | Bait | 14 | 57% [33%, 79%] | 0 | 36% |
+> | Graveyard | 13 | 77% [50%, 92%] | 0 | 42% |
+> | Lava Hound | 13 | 23% [8%, 50%] | 4 | 66% |
+> | Miner | 10 | 60% [31%, 83%] | 2 | 39% |
+> | P.E.K.K.A | 4 | 25% [5%, 70%] | 1 | 36% |
+231c231
+< **P1. Bring live spending timing back to the model's own SIM/pro behaviour (economy).** Targets rows 'low elixir when a push arrives' and 'one Rocket short'. Step 1 (measurement, cheap, VM): SIM A/B of the live checkpoint with the live 26-tick extrapolation applied to its observations vs without, same seeds; if elixir at play / at push start drops toward live (live tap elixir 1x/2x/OT 5.9 / 4.5 / 3.9 vs SIM 7.1/6.6/6.7 measured by W4 on SIM v3 with the live config, HANDOFF), the extrapolation is the live cause. Step 2 (fix, decoding): evaluate the GATE on the non-extrapolated batch (the distribution it was trained and calibrated on) while card/cell keep the extrapolated batch; or (learned) fine-tune the gate on extrapolated training rows so it is calibrated on the live input. If step 1 shows no extrapolation effect, the cause is the live state mix and the fix is learned instead: per-elixir-bucket recalibration of the gate fitted on pro VAL rows (pros' measured play hazard by elixir and pressure, section 3), checked first offline (is the gate already calibrated per elixir bucket on pro rows?). Proof it worked (live, >= 100 matches): pushes met with < 4 elixir 70% -> <= 45%; median elixir at push start 2.7 -> >= 4; plays at < 5 elixir per min down >= 30%; lost-episode rate 33% -> <= 30%; Rocket+6 elixir in the last 20 s of close losses up; no rise in tower damage taken in 1x. Expected size (b): +3 to +6 pp win rate (about 1/3 of the low-elixir ceiling); risk: slower answers -- but slow answers are contradicted as a loss cause (row 'slow first answer').
+---
+> **P1. Bring live spending timing back to the model's own SIM/pro behaviour (economy).** Targets rows 'low elixir when a push arrives' and 'one Rocket short'. Step 1 (measurement, cheap, VM): SIM A/B of the live checkpoint with the live 26-tick extrapolation applied to its observations vs without, same seeds; if elixir at play / at push start drops toward live (live tap elixir 1x/2x/OT 5.9 / 4.5 / 3.9 vs SIM 7.1/6.6/6.7 measured by W4 on SIM v3 with the live config, HANDOFF), the extrapolation is the live cause. Step 2 (fix, decoding): evaluate the GATE on the non-extrapolated batch (the distribution it was trained and calibrated on) while card/cell keep the extrapolated batch; or (learned) fine-tune the gate on extrapolated training rows so it is calibrated on the live input. If step 1 shows no extrapolation effect, the cause is the live state mix and the fix is learned instead: per-elixir-bucket recalibration of the gate fitted on pro VAL rows (pros' measured play hazard by elixir and pressure, section 3), checked first offline (is the gate already calibrated per elixir bucket on pro rows?). Proof it worked (live, >= 100 matches): pushes met with < 4 elixir 75% -> <= 45%; median elixir at push start 2.5 -> >= 4; plays at < 5 elixir per min down >= 30%; lost-episode rate 40% -> <= 30%; Rocket+6 elixir in the last 20 s of close losses up; no rise in tower damage taken in 1x. Expected size (b): +3 to +6 pp win rate (about 1/3 of the low-elixir ceiling); risk: slower answers -- but slow answers are contradicted as a loss cause (row 'slow first answer').
+257,259c257,259
+< * Opponent elixir counter vs EVAL_ONLY truth (114 frame-log matches): bias 0.35, mean abs error 0.54 elixir. Diagnostic only, never an input or a factor.
+< * Plays tapped before the previous play confirmed: 240 in 528 matches. Play-event elixir is the RAW elixir at the tap (checked 597/597).
+< * Hero Ice Wizard ability presses per match L 1.55 vs W 1.31.
+---
+> * Opponent elixir counter vs EVAL_ONLY truth (113 frame-log matches): bias 0.35, mean abs error 0.54 elixir. Diagnostic only, never an input or a factor.
+> * Plays tapped before the previous play confirmed: 239 in 527 matches. Play-event elixir is the RAW elixir at the tap (checked 597/597).
+> * Hero Ice Wizard ability presses per match L 1.55 vs W 1.30.

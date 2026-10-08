@@ -72,6 +72,27 @@ def uval(n):
     return float(NCOST.get(n, 0.5))
 
 
+# Body-value fix (L74 econ2, 2026-10-08): the reader labels spawned children with the PARENT card (a Witch's skeletons are
+# card 'Witch', max_hp 119 vs 1220, and were valued 5 elixir each). A body is worth uval(card) x min(1, its max_hp / the largest
+# max_hp seen for that card in the match); spell cards whose bodies are all small units get a per-unit value.
+SPELL_UNIT = {"Graveyard": 1 / 3.0, "GoblinBarrel": 1.0}
+BODY_FIX = os.environ.get("REVIEW_BODY_FIX", "1") == "1"
+
+
+def body_valuer(S):
+    """-> bval(name, max_hp) for one match's states (S[i][4] bodies: mine, X, Y, cid, hp, max_hp, kind, addr)."""
+    top = collections.Counter()
+    for s in S:
+        for b in s[4]:
+            if not b[0] and b[3] != -1 and (b[5] or 0) > 0: top[b[3]] = max(top[b[3]], b[5])
+    def bval(cid, mx):
+        n = nm(cid)
+        if not BODY_FIX: return uval(n)
+        if n in SPELL_UNIT: return SPELL_UNIT[n]
+        return uval(n) * (min(1.0, mx / top[cid]) if mx and mx > 0 and top[cid] else 1.0)
+    return bval
+
+
 def own(side, x, y):
     """raw millitiles -> own frame tiles: own king (9,3), enemy king (9,29); enemy side = larger y."""
     return ((18000 - x) / 1000.0, (32000 - y) / 1000.0) if side == 1 else (x / 1000.0, y / 1000.0)
@@ -216,7 +237,7 @@ def features(r):
         return sum(max(0, (hp_at(k, t0) or 0) - (hp_at(k, t1) or 0)) for k in ("eL", "eR", "eK") if hp.get(k))
     row["dmg"] = {p: dict(taken=taken(a0, min(b0, end)), dealt=dealt(a0, min(b0, end))) for p, a0, b0 in PH if end > a0}
     # ---- enemy bodies: values, first sightings (addresses), names seen
-    seen_addr = {}; opp_cards = set(); ev_val = []
+    seen_addr = {}; opp_cards = set(); ev_val = []; bval = body_valuer(S)
     for s in S:
         v_half = 0.0; v_all = 0.0; back = 0.0; air_half = False
         for b in s[4]:
@@ -224,7 +245,7 @@ def features(r):
             if mine or cid == -1 or h <= 0: continue
             n = nm(cid)
             if not n.isdigit() and not n.startswith("CHAR_"): opp_cards.add(n)
-            u = uval(n); v_all += u
+            u = bval(cid, mx); v_all += u
             if Y <= THREAT_Y: v_half += u; air_half |= n in AIR
             if Y >= 27: back += u
             if addr is not None and addr not in seen_addr: seen_addr[addr] = (s[0], n, X, Y)
@@ -380,7 +401,7 @@ def features(r):
     # ---- spells: Rocket / Log / Tornado outcome (bodies at the impact state)
     def bodies_near(t, X, Y, rad, enemy=True):
         k = bisect.bisect_left(T, t); k = min(k, len(S) - 1)
-        return [(nm(b[3]), b[1], b[2]) for b in S[k][4] if b[0] != enemy and b[3] != -1 and b[4] > 0 and math.hypot(b[1] - X, b[2] - Y) <= rad]
+        return [(nm(b[3]), b[1], b[2], bval(b[3], b[5])) for b in S[k][4] if b[0] != enemy and b[3] != -1 and b[4] > 0 and math.hypot(b[1] - X, b[2] - Y) <= rad]
     spells = []
     for p in CP:
         if p["name"] not in ("Rocket", "Log", "Tornado"): continue
@@ -392,7 +413,7 @@ def features(r):
             hits = bodies_near(imp, X, Y, 2.5)
             o.update(tower=tw[0] if tw else None, tower_hp_before=hp_at(tw[0], t) if tw else None,
                      tower_dmg=(hp_at(tw[0], t) - hp_at(tw[0], min(end, int(imp) + 40))) if tw and hp_at(tw[0], t) is not None and hp_at(tw[0], min(end, int(imp) + 40)) is not None else None,
-                     n_hit=len(hits), v_hit=round(sum(uval(h[0]) for h in hits), 1), my_half=Y <= 18)
+                     n_hit=len(hits), v_hit=round(sum(h[3] for h in hits), 1), my_half=Y <= 18)
         elif p["name"] == "Log":
             k = bisect.bisect_left(T, t); hit = set(); air_only = False
             for s in S[k:k + 4]:
@@ -406,7 +427,7 @@ def features(r):
             o.update(n_hit=len(hit), air_only=(not hit) and air_only, barrel=barrel, cards=sorted({h[1] for h in hit})[:4])
         else:
             hits = bodies_near(t + 10, X, Y, 5.5)
-            o.update(n_hit=len(hits), v_hit=round(sum(uval(h[0]) for h in hits), 1), d_king=round(math.hypot(X - 9.0, Y - 3.0), 1))
+            o.update(n_hit=len(hits), v_hit=round(sum(h[3] for h in hits), 1), d_king=round(math.hypot(X - 9.0, Y - 3.0), 1))
         spells.append(o)
     row["spells"] = spells
     # lethal Rocket windows: enemy princess alive <= ROCKET_DMG, Rocket in hand, >= 6 elixir, >= 3 s
@@ -582,6 +603,9 @@ def selftest():
     d, lo, hi = newcombe(60, 100, 40, 100); assert abs(d - .2) < 1e-9 and .06 < lo < .08
     assert tower_slot((True, 9.0, 3.0, -1, 100, 100, 12, "a")) == "mK" and tower_slot((False, 14.5, 25.5, -1, 1, 1, 13, "b")) == "eR"
     d, lo, hi = boot_diff([1, 2, 3, 4], [0, 0, 1, 1]); assert lo < d < hi and abs(d - 2.0) < 1e-9
+    NAME[26000007] = "Witch"; UV.setdefault("Witch", 5.0)    # body fix: a Witch skeleton (max_hp 119 of 1220) is not a 5-elixir Witch
+    bv = body_valuer([(0, 5, 5, (), [(False, 9, 20, 26000007, 1220, 1220, 15, "a"), (False, 9, 20, 26000007, 119, 119, 15, "b")])])
+    assert abs(bv(26000007, 1220) - UV["Witch"]) < 1e-9 and bv(26000007, 119) < .1 * UV["Witch"]
     import report as R   # within-match MH: match a differs by 1, match b by 0, equal weights -> 0.5
     u = [dict(_file="a", f=1, y=1), dict(_file="a", f=0, y=0), dict(_file="b", f=1, y=1), dict(_file="b", f=0, y=1)]
     d, lo, hi, n = R.mh(u, lambda x: x["f"], lambda x: x["y"], B=50); assert abs(d - .5) < 1e-9 and n == 2
