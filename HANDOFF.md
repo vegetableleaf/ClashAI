@@ -4501,6 +4501,11 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **04:2x: R3n u0080 OUT** (v2 132 vs R1e 133, 45/38; ghost -4.3 [-7.7, -1.0] FAILS; u0040 ghost -2.7). R4n (init R3n
+>   u0080, started 03:55) STOPPED at u6 by exact PID (+ chain_ns.sh, eval_v2_queue.sh, 39 orphan workers). **R4c
+>   launched** (`~/chain_r4c.sh`): r4_overrides (R3 + card/xbow_class kinds), init R3c u0030 (the live base), value_phi on
+>   frozen gen_v3.2, 80 updates, no stall; evals at u0040/u0080: v2 both seed sets vs R1e and vs R3c u0030, with/without
+>   AL, + ghost. Init screen 234 matches winrate .957.
 > * **LIVE SWITCHED 03:59 EDT 10-08 (owner: "at which you may stop the run and switch in whatever checkpoint wins").**
 >   Checkpoint R3c u0030 + barrel2k + CellRefine 2ep (`rseries_r3c_u0030_barrel2k_cellref.pt`, sha e7359f2b..., same on
 >   VM) via CKPT_OVERRIDE (R1e path kept in CKPT_OVERRIDE.r1e_backup); run_live.sh `--no-anti-leak` -> `--anti-leak`
