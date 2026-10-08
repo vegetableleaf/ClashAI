@@ -499,7 +499,8 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
         if lethal is None or t_sec is None or grid is None or card_names is None:
             raise ValueError('lethal_rocket requires per-row crown towers, decision times, the grid and card names')
         for r in range(len(out)):
-            hit = lethal_rocket_choice(options, t_sec[r], card_names[r], allowed[r], *lethal[r], grid)
+            towers, side, pending = lethal[r]
+            hit = lethal_rocket_choice(options, t_sec[r], card_names[r], allowed[r], towers, side, grid, pending=pending)
             if hit is not None:
                 out[r] = dict(play=True, slot=hit[0], cell=hit[1], why='lethal_rocket')
     return out

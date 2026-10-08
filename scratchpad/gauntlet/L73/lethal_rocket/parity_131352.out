@@ -1,0 +1,21 @@
+live_play_20261008_131352.jsonl side 1 fires 19
+   tick 3851 model_t 193.85 target {'lane': 'L', 'hp': 453, 'damage': 497, 'level': 15} | logged: Tesla play=False p=0.301
+   tick 3862 model_t 194.40 target {'lane': 'L', 'hp': 453, 'damage': 497, 'level': 15} | logged: Tesla play=False p=0.284
+   tick 3872 model_t 194.90 target {'lane': 'L', 'hp': 453, 'damage': 497, 'level': 15} | logged: Tesla play=False p=0.304
+   tick 3880 model_t 195.30 target {'lane': 'L', 'hp': 453, 'damage': 497, 'level': 15} | logged: Tesla play=True p=0.684
+   tick 3968 model_t 199.70 target {'lane': 'L', 'hp': 453, 'damage': 497, 'level': 15} | logged: Knight play=False p=0.181
+   tick 3978 model_t 200.20 target {'lane': 'L', 'hp': 453, 'damage': 497, 'level': 15} | logged: Knight play=False p=0.194
+   tick 3988 model_t 200.70 target {'lane': 'L', 'hp': 453, 'damage': 497, 'level': 15} | logged: Rocket play=False p=0.263
+   tick 3998 model_t 201.20 target {'lane': 'L', 'hp': 453, 'damage': 497, 'level': 15} | logged: Rocket play=False p=0.281
+   tick 4008 model_t 201.70 target {'lane': 'L', 'hp': 453, 'damage': 497, 'level': 15} | logged: Rocket play=False p=0.319
+   tick 4018 model_t 202.20 target {'lane': 'L', 'hp': 453, 'damage': 497, 'level': 15} | logged: Rocket play=False p=0.377
+   tick 4028 model_t 202.70 target {'lane': 'L', 'hp': 453, 'damage': 497, 'level': 15} | logged: Rocket play=False p=0.313
+   tick 4038 model_t 203.20 target {'lane': 'L', 'hp': 453, 'damage': 497, 'level': 15} | logged: Xbow play=False p=0.436
+   tick 4040 model_t 203.30 target {'lane': 'L', 'hp': 453, 'damage': 497, 'level': 15} | logged: Knight play=True p=0.817
+   tick 4068 model_t 204.70 target {'lane': 'L', 'hp': 453, 'damage': 497, 'level': 15} | logged: IceWizard play=True p=0.725
+   tick 4274 model_t 215.00 target {'lane': 'L', 'hp': 453, 'damage': 497, 'level': 15} | logged: Rocket play=False p=0.299
+   tick 4284 model_t 215.50 target {'lane': 'L', 'hp': 453, 'damage': 497, 'level': 15} | logged: Rocket play=False p=0.400
+   tick 4294 model_t 216.00 target {'lane': 'L', 'hp': 453, 'damage': 497, 'level': 15} | logged: Rocket play=False p=0.440
+   tick 4304 model_t 216.50 target {'lane': 'L', 'hp': 453, 'damage': 497, 'level': 15} | logged: Rocket play=True p=0.575
+   tick 5073 model_t 254.95 target {'lane': 'L', 'hp': 453, 'damage': 497, 'level': 15} | logged: Rocket play=True p=0.693
+{'matches': 1, 'fired_matches': 1, 'fires': 19, 'reg_fires': np.int64(0)}
