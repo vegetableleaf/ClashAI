@@ -4501,7 +4501,8 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
-> * **Nav loading recovery (worktree agent-a8778135 @37cbefe, not merged):** content_update screen (2 templates, both
+> * **Nav loading recovery MERGED (37cbefe + 22994f8 tap-throughs kept after recovery + fae5160 15 s pause after a relaunch; was
+>   worktree agent-a8778135):** content_update screen (2 templates, both
 >   >= .85; 0 false positives on 639 frames, max .666 on conn_lost) -> tap RESTART at once; 60 s pure loading with no
 >   modal -> force-stop mumu.store/vending/clashroyale + monkey launch, once per episode. Verifier PASS_WITH_NOTES; fix
 >   requested: keep unknown-screen tap-throughs after a recovery (else post-update popups end in a stop). Untested on
