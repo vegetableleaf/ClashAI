@@ -8,18 +8,23 @@ from pathlib import Path
 import pytest
 
 from pipeline.decision_options import add_arguments, config_from_args, options_from_config
-from pipeline.live_options import add_live_options_arguments, parse_with_live_options
+from pipeline.live_options import add_live_options_arguments, parse_with_live_options, tau_check
 
 REPO = Path(__file__).resolve().parents[2]
 DEPLOYED = '--xbow-class class_sample --xbow-class-floor 0.3 --tau-phase 0.35 0.45 0.55 --spell-aim rocket_area\n'
 
 
-def parse(argv, path):
+def parser(path):
     ap = argparse.ArgumentParser()
     add_arguments(ap)
     ap.add_argument('--tau', type=float, default=.35)
+    ap.add_argument('--tau-alternate', type=float, nargs=2, default=None)
     add_live_options_arguments(ap, path)
-    a, record = parse_with_live_options(ap, argv)
+    return ap
+
+
+def parse(argv, path):
+    a, record = parse_with_live_options(parser(path), argv)
     return options_from_config(config_from_args(a)), record
 
 
@@ -39,6 +44,8 @@ def test_file_present_applies_it(tmp_path):
 def test_file_absent_gives_plain_defaults(tmp_path):
     opts, rec = parse([], tmp_path / 'missing')
     assert not opts.active and rec['file'] is None and rec['from_file'] == {}
+    assert rec['status'] == 'ABSENT' and rec['path'] == str(tmp_path / 'missing')
+    assert rec['message'].startswith(f"LIVE_OPTIONS not found at {tmp_path / 'missing'}: running with PLAIN")
 
 
 def test_explicit_flags_win_flag_by_flag(tmp_path):
@@ -66,6 +73,35 @@ def test_unknown_flag_in_the_file_refuses(tmp_path):
         parse([], f)
 
 
+@pytest.mark.parametrize('text', ['--tau 0.3 0.4 0.5\n',                      # abbreviation of --tau-phase
+                                  '--spell-aim rocket_area --spell-aim argmax\n',
+                                  '--xbow-class class_sample\n--xbow-class=argmax\n'])
+def test_file_refuses_abbreviated_and_repeated_flags(tmp_path, text, capsys):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(text)
+    with pytest.raises(SystemExit) as e:
+        parse([], f)
+    assert e.value.code == 2 and str(f) in capsys.readouterr().err
+
+
+def test_tau_alternate_with_tau_phase_refuses_and_plain_tau_gets_a_note(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED)
+    a, _ = parse_with_live_options(parser(f), ['--tau-alternate', '.35', '.45'])
+    refusal, note = tau_check(a)
+    assert refusal.startswith('refusing: --tau-alternate') and '--no-live-options' in refusal and note is None
+    a, _ = parse_with_live_options(parser(f), ['--tau-alternate', '.35', '.45', '--no-live-options'])
+    assert tau_check(a) == (None, None)
+    a, _ = parse_with_live_options(parser(f), ['--tau-alternate', '.35', '.45', '--tau-phase', '.3', '.4', '.5',
+                                               '--no-live-options'])
+    assert tau_check(a)[0] is not None                                        # an explicit tau_phase refuses too
+    a, _ = parse_with_live_options(parser(f), ['--tau', '.35'])
+    refusal, note = tau_check(a)
+    assert refusal is None and 'not used by the gate (it equals the 1x value)' in note
+    a, _ = parse_with_live_options(parser(f), ['--tau', '.5'])
+    assert 'equals' not in tau_check(a)[1]
+    a, _ = parse_with_live_options(parser(tmp_path / 'missing'), ['--tau', '.5'])
+    assert tau_check(a) == (None, None)
+
+
 CKPT = REPO / 'icebow/data/bench/rl_royale/rseries_r3c/rseries_r3c_u0030_barrel2k_cellref.pt'
 
 
@@ -82,4 +118,26 @@ def test_check_json_reports_options_and_their_source(tmp_path, extra, expect):
     assert check['check'] == 'LIVE_CHECK_PASS' and check['decision_options']['spell_aim'] == expect
     assert check['decision_options']['tau_phase'] == (None if extra == ['--no-live-options'] else [.35, .45, .55])
     assert check['live_options']['file'] == (None if extra == ['--no-live-options'] else str(f))
-    assert '[live] decision options:' in out.stdout
+    status = 'ignored' if extra == ['--no-live-options'] else 'applied'
+    assert check['live_options']['status'] == status
+    assert ('[live] --no-live-options:' if status == 'ignored' else '[live] LIVE_OPTIONS applied from') in out.stdout
+
+
+def run_live_play(*args):
+    return subprocess.run([sys.executable, str(REPO / 'scratchpad/gauntlet/L68/live_reader/live_play.py'), *args],
+                          capture_output=True, text=True, timeout=300, cwd=REPO)
+
+
+@pytest.mark.skipif(not CKPT.is_file(), reason='live checkpoint not present')
+def test_check_json_absent_file_is_loud(tmp_path):
+    out = run_live_play('--check', '--ckpt', str(CKPT), '--live-options-file', str(tmp_path / 'missing'))
+    assert out.returncode == 0, out.stdout + out.stderr
+    assert f"[live] LIVE_OPTIONS not found at {tmp_path / 'missing'}: running with PLAIN decision defaults" in out.stdout
+    check = json.loads(out.stdout.strip().splitlines()[-1])
+    assert check['live_options']['status'] == 'ABSENT' and check['live_options']['path'] == str(tmp_path / 'missing')
+
+
+def test_live_play_refuses_tau_alternate_under_tau_phase(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED)
+    out = run_live_play('--check', '--tau-alternate', '.35', '.45', '--live-options-file', str(f))
+    assert out.returncode == 2 and '[live] refusing: --tau-alternate' in out.stdout, out.stdout + out.stderr

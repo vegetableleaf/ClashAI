@@ -298,11 +298,17 @@ def main() -> int:
     ap.add_argument("--nav-dry-run", action="store_true",
                     help="play nothing: run ONE between-match navigation that classifies the live screens and logs "
                          "the tap it WOULD make, never tapping (navigate by hand to test it)")
-    from pipeline.live_options import add_live_options_arguments, parse_with_live_options
+    from pipeline.live_options import add_live_options_arguments, parse_with_live_options, tau_check
     add_live_options_arguments(ap, REPO / "scratchpad/gauntlet/L70/live/LIVE_OPTIONS")
     a, live_options = parse_with_live_options(ap)       # deployed decision options; explicit flags win
+    refusal, live_options["tau_note"] = tau_check(a)
     a.live_options = live_options
-    print(f"[live] decision options: {json.dumps(live_options)}", flush=True)
+    print(f"[live] {live_options['message']}", flush=True)
+    if refusal:
+        print(f"[live] {refusal}", flush=True)
+        return 2
+    if live_options["tau_note"]:
+        print(f"[live] {live_options['tau_note']}", flush=True)
     try:                                     # owner 2026-10-07: live play gets the CPU before training / sim jobs
         import psutil
         psutil.Process().nice(psutil.ABOVE_NORMAL_PRIORITY_CLASS)

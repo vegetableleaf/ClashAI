@@ -253,7 +253,9 @@ def cell_centres_tiles(grid):
 def log_barrel_cell(logits, corridor, barrels, grid):
     """The cell whose rolling corridor covers the most barrel landing points (covering: |dx| <= half-width and the
     landing lies between half-depth behind the cell and the roll range ahead; my Log rolls toward decreasing board y),
-    highest logit among those. None (= keep the plain choice) without a barrel or a finite covering cell."""
+    highest logit among those. None (= keep the plain choice) without a barrel or a finite covering cell.
+    Static geometry only: it ignores the barrel's time to impact (tokens carry tti_s) and the Log's travel time.
+    UNVALIDATED live (recorded live logs carry no projectile arrays); SIM A/B 192 games: no win benefit. Off by default."""
     if not barrels:
         return None
     half, depth, reach = corridor
