@@ -74,7 +74,9 @@ def legal_cells(entities, side: int, card_id: int, name: str, grid: str = "latti
             standing[3.5 if bx < 9 else 14.5] = True
         if king or princess:
             hb = 2.0 if king else 1.5
-        elif names.get(cid) in buildings:
+        elif names.get(cid) in buildings and int(e.get("kind", -1)) in (12, 13):
+            # kind 14/15 bodies with a building id walk (Furnace troop, hut / drill spawns): live 180632 t3467,
+            # 222521 t3464 -- a kind-15 spawn on a dead hut's tile centre blocked a legal Knight
             q = [v / 500 for v in (e["x"], e["y"])]       # 500-unit lattice index; +-2 units of reader jitter
             parity = {round(v) % 2 for v in q}
             if any(abs(v - round(v)) > .004 for v in q) or len(parity) > 1:
@@ -85,7 +87,8 @@ def legal_cells(entities, side: int, card_id: int, name: str, grid: str = "latti
         ok &= ~((np.abs(X - bx) < hb + h) & (np.abs(Y - by) < hb + h))
     lane_open = np.where(X + h <= 9, not standing[3.5], np.where(X - h >= 9, not standing[14.5],
                                                                 not (standing[3.5] or standing[14.5])))
-    ok &= (Y + h <= 15) | (lane_open & (Y - h >= 17) & (Y + h <= 21))
+    mine = (Y + h <= 15) if h else (Y < 15)          # buildings: whole footprint; troops: strictly off the y 15 line
+    ok &= mine | (lane_open & (Y - h >= 17) & (Y + h <= 21))
     return ok if ok.any() else None
 
 

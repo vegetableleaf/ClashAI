@@ -181,6 +181,24 @@ def test_an_enemy_goblin_drill_blocks_its_2x2_but_a_digging_body_does_not(side):
     assert ok_at(legal_cells(towers() + [digging], side, TESLA, "Tesla"), 15.0, 9.0)
 
 
+@pytest.mark.parametrize("side", (0, 1))
+@pytest.mark.parametrize("kind", (14, 15))
+def test_a_walking_body_with_a_building_id_does_not_block(side, kind):
+    """live 180632 t3467: the hut was dead, a kind-15 spawn carrying its id stood on its tile centre."""
+    nat = (lambda X, Y: (18000 - X, 32000 - Y)) if side == 1 else (lambda X, Y: (X, Y))
+    walker = ent(1 - side, 27000001, *nat(12500, 10500), kind=kind)         # GoblinHut id, tile centre, my half
+    assert ok_at(legal_cells(towers() + [walker], side, KNIGHT, "Knight"), 12.5, 10.5)
+    hut = ent(1 - side, 27000001, *nat(12500, 10500), kind=13)              # the placed hut itself blocks
+    assert not ok_at(legal_cells(towers() + [hut], side, KNIGHT, "Knight"), 12.5, 10.5)
+
+
+@pytest.mark.parametrize("side", (0, 1))
+def test_troops_stay_strictly_below_the_y15_line(side):
+    m = legal_cells(towers(), side, KNIGHT, "Knight")
+    assert ok_at(m, 12.5, 14.5) and not ok_at(m, 12.0, 15.0)               # old rule kept: troops y < 15
+    assert ok_at(legal_cells(towers(), side, TESLA, "Tesla"), 12.0, 14.0)  # a footprint may end exactly at y 15
+
+
 def guarded(cell_first, cell_second, legal_guard=True, gate_p=.6, options=None):
     logits = torch.full((36 * 64,), -5.0)
     logits[cell_first], logits[cell_second] = 9.0, 8.0
