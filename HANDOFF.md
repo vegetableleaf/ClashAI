@@ -4501,6 +4501,10 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **05:0x VM queues:** `~/ab_grid2.sh r3old` (benchmark v2 tuning grid; so far tau (.30/.40/.45) 126 vs 127 p .89,
+>   tau (.25/.35/.45) 131 vs 127 p .58); `~/eval_v2_queue.sh` = candidates on v2 in order r3n_u0040 (now), r3c_u0020,
+>   r3c_u0030 (after R3c ends), r3n_u0080, r4n_u0040, r4n_u0080 -> eval.log "v2 paired sb_<name> vs sb_r1e" + ghost.
+>   Killed the duplicate old-benchmark chain_r3c_eval.sh (pid 1196370). chain_ns.sh still launches R4n after R3n.
 > * **predict_drops MERGED (6630e9e)** after blind re-verify PASS_WITH_NOTES (flag-off identical: digests match at the
 >   same batch size -- the old `cf903d26` was --batch 1 vs the worker's 16, an ordering artefact, sorted digests equal;
 >   flag-on SIM probe byte-identical to the committed output, 0 double boards / phantoms; evo barrels drop 14 = two
