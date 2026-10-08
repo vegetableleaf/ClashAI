@@ -34,6 +34,7 @@ class DecisionOptions:
     gate_hazard_min_elixir: float = 0.0     # hazard draws only at own elixir >= this (0 = everywhere)
     gate_hazard_quiet: bool = False         # hazard draws only with no enemy unit on the board (public bodies)
     lethal_rocket: str = 'off'
+    xbow_dead_lane: str = 'allow'           # 'block': no X-Bow cell that reaches only the king / a destroyed princess
 
     def __post_init__(self):
         if self.card_choice not in ('argmax', 'filtered'):
@@ -61,12 +62,14 @@ class DecisionOptions:
             raise ValueError('gate_hazard_min_elixir must be in [0, 10]')
         if self.lethal_rocket not in ('off', 'ot'):
             raise ValueError('lethal_rocket must be off or ot')
+        if self.xbow_dead_lane not in ('allow', 'block'):
+            raise ValueError('xbow_dead_lane must be allow or block')
 
     @property
     def active(self):
         return (self.card_choice != 'argmax' or self.spell_aim != 'argmax' or self.tau_phase is not None
                 or self.xbow_class != 'argmax' or self.log_aim != 'argmax' or self.gate_decode != 'threshold'
-                or self.lethal_rocket != 'off')
+                or self.lethal_rocket != 'off' or self.xbow_dead_lane != 'allow')
 
 
 def options_from_config(cfg=None):
@@ -103,6 +106,11 @@ def add_arguments(parser):
                         help='ot: in overtime (t >= 180 s, the tau_phase edge) play Rocket NOW, whatever the gate, at the '
                              'centre of an alive enemy PRINCESS tower whose HP <= my Rocket crown-tower damage (lower HP '
                              'first; never the king), when Rocket is in hand and affordable; else unchanged')
+    parser.add_argument('--xbow-dead-lane', choices=('allow', 'block'), default='allow',
+                        help='block (owner 2026-10-08, never the king): the X-Bow never takes a cell within reach of the '
+                             'enemy king or of a DESTROYED enemy princess that reaches no alive enemy princess '
+                             '(xbow_dead_lane_cells); it aims at its best remaining cell. With no cell left the X-Bow is '
+                             'not chosen and the next card by the model ranking is; nothing is forced')
     parser.add_argument('--decision-seed', type=int, default=0,
                         help='separate seeded card-choice stream; recorded with each experiment')
 
@@ -268,6 +276,16 @@ def xbow_offensive_cells(enemy_alive, grid):
     return hit
 
 
+def xbow_dead_lane_cells(enemy_alive, grid):
+    """[2304] bool, the cells xbow_dead_lane='block' removes: within X-Bow reach of the enemy king's or a DESTROYED enemy
+    princess's position, and of no ALIVE enemy princess (``enemy_alive`` = (K, L, R) in my board frame). With a
+    princess down this is the dead lane's lock cell (live 10-05..10-08: 152 of 168 dead-lane X-Bows sat exactly there,
+    board y 19.5, reaching nothing) plus every king-only cell; cells that lock the remaining princess and dead-lane
+    cells beyond the dead princess's reach (deeper defensive rows) stay. Kings never count as alive targets here."""
+    _, left, right = (bool(a) for a in enemy_alive)
+    return xbow_offensive_cells((True, True, True), grid) & ~xbow_offensive_cells((False, left, right), grid)
+
+
 def xbow_class_choice(logits, offensive, floor, rng):
     """-> (cell, defensive, sampled). D = defensive mass; draw Bernoulli(D) iff min(D, 1-D) >= floor, else the
     majority class; then the argmax cell inside the chosen class. Confident classes consume no RNG."""
@@ -343,13 +361,27 @@ def log_barrel_cell(logits, corridor, barrels, grid):
 
 def choose_cells(logits, card_names, options, *, rngs=None, enemy_alive=None, grid=None, barrels=None):
     """Aim only after card selection. Other cards retain exact argmax behaviour.
-    ``barrels`` (log_aim): per row, the enemy Goblin Barrel landing points from ``barrel_landings``."""
+    ``barrels`` (log_aim): per row, the enemy Goblin Barrel landing points from ``barrel_landings``.
+    xbow_dead_lane 'block': X-Bow rows lose ``xbow_dead_lane_cells`` before any X-Bow aim; a row with no finite cell
+    left returns -1 (the caller then drops that X-Bow and takes the next card)."""
     result = logits.argmax(dim=-1)
+    if options.xbow_dead_lane == 'block':
+        if len(card_names) != len(logits):
+            raise ValueError('one card identity required per cell-logit row')
+        logits = logits.clone()
+        for i, name in enumerate(card_names):
+            if not is_xbow(name):
+                continue
+            if enemy_alive is None or grid is None:
+                raise ValueError('xbow_dead_lane requires enemy tower states and the grid')
+            blocked = xbow_dead_lane_cells(tuple(bool(a) for a in enemy_alive[i]), grid)
+            logits[i] = logits[i].masked_fill(torch.as_tensor(blocked, device=logits.device), -torch.inf)
+            result[i] = logits[i].argmax() if bool(torch.isfinite(logits[i]).any()) else -1
     if options.xbow_class == 'class_sample':
         if len(card_names) != len(logits):
             raise ValueError('one card identity required per cell-logit row')
         for i, name in enumerate(card_names):
-            if not is_xbow(name):
+            if not is_xbow(name) or result[i] < 0:
                 continue
             if enemy_alive is None or grid is None or rngs is None:
                 raise ValueError('xbow class_sample requires enemy tower states, the grid and per-row RNGs')
@@ -473,14 +505,15 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
              for r in range(len(allowed))]
     cells = np.full(len(slots), -1, dtype=np.int64)
     ids = np.flatnonzero(playing)
-    if len(ids):
+    while len(ids):
         index = torch.as_tensor(ids, device=device)
         sub_enc = {k: v[index] for k, v in enc.items()}
         slot_tensor = torch.tensor([slots[r] for r in ids], device=device)
         logits = model.cell_logits(sub_enc, slot_tensor)
         names = [card_names[r][slots[r]] for r in ids] if card_names is not None else [''] * len(ids)
-        if (options.spell_aim != 'argmax' or options.xbow_class != 'argmax' or options.log_aim != 'argmax')                 and card_names is None:
-            raise ValueError('Rocket aim / X-Bow class / Log aim require explicit public card identities')
+        if (options.spell_aim != 'argmax' or options.xbow_class != 'argmax' or options.log_aim != 'argmax'
+                or options.xbow_dead_lane != 'allow') and card_names is None:
+            raise ValueError('Rocket aim / X-Bow class / Log aim / X-Bow dead lane require explicit public card identities')
         barrels = None
         if options.log_aim != 'argmax':
             if projectiles is None:
@@ -490,6 +523,19 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
         cells[ids] = choose_cells(logits, names, options, rngs=[rngs[r] for r in ids], grid=grid, barrels=barrels,
                                   enemy_alive=None if enemy_alive is None else [enemy_alive[r] for r in ids]
                                   ).cpu().numpy()
+        # xbow_dead_lane left an X-Bow no cell (-1): it is not chosen; the next card by the model's own ranking is
+        # (choose_slot without it), else WAIT. Never reached with unmasked SIM logits (the block never covers the board).
+        ids = ids[cells[ids] < 0]
+        if len(ids):
+            allowed = allowed.copy()
+        for r in ids:
+            allowed[r, slots[r]] = False
+            nxt = choose_slot(heads['card'][r], allowed[r], options, rngs[r], playing=True)
+            if nxt < 0:
+                playing[r] = False
+            else:
+                slots[r] = nxt
+        ids = ids[playing[ids]]
     tau = np.broadcast_to(tau, len(slots))
     out = [dict(play=bool(playing[r]), slot=slots[r], cell=int(cells[r]),
                 why=('no_affordable' if slots[r] < 0 else 'wait' if not playing[r]
@@ -527,7 +573,7 @@ def match_kwargs(matches):
         out['step_s'] = 0.05 * int(cfg['decide_every'])   # the SIM decides every decide_every ticks
         out['elixir'] = [float(m._cur[1].my_elixir) for m in matches]
         out['enemy_units'] = [enemy_unit_count(m._cur[1]) for m in matches]
-    if options.tau_phase is not None or options.xbow_class != 'argmax':
+    if options.tau_phase is not None or options.xbow_class != 'argmax' or options.xbow_dead_lane != 'allow':
         boards = [m._cur[1] for m in matches]    # the prepared decision's engine BoardState (my frame)
         out.update(t_sec=[float(b.t_sec) for b in boards], grid=cfg['grid'],
                    enemy_alive=[tuple(bool(t.alive) for t in b.towers[3:6]) for b in boards])

@@ -215,6 +215,16 @@ def test_lethal_rocket_deployable_from_the_file(tmp_path):
     assert parse([], tmp_path / 'missing')[0].lethal_rocket == 'off'
 
 
+def test_xbow_dead_lane_deployable_from_the_file(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED_FILE.rstrip('\n') + ' --xbow-dead-lane block\n')
+    opts, rec = parse([], f)
+    assert opts.xbow_dead_lane == 'block' and rec['from_file']['xbow_dead_lane'] == 'block'
+    assert (opts.lethal_rocket, opts.xbow_class, opts.gate_decode) == ('ot', 'class_sample', 'hazard_below_tau')
+    opts, rec = parse(['--xbow-dead-lane', 'allow'], f)                        # explicit wins
+    assert opts.xbow_dead_lane == 'allow' and rec['explicit'] == ['xbow_dead_lane']
+    assert parse([], REPO / 'scratchpad/gauntlet/L70/live/LIVE_OPTIONS')[0].xbow_dead_lane == 'allow'   # not deployed
+
+
 @pytest.mark.skipif(not CKPT.is_file(), reason='live checkpoint not present')
 def test_check_json_reports_lethal_rocket(tmp_path):
     f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + '--lethal-rocket ot\n')

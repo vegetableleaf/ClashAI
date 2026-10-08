@@ -1,0 +1,47 @@
+
+=== towerref_w2: 54 matches, 44 reached OT, 24 with an enemy princess down
+X-Bows per match by class x phase (1x/2x/OT):
+  KONLY   [0, 0, 0] total 0 = 0.000/match
+  OFF_P   [54, 56, 17] total 127 = 2.352/match
+  DL_DEF  [4, 8, 1] total 13 = 0.241/match
+  DEF     [12, 9, 0] total 21 = 0.389/match
+  literal DL_OFF 0 (of which KONLY 0); KONLY-or-king-nearest 0
+Value in states with an enemy princess down (cls: n | life s | king dmg | all-tower dmg | my dmg 20 s | opp spent 10 s | king awake):
+  OFF_P   1x  n=   2 life= 12.0 king=     0 towers=   245 my20=    84 opp10=5.51 awake=1.00 win=0.50
+  OFF_P   2x  n=   6 life= 15.5 king=     6 towers=  1486 my20=   551 opp10=6.54 awake=1.00 win=1.00
+  OFF_P   all n=   8 life= 14.6 king=     4 towers=  1175 my20=   434 opp10=6.28 awake=1.00 win=0.88
+  DL_DEF  1x  n=   4 life= 26.9 king=  1269 towers=  1291 my20=     0 opp10=4.01 awake=1.00 win=1.00
+  DL_DEF  2x  n=   8 life= 21.7 king=  1224 towers=  1918 my20=   170 opp10=6.05 awake=1.00 win=0.75
+  DL_DEF  OT  n=   1 life= 14.0 king=     0 towers=     0 my20=     0 opp10=9.00 awake=1.00 win=0.00
+  DL_DEF  all n=  13 life= 22.7 king=  1144 towers=  1577 my20=   105 opp10=5.65 awake=1.00 win=0.77
+  ROCKET  1x  n=   1 life=  nan king=     0 towers=   497 my20=   591 opp10=0.01 awake=1.00 win=1.00
+  ROCKET  2x  n=   7 life=  nan king=     5 towers=   483 my20=   134 opp10=4.71 awake=1.00 win=0.86
+  ROCKET  OT  n=   4 life=  nan king=     0 towers=   195 my20=    34 opp10=1.84 awake=1.00 win=0.50
+  ROCKET  all n=  12 life=  nan king=     3 towers=   388 my20=   139 opp10=3.36 awake=1.00 win=0.75
+
+=== ALL: 537 matches, 464 reached OT, 308 with an enemy princess down
+X-Bows per match by class x phase (1x/2x/OT):
+  KONLY   [0, 3, 0] total 3 = 0.006/match
+  OFF_P   [614, 532, 203] total 1349 = 2.512/match
+  DL_DEF  [24, 113, 31] total 168 = 0.313/match
+  DEF     [75, 57, 15] total 147 = 0.274/match
+  literal DL_OFF 3 (of which KONLY 3); KONLY-or-king-nearest 3
+Value in states with an enemy princess down (cls: n | life s | king dmg | all-tower dmg | my dmg 20 s | opp spent 10 s | king awake):
+  KONLY   2x  n=   3 life= 11.8 king=  4323 towers=  4323 my20=     0 opp10=0.00 awake=1.00 win=1.00
+  KONLY   all n=   3 life= 11.8 king=  4323 towers=  4323 my20=     0 opp10=0.00 awake=1.00 win=1.00
+  OFF_P   1x  n=  10 life= 15.9 king=     0 towers=  1517 my20=   526 opp10=4.54 awake=1.00 win=0.50
+  OFF_P   2x  n=  69 life= 14.8 king=   312 towers=  1842 my20=   412 opp10=7.40 awake=0.99 win=0.74
+  OFF_P   OT  n=  28 life= 14.9 king=   102 towers=  1039 my20=    90 opp10=6.95 awake=1.00 win=0.57
+  OFF_P   all n= 107 life= 14.9 king=   228 towers=  1601 my20=   339 opp10=7.01 awake=0.99 win=0.67
+  DL_DEF  1x  n=  24 life= 23.1 king=   534 towers=   546 my20=   583 opp10=4.27 awake=1.00 win=0.67
+  DL_DEF  2x  n= 113 life= 19.7 king=   373 towers=   503 my20=   374 opp10=6.43 awake=0.97 win=0.65
+  DL_DEF  OT  n=  31 life= 19.8 king=   147 towers=   172 my20=   169 opp10=6.93 awake=1.00 win=0.29
+  DL_DEF  all n= 168 life= 20.2 king=   355 towers=   449 my20=   366 opp10=6.21 awake=0.98 win=0.59
+  DEF     1x  n=   2 life= 17.2 king=     0 towers=     0 my20=     0 opp10=1.72 awake=1.00 win=0.50
+  DEF     2x  n=  16 life= 18.0 king=    55 towers=   256 my20=   290 opp10=4.79 awake=1.00 win=0.69
+  DEF     OT  n=   1 life= 12.4 king=     0 towers=  1615 my20=     0 opp10=11.00 awake=1.00 win=0.00
+  DEF     all n=  19 life= 17.6 king=    46 towers=   301 my20=   244 opp10=4.80 awake=1.00 win=0.63
+  ROCKET  1x  n=   5 life=  nan king=     0 towers=   199 my20=   334 opp10=1.85 awake=1.00 win=0.80
+  ROCKET  2x  n=  25 life=  nan king=    51 towers=   244 my20=   470 opp10=5.77 awake=1.00 win=0.68
+  ROCKET  OT  n=  14 life=  nan king=    19 towers=   320 my20=   824 opp10=5.09 awake=1.00 win=0.36
+  ROCKET  all n=  44 life=  nan king=    35 towers=   263 my20=   567 opp10=5.11 awake=1.00 win=0.59
