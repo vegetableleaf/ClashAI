@@ -21,6 +21,10 @@ SPEC = {
     "conn_lost":  ("conn_lost.png", (145, 702, 368, 748), (0, 400, 900, 1200), 0.85),
     "another_device": ("conn_lost.png", (145, 757, 610, 795), (0, 400, 900, 1200), 0.85),
     "reload":     ("conn_lost.png", (145, 860, 235, 893), (0, 600, 900, 1300), 0.85),
+    # "Content Update ... Restart the game" modal over the loading screen (2026-10-08 05:45; source =
+    # L68/live_reader/fixtures/content_update.png, copy it into raw/ before re-running)
+    "cu_title":   ("content_update.png", (92, 706, 314, 750), (0, 400, 900, 1200), 0.85),
+    "cu_restart": ("content_update.png", (94, 860, 194, 893), (0, 600, 900, 1300), 0.85),
 }
 man = {}
 for n, (src, b, reg, thr) in SPEC.items():

@@ -16,6 +16,9 @@ Screens (template matching on `adb exec-out screencap` frames vs scratchpad/gaun
   conn_lost  "Connection lost" dialog: "Another device is connecting" -> STOP the run (never kick the owner's phone);
            any other connection loss -> RELOAD.
   loading  the Clash Royale logo screen (app start / battle loading).
+  content_update  the game's own "Content Update ... Restart the game" modal (it froze the 94 % loading screen for an
+           hour, 2026-10-08): tap its RESTART at once. A loading screen stuck UNKNOWN_S with no modal -> force-stop
+           and relaunch the app. ONE such recovery per stuck episode; still no menu UNKNOWN_S later -> STOP as before.
 Policy: after a results screen tap Play Again, EXCEPT after the day's 4th win (counted here, persisted in
 ladder_state.json): tap OK, tap through the chest-opening screens until the main screen is stable, tap Battle. The
 win count is re-synced from the main screen whenever we are on it: no "Daily Bonus" -> 4 done; "Daily Bonus" back
@@ -56,8 +59,12 @@ TARGETS = {                                     # rectangle the tap point must l
     "bottom_ok": (340, 1490, 560, 1595),        # Trophy Road: close (blue OK in the bottom bar)
     "choose": (0, 150, 900, 1480),              # Trophy Road: green Choose (a pick-one-of-two card reward)
     "reward_card": (0, 60, 900, 1100),          # "Choose your reward": one of the two card tiles
-    "reload": (100, 700, 400, 1100),            # "Connection lost" dialog, NOT the another-device kind        # neutral point: top-centre art on every popup seen so far
+    "restart": (60, 820, 420, 940),             # "Content Update" modal: its only button (RESTART ~ (144, 876))
+    "reload": (100, 700, 400, 1100),           # "Connection lost" dialog, NOT the another-device kind        # neutral point: top-centre art on every popup seen so far
 }
+RELAUNCH = ("am force-stop com.mumu.store", "am force-stop com.android.vending",   # store overlays (start_live.sh)
+            "am force-stop com.supercell.clashroyale",
+            "monkey -p com.supercell.clashroyale -c android.intent.category.LAUNCHER 1")
 FORBIDDEN = {"shop_tab": (0, 1440, 170, 1600)}
 SWIPES = {"tr_scroll": (450, 1150, 450, 550, 700)}   # Trophy Road: slow drag up = show LOWER (already reached) rewards
 TAP_THROUGH_PT = (450, 450)
@@ -194,6 +201,8 @@ class Classifier:
             sc[n] = round(s, 3)
             if s >= e["threshold"]:
                 hit[n] = c
+        if "cu_title" in hit and "cu_restart" in hit:   # "Content Update" modal over the loading screen
+            return {"screen": "content_update", "restart": hit["cu_restart"], "scores": sc}
         if "conn_lost" in hit:                          # a system dialog over everything: check it first
             return {"screen": "conn_lost", "other_device": "another_device" in hit, "reload": hit.get("reload"),
                     "scores": sc}
@@ -253,6 +262,7 @@ class LadderNav:
         self.nograb_since: float | None = None
         self.tr_swipes, self.tr_sig, self.tr_sig_before = 0, None, None
         self.taps, self.main_n, self.main_sig = 0, 0, None
+        self.recovered = False                    # RESTART tapped / app relaunched in this stuck episode
 
     def plan(self, scr: dict, now: float) -> tuple:
         """-> ("act", target, point) | ("wait", why) | ("handoff", why) | ("stop", why)."""
@@ -263,9 +273,15 @@ class LadderNav:
             self.nograb_since = self.nograb_since if self.nograb_since is not None else now
             return ("stop", "screenshots failing for 60 s") if now - self.nograb_since > 60 else ("wait", "no screenshot")
         self.nograb_since = None
-        if s in ("unknown", "loading"):
+        if s in ("unknown", "loading", "content_update"):
             self.unknown_since = self.unknown_since if self.unknown_since is not None else now
             idle = now - self.unknown_since
+            if self.recovered:                    # 2026-10-08: after RESTART / relaunch, no blind tap and no handoff
+                if idle > self.UNKNOWN_S:
+                    return ("stop", f"{s} screen for {self.UNKNOWN_S:.0f} s after the loading-stuck recovery")
+                return ("wait", f"{s} (app restarting)")
+            if s == "content_update":
+                return ("act", "restart", scr["restart"])
             if self.choose_flow and self.picked_at is None:   # owner 2026-10-07: never tap blind until a card is
                 # picked; after the pick only the card reveal ('tap to continue', live 17:23) follows -> normal tap-through
                 if idle > self.FLOW_UNKNOWN_S:
@@ -279,9 +295,9 @@ class LadderNav:
                     return ("stop", f"{self.TAP_MAX} tap-throughs and still no known screen")
                 return ("act", "tap_through", TAP_THROUGH_PT)
             if idle > self.UNKNOWN_S:
-                return ("stop", f"{s} screen for {self.UNKNOWN_S:.0f} s")
+                return ("act", "relaunch", None) if s == "loading" else ("stop", f"{s} screen for {self.UNKNOWN_S:.0f} s")
             return ("wait", s)
-        self.unknown_since = None
+        self.unknown_since, self.recovered = None, False   # a known screen ends the stuck episode
         if s != "main":
             self.main_n, self.main_sig = 0, None
         if s == "choose_reward":   # owner 2026-10-07: "the model can randomly choose" -- one random card, tapped once
@@ -366,6 +382,8 @@ class LadderNav:
             self.choose_flow = True
         elif target == "reward_card":
             self.picked_at = now
+        elif target in ("restart", "relaunch"):  # the app restarts: any queue is gone; wait UNKNOWN_S for a menu
+            self.recovered, self.committed, self.unknown_since = True, False, now
 
 
 def discord_alert(text: str, png: Path | None) -> bool:
@@ -404,7 +422,8 @@ def grab(adb: list[str]):
 class LadderNavRunner:
     """Device side, same interface as friend_nav.FriendNav: probe() before match 1, run() between matches."""
     POLL_S, COOLDOWN_S = 0.5, 1.5
-    NAV_SCREENS = {"results", "main", "popup_x", "modes", "trophy_road", "choose_reward", "conn_lost"}
+    NAV_SCREENS = {"results", "main", "popup_x", "modes", "trophy_road", "choose_reward", "conn_lost",
+                   "content_update"}
 
     def __init__(self, adb: list[str], dry_run: bool = False, log_dir: Path = HERE, state_path: Path = STATE,
                  wins_today: int | None = None, trophy_log: bool = True, seed: int | None = None, alert=discord_alert):
@@ -522,7 +541,8 @@ class LadderNavRunner:
                     same = prev and prev[1] == p[1] and (p[2] is None or max(abs(prev[2][0] - p[2][0]),
                                                                           abs(prev[2][1] - p[2][1])) <= 8)
                     if same:
-                        cmd = command_for(p[1], p[2])
+                        cmds = RELAUNCH if p[1] == "relaunch" else (command_for(p[1], p[2]),)
+                        cmd = " ; ".join(cmds)
                         if (p[1] in ("tap_through", "choose", "reward_card") or (p[1] == "battle" and nav.via_main)) \
                                 and img is not None:
                             # evidence: unknown (chest?) screens, the main screen we requeue from after OK, and the
@@ -535,8 +555,12 @@ class LadderNavRunner:
                             print(f"[ladder] reward choice: random pick = {('left', 'right')[nav.pick]} card", flush=True)
                         W(event="input", target=p[1], cmd=cmd, dry_run=self.dry_run)
                         print(f"[ladder] {'WOULD ' if self.dry_run else ''}{p[1]}: {cmd}", flush=True)
+                        if p[1] in ("restart", "relaunch"):
+                            print("[ladder] loading stuck -> " + ("content-update RESTART tapped" if p[1] == "restart"
+                                                                  else "relaunched app"), flush=True)
                         if not self.dry_run:
-                            subprocess.run(self.adb + ["shell", cmd], capture_output=True, timeout=5)
+                            for c in cmds:
+                                subprocess.run(self.adb + ["shell", c], capture_output=True, timeout=5)
                         nav.acted(p[1], time.time())
                         prev = None
                         time.sleep(self.COOLDOWN_S)
