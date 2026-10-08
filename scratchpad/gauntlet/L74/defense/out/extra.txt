@@ -1,0 +1,32 @@
+
+== TR (towerref_w2 era): matches 52, defended >= 5 episodes 219
+(1) lock windows after the first defence: n 664, 1.52 s each; lane damage per match 1184: def/chained 238  def/not 660  other/chained 8  other/not 277
+(5) defensive plays per second in free states after the first defence while the lane tower is being hit, by my elixir: <2: 0.103/s (116s)  2-4: 0.299/s (130s)  4-6: 0.178/s (67s)  6+: 0.221/s (63s)
+(2) land-to-land gap between consecutive defensive cards (ticks): n 464 median 60  < 26: 0.004  < 35: 0.267  < 60: 0.491
+(3) defensive Tornado: n 36; next defensive card lands within 1.5 s 0.06, within 3 s 0.14, never in the episode 0.42; dmg10 1025
+(4) dmg10 by card and elixir at the play (lo < 4 / hi >= 6):  Knight 595(n55)/531(n45)  IceWizard 948(n58)/454(n35)  Tesla 325(n7)/468(n35)  Skeletons 682(n101)/173(n25)  Tornado 1084(n25)/2251(n3)  Log 704(n68)/357(n22)
+
+== RL (R-lineage): matches 532, defended >= 5 episodes 2182
+(1) lock windows after the first defence: n 7281, 1.57 s each; lane damage per match 1375: def/chained 311  def/not 777  other/chained 59  other/not 229
+(5) defensive plays per second in free states after the first defence while the lane tower is being hit, by my elixir: <2: 0.128/s (1334s)  2-4: 0.401/s (1437s)  4-6: 0.210/s (505s)  6+: 0.293/s (283s)
+(2) land-to-land gap between consecutive defensive cards (ticks): n 5049 median 62  < 26: 0.003  < 35: 0.249  < 60: 0.476
+(3) defensive Tornado: n 566; next defensive card lands within 1.5 s 0.13, within 3 s 0.30, never in the episode 0.40; dmg10 905
+(4) dmg10 by card and elixir at the play (lo < 4 / hi >= 6):  Knight 579(n740)/220(n263)  IceWizard 687(n696)/225(n260)  Tesla 413(n219)/239(n259)  Skeletons 609(n1012)/258(n173)  Tornado 1045(n416)/677(n43)  Log 748(n757)/265(n152)
+
+== PRO: matches 2244, defended >= 5 episodes 11314
+(5) defensive plays per second in free states after the first defence while the lane tower is being hit, by my elixir: <2: 0.087/s (2902s)  2-4: 0.151/s (7158s)  4-6: 0.147/s (5995s)  6+: 0.183/s (5951s)
+(2) land-to-land gap between consecutive defensive cards (ticks): n 26639 median 57  < 26: 0.097  < 35: 0.219  < 60: 0.523
+(3) defensive Tornado: n 3809; next defensive card lands within 1.5 s 0.11, within 3 s 0.36, never in the episode 0.31; dmg10 385
+(4) dmg10 by card and elixir at the play (lo < 4 / hi >= 6):  Knight 484(n765)/244(n3861)  IceWizard 441(n853)/230(n3666)  Tesla 0(n0)/213(n4099)  Skeletons 432(n2201)/261(n2811)  Tornado 526(n597)/324(n1894)  Log 465(n1535)/257(n2393)
+
+(6) defended >= 5 episodes by el0 and whether a defence had landed by the crossing:
+TR   el0<4/after: n=44 (0.34) fail 0.57 dmg 1414  el0<4/pre-placed: n=86 (0.66) fail 0.30 dmg 833  el0>=4/after: n=27 (0.30) fail 0.22 dmg 817  el0>=4/pre-placed: n=62 (0.70) fail 0.21 dmg 625
+RL   el0<4/after: n=536 (0.38) fail 0.45 dmg 1370  el0<4/pre-placed: n=875 (0.62) fail 0.25 dmg 724  el0>=4/after: n=307 (0.40) fail 0.22 dmg 716  el0>=4/pre-placed: n=464 (0.60) fail 0.15 dmg 473
+PRO  el0<4/after: n=1464 (0.71) fail 0.20 dmg 551  el0<4/pre-placed: n=594 (0.29) fail 0.15 dmg 434  el0>=4/after: n=7290 (0.79) fail 0.16 dmg 467  el0>=4/pre-placed: n=1966 (0.21) fail 0.13 dmg 420
+
+(7) per family: defended >= 5 episodes fail(>=1000)/dmg by el0 (<4 | >=4); first-defence-landed-by-crossing share; per-card dmg10 (all elixir)
+R1e (r1e31_u0155)          n=355 WR 0.51  el0<4: n=980 fail 0.31 dmg 950  el0>=4: n=461 fail 0.16 dmg 528  pre-placed 0.60  dmg10 Archer 158 Bomber 115 Cannon 162 Goblins 101 IceWizard 413 Knight 352 Log 515 MiniPekka 87 Skeletons 402 Tesla 228 Tornado 839 Xbow 57
+stack2k_cellref            n=102 WR 0.54  el0<4: n=244 fail 0.31 dmg 916  el0>=4: n=199 fail 0.20 dmg 600  pre-placed 0.63  dmg10 IceWizard 336 Knight 316 Log 417 Skeletons 375 Tesla 205 Tornado 865 Xbow 47
+towerref (both)            n= 52 WR 0.50  el0<4: n=130 fail 0.39 dmg 1030  el0>=4: n=89 fail 0.21 dmg 683  pre-placed 0.68  dmg10 IceWizard 562 Knight 403 Log 506 Skeletons 426 Tesla 232 Tornado 934 Xbow 18
+candidate                  n= 17 WR 0.29  el0<4: n=48 fail 0.52 dmg 1368  el0>=4: n=15 fail 0.20 dmg 680  pre-placed 0.56  dmg10 IceWizard 456 Knight 380 Log 583 Skeletons 516 Tesla 254 Tornado 892
+rseries_r2l_u0120          n=  6 WR 0.50  el0<4: n=9 fail 0.44 dmg 1580  el0>=4: n=7 fail 0.29 dmg 765  pre-placed 0.81  dmg10 
