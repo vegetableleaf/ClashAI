@@ -4791,7 +4791,8 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   reading; owner starts the crawl) + public missing-card diff; aac6c816 = official API client on the VM (~/crapi/; key
 >   created and placed by the OWNER at ~/.cr_api/key, never printed/committed) -> /v1/cards diff + post-update census.
 > * **Official API client MERGED (L74/crapi, VM ~/crapi; 9 tests OK on laptop + VM).** Waiting for the OWNER's key at
->   ~/.cr_api/key (allowed IP 34.148.91.90; if the VM IP is ephemeral a restart breaks the key). Then: ; cron () only after the owner OKs it. Balance update: Supercell
+>   ~/.cr_api/key (allowed IP 34.148.91.90; if the VM IP is ephemeral a restart breaks the key). Then: cd ~/crapi && python3 crapi.py selftest; cron
+>   (17 */2 * * * ~/crapi/run.sh) only after the owner OKs it. Balance update: Supercell
 >   "October Balance Changes 2026" posted 2026-10-06 (census cutoff 10-07 00:00 UTC): X-Bow damage 58 -> 61, Skeletons
 >   tighter spawn spread, Hero Ice Wizard freeze damage 89 -> 46 (affects the IW press value model), Minion Giant (live
 >   card; missing from the checkpoint vocab AND the reader catalog; present in RoyaleSim), Royal Ghost, Cannon evo, Golden
