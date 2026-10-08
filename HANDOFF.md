@@ -4479,6 +4479,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   pocket y 17-21. Replay (3,633 live plays): redirected 87, game had moved 85, wrong 2 (X-Bow on an expiring own
 >   X-Bow; a 0.8-tile Mini PEKKA), moved-but-missed 9. Live default ON, `--no-legal-guard`; SIM unchanged. Live
 >   still STOPPED (owner gate: centre-column fix first). Open: guard reads the decision-time board, not landing time.
+> * **Centre-column module v1 (CellRefine, 46k params, zero-init, base frozen; on old R3 u0050), all 100,463 VAL
+>   play rows:** cell top-1 21.87 -> 23.34%, top-3 45.59 -> 47.28%, NLL 3.060 -> 3.011, card top-1 unchanged 61.41%.
+>   Inside/across-patch one-tile x misses: spells 1975/1349 (1.46x) -> 1649/1574 (1.05x); units 7979/3046 (2.62x) ->
+>   7403/3179 (2.33x). Same centre column as the pro: side 0 48.3 -> 53.6%, side 1 49.1 -> 53.5%. Ceiling: on the same
+>   val rows the PROS' own centre picks are enemy-side only 64.8% (80% was Ice Wizard alone) -> the 8.5/9.5 unit
+>   choice is mostly not board-predictable in imitation labels. SIM base lane consistency 219/395 = 55.4%. Next: v2
+>   (RF +-15.5), SIM A/Bs, pro-choice determinants by slice (building pulls vs building-targeters), modules on R3c/R3n.
 > * **Log-on-air worker DONE_WITH_CONCERNS (worktree commit 16f667d, not merged; veto OPT-IN `--log-air-veto`).**
 >   MEASURED: pros Log an air-only corridor 0.78% of 47,703 Logs (air-only pushes = 3.6% of rows; pros answer them with
 >   Skeletons 8.0%, Electro Spirit 4.0%, Tesla 3.5%, Log 1.8%); bot at cast 1.7% (38/2,182 classifiable live Logs) =
