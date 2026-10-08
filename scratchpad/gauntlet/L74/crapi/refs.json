@@ -1,0 +1,1624 @@
+{
+ "sources": {
+  "ckpt": "C:/Users/benpe/ClashBot/icebow/data/bench/rl_royale/rseries_r3c/rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt",
+  "catalog": "live_card_catalog.json via pipeline.obs_contract._catalog_names()",
+  "royalesim": "research/ext/Royale/RoyaleSim/data/derived/cards.json cards-15535.1"
+ },
+ "vocab": [
+  "<pad>",
+  "archer-queen",
+  "archers",
+  "arrows",
+  "baby-dragon",
+  "balloon",
+  "bandit",
+  "barbarian-barrel",
+  "barbarian-hut",
+  "barbarians",
+  "bats",
+  "battle-healer",
+  "battle-ram",
+  "berserker",
+  "bomb-tower",
+  "bomber",
+  "boss-bandit",
+  "bowler",
+  "cannon",
+  "cannon-cart",
+  "clone",
+  "dark-prince",
+  "dart-goblin",
+  "earthquake",
+  "electro-dragon",
+  "electro-giant",
+  "electro-spirit",
+  "electro-wizard",
+  "elite-barbarians",
+  "elixir-collector",
+  "elixir-golem",
+  "executioner",
+  "fire-spirit",
+  "fireball",
+  "firecracker",
+  "fisherman",
+  "flying-machine",
+  "freeze",
+  "furnace",
+  "giant",
+  "giant-skeleton",
+  "giant-snowball",
+  "goblin-barrel",
+  "goblin-cage",
+  "goblin-curse",
+  "goblin-demolisher",
+  "goblin-drill",
+  "goblin-gang",
+  "goblin-giant",
+  "goblin-hut",
+  "goblin-machine",
+  "goblins",
+  "goblinstein",
+  "golden-knight",
+  "golem",
+  "graveyard",
+  "guards",
+  "heal-spirit",
+  "hog-rider",
+  "hunter",
+  "ice-golem",
+  "ice-spirit",
+  "ice-wizard",
+  "inferno-dragon",
+  "inferno-tower",
+  "knight",
+  "lava-hound",
+  "lightning",
+  "little-prince",
+  "lumberjack",
+  "magic-archer",
+  "mega-knight",
+  "mega-minion",
+  "mighty-miner",
+  "miner",
+  "mini-pekka",
+  "minion-horde",
+  "minions",
+  "mirror",
+  "monk",
+  "mortar",
+  "mother-witch",
+  "musketeer",
+  "night-witch",
+  "pekka",
+  "phoenix",
+  "poison",
+  "prince",
+  "princess",
+  "rage",
+  "ram-rider",
+  "rascals",
+  "rocket",
+  "ronin",
+  "royal-delivery",
+  "royal-ghost",
+  "royal-giant",
+  "royal-hogs",
+  "royal-recruits",
+  "rune-giant",
+  "skeleton-army",
+  "skeleton-barrel",
+  "skeleton-dragons",
+  "skeleton-king",
+  "skeletons",
+  "sparky",
+  "spear-goblins",
+  "spirit-empress",
+  "spirit-empress-air",
+  "suspicious-bush",
+  "tesla",
+  "the-log",
+  "three-musketeers",
+  "tombstone",
+  "tornado",
+  "valkyrie",
+  "vines",
+  "void",
+  "wall-breakers",
+  "witch",
+  "wizard",
+  "x-bow",
+  "zap",
+  "zappies"
+ ],
+ "catalog": {
+  "ids": [
+   13000000,
+   13000001,
+   13000004,
+   13000007,
+   13000008,
+   13000010,
+   13000011,
+   13000012,
+   13000013,
+   13000014,
+   13000015,
+   13000017,
+   13000022,
+   13000024,
+   13000026,
+   13000030,
+   13000035,
+   13000036,
+   13000037,
+   13000040,
+   13000044,
+   13000045,
+   13000047,
+   13000049,
+   13000050,
+   13000055,
+   13000056,
+   13000058,
+   13000059,
+   13000060,
+   13000063,
+   13000064,
+   13000081,
+   13000085,
+   13000094,
+   13000096,
+   13000098,
+   13000102,
+   13000106,
+   13000107,
+   13000108,
+   26000000,
+   26000001,
+   26000002,
+   26000003,
+   26000004,
+   26000005,
+   26000006,
+   26000007,
+   26000008,
+   26000009,
+   26000010,
+   26000011,
+   26000012,
+   26000013,
+   26000014,
+   26000015,
+   26000016,
+   26000017,
+   26000018,
+   26000019,
+   26000020,
+   26000021,
+   26000022,
+   26000023,
+   26000024,
+   26000025,
+   26000026,
+   26000027,
+   26000028,
+   26000029,
+   26000030,
+   26000031,
+   26000032,
+   26000033,
+   26000034,
+   26000035,
+   26000036,
+   26000037,
+   26000038,
+   26000039,
+   26000040,
+   26000041,
+   26000042,
+   26000043,
+   26000044,
+   26000045,
+   26000046,
+   26000047,
+   26000048,
+   26000049,
+   26000050,
+   26000051,
+   26000052,
+   26000053,
+   26000054,
+   26000055,
+   26000056,
+   26000057,
+   26000058,
+   26000059,
+   26000060,
+   26000061,
+   26000062,
+   26000063,
+   26000064,
+   26000065,
+   26000066,
+   26000067,
+   26000068,
+   26000069,
+   26000070,
+   26000071,
+   26000072,
+   26000073,
+   26000074,
+   26000075,
+   26000076,
+   26000077,
+   26000078,
+   26000079,
+   26000080,
+   26000081,
+   26000082,
+   26000083,
+   26000084,
+   26000085,
+   26000086,
+   26000087,
+   26000088,
+   26000089,
+   26000090,
+   26000091,
+   26000092,
+   26000093,
+   26000094,
+   26000095,
+   26000096,
+   26000097,
+   26000098,
+   26000099,
+   26000100,
+   26000101,
+   26000102,
+   26000103,
+   26000104,
+   26000105,
+   26000106,
+   27000000,
+   27000001,
+   27000002,
+   27000003,
+   27000004,
+   27000005,
+   27000006,
+   27000007,
+   27000008,
+   27000009,
+   27000010,
+   27000011,
+   27000012,
+   27000013,
+   27000014,
+   27000015,
+   27000016,
+   27000017,
+   28000000,
+   28000001,
+   28000002,
+   28000003,
+   28000004,
+   28000005,
+   28000006,
+   28000007,
+   28000008,
+   28000009,
+   28000010,
+   28000011,
+   28000012,
+   28000013,
+   28000014,
+   28000015,
+   28000016,
+   28000017,
+   28000018,
+   28000019,
+   28000020,
+   28000021,
+   28000022,
+   28000023,
+   28000024,
+   28000025,
+   28000026,
+   203000000,
+   203000002,
+   203000003,
+   203000006,
+   203000011,
+   203000014,
+   203000017,
+   203000018,
+   203000023,
+   203000027,
+   203000034,
+   203000038,
+   203000039,
+   203000062,
+   203000076,
+   203000088,
+   203000107
+  ],
+  "cards": [
+   {
+    "card_id": 26000000,
+    "display_name": "Knight",
+    "evo": true,
+    "hero": true,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000001,
+    "display_name": "Archer",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000002,
+    "display_name": "Goblins",
+    "evo": false,
+    "hero": true,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000003,
+    "display_name": "Giant",
+    "evo": false,
+    "hero": true,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000004,
+    "display_name": "Pekka",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000005,
+    "display_name": "Minions",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000006,
+    "display_name": "Balloon",
+    "evo": false,
+    "hero": true,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000007,
+    "display_name": "Witch",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000008,
+    "display_name": "Barbarians",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000009,
+    "display_name": "Golem",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000010,
+    "display_name": "Skeletons",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000011,
+    "display_name": "Valkyrie",
+    "evo": true,
+    "hero": true,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000012,
+    "display_name": "SkeletonArmy",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000013,
+    "display_name": "Bomber",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000014,
+    "display_name": "Musketeer",
+    "evo": true,
+    "hero": true,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000015,
+    "display_name": "BabyDragon",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000016,
+    "display_name": "Prince",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000017,
+    "display_name": "Wizard",
+    "evo": true,
+    "hero": true,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000018,
+    "display_name": "MiniPekka",
+    "evo": false,
+    "hero": true,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000019,
+    "display_name": "SpearGoblins",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000020,
+    "display_name": "GiantSkeleton",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000021,
+    "display_name": "HogRider",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000022,
+    "display_name": "MinionHorde",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000023,
+    "display_name": "IceWizard",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000024,
+    "display_name": "RoyalGiant",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000025,
+    "display_name": "SkeletonWarriors",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000026,
+    "display_name": "Princess",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000027,
+    "display_name": "DarkPrince",
+    "evo": false,
+    "hero": true,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000028,
+    "display_name": "ThreeMusketeers",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000029,
+    "display_name": "LavaHound",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000030,
+    "display_name": "IceSpirits",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000031,
+    "display_name": "FireSpirits",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000032,
+    "display_name": "Miner",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000033,
+    "display_name": "ZapMachine",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000034,
+    "display_name": "Bowler",
+    "evo": false,
+    "hero": true,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000035,
+    "display_name": "RageBarbarian",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000036,
+    "display_name": "BattleRam",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000037,
+    "display_name": "InfernoDragon",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000038,
+    "display_name": "IceGolemite",
+    "evo": false,
+    "hero": true,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000039,
+    "display_name": "MegaMinion",
+    "evo": false,
+    "hero": true,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000040,
+    "display_name": "BlowdartGoblin",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000041,
+    "display_name": "GoblinGang",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000042,
+    "display_name": "ElectroWizard",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000043,
+    "display_name": "AngryBarbarians",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000044,
+    "display_name": "Hunter",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000045,
+    "display_name": "AxeMan",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000046,
+    "display_name": "Assassin",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000047,
+    "display_name": "RoyalRecruits",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000048,
+    "display_name": "DarkWitch",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000049,
+    "display_name": "Bats",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000050,
+    "display_name": "Ghost",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000051,
+    "display_name": "RamRider",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000052,
+    "display_name": "MiniSparkys",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000053,
+    "display_name": "Rascals",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000054,
+    "display_name": "MovingCannon",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000055,
+    "display_name": "MegaKnight",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000056,
+    "display_name": "SkeletonBalloon",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000057,
+    "display_name": "DartBarrell",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000058,
+    "display_name": "Wallbreakers",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000059,
+    "display_name": "RoyalHogs",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000060,
+    "display_name": "GoblinGiant",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000061,
+    "display_name": "Fisherman",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000062,
+    "display_name": "EliteArcher",
+    "evo": false,
+    "hero": true,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000063,
+    "display_name": "ElectroDragon",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000064,
+    "display_name": "Firecracker",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000065,
+    "display_name": "MightyMiner",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000066,
+    "display_name": "SuperWitch",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 26000067,
+    "display_name": "ElixirGolem",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000068,
+    "display_name": "BattleHealer",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000069,
+    "display_name": "SkeletonKing",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000070,
+    "display_name": "SuperLavaHound",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 26000071,
+    "display_name": "SuperEliteArcher",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 26000072,
+    "display_name": "ArcherQueen",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000073,
+    "display_name": "SuperHogRider",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 26000074,
+    "display_name": "GoldenKnight",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000075,
+    "display_name": "SuperIceGolemite",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 26000076,
+    "display_name": "CHAR_DISABLED_1",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 26000077,
+    "display_name": "Monk",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000078,
+    "display_name": "SuperArcher",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 26000079,
+    "display_name": "RoyalRecruits_Chess",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 26000080,
+    "display_name": "SkeletonDragons",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000081,
+    "display_name": "SuperHogRiderTerry",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 26000082,
+    "display_name": "SuperMiniPekka",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 26000083,
+    "display_name": "WitchMother",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000084,
+    "display_name": "ElectroSpirit",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000085,
+    "display_name": "ElectroGiant",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000086,
+    "display_name": "PrinceBuff",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 26000087,
+    "display_name": "Phoenix",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000088,
+    "display_name": "CHAR_DISABLED_3",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 26000089,
+    "display_name": "CHAR_DISABLED_4",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 26000090,
+    "display_name": "CHAR_DISABLED_5",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 26000091,
+    "display_name": "CHAR_DISABLED_6",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 26000092,
+    "display_name": "CHAR_DISABLED_7",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 26000093,
+    "display_name": "LittlePrince",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000094,
+    "display_name": "TriWizards",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 26000095,
+    "display_name": "GoblinDemolisher",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000096,
+    "display_name": "GoblinMachine",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000097,
+    "display_name": "SuspiciousBush",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000098,
+    "display_name": "SuperKnight",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 26000099,
+    "display_name": "Goblinstein",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000100,
+    "display_name": "SkeletonWarriors_SpookyChess",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 26000101,
+    "display_name": "GiantBuffer",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000102,
+    "display_name": "Berserker",
+    "evo": false,
+    "hero": true,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000103,
+    "display_name": "BossBandit",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 26000104,
+    "display_name": "MergeMaiden_Normal",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 26000105,
+    "display_name": "MergeMaiden_Mounted",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 26000106,
+    "display_name": "Ronin",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 27000000,
+    "display_name": "Cannon",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 27000001,
+    "display_name": "GoblinHut",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 27000002,
+    "display_name": "Mortar",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 27000003,
+    "display_name": "InfernoTower",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 27000004,
+    "display_name": "BombTower",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 27000005,
+    "display_name": "BarbarianHut",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 27000006,
+    "display_name": "Tesla",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 27000007,
+    "display_name": "Elixir Collector",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 27000008,
+    "display_name": "Xbow",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 27000009,
+    "display_name": "Tombstone",
+    "evo": false,
+    "hero": true,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 27000010,
+    "display_name": "FirespiritHut",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 27000011,
+    "display_name": "BarbarianLauncher",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 27000012,
+    "display_name": "GoblinCage",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 27000013,
+    "display_name": "GoblinDrill",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 27000014,
+    "display_name": "GoblinPartyHut",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 27000015,
+    "display_name": "DarkElixir_Bottle",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 27000016,
+    "display_name": "ElixirBarrel",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 27000017,
+    "display_name": "GoblinRocketSilo",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 28000000,
+    "display_name": "Fireball",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 28000001,
+    "display_name": "Arrows",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 28000002,
+    "display_name": "Rage",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 28000003,
+    "display_name": "Rocket",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 28000004,
+    "display_name": "GoblinBarrel",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 28000005,
+    "display_name": "Freeze",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 28000006,
+    "display_name": "Mirror",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 28000007,
+    "display_name": "Lightning",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 28000008,
+    "display_name": "Zap",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 28000009,
+    "display_name": "Poison",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 28000010,
+    "display_name": "Graveyard",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 28000011,
+    "display_name": "Log",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 28000012,
+    "display_name": "Tornado",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 28000013,
+    "display_name": "Clone",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 28000014,
+    "display_name": "Earthquake",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 28000015,
+    "display_name": "BarbLog",
+    "evo": false,
+    "hero": true,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 28000016,
+    "display_name": "Heal",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 28000017,
+    "display_name": "Snowball",
+    "evo": true,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 28000018,
+    "display_name": "RoyalDelivery",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 28000019,
+    "display_name": "GlobalClone",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 28000020,
+    "display_name": "GoblinPartyRocket",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 28000021,
+    "display_name": "WarmSpell",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 28000022,
+    "display_name": "GlobalLightning",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": false
+   },
+   {
+    "card_id": 28000023,
+    "display_name": "DarkMagic",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 28000024,
+    "display_name": "GoblinCurse",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 28000025,
+    "display_name": "MergeMaiden",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   },
+   {
+    "card_id": 28000026,
+    "display_name": "Vines",
+    "evo": false,
+    "hero": false,
+    "standard_1v1": true
+   }
+  ]
+ },
+ "royalesim": {
+  "cards": [
+   "Knight",
+   "Archers",
+   "Goblins",
+   "Giant",
+   "P.E.K.K.A",
+   "Minions",
+   "Balloon",
+   "Witch",
+   "Barbarians",
+   "Golem",
+   "Skeletons",
+   "Valkyrie",
+   "Skeleton Army",
+   "Bomber",
+   "Musketeer",
+   "Baby Dragon",
+   "Prince",
+   "Wizard",
+   "Mini P.E.K.K.A",
+   "Spear Goblins",
+   "Giant Skeleton",
+   "Hog Rider",
+   "Minion Horde",
+   "Ice Wizard",
+   "Royal Giant",
+   "Guards",
+   "Princess",
+   "Dark Prince",
+   "Three Musketeers",
+   "Lava Hound",
+   "Ice Spirits",
+   "Fire Spirits",
+   "Miner",
+   "Sparky",
+   "Bowler",
+   "Lumberjack",
+   "Battle Ram",
+   "Inferno Dragon",
+   "Ice Golem",
+   "Mega Minion",
+   "Dart Goblin",
+   "Goblin Gang",
+   "Electro Wizard",
+   "Elite Barbarians",
+   "Hunter",
+   "Executioner",
+   "Bandit",
+   "Royal Recruits",
+   "Night Witch",
+   "Bats",
+   "Ghost",
+   "Ram Rider",
+   "Mini Sparkys",
+   "Rascals",
+   "Cannon Cart",
+   "Mega Knight",
+   "Skeleton Barrel",
+   "Flying Machine",
+   "Wallbreakers",
+   "Royal Hogs",
+   "Goblin Giant",
+   "Fisherman",
+   "Elite Archer",
+   "Electro Dragon",
+   "Firecracker",
+   "Mighty Miner",
+   "Super Witch",
+   "Elixir Golem",
+   "Battle Healer",
+   "Skeleton King",
+   "Super Lava Hound",
+   "Super Elite Archer",
+   "Archer Queen",
+   "Super Hog Rider",
+   "Golden Knight",
+   "Super Ice Golemite",
+   "Monk",
+   "Super Archer",
+   "Royal Recruits_Chess",
+   "Skeleton Dragons",
+   "Super Hog Rider Terry",
+   "Super Mini Pekka",
+   "Witch Mother",
+   "Electro Spirit",
+   "Electro Giant",
+   "Prince Buff",
+   "Phoenix",
+   "Little Prince",
+   "Tri Wizards",
+   "Goblin Demolisher",
+   "Goblin Machine",
+   "Suspicious Bush",
+   "Super Knight",
+   "Goblinstein",
+   "Skeleton Warriors_Spooky Chess",
+   "Giant Buffer",
+   "Berserker",
+   "Boss Bandit",
+   "Merge Maiden_Normal",
+   "Merge Maiden_Mounted",
+   "Ronin",
+   "Cannon",
+   "Goblin Hut",
+   "Mortar",
+   "Inferno Tower",
+   "Bomb Tower",
+   "Barbarian Hut",
+   "Tesla",
+   "Elixir Collector",
+   "X-Bow",
+   "Tombstone",
+   "Furnace",
+   "Barbarian Launcher",
+   "Goblin Cage",
+   "Goblin Drill",
+   "Goblin Party Hut",
+   "Goblin Rocket Silo",
+   "Fireball",
+   "Arrows",
+   "Rage",
+   "Rocket",
+   "Goblin Barrel",
+   "Freeze",
+   "Mirror",
+   "Lightning",
+   "Zap",
+   "Poison",
+   "Graveyard",
+   "The Log",
+   "Tornado",
+   "Clone",
+   "Earthquake",
+   "Barb Log",
+   "Heal",
+   "Snowball",
+   "Royal Delivery",
+   "Global Clone",
+   "Goblin Party Rocket",
+   "Warm Spell",
+   "Global Lightning",
+   "Dark Magic",
+   "Goblin Curse",
+   "Merge Maiden",
+   "Vines",
+   "Minion Giant"
+  ],
+  "evolutions": [
+   "Skeletons_EV1",
+   "Cannon_EV1",
+   "Musketeer_EV1",
+   "Angry Barbarians_EV1",
+   "Zap_EV1",
+   "Battle Ram_EV1",
+   "Inferno Dragon_EV1",
+   "Baby Dragon_EV1",
+   "Ghost_EV1",
+   "Skeleton Army_EV1",
+   "Snowball_EV1",
+   "Skeleton Balloon_EV1",
+   "Mortar_EV1",
+   "Royal Hogs_EV1",
+   "Minion Horde_EV1",
+   "Tesla_EV1",
+   "Royal Recruits_EV1",
+   "Wizard_EV1",
+   "Knight_EV1",
+   "Barbarians_EV1",
+   "Bomber_EV1",
+   "Valkyrie_EV1",
+   "Archer_EV1",
+   "Royal Giant_EV1",
+   "Mega Knight_EV1",
+   "Pekka_EV1",
+   "Bats_EV1",
+   "Wallbreakers_EV1",
+   "Ice Spirits_EV1",
+   "Firecracker_EV1",
+   "Witch_EV1",
+   "Goblin Cage_EV1",
+   "Axe Man_EV1",
+   "Goblin Giant_EV1",
+   "Princess_EV1",
+   "Hunter_EV1",
+   "Blowdart Goblin_EV1",
+   "Firespirit Hut_EV1",
+   "Electro Dragon_EV1",
+   "Goblin Drill_EV1",
+   "Goblin Barrel_EV1",
+   "Rage Barbarian_EV1"
+  ],
+  "hero_forms": [
+   "Hero Musketeer",
+   "Hero Ice Golem",
+   "Hero Berserker",
+   "Hero Balloon",
+   "Hero Valkyrie",
+   "Hero Wizard",
+   "Hero Mini P.E.K.K.A",
+   "Hero Knight",
+   "Hero Mega Minion",
+   "Hero Giant",
+   "Hero Elite Archer",
+   "Hero Bowler",
+   "Hero Goblins",
+   "Hero Barb Log",
+   "Hero Dark Prince",
+   "Hero Tombstone"
+  ]
+ }
+}
