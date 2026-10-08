@@ -54,20 +54,22 @@ class GenPilot(LegacyGenPilot):
                      if 'public_lookahead_counts' in info else {})
         out = self.model(b)
         p = float(torch.sigmoid(out['gate'][0]))
+        stalled = self.stalled(frame, info['el_int'])
         allowed = allowed_slots(np.array([h[0] > 0 for h in info['hand']]), info['costs'], info['el_int'])
         if not allowed.any():
             return self._audited(dict(play=False, no_affordable=True, p_play=p, hand_pos=-1, deck_index=-1, card=0,
-                        form=FORM_PAD, bs=info['bs'], name=None, el_int=info['el_int'], **lookahead))
+                        form=FORM_PAD, bs=info['bs'], name=None, el_int=info['el_int'], stalled=stalled,
+                        **lookahead))
         # tau_phase: the gate threshold of the phase of the board the model sees (bs.t_sec, tick + extrapolation),
         # as SIM's match_kwargs reads it from the prepared (extrapolated) BoardState.
         bs = info['bs']
         tau = (float(gate_taus(options, self.gate_tau, [bs.t_sec], 1)[0]) if options.tau_phase is not None
                else self.gate_tau)
-        playing = p > tau
+        playing = p > tau or stalled                    # SIM decide_batch: (p > tau) | stalled
         pos = choose_slot(out['card'][0], allowed, options, self.rng_decisions, playing=playing)
         card, form = info['hand'][pos]
         name = info['names'][info['hand_deck_indices'][pos]] if card > 0 else None
-        d = dict(play=playing and card > 0, p_play=p, hand_pos=pos, no_affordable=False,
+        d = dict(play=playing and card > 0, p_play=p, hand_pos=pos, no_affordable=False, stalled=stalled,
                  deck_index=info['hand_deck_indices'][pos], card=card, form=form, bs=bs, name=name, **lookahead)
         if options.tau_phase is not None:
             d['gate_tau'] = tau

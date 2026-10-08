@@ -21,7 +21,7 @@ from .dataset import PAST_K
 from .dataset_gen import SC_SLOT_COLS, card_key
 from .model_gen import load_model
 from . import vocab
-from .e1_eval import allowed_slots
+from .e1_eval import allowed_slots, anti_stall
 from .live_mem import board_state, deck_of, my_side_of
 from .model_v3 import cell_xy
 from collections import deque
@@ -34,6 +34,7 @@ from .train_s1 import MAX_U
 FORM_PAD = 3
 EVEN_BUILDINGS = {"Tesla"}           # owner 2026-10-07: Tesla is the ONLY 2x2 building; all others are 3x3
 ANYWHERE = {"Miner", "GoblinDrill"}  # deploy anywhere on the arena: never restricted
+SIM_START_TICK = 90                  # royale_env warmup_ticks: the SIM's first decision = its anti-stall clock start
 
 
 def legal_cells(entities, side: int, card_id: int, name: str, grid: str = "lattice", gx: int = 36, gy: int = 64):
@@ -96,6 +97,9 @@ class GenPilot:
     # Live-only (live_play.py turns it on; --no-legal-guard): the cell argmax is taken over legal_cells. Off here so
     # the SIM-parity tests keep checking the unguarded decision rule.
     legal_guard = False
+    # OPT-IN live anti-leak (live_play.py --anti-leak): the SIM's anti-stall rule (e1_eval.anti_stall), None = off.
+    anti_leak_elixir: Optional[float] = None
+    anti_leak_seconds = 12.0
 
     def __init__(self, ckpt, device: str = "cpu", gate_tau: float = 0.5, use_counter: bool = True,
                  extrapolate_ticks: int = 0, predict_drops: bool = False):
@@ -106,6 +110,7 @@ class GenPilot:
         self.grid = str(st["args"].get("grid", "lattice"))
         self.dev, self.gate_tau = torch.device(device), float(gate_tau)
         self.past: list[tuple[int, int, float, float, float]] = []       # (card gid, form, x, y, t_sec) confirmed
+        self.last_play_tick: Optional[int] = None       # anti-leak clock: last CONFIRMED play (None = SIM_START_TICK)
         self.history: dict = {}
         self.use_counter = use_counter
         self.opp = LiveOppElixir() if use_counter or self.feature_version >= 3 else None
@@ -122,6 +127,7 @@ class GenPilot:
 
     def reset_match(self) -> None:
         self.past.clear()
+        self.last_play_tick = None
         self.history.clear()
         self.frames.clear()
         if getattr(self, 'drops', None) is not None:
@@ -161,6 +167,7 @@ class GenPilot:
 
     def record_play(self, card: int, form: int, xy: tuple[float, float], t_sec: float) -> None:
         self.past.append((card, form, float(xy[0]), float(xy[1]), float(t_sec)))
+        self.last_play_tick = round(t_sec / .05)        # the LANDING (confirmation) tick, as SIM's Match._land
         if getattr(self,'feature_version',1)>=4 and self.public is not None:
             name=next(k for k,v in self.gid.items() if v==card)
             self.public.own_events.append(dict(card=name,tick=round(t_sec/.05),side=self.public.side,accepted=True,ability=False))
@@ -169,6 +176,17 @@ class GenPilot:
         """Feed the confirmed OWN live press log; never call on an attempted tap."""
         if getattr(self,'feature_version',1)>=4 and self.public is not None and accepted:
             self.public.own_events.append(dict(card=card,tick=int(tick),side=self.public.side,accepted=True,ability=True))
+
+    def stalled(self, frame: Mapping[str, Any], el_int: float) -> bool:
+        """e1_eval.anti_stall on the REAL frame tick (SIM: the decision / landing clock stays real) and the elixir of
+        the board the model sees (SIM: tick + H). With no confirmed play yet the clock runs from SIM_START_TICK, the
+        SIM's first decision (Match.prepare), whatever tick live first decides at (>= UI_READY_MIN_TICK 150)."""
+        if self.anti_leak_elixir is None:               # off: the frame / clock are not even read
+            return False
+        tick = int(frame["game_tick"])
+        if getattr(self, "last_play_tick", None) is None:
+            self.last_play_tick = SIM_START_TICK
+        return anti_stall(el_int, tick, self.last_play_tick, self.anti_leak_elixir, self.anti_leak_seconds)
 
     def _card(self, name: str) -> int:
         k = card_key(name)
@@ -256,15 +274,19 @@ class GenPilot:
                      if 'public_lookahead_counts' in info else {})
         out = self.model(b)
         p = float(torch.sigmoid(out["gate"][0]))
+        stalled = self.stalled(frame, info["el_int"])
         # sim rule (e1_eval.live_decide): argmax over hand slots we can afford; none affordable -> wait
         allowed = allowed_slots(np.array([h[0] > 0 for h in info["hand"]]), info["costs"], info["el_int"])
         if not allowed.any():
             return {"play": False, "no_affordable": True, "p_play": p, "hand_pos": -1, "deck_index": -1, "card": 0,
-                    "form": FORM_PAD, "bs": info["bs"], "name": None, "el_int": info["el_int"], **lookahead}
+                    "form": FORM_PAD, "bs": info["bs"], "name": None, "el_int": info["el_int"], "stalled": stalled,
+                    **lookahead}
         logits = out["card"][0].masked_fill(~torch.from_numpy(allowed).to(out["card"].device), float("-inf"))
         pos = int(logits.argmax())
         card, form = info["hand"][pos]
-        d = {"play": p > self.gate_tau and card > 0, "p_play": p, "hand_pos": pos, "no_affordable": False,
+        # stalled: play even when the gate says wait (e1_eval.live_decide: p <= tau and not stalled -> WAIT)
+        d = {"play": (p > self.gate_tau or stalled) and card > 0, "p_play": p, "hand_pos": pos, "no_affordable": False,
+             "stalled": stalled,
              "deck_index": info["hand_deck_indices"][pos], "card": card, "form": form, "bs": info["bs"],
              "name": info["names"][info["hand_deck_indices"][pos]] if card > 0 else None, **lookahead}
         if card > 0:

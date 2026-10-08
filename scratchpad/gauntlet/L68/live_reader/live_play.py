@@ -223,8 +223,15 @@ def main() -> int:
                          "ckpt + ckpt_sha256). Bypasses CKPT_OVERRIDE; refused together with --ckpt or --tau-alternate")
     ap.add_argument("--ckpt-alternate-state", default=str(REPO / "scratchpad/gauntlet/L70/live/ckpt_alternate.json"))
     ap.add_argument("--leak", type=float, default=9.5, help=argparse.SUPPRESS)
-    ap.add_argument("--no-anti-leak", action="store_true", default=True,
-                    help="compatibility flag: forced anti-leak spending has been removed")
+    leak = ap.add_mutually_exclusive_group()
+    leak.add_argument("--anti-leak", action="store_true",
+                      help="OPT-IN forced spend, the SIM's anti-stall rule (e1_eval.anti_stall): at int(elixir) >= "
+                           "--anti-leak-elixir and >= --anti-leak-seconds of game time since my last CONFIRMED play (or game "
+                           "tick 90, the SIM's first decision), play the model's card + cell even when the gate says wait. Off by default")
+    leak.add_argument("--no-anti-leak", action="store_true", default=True,
+                      help="compatibility no-op: anti-leak is off unless --anti-leak")
+    ap.add_argument("--anti-leak-elixir", type=float, default=9.0)
+    ap.add_argument("--anti-leak-seconds", type=float, default=12.0)
     ap.add_argument("--public-audit", action="store_true", default=True,
                     help="log public board/targets and model decisions, including WAIT, independently of video")
     ap.add_argument("--interval-ms", type=int, default=100)
@@ -328,7 +335,7 @@ def main() -> int:
             loaded = [load_pilot(a, decision_cfg, ckpt=path) for path, _ in arms]
             print(json.dumps(dict(check='LIVE_CHECK_PASS', checkpoints=[
                 dict(checkpoint=path, sha256=sha, feature_version=pl.feature_version)
-                for (path, sha), (_, pl) in zip(arms, loaded)], device=loaded[0][0], tau=a.tau, anti_leak=False,
+                for (path, sha), (_, pl) in zip(arms, loaded)], device=loaded[0][0], tau=a.tau, **anti_leak_log(a),
                 public_audit=a.public_audit, legal_guard=not getattr(a, 'no_legal_guard', False), predict_drops=a.predict_drops,
                 decision_options=vars(loaded[0][1].decision_options))))
             return 0
@@ -344,7 +351,7 @@ def main() -> int:
     if a.check:
         device, pilot = load_pilot(a, decision_cfg)
         print(json.dumps(dict(check='LIVE_CHECK_PASS', checkpoint=a.ckpt, sha256=a.ckpt_sha256,
-              feature_version=pilot.feature_version, device=device, tau=a.tau, anti_leak=False,
+              feature_version=pilot.feature_version, device=device, tau=a.tau, **anti_leak_log(a),
               public_audit=a.public_audit, legal_guard=getattr(pilot, 'legal_guard', None), predict_drops=a.predict_drops,
               decision_options=vars(pilot.decision_options))))
         return 0
@@ -490,7 +497,16 @@ def load_pilot(a, decision_cfg, ckpt=None):
                      decision_seed=a.decision_seed, public_audit=a.public_audit,
                      **({"predict_drops": True} if getattr(a, "predict_drops", False) else {}))
     pilot.legal_guard = not getattr(a, 'no_legal_guard', False)
+    if getattr(a, "anti_leak", False):          # default: the class's None = off, the decision rule unchanged
+        pilot.anti_leak_elixir, pilot.anti_leak_seconds = a.anti_leak_elixir, a.anti_leak_seconds
     return device, pilot
+
+
+def anti_leak_log(a) -> dict:
+    """anti_leak + its parameters, for the start event and the --check JSON."""
+    on = bool(getattr(a, "anti_leak", False))
+    return dict(anti_leak=on, anti_leak_elixir=getattr(a, "anti_leak_elixir", None) if on else None,
+                anti_leak_seconds=getattr(a, "anti_leak_seconds", None) if on else None)
 
 
 # ordinary match ends: nav may go on (a results screen seen by the menu guard is the game's own end of match)
@@ -516,7 +532,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
             log.write(json.dumps(k, default=str) + "\n")
             log.flush()
     W(event="start", screen=[lay.w, lay.h], tau=a.tau, leak=a.leak, dry_run=a.dry_run, ckpt=a.ckpt,
-      extrapolate=a.extrapolate, opp_counter=not a.no_opp_counter, device=device, anti_leak=False,
+      extrapolate=a.extrapolate, opp_counter=not a.no_opp_counter, device=device, **anti_leak_log(a),
       ckpt_source=a.ckpt_source, ckpt_sha256=a.ckpt_sha256,
       decision_options=vars(pilot.decision_options), decision_seed=pilot.match_seed,
       feature_version=pilot.feature_version, public_audit=a.public_audit, legal_guard=getattr(pilot, "legal_guard", None),
@@ -746,12 +762,13 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                   backlog=q.qsize())
                 warned_at = now
             el = me["elixir_raw"] / 1e4
-            forced = False  # log schema compatibility; the learned gate is authoritative at every elixir level
+            # forced = the anti-leak played although the gate said wait (SIM why == 'stall'); False when it is off
+            forced = bool(d["play"] and d.get("stalled") and d["p_play"] <= d.get("gate_tau", pilot.gate_tau))
             if a.public_audit and (d['play'] or tick-last_audit_tick >= 10):
                 W(event='decision', tick=tick, t_dev=t_dev, decide_ms=decide_ms,
                   backlog=q.qsize(), forced=forced,
                   decision={k:d[k] for k in ('play','p_play','no_affordable','hand_pos','name','card','form','xy','gate_tau',
-                                             'xy_unguarded') if k in d},
+                                             'xy_unguarded','stalled') if k in d},
                   public=d['public_audit'])
                 last_audit_tick = tick
             if not d["play"]:
