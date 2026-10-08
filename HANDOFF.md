@@ -4508,6 +4508,9 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   CellRefine + TowerRefine exactly. VM ~/ClashBot got pipeline/tower_refine.py + hooked model_gen.py (live ckpt
 >   byte-identical under it; backup ~/probe_rocket/model_gen.py.bak_pre_towerrefine). SIM A/B (v3, seeds 0:240 x 2, live
 >   options + rocket_area, base / w1 / w2) running ~1 h: ~/probe_rocket/vm_ab_towerref.sh.
+> * **OWNER 13:xx: "if the forecast review passes, switch it on then let me know so i can test it live."** Blind
+>   verification of W1 (d4e8103/524293e/7535b43) running incl. a trial merge into main. If PASS: merge, then let
+>   LIVE_OPTIONS accept `--own-effects` (a live flag, not a decision option) and add it to the file, `--check`, tell owner.
 > * **W1 own_effects DONE (worktree agent-aca294b6: d4e8103 core, 524293e plumbing+tests, 7535b43 A/B; NOT merged, not
 >   verified):** opt-in `--own-effects` (SIM e1_eval/search_s0/run_screen + live GenPilot/live_play); Log / Tornado /
 >   Fireball / Rocket knockback-pull from RoyaleSim cards.json + calibration.json (DISPLACEMENT_LAW, ATTRACT_LAW), hero IW
