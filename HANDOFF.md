@@ -4486,6 +4486,17 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   val rows the PROS' own centre picks are enemy-side only 64.8% (80% was Ice Wizard alone) -> the 8.5/9.5 unit
 >   choice is mostly not board-predictable in imitation labels. SIM base lane consistency 219/395 = 55.4%. Next: v2
 >   (RF +-15.5), SIM A/Bs, pro-choice determinants by slice (building pulls vs building-targeters), modules on R3c/R3n.
+> * **OWNER 00:1x (going to bed): "once the live verdict arrives, if a new model is promoted you should flip on the
+>   goblin barrel addon as well as everything else that was queued ... the wrong lane issue is literally causing the
+>   model to lose every match against goblin barrel ... Keep working on the tile fixes, as well as model training and
+>   evaluations. I'm restarting a live run that will run until your verdict arrives (at which you may stop the run and
+>   switch in whatever checkpoint wins)."** Lead plan: verdict = the pre-registered rules (no-stall 192 reactive +
+>   ghost + leak) over R3c / R3n / R4n vs R1e. The winner gets, each checked before it is switched on: the barrel
+>   fv6 target-patch branch (train_branch.py on the frozen winner; held-out lane >= 115/126; ghost + reactive no worse),
+>   CellRefine (if its SIM A/B is not worse), the merged legal guard (default ON), predict_drops (re-verification
+>   running; SIM A/B owed). The Log air veto stays OFF (owner: "a veto shouldn't be required"). Decode options
+>   (tau_phase, xbow_class) have no SIM A/B yet -> not switched on blind. Note: the owner's live restart runs main's
+>   live_play, so the legal guard is ON in it.
 > * **Log-on-air worker DONE_WITH_CONCERNS (worktree commit 16f667d, not merged; veto OPT-IN `--log-air-veto`).**
 >   MEASURED: pros Log an air-only corridor 0.78% of 47,703 Logs (air-only pushes = 3.6% of rows; pros answer them with
 >   Skeletons 8.0%, Electro Spirit 4.0%, Tesla 3.5%, Log 1.8%); bot at cast 1.7% (38/2,182 classifiable live Logs) =
