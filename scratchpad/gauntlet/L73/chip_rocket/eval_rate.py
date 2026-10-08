@@ -18,6 +18,7 @@ ph = np.where(sub["tick"] >= 3600, 2, np.where(sub["tick"] >= 2400, 1, 0)); tau 
 pro_rk = sub["y_card"] == RK
 rows = GenRows(sub, np.arange(n), DEV)
 models = {"base(live)": lambda: load_model(CK["live"], DEV)[0], "tw1": lambda: tower_refine.load(os.path.join(HERE, "tr_w1.pt"), DEV)[0],
+          "tw2": lambda: tower_refine.load(os.path.join(HERE, "tr_w2.pt"), DEV)[0],
           "tw4": lambda: tower_refine.load(os.path.join(HERE, "tr_w4.pt"), DEV)[0]}
 for name, mk in models.items():
     m = mk(); m.eval(); top = np.zeros(n, int); gate = np.zeros(n)
