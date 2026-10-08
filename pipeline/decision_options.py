@@ -59,8 +59,8 @@ class DecisionOptions:
             raise ValueError('gate_decode must be threshold, hazard or hazard_below_tau')
         if not math.isfinite(self.gate_hazard_min_elixir) or not 0 <= self.gate_hazard_min_elixir <= 10:
             raise ValueError('gate_hazard_min_elixir must be in [0, 10]')
-        if self.lethal_rocket not in ('off', 'ot'):
-            raise ValueError('lethal_rocket must be off or ot')
+        if self.lethal_rocket not in ('off', 'ot', 'ot_behind'):
+            raise ValueError('lethal_rocket must be off, ot or ot_behind')
 
     @property
     def active(self):
@@ -99,10 +99,12 @@ def add_arguments(parser):
                         help='hazard draws only when my elixir >= this (0 = at any elixir)')
     parser.add_argument('--gate-hazard-quiet', action='store_true',
                         help='hazard draws only when no enemy unit is on the board')
-    parser.add_argument('--lethal-rocket', choices=('off', 'ot'), default='off',
+    parser.add_argument('--lethal-rocket', choices=('off', 'ot', 'ot_behind'), default='off',
                         help='ot: in overtime (t >= 180 s, the tau_phase edge) play Rocket NOW, whatever the gate, at the '
                              'centre of an alive enemy PRINCESS tower whose HP <= my Rocket crown-tower damage (lower HP '
-                             'first; never the king), when Rocket is in hand and affordable; else unchanged')
+                             'first; never the king), when Rocket is in hand and affordable; else unchanged. ot_behind: '
+                             'also in regulation while the opponent has more crowns, if the Rocket can still land '
+                             'before 3:00')
     parser.add_argument('--decision-seed', type=int, default=0,
                         help='separate seeded card-choice stream; recorded with each experiment')
 
@@ -438,11 +440,38 @@ def lethal_rocket_cell(lane, grid):
     return int(cell_label(torch.tensor(anchors()[4 if lane == 'L' else 5]), grid))
 
 
+# ot_behind landing cutoff: a regulation Rocket counts only if it hits before regulation ends (tick 3600, 180 s; a
+# crown lead there ends the match). From the model-board time (decision tick + the 26-tick look-ahead = the SIM landing
+# tick under action delay 26; live MEASURED tap -> hand rotation min 24 / median 26-27 ticks) the Rocket still flies
+# from my king to the princess: 23.16 tiles / 350 milli per tick (catalog speed, lead) = 66 ticks; MEASURED live
+# 10-05..09: 129 of 171 tower hits land 60-80 ticks after the hand rotation (L73/lethal_rocket/timing.out).
+# Later fires cannot land before 3:00 and are skipped. ponytail: one flight time for both princesses (same distance).
+ROCKET_FLIGHT_TICKS = 66
+REGULATION_END_TICK = 3600
+
+
+def crowns_behind(crown_towers, side):
+    """True when the opponent has destroyed more of my crown towers than I have of theirs (public alive flags of the raw
+    ``episode.crown_towers`` rows; a missing row = destroyed, as from_engine's _tower_slots). False without my king."""
+    alive = [0, 0]
+    for t in crown_towers:
+        if t['hp'] > 0 and not t.get('destroyed'):
+            alive[int(t['side']) == side] += 1
+    if not any(int(t['side']) == side and t.get('type') == 'king' and t['hp'] > 0 for t in crown_towers):
+        return False
+    return 3 - alive[1] > 3 - alive[0]
+
+
 def lethal_rocket_choice(options, t_sec, names, allowed, crown_towers, side, grid, pending=False):
     """-> (slot, cell, target) when lethal_rocket fires, else None: overtime (phase_index 2, the tau_phase edge), no
-    card pending, an affordable Rocket slot (``allowed``: in hand and cost <= integer elixir), a lethal princess."""
-    if options.lethal_rocket == 'off' or pending or phase_index([t_sec])[0] != 2:
+    card pending, an affordable Rocket slot (``allowed``: in hand and cost <= integer elixir), a lethal princess.
+    ``ot_behind`` also fires in regulation while ``crowns_behind`` and the Rocket lands before tick 3600 (cutoff above)."""
+    if options.lethal_rocket == 'off' or pending:
         return None
+    if phase_index([t_sec])[0] != 2:
+        if (options.lethal_rocket != 'ot_behind' or round(t_sec / 0.05) + ROCKET_FLIGHT_TICKS > REGULATION_END_TICK
+                or not crowns_behind(crown_towers, side)):
+            return None
     slots = [i for i, n in enumerate(names) if n is not None and str(n).lower() == 'rocket' and allowed[i]]
     target = lethal_rocket_target(crown_towers, side) if slots else None
     if target is None:

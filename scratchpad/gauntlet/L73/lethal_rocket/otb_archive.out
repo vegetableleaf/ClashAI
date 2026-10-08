@@ -1,0 +1,30 @@
+match | first reg fire tick (lane, hp) | fires | outcome (me-opp, ending)
+live_play_20261005_072708.jsonl | 3037 (R, 315) | 8 | loss 0-1 regulation end dur 184s
+live_play_20261005_105507.jsonl | 2210 (R, 307) | 2 | win 2-1 OT dur 205s
+live_play_20261005_122154.jsonl | 2470 (L, 436) | 1 | loss 0-3 3-crown dur 126s
+live_play_20261006_155514.jsonl | 2484 (L, 433) | 12 | loss 1-2 regulation end dur 181s
+live_play_20261006_164355.jsonl | 1994 (R, 61) | 17 | win 2-1 regulation end dur 183s
+live_play_20261006_195757.jsonl | 3298 (L, 221) | 5 | loss 0-1 regulation end dur 182s
+live_play_20261007_193113.jsonl | 2464 (L, 106) | 9 | loss 1-2 regulation end dur 182s
+live_play_20261007_193710.jsonl | 1145 (L, 14) | 25 | loss 1-2 regulation end dur 181s
+live_play_20261007_203940.jsonl | 2471 (L, 257) | 15 | loss 1-2 regulation end dur 183s
+live_play_20261007_204603.jsonl | 2418 (L, 394) | 19 | loss 0-1 regulation end dur 183s
+live_play_20261007_213655.jsonl | 3357 (L, 150) | 9 | loss 0-1 regulation end dur 182s
+live_play_20261008_003333.jsonl | 2901 (R, 471) | 2 | win 2-1 OT dur 191s
+live_play_20261008_013301.jsonl | 2862 (R, 119) | 2 | loss 1-2 OT dur 204s
+live_play_20261008_032136.jsonl | 3122 (L, 250) | 5 | loss 0-1 regulation end dur 184s
+live_play_20261008_045649.jsonl | 1096 (R, 241) | 17 | loss 1-2 OT dur 276s
+live_play_20261008_050135.jsonl | 2437 (R, 108) | 28 | loss 0-1 regulation end dur 183s
+live_play_20261008_050511.jsonl | 2485 (L, 386) | 12 | loss 1-2 OT dur 190s
+live_play_20261008_065416.jsonl | 3171 (L, 112) | 8 | win 2-1 OT dur 309s
+live_play_20261008_071136.jsonl | 2437 (R, 351) | 10 | loss 0-3 3-crown dur 179s
+live_play_20261008_085303.jsonl | 1735 (R, 210) | 2 | loss 1-3 3-crown dur 112s
+live_play_20261008_092901.jsonl | 2400 (R, 406) | 17 | loss 1-2 regulation end dur 182s
+live_play_20261008_101124.jsonl | 1855 (R, 28) | 85 | loss 1-2 regulation end dur 184s
+live_play_20261008_105138.jsonl | 2200 (R, 417) | 4 | loss 1-2 regulation end dur 182s
+live_play_20261008_121128.jsonl | 1985 (R, 406) | 3 | loss 1-3 3-crown dur 134s
+live_play_20261008_151208.jsonl | 3431 (R, 281) | 8 | loss 0-1 regulation end dur 181s
+live_play_20261008_161209.jsonl | 3136 (R, 159) | 33 | loss 0-1 regulation end dur 184s
+
+loss-review regulation-end losses with the enemy lowest tower <= 497: 19; ot_behind fires in 10: ['live_play_20261005_072708.jsonl', 'live_play_20261006_195757.jsonl', 'live_play_20261007_193113.jsonl', 'live_play_20261007_193710.jsonl', 'live_play_20261007_204603.jsonl', 'live_play_20261007_213655.jsonl', 'live_play_20261008_032136.jsonl', 'live_play_20261008_050135.jsonl', 'live_play_20261008_151208.jsonl', 'live_play_20261008_161209.jsonl']
+  without a fire: [('live_play_20260929_190822.jsonl', 442), ('live_play_20261003_035713.jsonl', 167), ('live_play_20261005_073833.jsonl', 416), ('live_play_20261005_095105.jsonl', 478), ('live_play_20261005_102110.jsonl', 251), ('live_play_20261006_142102.jsonl', 225), ('live_play_20261007_224154.jsonl', 57), ('live_play_20261008_012941.jsonl', 439), ('live_play_20261008_070820.jsonl', 453)]

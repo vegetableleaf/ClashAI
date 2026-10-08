@@ -14,9 +14,11 @@ from pipeline.e1_eval import allowed_slots
 from pipeline.live_gen_v2 import GenPilot
 
 pilot = object.__new__(GenPilot)
-pilot.decision_options, pilot.grid = DecisionOptions(lethal_rocket='ot'), 'lattice'
+MODE = next((a.split('=', 1)[1] for a in sys.argv if a.startswith('--mode=')), 'ot')
+pilot.decision_options, pilot.grid = DecisionOptions(lethal_rocket=MODE), 'lattice'
 files = sorted(glob.glob(sys.argv[1]))
 first_only = '--first-only' in sys.argv
+REG = {}
 tot = dict(matches=0, fired_matches=0, fires=0, reg_fires=0)
 for f in files:
     dec = []
@@ -51,6 +53,8 @@ for f in files:
         if hit is not None:
             fires.append((d['tick'], round(t, 2), hit[2], d['decision'].get('name'), d['decision'].get('play'),
                           round(d['decision']['p_play'], 3)))
+            if phase_index([t])[0] != 2:
+                REG.setdefault(os.path.basename(f), []).append((d['tick'], hit[2]['lane'], hit[2]['hp']))
             tot['reg_fires'] += phase_index([t])[0] != 2
     tot['fires'] += len(fires)
     tot['fired_matches'] += bool(fires)
@@ -59,3 +63,6 @@ for f in files:
         for x in fires[:1] if first_only else fires:
             print('   tick %d model_t %.2f target %s | logged: %s play=%s p=%.3f' % (x[0], x[1], x[2], x[3], x[4], x[5]))
 print(tot)
+if REG:
+    json.dump(REG, open(os.environ.get('REG_OUT', os.devnull), 'w'))
+    print('regulation-fire matches', len(REG), 'fires', sum(map(len, REG.values())))

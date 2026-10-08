@@ -1,0 +1,170 @@
+live_play_20261005_071253.jsonl side 1 fires 5
+   tick 4319 model_t 217.25 target {'lane': 'R', 'hp': 1, 'damage': 497, 'level': 15} | logged: Rocket play=False p=0.228
+live_play_20261005_071827.jsonl side 1 fires 1
+   tick 6157 model_t 309.15 target {'lane': 'R', 'hp': 180, 'damage': 497, 'level': 15} | logged: Rocket play=True p=0.614
+live_play_20261005_072708.jsonl side 1 fires 8
+   tick 3037 model_t 153.15 target {'lane': 'R', 'hp': 315, 'damage': 497, 'level': 15} | logged: Knight play=False p=0.079
+live_play_20261005_080041.jsonl side 1 fires 3
+   tick 5107 model_t 256.65 target {'lane': 'R', 'hp': 478, 'damage': 497, 'level': 15} | logged: Tesla play=True p=0.358
+live_play_20261005_081858.jsonl side 1 fires 7
+   tick 3574 model_t 180.00 target {'lane': 'L', 'hp': 468, 'damage': 497, 'level': 15} | logged: Xbow play=False p=0.123
+live_play_20261005_082252.jsonl side 0 fires 11
+   tick 4682 model_t 235.40 target {'lane': 'R', 'hp': 486, 'damage': 497, 'level': 15} | logged: Xbow play=False p=0.287
+live_play_20261005_092103.jsonl side 1 fires 6
+   tick 3574 model_t 180.00 target {'lane': 'R', 'hp': 343, 'damage': 497, 'level': 15} | logged: Tesla play=True p=0.427
+live_play_20261005_103238.jsonl side 1 fires 2
+   tick 5838 model_t 293.20 target {'lane': 'R', 'hp': 28, 'damage': 497, 'level': 15} | logged: Tesla play=False p=0.326
+live_play_20261005_105507.jsonl side 1 fires 2
+   tick 2210 model_t 111.80 target {'lane': 'R', 'hp': 307, 'damage': 497, 'level': 15} | logged: IceWizard play=False p=0.047
+live_play_20261005_105847.jsonl side 1 fires 3
+   tick 4201 model_t 211.35 target {'lane': 'R', 'hp': 114, 'damage': 497, 'level': 15} | logged: Tesla play=False p=0.272
+live_play_20261005_113013.jsonl side 1 fires 1
+   tick 4389 model_t 220.75 target {'lane': 'R', 'hp': 483, 'damage': 497, 'level': 15} | logged: IceWizard play=True p=0.877
+live_play_20261005_113735.jsonl side 0 fires 1
+   tick 6215 model_t 312.05 target {'lane': 'R', 'hp': 394, 'damage': 497, 'level': 15} | logged: Rocket play=False p=0.322
+live_play_20261005_122154.jsonl side 1 fires 1
+   tick 2470 model_t 124.80 target {'lane': 'L', 'hp': 436, 'damage': 497, 'level': 15} | logged: Xbow play=False p=0.251
+live_play_20261005_122809.jsonl side 1 fires 4
+   tick 6102 model_t 306.40 target {'lane': 'R', 'hp': 283, 'damage': 497, 'level': 15} | logged: Xbow play=False p=0.275
+live_play_20261005_132429.jsonl side 1 fires 2
+   tick 5249 model_t 263.75 target {'lane': 'L', 'hp': 448, 'damage': 497, 'level': 15} | logged: Tesla play=False p=0.230
+live_play_20261006_121407.jsonl side 1 fires 9
+   tick 3732 model_t 187.90 target {'lane': 'R', 'hp': 320, 'damage': 342, 'level': 11} | logged: Xbow play=False p=0.235
+live_play_20261006_130342.jsonl side 0 fires 4
+   tick 4757 model_t 239.15 target {'lane': 'R', 'hp': 235, 'damage': 497, 'level': 15} | logged: Xbow play=False p=0.172
+live_play_20261006_131142.jsonl side 1 fires 3
+   tick 4889 model_t 245.75 target {'lane': 'R', 'hp': 108, 'damage': 497, 'level': 15} | logged: Xbow play=False p=0.259
+live_play_20261006_142102.jsonl side 1 fires 1
+   tick 3663 model_t 184.45 target {'lane': 'R', 'hp': 225, 'damage': 497, 'level': 15} | logged: Tesla play=True p=0.456
+live_play_20261006_155514.jsonl side 1 fires 12
+   tick 2484 model_t 125.50 target {'lane': 'L', 'hp': 433, 'damage': 497, 'level': 15} | logged: Knight play=False p=0.063
+live_play_20261006_164355.jsonl side 1 fires 17
+   tick 1994 model_t 101.00 target {'lane': 'R', 'hp': 61, 'damage': 497, 'level': 15} | logged: Xbow play=False p=0.011
+live_play_20261006_165046.jsonl side 1 fires 16
+   tick 4267 model_t 214.65 target {'lane': 'L', 'hp': 453, 'damage': 497, 'level': 15} | logged: Xbow play=False p=0.198
+live_play_20261006_171031.jsonl side 1 fires 13
+   tick 3598 model_t 181.20 target {'lane': 'L', 'hp': 27, 'damage': 497, 'level': 15} | logged: Knight play=False p=0.026
+live_play_20261006_171805.jsonl side 1 fires 1
+   tick 4866 model_t 244.60 target {'lane': 'R', 'hp': 32, 'damage': 497, 'level': 15} | logged: Tesla play=False p=0.217
+live_play_20261006_195411.jsonl side 1 fires 4
+   tick 3757 model_t 189.15 target {'lane': 'R', 'hp': 7, 'damage': 497, 'level': 15} | logged: Knight play=False p=0.280
+live_play_20261006_195757.jsonl side 0 fires 5
+   tick 3298 model_t 166.20 target {'lane': 'L', 'hp': 221, 'damage': 497, 'level': 15} | logged: Skeletons play=False p=0.109
+live_play_20261006_203401.jsonl side 1 fires 3
+   tick 4263 model_t 214.45 target {'lane': 'R', 'hp': 471, 'damage': 497, 'level': 15} | logged: Tesla play=False p=0.255
+live_play_20261006_205835.jsonl side 0 fires 6
+   tick 4079 model_t 205.25 target {'lane': 'R', 'hp': 109, 'damage': 497, 'level': 15} | logged: Tesla play=False p=0.247
+live_play_20261006_211401.jsonl side 0 fires 2
+   tick 4351 model_t 218.85 target {'lane': 'L', 'hp': 243, 'damage': 497, 'level': 15} | logged: Xbow play=False p=0.310
+live_play_20261007_121139.jsonl side 0 fires 1
+   tick 5598 model_t 281.20 target {'lane': 'R', 'hp': 110, 'damage': 342, 'level': 11} | logged: Rocket play=True p=0.680
+live_play_20261007_184711.jsonl side 0 fires 2
+   tick 6200 model_t 311.30 target {'lane': 'R', 'hp': 264, 'damage': 497, 'level': 15} | logged: Rocket play=False p=0.215
+live_play_20261007_185231.jsonl side 1 fires 7
+   tick 3748 model_t 188.70 target {'lane': 'L', 'hp': 155, 'damage': 497, 'level': 15} | logged: Skeletons play=False p=0.137
+live_play_20261007_185632.jsonl side 1 fires 2
+   tick 5555 model_t 279.05 target {'lane': 'R', 'hp': 243, 'damage': 497, 'level': 15} | logged: Skeletons play=False p=0.281
+live_play_20261007_193113.jsonl side 1 fires 9
+   tick 2464 model_t 124.50 target {'lane': 'L', 'hp': 106, 'damage': 497, 'level': 15} | logged: Xbow play=False p=0.014
+live_play_20261007_193710.jsonl side 1 fires 25
+   tick 1145 model_t 58.55 target {'lane': 'L', 'hp': 14, 'damage': 497, 'level': 15} | logged: Xbow play=False p=0.035
+live_play_20261007_194026.jsonl side 1 fires 12
+   tick 4512 model_t 226.90 target {'lane': 'L', 'hp': 433, 'damage': 497, 'level': 15} | logged: Xbow play=False p=0.039
+live_play_20261007_203940.jsonl side 1 fires 15
+   tick 2471 model_t 124.85 target {'lane': 'L', 'hp': 257, 'damage': 497, 'level': 15} | logged: Xbow play=False p=0.041
+live_play_20261007_204603.jsonl side 1 fires 19
+   tick 2418 model_t 122.20 target {'lane': 'L', 'hp': 394, 'damage': 497, 'level': 15} | logged: Tesla play=False p=0.202
+live_play_20261007_211825.jsonl side 0 fires 1
+   tick 5127 model_t 257.65 target {'lane': 'L', 'hp': 161, 'damage': 497, 'level': 15} | logged: Tesla play=True p=0.733
+live_play_20261007_213655.jsonl side 1 fires 9
+   tick 3357 model_t 169.15 target {'lane': 'L', 'hp': 150, 'damage': 497, 'level': 15} | logged: Knight play=False p=0.164
+live_play_20261007_221758.jsonl side 1 fires 5
+   tick 3598 model_t 181.20 target {'lane': 'L', 'hp': 374, 'damage': 497, 'level': 15} | logged: Skeletons play=False p=0.298
+live_play_20261007_223000.jsonl side 0 fires 1
+   tick 3959 model_t 199.25 target {'lane': 'R', 'hp': 406, 'damage': 497, 'level': 15} | logged: Rocket play=True p=0.522
+live_play_20261008_003333.jsonl side 1 fires 2
+   tick 2901 model_t 146.35 target {'lane': 'R', 'hp': 471, 'damage': 497, 'level': 15} | logged: IceWizard play=True p=0.382
+live_play_20261008_003700.jsonl side 1 fires 2
+   tick 6149 model_t 308.75 target {'lane': 'L', 'hp': 98, 'damage': 497, 'level': 15} | logged: IceWizard play=False p=0.320
+live_play_20261008_005958.jsonl side 1 fires 21
+   tick 3581 model_t 180.35 target {'lane': 'L', 'hp': 221, 'damage': 497, 'level': 15} | logged: Skeletons play=False p=0.183
+live_play_20261008_013301.jsonl side 1 fires 2
+   tick 2862 model_t 144.40 target {'lane': 'R', 'hp': 119, 'damage': 497, 'level': 15} | logged: Tesla play=False p=0.216
+live_play_20261008_015121.jsonl side 1 fires 27
+   tick 3895 model_t 196.05 target {'lane': 'L', 'hp': 124, 'damage': 497, 'level': 15} | logged: Log play=False p=0.076
+live_play_20261008_032136.jsonl side 1 fires 6
+   tick 3122 model_t 157.40 target {'lane': 'L', 'hp': 250, 'damage': 497, 'level': 15} | logged: Xbow play=False p=0.146
+live_play_20261008_032447.jsonl side 0 fires 2
+   tick 6193 model_t 310.95 target {'lane': 'L', 'hp': 309, 'damage': 497, 'level': 15} | logged: Rocket play=False p=0.308
+live_play_20261008_044029.jsonl side 1 fires 2
+   tick 3641 model_t 183.35 target {'lane': 'R', 'hp': 257, 'damage': 497, 'level': 15} | logged: Knight play=False p=0.520
+live_play_20261008_045649.jsonl side 1 fires 17
+   tick 1096 model_t 56.10 target {'lane': 'R', 'hp': 241, 'damage': 497, 'level': 15} | logged: Xbow play=False p=0.021
+live_play_20261008_050135.jsonl side 1 fires 32
+   tick 2437 model_t 123.15 target {'lane': 'R', 'hp': 108, 'damage': 497, 'level': 15} | logged: IceWizard play=False p=0.054
+live_play_20261008_050511.jsonl side 1 fires 12
+   tick 2485 model_t 125.55 target {'lane': 'L', 'hp': 386, 'damage': 497, 'level': 15} | logged: Xbow play=False p=0.392
+live_play_20261008_051147.jsonl side 1 fires 3
+   tick 5095 model_t 256.05 target {'lane': 'L', 'hp': 450, 'damage': 497, 'level': 15} | logged: Rocket play=False p=0.265
+live_play_20261008_052647.jsonl side 1 fires 8
+   tick 5015 model_t 252.05 target {'lane': 'L', 'hp': 344, 'damage': 497, 'level': 15} | logged: IceWizard play=False p=0.460
+live_play_20261008_064904.jsonl side 1 fires 16
+   tick 5298 model_t 266.20 target {'lane': 'L', 'hp': 272, 'damage': 497, 'level': 15} | logged: IceWizard play=False p=0.446
+live_play_20261008_065416.jsonl side 1 fires 23
+   tick 3171 model_t 159.85 target {'lane': 'L', 'hp': 112, 'damage': 497, 'level': 15} | logged: Log play=False p=0.334
+live_play_20261008_070456.jsonl side 0 fires 5
+   tick 3576 model_t 180.10 target {'lane': 'R', 'hp': 72, 'damage': 497, 'level': 15} | logged: Rocket play=False p=0.373
+live_play_20261008_070820.jsonl side 1 fires 4
+   tick 3618 model_t 182.20 target {'lane': 'L', 'hp': 453, 'damage': 497, 'level': 15} | logged: Skeletons play=False p=0.478
+live_play_20261008_071136.jsonl side 1 fires 12
+   tick 2437 model_t 123.15 target {'lane': 'R', 'hp': 351, 'damage': 497, 'level': 15} | logged: Xbow play=False p=0.063
+live_play_20261008_072007.jsonl side 1 fires 22
+   tick 3721 model_t 187.35 target {'lane': 'R', 'hp': 475, 'damage': 497, 'level': 15} | logged: Knight play=False p=0.354
+live_play_20261008_080911.jsonl side 0 fires 4
+   tick 3694 model_t 186.00 target {'lane': 'L', 'hp': 453, 'damage': 497, 'level': 15} | logged: Rocket play=False p=0.342
+live_play_20261008_083933.jsonl side 0 fires 3
+   tick 4922 model_t 247.40 target {'lane': 'L', 'hp': 188, 'damage': 497, 'level': 15} | logged: Tesla play=False p=0.460
+live_play_20261008_085303.jsonl side 1 fires 2
+   tick 1735 model_t 88.05 target {'lane': 'R', 'hp': 210, 'damage': 497, 'level': 15} | logged: IceWizard play=False p=0.238
+live_play_20261008_092112.jsonl side 1 fires 7
+   tick 4700 model_t 236.30 target {'lane': 'R', 'hp': 234, 'damage': 497, 'level': 15} | logged: Tesla play=False p=0.447
+live_play_20261008_092901.jsonl side 1 fires 17
+   tick 2400 model_t 121.30 target {'lane': 'R', 'hp': 406, 'damage': 497, 'level': 15} | logged: Log play=False p=0.085
+live_play_20261008_101124.jsonl side 1 fires 85
+   tick 1855 model_t 94.05 target {'lane': 'R', 'hp': 28, 'damage': 497, 'level': 15} | logged: Xbow play=False p=0.072
+live_play_20261008_105138.jsonl side 1 fires 4
+   tick 2200 model_t 111.30 target {'lane': 'R', 'hp': 417, 'damage': 497, 'level': 15} | logged: IceWizard play=False p=0.156
+live_play_20261008_112455.jsonl side 1 fires 6
+   tick 3948 model_t 198.70 target {'lane': 'R', 'hp': 210, 'damage': 497, 'level': 15} | logged: Rocket play=False p=0.157
+live_play_20261008_121128.jsonl side 1 fires 3
+   tick 1985 model_t 100.55 target {'lane': 'R', 'hp': 406, 'damage': 497, 'level': 15} | logged: IceWizard play=False p=0.249
+live_play_20261008_124644.jsonl side 1 fires 4
+   tick 6104 model_t 306.50 target {'lane': 'L', 'hp': 184, 'damage': 342, 'level': 11} | logged: Rocket play=False p=0.194
+live_play_20261008_125939.jsonl side 1 fires 4
+   tick 4038 model_t 203.20 target {'lane': 'R', 'hp': 221, 'damage': 497, 'level': 15} | logged: IceWizard play=False p=0.459
+live_play_20261008_131352.jsonl side 1 fires 19
+   tick 3851 model_t 193.85 target {'lane': 'L', 'hp': 453, 'damage': 497, 'level': 15} | logged: Tesla play=False p=0.301
+live_play_20261008_132358.jsonl side 1 fires 3
+   tick 4725 model_t 237.55 target {'lane': 'R', 'hp': 426, 'damage': 497, 'level': 15} | logged: Rocket play=False p=0.500
+live_play_20261008_151208.jsonl side 1 fires 8
+   tick 3431 model_t 172.85 target {'lane': 'R', 'hp': 281, 'damage': 497, 'level': 15} | logged: Tesla play=False p=0.204
+live_play_20261008_155513.jsonl side 1 fires 1
+   tick 3775 model_t 190.05 target {'lane': 'R', 'hp': 88, 'damage': 497, 'level': 15} | logged: Rocket play=True p=0.124
+live_play_20261008_160827.jsonl side 1 fires 2
+   tick 4041 model_t 203.35 target {'lane': 'L', 'hp': 218, 'damage': 497, 'level': 15} | logged: Rocket play=True p=0.185
+live_play_20261008_161209.jsonl side 1 fires 34
+   tick 3136 model_t 158.10 target {'lane': 'R', 'hp': 159, 'damage': 497, 'level': 15} | logged: Skeletons play=False p=0.397
+live_play_20261008_163007.jsonl side 1 fires 1
+   tick 5065 model_t 254.55 target {'lane': 'R', 'hp': 300, 'damage': 497, 'level': 15} | logged: Rocket play=True p=0.816
+live_play_20261008_164208.jsonl side 1 fires 1
+   tick 5649 model_t 283.75 target {'lane': 'L', 'hp': 21, 'damage': 497, 'level': 15} | logged: Rocket play=True p=0.444
+live_play_20261008_165034.jsonl side 0 fires 1
+   tick 3586 model_t 180.60 target {'lane': 'L', 'hp': 464, 'damage': 497, 'level': 15} | logged: Rocket play=True p=0.310
+live_play_20261008_172819.jsonl side 0 fires 1
+   tick 4931 model_t 247.85 target {'lane': 'R', 'hp': 492, 'damage': 497, 'level': 15} | logged: Rocket play=True p=0.468
+live_play_20261008_174737.jsonl side 1 fires 2
+   tick 3575 model_t 180.05 target {'lane': 'R', 'hp': 366, 'damage': 497, 'level': 15} | logged: Rocket play=True p=0.318
+live_play_20261008_175054.jsonl side 1 fires 2
+   tick 3799 model_t 191.25 target {'lane': 'R', 'hp': 182, 'damage': 497, 'level': 15} | logged: Rocket play=True p=0.290
+{'matches': 537, 'fired_matches': 84, 'fires': 693, 'reg_fires': np.int64(358)}
+regulation-fire matches 26 fires 358
