@@ -4501,6 +4501,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **W4 MECHANISM (code reading, measurement on the VM pending):** dataset.py samples WAIT rows every 40 ticks (2 s)
+>   and drops waits within 20 ticks before a play -> p_gate = probability per 2-s row. Live/SIM THRESHOLD it (play iff
+>   p > tau) at every decision, so nothing accumulates: tau .35 ~ a hazard of 0.21 plays/s; pros' quiet-board 1x hazard
+>   ~0.16/s -> p ~ .28 < tau -> even a perfectly calibrated gate never fires on a quiet board (the waiting problem), while
+>   any busy state with p barely > tau fires every decision (the cheap-card spam). Next: hazard-consistent decoding
+>   (play with prob 1-(1-p)^(dt/2 s), seeded) and a calibrated gate add-on; SIM checks incl. that 2x/OT spam doesn't
+>   return. W4's suspended extract chain killed by the lead (own job); gpu.lock restored to the chip_rocket content.
 > * **LAG INCIDENT 11:3x:** owner lost a live match to lag. Causes: 4 workers' local jobs (GPU TowerRefine training, row
 >   extraction, verification) + 5 ORPHANED `python -` scripts from earlier sessions (pids 64148/61016, 50212, 28348, 6280;
 >   parents bash 56996, 26916, 60040, 70116), each ~0.6 core for 1-3 days. Lead suspended the worker jobs (48716/67392
