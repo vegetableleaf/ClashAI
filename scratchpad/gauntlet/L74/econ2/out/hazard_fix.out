@@ -1,0 +1,32 @@
+
+## H  live_r1e vs sim_r1e: whole-match tap hazard by my elixir (taps/s, SIM matched to live's phase x board mix within the bucket) | elixir per tap | share of time
+| 0-2 | 0.106 / 0.102 (SIM raw 0.120) | 1.42 / 1.54 | 16.5% / 13.0% |
+| 2-4 | 0.227 / 0.213 (SIM raw 0.239) | 2.58 / 2.53 | 34.0% / 28.1% |
+| 4-6 | 0.195 / 0.160 (SIM raw 0.178) | 2.99 / 2.99 | 23.9% / 23.0% |
+| 6-8 | 0.220 / 0.198 (SIM raw 0.210) | 3.72 / 3.63 | 16.1% / 18.5% |
+| 8-10 | 0.237 / 0.185 (SIM raw 0.127) | 3.72 / 3.55 | 9.6% / 17.3% |
+board-state time mix live vs SIM: my_big 33.7%/30.0%, my_small 7.6%/9.2%, their_tank 16.7%/10.7%, their_half 22.6%/26.2%, empty 19.5%/23.9%
+
+## H  live_towerref vs sim_de10: whole-match tap hazard by my elixir (taps/s, SIM matched to live's phase x board mix within the bucket) | elixir per tap | share of time
+| 0-2 | 0.095 / 0.082 (SIM raw 0.086) | 1.45 / 1.50 | 9.8% / 7.3% |
+| 2-4 | 0.179 / 0.153 (SIM raw 0.162) | 2.46 / 2.41 | 24.5% / 21.5% |
+| 4-6 | 0.143 / 0.142 (SIM raw 0.159) | 2.93 / 2.80 | 25.9% / 26.7% |
+| 6-8 | 0.189 / 0.188 (SIM raw 0.210) | 3.47 / 3.44 | 23.5% / 27.8% |
+| 8-10 | 0.241 / 0.255 (SIM raw 0.229) | 3.65 / 3.61 | 16.3% / 16.7% |
+board-state time mix live vs SIM: my_big 34.4%/32.7%, my_small 5.4%/9.7%, their_tank 17.7%/12.4%, their_half 23.0%/25.3%, empty 19.6%/19.8%
+
+## H  live_stack vs sim_stack: whole-match tap hazard by my elixir (taps/s, SIM matched to live's phase x board mix within the bucket) | elixir per tap | share of time
+| 0-2 | 0.125 / 0.083 (SIM raw 0.086) | 1.55 / 1.47 | 9.4% / 6.1% |
+| 2-4 | 0.173 / 0.164 (SIM raw 0.173) | 2.41 / 2.40 | 27.3% / 19.9% |
+| 4-6 | 0.184 / 0.163 (SIM raw 0.173) | 2.82 / 2.74 | 28.1% / 25.9% |
+| 6-8 | 0.209 / 0.207 (SIM raw 0.226) | 3.66 / 3.39 | 21.8% / 25.5% |
+| 8-10 | 0.238 / 0.216 (SIM raw 0.154) | 3.67 / 3.59 | 13.3% / 22.6% |
+board-state time mix live vs SIM: my_big 37.7%/31.3%, my_small 6.5%/9.5%, their_tank 16.8%/11.2%, their_half 21.7%/24.8%, empty 17.3%/23.3%
+
+## H  pros vs sim_de10: whole-match tap hazard by my elixir (taps/s, SIM matched to live's phase x board mix within the bucket) | elixir per tap | share of time
+| 0-2 | 0.095 / 0.080 (SIM raw 0.086) | 1.36 / 1.50 | 5.7% / 7.3% |
+| 2-4 | 0.175 / 0.149 (SIM raw 0.162) | 2.48 / 2.41 | 18.0% / 21.5% |
+| 4-6 | 0.168 / 0.144 (SIM raw 0.159) | 2.97 / 2.80 | 22.9% / 26.7% |
+| 6-8 | 0.162 / 0.189 (SIM raw 0.210) | 3.45 / 3.44 | 27.0% / 27.8% |
+| 8-10 | 0.197 / 0.202 (SIM raw 0.229) | 3.50 / 3.61 | 26.5% / 16.7% |
+board-state time mix live vs SIM: my_big 34.4%/32.7%, my_small 4.6%/9.7%, their_tank 6.8%/12.4%, their_half 13.9%/25.3%, empty 40.3%/19.8%

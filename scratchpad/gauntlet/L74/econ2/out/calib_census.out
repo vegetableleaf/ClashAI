@@ -1,0 +1,11 @@
+
+## Q3  opponent pressure and my economy (same definitions everywhere; distance = mean |relative error| vs live_all over push_pm, push_pm_1x, push_v, lead, vm_mean, t_vm3, t_board8, t_tank)
+| source | matches | wins | pushes/min (1x) | push value | commit lead s | enemy value on my half (mean) | time vm>=3 | time board>=8 | time tank at back only | opp plays/min | my elixir mean | time at cap | push-start elixir mean / median / 1x | distance |
+| live_all | 471 | 0 | 1.05 (0.85) | 8.6 | 10.7 | 2.41 | 34.6% | 30.7% | 16.3% | 7.8 | 4.60 | 2.8% | 2.91 / 2.53 / 2.88 |   n/a |
+| live_towerref | 43 | 0 | 1.05 (0.93) | 8.8 | 13.1 | 2.38 | 34.4% | 32.1% | 17.7% | 7.2 | 5.28 | 4.3% | 3.06 / 2.74 / 3.13 | 0.061 |
+| live_r1e | 325 | 0 | 1.02 (0.83) | 8.6 | 10.9 | 2.35 | 33.7% | 30.4% | 16.7% | 7.9 | 4.38 | 2.6% | 2.73 / 2.39 / 2.81 | 0.020 |
+| sim_de10#evo | 240 | 160 | 0.98 (0.66) | 8.5 | 12.5 | 2.23 | 32.5% | 29.5% | 12.0% | 9.3 | 5.48 | 2.8% | 4.48 / 4.57 / 4.06 | 0.114 |
+| sim_de10#lad | 240 | 154 | 1.06 (0.70) | 8.4 | 12.5 | 2.30 | 32.9% | 32.2% | 12.8% | 8.8 | 5.54 | 3.0% | 4.49 / 4.50 / 4.08 | 0.093 |
+| sim_r1e#evo | 240 | 141 | 0.92 (0.64) | 8.4 | 11.5 | 2.03 | 29.9% | 28.3% | 10.4% | 9.2 | 5.03 | 9.1% | 3.64 / 3.43 / 3.73 | 0.150 |
+| sim_r1e#lad | 240 | 133 | 0.98 (0.65) | 8.3 | 12.0 | 2.06 | 30.2% | 29.3% | 10.9% | 8.8 | 5.07 | 8.9% | 3.64 / 3.45 / 3.82 | 0.140 |
+| sim_c_v32#lad | 120 | 80 | 1.02 (0.84) | 8.3 | 11.0 | 2.21 | 33.8% | 30.5% | 10.2% | 9.9 | 5.50 | 1.9% | 4.43 / 4.36 / 3.95 | 0.074 |
