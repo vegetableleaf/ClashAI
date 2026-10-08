@@ -4826,10 +4826,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   live A/B decides. Sent back: put it behind --hero-ability-spec {off,supplement} (default off) for an owner live A/B.
 > * **ot_behind MERGED ec28519** (blind PASS_WITH_NOTES on 1cb2907; notes: the cutoff lands ~0.2 tick after 3600 at median
 >   latency (only withholds fires, costless); SIM/live decision-RNG use diverges after a fire (pre-existing); gen:433 benign
->   as far as the data shows). NOT yet in LIVE_OPTIONS (deployed value stays ) -- switch to ot_behind with the next
+>   as far as the data shows). NOT yet in LIVE_OPTIONS (deployed value stays "ot") -- switch to ot_behind with the next
 >   bundle and update test_live_options DEPLOYED_FILE in the same commit.
 > * Owner tried the API key step from Google Cloud Shell (no clashbot_gcp key there -> Permission denied); lead gave the
 >   laptop one-liner (ssh -t ... read -rs key -> ~/.cr_api/key, then crapi.py selftest). Waiting for SELFTEST OK.
+> * **API census RUNNING (owner key OK, selftest passed ~23:58Z).** First run started by the lead (VM ~/crapi/run.sh, nice 19,
+>   flock): /v1/cards = 123 items; Path of Legends 2026-10 rankings returned 0 players (new season), 2026-09 -> 1000
+>   players seeded; output ~/crapi/data/ (battles.jsonl, census/census_latest.md). Cron NOT installed (needs owner OK).
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
