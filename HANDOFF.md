@@ -4407,6 +4407,22 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   anything live."** Not measured yet (the audit scored only unit-spawning plays). Same worker sent to measure spell
 >   impact point vs tap per spell/side, tile quantization of spells, and placement-vs-aim (hits at the actual point vs
 >   the best tile within +-1); scratch only until the verifier finishes. No new live deploy until it reports.
+> * **OWNER 22:0x: "not the cause ... in the literal center of the ally side board, with absolutely nothing to block it
+>   ... exactly one tile away from the effective position. Spells too."** Lead: the owner's objection is logically
+>   sound -- the tap audit (aim == reader landing) proves only that the live tap and reader mappings AGREE; a shared
+>   offset, or a live-vs-TRAINING frame offset (pro labels + sim obs), is invisible to it, and spells are never
+>   relocated. Worker redirected to a frame audit: H1 tower/landmark model-input coords live vs sim per side/axis +
+>   placement histograms vs pros and vs the bot's sim plays; H2 obs-vs-action frame inside live + enemy-relative
+>   offsets vs pros; H3 screen ground truth from recorded clips (pixels, incl. spells); H4 every mirror/flip formula.
+> * **OWNER 22:0x: "the model is playing log on air troops ... fixed WEEKS AGO".** Found: that fix (aa326cb, 2026-08-20,
+>   air veto) lived in the OLD advisor/PPO system (icebow/src/clashrl/threat_value.py); the generalist + GenPilot path
+>   (09-24 on) has no Log/air rule -- never ported. New worker (worktree): measure Log plays by corridor class
+>   (ground / Skeleton Barrel pre-drop / air-only / empty), why the model does it, a live `--no-log-air-veto` opt-out
+>   veto in a new pipeline/spell_veto.py, and an inventory of old-system fixes missing from the current path.
+> * **predict_drops fix DONE_WITH_CONCERNS** (worktree-agent-a7aad0cb551876164 @91dec3b, not merged): the HIGH/MED/LOW
+>   verifier findings fixed; SIM probe "14 skeletons" 8 -> 0, phantoms 7 -> 0 (one 14-token board = evo second wave,
+>   correct); flag-off digests identical (sim ext/tok, live 1,497 decides). Own decisions: pending TTL T+18. PARKED:
+>   needs re-verification + a SIM A/B, and no live deploy until the placement/spell question is closed.
 >   ~15:40" (Q1 card sampling flag, Q2 area-aware spell aim, Q3 GPU A/Bs after R1e, Q4 R1e approval ping, Q5 fixes);
 >   launcher `.foreman/codex_autopilot/codex_loop.sh` (back-to-back runs to 10-06; STOP_LOOP file stops it).
 > * **15:5x -- owner plan: after the R1e verdict the lead starts LIVE on the winner, then hands over to Codex via
