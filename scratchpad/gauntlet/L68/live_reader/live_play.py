@@ -347,6 +347,9 @@ def main() -> int:
     if a.iw_press_pstar is not None and not 0.0 < a.iw_press_pstar < 1.0:
         print("refusing: --iw-press-pstar must be in (0, 1)")
         return 2
+    if not 0 <= a.tap_gap_ms <= 500:
+        print("refusing: --tap-gap-ms must be in [0, 500]")
+        return 2
     if a.iw_press_pstar is not None and a.no_iw_pro_gate:
         print("[live] note: --no-iw-pro-gate skips the pro gate, so --iw-press-pstar %g has no effect" % a.iw_press_pstar,
               flush=True)
