@@ -4815,6 +4815,15 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   tower. SIM v3 960 paired: ot 634 vs ot_behind 633 (0/1); 12 regulation fires; 4 matches reached OT only via the fire
 >   (none won); 1 loss caused (fired at 77 s, lost 1-2 at 3:00 where ot won in OT); 1 unexplained (gen:433 fired at 153 s,
 >   crowns unchanged) -> verifier checks. Next bundle candidate (owner-requested).
+> * **Hero IW ability parity fix BUILT (ae78edcc, ad3f9ce/49ac777; not merged).** (a) pros NEVER had a Hero Ice Wizard in the
+>   training data (426,280 IW deck rows all form 0, 0 ability rows) -> hero form + any ability token is out of distribution.
+>   Fix = own_ability SUPPLEMENT spec (ice-wizard, form 2): 1 charge, no cooldown, 1000 ms deploy, used only when RoyaleSim
+>   lacks the form; readiness from my own deploy/press history (training convention for all 695,286 hero rows). Offline
+>   (8,293 rebuilt live rows): non-hero rows byte-identical; gate excess removed 82% (tank at back .122 -> .088 vs SIM .081)
+>   and 90% (formation .168 -> .126 vs .121) but overall 2-6.9 elixir over-corrects (157%; hero rows .049 vs SIM .087).
+>   SIM 960 paired (engine still base IW): C fix vs B unknown (= live today): push start +0.36 [+0.27, +0.45], taps < 5
+>   elixir -0.82/min, wins 634 vs 658 (p .19); C vs A (base): wins 634 = 634. SIM cannot show the live push-start gap ->
+>   live A/B decides. Sent back: put it behind --hero-ability-spec {off,supplement} (default off) for an owner live A/B.
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
