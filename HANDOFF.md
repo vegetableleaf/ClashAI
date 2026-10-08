@@ -4501,6 +4501,15 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   xbow: defensive share closest to the pros' 27%. The pick is then CONFIRMED on fresh seeds 48:96 vs a control
 >   there (guards against picking a lucky variant on the tuning games). If nothing passes: next grid, reported.
 >   Control reproduced r3old_u0050 exactly with telemetry on (22/34 census). ~6 min per 192-game arm.
+> * **CHIP-ROCKET Q1-Q2 (worker checkpoint) -- owner's hypothesis MEASURED true.** Pure chip = tower Rocket with no enemy
+>   troop within 2 tiles of impact. Tower Rockets/match: pros 1.57 (chip 73% [72,75]; OT chip 0.87), R1e 0.18 (chip 44%;
+>   OT chip 0.05), live stack 0.60 (chip 39% [22,55]; OT chip 0.13). Rate ratio with vs without an enemy troop within 4
+>   tiles of an alive princess (per eligible minute): pros 1.54, R1e 3.35, live 3.04 (any tower: 1.59 / 6.8 / 10.0).
+>   Matched states (2,582 pro chip-Rocket rows, live rule): live picks Rocket 14.4% (Rocket top card 21%; Rocket cell
+>   mass within 3 tiles of the target tower 50%; waits 32%; offensive X-Bow 20%); + Wizard 1.7 tiles behind the princess
+>   36.6% (P(Rocket on tower) x3.2, cell mass 0.50 -> 0.91); Musketeer x2.2; behind the KING x1.03. R1e x3.3; imitation base
+>   gen_v32 x2.7 -> from imitation, RL slightly worse. Lead hypothesis sent: towers are not board tokens (only hp/alive
+>   scalars), so nothing marks a lone tower for the cell/card heads -> prototype tower features into the heads.
 > * **OWNER 10:0x: live model banks elixir in OT (good) but spends it on offensive X-Bows that get thwarted, not tower
 >   Rockets; "only confident about casting rocket on enemy tower IF the enemy places a troop behind the king tower ...
 >   no concept of chip damage ... worth doing an investigation into that and making adjustments."** Lead note: prior
