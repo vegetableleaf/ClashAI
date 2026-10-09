@@ -20,6 +20,7 @@ XS = (0.10, 0.15, 0.20, 0.25)
 TW = K.TW
 AIRKILL = {"balloon", "balloon_hero", "lava_hound"}           # building-targeting air
 GROUND_ONLY = {"Knight", "Skeletons", "Log", "Xbow"}          # cannot hit air (Tornado: no damage worth the name)
+AA = {"Knight", "Skeletons", "Xbow"}                          # air_answer block's is_ground_only (troops/buildings; Log is a spell, not covered)
 OUT = "C:/Users/benpe/ClashBot/.claude/worktrees/agent-a71df5859a8006344/scratchpad/gauntlet/L74/tau_threat/"
 
 
@@ -144,9 +145,14 @@ def report(rows, mins, n, thr_frac, extra):
             nearg = [r for r in near if r["plays"][X]["card"] in GROUND_ONLY]
             anyair = [r for r in got if r["plays"][X]["any_air"]]
             anyg = [r for r in anyair if r["plays"][X]["card"] in GROUND_ONLY]
+            aa = [r for r in near if r["plays"][X]["card"] in AA]
+            aa_all = [r for r in got if r["plays"][X]["card"] in AA]
+            aa_alt = [r for r in aa if any(c not in AA and c not in ("Rocket",) and K.COST.get(c, 9) <= r["plays"][X]["el"] for c in r["plays"][X]["el_hand"])]
             P(f"        card: {dict(cards.most_common())}; ground-only {go / len(got):.1%}; balloon/lava hound within 12 tiles of the tower in "
               f"{len(near)}/{len(got)} plays, of which the card is ground-only in {len(nearg)} ({len(nearg) / max(len(got), 1):.1%} of all plays); "
-              f"anywhere on the board: {len(anyair)} / {len(anyg)}")
+              f"anywhere on the board: {len(anyair)} / {len(anyg)}; air_answer-covered (Knight/Skeletons/X-Bow) near an air unit: {len(aa)} "
+              f"(an affordable non-covered card exists in hand in {len(aa_alt)}; the other {len(aa) - len(aa_alt)} would stay a WAIT); "
+              f"covered cards in all plays {len(aa_all)}")
             el = [r["plays"][X]["el"] for r in got]
             P(f"        elixir at the play: median {np.median(el):.1f} (3.0-4.9: {np.mean([e < 5 for e in el]):.0%}); p_play at the play median "
               f"{np.median([r['plays'][X]['p'] for r in got]):.3f}")

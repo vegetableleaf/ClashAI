@@ -42,6 +42,13 @@ def fmt(t, d=3): return f"{t[0]:+.{d}f} [{t[1]:+.{d}f},{t[2]:+.{d}f}]"
 def tau(r, k): return (r["behaviour"].get("tau") or {}).get(k, 0) or 0
 
 
+def cards_of(r):
+    c = {}
+    for ph in (r["behaviour"].get("phase_cards") or {}).values():
+        for k, v in ph.items(): c[k] = c.get(k, 0) + v
+    return c
+
+
 def per_match(r):
     pu = r["behaviour"].get("push") or {}
     ec = r["behaviour"].get("economy") or {}
@@ -52,7 +59,7 @@ def per_match(r):
                 m4=tau(r, "m4_strict"), m4_all=tau(r, "m4_all"), m4_s=tau(r, "m4_strict_s"), m4_hp=tau(r, "m4_strict_hp"),
                 plays=r["plays_accepted"], tower_diff=r["tower_hp_diff"], mins=r["end_tick"] / 1200.0,
                 el_play=(sum(v["plays"] * v["elixir_at_play"] for v in ec.values() if v.get("elixir_at_play") is not None) / n_pl) if n_pl else None,
-                push_el=pu.get("big_elixir_at_start", []))
+                push_el=pu.get("big_elixir_at_start", []), cards=cards_of(r), ph1=sum((r["behaviour"].get("economy") or {}).get("1x", {}).get("plays", 0) for _ in (0,)))
 
 
 D = {a: load(a) for a in ARMS}
@@ -86,3 +93,6 @@ for a in ARMS:
     ea = [x["el_play"] for x in A if x["el_play"] is not None]; eb = [y["el_play"] for y in B if y["el_play"] is not None]
     print(f"   elixir at big-push start: base {sum(pa) / max(len(pa), 1):.2f} (n={len(pa)}) arm {sum(pb) / max(len(pb), 1):.2f} (n={len(pb)}); "
           f"elixir at my plays: base {sum(ea) / max(len(ea), 1):.2f} arm {sum(eb) / max(len(eb), 1):.2f}")
+    allc = sorted({c for x in A + B for c in x["cards"]})
+    print("   plays per match by card (base -> arm): " + ", ".join(
+        f"{c} {sum(x['cards'].get(c, 0) for x in A) / len(A):.2f}->{sum(y['cards'].get(c, 0) for y in B) / len(B):.2f}" for c in allc))

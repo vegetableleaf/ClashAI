@@ -1,0 +1,73 @@
+base matches 480; arms: base 480, x10 480, x15 480, x20 480, x25 480
+
+=== x10 (X=0.10) vs base, paired n=480 (evo 240, lad 240)
+wins base 323.0 -> 303.0 (-20.0) | better 69 worse 89 sign p=0.130 | delta win rate -0.042 [-0.092,+0.010]  non-inferior(-0.03): False
+   evo: base 150.0 arm 148.0 better 47 worse 49
+   lad: base 173.0 arm 155.0 better 22 worse 40
+   my tower HP lost / match                   base 3516.090 arm 3776.429 delta +260.340 [+45.952,+478.885]
+   my towers fallen / match                   base    0.398 arm    0.431 delta +0.033 [-0.023,+0.094]
+   three-crown losses / match                 base    0.029 arm    0.025 delta -0.004 [-0.021,+0.013]
+   run-over losses / match (proxy)            base    0.215 arm    0.242 delta +0.027 [-0.021,+0.073]
+   run-over falls / match (proxy)             base    0.244 arm    0.269 delta +0.025 [-0.027,+0.077]
+   M4 STRICT runs / match                     base    1.960 arm    1.183 delta -0.777 [-0.912,-0.650]
+   M4 STRICT seconds / match                  base    6.324 arm    3.006 delta -3.319 [-3.760,-2.896]
+   HP lost inside M4 runs / match             base  931.844 arm  422.919 delta -508.925 [-599.650,-420.275]
+   card plays / match                         base   39.758 arm   43.352 delta +3.594 [+2.017,+5.133]
+   tower HP diff (for - against) / match      base  247.754 arm   96.092 delta -151.662 [-423.748,+89.727]
+   M4 STRICT runs per 10 min: base 5.28 arm 3.07
+   elixir at big-push start: base 4.98 (n=1449) arm 4.88 (n=1570); elixir at my plays: base 6.67 arm 6.33
+   plays per match by card (base -> arm): IceWizard 6.66->7.29, Knight 6.96->7.64, Log 5.89->6.76, Rocket 1.42->1.35, Skeletons 6.99->7.75, Tesla 5.72->5.91, Tornado 2.19->2.90, Xbow 3.91->3.75
+
+=== x15 (X=0.15) vs base, paired n=480 (evo 240, lad 240)
+wins base 323.0 -> 305.0 (-18.0) | better 66 worse 84 sign p=0.165 | delta win rate -0.037 [-0.090,+0.015]  non-inferior(-0.03): False
+   evo: base 150.0 arm 155.0 better 45 worse 40
+   lad: base 173.0 arm 150.0 better 21 worse 44
+   my tower HP lost / match                   base 3516.090 arm 3723.144 delta +207.054 [+17.050,+393.673]
+   my towers fallen / match                   base    0.398 arm    0.429 delta +0.031 [-0.025,+0.094]
+   three-crown losses / match                 base    0.029 arm    0.025 delta -0.004 [-0.019,+0.010]
+   run-over losses / match (proxy)            base    0.215 arm    0.246 delta +0.031 [-0.019,+0.079]
+   run-over falls / match (proxy)             base    0.244 arm    0.271 delta +0.027 [-0.023,+0.077]
+   M4 STRICT runs / match                     base    1.960 arm    1.315 delta -0.646 [-0.762,-0.525]
+   M4 STRICT seconds / match                  base    6.324 arm    3.548 delta -2.776 [-3.167,-2.386]
+   HP lost inside M4 runs / match             base  931.844 arm  485.490 delta -446.354 [-530.910,-367.877]
+   card plays / match                         base   39.758 arm   42.456 delta +2.698 [+1.302,+4.054]
+   tower HP diff (for - against) / match      base  247.754 arm  144.510 delta -103.244 [-327.346,+122.562]
+   M4 STRICT runs per 10 min: base 5.28 arm 3.44
+   elixir at big-push start: base 4.98 (n=1449) arm 4.86 (n=1602); elixir at my plays: base 6.67 arm 6.42
+   plays per match by card (base -> arm): IceWizard 6.66->7.14, Knight 6.96->7.45, Log 5.89->6.56, Rocket 1.42->1.39, Skeletons 6.99->7.50, Tesla 5.72->5.93, Tornado 2.19->2.67, Xbow 3.91->3.81
+
+=== x20 (X=0.20) vs base, paired n=480 (evo 240, lad 240)
+wins base 323.0 -> 338.0 (+15.0) | better 78 worse 63 sign p=0.238 | delta win rate +0.031 [-0.017,+0.081]  non-inferior(-0.03): True
+   evo: base 150.0 arm 163.0 better 49 worse 36
+   lad: base 173.0 arm 175.0 better 29 worse 27
+   my tower HP lost / match                   base 3516.090 arm 3582.992 delta +66.902 [-101.333,+246.052]
+   my towers fallen / match                   base    0.398 arm    0.352 delta -0.046 [-0.100,+0.008]
+   three-crown losses / match                 base    0.029 arm    0.015 delta -0.015 [-0.029,-0.002]
+   run-over losses / match (proxy)            base    0.215 arm    0.185 delta -0.029 [-0.077,+0.017]
+   run-over falls / match (proxy)             base    0.244 arm    0.210 delta -0.033 [-0.079,+0.010]
+   M4 STRICT runs / match                     base    1.960 arm    1.465 delta -0.496 [-0.615,-0.385]
+   M4 STRICT seconds / match                  base    6.324 arm    4.251 delta -2.073 [-2.430,-1.713]
+   HP lost inside M4 runs / match             base  931.844 arm  598.879 delta -332.965 [-407.458,-259.235]
+   card plays / match                         base   39.758 arm   42.731 delta +2.973 [+1.646,+4.365]
+   tower HP diff (for - against) / match      base  247.754 arm  364.167 delta +116.412 [-86.173,+318.396]
+   M4 STRICT runs per 10 min: base 5.28 arm 3.81
+   elixir at big-push start: base 4.98 (n=1449) arm 4.92 (n=1591); elixir at my plays: base 6.67 arm 6.48
+   plays per match by card (base -> arm): IceWizard 6.66->7.16, Knight 6.96->7.50, Log 5.89->6.58, Rocket 1.42->1.49, Skeletons 6.99->7.47, Tesla 5.72->6.00, Tornado 2.19->2.70, Xbow 3.91->3.83
+
+=== x25 (X=0.25) vs base, paired n=480 (evo 240, lad 240)
+wins base 323.0 -> 332.0 (+9.0) | better 68 worse 59 sign p=0.478 | delta win rate +0.019 [-0.025,+0.062]  non-inferior(-0.03): True
+   evo: base 150.0 arm 164.0 better 42 worse 28
+   lad: base 173.0 arm 168.0 better 26 worse 31
+   my tower HP lost / match                   base 3516.090 arm 3574.912 delta +58.823 [-98.077,+223.244]
+   my towers fallen / match                   base    0.398 arm    0.373 delta -0.025 [-0.079,+0.027]
+   three-crown losses / match                 base    0.029 arm    0.019 delta -0.010 [-0.025,+0.004]
+   run-over losses / match (proxy)            base    0.215 arm    0.215 delta +0.000 [-0.044,+0.044]
+   run-over falls / match (proxy)             base    0.244 arm    0.246 delta +0.002 [-0.044,+0.046]
+   M4 STRICT runs / match                     base    1.960 arm    1.619 delta -0.342 [-0.450,-0.240]
+   M4 STRICT seconds / match                  base    6.324 arm    4.934 delta -1.391 [-1.705,-1.087]
+   HP lost inside M4 runs / match             base  931.844 arm  710.308 delta -221.535 [-291.225,-155.796]
+   card plays / match                         base   39.758 arm   41.885 delta +2.127 [+0.844,+3.354]
+   tower HP diff (for - against) / match      base  247.754 arm  358.298 delta +110.544 [-75.721,+306.396]
+   M4 STRICT runs per 10 min: base 5.28 arm 4.26
+   elixir at big-push start: base 4.98 (n=1449) arm 4.94 (n=1520); elixir at my plays: base 6.67 arm 6.52
+   plays per match by card (base -> arm): IceWizard 6.66->7.07, Knight 6.96->7.32, Log 5.89->6.38, Rocket 1.42->1.39, Skeletons 6.99->7.36, Tesla 5.72->5.92, Tornado 2.19->2.54, Xbow 3.91->3.90
