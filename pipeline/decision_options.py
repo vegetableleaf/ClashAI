@@ -30,6 +30,7 @@ class DecisionOptions:
     xbow_class: str = 'argmax'
     xbow_class_floor: float = 0.2
     log_aim: str = 'argmax'
+    log_air: str = 'off'                    # 'retarget' / 'block': a Log whose roll corridor holds only flyers (log_air_cell)
     gate_decode: str = 'threshold'          # 'hazard' / 'hazard_below_tau': execute the gate's learned play RATE (W4)
     gate_hazard_min_elixir: float = 0.0     # hazard draws only at own elixir >= this (0 = everywhere)
     gate_hazard_quiet: bool = False         # hazard draws only with no enemy unit on the board (public bodies)
@@ -62,6 +63,8 @@ class DecisionOptions:
             raise ValueError('xbow_class_floor must be in [0, 0.5]')
         if self.log_aim not in ('argmax', 'log_barrel'):
             raise ValueError('log_aim must be argmax or log_barrel')
+        if self.log_air not in ('off', 'retarget', 'block'):
+            raise ValueError('log_air must be off, retarget or block')
         if self.gate_decode not in ('threshold', 'hazard', 'hazard_below_tau'):
             raise ValueError('gate_decode must be threshold, hazard or hazard_below_tau')
         if not math.isfinite(self.gate_hazard_min_elixir) or not 0 <= self.gate_hazard_min_elixir <= 10:
@@ -87,7 +90,12 @@ class DecisionOptions:
         return (self.card_choice != 'argmax' or self.spell_aim != 'argmax' or self.tau_phase is not None
                 or self.xbow_class != 'argmax' or self.log_aim != 'argmax' or self.gate_decode != 'threshold'
                 or self.lethal_rocket != 'off' or self.xbow_dead_lane != 'allow' or self.rocket_dead_target != 'allow'
-                or self.tau_threatened is not None)
+                or self.tau_threatened is not None or self.log_air != 'off')
+
+    @property
+    def uses_barrels(self):
+        """The Goblin Barrel landing points are read (log_barrel's aim; log_air's exclusion)."""
+        return self.log_aim != 'argmax' or self.log_air != 'off'
 
 
 def options_from_config(cfg=None):
@@ -112,6 +120,12 @@ def add_arguments(parser):
                         help='log_barrel: with an enemy Goblin Barrel in flight (visible target), aim the Log / '
                              'Barbarian Barrel at the cells whose rolling corridor covers its landing point, '
                              'highest learned cell probability among them; else the plain argmax')
+    parser.add_argument('--log-air', choices=('off', 'retarget', 'block'), default='off',
+                        help='owner 2026-10-09 (a Log on air troops): when the Log the model plays has only flyers in its roll '
+                             'corridor (no ground unit, building or enemy tower; a Goblin Barrel landing in it exempts it), '
+                             'retarget: keep the Log but aim it at the cell whose corridor holds the most enemy ground '
+                             'elixir, else at the lower-HP enemy princess (the lethal-Log cast cell), else unchanged; '
+                             'block: do not play it (WAIT, no other card). Lethal Logs are never touched')
     parser.add_argument('--gate-decode', choices=('threshold', 'hazard', 'hazard_below_tau'), default='threshold',
                         help='hazard: per decision play with probability 1 - exp(-rate(p) * step), rate = the play '
                              'rate the gate learned on 2-s WAIT rows (gate_rate); hazard_below_tau: play iff p > tau '
@@ -559,8 +573,99 @@ def log_barrel_cell(logits, corridor, barrels, grid):
     return int(masked.argmax()) if bool(torch.isfinite(masked).any()) else None
 
 
+# ---- log_air (owner 2026-10-09: "played log on yet another air troop"; "log should still be cyclable") ----
+# The Log hits ground only (catalog Log projectile: aoe_to_air false, aoe_to_ground true). A Log whose roll corridor holds
+# only flyers does nothing, but the play can still be right (it cycles the hand), so retarget keeps the cast and re-aims it.
+LOG_AIR_UNIT_RADIUS = 0.5       # tiles: a unit is in the corridor when its centre is within this of the rolling box
+LOG_AIR_UNKNOWN_VALUE = 0.5     # elixir credited to a ground body the catalog has no card row for (sub-spawns)
+LOG_AIR_BLOCKED = -2            # choose_cells result: the Log is not played at all (block mode; the caller WAITs)
+
+
+@lru_cache(maxsize=1)
+def log_air_traits():
+    """{vocab id: (flying, ground elixir value)} for every troop / building class. Flying = catalog flying_height > 0
+    (the base class for evolution / hero forms; Lava Pups added: a sub-spawn with no card row). Value = card elixir / body
+    count (a Skeleton 1/3, a Tesla 4). A class with no row is ground at LOG_AIR_UNKNOWN_VALUE: an unknown body can only
+    make the gate refuse to act, never invent a flyer."""
+    import json
+    from . import vocab
+    from .body_identity import CATALOG
+    rows = {}
+    for c in json.loads(CATALOG.read_text(encoding='utf-8'))['cards']:
+        rows.setdefault(vocab.engine_key(c['name']), c)
+    out = {}
+    for i, name in enumerate(vocab.UNIT_VOCAB):
+        if vocab.is_spell(i):
+            continue
+        c = rows.get(name) or rows.get(vocab.base_key(name))
+        out[i] = ((name == 'lava_pups', LOG_AIR_UNKNOWN_VALUE) if c is None else
+                  ((c.get('flying_height') or 0) > 0, float(c['elixir']) / max(int(c.get('count') or 1), 1)))
+    return out
+
+
+def log_air_board(bs):
+    """(ground, air, towers) of a BoardState's enemy side, in tiles of my frame (the Log's): ground = ((x, y, elixir
+    value), ...) troops and buildings (side != 0, as enemy_body_tiles), air = ((x, y), ...), towers = alive enemy
+    ((x, y, radius, hp fraction, lane or None for the king), ...). Public data only."""
+    traits = log_air_traits()
+    ground, air = [], []
+    for u in bs.units:
+        if int(u.side) == 0 or int(u.cls) not in traits:
+            continue
+        flying, value = traits[int(u.cls)]
+        x, y = float(u.x) * 18.0, float(u.y) * 32.0
+        (air.append((x, y)) if flying else ground.append((x, y, value)))
+    from .public_geometry import constants
+    radius = constants()['tower_radius']
+    towers = tuple((tx, ty, float(radius['KingTower' if t.kind == 'king' else 'PrincessTower']) / 1000.0,
+                    1.0 if t.hp_frac is None else float(t.hp_frac), t.lane)
+                   for t, (tx, ty) in zip(bs.towers[3:6], ENEMY_TOWERS_TILES) if t.alive)
+    return tuple(ground), tuple(air), towers
+
+
+def _covers(x, y, pts, corridor, pad):
+    """[len(x), len(pts)] bool: the point lies in the Log's rolling box cast at (x, y) (it rolls toward decreasing y)."""
+    half, depth, reach = corridor
+    pts = np.asarray(pts, dtype=np.float64).reshape(-1, 2)
+    ahead = y[:, None] - pts[None, :, 1]
+    return (np.abs(x[:, None] - pts[None, :, 0]) <= half + pad) & (ahead >= -(depth + pad)) & (ahead <= reach + pad)
+
+
+def log_air_cell(logits, corridor, board, barrels, grid, mode, cell):
+    """-> the cell for a Log the model aims at ``cell``: ``cell`` unless its corridor holds a flyer and no ground body,
+    building, enemy tower or Goblin Barrel landing (it would hit nothing). Then block -> LOG_AIR_BLOCKED; retarget -> (1)
+    the legal cell whose corridor holds the most enemy ground elixir (highest logit among ties), else (2) the cast cell
+    of the lower-HP alive enemy princess (lethal_log_cell, tower x at LOG_CAST_Y_TILES: the roll ends at the tower; equal
+    HP -> logit), else ``cell``. Legal = finite logit (live masks illegal cells) and y >= LOG_CAST_Y_TILES (a Log is cast
+    in my own territory). Static geometry like log_barrel_cell: no travel time, no tap snap."""
+    ground, air, towers = board
+    x, y = cell_centres_tiles(grid)
+    at, pad = slice(cell, cell + 1), LOG_AIR_UNIT_RADIUS
+    if (not air or not _covers(x[at], y[at], air, corridor, pad).any()
+            or _covers(x[at], y[at], [g[:2] for g in ground], corridor, pad).any()
+            or any(_covers(x[at], y[at], [t[:2]], corridor, t[2]).any() for t in towers)
+            or _covers(x[at], y[at], [(bx * 18.0, by * 32.0) for bx, by in barrels or ()], corridor, 0.0).any()):
+        return cell
+    if mode == 'block':
+        return LOG_AIR_BLOCKED
+    legal = np.isfinite(logits.detach().cpu().numpy()) & (y >= LOG_CAST_Y_TILES - 1e-6)
+    best = None
+    if ground:
+        value = _covers(x, y, [g[:2] for g in ground], corridor, pad) @ np.array([g[2] for g in ground])
+        if (value[legal] > 0).any():
+            best = legal & (value >= value[legal].max() - 1e-9)
+    if best is None:
+        chip = [(t[3], lethal_log_cell(t[4], grid)) for t in towers if t[4] is not None]
+        chip = [(hp, c) for hp, c in chip if legal[c]]
+        if not chip:
+            return cell
+        best = np.zeros(len(x), dtype=bool)
+        best[[c for hp, c in chip if hp == min(h for h, _ in chip)]] = True
+    return int(logits.masked_fill(~torch.as_tensor(best, device=logits.device), -torch.inf).argmax())
+
+
 def choose_cells(logits, card_names, options, *, rngs=None, enemy_alive=None, grid=None, barrels=None,
-                 rocket_boards=None):
+                 rocket_boards=None, log_air_boards=None, log_air_moved=None):
     """Aim only after card selection. Other cards retain exact argmax behaviour.
     ``barrels`` (log_aim): per row, the enemy Goblin Barrel landing points from ``barrel_landings``.
     xbow_dead_lane 'block': X-Bow rows lose ``xbow_dead_lane_cells`` before any X-Bow aim; a row with no finite cell
@@ -601,6 +706,21 @@ def choose_cells(logits, card_names, options, *, rngs=None, enemy_alive=None, gr
             cell = log_barrel_cell(logits[i], corridor, barrels[i], grid)
             if cell is not None:
                 result[i] = cell
+    if options.log_air != 'off':
+        if len(card_names) != len(logits):
+            raise ValueError('one card identity required per cell-logit row')
+        for i, name in enumerate(card_names):
+            corridor = rolling_corridor(name) if is_log(name) else None
+            if corridor is None or result[i] < 0:
+                continue
+            if log_air_boards is None or grid is None:
+                raise ValueError('log_air requires the per-row enemy board and the grid')
+            cell = log_air_cell(logits[i], corridor, log_air_boards[i], None if barrels is None else barrels[i],
+                                grid, options.log_air, int(result[i]))
+            if cell != int(result[i]):
+                result[i] = cell
+                if log_air_moved is not None:       # the rows the option changed (a log tag; no effect on the decision)
+                    log_air_moved.append(i)
     if options.spell_aim != 'argmax':
         if len(card_names) != len(logits):
             raise ValueError('one card identity required per cell-logit row')
@@ -931,7 +1051,8 @@ def lethal_rocket_choice(options, t_sec, names, allowed, crown_towers, side, gri
 @torch.no_grad()
 def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options, rngs, card_names,
                  t_sec=None, enemy_alive=None, grid=None, projectiles=None, step_s=None, elixir=None,
-                 enemy_units=None, lethal=None, threatened=None, rocket_boards=None, tau_threat=None):
+                 enemy_units=None, lethal=None, threatened=None, rocket_boards=None, tau_threat=None,
+                 log_air_boards=None):
     """Optional branch of e1_eval's live decision; default branch remains untouched.
     ``t_sec`` (tau_phase) and ``enemy_alive`` [(K, L, R) alive] + ``grid`` (xbow_class) are per-row match context;
     ``projectiles`` (log_aim) = each row's model projectile tokens, decoded with the model's own card vocabulary.
@@ -955,6 +1076,7 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
              for r in range(len(allowed))]
     cells = np.full(len(slots), -1, dtype=np.int64)
     ids = np.flatnonzero(playing)
+    log_air_rows = set()                            # rows log_air re-aimed or blocked (why='log_air')
     while len(ids):
         index = torch.as_tensor(ids, device=device)
         sub_enc = {k: v[index] for k, v in enc.items()}
@@ -966,19 +1088,24 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
             raise ValueError('Rocket aim / X-Bow class / Log aim / dead-lane / dead-target blocks require explicit '
                              'public card identities')
         barrels = None
-        if options.log_aim != 'argmax':
+        if options.uses_barrels:
             if projectiles is None:
-                raise ValueError('log_barrel requires the model projectile tokens of every row')
+                raise ValueError('log_barrel / log_air require the model projectile tokens of every row')
             barrel_id = getattr(model, 'gid', {}).get(BARREL_KEY)
             barrels = [barrel_landings(projectiles[r], barrel_id) for r in ids]
+        moved = []
         cells[ids] = choose_cells(logits, names, options, rngs=[rngs[r] for r in ids], grid=grid, barrels=barrels,
                                   enemy_alive=None if enemy_alive is None else [enemy_alive[r] for r in ids],
-                                  rocket_boards=None if rocket_boards is None else [rocket_boards[r] for r in ids]
-                                  ).cpu().numpy()
+                                  rocket_boards=None if rocket_boards is None else [rocket_boards[r] for r in ids],
+                                  log_air_boards=None if log_air_boards is None else [log_air_boards[r] for r in ids],
+                                  log_air_moved=moved).cpu().numpy()
+        log_air_rows.update(int(ids[j]) for j in moved)
+        for r in ids[cells[ids] == LOG_AIR_BLOCKED]:    # block: WAIT, never another card
+            playing[r], cells[r] = False, -1
         # xbow_dead_lane / rocket_dead_target left an X-Bow / Rocket no cell (-1): it is not chosen; the next card by the
         # model's own ranking is (choose_slot without it), else WAIT. Never reached with unmasked SIM logits (neither
         # block ever covers the board).
-        ids = ids[cells[ids] < 0]
+        ids = ids[(cells[ids] < 0) & playing[ids]]
         if len(ids):
             allowed = allowed.copy()
         for r in ids:
@@ -996,6 +1123,8 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
                      'tau_threat' if p[r] > tau[r] and p[r] <= base_tau[r] and options.tau_threatened is not None
                      else 'gate' if p[r] > tau[r] else 'hazard'))
            for r in range(len(slots))]
+    for r in log_air_rows:
+        out[r]['why'] = 'log_air'
     if options.lethal_rocket != 'off':
         if lethal is None or t_sec is None or grid is None or card_names is None:
             raise ValueError('lethal_rocket requires per-row crown towers, decision times, the grid and card names')
@@ -1063,7 +1192,9 @@ def match_kwargs(matches):
             out['lethal'] = [row + ([(m.deck.cards[s], x, y, land * 0.05, hp_after(m._lethal_hp_hist, land))
                                      for land, s, x, y in m.done_plays[-8:]],)
                              for row, m in zip(out['lethal'], matches)]
-    if options.log_aim != 'argmax':     # the very projectile tokens the model saw (gen_row, fv >= 4), as live's batch
+    if options.log_air != 'off':        # the enemy board the Log's corridor is judged on (the decision BoardState, my frame)
+        out.update(grid=cfg['grid'], log_air_boards=[log_air_board(m._cur[1]) for m in matches])
+    if options.uses_barrels:            # the very projectile tokens the model saw (gen_row, fv >= 4), as live's batch
         rows = [getattr(m, '_gen_row', None) for m in matches]
         if any(r is None or 'projectiles' not in r for r in rows):
             raise ValueError('log_barrel requires generalist rows with public projectile tokens (feature_version >= 4)')

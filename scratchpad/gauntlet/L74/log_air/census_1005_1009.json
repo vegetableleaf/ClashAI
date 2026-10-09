@@ -1,0 +1,889 @@
+{
+ "files": 800,
+ "matches_with_log": 727,
+ "logs": 4153,
+ "only_air": 50,
+ "empty": 173,
+ "hits": 3930,
+ "barrel": 11,
+ "cases": [
+  {
+   "file": "20261005_070248",
+   "tick": 1013,
+   "xy": [
+    4.5,
+    20.5
+   ],
+   "retarget": "ground",
+   "value": 9.0,
+   "hand": [
+    "Log",
+    "IceWizard",
+    "Xbow",
+    "Rocket"
+   ]
+  },
+  {
+   "file": "20261005_080525",
+   "tick": 571,
+   "xy": [
+    14.5,
+    24.5
+   ],
+   "retarget": "ground",
+   "value": 5.0,
+   "hand": [
+    "Rocket",
+    "IceWizard",
+    "Knight",
+    "Log"
+   ]
+  },
+  {
+   "file": "20261005_080525",
+   "tick": 1761,
+   "xy": [
+    14.5,
+    24.5
+   ],
+   "retarget": "ground",
+   "value": 7.0,
+   "hand": [
+    "Rocket",
+    "Xbow",
+    "Knight",
+    "Log"
+   ]
+  },
+  {
+   "file": "20261005_082252",
+   "tick": 2008,
+   "xy": [
+    14.5,
+    24.5
+   ],
+   "retarget": "ground",
+   "value": 3.0,
+   "hand": [
+    "Rocket",
+    "Tesla",
+    "Xbow",
+    "Log"
+   ]
+  },
+  {
+   "file": "20261005_082252",
+   "tick": 5000,
+   "xy": [
+    14.5,
+    24.5
+   ],
+   "retarget": "ground",
+   "value": 3.0,
+   "hand": [
+    "Tesla",
+    "Rocket",
+    "Xbow",
+    "Log"
+   ]
+  },
+  {
+   "file": "20261005_130339",
+   "tick": 4007,
+   "xy": [
+    14.5,
+    27.5
+   ],
+   "retarget": "ground",
+   "value": 3.0,
+   "hand": [
+    "Knight",
+    "Log",
+    "Tornado",
+    "Rocket"
+   ]
+  },
+  {
+   "file": "20261005_131214",
+   "tick": 1669,
+   "xy": [
+    3.5,
+    17.5
+   ],
+   "retarget": "ground",
+   "value": 3.0,
+   "hand": [
+    "Rocket",
+    "Tesla",
+    "Tornado",
+    "Log"
+   ]
+  },
+  {
+   "file": "20261005_131214",
+   "tick": 3492,
+   "xy": [
+    14.5,
+    24.5
+   ],
+   "retarget": "chip",
+   "value": 0.0,
+   "hand": [
+    "Rocket",
+    "Xbow",
+    "Tesla",
+    "Log"
+   ]
+  },
+  {
+   "file": "20261006_141406",
+   "tick": 3878,
+   "xy": [
+    14.5,
+    24.5
+   ],
+   "retarget": "chip",
+   "value": 0.0,
+   "hand": [
+    "Log",
+    "Tesla",
+    "Xbow",
+    "Rocket"
+   ]
+  },
+  {
+   "file": "20261006_161450",
+   "tick": 3543,
+   "xy": [
+    14.5,
+    24.5
+   ],
+   "retarget": "ground",
+   "value": 7.0,
+   "hand": [
+    "Tornado",
+    "Tesla",
+    "Log",
+    "Rocket"
+   ]
+  },
+  {
+   "file": "20261006_163209",
+   "tick": 3554,
+   "xy": [
+    14.5,
+    27.5
+   ],
+   "retarget": "ground",
+   "value": 4.0,
+   "hand": [
+    "Tesla",
+    "Rocket",
+    "Xbow",
+    "Log"
+   ]
+  },
+  {
+   "file": "20261006_194412",
+   "tick": 3345,
+   "xy": [
+    14.5,
+    17.5
+   ],
+   "retarget": "unchanged",
+   "value": 0.0,
+   "hand": [
+    "Log",
+    "Tornado",
+    "Rocket",
+    "Tesla"
+   ]
+  },
+  {
+   "file": "20261006_195411",
+   "tick": 3626,
+   "xy": [
+    4.5,
+    20.5
+   ],
+   "retarget": "chip",
+   "value": 0.0,
+   "hand": [
+    "Tesla",
+    "Log",
+    "Rocket",
+    "Xbow"
+   ]
+  },
+  {
+   "file": "20261006_201754",
+   "tick": 2805,
+   "xy": [
+    3.5,
+    24.5
+   ],
+   "retarget": "chip",
+   "value": 0.0,
+   "hand": [
+    "Log",
+    "Tornado",
+    "Xbow",
+    "Rocket"
+   ]
+  },
+  {
+   "file": "20261006_212743",
+   "tick": 263,
+   "xy": [
+    3.5,
+    24.5
+   ],
+   "retarget": "chip",
+   "value": 0.0,
+   "hand": [
+    "IceWizard",
+    "Tornado",
+    "Rocket",
+    "Log"
+   ]
+  },
+  {
+   "file": "20261006_212743",
+   "tick": 2326,
+   "xy": [
+    13.5,
+    24.5
+   ],
+   "retarget": "ground",
+   "value": 3.0,
+   "hand": [
+    "Xbow",
+    "Log",
+    "Rocket",
+    "IceWizard"
+   ]
+  },
+  {
+   "file": "20261007_190250",
+   "tick": 3366,
+   "xy": [
+    14.5,
+    27.5
+   ],
+   "retarget": "ground",
+   "value": 30.0,
+   "hand": [
+    "Xbow",
+    "Tesla",
+    "Rocket",
+    "Log"
+   ]
+  },
+  {
+   "file": "20261007_192405",
+   "tick": 841,
+   "xy": [
+    4.5,
+    22.5
+   ],
+   "retarget": "chip",
+   "value": 0.0,
+   "hand": [
+    "Log",
+    "Tornado",
+    "IceWizard",
+    "Rocket"
+   ]
+  },
+  {
+   "file": "20261007_193113",
+   "tick": 3201,
+   "xy": [
+    14.5,
+    17.5
+   ],
+   "retarget": "chip",
+   "value": 0.0,
+   "hand": [
+    "Xbow",
+    "Log",
+    "Rocket",
+    "Tesla"
+   ]
+  },
+  {
+   "file": "20261007_193710",
+   "tick": 2892,
+   "xy": [
+    11.5,
+    24.5
+   ],
+   "retarget": "chip",
+   "value": 0.0,
+   "hand": [
+    "Knight",
+    "Xbow",
+    "Log",
+    "Rocket"
+   ]
+  },
+  {
+   "file": "20261007_194508",
+   "tick": 1597,
+   "xy": [
+    14.5,
+    27.5
+   ],
+   "retarget": "chip",
+   "value": 0.0,
+   "hand": [
+    "Tornado",
+    "Log",
+    "Rocket",
+    "Xbow"
+   ]
+  },
+  {
+   "file": "20261007_210332",
+   "tick": 1816,
+   "xy": [
+    3.5,
+    24.5
+   ],
+   "retarget": "ground",
+   "value": 4.0,
+   "hand": [
+    "Log",
+    "Rocket",
+    "Tornado",
+    "Knight"
+   ]
+  },
+  {
+   "file": "20261007_215755",
+   "tick": 1362,
+   "xy": [
+    3.5,
+    24.5
+   ],
+   "retarget": "ground",
+   "value": 2.0,
+   "hand": [
+    "Log",
+    "Rocket",
+    "Tesla",
+    "Xbow"
+   ]
+  },
+  {
+   "file": "20261007_220747",
+   "tick": 799,
+   "xy": [
+    3.5,
+    24.5
+   ],
+   "retarget": "chip",
+   "value": 0.0,
+   "hand": [
+    "Log",
+    "Tornado",
+    "Xbow",
+    "Knight"
+   ]
+  },
+  {
+   "file": "20261007_221758",
+   "tick": 3710,
+   "xy": [
+    3.5,
+    27.5
+   ],
+   "retarget": "ground",
+   "value": 5.0,
+   "hand": [
+    "IceWizard",
+    "Log",
+    "Rocket",
+    "Xbow"
+   ]
+  },
+  {
+   "file": "20261007_234433",
+   "tick": 2635,
+   "xy": [
+    3.5,
+    24.5
+   ],
+   "retarget": "ground",
+   "value": 10.0,
+   "hand": [
+    "Log",
+    "Rocket",
+    "Xbow",
+    "Tornado"
+   ]
+  },
+  {
+   "file": "20261007_234433",
+   "tick": 4147,
+   "xy": [
+    14.5,
+    27.5
+   ],
+   "retarget": "ground",
+   "value": 7.0,
+   "hand": [
+    "Tesla",
+    "Rocket",
+    "Log",
+    "IceWizard"
+   ]
+  },
+  {
+   "file": "20261007_235756",
+   "tick": 3083,
+   "xy": [
+    11.5,
+    24.5
+   ],
+   "retarget": "ground",
+   "value": 6.0,
+   "hand": [
+    "IceWizard",
+    "Xbow",
+    "Log",
+    "Rocket"
+   ]
+  },
+  {
+   "file": "20261008_000844",
+   "tick": 3993,
+   "xy": [
+    14.5,
+    17.5
+   ],
+   "retarget": "ground",
+   "value": 7.0,
+   "hand": [
+    "Log",
+    "Tesla",
+    "Knight",
+    "Rocket"
+   ]
+  },
+  {
+   "file": "20261008_002006",
+   "tick": 5494,
+   "xy": [
+    13.5,
+    24.5
+   ],
+   "retarget": "ground",
+   "value": 5.0,
+   "hand": [
+    "Xbow",
+    "Tesla",
+    "Rocket",
+    "Log"
+   ]
+  },
+  {
+   "file": "20261008_004223",
+   "tick": 3040,
+   "xy": [
+    14.5,
+    24.5
+   ],
+   "retarget": "ground",
+   "value": 4.0,
+   "hand": [
+    "Rocket",
+    "Log",
+    "Tesla",
+    "Tornado"
+   ]
+  },
+  {
+   "file": "20261008_004223",
+   "tick": 5202,
+   "xy": [
+    3.5,
+    24.5
+   ],
+   "retarget": "ground",
+   "value": 5.0,
+   "hand": [
+    "Rocket",
+    "Log",
+    "Xbow",
+    "Tesla"
+   ]
+  },
+  {
+   "file": "20261008_004223",
+   "tick": 5265,
+   "xy": [
+    3.5,
+    24.5
+   ],
+   "retarget": "ground",
+   "value": 5.0,
+   "hand": [
+    "Rocket",
+    "Log",
+    "Xbow",
+    "Tesla"
+   ]
+  },
+  {
+   "file": "20261008_004702",
+   "tick": 3539,
+   "xy": [
+    14.5,
+    27.5
+   ],
+   "retarget": "ground",
+   "value": 6.0,
+   "hand": [
+    "Xbow",
+    "Tesla",
+    "Rocket",
+    "Log"
+   ]
+  },
+  {
+   "file": "20261008_005338",
+   "tick": 3952,
+   "xy": [
+    14.5,
+    27.5
+   ],
+   "retarget": "chip",
+   "value": 0.0,
+   "hand": [
+    "Rocket",
+    "Xbow",
+    "Log",
+    "Tesla"
+   ]
+  },
+  {
+   "file": "20261008_005749",
+   "tick": 2113,
+   "xy": [
+    14.5,
+    24.5
+   ],
+   "retarget": "ground",
+   "value": 45.0,
+   "hand": [
+    "Xbow",
+    "Tornado",
+    "Rocket",
+    "Log"
+   ]
+  },
+  {
+   "file": "20261008_012624",
+   "tick": 2417,
+   "xy": [
+    14.5,
+    24.5
+   ],
+   "retarget": "chip",
+   "value": 0.0,
+   "hand": [
+    "Rocket",
+    "Tornado",
+    "Knight",
+    "Log"
+   ]
+  },
+  {
+   "file": "20261008_023452",
+   "tick": 4798,
+   "xy": [
+    14.5,
+    17.5
+   ],
+   "retarget": "ground",
+   "value": 5.0,
+   "hand": [
+    "Log",
+    "IceWizard",
+    "Tornado",
+    "Rocket"
+   ]
+  },
+  {
+   "file": "20261008_043206",
+   "tick": 842,
+   "xy": [
+    14.5,
+    22.5
+   ],
+   "retarget": "chip",
+   "value": 0.0,
+   "hand": [
+    "Rocket",
+    "Log",
+    "Tornado",
+    "Xbow"
+   ]
+  },
+  {
+   "file": "20261008_050511",
+   "tick": 1936,
+   "xy": [
+    14.5,
+    24.5
+   ],
+   "retarget": "chip",
+   "value": 0.0,
+   "hand": [
+    "Rocket",
+    "IceWizard",
+    "Log",
+    "Xbow"
+   ]
+  },
+  {
+   "file": "20261008_053140",
+   "tick": 2633,
+   "xy": [
+    15.5,
+    17.5
+   ],
+   "retarget": "ground",
+   "value": 10.0,
+   "hand": [
+    "Rocket",
+    "Tornado",
+    "Xbow",
+    "Log"
+   ]
+  },
+  {
+   "file": "20261008_121128",
+   "tick": 1048,
+   "xy": [
+    3.5,
+    24.5
+   ],
+   "retarget": "ground",
+   "value": 3.0,
+   "hand": [
+    "Xbow",
+    "Tesla",
+    "Rocket",
+    "Log"
+   ]
+  },
+  {
+   "file": "20261008_191338",
+   "tick": 2723,
+   "xy": [
+    3.5,
+    23.5
+   ],
+   "retarget": "ground",
+   "value": 5.0,
+   "hand": [
+    "Log",
+    "Xbow",
+    "Skeletons",
+    "Knight"
+   ]
+  },
+  {
+   "file": "20261009_005150",
+   "tick": 564,
+   "xy": [
+    14.5,
+    23.5
+   ],
+   "retarget": "ground",
+   "value": 5.0,
+   "hand": [
+    "Log",
+    "Knight",
+    "IceWizard",
+    "Rocket"
+   ]
+  },
+  {
+   "file": "20261009_055110",
+   "tick": 2554,
+   "xy": [
+    14.5,
+    27.5
+   ],
+   "retarget": "ground",
+   "value": 6.0,
+   "hand": [
+    "Log",
+    "Tesla",
+    "Tornado",
+    "Skeletons"
+   ]
+  },
+  {
+   "file": "20261009_061451",
+   "tick": 1495,
+   "xy": [
+    4.5,
+    21.5
+   ],
+   "retarget": "chip",
+   "value": 0.0,
+   "hand": [
+    "Log",
+    "Rocket",
+    "Xbow",
+    "Knight"
+   ]
+  },
+  {
+   "file": "20261009_083059",
+   "tick": 3351,
+   "xy": [
+    3.5,
+    27.5
+   ],
+   "retarget": "chip",
+   "value": 0.0,
+   "hand": [
+    "Tesla",
+    "Xbow",
+    "Rocket",
+    "Log"
+   ]
+  },
+  {
+   "file": "20261009_092400",
+   "tick": 1427,
+   "xy": [
+    3.5,
+    22.5
+   ],
+   "retarget": "chip",
+   "value": 0.0,
+   "hand": [
+    "Xbow",
+    "Tesla",
+    "Rocket",
+    "Log"
+   ]
+  },
+  {
+   "file": "20261009_130607",
+   "tick": 1001,
+   "xy": [
+    3.5,
+    22.5
+   ],
+   "retarget": "chip",
+   "value": 0.0,
+   "hand": [
+    "Log",
+    "Xbow",
+    "Rocket",
+    "Tesla"
+   ]
+  },
+  {
+   "file": "20261009_130607",
+   "tick": 1738,
+   "xy": [
+    3.5,
+    22.5
+   ],
+   "retarget": "ground",
+   "value": 1.0,
+   "hand": [
+    "Log",
+    "Xbow",
+    "Rocket",
+    "Tesla"
+   ]
+  }
+ ],
+ "retarget": {
+  "ground": 31,
+  "chip": 18,
+  "unchanged": 1
+ },
+ "after_only_air": {
+  "Skeletons": 13,
+  "Tesla": 10,
+  "Knight": 7,
+  "Tornado": 7,
+  "IceWizard": 6,
+  "Xbow": 3
+ },
+ "after_only_air_attacks_air": {
+  "False": 30,
+  "True": 16
+ },
+ "after_all": {
+  "Skeletons": 983,
+  "Knight": 873,
+  "IceWizard": 717,
+  "Tesla": 683,
+  "Xbow": 373,
+  "Tornado": 242,
+  "Rocket": 138
+ },
+ "units_in_path_only_air": {
+  "skeleton_barrel": 106,
+  "minion_horde": 26,
+  "bats": 23,
+  "lava_pups": 18,
+  "clone": 11,
+  "minions": 9,
+  "balloon": 9,
+  "lava_hound": 4,
+  "inferno_dragon": 4,
+  "mega_minion": 3,
+  "baby_dragon": 2,
+  "phoenix": 2,
+  "electro_dragon": 2,
+  "flying_machine": 1
+ },
+ "seen_130607": [
+  {
+   "file": "20261009_130607",
+   "tick": 1001,
+   "xy": [
+    3.5,
+    22.5
+   ],
+   "retarget": "chip",
+   "value": 0.0,
+   "hand": [
+    "Log",
+    "Xbow",
+    "Rocket",
+    "Tesla"
+   ]
+  },
+  {
+   "file": "20261009_130607",
+   "tick": 1738,
+   "xy": [
+    3.5,
+    22.5
+   ],
+   "retarget": "ground",
+   "value": 1.0,
+   "hand": [
+    "Log",
+    "Xbow",
+    "Rocket",
+    "Tesla"
+   ]
+  }
+ ],
+ "retarget_value_mean": 4.46,
+ "logs_per_match_mean": 5.19125
+}

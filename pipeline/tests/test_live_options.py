@@ -328,3 +328,21 @@ def test_check_json_reports_card_levels(tmp_path):
     assert out.returncode == 0, out.stdout + out.stderr
     check = json.loads(out.stdout.strip().splitlines()[-1])
     assert check['decision_options']['card_levels'] == [['IceWizard', 14], ['Knight', 16], ['Rocket', 16], ['Xbow', 16]]
+
+
+def test_log_air_deployable_from_the_file(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED_FILE.rstrip('\n') + ' --log-air retarget\n')
+    opts, rec = parse([], f)
+    assert opts.log_air == 'retarget' and rec['from_file']['log_air'] == 'retarget' and opts.log_aim == 'log_barrel'
+    opts, rec = parse(['--log-air', 'block'], f)                                   # explicit wins
+    assert opts.log_air == 'block' and rec['explicit'] == ['log_air']
+    assert parse([], REPO / 'scratchpad/gauntlet/L70/live/LIVE_OPTIONS')[0].log_air == 'off'   # not deployed
+
+
+@pytest.mark.skipif(not CKPT.is_file(), reason='live checkpoint not present')
+def test_check_json_reports_log_air(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED_FILE.rstrip('\n') + ' --log-air retarget\n')
+    out = run_live_play('--check', '--ckpt', str(CKPT), '--live-options-file', str(f))
+    assert out.returncode == 0, out.stdout + out.stderr
+    check = json.loads(out.stdout.strip().splitlines()[-1])
+    assert check['check'] == 'LIVE_CHECK_PASS' and check['decision_options']['log_air'] == 'retarget'
