@@ -37,7 +37,8 @@ def board(r):
     units = tuple(Unit(c, 1, x / 18.0, y / 32.0, h, None, None, 1.0) for c, x, y, h in r['b'])
     towers = tuple(Tower(s, k, l, h, bool(al)) for (s, k, l), (h, al) in zip(TOWERS, r.get('tw', [])))
     mine = tuple(Unit(c, 0, x / 18.0, y / 32.0, h, None, None, 1.0) for c, x, y, h in r.get('m', []))
-    return SimpleNamespace(units=units + mine, t_sec=r['tick'] * 0.05, my_elixir=r['el'], towers=towers)
+    return SimpleNamespace(units=units + mine, t_sec=r['tick'] * 0.05, my_elixir=r['el'], towers=towers,
+                           double_elixir=r['tick'] * 0.05 >= 120.0, overtime=r['tick'] * 0.05 >= 180.0)
 
 
 def first_triggers(item):
