@@ -5102,6 +5102,14 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   new branch (conservative earliest-hit tick + snapshots every decision).
 > * rdef_c RESUMED on the VM ~04:56 (STOP removed; `run_rdef_c.sh rdef_c --resume`, learner pid 2699495) + eval_chain2.sh
 >   (evals every 10 updates -> ~/rl_defence/eval/cmp_*.txt). Ship bar unchanged: beat live on SIM v3, pro agreement tripwire.
+> * **Sneaky lock (ac36f570, branch worktree-agent-ac36f57031761b23a, e133e01): NOT deployed.** RoyaleSim: X-Bow keeps its
+>   nearest lock; Tornado drags ~3.1 t; works only with the blocker within ~3 t of reach (12.5-13.0 t). Tornado touching
+>   the king woke it every time in SIM (real game untested). Live vs pros: blocked-X-Bow + pullable + Tornado affordable
+>   1.03 / 1.74 per match; Tornado pulls the blocker out 6.7% [2.9, 14.7] live vs 19.0% [15.4, 23.1] pros (controls 4.5 /
+>   3.5%). Scenario-bank guided BC (opt-in scenario_bank; off byte-identical): held-out (466) lock transfer .4% -> 1.3%
+>   (p .02), pulled out 1.1% -> 7.5%, king woken 2.5% -> .5%; SIM v3 960: i_u0004 615 (-2.1 [-5.8, +1.7]), i_u0008 627
+>   (-.8 [-4.5, +2.8]) vs 635 -> fails the -3 pp bound. Plain PPO inert; full-param run -29 wins. Next (running):
+>   anchor Tornado placement on non-blocked states; report ~11:00.
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
