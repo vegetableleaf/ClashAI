@@ -1,0 +1,16 @@
+
+=== towerref_w2: 107 matches with model_towers
+  Rocket  confirmed   133 | over a dead tower    5 | over a dead tower AND empty    4 = 0.037/match (3.0% of Rockets; 1x/2x/OT [0, 3, 1]; wasted elixir 24, 0.22/match) | centre-only variant 3 | via lethal rule 0
+  Log     confirmed   488 | over a dead tower    7 | over a dead tower AND empty    2 = 0.019/match (0.4% of Logs; 1x/2x/OT [0, 0, 2]; wasted elixir 4, 0.04/match) | centre-only variant 0 | via lethal rule 0
+  Tornado confirmed   194 | over a dead tower    3 | over a dead tower AND empty    1 = 0.009/match (0.5% of Tornados; 1x/2x/OT [0, 1, 0]; wasted elixir 3, 0.03/match) | centre-only variant 1 | via lethal rule 0
+
+=== ALL: 589 matches with model_towers
+  Rocket  confirmed   334 | over a dead tower   24 | over a dead tower AND empty   16 = 0.027/match (4.8% of Rockets; 1x/2x/OT [3, 10, 3]; wasted elixir 96, 0.16/match) | centre-only variant 14 | via lethal rule 0
+  Log     confirmed  3047 | over a dead tower  141 | over a dead tower AND empty   28 = 0.048/match (0.9% of Logs; 1x/2x/OT [1, 12, 15]; wasted elixir 56, 0.10/match) | centre-only variant 4 | via lethal rule 0
+  Tornado confirmed  1278 | over a dead tower   78 | over a dead tower AND empty    8 = 0.014/match (0.6% of Tornados; 1x/2x/OT [0, 4, 4]; wasted elixir 24, 0.04/match) | centre-only variant 8 | via lethal rule 0
+
+examples (towerref_w2 Rockets):
+   {'file': 'live_play_20261008_134526.jsonl', 'fam': 'towerref_w2', 'card': 'Rocket', 'tick': 3404, 'ph': '2x', 'xy': [12.5, 6.5], 'dead_hit': True, 'dead_centre': False, 'empty': True, 'n_bodies': 0, 'why': None, 'lethal': False}
+   {'file': 'live_play_20261008_135127.jsonl', 'fam': 'towerref_w2', 'card': 'Rocket', 'tick': 3499, 'ph': '2x', 'xy': [4.5, 5.5], 'dead_hit': True, 'dead_centre': True, 'empty': True, 'n_bodies': 0, 'why': None, 'lethal': False}
+   {'file': 'live_play_20261008_232056.jsonl', 'fam': 'towerref_w2', 'card': 'Rocket', 'tick': 2567, 'ph': '2x', 'xy': [14.0, 7.5], 'dead_hit': True, 'dead_centre': True, 'empty': True, 'n_bodies': 0, 'why': None, 'lethal': False}
+   {'file': 'live_play_20261008_232056.jsonl', 'fam': 'towerref_w2', 'card': 'Rocket', 'tick': 4643, 'ph': 'OT', 'xy': [13.5, 6.0], 'dead_hit': True, 'dead_centre': True, 'empty': True, 'n_bodies': 0, 'why': None, 'lethal': False}

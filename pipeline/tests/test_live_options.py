@@ -236,6 +236,16 @@ def test_xbow_dead_lane_deployable_from_the_file(tmp_path):
     assert parse([], REPO / 'scratchpad/gauntlet/L70/live/LIVE_OPTIONS')[0].xbow_dead_lane == 'block'   # bundle 2 deploys it
 
 
+def test_rocket_dead_target_deployable_from_the_file(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED.rstrip('\n') + ' --rocket-dead-target block\n')
+    opts, rec = parse([], f)
+    assert opts.rocket_dead_target == 'block' and rec['from_file']['rocket_dead_target'] == 'block'
+    assert opts.spell_aim == 'rocket_area'
+    opts, rec = parse(['--rocket-dead-target', 'allow'], f)                    # explicit wins
+    assert opts.rocket_dead_target == 'allow' and rec['explicit'] == ['rocket_dead_target']
+    assert parse([], REPO / 'scratchpad/gauntlet/L70/live/LIVE_OPTIONS')[0].rocket_dead_target == 'allow'   # not deployed
+
+
 @pytest.mark.skipif(not CKPT.is_file(), reason='live checkpoint not present')
 @pytest.mark.parametrize('mode', ['ot', 'ot_behind'])
 def test_check_json_reports_lethal_rocket(tmp_path, mode):
