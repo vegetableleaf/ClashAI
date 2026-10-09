@@ -578,13 +578,15 @@ def log_barrel_cell(logits, corridor, barrels, grid):
 # only flyers does nothing, but the play can still be right (it cycles the hand), so retarget keeps the cast and re-aims it.
 LOG_AIR_UNIT_RADIUS = 0.5       # tiles: a unit is in the corridor when its centre is within this of the rolling box
 LOG_AIR_UNKNOWN_VALUE = 0.5     # elixir credited to a ground body the catalog has no card row for (sub-spawns)
+LOG_AIR_GROUND_SPAWNERS = ('skeleton_barrel',)   # flyers whose death spawns ground skeletons: exempt, counted as ground (owner 10-09)
 LOG_AIR_BLOCKED = -2            # choose_cells result: the Log is not played at all (block mode; the caller WAITs)
 
 
 @lru_cache(maxsize=1)
 def log_air_traits():
     """{vocab id: (flying, ground elixir value)} for every troop / building class. Flying = catalog flying_height > 0
-    (the base class for evolution / hero forms; Lava Pups added: a sub-spawn with no card row). Value = card elixir / body
+    (the base class for evolution / hero forms; Lava Pups added: a sub-spawn with no card row). A Skeleton Barrel is
+    exempt (LOG_AIR_GROUND_SPAWNERS: the Log at its landing hits the skeletons it drops), like a Goblin Barrel in flight. Value = card elixir / body
     count (a Skeleton 1/3, a Tesla 4). A class with no row is ground at LOG_AIR_UNKNOWN_VALUE: an unknown body can only
     make the gate refuse to act, never invent a flyer."""
     import json
@@ -599,7 +601,8 @@ def log_air_traits():
             continue
         c = rows.get(name) or rows.get(vocab.base_key(name))
         out[i] = ((name == 'lava_pups', LOG_AIR_UNKNOWN_VALUE) if c is None else
-                  ((c.get('flying_height') or 0) > 0, float(c['elixir']) / max(int(c.get('count') or 1), 1)))
+                  ((c.get('flying_height') or 0) > 0 and vocab.base_key(name) not in LOG_AIR_GROUND_SPAWNERS,
+                   float(c['elixir']) / max(int(c.get('count') or 1), 1)))
     return out
 
 

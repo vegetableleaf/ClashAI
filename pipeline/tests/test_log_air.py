@@ -60,6 +60,18 @@ def test_traits_from_the_catalog():
     assert all(vocab.UNIT_VOCAB[i] not in vocab.SPELL_CLASSES for i in t)
 
 
+def test_skeleton_barrel_is_exempt_like_the_goblin_barrel():
+    t = log_air_traits()
+    for name in ('skeleton_barrel', 'skeleton_barrel_evo'):
+        assert t[ID(name)][0] is False                     # counted as ground: its landing drops skeletons
+    assert t[ID('balloon')][0] and t[ID('minions')][0]      # every other flyer still blocks
+    barrel = board([unit('skeleton_barrel', 3.5, 15.0)])
+    assert pick(AIM_LOGITS, barrel, mode='block') == AIM and pick(AIM_LOGITS, barrel) == AIM
+    mixed = board([unit('skeleton_barrel', 3.5, 15.0), unit('mega_minion', 3.5, 14.0)])
+    assert pick(AIM_LOGITS, mixed, mode='block') == AIM    # the barrel alone makes the corridor not air-only
+    assert pick(AIM_LOGITS, board([unit('mega_minion', 3.5, 14.0)]), mode='block') == LOG_AIR_BLOCKED
+
+
 def test_log_hits_ground_only_in_the_catalog():
     from pipeline.body_identity import CATALOG
     import json

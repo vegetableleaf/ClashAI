@@ -23,6 +23,7 @@ SRC = r'C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader'
 CORRIDOR = rolling_corridor('Log')
 ATTACKS_AIR = {c['name']: bool(c['attacks_air']) for c in json.loads(CATALOG.read_text(encoding='utf-8'))['cards']}
 FLAT = torch.zeros(2304)
+GOBLIN_BARREL = 42   # the live checkpoint's card_vocab id of 'goblin-barrel' (model_projectiles col 0); the log_air gate reads the same
 
 
 def board(pub):
@@ -99,10 +100,26 @@ def main(out, pattern=None):
                 res['logs'] += 1
                 kind = 'hits' if (g or t) else ('only_air' if a else 'empty')
                 res[kind] += 1
+                if kind == 'empty':
+                    # what was it?  proj = an enemy projectile (e.g. a Goblin Barrel) landing inside the corridor; no_enemy = no enemy
+                    # body or tower-attacker on the board; near = nearest enemy body within 3.5 tiles of the corridor box; far = beyond
+                    half, depth, reach = CORRIDOR
+                    cx, cy = xy[0] * 18.0, xy[1] * 32.0
+                    pr = [(q[4] * 18.0, q[5] * 32.0) for q in pub.get('model_projectiles', []) if len(q) > 5 and q[1] == 1.0 and q[0] == GOBLIN_BARREL and 0 <= q[4] <= 1 and 0 <= q[5] <= 1]
+                    inproj = bool(pr) and _covers(np.array([cx]), np.array([cy]), pr, CORRIDOR, 0.0).any()
+                    foes = [(u['x'] * 18.0, u['y'] * 32.0) for u in pub['model_bodies'] if u['side'] != 0]
+                    dist = min((max(abs(fx - cx) - half, 0.0) ** 2 + max((cy - reach) - fy, fy - (cy + depth), 0.0) ** 2) ** .5
+                               for fx, fy in foes) if foes else None
+                    cls = ('goblin_barrel_in_corridor' if inproj else 'no_enemy_unit' if dist is None else
+                           'near_miss<=3.5' if dist <= 3.5 else 'far>3.5')
+                    res.setdefault('empty_classes', collections.Counter())[cls] += 1
+                    res.setdefault('empty_cases', []).append(dict(file=os.path.basename(f)[10:25], tick=d['tick'], cls=cls,
+                        xy=[round(cx, 1), round(cy, 1)], dist=None if dist is None else round(dist, 1),
+                        elixir=pub.get('model_own_elixir'), n_foes=len(foes)))
                 if kind == 'only_air':
                     # an ENEMY projectile (enemy flag 1) aimed into the corridor: the Goblin Barrel exemption, approximated
                     # (the live gate keys on the barrel's own model id; the census has no deck-specific id map)
-                    pr = [(q[4] * 18.0, q[5] * 32.0) for q in pub.get('model_projectiles', []) if len(q) > 5 and q[1] == 1.0]
+                    pr = [(q[4] * 18.0, q[5] * 32.0) for q in pub.get('model_projectiles', []) if len(q) > 5 and q[1] == 1.0 and q[0] == GOBLIN_BARREL and 0 <= q[4] <= 1 and 0 <= q[5] <= 1]
                     if pr and _covers(np.array([xy[0] * 18]), np.array([xy[1] * 32]), pr, CORRIDOR, 0.0).any():
                         res['barrel'] += 1
                     rk, val = retarget_kind(b3, xy)
@@ -124,6 +141,7 @@ def main(out, pattern=None):
             res['matches_with_log'] += 1
         res['per_match'].append(n_log)
     res['retarget'] = dict(res['retarget'])
+    res['empty_classes'] = dict(res.get('empty_classes', {}))
     for k in ('after_only_air', 'after_only_air_attacks_air', 'after_all', 'units_in_path_only_air'):
         res[k] = dict(res[k].most_common())
     v = res.pop('retarget_value')
