@@ -1,0 +1,1636 @@
+{
+ "live_current": {
+  "matches": 256,
+  "minutes": 888.6,
+  "drills": {
+   "D1": {
+    "do": {
+     "n": 529,
+     "pass_pct": 23.6,
+     "ci": [
+      20.2,
+      27.4
+     ],
+     "acts": {
+      "WAIT": 404,
+      "IceWizard": 28,
+      "Knight": 26,
+      "Tesla": 24,
+      "Log": 17,
+      "Skeletons": 16
+     }
+    },
+    "hold": {
+     "n": 103,
+     "pass_pct": 80.6,
+     "ci": [
+      71.9,
+      87.1
+     ],
+     "acts": {
+      "WAIT": 83,
+      "Xbow": 7,
+      "Tesla": 6,
+      "Knight": 3,
+      "IceWizard": 2,
+      "Log": 1
+     }
+    }
+   },
+   "D2": {
+    "do": {
+     "n": 1666,
+     "pass_pct": 72.3,
+     "ci": [
+      70.1,
+      74.4
+     ],
+     "acts": {
+      "WAIT": 576,
+      "Tesla": 252,
+      "IceWizard": 247,
+      "Knight": 190,
+      "Skeletons": 165,
+      "Log": 146
+     }
+    },
+    "hold": {
+     "n": 1666,
+     "pass_pct": 87.0,
+     "ci": [
+      85.3,
+      88.6
+     ],
+     "acts": {
+      "WAIT": 576,
+      "Tesla": 252,
+      "IceWizard": 247,
+      "Knight": 190,
+      "Skeletons": 165,
+      "Log": 146
+     }
+    }
+   },
+   "D3": {
+    "do": {
+     "n": 2718,
+     "pass_pct": 78.3,
+     "ci": [
+      76.7,
+      79.8
+     ],
+     "acts": {
+      "WAIT": 751,
+      "IceWizard": 520,
+      "Skeletons": 381,
+      "Knight": 341,
+      "Tesla": 324,
+      "Log": 298
+     }
+    },
+    "hold": {
+     "n": 2718,
+     "pass_pct": 85.2,
+     "ci": [
+      83.8,
+      86.5
+     ],
+     "acts": {
+      "WAIT": 751,
+      "IceWizard": 520,
+      "Skeletons": 381,
+      "Knight": 341,
+      "Tesla": 324,
+      "Log": 298
+     }
+    }
+   },
+   "D4": {
+    "do": {
+     "n": 266,
+     "pass_pct": 26.7,
+     "ci": [
+      21.7,
+      32.3
+     ],
+     "acts": {
+      "WAIT": 124,
+      "Tesla": 36,
+      "IceWizard": 35,
+      "Knight": 23,
+      "Skeletons": 16,
+      "Xbow": 15
+     }
+    },
+    "hold": {
+     "n": 444,
+     "pass_pct": 75.0,
+     "ci": [
+      70.8,
+      78.8
+     ],
+     "acts": {
+      "WAIT": 249,
+      "Skeletons": 40,
+      "Tesla": 37,
+      "IceWizard": 36,
+      "Knight": 36,
+      "Log": 21
+     }
+    }
+   },
+   "D5": {
+    "do": {
+     "n": 283,
+     "pass_pct": 28.3,
+     "ci": [
+      23.3,
+      33.8
+     ],
+     "acts": {
+      "noLog": 182,
+      "Log": 80,
+      "Log_miss": 21
+     }
+    },
+    "hold": {
+     "n": 229,
+     "pass_pct": 94.3,
+     "ci": [
+      90.5,
+      96.7
+     ],
+     "acts": {
+      "noLog": 216,
+      "Log": 13
+     }
+    }
+   },
+   "D6": {
+    "do": {
+     "n": 35,
+     "pass_pct": 0.0,
+     "ci": [
+      0.0,
+      9.9
+     ],
+     "acts": {
+      "Tornado": 8,
+      "WAIT": 6,
+      "Knight": 5,
+      "IceWizard": 4,
+      "Xbow": 4,
+      "Skeletons": 3
+     }
+    },
+    "hold": {
+     "n": 563,
+     "pass_pct": 100.0,
+     "ci": [
+      99.3,
+      100.0
+     ],
+     "acts": {
+      "noRocket": 563
+     }
+    },
+    "do_combo": {
+     "n": 5,
+     "pass_pct": 0.0,
+     "ci": [
+      -0.0,
+      43.4
+     ],
+     "acts": {
+      "WAIT": 2,
+      "Xbow": 1,
+      "Knight+Tesla": 1,
+      "Tesla": 1
+     }
+    },
+    "do_kill6": {
+     "n": 35,
+     "pass_pct": 0.0,
+     "ci": [
+      0.0,
+      9.9
+     ],
+     "acts": {
+      "Tornado": 8,
+      "WAIT": 6,
+      "Knight": 5,
+      "IceWizard": 4,
+      "Xbow": 4,
+      "Skeletons": 3
+     }
+    }
+   },
+   "D7": {
+    "do": {
+     "n": 971,
+     "pass_pct": 12.7,
+     "ci": [
+      10.7,
+      14.9
+     ],
+     "acts": {
+      "noRocket": 829,
+      "Rocket_princess": 123,
+      "Rocket_other": 18,
+      "Rocket_unit_my_half": 1
+     }
+    },
+    "hold": {
+     "n": 207,
+     "pass_pct": 93.2,
+     "ci": [
+      89.0,
+      95.9
+     ],
+     "acts": {
+      "noRocket": 192,
+      "Rocket_princess": 14,
+      "Rocket_other": 1
+     }
+    }
+   },
+   "D8": {
+    "do": {
+     "n": 213,
+     "pass_pct": 3.8,
+     "ci": [
+      1.9,
+      7.2
+     ],
+     "acts": {
+      "noTornado": 200,
+      "Tornado_pull": 8,
+      "Tornado_other": 5
+     }
+    },
+    "hold": {
+     "n": 1275,
+     "pass_pct": 97.0,
+     "ci": [
+      95.9,
+      97.8
+     ],
+     "acts": {
+      "noTornado": 1228,
+      "Tornado_at_blockers": 38,
+      "Tornado_other": 9
+     }
+    }
+   },
+   "D9": {
+    "do": {
+     "n": 1513,
+     "pass_pct": 93.3,
+     "ci": [
+      92.0,
+      94.5
+     ],
+     "acts": {
+      "Skeletons": 364,
+      "Log": 282,
+      "IceWizard": 280,
+      "Knight": 263,
+      "Tesla": 146,
+      "Tornado": 131
+     }
+    },
+    "hold": {
+     "n": 1513,
+     "pass_pct": 96.4,
+     "ci": [
+      95.3,
+      97.2
+     ],
+     "acts": {
+      "Skeletons": 364,
+      "Log": 282,
+      "IceWizard": 280,
+      "Knight": 263,
+      "Tesla": 146,
+      "Tornado": 131
+     }
+    }
+   }
+  },
+  "per_match": {
+   "D1": 2.47,
+   "D2": 6.51,
+   "D3": 10.62,
+   "D4": 2.77,
+   "D5": 2.0,
+   "D6": 2.36,
+   "D7": 4.6,
+   "D8": 5.81,
+   "D9": 5.91
+  }
+ },
+ "live_deployed": {
+  "matches": 100,
+  "minutes": 359.8,
+  "drills": {
+   "D1": {
+    "do": {
+     "n": 167,
+     "pass_pct": 26.3,
+     "ci": [
+      20.3,
+      33.5
+     ],
+     "acts": {
+      "WAIT": 123,
+      "Knight": 11,
+      "IceWizard": 8,
+      "Log": 8,
+      "Tesla": 7,
+      "Skeletons": 5
+     }
+    },
+    "hold": {
+     "n": 31,
+     "pass_pct": 83.9,
+     "ci": [
+      67.4,
+      92.9
+     ],
+     "acts": {
+      "WAIT": 26,
+      "Xbow": 2,
+      "Knight": 1,
+      "Skeletons": 1,
+      "Tesla": 1
+     }
+    }
+   },
+   "D2": {
+    "do": {
+     "n": 676,
+     "pass_pct": 73.7,
+     "ci": [
+      70.2,
+      76.8
+     ],
+     "acts": {
+      "WAIT": 225,
+      "IceWizard": 107,
+      "Tesla": 105,
+      "Knight": 82,
+      "Log": 64,
+      "Skeletons": 63
+     }
+    },
+    "hold": {
+     "n": 676,
+     "pass_pct": 88.2,
+     "ci": [
+      85.5,
+      90.4
+     ],
+     "acts": {
+      "WAIT": 225,
+      "IceWizard": 107,
+      "Tesla": 105,
+      "Knight": 82,
+      "Log": 64,
+      "Skeletons": 63
+     }
+    }
+   },
+   "D3": {
+    "do": {
+     "n": 1092,
+     "pass_pct": 79.2,
+     "ci": [
+      76.7,
+      81.5
+     ],
+     "acts": {
+      "WAIT": 296,
+      "IceWizard": 225,
+      "Skeletons": 148,
+      "Knight": 131,
+      "Tesla": 126,
+      "Log": 117
+     }
+    },
+    "hold": {
+     "n": 1092,
+     "pass_pct": 86.4,
+     "ci": [
+      84.3,
+      88.3
+     ],
+     "acts": {
+      "WAIT": 296,
+      "IceWizard": 225,
+      "Skeletons": 148,
+      "Knight": 131,
+      "Tesla": 126,
+      "Log": 117
+     }
+    }
+   },
+   "D4": {
+    "do": {
+     "n": 122,
+     "pass_pct": 29.5,
+     "ci": [
+      22.1,
+      38.1
+     ],
+     "acts": {
+      "WAIT": 59,
+      "IceWizard": 22,
+      "Tesla": 14,
+      "Skeletons": 8,
+      "Knight": 7,
+      "Log": 6
+     }
+    },
+    "hold": {
+     "n": 215,
+     "pass_pct": 74.0,
+     "ci": [
+      67.7,
+      79.4
+     ],
+     "acts": {
+      "WAIT": 121,
+      "IceWizard": 23,
+      "Skeletons": 23,
+      "Knight": 14,
+      "Log": 13,
+      "Tesla": 13
+     }
+    }
+   },
+   "D5": {
+    "do": {
+     "n": 95,
+     "pass_pct": 37.9,
+     "ci": [
+      28.8,
+      47.9
+     ],
+     "acts": {
+      "noLog": 55,
+      "Log": 36,
+      "Log_miss": 4
+     }
+    },
+    "hold": {
+     "n": 101,
+     "pass_pct": 93.1,
+     "ci": [
+      86.4,
+      96.6
+     ],
+     "acts": {
+      "noLog": 94,
+      "Log": 7
+     }
+    }
+   },
+   "D6": {
+    "do": {
+     "n": 14,
+     "pass_pct": 0.0,
+     "ci": [
+      0.0,
+      21.5
+     ],
+     "acts": {
+      "Tornado": 4,
+      "Xbow": 3,
+      "Knight": 3,
+      "Tesla": 2,
+      "Skeletons": 2
+     }
+    },
+    "hold": {
+     "n": 242,
+     "pass_pct": 100.0,
+     "ci": [
+      98.4,
+      100.0
+     ],
+     "acts": {
+      "noRocket": 242
+     }
+    },
+    "do_combo": {
+     "n": 1,
+     "pass_pct": 0.0,
+     "ci": [
+      0.0,
+      79.3
+     ],
+     "acts": {
+      "Tesla": 1
+     }
+    },
+    "do_kill6": {
+     "n": 14,
+     "pass_pct": 0.0,
+     "ci": [
+      0.0,
+      21.5
+     ],
+     "acts": {
+      "Tornado": 4,
+      "Xbow": 3,
+      "Knight": 3,
+      "Tesla": 2,
+      "Skeletons": 2
+     }
+    }
+   },
+   "D7": {
+    "do": {
+     "n": 413,
+     "pass_pct": 12.1,
+     "ci": [
+      9.3,
+      15.6
+     ],
+     "acts": {
+      "noRocket": 355,
+      "Rocket_princess": 50,
+      "Rocket_other": 8
+     }
+    },
+    "hold": {
+     "n": 75,
+     "pass_pct": 96.0,
+     "ci": [
+      88.9,
+      98.6
+     ],
+     "acts": {
+      "noRocket": 72,
+      "Rocket_princess": 3
+     }
+    }
+   },
+   "D8": {
+    "do": {
+     "n": 70,
+     "pass_pct": 2.9,
+     "ci": [
+      0.8,
+      9.8
+     ],
+     "acts": {
+      "noTornado": 66,
+      "Tornado_other": 2,
+      "Tornado_pull": 2
+     }
+    },
+    "hold": {
+     "n": 530,
+     "pass_pct": 97.0,
+     "ci": [
+      95.2,
+      98.1
+     ],
+     "acts": {
+      "noTornado": 509,
+      "Tornado_at_blockers": 16,
+      "Tornado_other": 5
+     }
+    }
+   },
+   "D9": {
+    "do": {
+     "n": 726,
+     "pass_pct": 93.5,
+     "ci": [
+      91.5,
+      95.1
+     ],
+     "acts": {
+      "Skeletons": 166,
+      "Log": 134,
+      "IceWizard": 134,
+      "Knight": 133,
+      "Tesla": 73,
+      "Tornado": 63
+     }
+    },
+    "hold": {
+     "n": 726,
+     "pass_pct": 96.1,
+     "ci": [
+      94.5,
+      97.3
+     ],
+     "acts": {
+      "Skeletons": 166,
+      "Log": 134,
+      "IceWizard": 134,
+      "Knight": 133,
+      "Tesla": 73,
+      "Tornado": 63
+     }
+    }
+   }
+  },
+  "per_match": {
+   "D1": 1.98,
+   "D2": 6.76,
+   "D3": 10.92,
+   "D4": 3.37,
+   "D5": 1.96,
+   "D6": 2.57,
+   "D7": 4.88,
+   "D8": 6.0,
+   "D9": 7.26
+  }
+ },
+ "live_all": {
+  "matches": 723,
+  "minutes": 2485.0,
+  "drills": {
+   "D1": {
+    "do": {
+     "n": 1315,
+     "pass_pct": 20.5,
+     "ci": [
+      18.4,
+      22.8
+     ],
+     "acts": {
+      "WAIT": 1045,
+      "Tesla": 58,
+      "IceWizard": 50,
+      "Knight": 49,
+      "Tornado": 31,
+      "Log": 31
+     }
+    },
+    "hold": {
+     "n": 289,
+     "pass_pct": 84.8,
+     "ci": [
+      80.2,
+      88.5
+     ],
+     "acts": {
+      "WAIT": 245,
+      "Tesla": 12,
+      "Knight": 11,
+      "Xbow": 10,
+      "Skeletons": 7,
+      "IceWizard": 2
+     }
+    }
+   },
+   "D2": {
+    "do": {
+     "n": 4242,
+     "pass_pct": 71.2,
+     "ci": [
+      69.8,
+      72.6
+     ],
+     "acts": {
+      "WAIT": 1469,
+      "Tesla": 681,
+      "IceWizard": 592,
+      "Knight": 468,
+      "Skeletons": 403,
+      "Log": 400
+     }
+    },
+    "hold": {
+     "n": 4242,
+     "pass_pct": 85.9,
+     "ci": [
+      84.8,
+      86.9
+     ],
+     "acts": {
+      "WAIT": 1469,
+      "Tesla": 681,
+      "IceWizard": 592,
+      "Knight": 468,
+      "Skeletons": 403,
+      "Log": 400
+     }
+    }
+   },
+   "D3": {
+    "do": {
+     "n": 8697,
+     "pass_pct": 70.9,
+     "ci": [
+      69.9,
+      71.9
+     ],
+     "acts": {
+      "WAIT": 2257,
+      "IceWizard": 1519,
+      "Skeletons": 1230,
+      "Knight": 1122,
+      "Tesla": 1121,
+      "Log": 1079
+     }
+    },
+    "hold": {
+     "n": 8697,
+     "pass_pct": 79.1,
+     "ci": [
+      78.2,
+      79.9
+     ],
+     "acts": {
+      "WAIT": 2257,
+      "IceWizard": 1519,
+      "Skeletons": 1230,
+      "Knight": 1122,
+      "Tesla": 1121,
+      "Log": 1079
+     }
+    }
+   },
+   "D4": {
+    "do": {
+     "n": 678,
+     "pass_pct": 31.6,
+     "ci": [
+      28.2,
+      35.2
+     ],
+     "acts": {
+      "WAIT": 297,
+      "IceWizard": 115,
+      "Tesla": 98,
+      "Knight": 46,
+      "Xbow": 45,
+      "Skeletons": 32
+     }
+    },
+    "hold": {
+     "n": 1390,
+     "pass_pct": 73.8,
+     "ci": [
+      71.4,
+      76.1
+     ],
+     "acts": {
+      "WAIT": 731,
+      "Skeletons": 127,
+      "IceWizard": 125,
+      "Knight": 116,
+      "Tesla": 108,
+      "Log": 71
+     }
+    }
+   },
+   "D5": {
+    "do": {
+     "n": 763,
+     "pass_pct": 23.3,
+     "ci": [
+      20.5,
+      26.5
+     ],
+     "acts": {
+      "noLog": 513,
+      "Log": 178,
+      "Log_miss": 72
+     }
+    },
+    "hold": {
+     "n": 653,
+     "pass_pct": 92.8,
+     "ci": [
+      90.6,
+      94.5
+     ],
+     "acts": {
+      "noLog": 606,
+      "Log": 47
+     }
+    }
+   },
+   "D6": {
+    "do": {
+     "n": 72,
+     "pass_pct": 0.0,
+     "ci": [
+      0.0,
+      5.1
+     ],
+     "acts": {
+      "WAIT": 24,
+      "Tornado": 11,
+      "Tesla": 8,
+      "Xbow": 7,
+      "Knight": 7,
+      "IceWizard": 6
+     }
+    },
+    "hold": {
+     "n": 1118,
+     "pass_pct": 100.0,
+     "ci": [
+      99.7,
+      100.0
+     ],
+     "acts": {
+      "noRocket": 1118
+     }
+    },
+    "do_combo": {
+     "n": 10,
+     "pass_pct": 0.0,
+     "ci": [
+      -0.0,
+      27.8
+     ],
+     "acts": {
+      "WAIT": 6,
+      "Tornado": 1,
+      "Xbow": 1,
+      "Knight+Tesla": 1,
+      "Tesla": 1
+     }
+    },
+    "do_kill6": {
+     "n": 72,
+     "pass_pct": 0.0,
+     "ci": [
+      0.0,
+      5.1
+     ],
+     "acts": {
+      "WAIT": 24,
+      "Tornado": 11,
+      "Tesla": 8,
+      "Xbow": 7,
+      "Knight": 7,
+      "IceWizard": 6
+     }
+    }
+   },
+   "D7": {
+    "do": {
+     "n": 2126,
+     "pass_pct": 8.4,
+     "ci": [
+      7.3,
+      9.6
+     ],
+     "acts": {
+      "noRocket": 1910,
+      "Rocket_princess": 178,
+      "Rocket_other": 34,
+      "Rocket_unit_my_half": 4
+     }
+    },
+    "hold": {
+     "n": 393,
+     "pass_pct": 95.2,
+     "ci": [
+      92.6,
+      96.9
+     ],
+     "acts": {
+      "noRocket": 373,
+      "Rocket_princess": 18,
+      "Rocket_other": 2
+     }
+    }
+   },
+   "D8": {
+    "do": {
+     "n": 460,
+     "pass_pct": 4.3,
+     "ci": [
+      2.8,
+      6.6
+     ],
+     "acts": {
+      "noTornado": 432,
+      "Tornado_pull": 20,
+      "Tornado_other": 8
+     }
+    },
+    "hold": {
+     "n": 2718,
+     "pass_pct": 96.4,
+     "ci": [
+      95.6,
+      97.0
+     ],
+     "acts": {
+      "noTornado": 2603,
+      "Tornado_at_blockers": 98,
+      "Tornado_other": 17
+     }
+    }
+   },
+   "D9": {
+    "do": {
+     "n": 4131,
+     "pass_pct": 93.5,
+     "ci": [
+      92.7,
+      94.2
+     ],
+     "acts": {
+      "Skeletons": 1093,
+      "Knight": 784,
+      "IceWizard": 751,
+      "Log": 715,
+      "Tornado": 385,
+      "Tesla": 319
+     }
+    },
+    "hold": {
+     "n": 4131,
+     "pass_pct": 96.3,
+     "ci": [
+      95.7,
+      96.8
+     ],
+     "acts": {
+      "Skeletons": 1093,
+      "Knight": 784,
+      "IceWizard": 751,
+      "Log": 715,
+      "Tornado": 385,
+      "Tesla": 319
+     }
+    }
+   }
+  },
+  "per_match": {
+   "D1": 2.22,
+   "D2": 5.87,
+   "D3": 12.03,
+   "D4": 2.86,
+   "D5": 1.96,
+   "D6": 1.66,
+   "D7": 3.48,
+   "D8": 4.4,
+   "D9": 5.71
+  }
+ },
+ "pros": {
+  "matches": 2244,
+  "minutes": 9310.3,
+  "drills": {
+   "D1": {
+    "do": {
+     "n": 8295,
+     "pass_pct": 28.7,
+     "ci": [
+      27.7,
+      29.6
+     ],
+     "acts": {
+      "WAIT": 5918,
+      "IceWizard": 402,
+      "Knight": 391,
+      "Log": 379,
+      "Skeletons": 368,
+      "Tesla": 337
+     }
+    },
+    "hold": {
+     "n": 1568,
+     "pass_pct": 81.9,
+     "ci": [
+      79.9,
+      83.7
+     ],
+     "acts": {
+      "WAIT": 1284,
+      "IceWizard": 65,
+      "Xbow": 56,
+      "Knight": 43,
+      "Tesla": 38,
+      "Skeletons": 37
+     }
+    }
+   },
+   "D2": {
+    "do": {
+     "n": 19175,
+     "pass_pct": 81.3,
+     "ci": [
+      80.8,
+      81.9
+     ],
+     "acts": {
+      "WAIT": 6517,
+      "Tesla": 2804,
+      "IceWizard": 2438,
+      "Knight": 2093,
+      "Skeletons": 2072,
+      "Log": 1819
+     }
+    },
+    "hold": {
+     "n": 19175,
+     "pass_pct": 89.0,
+     "ci": [
+      88.6,
+      89.5
+     ],
+     "acts": {
+      "WAIT": 6517,
+      "Tesla": 2804,
+      "IceWizard": 2438,
+      "Knight": 2093,
+      "Skeletons": 2072,
+      "Log": 1819
+     }
+    }
+   },
+   "D3": {
+    "do": {
+     "n": 22697,
+     "pass_pct": 88.3,
+     "ci": [
+      87.9,
+      88.7
+     ],
+     "acts": {
+      "WAIT": 6311,
+      "Skeletons": 3285,
+      "IceWizard": 3146,
+      "Tesla": 3002,
+      "Knight": 2785,
+      "Log": 2763
+     }
+    },
+    "hold": {
+     "n": 22697,
+     "pass_pct": 94.0,
+     "ci": [
+      93.7,
+      94.3
+     ],
+     "acts": {
+      "WAIT": 6311,
+      "Skeletons": 3285,
+      "IceWizard": 3146,
+      "Tesla": 3002,
+      "Knight": 2785,
+      "Log": 2763
+     }
+    }
+   },
+   "D4": {
+    "do": {
+     "n": 4878,
+     "pass_pct": 24.6,
+     "ci": [
+      23.4,
+      25.8
+     ],
+     "acts": {
+      "WAIT": 2360,
+      "IceWizard": 540,
+      "Tesla": 508,
+      "Skeletons": 331,
+      "Knight": 302,
+      "Tornado": 295
+     }
+    },
+    "hold": {
+     "n": 6597,
+     "pass_pct": 76.6,
+     "ci": [
+      75.6,
+      77.6
+     ],
+     "acts": {
+      "WAIT": 3512,
+      "Skeletons": 581,
+      "IceWizard": 525,
+      "Tesla": 474,
+      "Knight": 438,
+      "Tornado": 387
+     }
+    }
+   },
+   "D5": {
+    "do": {
+     "n": 3643,
+     "pass_pct": 15.3,
+     "ci": [
+      14.1,
+      16.5
+     ],
+     "acts": {
+      "noLog": 2792,
+      "Log": 556,
+      "Log_miss": 295
+     }
+    },
+    "hold": {
+     "n": 3409,
+     "pass_pct": 93.0,
+     "ci": [
+      92.1,
+      93.9
+     ],
+     "acts": {
+      "noLog": 3172,
+      "Log": 237
+     }
+    }
+   },
+   "D6": {
+    "do": {
+     "n": 1296,
+     "pass_pct": 3.5,
+     "ci": [
+      2.6,
+      4.6
+     ],
+     "acts": {
+      "WAIT": 314,
+      "Knight": 159,
+      "Skeletons": 149,
+      "IceWizard": 140,
+      "Tesla": 137,
+      "Tornado": 135
+     }
+    },
+    "hold": {
+     "n": 10267,
+     "pass_pct": 98.8,
+     "ci": [
+      98.5,
+      99.0
+     ],
+     "acts": {
+      "noRocket": 10140,
+      "Rocket": 127
+     }
+    },
+    "do_combo": {
+     "n": 174,
+     "pass_pct": 4.6,
+     "ci": [
+      2.3,
+      8.8
+     ],
+     "acts": {
+      "WAIT": 32,
+      "IceWizard": 15,
+      "Xbow": 11,
+      "Tesla": 11,
+      "Knight": 9,
+      "Rocket+Tornado": 8
+     }
+    },
+    "do_kill6": {
+     "n": 1269,
+     "pass_pct": 3.3,
+     "ci": [
+      2.5,
+      4.4
+     ],
+     "acts": {
+      "WAIT": 309,
+      "Knight": 153,
+      "Skeletons": 144,
+      "IceWizard": 139,
+      "Tesla": 135,
+      "Tornado": 134
+     }
+    }
+   },
+   "D7": {
+    "do": {
+     "n": 14330,
+     "pass_pct": 10.3,
+     "ci": [
+      9.9,
+      10.9
+     ],
+     "acts": {
+      "noRocket": 12289,
+      "Rocket_princess": 1482,
+      "Rocket_unit_my_half": 282,
+      "Rocket_other": 261,
+      "Rocket_king": 16
+     }
+    },
+    "hold": {
+     "n": 5206,
+     "pass_pct": 91.5,
+     "ci": [
+      90.7,
+      92.3
+     ],
+     "acts": {
+      "noRocket": 4563,
+      "Rocket_princess": 420,
+      "Rocket_unit_my_half": 177,
+      "Rocket_other": 42,
+      "Rocket_king": 4
+     }
+    }
+   },
+   "D8": {
+    "do": {
+     "n": 1965,
+     "pass_pct": 5.8,
+     "ci": [
+      4.9,
+      6.9
+     ],
+     "acts": {
+      "noTornado": 1793,
+      "Tornado_pull": 114,
+      "Tornado_other": 58
+     }
+    },
+    "hold": {
+     "n": 13682,
+     "pass_pct": 94.5,
+     "ci": [
+      94.1,
+      94.8
+     ],
+     "acts": {
+      "noTornado": 12637,
+      "Tornado_at_blockers": 756,
+      "Tornado_other": 289
+     }
+    }
+   },
+   "D9": {
+    "do": {
+     "n": 16928,
+     "pass_pct": 92.1,
+     "ci": [
+      91.7,
+      92.5
+     ],
+     "acts": {
+      "Skeletons": 3645,
+      "Log": 3076,
+      "Knight": 2676,
+      "IceWizard": 2642,
+      "Tesla": 2043,
+      "Tornado": 1766
+     }
+    },
+    "hold": {
+     "n": 16928,
+     "pass_pct": 96.3,
+     "ci": [
+      96.0,
+      96.6
+     ],
+     "acts": {
+      "Skeletons": 3645,
+      "Log": 3076,
+      "Knight": 2676,
+      "IceWizard": 2642,
+      "Tesla": 2043,
+      "Tornado": 1766
+     }
+    }
+   }
+  },
+  "per_match": {
+   "D1": 4.4,
+   "D2": 8.55,
+   "D3": 10.11,
+   "D4": 5.11,
+   "D5": 3.14,
+   "D6": 5.23,
+   "D7": 8.71,
+   "D8": 6.97,
+   "D9": 7.54
+  }
+ },
+ "sim": {
+  "matches": 96,
+  "minutes": 368.6,
+  "drills": {
+   "D1": {
+    "do": {
+     "n": 230,
+     "pass_pct": 28.7,
+     "ci": [
+      23.2,
+      34.9
+     ],
+     "acts": {
+      "WAIT": 164,
+      "Tornado": 14,
+      "Skeletons": 12,
+      "IceWizard": 11,
+      "Knight": 10,
+      "Xbow": 7
+     }
+    },
+    "hold": {
+     "n": 57,
+     "pass_pct": 78.9,
+     "ci": [
+      66.7,
+      87.5
+     ],
+     "acts": {
+      "WAIT": 45,
+      "IceWizard": 4,
+      "Xbow": 3,
+      "Log": 2,
+      "Knight": 2,
+      "Tesla": 1
+     }
+    }
+   },
+   "D2": {
+    "do": {
+     "n": 665,
+     "pass_pct": 72.6,
+     "ci": [
+      69.1,
+      75.9
+     ],
+     "acts": {
+      "WAIT": 247,
+      "Tesla": 91,
+      "Knight": 83,
+      "IceWizard": 76,
+      "Skeletons": 73,
+      "Log": 58
+     }
+    },
+    "hold": {
+     "n": 665,
+     "pass_pct": 87.1,
+     "ci": [
+      84.3,
+      89.4
+     ],
+     "acts": {
+      "WAIT": 247,
+      "Tesla": 91,
+      "Knight": 83,
+      "IceWizard": 76,
+      "Skeletons": 73,
+      "Log": 58
+     }
+    }
+   },
+   "D3": {
+    "do": {
+     "n": 890,
+     "pass_pct": 88.0,
+     "ci": [
+      85.7,
+      90.0
+     ],
+     "acts": {
+      "WAIT": 249,
+      "IceWizard": 147,
+      "Skeletons": 143,
+      "Tesla": 123,
+      "Knight": 114,
+      "Log": 86
+     }
+    },
+    "hold": {
+     "n": 890,
+     "pass_pct": 88.0,
+     "ci": [
+      85.7,
+      90.0
+     ],
+     "acts": {
+      "WAIT": 249,
+      "IceWizard": 147,
+      "Skeletons": 143,
+      "Tesla": 123,
+      "Knight": 114,
+      "Log": 86
+     }
+    }
+   },
+   "D4": {
+    "do": {
+     "n": 181,
+     "pass_pct": 26.5,
+     "ci": [
+      20.6,
+      33.4
+     ],
+     "acts": {
+      "WAIT": 84,
+      "IceWizard": 25,
+      "Tesla": 20,
+      "Knight": 19,
+      "Xbow": 13,
+      "Skeletons": 11
+     }
+    },
+    "hold": {
+     "n": 283,
+     "pass_pct": 74.6,
+     "ci": [
+      69.2,
+      79.3
+     ],
+     "acts": {
+      "WAIT": 157,
+      "Skeletons": 30,
+      "Knight": 27,
+      "IceWizard": 26,
+      "Tesla": 17,
+      "Xbow": 9
+     }
+    }
+   },
+   "D5": {
+    "do": {
+     "n": 106,
+     "pass_pct": 26.4,
+     "ci": [
+      19.0,
+      35.5
+     ],
+     "acts": {
+      "noLog": 56,
+      "Log": 28,
+      "Log_miss": 22
+     }
+    },
+    "hold": {
+     "n": 149,
+     "pass_pct": 90.6,
+     "ci": [
+      84.8,
+      94.3
+     ],
+     "acts": {
+      "noLog": 135,
+      "Log": 14
+     }
+    }
+   },
+   "D6": {
+    "do": {
+     "n": 19,
+     "pass_pct": 5.3,
+     "ci": [
+      0.9,
+      24.6
+     ],
+     "acts": {
+      "IceWizard": 4,
+      "Knight": 4,
+      "Tesla": 3,
+      "Skeletons": 2,
+      "Rocket_elsewhere": 1,
+      "Xbow": 1
+     }
+    },
+    "hold": {
+     "n": 405,
+     "pass_pct": 99.8,
+     "ci": [
+      98.6,
+      100.0
+     ],
+     "acts": {
+      "noRocket": 404,
+      "Rocket": 1
+     }
+    },
+    "do_kill6": {
+     "n": 19,
+     "pass_pct": 5.3,
+     "ci": [
+      0.9,
+      24.6
+     ],
+     "acts": {
+      "IceWizard": 4,
+      "Knight": 4,
+      "Tesla": 3,
+      "Skeletons": 2,
+      "Rocket_elsewhere": 1,
+      "Xbow": 1
+     }
+    }
+   },
+   "D7": {
+    "do": {
+     "n": 547,
+     "pass_pct": 12.8,
+     "ci": [
+      10.3,
+      15.9
+     ],
+     "acts": {
+      "noRocket": 475,
+      "Rocket_princess": 70,
+      "Rocket_other": 2
+     }
+    },
+    "hold": {
+     "n": 128,
+     "pass_pct": 95.3,
+     "ci": [
+      90.2,
+      97.8
+     ],
+     "acts": {
+      "noRocket": 122,
+      "Rocket_princess": 6
+     }
+    }
+   },
+   "D8": {
+    "do": {
+     "n": 121,
+     "pass_pct": 2.5,
+     "ci": [
+      0.8,
+      7.0
+     ],
+     "acts": {
+      "noTornado": 115,
+      "Tornado_other": 3,
+      "Tornado_pull": 3
+     }
+    },
+    "hold": {
+     "n": 702,
+     "pass_pct": 96.4,
+     "ci": [
+      94.8,
+      97.6
+     ],
+     "acts": {
+      "noTornado": 673,
+      "Tornado_at_blockers": 25,
+      "Tornado_other": 4
+     }
+    }
+   },
+   "D9": {
+    "do": {
+     "n": 1136,
+     "pass_pct": 91.8,
+     "ci": [
+      90.1,
+      93.3
+     ],
+     "acts": {
+      "Skeletons": 239,
+      "Log": 230,
+      "Knight": 217,
+      "IceWizard": 181,
+      "Tornado": 130,
+      "Tesla": 99
+     }
+    },
+    "hold": {
+     "n": 1136,
+     "pass_pct": 95.9,
+     "ci": [
+      94.5,
+      96.9
+     ],
+     "acts": {
+      "Skeletons": 239,
+      "Log": 230,
+      "Knight": 217,
+      "IceWizard": 181,
+      "Tornado": 130,
+      "Tesla": 99
+     }
+    }
+   }
+  },
+  "per_match": {
+   "D1": 2.99,
+   "D2": 6.93,
+   "D3": 9.27,
+   "D4": 4.83,
+   "D5": 2.66,
+   "D6": 4.42,
+   "D7": 7.03,
+   "D8": 8.57,
+   "D9": 11.83
+  }
+ }
+}
