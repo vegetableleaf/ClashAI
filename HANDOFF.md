@@ -5134,6 +5134,18 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   +rocket-dead 17-12; +lethal-log & tau 40-39 (all n.s.). rdef_c evals: u0010 602.5 vs 635 (157/189, p .10), u0020 626
 >   (167/176, p .67) with 3-crown losses 38 vs 30, elixir at push 5.39 vs 4.96 -> banks more, defends no better; not
 >   shippable. Morning report posted to Discord.
+> * **Owner ~10:00 10-09 directives:** install the replay collector (owner does the Chrome extension); keep the 960-game bar
+>   if a bigger one slows progress; NO history rewrite yet; iterate on every failed strategy (memory iterate-dont-abandon).
+>   CORRECTION (a): the owner's LavaLoon clump was real -- live_play_20261009_011626 t3884 at (3.9, 9.1): Balloon + full
+>   LavaHound + both Skeleton Dragons inside one Rocket blast counting hitboxes (~16 elixir), Rocket in hand at 6.9
+>   elixir; the model sat 6.9 -> 9.1 elixir (p .36-.46, top card Tesla). My earlier analysis used the wrong push (t2405-2565).
+>   (a) code: choose_slot takes the argmax over AFFORDABLE cards -> the decoder substitutes a cheaper card when the model's
+>   top card is unaffordable (owner's "Log at 1 elixir instead of waiting for Knight"). Own cycle is NOT a model input
+>   (opp_cycle is).
+>   Workers launched: a91e018d collector install (C:\Users\benpe\tools\clash-royale-ai, not in our repo); a67f26ce rocket
+>   clump v2 (hitbox coverage, damage value, extrapolated landing, loss diagnosis); a996a070 input delay / pipelined second
+>   tap; a666a874 sneaky lock rule `--sneaky-lock on` (only-blocker, >80% success target); a9182138 `--card-wait`
+>   decode; abf27945 own-cycle features + fine-tune; a8bdb155 defence RL next arms (may stop rdef_c).
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
