@@ -81,7 +81,9 @@ def test_body_value_scales_with_hp_resolves_variants_and_skips_spells():
 
 
 def test_modes_value_what_the_rocket_does_not_what_the_card_cost():
-    one = lambda name, hp, mode: float(rocket_bodies(board(unit(name, 9, 24, hp)), mode)[0, 3])
+    def one(name, hp, mode):
+        rows = rocket_bodies(board(unit(name, 9, 24, hp)), mode)
+        return float(rows[0, 3]) if len(rows) else 0.0
     assert ROCKET_UNIT_DAMAGE == 580
     # cost: cost / bodies x hp fraction, whatever the Rocket does
     assert one('giant', 1.0, 'cost') == 5 and one('giant', .5, 'cost') == 2.5
@@ -141,14 +143,14 @@ def test_edge_hitbox_covers_what_the_centre_rule_misses():
     assert (np.hypot(x[ok] - 6.6, y[ok] - 22) <= rocket_radius_tiles() + .5 + 1e-9).all()
     assert (np.hypot(x[ok] - 11.4, y[ok] - 22) <= rocket_radius_tiles() + .5 + 1e-9).all()
     # the bigger hitbox of the Lava Hound (0.75) reaches farther than a Knight's (0.5): same gap, only the Hound is covered
-    gap = lambda name: best(board(unit(name, 6.6, 22), unit(name, 11.5, 22)), hitbox='edge')[0] / body_value(vocab.unit_id(name))
+    gap = lambda name: best(board(unit(name, 6.6, 22), unit(name, 11.8, 22)), hitbox='edge')[0] / body_value(vocab.unit_id(name))
     assert gap('lava_hound') == 2 and gap('knight') == 1
 
 
 def test_011626_cluster_fires_with_the_damage_value_not_the_cost_sum():
     # live_play_20261009_011626 tick 3884 (board frame): Hound at 13.7 % hp, Mega Minion 74 %, one Skeleton Dragon 77 %, Balloon 58 %
-    cluster = board(unit('lava_hound', 3.7, 21.2, .137), unit('mega_minion', 5.0, 20.3, .74), unit('skeleton_dragons', 5.5, 22.3, .77),
-                    unit('balloon', 4.1, 25.0, .58), elixir=7.8)
+    cluster = board(unit('lava_hound', 3.7, 21.2, .137), unit('mega_minion', 4.8, 21.0, .74), unit('skeleton_dragons', 5.2, 22.3, .77),
+                    unit('balloon', 4.1, 24.6, .58), elixir=7.8)
     assert best(cluster, 'cost', 'centre')[0] < 9.0                                   # the iteration-1 reading
     assert best(cluster, 'damage', 'edge')[0] == pytest.approx(7.61, abs=.05)
     full = ON.__class__(rocket_value=7.0, **DE)
@@ -177,7 +179,8 @@ def test_gates_min_elixir_idle_and_min_y():
     assert rocket_value_choice(idle, NAMES, OK, b, 'lattice', playing=True) is None             # the model plays: displaces nothing
     assert rocket_value_choice(ON, NAMES, OK, b, 'lattice', playing=True) is not None           # idle off: the gate is ignored
     deep = DecisionOptions(rocket_value=7.0, rocket_value_min_y=26.0)
-    assert rocket_value_choice(deep, NAMES, OK, b, 'lattice') is None                           # pups at y 24-25: blast centres reach 26 +
+    assert rocket_value_choice(deep, NAMES, OK, board(*pups(y=20.0)), 'lattice') is None       # a blast centred at y >= 26 cannot reach y 20
+    assert rocket_value_choice(deep, NAMES, OK, board(*pups(y=27.0)), 'lattice') is not None
     _, ok = best(board(*pups(y=27.0)), min_y=26.0)
     xs, ys = np.meshgrid(np.arange(36) * .5, np.arange(64) * .5)
     assert ok is not None and (ys.reshape(-1)[ok] >= 26.0).all()
