@@ -27,6 +27,14 @@ for v, y in ((9, 21), (7, 21), (9, 23), (7, 23)):
     add(f'de{v}_y{y}', rocket_value=float(v), rocket_value_mode='damage', rocket_value_hitbox='edge', rocket_value_min_y=float(y))
 for v in (9, 11):
     add(f'de{v}_lead', rocket_value=float(v), rocket_value_mode='damage', rocket_value_hitbox='edge', rocket_value_lead='on')
+for v, l in ((7, 3), (9, 3), (9, 5)):
+    add(f'de{v}_l{l}', rocket_value=float(v), rocket_value_mode='damage', rocket_value_hitbox='edge', rocket_value_max_left=float(l))
+for v, l in ((6, 3), (5, 2), (7, 3)):
+    add(f'ke{v}_l{l}', rocket_value=float(v), rocket_value_mode='kill', rocket_value_hitbox='edge', rocket_value_max_left=float(l))
+add('ke6_l3_e8', rocket_value=6.0, rocket_value_mode='kill', rocket_value_hitbox='edge', rocket_value_max_left=3.0, rocket_value_min_elixir=8.0)
+add('de7_l3_e8', rocket_value=7.0, rocket_value_mode='damage', rocket_value_hitbox='edge', rocket_value_max_left=3.0, rocket_value_min_elixir=8.0)
+add('de7_l3_y21', rocket_value=7.0, rocket_value_mode='damage', rocket_value_hitbox='edge', rocket_value_max_left=3.0, rocket_value_min_y=21.0)
+add('de7_l3_idle', rocket_value=7.0, rocket_value_mode='damage', rocket_value_hitbox='edge', rocket_value_max_left=3.0, rocket_value_idle='on')
 add('de7_y21_e8', rocket_value=7.0, rocket_value_mode='damage', rocket_value_hitbox='edge', rocket_value_min_y=21.0, rocket_value_min_elixir=8.0)
 
 

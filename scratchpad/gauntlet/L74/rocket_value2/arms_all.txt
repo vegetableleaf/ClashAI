@@ -29,4 +29,14 @@ de9_y23 --rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge -
 de7_y23 --rocket-value 7 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-value-min-y 23
 de9_lead --rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-value-lead on
 de11_lead --rocket-value 11 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-value-lead on
+de7_l3 --rocket-value 7 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-value-max-left 3
+de9_l3 --rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-value-max-left 3
+de9_l5 --rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-value-max-left 5
+ke6_l3 --rocket-value 6 --rocket-value-mode kill --rocket-value-hitbox edge --rocket-value-max-left 3
+ke5_l2 --rocket-value 5 --rocket-value-mode kill --rocket-value-hitbox edge --rocket-value-max-left 2
+ke7_l3 --rocket-value 7 --rocket-value-mode kill --rocket-value-hitbox edge --rocket-value-max-left 3
+ke6_l3_e8 --rocket-value 6 --rocket-value-mode kill --rocket-value-hitbox edge --rocket-value-max-left 3 --rocket-value-min-elixir 8
+de7_l3_e8 --rocket-value 7 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-value-max-left 3 --rocket-value-min-elixir 8
+de7_l3_y21 --rocket-value 7 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-value-max-left 3 --rocket-value-min-y 21
+de7_l3_idle --rocket-value 7 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-value-max-left 3 --rocket-value-idle on
 de7_y21_e8 --rocket-value 7 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-value-min-y 21 --rocket-value-min-elixir 8
