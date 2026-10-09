@@ -1,0 +1,5 @@
+logt: 51 failed, 1008 passed, 44 skipped, 164 warnings, 3 errors, 7 subtests passed in 252.05s (0:04:12)
+logbase: 50 failed, 995 passed, 44 skipped, 164 warnings, 3 errors, 7 subtests passed in 244.30s (0:04:04)
+only in branch:
+> pipeline/tests/test_live_options.py::test_check_json_reports_lethal_log
+(every test_check_json_* live_play --check subprocess test fails on the VM in both trees; passes on the laptop)
