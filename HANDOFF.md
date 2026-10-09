@@ -5315,6 +5315,14 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   worker aedc7fb6, Phase 1 (selectors + harvest + live-vs-pro baseline per drill, D1-D9: under-fire, threatened lane,
 >   pool elixir, air answer, Log targets, Rocket clump (+Tornado), late tower Rocket, sneaky lock, second card).
 >   Phases 2 (fork scoring) and 3 (training) gated on the lead. Output L74/drills/CATALOG.md.
+> * **Drills Phase 1 DONE (aedc7fb6, merged 63f5458; decision-level only, "is DO better" untested):** live DO/HOLD vs
+>   pros: D1 under fire 23.6/80.6 vs 28.7/81.9; D2 threatened lane 72.3/87.0 vs 81.3/89.0; **D3 pool elixir 78.3/85.2
+>   vs 88.3/94.0 but SIM 88/88 (live-only gap -> SIM cannot see it)**; D4 air 26.7/75.0 vs 24.6/76.6 (pro level; Knight
+>   vs lone Balloon is not above pros); D5 Log 28.3/94.3 vs 15.3/93.0; D6 clump Rocket 0/35 live vs pros 3.5% (both
+>   rare per moment); D7 late tower Rocket 12.7/93.2 vs 10.3/91.5; D8 sneaky 3.8 vs 5.8; D9 Tornado second card 8.7%
+>   live / 11.4 SIM / 10.4 pros (27-30% only in pipeline-decisions arms). Too rare to train: D6b, D6 DO, D8 DO (need
+>   forced-DO forks), D1 HOLD borderline. Phase 2 HELD; next: SIM rates for every drill + input-swap on live D3 moments
+>   (supplement on/off split first). Pending copy-back: E2 results (/workspace/results/defence/) when they exist.
 > * **Rocket+Tornado combo SIM (a67f26ce, f022854; pod; delay-0 wrapper):** pull works -- clump value in blast at impact
 >   61% (combo) vs 15% (lone Rocket, same moment), destroyed +.34 elixir/fire [-.08, +.74] (tanks survive ~1480 dmg).
 >   Wins: no combo arm beats its lone twin; cb9 -.2 pp [-1.3, +.8] (6% of matches fire), cb7 -1.9, cb5 -5.0; air pool cb7
