@@ -4853,6 +4853,16 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   cleared (exact PIDs) and reopened once more, unchanged (fresh browser context every launch). Told the owner plainly: the
 >   earlier runs passed because of the automation-hiding flag; the lead will not restore it. If it keeps verifying, stop it
 >   and rely on the API census + RoyaleAPI data access.
+> * **~21:xx: crawl stopped** (third run still stuck on Cloudflare verifying; exact PIDs). Owner: "I need a way to collect
+>   replay data ... we need to upgrade it or create our own." Lead will not build Cloudflare/bot-detection workarounds.
+>   New first-party route dispatched (worker a7e7ad1a, offline prep only): record pro battles through the GAME's own replay
+>   viewer (TV Royale / top replays) with our MuMu memory reader, observe-only, convert to both-sides plays in the crawl
+>   schema, validate the converter on our own live matches; device test later (~15 min) with the owner's OK.
+> * **Hero IW switch MERGED f02a4ac** (blind PASS_WITH_NOTES on f5397a8: 0 off-vs-main differences; notes: lru_cache(2)
+>   re-reads cards.json on mixed calls; flag inert on feature_version < 4). Dead-lane merge candidate 487cfd2 in
+>   C:/Users/benpe/cb_merge_dl (lead resolved a decision_options.py conflict with ot_behind; 144 tests pass) under blind
+>   verification. Dead-lane worker: live dead-lane X-Bows sit on the lane lock cell (152/168), refined block = lock cell +
+>   king-only cells; SIM 635 vs 634; 37% of blocked X-Bows move one row back in the same lane (owner may want lane-wide).
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
