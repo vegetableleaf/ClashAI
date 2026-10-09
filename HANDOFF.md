@@ -5119,7 +5119,16 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   PASS_WITH_NOTES: off identical on 127,477 live decisions; 185400 every-frame 0 fires (4172-4230, look-ahead 24/26);
 >   225206 Log fires 5327-5345; all 2,312 landings 10-08/09 had a decision within 10 ticks (no 112-tick hold); history
 >   <= 121 entries, resets per match. Notes (low): release can precede the real hit by 4-8 ticks when other damage lands
->   first; hp_after docstring wrong for Rocket-then-Log of my own.
+>   first; hp_after docstring wrong for Rocket-then-Log of my own. (Correction: restart was 06:59, not ~07:1x.)
+> * **Sneaky lock iteration 2 (ae371b7): NOT deployed.** Tornado-plain anchor (arm j) cut ordinary-state Tornado drift
+>   5.0 -> ~2 tiles but also killed the technique (pulled out 7.5% -> 2.5%); SIM j_u0010 638 vs 635 (+.3 [-3.3, +4.0]),
+>   pooled 1920 -1.3 [-3.9, +1.2]; j_u0004 605. Drift-causes-loss hypothesis (c) contradicted. **METHOD FINDING (a):
+>   placebo checkpoints (live weights + Gaussian noise on the placement bias) give +/-3.6 pp 95% half-width at 960 games,
+>   +/-2.6 at 1920 -> the "lower bound > -3 pp" bar cannot resolve 1-2 pp effects; a null policy passes only if its point
+>   estimate lands above ~+0.3 pp.** Large rejections (rocket-value, air-answer on Balloon/Hound decks) stand; tau .20's
+>   win gain is indistinguishable from noise (its three-crown reduction is the robust part). Owner decision proposed: a
+>   paired bar on several thousand games, or a placebo-relative bar.
+> * 07:36: 11,723 trophies (menu read); all-time 528-489; last 60 min 10-6 +118.
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
