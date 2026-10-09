@@ -43,6 +43,17 @@ Opt-in everywhere; default off = byte-identical (default_parity.py, 7/7 identica
    Differences that remain between SIM and live: SIM decides on the frame grid only INSIDE a window (otherwise every 10 ticks), live
    decides every frame; SIM has no hand-tap loss (live lost 1 board tap in 12 pairs); SIM B lands exactly delay ticks after its decision.
 
+2b. OFFLINE REPLAY ON LIVE LOGS (pd_replay.py, pd_replay.out; 70 logs of 10-08, 2,637 play decisions rebuilt as the model's own input,
+   then "A pending": hand slot -> next card, elixir minus cost, A newest past play, slot masked; bodies/spell and the board NOT advanced)
+    * gate p: median .407 on the decision states -> .074 right after the model's own play (it backs off by itself)
+    * p > tau (the deployed phase thresholds) at the first window decision: 4.9% of plays (1x 7.1%, 2x 4.2%, OT 2.1%); pros: 5.8% of consecutive
+      plays are <= 24 ticks apart.  By first card: Skeletons 10.3%, Log 6.5%, Tornado 5.5%, Tesla 4.0%, Knight 2.8%, IceWizard 2.8%, Xbow 0, Rocket 0.
+    * the second card among those wants: Tornado 40% (51 of 128) vs the pros' 12% of second plays -- the SIM's Tornado over-pick shows up
+      on LIVE states too (c: measured), so it is the model's own gate x card selection, not a SIM artefact.  Top pairs: Skeletons->Tornado 17,
+      Log->Tornado 14, Skeletons->Log 11, IceWizard->Tornado 9, Skeletons->Tesla 8 (pros: Log->Skeletons, Tesla->Skeletons, IceWizard->Skeletons).
+    * limits: one frame of the window (the state does not evolve), no pending bodies, next card unknown.  The window has ~12 decisions, so the
+      real rate is >= this; the SIM A/B measures it.
+
 3. SIM A/B PLAN (RunPod pod; pod_pipeline_decisions.sh, pod-ready, all paths env-driven)
    step 1  PHASE=pre   unit tests + REAL-engine smoke (4 seeds x {off, pd0} x {evo, lad}): fails fast if the pending bodies / spell path
                         (extrapolate.pending_board, Match._pending_raw) cannot run on RoyaleSim, if pd0 shows 0 pending decisions, if a
