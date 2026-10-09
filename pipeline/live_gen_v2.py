@@ -90,7 +90,8 @@ class GenPilot(LegacyGenPilot):
         out = self.model(b)
         p = float(torch.sigmoid(out['gate'][0]))
         stalled = self.stalled(frame, info['el_int'])
-        allowed = allowed_slots(np.array([h[0] > 0 for h in info['hand']]), info['costs'], info['el_int'])
+        allowed = allowed_slots(np.array([h[0] > 0 for h in info['hand']]), info['costs'],
+                                info.get('el_afford', info['el_int']))     # --afford-ticks; default = el_int
         hazard_on = options.gate_decode != 'threshold'  # off: the frame / pilot state are not even read
         if hazard_on:
             tick = int(frame['game_tick'])              # the reader's game clock; a frame without it raises

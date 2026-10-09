@@ -110,6 +110,10 @@ OPP_TRACE_EVERY = 20                          # result()["opp_counter"]["trace"]
 # past-play dt use tick + H; the decision / landing / anti-stall clock ticks stay real. cfg["opp_elixir"]: the
 # counter's estimate at tick + H with no further plays (= min(10, est(tick) + regen)), the counter itself never
 # moves past the real tick; the truth-error diagnostic stays est(tick) vs truth(tick).
+# cfg["afford_ticks"] A (L74; unset = today, byte-identical): the afford mask (live/sample policies) uses MY elixir A
+# ticks ahead from the RAW state (afford_elixir) instead of the look-ahead view's; the model input, the anti-stall
+# elixir and the landing are unchanged. A == extrapolate_ticks reproduces today's mask (except a match's first,
+# unextrapolated decision).
 
 
 # ------------------------------------------------------------------------------------------------------
@@ -235,6 +239,20 @@ def allowed_slots(hand: np.ndarray, costs: Sequence[float], elixir_int: float, a
     if not afford_mask:
         return hand.copy()
     return hand & np.array([float(c) <= float(elixir_int) + 1e-6 for c in costs], dtype=bool)
+
+
+def afford_elixir(players, side: int, tick: int, ticks: int) -> float:
+    """cfg["afford_ticks"] A / live_play --afford-ticks (L74; unset = today's rule, the look-ahead elixir): MY elixir
+    ``ticks`` after ``tick`` with no spend, read from the RAW state and advanced exactly as pipeline.extrapolate
+    advances it, so A == extrapolate_ticks reproduces the look-ahead elixir. Live, a tap that cannot pay yet is held
+    by the game and refused unless it can pay within ~22 ticks of the board tap's arrival (n = 19,361 live plays,
+    scratchpad/gauntlet/L74/latency/afford_arrival.txt): the afford horizon is arrival + ~21, not the look-ahead."""
+    from pipeline.opp_elixir_count import MAX_ELIXIR, regen_between
+    me = next(p for p in players if int(p["side"]) == int(side))
+    g = regen_between(tick, tick + ticks)
+    if "elixir_exact" in me:                                  # SIM state / live_mem.to_observe
+        return min(MAX_ELIXIR, float(me["elixir_exact"]) + g)
+    return min(MAX_ELIXIR * 1e4, float(me["elixir_raw"]) + g * 1e4) / 1e4    # live reader frame
 
 
 def anti_stall(elixir_int: float, tick: int, last_play_tick: int, stall_elixir: Optional[float],
@@ -620,6 +638,8 @@ class Match:
         self.extrap = int(cfg.get("extrapolate_ticks") or 0)
         if self.extrap < 0:
             raise ValueError(f"cfg['extrapolate_ticks'] {self.extrap} < 0")
+        if cfg.get("afford_ticks") is not None and int(cfg["afford_ticks"]) < 0:
+            raise ValueError(f"cfg['afford_ticks'] {cfg['afford_ticks']} < 0")
         self._prev_raw = None                                # cfg["extrapolate_ticks"]: last decision's raw state
         self.drops = None                                    # cfg["predict_drops"] (opt-in, needs extrapolate_ticks)
         if cfg.get("predict_drops") and self.extrap:
@@ -767,7 +787,10 @@ class Match:
         tick, bs, view = self._cur
         el_int = float(int(view.my_elixir))
         live_like = policy in ("live", "sample")
-        allowed = allowed_slots(hand, self.costs, el_int,
+        el_afford = el_int                                    # cfg["afford_ticks"] unset: the look-ahead elixir
+        if live_like and cfg.get("afford_ticks") is not None:
+            el_afford = float(int(afford_elixir(self.state["players"], self.side, tick, int(cfg["afford_ticks"]))))
+        allowed = allowed_slots(hand, self.costs, el_afford,
                                 afford_mask=cfg["afford_mask"] if live_like else (not cfg["random_hand_only"]))
         stalled = anti_stall(el_int, tick, self.last_play_tick, cfg["stall_elixir"], cfg["stall_seconds"]) \
             if live_like else False
@@ -921,6 +944,7 @@ class Match:
             **({"action_delay_ticks": self.delay, "plays_unlanded": self.n_unlanded,
                 "plays_refused_at_landing": n_att - n_acc - self.n_unlanded} if self.delay else {}),
             **({"extrapolate_ticks": self.extrap} if self.extrap else {}),
+            **({"afford_ticks": int(cfg["afford_ticks"])} if cfg.get("afford_ticks") is not None else {}),
             **({"predict_drops": True} if self.drops is not None else {}),
             **({"own_effects": True} if self.own_fx is not None else {}),
             **({"hero_abilities": True, "ability_presses": {s: dict(c) for s, c in env.ability_presses.items()}}

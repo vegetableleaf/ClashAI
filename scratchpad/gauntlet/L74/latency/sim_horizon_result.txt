@@ -1,0 +1,13 @@
+d24 evo rc=0 00:28:28
+d24 lad rc=0 00:28:40
+d26 lad rc=0 00:28:40
+d24a23 evo rc=0 00:28:42
+d24a23 lad rc=0 00:28:44
+d26 evo rc=0 00:29:04
+DONE
+paired games 960 ({'d26': 960, 'd24': 960, 'd24a23': 960})
+    d26: wins 634.0/960  crowns diff +0.270  plays 37882 accepted 37286 refused 596 (1.57%)  accepted/min 10.283  elixir@play 1x/2x/OT [7.137, 6.594, 6.627]  leak>=9.5 [0.0693, 0.0153, 0.01]  end tick 4418
+    d24: wins 630.0/960  crowns diff +0.264  plays 38464 accepted 37865 refused 599 (1.56%)  accepted/min 10.335  elixir@play 1x/2x/OT [7.139, 6.597, 6.536]  leak>=9.5 [0.0691, 0.0172, 0.0107]  end tick 4459
+         vs d26: better 159 / worse 163 (sign test p 0.867); wins delta -4.0
+ d24a23: wins 627.0/960  crowns diff +0.256  plays 38369 accepted 37784 refused 585 (1.52%)  accepted/min 10.328  elixir@play 1x/2x/OT [7.139, 6.6, 6.532]  leak>=9.5 [0.0691, 0.0172, 0.0106]  end tick 4453
+         vs d26: better 156 / worse 163 (sign test p 0.737); wins delta -7.0
