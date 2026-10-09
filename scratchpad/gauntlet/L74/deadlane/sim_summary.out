@@ -1,0 +1,39 @@
+base evo rc=0 23:53:49
+block evo rc=0 23:53:58
+block lad rc=0 00:22:00
+base lad rc=0 00:22:03
+DONE
+== paired n=960 (base 960, block 960)
+wins base 634.0 vs block 635.0 | block better 4 worse 3 sign p=1.0000 | tower-hp diff delta +56
+   evo: base 319.0 block 323.0 better 4 worse 0 p=0.125
+   lad: base 315.0 block 312.0 better 0 worse 3 p=0.250
+OT (either arm past 3600 ticks) n=625: base 434.0 block 435.0 | base reached OT 623 block 622
+matches whose outcome or X-Bow count differ: 40
+
+== base: X-Bows/match 3.951 [3.852,4.043]
+   1x  per match KONLY 0.000 OFF_P 1.282 DL_LOCK 0.015 DL_BACK 0.006 DEF 0.246
+   2x  per match KONLY 0.000 OFF_P 1.289 DL_LOCK 0.119 DL_BACK 0.007 DEF 0.193
+   OT  per match KONLY 0.000 OFF_P 0.682 DL_LOCK 0.018 DL_BACK 0.004 DEF 0.091
+   all per match KONLY 0.000 OFF_P 3.253 DL_LOCK 0.151 DL_BACK 0.018 DEF 0.529
+   with an enemy princess down: n 240 KONLY 0 OFF_P 62 DL_LOCK 145 DL_BACK 17 DEF 16
+   blocked set (KONLY + DL_LOCK)/match 0.151 [0.118,0.186]
+   lead-rule defensive X-Bows/match 1x 0.267 2x 0.319 OT 0.113
+   Rockets/match 1.444: tower 1x 0.151 2x 0.193 OT 0.596 | push Rockets/match 0.060 [0.044,0.078]
+   elixir at big-push start mean 5.12 (n 2953)
+   1x: elixir@play 7.14 | cheap (Skel+Log) 0.339 | Skeletons 0.177, Knight 0.175, Log 0.162, IceWizard 0.158, Tesla 0.146, Xbow 0.111, Tornado 0.055, Rocket 0.016
+   2x: elixir@play 6.59 | cheap (Skel+Log) 0.317 | Skeletons 0.178, Knight 0.177, IceWizard 0.174, Tesla 0.145, Log 0.139, Xbow 0.115, Tornado 0.050, Rocket 0.022
+   OT: elixir@play 6.63 | cheap (Skel+Log) 0.303 | Knight 0.172, IceWizard 0.167, Skeletons 0.165, Tesla 0.144, Log 0.138, Rocket 0.082, Xbow 0.072, Tornado 0.060
+
+== block: X-Bows/match 3.941 [3.846,4.033]
+   1x  per match KONLY 0.000 OFF_P 1.290 DL_LOCK 0.000 DL_BACK 0.014 DEF 0.246
+   2x  per match KONLY 0.000 OFF_P 1.342 DL_LOCK 0.001 DL_BACK 0.053 DEF 0.209
+   OT  per match KONLY 0.000 OFF_P 0.686 DL_LOCK 0.000 DL_BACK 0.006 DEF 0.094
+   all per match KONLY 0.000 OFF_P 3.318 DL_LOCK 0.001 DL_BACK 0.073 DEF 0.549
+   with an enemy princess down: n 230 KONLY 0 OFF_P 124 DL_LOCK 1 DL_BACK 70 DEF 35
+   blocked set (KONLY + DL_LOCK)/match 0.001 [0.000,0.003]
+   lead-rule defensive X-Bows/match 1x 0.259 2x 0.264 OT 0.100
+   Rockets/match 1.464: tower 1x 0.152 2x 0.203 OT 0.605 | push Rockets/match 0.061 [0.045,0.079]
+   elixir at big-push start mean 5.12 (n 2954)
+   1x: elixir@play 7.14 | cheap (Skel+Log) 0.339 | Skeletons 0.177, Knight 0.175, Log 0.161, IceWizard 0.158, Tesla 0.146, Xbow 0.111, Tornado 0.055, Rocket 0.017
+   2x: elixir@play 6.60 | cheap (Skel+Log) 0.317 | Skeletons 0.178, Knight 0.177, IceWizard 0.174, Tesla 0.143, Log 0.139, Xbow 0.115, Tornado 0.051, Rocket 0.024
+   OT: elixir@play 6.63 | cheap (Skel+Log) 0.304 | Knight 0.172, IceWizard 0.167, Skeletons 0.165, Tesla 0.145, Log 0.139, Rocket 0.082, Xbow 0.071, Tornado 0.059
