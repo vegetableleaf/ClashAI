@@ -46,6 +46,8 @@ def _logged(*a, **k):
                     card=None if name is None else str(name), why=d.get('why'), ra=bool(ra), pe=bool(_ctx['pending'][r]),
                     b=[[int(u.cls), round(float(u.x) * 18, 3), round(float(u.y) * 32, 3), None if u.hp_frac is None else round(float(u.hp_frac), 4)]
                        for u in bs.units if int(u.side) != 0],
+                    m=[[int(u.cls), round(float(u.x) * 18, 2), round(float(u.y) * 32, 2), None if u.hp_frac is None else round(float(u.hp_frac), 3)]
+                       for u in bs.units if int(u.side) == 0],
                     tw=[[None if t.hp_frac is None else round(float(t.hp_frac), 4), bool(t.alive)] for t in bs.towers]))   # my K, L, R, opp K, L, R
     return out
 
