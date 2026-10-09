@@ -143,7 +143,7 @@ def test_edge_hitbox_covers_what_the_centre_rule_misses():
     assert (np.hypot(x[ok] - 6.6, y[ok] - 22) <= rocket_radius_tiles() + .5 + 1e-9).all()
     assert (np.hypot(x[ok] - 11.4, y[ok] - 22) <= rocket_radius_tiles() + .5 + 1e-9).all()
     # the bigger hitbox of the Lava Hound (0.75) reaches farther than a Knight's (0.5): same gap, only the Hound is covered
-    gap = lambda name: best(board(unit(name, 6.6, 22), unit(name, 11.8, 22)), hitbox='edge')[0] / body_value(vocab.unit_id(name))
+    gap = lambda name: best(board(unit(name, 5.8, 22), unit(name, 11.2, 22)), hitbox='edge')[0] / body_value(vocab.unit_id(name))
     assert gap('lava_hound') == 2 and gap('knight') == 1
 
 
