@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 import torch
 
-from pipeline.decision_options import (DecisionOptions, IN_FLIGHT_MARGIN_TICKS, LOG_HIT_TICKS, ROCKET_FLIGHT_TICKS,
+from pipeline.decision_options import (DecisionOptions, LETHAL_HIST_TICKS, hp_after, record_hp, IN_FLIGHT_MARGIN_TICKS, LOG_HIT_TICKS, ROCKET_FLIGHT_TICKS,
                                       add_arguments, config_from_args, decide_batch, in_flight_damage,
                                       lethal_log_cell, lethal_rocket_choice, match_kwargs, options_from_config,
                                       rocket_tower_damage)
@@ -180,8 +180,8 @@ def test_match_kwargs_own_plays_only_when_on():
     assert match_kwargs([m])['lethal'] == [(tw, 1, False)]                              # off: unchanged
     m.cfg = {**m.cfg, 'lethal_log': 'on'}
     del m.rng_decision_options
-    # + the landing-HP snapshot (None: this play landed before the first snapshot -> counted conservatively)
-    assert match_kwargs([m])['lethal'] == [(tw, 1, False, [('rocket', .2, .2, 3690 * .05, None)])]
+    # + the HP baseline: the first snapshot at / after the landing (here this decision's own, tick 3700)
+    assert match_kwargs([m])['lethal'] == [(tw, 1, False, [('rocket', .2, .2, 3690 * .05, {'R': 40, 'L': 1092})])]
 
 
 def test_sim_rows_and_live_pilot_share_the_guard():
@@ -257,6 +257,7 @@ def test_live_pilot_records_landing_hp_and_fires_after_the_hit(side):
     assert p.decide(live_frame(side, 530, 4424, tick=5250)).get('why') is None    # 530: nothing lethal; snapshot kept
     lane_x = (3.5 if side == 0 else 14.5) / 18                                       # raw-left tower in my frame
     p.past = [(2, 0, lane_x, 6.5 / 32, 5263 * .05)]
+    p.decide(live_frame(side, 530, 4424, tick=5265))                                # first snapshot after the landing
     p.row(None)[1]['bs'].t_sec = 5331 * .05 + 1.2
     d = p.decide(live_frame(side, 33, 4424, tick=5331))
     assert d['why'] == 'lethal_log' and d['lethal_rocket']['hp'] == 33
@@ -275,10 +276,38 @@ def test_sim_match_kwargs_attaches_the_landing_snapshot():
                         deck=SimpleNamespace(cards=['rocket', 'the-log']), state={'episode': {'crown_towers': tw_before}},
                         _cur=(5250, SimpleNamespace(t_sec=263.8), None), done_plays=[])
     match_kwargs([m])
-    m.state, m._cur, m.done_plays = {'episode': {'crown_towers': tw_after}}, (5340, SimpleNamespace(t_sec=268.3), None), \
-        [(5276, 0, 14.5 / 18, 6.5 / 32)]
+    m._cur, m.done_plays = (5280, SimpleNamespace(t_sec=265.3), None), [(5276, 0, 14.5 / 18, 6.5 / 32)]
+    match_kwargs([m])                                                     # first decision after the landing: 350 HP
+    m.state, m._cur = {'episode': {'crown_towers': tw_after}}, (5340, SimpleNamespace(t_sec=268.3), None)
     row = match_kwargs([m])['lethal'][0]
     assert row[3] == [('rocket', 14.5 / 18, 6.5 / 32, 5276 * .05, {'R': 350, 'L': 3052})]
     hit = lethal_rocket_choice(LOG, 268.3, ['knight', 'rocket', 'the-log', 'tesla'], OK, *row[:2], 'lattice',
                                own=row[3])
     assert hit[2] == dict(lane='R', hp=8, damage=35, level=11, card='Log')
+
+
+# ---- verifier v4: the HP baseline is the first snapshot AT / AFTER the landing; the history spans the whole window ----
+def test_baseline_is_the_first_snapshot_after_the_landing():
+    hist = [(4144, {'L': 345}), (4172, {'L': 3}), (4200, {'L': 3})]
+    assert hp_after(hist, 4170) == {'L': 3} and hp_after(hist, 4144) == {'L': 345} and hp_after(hist, 4201) is None
+    # 185400 (observer 1, lane L): my Rocket confirmed 4084 hit at 4146 (345 -> 3); the Log played at 4144 was
+    # confirmed at 4170 (no decision while pending); every frame 4200..4224: the Log still rolls -> no Rocket at 3 HP
+    log = ('the-log', 3.5 / 18, 17.5 / 32)
+    hist = [(4086, {'L': 345}), (4144, {'L': 345}), (4172, {'L': 3})]
+    tw = towers(1, 1092, 3, my_max=3052, enemy_max=3052)
+    for raw in range(4172, 4225, 2):
+        h = hist + [(raw, {'L': 3})]
+        own = [('rocket', 3.5 / 18, 6.5 / 32, 4084 * .05, hp_after(h, 4084)), (*log, 4170 * .05, hp_after(h, 4170))]
+        for la in (24, 26):
+            assert lethal_rocket_choice(LOG, (raw + la) * .05, NAMES, OK, tw, 1, 'lattice', own=own) is None, (raw, la)
+    # no snapshot after the landing yet: the spell counts
+    assert in_flight_damage([(*log, 199.0, hp_after(hist, 4300))], 200.0, 11, {'L': 3}) == {'L': 35}
+
+
+def test_history_spans_the_in_flight_window_not_a_count():
+    hist = None
+    for t in range(0, 599):                                             # a snapshot every tick: > 64 entries kept
+        hist = record_hp(hist, t, {'L': t})
+    assert hist[0][0] == 598 - LETHAL_HIST_TICKS and hist[-1][0] == 598 and len(hist) == LETHAL_HIST_TICKS + 1 > 64
+    assert record_hp(hist, 598, {'L': 0})[-1] == (598, {'L': 598})          # one entry per tick
+    assert record_hp(hist, 10, {'L': 1}) == [(10, {'L': 1})]               # tick went back: a new match

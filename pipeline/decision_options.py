@@ -731,11 +731,14 @@ def enemy_princess_hps(crown_towers, side):
     return out
 
 
-def hp_before(history, tick):
-    """The latest ``enemy_princess_hps`` snapshot at or before raw ``tick`` from [(raw tick, hps)], else None."""
+def hp_after(history, tick):
+    """The FIRST ``enemy_princess_hps`` snapshot at or after raw ``tick`` (a spell's landing) from [(raw tick, hps)],
+    else None. Verifier v4: a snapshot from BEFORE the landing can predate another of my spells' hit (185400: the Log's
+    pre-play snapshot 345 HP, my Rocket's hit 345 -> 3 two ticks later, the Log confirmed at 4170) and so credit that
+    damage to this spell. After the landing nothing of mine but the spell itself is still due on that tower."""
     best = None
     for t, hps in history:
-        if t <= tick and (best is None or t >= best[0]):
+        if t >= tick and (best is None or t < best[0]):
             best = (t, hps)
     return None if best is None else best[1]
 
@@ -746,6 +749,21 @@ def hp_before(history, tick):
 # (model-board time - the largest look-ahead, 26). Another source's damage before that no longer releases it.
 RELEASE_MARGIN_TICKS = 10
 MAX_LOOKAHEAD_TICKS = 26
+# HP history kept: every snapshot since the oldest landing still inside its in-flight window (raw ticks; a spell older
+# than this no longer counts), not a fixed count -- 64 snapshots at a decision every ~2 ticks spanned only ~128 ticks.
+LETHAL_HIST_TICKS = ROCKET_FLIGHT_TICKS + MAX_LOOKAHEAD_TICKS + IN_FLIGHT_MARGIN_TICKS + 8
+
+
+def record_hp(history, tick, hps):
+    """Append this decision's enemy-princess HP (one entry per raw tick) and drop entries older than the window.
+    -> the (possibly new) history list; a tick going backwards (a new match) restarts it."""
+    if history is None or (history and history[-1][0] > tick):
+        history = []
+    if not history or history[-1][0] != tick:
+        history.append((tick, hps))
+    while history and history[0][0] < tick - LETHAL_HIST_TICKS:
+        history.pop(0)
+    return history
 
 
 def in_flight_damage(own, t_sec, level, hp_now=None):
@@ -754,9 +772,10 @@ def in_flight_damage(own, t_sec, level, hp_now=None):
     princess radius of the tower centre; Log: the tower inside its roll corridor (half-width / roll range + half-depth,
     each + the princess radius).
     A spell stops counting once it has HIT (verifier v2: counting it after the hit refused finishing spells): the tower
-    has lost at least that spell's damage since the landing (``hp_now`` vs the landing snapshot; public tower HP). This
-    is robust to the live confirmation-time stamp: any snapshot before the hit works, and the hit is >= 57 ticks after
-    landing while the stamp lags the placement by a few ticks; the time-window alone stays the upper bound."""
+    has lost at least that spell's damage since its landing (``hp_now`` vs ``hp_after`` the landing: the first public
+    snapshot at or after it, None = not seen yet = still counts) AND the conservative earliest hit has passed. The live
+    confirmation stamp lags the placement by a few ticks and the hit comes >= ~50 ticks after it, so the first snapshot
+    after the stamp is still before the hit; the time-window alone stays the upper bound."""
     from .public_geometry import constants
     tr = constants()['tower_radius']['PrincessTower'] / 1000.0
     half, depth, reach = rolling_corridor('Log')
@@ -972,12 +991,9 @@ def match_kwargs(matches):
                             getattr(m, 'pending', None) is not None) for m in matches])
         if options.lethal_log == 'on':  # + my accepted plays (landing tick, deck slot, my-frame xy) for the in-flight guard
             for row, m in zip(out['lethal'], matches):   # public tower HP per decision tick -> the HP each spell landed on
-                hist = getattr(m, '_lethal_hp_hist', None)
-                if hist is None or (hist and hist[-1][0] > m._cur[0]):
-                    hist = m._lethal_hp_hist = []
-                hist.append((int(m._cur[0]), enemy_princess_hps(row[0], row[1])))
-                del hist[:-64]
-            out['lethal'] = [row + ([(m.deck.cards[s], x, y, land * 0.05, hp_before(m._lethal_hp_hist, land))
+                m._lethal_hp_hist = record_hp(getattr(m, '_lethal_hp_hist', None), int(m._cur[0]),
+                                              enemy_princess_hps(row[0], row[1]))
+            out['lethal'] = [row + ([(m.deck.cards[s], x, y, land * 0.05, hp_after(m._lethal_hp_hist, land))
                                      for land, s, x, y in m.done_plays[-8:]],)
                              for row, m in zip(out['lethal'], matches)]
     if options.log_aim != 'argmax':     # the very projectile tokens the model saw (gen_row, fv >= 4), as live's batch
