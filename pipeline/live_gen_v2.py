@@ -15,6 +15,7 @@ from .decision_options import (BARREL_KEY, DecisionOptions, barrel_landings, cho
                                gate_taus, hazard_draw, is_xbow, lethal_rocket_choice, tau_threat_state,
                                threat_on, threat_taus, tower_threat, xbow_dead_lane_cells, enemy_body_tiles,
                                princess_dead_state, rocket_covers_king, rocket_kills_king)
+from .decision_options import rocket_bodies, rocket_track, rocket_value_cell, rocket_value_choice
 from .live_mem import my_side_of
 from .decision_options import enemy_princess_hps, hp_after, record_hp
 
@@ -52,6 +53,7 @@ class GenPilot(LegacyGenPilot):
         self._threat_state = None               # decision_options.tower_threat state of the previous decision
         self._princess_dead_state = None        # decision_options.princess_dead_state of the previous decision
         self._tau_threat_state = None           # decision_options.tau_threat_state of the previous decision
+        self.rv_hist = None                     # rocket_value_lead: the last decisions' enemy bodies (rocket_track)
 
     def reset_match(self):
         super().reset_match()
@@ -64,6 +66,7 @@ class GenPilot(LegacyGenPilot):
         self._princess_dead_state = None
         self._lethal_hp_hist = None
         self._tau_threat_state = None
+        self.rv_hist = None                     # rocket_value_lead: the last decisions' enemy bodies (rocket_track)
 
     def row(self, frame):
         b, info = super().row(frame)
@@ -105,6 +108,23 @@ class GenPilot(LegacyGenPilot):
             own = [(key.get(c), x, y, t, hp_after(hist, round(t / 0.05))) for c, f, x, y, t in getattr(self, 'past', [])[-8:]]
         return lethal_rocket_choice(options, info['bs'].t_sec, names, allowed, towers, side, self.grid, own=own)
 
+    def rocket_value(self, info, allowed, playing=False):
+        """decision_options.rocket_value_choice on the live board (info['bs']: the reader's bodies with hp_frac; live_play never
+        decides with a card pending) -> (hand position, eligible cells, value) or None. Called at EVERY decision when on (the
+        lead history), as SIM decide_batch."""
+        options = self.decision_options
+        if getattr(options, 'rocket_value', 0.0) <= 0:
+            return None
+        names = [info['names'][di] if di >= 0 else None for di in info['hand_deck_indices']]
+        return rocket_value_choice(options, names, allowed, info['bs'], self.grid, holder=self, playing=bool(playing))
+
+    def rocket_value_observe(self, info):
+        """The decision with nothing affordable: only the lead history (SIM decide_batch sees this board too)."""
+        options = self.decision_options
+        if getattr(options, 'rocket_value', 0.0) > 0 and options.rocket_value_lead == 'on':
+            tick = int(round(float(info['bs'].t_sec) / 0.05))
+            rocket_track(self, tick, rocket_bodies(info['bs'], options.rocket_value_mode))
+
     @torch.no_grad()
     def decide(self, frame):
         options = self.decision_options
@@ -135,6 +155,7 @@ class GenPilot(LegacyGenPilot):
         if getattr(options, 'lethal_rocket', 'off') != 'off' and getattr(options, 'lethal_log', 'off') == 'on':
             self._lethal_snapshot(frame, names=info['names'])  # every decision (as SIM match_kwargs), affordable or not
         if not allowed.any():
+            self.rocket_value_observe(info)
             if hazard_on:
                 self._hazard_prev = (tick, False)
             return self._audited(dict(play=False, no_affordable=True, p_play=p, hand_pos=-1, deck_index=-1, card=0,
@@ -162,6 +183,24 @@ class GenPilot(LegacyGenPilot):
             d = dict(play=True, p_play=p, hand_pos=pos, no_affordable=False, stalled=stalled, why=why,
                      lethal_rocket=target, deck_index=info['hand_deck_indices'][pos], card=card, form=form, bs=bs,
                      name=info['names'][info['hand_deck_indices'][pos]], xy=cell_xy(cell, self.grid), **lookahead)
+            if options.tau_phase is not None or options.tau_threatened is not None:
+                d['gate_tau'] = tau
+            if tau_threat is not None:
+                d['tau_threat'] = tau_threat
+            if hazard_on:                               # a play was made: no hazard accrues over its landing
+                d.update(hazard_step_s=step, hazard_play=False)
+                self._hazard_prev = (tick, False)
+            return self._audited(d)
+        rocket = self.rocket_value(info, allowed, playing)
+        if rocket is not None:                          # SIM decide_batch: the same rule, below the lethal rule
+            pos, eligible, value = rocket
+            card, form = info['hand'][pos]
+            d = dict(play=True, p_play=p, hand_pos=pos, no_affordable=False, stalled=stalled, why='rocket_value',
+                     rocket_value=round(value, 3), deck_index=info['hand_deck_indices'][pos], card=card, form=form, bs=bs,
+                     name=info['names'][info['hand_deck_indices'][pos]], **lookahead)
+            logits = self.guard_cells(frame, d, self.model(b, card=torch.tensor([card], device=self.dev),
+                                                           form=torch.tensor([form], device=self.dev))['cell'])
+            d['xy'] = cell_xy(rocket_value_cell(logits, eligible), self.grid)
             if options.tau_phase is not None or options.tau_threatened is not None:
                 d['gate_tau'] = tau
             if tau_threat is not None:

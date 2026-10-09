@@ -40,6 +40,12 @@ class DecisionOptions:
     xbow_dead_lane: str = 'allow'           # 'block': no X-Bow cell that reaches only the king / a destroyed princess
     rocket_dead_target: str = 'allow'       # 'block': no Rocket on a fallen tower / the king with nothing alive in it
     tau_threatened: Optional[float] = None  # gate threshold while threatened (tau_threat_state); None = the phase tau
+    rocket_value: float = 0.0               # > 0: Rocket a clump of >= this much enemy elixir value on my half (rocket_value_choice)
+    rocket_value_mode: str = 'cost'         # 'damage': value = the share of each body's value the Rocket destroys
+    rocket_value_hitbox: str = 'centre'     # 'edge': a body is in the blast when its hitbox touches the radius
+    rocket_value_lead: str = 'off'          # 'on': aim at where the bodies will be when the Rocket lands
+    rocket_value_idle: str = 'off'          # 'on': only at a decision where the model itself would not play (displaces nothing)
+    rocket_value_min_elixir: float = 0.0    # fire only with at least this much elixir (the Rocket leaves the rest)
 
     def __post_init__(self):
         if self.card_choice not in ('argmax', 'filtered'):
@@ -78,13 +84,21 @@ class DecisionOptions:
             raise ValueError('lethal_log must be off or on')
         if self.tau_threatened is not None and not (math.isfinite(self.tau_threatened) and 0 <= self.tau_threatened <= 1):
             raise ValueError('tau_threatened must be a threshold in [0, 1]')
+        if not math.isfinite(self.rocket_value) or self.rocket_value < 0:
+            raise ValueError('rocket_value must be finite and >= 0')
+        for k, ok in (('rocket_value_mode', ('cost', 'damage')), ('rocket_value_hitbox', ('centre', 'edge')),
+                      ('rocket_value_lead', ('off', 'on')), ('rocket_value_idle', ('off', 'on'))):
+            if getattr(self, k) not in ok:
+                raise ValueError(f'{k} must be one of {ok}')
+        if not math.isfinite(self.rocket_value_min_elixir) or not 0 <= self.rocket_value_min_elixir <= 10:
+            raise ValueError('rocket_value_min_elixir must be in [0, 10]')
 
     @property
     def active(self):
         return (self.card_choice != 'argmax' or self.spell_aim != 'argmax' or self.tau_phase is not None
                 or self.xbow_class != 'argmax' or self.log_aim != 'argmax' or self.gate_decode != 'threshold'
                 or self.lethal_rocket != 'off' or self.xbow_dead_lane != 'allow' or self.rocket_dead_target != 'allow'
-                or self.tau_threatened is not None)
+                or self.tau_threatened is not None or self.rocket_value > 0)
 
 
 def options_from_config(cfg=None):
@@ -148,6 +162,26 @@ def add_arguments(parser):
                         help='while threatened (one of my towers lost HP within the last 2 s of board time AND an enemy '
                              'unit is within 8 tiles of that tower, public) the gate threshold is X instead of the phase '
                              'tau: play iff P(play) > X. Card and cell stay the model own choices; default off')
+    parser.add_argument('--rocket-value', type=float, default=0.0, metavar='V',
+                        help='owner 2026-10-09 (a Lava Hound push never Rocketed): with Rocket in hand and affordable and nothing '
+                             'pending, play it when the best blast centred on MY half holds >= V elixir of enemy value, aimed by '
+                             'the rocket_area logic among the cells that cover that whole clump; the lethal rules keep priority. '
+                             'The sub-options below change how the value is counted. 0 = off')
+    parser.add_argument('--rocket-value-mode', choices=('cost', 'damage'), default='cost',
+                        help='cost: a body is worth card cost / bodies x hp fraction; damage: x the share of its hp the Rocket '
+                             'takes instead (min(Rocket damage, hp now) / max hp), so a Giant counts for a third and a Skeleton '
+                             'Dragon pair in full')
+    parser.add_argument('--rocket-value-hitbox', choices=('centre', 'edge'), default='centre',
+                        help='edge: a body is in the blast when its HITBOX touches the radius (centre distance <= radius + its '
+                             'collision radius, the RoyaleSim rule); centre: its centre must be inside the radius')
+    parser.add_argument('--rocket-value-lead', choices=('off', 'on'), default='off',
+                        help='on: aim at where the bodies will be when the Rocket lands (action delay + flight from my king '
+                             'tower), each moved at the velocity measured from the last 2 s of decisions')
+    parser.add_argument('--rocket-value-idle', choices=('off', 'on'), default='off',
+                        help='on: only at a decision where the model itself would not play (gate WAIT after the hazard draw), so '
+                             'the Rocket displaces no play of the model')
+    parser.add_argument('--rocket-value-min-elixir', type=float, default=0.0, metavar='E',
+                        help='fire only with at least E elixir (the Rocket leaves E - 6 for the defence); 0 = any affordable')
     parser.add_argument('--decision-seed', type=int, default=0,
                         help='separate seeded card-choice stream; recorded with each experiment')
 
@@ -865,14 +899,201 @@ def lethal_rocket_choice(options, t_sec, names, allowed, crown_towers, side, gri
     return slots[0], lethal_rocket_cell(target['lane'], grid), target
 
 
+# ---- rocket_value (owner 2026-10-09 01:4x: "WHY IS THE MODEL NOT ROCKETING A FULL LAVAHOUND PUSH WITH 15+ ELIXIR OF VALUE?";
+# iteration 2 10:00: "failure at the first attempt does not validate discarding the strategy") ----
+# With Rocket in hand and affordable and nothing pending, play it when the best blast on MY half holds >= V of enemy elixir value.
+# Sub-options (each one change, each its own value of a field so arms differ by exactly one thing):
+#   rocket_value_mode  cost   (iteration 1) a body is worth its card's cost / bodies x its hp fraction, whatever the Rocket does to it
+#                      damage a body is worth cost / bodies x min(Rocket damage, hp now) / max hp: the share of its value the
+#                             Rocket destroys (a Giant at full hp is worth 1.9 of its 5, a Skeleton Dragon pair all 4)
+#   rocket_value_hitbox centre the blast covers a body whose CENTRE is within the Rocket radius (iteration 1)
+#                      edge   ... whose HITBOX touches it: centre distance <= radius + the body's collision radius (the RoyaleSim
+#                             rule, spells.AOE_HIT_TEST = EdgeInclusive; Lava Hound 0.75, Balloon 0.5, Skeleton Dragons 0.9 tiles)
+#   rocket_value_lead  off    aim at the bodies where they are now
+#                      on     aim at where they will be when it lands: each body moves on at the velocity measured from the decision
+#                             history over the action delay + the Rocket flight from my king tower (rocket_lands_in)
+# All numbers are RoyaleSim catalog ratios (the unified-level ladder cancels: Rocket 580 and every hp share it).
+ROCKET_UNIT_DAMAGE = 580.0        # catalog Rocket damage to a non-tower body, level-1 scale (the same scale as every catalog hitpoints)
+ROCKET_ACT_DELAY_TICKS = 27       # decision -> the card is deployed: SIM 26 (action delay), live 28 (confirmation); measured at L74/rocket_value
+ROCKET_SPEED_TILES_PER_TICK = 0.35   # catalog Rocket projectile speed 350, from my king tower (9.0, 28.65) in the board frame
+MY_HALF_MIN_Y_TILES = 16.0        # board frame (me at the bottom): y tiles >= 16 is my half; a cell centre there is "on my half"
+_CHILD_SHARE = {'golemite': ('golem', 2, 'Golemite'), 'lava_pups': ('lava_hound', 6, 'LavaPups'),
+                'elixir_golemite': ('elixir_golem', 2, 'ElixirGolem2'), 'elixir_blob': ('elixir_golemite', 2, 'ElixirGolem4'),
+                'royal_recruit': ('royal_recruits', 1, 'Recruit')}
+
+
+@lru_cache(maxsize=1)
+def rocket_unit_table():
+    """{vocab key: (elixir value of one full-hp body, catalog hitpoints, collision radius in tiles)}; troops and buildings.
+    Value = card cost / bodies the card puts out (cards.json count + second_summon.count). A spawned child shares its parent card
+    (Lava Pups are the Hound's 7 over 6, golemites the Golem's 8 over 2, blobs a golemite's share over 2). A key missing from it
+    is worth 0 (spells, ability markers, anything the catalog does not know)."""
+    import json
+    from . import vocab
+    from .body_identity import CATALOG
+    catalog = json.loads(CATALOG.read_text(encoding='utf-8'))
+    table = {}
+    for c in catalog['cards']:
+        key = vocab.engine_key(c['name'])
+        if c.get('kind') in ('troop', 'building') and c.get('elixir') and key not in table:
+            n = int(c.get('count') or 1) + int((c.get('second_summon') or {}).get('count') or 0)
+            table[key] = (float(c['elixir']) / max(n, 1), float(c.get('hitpoints') or 0.0),
+                          float(c.get('collision_radius_milli') or 500) / 1000.0)
+    for child in ('golemite', 'lava_pups', 'elixir_golemite', 'elixir_blob', 'royal_recruit'):   # parents before children
+        parent, n, unit = _CHILD_SHARE[child]
+        u = catalog['units'][unit]
+        table[child] = (table.get(parent, (0.0,))[0] / n if parent in table else 0.0, float(u.get('hitpoints') or 0.0),
+                        float(u.get('collision_radius_milli') or 500) / 1000.0)
+    return table
+
+
+def unit_values():
+    """{vocab key: elixir value of one full-HP body} (rocket_unit_table's first column)."""
+    return {k: v[0] for k, v in rocket_unit_table().items()}
+
+
+def body_value(cls, hp_frac=None):
+    """Elixir value of one enemy body of vocab id ``cls`` at hp fraction ``hp_frac`` (None = full); 0 for spells and markers."""
+    from . import vocab
+    name = vocab.UNIT_VOCAB[int(cls)]
+    if vocab.is_spell(int(cls)) or name.endswith('_ability'):
+        return 0.0
+    return rocket_unit_table().get(vocab.base_key(name), (0.0,))[0] * (1.0 if hp_frac is None else min(max(float(hp_frac), 0.0), 1.0))
+
+
+def rocket_bodies(bs, mode='cost'):
+    """[n, 5] float (class id, x tiles, y tiles, value, collision radius tiles) per enemy body of a BoardState (side != 0,
+    as enemy_unit_count) worth > 0 under ``mode``: cost -> cost/bodies x hp fraction; damage -> cost/bodies x the share of its hp
+    the Rocket takes (min(ROCKET_UNIT_DAMAGE, hp now) / max hp). Unknown hp = full."""
+    from . import vocab
+    table, rows = rocket_unit_table(), []
+    for u in bs.units:
+        if int(u.side) == 0 or vocab.is_spell(int(u.cls)):
+            continue
+        name = vocab.UNIT_VOCAB[int(u.cls)]
+        ev, hp, radius = table.get(vocab.base_key(name), (0.0, 0.0, 0.5))
+        if ev <= 0 or name.endswith('_ability'):
+            continue
+        f = 1.0 if u.hp_frac is None else min(max(float(u.hp_frac), 0.0), 1.0)
+        value = ev * f if mode == 'cost' or hp <= 0 else ev * min(ROCKET_UNIT_DAMAGE, f * hp) / hp
+        if value > 0:
+            rows.append((float(u.cls), float(u.x) * 18.0, float(u.y) * 32.0, value, radius))
+    return np.array(rows, dtype=np.float64).reshape(-1, 5)
+
+
+def rocket_lands_in(cx, cy):
+    """Ticks from the decision to the Rocket's impact at board tile (cx, cy): the action delay, the 2-tick launch overhead and the
+    flight at the catalog speed from my king tower (9.0, 28.65). MEASURED in RoyaleSim at L74/rocket_value (round(d/.35)+2, +-1)."""
+    return ROCKET_ACT_DELAY_TICKS + int(round(math.hypot(cx - 9.0, cy - 28.65) / ROCKET_SPEED_TILES_PER_TICK)) + 2
+
+
+def rocket_velocities(history, tick, bodies, max_speed=3.0):
+    """[n, 2] tiles per tick for each row of ``bodies`` (rocket_bodies): matched to the nearest body of the same class in the OLDEST
+    snapshot of ``history`` ([(tick, bodies)], newest last) that is >= 6 ticks old, within max_speed tiles/s x the gap + 0.75; zero
+    when unmatched. A swarm of identical bodies moves as a group, which is what the blast needs."""
+    vel = np.zeros((len(bodies), 2))
+    ref = next((h for h in history if tick - h[0] >= 6), None)
+    if ref is None or not len(bodies) or not len(ref[1]):
+        return vel
+    gap = tick - ref[0]
+    for i, b in enumerate(bodies):
+        same = ref[1][ref[1][:, 0] == b[0]]
+        if not len(same):
+            continue
+        d = np.hypot(same[:, 1] - b[1], same[:, 2] - b[2])
+        j = int(d.argmin())
+        if d[j] <= max_speed * 0.05 * gap + 0.75:
+            vel[i] = ((b[1] - same[j, 1]) / gap, (b[2] - same[j, 2]) / gap)
+    return vel
+
+
+def rocket_track(holder, tick, bodies, keep_ticks=40):
+    """Append the decision's bodies to ``holder.rv_hist`` (the SIM match / the live pilot) and forget snapshots older than
+    ``keep_ticks``; -> the history BEFORE this decision. A snapshot closer than 4 ticks to the last one replaces nothing (live
+    decides every frame)."""
+    hist = getattr(holder, 'rv_hist', None)
+    if hist is None:
+        hist = holder.rv_hist = []
+    before = list(hist)
+    if not hist or tick - hist[-1][0] >= 4:
+        hist.append((tick, bodies))
+    while hist and tick - hist[0][0] > keep_ticks:
+        hist.pop(0)
+    return before
+
+
+def best_rocket_clump(bodies, grid, hitbox='centre', lead=None):
+    """-> (value, eligible) for the best Rocket blast CENTRED on my half: its value, and the [2304] bool cells (on my half) whose
+    blast covers every body of that best clump. (0.0, None) with no body worth anything. ``hitbox`` 'centre' counts a body whose
+    centre is within the Rocket radius, 'edge' one whose hitbox touches it (radius + the body's collision radius). ``lead`` =
+    None, or the (decision tick, history) of rocket_track: the bodies are moved to where they will be when a Rocket aimed at the
+    cell lands (rocket_lands_in at the cell, found by one refinement from the static best cell)."""
+    if not len(bodies):
+        return 0.0, None
+    x, y = cell_centres_tiles(grid)
+    reach = rocket_radius_tiles() + (bodies[:, 4] if hitbox == 'edge' else np.zeros(len(bodies)))
+    mine = y >= MY_HALF_MIN_Y_TILES
+
+    def blast(pos):
+        inside = np.hypot(x[:, None] - pos[None, :, 0], y[:, None] - pos[None, :, 1]) <= reach[None, :]
+        return inside, np.where(mine, inside @ bodies[:, 3], -1.0)
+
+    pos = bodies[:, 1:3]
+    inside, value = blast(pos)
+    if lead is not None:
+        vel = rocket_velocities(lead[1], lead[0], bodies)
+        for _ in range(2):          # the flight depends on the aimed cell, the cell on where the bodies will be: two refinements
+            best = int(value.argmax())
+            horizon = rocket_lands_in(x[best], y[best])
+            pos = np.clip(bodies[:, 1:3] + vel * horizon, (0.0, 0.0), (18.0, 32.0))
+            inside, value = blast(pos)
+    best = int(value.argmax())
+    if value[best] <= 0:
+        return 0.0, None
+    return float(value[best]), mine & inside[:, inside[best]].all(axis=1)
+
+
+def rocket_value_choice(options, names, allowed, bs, grid, pending=False, holder=None, playing=False):
+    """-> (slot, eligible cells, value) when rocket_value fires, else None: an affordable Rocket slot (``allowed``), no card
+    pending, and the best blast centred on my half (best_rocket_clump) holds >= options.rocket_value. Public bodies only; the
+    enemy king is out of reach (a centre on my half is >= 13 tiles from it). With lead on, ``holder`` keeps the decision history
+    (rocket_track); called at EVERY decision, even with no Rocket in hand, so the history has no gaps."""
+    if options.rocket_value <= 0:
+        return None
+    bodies = rocket_bodies(bs, options.rocket_value_mode)
+    lead = None
+    if options.rocket_value_lead == 'on' and holder is not None:
+        tick = int(round(float(bs.t_sec) / 0.05))
+        lead = (tick, rocket_track(holder, tick, bodies))
+    slots = [i for i, n in enumerate(names) if n is not None and str(n).lower() == 'rocket' and allowed[i]]
+    if pending or not slots or (options.rocket_value_idle == 'on' and playing):
+        return None
+    if float(bs.my_elixir) + 1e-9 < options.rocket_value_min_elixir:
+        return None
+    value, eligible = best_rocket_clump(bodies, grid, options.rocket_value_hitbox, lead)
+    return None if eligible is None or value + 1e-9 < options.rocket_value else (slots[0], eligible, value)
+
+
+def rocket_value_cell(logits, eligible):
+    """The rocket_area aim restricted to ``eligible``: most learned cell mass inside the Rocket radius, then the cell's
+    own logit, then the first index (choose_cells' tie order). With no finite eligible logit: the first eligible cell."""
+    logits = logits.reshape(-1)
+    keep = torch.as_tensor(np.asarray(eligible, dtype=bool), device=logits.device) & torch.isfinite(logits)
+    if not bool(keep.any()):
+        return int(np.flatnonzero(eligible)[0])
+    mass = rocket_area_scores(logits.softmax(dim=-1)[None])[0].masked_fill(~keep, -torch.inf)
+    return int(logits.masked_fill(mass != mass.max(), -torch.inf).argmax())
+
+
 @torch.no_grad()
 def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options, rngs, card_names,
                  t_sec=None, enemy_alive=None, grid=None, projectiles=None, step_s=None, elixir=None,
-                 enemy_units=None, lethal=None, threatened=None, rocket_boards=None, tau_threat=None):
+                 enemy_units=None, lethal=None, threatened=None, rocket_boards=None, tau_threat=None, rocket_value=None):
     """Optional branch of e1_eval's live decision; default branch remains untouched.
     ``t_sec`` (tau_phase) and ``enemy_alive`` [(K, L, R) alive] + ``grid`` (xbow_class) are per-row match context;
     ``projectiles`` (log_aim) = each row's model projectile tokens, decoded with the model's own card vocabulary.
-    ``lethal`` (lethal_rocket) = per row (raw crown towers, my side, a card pending) for ``lethal_rocket_choice``."""
+    ``lethal`` (lethal_rocket) = per row (raw crown towers, my side, a card pending) for ``lethal_rocket_choice``.
+    ``rocket_value`` = per row (the decision BoardState, a card pending, the match keeping the lead history) for ``rocket_value_choice``."""
     base_tau = tau = gate_taus(options, tau, t_sec, len(allowed))
     tau = threat_taus(options, tau, tau_threat)
     playing = allowed.any(axis=1) & ((np.asarray(p) > tau) | stalled)
@@ -931,6 +1152,21 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
                      'tau_threat' if p[r] > tau[r] and p[r] <= base_tau[r] and options.tau_threatened is not None
                      else 'gate' if p[r] > tau[r] else 'hazard'))
            for r in range(len(slots))]
+    if options.rocket_value > 0:    # before lethal_rocket, which overrides it
+        if rocket_value is None or grid is None or card_names is None:
+            raise ValueError('rocket_value requires per-row boards, the grid and card names')
+        hits = {}
+        for r in range(len(out)):
+            hit = rocket_value_choice(options, card_names[r], allowed[r], rocket_value[r][0], grid, pending=rocket_value[r][1],
+                                      holder=rocket_value[r][2], playing=bool(playing[r]))
+            if hit is not None:
+                hits[r] = hit
+        if hits:
+            ids = list(hits)
+            logits = model.cell_logits({k: v[torch.as_tensor(ids, device=device)] for k, v in enc.items()},
+                                       torch.tensor([hits[r][0] for r in ids], device=device))
+            for j, r in enumerate(ids):
+                out[r] = dict(play=True, slot=hits[r][0], cell=rocket_value_cell(logits[j], hits[r][1]), why='rocket_value')
     if options.lethal_rocket != 'off':
         if lethal is None or t_sec is None or grid is None or card_names is None:
             raise ValueError('lethal_rocket requires per-row crown towers, decision times, the grid and card names')
@@ -996,6 +1232,8 @@ def match_kwargs(matches):
             out['lethal'] = [row + ([(m.deck.cards[s], x, y, land * 0.05, hp_after(m._lethal_hp_hist, land))
                                      for land, s, x, y in m.done_plays[-8:]],)
                              for row, m in zip(out['lethal'], matches)]
+    if options.rocket_value > 0:        # the decision's engine BoardState (hp_frac known, as live's): same board as tau_phase
+        out.update(grid=cfg['grid'], rocket_value=[(m._cur[1], getattr(m, 'pending', None) is not None, m) for m in matches])
     if options.log_aim != 'argmax':     # the very projectile tokens the model saw (gen_row, fv >= 4), as live's batch
         rows = [getattr(m, '_gen_row', None) for m in matches]
         if any(r is None or 'projectiles' not in r for r in rows):
