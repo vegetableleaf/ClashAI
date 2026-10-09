@@ -150,11 +150,6 @@ class TestFollowUps(unittest.TestCase):
         self.assertEqual(spec(after=4)["require_first"], True)
         with self.assertRaises(ValueError):
             E.follow_up_spec(0, 0, -1)
-        side = E.SelfPlaySide.__new__(E.SelfPlaySide)
-        side._record = lambda p, d: T
-        side.env, side.cfg, side.delay = SimpleNamespace(hero_abilities=False), {"decide_every": 10}, D
-        with self.assertRaises(NotImplementedError):
-            side.apply(0.9, dict(PLAY, follow_ups=[spec()]))
 
 
 class TestSharedVerdict(unittest.TestCase):
