@@ -4837,6 +4837,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   GenPilot(hero_ability_spec), EXTRA_LIVE_FLAGS + live_play --hero-ability-spec {off,supplement}, default off; 7 tests).
 >   Merge candidate f5397a8 in C:/Users/benpe/cb_merge_hero (junctions inside) under blind verification. Button returning to
 >   ready after 91/741 presses (12%) -- evidence favours 1 charge (b).
+> * **OWNER ~20:1x:** (1) replay crawl -- lead started crawl_polite.py crawl in a visible PowerShell window (pid 59776 ->
+>   python 75404, Chrome 77332, 20:11); the owner handles Cloudflare/login and presses Enter there. (2) Sim upstream watch:
+>   session cron 3035e80f every 2 h at :43 (RoyaleSim f042db0 / RoyaleGym 8bd8c5c last checked 2026-10-08 20:1x) -- update
+>   the sim (isolated runtime, tests, owner OK to switch the pin) as soon as Hero IW / Electro Wizard hero / Electro Giant evo
+>   / balance values land. (3) Owner grinds on a SECOND account meanwhile; restarts live on the main account when the next
+>   bundle arrives. The Hero IW fix does NOT need a retrain (input encoding switch). Old Playwright Chrome group from 10-05
+>   (pid 58400) left alone.
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
