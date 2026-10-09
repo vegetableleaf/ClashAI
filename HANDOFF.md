@@ -5235,6 +5235,41 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   Ubuntu 24.04, py3.12/3.13, no Rust). $0.82/h. Setup worker a2ef9aca: venv + torch cu128, RoyaleSim Linux build,
 >   needed data only (no secrets/reader), bit-exact SIM check vs VM backup, /workspace/POD_README.md. A friend's GCP
 >   free-trial n2-standard-128 may follow (free trial likely capped at 8 vCPU until upgraded).
+> * **POD READY (a2ef9aca):** /workspace/clashbot (main 51b9806 + six worker branches from a bundle), venv /workspace/venv
+>   py3.12 (3.13 breaks torch import there), torch 2.11+cu128, ROYALE_RUNTIME=20261006-linux = PyPI wheels (royalesim
+>   0.1.17 / royalegym 0.1.18; no Rust). Base arm seeds 0:140 evo = VM backup 140/140 bit-identical. ~47 games/min at 28
+>   procs. Disk 12/30 GB. README /workspace/POD_README.md (copy in the session temp). Shared protocol: per-worker
+>   worktrees /workspace/wt_*, `flock /workspace/cpu.lock` for SIM (<= 28 procs), `flock /workspace/gpu.lock` for GPU,
+>   results /workspace/results/* copied back (not persistent). Queue: rocket combo SIM -> own-cycle (GPU now; SIM after)
+>   -> defence E2 (both locks) -> card-wait patience. Owner also asked for general fast consecutive plays -> a996a070
+>   `--pipeline-decisions` (model decides while a play is pending; shared follow-up rules).
+> * log-air block merge candidate df66b0d (conflict in test_live_options resolved: main's card_levels assertion + the
+>   branch's log_air tests) -> blind verifier a842013f.
+> * **--pipeline-decisions built (a996a070, l74-pipeline-decisions 0b3be39/231eff3; not merged, SIM/live untested).** Why
+>   pipelining failed before (L74/pipeline_plays): OFF 628 vs v1 487, v2 570/584; 4.4x pros' consecutive plays within 20
+>   ticks; P(Tornado | affordable) at second plays .50 vs pros .16. New design: shared follow_up_verdict, pending play
+>   shown as executed (pending_board / pending_hand / elixir / own_effects), newest frame only, optional
+>   --pipeline-tau-delta. Offline replay (2,637 play decisions): gate p .407 -> .074 right after a play; 4.9% would want
+>   a second play at the first window decision vs pros 5.8% within 24 ticks; but Tornado is 40% of those second cards vs
+>   pros 12%. GAP: merged --follow-up-taps SIM support is only in the ghost Match, NOT in SelfPlaySide (search_s0) ->
+>   the combo cannot be benchmarked until a996a070 adds follow_ups to SelfPlaySide (high priority). Owner: tell them when
+>   consecutive plays < 1.2 s (incl. Rocket+Tornado) are reliable -> owner switches to the main account for friendlies.
+>   Owner grinding the 2nd account meanwhile (live stays stopped; nothing touches the emulator).
+> * A live supervisor run happened 16:12-16:57 (11 matches; tally 549-512 -> 558-513), not started or stopped by the lead
+>   (owner's own run, presumably); STOP file re-created 16:57. Same checkpoint 41b52a83 (+ card levels now in the file).
+> * follow_ups added to SelfPlaySide (a996a070: l74-pipeline-decisions bb239f1 = dacaf22 + f1cd61a + merge 3853466 of
+>   l74-follow-up-landing) -> the combo can be benchmarked through search_s0; relayed to a67f26ce. pipeline-decisions pod
+>   `pre` smoke queued under cpu.lock.
+> * log-air block blind verification a842013f: FAIL (medium) -- Phoenix egg inherits the parent `phoenix` class
+>   (body_identity.py:227) -> counted as flying -> a useful Log is held (20261006_141406 t3878). All other criteria
+>   PASS (off identical on 8,272 live decisions; 0 candidate-only failures). Back to a93fc9a1 (per-body flying).
+>   Fixed b74da73 (per-body: Phoenix egg = ground; *_ability not flying) -> candidate bd4c8ca -> verifier a1d953e2.
+> * **Rocket+Tornado combo SIM (a67f26ce, f022854; pod; delay-0 wrapper):** pull works -- clump value in blast at impact
+>   61% (combo) vs 15% (lone Rocket, same moment), destroyed +.34 elixir/fire [-.08, +.74] (tanks survive ~1480 dmg).
+>   Wins: no combo arm beats its lone twin; cb9 -.2 pp [-1.3, +.8] (6% of matches fire), cb7 -1.9, cb5 -5.0; air pool cb7
+>   +1.7 [-1.3, +4.6], cb9 +1.3 (n.s.). 11-33% of combo Rockets refused at landing (undiagnosed). Next: cb9 under live
+>   conditions on bb239f1, refusal diagnosis, then blind verification -> owner's friendly test.
+> * Pod lock-order bug (lead's protocol: cpu then gpu) stalled 4 SIM jobs ~50 min; README now says GPU lock FIRST.
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
