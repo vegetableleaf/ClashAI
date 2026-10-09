@@ -35,7 +35,8 @@ BUNDLE = ('--gate-decode hazard_below_tau --gate-hazard-min-elixir 9 --iw-press-
           '--hero-ability-spec supplement --gate-hazard-threatened 2 --early-release-margin 8 '   # bundle 3 (2026-10-09 00:3x)
           '--identity-ext on '   # 2026-10-09 01:0x (blind-verified a9538ab)
           '--rocket-dead-target block '   # 2026-10-09 03:0x (blind re-verified afe3214)
-          '--lethal-log on --tau-threatened 0.2')   # 2026-10-09 05:xx (blind af471193, merge 766e008)
+          '--lethal-log on --tau-threatened 0.2 '   # 2026-10-09 05:xx (blind af471193, merge 766e008)
+          '--card-levels Rocket=16 Log=15')   # 2026-10-09 13:xx (owner card levels; blind af0555f2)
 DEPLOYED_FILE = DEPLOYED.rstrip('\n') + ' ' + BUNDLE + '\n'
 
 
@@ -54,6 +55,7 @@ def test_checked_in_file_applies_every_bundle_option():
     assert opts.gate_hazard_threatened == 2.0 and a.hero_ability_spec == 'supplement' and a.early_release_margin == 8
     assert a.identity_ext == 'on' and opts.rocket_dead_target == 'block'
     assert opts.lethal_log == 'on' and opts.tau_threatened == 0.2
+    assert dict(opts.card_levels) == {'Rocket': 16, 'Log': 15}
 
 
 def test_file_present_applies_it(tmp_path):
