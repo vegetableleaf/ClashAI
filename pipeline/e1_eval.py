@@ -1157,8 +1157,11 @@ class Match:
         core, ids = getattr(env, "core", None), getattr(env, "deck_ids", None)
         if core is not None and ids is not None:
             return ids[self.side][di] in core.state().players[self.side].hand
-        me = next((pl for pl in env.eng.observe()["players"] if int(pl["side"]) == self.side), {})
+        me = next((pl for pl in self._fresh_players() if int(pl["side"]) == self.side), {})
         return di in me["hand_deck_indices"] if "hand_deck_indices" in me else True
+
+    def _fresh_players(self) -> list:
+        return self.env.eng.observe()["players"]
 
     def _record(self, p: float, d: dict) -> int:
         """(b), first half: the decision's tallies and its cfg["record"] row. -> the decision tick."""
@@ -1498,6 +1501,8 @@ class SelfPlaySide(Match):
         self.accepted: list[tuple[int, str]] = []          # (landing tick, card slug) -> the other side's counter
         self.other: Optional["SelfPlaySide"] = None
         self.pending: Optional[tuple] = None                # (landing tick, p, decision)
+        self._fu: Optional[dict] = None                     # the open follow-up plan of my last play (see _follow_start)
+        self.fu_tasks: list = []                            # its unresolved follow-ups (SelfPlayMatch.due evaluates them)
         self.next_tick = int(env.tick)
 
     def _opp_plays(self) -> list:
@@ -1509,8 +1514,13 @@ class SelfPlaySide(Match):
             for side, commands in self._ability_commands.items():
                 self.env.queue_abilities(side, commands, self.delay)
         de, delay = self.cfg["decide_every"], self.delay
-        if d["play"] and d.get("follow_ups"):
-            raise NotImplementedError("follow_ups are scheduled by the ghost Match only (SelfPlaySide queues one play)")
+        if d["play"] and d.get("follow_ups"):                 # follow_up_spec second plays: the ghost Match's rules (module comment)
+            if self.pipe:
+                raise ValueError("follow_ups and pipeline_decisions are separate mechanisms: use one")
+            if not delay:
+                raise ValueError("follow_ups need cfg['action_delay_ticks'] > 0 in a SelfPlaySide")
+            self._follow_start(p, d, tick)
+            return
         if self.pipe:                                         # cfg["pipeline_decisions"]: plays wait in self.pend (SelfPlayMatch.due
             self._pipe_decided(p, d, tick)                    # lands them); the next decision is on the reader-frame grid
             self.next_tick = self._pipe_next_tick(tick)
@@ -1525,9 +1535,78 @@ class SelfPlaySide(Match):
             self._land(p, d, tick, True)
         self.next_tick = tick + de
 
+    # ---- follow_ups (the ghost Match._apply_follow_ups' rules, event-driven: SelfPlayMatch.due calls _follow_check) ----------------
+    def _fresh_players(self) -> list:
+        return self.env.raw()["players"]
+
+    def _follow_start(self, p: float, d: dict, tick: int) -> None:
+        """The first play lands at tick + delay (SelfPlayMatch.due); each follow-up is evaluated by _follow_check on the reader-frame
+        grid from the first frame at or after its due tick AND after the first tap returned; my next decision is only taken once all
+        of them are resolved and landed (the first grid tick after the last landing, as Match.apply)."""
+        arrival = int(self.cfg.get("follow_arrival_ticks", FOLLOW_ARRIVAL_TICKS))
+        grid = lambda x: tick + -(-(x - tick) // FOLLOW_FRAME_TICKS) * FOLLOW_FRAME_TICKS      # noqa: E731
+        land_a = tick + self.delay
+        self.pend.append((land_a, p, d, self._cur))
+        self.pend.sort(key=lambda q: q[0])
+        self._fu = dict(tick=tick, land_a=land_a, d=d, arrival=arrival, a_landed=False, a_acc=None, last=land_a, p=p,
+                        cur=self._cur)
+        self.fu_tasks = [dict(fu=fu, due=tick + int(fu["after_ticks"]),
+                              expire=tick + int(fu["after_ticks"]) + int(fu["within_ticks"]), blocked=None,
+                              next_check=grid(max(tick + int(fu["after_ticks"]), tick + arrival)))
+                         for fu in d["follow_ups"]]
+        self.next_tick = 10 ** 9                              # no decision until every follow-up is resolved (_follow_resolved)
+        if getattr(self, "follow_n", None) is None:
+            self.follow_n = Counter()
+
+    def _follow_check(self, t: int) -> None:
+        """Evaluate every follow-up whose check tick is ``t`` (the engine is at t, everything due has landed): the shared verdict on
+        the CURRENT state, waiting re-checks 2 ticks later until its window closes."""
+        env, fu0 = self.env, self._fu
+        for task in list(self.fu_tasks):
+            if task["next_check"] > t:
+                continue
+            fu = task["fu"]
+            horizon = fu.get("afford_ticks")
+            horizon = FOLLOW_AFFORD_TICKS if horizon is None else int(horizon)
+            out = [dd["slot"] for _, _, dd, _ in self.pend]
+            me = next(pl for pl in self._fresh_players() if int(pl["side"]) == self.side)
+            act, why = follow_up_verdict(
+                tick=t, due=task["due"], expire=task["expire"], blocked=task["blocked"],
+                first_failed=bool(fu.get("require_first", True) and fu0["a_landed"] and not fu0["a_acc"]),
+                slot_changed=not self._slot_in_hand(fu["slot"]), slot_busy=fu["slot"] in out, n_out=len(out),
+                have=follow_up_have(me["elixir_exact"], t, horizon, sum(self.costs[x] for x in out)),
+                cost=self.costs[fu["slot"]])
+            if act == "wait":
+                task["blocked"] = why if why != "early" else task["blocked"]
+                task["next_check"] = t + FOLLOW_FRAME_TICKS
+                if task["next_check"] > task["expire"]:       # the window closed while waiting: never fired late
+                    act, why = "cancel", task["blocked"] or "late"
+                else:
+                    continue
+            self.fu_tasks.remove(task)
+            if act == "fire":
+                land_b = max(fu0["land_a"] + max(t - fu0["tick"] - fu0["arrival"], 0), t + 1)
+                self.pend.append((land_b, fu0["p"], {"play": True, "slot": fu["slot"], "cell": fu["cell"], "why": "follow_up"},
+                                  fu0["cur"]))
+                self.pend.sort(key=lambda q: q[0])
+                fu0["last"] = max(fu0["last"], land_b)
+                self.follow_n["fired"] += 1
+            else:
+                self.follow_n[f"cancelled_{why}"] += 1
+        self._follow_resolved()
+
+    def _follow_resolved(self) -> None:
+        if self._fu is not None and not self.fu_tasks:
+            f = self._fu
+            self._fu = None
+            self.next_tick = f["tick"] + self.cfg["decide_every"] * ((f["last"] - f["tick"]) // self.cfg["decide_every"] + 1)
+
     def _land(self, p: float, d: dict, land: int, landed: bool, cur=None) -> bool:
         from pipeline.dataset_gen import card_key
         acc = super()._land(p, d, land, landed, cur)
+        fu0 = getattr(self, "_fu", None)
+        if fu0 is not None and d is fu0["d"]:                 # the first play of an open follow-up plan landed (or was refused)
+            fu0["a_landed"], fu0["a_acc"] = True, acc
         if acc:
             self.accepted.append((int(land), str(card_key(self.engine_deck[self.deck_index_of_slot[d["slot"]]]))))
         return acc
@@ -1576,8 +1655,12 @@ class SelfPlayMatch:
                     land, p, d, cur = s.pend.pop(0)
                     s._land(p, d, land, True, cur)
                     s._pipe_last_land = land
+            for s in self.sides:
+                if s.fu_tasks and not env.terminated:                          # follow_ups: the shared verdict at its check tick
+                    s._follow_check(t)
             if env.done:
                 for s in self.sides:
+                    s.fu_tasks = []
                     if s.pending:
                         (land, p, d), s.pending = s.pending, None
                         s._land(p, d, land, False)
@@ -1592,7 +1675,8 @@ class SelfPlayMatch:
                     s.state = raw
                 return ds
             nxt = min([s.next_tick for s in self.sides] + [s.pending[0] for s in self.sides if s.pending]
-                      + [s.pend[0][0] for s in self.sides if s.pend])
+                      + [s.pend[0][0] for s in self.sides if s.pend]
+                      + [task["next_check"] for s in self.sides for task in s.fu_tasks])
             env._advance_to(min(nxt, env.tail_cap))
 
     def result(self) -> dict:
