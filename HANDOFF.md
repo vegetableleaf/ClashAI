@@ -4882,6 +4882,12 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   decks (feeds the generalist; X-Bow rare). UNKNOWN until the device test: reader resolves a replay battle? both hands
 >   visible? speed-up? menu path. Note live_mem.my_side_of raises unless exactly one hand is visible (replay = both).
 >   Device test (~15 min, owner opens TV Royale by hand): nav_dryrun.py --device --seconds 180, then feasibility.py.
+> * **Dead-lane block MERGED 698125f** (blind PASS_WITH_NOTES on 487cfd2: allow byte-identical incl. RNG over 2,370 records; 0
+>   new failures; notes: stale base (lead re-tested the combined tree with the Hero IW merge: 152 passed; --check with
+>   block + ot_behind + hero supplement = LIVE_CHECK_PASS on cuda); blocked X-Bows move to the remaining princess lock
+>   cell (72-100%) or centre-defensive, elixir not redirected to Rockets; the builder's classes.py counts centre x 9.5
+>   cells on a dead R side as dead-lane (overstates DL_BACK); reach = 13.04 tiles (existing helper) vs catalog 13.1).
+>   Bundle 2 waits only for the afford/fast-input verification (cb_merge_af).
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
