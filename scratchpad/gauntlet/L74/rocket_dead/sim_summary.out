@@ -1,0 +1,20 @@
+== paired n=480 (base 480, block 480)
+wins base 315.0 vs block 315.0 | block better 0 worse 0 sign p=1.0000 | tower-hp diff delta -10
+   evo: base 162.0 block 162.0 better 0 worse 0 p=1.000
+   lad: base 153.0 block 153.0 better 0 worse 0 p=1.000
+OT (either arm past 3600) n=308: base 209.0 block 209.0
+matches whose Rockets or outcome differ: 8
+
+== base: Rockets/match 1.392 | dead_empty 0.0187 tower 1.1854 units 0.1854 empty 0.0021
+   dead_empty Rockets: 9 (1x/2x/OT [1, 7, 1]) | Rockets after an enemy princess fell 37
+   tower Rockets/match 1x 0.131 2x 0.188 OT 0.558 | push Rockets/match 0.060 [0.040,0.083] | elixir at big-push start 5.06
+   1x: cheap (Skel+Log) 0.336 | Rocket 0.015
+   2x: cheap (Skel+Log) 0.319 | Rocket 0.024
+   OT: cheap (Skel+Log) 0.308 | Rocket 0.079
+
+== block: Rockets/match 1.392 | dead_empty 0.0042 tower 1.1979 units 0.1875 empty 0.0021
+   dead_empty Rockets: 2 (1x/2x/OT [0, 1, 1]) | Rockets after an enemy princess fell 37
+   tower Rockets/match 1x 0.133 2x 0.196 OT 0.558 | push Rockets/match 0.060 [0.037,0.085] | elixir at big-push start 5.06
+   1x: cheap (Skel+Log) 0.336 | Rocket 0.015
+   2x: cheap (Skel+Log) 0.319 | Rocket 0.024
+   OT: cheap (Skel+Log) 0.308 | Rocket 0.079

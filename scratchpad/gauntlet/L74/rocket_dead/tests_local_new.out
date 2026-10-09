@@ -1,0 +1,355 @@
+....................s................................................... [ 16%]
+........................................................................ [ 32%]
+........................................................................ [ 48%]
+........................................................................ [ 64%]
+........................................................................ [ 80%]
+.............s....F....FFs...FFF....F.F.F............................... [ 96%]
+.................                                                        [100%]
+================================== FAILURES ===================================
+________________ test_non_900x1600_screen_refused_without_flag ________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000016001CF44B0>
+capsys = <_pytest.capture.CaptureFixture object at 0x000001600198F2B0>
+
+    def test_non_900x1600_screen_refused_without_flag(monkeypatch, capsys):
+        class Loaded(Exception):
+            pass
+    
+        def no_model(*a, **k):
+            raise Loaded
+        monkeypatch.setattr(lp, "screen_size", lambda: (1080, 1920))
+        monkeypatch.setattr(lp, "GenPilot", no_model)
+        monkeypatch.setattr(sys, "argv", ["live_play.py", "--menu-guard"])
+>       assert lp.main() == 2 and "900x1600" in capsys.readouterr().out     # the opt-in guard needs its template size
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       assert (2 == 2 and '900x1600' in '[live] LIVE_OPTIONS applied from C:\\Users\\benpe\\ClashBot\\.claude\\worktrees\\agent-a1f8484f32eef598e\\scratchpad\...rees\\agent-a1f8484f32eef598e\\scratchpad\\gauntlet\\L70\\live\\CKPT_OVERRIDE; supply --ckpt or update CKPT_OVERRIDE\n')
+E        +  where 2 = <function main at 0x00000160013F53A0>()
+E        +    where <function main at 0x00000160013F53A0> = lp.main
+E        +  and   '[live] LIVE_OPTIONS applied from C:\\Users\\benpe\\ClashBot\\.claude\\worktrees\\agent-a1f8484f32eef598e\\scratchpad\...rees\\agent-a1f8484f32eef598e\\scratchpad\\gauntlet\\L70\\live\\CKPT_OVERRIDE; supply --ckpt or update CKPT_OVERRIDE\n' = CaptureResult(out="[live] LIVE_OPTIONS applied from C:\\Users\\benpe\\ClashBot\\.claude\\worktrees\\agent-a1f8484f32ee...nt-a1f8484f32eef598e\\scratchpad\\gauntlet\\L70\\live\\CKPT_OVERRIDE; supply --ckpt or update CKPT_OVERRIDE\n", err='').out
+E        +    where CaptureResult(out="[live] LIVE_OPTIONS applied from C:\\Users\\benpe\\ClashBot\\.claude\\worktrees\\agent-a1f8484f32ee...nt-a1f8484f32eef598e\\scratchpad\\gauntlet\\L70\\live\\CKPT_OVERRIDE; supply --ckpt or update CKPT_OVERRIDE\n", err='') = readouterr()
+E        +      where readouterr = <_pytest.capture.CaptureFixture object at 0x000001600198F2B0>.readouterr
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:552: AssertionError
+_______________ test_first_match_is_navigated_from_a_menu[main] _______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000160027F1B70>
+launch = 'main'
+
+    @pytest.mark.parametrize("launch", ["main", None])
+    def test_first_match_is_navigated_from_a_menu(monkeypatch, launch):
+        calls = []
+    
+        class FakeNav:
+            def __init__(self, adb, friend, dry_run=False, **kw):
+                calls.append(("invite_wait", kw.get("invite_wait")))
+    
+            def probe(self):
+                calls.append("probe")
+                return launch
+    
+            def run(self):
+                calls.append("nav")
+                return True, "handoff"
+    
+        class NoModel:
+            def __init__(self, *a, **k):
+                pass
+    
+            def reset_match(self):
+                pass
+    
+        def fake_play(a, pilot, lay, device, renders, start_timeout=None, **kw):
+            calls.append(("match", start_timeout))
+            return "battle_inactive"
+        monkeypatch.setattr(fn, "FriendNav", FakeNav)
+        monkeypatch.setattr(lp, "screen_size", lambda: (900, 1600))
+        monkeypatch.setattr(lp, "GenPilot", NoModel)
+        monkeypatch.setattr(lp, "play_match", fake_play)
+        monkeypatch.setattr(sys, "argv", ["live_play.py", "--matches", "2", "--friend", "JinxTheCat"])
+>       assert lp.main() == 0
+E       assert 2 == 0
+E        +  where 2 = <function main at 0x00000160013F53A0>()
+E        +    where <function main at 0x00000160013F53A0> = lp.main
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:675: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[live] LIVE_OPTIONS applied from C:\Users\benpe\ClashBot\.claude\worktrees\agent-a1f8484f32eef598e\scratchpad\gauntlet\L70\live\LIVE_OPTIONS: ['afford_ticks', 'extrapolate', 'fast_input', 'gate_decode', 'gate_hazard_min_elixir', 'iw_press_pstar', 'lethal_rocket', 'log_aim', 'own_effects', 'spell_aim', 'tap_gap_ms', 'tau_phase', 'xbow_class', 'xbow_class_floor', 'xbow_dead_lane']; explicit flags: []
+[live] note: tau_phase 1x/2x/OT = (0.35, 0.45, 0.55) sets the play threshold; --tau 0.35 is not used by the gate (it equals the 1x value)
+[live] No selected live checkpoint at C:\Users\benpe\ClashBot\.claude\worktrees\agent-a1f8484f32eef598e\scratchpad\gauntlet\L70\live\CKPT_OVERRIDE; supply --ckpt or update CKPT_OVERRIDE
+_______________ test_first_match_is_navigated_from_a_menu[None] _______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000016001CB82F0>
+launch = None
+
+    @pytest.mark.parametrize("launch", ["main", None])
+    def test_first_match_is_navigated_from_a_menu(monkeypatch, launch):
+        calls = []
+    
+        class FakeNav:
+            def __init__(self, adb, friend, dry_run=False, **kw):
+                calls.append(("invite_wait", kw.get("invite_wait")))
+    
+            def probe(self):
+                calls.append("probe")
+                return launch
+    
+            def run(self):
+                calls.append("nav")
+                return True, "handoff"
+    
+        class NoModel:
+            def __init__(self, *a, **k):
+                pass
+    
+            def reset_match(self):
+                pass
+    
+        def fake_play(a, pilot, lay, device, renders, start_timeout=None, **kw):
+            calls.append(("match", start_timeout))
+            return "battle_inactive"
+        monkeypatch.setattr(fn, "FriendNav", FakeNav)
+        monkeypatch.setattr(lp, "screen_size", lambda: (900, 1600))
+        monkeypatch.setattr(lp, "GenPilot", NoModel)
+        monkeypatch.setattr(lp, "play_match", fake_play)
+        monkeypatch.setattr(sys, "argv", ["live_play.py", "--matches", "2", "--friend", "JinxTheCat"])
+>       assert lp.main() == 0
+E       assert 2 == 0
+E        +  where 2 = <function main at 0x00000160013F53A0>()
+E        +    where <function main at 0x00000160013F53A0> = lp.main
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:675: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[live] LIVE_OPTIONS applied from C:\Users\benpe\ClashBot\.claude\worktrees\agent-a1f8484f32eef598e\scratchpad\gauntlet\L70\live\LIVE_OPTIONS: ['afford_ticks', 'extrapolate', 'fast_input', 'gate_decode', 'gate_hazard_min_elixir', 'iw_press_pstar', 'lethal_rocket', 'log_aim', 'own_effects', 'spell_aim', 'tap_gap_ms', 'tau_phase', 'xbow_class', 'xbow_class_floor', 'xbow_dead_lane']; explicit flags: []
+[live] note: tau_phase 1x/2x/OT = (0.35, 0.45, 0.55) sets the play threshold; --tau 0.35 is not used by the gate (it equals the 1x value)
+[live] No selected live checkpoint at C:\Users\benpe\ClashBot\.claude\worktrees\agent-a1f8484f32eef598e\scratchpad\gauntlet\L70\live\CKPT_OVERRIDE; supply --ckpt or update CKPT_OVERRIDE
+________________ test_menu_guard_flag_default_off[argv0-False] ________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000160027F3620>
+argv = [], on = False
+
+    @pytest.mark.parametrize("argv,on", [([], False), (["--menu-guard"], True), (["--no-menu-guard"], False)])
+    def test_menu_guard_flag_default_off(monkeypatch, argv, on):
+        seen = []
+    
+        class NoModel:
+            def __init__(self, *a, **k):
+                pass
+        monkeypatch.setattr(lp, "screen_size", lambda: (900, 1600))
+        monkeypatch.setattr(lp, "GenPilot", NoModel)
+        monkeypatch.setattr(lp, "play_match", lambda a, *r, **k: seen.append(a.menu_guard) or "battle_inactive")
+        monkeypatch.setattr(sys, "argv", ["live_play.py"] + argv)
+>       assert lp.main() == 0 and seen == [on]
+E       assert (2 == 0)
+E        +  where 2 = <function main at 0x00000160013F53A0>()
+E        +    where <function main at 0x00000160013F53A0> = lp.main
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:776: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[live] LIVE_OPTIONS applied from C:\Users\benpe\ClashBot\.claude\worktrees\agent-a1f8484f32eef598e\scratchpad\gauntlet\L70\live\LIVE_OPTIONS: ['afford_ticks', 'extrapolate', 'fast_input', 'gate_decode', 'gate_hazard_min_elixir', 'iw_press_pstar', 'lethal_rocket', 'log_aim', 'own_effects', 'spell_aim', 'tap_gap_ms', 'tau_phase', 'xbow_class', 'xbow_class_floor', 'xbow_dead_lane']; explicit flags: []
+[live] note: tau_phase 1x/2x/OT = (0.35, 0.45, 0.55) sets the play threshold; --tau 0.35 is not used by the gate (it equals the 1x value)
+[live] No selected live checkpoint at C:\Users\benpe\ClashBot\.claude\worktrees\agent-a1f8484f32eef598e\scratchpad\gauntlet\L70\live\CKPT_OVERRIDE; supply --ckpt or update CKPT_OVERRIDE
+________________ test_menu_guard_flag_default_off[argv1-True] _________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000016001CB9F60>
+argv = ['--menu-guard'], on = True
+
+    @pytest.mark.parametrize("argv,on", [([], False), (["--menu-guard"], True), (["--no-menu-guard"], False)])
+    def test_menu_guard_flag_default_off(monkeypatch, argv, on):
+        seen = []
+    
+        class NoModel:
+            def __init__(self, *a, **k):
+                pass
+        monkeypatch.setattr(lp, "screen_size", lambda: (900, 1600))
+        monkeypatch.setattr(lp, "GenPilot", NoModel)
+        monkeypatch.setattr(lp, "play_match", lambda a, *r, **k: seen.append(a.menu_guard) or "battle_inactive")
+        monkeypatch.setattr(sys, "argv", ["live_play.py"] + argv)
+>       assert lp.main() == 0 and seen == [on]
+E       assert (2 == 0)
+E        +  where 2 = <function main at 0x00000160013F53A0>()
+E        +    where <function main at 0x00000160013F53A0> = lp.main
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:776: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[live] LIVE_OPTIONS applied from C:\Users\benpe\ClashBot\.claude\worktrees\agent-a1f8484f32eef598e\scratchpad\gauntlet\L70\live\LIVE_OPTIONS: ['afford_ticks', 'extrapolate', 'fast_input', 'gate_decode', 'gate_hazard_min_elixir', 'iw_press_pstar', 'lethal_rocket', 'log_aim', 'own_effects', 'spell_aim', 'tap_gap_ms', 'tau_phase', 'xbow_class', 'xbow_class_floor', 'xbow_dead_lane']; explicit flags: []
+[live] note: tau_phase 1x/2x/OT = (0.35, 0.45, 0.55) sets the play threshold; --tau 0.35 is not used by the gate (it equals the 1x value)
+[live] No selected live checkpoint at C:\Users\benpe\ClashBot\.claude\worktrees\agent-a1f8484f32eef598e\scratchpad\gauntlet\L70\live\CKPT_OVERRIDE; supply --ckpt or update CKPT_OVERRIDE
+________________ test_menu_guard_flag_default_off[argv2-False] ________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000160014159B0>
+argv = ['--no-menu-guard'], on = False
+
+    @pytest.mark.parametrize("argv,on", [([], False), (["--menu-guard"], True), (["--no-menu-guard"], False)])
+    def test_menu_guard_flag_default_off(monkeypatch, argv, on):
+        seen = []
+    
+        class NoModel:
+            def __init__(self, *a, **k):
+                pass
+        monkeypatch.setattr(lp, "screen_size", lambda: (900, 1600))
+        monkeypatch.setattr(lp, "GenPilot", NoModel)
+        monkeypatch.setattr(lp, "play_match", lambda a, *r, **k: seen.append(a.menu_guard) or "battle_inactive")
+        monkeypatch.setattr(sys, "argv", ["live_play.py"] + argv)
+>       assert lp.main() == 0 and seen == [on]
+E       assert (2 == 0)
+E        +  where 2 = <function main at 0x00000160013F53A0>()
+E        +    where <function main at 0x00000160013F53A0> = lp.main
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:776: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[live] LIVE_OPTIONS applied from C:\Users\benpe\ClashBot\.claude\worktrees\agent-a1f8484f32eef598e\scratchpad\gauntlet\L70\live\LIVE_OPTIONS: ['afford_ticks', 'extrapolate', 'fast_input', 'gate_decode', 'gate_hazard_min_elixir', 'iw_press_pstar', 'lethal_rocket', 'log_aim', 'own_effects', 'spell_aim', 'tap_gap_ms', 'tau_phase', 'xbow_class', 'xbow_class_floor', 'xbow_dead_lane']; explicit flags: []
+[live] note: tau_phase 1x/2x/OT = (0.35, 0.45, 0.55) sets the play threshold; --tau 0.35 is not used by the gate (it equals the 1x value)
+[live] No selected live checkpoint at C:\Users\benpe\ClashBot\.claude\worktrees\agent-a1f8484f32eef598e\scratchpad\gauntlet\L70\live\CKPT_OVERRIDE; supply --ckpt or update CKPT_OVERRIDE
+______________ test_main_starts_nav_only_after_the_quiet_period _______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001600174E740>
+
+    def test_main_starts_nav_only_after_the_quiet_period(monkeypatch):
+        events = []
+        monkeypatch.setattr(lp, "NAV_QUIET_S", 1.0)
+        monkeypatch.setattr(lp, "adb", lambda *a, **k: "")
+    
+        class FakeNav:
+            def __init__(self, *a, **k):
+                pass
+    
+            def probe(self):
+                return None                                 # a battle is running at launch: play it
+    
+            def run(self):
+                events.append(("nav", _time.time()))
+                return True, "handoff"
+    
+        class NoModel:
+            def __init__(self, *a, **k):
+                pass
+    
+            def reset_match(self):
+                pass
+    
+        def fake_play(a, *r, **k):
+            lp.input_cmd("input tap 1 2")                   # the match's last input
+            events.append(("tap", _time.time()))
+            return "battle_inactive"
+        monkeypatch.setattr(fn, "FriendNav", FakeNav)
+        monkeypatch.setattr(lp, "screen_size", lambda: (900, 1600))
+        monkeypatch.setattr(lp, "GenPilot", NoModel)
+        monkeypatch.setattr(lp, "play_match", fake_play)
+        monkeypatch.setattr(sys, "argv", ["live_play.py", "--matches", "2", "--friend", "JinxTheCat"])
+>       assert lp.main() == 0
+E       assert 2 == 0
+E        +  where 2 = <function main at 0x00000160013F53A0>()
+E        +    where <function main at 0x00000160013F53A0> = lp.main
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:891: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[live] LIVE_OPTIONS applied from C:\Users\benpe\ClashBot\.claude\worktrees\agent-a1f8484f32eef598e\scratchpad\gauntlet\L70\live\LIVE_OPTIONS: ['afford_ticks', 'extrapolate', 'fast_input', 'gate_decode', 'gate_hazard_min_elixir', 'iw_press_pstar', 'lethal_rocket', 'log_aim', 'own_effects', 'spell_aim', 'tap_gap_ms', 'tau_phase', 'xbow_class', 'xbow_class_floor', 'xbow_dead_lane']; explicit flags: []
+[live] note: tau_phase 1x/2x/OT = (0.35, 0.45, 0.55) sets the play threshold; --tau 0.35 is not used by the gate (it equals the 1x value)
+[live] No selected live checkpoint at C:\Users\benpe\ClashBot\.claude\worktrees\agent-a1f8484f32eef598e\scratchpad\gauntlet\L70\live\CKPT_OVERRIDE; supply --ckpt or update CKPT_OVERRIDE
+__________________ test_preflight_loads_default_without_adb ___________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000016001E939A0>
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-342/test_preflight_loads_default_w0')
+capsys = <_pytest.capture.CaptureFixture object at 0x00000160028AED50>
+
+    def test_preflight_loads_default_without_adb(monkeypatch, tmp_path, capsys):
+        checkpoint, _ = args(monkeypatch, tmp_path, '--check')
+        loaded = []
+        def pilot(path, **kw):
+            loaded.append((path, kw))
+            return SimpleNamespace(feature_version=4, decision_options=kw['decision_options'])
+        monkeypatch.setattr(lp, 'GenPilot', pilot)
+        monkeypatch.setattr(lp, 'screen_size', lambda: pytest.fail('Offline check touched ADB'))
+        assert lp.main() == 0
+        assert loaded[0][0] == str(checkpoint)
+        kw = loaded[0][1]
+        import torch                                    # owner 2026-10-08: default --device auto (GPU when available)
+        assert kw['device'] == ('cuda' if torch.cuda.is_available() else 'cpu')
+        assert kw['gate_tau'] == .35 and kw['public_audit']
+>       assert not kw['decision_options'].active
+E       AssertionError: assert not True
+E        +  where True = DecisionOptions(card_choice='argmax', card_ratio=0.7, card_T=1.0, spell_aim='rocket_area', tau_phase=(0.35, 0.45, 0.55...ened=0.0, gate_hazard_threat_radius=0.0, lethal_rocket='ot_behind', xbow_dead_lane='block', rocket_dead_target='allow').active
+
+scratchpad\gauntlet\L68\live_reader\test_live_entry.py:36: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[live] LIVE_OPTIONS applied from C:\Users\benpe\ClashBot\.claude\worktrees\agent-a1f8484f32eef598e\scratchpad\gauntlet\L70\live\LIVE_OPTIONS: ['afford_ticks', 'extrapolate', 'fast_input', 'gate_decode', 'gate_hazard_min_elixir', 'iw_press_pstar', 'lethal_rocket', 'log_aim', 'own_effects', 'spell_aim', 'tap_gap_ms', 'tau_phase', 'xbow_class', 'xbow_class_floor', 'xbow_dead_lane']; explicit flags: []
+[live] note: tau_phase 1x/2x/OT = (0.35, 0.45, 0.55) sets the play threshold; --tau 0.35 is not used by the gate (it equals the 1x value)
+[live] checkpoint: C:\Users\benpe\AppData\Local\Temp\pytest-of-benpe\pytest-342\test_preflight_loads_default_w0\accepted.pt
+[live] selected by: C:\Users\benpe\AppData\Local\Temp\pytest-of-benpe\pytest-342\test_preflight_loads_default_w0\CKPT_OVERRIDE
+[live] SHA256: e6a8036e9cb9f8c9f52ffd985c4d6f0498d94e6919f4c67b6423da0176e549fa
+{"check": "LIVE_CHECK_PASS", "checkpoint": "C:\\Users\\benpe\\AppData\\Local\\Temp\\pytest-of-benpe\\pytest-342\\test_preflight_loads_default_w0\\accepted.pt", "sha256": "e6a8036e9cb9f8c9f52ffd985c4d6f0498d94e6919f4c67b6423da0176e549fa", "feature_version": 4, "device": "cuda", "tau": 0.35, "anti_leak": false, "anti_leak_elixir": null, "anti_leak_seconds": null, "extrapolate": 24, "afford_ticks": 23, "early_release_margin": null, "fast_input": true, "tap_gap_ms": 0, "public_audit": true, "legal_guard": true, "predict_drops": false, "own_effects": true, "iw_press_pstar": 0.03, "hero_ability_spec": "off", "decision_options": {"card_choice": "argmax", "card_ratio": 0.7, "card_T": 1.0, "spell_aim": "rocket_area", "tau_phase": [0.35, 0.45, 0.55], "xbow_class": "class_sample", "xbow_class_floor": 0.3, "log_aim": "log_barrel", "gate_decode": "hazard_below_tau", "gate_hazard_min_elixir": 9.0, "gate_hazard_quiet": false, "gate_hazard_threatened": 0.0, "gate_hazard_threat_radius": 0.0, "lethal_rocket": "ot_behind", "xbow_dead_lane": "block", "rocket_dead_target": "allow"}, "live_options": {"status": "applied", "path": "C:\\Users\\benpe\\ClashBot\\.claude\\worktrees\\agent-a1f8484f32eef598e\\scratchpad\\gauntlet\\L70\\live\\LIVE_OPTIONS", "file": "C:\\Users\\benpe\\ClashBot\\.claude\\worktrees\\agent-a1f8484f32eef598e\\scratchpad\\gauntlet\\L70\\live\\LIVE_OPTIONS", "from_file": {"afford_ticks": 23, "extrapolate": 24, "fast_input": true, "gate_decode": "hazard_below_tau", "gate_hazard_min_elixir": 9.0, "iw_press_pstar": 0.03, "lethal_rocket": "ot_behind", "log_aim": "log_barrel", "own_effects": true, "spell_aim": "rocket_area", "tap_gap_ms": 0, "tau_phase": [0.35, 0.45, 0.55], "xbow_class": "class_sample", "xbow_class_floor": 0.3, "xbow_dead_lane": "block"}, "explicit": [], "ignored": false, "message": "LIVE_OPTIONS applied from C:\\Users\\benpe\\ClashBot\\.claude\\worktrees\\agent-a1f8484f32eef598e\\scratchpad\\gauntlet\\L70\\live\\LIVE_OPTIONS: ['afford_ticks', 'extrapolate', 'fast_input', 'gate_decode', 'gate_hazard_min_elixir', 'iw_press_pstar', 'lethal_rocket', 'log_aim', 'own_effects', 'spell_aim', 'tap_gap_ms', 'tau_phase', 'xbow_class', 'xbow_class_floor', 'xbow_dead_lane']; explicit flags: []", "tau_note": "note: tau_phase 1x/2x/OT = (0.35, 0.45, 0.55) sets the play threshold; --tau 0.35 is not used by the gate (it equals the 1x value)"}}
+______________ test_manual_run_records_locally_and_explicit_wins ______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000016001449E10>
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-342/test_manual_run_records_locall0')
+
+    def test_manual_run_records_locally_and_explicit_wins(monkeypatch, tmp_path):
+        checkpoint, pointer = args(monkeypatch, tmp_path)
+        explicit = tmp_path / 'explicit.pt'
+        explicit.write_bytes(b'override')
+        monkeypatch.setattr(sys, 'argv', sys.argv + ['--ckpt', str(explicit)])
+        monkeypatch.setattr(lp, 'screen_size', lambda: (900, 1600))
+        monkeypatch.setattr(lp, 'GenPilot', lambda *a, **kw: object())
+        observed = []
+        def play(a, pilot, lay, device, renders, **kw):
+            observed.append((a, kw))
+            return 'battle_inactive'
+        monkeypatch.setattr(lp, 'play_match', play)
+>       assert lp.main() == 0
+               ^^^^^^^^^
+
+scratchpad\gauntlet\L68\live_reader\test_live_entry.py:59: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+scratchpad\gauntlet\L68\live_reader\live_play.py:461: in main
+    device, pilot = load_pilot(a, decision_cfg)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+a = Namespace(card_choice='argmax', card_ratio=0.7, card_T=1.0, spell_aim='rocket_area', tau_phase=[0.35, 0.45, 0.55], xbo...alue)'}, ckpt_source='explicit --ckpt', ckpt_sha256='ce603774135699e9abdfd65eb1f2733774da58af91782528e82ef5f9efdb8fba')
+decision_cfg = {'card_choice': 'argmax', 'card_ratio': 0.7, 'card_T': 1.0, 'spell_aim': 'rocket_area', ...}
+ckpt = None
+
+    def load_pilot(a, decision_cfg, ckpt=None):
+        import torch
+        from pipeline.decision_options import options_from_config
+        torch.set_num_threads(4)
+        device = ("cuda" if torch.cuda.is_available() else "cpu") if a.device == "auto" else a.device
+        pilot = GenPilot(ckpt or a.ckpt, device=device, gate_tau=a.tau, use_counter=not a.no_opp_counter,
+                         extrapolate_ticks=a.extrapolate, decision_options=options_from_config(decision_cfg),
+                         decision_seed=a.decision_seed, public_audit=a.public_audit,
+                         **({"predict_drops": True} if getattr(a, "predict_drops", False) else {}),
+                         **({"own_effects": True} if getattr(a, "own_effects", False) else {}),
+                         **({"hero_ability_spec": a.hero_ability_spec} if getattr(a, "hero_ability_spec", "off") != "off" else {}))
+>       pilot.legal_guard = not getattr(a, 'no_legal_guard', False)
+        ^^^^^^^^^^^^^^^^^
+E       AttributeError: 'object' object has no attribute 'legal_guard' and no __dict__ for setting new attributes
+
+scratchpad\gauntlet\L68\live_reader\live_play.py:579: AttributeError
+---------------------------- Captured stdout call -----------------------------
+[live] LIVE_OPTIONS applied from C:\Users\benpe\ClashBot\.claude\worktrees\agent-a1f8484f32eef598e\scratchpad\gauntlet\L70\live\LIVE_OPTIONS: ['afford_ticks', 'extrapolate', 'fast_input', 'gate_decode', 'gate_hazard_min_elixir', 'iw_press_pstar', 'lethal_rocket', 'log_aim', 'own_effects', 'spell_aim', 'tap_gap_ms', 'tau_phase', 'xbow_class', 'xbow_class_floor', 'xbow_dead_lane']; explicit flags: []
+[live] note: tau_phase 1x/2x/OT = (0.35, 0.45, 0.55) sets the play threshold; --tau 0.35 is not used by the gate (it equals the 1x value)
+[live] checkpoint: C:\Users\benpe\AppData\Local\Temp\pytest-of-benpe\pytest-342\test_manual_run_records_locall0\explicit.pt
+[live] selected by: explicit --ckpt
+[live] SHA256: ce603774135699e9abdfd65eb1f2733774da58af91782528e82ef5f9efdb8fba
+============================== warnings summary ===============================
+pipeline/tests/test_live_anti_leak.py::test_off_is_identical_to_main_on_a_recorded_stream[default]
+pipeline/tests/test_live_anti_leak.py::test_off_is_identical_to_main_on_a_recorded_stream[tau_phase+xbow_class]
+pipeline/tests/test_live_anti_leak.py::test_forced_play_matches_sim_card_and_cell[default]
+pipeline/tests/test_live_anti_leak.py::test_forced_play_matches_sim_card_and_cell[tau_phase+xbow_class]
+pipeline/tests/test_live_anti_leak.py::test_real_stream_with_anti_leak_on_plays_only_when_the_rule_fires
+scratchpad/gauntlet/L68/live_reader/test_ckpt_alternate.py::test_check_loads_fv4_and_fv5_side_by_side
+  C:\Users\benpe\ClashBot\.claude\worktrees\agent-a1f8484f32eef598e\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+    self.encoder = nn.TransformerEncoder(enc, layers)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_non_900x1600_screen_refused_without_flag
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_first_match_is_navigated_from_a_menu[main]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_first_match_is_navigated_from_a_menu[None]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_menu_guard_flag_default_off[argv0-False]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_menu_guard_flag_default_off[argv1-True]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_menu_guard_flag_default_off[argv2-False]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_main_starts_nav_only_after_the_quiet_period
+FAILED scratchpad/gauntlet/L68/live_reader/test_live_entry.py::test_preflight_loads_default_without_adb
+FAILED scratchpad/gauntlet/L68/live_reader/test_live_entry.py::test_manual_run_records_locally_and_explicit_wins
+9 failed, 437 passed, 3 skipped, 6 warnings in 849.23s (0:14:09)
