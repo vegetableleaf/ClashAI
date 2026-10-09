@@ -33,6 +33,8 @@ class DecisionOptions:
     gate_decode: str = 'threshold'          # 'hazard' / 'hazard_below_tau': execute the gate's learned play RATE (W4)
     gate_hazard_min_elixir: float = 0.0     # hazard draws only at own elixir >= this (0 = everywhere)
     gate_hazard_quiet: bool = False         # hazard draws only with no enemy unit on the board (public bodies)
+    gate_hazard_threatened: float = 0.0     # hazard draws ALSO while a tower of mine lost HP within this many s (0 = off)
+    gate_hazard_threat_radius: float = 0.0  # ... or while an enemy unit is within this many tiles of my alive tower
     lethal_rocket: str = 'off'
     xbow_dead_lane: str = 'allow'           # 'block': no X-Bow cell that reaches only the king / a destroyed princess
 
@@ -60,6 +62,9 @@ class DecisionOptions:
             raise ValueError('gate_decode must be threshold, hazard or hazard_below_tau')
         if not math.isfinite(self.gate_hazard_min_elixir) or not 0 <= self.gate_hazard_min_elixir <= 10:
             raise ValueError('gate_hazard_min_elixir must be in [0, 10]')
+        for k in ('gate_hazard_threatened', 'gate_hazard_threat_radius'):
+            if not math.isfinite(getattr(self, k)) or getattr(self, k) < 0:
+                raise ValueError(f'{k} must be finite and >= 0')
         if self.lethal_rocket not in ('off', 'ot', 'ot_behind'):
             raise ValueError('lethal_rocket must be off, ot or ot_behind')
         if self.xbow_dead_lane not in ('allow', 'block'):
@@ -102,6 +107,11 @@ def add_arguments(parser):
                         help='hazard draws only when my elixir >= this (0 = at any elixir)')
     parser.add_argument('--gate-hazard-quiet', action='store_true',
                         help='hazard draws only when no enemy unit is on the board')
+    parser.add_argument('--gate-hazard-threatened', type=float, default=0.0, metavar='SECONDS',
+                        help='hazard draws ALSO (OR with --gate-hazard-min-elixir) while one of my towers lost HP within '
+                             'the last SECONDS of decision-board time (public tower HP); 0 = off')
+    parser.add_argument('--gate-hazard-threat-radius', type=float, default=0.0, metavar='TILES',
+                        help='hazard draws ALSO while an enemy unit is within TILES of one of my alive towers; 0 = off')
     parser.add_argument('--lethal-rocket', choices=('off', 'ot', 'ot_behind'), default='off',
                         help='ot: in overtime (t >= 180 s, the tau_phase edge) play Rocket NOW, whatever the gate, at the '
                              'centre of an alive enemy PRINCESS tower whose HP <= my Rocket crown-tower damage (lower HP '
@@ -234,17 +244,50 @@ def hazard_play(p, step_s, rng):
     return bool(rng.random() < -math.expm1(-float(gate_rate(p)) * float(step_s)))
 
 
-def hazard_draw(options, p, step_s, rng, *, elixir=None, enemy_units=None):
+def threat_on(options):
+    return options.gate_hazard_threatened > 0 or options.gate_hazard_threat_radius > 0
+
+
+def tower_threat(options, prev, bs):
+    """-> (state, threatened) for gate_hazard_threatened / _threat_radius on one decision's BoardState (my frame).
+    ``prev`` = the state this helper returned at the previous decision of the match (None at the first). Threatened =
+    one of MY towers' public hp_frac fell since the previous decision at most gate_hazard_threatened s ago (board time
+    ``bs.t_sec``), or an enemy unit (side != 0, as enemy_unit_count) is within gate_hazard_threat_radius tiles of an
+    alive tower of mine. Idempotent on a repeated board. Both SIM match_kwargs and live_gen_v2 call it."""
+    from .obs_contract import _ANCHOR_XY, TILES_X, TILES_Y, TOWER_ORDER
+    t, hp = float(bs.t_sec), tuple(tw.hp_frac for tw in bs.towers[:3])
+    last = prev[2] if prev else None
+    if prev and any(a is not None and b is not None and b < a - 1e-9 for a, b in zip(prev[1], hp)):
+        last = t
+    threatened = (options.gate_hazard_threatened > 0 and last is not None
+                  and t - last <= options.gate_hazard_threatened + 1e-6)
+    R = options.gate_hazard_threat_radius
+    if R > 0 and not threatened:
+        anchors = [_ANCHOR_XY[kl] for kl, tw in zip(TOWER_ORDER, bs.towers[:3]) if tw.alive]
+        threatened = any(math.hypot((u.x - x) * TILES_X, (u.y - y) * TILES_Y) <= R
+                         for u in bs.units if int(u.side) != 0 for x, y in anchors)
+    return (t, hp, last), bool(threatened)
+
+
+def hazard_draw(options, p, step_s, rng, *, elixir=None, enemy_units=None, threatened=None):
     """The ONE hazard decision for a row where a play is possible and the threshold said wait (SIM decide_batch and
-    live_gen_v2 both call it). Out of scope (elixir < gate_hazard_min_elixir, or an enemy unit on the board with
-    gate_hazard_quiet) -> False without drawing. Missing context for an active scope raises, never a silent no-op."""
+    live_gen_v2 both call it). Scopes: elixir >= gate_hazard_min_elixir OR ``threatened`` (tower_threat, when
+    gate_hazard_threatened / _threat_radius is set); no scope set = everywhere. Out of scope, or an enemy unit on the
+    board with gate_hazard_quiet -> False without drawing. Missing context for an active scope raises, never a silent
+    no-op."""
     if step_s is None:
         raise ValueError('hazard gate decoding requires the decision step (seconds)')
+    scopes = []
     if options.gate_hazard_min_elixir > 0:
         if elixir is None:
             raise ValueError('gate_hazard_min_elixir requires the own elixir of every row')
-        if float(elixir) < options.gate_hazard_min_elixir:
-            return False
+        scopes.append(float(elixir) >= options.gate_hazard_min_elixir)
+    if threat_on(options):
+        if threatened is None:
+            raise ValueError('gate_hazard_threatened / _threat_radius require the tower threat of every row')
+        scopes.append(bool(threatened))
+    if scopes and not any(scopes):
+        return False
     if options.gate_hazard_quiet:
         if enemy_units is None:
             raise ValueError('gate_hazard_quiet requires the enemy unit count of every row')
@@ -514,7 +557,7 @@ def lethal_rocket_choice(options, t_sec, names, allowed, crown_towers, side, gri
 @torch.no_grad()
 def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options, rngs, card_names,
                  t_sec=None, enemy_alive=None, grid=None, projectiles=None, step_s=None, elixir=None,
-                 enemy_units=None, lethal=None):
+                 enemy_units=None, lethal=None, threatened=None):
     """Optional branch of e1_eval's live decision; default branch remains untouched.
     ``t_sec`` (tau_phase) and ``enemy_alive`` [(K, L, R) alive] + ``grid`` (xbow_class) are per-row match context;
     ``projectiles`` (log_aim) = each row's model projectile tokens, decoded with the model's own card vocabulary.
@@ -529,7 +572,8 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
         for r in np.flatnonzero(allowed.any(axis=1) & ~playing):   # a draw only where a play is possible
             playing[r] = hazard_draw(options, p[r], step_s, rngs[r],
                                      elixir=None if elixir is None else elixir[r],
-                                     enemy_units=None if enemy_units is None else enemy_units[r])
+                                     enemy_units=None if enemy_units is None else enemy_units[r],
+                                     threatened=None if threatened is None else threatened[r])
     slots = [choose_slot(heads['card'][r], allowed[r], options, rngs[r], playing=bool(playing[r]))
              for r in range(len(allowed))]
     cells = np.full(len(slots), -1, dtype=np.int64)
@@ -602,6 +646,10 @@ def match_kwargs(matches):
         out['step_s'] = 0.05 * int(cfg['decide_every'])   # the SIM decides every decide_every ticks
         out['elixir'] = [float(m._cur[1].my_elixir) for m in matches]
         out['enemy_units'] = [enemy_unit_count(m._cur[1]) for m in matches]
+        if threat_on(options):              # per-match state on the match, the decision's engine BoardState (my frame)
+            for m in matches:
+                m.threat_state, m.threatened = tower_threat(options, getattr(m, 'threat_state', None), m._cur[1])
+            out['threatened'] = [m.threatened for m in matches]
     if options.tau_phase is not None or options.xbow_class != 'argmax' or options.xbow_dead_lane != 'allow':
         boards = [m._cur[1] for m in matches]    # the prepared decision's engine BoardState (my frame)
         out.update(t_sec=[float(b.t_sec) for b in boards], grid=cfg['grid'],

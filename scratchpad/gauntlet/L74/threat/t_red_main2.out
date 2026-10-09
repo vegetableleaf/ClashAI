@@ -1,0 +1,59 @@
+F
+================================== FAILURES ===================================
+____________ test_gate_hazard_threatened_deployable_from_the_file _____________
+
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-329/test_gate_hazard_threatened_de0')
+
+    def test_gate_hazard_threatened_deployable_from_the_file(tmp_path):
+        f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + GATE.rstrip('\n') + ' --gate-hazard-threatened 2\n')
+>       opts, rec = parse([], f)
+                    ^^^^^^^^^^^^
+
+pipeline\tests\test_live_options.py:190: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+pipeline\tests\test_live_options.py:28: in parse
+    a, record = parse_with_live_options(parser(path), argv)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pipeline\live_options.py:73: in parse_with_live_options
+    parsed = _read_file(path, dests, unset)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pipeline\live_options.py:60: in _read_file
+    return parser.parse_args(tokens, namespace=unset())
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\argparse.py:1930: in parse_args
+    self.error(msg)
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\argparse.py:2686: in error
+    self.exit(2, _('%(prog)s: error: %(message)s\n') % args)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = ArgumentParser(prog='C:\\Users\\benpe\\AppData\\Local\\Temp\\pytest-of-benpe\\pytest-329\\test_gate_hazard_threatened_...age=None, description=None, formatter_class=<class 'argparse.HelpFormatter'>, conflict_handler='error', add_help=False)
+status = 2
+message = 'C:\\Users\\benpe\\AppData\\Local\\Temp\\pytest-of-benpe\\pytest-329\\test_gate_hazard_threatened_de0\\LIVE_OPTIONS: error: unrecognized arguments: --gate-hazard-threatened 2\n'
+
+    def exit(self, status=0, message=None):
+        if message:
+            self._print_message(message, _sys.stderr)
+>       _sys.exit(status)
+E       SystemExit: 2
+
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\argparse.py:2673: SystemExit
+---------------------------- Captured stderr call -----------------------------
+usage: C:\Users\benpe\AppData\Local\Temp\pytest-of-benpe\pytest-329\test_gate_hazard_threatened_de0\LIVE_OPTIONS
+       [--card-choice {argmax,filtered}] [--card-ratio CARD_RATIO]
+       [--card-T CARD_T] [--spell-aim {argmax,rocket_area}]
+       [--tau-phase T1X T2X TOT] [--xbow-class {argmax,class_sample}]
+       [--xbow-class-floor XBOW_CLASS_FLOOR] [--log-aim {argmax,log_barrel}]
+       [--gate-decode {threshold,hazard,hazard_below_tau}]
+       [--gate-hazard-min-elixir GATE_HAZARD_MIN_ELIXIR] [--gate-hazard-quiet]
+       [--lethal-rocket {off,ot,ot_behind}] [--xbow-dead-lane {allow,block}]
+       [--decision-seed DECISION_SEED] [--own-effects]
+       [--iw-press-pstar IW_PRESS_PSTAR]
+       [--hero-ability-spec {off,supplement}] [--fast-input]
+       [--tap-gap-ms TAP_GAP_MS] [--afford-ticks AFFORD_TICKS]
+       [--early-release-margin EARLY_RELEASE_MARGIN]
+       [--extrapolate EXTRAPOLATE]
+C:\Users\benpe\AppData\Local\Temp\pytest-of-benpe\pytest-329\test_gate_hazard_threatened_de0\LIVE_OPTIONS: error: unrecognized arguments: --gate-hazard-threatened 2
+=========================== short test summary info ===========================
+FAILED pipeline/tests/test_live_options.py::test_gate_hazard_threatened_deployable_from_the_file
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed in 5.00s

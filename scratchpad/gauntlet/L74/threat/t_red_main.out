@@ -1,0 +1,17 @@
+
+=================================== ERRORS ====================================
+___________ ERROR collecting pipeline/tests/test_gate_threatened.py ___________
+ImportError while importing test module 'C:\Users\benpe\ClashBot\.claude\worktrees\agent-aca25a233db38e441\pipeline\tests\test_gate_threatened.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pipeline\tests\test_gate_threatened.py:13: in <module>
+    from pipeline.decision_options import DecisionOptions, hazard_draw, match_kwargs, tower_threat
+E   ImportError: cannot import name 'tower_threat' from 'pipeline.decision_options' (C:\Users\benpe\ClashBot\.claude\worktrees\agent-aca25a233db38e441\pipeline\decision_options.py)
+=========================== short test summary info ===========================
+ERROR pipeline/tests/test_gate_threatened.py
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 6.31s
