@@ -566,3 +566,19 @@ def test_sim_combo_modes_only_and_rocket_only():
     assert r['why'] == 'rocket_tornado' and r['slot'] == 1 and 'follow_ups' not in r and r['cell'] == run(only, split)['cell']
     assert run(only, one).get('why') != 'rocket_value' and run(ro, one).get('why') != 'rocket_value'
     assert run(COMBO, one)['why'] == 'rocket_value'
+
+
+def test_tornado_centre_is_the_middle_of_the_plateau_not_its_corner_and_never_the_board_edge():
+    # a clump on the left bridge: every centre within 5.5 of all of it ties on value; the old first-index tie took (0.0, 16.0), a cell the
+    # SIM refused every time (78 of 78 combos)
+    clump = rocket_bodies(board(unit('knight', 3.0, 17.0), unit('knight', 4.0, 19.0), unit('knight', 2.5, 20.0), unit('knight', 5.0, 18.0)), 'cost')
+    value, cell = best_tornado_centre(clump, 'lattice')
+    x, y = cell_centres_tiles('lattice')
+    assert value == 12.0 and x[cell] >= 1.0 and y[cell] >= 16.0
+    assert abs(x[cell] - 3.6) <= 1.5 and abs(y[cell] - 18.5) <= 1.5                 # near the clump's value-weighted middle
+    for hb in ('centre', 'edge'):
+        _, c = best_tornado_centre(clump, 'lattice', hb)
+        assert 1.0 <= x[c] <= 17.0 and y[c] <= 31.0
+    far_edge = rocket_bodies(board(unit('giant', 0.2, 22.0), unit('knight', 1.0, 22.5), unit('knight', 0.5, 23.5)), 'cost')
+    _, c = best_tornado_centre(far_edge, 'lattice')
+    assert x[c] >= 1.0                                                                 # the board edge is excluded even when the clump hugs it

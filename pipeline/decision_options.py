@@ -1277,16 +1277,29 @@ def elixir_regen_per_tick(bs):
     return (3 if bs.overtime else 2 if bs.double_elixir else 1) / 56.0
 
 
+COMBO_EDGE_MARGIN_TILES = 1.0     # a combo is never aimed within this of the board's side edge (SIM: EVERY Rocket at the first column, x = 0.0, was refused)
+
+
 def best_tornado_centre(bodies, grid, hitbox='centre', min_y=MY_HALF_MIN_Y_TILES):
-    """-> (value, cell) for the Tornado centre on my half whose pull radius holds the most value; (0.0, None) without bodies."""
+    """-> (value, cell) for the Tornado centre on my half whose pull radius holds the most value; (0.0, None) without bodies.
+    Many centres tie on a spread clump (a plateau): the one picked is the plateau's MIDDLE for the bodies it pulls, the cell with the
+    smallest value-weighted mean distance to them -- the pull gathers them there and the Rocket (radius 2.0) lands on that point.
+    The first-index tie-break of iteration 3 took the plateau's corner, (0.0, 16.0): all 78 of those SIM combos were refused at landing
+    (cb5 / cb7 / cb9, pod 10-09) and the pull would have dragged the clump to the edge."""
     if not len(bodies):
         return 0.0, None
     x, y = cell_centres_tiles(grid)
     reach = tornado_radius_tiles() + (bodies[:, 4] if hitbox == 'edge' else np.zeros(len(bodies)))
-    inside = np.hypot(x[:, None] - bodies[None, :, 1], y[:, None] - bodies[None, :, 2]) <= reach[None, :]
-    value = np.where(y >= min_y, inside @ bodies[:, 3], -1.0)
-    best = int(value.argmax())
-    return (float(value[best]), best) if value[best] > 0 else (0.0, None)
+    dist = np.hypot(x[:, None] - bodies[None, :, 1], y[:, None] - bodies[None, :, 2])
+    inside = dist <= reach[None, :]
+    ok = (y >= min_y) & (x >= COMBO_EDGE_MARGIN_TILES) & (x <= 18.0 - COMBO_EDGE_MARGIN_TILES) & (y <= 32.0 - COMBO_EDGE_MARGIN_TILES)
+    value = np.where(ok, inside @ bodies[:, 3], -1.0)
+    top = float(value.max())
+    if top <= 0:
+        return 0.0, None
+    plateau = np.flatnonzero(value >= top - 1e-9)
+    spread = (np.where(inside[plateau], dist[plateau], 0.0) * bodies[None, :, 3]).sum(axis=1)
+    return top, int(plateau[int(spread.argmin())])
 
 
 def rocket_tornado_choice(options, names, allowed, bs, grid, pending=False, min_gap=LIVE_FOLLOW_MIN_GAP_TICKS):

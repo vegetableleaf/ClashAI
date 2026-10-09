@@ -353,3 +353,27 @@ def test_check_json_reports_card_levels(tmp_path):
     check = json.loads(out.stdout.strip().splitlines()[-1])
     assert check['decision_options']['card_levels'] == [['IceWizard', 14], ['Knight', 16], ['Log', 15], ['Rocket', 16],
                                                          ['Xbow', 16]]
+
+
+def test_rocket_tornado_deployable_from_the_file(tmp_path):
+    # --follow-up-taps is a live_play command-line flag (not in EXTRA_LIVE_FLAGS: pass it beside the file; without it the Tornado is only logged)
+    f = tmp_path / 'LIVE_OPTIONS'
+    f.write_text(DEPLOYED + '--rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-tornado only\n')
+    opts, rec = parse([], f)
+    assert (opts.rocket_value, opts.rocket_tornado) == (9.0, 'only') and rec['from_file']['rocket_tornado'] == 'only'
+    opts, rec = parse(['--rocket-tornado', 'off'], f)                                  # explicit wins
+    assert opts.rocket_tornado == 'off' and 'rocket_tornado' in rec['explicit']
+    assert parse([], tmp_path / 'missing')[0].rocket_tornado == 'off'
+    g = tmp_path / 'LO2'; g.write_text(DEPLOYED + '--rocket-tornado on\n')
+    with pytest.raises(ValueError, match='rocket_value'):                                # the combo needs its V
+        parse([], g)
+
+
+@pytest.mark.skipif(not CKPT.is_file() or importlib.util.find_spec('cv2') is None, reason='live checkpoint / cv2 not present')
+def test_check_json_reports_rocket_tornado(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'
+    f.write_text(DEPLOYED + '--rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-tornado only\n')
+    out = run_live_play('--check', '--ckpt', str(CKPT), '--live-options-file', str(f), '--follow-up-taps')
+    assert out.returncode == 0, out.stdout + out.stderr
+    check = json.loads(out.stdout.strip().splitlines()[-1])
+    assert check['decision_options']['rocket_tornado'] == 'only' and check['live_options']['from_file']['rocket_tornado'] == 'only'
