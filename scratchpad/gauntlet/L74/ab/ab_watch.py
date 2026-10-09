@@ -11,6 +11,7 @@ REPO = Path(__file__).resolve().parents[4]
 L = REPO / 'scratchpad/gauntlet/L70/live'
 LOGS = REPO / 'scratchpad/gauntlet/L68/live_reader'
 STATE = Path(__file__).with_name('ab_state.json')
+HOLD = Path(__file__).with_name('HOLD')          # present = do not start the ON arm yet (owner's friend match)
 OUT = Path(__file__).with_name('ab_watch.out')
 BASH = r'C:\Program Files\Git\usr\bin\bash.exe'
 PY = str(REPO / 'icebow/.venv/Scripts/python.exe')
@@ -79,6 +80,11 @@ def main():
                 say(f"arm OFF done ({len(got)} matches); stopping between matches to flip the Hero IW fix ON")
                 if not stop_and_wait():
                     say('live did not stop within 30 min -- watcher giving up, nothing restarted'); return
+                if HOLD.exists():           # owner 22:1x: a friend match first -- live stays stopped until HOLD is removed
+                    say('live stopped after the OFF arm; HOLDING for the owner (friend match) before the ON arm')
+                    while HOLD.exists():
+                        time.sleep(15)
+                    say('hold released -- starting the ON arm')
                 (L / 'STOP').unlink(missing_ok=True)
                 env = dict(os.environ, LIVE_ARGS='--hero-ability-spec supplement')
                 subprocess.Popen([BASH, str(L / 'run_live.sh')], cwd=str(REPO), env=env,
