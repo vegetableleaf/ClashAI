@@ -5275,6 +5275,25 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 > * Royale upstream 10-09 evening (not pulled; pod pins PyPI royalesim 0.1.17 / royalegym 0.1.18): RoyaleSim +418
 >   (0.1.25; Evo Electro Giant runs on the 160402017 table, UNBUILT; extract_cards builds Hero Ice Wizard + Hero Electro
 >   Wizard, no runtime mechanic yet), RoyaleGym +226, RoyaleLearn +85, RoyaleViser +25.
+> * Owner 10-09 evening: live mechanic tests may use **Classic 1v1** (no trophy cost) as well as friendlies; the
+>   opponent pool is not the 11.5k ladder -> mechanics only, not strength. Owner: "the model makes plays based solely on
+>   what it usually learns from data ... overfitting" -> board-reading probe (ac4d9f33, pod GPU only, measurement only):
+>   M1 train-vs-val gap, M2 board-blind baseline, M3 counterfactual perturbations on live states (lane mirror, threat
+>   +3 tiles, threats removed, air<->ground swap), M4 worst situations -> ONE training recommendation. Old S1 numbers
+>   (09-06, not this checkpoint): val tile 18.1 vs board-blind 8.9, train-subset 22.4.
+> * **pipeline-decisions `ab` INTERIM (a996a070, ~120 paired/arm of 960):** pd0 -19.7 pp (p .0003), pd1 -13.9 (p .0095),
+>   pd2 -6.0 (p .34); pair share <=24 ticks 13.4 / 8.5 / 5.3% (pros 5.8); elixir@play 6.26 / 6.38 / 6.59 (off 6.57);
+>   **Tornado share of second cards 27-30% in every arm (pros 11.9%)** -- the delta fixes the pair rate, never the card.
+>   pd3/pd4 cancelled (would only converge to off). Next: input dump at pending second decisions (is the pending first
+>   play visible to the model? lead hypothesis (b): it is not, so the threat reads unanswered and Tornado answers
+>   again), then SIM fork "pending view vs landed view". Not ready for the owner's main-account test.
+> * **own-cycle CLOSED for imitation, OPEN for RL (abf27945):** SIM v3 960 paired vs live 665: frozen w4 602
+>   (-6.56 pp [-10.31, -2.81], 139/202, p .0008); unfrozen low-LR 617 (-5.00 [-8.74, -1.26], p .011). The w4-weighting
+>   hypothesis is contradicted (w4 -6.6 vs plain -6.8). Behaviour: multi-Rocket cycles .443 -> .267 / .214 (z -5.8 /
+>   -7.2), defensive X-Bows .63 -> .77. Teacher-forced: val 5.507 -> 5.356 but shuffled-feature control 5.365 -> the
+>   cycle-specific part is ~0.004 CE. **General lesson (a, 3 arms): imitation fine-tunes of the RL checkpoint toward pro
+>   labels lose 5-7 pp in SIM.** Dose arms (0.5/0.25) cancelled. Parked next iteration: RL fine-tune WITH the columns vs
+>   an RL control without (rl_royale.py; post-RL cell/tower refine re-applied) -- after defence E2 frees the pod.
 > * **Rocket+Tornado combo SIM (a67f26ce, f022854; pod; delay-0 wrapper):** pull works -- clump value in blast at impact
 >   61% (combo) vs 15% (lone Rocket, same moment), destroyed +.34 elixir/fire [-.08, +.74] (tanks survive ~1480 dmg).
 >   Wins: no combo arm beats its lone twin; cb9 -.2 pp [-1.3, +.8] (6% of matches fire), cb7 -1.9, cb5 -5.0; air pool cb7
