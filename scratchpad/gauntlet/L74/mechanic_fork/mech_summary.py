@@ -58,6 +58,12 @@ def main(argv):
     out["opps_per_match"] = out["opportunities"] / max(1, len(rows))
     forked = [(c, o) for c, o in opps if "Bres" in o]
     out["forked"] = len(forked)
+    rp = [(o["Bres"].get("root_play") or {}) for _, o in forked if "root_play" in o["Bres"]]
+    out["B_root_play"] = {"n": len(rp), "played": sum(1 for x in rp if x), "accepted": sum(1 for x in rp if x.get("accepted")),
+                          "refused": {}}
+    for x in rp:
+        if x and not x.get("accepted"):
+            out["B_root_play"]["refused"][str(x.get("reason"))] = out["B_root_play"]["refused"].get(str(x.get("reason")), 0) + 1
     out["same_as_model"] = sum(1 for _, o in opps if o["same"])
     # faithfulness: A replayed from the snapshot vs the original continuation
     chk = [(c, o) for c, o in opps if "Acheck" in o]
@@ -165,6 +171,7 @@ def main(argv):
           f"({out['opps_per_match']:.2f}/match; {out['matches_with_opportunity']} matches with >= 1), "
           f"{out['forked']} forked, {out['same_as_model']} same as the model, {out['trigger_decisions']} trigger decisions")
     print("faithfulness:", json.dumps(fa))
+    print("B root play:", json.dumps(out["B_root_play"]))
     for scope in ("forked", "all"):
         print(f"-- B - A, {scope} opportunities")
         for k, v in res[scope].items():

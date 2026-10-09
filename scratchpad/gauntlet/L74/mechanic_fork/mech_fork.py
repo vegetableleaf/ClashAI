@@ -223,6 +223,8 @@ class Track:
     def out(self, m):
         o, cr = m.env.outcome(m.learner.side)
         r = {"10": self.caps[200], "20": self.caps[400], "end": snap(m), "outcome": o}
+        rp = next((p for p in m.learner.plays if p.get("tick") == self.t0), None)   # our play decided at the root
+        r["root_play"] = None if rp is None else {k: rp.get(k) for k in ("card", "accepted", "reason")}
         if MECH == "sneaky":
             r["lock"] = self.lock()
             land = self.t0 + DELAY
