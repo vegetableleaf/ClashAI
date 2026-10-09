@@ -5027,7 +5027,21 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   SIM arm; lone-Rocket rule ships first.
 > * **identity-ext-2 MERGED 7a1062b + LIVE ~02:2x** (blind ae873022 PASS_WITH_NOTES: off identical on 197,233 states; only 4
 >   bodies change: Skeletrooper -> bandit, Tombstone monster -> giant, banner + MA decoy dropped). Notes: trooper does 10%
->   tower damage (bandit 100%); decoy draws my fire unseen; Tombstone rule on 1 live log. Discord posted.
+>   tower damage (bandit 100%); decoy draws my fire unseen; Tombstone rule on 1 live log. Discord posted. (Correction:
+>   the restart applied at 01:44, not ~02:2x.)
+> * Owner ~02:0x: purge USABLE reader artifacts from the public repo (vague mentions OK) -> worker a507553e (UNTRACK list +
+>   .gitignore + scrub offsets + local icebow/data/reader_config.json loader; lead applies `git rm --cached`). History
+>   rewrite NOT approved yet (old commits + 26 forks still hold the files). rdef_a stopped (u0013 kept), rdef_c paused
+>   at u0002 to free the VM for decision SIMs; resume later with `bash run_rdef_c.sh rdef_c --resume`. M4 timing worker
+>   a71df585 (`--tau-threatened X`).
+> * Reviewed github.com/cochon123/clash-royale-ai (no license; created 2026-08-06): a RoyaleAPI replay COLLECTOR as a Chrome
+>   MV3 extension (hooks the page's /data/replay XHR in the user's own browser; hosts royaleapi.com + 127.0.0.1:8765
+>   only; perms alarms/downloads/storage/tabs) + local SQLite frontier service (2.2 s paced, backoff on 429, pauses for a
+>   HUMAN on Cloudflare/login -- no bypass), a cleaner that keeps Hero/Champion ability events (tick + side, no position)
+>   and joins official-API battlelogs for exact decks/forms, dedup + quarantine. Its BC models are action-sequence only
+>   (no board state) -- not useful to us. Value: fresh post-balance pro replays incl. Hero abilities for our dataset
+>   rebuild. Not installed; needs owner (separate Chrome profile), RoyaleAPI permission question, and no code copied
+>   into our repo (no license).
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
