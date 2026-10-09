@@ -5263,6 +5263,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 > * log-air block blind verification a842013f: FAIL (medium) -- Phoenix egg inherits the parent `phoenix` class
 >   (body_identity.py:227) -> counted as flying -> a useful Log is held (20261006_141406 t3878). All other criteria
 >   PASS (off identical on 8,272 live decisions; 0 candidate-only failures). Back to a93fc9a1 (per-body flying).
+>   Fixed b74da73 (per-body: Phoenix egg = ground; *_ability not flying) -> candidate bd4c8ca -> verifier a1d953e2.
+> * **Rocket+Tornado combo SIM (a67f26ce, f022854; pod; delay-0 wrapper):** pull works -- clump value in blast at impact
+>   61% (combo) vs 15% (lone Rocket, same moment), destroyed +.34 elixir/fire [-.08, +.74] (tanks survive ~1480 dmg).
+>   Wins: no combo arm beats its lone twin; cb9 -.2 pp [-1.3, +.8] (6% of matches fire), cb7 -1.9, cb5 -5.0; air pool cb7
+>   +1.7 [-1.3, +4.6], cb9 +1.3 (n.s.). 11-33% of combo Rockets refused at landing (undiagnosed). Next: cb9 under live
+>   conditions on bb239f1, refusal diagnosis, then blind verification -> owner's friendly test.
+> * Pod lock-order bug (lead's protocol: cpu then gpu) stalled 4 SIM jobs ~50 min; README now says GPU lock FIRST.
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
