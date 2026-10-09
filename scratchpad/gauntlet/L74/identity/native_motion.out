@@ -1,0 +1,34 @@
+DarkPrince@hero DarkPrince 1356: n 5
+   life  10.0 s  moved   6.4 tiles  0.64 tiles/s  nearest enemy building at end 2.8
+   life   4.6 s  moved   3.9 tiles  0.86 tiles/s  nearest enemy building at end 2.4
+   life   6.3 s  moved   8.7 tiles  1.38 tiles/s  nearest enemy building at end 2.4
+   life   8.4 s  moved   1.6 tiles  0.19 tiles/s  nearest enemy building at end 2.4
+   life   3.3 s  moved   1.7 tiles  0.50 tiles/s  nearest enemy building at end 3.6
+Musketeer@hero Musketeer 1536: n 5
+   life   6.0 s  moved   0.0 tiles  0.00 tiles/s  nearest enemy building at end 10.0
+   life   5.8 s  moved   0.0 tiles  0.00 tiles/s  nearest enemy building at end 8.0
+   life   7.5 s  moved   0.0 tiles  0.00 tiles/s  nearest enemy building at end 6.0
+   life   5.5 s  moved   0.0 tiles  0.00 tiles/s  nearest enemy building at end 11.5
+   life   3.8 s  moved   0.0 tiles  0.00 tiles/s  nearest enemy building at end 16.1
+Balloon@hero Balloon 473: n 7
+   life   1.5 s  moved   0.0 tiles  0.00 tiles/s  nearest enemy building at end 4.6
+   life   1.5 s  moved   0.3 tiles  0.20 tiles/s  nearest enemy building at end 1.1
+   life   2.0 s  moved   0.0 tiles  0.00 tiles/s  nearest enemy building at end 6.5
+   life   2.6 s  moved   0.0 tiles  0.00 tiles/s  nearest enemy building at end 3.0
+   life   2.5 s  moved   0.0 tiles  0.00 tiles/s  nearest enemy building at end 1.9
+Tombstone@hero Tombstone 4224: n 4
+   life  22.0 s  moved  11.8 tiles  0.54 tiles/s  nearest enemy building at end 5.0
+   life  17.7 s  moved  10.4 tiles  0.59 tiles/s  nearest enemy building at end 2.9
+   life  16.9 s  moved  13.5 tiles  0.80 tiles/s  nearest enemy building at end 3.3
+   life  26.9 s  moved  13.1 tiles  0.49 tiles/s  nearest enemy building at end 3.7
+Goblins@hero Goblins 2560: n 6
+   life   6.0 s  moved   0.0 tiles  0.00 tiles/s  nearest enemy building at end 4.3
+   life   3.3 s  moved   0.0 tiles  0.00 tiles/s  nearest enemy building at end 6.2
+   life   5.8 s  moved   0.0 tiles  0.00 tiles/s  nearest enemy building at end 2.4
+   life   6.0 s  moved   0.0 tiles  0.00 tiles/s  nearest enemy building at end 2.5
+   life   6.2 s  moved   0.0 tiles  0.00 tiles/s  nearest enemy building at end 3.9
+EliteArcher@hero EliteArcher 271: n 4
+   life   1.5 s  moved   0.0 tiles  0.00 tiles/s  nearest enemy building at end 10.7
+   life   1.4 s  moved   0.0 tiles  0.00 tiles/s  nearest enemy building at end 11.8
+   life   1.0 s  moved   0.0 tiles  0.00 tiles/s  nearest enemy building at end 9.4
+   life   5.0 s  moved   0.0 tiles  0.00 tiles/s  nearest enemy building at end 16.5

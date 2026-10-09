@@ -1,0 +1,8 @@
+[0/1286] 0s {}
+[200/1286] 2s {}
+[400/1286] 2s {}
+[600/1286] 3s {}
+[800/1286] 40s {'states': 47061}
+[1000/1286] 75s {'states': 108253}
+[1200/1286] 109s {'states': 169749}
+root C:/Users/benpe/ClashBot stats {'states': 196449} off_sha256 b207d70d7c0577f35237117d8bb5afb89032f935dc19bc57b86f354e69a2c156 failures 0

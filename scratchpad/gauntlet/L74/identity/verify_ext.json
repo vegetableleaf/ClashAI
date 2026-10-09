@@ -1,73 +1,142 @@
 {
+ "root": "C:\\Users\\benpe\\ClashBot\\.claude\\worktrees\\agent-a4defcf779b079511",
  "stats": {
-  "states": 190562,
-  "states_changed": 1849
+  "states": 196132,
+  "states_changed": 2622
  },
+ "off_sha256": "93255b95a1d1363d03c039e30e5be3a7276f21721645c958bbce154468a2d634",
  "failures": [],
  "n_failures": 0,
  "changes": [
+  {
+   "before_cls": "goblins",
+   "before_form": 2,
+   "after_cls": null,
+   "after_form": null,
+   "rows": 495,
+   "states": 495,
+   "logs": 14,
+   "logs_since_1008": 8
+  },
   {
    "before_cls": null,
    "before_form": null,
    "after_cls": "elite_barbarians",
    "after_form": 0,
-   "rows": 417
+   "rows": 417,
+   "states": 246,
+   "logs": 8,
+   "logs_since_1008": 3
   },
   {
    "before_cls": "little_prince",
    "before_form": 0,
    "after_cls": "knight",
    "after_form": 0,
-   "rows": 384
+   "rows": 384,
+   "states": 341,
+   "logs": 9,
+   "logs_since_1008": 5
   },
   {
    "before_cls": null,
    "before_form": null,
    "after_cls": "balloon",
    "after_form": 0,
-   "rows": 366
+   "rows": 366,
+   "states": 337,
+   "logs": 3,
+   "logs_since_1008": 2
   },
   {
    "before_cls": "royal_ghost",
    "before_form": 1,
    "after_cls": "skeletons",
    "after_form": 0,
-   "rows": 335
+   "rows": 335,
+   "states": 207,
+   "logs": 18,
+   "logs_since_1008": 5
   },
   {
    "before_cls": null,
    "before_form": null,
    "after_cls": "electro_wizard",
    "after_form": 0,
-   "rows": 242
+   "rows": 242,
+   "states": 242,
+   "logs": 3,
+   "logs_since_1008": 0
   },
   {
    "before_cls": "musketeer",
    "before_form": 2,
    "after_cls": "tesla",
    "after_form": 0,
-   "rows": 223
+   "rows": 223,
+   "states": 223,
+   "logs": 12,
+   "logs_since_1008": 8
   },
   {
-   "before_cls": "mortar",
-   "before_form": 1,
-   "after_cls": "goblins",
+   "before_cls": "balloon",
+   "before_form": 2,
+   "after_cls": "bandit",
    "after_form": 0,
-   "rows": 142
+   "rows": 203,
+   "states": 203,
+   "logs": 21,
+   "logs_since_1008": 6
   },
   {
    "before_cls": "dark_prince",
    "before_form": 2,
    "after_cls": "ram_rider",
    "after_form": 0,
-   "rows": 141
+   "rows": 153,
+   "states": 153,
+   "logs": 9,
+   "logs_since_1008": 4
+  },
+  {
+   "before_cls": "mortar",
+   "before_form": 1,
+   "after_cls": "goblins",
+   "after_form": 0,
+   "rows": 142,
+   "states": 113,
+   "logs": 9,
+   "logs_since_1008": 5
   },
   {
    "before_cls": null,
    "before_form": null,
    "after_cls": "electro_giant",
    "after_form": 0,
-   "rows": 100
+   "rows": 100,
+   "states": 100,
+   "logs": 2,
+   "logs_since_1008": 2
+  },
+  {
+   "before_cls": "tombstone",
+   "before_form": 2,
+   "after_cls": "giant",
+   "after_form": 0,
+   "rows": 51,
+   "states": 51,
+   "logs": 1,
+   "logs_since_1008": 1
+  },
+  {
+   "before_cls": "magic_archer",
+   "before_form": 2,
+   "after_cls": null,
+   "after_form": null,
+   "rows": 20,
+   "states": 20,
+   "logs": 4,
+   "logs_since_1008": 1
   }
  ],
  "examples": [
@@ -189,6 +258,34 @@
   },
   {
    "change": [
+    "goblins",
+    2,
+    null,
+    null
+   ],
+   "log": "live_play_20261005_083137.jsonl",
+   "raw_tick": 536,
+   "before": [
+    60.0,
+    0.0,
+    1.0,
+    0.0,
+    0.4462220072746277,
+    0.6333749890327454,
+    0.9965050220489502,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    2
+   ],
+   "after": null
+  },
+  {
+   "change": [
     "dark_prince",
     2,
     "ram_rider",
@@ -277,6 +374,50 @@
   },
   {
    "change": [
+    "balloon",
+    2,
+    "bandit",
+    0
+   ],
+   "log": "live_play_20261005_095105.jsonl",
+   "raw_tick": 2431,
+   "before": [
+    12.0,
+    0.0,
+    1.0,
+    0.0,
+    0.5555559992790222,
+    0.6468750238418579,
+    1.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    2
+   ],
+   "after": [
+    13.0,
+    0.0,
+    1.0,
+    0.0,
+    0.5555559992790222,
+    0.6468750238418579,
+    1.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0
+   ]
+  },
+  {
+   "change": [
     "musketeer",
     2,
     "tesla",
@@ -349,6 +490,34 @@
   },
   {
    "change": [
+    "magic_archer",
+    2,
+    null,
+    null
+   ],
+   "log": "live_play_20261005_122809.jsonl",
+   "raw_tick": 2678,
+   "before": [
+    79.0,
+    0.0,
+    1.0,
+    0.0,
+    0.2131109982728958,
+    0.4636250138282776,
+    1.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    2
+   ],
+   "after": null
+  },
+  {
+   "change": [
     null,
     null,
     "balloon",
@@ -392,6 +561,50 @@
     0.0,
     0.8056110143661499,
     0.453125,
+    1.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0
+   ]
+  },
+  {
+   "change": [
+    "tombstone",
+    2,
+    "giant",
+    0
+   ],
+   "log": "live_play_20261008_191715.jsonl",
+   "raw_tick": 1436,
+   "before": [
+    119.0,
+    0.0,
+    1.0,
+    0.0,
+    0.47811099886894226,
+    0.26231199502944946,
+    1.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    2
+   ],
+   "after": [
+    48.0,
+    0.0,
+    1.0,
+    0.0,
+    0.47811099886894226,
+    0.26231199502944946,
     1.0,
     1.0,
     0.0,

@@ -31,9 +31,14 @@ CASES = [
     (('203000042', 945, 0), (None, 'electro_wizard', 0)),             # Hero Electro Wizard
     (('13000075', 6314, 0), (None, 'electro_giant', 0)),              # Evo Electro Giant
     (('26000107', 1817, 0), (None, 'balloon', 0)),                    # Minion Giant -> closest learned class
-    (('Balloon', 688, 2), ('balloon', 'balloon', 2)),                 # Skeletrooper: no defensible class, unchanged
-    (('Goblins', 3720, 2), ('goblins', 'goblins', 2)),                # Hero Goblins banner: unchanged
-    (('Tombstone', 4224, 2), ('tombstone', 'tombstone', 2)),          # Hero Tombstone Queen: unchanged
+    (('Balloon', 688, 2), ('balloon', 'bandit', 0)),                  # Hero Balloon Skeletrooper, L15
+    (('Balloon', 2436, 2), ('balloon', 'balloon', 2)),                # the Hero Balloon itself, L15
+    (('Goblins', 3720, 2), ('goblins', None, 0)),                     # Hero Goblins banner, L15: dropped
+    (('Goblins', 293, 2), ('goblins', 'goblins', 2)),                 # a Hero Goblin, L15
+    (('Tombstone', 4224, 2), ('tombstone', 'giant', 0)),              # Hero Tombstone monster (L11 HP in a L15 board)
+    (('Tombstone', 770, 2), ('tombstone', 'tombstone', 2)),           # the Hero Tombstone, L15
+    (('EliteArcher', 394, 2), ('magic_archer', None, 0)),             # Hero Magic Archer decoy, L15: dropped
+    (('EliteArcher', 770, 2), ('magic_archer', 'magic_archer', 2)),   # the Hero Magic Archer, L15
     (('Witch', 130, 0), ('skeletons', 'skeletons', 0)),               # fv5 family child: untouched
     (('Knight', 2539, 0), ('knight', 'knight', 0)),
 ]
@@ -62,10 +67,12 @@ def test_spawn_hp_tables_reproduce_the_live_values_and_spare_the_parent():
     t = BI.ext_tables()
     measured = {('dark_prince', 2): ('ram_rider', {1796, 1971}), ('musketeer', 2): ('tesla', {1536, 1854, 2034, 2232, 2454}),
                 ('little_prince', 0): ('knight', {1600, 1931, 2118, 2325, 2556}), ('mortar', 1): ('goblins', {267, 293, 323}),
-                ('royal_ghost', 1): ('skeletons', {81, 108, 119, 130})}
+                ('royal_ghost', 1): ('skeletons', {81, 108, 119, 130}), ('balloon', 2): ('bandit', {627, 688, 756, 832}),
+                ('tombstone', 2): ('giant', {4224, 5593}), ('goblins', 2): (None, {3390, 3720, 4090}),
+                ('magic_archer', 2): (None, {271, 394, 433})}
     for key, (cls, hps) in measured.items():
         for hp in hps:                                   # every live census value is an exact table entry
-            assert {U[c[0]] for c in t[key][hp] if c[2] == 'ext_child'} == {cls}, (key, hp)
+            assert {c[0] and U[c[0]] for c in t[key][hp] if c[2] == 'ext_child'} == {cls}, (key, hp)
         # the parent's own HP never resolves to the spawn class at the parent's own level
         own = [(hp, c[3]) for hp, cs in t[key].items() for c in cs if c[2] == 'parent']
         for hp, level in own:
@@ -100,10 +107,11 @@ def _units(frame, ext):
 
 
 def test_from_engine_changes_only_the_targeted_bodies():
-    f = _frame_with((203000027, 1971), (13000043, 1949), (26000014, 2232))   # Rhino, Evo E-Barbs, a base Musketeer
+    # Rhino, Evo E-Barbs, a base Musketeer, a Hero Goblins banner
+    f = _frame_with((203000027, 1971), (13000043, 1949), (26000014, 2232), (203000002, 3720))
     off, on = _units(f, False), _units(f, True)
-    assert [u[0] for u in off] == ['knight', 'dark_prince', 'musketeer']     # the evo id is dropped today
-    assert [u[0] for u in on] == ['knight', 'ram_rider', 'elite_barbarians', 'musketeer']
+    assert [u[0] for u in off] == ['knight', 'dark_prince', 'musketeer', 'goblins']   # the evo id is dropped today
+    assert [u[0] for u in on] == ['knight', 'ram_rider', 'elite_barbarians', 'musketeer']   # the banner is dropped
     assert off[1][1:-1] == on[1][1:-1] and on[1][-1] == 0 and off[1][-1] == 2   # same position / hp, form 0
     assert off[0] == on[0] and off[2] == on[3]
 

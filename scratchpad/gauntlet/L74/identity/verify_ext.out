@@ -1,23 +1,21 @@
-[0/1268] 0s {}
-[100/1268] 0s {}
-[200/1268] 1s {}
-[300/1268] 1s {}
-[400/1268] 1s {}
-[500/1268] 1s {}
-[600/1268] 1s {}
-[700/1268] 17s {'states': 15331, 'states_changed': 106}
-[800/1268] 53s {'states': 47061, 'states_changed': 541}
-[900/1268] 86s {'states': 75824, 'states_changed': 714}
-[1000/1268] 121s {'states': 108253, 'states_changed': 942}
-[1100/1268] 150s {'states': 136782, 'states_changed': 1091}
-[1200/1268] 186s {'states': 169749, 'states_changed': 1419}
-stats {'states': 190562, 'states_changed': 1849} failures 0
-                None fNone -> elite_barbarians f0  token rows 417
-       little_prince f0 -> knight         f0  token rows 384
-                None fNone -> balloon        f0  token rows 366
-         royal_ghost f1 -> skeletons      f0  token rows 335
-                None fNone -> electro_wizard f0  token rows 242
-           musketeer f2 -> tesla          f0  token rows 223
-              mortar f1 -> goblins        f0  token rows 142
-         dark_prince f2 -> ram_rider      f0  token rows 141
-                None fNone -> electro_giant  f0  token rows 100
+[0/1283] 0s {}
+[200/1283] 1s {}
+[400/1283] 1s {}
+[600/1283] 1s {}
+[800/1283] 54s {'states': 47061, 'states_changed': 712}
+[1000/1283] 120s {'states': 108253, 'states_changed': 1321}
+[1200/1283] 186s {'states': 169749, 'states_changed': 2055}
+root C:\Users\benpe\ClashBot\.claude\worktrees\agent-a4defcf779b079511 stats {'states': 196132, 'states_changed': 2622} off_sha256 93255b95a1d1363d03c039e30e5be3a7276f21721645c958bbce154468a2d634 failures 0
+             goblins f2 -> None           fNone  rows   495 states   495 logs  14 (since 10-08: 8)
+                None fNone -> elite_barbarians f0  rows   417 states   246 logs   8 (since 10-08: 3)
+       little_prince f0 -> knight         f0  rows   384 states   341 logs   9 (since 10-08: 5)
+                None fNone -> balloon        f0  rows   366 states   337 logs   3 (since 10-08: 2)
+         royal_ghost f1 -> skeletons      f0  rows   335 states   207 logs  18 (since 10-08: 5)
+                None fNone -> electro_wizard f0  rows   242 states   242 logs   3 (since 10-08: 0)
+           musketeer f2 -> tesla          f0  rows   223 states   223 logs  12 (since 10-08: 8)
+             balloon f2 -> bandit         f0  rows   203 states   203 logs  21 (since 10-08: 6)
+         dark_prince f2 -> ram_rider      f0  rows   153 states   153 logs   9 (since 10-08: 4)
+              mortar f1 -> goblins        f0  rows   142 states   113 logs   9 (since 10-08: 5)
+                None fNone -> electro_giant  f0  rows   100 states   100 logs   2 (since 10-08: 2)
+           tombstone f2 -> giant          f0  rows    51 states    51 logs   1 (since 10-08: 1)
+        magic_archer f2 -> None           fNone  rows    20 states    20 logs   4 (since 10-08: 1)

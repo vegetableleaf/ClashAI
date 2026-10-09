@@ -68,20 +68,31 @@ EXT_CARD_IDS = {'13000043': 'AngryBarbarians', '13000075': 'ElectroGiant', '2030
 # 1817 HP at L11) vs Balloon (flying, buildings only, speed 60, 1676 HP); differs in range (4 tiles vs melee) and
 # damage (189 / 1.5 s vs 640 / 2 s at L11).
 EXT_CLASS = {'minion_giant': 'balloon'}
-# (parent key, reader form) -> ((unit, level-1 HP or None = catalog units[unit], class), ...): spawned / ability bodies
-# the reader names by their card, given today the card's own class. HP x the parent's level multipliers reproduces
-# every live value (census). Mortar evo shells spawn Goblins (catalog Mortar_EV1, wiki); Evo Royal Ghost Souldiers =
-# skeleton HP / damage / speed (catalog Ghost_EV1_Summon_*, wiki 81 / 81 at L11; hit 1.8 s splash vs 1.1 s single);
-# Little Prince's Guardienne = Knight-like (catalog ChampionGuard 625 / 91 / 1.2 s / speed 60 / range 1.2 vs Knight
-# 690 / 79 / 1.2 s / 60 / 1.2; the wiki calls her "comparable to a Knight"); Hero Dark Prince's Rhino (wiki 1356 HP
-# at L11 = 530 x 2.56) targets buildings, medium speed, charges, hit 1.6 s = Ram Rider's ram (buildings, 60, charge,
-# 1.7 s, 1766 HP); Hero Musketeer's Trusty Turret (wiki 1536 HP at L11 = 600 x 2.56) is a building shooting air and
-# ground at 4 tiles for 10 s = Tesla (building, air and ground, 5.5 tiles, 25 s).
+# (parent key, reader form) -> ((unit, level-1 HP or None = catalog units[unit], class or None = drop), ...): spawned /
+# ability bodies the reader names by their card, given today the card's own class. HP x the parent's level multipliers
+# reproduces every live value (census). Mortar evo shells spawn Goblins (catalog Mortar_EV1, wiki); Evo Royal Ghost
+# Souldiers = skeleton HP / damage / speed (catalog Ghost_EV1_Summon_*, wiki 81 / 81 at L11; hit 1.8 s splash vs 1.1 s
+# single); Little Prince's Guardienne = Knight-like (catalog ChampionGuard 625 / 91 / 1.2 s / speed 60 / range 1.2 vs
+# Knight 690 / 79 / 1.2 s / 60 / 1.2; the wiki calls her "comparable to a Knight").
+# Hero ability units: client-extracted stats in RoyaleSim 20261006 data/derived/cards.json hero_forms[*].tables.units
+# (level 1; x2.56 = L11); nearest class = scratchpad/gauntlet/L74/identity/nearest.py (same transport / targets / reach /
+# splash / kind, then |log| HP + DPS + speed): DarkPrinceHero_Mount 530 HP, buildings only, ground, speed 60, charge
+# -> ram_rider (690, buildings, 60, charge; dist .54); MusketeerTurret 600 HP building, air + ground, 4 tiles, 10 s
+# -> tesla (dist .66; goblin_hut .58 is a tie within noise, tesla kept); SkeletonTrooper 185 HP ground melee, targets
+# ground, speed 120 -> bandit (354, ground melee, speed 90; dist .98); TombstoneHero_Monster_Active 1650 HP, buildings
+# only, ground, speed 60 -> giant (1550, buildings, 45; dist .52). No class fits -> DROPPED (None): the Hero Goblins
+# banner GoblinHero_Flag_Building (1000 HP, no attack, no movement; its 2 goblins read as goblins when they appear) and
+# the Hero Magic Archer decoy EliteArcherHero_Dummy (106 HP, no damage, 7 s) -- today they read as an attacking goblin
+# / Magic Archer.
 EXT_BODIES = {('mortar', 1): (('Goblin', None, 'goblins'),),
               ('royal_ghost', 1): (('Ghost_EV1_Summon_Left', None, 'skeletons'),),
               ('little_prince', 0): (('ChampionGuard', None, 'knight'),),
-              ('dark_prince', 2): (('DarkPrinceHero_Rhino', 530, 'ram_rider'),),
-              ('musketeer', 2): (('MusketeerHero_Turret', 600, 'tesla'),)}
+              ('dark_prince', 2): (('DarkPrinceHero_Mount', 530, 'ram_rider'),),
+              ('musketeer', 2): (('MusketeerTurret', 600, 'tesla'),),
+              ('balloon', 2): (('SkeletonTrooper', 185, 'bandit'),),
+              ('tombstone', 2): (('TombstoneHero_Monster_Active', 1650, 'giant'),),
+              ('goblins', 2): (('GoblinHero_Flag_Building', 1000, None),),
+              ('magic_archer', 2): (('EliteArcherHero_Dummy', 106, None),)}
 
 
 @contextmanager
@@ -357,7 +368,8 @@ def ext_tables():
                 table.setdefault(hp * m // 100, set()).add((vocab.unit_id(key), form, 'parent', level))
             for unit, base, cls in bodies:
                 for hp in ({base} if base else _hitpoints(unit, units[unit])):
-                    table.setdefault(hp * m // 100, set()).add((vocab.unit_id(cls), 0, 'ext_child', level))
+                    table.setdefault(hp * m // 100, set()).add(
+                        (None if cls is None else vocab.unit_id(cls), 0, 'ext_child', level))
     return out
 
 
