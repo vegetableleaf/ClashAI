@@ -1,0 +1,49 @@
+
+== base: n 960 | tower HP lost/match 3595 | 3-crown losses 30 | crowns against/match 0.440
+   damage episodes/match 8.03 | first own play after episode start: <=1 s 0.197 <=2 s 0.353 <=5 s 0.608 | median 71 ticks | none before the end 307
+     elixir [0,3) at episode start: n 2222 play <=2 s 0.254
+     elixir [3,6) at episode start: n 3349 play <=2 s 0.344
+     elixir [6,9) at episode start: n 1913 play <=2 s 0.484
+     elixir [9,11) at episode start: n 227 play <=2 s 0.361
+   elixir at big-push start mean 5.11 (n 2958) | plays/match 38.87
+   1x: elixir@play 7.14 | leak>=9.5 0.069 | cheap (Skel+Log) 0.338 | Skeletons 0.177, Knight 0.175, Log 0.161, IceWizard 0.158, Tesla 0.146, Xbow 0.111, Tornado 0.055, Rocket 0.017
+   2x: elixir@play 6.60 | leak>=9.5 0.015 | cheap (Skel+Log) 0.317 | Skeletons 0.178, Knight 0.176, IceWizard 0.173, Tesla 0.143, Log 0.139, Xbow 0.115, Tornado 0.051, Rocket 0.024
+   OT: elixir@play 6.62 | leak>=9.5 0.009 | cheap (Skel+Log) 0.304 | Knight 0.172, IceWizard 0.167, Skeletons 0.165, Tesla 0.145, Log 0.139, Rocket 0.082, Xbow 0.071, Tornado 0.059
+
+######## thr vs base: paired n=960 (base 960, thr 960)
+wins base 635.0 vs thr 636.0 (delta +1.0) | thr better 127 worse 126 sign p=1.0000
+   evo: base 323.0 thr 307.0 better 54 worse 70 p=0.178
+   lad: base 312.0 thr 329.0 better 73 worse 56 p=0.159
+   my tower HP lost/match, paired delta thr - base: -82.2 [-222.6, +52.4]
+   tower_hp_diff (mine - theirs) paired delta: +65.0 [-96.5, +231.4]
+   3-crown losses base 30 thr 25
+
+== thr: n 960 | tower HP lost/match 3512 | 3-crown losses 25 | crowns against/match 0.420
+   damage episodes/match 8.02 | first own play after episode start: <=1 s 0.201 <=2 s 0.386 <=5 s 0.662 | median 59.0 ticks | none before the end 319
+     elixir [0,3) at episode start: n 2248 play <=2 s 0.271
+     elixir [3,6) at episode start: n 3378 play <=2 s 0.394
+     elixir [6,9) at episode start: n 1852 play <=2 s 0.513
+     elixir [9,11) at episode start: n 224 play <=2 s 0.357
+   elixir at big-push start mean 5.13 (n 2962) | plays/match 39.79
+   1x: elixir@play 7.07 | leak>=9.5 0.067 | cheap (Skel+Log) 0.339 | Skeletons 0.177, Knight 0.174, Log 0.162, IceWizard 0.159, Tesla 0.145, Xbow 0.111, Tornado 0.056, Rocket 0.016
+   2x: elixir@play 6.51 | leak>=9.5 0.015 | cheap (Skel+Log) 0.321 | Skeletons 0.181, Knight 0.176, IceWizard 0.175, Log 0.140, Tesla 0.140, Xbow 0.114, Tornado 0.052, Rocket 0.022
+   OT: elixir@play 6.53 | leak>=9.5 0.014 | cheap (Skel+Log) 0.308 | Knight 0.173, IceWizard 0.168, Skeletons 0.167, Tesla 0.145, Log 0.141, Rocket 0.078, Xbow 0.069, Tornado 0.059
+
+######## rad vs base: paired n=960 (base 960, rad 960)
+wins base 635.0 vs rad 639.0 (delta +4.0) | rad better 113 worse 109 sign p=0.8405
+   evo: base 323.0 rad 321.0 better 56 worse 58 p=0.925
+   lad: base 312.0 rad 318.0 better 57 worse 51 p=0.631
+   my tower HP lost/match, paired delta rad - base: +17.4 [-107.5, +143.4]
+   tower_hp_diff (mine - theirs) paired delta: +49.2 [-93.1, +193.9]
+   3-crown losses base 30 rad 22
+
+== rad: n 960 | tower HP lost/match 3612 | 3-crown losses 22 | crowns against/match 0.418
+   damage episodes/match 8.17 | first own play after episode start: <=1 s 0.215 <=2 s 0.381 <=5 s 0.637 | median 63.0 ticks | none before the end 327
+     elixir [0,3) at episode start: n 2411 play <=2 s 0.288
+     elixir [3,6) at episode start: n 3446 play <=2 s 0.390
+     elixir [6,9) at episode start: n 1770 play <=2 s 0.490
+     elixir [9,11) at episode start: n 219 play <=2 s 0.388
+   elixir at big-push start mean 5.09 (n 3136) | plays/match 40.81
+   1x: elixir@play 7.08 | leak>=9.5 0.068 | cheap (Skel+Log) 0.340 | Skeletons 0.177, Knight 0.176, Log 0.162, IceWizard 0.159, Tesla 0.144, Xbow 0.108, Tornado 0.057, Rocket 0.017
+   2x: elixir@play 6.51 | leak>=9.5 0.014 | cheap (Skel+Log) 0.319 | Skeletons 0.180, Knight 0.177, IceWizard 0.174, Tesla 0.142, Log 0.140, Xbow 0.113, Tornado 0.051, Rocket 0.023
+   OT: elixir@play 6.52 | leak>=9.5 0.010 | cheap (Skel+Log) 0.308 | Knight 0.173, IceWizard 0.168, Skeletons 0.168, Tesla 0.142, Log 0.140, Rocket 0.078, Xbow 0.068, Tornado 0.061

@@ -4,8 +4,8 @@
 # live-only flags (--iw-press-pstar, --fast-input, --tap-gap-ms; --afford-ticks / --extrapolate 24 are not search_s0
 # flags: its live condition is delay 26 / extrapolate 26), checkpoint towerref_w2 41b52a83.
 #   thr = + --gate-hazard-threatened 2 ; rad = + --gate-hazard-threat-radius 4 (the variant)
-#   ARMS="base thr rad" SEEDS=0:480 WORKERS=32 bash vm_ab.sh
-cd ~/threat/repo
+#   ARMS="base thr rad" SEEDS=0:480 WORKERS=32 bash vm_ab.sh   (main tree: REPO=~/threat/main_repo TAG=_main ARMS=base)
+cd ${REPO:-~/threat/repo}
 export ROYALE_RUNTIME=20261006-linux OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 CUDA_VISIBLE_DEVICES=
 PY=~/venv/bin/python; O=~/threat/sim${TAG:-}; mkdir -p $O; W=${WORKERS:-32}; LOG=$O/sim.log; SEEDS=${SEEDS:-0:480}
 CK=$HOME/lethal/rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt; GEN1=icebow/data/pipeline/gen_v1_s0/gen_s0.pt
