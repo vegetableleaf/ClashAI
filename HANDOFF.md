@@ -5176,6 +5176,17 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 > * Owner ~13:00: restart live as each feature is integrated (memory overnight-2026-10-08-12k). Own-cycle stage 2 (laptop
 >   GPU, frozen base, 350 cols): real-minus-placebo card CE -.0121 [-.0169, -.0074], wait -.0070, gate -.0025; top-1
 >   card 59.46 -> 59.84% n.s.; SIM 960 running. follow-up taps (2bafe09) in blind verification a4e15736.
+> * **Owner ~13:20: STOP live NOW** (Log at air: 130607 t1001 Mega Minion, t1738 3 Minions; 30/2,433 Logs 10-08/09 had
+>   only air in the path). Live killed mid-match by PID (restart helper too), STOP present -- stays off until the owner says.
+>   Owner: "log should still be cyclable" -> a93fc9a1 `--log-air retarget` (re-aim to ground value / princess chip cell;
+>   block = comparison arm).
+> * follow-up taps MERGED fb42332 (blind PASS_WITH_NOTES; SIM cap + stale-frame fixes 931967c in verification a45e4317).
+>   card-levels-fix MERGED 27e6978. lethal-level-guard (6b3f9bd: impossible level -> no fire, not ValueError; level-8 =
+>   owner's lower account 10-08 20:20-20:53; decide() unwrapped -> a raise would abort a match) in verification a0322803.
+> * **card-wait (a9182138, 9481ddf): not shipped.** Owner hypothesis partly (a): 26% of plays < 4 elixir vs pros 11-13%;
+>   but decoder substitution only 0.8% of plays (c) -- 97% of low-elixir plays are the model's own top card. SIM 480: top
+>   334 vs 337; ideal-top 325; ideal-ratio .25 328 (-1.9 [-5.2, +1.3]); tower HP lost -100..-194/match all modes. Next:
+>   ratio .25 to 960 + a low-elixir "patience" gate (mirror of tau-threatened).
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
