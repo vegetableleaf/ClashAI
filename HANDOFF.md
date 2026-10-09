@@ -5220,6 +5220,12 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   $0.59/h 16 vCPU). SSH key for the pod: ~/.ssh/runpod_clashbot (public key given to the owner). Laptop SIM: only
 >   log-air runs (laptop was 100% CPU: idle MuMu ~1.7 threads, Medal ~1.1); others code-only until the pod is up.
 >   Defence RL pod-ready (02d901e: host.sh / host.pod.sh / pod_smoke.sh / baselines.sh / live_flags.sh).
+> * **Rocket clump iteration 2 (a67f26ce, 57f848f; 312/480 base matches covered): no winner.** Why it loses (a): blast
+>   value 10.6 at decision -> 2.9 destroyed at impact (44% walked out in the ~1.8 s flight); vs a placebo Rocket at the
+>   corner it helps (-9 vs -25 wins) but the 6 elixir would buy ~2.3 defensive cards. Lead aim fails (forecast worse than
+>   static). 011626 t3884 re-measured: best blast 7.6 elixir by damage (Hound at 13.7% HP; both my princesses already
+>   dead). Variants: rv9 -2.9 pp, de9 -2.6, de9_e8 -.3 [-1.6, +.6], de7_th -.6 [-1.6, 0] (0.15 live fires/match) -- none
+>   shown positive. Rocket+Tornado combo built on --follow-up-taps (window table done), SIM pending (pod).
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
