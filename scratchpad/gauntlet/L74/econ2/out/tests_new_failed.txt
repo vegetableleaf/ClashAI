@@ -1,3 +1,15 @@
+FAILED pipeline/tests/test_gen_v31_legacy.py::test_dataset_init_inference_and_loss_bytes[1]
+FAILED pipeline/tests/test_gen_v31_legacy.py::test_dataset_init_inference_and_loss_bytes[2]
+FAILED pipeline/tests/test_gen_v31_legacy.py::test_dataset_init_inference_and_loss_bytes[3]
+FAILED pipeline/tests/test_gen_v31_legacy.py::test_head_simulation_rows_actions_trajectory_and_rng[1]
+FAILED pipeline/tests/test_gen_v31_legacy.py::test_head_simulation_rows_actions_trajectory_and_rng[2]
+FAILED pipeline/tests/test_gen_v31_legacy.py::test_head_simulation_rows_actions_trajectory_and_rng[3]
+FAILED pipeline/tests/test_live_options.py::test_check_json_absent_file_is_loud
+FAILED pipeline/tests/test_live_options.py::test_check_json_reports_gate_decode
+FAILED pipeline/tests/test_live_options.py::test_check_json_reports_lethal_rocket
+FAILED pipeline/tests/test_live_options.py::test_check_json_reports_options_and_their_source[extra0-rocket_area]
+FAILED pipeline/tests/test_live_options.py::test_check_json_reports_options_and_their_source[extra1-argmax]
+FAILED pipeline/tests/test_live_options.py::test_check_json_reports_options_and_their_source[extra2-argmax]
 FAILED pipeline/tests/test_public_delivery.py::test_telemetry_off_matches_legacy_engine_and_outputs
 FAILED pipeline/tests/test_public_delivery.py::test_telemetry_on_does_not_change_sim_state_with_deployments
 FAILED pipeline/tests/test_public_delivery.py::test_telemetry_records_sim_without_private_fields_and_forks
