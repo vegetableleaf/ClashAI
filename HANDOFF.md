@@ -4969,6 +4969,28 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   timing); bundle 3 if verified. Friend package built at share/friend_reader_160402012 (git-excluded): emulator build
 >   160402012 (not 160402020), libg sha256 79c4e485...918c2, sampler sha256 06066e26 == device copy; README_FOR_AGENT.md
 >   explains the mismatch and what to re-derive.
+> * **Hero IW A/B DONE 00:24 10-09 (L74/ab/ab_report.py; ladder_nav outcomes):** OFF (spec off) 20 matches 11 W-9 L (+69 tr);
+>   ON (supplement) 17 real matches 10 W-7 L (+93 tr) -- the watcher's 20 included the MuMu-crash match and 2 empty logs.
+>   Win rate not separable at n~20 (b). Economy (a): elixir before a play 5.41 -> 5.76; plays below 4 elixir 32.8% -> 26.4%;
+>   IW abilities/match 1.5 -> 2.2. **BUNDLE 3 DEPLOYED 00:34** (LIVE_OPTIONS + test pin; backup LIVE_OPTIONS.bundle2_backup):
+>   + --hero-ability-spec supplement --gate-hazard-threatened 2 --early-release-margin 8. tests/test_live_options 27 passed;
+>   live_play --check LIVE_CHECK_PASS (all three applied). Supervisor restarted 00:34:23 (restarts 0/10).
+> * **Mistake catalogue FINAL (a062325a, commit 6455053 on worktree-agent-a062325a516da5d40; 654 live vs 2,244 pro sides):**
+>   M4 frozen under fire (tower losing HP, enemy <= 8 t, 3+ elixir card affordable, no play >= 2 s) 3.5 vs pros 2.3 per
+>   10 min, +6.8% falls [2.8, 10.6], ~4.3 wins/100; cause = the model's p_play (median .12 vs tau .35); worse in newer ckpts
+>   (towerref 4.5, stack2k 5.4 vs R1e 2.8 per 10 min) -> the threatened gate (now live) targets it. M3 off-side spend while a
+>   push forms ~2.4 wins/100. N1 early piecemeal defence at low elixir (association). Contradicted (c): M1 overcommit, M2
+>   wrong lane, M6 wasted spells, M8 quiet spend-down. Fixes F1-F3 in its fixes.txt (reward on M4 idle steps, gate labels,
+>   reset states). Its pro data reads agent-af3c232b452e8ef86's worktree -- do not delete that worktree.
+> * **Owner 00:3x: Tornado "sneaky lock"** (Tornado drags a deep X-Bow-blocking troop out of X-Bow range -> the X-Bow locks the
+>   tower; Hunter CR uses it) -- model must LEARN it. Owner asked to remove "never cast tornado on king tower": (c) no such
+>   rule exists in the live path (live_play / live_gen* / decision_options: no Tornado restriction; legal_cells returns
+>   None for spells) nor in rl_royale.py; the retired icebow/src/clashrl/play.py had Tornado->own-king ASSISTS, not a ban.
+>   Daily report fixed: L73/daily/daily.py (gather / post) so a run needs one Bash allow rule.
+> * Friend: their build 160402020 (libg sha256 9358b626..., same 28,919,824 bytes). share/friend_reader_160402020_candidate/:
+>   libg_layout.py (hash-manifest layout compare, no binary shared; libg has stripped section headers -> program headers),
+>   our manifest, candidate sampler (stamp 160402020 only; VM gcc 14.2.0, sha256 103d0786...; smoke 3/3 valid frames on
+>   our 160402012 device), README. Unvalidated for 160402020 until their compare + battle checklist pass.
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the

@@ -1,0 +1,10 @@
+21:43:39 watcher up, phase off
+22:16:41 watcher up, phase off
+22:32:48 arm OFF done (20 matches); stopping between matches to flip the Hero IW fix ON
+22:38:23 live stopped after the OFF arm; HOLDING for the owner (friend match) before the ON arm
+23:02:24 hold released -- starting the ON arm
+23:02:25 arm ON started at 20261008_230225 (--hero-ability-spec supplement)
+23:11:01 arm ON: live is not running (supervisor gave up?) -- watcher waiting; owner may restart
+23:14:03 arm ON: live is not running (supervisor gave up?) -- watcher waiting; owner may restart
+00:24:01 arm ON done (20 matches); stopping live (left OFF for the owner)
+00:33:53 A/B complete: 20 OFF + 20 ON; live is stopped (STOP file present)
