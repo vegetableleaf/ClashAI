@@ -21,7 +21,7 @@ launched, procs, n = {}, [], 0
 
 def candidates(s):
     out = set()
-    for f in glob.glob(f'{O}/fires_base_{s}/fires_*.jsonl'):
+    for f in glob.glob(f'{O}/fires_base_{s}/fires_*.jsonl') + glob.glob(f'{O}/fires_base_{s}_b*/fires_*.jsonl'):
         for line in open(f):
             try:
                 x = json.loads(line)
@@ -50,7 +50,7 @@ def launch(arm, s, seeds):
 
 BATCH = 8                                   # fewer, bigger jobs: each one reloads the models
 while True:
-    base_done = os.path.exists(f'{O}/sim_base.log') and 'DONE' in open(f'{O}/sim_base.log').read()
+    base_done = os.path.exists(f'{O}/STOP_BASE') or (os.path.exists(f'{O}/sim_base.log') and 'DONE' in open(f'{O}/sim_base.log').read())
     for s in CEN:
         new = candidates(s) - launched.setdefault(s, set())
         if new and (len(new) >= BATCH or base_done):

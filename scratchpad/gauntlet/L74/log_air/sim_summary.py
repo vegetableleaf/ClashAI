@@ -8,12 +8,13 @@ Logs and what the re-aim hits (log_fire_s0 geometry on the decision board)."""
 import glob, json, math, os, sys
 from collections import Counter, defaultdict
 
-O = sys.argv[1]
+O = sys.argv[1]                                  # the log_air arms' dir (retarget_<census>_b*)
 SUF = sys.argv[2].split(',') if len(sys.argv) > 2 else ['evo', 'lad', 'air']
+OB = sys.argv[3] if len(sys.argv) > 3 else O      # the base dir (the VM backup after the VM stopped; same results seed for seed)
 
 
 def games(arm, s):
-    out = {}
+    out, O = {}, (OB if arm == 'base' else globals()['O'])
     for p in [f'{O}/{arm}_{s}/matches.jsonl'] + sorted(glob.glob(f'{O}/{arm}_{s}_b*/matches.jsonl')):
         if os.path.exists(p):
             for line in open(p):
@@ -27,7 +28,7 @@ def games(arm, s):
 
 
 def fires(arm, s):
-    out = defaultdict(list)
+    out, O = defaultdict(list), (OB if arm == 'base' else globals()['O'])
     for f in glob.glob(f'{O}/fires_{arm}_{s}/fires_*.jsonl') + glob.glob(f'{O}/fires_{arm}_{s}_b*/fires_*.jsonl'):
         for line in open(f):
             try:
