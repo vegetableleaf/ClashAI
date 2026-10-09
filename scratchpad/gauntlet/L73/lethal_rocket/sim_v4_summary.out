@@ -1,0 +1,19 @@
+v4_off evo rc=0 10:34:14
+v4_on evo rc=0 10:34:37
+v4_on lad rc=0 10:35:11
+v4_off lad rc=0 10:36:05
+DONE
+off identity (main_off vs v4_off): 480 common; identical 480; differ []
+on: paired 480; main wins 337.0, branch wins 337.0
+  branch better 0 / worse 0 (sign test p 1.000)
+  lethal fires: main 220 ({'lethal_rocket': 200, 'lethal_log': 20}), branch 220 ({'lethal_rocket': 200, 'lethal_log': 20})
+  matches whose fires or result differ: 0
+/home/clashbot-gauntlet/lethal/sim_rel v4_on: fires 220 in 187 matches; fire-based double-casts: cross-card 7 in 7 matches, same-card 22 (first never cast)
+    cross (('evo', 's0:gen:148'), 'lethal_rocket', 306.8, 'lethal_log', 308.3, 'L')
+    cross (('evo', 's0:gen:169'), 'lethal_rocket', 303.8, 'lethal_log', 305.3, 'R')
+    cross (('evo', 's0:gen:204'), 'lethal_rocket', 305.8, 'lethal_log', 307.3, 'R')
+    cross (('evo', 's0:gen:53'), 'lethal_rocket', 305.3, 'lethal_log', 306.8, 'R')
+    cross (('lad', 's0:gen:113'), 'lethal_rocket', 306.3, 'lethal_log', 307.8, 'L')
+    cross (('lad', 's0:gen:77'), 'lethal_rocket', 304.8, 'lethal_log', 306.3, 'L')
+    cross (('lad', 's0:gen:78'), 'lethal_rocket', 304.8, 'lethal_log', 306.3, 'R')
+  landing-based: lethal casts 220, accepted 119; ACCEPTED double-casts 0 []
