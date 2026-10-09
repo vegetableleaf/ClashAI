@@ -1,0 +1,407 @@
+{
+ "stats": {
+  "states": 190562,
+  "states_changed": 1849
+ },
+ "failures": [],
+ "n_failures": 0,
+ "changes": [
+  {
+   "before_cls": null,
+   "before_form": null,
+   "after_cls": "elite_barbarians",
+   "after_form": 0,
+   "rows": 417
+  },
+  {
+   "before_cls": "little_prince",
+   "before_form": 0,
+   "after_cls": "knight",
+   "after_form": 0,
+   "rows": 384
+  },
+  {
+   "before_cls": null,
+   "before_form": null,
+   "after_cls": "balloon",
+   "after_form": 0,
+   "rows": 366
+  },
+  {
+   "before_cls": "royal_ghost",
+   "before_form": 1,
+   "after_cls": "skeletons",
+   "after_form": 0,
+   "rows": 335
+  },
+  {
+   "before_cls": null,
+   "before_form": null,
+   "after_cls": "electro_wizard",
+   "after_form": 0,
+   "rows": 242
+  },
+  {
+   "before_cls": "musketeer",
+   "before_form": 2,
+   "after_cls": "tesla",
+   "after_form": 0,
+   "rows": 223
+  },
+  {
+   "before_cls": "mortar",
+   "before_form": 1,
+   "after_cls": "goblins",
+   "after_form": 0,
+   "rows": 142
+  },
+  {
+   "before_cls": "dark_prince",
+   "before_form": 2,
+   "after_cls": "ram_rider",
+   "after_form": 0,
+   "rows": 141
+  },
+  {
+   "before_cls": null,
+   "before_form": null,
+   "after_cls": "electro_giant",
+   "after_form": 0,
+   "rows": 100
+  }
+ ],
+ "examples": [
+  {
+   "change": [
+    "royal_ghost",
+    1,
+    "skeletons",
+    0
+   ],
+   "log": "live_play_20261005_071827.jsonl",
+   "raw_tick": 2595,
+   "before": [
+    104.0,
+    0.0,
+    1.0,
+    0.0,
+    0.013888999819755554,
+    0.49668800830841064,
+    1.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    1
+   ],
+   "after": [
+    7.0,
+    0.0,
+    1.0,
+    0.0,
+    0.013888999819755554,
+    0.49668800830841064,
+    1.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0
+   ]
+  },
+  {
+   "change": [
+    "little_prince",
+    0,
+    "knight",
+    0
+   ],
+   "log": "live_play_20261005_072708.jsonl",
+   "raw_tick": 2749,
+   "before": [
+    77.0,
+    0.0,
+    1.0,
+    0.0,
+    0.20938900113105774,
+    0.5180619955062866,
+    1.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0
+   ],
+   "after": [
+    5.0,
+    0.0,
+    1.0,
+    0.0,
+    0.20938900113105774,
+    0.5180619955062866,
+    1.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0
+   ]
+  },
+  {
+   "change": [
+    null,
+    null,
+    "elite_barbarians",
+    0
+   ],
+   "log": "live_play_20261005_081512.jsonl",
+   "raw_tick": 1884,
+   "before": null,
+   "after": [
+    35.0,
+    0.0,
+    1.0,
+    0.0,
+    0.15549999475479126,
+    0.4531559944152832,
+    1.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0
+   ]
+  },
+  {
+   "change": [
+    "dark_prince",
+    2,
+    "ram_rider",
+    0
+   ],
+   "log": "live_play_20261005_085720.jsonl",
+   "raw_tick": 677,
+   "before": [
+    28.0,
+    0.0,
+    1.0,
+    0.0,
+    0.15833300352096558,
+    0.4763120114803314,
+    0.8361240029335022,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    2
+   ],
+   "after": [
+    100.0,
+    0.0,
+    1.0,
+    0.0,
+    0.15833300352096558,
+    0.4763120114803314,
+    0.8361240029335022,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0
+   ]
+  },
+  {
+   "change": [
+    "mortar",
+    1,
+    "goblins",
+    0
+   ],
+   "log": "live_play_20261005_093120.jsonl",
+   "raw_tick": 3495,
+   "before": [
+    89.0,
+    0.0,
+    1.0,
+    0.0,
+    0.9099439978599548,
+    0.6869059801101685,
+    1.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    1
+   ],
+   "after": [
+    60.0,
+    0.0,
+    1.0,
+    0.0,
+    0.9099439978599548,
+    0.6869059801101685,
+    1.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0
+   ]
+  },
+  {
+   "change": [
+    "musketeer",
+    2,
+    "tesla",
+    0
+   ],
+   "log": "live_play_20261005_104436.jsonl",
+   "raw_tick": 3253,
+   "before": [
+    92.0,
+    0.0,
+    1.0,
+    0.0,
+    0.23311099410057068,
+    0.6191250085830688,
+    1.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    2
+   ],
+   "after": [
+    1.0,
+    0.0,
+    1.0,
+    0.0,
+    0.23311099410057068,
+    0.6191250085830688,
+    1.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0
+   ]
+  },
+  {
+   "change": [
+    null,
+    null,
+    "electro_wizard",
+    0
+   ],
+   "log": "live_play_20261005_113418.jsonl",
+   "raw_tick": 1570,
+   "before": null,
+   "after": [
+    34.0,
+    0.0,
+    1.0,
+    0.0,
+    0.3055559992790222,
+    0.171875,
+    1.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0
+   ]
+  },
+  {
+   "change": [
+    null,
+    null,
+    "balloon",
+    0
+   ],
+   "log": "live_play_20261007_200907.jsonl",
+   "raw_tick": 251,
+   "before": null,
+   "after": [
+    12.0,
+    0.0,
+    1.0,
+    0.0,
+    0.5277780294418335,
+    0.015625,
+    1.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0
+   ]
+  },
+  {
+   "change": [
+    null,
+    null,
+    "electro_giant",
+    0
+   ],
+   "log": "live_play_20261008_164722.jsonl",
+   "raw_tick": 2537,
+   "before": null,
+   "after": [
+    32.0,
+    0.0,
+    1.0,
+    0.0,
+    0.8056110143661499,
+    0.453125,
+    1.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0
+   ]
+  }
+ ]
+}

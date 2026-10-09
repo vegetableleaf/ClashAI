@@ -1,0 +1,544 @@
+{
+"npz": "C:/Users/benpe/ClashBot/icebow/data/pipeline/gen_dataset_v32_fv5.npz",
+"rows_tok": 16127548,
+"counts": {
+"tesla": {
+"mine_f0": 143157,
+"mine_f1": 48657,
+"enemy_f0": 142707,
+"enemy_f1": 48774
+},
+"ice_wizard": {
+"mine_f0": 163220,
+"enemy_f0": 164277
+},
+"x_bow": {
+"mine_f0": 118808,
+"enemy_f0": 119727
+},
+"knight": {
+"mine_f0": 103019,
+"mine_f1": 40133,
+"mine_f2": 92254,
+"enemy_f0": 104152,
+"enemy_f1": 40633,
+"enemy_f2": 93319
+},
+"skeletons": {
+"mine_f0": 952184,
+"mine_f1": 45346,
+"enemy_f0": 984647,
+"enemy_f1": 45953
+},
+"archer_queen": {
+"mine_f0": 21934,
+"enemy_f0": 22196
+},
+"archers": {
+"mine_f0": 70844,
+"mine_f1": 26371,
+"enemy_f0": 71323,
+"enemy_f1": 26752
+},
+"baby_dragon": {
+"mine_f0": 71100,
+"mine_f1": 23076,
+"enemy_f0": 73538,
+"enemy_f1": 23951
+},
+"balloon": {
+"mine_f0": 25590,
+"mine_f2": 48191,
+"enemy_f0": 27072,
+"enemy_f2": 51296
+},
+"bandit": {
+"mine_f0": 31736,
+"enemy_f0": 33316
+},
+"barbarians": {
+"mine_f0": 180124,
+"mine_f1": 15418,
+"enemy_f0": 186118,
+"enemy_f1": 16011
+},
+"bats": {
+"mine_f0": 174101,
+"mine_f1": 21524,
+"enemy_f0": 181034,
+"enemy_f1": 21653
+},
+"battle_healer": {
+"mine_f0": 2569,
+"enemy_f0": 2728
+},
+"battle_ram": {
+"mine_f0": 44539,
+"mine_f1": 16280,
+"enemy_f0": 46917,
+"enemy_f1": 16972
+},
+"berserker": {
+"mine_f0": 2104,
+"mine_f2": 177588,
+"enemy_f0": 2176,
+"enemy_f2": 180968
+},
+"bomb_tower": {
+"mine_f0": 26875,
+"enemy_f0": 26926
+},
+"bomber": {
+"mine_f0": 68016,
+"mine_f1": 956,
+"enemy_f0": 67947,
+"enemy_f1": 1007
+},
+"boss_bandit": {
+"mine_f0": 5583,
+"enemy_f0": 5961
+},
+"bowler": {
+"mine_f0": 67034,
+"mine_f2": 57225,
+"enemy_f0": 69013,
+"enemy_f2": 59199
+},
+"cannon": {
+"mine_f0": 105484,
+"mine_f1": 22958,
+"enemy_f0": 102876,
+"enemy_f1": 22362
+},
+"cannon_cart": {
+"mine_f0": 83090,
+"enemy_f0": 85450
+},
+"clone": {
+"mine_f0": 2859,
+"enemy_f0": 3295
+},
+"dark_prince": {
+"mine_f0": 29014,
+"mine_f2": 21347,
+"enemy_f0": 29735,
+"enemy_f2": 22398
+},
+"dart_goblin": {
+"mine_f0": 46148,
+"mine_f1": 2731,
+"enemy_f0": 47023,
+"enemy_f1": 2807
+},
+"electro_dragon": {
+"mine_f0": 15629,
+"mine_f1": 9525,
+"enemy_f0": 16113,
+"enemy_f1": 9986
+},
+"electro_giant": {
+"mine_f0": 27886,
+"enemy_f0": 29380
+},
+"electro_spirit": {
+"mine_f0": 46525,
+"enemy_f0": 49419
+},
+"electro_wizard": {
+"mine_f0": 28122,
+"enemy_f0": 29358
+},
+"elite_barbarians": {
+"mine_f0": 2360,
+"enemy_f0": 2499
+},
+"elixir_blob": {
+"mine_f0": 10278,
+"enemy_f0": 11494
+},
+"elixir_collector": {
+"mine_f0": 19599,
+"enemy_f0": 19393
+},
+"elixir_golem": {
+"mine_f0": 13285,
+"enemy_f0": 13798
+},
+"elixir_golemite": {
+"mine_f0": 8493,
+"enemy_f0": 9395
+},
+"executioner": {
+"mine_f0": 24535,
+"mine_f1": 13472,
+"enemy_f0": 25331,
+"enemy_f1": 14028
+},
+"fire_spirit": {
+"mine_f0": 66293,
+"enemy_f0": 68062
+},
+"firecracker": {
+"mine_f0": 88624,
+"mine_f1": 28489,
+"enemy_f0": 88403,
+"enemy_f1": 28266
+},
+"fisherman": {
+"mine_f0": 26720,
+"enemy_f0": 27220
+},
+"flying_machine": {
+"mine_f0": 20647,
+"enemy_f0": 21489
+},
+"furnace": {
+"mine_f0": 71186,
+"mine_f1": 15032,
+"enemy_f0": 72722,
+"enemy_f1": 15410
+},
+"giant": {
+"mine_f0": 23492,
+"mine_f2": 48083,
+"enemy_f0": 24416,
+"enemy_f2": 49691
+},
+"giant_skeleton": {
+"mine_f0": 53384,
+"enemy_f0": 55275
+},
+"goblin_cage": {
+"mine_f0": 41723,
+"mine_f1": 4073,
+"enemy_f0": 42490,
+"enemy_f1": 4257
+},
+"goblin_demolisher": {
+"mine_f0": 31418,
+"enemy_f0": 31523
+},
+"goblin_drill": {
+"mine_f0": 29874,
+"mine_f1": 11635,
+"enemy_f0": 30693,
+"enemy_f1": 11827
+},
+"goblin_gang": {
+"mine_f0": 132839,
+"enemy_f0": 140915
+},
+"goblin_giant": {
+"mine_f0": 7042,
+"mine_f1": 4604,
+"enemy_f0": 7335,
+"enemy_f1": 4799
+},
+"goblin_hut": {
+"mine_f0": 35869,
+"enemy_f0": 36389
+},
+"goblin_machine": {
+"mine_f0": 5870,
+"enemy_f0": 6223
+},
+"goblins": {
+"mine_f0": 109816,
+"mine_f2": 45099,
+"enemy_f0": 121862,
+"enemy_f2": 46748
+},
+"goblinstein": {
+"mine_f0": 102461,
+"enemy_f0": 106735
+},
+"golden_knight": {
+"mine_f0": 40161,
+"enemy_f0": 42244
+},
+"golem": {
+"mine_f0": 28889,
+"enemy_f0": 30005
+},
+"golemite": {
+"mine_f0": 11197,
+"enemy_f0": 11895
+},
+"guards": {
+"mine_f0": 46644,
+"enemy_f0": 49198
+},
+"heal_spirit": {
+"mine_f0": 5302,
+"enemy_f0": 5843
+},
+"hog_rider": {
+"mine_f0": 112582,
+"enemy_f0": 119564
+},
+"hunter": {
+"mine_f0": 19139,
+"mine_f1": 1509,
+"enemy_f0": 19179,
+"enemy_f1": 1519
+},
+"ice_golem": {
+"mine_f0": 39849,
+"mine_f2": 17862,
+"enemy_f0": 39782,
+"enemy_f2": 17921
+},
+"ice_spirit": {
+"mine_f0": 37880,
+"mine_f1": 291,
+"enemy_f0": 40542,
+"enemy_f1": 321
+},
+"inferno_dragon": {
+"mine_f0": 95910,
+"mine_f1": 29995,
+"enemy_f0": 98150,
+"enemy_f1": 31000
+},
+"inferno_tower": {
+"mine_f0": 13731,
+"enemy_f0": 13916
+},
+"lava_hound": {
+"mine_f0": 49202,
+"enemy_f0": 50471
+},
+"lava_pups": {
+"mine_f0": 43388,
+"enemy_f0": 44648
+},
+"little_prince": {
+"mine_f0": 14365,
+"enemy_f0": 14599
+},
+"lumberjack": {
+"mine_f0": 17854,
+"mine_f1": 2956,
+"enemy_f0": 18761,
+"enemy_f1": 3134
+},
+"magic_archer": {
+"mine_f0": 7938,
+"mine_f2": 15399,
+"enemy_f0": 8179,
+"enemy_f2": 15978
+},
+"mega_knight": {
+"mine_f0": 25464,
+"mine_f1": 9279,
+"enemy_f0": 26680,
+"enemy_f1": 9701
+},
+"mega_minion": {
+"mine_f0": 9327,
+"mine_f2": 34686,
+"enemy_f0": 9531,
+"enemy_f2": 35508
+},
+"mighty_miner": {
+"mine_f0": 136935,
+"enemy_f0": 136024
+},
+"miner": {
+"mine_f0": 46612,
+"enemy_f0": 48985
+},
+"mini_pekka": {
+"mine_f0": 13597,
+"mine_f2": 27625,
+"enemy_f0": 14163,
+"enemy_f2": 28882
+},
+"minion_horde": {
+"mine_f0": 61387,
+"mine_f1": 54295,
+"enemy_f0": 66356,
+"enemy_f1": 58550
+},
+"minions": {
+"mine_f0": 157059,
+"enemy_f0": 164431
+},
+"monk": {
+"mine_f0": 6668,
+"enemy_f0": 6821
+},
+"mortar": {
+"mine_f0": 57612,
+"mine_f1": 27257,
+"enemy_f0": 59242,
+"enemy_f1": 27921
+},
+"mother_witch": {
+"mine_f0": 32781,
+"enemy_f0": 34095
+},
+"mother_witch_hog": {
+"mine_f0": 28308,
+"enemy_f0": 29009
+},
+"musketeer": {
+"mine_f0": 41106,
+"mine_f1": 13025,
+"mine_f2": 37723,
+"enemy_f0": 40956,
+"enemy_f1": 13076,
+"enemy_f2": 37326
+},
+"night_witch": {
+"mine_f0": 31340,
+"enemy_f0": 32522
+},
+"pekka": {
+"mine_f0": 39757,
+"mine_f1": 9960,
+"enemy_f0": 41412,
+"enemy_f1": 10266
+},
+"phoenix": {
+"mine_f0": 16475,
+"enemy_f0": 16911
+},
+"prince": {
+"mine_f0": 31316,
+"enemy_f0": 32267
+},
+"princess": {
+"mine_f0": 90565,
+"mine_f1": 18125,
+"enemy_f0": 91434,
+"enemy_f1": 17890
+},
+"ram_rider": {
+"mine_f0": 15010,
+"enemy_f0": 16144
+},
+"rascals": {
+"mine_f0": 114531,
+"enemy_f0": 119171
+},
+"ronin": {
+"mine_f0": 4073,
+"enemy_f0": 4339
+},
+"royal_ghost": {
+"mine_f0": 73225,
+"mine_f1": 36788,
+"enemy_f0": 75388,
+"enemy_f1": 37554
+},
+"royal_giant": {
+"mine_f0": 16584,
+"mine_f1": 9717,
+"enemy_f0": 17305,
+"enemy_f1": 9966
+},
+"royal_hogs": {
+"mine_f0": 120281,
+"mine_f1": 35355,
+"enemy_f0": 134318,
+"enemy_f1": 39245
+},
+"royal_recruit": {
+"mine_f0": 101128,
+"mine_f1": 52467,
+"enemy_f0": 104868,
+"enemy_f1": 55127
+},
+"rune_giant": {
+"mine_f0": 10705,
+"enemy_f0": 10982
+},
+"skeleton_army": {
+"mine_f0": 285106,
+"mine_f1": 140369,
+"enemy_f0": 303674,
+"enemy_f1": 148484
+},
+"skeleton_barrel": {
+"mine_f0": 23841,
+"mine_f1": 8705,
+"enemy_f0": 25257,
+"enemy_f1": 9382
+},
+"skeleton_dragons": {
+"mine_f0": 56800,
+"enemy_f0": 59224
+},
+"skeleton_king": {
+"mine_f0": 33696,
+"enemy_f0": 35352
+},
+"sparky": {
+"mine_f0": 44666,
+"enemy_f0": 45448
+},
+"spear_goblins": {
+"mine_f0": 113127,
+"enemy_f0": 114611
+},
+"suspicious_bush": {
+"mine_f0": 16704,
+"enemy_f0": 17301
+},
+"three_musketeers": {
+"mine_f0": 7941,
+"enemy_f0": 8106
+},
+"tombstone": {
+"mine_f0": 25734,
+"mine_f2": 59441,
+"enemy_f0": 26349,
+"enemy_f2": 60508
+},
+"valkyrie": {
+"mine_f0": 20889,
+"mine_f1": 5394,
+"mine_f2": 61302,
+"enemy_f0": 21633,
+"enemy_f1": 5609,
+"enemy_f2": 63939
+},
+"wall_breakers": {
+"mine_f0": 32028,
+"mine_f1": 7101,
+"enemy_f0": 35868,
+"enemy_f1": 7592
+},
+"witch": {
+"mine_f0": 20250,
+"mine_f1": 15923,
+"enemy_f0": 21002,
+"enemy_f1": 16437
+},
+"wizard": {
+"mine_f0": 12108,
+"mine_f1": 9814,
+"mine_f2": 22846,
+"enemy_f0": 12450,
+"enemy_f1": 10111,
+"enemy_f2": 23673
+},
+"zappies": {
+"mine_f0": 172800,
+"enemy_f0": 179114
+},
+"spirit_empress_air": {
+"mine_f0": 8579,
+"enemy_f0": 9034
+},
+"barbarian_hut": {
+"mine_f0": 248,
+"enemy_f0": 229
+},
+"mirror": {
+"mine_f0": 11,
+"enemy_f0": 10
+}
+}
+}

@@ -1,0 +1,23 @@
+all census logs with bodies: 713; result known 657: {'WIN': 337, 'LOSS': 319, 'DRAW': 1} (loss rate 48.6% of W+L)
+
+group | reader id | HP live | is | model today | ext on | bodies | states | matches | W-L-? | loss% | training (native sample, L11)
+new: Evo Elite Barbarians | 13000043 | [1776, 1949, 2143] | evolved Elite Barbarians (HP = AngryBarbarians L14-16) | None(legacy) | elite_barbarians(ext_card) | 22 | 417 | 8 | 0-8-0 | 100% | absent (card/form not in the native catalog)
+new: Hero Electro Wizard | 203000042 | [714, 945, 1141] | Hero Electro Wizard (HP = ElectroWizard L11/14/16) | None(legacy) | electro_wizard(ext_card) | 14 | 242 | 3 | 1-2-0 | 67% | absent (card/form not in the native catalog)
+new: Minion Giant | 26000107 | [1817, 2193] | Minion Giant (HP = RoyaleSim MinionGiant L11/13) | None(legacy) | balloon(ext_card) | 11 | 366 | 3 | 0-3-0 | 100% | absent (card/form not in the native catalog)
+new: Evo Electro Giant | 13000075 | [3952, 6314] | evolved Electro Giant (HP = ElectroGiant L11/16) | None(legacy) | electro_giant(ext_card) | 2 | 100 | 2 | 1-1-0 | 50% | absent (card/form not in the native catalog)
+Hero Balloon ability | 203000006 | [627, 688, 756, 832] | Skeletrooper (wiki 473@L11) | balloon(legacy) | balloon(legacy) | 45 | 281 | 26 | 12-10-4 | 45% | balloon f2 27 bodies/17 replays
+Hero Dark Prince ability | 203000027 | [1796, 1971] | Rhino mount (wiki 1356@L11) | dark_prince(legacy) | ram_rider(ext_child) | 15 | 178 | 10 | 4-5-1 | 56% | dark_prince f2 7 bodies/6 replays
+Hero Musketeer ability | 203000014 | [1536, 1854, 2034, 2232, 2454] | Trusty Turret (wiki 1536@L11) | musketeer(legacy) | tesla(ext_child) | 37 | 250 | 13 | 4-9-0 | 69% | musketeer f2 20 bodies/15 replays
+Hero Tombstone ability | 203000088 | [4224, 5593] | Queen (wiki 4224@L11) | tombstone(unknown_hp) | tombstone(unknown_hp) | 3 | 82 | 2 | 1-1-0 | 50% | tombstone f2 13 bodies/9 replays
+Hero Goblins ability | 203000002 | [3390, 3720, 4090] | Banner (2560@L11 native) | goblins(legacy) | goblins(legacy) | 60 | 629 | 19 | 6-11-2 | 65% | goblins f2 115 bodies/25 replays
+Hero Magic Archer ability | 203000062 | [271, 394, 433] | decoy (wiki 271@L11) | magic_archer(legacy) | magic_archer(legacy) | 10 | 33 | 7 | 7-0-0 | 0% | magic_archer f2 10 bodies/8 replays
+Little Prince ability | 26000093 | [1600, 1931, 2118, 2325, 2556] | Guardienne (catalog ChampionGuard) | little_prince(legacy) | knight(ext_child) | 24 | 416 | 10 | 2-7-1 | 78% | little_prince f0 23 bodies/13 replays
+Evo Mortar spawn | 13000098 | [267, 293, 323] | Goblin (catalog Mortar_EV1 -> Goblin) | mortar(legacy) | goblins(ext_child) | 29 | 142 | 9 | 5-4-0 | 44% | mortar f1 77 bodies/19 replays
+Evo Royal Ghost spawn | 13000050 | [81, 108, 119, 130] | Souldier (catalog Ghost_EV1_Summon, wiki 81/81) | royal_ghost(legacy) | skeletons(ext_child) | 77 | 371 | 20 | 7-13-0 | 65% | royal_ghost f1 105 bodies/22 replays
+Evo Skeleton Army spawn | 13000012 | [2, 3, 4] | spectral skeleton (catalog SkeletonArmy_EV1_Spectral) | skeleton_army(legacy) | skeleton_army(legacy) | 420 | 1570 | 33 | 15-17-1 | 53% | skeleton_army f1 271 bodies/17 replays
+Evo Lumberjack spawn | 13000035 | [2, 3, 4] | ghost (catalog RageBarbarianEvoGhost) | lumberjack(legacy) | lumberjack(legacy) | 14 | 95 | 11 | 7-4-0 | 36% | lumberjack f1 20 bodies/17 replays
+Evo Wall Breakers spawn | 13000058 | [216, 238] | Wallbreaker_mini (catalog) | wall_breakers(legacy) | wall_breakers(legacy) | 10 | 19 | 8 | 6-2-0 | 25% | wall_breakers f1 32 bodies/16 replays
+Evo Battle Ram spawn | 13000036 | [716, 949, 1041, 1145] | Barbarian (catalog Barbarian_EV1) | battle_ram(legacy) | battle_ram(legacy) | 30 | 214 | 14 | 6-8-0 | 57% | battle_ram f1 45 bodies/19 replays
+Goblin Cage spawn | 27000012 | [582, 639, 770, 1484, 1629, 1791] | Goblin Brawler (child_no_class) | goblin_cage(child_no_class) | goblin_cage(child_no_class) | 74 | 1009 | 32 | 19-9-4 | 32% | goblin_cage f0 92 bodies/25 replays
+Evo Goblin Cage spawn | 13000107 | [1484, 1629, 1791] | Goblin Brawler (child_no_class) | goblin_cage(child_no_class) | goblin_cage(child_no_class) | 13 | 131 | 12 | 7-5-0 | 42% | goblin_cage f0 21 bodies/18 replays
+Phoenix spawn | 26000087 | [317, 383, 420, 461, 507] | Phoenix egg (child_no_class) | phoenix(child_no_class) | phoenix(child_no_class) | 44 | 206 | 16 | 7-7-2 | 50% | phoenix f0 73 bodies/25 replays

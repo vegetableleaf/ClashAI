@@ -341,6 +341,10 @@ def main() -> int:
                     help="own-ability catalog for my hero's ability token: off (default) = pinned catalog, my Hero Ice "
                          "Wizard reads 'readiness unknown' as today; supplement = pipeline.own_ability.SUPPLEMENT, the "
                          "training-style token (L74 econ2). Deployable from LIVE_OPTIONS")
+    ap.add_argument("--identity-ext", choices=("off", "on"), default="off",
+                    help="L74 identity extension (pipeline.body_identity.extension): new card ids and ability / evo "
+                         "spawn bodies reach the model as learned classes. off (default) = unchanged. Deployable from "
+                         "LIVE_OPTIONS")
     ap.add_argument("--ckpt-override-file", type=Path, default=REPO / "scratchpad/gauntlet/L70/live/CKPT_OVERRIDE",
                     help="default checkpoint selection; explicit --ckpt wins. A changed selection ends a default-selected run between matches")
     ap.add_argument("--nav-dry-run", action="store_true",
@@ -431,7 +435,7 @@ def main() -> int:
               feature_version=pilot.feature_version, device=device, tau=a.tau, **anti_leak_log(a), **latency_log(a),
               public_audit=a.public_audit, legal_guard=getattr(pilot, 'legal_guard', None), predict_drops=a.predict_drops, own_effects=bool(getattr(a, 'own_effects', False)),
                 iw_press_pstar=a.iw_press_pstar, hero_ability_spec=getattr(a, "hero_ability_spec", "off"),
-              decision_options=vars(pilot.decision_options), live_options=a.live_options)))
+              identity_ext=bool(getattr(pilot, "identity_ext", False)), decision_options=vars(pilot.decision_options), live_options=a.live_options)))
         return 0
     nav = None
     if a.matches > 1 or a.nav_dry_run:
@@ -577,6 +581,8 @@ def load_pilot(a, decision_cfg, ckpt=None):
                      **({"own_effects": True} if getattr(a, "own_effects", False) else {}),
                      **({"hero_ability_spec": a.hero_ability_spec} if getattr(a, "hero_ability_spec", "off") != "off" else {}))
     pilot.legal_guard = not getattr(a, 'no_legal_guard', False)
+    if getattr(a, "identity_ext", "off") == "on":   # default: the class's False = off, the model input unchanged
+        pilot.identity_ext = True
     if getattr(a, "afford_ticks", None) is not None:   # default: the class's None = the look-ahead elixir, unchanged
         pilot.afford_ticks = int(a.afford_ticks)
     if getattr(a, "anti_leak", False):          # default: the class's None = off, the decision rule unchanged
@@ -629,7 +635,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
       **({"predict_drops": True} if getattr(a, "predict_drops", False) else {}),
       **({"own_effects": True} if getattr(a, "own_effects", False) else {}),
       fast_input=bool(getattr(a, "fast_input", False)), tap_gap_ms=getattr(a, "tap_gap_ms", 50),
-      afford_ticks=getattr(pilot, "afford_ticks", None), early_release_margin=getattr(a, "early_release_margin", None))
+      afford_ticks=getattr(pilot, "afford_ticks", None), early_release_margin=getattr(a, "early_release_margin", None),
+      identity_ext=bool(getattr(pilot, "identity_ext", False)))
     release_margin = getattr(a, "early_release_margin", None)
     tap_gap = getattr(a, "tap_gap_ms", 50)
     tap_sleep = f" sleep {tap_gap / 1000:g};" if tap_gap > 0 else ""    # default 50 -> "...; sleep 0.05; ..." as before
