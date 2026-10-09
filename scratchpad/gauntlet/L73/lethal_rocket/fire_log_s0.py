@@ -24,7 +24,8 @@ def _logged(*a, **k):
                 f.write(json.dumps(dict(why=out[r]['why'], t_sec=float(k['t_sec'][r]), slot=out[r]['slot'], cell=out[r]['cell'],
                                         tag=_tags[r][0] if r < len(_tags) else None,
                                         behind=D.crowns_behind(towers, side) if hasattr(D, 'crowns_behind') else None,
-                                        target=D.lethal_rocket_target(towers, side))) + '\n')
+                                        target=D.lethal_rocket_target(
+                                            towers, side, 'Log' if out[r]['why'] == 'lethal_log' else 'Rocket'))) + '\n')
     return out
 
 
