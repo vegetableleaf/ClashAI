@@ -525,5 +525,5 @@ def test_live_combo_rocket_now_tornado_planned_in_the_middle_of_the_window():
     d = combo_pilot(COMBO, board(*pups(), elixir=9.5), calls).decide(live_frame(0, 1092, 1092))
     assert d['why'] == 'rocket_value' and not calls and 'follow_ups' not in d
     d = combo_pilot(DecisionOptions(rocket_value=7.0), bs, calls).decide(live_frame(0, 1092, 1092))
-    assert d['why'] == 'rocket_value' or d.get('why') != 'rocket_tornado'
+    assert d.get('why') != 'rocket_tornado'
     assert not calls
