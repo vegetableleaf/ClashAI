@@ -293,3 +293,12 @@ def test_check_json_reports_lethal_log(tmp_path):
     assert out.returncode == 0, out.stdout + out.stderr
     check = json.loads(out.stdout.strip().splitlines()[-1])
     assert check['decision_options']['lethal_log'] == 'on' and check['live_options']['from_file']['lethal_log'] == 'on'
+
+
+def test_tau_threatened_deployable_from_the_file(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + '--tau-threatened 0.2\n')
+    opts, rec = parse([], f)
+    assert opts.tau_threatened == 0.2 and rec['from_file']['tau_threatened'] == 0.2
+    opts, rec = parse(['--tau-threatened', '0.1'], f)                          # explicit wins
+    assert opts.tau_threatened == 0.1 and rec['explicit'] == ['tau_threatened']
+    assert parse([], tmp_path / 'missing')[0].tau_threatened is None
