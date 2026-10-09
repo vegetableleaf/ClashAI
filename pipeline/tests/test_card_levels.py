@@ -109,3 +109,19 @@ def test_rocket_dead_target_king_exception_uses_the_card_level():
     assert not rocket_kills_king(tw, 0) and rocket_kills_king(tw, 0, {'Rocket': 16})
     assert rocket_kills_king(tw, 0, {'Log': 15}) is False                          # Rocket not listed: tower level
     assert rocket_kills_king(towers(0, 4424, 4424, king_hp=547), 0, {'Rocket': 16}) is False
+
+
+def test_in_flight_spell_unlisted_uses_the_tower_level_not_the_evaluated_cards():
+    """Verifier: with Rocket=16 alone, my Log in flight is costed at the TOWER level (15: 51), not Rocket's 16 (56)."""
+    only_rocket = replace(ON, card_levels=['Rocket=16'])
+    log = ('the-log', 3.5 / 18, 17.5 / 32, 199.5)                      # my Log rolling at my L, not hit yet
+    for hp in (52, 56):                                                  # 51 < hp <= 56: the Log does NOT finish it
+        tw = towers(0, hp, 4424)
+        hit = lethal_rocket_choice(only_rocket, 200.0, NAMES, OK, tw, 0, 'lattice', own=[log])
+        assert hit is not None and hit[0] == 1 and hit[2] == dict(lane='L', hp=hp, damage=546, level=16)
+    tw = towers(0, 51, 4424)                                             # 51: the Log in flight finishes it
+    assert lethal_rocket_choice(only_rocket, 200.0, NAMES, OK, tw, 0, 'lattice', own=[log]) is None
+    # a listed Log level is used for the Log in flight (Log=16 -> 56)
+    both = replace(ON, card_levels=['Rocket=16', 'Log=16'])
+    assert lethal_rocket_choice(both, 200.0, ['Knight', 'Rocket', 'Xbow', 'Tesla'], OK, towers(0, 56, 4424), 0,
+                                'lattice', own=[log]) is None

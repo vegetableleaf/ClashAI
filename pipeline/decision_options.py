@@ -150,9 +150,9 @@ def add_arguments(parser):
     parser.add_argument('--card-levels', nargs='+', default=None, metavar='NAME=LEVEL',
                         help='LIVE ONLY (the SIM decision path ignores it: its cards are level 11): my card levels for '
                              'the lethal Rocket / Log rules (tower damage, in-flight guard, the --rocket-dead-target '
-                             'king-lethal exception), e.g. '
-                             'Rocket=16 Knight=16 Xbow=16; names from the card catalog, each level within its range; a '
-                             'card not listed falls back to my tower level (the default for every card)')
+                             'king-lethal exception), e.g. Rocket=16 Log=15 (list BOTH lethal spells); names from '
+                             'the card catalog, each level within its range; a card not listed falls back to my tower '
+                             'level (the default for every card)')
     parser.add_argument('--tau-threatened', type=float, default=None, metavar='X',
                         help='while threatened (one of my towers lost HP within the last 2 s of board time AND an enemy '
                              'unit is within 8 tiles of that tower, public) the gate threshold is X instead of the phase '
@@ -726,11 +726,12 @@ def lethal_rocket_target(crown_towers, side, card='Rocket', own=None, t_sec=None
     level = mine and level_of_factor(float(mine['max_hp']) / (4824.0 if mine.get('type') == 'king' else 3052.0))
     if level is None:
         return None
-    if levels and card in levels:
-        level = levels[card]
+    tower_level = level                              # in-flight spells: their own listed level, else THIS (never
+    if levels and card in levels:                   # the evaluated card's level -- verifier: an unlisted Log costed
+        level = levels[card]                        # at Rocket=16's level held a lethal Rocket back)
     damage, best = rocket_tower_damage(level, card), None
-    covered = (in_flight_damage(own, t_sec, level, enemy_princess_hps(crown_towers, side), levels=levels) if levels
-               else in_flight_damage(own, t_sec, level, enemy_princess_hps(crown_towers, side))) if own else {}
+    covered = (in_flight_damage(own, t_sec, tower_level, enemy_princess_hps(crown_towers, side), levels=levels)
+               if levels else in_flight_damage(own, t_sec, level, enemy_princess_hps(crown_towers, side))) if own else {}
     for t in crown_towers:
         if int(t['side']) == side or t.get('type') != 'princess' or t.get('destroyed') or not 0 < t['hp'] <= damage:
             continue
