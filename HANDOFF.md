@@ -4956,6 +4956,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   a07c6c75 defence RL (critic + dense defence/economy reward + overrun-archetype opponents, VM GPU, candidate by ~07:00);
 >   a4649cc8 RoyaleSim forms (Evo Tesla, Evo Knight, Hero IW with Oct-2026 values, isolated runtime ~/simforms). Threatened-gate
 >   verifier ab4d0d0f running. TV Royale harvest deferred (live has the emulator overnight).
+> * **~23:2x: C: drive hit 0 bytes free** (RL worker alarm); MuMu crashed; the owner restarted it; the supervisor relaunched live_play at
+>   23:14 WITH --hero-ability-spec supplement (LIVE_ARGS kept) -> ON arm continues. Free space later 12.2 GB. Temp\claude =
+>   ~104 GB, .claude/worktrees ~40 GB, overlayed_replays 8 GB -> cleanup pending (only regenerable artefacts we created).
+> * **threatened gate MERGED db41a6b** (blind PASS_WITH_NOTES on 34cac05); deploy after the A/B. Owner bug: Rocket aimed at a
+>   fallen tower (live_play_20261008_232056: 3 Rockets at the dead R princess spot, 2 with no enemy within 2 t; model's own
+>   choice + rocket_area) -> a1f8484f building opt-in --rocket-dead-target block. Owner: mistake examples are illustrative,
+>   analyse broadly (relayed to a062325a).
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
