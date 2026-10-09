@@ -1,0 +1,22 @@
+logs 465; plays with stage timings: deployed config (fast-input, gap 0) 7574, other 1375
+
+== deployed input path, per confirmed play ==
+sample_age ms      n=7574 mean=3.8 p5=1 p25=1 p50=2 p75=2 p95=16
+decide ms          n=7574 mean=81.4 p5=68 p25=74 p50=79 p75=87 p95=105
+tap ms             n=7574 mean=24.8 p5=21 p25=22 p50=23 p75=26 p95=35
+tap_end ms         n=7574 mean=110.4 p5=92 p25=98 p50=105 p75=116 p95=147   (sample -> board tap returned; = ticks x 50)
+game ms            n=7574 mean=1180.7 p5=1054 p25=1094 p50=1107 p75=1189 p95=1698   (board tap returned -> slot rotated)
+decision->confirm ticks n=7574 mean=25.8 p5=23 p25=24 p50=24 p75=26 p95=36
+our share of decision->confirm: median 8.5%; game share 91.5%
+lock tail (confirmation frame -> next decision): 2 ticks by construction (the confirmation frame never decides)
+
+== planned follow-up: wall ms from the first decision frame's sample to the second tap going out ==
+  after_ticks= 0: fire at n=7574 mean=2.2 p5=1.84 p25=1.96 p50=2.1 p75=2.32 p95=2.94 ticks
+  after_ticks= 2: fire at n=7574 mean=2.3 p5=2.1 p25=2.1 p50=2.1 p75=2.32 p95=2.94 ticks
+  after_ticks= 4: fire at n=7574 mean=4.1 p5=4.1 p25=4.1 p50=4.1 p75=4.1 p95=4.1 ticks
+  after_ticks= 6: fire at n=7574 mean=6.1 p5=6.1 p25=6.1 p50=6.1 p75=6.1 p95=6.1 ticks
+  after_ticks=10: fire at n=7574 mean=10.1 p5=10.1 p25=10.1 p50=10.1 p75=10.1 p95=10.1 ticks
+  the second board tap lands ~its own tap_ms after the first returned: +n=7574 mean=0.5 p5=0.42 p25=0.44 p50=0.46 p75=0.52 p95=0.7 ticks, so landing-to-landing gap ~ fire gap(after<=2) - first tap's arrival lead + that (ticks, estimate)
+
+== for comparison: default input path (adb.exe per tap, gap 50) ==
+tap_end ms n=1214 mean=248.2 p5=203 p25=217 p50=232 p75=259 p95=360;  decision->confirm ticks n=1214 mean=27.7 p5=26 p25=26 p50=28 p75=28 p95=31

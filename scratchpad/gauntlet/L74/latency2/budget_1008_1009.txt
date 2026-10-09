@@ -1,0 +1,47 @@
+logs 459; confirmed plays with host timings 15817; in recorded logs 4132
+game ticks per device second (whole recorded matches): n=99 mean=19.95 p5=19.92 p25=19.94 p50=19.96 p75=19.98 p95=19.99
+frame spacing in ticks: n=208035 mean=2.00 p5=2 p25=2 p50=2 p75=2 p95=2
+
+== all confirmed plays ==
+T_rot - T0 (ticks):            n=15817 mean=27.34 p5=24 p25=24 p50=26 p75=28 p95=39
+latency_s (host, s):           n=15817 mean=1.36 p5=1.2 p25=1.202 p50=1.301 p75=1.401 p95=1.914
+decide_ms:                     n=15817 mean=79.74 p5=54 p25=70 p50=77 p75=88 p95=110
+tap_ms:                        n=15817 mean=99.19 p5=21 p25=23 p50=122 p75=149 p95=224
+frames queued during decide+tap: n=15817 mean=1.41 p5=0 p25=1 p50=1 p75=2 p95=3
+
+== recorded logs (frame-level) ==
+T_rot - T0:                    n=4132 mean=27.39 p5=24 p25=25 p50=26 p75=28 p95=34
+T_prev - T0 (rotation lower bound): n=4132 mean=25.38 p5=22 p25=23 p50=24 p75=26 p95=32
+(T_prev + T_rot)/2 - T0 (midpoint): n=4132 mean=26.39 p5=23.0 p25=24.0 p50=25.0 p75=27.0 p95=33.0
+T_el - T_rot (elixir charge vs rotation): n=4132 mean=-0.09 p5=0 p25=0 p50=0 p75=0 p95=0
+T_sp - T_rot (new own entity vs rotation): n=3708 mean=5.45 p5=0 p25=0 p50=0 p75=0 p95=43
+ticks/s inside play windows:   n=4132 mean=19.99 p5=19.26 p25=19.97 p50=19.98 p75=19.98 p95=20.74
+
+OLS gap_ticks = 24.14 + 17.87 ticks/s * (decide+tap s)   [1:1 host->game would be 20 ticks/s]; corr=0.333
+  decide+tap in [0,200) ms: n=8804 median gap 25.0 ticks, mean 26.14
+  decide+tap in [200,260) ms: n=4915 median gap 27 ticks, mean 28.29
+  decide+tap in [260,320) ms: n=1312 median gap 28.0 ticks, mean 29.42
+  decide+tap in [320,400) ms: n=536 median gap 30.0 ticks, mean 30.54
+  decide+tap in [400,1000000) ms: n=250 median gap 32.0 ticks, mean 32.90
+
+== by input configuration ==
+fast_input=False tap_gap_ms=50: gap ticks n=8295 mean=28.72 p5=25 p25=26 p50=28 p75=28 p95=41
+    tap_ms n=8295 mean=165.58 p5=122 p25=135 p50=148 p75=173 p95=267
+    recv_age_ms (queue)            n=1214 mean=6.10 p5=1 p25=1 p50=1 p75=1 p95=50
+    sample_age_ms (sample->decide) n=1214 mean=7.50 p5=1 p25=1 p50=2 p75=3 p95=53
+    tap_end_ms (sample->board tap returned) n=1214 mean=248.25 p5=203 p25=217 p50=232 p75=259 p95=360
+    game part ms = (T_rot-T0)*50 - tap_end_ms n=1214 mean=1136.14 p5=1038 p25=1080 p50=1119 p75=1167 p95=1238
+fast_input=True tap_gap_ms=0: gap ticks n=7361 mean=25.80 p5=23 p25=24 p50=24 p75=26 p95=36
+    tap_ms n=7361 mean=24.65 p5=21 p25=22 p50=23 p75=25 p95=35
+    recv_age_ms (queue)            n=7361 mean=2.46 p5=1 p25=1 p50=1 p75=1 p95=8
+    sample_age_ms (sample->decide) n=7361 mean=3.38 p5=1 p25=1 p50=2 p75=2 p95=14
+    tap_end_ms (sample->board tap returned) n=7361 mean=109.42 p5=92 p25=98 p50=105 p75=115 p95=144
+    game part ms = (T_rot-T0)*50 - tap_end_ms n=7361 mean=1180.53 p5=1054 p25=1094 p50=1107 p75=1190 p95=1696
+fast_input=True tap_gap_ms=50: gap ticks n=161 mean=26.48 p5=24 p25=25 p50=26 p75=26 p95=28
+    tap_ms n=161 mean=86.24 p5=78 p25=80 p50=83 p75=88 p95=111
+    recv_age_ms (queue)            n=161 mean=1.71 p5=0 p25=1 p50=1 p75=1 p95=1
+    sample_age_ms (sample->decide) n=161 mean=2.54 p5=1 p25=1 p50=1 p75=2 p95=4
+    tap_end_ms (sample->board tap returned) n=161 mean=163.70 p5=146 p25=153 p50=159 p75=166 p95=205
+    game part ms = (T_rot-T0)*50 - tap_end_ms n=161 mean=1160.53 p5=1040 p25=1092 p50=1139 p75=1149 p95=1256
+device=cpu: decide_ms n=6272 mean=77.49 p5=48 p25=64 p50=71 p75=89 p95=118
+device=cuda: decide_ms n=9545 mean=81.21 p5=66 p25=74 p50=79 p75=87 p95=105
