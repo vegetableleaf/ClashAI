@@ -40,7 +40,7 @@ def fires(d, arm, c):
         for f in glob.glob(f'{dd}/fires_{arm}_{c}/bw_*.jsonl'):
             for line in open(f):
                 r = json.loads(line)
-                if r['play'] and r.get('why') == 'rocket_value':
+                if r['play'] and r.get('why') in ('rocket_value', 'rocket_tornado'):
                     cnt += 1; tags.add(r['tag'])
     return cnt, tags
 
@@ -61,6 +61,7 @@ print(f'BASE (scout): n={n} ({", ".join(f"{c} {len(base[c])}" for c in C)}) wins
 for arm in a.arms.split(','):
     diffs, tower, enemy, sim, ident_bad, ident_n, fired_tags = [], [], [], 0, 0, 0, 0
     nf = 0
+    fu = {}
     per = {}
     for c in C:
         arm_r = load(a.arms_dir, arm, c)
@@ -70,6 +71,8 @@ for arm in a.arms.split(','):
             if tag in arm_r:
                 sim += 1
                 x = arm_r[tag]
+                for k_, v_ in (x.get('follow_ups') or {}).items():
+                    fu[k_] = fu.get(k_, 0) + v_
                 diffs.append(score(x) - score(b)); tower.append(x['tower_hp_for'] - b['tower_hp_for']); enemy.append(x['tower_hp_against'] - b['tower_hp_against'])
                 if tag not in ftags:
                     ident_n += 1
@@ -86,4 +89,6 @@ for arm in a.arms.split(','):
     for c in C:
         d = per.get(c, [])
         print(f'   {c}: simulated {len(d)}, net wins {sum(d):+.1f} (better {sum(x > 0 for x in d)} worse {sum(x < 0 for x in d)})')
+    if fu:
+        print(f'   Tornado follow-ups (combo second tap): {fu}')
     print(f'   my tower HP left per match {sum(tower) / n:+.0f}, enemy tower HP left {sum(enemy) / n:+.0f} | controls (simulated, no fire): {ident_n}, differing from BASE: {ident_bad}')

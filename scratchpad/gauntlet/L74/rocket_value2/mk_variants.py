@@ -48,6 +48,18 @@ add('de7_th_y21', rocket_value=7.0, rocket_value_mode='damage', rocket_value_hit
 add('de7_y21_e8', rocket_value=7.0, rocket_value_mode='damage', rocket_value_hitbox='edge', rocket_value_min_y=21.0, rocket_value_min_elixir=8.0)
 
 
+# ---- the Rocket + Tornado combo (rocket_tornado): the combo alone ('only'), its Rocket-alone twin at the same trigger ('rocket_only'), with the lone rule ('on')
+DE = dict(rocket_value_mode='damage', rocket_value_hitbox='edge')
+for v in (7, 9):
+    add(f'cb{v}', rocket_value=float(v), rocket_tornado='only', **DE)
+    add(f'cb{v}_ro', rocket_value=float(v), rocket_tornado='rocket_only', **DE)
+add('cb7_th', rocket_value=7.0, rocket_tornado='only', rocket_value_threat='on', **DE)
+add('cb7_th_ro', rocket_value=7.0, rocket_tornado='rocket_only', rocket_value_threat='on', **DE)
+add('cbon7_th', rocket_value=7.0, rocket_tornado='on', rocket_value_threat='on', **DE)
+add('cb5', rocket_value=5.0, rocket_tornado='only', **DE)
+add('cb5_ro', rocket_value=5.0, rocket_tornado='rocket_only', **DE)
+
+
 def flags(kw):
     out = []
     for k, v in kw.items():

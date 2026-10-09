@@ -52,3 +52,12 @@ ke5_th --rocket-value 5 --rocket-value-mode kill --rocket-value-hitbox edge --ro
 ke7_th --rocket-value 7 --rocket-value-mode kill --rocket-value-hitbox edge --rocket-value-threat on
 de7_th_y21 --rocket-value 7 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-value-threat on --rocket-value-min-y 21
 de7_y21_e8 --rocket-value 7 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-value-min-y 21 --rocket-value-min-elixir 8
+cb7 --rocket-value 7 --rocket-tornado only --rocket-value-mode damage --rocket-value-hitbox edge
+cb7_ro --rocket-value 7 --rocket-tornado rocket_only --rocket-value-mode damage --rocket-value-hitbox edge
+cb9 --rocket-value 9 --rocket-tornado only --rocket-value-mode damage --rocket-value-hitbox edge
+cb9_ro --rocket-value 9 --rocket-tornado rocket_only --rocket-value-mode damage --rocket-value-hitbox edge
+cb7_th --rocket-value 7 --rocket-tornado only --rocket-value-threat on --rocket-value-mode damage --rocket-value-hitbox edge
+cb7_th_ro --rocket-value 7 --rocket-tornado rocket_only --rocket-value-threat on --rocket-value-mode damage --rocket-value-hitbox edge
+cbon7_th --rocket-value 7 --rocket-tornado on --rocket-value-threat on --rocket-value-mode damage --rocket-value-hitbox edge
+cb5 --rocket-value 5 --rocket-tornado only --rocket-value-mode damage --rocket-value-hitbox edge
+cb5_ro --rocket-value 5 --rocket-tornado rocket_only --rocket-value-mode damage --rocket-value-hitbox edge

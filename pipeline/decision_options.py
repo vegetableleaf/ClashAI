@@ -45,7 +45,8 @@ class DecisionOptions:
     rocket_value_min_y: float = 16.0        # the blast centre must be at board y >= this (16 = my half; 21+ = near my towers)
     rocket_value_max_left: float = 99.0     # no fire when the bodies in the blast would KEEP more than this much value after the Rocket
     rocket_value_threat: str = 'off'        # 'on': only while a tower of mine is under fire with an enemy body near it (tau_threat_state)
-    rocket_tornado: str = 'off'             # 'on': Rocket + Tornado on a clump too spread for one blast (live only; needs the follow-up taps API)
+    rocket_tornado: str = 'off'             # 'on': + Rocket and Tornado on a clump too spread for one blast; 'only': without the lone rule;
+                                            # 'rocket_only': SIM measurement ablation (the same Rocket, no Tornado)
     rocket_value_hitbox: str = 'centre'     # 'edge': a body is in the blast when its hitbox touches the radius
     rocket_value_lead: str = 'off'          # 'on' / 'drift' / 'blend': aim at where the bodies will be when the Rocket lands
     rocket_value_idle: str = 'off'          # 'on': only at a decision where the model itself would not play (displaces nothing)
@@ -93,7 +94,7 @@ class DecisionOptions:
             raise ValueError('rocket_value must be finite and >= 0')
         for k, ok in (('rocket_value_mode', ('cost', 'damage', 'kill')), ('rocket_value_hitbox', ('centre', 'edge')),
                       ('rocket_value_lead', ('off', 'on', 'drift', 'blend')), ('rocket_value_idle', ('off', 'on')),
-                      ('rocket_value_threat', ('off', 'on')), ('rocket_tornado', ('off', 'on'))):
+                      ('rocket_value_threat', ('off', 'on')), ('rocket_tornado', ('off', 'on', 'only', 'rocket_only'))):
             if getattr(self, k) not in ok:
                 raise ValueError(f'{k} must be one of {ok}')
         if not math.isfinite(self.rocket_value_min_elixir) or not 0 <= self.rocket_value_min_elixir <= 10:
@@ -194,11 +195,12 @@ def add_arguments(parser):
     parser.add_argument('--rocket-value-threat', choices=('off', 'on'), default='off',
                         help='on: only while one of my towers lost public HP within the last 2 s AND an enemy body is within 8 tiles of '
                              'it (the --tau-threatened state): the clump is attacking, not merely crossing the river')
-    parser.add_argument('--rocket-tornado', choices=('off', 'on'), default='off',
+    parser.add_argument('--rocket-tornado', choices=('off', 'on', 'only', 'rocket_only'), default='off',
                         help='owner 2026-10-09 (needs --rocket-value V and the pipelined follow-up tap, GenPilot.plan_follow_up): on a clump '
                              'too spread for one Rocket blast (the Tornado pull holds >= V, no single blast does) with Rocket and Tornado '
                              'in hand and both affordable: Rocket at the pull centre now, the Tornado there as a follow-up tap timed so the '
-                             'Rocket lands inside the pull (rocket_tornado_plan). Live only: the SIM has no pipelined taps')
+                             'Rocket lands inside the pull (rocket_tornado_plan). on = alongside the lone rule, only = the combo without the lone rule, '
+                             'rocket_only = SIM measurement ablation: the same Rocket at the same moment, no Tornado (not for live)')
     parser.add_argument('--rocket-value-max-left', type=float, default=99.0, metavar='L',
                         help='no fire when the bodies in the best blast would still hold more than L elixir of value after the '
                              'Rocket (a Golem keeps 5.7 of its 8): the Rocket then only strips the support and the elixir it '
@@ -1393,7 +1395,7 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
         for r in range(len(out)):
             hit = rocket_value_choice(options, card_names[r], allowed[r], rocket_value[r][0], grid, pending=rocket_value[r][1],
                                       holder=rocket_value[r][2], playing=bool(playing[r]))
-            if hit is not None:
+            if hit is not None and options.rocket_tornado not in ('only', 'rocket_only'):      # those modes: the combo trigger alone
                 hits[r] = hit
         if hits:
             ids = list(hits)
@@ -1411,8 +1413,9 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
                 hit = rocket_tornado_choice(options, card_names[r], allowed[r], bs, grid, pending)
                 if hit is not None:
                     after, within = rocket_tornado_timing(hit[3])
-                    out[r] = dict(play=True, slot=hit[0], cell=hit[2], why='rocket_tornado',
-                                  follow_ups=[follow_up_spec(hit[1], hit[2], after, within)])
+                    out[r] = dict(play=True, slot=hit[0], cell=hit[2], why='rocket_tornado')
+                    if options.rocket_tornado != 'rocket_only':
+                        out[r]['follow_ups'] = [follow_up_spec(hit[1], hit[2], after, within)]
     if options.lethal_rocket != 'off':
         if lethal is None or t_sec is None or grid is None or card_names is None:
             raise ValueError('lethal_rocket requires per-row crown towers, decision times, the grid and card names')

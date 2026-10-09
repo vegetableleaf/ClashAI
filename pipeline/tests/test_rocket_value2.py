@@ -548,3 +548,21 @@ def test_sim_combo_rocket_now_tornado_as_a_follow_up_spec_on_deck_slots():
     gated = DecisionOptions(rocket_value=7.0, rocket_tornado='on', rocket_value_threat='on')
     out = decide_batch(Model(), **a, options=gated, rocket_value=[(bs, False, SimpleNamespace())], **kw)[0]
     assert out.get('why') != 'rocket_tornado'
+
+
+def test_sim_combo_modes_only_and_rocket_only():
+    deck = ['knight', 'rocket', 'the-log', 'tornado', 'x-bow', 'ice-wizard', 'skeletons', 'tesla']
+    hand = (vocab.unit_id('rocket'), vocab.unit_id('tornado'), vocab.unit_id('knight'), vocab.unit_id('the_log'))
+    allowed = np.zeros((1, 8), bool); allowed[0, [0, 1, 2]] = True
+    a = sim_args(1); a['allowed'] = allowed; a['heads'] = {'card': torch.tensor([[9., 0, 0, 0, 0, 0, 0, 0]])}
+    kw = dict(tau=.35, device='cpu', rngs=[None], card_names=[deck], grid='lattice')
+    run = lambda opts, bs: decide_batch(Model(), **a, options=opts, rocket_value=[(bs, False, SimpleNamespace())], **kw)[0]
+    split = board(*split_pups(), elixir=9.5); split.my_hand = hand
+    one = board(*pups(), elixir=9.5); one.my_hand = hand
+    only = DecisionOptions(rocket_value=7.0, rocket_tornado='only')
+    ro = DecisionOptions(rocket_value=7.0, rocket_tornado='rocket_only')
+    assert run(only, split)['follow_ups'] and run(only, split)['why'] == 'rocket_tornado'
+    r = run(ro, split)
+    assert r['why'] == 'rocket_tornado' and r['slot'] == 1 and 'follow_ups' not in r and r['cell'] == run(only, split)['cell']
+    assert run(only, one).get('why') != 'rocket_value' and run(ro, one).get('why') != 'rocket_value'
+    assert run(COMBO, one)['why'] == 'rocket_value'

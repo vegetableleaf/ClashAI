@@ -70,6 +70,8 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
     def __init__(self, *args, decision_options=None, decision_seed=0, public_audit=False, **kwargs):
         super().__init__(*args, **kwargs)
         self.decision_options = decision_options or DecisionOptions()
+        if self.decision_options.rocket_tornado == 'rocket_only':
+            raise ValueError('rocket_tornado rocket_only is a SIM measurement ablation, not a live mode')
         if self.decision_options.rocket_tornado != 'off' and not hasattr(self, 'plan_follow_up'):
             raise ValueError('rocket_tornado needs the pipelined follow-up tap (GenPilot.plan_follow_up, --follow-up-taps branch)')
         if self.decision_options.log_aim != 'argmax' and getattr(self, 'feature_version', 1) < 4:
@@ -147,7 +149,8 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
         if getattr(options, 'rocket_value', 0.0) <= 0:
             return None
         names = [info['names'][di] if di >= 0 else None for di in info['hand_deck_indices']]
-        return rocket_value_choice(options, names, allowed, info['bs'], self.grid, holder=self, playing=bool(playing))
+        hit = rocket_value_choice(options, names, allowed, info['bs'], self.grid, holder=self, playing=bool(playing))
+        return None if options.rocket_tornado == 'only' else hit      # 'only': the combo without the lone rule (state still kept above)
 
     def rocket_tornado(self, info, allowed, playing=False):
         """decision_options.rocket_tornado_choice on the live board -> (Rocket hand position, cell, (earliest, latest), value) or None.

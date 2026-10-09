@@ -57,10 +57,18 @@ def first_triggers(item):
         for v, o in VARS.items():
             if v in found:
                 continue
-            stateful = o.rocket_value_lead in ('on', 'blend') or o.rocket_value_threat == 'on'     # these keep per-match state: call every decision
+            stateful = o.rocket_value_lead in ('on', 'blend') or o.rocket_value_threat == 'on' or o.rocket_tornado != 'off'   # per-match state
             if not stateful and vals.get((o.rocket_value_mode, o.rocket_value_hitbox, o.rocket_value_min_y), 0.0) + 1e-9 < o.rocket_value:
                 continue
             hit = D.rocket_value_choice(o, names, allowed, bs, grid, pending=r['pe'], holder=holders[v], playing=r['pl'])
+            if o.rocket_tornado != 'off':      # the combo trigger (decide_batch's order): the lone hit first unless 'only' / 'rocket_only'. The log has no
+                if o.rocket_tornado == 'on' and hit is not None:     # hand, so 'Tornado in hand' is not checked: a SUPERSET of the seeds the arm can differ on
+                    pass
+                elif (o.rocket_value_idle == 'on' and r['pl']) or (o.rocket_value_threat == 'on' and not getattr(holders[v], 'rv_threatened', False)):
+                    hit = None
+                else:
+                    hit = D.rocket_tornado_choice(o, names, allowed, bs, grid, r['pe'])
+                    hit = None if hit is None else (hit[0], None, hit[4])
             if hit is not None:
                 found[v] = dict(tag=tag, v=v, t=round(r['tick'] * 0.05, 2), value=round(hit[2], 3), el=r['el'], play=r['pl'], card=r['card'],
                                 why=r['why'], n_dec=r['n'])

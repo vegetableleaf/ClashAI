@@ -303,5 +303,62 @@
 "rocket_value_hitbox": "edge",
 "rocket_value_min_y": 21.0,
 "rocket_value_min_elixir": 8.0
+},
+"cb7": {
+"rocket_value": 7.0,
+"rocket_tornado": "only",
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge"
+},
+"cb7_ro": {
+"rocket_value": 7.0,
+"rocket_tornado": "rocket_only",
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge"
+},
+"cb9": {
+"rocket_value": 9.0,
+"rocket_tornado": "only",
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge"
+},
+"cb9_ro": {
+"rocket_value": 9.0,
+"rocket_tornado": "rocket_only",
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge"
+},
+"cb7_th": {
+"rocket_value": 7.0,
+"rocket_tornado": "only",
+"rocket_value_threat": "on",
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge"
+},
+"cb7_th_ro": {
+"rocket_value": 7.0,
+"rocket_tornado": "rocket_only",
+"rocket_value_threat": "on",
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge"
+},
+"cbon7_th": {
+"rocket_value": 7.0,
+"rocket_tornado": "on",
+"rocket_value_threat": "on",
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge"
+},
+"cb5": {
+"rocket_value": 5.0,
+"rocket_tornado": "only",
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge"
+},
+"cb5_ro": {
+"rocket_value": 5.0,
+"rocket_tornado": "rocket_only",
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge"
 }
 }
