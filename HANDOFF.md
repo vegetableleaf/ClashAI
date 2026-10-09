@@ -4863,6 +4863,15 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   C:/Users/benpe/cb_merge_dl (lead resolved a decision_options.py conflict with ot_behind; 144 tests pass) under blind
 >   verification. Dead-lane worker: live dead-lane X-Bows sit on the lane lock cell (152/168), refined block = lock cell +
 >   king-only cells; SIM 635 vs 634; 37% of blocked X-Bows move one row back in the same lane (owner may want lane-wide).
+> * **Afford-arrival (a19b2927, branch l74-afford-arrival dbaf585/54ca5b0): the lead's rule was WRONG (c).** The game HOLDS an
+>   unaffordable tap until it can pay and refuses only if payment comes > ~22 ticks after the board tap (refusal by wait:
+>   2-7% to 20 ticks, 49% at 22-23, 100% from 23; n=19,361); "afford at arrival" would have blocked 2,895 accepted plays.
+>   Built opt-in --afford-ticks A (raw elixir A ticks ahead; A = p5 arrival + 21: fast/gap0 23, else 24; SIM cfg
+>   afford_ticks) and --early-release-margin M (release at expected landing + 22 + M; M=8: 0.27% false releases default,
+>   0/312 fast). SIM horizon A/B 960 paired: d26 634, d24 630 (159/163), d24+afford23 627 -> neutral. Consistent fast/gap0
+>   horizon = 23 (execution ~ confirm - 1). Owner deploy line (pending checks): --fast-input --tap-gap-ms 0 --afford-ticks 23
+>   --early-release-margin 8 --extrapolate 23/24 (+ SIM action_delay to match when SIM is used). Lead added the five flags
+>   to EXTRA_LIVE_FLAGS (cb_merge_af 2b6f042; 38 tests pass; --check passes); blind verification running.
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
