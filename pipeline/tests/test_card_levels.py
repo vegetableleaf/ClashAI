@@ -72,7 +72,9 @@ def test_in_flight_guard_uses_the_per_card_damage():
     assert lethal_rocket_choice(LV, 200.0, NAMES, OK, tw, 0, 'lattice')[0] == 1
 
 
-def test_sim_rows_unaffected_when_off_and_match_kwargs_accepts_levels():
+def test_sim_ignores_card_levels():
+    """card_levels is LIVE-ONLY: SIM decide_batch rows and match_kwargs are identical with and without it (a deployed
+    LIVE_OPTIONS bundle in a SIM run must not give the level-11 SIM a 546-damage Rocket)."""
     from types import SimpleNamespace
     enc = {'g': torch.zeros(2, 2)}
     heads = {'card': torch.tensor([[9., 0, 0, 0]] * 2)}
@@ -85,11 +87,25 @@ def test_sim_rows_unaffected_when_off_and_match_kwargs_accepts_levels():
         out = decide_batch(Model(), enc, heads, np.array([.1, .1]), np.ones((2, 4), bool), np.zeros(2, bool),
                            options=opts, rngs=rngs, **kw)
         return out, [r.bit_generator.state for r in rngs]
-    assert run(ON) == run(replace(ON, card_levels=None))
-    on, _ = run(LV)
-    assert on[0]['why'] == 'lethal_rocket' and run(ON)[0][0]['why'] == 'wait'      # 520 HP: only at Rocket level 16
-    assert on[1] == run(ON)[0][1]
-    m = SimpleNamespace(tag='a', k=1, cfg={'lethal_rocket': 'ot_behind', 'card_levels': OWNER, 'grid': 'lattice'},
-                        side=1, deck=SimpleNamespace(cards=['rocket']), state={'episode': {'crown_towers': []}},
-                        _cur=(3700, SimpleNamespace(t_sec=186.3), None))
-    assert match_kwargs([m])['decision_options'].card_levels == LV.card_levels
+    assert run(LV) == run(ON) == run(replace(ON, card_levels=None))
+    assert run(LV)[0][0]['why'] == 'wait'                                          # 520 HP: no Rocket in the SIM
+
+    def match(cfg):
+        return SimpleNamespace(tag='a', k=1, cfg=cfg, side=1, deck=SimpleNamespace(cards=['rocket']),
+                               state={'episode': {'crown_towers': towers(1, 520, 4424)}},
+                               _cur=(3700, SimpleNamespace(t_sec=186.3), None))
+    base = {'lethal_rocket': 'ot_behind', 'grid': 'lattice'}
+    a, b = match_kwargs([match(base)]), match_kwargs([match({**base, 'card_levels': OWNER})])
+    assert a.keys() == b.keys() and a['decision_options'] == b['decision_options'] == options_from_config(base)
+    assert a['lethal'] == b['lethal'] and [r.random() for r in a['rngs']] == [r.random() for r in b['rngs']]
+    assert match_kwargs([match({**base, 'card_levels': OWNER}), match(base)])['decision_options'].card_levels is None
+    assert match_kwargs([match({'card_levels': OWNER})]) == {}                     # inert alone, as before
+
+
+def test_rocket_dead_target_king_exception_uses_the_card_level():
+    from pipeline.decision_options import my_rocket_damage, rocket_kills_king
+    tw = towers(0, 4424, 4424, king_hp=520)                                        # my towers: level 15
+    assert my_rocket_damage(tw, 0) == 497 and my_rocket_damage(tw, 0, {'Rocket': 16}) == 546
+    assert not rocket_kills_king(tw, 0) and rocket_kills_king(tw, 0, {'Rocket': 16})
+    assert rocket_kills_king(tw, 0, {'Log': 15}) is False                          # Rocket not listed: tower level
+    assert rocket_kills_king(towers(0, 4424, 4424, king_hp=547), 0, {'Rocket': 16}) is False

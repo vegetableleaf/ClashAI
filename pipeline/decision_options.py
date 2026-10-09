@@ -1,7 +1,7 @@
 """Opt-in inference choices. No gate, tower-HP, card-priority or reward rules."""
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from functools import lru_cache
 import math
 import re
@@ -148,7 +148,9 @@ def add_arguments(parser):
                              'cell with a real target (body / alive princess) by the same scoring, else NOT cast: the '
                              'next card by the model ranking, else WAIT (rocket_target_cells). Unblocked aims unchanged')
     parser.add_argument('--card-levels', nargs='+', default=None, metavar='NAME=LEVEL',
-                        help='my card levels for the lethal Rocket / Log rules (tower damage, in-flight guard), e.g. '
+                        help='LIVE ONLY (the SIM decision path ignores it: its cards are level 11): my card levels for '
+                             'the lethal Rocket / Log rules (tower damage, in-flight guard, the --rocket-dead-target '
+                             'king-lethal exception), e.g. '
                              'Rocket=16 Knight=16 Xbow=16; names from the card catalog, each level within its range; a '
                              'card not listed falls back to my tower level (the default for every card)')
     parser.add_argument('--tau-threatened', type=float, default=None, metavar='X',
@@ -466,17 +468,20 @@ def princess_dead_state(prev, bs):
     return tuple(since), tuple(eff)
 
 
-def my_rocket_damage(crown_towers, side):
-    """My Rocket's crown-tower damage from my own tower max HP (lethal_rocket_target's level rule), or None."""
+def my_rocket_damage(crown_towers, side, levels=None):
+    """My Rocket's crown-tower damage from my own tower max HP (lethal_rocket_target's level rule), or None.
+    ``levels`` (card_levels, live only): {catalog name: level}; a listed Rocket uses its own level."""
     from .body_identity import level_of_factor
     mine = next((t for t in crown_towers if int(t['side']) == side and t.get('max_hp')), None)
     level = mine and level_of_factor(float(mine['max_hp']) / (4824.0 if mine.get('type') == 'king' else 3052.0))
-    return None if level is None else rocket_tower_damage(level)
+    if level is None:
+        return None
+    return rocket_tower_damage(levels['Rocket'] if levels and 'Rocket' in levels else level)
 
 
-def rocket_kills_king(crown_towers, side):
+def rocket_kills_king(crown_towers, side, levels=None):
     """True when the alive enemy king's public HP <= my Rocket's crown-tower damage (the never-the-king exception)."""
-    damage = my_rocket_damage(crown_towers, side)
+    damage = my_rocket_damage(crown_towers, side, levels) if levels else my_rocket_damage(crown_towers, side)
     return bool(damage) and any(int(t['side']) != side and t.get('type') == 'king' and not t.get('destroyed')
                                 and 0 < t['hp'] <= damage for t in crown_towers)
 
@@ -931,6 +936,8 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
     ``t_sec`` (tau_phase) and ``enemy_alive`` [(K, L, R) alive] + ``grid`` (xbow_class) are per-row match context;
     ``projectiles`` (log_aim) = each row's model projectile tokens, decoded with the model's own card vocabulary.
     ``lethal`` (lethal_rocket) = per row (raw crown towers, my side, a card pending) for ``lethal_rocket_choice``."""
+    if options.card_levels is not None:             # card_levels is LIVE-ONLY: the SIM's own (level-11) cards decide
+        options = replace(options, card_levels=None)
     base_tau = tau = gate_taus(options, tau, t_sec, len(allowed))
     tau = threat_taus(options, tau, tau_threat)
     playing = allowed.any(axis=1) & ((np.asarray(p) > tau) | stalled)
@@ -1006,12 +1013,14 @@ def match_kwargs(matches):
     """Per-match RNGs, never a batch-wide stream; public deck names for aiming."""
     cfg = matches[0].cfg
     options = options_from_config(cfg)
+    if options.card_levels is not None:             # card_levels is LIVE-ONLY (a live bundle in a SIM run is ignored)
+        options = replace(options, card_levels=None)
     if not options.active:
         return {}
     from .e1_eval import obs_seed
     rngs = []
     for match in matches:
-        if options_from_config(match.cfg) != options:
+        if replace(options_from_config(match.cfg), card_levels=None) != options:
             raise ValueError('mixed decision options in one policy batch')
         if not hasattr(match, 'rng_decision_options'):
             seed = obs_seed('decision_options:' + match.tag, match.k)
