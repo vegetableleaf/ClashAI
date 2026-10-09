@@ -4833,6 +4833,10 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 > * **API census RUNNING (owner key OK, selftest passed ~23:58Z).** First run started by the lead (VM ~/crapi/run.sh, nice 19,
 >   flock): /v1/cards = 123 items; Path of Legends 2026-10 rankings returned 0 players (new season), 2026-09 -> 1000
 >   players seeded; output ~/crapi/data/ (battles.jsonl, census/census_latest.md). Cron NOT installed (needs owner OK).
+> * **Hero IW switch BUILT** (branch worktree-agent-ae78edcc87473def5 94ad715: own_ability catalog(hero_spec)/tokens(hero_spec),
+>   GenPilot(hero_ability_spec), EXTRA_LIVE_FLAGS + live_play --hero-ability-spec {off,supplement}, default off; 7 tests).
+>   Merge candidate f5397a8 in C:/Users/benpe/cb_merge_hero (junctions inside) under blind verification. Button returning to
+>   ready after 91/741 presses (12%) -- evidence favours 1 charge (b).
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
