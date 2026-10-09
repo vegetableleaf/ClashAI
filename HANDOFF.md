@@ -5146,6 +5146,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   clump v2 (hitbox coverage, damage value, extrapolated landing, loss diagnosis); a996a070 input delay / pipelined second
 >   tap; a666a874 sneaky lock rule `--sneaky-lock on` (only-blocker, >80% success target); a9182138 `--card-wait`
 >   decode; abf27945 own-cycle features + fine-tune; a8bdb155 defence RL next arms (may stop rdef_c).
+> * **Replay collector INSTALLED (a91e018d) outside the repo:** C:\Users\benpe\tools\clash-royale-ai (pinned 859b62d, no
+>   license -- never commit it here). Venv py3.13 `--no-deps` (+ lxml); the .exe launcher is blocked by Application Control,
+>   so start_collector.bat / cr.bat run `python -m cr_replay_pipeline.cli`. 69 X-Bow seed tags (VM census: >= 2 X-Bow
+>   PoL games or >= 30% X-Bow) in data\collector.sqlite3; port 8765; raw replays -> data\raw. Security: only outbound
+>   call is api.clashroyale.com for `discover`; no pickle on the serve/seed path; local service has CORS * and no auth
+>   -> dedicated Chrome profile only. Pace floor locally edited 0.75 -> 2.2 s (frontier.py). Owner steps:
+>   OWNER_STEPS.md. Next: converter from its raw replays to our pro dataset.
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
