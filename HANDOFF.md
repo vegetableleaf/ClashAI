@@ -4937,6 +4937,16 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   training: evo form in 98% of X-Bow+Tesla rows, 16,547 evo Tesla plays; live hand carries the form. Open (b): training
 >   has >= 3 tombstone bodies in 33% of row-sides vs live rarely (native raw-name check). Proposals: economy (in A/B),
 >   threatened gate (building), splash bias vs swarms (rule-like; not pursued without the owner).
+> * **A/B status 22:38:** OFF arm done (20 matches, 21:20-22:32; a 21st started 3 s before STOP, discard it); live stopped and
+>   HOLDING (scratchpad/gauntlet/L74/ab/HOLD) for the owner's friend match; remove HOLD on the owner's word -> the watcher
+>   starts the ON arm (LIVE_ARGS=--hero-ability-spec supplement) for 20 and stops.
+> * **--gate-hazard-threatened BUILT (aca25a23; merge candidate 34cac05 in C:/Users/benpe/cb_merge_thr, junctions inside;
+>   blind verification running).** SIM v3 960 paired (deployed bundle): base 635 / thr T=2 s 636 (127/126) / radius R=4 639;
+>   tower HP lost/match 3595 -> 3512 (-82 [-223, +52]); 3-crown losses 30 -> 25; play within 2 s of damage .353 -> .386,
+>   median ticks to first play 71 -> 59; elixir at push start unchanged. 213416 counterfactual: P(play before all towers fell)
+>   0 -> .52 (card = model's Tornado .82). CORRECTION to the lead: in the king-fall window p was .04-.20 (tau .35 until 2402);
+>   the .22-.34 values were while the princess fell with NO affordable card. Deploy after the A/B (with early release),
+>   update DEPLOYED_FILE.
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
