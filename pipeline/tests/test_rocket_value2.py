@@ -428,7 +428,7 @@ def test_live_lethal_has_priority_and_unchanged_when_the_rule_does_not_hold():
 
 # ---- rocket_tornado: the combo on a clump too spread for one blast (live only; the follow-up tap API is stubbed) ----------------------
 from pipeline.decision_options import (LIVE_FOLLOW_MIN_GAP_TICKS, PULL_LANDS_FROM, PULL_LANDS_TO, best_tornado_centre,  # noqa: E402
-                                      cell_centres_tiles, rocket_flight_ticks, rocket_tornado_choice, rocket_tornado_plan,
+                                      cell_centres_tiles, rocket_flight_ticks, rocket_tornado_choice, rocket_tornado_plan, rocket_tornado_timing,
                                       tornado_radius_tiles)
 
 COMBO = DecisionOptions(rocket_value=7.0, rocket_tornado='on')
@@ -440,7 +440,7 @@ def split_pups(y=22.0, gap=3.0):
     return [unit('lava_pups', 9 - gap + .3 * i, y) for i in range(3)] + [unit('lava_pups', 9 + gap + .3 * i, y) for i in range(3)]
 
 
-def test_combo_flag_validation_default_off_and_sim_refusal():
+def test_combo_flag_validation_and_default_off():
     assert DecisionOptions().rocket_tornado == 'off' and COMBO.active
     for bad in ('yes', 'ON', ''):
         with pytest.raises(ValueError):
@@ -449,10 +449,6 @@ def test_combo_flag_validation_default_off_and_sim_refusal():
         DecisionOptions(rocket_tornado='on')
     ap = argparse.ArgumentParser(); add_arguments(ap)
     assert options_from_config(config_from_args(ap.parse_args(['--rocket-value', '7', '--rocket-tornado', 'on']))) == COMBO
-    a = sim_args(1)
-    kw = dict(tau=.35, device='cpu', rngs=[None], card_names=[['knight', 'rocket', 'the-log', 'tornado']], grid='lattice')
-    with pytest.raises(ValueError, match='live only'):
-        decide_batch(Model(), **a, options=COMBO, rocket_value=[(board(*split_pups()), False, SimpleNamespace())], **kw)
 
 
 @pytest.mark.parametrize('d,flight', [(5, 16), (7, 22), (9, 28), (11, 33), (13, 39), (15, 45), (17, 51), (20, 59), (23, 68)])
@@ -518,7 +514,7 @@ def test_live_combo_rocket_now_tornado_planned_in_the_middle_of_the_window():
     assert d['play'] and d['name'] == 'Rocket' and d['why'] == 'rocket_tornado' and d['hand_pos'] == 1
     lo, hi = d['rocket_tornado_window']
     (first, name, xy, after, within), = calls
-    assert (first, name) == ('Rocket', 'Tornado') and after == (lo + hi) // 2 and after + within == hi and xy == d['xy']
+    assert (first, name) == ('Rocket', 'Tornado') and (after, within) == rocket_tornado_timing((lo, hi)) and xy == d['xy']
     assert d['follow_ups'][0]['follow']['after_ticks'] == after
     # the lone rule has priority where one blast holds it; the combo is silent without a clump / off
     calls.clear()
@@ -527,3 +523,28 @@ def test_live_combo_rocket_now_tornado_planned_in_the_middle_of_the_window():
     d = combo_pilot(DecisionOptions(rocket_value=7.0), bs, calls).decide(live_frame(0, 1092, 1092))
     assert d.get('why') != 'rocket_tornado'
     assert not calls
+
+
+def test_sim_combo_rocket_now_tornado_as_a_follow_up_spec_on_deck_slots():
+    from pipeline.e1_eval import follow_up_spec
+    deck = ['knight', 'rocket', 'the-log', 'tornado', 'x-bow', 'ice-wizard', 'skeletons', 'tesla']
+    hand_ids = (vocab.unit_id('rocket'), vocab.unit_id('tornado'), vocab.unit_id('knight'), vocab.unit_id('the_log'))
+    bs = board(*split_pups(), elixir=9.5)
+    bs.my_hand = hand_ids
+    allowed = np.zeros((1, 8), bool); allowed[0, [0, 1, 2]] = True                      # Tornado (deck slot 3) is not affordable NOW
+    a = sim_args(1)
+    a['allowed'] = allowed; a['heads'] = {'card': torch.tensor([[9., 0, 0, 0, 0, 0, 0, 0]])}
+    kw = dict(tau=.35, device='cpu', rngs=[None], card_names=[deck], grid='lattice')
+    out = decide_batch(Model(), **a, options=COMBO, rocket_value=[(bs, False, SimpleNamespace())], **kw)[0]
+    assert out['why'] == 'rocket_tornado' and out['play'] and out['slot'] == 1
+    hit = rocket_tornado_choice(COMBO, deck, allowed[0], bs, 'lattice')
+    after, within = rocket_tornado_timing(hit[3])
+    assert out['cell'] == hit[2] and out['follow_ups'] == [follow_up_spec(3, hit[2], after, within)]
+    bs.my_hand = (vocab.unit_id('rocket'), vocab.unit_id('knight'), vocab.unit_id('the_log'), vocab.unit_id('x_bow'))   # Tornado not in hand
+    out = decide_batch(Model(), **a, options=COMBO, rocket_value=[(bs, False, SimpleNamespace())], **kw)[0]
+    assert out.get('why') != 'rocket_tornado' and 'follow_ups' not in out
+    # the lone rule keeps priority, and a threat / idle gate holds the combo back
+    bs.my_hand = hand_ids
+    gated = DecisionOptions(rocket_value=7.0, rocket_tornado='on', rocket_value_threat='on')
+    out = decide_batch(Model(), **a, options=gated, rocket_value=[(bs, False, SimpleNamespace())], **kw)[0]
+    assert out.get('why') != 'rocket_tornado'

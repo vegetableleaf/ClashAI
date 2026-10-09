@@ -15,7 +15,7 @@ from .decision_options import (BARREL_KEY, DecisionOptions, barrel_landings, cho
                                gate_taus, hazard_draw, is_xbow, lethal_rocket_choice, tau_threat_state,
                                threat_on, threat_taus, tower_threat, xbow_dead_lane_cells, enemy_body_tiles,
                                princess_dead_state, rocket_covers_king, rocket_kills_king)
-from .decision_options import rocket_tornado_choice, rocket_value_cell, rocket_value_choice
+from .decision_options import rocket_tornado_choice, rocket_tornado_timing, rocket_value_cell, rocket_value_choice
 from .live_mem import my_side_of
 from .decision_options import enemy_princess_hps, hp_after, record_hp
 
@@ -253,8 +253,8 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
             d = dict(play=True, p_play=p, hand_pos=pos, no_affordable=False, stalled=stalled, why='rocket_tornado',
                      rocket_value=round(value, 3), deck_index=info['hand_deck_indices'][pos], card=card, form=form, bs=bs,
                      name=info['names'][info['hand_deck_indices'][pos]], xy=xy, **lookahead)
-            after = (lo + hi) // 2                      # the middle of the window: robust to the 2-tick frame grid on both sides
-            follow = self.plan_follow_up(frame, d, 'Tornado', xy, after_ticks=after, within_ticks=hi - after)
+            after, within = rocket_tornado_timing((lo, hi))     # the middle of the window (SIM decide_batch asks for the same timing)
+            follow = self.plan_follow_up(frame, d, 'Tornado', xy, after_ticks=after, within_ticks=within)
             if follow is not None:                      # the Tornado left the hand since: no combo, fall through to the model
                 d['follow_ups'] = [follow]
                 d['rocket_tornado_window'] = (lo, hi)

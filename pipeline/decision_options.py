@@ -1238,6 +1238,15 @@ def rocket_value_cell(logits, eligible):
 PULL_LANDS_FROM, PULL_LANDS_TO = 12, 33
 LIVE_FOLLOW_MIN_GAP_TICKS = 4
 WINDOW_MIN_WIDTH_TICKS = 5                    # a plan narrower than the 2-tick live frame grid is not started
+COMBO_ARRIVAL_TICKS = 2                       # e1_eval.FOLLOW_ARRIVAL_TICKS: a follow-up requested after_ticks later lands that many minus this
+                                              # after the first play (live, 11 pairs asked 4 apart: 0-3 apart, mean 1.1)
+
+
+def rocket_tornado_timing(plan):
+    """(after_ticks, within_ticks) of the Tornado follow-up for a plan window (lo, hi) of landing gaps: the middle of the window, robust to
+    the 2-tick frame grid on both sides, shifted by the arrival lag (e1_eval.FOLLOW_ARRIVAL_TICKS) the request is lost to."""
+    after = (plan[0] + plan[1]) // 2 + COMBO_ARRIVAL_TICKS
+    return after, plan[1] + COMBO_ARRIVAL_TICKS - after
 
 
 @lru_cache(maxsize=1)
@@ -1288,6 +1297,10 @@ def rocket_tornado_choice(options, names, allowed, bs, grid, pending=False, min_
         return None
     rockets = [i for i, n in enumerate(names) if n is not None and str(n).lower() == 'rocket' and allowed[i]]
     tornados = [i for i, n in enumerate(names) if n is not None and str(n).lower() == 'tornado']
+    hand = getattr(bs, 'my_hand', None)             # the SIM's names are the whole deck: the Tornado must be in the HAND (live names = the hand)
+    if hand is not None and tornados:
+        from . import vocab
+        tornados = tornados if vocab.unit_id('tornado') in tuple(hand) else []
     if not rockets or not tornados or float(bs.my_elixir) + 1e-9 < options.rocket_value_min_elixir:
         return None
     bodies = rocket_bodies(bs, options.rocket_value_mode)
@@ -1373,8 +1386,6 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
                      'tau_threat' if p[r] > tau[r] and p[r] <= base_tau[r] and options.tau_threatened is not None
                      else 'gate' if p[r] > tau[r] else 'hazard'))
            for r in range(len(slots))]
-    if options.rocket_tornado != 'off':
-        raise ValueError('rocket_tornado is live only: the SIM has no pipelined second tap (its pending lock needs a 30-tick gap)')
     if options.rocket_value > 0:    # before lethal_rocket, which overrides it
         if rocket_value is None or grid is None or card_names is None:
             raise ValueError('rocket_value requires per-row boards, the grid and card names')
@@ -1390,6 +1401,18 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
                                        torch.tensor([hits[r][0] for r in ids], device=device))
             for j, r in enumerate(ids):
                 out[r] = dict(play=True, slot=hits[r][0], cell=rocket_value_cell(logits[j], hits[r][1]), why='rocket_value')
+        if options.rocket_tornado != 'off':     # the combo: Rocket at the pull centre now, the Tornado as a pipelined follow-up (e1_eval.follow_up_spec)
+            from .e1_eval import follow_up_spec
+            for r in range(len(out)):
+                bs, pending, holder = rocket_value[r]
+                if r in hits or (options.rocket_value_idle == 'on' and bool(playing[r])) or (
+                        options.rocket_value_threat == 'on' and not getattr(holder, 'rv_threatened', False)):
+                    continue
+                hit = rocket_tornado_choice(options, card_names[r], allowed[r], bs, grid, pending)
+                if hit is not None:
+                    after, within = rocket_tornado_timing(hit[3])
+                    out[r] = dict(play=True, slot=hit[0], cell=hit[2], why='rocket_tornado',
+                                  follow_ups=[follow_up_spec(hit[1], hit[2], after, within)])
     if options.lethal_rocket != 'off':
         if lethal is None or t_sec is None or grid is None or card_names is None:
             raise ValueError('lethal_rocket requires per-row crown towers, decision times, the grid and card names')
