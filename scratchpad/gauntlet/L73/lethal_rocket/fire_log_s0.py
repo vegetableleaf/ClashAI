@@ -16,12 +16,12 @@ def _mk(matches):
 
 def _logged(*a, **k):
     out = _orig(*a, **k)
-    rows = [r for r, d in enumerate(out) if d.get('why') == 'lethal_rocket']
+    rows = [r for r, d in enumerate(out) if d.get('why') in ('lethal_rocket', 'lethal_log')]
     if rows:
         with open(os.path.join(os.environ['FIRE_DIR'], f'fires_{os.getpid()}.jsonl'), 'a') as f:
             for r in rows:
                 towers, side, _ = k['lethal'][r]
-                f.write(json.dumps(dict(t_sec=float(k['t_sec'][r]), slot=out[r]['slot'], cell=out[r]['cell'],
+                f.write(json.dumps(dict(why=out[r]['why'], t_sec=float(k['t_sec'][r]), slot=out[r]['slot'], cell=out[r]['cell'],
                                         tag=_tags[r][0] if r < len(_tags) else None,
                                         behind=D.crowns_behind(towers, side) if hasattr(D, 'crowns_behind') else None,
                                         target=D.lethal_rocket_target(towers, side))) + '\n')
