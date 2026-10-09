@@ -26,11 +26,14 @@
 set -u
 CB=${CB:-/workspace/wt_pd}; cd "$CB" || exit 2
 PHASE=${PHASE:-pre}
-if [ "$PHASE" != sum ] && [ -z "${PD_LOCKED:-}" ]; then        # one lock for the whole phase (arms run in parallel inside it)
+# PD_NOLOCK=1 (lead decision 2026-10-09, `pre` only): run outside cpu.lock; the smoke then uses SMOKE_W (default 2) workers, one run at a
+# time, plus the pytest process: at most 2 busy processes at any moment, nice 10.
+if [ "$PHASE" != sum ] && [ -z "${PD_LOCKED:-}" ] && [ -z "${PD_NOLOCK:-}" ]; then        # one lock for the whole phase (arms run in parallel inside it)
   mkdir -p /workspace/results/pipeline
   echo "[$(date +%T)] waiting for /workspace/cpu.lock (PHASE=$PHASE)"
   exec flock /workspace/cpu.lock env PD_LOCKED=1 bash "$0" "$@"
 fi
+[ -n "${PD_NOLOCK:-}" ] && echo "[$(date +%T)] PD_NOLOCK: running outside cpu.lock, nice 10, <= 2 processes"
 [ -n "${PD_LOCKED:-}" ] && echo "[$(date +%T)] got /workspace/cpu.lock (PHASE=$PHASE)"
 export ROYALE_RUNTIME=${ROYALE_RUNTIME:-20261006-linux} OMP_NUM_THREADS=1 MKL_NUM_THREADS=1       # POD_README.md: the runtime tag of the Linux build
 PY=${PY:-/workspace/venv/bin/python}
@@ -54,7 +57,7 @@ preflight() {
 
 search() {   # search NAME CENSUS_FILE CENSUS_TAG WORKERS SEEDS [extra]
   local name=$1 d=$2 s=$3 w=$4 seeds=$5
-  nice $PY -m pipeline.search_s0 --out "$OUT/${name}_$s" --seeds "$seeds" --opps gen --arms plain --gen "$CK" --opp-gen "$GEN1" \
+  nice -n "${NICE:-10}" $PY -m pipeline.search_s0 --out "$OUT/${name}_$s" --seeds "$seeds" --opps gen --arms plain --gen "$CK" --opp-gen "$GEN1" \
     --forms-mode deck --device cpu --workers "$w" --tail-cap 7200 --tau-plain 0.35 --census "$d" --hero-abilities \
     --ability-policy v2 --opp-policy sample --opp-T 0.3 $SIMFLAGS --behaviour-telemetry --record-plays ${X[$name]} \
     > "$OUT/${name}_$s.log" 2>&1
@@ -65,11 +68,11 @@ case "$PHASE" in
 pre)
   preflight
   # (1) fake-engine unit tests of the rules (laptop-identical) + the follow-up / default-parity ones they rest on
-  $PY -m pytest -q -p no:cacheprovider pipeline/tests/test_e1_pipeline_decisions.py pipeline/tests/test_e1_follow_up.py \
+  nice -n "${NICE:-10}" $PY -m pytest -q -p no:cacheprovider pipeline/tests/test_e1_pipeline_decisions.py pipeline/tests/test_e1_follow_up.py \
       pipeline/tests/test_e1_action_delay.py pipeline/tests/test_league.py pipeline/tests/test_search_s0.py || exit 4
   # (2) REAL-engine smoke: 4 seeds x {off, pd0} x {evo, lad}, 6 workers. Must run clean; then the checks below.
   for a in off pd0; do for s in evo lad; do d=$EVO; [ $s = lad ] && d=$LAD
-    search $a "$d" $s 3 0:4; done; done
+    search $a "$d" $s ${SMOKE_W:-2} 0:4; done; done
   $PY - <<'PYEOF' || exit 5
 import json, glob, sys
 bad = 0
