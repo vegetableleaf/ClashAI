@@ -260,3 +260,21 @@ def test_latency_flags_deployable_from_the_file_and_explicit_wins(tmp_path):
     assert (a.extrapolate, a.tap_gap_ms, a.afford_ticks) == (26, 50, 23) and sorted(rec['explicit']) == ['extrapolate', 'tap_gap_ms']
     a, rec = parse_with_live_options(ap, ['--no-live-options'])
     assert (a.fast_input, a.tap_gap_ms, a.afford_ticks, a.early_release_margin, a.extrapolate) == (False, 50, None, None, 26)
+
+
+def test_lethal_log_deployable_from_the_file(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + '--lethal-rocket ot_behind --lethal-log on\n')
+    opts, rec = parse([], f)
+    assert (opts.lethal_rocket, opts.lethal_log) == ('ot_behind', 'on') and rec['from_file']['lethal_log'] == 'on'
+    opts, rec = parse(['--lethal-log', 'off'], f)                               # explicit wins
+    assert opts.lethal_log == 'off' and rec['explicit'] == ['lethal_log']
+    assert parse([], tmp_path / 'missing')[0].lethal_log == 'off'
+
+
+@pytest.mark.skipif(not CKPT.is_file(), reason='live checkpoint not present')
+def test_check_json_reports_lethal_log(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + '--lethal-rocket ot_behind --lethal-log on\n')
+    out = run_live_play('--check', '--ckpt', str(CKPT), '--live-options-file', str(f))
+    assert out.returncode == 0, out.stdout + out.stderr
+    check = json.loads(out.stdout.strip().splitlines()[-1])
+    assert check['decision_options']['lethal_log'] == 'on' and check['live_options']['from_file']['lethal_log'] == 'on'

@@ -126,7 +126,8 @@ class GenPilot(LegacyGenPilot):
         if lethal is not None:                          # SIM decide_batch: the same rule overrides gate, card and cell
             pos, cell, target = lethal
             card, form = info['hand'][pos]
-            d = dict(play=True, p_play=p, hand_pos=pos, no_affordable=False, stalled=stalled, why='lethal_rocket',
+            why = 'lethal_log' if target.get('card') == 'Log' else 'lethal_rocket'
+            d = dict(play=True, p_play=p, hand_pos=pos, no_affordable=False, stalled=stalled, why=why,
                      lethal_rocket=target, deck_index=info['hand_deck_indices'][pos], card=card, form=form, bs=bs,
                      name=info['names'][info['hand_deck_indices'][pos]], xy=cell_xy(cell, self.grid), **lookahead)
             if options.tau_phase is not None:

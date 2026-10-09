@@ -36,6 +36,7 @@ class DecisionOptions:
     gate_hazard_threatened: float = 0.0     # hazard draws ALSO while a tower of mine lost HP within this many s (0 = off)
     gate_hazard_threat_radius: float = 0.0  # ... or while an enemy unit is within this many tiles of my alive tower
     lethal_rocket: str = 'off'
+    lethal_log: str = 'off'                 # 'on': the lethal finisher also uses the Log (rides on lethal_rocket's mode)
     xbow_dead_lane: str = 'allow'           # 'block': no X-Bow cell that reaches only the king / a destroyed princess
 
     def __post_init__(self):
@@ -69,6 +70,8 @@ class DecisionOptions:
             raise ValueError('lethal_rocket must be off, ot or ot_behind')
         if self.xbow_dead_lane not in ('allow', 'block'):
             raise ValueError('xbow_dead_lane must be allow or block')
+        if self.lethal_log not in ('off', 'on'):
+            raise ValueError('lethal_log must be off or on')
 
     @property
     def active(self):
@@ -118,6 +121,11 @@ def add_arguments(parser):
                              'first; never the king), when Rocket is in hand and affordable; else unchanged. ot_behind: '
                              'also in regulation while the opponent has more crowns, if the Rocket can still land '
                              'before 3:00')
+    parser.add_argument('--lethal-log', choices=('off', 'on'), default='off',
+                        help='on: the --lethal-rocket finisher (same phase / crown / landing rules; inert when it is off) '
+                             'also uses the Log: an alive enemy PRINCESS with HP <= my Log crown-tower damage gets the '
+                             'Log, cast on my side at (tower x, y 17.5 tiles) so its roll reaches the tower; preferred over '
+                             'the Rocket when both finish')
     parser.add_argument('--xbow-dead-lane', choices=('allow', 'block'), default='allow',
                         help='block (owner 2026-10-08, never the king): the X-Bow never takes a cell within reach of the '
                              'enemy king or of a DESTROYED enemy princess that reaches no alive enemy princess '
@@ -460,24 +468,26 @@ def choose_cells(logits, card_names, options, *, rngs=None, enemy_alive=None, gr
 
 
 # ---- lethal_rocket (owner 2026-10-08: "always be rocketing a tower it can finish in one rocket if it's overtime") ----
-@lru_cache(maxsize=1)
-def _rocket_catalog():
+@lru_cache(maxsize=2)
+def _rocket_catalog(name='Rocket'):
     import json
     from .body_identity import CATALOG, CALIBRATION
-    rocket = next(c for c in json.loads(CATALOG.read_text(encoding='utf-8'))['cards'] if c['name'] == 'Rocket')
+    rocket = next(c for c in json.loads(CATALOG.read_text(encoding='utf-8'))['cards'] if c['name'] == name)
     rounding = json.loads(CALIBRATION.read_text(encoding='utf-8'))['combat']['CROWN_TOWER_DAMAGE_ROUNDING']['value']
     return int(rocket['damage']), int(rocket['crown_tower_damage_percent']), rocket['level_scaling'], rounding
 
 
 @lru_cache(maxsize=32)
-def rocket_tower_damage(level):
+def rocket_tower_damage(level, name='Rocket'):
     """My Rocket's crown-tower damage at unified card ``level``: RoyaleSim catalog damage floor(580 x ladder / 100)
     (rocket_teaching.scaled_stat's table), then its 23 % under calibration combat.CROWN_TOWER_DAMAGE_ROUNDING
-    (ceil_kept_share). Level 15 = 497 = MEASURED live (live_play_20261008_131352 t4304: 1092 -> 595); level 11 = 342."""
-    base, pct, ls, rounding = _rocket_catalog()
+    (ceil_kept_share). Level 15 = 497 = MEASURED live (live_play_20261008_131352 t4304: 1092 -> 595); level 11 = 342.
+    ``name='Log'``: 105 x ladder, 13 % -> level 15 = 51, level 11 = 35 = MEASURED live (1,270 / 175 enemy-princess HP
+    drops of exactly 51 / 35 after a confirmed Log, archive 10-01..09, L73/lethal_rocket/log_timing.out)."""
+    base, pct, ls, rounding = _rocket_catalog(name)
     local, step = int(level) - ls['relative_level'], int(level) - ls['base_level']
     if not 1 <= local <= ls['level_count'] or not 0 <= step < len(ls['multiplier_percent_by_level']):
-        raise ValueError(f'Rocket has no level {level}')
+        raise ValueError(f'{name} has no level {level}')
     n = base * int(ls['multiplier_percent_by_level'][step]) // 100 * pct
     if rounding == 'ceil_kept_share':
         return -(-n // 100)
@@ -486,7 +496,7 @@ def rocket_tower_damage(level):
     raise ValueError(f'unknown crown-tower rounding {rounding!r}')
 
 
-def lethal_rocket_target(crown_towers, side):
+def lethal_rocket_target(crown_towers, side, card='Rocket'):
     """The alive ENEMY PRINCESS my Rocket finishes in one hit, lowest HP first -> dict(lane (my frame), hp, damage,
     level), else None. ``crown_towers``: raw ``episode.crown_towers`` rows (side, type, x, y in 1/1000 tile, hp, max_hp;
     live_mem.to_observe / RoyaleSim raw()). My card level = my own tower max HP (from_engine's level factor: level 11
@@ -497,13 +507,15 @@ def lethal_rocket_target(crown_towers, side):
     level = mine and level_of_factor(float(mine['max_hp']) / (4824.0 if mine.get('type') == 'king' else 3052.0))
     if level is None:
         return None
-    damage, best = rocket_tower_damage(level), None
+    damage, best = rocket_tower_damage(level, card), None
     for t in crown_towers:
         if int(t['side']) == side or t.get('type') != 'princess' or t.get('destroyed') or not 0 < t['hp'] <= damage:
             continue
         x, _ = _engine_xy(float(t['x']), float(t['y']), side == 1)
         if best is None or t['hp'] < best['hp']:
             best = dict(lane='L' if x < .5 else 'R', hp=int(t['hp']), damage=damage, level=level)
+    if best is not None and card != 'Rocket':
+        best['card'] = card
     return best
 
 
@@ -523,6 +535,16 @@ def lethal_rocket_cell(lane, grid):
 # Later fires cannot land before 3:00 and are skipped. ponytail: one flight time for both princesses (same distance).
 ROCKET_FLIGHT_TICKS = 66
 REGULATION_END_TICK = 3600
+# lethal_log: the Log may only be cast in my own troop territory (catalog can_deploy_on_enemy_side false; RoyaleSim
+# SpellPlacement::TroopTerritory), so it is cast at (tower x, 17.5 tiles) -- the forward-most own-territory row, a tile
+# centre (no tap snap) -- and rolls 10.1 tiles forward (ProjectileRange 10100; half-width 1.95, half-depth 0.6): its end
+# box reaches y 6.8, inside the princess's 1-tile collision circle at 6.5 (0.7-tile margin; x margin 2.95). MEASURED live:
+# casts at (3.5 | 14.5, 17.5) are the bot's commonest tower Logs and hit (553 / 563 HP drops of 35/51). Hit time after
+# landing: 3 tiles airborne at 0.36 tile/tick (9 ticks, spells.SPELL_AS_DEPLOY_LAUNCH_MODEL) + the landing tick + 47
+# roll steps of 0.2 tile until the front edge meets the tower = 57 ticks; MEASURED live hand rotation -> HP drop median
+# 62 (snapshots every ~10 ticks: an upper bound).
+LOG_CAST_Y_TILES = 17.5
+LOG_HIT_TICKS = 57
 
 
 def crowns_behind(crown_towers, side):
@@ -537,12 +559,45 @@ def crowns_behind(crown_towers, side):
     return 3 - alive[1] > 3 - alive[0]
 
 
+@lru_cache(maxsize=8)
+def lethal_log_cell(lane, grid):
+    """The ``grid`` cell at (enemy princess x, LOG_CAST_Y_TILES), my frame: its roll reaches that princess."""
+    from .model_tower import anchors
+    from .model_v3 import cell_label
+    return int(cell_label(torch.tensor((anchors()[4 if lane == 'L' else 5][0], LOG_CAST_Y_TILES / 32.0)), grid))
+
+
+def _lethal_phase(options, t_sec, crown_towers, side, hit_ticks):
+    """OT, or (ot_behind) regulation while behind on crowns and the card still hits before REGULATION_END_TICK."""
+    if phase_index([t_sec])[0] == 2:
+        return True
+    return (options.lethal_rocket == 'ot_behind' and round(t_sec / 0.05) + hit_ticks <= REGULATION_END_TICK
+            and crowns_behind(crown_towers, side))
+
+
+def is_log(name):
+    return ROLLING_CARDS.get(re.sub(r'[^a-z]', '', str(name).split('@')[0].lower())) == 'Log'
+
+
+def lethal_log_choice(options, t_sec, names, allowed, crown_towers, side, grid):
+    """lethal_log: -> (slot, cell, target with card='Log') or None, under lethal_rocket's phase / crown rules."""
+    slots = [i for i, n in enumerate(names) if n is not None and is_log(n) and allowed[i]]
+    if not slots or not _lethal_phase(options, t_sec, crown_towers, side, LOG_HIT_TICKS):
+        return None
+    target = lethal_rocket_target(crown_towers, side, 'Log')
+    return None if target is None else (slots[0], lethal_log_cell(target['lane'], grid), target)
+
+
 def lethal_rocket_choice(options, t_sec, names, allowed, crown_towers, side, grid, pending=False):
     """-> (slot, cell, target) when lethal_rocket fires, else None: overtime (phase_index 2, the tau_phase edge), no
     card pending, an affordable Rocket slot (``allowed``: in hand and cost <= integer elixir), a lethal princess.
     ``ot_behind`` also fires in regulation while ``crowns_behind`` and the Rocket lands before tick 3600 (cutoff above)."""
     if options.lethal_rocket == 'off' or pending:
         return None
+    if options.lethal_log == 'on':                  # the Log first: cheaper and it hits sooner
+        hit = lethal_log_choice(options, t_sec, names, allowed, crown_towers, side, grid)
+        if hit is not None:
+            return hit
     if phase_index([t_sec])[0] != 2:
         if (options.lethal_rocket != 'ot_behind' or round(t_sec / 0.05) + ROCKET_FLIGHT_TICKS > REGULATION_END_TICK
                 or not crowns_behind(crown_towers, side)):
@@ -621,7 +676,8 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
             towers, side, pending = lethal[r]
             hit = lethal_rocket_choice(options, t_sec[r], card_names[r], allowed[r], towers, side, grid, pending=pending)
             if hit is not None:
-                out[r] = dict(play=True, slot=hit[0], cell=hit[1], why='lethal_rocket')
+                out[r] = dict(play=True, slot=hit[0], cell=hit[1],
+                              why='lethal_log' if hit[2].get('card') == 'Log' else 'lethal_rocket')
     return out
 
 
