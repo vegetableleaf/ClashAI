@@ -19,7 +19,7 @@ from pipeline.tests import test_e1_action_delay as AD                     # noqa
 from pipeline.tests.test_e1_opp_counter import T                          # noqa: E402
 
 D = 26
-# icebow deck slot costs (the fake engine's): slot 2 = 3, slot 0 = 3, slot 3 = 6, slot 7 = 1
+# icebow deck slot costs (the fake engine's): slot 2 = 3, slot 5 = 3, slot 1 = 4, slot 3 = 6; in hand: slots 2, 5, 3, 1
 PLAY = AD.PLAY                                                              # slot 2 (3 elixir), cell CELL
 CELL = AD.CELL
 
@@ -43,7 +43,7 @@ def run(follow_ups, env=None, delay=D, script=None, **cfg):
     return AD._scripted(script or [play], delay, env=env, **cfg)
 
 
-def spec(slot=0, after=4, **kw):
+def spec(slot=5, after=4, **kw):          # slot 5 = 3 elixir, in the fake hand (slots 2, 5, 3, 1 are)
     return E.follow_up_spec(slot, CELL + 3, after, **kw)
 
 
@@ -91,7 +91,7 @@ class TestFollowUps(unittest.TestCase):
     def test_first_play_refused_before_the_follow_up_is_decided_cancels_it(self):
         m, env, _ = run([spec(after=40, within_ticks=4)], env=_Env(refuse_at=[T + D]))
         self.assertEqual(acts(env), [T + D])                              # only the (refused) first
-        self.assertEqual(m.result()["follow_ups"], {"cancelled_first_refused": 1})
+        self.assertEqual(m.result()["follow_ups"], {"cancelled_first_unconfirmed": 1})
         m, env, _ = run([spec(after=40, within_ticks=4, require_first=False)], env=_Env(refuse_at=[T + D]))
         self.assertEqual(len(acts(env)), 2)
 
@@ -100,13 +100,24 @@ class TestFollowUps(unittest.TestCase):
         self.assertEqual(acts(env), [T + D, T + D + 2])
         self.assertEqual(m.result()["plays_accepted"], 1)
 
-    def test_two_follow_ups_reserve_each_other(self):
-        # slot 2 (3) + slot 0 (3) + slot 7 (1) = 7: with 6.8 the third is short, with 8 it is paid
-        a = [spec(slot=0, after=2), spec(slot=7, after=4)]
-        _, env, _ = run(a, env=_Env(lambda t: 6.8))
+    def test_at_most_two_plays_outstanding_a_third_waits_for_a_landing(self):
+        # A (slot 2) + follow-up 1 (slot 5) are outstanding; follow-up 2 (slot 1, 4 elixir) is decided 4 ticks after A
+        three = lambda within: [spec(slot=5, after=2), spec(slot=1, after=4, within_ticks=within)]     # noqa: E731
+        m, env, _ = run(three(10))                                      # window closes before anything lands (T + 14)
         self.assertEqual(len(acts(env)), 2)
-        _, env, _ = run(a, env=_Env(lambda t: 8.0))
-        self.assertEqual(len(acts(env)), 3)
+        self.assertEqual(m.result()["follow_ups"], {"fired": 1, "cancelled_outstanding": 1})
+        m, env, _ = run(three(30))                                      # the first two land at T + 26: it is decided then
+        self.assertEqual(acts(env), [T + D, T + D, T + D + 24])         # asked 22 ticks after T -> 22 - 2 after A's landing
+        self.assertEqual(m.result()["follow_ups"], {"fired": 2})
+
+    def test_a_slot_with_a_play_outstanding_is_busy_and_a_card_not_in_hand_is_cancelled(self):
+        m, env, _ = run([spec(slot=2, after=2)])                        # the first play's own slot
+        self.assertEqual(acts(env), [T + D])
+        self.assertEqual(m.result()["follow_ups"], {"cancelled_slot_busy": 1})
+        m, env, _ = run([spec(slot=0, after=2)])                        # slot 0's card is not in the hand: no attempt at all
+        self.assertEqual(acts(env), [T + D])
+        self.assertEqual(m.result()["follow_ups"], {"cancelled_slot_changed": 1})
+        self.assertEqual(m.result()["plays_attempted"], 1)              # live cancels it too: nothing is tapped / refused
 
     def test_no_key_is_byte_identical_to_a_play_without_follow_ups(self):
         a, ea, ta = run(None, script=[PLAY, PLAY])
@@ -125,6 +136,26 @@ class TestFollowUps(unittest.TestCase):
         side.env, side.cfg, side.delay = SimpleNamespace(hero_abilities=False), {"decide_every": 10}, D
         with self.assertRaises(NotImplementedError):
             side.apply(0.9, dict(PLAY, follow_ups=[spec()]))
+
+
+class TestSharedVerdict(unittest.TestCase):
+    base = dict(tick=100, due=100, expire=110, blocked=None, first_failed=False, slot_changed=False, slot_busy=False,
+                n_out=1, have=5.0, cost=3.0)
+
+    def v(self, **kw):
+        return E.follow_up_verdict(**{**self.base, **kw})
+
+    def test_order_and_answers(self):
+        self.assertEqual(self.v(), ("fire", ""))
+        self.assertEqual(self.v(first_failed=True, slot_changed=True), ("cancel", "first_unconfirmed"))
+        self.assertEqual(self.v(slot_changed=True, tick=200), ("cancel", "slot_changed"))        # before expiry
+        self.assertEqual(self.v(tick=111, blocked="unaffordable"), ("cancel", "unaffordable"))
+        self.assertEqual(self.v(tick=111), ("cancel", "late"))
+        self.assertEqual(self.v(tick=99), ("wait", "early"))
+        self.assertEqual(self.v(slot_busy=True), ("cancel", "slot_busy"))
+        self.assertEqual(self.v(n_out=E.FOLLOW_MAX_OUT), ("wait", "outstanding"))
+        self.assertEqual(self.v(have=2.9), ("wait", "unaffordable"))
+        self.assertEqual(self.v(have=3.0), ("fire", ""))
 
 
 class TestLiveTwin(unittest.TestCase):

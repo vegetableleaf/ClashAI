@@ -93,8 +93,8 @@ def release_ticks(elixir: float, name: str, tick: int, arrival_ticks: float, mar
     return min(CONFIRM_TICKS, math.ceil(max(arrival_ticks, need)) + CONFIRM_BASE + int(margin))
 
 
-FOLLOW_MAX_OUT = 2        # --follow-up-taps: taps outstanding (tapped, not confirmed) at once; a follow-up waits at the cap
-from pipeline.e1_eval import FOLLOW_AFFORD_TICKS, follow_up_have  # noqa: E402  default afford horizon (6 ticks) + the SIM's formula
+from pipeline.e1_eval import FOLLOW_AFFORD_TICKS, FOLLOW_MAX_OUT, follow_up_have, follow_up_verdict  # noqa: E402,F401
+# ... the SIM's rules: the horizon (6 ticks), the outstanding-tap cap (2), the formula and the verdict order are shared
 
 
 def card_cost_of(name: str) -> float:
@@ -114,25 +114,17 @@ def follow_verdict(fu: dict, tick: int, me: dict, pending: list, cost=card_cost_
     elixir of every outstanding tap unspent -> my elixir `afford_ticks` ahead MINUS the cost of every unconfirmed tap
     must cover the follow-up. A follow-up never fires late (past expire), never into a slot that changed or is busy."""
     d, first = fu["d"], fu.get("first")
-    if d["follow"].get("require_first", True) and first is not None and first.get("state") == "unconfirmed":
-        return "cancel", "first_unconfirmed"          # the play it follows was refused: do not play half a combo
-    if me["hand_deck_indices"][d["hand_pos"]] != d["deck_index"]:
-        return "cancel", "slot_changed"               # the card is no longer there: never tap a slot we do not know
-    if tick > fu["expire"]:
-        return "cancel", fu.get("blocked") or "late"
-    if tick < fu["due"]:
-        return "wait", "early"
-    if any(p["d"]["hand_pos"] == d["hand_pos"] for p in pending):
-        return "cancel", "slot_busy"                  # that slot already has a tap outstanding: no second tap on it
-    if len(pending) >= FOLLOW_MAX_OUT:
-        return "wait", "outstanding"
     horizon = d["follow"].get("afford_ticks")
     horizon = FOLLOW_AFFORD_TICKS if horizon is None else int(horizon)
     reserved = sum(cost(p["d"]["name"]) for p in pending)
-    have = follow_up_have(me["elixir_raw"] / 1e4, tick, horizon, reserved)     # e1_eval: the SIM's Match.apply uses the same
-    if have + 1e-6 < cost(d["name"]):
-        return "wait", "unaffordable"
-    return "fire", reserved
+    # the rules and their order are e1_eval.follow_up_verdict's (the SIM's Match.apply calls it too); only the facts are live
+    act, why = follow_up_verdict(
+        tick=tick, due=fu["due"], expire=fu["expire"], blocked=fu.get("blocked"),
+        first_failed=bool(d["follow"].get("require_first", True) and first is not None and first.get("state") == "unconfirmed"),
+        slot_changed=me["hand_deck_indices"][d["hand_pos"]] != d["deck_index"],
+        slot_busy=any(p["d"]["hand_pos"] == d["hand_pos"] for p in pending), n_out=len(pending),
+        have=follow_up_have(me["elixir_raw"] / 1e4, tick, horizon, reserved), cost=cost(d["name"]))
+    return (act, reserved) if act == "fire" else (act, why)
 
 
 def clock_verdict(tick: int, last_tick: int, idle_s: float) -> str:
@@ -967,8 +959,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                 W(event="stop", why="5_unconfirmed"); break
             stop_now = False
             for fu in list(sched):                       # --follow-up-taps: scheduled second plays (sched empty = skipped)
-                if not advanced:                         # a frozen clock fires and cancels nothing
-                    break
+                if not (advanced and newest):            # a frozen clock fires and cancels nothing; a stale frame (newer ones
+                    break                                # queued) would judge "never late" on an old tick: wait for the newest
                 act, why = follow_verdict(fu, tick, me, pending)
                 if act == "wait":
                     if why != "early":
