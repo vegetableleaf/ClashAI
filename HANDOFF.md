@@ -5070,6 +5070,12 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   (4/21 empty fallen-tower Rockets were < 60 ticks dead; 0 revivals after 60+ ticks seen in 307 matches -> threshold
 >   could drop toward ~35 ticks, glitches are 10-30); re-aims lean on the 0.5-tile body slack (3/5 live); a re-aim onto a
 >   finishable king logs rocket_dead_target, not rocket_king_lethal. Backup: LIVE_OPTIONS.identity_backup.
+> * **rocket-value / rocket-tornado (a3bcd399, 11becad): DO NOT SHIP.** SIM v3 480 paired vs deployed bundle (323): V=7 269
+>   (20/74), V=9 301 (15/37), V=11 305 (2/20), all p <= .003; more fires = bigger loss. Pros Rocket such clumps within 2 s
+>   only 6-8% (2,243 sides; 85-88% never within 6 s); the model already does 3%. Owner's 011626 "15+ elixir" (c): best
+>   single blast 3.5-5.0 elixir (pups spread 4.4 t; my lava_rocket.py valued each pup at 7). Combo infeasible at live
+>   latency: Tornado >= 30 ticks after the Rocket leaves 33/1,152 my-half cells (2.9%, river only), 0 at 40 ticks; needs
+>   unconfirmed double-tap input. Untested next: kill-weighted value (only bodies one Rocket kills).
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
