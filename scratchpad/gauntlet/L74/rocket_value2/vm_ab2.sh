@@ -27,6 +27,6 @@ run() { local name=$1 s=$2; d=$EVO; [ $s = lad ] && d=$LAD
     --opp-gen $GEN1 --forms-mode deck --device cpu --workers $W --tail-cap 7200 --tau-plain 0.35 --census $d --hero-abilities \
     --ability-policy v2 --opp-policy sample --opp-T 0.3 "${LV[@]}" $flags > $O/${name}_$s.log 2>&1
   echo "$name $s rc=$? $(date +%T)" >> $LOG; }
-for a in ${ARMS:-base}; do for s in evo lad; do run $a $s & done; done
+for a in ${ARMS:-base}; do for s in ${CENSUSES:-evo lad}; do run $a $s & done; done
 wait
 echo DONE >> $LOG

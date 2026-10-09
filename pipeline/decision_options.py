@@ -1075,12 +1075,15 @@ def rocket_value_choice(options, names, allowed, bs, grid, pending=False, holder
     (rocket_track); called at EVERY decision, even with no Rocket in hand, so the history has no gaps."""
     if options.rocket_value <= 0:
         return None
+    slots = [i for i, n in enumerate(names) if n is not None and str(n).lower() == 'rocket' and allowed[i]]
+    track = options.rocket_value_lead == 'on' and holder is not None
+    if not slots and not track:
+        return None                                 # nothing to cast, no history to keep
     bodies = rocket_bodies(bs, options.rocket_value_mode)
     lead = None
-    if options.rocket_value_lead == 'on' and holder is not None:
+    if track:
         tick = int(round(float(bs.t_sec) / 0.05))
         lead = (tick, rocket_track(holder, tick, bodies))
-    slots = [i for i, n in enumerate(names) if n is not None and str(n).lower() == 'rocket' and allowed[i]]
     if pending or not slots or (options.rocket_value_idle == 'on' and playing):
         return None
     if float(bs.my_elixir) + 1e-9 < options.rocket_value_min_elixir:
