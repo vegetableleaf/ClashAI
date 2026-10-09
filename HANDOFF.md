@@ -5129,6 +5129,11 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   win gain is indistinguishable from noise (its three-crown reduction is the robust part). Owner decision proposed: a
 >   paired bar on several thousand games, or a placebo-relative bar.
 > * 07:36: 11,723 trophies (menu read); all-time 528-489; last 60 min 10-6 +118.
+> * **Morning 09:5x:** since 23:00 166 matches 90-76 (54%), +486 by match results; menu read 11,752 (the two disagree --
+>   the 23:00 "11,378" was approximate or the read lags). Per config: bundle 3 2-0; +identity 8-9; +hero spawns 13-9;
+>   +rocket-dead 17-12; +lethal-log & tau 40-39 (all n.s.). rdef_c evals: u0010 602.5 vs 635 (157/189, p .10), u0020 626
+>   (167/176, p .67) with 3-crown losses 38 vs 30, elixir at push 5.39 vs 4.96 -> banks more, defends no better; not
+>   shippable. Morning report posted to Discord.
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
