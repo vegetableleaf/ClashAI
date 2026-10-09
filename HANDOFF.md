@@ -5001,7 +5001,16 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   persistence; score unmasked then mask).
 > * **lethal-log built (a0ff8a54, branch lethal-log 0b40ed8):** Log tower damage 51 @ lvl 15 / 35 @ lvl 11 (live: 1,270 / 175
 >   exact drops); cast (tower x, y 17.5), hits ~57 ticks after landing; SIM 480 paired 315 -> 316 (1/0). Archive replay:
->   would fire in 34 of 600 matches. Merge candidate a7101de in C:/Users/benpe/cb_merge_log -> blind verifier aa10f7e7.
+>   would fire in 34 of 600 matches. Merge candidate a7101de in C:/Users/benpe/cb_merge_log -> blind verifier aa10f7e7:
+>   PASS_WITH_NOTES (off: 0/196,053 lethal outputs differ; 329 Log fires all rule-correct; 1,158/1,407 live Logs from
+>   that cell show the exact 51/35 drop; tests 299 vs 285 +14 new). NOT deployed: MEDIUM double-cast -- no rule checks
+>   my own finishing spell in flight (SIM seeds 177/183: Rocket then Log 1.5 s later at the same tower; >= 11/28 in the
+>   builder's run; reverse = wasted 6-elixir Rocket after a Log) -> back to a0ff8a54. Cast cell margin ~1 tile (y 19.5
+>   live 0/54).
+> * identity-ext-2 (a4defcf7, ea55fb8): Skeletrooper -> bandit, Hero Tombstone Queen -> giant, banner + MA decoy dropped;
+>   Rhino/Turret HP from client tables; off-hash identical over 196,449 states; 2,622 states change -> merge candidate
+>   2124fd7 in C:/Users/benpe/cb_merge_id2 -> blind verifier ae873022.
+> * Bundle 3 health check scheduled 02:37 (session cron 637669ac): KEEP/REVERT on clear evidence only.
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
