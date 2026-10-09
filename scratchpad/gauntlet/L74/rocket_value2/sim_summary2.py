@@ -7,7 +7,7 @@ over ALL matches of the censuses (n = every BASE match): wins, better/worse (sig
 all n matches (zeros included) and its non-inferiority bound (ni), tower HP, fires per match (the arm's rocket_value plays, from the full-board
 windows), and the CONTROL check: simulated seeds on which the arm fired nothing must equal BASE exactly (outcome and tower HP)."""
 import argparse, glob, json, math, os, random
-from collections import defaultdict
+from collections import Counter, defaultdict
 
 ap = argparse.ArgumentParser()
 ap.add_argument('scout'); ap.add_argument('arms_dir'); ap.add_argument('arms')
@@ -45,6 +45,15 @@ def fires(d, arm, c):
     return cnt, tags
 
 
+def follow_tally(d, arm, c):
+    out = Counter()
+    for dd in d.split(','):
+        for f in glob.glob(f'{dd}/fires_{arm}_{c}/fu_*.jsonl'):
+            for line in open(f):
+                out[json.loads(line)['result']] += 1
+    return out
+
+
 def sign_p(b, c):
     n, k = b + c, min(b, c)
     return min(1.0, 2 * sum(math.comb(n, i) for i in range(k + 1)) / 2 ** n) if n else 1.0
@@ -66,6 +75,8 @@ for arm in a.arms.split(','):
     for c in C:
         arm_r = load(a.arms_dir, arm, c)
         cnt, ftags = fires(a.arms_dir, arm, c)
+        for k_, v_ in follow_tally(a.arms_dir, arm, c).items():
+            fu[k_] = fu.get(k_, 0) + v_
         nf += cnt; fired_tags += len(ftags)
         for tag, b in base[c].items():
             if tag in arm_r:

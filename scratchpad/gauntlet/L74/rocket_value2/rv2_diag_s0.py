@@ -14,6 +14,7 @@ except Exception:
     pass
 import numpy as np
 import pipeline.decision_options as D
+import rv2_selfplay_followups     # noqa: F401  (SelfPlaySide follow-ups for the Rocket + Tornado combo; inert without follow_ups)
 from pipeline import vocab
 
 _orig, _orig_mk, _ctx, _until = D.decide_batch, D.match_kwargs, {}, {}
