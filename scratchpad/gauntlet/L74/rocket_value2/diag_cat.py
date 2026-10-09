@@ -17,7 +17,7 @@ FLY = {vocab.engine_key(c['name']): bool(c.get('flying_height')) for c in cs['ca
 SPEED = {vocab.engine_key(c['name']): c.get('speed') or 0 for c in cs['cards']}
 
 
-def info(n): return T.get(vocab.base_key(n), (0.0, 0.0, 0.5))
+def info(n): return T.get(vocab.base_key(n), (0.0, 0.0, 0.5))[:3]
 
 
 def load(arm, c):

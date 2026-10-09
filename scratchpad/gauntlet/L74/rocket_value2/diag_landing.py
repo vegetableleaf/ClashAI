@@ -20,7 +20,7 @@ MAXD = 5.0
 T = D.rocket_unit_table()
 
 
-def info(n): return T.get(vocab.base_key(n), (0.0, 0.0, 0.5))
+def info(n): return T.get(vocab.base_key(n), (0.0, 0.0, 0.5))[:3]
 
 
 def load(arm, c):

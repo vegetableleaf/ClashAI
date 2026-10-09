@@ -1,8 +1,7 @@
-Traceback (most recent call last):
-  File "C:\Users\benpe\ClashBot\.claude\worktrees\agent-a67f26ceb5d77048a\scratchpad\gauntlet\L74\rocket_value2\diag_lead.py", line 56, in <module>
-    hist = [(int(round(d['t'] / 0.05)), bodies_of(d)) for d in FA.get(tag, []) if t0 - 1.0 - 1e-6 <= d['t'] < t0 - 1e-6]
-                                        ~~~~~~~~~^^^
-  File "C:\Users\benpe\ClashBot\.claude\worktrees\agent-a67f26ceb5d77048a\scratchpad\gauntlet\L74\rocket_value2\diag_lead.py", line 36, in bodies_of
-    ev, hp, r = info(n)
-    ^^^^^^^^^
-ValueError: too many values to unpack (expected 3)
+113 fires, 440 bodies followed to impact
+position error at impact (tiles): static mean 2.27 median 2.21 | lead mean 2.73 median 2.51
+displacement to impact: actual mean |d| 2.27 (dy +1.52), predicted 1.98 (dy +1.05), predicted ~0 for 32%; regression slope actual~predicted 0.23, corr 0.16
+  prior drift : position error mean 2.16 median 1.98; covered 617 (46%)
+  prior blend : position error mean 2.80 median 2.48; covered 601 (45%)
+  prior half  : position error mean 2.28 median 2.04; covered 507 (38%)
+value covered by the best blast, scored on the TRUE impact positions, of 1332: static aim 501 (38%), lead aim 562 (42%), oracle 1057 (79%)

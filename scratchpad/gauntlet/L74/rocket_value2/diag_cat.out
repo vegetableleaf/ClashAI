@@ -1,5 +1,7 @@
-Traceback (most recent call last):
-  File "C:\Users\benpe\ClashBot\.claude\worktrees\agent-a67f26ceb5d77048a\scratchpad\gauntlet\L74\rocket_value2\diag_cat.py", line 48, in <module>
-    ev, hp, r = info(nm)
-    ^^^^^^^^^
-ValueError: too many values to unpack (expected 3)
+category (value-weighted share of the value that was in the blast at the decision)
+  air    moving  n=  46 value    165: inside at impact  34%  outside  62%  gone   4%
+  air    noref   n=  38 value    132: inside at impact  14%  outside  79%  gone   7%
+  air    still   n=  10 value     35: inside at impact  57%  outside  43%  gone   0%
+  ground moving  n= 185 value    628: inside at impact  50%  outside  43%  gone   8%
+  ground noref   n= 162 value    643: inside at impact  51%  outside  33%  gone  16%
+  ground still   n=  23 value     72: inside at impact  45%  outside  43%  gone  12%

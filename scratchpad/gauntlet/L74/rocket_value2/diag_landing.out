@@ -1,5 +1,7 @@
-Traceback (most recent call last):
-  File "C:\Users\benpe\ClashBot\.claude\worktrees\agent-a67f26ceb5d77048a\scratchpad\gauntlet\L74\rocket_value2\diag_landing.py", line 52, in <module>
-    ev, hp, r = info(n)
-    ^^^^^^^^^
-ValueError: too many values to unpack (expected 3)
+147 fires; value in the blast at the decision 1558 (10.60/fire)
+  dead           bodies   43 value   131.7 (8%)
+  hit            bodies   73 value   361.6 (23%)
+  missed         bodies  217 value   692.6 (44%)
+  inside_unhurt  bodies  102 value   371.9 (24%)
+survivors moved between the boards: mean 2.60 tiles, median 2.58, >=2 tiles 65%
+a blast re-aimed at the impact-time positions would cover 1335 of the 1426 surviving-body value (vs 733 the real aim covered)

@@ -16,7 +16,7 @@ DIR, ARM = sys.argv[1], (sys.argv[2] if len(sys.argv) > 2 else 'rv9')
 T = D.rocket_unit_table()
 
 
-def info(n): return T.get(vocab.base_key(n), (0.0, 0.0, 0.5))
+def info(n): return T.get(vocab.base_key(n), (0.0, 0.0, 0.5))[:3]
 
 
 def load(arm, c):
