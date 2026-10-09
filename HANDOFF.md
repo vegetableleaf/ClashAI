@@ -4875,6 +4875,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 > * **OWNER ruling on dead-lane scope:** "The xbow block should only block offensive xbows in the dead lane." = the built
 >   refined block (dead lane lock cell + king-only cells = placements aimed at a dead/king tower; deeper defensive rows stay
 >   allowed). No change needed.
+> * **In-game replay recorder MERGED (L74/replay_rec, NOTES.md).** recorder.py watch-only (no taps, refuses if we are a player),
+>   convert.py both sides -> battles.csv/plays_ext_i1.csv (deck strings carry -ev1/-hero); on 60 of our live matches: body
+>   card+tick within 5 ticks 99.79%, precision 100%, within 1 tile 99.74%; spells unverifiable from logs. TV Royale (wiki):
+>   1 replay/channel/hour, kept 24 h, ~33 channels incl. Ranked; expected ~48-72 high-skill replays/day (untested), mixed
+>   decks (feeds the generalist; X-Bow rare). UNKNOWN until the device test: reader resolves a replay battle? both hands
+>   visible? speed-up? menu path. Note live_mem.my_side_of raises unless exactly one hand is visible (replay = both).
+>   Device test (~15 min, owner opens TV Royale by hand): nav_dryrun.py --device --seconds 180, then feasibility.py.
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
