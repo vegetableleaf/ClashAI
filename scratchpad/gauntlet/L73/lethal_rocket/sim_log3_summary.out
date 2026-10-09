@@ -1,0 +1,33 @@
+on evo rc=0 08:05:40
+off lad rc=0 08:05:55
+on lad rc=0 08:05:58
+off evo rc=0 08:06:07
+DONE
+off: 480 common matches (A 480, B 480); records identical 480; differ 0 []
+paired games 480 (off 480, on 480)
+  off: wins 315.0; outcomes {'win': 315, 'loss': 165}
+  on: wins 316.0; outcomes {'win': 316, 'loss': 164}
+  paired: on better 1 / worse 0 (sign test p 1.000)
+Log fires 21 in 21 matches; phases {'OT': 21}; damage {35: 21}; Rocket fires off 171 / on 162
+    ('evo', 's0:gen:103'): first Log t 306.30 L hp 11 | off win 1-0 end 6111 | on win 1-0 end 6111
+/home/clashbot-gauntlet/lethal/sim_log3 on: fires 183 in 167 matches; fire-based double-casts: cross-card 4 in 4 matches, same-card 11 (first never cast)
+    cross (('evo', 's0:gen:103'), 'lethal_rocket', 304.8, 'lethal_log', 306.3, 'L')
+    cross (('evo', 's0:gen:161'), 'lethal_rocket', 305.3, 'lethal_log', 306.8, 'L')
+    cross (('lad', 's0:gen:110'), 'lethal_rocket', 305.3, 'lethal_log', 306.8, 'R')
+    cross (('lad', 's0:gen:183'), 'lethal_rocket', 306.8, 'lethal_log', 308.3, 'R')
+  landing-based: lethal casts 183, accepted 111; ACCEPTED double-casts 0 []
+/home/clashbot-gauntlet/lethal/sim_log3 off: fires 171 in 156 matches; fire-based double-casts: cross-card 0 in 0 matches, same-card 15 (first never cast)
+  landing-based: lethal casts 171, accepted 105; ACCEPTED double-casts 0 []
+sim_log off lad:17: loss 0-1 end 5419 | fires []
+sim_log off lad:185: loss 0-1 end 4225 | fires []
+sim_log off lad:222: win 1-0 end 6069 | fires [('lethal_rocket', 297.3, 'L', 2)]
+sim_log2 on lad:17: loss 0-1 end 5419 | fires []
+sim_log2 on lad:185: win 1-0 end 3782 | fires [('lethal_log', 186.3, 'L', 22)]
+sim_log2 on lad:222: win 1-0 end 6069 | fires [('lethal_log', 300.3, 'L', 2), ('lethal_log', 301.8, 'L', 2), ('lethal_log', 303.3, 'L', 2)]
+sim_log3 on lad:17: loss 0-1 end 5419 | fires [('lethal_log', 268.3, 'L', 8)]
+sim_log3 on lad:185: win 1-0 end 3752 | fires [('lethal_log', 184.8, 'L', 22)]
+sim_log3 on lad:222: win 1-0 end 6069 | fires [('lethal_rocket', 297.3, 'L', 2), ('lethal_log', 303.3, 'L', 2)]
+{"tag": "s0:gen:222", "why": "lethal_rocket", "land": 5946, "accepted": true, "cell": 475}
+{"tag": "s0:gen:222", "why": "lethal_log", "land": 6066, "accepted": false, "cell": 1267}
+{"tag": "s0:gen:17", "why": "lethal_log", "land": 5366, "accepted": true, "cell": 1267}
+{"tag": "s0:gen:185", "why": "lethal_log", "land": 3696, "accepted": true, "cell": 1267}

@@ -16,6 +16,7 @@ from .decision_options import (BARREL_KEY, DecisionOptions, barrel_landings, cho
                                xbow_dead_lane_cells, enemy_body_tiles, princess_dead_state, rocket_covers_king,
                                rocket_kills_king)
 from .live_mem import my_side_of
+from .decision_options import enemy_princess_hps, hp_before
 
 # W4 hazard gate decoding: game seconds one live decision may accrue. Live decides every reader frame (logged decisions
 # ~10 ticks apart, SIM every 10); a CPU-starved loop reaches ~30 ticks (1.5 s). 2.0 s = the WAIT-row stride the gate was
@@ -60,6 +61,7 @@ class GenPilot(LegacyGenPilot):
         self._hazard_prev = None
         self._threat_state = None
         self._princess_dead_state = None
+        self._lethal_hp_hist = None
 
     def row(self, frame):
         b, info = super().row(frame)
@@ -83,7 +85,17 @@ class GenPilot(LegacyGenPilot):
         side = my_side_of(frame)
         towers = to_observe(frame, side, info['names'])['episode']['crown_towers']
         names = [info['names'][di] if di >= 0 else None for di in info['hand_deck_indices']]
-        return lethal_rocket_choice(options, info['bs'].t_sec, names, allowed, towers, side, self.grid)
+        own = None
+        if getattr(options, 'lethal_log', 'off') == 'on':   # my confirmed plays (card, model xy, landing t): in flight
+            tick = int(frame['game_tick'])                  # + the public tower HP each spell landed on (SIM: match_kwargs)
+            hist = getattr(self, '_lethal_hp_hist', None)
+            if hist is None or (hist and hist[-1][0] > tick):
+                hist = self._lethal_hp_hist = []
+            hist.append((tick, enemy_princess_hps(towers, side)))
+            del hist[:-64]
+            key = {v: k for k, v in getattr(self, 'gid', {}).items()}
+            own = [(key.get(c), x, y, t, hp_before(hist, round(t / 0.05))) for c, f, x, y, t in getattr(self, 'past', [])[-8:]]
+        return lethal_rocket_choice(options, info['bs'].t_sec, names, allowed, towers, side, self.grid, own=own)
 
     @torch.no_grad()
     def decide(self, frame):
@@ -132,7 +144,8 @@ class GenPilot(LegacyGenPilot):
         if lethal is not None:                          # SIM decide_batch: the same rule overrides gate, card and cell
             pos, cell, target = lethal
             card, form = info['hand'][pos]
-            d = dict(play=True, p_play=p, hand_pos=pos, no_affordable=False, stalled=stalled, why='lethal_rocket',
+            why = 'lethal_log' if target.get('card') == 'Log' else 'lethal_rocket'
+            d = dict(play=True, p_play=p, hand_pos=pos, no_affordable=False, stalled=stalled, why=why,
                      lethal_rocket=target, deck_index=info['hand_deck_indices'][pos], card=card, form=form, bs=bs,
                      name=info['names'][info['hand_deck_indices'][pos]], xy=cell_xy(cell, self.grid), **lookahead)
             if options.tau_phase is not None:

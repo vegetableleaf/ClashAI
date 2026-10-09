@@ -1,0 +1,35 @@
+{'matches': 600, 'log_fire_decisions': 329, 'reg_behind': 12, 'OT': 22}
+live_play_20261005_080525.jsonl | reg_behind tick 2855 t 144.1 R hp 6 (dmg 51) | bot next 3 s: ['IceWizard'] | tower fell +8 ticks | loss 1-2 dur 179s
+live_play_20261005_082738.jsonl | OT tick 4318 t 217.2 L hp 49 (dmg 51) | bot next 3 s: [] | tower fell +80 ticks | win 1-0 dur 223s
+live_play_20261005_084413.jsonl | OT tick 4779 t 240.2 R hp 22 (dmg 51) | bot next 3 s: ['Tesla'] | tower fell +10 ticks | win 2-1 dur 243s
+live_play_20261005_103238.jsonl | OT tick 5788 t 290.7 R hp 28 (dmg 51) | bot next 3 s: ['Tesla'] | tower fell +306 ticks | win 1-0 dur 307s
+live_play_20261005_111617.jsonl | reg_behind tick 2530 t 127.8 L hp 49 (dmg 51) | bot next 3 s: [] | tower fell +10 ticks | loss 1-3 dur 171s
+live_play_20261005_114253.jsonl | OT tick 6115 t 307.1 L hp 15 (dmg 51) | bot next 3 s: [] | tower fell +20 ticks | win 1-0 dur 309s
+live_play_20261005_125234.jsonl | OT tick 4812 t 241.9 R hp 41 (dmg 51) | bot next 3 s: ['Tesla'] | tower fell +425 ticks | win 1-0 dur 263s
+live_play_20261006_164355.jsonl | reg_behind tick 2976 t 150.1 R hp 25 (dmg 51) | bot next 3 s: ['Tesla'] | tower fell +72 ticks | win 2-1 dur 183s
+live_play_20261006_165046.jsonl | OT tick 4995 t 251.1 L hp 25 (dmg 51) | bot next 3 s: ['Log', 'Skeletons'] | tower fell +135 ticks | draw 1-1 dur 256s
+live_play_20261006_171031.jsonl | OT tick 3666 t 184.6 L hp 27 (dmg 51) | bot next 3 s: ['IceWizard'] | tower fell +389 ticks | win 1-0 dur 206s
+live_play_20261006_171805.jsonl | OT tick 4866 t 244.6 R hp 32 (dmg 51) | bot next 3 s: ['Tesla'] | tower fell +10 ticks | win 1-0 dur 248s
+live_play_20261006_195411.jsonl | OT tick 3580 t 180.3 R hp 7 (dmg 51) | bot next 3 s: ['Tornado', 'Log'] | tower fell +561 ticks | win 1-0 dur 211s
+live_play_20261007_185231.jsonl | OT tick 4404 t 221.5 L hp 17 (dmg 51) | bot next 3 s: ['Log', 'Knight'] | tower fell +122 ticks | draw 0-0 dur 226s
+live_play_20261007_193710.jsonl | reg_behind tick 1289 t 65.8 L hp 14 (dmg 51) | bot next 3 s: [] | tower fell no | loss 1-2 dur 181s
+live_play_20261007_212614.jsonl | OT tick 3644 t 183.5 L hp 43 (dmg 51) | bot next 3 s: ['Log'] | tower fell +96 ticks | win 1-0 dur 190s
+live_play_20261007_223701.jsonl | OT tick 5473 t 274.9 R hp 21 (dmg 51) | bot next 3 s: ['Log'] | tower fell +64 ticks | draw 0-0 dur 277s
+live_play_20261008_002502.jsonl | reg_behind tick 2275 t 115.1 R hp 14 (dmg 51) | bot next 3 s: ['Knight'] | tower fell +4 ticks | draw 1-1 dur 191s
+live_play_20261008_011022.jsonl | reg_behind tick 1535 t 78.1 L hp 19 (dmg 51) | bot next 3 s: [] | tower fell +10 ticks | loss 1-2 dur 312s
+live_play_20261008_022210.jsonl | reg_behind tick 3373 t 170.0 R hp 14 (dmg 51) | bot next 3 s: ['Log'] | tower fell +28 ticks | loss 1-3 dur 185s
+live_play_20261008_025512.jsonl | OT tick 6106 t 306.6 R hp 47 (dmg 51) | bot next 3 s: [] | tower fell +20 ticks | win 2-1 dur 308s
+live_play_20261008_040027.jsonl | OT tick 6102 t 306.4 R hp 8 (dmg 51) | bot next 3 s: [] | tower fell +10 ticks | win 1-0 dur 308s
+live_play_20261008_065416.jsonl | OT tick 6088 t 305.7 R hp 12 (dmg 51) | bot next 3 s: [] | tower fell +20 ticks | win 2-1 dur 309s
+live_play_20261008_070820.jsonl | reg_behind tick 1647 t 83.7 R hp 14 (dmg 51) | bot next 3 s: [] | tower fell +11 ticks | loss 1-2 dur 182s
+live_play_20261008_085503.jsonl | OT tick 6135 t 308.1 L hp 11 (dmg 51) | bot next 3 s: [] | tower fell +20 ticks | win 1-0 dur 311s
+live_play_20261008_091512.jsonl | reg_behind tick 1311 t 66.9 R hp 32 (dmg 51) | bot next 3 s: [] | tower fell +10 ticks | loss 1-3 dur 111s
+live_play_20261008_101124.jsonl | reg_behind tick 2031 t 102.9 R hp 28 (dmg 51) | bot next 3 s: [] | tower fell +973 ticks | loss 1-2 dur 184s
+live_play_20261008_101709.jsonl | OT tick 6135 t 308.1 L hp 7 (dmg 51) | bot next 3 s: [] | tower fell +10 ticks | win 2-1 dur 311s
+live_play_20261008_105138.jsonl | reg_behind tick 2225 t 112.6 R hp 25 (dmg 51) | bot next 3 s: ['IceWizard'] | tower fell +31 ticks | loss 1-2 dur 182s
+live_play_20261008_124644.jsonl | OT tick 6124 t 307.5 L hp 11 (dmg 35) | bot next 3 s: ['Rocket'] | tower fell +20 ticks | ?
+live_play_20261008_212400.jsonl | OT tick 4208 t 211.6 R hp 21 (dmg 51) | bot next 3 s: [] | tower fell +10 ticks | ?
+live_play_20261008_225206.jsonl | OT tick 5331 t 267.8 R hp 34 (dmg 35) | bot next 3 s: ['Log', 'Tornado'] | tower fell no | ?
+live_play_20261008_234336.jsonl | reg_behind tick 3025 t 152.5 L hp 41 (dmg 51) | bot next 3 s: [] | tower fell +282 ticks | ?
+live_play_20261008_234651.jsonl | OT tick 5116 t 257.0 R hp 8 (dmg 51) | bot next 3 s: ['Tesla'] | tower fell +10 ticks | ?
+live_play_20261009_000019.jsonl | OT tick 6127 t 307.6 R hp 15 (dmg 51) | bot next 3 s: [] | tower fell +20 ticks | ?
