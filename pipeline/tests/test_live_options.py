@@ -304,3 +304,25 @@ def test_tau_threatened_deployable_from_the_file(tmp_path):
     opts, rec = parse(['--tau-threatened', '0.1'], f)                          # explicit wins
     assert opts.tau_threatened == 0.1 and rec['explicit'] == ['tau_threatened']
     assert parse([], tmp_path / 'missing')[0].tau_threatened is None
+
+
+CARD_LEVELS = '--card-levels Rocket=16 Knight=16 Xbow=16 IceWizard=14\n'
+
+
+def test_card_levels_deployable_from_the_file(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + CARD_LEVELS)
+    opts, rec = parse([], f)
+    assert opts.card_levels == (('IceWizard', 14), ('Knight', 16), ('Rocket', 16), ('Xbow', 16))
+    assert rec['from_file']['card_levels'] == ['Rocket=16', 'Knight=16', 'Xbow=16', 'IceWizard=14']
+    opts, rec = parse(['--card-levels', 'Rocket=15'], f)                       # explicit wins
+    assert opts.card_levels == (('Rocket', 15),) and rec['explicit'] == ['card_levels']
+    assert parse([], tmp_path / 'missing')[0].card_levels is None
+
+
+@pytest.mark.skipif(not CKPT.is_file(), reason='live checkpoint not present')
+def test_check_json_reports_card_levels(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + CARD_LEVELS)
+    out = run_live_play('--check', '--ckpt', str(CKPT), '--live-options-file', str(f))
+    assert out.returncode == 0, out.stdout + out.stderr
+    check = json.loads(out.stdout.strip().splitlines()[-1])
+    assert check['decision_options']['card_levels'] == [['IceWizard', 14], ['Knight', 16], ['Rocket', 16], ['Xbow', 16]]

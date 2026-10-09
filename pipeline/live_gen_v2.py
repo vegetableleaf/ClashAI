@@ -206,8 +206,9 @@ class GenPilot(LegacyGenPilot):
                     if str(name).lower() == 'rocket':
                         from .live_mem import to_observe
                         side = my_side_of(frame)
-                        kills_king = rocket_kills_king(to_observe(frame, side, info['names'])['episode']['crown_towers'],
-                                                       side)
+                        towers = to_observe(frame, side, info['names'])['episode']['crown_towers']
+                        kills_king = (rocket_kills_king(towers, side, dict(options.card_levels)) if options.card_levels
+                                      else rocket_kills_king(towers, side))
                     context['rocket_boards'] = [(self._princess_alive, enemy_body_tiles(bs), kills_king)]
             if cell_options.log_aim != 'argmax':       # the model's own projectile tokens, as SIM's match_kwargs
                 context.update(grid=self.grid, barrels=[barrel_landings(b['projectiles'][0], self.gid.get(BARREL_KEY))])
