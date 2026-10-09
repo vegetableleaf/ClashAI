@@ -5094,12 +5094,14 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 > * Combined candidate a0f3746 in C:/Users/benpe/cb_merge_tau = ce4f5b6 + lethal-log (74de8f8, 2 trivial conflicts) + tau
 >   (11 blocks resolved, both sides kept); 241 tests pass -> blind verifier af471193 (A log, B tau incl. own SIM re-run, C
 >   merge). If PASS: deploy `--lethal-log on --tau-threatened 0.2`, Discord, restart between matches.
-> * **DEPLOYED ~05:3x: `--lethal-log on --tau-threatened 0.2`** (merge 766e008, LIVE_OPTIONS 9eb8e34; backup
+> * **DEPLOYED 04:54 (restart; first match 045438 confirms both flags): `--lethal-log on --tau-threatened 0.2`** (merge 766e008, LIVE_OPTIONS 9eb8e34; backup
 >   LIVE_OPTIONS.rdt_backup; Discord posted). Verifier af471193: B tau PASS (own SIM 324 -> 337, 78/65, p .32, +2.7
 >   [-2.1, +7.5]; three-crown -.015 [-.029, -.002]; tower HP lost +73 n.s.; elixir at push 4.98 -> 4.92); C merge PASS;
 >   A4 FAIL = guard releases a rolling spell when OTHER damage lands first (185400 t4200: Log in flight, earlier Rocket
 >   took 345 -> 3, Rocket re-fired; 1/14) -- shared with the pre-tonight rule, not a regression -> a0ff8a54 fixing on a
 >   new branch (conservative earliest-hit tick + snapshots every decision).
+> * rdef_c RESUMED on the VM ~04:56 (STOP removed; `run_rdef_c.sh rdef_c --resume`, learner pid 2699495) + eval_chain2.sh
+>   (evals every 10 updates -> ~/rl_defence/eval/cmp_*.txt). Ship bar unchanged: beat live on SIM v3, pro agreement tripwire.
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
