@@ -910,31 +910,43 @@ class Match:
         still unspent if it has not landed) is taken on the way."""
         env, delay, de = self.env, self.delay, self.cfg["decide_every"]
         arrival = int(self.cfg.get("follow_arrival_ticks", FOLLOW_ARRIVAL_TICKS))
-        land_a, cost_a = tick + delay, self.costs[d["slot"]]
-        st = {"a_landed": False, "a_acc": None}
+        land_a = tick + delay
+        st = {"a_acc": None, "a_landed": False, "last": land_a, "seq": 0}
         tally = getattr(self, "follow_n", None)
         if tally is None:
             tally = self.follow_n = Counter()
+        # plays decided and not landed yet, by landing tick: the first play, then every fired follow-up. EVERY one reaches the
+        # engine at its OWN landing tick: advance() lands whatever is due before it moves the engine on, however long a later
+        # follow-up keeps waiting. "Outstanding" = this list (decided, not landed); live's = tapped, not confirmed. Both are
+        # judged on the 2-tick frame grid anchored at the decision (below), where a play that landed at or before a frame's
+        # tick has been confirmed on that frame, so the two agree except that live counts from the first board tap's
+        # return (>= FOLLOW_ARRIVAL_TICKS after the decision; no follow-up is judged earlier either, see ``t`` below).
+        queue = [(land_a, 0, d)]
 
-        def advance(t: int) -> None:                          # engine to t, the first play landing on the way
+        def advance(t: int) -> None:
             t = min(t, env.tail_cap)
-            if not st["a_landed"] and land_a <= t:
-                env._advance_to(min(land_a, env.tail_cap))
-                landed = not (delay and (env.terminated or env.tick < land_a))
-                st["a_acc"], st["a_landed"] = self._land(p, d, land_a, landed), True
+            while queue and queue[0][0] <= t:
+                lt, _, dd = queue.pop(0)
+                env._advance_to(min(lt, env.tail_cap))
+                first = dd is d
+                landed = not ((delay or not first) and (env.terminated or env.tick < lt))
+                acc = self._land(p, dd, lt, landed)
+                st["last"] = max(st["last"], lt)
+                if first:
+                    st["a_acc"], st["a_landed"] = acc, True
             env._advance_to(t)
 
-        fired = []                                            # (landing tick, follow-up decision dict)
+        grid = lambda x: tick + -(-(x - tick) // FOLLOW_FRAME_TICKS) * FOLLOW_FRAME_TICKS      # noqa: E731 first frame tick >= x
         for fu in d["follow_ups"]:
             after, within = int(fu["after_ticks"]), int(fu["within_ticks"])
             horizon = fu.get("afford_ticks")
             horizon = FOLLOW_AFFORD_TICKS if horizon is None else int(horizon)
             due, expire = tick + after, tick + after + within
-            t, blocked, outcome = due, None, "late"
+            # judged on reader frames: the first one at or after its due tick AND after the first tap returned
+            t, blocked, outcome = grid(max(due, tick + arrival)), None, "late"
             while t <= expire and not (env.terminated or env.tick >= env.tail_cap):
                 advance(t)
-                out = [d["slot"]] if not st["a_landed"] else []   # plays decided, not landed: the first, earlier follow-ups
-                out += [f["slot"] for lt, f in fired if lt > env.tick]
+                out = [dd["slot"] for _, _, dd in queue]
                 me = next(pl for pl in env.eng.observe()["players"] if int(pl["side"]) == self.side)
                 act, why = follow_up_verdict(
                     tick=env.tick, due=due, expire=expire, blocked=blocked,
@@ -943,8 +955,10 @@ class Match:
                     have=follow_up_have(me["elixir_exact"], env.tick, horizon, sum(self.costs[s] for s in out)),
                     cost=self.costs[fu["slot"]])
                 if act == "fire":
-                    fired.append((max(land_a + max(t - tick - arrival, 0), env.tick + 1),
+                    st["seq"] += 1
+                    queue.append((max(land_a + max(t - tick - arrival, 0), env.tick + 1), st["seq"],
                                   {"play": True, "slot": fu["slot"], "cell": fu["cell"], "why": "follow_up"}))
+                    queue.sort(key=lambda e: (e[0], e[1]))
                     outcome = None
                     break
                 if act == "cancel":
@@ -954,12 +968,8 @@ class Match:
                 outcome = blocked or "late"
                 t += FOLLOW_FRAME_TICKS
             tally["fired" if outcome is None else f"cancelled_{outcome}"] += 1
-        advance(land_a)                                       # the first play lands even when every follow-up was dropped
-        last = land_a
-        for land_b, fb in sorted(fired, key=lambda x: x[0]):
-            env._advance_to(min(land_b, env.tail_cap))
-            self._land(p, fb, land_b, not (env.terminated or env.tick < land_b))
-            last = max(last, land_b)
+        advance(max([land_a] + [lt for lt, _, _ in queue]))   # the rest land, each at its own tick (the first even if all dropped)
+        last = st["last"]
         env._advance_to(min(tick + de * ((last - tick) // de + 1), env.tail_cap))
         self.state = env.eng.observe()
         self.done = bool(env.terminated) or env.tick >= env.tail_cap
