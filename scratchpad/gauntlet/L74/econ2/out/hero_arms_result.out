@@ -1,0 +1,21 @@
+paired sim_hC vs sim_hB: n=960 score 634.0 vs 658.0; better 145 / worse 169; sign p 0.194
+sim_hC - sim_hB: push-start elixir (per-match mean) +0.362 [+0.273, +0.447] (n 859)
+sim_hC - sim_hB: taps < 5 elixir /min -0.822 [-0.927, -0.722] (n 960)
+sim_hC - sim_hB: mean elixir +0.274 [+0.247, +0.304] (n 960)
+paired sim_hC vs sim_hA: n=960 score 634.0 vs 634.0; better 158 / worse 158; sign p 1.000
+sim_hC - sim_hA: push-start elixir (per-match mean) +0.298 [+0.193, +0.401] (n 843)
+sim_hC - sim_hA: taps < 5 elixir /min -0.477 [-0.594, -0.374] (n 960)
+sim_hC - sim_hA: mean elixir +0.297 [+0.260, +0.334] (n 960)
+paired sim_hB vs sim_hA: n=960 score 658.0 vs 634.0; better 183 / worse 159; sign p 0.214
+sim_hB - sim_hA: push-start elixir (per-match mean) -0.052 [-0.153, +0.050] (n 839)
+sim_hB - sim_hA: taps < 5 elixir /min +0.345 [+0.233, +0.454] (n 960)
+sim_hB - sim_hA: mean elixir +0.023 [-0.016, +0.062] (n 960)
+
+## Q3  opponent pressure and my economy (same definitions everywhere; distance = mean |relative error| vs live_all over push_pm, push_pm_1x, push_v, lead, vm_mean, t_vm3, t_board8, t_tank)
+| source | matches | wins | pushes/min (1x) | push value | commit lead s | enemy value on my half (mean) | time vm>=3 | time board>=8 | time tank at back only | opp plays/min | my elixir mean | time at cap | push-start elixir mean / median / 1x | taps < 5 elixir /min | distance |
+| live_all | 471 | 0 | 1.05 (0.85) | 8.6 | 10.7 | 2.41 | 34.6% | 30.7% | 16.3% | 7.8 | 4.60 | 2.8% | 2.91 / 2.53 / 2.88 | 6.51 |   n/a |
+| live_towerref | 43 | 0 | 1.05 (0.93) | 8.8 | 13.1 | 2.38 | 34.4% | 32.1% | 17.7% | 7.2 | 5.28 | 4.3% | 3.06 / 2.74 / 3.13 | 4.24 | 0.061 |
+| live_r1e | 325 | 0 | 1.02 (0.83) | 8.6 | 10.9 | 2.35 | 33.7% | 30.4% | 16.7% | 7.9 | 4.38 | 2.6% | 2.73 / 2.39 / 2.81 | 7.28 | 0.020 |
+| sim_hA | 960 | 634 | 1.02 (0.68) | 8.4 | 12.0 | 2.24 | 32.5% | 30.8% | 12.2% | 9.1 | 5.53 | 3.1% | 4.40 / 4.43 / 4.00 | 3.71 | 0.096 |
+| sim_hB | 960 | 658 | 1.02 (0.67) | 8.3 | 12.0 | 2.18 | 32.3% | 30.6% | 11.9% | 9.3 | 5.54 | 3.7% | 4.35 / 4.29 / 3.90 | 4.12 | 0.103 |
+| sim_hC | 960 | 634 | 1.02 (0.68) | 8.3 | 11.5 | 2.23 | 32.9% | 30.6% | 11.8% | 9.2 | 5.83 | 3.9% | 4.73 / 4.75 / 4.18 | 3.19 | 0.092 |

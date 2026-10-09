@@ -312,6 +312,10 @@ def main() -> int:
     ap.add_argument("--iw-press-pstar", type=float, default=None,
                     help="Hero Ice Wizard pro gate: press only at hazard >= this P* (default: the fitted P*(V=4) .0196); "
                          "deployable from LIVE_OPTIONS")
+    ap.add_argument("--hero-ability-spec", choices=("off", "supplement"), default="off",
+                    help="own-ability catalog for my hero's ability token: off (default) = pinned catalog, my Hero Ice "
+                         "Wizard reads 'readiness unknown' as today; supplement = pipeline.own_ability.SUPPLEMENT, the "
+                         "training-style token (L74 econ2). Deployable from LIVE_OPTIONS")
     ap.add_argument("--ckpt-override-file", type=Path, default=REPO / "scratchpad/gauntlet/L70/live/CKPT_OVERRIDE",
                     help="default checkpoint selection; explicit --ckpt wins. A changed selection ends a default-selected run between matches")
     ap.add_argument("--nav-dry-run", action="store_true",
@@ -378,7 +382,7 @@ def main() -> int:
                 dict(checkpoint=path, sha256=sha, feature_version=pl.feature_version)
                 for (path, sha), (_, pl) in zip(arms, loaded)], device=loaded[0][0], tau=a.tau, **anti_leak_log(a),
                 public_audit=a.public_audit, legal_guard=not getattr(a, 'no_legal_guard', False), predict_drops=a.predict_drops, own_effects=bool(getattr(a, 'own_effects', False)),
-                iw_press_pstar=a.iw_press_pstar,
+                iw_press_pstar=a.iw_press_pstar, hero_ability_spec=getattr(a, "hero_ability_spec", "off"),
                 decision_options=vars(loaded[0][1].decision_options), live_options=a.live_options)))
             return 0
     else:
@@ -395,7 +399,7 @@ def main() -> int:
         print(json.dumps(dict(check='LIVE_CHECK_PASS', checkpoint=a.ckpt, sha256=a.ckpt_sha256,
               feature_version=pilot.feature_version, device=device, tau=a.tau, **anti_leak_log(a),
               public_audit=a.public_audit, legal_guard=getattr(pilot, 'legal_guard', None), predict_drops=a.predict_drops, own_effects=bool(getattr(a, 'own_effects', False)),
-                iw_press_pstar=a.iw_press_pstar,
+                iw_press_pstar=a.iw_press_pstar, hero_ability_spec=getattr(a, "hero_ability_spec", "off"),
               decision_options=vars(pilot.decision_options), live_options=a.live_options)))
         return 0
     nav = None
@@ -539,7 +543,8 @@ def load_pilot(a, decision_cfg, ckpt=None):
                      extrapolate_ticks=a.extrapolate, decision_options=options_from_config(decision_cfg),
                      decision_seed=a.decision_seed, public_audit=a.public_audit,
                      **({"predict_drops": True} if getattr(a, "predict_drops", False) else {}),
-                     **({"own_effects": True} if getattr(a, "own_effects", False) else {}))
+                     **({"own_effects": True} if getattr(a, "own_effects", False) else {}),
+                     **({"hero_ability_spec": a.hero_ability_spec} if getattr(a, "hero_ability_spec", "off") != "off" else {}))
     pilot.legal_guard = not getattr(a, 'no_legal_guard', False)
     if getattr(a, "anti_leak", False):          # default: the class's None = off, the decision rule unchanged
         pilot.anti_leak_elixir, pilot.anti_leak_seconds = a.anti_leak_elixir, a.anti_leak_seconds
@@ -579,7 +584,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
       extrapolate=a.extrapolate, opp_counter=not a.no_opp_counter, device=device, **anti_leak_log(a),
       ckpt_source=a.ckpt_source, ckpt_sha256=a.ckpt_sha256,
       decision_options=vars(pilot.decision_options), decision_seed=pilot.match_seed,
-      live_options=getattr(a, "live_options", None), iw_press_pstar=getattr(a, "iw_press_pstar", None),
+      live_options=getattr(a, "live_options", None), iw_press_pstar=getattr(a, "iw_press_pstar", None), hero_ability_spec=getattr(a, "hero_ability_spec", "off"),
       feature_version=pilot.feature_version, public_audit=a.public_audit, legal_guard=getattr(pilot, "legal_guard", None),
       **({"predict_drops": True} if getattr(a, "predict_drops", False) else {}),
       **({"own_effects": True} if getattr(a, "own_effects", False) else {}),

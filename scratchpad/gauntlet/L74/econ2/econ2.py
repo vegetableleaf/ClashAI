@@ -419,12 +419,12 @@ def tables(R, ref="live_all", srcs=None):
 
 def pressure(ms):
     """Q3 calibration metrics, identical for live / SIM / pros (all from the compact format; public information only)."""
-    t1 = tall = 0.0; P1 = []; Pall = []; lead = []; vm_s = b8 = v3 = vm_int = tkb = 0.0; ops = 0; el_t = cap = 0.0; outs = collections.Counter()
+    t1 = tall = 0.0; P1 = []; Pall = []; lead = []; vm_s = b8 = v3 = vm_int = tkb = 0.0; ops = lo = 0; el_t = cap = 0.0; outs = collections.Counter()
     tim = []
     for m in ms:
         T, el, vm, vt = m["T"], m["el"], m["vm"], m["vt"]
         if len(T) < 50 or any(p[1] not in CARDS for p in m["pl"]): continue
-        outs[m.get("out")] += 1; ops += len(m["ops"])
+        outs[m.get("out")] += 1; ops += len(m["ops"]); lo += sum(1 for p in m["pl"] if p[2] is not None and p[2] < 5)
         for i in range(len(T) - 1):
             dt = min(T[i + 1] - T[i], 30) / 20.0; tall += dt; t1 += dt * (T[i] < 2400)
             vm_int += dt * vm[i]; v3 += dt * (vm[i] >= 3); b8 += dt * (vm[i] + vt[i] >= 8); tkb += dt * (vm[i] < .5 and m["tk"][i] >= 5)
@@ -437,7 +437,7 @@ def pressure(ms):
     return dict(n=n, win=outs.get("win", 0) + outs.get("WIN", 0), draw=outs.get("draw", 0) + outs.get("DRAW", 0), outs=dict(outs),
                 push_pm=len(Pall) / mins, push_pm_1x=len(P1) / (t1 / 60.0), push_v=mean([v for e, v in Pall]), lead=med(lead),
                 vm_mean=vm_int / tall, t_vm3=v3 / tall, t_tank=tkb / tall, t_board8=b8 / tall, opp_pm=ops / mins, el_push=mean([e for e, v in Pall]),
-                el_push_med=med([e for e, v in Pall]), el_push_1x=mean(P1), el_mean=el_t / tall, t_cap=cap / tall, minutes=mins / max(1, n))
+                el_push_med=med([e for e, v in Pall]), el_push_1x=mean(P1), el_mean=el_t / tall, taps_lo_pm=lo / mins, t_cap=cap / tall, minutes=mins / max(1, n))
 
 
 CAL_KEYS = ("push_pm", "push_pm_1x", "push_v", "lead", "vm_mean", "t_vm3", "t_board8", "t_tank")
@@ -445,7 +445,7 @@ CAL_KEYS = ("push_pm", "push_pm_1x", "push_v", "lead", "vm_mean", "t_vm3", "t_bo
 
 def calib_table(names):
     print("\n## Q3  opponent pressure and my economy (same definitions everywhere; distance = mean |relative error| vs live_all over " + ", ".join(CAL_KEYS) + ")")
-    print("| source | matches | wins | pushes/min (1x) | push value | commit lead s | enemy value on my half (mean) | time vm>=3 | time board>=8 | time tank at back only | opp plays/min | my elixir mean | time at cap | push-start elixir mean / median / 1x | distance |")
+    print("| source | matches | wins | pushes/min (1x) | push value | commit lead s | enemy value on my half (mean) | time vm>=3 | time board>=8 | time tank at back only | opp plays/min | my elixir mean | time at cap | push-start elixir mean / median / 1x | taps < 5 elixir /min | distance |")
     out = {}
     for n in names:
         n, _, cen = n.partition("#")                     # name#lad = one opponent census only
@@ -458,7 +458,7 @@ def calib_table(names):
             ref = out.get("live_all")                 # calibration distance: mean |relative error| vs live_all on the pressure metrics
             d = mean([abs(r[k] / ref[k] - 1) for k in CAL_KEYS]) if ref and g != "live_all" else None
             print(f"| {g} | {r['n']} | {r['win']} | {f2(r['push_pm'])} ({f2(r['push_pm_1x'])}) | {f2(r['push_v'], 1)} | {f2(r['lead'], 1)} | {f2(r['vm_mean'])} | {f2(100 * r['t_vm3'], 1)}% | "
-                  f"{f2(100 * r['t_board8'], 1)}% | {f2(100 * r['t_tank'], 1)}% | {f2(r['opp_pm'], 1)} | {f2(r['el_mean'])} | {f2(100 * r['t_cap'], 1)}% | {f2(r['el_push'])} / {f2(r['el_push_med'])} / {f2(r['el_push_1x'])} | {f2(d, 3)} |")
+                  f"{f2(100 * r['t_board8'], 1)}% | {f2(100 * r['t_tank'], 1)}% | {f2(r['opp_pm'], 1)} | {f2(r['el_mean'])} | {f2(100 * r['t_cap'], 1)}% | {f2(r['el_push'])} / {f2(r['el_push_med'])} / {f2(r['el_push_1x'])} | {f2(r['taps_lo_pm'])} | {f2(d, 3)} |")
     json.dump(out, open(HERE + "calib_" + "_".join(names)[:80].replace("@", "-") + ".json", "w"), indent=1)
 
 
@@ -543,6 +543,24 @@ def load_named(n):
     if n.startswith("live_"):
         f = n[5:]; return [m for m in load("live") if (f == "all" or m["fam"] == f) and not m.get("al")]
     return [m for m in load(n) if not cut or m.get("seed") is None or m["seed"] < int(cut)]
+
+
+def paired_econ(a, b):
+    """Paired (census, seed) differences a - b: per-match mean push-start elixir, taps at < 5 elixir per minute, mean
+    elixir; bootstrap 95% CI over matches."""
+    import random
+    def per(n):
+        out = {}
+        for m in load(n):
+            T, el = m["T"], m["el"]; mins = m["end"] / 1200.0
+            pe = [el[T.index(t)] for t in m["ps"] if el[T.index(t)] is not None]
+            out[(m["cen"], m["seed"])] = (mean(pe), sum(1 for p in m["pl"] if p[2] is not None and p[2] < 5) / mins, mean([e for e in el if e is not None]))
+        return out
+    A, B = per(a), per(b); k = sorted(set(A) & set(B)); rng = random.Random(3)
+    for j, lab in enumerate(("push-start elixir (per-match mean)", "taps < 5 elixir /min", "mean elixir")):
+        d = [A[x][j] - B[x][j] for x in k if A[x][j] is not None and B[x][j] is not None]
+        bs = sorted(sum(d[rng.randrange(len(d))] for _ in d) / len(d) for _ in range(1000))
+        print(f"{a} - {b}: {lab} {sum(d) / len(d):+.3f} [{bs[25]:+.3f}, {bs[974]:+.3f}] (n {len(d)})")
 
 
 def paired(a, b, cut=None):
@@ -630,7 +648,7 @@ if __name__ == "__main__":
     elif mode == "deploys": deploys(sys.argv[2:])
     elif mode == "hazard": hazard([a.split(":") for a in sys.argv[2:]])
     elif mode == "depcards": dep_cards(sys.argv[2], sys.argv[3])
-    elif mode == "paired": paired(sys.argv[2], sys.argv[3], int(sys.argv[4]) if len(sys.argv) > 4 else None)
+    elif mode == "paired": paired(sys.argv[2], sys.argv[3], int(sys.argv[4]) if len(sys.argv) > 4 else None); paired_econ(sys.argv[2], sys.argv[3])
     elif mode == "report":
         R = report(sys.argv[2:]); tables(R)
         PRS = [(x, y) for x, y in (("live_r1e", "sim_r1e"), ("live_towerref", "sim_de10"), ("live_stack", "sim_stack"), ("pros", "sim_de10")) if x in R and y in R]

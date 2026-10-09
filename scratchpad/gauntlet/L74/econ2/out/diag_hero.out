@@ -1,0 +1,6 @@
+Hero IW lives (complete): 2825 | confirmed-or-not presses per life: {0: 2130, 1: 659, 2: 28, 3: 6, 4: 2}
+gap between presses in one life (s, min/p10/p50/p90/max): [1.2, 1.5, 20.4, 31.45, 62.3] n 46
+deploy (first sighting) -> first 'ready' button (s): [0.1, 2.2, 2.3, 6.2, 21.3] n 2269
+press -> button 'ready' again in the same life (s): [1.0, 1.4, 12.95, 24.95, 29.45] n 91
+elixir drop per confirmed press: median 1.1432 n 763 | button right after: {'stale': 632, 'absent': 100, 'grey': 24, 'ready': 7}
+NOTE (b): in 91 of 741 presses (12%; the "13%" quoted earlier) the button reads 'ready' again later in the same life (median 13 s), and 36 of the 695 lives with a press (5%; 1.3% of all 2,825 lives) hold 2+ presses (gaps median 20 s). The evidence favours 1 charge: right after a confirmed press the button reads absent 100 / grey 24 / ready 7 (non-stale), and 98.6% of lives hold <= 1 press; the late 'ready' readings may be button misreads at 2 s sampling or a second Hero IW overlapping the life window (both untested). If the spec were 2 charges (no cooldown), the supplement token after the FIRST press would read ready 1 / ready_known 1 / charges 1 / cooldown 0 (as before any press) instead of ready 0 / charges 0, i.e. identical to the pre-press token until the second press.

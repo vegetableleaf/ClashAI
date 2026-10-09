@@ -19,7 +19,7 @@ sys.path.insert(0, REPO); sys.path.insert(0, REPO + "/scratchpad/gauntlet/L73/le
 CKPT = "/home/clashbot-gauntlet/probe_rocket/rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt"   # sha 41b52a83 = live
 LOGS = os.path.expanduser("~/econ2/live_logs")
 SIMDIR = os.path.expanduser("~/econ2/sim")
-OUT = os.path.expanduser("~/econ2/swap_rows.pkl")
+OUT = os.path.expanduser(os.environ.get("SWAP_OUT", "~/econ2/swap_rows.pkl"))
 TAU = (.35, .45, .55)
 INT_KEYS = ("hand_card", "hand_form", "next_card", "next_form", "deck_card", "deck_form", "unit_form")
 KEYS = ("tok", "mask", "sc", "past", "hand_card", "hand_form", "next_card", "next_form", "deck_card", "deck_form", "unit_form",
@@ -316,5 +316,44 @@ def known_test():
         sys.stdout.flush()
 
 
+def fixcheck():
+    """Live rows rebuilt with the own_ability parity fix (SWAP_OUT pickle) vs the pre-fix rows (~/econ2/swap_rows.pkl):
+    rows without my Hero IW must be byte-identical; hero rows must carry the training-style token; gate excess vs SIM."""
+    import torch
+    from pipeline.model_gen import load_model
+    torch.set_num_threads(16)
+    old = pickle.load(open(os.path.expanduser("~/econ2/swap_rows.pkl"), "rb")); new = pickle.load(open(OUT, "rb"))
+    S = old["sim"]; O = {(r["file"], r["tick"]): r for r in old["live"]}; N = new["live"]
+    assert len(N) == len(old["live"]), (len(N), len(old["live"]))
+    hero = lambda b: bool(np.abs(b["own_ability"]).sum() > 0)
+    same = diff = 0; bad = collections.Counter()
+    for r in N:
+        o = O[(r["file"], r["tick"])]
+        if hero(o["b"]): continue
+        eq = all(np.array_equal(o["b"][k], r["b"][k]) for k in KEYS) and o["p"] == r["p"]
+        same += eq; diff += not eq
+        if not eq: bad.update(k for k in KEYS if not np.array_equal(o["b"][k], r["b"][k]))
+    print(f"rows without my Hero IW: byte-identical {same}, different {diff} {dict(bad)}")
+    hr = np.concatenate([r["b"]["own_ability"][np.abs(r["b"]["own_ability"]).sum(-1) > 0] for r in N if hero(r["b"])])
+    for c, n in enumerate(("card", "form", "living", "ready", "ready_known", "charges", "cooldown_s")):
+        print(f"hero rows {n}: {dict(collections.Counter(np.round(hr[:, c], 2).tolist()).most_common(6))}")
+    model, st = load_model(CKPT, torch.device("cpu")); model.eval()
+    def key(r): return (min(r["ph"], 1), int(r["el"]), r["trig"])
+    res = {}
+    for nm, sel in {"tank": lambda r: r["trig"] == "their_tank", "form": lambda r: r["form"], "all 2-7": lambda r: True}.items():
+        Ss = [r for r in S if sel(r)]; cs = collections.defaultdict(list)
+        for r, (p, t) in zip(Ss, run_model(model, Ss)): cs[key(r)].append(p > TAU[r["ph"]])
+        def matched(rows):
+            k = [(r, r["p"]) for r in rows if len(cs.get(key(r), [])) >= 10]
+            return np.mean([p > TAU[r["ph"]] for r, p in k]), np.mean([np.mean(cs[key(r)]) for r, p in k]), len(k)
+        fo, fs, n = matched([r for r in old["live"] if sel(r)]); fn, _, _ = matched([r for r in N if sel(r)])
+        fh_o, fs_h, nh = matched([r for r in old["live"] if sel(r) and hero(r["b"])]); fh_n, _, _ = matched([r for r in N if sel(r) and hero(r["b"])])
+        print(f"## [{nm}] P(p>tau) matched: SIM {fs:.4f} | live before {fo:.4f} (excess {fo - fs:+.4f}) -> after {fn:.4f} (excess {fn - fs:+.4f}); "
+              f"removed {(fo - fn) / (fo - fs) * 100:.0f}% of the excess (n {n}) | hero-present rows: {fh_o:.4f} -> {fh_n:.4f} vs SIM {fs_h:.4f} (n {nh})")
+        res[nm] = dict(sim=fs, before=fo, after=fn, n=n, hero_before=fh_o, hero_after=fh_n, hero_sim=fs_h, n_hero=nh)
+    err = np.abs([r["p"] - r["p_log"] for r in N]); print("rebuilt |p - logged p| median %.4f (logged = pre-fix live)" % np.median(err))
+    json.dump(res, open(os.path.expanduser("~/econ2/fixcheck.json"), "w"), indent=1, default=float)
+
+
 if __name__ == "__main__":
-    {"collect": collect, "swap": swap, "follow": follow, "known": known_test}[sys.argv[1]]()
+    {"collect": collect, "swap": swap, "follow": follow, "known": known_test, "fixcheck": fixcheck}[sys.argv[1]]()
