@@ -5187,6 +5187,20 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   but decoder substitution only 0.8% of plays (c) -- 97% of low-elixir plays are the model's own top card. SIM 480: top
 >   334 vs 337; ideal-top 325; ideal-ratio .25 328 (-1.9 [-5.2, +1.3]); tower HP lost -100..-194/match all modes. Next:
 >   ratio .25 to 960 + a low-elixir "patience" gate (mirror of tau-threatened).
+> * **VM STOPPED ~14:00 10-09 (GCP credit exhausted; owner stopped clashbot-s3c).** Workers' VM results backed up to
+>   C:\Users\benpe\vm_backup_20261009\vm_results.tgz (950 MB, 15,625 files: rdef_a/rdef_c ckpts incl. u0030 snap,
+>   sneaky*, own_cycle, rocket_value*, card_wait, log_air, rl_defence, air_answer, tau_threat, crapi census,
+>   L68/rl logs). Compute is LOCAL now (laptop 16 threads, 31 GB, RTX 5050 8 GB, shared): per-worker caps log-air 4,
+>   card-wait 3, rocket-clump 3, own-cycle 2 SIM + GPU only while live STOP exists; defence RL paused (write-up + rented-box
+>   plan). Owner looking for compute < $15/day (recommended: Hetzner AX162 ~$8/day + Vast.ai/RunPod GPU hourly). A new
+>   GCP account for another free trial is against Google's one-trial rule -- advised against.
+> * **Sneaky lock rule (a666a874, af50e7f): not shipped.** Controlled test (opponent idle) 148/176 = 84.1% [78.0, 88.8]
+>   of pullable cases cast and all 148 casts locked the tower; with the opponent playing 57.9% (new defenders take the
+>   lock); SIM 213 pairs -5.6 pp [-11.3, 0.0]; HP>=800 / elixir>=7 filters near-null (rarely fire). King-touch 16.7% of
+>   live episodes have no king-free cell.
+> * Collector: 48 replays, 9/117 players, paused by 3 Cloudflare challenges (owner must solve + `cr.bat resume`); 9.4% of
+>   recent requests rate-limited; cr.bat fixed for UTF-8 console. Multi-instance across IPs declined (rate-limit evasion).
+> * Pending small merges: lethal-level-guard-tidy (2393d41), l74-follow-up-landing (c62fba6) -- need light verification.
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
