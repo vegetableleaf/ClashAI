@@ -4917,6 +4917,9 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   push at 1.0 elixir; Tesla placed centre while the barrels came down the left lane. Workers: af9dd59f run-over scan
 >   (Q1 3-crown/run-over causes, Q2 identity incl. training data, Q3 evo Tesla in training, Q4 ranked fixes); aca25a23
 >   --gate-hazard-threatened (hazard draws at the model's own rate while my tower is losing HP) + SIM A/B.
+> * **Early-release fixes MERGED 4f5424d** (blind PASS_WITH_NOTES on 73367d4; notes: a late landing resets fails_run even with
+>   other releases unresolved; unconfirmed events still logged for releases that later land). TODO after the Hero IW A/B:
+>   add --early-release-margin 8 to LIVE_OPTIONS (owner asked) + DEPLOYED_FILE in test_live_options.
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
