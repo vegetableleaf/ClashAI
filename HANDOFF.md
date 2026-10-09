@@ -5211,6 +5211,30 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   proxies (Minion Giant as balloon etc.). A friend needs: current code + LIVE_OPTIONS (--identity-ext on) + two
 >   untracked data files (research/ext/Royale/RoyaleSim/data/derived/cards.json + calibration.json at RoyaleSim 369fe33;
 >   research/ext/cr-native-sandbox/native_core/data/live_card_catalog.json) + a reader for their build.
+> * **Own-cycle (abf27945, c730aaa) stage 3 SIM FAIL (a):** frozen-columns ckpt 326 vs 361 on 514/960 VM pairs, -6.8 pp
+>   [-12.0, -1.6]; defensive Rockets .463 -> .304/match. Likely (b): fine-tune used the plain pro loss, live ckpt was
+>   trained with rocket_context_weight 4.0 -> fixed retrain wt4_gpu.pt (laptop GPU, STOP present), not SIMed. Pod job
+>   pipeline/pod_own_cycle.sh (frozen w4, unfrozen low LR, placebo; 960 paired each). Live plumbing `--own-cycle
+>   {auto,off}` by checkpoint content.
+> * Compute: owner renting RunPod (RTX 6000 Ada gone; recommended L40 $0.82/h, 32 vCPU, 250 GB RAM; fallback RTX A6000
+>   $0.59/h 16 vCPU). SSH key for the pod: ~/.ssh/runpod_clashbot (public key given to the owner). Laptop SIM: only
+>   log-air runs (laptop was 100% CPU: idle MuMu ~1.7 threads, Medal ~1.1); others code-only until the pod is up.
+>   Defence RL pod-ready (02d901e: host.sh / host.pod.sh / pod_smoke.sh / baselines.sh / live_flags.sh).
+> * **Rocket clump iteration 2 (a67f26ce, 57f848f; 312/480 base matches covered): no winner.** Why it loses (a): blast
+>   value 10.6 at decision -> 2.9 destroyed at impact (44% walked out in the ~1.8 s flight); vs a placebo Rocket at the
+>   corner it helps (-9 vs -25 wins) but the 6 elixir would buy ~2.3 defensive cards. Lead aim fails (forecast worse than
+>   static). 011626 t3884 re-measured: best blast 7.6 elixir by damage (Hound at 13.7% HP; both my princesses already
+>   dead). Variants: rv9 -2.9 pp, de9 -2.6, de9_e8 -.3 [-1.6, +.6], de7_th -.6 [-1.6, 0] (0.15 live fires/match) -- none
+>   shown positive. Rocket+Tornado combo built on --follow-up-taps (window table done), SIM pending (pod).
+> * **log-air result (a93fc9a1):** 50/4,153 live Logs (1.2%) had only flyers in the corridor (16 of them Skeleton Barrel);
+>   SIM on touched games: retarget -14.8 pp (1/5), block +7.4 pp (3/1); overall block +.5 [-.5, +1.5]. Cycling the Log
+>   did not bring air answers faster (35% = base rate). **Owner chose block + Skeleton Barrel exemption** (retarget dropped).
+>   4.2% of Logs hit nothing at all -> being characterised.
+> * **RunPod L40 pod UP ~16:xx 10-09:** `ssh -i ~/.ssh/runpod_clashbot -p 48431 root@64.247.206.120` (32 vCPU / 250 GB
+>   rented; nproc shows host 255 -- use <= 30 procs; 30 GB overlay, /workspace NOT persistent; L40 46 GB, driver 595.91;
+>   Ubuntu 24.04, py3.12/3.13, no Rust). $0.82/h. Setup worker a2ef9aca: venv + torch cu128, RoyaleSim Linux build,
+>   needed data only (no secrets/reader), bit-exact SIM check vs VM backup, /workspace/POD_README.md. A friend's GCP
+>   free-trial n2-standard-128 may follow (free trial likely capped at 8 vCPU until upgraded).
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
