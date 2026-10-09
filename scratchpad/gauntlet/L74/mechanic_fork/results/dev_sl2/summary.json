@@ -1,0 +1,23 @@
+{
+ "per_arm_opp": {
+  "plain|gen": {
+   "n": 6,
+   "win": 2,
+   "loss": 4,
+   "draw": 0,
+   "crowns_diff_mean": -0.667,
+   "tower_hp_diff_mean": -1197.5,
+   "plays_accepted_mean": 38.2,
+   "searched": 0,
+   "unsearched": 0,
+   "gate_skipped": 0,
+   "overrides": 0,
+   "chose_wait": 0,
+   "s_per_searched_mean": null,
+   "wall_s_mean": 63.9,
+   "wall_truncated": 0
+  }
+ },
+ "paired_vs_plain": {},
+ "wall_total_s": 234.0
+}
