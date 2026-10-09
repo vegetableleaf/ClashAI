@@ -1,0 +1,233 @@
+L74 runover scan -- live logs since 2026-10-05 (scratchpad/gauntlet/L74/runover; parse.py -> analyze.py -> summarize.py)
+results src: {'derived': 83, 'ladder': 473, 'nav': 12}
+
+=== ALL since 10-05: matches 568  W 289 L 278  3-crowned 66 (24% of losses)
+  crowns conceded in losses: {2: 64, 1: 146, 3: 66, 0: 2}
+  fall episodes (my tower falls; princesses that fall with the king are not double counted): 458
+    fall within 10 s of the push crossing: 145/458 (32%)
+    fall within 15 s of the push crossing: 235/458 (51%)
+    fall within 20 s of the push crossing: 310/458 (68%)
+    fall within 30 s of the push crossing: 394/458 (86%)
+  -- RUN-OVER (<= 20 s): n=310
+     elixir at push crossing: median 2.39; < 4: 226/310 (73%); window min elixir median 0.9
+     seconds under fire (tower losing HP) 881: gate hold (affordable defence, no play) 247 (28%), broke 500 (57%), playing 134
+     episodes with >= 2 s gate hold while under fire: 49/310 (16%); their p median 0.19 vs tau median 0.45
+     cards affordable and held in those episodes (episodes): {'Tornado': 31, 'Tesla': 23, 'Log': 22, 'Skeletons': 16, 'IceWizard': 13, 'Knight': 9}
+     primary cause: {'broke': 151, 'answered_still_fell': 82, 'gate_hold': 77}
+     no non-X-Bow play in the threat lane (or anywhere for king) from 2 s before the crossing to the fall: 99/310 (32%)
+       of which no play at all 50; played only elsewhere 49
+     spent in the 12..2 s before the crossing: median 6.0 elixir; >= 6: 183/310 (59%); with an X-Bow: 54/310 (17%); with a Rocket: 17/310 (5%)
+     cards played in those 10 s: {'Knight': 124, 'IceWizard': 112, 'Skeletons': 109, 'Log': 104, 'Tesla': 64, 'Tornado': 57, 'Xbow': 54, 'Rocket': 17}
+     cards played in the windows: {'Skeletons': 183, 'Log': 173, 'Knight': 173, 'IceWizard': 165, 'Tornado': 118, 'Tesla': 65, 'Xbow': 16, 'Rocket': 14, 'Cannon': 3, 'Minions': 2, 'Archer': 2, 'InfernoTower': 2, 'BombTower': 2, 'MiniPekka': 1, 'Goblins': 1, 'GoblinHut': 1, 'Princess': 1, 'Valkyrie': 1, 'IceSpirits': 1, 'BlowdartGoblin': 1}
+     attacker body-observations within 7 tiles of the tower (last 3 s): 5402; parent-named spawns resolved to the child class 2072 (38%), UNRESOLVED (model sees the parent) 272 (5.0%); episodes with any unresolved: 38
+     attacker cards (episodes): {'Witch': 40, 'GoblinBarrel': 25, 'HogRider': 20, 'MegaKnight': 19, 'Pekka': 16, 'SkeletonBalloon': 14, 'MiniPekka': 11, 'BattleRam': 11, 'SkeletonKing': 10, 'ElixirGolem': 9, 'Balloon': 9, 'Valkyrie': 9, 'Wizard': 8, 'AngryBarbarians': 8, 'DarkPrince': 8}
+  -- slower falls (> 20 s): n=148
+     elixir at push crossing: median 2.78; < 4: 98/148 (66%); window min elixir median 0.82
+     seconds under fire (tower losing HP) 1005: gate hold (affordable defence, no play) 374 (37%), broke 474 (47%), playing 156
+     episodes with >= 2 s gate hold while under fire: 63/148 (43%); their p median 0.19 vs tau median 0.45
+     cards affordable and held in those episodes (episodes): {'Log': 38, 'Tornado': 37, 'Tesla': 36, 'Knight': 25, 'Skeletons': 18, 'IceWizard': 13}
+     primary cause: {'gate_hold': 47, 'broke': 93, 'answered_still_fell': 8}
+     no non-X-Bow play in the threat lane (or anywhere for king) from 2 s before the crossing to the fall: 3/148 (2%)
+       of which no play at all 0; played only elsewhere 3
+     spent in the 12..2 s before the crossing: median 6.0 elixir; >= 6: 93/148 (63%); with an X-Bow: 53/148 (36%); with a Rocket: 7/148 (5%)
+     cards played in those 10 s: {'Xbow': 53, 'IceWizard': 49, 'Log': 37, 'Tesla': 36, 'Skeletons': 34, 'Knight': 29, 'Tornado': 15, 'Rocket': 7}
+     cards played in the windows: {'Skeletons': 209, 'Knight': 204, 'IceWizard': 202, 'Tornado': 173, 'Log': 159, 'Tesla': 110, 'Cannon': 14, 'BombTower': 11, 'Rocket': 9, 'GoblinHut': 9, 'Xbow': 7, 'BlowdartGoblin': 7, 'IceSpirits': 7, 'Princess': 6, 'Valkyrie': 6, 'InfernoTower': 4, 'SkeletonArmy': 4, 'Wallbreakers': 4, 'Minions': 3, 'GoblinBarrel': 3, 'MiniPekka': 2, 'Goblins': 1, 'Archer': 1, 'Fireball': 1}
+     attacker body-observations within 7 tiles of the tower (last 3 s): 3940; parent-named spawns resolved to the child class 1395 (35%), UNRESOLVED (model sees the parent) 228 (5.8%); episodes with any unresolved: 20
+     attacker cards (episodes): {'Witch': 23, 'ElixirGolem': 19, 'BabyDragon': 13, 'MiniPekka': 13, 'LavaHound': 13, 'BattleHealer': 12, 'SkeletonKing': 11, 'Golem': 10, 'Pekka': 10, 'DarkPrince': 9, 'MegaKnight': 9, 'InfernoDragon': 9, 'HogRider': 9, 'ElectroDragon': 9, 'AxeMan': 8}
+
+=== era pre: matches 559  W 284 L 274  3-crowned 64 (23% of losses)
+  crowns conceded in losses: {2: 63, 1: 145, 3: 64, 0: 2}
+  fall episodes (my tower falls; princesses that fall with the king are not double counted): 451
+    fall within 10 s of the push crossing: 145/451 (32%)
+    fall within 15 s of the push crossing: 231/451 (51%)
+    fall within 20 s of the push crossing: 305/451 (68%)
+    fall within 30 s of the push crossing: 387/451 (86%)
+  -- RUN-OVER (<= 20 s): n=305
+     elixir at push crossing: median 2.39; < 4: 222/305 (73%); window min elixir median 0.9
+     seconds under fire (tower losing HP) 863: gate hold (affordable defence, no play) 244 (28%), broke 486 (56%), playing 133
+     episodes with >= 2 s gate hold while under fire: 49/305 (16%); their p median 0.19 vs tau median 0.45
+     cards affordable and held in those episodes (episodes): {'Tornado': 31, 'Tesla': 23, 'Log': 22, 'Skeletons': 16, 'IceWizard': 13, 'Knight': 9}
+     primary cause: {'broke': 148, 'answered_still_fell': 82, 'gate_hold': 75}
+     no non-X-Bow play in the threat lane (or anywhere for king) from 2 s before the crossing to the fall: 99/305 (32%)
+       of which no play at all 50; played only elsewhere 49
+     spent in the 12..2 s before the crossing: median 6 elixir; >= 6: 180/305 (59%); with an X-Bow: 53/305 (17%); with a Rocket: 17/305 (6%)
+     cards played in those 10 s: {'Knight': 121, 'IceWizard': 110, 'Skeletons': 109, 'Log': 100, 'Tesla': 63, 'Tornado': 57, 'Xbow': 53, 'Rocket': 17}
+     cards played in the windows: {'Skeletons': 178, 'Log': 171, 'Knight': 170, 'IceWizard': 162, 'Tornado': 117, 'Tesla': 64, 'Xbow': 16, 'Rocket': 14, 'Cannon': 3, 'Minions': 2, 'Archer': 2, 'InfernoTower': 2, 'BombTower': 2, 'MiniPekka': 1, 'Goblins': 1, 'GoblinHut': 1, 'Princess': 1, 'Valkyrie': 1, 'IceSpirits': 1, 'BlowdartGoblin': 1}
+     attacker body-observations within 7 tiles of the tower (last 3 s): 5232; parent-named spawns resolved to the child class 1944 (37%), UNRESOLVED (model sees the parent) 272 (5.2%); episodes with any unresolved: 38
+     attacker cards (episodes): {'Witch': 40, 'GoblinBarrel': 25, 'HogRider': 20, 'MegaKnight': 19, 'Pekka': 15, 'SkeletonBalloon': 13, 'MiniPekka': 11, 'BattleRam': 10, 'SkeletonKing': 9, 'ElixirGolem': 9, 'Balloon': 9, 'Valkyrie': 9, 'Wizard': 8, 'AngryBarbarians': 8, 'DarkPrince': 8}
+  -- slower falls (> 20 s): n=146
+     elixir at push crossing: median 2.78; < 4: 96/146 (66%); window min elixir median 0.82
+     seconds under fire (tower losing HP) 990: gate hold (affordable defence, no play) 363 (37%), broke 470 (48%), playing 156
+     episodes with >= 2 s gate hold while under fire: 61/146 (42%); their p median 0.19 vs tau median 0.45
+     cards affordable and held in those episodes (episodes): {'Log': 38, 'Tornado': 35, 'Tesla': 34, 'Knight': 25, 'Skeletons': 18, 'IceWizard': 13}
+     primary cause: {'gate_hold': 46, 'broke': 92, 'answered_still_fell': 8}
+     no non-X-Bow play in the threat lane (or anywhere for king) from 2 s before the crossing to the fall: 3/146 (2%)
+       of which no play at all 0; played only elsewhere 3
+     spent in the 12..2 s before the crossing: median 6.0 elixir; >= 6: 92/146 (63%); with an X-Bow: 52/146 (36%); with a Rocket: 7/146 (5%)
+     cards played in those 10 s: {'Xbow': 52, 'IceWizard': 48, 'Tesla': 36, 'Log': 35, 'Skeletons': 34, 'Knight': 28, 'Tornado': 15, 'Rocket': 7}
+     cards played in the windows: {'Skeletons': 206, 'Knight': 202, 'IceWizard': 200, 'Tornado': 172, 'Log': 158, 'Tesla': 110, 'Cannon': 14, 'BombTower': 11, 'Rocket': 9, 'GoblinHut': 9, 'Xbow': 7, 'BlowdartGoblin': 7, 'IceSpirits': 7, 'Princess': 6, 'Valkyrie': 6, 'InfernoTower': 4, 'SkeletonArmy': 4, 'Wallbreakers': 4, 'Minions': 3, 'GoblinBarrel': 3, 'MiniPekka': 2, 'Goblins': 1, 'Archer': 1, 'Fireball': 1}
+     attacker body-observations within 7 tiles of the tower (last 3 s): 3790; parent-named spawns resolved to the child class 1337 (35%), UNRESOLVED (model sees the parent) 207 (5.5%); episodes with any unresolved: 19
+     attacker cards (episodes): {'Witch': 23, 'ElixirGolem': 19, 'BabyDragon': 13, 'MiniPekka': 13, 'LavaHound': 13, 'BattleHealer': 12, 'Golem': 10, 'SkeletonKing': 10, 'DarkPrince': 9, 'MegaKnight': 9, 'InfernoDragon': 9, 'HogRider': 9, 'ElectroDragon': 9, 'Pekka': 9, 'AxeMan': 8}
+
+=== era bundle2: matches 9  W 5 L 4  3-crowned 2 (50% of losses)
+  crowns conceded in losses: {2: 1, 3: 2, 1: 1}
+  fall episodes (my tower falls; princesses that fall with the king are not double counted): 7
+    fall within 10 s of the push crossing: 0/7 (0%)
+    fall within 15 s of the push crossing: 4/7 (57%)
+    fall within 20 s of the push crossing: 5/7 (71%)
+    fall within 30 s of the push crossing: 7/7 (100%)
+  -- RUN-OVER (<= 20 s): n=5
+     elixir at push crossing: median 2.3; < 4: 4/5 (80%); window min elixir median 0.83
+     seconds under fire (tower losing HP) 17: gate hold (affordable defence, no play) 3 (17%), broke 14 (81%), playing 0
+     episodes with >= 2 s gate hold while under fire: 0/5 (0%); their p median None vs tau median None
+     cards affordable and held in those episodes (episodes): {}
+     primary cause: {'broke': 3, 'gate_hold': 2}
+     no non-X-Bow play in the threat lane (or anywhere for king) from 2 s before the crossing to the fall: 0/5 (0%)
+       of which no play at all 0; played only elsewhere 0
+     spent in the 12..2 s before the crossing: median 6 elixir; >= 6: 3/5 (60%); with an X-Bow: 1/5 (20%); with a Rocket: 0/5 (0%)
+     cards played in those 10 s: {'Log': 4, 'Knight': 3, 'IceWizard': 2, 'Tesla': 1, 'Xbow': 1}
+     cards played in the windows: {'Skeletons': 5, 'IceWizard': 3, 'Knight': 3, 'Log': 2, 'Tesla': 1, 'Tornado': 1}
+     attacker body-observations within 7 tiles of the tower (last 3 s): 170; parent-named spawns resolved to the child class 128 (75%), UNRESOLVED (model sees the parent) 0 (0.0%); episodes with any unresolved: 0
+     attacker cards (episodes): {'MiniSparkys': 1, 'SkeletonBalloon': 1, 'SkeletonKing': 1, 'ElectroWizard': 1, 'Pekka': 1, 'BattleRam': 1, 'Giant': 1}
+  -- slower falls (> 20 s): n=2
+     elixir at push crossing: median 2.27; < 4: 2/2 (100%); window min elixir median 0.71
+     seconds under fire (tower losing HP) 15: gate hold (affordable defence, no play) 11 (71%), broke 4 (27%), playing 0
+     episodes with >= 2 s gate hold while under fire: 2/2 (100%); their p median 0.26 vs tau median 0.5
+     cards affordable and held in those episodes (episodes): {'Tornado': 2, 'Tesla': 2}
+     primary cause: {'gate_hold': 1, 'broke': 1}
+     no non-X-Bow play in the threat lane (or anywhere for king) from 2 s before the crossing to the fall: 0/2 (0%)
+       of which no play at all 0; played only elsewhere 0
+     spent in the 12..2 s before the crossing: median 8.0 elixir; >= 6: 1/2 (50%); with an X-Bow: 1/2 (50%); with a Rocket: 0/2 (0%)
+     cards played in those 10 s: {'Log': 2, 'Xbow': 1, 'Knight': 1, 'IceWizard': 1}
+     cards played in the windows: {'Skeletons': 3, 'IceWizard': 2, 'Knight': 2, 'Tornado': 1, 'Log': 1}
+     attacker body-observations within 7 tiles of the tower (last 3 s): 150; parent-named spawns resolved to the child class 58 (39%), UNRESOLVED (model sees the parent) 21 (14.0%); episodes with any unresolved: 1
+     attacker cards (episodes): {'SkeletonArmy': 1, 'SkeletonBalloon': 1, 'SkeletonKing': 1, 'RamRider': 1, 'BattleRam': 1, 'ElectroWizard': 1, '-1': 1, 'Pekka': 1}
+  family R1e                    n 356 W-L 180-175  3-crowned 35  falls 281 run-over<=20s 193
+  family candidate              n  17 W-L 5-12  3-crowned 1  falls 18 run-over<=20s 13
+  family rseries_r2l_u0120      n   6 W-L 3-3  3-crowned 0  falls 4 run-over<=20s 3
+  family stack2k_cellref        n 103 W-L 56-47  3-crowned 16  falls 83 run-over<=20s 55
+  family towerref_w2            n  86 W-L 45-41  3-crowned 14  falls 72 run-over<=20s 46
+
+losses with >= 1 run-over fall: 234/278 (84%); wins with one: 18/289 (6%)
+  opp has Skeleton Barrel: matches  35 W-L 11-24 (WR 31%) 3-crowned 9; run-over falls 29
+  opp has Skeleton King  : matches  27 W-L 8-19 (WR 30%) 3-crowned 7; run-over falls 19
+  opp has Skeleton Army  : matches  79 W-L 35-44 (WR 44%) 3-crowned 7; run-over falls 52
+  opp has Graveyard      : matches  20 W-L 11-9 (WR 55%) 3-crowned 1; run-over falls 12
+  opp has Witch          : matches  96 W-L 36-60 (WR 38%) 3-crowned 19; run-over falls 74
+  opp has Goblin Barrel  : matches  60 W-L 28-32 (WR 47%) 3-crowned 4; run-over falls 42
+  opp has Golem          : matches  22 W-L 7-15 (WR 32%) 3-crowned 6; run-over falls 9
+  opp has Hog            : matches  83 W-L 34-49 (WR 41%) 3-crowned 7; run-over falls 53
+  opp has Balloon        : matches  38 W-L 18-20 (WR 47%) 3-crowned 4; run-over falls 20
+  opp has Royal Hogs     : matches  40 W-L 21-19 (WR 52%) 3-crowned 2; run-over falls 20
+  opp has Lava           : matches  13 W-L 3-10 (WR 23%) 3-crowned 5; run-over falls 7
+  all: WR 51%
+
+3-crown losses, towerref_w2 family (file | push->king seconds | elixir at crossing | gate s / broke s | held | plays | attackers):
+  20261008_131820 pre      24.2s el0 10.0 gate 10.1/0.0 held {'Tesla': 2, 'Tornado': 19, 'Skeletons': 4, 'IceWizard': 13} plays [['Tesla', 'C'], ['Log', 'L'], ['Skeletons', 'R']] att ['Witch']
+  20261008_133501 pre      23.4s el0 2.2 gate 6.5/0.0 held {'Tesla': 13, 'Tornado': 13} plays [['Log', 'R'], ['Skeletons', 'R'], ['Knight', 'R'], ['IceWizard', 'R']] att ['Witch', 'ElixirGolem']
+  20261008_133745 pre      36.0s el0 2.0 gate 5.7/0.0 held {'Knight': 11, 'Log': 11, 'Tornado': 11} plays [['Tesla', 'C'], ['Skeletons', 'C']] att ['AngryBarbarians']
+  20261008_134026 pre      29.2s el0 1.5 gate 7.2/2.0 held {'Tornado': 14, 'Tesla': 11} plays [['Skeletons', 'L'], ['Knight', 'L'], ['IceWizard', 'L'], ['Log', 'L']] att ['DarkWitch', 'Witch', 'ElixirGolem', 'Archer']
+  20261008_134846 pre      37.0s el0 3.8 gate 7.6/0.0 held {'Log': 14, 'Tornado': 14} plays [['Tesla', 'C'], ['Knight', 'C'], ['Skeletons', 'C'], ['IceWizard', 'C']] att ['Golem', 'GiantSkeleton']
+  20261008_153140 pre      27.4s el0 1.0 gate 4.5/2.0 held {'IceWizard': 9, 'Tesla': 4} plays [['Log', 'L'], ['Knight', 'R'], ['Tornado', 'L']] att ['BattleRam', 'ElectroWizard', 'Assassin']
+  20261008_174413 pre      58.1s el0 1.4 gate 18.8/0.0 held {'Knight': 36, 'Tornado': 36} plays [['Skeletons', 'R'], ['IceWizard', 'R'], ['Knight', 'R']] att ['RoyalRecruits', 'RoyalHogs']
+  20261008_180243 pre      10.9s el0 10.0 gate 1.0/0.0 held {'Tesla': 2, 'Tornado': 2} plays [] att ['Witch', 'GiantBuffer', 'Miner']
+  20261008_183808 pre      33.7s el0 5.2 gate 6.0/0.0 held {'Skeletons': 12, 'Tornado': 11} plays [['Knight', 'L'], ['IceWizard', 'L'], ['Skeletons', 'L'], ['Log', 'L'], ['Tesla', 'C'], ['Knight', 'L'], ['IceWizard', 'L'], ['Skeletons', 'C']] att ['LittlePrince', '26000107']
+  20261008_184516 pre      39.0s el0 10.0 gate 0.0/0.0 held {} plays [['Rocket', 'R'], ['Tornado', 'R'], ['Log', 'L'], ['Knight', 'C'], ['IceWizard', 'C'], ['Skeletons', 'C'], ['Rocket', 'L'], ['Tornado', 'C'], ['Knight', 'C'], ['Tesla', 'L'], ['IceWizard', 'C'], ['Skeletons', 'L'], ['Log', 'R'], ['Knight', 'R'], ['Rocket', 'R'], ['Tornado', 'R'], ['Skeletons', 'L'], ['Tesla', 'C'], ['Knight', 'R'], ['Rocket', 'R'], ['Tornado', 'C'], ['Skeletons', 'C'], ['Tesla', 'C'], ['Knight', 'R'], ['Knight', 'R']] att ['GiantSkeleton', 'Bowler', 'MegaKnight', 'Pekka']
+  20261008_185952 pre      53.0s el0 7.4 gate 0.0/0.0 held {} plays [['Cannon', 'C'], ['BombTower', 'R'], ['Tesla', 'R'], ['Tornado', 'L'], ['InfernoTower', 'C'], ['Cannon', 'L'], ['BombTower', 'C'], ['Tesla', 'R'], ['Tornado', 'R'], ['InfernoTower', 'C'], ['Cannon', 'C'], ['BombTower', 'L'], ['GoblinHut', 'C'], ['Tornado', 'R'], ['Tesla', 'R'], ['Cannon', 'C'], ['BombTower', 'C'], ['GoblinHut', 'C'], ['Tornado', 'R'], ['Tesla', 'C'], ['Cannon', 'C'], ['BombTower', 'R'], ['GoblinHut', 'C'], ['Tornado', 'R'], ['Tesla', 'C'], ['Cannon', 'C'], ['BombTower', 'C'], ['GoblinHut', 'C'], ['InfernoTower', 'L'], ['Tornado', 'C'], ['Cannon', 'R'], ['Tesla', 'C'], ['GoblinHut', 'R'], ['BombTower', 'C'], ['Tornado', 'C'], ['Tornado', 'C']] att ['GoblinDrill', 'MegaKnight', 'GoldenKnight', 'Witch']
+  20261008_194541 pre      32.6s el0 6.1 gate 0.0/8.9 held {} plays [['GoblinBarrel', 'R'], ['Princess', 'C'], ['Valkyrie', 'R'], ['IceSpirits', 'R'], ['BlowdartGoblin', 'C'], ['GoblinBarrel', 'R'], ['Princess', 'C']] att ['GoblinHut', 'BabyDragon', 'ElectroGiant']
+  20261008_213416 bundle2  23.2s el0 3.7 gate 8.6/1.5 held {'Tornado': 17, 'Tesla': 12} plays [['Skeletons', 'L'], ['IceWizard', 'C'], ['Knight', 'R']] att ['SkeletonArmy', 'SkeletonBalloon', 'SkeletonKing']
+  20261008_213632 bundle2  24.0s el0 0.8 gate 2.0/2.5 held {'Tornado': 4, 'Tesla': 2} plays [['Skeletons', 'L'], ['Tornado', 'L'], ['Knight', 'L'], ['Log', 'L'], ['IceWizard', 'L'], ['Skeletons', 'L']] att ['RamRider', 'BattleRam', 'ElectroWizard', '-1']
+
+=== Q2 live identity census (bodies seen across decision states; one body counted once per state)
+resolved to a child class (model receives the child):
+  ('Witch', '0', 'skeletons', 'child'): 20817 body-states in 97 (name,hp) match-entries, max_hp [81, 98, 108, 119, 130]
+  ('Witch', '1', 'skeletons', 'child'): 10749 body-states in 69 (name,hp) match-entries, max_hp [81, 98, 108, 119, 130, 144]
+  ('Tombstone', '0', 'skeletons', 'child'): 7582 body-states in 32 (name,hp) match-entries, max_hp [42, 46, 51, 61, 98, 108, 119, 130]
+  ('SkeletonBalloon', '0', 'skeletons', 'child'): 3110 body-states in 35 (name,hp) match-entries, max_hp [81, 108, 119, 130]
+  ('ElixirGolem', '0', 'elixir_blob', 'legacy'): 3087 body-states in 40 (name,hp) match-entries, max_hp [360, 477, 524, 576]
+  ('SkeletonKing', '0', 'skeletons', 'child'): 2431 body-states in 23 (name,hp) match-entries, max_hp [1]
+  ('DarkWitch', '0', 'bats', 'child'): 2331 body-states in 16 (name,hp) match-entries, max_hp [108, 119, 130]
+  ('GoblinGiant', '0', 'spear_goblins', 'child'): 2207 body-states in 22 (name,hp) match-entries, max_hp [133, 176, 193, 212]
+  ('SkeletonBalloon', '1', 'skeletons', 'child'): 2112 body-states in 27 (name,hp) match-entries, max_hp [81, 108, 119, 130]
+  ('ElixirGolem', '0', 'elixir_golemite', 'legacy'): 2029 body-states in 40 (name,hp) match-entries, max_hp [762, 1010, 1108, 1218]
+  ('LavaHound', '0', 'lava_pups', 'legacy'): 1839 body-states in 13 (name,hp) match-entries, max_hp [215, 284, 312, 343]
+  ('BarbarianHut', '0', 'barbarians', 'child'): 1805 body-states in 6 (name,hp) match-entries, max_hp [949, 1041]
+  ('FirespiritHut', '0', 'fire_spirit', 'child'): 1563 body-states in 23 (name,hp) match-entries, max_hp [284, 312, 343, 378]
+  ('Golem', '0', 'golemite', 'legacy'): 1356 body-states in 22 (name,hp) match-entries, max_hp [1376, 1510, 1660]
+  ('GoblinGiant', '1', 'spear_goblins', 'child'): 1165 body-states in 20 (name,hp) match-entries, max_hp [176, 193, 212]
+  ('Tombstone', '2', 'skeletons', 'child'): 919 body-states in 4 (name,hp) match-entries, max_hp [81, 108, 119, 130]
+  ('GoblinHut', '0', 'spear_goblins', 'child'): 836 body-states in 14 (name,hp) match-entries, max_hp [69, 75, 100, 133, 176, 193, 212]
+  ('GoblinDrill', '0', 'goblins', 'child'): 825 body-states in 22 (name,hp) match-entries, max_hp [202, 267, 293, 323]
+  ('-1', '0', 'mother_witch_hog', 'unnamed'): 328 body-states in 12 (name,hp) match-entries, max_hp [833, 915, 1006]
+  ('GoblinGiant', '1', 'goblins', 'child'): 275 body-states in 20 (name,hp) match-entries, max_hp [267, 293, 323]
+  ('-1', '0', 'goblins', 'unnamed'): 152 body-states in 13 (name,hp) match-entries, max_hp [267, 293, 323]
+  ('FirespiritHut', '1', 'fire_spirit', 'child'): 134 body-states in 6 (name,hp) match-entries, max_hp [312, 343]
+  ('GoblinDrill', '1', 'goblins', 'child'): 25 body-states in 2 (name,hp) match-entries, max_hp [267, 293]
+UNRESOLVED (a non-parent body whose class stays the parent card):
+  ('GoblinGang', '0', 'goblin_gang', 'legacy'): 4752 body-states, 39 match-entries, max_hp [133, 176, 193, 212]
+  ('BattleRam', '0', 'battle_ram', 'legacy'): 1844 body-states, 36 match-entries, max_hp [408, 448, 492, 593, 716, 865, 949, 1041]
+  ('ThreeMusketeers', '0', 'three_musketeers', 'legacy'): 1741 body-states, 12 match-entries, max_hp [906, 1200, 1316, 1447, 1593]
+  ('Ghost', '0', 'royal_ghost', 'legacy'): 1537 body-states, 19 match-entries, max_hp [1152, 1525, 1674, 1840]
+  ('SkeletonArmy', '1', 'skeleton_army', 'legacy'): 1382 body-states, 31 match-entries, max_hp [2, 3, 4]
+  ('RamRider', '0', 'ram_rider', 'legacy'): 1148 body-states, 26 match-entries, max_hp [593, 786, 863, 948]
+  ('Rascals', '0', 'rascals', 'legacy'): 1036 body-states, 10 match-entries, max_hp [261, 345, 379]
+  ('ElectroSpirit', '0', 'electro_spirit', 'legacy'): 977 body-states, 37 match-entries, max_hp [284, 312, 343]
+  ('SuspiciousBush', '0', 'suspicious_bush', 'legacy'): 895 body-states, 17 match-entries, max_hp [337, 447, 491, 539]
+  ('Goblinstein', '0', 'goblinstein', 'legacy'): 873 body-states, 10 match-entries, max_hp [721, 955, 1049, 2240, 2966, 3255]
+  ('GoblinCage', '0', 'goblin_cage', 'child_no_class'): 720 body-states, 23 match-entries, max_hp [582, 639, 770, 1484, 1629, 1791]
+  ('Ghost', '1', 'royal_ghost', 'legacy'): 718 body-states, 33 match-entries, max_hp [81, 108, 119, 130, 1152, 1525, 1674, 1840]
+  ('Goblins', '2', 'goblins', 'legacy'): 439 body-states, 13 match-entries, max_hp [3390, 3720, 4090]
+  ('LittlePrince', '0', 'little_prince', 'legacy'): 356 body-states, 8 match-entries, max_hp [1600, 2118, 2325, 2556]
+  ('Musketeer', '2', 'musketeer', 'legacy'): 223 body-states, 12 match-entries, max_hp [1536, 1854, 2232, 2454]
+  ('BattleRam', '1', 'battle_ram', 'legacy'): 195 body-states, 12 match-entries, max_hp [716, 949, 1041, 1145]
+  ('Balloon', '2', 'balloon', 'legacy'): 189 body-states, 22 match-entries, max_hp [627, 688, 756, 832]
+  ('Mortar', '1', 'mortar', 'legacy'): 142 body-states, 9 match-entries, max_hp [267, 293, 323]
+  ('Phoenix', '0', 'phoenix', 'child_no_class'): 137 body-states, 11 match-entries, max_hp [317, 420, 461, 507]
+  ('DarkPrince', '2', 'dark_prince', 'legacy'): 131 body-states, 7 match-entries, max_hp [1971]
+  ('GoblinCage', '1', 'goblin_cage', 'child_no_class'): 111 body-states, 10 match-entries, max_hp [1484, 1629]
+  ('RageBarbarian', '1', 'lumberjack', 'legacy'): 95 body-states, 11 match-entries, max_hp [2, 3, 4]
+  ('Tombstone', '2', 'tombstone', 'unknown_hp'): 51 body-states, 1 match-entries, max_hp [4224]
+  ('EliteArcher', '2', 'magic_archer', 'legacy'): 20 body-states, 4 match-entries, max_hp [271, 394, 433]
+  ('Wallbreakers', '1', 'wall_breakers', 'legacy'): 19 body-states, 8 match-entries, max_hp [216, 238]
+  ('IceWizard', '2', 'ice_wizard', 'legacy'): 7 body-states, 2 match-entries, max_hp [266, 425]
+max simultaneous model bodies of one enemy class in one state (classes >= 3), matches:
+  skeletons            in 169 matches (max 23)
+  goblins              in  89 matches (max 6)
+  skeleton_army        in  79 matches (max 27)
+  witch                in  57 matches (max 22)
+  bats                 in  56 matches (max 9)
+  barbarians           in  54 matches (max 10)
+  minions              in  47 matches (max 6)
+  royal_hogs           in  40 matches (max 8)
+  goblin_gang          in  39 matches (max 6)
+  tombstone            in  32 matches (max 11)
+  spear_goblins        in  32 matches (max 4)
+  minion_horde         in  30 matches (max 12)
+  guards               in  26 matches (max 3)
+  skeleton_barrel      in  26 matches (max 14)
+  elixir_blob          in  26 matches (max 4)
+  zappies              in  23 matches (max 4)
+  skeleton_king        in  17 matches (max 17)
+  royal_recruit        in  17 matches (max 6)
+  royal_ghost          in  16 matches (max 5)
+  goblin_giant         in  15 matches (max 6)
+  clone                in  13 matches (max 10)
+  lava_pups            in  13 matches (max 6)
+  elixir_golemite      in  12 matches (max 4)
+  goblin_drill         in  11 matches (max 3)
+  three_musketeers     in  10 matches (max 3)
+  rascals              in  10 matches (max 3)
+  furnace              in   9 matches (max 4)
+  goblin_hut           in   9 matches (max 5)
+  night_witch          in   8 matches (max 11)
+  barbarian_hut        in   4 matches (max 8)
+  battle_ram           in   3 matches (max 4)
+  mortar               in   3 matches (max 3)
+  musketeer            in   3 matches (max 3)
+  mirror               in   2 matches (max 3)
+  fire_spirit          in   2 matches (max 3)
+  mother_witch_hog     in   2 matches (max 3)
+  mega_knight          in   2 matches (max 3)
+  monk                 in   1 matches (max 3)
+  elixir_golem         in   1 matches (max 3)
+  ice_wizard           in   1 matches (max 3)
