@@ -5308,6 +5308,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   were bolted on as rules / imitation fine-tunes onto a policy not trained with them; (v) RL R3c base vs R1e 542 vs
 >   548 (p .76): RL itself added nothing measurable. New instrument started: forked same-moment two-choice test
 >   (a13e48dd; sneaky lock, wait-for-better-card, then combo), common random numbers, B-A at +10 s/+20 s/end.
+>   Owner's late-game tower Rocket case (2x/OT; hold if a big push threatens) added to it as mechanic 3.
+> * **OWNER: drills.** Old drills (Aug, old stack) sat at random (18-20% vs 16.7%) for measured reasons (terminal drill
+>   ends, 8% step share over 28 drills, 9/28 never positive, hand-priced reward, cell-precision boards). New design:
+>   real-moment selectors, do/hold pairs, answer from forked outcomes, KL-anchored training (reuse arm E). Drill-suite
+>   worker aedc7fb6, Phase 1 (selectors + harvest + live-vs-pro baseline per drill, D1-D9: under-fire, threatened lane,
+>   pool elixir, air answer, Log targets, Rocket clump (+Tornado), late tower Rocket, sneaky lock, second card).
+>   Phases 2 (fork scoring) and 3 (training) gated on the lead. Output L74/drills/CATALOG.md.
 > * **Rocket+Tornado combo SIM (a67f26ce, f022854; pod; delay-0 wrapper):** pull works -- clump value in blast at impact
 >   61% (combo) vs 15% (lone Rocket, same moment), destroyed +.34 elixir/fire [-.08, +.74] (tanks survive ~1480 dmg).
 >   Wins: no combo arm beats its lone twin; cb9 -.2 pp [-1.3, +.8] (6% of matches fire), cb7 -1.9, cb5 -5.0; air pool cb7
