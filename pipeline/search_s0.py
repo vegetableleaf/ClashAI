@@ -630,6 +630,9 @@ def _run_job(job: tuple) -> dict:
     m, name = got
     rec = _W["runner"].play(arm, m, deadline or None)
     rec["opp_deck_name"] = name
+    for k in ("pipeline_decisions", "follow_ups"):         # the learner side's mechanism tallies (present only when the mechanism is on)
+        if k in _W["runner"].last_result:
+            rec[k] = _W["runner"].last_result[k]
     if _W.get("record_plays"):     # --record-plays: our plays [decision tick, landing tick, card, accepted, elixir seen]
         rec["own_plays"] = [[q["tick"], q.get("land_tick", q["tick"]), q["card"], q["accepted"], q["elixir_exact"]]
                             for q in _W["runner"].last_result["plays"]]

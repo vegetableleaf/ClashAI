@@ -66,6 +66,7 @@ search() {   # search NAME CENSUS_FILE CENSUS_TAG WORKERS SEEDS [extra]
 
 case "$PHASE" in
 pre)
+  rm -rf "$OUT"/off_evo "$OUT"/off_lad "$OUT"/pd0_evo "$OUT"/pd0_lad "$OUT"/run.log 2>/dev/null; rm -f "$OUT"/off_*.log "$OUT"/pd0_*.log
   preflight
   # (1) fake-engine unit tests of the rules (laptop-identical) + the follow-up / default-parity ones they rest on
   nice -n "${NICE:-10}" $PY -m pytest -q -p no:cacheprovider pipeline/tests/test_e1_pipeline_decisions.py pipeline/tests/test_e1_follow_up.py \
@@ -96,8 +97,8 @@ for arm in ("off", "pd0"):
             if pd is not None and pd.get("blocked_unaffordable", 0) + pd.get("blocked_slot_busy", 0) + pd.get("blocked_outstanding", 0) > 0:
                 print("  VERDICT BLOCKED a model decision (the mask should make this unreachable):", r["tag"], pd); bad += 1
         if arm == "pd0":
-            sec = sum((r["pipeline_decisions"] or {}).get("second_plays", 0) for r in rows)
-            dec = sum((r["pipeline_decisions"] or {}).get("decisions_pending", 0) for r in rows)
+            sec = sum((r.get("pipeline_decisions") or {}).get("second_plays", 0) for r in rows)
+            dec = sum((r.get("pipeline_decisions") or {}).get("decisions_pending", 0) for r in rows)
             print("  pending decisions", dec, "second plays", sec, "(0 pending decisions = the mechanism never ran)")
             if dec == 0:
                 bad += 1
