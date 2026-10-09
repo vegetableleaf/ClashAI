@@ -1,0 +1,2 @@
+4200 model_t 211.30 enemy {'R': 2543, 'L': 3} hand ['Tesla', 'Skeletons', 'Xbow', 'Rocket'] el 8 -> None | logged Rocket True
+main 9eb8e34 at the same tick: 4200 model_t 211.30 enemy {'R': 2543, 'L': 3} -> ('Rocket', {'lane': 'L', 'hp': 3, 'damage': 342, 'level': 11})

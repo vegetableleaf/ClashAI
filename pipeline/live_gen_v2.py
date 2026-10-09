@@ -16,7 +16,7 @@ from .decision_options import (BARREL_KEY, DecisionOptions, barrel_landings, cho
                                threat_on, threat_taus, tower_threat, xbow_dead_lane_cells, enemy_body_tiles,
                                princess_dead_state, rocket_covers_king, rocket_kills_king)
 from .live_mem import my_side_of
-from .decision_options import enemy_princess_hps, hp_before
+from .decision_options import enemy_princess_hps, hp_after, record_hp
 
 # W4 hazard gate decoding: game seconds one live decision may accrue. Live decides every reader frame (logged decisions
 # ~10 ticks apart, SIM every 10); a CPU-starved loop reaches ~30 ticks (1.5 s). 2.0 s = the WAIT-row stride the gate was
@@ -77,6 +77,17 @@ class GenPilot(LegacyGenPilot):
             decision['public_audit'] = self._public_audit_snapshot
         return decision
 
+    def _lethal_snapshot(self, frame, towers=None, side=None, names=None):
+        """lethal_log: this decision's public enemy-princess HP into the per-match history (one entry per game tick),
+        taken on EVERY decision, affordable or not, as SIM match_kwargs. -> the history."""
+        tick = int(frame['game_tick'])
+        if towers is None:
+            from .live_mem import to_observe
+            side = my_side_of(frame)
+            towers = to_observe(frame, side, names)['episode']['crown_towers']
+        self._lethal_hp_hist = record_hp(getattr(self, '_lethal_hp_hist', None), tick, enemy_princess_hps(towers, side))
+        return self._lethal_hp_hist
+
     def lethal_rocket(self, frame, info, allowed):
         """decision_options.lethal_rocket_choice on the live frame: the decision board's time (bs.t_sec, as tau_phase),
         the raw frame's absolute tower HP (public), my hand by position. live_play never decides with a card pending."""
@@ -89,14 +100,9 @@ class GenPilot(LegacyGenPilot):
         names = [info['names'][di] if di >= 0 else None for di in info['hand_deck_indices']]
         own = None
         if getattr(options, 'lethal_log', 'off') == 'on':   # my confirmed plays (card, model xy, landing t): in flight
-            tick = int(frame['game_tick'])                  # + the public tower HP each spell landed on (SIM: match_kwargs)
-            hist = getattr(self, '_lethal_hp_hist', None)
-            if hist is None or (hist and hist[-1][0] > tick):
-                hist = self._lethal_hp_hist = []
-            hist.append((tick, enemy_princess_hps(towers, side)))
-            del hist[:-64]
+            hist = self._lethal_snapshot(frame, towers, side)   # + the public tower HP each spell landed on
             key = {v: k for k, v in getattr(self, 'gid', {}).items()}
-            own = [(key.get(c), x, y, t, hp_before(hist, round(t / 0.05))) for c, f, x, y, t in getattr(self, 'past', [])[-8:]]
+            own = [(key.get(c), x, y, t, hp_after(hist, round(t / 0.05))) for c, f, x, y, t in getattr(self, 'past', [])[-8:]]
         return lethal_rocket_choice(options, info['bs'].t_sec, names, allowed, towers, side, self.grid, own=own)
 
     @torch.no_grad()
@@ -126,6 +132,8 @@ class GenPilot(LegacyGenPilot):
         tau_threat = None
         if options.tau_threatened is not None:          # every decision (as SIM match_kwargs), affordable or not
             self._tau_threat_state, tau_threat = tau_threat_state(getattr(self, '_tau_threat_state', None), info['bs'])
+        if getattr(options, 'lethal_rocket', 'off') != 'off' and getattr(options, 'lethal_log', 'off') == 'on':
+            self._lethal_snapshot(frame, names=info['names'])  # every decision (as SIM match_kwargs), affordable or not
         if not allowed.any():
             if hazard_on:
                 self._hazard_prev = (tick, False)
