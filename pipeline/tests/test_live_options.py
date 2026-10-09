@@ -36,7 +36,8 @@ BUNDLE = ('--gate-decode hazard_below_tau --gate-hazard-min-elixir 9 --iw-press-
           '--identity-ext on '   # 2026-10-09 01:0x (blind-verified a9538ab)
           '--rocket-dead-target block '   # 2026-10-09 03:0x (blind re-verified afe3214)
           '--lethal-log on --tau-threatened 0.2 '   # 2026-10-09 05:xx (blind af471193, merge 766e008)
-          '--card-levels Rocket=16 Log=15')   # 2026-10-09 13:xx (owner card levels; blind af0555f2)
+          '--card-levels Rocket=16 Log=15 '   # 2026-10-09 13:xx (owner card levels; blind af0555f2)
+          '--log-air block')   # 2026-10-09 evening (owner: hold + Skeleton Barrel exempt; blind a1d953e2 on bd4c8ca)
 DEPLOYED_FILE = DEPLOYED.rstrip('\n') + ' ' + BUNDLE + '\n'
 
 
@@ -56,6 +57,7 @@ def test_checked_in_file_applies_every_bundle_option():
     assert a.identity_ext == 'on' and opts.rocket_dead_target == 'block'
     assert opts.lethal_log == 'on' and opts.tau_threatened == 0.2
     assert dict(opts.card_levels) == {'Rocket': 16, 'Log': 15}
+    assert opts.log_air == 'block'
 
 
 def test_file_present_applies_it(tmp_path):
@@ -332,17 +334,17 @@ def test_check_json_reports_card_levels(tmp_path):
 
 
 def test_log_air_deployable_from_the_file(tmp_path):
-    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED_FILE.rstrip('\n') + ' --log-air retarget\n')
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED_FILE.replace('--log-air block', '--log-air retarget'))
     opts, rec = parse([], f)
     assert opts.log_air == 'retarget' and rec['from_file']['log_air'] == 'retarget' and opts.log_aim == 'log_barrel'
     opts, rec = parse(['--log-air', 'block'], f)                                   # explicit wins
     assert opts.log_air == 'block' and rec['explicit'] == ['log_air']
-    assert parse([], REPO / 'scratchpad/gauntlet/L70/live/LIVE_OPTIONS')[0].log_air == 'off'   # not deployed
+    assert parse([], REPO / 'scratchpad/gauntlet/L70/live/LIVE_OPTIONS')[0].log_air == 'block'   # deployed 2026-10-09
 
 
 @pytest.mark.skipif(not CKPT.is_file(), reason='live checkpoint not present')
 def test_check_json_reports_log_air(tmp_path):
-    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED_FILE.rstrip('\n') + ' --log-air retarget\n')
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED_FILE.replace('--log-air block', '--log-air retarget'))
     out = run_live_play('--check', '--ckpt', str(CKPT), '--live-options-file', str(f))
     assert out.returncode == 0, out.stdout + out.stderr
     check = json.loads(out.stdout.strip().splitlines()[-1])

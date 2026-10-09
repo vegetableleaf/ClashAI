@@ -5264,6 +5264,17 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   (body_identity.py:227) -> counted as flying -> a useful Log is held (20261006_141406 t3878). All other criteria
 >   PASS (off identical on 8,272 live decisions; 0 candidate-only failures). Back to a93fc9a1 (per-body flying).
 >   Fixed b74da73 (per-body: Phoenix egg = ground; *_ability not flying) -> candidate bd4c8ca -> verifier a1d953e2.
+> * **log-air v2 MERGED + ON (`--log-air block` in LIVE_OPTIONS + test pin; owner's pick "hold + Skeleton Barrel
+>   exempt").** Blind a1d953e2 on bd4c8ca: PASS_WITH_NOTES -- off/absent byte-identical (27 live logs, 8,272 decisions,
+>   242 Logs; SIM decide_batch 3,840 rows), 141406 t3878 egg Log kept, 130607 t1001/t1738 blocked, real Phoenix still
+>   air, Skeleton/Goblin Barrel exemptions, lethal Log 8/8 untouched, 64/64 side x lane cases, public fields only,
+>   `--check` PASS, 462 tests pass. Parked: (low) an egg claims the nearest flyer of ANY class within 0.75 tiles
+>   (decision_options.py ~664) -> limit to the parent's class (failure mode = the old no-block behaviour); SIM's egg may
+>   sit outside the 262..558 HP set, so the egg rule may never fire in SIM. Live NOT restarted (stopped since owner's
+>   "stop live NOW"; next owner-started run picks it up).
+> * Royale upstream 10-09 evening (not pulled; pod pins PyPI royalesim 0.1.17 / royalegym 0.1.18): RoyaleSim +418
+>   (0.1.25; Evo Electro Giant runs on the 160402017 table, UNBUILT; extract_cards builds Hero Ice Wizard + Hero Electro
+>   Wizard, no runtime mechanic yet), RoyaleGym +226, RoyaleLearn +85, RoyaleViser +25.
 > * **Rocket+Tornado combo SIM (a67f26ce, f022854; pod; delay-0 wrapper):** pull works -- clump value in blast at impact
 >   61% (combo) vs 15% (lone Rocket, same moment), destroyed +.34 elixir/fire [-.08, +.74] (tanks survive ~1480 dmg).
 >   Wins: no combo arm beats its lone twin; cb9 -.2 pp [-1.3, +.8] (6% of matches fire), cb7 -1.9, cb5 -5.0; air pool cb7
