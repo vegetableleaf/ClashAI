@@ -5201,6 +5201,16 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 > * Collector: 48 replays, 9/117 players, paused by 3 Cloudflare challenges (owner must solve + `cr.bat resume`); 9.4% of
 >   recent requests rate-limited; cr.bat fixed for UTF-8 console. Multi-instance across IPs declined (rate-limit evasion).
 > * Pending small merges: lethal-level-guard-tidy (2393d41), l74-follow-up-landing (c62fba6) -- need light verification.
+> * **Defence RL round 2 (a8bdb155, cca0a82): no candidate.** rdef_c u30 607 vs 635 (165/193), 3-crown 44 vs 30, run-overs
+>   .380 vs .311, train metrics flat over 36 updates (drift, not learning). Fast base (no refine heads) 626 (level; updates
+>   3-6 min vs 8-15). Arm D (fast base + rdef_c reward) 632.5 vs 626 level. Arm E (counterfactual gate labels at M4 moments)
+>   partial: played earlier at lower elixir, 3-crown 17 vs 6 on 296 games -- labels ignored elixir cost; fixed as
+>   towers_mat (charges only elixir that bought nothing, 30 s). E2 = E + towers_mat, NOT run (needs ~2.7 h on 48 cores or
+>   ~40 min with a GPU learner). Baseline: 36 s/match under fire, 77% of tower damage taken under fire.
+> * Owner asked: same checkpoint 41b52a83 since 10-08 ~13:00 (no retrain). New cards are seen only through identity-ext
+>   proxies (Minion Giant as balloon etc.). A friend needs: current code + LIVE_OPTIONS (--identity-ext on) + two
+>   untracked data files (research/ext/Royale/RoyaleSim/data/derived/cards.json + calibration.json at RoyaleSim 369fe33;
+>   research/ext/cr-native-sandbox/native_core/data/live_card_catalog.json) + a reader for their build.
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
