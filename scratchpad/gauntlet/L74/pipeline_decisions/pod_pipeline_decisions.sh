@@ -7,9 +7,12 @@
 #   PHASE=ab     the A/B: ARMS in parallel, each over census EVO + ladder LAD, paired by (census, tag).
 #   PHASE=sum    pd_ab_summary.py (paired wins + the pro-pair profile + the acceptance bar).
 #
-#   CB=/workspace/ClashBot PHASE=pre bash scratchpad/gauntlet/L74/pipeline_decisions/pod_pipeline_decisions.sh
-#   CB=/workspace/ClashBot PHASE=ab  SEEDS=0:480 bash scratchpad/gauntlet/L74/pipeline_decisions/pod_pipeline_decisions.sh
-#   CB=/workspace/ClashBot PHASE=sum bash scratchpad/gauntlet/L74/pipeline_decisions/pod_pipeline_decisions.sh
+# Pod defaults (POD_README.md, 2026-10-09): repo = the worktree /workspace/wt_pd of branch l74-pipeline-decisions (icebow/data and
+# research/ext symlinked to /workspace/clashbot), venv /workspace/venv, results /workspace/results/pipeline, ROYALE_RUNTIME=20261006-linux.
+# The WHOLE phase runs under `flock /workspace/cpu.lock` (shared pod: it queues behind the other jobs; <= 28 processes, TOTAL).
+#   nohup bash scratchpad/gauntlet/L74/pipeline_decisions/pod_pipeline_decisions.sh > /workspace/results/pipeline/pre.out 2>&1 &     # PHASE=pre
+#   PHASE=ab SEEDS=0:480 nohup bash .../pod_pipeline_decisions.sh > /workspace/results/pipeline/ab.out 2>&1 &
+#   PHASE=sum bash .../pod_pipeline_decisions.sh
 #
 # Arms (decisions on 3 of the 4 are the deployed LIVE_OPTIONS bundle's; only --pipeline-* differs):
 #   off  reference: the hard lock                                  (no flag)
@@ -21,13 +24,19 @@
 # 584 of 960 with 4.4x the pros' pairs and Tornado .50 vs .16 at second plays -- if pd0 shows that again, pd1/pd2 are the answer or the
 # idea is closed; one change per experiment: the arms differ ONLY in the pipeline flags.
 set -u
-CB=${CB:-/workspace/ClashBot}; cd "$CB" || exit 2
+CB=${CB:-/workspace/wt_pd}; cd "$CB" || exit 2
 PHASE=${PHASE:-pre}
+if [ "$PHASE" != sum ] && [ -z "${PD_LOCKED:-}" ]; then        # one lock for the whole phase (arms run in parallel inside it)
+  mkdir -p /workspace/results/pipeline
+  echo "[$(date +%T)] waiting for /workspace/cpu.lock (PHASE=$PHASE)"
+  exec flock /workspace/cpu.lock env PD_LOCKED=1 bash "$0" "$@"
+fi
+[ -n "${PD_LOCKED:-}" ] && echo "[$(date +%T)] got /workspace/cpu.lock (PHASE=$PHASE)"
 export ROYALE_RUNTIME=${ROYALE_RUNTIME:-20261006-linux} OMP_NUM_THREADS=1 MKL_NUM_THREADS=1       # POD_README.md: the runtime tag of the Linux build
-PY=${PY:-python}
+PY=${PY:-/workspace/venv/bin/python}
 HERE=scratchpad/gauntlet/L74/pipeline_decisions
-OUT=${OUT:-/workspace/pd_ab}; export OUT; mkdir -p "$OUT"; LOG=$OUT/run.log
-TOTAL=${TOTAL:-30}                                   # <= 30 procs on the 32-vCPU pod (nproc shows the 255-core host)
+OUT=${OUT:-/workspace/results/pipeline/pd_ab}; export OUT; mkdir -p "$OUT"; LOG=$OUT/run.log
+TOTAL=${TOTAL:-28}                                   # <= 28 procs on the shared 32-vCPU pod (nproc shows the 255-core host)
 SEEDS=${SEEDS:-0:480}
 CK=${CK:-icebow/data/bench/rl_royale/rseries_r3c/rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt}      # live checkpoint, sha 41b52a83
 GEN1=${GEN1:-icebow/data/pipeline/gen_v1_s0/gen_s0.pt}
