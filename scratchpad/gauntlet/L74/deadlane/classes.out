@@ -1,0 +1,35 @@
+
+towerref_w2: 21 X-Bows with an enemy princess down
+  1x  n=   6 KONLY=  0 (0%) OFF_P=  2 (33%) DL_LOCK=  3 (50%) DL_BACK=  1 (17%) DEF=  0 (0%)
+  2x  n=  14 KONLY=  0 (0%) OFF_P=  6 (43%) DL_LOCK=  6 (43%) DL_BACK=  2 (14%) DEF=  0 (0%)
+  OT  n=   1 KONLY=  0 (0%) OFF_P=  0 (0%) DL_LOCK=  1 (100%) DL_BACK=  0 (0%) DEF=  0 (0%)
+  all n=  21 KONLY=  0 (0%) OFF_P=  8 (38%) DL_LOCK= 10 (48%) DL_BACK=  3 (14%) DEF=  0 (0%)
+  dead-lane rows (board y): [(19.5, 10), (22.5, 3)]
+
+stack2k: 63 X-Bows with an enemy princess down
+  1x  n=   6 KONLY=  0 (0%) OFF_P=  2 (33%) DL_LOCK=  4 (67%) DL_BACK=  0 (0%) DEF=  0 (0%)
+  2x  n=  43 KONLY=  1 (2%) OFF_P=  9 (21%) DL_LOCK= 31 (72%) DL_BACK=  1 (2%) DEF=  1 (2%)
+  OT  n=  14 KONLY=  0 (0%) OFF_P=  6 (43%) DL_LOCK=  8 (57%) DL_BACK=  0 (0%) DEF=  0 (0%)
+  all n=  63 KONLY=  1 (2%) OFF_P= 17 (27%) DL_LOCK= 43 (68%) DL_BACK=  1 (2%) DEF=  1 (2%)
+  dead-lane rows (board y): [(19.5, 43), (22.5, 1)]
+
+R1e: 203 X-Bows with an enemy princess down
+  1x  n=  22 KONLY=  0 (0%) OFF_P=  6 (27%) DL_LOCK= 13 (59%) DL_BACK=  1 (5%) DEF=  2 (9%)
+  2x  n= 138 KONLY=  2 (1%) OFF_P= 52 (38%) DL_LOCK= 65 (47%) DL_BACK=  4 (3%) DEF= 15 (11%)
+  OT  n=  43 KONLY=  0 (0%) OFF_P= 21 (49%) DL_LOCK= 19 (44%) DL_BACK=  2 (5%) DEF=  1 (2%)
+  all n= 203 KONLY=  2 (1%) OFF_P= 79 (39%) DL_LOCK= 97 (48%) DL_BACK=  7 (3%) DEF= 18 (9%)
+  dead-lane rows (board y): [(19.5, 97), (21.5, 1), (22.5, 6)]
+
+other: 10 X-Bows with an enemy princess down
+  1x  n=   2 KONLY=  0 (0%) OFF_P=  0 (0%) DL_LOCK=  2 (100%) DL_BACK=  0 (0%) DEF=  0 (0%)
+  2x  n=   6 KONLY=  0 (0%) OFF_P=  2 (33%) DL_LOCK=  3 (50%) DL_BACK=  1 (17%) DEF=  0 (0%)
+  OT  n=   2 KONLY=  0 (0%) OFF_P=  1 (50%) DL_LOCK=  1 (50%) DL_BACK=  0 (0%) DEF=  0 (0%)
+  all n=  10 KONLY=  0 (0%) OFF_P=  3 (30%) DL_LOCK=  6 (60%) DL_BACK=  1 (10%) DEF=  0 (0%)
+  dead-lane rows (board y): [(19.5, 6), (22.5, 1)]
+
+pros: 297 X-Bows with an enemy princess down
+  1x  n=  74 KONLY= 21 (28%) OFF_P= 35 (47%) DL_LOCK=  8 (11%) DL_BACK=  7 (9%) DEF=  3 (4%)
+  2x  n= 202 KONLY= 27 (13%) OFF_P= 90 (45%) DL_LOCK= 30 (15%) DL_BACK= 33 (16%) DEF= 22 (11%)
+  OT  n=  21 KONLY=  0 (0%) OFF_P= 14 (67%) DL_LOCK=  4 (19%) DL_BACK=  1 (5%) DEF=  2 (10%)
+  all n= 297 KONLY= 48 (16%) OFF_P=139 (47%) DL_LOCK= 42 (14%) DL_BACK= 41 (14%) DEF= 27 (9%)
+  dead-lane rows (board y): [(18.5, 4), (19.5, 38), (21.5, 10), (22.5, 24), (23.5, 5), (25.5, 1), (29.5, 1)]
