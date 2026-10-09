@@ -473,7 +473,7 @@ def my_rocket_damage(crown_towers, side, levels=None):
     level = mine and level_of_factor(float(mine['max_hp']) / (4824.0 if mine.get('type') == 'king' else 3052.0))
     if level is None:
         return None
-    return rocket_tower_damage(levels['Rocket'] if levels and 'Rocket' in levels else level)
+    return tower_damage_or_none(levels['Rocket'] if levels and 'Rocket' in levels else level)
 
 
 def rocket_kills_king(crown_towers, side, levels=None):
@@ -691,6 +691,16 @@ def parse_card_levels(spec):
     return tuple(sorted(out.items()))
 
 
+def tower_damage_or_none(level, name='Rocket'):
+    """
+    reads as level 8 in 2,912 of 152,711 decisions (10-08 20:20-20:53), and the Log (Legendary) starts at level 9 --
+    """
+    try:
+        return rocket_tower_damage(level, name)
+    except ValueError:
+        return None
+
+
 @lru_cache(maxsize=32)
 def rocket_tower_damage(level, name='Rocket'):
     """My Rocket's crown-tower damage at unified card ``level``: RoyaleSim catalog damage floor(580 x ladder / 100)
@@ -724,7 +734,9 @@ def lethal_rocket_target(crown_towers, side, card='Rocket', own=None, t_sec=None
     tower_level = level                              # in-flight spells: their own listed level, else THIS (never
     if levels and card in levels:                   # the evaluated card's level -- verifier: an unlisted Log costed
         level = levels[card]                        # at Rocket=16's level held a lethal Rocket back)
-    damage, best = rocket_tower_damage(level, card), None
+    damage, best = tower_damage_or_none(level, card), None
+    if damage is None:                              # no such card level (e.g. a level-8 King: Log starts at 9): no fire
+        return None
     covered = (in_flight_damage(own, t_sec, tower_level, enemy_princess_hps(crown_towers, side), levels=levels)
                if levels else in_flight_damage(own, t_sec, level, enemy_princess_hps(crown_towers, side))) if own else {}
     for t in crown_towers:
@@ -836,7 +848,10 @@ def in_flight_damage(own, t_sec, level, hp_now=None, levels=None):
             if (math.hypot(x - tx, y - ty) <= rocket_radius_tiles() + tr if rocket else
                     abs(x - tx) <= half + tr and -(depth + tr) <= y - ty <= reach + depth + tr):
                 card = 'Rocket' if rocket else 'Log'
-                damage = rocket_tower_damage(levels.get(card, level) if levels else level, card)
+                damage = tower_damage_or_none(levels.get(card, level) if levels else level, card)
+                if damage is None:                  # unknown level: count the spell as finishing (never a 2nd cast)
+                    out[lane] = math.inf
+                    continue
                 if (before and hp_now and lane in before and lane in hp_now and before[lane] - hp_now[lane] >= damage
                         and round((t_sec - land) / 0.05) - MAX_LOOKAHEAD_TICKS >= hit - RELEASE_MARGIN_TICKS):
                     continue                        # it already hit: the tower HP includes its damage
