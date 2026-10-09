@@ -43,6 +43,7 @@ class DecisionOptions:
     rocket_value: float = 0.0               # > 0: Rocket a clump of >= this much enemy elixir value on my half (rocket_value_choice)
     rocket_value_mode: str = 'cost'         # 'damage': the share of each body's value the Rocket destroys; 'kill': only bodies it kills
     rocket_value_min_y: float = 16.0        # the blast centre must be at board y >= this (16 = my half; 21+ = near my towers)
+    rocket_value_max_left: float = 99.0     # no fire when the bodies in the blast would KEEP more than this much value after the Rocket
     rocket_value_hitbox: str = 'centre'     # 'edge': a body is in the blast when its hitbox touches the radius
     rocket_value_lead: str = 'off'          # 'on': aim at where the bodies will be when the Rocket lands
     rocket_value_idle: str = 'off'          # 'on': only at a decision where the model itself would not play (displaces nothing)
@@ -95,6 +96,8 @@ class DecisionOptions:
             raise ValueError('rocket_value_min_elixir must be in [0, 10]')
         if not math.isfinite(self.rocket_value_min_y) or not 16.0 <= self.rocket_value_min_y <= 32.0:
             raise ValueError('rocket_value_min_y must be in [16, 32] tiles (my half)')
+        if not math.isfinite(self.rocket_value_max_left) or self.rocket_value_max_left < 0:
+            raise ValueError('rocket_value_max_left must be finite and >= 0 (99 = off)')
 
     @property
     def active(self):
@@ -174,6 +177,10 @@ def add_arguments(parser):
                         help='cost: a body is worth card cost / bodies x hp fraction; damage: x the share of its hp the Rocket '
                              'takes instead (min(Rocket damage, hp now) / max hp), so a Giant counts for a third and a Skeleton '
                              'Dragon pair in full; kill: only the bodies the Rocket kills outright count, at their full value')
+    parser.add_argument('--rocket-value-max-left', type=float, default=99.0, metavar='L',
+                        help='no fire when the bodies in the best blast would still hold more than L elixir of value after the '
+                             'Rocket (a Golem keeps 5.7 of its 8): the Rocket then only strips the support and the elixir it '
+                             'cost is missing against the tank. 99 = off')
     parser.add_argument('--rocket-value-min-y', type=float, default=16.0, metavar='Y',
                         help='the blast centre must be at board y >= Y tiles (me at the bottom, my half starts at 16, my princess '
                              'towers stand at 25.5): a deep centre is short in the air and on a clump already at my towers')
@@ -970,7 +977,7 @@ def body_value(cls, hp_frac=None):
 
 
 def rocket_bodies(bs, mode='cost'):
-    """[n, 5] float (class id, x tiles, y tiles, value, collision radius tiles) per enemy body of a BoardState (side != 0,
+    """[n, 6] float (class id, x tiles, y tiles, value, collision radius tiles, value left after the Rocket) per enemy body of a BoardState (side != 0,
     as enemy_unit_count) worth > 0 under ``mode``: cost -> cost/bodies x hp fraction; damage -> cost/bodies x the share of its hp
     the Rocket takes (min(ROCKET_UNIT_DAMAGE, hp now) / max hp); kill -> cost/bodies x hp fraction for a body the Rocket kills
     (hp now <= ROCKET_UNIT_DAMAGE), 0 for one that survives it. Unknown hp = full."""
@@ -990,9 +997,10 @@ def rocket_bodies(bs, mode='cost'):
             value = ev * f if f * hp <= ROCKET_UNIT_DAMAGE else 0.0
         else:
             value = ev * min(ROCKET_UNIT_DAMAGE, f * hp) / hp
-        if value > 0:
-            rows.append((float(u.cls), float(u.x) * 18.0, float(u.y) * 32.0, value, radius))
-    return np.array(rows, dtype=np.float64).reshape(-1, 5)
+        left = ev * max(0.0, f * hp - ROCKET_UNIT_DAMAGE) / hp if hp > 0 else 0.0       # what survives the Rocket
+        if value > 0 or left > 0:
+            rows.append((float(u.cls), float(u.x) * 18.0, float(u.y) * 32.0, value, radius, left))
+    return np.array(rows, dtype=np.float64).reshape(-1, 6)
 
 
 def rocket_lands_in(cx, cy):
@@ -1037,14 +1045,14 @@ def rocket_track(holder, tick, bodies, keep_ticks=40):
     return before
 
 
-def best_rocket_clump(bodies, grid, hitbox='centre', lead=None, min_y=MY_HALF_MIN_Y_TILES):
+def best_rocket_clump(bodies, grid, hitbox='centre', lead=None, min_y=MY_HALF_MIN_Y_TILES, with_left=False):
     """-> (value, eligible) for the best Rocket blast CENTRED on my half: its value, and the [2304] bool cells (on my half) whose
     blast covers every body of that best clump. (0.0, None) with no body worth anything. ``hitbox`` 'centre' counts a body whose
     centre is within the Rocket radius, 'edge' one whose hitbox touches it (radius + the body's collision radius). ``lead`` =
     None, or the (decision tick, history) of rocket_track: the bodies are moved to where they will be when a Rocket aimed at the
     cell lands (rocket_lands_in at the cell, found by one refinement from the static best cell)."""
     if not len(bodies):
-        return 0.0, None
+        return (0.0, None, 0.0) if with_left else (0.0, None)
     x, y = cell_centres_tiles(grid)
     reach = rocket_radius_tiles() + (bodies[:, 4] if hitbox == 'edge' else np.zeros(len(bodies)))
     mine = y >= min_y
@@ -1064,8 +1072,10 @@ def best_rocket_clump(bodies, grid, hitbox='centre', lead=None, min_y=MY_HALF_MI
             inside, value = blast(pos)
     best = int(value.argmax())
     if value[best] <= 0:
-        return 0.0, None
-    return float(value[best]), mine & inside[:, inside[best]].all(axis=1)
+        return (0.0, None, 0.0) if with_left else (0.0, None)
+    members = inside[best] & (bodies[:, 3] > 0)         # the clump: the bodies that count; a zero-value survivor need not be covered
+    eligible = mine & inside[:, members].all(axis=1)
+    return (float(value[best]), eligible, float(inside[best] @ bodies[:, 5])) if with_left else (float(value[best]), eligible)
 
 
 def rocket_value_choice(options, names, allowed, bs, grid, pending=False, holder=None, playing=False):
@@ -1088,8 +1098,10 @@ def rocket_value_choice(options, names, allowed, bs, grid, pending=False, holder
         return None
     if float(bs.my_elixir) + 1e-9 < options.rocket_value_min_elixir:
         return None
-    value, eligible = best_rocket_clump(bodies, grid, options.rocket_value_hitbox, lead, options.rocket_value_min_y)
-    return None if eligible is None or value + 1e-9 < options.rocket_value else (slots[0], eligible, value)
+    value, eligible, left = best_rocket_clump(bodies, grid, options.rocket_value_hitbox, lead, options.rocket_value_min_y, True)
+    if eligible is None or value + 1e-9 < options.rocket_value or left > options.rocket_value_max_left + 1e-9:
+        return None
+    return slots[0], eligible, value
 
 
 def rocket_value_cell(logits, eligible):

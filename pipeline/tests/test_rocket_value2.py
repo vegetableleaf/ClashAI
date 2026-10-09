@@ -53,10 +53,11 @@ def test_default_off_flags_and_validation():
     assert options_from_config(config_from_args(ap.parse_args(full))) == DecisionOptions(
         rocket_value=9.0, rocket_value_mode='kill', rocket_value_hitbox='edge', rocket_value_lead='on', rocket_value_idle='on',
         rocket_value_min_elixir=9.0, rocket_value_min_y=21.0)
+    assert options_from_config(config_from_args(ap.parse_args(['--rocket-value', '9', '--rocket-value-max-left', '3']))).rocket_value_max_left == 3.0
     for kw in (dict(rocket_value=-1.0), dict(rocket_value=float('nan')), dict(rocket_value=float('inf')), dict(rocket_value_mode='x'),
                dict(rocket_value_hitbox='x'), dict(rocket_value_lead='yes'), dict(rocket_value_idle='x'),
                dict(rocket_value_min_elixir=11.0), dict(rocket_value_min_elixir=-1.0), dict(rocket_value_min_y=10.0),
-               dict(rocket_value_min_y=40.0), dict(rocket_value_min_y=float('nan'))):
+               dict(rocket_value_min_y=40.0), dict(rocket_value_min_y=float('nan')), dict(rocket_value_max_left=-1.0)):
         with pytest.raises(ValueError):
             DecisionOptions(**kw)
 
@@ -123,7 +124,7 @@ def test_best_blast_my_half_only_and_eligible_cells_cover_the_whole_clump():
     assert best(board(*pups(y=8.0))) == (0.0, None)                                   # the same push on the enemy half: out of range
     assert best(board(unit('balloon', 9, 14.5), unit('giant', 9, 17.2)))[0] == 10.0   # centre at y >= 16 still covers y 14.5
     assert best(board(unit('balloon', 9, 12.0)))[0] == 0.0
-    assert best_rocket_clump(np.zeros((0, 5)), 'lattice') == (0.0, None)
+    assert best_rocket_clump(np.zeros((0, 6)), 'lattice') == (0.0, None)
 
 
 def test_best_blast_picks_the_biggest_clump_not_the_first():
@@ -156,6 +157,26 @@ def test_011626_cluster_fires_with_the_damage_value_not_the_cost_sum():
     full = ON.__class__(rocket_value=7.0, **DE)
     assert rocket_value_choice(full, NAMES, OK, cluster, 'lattice')[2] == pytest.approx(7.61, abs=.05)
     assert rocket_value_choice(DecisionOptions(rocket_value=9.0, **DE), NAMES, OK, cluster, 'lattice') is None
+
+
+def test_max_left_refuses_a_blast_that_leaves_a_tank_standing():
+    # a Golem (hp 2000 -> keeps 8 x (1 - 580/2000) = 5.68) with three Skeleton Dragons (2 each, all killed)
+    push = board(unit('golem', 4.0, 22.0), unit('skeleton_dragons', 4.5, 22.5), unit('skeleton_dragons', 3.5, 22.5),
+                 unit('skeleton_dragons', 4.0, 23.0))
+    rows = rocket_bodies(push, 'damage')
+    assert rows[:, 5].sum() == pytest.approx(8 * (2000 - 580) / 2000)                    # only the Golem keeps value
+    free = DecisionOptions(rocket_value=7.0, rocket_value_mode='damage')
+    assert rocket_value_choice(free, NAMES, OK, push, 'lattice')[2] == pytest.approx(8 * 580 / 2000 + 6)
+    assert rocket_value_choice(DecisionOptions(rocket_value=7.0, rocket_value_mode='damage', rocket_value_max_left=5.0), NAMES, OK,
+                               push, 'lattice') is None
+    assert rocket_value_choice(DecisionOptions(rocket_value=7.0, rocket_value_mode='damage', rocket_value_max_left=5.7), NAMES, OK,
+                               push, 'lattice') is not None
+    # kill mode: the Golem counts nothing, need not be covered, but still counts as left
+    kill = DecisionOptions(rocket_value=6.0, rocket_value_mode='kill')
+    value, ok, left = best_rocket_clump(rocket_bodies(push, 'kill'), 'lattice', 'centre', None, 16.0, True)
+    assert value == 6.0 and left == pytest.approx(8 * (2000 - 580) / 2000) and ok.any()
+    assert rocket_value_choice(kill, NAMES, OK, push, 'lattice')[2] == 6.0
+    assert rocket_value_choice(DecisionOptions(rocket_value=6.0, rocket_value_mode='kill', rocket_value_max_left=3.0), NAMES, OK, push, 'lattice') is None
 
 
 def test_choice_threshold_slot_pending_and_default_off():
@@ -213,7 +234,7 @@ def test_lead_history_is_kept_short_and_per_holder():
         rocket_track(holder, tick, rocket_bodies(board(unit('giant', 4.0, 20.0)), 'cost'))
     assert holder.rv_hist[0][0] >= 400 - 10 - 40 and len(holder.rv_hist) <= 5
     other = SimpleNamespace()
-    assert rocket_track(other, 5, np.zeros((0, 5))) == [] and len(other.rv_hist) == 1
+    assert rocket_track(other, 5, np.zeros((0, 6))) == [] and len(other.rv_hist) == 1
 
 
 def test_aim_follows_the_model_mass_among_the_eligible_cells_only():
