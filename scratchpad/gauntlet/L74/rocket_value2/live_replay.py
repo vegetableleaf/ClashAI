@@ -23,7 +23,7 @@ except Exception:
 import numpy as np
 from pipeline import decision_options as D
 from pipeline import vocab
-from pipeline.obs_contract import Unit
+from pipeline.obs_contract import Tower, Unit
 
 ap = argparse.ArgumentParser()
 ap.add_argument('--logs', default='C:/Users/benpe/ClashBot/scratchpad/gauntlet/L68/live_reader')
@@ -69,7 +69,8 @@ def load(path):
 
 def board(p):
     units = tuple(Unit(**{k: b[k] for k in Unit.__dataclass_fields__ if k in b}) for b in p['model_bodies'])
-    return SimpleNamespace(units=units, t_sec=float(p['model_tick']) * 0.05, my_elixir=float(p['model_own_elixir']))
+    towers = tuple(Tower(**{k: t[k] for k in Tower.__dataclass_fields__ if k in t}) for t in p.get('model_towers') or [])
+    return SimpleNamespace(units=units, t_sec=float(p['model_tick']) * 0.05, my_elixir=float(p['model_own_elixir']), towers=towers)
 
 
 def run(path, detail=None):
@@ -94,7 +95,7 @@ def run(path, detail=None):
             for key in KEYS:
                 vals[key] = D.best_rocket_clump(D.rocket_bodies(bs, key[0]), 'lattice', key[1], None, key[2])[0]
         for k, o in OPTS.items():
-            if o.rocket_value_lead not in ('off', 'drift') or (vals.get((o.rocket_value_mode, o.rocket_value_hitbox, o.rocket_value_min_y), 0.0)
+            if o.rocket_value_lead in ('on', 'blend') or o.rocket_value_threat == 'on' or (vals.get((o.rocket_value_mode, o.rocket_value_hitbox, o.rocket_value_min_y), 0.0)
                                                                 + 1e-9 >= o.rocket_value) or detail:
                 hit = D.rocket_value_choice(o, hand, allowed, bs, 'lattice', holder=holders[k], playing=bool(d['decision'].get('play')))
             else:

@@ -12,7 +12,9 @@ from types import SimpleNamespace
 sys.path.insert(0, os.getcwd())
 import numpy as np
 from pipeline import decision_options as D
-from pipeline.obs_contract import Unit
+from pipeline.obs_contract import Tower, Unit
+
+TOWERS = [(0, 'king', None), (0, 'princess', 'L'), (0, 'princess', 'R'), (1, 'king', None), (1, 'princess', 'L'), (1, 'princess', 'R')]
 
 ap = argparse.ArgumentParser()
 ap.add_argument('boards'); ap.add_argument('census'); ap.add_argument('variants')
@@ -33,7 +35,9 @@ def load_tags(boards, census):
 
 def board(r):
     units = tuple(Unit(c, 1, x / 18.0, y / 32.0, h, None, None, 1.0) for c, x, y, h in r['b'])
-    return SimpleNamespace(units=units, t_sec=r['tick'] * 0.05, my_elixir=r['el'])
+    towers = tuple(Tower(s, k, l, h, bool(al)) for (s, k, l), (h, al) in zip(TOWERS, r.get('tw', [])))
+    mine = tuple(Unit(c, 0, x / 18.0, y / 32.0, h, None, None, 1.0) for c, x, y, h in r.get('m', []))
+    return SimpleNamespace(units=units + mine, t_sec=r['tick'] * 0.05, my_elixir=r['el'], towers=towers)
 
 
 def first_triggers(item):
@@ -53,8 +57,8 @@ def first_triggers(item):
         for v, o in VARS.items():
             if v in found:
                 continue
-            lead = o.rocket_value_lead == 'on'
-            if not lead and vals.get((o.rocket_value_mode, o.rocket_value_hitbox, o.rocket_value_min_y), 0.0) + 1e-9 < o.rocket_value:
+            stateful = o.rocket_value_lead in ('on', 'blend') or o.rocket_value_threat == 'on'     # these keep per-match state: call every decision
+            if not stateful and vals.get((o.rocket_value_mode, o.rocket_value_hitbox, o.rocket_value_min_y), 0.0) + 1e-9 < o.rocket_value:
                 continue
             hit = D.rocket_value_choice(o, names, allowed, bs, grid, pending=r['pe'], holder=holders[v], playing=r['pl'])
             if hit is not None:
