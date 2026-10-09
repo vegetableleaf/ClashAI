@@ -30,7 +30,8 @@ def parse(argv, path):
 
 
 # owner 2026-10-08 bundle: 9+ elixir hazard gate (W4), Hero IW higher bar, Log at the Goblin Barrel, OT lethal Rocket
-BUNDLE = '--gate-decode hazard_below_tau --gate-hazard-min-elixir 9 --iw-press-pstar 0.03 --log-aim log_barrel --lethal-rocket ot'
+BUNDLE = ('--gate-decode hazard_below_tau --gate-hazard-min-elixir 9 --iw-press-pstar 0.03 --log-aim log_barrel --lethal-rocket ot_behind '
+          '--xbow-dead-lane block --fast-input --tap-gap-ms 0 --afford-ticks 23 --extrapolate 24')   # bundle 2 (2026-10-08 night)
 DEPLOYED_FILE = DEPLOYED.rstrip('\n') + ' ' + BUNDLE + '\n'
 
 
@@ -44,7 +45,7 @@ def test_checked_in_file_applies_every_bundle_option():
     a, rec = parse_with_live_options(ap, [])
     opts = options_from_config(config_from_args(a))
     assert (opts.gate_decode, opts.gate_hazard_min_elixir, opts.log_aim, opts.lethal_rocket) == \
-        ('hazard_below_tau', 9.0, 'log_barrel', 'ot')
+        ('hazard_below_tau', 9.0, 'log_barrel', 'ot_behind')
     assert a.iw_press_pstar == 0.03 and a.own_effects is True and rec['explicit'] == []
 
 
@@ -217,13 +218,13 @@ def test_lethal_rocket_deployable_from_the_file(tmp_path, mode):
 
 
 def test_xbow_dead_lane_deployable_from_the_file(tmp_path):
-    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED_FILE.rstrip('\n') + ' --xbow-dead-lane block\n')
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED.rstrip('\n') + ' --xbow-dead-lane block\n')
     opts, rec = parse([], f)
     assert opts.xbow_dead_lane == 'block' and rec['from_file']['xbow_dead_lane'] == 'block'
-    assert (opts.lethal_rocket, opts.xbow_class, opts.gate_decode) == ('ot', 'class_sample', 'hazard_below_tau')
+    assert opts.xbow_class == 'class_sample'
     opts, rec = parse(['--xbow-dead-lane', 'allow'], f)                        # explicit wins
     assert opts.xbow_dead_lane == 'allow' and rec['explicit'] == ['xbow_dead_lane']
-    assert parse([], REPO / 'scratchpad/gauntlet/L70/live/LIVE_OPTIONS')[0].xbow_dead_lane == 'allow'   # not deployed
+    assert parse([], REPO / 'scratchpad/gauntlet/L70/live/LIVE_OPTIONS')[0].xbow_dead_lane == 'block'   # bundle 2 deploys it
 
 
 @pytest.mark.skipif(not CKPT.is_file(), reason='live checkpoint not present')
