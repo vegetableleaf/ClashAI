@@ -225,3 +225,18 @@ def test_check_json_reports_lethal_rocket(tmp_path, mode):
     check = json.loads(out.stdout.strip().splitlines()[-1])
     assert check['decision_options']['lethal_rocket'] == mode
     assert check['live_options']['from_file']['lethal_rocket'] == mode
+
+
+def test_latency_flags_deployable_from_the_file_and_explicit_wins(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'
+    f.write_text('--fast-input --tap-gap-ms 0 --afford-ticks 23 --early-release-margin 8 --extrapolate 24\n')
+    ap = parser(f)
+    ap.add_argument('--fast-input', action='store_true'); ap.add_argument('--tap-gap-ms', type=int, default=50)
+    ap.add_argument('--afford-ticks', type=int, default=None); ap.add_argument('--early-release-margin', type=int, default=None)
+    ap.add_argument('--extrapolate', type=int, default=26)
+    a, rec = parse_with_live_options(ap, [])
+    assert (a.fast_input, a.tap_gap_ms, a.afford_ticks, a.early_release_margin, a.extrapolate) == (True, 0, 23, 8, 24)
+    a, rec = parse_with_live_options(ap, ['--extrapolate', '26', '--tap-gap-ms', '50'])
+    assert (a.extrapolate, a.tap_gap_ms, a.afford_ticks) == (26, 50, 23) and sorted(rec['explicit']) == ['extrapolate', 'tap_gap_ms']
+    a, rec = parse_with_live_options(ap, ['--no-live-options'])
+    assert (a.fast_input, a.tap_gap_ms, a.afford_ticks, a.early_release_margin, a.extrapolate) == (False, 50, None, None, 26)

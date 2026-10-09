@@ -18,7 +18,14 @@ _UNSET = object()
 # live_play.py flag with the same name and action; explicit command-line use still wins.
 EXTRA_LIVE_FLAGS = (('--own-effects', dict(action='store_true')),
                     ('--iw-press-pstar', dict(type=float, default=None)),   # owner 2026-10-08: IW higher bar
-                    ('--hero-ability-spec', dict(choices=('off', 'supplement'), default='off')))   # L74 econ2 Hero IW token
+                    ('--hero-ability-spec', dict(choices=('off', 'supplement'), default='off')),   # L74 econ2 Hero IW token
+                    # L74 latency (owner-tested 2026-10-08): input path, affordability hold window, refused-tap release,
+                    # look-ahead horizon -- deployable together so the horizon can follow the measured latency
+                    ('--fast-input', dict(action='store_true')),
+                    ('--tap-gap-ms', dict(type=int)),
+                    ('--afford-ticks', dict(type=int)),
+                    ('--early-release-margin', dict(type=int)),
+                    ('--extrapolate', dict(type=int)))
 
 
 def _decision_parser(prog, allow_abbrev=True):
