@@ -5010,7 +5010,18 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 > * identity-ext-2 (a4defcf7, ea55fb8): Skeletrooper -> bandit, Hero Tombstone Queen -> giant, banner + MA decoy dropped;
 >   Rhino/Turret HP from client tables; off-hash identical over 196,449 states; 2,622 states change -> merge candidate
 >   2124fd7 in C:/Users/benpe/cb_merge_id2 -> blind verifier ae873022.
-> * Bundle 3 health check scheduled 02:37 (session cron 637669ac): KEEP/REVERT on clear evidence only.
+> * Bundle 3 health check scheduled 02:37 (session cron 637669ac): KEEP/REVERT on clear evidence only. Since 00:34: 6 W-6 L.
+> * **Owner 01:3x-01:4x (furious; "fix it by tomorrow or i quit"):** Knight vs a lone Balloon; no Rocket on a LavaHound push.
+>   (a) live_play_20261009_011626 (L74/ab/lava_rocket.py, knight_balloon.py): Tesla t2167 (fine) -> Skeletons t2369 at
+>   (16.5,14.5) and Knight t2419 at (15.5,14.5) vs a full-HP Hero Balloon (203000006) = 4 elixir on ground-only cards vs a
+>   building-targeting air unit (model's own picks, p .38/.47) -> Rocket unaffordable when the Hound popped at the left
+>   tower (t2445-2505, 3.5-5.7 elixir); affordable t2525-2565 (6.4-7.8) with pups clumped there, card pick Tornado/X-Bow,
+>   never Rocket; X-Bow t2573 at (2.5,12.5) (can't hit air). Fixes dispatched (opt-in, SIM-gated, blind-verified before
+>   live): a3832d1a `--air-answer block` (no ground-only card on my half when only building-targeting air is near);
+>   a3bcd399 `--rocket-value V` (Rocket a clump on my half worth >= V elixir; pro rate checked). rocket-dead-target v2
+>   (4191053/b70f704: king re-aims 0, not-cast path, 60-tick persistence, 0 shifted aims; SIM 315 vs 315) -> candidate
+>   8137df5 in C:/Users/benpe/cb_merge_rdt2 -> verifier a17a8416. RL defence interim: rdef_a u0010 618 vs live 635 (n.s.);
+>   reward bug fixed (raw coords 1000/tile); arm rdef_c started 01:16.
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
