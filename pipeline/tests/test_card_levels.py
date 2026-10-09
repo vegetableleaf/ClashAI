@@ -125,3 +125,50 @@ def test_in_flight_spell_unlisted_uses_the_tower_level_not_the_evaluated_cards()
     both = replace(ON, card_levels=['Rocket=16', 'Log=16'])
     assert lethal_rocket_choice(both, 200.0, ['Knight', 'Rocket', 'Xbow', 'Tesla'], OK, towers(0, 56, 4424), 0,
                                 'lattice', own=[log]) is None
+
+
+# ---- impossible card levels (verifier: a lower-level account's King reads level 8; the Log starts at 9) -------------------
+def low_towers(side, l, r):
+    return towers(side, l, r, my_max=2352, enemy_max=2352)                        # princess 2352 -> level 8
+
+
+def test_impossible_level_never_raises_and_does_not_fire_that_card():
+    from pipeline.decision_options import my_rocket_damage, rocket_kills_king, tower_damage_or_none
+    assert tower_damage_or_none(8, 'Log') is None and tower_damage_or_none(15, 'Log') == 51
+    assert tower_damage_or_none(8) == rocket_tower_damage(8) == 258               # Rocket exists at level 8
+    with pytest.raises(ValueError):
+        rocket_tower_damage(8, 'Log')                                            # the raw table still refuses
+    for side in (0, 1):
+        tw = low_towers(side, 40, 1092)
+        lane = 'L' if side == 0 else 'R'                                         # the raw-left (40 HP) tower
+        hit = lethal_rocket_choice(ON, 200.0, NAMES, OK, tw, side, 'lattice')     # Log impossible -> the Rocket
+        assert hit[0] == 1 and hit[2] == dict(lane=lane, hp=40, damage=258, level=8)
+        assert lethal_rocket_choice(ON, 200.0, ['Knight', 'Xbow', 'Log', 'Tesla'], OK, tw, side, 'lattice') is None
+        # my Log in flight at an impossible level counts as finishing: no Rocket after it
+        log = ('the-log', (3.5 if lane == 'L' else 14.5) / 18, 17.5 / 32, 199.5)
+        assert lethal_rocket_choice(ON, 200.0, NAMES, OK, tw, side, 'lattice', own=[log]) is None
+        # a listed level still wins (live --card-levels)
+        assert rocket_tower_damage(9, 'Log') == 29
+        assert lethal_rocket_choice(replace(ON, card_levels=['Log=9']), 200.0, NAMES, OK, low_towers(side, 25, 1092),
+                                    side, 'lattice')[2] == dict(lane=lane, hp=25, damage=29, level=9, card='Log')
+    tiny = towers(0, 4424, 4424, my_max=320, enemy_max=4424, king_hp=100)        # my towers read level 1: no Rocket
+    assert my_rocket_damage(tiny, 0) is None and rocket_kills_king(tiny, 0) is False
+
+
+def test_live_pilot_survives_a_level_8_board():
+    from types import SimpleNamespace
+    from pipeline.live_gen_v2 import GenPilot
+    tw = low_towers(0, 40, 1092)
+    ents = [dict(card_id=-1, kind=12 if t['type'] == 'king' else 13, side=t['side'], x=t['x'], y=t['y'], hp=t['hp'],
+                 max_hp=t['max_hp'], address=f'0x{i}') for i, t in enumerate(tw)]
+    frame = dict(game_tick=4000, entities=ents, players=[
+        dict(side=0, elixir_raw=80000, next_deck_index=4, hand_deck_indices=[0, 1, 2, 3]),
+        dict(side=1, elixir_raw=0, next_deck_index=-1, hand_deck_indices=[-1] * 4)])
+    p = object.__new__(GenPilot)
+    p.decision_options, p.grid = ON, 'lattice'
+    p.gid, p.past = {'the-log': 3}, [(3, 0, 3.5 / 18, 17.5 / 32, 199.5)]
+    names = ['Knight', 'Rocket', 'Log', 'Tesla', 'Xbow', 'IceWizard', 'Skeletons', 'Tornado']
+    info = dict(names=names, hand_deck_indices=[0, 1, 2, 3], bs=SimpleNamespace(t_sec=200.0))
+    assert p.lethal_rocket(frame, info, np.ones(4, bool)) is None              # Log impossible + Log in flight: no fire
+    p.past = []
+    assert p.lethal_rocket(frame, info, np.ones(4, bool))[2]['damage'] == 258   # the Rocket at level 8
