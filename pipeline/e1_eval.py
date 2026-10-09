@@ -283,6 +283,35 @@ def follow_up_spec(slot: int, cell: int, after_ticks: int, within_ticks: int = 2
             "afford_ticks": None if afford_ticks is None else int(afford_ticks), "require_first": bool(require_first)}
 
 
+FOLLOW_MAX_OUT = 2               # plays decided but not landed at once (live: taps outstanding); a follow-up waits at the cap
+
+
+def follow_up_verdict(*, tick: int, due: int, expire: int, blocked: Optional[str], first_failed: bool, slot_changed: bool,
+                      slot_busy: bool, n_out: int, have: float, cost: float) -> tuple:
+    """What to do with a follow-up on the frame / engine tick ``tick`` -> ("wait", why) | ("cancel", why) | ("fire", "").
+    ONE rule list for live_play.follow_verdict and Match._apply_follow_ups (the caller builds the facts, so only the facts
+    differ): the play it follows was refused (``first_failed``) -> cancel first_unconfirmed; its card is no longer in
+    the slot (``slot_changed``) -> cancel; past ``expire`` -> cancel, with what held it (``blocked``) else "late"; before
+    ``due`` -> wait; another play outstanding on its slot (``slot_busy``) -> cancel slot_busy; ``n_out`` plays outstanding
+    at FOLLOW_MAX_OUT -> wait "outstanding"; ``have`` (follow_up_have, reserved already taken off) short of ``cost`` ->
+    wait "unaffordable"; else fire. The order is the order of the checks."""
+    if first_failed:
+        return "cancel", "first_unconfirmed"
+    if slot_changed:
+        return "cancel", "slot_changed"
+    if tick > expire:
+        return "cancel", blocked or "late"
+    if tick < due:
+        return "wait", "early"
+    if slot_busy:
+        return "cancel", "slot_busy"
+    if n_out >= FOLLOW_MAX_OUT:
+        return "wait", "outstanding"
+    if have + 1e-6 < cost:
+        return "wait", "unaffordable"
+    return "fire", ""
+
+
 def follow_up_have(elixir: float, tick: int, horizon: int, reserved: float) -> float:
     """My elixir ``horizon`` ticks after ``tick`` with no further spend, capped, minus ``reserved`` (the cost of every play
     decided but not landed yet). ONE formula for live_play.follow_verdict and Match.apply."""
@@ -900,23 +929,31 @@ class Match:
             after, within = int(fu["after_ticks"]), int(fu["within_ticks"])
             horizon = fu.get("afford_ticks")
             horizon = FOLLOW_AFFORD_TICKS if horizon is None else int(horizon)
-            cost_b = self.costs[fu["slot"]]
-            t, why = tick + after, "late"
-            while t <= tick + after + within and not (env.terminated or env.tick >= env.tail_cap):
+            due, expire = tick + after, tick + after + within
+            t, blocked, outcome = due, None, "late"
+            while t <= expire and not (env.terminated or env.tick >= env.tail_cap):
                 advance(t)
-                if fu.get("require_first", True) and st["a_landed"] and not st["a_acc"]:
-                    why = "first_refused"
-                    break
-                reserved = (0.0 if st["a_landed"] else cost_a) + sum(self.costs[f["slot"]] for lt, f in fired if lt > env.tick)
+                out = [d["slot"]] if not st["a_landed"] else []   # plays decided, not landed: the first, earlier follow-ups
+                out += [f["slot"] for lt, f in fired if lt > env.tick]
                 me = next(pl for pl in env.eng.observe()["players"] if int(pl["side"]) == self.side)
-                if follow_up_have(me["elixir_exact"], env.tick, horizon, reserved) + 1e-6 >= cost_b:
+                act, why = follow_up_verdict(
+                    tick=env.tick, due=due, expire=expire, blocked=blocked,
+                    first_failed=bool(fu.get("require_first", True) and st["a_landed"] and not st["a_acc"]),
+                    slot_changed=not self._slot_in_hand(fu["slot"]), slot_busy=fu["slot"] in out, n_out=len(out),
+                    have=follow_up_have(me["elixir_exact"], env.tick, horizon, sum(self.costs[s] for s in out)),
+                    cost=self.costs[fu["slot"]])
+                if act == "fire":
                     fired.append((max(land_a + max(t - tick - arrival, 0), env.tick + 1),
                                   {"play": True, "slot": fu["slot"], "cell": fu["cell"], "why": "follow_up"}))
-                    why = None
+                    outcome = None
                     break
-                why = "unaffordable"
+                if act == "cancel":
+                    outcome = why
+                    break
+                blocked = why if why != "early" else blocked      # what held it, for the cancel reason at its expiry
+                outcome = blocked or "late"
                 t += FOLLOW_FRAME_TICKS
-            tally["fired" if why is None else f"cancelled_{why}"] += 1
+            tally["fired" if outcome is None else f"cancelled_{outcome}"] += 1
         advance(land_a)                                       # the first play lands even when every follow-up was dropped
         last = land_a
         for land_b, fb in sorted(fired, key=lambda x: x[0]):
@@ -926,6 +963,16 @@ class Match:
         env._advance_to(min(tick + de * ((last - tick) // de + 1), env.tail_cap))
         self.state = env.eng.observe()
         self.done = bool(env.terminated) or env.tick >= env.tail_cap
+
+    def _slot_in_hand(self, slot: int) -> bool:
+        """Is deck slot ``slot``'s card in my hand right now (RoyaleSim: the core's hand; the real engine / fakes:
+        ``hand_deck_indices``); True when the env cannot say (never cancels on unknown). Live twin: the reader's hand slot."""
+        env, di = self.env, self.deck_index_of_slot[slot]
+        core, ids = getattr(env, "core", None), getattr(env, "deck_ids", None)
+        if core is not None and ids is not None:
+            return ids[self.side][di] in core.state().players[self.side].hand
+        me = next((pl for pl in env.eng.observe()["players"] if int(pl["side"]) == self.side), {})
+        return di in me["hand_deck_indices"] if "hand_deck_indices" in me else True
 
     def _record(self, p: float, d: dict) -> int:
         """(b), first half: the decision's tallies and its cfg["record"] row. -> the decision tick."""

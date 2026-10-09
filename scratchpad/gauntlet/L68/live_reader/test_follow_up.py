@@ -342,3 +342,46 @@ def test_follow_up_api_is_pinned():
         "slot", "cell", "after_ticks", "within_ticks", "afford_ticks", "require_first"]
     assert set(e1_eval.follow_up_spec(1, 2, 3)) == {"slot", "cell", "after_ticks", "within_ticks", "afford_ticks", "require_first"}
     assert (e1_eval.FOLLOW_AFFORD_TICKS, lp.FOLLOW_MAX_OUT) == (6, 2)
+    assert lp.FOLLOW_MAX_OUT == e1_eval.FOLLOW_MAX_OUT
+
+
+# ---- F2: a follow-up is judged on the NEWEST frame, never on a stale one from a backlog ----------------------------------
+def run_backlog(monkeypatch, tmp_path, within, burst=True):
+    """The first tap blocks 0.3 s (a slow adb); meanwhile the reader delivers a burst of frames up to tick ~200, so the
+    follow-up (due 4 ticks after the first decision) meets a queue of old frames."""
+    import threading
+    game = Game(elixir=10.0, rotate={0: 178})                                 # static game: the first slot rotates on a fixed tick
+    taps = []
+
+    def tap(cmd, timeout=5):
+        taps.append(cmd)
+        if burst and len(taps) == 1:
+            threading.Event().wait(0.3)
+        return True
+
+    def frames():
+        for t in range(150, 330, 2):
+            if not burst or not (160 <= t < 200):
+                threading.Event().wait(0.02)                               # paced, except the burst while the tap blocks
+            yield t, game.frame(t)
+    pilot = ComboPilot([fu_dict(after=4, within=within)])
+    monkeypatch.setattr(lp, "input_cmd", tap)
+    _, ev = play(monkeypatch, tmp_path, frames=frames(), pilot=pilot, pace=0.0, tap_gap_ms=0, follow_up_taps=True)
+    return taps, ev
+
+
+def test_follow_up_is_not_fired_on_a_stale_frame_past_its_deadline(monkeypatch, tmp_path):
+    taps, ev = run_backlog(monkeypatch, tmp_path, within=2)                # window = first decision tick + 4 .. + 6
+    a = next(e for e in ev if e["event"] == "play")
+    assert a["tick"] < 160
+    first_tap = next(e for e in ev if e["event"] == "tap_timing")
+    assert first_tap["frame_age_backlog"] >= 5                            # the burst really queued up behind the slow tap
+    canc = [e for e in ev if e["event"] == "follow_up_cancelled"]
+    assert len(taps) == 1 and not any(e.get("follow_up") for e in ev if e["event"] == "play"), taps
+    assert len(canc) == 1 and canc[0]["why"] == "late"
+    assert canc[0]["tick"] > a["tick"] + 6                                # judged on a frame past the window, not an old one
+
+
+def test_without_a_backlog_the_same_follow_up_still_fires(monkeypatch, tmp_path):
+    taps, ev = run_backlog(monkeypatch, tmp_path, within=2, burst=False)
+    assert len(taps) == 2 and any(e.get("follow_up") for e in ev if e["event"] == "play")
