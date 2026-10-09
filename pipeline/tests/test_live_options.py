@@ -264,3 +264,12 @@ def test_latency_flags_deployable_from_the_file_and_explicit_wins(tmp_path):
     assert (a.extrapolate, a.tap_gap_ms, a.afford_ticks) == (26, 50, 23) and sorted(rec['explicit']) == ['extrapolate', 'tap_gap_ms']
     a, rec = parse_with_live_options(ap, ['--no-live-options'])
     assert (a.fast_input, a.tap_gap_ms, a.afford_ticks, a.early_release_margin, a.extrapolate) == (False, 50, None, None, 26)
+
+
+def test_tau_threatened_deployable_from_the_file(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + '--tau-threatened 0.2\n')
+    opts, rec = parse([], f)
+    assert opts.tau_threatened == 0.2 and rec['from_file']['tau_threatened'] == 0.2
+    opts, rec = parse(['--tau-threatened', '0.1'], f)                          # explicit wins
+    assert opts.tau_threatened == 0.1 and rec['explicit'] == ['tau_threatened']
+    assert parse([], tmp_path / 'missing')[0].tau_threatened is None

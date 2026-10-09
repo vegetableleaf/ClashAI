@@ -37,6 +37,7 @@ class DecisionOptions:
     gate_hazard_threat_radius: float = 0.0  # ... or while an enemy unit is within this many tiles of my alive tower
     lethal_rocket: str = 'off'
     xbow_dead_lane: str = 'allow'           # 'block': no X-Bow cell that reaches only the king / a destroyed princess
+    tau_threatened: Optional[float] = None  # gate threshold while threatened (tau_threat_state); None = the phase tau
 
     def __post_init__(self):
         if self.card_choice not in ('argmax', 'filtered'):
@@ -69,12 +70,14 @@ class DecisionOptions:
             raise ValueError('lethal_rocket must be off, ot or ot_behind')
         if self.xbow_dead_lane not in ('allow', 'block'):
             raise ValueError('xbow_dead_lane must be allow or block')
+        if self.tau_threatened is not None and not (math.isfinite(self.tau_threatened) and 0 <= self.tau_threatened <= 1):
+            raise ValueError('tau_threatened must be a threshold in [0, 1]')
 
     @property
     def active(self):
         return (self.card_choice != 'argmax' or self.spell_aim != 'argmax' or self.tau_phase is not None
                 or self.xbow_class != 'argmax' or self.log_aim != 'argmax' or self.gate_decode != 'threshold'
-                or self.lethal_rocket != 'off' or self.xbow_dead_lane != 'allow')
+                or self.lethal_rocket != 'off' or self.xbow_dead_lane != 'allow' or self.tau_threatened is not None)
 
 
 def options_from_config(cfg=None):
@@ -123,6 +126,10 @@ def add_arguments(parser):
                              'enemy king or of a DESTROYED enemy princess that reaches no alive enemy princess '
                              '(xbow_dead_lane_cells); it aims at its best remaining cell. With no cell left the X-Bow is '
                              'not chosen and the next card by the model ranking is; nothing is forced')
+    parser.add_argument('--tau-threatened', type=float, default=None, metavar='X',
+                        help='while threatened (one of my towers lost HP within the last 2 s of board time AND an enemy '
+                             'unit is within 8 tiles of that tower, public) the gate threshold is X instead of the phase '
+                             'tau: play iff P(play) > X. Card and cell stay the model own choices; default off')
     parser.add_argument('--decision-seed', type=int, default=0,
                         help='separate seeded card-choice stream; recorded with each experiment')
 
@@ -294,6 +301,42 @@ def hazard_draw(options, p, step_s, rng, *, elixir=None, enemy_units=None, threa
         if int(enemy_units):
             return False
     return hazard_play(p, step_s, rng)
+
+
+# --tau-threatened: M4 "frozen under fire" (L74 catalogue): a tower losing HP with an enemy body within 8 tiles of it.
+TAU_THREAT_WINDOW_S, TAU_THREAT_RADIUS_TILES = 2.0, 8.0
+
+
+def tau_threat_state(prev, bs):
+    """-> (state, threatened) on one decision's BoardState (my frame). ``prev`` = the state returned at the previous
+    decision of the match (None at the first). Threatened = some tower of mine lost public HP within the last
+    TAU_THREAT_WINDOW_S of board time (``bs.t_sec``) AND an enemy unit (side != 0, as enemy_unit_count) is within
+    TAU_THREAT_RADIUS_TILES of THAT tower. A fallen tower keeps its position. Idempotent on a repeated board."""
+    from .obs_contract import _ANCHOR_XY, TILES_X, TILES_Y, TOWER_ORDER
+    t, hp = float(bs.t_sec), tuple(tw.hp_frac for tw in bs.towers[:3])
+    last = list(prev[1]) if prev else [None] * 3
+    if prev:
+        for i, (a, b) in enumerate(zip(prev[0], hp)):
+            if a is not None and b is not None and b < a - 1e-9:
+                last[i] = t
+    threatened = False
+    enemies = [u for u in bs.units if int(u.side) != 0] if any(
+        l is not None and t - l <= TAU_THREAT_WINDOW_S + 1e-6 for l in last) else []
+    for l, kl in zip(last, TOWER_ORDER):
+        if l is not None and t - l <= TAU_THREAT_WINDOW_S + 1e-6:
+            x, y = _ANCHOR_XY[kl]
+            threatened = threatened or any(math.hypot((u.x - x) * TILES_X, (u.y - y) * TILES_Y) <= TAU_THREAT_RADIUS_TILES
+                                           for u in enemies)
+    return (hp, tuple(last)), threatened
+
+
+def threat_taus(options, tau, threatened):
+    """The gate threshold with tau_threatened applied: X on the threatened rows, ``tau`` (scalar or per row) elsewhere."""
+    if options.tau_threatened is None:
+        return tau
+    if threatened is None:
+        raise ValueError('tau_threatened requires the threat flag of every row')
+    return np.where(np.asarray(threatened, dtype=bool), options.tau_threatened, tau)
 
 
 def enemy_unit_count(bs):
@@ -557,12 +600,13 @@ def lethal_rocket_choice(options, t_sec, names, allowed, crown_towers, side, gri
 @torch.no_grad()
 def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options, rngs, card_names,
                  t_sec=None, enemy_alive=None, grid=None, projectiles=None, step_s=None, elixir=None,
-                 enemy_units=None, lethal=None, threatened=None):
+                 enemy_units=None, lethal=None, threatened=None, tau_threat=None):
     """Optional branch of e1_eval's live decision; default branch remains untouched.
     ``t_sec`` (tau_phase) and ``enemy_alive`` [(K, L, R) alive] + ``grid`` (xbow_class) are per-row match context;
     ``projectiles`` (log_aim) = each row's model projectile tokens, decoded with the model's own card vocabulary.
     ``lethal`` (lethal_rocket) = per row (raw crown towers, my side, a card pending) for ``lethal_rocket_choice``."""
-    tau = gate_taus(options, tau, t_sec, len(allowed))
+    base_tau = tau = gate_taus(options, tau, t_sec, len(allowed))
+    tau = threat_taus(options, tau, tau_threat)
     playing = allowed.any(axis=1) & ((np.asarray(p) > tau) | stalled)
     if options.gate_decode != 'threshold':
         if step_s is None:
@@ -609,10 +653,12 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
             else:
                 slots[r] = nxt
         ids = ids[playing[ids]]
-    tau = np.broadcast_to(tau, len(slots))
+    tau, base_tau = np.broadcast_to(tau, len(slots)), np.broadcast_to(base_tau, len(slots))
     out = [dict(play=bool(playing[r]), slot=slots[r], cell=int(cells[r]),
                 why=('no_affordable' if slots[r] < 0 else 'wait' if not playing[r]
-                     else 'stall' if stalled[r] and p[r] <= tau[r] else 'gate' if p[r] > tau[r] else 'hazard'))
+                     else 'stall' if stalled[r] and p[r] <= tau[r] else
+                     'tau_threat' if p[r] > tau[r] and p[r] <= base_tau[r] and options.tau_threatened is not None
+                     else 'gate' if p[r] > tau[r] else 'hazard'))
            for r in range(len(slots))]
     if options.lethal_rocket != 'off':
         if lethal is None or t_sec is None or grid is None or card_names is None:
@@ -650,6 +696,10 @@ def match_kwargs(matches):
             for m in matches:
                 m.threat_state, m.threatened = tower_threat(options, getattr(m, 'threat_state', None), m._cur[1])
             out['threatened'] = [m.threatened for m in matches]
+    if options.tau_threatened is not None:  # the decision's engine BoardState (my frame); per-match state on the match
+        for m in matches:
+            m.tau_threat_state, m.tau_threat = tau_threat_state(getattr(m, 'tau_threat_state', None), m._cur[1])
+        out['tau_threat'] = [m.tau_threat for m in matches]
     if options.tau_phase is not None or options.xbow_class != 'argmax' or options.xbow_dead_lane != 'allow':
         boards = [m._cur[1] for m in matches]    # the prepared decision's engine BoardState (my frame)
         out.update(t_sec=[float(b.t_sec) for b in boards], grid=cfg['grid'],
