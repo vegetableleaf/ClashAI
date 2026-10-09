@@ -5042,6 +5042,12 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   (no board state) -- not useful to us. Value: fresh post-balance pro replays incl. Hero abilities for our dataset
 >   rebuild. Not installed; needs owner (separate Chrome profile), RoyaleAPI permission question, and no code copied
 >   into our repo (no license).
+> * **RL defence FINAL (a07c6c75, branch worktree-agent-a07c6c751e3ebf0fb, commits 3faa88c..e7a11b6): no candidate.** rdef_a
+>   u0010 618 vs live 635 (157/174, p .38); towers lost 1.142 vs 1.114; pro agreement -.3 pp. SIM reproduces live run-over
+>   losses (82.8% vs 84%). Broke-at-push predicts tower damage per push (.378 vs .120, correlational) but match-level null
+>   (4.95 vs 4.98). Updates 500-940 s (refine heads + contention, no VM GPU). Next arm (not started): base without refine
+>   heads, distinct seeds, broke term = tower damage of pushes met < 4 elixir-equiv, <= 64 cores, eval after >= 20 updates.
+>   Resume rdef_c: `cd ~/rl_defence/repo && nohup bash scratchpad/gauntlet/L74/rl_defence/run_rdef_c.sh rdef_c --resume`.
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
