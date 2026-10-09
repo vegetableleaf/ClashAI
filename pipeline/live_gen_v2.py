@@ -80,7 +80,11 @@ class GenPilot(LegacyGenPilot):
         side = my_side_of(frame)
         towers = to_observe(frame, side, info['names'])['episode']['crown_towers']
         names = [info['names'][di] if di >= 0 else None for di in info['hand_deck_indices']]
-        return lethal_rocket_choice(options, info['bs'].t_sec, names, allowed, towers, side, self.grid)
+        own = None
+        if getattr(options, 'lethal_log', 'off') == 'on':   # my confirmed plays (card, model xy, landing t): in flight
+            key = {v: k for k, v in getattr(self, 'gid', {}).items()}
+            own = [(key.get(c), x, y, t) for c, f, x, y, t in getattr(self, 'past', [])[-8:]]
+        return lethal_rocket_choice(options, info['bs'].t_sec, names, allowed, towers, side, self.grid, own=own)
 
     @torch.no_grad()
     def decide(self, frame):

@@ -2,14 +2,16 @@
 --lethal-rocket's phase / crown rules; preferred over the Rocket; cast on my side so its roll reaches the tower."""
 import argparse
 from dataclasses import replace
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
 import torch
 
-from pipeline.decision_options import (DecisionOptions, LOG_HIT_TICKS, ROCKET_FLIGHT_TICKS, add_arguments,
-                                      config_from_args, decide_batch, lethal_log_cell, lethal_rocket_choice,
-                                      options_from_config, rocket_tower_damage)
+from pipeline.decision_options import (DecisionOptions, IN_FLIGHT_MARGIN_TICKS, LOG_HIT_TICKS, ROCKET_FLIGHT_TICKS,
+                                      add_arguments, config_from_args, decide_batch, in_flight_damage,
+                                      lethal_log_cell, lethal_rocket_choice, match_kwargs, options_from_config,
+                                      rocket_tower_damage)
 from pipeline.model_v3 import cell_xy
 from pipeline.obs_contract import PRINCESS_X_L, PRINCESS_X_R
 from pipeline.tests.test_lethal_rocket import L_CELL, R_CELL, Model, live_frame, live_pilot, towers
@@ -130,3 +132,69 @@ def test_sim_decide_batch_with_hazard_gate_and_dead_lane():
     assert on[0] == dict(play=True, slot=2, cell=LOG_R, why='lethal_log')         # side 1: raw-left = my R
     assert off[0]['why'] == 'lethal_rocket' and on[1:] == off[1:] and on[2]['why'] == 'lethal_rocket'
     assert rs_on == rs_off
+
+
+# ---- in-flight guard (verifier finding 1: Rocket then Log at one tower; Log then a wasted Rocket) ----------------------
+RK_L, LOG_AT_L = ('rocket', 3.5 / 18, 6.5 / 32), ('the-log', 3.5 / 18, 17.5 / 32)   # my accepted plays: card, x, y
+
+
+def test_in_flight_geometry_and_window():
+    t = 200.0
+    assert in_flight_damage([(*RK_L, t - .5)], t, 15) == {'L': 497}
+    assert in_flight_damage([(*LOG_AT_L, t - .5)], t, 15) == {'L': 51}
+    assert in_flight_damage([('Log', 14.5 / 18, 17.5 / 32, t - .5)], t, 15) == {'R': 51}
+    assert in_flight_damage([('the-log', 3.5 / 18, 19.5 / 32, t - .5)], t, 15) == {}    # rolls short (live 0/54)
+    assert in_flight_damage([('knight', 3.5 / 18, 6.5 / 32, t - .5)], t, 15) == {}
+    assert in_flight_damage([(*RK_L, t + .05)], t, 15) == {}                              # not landed yet
+    last = (ROCKET_FLIGHT_TICKS + 26 + IN_FLIGHT_MARGIN_TICKS) * .05
+    assert in_flight_damage([(*RK_L, t - last)], t, 15) == {'L': 497}
+    assert in_flight_damage([(*RK_L, t - last - .05)], t, 15) == {}                       # window over
+    assert in_flight_damage([(*RK_L, t - .5), (*LOG_AT_L, t - .5)], t, 11) == {'L': 342 + 35}
+
+
+def test_no_second_spell_on_a_tower_my_spell_will_finish():
+    t, tw = 200.0, towers(0, 40, 1092)
+    assert lethal_rocket_choice(LOG, t, NAMES, OK, tw, 0, 'lattice', own=[(*RK_L, t - .5)]) is None   # Rocket flying
+    assert lethal_rocket_choice(LOG, t, NAMES, OK, tw, 0, 'lattice', own=[(*LOG_AT_L, t - .5)]) is None  # Log rolling
+    both = towers(0, 30, 45)                                                  # L covered -> the other lethal tower
+    slot, cell, target = lethal_rocket_choice(LOG, t, NAMES, OK, both, 0, 'lattice', own=[(*RK_L, t - .5)])
+    assert (slot, cell, target['lane'], target['hp']) == (2, LOG_R, 'R', 45)
+    # a Log in flight does not finish a 300-HP tower: the Rocket still fires
+    assert lethal_rocket_choice(LOG, t, NAMES, OK, towers(0, 300, 1092), 0, 'lattice',
+                                own=[(*LOG_AT_L, t - .5)])[:2] == (1, L_CELL)
+    # an expired / missed spell no longer blocks
+    assert lethal_rocket_choice(LOG, t, NAMES, OK, tw, 0, 'lattice', own=[(*RK_L, t - 10)])[0] == 2
+    # regulation behind, Log fired: the Rocket rule does not follow it up
+    behind = towers(0, 40, 1092, my_hp=(0, 4424))
+    assert lethal_rocket_choice(LOG, 95.0, NAMES, OK, behind, 0, 'lattice', own=[(*LOG_AT_L, 94.5)]) is None
+    # lethal_log off: the guard is off too (today's rule exactly)
+    assert lethal_rocket_choice(BUNDLE, t, NAMES, OK, tw, 0, 'lattice', own=[(*RK_L, t - .5)]) == \
+        lethal_rocket_choice(BUNDLE, t, NAMES, OK, tw, 0, 'lattice')
+
+
+def test_match_kwargs_own_plays_only_when_on():
+    tw = towers(1, 40, 1092)
+    m = SimpleNamespace(tag='a', k=1, cfg={'lethal_rocket': 'ot_behind', 'grid': 'lattice'}, side=1,
+                        deck=SimpleNamespace(cards=['rocket', 'the-log']), state={'episode': {'crown_towers': tw}},
+                        _cur=(3700, SimpleNamespace(t_sec=186.3), None), done_plays=[(3690, 0, .2, .2)])
+    assert match_kwargs([m])['lethal'] == [(tw, 1, False)]                              # off: unchanged
+    m.cfg = {**m.cfg, 'lethal_log': 'on'}
+    del m.rng_decision_options
+    assert match_kwargs([m])['lethal'] == [(tw, 1, False, [('rocket', .2, .2, 3690 * .05)])]
+
+
+def test_sim_rows_and_live_pilot_share_the_guard():
+    enc = {'g': torch.zeros(1, 2)}
+    heads = {'card': torch.tensor([[9., 0, 0, 0]])}
+    names = [['knight', 'rocket', 'the-log', 'tesla']]
+    own = [('rocket', 14.5 / 18, 6.5 / 32, 199.5)]                     # my Rocket flying at my R = side 1 raw-left
+    out = decide_batch(Model(), enc, heads, np.array([.1]), np.ones((1, 4), bool), np.zeros(1, bool), tau=.35,
+                       device='cpu', options=LOG, rngs=[np.random.default_rng(0)], card_names=names, t_sec=[200.0],
+                       grid='lattice', lethal=[(towers(1, 40, 1092), 1, False, own)], step_s=.5, elixir=[5.],
+                       enemy_units=[0], enemy_alive=[(True, True, True)], projectiles=[np.zeros((64, 8))])
+    assert out[0]['why'] not in ('lethal_log', 'lethal_rocket')
+    p = live_pilot(LIVE_LOG, 200.0)
+    p.gid, p.past = {'rocket': 2}, [(2, 0, 14.5 / 18, 6.5 / 32, 199.5)]
+    assert p.decide(live_frame(1, 40, 1092)).get('why') is None
+    p.past = [(2, 0, 14.5 / 18, 6.5 / 32, 190.0)]                     # long landed (and missed): fires again
+    assert p.decide(live_frame(1, 40, 1092))['why'] == 'lethal_log'
