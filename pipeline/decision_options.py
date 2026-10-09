@@ -41,7 +41,8 @@ class DecisionOptions:
     rocket_dead_target: str = 'allow'       # 'block': no Rocket on a fallen tower / the king with nothing alive in it
     tau_threatened: Optional[float] = None  # gate threshold while threatened (tau_threat_state); None = the phase tau
     rocket_value: float = 0.0               # > 0: Rocket a clump of >= this much enemy elixir value on my half (rocket_value_choice)
-    rocket_value_mode: str = 'cost'         # 'damage': value = the share of each body's value the Rocket destroys
+    rocket_value_mode: str = 'cost'         # 'damage': the share of each body's value the Rocket destroys; 'kill': only bodies it kills
+    rocket_value_min_y: float = 16.0        # the blast centre must be at board y >= this (16 = my half; 21+ = near my towers)
     rocket_value_hitbox: str = 'centre'     # 'edge': a body is in the blast when its hitbox touches the radius
     rocket_value_lead: str = 'off'          # 'on': aim at where the bodies will be when the Rocket lands
     rocket_value_idle: str = 'off'          # 'on': only at a decision where the model itself would not play (displaces nothing)
@@ -86,12 +87,14 @@ class DecisionOptions:
             raise ValueError('tau_threatened must be a threshold in [0, 1]')
         if not math.isfinite(self.rocket_value) or self.rocket_value < 0:
             raise ValueError('rocket_value must be finite and >= 0')
-        for k, ok in (('rocket_value_mode', ('cost', 'damage')), ('rocket_value_hitbox', ('centre', 'edge')),
+        for k, ok in (('rocket_value_mode', ('cost', 'damage', 'kill')), ('rocket_value_hitbox', ('centre', 'edge')),
                       ('rocket_value_lead', ('off', 'on')), ('rocket_value_idle', ('off', 'on'))):
             if getattr(self, k) not in ok:
                 raise ValueError(f'{k} must be one of {ok}')
         if not math.isfinite(self.rocket_value_min_elixir) or not 0 <= self.rocket_value_min_elixir <= 10:
             raise ValueError('rocket_value_min_elixir must be in [0, 10]')
+        if not math.isfinite(self.rocket_value_min_y) or not 16.0 <= self.rocket_value_min_y <= 32.0:
+            raise ValueError('rocket_value_min_y must be in [16, 32] tiles (my half)')
 
     @property
     def active(self):
@@ -167,10 +170,13 @@ def add_arguments(parser):
                              'pending, play it when the best blast centred on MY half holds >= V elixir of enemy value, aimed by '
                              'the rocket_area logic among the cells that cover that whole clump; the lethal rules keep priority. '
                              'The sub-options below change how the value is counted. 0 = off')
-    parser.add_argument('--rocket-value-mode', choices=('cost', 'damage'), default='cost',
+    parser.add_argument('--rocket-value-mode', choices=('cost', 'damage', 'kill'), default='cost',
                         help='cost: a body is worth card cost / bodies x hp fraction; damage: x the share of its hp the Rocket '
                              'takes instead (min(Rocket damage, hp now) / max hp), so a Giant counts for a third and a Skeleton '
-                             'Dragon pair in full')
+                             'Dragon pair in full; kill: only the bodies the Rocket kills outright count, at their full value')
+    parser.add_argument('--rocket-value-min-y', type=float, default=16.0, metavar='Y',
+                        help='the blast centre must be at board y >= Y tiles (me at the bottom, my half starts at 16, my princess '
+                             'towers stand at 25.5): a deep centre is short in the air and on a clump already at my towers')
     parser.add_argument('--rocket-value-hitbox', choices=('centre', 'edge'), default='centre',
                         help='edge: a body is in the blast when its HITBOX touches the radius (centre distance <= radius + its '
                              'collision radius, the RoyaleSim rule); centre: its centre must be inside the radius')
@@ -914,7 +920,9 @@ def lethal_rocket_choice(options, t_sec, names, allowed, crown_towers, side, gri
 #                             history over the action delay + the Rocket flight from my king tower (rocket_lands_in)
 # All numbers are RoyaleSim catalog ratios (the unified-level ladder cancels: Rocket 580 and every hp share it).
 ROCKET_UNIT_DAMAGE = 580.0        # catalog Rocket damage to a non-tower body, level-1 scale (the same scale as every catalog hitpoints)
-ROCKET_ACT_DELAY_TICKS = 27       # decision -> the card is deployed: SIM 26 (action delay), live 28 (confirmation); measured at L74/rocket_value
+ROCKET_LAG_TICKS = 2              # decision -> deploy NOT already in the decision board: the SIM benchmark lands a play at once (0); live
+                                  # decides on a board extrapolated 24 ticks ahead of a ~28-tick confirmation (4). With --action-delay 26 the
+                                  # SIM needs --extrapolate 26 for the same thing.
 ROCKET_SPEED_TILES_PER_TICK = 0.35   # catalog Rocket projectile speed 350, from my king tower (9.0, 28.65) in the board frame
 MY_HALF_MIN_Y_TILES = 16.0        # board frame (me at the bottom): y tiles >= 16 is my half; a cell centre there is "on my half"
 _CHILD_SHARE = {'golemite': ('golem', 2, 'Golemite'), 'lava_pups': ('lava_hound', 6, 'LavaPups'),
@@ -964,7 +972,8 @@ def body_value(cls, hp_frac=None):
 def rocket_bodies(bs, mode='cost'):
     """[n, 5] float (class id, x tiles, y tiles, value, collision radius tiles) per enemy body of a BoardState (side != 0,
     as enemy_unit_count) worth > 0 under ``mode``: cost -> cost/bodies x hp fraction; damage -> cost/bodies x the share of its hp
-    the Rocket takes (min(ROCKET_UNIT_DAMAGE, hp now) / max hp). Unknown hp = full."""
+    the Rocket takes (min(ROCKET_UNIT_DAMAGE, hp now) / max hp); kill -> cost/bodies x hp fraction for a body the Rocket kills
+    (hp now <= ROCKET_UNIT_DAMAGE), 0 for one that survives it. Unknown hp = full."""
     from . import vocab
     table, rows = rocket_unit_table(), []
     for u in bs.units:
@@ -975,16 +984,22 @@ def rocket_bodies(bs, mode='cost'):
         if ev <= 0 or name.endswith('_ability'):
             continue
         f = 1.0 if u.hp_frac is None else min(max(float(u.hp_frac), 0.0), 1.0)
-        value = ev * f if mode == 'cost' or hp <= 0 else ev * min(ROCKET_UNIT_DAMAGE, f * hp) / hp
+        if mode == 'cost' or hp <= 0:
+            value = ev * f
+        elif mode == 'kill':
+            value = ev * f if f * hp <= ROCKET_UNIT_DAMAGE else 0.0
+        else:
+            value = ev * min(ROCKET_UNIT_DAMAGE, f * hp) / hp
         if value > 0:
             rows.append((float(u.cls), float(u.x) * 18.0, float(u.y) * 32.0, value, radius))
     return np.array(rows, dtype=np.float64).reshape(-1, 5)
 
 
 def rocket_lands_in(cx, cy):
-    """Ticks from the decision to the Rocket's impact at board tile (cx, cy): the action delay, the 2-tick launch overhead and the
-    flight at the catalog speed from my king tower (9.0, 28.65). MEASURED in RoyaleSim at L74/rocket_value (round(d/.35)+2, +-1)."""
-    return ROCKET_ACT_DELAY_TICKS + int(round(math.hypot(cx - 9.0, cy - 28.65) / ROCKET_SPEED_TILES_PER_TICK)) + 2
+    """Ticks from the decision board to the Rocket's impact at board tile (cx, cy): the residual lag (ROCKET_LAG_TICKS), the 2-tick
+    launch overhead and the flight at the catalog speed from my king tower (9.0, 28.65). Flight MEASURED in RoyaleSim at
+    L74/rocket_value (round(d/.35)+2, +-1)."""
+    return ROCKET_LAG_TICKS + int(round(math.hypot(cx - 9.0, cy - 28.65) / ROCKET_SPEED_TILES_PER_TICK)) + 2
 
 
 def rocket_velocities(history, tick, bodies, max_speed=3.0):
@@ -1022,7 +1037,7 @@ def rocket_track(holder, tick, bodies, keep_ticks=40):
     return before
 
 
-def best_rocket_clump(bodies, grid, hitbox='centre', lead=None):
+def best_rocket_clump(bodies, grid, hitbox='centre', lead=None, min_y=MY_HALF_MIN_Y_TILES):
     """-> (value, eligible) for the best Rocket blast CENTRED on my half: its value, and the [2304] bool cells (on my half) whose
     blast covers every body of that best clump. (0.0, None) with no body worth anything. ``hitbox`` 'centre' counts a body whose
     centre is within the Rocket radius, 'edge' one whose hitbox touches it (radius + the body's collision radius). ``lead`` =
@@ -1032,7 +1047,7 @@ def best_rocket_clump(bodies, grid, hitbox='centre', lead=None):
         return 0.0, None
     x, y = cell_centres_tiles(grid)
     reach = rocket_radius_tiles() + (bodies[:, 4] if hitbox == 'edge' else np.zeros(len(bodies)))
-    mine = y >= MY_HALF_MIN_Y_TILES
+    mine = y >= min_y
 
     def blast(pos):
         inside = np.hypot(x[:, None] - pos[None, :, 0], y[:, None] - pos[None, :, 1]) <= reach[None, :]
@@ -1070,7 +1085,7 @@ def rocket_value_choice(options, names, allowed, bs, grid, pending=False, holder
         return None
     if float(bs.my_elixir) + 1e-9 < options.rocket_value_min_elixir:
         return None
-    value, eligible = best_rocket_clump(bodies, grid, options.rocket_value_hitbox, lead)
+    value, eligible = best_rocket_clump(bodies, grid, options.rocket_value_hitbox, lead, options.rocket_value_min_y)
     return None if eligible is None or value + 1e-9 < options.rocket_value else (slots[0], eligible, value)
 
 
