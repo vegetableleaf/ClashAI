@@ -7,9 +7,9 @@
 
 Each screen is classified by BOTH existing classifiers (ladder_nav.Classifier: results / main / popup_x / modes /
 loading ...; friend_nav.Classifier: social / battle_type / ...) and mapped to the replay-plan step it implies with the
-tap the future navigator WOULD make (`would_tap`, a plan entry -- nothing is sent). The TV Royale screens have no
-templates yet: every screen both classifiers call unknown is saved to --save-dir, so the owner's by-hand pass yields
-the PNGs that templates (L70/ladder_nav/templates/_build.py convention) get cut from.
+tap the future navigator WOULD make (`would_tap`, a plan entry -- nothing is sent). Every capture is saved to
+--save-dir as <class>_<HHMMSS>.png (--unknown-only: the old behaviour), so the owner's by-hand pass yields the PNGs
+tv_templates.py cuts templates from.
 """
 from __future__ import annotations
 
@@ -54,6 +54,7 @@ def main() -> int:
     src.add_argument("--device", action="store_true")
     ap.add_argument("--every", type=float, default=2.0)
     ap.add_argument("--seconds", type=float, default=120.0)
+    ap.add_argument("--unknown-only", dest="save_all", action="store_false", help="save only unknown screens")
     ap.add_argument("--save-dir", default=str(HERE.parents[3] / "icebow" / "data" / "replay_rec" / "screens"))
     a = ap.parse_args()
     import cv2
@@ -72,8 +73,10 @@ def main() -> int:
     while time.time() - t0 < a.seconds:
         img = grab(lp.ADB)
         r = classify(img, ladder, friend)
-        if r["screen"] == "unknown" and img is not None:
-            r["saved"] = str(save / f"unknown_{time.strftime('%H%M%S')}.png")
+        # every capture is saved, named by its class: 10-08 the TV Royale menus were lost because ladder_nav calls
+        # any screen with a red X `popup_x` and only `unknown` screens were kept
+        if img is not None and (a.save_all or r["screen"] == "unknown"):
+            r["saved"] = str(save / f"{r['screen']}_{time.strftime('%H%M%S')}.png")
             cv2.imwrite(r["saved"], img)
         print(json.dumps(dict(t=round(time.time() - t0, 1), **r)), flush=True)
         time.sleep(a.every)

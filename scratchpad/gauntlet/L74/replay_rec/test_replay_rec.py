@@ -46,13 +46,17 @@ def battle(visible=(0, 1), end_tick=600):
     """Reader-shaped frames every 2 ticks; hands cycle like the game (played card -> back of the queue)."""
     hand = {s: [0, 1, 2, 3] for s in (0, 1)}
     queue = {s: [4, 5, 6, 7] for s in (0, 1)}
-    board, objs, frames, n = {}, {}, [], 0
+    board, objs, frames, n, empty = {}, {}, [], 0, []
     for tick in range(100, end_tick + 1, 2):
+        for s, slot in empty:                         # the game refills an emptied slot one sample later
+            hand[s][slot] = queue[s].pop(0)
+        empty = []
         for t, s, slot, born in SCRIPT:
             if t == tick:
                 d = hand[s][slot]
-                hand[s][slot] = queue[s].pop(0)
+                hand[s][slot] = -1                    # device replay 10-08 t781: the played slot reads -1 first
                 queue[s].append(d)
+                empty.append((s, slot))
                 for kind, cid, xy, tgt in born:
                     n += 1
                     o = dict(address=hex(0x1000 + n), category=n, side=s, x=xy[0], y=xy[1], card_id=cid,
@@ -69,6 +73,7 @@ def battle(visible=(0, 1), end_tick=600):
                   if not (tick >= 590 and (s, x) == (0, 3500))]            # blue takes red's left princess
         players = [dict(side=s, elixir_raw=50000, next_deck_index=queue[s][0] if s in visible else -1,
                         hand_deck_indices=list(hand[s]) if s in visible else [-1] * 4,
+                        cycle_deck_indices=list(queue[s]) if s in visible else [],
                         deck_card_ids=DECK[s] if s in visible else [], deck_form_flags=FLAGS[s] if s in visible else [])
                    for s in (0, 1)]
         frames.append(dict(battle_active=True, coherent=True, game_tick=tick, players=players,

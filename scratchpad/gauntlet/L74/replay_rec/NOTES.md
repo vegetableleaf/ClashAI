@@ -2,7 +2,10 @@
 
 This replaces the RoyaleAPI crawl, which Cloudflare blocks for an honestly automated browser. Nothing here hides
 automation. The memory reader watches a replay that the game itself plays.
-Status 2026-10-08: offline preparation only. No emulator, adb or game command has been run. The device test needs the owner's OK.
+Status 2026-10-08:
+- Sections 1–5: offline preparation.
+- The device feasibility test PASSED at 21:08. The lead ran it and the owner navigated by hand.
+- Section 6: the harvest build, with no device commands from this worker.
 Labels: **(a)** measured (number + source), **(b)** plausible but untested, **(c)** contradicted.
 
 ## 1. In-game replay sources (public web research, 2026-10-08)
@@ -69,12 +72,17 @@ thetechylife.com "How do I Share a Replay on Clash Royale" (seen only in a searc
 - The converter in this folder writes crawl rows, which go through the same `replay_drive` → driven corpus →
   `dataset_gen` path as the crawl, so that rule is enforced downstream exactly as it is today.
 
-**Untested, and only the device can settle them:**
-- (b) Are both hands actually visible in a TV Royale replay? The `live_play.py:723` comment says yes for "the results / replay
-  screen".
-- (b) Does the reader's battle chain (`libg+0x1aeef98 → +0x18 → +0x90`) resolve at all in the replay viewer?
-- (b) Is `applied_replay_tick` far ahead of `game_tick` in a replay? Every command is known in advance in a replay, so it
-  could be, which would make it a second spectator signal. In a live battle `probe1.jsonl` shows 200 vs 206.
+**Settled by the device test (2026-10-08 21:08; the owner navigated by hand; recording
+`icebow/data/replay_rec/rec_20261008_210824.jsonl`, Ultimate Champion channel):**
+- (a) Both hands are visible in a TV Royale replay: 793 of 793 frames are spectator frames, with both hands, next cards,
+  elixir and decks with forms.
+- (a) The reader's battle chain resolves in the replay viewer: `failure` is `none` on every frame.
+- (a) `applied_replay_tick` is **-1** in the replay, against 200 at tick 206 in a live battle (`probe1.jsonl`). That is a
+  second spectator signal; it is not used yet.
+- (a) Speed: the owner says every replay plays at up to 4x. With 4x on, the recording ran at **73.1 ticks/s**.
+- (a) In the replay the game first empties the played slot (`hand [3, 4, -1, 6]`, and the cycle grows to 5), then
+  refills it one sample later. Two plays can land inside one 100 ms sample at 4x (Hog + Musketeer at t4848). Section 6
+  covers the fixes.
 
 ## 3. What was built (this folder)
 
@@ -161,3 +169,77 @@ player profile).
    live, and that is a reader reverse-engineering task, not a converter one.
    Pass = the reader resolves; both sides have plays and decks; ≥ 90 % of plays are positioned.
    Rerun the conversion offline later with `convert.py REC.jsonl`, or check it with `feasibility.py --recording REC.jsonl`.
+
+## 6. Harvest build (lead ticket 2026-10-08 evening; no device command run by this worker)
+
+**Converter fixes from the device recording (a):**
+- A slot that leaves a card, to -1 or to another card, is the play, timed at that frame. The refill from -1 to a card is
+  not a play. Before this fix, the play frame showed the emptied slot as the deck's last card, so 7 of 123 play rows held
+  a hand without the played card.
+- When two plays land in one sample, they are ordered by their place in the reader's cycle.
+- New `convert.cycle_check`: it drives the first frame's hand and queue through the detected plays and compares the result
+  with the reader on every frame. Device replay: **0 and 0 of 763 frames differ** on the two sides. So every play was
+  found, none was invented, and the order is right.
+- `replay_drive.offline_report` on the converted CSV now finds a legal hand cycle for both sides (256 deals each). Before
+  the ordering fix, side 1 had 0.
+
+**Dataset bridge (3):** `to_record.py` writes the recording in the engine re-drive's own `replay_*.json` schema
+(frames / play_frames / log / final_decks, `record_native` and `record_full`). So
+`dataset_gen --corpus DIR --feature-version 4` builds rows from the **real** game states, with no VM and no engine.
+- The device replay gives 342 rows: 45 + 78 play rows and 119 + 100 wait rows. Every play row has its card in the
+  actor's own hand, and the labels are on the board.
+- Public-only proof (`test_to_record.py`): scrambling one side's hand, next card, elixir and log `hand_before` leaves
+  every array of the **other** side's rows byte-identical, on the synthetic battle and on the device replay. The scramble
+  does change the scrambled side's own rows.
+- Play frames carry only the actor's player block. The opponent's elixir column is the public estimate (dataset_gen fv4).
+- The CSV route still works too: `harvest` writes `OUT/crawl/` in the crawl2 schema for the VM re-drive, and
+  `replay_drive.load_battle`, `deck_for_side` and `infer_deals` pass on it.
+
+**Navigator (1):**
+- `tv_templates.py` cuts the templates into `icebow/data/replay_rec/templates/`.
+- `tv_nav.py` holds the Classifier, the pure `decide()` and the tap allowlist.
+- `harvest.py` runs the loop. `--dry-run` sends no taps and makes no recording. It stops on any screen it does not know
+  for 20 s, on conn_lost / content_update, and on any tap outside its rectangle.
+- Templates built so far, from the 10-08 captures: `rp_close`, `rp_pause`, `spd_x1`, `spd_x05`, `spd_x4` and `rp_rewind`.
+  They classify every capture correctly: 6 of 6 controls screens with the right speed label, and 104 others (live battle,
+  replay with the controls hidden, end screens) as unknown.
+- **Missing: the TV Royale menu screens were never saved.** The old dry run kept only `unknown` screens, and ladder_nav
+  calls any screen with a red X `popup_x`. `nav_dryrun.py --device` now saves every capture as `<class>_<HHMMSS>.png`.
+  `harvest.py` refuses a real run until `tv_nav.missing_templates()` is empty:
+  - `tv_entry`, `tv_list_hdr`, `tv_channel_btn`, `tv_channels_hdr`, `tvch_ultimate_champion`, `tv_row_play`, `rp_exit`.
+- **Capture pass (~3 min, lead OK + owner):** run `nav_dryrun.py --device --every 1 --seconds 180`. Walk main → TV Royale →
+  channel list → Ultimate Champion → replay list (with one row grey) → start a replay → let it end → leave the end
+  screen. Then add the SPEC rows in `tv_templates.py` and run `tv_templates.py --check`.
+- Speed: tap the speed button (shown by tapping the arena) until the label reads x4, at most 5 taps. The reader's tick
+  rate (≥ 60/s) confirms it. The cycle seen: x1 → x0.5 → … x4. The x2 label was never captured.
+
+**Harvest (2):** `harvest.py` works one channel at a time, in the order Ultimate Champion → Royal → Grand → Champion →
+Master III/II/I → top arena (`tv_nav.CHANNELS`).
+- On a channel it takes the first replay row that is not grey; the game greys watched replays itself.
+- The recorder opens BEFORE the row is tapped, so the replay is recorded from tick 0.
+- At replay end it runs convert, the checks, the dedupe, `to_record`, and appends a manifest row.
+- A replay is rejected when:
+  - the hands are hidden;
+  - a deck is not 8 cards;
+  - a side has fewer than 5 plays;
+  - less than 90 % of a side's plays are positioned;
+  - the first tick is above 200;
+  - `cycle_check` shows any mismatch;
+  - or it is a duplicate: same decks and ≥ 80 % of plays matching on side, card and a tick within 16.
+- Offline: `harvest.py --process REC.jsonl`. The device replay gets `rejected: started_late:381`, because the owner
+  started the recorder after the replay; every other check passes.
+- Tests: `test_harvest.py`, 7 tests (process accept / duplicate / late / played-in; dedupe jitter; the full decide cycle
+  with every tap allowlisted; stops; a dry run that never taps; ReaderPump recording one replay; the classifier on the
+  device captures).
+
+**Throughput (4):**
+- (a) Device recording: 4x ran at 73.1 game ticks/s.
+- (a) Crawl battle length, last-play tick over 2,050 replays: mean 4,731, median 4,931, p90 5,957 ticks.
+- So the replay itself takes about **65–70 s at 4x** (p90 about 85 s).
+- (b) Navigation per replay: VS/loading about 4 s (10-08 captures), plus speed taps 1–3 s, plus exit and back to the list
+  5–10 s, about 15–20 s in all. That is **about 85–90 s per replay, roughly 40 replays an hour**.
+- (a/b) Supply: TV Royale adds 1 replay per channel per hour and keeps each for 24 h (wiki), so **at most 24 new per
+  channel per day**. The top 4 Ranked channels give at most about 96 high-skill replays a day, about 2.5 h of
+  emulator time.
+- The owner sees "hundreds" across all arena and rank channels. How many are viable after the checks (meme or upset
+  picks, draws) is unmeasured, and so is the exact number of Ranked channels.

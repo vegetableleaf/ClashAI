@@ -175,31 +175,66 @@ def follow(frames, i: int, key) -> tuple[float, float]:
 
 
 def hand_plays(frames) -> list[dict]:
-    """Hand-slot rotations of every side with a visible hand; position located from the public board."""
-    born, claimed, prev, plays = births(frames), set(), {}, []
+    """Hand-slot rotations of every side with a visible hand; position located from the public board.
+
+    The game empties the played slot first: device replay 2026-10-08 t781 hand [3, 4, -1, 6] (cycle grew to 5,
+    elixir 9.78 -> 4.90 = the 5-elixir Witch), t790 [3, 4, 7, 6]. So a slot leaving a card (to -1 or to another card)
+    is the play, at that frame; -1 -> card is the refill, not a play. A fully hidden hand is no information."""
+    born, claimed, prev, full, plays = births(frames), set(), {}, {}, []
     for i, f in enumerate(frames):
         for p in f.get("players") or ():
             s, h = int(p["side"]), list(p["hand_deck_indices"])
-            if not all(d >= 0 for d in h):
+            if not any(d >= 0 for d in h) or len(p.get("deck_card_ids") or ()) != 8:
                 continue
-            old = prev.get(s)
+            old, before = prev.get(s), full.get(s)
             prev[s] = h
-            if old is None or len(p.get("deck_card_ids") or ()) != 8:
+            if all(d >= 0 for d in h):
+                full[s] = h
+            if old is None:
                 continue
             flags = list(p.get("deck_form_flags") or [0] * 8)
-            for a, b in zip(old, h):
-                if a == b:
-                    continue
+            cyc = list(p.get("cycle_deck_indices") or [])
+            # two plays inside one sample (device replay t4993: Ice Golem + Skeletons): the cycle appends played
+            # cards in play order, so order them by their place in it (the cycle-order engine re-drive needs it)
+            for a in sorted((a for a, b in zip(old, h) if a >= 0 and a != b),
+                            key=lambda a: cyc.index(a) if a in cyc else len(cyc)):
                 cid = int(p["deck_card_ids"][a])
                 slug = slug_form(cid)[0]
                 loc = locate(frames, born, i, s, slug, cid // 1_000_000 == 28, claimed)
                 decked = int(flags[a])
-                plays.append(dict(side=s, tick=int(f["game_tick"]), card=slug, detect="hand",
+                plays.append(dict(side=s, tick=int(f["game_tick"]), card=slug, detect="hand", frame=i,
+                                  hand_before=list(before or old), deck_index=a,
                                   x=None if loc is None else loc[0], y=None if loc is None else loc[1],
                                   # observed form when located; else hero (always its form) / base; an unlocated
                                   # decked evo stays 0 (its evo cycle is not counted here)
                                   form=loc[2] if loc else (2 if decked == 2 else 0)))
     return plays
+
+
+def cycle_check(frames, plays) -> dict[int, int]:
+    """side -> frames whose reader hand (as a set) or queue differs from the first frame's hand / queue driven
+    through the detected plays (play -> back of the queue, its front -> hand). 0 = every play found, none invented,
+    in cycle order. Device replay 10-08: 0 / 0 of 763 frames."""
+    out = {}
+    for s in (0, 1):
+        seq = [e for e in plays if e["side"] == s]
+        p0 = next((p for p in frames[0]["players"] if int(p["side"]) == s), None)
+        if p0 is None or not all(i >= 0 for i in p0["hand_deck_indices"]):
+            out[s] = -1                                   # hand not visible at the start: cannot check
+            continue
+        hand, queue, k, bad = set(p0["hand_deck_indices"]), list(p0.get("cycle_deck_indices") or []), 0, 0
+        for f in frames:
+            while k < len(seq) and seq[k]["tick"] <= int(f["game_tick"]):
+                hand.discard(seq[k]["deck_index"])
+                if queue:
+                    hand.add(queue.pop(0))
+                queue.append(seq[k]["deck_index"])
+                k += 1
+            p = next(p for p in f["players"] if int(p["side"]) == s)
+            h, cyc = p["hand_deck_indices"], list(p.get("cycle_deck_indices") or [])
+            bad += all(i >= 0 for i in h) and (set(h) != hand or (len(cyc) == 4 and cyc != queue))
+        out[s] = bad
+    return out
 
 
 def body_plays(frames, sides=(0, 1)) -> list[dict]:
@@ -264,6 +299,7 @@ def convert(path: Path, tag: str | None = None) -> dict:
                          attr_ability=0, attr_card=e["card"], attr_s=SIDE_NAME[e["side"]], attr_t=e["tick"],
                          attr_i=0, form=e["form"], detect=e["detect"], located=int(ok)))
     return dict(battle=battle, plays=rows, frames=len(frames), mode="hand" if spectator else "body",
+                cycle_bad=cycle_check(frames, plays) if spectator else None,
                 seats={s: seats.count(s) for s in set(seats)}, first_tick=int(frames[0]["game_tick"]),
                 last_tick=int(frames[-1]["game_tick"]))
 
