@@ -5152,7 +5152,18 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   PoL games or >= 30% X-Bow) in data\collector.sqlite3; port 8765; raw replays -> data\raw. Security: only outbound
 >   call is api.clashroyale.com for `discover`; no pickle on the serve/seed path; local service has CORS * and no auth
 >   -> dedicated Chrome profile only. Pace floor locally edited 0.75 -> 2.2 s (frontier.py). Owner steps:
->   OWNER_STEPS.md. Next: converter from its raw replays to our pro dataset.
+>   OWNER_STEPS.md. Next: converter from its raw replays to our pro dataset. Owner later removed the pace lock (back to the
+>   shipped 0.75 s floor; "it already slows itself down").
+> * **Input delay (a996a070, 34e5a85, opt-in --follow-up-taps):** our chain is ~0.1 s (decide 79 ms, tap 23 ms median);
+>   the game's deploy is 91.5% of decision->confirm (24 ticks median) -> nothing left to cut for one play. Pipelined second
+>   tap LIVE-TESTED 10-09 12:1x-12:3x in friendlies vs the owner's 2nd account "ClashAI" (probe_live.py, CPU): 11/12 pairs
+>   both confirmed (5/5 at spare 2, 6/6 at spare 0; 1 refused in the first match), decision gap 4 ticks, landing gap 0-3;
+>   the game charges A+B together. Combo window at gap 4: 78.1% of my-half cells (vs 2.9% at gap 30). GO; SIM parity for
+>   follow-ups next. Two early runs stopped on battle_over_hands_visible because the probe attached AFTER the match ended
+>   (results screen) -- friendlies work; the probe must start before each battle (friend nav templates are JinxTheCat's).
+> * Own-cycle (abf27945): the model already uses its next card + last 3 plays (ablation: val loss 5.507 -> 5.640, card
+>   agreement 59.5% -> 58.2%) -> owner's "could never estimate its own cycle" partly (c); explicit cycle-price features
+>   built (350 zero-init columns); laptop GPU training approved by the owner with live paused (STOP 11:59).
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
