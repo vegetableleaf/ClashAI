@@ -1,6 +1,29 @@
-only_air Logs 50
+only_air Logs 50 (of 4153 Logs; 173 empty corridor)
 air answer already in hand at the Log: 36
-retarget kinds Counter({'ground': 31, 'chip': 18, 'unchanged': 1})
+retarget kinds {'ground': 31, 'chip': 18, 'unchanged': 1}
 retarget ground value: mean 4.46
 after only_air Log: {'Skeletons': 13, 'Tesla': 10, 'Knight': 7, 'Tornado': 7, 'IceWizard': 6, 'Xbow': 3} total 46 air answers (Tesla+IceWizard): 16
-after any Log: air answers share 0.34921426789723126 only_air share 0.34782608695652173
+after any Log: air-answer share 0.349; after only_air Log 0.348
+air types in the path of an only_air Log:
+   16 ('skeleton_barrel',)
+   6 ('minion_horde',)
+   4 ('inferno_dragon',)
+   3 ('balloon',)
+   3 ('bats',)
+   2 ('baby_dragon',)
+   2 ('balloon', 'lava_hound')
+   2 ('minions', 'skeleton_barrel')
+   1 ('mega_minion', 'minions')
+   1 ('bats', 'phoenix')
+   1 ('bats', 'skeleton_barrel')
+   1 ('electro_dragon',)
+   1 ('balloon', 'lava_hound', 'mega_minion')
+   1 ('lava_pups', 'skeleton_barrel')
+   1 ('electro_dragon', 'lava_pups')
+   1 ('flying_machine', 'lava_pups', 'phoenix')
+   1 ('balloon', 'skeleton_barrel')
+   1 ('balloon', 'lava_pups')
+   1 ('mega_minion',)
+   1 ('lava_hound', 'minions')
+Logs whose only flyer is a Skeleton Barrel: 16
+per-match Log rate: 5.19 Logs/game over 800 games; only_air 0.062/game

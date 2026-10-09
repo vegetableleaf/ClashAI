@@ -109,13 +109,15 @@ def main(out, pattern=None):
                     res['retarget'][rk] += 1
                     res['retarget_value'].append(val)
                     from pipeline import vocab
+                    path = []
                     for u in pub['model_bodies']:
                         if u['side'] != 0:
                             ux, uy = u['x'] * 18, u['y'] * 32
                             if _covers(np.array([xy[0] * 18]), np.array([xy[1] * 32]), [(ux, uy)], CORRIDOR, LOG_AIR_UNIT_RADIUS).any():
                                 res['units_in_path_only_air'][vocab.UNIT_VOCAB[u['cls']]] += 1
+                                path.append(vocab.UNIT_VOCAB[u['cls']])
                     case = dict(file=os.path.basename(f)[10:25], tick=d['tick'], xy=[round(xy[0] * 18, 1), round(xy[1] * 32, 1)],
-                                retarget=rk, value=round(val, 2), hand=[h['name'] for h in pub['own_hand']])
+                                retarget=rk, value=round(val, 2), path=sorted(path), hand=[h['name'] for h in pub['own_hand']])
                     res['cases'].append(case)
                 pending = dict(before=[h['name'] for h in pub['own_hand']], only_air=kind == 'only_air', wait=6)
         if n_log:

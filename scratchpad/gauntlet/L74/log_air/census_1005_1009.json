@@ -16,6 +16,9 @@
    ],
    "retarget": "ground",
    "value": 9.0,
+   "path": [
+    "baby_dragon"
+   ],
    "hand": [
     "Log",
     "IceWizard",
@@ -32,6 +35,10 @@
    ],
    "retarget": "ground",
    "value": 5.0,
+   "path": [
+    "skeleton_barrel",
+    "skeleton_barrel"
+   ],
    "hand": [
     "Rocket",
     "IceWizard",
@@ -48,6 +55,15 @@
    ],
    "retarget": "ground",
    "value": 7.0,
+   "path": [
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel"
+   ],
    "hand": [
     "Rocket",
     "Xbow",
@@ -64,6 +80,15 @@
    ],
    "retarget": "ground",
    "value": 3.0,
+   "path": [
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel"
+   ],
    "hand": [
     "Rocket",
     "Tesla",
@@ -80,6 +105,15 @@
    ],
    "retarget": "ground",
    "value": 3.0,
+   "path": [
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel"
+   ],
    "hand": [
     "Tesla",
     "Rocket",
@@ -96,6 +130,10 @@
    ],
    "retarget": "ground",
    "value": 3.0,
+   "path": [
+    "skeleton_barrel",
+    "skeleton_barrel"
+   ],
    "hand": [
     "Knight",
     "Log",
@@ -112,6 +150,11 @@
    ],
    "retarget": "ground",
    "value": 3.0,
+   "path": [
+    "mega_minion",
+    "minions",
+    "minions"
+   ],
    "hand": [
     "Rocket",
     "Tesla",
@@ -128,6 +171,11 @@
    ],
    "retarget": "chip",
    "value": 0.0,
+   "path": [
+    "balloon",
+    "balloon",
+    "lava_hound"
+   ],
    "hand": [
     "Rocket",
     "Xbow",
@@ -144,6 +192,14 @@
    ],
    "retarget": "chip",
    "value": 0.0,
+   "path": [
+    "bats",
+    "bats",
+    "bats",
+    "bats",
+    "bats",
+    "phoenix"
+   ],
    "hand": [
     "Log",
     "Tesla",
@@ -160,6 +216,15 @@
    ],
    "retarget": "ground",
    "value": 7.0,
+   "path": [
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel"
+   ],
    "hand": [
     "Tornado",
     "Tesla",
@@ -176,6 +241,9 @@
    ],
    "retarget": "ground",
    "value": 4.0,
+   "path": [
+    "balloon"
+   ],
    "hand": [
     "Tesla",
     "Rocket",
@@ -192,6 +260,14 @@
    ],
    "retarget": "unchanged",
    "value": 0.0,
+   "path": [
+    "minion_horde",
+    "minion_horde",
+    "minion_horde",
+    "minion_horde",
+    "minion_horde",
+    "minion_horde"
+   ],
    "hand": [
     "Log",
     "Tornado",
@@ -208,6 +284,19 @@
    ],
    "retarget": "chip",
    "value": 0.0,
+   "path": [
+    "clone",
+    "clone",
+    "clone",
+    "clone",
+    "clone",
+    "minion_horde",
+    "minion_horde",
+    "minion_horde",
+    "minion_horde",
+    "minion_horde",
+    "minion_horde"
+   ],
    "hand": [
     "Tesla",
     "Log",
@@ -224,6 +313,15 @@
    ],
    "retarget": "chip",
    "value": 0.0,
+   "path": [
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel"
+   ],
    "hand": [
     "Log",
     "Tornado",
@@ -240,6 +338,15 @@
    ],
    "retarget": "chip",
    "value": 0.0,
+   "path": [
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel"
+   ],
    "hand": [
     "IceWizard",
     "Tornado",
@@ -256,6 +363,14 @@
    ],
    "retarget": "ground",
    "value": 3.0,
+   "path": [
+    "bats",
+    "bats",
+    "bats",
+    "bats",
+    "bats",
+    "skeleton_barrel"
+   ],
    "hand": [
     "Xbow",
     "Log",
@@ -272,6 +387,11 @@
    ],
    "retarget": "ground",
    "value": 30.0,
+   "path": [
+    "bats",
+    "bats",
+    "bats"
+   ],
    "hand": [
     "Xbow",
     "Tesla",
@@ -288,6 +408,10 @@
    ],
    "retarget": "chip",
    "value": 0.0,
+   "path": [
+    "baby_dragon",
+    "clone"
+   ],
    "hand": [
     "Log",
     "Tornado",
@@ -304,6 +428,9 @@
    ],
    "retarget": "chip",
    "value": 0.0,
+   "path": [
+    "balloon"
+   ],
    "hand": [
     "Xbow",
     "Log",
@@ -320,6 +447,10 @@
    ],
    "retarget": "chip",
    "value": 0.0,
+   "path": [
+    "balloon",
+    "lava_hound"
+   ],
    "hand": [
     "Knight",
     "Xbow",
@@ -336,6 +467,13 @@
    ],
    "retarget": "chip",
    "value": 0.0,
+   "path": [
+    "bats",
+    "bats",
+    "bats",
+    "bats",
+    "bats"
+   ],
    "hand": [
     "Tornado",
     "Log",
@@ -352,6 +490,15 @@
    ],
    "retarget": "ground",
    "value": 4.0,
+   "path": [
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel"
+   ],
    "hand": [
     "Log",
     "Rocket",
@@ -368,6 +515,9 @@
    ],
    "retarget": "ground",
    "value": 2.0,
+   "path": [
+    "skeleton_barrel"
+   ],
    "hand": [
     "Log",
     "Rocket",
@@ -384,6 +534,9 @@
    ],
    "retarget": "chip",
    "value": 0.0,
+   "path": [
+    "skeleton_barrel"
+   ],
    "hand": [
     "Log",
     "Tornado",
@@ -400,6 +553,9 @@
    ],
    "retarget": "ground",
    "value": 5.0,
+   "path": [
+    "electro_dragon"
+   ],
    "hand": [
     "IceWizard",
     "Log",
@@ -416,6 +572,15 @@
    ],
    "retarget": "ground",
    "value": 10.0,
+   "path": [
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel"
+   ],
    "hand": [
     "Log",
     "Rocket",
@@ -432,6 +597,15 @@
    ],
    "retarget": "ground",
    "value": 7.0,
+   "path": [
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel"
+   ],
    "hand": [
     "Tesla",
     "Rocket",
@@ -448,6 +622,11 @@
    ],
    "retarget": "ground",
    "value": 6.0,
+   "path": [
+    "balloon",
+    "lava_hound",
+    "mega_minion"
+   ],
    "hand": [
     "IceWizard",
     "Xbow",
@@ -464,6 +643,14 @@
    ],
    "retarget": "ground",
    "value": 7.0,
+   "path": [
+    "minion_horde",
+    "minion_horde",
+    "minion_horde",
+    "minion_horde",
+    "minion_horde",
+    "minion_horde"
+   ],
    "hand": [
     "Log",
     "Tesla",
@@ -480,6 +667,9 @@
    ],
    "retarget": "ground",
    "value": 5.0,
+   "path": [
+    "balloon"
+   ],
    "hand": [
     "Xbow",
     "Tesla",
@@ -496,6 +686,18 @@
    ],
    "retarget": "ground",
    "value": 4.0,
+   "path": [
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel"
+   ],
    "hand": [
     "Rocket",
     "Log",
@@ -512,6 +714,13 @@
    ],
    "retarget": "ground",
    "value": 5.0,
+   "path": [
+    "minions",
+    "minions",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel"
+   ],
    "hand": [
     "Rocket",
     "Log",
@@ -528,6 +737,17 @@
    ],
    "retarget": "ground",
    "value": 5.0,
+   "path": [
+    "minions",
+    "minions",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel"
+   ],
    "hand": [
     "Rocket",
     "Log",
@@ -544,6 +764,13 @@
    ],
    "retarget": "ground",
    "value": 6.0,
+   "path": [
+    "bats",
+    "bats",
+    "bats",
+    "bats",
+    "bats"
+   ],
    "hand": [
     "Xbow",
     "Tesla",
@@ -560,6 +787,9 @@
    ],
    "retarget": "chip",
    "value": 0.0,
+   "path": [
+    "minion_horde"
+   ],
    "hand": [
     "Rocket",
     "Xbow",
@@ -576,6 +806,16 @@
    ],
    "retarget": "ground",
    "value": 45.0,
+   "path": [
+    "lava_pups",
+    "lava_pups",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel"
+   ],
    "hand": [
     "Xbow",
     "Tornado",
@@ -592,6 +832,16 @@
    ],
    "retarget": "chip",
    "value": 0.0,
+   "path": [
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel",
+    "skeleton_barrel"
+   ],
    "hand": [
     "Rocket",
     "Tornado",
@@ -608,6 +858,9 @@
    ],
    "retarget": "ground",
    "value": 5.0,
+   "path": [
+    "inferno_dragon"
+   ],
    "hand": [
     "Log",
     "IceWizard",
@@ -624,6 +877,9 @@
    ],
    "retarget": "chip",
    "value": 0.0,
+   "path": [
+    "inferno_dragon"
+   ],
    "hand": [
     "Rocket",
     "Log",
@@ -640,6 +896,20 @@
    ],
    "retarget": "chip",
    "value": 0.0,
+   "path": [
+    "clone",
+    "clone",
+    "clone",
+    "clone",
+    "clone",
+    "electro_dragon",
+    "lava_pups",
+    "lava_pups",
+    "lava_pups",
+    "lava_pups",
+    "lava_pups",
+    "lava_pups"
+   ],
    "hand": [
     "Rocket",
     "IceWizard",
@@ -656,6 +926,9 @@
    ],
    "retarget": "ground",
    "value": 10.0,
+   "path": [
+    "inferno_dragon"
+   ],
    "hand": [
     "Rocket",
     "Tornado",
@@ -672,6 +945,15 @@
    ],
    "retarget": "ground",
    "value": 3.0,
+   "path": [
+    "flying_machine",
+    "lava_pups",
+    "lava_pups",
+    "lava_pups",
+    "lava_pups",
+    "lava_pups",
+    "phoenix"
+   ],
    "hand": [
     "Xbow",
     "Tesla",
@@ -688,6 +970,10 @@
    ],
    "retarget": "ground",
    "value": 5.0,
+   "path": [
+    "balloon",
+    "skeleton_barrel"
+   ],
    "hand": [
     "Log",
     "Xbow",
@@ -704,6 +990,13 @@
    ],
    "retarget": "ground",
    "value": 5.0,
+   "path": [
+    "minion_horde",
+    "minion_horde",
+    "minion_horde",
+    "minion_horde",
+    "minion_horde"
+   ],
    "hand": [
     "Log",
     "Knight",
@@ -720,6 +1013,10 @@
    ],
    "retarget": "ground",
    "value": 6.0,
+   "path": [
+    "minion_horde",
+    "minion_horde"
+   ],
    "hand": [
     "Log",
     "Tesla",
@@ -736,6 +1033,14 @@
    ],
    "retarget": "chip",
    "value": 0.0,
+   "path": [
+    "balloon",
+    "lava_pups",
+    "lava_pups",
+    "lava_pups",
+    "lava_pups",
+    "lava_pups"
+   ],
    "hand": [
     "Log",
     "Rocket",
@@ -752,6 +1057,9 @@
    ],
    "retarget": "chip",
    "value": 0.0,
+   "path": [
+    "skeleton_barrel"
+   ],
    "hand": [
     "Tesla",
     "Xbow",
@@ -768,6 +1076,9 @@
    ],
    "retarget": "chip",
    "value": 0.0,
+   "path": [
+    "inferno_dragon"
+   ],
    "hand": [
     "Xbow",
     "Tesla",
@@ -784,6 +1095,9 @@
    ],
    "retarget": "chip",
    "value": 0.0,
+   "path": [
+    "mega_minion"
+   ],
    "hand": [
     "Log",
     "Xbow",
@@ -800,6 +1114,12 @@
    ],
    "retarget": "ground",
    "value": 1.0,
+   "path": [
+    "lava_hound",
+    "minions",
+    "minions",
+    "minions"
+   ],
    "hand": [
     "Log",
     "Xbow",
@@ -860,6 +1180,9 @@
    ],
    "retarget": "chip",
    "value": 0.0,
+   "path": [
+    "mega_minion"
+   ],
    "hand": [
     "Log",
     "Xbow",
@@ -876,6 +1199,12 @@
    ],
    "retarget": "ground",
    "value": 1.0,
+   "path": [
+    "lava_hound",
+    "minions",
+    "minions",
+    "minions"
+   ],
    "hand": [
     "Log",
     "Xbow",

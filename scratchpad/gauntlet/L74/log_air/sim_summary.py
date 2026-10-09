@@ -1,8 +1,10 @@
-"""log_air SIM A/B summary.  python sim_summary.py <sim dir> [evo,lad,air]
-Paired by (census, match tag): wins (win 1, draw .5), better / worse / same, mean paired difference in percentage points with a
-95 % normal CI (non-inferiority bar: lower bound > -3 pp), two-sided sign test; per arm the Log plays per match, the corridor
-class of each Log play (hits / only_air / empty), and for the log_air arms the touched Logs (re-aimed cell_kind or blocked)
-and the outcomes of the matches where it fired."""
+"""log_air SIM A/B summary (staged design, stage_b.py).  python sim_summary.py <sim dir> [evo,lad,air]
+Base ran on every seed; a log_air arm ran only on the CANDIDATE games (base played >= 1 Log whose corridor held only flyers --
+the only way log_air can touch a game; a game without one is identical in every arm, det_check.py). Paired by (census, tag):
+a non-candidate game takes the base result for the arm, a candidate game its own result (a candidate whose arm game has not
+finished is left out of that arm's pairs).  Wins (win 1, draw .5), better / worse / same, mean paired difference in pp with a
+95 % normal CI (non-inferiority bar: lower bound > -3 pp), sign test; Log plays per game by corridor class (base); the touched
+Logs and what the re-aim hits (log_fire_s0 geometry on the decision board)."""
 import glob, json, math, os, sys
 from collections import Counter, defaultdict
 
@@ -10,25 +12,29 @@ O = sys.argv[1]
 SUF = sys.argv[2].split(',') if len(sys.argv) > 2 else ['evo', 'lad', 'air']
 
 
-def load(arm):
+def games(arm, s):
     out = {}
-    for s in SUF:
-        p = f'{O}/{arm}_{s}/matches.jsonl'
+    for p in [f'{O}/{arm}_{s}/matches.jsonl'] + sorted(glob.glob(f'{O}/{arm}_{s}_b*/matches.jsonl')):
         if os.path.exists(p):
             for line in open(p):
-                r = json.loads(line)
+                try:
+                    r = json.loads(line)
+                except ValueError:
+                    continue
                 if r['arm'] == 'plain':
-                    out[(s, r['tag'])] = r
+                    out[r['tag']] = r
     return out
 
 
-def fires(arm):
+def fires(arm, s):
     out = defaultdict(list)
-    for s in SUF:
-        for f in glob.glob(f'{O}/fires_{arm}_{s}/fires_*.jsonl'):
-            for line in open(f):
+    for f in glob.glob(f'{O}/fires_{arm}_{s}/fires_*.jsonl') + glob.glob(f'{O}/fires_{arm}_{s}_b*/fires_*.jsonl'):
+        for line in open(f):
+            try:
                 x = json.loads(line)
-                out[(s, x['tag'])].append(x)
+            except ValueError:
+                continue
+            out[x['tag']].append(x)
     return out
 
 
@@ -41,8 +47,7 @@ def sign_p(b, c):
     return min(1.0, 2 * sum(math.comb(n, i) for i in range(k + 1)) / 2 ** n) if n else 1.0
 
 
-def compare(a, b, an, bn, keys, label):
-    d = [score(b[k]) - score(a[k]) for k in keys]
+def stats(d, label, bn):
     n = len(d)
     if not n:
         return
@@ -50,37 +55,51 @@ def compare(a, b, an, bn, keys, label):
     sd = math.sqrt(sum((x - m) ** 2 for x in d) / max(n - 1, 1))
     hw = 1.96 * sd / math.sqrt(n)
     up, dn = sum(x > 0 for x in d), sum(x < 0 for x in d)
-    print(f'  [{label}] {bn} vs {an}: wins {sum(score(b[k]) for k in keys):.1f} vs {sum(score(a[k]) for k in keys):.1f} of {n}; '
-          f'better {up} / worse {dn} / same {n - up - dn}; diff {100 * m:+.1f} pp, 95% CI [{100 * (m - hw):+.1f}, {100 * (m + hw):+.1f}] '
-          f'(half-width {100 * hw:.1f}); sign p {sign_p(up, dn):.3f}; non-inferior (lower > -3 pp): {100 * (m - hw) > -3}')
+    print(f'  [{label}] {bn} - base over {n} paired games: better {up} / worse {dn} / same {n - up - dn}; diff {100 * m:+.2f} pp, '
+          f'95% CI [{100 * (m - hw):+.2f}, {100 * (m + hw):+.2f}] (half-width {100 * hw:.2f}); sign p {sign_p(up, dn):.3f}; '
+          f'non-inferior (lower > -3 pp): {100 * (m - hw) > -3}')
 
 
-arms = {n: load(n) for n in ('base', 'retarget', 'block')}
-fr = {n: fires(n) for n in arms}
-for n, v in arms.items():
-    print(f'{n}: {len(v)} games')
-for bn in ('retarget', 'block'):
-    keys = sorted(set(arms['base']) & set(arms[bn]))
-    print(f'--- {bn} vs base, paired games {len(keys)}')
-    compare(arms['base'], arms[bn], 'base', bn, keys, 'all')
+base = {s: games('base', s) for s in SUF}
+bfire = {s: fires('base', s) for s in SUF}
+cand = {s: {t for t, v in bfire[s].items() if any(x.get('play') and x.get('kind') == 'only_air' for x in v)} for s in SUF}
+print('base games:', {s: len(base[s]) for s in SUF}, '| candidate games (base played an only_air Log):',
+      {s: len([t for t in cand[s] if t in base[s]]) for s in SUF})
+for arm in ('retarget', 'block'):
+    res = {s: games(arm, s) for s in SUF}
+    fa = {s: fires(arm, s) for s in SUF}
+    diffs = defaultdict(list)
+    pending = 0
     for s in SUF:
-        compare(arms['base'], arms[bn], 'base', bn, [k for k in keys if k[0] == s], s)
-    hit = [k for k in keys if any(x.get('why') == 'log_air' for x in fr[bn].get(k, []))]
-    compare(arms['base'], arms[bn], 'base', bn, hit, 'matches where log_air fired')
-    print(f'  matches where log_air fired: {len(hit)} of {len(keys)}')
-print('--- Log plays per arm (play = True) and corridor class at the decision')
-for n in arms:
-    games = len(arms[n])
-    plays = [x for v in fr[n].values() for x in v if x['play']]
-    kinds = Counter(x['kind'] for x in plays)
-    print(f'  {n}: {len(plays)} Log plays in {games} games = {len(plays) / max(games, 1):.2f} per game; corridor {dict(kinds)}'
-          f' ({100 * kinds["only_air"] / max(len(plays), 1):.1f} % only_air, {100 * kinds["empty"] / max(len(plays), 1):.1f} % empty)')
-    if n != 'base':
-        touched = [x for v in fr[n].values() for x in v if x.get('why') == 'log_air']
-        if n == 'retarget':
-            print(f'    log_air re-aimed {len(touched)} Logs ({len(touched) / max(games, 1):.3f} per game); new cell: '
-                  f'{dict(Counter(x.get("cell_kind") for x in touched))}; new corridor class {dict(Counter(x["kind"] for x in touched))}; '
-                  f'hits something (ground elixir or tower) {sum(x["kind"] == "hits" for x in touched)} of {len(touched)}; '
-                  f'mean ground elixir {sum(x["ground_value"] for x in touched) / max(len(touched), 1):.2f}')
-        else:
-            print(f'    log_air blocked {len(touched)} Logs ({len(touched) / max(games, 1):.3f} per game)')
+        for t, b in base[s].items():
+            if t in cand[s]:
+                if t not in res[s]:
+                    pending += 1
+                    continue
+                diffs[s].append(score(res[s][t]) - score(b))
+            else:
+                diffs[s].append(0.0)
+    print(f'--- {arm}  (candidates still pending: {pending})')
+    stats([x for s in SUF for x in diffs[s]], 'all', arm)
+    for s in SUF:
+        stats(diffs[s], s, arm)
+    run = [(s, t) for s in SUF for t in res[s]]
+    print(f'  candidate games run: {len(run)}; of those the arm touched: {sum(any(x.get("why") == "log_air" for x in fa[s].get(t, [])) for s, t in run)}')
+    stats([score(res[s][t]) - score(base[s][t]) for s, t in run if t in base[s]], 'candidate games only', arm)
+    touched = [x for s in SUF for v in fa[s].values() for x in v if x.get('why') == 'log_air']
+    if arm == 'retarget':
+        print(f'  re-aimed {len(touched)} Logs; new cell {dict(Counter(x.get("cell_kind") for x in touched))}; corridor class after '
+              f'{dict(Counter(x["kind"] for x in touched))}; hits something {sum(x["kind"] == "hits" for x in touched)} of {len(touched)}; '
+              f'mean ground elixir in the new corridor {sum(x["ground_value"] for x in touched) / max(len(touched), 1):.2f}')
+    else:
+        print(f'  blocked {len(touched)} Logs (WAIT)')
+n = sum(len(v) for v in base.values())
+plays = [x for s in SUF for v in bfire[s].values() for x in v if x['play']]
+k = Counter(x['kind'] for x in plays)
+print(f'--- base Log plays: {len(plays)} in {n} games = {len(plays) / max(n, 1):.2f} per game; corridor class {dict(k)} '
+      f'({100 * k["only_air"] / max(len(plays), 1):.1f} % only_air, {100 * k["empty"] / max(len(plays), 1):.1f} % empty); '
+      f'only_air Logs per game {k["only_air"] / max(n, 1):.3f}')
+for s in SUF:
+    pl = [x for v in bfire[s].values() for x in v if x['play']]
+    kk = Counter(x['kind'] for x in pl)
+    print(f'   {s}: {len(pl)} plays in {len(base[s])} games; {dict(kk)}')
