@@ -4896,6 +4896,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   battles; both hands/next/elixir/decks visible (spectator 793/793 frames); 73 ticks/s at 4x (owner: every replay plays
 >   at max 4x; channels for every arena and every Ranked tier -> hundreds of replays); 440 projectiles; decks with forms;
 >   plays 45 / 78 all positioned. Harvester (navigator + dedupe + loop + dataset bridge) dispatched to a7e7ad1a.
+> * **TV Royale harvester MERGED (L74/replay_rec: tv_templates.py, tv_nav.py, harvest.py, to_record.py; tests 14/14).** Needs a
+>   ~3 min owner capture pass when live is OFF: nav_dryrun.py --device --every 1 --seconds 180 while walking main -> TV
+>   Royale -> channel list -> Ultimate Champion -> replay list (one grey row) -> start a replay -> let it end -> leave the end
+>   screen; then templates tv_entry/tv_list_hdr/tv_channel_btn/tv_channels_hdr/tvch_ultimate_champion/tv_row_play/rp_exit.
+>   Throughput est.: ~65-70 s per replay at 4x + 15-20 s nav = ~40/hour; supply ~24 new/channel/day -> top 4 Ranked
+>   channels ~96/day (~2.5 h emulator). The test recording: 342 dataset_gen fv4 rows (public-only check passed);
+>   rejected only as started_late:381. Live currently running (owner restarted on bundle 2).
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
