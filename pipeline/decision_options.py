@@ -45,6 +45,7 @@ class DecisionOptions:
     rocket_value_min_y: float = 16.0        # the blast centre must be at board y >= this (16 = my half; 21+ = near my towers)
     rocket_value_max_left: float = 99.0     # no fire when the bodies in the blast would KEEP more than this much value after the Rocket
     rocket_value_threat: str = 'off'        # 'on': only while a tower of mine is under fire with an enemy body near it (tau_threat_state)
+    rocket_tornado: str = 'off'             # 'on': Rocket + Tornado on a clump too spread for one blast (live only; needs the follow-up taps API)
     rocket_value_hitbox: str = 'centre'     # 'edge': a body is in the blast when its hitbox touches the radius
     rocket_value_lead: str = 'off'          # 'on' / 'drift' / 'blend': aim at where the bodies will be when the Rocket lands
     rocket_value_idle: str = 'off'          # 'on': only at a decision where the model itself would not play (displaces nothing)
@@ -91,7 +92,7 @@ class DecisionOptions:
             raise ValueError('rocket_value must be finite and >= 0')
         for k, ok in (('rocket_value_mode', ('cost', 'damage', 'kill')), ('rocket_value_hitbox', ('centre', 'edge')),
                       ('rocket_value_lead', ('off', 'on', 'drift', 'blend')), ('rocket_value_idle', ('off', 'on')),
-                      ('rocket_value_threat', ('off', 'on'))):
+                      ('rocket_value_threat', ('off', 'on')), ('rocket_tornado', ('off', 'on'))):
             if getattr(self, k) not in ok:
                 raise ValueError(f'{k} must be one of {ok}')
         if not math.isfinite(self.rocket_value_min_elixir) or not 0 <= self.rocket_value_min_elixir <= 10:
@@ -100,13 +101,15 @@ class DecisionOptions:
             raise ValueError('rocket_value_min_y must be in [16, 32] tiles (my half)')
         if not math.isfinite(self.rocket_value_max_left) or self.rocket_value_max_left < 0:
             raise ValueError('rocket_value_max_left must be finite and >= 0 (99 = off)')
+        if self.rocket_tornado != 'off' and self.rocket_value <= 0:
+            raise ValueError('rocket_tornado needs rocket_value > 0 (its V)')
 
     @property
     def active(self):
         return (self.card_choice != 'argmax' or self.spell_aim != 'argmax' or self.tau_phase is not None
                 or self.xbow_class != 'argmax' or self.log_aim != 'argmax' or self.gate_decode != 'threshold'
                 or self.lethal_rocket != 'off' or self.xbow_dead_lane != 'allow' or self.rocket_dead_target != 'allow'
-                or self.tau_threatened is not None or self.rocket_value > 0)
+                or self.tau_threatened is not None or self.rocket_value > 0 or self.rocket_tornado != 'off')
 
 
 def options_from_config(cfg=None):
@@ -182,6 +185,11 @@ def add_arguments(parser):
     parser.add_argument('--rocket-value-threat', choices=('off', 'on'), default='off',
                         help='on: only while one of my towers lost public HP within the last 2 s AND an enemy body is within 8 tiles of '
                              'it (the --tau-threatened state): the clump is attacking, not merely crossing the river')
+    parser.add_argument('--rocket-tornado', choices=('off', 'on'), default='off',
+                        help='owner 2026-10-09 (needs --rocket-value V and the pipelined follow-up tap, GenPilot.plan_follow_up): on a clump '
+                             'too spread for one Rocket blast (the Tornado pull holds >= V, no single blast does) with Rocket and Tornado '
+                             'in hand and both affordable: Rocket at the pull centre now, the Tornado there as a follow-up tap timed so the '
+                             'Rocket lands inside the pull (rocket_tornado_plan). Live only: the SIM has no pipelined taps')
     parser.add_argument('--rocket-value-max-left', type=float, default=99.0, metavar='L',
                         help='no fire when the bodies in the best blast would still hold more than L elixir of value after the '
                              'Rocket (a Golem keeps 5.7 of its 8): the Rocket then only strips the support and the elixir it '
@@ -1107,6 +1115,7 @@ def rocket_value_choice(options, names, allowed, bs, grid, pending=False, holder
     threatened = False
     if watch and holder is not None:                # the tower-fire state is kept on EVERY decision, like the lead history
         holder.rv_threat_state, threatened = tau_threat_state(getattr(holder, 'rv_threat_state', None), bs)
+        holder.rv_threatened = threatened
     if not slots and not track:
         return None                                 # nothing to cast, no history to keep
     bodies = rocket_bodies(bs, options.rocket_value_mode)
@@ -1135,6 +1144,84 @@ def rocket_value_cell(logits, eligible):
         return int(np.flatnonzero(eligible)[0])
     mass = rocket_area_scores(logits.softmax(dim=-1)[None])[0].masked_fill(~keep, -torch.inf)
     return int(logits.masked_fill(mass != mass.max(), -torch.inf).argmax())
+
+
+# ---- rocket_tornado (owner 2026-10-09 ~01:55: "rocket tornado combo also applies, especially for clumps that are too far apart for a lone
+# rocket to hit all of them"; coordinator 10-09: the pipelined second tap works live, branch worktree-agent-a996a070b47df363e 34e5a85) ----
+# The Tornado pulls every body within its radius toward the centre for 21 ticks; the Rocket must LAND while the pull has gathered them.
+# MEASURED in RoyaleSim (L74/rocket_value/measure_combo.out): Tornado lives 21 ticks, radius 5.5; 8 Knights / Giants spread within ~2 tiles of
+# the centre fit one 2.0-radius blast from 15 (Knights) / 21 (Giants) ticks after the cast and for >= 30 more: the Rocket must land
+# PULL_LANDS_FROM..PULL_LANDS_TO ticks after the Tornado is deployed. Rocket flight (decision -> impact) = round(d / .35) + 2 ticks from
+# my king tower. With a Rocket decision at T and a Tornado tap at T + g, the Rocket lands at T + flight and the Tornado at T + g:
+# g in [max(min_gap, flight - PULL_LANDS_TO), flight - PULL_LANDS_FROM]. min_gap = LIVE_FOLLOW_MIN_GAP_TICKS (the pipelined second tap:
+# both cards landed 0-3 ticks apart at a 4-tick decision gap in 11 of 12 live pairs); the SIM's pending lock needs 30 (2.9 % of cells).
+PULL_LANDS_FROM, PULL_LANDS_TO = 12, 33
+LIVE_FOLLOW_MIN_GAP_TICKS = 4
+WINDOW_MIN_WIDTH_TICKS = 5                    # a plan narrower than the 2-tick live frame grid is not started
+
+
+@lru_cache(maxsize=1)
+def tornado_radius_tiles():
+    import json
+    from .body_identity import CATALOG
+    t = next(c for c in json.loads(CATALOG.read_text(encoding='utf-8'))['cards'] if c['name'] == 'Tornado')
+    return float(t['spell']['radius_milli']) / 1000.0
+
+
+def rocket_flight_ticks(cx, cy):
+    """Ticks from the Rocket's deploy to its impact at board tile (cx, cy) (no residual lag): 2 + round(d / .35) from my king tower."""
+    return rocket_lands_in(cx, cy) - ROCKET_LAG_TICKS
+
+
+def rocket_tornado_plan(cx, cy, min_gap=LIVE_FOLLOW_MIN_GAP_TICKS):
+    """-> (earliest, latest) ticks after the Rocket decision at which the Tornado may be tapped so the Rocket lands inside the pull, or
+    None when there is no such time (the combo is not started)."""
+    flight = rocket_flight_ticks(cx, cy)
+    lo, hi = max(min_gap, flight - PULL_LANDS_TO), flight - PULL_LANDS_FROM
+    return (lo, hi) if lo <= hi else None
+
+
+def elixir_regen_per_tick(bs):
+    """Public regeneration of MY elixir per tick on a BoardState: 1 per 2.8 s, x2 from 2:00, x3 in overtime."""
+    return (3 if bs.overtime else 2 if bs.double_elixir else 1) / 56.0
+
+
+def best_tornado_centre(bodies, grid, hitbox='centre', min_y=MY_HALF_MIN_Y_TILES):
+    """-> (value, cell) for the Tornado centre on my half whose pull radius holds the most value; (0.0, None) without bodies."""
+    if not len(bodies):
+        return 0.0, None
+    x, y = cell_centres_tiles(grid)
+    reach = tornado_radius_tiles() + (bodies[:, 4] if hitbox == 'edge' else np.zeros(len(bodies)))
+    inside = np.hypot(x[:, None] - bodies[None, :, 1], y[:, None] - bodies[None, :, 2]) <= reach[None, :]
+    value = np.where(y >= min_y, inside @ bodies[:, 3], -1.0)
+    best = int(value.argmax())
+    return (float(value[best]), best) if value[best] > 0 else (0.0, None)
+
+
+def rocket_tornado_choice(options, names, allowed, bs, grid, pending=False, min_gap=LIVE_FOLLOW_MIN_GAP_TICKS):
+    """-> (rocket slot, tornado slot, cell, (earliest, latest), value) when the combo starts, else None: Rocket AND Tornado in hand
+    (``names`` = the hand), the Rocket affordable now and the Tornado affordable at the earliest follow-up time (regeneration counted),
+    nothing pending, NO single Rocket blast already holds rocket_value (rocket_value_choice's), the Tornado pull around the best centre
+    holds >= rocket_value, and a follow-up time at least WINDOW_MIN_WIDTH_TICKS wide exists. Same value mode / hitbox / min_y / min
+    elixir as the lone rule (the caller applies idle / threat)."""
+    if options.rocket_tornado == 'off' or options.rocket_value <= 0 or pending:
+        return None
+    rockets = [i for i, n in enumerate(names) if n is not None and str(n).lower() == 'rocket' and allowed[i]]
+    tornados = [i for i, n in enumerate(names) if n is not None and str(n).lower() == 'tornado']
+    if not rockets or not tornados or float(bs.my_elixir) + 1e-9 < options.rocket_value_min_elixir:
+        return None
+    bodies = rocket_bodies(bs, options.rocket_value_mode)
+    single, _ = best_rocket_clump(bodies, grid, options.rocket_value_hitbox, None, options.rocket_value_min_y)
+    value, cell = best_tornado_centre(bodies, grid, options.rocket_value_hitbox, options.rocket_value_min_y)
+    if cell is None or single + 1e-9 >= options.rocket_value or value + 1e-9 < options.rocket_value:
+        return None
+    x, y = cell_centres_tiles(grid)
+    plan = rocket_tornado_plan(x[cell], y[cell], min_gap)
+    if plan is None or plan[1] - plan[0] + 1 < WINDOW_MIN_WIDTH_TICKS:
+        return None
+    if float(bs.my_elixir) - 6.0 + elixir_regen_per_tick(bs) * plan[0] < 3.0:       # Rocket 6 now, Tornado 3 at the follow-up time
+        return None
+    return rockets[0], tornados[0], int(cell), plan, value
 
 
 @torch.no_grad()
@@ -1204,6 +1291,8 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
                      'tau_threat' if p[r] > tau[r] and p[r] <= base_tau[r] and options.tau_threatened is not None
                      else 'gate' if p[r] > tau[r] else 'hazard'))
            for r in range(len(slots))]
+    if options.rocket_tornado != 'off':
+        raise ValueError('rocket_tornado is live only: the SIM has no pipelined second tap (its pending lock needs a 30-tick gap)')
     if options.rocket_value > 0:    # before lethal_rocket, which overrides it
         if rocket_value is None or grid is None or card_names is None:
             raise ValueError('rocket_value requires per-row boards, the grid and card names')

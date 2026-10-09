@@ -424,3 +424,106 @@ def test_live_lethal_has_priority_and_unchanged_when_the_rule_does_not_hold():
     da, db = a.decide(live_frame(0, 1092, 1092)), b.decide(live_frame(0, 1092, 1092))
     assert da == db and 'why' not in da
     assert a.rng_decisions.bit_generator.state == b.rng_decisions.bit_generator.state
+
+
+# ---- rocket_tornado: the combo on a clump too spread for one blast (live only; the follow-up tap API is stubbed) ----------------------
+from pipeline.decision_options import (LIVE_FOLLOW_MIN_GAP_TICKS, PULL_LANDS_FROM, PULL_LANDS_TO, best_tornado_centre,  # noqa: E402
+                                      cell_centres_tiles, rocket_flight_ticks, rocket_tornado_choice, rocket_tornado_plan,
+                                      tornado_radius_tiles)
+
+COMBO = DecisionOptions(rocket_value=7.0, rocket_tornado='on')
+HAND = ['Knight', 'Rocket', 'Log', 'Tornado']
+
+
+def split_pups(y=22.0, gap=3.0):
+    """Six pups in two tight groups 2 x gap apart: no single 2-tile blast holds more than 3 (3.5), the Tornado pull holds all 6 (7.0)."""
+    return [unit('lava_pups', 9 - gap + .3 * i, y) for i in range(3)] + [unit('lava_pups', 9 + gap + .3 * i, y) for i in range(3)]
+
+
+def test_combo_flag_validation_default_off_and_sim_refusal():
+    assert DecisionOptions().rocket_tornado == 'off' and COMBO.active
+    for bad in ('yes', 'ON', ''):
+        with pytest.raises(ValueError):
+            DecisionOptions(rocket_value=7.0, rocket_tornado=bad)
+    with pytest.raises(ValueError, match='rocket_value'):
+        DecisionOptions(rocket_tornado='on')
+    ap = argparse.ArgumentParser(); add_arguments(ap)
+    assert options_from_config(config_from_args(ap.parse_args(['--rocket-value', '7', '--rocket-tornado', 'on']))) == COMBO
+    a = sim_args(1)
+    kw = dict(tau=.35, device='cpu', rngs=[None], card_names=[['knight', 'rocket', 'the-log', 'tornado']], grid='lattice')
+    with pytest.raises(ValueError, match='live only'):
+        decide_batch(Model(), **a, options=COMBO, rocket_value=[(board(*split_pups()), False, SimpleNamespace())], **kw)
+
+
+@pytest.mark.parametrize('d,flight', [(5, 16), (7, 22), (9, 28), (11, 33), (13, 39), (15, 45), (17, 51), (20, 59), (23, 68)])
+def test_rocket_flight_matches_the_royalesim_measurement(d, flight):
+    assert abs(rocket_flight_ticks(9.0, 28.65 - d) - flight) <= 1                    # straight ahead of my king tower
+
+
+def test_follow_up_timing_table_at_the_live_gap_and_the_sim_gap():
+    x, y = cell_centres_tiles('lattice')
+    mine = y >= 16.0
+    share = lambda gap: np.mean([rocket_tornado_plan(cx, cy, gap) is not None for cx, cy in zip(x[mine], y[mine])])
+    assert share(LIVE_FOLLOW_MIN_GAP_TICKS) == pytest.approx(.781, abs=.02)           # 78.1 % of my-half cells (window_table2.txt)
+    assert share(30) == pytest.approx(.029, abs=.01)                                  # the SIM pending lock: 2.9 %
+    assert rocket_tornado_plan(9.0, 22.0) == (4, 9)                                   # a clump 6.7 tiles from my king: 4..9 ticks after the Rocket
+    assert rocket_tornado_plan(9.0, 17.0) == (4, 23)
+    assert rocket_tornado_plan(9.0, 26.0) is None                                     # 2.7 tiles from my king: the Rocket lands too early
+    lo, hi = rocket_tornado_plan(3.5, 17.0)
+    assert hi == rocket_flight_ticks(3.5, 17.0) - PULL_LANDS_FROM and lo == max(4, rocket_flight_ticks(3.5, 17.0) - PULL_LANDS_TO)
+
+
+def test_tornado_centre_covers_the_split_clump_a_single_blast_cannot():
+    bodies = rocket_bodies(board(*split_pups()), 'cost')
+    assert best_rocket_clump(bodies, 'lattice')[0] == pytest.approx(3.5)
+    value, cell = best_tornado_centre(bodies, 'lattice')
+    assert value == pytest.approx(7.0) and tornado_radius_tiles() == 5.5
+    x, y = cell_centres_tiles('lattice')
+    assert abs(x[cell] - 9.0) <= 1.0 and 16 <= y[cell]
+
+
+def test_combo_choice_conditions():
+    bs = board(*split_pups(), elixir=9.5)
+    ok = [True, True, True, True]
+    hit = rocket_tornado_choice(COMBO, HAND, ok, bs, 'lattice')
+    assert hit[0] == 1 and hit[1] == 3 and hit[4] == pytest.approx(7.0) and hit[3][1] - hit[3][0] + 1 >= 5
+    assert rocket_tornado_choice(COMBO, HAND, ok, board(*split_pups(), elixir=8.0), 'lattice') is None       # 6 now + 3 later needs ~9
+    assert rocket_tornado_choice(COMBO, HAND, ok, bs, 'lattice', pending=True) is None
+    assert rocket_tornado_choice(COMBO, ['Knight', 'Rocket', 'Log', 'Tesla'], ok, bs, 'lattice') is None     # no Tornado in hand
+    assert rocket_tornado_choice(COMBO, HAND, [True, False, True, True], bs, 'lattice') is None              # Rocket not affordable
+    assert rocket_tornado_choice(DecisionOptions(rocket_value=7.0), HAND, ok, bs, 'lattice') is None         # combo off
+    assert rocket_tornado_choice(DecisionOptions(rocket_value=7.1, rocket_tornado='on'), HAND, ok, bs, 'lattice') is None   # pull holds 7.0
+    assert rocket_tornado_choice(COMBO, HAND, ok, board(*pups(), elixir=9.5), 'lattice') is None             # one blast holds it: the lone rule's
+    assert rocket_tornado_choice(COMBO, HAND, ok, board(*split_pups(y=27.0), elixir=9.5), 'lattice') is None  # too close to my king: no window
+    gated = DecisionOptions(rocket_value=7.0, rocket_tornado='on', rocket_value_min_elixir=9.9)
+    assert rocket_tornado_choice(gated, HAND, ok, bs, 'lattice') is None
+
+
+def combo_pilot(options, bs, calls):
+    pilot = live_pilot(options, bs)
+    pilot.row = lambda frame: ({}, dict(hand=[(1, 0), (2, 0), (3, 0), (4, 0)], costs=[3, 6, 2, 3], el_int=9, names=[
+        'Knight', 'Rocket', 'Log', 'Tornado', 'Xbow', 'IceWizard', 'Skeletons', 'Tesla'], hand_deck_indices=[0, 1, 2, 3], bs=bs))
+
+    def plan_follow_up(frame, first, name, xy, after_ticks, within_ticks=20, **kw):
+        calls.append((first['name'], name, xy, after_ticks, within_ticks))
+        return dict(play=True, name=name, xy=xy, follow=dict(after_ticks=after_ticks, within_ticks=within_ticks))
+    pilot.plan_follow_up = plan_follow_up
+    return pilot
+
+
+def test_live_combo_rocket_now_tornado_planned_in_the_middle_of_the_window():
+    calls = []
+    bs = board(*split_pups(), elixir=9.5)
+    d = combo_pilot(COMBO, bs, calls).decide(live_frame(0, 1092, 1092))
+    assert d['play'] and d['name'] == 'Rocket' and d['why'] == 'rocket_tornado' and d['hand_pos'] == 1
+    lo, hi = d['rocket_tornado_window']
+    (first, name, xy, after, within), = calls
+    assert (first, name) == ('Rocket', 'Tornado') and after == (lo + hi) // 2 and after + within == hi and xy == d['xy']
+    assert d['follow_ups'][0]['follow']['after_ticks'] == after
+    # the lone rule has priority where one blast holds it; the combo is silent without a clump / off
+    calls.clear()
+    d = combo_pilot(COMBO, board(*pups(), elixir=9.5), calls).decide(live_frame(0, 1092, 1092))
+    assert d['why'] == 'rocket_value' and not calls and 'follow_ups' not in d
+    d = combo_pilot(DecisionOptions(rocket_value=7.0), bs, calls).decide(live_frame(0, 1092, 1092))
+    assert d['why'] == 'rocket_value' or d.get('why') != 'rocket_tornado'
+    assert not calls

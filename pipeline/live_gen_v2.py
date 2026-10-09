@@ -15,7 +15,7 @@ from .decision_options import (BARREL_KEY, DecisionOptions, barrel_landings, cho
                                gate_taus, hazard_draw, is_xbow, lethal_rocket_choice, tau_threat_state,
                                threat_on, threat_taus, tower_threat, xbow_dead_lane_cells, enemy_body_tiles,
                                princess_dead_state, rocket_covers_king, rocket_kills_king)
-from .decision_options import rocket_value_cell, rocket_value_choice
+from .decision_options import rocket_tornado_choice, rocket_value_cell, rocket_value_choice
 from .live_mem import my_side_of
 from .decision_options import enemy_princess_hps, hp_after, record_hp
 
@@ -41,6 +41,8 @@ class GenPilot(LegacyGenPilot):
     def __init__(self, *args, decision_options=None, decision_seed=0, public_audit=False, **kwargs):
         super().__init__(*args, **kwargs)
         self.decision_options = decision_options or DecisionOptions()
+        if self.decision_options.rocket_tornado != 'off' and not hasattr(self, 'plan_follow_up'):
+            raise ValueError('rocket_tornado needs the pipelined follow-up tap (GenPilot.plan_follow_up, --follow-up-taps branch)')
         if self.decision_options.log_aim != 'argmax' and getattr(self, 'feature_version', 1) < 4:
             raise ValueError('log_aim needs a feature_version >= 4 checkpoint (public projectile tokens)')
         self.decision_seed = int(decision_seed)
@@ -53,7 +55,7 @@ class GenPilot(LegacyGenPilot):
         self._threat_state = None               # decision_options.tower_threat state of the previous decision
         self._princess_dead_state = None        # decision_options.princess_dead_state of the previous decision
         self._tau_threat_state = None           # decision_options.tau_threat_state of the previous decision
-        self.rv_hist, self.rv_threat_state = None, None   # rocket_value: the lead history (rocket_track) / the tower-fire state
+        self.rv_hist, self.rv_threat_state, self.rv_threatened = None, None, False   # rocket_value: lead history / tower-fire state
 
     def reset_match(self):
         super().reset_match()
@@ -66,7 +68,7 @@ class GenPilot(LegacyGenPilot):
         self._princess_dead_state = None
         self._lethal_hp_hist = None
         self._tau_threat_state = None
-        self.rv_hist, self.rv_threat_state = None, None   # rocket_value: the lead history (rocket_track) / the tower-fire state
+        self.rv_hist, self.rv_threat_state, self.rv_threatened = None, None, False   # rocket_value: lead history / tower-fire state
 
     def row(self, frame):
         b, info = super().row(frame)
@@ -117,6 +119,18 @@ class GenPilot(LegacyGenPilot):
             return None
         names = [info['names'][di] if di >= 0 else None for di in info['hand_deck_indices']]
         return rocket_value_choice(options, names, allowed, info['bs'], self.grid, holder=self, playing=bool(playing))
+
+    def rocket_tornado(self, info, allowed, playing=False):
+        """decision_options.rocket_tornado_choice on the live board -> (Rocket hand position, cell, (earliest, latest), value) or None.
+        The lone rule has priority (the caller asks it first); idle / threat gates as the lone rule (threat from the state it kept)."""
+        options = self.decision_options
+        if options.rocket_tornado == 'off' or (options.rocket_value_idle == 'on' and playing):
+            return None
+        if options.rocket_value_threat == 'on' and not getattr(self, 'rv_threatened', False):
+            return None
+        names = [info['names'][di] if di >= 0 else None for di in info['hand_deck_indices']]
+        hit = rocket_tornado_choice(options, names, allowed, info['bs'], self.grid)
+        return None if hit is None else (hit[0], hit[2], hit[3], hit[4])
 
     @torch.no_grad()
     def decide(self, frame):
@@ -202,6 +216,27 @@ class GenPilot(LegacyGenPilot):
                 d.update(hazard_step_s=step, hazard_play=False)
                 self._hazard_prev = (tick, False)
             return self._audited(d)
+        combo = self.rocket_tornado(info, allowed, playing)
+        if combo is not None:                           # not in the SIM (decide_batch refuses it): the pipelined second tap is live only
+            pos, cell, (lo, hi), value = combo
+            card, form = info['hand'][pos]
+            xy = cell_xy(cell, self.grid)
+            d = dict(play=True, p_play=p, hand_pos=pos, no_affordable=False, stalled=stalled, why='rocket_tornado',
+                     rocket_value=round(value, 3), deck_index=info['hand_deck_indices'][pos], card=card, form=form, bs=bs,
+                     name=info['names'][info['hand_deck_indices'][pos]], xy=xy, **lookahead)
+            after = (lo + hi) // 2                      # the middle of the window: robust to the 2-tick frame grid on both sides
+            follow = self.plan_follow_up(frame, d, 'Tornado', xy, after_ticks=after, within_ticks=hi - after)
+            if follow is not None:                      # the Tornado left the hand since: no combo, fall through to the model
+                d['follow_ups'] = [follow]
+                d['rocket_tornado_window'] = (lo, hi)
+                if options.tau_phase is not None or options.tau_threatened is not None:
+                    d['gate_tau'] = tau
+                if tau_threat is not None:
+                    d['tau_threat'] = tau_threat
+                if hazard_on:
+                    d.update(hazard_step_s=step, hazard_play=False)
+                    self._hazard_prev = (tick, False)
+                return self._audited(d)
         pos = choose_slot(out['card'][0], allowed, options, self.rng_decisions, playing=playing)
         dropped = None                                  # the block that left an X-Bow / Rocket no cell (SIM decide_batch)
         while True:
