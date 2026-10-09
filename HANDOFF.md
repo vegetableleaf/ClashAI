@@ -4872,6 +4872,9 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   horizon = 23 (execution ~ confirm - 1). Owner deploy line (pending checks): --fast-input --tap-gap-ms 0 --afford-ticks 23
 >   --early-release-margin 8 --extrapolate 23/24 (+ SIM action_delay to match when SIM is used). Lead added the five flags
 >   to EXTRA_LIVE_FLAGS (cb_merge_af 2b6f042; 38 tests pass; --check passes); blind verification running.
+> * **OWNER ruling on dead-lane scope:** "The xbow block should only block offensive xbows in the dead lane." = the built
+>   refined block (dead lane lock cell + king-only cells = placements aimed at a dead/king tower; deeper defensive rows stay
+>   allowed). No change needed.
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
