@@ -5076,6 +5076,14 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   single blast 3.5-5.0 elixir (pups spread 4.4 t; my lava_rocket.py valued each pup at 7). Combo infeasible at live
 >   latency: Tornado >= 30 ticks after the Rocket leaves 33/1,152 my-half cells (2.9%, river only), 0 at 40 ticks; needs
 >   unconfirmed double-tap input. Untested next: kill-weighted value (only bodies one Rocket kills).
+> * **air-answer (a3832d1a, 5ef2a96): DO NOT SHIP.** Live census: blocks 45 of 10,587 ground-only plays (Knight 21,
+>   Skeletons 21, X-Bow 3; 011626 t848/2369/2419 fire). Pros do it too: 32% of placements with a Balloon within 5.5 t
+>   (bot 33%) (c, premise contradicted). SIM: plain 480 pairs 323 -> 325 (5/3); Balloon/Hound decks 720 pairs 432 -> 406
+>   (26/52, p .004). Fallback card is the likely cause (68% Tornado/Rocket/Log; Log can't hit air); drop-to-WAIT +5
+>   (24/19, n.s.) untested at scale; buildings may decoy Balloons.
+> * 04:0x manual live health check (cron 637669ac never fired -- session never idle; deleted): KEEP. identity-ext-2 era
+>   (01:44-03:00) 12-9 +94; last 60 min 11-6 +148; all-time 500-462. Upstream: RoyaleSim tip still f042db0 (no new cards);
+>   RoyaleGym 83cab5a docs only; RoyaleLearn c221c16 0.5.13; RoyaleViser 8b07966 docs.
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
