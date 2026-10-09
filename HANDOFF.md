@@ -5060,6 +5060,10 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   (not blind): same targeted tests before/after (108 -> 117 passed incl. 7 new; same 2 known test_live_entry failures),
 >   --check PASS, sampler command byte-identical, example live_sampler3.c URL 404 on main. NOT done: history rewrite
 >   (old commits + 26 forks still hold the files) -- owner decision. Do not re-add reader specifics to tracked files.
+> * 02:48 menu read: **11,565 trophies**. lethal-log v2 (2b205e1, candidate b9a3ea4 cb_merge_log) re-verified a65ac040
+>   PASS_WITH_NOTES: off identical (187,841 live states; SIM 480/480), 0 wasted double casts, SIM 316 vs 315. NOT
+>   deployed: MEDIUM -- the in-flight guard keeps counting a spell after it HIT (until hit+26+20 ticks) -> refuses the
+>   finishing Log (SIM lad 17: 350->8 HP, Log refused, lost 0-1; live 225206 t5331: 34 HP, Log refused). Back to a0ff8a54.
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
