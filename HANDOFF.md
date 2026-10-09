@@ -5084,6 +5084,16 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 > * 04:0x manual live health check (cron 637669ac never fired -- session never idle; deleted): KEEP. identity-ext-2 era
 >   (01:44-03:00) 12-9 +94; last 60 min 11-6 +148; all-time 500-462. Upstream: RoyaleSim tip still f042db0 (no new cards);
 >   RoyaleGym 83cab5a docs only; RoyaleLearn c221c16 0.5.13; RoyaleViser 8b07966 docs.
+> * **lethal-log v3 (7d7a8ff):** guard releases a spell once the tower lost >= its damage since landing (public HP
+>   snapshots); live 225206 t5331 now fires the Log; SIM 316 vs 315 (1/0), 0 landed double casts; lad 17 still lost (enemy
+>   crowned 3 ticks before the Log's hit). Late-landing released taps not handled (needs live_play.py).
+> * **tau-threatened (a71df585, 575a99d/cef1050):** while a tower of mine lost HP within 2 s AND an enemy is within 8 t of
+>   it, gate threshold = X. Live replay of 650 M4 runs: X=.20 breaks 48% (median 1.0 s). SIM 480 paired: X=.10 303,
+>   .15 305, **.20 338** (78/63, +3.1 [-1.7, +8.1], three-crown losses -.015 [-.029, -.002], tower HP lost +67 n.s.),
+>   .25 332; base 323. Pick .20 (non-inferior, win gain not significant).
+> * Combined candidate a0f3746 in C:/Users/benpe/cb_merge_tau = ce4f5b6 + lethal-log (74de8f8, 2 trivial conflicts) + tau
+>   (11 blocks resolved, both sides kept); 241 tests pass -> blind verifier af471193 (A log, B tau incl. own SIM re-run, C
+>   merge). If PASS: deploy `--lethal-log on --tau-threatened 0.2`, Discord, restart between matches.
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
