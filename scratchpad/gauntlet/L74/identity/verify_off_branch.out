@@ -1,0 +1,8 @@
+[0/1285] 0s {}
+[200/1285] 0s {}
+[400/1285] 1s {}
+[600/1285] 1s {}
+[800/1285] 28s {'states': 47061}
+[1000/1285] 63s {'states': 108253}
+[1200/1285] 101s {'states': 169749}
+root C:\Users\benpe\ClashBot\.claude\worktrees\agent-a4defcf779b079511 stats {'states': 196449} off_sha256 b207d70d7c0577f35237117d8bb5afb89032f935dc19bc57b86f354e69a2c156 failures 0
