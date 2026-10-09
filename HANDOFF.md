@@ -4903,6 +4903,20 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   Throughput est.: ~65-70 s per replay at 4x + 15-20 s nav = ~40/hour; supply ~24 new/channel/day -> top 4 Ranked
 >   channels ~96/day (~2.5 h emulator). The test recording: 342 dataset_gen fv4 rows (public-only check passed);
 >   rejected only as started_late:381. Live currently running (owner restarted on bundle 2).
+> * **LIVE A/B RUNNING (owner ~21:4x): Hero IW fix OFF for 20 matches (from the 21:20 bundle-2 start), then ON for 20.**
+>   Watcher scratchpad/gauntlet/L74/ab/ab_watch.py (background; state ab_state.json, log ab_watch.out, Discord per step):
+>   at 20 OFF it touches L70/live/STOP, waits, restarts run_live.sh with LIVE_ARGS="--hero-ability-spec supplement"; at
+>   20 ON it stops and leaves live OFF. Early release is NOT switched on during the A/B (would confound the ON arm) --
+>   turn it on after (owner asked to switch it on once it passes verification).
+> * **OWNER: highest priority = defence / 3-crown run-overs.** Match live_play_20261008_213416 (evo Skeleton Barrel, Skeleton
+>   King, Skeleton Army, Blowdart, spirits, Suspicious Bush): 3-crown loss. (a) IDENTITY BUG: spawned units carry the PARENT
+>   card name and pipeline/vocab.engine_unit_id has no split for them -> the evo barrel's skeletons (SkeletonBalloon,
+>   hp 108) map to skeleton_barrel (flying troop) and Skeleton King's summons to ~20 SkeletonKing bodies; probably the
+>   same in training (same from_engine path) -> fix = vocab split + dataset rebuild + retrain. (a) right princess 3004 -> 0
+>   in ~3.5 s; king 7032 -> 0 over ~12 s with an affordable Tesla and gate p .13-.34 < 2x tau .45 -> no play; entered the
+>   push at 1.0 elixir; Tesla placed centre while the barrels came down the left lane. Workers: af9dd59f run-over scan
+>   (Q1 3-crown/run-over causes, Q2 identity incl. training data, Q3 evo Tesla in training, Q4 ranked fixes); aca25a23
+>   --gate-hazard-threatened (hazard draws at the model's own rate while my tower is losing HP) + SIM A/B.
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
