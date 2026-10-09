@@ -27,6 +27,9 @@ for v, y in ((9, 21), (7, 21), (9, 23), (7, 23)):
     add(f'de{v}_y{y}', rocket_value=float(v), rocket_value_mode='damage', rocket_value_hitbox='edge', rocket_value_min_y=float(y))
 for v in (9, 11):
     add(f'de{v}_lead', rocket_value=float(v), rocket_value_mode='damage', rocket_value_hitbox='edge', rocket_value_lead='on')
+for v in (9, 11):
+    for mode in ('drift', 'blend'):
+        add(f'de{v}_{mode}', rocket_value=float(v), rocket_value_mode='damage', rocket_value_hitbox='edge', rocket_value_lead=mode)
 for v, l in ((7, 3), (9, 3), (9, 5)):
     add(f'de{v}_l{l}', rocket_value=float(v), rocket_value_mode='damage', rocket_value_hitbox='edge', rocket_value_max_left=float(l))
 for v, l in ((6, 3), (5, 2), (7, 3)):

@@ -158,6 +158,30 @@
 "rocket_value_hitbox": "edge",
 "rocket_value_lead": "on"
 },
+"de9_drift": {
+"rocket_value": 9.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_lead": "drift"
+},
+"de9_blend": {
+"rocket_value": 9.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_lead": "blend"
+},
+"de11_drift": {
+"rocket_value": 11.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_lead": "drift"
+},
+"de11_blend": {
+"rocket_value": 11.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_lead": "blend"
+},
 "de7_l3": {
 "rocket_value": 7.0,
 "rocket_value_mode": "damage",

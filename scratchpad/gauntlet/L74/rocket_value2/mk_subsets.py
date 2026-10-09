@@ -10,6 +10,7 @@ ap.add_argument('scout'); ap.add_argument('out')
 ap.add_argument('--controls', type=int, default=12)
 ap.add_argument('--arms', default='')
 ap.add_argument('--censuses', default='evo,lad')
+ap.add_argument('--skip', default=None, help='an earlier chunk directory: its seeds are not simulated again')
 a = ap.parse_args()
 os.makedirs(a.out, exist_ok=True)
 random.seed(0)
@@ -34,10 +35,16 @@ for v in names:
     for c in censuses:
         tags = trig[c][v]
         done = alltags[c]
-        seeds = sorted(int(t.split(':')[-1]) for t in tags)
+        done_tags = {t for t in tags if t in done}                 # only matches BASE has finished (the others are still being logged)
+        seeds = sorted(int(t.split(':')[-1]) for t in done_tags)
         rest = sorted(int(t.split(':')[-1]) for t in done - set(tags))
+        prev = set()
+        if a.skip and os.path.exists(f'{a.skip}/{v}_{c}.txt'):
+            prev = {int(x) for x in open(f'{a.skip}/{v}_{c}.txt').read().split(',') if x}
         ctrl = sorted(random.sample(rest, min(a.controls, len(rest))))
+        if a.skip:
+            ctrl = []                                              # controls only once, in the first chunk
         if v in want:
-            open(f'{a.out}/{v}_{c}.txt', 'w').write(','.join(map(str, sorted(set(seeds) | set(ctrl)))))
+            open(f'{a.out}/{v}_{c}.txt', 'w').write(','.join(map(str, sorted((set(seeds) | set(ctrl)) - prev))))
         row.append(f'{len(seeds):>5d}/{len(done):<4d} {len(seeds) / max(len(done), 1):5.0%}')
     print(f'{v:16s} ' + ' '.join(f'{x:>14s}' for x in row))

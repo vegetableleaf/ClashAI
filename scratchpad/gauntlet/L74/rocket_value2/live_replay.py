@@ -30,6 +30,7 @@ ap.add_argument('--logs', default='C:/Users/benpe/ClashBot/scratchpad/gauntlet/L
 ap.add_argument('--since', default='20261005')
 ap.add_argument('--detail', nargs=3, metavar=('FILE', 'T0', 'T1'))
 ap.add_argument('--variants', default='')
+ap.add_argument('--variants-json', default=None, help='name -> DecisionOptions kwargs (mk_variants.py) instead of the built-in list')
 args = ap.parse_args()
 
 R = dict(rocket_value=9.0)
@@ -45,9 +46,12 @@ VARIANTS = {
     'dmg_edge_V9_y21': dict(R, rocket_value_mode='damage', rocket_value_hitbox='edge', rocket_value_min_y=21.0),
     'kill_edge_V7': dict(rocket_value=7.0, rocket_value_mode='kill', rocket_value_hitbox='edge'),
 }
+if args.variants_json:
+    VARIANTS = json.load(open(args.variants_json))
 if args.variants:
     VARIANTS = {k: v for k, v in VARIANTS.items() if k in args.variants.split(',')}
 OPTS = {k: D.DecisionOptions(**v) for k, v in VARIANTS.items()}
+KEYS = {(o.rocket_value_mode, o.rocket_value_hitbox, o.rocket_value_min_y) for o in OPTS.values()}
 GAP, WITHIN = 200, 40            # ticks: 10 s ends an episode; 2 s = "the model Rocketed right then"
 
 
@@ -85,8 +89,16 @@ def run(path, detail=None):
         bs = board(p)
         in_hand = 'Rocket' in hand
         n_rocket_hand += in_hand
+        vals = {}
+        if in_hand and allowed[hand.index('Rocket')]:        # one best_rocket_clump per (mode, hitbox, min_y): a variant is only called when it can fire
+            for key in KEYS:
+                vals[key] = D.best_rocket_clump(D.rocket_bodies(bs, key[0]), 'lattice', key[1], None, key[2])[0]
         for k, o in OPTS.items():
-            hit = D.rocket_value_choice(o, hand, allowed, bs, 'lattice', holder=holders[k], playing=bool(d['decision'].get('play')))
+            if o.rocket_value_lead not in ('off', 'drift') or (vals.get((o.rocket_value_mode, o.rocket_value_hitbox, o.rocket_value_min_y), 0.0)
+                                                                + 1e-9 >= o.rocket_value) or detail:
+                hit = D.rocket_value_choice(o, hand, allowed, bs, 'lattice', holder=holders[k], playing=bool(d['decision'].get('play')))
+            else:
+                hit = None
             tick = p['raw_tick']
             if hit is not None:
                 if last[k] is None or tick - last[k] > GAP:

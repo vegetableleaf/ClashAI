@@ -944,7 +944,8 @@ _CHILD_SHARE = {'golemite': ('golem', 2, 'Golemite'), 'lava_pups': ('lava_hound'
 
 @lru_cache(maxsize=1)
 def rocket_unit_table():
-    """{vocab key: (elixir value of one full-hp body, catalog hitpoints, collision radius in tiles)}; troops and buildings.
+    """{vocab key: (elixir value of one full-hp body, catalog hitpoints, collision radius in tiles, speed in tiles per tick)}; troops
+    and buildings.
     Value = card cost / bodies the card puts out (cards.json count + second_summon.count). A spawned child shares its parent card
     (Lava Pups are the Hound's 7 over 6, golemites the Golem's 8 over 2, blobs a golemite's share over 2). A key missing from it
     is worth 0 (spells, ability markers, anything the catalog does not know)."""
