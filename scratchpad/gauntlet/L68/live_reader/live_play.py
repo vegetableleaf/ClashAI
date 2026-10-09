@@ -411,7 +411,7 @@ def main() -> int:
             loaded = [load_pilot(a, decision_cfg, ckpt=path) for path, _ in arms]
             print(json.dumps(dict(check='LIVE_CHECK_PASS', checkpoints=[
                 dict(checkpoint=path, sha256=sha, feature_version=pl.feature_version)
-                for (path, sha), (_, pl) in zip(arms, loaded)], device=loaded[0][0], tau=a.tau, **anti_leak_log(a),
+                for (path, sha), (_, pl) in zip(arms, loaded)], device=loaded[0][0], tau=a.tau, **anti_leak_log(a), **latency_log(a),
                 public_audit=a.public_audit, legal_guard=not getattr(a, 'no_legal_guard', False), predict_drops=a.predict_drops, own_effects=bool(getattr(a, 'own_effects', False)),
                 iw_press_pstar=a.iw_press_pstar, hero_ability_spec=getattr(a, "hero_ability_spec", "off"),
                 decision_options=vars(loaded[0][1].decision_options), live_options=a.live_options)))
@@ -428,7 +428,7 @@ def main() -> int:
     if a.check:
         device, pilot = load_pilot(a, decision_cfg)
         print(json.dumps(dict(check='LIVE_CHECK_PASS', checkpoint=a.ckpt, sha256=a.ckpt_sha256,
-              feature_version=pilot.feature_version, device=device, tau=a.tau, **anti_leak_log(a),
+              feature_version=pilot.feature_version, device=device, tau=a.tau, **anti_leak_log(a), **latency_log(a),
               public_audit=a.public_audit, legal_guard=getattr(pilot, 'legal_guard', None), predict_drops=a.predict_drops, own_effects=bool(getattr(a, 'own_effects', False)),
                 iw_press_pstar=a.iw_press_pstar, hero_ability_spec=getattr(a, "hero_ability_spec", "off"),
               decision_options=vars(pilot.decision_options), live_options=a.live_options)))
@@ -584,6 +584,13 @@ def load_pilot(a, decision_cfg, ckpt=None):
     return device, pilot
 
 
+def latency_log(a) -> dict:
+    """The L74 timing / input options, for the --check JSON (the start event logs the same values)."""
+    return dict(extrapolate=getattr(a, "extrapolate", None), afford_ticks=getattr(a, "afford_ticks", None),
+                early_release_margin=getattr(a, "early_release_margin", None),
+                fast_input=bool(getattr(a, "fast_input", False)), tap_gap_ms=getattr(a, "tap_gap_ms", 50))
+
+
 def anti_leak_log(a) -> dict:
     """anti_leak + its parameters, for the start event and the --check JSON."""
     on = bool(getattr(a, "anti_leak", False))
@@ -670,7 +677,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
         W(event="stop", why="reader_closed_4x")
 
     t0, pending, fails, played, confirmed, last_tick, last_adv = time.time(), None, 0, 0, 0, -1, time.time()
-    released = None   # --early-release-margin: the last early-released tap, until it lands late or CONFIRM_TICKS pass
+    released: dict = {}   # --early-release-margin: hand slot -> its early-released tap, until it lands late or is re-tapped,
+                          # or CONFIRM_TICKS pass after its release (a slot rotates only when OUR card in it is played)
     fails_run = 0   # CONSECUTIVE unconfirmed taps: 5 in a row = real malfunction (5 slow taps over a match under load is not)
     seen_active, both_vis, warmed, waiting_logged = False, 0, False, False
     from collections import deque
@@ -816,17 +824,19 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                             if not input_cmd(f"input tap {button.point[0]} {button.point[1]}"):
                                 W(event="stop", why="tap_timeout", tick=tick, input="ability"); break
                             ab_pending = {"t": now, "tick": tick, "elixir_raw": me["elixir_raw"]}
-            if released is not None:                     # --early-release-margin: a released tap that lands late
-                rp = released["d"]["hand_pos"]
-                if (me["hand_deck_indices"][rp] != released["me"]["hand_deck_indices"][rp]
+            for rp, rel in list(released.items()):       # --early-release-margin: released taps that land late
+                if (me["hand_deck_indices"][rp] != rel["me"]["hand_deck_indices"][rp]
                         and not (pending and pending["d"]["hand_pos"] == rp)):
-                    rd = released["d"]
+                    rd = rel["d"]
                     pilot.record_play(rd["card"], rd["form"], rd["xy"], tick * 0.05)
-                    W(event="late_landing", tick=tick, name=rd["name"], after_ticks=tick - released["tick"],
-                      release_ticks=released["release"])
-                    released = None
-                elif tick - released["tick"] > CONFIRM_TICKS:
-                    released = None
+                    confirmed += 1                       # a late landing IS a confirmation: undo its release's
+                    fails -= 1                           # unconfirmed count and reset the 5-in-a-row stop
+                    fails_run = 0
+                    W(event="late_landing", tick=tick, name=rd["name"], after_ticks=tick - rel["tick"],
+                      release_ticks=rel["release"], fails=fails)
+                    del released[rp]
+                elif tick - rel["tick"] > rel["release"] + CONFIRM_TICKS:     # watched CONFIRM_TICKS past its release
+                    del released[rp]
             if pending:
                 old = pending["me"]
                 pos = pending["d"]["hand_pos"]
@@ -857,7 +867,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                       p_play=pending["d"]["p_play"], elixir=old["elixir_raw"] / 1e4, fails=fails,
                       **({"release_ticks": pending["release"]} if "release" in pending else {}))
                     if pending.get("release", CONFIRM_TICKS) < CONFIRM_TICKS:
-                        released = pending                   # an early release: watch for a late landing
+                        released[pending["d"]["hand_pos"]] = pending    # an early release: watch for a late landing
                     pending = None
                     if fails_run >= 5:
                         W(event="stop", why="5_unconfirmed"); break
@@ -921,8 +931,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
             pending = {"d": d, "me": me, "t": now, "tick": tick, "addrs": {e["address"] for e in f["entities"]}}
             if release_margin is not None:               # --early-release-margin: expected confirmation + margin
                 pending["release"] = release_ticks(el, d["name"], tick, (t_done - t_recv) * 20, release_margin)
-            if released is not None and released["d"]["hand_pos"] == d["hand_pos"]:
-                released = None                          # the same slot tapped again: its rotation is this tap's
+            released.pop(d["hand_pos"], None)            # the same slot tapped again: its rotation is this tap's
     finally:
         with spawn_lock:
             stopping.set()                               # the pump may not start another sampler from here on
