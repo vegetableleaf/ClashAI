@@ -4920,6 +4920,16 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 > * **Early-release fixes MERGED 4f5424d** (blind PASS_WITH_NOTES on 73367d4; notes: a late landing resets fails_run even with
 >   other releases unresolved; unconfirmed events still logged for releases that later land). TODO after the Hero IW A/B:
 >   add --early-release-margin 8 to LIVE_OPTIONS (owner asked) + DEPLOYED_FILE in test_live_options.
+> * **RETRACTION (run-over worker af9dd59f, interim): the lead's identity-bug claim for 213416 is CONTRADICTED for the current
+>   fv6 model.** skelbarrel_trace.py printed RAW catalog names; the model input (model_bodies) held 545 'skeletons' body-
+>   states (293 SkeletonBalloon form-1 hp108, 185 SkeletonKing hp1, 67 SkeletonBalloon hp108) resolved by pipeline/
+>   body_identity.py (fv5+); skeleton_king never > 2 bodies in a state. The mislabel was REAL for R1e (fv4: skeleton_king up
+>   to 17 in 15 matches, witch up to 22 in 57). gen_dataset_v32_fv5 is resolved too (0 row-sides with >= 3 skeleton_king/
+>   skeleton_barrel/witch). -> no identity retrain needed for the current model. Q1 (568 matches since 10-05, 289W-278L,
+>   66 three-crowned): 458 tower falls, 68% within 20 s of the push crossing; 310 run-overs: elixir at crossing median 2.39,
+>   73% < 4; median 6.0 elixir spent in the 10 s before (Knight, IW, Skeletons, Log; 17% incl. an X-Bow). Time under fire:
+>   57% broke, 28% gate hold (median p .19 vs tau .45), 15% playing. Primary cause: broke 151, answered but fell 82, gate
+>   hold 77. Skeleton swarm (>= 4 on my half): no splash answer though affordable 31% (current model 25/76), p .10-.14.
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
