@@ -180,7 +180,8 @@ def test_match_kwargs_own_plays_only_when_on():
     assert match_kwargs([m])['lethal'] == [(tw, 1, False)]                              # off: unchanged
     m.cfg = {**m.cfg, 'lethal_log': 'on'}
     del m.rng_decision_options
-    assert match_kwargs([m])['lethal'] == [(tw, 1, False, [('rocket', .2, .2, 3690 * .05)])]
+    # + the landing-HP snapshot (None: this play landed before the first snapshot -> counted conservatively)
+    assert match_kwargs([m])['lethal'] == [(tw, 1, False, [('rocket', .2, .2, 3690 * .05, None)])]
 
 
 def test_sim_rows_and_live_pilot_share_the_guard():
@@ -198,3 +199,55 @@ def test_sim_rows_and_live_pilot_share_the_guard():
     assert p.decide(live_frame(1, 40, 1092)).get('why') is None
     p.past = [(2, 0, 14.5 / 18, 6.5 / 32, 190.0)]                     # long landed (and missed): fires again
     assert p.decide(live_frame(1, 40, 1092))['why'] == 'lethal_log'
+
+
+# ---- a spell that already HIT no longer counts (verifier v2: SIM lad 17, live 225206 t5331) ----------------------------
+def test_spell_stops_counting_once_it_has_hit():
+    t = 200.0
+    rk = (*RK_L, t - 3.0)                                               # landed 60 ticks ago, inside its window
+    assert in_flight_damage([(*rk, {'L': 350})], t, 11, {'L': 350}) == {'L': 342}         # not hit yet: counts
+    assert in_flight_damage([(*rk, {'L': 350})], t, 11, {'L': 8}) == {}                   # 350 -> 8: it hit
+    assert in_flight_damage([(*rk, {'L': 350})], t, 11, {'L': 9}) == {'L': 342}           # lost 341 < 342: still due
+    assert in_flight_damage([(*rk, None)], t, 11, {'L': 8}) == {'L': 342}                 # no snapshot: conservative
+    # lad s0:gen:17 shape: my Rocket took the tower 350 -> 8; the lethal Log now fires
+    tw = towers(0, 8, 3052, my_max=3052, enemy_max=3052)
+    hit = lethal_rocket_choice(LOG, t, NAMES, OK, tw, 0, 'lattice', own=[(*rk, {'L': 350, 'R': 3052})])
+    assert hit[0] == 2 and hit[2]['card'] == 'Log'
+    # before the hit the guard still holds (the original double-cast fix): Rocket flying at a 30-HP tower
+    tw30 = towers(0, 30, 3052, my_max=3052, enemy_max=3052)
+    assert lethal_rocket_choice(LOG, t, NAMES, OK, tw30, 0, 'lattice', own=[(*rk, {'L': 30, 'R': 3052})]) is None
+
+
+@pytest.mark.parametrize('side', [0, 1])
+def test_live_pilot_records_landing_hp_and_fires_after_the_hit(side):
+    """Live 225206 shape (level 15 here): Rocket confirmed at tick 5263 on a 530-HP tower, which reads 33 at 5331."""
+    p = live_pilot(LIVE_LOG, 263.0)
+    p.gid = {'rocket': 2}
+    assert p.decide(live_frame(side, 530, 4424, tick=5250)).get('why') is None    # 530: nothing lethal; snapshot kept
+    lane_x = (3.5 if side == 0 else 14.5) / 18                                       # raw-left tower in my frame
+    p.past = [(2, 0, lane_x, 6.5 / 32, 5263 * .05)]
+    p.row(None)[1]['bs'].t_sec = 5331 * .05 + 1.2
+    d = p.decide(live_frame(side, 33, 4424, tick=5331))
+    assert d['why'] == 'lethal_log' and d['lethal_rocket']['hp'] == 33
+    p2 = live_pilot(LIVE_LOG, 263.0)                                                 # Rocket on a 40-HP tower, not hit yet
+    p2.gid = {'rocket': 2}
+    p2.decide(live_frame(side, 40, 4424, tick=5250))
+    p2.past = [(2, 0, lane_x, 6.5 / 32, 5263 * .05)]
+    p2.row(None)[1]['bs'].t_sec = 5300 * .05 + 1.2
+    assert p2.decide(live_frame(side, 40, 4424, tick=5300)).get('why') is None
+
+
+def test_sim_match_kwargs_attaches_the_landing_snapshot():
+    tw_before, tw_after = towers(1, 350, 3052, my_max=3052, enemy_max=3052), towers(1, 8, 3052, my_max=3052,
+                                                                                   enemy_max=3052)
+    m = SimpleNamespace(tag='a', k=1, cfg={'lethal_rocket': 'ot_behind', 'lethal_log': 'on', 'grid': 'lattice'}, side=1,
+                        deck=SimpleNamespace(cards=['rocket', 'the-log']), state={'episode': {'crown_towers': tw_before}},
+                        _cur=(5250, SimpleNamespace(t_sec=263.8), None), done_plays=[])
+    match_kwargs([m])
+    m.state, m._cur, m.done_plays = {'episode': {'crown_towers': tw_after}}, (5340, SimpleNamespace(t_sec=268.3), None), \
+        [(5276, 0, 14.5 / 18, 6.5 / 32)]
+    row = match_kwargs([m])['lethal'][0]
+    assert row[3] == [('rocket', 14.5 / 18, 6.5 / 32, 5276 * .05, {'R': 350, 'L': 3052})]
+    hit = lethal_rocket_choice(LOG, 268.3, ['knight', 'rocket', 'the-log', 'tesla'], OK, *row[:2], 'lattice',
+                               own=row[3])
+    assert hit[2] == dict(lane='R', hp=8, damage=35, level=11, card='Log')

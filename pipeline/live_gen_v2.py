@@ -15,6 +15,7 @@ from .decision_options import (BARREL_KEY, DecisionOptions, barrel_landings, cho
                                gate_taus, hazard_draw, is_xbow, lethal_rocket_choice, threat_on, tower_threat,
                                xbow_dead_lane_cells)
 from .live_mem import my_side_of
+from .decision_options import enemy_princess_hps, hp_before
 
 # W4 hazard gate decoding: game seconds one live decision may accrue. Live decides every reader frame (logged decisions
 # ~10 ticks apart, SIM every 10); a CPU-starved loop reaches ~30 ticks (1.5 s). 2.0 s = the WAIT-row stride the gate was
@@ -57,6 +58,7 @@ class GenPilot(LegacyGenPilot):
         self._public_audit_snapshot = None
         self._hazard_prev = None
         self._threat_state = None
+        self._lethal_hp_hist = None
 
     def row(self, frame):
         b, info = super().row(frame)
@@ -82,8 +84,14 @@ class GenPilot(LegacyGenPilot):
         names = [info['names'][di] if di >= 0 else None for di in info['hand_deck_indices']]
         own = None
         if getattr(options, 'lethal_log', 'off') == 'on':   # my confirmed plays (card, model xy, landing t): in flight
+            tick = int(frame['game_tick'])                  # + the public tower HP each spell landed on (SIM: match_kwargs)
+            hist = getattr(self, '_lethal_hp_hist', None)
+            if hist is None or (hist and hist[-1][0] > tick):
+                hist = self._lethal_hp_hist = []
+            hist.append((tick, enemy_princess_hps(towers, side)))
+            del hist[:-64]
             key = {v: k for k, v in getattr(self, 'gid', {}).items()}
-            own = [(key.get(c), x, y, t) for c, f, x, y, t in getattr(self, 'past', [])[-8:]]
+            own = [(key.get(c), x, y, t, hp_before(hist, round(t / 0.05))) for c, f, x, y, t in getattr(self, 'past', [])[-8:]]
         return lethal_rocket_choice(options, info['bs'].t_sec, names, allowed, towers, side, self.grid, own=own)
 
     @torch.no_grad()

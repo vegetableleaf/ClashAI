@@ -1,0 +1,7 @@
+5235 model_t 262.95 enemy {'R': 376, 'L': 2572} hand ['Skeletons', 'Xbow', 'IceWizard', 'Rocket'] el 7 -> None | logged Rocket False
+5239 model_t 263.15 enemy {'R': 376, 'L': 2572} hand ['Skeletons', 'Xbow', 'IceWizard', 'Rocket'] el 8 -> None | logged Rocket True
+5265 model_t 264.45 enemy {'R': 376, 'L': 2572} hand ['Skeletons', 'Xbow', 'IceWizard', 'Knight'] el 3 -> None | logged Skeletons False
+5275 model_t 264.95 enemy {'R': 376, 'L': 2572} hand ['Skeletons', 'Xbow', 'IceWizard', 'Knight'] el 4 -> None | logged IceWizard False
+5279 model_t 265.15 enemy {'R': 376, 'L': 2572} hand ['Skeletons', 'Xbow', 'IceWizard', 'Knight'] el 4 -> None | logged IceWizard True
+5305 model_t 266.45 enemy {'R': 376, 'L': 2572} hand ['Skeletons', 'Xbow', 'Tesla', 'Knight'] el 2 -> None | logged Skeletons True
+5331 model_t 267.75 enemy {'R': 34, 'L': 2572} hand ['Log', 'Xbow', 'Tesla', 'Knight'] el 3 -> ('Log', {'lane': 'R', 'hp': 34, 'damage': 35, 'level': 11, 'card': 'Log'}) | logged Log True

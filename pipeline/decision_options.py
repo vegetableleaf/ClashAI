@@ -509,7 +509,7 @@ def lethal_rocket_target(crown_towers, side, card='Rocket', own=None, t_sec=None
     if level is None:
         return None
     damage, best = rocket_tower_damage(level, card), None
-    covered = in_flight_damage(own, t_sec, level) if own else {}
+    covered = in_flight_damage(own, t_sec, level, enemy_princess_hps(crown_towers, side)) if own else {}
     for t in crown_towers:
         if int(t['side']) == side or t.get('type') != 'princess' or t.get('destroyed') or not 0 < t['hp'] <= damage:
             continue
@@ -556,15 +556,40 @@ LOG_HIT_TICKS = 57
 IN_FLIGHT_MARGIN_TICKS = 20
 
 
-def in_flight_damage(own, t_sec, level):
+def enemy_princess_hps(crown_towers, side):
+    """{'L' | 'R' (my frame): HP} of the alive enemy princesses in raw ``episode.crown_towers`` rows (public)."""
+    from .obs_contract import _engine_xy
+    out = {}
+    for t in crown_towers:
+        if int(t['side']) != side and t.get('type') == 'princess' and not t.get('destroyed') and t['hp'] > 0:
+            out['L' if _engine_xy(float(t['x']), float(t['y']), side == 1)[0] < .5 else 'R'] = int(t['hp'])
+    return out
+
+
+def hp_before(history, tick):
+    """The latest ``enemy_princess_hps`` snapshot at or before raw ``tick`` from [(raw tick, hps)], else None."""
+    best = None
+    for t, hps in history:
+        if t <= tick and (best is None or t >= best[0]):
+            best = (t, hps)
+    return None if best is None else best[1]
+
+
+def in_flight_damage(own, t_sec, level, hp_now=None):
     """{'L' | 'R': tower damage} of my own Rockets / Logs still due to hit an enemy princess. ``own``: [(card name, x, y
-    in my 0-1 frame, landing t_sec)]. Rocket: aim within its radius + the princess radius of the tower centre; Log: the
-    tower inside its roll corridor (half-width / roll range + half-depth, each + the princess radius)."""
+    in my 0-1 frame, landing t_sec[, enemy_princess_hps at or before the landing])]. Rocket: aim within its radius + the
+    princess radius of the tower centre; Log: the tower inside its roll corridor (half-width / roll range + half-depth,
+    each + the princess radius).
+    A spell stops counting once it has HIT (verifier v2: counting it after the hit refused finishing spells): the tower
+    has lost at least that spell's damage since the landing (``hp_now`` vs the landing snapshot; public tower HP). This
+    is robust to the live confirmation-time stamp: any snapshot before the hit works, and the hit is >= 57 ticks after
+    landing while the stamp lags the placement by a few ticks; the time-window alone stays the upper bound."""
     from .public_geometry import constants
     tr = constants()['tower_radius']['PrincessTower'] / 1000.0
     half, depth, reach = rolling_corridor('Log')
     out = {}
-    for name, x, y, land in own:
+    for name, x, y, land, *before in own:
+        before = before[0] if before else None
         rocket = str(name).lower() == 'rocket'
         if not (rocket or is_log(name)):
             continue
@@ -575,7 +600,10 @@ def in_flight_damage(own, t_sec, level):
         for lane, (tx, ty) in zip('LR', ENEMY_TOWERS_TILES[1:]):
             if (math.hypot(x - tx, y - ty) <= rocket_radius_tiles() + tr if rocket else
                     abs(x - tx) <= half + tr and -(depth + tr) <= y - ty <= reach + depth + tr):
-                out[lane] = out.get(lane, 0) + rocket_tower_damage(level, 'Rocket' if rocket else 'Log')
+                damage = rocket_tower_damage(level, 'Rocket' if rocket else 'Log')
+                if before and hp_now and lane in before and lane in hp_now and before[lane] - hp_now[lane] >= damage:
+                    continue                        # it already hit: the tower HP includes its damage
+                out[lane] = out.get(lane, 0) + damage
     return out
 
 
@@ -751,7 +779,14 @@ def match_kwargs(matches):
                    lethal=[(((m.state or {}).get('episode') or {}).get('crown_towers', []), int(m.side),
                             getattr(m, 'pending', None) is not None) for m in matches])
         if options.lethal_log == 'on':  # + my accepted plays (landing tick, deck slot, my-frame xy) for the in-flight guard
-            out['lethal'] = [row + ([(m.deck.cards[s], x, y, land * 0.05) for land, s, x, y in m.done_plays[-8:]],)
+            for row, m in zip(out['lethal'], matches):   # public tower HP per decision tick -> the HP each spell landed on
+                hist = getattr(m, '_lethal_hp_hist', None)
+                if hist is None or (hist and hist[-1][0] > m._cur[0]):
+                    hist = m._lethal_hp_hist = []
+                hist.append((int(m._cur[0]), enemy_princess_hps(row[0], row[1])))
+                del hist[:-64]
+            out['lethal'] = [row + ([(m.deck.cards[s], x, y, land * 0.05, hp_before(m._lethal_hp_hist, land))
+                                     for land, s, x, y in m.done_plays[-8:]],)
                              for row, m in zip(out['lethal'], matches)]
     if options.log_aim != 'argmax':     # the very projectile tokens the model saw (gen_row, fv >= 4), as live's batch
         rows = [getattr(m, '_gen_row', None) for m in matches]
