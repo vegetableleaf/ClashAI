@@ -1,0 +1,6 @@
+4086 model_t 205.60 enemy {'R': 2543, 'L': 370} hand ['Tesla', 'Skeletons', 'Xbow', 'Tornado'] el 5 -> None | logged Tornado False
+4088 model_t 205.70 enemy {'R': 2543, 'L': 370} hand ['Tesla', 'Skeletons', 'Xbow', 'Tornado'] el 5 -> None | logged Tornado True
+4116 model_t 207.10 enemy {'R': 2543, 'L': 370} hand ['Tesla', 'Skeletons', 'Xbow', 'IceWizard'] el 6 -> None | logged IceWizard True
+4144 model_t 208.50 enemy {'R': 2543, 'L': 345} hand ['Tesla', 'Skeletons', 'Xbow', 'Log'] el 6 -> None | logged Log True
+4172 model_t 209.90 enemy {'R': 2543, 'L': 3} hand ['Tesla', 'Skeletons', 'Xbow', 'Knight'] el 8 -> None | logged Knight True
+4200 model_t 211.30 enemy {'R': 2543, 'L': 3} hand ['Tesla', 'Skeletons', 'Xbow', 'Rocket'] el 8 -> None | logged Rocket True

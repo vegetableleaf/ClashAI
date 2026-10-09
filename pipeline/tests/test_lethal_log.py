@@ -204,7 +204,7 @@ def test_sim_rows_and_live_pilot_share_the_guard():
 # ---- a spell that already HIT no longer counts (verifier v2: SIM lad 17, live 225206 t5331) ----------------------------
 def test_spell_stops_counting_once_it_has_hit():
     t = 200.0
-    rk = (*RK_L, t - 3.0)                                               # landed 60 ticks ago, inside its window
+    rk = (*RK_L, t - 4.6)                    # landed 92 model ticks ago (>= 66 - 10 + 26: past its earliest hit)
     assert in_flight_damage([(*rk, {'L': 350})], t, 11, {'L': 350}) == {'L': 342}         # not hit yet: counts
     assert in_flight_damage([(*rk, {'L': 350})], t, 11, {'L': 8}) == {}                   # 350 -> 8: it hit
     assert in_flight_damage([(*rk, {'L': 350})], t, 11, {'L': 9}) == {'L': 342}           # lost 341 < 342: still due
@@ -216,6 +216,37 @@ def test_spell_stops_counting_once_it_has_hit():
     # before the hit the guard still holds (the original double-cast fix): Rocket flying at a 30-HP tower
     tw30 = towers(0, 30, 3052, my_max=3052, enemy_max=3052)
     assert lethal_rocket_choice(LOG, t, NAMES, OK, tw30, 0, 'lattice', own=[(*rk, {'L': 30, 'R': 3052})]) is None
+
+
+def test_release_needs_the_earliest_hit_time_too():
+    """Verifier A4: another source's damage before the spell can have hit does not release it."""
+    from pipeline.decision_options import MAX_LOOKAHEAD_TICKS, RELEASE_MARGIN_TICKS
+    t = 200.0
+    edge_rk = (ROCKET_FLIGHT_TICKS - RELEASE_MARGIN_TICKS + MAX_LOOKAHEAD_TICKS) * .05     # 82 model ticks
+    assert in_flight_damage([(*RK_L, t - edge_rk, {'L': 350})], t, 11, {'L': 8}) == {}               # released
+    assert in_flight_damage([(*RK_L, t - edge_rk + .05, {'L': 350})], t, 11, {'L': 8}) == {'L': 342}  # 1 tick early
+    # synthetic: my Log lands at 100 HP, an X-Bow chips the tower to 30, 20 ticks later: still in flight
+    log = ('the-log', 3.5 / 18, 17.5 / 32)
+    assert in_flight_damage([(*log, t - 1.0, {'L': 100})], t, 15, {'L': 30}) == {'L': 51}
+    edge_log = (LOG_HIT_TICKS - RELEASE_MARGIN_TICKS + MAX_LOOKAHEAD_TICKS) * .05
+    assert in_flight_damage([(*log, t - edge_log, {'L': 100})], t, 15, {'L': 30}) == {}
+    # live 185400 t4200 shape (observer side 1, lane L): my Rocket took the tower 345 -> 3, my Log landed at 4170 on
+    # 345 HP and is still rolling at 4200 (model board 4224): no Rocket at the 3-HP tower
+    tw = towers(1, 1092, 3, my_max=3052, enemy_max=3052)        # raw-right = my L for side 1
+    own = [('rocket', 3.5 / 18, 6.5 / 32, 4084 * .05, {'L': 345}), (*log, 4170 * .05, {'L': 345})]
+    assert lethal_rocket_choice(LOG, 4224 * .05, NAMES, OK, tw, 1, 'lattice', own=own) is None
+    assert lethal_rocket_choice(LOG, 4224 * .05, NAMES, OK, tw, 1, 'lattice', own=own[:1])[2]['card'] == 'Log'
+
+
+def test_live_snapshots_on_every_decision_only_when_on():
+    frame = live_frame(0, 530, 4424, tick=5000)
+    p = live_pilot(LIVE_LOG, 250.0)
+    p.row(None)[1]['el_int'] = 0                                         # nothing affordable: the early return
+    assert p.decide(frame)['no_affordable'] and p._lethal_hp_hist == [(5000, {'L': 530, 'R': 4424})]
+    q = live_pilot(LIVE_BUNDLE, 250.0)
+    q.row(None)[1]['el_int'] = 0
+    q.decide(frame)
+    assert getattr(q, '_lethal_hp_hist', None) is None                    # lethal_log off: nothing recorded
 
 
 @pytest.mark.parametrize('side', [0, 1])

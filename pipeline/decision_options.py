@@ -740,6 +740,14 @@ def hp_before(history, tick):
     return None if best is None else best[1]
 
 
+# Release (verifier A4): a spell counts as HIT only when the tower lost >= its damage since the landing AND the board
+# time has passed a conservative earliest hit -- landing + its nominal hit ticks (Rocket 66, Log 57) - this margin
+# (MEASURED live spread ~+-10 ticks: L73/lethal_rocket/timing.out, log_timing.out), on a raw-tick lower bound
+# (model-board time - the largest look-ahead, 26). Another source's damage before that no longer releases it.
+RELEASE_MARGIN_TICKS = 10
+MAX_LOOKAHEAD_TICKS = 26
+
+
 def in_flight_damage(own, t_sec, level, hp_now=None):
     """{'L' | 'R': tower damage} of my own Rockets / Logs still due to hit an enemy princess. ``own``: [(card name, x, y
     in my 0-1 frame, landing t_sec[, enemy_princess_hps at or before the landing])]. Rocket: aim within its radius + the
@@ -766,7 +774,8 @@ def in_flight_damage(own, t_sec, level, hp_now=None):
             if (math.hypot(x - tx, y - ty) <= rocket_radius_tiles() + tr if rocket else
                     abs(x - tx) <= half + tr and -(depth + tr) <= y - ty <= reach + depth + tr):
                 damage = rocket_tower_damage(level, 'Rocket' if rocket else 'Log')
-                if before and hp_now and lane in before and lane in hp_now and before[lane] - hp_now[lane] >= damage:
+                if (before and hp_now and lane in before and lane in hp_now and before[lane] - hp_now[lane] >= damage
+                        and round((t_sec - land) / 0.05) - MAX_LOOKAHEAD_TICKS >= hit - RELEASE_MARGIN_TICKS):
                     continue                        # it already hit: the tower HP includes its damage
                 out[lane] = out.get(lane, 0) + damage
     return out
