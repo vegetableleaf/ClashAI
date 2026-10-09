@@ -3,7 +3,7 @@
 Per worker <FIRE_DIR>/boards_<pid>.jsonl, one line per decision:
   {"tag", "n" (decision index in the match), "tick", "el" (my elixir), "pl" (BASE plays a card here), "card" (its name, or null),
    "why", "ra" (a Rocket slot is affordable), "pe" (a card is pending), "b" [[vocab class id, x tiles, y tiles, hp fraction], ...] for
-   every body not mine}, plus, once per match, a {"tag", "names": [...], "grid"} line.
+   every body not mine, "tw" [[hp fraction, alive] x 6: my K, L, R, then the opponent's]}, plus, once per match, a {"tag", "names": [...], "grid"} line.
 Everything the rocket_value rule reads (rocket_value_choice: names, allowed, the board's bodies / elixir / time, pending, the gate
 decision) is in it, so any variant's FIRST TRIGGER can be found offline by replaying the rule (replay_triggers.py): an arm that fires
 nothing plays the match identically to BASE and its first fire is that trigger (BASE and the arm are identical until then)."""
@@ -45,7 +45,8 @@ def _logged(*a, **k):
         _write(dict(tag=tag, n=_n[tag], tick=int(round(float(bs.t_sec) / 0.05)), el=round(float(bs.my_elixir), 3), pl=bool(d['play']),
                     card=None if name is None else str(name), why=d.get('why'), ra=bool(ra), pe=bool(_ctx['pending'][r]),
                     b=[[int(u.cls), round(float(u.x) * 18, 3), round(float(u.y) * 32, 3), None if u.hp_frac is None else round(float(u.hp_frac), 4)]
-                       for u in bs.units if int(u.side) != 0]))
+                       for u in bs.units if int(u.side) != 0],
+                    tw=[[None if t.hp_frac is None else round(float(t.hp_frac), 4), bool(t.alive)] for t in bs.towers]))   # my K, L, R, opp K, L, R
     return out
 
 
