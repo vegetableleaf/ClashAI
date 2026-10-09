@@ -117,6 +117,9 @@ class GenPilot:
     # OPT-IN (live_play.py --afford-ticks, L74): the afford mask uses my elixir this many ticks after the decision
     # frame (e1_eval.afford_elixir, raw frame) instead of the look-ahead board's. None = off = unchanged.
     afford_ticks: Optional[int] = None
+    # OPT-IN (live_play.py --identity-ext on, L74): body_identity.extension() around the board's from_engine (new card
+    # ids + ability / evo spawn bodies -> learned classes). False = off = unchanged.
+    identity_ext = False
 
     def __init__(self, ckpt, device: str = "cpu", gate_tau: float = 0.5, use_counter: bool = True,
                  extrapolate_ticks: int = 0, predict_drops: bool = False, own_effects: bool = False,
@@ -258,9 +261,12 @@ class GenPilot:
             from dataclasses import replace
             from .live_mem import to_observe
             from .obs_contract import from_engine
+            from contextlib import nullcontext
+            from .body_identity import extension
             live_deck, live_names = deck_of(frame, side)
-            bs = from_engine(to_observe(frame, side, live_names), side, live_deck, history=self.history,
-                             engine_deck=live_names, unmapped=set(), feature_version=self.feature_version)
+            with extension() if getattr(self, "identity_ext", False) else nullcontext():
+                bs = from_engine(to_observe(frame, side, live_names), side, live_deck, history=self.history,
+                                 engine_deck=live_names, unmapped=set(), feature_version=self.feature_version)
             bs = replace(bs, source="live_mem", opp_elixir=opp if self.use_counter else None)
         else:
             bs = board_state(frame, history=self.history, opp_elixir=opp)

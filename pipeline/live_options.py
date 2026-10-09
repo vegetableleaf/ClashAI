@@ -25,7 +25,8 @@ EXTRA_LIVE_FLAGS = (('--own-effects', dict(action='store_true')),
                     ('--tap-gap-ms', dict(type=int)),
                     ('--afford-ticks', dict(type=int)),
                     ('--early-release-margin', dict(type=int)),
-                    ('--extrapolate', dict(type=int)))
+                    ('--extrapolate', dict(type=int)),
+                    ('--identity-ext', dict(choices=('off', 'on'), default='off')))   # L74 identity extension
 
 
 def _decision_parser(prog, allow_abbrev=True):

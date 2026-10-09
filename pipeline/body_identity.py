@@ -9,6 +9,7 @@ with the level. When one HP value matches different identities at different leve
 level of a same-side parent of that card on the same board, then (2) the card level implied by the side's tower
 max HP (``level_of_factor``). Native and SIM are level 11 (factor exactly 1.0).
 """
+from contextlib import contextmanager
 from dataclasses import dataclass
 from functools import lru_cache
 import json
@@ -51,6 +52,47 @@ MEASURED_HP = {('skeleton_king', 1): 'skeletons'}
 # makes them. Native: 629 x176 (VoodooHog L11) and 202 x80 (Goblin L11); live: 915 (VoodooHog L15).
 UNNAMED = (('VoodooHog', 'mother_witch_hog', 'WitchMother'), ('GoblinCurseGoblin', 'goblins', 'GoblinCurse'))
 _CHILD_RANK = {'parent': 0, 'child': 1, 'child_no_class': 2}
+
+# ---- L74 identity extension: OPT-IN, live only (live_play --identity-ext on -> GenPilot.identity_ext -> extension()).
+# Off (the default) = resolve_board unchanged. Training data (gen_dataset_v32_fv5) never had it. Evidence:
+# scratchpad/gauntlet/L74/identity/ (census.py = live census, native_scan.py = training corpora, wiki/ = api.php pages).
+EXTENSION = False
+# Reader card ids absent from the pinned live catalog (dropped today) -> catalog card name. Every live body's max_hp is
+# that card's catalog HP at a playable level: 13000043 AngryBarbarians L14/15/16 (evo; HANDOFF 10-06 native proof),
+# 203000042 ElectroWizard L11/14/16 (troop hero id = 203000000 + base id), 13000075 ElectroGiant L11/16 (evo, 10-06
+# Shocktober post), 26000107 RoyaleSim MinionGiant L11/13 (released 2026-09-05). Form 0: the model was trained on these
+# classes only in form 0 (an evo / hero form of them never occurs in gen_dataset_v32_fv5).
+EXT_CARD_IDS = {'13000043': 'AngryBarbarians', '13000075': 'ElectroGiant', '203000042': 'ElectroWizard',
+                '26000107': 'MinionGiant'}
+# No vocab class -> closest learned class. Minion Giant (catalog: flying_height 3000, target_only_buildings, speed 60,
+# 1817 HP at L11) vs Balloon (flying, buildings only, speed 60, 1676 HP); differs in range (4 tiles vs melee) and
+# damage (189 / 1.5 s vs 640 / 2 s at L11).
+EXT_CLASS = {'minion_giant': 'balloon'}
+# (parent key, reader form) -> ((unit, level-1 HP or None = catalog units[unit], class), ...): spawned / ability bodies
+# the reader names by their card, given today the card's own class. HP x the parent's level multipliers reproduces
+# every live value (census). Mortar evo shells spawn Goblins (catalog Mortar_EV1, wiki); Evo Royal Ghost Souldiers =
+# skeleton HP / damage / speed (catalog Ghost_EV1_Summon_*, wiki 81 / 81 at L11; hit 1.8 s splash vs 1.1 s single);
+# Little Prince's Guardienne = Knight-like (catalog ChampionGuard 625 / 91 / 1.2 s / speed 60 / range 1.2 vs Knight
+# 690 / 79 / 1.2 s / 60 / 1.2; the wiki calls her "comparable to a Knight"); Hero Dark Prince's Rhino (wiki 1356 HP
+# at L11 = 530 x 2.56) targets buildings, medium speed, charges, hit 1.6 s = Ram Rider's ram (buildings, 60, charge,
+# 1.7 s, 1766 HP); Hero Musketeer's Trusty Turret (wiki 1536 HP at L11 = 600 x 2.56) is a building shooting air and
+# ground at 4 tiles for 10 s = Tesla (building, air and ground, 5.5 tiles, 25 s).
+EXT_BODIES = {('mortar', 1): (('Goblin', None, 'goblins'),),
+              ('royal_ghost', 1): (('Ghost_EV1_Summon_Left', None, 'skeletons'),),
+              ('little_prince', 0): (('ChampionGuard', None, 'knight'),),
+              ('dark_prince', 2): (('DarkPrinceHero_Rhino', 530, 'ram_rider'),),
+              ('musketeer', 2): (('MusketeerHero_Turret', 600, 'tesla'),)}
+
+
+@contextmanager
+def extension(on=True):
+    """resolve_board with the L74 extension inside the block (restored after, also on error)."""
+    global EXTENSION
+    old, EXTENSION = EXTENSION, bool(on)
+    try:
+        yield
+    finally:
+        EXTENSION = old
 
 
 @dataclass(frozen=True)
@@ -295,6 +337,47 @@ def resolve_unnamed(max_hp, *, level=None):
     return got if got is not None else Identity(None, 0, 'ambiguous_hp' if cands else 'unknown_hp')
 
 
+@lru_cache(maxsize=1)
+def ext_tables():
+    """{(parent key, form): {max_hp: {(cls, form, 'parent' | 'ext_child', level)}}} for EXT_BODIES. The parent's own
+    HP is in the table too, so a value both bodies reach is settled by level or stays as today."""
+    catalog, _ = _catalog()
+    units = catalog['units']
+    rec = {}
+    for card in catalog['cards']:
+        rec.setdefault((vocab.engine_key(card['name']), 0), card)
+    for field, form in (('evolutions', 1), ('hero_forms', 2)):
+        for card in catalog[field]:
+            rec.setdefault((vocab.engine_key(card.get('form_of', '')), form), card)
+    out = {}
+    for (key, form), bodies in EXT_BODIES.items():
+        parent, table = rec[key, form], out.setdefault((key, form), {})
+        for level, m in _levels(parent):
+            for hp in _hitpoints(parent['name'], parent):
+                table.setdefault(hp * m // 100, set()).add((vocab.unit_id(key), form, 'parent', level))
+            for unit, base, cls in bodies:
+                for hp in ({base} if base else _hitpoints(unit, units[unit])):
+                    table.setdefault(hp * m // 100, set()).add((vocab.unit_id(cls), 0, 'ext_child', level))
+    return out
+
+
+def _extend(body, ident, level):
+    """One body's identity with the L74 extension (see EXTENSION); unchanged unless a rule matches."""
+    side, name, mhp, form, unnamed = body
+    if unnamed:
+        return ident
+    real = EXT_CARD_IDS.get(str(name))
+    if real is not None:
+        key = vocab.engine_key(real)
+        return Identity(vocab.unit_id(EXT_CLASS.get(key, key)), 0, 'ext_card')
+    if (ident.reason not in ('legacy', 'unknown_hp', 'ambiguous_hp') or mhp is None or not float(mhp) > 0
+            or int(mhp) != float(mhp)):
+        return ident
+    table = ext_tables().get((vocab.engine_key(str(name)), int(form)))
+    got = _pick(table.get(int(mhp), set()), None, level) if table else None
+    return Identity(got.cls, 0, got.reason, got.how) if got is not None and got.reason == 'ext_child' else ident
+
+
 def resolve_board(bodies, factor_by_side):
     """Feature version 5 identities for one board, in order.
 
@@ -319,4 +402,6 @@ def resolve_board(bodies, factor_by_side):
             # tower-factor normalisation as fv4 (obs_contract, IDENTITY_AUDIT #5)
             mhp = float(mhp) / f
         out.append(resolve(str(name), float(mhp), form, level=lv, parent_levels=seen.get((int(side), key))))
+    if EXTENSION:
+        out = [_extend(b, ident, level.get(int(b[0]))) for b, ident in zip(bodies, out)]
     return out

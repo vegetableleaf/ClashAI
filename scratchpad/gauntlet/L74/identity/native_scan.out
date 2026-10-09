@@ -1,0 +1,106 @@
+replays 14818 head scan 16s {'Balloon@hero': 2071, 'Goblins@hero': 548, 'Musketeer@hero': 655, 'DarkPrince@hero': 676, 'Tombstone@hero': 640, 'IceGolemite@hero': 478, 'EliteArcher@hero': 469, 'LittlePrince': 341, 'Goblinstein': 1424, 'BattleRam': 41, 'BattleRam@evolution': 1758, 'GoblinGang': 1557, 'SkeletonArmy@evolution': 2098, 'Mortar@evolution': 1986, 'Ghost@evolution': 2170, 'Ghost': 426, 'RageBarbarian@evolution': 402, 'Wallbreakers@evolution': 828, 'GoblinCage': 239, 'GoblinCage@evolution': 1043, 'Phoenix': 435, 'IceSpirits@evolution': 161, 'AngryBarbarians@evolution': 0, 'ElixirGolem': 640, 'SuspiciousBush': 362, 'RamRider': 430, 'Rascals': 1398, 'ThreeMusketeers': 150, 'LavaHound': 1391, 'Golem': 1022, 'ElectroSpirit': 4924, 'Wizard@hero': 790, 'Bowler@hero': 1176, 'BarbLog@hero': 1055}
+[0/802] 17s
+[25/802] 18s
+[50/802] 21s
+[75/802] 23s
+[100/802] 24s
+[125/802] 26s
+[150/802] 28s
+[175/802] 30s
+[200/802] 32s
+[225/802] 34s
+[250/802] 36s
+[275/802] 38s
+[300/802] 40s
+[325/802] 41s
+[350/802] 43s
+[375/802] 46s
+[400/802] 48s
+[425/802] 50s
+[450/802] 52s
+[475/802] 54s
+[500/802] 56s
+[525/802] 58s
+[550/802] 60s
+[575/802] 62s
+[600/802] 64s
+[625/802] 66s
+[650/802] 68s
+[675/802] 70s
+[700/802] 72s
+[725/802] 74s
+[750/802] 76s
+[775/802] 78s
+[800/802] 80s
+{'target': 'Balloon@hero', 'name': 'Balloon', 'card_id': 203000006, 'form': 2, 'max_hp': 1676, 'cls': 'balloon', 'cls_form': 2, 'reason': 'legacy', 'frames': 2157, 'bodies': 73, 'replays': 25}
+{'target': 'Balloon@hero', 'name': 'Balloon', 'card_id': 203000006, 'form': 2, 'max_hp': 473, 'cls': 'balloon', 'cls_form': 2, 'reason': 'legacy', 'frames': 268, 'bodies': 27, 'replays': 17}
+{'target': 'BarbLog@hero', 'name': 'BarbLog', 'card_id': 28000015, 'form': 0, 'max_hp': 716, 'cls': 'barbarians', 'cls_form': 0, 'reason': 'legacy', 'frames': 1592, 'bodies': 136, 'replays': 25}
+{'target': 'BattleRam', 'name': 'BattleRam', 'card_id': 26000036, 'form': 0, 'max_hp': 716, 'cls': 'battle_ram', 'cls_form': 0, 'reason': 'legacy', 'frames': 1964, 'bodies': 174, 'replays': 24}
+{'target': 'BattleRam', 'name': 'BattleRam', 'card_id': 26000036, 'form': 0, 'max_hp': 967, 'cls': 'battle_ram', 'cls_form': 0, 'reason': 'legacy', 'frames': 1414, 'bodies': 90, 'replays': 24}
+{'target': 'BattleRam@evolution', 'name': 'BattleRam', 'card_id': 26000036, 'form': 0, 'max_hp': 716, 'cls': 'battle_ram', 'cls_form': 0, 'reason': 'legacy', 'frames': 1564, 'bodies': 150, 'replays': 25}
+{'target': 'BattleRam@evolution', 'name': 'BattleRam', 'card_id': 26000036, 'form': 0, 'max_hp': 967, 'cls': 'battle_ram', 'cls_form': 0, 'reason': 'legacy', 'frames': 1168, 'bodies': 77, 'replays': 25}
+{'target': 'BattleRam@evolution', 'name': 'BattleRam', 'card_id': 13000036, 'form': 1, 'max_hp': 716, 'cls': 'battle_ram', 'cls_form': 1, 'reason': 'legacy', 'frames': 457, 'bodies': 45, 'replays': 19}
+{'target': 'BattleRam@evolution', 'name': 'BattleRam', 'card_id': 13000036, 'form': 1, 'max_hp': 967, 'cls': 'battle_ram', 'cls_form': 1, 'reason': 'legacy', 'frames': 529, 'bodies': 24, 'replays': 19}
+{'target': 'Bowler@hero', 'name': 'Bowler', 'card_id': 203000034, 'form': 2, 'max_hp': 2081, 'cls': 'bowler', 'cls_form': 2, 'reason': 'legacy', 'frames': 5697, 'bodies': 104, 'replays': 25}
+{'target': 'DarkPrince@hero', 'name': 'DarkPrince', 'card_id': 203000027, 'form': 2, 'max_hp': 1200, 'cls': 'dark_prince', 'cls_form': 2, 'reason': 'legacy', 'frames': 2640, 'bodies': 89, 'replays': 25}
+{'target': 'DarkPrince@hero', 'name': 'DarkPrince', 'card_id': 203000027, 'form': 2, 'max_hp': 1356, 'cls': 'dark_prince', 'cls_form': 2, 'reason': 'legacy', 'frames': 109, 'bodies': 7, 'replays': 6}
+{'target': 'ElectroSpirit', 'name': 'ElectroSpirit', 'card_id': 26000084, 'form': 0, 'max_hp': 217, 'cls': 'electro_spirit', 'cls_form': 0, 'reason': 'legacy', 'frames': 915, 'bodies': 179, 'replays': 25}
+{'target': 'EliteArcher@hero', 'name': 'EliteArcher', 'card_id': 203000062, 'form': 2, 'max_hp': 529, 'cls': 'magic_archer', 'cls_form': 2, 'reason': 'legacy', 'frames': 3165, 'bodies': 102, 'replays': 25}
+{'target': 'EliteArcher@hero', 'name': 'EliteArcher', 'card_id': 203000062, 'form': 2, 'max_hp': 271, 'cls': 'magic_archer', 'cls_form': 2, 'reason': 'legacy', 'frames': 67, 'bodies': 10, 'replays': 8}
+{'target': 'ElixirGolem', 'name': 'ElixirGolem', 'card_id': 26000067, 'form': 0, 'max_hp': 360, 'cls': 'elixir_blob', 'cls_form': 0, 'reason': 'legacy', 'frames': 1469, 'bodies': 208, 'replays': 25}
+{'target': 'ElixirGolem', 'name': 'ElixirGolem', 'card_id': 26000067, 'form': 0, 'max_hp': 762, 'cls': 'elixir_golemite', 'cls_form': 0, 'reason': 'legacy', 'frames': 1308, 'bodies': 114, 'replays': 25}
+{'target': 'ElixirGolem', 'name': 'ElixirGolem', 'card_id': 26000067, 'form': 0, 'max_hp': 1569, 'cls': 'elixir_golem', 'cls_form': 0, 'reason': 'legacy', 'frames': 2188, 'bodies': 61, 'replays': 25}
+{'target': 'Ghost', 'name': 'Ghost', 'card_id': 26000050, 'form': 0, 'max_hp': 1210, 'cls': 'royal_ghost', 'cls_form': 0, 'reason': 'legacy', 'frames': 3586, 'bodies': 121, 'replays': 24}
+{'target': 'Ghost@evolution', 'name': 'Ghost', 'card_id': 13000050, 'form': 1, 'max_hp': 81, 'cls': 'royal_ghost', 'cls_form': 1, 'reason': 'legacy', 'frames': 827, 'bodies': 105, 'replays': 22}
+{'target': 'Ghost@evolution', 'name': 'Ghost', 'card_id': 26000050, 'form': 0, 'max_hp': 1210, 'cls': 'royal_ghost', 'cls_form': 0, 'reason': 'legacy', 'frames': 2997, 'bodies': 97, 'replays': 25}
+{'target': 'Ghost@evolution', 'name': 'Ghost', 'card_id': 13000050, 'form': 1, 'max_hp': 1210, 'cls': 'royal_ghost', 'cls_form': 1, 'reason': 'legacy', 'frames': 1050, 'bodies': 34, 'replays': 22}
+{'target': 'GoblinCage', 'name': 'GoblinCage', 'card_id': 27000012, 'form': 0, 'max_hp': 780, 'cls': 'goblin_cage', 'cls_form': 0, 'reason': 'parent', 'frames': 1819, 'bodies': 95, 'replays': 25}
+{'target': 'GoblinCage', 'name': 'GoblinCage', 'card_id': 27000012, 'form': 0, 'max_hp': 1080, 'cls': 'goblin_cage', 'cls_form': 0, 'reason': 'child_no_class', 'frames': 1828, 'bodies': 92, 'replays': 25}
+{'target': 'GoblinCage@evolution', 'name': 'GoblinCage', 'card_id': 27000012, 'form': 0, 'max_hp': 780, 'cls': 'goblin_cage', 'cls_form': 0, 'reason': 'parent', 'frames': 1255, 'bodies': 65, 'replays': 24}
+{'target': 'GoblinCage@evolution', 'name': 'GoblinCage', 'card_id': 27000012, 'form': 0, 'max_hp': 1080, 'cls': 'goblin_cage', 'cls_form': 0, 'reason': 'child_no_class', 'frames': 1320, 'bodies': 63, 'replays': 24}
+{'target': 'GoblinCage@evolution', 'name': 'GoblinCage', 'card_id': 13000107, 'form': 1, 'max_hp': 780, 'cls': 'goblin_cage', 'cls_form': 1, 'reason': 'parent', 'frames': 429, 'bodies': 23, 'replays': 20}
+{'target': 'GoblinCage@evolution', 'name': 'GoblinCage', 'card_id': 13000107, 'form': 1, 'max_hp': 1080, 'cls': 'goblin_cage', 'cls_form': 0, 'reason': 'child_no_class', 'frames': 418, 'bodies': 21, 'replays': 18}
+{'target': 'GoblinGang', 'name': 'GoblinGang', 'card_id': 26000041, 'form': 0, 'max_hp': 133, 'cls': 'goblin_gang', 'cls_form': 0, 'reason': 'legacy', 'frames': 5644, 'bodies': 342, 'replays': 23}
+{'target': 'GoblinGang', 'name': 'GoblinGang', 'card_id': 26000041, 'form': 0, 'max_hp': 202, 'cls': 'goblin_gang', 'cls_form': 0, 'reason': 'legacy', 'frames': 3935, 'bodies': 340, 'replays': 23}
+{'target': 'Goblins@hero', 'name': 'Goblins', 'card_id': 203000002, 'form': 2, 'max_hp': 202, 'cls': 'goblins', 'cls_form': 2, 'reason': 'legacy', 'frames': 6456, 'bodies': 522, 'replays': 25}
+{'target': 'Goblins@hero', 'name': 'Goblins', 'card_id': 203000002, 'form': 2, 'max_hp': 2560, 'cls': 'goblins', 'cls_form': 2, 'reason': 'legacy', 'frames': 1427, 'bodies': 115, 'replays': 25}
+{'target': 'Goblinstein', 'name': 'Goblinstein', 'card_id': 26000099, 'form': 0, 'max_hp': 2385, 'cls': 'goblinstein', 'cls_form': 0, 'reason': 'legacy', 'frames': 2706, 'bodies': 93, 'replays': 25}
+{'target': 'Goblinstein', 'name': 'Goblinstein', 'card_id': 26000099, 'form': 0, 'max_hp': 721, 'cls': 'goblinstein', 'cls_form': 0, 'reason': 'legacy', 'frames': 3714, 'bodies': 93, 'replays': 25}
+{'target': 'Golem', 'name': 'Golem', 'card_id': 26000009, 'form': 0, 'max_hp': 1039, 'cls': 'golemite', 'cls_form': 0, 'reason': 'legacy', 'frames': 1090, 'bodies': 82, 'replays': 22}
+{'target': 'Golem', 'name': 'Golem', 'card_id': 26000009, 'form': 0, 'max_hp': 5120, 'cls': 'golem', 'cls_form': 0, 'reason': 'legacy', 'frames': 2533, 'bodies': 41, 'replays': 22}
+{'target': 'IceGolemite@hero', 'name': 'IceGolemite', 'card_id': 203000038, 'form': 2, 'max_hp': 1315, 'cls': 'ice_golem', 'cls_form': 2, 'reason': 'legacy', 'frames': 3509, 'bodies': 163, 'replays': 25}
+{'target': 'IceSpirits@evolution', 'name': 'IceSpirits', 'card_id': 26000030, 'form': 0, 'max_hp': 217, 'cls': 'ice_spirit', 'cls_form': 0, 'reason': 'legacy', 'frames': 667, 'bodies': 102, 'replays': 25}
+{'target': 'IceSpirits@evolution', 'name': 'IceSpirits', 'card_id': 13000030, 'form': 1, 'max_hp': 217, 'cls': 'ice_spirit', 'cls_form': 1, 'reason': 'legacy', 'frames': 150, 'bodies': 38, 'replays': 22}
+{'target': 'LavaHound', 'name': 'LavaHound', 'card_id': 26000029, 'form': 0, 'max_hp': 215, 'cls': 'lava_pups', 'cls_form': 0, 'reason': 'legacy', 'frames': 3648, 'bodies': 396, 'replays': 25}
+{'target': 'LavaHound', 'name': 'LavaHound', 'card_id': 26000029, 'form': 0, 'max_hp': 3581, 'cls': 'lava_hound', 'cls_form': 0, 'reason': 'legacy', 'frames': 4554, 'bodies': 75, 'replays': 25}
+{'target': 'LittlePrince', 'name': 'LittlePrince', 'card_id': 26000093, 'form': 0, 'max_hp': 698, 'cls': 'little_prince', 'cls_form': 0, 'reason': 'legacy', 'frames': 4039, 'bodies': 116, 'replays': 24}
+{'target': 'LittlePrince', 'name': 'LittlePrince', 'card_id': 26000093, 'form': 0, 'max_hp': 1600, 'cls': 'little_prince', 'cls_form': 0, 'reason': 'legacy', 'frames': 457, 'bodies': 23, 'replays': 13}
+{'target': 'Mortar@evolution', 'name': 'Mortar', 'card_id': 27000002, 'form': 0, 'max_hp': 1369, 'cls': 'mortar', 'cls_form': 0, 'reason': 'legacy', 'frames': 2250, 'bodies': 78, 'replays': 23}
+{'target': 'Mortar@evolution', 'name': 'Mortar', 'card_id': 13000098, 'form': 1, 'max_hp': 202, 'cls': 'mortar', 'cls_form': 1, 'reason': 'legacy', 'frames': 382, 'bodies': 77, 'replays': 19}
+{'target': 'Mortar@evolution', 'name': 'Mortar', 'card_id': 13000098, 'form': 1, 'max_hp': 1369, 'cls': 'mortar', 'cls_form': 1, 'reason': 'legacy', 'frames': 1071, 'bodies': 31, 'replays': 19}
+{'target': 'Musketeer@hero', 'name': 'Musketeer', 'card_id': 203000014, 'form': 2, 'max_hp': 721, 'cls': 'musketeer', 'cls_form': 2, 'reason': 'legacy', 'frames': 4614, 'bodies': 115, 'replays': 24}
+{'target': 'Musketeer@hero', 'name': 'Musketeer', 'card_id': 203000014, 'form': 2, 'max_hp': 1536, 'cls': 'musketeer', 'cls_form': 2, 'reason': 'legacy', 'frames': 249, 'bodies': 20, 'replays': 15}
+{'target': 'Phoenix', 'name': 'Phoenix', 'card_id': 26000087, 'form': 0, 'max_hp': 1052, 'cls': 'phoenix', 'cls_form': 0, 'reason': 'parent', 'frames': 3624, 'bodies': 106, 'replays': 25}
+{'target': 'Phoenix', 'name': 'Phoenix', 'card_id': 26000087, 'form': 0, 'max_hp': 317, 'cls': 'phoenix', 'cls_form': 0, 'reason': 'child_no_class', 'frames': 428, 'bodies': 73, 'replays': 25}
+{'target': 'RageBarbarian@evolution', 'name': 'RageBarbarian', 'card_id': 26000035, 'form': 0, 'max_hp': 1282, 'cls': 'lumberjack', 'cls_form': 0, 'reason': 'legacy', 'frames': 1336, 'bodies': 64, 'replays': 24}
+{'target': 'RageBarbarian@evolution', 'name': 'RageBarbarian', 'card_id': 13000035, 'form': 1, 'max_hp': 1282, 'cls': 'lumberjack', 'cls_form': 1, 'reason': 'legacy', 'frames': 379, 'bodies': 20, 'replays': 17}
+{'target': 'RageBarbarian@evolution', 'name': 'RageBarbarian', 'card_id': 13000035, 'form': 1, 'max_hp': 2, 'cls': 'lumberjack', 'cls_form': 1, 'reason': 'legacy', 'frames': 189, 'bodies': 20, 'replays': 17}
+{'target': 'RamRider', 'name': 'RamRider', 'card_id': 26000051, 'form': 0, 'max_hp': 593, 'cls': 'ram_rider', 'cls_form': 0, 'reason': 'legacy', 'frames': 1652, 'bodies': 77, 'replays': 25}
+{'target': 'RamRider', 'name': 'RamRider', 'card_id': 26000051, 'form': 0, 'max_hp': 1766, 'cls': 'ram_rider', 'cls_form': 0, 'reason': 'legacy', 'frames': 1652, 'bodies': 77, 'replays': 25}
+{'target': 'Rascals', 'name': 'Rascals', 'card_id': 26000053, 'form': 0, 'max_hp': 261, 'cls': 'rascals', 'cls_form': 0, 'reason': 'legacy', 'frames': 6163, 'bodies': 230, 'replays': 24}
+{'target': 'Rascals', 'name': 'Rascals', 'card_id': 26000053, 'form': 0, 'max_hp': 1832, 'cls': 'rascals', 'cls_form': 0, 'reason': 'legacy', 'frames': 3356, 'bodies': 115, 'replays': 24}
+{'target': 'SkeletonArmy@evolution', 'name': 'SkeletonArmy', 'card_id': 26000012, 'form': 0, 'max_hp': 81, 'cls': 'skeleton_army', 'cls_form': 0, 'reason': 'legacy', 'frames': 11340, 'bodies': 1068, 'replays': 25}
+{'target': 'SkeletonArmy@evolution', 'name': 'SkeletonArmy', 'card_id': 13000012, 'form': 1, 'max_hp': 81, 'cls': 'skeleton_army', 'cls_form': 1, 'reason': 'legacy', 'frames': 3916, 'bodies': 368, 'replays': 18}
+{'target': 'SkeletonArmy@evolution', 'name': 'SkeletonArmy', 'card_id': 13000012, 'form': 1, 'max_hp': 2, 'cls': 'skeleton_army', 'cls_form': 1, 'reason': 'legacy', 'frames': 2071, 'bodies': 271, 'replays': 17}
+{'target': 'SuspiciousBush', 'name': 'SuspiciousBush', 'card_id': 26000097, 'form': 0, 'max_hp': 337, 'cls': 'suspicious_bush', 'cls_form': 0, 'reason': 'legacy', 'frames': 1870, 'bodies': 248, 'replays': 25}
+{'target': 'SuspiciousBush', 'name': 'SuspiciousBush', 'card_id': 26000097, 'form': 0, 'max_hp': 81, 'cls': 'suspicious_bush', 'cls_form': 0, 'reason': 'legacy', 'frames': 2142, 'bodies': 129, 'replays': 25}
+{'target': 'ThreeMusketeers', 'name': 'ThreeMusketeers', 'card_id': 26000028, 'form': 0, 'max_hp': 883, 'cls': 'three_musketeers', 'cls_form': 0, 'reason': 'legacy', 'frames': 4670, 'bodies': 108, 'replays': 23}
+{'target': 'Tombstone@hero', 'name': 'Tombstone', 'card_id': 203000088, 'form': 2, 'max_hp': 81, 'cls': 'skeletons', 'cls_form': 0, 'reason': 'child', 'frames': 8136, 'bodies': 962, 'replays': 25}
+{'target': 'Tombstone@hero', 'name': 'Tombstone', 'card_id': 203000088, 'form': 2, 'max_hp': 529, 'cls': 'tombstone', 'cls_form': 2, 'reason': 'parent', 'frames': 4986, 'bodies': 195, 'replays': 25}
+{'target': 'Tombstone@hero', 'name': 'Tombstone', 'card_id': 203000088, 'form': 2, 'max_hp': -1, 'cls': 'tombstone', 'cls_form': 2, 'reason': 'unreadable', 'frames': 2751, 'bodies': 98, 'replays': 25}
+{'target': 'Tombstone@hero', 'name': 'Tombstone', 'card_id': 203000088, 'form': 2, 'max_hp': 4224, 'cls': 'tombstone', 'cls_form': 2, 'reason': 'unknown_hp', 'frames': 556, 'bodies': 13, 'replays': 9}
+{'target': 'Wallbreakers@evolution', 'name': 'Wallbreakers', 'card_id': 26000058, 'form': 0, 'max_hp': 330, 'cls': 'wall_breakers', 'cls_form': 0, 'reason': 'legacy', 'frames': 2380, 'bodies': 219, 'replays': 25}
+{'target': 'Wallbreakers@evolution', 'name': 'Wallbreakers', 'card_id': 13000058, 'form': 1, 'max_hp': 330, 'cls': 'wall_breakers', 'cls_form': 1, 'reason': 'legacy', 'frames': 816, 'bodies': 86, 'replays': 21}
+{'target': 'Wallbreakers@evolution', 'name': 'Wallbreakers', 'card_id': 13000058, 'form': 1, 'max_hp': 163, 'cls': 'wall_breakers', 'cls_form': 1, 'reason': 'legacy', 'frames': 93, 'bodies': 32, 'replays': 16}
+{'target': 'Wizard@hero', 'name': 'Wizard', 'card_id': 203000017, 'form': 2, 'max_hp': 755, 'cls': 'wizard', 'cls_form': 2, 'reason': 'legacy', 'frames': 2646, 'bodies': 82, 'replays': 24}
+done 80s

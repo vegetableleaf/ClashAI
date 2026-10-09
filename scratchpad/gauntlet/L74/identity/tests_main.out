@@ -1,0 +1,2097 @@
+.........................................................s.............. [ 11%]
+........................................................................ [ 22%]
+........................................................................ [ 33%]
+............F..ssssss..............FF..FFFFFFFFF..FFF................... [ 44%]
+........................................................................ [ 55%]
+..............................F..................................... [ 66%]
+.......................................................................s [ 77%]
+sss..........................F..........FFFFFFFFFFFFF..FFF..FF..F......F [ 88%]
+s....FFFFFFFs.F.FFF....FFF.F............................................ [ 99%]
+....                                                                     [100%]
+=================================== ERRORS ====================================
+_____________ ERROR collecting pipeline/tests/test_royale_port.py _____________
+ImportError while importing test module 'C:\Users\benpe\ClashBot\.claude\worktrees\agent-a4defcf779b079511\pipeline\tests\test_royale_port.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pipeline\tests\test_royale_port.py:8: in <module>
+    from pipeline.royale_env import RoyaleSelfPlayEnv
+pipeline\royale_env.py:34: in <module>
+    _activate_runtime()
+pipeline\royale_runtime.py:73: in activate
+    importlib.import_module("royalegym")
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\research\ext\Royale-20261005\runtime\royalegym\__init__.py:39: in <module>
+    from .action import ActionParser, HalfTileActionParser, PlacementOracle, TileActionParser
+..\..\..\research\ext\Royale-20261005\runtime\royalegym\action.py:86: in <module>
+    from gymnasium import spaces
+E   ModuleNotFoundError: No module named 'gymnasium'
+================================== FAILURES ===================================
+_________ test_real_sample_adapter_parity_and_command_frames_excluded _________
+
+    def test_real_sample_adapter_parity_and_command_frames_excluded():
+        path = Path('.foreman/codex_autopilot/runs/native_public_sample.json')
+>       rec = tag_native_recording(json.loads(path.read_text(encoding='utf-8-sig')), {})
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+pipeline\tests\test_public_observation.py:123: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\pathlib\_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\pathlib\_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('.foreman/codex_autopilot/runs/native_public_sample.json')
+mode = 'r', buffering = -1, encoding = 'utf-8-sig', errors = None
+newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '.foreman\\codex_autopilot\\runs\\native_public_sample.json'
+
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\pathlib\_local.py:537: FileNotFoundError
+__________________ test_real_dataset_privacy_and_exact_forms __________________
+
+    def test_real_dataset_privacy_and_exact_forms():
+>       rec = json.loads(SAMPLE.read_text(encoding='utf-8'))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+pipeline\tests\test_gen_v31.py:33: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\pathlib\_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\pathlib\_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('.foreman/codex_autopilot/runs/native_full_sample.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '.foreman\\codex_autopilot\\runs\\native_full_sample.json'
+
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\pathlib\_local.py:537: FileNotFoundError
+_____________ test_build_batch_checkpoint_roundtrip_and_backward ______________
+
+    def test_build_batch_checkpoint_roundtrip_and_backward():
+        wd = workdir(); corpus = wd/'corpus'; corpus.mkdir()
+>       (corpus/'replay_sample.json').write_bytes(SAMPLE.read_bytes())
+                                                  ^^^^^^^^^^^^^^^^^^^
+
+pipeline\tests\test_gen_v31.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\pathlib\_abc.py:625: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('.foreman/codex_autopilot/runs/native_full_sample.json')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '.foreman\\codex_autopilot\\runs\\native_full_sample.json'
+
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\pathlib\_local.py:537: FileNotFoundError
+_____ test_sim_features_use_sightings_not_commands_and_fork_isolation[1] ______
+
+other_version = 1
+
+    @pytest.mark.parametrize('other_version', [1, 3, 4])
+    def test_sim_features_use_sightings_not_commands_and_fork_isolation(other_version):
+>       from pipeline.tests.gen_v3.test_sim_integration import match, policy
+
+pipeline\tests\test_gen_v31.py:124: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\icebow\.venv\Lib\site-packages\_pytest\assertion\rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+pipeline\tests\gen_v3\test_sim_integration.py:14: in <module>
+    from pipeline.royale_env import RoyaleSelfPlayEnv
+pipeline\royale_env.py:34: in <module>
+    _activate_runtime()
+pipeline\royale_runtime.py:73: in activate
+    importlib.import_module("royalegym")
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\research\ext\Royale-20261005\runtime\royalegym\__init__.py:39: in <module>
+    from .action import ActionParser, HalfTileActionParser, PlacementOracle, TileActionParser
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    """Action parsing and action masking.
+    
+    THE ACTION SPACE: ``Discrete(1 + 4 * 18 * 32) = 2305``
+        Index 0 is NO-OP. Index ``1 + slot * 576 + ty * 18 + tx`` plays hand slot
+        ``slot`` at the centre of tile ``(tx, ty)``, in the ACTING player's own frame
+        (own king at the bottom), so Blue and Red share one policy head.
+        ``ability_buttons=True`` adds one action per ability button after these,
+        ``n_buttons`` of them (the engine's count): Discrete(2308) on RoyaleSim 2245f9f on.
+    
+    WHY THIS AND NOT THE ALTERNATIVES
+        * Joint Discrete over (slot x tile) is the only shape in which a mask can say
+          "Giant is legal here but Fireball is not" exactly. Legality is a property of
+          the PAIR: elixir is per card, territory depends on placement type (spells go
+          anywhere, a Goblin Barrel anywhere but water, a Log only where a troop may go
+          but over buildings, buildings never into the pocket, a Miner anywhere on land
+          but not on a building, a Mirror wherever the card it copies may go), footprints
+          depend on card radius.
+          sb3-contrib MaskablePPO applies a MultiDiscrete mask per dimension
+          independently, so a MultiDiscrete([5, 18, 32]) head could only mask the
+          marginals and would happily sample "Knight on the enemy king". An
+          autoregressive factorised head (card, then position conditioned on card)
+          CAN mask exactly, and is the better choice at scale, but it needs a custom
+          policy; the joint Discrete works with stock MaskablePPO today and 2305
+          logits is small.
+        * Tile resolution, not half-tile. The tilemap is half-tile (36 x 64).
+          Half-tile would be Discrete(9217): 4x the logits, and under placement.TAP_SNAP =
+          client16402_tile_centre the engine snaps every tap to its tile centre, spells
+          too, so half-tile taps land where tile taps do. Measured by the docs session on
+          RoyaleSim 0d0ccd6: a Knight's 992 legal half-tile moves put it on 215 points,
+          against the tile grid's 213; a Fireball's 576 either way. ``HalfTileActionParser``
+          is provided so that trade can be measured instead of argued.
+        * No "hold" or timing sub-action: timing is expressed by choosing NO-OP on
+          a decision step, at ``decision_ms`` granularity (see env.py).
+    
+    HOW THE MASK IS COMPUTED, AND WHY INDEPENDENTLY OF THE ENGINE
+        ``PlacementOracle`` recomputes legality from the state snapshot, arena and
+        ``DeployRules`` with numpy grids. The engine enforces the same rules on its
+        own code path (``Engine.check_deploy``). The two are kept deliberately
+        separate: tests compare them exhaustively, so a silently wrong mask -- which
+        trains an agent to want illegal moves, or never to find legal ones -- fails
+        a test instead of a training run.
+    
+        A point on a half-cell boundary belongs to every cell it touches. A tile
+        centre touches four half-cells, so a tile is legal iff its whole 2x2 block
+        is. This closed-cell rule is what makes placement exactly invariant under
+        the 180-degree seat rotation.
+    
+        TWO KINDS OF RULE, AS IN THE RUST ENGINE (arena.rs ``deploy_zone``)
+        CELL rules (water, no-deploy, the river band closed to troops, buildings'
+        own half) are grids over half-cells, and a point needs every cell it
+        touches. POINT rules are tested on the point itself: the bodies already on
+        the board, and the closed NoDeploySize rect of every alive enemy crown tower
+        (``DeployRules``). A troop's body is judged where the tap resolves -- its tile
+        centre under placement.TAP_SNAP -- and an own building's, tower's or live
+        bottle's tile does not refuse a troop tap, which the engine moves off it
+        (``PlacementOracle.own_tower_zone``), unless the move finds nowhere to go
+        (``GridActionParser.moved_taps_that_land``). The rect rule equals a cell rule
+        only while every rect edge lies on a half-cell boundary (the shipped sizes do);
+        testing the point keeps the mask right if a regenerated cards.json ever breaks
+        that.
+    
+        A BUILDING IS ASKED A DIFFERENT QUESTION, AND IT IS NOT "DOES IT FIT HERE"
+        A building stands on a square of TILES, and a tap that does not fit is not
+        refused: the game moves the building to the nearest place it does fit. So
+        for a building card the mask answers "will a tap here build anything",
+        which stops depending on what is already on the board -- nothing can be in
+        the way, because being in the way relocates rather than refuses. Only the
+        cell rules remain. What a tap actually BUILDS, and where, is the engine's
+        ``building_placement``, and the mask is not the place to ask it: an action
+        space over 2 304 tiles cannot say "here, but two tiles left" anyway.
+    
+        Measured against the engine on 2026-09-22, tile centres, both seats, a board
+        with buildings and towers standing: the cell rules alone reproduce
+        ``check_deploy`` for a Cannon on all 576 cells, where the old
+        body-overlap rule missed 18 of them. Before relocation shipped, those 18 were
+        right; a building really was refused for touching another body.
+    """
+    
+    from __future__ import annotations
+    
+    from abc import ABC, abstractmethod
+    from collections.abc import Sequence
+    from typing import Any
+    
+    import numpy as np
+>   from gymnasium import spaces
+E   ModuleNotFoundError: No module named 'gymnasium'
+
+..\..\..\research\ext\Royale-20261005\runtime\royalegym\action.py:86: ModuleNotFoundError
+_____ test_sim_features_use_sightings_not_commands_and_fork_isolation[3] ______
+
+other_version = 3
+
+    @pytest.mark.parametrize('other_version', [1, 3, 4])
+    def test_sim_features_use_sightings_not_commands_and_fork_isolation(other_version):
+>       from pipeline.tests.gen_v3.test_sim_integration import match, policy
+
+pipeline\tests\test_gen_v31.py:124: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\icebow\.venv\Lib\site-packages\_pytest\assertion\rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+pipeline\tests\gen_v3\test_sim_integration.py:14: in <module>
+    from pipeline.royale_env import RoyaleSelfPlayEnv
+pipeline\royale_env.py:34: in <module>
+    _activate_runtime()
+pipeline\royale_runtime.py:73: in activate
+    importlib.import_module("royalegym")
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\research\ext\Royale-20261005\runtime\royalegym\__init__.py:39: in <module>
+    from .action import ActionParser, HalfTileActionParser, PlacementOracle, TileActionParser
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    """Action parsing and action masking.
+    
+    THE ACTION SPACE: ``Discrete(1 + 4 * 18 * 32) = 2305``
+        Index 0 is NO-OP. Index ``1 + slot * 576 + ty * 18 + tx`` plays hand slot
+        ``slot`` at the centre of tile ``(tx, ty)``, in the ACTING player's own frame
+        (own king at the bottom), so Blue and Red share one policy head.
+        ``ability_buttons=True`` adds one action per ability button after these,
+        ``n_buttons`` of them (the engine's count): Discrete(2308) on RoyaleSim 2245f9f on.
+    
+    WHY THIS AND NOT THE ALTERNATIVES
+        * Joint Discrete over (slot x tile) is the only shape in which a mask can say
+          "Giant is legal here but Fireball is not" exactly. Legality is a property of
+          the PAIR: elixir is per card, territory depends on placement type (spells go
+          anywhere, a Goblin Barrel anywhere but water, a Log only where a troop may go
+          but over buildings, buildings never into the pocket, a Miner anywhere on land
+          but not on a building, a Mirror wherever the card it copies may go), footprints
+          depend on card radius.
+          sb3-contrib MaskablePPO applies a MultiDiscrete mask per dimension
+          independently, so a MultiDiscrete([5, 18, 32]) head could only mask the
+          marginals and would happily sample "Knight on the enemy king". An
+          autoregressive factorised head (card, then position conditioned on card)
+          CAN mask exactly, and is the better choice at scale, but it needs a custom
+          policy; the joint Discrete works with stock MaskablePPO today and 2305
+          logits is small.
+        * Tile resolution, not half-tile. The tilemap is half-tile (36 x 64).
+          Half-tile would be Discrete(9217): 4x the logits, and under placement.TAP_SNAP =
+          client16402_tile_centre the engine snaps every tap to its tile centre, spells
+          too, so half-tile taps land where tile taps do. Measured by the docs session on
+          RoyaleSim 0d0ccd6: a Knight's 992 legal half-tile moves put it on 215 points,
+          against the tile grid's 213; a Fireball's 576 either way. ``HalfTileActionParser``
+          is provided so that trade can be measured instead of argued.
+        * No "hold" or timing sub-action: timing is expressed by choosing NO-OP on
+          a decision step, at ``decision_ms`` granularity (see env.py).
+    
+    HOW THE MASK IS COMPUTED, AND WHY INDEPENDENTLY OF THE ENGINE
+        ``PlacementOracle`` recomputes legality from the state snapshot, arena and
+        ``DeployRules`` with numpy grids. The engine enforces the same rules on its
+        own code path (``Engine.check_deploy``). The two are kept deliberately
+        separate: tests compare them exhaustively, so a silently wrong mask -- which
+        trains an agent to want illegal moves, or never to find legal ones -- fails
+        a test instead of a training run.
+    
+        A point on a half-cell boundary belongs to every cell it touches. A tile
+        centre touches four half-cells, so a tile is legal iff its whole 2x2 block
+        is. This closed-cell rule is what makes placement exactly invariant under
+        the 180-degree seat rotation.
+    
+        TWO KINDS OF RULE, AS IN THE RUST ENGINE (arena.rs ``deploy_zone``)
+        CELL rules (water, no-deploy, the river band closed to troops, buildings'
+        own half) are grids over half-cells, and a point needs every cell it
+        touches. POINT rules are tested on the point itself: the bodies already on
+        the board, and the closed NoDeploySize rect of every alive enemy crown tower
+        (``DeployRules``). A troop's body is judged where the tap resolves -- its tile
+        centre under placement.TAP_SNAP -- and an own building's, tower's or live
+        bottle's tile does not refuse a troop tap, which the engine moves off it
+        (``PlacementOracle.own_tower_zone``), unless the move finds nowhere to go
+        (``GridActionParser.moved_taps_that_land``). The rect rule equals a cell rule
+        only while every rect edge lies on a half-cell boundary (the shipped sizes do);
+        testing the point keeps the mask right if a regenerated cards.json ever breaks
+        that.
+    
+        A BUILDING IS ASKED A DIFFERENT QUESTION, AND IT IS NOT "DOES IT FIT HERE"
+        A building stands on a square of TILES, and a tap that does not fit is not
+        refused: the game moves the building to the nearest place it does fit. So
+        for a building card the mask answers "will a tap here build anything",
+        which stops depending on what is already on the board -- nothing can be in
+        the way, because being in the way relocates rather than refuses. Only the
+        cell rules remain. What a tap actually BUILDS, and where, is the engine's
+        ``building_placement``, and the mask is not the place to ask it: an action
+        space over 2 304 tiles cannot say "here, but two tiles left" anyway.
+    
+        Measured against the engine on 2026-09-22, tile centres, both seats, a board
+        with buildings and towers standing: the cell rules alone reproduce
+        ``check_deploy`` for a Cannon on all 576 cells, where the old
+        body-overlap rule missed 18 of them. Before relocation shipped, those 18 were
+        right; a building really was refused for touching another body.
+    """
+    
+    from __future__ import annotations
+    
+    from abc import ABC, abstractmethod
+    from collections.abc import Sequence
+    from typing import Any
+    
+    import numpy as np
+>   from gymnasium import spaces
+E   ModuleNotFoundError: No module named 'gymnasium'
+
+..\..\..\research\ext\Royale-20261005\runtime\royalegym\action.py:86: ModuleNotFoundError
+_____ test_sim_features_use_sightings_not_commands_and_fork_isolation[4] ______
+
+other_version = 4
+
+    @pytest.mark.parametrize('other_version', [1, 3, 4])
+    def test_sim_features_use_sightings_not_commands_and_fork_isolation(other_version):
+>       from pipeline.tests.gen_v3.test_sim_integration import match, policy
+
+pipeline\tests\test_gen_v31.py:124: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\icebow\.venv\Lib\site-packages\_pytest\assertion\rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+pipeline\tests\gen_v3\test_sim_integration.py:14: in <module>
+    from pipeline.royale_env import RoyaleSelfPlayEnv
+pipeline\royale_env.py:34: in <module>
+    _activate_runtime()
+pipeline\royale_runtime.py:73: in activate
+    importlib.import_module("royalegym")
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\research\ext\Royale-20261005\runtime\royalegym\__init__.py:39: in <module>
+    from .action import ActionParser, HalfTileActionParser, PlacementOracle, TileActionParser
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    """Action parsing and action masking.
+    
+    THE ACTION SPACE: ``Discrete(1 + 4 * 18 * 32) = 2305``
+        Index 0 is NO-OP. Index ``1 + slot * 576 + ty * 18 + tx`` plays hand slot
+        ``slot`` at the centre of tile ``(tx, ty)``, in the ACTING player's own frame
+        (own king at the bottom), so Blue and Red share one policy head.
+        ``ability_buttons=True`` adds one action per ability button after these,
+        ``n_buttons`` of them (the engine's count): Discrete(2308) on RoyaleSim 2245f9f on.
+    
+    WHY THIS AND NOT THE ALTERNATIVES
+        * Joint Discrete over (slot x tile) is the only shape in which a mask can say
+          "Giant is legal here but Fireball is not" exactly. Legality is a property of
+          the PAIR: elixir is per card, territory depends on placement type (spells go
+          anywhere, a Goblin Barrel anywhere but water, a Log only where a troop may go
+          but over buildings, buildings never into the pocket, a Miner anywhere on land
+          but not on a building, a Mirror wherever the card it copies may go), footprints
+          depend on card radius.
+          sb3-contrib MaskablePPO applies a MultiDiscrete mask per dimension
+          independently, so a MultiDiscrete([5, 18, 32]) head could only mask the
+          marginals and would happily sample "Knight on the enemy king". An
+          autoregressive factorised head (card, then position conditioned on card)
+          CAN mask exactly, and is the better choice at scale, but it needs a custom
+          policy; the joint Discrete works with stock MaskablePPO today and 2305
+          logits is small.
+        * Tile resolution, not half-tile. The tilemap is half-tile (36 x 64).
+          Half-tile would be Discrete(9217): 4x the logits, and under placement.TAP_SNAP =
+          client16402_tile_centre the engine snaps every tap to its tile centre, spells
+          too, so half-tile taps land where tile taps do. Measured by the docs session on
+          RoyaleSim 0d0ccd6: a Knight's 992 legal half-tile moves put it on 215 points,
+          against the tile grid's 213; a Fireball's 576 either way. ``HalfTileActionParser``
+          is provided so that trade can be measured instead of argued.
+        * No "hold" or timing sub-action: timing is expressed by choosing NO-OP on
+          a decision step, at ``decision_ms`` granularity (see env.py).
+    
+    HOW THE MASK IS COMPUTED, AND WHY INDEPENDENTLY OF THE ENGINE
+        ``PlacementOracle`` recomputes legality from the state snapshot, arena and
+        ``DeployRules`` with numpy grids. The engine enforces the same rules on its
+        own code path (``Engine.check_deploy``). The two are kept deliberately
+        separate: tests compare them exhaustively, so a silently wrong mask -- which
+        trains an agent to want illegal moves, or never to find legal ones -- fails
+        a test instead of a training run.
+    
+        A point on a half-cell boundary belongs to every cell it touches. A tile
+        centre touches four half-cells, so a tile is legal iff its whole 2x2 block
+        is. This closed-cell rule is what makes placement exactly invariant under
+        the 180-degree seat rotation.
+    
+        TWO KINDS OF RULE, AS IN THE RUST ENGINE (arena.rs ``deploy_zone``)
+        CELL rules (water, no-deploy, the river band closed to troops, buildings'
+        own half) are grids over half-cells, and a point needs every cell it
+        touches. POINT rules are tested on the point itself: the bodies already on
+        the board, and the closed NoDeploySize rect of every alive enemy crown tower
+        (``DeployRules``). A troop's body is judged where the tap resolves -- its tile
+        centre under placement.TAP_SNAP -- and an own building's, tower's or live
+        bottle's tile does not refuse a troop tap, which the engine moves off it
+        (``PlacementOracle.own_tower_zone``), unless the move finds nowhere to go
+        (``GridActionParser.moved_taps_that_land``). The rect rule equals a cell rule
+        only while every rect edge lies on a half-cell boundary (the shipped sizes do);
+        testing the point keeps the mask right if a regenerated cards.json ever breaks
+        that.
+    
+        A BUILDING IS ASKED A DIFFERENT QUESTION, AND IT IS NOT "DOES IT FIT HERE"
+        A building stands on a square of TILES, and a tap that does not fit is not
+        refused: the game moves the building to the nearest place it does fit. So
+        for a building card the mask answers "will a tap here build anything",
+        which stops depending on what is already on the board -- nothing can be in
+        the way, because being in the way relocates rather than refuses. Only the
+        cell rules remain. What a tap actually BUILDS, and where, is the engine's
+        ``building_placement``, and the mask is not the place to ask it: an action
+        space over 2 304 tiles cannot say "here, but two tiles left" anyway.
+    
+        Measured against the engine on 2026-09-22, tile centres, both seats, a board
+        with buildings and towers standing: the cell rules alone reproduce
+        ``check_deploy`` for a Cannon on all 576 cells, where the old
+        body-overlap rule missed 18 of them. Before relocation shipped, those 18 were
+        right; a building really was refused for touching another body.
+    """
+    
+    from __future__ import annotations
+    
+    from abc import ABC, abstractmethod
+    from collections.abc import Sequence
+    from typing import Any
+    
+    import numpy as np
+>   from gymnasium import spaces
+E   ModuleNotFoundError: No module named 'gymnasium'
+
+..\..\..\research\ext\Royale-20261005\runtime\royalegym\action.py:86: ModuleNotFoundError
+_____________ test_rl_trajectory_carries_cycle_through_collation ______________
+
+    def test_rl_trajectory_carries_cycle_through_collation():
+>       from pipeline.tests.gen_v3.test_sim_integration import policy, NAMES
+
+pipeline\tests\test_gen_v31.py:149: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\icebow\.venv\Lib\site-packages\_pytest\assertion\rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+pipeline\tests\gen_v3\test_sim_integration.py:14: in <module>
+    from pipeline.royale_env import RoyaleSelfPlayEnv
+pipeline\royale_env.py:34: in <module>
+    _activate_runtime()
+pipeline\royale_runtime.py:73: in activate
+    importlib.import_module("royalegym")
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\research\ext\Royale-20261005\runtime\royalegym\__init__.py:39: in <module>
+    from .action import ActionParser, HalfTileActionParser, PlacementOracle, TileActionParser
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    """Action parsing and action masking.
+    
+    THE ACTION SPACE: ``Discrete(1 + 4 * 18 * 32) = 2305``
+        Index 0 is NO-OP. Index ``1 + slot * 576 + ty * 18 + tx`` plays hand slot
+        ``slot`` at the centre of tile ``(tx, ty)``, in the ACTING player's own frame
+        (own king at the bottom), so Blue and Red share one policy head.
+        ``ability_buttons=True`` adds one action per ability button after these,
+        ``n_buttons`` of them (the engine's count): Discrete(2308) on RoyaleSim 2245f9f on.
+    
+    WHY THIS AND NOT THE ALTERNATIVES
+        * Joint Discrete over (slot x tile) is the only shape in which a mask can say
+          "Giant is legal here but Fireball is not" exactly. Legality is a property of
+          the PAIR: elixir is per card, territory depends on placement type (spells go
+          anywhere, a Goblin Barrel anywhere but water, a Log only where a troop may go
+          but over buildings, buildings never into the pocket, a Miner anywhere on land
+          but not on a building, a Mirror wherever the card it copies may go), footprints
+          depend on card radius.
+          sb3-contrib MaskablePPO applies a MultiDiscrete mask per dimension
+          independently, so a MultiDiscrete([5, 18, 32]) head could only mask the
+          marginals and would happily sample "Knight on the enemy king". An
+          autoregressive factorised head (card, then position conditioned on card)
+          CAN mask exactly, and is the better choice at scale, but it needs a custom
+          policy; the joint Discrete works with stock MaskablePPO today and 2305
+          logits is small.
+        * Tile resolution, not half-tile. The tilemap is half-tile (36 x 64).
+          Half-tile would be Discrete(9217): 4x the logits, and under placement.TAP_SNAP =
+          client16402_tile_centre the engine snaps every tap to its tile centre, spells
+          too, so half-tile taps land where tile taps do. Measured by the docs session on
+          RoyaleSim 0d0ccd6: a Knight's 992 legal half-tile moves put it on 215 points,
+          against the tile grid's 213; a Fireball's 576 either way. ``HalfTileActionParser``
+          is provided so that trade can be measured instead of argued.
+        * No "hold" or timing sub-action: timing is expressed by choosing NO-OP on
+          a decision step, at ``decision_ms`` granularity (see env.py).
+    
+    HOW THE MASK IS COMPUTED, AND WHY INDEPENDENTLY OF THE ENGINE
+        ``PlacementOracle`` recomputes legality from the state snapshot, arena and
+        ``DeployRules`` with numpy grids. The engine enforces the same rules on its
+        own code path (``Engine.check_deploy``). The two are kept deliberately
+        separate: tests compare them exhaustively, so a silently wrong mask -- which
+        trains an agent to want illegal moves, or never to find legal ones -- fails
+        a test instead of a training run.
+    
+        A point on a half-cell boundary belongs to every cell it touches. A tile
+        centre touches four half-cells, so a tile is legal iff its whole 2x2 block
+        is. This closed-cell rule is what makes placement exactly invariant under
+        the 180-degree seat rotation.
+    
+        TWO KINDS OF RULE, AS IN THE RUST ENGINE (arena.rs ``deploy_zone``)
+        CELL rules (water, no-deploy, the river band closed to troops, buildings'
+        own half) are grids over half-cells, and a point needs every cell it
+        touches. POINT rules are tested on the point itself: the bodies already on
+        the board, and the closed NoDeploySize rect of every alive enemy crown tower
+        (``DeployRules``). A troop's body is judged where the tap resolves -- its tile
+        centre under placement.TAP_SNAP -- and an own building's, tower's or live
+        bottle's tile does not refuse a troop tap, which the engine moves off it
+        (``PlacementOracle.own_tower_zone``), unless the move finds nowhere to go
+        (``GridActionParser.moved_taps_that_land``). The rect rule equals a cell rule
+        only while every rect edge lies on a half-cell boundary (the shipped sizes do);
+        testing the point keeps the mask right if a regenerated cards.json ever breaks
+        that.
+    
+        A BUILDING IS ASKED A DIFFERENT QUESTION, AND IT IS NOT "DOES IT FIT HERE"
+        A building stands on a square of TILES, and a tap that does not fit is not
+        refused: the game moves the building to the nearest place it does fit. So
+        for a building card the mask answers "will a tap here build anything",
+        which stops depending on what is already on the board -- nothing can be in
+        the way, because being in the way relocates rather than refuses. Only the
+        cell rules remain. What a tap actually BUILDS, and where, is the engine's
+        ``building_placement``, and the mask is not the place to ask it: an action
+        space over 2 304 tiles cannot say "here, but two tiles left" anyway.
+    
+        Measured against the engine on 2026-09-22, tile centres, both seats, a board
+        with buildings and towers standing: the cell rules alone reproduce
+        ``check_deploy`` for a Cannon on all 576 cells, where the old
+        body-overlap rule missed 18 of them. Before relocation shipped, those 18 were
+        right; a building really was refused for touching another body.
+    """
+    
+    from __future__ import annotations
+    
+    from abc import ABC, abstractmethod
+    from collections.abc import Sequence
+    from typing import Any
+    
+    import numpy as np
+>   from gymnasium import spaces
+E   ModuleNotFoundError: No module named 'gymnasium'
+
+..\..\..\research\ext\Royale-20261005\runtime\royalegym\action.py:86: ModuleNotFoundError
+_________________ test_version_four_refuses_legacy_recordings _________________
+
+    def test_version_four_refuses_legacy_recordings():
+        wd=workdir(); corpus=wd/'corpus';corpus.mkdir()
+>       rec=json.loads(SAMPLE.read_text());rec.pop('record_native')
+                       ^^^^^^^^^^^^^^^^^^
+
+pipeline\tests\test_gen_v31.py:171: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\pathlib\_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\pathlib\_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('.foreman/codex_autopilot/runs/native_full_sample.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '.foreman\\codex_autopilot\\runs\\native_full_sample.json'
+
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\pathlib\_local.py:537: FileNotFoundError
+_____________ test_full_and_play_compact_board_features_identical _____________
+
+    def test_full_and_play_compact_board_features_identical():
+        from dataclasses import replace
+        from pipeline.dataset import _as_compact
+        from pipeline import obs_contract as O
+        from pipeline.public_observation import body_only_board
+>       rec=tag_native_recording(json.loads(SAMPLE.read_text()),{})
+                                            ^^^^^^^^^^^^^^^^^^
+
+pipeline\tests\test_gen_v31.py:182: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\pathlib\_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\pathlib\_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('.foreman/codex_autopilot/runs/native_full_sample.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '.foreman\\codex_autopilot\\runs\\native_full_sample.json'
+
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\pathlib\_local.py:537: FileNotFoundError
+________________ test_dataset_init_inference_and_loss_bytes[1] ________________
+
+version = 1
+
+    @pytest.mark.parametrize('version', [1, 2, 3])
+    def test_dataset_init_inference_and_loss_bytes(version):
+        sample = str(ROOT/'.foreman/codex_autopilot/runs/native_full_sample.json')
+        a = head('dataset_gen').replay_rows(sample, feature_version=version)
+        b = D.replay_rows(sample, feature_version=version)
+>       assert 'error' not in a and 'error' not in b
+E       assert ('error' not in {'path': 'C:\\Users\\benpe\\ClashBot\\.claude\\worktrees\\agent-a4defcf779b079511\\.foreman\\codex_autopilot\\runs\\na...\\\.claude\\\\worktrees\\\\agent-a4defcf779b079511\\\\.foreman\\\\codex_autopilot\\\\runs\\\\native_full_sample.json'"})
+
+pipeline\tests\test_gen_v31_legacy.py:34: AssertionError
+________________ test_dataset_init_inference_and_loss_bytes[2] ________________
+
+version = 2
+
+    @pytest.mark.parametrize('version', [1, 2, 3])
+    def test_dataset_init_inference_and_loss_bytes(version):
+        sample = str(ROOT/'.foreman/codex_autopilot/runs/native_full_sample.json')
+        a = head('dataset_gen').replay_rows(sample, feature_version=version)
+        b = D.replay_rows(sample, feature_version=version)
+>       assert 'error' not in a and 'error' not in b
+E       assert ('error' not in {'path': 'C:\\Users\\benpe\\ClashBot\\.claude\\worktrees\\agent-a4defcf779b079511\\.foreman\\codex_autopilot\\runs\\na...\\\.claude\\\\worktrees\\\\agent-a4defcf779b079511\\\\.foreman\\\\codex_autopilot\\\\runs\\\\native_full_sample.json'"})
+
+pipeline\tests\test_gen_v31_legacy.py:34: AssertionError
+________________ test_dataset_init_inference_and_loss_bytes[3] ________________
+
+version = 3
+
+    @pytest.mark.parametrize('version', [1, 2, 3])
+    def test_dataset_init_inference_and_loss_bytes(version):
+        sample = str(ROOT/'.foreman/codex_autopilot/runs/native_full_sample.json')
+        a = head('dataset_gen').replay_rows(sample, feature_version=version)
+        b = D.replay_rows(sample, feature_version=version)
+>       assert 'error' not in a and 'error' not in b
+E       assert ('error' not in {'path': 'C:\\Users\\benpe\\ClashBot\\.claude\\worktrees\\agent-a4defcf779b079511\\.foreman\\codex_autopilot\\runs\\na...\\\.claude\\\\worktrees\\\\agent-a4defcf779b079511\\\\.foreman\\\\codex_autopilot\\\\runs\\\\native_full_sample.json'"})
+
+pipeline\tests\test_gen_v31_legacy.py:34: AssertionError
+___________ test_head_simulation_rows_actions_trajectory_and_rng[1] ___________
+
+version = 1
+
+    @pytest.mark.parametrize('version', [1, 2, 3])
+    def test_head_simulation_rows_actions_trajectory_and_rng(version):
+>       from pipeline import e1_eval as E, royale_env as RE, rl_royale as RL
+
+pipeline\tests\test_gen_v31_legacy.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+pipeline\royale_env.py:34: in <module>
+    _activate_runtime()
+pipeline\royale_runtime.py:73: in activate
+    importlib.import_module("royalegym")
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\research\ext\Royale-20261005\runtime\royalegym\__init__.py:39: in <module>
+    from .action import ActionParser, HalfTileActionParser, PlacementOracle, TileActionParser
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    """Action parsing and action masking.
+    
+    THE ACTION SPACE: ``Discrete(1 + 4 * 18 * 32) = 2305``
+        Index 0 is NO-OP. Index ``1 + slot * 576 + ty * 18 + tx`` plays hand slot
+        ``slot`` at the centre of tile ``(tx, ty)``, in the ACTING player's own frame
+        (own king at the bottom), so Blue and Red share one policy head.
+        ``ability_buttons=True`` adds one action per ability button after these,
+        ``n_buttons`` of them (the engine's count): Discrete(2308) on RoyaleSim 2245f9f on.
+    
+    WHY THIS AND NOT THE ALTERNATIVES
+        * Joint Discrete over (slot x tile) is the only shape in which a mask can say
+          "Giant is legal here but Fireball is not" exactly. Legality is a property of
+          the PAIR: elixir is per card, territory depends on placement type (spells go
+          anywhere, a Goblin Barrel anywhere but water, a Log only where a troop may go
+          but over buildings, buildings never into the pocket, a Miner anywhere on land
+          but not on a building, a Mirror wherever the card it copies may go), footprints
+          depend on card radius.
+          sb3-contrib MaskablePPO applies a MultiDiscrete mask per dimension
+          independently, so a MultiDiscrete([5, 18, 32]) head could only mask the
+          marginals and would happily sample "Knight on the enemy king". An
+          autoregressive factorised head (card, then position conditioned on card)
+          CAN mask exactly, and is the better choice at scale, but it needs a custom
+          policy; the joint Discrete works with stock MaskablePPO today and 2305
+          logits is small.
+        * Tile resolution, not half-tile. The tilemap is half-tile (36 x 64).
+          Half-tile would be Discrete(9217): 4x the logits, and under placement.TAP_SNAP =
+          client16402_tile_centre the engine snaps every tap to its tile centre, spells
+          too, so half-tile taps land where tile taps do. Measured by the docs session on
+          RoyaleSim 0d0ccd6: a Knight's 992 legal half-tile moves put it on 215 points,
+          against the tile grid's 213; a Fireball's 576 either way. ``HalfTileActionParser``
+          is provided so that trade can be measured instead of argued.
+        * No "hold" or timing sub-action: timing is expressed by choosing NO-OP on
+          a decision step, at ``decision_ms`` granularity (see env.py).
+    
+    HOW THE MASK IS COMPUTED, AND WHY INDEPENDENTLY OF THE ENGINE
+        ``PlacementOracle`` recomputes legality from the state snapshot, arena and
+        ``DeployRules`` with numpy grids. The engine enforces the same rules on its
+        own code path (``Engine.check_deploy``). The two are kept deliberately
+        separate: tests compare them exhaustively, so a silently wrong mask -- which
+        trains an agent to want illegal moves, or never to find legal ones -- fails
+        a test instead of a training run.
+    
+        A point on a half-cell boundary belongs to every cell it touches. A tile
+        centre touches four half-cells, so a tile is legal iff its whole 2x2 block
+        is. This closed-cell rule is what makes placement exactly invariant under
+        the 180-degree seat rotation.
+    
+        TWO KINDS OF RULE, AS IN THE RUST ENGINE (arena.rs ``deploy_zone``)
+        CELL rules (water, no-deploy, the river band closed to troops, buildings'
+        own half) are grids over half-cells, and a point needs every cell it
+        touches. POINT rules are tested on the point itself: the bodies already on
+        the board, and the closed NoDeploySize rect of every alive enemy crown tower
+        (``DeployRules``). A troop's body is judged where the tap resolves -- its tile
+        centre under placement.TAP_SNAP -- and an own building's, tower's or live
+        bottle's tile does not refuse a troop tap, which the engine moves off it
+        (``PlacementOracle.own_tower_zone``), unless the move finds nowhere to go
+        (``GridActionParser.moved_taps_that_land``). The rect rule equals a cell rule
+        only while every rect edge lies on a half-cell boundary (the shipped sizes do);
+        testing the point keeps the mask right if a regenerated cards.json ever breaks
+        that.
+    
+        A BUILDING IS ASKED A DIFFERENT QUESTION, AND IT IS NOT "DOES IT FIT HERE"
+        A building stands on a square of TILES, and a tap that does not fit is not
+        refused: the game moves the building to the nearest place it does fit. So
+        for a building card the mask answers "will a tap here build anything",
+        which stops depending on what is already on the board -- nothing can be in
+        the way, because being in the way relocates rather than refuses. Only the
+        cell rules remain. What a tap actually BUILDS, and where, is the engine's
+        ``building_placement``, and the mask is not the place to ask it: an action
+        space over 2 304 tiles cannot say "here, but two tiles left" anyway.
+    
+        Measured against the engine on 2026-09-22, tile centres, both seats, a board
+        with buildings and towers standing: the cell rules alone reproduce
+        ``check_deploy`` for a Cannon on all 576 cells, where the old
+        body-overlap rule missed 18 of them. Before relocation shipped, those 18 were
+        right; a building really was refused for touching another body.
+    """
+    
+    from __future__ import annotations
+    
+    from abc import ABC, abstractmethod
+    from collections.abc import Sequence
+    from typing import Any
+    
+    import numpy as np
+>   from gymnasium import spaces
+E   ModuleNotFoundError: No module named 'gymnasium'
+
+..\..\..\research\ext\Royale-20261005\runtime\royalegym\action.py:86: ModuleNotFoundError
+___________ test_head_simulation_rows_actions_trajectory_and_rng[2] ___________
+
+version = 2
+
+    @pytest.mark.parametrize('version', [1, 2, 3])
+    def test_head_simulation_rows_actions_trajectory_and_rng(version):
+>       from pipeline import e1_eval as E, royale_env as RE, rl_royale as RL
+
+pipeline\tests\test_gen_v31_legacy.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+pipeline\royale_env.py:34: in <module>
+    _activate_runtime()
+pipeline\royale_runtime.py:73: in activate
+    importlib.import_module("royalegym")
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\research\ext\Royale-20261005\runtime\royalegym\__init__.py:39: in <module>
+    from .action import ActionParser, HalfTileActionParser, PlacementOracle, TileActionParser
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    """Action parsing and action masking.
+    
+    THE ACTION SPACE: ``Discrete(1 + 4 * 18 * 32) = 2305``
+        Index 0 is NO-OP. Index ``1 + slot * 576 + ty * 18 + tx`` plays hand slot
+        ``slot`` at the centre of tile ``(tx, ty)``, in the ACTING player's own frame
+        (own king at the bottom), so Blue and Red share one policy head.
+        ``ability_buttons=True`` adds one action per ability button after these,
+        ``n_buttons`` of them (the engine's count): Discrete(2308) on RoyaleSim 2245f9f on.
+    
+    WHY THIS AND NOT THE ALTERNATIVES
+        * Joint Discrete over (slot x tile) is the only shape in which a mask can say
+          "Giant is legal here but Fireball is not" exactly. Legality is a property of
+          the PAIR: elixir is per card, territory depends on placement type (spells go
+          anywhere, a Goblin Barrel anywhere but water, a Log only where a troop may go
+          but over buildings, buildings never into the pocket, a Miner anywhere on land
+          but not on a building, a Mirror wherever the card it copies may go), footprints
+          depend on card radius.
+          sb3-contrib MaskablePPO applies a MultiDiscrete mask per dimension
+          independently, so a MultiDiscrete([5, 18, 32]) head could only mask the
+          marginals and would happily sample "Knight on the enemy king". An
+          autoregressive factorised head (card, then position conditioned on card)
+          CAN mask exactly, and is the better choice at scale, but it needs a custom
+          policy; the joint Discrete works with stock MaskablePPO today and 2305
+          logits is small.
+        * Tile resolution, not half-tile. The tilemap is half-tile (36 x 64).
+          Half-tile would be Discrete(9217): 4x the logits, and under placement.TAP_SNAP =
+          client16402_tile_centre the engine snaps every tap to its tile centre, spells
+          too, so half-tile taps land where tile taps do. Measured by the docs session on
+          RoyaleSim 0d0ccd6: a Knight's 992 legal half-tile moves put it on 215 points,
+          against the tile grid's 213; a Fireball's 576 either way. ``HalfTileActionParser``
+          is provided so that trade can be measured instead of argued.
+        * No "hold" or timing sub-action: timing is expressed by choosing NO-OP on
+          a decision step, at ``decision_ms`` granularity (see env.py).
+    
+    HOW THE MASK IS COMPUTED, AND WHY INDEPENDENTLY OF THE ENGINE
+        ``PlacementOracle`` recomputes legality from the state snapshot, arena and
+        ``DeployRules`` with numpy grids. The engine enforces the same rules on its
+        own code path (``Engine.check_deploy``). The two are kept deliberately
+        separate: tests compare them exhaustively, so a silently wrong mask -- which
+        trains an agent to want illegal moves, or never to find legal ones -- fails
+        a test instead of a training run.
+    
+        A point on a half-cell boundary belongs to every cell it touches. A tile
+        centre touches four half-cells, so a tile is legal iff its whole 2x2 block
+        is. This closed-cell rule is what makes placement exactly invariant under
+        the 180-degree seat rotation.
+    
+        TWO KINDS OF RULE, AS IN THE RUST ENGINE (arena.rs ``deploy_zone``)
+        CELL rules (water, no-deploy, the river band closed to troops, buildings'
+        own half) are grids over half-cells, and a point needs every cell it
+        touches. POINT rules are tested on the point itself: the bodies already on
+        the board, and the closed NoDeploySize rect of every alive enemy crown tower
+        (``DeployRules``). A troop's body is judged where the tap resolves -- its tile
+        centre under placement.TAP_SNAP -- and an own building's, tower's or live
+        bottle's tile does not refuse a troop tap, which the engine moves off it
+        (``PlacementOracle.own_tower_zone``), unless the move finds nowhere to go
+        (``GridActionParser.moved_taps_that_land``). The rect rule equals a cell rule
+        only while every rect edge lies on a half-cell boundary (the shipped sizes do);
+        testing the point keeps the mask right if a regenerated cards.json ever breaks
+        that.
+    
+        A BUILDING IS ASKED A DIFFERENT QUESTION, AND IT IS NOT "DOES IT FIT HERE"
+        A building stands on a square of TILES, and a tap that does not fit is not
+        refused: the game moves the building to the nearest place it does fit. So
+        for a building card the mask answers "will a tap here build anything",
+        which stops depending on what is already on the board -- nothing can be in
+        the way, because being in the way relocates rather than refuses. Only the
+        cell rules remain. What a tap actually BUILDS, and where, is the engine's
+        ``building_placement``, and the mask is not the place to ask it: an action
+        space over 2 304 tiles cannot say "here, but two tiles left" anyway.
+    
+        Measured against the engine on 2026-09-22, tile centres, both seats, a board
+        with buildings and towers standing: the cell rules alone reproduce
+        ``check_deploy`` for a Cannon on all 576 cells, where the old
+        body-overlap rule missed 18 of them. Before relocation shipped, those 18 were
+        right; a building really was refused for touching another body.
+    """
+    
+    from __future__ import annotations
+    
+    from abc import ABC, abstractmethod
+    from collections.abc import Sequence
+    from typing import Any
+    
+    import numpy as np
+>   from gymnasium import spaces
+E   ModuleNotFoundError: No module named 'gymnasium'
+
+..\..\..\research\ext\Royale-20261005\runtime\royalegym\action.py:86: ModuleNotFoundError
+___________ test_head_simulation_rows_actions_trajectory_and_rng[3] ___________
+
+version = 3
+
+    @pytest.mark.parametrize('version', [1, 2, 3])
+    def test_head_simulation_rows_actions_trajectory_and_rng(version):
+>       from pipeline import e1_eval as E, royale_env as RE, rl_royale as RL
+
+pipeline\tests\test_gen_v31_legacy.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+pipeline\royale_env.py:34: in <module>
+    _activate_runtime()
+pipeline\royale_runtime.py:73: in activate
+    importlib.import_module("royalegym")
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\research\ext\Royale-20261005\runtime\royalegym\__init__.py:39: in <module>
+    from .action import ActionParser, HalfTileActionParser, PlacementOracle, TileActionParser
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    """Action parsing and action masking.
+    
+    THE ACTION SPACE: ``Discrete(1 + 4 * 18 * 32) = 2305``
+        Index 0 is NO-OP. Index ``1 + slot * 576 + ty * 18 + tx`` plays hand slot
+        ``slot`` at the centre of tile ``(tx, ty)``, in the ACTING player's own frame
+        (own king at the bottom), so Blue and Red share one policy head.
+        ``ability_buttons=True`` adds one action per ability button after these,
+        ``n_buttons`` of them (the engine's count): Discrete(2308) on RoyaleSim 2245f9f on.
+    
+    WHY THIS AND NOT THE ALTERNATIVES
+        * Joint Discrete over (slot x tile) is the only shape in which a mask can say
+          "Giant is legal here but Fireball is not" exactly. Legality is a property of
+          the PAIR: elixir is per card, territory depends on placement type (spells go
+          anywhere, a Goblin Barrel anywhere but water, a Log only where a troop may go
+          but over buildings, buildings never into the pocket, a Miner anywhere on land
+          but not on a building, a Mirror wherever the card it copies may go), footprints
+          depend on card radius.
+          sb3-contrib MaskablePPO applies a MultiDiscrete mask per dimension
+          independently, so a MultiDiscrete([5, 18, 32]) head could only mask the
+          marginals and would happily sample "Knight on the enemy king". An
+          autoregressive factorised head (card, then position conditioned on card)
+          CAN mask exactly, and is the better choice at scale, but it needs a custom
+          policy; the joint Discrete works with stock MaskablePPO today and 2305
+          logits is small.
+        * Tile resolution, not half-tile. The tilemap is half-tile (36 x 64).
+          Half-tile would be Discrete(9217): 4x the logits, and under placement.TAP_SNAP =
+          client16402_tile_centre the engine snaps every tap to its tile centre, spells
+          too, so half-tile taps land where tile taps do. Measured by the docs session on
+          RoyaleSim 0d0ccd6: a Knight's 992 legal half-tile moves put it on 215 points,
+          against the tile grid's 213; a Fireball's 576 either way. ``HalfTileActionParser``
+          is provided so that trade can be measured instead of argued.
+        * No "hold" or timing sub-action: timing is expressed by choosing NO-OP on
+          a decision step, at ``decision_ms`` granularity (see env.py).
+    
+    HOW THE MASK IS COMPUTED, AND WHY INDEPENDENTLY OF THE ENGINE
+        ``PlacementOracle`` recomputes legality from the state snapshot, arena and
+        ``DeployRules`` with numpy grids. The engine enforces the same rules on its
+        own code path (``Engine.check_deploy``). The two are kept deliberately
+        separate: tests compare them exhaustively, so a silently wrong mask -- which
+        trains an agent to want illegal moves, or never to find legal ones -- fails
+        a test instead of a training run.
+    
+        A point on a half-cell boundary belongs to every cell it touches. A tile
+        centre touches four half-cells, so a tile is legal iff its whole 2x2 block
+        is. This closed-cell rule is what makes placement exactly invariant under
+        the 180-degree seat rotation.
+    
+        TWO KINDS OF RULE, AS IN THE RUST ENGINE (arena.rs ``deploy_zone``)
+        CELL rules (water, no-deploy, the river band closed to troops, buildings'
+        own half) are grids over half-cells, and a point needs every cell it
+        touches. POINT rules are tested on the point itself: the bodies already on
+        the board, and the closed NoDeploySize rect of every alive enemy crown tower
+        (``DeployRules``). A troop's body is judged where the tap resolves -- its tile
+        centre under placement.TAP_SNAP -- and an own building's, tower's or live
+        bottle's tile does not refuse a troop tap, which the engine moves off it
+        (``PlacementOracle.own_tower_zone``), unless the move finds nowhere to go
+        (``GridActionParser.moved_taps_that_land``). The rect rule equals a cell rule
+        only while every rect edge lies on a half-cell boundary (the shipped sizes do);
+        testing the point keeps the mask right if a regenerated cards.json ever breaks
+        that.
+    
+        A BUILDING IS ASKED A DIFFERENT QUESTION, AND IT IS NOT "DOES IT FIT HERE"
+        A building stands on a square of TILES, and a tap that does not fit is not
+        refused: the game moves the building to the nearest place it does fit. So
+        for a building card the mask answers "will a tap here build anything",
+        which stops depending on what is already on the board -- nothing can be in
+        the way, because being in the way relocates rather than refuses. Only the
+        cell rules remain. What a tap actually BUILDS, and where, is the engine's
+        ``building_placement``, and the mask is not the place to ask it: an action
+        space over 2 304 tiles cannot say "here, but two tiles left" anyway.
+    
+        Measured against the engine on 2026-09-22, tile centres, both seats, a board
+        with buildings and towers standing: the cell rules alone reproduce
+        ``check_deploy`` for a Cannon on all 576 cells, where the old
+        body-overlap rule missed 18 of them. Before relocation shipped, those 18 were
+        right; a building really was refused for touching another body.
+    """
+    
+    from __future__ import annotations
+    
+    from abc import ABC, abstractmethod
+    from collections.abc import Sequence
+    from typing import Any
+    
+    import numpy as np
+>   from gymnasium import spaces
+E   ModuleNotFoundError: No module named 'gymnasium'
+
+..\..\..\research\ext\Royale-20261005\runtime\royalegym\action.py:86: ModuleNotFoundError
+____________ test_sim_prepare_and_live_decide_use_advanced_tokens _____________
+
+    def test_sim_prepare_and_live_decide_use_advanced_tokens():
+>       from pipeline.tests.gen_v3.test_sim_integration import match, policy
+
+pipeline\tests\test_r8_extrapolate.py:116: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\icebow\.venv\Lib\site-packages\_pytest\assertion\rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+pipeline\tests\gen_v3\test_sim_integration.py:14: in <module>
+    from pipeline.royale_env import RoyaleSelfPlayEnv
+pipeline\royale_env.py:34: in <module>
+    _activate_runtime()
+pipeline\royale_runtime.py:73: in activate
+    importlib.import_module("royalegym")
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\research\ext\Royale-20261005\runtime\royalegym\__init__.py:39: in <module>
+    from .action import ActionParser, HalfTileActionParser, PlacementOracle, TileActionParser
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    """Action parsing and action masking.
+    
+    THE ACTION SPACE: ``Discrete(1 + 4 * 18 * 32) = 2305``
+        Index 0 is NO-OP. Index ``1 + slot * 576 + ty * 18 + tx`` plays hand slot
+        ``slot`` at the centre of tile ``(tx, ty)``, in the ACTING player's own frame
+        (own king at the bottom), so Blue and Red share one policy head.
+        ``ability_buttons=True`` adds one action per ability button after these,
+        ``n_buttons`` of them (the engine's count): Discrete(2308) on RoyaleSim 2245f9f on.
+    
+    WHY THIS AND NOT THE ALTERNATIVES
+        * Joint Discrete over (slot x tile) is the only shape in which a mask can say
+          "Giant is legal here but Fireball is not" exactly. Legality is a property of
+          the PAIR: elixir is per card, territory depends on placement type (spells go
+          anywhere, a Goblin Barrel anywhere but water, a Log only where a troop may go
+          but over buildings, buildings never into the pocket, a Miner anywhere on land
+          but not on a building, a Mirror wherever the card it copies may go), footprints
+          depend on card radius.
+          sb3-contrib MaskablePPO applies a MultiDiscrete mask per dimension
+          independently, so a MultiDiscrete([5, 18, 32]) head could only mask the
+          marginals and would happily sample "Knight on the enemy king". An
+          autoregressive factorised head (card, then position conditioned on card)
+          CAN mask exactly, and is the better choice at scale, but it needs a custom
+          policy; the joint Discrete works with stock MaskablePPO today and 2305
+          logits is small.
+        * Tile resolution, not half-tile. The tilemap is half-tile (36 x 64).
+          Half-tile would be Discrete(9217): 4x the logits, and under placement.TAP_SNAP =
+          client16402_tile_centre the engine snaps every tap to its tile centre, spells
+          too, so half-tile taps land where tile taps do. Measured by the docs session on
+          RoyaleSim 0d0ccd6: a Knight's 992 legal half-tile moves put it on 215 points,
+          against the tile grid's 213; a Fireball's 576 either way. ``HalfTileActionParser``
+          is provided so that trade can be measured instead of argued.
+        * No "hold" or timing sub-action: timing is expressed by choosing NO-OP on
+          a decision step, at ``decision_ms`` granularity (see env.py).
+    
+    HOW THE MASK IS COMPUTED, AND WHY INDEPENDENTLY OF THE ENGINE
+        ``PlacementOracle`` recomputes legality from the state snapshot, arena and
+        ``DeployRules`` with numpy grids. The engine enforces the same rules on its
+        own code path (``Engine.check_deploy``). The two are kept deliberately
+        separate: tests compare them exhaustively, so a silently wrong mask -- which
+        trains an agent to want illegal moves, or never to find legal ones -- fails
+        a test instead of a training run.
+    
+        A point on a half-cell boundary belongs to every cell it touches. A tile
+        centre touches four half-cells, so a tile is legal iff its whole 2x2 block
+        is. This closed-cell rule is what makes placement exactly invariant under
+        the 180-degree seat rotation.
+    
+        TWO KINDS OF RULE, AS IN THE RUST ENGINE (arena.rs ``deploy_zone``)
+        CELL rules (water, no-deploy, the river band closed to troops, buildings'
+        own half) are grids over half-cells, and a point needs every cell it
+        touches. POINT rules are tested on the point itself: the bodies already on
+        the board, and the closed NoDeploySize rect of every alive enemy crown tower
+        (``DeployRules``). A troop's body is judged where the tap resolves -- its tile
+        centre under placement.TAP_SNAP -- and an own building's, tower's or live
+        bottle's tile does not refuse a troop tap, which the engine moves off it
+        (``PlacementOracle.own_tower_zone``), unless the move finds nowhere to go
+        (``GridActionParser.moved_taps_that_land``). The rect rule equals a cell rule
+        only while every rect edge lies on a half-cell boundary (the shipped sizes do);
+        testing the point keeps the mask right if a regenerated cards.json ever breaks
+        that.
+    
+        A BUILDING IS ASKED A DIFFERENT QUESTION, AND IT IS NOT "DOES IT FIT HERE"
+        A building stands on a square of TILES, and a tap that does not fit is not
+        refused: the game moves the building to the nearest place it does fit. So
+        for a building card the mask answers "will a tap here build anything",
+        which stops depending on what is already on the board -- nothing can be in
+        the way, because being in the way relocates rather than refuses. Only the
+        cell rules remain. What a tap actually BUILDS, and where, is the engine's
+        ``building_placement``, and the mask is not the place to ask it: an action
+        space over 2 304 tiles cannot say "here, but two tiles left" anyway.
+    
+        Measured against the engine on 2026-09-22, tile centres, both seats, a board
+        with buildings and towers standing: the cell rules alone reproduce
+        ``check_deploy`` for a Cannon on all 576 cells, where the old
+        body-overlap rule missed 18 of them. Before relocation shipped, those 18 were
+        right; a building really was refused for touching another body.
+    """
+    
+    from __future__ import annotations
+    
+    from abc import ABC, abstractmethod
+    from collections.abc import Sequence
+    from typing import Any
+    
+    import numpy as np
+>   from gymnasium import spaces
+E   ModuleNotFoundError: No module named 'gymnasium'
+
+..\..\..\research\ext\Royale-20261005\runtime\royalegym\action.py:86: ModuleNotFoundError
+__________________ test_check_loads_fv4_and_fv5_side_by_side __________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C464C732A0>
+capsys = <_pytest.capture.CaptureFixture object at 0x000001C472B92B30>
+
+    @pytest.mark.skipif(not (R1E.is_file() and FV5.is_file()), reason="main-checkout checkpoints absent")
+    def test_check_loads_fv4_and_fv5_side_by_side(monkeypatch, capsys):
+        import torch
+        real = torch.set_num_threads
+        monkeypatch.setattr(torch, "set_num_threads", lambda n: real(min(n, 2)))     # CPU budget while testing
+        monkeypatch.setattr(lp, "screen_size", lambda: pytest.fail("Offline check touched ADB"))
+        monkeypatch.setattr(sys, "argv", ["live_play.py", "--check", "--ckpt-alternate", str(R1E), str(FV5)])
+>       assert lp.main() == 0
+               ^^^^^^^^^
+
+scratchpad\gauntlet\L68\live_reader\test_ckpt_alternate.py:50: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+scratchpad\gauntlet\L68\live_reader\live_play.py:411: in main
+    loaded = [load_pilot(a, decision_cfg, ckpt=path) for path, _ in arms]
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scratchpad\gauntlet\L68\live_reader\live_play.py:573: in load_pilot
+    pilot = GenPilot(ckpt or a.ckpt, device=device, gate_tau=a.tau, use_counter=not a.no_opp_counter,
+pipeline\live_gen_v2.py:38: in __init__
+    super().__init__(*args, **kwargs)
+pipeline\live_gen.py:124: in __init__
+    self.model, st = load_model(ckpt, torch.device(device))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pipeline\model_gen.py:279: in load_model
+    st = torch.load(ckpt, map_location=device)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\icebow\.venv\Lib\site-packages\torch\serialization.py:1570: in load
+    return _load(
+..\..\..\icebow\.venv\Lib\site-packages\torch\serialization.py:2190: in _load
+    result = unpickler.load()
+             ^^^^^^^^^^^^^^^^
+..\..\..\icebow\.venv\Lib\site-packages\torch\_weights_only_unpickler.py:541: in load
+    self.append(self.persistent_load(pid))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\icebow\.venv\Lib\site-packages\torch\serialization.py:2154: in persistent_load
+    typed_storage = load_tensor(
+..\..\..\icebow\.venv\Lib\site-packages\torch\serialization.py:2116: in load_tensor
+    wrap_storage = restore_location(storage, location)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\icebow\.venv\Lib\site-packages\torch\serialization.py:1920: in restore_location
+    return default_restore_location(storage, str(map_location))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\icebow\.venv\Lib\site-packages\torch\serialization.py:734: in default_restore_location
+    result = fn(storage, location)
+             ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\icebow\.venv\Lib\site-packages\torch\serialization.py:667: in _deserialize
+    device = _validate_device(location, backend_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+location = 'cuda', backend_name = 'cuda'
+
+    def _validate_device(location, backend_name):
+        """
+        Check whether the device index of specified backend is valid
+    
+        In case of privateuse1 backend, your must first register a device_module for
+        privateuse1 using torch._register_device_module. Implement the following
+        methods in device_module like cuda: device_module._utils._get_device_index(location, True),
+        device_module.device_count().
+    
+        Args:
+            location: string of device
+            backend_name: the backend name or the name of privateuse1, which can be renamed
+    
+        Returns:
+            device_index: int
+        """
+        if not hasattr(torch, backend_name):
+            raise RuntimeError(
+                f"The {backend_name.upper()} device module is not registered. "
+                "If you are running on a CPU-only machine, "
+                "please use torch.load with map_location=torch.device('cpu') "
+                "to map your storages to the CPU."
+            )
+        device_module = getattr(torch, backend_name)
+        if hasattr(device_module, "_utils") and hasattr(
+            device_module._utils, "_get_device_index"
+        ):
+            device_index = device_module._utils._get_device_index(location, True)
+            device = torch.device(backend_name, device_index)
+        else:
+            device = torch.device(location)
+            device_index = device.index if device.index else 0
+        if hasattr(device_module, "is_available") and not device_module.is_available():
+            raise RuntimeError(
+                f"Attempting to deserialize object on a {backend_name.upper()} "
+                f"device but torch.{backend_name}.is_available() is False. "
+                "If you are running on a CPU-only machine, "
+                "please use torch.load with map_location=torch.device('cpu') "
+                "to map your storages to the CPU."
+            )
+        if hasattr(device_module, "device_count"):
+            device_count = device_module.device_count()
+            if device_index >= device_count:
+>               raise RuntimeError(
+                    f"Attempting to deserialize object on {backend_name.upper()} device "
+                    f"{device_index} but torch.{backend_name}.device_count() is {device_count}. "
+                    "Please use torch.load with map_location to map your storages "
+                    "to an existing device."
+                )
+E               RuntimeError: Attempting to deserialize object on CUDA device 0 but torch.cuda.device_count() is 0. Please use torch.load with map_location to map your storages to an existing device.
+
+..\..\..\icebow\.venv\Lib\site-packages\torch\serialization.py:644: RuntimeError
+---------------------------- Captured stdout call -----------------------------
+[live] LIVE_OPTIONS applied from C:\Users\benpe\ClashBot\.claude\worktrees\agent-a4defcf779b079511\scratchpad\gauntlet\L70\live\LIVE_OPTIONS: ['afford_ticks', 'extrapolate', 'fast_input', 'gate_decode', 'gate_hazard_min_elixir', 'iw_press_pstar', 'lethal_rocket', 'log_aim', 'own_effects', 'spell_aim', 'tap_gap_ms', 'tau_phase', 'xbow_class', 'xbow_class_floor', 'xbow_dead_lane']; explicit flags: []
+[live] note: tau_phase 1x/2x/OT = (0.35, 0.45, 0.55) sets the play threshold; --tau 0.35 is not used by the gate (it equals the 1x value)
+[live] checkpoint A: C:\Users\benpe\ClashBot\icebow\data\bench\rl_royale\rseries_r1e31\rseries_r1e31_u0155.pt
+[live] SHA256 A: 76fdfaacbd9c2049cc88792278f06e3f73a56eaf9653791e922d9332dd6751cd
+[live] checkpoint B: C:\Users\benpe\ClashBot\icebow\data\pipeline\gen_v32_s0\gen_s0.pt
+[live] SHA256 B: 61011b6ce5e655c0f66c875ee844685373cc6370051f9eccba1e1d79de1a0569
+________________________ test_every_capture_is_covered ________________________
+
+    def test_every_capture_is_covered():
+>       assert sorted(p.stem for p in RAW.glob("*.png")) == sorted(EXPECT)
+E       AssertionError: assert [] == ['after_ok_13..._130915', ...]
+E         
+E         Right contains 10 more items, first extra item: 'after_ok_131638'
+E         Use -v to get more diff
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:68: AssertionError
+____ test_capture_classifies_and_plans_allowlisted_input[after_ok_131638] _____
+
+name = 'after_ok_131638'
+
+    @pytest.mark.parametrize("name", sorted(EXPECT))
+    def test_capture_classifies_and_plans_allowlisted_input(name):
+        screen, target, pt = EXPECT[name]
+        scr = CLF.classify(img(name))
+>       assert scr["screen"] == screen, scr
+E       AssertionError: {'screen': 'unknown', 'scores': {}, 'why': 'no 900x1600 frame'}
+E       assert 'unknown' == 'main'
+E         
+E         - main
+E         + unknown
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:75: AssertionError
+___ test_capture_classifies_and_plans_allowlisted_input[battle_type_130729] ___
+
+name = 'battle_type_130729'
+
+    @pytest.mark.parametrize("name", sorted(EXPECT))
+    def test_capture_classifies_and_plans_allowlisted_input(name):
+        screen, target, pt = EXPECT[name]
+        scr = CLF.classify(img(name))
+>       assert scr["screen"] == screen, scr
+E       AssertionError: {'screen': 'unknown', 'scores': {}, 'why': 'no 900x1600 frame'}
+E       assert 'unknown' == 'battle_type'
+E         
+E         - battle_type
+E         + unknown
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:75: AssertionError
+__ test_capture_classifies_and_plans_allowlisted_input[cancel_invite_130818] __
+
+name = 'cancel_invite_130818'
+
+    @pytest.mark.parametrize("name", sorted(EXPECT))
+    def test_capture_classifies_and_plans_allowlisted_input(name):
+        screen, target, pt = EXPECT[name]
+        scr = CLF.classify(img(name))
+>       assert scr["screen"] == screen, scr
+E       AssertionError: {'screen': 'unknown', 'scores': {}, 'why': 'no 900x1600 frame'}
+E       assert 'unknown' == 'pending'
+E         
+E         - pending
+E         + unknown
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:75: AssertionError
+__ test_capture_classifies_and_plans_allowlisted_input[friend_entry_130350] ___
+
+name = 'friend_entry_130350'
+
+    @pytest.mark.parametrize("name", sorted(EXPECT))
+    def test_capture_classifies_and_plans_allowlisted_input(name):
+        screen, target, pt = EXPECT[name]
+        scr = CLF.classify(img(name))
+>       assert scr["screen"] == screen, scr
+E       AssertionError: {'screen': 'unknown', 'scores': {}, 'why': 'no 900x1600 frame'}
+E       assert 'unknown' == 'popup'
+E         
+E         - popup
+E         + unknown
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:75: AssertionError
+__ test_capture_classifies_and_plans_allowlisted_input[friends_list_130251] ___
+
+name = 'friends_list_130251'
+
+    @pytest.mark.parametrize("name", sorted(EXPECT))
+    def test_capture_classifies_and_plans_allowlisted_input(name):
+        screen, target, pt = EXPECT[name]
+        scr = CLF.classify(img(name))
+>       assert scr["screen"] == screen, scr
+E       AssertionError: {'screen': 'unknown', 'scores': {}, 'why': 'no 900x1600 frame'}
+E       assert 'unknown' == 'social'
+E         
+E         - social
+E         + unknown
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:75: AssertionError
+__ test_capture_classifies_and_plans_allowlisted_input[friends_list_130915] ___
+
+name = 'friends_list_130915'
+
+    @pytest.mark.parametrize("name", sorted(EXPECT))
+    def test_capture_classifies_and_plans_allowlisted_input(name):
+        screen, target, pt = EXPECT[name]
+        scr = CLF.classify(img(name))
+>       assert scr["screen"] == screen, scr
+E       AssertionError: {'screen': 'unknown', 'scores': {}, 'why': 'no 900x1600 frame'}
+E       assert 'unknown' == 'social'
+E         
+E         - social
+E         + unknown
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:75: AssertionError
+_ test_capture_classifies_and_plans_allowlisted_input[invite_incoming_131227] _
+
+name = 'invite_incoming_131227'
+
+    @pytest.mark.parametrize("name", sorted(EXPECT))
+    def test_capture_classifies_and_plans_allowlisted_input(name):
+        screen, target, pt = EXPECT[name]
+        scr = CLF.classify(img(name))
+>       assert scr["screen"] == screen, scr
+E       AssertionError: {'screen': 'unknown', 'scores': {}, 'why': 'no 900x1600 frame'}
+E       assert 'unknown' == 'incoming'
+E         
+E         - incoming
+E         + unknown
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:75: AssertionError
+___ test_capture_classifies_and_plans_allowlisted_input[invite_sent_130520] ___
+
+name = 'invite_sent_130520'
+
+    @pytest.mark.parametrize("name", sorted(EXPECT))
+    def test_capture_classifies_and_plans_allowlisted_input(name):
+        screen, target, pt = EXPECT[name]
+        scr = CLF.classify(img(name))
+>       assert scr["screen"] == screen, scr
+E       AssertionError: {'screen': 'unknown', 'scores': {}, 'why': 'no 900x1600 frame'}
+E       assert 'unknown' == 'pending'
+E         
+E         - pending
+E         + unknown
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:75: AssertionError
+_____ test_capture_classifies_and_plans_allowlisted_input[results_131619] _____
+
+name = 'results_131619'
+
+    @pytest.mark.parametrize("name", sorted(EXPECT))
+    def test_capture_classifies_and_plans_allowlisted_input(name):
+        screen, target, pt = EXPECT[name]
+        scr = CLF.classify(img(name))
+>       assert scr["screen"] == screen, scr
+E       AssertionError: {'screen': 'unknown', 'scores': {}, 'why': 'no 900x1600 frame'}
+E       assert 'unknown' == 'results'
+E         
+E         - results
+E         + unknown
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:75: AssertionError
+____ test_capture_classifies_and_plans_allowlisted_input[test_now_125953] _____
+
+name = 'test_now_125953'
+
+    @pytest.mark.parametrize("name", sorted(EXPECT))
+    def test_capture_classifies_and_plans_allowlisted_input(name):
+        screen, target, pt = EXPECT[name]
+        scr = CLF.classify(img(name))
+>       assert scr["screen"] == screen, scr
+E       AssertionError: {'screen': 'unknown', 'scores': {}, 'why': 'no 900x1600 frame'}
+E       assert 'unknown' == 'main'
+E         
+E         - main
+E         + unknown
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:75: AssertionError
+__________________ test_results_capture_verifies_the_friend ___________________
+
+    def test_results_capture_verifies_the_friend():
+>       assert CLF.classify(img("results_131619"))["friend"] is True
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'friend'
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:89: KeyError
+_____________________ test_results_foreign_opponent_stops _____________________
+
+    def test_results_foreign_opponent_stops():
+        im = img("results_131619")
+>       im[428:480, 305:590] = im[455, 290]                         # blank the opponent name with the banner colour
+                               ^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:94: TypeError
+_________________ test_popup_for_someone_else_is_not_acted_on _________________
+
+    def test_popup_for_someone_else_is_not_acted_on():
+        im = img("friend_entry_130350")
+>       im[1006:1038, 110:280] = 255                                # header name blanked
+        ^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object does not support item assignment
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:119: TypeError
+____ test_popup_button_drawn_over_quickplay_without_popup_body_is_rejected ____
+
+    def test_popup_button_drawn_over_quickplay_without_popup_body_is_rejected():
+        """The dangerous misread: a Friendly-Battle button + friend header over the bare Social list, where the tap
+        would land on Quickplay. The popup's white body is missing on both sides -> never 'popup'."""
+        src, im = img("friend_entry_130350"), img("friends_list_130251")
+>       im[1272:1352, 95:292] = src[1272:1352, 95:292]
+                                ^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:127: TypeError
+___________ test_main_screen_never_yields_battle_or_quickplay_input ___________
+
+    def test_main_screen_never_yields_battle_or_quickplay_input():
+        for name in ("after_ok_131638", "test_now_125953"):
+            scr = CLF.classify(img(name))
+            nav = fn.Nav(0.0, random.Random(1))
+            for t in np.arange(0.0, 60.0, 0.5):
+                p = nav.plan(scr, t)
+>               assert p[0] == "act" and p[1] == "main_to_social", p
+E               AssertionError: ('wait', 'unknown')
+E               assert ('wait' == 'act'
+E                 
+E                 - act
+E                 + wait)
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:144: AssertionError
+______________ test_waits_for_the_friends_invite_before_sending _______________
+
+    def test_waits_for_the_friends_invite_before_sending():
+        nav = fn.Nav(0.0, random.Random(0))
+        wait = nav.wait_until
+        assert 5 <= wait <= 20
+        scr = CLF.classify(img("friends_list_130915"))
+        assert nav.plan(scr, wait - 0.1)[0] == "wait"
+>       assert nav.plan(scr, wait + 0.1)[:2] == ("act", "friend_row")
+E       AssertionError: assert ('wait', 'unknown') == ('act', 'friend_row')
+E         
+E         At index 0 diff: 'wait' != 'act'
+E         Use -v to get more diff
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:173: AssertionError
+_____________ test_cross_invite_cancels_ours_then_accepts_theirs ______________
+
+    def test_cross_invite_cancels_ours_then_accepts_theirs():
+        im = img("invite_incoming_131227")
+>       im[80:225, 25:875] = img("invite_sent_130520")[80:225, 25:875]     # our pending banner over their invite
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:178: TypeError
+_____________________ test_end_to_end_fake_device[False] ______________________
+
+dry = False
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C4015CABA0>
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-341/test_end_to_end_fake_device_Fa0')
+
+    @pytest.mark.parametrize("dry", [False, True])
+    def test_end_to_end_fake_device(dry, monkeypatch, tmp_path):
+        dev = FakeDevice()
+        clock = types.SimpleNamespace(time=lambda: dev.now, strftime=_time.strftime,
+                                      sleep=lambda s: setattr(dev, "now", dev.now + s))
+        monkeypatch.setattr(fn, "time", clock)
+        monkeypatch.setattr(fn.subprocess, "run", dev.run)
+    
+        class QuickNav(fn.Nav):                                             # shorter clocks: each frame costs a real
+            TRANSITION_S = 20.0                                             # full-resolution classification
+    
+            def __init__(self, t0, rng=None, **kw):
+                super().__init__(t0, rng, **kw)
+                self.wait_until = t0 + 5.0
+        monkeypatch.setattr(fn, "Nav", QuickNav)
+        nav = fn.FriendNav(["adb"], "JinxTheCat", dry_run=dry, log_dir=tmp_path)
+        monkeypatch.setattr(nav, "grab", dev.grab)
+        ok, why = nav.run()
+        if dry:
+            assert dev.cmds == [] and not ok and "transition" in why        # nothing sent; stays on results -> 180 s stop
+            return
+>       assert ok, why
+E       AssertionError: transition over 20 s
+E       assert False
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:285: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[nav] start (log C:\Users\benpe\AppData\Local\Temp\pytest-of-benpe\pytest-341\test_end_to_end_fake_device_Fa0\nav_20261008_234114.jsonl); friend-invite wait 5.0 s
+[nav] unknown: ('wait', 'unknown')
+[nav] unknown: ('stop', 'transition over 20 s')
+[nav] STOP: transition over 20 s
+_______ test_menu_guard_arms_only_when_the_clock_runs_and_fails_closed ________
+
+    def test_menu_guard_arms_only_when_the_clock_runs_and_fails_closed():
+        g = fn.MenuGuard(["no-such-adb"], clf=CLF)
+        g.stop()
+        g.feed(img("after_ok_131638"))
+        assert g.menu is None and not g.clear(_time.time())  # started from the menu (Training Camp flow): ignored
+        t_before = _time.time()
+        g.arm()
+        black = np.zeros((1600, 900, 3), np.uint8)
+        g.feed(None)                                        # failed grab: NOT a success
+        g.feed(np.zeros((1920, 1080, 3), np.uint8))         # wrong size: NOT a success
+        g.feed(black, t_grab=t_before - 1)                  # grabbed before arming: NOT a success
+        assert g.ok_ts is None and not g.clear(_time.time())
+        g.feed(black)
+        assert g.clear(_time.time()) and not g.clear(_time.time() + fn.MenuGuard.FRESH_S + 1)   # fresh for FRESH_S
+        g.feed(img("after_ok_131638"))
+>       assert g.menu == "main" and not g.clear(_time.time())
+E       AssertionError: assert (None == 'main')
+E        +  where None = <friend_nav.MenuGuard object at 0x000001C472EE5940>.menu
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:477: AssertionError
+________________ test_non_900x1600_screen_refused_without_flag ________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C4666F3770>
+capsys = <_pytest.capture.CaptureFixture object at 0x000001C4015E1570>
+
+    def test_non_900x1600_screen_refused_without_flag(monkeypatch, capsys):
+        class Loaded(Exception):
+            pass
+    
+        def no_model(*a, **k):
+            raise Loaded
+        monkeypatch.setattr(lp, "screen_size", lambda: (1080, 1920))
+        monkeypatch.setattr(lp, "GenPilot", no_model)
+        monkeypatch.setattr(sys, "argv", ["live_play.py", "--menu-guard"])
+>       assert lp.main() == 2 and "900x1600" in capsys.readouterr().out     # the opt-in guard needs its template size
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       assert (2 == 2 and '900x1600' in '[live] LIVE_OPTIONS applied from C:\\Users\\benpe\\ClashBot\\.claude\\worktrees\\agent-a4defcf779b079511\\scratchpad\...rees\\agent-a4defcf779b079511\\scratchpad\\gauntlet\\L70\\live\\CKPT_OVERRIDE; supply --ckpt or update CKPT_OVERRIDE\n')
+E        +  where 2 = <function main at 0x000001C464C98C20>()
+E        +    where <function main at 0x000001C464C98C20> = lp.main
+E        +  and   '[live] LIVE_OPTIONS applied from C:\\Users\\benpe\\ClashBot\\.claude\\worktrees\\agent-a4defcf779b079511\\scratchpad\...rees\\agent-a4defcf779b079511\\scratchpad\\gauntlet\\L70\\live\\CKPT_OVERRIDE; supply --ckpt or update CKPT_OVERRIDE\n' = CaptureResult(out="[live] LIVE_OPTIONS applied from C:\\Users\\benpe\\ClashBot\\.claude\\worktrees\\agent-a4defcf779b0...nt-a4defcf779b079511\\scratchpad\\gauntlet\\L70\\live\\CKPT_OVERRIDE; supply --ckpt or update CKPT_OVERRIDE\n", err='').out
+E        +    where CaptureResult(out="[live] LIVE_OPTIONS applied from C:\\Users\\benpe\\ClashBot\\.claude\\worktrees\\agent-a4defcf779b0...nt-a4defcf779b079511\\scratchpad\\gauntlet\\L70\\live\\CKPT_OVERRIDE; supply --ckpt or update CKPT_OVERRIDE\n", err='') = readouterr()
+E        +      where readouterr = <_pytest.capture.CaptureFixture object at 0x000001C4015E1570>.readouterr
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:552: AssertionError
+_________ test_list_search_goes_to_top_then_finds_row_below_the_fold __________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C4666F35B0>
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-341/test_list_search_goes_to_top_t0')
+
+    def test_list_search_goes_to_top_then_finds_row_below_the_fold(monkeypatch, tmp_path):
+        top, row = img("friends_list_130251"), img("friends_list_130915")
+        (ok, why), dev = run_list(monkeypatch, tmp_path, [top, row], 0)
+>       assert ok, why
+E       AssertionError: unrecognised screen (unknown) for 20 s
+E       assert False
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:611: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[nav] start (log C:\Users\benpe\AppData\Local\Temp\pytest-of-benpe\pytest-341\test_list_search_goes_to_top_t0\nav_20261008_234210.jsonl); friend-invite wait 5.0 s
+[nav] unknown: ('wait', 'unknown')
+[nav] unknown: ('stop', 'unrecognised screen (unknown) for 20 s')
+[nav] STOP: unrecognised screen (unknown) for 20 s
+______________ test_list_search_from_below_scrolls_up_to_the_row ______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C40154A740>
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-341/test_list_search_from_below_sc0')
+
+    def test_list_search_from_below_scrolls_up_to_the_row(monkeypatch, tmp_path):
+        top, row = img("friends_list_130251"), img("friends_list_130915")
+>       (ok, why), dev = run_list(monkeypatch, tmp_path, [top, row, _norow()], 2)
+                                                                    ^^^^^^^^
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:622: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _norow():
+        im = img("friends_list_130915")
+>       im[1100:1160, 195:390] = im[1180, 300]                      # the friend's name painted out: someone else's row
+                                 ^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:562: TypeError
+____________________ test_friend_not_in_list_stops_cleanly ____________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C4015CA970>
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-341/test_friend_not_in_list_stops_0')
+
+    def test_friend_not_in_list_stops_cleanly(monkeypatch, tmp_path):
+>       (ok, why), dev = run_list(monkeypatch, tmp_path, [img("friends_list_130251"), _norow()], 0)
+                                                                                      ^^^^^^^^
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:627: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _norow():
+        im = img("friends_list_130915")
+>       im[1100:1160, 195:390] = im[1180, 300]                      # the friend's name painted out: someone else's row
+                                 ^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:562: TypeError
+___________________ test_probe_sees_menu_or_assumes_battle ____________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C4015CA0B0>
+
+    def test_probe_sees_menu_or_assumes_battle(monkeypatch):
+        now = [0.0]
+        monkeypatch.setattr(fn, "time", types.SimpleNamespace(
+            time=lambda: now[0], sleep=lambda s: now.__setitem__(0, now[0] + s + 0.3)))
+        nav = fn.FriendNav(["adb"], "JinxTheCat")
+        monkeypatch.setattr(nav, "grab", lambda: img("after_ok_131638"))
+>       assert nav.probe() == "main"
+E       AssertionError: assert None == 'main'
+E        +  where None = probe()
+E        +    where probe = <friend_nav.FriendNav object at 0x000001C472E75940>.probe
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:638: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[nav] no menu screen in 8 s -- assuming a battle is running: playing it
+_______________ test_first_match_is_navigated_from_a_menu[main] _______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C4015CB3F0>
+launch = 'main'
+
+    @pytest.mark.parametrize("launch", ["main", None])
+    def test_first_match_is_navigated_from_a_menu(monkeypatch, launch):
+        calls = []
+    
+        class FakeNav:
+            def __init__(self, adb, friend, dry_run=False, **kw):
+                calls.append(("invite_wait", kw.get("invite_wait")))
+    
+            def probe(self):
+                calls.append("probe")
+                return launch
+    
+            def run(self):
+                calls.append("nav")
+                return True, "handoff"
+    
+        class NoModel:
+            def __init__(self, *a, **k):
+                pass
+    
+            def reset_match(self):
+                pass
+    
+        def fake_play(a, pilot, lay, device, renders, start_timeout=None, **kw):
+            calls.append(("match", start_timeout))
+            return "battle_inactive"
+        monkeypatch.setattr(fn, "FriendNav", FakeNav)
+        monkeypatch.setattr(lp, "screen_size", lambda: (900, 1600))
+        monkeypatch.setattr(lp, "GenPilot", NoModel)
+        monkeypatch.setattr(lp, "play_match", fake_play)
+        monkeypatch.setattr(sys, "argv", ["live_play.py", "--matches", "2", "--friend", "JinxTheCat"])
+>       assert lp.main() == 0
+E       assert 2 == 0
+E        +  where 2 = <function main at 0x000001C464C98C20>()
+E        +    where <function main at 0x000001C464C98C20> = lp.main
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:675: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[live] LIVE_OPTIONS applied from C:\Users\benpe\ClashBot\.claude\worktrees\agent-a4defcf779b079511\scratchpad\gauntlet\L70\live\LIVE_OPTIONS: ['afford_ticks', 'extrapolate', 'fast_input', 'gate_decode', 'gate_hazard_min_elixir', 'iw_press_pstar', 'lethal_rocket', 'log_aim', 'own_effects', 'spell_aim', 'tap_gap_ms', 'tau_phase', 'xbow_class', 'xbow_class_floor', 'xbow_dead_lane']; explicit flags: []
+[live] note: tau_phase 1x/2x/OT = (0.35, 0.45, 0.55) sets the play threshold; --tau 0.35 is not used by the gate (it equals the 1x value)
+[live] No selected live checkpoint at C:\Users\benpe\ClashBot\.claude\worktrees\agent-a4defcf779b079511\scratchpad\gauntlet\L70\live\CKPT_OVERRIDE; supply --ckpt or update CKPT_OVERRIDE
+_______________ test_first_match_is_navigated_from_a_menu[None] _______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C4015CA580>
+launch = None
+
+    @pytest.mark.parametrize("launch", ["main", None])
+    def test_first_match_is_navigated_from_a_menu(monkeypatch, launch):
+        calls = []
+    
+        class FakeNav:
+            def __init__(self, adb, friend, dry_run=False, **kw):
+                calls.append(("invite_wait", kw.get("invite_wait")))
+    
+            def probe(self):
+                calls.append("probe")
+                return launch
+    
+            def run(self):
+                calls.append("nav")
+                return True, "handoff"
+    
+        class NoModel:
+            def __init__(self, *a, **k):
+                pass
+    
+            def reset_match(self):
+                pass
+    
+        def fake_play(a, pilot, lay, device, renders, start_timeout=None, **kw):
+            calls.append(("match", start_timeout))
+            return "battle_inactive"
+        monkeypatch.setattr(fn, "FriendNav", FakeNav)
+        monkeypatch.setattr(lp, "screen_size", lambda: (900, 1600))
+        monkeypatch.setattr(lp, "GenPilot", NoModel)
+        monkeypatch.setattr(lp, "play_match", fake_play)
+        monkeypatch.setattr(sys, "argv", ["live_play.py", "--matches", "2", "--friend", "JinxTheCat"])
+>       assert lp.main() == 0
+E       assert 2 == 0
+E        +  where 2 = <function main at 0x000001C464C98C20>()
+E        +    where <function main at 0x000001C464C98C20> = lp.main
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:675: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[live] LIVE_OPTIONS applied from C:\Users\benpe\ClashBot\.claude\worktrees\agent-a4defcf779b079511\scratchpad\gauntlet\L70\live\LIVE_OPTIONS: ['afford_ticks', 'extrapolate', 'fast_input', 'gate_decode', 'gate_hazard_min_elixir', 'iw_press_pstar', 'lethal_rocket', 'log_aim', 'own_effects', 'spell_aim', 'tap_gap_ms', 'tau_phase', 'xbow_class', 'xbow_class_floor', 'xbow_dead_lane']; explicit flags: []
+[live] note: tau_phase 1x/2x/OT = (0.35, 0.45, 0.55) sets the play threshold; --tau 0.35 is not used by the gate (it equals the 1x value)
+[live] No selected live checkpoint at C:\Users\benpe\ClashBot\.claude\worktrees\agent-a4defcf779b079511\scratchpad\gauntlet\L70\live\CKPT_OVERRIDE; supply --ckpt or update CKPT_OVERRIDE
+______________ test_list_search_restarts_after_an_expired_invite ______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C46664CD00>
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-341/test_list_search_restarts_afte0')
+
+    def test_list_search_restarts_after_an_expired_invite(monkeypatch, tmp_path):
+        dev = ExpireDevice([img("friends_list_130251"), img("friends_list_130915")], 0)
+        clock = types.SimpleNamespace(time=lambda: dev.now, strftime=_time.strftime,
+                                      sleep=lambda s: setattr(dev, "now", dev.now + s))
+        monkeypatch.setattr(fn, "time", clock)
+        monkeypatch.setattr(fn.subprocess, "run", dev.run)
+        monkeypatch.setattr(fn.Nav, "__init__", _quick_nav_init)
+        nav = fn.FriendNav(["adb"], "JinxTheCat", log_dir=tmp_path)
+        monkeypatch.setattr(nav, "grab", dev.grab)
+        ok, why = nav.run()
+>       assert ok, why
+E       AssertionError: unrecognised screen (unknown) for 20 s
+E       assert False
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:746: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[nav] start (log C:\Users\benpe\AppData\Local\Temp\pytest-of-benpe\pytest-341\test_list_search_restarts_afte0\nav_20261008_234210.jsonl); friend-invite wait 5.0 s
+[nav] unknown: ('wait', 'unknown')
+[nav] unknown: ('stop', 'unrecognised screen (unknown) for 20 s')
+[nav] STOP: unrecognised screen (unknown) for 20 s
+________________ test_menu_guard_flag_default_off[argv0-False] ________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C4015CB310>
+argv = [], on = False
+
+    @pytest.mark.parametrize("argv,on", [([], False), (["--menu-guard"], True), (["--no-menu-guard"], False)])
+    def test_menu_guard_flag_default_off(monkeypatch, argv, on):
+        seen = []
+    
+        class NoModel:
+            def __init__(self, *a, **k):
+                pass
+        monkeypatch.setattr(lp, "screen_size", lambda: (900, 1600))
+        monkeypatch.setattr(lp, "GenPilot", NoModel)
+        monkeypatch.setattr(lp, "play_match", lambda a, *r, **k: seen.append(a.menu_guard) or "battle_inactive")
+        monkeypatch.setattr(sys, "argv", ["live_play.py"] + argv)
+>       assert lp.main() == 0 and seen == [on]
+E       assert (2 == 0)
+E        +  where 2 = <function main at 0x000001C464C98C20>()
+E        +    where <function main at 0x000001C464C98C20> = lp.main
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:776: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[live] LIVE_OPTIONS applied from C:\Users\benpe\ClashBot\.claude\worktrees\agent-a4defcf779b079511\scratchpad\gauntlet\L70\live\LIVE_OPTIONS: ['afford_ticks', 'extrapolate', 'fast_input', 'gate_decode', 'gate_hazard_min_elixir', 'iw_press_pstar', 'lethal_rocket', 'log_aim', 'own_effects', 'spell_aim', 'tap_gap_ms', 'tau_phase', 'xbow_class', 'xbow_class_floor', 'xbow_dead_lane']; explicit flags: []
+[live] note: tau_phase 1x/2x/OT = (0.35, 0.45, 0.55) sets the play threshold; --tau 0.35 is not used by the gate (it equals the 1x value)
+[live] No selected live checkpoint at C:\Users\benpe\ClashBot\.claude\worktrees\agent-a4defcf779b079511\scratchpad\gauntlet\L70\live\CKPT_OVERRIDE; supply --ckpt or update CKPT_OVERRIDE
+________________ test_menu_guard_flag_default_off[argv1-True] _________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C40A1820B0>
+argv = ['--menu-guard'], on = True
+
+    @pytest.mark.parametrize("argv,on", [([], False), (["--menu-guard"], True), (["--no-menu-guard"], False)])
+    def test_menu_guard_flag_default_off(monkeypatch, argv, on):
+        seen = []
+    
+        class NoModel:
+            def __init__(self, *a, **k):
+                pass
+        monkeypatch.setattr(lp, "screen_size", lambda: (900, 1600))
+        monkeypatch.setattr(lp, "GenPilot", NoModel)
+        monkeypatch.setattr(lp, "play_match", lambda a, *r, **k: seen.append(a.menu_guard) or "battle_inactive")
+        monkeypatch.setattr(sys, "argv", ["live_play.py"] + argv)
+>       assert lp.main() == 0 and seen == [on]
+E       assert (2 == 0)
+E        +  where 2 = <function main at 0x000001C464C98C20>()
+E        +    where <function main at 0x000001C464C98C20> = lp.main
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:776: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[live] LIVE_OPTIONS applied from C:\Users\benpe\ClashBot\.claude\worktrees\agent-a4defcf779b079511\scratchpad\gauntlet\L70\live\LIVE_OPTIONS: ['afford_ticks', 'extrapolate', 'fast_input', 'gate_decode', 'gate_hazard_min_elixir', 'iw_press_pstar', 'lethal_rocket', 'log_aim', 'own_effects', 'spell_aim', 'tap_gap_ms', 'tau_phase', 'xbow_class', 'xbow_class_floor', 'xbow_dead_lane']; explicit flags: []
+[live] note: tau_phase 1x/2x/OT = (0.35, 0.45, 0.55) sets the play threshold; --tau 0.35 is not used by the gate (it equals the 1x value)
+[live] No selected live checkpoint at C:\Users\benpe\ClashBot\.claude\worktrees\agent-a4defcf779b079511\scratchpad\gauntlet\L70\live\CKPT_OVERRIDE; supply --ckpt or update CKPT_OVERRIDE
+________________ test_menu_guard_flag_default_off[argv2-False] ________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C401570440>
+argv = ['--no-menu-guard'], on = False
+
+    @pytest.mark.parametrize("argv,on", [([], False), (["--menu-guard"], True), (["--no-menu-guard"], False)])
+    def test_menu_guard_flag_default_off(monkeypatch, argv, on):
+        seen = []
+    
+        class NoModel:
+            def __init__(self, *a, **k):
+                pass
+        monkeypatch.setattr(lp, "screen_size", lambda: (900, 1600))
+        monkeypatch.setattr(lp, "GenPilot", NoModel)
+        monkeypatch.setattr(lp, "play_match", lambda a, *r, **k: seen.append(a.menu_guard) or "battle_inactive")
+        monkeypatch.setattr(sys, "argv", ["live_play.py"] + argv)
+>       assert lp.main() == 0 and seen == [on]
+E       assert (2 == 0)
+E        +  where 2 = <function main at 0x000001C464C98C20>()
+E        +    where <function main at 0x000001C464C98C20> = lp.main
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:776: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[live] LIVE_OPTIONS applied from C:\Users\benpe\ClashBot\.claude\worktrees\agent-a4defcf779b079511\scratchpad\gauntlet\L70\live\LIVE_OPTIONS: ['afford_ticks', 'extrapolate', 'fast_input', 'gate_decode', 'gate_hazard_min_elixir', 'iw_press_pstar', 'lethal_rocket', 'log_aim', 'own_effects', 'spell_aim', 'tap_gap_ms', 'tau_phase', 'xbow_class', 'xbow_class_floor', 'xbow_dead_lane']; explicit flags: []
+[live] note: tau_phase 1x/2x/OT = (0.35, 0.45, 0.55) sets the play threshold; --tau 0.35 is not used by the gate (it equals the 1x value)
+[live] No selected live checkpoint at C:\Users\benpe\ClashBot\.claude\worktrees\agent-a4defcf779b079511\scratchpad\gauntlet\L70\live\CKPT_OVERRIDE; supply --ckpt or update CKPT_OVERRIDE
+______________ test_main_starts_nav_only_after_the_quiet_period _______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C4015CA580>
+
+    def test_main_starts_nav_only_after_the_quiet_period(monkeypatch):
+        events = []
+        monkeypatch.setattr(lp, "NAV_QUIET_S", 1.0)
+        monkeypatch.setattr(lp, "adb", lambda *a, **k: "")
+    
+        class FakeNav:
+            def __init__(self, *a, **k):
+                pass
+    
+            def probe(self):
+                return None                                 # a battle is running at launch: play it
+    
+            def run(self):
+                events.append(("nav", _time.time()))
+                return True, "handoff"
+    
+        class NoModel:
+            def __init__(self, *a, **k):
+                pass
+    
+            def reset_match(self):
+                pass
+    
+        def fake_play(a, *r, **k):
+            lp.input_cmd("input tap 1 2")                   # the match's last input
+            events.append(("tap", _time.time()))
+            return "battle_inactive"
+        monkeypatch.setattr(fn, "FriendNav", FakeNav)
+        monkeypatch.setattr(lp, "screen_size", lambda: (900, 1600))
+        monkeypatch.setattr(lp, "GenPilot", NoModel)
+        monkeypatch.setattr(lp, "play_match", fake_play)
+        monkeypatch.setattr(sys, "argv", ["live_play.py", "--matches", "2", "--friend", "JinxTheCat"])
+>       assert lp.main() == 0
+E       assert 2 == 0
+E        +  where 2 = <function main at 0x000001C464C98C20>()
+E        +    where <function main at 0x000001C464C98C20> = lp.main
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:891: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[live] LIVE_OPTIONS applied from C:\Users\benpe\ClashBot\.claude\worktrees\agent-a4defcf779b079511\scratchpad\gauntlet\L70\live\LIVE_OPTIONS: ['afford_ticks', 'extrapolate', 'fast_input', 'gate_decode', 'gate_hazard_min_elixir', 'iw_press_pstar', 'lethal_rocket', 'log_aim', 'own_effects', 'spell_aim', 'tap_gap_ms', 'tau_phase', 'xbow_class', 'xbow_class_floor', 'xbow_dead_lane']; explicit flags: []
+[live] note: tau_phase 1x/2x/OT = (0.35, 0.45, 0.55) sets the play threshold; --tau 0.35 is not used by the gate (it equals the 1x value)
+[live] No selected live checkpoint at C:\Users\benpe\ClashBot\.claude\worktrees\agent-a4defcf779b079511\scratchpad\gauntlet\L70\live\CKPT_OVERRIDE; supply --ckpt or update CKPT_OVERRIDE
+__________ test_invite_wait_fixed_20s_and_random_only_after_a_cross ___________
+
+    def test_invite_wait_fixed_20s_and_random_only_after_a_cross():
+        nav = fn.Nav(0.0, random.Random(0))
+        social = CLF.classify(img("friends_list_130915"))
+        assert nav.plan(social, 19.9)[0] == "wait"                               # no invite of ours before 20 s
+>       assert nav.plan(social, 20.1)[:2] == ("act", "friend_row")
+E       AssertionError: assert ('wait', 'unknown') == ('act', 'friend_row')
+E         
+E         At index 0 diff: 'wait' != 'act'
+E         Use -v to get more diff
+
+scratchpad\gauntlet\L68\live_reader\test_friend_nav.py:900: AssertionError
+__________________ test_preflight_loads_default_without_adb ___________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C401572820>
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-341/test_preflight_loads_default_w0')
+capsys = <_pytest.capture.CaptureFixture object at 0x000001C40158A810>
+
+    def test_preflight_loads_default_without_adb(monkeypatch, tmp_path, capsys):
+        checkpoint, _ = args(monkeypatch, tmp_path, '--check')
+        loaded = []
+        def pilot(path, **kw):
+            loaded.append((path, kw))
+            return SimpleNamespace(feature_version=4, decision_options=kw['decision_options'])
+        monkeypatch.setattr(lp, 'GenPilot', pilot)
+        monkeypatch.setattr(lp, 'screen_size', lambda: pytest.fail('Offline check touched ADB'))
+        assert lp.main() == 0
+        assert loaded[0][0] == str(checkpoint)
+        kw = loaded[0][1]
+        import torch                                    # owner 2026-10-08: default --device auto (GPU when available)
+        assert kw['device'] == ('cuda' if torch.cuda.is_available() else 'cpu')
+        assert kw['gate_tau'] == .35 and kw['public_audit']
+>       assert not kw['decision_options'].active
+E       AssertionError: assert not True
+E        +  where True = DecisionOptions(card_choice='argmax', card_ratio=0.7, card_T=1.0, spell_aim='rocket_area', tau_phase=(0.35, 0.45, 0.55...ard_below_tau', gate_hazard_min_elixir=9.0, gate_hazard_quiet=False, lethal_rocket='ot_behind', xbow_dead_lane='block').active
+
+scratchpad\gauntlet\L68\live_reader\test_live_entry.py:36: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[live] LIVE_OPTIONS applied from C:\Users\benpe\ClashBot\.claude\worktrees\agent-a4defcf779b079511\scratchpad\gauntlet\L70\live\LIVE_OPTIONS: ['afford_ticks', 'extrapolate', 'fast_input', 'gate_decode', 'gate_hazard_min_elixir', 'iw_press_pstar', 'lethal_rocket', 'log_aim', 'own_effects', 'spell_aim', 'tap_gap_ms', 'tau_phase', 'xbow_class', 'xbow_class_floor', 'xbow_dead_lane']; explicit flags: []
+[live] note: tau_phase 1x/2x/OT = (0.35, 0.45, 0.55) sets the play threshold; --tau 0.35 is not used by the gate (it equals the 1x value)
+[live] checkpoint: C:\Users\benpe\AppData\Local\Temp\pytest-of-benpe\pytest-341\test_preflight_loads_default_w0\accepted.pt
+[live] selected by: C:\Users\benpe\AppData\Local\Temp\pytest-of-benpe\pytest-341\test_preflight_loads_default_w0\CKPT_OVERRIDE
+[live] SHA256: e6a8036e9cb9f8c9f52ffd985c4d6f0498d94e6919f4c67b6423da0176e549fa
+{"check": "LIVE_CHECK_PASS", "checkpoint": "C:\\Users\\benpe\\AppData\\Local\\Temp\\pytest-of-benpe\\pytest-341\\test_preflight_loads_default_w0\\accepted.pt", "sha256": "e6a8036e9cb9f8c9f52ffd985c4d6f0498d94e6919f4c67b6423da0176e549fa", "feature_version": 4, "device": "cuda", "tau": 0.35, "anti_leak": false, "anti_leak_elixir": null, "anti_leak_seconds": null, "extrapolate": 24, "afford_ticks": 23, "early_release_margin": null, "fast_input": true, "tap_gap_ms": 0, "public_audit": true, "legal_guard": true, "predict_drops": false, "own_effects": true, "iw_press_pstar": 0.03, "hero_ability_spec": "off", "decision_options": {"card_choice": "argmax", "card_ratio": 0.7, "card_T": 1.0, "spell_aim": "rocket_area", "tau_phase": [0.35, 0.45, 0.55], "xbow_class": "class_sample", "xbow_class_floor": 0.3, "log_aim": "log_barrel", "gate_decode": "hazard_below_tau", "gate_hazard_min_elixir": 9.0, "gate_hazard_quiet": false, "lethal_rocket": "ot_behind", "xbow_dead_lane": "block"}, "live_options": {"status": "applied", "path": "C:\\Users\\benpe\\ClashBot\\.claude\\worktrees\\agent-a4defcf779b079511\\scratchpad\\gauntlet\\L70\\live\\LIVE_OPTIONS", "file": "C:\\Users\\benpe\\ClashBot\\.claude\\worktrees\\agent-a4defcf779b079511\\scratchpad\\gauntlet\\L70\\live\\LIVE_OPTIONS", "from_file": {"afford_ticks": 23, "extrapolate": 24, "fast_input": true, "gate_decode": "hazard_below_tau", "gate_hazard_min_elixir": 9.0, "iw_press_pstar": 0.03, "lethal_rocket": "ot_behind", "log_aim": "log_barrel", "own_effects": true, "spell_aim": "rocket_area", "tap_gap_ms": 0, "tau_phase": [0.35, 0.45, 0.55], "xbow_class": "class_sample", "xbow_class_floor": 0.3, "xbow_dead_lane": "block"}, "explicit": [], "ignored": false, "message": "LIVE_OPTIONS applied from C:\\Users\\benpe\\ClashBot\\.claude\\worktrees\\agent-a4defcf779b079511\\scratchpad\\gauntlet\\L70\\live\\LIVE_OPTIONS: ['afford_ticks', 'extrapolate', 'fast_input', 'gate_decode', 'gate_hazard_min_elixir', 'iw_press_pstar', 'lethal_rocket', 'log_aim', 'own_effects', 'spell_aim', 'tap_gap_ms', 'tau_phase', 'xbow_class', 'xbow_class_floor', 'xbow_dead_lane']; explicit flags: []", "tau_note": "note: tau_phase 1x/2x/OT = (0.35, 0.45, 0.55) sets the play threshold; --tau 0.35 is not used by the gate (it equals the 1x value)"}}
+______________ test_manual_run_records_locally_and_explicit_wins ______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C4666F2820>
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-341/test_manual_run_records_locall0')
+
+    def test_manual_run_records_locally_and_explicit_wins(monkeypatch, tmp_path):
+        checkpoint, pointer = args(monkeypatch, tmp_path)
+        explicit = tmp_path / 'explicit.pt'
+        explicit.write_bytes(b'override')
+        monkeypatch.setattr(sys, 'argv', sys.argv + ['--ckpt', str(explicit)])
+        monkeypatch.setattr(lp, 'screen_size', lambda: (900, 1600))
+        monkeypatch.setattr(lp, 'GenPilot', lambda *a, **kw: object())
+        observed = []
+        def play(a, pilot, lay, device, renders, **kw):
+            observed.append((a, kw))
+            return 'battle_inactive'
+        monkeypatch.setattr(lp, 'play_match', play)
+>       assert lp.main() == 0
+               ^^^^^^^^^
+
+scratchpad\gauntlet\L68\live_reader\test_live_entry.py:59: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+scratchpad\gauntlet\L68\live_reader\live_play.py:461: in main
+    loaded = [load_pilot(a, decision_cfg, ckpt=path) for path, _ in arms]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+a = Namespace(card_choice='argmax', card_ratio=0.7, card_T=1.0, spell_aim='rocket_area', tau_phase=[0.35, 0.45, 0.55], xbo...alue)'}, ckpt_source='explicit --ckpt', ckpt_sha256='ce603774135699e9abdfd65eb1f2733774da58af91782528e82ef5f9efdb8fba')
+decision_cfg = {'card_choice': 'argmax', 'card_ratio': 0.7, 'card_T': 1.0, 'spell_aim': 'rocket_area', ...}
+ckpt = None
+
+        pilots[i].reset_match()                              # fresh history / opp counter / decision seed for this match
+        return arms[i], pilots[i]
+    
+    
+    def load_pilot(a, decision_cfg, ckpt=None):
+        import torch
+        from pipeline.decision_options import options_from_config
+        torch.set_num_threads(4)
+        device = ("cuda" if torch.cuda.is_available() else "cpu") if a.device == "auto" else a.device
+        pilot = GenPilot(ckpt or a.ckpt, device=device, gate_tau=a.tau, use_counter=not a.no_opp_counter,
+                         extrapolate_ticks=a.extrapolate, decision_options=options_from_config(decision_cfg),
+>                        decision_seed=a.decision_seed, public_audit=a.public_audit,
+        ^^^^^^^^^^^^^^^^^
+                         **({"predict_drops": True} if getattr(a, "predict_drops", False) else {}),
+                         **({"own_effects": True} if getattr(a, "own_effects", False) else {}),
+                         **({"hero_ability_spec": a.hero_ability_spec} if getattr(a, "hero_ability_spec", "off") != "off" else {}))
+E                        AttributeError: 'object' object has no attribute 'legal_guard' and no __dict__ for setting new attributes
+
+scratchpad\gauntlet\L68\live_reader\live_play.py:579: AttributeError
+---------------------------- Captured stdout call -----------------------------
+[live] LIVE_OPTIONS applied from C:\Users\benpe\ClashBot\.claude\worktrees\agent-a4defcf779b079511\scratchpad\gauntlet\L70\live\LIVE_OPTIONS: ['afford_ticks', 'extrapolate', 'fast_input', 'gate_decode', 'gate_hazard_min_elixir', 'iw_press_pstar', 'lethal_rocket', 'log_aim', 'own_effects', 'spell_aim', 'tap_gap_ms', 'tau_phase', 'xbow_class', 'xbow_class_floor', 'xbow_dead_lane']; explicit flags: []
+[live] note: tau_phase 1x/2x/OT = (0.35, 0.45, 0.55) sets the play threshold; --tau 0.35 is not used by the gate (it equals the 1x value)
+[live] checkpoint: C:\Users\benpe\AppData\Local\Temp\pytest-of-benpe\pytest-341\test_manual_run_records_locall0\explicit.pt
+[live] selected by: explicit --ckpt
+[live] SHA256: ce603774135699e9abdfd65eb1f2733774da58af91782528e82ef5f9efdb8fba
+============================== warnings summary ===============================
+pipeline/tests/test_live_anti_leak.py: 5 warnings
+pipeline/tests/test_extrapolate.py: 2 warnings
+pipeline/tests/test_gen_v31_legacy.py: 2 warnings
+pipeline/tests/test_model_gen.py: 8 warnings
+pipeline/tests/test_own_ability_hero_iw.py: 1 warning
+pipeline/tests/test_cell_refine.py: 5 warnings
+  C:\Users\benpe\ClashBot\.claude\worktrees\agent-a4defcf779b079511\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+    self.encoder = nn.TransformerEncoder(enc, layers)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED pipeline/tests/test_public_observation.py::test_real_sample_adapter_parity_and_command_frames_excluded
+FAILED pipeline/tests/test_gen_v31.py::test_real_dataset_privacy_and_exact_forms
+FAILED pipeline/tests/test_gen_v31.py::test_build_batch_checkpoint_roundtrip_and_backward
+FAILED pipeline/tests/test_gen_v31.py::test_sim_features_use_sightings_not_commands_and_fork_isolation[1]
+FAILED pipeline/tests/test_gen_v31.py::test_sim_features_use_sightings_not_commands_and_fork_isolation[3]
+FAILED pipeline/tests/test_gen_v31.py::test_sim_features_use_sightings_not_commands_and_fork_isolation[4]
+FAILED pipeline/tests/test_gen_v31.py::test_rl_trajectory_carries_cycle_through_collation
+FAILED pipeline/tests/test_gen_v31.py::test_version_four_refuses_legacy_recordings
+FAILED pipeline/tests/test_gen_v31.py::test_full_and_play_compact_board_features_identical
+FAILED pipeline/tests/test_gen_v31_legacy.py::test_dataset_init_inference_and_loss_bytes[1]
+FAILED pipeline/tests/test_gen_v31_legacy.py::test_dataset_init_inference_and_loss_bytes[2]
+FAILED pipeline/tests/test_gen_v31_legacy.py::test_dataset_init_inference_and_loss_bytes[3]
+FAILED pipeline/tests/test_gen_v31_legacy.py::test_head_simulation_rows_actions_trajectory_and_rng[1]
+FAILED pipeline/tests/test_gen_v31_legacy.py::test_head_simulation_rows_actions_trajectory_and_rng[2]
+FAILED pipeline/tests/test_gen_v31_legacy.py::test_head_simulation_rows_actions_trajectory_and_rng[3]
+FAILED pipeline/tests/test_r8_extrapolate.py::test_sim_prepare_and_live_decide_use_advanced_tokens
+FAILED scratchpad/gauntlet/L68/live_reader/test_ckpt_alternate.py::test_check_loads_fv4_and_fv5_side_by_side
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_every_capture_is_covered
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_capture_classifies_and_plans_allowlisted_input[after_ok_131638]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_capture_classifies_and_plans_allowlisted_input[battle_type_130729]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_capture_classifies_and_plans_allowlisted_input[cancel_invite_130818]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_capture_classifies_and_plans_allowlisted_input[friend_entry_130350]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_capture_classifies_and_plans_allowlisted_input[friends_list_130251]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_capture_classifies_and_plans_allowlisted_input[friends_list_130915]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_capture_classifies_and_plans_allowlisted_input[invite_incoming_131227]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_capture_classifies_and_plans_allowlisted_input[invite_sent_130520]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_capture_classifies_and_plans_allowlisted_input[results_131619]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_capture_classifies_and_plans_allowlisted_input[test_now_125953]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_results_capture_verifies_the_friend
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_results_foreign_opponent_stops
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_popup_for_someone_else_is_not_acted_on
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_popup_button_drawn_over_quickplay_without_popup_body_is_rejected
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_main_screen_never_yields_battle_or_quickplay_input
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_waits_for_the_friends_invite_before_sending
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_cross_invite_cancels_ours_then_accepts_theirs
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_end_to_end_fake_device[False]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_menu_guard_arms_only_when_the_clock_runs_and_fails_closed
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_non_900x1600_screen_refused_without_flag
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_list_search_goes_to_top_then_finds_row_below_the_fold
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_list_search_from_below_scrolls_up_to_the_row
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_friend_not_in_list_stops_cleanly
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_probe_sees_menu_or_assumes_battle
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_first_match_is_navigated_from_a_menu[main]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_first_match_is_navigated_from_a_menu[None]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_list_search_restarts_after_an_expired_invite
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_menu_guard_flag_default_off[argv0-False]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_menu_guard_flag_default_off[argv1-True]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_menu_guard_flag_default_off[argv2-False]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_main_starts_nav_only_after_the_quiet_period
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_invite_wait_fixed_20s_and_random_only_after_a_cross
+FAILED scratchpad/gauntlet/L68/live_reader/test_live_entry.py::test_preflight_loads_default_without_adb
+FAILED scratchpad/gauntlet/L68/live_reader/test_live_entry.py::test_manual_run_records_locally_and_explicit_wins
+ERROR pipeline/tests/test_royale_port.py
+52 failed, 583 passed, 13 skipped, 23 warnings, 1 error, 4 subtests passed in 1003.33s (0:16:43)
+v4_and_fv5_side_by_side
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_every_capture_is_covered
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_capture_classifies_and_plans_allowlisted_input[after_ok_131638]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_capture_classifies_and_plans_allowlisted_input[battle_type_130729]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_capture_classifies_and_plans_allowlisted_input[cancel_invite_130818]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_capture_classifies_and_plans_allowlisted_input[friend_entry_130350]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_capture_classifies_and_plans_allowlisted_input[friends_list_130251]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_capture_classifies_and_plans_allowlisted_input[friends_list_130915]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_capture_classifies_and_plans_allowlisted_input[invite_incoming_131227]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_capture_classifies_and_plans_allowlisted_input[invite_sent_130520]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_capture_classifies_and_plans_allowlisted_input[results_131619]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_capture_classifies_and_plans_allowlisted_input[test_now_125953]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_results_capture_verifies_the_friend
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_results_foreign_opponent_stops
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_popup_for_someone_else_is_not_acted_on
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_popup_button_drawn_over_quickplay_without_popup_body_is_rejected
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_main_screen_never_yields_battle_or_quickplay_input
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_waits_for_the_friends_invite_before_sending
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_cross_invite_cancels_ours_then_accepts_theirs
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_end_to_end_fake_device[False]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_menu_guard_arms_only_when_the_clock_runs_and_fails_closed
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_non_900x1600_screen_refused_without_flag
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_list_search_goes_to_top_then_finds_row_below_the_fold
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_list_search_from_below_scrolls_up_to_the_row
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_friend_not_in_list_stops_cleanly
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_probe_sees_menu_or_assumes_battle
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_first_match_is_navigated_from_a_menu[main]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_first_match_is_navigated_from_a_menu[None]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_list_search_restarts_after_an_expired_invite
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_menu_guard_flag_default_off[argv0-False]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_menu_guard_flag_default_off[argv1-True]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_menu_guard_flag_default_off[argv2-False]
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_main_starts_nav_only_after_the_quiet_period
+FAILED scratchpad/gauntlet/L68/live_reader/test_friend_nav.py::test_invite_wait_fixed_20s_and_random_only_after_a_cross
+FAILED scratchpad/gauntlet/L68/live_reader/test_live_entry.py::test_preflight_loads_default_without_adb
+FAILED scratchpad/gauntlet/L68/live_reader/test_live_entry.py::test_manual_run_records_locally_and_explicit_wins
+ERROR pipeline/tests/test_royale_port.py
+52 failed, 583 passed, 13 skipped, 23 warnings, 1 error, 4 subtests passed in 957.45s (0:15:57)

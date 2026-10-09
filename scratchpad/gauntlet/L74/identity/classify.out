@@ -1,0 +1,56 @@
+
+=== DROPPED (model never sees the body)
+    13000043 13000043           f0 -> None               legacy         bodies    22 states    417 fstates     0 matches    8 hp {1776: 4, 1949: 8, 2143: 10}
+   203000042 203000042          f0 -> None               legacy         bodies    14 states    242 fstates     0 matches    3 hp {714: 8, 945: 3, 1141: 3}
+    26000107 26000107           f0 -> None               legacy         bodies    11 states    366 fstates     0 matches    3 hp {1817: 7, 2193: 4}
+    13000075 13000075           f0 -> None               legacy         bodies     2 states    100 fstates     0 matches    2 hp {3952: 1, 6314: 1}
+
+=== NOT the card's own body but given the card's own class (legacy / unknown_hp / ambiguous)
+    26000067 ElixirGolem        f0 -> elixir_blob        legacy         bodies   729 states   3394 fstates   418 matches   48 hp {360: 20, 396: 4, 435: 8, 477: 108, 524: 512, 576: 77}
+    26000041 GoblinGang         f0 -> goblin_gang        legacy         bodies   602 states   4898 fstates   622 matches   47 hp {133: 104, 176: 178, 193: 240, 212: 80}
+    13000012 SkeletonArmy       f1 -> skeleton_army      legacy         bodies   420 states   1382 fstates   188 matches   33 hp {2: 27, 3: 346, 4: 47}
+    26000067 ElixirGolem        f0 -> elixir_golemite    legacy         bodies   395 states   2198 fstates   329 matches   48 hp {762: 10, 837: 2, 920: 4, 1010: 58, 1108: 279, 1218: 42}
+    26000036 BattleRam          f0 -> battle_ram         legacy         bodies   288 states   1905 fstates   439 matches   42 hp {408: 20, 448: 53, 492: 10, 593: 12, 716: 6, 865: 4, 949: 49, 1041: 120, 1145: 12, 1260: 2}
+    26000084 ElectroSpirit      f0 -> electro_spirit     legacy         bodies   209 states    983 fstates   245 matches   50 hp {259: 8, 284: 46, 312: 144, 343: 11}
+    26000097 SuspiciousBush     f0 -> suspicious_bush    legacy         bodies   193 states    895 fstates   181 matches   19 hp {337: 19, 407: 6, 447: 66, 491: 98, 539: 4}
+    26000029 LavaHound          f0 -> lava_pups          legacy         bodies   189 states   1839 fstates   235 matches   15 hp {215: 6, 284: 41, 312: 112, 343: 30}
+    26000009 Golem              f0 -> golemite           legacy         bodies   140 states   1441 fstates   444 matches   31 hp {1039: 4, 1376: 40, 1510: 60, 1660: 36}
+    26000051 RamRider           f0 -> ram_rider          legacy         bodies   102 states   1186 fstates    80 matches   27 hp {593: 2, 786: 31, 863: 47, 948: 22}
+    13000050 Ghost              f1 -> royal_ghost        legacy         bodies    99 states    718 fstates    36 matches   21 hp {81: 9, 108: 13, 119: 39, 130: 16, 1152: 6, 1525: 3, 1674: 9, 1840: 4}
+    26000099 Goblinstein        f0 -> goblinstein        legacy         bodies    88 states   1331 fstates   637 matches   11 hp {721: 9, 955: 8, 1049: 24, 1153: 3, 2240: 9, 2966: 8, 3255: 24, 3578: 3}
+    26000053 Rascals            f0 -> rascals            legacy         bodies    86 states   1036 fstates   419 matches   13 hp {261: 6, 345: 28, 379: 52}
+    26000050 Ghost              f0 -> royal_ghost        legacy         bodies    82 states   1537 fstates     0 matches   19 hp {1152: 14, 1525: 13, 1674: 33, 1840: 22}
+    26000028 ThreeMusketeers    f0 -> three_musketeers   legacy         bodies    68 states   1741 fstates     0 matches    8 hp {906: 15, 1200: 3, 1316: 36, 1447: 13, 1593: 1}
+   203000038 IceGolemite        f2 -> ice_golem          legacy         bodies    68 states    772 fstates   107 matches   12 hp {1228: 28, 1483: 5, 1627: 3, 1785: 27, 1963: 5}
+   203000002 Goblins            f2 -> goblins            legacy         bodies    60 states    495 fstates   134 matches   19 hp {3390: 35, 3720: 19, 4090: 6}
+   203000006 Balloon            f2 -> balloon            legacy         bodies    45 states    189 fstates    92 matches   26 hp {627: 10, 688: 27, 756: 5, 832: 3}
+   203000014 Musketeer          f2 -> musketeer          legacy         bodies    37 states    223 fstates    27 matches   13 hp {1536: 22, 1854: 1, 2034: 3, 2232: 5, 2454: 6}
+    13000036 BattleRam          f1 -> battle_ram         legacy         bodies    30 states    204 fstates    10 matches   14 hp {716: 2, 949: 6, 1041: 18, 1145: 4}
+    13000098 Mortar             f1 -> mortar             legacy         bodies    29 states    142 fstates     0 matches    9 hp {267: 3, 293: 20, 323: 6}
+    26000093 LittlePrince       f0 -> little_prince      legacy         bodies    24 states    384 fstates    32 matches   10 hp {1600: 4, 1931: 3, 2118: 6, 2325: 10, 2556: 1}
+   203000027 DarkPrince         f2 -> dark_prince        legacy         bodies    15 states    141 fstates    37 matches   10 hp {1796: 3, 1971: 12}
+    13000035 RageBarbarian      f1 -> lumberjack         legacy         bodies    14 states     95 fstates     0 matches   11 hp {2: 3, 3: 7, 4: 4}
+    13000058 Wallbreakers       f1 -> wall_breakers      legacy         bodies    10 states     19 fstates     0 matches    8 hp {216: 2, 238: 8}
+   203000062 EliteArcher        f2 -> magic_archer       legacy         bodies    10 states     20 fstates    13 matches    7 hp {271: 1, 394: 5, 433: 4}
+    13000030 IceSpirits         f1 -> ice_spirit         legacy         bodies     3 states     21 fstates     0 matches    1 hp {312: 3}
+   203000088 Tombstone          f2 -> tombstone          unknown_hp     bodies     3 states     51 fstates    31 matches    2 hp {4224: 2, 5593: 1}
+
+=== own body unknown (no catalog record or unreadable HP)
+    28000004 GoblinBarrel       f0 -> goblins            legacy         bodies   827 states   2533 fstates   567 matches   73 hp {81: 18, 108: 8, 119: 19, 130: 21, 202: 112, 221: 16, 244: 39, 267: 205, 293: 266, 323: 123}
+    28000010 Graveyard          f0 -> skeletons          legacy         bodies   672 states   1355 fstates   800 matches   28 hp {81: 32, 108: 200, 119: 414, 130: 26}
+    28000015 BarbLog            f0 -> barbarians         legacy         bodies   323 states   1846 fstates   527 matches   83 hp {716: 32, 865: 19, 949: 71, 1041: 174, 1145: 27}
+    28000013 Clone              f0 -> clone              legacy         bodies   261 states    932 fstates   716 matches   37 hp {1: 261}
+    28000018 RoyalDelivery      f0 -> royal_recruit      legacy         bodies   112 states   1030 fstates   120 matches   30 hp {547: 2, 661: 10, 725: 21, 796: 75, 875: 4}
+    13000007 Witch              f1 -> witch              unreadable     bodies   110 states   1779 fstates   116 matches   72 hp {-1: 110}
+    28000016 Heal               f0 -> heal_spirit        legacy         bodies    67 states    285 fstates    20 matches   21 hp {215: 5, 284: 13, 312: 42, 343: 7}
+   203000023 IceWizard          f2 -> ice_wizard         legacy         bodies    64 states   1130 fstates   205 matches   11 hp {266: 1, 386: 5, 425: 1, 688: 40, 831: 4, 911: 1, 1000: 9, 1100: 3}
+    13000049 Bats               f1 -> bats               unreadable     bodies    30 states    319 fstates     0 matches    9 hp {-1: 30}
+   203000088 Tombstone          f2 -> tombstone          unreadable     bodies    20 states    385 fstates   262 matches    5 hp {-1: 20}
+    28000006 Mirror             f0 -> mirror             legacy         bodies    15 states     92 fstates     0 matches    2 hp {323: 6, 355: 9}
+    27000013 GoblinDrill        f0 -> goblin_drill       unreadable     bodies     1 states      1 fstates     0 matches    1 hp {-1: 1}
+    13000004 Pekka              f1 -> pekka              unreadable     bodies     1 states      7 fstates     0 matches    1 hp {-1: 1}
+
+=== child_no_class (spawned body, no class of its own, keeps the parent class form 0)
+    27000012 GoblinCage         f0 -> goblin_cage        child_no_class bodies    74 states    776 fstates   233 matches   32 hp {582: 1, 639: 4, 770: 6, 1484: 21, 1629: 36, 1791: 6}
+    26000087 Phoenix            f0 -> phoenix            child_no_class bodies    44 states    137 fstates    69 matches   16 hp {317: 4, 383: 5, 420: 13, 461: 15, 507: 7}
+    13000107 GoblinCage         f1 -> goblin_cage        child_no_class bodies    13 states    123 fstates     8 matches   12 hp {1484: 3, 1629: 9, 1791: 1}

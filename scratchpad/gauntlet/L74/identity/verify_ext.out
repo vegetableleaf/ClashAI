@@ -1,0 +1,23 @@
+[0/1268] 0s {}
+[100/1268] 0s {}
+[200/1268] 1s {}
+[300/1268] 1s {}
+[400/1268] 1s {}
+[500/1268] 1s {}
+[600/1268] 1s {}
+[700/1268] 17s {'states': 15331, 'states_changed': 106}
+[800/1268] 53s {'states': 47061, 'states_changed': 541}
+[900/1268] 86s {'states': 75824, 'states_changed': 714}
+[1000/1268] 121s {'states': 108253, 'states_changed': 942}
+[1100/1268] 150s {'states': 136782, 'states_changed': 1091}
+[1200/1268] 186s {'states': 169749, 'states_changed': 1419}
+stats {'states': 190562, 'states_changed': 1849} failures 0
+                None fNone -> elite_barbarians f0  token rows 417
+       little_prince f0 -> knight         f0  token rows 384
+                None fNone -> balloon        f0  token rows 366
+         royal_ghost f1 -> skeletons      f0  token rows 335
+                None fNone -> electro_wizard f0  token rows 242
+           musketeer f2 -> tesla          f0  token rows 223
+              mortar f1 -> goblins        f0  token rows 142
+         dark_prince f2 -> ram_rider      f0  token rows 141
+                None fNone -> electro_giant  f0  token rows 100
