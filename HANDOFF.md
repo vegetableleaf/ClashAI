@@ -4947,6 +4947,15 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   0 -> .52 (card = model's Tornado .82). CORRECTION to the lead: in the king-fall window p was .04-.20 (tau .35 until 2402);
 >   the .22-.34 values were while the princess fell with NO affordable card. Deploy after the A/B (with early release),
 >   update DEPLOYED_FILE.
+> * **OVERNIGHT 2026-10-08 (owner asleep; memory overnight-2026-10-08-12k.md): goal 12,000 trophies by morning (~11,378 at
+>   23:00; live 456-431).** Hero IW A/B ON arm started 23:02:25 (watcher stops after 20, ~00:20). Plan after the A/B: decide
+>   the Hero IW switch from the 20/20 comparison, deploy --gate-hazard-threatened 2 (if verification passes) + --early-release-
+>   margin 8, keep live running overnight (STOP file removed, run_live.sh). Workers: a062325a mistake catalogue (M1 overcommit,
+>   M2 wrong priority/lane, M3 off-side spend during pushes, M4 idle, M5 offence before pushes, M6 wasted spells, M7 saving
+>   doomed units; interim ~01:00, final ~06:00); a4defcf7 unseen units (ability spawns, new cards -> flagged identity mapping);
+>   a07c6c75 defence RL (critic + dense defence/economy reward + overrun-archetype opponents, VM GPU, candidate by ~07:00);
+>   a4649cc8 RoyaleSim forms (Evo Tesla, Evo Knight, Hero IW with Oct-2026 values, isolated runtime ~/simforms). Threatened-gate
+>   verifier ab4d0d0f running. TV Royale harvest deferred (live has the emulator overnight).
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
