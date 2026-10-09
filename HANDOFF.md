@@ -5053,6 +5053,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   (4.95 vs 4.98). Updates 500-940 s (refine heads + contention, no VM GPU). Next arm (not started): base without refine
 >   heads, distinct seeds, broke term = tower damage of pushes met < 4 elixir-equiv, <= 64 cores, eval after >= 20 updates.
 >   Resume rdef_c: `cd ~/rl_defence/repo && nohup bash scratchpad/gauntlet/L74/rl_defence/run_rdef_c.sh rdef_c --resume`.
+> * **READER PURGE PUSHED (188801c merge + 7526a02):** 65 usable reader artifacts untracked (kept on disk, git-ignored);
+>   29 docs/records scrubbed of offsets/vtables/hashes/sampler paths; launch values now come from the LOCAL file
+>   icebow/data/reader_config.json (git-ignored; loader pipeline/reader_config.py; CLASHBOT_READER_CONFIG overrides).
+>   NEW WORKTREES: the reader sources are no longer in checkouts -- the main checkout keeps them on disk. Lead-verified
+>   (not blind): same targeted tests before/after (108 -> 117 passed incl. 7 new; same 2 known test_live_entry failures),
+>   --check PASS, sampler command byte-identical, example live_sampler3.c URL 404 on main. NOT done: history rewrite
+>   (old commits + 26 forks still hold the files) -- owner decision. Do not re-add reader specifics to tracked files.
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
