@@ -5169,6 +5169,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   Wizard = 14. Lethal rules assume card level = my tower level (15): Rocket 16 does 546 to a tower, not 497 (Log 15 = 51
 >   unchanged). (a) every live Rocket tower hit through 09:xx 10-09 = 497 (upgrade after that). -> a0ff8a54 building opt-in
 >   `--card-levels NAME=LEVEL`; deploy `--card-levels Rocket=16 Log=15` after verification; confirm 546 drops live.
+> * **card-levels MERGED + LIVE ~13:1x (375eefe; LIVE-ONLY, SIM ignores it; backup LIVE_OPTIONS.pre_levels_backup; Discord
+>   posted).** Blind af0555f2 PASS_WITH_NOTES: off identical on 253,277 live decisions + 4,000 SIM rows; Rocket=16 fires at
+>   <= 546 (archive fires 655 -> 929), Log=15 at <= 51; king exception uses 546. Defect (not hit by the deployed setting):
+>   an unlisted in-flight spell is costed at the evaluated card's level -> a0ff8a54. TODO: confirm a live 546 drop.
+> * Owner ~13:00: restart live as each feature is integrated (memory overnight-2026-10-08-12k). Own-cycle stage 2 (laptop
+>   GPU, frozen base, 350 cols): real-minus-placebo card CE -.0121 [-.0169, -.0074], wait -.0070, gate -.0025; top-1
+>   card 59.46 -> 59.84% n.s.; SIM 960 running. follow-up taps (2bafe09) in blind verification a4e15736.
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
