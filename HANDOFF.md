@@ -5115,6 +5115,11 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   the decision that PLAYED the Log (4144, 345 HP), my earlier Rocket's hit at 4146 falls between snapshot and landing.
 >   Not deployed; live keeps v3. Back to a0ff8a54: baseline = first snapshot at/after landing (or post-hit time release),
 >   window-sized history.
+> * **lethal-log-release v4 (a314274) MERGED 88c7352 + LIVE (code-only restart ~07:1x; Discord posted).** Blind af538c30
+>   PASS_WITH_NOTES: off identical on 127,477 live decisions; 185400 every-frame 0 fires (4172-4230, look-ahead 24/26);
+>   225206 Log fires 5327-5345; all 2,312 landings 10-08/09 had a decision within 10 ticks (no 112-tick hold); history
+>   <= 121 entries, resets per match. Notes (low): release can precede the real hit by 4-8 ticks when other damage lands
+>   first; hp_after docstring wrong for Rocket-then-Log of my own.
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
