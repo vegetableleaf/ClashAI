@@ -1,0 +1,4 @@
+retarget tower_hp_diff: 28 candidate games, mean retarget - base -863.6 (95% CI -1595.3 .. -131.8); better 13 / worse 10
+retarget crowns_diff: 28 candidate games, mean retarget - base -0.4 (95% CI -0.8 .. -0.0); better 1 / worse 7
+block tower_hp_diff: 28 candidate games, mean block - base -158.5 (95% CI -930.2 .. +613.2); better 11 / worse 12
+block crowns_diff: 28 candidate games, mean block - base +0.1 (95% CI -0.2 .. +0.4); better 4 / worse 2
