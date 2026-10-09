@@ -121,7 +121,7 @@ class GenPilot(LegacyGenPilot):
     def rocket_value_observe(self, info):
         """The decision with nothing affordable: only the lead history (SIM decide_batch sees this board too)."""
         options = self.decision_options
-        if getattr(options, 'rocket_value', 0.0) > 0 and options.rocket_value_lead == 'on':
+        if getattr(options, 'rocket_value', 0.0) > 0 and options.rocket_value_lead in ('on', 'blend'):
             tick = int(round(float(info['bs'].t_sec) / 0.05))
             rocket_track(self, tick, rocket_bodies(info['bs'], options.rocket_value_mode))
 

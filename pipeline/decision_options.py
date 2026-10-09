@@ -45,7 +45,7 @@ class DecisionOptions:
     rocket_value_min_y: float = 16.0        # the blast centre must be at board y >= this (16 = my half; 21+ = near my towers)
     rocket_value_max_left: float = 99.0     # no fire when the bodies in the blast would KEEP more than this much value after the Rocket
     rocket_value_hitbox: str = 'centre'     # 'edge': a body is in the blast when its hitbox touches the radius
-    rocket_value_lead: str = 'off'          # 'on': aim at where the bodies will be when the Rocket lands
+    rocket_value_lead: str = 'off'          # 'on' / 'drift' / 'blend': aim at where the bodies will be when the Rocket lands
     rocket_value_idle: str = 'off'          # 'on': only at a decision where the model itself would not play (displaces nothing)
     rocket_value_min_elixir: float = 0.0    # fire only with at least this much elixir (the Rocket leaves the rest)
 
@@ -89,7 +89,7 @@ class DecisionOptions:
         if not math.isfinite(self.rocket_value) or self.rocket_value < 0:
             raise ValueError('rocket_value must be finite and >= 0')
         for k, ok in (('rocket_value_mode', ('cost', 'damage', 'kill')), ('rocket_value_hitbox', ('centre', 'edge')),
-                      ('rocket_value_lead', ('off', 'on')), ('rocket_value_idle', ('off', 'on'))):
+                      ('rocket_value_lead', ('off', 'on', 'drift', 'blend')), ('rocket_value_idle', ('off', 'on'))):
             if getattr(self, k) not in ok:
                 raise ValueError(f'{k} must be one of {ok}')
         if not math.isfinite(self.rocket_value_min_elixir) or not 0 <= self.rocket_value_min_elixir <= 10:
@@ -187,9 +187,10 @@ def add_arguments(parser):
     parser.add_argument('--rocket-value-hitbox', choices=('centre', 'edge'), default='centre',
                         help='edge: a body is in the blast when its HITBOX touches the radius (centre distance <= radius + its '
                              'collision radius, the RoyaleSim rule); centre: its centre must be inside the radius')
-    parser.add_argument('--rocket-value-lead', choices=('off', 'on'), default='off',
-                        help='on: aim at where the bodies will be when the Rocket lands (action delay + flight from my king '
-                             'tower), each moved at the velocity measured from the last 2 s of decisions')
+    parser.add_argument('--rocket-value-lead', choices=('off', 'on', 'drift', 'blend'), default='off',
+                        help='aim at where the bodies will be when the Rocket lands (flight from my king tower): on = each body moved '
+                             'at the velocity measured from the last 2 s of decisions; drift = every body walks toward my side at its '
+                             'catalog speed; blend = the measured velocity where it moves, the drift otherwise')
     parser.add_argument('--rocket-value-idle', choices=('off', 'on'), default='off',
                         help='on: only at a decision where the model itself would not play (gate WAIT after the hazard draw), so '
                              'the Rocket displaces no play of the model')
@@ -924,7 +925,11 @@ def lethal_rocket_choice(options, t_sec, names, allowed, crown_towers, side, gri
 #                             rule, spells.AOE_HIT_TEST = EdgeInclusive; Lava Hound 0.75, Balloon 0.5, Skeleton Dragons 0.9 tiles)
 #   rocket_value_lead  off    aim at the bodies where they are now
 #                      on     aim at where they will be when it lands: each body moves on at the velocity measured from the decision
-#                             history over the action delay + the Rocket flight from my king tower (rocket_lands_in)
+#                             history over the residual lag + the Rocket flight from my king tower (rocket_lands_in)
+#                      drift  ... every body walks toward my side (+y) at its catalog speed, no history
+#                      blend  ... the measured velocity where the body moves, the drift where it does not (just deployed, standing)
+#                      MEASURED (L74/rocket_value2/diag_lead.py, 440 bodies of 113 SIM fires): the bodies move 2.3 tiles by impact; the
+#                      best blast aimed at the static / history / drift positions covers 38 / 42 / 46 % of their value (oracle 79 %)
 # All numbers are RoyaleSim catalog ratios (the unified-level ladder cancels: Rocket 580 and every hp share it).
 ROCKET_UNIT_DAMAGE = 580.0        # catalog Rocket damage to a non-tower body, level-1 scale (the same scale as every catalog hitpoints)
 ROCKET_LAG_TICKS = 2              # decision -> deploy NOT already in the decision board: the SIM benchmark lands a play at once (0); live
@@ -953,12 +958,12 @@ def rocket_unit_table():
         if c.get('kind') in ('troop', 'building') and c.get('elixir') and key not in table:
             n = int(c.get('count') or 1) + int((c.get('second_summon') or {}).get('count') or 0)
             table[key] = (float(c['elixir']) / max(n, 1), float(c.get('hitpoints') or 0.0),
-                          float(c.get('collision_radius_milli') or 500) / 1000.0)
+                          float(c.get('collision_radius_milli') or 500) / 1000.0, float(c.get('speed') or 60) / 1200.0)
     for child in ('golemite', 'lava_pups', 'elixir_golemite', 'elixir_blob', 'royal_recruit'):   # parents before children
         parent, n, unit = _CHILD_SHARE[child]
         u = catalog['units'][unit]
         table[child] = (table.get(parent, (0.0,))[0] / n if parent in table else 0.0, float(u.get('hitpoints') or 0.0),
-                        float(u.get('collision_radius_milli') or 500) / 1000.0)
+                        float(u.get('collision_radius_milli') or 500) / 1000.0, float(u.get('speed') or 60) / 1200.0)
     return table
 
 
@@ -977,7 +982,8 @@ def body_value(cls, hp_frac=None):
 
 
 def rocket_bodies(bs, mode='cost'):
-    """[n, 6] float (class id, x tiles, y tiles, value, collision radius tiles, value left after the Rocket) per enemy body of a BoardState (side != 0,
+    """[n, 7] float (class id, x tiles, y tiles, value, collision radius tiles, value left after the Rocket, catalog speed in tiles per
+    tick = speed / 1200: catalog speed 60 is 1 tile/s) per enemy body of a BoardState (side != 0,
     as enemy_unit_count) worth > 0 under ``mode``: cost -> cost/bodies x hp fraction; damage -> cost/bodies x the share of its hp
     the Rocket takes (min(ROCKET_UNIT_DAMAGE, hp now) / max hp); kill -> cost/bodies x hp fraction for a body the Rocket kills
     (hp now <= ROCKET_UNIT_DAMAGE), 0 for one that survives it. Unknown hp = full."""
@@ -987,7 +993,7 @@ def rocket_bodies(bs, mode='cost'):
         if int(u.side) == 0 or vocab.is_spell(int(u.cls)):
             continue
         name = vocab.UNIT_VOCAB[int(u.cls)]
-        ev, hp, radius = table.get(vocab.base_key(name), (0.0, 0.0, 0.5))
+        ev, hp, radius, speed = table.get(vocab.base_key(name), (0.0, 0.0, 0.5, 0.05))
         if ev <= 0 or name.endswith('_ability'):
             continue
         f = 1.0 if u.hp_frac is None else min(max(float(u.hp_frac), 0.0), 1.0)
@@ -999,8 +1005,8 @@ def rocket_bodies(bs, mode='cost'):
             value = ev * min(ROCKET_UNIT_DAMAGE, f * hp) / hp
         left = ev * max(0.0, f * hp - ROCKET_UNIT_DAMAGE) / hp if hp > 0 else 0.0       # what survives the Rocket
         if value > 0 or left > 0:
-            rows.append((float(u.cls), float(u.x) * 18.0, float(u.y) * 32.0, value, radius, left))
-    return np.array(rows, dtype=np.float64).reshape(-1, 6)
+            rows.append((float(u.cls), float(u.x) * 18.0, float(u.y) * 32.0, value, radius, left, speed))
+    return np.array(rows, dtype=np.float64).reshape(-1, 7)
 
 
 def rocket_lands_in(cx, cy):
@@ -1049,7 +1055,7 @@ def best_rocket_clump(bodies, grid, hitbox='centre', lead=None, min_y=MY_HALF_MI
     """-> (value, eligible) for the best Rocket blast CENTRED on my half: its value, and the [2304] bool cells (on my half) whose
     blast covers every body of that best clump. (0.0, None) with no body worth anything. ``hitbox`` 'centre' counts a body whose
     centre is within the Rocket radius, 'edge' one whose hitbox touches it (radius + the body's collision radius). ``lead`` =
-    None, or the (decision tick, history) of rocket_track: the bodies are moved to where they will be when a Rocket aimed at the
+    None, or the (decision tick, history, mode) of rocket_track / 'drift': the bodies are moved to where they will be when a Rocket aimed at the
     cell lands (rocket_lands_in at the cell, found by one refinement from the static best cell)."""
     if not len(bodies):
         return (0.0, None, 0.0) if with_left else (0.0, None)
@@ -1064,7 +1070,10 @@ def best_rocket_clump(bodies, grid, hitbox='centre', lead=None, min_y=MY_HALF_MI
     pos = bodies[:, 1:3]
     inside, value = blast(pos)
     if lead is not None:
-        vel = rocket_velocities(lead[1], lead[0], bodies)
+        vel = rocket_velocities(lead[1], lead[0], bodies) if lead[2] != 'drift' else np.zeros((len(bodies), 2))
+        if lead[2] != 'on':                         # drift / blend: toward my side (+y) at the catalog speed where nothing measured moves
+            drift = np.stack([np.zeros(len(bodies)), bodies[:, 6]], axis=1)
+            vel = drift if lead[2] == 'drift' else np.where((np.hypot(vel[:, 0], vel[:, 1]) > 0.01)[:, None], vel, drift)
         for _ in range(2):          # the flight depends on the aimed cell, the cell on where the bodies will be: two refinements
             best = int(value.argmax())
             horizon = rocket_lands_in(x[best], y[best])
@@ -1086,14 +1095,16 @@ def rocket_value_choice(options, names, allowed, bs, grid, pending=False, holder
     if options.rocket_value <= 0:
         return None
     slots = [i for i, n in enumerate(names) if n is not None and str(n).lower() == 'rocket' and allowed[i]]
-    track = options.rocket_value_lead == 'on' and holder is not None
+    track = options.rocket_value_lead in ('on', 'blend') and holder is not None
     if not slots and not track:
         return None                                 # nothing to cast, no history to keep
     bodies = rocket_bodies(bs, options.rocket_value_mode)
     lead = None
     if track:
         tick = int(round(float(bs.t_sec) / 0.05))
-        lead = (tick, rocket_track(holder, tick, bodies))
+        lead = (tick, rocket_track(holder, tick, bodies), options.rocket_value_lead)
+    elif options.rocket_value_lead == 'drift':
+        lead = (0, [], 'drift')
     if pending or not slots or (options.rocket_value_idle == 'on' and playing):
         return None
     if float(bs.my_elixir) + 1e-9 < options.rocket_value_min_elixir:

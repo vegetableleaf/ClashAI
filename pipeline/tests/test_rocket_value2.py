@@ -124,7 +124,7 @@ def test_best_blast_my_half_only_and_eligible_cells_cover_the_whole_clump():
     assert best(board(*pups(y=8.0))) == (0.0, None)                                   # the same push on the enemy half: out of range
     assert best(board(unit('balloon', 9, 14.5), unit('giant', 9, 17.2)))[0] == 10.0   # centre at y >= 16 still covers y 14.5
     assert best(board(unit('balloon', 9, 12.0)))[0] == 0.0
-    assert best_rocket_clump(np.zeros((0, 6)), 'lattice') == (0.0, None)
+    assert best_rocket_clump(np.zeros((0, 7)), 'lattice') == (0.0, None)
 
 
 def test_best_blast_picks_the_biggest_clump_not_the_first():
@@ -216,7 +216,7 @@ def test_lead_moves_the_blast_to_where_the_bodies_will_be():
     vel = rocket_velocities(hist, 120, now)
     assert np.allclose(vel, [[0, .05], [0, .05]])                                    # 1 tile in 20 ticks, +y (toward my side)
     _, ok_static = best_rocket_clump(now, 'lattice')
-    value, ok_lead = best_rocket_clump(now, 'lattice', 'centre', (120, hist))
+    value, ok_lead = best_rocket_clump(now, 'lattice', 'centre', (120, hist, 'on'))
     assert value == 8.0
     ys = np.meshgrid(np.arange(36) * .5, np.arange(64) * .5)[1].reshape(-1)
     shift = ys[ok_lead].mean() - ys[ok_static].mean()
@@ -228,13 +228,32 @@ def test_lead_moves_the_blast_to_where_the_bodies_will_be():
     assert not rocket_velocities([(118, old)], 120, now).any()                       # a snapshot < 6 ticks old is not a baseline
 
 
+def test_lead_drift_and_blend_walk_toward_my_side_at_the_catalog_speed():
+    now = rocket_bodies(board(unit('giant', 4.0, 20.0), unit('knight', 4.5, 20.5)), 'cost')
+    assert rocket_unit_table()['giant'][3] == pytest.approx(45 / 1200) and rocket_unit_table()['knight'][3] == pytest.approx(.05)
+    ys = np.meshgrid(np.arange(36) * .5, np.arange(64) * .5)[1].reshape(-1)
+    _, ok_static = best_rocket_clump(now, 'lattice')
+    horizon = rocket_lands_in(4.25, 22.0)
+    for mode in ('drift', 'blend'):                                                  # blend with no history = drift
+        value, ok = best_rocket_clump(now, 'lattice', 'centre', (120, [], mode))
+        assert value == 8.0 and ys[ok].mean() - ys[ok_static].mean() == pytest.approx(.044 * horizon, abs=1.0)
+    holder = SimpleNamespace()                                                       # blend: a body that moves keeps its measured velocity
+    rocket_track(holder, 100, rocket_bodies(board(unit('giant', 4.0, 19.0), unit('knight', 4.5, 20.5)), 'cost'))
+    hist = rocket_track(holder, 120, now)
+    value, ok = best_rocket_clump(now, 'lattice', 'centre', (120, hist, 'blend'))
+    assert value == 8.0 and ok.any()
+    opts = DecisionOptions(rocket_value=7.0, rocket_value_lead='drift')
+    assert rocket_value_choice(opts, NAMES, OK, board(*pups()), 'lattice', holder=None) is not None      # drift needs no holder
+    assert not hasattr(SimpleNamespace(), 'rv_hist')
+
+
 def test_lead_history_is_kept_short_and_per_holder():
     holder = SimpleNamespace()
     for tick in range(0, 400, 10):
         rocket_track(holder, tick, rocket_bodies(board(unit('giant', 4.0, 20.0)), 'cost'))
     assert holder.rv_hist[0][0] >= 400 - 10 - 40 and len(holder.rv_hist) <= 5
     other = SimpleNamespace()
-    assert rocket_track(other, 5, np.zeros((0, 6))) == [] and len(other.rv_hist) == 1
+    assert rocket_track(other, 5, np.zeros((0, 7))) == [] and len(other.rv_hist) == 1
 
 
 def test_aim_follows_the_model_mass_among_the_eligible_cells_only():
