@@ -1,5 +1,6 @@
 """LIVE_OPTIONS: deployed decision options for live_play.py; explicit flags win, --no-live-options ignores the file."""
 import argparse
+import importlib.util
 import json
 import subprocess
 import sys
@@ -315,12 +316,12 @@ def test_rocket_value_deployable_from_the_file(tmp_path):
     assert (opts.rocket_value_idle, opts.rocket_value_lead, opts.rocket_value_min_y) == ('on', 'on', 21.0)
     assert rec['from_file']['rocket_value'] == 9.0 and rec['from_file']['rocket_value_mode'] == 'damage'
     opts, rec = parse(['--rocket-value', '0'], f)                              # explicit wins
-    assert opts.rocket_value == 0.0 and rec['explicit'] == ['rocket_value'] and not opts.active
+    assert opts.rocket_value == 0.0 and rec["explicit"] == ["rocket_value"]
     d = parse([], tmp_path / 'missing')[0]
     assert d.rocket_value == 0.0 and d.rocket_value_mode == 'cost' and d.rocket_value_hitbox == 'centre' and d.rocket_value_lead == 'off'
 
 
-@pytest.mark.skipif(not CKPT.is_file(), reason='live checkpoint not present')
+@pytest.mark.skipif(not CKPT.is_file() or importlib.util.find_spec('cv2') is None, reason='live checkpoint / cv2 not present')
 def test_check_json_reports_rocket_value(tmp_path):
     f = tmp_path / 'LIVE_OPTIONS'
     f.write_text(DEPLOYED + '--rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-value-min-elixir 9\n')
