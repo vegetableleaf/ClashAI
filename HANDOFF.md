@@ -4991,6 +4991,26 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   libg_layout.py (hash-manifest layout compare, no binary shared; libg has stripped section headers -> program headers),
 >   our manifest, candidate sampler (stamp 160402020 only; VM gcc 14.2.0, sha256 103d0786...; smoke 3/3 valid frames on
 >   our 160402012 device), README. Unvalidated for 160402020 until their compare + battle checklist pass.
+> * **Blind verification (aae5fdee) of merge 165aad6+8aa7f9a:** identity-ext PASS_WITH_NOTES -> **MERGED a9538ab, LIVE 00:44**
+>   (--identity-ext on in LIVE_OPTIONS, 368f963; restart via L74/deploy/restart_live.py). Off byte-identical on 6,613 live
+>   states; 8/9 mappings fire live. GAP (a): Hero Balloon spawn (688 HP) and Hero Tombstone spawn (4224 HP), Hero Goblins
+>   banner, Magic Archer decoy still unmapped -> a4defcf7 follow-up branch. rocket-dead-target PASS_WITH_NOTES but NOT
+>   deployed: of 7 blocked live Rockets, 3 re-aimed onto the enemy KING (owner: never the king), the spend moves instead of
+>   being saved; 71 reader glitches (princess reads dead 10-30 ticks) could block a standing tower; 1/183 unblocked aim
+>   shifted -> back to a1f8484f (king-blast block unless lethal; no cast when nothing valid remains; 60-tick dead
+>   persistence; score unmasked then mask).
+> * **lethal-log built (a0ff8a54, branch lethal-log 0b40ed8):** Log tower damage 51 @ lvl 15 / 35 @ lvl 11 (live: 1,270 / 175
+>   exact drops); cast (tower x, y 17.5), hits ~57 ticks after landing; SIM 480 paired 315 -> 316 (1/0). Archive replay:
+>   would fire in 34 of 600 matches. Merge candidate a7101de in C:/Users/benpe/cb_merge_log -> blind verifier aa10f7e7.
+> * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
+>   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
+>   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
+>   next RL round uses it; sim presses the ability 2.48/match vs live 1.57.
+> * Friend 160402020: compare = LAYOUT CHANGED (6,857/7,061 pages; text +0x6c0, relro +0x6c0, data/bss +0x700). Our libg
+>   has ZERO static references to the pinned addresses (no rip-rel disp, no RELATIVE relocs) -> protected code; offsets
+>   must come from the running game. Built find_offsets (read-only runtime finder): on our 160402012 device it recovered
+>   0x1aeef98/+0x18 (alt 0x1b16850/+0x28), king 0x19f7838, troop 0x19f6c28, projectile 0x19f7370 in 20 s. Candidate
+>   sampler now takes RE_VT_PROJECTILE / RE_VT_AREA from the environment. share/friend_reader_160402020_candidate/.
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
