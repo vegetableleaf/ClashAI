@@ -1,0 +1,25 @@
+match live_play_20261008_213416.jsonl: window ticks 2268..2480; logged p in window 0.04..0.20; no play was made by the bot in the window
+
+== deployed (elixir>=9): P(play before all towers fell) = 0.00; card if played {}
+   P(played within  2 s of tick 2268) = 0.00
+   P(played within  4 s of tick 2268) = 0.00
+   P(played within  6 s of tick 2268) = 0.00
+   P(played within  8 s of tick 2268) = 0.00
+   P(played within 10 s of tick 2268) = 0.00
+   tick threatened p rate/s P(played by now): [(2288, False, 0.045, 0.023, 0.0), (2328, False, 0.199, 0.111, 0.0), (2368, False, 0.134, 0.072, 0.0), (2408, False, 0.13, 0.07, 0.0), (2450, False, 0.154, 0.084, 0.0)]
+
+== +threatened T=2s: P(play before all towers fell) = 0.52; card if played {'Tornado': 0.82, 'Xbow': 0.18}
+   P(played within  2 s of tick 2268) = 0.04
+   P(played within  4 s of tick 2268) = 0.19
+   P(played within  6 s of tick 2268) = 0.30
+   P(played within  8 s of tick 2268) = 0.38
+   P(played within 10 s of tick 2268) = 0.48
+   tick threatened p rate/s P(played by now): [(2288, True, 0.045, 0.023, 0.011), (2328, True, 0.199, 0.111, 0.107), (2368, True, 0.134, 0.072, 0.248), (2408, True, 0.13, 0.07, 0.354), (2450, True, 0.154, 0.084, 0.452)]
+
+== +threat radius 4 tiles: P(play before all towers fell) = 0.51; card if played {'Tornado': 0.84, 'Xbow': 0.16}
+   P(played within  2 s of tick 2268) = 0.04
+   P(played within  4 s of tick 2268) = 0.19
+   P(played within  6 s of tick 2268) = 0.30
+   P(played within  8 s of tick 2268) = 0.38
+   P(played within 10 s of tick 2268) = 0.48
+   tick threatened p rate/s P(played by now): [(2288, True, 0.045, 0.023, 0.011), (2328, True, 0.199, 0.111, 0.107), (2368, True, 0.134, 0.072, 0.248), (2408, True, 0.13, 0.07, 0.354), (2450, True, 0.154, 0.084, 0.452)]

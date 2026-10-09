@@ -12,7 +12,8 @@ from .model_v3 import cell_xy
 from dataclasses import replace
 
 from .decision_options import (BARREL_KEY, DecisionOptions, barrel_landings, choose_cells, choose_slot, enemy_unit_count,
-                               gate_taus, hazard_draw, is_xbow, lethal_rocket_choice, xbow_dead_lane_cells)
+                               gate_taus, hazard_draw, is_xbow, lethal_rocket_choice, threat_on, tower_threat,
+                               xbow_dead_lane_cells)
 from .live_mem import my_side_of
 
 # W4 hazard gate decoding: game seconds one live decision may accrue. Live decides every reader frame (logged decisions
@@ -46,6 +47,7 @@ class GenPilot(LegacyGenPilot):
         self.public_audit = bool(public_audit)
         self._public_audit_snapshot = None
         self._hazard_prev = None                # (game tick, waited with a play possible) of the previous decision
+        self._threat_state = None               # decision_options.tower_threat state of the previous decision
 
     def reset_match(self):
         super().reset_match()
@@ -54,6 +56,7 @@ class GenPilot(LegacyGenPilot):
         self.rng_decisions = np.random.default_rng(self.match_seed)
         self._public_audit_snapshot = None
         self._hazard_prev = None
+        self._threat_state = None
 
     def row(self, frame):
         b, info = super().row(frame)
@@ -96,6 +99,10 @@ class GenPilot(LegacyGenPilot):
         if hazard_on:
             tick = int(frame['game_tick'])              # the reader's game clock; a frame without it raises
             step = hazard_step_s(getattr(self, '_hazard_prev', None), tick)
+            threatened = None
+            if threat_on(options):                      # every decision (as SIM match_kwargs), affordable or not
+                self._threat_state, threatened = tower_threat(options, getattr(self, '_threat_state', None),
+                                                              info['bs'])
         if not allowed.any():
             if hazard_on:
                 self._hazard_prev = (tick, False)
@@ -114,7 +121,7 @@ class GenPilot(LegacyGenPilot):
                 playing = bool(stalled)
             if not playing:
                 playing = hazard = hazard_draw(options, p, step, self.rng_decisions, elixir=bs.my_elixir,
-                                               enemy_units=enemy_unit_count(bs))
+                                               enemy_units=enemy_unit_count(bs), threatened=threatened)
         lethal = self.lethal_rocket(frame, info, allowed)
         if lethal is not None:                          # SIM decide_batch: the same rule overrides gate, card and cell
             pos, cell, target = lethal
@@ -139,6 +146,8 @@ class GenPilot(LegacyGenPilot):
                 d['gate_tau'] = tau
             if hazard_on:
                 d.update(hazard_step_s=step, hazard_play=bool(hazard and d['play']))
+                if threatened is not None:
+                    d['threatened'] = threatened
                 self._hazard_prev = (tick, not d['play'])
             if dropped:
                 d['why'] = 'xbow_dead_lane'
