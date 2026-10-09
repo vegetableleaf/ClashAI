@@ -185,6 +185,15 @@ def test_gate_decode_flags_deployable_from_the_file(tmp_path):
     assert (opts.gate_decode, opts.gate_hazard_min_elixir, opts.gate_hazard_quiet) == ('threshold', 0.0, False)
 
 
+def test_gate_hazard_threatened_deployable_from_the_file(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + GATE.rstrip('\n') + ' --gate-hazard-threatened 2\n')
+    opts, rec = parse([], f)
+    assert (opts.gate_hazard_threatened, opts.gate_hazard_threat_radius, opts.gate_hazard_min_elixir) == (2.0, 0.0, 9.0)
+    assert rec['from_file']['gate_hazard_threatened'] == 2.0
+    opts, rec = parse(['--gate-hazard-threatened', '0'], f)                     # explicit wins
+    assert opts.gate_hazard_threatened == 0.0 and rec['explicit'] == ['gate_hazard_threatened']
+
+
 @pytest.mark.skipif(not CKPT.is_file(), reason='live checkpoint not present')
 def test_check_json_reports_gate_decode(tmp_path):
     f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + GATE)
