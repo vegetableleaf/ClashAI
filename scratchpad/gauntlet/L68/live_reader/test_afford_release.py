@@ -85,3 +85,70 @@ def test_afford_ticks_reaches_the_pilot(monkeypatch):
     assert pilot.afford_ticks == 23
     _, pilot = lp.load_pilot(SimpleNamespace(**dict(vars(a), afford_ticks=None)), None)
     assert not hasattr(pilot, "afford_ticks") and GenPilot.afford_ticks is None    # class default = unchanged rule
+
+
+def test_two_released_slots_both_watched(monkeypatch, tmp_path):
+    """Verifier F1 repro: slot 0 played 152, released 184; slot 1 played 186, released 218; slot 0 rotates 240 ->
+    slot 0's late landing is still recorded (one released tap per slot, not one in total)."""
+    frames = [(t, frame(t, slot0=0 if t < 240 else 4)) for t in range(150, 260, 2)]
+    pilot = SeqPilot()
+    _, ev = play(monkeypatch, tmp_path, frames=frames, pilot=pilot, pace=0.05, early_release_margin=8)
+    kinds = [(e["event"], e["tick"]) for e in ev if e["event"] in ("play", "unconfirmed", "late_landing")]
+    assert kinds[:4] == [("play", 152), ("unconfirmed", 184), ("play", 186), ("unconfirmed", 218)], kinds
+    late = [e for e in ev if e["event"] == "late_landing"]
+    assert [e["tick"] for e in late] == [240] and late[0]["after_ticks"] == 88, kinds
+    assert [r[3] for r in pilot.recorded] == [240 * 0.05]
+
+
+def test_late_landings_count_as_confirmations(monkeypatch, tmp_path):
+    """Verifier F2: every tap is released early and then lands; 5+ in a row must not stop the match, and each late
+    landing counts as confirmed (fails / confirmed in the end event)."""
+    hand_x = [lp.Layout(900, 1600).hand(p)[0] for p in range(4)]
+    st = {"tick": 0, "due": {}, "flips": [0, 0, 0, 0]}
+
+    def tap(cmd, timeout=5):
+        pos = hand_x.index(int(cmd.split()[2].rstrip(";")))
+        st["due"][pos] = st["tick"] + 40                   # lands 40 ticks after the tap: after the ~31-tick release
+        return True
+
+    def frames():
+        for t in range(150, 700, 2):
+            st["tick"] = t
+            for p, due in list(st["due"].items()):
+                if t >= due:
+                    st["flips"][p] ^= 1
+                    del st["due"][p]
+            f = json.loads(frame(t))
+            f["players"][0]["hand_deck_indices"] = [p + 4 * st["flips"][p] for p in range(4)]
+            yield t, json.dumps(f) + "\n"
+
+    class Cycle(Pilot):
+        n = 0
+
+        def decide(self, f):
+            d = super().decide(f)
+            d["hand_pos"], self.n = (self.n - 1) % 4, self.n + 1    # call 0 = warm-up; then slots 0, 1, 2, 3, 0, ...
+            return d
+    monkeypatch.setattr(lp, "input_cmd", tap)
+    _, ev = play(monkeypatch, tmp_path, frames=frames(), pilot=Cycle(), pace=0.03, early_release_margin=8)
+    late = [e for e in ev if e["event"] == "late_landing"]
+    unconf = [e for e in ev if e["event"] == "unconfirmed"]
+    end = next(e for e in ev if e["event"] == "end")
+    assert len(late) >= 6 and not any(e["event"] == "stop" and e["why"] == "5_unconfirmed" for e in ev), late
+    assert end["confirmed"] == len(late) + sum(e["event"] == "confirmed" for e in ev)
+    assert end["fails"] == len(unconf) - len(late)
+
+
+def test_check_json_reports_the_latency_options(monkeypatch, tmp_path, capsys):
+    """Verifier F3: --check prints extrapolate / afford_ticks / early_release_margin / fast_input / tap_gap_ms."""
+    ck = tmp_path / "m.pt"
+    ck.write_bytes(b"x")
+    monkeypatch.setattr(sys, "argv", ["live_play.py", "--check", "--no-live-options", "--ckpt", str(ck),
+                                      "--extrapolate", "24", "--afford-ticks", "23", "--early-release-margin", "8",
+                                      "--fast-input", "--tap-gap-ms", "0"])
+    monkeypatch.setattr(lp, "GenPilot", lambda path, **kw: SimpleNamespace(feature_version=4,
+                                                                           decision_options=kw["decision_options"]))
+    assert lp.main() == 0
+    out = json.loads(capsys.readouterr().out.strip().splitlines()[-1])
+    assert (out["extrapolate"], out["afford_ticks"], out["early_release_margin"], out["fast_input"],
+            out["tap_gap_ms"]) == (24, 23, 8, True, 0)
