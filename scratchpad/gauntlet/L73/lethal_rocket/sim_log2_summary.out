@@ -1,0 +1,56 @@
+on lad rc=1 05:23:44
+on evo rc=1 05:23:48
+off lad rc=0 05:31:58
+off evo rc=0 05:32:14
+DONE
+on evo rc=0 05:42:15
+on lad rc=0 05:42:30
+DONE_ON
+off: 480 common matches (A 480, B 480); records identical 480; differ 0 []
+paired games 480 (off 480, on 480)
+  off: wins 315.0; outcomes {'win': 315, 'loss': 165}
+  on: wins 316.0; outcomes {'win': 316, 'loss': 164}
+  paired: on better 1 / worse 0 (sign test p 1.000)
+Log fires 22 in 20 matches; phases {'OT': 22}; damage {35: 22}; Rocket fires off 171 / on 161
+    ('evo', 's0:gen:103'): first Log t 306.30 L hp 11 | off win 1-0 end 6111 | on win 1-0 end 6111
+    ('evo', 's0:gen:136'): first Log t 306.30 R hp 18 | off win 1-0 end 6118 | on win 1-0 end 6118
+    ('evo', 's0:gen:161'): first Log t 306.80 L hp 3 | off win 1-0 end 6113 | on win 1-0 end 6113
+    ('evo', 's0:gen:174'): first Log t 213.30 R hp 2 | off win 1-0 end 4242 | on win 1-0 end 4242
+    ('evo', 's0:gen:190'): first Log t 282.30 L hp 7 | off win 1-0 end 5838 | on win 1-0 end 5703
+    ('evo', 's0:gen:211'): first Log t 219.80 R hp 28 | off win 1-0 end 4374 | on win 1-0 end 4374
+    ('evo', 's0:gen:81'): first Log t 293.30 L hp 20 | off win 1-0 end 5938 | on win 1-0 end 5922
+    ('evo', 's0:gen:9'): first Log t 276.80 R hp 13 | off win 1-0 end 5838 | on win 1-0 end 5592
+    ('lad', 's0:gen:110'): first Log t 306.80 R hp 3 | off win 1-0 end 6113 | on win 1-0 end 6113
+    ('lad', 's0:gen:149'): first Log t 197.30 L hp 7 | off win 1-0 end 3926 | on win 1-0 end 3926
+    ('lad', 's0:gen:15'): first Log t 259.30 R hp 1 | off win 1-0 end 5166 | on win 1-0 end 5166
+    ('lad', 's0:gen:174'): first Log t 307.80 R hp 16 | off win 1-0 end 6146 | on win 1-0 end 6146
+    ('lad', 's0:gen:183'): first Log t 308.30 R hp 11 | off win 1-0 end 6151 | on win 1-0 end 6151
+    ('lad', 's0:gen:185'): first Log t 186.30 L hp 22 | off loss 0-1 end 4225 | on win 1-0 end 3782
+    ('lad', 's0:gen:186'): first Log t 209.30 R hp 3 | off win 1-0 end 4167 | on win 1-0 end 4167
+    ('lad', 's0:gen:198'): first Log t 267.30 L hp 32 | off win 1-0 end 5349 | on win 1-0 end 5349
+    ('lad', 's0:gen:200'): first Log t 306.80 R hp 13 | off win 1-0 end 6123 | on win 1-0 end 6123
+    ('lad', 's0:gen:221'): first Log t 291.80 R hp 19 | off win 1-0 end 5892 | on win 1-0 end 5892
+    ('lad', 's0:gen:222'): first Log t 300.30 L hp 2 | off win 1-0 end 6069 | on win 1-0 end 6069
+    ('lad', 's0:gen:57'): first Log t 308.30 R hp 3 | off win 1-0 end 6143 | on win 1-0 end 6143
+  outcome changes on matches WITHOUT a Log fire: 0 []
+/home/clashbot-gauntlet/lethal/sim_log on: fires 191 in 167 matches; fire-based double-casts: cross-card 12 in 12 matches, same-card 12 (first never cast)
+    cross (('evo', 's0:gen:103'), 'lethal_rocket', 304.8, 'lethal_log', 306.3, 'L')
+    cross (('evo', 's0:gen:161'), 'lethal_rocket', 305.3, 'lethal_log', 306.8, 'L')
+    cross (('evo', 's0:gen:167'), 'lethal_rocket', 230.8, 'lethal_log', 232.8, 'L')
+    cross (('evo', 's0:gen:29'), 'lethal_rocket', 192.3, 'lethal_log', 194.3, 'R')
+    cross (('lad', 's0:gen:110'), 'lethal_rocket', 305.3, 'lethal_log', 306.8, 'R')
+    cross (('lad', 's0:gen:123'), 'lethal_rocket', 185.3, 'lethal_log', 187.3, 'L')
+    cross (('lad', 's0:gen:143'), 'lethal_rocket', 253.3, 'lethal_log', 254.8, 'R')
+    cross (('lad', 's0:gen:162'), 'lethal_rocket', 180.8, 'lethal_log', 183.3, 'L')
+    cross (('lad', 's0:gen:177'), 'lethal_rocket', 234.8, 'lethal_log', 236.3, 'L')
+    cross (('lad', 's0:gen:183'), 'lethal_rocket', 306.8, 'lethal_log', 308.3, 'R')
+    cross (('lad', 's0:gen:222'), 'lethal_rocket', 297.3, 'lethal_log', 302.8, 'L')
+    cross (('lad', 's0:gen:226'), 'lethal_rocket', 157.3, 'lethal_log', 159.3, 'R')
+/home/clashbot-gauntlet/lethal/sim_log2 on: fires 183 in 166 matches; fire-based double-casts: cross-card 4 in 4 matches, same-card 13 (first never cast)
+    cross (('evo', 's0:gen:103'), 'lethal_rocket', 304.8, 'lethal_log', 306.3, 'L')
+    cross (('evo', 's0:gen:161'), 'lethal_rocket', 305.3, 'lethal_log', 306.8, 'L')
+    cross (('lad', 's0:gen:110'), 'lethal_rocket', 305.3, 'lethal_log', 306.8, 'R')
+    cross (('lad', 's0:gen:183'), 'lethal_rocket', 306.8, 'lethal_log', 308.3, 'R')
+  landing-based: lethal casts 183, accepted 109; ACCEPTED double-casts 0 []
+/home/clashbot-gauntlet/lethal/sim_log2 off: fires 171 in 156 matches; fire-based double-casts: cross-card 0 in 0 matches, same-card 15 (first never cast)
+  landing-based: lethal casts 171, accepted 105; ACCEPTED double-casts 0 []
