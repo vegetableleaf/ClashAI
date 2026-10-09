@@ -4888,6 +4888,14 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   cell (72-100%) or centre-defensive, elixir not redirected to Rockets; the builder's classes.py counts centre x 9.5
 >   cells on a dead R side as dead-lane (overstates DL_BACK); reach = 13.04 tiles (existing helper) vs catalog 13.1).
 >   Bundle 2 waits only for the afford/fast-input verification (cb_merge_af).
+> * **BUNDLE 2 DEPLOYED 9102829 (owner restarts live on the main account).** LIVE_OPTIONS = bundle 1 + --lethal-rocket ot_behind +
+>   --xbow-dead-lane block + --fast-input --tap-gap-ms 0 --afford-ticks 23 --extrapolate 24; --early-release-margin OFF
+>   (verifier F1/F2 sent back to a19b2927); --hero-ability-spec stays off (owner A/B: add --hero-ability-spec supplement
+>   for "on" sessions). Plain live_play --check: LIVE_CHECK_PASS cuda 41b52a83, all options applied.
+> * **TV ROYALE DEVICE TEST PASSED (21:08, rec icebow/data/replay_rec/rec_20261008_210824.jsonl).** Reader resolves replay
+>   battles; both hands/next/elixir/decks visible (spectator 793/793 frames); 73 ticks/s at 4x (owner: every replay plays
+>   at max 4x; channels for every arena and every Ranked tier -> hundreds of replays); 440 projectiles; decks with forms;
+>   plays 45 / 78 all positioned. Harvester (navigator + dedupe + loop + dataset bridge) dispatched to a7e7ad1a.
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
