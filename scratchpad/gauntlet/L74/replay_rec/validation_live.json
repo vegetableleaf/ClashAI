@@ -1,0 +1,200 @@
+{
+ "matches": 60,
+ "truth_plays": 2512,
+ "truth_spells": 593,
+ "truth_bodies": 1919,
+ "A_recall_card_tick<=5": 0.9979,
+ "A_recall_card_tick<=10": 0.9979,
+ "A_recall_card_tick<=20": 0.9979,
+ "A_recall_card_tick<=40": 0.9979,
+ "A_precision_vs_my_detections": 1.0,
+ "A_detections": 1941,
+ "A_tick_err_p50_p90": [
+  0,
+  0
+ ],
+ "A_cell<=1tile_of_matched": 0.9974,
+ "B_located_bodies": 0.9974,
+ "B_cell<=1tile_of_located": 0.9974,
+ "B_cell<=1tile_excl_game_displaced(live err>1)": 0.999,
+ "B_n_excluded_game_displaced": 4,
+ "spells_A_detected_from_bodies<=100": "26/593",
+ "spells_A_tick_err_p50": 57,
+ "spells_B_located_from_bodies(no_projectiles_in_logs)": "25/593",
+ "spells_B_cell<=1tile_of_located": 0.84,
+ "spells_by_card": {
+  "giant-snowball": 15,
+  "goblin-barrel": 26,
+  "rocket": 79,
+  "the-log": 312,
+  "tornado": 161
+ },
+ "live_tap_err_tiles_p50_p90(context)": [
+  0.0,
+  0.5515432893255071
+ ],
+ "per_card_[n,A_hit<=10,B_cell<=1]": {
+  "wall-breakers": [
+   39,
+   39,
+   39
+  ],
+  "skeleton-army": [
+   42,
+   41,
+   41
+  ],
+  "princess": [
+   32,
+   32,
+   32
+  ],
+  "valkyrie": [
+   45,
+   45,
+   45
+  ],
+  "ice-spirit": [
+   54,
+   54,
+   54
+  ],
+  "dart-goblin": [
+   47,
+   47,
+   47
+  ],
+  "cannon": [
+   21,
+   21,
+   20
+  ],
+  "x-bow": [
+   193,
+   192,
+   192
+  ],
+  "ice-wizard": [
+   357,
+   357,
+   357
+  ],
+  "skeletons": [
+   361,
+   359,
+   359
+  ],
+  "knight": [
+   352,
+   352,
+   351
+  ],
+  "tesla": [
+   295,
+   295,
+   292
+  ],
+  "bomb-tower": [
+   11,
+   11,
+   11
+  ],
+  "goblin-drill": [
+   10,
+   10,
+   9
+  ],
+  "inferno-tower": [
+   4,
+   4,
+   4
+  ],
+  "goblin-hut": [
+   7,
+   7,
+   7
+  ],
+  "golden-knight": [
+   15,
+   15,
+   15
+  ],
+  "executioner": [
+   8,
+   8,
+   8
+  ],
+  "firecracker": [
+   18,
+   18,
+   18
+  ],
+  "bowler": [
+   8,
+   8,
+   8
+  ]
+ },
+ "logs": [
+  "live_play_20261008_194541.jsonl",
+  "live_play_20261008_194132.jsonl",
+  "live_play_20261008_193801.jsonl",
+  "live_play_20261008_192815.jsonl",
+  "live_play_20261008_192438.jsonl",
+  "live_play_20261008_192113.jsonl",
+  "live_play_20261008_191715.jsonl",
+  "live_play_20261008_191338.jsonl",
+  "live_play_20261008_185952.jsonl",
+  "live_play_20261008_185400.jsonl",
+  "live_play_20261008_184937.jsonl",
+  "live_play_20261008_184516.jsonl",
+  "live_play_20261008_184128.jsonl",
+  "live_play_20261008_183808.jsonl",
+  "live_play_20261008_182819.jsonl",
+  "live_play_20261008_180623.jsonl",
+  "live_play_20261008_180243.jsonl",
+  "live_play_20261008_175808.jsonl",
+  "live_play_20261008_175427.jsonl",
+  "live_play_20261008_175054.jsonl",
+  "live_play_20261008_174737.jsonl",
+  "live_play_20261008_174413.jsonl",
+  "live_play_20261008_174039.jsonl",
+  "live_play_20261008_173603.jsonl",
+  "live_play_20261008_173247.jsonl",
+  "live_play_20261008_172819.jsonl",
+  "live_play_20261008_162350.jsonl",
+  "live_play_20261008_155151.jsonl",
+  "live_play_20261008_150839.jsonl",
+  "live_play_20261008_142804.jsonl",
+  "live_play_20261008_140408.jsonl",
+  "live_play_20261008_133745.jsonl",
+  "live_play_20261008_130524.jsonl",
+  "live_play_20261008_125622.jsonl",
+  "live_play_20261008_124644.jsonl",
+  "live_play_20261008_124105.jsonl",
+  "live_play_20261008_123240.jsonl",
+  "live_play_20261008_121633.jsonl",
+  "live_play_20261008_121357.jsonl",
+  "live_play_20261008_121128.jsonl",
+  "live_play_20261008_112455.jsonl",
+  "live_play_20261008_110517.jsonl",
+  "live_play_20261008_103606.jsonl",
+  "live_play_20261008_101709.jsonl",
+  "live_play_20261008_094513.jsonl",
+  "live_play_20261008_092543.jsonl",
+  "live_play_20261008_085303.jsonl",
+  "live_play_20261008_082122.jsonl",
+  "live_play_20261008_075106.jsonl",
+  "live_play_20261008_072007.jsonl",
+  "live_play_20261008_053843.jsonl",
+  "live_play_20261008_050511.jsonl",
+  "live_play_20261008_043206.jsonl",
+  "live_play_20261008_040027.jsonl",
+  "live_play_20261008_031817.jsonl",
+  "live_play_20261008_024519.jsonl",
+  "live_play_20261008_021000.jsonl",
+  "live_play_20261008_013653.jsonl",
+  "live_play_20261008_010523.jsonl",
+  "live_play_20261008_003019.jsonl"
+ ]
+}
