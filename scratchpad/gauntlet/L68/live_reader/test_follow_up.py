@@ -324,3 +324,21 @@ def test_check_json_reports_the_flag_only_when_it_is_on(monkeypatch, tmp_path, c
         assert lp.main() == 0
         out.append(json.loads(capsys.readouterr().out.strip().splitlines()[-1]))
     assert "follow_up_taps" not in out[0] and out[1]["follow_up_taps"] is True
+
+
+# ---- the API the combo producer codes against: pinned so a change is a loud, deliberate one --------------------------------
+def test_follow_up_api_is_pinned():
+    import inspect
+    from pipeline import e1_eval
+    from pipeline.live_gen_v2 import FollowUpPlanner
+    sig = inspect.signature(FollowUpPlanner.plan_follow_up)
+    assert [(n, p.default) for n, p in sig.parameters.items()] == [
+        ("self", inspect._empty), ("frame", inspect._empty), ("first", inspect._empty), ("name", inspect._empty),
+        ("xy", inspect._empty), ("after_ticks", inspect._empty), ("within_ticks", 20), ("afford_ticks", None),
+        ("require_first", True)]
+    # live: d['follow_ups'] = [plan_follow_up(...)] -> {follow: {after_ticks, within_ticks, afford_ticks, require_first}, ...}
+    # SIM:  d['follow_ups'] = [follow_up_spec(slot, cell, after_ticks, within_ticks=20, afford_ticks=None, require_first=True)]
+    assert list(inspect.signature(e1_eval.follow_up_spec).parameters) == [
+        "slot", "cell", "after_ticks", "within_ticks", "afford_ticks", "require_first"]
+    assert set(e1_eval.follow_up_spec(1, 2, 3)) == {"slot", "cell", "after_ticks", "within_ticks", "afford_ticks", "require_first"}
+    assert (e1_eval.FOLLOW_AFFORD_TICKS, lp.FOLLOW_MAX_OUT) == (6, 2)

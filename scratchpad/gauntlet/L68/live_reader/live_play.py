@@ -94,7 +94,7 @@ def release_ticks(elixir: float, name: str, tick: int, arrival_ticks: float, mar
 
 
 FOLLOW_MAX_OUT = 2        # --follow-up-taps: taps outstanding (tapped, not confirmed) at once; a follow-up waits at the cap
-FOLLOW_AFFORD_TICKS = 6   # default afford horizon of a follow-up (ticks after its decision frame): ~3 of tap arrival + slack
+from pipeline.e1_eval import FOLLOW_AFFORD_TICKS, follow_up_have  # noqa: E402  default afford horizon (6 ticks) + the SIM's formula
 
 
 def card_cost_of(name: str) -> float:
@@ -113,7 +113,6 @@ def follow_verdict(fu: dict, tick: int, me: dict, pending: list, cost=card_cost_
     Its OWN affordability check: the game charges a tap when it lands (~22 ticks later), so the reader still shows the
     elixir of every outstanding tap unspent -> my elixir `afford_ticks` ahead MINUS the cost of every unconfirmed tap
     must cover the follow-up. A follow-up never fires late (past expire), never into a slot that changed or is busy."""
-    from pipeline.opp_elixir_count import MAX_ELIXIR, regen_between
     d, first = fu["d"], fu.get("first")
     if d["follow"].get("require_first", True) and first is not None and first.get("state") == "unconfirmed":
         return "cancel", "first_unconfirmed"          # the play it follows was refused: do not play half a combo
@@ -130,7 +129,7 @@ def follow_verdict(fu: dict, tick: int, me: dict, pending: list, cost=card_cost_
     horizon = d["follow"].get("afford_ticks")
     horizon = FOLLOW_AFFORD_TICKS if horizon is None else int(horizon)
     reserved = sum(cost(p["d"]["name"]) for p in pending)
-    have = min(MAX_ELIXIR, me["elixir_raw"] / 1e4 + regen_between(tick, tick + horizon)) - reserved
+    have = follow_up_have(me["elixir_raw"] / 1e4, tick, horizon, reserved)     # e1_eval: the SIM's Match.apply uses the same
     if have + 1e-6 < cost(d["name"]):
         return "wait", "unaffordable"
     return "fire", reserved
