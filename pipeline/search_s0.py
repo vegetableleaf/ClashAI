@@ -587,6 +587,11 @@ def _init_worker(args: dict) -> None:
         learner_cfg['predict_drops'] = True
     if args.get('own_effects'):
         learner_cfg['own_effects'] = True
+    if args.get('pipeline_decisions'):
+        learner_cfg['pipeline_decisions'] = True
+        if args.get('pipeline_tau_delta'):
+            learner_cfg['pipeline_tau_delta'] = float(args['pipeline_tau_delta'])
+    _W["record_plays"] = bool(args.get("record_plays"))
     _W["runner"] = Runner(gen, opps, learner_cfg,
                           lambda: RoyaleSelfPlayEnv(decision_ticks=10, tail_cap=cap, forms_mode=fm,
                                                     hero_abilities=args.get("hero_abilities", False),
@@ -625,6 +630,9 @@ def _run_job(job: tuple) -> dict:
     m, name = got
     rec = _W["runner"].play(arm, m, deadline or None)
     rec["opp_deck_name"] = name
+    if _W.get("record_plays"):     # --record-plays: our plays [decision tick, landing tick, card, accepted, elixir seen]
+        rec["own_plays"] = [[q["tick"], q.get("land_tick", q["tick"]), q["card"], q["accepted"], q["elixir_exact"]]
+                            for q in _W["runner"].last_result["plays"]]
     rec.update(_W.get("opp_meta") or {})
     return rec
 
@@ -724,6 +732,13 @@ def main(argv=None) -> int:
     ap.add_argument("--own-effects", action="store_true",
                     help="W1: the learner look-ahead applies my own recent Log / Tornado / Rocket / hero IW freeze to the "
                          "enemy bodies they reach (cfg 'own_effects', pipeline/extrapolate.py); default off = unchanged")
+    ap.add_argument("--pipeline-decisions", action="store_true",
+                    help="L74: the learner's MODEL decides again while one of its plays is pending (cfg 'pipeline_decisions', "
+                         "e1_eval.SelfPlaySide; needs the live delay; frame grid, <= 2 outstanding); default off = unchanged")
+    ap.add_argument("--pipeline-tau-delta", type=float, default=0.0,
+                    help="with --pipeline-decisions: added to the play-gate threshold while a play is pending (default 0)")
+    ap.add_argument("--record-plays", action="store_true",
+                    help="each match line gets own_plays [decision tick, landing tick, card, accepted, elixir seen]")
     ap.add_argument("--hero-abilities", action="store_true",
                     help="press ready, affordable hero buttons within attack range + 1.5 tiles of enemies")
     ap.add_argument("--ability-policy", default="generic", choices=("generic", "v2"),
@@ -776,7 +791,12 @@ def main(argv=None) -> int:
         wargs['predict_drops'] = True
     if a.own_effects:
         wargs['own_effects'] = True
-    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
+    if a.pipeline_decisions:
+        wargs['pipeline_decisions'] = True
+        wargs['pipeline_tau_delta'] = a.pipeline_tau_delta
+    if a.record_plays:
+        wargs['record_plays'] = True
+    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays') or v) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
                                                 "gen_sha256": sha256(REPO / a.gen), "opp_gen_sha256": opp_sha,
                                                 "s1_sha256": sha256(REPO / a.s1),
                                                 "tau_plain": TAU_PLAIN, "tau_opp": TAU_OPP, "crown_w": CROWN_W,

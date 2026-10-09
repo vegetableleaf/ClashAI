@@ -132,7 +132,8 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
             hist = self._lethal_snapshot(frame, towers, side)   # + the public tower HP each spell landed on
             key = {v: k for k, v in getattr(self, 'gid', {}).items()}
             own = [(key.get(c), x, y, t, hp_after(hist, round(t / 0.05))) for c, f, x, y, t in getattr(self, 'past', [])[-8:]]
-        return lethal_rocket_choice(options, info['bs'].t_sec, names, allowed, towers, side, self.grid, own=own)
+        return lethal_rocket_choice(options, info['bs'].t_sec, names, allowed, towers, side, self.grid, own=own,
+                                    pending=bool(info.get('pending')))   # --pipeline-decisions: never fires with a play pending
 
     @torch.no_grad()
     def decide(self, frame):
@@ -175,6 +176,8 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
         tau = (float(gate_taus(options, self.gate_tau, [bs.t_sec], 1)[0]) if options.tau_phase is not None
                else self.gate_tau)
         tau = float(threat_taus(options, tau, tau_threat))   # tau_threatened: X while threatened, else unchanged
+        if info.get('pending'):                         # --pipeline-decisions: cfg["pipeline_tau_delta"], only while a play is pending
+            tau += float(getattr(self, 'pipeline_tau_delta', 0.0) or 0.0)
         playing = p > tau or stalled                    # SIM decide_batch: (p > tau) | stalled
         hazard = None
         if hazard_on:                                   # SIM decide_batch: the same hazard_draw on the same context

@@ -12,6 +12,7 @@ it decides on). RoyaleSim screen (HANDOFF L68ao, 58 matches): hidden 0.879 -> co
 """
 from __future__ import annotations
 
+import math
 from typing import Any, Mapping, Optional, Sequence
 
 import numpy as np
@@ -21,12 +22,12 @@ from .dataset import PAST_K
 from .dataset_gen import SC_SLOT_COLS, card_key
 from .model_gen import load_model
 from . import vocab
-from .e1_eval import allowed_slots, anti_stall
+from .e1_eval import allowed_slots, anti_stall, pending_hand
 from .live_mem import board_state, deck_of, my_side_of
 from .model_v3 import cell_xy
 from collections import deque
 
-from .extrapolate import DropTracker, extrapolate
+from .extrapolate import DropTracker, catalog, extrapolate, pending_board
 from .opp_elixir_count import LiveOppElixir, card_cost, regen_between
 from .obs_contract import to_tokens
 from .train_s1 import MAX_U
@@ -107,6 +108,31 @@ def own_effects_raw(own_fx, side: int, tick: int) -> list:
     return out
 
 
+def pending_frame(frame, me, side: int, pend: list) -> dict:
+    """--pipeline-decisions: the (look-ahead) reader frame plus my pending plays as the game will show them at its tick
+    (extrapolate.pending_board, the SIM's Match._pending_raw rule): reader-shaped bodies (kind 14 troop / 12 building = the
+    reader's fresh own bodies; hp = max_hp: only hp_frac 1 reaches the model for these cards) and, when the frame carries
+    look-ahead public objects, the spell projectile / area rows."""
+    plays = []
+    for q in pend:
+        x, y = q["xy"][0] * 18000.0, (1 - q["xy"][1]) * 32000.0
+        x, y = (18000.0 - x, 32000.0 - y) if side == 1 else (x, y)
+        plays.append(dict(card=q["name"], x=x, y=y, land=q["land"]))
+    bodies, shots, areas = pending_board(plays, side, int(frame["game_tick"]))
+    if not (bodies or shots or areas):
+        return frame
+    cid = {card_key(q["name"]): me["deck_card_ids"][q["deck_index"]] for q in pend}
+    out = dict(frame, entities=list(frame.get("entities") or []) + [
+        dict(side=side, x=x, y=y, card_id=cid[k], hp=float(catalog()[k]["hitpoints"] or 1),
+             max_hp=float(catalog()[k]["hitpoints"] or 1), kind=12 if catalog()[k]["kind"] == "building" else 14,
+             address=eid) for k, x, y, eid in bodies])
+    objs = frame.get("extrapolated_public_objects")
+    if objs is not None and (shots or areas):
+        out["extrapolated_public_objects"] = dict(projectiles=list(objs["projectiles"]) + shots,
+                                                  effects=list(objs["effects"]) + areas)
+    return out
+
+
 class GenPilot:
     # Live-only (live_play.py turns it on; --no-legal-guard): the cell argmax is taken over legal_cells. Off here so
     # the SIM-parity tests keep checking the unguarded decision rule.
@@ -155,8 +181,22 @@ class GenPilot:
         if hero_ability_spec not in HERO_SPECS:
             raise ValueError(f"hero_ability_spec {hero_ability_spec!r} not in {HERO_SPECS}")
         self.hero_ability_spec = hero_ability_spec
+        # OPT-IN --pipeline-decisions (live_play set_pending): my tapped, not yet confirmed plays, each dict(hand_pos,
+        # deck_index, card, form, name, xy, land). A decision sees every one still in my hand as executed at its landing
+        # (row(); e1_eval.Match._pending_view's rule). Empty = every code path below is skipped = unchanged.
+        self.pending_plays: list = []
+
+    def set_pending(self, plays: list) -> None:
+        """live_play: my outstanding taps (oldest first) before every decision; [] = none."""
+        self.pending_plays = list(plays)
+
+    def _pending_in_hand(self, me: Mapping[str, Any]) -> list:
+        """Pending plays whose card still sits at its hand position (not executed yet), oldest first."""
+        hand = list(me["hand_deck_indices"])
+        return [q for q in getattr(self, "pending_plays", None) or [] if hand[q["hand_pos"]] == q["deck_index"]]
 
     def reset_match(self) -> None:
+        self.pending_plays = []
         self.past.clear()
         self.last_play_tick = None
         self.history.clear()
@@ -242,6 +282,7 @@ class GenPilot:
         me = next(p for p in frame["players"] if int(p["side"]) == side)
         forms = list(me.get("deck_form_flags") or [0] * 8)                # reader 0/1/2 = base/evo/hero (as ours)
         opp = self.opp_est
+        pend = self._pending_in_hand(me) if getattr(self, "pending_plays", None) else []   # --pipeline-decisions
         if self.ext_h:
             # ALWAYS advance (prev None -> clock + my elixir only), so history ages never jump by H mid-match
             tick = int(frame["game_tick"])
@@ -250,11 +291,14 @@ class GenPilot:
                               if getattr(self, 'feature_version', 1) >= 4 and self.public is not None else {})
             if getattr(self, 'drops', None) is not None:
                 object_context = dict(object_context, drops=self.drops.pending)
-            if getattr(self, 'own_fx', None) is not None:
-                object_context = dict(object_context, own_effects=own_effects_raw(self.own_fx, side, tick))
+            if getattr(self, 'own_fx', None) is not None:      # + a pending play at its expected landing tick
+                fx = self.own_fx + [dict(card=card_key(q["name"]), xy=q["xy"], tick=q["land"]) for q in pend]
+                object_context = dict(object_context, own_effects=own_effects_raw(fx, side, tick))
             frame = extrapolate(frame, prev, self.ext_h, side, **object_context)
             if opp is not None:
                 opp = min(10.0, opp + regen_between(tick, tick + self.ext_h))
+        if pend:                                          # --pipeline-decisions: pending plays on the look-ahead board
+            frame = pending_frame(frame, me, side, pend)
         if getattr(self, 'feature_version', 1) >= 4 and getattr(self, 'public', None) is not None:
             opp = self.public.estimate_at(int(frame['game_tick'])) if self.use_counter else None
         if getattr(self, "feature_version", 1) >= 3:
@@ -273,16 +317,25 @@ class GenPilot:
         if getattr(self, 'feature_version', 1) >= 4:
             from .public_observation import body_only_board
             bs = body_only_board(bs)
+        deck = [self._card(n) for n in names]
+        hand_idx, nd, pos = list(me["hand_deck_indices"]), int(me["next_deck_index"]), []
+        cost_of = lambda d: (card_cost(vocab.engine_key(names[d])) or 0.0) if d >= 0 else 0.0   # noqa: E731
+        spent = 0.0
+        if pend:   # --pipeline-decisions: pending = executed (e1_eval.pending_hand; the SIM's Match._pending_view)
+            from dataclasses import replace
+            hand_idx, nd, pos = pending_hand(list(range(len(deck))), hand_idx, nd,
+                                             [deck.index(c) for c, *_ in self.past], [q["deck_index"] for q in pend])
+            spent = sum(cost_of(me["hand_deck_indices"][i]) for i in pos)
+            bs = replace(bs, my_elixir=max(0.0, bs.my_elixir - spent))
         tok, mask, sc = to_tokens(bs, MAX_U)
         sc = sc.copy()
         sc[SC_SLOT_COLS] = 0.0
-        deck = [self._card(n) for n in names]
-        hand = [(deck[d], forms[d]) if d >= 0 else (0, FORM_PAD) for d in me["hand_deck_indices"]]
-        nd = int(me["next_deck_index"])
+        hand = [(deck[d], forms[d]) if d >= 0 else (0, FORM_PAD) for d in hand_idx]
         nxt = (deck[nd], forms[nd]) if nd >= 0 else (0, FORM_PAD)
         order = np.argsort(deck, kind="stable")                           # dataset_gen: canonical deck order
         past = np.tile(np.array([0, FORM_PAD, -1, -1, -1], np.float32), (PAST_K, 1))
-        for i, (c, f, x, y, t) in enumerate(reversed(self.past[-PAST_K:])):
+        rows = self.past + [(q["card"], q["form"], *q["xy"], min(q["land"] * 0.05, bs.t_sec)) for q in pend]
+        for i, (c, f, x, y, t) in enumerate(reversed(rows[-PAST_K:])):
             past[i] = (c, f, x, y, bs.t_sec - t)
         T = lambda a, dt=torch.long: torch.as_tensor(np.asarray(a), dtype=dt, device=self.dev).unsqueeze(0)  # noqa: E731
         b = {"tok": T(tok, torch.float32), "mask": T(mask, torch.bool), "sc": T(sc, torch.float32),
@@ -311,13 +364,17 @@ class GenPilot:
                 b["opp_past"] = T(opponent_past(self.opp.detected_plays, int(frame["game_tick"]), side, self.gid), torch.float32)
         # Affordability, as the sim's live rule (e1_eval.allowed_slots): int(elixir the model's own input shows, i.e. at
         # tick+H when extrapolating) vs the card's cost. Unknown cost (Mirror, pad slot) -> 0 = never blocks.
-        costs = [(card_cost(vocab.engine_key(names[d])) or 0.0) if d >= 0 else 0.0 for d in me["hand_deck_indices"]]
-        info = {"bs": bs, "hand": hand, "hand_deck_indices": list(me["hand_deck_indices"]), "names": names,
+        # --pipeline-decisions: a pending play's hand position (the view shows the next card there) is never choosable --
+        # the game still holds the pending card there, a tap would replay it
+        costs = [float("inf") if i in pos else cost_of(d) for i, d in enumerate(me["hand_deck_indices"])]
+        info = {"bs": bs, "hand": hand, "hand_deck_indices": hand_idx, "names": names,   # = the reader's unless pending
                 "costs": costs, "el_int": int(bs.my_elixir)}
         info["el_afford"] = info["el_int"]
         if getattr(self, "afford_ticks", None) is not None:    # raw frame `me` (before extrapolation)
             from .e1_eval import afford_elixir
-            info["el_afford"] = int(afford_elixir([me], side, int(raw_tick), int(self.afford_ticks)))
+            info["el_afford"] = int(max(0.0, afford_elixir([me], side, int(raw_tick), int(self.afford_ticks)) - spent))
+        if pend:
+            info["pending"] = True                          # decision_options / live_gen_v2: pending-only rules
         if 'public_lookahead_counts' in frame:
             info['public_lookahead_counts'] = frame['public_lookahead_counts']
         return b, info
@@ -360,7 +417,15 @@ class GenPilot:
             return logits
         side = my_side_of(frame)
         me = next(p for p in frame["players"] if int(p["side"]) == side)
-        ok = legal_cells(frame.get("entities", []), side, me["deck_card_ids"][d["deck_index"]], d["name"], self.grid)
+        ents = list(frame.get("entities", []))
+        for q in self._pending_in_hand(me) if getattr(self, "pending_plays", None) else []:
+            # --pipeline-decisions: a pending building occupies its tapped tile as the game snaps it (3x3: tile centre, 2x2:
+            # tile corner) -- legal_cells reads that position parity; a pending troop / spell blocks nothing
+            snap = round if q["name"] in EVEN_BUILDINGS else (lambda v: math.floor(v) + 0.5)
+            x, y = snap(q["xy"][0] * 18) * 1000, snap((1 - q["xy"][1]) * 32) * 1000
+            x, y = (18000 - x, 32000 - y) if side == 1 else (x, y)
+            ents.append(dict(side=side, x=x, y=y, card_id=me["deck_card_ids"][q["deck_index"]], kind=12, hp=1))
+        ok = legal_cells(ents, side, me["deck_card_ids"][d["deck_index"]], d["name"], self.grid)
         if ok is None:
             return logits
         ok = torch.from_numpy(ok).to(logits.device)
