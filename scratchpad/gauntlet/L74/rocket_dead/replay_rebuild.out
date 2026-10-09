@@ -1,0 +1,10 @@
+skipped live_play_20261008_190419.jsonl IndexError list index out of range
+skipped live_play_20261008_231301.jsonl IndexError list index out of range
+skipped live_play_20261008_231426.jsonl IndexError list index out of range
+{'rockets': 160, 'rebuild_matches_logged_xy': 153, 'glitch_window': 4, 'unblocked': 155, 'unblocked_shifted': 0, 'glitch_off_blocked_if_unfiltered': 3, 'blocked': 5, 'blocked->UNIT': 3, 'skipped_logs': 3, 'blocked->PRINCESS': 2}
+blocked Rockets (match, tick, off aim, block aim, where, glitch):
+   ('20261008_134526', 3404, [12.5, 6.5], [12.5, 5.0], 'UNIT', '')
+   ('20261008_135127', 3499, [4.5, 5.5], [5.5, 4.0], 'UNIT', '')
+   ('20261008_232056', 2567, [14.0, 7.5], [4.0, 7.5], 'PRINCESS', '')
+   ('20261008_232056', 4643, [13.5, 6.0], [12.5, 4.5], 'UNIT', '')
+   ('20261008_232056', 5812, [8.5, 2.0], [6.0, 5.0], 'PRINCESS', 'glitch')

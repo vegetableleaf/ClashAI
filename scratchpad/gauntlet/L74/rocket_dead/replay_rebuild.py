@@ -61,6 +61,7 @@ def main():
             m = Match(f, ck)
         except Exception as e:                        # noqa: BLE001 -- incomplete / old-schema logs
             tally["skipped_logs"] += 1
+            print("skipped", os.path.basename(f), type(e).__name__, str(e)[:80])
             continue
         state, eff = None, []
         for d in m.dec:                               # glitch filter over every decision, as live

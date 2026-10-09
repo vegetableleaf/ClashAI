@@ -43,8 +43,11 @@ def kind(row):
     alive = {"K": aK, "L": aL, "R": aR}
     over = {k: math.hypot(x - tx, y - ty) <= 2.0 + tr for k, (tx, ty, tr) in T.items()}
     dead = any(over[k] and not alive[k] for k in T)
-    live = any(over[k] and alive[k] for k in T)
-    return "dead_empty" if dead and not live and n0 == 0 else "tower" if live else "empty" if n0 == 0 and n1 == 0 else "units"
+    princess = any(over[k] and alive[k] for k in "LR")
+    if over["K"] and alive["K"] and n0 == 0:
+        return "king_empty"                                  # the king with no unit (lethal exceptions not separated)
+    return ("dead_empty" if dead and not princess and n0 == 0 else "tower" if princess or over["K"] else
+            "empty" if n0 == 0 and n1 == 0 else "units")
 
 
 A, Bk = load("base"), load("block")
@@ -66,7 +69,7 @@ for name, rows in (("base", a), ("block", b)):
     R = [q for r in rows for q in r["behaviour"].get("lr_rockets", [])]
     c = Counter(kind(q) for q in R)
     print(f"\n== {name}: Rockets/match {len(R) / len(rows):.3f} | " + " ".join(f"{k} {c[k] / len(rows):.4f}" for k in
-                                                                         ("dead_empty", "tower", "units", "empty")))
+                                                                         ("dead_empty", "king_empty", "tower", "units", "empty")))
     print(f"   dead_empty Rockets: {c['dead_empty']} (1x/2x/OT {[sum(kind(q) == 'dead_empty' and lo <= q[0] < hi for q in R) for _, lo, hi in PH]})"
           f" | Rockets after an enemy princess fell {sum(not (q[4] and q[5]) for q in R)}")
     tr = [r["behaviour"]["tower_rockets_phase"] for r in rows]
