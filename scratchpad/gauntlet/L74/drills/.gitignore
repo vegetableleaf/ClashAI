@@ -2,5 +2,5 @@ data/
 _peek*.py
 _fix.py
 *.log
-out/moments_*.jsonl.gz
-out/sim_dump/
+out/moments_pros.jsonl.gz
+out/sim_dump/dump/

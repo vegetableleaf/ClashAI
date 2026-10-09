@@ -23,6 +23,7 @@ except Exception: pass
 HERE = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/") + "/"
 MAIN = "C:/Users/benpe/ClashBot/"
 OUT = HERE + "out/"
+sys.path.insert(0, MAIN); sys.path.insert(0, HERE)
 LOGDIR = MAIN + "scratchpad/gauntlet/L68/live_reader/"
 CARDS_JSON = MAIN + "research/ext/Royale/RoyaleSim/data/derived/cards.json"
 
@@ -104,7 +105,7 @@ def canon(n):
     return CANON.get(n, CANON.get(n.lower(), n))
 
 
-def load_sim(dump_dir=OUT + "sim_dump/"):
+def load_sim(dump_dir=OUT + "sim_dump/dump/"):
     """sim_dump.py lines -> the live/pros per-match format. Board frame (x, y in [0, 1], my side at y = 1) -> own tiles
     (18 x, 32 (1 - y)). Enemy values / air flags as build_live.py. A unit's first-seen tick = tick - age_s x 20 when the engine
     gives an age, else the first dump tick where its class count rose (ponytail: no unit ids in BoardState)."""
@@ -203,7 +204,16 @@ def enemies(st, ymax=99.0, ground=None):
     return out
 
 
-def val(bs): return sum(b[3] for b in bs)
+def val(bs):
+    """elixir value of enemy bodies; bodies of one class first seen on the same tick worth >= 2 each are ONE card (Ram Rider = ram +
+    rider, both valued 5 by build_live) -- ponytail: two same-tick copies of a real >= 2-elixir card would also collapse (rare)."""
+    seen, tot = set(), 0.0
+    for b in bs:
+        if b[3] >= 2.0 and b[5] is not None:
+            if (b[0], b[5]) in seen: continue
+            seen.add((b[0], b[5]))
+        tot += b[3]
+    return tot
 
 
 def lost_hp(M, i, k, dt=20):
@@ -371,7 +381,7 @@ R_BLAST, R_PULL = 2.5, 5.5     # Rocket radius 2.0 + ~0.5 body radius (pc.py R_C
 def clump(bs, r):
     best = (0.0, None, None)
     for b in bs:
-        v = sum(c[3] for c in bs if d2((b[1], b[2]), (c[1], c[2])) <= r)
+        v = val([c for c in bs if d2((b[1], b[2]), (c[1], c[2])) <= r])
         if v > best[0]: best = (v, b[1], b[2])
     return best
 
@@ -392,7 +402,7 @@ def D6(M, i, st):
     vb, x, y = clump(bs, R_BLAST)
     if vb >= 10.0:
         hit = [b for b in bs if d2((b[1], b[2]), (x, y)) <= R_BLAST]
-        kill = sum(b[3] * min(1.0, ROCKET_DMG / max(1.0, unit_hp(b[0]) * (b[6] if b[6] is not None else 1.0))) for b in hit)
+        kill = vb * sum(b[3] * min(1.0, ROCKET_DMG / max(1.0, unit_hp(b[0]) * (b[6] if b[6] is not None else 1.0))) for b in hit) / max(1e-9, sum(b[3] for b in hit))
         yield "do", "clump", dict(v=round(vb, 2), x=x, y=y, kill=round(kill, 2), cls=sorted({b[0] for b in hit}))
     elif "Tornado" in (st[2] or ()) and st[1] >= 9.0:
         vp, px, py = clump(bs, R_PULL)
@@ -451,43 +461,48 @@ def J7(M, t, kind, info):
     return (not bad), ("Rocket_" + at(bad[0]) if bad else ("Rocket_" + w[0] if w else "noRocket"))
 
 
-XBOW_R = 12.0       # X-Bow range 11.5 (cards.json range_milli 11500) + 0.5 body radius
-REACH = 13.04       # X-Bow placement centre -> enemy tower centre (L70/gen_v31/xbow_reach_public.json; review.py REACH)
-BAND = (8.5, 12.0)  # "somewhat near the outer edge" of the range
+import sneaky_rule as SR      # the sneaky-lock worker's rule (copy of pipeline/sneaky_lock.py @ af50e7f), so D8 == the fork's trigger
 
 
-def is_heavy(cls): return _norm(cls) in HEAVY or _norm(cls).replace("evo", "") in HEAVY
+def to_bs(st):
+    """my state tuple -> the minimal BoardState the sneaky rule reads (units: cls, side, x, y in the board frame = own X / 18,
+    (32 - own Y) / 32; towers[4], [5] = enemy princess L, R alive)."""
+    from types import SimpleNamespace as NS
+    from pipeline import vocab
+    units = []
+    for side, rows in ((0, st[6]), (1, st[3])):
+        for r in rows:
+            try: units.append(NS(cls=vocab.unit_id(r[0]), side=side, x=r[1] / 18.0, y=(32.0 - r[2]) / 32.0))
+            except (KeyError, ValueError): pass
+    alive = [(st[4].get(k) or 0) > 0 for k in ("mK", "mL", "mR", "eK", "eL", "eR")]
+    return NS(units=units, towers=[NS(alive=a) for a in alive])
 
 
 def D8(M, i, st):
-    """Sneaky lock (owner spec). My X-Bow alive and within REACH of an alive enemy tower (it can lock), Tornado affordable, nothing pending.
-    Blockers = enemy GROUND bodies (the X-Bow cannot target air) within 12 tiles of the X-Bow.
-    DO-moment: exactly one blocker, JUST PLAYED (first seen <= 1.5 s ago: "whenever opponent plays a troop"), in the outer band
-    8.5-12 tiles, pullable (not a building, not heavy: engine mass < 15).
-    HOLD-moment: >= 2 blockers with a just-played one in the band (other blockers inside the range), or a single blocker that is not pullable
-    (inside 8.5 tiles, a building or heavy).  Window 3 s.  DO = a Tornado within 5.5 tiles of the blocker and farther from the
-    X-Bow than the blocker (pulls it out).  HOLD = no Tornado."""
-    if not afford(st, {"Tornado"}): return
-    xb = [o for o in st[6] if o[0] == "x_bow"]
-    for o in xb:
-        p = (o[1], o[2])
-        if not any((st[4].get(k) or 0) > 0 and d2(p, ET[k]) <= REACH for k in ET): continue
-        bl = [b for b in enemies(st, ground=True) if d2((b[1], b[2]), p) <= XBOW_R]
-        if not bl: continue
-        band = [b for b in bl if BAND[0] <= d2((b[1], b[2]), p) <= BAND[1] and st[0] - (b[5] if b[5] is not None else -999) <= 30]
-        key = f"{p[0]:.1f},{p[1]:.1f}"
-        if len(bl) == 1 and band and band[0][0] not in BUILDINGS and not is_heavy(band[0][0]):
-            b = band[0]; yield "do", key, dict(xb=p, b=(b[1], b[2]), cls=b[0], d=round(d2((b[1], b[2]), p), 2))
-        elif (len(bl) >= 2 and band) or (len(bl) == 1 and st[0] - (bl[0][5] if bl[0][5] is not None else -999) <= 30):
-            yield "hold", key, dict(xb=p, n=len(bl), cls=sorted({b[0] for b in bl}),
-                                    why="blockers" if len(bl) >= 2 else ("inside" if not band else "building/heavy"))
+    """Sneaky lock (owner spec), using the sneaky-lock worker's rule unchanged (sneaky_rule.py): my X-Bow reaches an alive enemy
+    princess (13.04 tiles); BLOCKERS = enemy ground bodies within 12.1 + radius of it and nearer than that tower; the plan exists
+    when there is EXACTLY ONE blocker, a troop, and some Tornado cell's forward-simulated pull (speed x 3.6 per tick, 21 ticks) holds
+    it >= 0.3 tiles beyond the X-Bow's drop distance for 3 ticks without dragging another body into reach.  Tornado affordable,
+    nothing pending.  DO-moment: the plan exists.  HOLD-moment: blockers exist but no plan (>= 2 blockers = "other blockers inside
+    the range", a building, or not pullable).  Window 3 s.  DO = a Tornado landing within 6 tiles of the blocker.
+    HOLD = no Tornado landing within 6 tiles of any blocker."""
+    if not afford(st, {"Tornado"}) or not any(o[0] == "x_bow" for o in st[6]): return
+    bs = to_bs(st)
+    sit = SR.sneaky_situation(bs)
+    if sit is None or not sit["blockers"]: return
+    xb = (sit["xbow"][0], 32.0 - sit["xbow"][1]); key = f"{xb[0]:.0f},{xb[1]:.0f}"
+    blk = [(r[1], 32.0 - r[2]) for r in sit["blockers"]]
+    plan = SR.sneaky_lock_plan(bs) if len(blk) == 1 else None
+    if plan: yield "do", key, dict(xb=xb, b=blk[0], d=round(plan["d_xbow"], 2), cell=(plan["cx"], 32.0 - plan["cy"]))
+    else: yield "hold", key, dict(xb=xb, blk=blk, n=len(blk), why="blockers" if len(blk) >= 2 else "not_pullable")
 
 
 def J8(M, t, kind, info):
     nd = [p for p in M.plays(t, t + 60) if p[2] == "Tornado"]
-    if kind == "hold": return (not nd), ("Tornado" if nd else "noTornado")
-    xb, b = info["xb"], info["b"]
-    ok = [p for p in nd if d2((p[3], p[4]), b) <= 5.5 and d2((p[3], p[4]), xb) > d2(b, xb)]
+    if kind == "hold":
+        bad = [p for p in nd if any(d2((p[3], p[4]), b) <= 6.0 for b in info["blk"])]
+        return (not bad), ("Tornado_at_blockers" if bad else ("Tornado_other" if nd else "noTornado"))
+    ok = [p for p in nd if d2((p[3], p[4]), info["b"]) <= 6.0]
     return bool(ok), ("Tornado_pull" if ok else ("Tornado_other" if nd else "noTornado"))
 
 
@@ -579,15 +594,18 @@ def run():
             recs = harvest(m)
             o = opts.get(m["file"], {}) if src == "live" else {}
             for r in recs:
-                r.update(file=m["file"], fam=fam, log_air=o.get("log_air", "off") if src == "live" else None)
-            allrec += recs; mins[fam] += m["end"] / 1200.0; nm[fam] += 1
+                r.update(file=m["file"], fam=fam, log_air=o.get("log_air", "off") if src == "live" else None,
+                         depl=src == "live" and fam == "towerref_bundle" and o.get("tau_threatened") is not None)
+            dk = fam + ("+depl" if src == "live" and fam == "towerref_bundle" and o.get("tau_threatened") is not None else "")
+            allrec += recs; mins[dk] += m["end"] / 1200.0; nm[dk] += 1
         with gzip.open(OUT + f"moments_{src}.jsonl.gz", "wt") as fh:
             for r in allrec: fh.write(json.dumps(r, default=str) + "\n")
         groups = {src: allrec} if src in ("pros", "sim") else {
             "live_current": [r for r in allrec if r["fam"] == "towerref_bundle"],
+            "live_deployed": [r for r in allrec if r["depl"]],
             "live_all": allrec}
         for g, rr in groups.items():
-            fams = ["towerref_bundle"] if g == "live_current" else list(nm)
+            fams = {"live_current": ["towerref_bundle", "towerref_bundle+depl"], "live_deployed": ["towerref_bundle+depl"]}.get(g, list(nm))
             summary[g] = dict(matches=sum(nm[f] for f in fams), minutes=round(sum(mins[f] for f in fams), 1), drills=rates(rr),
                               per_match={dr: round(sum(r["drill"] == dr for r in rr) / max(1, sum(nm[f] for f in fams)), 2)
                                          for dr in sorted({r["drill"] for r in rr})})
@@ -598,7 +616,7 @@ def run():
 
 def d9_extra():
     out = {}
-    for src, filt in (("live", lambda r: r["fam"] == "towerref_bundle"), ("pros", lambda r: True)):
+    for src, filt in (("live", lambda r: r["fam"] == "towerref_bundle"), ("pros", lambda r: True), ("sim", lambda r: True)):
         with gzip.open(OUT + f"moments_{src}.jsonl.gz", "rt") as fh:
             rr = [json.loads(l) for l in fh]
         rr = [r for r in rr if r["drill"] == "D9" and filt(r)]
@@ -650,9 +668,16 @@ def selftest():
     assert r and r[0]["kind"] == "do" and r[0]["do"] is True, r
     # D8: my X-Bow at (4, 14) locks eL; one knight at 10 tiles -> do; Tornado behind it pulls it out
     hd = ("Tornado", "Knight", "Log", "Rocket")
-    m = dict(S=[st(0, 6, hd, [body("knight", 4, 24, 3)], own=[("x_bow", 4, 14, 1000, 1000)])], P=[(5, 30, "Tornado", 4, 27, 6, None)], end=100)
+    m = dict(S=[st(0, 6, hd, [body("knight", 4, 25, 3)], own=[("x_bow", 4, 14, 1000, 1000)])], P=[(5, 30, "Tornado", 4, 28, 6, None)], end=100)
     r = [x for x in harvest(m) if x["drill"] == "D8"]
     assert r and r[0]["kind"] == "do" and r[0]["do"] is True, r
+    # D8 hold: two blockers -> no plan; a Tornado at them fails
+    m = dict(S=[st(0, 6, hd, [body("knight", 4, 23.5, 3), body("valkyrie", 5, 20, 4)], own=[("x_bow", 4, 14, 1000, 1000)])],
+             P=[(5, 30, "Tornado", 4, 25, 6, None)], end=100)
+    r = [x for x in harvest(m) if x["drill"] == "D8"]
+    assert r and r[0]["kind"] == "hold" and r[0]["hold"] is False, r
+    # val: ram rider (2 bodies, same first tick) counts once
+    assert val([body("ram_rider", 4, 10, 5), body("ram_rider", 4.1, 10, 5)]) == 5.0
     # D9: Log then Tornado on an empty spot -> no-pull Tornado, hold fails
     m = dict(S=[st(0, 8, hand, [body("knight", 4, 10, 3)]), st(20, 6, hand, [body("knight", 4, 10, 3)])],
              P=[(0, 20, "Log", 4, 8, 8, None), (30, 50, "Tornado", 14, 10, 6, None)], end=100)

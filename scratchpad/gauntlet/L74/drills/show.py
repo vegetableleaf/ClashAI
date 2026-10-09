@@ -1,7 +1,7 @@
 """Print the per-drill baseline table from out/baseline.json (+ D9 extra)."""
 import json, sys
 B = json.load(open(sys.argv[1] if len(sys.argv) > 1 else 'out/baseline.json'))
-G = [g for g in ('live_current', 'live_all', 'pros', 'sim') if g in B]
+G = [g for g in ('live_current', 'live_deployed', 'live_all', 'pros', 'sim') if g in B]
 print({g: (B[g]['matches'], B[g]['minutes']) for g in G})
 for dr in sorted({d for g in G for d in B[g]['drills']}):
     for kind in ('do', 'do_kill6', 'hold', 'do_combo'):
