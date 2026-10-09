@@ -4963,6 +4963,12 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   fallen tower (live_play_20261008_232056: 3 Rockets at the dead R princess spot, 2 with no enemy within 2 t; model's own
 >   choice + rocket_area) -> a1f8484f building opt-in --rocket-dead-target block. Owner: mistake examples are illustrative,
 >   analyse broadly (relayed to a062325a).
+> * **Owner ~00:0x 10-09: lethal LOG** ("if the enemy tower HP is finishable by a log, use the log to finish the tower, either to
+>   gain even crown lead right before overtime or to secure an overtime win") -> a0ff8a54: --lethal-log on (same situations as
+>   --lethal-rocket ot_behind; Log preferred when both finish; guaranteed-hit cast cell; regulation cutoff from the Log's
+>   timing); bundle 3 if verified. Friend package built at share/friend_reader_160402012 (git-excluded): emulator build
+>   160402012 (not 160402020), libg sha256 79c4e485...918c2, sampler sha256 06066e26 == device copy; README_FOR_AGENT.md
+>   explains the mismatch and what to re-derive.
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
