@@ -4849,6 +4849,10 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   workaround) -> removed in royale/browser.py (crawler branch polite-browser-crawl 3da7b78; old transport.py/test still
 >   have it, unused by crawl_polite). Restarted in a visible window. If Cloudflare will not pass an honestly automated
 >   browser, do NOT disguise it: rely on the official API census + the owner's RoyaleAPI data request.
+> * **Crawl retry 2 (owner: stuck on Cloudflare "verifying"; "I know for a fact the tool works. please try again"):** lead
+>   cleared (exact PIDs) and reopened once more, unchanged (fresh browser context every launch). Told the owner plainly: the
+>   earlier runs passed because of the automation-hiding flag; the lead will not restore it. If it keeps verifying, stop it
+>   and rely on the API census + RoyaleAPI data access.
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
