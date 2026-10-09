@@ -20,7 +20,10 @@ run() { local name=$1 s=$2; d=$EVO; [ $s = lad ] && d=$LAD
   export FIRE_DIR=$O/fires_${name}_$s; mkdir -p $FIRE_DIR
   case $name in plc*) export PLACEBO=1;; *) unset PLACEBO;; esac
   [ -n "$TIMES" ] && [ -f $TIMES$s.json ] && [ "$name" = base ] && export WIN_TIMES=$TIMES$s.json || unset WIN_TIMES
-  nice -n 10 $PY $WRAP --out $O/${name}_$s --seeds $SEEDS --opps gen --arms plain --gen $CK \
+  local seeds=$SEEDS   # SEEDDIR/<arm>_<census>.txt = the seeds on which the arm can differ from BASE at all (mk_subsets.py); empty = none
+  if [ -n "$SEEDDIR" ] && [ -f $SEEDDIR/${name}_$s.txt ]; then seeds=$(cat $SEEDDIR/${name}_$s.txt)
+    [ -z "$seeds" ] && { echo "$name $s no fires (identical to base)" >> $LOG; return; }; fi
+  nice -n 10 $PY $WRAP --out $O/${name}_$s --seeds $seeds --opps gen --arms plain --gen $CK \
     --opp-gen $GEN1 --forms-mode deck --device cpu --workers $W --tail-cap 7200 --tau-plain 0.35 --census $d --hero-abilities \
     --ability-policy v2 --opp-policy sample --opp-T 0.3 "${LV[@]}" $flags > $O/${name}_$s.log 2>&1
   echo "$name $s rc=$? $(date +%T)" >> $LOG; }
