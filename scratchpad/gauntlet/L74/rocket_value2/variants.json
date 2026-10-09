@@ -246,6 +246,57 @@
 "rocket_value_max_left": 3.0,
 "rocket_value_idle": "on"
 },
+"de5_th": {
+"rocket_value": 5.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_threat": "on"
+},
+"de7_th": {
+"rocket_value": 7.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_threat": "on"
+},
+"de9_th": {
+"rocket_value": 9.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_threat": "on"
+},
+"de7_th_l3": {
+"rocket_value": 7.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_threat": "on",
+"rocket_value_max_left": 3.0
+},
+"de7_th_idle": {
+"rocket_value": 7.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_threat": "on",
+"rocket_value_idle": "on"
+},
+"ke5_th": {
+"rocket_value": 5.0,
+"rocket_value_mode": "kill",
+"rocket_value_hitbox": "edge",
+"rocket_value_threat": "on"
+},
+"ke7_th": {
+"rocket_value": 7.0,
+"rocket_value_mode": "kill",
+"rocket_value_hitbox": "edge",
+"rocket_value_threat": "on"
+},
+"de7_th_y21": {
+"rocket_value": 7.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_threat": "on",
+"rocket_value_min_y": 21.0
+},
 "de7_y21_e8": {
 "rocket_value": 7.0,
 "rocket_value_mode": "damage",

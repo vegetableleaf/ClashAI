@@ -38,6 +38,13 @@ add('ke6_l3_e8', rocket_value=6.0, rocket_value_mode='kill', rocket_value_hitbox
 add('de7_l3_e8', rocket_value=7.0, rocket_value_mode='damage', rocket_value_hitbox='edge', rocket_value_max_left=3.0, rocket_value_min_elixir=8.0)
 add('de7_l3_y21', rocket_value=7.0, rocket_value_mode='damage', rocket_value_hitbox='edge', rocket_value_max_left=3.0, rocket_value_min_y=21.0)
 add('de7_l3_idle', rocket_value=7.0, rocket_value_mode='damage', rocket_value_hitbox='edge', rocket_value_max_left=3.0, rocket_value_idle='on')
+for v in (5, 7, 9):
+    add(f'de{v}_th', rocket_value=float(v), rocket_value_mode='damage', rocket_value_hitbox='edge', rocket_value_threat='on')
+add('de7_th_l3', rocket_value=7.0, rocket_value_mode='damage', rocket_value_hitbox='edge', rocket_value_threat='on', rocket_value_max_left=3.0)
+add('de7_th_idle', rocket_value=7.0, rocket_value_mode='damage', rocket_value_hitbox='edge', rocket_value_threat='on', rocket_value_idle='on')
+add('ke5_th', rocket_value=5.0, rocket_value_mode='kill', rocket_value_hitbox='edge', rocket_value_threat='on')
+add('ke7_th', rocket_value=7.0, rocket_value_mode='kill', rocket_value_hitbox='edge', rocket_value_threat='on')
+add('de7_th_y21', rocket_value=7.0, rocket_value_mode='damage', rocket_value_hitbox='edge', rocket_value_threat='on', rocket_value_min_y=21.0)
 add('de7_y21_e8', rocket_value=7.0, rocket_value_mode='damage', rocket_value_hitbox='edge', rocket_value_min_y=21.0, rocket_value_min_elixir=8.0)
 
 

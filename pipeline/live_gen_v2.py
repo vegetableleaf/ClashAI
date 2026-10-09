@@ -15,7 +15,7 @@ from .decision_options import (BARREL_KEY, DecisionOptions, barrel_landings, cho
                                gate_taus, hazard_draw, is_xbow, lethal_rocket_choice, tau_threat_state,
                                threat_on, threat_taus, tower_threat, xbow_dead_lane_cells, enemy_body_tiles,
                                princess_dead_state, rocket_covers_king, rocket_kills_king)
-from .decision_options import rocket_bodies, rocket_track, rocket_value_cell, rocket_value_choice
+from .decision_options import rocket_value_cell, rocket_value_choice
 from .live_mem import my_side_of
 from .decision_options import enemy_princess_hps, hp_after, record_hp
 
@@ -53,7 +53,7 @@ class GenPilot(LegacyGenPilot):
         self._threat_state = None               # decision_options.tower_threat state of the previous decision
         self._princess_dead_state = None        # decision_options.princess_dead_state of the previous decision
         self._tau_threat_state = None           # decision_options.tau_threat_state of the previous decision
-        self.rv_hist = None                     # rocket_value_lead: the last decisions' enemy bodies (rocket_track)
+        self.rv_hist, self.rv_threat_state = None, None   # rocket_value: the lead history (rocket_track) / the tower-fire state
 
     def reset_match(self):
         super().reset_match()
@@ -66,7 +66,7 @@ class GenPilot(LegacyGenPilot):
         self._princess_dead_state = None
         self._lethal_hp_hist = None
         self._tau_threat_state = None
-        self.rv_hist = None                     # rocket_value_lead: the last decisions' enemy bodies (rocket_track)
+        self.rv_hist, self.rv_threat_state = None, None   # rocket_value: the lead history (rocket_track) / the tower-fire state
 
     def row(self, frame):
         b, info = super().row(frame)
@@ -118,13 +118,6 @@ class GenPilot(LegacyGenPilot):
         names = [info['names'][di] if di >= 0 else None for di in info['hand_deck_indices']]
         return rocket_value_choice(options, names, allowed, info['bs'], self.grid, holder=self, playing=bool(playing))
 
-    def rocket_value_observe(self, info):
-        """The decision with nothing affordable: only the lead history (SIM decide_batch sees this board too)."""
-        options = self.decision_options
-        if getattr(options, 'rocket_value', 0.0) > 0 and options.rocket_value_lead in ('on', 'blend'):
-            tick = int(round(float(info['bs'].t_sec) / 0.05))
-            rocket_track(self, tick, rocket_bodies(info['bs'], options.rocket_value_mode))
-
     @torch.no_grad()
     def decide(self, frame):
         options = self.decision_options
@@ -155,7 +148,7 @@ class GenPilot(LegacyGenPilot):
         if getattr(options, 'lethal_rocket', 'off') != 'off' and getattr(options, 'lethal_log', 'off') == 'on':
             self._lethal_snapshot(frame, names=info['names'])  # every decision (as SIM match_kwargs), affordable or not
         if not allowed.any():
-            self.rocket_value_observe(info)
+            self.rocket_value(info, allowed)        # nothing affordable: only the per-match state the rule keeps (SIM decide_batch sees it too)
             if hazard_on:
                 self._hazard_prev = (tick, False)
             return self._audited(dict(play=False, no_affordable=True, p_play=p, hand_pos=-1, deck_index=-1, card=0,

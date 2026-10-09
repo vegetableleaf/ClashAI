@@ -17,7 +17,7 @@ from pipeline.decision_options import (DecisionOptions, ROCKET_UNIT_DAMAGE, add_
                                       rocket_value_choice, rocket_velocities, unit_values)
 from pipeline.live_gen_v2 import GenPilot
 from pipeline.model_v3 import cell_xy
-from pipeline.obs_contract import Unit
+from pipeline.obs_contract import Tower, Unit
 from pipeline.tests.test_lethal_rocket import live_frame, towers
 
 ON = DecisionOptions(rocket_value=7.0)
@@ -29,8 +29,13 @@ def unit(name, x_tiles, y_tiles, hp=1.0, side=1):
     return Unit(vocab.unit_id(name), side, x_tiles / 18.0, y_tiles / 32.0, hp, None, None, 1.0)
 
 
-def board(*units, elixir=7.3, t=100.0):
-    return SimpleNamespace(units=tuple(units), t_sec=t, my_elixir=elixir, towers=(), double_elixir=False, overtime=False)
+def board(*units, elixir=7.3, t=100.0, towers=()):
+    return SimpleNamespace(units=tuple(units), t_sec=t, my_elixir=elixir, towers=towers, double_elixir=False, overtime=False)
+
+
+def six_towers(l=1.0, r=1.0, k=1.0):
+    mine = (Tower(0, 'king', None, k, True), Tower(0, 'princess', 'L', l, True), Tower(0, 'princess', 'R', r, True))
+    return mine + (Tower(1, 'king', None, 1.0, True), Tower(1, 'princess', 'L', 1.0, True), Tower(1, 'princess', 'R', 1.0, True))
 
 
 def pups(n=6, x=4.0, y=24.0, hp=1.0):
@@ -49,15 +54,15 @@ def test_default_off_flags_and_validation():
     assert options_from_config(config_from_args(ap.parse_args([]))) == DecisionOptions()
     assert options_from_config(config_from_args(ap.parse_args(['--rocket-value', '7']))) == ON
     full = ['--rocket-value', '9', '--rocket-value-mode', 'kill', '--rocket-value-hitbox', 'edge', '--rocket-value-lead', 'on',
-            '--rocket-value-idle', 'on', '--rocket-value-min-elixir', '9', '--rocket-value-min-y', '21']
+            '--rocket-value-idle', 'on', '--rocket-value-min-elixir', '9', '--rocket-value-min-y', '21', '--rocket-value-threat', 'on']
     assert options_from_config(config_from_args(ap.parse_args(full))) == DecisionOptions(
         rocket_value=9.0, rocket_value_mode='kill', rocket_value_hitbox='edge', rocket_value_lead='on', rocket_value_idle='on',
-        rocket_value_min_elixir=9.0, rocket_value_min_y=21.0)
+        rocket_value_min_elixir=9.0, rocket_value_min_y=21.0, rocket_value_threat='on')
     assert options_from_config(config_from_args(ap.parse_args(['--rocket-value', '9', '--rocket-value-max-left', '3']))).rocket_value_max_left == 3.0
     for kw in (dict(rocket_value=-1.0), dict(rocket_value=float('nan')), dict(rocket_value=float('inf')), dict(rocket_value_mode='x'),
                dict(rocket_value_hitbox='x'), dict(rocket_value_lead='yes'), dict(rocket_value_idle='x'),
                dict(rocket_value_min_elixir=11.0), dict(rocket_value_min_elixir=-1.0), dict(rocket_value_min_y=10.0),
-               dict(rocket_value_min_y=40.0), dict(rocket_value_min_y=float('nan')), dict(rocket_value_max_left=-1.0)):
+               dict(rocket_value_min_y=40.0), dict(rocket_value_min_y=float('nan')), dict(rocket_value_max_left=-1.0), dict(rocket_value_threat='x')):
         with pytest.raises(ValueError):
             DecisionOptions(**kw)
 
@@ -177,6 +182,28 @@ def test_max_left_refuses_a_blast_that_leaves_a_tank_standing():
     assert value == 6.0 and left == pytest.approx(8 * (2000 - 580) / 2000) and ok.any()
     assert rocket_value_choice(kill, NAMES, OK, push, 'lattice')[2] == 6.0
     assert rocket_value_choice(DecisionOptions(rocket_value=6.0, rocket_value_mode='kill', rocket_value_max_left=3.0), NAMES, OK, push, 'lattice') is None
+
+
+def test_threat_gate_fires_only_while_a_tower_of_mine_is_under_fire_with_a_body_near_it():
+    on = DecisionOptions(rocket_value=7.0, rocket_value_threat='on')
+    holder = SimpleNamespace()
+    ask = lambda t, l: rocket_value_choice(on, NAMES, OK, board(*pups(), t=t, towers=six_towers(l=l)), 'lattice', holder=holder)
+    assert ask(100.0, 1.0) is None                                                      # nobody hit my tower
+    assert ask(100.5, 0.9) is not None                                                  # the left princess just lost HP, the pups are on it
+    assert ask(101.5, 0.9) is not None and ask(102.4, 0.9) is not None                  # within the 2 s window
+    assert ask(103.0, 0.9) is None                                                      # window over, no new loss
+    assert ask(103.5, 0.8) is not None                                                  # lost again
+    far = [unit('lava_pups', 4.0 + .3 * i, 17.0, 1.0) for i in range(6)]               # the same loss, the pups are 8.5 tiles from the tower
+    h2 = SimpleNamespace()
+    rocket_value_choice(on, NAMES, OK, board(*far, t=100.0, towers=six_towers()), 'lattice', holder=h2)
+    assert rocket_value_choice(on, NAMES, OK, board(*far, t=100.5, towers=six_towers(l=.9)), 'lattice', holder=h2) is None
+    assert rocket_value_choice(on, NAMES, OK, board(*pups(), towers=six_towers()), 'lattice') is None      # no holder: cannot know
+    # the state is kept at EVERY decision, with no Rocket affordable too
+    h3 = SimpleNamespace()
+    rocket_value_choice(on, NAMES, [True, False, True, True], board(*pups(), t=100.0, towers=six_towers()), 'lattice', holder=h3)
+    assert rocket_value_choice(on, NAMES, OK, board(*pups(), t=100.5, towers=six_towers(l=.9)), 'lattice', holder=h3) is not None
+    off = DecisionOptions(rocket_value=7.0)
+    assert rocket_value_choice(off, NAMES, OK, board(*pups(), towers=six_towers()), 'lattice') is not None      # threat off: ignored
 
 
 def test_choice_threshold_slot_pending_and_default_off():

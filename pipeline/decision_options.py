@@ -44,6 +44,7 @@ class DecisionOptions:
     rocket_value_mode: str = 'cost'         # 'damage': the share of each body's value the Rocket destroys; 'kill': only bodies it kills
     rocket_value_min_y: float = 16.0        # the blast centre must be at board y >= this (16 = my half; 21+ = near my towers)
     rocket_value_max_left: float = 99.0     # no fire when the bodies in the blast would KEEP more than this much value after the Rocket
+    rocket_value_threat: str = 'off'        # 'on': only while a tower of mine is under fire with an enemy body near it (tau_threat_state)
     rocket_value_hitbox: str = 'centre'     # 'edge': a body is in the blast when its hitbox touches the radius
     rocket_value_lead: str = 'off'          # 'on' / 'drift' / 'blend': aim at where the bodies will be when the Rocket lands
     rocket_value_idle: str = 'off'          # 'on': only at a decision where the model itself would not play (displaces nothing)
@@ -89,7 +90,8 @@ class DecisionOptions:
         if not math.isfinite(self.rocket_value) or self.rocket_value < 0:
             raise ValueError('rocket_value must be finite and >= 0')
         for k, ok in (('rocket_value_mode', ('cost', 'damage', 'kill')), ('rocket_value_hitbox', ('centre', 'edge')),
-                      ('rocket_value_lead', ('off', 'on', 'drift', 'blend')), ('rocket_value_idle', ('off', 'on'))):
+                      ('rocket_value_lead', ('off', 'on', 'drift', 'blend')), ('rocket_value_idle', ('off', 'on')),
+                      ('rocket_value_threat', ('off', 'on'))):
             if getattr(self, k) not in ok:
                 raise ValueError(f'{k} must be one of {ok}')
         if not math.isfinite(self.rocket_value_min_elixir) or not 0 <= self.rocket_value_min_elixir <= 10:
@@ -177,6 +179,9 @@ def add_arguments(parser):
                         help='cost: a body is worth card cost / bodies x hp fraction; damage: x the share of its hp the Rocket '
                              'takes instead (min(Rocket damage, hp now) / max hp), so a Giant counts for a third and a Skeleton '
                              'Dragon pair in full; kill: only the bodies the Rocket kills outright count, at their full value')
+    parser.add_argument('--rocket-value-threat', choices=('off', 'on'), default='off',
+                        help='on: only while one of my towers lost public HP within the last 2 s AND an enemy body is within 8 tiles of '
+                             'it (the --tau-threatened state): the clump is attacking, not merely crossing the river')
     parser.add_argument('--rocket-value-max-left', type=float, default=99.0, metavar='L',
                         help='no fire when the bodies in the best blast would still hold more than L elixir of value after the '
                              'Rocket (a Golem keeps 5.7 of its 8): the Rocket then only strips the support and the elixir it '
@@ -923,6 +928,7 @@ def lethal_rocket_choice(options, t_sec, names, allowed, crown_towers, side, gri
 #   rocket_value_hitbox centre the blast covers a body whose CENTRE is within the Rocket radius (iteration 1)
 #                      edge   ... whose HITBOX touches it: centre distance <= radius + the body's collision radius (the RoyaleSim
 #                             rule, spells.AOE_HIT_TEST = EdgeInclusive; Lava Hound 0.75, Balloon 0.5, Skeleton Dragons 0.9 tiles)
+#   rocket_value_threat on    only while a tower of mine is under fire with an enemy body near it (tau_threat_state)
 #   rocket_value_lead  off    aim at the bodies where they are now
 #                      on     aim at where they will be when it lands: each body moves on at the velocity measured from the decision
 #                             history over the residual lag + the Rocket flight from my king tower (rocket_lands_in)
@@ -1097,6 +1103,10 @@ def rocket_value_choice(options, names, allowed, bs, grid, pending=False, holder
         return None
     slots = [i for i, n in enumerate(names) if n is not None and str(n).lower() == 'rocket' and allowed[i]]
     track = options.rocket_value_lead in ('on', 'blend') and holder is not None
+    watch = options.rocket_value_threat == 'on'
+    threatened = False
+    if watch and holder is not None:                # the tower-fire state is kept on EVERY decision, like the lead history
+        holder.rv_threat_state, threatened = tau_threat_state(getattr(holder, 'rv_threat_state', None), bs)
     if not slots and not track:
         return None                                 # nothing to cast, no history to keep
     bodies = rocket_bodies(bs, options.rocket_value_mode)
@@ -1108,7 +1118,7 @@ def rocket_value_choice(options, names, allowed, bs, grid, pending=False, holder
         lead = (0, [], 'drift')
     if pending or not slots or (options.rocket_value_idle == 'on' and playing):
         return None
-    if float(bs.my_elixir) + 1e-9 < options.rocket_value_min_elixir:
+    if float(bs.my_elixir) + 1e-9 < options.rocket_value_min_elixir or (watch and not threatened):
         return None
     value, eligible, left = best_rocket_clump(bodies, grid, options.rocket_value_hitbox, lead, options.rocket_value_min_y, True)
     if eligible is None or value + 1e-9 < options.rocket_value or left > options.rocket_value_max_left + 1e-9:
