@@ -5163,7 +5163,12 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   (results screen) -- friendlies work; the probe must start before each battle (friend nav templates are JinxTheCat's).
 > * Own-cycle (abf27945): the model already uses its next card + last 3 plays (ablation: val loss 5.507 -> 5.640, card
 >   agreement 59.5% -> 58.2%) -> owner's "could never estimate its own cycle" partly (c); explicit cycle-price features
->   built (350 zero-init columns); laptop GPU training approved by the owner with live paused (STOP 11:59).
+>   built (350 zero-init columns); laptop GPU training approved by the owner with live paused (STOP 11:59). GPU runs done
+>   12:40 (32 min); live restarted 12:41.
+> * **Owner ~12:45 10-09 card levels:** Knight, X-Bow, Rocket = 16; Tesla, Log, Tornado, Skeletons (all others) = 15; Ice
+>   Wizard = 14. Lethal rules assume card level = my tower level (15): Rocket 16 does 546 to a tower, not 497 (Log 15 = 51
+>   unchanged). (a) every live Rocket tower hit through 09:xx 10-09 = 497 (upgrade after that). -> a0ff8a54 building opt-in
+>   `--card-levels NAME=LEVEL`; deploy `--card-levels Rocket=16 Log=15` after verification; confirm 546 drops live.
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
