@@ -5064,6 +5064,12 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   PASS_WITH_NOTES: off identical (187,841 live states; SIM 480/480), 0 wasted double casts, SIM 316 vs 315. NOT
 >   deployed: MEDIUM -- the in-flight guard keeps counting a spell after it HIT (until hit+26+20 ticks) -> refuses the
 >   finishing Log (SIM lad 17: 350->8 HP, Log refused, lost 0-1; live 225206 t5331: 34 HP, Log refused). Back to a0ff8a54.
+> * **rocket-dead-target v2 MERGED afe3214 + LIVE (3ac2d6b, restart ~03:0x; Discord posted).** Blind re-verify a17a8416
+>   PASS_WITH_NOTES: off identical on 7,791 rebuilt live records (RNG incl.); 0 king aims; 0 empty dead-tower aims after
+>   60 ticks; 0 shifted unblocked aims; 0 candidate-only failures. Notes: Rockets decided the tick a tower falls still pass
+>   (4/21 empty fallen-tower Rockets were < 60 ticks dead; 0 revivals after 60+ ticks seen in 307 matches -> threshold
+>   could drop toward ~35 ticks, glitches are 10-30); re-aims lean on the 0.5-tile body slack (3/5 live); a re-aim onto a
+>   finishable king logs rocket_dead_target, not rocket_king_lethal. Backup: LIVE_OPTIONS.identity_backup.
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
