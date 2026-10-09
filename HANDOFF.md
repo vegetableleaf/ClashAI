@@ -5226,6 +5226,15 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   static). 011626 t3884 re-measured: best blast 7.6 elixir by damage (Hound at 13.7% HP; both my princesses already
 >   dead). Variants: rv9 -2.9 pp, de9 -2.6, de9_e8 -.3 [-1.6, +.6], de7_th -.6 [-1.6, 0] (0.15 live fires/match) -- none
 >   shown positive. Rocket+Tornado combo built on --follow-up-taps (window table done), SIM pending (pod).
+> * **log-air result (a93fc9a1):** 50/4,153 live Logs (1.2%) had only flyers in the corridor (16 of them Skeleton Barrel);
+>   SIM on touched games: retarget -14.8 pp (1/5), block +7.4 pp (3/1); overall block +.5 [-.5, +1.5]. Cycling the Log
+>   did not bring air answers faster (35% = base rate). **Owner chose block + Skeleton Barrel exemption** (retarget dropped).
+>   4.2% of Logs hit nothing at all -> being characterised.
+> * **RunPod L40 pod UP ~16:xx 10-09:** `ssh -i ~/.ssh/runpod_clashbot -p 48431 root@64.247.206.120` (32 vCPU / 250 GB
+>   rented; nproc shows host 255 -- use <= 30 procs; 30 GB overlay, /workspace NOT persistent; L40 46 GB, driver 595.91;
+>   Ubuntu 24.04, py3.12/3.13, no Rust). $0.82/h. Setup worker a2ef9aca: venv + torch cu128, RoyaleSim Linux build,
+>   needed data only (no secrets/reader), bit-exact SIM check vs VM backup, /workspace/POD_README.md. A friend's GCP
+>   free-trial n2-standard-128 may follow (free trial likely capped at 8 vCPU until upgraded).
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
