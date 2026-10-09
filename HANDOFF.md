@@ -4930,6 +4930,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   73% < 4; median 6.0 elixir spent in the 10 s before (Knight, IW, Skeletons, Log; 17% incl. an X-Bow). Time under fire:
 >   57% broke, 28% gate hold (median p .19 vs tau .45), 15% playing. Primary cause: broke 151, answered but fell 82, gate
 >   hold 77. Skeleton swarm (>= 4 on my half): no splash answer though affordable 31% (current model 25/76), p .10-.14.
+> * **RUN-OVER SCAN FINAL (L74/runover/summary.txt).** Losses with a run-over fall 234/278 (84%) vs wins 18/289. First tower
+>   lost per loss: broke 161/276, gate hold 59, answered-but-fell 56 (towerref_w2: 22/9/10 of 41). Placement: 99/310
+>   run-overs had no play in the threat lane (50 none, 49 elsewhere). Skeleton Barrel on my half: bot elixir 2.5 vs pros 6.8,
+>   splash answer within 6 s 73% vs 93%, Tesla first 9% vs 29%; 4+ skeletons: 2.8 vs 5.7, 60% vs 69%. Evo Tesla (a) in
+>   training: evo form in 98% of X-Bow+Tesla rows, 16,547 evo Tesla plays; live hand carries the form. Open (b): training
+>   has >= 3 tombstone bodies in 33% of row-sides vs live rarely (native raw-name check). Proposals: economy (in A/B),
+>   threatened gate (building), splash bias vs swarms (rule-like; not pursued without the owner).
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
