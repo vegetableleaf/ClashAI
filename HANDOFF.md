@@ -5294,6 +5294,20 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   cycle-specific part is ~0.004 CE. **General lesson (a, 3 arms): imitation fine-tunes of the RL checkpoint toward pro
 >   labels lose 5-7 pp in SIM.** Dose arms (0.5/0.25) cancelled. Parked next iteration: RL fine-tune WITH the columns vs
 >   an RL control without (rl_royale.py; post-RL cell/tower refine re-applied) -- after defence E2 frees the pod.
+>   Branch worktree-agent-abf279452971c0294 @ddc649d (not merged); results tgz in that worktree's .foreman/scratch.
+> * **pd diag (a996a070, ee206c0): lead hypothesis (b) KILLED.** The pending first play is in every input channel,
+>   live and SIM: hand slot masked, elixir deducted (57/60), past channel, own_effects 60/60, pending spells as
+>   projectile/effect rows (15/15). Fork "pending view vs landed truth" (60 pending + 60 free states, few matches):
+>   Tornado top card 34.5% view / 31.0% truth vs ~0-2% free; agreement view-truth 88%. After Log 67% Tornado (n 9), after
+>   X-Bow 100% (n 3). => The Tornado over-pick is the MODEL's habit on post-play states, not a view error. A card rule
+>   (no spell->spell follow-up) conflicts with the owner's "learned fixes, never hardcoded"; learned route TBD.
+> * **OWNER 10-09 ~19:xx: "every strategy falls short ... the evaluation may be flawed."** Lead answer: both, with
+>   specific causes -- (i) 960-game win rate resolves +-3.6 pp, a single mechanic is plausibly 1-3 pp; some "fails" were
+>   underpowered (patience 240 pairs [-7.1, +4.6]); (ii) ONE frozen opponent (gen_v1_s0) in the same engine/decks as
+>   the RL league -> possible incumbent bias (b, untested); (iii) SIM-vs-live transfer never calibrated; (iv) mechanics
+>   were bolted on as rules / imitation fine-tunes onto a policy not trained with them; (v) RL R3c base vs R1e 542 vs
+>   548 (p .76): RL itself added nothing measurable. New instrument started: forked same-moment two-choice test
+>   (a13e48dd; sneaky lock, wait-for-better-card, then combo), common random numbers, B-A at +10 s/+20 s/end.
 > * **Rocket+Tornado combo SIM (a67f26ce, f022854; pod; delay-0 wrapper):** pull works -- clump value in blast at impact
 >   61% (combo) vs 15% (lone Rocket, same moment), destroyed +.34 elixir/fire [-.08, +.74] (tanks survive ~1480 dmg).
 >   Wins: no combo arm beats its lone twin; cb9 -.2 pp [-1.3, +.8] (6% of matches fire), cb7 -1.9, cb5 -5.0; air pool cb7
