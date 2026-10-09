@@ -1,0 +1,12 @@
+
+=== PRO barrel episodes on my half (X-Bow+Tesla deck rows): n=1208
+  elixir at start: median 6.8; < 2: 16; < 3: 82
+  any play within -1..+6 s: 1188/1208 (98%); a splash answer (Log/Tesla/IW/Tornado): 1119/1208 (93%)
+  cards played: {'tesla': 460, 'tornado': 381, 'the-log': 370, 'ice-wizard': 352, 'skeletons': 322, 'knight': 230, 'x-bow': 95, 'electro-spirit': 59, 'rocket': 42, 'archers': 34}
+  first card: {'tesla': 356, 'tornado': 213, 'ice-wizard': 176, 'the-log': 134, 'skeletons': 106, 'knight': 90, 'x-bow': 38, 'rocket': 24, '(none)': 20, 'archers': 17}
+
+=== PRO swarm episodes on my half (X-Bow+Tesla deck rows): n=2571
+  elixir at start: median 5.7; < 2: 110; < 3: 346
+  any play within -1..+6 s: 2354/2571 (92%); a splash answer (Log/Tesla/IW/Tornado): 1774/2571 (69%)
+  cards played: {'the-log': 862, 'skeletons': 769, 'ice-wizard': 733, 'knight': 570, 'tornado': 400, 'tesla': 398, 'x-bow': 272, 'electro-spirit': 157, 'rocket': 111, 'archers': 104}
+  first card: {'the-log': 520, 'ice-wizard': 413, 'skeletons': 331, 'knight': 255, 'tornado': 251, '(none)': 217, 'tesla': 189, 'x-bow': 145, 'electro-spirit': 75, 'rocket': 59}

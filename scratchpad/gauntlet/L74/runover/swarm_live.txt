@@ -1,0 +1,60 @@
+
+=== barrel episodes on my half, all families: n=158 in 35 matches
+  elixir at start: median 2.5; < 2: 57; < 3: 92
+  any play within -1..+6 s: 138/158; a splash answer (Log/Tesla/IW/Tornado): 115/158
+  cards played: {'Skeletons': 48, 'IceWizard': 47, 'Log': 46, 'Tornado': 40, 'Knight': 25, 'Tesla': 18, 'Xbow': 7}
+  first card: {'Tornado': 31, 'IceWizard': 29, 'Skeletons': 26, 'Log': 21, '(none)': 20, 'Tesla': 15, 'Knight': 12, 'Xbow': 4}
+  NO splash answer although one was affordable and the gate held: 36/158; held: {'Tornado': 23, 'Log': 19, 'IceWizard': 9, 'Tesla': 6}; p median 0.10687997937202454 vs tau 0.35
+  NO splash answer and none affordable (broke / not in hand): 7/158
+  tower HP lost in 12 s after start, splash answer: median 375 mean 1074 (n 115)
+  tower HP lost in 12 s after start, no splash answer: median 108 mean 546 (n 43)
+
+=== barrel episodes on my half, towerref_w2 (current): n=16 in 3 matches
+  elixir at start: median 3.8; < 2: 3; < 3: 6
+  any play within -1..+6 s: 14/16; a splash answer (Log/Tesla/IW/Tornado): 13/16
+  cards played: {'Log': 6, 'IceWizard': 6, 'Skeletons': 5, 'Tesla': 4, 'Tornado': 3, 'Xbow': 2, 'Knight': 2}
+  first card: {'Tesla': 4, 'Tornado': 3, 'IceWizard': 3, '(none)': 2, 'Xbow': 1, 'Skeletons': 1, 'Log': 1, 'Knight': 1}
+  NO splash answer although one was affordable and the gate held: 2/16; held: {'Tornado': 2, 'Log': 1, 'IceWizard': 1}; p median 0.145335016772151 vs tau 0.35
+  NO splash answer and none affordable (broke / not in hand): 1/16
+  tower HP lost in 12 s after start, splash answer: median 63 mean 293 (n 13)
+  tower HP lost in 12 s after start, no splash answer: median 352 mean 1504 (n 3)
+
+=== barrel episodes on my half, fv6 (stack2k + towerref): n=40 in 9 matches
+  elixir at start: median 3.6; < 2: 10; < 3: 16
+  any play within -1..+6 s: 35/40; a splash answer (Log/Tesla/IW/Tornado): 31/40
+  cards played: {'IceWizard': 13, 'Tornado': 11, 'Log': 11, 'Skeletons': 9, 'Tesla': 7, 'Xbow': 4, 'Knight': 4}
+  first card: {'Tornado': 9, 'IceWizard': 7, 'Tesla': 7, '(none)': 5, 'Skeletons': 5, 'Log': 4, 'Xbow': 2, 'Knight': 1}
+  NO splash answer although one was affordable and the gate held: 7/40; held: {'Log': 6, 'Tornado': 3, 'IceWizard': 2, 'Tesla': 1}; p median 0.20070374011993408 vs tau 0.35
+  NO splash answer and none affordable (broke / not in hand): 2/40
+  tower HP lost in 12 s after start, splash answer: median 108 mean 896 (n 31)
+  tower HP lost in 12 s after start, no splash answer: median 352 mean 1070 (n 9)
+
+=== swarm episodes on my half, all families: n=572 in 196 matches
+  elixir at start: median 2.8; < 2: 194; < 3: 300
+  any play within -1..+6 s: 454/572; a splash answer (Log/Tesla/IW/Tornado): 346/572
+  cards played: {'IceWizard': 155, 'Skeletons': 148, 'Log': 144, 'Knight': 135, 'Tornado': 88, 'Tesla': 61, 'Xbow': 27, 'Rocket': 3}
+  first card: {'(none)': 118, 'IceWizard': 96, 'Log': 90, 'Skeletons': 78, 'Knight': 73, 'Tornado': 56, 'Tesla': 40, 'Xbow': 18, 'Rocket': 3}
+  NO splash answer although one was affordable and the gate held: 177/572; held: {'Tornado': 118, 'Log': 73, 'Tesla': 63, 'IceWizard': 50}; p median 0.1040349081158638 vs tau 0.35
+  NO splash answer and none affordable (broke / not in hand): 49/572
+  tower HP lost in 12 s after start, splash answer: median 344 mean 1071 (n 346)
+  tower HP lost in 12 s after start, no splash answer: median 222 mean 977 (n 226)
+
+=== swarm episodes on my half, towerref_w2 (current): n=76 in 28 matches
+  elixir at start: median 3.9; < 2: 20; < 3: 31
+  any play within -1..+6 s: 60/76; a splash answer (Log/Tesla/IW/Tornado): 45/76
+  cards played: {'IceWizard': 25, 'Skeletons': 21, 'Log': 20, 'Knight': 12, 'Tornado': 8, 'Tesla': 7, 'Xbow': 6, 'Rocket': 2}
+  first card: {'(none)': 16, 'IceWizard': 15, 'Log': 13, 'Skeletons': 11, 'Knight': 7, 'Tesla': 4, 'Tornado': 4, 'Xbow': 4, 'Rocket': 2}
+  NO splash answer although one was affordable and the gate held: 25/76; held: {'Tornado': 19, 'Tesla': 11, 'IceWizard': 9, 'Log': 9}; p median 0.13919483125209808 vs tau 0.35
+  NO splash answer and none affordable (broke / not in hand): 6/76
+  tower HP lost in 12 s after start, splash answer: median 429 mean 1111 (n 45)
+  tower HP lost in 12 s after start, no splash answer: median 216 mean 832 (n 31)
+
+=== swarm episodes on my half, fv6 (stack2k + towerref): n=169 in 58 matches
+  elixir at start: median 3.5; < 2: 43; < 3: 70
+  any play within -1..+6 s: 131/169; a splash answer (Log/Tesla/IW/Tornado): 104/169
+  cards played: {'IceWizard': 51, 'Log': 45, 'Skeletons': 44, 'Knight': 31, 'Tornado': 25, 'Tesla': 18, 'Xbow': 8, 'Rocket': 2}
+  first card: {'(none)': 38, 'IceWizard': 30, 'Log': 29, 'Skeletons': 21, 'Tornado': 18, 'Knight': 17, 'Tesla': 8, 'Xbow': 6, 'Rocket': 2}
+  NO splash answer although one was affordable and the gate held: 56/169; held: {'Tornado': 34, 'Tesla': 26, 'Log': 22, 'IceWizard': 19}; p median 0.1390530839562416 vs tau 0.35
+  NO splash answer and none affordable (broke / not in hand): 9/169
+  tower HP lost in 12 s after start, splash answer: median 119 mean 1004 (n 104)
+  tower HP lost in 12 s after start, no splash answer: median 216 mean 868 (n 65)

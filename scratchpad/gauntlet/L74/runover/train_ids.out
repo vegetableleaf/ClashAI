@@ -1,0 +1,118 @@
+rows 3517863; X-Bow+Tesla deck rows 389968 (11.1%); +Ice Wizard 313741; replays 2800
+Tesla deck_form among X-Bow+Tesla rows: Counter({1: 383842, 0: 6126})
+Tesla deck_form among ALL rows with Tesla in deck: Counter({1: 644578, 0: 46965})
+replays with evo Tesla in the X-Bow deck: 2763
+Tesla plays (rows): 27789 by played form: Counter({1: 26210, 0: 1579}) | in X-Bow decks: Counter({1: 16547, 0: 213})
+rows with Tesla in hand, X-Bow decks, by form: Counter({1: 174761, 0: 3231})
+tag ('032ab13a879549868606f21f50c01a16', 1)
+tag ('034fd0b7c5b342609329bcf805497606', 1)
+tag ('03a0430393bd4f6dbf4f95f321908fa8', 1)
+tag ('03e137c4616e4deba475f99d6ebf06dd', 1)
+tag ('041332106f474899877739aa6a741cd3', 1)
+
+Tesla body tokens (cls, side, form, row):
+  ('tesla', 'enemy', 0, 'other_row') 137000
+  ('tesla', 'enemy', 0, 'xbow_deck_row') 5707
+  ('tesla', 'enemy', 1, 'other_row') 47225
+  ('tesla', 'enemy', 1, 'xbow_deck_row') 1549
+  ('tesla', 'mine', 0, 'other_row') 56934
+  ('tesla', 'mine', 0, 'xbow_deck_row') 86223
+  ('tesla', 'mine', 1, 'other_row') 17156
+  ('tesla', 'mine', 1, 'xbow_deck_row') 31501
+
+body tokens by class (top 60):
+  skeletons              2028130
+  skeleton_army          877633
+  knight                 473510
+  bats                   398312
+  barbarians             397671
+  tesla                  383295
+  berserker              362836
+  zappies                351914
+  royal_hogs             329199
+  ice_wizard             327497
+  goblins                323525
+  minions                321490
+  royal_recruit          313590
+  goblin_gang            273754
+  mighty_miner           272959
+  inferno_dragon         255055
+  cannon                 253680
+  bowler                 252471
+  minion_horde           240588
+  x_bow                  238535
+  firecracker            233782
+  rascals                233702
+  hog_rider              232146
+  spear_goblins          227738
+  royal_ghost            222955
+  princess               218014
+  goblinstein            209196
+  archers                195290
+  baby_dragon            191665
+  musketeer              183212
+  valkyrie               178766
+  furnace                174350
+  mortar                 172032
+  tombstone              172032
+  cannon_cart            168540
+  balloon                152149
+  giant                  145682
+  bomber                 137926
+  fire_spirit            134355
+  battle_ram             124708
+  skeleton_dragons       116024
+  ice_golem              115414
+  giant_skeleton         108659
+  dark_prince            102494
+  pekka                  101395
+  lava_hound             99673
+  dart_goblin            98709
+  electro_spirit         95944
+  guards                 95842
+  miner                  95597
+  goblin_cage            92543
+  wizard                 91002
+  sparky                 90114
+  mega_minion            89052
+  lava_pups              88036
+  mini_pekka             84267
+  goblin_drill           84029
+  wall_breakers          82589
+  golden_knight          82405
+  ice_spirit             79034
+
+per (row, side): how many bodies of the class (distribution; a unique unit > 1 = children named as parent)
+  skeleton_king      row-sides    68487  max   2  1:67926 2:561 3+:0 (0.0%)
+  skeleton_barrel    row-sides    67180  max   2  1:67175 2:5 3+:0 (0.0%)
+  witch              row-sides    72376  max   2  1:71140 2:1236 3+:0 (0.0%)
+  night_witch        row-sides    63450  max   2  1:63038 2:412 3+:0 (0.0%)
+  tombstone          row-sides    99186  max   5  1:59735 2:6725 3+:32726 (33.0%)
+  goblin_hut         row-sides    71997  max   2  1:71736 2:261 3+:0 (0.0%)
+  furnace            row-sides   169995  max   3  1:165645 2:4345 3+:5 (0.0%)
+  barbarian_hut      row-sides      471  max   2  1:465 2:6 3+:0 (0.0%)
+  goblin_drill       row-sides    83951  max   2  1:83873 2:78 3+:0 (0.0%)
+  phoenix            row-sides    32697  max   3  1:32009 2:687 3+:1 (0.0%)
+  mother_witch       row-sides    66466  max   2  1:66056 2:410 3+:0 (0.0%)
+  skeleton_army      row-sides    84052  max  31  1:7055 2:4717 3+:72280 (86.0%)
+  suspicious_bush    row-sides    27403  max   3  1:20904 2:6396 3+:103 (0.4%)
+  goblin_gang        row-sides    67326  max  10  1:9547 2:8428 3+:49351 (73.3%)
+  graveyard          none
+  goblin_barrel      none
+  skeletons          row-sides   709934  max  27  1:139046 2:152788 3+:418100 (58.9%)
+  bats               row-sides   121154  max  12  1:16178 2:34025 3+:70951 (58.6%)
+  goblins            row-sides   143700  max  15  1:56998 2:30672 3+:56030 (39.0%)
+  spear_goblins      row-sides   119909  max   8  1:45242 2:47723 3+:26944 (22.5%)
+  barbarians         row-sides   281697  max  10  1:244191 2:5563 3+:31943 (11.3%)
+  golem              row-sides    58743  max   2  1:58592 2:151 3+:0 (0.0%)
+  golemite           row-sides    13565  max   4  1:4061 2:9489 3+:15 (0.1%)
+  lava_hound         row-sides    99230  max   2  1:98787 2:443 3+:0 (0.0%)
+  lava_pups          row-sides    22719  max  12  1:3649 2:3242 3+:15828 (69.7%)
+  elixir_golem       row-sides    26607  max   2  1:26131 2:476 3+:0 (0.0%)
+  royal_recruits     none
+  royal_recruit      row-sides    85825  max  12  1:27374 2:7148 3+:51303 (59.8%)
+  goblin_giant       row-sides    23717  max   2  1:23654 2:63 3+:0 (0.0%)
+  goblin_cage        row-sides    92036  max   2  1:91529 2:507 3+:0 (0.0%)
+  guards             row-sides    39269  max   6  1:6773 2:8542 3+:23954 (61.0%)
+  minion_horde       row-sides    52031  max  10  1:5728 2:4499 3+:41804 (80.3%)
+  minions            row-sides   126331  max   6  1:19010 2:20261 3+:87060 (68.9%)
