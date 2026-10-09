@@ -5245,6 +5245,16 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   `--pipeline-decisions` (model decides while a play is pending; shared follow-up rules).
 > * log-air block merge candidate df66b0d (conflict in test_live_options resolved: main's card_levels assertion + the
 >   branch's log_air tests) -> blind verifier a842013f.
+> * **--pipeline-decisions built (a996a070, l74-pipeline-decisions 0b3be39/231eff3; not merged, SIM/live untested).** Why
+>   pipelining failed before (L74/pipeline_plays): OFF 628 vs v1 487, v2 570/584; 4.4x pros' consecutive plays within 20
+>   ticks; P(Tornado | affordable) at second plays .50 vs pros .16. New design: shared follow_up_verdict, pending play
+>   shown as executed (pending_board / pending_hand / elixir / own_effects), newest frame only, optional
+>   --pipeline-tau-delta. Offline replay (2,637 play decisions): gate p .407 -> .074 right after a play; 4.9% would want
+>   a second play at the first window decision vs pros 5.8% within 24 ticks; but Tornado is 40% of those second cards vs
+>   pros 12%. GAP: merged --follow-up-taps SIM support is only in the ghost Match, NOT in SelfPlaySide (search_s0) ->
+>   the combo cannot be benchmarked until a996a070 adds follow_ups to SelfPlaySide (high priority). Owner: tell them when
+>   consecutive plays < 1.2 s (incl. Rocket+Tornado) are reliable -> owner switches to the main account for friendlies.
+>   Owner grinding the 2nd account meanwhile (live stays stopped; nothing touches the emulator).
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
