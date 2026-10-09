@@ -16,6 +16,8 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 from pipeline.decision_options import (LOG_AIR_BLOCKED, LOG_AIR_UNIT_RADIUS, _covers, cell_centres_tiles, log_air_board,
                                       log_air_cell, rolling_corridor)
 from pipeline.body_identity import CATALOG
+from pipeline.obs_contract import _catalog_names
+from pipeline.decision_options import log_air_ground_child_tiles
 from pipeline.model_v3 import cell_label
 from pipeline.obs_contract import Tower, Unit
 
@@ -35,9 +37,19 @@ def board(pub):
 from types import SimpleNamespace
 
 
+NAMES = _catalog_names()
+
+
+def eggs_of(pub):
+    """Ground children of a flying parent (the Phoenix egg), from the raw reader bodies, as the live gate reads them."""
+    ents = [dict(side=b['side'], x=b['x'], y=b['y'], name=NAMES.get(int(b['card_id']), str(b['card_id'])), max_hp=b['max_hp'])
+            for b in pub.get('raw_bodies', []) if int(b['card_id']) >= 0]
+    return log_air_ground_child_tiles(ents, pub['observer_side'])
+
+
 def classify(pub, xy):
     bs = board(pub)
-    ground, air, towers = log_air_board(bs)
+    ground, air, towers = log_air_board(bs, eggs_of(pub))
     x, y = xy[0] * 18.0, xy[1] * 32.0
     cx, cy = np.array([x]), np.array([y])
     g = _covers(cx, cy, [p[:2] for p in ground], CORRIDOR, LOG_AIR_UNIT_RADIUS).any()
@@ -96,6 +108,11 @@ def main(out, pattern=None):
                     continue
                 xy = dec['decision'].get('xy') or d['xy']
                 g, a, t, b3 = classify(pub, xy)
+                from pipeline import vocab as _v
+                res.setdefault('ability_class_bodies_at_logs', collections.Counter()).update(
+                    _v.UNIT_VOCAB[u['cls']] for u in pub['model_bodies'] if _v.UNIT_VOCAB[u['cls']].endswith('_ability'))
+                if eggs_of(pub):
+                    res['logs_with_egg_on_board'] = res.get('logs_with_egg_on_board', 0) + 1
                 n_log += 1
                 res['logs'] += 1
                 kind = 'hits' if (g or t) else ('only_air' if a else 'empty')
@@ -141,6 +158,7 @@ def main(out, pattern=None):
             res['matches_with_log'] += 1
         res['per_match'].append(n_log)
     res['retarget'] = dict(res['retarget'])
+    res['ability_class_bodies_at_logs'] = dict(res.get('ability_class_bodies_at_logs', {}))
     res['empty_classes'] = dict(res.get('empty_classes', {}))
     for k in ('after_only_air', 'after_only_air_attacks_air', 'after_all', 'units_in_path_only_air'):
         res[k] = dict(res[k].most_common())

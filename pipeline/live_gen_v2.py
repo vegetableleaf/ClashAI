@@ -14,7 +14,8 @@ from dataclasses import replace
 from .decision_options import (BARREL_KEY, DecisionOptions, barrel_landings, choose_cells, choose_slot, enemy_unit_count,
                                gate_taus, hazard_draw, is_xbow, lethal_rocket_choice, tau_threat_state,
                                threat_on, threat_taus, tower_threat, xbow_dead_lane_cells, enemy_body_tiles,
-                               princess_dead_state, rocket_covers_king, rocket_kills_king, log_air_board, LOG_AIR_BLOCKED)
+                               princess_dead_state, rocket_covers_king, rocket_kills_king, log_air_board, LOG_AIR_BLOCKED,
+                               log_air_ground_child_tiles, is_log)
 from .live_mem import my_side_of
 from .decision_options import enemy_princess_hps, hp_after, record_hp
 
@@ -212,8 +213,11 @@ class GenPilot(LegacyGenPilot):
                     context['rocket_boards'] = [(self._princess_alive, enemy_body_tiles(bs), kills_king)]
             if cell_options.uses_barrels:              # the model's own projectile tokens, as SIM's match_kwargs
                 context.update(grid=self.grid, barrels=[barrel_landings(b['projectiles'][0], self.gid.get(BARREL_KEY))])
-            if cell_options.log_air != 'off':          # the decision board's enemy units / towers, as SIM's match_kwargs
-                context.update(grid=self.grid, log_air_boards=[log_air_board(bs)])
+            if cell_options.log_air != 'off' and is_log(name):   # the decision board's enemy units / towers, as SIM's match_kwargs
+                from .live_mem import to_observe        # the raw bodies: an egg is ground whatever class it wears
+                side = my_side_of(frame)
+                context.update(grid=self.grid, log_air_boards=[log_air_board(
+                    bs, log_air_ground_child_tiles(to_observe(frame, side, info['names'])['entities'], side))])
             logits = self.guard_cells(frame, d, logits)
             moved = []
             cell = int(choose_cells(logits, [name], cell_options, log_air_moved=moved, **context)[0])

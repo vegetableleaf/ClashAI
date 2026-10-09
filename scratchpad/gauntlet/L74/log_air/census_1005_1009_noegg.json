@@ -1,10 +1,10 @@
 {
- "files": 811,
+ "files": 800,
  "matches_with_log": 727,
  "logs": 4153,
- "only_air": 28,
+ "only_air": 29,
  "empty": 173,
- "hits": 3952,
+ "hits": 3951,
  "barrel": 4,
  "cases": [
   {
@@ -66,6 +66,30 @@
     "Xbow",
     "Tesla",
     "Log"
+   ]
+  },
+  {
+   "file": "20261006_141406",
+   "tick": 3878,
+   "xy": [
+    14.5,
+    24.5
+   ],
+   "retarget": "chip",
+   "value": 0.0,
+   "path": [
+    "bats",
+    "bats",
+    "bats",
+    "bats",
+    "bats",
+    "phoenix"
+   ],
+   "hand": [
+    "Log",
+    "Tesla",
+    "Xbow",
+    "Rocket"
    ]
   },
   {
@@ -610,11 +634,11 @@
  ],
  "retarget": {
   "ground": 15,
-  "chip": 12,
+  "chip": 13,
   "unchanged": 1
  },
  "after_only_air": {
-  "Skeletons": 7,
+  "Skeletons": 8,
   "Tornado": 6,
   "Knight": 5,
   "Tesla": 4,
@@ -622,7 +646,7 @@
   "Xbow": 2
  },
  "after_only_air_attacks_air": {
-  "False": 20,
+  "False": 21,
   "True": 8
  },
  "after_all": {
@@ -636,8 +660,8 @@
  },
  "units_in_path_only_air": {
   "minion_horde": 26,
+  "bats": 18,
   "lava_pups": 16,
-  "bats": 13,
   "clone": 11,
   "balloon": 8,
   "minions": 5,
@@ -645,8 +669,8 @@
   "inferno_dragon": 4,
   "mega_minion": 3,
   "baby_dragon": 2,
+  "phoenix": 2,
   "electro_dragon": 2,
-  "phoenix": 1,
   "flying_machine": 1
  },
  "seen_130607": [
@@ -692,7 +716,6 @@
    ]
   }
  ],
- "ability_class_bodies_at_logs": {},
  "empty_classes": {
   "no_enemy_unit": 31,
   "far>3.5": 19,
@@ -2777,7 +2800,6 @@
    "n_foes": 0
   }
  ],
- "logs_with_egg_on_board": 3,
- "retarget_value_mean": 3.75,
- "logs_per_match_mean": 5.120838471023428
+ "retarget_value_mean": 3.6206896551724137,
+ "logs_per_match_mean": 5.19125
 }

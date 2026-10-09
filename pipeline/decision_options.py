@@ -601,22 +601,71 @@ def log_air_traits():
             continue
         c = rows.get(name) or rows.get(vocab.base_key(name))
         out[i] = ((name == 'lava_pups', LOG_AIR_UNKNOWN_VALUE) if c is None else
-                  ((c.get('flying_height') or 0) > 0 and vocab.base_key(name) not in LOG_AIR_GROUND_SPAWNERS,
+                  ((c.get('flying_height') or 0) > 0 and vocab.base_key(name) not in LOG_AIR_GROUND_SPAWNERS
+                   and not name.endswith('_ability'),
                    float(c['elixir']) / max(int(c.get('count') or 1), 1)))
     return out
 
 
-def log_air_board(bs):
+@lru_cache(maxsize=1)
+def log_air_ground_children():
+    """{engine key of a FLYING parent card: {max_hp, ...}} of its bodies that have no vocab class of their own and so
+    carry the parent's class (body_identity reason 'child_no_class' and an HP no parent body has: the Phoenix egg, 124 x the level ladder = 317 at
+    level 11; the respawned flying Phoenix has the parent's HP and stays air). They are
+    GROUND bodies (catalog PhoenixEgg flying_height 0) that a Log hits, but the board shows them as the flying parent."""
+    from . import vocab
+    from .body_identity import tables
+    flying = {vocab.UNIT_VOCAB[i] for i, (f, _) in log_air_traits().items() if f}
+    out = {}
+    for (parent, _form), by_hp in tables().items():
+        if parent not in flying:
+            continue
+        for hp, idents in by_hp.items():
+            if any(x[2] == 'child_no_class' for x in idents) and not any(x[2] == 'parent' for x in idents):
+                out.setdefault(parent, set()).add(int(hp))      # not the flying PhoenixNoRespawn: it has the parent's HP
+    return out
+
+
+def log_air_ground_child_tiles(entities, my_side):
+    """Tile positions (x, y; my frame) of the enemy bodies in raw engine-shaped ``entities`` (dicts: side, x, y in
+    millitiles, name, max_hp: SIM ``state['entities']`` / live ``to_observe(...)['entities']``) that are ground children
+    of a flying parent (log_air_ground_children): per BODY by its max HP, not per class. () when there are none."""
+    from . import vocab
+    from .obs_contract import _engine_xy
+    kids = log_air_ground_children()
+    out = []
+    for e in entities or ():
+        if int(e['side']) == int(my_side) or e.get('name') in (None, '-1'):
+            continue
+        hps = kids.get(vocab.engine_key(str(e['name'])))
+        if hps and e.get('max_hp') is not None and float(e['max_hp']) == int(e['max_hp']) and int(e['max_hp']) in hps:
+            x, y = _engine_xy(float(e['x']), float(e['y']), int(my_side) == 1)
+            out.append((x * 18.0, y * 32.0))
+    return tuple(out)
+
+
+LOG_AIR_CHILD_MATCH_TILES = 0.75    # a ground child (an egg does not move) claims the nearest same-position flyer-class unit
+
+
+def log_air_board(bs, ground_children=()):
     """(ground, air, towers) of a BoardState's enemy side, in tiles of my frame (the Log's): ground = ((x, y, elixir
     value), ...) troops and buildings (side != 0, as enemy_body_tiles), air = ((x, y), ...), towers = alive enemy
-    ((x, y, radius, hp fraction, lane or None for the king), ...). Public data only."""
+    ((x, y, radius, hp fraction, lane or None for the king), ...). Public data only.
+    ``ground_children`` (log_air_ground_child_tiles): tiles of ground bodies that wear a flying parent's class (the Phoenix
+    egg); the nearest flying-class unit within LOG_AIR_CHILD_MATCH_TILES of each is ground, not air."""
     traits = log_air_traits()
     ground, air = [], []
+    claim = list(ground_children)
     for u in bs.units:
         if int(u.side) == 0 or int(u.cls) not in traits:
             continue
         flying, value = traits[int(u.cls)]
         x, y = float(u.x) * 18.0, float(u.y) * 32.0
+        if flying and claim:
+            near = min(range(len(claim)), key=lambda k: math.hypot(claim[k][0] - x, claim[k][1] - y))
+            if math.hypot(claim[near][0] - x, claim[near][1] - y) <= LOG_AIR_CHILD_MATCH_TILES:
+                claim.pop(near)
+                flying, value = False, LOG_AIR_UNKNOWN_VALUE
         (air.append((x, y)) if flying else ground.append((x, y, value)))
     from .public_geometry import constants
     radius = constants()['tower_radius']
@@ -1196,7 +1245,9 @@ def match_kwargs(matches):
                                      for land, s, x, y in m.done_plays[-8:]],)
                              for row, m in zip(out['lethal'], matches)]
     if options.log_air != 'off':        # the enemy board the Log's corridor is judged on (the decision BoardState, my frame)
-        out.update(grid=cfg['grid'], log_air_boards=[log_air_board(m._cur[1]) for m in matches])
+        out.update(grid=cfg['grid'], log_air_boards=[
+            log_air_board(m._cur[1], log_air_ground_child_tiles((getattr(m, 'state', None) or {}).get('entities'), getattr(m, 'side', 0)))
+            for m in matches])
     if options.uses_barrels:            # the very projectile tokens the model saw (gen_row, fv >= 4), as live's batch
         rows = [getattr(m, '_gen_row', None) for m in matches]
         if any(r is None or 'projectiles' not in r for r in rows):

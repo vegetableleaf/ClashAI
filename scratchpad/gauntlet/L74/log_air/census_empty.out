@@ -1,4 +1,4 @@
-Logs 4153 only_air 29 of which an enemy projectile lands in the corridor (Goblin Barrel exemption, approx.) 4 empty 173 hits 3951
+Logs 4153 only_air 28 of which an enemy projectile lands in the corridor (Goblin Barrel exemption, approx.) 4 empty 173 hits 3952
 {'no_enemy_unit': '31 (18%)', 'far>3.5': '19 (11%)', 'goblin_barrel_in_corridor': '77 (45%)', 'near_miss<=3.5': '46 (27%)'}
 no_enemy_unit n 31 elixir mean 6.0 nearest-foe dist median None cast y top [(17.5, 17), (27.5, 9), (11.5, 5)] median n_foes 0
 far>3.5 n 19 elixir mean 5.0 nearest-foe dist median 7.3 cast y top [(27.5, 12), (17.5, 6), (28.5, 1)] median n_foes 1

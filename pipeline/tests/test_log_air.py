@@ -9,7 +9,7 @@ import pytest
 import torch
 
 from pipeline import vocab
-from pipeline.decision_options import (LOG_AIR_BLOCKED, DecisionOptions, add_arguments, choose_cells, config_from_args,
+from pipeline.decision_options import (LOG_AIR_BLOCKED, DecisionOptions, log_air_ground_child_tiles, log_air_ground_children, add_arguments, choose_cells, config_from_args,
                                       decide_batch, log_air_board, log_air_cell, log_air_traits, lethal_log_cell,
                                       match_kwargs, options_from_config, rolling_corridor)
 from pipeline.obs_contract import Tower, Unit
@@ -70,6 +70,60 @@ def test_skeleton_barrel_is_exempt_like_the_goblin_barrel():
     mixed = board([unit('skeleton_barrel', 3.5, 15.0), unit('mega_minion', 3.5, 14.0)])
     assert pick(AIM_LOGITS, mixed, mode='block') == AIM    # the barrel alone makes the corridor not air-only
     assert pick(AIM_LOGITS, board([unit('mega_minion', 3.5, 14.0)]), mode='block') == LOG_AIR_BLOCKED
+
+
+def test_ability_classes_are_not_flyers():
+    """balloon_hero_ability = the Hero Balloon's thrown SkeletonTroopers (ground); mega_minion_hero_ability = the warp strike
+    (an effect, not a body). Detector-only classes, never emitted by the engine / reader path; never air."""
+    t = log_air_traits()
+    for name in ('balloon_hero_ability', 'mega_minion_hero_ability', 'knight_hero_ability'):
+        assert t[ID(name)][0] is False
+    assert t[ID('balloon_hero')][0] and t[ID('mega_minion_hero')][0] and t[ID('mega_minion')][0]   # the units still fly
+
+
+def test_phoenix_egg_hps_are_ground_children_and_the_flyer_is_not():
+    kids = log_air_ground_children()['phoenix']
+    assert kids == {262, 288, 317, 348, 383, 420, 461, 507, 558}              # PhoenixEgg 124 x the level ladder
+    from pipeline.body_identity import tables
+    parent = {hp for hp, v in tables()[('phoenix', 0)].items() if any(x[2] == 'parent' for x in v)}
+    assert 411 not in kids and not kids & parent and {1528, 1052, 871} <= parent   # the (respawned) Phoenix keeps flying
+
+
+def raw(side, x, y, name, mhp):
+    return dict(side=side, x=x, y=y, name=name, max_hp=mhp, hp=mhp)
+
+
+def test_ground_child_tiles_follow_my_frame_for_both_sides():
+    # my frame has my king at the high-y edge: observer side 0 sees the enemy (side 1) egg at native (16000, 23100) at
+    # model (16.0, 8.9); observer side 1 (mirror on) sees the enemy (side 0) egg at native (2000, 8900) at the same tile
+    a = log_air_ground_child_tiles([raw(1, 16000, 23100, 'Phoenix', 420)], 0)
+    b = log_air_ground_child_tiles([raw(0, 2000, 8900, 'Phoenix', 420)], 1)
+    assert len(a) == len(b) == 1 and np.allclose(a, b, atol=1e-6) and np.allclose(a[0], (16.0, 8.9), atol=1e-6)
+    assert log_air_ground_child_tiles([raw(1, 16000, 23100, 'Phoenix', 1528), raw(1, 1000, 1000, 'Bats', 420),
+                                       raw(0, 16000, 23100, 'Phoenix', 420), raw(1, 1000, 1000, '-1', 420)], 0) == ()
+    assert log_air_ground_child_tiles(None, 0) == ()
+
+
+def test_phoenix_egg_in_the_corridor_is_ground_but_bats_alone_still_block():
+    """Real case 20261006_141406 tick 3878: 5 Bats plus a 420-HP egg (here moved mid-lane): the Log hits the egg."""
+    bats = [unit('bats', 8.2 + .3 * k, 10.0 + .2 * k) for k in range(5)]
+    egg = unit('phoenix', 9.0, 8.9)
+    eggs = log_air_ground_child_tiles([raw(1, 9000, 23100, 'Phoenix', 420)], 0)
+    aim = cell(9.0, 17.5)                                   # mid-lane: no tower in the roll
+    logits = peaked({aim: 1.})
+    with_egg = board(bats + [egg])
+    # per-class (the defect): the egg counts as a flyer and the Log is blocked
+    assert log_air_cell(logits, CORRIDOR, log_air_board(with_egg), (), 'lattice', 'block', aim) == LOG_AIR_BLOCKED
+    # per-body: the egg is ground, so the corridor is not air-only
+    assert log_air_cell(logits, CORRIDOR, log_air_board(with_egg, eggs), (), 'lattice', 'block', aim) == aim
+    assert log_air_cell(logits, CORRIDOR, log_air_board(board(bats), ()), (), 'lattice', 'block', aim) == LOG_AIR_BLOCKED
+    g, a, _ = log_air_board(with_egg, eggs)
+    assert len(g) == 1 and len(a) == 5
+    # a real Phoenix 3 tiles from an egg stays air; one egg claims one unit only
+    g, a, _ = log_air_board(board([unit('phoenix', 9.0, 8.9), unit('phoenix', 9.2, 9.0)]), eggs)
+    assert len(g) == 1 and len(a) == 1
+    g, a, _ = log_air_board(board([unit('phoenix', 10.0, 12.0)]), eggs)
+    assert len(g) == 0 and len(a) == 1
 
 
 def test_log_hits_ground_only_in_the_catalog():
@@ -281,3 +335,54 @@ def test_live_ground_or_no_flyer_is_untouched_and_block_never_swaps_cards(side):
             assert p.rng_decisions.bit_generator.state == live_pilot(DecisionOptions()).rng_decisions.bit_generator.state
     b = live_pilot(BLOCK).decide(live_frame(side))
     assert b['hand_pos'] == 3 and not b['play']             # still the Log's slot: no other card was substituted
+
+
+def test_match_kwargs_reads_the_raw_egg_from_the_sim_state():
+    bs = board([unit('phoenix', 9.0, 8.9), unit('bats', 8.5, 10.0)])
+    m = SimpleNamespace(tag='a', k=1, cfg={'log_air': 'block', 'grid': 'lattice'}, side=0, deck=SimpleNamespace(cards=NAMES),
+                        state={'entities': [raw(1, 9000, 23100, 'Phoenix', 420), raw(1, 8500, 21900, 'Bats', 30)]},
+                        _cur=(100, bs, None), _gen_row={'projectiles': torch.zeros(0, 20)})
+    ground, air, _ = match_kwargs([m])['log_air_boards'][0]
+    assert len(ground) == 1 and len(air) == 1                      # the egg is ground, the bat is air
+    m.state = {'entities': [raw(1, 9000, 23100, 'Phoenix', 1528)]}  # a real (parent-HP) Phoenix: still air
+    ground, air, _ = match_kwargs([m])['log_air_boards'][0]
+    assert len(ground) == 0 and len(air) == 2
+
+
+def card_id_of(name):
+    from pipeline.obs_contract import _catalog_names
+    return next(k for k, v in _catalog_names().items() if v == name)
+
+
+@pytest.mark.parametrize('side', [0, 1])
+def test_live_phoenix_egg_with_bats_is_not_blocked(side):
+    import copy
+    from pipeline.tests.test_live_decision_options import pilot
+    f = live_frame(side, flyer=None)
+    base = next(e for e in f['entities'] if e['kind'] == 15)
+    mid = (9000, 15000) if side == 1 else (9000, 17000)           # the centre column, 15 tiles up in my frame
+
+    def add(card, mhp, dx):
+        e = copy.deepcopy(base)
+        e.update(side=1 - side, card_id=card_id_of(card), x=mid[0] + dx, y=mid[1], hp=mhp, max_hp=mhp, address=f'0x{card}{dx}')
+        f['entities'].append(e)
+
+    def run(options):
+        p = pilot(options, .6, card_logits=LOG_HAND, cell=peaked({cell(9.0, 22.5): 1.}))
+        row = p.row
+
+        def with_tokens(frame):                                   # the stub model has no fv >= 4 projectile tokens
+            b, info = row(frame)
+            b['projectiles'] = torch.zeros(1, 0, 20)
+            return b, info
+        p.row = with_tokens
+        return p.decide(f)
+    for dx in (-600, -300, 0, 300):
+        add('Bats', 30, dx)
+    d = run(BLOCK)
+    assert d['name'] == 'Log' and not d['play'] and d['why'] == 'log_air'          # bats alone: blocked
+    add('Phoenix', 420, 600)                                       # a 420-HP "Phoenix": the level-14 egg, a ground body
+    d = run(BLOCK)
+    assert d['play'] and 'why' not in d and d == run(DecisionOptions())
+    f['entities'][-1].update(hp=1393, max_hp=1393)                 # a level-14 flying Phoenix instead: blocked again
+    assert not run(BLOCK)['play']
