@@ -12,10 +12,11 @@ from .model_v3 import cell_xy
 from dataclasses import replace
 
 from .decision_options import (BARREL_KEY, DecisionOptions, barrel_landings, choose_cells, choose_slot, enemy_unit_count,
-                               gate_taus, hazard_draw, is_xbow, lethal_rocket_choice, threat_on, tower_threat,
-                               xbow_dead_lane_cells, enemy_body_tiles, princess_dead_state, rocket_covers_king,
-                               rocket_kills_king)
+                               gate_taus, hazard_draw, is_xbow, lethal_rocket_choice, tau_threat_state,
+                               threat_on, threat_taus, tower_threat, xbow_dead_lane_cells, enemy_body_tiles,
+                               princess_dead_state, rocket_covers_king, rocket_kills_king)
 from .live_mem import my_side_of
+from .decision_options import enemy_princess_hps, hp_before
 
 # W4 hazard gate decoding: game seconds one live decision may accrue. Live decides every reader frame (logged decisions
 # ~10 ticks apart, SIM every 10); a CPU-starved loop reaches ~30 ticks (1.5 s). 2.0 s = the WAIT-row stride the gate was
@@ -50,6 +51,7 @@ class GenPilot(LegacyGenPilot):
         self._hazard_prev = None                # (game tick, waited with a play possible) of the previous decision
         self._threat_state = None               # decision_options.tower_threat state of the previous decision
         self._princess_dead_state = None        # decision_options.princess_dead_state of the previous decision
+        self._tau_threat_state = None           # decision_options.tau_threat_state of the previous decision
 
     def reset_match(self):
         super().reset_match()
@@ -60,6 +62,8 @@ class GenPilot(LegacyGenPilot):
         self._hazard_prev = None
         self._threat_state = None
         self._princess_dead_state = None
+        self._lethal_hp_hist = None
+        self._tau_threat_state = None
 
     def row(self, frame):
         b, info = super().row(frame)
@@ -83,7 +87,17 @@ class GenPilot(LegacyGenPilot):
         side = my_side_of(frame)
         towers = to_observe(frame, side, info['names'])['episode']['crown_towers']
         names = [info['names'][di] if di >= 0 else None for di in info['hand_deck_indices']]
-        return lethal_rocket_choice(options, info['bs'].t_sec, names, allowed, towers, side, self.grid)
+        own = None
+        if getattr(options, 'lethal_log', 'off') == 'on':   # my confirmed plays (card, model xy, landing t): in flight
+            tick = int(frame['game_tick'])                  # + the public tower HP each spell landed on (SIM: match_kwargs)
+            hist = getattr(self, '_lethal_hp_hist', None)
+            if hist is None or (hist and hist[-1][0] > tick):
+                hist = self._lethal_hp_hist = []
+            hist.append((tick, enemy_princess_hps(towers, side)))
+            del hist[:-64]
+            key = {v: k for k, v in getattr(self, 'gid', {}).items()}
+            own = [(key.get(c), x, y, t, hp_before(hist, round(t / 0.05))) for c, f, x, y, t in getattr(self, 'past', [])[-8:]]
+        return lethal_rocket_choice(options, info['bs'].t_sec, names, allowed, towers, side, self.grid, own=own)
 
     @torch.no_grad()
     def decide(self, frame):
@@ -109,6 +123,9 @@ class GenPilot(LegacyGenPilot):
         if options.rocket_dead_target != 'allow':        # every decision (as SIM match_kwargs): reader-glitch filter
             self._princess_dead_state, self._princess_alive = princess_dead_state(
                 getattr(self, '_princess_dead_state', None), info['bs'])
+        tau_threat = None
+        if options.tau_threatened is not None:          # every decision (as SIM match_kwargs), affordable or not
+            self._tau_threat_state, tau_threat = tau_threat_state(getattr(self, '_tau_threat_state', None), info['bs'])
         if not allowed.any():
             if hazard_on:
                 self._hazard_prev = (tick, False)
@@ -120,6 +137,7 @@ class GenPilot(LegacyGenPilot):
         bs = info['bs']
         tau = (float(gate_taus(options, self.gate_tau, [bs.t_sec], 1)[0]) if options.tau_phase is not None
                else self.gate_tau)
+        tau = float(threat_taus(options, tau, tau_threat))   # tau_threatened: X while threatened, else unchanged
         playing = p > tau or stalled                    # SIM decide_batch: (p > tau) | stalled
         hazard = None
         if hazard_on:                                   # SIM decide_batch: the same hazard_draw on the same context
@@ -132,11 +150,14 @@ class GenPilot(LegacyGenPilot):
         if lethal is not None:                          # SIM decide_batch: the same rule overrides gate, card and cell
             pos, cell, target = lethal
             card, form = info['hand'][pos]
-            d = dict(play=True, p_play=p, hand_pos=pos, no_affordable=False, stalled=stalled, why='lethal_rocket',
+            why = 'lethal_log' if target.get('card') == 'Log' else 'lethal_rocket'
+            d = dict(play=True, p_play=p, hand_pos=pos, no_affordable=False, stalled=stalled, why=why,
                      lethal_rocket=target, deck_index=info['hand_deck_indices'][pos], card=card, form=form, bs=bs,
                      name=info['names'][info['hand_deck_indices'][pos]], xy=cell_xy(cell, self.grid), **lookahead)
-            if options.tau_phase is not None:
+            if options.tau_phase is not None or options.tau_threatened is not None:
                 d['gate_tau'] = tau
+            if tau_threat is not None:
+                d['tau_threat'] = tau_threat
             if hazard_on:                               # a play was made: no hazard accrues over its landing
                 d.update(hazard_step_s=step, hazard_play=False)
                 self._hazard_prev = (tick, False)
@@ -148,8 +169,10 @@ class GenPilot(LegacyGenPilot):
             name = info['names'][info['hand_deck_indices'][pos]] if card > 0 else None
             d = dict(play=playing and card > 0, p_play=p, hand_pos=pos, no_affordable=False, stalled=stalled,
                      deck_index=info['hand_deck_indices'][pos], card=card, form=form, bs=bs, name=name, **lookahead)
-            if options.tau_phase is not None:
+            if options.tau_phase is not None or options.tau_threatened is not None:
                 d['gate_tau'] = tau
+            if tau_threat is not None:
+                d['tau_threat'] = tau_threat
             if hazard_on:
                 d.update(hazard_step_s=step, hazard_play=bool(hazard and d['play']))
                 if threatened is not None:

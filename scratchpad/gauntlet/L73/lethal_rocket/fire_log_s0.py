@@ -16,19 +16,36 @@ def _mk(matches):
 
 def _logged(*a, **k):
     out = _orig(*a, **k)
-    rows = [r for r, d in enumerate(out) if d.get('why') == 'lethal_rocket']
+    rows = [r for r, d in enumerate(out) if d.get('why') in ('lethal_rocket', 'lethal_log')]
     if rows:
         with open(os.path.join(os.environ['FIRE_DIR'], f'fires_{os.getpid()}.jsonl'), 'a') as f:
             for r in rows:
-                towers, side, _ = k['lethal'][r]
-                f.write(json.dumps(dict(t_sec=float(k['t_sec'][r]), slot=out[r]['slot'], cell=out[r]['cell'],
+                towers, side = k['lethal'][r][:2]
+                f.write(json.dumps(dict(why=out[r]['why'], t_sec=float(k['t_sec'][r]), slot=out[r]['slot'], cell=out[r]['cell'],
                                         tag=_tags[r][0] if r < len(_tags) else None,
                                         behind=D.crowns_behind(towers, side) if hasattr(D, 'crowns_behind') else None,
-                                        target=D.lethal_rocket_target(towers, side))) + '\n')
+                                        target=D.lethal_rocket_target(
+                                            towers, side, 'Log' if out[r]['why'] == 'lethal_log' else 'Rocket'))) + '\n')
     return out
 
 
 D.decide_batch, D.match_kwargs = _logged, _mk
+
+import pipeline.e1_eval as E  # noqa: E402
+_orig_land = E.Match._land
+
+
+def _land(self, p, d, land, landed):
+    """Every lethal-rule play's landing: accepted by the engine or not (a refused / unlanded fire casts nothing)."""
+    acc = _orig_land(self, p, d, land, landed)
+    if d.get('why') in ('lethal_rocket', 'lethal_log'):
+        with open(os.path.join(os.environ['FIRE_DIR'], f'lands_{os.getpid()}.jsonl'), 'a') as f:
+            f.write(json.dumps(dict(tag=getattr(self, 'tag', None), why=d['why'], land=int(land), accepted=bool(acc),
+                                    cell=int(d['cell']))) + '\n')
+    return acc
+
+
+E.Match._land = _land
 
 if __name__ == '__main__':
     from pipeline import search_s0

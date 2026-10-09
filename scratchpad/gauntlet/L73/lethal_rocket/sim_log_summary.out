@@ -1,0 +1,39 @@
+on lad rc=0 04:33:48
+off lad rc=0 04:34:24
+off evo rc=0 04:34:26
+on evo rc=0 04:34:53
+DONE
+paired games 480 (off 480, on 480)
+  off: wins 315.0; outcomes {'win': 315, 'loss': 165}
+  on: wins 316.0; outcomes {'win': 316, 'loss': 164}
+  paired: on better 1 / worse 0 (sign test p 1.000)
+Log fires 29 in 28 matches; phases {'OT': 28, 'reg': 1}; damage {342: 29}; Rocket fires off 171 / on 162
+    ('evo', 's0:gen:103'): first Log t 306.30 L hp 11 | off win 1-0 end 6111 | on win 1-0 end 6111
+    ('evo', 's0:gen:136'): first Log t 306.30 R hp 18 | off win 1-0 end 6118 | on win 1-0 end 6118
+    ('evo', 's0:gen:161'): first Log t 306.80 L hp 3 | off win 1-0 end 6113 | on win 1-0 end 6113
+    ('evo', 's0:gen:167'): first Log t 232.80 L hp 24 | off win 1-0 end 4638 | on win 1-0 end 4638
+    ('evo', 's0:gen:174'): first Log t 213.30 R hp 2 | off win 1-0 end 4242 | on win 1-0 end 4242
+    ('evo', 's0:gen:190'): first Log t 282.30 L hp 7 | off win 1-0 end 5838 | on win 1-0 end 5703
+    ('evo', 's0:gen:211'): first Log t 219.80 R hp 28 | off win 1-0 end 4374 | on win 1-0 end 4374
+    ('evo', 's0:gen:29'): first Log t 194.30 R hp 1 | off win 1-0 end 3864 | on win 1-0 end 3864
+    ('evo', 's0:gen:81'): first Log t 293.30 L hp 20 | off win 1-0 end 5938 | on win 1-0 end 5922
+    ('evo', 's0:gen:9'): first Log t 276.80 R hp 13 | off win 1-0 end 5838 | on win 1-0 end 5592
+    ('lad', 's0:gen:110'): first Log t 306.80 R hp 3 | off win 1-0 end 6113 | on win 1-0 end 6113
+    ('lad', 's0:gen:123'): first Log t 187.30 L hp 17 | off win 1-0 end 3727 | on win 1-0 end 3727
+    ('lad', 's0:gen:143'): first Log t 254.80 R hp 1 | off win 1-0 end 5072 | on win 1-0 end 5072
+    ('lad', 's0:gen:149'): first Log t 197.30 L hp 7 | off win 1-0 end 3926 | on win 1-0 end 3926
+    ('lad', 's0:gen:15'): first Log t 259.30 R hp 1 | off win 1-0 end 5166 | on win 1-0 end 5166
+    ('lad', 's0:gen:162'): first Log t 183.30 L hp 19 | off win 1-0 end 3683 | on win 1-0 end 3683
+    ('lad', 's0:gen:17'): first Log t 268.30 L hp 8 | off loss 0-1 end 5419 | on loss 0-1 end 5419
+    ('lad', 's0:gen:174'): first Log t 307.80 R hp 16 | off win 1-0 end 6146 | on win 1-0 end 6146
+    ('lad', 's0:gen:177'): first Log t 236.30 L hp 14 | off win 1-0 end 4763 | on win 1-0 end 4763
+    ('lad', 's0:gen:183'): first Log t 308.30 R hp 11 | off win 1-0 end 6151 | on win 1-0 end 6151
+    ('lad', 's0:gen:185'): first Log t 184.80 L hp 22 | off loss 0-1 end 4225 | on win 1-0 end 3752
+    ('lad', 's0:gen:186'): first Log t 209.30 R hp 3 | off win 1-0 end 4167 | on win 1-0 end 4167
+    ('lad', 's0:gen:198'): first Log t 267.30 L hp 32 | off win 1-0 end 5349 | on win 1-0 end 5349
+    ('lad', 's0:gen:200'): first Log t 306.80 R hp 13 | off win 1-0 end 6123 | on win 1-0 end 6123
+    ('lad', 's0:gen:221'): first Log t 291.80 R hp 19 | off win 1-0 end 5892 | on win 1-0 end 5892
+    ('lad', 's0:gen:222'): first Log t 302.80 L hp 2 | off win 1-0 end 6069 | on win 1-0 end 6069
+    ('lad', 's0:gen:226'): first Log t 159.30 R hp 14 | off win 2-1 end 3600 | on win 2-1 end 3600
+    ('lad', 's0:gen:57'): first Log t 308.30 R hp 3 | off win 1-0 end 6143 | on win 1-0 end 6143
+  outcome changes on matches WITHOUT a Log fire: 0 []
