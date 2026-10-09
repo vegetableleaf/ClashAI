@@ -4844,6 +4844,11 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   / balance values land. (3) Owner grinds on a SECOND account meanwhile; restarts live on the main account when the next
 >   bundle arrives. The Hero IW fix does NOT need a retrain (input encoding switch). Old Playwright Chrome group from 10-05
 >   (pid 58400) left alone.
+> * **Crawl retry ~20:2x:** first run stuck before any page (owner: Cloudflare shows no box). Lead found the polite crawler
+>   still launched Chrome with --disable-blink-features=AutomationControlled (hides automation from the site = bot-detection
+>   workaround) -> removed in royale/browser.py (crawler branch polite-browser-crawl 3da7b78; old transport.py/test still
+>   have it, unused by crawl_polite). Restarted in a visible window. If Cloudflare will not pass an honestly automated
+>   browser, do NOT disguise it: rely on the official API census + the owner's RoyaleAPI data request.
 > * Side note (a): live runs the model on CPU (live_play --device default "cpu" since a6d90f7, "leaving the GPU for training"; start_live.sh passes --device cpu), mean decide
 >   ~90-108 ms, 2-10 cpu_starved warnings per match; my log scans during live did not move it (93-105 ms).
 > * **own_effects MERGED + ON (0a2fda3 merge, 6bef568 switch-on):** blind verification PASS except --check JSON lacked the
