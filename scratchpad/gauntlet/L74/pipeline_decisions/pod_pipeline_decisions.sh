@@ -69,7 +69,8 @@ pre)
   preflight
   # (1) fake-engine unit tests of the rules (laptop-identical) + the follow-up / default-parity ones they rest on
   nice -n "${NICE:-10}" $PY -m pytest -q -p no:cacheprovider pipeline/tests/test_e1_pipeline_decisions.py pipeline/tests/test_e1_follow_up.py \
-      pipeline/tests/test_e1_action_delay.py pipeline/tests/test_league.py pipeline/tests/test_search_s0.py || exit 4
+      pipeline/tests/test_e1_action_delay.py pipeline/tests/test_league.py pipeline/tests/test_search_s0.py pipeline/tests/test_e1_follow_up_selfplay.py \
+      --deselect pipeline/tests/test_e1_follow_up.py::TestLiveTwin || exit 4   # TestLiveTwin imports live_play -> cv2 (not on the pod)
   # (2) REAL-engine smoke: 4 seeds x {off, pd0} x {evo, lad}, 6 workers. Must run clean; then the checks below.
   for a in off pd0; do for s in evo lad; do d=$EVO; [ $s = lad ] && d=$LAD
     search $a "$d" $s ${SMOKE_W:-2} 0:4; done; done
