@@ -8,6 +8,10 @@ Per worker process <FIRE_DIR>/bw_<pid>.jsonl, one 'b' line per decision inside a
 Module-level patch: spawn workers re-import this main module first, so it is active in every worker."""
 import json, os, sys
 sys.path.insert(0, os.getcwd())
+try:    # laptop: below-normal priority (every spawn worker re-imports this module)
+    import ctypes; ctypes.windll.kernel32.SetPriorityClass(ctypes.windll.kernel32.GetCurrentProcess(), 0x4000)
+except Exception:
+    pass
 import numpy as np
 import pipeline.decision_options as D
 from pipeline import vocab

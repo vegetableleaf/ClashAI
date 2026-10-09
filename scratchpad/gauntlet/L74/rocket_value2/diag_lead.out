@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "C:\Users\benpe\ClashBot\.claude\worktrees\agent-a67f26ceb5d77048a\scratchpad\gauntlet\L74\rocket_value2\diag_lead.py", line 56, in <module>
+    hist = [(int(round(d['t'] / 0.05)), bodies_of(d)) for d in FA.get(tag, []) if t0 - 1.0 - 1e-6 <= d['t'] < t0 - 1e-6]
+                                        ~~~~~~~~~^^^
+  File "C:\Users\benpe\ClashBot\.claude\worktrees\agent-a67f26ceb5d77048a\scratchpad\gauntlet\L74\rocket_value2\diag_lead.py", line 36, in bodies_of
+    ev, hp, r = info(n)
+    ^^^^^^^^^
+ValueError: too many values to unpack (expected 3)

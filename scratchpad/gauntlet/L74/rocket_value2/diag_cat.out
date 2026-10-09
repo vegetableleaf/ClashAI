@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "C:\Users\benpe\ClashBot\.claude\worktrees\agent-a67f26ceb5d77048a\scratchpad\gauntlet\L74\rocket_value2\diag_cat.py", line 48, in <module>
+    ev, hp, r = info(nm)
+    ^^^^^^^^^
+ValueError: too many values to unpack (expected 3)

@@ -1,0 +1,8 @@
+159 fires, 159 with all boards
+tower hp lost (princess hp_frac sum) in the next 6s: base 0.010 arm 0.027; share of fires where base lost >= .05: 0.08
+tower hp lost (princess hp_frac sum) in the next 10s: base 0.036 arm 0.073; share of fires where base lost >= .05: 0.23
+tower hp lost (princess hp_frac sum) in the next 15s: base 0.080 arm 0.130; share of fires where base lost >= .05: 0.38
+base tower loss in 10 s in [-9,0.005): n=92 better 10 worse 18 net -8 (-0.087/fire)
+base tower loss in 10 s in [0.005,0.05): n=30 better 1 worse 11 net -10 (-0.333/fire)
+base tower loss in 10 s in [0.05,0.15): n=26 better 3 worse 6 net -3 (-0.115/fire)
+base tower loss in 10 s in [0.15,9): n=11 better 1 worse 2 net -1 (-0.091/fire)

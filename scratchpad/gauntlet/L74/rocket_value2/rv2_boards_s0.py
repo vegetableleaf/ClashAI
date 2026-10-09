@@ -9,6 +9,10 @@ decision) is in it, so any variant's FIRST TRIGGER can be found offline by repla
 nothing plays the match identically to BASE and its first fire is that trigger (BASE and the arm are identical until then)."""
 import json, os, sys
 sys.path.insert(0, os.getcwd())
+try:    # laptop: below-normal priority (every spawn worker re-imports this module)
+    import ctypes; ctypes.windll.kernel32.SetPriorityClass(ctypes.windll.kernel32.GetCurrentProcess(), 0x4000)
+except Exception:
+    pass
 import numpy as np
 import pipeline.decision_options as D
 
