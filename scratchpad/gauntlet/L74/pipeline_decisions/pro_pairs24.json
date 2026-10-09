@@ -1,0 +1,57 @@
+{
+ "sides": 2244,
+ "plays_per_min": {
+  "1x": 6.76,
+  "2x": 12.82,
+  "OT": 13.99
+ },
+ "plays_per_match": 42.55,
+ "gap_ticks_quantiles": {
+  "5": 22.0,
+  "10": 30.0,
+  "25": 45.0,
+  "50": 80.0
+ },
+ "share_gap_le_24": 0.0583,
+ "share_gap_le_35": 0.1523,
+ "share_gap_le_20": 0.0441,
+ "pairs_le_24_per_match": 2.422,
+ "pairs_le_35_per_match": 6.328,
+ "top_pairs_le_24_per_match": {
+  "log->skeletons": 0.153,
+  "tesla->skeletons": 0.148,
+  "icewizard->skeletons": 0.139,
+  "skeletons->log": 0.105,
+  "skeletons->icewizard": 0.102,
+  "knight->skeletons": 0.09,
+  "icewizard->log": 0.089,
+  "skeletons->knight": 0.088,
+  "tornado->skeletons": 0.085,
+  "tesla->log": 0.077,
+  "rocket->tornado": 0.071,
+  "knight->log": 0.07,
+  "skeletons->tesla": 0.068,
+  "log->icewizard": 0.064
+ },
+ "second_mix_le_24": {
+  "icewizard": 0.131,
+  "knight": 0.136,
+  "log": 0.174,
+  "rocket": 0.029,
+  "skeletons": 0.282,
+  "tesla": 0.105,
+  "tornado": 0.119,
+  "xbow": 0.023
+ },
+ "second_mix_le_35": {
+  "icewizard": 0.141,
+  "knight": 0.16,
+  "log": 0.179,
+  "rocket": 0.026,
+  "skeletons": 0.258,
+  "tesla": 0.11,
+  "tornado": 0.096,
+  "xbow": 0.029
+ },
+ "rocket_tornado_le_24_per_match": 0.0713
+}

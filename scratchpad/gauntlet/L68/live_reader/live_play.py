@@ -21,6 +21,12 @@ frame backlog 72, 5 of 17 taps unconfirmed, the bot leaked). The tick-advance ga
 after the first decision WITHOUT waiting for its ~24-tick confirmation (the pending lock otherwise means >= 26 ticks between
 plays). Own affordability check (elixir minus every unconfirmed tap), <= 2 taps outstanding, cancelled when the first play is
 refused or the slot changed; no decision while one is scheduled. Plan + test: scratchpad/gauntlet/L74/latency2/live_test_plan.txt.
+--pipeline-decisions (OPT-IN, L74 pipeline_decisions): the MODEL may decide again while one of its plays is tapped but not
+confirmed (instead of the hard lock), newest frame only, <= FOLLOW_MAX_OUT taps outstanding. The decision sees the pending play
+as executed (pilot.set_pending: its bodies / spell on the look-ahead board, hand + next, elixir minus its cost, newest past
+play, own_effects), its hand slot is masked, elixir = mine minus every unconfirmed tap, and e1_eval.follow_up_verdict has the
+last word. Gate / card / cell stay the model's own; --pipeline-tau-delta raises the gate threshold only while one is pending
+(default 0). A refused first play changes nothing. The SIM twin: e1_eval cfg 'pipeline_decisions'.
 """
 from __future__ import annotations
 
@@ -94,6 +100,7 @@ def release_ticks(elixir: float, name: str, tick: int, arrival_ticks: float, mar
 
 
 from pipeline.e1_eval import FOLLOW_AFFORD_TICKS, FOLLOW_MAX_OUT, follow_up_have, follow_up_verdict  # noqa: E402,F401
+PIPELINE_LAND_TICKS = 24     # --pipeline-decisions: a tap's expected landing = its decision tick + --extrapolate (else this: the deployed median)
 # ... the SIM's rules: the horizon (6 ticks), the outstanding-tap cap (2), the formula and the verdict order are shared
 
 
@@ -368,6 +375,14 @@ def main() -> int:
                          "affordability check (my elixir minus every unconfirmed tap); at most 2 taps outstanding; cancelled "
                          "when the first play is refused or its slot changed. No decision is made while one is scheduled. "
                          "Off = unchanged: follow_ups are logged (follow_up_ignored) and not played")
+    ap.add_argument("--pipeline-decisions", action="store_true",
+                    help="OPT-IN (L74 pipeline_decisions): let the MODEL decide again while one of its plays is still pending "
+                         "(tapped, not confirmed) instead of the hard lock. Newest frame only, at most 2 taps outstanding, the "
+                         "pending card's hand slot masked, elixir minus every unconfirmed tap, the pending play seen as "
+                         "executed (board, hand, elixir, own_effects). Off = unchanged (default byte-identical)")
+    ap.add_argument("--pipeline-tau-delta", type=float, default=0.0,
+                    help="with --pipeline-decisions: add this to the play-gate threshold while a play is pending (default 0 = "
+                         "the model's own tau; the earlier SIM failures had the gate firing 2-3x the pro rate in the window)")
     ap.add_argument("--no-opp-counter", action="store_true",
                     help="feed the model opponent elixir = unknown instead of the public-events counter")
     ap.add_argument("--menu-guard", action="store_true",
@@ -652,6 +667,8 @@ def load_pilot(a, decision_cfg, ckpt=None):
         pilot.identity_ext = True
     if getattr(a, "afford_ticks", None) is not None:   # default: the class's None = the look-ahead elixir, unchanged
         pilot.afford_ticks = int(a.afford_ticks)
+    if getattr(a, "pipeline_decisions", False):  # default: the class's 0.0 / no pending plays = unchanged
+        pilot.pipeline_tau_delta = float(getattr(a, "pipeline_tau_delta", 0.0) or 0.0)
     if getattr(a, "anti_leak", False):          # default: the class's None = off, the decision rule unchanged
         pilot.anti_leak_elixir, pilot.anti_leak_seconds = a.anti_leak_elixir, a.anti_leak_seconds
     return device, pilot
@@ -662,7 +679,9 @@ def latency_log(a) -> dict:
     return dict(extrapolate=getattr(a, "extrapolate", None), afford_ticks=getattr(a, "afford_ticks", None),
                 early_release_margin=getattr(a, "early_release_margin", None),
                 fast_input=bool(getattr(a, "fast_input", False)), tap_gap_ms=getattr(a, "tap_gap_ms", 50),
-                **({"follow_up_taps": True} if getattr(a, "follow_up_taps", False) else {}))
+                **({"follow_up_taps": True} if getattr(a, "follow_up_taps", False) else {}),
+                **({"pipeline_decisions": True, "pipeline_tau_delta": getattr(a, "pipeline_tau_delta", 0.0)}
+                   if getattr(a, "pipeline_decisions", False) else {}))
 
 
 def anti_leak_log(a) -> dict:
@@ -705,8 +724,11 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
       fast_input=bool(getattr(a, "fast_input", False)), tap_gap_ms=getattr(a, "tap_gap_ms", 50),
       afford_ticks=getattr(pilot, "afford_ticks", None), early_release_margin=getattr(a, "early_release_margin", None),
       identity_ext=bool(getattr(pilot, "identity_ext", False)),
-      **({"follow_up_taps": True} if getattr(a, "follow_up_taps", False) else {}))
+      **({"follow_up_taps": True} if getattr(a, "follow_up_taps", False) else {}),
+      **({"pipeline_decisions": True, "pipeline_tau_delta": getattr(a, "pipeline_tau_delta", 0.0)}
+         if getattr(a, "pipeline_decisions", False) else {}))
     follow = bool(getattr(a, "follow_up_taps", False))
+    pipe = bool(getattr(a, "pipeline_decisions", False))
     release_margin = getattr(a, "early_release_margin", None)
     tap_gap = getattr(a, "tap_gap_ms", 50)
     tap_sleep = f" sleep {tap_gap / 1000:g};" if tap_gap > 0 else ""    # default 50 -> "...; sleep 0.05; ..." as before
@@ -758,6 +780,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
     t0, pending, fails, played, confirmed, last_tick, last_adv = time.time(), [], 0, 0, 0, -1, time.time()
     sched: list = []
     follow_n = {"fired": 0, "cancelled": 0}
+    pipe_n = {"second": 0}
     released: dict = {}   # --early-release-margin: hand slot -> its early-released tap, until it lands late or is re-tapped,
                           # or CONFIRM_TICKS pass after its release (a slot rotates only when OUR card in it is played)
     fails_run = 0   # CONSECUTIVE unconfirmed taps: 5 in a row = real malfunction (5 slow taps over a match under load is not)
@@ -941,7 +964,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                     fails_run = 0
                     W(event="confirmed", tick=tick, name=d["name"], intended=d["xy"], elixir_drop=dropped / 1e4,
                       spawn=[my_frame_xy(e, side) for e in new[:1]], err_tiles=err, latency_s=round(now - pd["t"], 3),
-                      **({"follow_up": True} if pd.get("follow_up") else {}))
+                      **({"follow_up": True} if pd.get("follow_up") else {}),
+                      **({"pipelined": True} if pd.get("pipelined") else {}))
                     pd["state"] = "confirmed"
                     pending.remove(pd)
                 elif tick - pd["tick"] > pd.get("release", CONFIRM_TICKS):
@@ -950,7 +974,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                     W(event="unconfirmed", tick=tick, name=pd["d"]["name"], intended=pd["d"]["xy"],
                       p_play=pd["d"]["p_play"], elixir=old["elixir_raw"] / 1e4, fails=fails,
                       **({"release_ticks": pd["release"]} if "release" in pd else {}),
-                      **({"follow_up": True} if pd.get("follow_up") else {}))
+                      **({"follow_up": True} if pd.get("follow_up") else {}),
+                      **({"pipelined": True} if pd.get("pipelined") else {}))
                     if pd.get("release", CONFIRM_TICKS) < CONFIRM_TICKS:
                         released[pd["d"]["hand_pos"]] = pd          # an early release: watch for a late landing
                     pd["state"] = "unconfirmed"
@@ -1001,10 +1026,17 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
             if stop_now:
                 break
             if had or pending or sched:                  # off: exactly `had` (a single pending play blocks decisions)
-                continue
+                # --pipeline-decisions: a decision IS allowed with one tap outstanding (below the cap, nothing scheduled);
+                # the frame on which the last outstanding tap confirmed (pending empty, had) still never decides
+                if not (pipe and pending and not sched and len(pending) < FOLLOW_MAX_OUT):
+                    continue
             if not newest or not advanced:               # stale frame: newer ones queued / the clock did not move
                 continue
             t_dec = time.time()
+            if pipe:                                     # the pilot sees every unconfirmed tap as executed ([] = none)
+                pilot.set_pending([dict(hand_pos=pd["d"]["hand_pos"], deck_index=pd["d"]["deck_index"], card=pd["d"]["card"],
+                                        form=pd["d"]["form"], name=pd["d"]["name"], xy=pd["d"]["xy"],
+                                        land=pd["tick"] + (a.extrapolate or PIPELINE_LAND_TICKS)) for pd in pending])
             d = pilot.decide(f)
             decide_ms = round((time.time() - t_dec) * 1000)
             dec_times.append(decide_ms)
@@ -1027,10 +1059,23 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                   decision={k:d[k] for k in ('play','p_play','no_affordable','hand_pos','name','card','form','xy','gate_tau',
                                              'xy_unguarded','stalled','hazard_step_s','hazard_play','why',
                                              'lethal_rocket') if k in d},
+                  **({"pending": [pd["d"]["name"] for pd in pending]} if pending else {}),
                   public=d['public_audit'])
                 last_audit_tick = tick
             if not d["play"]:
                 continue
+            if pipe and pending:                         # a SECOND play: the shared verdict (cap, slot busy, elixir) has the last word
+                horizon = getattr(pilot, "afford_ticks", None)
+                if horizon is None:                      # the mask used the look-ahead elixir: the verdict is never stricter
+                    horizon = a.extrapolate or None
+                act, why = follow_up_verdict(
+                    tick=tick, due=tick, expire=tick, blocked=None, first_failed=False, slot_changed=False,
+                    slot_busy=any(pd["d"]["hand_pos"] == d["hand_pos"] for pd in pending), n_out=len(pending),
+                    have=follow_up_have(me["elixir_raw"] / 1e4, tick, FOLLOW_AFFORD_TICKS if horizon is None else int(horizon),
+                                        sum(card_cost_of(pd["d"]["name"]) for pd in pending)), cost=card_cost_of(d["name"]))
+                if act != "fire":
+                    W(event="pipeline_blocked", tick=tick, name=d["name"], why=why)
+                    continue
             if not guard_clear():                        # the guard has not (freshly) seen a battle screen
                 if not blocked_logged:
                     W(event="tap_blocked", tick=tick, name=d["name"], why="menu guard not clear",
@@ -1042,8 +1087,10 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
             W(event="play", tick=tick, t_dev=t_dev, name=d["name"], p_play=round(d["p_play"], 4), forced=forced, elixir=el,
               hand_pos=d["hand_pos"], xy=[round(v, 4) for v in d["xy"]], tap_hand=hand, tap_board=board,
               **({"hazard_play": True} if d.get("hazard_play") else {}),
-              **({"why": d["why"], "lethal_rocket": d["lethal_rocket"]} if d.get("why") == "lethal_rocket" else {}))
+              **({"why": d["why"], "lethal_rocket": d["lethal_rocket"]} if d.get("why") == "lethal_rocket" else {}),
+              **({"pipelined": True, "outstanding": len(pending)} if pending else {}))
             played += 1
+            pipe_n["second"] += bool(pending)
             if d.get("follow_ups") and (a.dry_run or not follow):   # planned second plays that will not be tapped
                 W(event="follow_up_ignored", tick=tick, why="dry_run" if a.dry_run else "flag_off",
                   names=[fd["name"] for fd in d["follow_ups"]])
@@ -1065,6 +1112,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
             if release_margin is not None:               # --early-release-margin: expected confirmation + margin
                 entry["release"] = release_ticks(el, d["name"], tick, (t_done - t_recv) * 20, release_margin)
             released.pop(d["hand_pos"], None)            # the same slot tapped again: its rotation is this tap's
+            if pending:                                  # --pipeline-decisions: tapped while another tap was outstanding
+                entry["pipelined"] = True
             pending.append(entry)
             for fd in (d.get("follow_ups") or ()) if follow else ():   # --follow-up-taps: planned second plays of this one
                 fw = fd["follow"]
@@ -1096,7 +1145,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
             W(event="recording", segments=rec.stop())
         W(event="end", played=played, confirmed=confirmed, fails=fails, seconds=round(time.time() - t0, 1),
           **({"follow_ups_fired": follow_n["fired"], "follow_ups_cancelled": follow_n["cancelled"],
-              "follow_ups_unfired": len(sched)} if follow else {}))
+              "follow_ups_unfired": len(sched)} if follow else {}),
+          **({"pipelined_plays": pipe_n["second"]} if pipe else {}))
         log.close()
         print(json.dumps({"played": played, "confirmed": confirmed, "fails": fails, "log": log.name}))
         if rec and clip_caption is not None:             # owner 2026-10-06: restore the 60-s Discord clip (Codex removed it)

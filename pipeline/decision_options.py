@@ -1322,7 +1322,8 @@ def rocket_tornado_choice(options, names, allowed, bs, grid, pending=False, min_
 @torch.no_grad()
 def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options, rngs, card_names,
                  t_sec=None, enemy_alive=None, grid=None, projectiles=None, step_s=None, elixir=None,
-                 enemy_units=None, lethal=None, threatened=None, rocket_boards=None, tau_threat=None, rocket_value=None):
+                 enemy_units=None, lethal=None, threatened=None, rocket_boards=None, tau_threat=None, tau_delta=None,
+                 rocket_value=None):
     """Optional branch of e1_eval's live decision; default branch remains untouched.
     ``t_sec`` (tau_phase) and ``enemy_alive`` [(K, L, R) alive] + ``grid`` (xbow_class) are per-row match context;
     ``projectiles`` (log_aim) = each row's model projectile tokens, decoded with the model's own card vocabulary.
@@ -1332,6 +1333,8 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
         options = replace(options, card_levels=None)
     base_tau = tau = gate_taus(options, tau, t_sec, len(allowed))
     tau = threat_taus(options, tau, tau_threat)
+    if tau_delta is not None:                       # pipeline_decisions: a per-row threshold shift while a play is pending
+        tau = tau + np.asarray(tau_delta, dtype=np.float64)
     playing = allowed.any(axis=1) & ((np.asarray(p) > tau) | stalled)
     if options.gate_decode != 'threshold':
         if step_s is None:
@@ -1339,7 +1342,7 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
         if options.gate_decode == 'hazard':
             playing = allowed.any(axis=1) & stalled
         for r in np.flatnonzero(allowed.any(axis=1) & ~playing):   # a draw only where a play is possible
-            playing[r] = hazard_draw(options, p[r], step_s, rngs[r],
+            playing[r] = hazard_draw(options, p[r], step_s[r] if np.ndim(step_s) else step_s, rngs[r],
                                      elixir=None if elixir is None else elixir[r],
                                      enemy_units=None if enemy_units is None else enemy_units[r],
                                      threatened=None if threatened is None else threatened[r])
@@ -1448,8 +1451,13 @@ def match_kwargs(matches):
                 [seed, int(cfg.get('decision_seed', 0))]))
         rngs.append(match.rng_decision_options)
     out = dict(decision_options=options, rngs=rngs, card_names=[list(m.deck.cards) for m in matches])
+    if cfg.get('pipeline_tau_delta') and any(getattr(m, 'pend', None) for m in matches):   # only while a play is pending
+        out['tau_delta'] = [float(cfg['pipeline_tau_delta']) if getattr(m, 'pend', None) else 0.0 for m in matches]
     if options.gate_decode != 'threshold':
         out['step_s'] = 0.05 * int(cfg['decide_every'])   # the SIM decides every decide_every ticks
+        if any(getattr(m, '_hz_step_ticks', None) is not None for m in matches):   # pipeline_decisions: the real step per row
+            out['step_s'] = [0.05 * (cfg['decide_every'] if getattr(m, '_hz_step_ticks', None) is None else m._hz_step_ticks)
+                             for m in matches]
         out['elixir'] = [float(m._cur[1].my_elixir) for m in matches]
         out['enemy_units'] = [enemy_unit_count(m._cur[1]) for m in matches]
         if threat_on(options):              # per-match state on the match, the decision's engine BoardState (my frame)
@@ -1475,7 +1483,7 @@ def match_kwargs(matches):
     if options.lethal_rocket != 'off':  # the model board's time (as tau_phase); tower HP from the decision tick's raw state
         out.update(t_sec=[float(m._cur[1].t_sec) for m in matches], grid=cfg['grid'],
                    lethal=[(((m.state or {}).get('episode') or {}).get('crown_towers', []), int(m.side),
-                            getattr(m, 'pending', None) is not None) for m in matches])
+                            getattr(m, 'pending', None) is not None or bool(getattr(m, 'pend', None))) for m in matches])
         if options.lethal_log == 'on':  # + my accepted plays (landing tick, deck slot, my-frame xy) for the in-flight guard
             for row, m in zip(out['lethal'], matches):   # public tower HP per decision tick -> the HP each spell landed on
                 m._lethal_hp_hist = record_hp(getattr(m, '_lethal_hp_hist', None), int(m._cur[0]),
