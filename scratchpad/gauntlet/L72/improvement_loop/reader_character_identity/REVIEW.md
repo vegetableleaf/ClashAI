@@ -9,7 +9,7 @@ then-specified alias behavior; they did not establish character-role correctness
 
 New offline current-block census:1,202shared-ID object records from coherent
 captured registry prefixes:579Hero,534FloatingCube,31IceCube,58read errors.
-All534decoded FloatingCubes reference a captured same-side Hero via+0x180.
+All534decoded FloatingCubes reference a captured same-side Hero via+<off>.
 The C decoder exactly matches the scalar reference on all1,202records plus13name
 fixtures. Four positive/nine malformed names and four malformed streams pass.
 Partial registry suffixes and missing object bytes remain counted. Three legacy
@@ -33,7 +33,7 @@ Current client160402012 and three original binary windows passed. A single passi
 sightings,146successful names. Independent current-registry joins match all73
 FloatingCubes to real Heroes;1positive6badjoin controls pass. Total sampler read
 time median242.5us,p95 520us,max897us. This instrument did not tap, navigate or
-control a match. The new binary resides at/data/local/tmp/re_live_sampler3_20261006.
+control a match. The new binary resides at<device path, local reader config>.
 
 The isolated live_play_identity.py subclass filters before BOTH observe and row,
 including stored extrapolation frames. Four integration tests pass, and its

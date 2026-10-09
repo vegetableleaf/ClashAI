@@ -18,7 +18,7 @@ Mandatory promotion checklist:
 
 1. Bind recorder/client/C++ source, compiled bridge, deployed bridge and libg hashes. A source checkout alone is insufficient.
 2. Run all twenty replays into a fresh destination and require exact successful summary/file identities. Validate actual fields and values, not only flags or nonempty arrays.
-3. Show per-card area timer slopes and disappearance endpoints; check lifetime-extension cases separately. The raw counter at +0x100 decreases by50ms per engine tick in the measured native sample.
+3. Show per-card area timer slopes and disappearance endpoints; check lifetime-extension cases separately. The raw counter at +<off> decreases by50ms per engine tick in the measured native sample.
 4. Validate TTI against held-out landing evidence. The current report measures distance outside object-disappearance brackets; cancellation and disappearance are not causal impacts. Retain unknown first/ambiguous observations and report tails.
 5. Implement native source-linked damage/impact events. Required ledger: event tick, source projectile/card/side, target entity/type, damage. Validate isolated Rocket troop/tower controls and competing-damage controls. Sparse HP drops, proximity, source pointers and projectile disappearance do not certify causal hits.
 6. Trace public frames through the actual dataset builder, batch loader and model, SIM and reader adapters; mutate every opposing private field and require unchanged input. Reconcile native form IDs, public detected plays/cycle, area/projectile timing, own ability state, and all required weighting targets on the small sample.

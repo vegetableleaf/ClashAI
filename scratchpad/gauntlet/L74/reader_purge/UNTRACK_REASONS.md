@@ -1,0 +1,88 @@
+# Reader purge: why each path is untracked
+
+One line per path in UNTRACK.txt. The files stay on disk; they are only removed from the public index.
+
+- `scratchpad/gauntlet/L62/bridge_re.md` -- RE doc: libg vtable RVAs, function RVAs, buff/area-effect object field offsets and data-table columns
+- `scratchpad/gauntlet/L62/re_dis.py` -- disassembles a slice of the live libg code dump by RVA (RE tool)
+- `scratchpad/gauntlet/L62/re_enum_table.py` -- libg RE script that walks an enum table by address
+- `scratchpad/gauntlet/L62/re_fix_nul.py` -- libg RE patch helper (bridge/binary fix-up)
+- `scratchpad/gauntlet/L62/re_patch_bridge_json.py` -- patches the bridge JSON exporter with RE'd libg offsets
+- `scratchpad/gauntlet/L62/re_patch_bridge_loop.py` -- patches the bridge loop with RE'd libg RVAs and field offsets
+- `scratchpad/gauntlet/L62/re_range.py` -- libg RE script (address range scan)
+- `scratchpad/gauntlet/L62/re_strrefs.py` -- libg RE script (string cross-references)
+- `scratchpad/gauntlet/L62/re_verify_bridge.py` -- bridge runbook embedding libg/bridge hashes and object offsets
+- `scratchpad/gauntlet/L62/re_xrefs.py` -- libg RE script (code cross-references with raw reads)
+- `scratchpad/gauntlet/L68/live_reader/chain_scan.c` -- C source of a pointer-chain scanner that finds the reader's root chain in process memory
+- `scratchpad/gauntlet/L68/live_reader/probe1.jsonl` -- raw reader capture whose frames embed the chain pointers (libg base / root / context) of a live process
+- `scratchpad/gauntlet/L70/reader/FINDINGS.md` -- reader RE findings: vtable RVAs, object field offsets, evolution-form ids location
+- `scratchpad/gauntlet/L70/reader/GATES.md` -- reader RE gate doc naming the structures and offsets checked
+- `scratchpad/gauntlet/L70/reader/REPORT.md` -- reader RE report: offset chain, field-offset and vtable tables
+- `scratchpad/gauntlet/L70/reader/_mk_manifest.py` -- builds the manifest for the reader RE capture (names sampler/peeker artefacts)
+- `scratchpad/gauntlet/L70/reader/audit_evidence.py` -- audits raw object bytes using the reader's field offsets and pointer ranges
+- `scratchpad/gauntlet/L70/reader/build_source.py` -- builds the sampler source/binary (compile recipe and extension injection)
+- `scratchpad/gauntlet/L70/reader/clock_anchor.json` -- reader capture clock anchor with the target process base address
+- `scratchpad/gauntlet/L70/reader/compare_default.py` -- drives the sampler binaries for the v1/v2 side-by-side comparison
+- `scratchpad/gauntlet/L70/reader/correlate.py` -- decodes raw object bytes with the reader's projectile/area-effect offsets
+- `scratchpad/gauntlet/L70/reader/correlation.json` -- dump of raw game-object records with vtable RVAs and field values
+- `scratchpad/gauntlet/L70/reader/extension_impl.inc` -- C source of the sampler's extended reader (projectile/effect decoding by vtable and offset)
+- `scratchpad/gauntlet/L70/reader/identity.json` -- raw memory windows (ELF header and vtable words) of the game library from a live process
+- `scratchpad/gauntlet/L70/reader/inspect_capture.py` -- decodes raw captured object bytes with field offsets
+- `scratchpad/gauntlet/L70/reader/inspect_existing_video.py` -- reads recorded reader frames and addresses (captured object addresses)
+- `scratchpad/gauntlet/L70/reader/live_sampler2.c` -- the v2 memory sampler C source (root RVA, vtables, object field offsets)
+- `scratchpad/gauntlet/L70/reader/probe_host.py` -- host-side driver that pushes and runs the peeker/sampler and decodes memory windows
+- `scratchpad/gauntlet/L70/reader/re_peek.c` -- C source of the read-only batch process-memory peeker
+- `scratchpad/gauntlet/L70/reader/reference_fields.py` -- independent decoder of raw game objects (field offsets, vtable RVAs)
+- `scratchpad/gauntlet/L70/reader/run_abil.py` -- replay/sampler driver from the reader RE project (names the sampler binaries)
+- `scratchpad/gauntlet/L70/reader/test_reference.py` -- tests of the raw-object decoder; embeds vtable RVA and field offsets
+- `scratchpad/gauntlet/L71/integration/checks/l72-reader-character-passive-v2.out` -- output of the passive reader check: memory windows at vtable offsets, sampler binary hash
+- `scratchpad/gauntlet/L72/improvement_loop/native_elite_form_probe.json` -- native-engine probe output listing libg vtable RVAs and object/state offsets
+- `scratchpad/gauntlet/L72/improvement_loop/native_elite_form_probe_v2.json` -- native-engine probe output listing libg vtable RVAs and object/state offsets
+- `scratchpad/gauntlet/L72/improvement_loop/native_elite_form_probe_v3.json` -- native-engine probe output listing libg vtable RVAs and object/state offsets
+- `scratchpad/gauntlet/L72/improvement_loop/native_elite_form_probe_v4.json` -- native-engine probe output listing libg vtable RVAs and object/state offsets
+- `scratchpad/gauntlet/L72/improvement_loop/native_elite_form_probe_v5.json` -- native-engine probe output listing libg vtable RVAs and object/state offsets
+- `scratchpad/gauntlet/L72/improvement_loop/native_rebuilt_service_start.out` -- native host start log with libg RVAs and state/vtable pointers
+- `scratchpad/gauntlet/L72/improvement_loop/native_service_crash.log` -- native host crash log with libg build id and module offsets
+- `scratchpad/gauntlet/L72/improvement_loop/native_service_guest.log` -- native host guest log with libg RVAs and state/vtable pointers
+- `scratchpad/gauntlet/L72/improvement_loop/native_service_start.err` -- native host start log with libg RVAs and state/vtable pointers
+- `scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/PASSIVE_PLAN.md` -- procedure to run the sampler passively: binary path, ELF/vtable identity windows, launch order
+- `scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/PASSIVE_V2_PLAN.md` -- passive-run plan: module base derivation and sampler/peeker usage
+- `scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/build_successor.py` -- builds the v3 sampler (compile recipe, source patching)
+- `scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/character_name.h` -- C header of the v3 sampler's character-name decoder (object field offsets)
+- `scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/decoder_test.c` -- C test of the v3 decoder; embeds object layouts
+- `scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/format_original.c` -- C source of the sampler's original entity formatter
+- `scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/format_successor.c` -- C source of the sampler's successor entity formatter
+- `scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/live_sampler3.c` -- the v3 memory sampler C source (root RVA, vtables, character-name offsets)
+- `scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/passive.py` -- drives the v3 sampler/peeker against a live process with vtable offsets and identity windows
+- `scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/passive_started.json` -- passive run manifest: sampler binary hashes and paths
+- `scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/passive_v2.json` -- passive run output with identity windows at vtable offsets
+- `scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/passive_v2.py` -- passive v2 driver: module base derivation, vtable offsets, sampler launch
+- `scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/passive_v2_identity.json` -- identity windows (memory bytes at vtable offsets)
+- `scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/passive_v2_started.json` -- passive v2 manifest: sampler binary hashes and paths
+- `scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/qualify.py` -- qualification run of the v3 sampler: launches it with the offset chain and decodes raw bytes
+- `scratchpad/gauntlet/L72/improvement_loop/void_identity/probe.json` -- native-engine probe output listing libg vtable RVAs
+- `scratchpad/gauntlet/L73/hero_dedupe/explore.py` -- re-decodes captured raw object bytes with the sampler's field offsets and the hp pointer chain
+- `scratchpad/gauntlet/ext/dump/dump_libg.sh` -- dumps libg memory mappings from a live process
+- `scratchpad/gauntlet/ext/dump/hold_dump.py` -- drives the dump of libg from a live process (offsets, maps)
+- `scratchpad/gauntlet/ext/dump/hold_fix.py` -- writes into process memory to unblock the engine (offsets)
+- `scratchpad/gauntlet/ext/dump/memdump.c` -- C source that reads /proc/<pid>/mem and dumps a mapping
+- `scratchpad/gauntlet/ext/dump/memwrite.c` -- C source that writes /proc/<pid>/mem
+- `scratchpad/gauntlet/ext/re/wrap_elf.py` -- wraps a memory dump as an ELF for disassembly (RE tool)
+
+## Considered and kept (tracked)
+
+- `pipeline/live_mem.py` -- consumes the sampler's JSON frames only; docstring scrubbed, no offsets.
+- `pipeline/reader_config.py` (new) -- loader for the local-only launch values; contains no values.
+- `scratchpad/gauntlet/L68/live_reader/live_play.py` -- builds the sampler command from the local config; constants removed. The device process-name pattern `live_sampler` (pkill) stays: a name, not an offset.
+- `scratchpad/gauntlet/L74/replay_rec/recorder.py` -- same, via live_play's loader.
+- `scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/{adapter.py,live_play_identity.py,test_*.py,*.md plans,reviewed/verified/started.json}` -- parse the sampler's JSON output or record run hashes; no offsets (v3 reader entry now reads the local config). `started/reviewed/verified.json` name the untracked source files and hash them; hashes only.
+- `scratchpad/gauntlet/L72/improvement_loop/decision_capture*/entry.py` -- v3 launch values now from the local config.
+- `pipeline/tests/test_live_mem.py` and the other `live_mem` users -- the FRAME fixture holds game-state values (ids, x/y), no chain pointers or offsets.
+- `scratchpad/gauntlet/L74/replay_rec/*` (feasibility, harvest, to_record, ...) -- consume reader JSON frames; NOTES.md refers to the reader source only by a neutral phrase.
+- `scratchpad/gauntlet/L68/live_reader/{friend_nav,ladder_nav,hero_button,...}.py` -- adb screen automation; no memory access.
+- `research/sandbox_tools/*`, `research/CR_NATIVE_SANDBOX_ASSESSMENT.md`, L61/L63-L67 sandbox docs -- describe running the engine library headless in an emulator; the library name is a vague mention. Library hashes, RVAs and offsets were redacted in place.
+- `icebow/Instructions.txt`, `hogeq/Instructions.txt` -- say the reader program is NOT in the repo; no steps, no values.
+- `scratchpad/gauntlet/L71/integration/checks/l72-reader-character-*.{json,out}` (other than passive-v2) -- gate verdicts only.
+- `scratchpad/gauntlet/L67/reader_audit/*`, `scratchpad/gauntlet/L71/barrel_target/*reader_archive*` -- audits of reader output (counts, ids); no offsets.
+- `scratchpad/gauntlet/L72/improvement_loop/opponent_hand_reader/*` -- opponent-hand inference from public plays; no memory access.
+- `HANDOFF.md`, `HANDOFF_ARCHIVE.md`, `GAUNTLET_LOG.md`, `scratchpad/gauntlet/L62/_handoff_5cs45.md`, `L62/engine_view.md` -- redacted in place (addresses, offsets, library hashes and sizes, sampler device paths).
+- `CLAUDE_TRANSITION_RECORD_20261006.md` -- NOT untracked: it is a 5 MB archive of mostly non-reader material. Redacted in place; the four embedded snapshots of the reader RE notes (A0057-A0060, L70/reader/{FINDINGS,GATES,NEXT_FIELDS_AUTOPILOT,REPORT}.md) had their bodies replaced by a one-line note.

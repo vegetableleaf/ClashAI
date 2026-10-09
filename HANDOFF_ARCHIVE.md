@@ -1738,7 +1738,7 @@ always passing the resolved float — a number is never a sentinel.
 
 Six runs each launched with `--workers 0` became six runs with **12 workers each = 72 processes** on
 16 cores. The logs filled with `bash: fork: retry: Resource temporarily unavailable` and children
-dying with `0xC000012D`. That is the §3 RAM/oversubscription failure, arriving through a flag that
+dying with `<addr>`. That is the §3 RAM/oversubscription failure, arriving through a flag that
 was supposed to prevent it.
 
 ### Trap (§8)
@@ -6720,7 +6720,7 @@ The original Android x86_64 `libg.so` of client **15.535.29** run headless insid
 `com.supercell.titan.*` classes whose JNI descriptors match the real client's. The real package is
 installed on the AVD only to borrow its `AssetManager` (the exact problem Arron's
 `cr-engine-extraction` was stuck on — `research/CR_ENGINE_EXTRACTION_REVIEW.md`, deleted 2026-09-06 on owner ruling, never committed). ~60 hardcoded RVAs
-(fail-closed on `JNI_OnLoad-base != 0x1458BC0`); renderer NOP'd by five byte-verified patches at
+(fail-closed on `JNI_OnLoad-base != <addr>`); renderer NOP'd by five byte-verified patches at
 `GameMain::init`. JSON-line TCP API: `reset(replay_json)` (Supercell replay format: `rndSeed`,
 `battle{deck0,deck1{sp:[{d,l,el}x8], sc:[tower troop]}, avatar0/1, gamemode 72000007}`, **`cmd: []`**),
 `step(n)` (20 Hz logical ticks, no sleeps, author-reported ~10,200 ticks/s in-guest), `act(side,
@@ -6739,7 +6739,7 @@ elixir exact /10000; hand/cycle/next; towers; `state_hash`). Coverage claimed: 1
 ### 3. Why it is NOT running on this box (blocked on owner; nothing here is an engineering blocker)
 1. **Runtime.** `freeze_runtime.ps1` hard-gates size + SHA-256 of all five split APKs of exactly
    15.535.29 x86_64 (base 46,768,886 B; en 123,289; hdpi 88,604; x86_64 77,768,051; asset pack
-   885,861,071) and of `libg.so` (fa6704b8...). Repo ships none ("legally obtained by the user"). I do
+   885,861,071) and of `libg.so` (<libg/sampler hash, local>). Repo ships none ("legally obtained by the user"). I do
    not fetch game binaries from mirrors. Source = the owner's own BlueStacks 5 / Google Play Games
    install (both x86_64 Android): `adb connect 127.0.0.1:5555` -> `dumpsys package
    com.supercell.clashroyale | findstr versionName` -> if **15.535.29**: `pm path` + `adb pull` x5. Any
@@ -6902,12 +6902,12 @@ the owner's "ADB on". Then `prepare_runtime.ps1` + `freeze_runtime.ps1` + `docto
 * Sizes: all five equal the manifest's to the byte. SHA-256: `split_install_time_asset_pack.apk` (886 MB)
   MATCHES; `base.apk`, `split_config.en.apk`, `split_config.hdpi.apk`, `split_config.x86_64.apk` DIFFER.
 * Inside the owner's `split_config.x86_64.apk`: **all 14 `lib/x86_64/*.so` match the manifest's
-  `native_libs` size+sha256, incl. `libg.so` = `fa6704b8…` = `frozen_libg_sha256`.** The 383 data-table
+  `native_libs` size+sha256, incl. `libg.so` = `<libg/sampler hash, local>` = `frozen_libg_sha256`.** The 383 data-table
   files (34 csv_client + 349 csv_logic), arena and tilemap come from the asset pack, which matches whole.
 * Why the four wrappers differ (b, strongly supported, not proven without the author's files): exactly
   those four carry `com.android.vending.derived.apk.id` in their compiled AndroidManifest (a Play-injected
   4-byte int -> same size, different bytes, then a fresh Play signature; base.apk additionally has the
-  Play "frosting" block 0x2146444e); the asset pack has no derived-id and is identical. Different Play
+  Play "frosting" block <addr>); the asset pack has no derived-id and is identical. Different Play
   deliveries of the same release get different derived-APK ids. Author's copy = same release, other id.
 * The tool's own design covers this: `freeze_runtime.ps1 -ManifestTemplate <json>` only COMPARES an APK
   hash when the template has one (`if ($Apk.sha256 -and ...)`), otherwise it RECORDS the local value; the
@@ -6976,17 +6976,17 @@ Candidate replay: one from `scratchpad/usable_replays.json` whose decks avoid El
   bootstrap). So the non-direct profiles are research leftovers; **probe-direct is the only path that
   reaches a battle**, and it is the one that stalls. Log: `scratchpad/gauntlet/ext/probe_nosurf_author.log`.
 * nativeStep mechanics (bridge source, `android_probe/native/jni_bridge.cpp` 1964-2161): per step
-  `core_update(state, 0.05f)` (RVA 0xCE2CC0) -> capture -> `state_update(state, 0.05f)` (0xCE26D0) under the
-  0x1A85930 gate; tick read at battle+0x60 (battle = state+0x90). Nothing in the bridge can produce
+  `core_update(state, 0.05f)` (RVA <addr>) -> capture -> `state_update(state, 0.05f)` (<addr>) under the
+  <addr> gate; tick read at battle+<off> (battle = state+<off>). Nothing in the bridge can produce
   "stepped 100 / tick 0" except the engine's own update returning early.
 
 ### 3. What is ruled out / what is left (labelled)
 * Ruled out (measured): wrong replay doc (sha of the bootstrap matches the author's example; rng/tower/
-  elixir state identical); AVD config drift (config.ini == author's overrides); wrong libg (sha fa6704b8...);
+  elixir state identical); AVD config drift (config.ini == author's overrides); wrong libg (sha <libg/sampler hash, local>);
   timeout paths (33.7 ms); serve-specific bug (author's probe fails the same way).
-* Static RE of libg is IMPOSSIBLE: on disk it has 5 section headers and no .text; PT_LOADs 0..0x18b2fe0 RX
-  (encrypted), RW, a second RX at 0x1ae0000 (0x2099b bytes = the unpacker stub), RW at 0x1b04000. Carving
-  0xCE2CC0 (`scratchpad/gauntlet/ext/re/wrap_elf.py` -> `core.elf` -> llvm-objdump) gives garbage. lldb.exe in
+* Static RE of libg is IMPOSSIBLE: on disk it has 5 section headers and no .text; PT_LOADs 0..<addr> RX
+  (encrypted), RW, a second RX at <addr> (<addr> bytes = the unpacker stub), RW at <addr>. Carving
+  <addr> (`scratchpad/gauntlet/ext/re/wrap_elf.py` -> `core.elf` -> llvm-objdump) gives garbage. lldb.exe in
   the NDK fails to start on this box (liblldb.dll / api-ms-win-crt-time DLL). No capstone (third-party, not
   installed without owner OK). => the decrypted code must be DUMPED FROM THE LIVE PROCESS.
 * Hypotheses, all UNTESTED: (a) locale/timezone-dependent path -- the Java shims (`ApplicationUtilBase`
@@ -7021,7 +7021,7 @@ Candidate replay: one from `scratchpad/usable_replays.json` whose decks avoid El
    '<root>/input-replay.json'`, root `/data/local/tmp/cr-native-sandbox-probe`; the script's ValidateSet
    rejects the new name, so run the adb command directly after run_probe.ps1 has pushed the files once).
    `adb pull` the dumps; `wrap_elf.py <dump> <vaddr> <len> out.elf` (edit: it seeks by vaddr, so pass a
-   dump that starts at the mapping base or add an offset arg); `llvm-objdump -d --start-address=0xCE2CC0`
+   dump that starts at the mapping base or add an offset arg); `llvm-objdump -d --start-address=<addr>`
    (address = libg base + RVA) and read the early exits of core_update; compare the dumped battle/logic
    words against the author's field map in `docs/SANDBOX_RUNTIME_TECHNICAL.zh-CN.md` 190-259.
 4. When tick advances: `research/ext/cr-native-sandbox/.venv/Scripts/python.exe
@@ -7074,18 +7074,18 @@ the author's box also shows `loading_complete false`; anything about conversion 
   with a post-step hold, `CR_PROBE_HOLD_MS`) + a static `memdump` (pread on `/proc/<pid>/mem`, root) pulled
   every libg mapping (`scratchpad/gauntlet/ext/dump/live/`, code at RVA 0 = `libg_7ad3d8ec7000_rwxp.bin`)
   and the state/battle/GameMain objects (`hold1/`). `wrap_elf.py` + NDK `llvm-objdump` disassemble it.
-* `core_update` (0xCE2CC0) has five early exits before the tick path. The one that fires here is the third:
-  `dword [GameMain+0x1BC] != 0` (helper 0x72D220). Live values: `+0x1B8 = 0, +0x1B9 = 1, +0x1BC = 5,
-  +0x1C0 = 8`, and the string at `+0x1D0` (len 71) is
+* `core_update` (<addr>) has five early exits before the tick path. The one that fires here is the third:
+  `dword [GameMain+<off>] != 0` (helper <addr>). Live values: `+<off> = 0, +<off> = 1, +<off> = 5,
+  +<off> = 8`, and the string at `+<off>` (len 71) is
   `https://play.google.com/store/apps/details?id=com.supercell.clashroyale`. The accumulator at
-  state+0x44 was 0.0 and state+0x18c = 0, so the tick path was never entered.
-* Who queues it: the server-message dispatcher (function 0xB072E0; type via vtable[5]) -> login-failed
-  branch (reason via vtable[8] at 0xB09D72) -> reason-7 jump table 0x3376C0 entry 1 = reason **8** ->
-  block 0xB0D09F: copies the message text into GameMain+0x1D0 and calls `requestAction(GameMain, code 5,
-  param 8)` (0x72B0E0, call site 0xB0D132). Code 5's handler (processor 0x72D230, jump table 0x2AC038 ->
-  0x72D288) opens the stored URL = the "update from the store" popup. `requestAction` stores the action in
-  `+0x1BC/+0x1C0` for GameMain::update's processor, which the headless bridge NEVER runs (it pumps only the
-  state manager 0xCE7810), so the action stays pending forever and the battle core refuses to tick.
+  state+<off> was 0.0 and state+<off> = 0, so the tick path was never entered.
+* Who queues it: the server-message dispatcher (function <addr>; type via vtable[5]) -> login-failed
+  branch (reason via vtable[8] at <addr>) -> reason-7 jump table <addr> entry 1 = reason **8** ->
+  block <addr>: copies the message text into GameMain+<off> and calls `requestAction(GameMain, code 5,
+  param 8)` (<addr>, call site <addr>). Code 5's handler (processor <addr>, jump table <addr> ->
+  <addr>) opens the stored URL = the "update from the store" popup. `requestAction` stores the action in
+  `+<off>/+<off>` for GameMain::update's processor, which the headless bridge NEVER runs (it pumps only the
+  state manager <addr>), so the action stays pending forever and the battle core refuses to tick.
 * Why the author's box did not hit it (plausible, UNTESTED): reason 8 is "client older than required"; our
   Java wrapper is the Play-derived split APK set (§5av: 4 wrappers differ from the frozen build) and its
   reported version/fingerprint is what the login path compares against. The author's runtime is the frozen
@@ -7096,7 +7096,7 @@ the author's box also shows `loading_complete false`; anything about conversion 
 * Live A/B first (`scratchpad/gauntlet/ext/dump/hold_fix.py`, pre-step hold `CR_PROBE_HOLD_PRE_MS` +
   release file, static `memwrite` doing pwrite on `/proc/<pid>/mem`):
   control (hold, no write): tick 0->0, hash **e23456fd00d634de** (§5aw's stall exactly);
-  `--clear` (qword +0x1BC := 0, word +0x1B8 := 0, i.e. what 0x72D230 itself does before dispatch):
+  `--clear` (qword +<off> := 0, word +<off> := 0, i.e. what <addr> itself does before dispatch):
   tick 0->**100**, hash **96598dc9028e1802**, rng 3502570521, towers [4824,3052,3052,4824,3052,3052]
   = the author's certified 100-tick state bit for bit. Files: `hold2_ctrl/`, `hold3_clear/` (result.json).
 * Permanent fix in the bridge (`android_probe/native/jni_bridge.cpp`, `discard_pending_game_action`, called
@@ -7143,7 +7143,7 @@ the author's box also shows `loading_complete false`; anything about conversion 
 * Git-Bash mangles `/data/local/tmp/...` into a Windows path in `adb push` args -> push from PowerShell.
 * `pgrep -f` matched the adb `sh -c` wrapper itself -> pattern `^app_process.*JniHost`.
 * `full-card-bootstrap.json` run died with SIGSEGV (exit 139) inside `nativePumpDataTables`
-  (0xE74B40 -> 0x12AF1B0 null deref, fault 0x80, 11 s uptime) -- BEFORE the replay doc is used, and the
+  (<addr> -> <addr> null deref, fault 0x80, 11 s uptime) -- BEFORE the replay doc is used, and the
   DataTables pump's iteration count varies run to run (89/106/167). Timing-dependent; one crash in ~10
   boots tonight. Re-run on crash; do not read it as a doc problem.
 * The Bash tool's cwd persists between calls; `cd research/ext/...` from inside the sandbox fails -- use
@@ -7153,11 +7153,11 @@ the author's box also shows `loading_complete false`; anything about conversion 
 
 ### 1. What ran
 * Service boot via `scratchpad/gauntlet/ext/svc_start4.ps1` (6-attempt retry): attempts 1 and 2 died in
-  `nativePumpDataTables` (SIGSEGV fault 0x80, same PCs as §5ax.5: libg 0x12AF1B0 <- 0x11EA4C2 <- 0xE256E6
-  <- 0xE74CA7), attempt 3 booted and attested (tick-10 hash d036bec06e300550). Static read of the crash
+  `nativePumpDataTables` (SIGSEGV fault 0x80, same PCs as §5ax.5: libg <addr> <- <addr> <- <addr>
+  <- <addr>), attempt 3 booted and attested (tick-10 hash d036bec06e300550). Static read of the crash
   site (carvings `dump/live/c_12af100.elf`, `c_11ea400.elf`, `c_e25600.elf`, `c_11e8860.elf`, NOT committed):
-  0x11EA4A0 calls the resource lookup 0x11E8860(name, 0) and hands the result to 0x12AF1B0, a
-  wait-until-loaded loop on [obj+0x80]; a null lookup faults at +0x80. Timing-dependent (2 of 3 boots
+  <addr> calls the resource lookup <addr>(name, 0) and hands the result to <addr>, a
+  wait-until-loaded loop on [obj+<off>]; a null lookup faults at +<off>. Timing-dependent (2 of 3 boots
   tonight, ~1 in 10 in §5ax) -> the retry loop is the fix for now; the lookup's argument is the lead if it
   ever becomes frequent.
 * `research/sandbox_tools/replay_batch.py` (new): every tag in `usable_replays.json` through
@@ -7246,7 +7246,7 @@ the author's box also shows `loading_complete false`; anything about conversion 
 3. The 7 `position_based=False` matches: probe whether the hero/evolution form flag changes the deal.
 4. Per-tick state dump for the sim-parity oracle (§4p): `--record-full --record-every 1` over the 135
    clean matches = ~4 h of engine time at 108 s/match; or record every 4 ticks (~30 s/match, 1.1 h).
-5. Boot crash: if `nativePumpDataTables` SIGSEGV becomes >1 in 3, chase 0x11E8860's argument.
+5. Boot crash: if `nativePumpDataTables` SIGSEGV becomes >1 in 3, chase <addr>'s argument.
 
 ### 7. Housekeeping
 * Emulator + service stopped 01:08 (`worker stop --stop-vm`, qemu verified gone). Cuda run untouched

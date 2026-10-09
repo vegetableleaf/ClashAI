@@ -2,7 +2,7 @@
 
 **A. Owner rulings.** Q2 granted (runtime may be copied to the VM). Q1 answered with a task: identify which of HunterCR's videos are icebow by inspecting frames, verify card-by-card that all eight are present, and see how much footage that yields.
 
-**B. Runtime is on clashbot-s3 (a).** 1.1 GB transferred over ssh (`tar | ssh tar -x`), 5 APKs + 14 `.so` + 383 DataTables. **`libg.so` sha256 `fa6704b8...246ba` on both ends** -- identical to the hash `bindings/runtime-manifest.json` pins, so the version freeze survived the move. Nothing under any `*/data/` path was included.
+**B. Runtime is on clashbot-s3 (a).** 1.1 GB transferred over ssh (`tar | ssh tar -x`), 5 APKs + 14 `.so` + 383 DataTables. **`libg.so` sha256 `<libg/sampler hash, local>` on both ends** -- identical to the hash `bindings/runtime-manifest.json` pins, so the version freeze survived the move. Nothing under any `*/data/` path was included.
 
 **C. Channel inventory (a), metadata only, no video fetched.** `yt-dlp --flat-playlist`: **1,382 videos, 441.6 hours, median 17.0 min**, 1,379 of them over 10 minutes. So the raw supply comfortably exceeds the 78-139 video-hours that §5cs.80 measured as one corpus doubling -- *if* enough of it is icebow, which is the open question.
 

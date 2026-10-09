@@ -29,7 +29,7 @@ Not a reimplementation, not box64/qemu-user, not a Python rewrite of the battle 
 All from a **Runtime ZIP the user must obtain legally themselves** --
 `cr-native-sandbox-runtime-150535029.zip`, SHA-256 `82b2e79e...c4310`, explicitly not in the GitHub
 repo (README 1, README 9). Contents (README 1.3): 5 split APKs; 14 x86_64 `.so` (`libg.so` = battle
-core, SHA-256 `fa6704b8...246ba`, plus `libc++_shared`, `libfmod`, `libfmodstudio`,
+core, SHA-256 `<libg/sampler hash, local>`, plus `libc++_shared`, `libfmod`, `libfmodstudio`,
 `libsupercell_clashroyale`, `libflutter`, `libsentry*`, ...); 383 DataTables CSVs under
 `csv_client/` + `csv_logic/`; and `assets/locations/training_arena.csv` +
 `assets/tilemaps/tilemap.csv` pulled from the asset pack. Frozen: game `15.535.29`, runtime
@@ -145,7 +145,7 @@ is not redistributable (README 9 -- the repo ships no APK/`.so`/assets, "Runtime
 取得", and the MIT licence explicitly excludes the third-party game binaries). Copying your own
 legally obtained files onto a Linux VM you control is one thing; a shared/cloud host or any repo is
 a different question. **Flagging, not ruling.** Separately, the version freeze is unforgiving
-(`libg.so` must hash `fa6704b8...246ba`, re-verified against `bindings/runtime-manifest.json`);
+(`libg.so` must hash `<libg/sampler hash, local>`, re-verified against `bindings/runtime-manifest.json`);
 hashes are platform-independent so the freeze transfers intact, but no newer APK can substitute.
 
 ## 4. Asset / data dependencies (measured with `du`/`ls`)

@@ -220,7 +220,7 @@ STATE    running: geo2 s54. cleared: gate 1 (workers 12). confirmed: scratch, 40
   ready; waiting for the owner to enable ADB in BlueStacks. §5au.
 - 2026-09-01 22:40 sandbox runtime pulled from the owner's BlueStacks via exec-out (HD-Player adb proxy
   whitelists getprop/dumpsys/logcat only; pull/sync blocked). Engine payload byte-identical: 14/14 native
-  libs incl. libg.so fa6704b8 + asset pack; 4 Play-derived APK wrappers differ (derived.apk.id + re-sign,
+  libs incl. libg.so <libg/sampler hash, local> + asset pack; 4 Play-derived APK wrappers differ (derived.apk.id + re-sign,
   same sizes). prepare_runtime OK. freeze (template with blanked APK hashes) = owner's call. §5av.
 - 2026-09-01 23:05-23:40 (owner: "run the single replay conversion now, an hour of slowdown is fine")
   sandbox SMOKE on this box: AVD boot 61.6 s, 5 APKs installed, libg headless load, DataTables, battle
@@ -1232,7 +1232,7 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - (a) m250 pro agreement (read_ckpt, both val sets): control kl 0 = 11.25/32.97 (v1), 10.95/33.53 (v2) -- DOWN 4.2 top1 / 13.6 top5 from the init, bcA's collapse on schedule. KL 0.3 = 16.73/44.02 (v1), 16.28/42.69 (v2) -- top1 ABOVE the init (+1.29/+1.28), top5 held, rails lower (p99 8.9 vs 9.6). Arm gap +5.48 top1 / +11.05 top5. Not pinned, not collapsed.
 - (a) The control loses the low-frequency cards first: rocket 1.9/18.9 vs KL 13.2/32.1, tornado 1.4/5.6 vs 2.8/22.2.
 - Limits: one checkpoint, one seed, one coef; the across-seed band is unmeasured; the arm gap is far outside any plausible band, the +1.3 top1 rise is not. m500 ~19:30 UTC.
-- (a/c) Bridge RE (owner-authorised, static only, sandbox commit 81e5dff): area effects are the 3M global-id series, NOT 4M -- the v1 gate was listing projectiles twice, which is exactly §5cs.43's effects==projectiles measurement, reached independently. No freeze/stun flag exists: "frozen" is a buff with -100 HitSpeedMultiplier, so a generic buffs[] export is the only faithful one. Buff manager = component[3], instance 0x70 B with remaining/total ms; AEO vtable 0x19691f8 with side/x/y/elapsed/life/radius.
+- (a/c) Bridge RE (owner-authorised, static only, sandbox commit 81e5dff): area effects are the 3M global-id series, NOT 4M -- the v1 gate was listing projectiles twice, which is exactly §5cs.43's effects==projectiles measurement, reached independently. No freeze/stun flag exists: "frozen" is a buff with -100 HitSpeedMultiplier, so a generic buffs[] export is the only faithful one. Buff manager = component[3], instance 0x70 B with remaining/total ms; AEO vtable <addr> with side/x/y/elapsed/life/radius.
 - v2 bridge built (9b63a7a0) but artifacts/ deliberately restored to v1 (82887463, verified) -- the worker pool redeploys by hash on service start and would restart the live trainers. Verification runbook re_verify_bridge.py written, NOT run.
 
 ## L62g -- 2026-09-05 19:1x UTC -- RETRACTION: the play gate collapsed; pair killed and relaunched with the pro gate prior
@@ -1482,7 +1482,7 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Unmeasured: engine throughput per VM slot -- needs the runtime, which is behind the owner ruling in 5cs.80 H. Everything cheaper than that ruling is now done. §5cs.81.
 
 ## L66 (2026-09-07) -- runtime on the VM; channel = 441.6 h; deck identifier built; the pilot is DISCARDED
-- Owner granted Q2. Runtime uploaded to clashbot-s3: 1.1 GB, libg.so sha256 fa6704b8...246ba identical both ends = the version freeze survived. No */data/ included.
+- Owner granted Q2. Runtime uploaded to clashbot-s3: 1.1 GB, libg.so sha256 <libg/sampler hash, local> identical both ends = the version freeze survived. No */data/ included.
 - Channel (metadata only): 1,382 videos, 441.6 h, median 17.0 min. Raw supply exceeds the 78-139 h/doubling from 5cs.80 IF enough is icebow.
 - deckid.py/profile.py: read the HAND (fixed slot fractions, NCC vs 2,174 card templates, evo folded to base). FOUR passes, three wrong: (1) whole-crop dot product compared a card against a zoom of a card -- non-icebow p90 outranked the icebow median; fixed by sliding at multiple scales; (2) evo vs base names; (3) kept only each slot's top-2, so an unmatched card scored 0.000 and a KNOWN icebow video read worst_icebow 0.000.
 - PILOT DISCARDED (c): 12 random videos at 20 s each all scored 0.483-0.545 vs known icebow 0.623-0.634 -- looked like a clean 0/12. Controlled test on KNOWN icebow footage: 20 s -> 0.558, 180 s -> 0.625, 180 s with 20 frames -> 0.625. Slice LENGTH decides, frame count does not. Every pilot clip sat in the regime where real icebow reads ~0.56. No conclusion about the icebow fraction survives. Eyeball agreed: the top "negative" (0.545) shows tornado + rocket + greyed x-bow.

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "frozen": true,
   "output": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\native_confirmation_20261005\\runtime\\manifest\\runtime-manifest.json",
-  "libg_sha256": "fa6704b83cb9c5b8eecb7b56c9671b834d636a3a6d9ac446e698e1262dc246ba",
+  "libg_sha256": "<libg/sampler hash, local>",
   "apk_count": 5,
   "native_lib_count": 14
 }
