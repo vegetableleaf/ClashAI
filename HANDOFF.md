@@ -5255,6 +5255,14 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   the combo cannot be benchmarked until a996a070 adds follow_ups to SelfPlaySide (high priority). Owner: tell them when
 >   consecutive plays < 1.2 s (incl. Rocket+Tornado) are reliable -> owner switches to the main account for friendlies.
 >   Owner grinding the 2nd account meanwhile (live stays stopped; nothing touches the emulator).
+> * A live supervisor run happened 16:12-16:57 (11 matches; tally 549-512 -> 558-513), not started or stopped by the lead
+>   (owner's own run, presumably); STOP file re-created 16:57. Same checkpoint 41b52a83 (+ card levels now in the file).
+> * follow_ups added to SelfPlaySide (a996a070: l74-pipeline-decisions bb239f1 = dacaf22 + f1cd61a + merge 3853466 of
+>   l74-follow-up-landing) -> the combo can be benchmarked through search_s0; relayed to a67f26ce. pipeline-decisions pod
+>   `pre` smoke queued under cpu.lock.
+> * log-air block blind verification a842013f: FAIL (medium) -- Phoenix egg inherits the parent `phoenix` class
+>   (body_identity.py:227) -> counted as flying -> a useful Log is held (20261006_141406 t3878). All other criteria
+>   PASS (off identical on 8,272 live decisions; 0 candidate-only failures). Back to a93fc9a1 (per-body flying).
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
