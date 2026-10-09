@@ -1,0 +1,3 @@
+retarget 28 rejected plays per game: base 0.82, arm 0.64; accepted plays base 39.5 arm 36.4; end_tick base 4453 arm 4232
+block 28 rejected plays per game: base 0.82, arm 0.54; accepted plays base 39.5 arm 37.6; end_tick base 4453 arm 4373
+all base games: rejected per game 0.57

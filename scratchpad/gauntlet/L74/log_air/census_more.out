@@ -1,0 +1,23 @@
+only_air Logs 28 (of 4153 Logs; 173 empty corridor)
+air answer already in hand at the Log: 23
+retarget kinds {'ground': 15, 'chip': 12, 'unchanged': 1}
+retarget ground value: mean 3.75
+after only_air Log: {'Skeletons': 7, 'Tornado': 6, 'Knight': 5, 'Tesla': 4, 'IceWizard': 4, 'Xbow': 2} total 28 air answers (Tesla+IceWizard): 8
+after any Log: air-answer share 0.349; after only_air Log 0.286
+air types in the path of an only_air Log:
+   6 ('minion_horde',)
+   4 ('inferno_dragon',)
+   3 ('balloon',)
+   3 ('bats',)
+   2 ('baby_dragon',)
+   2 ('balloon', 'lava_hound')
+   1 ('mega_minion', 'minions')
+   1 ('electro_dragon',)
+   1 ('balloon', 'lava_hound', 'mega_minion')
+   1 ('electro_dragon', 'lava_pups')
+   1 ('flying_machine', 'lava_pups', 'phoenix')
+   1 ('balloon', 'lava_pups')
+   1 ('mega_minion',)
+   1 ('lava_hound', 'minions')
+Logs whose only flyer is a Skeleton Barrel: 0
+per-match Log rate: 5.12 Logs/game over 811 games; only_air 0.035/game

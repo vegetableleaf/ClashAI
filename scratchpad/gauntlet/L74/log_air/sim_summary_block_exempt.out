@@ -1,0 +1,18 @@
+base games: {'evo': 153, 'air': 236} | candidate games (base played an only_air Log): {'evo': 6, 'air': 21}
+--- retarget  (candidates still pending: 0)
+  [all] retarget - base over 389 paired games: better 1 / worse 5 / same 383; diff -1.03 pp, 95% CI [-2.26, +0.20] (half-width 1.23); sign p 0.219; non-inferior (lower > -3 pp): True
+  [evo] retarget - base over 153 paired games: better 1 / worse 1 / same 151; diff +0.00 pp, 95% CI [-1.82, +1.82] (half-width 1.82); sign p 1.000; non-inferior (lower > -3 pp): True
+  [air] retarget - base over 236 paired games: better 0 / worse 4 / same 232; diff -1.69 pp, 95% CI [-3.35, -0.04] (half-width 1.65); sign p 0.125; non-inferior (lower > -3 pp): False
+  candidate games run: 27; of those the arm touched: 26
+  [candidate games only] retarget - base over 27 paired games: better 1 / worse 5 / same 21; diff -14.81 pp, 95% CI [-32.02, +2.39] (half-width 17.20); sign p 0.219; non-inferior (lower > -3 pp): False
+  re-aimed 27 Logs; new cell {'ground': 10, 'chip': 17}; corridor class after {'hits': 27}; hits something 27 of 27; mean ground elixir in the new corridor 1.35
+--- block  (candidates still pending: 0)
+  [all] block - base over 389 paired games: better 2 / worse 1 / same 386; diff +0.26 pp, 95% CI [-0.62, +1.13] (half-width 0.87); sign p 1.000; non-inferior (lower > -3 pp): True
+  [evo] block - base over 153 paired games: better 1 / worse 0 / same 152; diff +0.65 pp, 95% CI [-0.63, +1.93] (half-width 1.28); sign p 1.000; non-inferior (lower > -3 pp): True
+  [air] block - base over 236 paired games: better 1 / worse 1 / same 234; diff +0.00 pp, 95% CI [-1.18, +1.18] (half-width 1.18); sign p 1.000; non-inferior (lower > -3 pp): True
+  candidate games run: 27; of those the arm touched: 24
+  [candidate games only] block - base over 27 paired games: better 2 / worse 1 / same 24; diff +3.70 pp, 95% CI [-9.03, +16.44] (half-width 12.73); sign p 1.000; non-inferior (lower > -3 pp): False
+  blocked 45 Logs (WAIT)
+--- base Log plays: 1895 in 389 games = 4.87 per game; corridor class {'hits': 1835, 'only_air': 28, 'empty': 32} (1.5 % only_air, 1.7 % empty); only_air Logs per game 0.072
+   evo: 960 plays in 153 games; {'hits': 940, 'only_air': 6, 'empty': 14}
+   air: 935 plays in 236 games; {'hits': 895, 'only_air': 22, 'empty': 18}
