@@ -5022,6 +5022,12 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   (4191053/b70f704: king re-aims 0, not-cast path, 60-tick persistence, 0 shifted aims; SIM 315 vs 315) -> candidate
 >   8137df5 in C:/Users/benpe/cb_merge_rdt2 -> verifier a17a8416. RL defence interim: rdef_a u0010 618 vs live 635 (n.s.);
 >   reward bug fixed (raw coords 1000/tile); arm rdef_c started 01:16.
+> * Owner ~01:55: Rocket+Tornado combo for clumps too wide for one Rocket -> a3bcd399 adds a SEPARATE `--rocket-tornado on`
+>   (Rocket first, Tornado timed to the measured Rocket flight + live latency; follow-up dropped, never late) with its own
+>   SIM arm; lone-Rocket rule ships first.
+> * **identity-ext-2 MERGED 7a1062b + LIVE ~02:2x** (blind ae873022 PASS_WITH_NOTES: off identical on 197,233 states; only 4
+>   bodies change: Skeletrooper -> bandit, Tombstone monster -> giant, banner + MA decoy dropped). Notes: trooper does 10%
+>   tower damage (bandit 100%); decoy draws my fire unseen; Tombstone rule on 1 live log. Discord posted.
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
