@@ -65,7 +65,8 @@ def main():
         from live_play_identity import IdentityPilot, install_catalog
         install_catalog()
         entry.GenPilot = IdentityPilot
-        entry.READERS = {'v3': ('/data/local/tmp/re_live_sampler3_20261006', ' --extended --character-identity')}
+        from pipeline import reader_config
+        entry.READERS = {'v3': reader_config.reader('v3')}   # local-only reader config
         if not any(x == '--reader' or x.startswith('--reader=') for x in rest):
             rest += ['--reader', 'v3']
     sys.argv = [str(CANONICAL)] + rest

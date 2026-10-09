@@ -1,6 +1,6 @@
 **GAUNTLET L66 — runtime is on the VM; channel is 441.6 h; my pilot was wrong and is discarded**
 
-**Q2 done.** The 1.1 GB runtime is on `clashbot-s3`. `libg.so` hashes identical on both ends (`fa6704b8…246ba`), which is the exact hash the sandbox's manifest pins — the version freeze survived the move. Nothing from any `data/` folder went with it.
+**Q2 done.** The 1.1 GB runtime is on `clashbot-s3`. `libg.so` hashes identical on both ends (`<libg/sampler hash, local>`), which is the exact hash the sandbox's manifest pins — the version freeze survived the move. Nothing from any `data/` folder went with it.
 
 **Q1 — the channel:** 1,382 videos, **441.6 hours**, median 17 min (metadata only, nothing downloaded for this count). That's comfortably more than the 78–139 hours that buys one corpus doubling — *if* enough of it is icebow.
 

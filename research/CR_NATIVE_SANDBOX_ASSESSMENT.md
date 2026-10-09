@@ -48,8 +48,8 @@ RoyaleAPI crawl (`icebow/data/royaleapi/crawl2/`). Labels as always: **measured*
   `cr-engine-extraction` was stuck on: this repo solves it by running inside Android instead of standalone).
 * **Init:** ~60 hardcoded function addresses (RVAs) into `libg.so` 15.535.29: `CreateGameMain`, `GameMain::init` (with five
   byte-verified patches that skip renderer setup and are restored afterwards), DataTables load, the replay loader, the battle
-  tick (`0xCE2CC0`), `DoSpellCommand` (play a card), the ability command, the deployment validator, elixir/hand getters.
-  Every entry point checks `JNI_OnLoad - base == 0x1458BC0` and fails closed on any other build.
+  tick (`<addr>`), `DoSpellCommand` (play a card), the ability command, the deployment validator, elixir/hand getters.
+  Every entry point checks `JNI_OnLoad - base == <addr>` and fails closed on any other build.
 * **Battle creation:** `reset(replay_json)` — a Supercell-format replay object (`rndSeed`, `battle{deck0, deck1, avatar0,
   avatar1, gamemode 72000007, arena, location}`, **`cmd: []`**) goes through the client's own replay loader; the game state is
   replaced in-process (~11.5 ms author-reported; no DataTables reload).

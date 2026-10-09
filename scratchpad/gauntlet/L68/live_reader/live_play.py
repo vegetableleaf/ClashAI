@@ -41,12 +41,33 @@ from friend_nav import MenuGuard  # noqa: E402
 # run the Windows adb -> empty output.
 ADB = [r"C:\Program Files\Netease\MuMuPlayer\nx_device\15.0\shell\adb.exe", "-s", "127.0.0.1:16384"]
 ENV = dict(os.environ)
-RVA, ROOT_CTX = "0x1aeef98", "0x18"
+# The reader's launch values are local-only (icebow/data/reader_config.json, untracked; pipeline/reader_config.py).
+# Importing stays possible without the file (tests, tooling); main() requires it.
+RVA, ROOT_CTX = None, None
 UI_READY_MIN_TICK = 150
-# 2026-10-03 reader v2 (scratchpad/gauntlet/L70/reader/FINDINGS.md): v1 DROPPED evolved bodies (evolution-form card
+# 2026-10-03 reader v2: v1 DROPPED evolved bodies (evolution-form card
 # ids); v2 --extended keeps them (+ per-entity evo, projectiles, effects). v1 checkpoints fold the form id to the base
 # card via the catalog. Rollback: --reader v1.
-READERS = {"v1": ("/data/local/tmp/live_sampler", ""), "v2": ("/data/local/tmp/re_live_sampler2", " --extended")}
+READERS: dict = {}       # name -> (device binary, extra args), from the local reader config
+
+
+def apply_reader_config(strict: bool = True) -> None:
+    """Fill RVA / ROOT_CTX / READERS from the local reader config. strict: a missing or invalid file exits with a clear
+    message. A READERS already set (an entry script's override) is kept."""
+    global RVA, ROOT_CTX, READERS
+    from pipeline import reader_config
+    try:
+        cfg = reader_config.load()
+    except reader_config.ReaderConfigError:
+        if strict:
+            raise
+        return
+    RVA, ROOT_CTX = cfg["root_rva"], cfg["root_ctx"]
+    if not READERS:
+        READERS = reader_config.readers(cfg)
+
+
+apply_reader_config(strict=False)
 CONFIRM_TICKS = 60       # a tap is "unconfirmed" only after 60 GAME ticks (3 s) without registering -- never wall clock
 READER_SILENT_S = 10.0   # no reader line at all this long after the clock ran -> stop (a reader restart takes ~1-2 s)
 GUARD_BLIND_S = 30.0     # menu guard without a successful screen classification this long -> stop (taps block at 8 s);
@@ -169,7 +190,7 @@ def screen_size() -> tuple[int, int]:
     # running (2026-09-25 02:3x: `devices` listed only emulator-5554). Reconnect first; fail readably if still gone.
     subprocess.run([ADB[0], "connect", ADB[2]], capture_output=True, text=True, timeout=10, env=ENV)
     if adb("shell", "id -u").strip() != "0":               # MuMu restarts reset adbd to the shell user; the reader
-        adb("root")                                        # needs root for /proc/PID/mem. `adb root` restarts adbd,
+        adb("root")                                        # needs root. `adb root` restarts adbd,
         time.sleep(2)                                      # which drops the TCP device -> reconnect.
         subprocess.run([ADB[0], "connect", ADB[2]], capture_output=True, text=True, timeout=10, env=ENV)
     sizes = re.findall(r"(\d+)x(\d+)", adb("shell", "wm size"))
@@ -227,6 +248,7 @@ class ScreenRec:
 
 
 def main() -> int:
+    apply_reader_config(strict=True)                   # clear error, before anything else, when the local file is absent
     ap = argparse.ArgumentParser()
     from pipeline.decision_options import add_arguments, config_from_args
     add_arguments(ap)
@@ -655,8 +677,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                                                   on_frame=guard.feed if guard else None)
     ab_pending, last_bstate = None, None
     sampler, extra = READERS[a.reader]
-    cmd = (f"{sampler} $(pidof com.supercell.clashroyale) {a.interval_ms} {RVA} {ROOT_CTX} "
-           f"--unified 0{extra}")
+    cmd = (f"{sampler} $(pidof com.supercell.clashroyale) {a.interval_ms} {RVA} {ROOT_CTX}"
+           f"{extra}")                                   # extra = the reader's remaining arguments (local reader config)
     procs: list = []
     stopping, spawn_lock = threading.Event(), threading.Lock()
 

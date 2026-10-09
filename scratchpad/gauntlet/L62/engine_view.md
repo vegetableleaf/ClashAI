@@ -190,7 +190,7 @@ before each play, and 58 graveyard, 57 poison, 184 tornado, 43 freeze, 30 rage, 
 and 3 heal-spirit plays have a LATER full play-frame captured inside that zone's lifetime (e.g. graveyard played tick 831, next
 play frame tick 863; poison 2896 -> 2961), and every one of those frames has 0 extra effects. In the every-tick recording the three
 Tornado plays (ticks 3016, 4632, 5082) show no Tornado effect in the 60 ticks after each.
-Reading of the bridge code: an effect row is emitted only if `category in [4M, 5M)`, `vtable_rva != 0 and < 0x3000000`, `side in (0,1)`,
+Reading of the bridge code: an effect row is emitted only if `category in [4M, 5M)`, `vtable_rva != 0 and < <addr>`, `side in (0,1)`,
 and (for non-projectile vtables) `0 <= x <= 18000, 0 <= y <= 32000`. Either area effects are not 4M-series objects in this registry, or
 they fail the side / bounds gate (a zone with side = -1 or team-less would be dropped). Which one cannot be told from disk.
 STATUS: lingering zones = NOT EXPORTED by the current bridge (needs a new libg registry/offset, not a recorder change).

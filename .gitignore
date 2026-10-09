@@ -83,3 +83,44 @@ scratchpad/gauntlet/L68/generalist/pilot/bytediff/
 
 # live memory-reader binary (not ours to redistribute)
 scratchpad/gauntlet/L68/live_reader/live_sampler
+
+# reader purge (L74/reader_purge): the live memory reader is local-only. These files stay on disk but are never tracked.
+# Launch values for the reader: icebow/data/reader_config.json (icebow/data/ is ignored as well; listed for clarity).
+icebow/data/reader_config.json
+**/re_live_sampler*
+**/live_sampler*
+**/re_peek*
+scratchpad/gauntlet/L70/reader/
+scratchpad/gauntlet/ext/dump/
+scratchpad/gauntlet/ext/re/
+scratchpad/gauntlet/L62/re_*
+scratchpad/gauntlet/L62/bridge_re.md
+scratchpad/gauntlet/L68/live_reader/chain_scan.c
+scratchpad/gauntlet/L68/live_reader/probe1.jsonl
+scratchpad/gauntlet/L73/hero_dedupe/explore.py
+scratchpad/gauntlet/L71/integration/checks/l72-reader-character-passive-v2.out
+scratchpad/gauntlet/L72/improvement_loop/native_elite_form_probe.json
+scratchpad/gauntlet/L72/improvement_loop/native_elite_form_probe_v2.json
+scratchpad/gauntlet/L72/improvement_loop/native_elite_form_probe_v3.json
+scratchpad/gauntlet/L72/improvement_loop/native_elite_form_probe_v4.json
+scratchpad/gauntlet/L72/improvement_loop/native_elite_form_probe_v5.json
+scratchpad/gauntlet/L72/improvement_loop/native_rebuilt_service_start.out
+scratchpad/gauntlet/L72/improvement_loop/native_service_crash.log
+scratchpad/gauntlet/L72/improvement_loop/native_service_guest.log
+scratchpad/gauntlet/L72/improvement_loop/native_service_start.err
+scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/PASSIVE_PLAN.md
+scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/PASSIVE_V2_PLAN.md
+scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/build_successor.py
+scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/character_name.h
+scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/decoder_test.c
+scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/format_original.c
+scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/format_successor.c
+scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/live_sampler3.c
+scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/passive.py
+scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/passive_started.json
+scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/passive_v2.json
+scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/passive_v2.py
+scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/passive_v2_identity.json
+scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/passive_v2_started.json
+scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/qualify.py
+scratchpad/gauntlet/L72/improvement_loop/void_identity/probe.json

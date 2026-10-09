@@ -998,7 +998,7 @@ actualR1estartupcheck. Originalobs_contractbackedup. No newcheckpointorstrengthp
 Importantlatercorrection in`reader_character_identity`:203000023alsoidentifies
 FloatingCube/IceCube. Earlier2,435shared-IDentriescannotallbedescribedasactualHero
 bodies. Neworiginalbytecensus1,202objects:579Hero/534FloatingCube/31IceCube/58readerrors;
-all534FloatingCubesjoinedcurrentregistrysame-sideHerovia+0x180. IndependentC/scalar
+all534FloatingCubesjoinedcurrentregistrysame-sideHerovia+<off>. IndependentC/scalar
 1,215decodesexact,4positivenames/9malformednames/4badstreams. Partial/missingreads
 preserved;3legacyformatfixturesexact,fullcanonicalstreamparityunrun. No guessed
 same-positiondedup;colocatedrealbodiesretained.
@@ -1006,7 +1006,7 @@ same-positiondedup;colocatedrealbodiesretained.
 Separate sampler3readscharacternamewithin tick/chaincoherencebracket,preservesraw
 objects. Onepassivecurrentclient160402012probe120framesat2Hz:120coherentactive,
 73Hero+73FloatingCubes,146names,all73independentparentjoins;1positive6bad. Readtime
-median242.5us/p95520/max897. Binaryseparate`/data/local/tmp/re_live_sampler3_20261006`.
+median242.5us/p95520/max897. Binaryseparate`<device path, local reader config>`.
 AdapterkeepsHero,excludescubes/unresolvedaliasesfromordinarybodies/events/controllers,
 preservesrawaudit. IceCubecombatmechanicsremainunqualified. Unknown13000043proved
 evolvedEliteBarbariansfromoriginalassets/nativepriorprobe;isolatedcatalogoverlay.
@@ -1314,14 +1314,14 @@ adoption or improved decisions.
 
 - Original-byte census1202shared-ID records:579IceWizardHero,
   534IceWizardHeroFloatingCube,31IceWizardHero_IceCube,58read errors.
-  All534FloatingCubes link to captured same-side Heroes through object+0x180.
+  All534FloatingCubes link to captured same-side Heroes through object+<off>.
 - Portable C decoder and scalar reference agree on1202records plus13name fixtures;
   4positive/9malformed names and4malformed streams qualified. Names come from
-  object+0x48 data, length+0x2c, inline/indirect bytes+0x30 with bounded ASCII,
+  object+<off> data, length+<off>, inline/indirect bytes+<off> with bounded ASCII,
   no stale/fallback name. Missing registry/read evidence remains explicit.
 - Separate sampler3 binary derives from preserved sampler2 and reads names inside
   the coherent tick/chain bracket. Installed separately as
-  `/data/local/tmp/re_live_sampler3_20261006`. Current-client160402012 binary
+  `<device path, local reader config>`. Current-client160402012 binary
   windows and one passive120frame/500ms collection qualified. All120frames were
   active/coherent;73Hero+73FloatingCube sightings and73independent parent joins;
   reader time median242.5us,p95520us,max897us. No policy/tap/match launch occurred.
@@ -8726,7 +8726,7 @@ STATE    running: geo2 s54. cleared: gate 1 (workers 12). confirmed: scratch, 40
   ready; waiting for the owner to enable ADB in BlueStacks. §5au.
 - 2026-09-01 22:40 sandbox runtime pulled from the owner's BlueStacks via exec-out (HD-Player adb proxy
   whitelists getprop/dumpsys/logcat only; pull/sync blocked). Engine payload byte-identical: 14/14 native
-  libs incl. libg.so fa6704b8 + asset pack; 4 Play-derived APK wrappers differ (derived.apk.id + re-sign,
+  libs incl. libg.so <libg/sampler hash, local> + asset pack; 4 Play-derived APK wrappers differ (derived.apk.id + re-sign,
   same sizes). prepare_runtime OK. freeze (template with blanked APK hashes) = owner's call. §5av.
 - 2026-09-01 23:05-23:40 (owner: "run the single replay conversion now, an hour of slowdown is fine")
   sandbox SMOKE on this box: AVD boot 61.6 s, 5 APKs installed, libg headless load, DataTables, battle
@@ -9738,7 +9738,7 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - (a) m250 pro agreement (read_ckpt, both val sets): control kl 0 = 11.25/32.97 (v1), 10.95/33.53 (v2) -- DOWN 4.2 top1 / 13.6 top5 from the init, bcA's collapse on schedule. KL 0.3 = 16.73/44.02 (v1), 16.28/42.69 (v2) -- top1 ABOVE the init (+1.29/+1.28), top5 held, rails lower (p99 8.9 vs 9.6). Arm gap +5.48 top1 / +11.05 top5. Not pinned, not collapsed.
 - (a) The control loses the low-frequency cards first: rocket 1.9/18.9 vs KL 13.2/32.1, tornado 1.4/5.6 vs 2.8/22.2.
 - Limits: one checkpoint, one seed, one coef; the across-seed band is unmeasured; the arm gap is far outside any plausible band, the +1.3 top1 rise is not. m500 ~19:30 UTC.
-- (a/c) Bridge RE (owner-authorised, static only, sandbox commit 81e5dff): area effects are the 3M global-id series, NOT 4M -- the v1 gate was listing projectiles twice, which is exactly §5cs.43's effects==projectiles measurement, reached independently. No freeze/stun flag exists: "frozen" is a buff with -100 HitSpeedMultiplier, so a generic buffs[] export is the only faithful one. Buff manager = component[3], instance 0x70 B with remaining/total ms; AEO vtable 0x19691f8 with side/x/y/elapsed/life/radius.
+- (a/c) Bridge RE (owner-authorised, static only, sandbox commit 81e5dff): area effects are the 3M global-id series, NOT 4M -- the v1 gate was listing projectiles twice, which is exactly §5cs.43's effects==projectiles measurement, reached independently. No freeze/stun flag exists: "frozen" is a buff with -100 HitSpeedMultiplier, so a generic buffs[] export is the only faithful one. Buff manager = component[3], instance 0x70 B with remaining/total ms; AEO vtable <addr> with side/x/y/elapsed/life/radius.
 - v2 bridge built (9b63a7a0) but artifacts/ deliberately restored to v1 (82887463, verified) -- the worker pool redeploys by hash on service start and would restart the live trainers. Verification runbook re_verify_bridge.py written, NOT run.
 
 ## L62g -- 2026-09-05 19:1x UTC -- RETRACTION: the play gate collapsed; pair killed and relaunched with the pro gate prior
@@ -9988,7 +9988,7 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Unmeasured: engine throughput per VM slot -- needs the runtime, which is behind the owner ruling in 5cs.80 H. Everything cheaper than that ruling is now done. §5cs.81.
 
 ## L66 (2026-09-07) -- runtime on the VM; channel = 441.6 h; deck identifier built; the pilot is DISCARDED
-- Owner granted Q2. Runtime uploaded to clashbot-s3: 1.1 GB, libg.so sha256 fa6704b8...246ba identical both ends = the version freeze survived. No */data/ included.
+- Owner granted Q2. Runtime uploaded to clashbot-s3: 1.1 GB, libg.so sha256 <libg/sampler hash, local> identical both ends = the version freeze survived. No */data/ included.
 - Channel (metadata only): 1,382 videos, 441.6 h, median 17.0 min. Raw supply exceeds the 78-139 h/doubling from 5cs.80 IF enough is icebow.
 - deckid.py/profile.py: read the HAND (fixed slot fractions, NCC vs 2,174 card templates, evo folded to base). FOUR passes, three wrong: (1) whole-crop dot product compared a card against a zoom of a card -- non-icebow p90 outranked the icebow median; fixed by sliding at multiple scales; (2) evo vs base names; (3) kept only each slot's top-2, so an unmatched card scored 0.000 and a KNOWN icebow video read worst_icebow 0.000.
 - PILOT DISCARDED (c): 12 random videos at 20 s each all scored 0.483-0.545 vs known icebow 0.623-0.634 -- looked like a clean 0/12. Controlled test on KNOWN icebow footage: 20 s -> 0.558, 180 s -> 0.625, 180 s with 20 frames -> 0.625. Slice LENGTH decides, frame count does not. Every pilot clip sat in the regime where real icebow reads ~0.56. No conclusion about the icebow fraction survives. Eyeball agreed: the top "negative" (0.545) shows tornado + rocket + greyed x-bow.
@@ -10554,9 +10554,9 @@ CURRENT OWNER LIVE: owner restarted canonical R1e at15:12. At15:32 one actual wo
 
 Read reader_character_identity/REVIEW.md,PLAN/GATES,verified/passive_v2/reviewed.json and NEXT_DECISION_CAPTURE_20261006.md. The prior card-ID-only repair is incomplete:203000023 identifies true Hero plus FloatingCube and IceCube. Earlier2435alive shared-ID entries cannot all be called actual Hero bodies. Preserve prior raw counts/conversion checks; those did not prove character-role correctness.
 
-New original-byte census1202records:579Hero,534FloatingCube,31IceCube,58readerrors. All534FloatingCubes join current-registry same-side Heroes through+0x180. Independent C/scalar1215decodes exact with4positive9badnames/4badstreams. Partialregistry/missingreads retained. Three default entity formatter fixtures exact; no full default stream comparison.19.644861s0/token. Never repeat.
+New original-byte census1202records:579Hero,534FloatingCube,31IceCube,58readerrors. All534FloatingCubes join current-registry same-side Heroes through+<off>. Independent C/scalar1215decodes exact with4positive9badnames/4badstreams. Partialregistry/missingreads retained. Three default entity formatter fixtures exact; no full default stream comparison.19.644861s0/token. Never repeat.
 
-Separate sampler3 compiled from preserved original. One bounded passive current-client160402012 check:120/120coherentactiveframes,73Hero+73FloatingCube,146successfulnames; all73parentjoins independent,1positive6badcontrols. readus median242.5,p95 520,max897. Installed separately at/data/local/tmp/re_live_sampler3_20261006; no policy/match launch, no old binary overwritten. Adapter keeps exact Hero, excludes cube/unresolved full-body/event/controller aliases, preserves raw audit/colocated real bodies. IceCube mechanics remainUNQUALIFIED.
+Separate sampler3 compiled from preserved original. One bounded passive current-client160402012 check:120/120coherentactiveframes,73Hero+73FloatingCube,146successfulnames; all73parentjoins independent,1positive6badcontrols. readus median242.5,p95 520,max897. Installed separately at<device path, local reader config>; no policy/match launch, no old binary overwritten. Adapter keeps exact Hero, excludes cube/unresolved full-body/event/controller aliases, preserves raw audit/colocated real bodies. IceCube mechanics remainUNQUALIFIED.
 
 13000043 has original native/assets proof for evolved EliteBarbarians, AngryBarbarians/form1. Isolated entry adds exact catalog overlay. live_play_identity.py normalizes before BOTHobserve/row/storedmotion and retains original raw audit.4integrationtestsPASS; offline check exactR1e/CPU/tau.35/publicauditON/argmax/anti-leakOFF. Canonical start_live/config/sources remain untouched. New entry NOTACTIVATED, no weights/checkpoint/report changes.
 
@@ -13774,7 +13774,7 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 > First20 one-tick diagnostic replays completed. Source contains area exports, but the deployed old binary
 > did not: every frame of first sampled replay omitted them. Rebuilt bridge with NDK27.3 and -Werror;
 > second same20 capture is running, now exports areas. First rebuilt replay:4 area tracks/48 observations,
-> all44 adjacent raw+0x100 counters DECREASE50ms/tick. Old source treated that counter as elapsed time.
+> all44 adjacent raw+<off> counters DECREASE50ms/tick. Old source treated that counter as elapsed time.
 > Corrected observation-only C++ read to remaining_ms; elapsed=life-remaining. A third identical20 sample
 > will validate correction and compare command logs/final state hashes. Native causal-hit hook is still absent;
 > field checker requires troop/tower causal events and therefore does NOT authorize full corpus re-drive.
@@ -14363,7 +14363,7 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 > 3. VM re-drive (136.108.166.193, `~/cb/run_abil.py`, ETA ~19-20 EDT). Done when `~/cb/ABIL_DONE` exists. THEN: fetch
 >    the 6 `<corpus>_abil` dirs (tar|gzip over ssh, see pilot_drive.md "Fetch"), check counts vs summary.jsonl, and
 >    `sudo poweroff` the VM (bills while up). Old VM clashbot-s3 (us-central1-a) is stopped: owner deletes it.
-> NEXT, in order: (a) wire reader v2 into live: live_play.py runs `/data/local/tmp/re_live_sampler2 ... --extended`
+> NEXT, in order: (a) wire reader v2 into live: live_play.py runs `<device path, local reader config> ... --extended`
 >    (v1 checkpoints fold evo form ids to base via the catalog -> they finally SEE evolved units); test --dry-run on a
 >    match, swap at a match boundary, tally before/after separately. (b) gen_v3 results -> HANDOFF; gen_v3 goes live
 >    only WITH reader v2. (c) gen_v3.1 data: dataset_gen must read the re-drive's native ids (entity rows end
@@ -14474,12 +14474,12 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   ~400 logs them `_invalid` with skipped="ability plays not driven by this version"; all 40,421 recorded presses
 >   skipped. The 11:1x note above saying abilities were replayed is WRONG. IL boards lack every ability's effect while
 >   the pros' later actions answered games where it fired. Parked: re-drive with abilities (RoyaleSim supports them).
-> * **13:3x -- READER RE PHASE 1 DONE (Codex, re_peek + our own casts as labels; `L70/reader/FINDINGS.md`):**
->   projectiles = objects with vtable RVA 0x19f7370 (x/y +0x7c/+0x80, target +0x120/+0x124; 1 Rocket + 28 Logs matched);
->   area effects = vtable 0x19f6a28 (+0x100 remaining ms; Tornado: 101/101 timer pairs agree); EVOLVED bodies carry
->   EVOLUTION-FORM ids at +0xac (13000000 / 13000102) and the v1 sampler FILTERS THEM OUT -- live has never seen an
->   evolved unit at all (24 base / 6 evo Knights, 15 base / 5 evo Teslas validated). `live_sampler2.c` (lead-compiled,
->   on device /data/local/tmp/re_live_sampler2): default output = v1 semantics (4-min side-by-side, 559 common ticks:
+> * **13:3x -- READER RE PHASE 1 DONE (Codex, a read-only peeker + our own casts as labels; notes kept local):**
+>   projectiles = a distinct object class (position and target fields; 1 Rocket + 28 Logs matched);
+>   area effects = another class (remaining-ms field; Tornado: 101/101 timer pairs agree); EVOLVED bodies carry
+>   EVOLUTION-FORM ids (13000000 / 13000102) and the v1 sampler FILTERS THEM OUT -- live has never seen an
+>   evolved unit at all (24 base / 6 evo Knights, 15 base / 5 evo Teslas validated). `<reader source, local only>` (lead-compiled,
+>   on device <device path, local reader config>): default output = v1 semantics (4-min side-by-side, 559 common ticks:
 >   24 differ only by applied_replay_tick / 2 mid-update HP reads -- sampling races, no format diff); `--extended`
 >   adds per-entity evo, `projectiles` (card ids incl. spells, e.g. 28000011 x116; towers -1) and `effects`
 >   (remaining_ms). 4-min capture: 709 evolved-unit sightings, +0.73 units/frame visible vs v1, 715 projectile and
@@ -14499,15 +14499,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   entity ids (re-drive --record-native). VM: zone out of resources; owner authorised gcloud -> installed
 >   `~/tools/google-cloud-sdk` (587.0.0, zip, no admin); auth needs the OWNER (the OAuth code is a credential the lead
 >   must not paste) -- or the owner recreates the VM from a machine image in another zone via the console.
-> * **READER RE project (`scratchpad/gauntlet/L70/reader/`):** sources found -- `research/ext/cr_live/upstream/
->   native_core/mumu_live_private_sampler.c` = our live_sampler (526 lines, args PID INTERVAL RVA ROOT [--unified]),
->   upstream scanners, the live x86_64 `libg.so` (stripped, no 'projectile' strings -> dynamic RE). Engine sandbox
->   bridge `cr-native-sandbox/android_probe/native/jni_bridge.cpp` already exports projectiles (vtable RVA 0x1969B38 in
->   build 150535029) / effects / buffs = layout guide. Codex cannot run WSL (E_ACCESSDENIED) but can run adb ->
->   the lead built `re_peek` (read-only batch /proc/PID/mem reader, `L70/reader/re_peek.c`, on device
->   /data/local/tmp/re_peek; verified: libg ELF magic). Codex phase 1 (`.foreman/scratch/reader-re-1b.md`) probes in
->   Python over adb, labels with OUR plays (Rocket/Log/Tornado casts, evo Knight/Tesla cycle), writes live_sampler2.c
->   for the lead to compile. Git Bash TRAP: `MSYS_NO_PATHCONV=1` before adb with /data/... paths.
+> * **READER RE project (notes and sources kept local only):** sources found -- the upstream sampler source (our v1
+>   sampler), upstream scanners, the live x86_64 client library (stripped -> dynamic RE). The engine sandbox bridge already
+>   exports projectiles / effects / buffs = layout guide. Codex cannot run WSL (E_ACCESSDENIED) but can run adb -> the lead
+>   built a read-only batch memory peeker (on device; verified by the library's ELF magic). Codex phase 1
+>   (`.foreman/scratch/reader-re-1b.md`) probes in Python over adb, labels with OUR plays (Rocket/Log/Tornado casts, evo
+>   Knight/Tesla cycle), writes the v2 sampler source for the lead to compile. Bash TRAP: `MSYS_NO_PATHCONV=1` before adb
+>   with /data/... paths.
 > * **12:4x -- gen_v3 live-path review (Claude verifier, PASS_WITH_NOTES) + a BLOCKER found by the lead:**
 >   **LIVE READER NEVER REPORTS EVOLVED UNITS AS EVOLVED.** 66,475 recorded live frames (10-02/03): 19,111 hero-form-id
 >   sightings (Tombstone, EliteArcher, Knight, Musketeer...), 0 evolution-form ids (13000xxx); unknown ids only -1
@@ -14834,7 +14832,7 @@ See the newest autopilot block above and `.foreman/codex_autopilot/JOURNAL.md` f
 
 **2026-09-24 -- LIVE STATE READER (owner-requested, all live match modes, opponent hand/next/elixir never fed to the model): upstream IMAX9D/cr-native-sandbox ships a MuMu read-only memory reader (docs/MUMU_LIVE_QUICKSTART.zh-CN.md, bindings/mumu-live-160402002-arm64.json). It reads tick, both players' hand/next/elixir, and per-entity side/x/y/card_id/level/behavior/HP; NO status effects, targeting, projectiles or ability cooldowns in its verified contract. The owner mapped and verified the x86_64 live build used by this project; the live path consumes own-side state plus public opponent events and is intended for ranked and trophy-ladder evaluation.**
 
-**2026-09-24 ~18:xx EDT -- RUNNING: first full generalist training `gen_v1_s0` (owner: "generalist training next"): `icebow/.venv/Scripts/python.exe -m pipeline.train_gen --data icebow/data/pipeline/gen_dataset_v1.npz --seed 0 --epochs 4 --val-sample 30000 --grid lattice --out-dir icebow/data/pipeline/gen_v1_s0`, stdout `scratchpad/gauntlet/L68/generalist/gen_v1_s0.out`. ~1 h/epoch (836-950 rows/s measured), ~4 h. PRE-REGISTERED SCREEN (1 seed): v3val (S1's exact 13,761 rows) exact cell / card vs v6lat_s0 0.2097 / 0.6546 (3-seed band 21.04 +- 0.22 / 64.99 +- 0.57); generalist selects its best epoch on an all-deck val sample (not v3val) -- state beside any comparison. A single seed is a screen; 3 seeds decide. Session restarted ~17:3x EDT; the G3 a2 worker was lost mid-ticket, its edits verified and accepted (748021b).** **RESULT 2026-09-25 00:25 EDT (a, 1 seed = screen): gen_v1_s0 finished 4 epochs (6.5 h wall, laptop contended; 1.34 M params, GPU peak 3.7 GB). Selected epoch 4 (best on the all-deck val sample: cell 0.2116 / card 0.6016). On v3val (S1's 13,761 rows, 3,796 plays): exact cell 0.2071 / card 0.6457 / gate_bal 0.7669 vs v6lat_s0 0.2097 / 0.6546 / 0.766 -> -0.26 / -0.89 / +0.09 pp; vs the v6lat 3-seed band 21.04+-0.22 / 64.99+-0.57 -> -0.33 / -0.42 pp. Binomial SE on 3,796 plays is ~0.66 pp (cell) / ~0.78 pp (card), so the generalist is NOT distinguishable from the icebow specialist on icebow's own val set, while also covering every deck in gen_dataset_v1. v3val trajectory ep1-4 cell .1728/.1963/.2044/.2071, card .5811/.6209/.6452/.6457: cell still rising at ep4, card flat -> more epochs/data may help cell (b, untested). train cell 0.2148 vs val 0.2116: little overfit. Checkpoint icebow/data/pipeline/gen_v1_s0/gen_s0.pt (gitignored). NEXT (owner to approve; no big laptop runs): seeds 1-2 for the 3-seed decision (VM preferred), a paired per-row comparison vs v6lat on v3val (cheap), per-deck agreement vs games-per-deck, then RoyaleSim held-out winrate as icebow.** **FOLLOW-UPS 2026-09-25 overnight (owner-authorised; foreman ledger .foreman/gen-followups/ledger.md): (T1) seeds 1-2 NOT run: VM 136.111.202.176 ssh timeout, no gcloud on the laptop -- owner to start the VM / give its IP. (T2, a) PAIRED v3val, 3,796 play rows matched 1:1 by (tag, side, tick), replay-clustered bootstrap 10k with shared resamples (scratchpad/gauntlet/L68/generalist/paired/): gen - v6lat 3-seed mean cell -0.33 pp [-1.38, +0.67], card -0.42 pp [-1.43, +0.57]; per seed s0/s1/s2 cell -0.26/-0.58/-0.16, card -0.90/-0.58/+0.21, every CI crosses 0 -> the generalist is not distinguishable from the icebow specialist on icebow's own val. (T3, a) ALL-DECK val (372,239 rows / 92,189 plays, gen_v1_s0_eval_full.json): cell .216 card .603; by the deck's TRAIN rows 0 / 1-999 / 1k-10k / 10k-100k / 100k+ (341/256/137/80/2 decks): cell .218/.208/.211/.217/.220 FLAT (Spearman -0.03) but card .564/.581/.598/.606/.631 (+6.7 pp) -> placement transfers to unseen 8-card combinations; card CHOICE is the deck-specific, data-hungry part. (T4) pipeline/e1_eval.py now runs a GenModel checkpoint in the batched RoyaleSim path (GenPolicy: hand-position logits scattered onto deck slots -> S1's live_decide_batch unchanged; S1 path byte-identical, blind-verified PASS_WITH_NOTES, 113 tests) + scratchpad/gauntlet/L68/generalist/screen_gen/run_screen.py (RL held-out screen: 58 loadable entries x k0-2, tau 0.27 = S1's, paired via rl_royale.screen_score). Screens: see the next note.** **SCREENS 2026-09-25 03:08 (a, single seed each, 174 paired matches = 58 loadable held-out ghost entries x k0-2, run_screen.py, GPU ~3.5 min each; runner fidelity: v6aug_s1 noisy = 0.747 == the cached RL init screen). NOISY obs (RL screen, Noise() all on): v6aug_s1 0.747 / v6lat_s0 0.626 / gen 0.500; gen vs v6lat -12.6 pp [-21.3, -4.6], gen vs v6aug -24.7 [-33.3, -16.1], v6aug vs v6lat +12.1 [+5.2, +19.0]. CLEAN obs (--noise-off all, closest to the memory reader): gen 0.966 / v6lat 0.931 / v6aug 0.862; gen vs v6lat +3.4 [0.0, +8.6] (6 better / 0 worse entries), gen vs v6aug +10.3 [+3.4, +19.0] (18/0), v6aug vs v6lat -6.9 [-13.8, -1.7]. Reading: the generalist is the LEAST noise-robust (-46.6 pp clean->noisy vs -30.5 v6lat, -11.5 v6aug) -- it was trained on clean rows only -- but with clean state it is at least on par with the icebow specialists, so for the MEMORY-READER live path it is the right pilot, and noise augmentation (v6aug) is the wrong choice there (-6.9 pp). Caveats: (1) clean screens are near ceiling (0.86-0.97) vs non-reactive ghosts -> little resolution; (2) --noise-off all makes OPP elixir exact, while the reader path forces it unknown (owner rule) -- not simulated; (3) tau 0.27 (S1's) for all; (4) one seed per model. Next (b, untested): a generalist trained with noise aug for the CV path; an opp-elixir-unknown screen arm.** **OPP-ELIXIR-HIDDEN ARM 2026-09-25 09:22 (a; owner dropped the noise-aug generalist: the reader removes noise): clean obs except opponent elixir = None (the live rule; --noise-off all names but opp_elixir). gen 0.966 -> 0.879 (-8.6 pp [-17.2, 0.0], 3 better / 18 worse entries); v6lat_s0 0.931 -> 0.793 (-13.8 [-24.1, -3.4], 3/27). Under the live rule gen vs v6lat +8.6 [-3.4, +22.4] (30/15). -> hidden opp elixir costs 9-14 pp: the ceiling a public-events opp-elixir COUNTER can recover (T6 in .foreman/gen-followups/ledger.md, building).** **OPP-ELIXIR COUNTER 2026-09-25 10:30 (a). pipeline/opp_elixir_count.py (blind-verified x2): OppElixirCounter accounting = start 6.0 at tick 0 (NOT 5; 100/100 corpus sides + live probe1 to the unit), regen 0.0178/0.0357/0.0537 elixir/tick, x2 from tick 2400, x3 from 4800, stops ~6002, cap 10, minus CardDB cost, upward re-base on an unaffordable play; with perfect play detection MAE 0.024 (0.0051 without Elixir Collector/Elixir Golem, which it does not model); without spells (the reader cannot see bodiless spells) bias +1.3..+1.4. PlayDetector (reader frames, never reads elixir_raw): new opponent bodies; same card within 100 ticks joins the play; spawn if a higher-max_hp same-card body is on board / gone <= 60 ticks; death-spawn if a lower-max_hp same-card body vanished within 1.5 tiles; gap sim (1-3 s reader gaps) misses ~= never-visible plays. Known gaps: Mirror within 100 ticks charged 0; address reuse unverified; a single backwards-tick frame resets the match (feed only active+coherent frames); detection NOT yet validated on real reader recordings (live_play now logs entity kind/address + the bot's true elixir, grading only). SCREEN ARM run_screen.py --opp-elixir {truth,hidden,counter,counter_all} (clean obs; counter = delivered ghost plays, bodiless spells dropped). CORRECTION: with --noise-off all the k=0/1/2 seeds replay IDENTICAL matches (58/58 entries) -> every CLEAN screen above is 58 distinct matches, not 174; the CIs were entry-clustered (58) and stay valid. RESULTS (58 matches, paired): gen hidden 0.879 -> counter 0.983 (+10.3 [+1.7, +19.0]), counter_all 0.948 (+6.9 [-1.7, +15.5]), exact 0.966 (counter vs exact +1.7 [-3.4, +6.9]); v6lat hidden 0.793 -> counter 0.914 (+12.1 [+1.7, +24.1]), counter_all 0.897, exact 0.931; gen vs v6lat under the counter +6.9 [0.0, +15.5]. Counter bias in the screen +0.89 (spells missed + RoyaleSim regen slightly faster than the real engine). -> the counter recovers the whole hidden-elixir cost; wire it into live play (next).** **ACTION DELAY 2026-09-25 12:18 (a). Owner question: does the model account for deploy delay? Post-landing deploy time: yes, implicitly (in the pro data). Tap->land delay: NO -- training rows pair the pro placement with the board at the tick the card EXECUTED; live the card executes 24-27 ticks (1.20-1.35 s) after the decision frame (first live match: 198->222, 352->379, 381->408, 568->592, 927->953). ("v6lat" = lattice grid, not latency.) New arm e1_eval action_delay_ticks / run_screen --action-delay (blind-verified, 892975a): a play decided at T lands at T+D on the T-chosen cell, no decisions while pending, elixir spent at landing, bookkeeping at landing. Live condition (clean + opp-elixir counter), 58 matches, paired vs delay 0: gen 0.983 -> D20 0.897 (-8.6 [-17.2, 0.0]) -> D26 0.828 (-15.5 [-25.9, -5.2]); v6lat 0.914 -> D20 0.897 (-1.7 [-8.6, +5.2]) -> D26 0.845 (-6.9 [-17.2, +1.7]). D26 slightly OVERSTATES (decisions resume on the 10-tick grid, T+30) -> live cost bracketed D20..D26: gen 9-16 pp, v6lat 2-7 pp. Under realistic lag gen (0.828) and v6lat (0.845) are ~tied: the generalist's clean-screen lead assumed instant plays. Fix candidates (untested): (1) latency-shifted training rows (board ~26 ticks before execution; corpora store frames every 20 ticks); (2) extrapolate the reader state ~1.3 s at decision time; (3) trim our own tap pipeline latency. Also fixed live: live_play stamped the model's own past plays with the DECISION time (now the confirmation tick, as training).** **EXTRAPOLATION 2026-09-25 12:38 (a; owner chose extrapolation over pipeline trim / latency-shifted retrain). pipeline/extrapolate.py (pure, shared screen/live; blind-verified, 1212b93): matched units move pos + v*H (v from the previous decision round, ids = RoyaleSim uid / reader address + same side & card), clamped; towers/new bodies static; clock +H; my elixir + regen(tick, tick+H) capped; opp est = counter(tick) + regen; HP/deaths/retargeting NOT simulated. Moving-unit position error at H=26: 0.656 tiles vs 1.559 stale (independently reproduced). Screens (live condition + delay 26, 58 matches, paired): gen D26 0.828 -> +ext 0.862 (+3.4 [-5.2, +13.8]; still -12.1 [-22.4, -3.4] vs delay 0); v6lat D26 0.845 -> +ext 0.914 (+6.9 [-1.7, +17.2]; = its delay-0 0.914, delta 0.0). Under lag + extrapolation gen vs v6lat -5.2 [-17.2, +5.2]. Reading: directionally positive for both, significant for neither (58 matches); it recovers v6lat's whole lag cost but only ~a quarter of the generalist's. The generalist's larger lag sensitivity is not explained by position error alone (b, untested). Live wiring of extrapolation NOT done yet (note for it: pass H-consistent ages -- the verifier flagged history age_sec skew on the first decision).** **SELF-PLAY LEAGUE READY 2026-09-25 (a; owner rulings: one learner = the generalist; opponents = frozen generalist snapshots + the icebow S1 specialist v6aug_s1 (icebow only); gate leashed too; starter deck out -- GoblinHut absent from RoyaleSim; dead-lane X-Bow left to RL). Commits 1db3ef0 (generalist learner + live-condition keys), ae5239f (RoyaleSelfPlayEnv; 183 loadable top-1000 decks = 17% of deck-sides), 276f092 (league). Design: per match the learner deck = icebow w.p. 0.2 else census decks weighted max(sides^0.5, 0.5*mean) (effective ~112 decks); opponent mix latest snapshot .35 / older .25 / init .2 / S1 .2; snapshot every 10 updates, keep 8 (5.4 MB each, evicted deleted); both sides under the live condition (clean obs, opp-elixir counter fed only the other side's LANDED plays, action delay 26, extrapolation 26); leash beta on max(KL_gate, KL_card, KL_cell) (yaml default now 'max'; 'cell' = old rule). RoyaleSim's elixir schedule MEASURED: 1/56 then 1/28 from tick 2400, NO triple phase, game over 6000 -> the counter uses it in simulation (counter_all exact); remaining in-sim counter error = invisible bodiless spells (self-play bias ~+2.3..+3.5, 21-25% of opponent plays), the same mechanism as live. Evaluation = held-out ghost screen under the training condition + pro-agreement tripwire + guards; rl_gate --commands --config <run config.yaml> reproduces the condition. Start (RUNBOOK section 9): research/ext/Royale/.venv/Scripts/python.exe -m pipeline.rl_royale --config pipeline/rl_royale.yaml --run <name> init=icebow/data/pipeline/gen_v1_s0/gen_s0.pt league=true noise_off=all opp_elixir=counter action_delay_ticks=26 extrapolate_ticks=26. Per-update time: ~12-13 min on CPU extrapolated from smokes; GPU unmeasured. NOT STARTED -- needs the owner's go-ahead (shared laptop).** **RUN league1 STARTED 2026-09-25 21:05 EDT (owner: "edit RoyaleSim to have triple elixir in the last minute ... bootstrap ... start training ... run overnight"). RoyaleSim LOCAL PATCH first (d44f091, patch file scratchpad/gauntlet/L68/selfplay/royalesim_triple_elixir.patch; not upstream -- tell the friend): triple elixir from tick 4800 (3x the 1x step, re-measured 54/53 milli/tick). Command: research/ext/Royale/.venv/Scripts/python.exe -m pipeline.rl_royale --config pipeline/rl_royale.yaml --run league1 init=icebow/data/pipeline/gen_v1_s0/gen_s0.pt league=true noise_off=all opp_elixir=counter action_delay_ticks=26 extrapolate_ticks=26 max_updates=5000 screen_seeds=[0] (screen_seeds [0]: clean screens replay identical matches across k). GPU bootstrap: learner + 3 actors on CUDA peak 7.43 of 8.15 GB, min free 477 MiB, flat through update 0 -> kept on GPU; ~2.2 min/update (roll 89 s + upd 43 s). Init: pro agreement .2071/.6457/.7669, held-out screen (live condition, triple-elixir engine) 0.879. u0000: W/L/D 33/31/0, vs init 0.46 (48), vs S1 0.69 (16). Watchdog scratchpad/gauntlet/L68/rl/league1_watchdog.py (detached): on a CUDA out-of-memory exit it resumes ONCE on CPU; any other exit -> no relaunch. Logs: scratchpad/gauntlet/L68/rl/league1_launch.out(.err), run dir scratchpad/gauntlet/L68/rl/league1/, checkpoints icebow/data/bench/rl_royale/league1/. Stop: create scratchpad/gauntlet/L68/rl/league1/STOP (RUNBOOK).** **league1 RESULT 2026-09-26 (a): stopped by the owner's STOP after update 352 (~22.5k matches, 16 h, GPU throughout, no stop rule, no OOM). Held-out screen (58) mean 0.927 over 35 screens (33 above init 0.879; plateau 0.92-0.94 from ~u150); self-play vs the frozen init ~0.50 in every 50-update window; vs S1 specialist 0.70-0.78 (already 0.69 at u0); pro-agreement cell -0.2..-0.6 pp, card to -0.9 pp; gate KL 0.016 -> 0.076 (under target, beta at floor 0.03 throughout). ACCEPTANCE on the 299 TRAIN-split ghosts (never used by a league run; live condition; seed 0; paired vs init 0.920; scratchpad/gauntlet/L68/rl/league1_accept/): u0250 +0.3 [-3.0, +3.7], u0270 0.0 [-3.7, +3.7] (its screen read 1.000), u0310 +1.7 [-2.0, +5.4], u0350 0.0 [-3.7, +3.7]; outlived-win share 0.24 -> 0.25-0.26. VERDICT: no measurable improvement; the screen's +4.8 pp was selection among noisy 58-match screens (checkpoint mapping: log line uN = ckpt _u(N+1)). Nothing broke. Candidate causes (b, untested): thin win/loss signal (G=4 per matchup, ~half the groups mixed), no critic/value baseline. Starting generalist remains the live model.** **LATENCY-SHIFTED GENERALIST 2026-09-26 (owner: "Option 1 first"). Dataset gen_dataset_v1_lat26 (da9311d; blind-verified after an F1 repair): each play row on the recorded frame nearest p-26 within [p-46, p-16] (offsets 16-35, median 25), PRE-act hand (frames at play ticks are pre-act snapshots), combo drops 32,767 (3.5%; icebow 4.2%) = second cards of <=35-tick combos the live pending lock cannot execute anyway; wait rows exclude (t, t+46] (-21.5%); play share 24.8% -> 28.8%. Trained gen_v1lat26_s0 (same seed/epochs/model as gen_v1_s0; GPU 14:40-18:21, battery guard never fired): shifted-v3val (11,093 rows, NOT comparable to v1's v3val) ep1-4 cell .1694/.1824/.1871/.1943, card .5472/.5876/.6028/.6056, gate_bal .6747/.7705/.7790/.7864. Screens pending (owner's battery at 15%). ALSO FOUND (pre-existing, every S1 + generalist dataset, out of this experiment's scope): wait rows on the side's OWN play tick carry the post-play hand with gate 0 = 424,545 of 2,817,527 (15.07%) wait rows of gen_dataset_v1 -- gate label noise toward 'wait' (possible contributor to the cautious live gate: untested). Owner to decide a separate fix.** **LAT26 SCREENS 2026-09-26 21:50 (a; triple-elixir engine, live condition, seed 0, paired; scratchpad/gauntlet/L68/generalist/lat26/screens/): heldout-58 / train-299 win rates: A gen_v1 delay 0 0.983/0.940; B gen_v1 D26 0.845/0.893; C gen_v1 D26+ext26 (current live) 0.879/0.920; D gen_v1lat26 D26 no ext 0.914/0.886. D vs C: train -3.3 [-7.7, +0.7] (16 better / 26 worse), heldout +3.4 [-5.2, +12.1]; D vs B train -0.7 [-4.3, +3.0]; C vs B train +2.7 [-1.7, +7.0]; A-B lag cost on train 4.7 pp (smaller than the 58-screen's 13.8). VERDICT: the latency-shifted retrain did NOT help (no better than plain delay-26 gen_v1, leaning worse than live C) -> gen_v1 + extrapolate 26 stays the live model. LIVE DIAGNOSIS same evening (owner: 'horrible, even the original checkpoint'): reader/game unchanged (libg 79c4e485, build 160402012); decisions took 176-347 ms (vs ~40 ms idle) in every bad match, each overlapping CPU load (train_gen, ~15% battery throttle, these screens) -> backlog up to 262 frames. live_play now times taps out in GAME ticks (60) and warns CPU-STARVED when the median decision > 100 ms. Play only on an idle, plugged-in machine.** **LIVE LAG ROOT CAUSE CONFIRMED 2026-09-26 22:04 (a): the 21:54 match still lagged with none of my jobs running -- decide_ms 515-3372 while the owner's OTHER project (python test tooling + other Claude sessions) held the CPU at 100%; the pilot ran torch on CPU with its default 16 threads. live_play now runs the model on the GPU when available (--device auto) with torch.set_num_threads(4), plus a warm-up forward on the first frame. Next match (22:04, gen_v1 + ext26, cuda): decide ~40 ms, backlog 0, 27/27 taps confirmed at 25-30 ticks, 5/27 forced, into overtime.**
+**2026-09-24 ~18:xx EDT -- RUNNING: first full generalist training `gen_v1_s0` (owner: "generalist training next"): `icebow/.venv/Scripts/python.exe -m pipeline.train_gen --data icebow/data/pipeline/gen_dataset_v1.npz --seed 0 --epochs 4 --val-sample 30000 --grid lattice --out-dir icebow/data/pipeline/gen_v1_s0`, stdout `scratchpad/gauntlet/L68/generalist/gen_v1_s0.out`. ~1 h/epoch (836-950 rows/s measured), ~4 h. PRE-REGISTERED SCREEN (1 seed): v3val (S1's exact 13,761 rows) exact cell / card vs v6lat_s0 0.2097 / 0.6546 (3-seed band 21.04 +- 0.22 / 64.99 +- 0.57); generalist selects its best epoch on an all-deck val sample (not v3val) -- state beside any comparison. A single seed is a screen; 3 seeds decide. Session restarted ~17:3x EDT; the G3 a2 worker was lost mid-ticket, its edits verified and accepted (748021b).** **RESULT 2026-09-25 00:25 EDT (a, 1 seed = screen): gen_v1_s0 finished 4 epochs (6.5 h wall, laptop contended; 1.34 M params, GPU peak 3.7 GB). Selected epoch 4 (best on the all-deck val sample: cell 0.2116 / card 0.6016). On v3val (S1's 13,761 rows, 3,796 plays): exact cell 0.2071 / card 0.6457 / gate_bal 0.7669 vs v6lat_s0 0.2097 / 0.6546 / 0.766 -> -0.26 / -0.89 / +0.09 pp; vs the v6lat 3-seed band 21.04+-0.22 / 64.99+-0.57 -> -0.33 / -0.42 pp. Binomial SE on 3,796 plays is ~0.66 pp (cell) / ~0.78 pp (card), so the generalist is NOT distinguishable from the icebow specialist on icebow's own val set, while also covering every deck in gen_dataset_v1. v3val trajectory ep1-4 cell .1728/.1963/.2044/.2071, card .5811/.6209/.6452/.6457: cell still rising at ep4, card flat -> more epochs/data may help cell (b, untested). train cell 0.2148 vs val 0.2116: little overfit. Checkpoint icebow/data/pipeline/gen_v1_s0/gen_s0.pt (gitignored). NEXT (owner to approve; no big laptop runs): seeds 1-2 for the 3-seed decision (VM preferred), a paired per-row comparison vs v6lat on v3val (cheap), per-deck agreement vs games-per-deck, then RoyaleSim held-out winrate as icebow.** **FOLLOW-UPS 2026-09-25 overnight (owner-authorised; foreman ledger .foreman/gen-followups/ledger.md): (T1) seeds 1-2 NOT run: VM 136.111.202.176 ssh timeout, no gcloud on the laptop -- owner to start the VM / give its IP. (T2, a) PAIRED v3val, 3,796 play rows matched 1:1 by (tag, side, tick), replay-clustered bootstrap 10k with shared resamples (scratchpad/gauntlet/L68/generalist/paired/): gen - v6lat 3-seed mean cell -0.33 pp [-1.38, +0.67], card -0.42 pp [-1.43, +0.57]; per seed s0/s1/s2 cell -0.26/-0.58/-0.16, card -0.90/-0.58/+0.21, every CI crosses 0 -> the generalist is not distinguishable from the icebow specialist on icebow's own val. (T3, a) ALL-DECK val (372,239 rows / 92,189 plays, gen_v1_s0_eval_full.json): cell .216 card .603; by the deck's TRAIN rows 0 / 1-999 / 1k-10k / 10k-100k / 100k+ (341/256/137/80/2 decks): cell .218/.208/.211/.217/.220 FLAT (Spearman -0.03) but card .564/.581/.598/.606/.631 (+6.7 pp) -> placement transfers to unseen 8-card combinations; card CHOICE is the deck-specific, data-hungry part. (T4) pipeline/e1_eval.py now runs a GenModel checkpoint in the batched RoyaleSim path (GenPolicy: hand-position logits scattered onto deck slots -> S1's live_decide_batch unchanged; S1 path byte-identical, blind-verified PASS_WITH_NOTES, 113 tests) + scratchpad/gauntlet/L68/generalist/screen_gen/run_screen.py (RL held-out screen: 58 loadable entries x k0-2, tau 0.27 = S1's, paired via rl_royale.screen_score). Screens: see the next note.** **SCREENS 2026-09-25 03:08 (a, single seed each, 174 paired matches = 58 loadable held-out ghost entries x k0-2, run_screen.py, GPU ~3.5 min each; runner fidelity: v6aug_s1 noisy = 0.747 == the cached RL init screen). NOISY obs (RL screen, Noise() all on): v6aug_s1 0.747 / v6lat_s0 0.626 / gen 0.500; gen vs v6lat -12.6 pp [-21.3, -4.6], gen vs v6aug -24.7 [-33.3, -16.1], v6aug vs v6lat +12.1 [+5.2, +19.0]. CLEAN obs (--noise-off all, closest to the memory reader): gen 0.966 / v6lat 0.931 / v6aug 0.862; gen vs v6lat +3.4 [0.0, +8.6] (6 better / 0 worse entries), gen vs v6aug +10.3 [+3.4, +19.0] (18/0), v6aug vs v6lat -6.9 [-13.8, -1.7]. Reading: the generalist is the LEAST noise-robust (-46.6 pp clean->noisy vs -30.5 v6lat, -11.5 v6aug) -- it was trained on clean rows only -- but with clean state it is at least on par with the icebow specialists, so for the MEMORY-READER live path it is the right pilot, and noise augmentation (v6aug) is the wrong choice there (-6.9 pp). Caveats: (1) clean screens are near ceiling (0.86-0.97) vs non-reactive ghosts -> little resolution; (2) --noise-off all makes OPP elixir exact, while the reader path forces it unknown (owner rule) -- not simulated; (3) tau 0.27 (S1's) for all; (4) one seed per model. Next (b, untested): a generalist trained with noise aug for the CV path; an opp-elixir-unknown screen arm.** **OPP-ELIXIR-HIDDEN ARM 2026-09-25 09:22 (a; owner dropped the noise-aug generalist: the reader removes noise): clean obs except opponent elixir = None (the live rule; --noise-off all names but opp_elixir). gen 0.966 -> 0.879 (-8.6 pp [-17.2, 0.0], 3 better / 18 worse entries); v6lat_s0 0.931 -> 0.793 (-13.8 [-24.1, -3.4], 3/27). Under the live rule gen vs v6lat +8.6 [-3.4, +22.4] (30/15). -> hidden opp elixir costs 9-14 pp: the ceiling a public-events opp-elixir COUNTER can recover (T6 in .foreman/gen-followups/ledger.md, building).** **OPP-ELIXIR COUNTER 2026-09-25 10:30 (a). pipeline/opp_elixir_count.py (blind-verified x2): OppElixirCounter accounting = start 6.0 at tick 0 (NOT 5; 100/100 corpus sides + live probe1 to the unit), regen 0.0178/0.0357/0.0537 elixir/tick, x2 from tick 2400, x3 from 4800, stops ~6002, cap 10, minus CardDB cost, upward re-base on an unaffordable play; with perfect play detection MAE 0.024 (0.0051 without Elixir Collector/Elixir Golem, which it does not model); without spells (the reader cannot see bodiless spells) bias +1.3..+1.4. PlayDetector (reader frames, never reads elixir_raw): new opponent bodies; same card within 100 ticks joins the play; spawn if a higher-max_hp same-card body is on board / gone <= 60 ticks; death-spawn if a lower-max_hp same-card body vanished within 1.5 tiles; gap sim (1-3 s reader gaps) misses ~= never-visible plays. Known gaps: Mirror within 100 ticks charged 0; address reuse unverified; a single backwards-tick frame resets the match (feed only active+coherent frames); detection NOT yet validated on real reader recordings (live_play now logs entity kind/address + the bot's true elixir, grading only). SCREEN ARM run_screen.py --opp-elixir {truth,hidden,counter,counter_all} (clean obs; counter = delivered ghost plays, bodiless spells dropped). CORRECTION: with --noise-off all the k=0/1/2 seeds replay IDENTICAL matches (58/58 entries) -> every CLEAN screen above is 58 distinct matches, not 174; the CIs were entry-clustered (58) and stay valid. RESULTS (58 matches, paired): gen hidden 0.879 -> counter 0.983 (+10.3 [+1.7, +19.0]), counter_all 0.948 (+6.9 [-1.7, +15.5]), exact 0.966 (counter vs exact +1.7 [-3.4, +6.9]); v6lat hidden 0.793 -> counter 0.914 (+12.1 [+1.7, +24.1]), counter_all 0.897, exact 0.931; gen vs v6lat under the counter +6.9 [0.0, +15.5]. Counter bias in the screen +0.89 (spells missed + RoyaleSim regen slightly faster than the real engine). -> the counter recovers the whole hidden-elixir cost; wire it into live play (next).** **ACTION DELAY 2026-09-25 12:18 (a). Owner question: does the model account for deploy delay? Post-landing deploy time: yes, implicitly (in the pro data). Tap->land delay: NO -- training rows pair the pro placement with the board at the tick the card EXECUTED; live the card executes 24-27 ticks (1.20-1.35 s) after the decision frame (first live match: 198->222, 352->379, 381->408, 568->592, 927->953). ("v6lat" = lattice grid, not latency.) New arm e1_eval action_delay_ticks / run_screen --action-delay (blind-verified, 892975a): a play decided at T lands at T+D on the T-chosen cell, no decisions while pending, elixir spent at landing, bookkeeping at landing. Live condition (clean + opp-elixir counter), 58 matches, paired vs delay 0: gen 0.983 -> D20 0.897 (-8.6 [-17.2, 0.0]) -> D26 0.828 (-15.5 [-25.9, -5.2]); v6lat 0.914 -> D20 0.897 (-1.7 [-8.6, +5.2]) -> D26 0.845 (-6.9 [-17.2, +1.7]). D26 slightly OVERSTATES (decisions resume on the 10-tick grid, T+30) -> live cost bracketed D20..D26: gen 9-16 pp, v6lat 2-7 pp. Under realistic lag gen (0.828) and v6lat (0.845) are ~tied: the generalist's clean-screen lead assumed instant plays. Fix candidates (untested): (1) latency-shifted training rows (board ~26 ticks before execution; corpora store frames every 20 ticks); (2) extrapolate the reader state ~1.3 s at decision time; (3) trim our own tap pipeline latency. Also fixed live: live_play stamped the model's own past plays with the DECISION time (now the confirmation tick, as training).** **EXTRAPOLATION 2026-09-25 12:38 (a; owner chose extrapolation over pipeline trim / latency-shifted retrain). pipeline/extrapolate.py (pure, shared screen/live; blind-verified, 1212b93): matched units move pos + v*H (v from the previous decision round, ids = RoyaleSim uid / reader address + same side & card), clamped; towers/new bodies static; clock +H; my elixir + regen(tick, tick+H) capped; opp est = counter(tick) + regen; HP/deaths/retargeting NOT simulated. Moving-unit position error at H=26: 0.656 tiles vs 1.559 stale (independently reproduced). Screens (live condition + delay 26, 58 matches, paired): gen D26 0.828 -> +ext 0.862 (+3.4 [-5.2, +13.8]; still -12.1 [-22.4, -3.4] vs delay 0); v6lat D26 0.845 -> +ext 0.914 (+6.9 [-1.7, +17.2]; = its delay-0 0.914, delta 0.0). Under lag + extrapolation gen vs v6lat -5.2 [-17.2, +5.2]. Reading: directionally positive for both, significant for neither (58 matches); it recovers v6lat's whole lag cost but only ~a quarter of the generalist's. The generalist's larger lag sensitivity is not explained by position error alone (b, untested). Live wiring of extrapolation NOT done yet (note for it: pass H-consistent ages -- the verifier flagged history age_sec skew on the first decision).** **SELF-PLAY LEAGUE READY 2026-09-25 (a; owner rulings: one learner = the generalist; opponents = frozen generalist snapshots + the icebow S1 specialist v6aug_s1 (icebow only); gate leashed too; starter deck out -- GoblinHut absent from RoyaleSim; dead-lane X-Bow left to RL). Commits 1db3ef0 (generalist learner + live-condition keys), ae5239f (RoyaleSelfPlayEnv; 183 loadable top-1000 decks = 17% of deck-sides), 276f092 (league). Design: per match the learner deck = icebow w.p. 0.2 else census decks weighted max(sides^0.5, 0.5*mean) (effective ~112 decks); opponent mix latest snapshot .35 / older .25 / init .2 / S1 .2; snapshot every 10 updates, keep 8 (5.4 MB each, evicted deleted); both sides under the live condition (clean obs, opp-elixir counter fed only the other side's LANDED plays, action delay 26, extrapolation 26); leash beta on max(KL_gate, KL_card, KL_cell) (yaml default now 'max'; 'cell' = old rule). RoyaleSim's elixir schedule MEASURED: 1/56 then 1/28 from tick 2400, NO triple phase, game over 6000 -> the counter uses it in simulation (counter_all exact); remaining in-sim counter error = invisible bodiless spells (self-play bias ~+2.3..+3.5, 21-25% of opponent plays), the same mechanism as live. Evaluation = held-out ghost screen under the training condition + pro-agreement tripwire + guards; rl_gate --commands --config <run config.yaml> reproduces the condition. Start (RUNBOOK section 9): research/ext/Royale/.venv/Scripts/python.exe -m pipeline.rl_royale --config pipeline/rl_royale.yaml --run <name> init=icebow/data/pipeline/gen_v1_s0/gen_s0.pt league=true noise_off=all opp_elixir=counter action_delay_ticks=26 extrapolate_ticks=26. Per-update time: ~12-13 min on CPU extrapolated from smokes; GPU unmeasured. NOT STARTED -- needs the owner's go-ahead (shared laptop).** **RUN league1 STARTED 2026-09-25 21:05 EDT (owner: "edit RoyaleSim to have triple elixir in the last minute ... bootstrap ... start training ... run overnight"). RoyaleSim LOCAL PATCH first (d44f091, patch file scratchpad/gauntlet/L68/selfplay/royalesim_triple_elixir.patch; not upstream -- tell the friend): triple elixir from tick 4800 (3x the 1x step, re-measured 54/53 milli/tick). Command: research/ext/Royale/.venv/Scripts/python.exe -m pipeline.rl_royale --config pipeline/rl_royale.yaml --run league1 init=icebow/data/pipeline/gen_v1_s0/gen_s0.pt league=true noise_off=all opp_elixir=counter action_delay_ticks=26 extrapolate_ticks=26 max_updates=5000 screen_seeds=[0] (screen_seeds [0]: clean screens replay identical matches across k). GPU bootstrap: learner + 3 actors on CUDA peak 7.43 of 8.15 GB, min free 477 MiB, flat through update 0 -> kept on GPU; ~2.2 min/update (roll 89 s + upd 43 s). Init: pro agreement .2071/.6457/.7669, held-out screen (live condition, triple-elixir engine) 0.879. u0000: W/L/D 33/31/0, vs init 0.46 (48), vs S1 0.69 (16). Watchdog scratchpad/gauntlet/L68/rl/league1_watchdog.py (detached): on a CUDA out-of-memory exit it resumes ONCE on CPU; any other exit -> no relaunch. Logs: scratchpad/gauntlet/L68/rl/league1_launch.out(.err), run dir scratchpad/gauntlet/L68/rl/league1/, checkpoints icebow/data/bench/rl_royale/league1/. Stop: create scratchpad/gauntlet/L68/rl/league1/STOP (RUNBOOK).** **league1 RESULT 2026-09-26 (a): stopped by the owner's STOP after update 352 (~22.5k matches, 16 h, GPU throughout, no stop rule, no OOM). Held-out screen (58) mean 0.927 over 35 screens (33 above init 0.879; plateau 0.92-0.94 from ~u150); self-play vs the frozen init ~0.50 in every 50-update window; vs S1 specialist 0.70-0.78 (already 0.69 at u0); pro-agreement cell -0.2..-0.6 pp, card to -0.9 pp; gate KL 0.016 -> 0.076 (under target, beta at floor 0.03 throughout). ACCEPTANCE on the 299 TRAIN-split ghosts (never used by a league run; live condition; seed 0; paired vs init 0.920; scratchpad/gauntlet/L68/rl/league1_accept/): u0250 +0.3 [-3.0, +3.7], u0270 0.0 [-3.7, +3.7] (its screen read 1.000), u0310 +1.7 [-2.0, +5.4], u0350 0.0 [-3.7, +3.7]; outlived-win share 0.24 -> 0.25-0.26. VERDICT: no measurable improvement; the screen's +4.8 pp was selection among noisy 58-match screens (checkpoint mapping: log line uN = ckpt _u(N+1)). Nothing broke. Candidate causes (b, untested): thin win/loss signal (G=4 per matchup, ~half the groups mixed), no critic/value baseline. Starting generalist remains the live model.** **LATENCY-SHIFTED GENERALIST 2026-09-26 (owner: "Option 1 first"). Dataset gen_dataset_v1_lat26 (da9311d; blind-verified after an F1 repair): each play row on the recorded frame nearest p-26 within [p-46, p-16] (offsets 16-35, median 25), PRE-act hand (frames at play ticks are pre-act snapshots), combo drops 32,767 (3.5%; icebow 4.2%) = second cards of <=35-tick combos the live pending lock cannot execute anyway; wait rows exclude (t, t+46] (-21.5%); play share 24.8% -> 28.8%. Trained gen_v1lat26_s0 (same seed/epochs/model as gen_v1_s0; GPU 14:40-18:21, battery guard never fired): shifted-v3val (11,093 rows, NOT comparable to v1's v3val) ep1-4 cell .1694/.1824/.1871/.1943, card .5472/.5876/.6028/.6056, gate_bal .6747/.7705/.7790/.7864. Screens pending (owner's battery at 15%). ALSO FOUND (pre-existing, every S1 + generalist dataset, out of this experiment's scope): wait rows on the side's OWN play tick carry the post-play hand with gate 0 = 424,545 of 2,817,527 (15.07%) wait rows of gen_dataset_v1 -- gate label noise toward 'wait' (possible contributor to the cautious live gate: untested). Owner to decide a separate fix.** **LAT26 SCREENS 2026-09-26 21:50 (a; triple-elixir engine, live condition, seed 0, paired; scratchpad/gauntlet/L68/generalist/lat26/screens/): heldout-58 / train-299 win rates: A gen_v1 delay 0 0.983/0.940; B gen_v1 D26 0.845/0.893; C gen_v1 D26+ext26 (current live) 0.879/0.920; D gen_v1lat26 D26 no ext 0.914/0.886. D vs C: train -3.3 [-7.7, +0.7] (16 better / 26 worse), heldout +3.4 [-5.2, +12.1]; D vs B train -0.7 [-4.3, +3.0]; C vs B train +2.7 [-1.7, +7.0]; A-B lag cost on train 4.7 pp (smaller than the 58-screen's 13.8). VERDICT: the latency-shifted retrain did NOT help (no better than plain delay-26 gen_v1, leaning worse than live C) -> gen_v1 + extrapolate 26 stays the live model. LIVE DIAGNOSIS same evening (owner: 'horrible, even the original checkpoint'): reader/game unchanged (libg <libg/sampler hash, local>, build 160402012); decisions took 176-347 ms (vs ~40 ms idle) in every bad match, each overlapping CPU load (train_gen, ~15% battery throttle, these screens) -> backlog up to 262 frames. live_play now times taps out in GAME ticks (60) and warns CPU-STARVED when the median decision > 100 ms. Play only on an idle, plugged-in machine.** **LIVE LAG ROOT CAUSE CONFIRMED 2026-09-26 22:04 (a): the 21:54 match still lagged with none of my jobs running -- decide_ms 515-3372 while the owner's OTHER project (python test tooling + other Claude sessions) held the CPU at 100%; the pilot ran torch on CPU with its default 16 threads. live_play now runs the model on the GPU when available (--device auto) with torch.set_num_threads(4), plus a warm-up forward on the first frame. Next match (22:04, gen_v1 + ext26, cuda): decide ~40 ms, backlog 0, 27/27 taps confirmed at 25-30 ticks, 5/27 forced, into overtime.**
 **2026-09-29 -- live Tesla-vs-hog audit.** The owner reported the Tesla landing too far from a hog to pull it. Measured: the model aims the centre Tesla at native x 9000 (the standard pull spot), but a tap exactly on that tile corner snapped the 2x2 building one tile left (x 8000) in 34/35 side-1 taps. That broke the pull for right-lane hogs: 2 of 5 Tesla-vs-hog events failed, both of them right-lane hogs against x 8000. `live_play.py` now taps 2x2 buildings a quarter tile inside the corner; this is unverified until the next match. **Check Tesla dx = 0 in the next log.** Not grid resolution, not the policy, and RL cannot learn it because the sim has no tap snap. Also measured: opp-elixir counter live MAE 1.34 (bias +1.14, reads high), ability crops correct. The owner's friend matches ran lat26 with ext 0, not the live gen_v1_s0 with ext 26. Details are in `.foreman/gen-followups/ledger.md` (09-29).
 **2026-09-29 -- Royale stack upstream moved (owner: friend updated RoyaleSim; check it before any sim run).** The friend rewrote history on 09-25, so RoyaleSim, RoyaleGym, RoyaleLearn and RoyaleViser have DIVERGED and cannot fast-forward. Every local-only commit is the friend's pre-rewrite copy. The only local change is our triple-elixir patch in RoyaleSim, which upstream e4dc73b supersedes: same switch at t4801, rate 537 raw/tick against our 535.7. Upstream behind-counts: RoyaleSim 710, RoyaleGym 281, RoyaleLearn 279. Engine behaviour that changes our screens: tap snap to tile centre (placement.TAP_SNAP); even buildings on the arena lower-left corner (SNAP_EVEN_CORNER, the same thing our live Tesla hit, so live_play now nudges x AND y); troop and Heal taps on own buildings relocated; the round-12 mechanic flips; the Tornado pull with overshoot (b244304); native per-side command delay (f4d23dd; ours is still e1_eval's own); triple elixir. The import names our royale_env uses (DeployCommand, MatchSetup, RustEngine, ...) still exist. **Consequence: every RoyaleSim baseline (clean 0.966, the 299-set numbers, league1, lat26) is on the OLD engine. Re-baseline gen_v1_s0 on the updated engine before the tau sweep.** **UPDATED 2026-09-29 20:xx:** each repo was reset to origin/main (old HEADs kept as branch `pre-update-20260929`, and the RoyaleSim patch is in `git stash`). royalesim was rebuilt with `maturin develop --release` (11 min). TRAP: `data/derived/cards.json` is gitignored and was our 09-23 extract, so the new engine refused it (`CLIENT16402_VALUES HealSpirit.Hitpoints: no card of that name`). Fix: copy the committed `cards-15.535.json` over it (the old one is kept as `cards.json.pre-update-20260929`). arena.json and globals.json are still the 09-23 extracts; the new build loads them without complaint. Cards: 100 -> 132 of 144 load (+32; 12 refused, down from 44), plus 13 evo/hero forms (Evo Cannon, Skeletons, Musketeer, Elite Barbarians, Zap, Battle Ram, Inferno Dragon, Baby Dragon, Royal Ghost; Hero Musketeer, Ice Golem, Berserker, Balloon). Icebow's Evo Tesla, Evo Knight and Hero Ice Wizard are NOT among them; the sim still plays the base forms. GoblinHut now loads, so the STARTER deck is playable in the sim. royale_env.REGEN_SCHEDULE triple rate is now 1/18.6, measured on the new build at 0.01785 / 0.03575 / 0.05375 per tick (expected 1/56, 1/28, 1/18.6). Tests: 98/98 green in the Royale venv after the refused-card example moved from GoblinHut to LittlePrince. **Still owed: re-baseline gen_v1_s0 on the new engine (CPU-heavy, ask first) before the tau sweep.**
 **2026-09-29 20:57 EDT -- OVERNIGHT RUN (owner-authorised).** Driver: `scratchpad/gauntlet/L68/overnight0929/run.sh`, log `driver.log` beside it. (1) Tau sweep of gen_v1_s0 on the NEW engine, live condition (noise-off all, counter, delay 26, ext 26), train split pinned to the old 299 tags (`run_screen.py --only-tags-from`, new flag; the new engine would otherwise load many more). tau 0.27 = the re-measure, paired against the old-engine train_C. **Found:** the sim screens always used rl_royale.yaml tau **0.27**, but live_play uses **0.5**, and the sim's anti-stall rule (>=9 elixir and 12 s) differs from live's leak rule (>=9.5), so no sim number so far measured the live threshold. (2) Then **league1b** = league1 with ONE change, the engine: same argv, same entries.json (copied), same census decks, max_updates 200 (stop point only). Run dir `scratchpad/gauntlet/L68/rl/league1b/`. Morning: acceptance of league1b candidates vs init on the 299 train-split, as league1's. Owner wants an RL-framework brainstorm (goal: beat pros, adapt to the opponent mid-match, predict plays) written after league1b.
@@ -15996,7 +15994,7 @@ per section in place, keep the archive greppable and committed.
   battle. It is a fidelity signal (the engine diverged earlier), not a command-format error.
 * **"THE ENGINE'S CLOCK DOES NOT ADVANCE" WAS A PENDING UI POPUP, NOT A CLOCK (2026-09-02, §5ax).**
   Every hypothesis in §5aw (locale, runtime clock, CPU, loading flag) was about time; the real gate was
-  `GameMain+0x1BC != 0`, a queued "update from the store" action that the headless path never consumes.
+  `GameMain+<off> != 0`, a queued "update from the store" action that the headless path never consumes.
   When a native engine returns instantly without effect, read its early exits from a LIVE DUMP before
   theorising -- the code on disk was encrypted and the 33 ms return time already said "no wait path".
   Sandbox-tool traps from the same night: toybox `dd skip=` overflows past 2^31, `adb push` resets the
@@ -16557,25 +16555,17 @@ is the 5.5 / 11.1-point ARM GAP. Confirmation is m500/m1000/m2000 on this pair, 
 **B. RE of the bridge (owner order "reverse engineer the remaining features, you have my permission").** Static work
 only, on the §5ax live libg dump (15.535.29, x86_64); no VM touched while the pair trains. Sandbox commit **`81e5dff`**
 `bridge: export buffs + area_effects (RE, unverified)` (sandbox's own git, on top of 7c66f92); nothing committed to
-ClashBot. Every offset in bridge_re.md cites a function RVA + instruction.
-- **(c) The v1 bridge's series assumption is wrong.** Object type is vtable slot 2 (`0xf6dd60: mov eax,3` area effect,
-  `0xf7f250: mov eax,4` projectile) and global ids are `type*1M + n`, so **area effects are 3M..4M and 4M is
-  projectiles only** (dispatch 0x10b90db/0x10b913b). The bridge gated `effects` on the 4M series -> it was listing
+ClashBot. Every offset in the (local-only) bridge RE notes cites a function address + instruction.
+- **(c) The v1 bridge's series assumption is wrong.** Object type is vtable slot 2 (`<addr>: mov eax,3` area effect,
+  `<addr>: mov eax,4` projectile) and global ids are `type*1M + n`, so **area effects are 3M..4M and 4M is
+  projectiles only** (dispatch <addr>/<addr>). The bridge gated `effects` on the 4M series -> it was listing
   projectiles a second time. That is the mechanism behind §5cs.43's measurement that `effects == projectiles` in
   23,169/23,169 frames: the two findings, reached independently and by different methods, agree.
 - **(c) There is no freeze/stun flag on a character.** The engine folds `HitSpeedMultiplier` / `SpawnSpeedMultiplier`
-  over the buff list (0xfb2b00 / 0xfb2bc0); "frozen" IS a buff with -100 multipliers. So the generic buff export is not
+  over the buff list (<addr> / <addr>); "frozen" IS a buff with -100 multipliers. So the generic buff export is not
   merely convenient, it is the only faithful representation -- a boolean stun/freeze channel would be an invention.
-- Offsets (a): character components bitmask +0x30 / array +0x18 / count +0x24, **buff manager = component[3]**
-  (getter 0xf852e0); manager vtable 0x196ec68, array +0x18, count +0x24 (ctor 0xfb08f0, update 0xfb0b10, add 0xfb1130,
-  remove 0xfb2240); buff instance 0x70 B: +0x00 owner, **+0x08 remaining ms (-1 = permanent), +0x0C total ms**,
-  +0x18 data*, +0x28 level, +0x38 instigator, +0x40 instigator side, +0x54 shield hp (tick 0xf78200 does
-  `max([+8],50)-50` -- a 50 ms decrement, i.e. one tick). `LogicAreaEffectObject` vtable 0x19691f8, size 0x150,
-  ctor 0xf6b410: +0x48 data, +0x78 side, +0x7c/+0x80 x/y, +0xfc level, +0x100 elapsed, +0x114 life override; life =
-  `[+0x114]` if >=0 else `data+0x170 + level*data+0x174` (0xdd5ff5). Data columns: buff HitSpeedMultiplier +0xe0,
-  SpeedMultiplier +0xe4, DamageReduction +0xc0, Invisible +0x108, Shield +0x140, HitpointMultiplier +0x19c,
-  DamagePerSecond +0x1d0, LockTarget +0x200, SwitchTeam +0x220; AEO Radius +0x17c, MaxRadius +0xb8, LifeDuration
-  +0x170/+0x174/+0x178, Damage +0x124, HitSpeed +0x118, OnlyEnemies +0x129, ControlsBuff +0x194 (full list §3).
+- Offsets (a): the character component layout, buff-manager layout, buff-instance fields, area-effect object fields and
+  data-table columns were all recovered statically; the numeric values are kept in local-only notes.
 - **What v2 exports**: per character `buffs:[{name, data_id, remaining_ms, total_ms, level, instigator_side, shield_hp,
   flags, hit_speed_multiplier, speed_multiplier, spawn_speed_multiplier, damage_reduction, hitpoint_multiplier,
   damage_per_second, heal_per_second, invisible, lock_target, switch_team, ...}]` + `buff_manager_count`; top level
@@ -16593,8 +16583,8 @@ ClashBot. Every offset in bridge_re.md cites a function RVA + instruction.
 **C. Verification, NOT run (b throughout).** `L62/re_verify_bridge.py`: `deploy --bridge v2`, `drive` (pool tag
 092PPVPCRCPC carries Poison/Tornado/Graveyard/Ice Spirit/Log from both sides; `--synthetic` scripts Freeze/Zap/Rage
 because the pool has none), `compare v1.jsonl v2.jsonl` asserting every pre-existing field and the state_hash are
-byte-identical. Until that runs, EVERY offset above is static-only: the Name column -> data+0x28 is (b), shield +0x54
-as live HP is (b), the tournament-cap branch is unexercised, AEO +0x94/+0x98/+0xac are exported raw with no meaning.
+byte-identical. Until that runs, EVERY offset above is static-only: the Name column -> data+<off> is (b), shield +<off>
+as live HP is (b), the tournament-cap branch is unexercised, AEO +<off>/+<off>/+<off> are exported raw with no meaning.
 Per-hit events (splash flashes, chain arcs) were skipped by design.
 
 **Not established / traps.** (1) Nothing here says the KL arm's advantage survives to m2000 or to a second seed --
@@ -19058,7 +19048,7 @@ Threshold **0.60**: min positive 0.625, max negative 0.565, gap 0.060. `NYAWcJcG
 
 **A. Owner rulings.** Q2 granted (runtime may be copied to the VM). Q1 answered with a task: identify which of HunterCR's videos are icebow by inspecting frames, verify card-by-card that all eight are present, and see how much footage that yields.
 
-**B. Runtime is on clashbot-s3 (a).** 1.1 GB transferred over ssh (`tar | ssh tar -x`), 5 APKs + 14 `.so` + 383 DataTables. **`libg.so` sha256 `fa6704b8...246ba` on both ends** -- identical to the hash `bindings/runtime-manifest.json` pins, so the version freeze survived the move. Nothing under any `*/data/` path was included.
+**B. Runtime is on clashbot-s3 (a).** 1.1 GB transferred over ssh (`tar | ssh tar -x`), 5 APKs + 14 `.so` + 383 DataTables. **`libg.so` sha256 `<libg/sampler hash, local>` on both ends** -- identical to the hash `bindings/runtime-manifest.json` pins, so the version freeze survived the move. Nothing under any `*/data/` path was included.
 
 **C. Channel inventory (a), metadata only, no video fetched.** `yt-dlp --flat-playlist`: **1,382 videos, 441.6 hours, median 17.0 min**, 1,379 of them over 10 minutes. So the raw supply comfortably exceeds the 78-139 video-hours that §5cs.80 measured as one corpus doubling -- *if* enough of it is icebow, which is the open question.
 
@@ -21457,7 +21447,7 @@ always passing the resolved float — a number is never a sentinel.
 
 Six runs each launched with `--workers 0` became six runs with **12 workers each = 72 processes** on
 16 cores. The logs filled with `bash: fork: retry: Resource temporarily unavailable` and children
-dying with `0xC000012D`. That is the §3 RAM/oversubscription failure, arriving through a flag that
+dying with `<addr>`. That is the §3 RAM/oversubscription failure, arriving through a flag that
 was supposed to prevent it.
 
 ### Trap (§8)
@@ -26439,7 +26429,7 @@ The original Android x86_64 `libg.so` of client **15.535.29** run headless insid
 `com.supercell.titan.*` classes whose JNI descriptors match the real client's. The real package is
 installed on the AVD only to borrow its `AssetManager` (the exact problem Arron's
 `cr-engine-extraction` was stuck on — `research/CR_ENGINE_EXTRACTION_REVIEW.md`, deleted 2026-09-06 on owner ruling, never committed). ~60 hardcoded RVAs
-(fail-closed on `JNI_OnLoad-base != 0x1458BC0`); renderer NOP'd by five byte-verified patches at
+(fail-closed on `JNI_OnLoad-base != <addr>`); renderer NOP'd by five byte-verified patches at
 `GameMain::init`. JSON-line TCP API: `reset(replay_json)` (Supercell replay format: `rndSeed`,
 `battle{deck0,deck1{sp:[{d,l,el}x8], sc:[tower troop]}, avatar0/1, gamemode 72000007}`, **`cmd: []`**),
 `step(n)` (20 Hz logical ticks, no sleeps, author-reported ~10,200 ticks/s in-guest), `act(side,
@@ -26458,7 +26448,7 @@ elixir exact /10000; hand/cycle/next; towers; `state_hash`). Coverage claimed: 1
 ### 3. Why it is NOT running on this box (blocked on owner; nothing here is an engineering blocker)
 1. **Runtime.** `freeze_runtime.ps1` hard-gates size + SHA-256 of all five split APKs of exactly
    15.535.29 x86_64 (base 46,768,886 B; en 123,289; hdpi 88,604; x86_64 77,768,051; asset pack
-   885,861,071) and of `libg.so` (fa6704b8...). Repo ships none ("legally obtained by the user"). I do
+   885,861,071) and of `libg.so` (<libg/sampler hash, local>). Repo ships none ("legally obtained by the user"). I do
    not fetch game binaries from mirrors. Source = the owner's own BlueStacks 5 / Google Play Games
    install (both x86_64 Android): `adb connect 127.0.0.1:5555` -> `dumpsys package
    com.supercell.clashroyale | findstr versionName` -> if **15.535.29**: `pm path` + `adb pull` x5. Any
@@ -26621,12 +26611,12 @@ the owner's "ADB on". Then `prepare_runtime.ps1` + `freeze_runtime.ps1` + `docto
 * Sizes: all five equal the manifest's to the byte. SHA-256: `split_install_time_asset_pack.apk` (886 MB)
   MATCHES; `base.apk`, `split_config.en.apk`, `split_config.hdpi.apk`, `split_config.x86_64.apk` DIFFER.
 * Inside the owner's `split_config.x86_64.apk`: **all 14 `lib/x86_64/*.so` match the manifest's
-  `native_libs` size+sha256, incl. `libg.so` = `fa6704b8…` = `frozen_libg_sha256`.** The 383 data-table
+  `native_libs` size+sha256, incl. `libg.so` = `<libg/sampler hash, local>` = `frozen_libg_sha256`.** The 383 data-table
   files (34 csv_client + 349 csv_logic), arena and tilemap come from the asset pack, which matches whole.
 * Why the four wrappers differ (b, strongly supported, not proven without the author's files): exactly
   those four carry `com.android.vending.derived.apk.id` in their compiled AndroidManifest (a Play-injected
   4-byte int -> same size, different bytes, then a fresh Play signature; base.apk additionally has the
-  Play "frosting" block 0x2146444e); the asset pack has no derived-id and is identical. Different Play
+  Play "frosting" block <addr>); the asset pack has no derived-id and is identical. Different Play
   deliveries of the same release get different derived-APK ids. Author's copy = same release, other id.
 * The tool's own design covers this: `freeze_runtime.ps1 -ManifestTemplate <json>` only COMPARES an APK
   hash when the template has one (`if ($Apk.sha256 -and ...)`), otherwise it RECORDS the local value; the
@@ -26695,17 +26685,17 @@ Candidate replay: one from `scratchpad/usable_replays.json` whose decks avoid El
   bootstrap). So the non-direct profiles are research leftovers; **probe-direct is the only path that
   reaches a battle**, and it is the one that stalls. Log: `scratchpad/gauntlet/ext/probe_nosurf_author.log`.
 * nativeStep mechanics (bridge source, `android_probe/native/jni_bridge.cpp` 1964-2161): per step
-  `core_update(state, 0.05f)` (RVA 0xCE2CC0) -> capture -> `state_update(state, 0.05f)` (0xCE26D0) under the
-  0x1A85930 gate; tick read at battle+0x60 (battle = state+0x90). Nothing in the bridge can produce
+  `core_update(state, 0.05f)` (RVA <addr>) -> capture -> `state_update(state, 0.05f)` (<addr>) under the
+  <addr> gate; tick read at battle+<off> (battle = state+<off>). Nothing in the bridge can produce
   "stepped 100 / tick 0" except the engine's own update returning early.
 
 ### 3. What is ruled out / what is left (labelled)
 * Ruled out (measured): wrong replay doc (sha of the bootstrap matches the author's example; rng/tower/
-  elixir state identical); AVD config drift (config.ini == author's overrides); wrong libg (sha fa6704b8...);
+  elixir state identical); AVD config drift (config.ini == author's overrides); wrong libg (sha <libg/sampler hash, local>);
   timeout paths (33.7 ms); serve-specific bug (author's probe fails the same way).
-* Static RE of libg is IMPOSSIBLE: on disk it has 5 section headers and no .text; PT_LOADs 0..0x18b2fe0 RX
-  (encrypted), RW, a second RX at 0x1ae0000 (0x2099b bytes = the unpacker stub), RW at 0x1b04000. Carving
-  0xCE2CC0 (`scratchpad/gauntlet/ext/re/wrap_elf.py` -> `core.elf` -> llvm-objdump) gives garbage. lldb.exe in
+* Static RE of libg is IMPOSSIBLE: on disk it has 5 section headers and no .text; PT_LOADs 0..<addr> RX
+  (encrypted), RW, a second RX at <addr> (<addr> bytes = the unpacker stub), RW at <addr>. Carving
+  <addr> (`scratchpad/gauntlet/ext/re/wrap_elf.py` -> `core.elf` -> llvm-objdump) gives garbage. lldb.exe in
   the NDK fails to start on this box (liblldb.dll / api-ms-win-crt-time DLL). No capstone (third-party, not
   installed without owner OK). => the decrypted code must be DUMPED FROM THE LIVE PROCESS.
 * Hypotheses, all UNTESTED: (a) locale/timezone-dependent path -- the Java shims (`ApplicationUtilBase`
@@ -26740,7 +26730,7 @@ Candidate replay: one from `scratchpad/usable_replays.json` whose decks avoid El
    '<root>/input-replay.json'`, root `/data/local/tmp/cr-native-sandbox-probe`; the script's ValidateSet
    rejects the new name, so run the adb command directly after run_probe.ps1 has pushed the files once).
    `adb pull` the dumps; `wrap_elf.py <dump> <vaddr> <len> out.elf` (edit: it seeks by vaddr, so pass a
-   dump that starts at the mapping base or add an offset arg); `llvm-objdump -d --start-address=0xCE2CC0`
+   dump that starts at the mapping base or add an offset arg); `llvm-objdump -d --start-address=<addr>`
    (address = libg base + RVA) and read the early exits of core_update; compare the dumped battle/logic
    words against the author's field map in `docs/SANDBOX_RUNTIME_TECHNICAL.zh-CN.md` 190-259.
 4. When tick advances: `research/ext/cr-native-sandbox/.venv/Scripts/python.exe
@@ -26793,18 +26783,18 @@ the author's box also shows `loading_complete false`; anything about conversion 
   with a post-step hold, `CR_PROBE_HOLD_MS`) + a static `memdump` (pread on `/proc/<pid>/mem`, root) pulled
   every libg mapping (`scratchpad/gauntlet/ext/dump/live/`, code at RVA 0 = `libg_7ad3d8ec7000_rwxp.bin`)
   and the state/battle/GameMain objects (`hold1/`). `wrap_elf.py` + NDK `llvm-objdump` disassemble it.
-* `core_update` (0xCE2CC0) has five early exits before the tick path. The one that fires here is the third:
-  `dword [GameMain+0x1BC] != 0` (helper 0x72D220). Live values: `+0x1B8 = 0, +0x1B9 = 1, +0x1BC = 5,
-  +0x1C0 = 8`, and the string at `+0x1D0` (len 71) is
+* `core_update` (<addr>) has five early exits before the tick path. The one that fires here is the third:
+  `dword [GameMain+<off>] != 0` (helper <addr>). Live values: `+<off> = 0, +<off> = 1, +<off> = 5,
+  +<off> = 8`, and the string at `+<off>` (len 71) is
   `https://play.google.com/store/apps/details?id=com.supercell.clashroyale`. The accumulator at
-  state+0x44 was 0.0 and state+0x18c = 0, so the tick path was never entered.
-* Who queues it: the server-message dispatcher (function 0xB072E0; type via vtable[5]) -> login-failed
-  branch (reason via vtable[8] at 0xB09D72) -> reason-7 jump table 0x3376C0 entry 1 = reason **8** ->
-  block 0xB0D09F: copies the message text into GameMain+0x1D0 and calls `requestAction(GameMain, code 5,
-  param 8)` (0x72B0E0, call site 0xB0D132). Code 5's handler (processor 0x72D230, jump table 0x2AC038 ->
-  0x72D288) opens the stored URL = the "update from the store" popup. `requestAction` stores the action in
-  `+0x1BC/+0x1C0` for GameMain::update's processor, which the headless bridge NEVER runs (it pumps only the
-  state manager 0xCE7810), so the action stays pending forever and the battle core refuses to tick.
+  state+<off> was 0.0 and state+<off> = 0, so the tick path was never entered.
+* Who queues it: the server-message dispatcher (function <addr>; type via vtable[5]) -> login-failed
+  branch (reason via vtable[8] at <addr>) -> reason-7 jump table <addr> entry 1 = reason **8** ->
+  block <addr>: copies the message text into GameMain+<off> and calls `requestAction(GameMain, code 5,
+  param 8)` (<addr>, call site <addr>). Code 5's handler (processor <addr>, jump table <addr> ->
+  <addr>) opens the stored URL = the "update from the store" popup. `requestAction` stores the action in
+  `+<off>/+<off>` for GameMain::update's processor, which the headless bridge NEVER runs (it pumps only the
+  state manager <addr>), so the action stays pending forever and the battle core refuses to tick.
 * Why the author's box did not hit it (plausible, UNTESTED): reason 8 is "client older than required"; our
   Java wrapper is the Play-derived split APK set (§5av: 4 wrappers differ from the frozen build) and its
   reported version/fingerprint is what the login path compares against. The author's runtime is the frozen
@@ -26815,7 +26805,7 @@ the author's box also shows `loading_complete false`; anything about conversion 
 * Live A/B first (`scratchpad/gauntlet/ext/dump/hold_fix.py`, pre-step hold `CR_PROBE_HOLD_PRE_MS` +
   release file, static `memwrite` doing pwrite on `/proc/<pid>/mem`):
   control (hold, no write): tick 0->0, hash **e23456fd00d634de** (§5aw's stall exactly);
-  `--clear` (qword +0x1BC := 0, word +0x1B8 := 0, i.e. what 0x72D230 itself does before dispatch):
+  `--clear` (qword +<off> := 0, word +<off> := 0, i.e. what <addr> itself does before dispatch):
   tick 0->**100**, hash **96598dc9028e1802**, rng 3502570521, towers [4824,3052,3052,4824,3052,3052]
   = the author's certified 100-tick state bit for bit. Files: `hold2_ctrl/`, `hold3_clear/` (result.json).
 * Permanent fix in the bridge (`android_probe/native/jni_bridge.cpp`, `discard_pending_game_action`, called
@@ -26862,7 +26852,7 @@ the author's box also shows `loading_complete false`; anything about conversion 
 * Git-Bash mangles `/data/local/tmp/...` into a Windows path in `adb push` args -> push from PowerShell.
 * `pgrep -f` matched the adb `sh -c` wrapper itself -> pattern `^app_process.*JniHost`.
 * `full-card-bootstrap.json` run died with SIGSEGV (exit 139) inside `nativePumpDataTables`
-  (0xE74B40 -> 0x12AF1B0 null deref, fault 0x80, 11 s uptime) -- BEFORE the replay doc is used, and the
+  (<addr> -> <addr> null deref, fault 0x80, 11 s uptime) -- BEFORE the replay doc is used, and the
   DataTables pump's iteration count varies run to run (89/106/167). Timing-dependent; one crash in ~10
   boots tonight. Re-run on crash; do not read it as a doc problem.
 * The Bash tool's cwd persists between calls; `cd research/ext/...` from inside the sandbox fails -- use
@@ -26872,11 +26862,11 @@ the author's box also shows `loading_complete false`; anything about conversion 
 
 ### 1. What ran
 * Service boot via `scratchpad/gauntlet/ext/svc_start4.ps1` (6-attempt retry): attempts 1 and 2 died in
-  `nativePumpDataTables` (SIGSEGV fault 0x80, same PCs as §5ax.5: libg 0x12AF1B0 <- 0x11EA4C2 <- 0xE256E6
-  <- 0xE74CA7), attempt 3 booted and attested (tick-10 hash d036bec06e300550). Static read of the crash
+  `nativePumpDataTables` (SIGSEGV fault 0x80, same PCs as §5ax.5: libg <addr> <- <addr> <- <addr>
+  <- <addr>), attempt 3 booted and attested (tick-10 hash d036bec06e300550). Static read of the crash
   site (carvings `dump/live/c_12af100.elf`, `c_11ea400.elf`, `c_e25600.elf`, `c_11e8860.elf`, NOT committed):
-  0x11EA4A0 calls the resource lookup 0x11E8860(name, 0) and hands the result to 0x12AF1B0, a
-  wait-until-loaded loop on [obj+0x80]; a null lookup faults at +0x80. Timing-dependent (2 of 3 boots
+  <addr> calls the resource lookup <addr>(name, 0) and hands the result to <addr>, a
+  wait-until-loaded loop on [obj+<off>]; a null lookup faults at +<off>. Timing-dependent (2 of 3 boots
   tonight, ~1 in 10 in §5ax) -> the retry loop is the fix for now; the lookup's argument is the lead if it
   ever becomes frequent.
 * `research/sandbox_tools/replay_batch.py` (new): every tag in `usable_replays.json` through
@@ -26965,7 +26955,7 @@ the author's box also shows `loading_complete false`; anything about conversion 
 3. The 7 `position_based=False` matches: probe whether the hero/evolution form flag changes the deal.
 4. Per-tick state dump for the sim-parity oracle (§4p): `--record-full --record-every 1` over the 135
    clean matches = ~4 h of engine time at 108 s/match; or record every 4 ticks (~30 s/match, 1.1 h).
-5. Boot crash: if `nativePumpDataTables` SIGSEGV becomes >1 in 3, chase 0x11E8860's argument.
+5. Boot crash: if `nativePumpDataTables` SIGSEGV becomes >1 in 3, chase <addr>'s argument.
 
 ### 7. Housekeeping
 * Emulator + service stopped 01:08 (`worker stop --stop-vm`, qemu verified gone). Cuda run untouched
@@ -34646,7 +34636,7 @@ Paths the guide CREATES (do not exist yet by design): `data\hf_crawl\{icebow,hog
 - Reactive play 48 matches 687.9 s, gen_v1 12/24 vs gen: scratchpad/gauntlet/L69/rebase_1001_evo/reactive_genv1/summary.json.
 - Ghost screen 0.926, 299 matches 732.8 s: rebase_1001_evo/train_tau0.27.out + HANDOFF.md:187; 191/299 tags from crawl2 (pool_env_v1.jsonl "source").
 - search_s0 hashes --s1 unconditionally: pipeline/search_s0.py:717 (`sha256(REPO / a.s1)`), default s1_icebow_v6aug_s1.pt (:124).
-- Live: reader needs root (/proc/PID/mem), sampler at /data/local/tmp/live_sampler not pushed by any script (live_play.py:142-146, :342); build 160402012 x86_64: HANDOFF.md:167; ranked ladder path confirmed: HANDOFF.md:182; CPU starvation: HANDOFF.md:169 (LIVE LAG ROOT CAUSE).
+- Live: reader needs root (/proc/PID/mem), sampler at <device path, local reader config> not pushed by any script (live_play.py:142-146, :342); build 160402012 x86_64: HANDOFF.md:167; ranked ladder path confirmed: HANDOFF.md:182; CPU starvation: HANDOFF.md:169 (LIVE LAG ROOT CAUSE).
 - run.py play --student loads S1Model only: icebow/src/clashrl/student_live.py:44-52.
 ~~~~
 <!-- RECORD_SOURCE A0034 END -->
@@ -36181,174 +36171,19 @@ Checks run directly under PowerShell with bytecode writes disabled and CPU threa
 
 ### SOURCE SNAPSHOT A0057: scratchpad/gauntlet/L70/reader/FINDINGS.md
 
-Origin: worktree snapshot. Raw source SHA256: `43cb2e8e87f3b90b267acef7056059458f0816840f68b3d85dea34d61d733f4f`.
-
-<!-- RECORD_SOURCE A0057 BEGIN -->
-~~~~text
-DONE_WITH_CONCERNS
-
-Read-only capture completed on PID 2013, package build **160402012**, ELF x86_64, libg base `0x74b3c0206000`. No WSL/compiler, input, new screen/video capture, process termination, git, agents, or game-memory writes were used. Existing `re_peek.c` was not changed.
-
-- **Container:** dereference `libg+0x1aeef98 -> +0x18 -> +0x90` to battle; then `battle+0xa8 -> player_state`, `player_state+0x08 -> registry`, `registry+0x40 -> collection`, collection `+0x08` data / `+0x14` count. The live registry aliases battle, so `battle+0x40` is the same collection. Projectiles/effects are mixed with troops.
-- **Projectile vtable RVA `0x19f7370`:** side `+0x78`, x/y `+0x7c/+0x80`, native card ID `+0xac`, target x/y `+0x120/+0x124`. One Rocket and 28 Log objects match confirmed casts. Rocket: confirmation tick 717; positions `(11640,16346)` at 752 and `(13078,9506)` at 772 approach `(13500,7500)`, exactly the logged target.
-- **Effect vtable RVA `0x19f6a28`:** same side/position/card fields; data pointer `+0x48`; **remaining milliseconds at `+0x100`**. Tornado: confirmation 806; position `(4500,17500)` at ticks 818/825 equals the logged cast point; remaining time 400/50 ms. Across effects, **101/101** adjacent coherent pairs decrease by 50 ms per tick. The sandbox's elapsed-time interpretation and data-lifetime offsets must not be copied.
-- **Evolution:** the brief's base-ID premise is false here. Entity `+0xac` is `13000000` for evolved Knight and `13000102` for evolved Tesla; base IDs are `26000000` / `27000006`. V1 discards these `<20000000` bodies. Validated against independent data names and cast cycle: **24 base / 6 evolved Knights; 15 base / 5 evolved Teslas**. All agree with evolution on the third confirmed cast. Existing opponent video frames were inspected; effects obscure strict visual form confirmation.
-
-Delivered `live_sampler2.c` with optional `--extended`, exact WSL build command and lead checklist; `reference_fields.py` decodes saved re_peek bytes without compiling. Seven offline tests pass. Default reader functions/formatters remain unchanged; **C compilation and v1/v2 runtime diff were NOT run**, as instructed. Literal independent streams have different reader PIDs/timestamps; the checklist distinguishes raw diff, deterministic formatter equality, and normalized same-tick comparison.
-
-Evidence: `correlation.json`, `evidence_audit.json`, `capture_a.jsonl`, `capture_b.jsonl`, `identity.json`, `video_evidence.json`. Captured 1,680 batches at 1/2 Hz; 1,623 decodable frames, 1,592 tick-coherent. The bounded census and lagged pointer discovery miss short-lived objects; empty output is not proof of absence. See `REPORT.md` for layouts, limits and reproduction commands.
-~~~~
-<!-- RECORD_SOURCE A0057 END -->
-
+[body redacted: reader reverse-engineering notes (offset chain, field offsets, type tags) are kept local only]
 
 ### SOURCE SNAPSHOT A0058: scratchpad/gauntlet/L70/reader/GATES.md
 
-Origin: worktree snapshot. Raw source SHA256: `9ac62043854a232e6a964efe9eaae8be1b4ae6eae30e4aef2700d4474aef78e7`.
-
-<!-- RECORD_SOURCE A0058 BEGIN -->
-~~~~text
-# Gates: live reader phase 1
-
-OWNS: scratchpad/gauntlet/L70/reader/* (new files only; re_peek and re_peek.c excluded)
-
-Scope: read-only host probing, labelled evidence, optional C extension and Python decoder.
-
-- [x] G1: Sandbox container and layout findings are documented with build-specific caveats.
-  EVIDENCE: Manual source review of jni_bridge.cpp enumeration and export; REPORT.md item 1 records container, vtables, layouts, buffs and disproven elapsed-time interpretation.
-- [x] G2: Batched live snapshots contain registry objects and bounded battle/player-state container candidates at no more than 2 Hz.
-  CHECK: python -B scratchpad/gauntlet/L70/reader/audit_evidence.py
-  EXPECT: EVIDENCE_AUDIT_PASSED
-  EVIDENCE: Direct Python check in C:/Users/benpe/ClashBot; exit 0; expectation matched; output SHA256 31228bc8c6e69b288cbe9b1f158fd85403fcabf41dabb20a81f3bb8558583bad; full command/output in validation.json.
-
-- [x] G3: Rocket, Log and Tornado observations correlate with confirmed bot casts and native coordinates.
-  CHECK: python -B scratchpad/gauntlet/L70/reader/test_reference.py
-  EXPECT: Ran 7 tests
-  EVIDENCE: Direct Python check in C:/Users/benpe/ClashBot; exit 0; expectation matched; output SHA256 d79285e542166f20a7817056ac884c8625dab5e3eda34d956b0eeac73ba77c19; full command/output in validation.json.
-
-- [x] G4: Evolution marker separates at least five independently labelled base and evolved bodies per requested card.
-  CHECK: python -B scratchpad/gauntlet/L70/reader/audit_evidence.py
-  EXPECT: EVIDENCE_AUDIT_PASSED
-  EVIDENCE: Direct Python check in C:/Users/benpe/ClashBot; exit 0; expectation matched; output SHA256 31228bc8c6e69b288cbe9b1f158fd85403fcabf41dabb20a81f3bb8558583bad; full command/output in validation.json.
-
-- [x] G5: Optional C extension preserves default source behavior and Python reference decodes recorded bytes with explicit uncertainty.
-  CHECK: python -B scratchpad/gauntlet/L70/reader/test_reference.py
-  EXPECT: Ran 7 tests
-  EVIDENCE: Direct Python check in C:/Users/benpe/ClashBot; exit 0; expectation matched; output SHA256 d79285e542166f20a7817056ac884c8625dab5e3eda34d956b0eeac73ba77c19; full command/output in validation.json.
-
-- [x] G6: Lead compilation and runtime comparison checklist is delivered; build and runtime diff remain unperformed here by instruction.
-  EVIDENCE: live_sampler2.c header contains exact gcc -O2 -static -o live_sampler2 live_sampler2.c command and explicit default/new-field verification checklist; compare_default.py delivered. No compilation or runtime equality claim.
-- [x] G7: Findings distinguish verified fields, candidates, missing evidence and collection limitations.
-  EVIDENCE: FINDINGS.md and REPORT.md record raw-pointer uncertainty, 2826 missing object observations, bounded census, existing-video limitations and unperformed C validation.
-~~~~
-<!-- RECORD_SOURCE A0058 END -->
-
+[body redacted: reader reverse-engineering notes (offset chain, field offsets, type tags) are kept local only]
 
 ### SOURCE SNAPSHOT A0059: scratchpad/gauntlet/L70/reader/NEXT_FIELDS_AUTOPILOT.md
 
-Origin: worktree snapshot. Raw source SHA256: `16c508aa132c4f72a6fa5a7bbc1be52a1230c20365ce91f1acde631bfdf92260`.
-
-<!-- RECORD_SOURCE A0059 BEGIN -->
-~~~~text
-# Reader next fields: source audit, 2026-10-03
-
-Status: **UNTESTED on build 160402012** for all new fields below. No reader binary, live launcher, model input or memory offsets were changed by this audit. Existing phase-1 evidence in FINDINGS.md remains the authority for already validated fields.
-
-The sandbox bridge is a layout guide for an older build, not a validated address map for the live game. It labels its full extension `buffs_area_effects_v2_unverified` (`research/ext/cr-native-sandbox/android_probe/native/jni_bridge.cpp:2155`).
-
-| Field | Existing source evidence | Work needed before live use |
-|---|---|---|
-| Applied buffs/status | Bridge lines 1582-1677 traverse component slot 3: entity component array +0x18; manager array +0x18/count +0x24. Buff instance +0x08 remaining ms, +0x0c total ms; data describes movement/attack modifiers, shields and other effects. Bit flags are explicitly derived interpretations. | Re-identify the live-build manager/vtable, collect before/during/after known visible casts, establish timer direction and units, and verify public visibility for each exported flag. Do not copy the old RVA or treat derived flags as observed engine bits. |
-| Ability readiness | Bridge lines 1535-1566 use native accessor functions to find an ability slot/component; component +0x98 state, +0x78 cooldown ms, +0x80 charges, +0x84 pending ms; availability is state==2. | Accessor functions/RVAs and object layout need live-build RE. Restrict any initial readout to the player's own side; opponent readiness/cooldown/charges must not become model input without an owner ruling on public observability. |
-| Deploying units | `pipeline/obs_contract.py:38` currently treats native kinds 12/14 as deploying; reader v2 exports `kind` and `behavior_state_raw`. | Correlate first sightings, body activation and our confirmed casts on the live build. No evidence here validates kind 12/14 or a behavior-state value as live deployment state. Preserve unknown rather than claiming an observed deployment timer. |
-
-Training/live parity also needs care: re-drive projectile rows currently retain side/position/target/name but no projectile identity, while reader v2 includes address/generation_key. Re-drive effects retain side/position/name without remaining duration or identity. New public-play detection must use a shared observable contract and test multi-projectile/spell-effect deduplication; copying live address-based logic into these recordings would not establish parity.
-
-Exact **body** IDs do exist in the re-drive and were decoded separately: `pipeline/native_recording.py`, 15 passing native/v3 contract tests, and one real 288-frame recording checked in both perspectives (576 unit/tower comparisons). Those results do not validate spell detection, buffs, ability state or full-cycle inputs.
-~~~~
-<!-- RECORD_SOURCE A0059 END -->
-
+[body redacted: reader reverse-engineering notes (offset chain, field offsets, type tags) are kept local only]
 
 ### SOURCE SNAPSHOT A0060: scratchpad/gauntlet/L70/reader/REPORT.md
 
-Origin: worktree snapshot. Raw source SHA256: `ed8ec20efc91949c1b9917b2f052ed9c37b7d21967e5b8d72883b4c2801d3a8b`.
-
-<!-- RECORD_SOURCE A0060 BEGIN -->
-~~~~text
-DONE_WITH_CONCERNS
-
-This is a source-and-evidence delivery, not a deployed reader upgrade. The two host collectors have exited normally. The running pilot and its reader were not changed.
-
-## Sandbox bridge findings (item 1)
-
-Source: `research/ext/cr-native-sandbox/android_probe/native/jni_bridge.cpp`, especially lines 91-98, 1150-1175, 1380-1530, 1582-1677 and 2033-2138. These are **other-build** findings (150535029), not live offset authority.
-
-The sandbox's manager `+0x20` leads to context; context `+0x90` to battle. Battle `+0xa8 -> hp_state`, hp_state `+8 -> registry`, registry `+0x40 -> collection`, collection `+8 -> data`, `+0x14 -> count`. It enumerates object pointers from the same registry for units, projectiles and effects. The global object ID at `+8` separates series: 3M areas, 4M projectiles/other nonunits, 5M troops/towers. It additionally checks vtables: projectile `0x1969b38`, area `0x19691f8`; these RVAs are wrong for the live build.
-
-Common fields: side `+0x78`, x/y `+0x7c/+0x80`, secondary x/y `+0x84/+0x88`, card ID `+0xac`. Projectile pointer candidates are source `+0x100`, target `+0x108`, attached owner `+0x118`; target coordinate candidates `+0x120/+0x124`. Areas use data `+0x48`, level `+0xfc`, `+0x100` labelled elapsed, override `+0x114`. The sandbox estimates remaining life from override or data `+0x170/+0x174/+0x178`, radius from `+0x17c`, and explicitly does not implement its tournament-cap branch. **Live capture disproves that elapsed interpretation and does not validate those data offsets.**
-
-Buffs are per-character: entity `+0x18 -> component array`; kind `+0x30` bit 3 and component count `+0x24 >=4` gate component slot 3 (`array+0x18`). Manager vtable is `0x196ec68`; manager `+0x18 -> instance pointer array`, count `+0x24`, capped at 64. Instance owner `+0`, remaining/total `+8/+0xc`, data `+0x18`, level `+0x28`, instigator side `+0x40`, shield HP `+0x54`. Data supplies name/ID, damage reduction, speed multipliers, invisibility and other flags. Manager-vtable or owner mismatch is flagged. Buff exports were already marked unverified upstream and are **not** claimed as live-validated or added here.
-
-## Live evidence (items 2-3)
-
-`identity.json` independently confirms build 160402012, PID 2013 and ELF64 machine 62 at `0x74b3c0206000`. Capture metadata preserves mapping snapshots. No native game functions were called.
-
-Root chain: `*[base+0x1aeef98] -> *[root+0x18] -> *[context+0x90] = battle`. The downstream registry chain is unchanged from the sandbox. In observed matches `*[player_state+8] == battle`, so its collection is also directly at `battle+0x40`. Troop vtable `0x19f6c28`; king tower `0x19f7838`; projectile `0x19f7370`; area `0x19f6a28`. `0x19f7038` also appears among 3M/4M objects, including objects with cleared fields: it is **not** accepted as a projectile/area vtable.
-
-| Field | Live offset | Evidence/status |
-|---|---|---|
-| vtable pointer / generation ID | `0x00` / `0x08` | Map-relative class and per-battle object identity |
-| side / x / y / native card ID | `0x78` / `0x7c` / `0x80` / `0xac` | Cast-correlated for Rocket, Log, Tornado |
-| projectile target x/y | `0x120` / `0x124` | Rocket endpoint exactly matches native cast target |
-| projectile source/target/attached owner pointers | `0x100` / `0x108` / `0x118` | Exported raw pointer candidates; semantics not independently validated here |
-| area data / level | `0x48` / `0xfc` | Data names recovered; level exported as raw |
-| area remaining time | `0x100` | Countdown: 101/101 adjacent coherent pairs match -50 ms/tick |
-| area override candidate | `0x114` | Exported as `life_override_ms_raw`; no derived lifetime formula |
-| evolved form | card ID at `0xac` belongs to 13M table | Names plus cast cycles, independently counted bodies |
-
-Rocket example: `live_play_20261003_124543.jsonl`, play 689, confirmed 717; `capture_a` batches 105/106, ticks 752/772, address `0x74b519d47a00`, generation 4000023, side 1. Positions `(11640,16346)` and `(13078,9506)` move toward constant target `(13500,7500)`, exactly the logged target transformed from our frame. The capture contains 28 matched Log bodies. Log's endpoint is its roll endpoint, not necessarily its cast/start point; keep those concepts separate.
-
-Tornado example: `live_play_20261003_125856.jsonl`, play 778, confirmed 806; `capture_b` batches 323/324, ticks 818/825, address `0x74b4780ffad0`, generation 3000005, side 1. Both positions equal `(4500,17500)`, the native cast point. Data name `Tornado`; remaining 400 -> 50 ms. Other corroborating countdowns include BarbarianRage, IceWizardHero_FreezeAeo, Freeze and Rage. Data `+0x170` is -256 for the recorded Tornado, further demonstrating that the old lifetime formula is unsuitable.
-
-Evolution is not hidden behind a missing boolean in these observations: the native card ID itself distinguishes forms. Knight/`Knight_EV1` use 26000000/13000000; Tesla/`Tesla_EV1` use 27000006/13000102. Data names come through entity `+0x48`, native string length at data `+0x2c`, inline/indirect chars `+0x30`. For each matched body, confirmed-cast ordinal, independent name, and at least one coherent sample agree: Knight 24 base/6 evolved; Tesla 15 base/5 evolved. Evolved bodies are third casts in the observed two-base/one-evolved cycle. The first mid-match Knight evolution was not counted when its onset was too far from a confirmed cast. The audit retains five examples per class with address, generation, tick and log.
-
-Opponent table-13 forms include `electro_dragon_ev1` and `RageBarbarian_EV1`. `video_evidence_0.png` / `_1.png` were extracted from the **already existing** recorded match `lp_20261003_124226_0.mp4`; no capture command was issued. The right-bridge enemy cluster agrees with the sampled positions; purple rage/freeze effects obscure strict visual evolution identification. Encoder delay is also uncalibrated. Treat this as a limited visual cross-check, not universal form validation.
-
-## Capture bounds and limitations
-
-`probe_host.py` uses root `re_peek` with O_RDONLY and one adb call per batch: stdin is written to `/data/local/tmp/re_<tag>_req`, output to `/data/local/tmp/re_<tag>_out`, then cat. `MSYS_NO_PATHCONV=1` is set. Requests are restricted to readable mappings, at most 1,024 requests / 256 KiB per batch. Game memory is never written. All host outputs are in this directory.
-
-Capture A: 720 one-second batches, 722 adb calls, 58,329,492 estimated transferred text bytes, 86 failed individual memory reads. Capture B: 960 half-second batches, 962 calls, 31,192,646 bytes, no failed reads; expensive container census runs in four-batch bursts every 40 batches. Measured minimum batch-start gaps exceed 1.0000/0.5000 seconds. Approximate traffic was 79/63 KiB/s; maximum batch time 0.418/0.442 s. These totals exclude separate setup/identity/clock checks.
-
-The census scans aligned pointers in `0x600` battle/player-state windows plus registry, up to 160 candidate headers; it tests Supercell pointer/capacity/count vectors and STL triples, bounded to 256 elements. `evidence_audit.json` lists candidate paths/vtables. It is not an exhaustive heap or linked-list proof. The main registry allows up to 2,048 entries. Raw object windows are `0x200` and may extend beyond an individual object's allocation; only the identified class fields are interpreted.
-
-Dependent pointers are planned from prior batches. Offline decoders use **current batch bytes only**, require current registry-prefix membership and class IDs, and expose missing suffixes/objects. There are 1,623 decodable and 1,592 tick-coherent frames, with 2,826 missing object observations. Missing reads, frees, reuse and sub-second lifetimes prevent completeness claims. Clock fits associate eight battle instances with logs, median errors about 0.87-1.41 ticks. A tick bracket is not an engine lock. Mapping snapshots are not refreshed continuously.
-
-## Sampler v2 and verification (item 4)
-
-`live_sampler2.c` is a standalone copy of upstream with optional `--extended` after `--unified N`. The original default readers and JSON formatters are preserved verbatim. With the flag, the reader adds per-entity `evo` 0/1, admits table-13 bodies that v1 filters, and adds projectiles/effects plus validity/error metadata. Native form IDs are retained; no unverified normalization formula maps Tesla 13000102 to its base ID. Other consumers may need explicit form mapping before eventual integration.
-
-The extension reads within v1's tick/root/context/battle bracket. It suppresses nonunit arrays on inactive, incoherent or failed extended reads. `remaining_ms` comes directly from the measured countdown; negative values become null. Unknown nonunit classes are counted, not guessed. No buff extension or game input was added. The inherited `kill(pid,0)` is only an existence/permission check, not a termination signal.
-
-**Not compiled or run here. No v1/v2 runtime diff result exists.** Exact lead build command in WSL, from this directory:
-
-```sh
-gcc -O2 -static -o live_sampler2 live_sampler2.c
-```
-
-The C header contains the required lead checklist. Independent live JSON streams necessarily differ in reader_pid, timestamps, timings and scheduling. `compare_default.py` reports raw equality separately, then compares coherent same-tick payloads excluding only reader_pid, sequence, sample_monotonic_us and read_us. A normalized comparison is not a byte-identical formatter proof; the lead should additionally compare deterministic identical C frame fixtures.
-
-Reproduction from repository root (Python only, no device reads):
-
-```text
-python -B scratchpad/gauntlet/L70/reader/test_reference.py
-python -B scratchpad/gauntlet/L70/reader/audit_evidence.py
-python -B scratchpad/gauntlet/L70/reader/reference_fields.py --capture scratchpad/gauntlet/L70/reader/capture_a.jsonl --out scratchpad/gauntlet/L70/reader/decoded_fresh.jsonl
-```
-
-The Python reference deliberately retains partial decoded research evidence with `extension.valid=false` and missing-read diagnostics; C suppresses nonunits on invalid frames. Compare new field values on identical valid captured bytes. Seven tests cover recorded Rocket and Tornado, evolution names/cycles with at least five independent bodies per class, wrong-build vtable rejection, malformed/missing reads, negative timers and unchanged default source sections. These are source/offline checks, not C compilation or engine runtime evidence.
-~~~~
-<!-- RECORD_SOURCE A0060 END -->
-
+[body redacted: reader reverse-engineering notes (offset chain, field offsets, type tags) are kept local only]
 
 ### SOURCE SNAPSHOT A0061: scratchpad/gauntlet/L70/rl/R1T_V3_AUTOPILOT_REPORT.md
 
@@ -50563,9 +50398,9 @@ Origin: worktree snapshot. Raw source SHA256: `ceaa7e0b686b95fb30ccc784eb96d8e52
 After C1 byte decoder success and separate lifecycle correction, run the NEW
 sampler once for120frames at500ms (2Hz, about60seconds). No model, taps, game
 navigation, policy restart, STOP changes or modifications to existing binaries.
-Use a unique /data/local/tmp/re_live_sampler3_20261006 path. Preserve the owner's
+Use a unique <device path, local reader config> path. Preserve the owner's
 active R1e and original reader. Check current package160402012 and the original
-three public binary identity windows through the existing re_peek first; ELF
+three public binary identity windows through the existing the memory peeker first; ELF
 header must match and vtable pointer offsets must match after ASLR rebasing.
 If identity fails, collect nothing. The sampler opens game memory read-only.
 
@@ -50596,7 +50431,7 @@ Origin: worktree snapshot. Raw source SHA256: `6be877056505d7b320e997665002ca840
 # Separate current-client identity guard correction
 
 Original passive.py and its0.661686s nonzero receipt are preserved. It exited at
-the module-base assertion before re_peek, upload, or sampler launch. The expected
+the module-base assertion before the memory peeker, upload, or sampler launch. The expected
 single value for map-start minus file-offset was wrong: the current module has
 segment alignment gaps. A fresh read-only maps inspection confirms one offset0
 mapping and several later segments with different differences. The existing
@@ -50649,7 +50484,7 @@ proved Elite Barbarians alias with all prior catalog mappings unchanged.
 
 C1: replay the saved capture_a/b public registry bytes only, with source hashes,
 current-block reads and coherent-frame accounting. Independently decode each
-eligible203000023 character's name and optional+0x180 attachment. No model,
+eligible203000023 character's name and optional+<off> attachment. No model,
 optimizer, native game, device sampler, or new live match. Unreadable bytes stay
 unknown; registry membership and matching side/card/name are required for parent
 qualification. Save all names, classes and unresolved/attachment denominators.
@@ -50704,7 +50539,7 @@ then-specified alias behavior; they did not establish character-role correctness
 
 New offline current-block census:1,202shared-ID object records from coherent
 captured registry prefixes:579Hero,534FloatingCube,31IceCube,58read errors.
-All534decoded FloatingCubes reference a captured same-side Hero via+0x180.
+All534decoded FloatingCubes reference a captured same-side Hero via+<off>.
 The C decoder exactly matches the scalar reference on all1,202records plus13name
 fixtures. Four positive/nine malformed names and four malformed streams pass.
 Partial registry suffixes and missing object bytes remain counted. Three legacy
@@ -50728,7 +50563,7 @@ Current client160402012 and three original binary windows passed. A single passi
 sightings,146successful names. Independent current-registry joins match all73
 FloatingCubes to real Heroes;1positive6badjoin controls pass. Total sampler read
 time median242.5us,p95 520us,max897us. This instrument did not tap, navigate or
-control a match. The new binary resides at/data/local/tmp/re_live_sampler3_20261006.
+control a match. The new binary resides at<device path, local reader config>.
 
 The isolated live_play_identity.py subclass filters before BOTH observe and row,
 including stored extrapolation frames. Four integration tests pass, and its
@@ -61614,13 +61449,13 @@ scratchpad/gauntlet/L70/reader/clock_anchor.json
 scratchpad/gauntlet/L70/reader/compare_default.py
 scratchpad/gauntlet/L70/reader/correlate.py
 scratchpad/gauntlet/L70/reader/correlation.json
-scratchpad/gauntlet/L70/reader/extension_impl.inc
+scratchpad/gauntlet/L70/reader/<reader source, local only>
 scratchpad/gauntlet/L70/reader/identity.json
 scratchpad/gauntlet/L70/reader/inspect_capture.py
 scratchpad/gauntlet/L70/reader/inspect_existing_video.py
-scratchpad/gauntlet/L70/reader/live_sampler2.c
+scratchpad/gauntlet/L70/reader/<reader source, local only>
 scratchpad/gauntlet/L70/reader/probe_host.py
-scratchpad/gauntlet/L70/reader/re_peek.c
+scratchpad/gauntlet/L70/reader/<reader source, local only>
 scratchpad/gauntlet/L70/reader/reference_fields.py
 scratchpad/gauntlet/L70/reader/run_abil.py
 scratchpad/gauntlet/L70/reader/test_reference.py
@@ -63848,7 +63683,7 @@ scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/decoder_test.
 scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/format_original.c
 scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/format_successor.c
 scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/live_play_identity.py
-scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/live_sampler3.c
+scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/<reader source, local only>
 scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/passive.py
 scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/passive_started.json
 scratchpad/gauntlet/L72/improvement_loop/reader_character_identity/passive_v2.json

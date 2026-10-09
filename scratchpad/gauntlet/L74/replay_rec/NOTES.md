@@ -43,7 +43,7 @@ thetechylife.com "How do I Share a Replay on Clash Royale" (seen only in a searc
 
 ## 2. Reader capability verdict (code reading)
 
-**What one reader frame holds** (`L70/reader/live_sampler2.c` emit_player / emit_chain, `extension_impl.inc`):
+**What one reader frame holds** (`L70/reader/<reader source, local only>` emit_player / emit_chain, `<reader source, local only>`):
 - Top level: `game_tick`, `battle_active`, `coherent`, `failure`, `applied_replay_tick`, `chain` (pointers), and `sample_monotonic_us`.
 - `players[2]`: `side`, `elixir_raw`, `refill_timer`, `next_deck_index`, `hand_deck_indices[4]`, `cycle_deck_indices`.
   It also holds `deck_card_ids[8]` and `deck_form_flags[8]` (0/1/2 = base/evo/hero), but **only for a side whose hand

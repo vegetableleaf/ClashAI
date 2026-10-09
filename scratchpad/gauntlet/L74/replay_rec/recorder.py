@@ -6,7 +6,7 @@
     icebow/.venv/Scripts/python.exe scratchpad/gauntlet/L74/replay_rec/recorder.py --from-file FRAMES.jsonl
 
 No taps, no model, no game-memory writes: the only device command is the same read-only memory sampler live_play.py
-runs (`adb shell <sampler> PID INTERVAL RVA CTX --unified 0 --extended`). Every reader line is saved with the host
+runs (the command line live_play.py builds from the local reader config). Every reader line is saved with the host
 receive time to OUT/rec_<stamp>.jsonl as {"event": "frame", "t_host", "f": <reader frame>}, plus rec_start /
 battle_start / battle_end / refused events.
 Battle start = the first active+coherent frame whose game_tick advanced past 0. End = (a) frames inactive for
@@ -89,10 +89,11 @@ def device_lines():
     """The live_play.py reader command, read-only. Imported lazily: live_play pulls torch."""
     sys.path.insert(0, str(REPO / "scratchpad" / "gauntlet" / "L68" / "live_reader"))
     import live_play as lp
+    lp.apply_reader_config(strict=True)           # clear error when the local reader config is absent
     sampler, extra = lp.READERS["v2"]
     # `echo $$; exec` = the first line is the sampler's own device PID, so stop() kills exactly it (never a pattern
     # kill: a live_play.py sampler of the owner's may be running too)
-    cmd = f"echo $$; exec {sampler} $(pidof com.supercell.clashroyale) 100 {lp.RVA} {lp.ROOT_CTX} --unified 0{extra}"
+    cmd = f"echo $$; exec {sampler} $(pidof com.supercell.clashroyale) 100 {lp.RVA} {lp.ROOT_CTX}{extra}"
     p = subprocess.Popen(lp.ADB + ["shell", cmd], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True,
                          env=lp.ENV)
     pid = p.stdout.readline().strip()

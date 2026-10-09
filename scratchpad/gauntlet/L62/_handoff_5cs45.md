@@ -28,25 +28,17 @@ is the 5.5 / 11.1-point ARM GAP. Confirmation is m500/m1000/m2000 on this pair, 
 **B. RE of the bridge (owner order "reverse engineer the remaining features, you have my permission").** Static work
 only, on the §5ax live libg dump (15.535.29, x86_64); no VM touched while the pair trains. Sandbox commit **`81e5dff`**
 `bridge: export buffs + area_effects (RE, unverified)` (sandbox's own git, on top of 7c66f92); nothing committed to
-ClashBot. Every offset in bridge_re.md cites a function RVA + instruction.
-- **(c) The v1 bridge's series assumption is wrong.** Object type is vtable slot 2 (`0xf6dd60: mov eax,3` area effect,
-  `0xf7f250: mov eax,4` projectile) and global ids are `type*1M + n`, so **area effects are 3M..4M and 4M is
-  projectiles only** (dispatch 0x10b90db/0x10b913b). The bridge gated `effects` on the 4M series -> it was listing
+ClashBot. Every offset in the (local-only) bridge RE notes cites a function address + instruction.
+- **(c) The v1 bridge's series assumption is wrong.** Object type is vtable slot 2 (`<addr>: mov eax,3` area effect,
+  `<addr>: mov eax,4` projectile) and global ids are `type*1M + n`, so **area effects are 3M..4M and 4M is
+  projectiles only** (dispatch <addr>/<addr>). The bridge gated `effects` on the 4M series -> it was listing
   projectiles a second time. That is the mechanism behind §5cs.43's measurement that `effects == projectiles` in
   23,169/23,169 frames: the two findings, reached independently and by different methods, agree.
 - **(c) There is no freeze/stun flag on a character.** The engine folds `HitSpeedMultiplier` / `SpawnSpeedMultiplier`
-  over the buff list (0xfb2b00 / 0xfb2bc0); "frozen" IS a buff with -100 multipliers. So the generic buff export is not
+  over the buff list (<addr> / <addr>); "frozen" IS a buff with -100 multipliers. So the generic buff export is not
   merely convenient, it is the only faithful representation -- a boolean stun/freeze channel would be an invention.
-- Offsets (a): character components bitmask +0x30 / array +0x18 / count +0x24, **buff manager = component[3]**
-  (getter 0xf852e0); manager vtable 0x196ec68, array +0x18, count +0x24 (ctor 0xfb08f0, update 0xfb0b10, add 0xfb1130,
-  remove 0xfb2240); buff instance 0x70 B: +0x00 owner, **+0x08 remaining ms (-1 = permanent), +0x0C total ms**,
-  +0x18 data*, +0x28 level, +0x38 instigator, +0x40 instigator side, +0x54 shield hp (tick 0xf78200 does
-  `max([+8],50)-50` -- a 50 ms decrement, i.e. one tick). `LogicAreaEffectObject` vtable 0x19691f8, size 0x150,
-  ctor 0xf6b410: +0x48 data, +0x78 side, +0x7c/+0x80 x/y, +0xfc level, +0x100 elapsed, +0x114 life override; life =
-  `[+0x114]` if >=0 else `data+0x170 + level*data+0x174` (0xdd5ff5). Data columns: buff HitSpeedMultiplier +0xe0,
-  SpeedMultiplier +0xe4, DamageReduction +0xc0, Invisible +0x108, Shield +0x140, HitpointMultiplier +0x19c,
-  DamagePerSecond +0x1d0, LockTarget +0x200, SwitchTeam +0x220; AEO Radius +0x17c, MaxRadius +0xb8, LifeDuration
-  +0x170/+0x174/+0x178, Damage +0x124, HitSpeed +0x118, OnlyEnemies +0x129, ControlsBuff +0x194 (full list §3).
+- Offsets (a): the character component layout, buff-manager layout, buff-instance fields, area-effect object fields and
+  data-table columns were all recovered statically; the numeric values are kept in local-only notes.
 - **What v2 exports**: per character `buffs:[{name, data_id, remaining_ms, total_ms, level, instigator_side, shield_hp,
   flags, hit_speed_multiplier, speed_multiplier, spawn_speed_multiplier, damage_reduction, hitpoint_multiplier,
   damage_per_second, heal_per_second, invisible, lock_target, switch_team, ...}]` + `buff_manager_count`; top level
@@ -64,8 +56,8 @@ ClashBot. Every offset in bridge_re.md cites a function RVA + instruction.
 **C. Verification, NOT run (b throughout).** `L62/re_verify_bridge.py`: `deploy --bridge v2`, `drive` (pool tag
 092PPVPCRCPC carries Poison/Tornado/Graveyard/Ice Spirit/Log from both sides; `--synthetic` scripts Freeze/Zap/Rage
 because the pool has none), `compare v1.jsonl v2.jsonl` asserting every pre-existing field and the state_hash are
-byte-identical. Until that runs, EVERY offset above is static-only: the Name column -> data+0x28 is (b), shield +0x54
-as live HP is (b), the tournament-cap branch is unexercised, AEO +0x94/+0x98/+0xac are exported raw with no meaning.
+byte-identical. Until that runs, EVERY offset above is static-only: the Name column -> data+<off> is (b), shield +<off>
+as live HP is (b), the tournament-cap branch is unexercised, AEO +<off>/+<off>/+<off> are exported raw with no meaning.
 Per-hit events (splash flashes, chain arcs) were skipped by design.
 
 **Not established / traps.** (1) Nothing here says the KL arm's advantage survives to m2000 or to a second seed --

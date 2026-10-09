@@ -20,7 +20,7 @@ proved Elite Barbarians alias with all prior catalog mappings unchanged.
 
 C1: replay the saved capture_a/b public registry bytes only, with source hashes,
 current-block reads and coherent-frame accounting. Independently decode each
-eligible203000023 character's name and optional+0x180 attachment. No model,
+eligible203000023 character's name and optional+<off> attachment. No model,
 optimizer, native game, device sampler, or new live match. Unreadable bytes stay
 unknown; registry membership and matching side/card/name are required for parent
 qualification. Save all names, classes and unresolved/attachment denominators.

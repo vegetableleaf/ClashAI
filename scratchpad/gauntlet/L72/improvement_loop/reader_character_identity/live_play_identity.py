@@ -40,7 +40,8 @@ def main():
     entry=importlib.util.module_from_spec(spec);spec.loader.exec_module(entry)
     install_catalog()
     entry.GenPilot=IdentityPilot
-    entry.READERS={'v3':('/data/local/tmp/re_live_sampler3_20261006',' --extended --character-identity')}
+    from pipeline import reader_config
+    entry.READERS={'v3':reader_config.reader('v3')}   # local-only reader config
     if not any(x=='--reader' or x.startswith('--reader=') for x in sys.argv[1:]):
         sys.argv.extend(['--reader','v3'])
     print('[reader] isolated character identity entry; production startup unchanged',flush=True)

@@ -1,7 +1,7 @@
 """Live memory-reader frame -> BoardState, via the engine adapter (L68 live reader).
 
-The reader (upstream cr-native-sandbox ``mumu_live_private_sampler.c --unified``, re-mapped for the x86_64
-libg build: manager RVA 0x1aeef98, manager->context 0x18) emits one JSON frame per sample with the SAME native
+The reader (a read-only memory sampler, re-mapped for the x86_64 client build; its launch values are local-only,
+see pipeline/reader_config.py) emits one JSON frame per sample with the SAME native
 fields the sandbox engine's ``observe()`` has, so the frame is reshaped into that dict and handed to
 ``obs_contract.from_engine`` (which mirrors when ``my_side == 1``; in Training Camp the human is side 1).
 
