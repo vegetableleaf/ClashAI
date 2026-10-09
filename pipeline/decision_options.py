@@ -1,7 +1,7 @@
 """Opt-in inference choices. No gate, tower-HP, card-priority or reward rules."""
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from functools import lru_cache
 import math
 import re
@@ -50,6 +50,7 @@ class DecisionOptions:
     rocket_value_lead: str = 'off'          # 'on' / 'drift' / 'blend': aim at where the bodies will be when the Rocket lands
     rocket_value_idle: str = 'off'          # 'on': only at a decision where the model itself would not play (displaces nothing)
     rocket_value_min_elixir: float = 0.0    # fire only with at least this much elixir (the Rocket leaves the rest)
+    card_levels: Optional[tuple] = None     # ((catalog name, level), ...) for the lethal rules; None = my tower level
 
     def __post_init__(self):
         if self.card_choice not in ('argmax', 'filtered'):
@@ -103,6 +104,8 @@ class DecisionOptions:
             raise ValueError('rocket_value_max_left must be finite and >= 0 (99 = off)')
         if self.rocket_tornado != 'off' and self.rocket_value <= 0:
             raise ValueError('rocket_tornado needs rocket_value > 0 (its V)')
+        if self.card_levels is not None:
+            object.__setattr__(self, 'card_levels', parse_card_levels(self.card_levels))
 
     @property
     def active(self):
@@ -169,6 +172,12 @@ def add_arguments(parser):
                              'or the enemy king with no enemy body (unless it finishes the king), is re-aimed at the best '
                              'cell with a real target (body / alive princess) by the same scoring, else NOT cast: the '
                              'next card by the model ranking, else WAIT (rocket_target_cells). Unblocked aims unchanged')
+    parser.add_argument('--card-levels', nargs='+', default=None, metavar='NAME=LEVEL',
+                        help='LIVE ONLY (the SIM decision path ignores it: its cards are level 11): my card levels for '
+                             'the lethal Rocket / Log rules (tower damage, in-flight guard, the --rocket-dead-target '
+                             'king-lethal exception), e.g. Rocket=16 Log=15 (list BOTH lethal spells); names from '
+                             'the card catalog, each level within its range; a card not listed falls back to my tower '
+                             'level (the default for every card)')
     parser.add_argument('--tau-threatened', type=float, default=None, metavar='X',
                         help='while threatened (one of my towers lost HP within the last 2 s of board time AND an enemy '
                              'unit is within 8 tiles of that tower, public) the gate threshold is X instead of the phase '
@@ -520,17 +529,20 @@ def princess_dead_state(prev, bs):
     return tuple(since), tuple(eff)
 
 
-def my_rocket_damage(crown_towers, side):
-    """My Rocket's crown-tower damage from my own tower max HP (lethal_rocket_target's level rule), or None."""
+def my_rocket_damage(crown_towers, side, levels=None):
+    """My Rocket's crown-tower damage from my own tower max HP (lethal_rocket_target's level rule), or None.
+    ``levels`` (card_levels, live only): {catalog name: level}; a listed Rocket uses its own level."""
     from .body_identity import level_of_factor
     mine = next((t for t in crown_towers if int(t['side']) == side and t.get('max_hp')), None)
     level = mine and level_of_factor(float(mine['max_hp']) / (4824.0 if mine.get('type') == 'king' else 3052.0))
-    return None if level is None else rocket_tower_damage(level)
+    if level is None:
+        return None
+    return tower_damage_or_none(levels['Rocket'] if levels and 'Rocket' in levels else level)
 
 
-def rocket_kills_king(crown_towers, side):
+def rocket_kills_king(crown_towers, side, levels=None):
     """True when the alive enemy king's public HP <= my Rocket's crown-tower damage (the never-the-king exception)."""
-    damage = my_rocket_damage(crown_towers, side)
+    damage = my_rocket_damage(crown_towers, side, levels) if levels else my_rocket_damage(crown_towers, side)
     return bool(damage) and any(int(t['side']) != side and t.get('type') == 'king' and not t.get('destroyed')
                                 and 0 < t['hp'] <= damage for t in crown_towers)
 
@@ -703,6 +715,57 @@ def _rocket_catalog(name='Rocket'):
     return int(rocket['damage']), int(rocket['crown_tower_damage_percent']), rocket['level_scaling'], rounding
 
 
+@lru_cache(maxsize=1)
+def _catalog_cards():
+    """{normalised name / display name: catalog card record} (RoyaleSim cards.json)."""
+    import json
+    from .body_identity import CATALOG
+    out = {}
+    for c in json.loads(CATALOG.read_text(encoding='utf-8'))['cards']:
+        for n in (c['name'], c.get('display_name') or ''):
+            out.setdefault(re.sub(r'[^a-z]', '', n.lower()), c)
+    return out
+
+
+def parse_card_levels(spec):
+    """``--card-levels`` -> sorted ((catalog name, level), ...). ``spec``: 'NAME=LEVEL' strings, (name, level) pairs or
+    a {name: level} dict (a JSON config). Unknown names, repeats and levels outside the card's catalog range raise."""
+    items = spec.items() if isinstance(spec, dict) else (s.split('=', 1) if isinstance(s, str) else s for s in spec)
+    out = {}
+    for item in items:
+        if len(item) != 2:
+            raise ValueError(f'card_levels entries are NAME=LEVEL, got {item!r}')
+        name, level = item
+        card = _catalog_cards().get(re.sub(r'[^a-z]', '', str(name).split('@')[0].lower()))
+        if card is None:
+            raise ValueError(f'card_levels: {name!r} is not a catalog card')
+        try:
+            level = int(level)
+        except (TypeError, ValueError):
+            raise ValueError(f'card_levels: {name}={level!r} is not an integer level') from None
+        ls = card.get('level_scaling')
+        if not ls:
+            raise ValueError(f"card_levels: {card['name']} has no level table in the catalog")
+        if not (1 <= level - ls['relative_level'] <= ls['level_count']
+                and 0 <= level - ls['base_level'] < len(ls['multiplier_percent_by_level'])):
+            raise ValueError(f"card_levels: {card['name']} has no level {level}")
+        if card['name'] in out:
+            raise ValueError(f"card_levels: {card['name']} given twice")
+        out[card['name']] = level
+    return tuple(sorted(out.items()))
+
+
+def tower_damage_or_none(level, name='Rocket'):
+    """``rocket_tower_damage`` for the live / SIM rules: None instead of a ValueError when the card has no such level.
+    MEASURED live (L73/lethal_rocket/level8_scan.out): a lower-level account's King (princess 2352 / king 3768 HP)
+    reads as level 8 in 2,912 of 152,711 decisions (10-08 20:20-20:53), and the Log (Legendary) starts at level 9 --
+    the unguarded call raised out of GenPilot.decide, and live_play does not catch it (the match is abandoned)."""
+    try:
+        return rocket_tower_damage(level, name)
+    except ValueError:
+        return None
+
+
 @lru_cache(maxsize=32)
 def rocket_tower_damage(level, name='Rocket'):
     """My Rocket's crown-tower damage at unified card ``level``: RoyaleSim catalog damage floor(580 x ladder / 100)
@@ -722,20 +785,27 @@ def rocket_tower_damage(level, name='Rocket'):
     raise ValueError(f'unknown crown-tower rounding {rounding!r}')
 
 
-def lethal_rocket_target(crown_towers, side, card='Rocket', own=None, t_sec=None):
+def lethal_rocket_target(crown_towers, side, card='Rocket', own=None, t_sec=None, levels=None):
     """The alive ENEMY PRINCESS my Rocket finishes in one hit, lowest HP first -> dict(lane (my frame), hp, damage,
     level), else None. ``crown_towers``: raw ``episode.crown_towers`` rows (side, type, x, y in 1/1000 tile, hp, max_hp;
     live_mem.to_observe / RoyaleSim raw()). My card level = my own tower max HP (from_engine's level factor: level 11
     = 3052 princess / 4824 king -> body_identity.level_of_factor); Rocket assumed at that level. Kings never qualify.
-    ``own`` (lethal_log on): my accepted plays -> a princess my own Rocket / Log in flight will finish is skipped."""
+    ``own`` (lethal_log on): my accepted plays -> a princess my own Rocket / Log in flight will finish is skipped.
+    ``levels`` (card_levels): {catalog name: level}; a listed card uses its own level, any other my tower level."""
     from .body_identity import level_of_factor
     from .obs_contract import _engine_xy
     mine = next((t for t in crown_towers if int(t['side']) == side and t.get('max_hp')), None)
     level = mine and level_of_factor(float(mine['max_hp']) / (4824.0 if mine.get('type') == 'king' else 3052.0))
     if level is None:
         return None
-    damage, best = rocket_tower_damage(level, card), None
-    covered = in_flight_damage(own, t_sec, level, enemy_princess_hps(crown_towers, side)) if own else {}
+    tower_level = level                              # in-flight spells: their own listed level, else THIS (never
+    if levels and card in levels:                   # the evaluated card's level -- verifier: an unlisted Log costed
+        level = levels[card]                        # at Rocket=16's level held a lethal Rocket back)
+    damage, best = tower_damage_or_none(level, card), None
+    if damage is None:                              # no such card level (e.g. a level-8 King: Log starts at 9): no fire
+        return None
+    covered = (in_flight_damage(own, t_sec, tower_level, enemy_princess_hps(crown_towers, side), levels=levels)
+               if levels else in_flight_damage(own, t_sec, level, enemy_princess_hps(crown_towers, side))) if own else {}
     for t in crown_towers:
         if int(t['side']) == side or t.get('type') != 'princess' or t.get('destroyed') or not 0 < t['hp'] <= damage:
             continue
@@ -827,7 +897,7 @@ def record_hp(history, tick, hps):
     return history
 
 
-def in_flight_damage(own, t_sec, level, hp_now=None):
+def in_flight_damage(own, t_sec, level, hp_now=None, levels=None):
     """{'L' | 'R': tower damage} of my own Rockets / Logs still due to hit an enemy princess. ``own``: [(card name, x, y
     in my 0-1 frame, landing t_sec[, enemy_princess_hps at or before the landing])]. Rocket: aim within its radius + the
     princess radius of the tower centre; Log: the tower inside its roll corridor (half-width / roll range + half-depth,
@@ -853,7 +923,11 @@ def in_flight_damage(own, t_sec, level, hp_now=None):
         for lane, (tx, ty) in zip('LR', ENEMY_TOWERS_TILES[1:]):
             if (math.hypot(x - tx, y - ty) <= rocket_radius_tiles() + tr if rocket else
                     abs(x - tx) <= half + tr and -(depth + tr) <= y - ty <= reach + depth + tr):
-                damage = rocket_tower_damage(level, 'Rocket' if rocket else 'Log')
+                card = 'Rocket' if rocket else 'Log'
+                damage = tower_damage_or_none(levels.get(card, level) if levels else level, card)
+                if damage is None:                  # unknown level: count the spell as finishing (never a 2nd cast)
+                    out[lane] = math.inf
+                    continue
                 if (before and hp_now and lane in before and lane in hp_now and before[lane] - hp_now[lane] >= damage
                         and round((t_sec - land) / 0.05) - MAX_LOOKAHEAD_TICKS >= hit - RELEASE_MARGIN_TICKS):
                     continue                        # it already hit: the tower HP includes its damage
@@ -898,7 +972,9 @@ def lethal_log_choice(options, t_sec, names, allowed, crown_towers, side, grid, 
     slots = [i for i, n in enumerate(names) if n is not None and is_log(n) and allowed[i]]
     if not slots or not _lethal_phase(options, t_sec, crown_towers, side, LOG_HIT_TICKS):
         return None
-    target = lethal_rocket_target(crown_towers, side, 'Log', own, t_sec)
+    levels = dict(options.card_levels) if options.card_levels else None
+    target = (lethal_rocket_target(crown_towers, side, 'Log', own, t_sec, levels=levels) if levels else
+              lethal_rocket_target(crown_towers, side, 'Log', own, t_sec))
     return None if target is None else (slots[0], lethal_log_cell(target['lane'], grid), target)
 
 
@@ -919,8 +995,12 @@ def lethal_rocket_choice(options, t_sec, names, allowed, crown_towers, side, gri
                 or not crowns_behind(crown_towers, side)):
             return None
     slots = [i for i, n in enumerate(names) if n is not None and str(n).lower() == 'rocket' and allowed[i]]
-    target = (lethal_rocket_target(crown_towers, side, own=own, t_sec=t_sec) if own else
-              lethal_rocket_target(crown_towers, side)) if slots else None
+    levels = dict(options.card_levels) if options.card_levels else None
+    if levels:                                       # card_levels: the Rocket's own level (default: my tower level)
+        target = lethal_rocket_target(crown_towers, side, own=own, t_sec=t_sec, levels=levels) if slots else None
+    else:
+        target = (lethal_rocket_target(crown_towers, side, own=own, t_sec=t_sec) if own else
+                  lethal_rocket_target(crown_towers, side)) if slots else None
     if target is None:
         return None
     return slots[0], lethal_rocket_cell(target['lane'], grid), target
@@ -1233,6 +1313,8 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
     ``projectiles`` (log_aim) = each row's model projectile tokens, decoded with the model's own card vocabulary.
     ``lethal`` (lethal_rocket) = per row (raw crown towers, my side, a card pending) for ``lethal_rocket_choice``.
     ``rocket_value`` = per row (the decision BoardState, a card pending, the match keeping the lead history) for ``rocket_value_choice``."""
+    if options.card_levels is not None:             # card_levels is LIVE-ONLY: the SIM's own (level-11) cards decide
+        options = replace(options, card_levels=None)
     base_tau = tau = gate_taus(options, tau, t_sec, len(allowed))
     tau = threat_taus(options, tau, tau_threat)
     playing = allowed.any(axis=1) & ((np.asarray(p) > tau) | stalled)
@@ -1325,12 +1407,14 @@ def match_kwargs(matches):
     """Per-match RNGs, never a batch-wide stream; public deck names for aiming."""
     cfg = matches[0].cfg
     options = options_from_config(cfg)
+    if options.card_levels is not None:             # card_levels is LIVE-ONLY (a live bundle in a SIM run is ignored)
+        options = replace(options, card_levels=None)
     if not options.active:
         return {}
     from .e1_eval import obs_seed
     rngs = []
     for match in matches:
-        if options_from_config(match.cfg) != options:
+        if replace(options_from_config(match.cfg), card_levels=None) != options:
             raise ValueError('mixed decision options in one policy batch')
         if not hasattr(match, 'rng_decision_options'):
             seed = obs_seed('decision_options:' + match.tag, match.k)

@@ -255,6 +255,70 @@ def afford_elixir(players, side: int, tick: int, ticks: int) -> float:
     return min(MAX_ELIXIR * 1e4, float(me["elixir_raw"]) + g * 1e4) / 1e4    # live reader frame
 
 
+# ---- follow-up plays (L74 latency2; live: live_play --follow-up-taps, pilot.plan_follow_up) -------------------------------
+# A decision dict that carries ``follow_ups`` = [follow_up_spec(slot, cell, after_ticks), ...] asks for second plays decided
+# ``after_ticks`` after the first one WITHOUT waiting for it to land (live: tapped while the first is still unconfirmed).
+# Match.apply plays the same rules live_play.follow_verdict does, in engine ticks (opt-in: no key = no change, byte-identical):
+#   * the follow-up is decided at tick T + after_ticks (re-checked every 2 ticks = the reader frame grid until
+#     T + after_ticks + within_ticks, then dropped) and needs my elixir ``afford_ticks`` ahead (default FOLLOW_AFFORD_TICKS)
+#     MINUS the cost of every play decided but not landed yet (the first, earlier follow-ups) to cover its cost
+#   * it is dropped when the first play was refused at landing before it was decided (``require_first``)
+#   * it lands at A's landing + max(after_ticks - cfg["follow_arrival_ticks"], 0): live both taps are issued as soon as the
+#     first board tap returned (~2 ticks deployed, FOLLOW_ARRIVAL_TICKS), so a request below that lands together with it
+#     (live, 3 friendly matches 2026-10-09, 11 pairs asked 4 ticks apart: landing gap median 0, mean 1.1, max 3; the first
+#     taps took ~4 ticks on a CPU-starved host)
+#   * a card that has left the hand / cannot be paid at its landing is refused by the engine and counted like any refusal
+# While any of them is pending there are no decisions, as for a single delayed play.
+FOLLOW_AFFORD_TICKS = 6          # live_play.FOLLOW_AFFORD_TICKS: default afford horizon of a follow-up
+FOLLOW_ARRIVAL_TICKS = 2         # deployed live: decision frame -> board tap returned (stage_chain.txt: median 2.1 ticks)
+FOLLOW_FRAME_TICKS = 2           # the reader delivers a frame every 2 ticks: a waiting follow-up is re-checked this often
+
+
+def follow_up_spec(slot: int, cell: int, after_ticks: int, within_ticks: int = 20, afford_ticks: Optional[int] = None,
+                   require_first: bool = True) -> dict:
+    """One entry of a SIM decision's ``follow_ups`` (the live twin is GenPilot.plan_follow_up(name, xy, ...))."""
+    if int(after_ticks) < 0 or int(within_ticks) < 0:
+        raise ValueError(f"follow-up needs after_ticks / within_ticks >= 0: {after_ticks}, {within_ticks}")
+    return {"slot": int(slot), "cell": int(cell), "after_ticks": int(after_ticks), "within_ticks": int(within_ticks),
+            "afford_ticks": None if afford_ticks is None else int(afford_ticks), "require_first": bool(require_first)}
+
+
+FOLLOW_MAX_OUT = 2               # plays decided but not landed at once (live: taps outstanding); a follow-up waits at the cap
+
+
+def follow_up_verdict(*, tick: int, due: int, expire: int, blocked: Optional[str], first_failed: bool, slot_changed: bool,
+                      slot_busy: bool, n_out: int, have: float, cost: float) -> tuple:
+    """What to do with a follow-up on the frame / engine tick ``tick`` -> ("wait", why) | ("cancel", why) | ("fire", "").
+    ONE rule list for live_play.follow_verdict and Match._apply_follow_ups (the caller builds the facts, so only the facts
+    differ): the play it follows was refused (``first_failed``) -> cancel first_unconfirmed; its card is no longer in
+    the slot (``slot_changed``) -> cancel; past ``expire`` -> cancel, with what held it (``blocked``) else "late"; before
+    ``due`` -> wait; another play outstanding on its slot (``slot_busy``) -> cancel slot_busy; ``n_out`` plays outstanding
+    at FOLLOW_MAX_OUT -> wait "outstanding"; ``have`` (follow_up_have, reserved already taken off) short of ``cost`` ->
+    wait "unaffordable"; else fire. The order is the order of the checks."""
+    if first_failed:
+        return "cancel", "first_unconfirmed"
+    if slot_changed:
+        return "cancel", "slot_changed"
+    if tick > expire:
+        return "cancel", blocked or "late"
+    if tick < due:
+        return "wait", "early"
+    if slot_busy:
+        return "cancel", "slot_busy"
+    if n_out >= FOLLOW_MAX_OUT:
+        return "wait", "outstanding"
+    if have + 1e-6 < cost:
+        return "wait", "unaffordable"
+    return "fire", ""
+
+
+def follow_up_have(elixir: float, tick: int, horizon: int, reserved: float) -> float:
+    """My elixir ``horizon`` ticks after ``tick`` with no further spend, capped, minus ``reserved`` (the cost of every play
+    decided but not landed yet). ONE formula for live_play.follow_verdict and Match.apply."""
+    from pipeline.opp_elixir_count import MAX_ELIXIR, regen_between
+    return min(MAX_ELIXIR, float(elixir) + regen_between(tick, tick + int(horizon))) - float(reserved)
+
+
 def anti_stall(elixir_int: float, tick: int, last_play_tick: int, stall_elixir: Optional[float],
                stall_seconds: float) -> bool:
     """student_live.StudentPolicy._stalled with ENGINE time: elixir >= stall_elixir and >= stall_seconds since the
@@ -826,6 +890,8 @@ class Match:
             for side, commands in self._ability_commands.items():
                 self.env.queue_abilities(side, commands, self.delay)
         delay = self.delay
+        if d["play"] and d.get("follow_ups"):                 # opt-in second plays (see follow_up_spec); no key = skipped
+            return self._apply_follow_ups(p, d, tick)
         if d["play"]:
             land = tick + delay                               # cfg["action_delay_ticks"]: the play enters here
             if delay:                                         # pending: board runs on, card in hand, elixir unspent,
@@ -837,6 +903,76 @@ class Match:
         env._advance_to(min((tick + de * (delay // de + 1)) if (delay and d["play"]) else env.tick + de, env.tail_cap))
         self.state = env.eng.observe()
         self.done = bool(env.terminated) or env.tick >= env.tail_cap
+
+    def _apply_follow_ups(self, p: float, d: dict, tick: int) -> None:
+        """Match.apply for a play that carries ``follow_ups`` (module comment above). Engine acts in time order: the first play
+        at T + delay, each follow-up at its landing; its decision (affordability on the state at its own tick, the first play
+        still unspent if it has not landed) is taken on the way."""
+        env, delay, de = self.env, self.delay, self.cfg["decide_every"]
+        arrival = int(self.cfg.get("follow_arrival_ticks", FOLLOW_ARRIVAL_TICKS))
+        land_a, cost_a = tick + delay, self.costs[d["slot"]]
+        st = {"a_landed": False, "a_acc": None}
+        tally = getattr(self, "follow_n", None)
+        if tally is None:
+            tally = self.follow_n = Counter()
+
+        def advance(t: int) -> None:                          # engine to t, the first play landing on the way
+            t = min(t, env.tail_cap)
+            if not st["a_landed"] and land_a <= t:
+                env._advance_to(min(land_a, env.tail_cap))
+                landed = not (delay and (env.terminated or env.tick < land_a))
+                st["a_acc"], st["a_landed"] = self._land(p, d, land_a, landed), True
+            env._advance_to(t)
+
+        fired = []                                            # (landing tick, follow-up decision dict)
+        for fu in d["follow_ups"]:
+            after, within = int(fu["after_ticks"]), int(fu["within_ticks"])
+            horizon = fu.get("afford_ticks")
+            horizon = FOLLOW_AFFORD_TICKS if horizon is None else int(horizon)
+            due, expire = tick + after, tick + after + within
+            t, blocked, outcome = due, None, "late"
+            while t <= expire and not (env.terminated or env.tick >= env.tail_cap):
+                advance(t)
+                out = [d["slot"]] if not st["a_landed"] else []   # plays decided, not landed: the first, earlier follow-ups
+                out += [f["slot"] for lt, f in fired if lt > env.tick]
+                me = next(pl for pl in env.eng.observe()["players"] if int(pl["side"]) == self.side)
+                act, why = follow_up_verdict(
+                    tick=env.tick, due=due, expire=expire, blocked=blocked,
+                    first_failed=bool(fu.get("require_first", True) and st["a_landed"] and not st["a_acc"]),
+                    slot_changed=not self._slot_in_hand(fu["slot"]), slot_busy=fu["slot"] in out, n_out=len(out),
+                    have=follow_up_have(me["elixir_exact"], env.tick, horizon, sum(self.costs[s] for s in out)),
+                    cost=self.costs[fu["slot"]])
+                if act == "fire":
+                    fired.append((max(land_a + max(t - tick - arrival, 0), env.tick + 1),
+                                  {"play": True, "slot": fu["slot"], "cell": fu["cell"], "why": "follow_up"}))
+                    outcome = None
+                    break
+                if act == "cancel":
+                    outcome = why
+                    break
+                blocked = why if why != "early" else blocked      # what held it, for the cancel reason at its expiry
+                outcome = blocked or "late"
+                t += FOLLOW_FRAME_TICKS
+            tally["fired" if outcome is None else f"cancelled_{outcome}"] += 1
+        advance(land_a)                                       # the first play lands even when every follow-up was dropped
+        last = land_a
+        for land_b, fb in sorted(fired, key=lambda x: x[0]):
+            env._advance_to(min(land_b, env.tail_cap))
+            self._land(p, fb, land_b, not (env.terminated or env.tick < land_b))
+            last = max(last, land_b)
+        env._advance_to(min(tick + de * ((last - tick) // de + 1), env.tail_cap))
+        self.state = env.eng.observe()
+        self.done = bool(env.terminated) or env.tick >= env.tail_cap
+
+    def _slot_in_hand(self, slot: int) -> bool:
+        """Is deck slot ``slot``'s card in my hand right now (RoyaleSim: the core's hand; the real engine / fakes:
+        ``hand_deck_indices``); True when the env cannot say (never cancels on unknown). Live twin: the reader's hand slot."""
+        env, di = self.env, self.deck_index_of_slot[slot]
+        core, ids = getattr(env, "core", None), getattr(env, "deck_ids", None)
+        if core is not None and ids is not None:
+            return ids[self.side][di] in core.state().players[self.side].hand
+        me = next((pl for pl in env.eng.observe()["players"] if int(pl["side"]) == self.side), {})
+        return di in me["hand_deck_indices"] if "hand_deck_indices" in me else True
 
     def _record(self, p: float, d: dict) -> int:
         """(b), first half: the decision's tallies and its cfg["record"] row. -> the decision tick."""
@@ -941,6 +1077,7 @@ class Match:
             **({'public_lookahead_counts': dict(self._public_lookahead_total)}
                if cfg.get('behaviour_telemetry') and hasattr(self, '_public_lookahead_total') else {}),
             **({"opp_counter": self._opp_summary()} if self.opp_mode else {}),
+            **({"follow_ups": dict(self.follow_n)} if getattr(self, "follow_n", None) else {}),
             **({"action_delay_ticks": self.delay, "plays_unlanded": self.n_unlanded,
                 "plays_refused_at_landing": n_att - n_acc - self.n_unlanded} if self.delay else {}),
             **({"extrapolate_ticks": self.extrap} if self.extrap else {}),
@@ -1184,6 +1321,8 @@ class SelfPlaySide(Match):
             for side, commands in self._ability_commands.items():
                 self.env.queue_abilities(side, commands, self.delay)
         de, delay = self.cfg["decide_every"], self.delay
+        if d["play"] and d.get("follow_ups"):
+            raise NotImplementedError("follow_ups are scheduled by the ghost Match only (SelfPlaySide queues one play)")
         if d["play"] and delay:
             self.pending = (tick + delay, p, d)
             self.next_tick = tick + de * (delay // de + 1)

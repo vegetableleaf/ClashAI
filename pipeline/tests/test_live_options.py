@@ -36,7 +36,8 @@ BUNDLE = ('--gate-decode hazard_below_tau --gate-hazard-min-elixir 9 --iw-press-
           '--hero-ability-spec supplement --gate-hazard-threatened 2 --early-release-margin 8 '   # bundle 3 (2026-10-09 00:3x)
           '--identity-ext on '   # 2026-10-09 01:0x (blind-verified a9538ab)
           '--rocket-dead-target block '   # 2026-10-09 03:0x (blind re-verified afe3214)
-          '--lethal-log on --tau-threatened 0.2')   # 2026-10-09 05:xx (blind af471193, merge 766e008)
+          '--lethal-log on --tau-threatened 0.2 '   # 2026-10-09 05:xx (blind af471193, merge 766e008)
+          '--card-levels Rocket=16 Log=15')   # 2026-10-09 13:xx (owner card levels; blind af0555f2)
 DEPLOYED_FILE = DEPLOYED.rstrip('\n') + ' ' + BUNDLE + '\n'
 
 
@@ -55,6 +56,7 @@ def test_checked_in_file_applies_every_bundle_option():
     assert opts.gate_hazard_threatened == 2.0 and a.hero_ability_spec == 'supplement' and a.early_release_margin == 8
     assert a.identity_ext == 'on' and opts.rocket_dead_target == 'block'
     assert opts.lethal_log == 'on' and opts.tau_threatened == 0.2
+    assert dict(opts.card_levels) == {'Rocket': 16, 'Log': 15}
 
 
 def test_file_present_applies_it(tmp_path):
@@ -330,3 +332,24 @@ def test_check_json_reports_rocket_value(tmp_path):
     check = json.loads(out.stdout.strip().splitlines()[-1])
     assert check['decision_options']['rocket_value'] == 9.0 and check['decision_options']['rocket_value_mode'] == 'damage'
     assert check['live_options']['from_file']['rocket_value_min_elixir'] == 9.0
+CARD_LEVELS = '--card-levels Rocket=16 Log=15 Knight=16 Xbow=16 IceWizard=14\n'
+
+
+def test_card_levels_deployable_from_the_file(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + CARD_LEVELS)
+    opts, rec = parse([], f)
+    assert opts.card_levels == (('IceWizard', 14), ('Knight', 16), ('Log', 15), ('Rocket', 16), ('Xbow', 16))
+    assert rec['from_file']['card_levels'] == ['Rocket=16', 'Log=15', 'Knight=16', 'Xbow=16', 'IceWizard=14']
+    opts, rec = parse(['--card-levels', 'Rocket=15'], f)                       # explicit wins
+    assert opts.card_levels == (('Rocket', 15),) and rec['explicit'] == ['card_levels']
+    assert parse([], tmp_path / 'missing')[0].card_levels is None
+
+
+@pytest.mark.skipif(not CKPT.is_file(), reason='live checkpoint not present')
+def test_check_json_reports_card_levels(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + CARD_LEVELS)
+    out = run_live_play('--check', '--ckpt', str(CKPT), '--live-options-file', str(f))
+    assert out.returncode == 0, out.stdout + out.stderr
+    check = json.loads(out.stdout.strip().splitlines()[-1])
+    assert check['decision_options']['card_levels'] == [['IceWizard', 14], ['Knight', 16], ['Log', 15], ['Rocket', 16],
+                                                         ['Xbow', 16]]

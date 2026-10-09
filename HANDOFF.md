@@ -5134,6 +5134,83 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   +rocket-dead 17-12; +lethal-log & tau 40-39 (all n.s.). rdef_c evals: u0010 602.5 vs 635 (157/189, p .10), u0020 626
 >   (167/176, p .67) with 3-crown losses 38 vs 30, elixir at push 5.39 vs 4.96 -> banks more, defends no better; not
 >   shippable. Morning report posted to Discord.
+> * **Owner ~10:00 10-09 directives:** install the replay collector (owner does the Chrome extension); keep the 960-game bar
+>   if a bigger one slows progress; NO history rewrite yet; iterate on every failed strategy (memory iterate-dont-abandon).
+>   CORRECTION (a): the owner's LavaLoon clump was real -- live_play_20261009_011626 t3884 at (3.9, 9.1): Balloon + full
+>   LavaHound + both Skeleton Dragons inside one Rocket blast counting hitboxes (~16 elixir), Rocket in hand at 6.9
+>   elixir; the model sat 6.9 -> 9.1 elixir (p .36-.46, top card Tesla). My earlier analysis used the wrong push (t2405-2565).
+>   (a) code: choose_slot takes the argmax over AFFORDABLE cards -> the decoder substitutes a cheaper card when the model's
+>   top card is unaffordable (owner's "Log at 1 elixir instead of waiting for Knight"). Own cycle is NOT a model input
+>   (opp_cycle is).
+>   Workers launched: a91e018d collector install (C:\Users\benpe\tools\clash-royale-ai, not in our repo); a67f26ce rocket
+>   clump v2 (hitbox coverage, damage value, extrapolated landing, loss diagnosis); a996a070 input delay / pipelined second
+>   tap; a666a874 sneaky lock rule `--sneaky-lock on` (only-blocker, >80% success target); a9182138 `--card-wait`
+>   decode; abf27945 own-cycle features + fine-tune; a8bdb155 defence RL next arms (may stop rdef_c).
+> * **Replay collector INSTALLED (a91e018d) outside the repo:** C:\Users\benpe\tools\clash-royale-ai (pinned 859b62d, no
+>   license -- never commit it here). Venv py3.13 `--no-deps` (+ lxml); the .exe launcher is blocked by Application Control,
+>   so start_collector.bat / cr.bat run `python -m cr_replay_pipeline.cli`. 69 X-Bow seed tags (VM census: >= 2 X-Bow
+>   PoL games or >= 30% X-Bow) in data\collector.sqlite3; port 8765; raw replays -> data\raw. Security: only outbound
+>   call is api.clashroyale.com for `discover`; no pickle on the serve/seed path; local service has CORS * and no auth
+>   -> dedicated Chrome profile only. Pace floor locally edited 0.75 -> 2.2 s (frontier.py). Owner steps:
+>   OWNER_STEPS.md. Next: converter from its raw replays to our pro dataset. Owner later removed the pace lock (back to the
+>   shipped 0.75 s floor; "it already slows itself down").
+> * **Input delay (a996a070, 34e5a85, opt-in --follow-up-taps):** our chain is ~0.1 s (decide 79 ms, tap 23 ms median);
+>   the game's deploy is 91.5% of decision->confirm (24 ticks median) -> nothing left to cut for one play. Pipelined second
+>   tap LIVE-TESTED 10-09 12:1x-12:3x in friendlies vs the owner's 2nd account "ClashAI" (probe_live.py, CPU): 11/12 pairs
+>   both confirmed (5/5 at spare 2, 6/6 at spare 0; 1 refused in the first match), decision gap 4 ticks, landing gap 0-3;
+>   the game charges A+B together. Combo window at gap 4: 78.1% of my-half cells (vs 2.9% at gap 30). GO; SIM parity for
+>   follow-ups next. Two early runs stopped on battle_over_hands_visible because the probe attached AFTER the match ended
+>   (results screen) -- friendlies work; the probe must start before each battle (friend nav templates are JinxTheCat's).
+> * Own-cycle (abf27945): the model already uses its next card + last 3 plays (ablation: val loss 5.507 -> 5.640, card
+>   agreement 59.5% -> 58.2%) -> owner's "could never estimate its own cycle" partly (c); explicit cycle-price features
+>   built (350 zero-init columns); laptop GPU training approved by the owner with live paused (STOP 11:59). GPU runs done
+>   12:40 (32 min); live restarted 12:41.
+> * **Owner ~12:45 10-09 card levels:** Knight, X-Bow, Rocket = 16; Tesla, Log, Tornado, Skeletons (all others) = 15; Ice
+>   Wizard = 14. Lethal rules assume card level = my tower level (15): Rocket 16 does 546 to a tower, not 497 (Log 15 = 51
+>   unchanged). (a) every live Rocket tower hit through 09:xx 10-09 = 497 (upgrade after that). -> a0ff8a54 building opt-in
+>   `--card-levels NAME=LEVEL`; deploy `--card-levels Rocket=16 Log=15` after verification; confirm 546 drops live.
+> * **card-levels MERGED + LIVE ~13:1x (375eefe; LIVE-ONLY, SIM ignores it; backup LIVE_OPTIONS.pre_levels_backup; Discord
+>   posted).** Blind af0555f2 PASS_WITH_NOTES: off identical on 253,277 live decisions + 4,000 SIM rows; Rocket=16 fires at
+>   <= 546 (archive fires 655 -> 929), Log=15 at <= 51; king exception uses 546. Defect (not hit by the deployed setting):
+>   an unlisted in-flight spell is costed at the evaluated card's level -> a0ff8a54. TODO: confirm a live 546 drop.
+> * Owner ~13:00: restart live as each feature is integrated (memory overnight-2026-10-08-12k). Own-cycle stage 2 (laptop
+>   GPU, frozen base, 350 cols): real-minus-placebo card CE -.0121 [-.0169, -.0074], wait -.0070, gate -.0025; top-1
+>   card 59.46 -> 59.84% n.s.; SIM 960 running. follow-up taps (2bafe09) in blind verification a4e15736.
+> * **Owner ~13:20: STOP live NOW** (Log at air: 130607 t1001 Mega Minion, t1738 3 Minions; 30/2,433 Logs 10-08/09 had
+>   only air in the path). Live killed mid-match by PID (restart helper too), STOP present -- stays off until the owner says.
+>   Owner: "log should still be cyclable" -> a93fc9a1 `--log-air retarget` (re-aim to ground value / princess chip cell;
+>   block = comparison arm).
+> * follow-up taps MERGED fb42332 (blind PASS_WITH_NOTES; SIM cap + stale-frame fixes 931967c in verification a45e4317).
+>   card-levels-fix MERGED 27e6978. lethal-level-guard (6b3f9bd: impossible level -> no fire, not ValueError; level-8 =
+>   owner's lower account 10-08 20:20-20:53; decide() unwrapped -> a raise would abort a match) in verification a0322803.
+> * **card-wait (a9182138, 9481ddf): not shipped.** Owner hypothesis partly (a): 26% of plays < 4 elixir vs pros 11-13%;
+>   but decoder substitution only 0.8% of plays (c) -- 97% of low-elixir plays are the model's own top card. SIM 480: top
+>   334 vs 337; ideal-top 325; ideal-ratio .25 328 (-1.9 [-5.2, +1.3]); tower HP lost -100..-194/match all modes. Next:
+>   ratio .25 to 960 + a low-elixir "patience" gate (mirror of tau-threatened).
+> * **VM STOPPED ~14:00 10-09 (GCP credit exhausted; owner stopped clashbot-s3c).** Workers' VM results backed up to
+>   C:\Users\benpe\vm_backup_20261009\vm_results.tgz (950 MB, 15,625 files: rdef_a/rdef_c ckpts incl. u0030 snap,
+>   sneaky*, own_cycle, rocket_value*, card_wait, log_air, rl_defence, air_answer, tau_threat, crapi census,
+>   L68/rl logs). Compute is LOCAL now (laptop 16 threads, 31 GB, RTX 5050 8 GB, shared): per-worker caps log-air 4,
+>   card-wait 3, rocket-clump 3, own-cycle 2 SIM + GPU only while live STOP exists; defence RL paused (write-up + rented-box
+>   plan). Owner looking for compute < $15/day (recommended: Hetzner AX162 ~$8/day + Vast.ai/RunPod GPU hourly). A new
+>   GCP account for another free trial is against Google's one-trial rule -- advised against.
+> * **Sneaky lock rule (a666a874, af50e7f): not shipped.** Controlled test (opponent idle) 148/176 = 84.1% [78.0, 88.8]
+>   of pullable cases cast and all 148 casts locked the tower; with the opponent playing 57.9% (new defenders take the
+>   lock); SIM 213 pairs -5.6 pp [-11.3, 0.0]; HP>=800 / elixir>=7 filters near-null (rarely fire). King-touch 16.7% of
+>   live episodes have no king-free cell.
+> * Collector: 48 replays, 9/117 players, paused by 3 Cloudflare challenges (owner must solve + `cr.bat resume`); 9.4% of
+>   recent requests rate-limited; cr.bat fixed for UTF-8 console. Multi-instance across IPs declined (rate-limit evasion).
+> * Pending small merges: lethal-level-guard-tidy (2393d41), l74-follow-up-landing (c62fba6) -- need light verification.
+> * **Defence RL round 2 (a8bdb155, cca0a82): no candidate.** rdef_c u30 607 vs 635 (165/193), 3-crown 44 vs 30, run-overs
+>   .380 vs .311, train metrics flat over 36 updates (drift, not learning). Fast base (no refine heads) 626 (level; updates
+>   3-6 min vs 8-15). Arm D (fast base + rdef_c reward) 632.5 vs 626 level. Arm E (counterfactual gate labels at M4 moments)
+>   partial: played earlier at lower elixir, 3-crown 17 vs 6 on 296 games -- labels ignored elixir cost; fixed as
+>   towers_mat (charges only elixir that bought nothing, 30 s). E2 = E + towers_mat, NOT run (needs ~2.7 h on 48 cores or
+>   ~40 min with a GPU learner). Baseline: 36 s/match under fire, 77% of tower damage taken under fire.
+> * Owner asked: same checkpoint 41b52a83 since 10-08 ~13:00 (no retrain). New cards are seen only through identity-ext
+>   proxies (Minion Giant as balloon etc.). A friend needs: current code + LIVE_OPTIONS (--identity-ext on) + two
+>   untracked data files (research/ext/Royale/RoyaleSim/data/derived/cards.json + calibration.json at RoyaleSim 369fe33;
+>   research/ext/cr-native-sandbox/native_core/data/live_card_catalog.json) + a reader for their build.
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the

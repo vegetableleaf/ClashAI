@@ -1,0 +1,30 @@
+flight (ticks) per distance from my king tower; Tornado decision window [lo, hi] ticks after the Rocket decision
+  d tiles  flight | gap>=2 | gap>=4 | gap>=10 | gap>=26 | gap>=30
+  d= 3     11   |      none |      none |      none |      none |      none
+  d= 5     16   |     [2,4] |     [4,4] |      none |      none |      none
+  d= 7     22   |    [2,10] |    [4,10] |   [10,10] |      none |      none
+  d= 9     28   |    [2,16] |    [4,16] |   [10,16] |      none |      none
+  d=11     33   |    [2,21] |    [4,21] |   [10,21] |      none |      none
+  d=13     39   |    [6,27] |    [6,27] |   [10,27] |   [26,27] |      none
+  d=14     42   |    [9,30] |    [9,30] |   [10,30] |   [26,30] |   [30,30]
+  d=15     45   |   [12,33] |   [12,33] |   [12,33] |   [26,33] |   [30,33]
+  d=17     51   |   [18,39] |   [18,39] |   [18,39] |   [26,39] |   [30,39]
+  d=20     59   |   [26,47] |   [26,47] |   [26,47] |   [26,47] |   [30,47]
+  d=23     68   |   [35,56] |   [35,56] |   [35,56] |   [35,56] |   [35,56]
+
+my-half cells: 1152   (cell fraction with a feasible Tornado time at a minimum gap)
+  min gap  2 ticks:  960 cells ( 83.3%), deepest y  31.5  window >= 5 ticks wide (robust to the 2-tick frame grid):  73.2%  pipelined, median
+  min gap  3 ticks:  935 cells ( 81.2%), deepest y  31.5  window >= 5 ticks wide (robust to the 2-tick frame grid):  69.8%  pipelined, p95
+  min gap  4 ticks:  900 cells ( 78.1%), deepest y  31.5  window >= 5 ticks wide (robust to the 2-tick frame grid):  67.0%  pipelined, +1 frame
+  min gap  6 ticks:  843 cells ( 73.2%), deepest y  31.5  window >= 5 ticks wide (robust to the 2-tick frame grid):  60.6%  
+  min gap 10 ticks:  698 cells ( 60.6%), deepest y  31.5  window >= 5 ticks wide (robust to the 2-tick frame grid):  45.6%  
+  min gap 20 ticks:  297 cells ( 25.8%), deepest y  23.5  window >= 5 ticks wide (robust to the 2-tick frame grid):  15.5%  
+  min gap 26 ticks:  122 cells ( 10.6%), deepest y  20.0  window >= 5 ticks wide (robust to the 2-tick frame grid):   2.9%  today's observed minimum
+  min gap 30 ticks:   33 cells (  2.9%), deepest y  18.0  window >= 5 ticks wide (robust to the 2-tick frame grid):   0.3%  rocket_value worker's FOLLOW_MIN_GAP (pending lock)
+  min gap 34 ticks:    3 cells (  0.3%), deepest y  16.0  window >= 5 ticks wide (robust to the 2-tick frame grid):   0.0%  
+  min gap 40 ticks:    0 cells (  0.0%), deepest y   nan  window >= 5 ticks wide (robust to the 2-tick frame grid):   0.0%  
+
+elixir needed at the Rocket decision (Rocket 6 + Tornado 3 = 9, minus the regeneration inside the gap)
+     1x  gap  2:  8.96  gap  4:  8.93  gap 10:  8.82  gap 30:  8.46
+     2x  gap  2:  8.93  gap  4:  8.86  gap 10:  8.64  gap 30:  7.93
+  3x/OT  gap  2:  8.89  gap  4:  8.79  gap 10:  8.46  gap 30:  7.39
