@@ -33,7 +33,8 @@ def parse(argv, path):
 BUNDLE = ('--gate-decode hazard_below_tau --gate-hazard-min-elixir 9 --iw-press-pstar 0.03 --log-aim log_barrel --lethal-rocket ot_behind '
           '--xbow-dead-lane block --fast-input --tap-gap-ms 0 --afford-ticks 23 --extrapolate 24 '   # bundle 2 (2026-10-08 night)
           '--hero-ability-spec supplement --gate-hazard-threatened 2 --early-release-margin 8 '   # bundle 3 (2026-10-09 00:3x)
-          '--identity-ext on')   # 2026-10-09 01:0x (blind-verified a9538ab)
+          '--identity-ext on '   # 2026-10-09 01:0x (blind-verified a9538ab)
+          '--rocket-dead-target block')   # 2026-10-09 03:0x (blind re-verified afe3214)
 DEPLOYED_FILE = DEPLOYED.rstrip('\n') + ' ' + BUNDLE + '\n'
 
 
@@ -50,7 +51,7 @@ def test_checked_in_file_applies_every_bundle_option():
         ('hazard_below_tau', 9.0, 'log_barrel', 'ot_behind')
     assert a.iw_press_pstar == 0.03 and a.own_effects is True and rec['explicit'] == []
     assert opts.gate_hazard_threatened == 2.0 and a.hero_ability_spec == 'supplement' and a.early_release_margin == 8
-    assert a.identity_ext == 'on'
+    assert a.identity_ext == 'on' and opts.rocket_dead_target == 'block'
 
 
 def test_file_present_applies_it(tmp_path):
@@ -247,7 +248,7 @@ def test_rocket_dead_target_deployable_from_the_file(tmp_path):
     assert opts.spell_aim == 'rocket_area'
     opts, rec = parse(['--rocket-dead-target', 'allow'], f)                    # explicit wins
     assert opts.rocket_dead_target == 'allow' and rec['explicit'] == ['rocket_dead_target']
-    assert parse([], REPO / 'scratchpad/gauntlet/L70/live/LIVE_OPTIONS')[0].rocket_dead_target == 'allow'   # not deployed
+    assert parse([], REPO / 'scratchpad/gauntlet/L70/live/LIVE_OPTIONS')[0].rocket_dead_target == 'block'   # deployed 10-09
 
 
 @pytest.mark.skipif(not CKPT.is_file(), reason='live checkpoint not present')
