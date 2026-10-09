@@ -1,0 +1,5 @@
+NEW-only:
+MAIN-only:
+47 failed, 1094 passed, 44 skipped, 164 warnings, 17 errors, 7 subtests passed in 347.38s (0:05:47)
+47 failed, 998 passed, 44 skipped, 164 warnings, 17 errors, 7 subtests passed in 474.84s (0:07:54)
+fail sets identical: yes (64 each)

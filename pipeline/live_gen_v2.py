@@ -13,7 +13,8 @@ from dataclasses import replace
 
 from .decision_options import (BARREL_KEY, DecisionOptions, barrel_landings, choose_cells, choose_slot, enemy_unit_count,
                                gate_taus, hazard_draw, is_xbow, lethal_rocket_choice, threat_on, tower_threat,
-                               xbow_dead_lane_cells)
+                               xbow_dead_lane_cells, enemy_body_tiles, princess_dead_state, rocket_covers_king,
+                               rocket_kills_king)
 from .live_mem import my_side_of
 
 # W4 hazard gate decoding: game seconds one live decision may accrue. Live decides every reader frame (logged decisions
@@ -48,6 +49,7 @@ class GenPilot(LegacyGenPilot):
         self._public_audit_snapshot = None
         self._hazard_prev = None                # (game tick, waited with a play possible) of the previous decision
         self._threat_state = None               # decision_options.tower_threat state of the previous decision
+        self._princess_dead_state = None        # decision_options.princess_dead_state of the previous decision
 
     def reset_match(self):
         super().reset_match()
@@ -57,6 +59,7 @@ class GenPilot(LegacyGenPilot):
         self._public_audit_snapshot = None
         self._hazard_prev = None
         self._threat_state = None
+        self._princess_dead_state = None
 
     def row(self, frame):
         b, info = super().row(frame)
@@ -103,6 +106,9 @@ class GenPilot(LegacyGenPilot):
             if threat_on(options):                      # every decision (as SIM match_kwargs), affordable or not
                 self._threat_state, threatened = tower_threat(options, getattr(self, '_threat_state', None),
                                                               info['bs'])
+        if options.rocket_dead_target != 'allow':        # every decision (as SIM match_kwargs): reader-glitch filter
+            self._princess_dead_state, self._princess_alive = princess_dead_state(
+                getattr(self, '_princess_dead_state', None), info['bs'])
         if not allowed.any():
             if hazard_on:
                 self._hazard_prev = (tick, False)
@@ -136,7 +142,7 @@ class GenPilot(LegacyGenPilot):
                 self._hazard_prev = (tick, False)
             return self._audited(d)
         pos = choose_slot(out['card'][0], allowed, options, self.rng_decisions, playing=playing)
-        dropped = False                                 # xbow_dead_lane left the X-Bow no cell (SIM decide_batch)
+        dropped = None                                  # the block that left an X-Bow / Rocket no cell (SIM decide_batch)
         while True:
             card, form = info['hand'][pos]
             name = info['names'][info['hand_deck_indices'][pos]] if card > 0 else None
@@ -150,24 +156,35 @@ class GenPilot(LegacyGenPilot):
                     d['threatened'] = threatened
                 self._hazard_prev = (tick, not d['play'])
             if dropped:
-                d['why'] = 'xbow_dead_lane'
+                d['why'] = dropped
             if card <= 0:
                 break
             logits = self.model(b, card=torch.tensor([card], device=self.dev),
                                 form=torch.tensor([form], device=self.dev))['cell']
             # SIM aims only playing rows: a WAIT's logged xy keeps the plain X-Bow argmax and draws no RNG.
-            cell_options = options if d['play'] else replace(options, xbow_class='argmax', xbow_dead_lane='allow')
+            cell_options = options if d['play'] else replace(options, xbow_class='argmax', xbow_dead_lane='allow',
+                                                             rocket_dead_target='allow')
             context = {}
-            if cell_options.xbow_class != 'argmax' or cell_options.xbow_dead_lane != 'allow':
+            if (cell_options.xbow_class != 'argmax' or cell_options.xbow_dead_lane != 'allow'
+                    or cell_options.rocket_dead_target != 'allow'):
                 # enemy K, L, R alive in my board frame, as SIM's match_kwargs
                 context = dict(rngs=[self.rng_decisions], grid=self.grid,
                                enemy_alive=[tuple(bool(t.alive) for t in bs.towers[3:6])])
+                if cell_options.rocket_dead_target != 'allow':      # as SIM match_kwargs: glitch-filtered towers,
+                    kills_king = False                              # the model board's bodies, the raw king HP
+                    if str(name).lower() == 'rocket':
+                        from .live_mem import to_observe
+                        side = my_side_of(frame)
+                        kills_king = rocket_kills_king(to_observe(frame, side, info['names'])['episode']['crown_towers'],
+                                                       side)
+                    context['rocket_boards'] = [(self._princess_alive, enemy_body_tiles(bs), kills_king)]
             if cell_options.log_aim != 'argmax':       # the model's own projectile tokens, as SIM's match_kwargs
                 context.update(grid=self.grid, barrels=[barrel_landings(b['projectiles'][0], self.gid.get(BARREL_KEY))])
             logits = self.guard_cells(frame, d, logits)
             cell = int(choose_cells(logits, [name], cell_options, **context)[0])
             if cell < 0:                                # SIM decide_batch: next card by the model's ranking, else WAIT
-                allowed, dropped = allowed.copy(), True
+                allowed = allowed.copy()
+                dropped = 'xbow_dead_lane' if is_xbow(name) else 'rocket_dead_target'
                 allowed[pos] = False
                 nxt = choose_slot(out['card'][0], allowed, options, self.rng_decisions, playing=True)
                 if nxt < 0:
@@ -178,6 +195,12 @@ class GenPilot(LegacyGenPilot):
             if cell_options.xbow_dead_lane == 'block' and is_xbow(name) and xbow_dead_lane_cells(
                     context['enemy_alive'][0], self.grid)[int(logits.reshape(-1).argmax())]:
                 d['why'] = 'xbow_dead_lane'             # the model's top X-Bow cell was blocked (live log only)
+            if cell_options.rocket_dead_target == 'block' and str(name).lower() == 'rocket':   # live log only, no RNG
+                if cell != int(choose_cells(logits, [name], replace(cell_options, rocket_dead_target='allow'),
+                                            **context)[0]):
+                    d['why'] = 'rocket_dead_target'     # the usual Rocket aim was blocked and re-aimed
+                elif kills_king and rocket_covers_king(cell, self.grid):
+                    d['why'] = 'rocket_king_lethal'     # the explicit never-the-king exception: this Rocket finishes it
             d['xy'] = cell_xy(cell, self.grid)
             break
         return self._audited(d)

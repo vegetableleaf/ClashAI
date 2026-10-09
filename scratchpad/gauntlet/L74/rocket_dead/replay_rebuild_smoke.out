@@ -1,0 +1,5 @@
+{'rockets': 6, 'rebuild_matches_logged_xy': 6, 'glitch_window': 1, 'blocked': 3, 'blocked->PRINCESS': 2, 'unblocked': 3, 'unblocked_shifted': 0, 'blocked->UNIT': 1, 'glitch_off_blocked_if_unfiltered': 1}
+blocked Rockets (match, tick, off aim, block aim, where, glitch):
+   ('20261008_232056', 2567, [14.0, 7.5], [4.0, 7.5], 'PRINCESS', '')
+   ('20261008_232056', 4643, [13.5, 6.0], [12.5, 4.5], 'UNIT', '')
+   ('20261008_232056', 5812, [8.5, 2.0], [6.0, 5.0], 'PRINCESS', 'glitch')
