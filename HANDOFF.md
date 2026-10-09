@@ -5110,6 +5110,11 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   (p .02), pulled out 1.1% -> 7.5%, king woken 2.5% -> .5%; SIM v3 960: i_u0004 615 (-2.1 [-5.8, +1.7]), i_u0008 627
 >   (-.8 [-4.5, +2.8]) vs 635 -> fails the -3 pp bound. Plain PPO inert; full-param run -29 wins. Next (running):
 >   anchor Tornado placement on non-blocked states; report ~11:00.
+> * lethal-log-release (f4da2f6; earliest-hit bound + every-decision snapshots): blind a5e8a869 **FAIL on the goal** --
+>   185400 every-frame replay still fires `Rocket hp 3` at 4218-4222 (Log finishes at 4224): the landing snapshot is
+>   the decision that PLAYED the Log (4144, 345 HP), my earlier Rocket's hit at 4146 falls between snapshot and landing.
+>   Not deployed; live keeps v3. Back to a0ff8a54: baseline = first snapshot at/after landing (or post-hit time release),
+>   window-sized history.
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
