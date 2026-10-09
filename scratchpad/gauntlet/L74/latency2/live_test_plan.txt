@@ -1,0 +1,80 @@
+SUPERVISED LIVE TEST: pipelined second tap (--follow-up-taps)            written 2026-10-09, branch worktree-agent-a996a070b47df363e
+Nothing here has been run. The ranked bot was not touched. The flag is OFF by default; only this test turns it on.
+
+WHAT THE TEST DECIDES
+ Q1  Does the game take a second card tap while the first is still unconfirmed (about 1.1 s)?  Never observed: today's pending
+     lock means no log holds two taps closer than 26 ticks.
+ Q2  How does it charge the elixir of two overlapping taps?  The code assumes the conservative case (a follow-up needs elixir
+     for BOTH: my elixir at its horizon minus the unconfirmed first card's cost).
+ Q3  What decision->decision / landing->landing gap does it really reach?  Estimate from the 10-08/09 logs
+     (stage_chain.txt): the second tap goes out 2.1 ticks (p95 2.9) after the first decision frame; frames are 2 ticks apart,
+     so the first reachable `after_ticks` is 2; a request of 4 is hit on the next frame (4.1 ticks).
+ Until Q1-Q3 are measured live, the achievable gap is an estimate (b), not a measurement.
+
+PRECONDITIONS
+ - Branch tip checked out in the checkout that runs live (merge is NOT needed: run from a clean checkout of the branch, or merge
+   locally and revert after).  `git status` clean for live_play.py / live_gen_v2.py.
+ - Offline gate first (about 1 min, CPU only; needs the local reader config path in CLASHBOT_READER_CONFIG):
+     icebow/.venv/Scripts/python.exe -m pytest -q scratchpad/gauntlet/L68/live_reader/test_follow_up.py \
+        scratchpad/gauntlet/L74/latency2/test_probe.py        -> 21 passed
+     icebow/.venv/Scripts/python.exe scratchpad/gauntlet/L74/latency2/default_parity.py   -> DEFAULT_PARITY_PASS
+     icebow/.venv/Scripts/python.exe scratchpad/gauntlet/L74/latency2/probe_live.py -- --check --device cpu --follow-up-taps
+        -> LIVE_CHECK_PASS with "follow_up_taps": true and the deployed options (sha unchanged)
+ - Ranked bot stopped BETWEEN matches: scratchpad/gauntlet/L70/live/stop_live.sh (touches STOP; the supervisor ends after the
+   current match), confirm no live_play.py process remains, MuMu open on the main menu. No other GPU/CPU job.
+ - The test uses the deployed LIVE_OPTIONS automatically (fast input, gap 0, afford 23, extrapolate 24, early release 8).
+
+RUN (one command, about 2 x 3.5 min; preferred = FRIENDLY matches so no trophies are at stake)
+   icebow/.venv/Scripts/python.exe scratchpad/gauntlet/L74/latency2/probe_live.py --probe-every 40 --probe-after 4 --probe-max 4 \
+       -- --matches 2 --friend <FRIEND> --max-seconds 400
+ The probe replaces a WAIT with two cheap plain cards (cost <= 3, not buildings) on MY half, A now and B 4 ticks later,
+ at most 4 pairs a match, only with 2 elixir to spare, never while the model itself is playing. Ladder fallback if no friend
+ is available: add `--ladder` instead of `--friend`, and use `--probe-max 2` (each pair costs about 4-6 elixir of waste).
+ Dry rehearsal of the wiring without taps (no emulator input): add `--dry-run`; the log shows follow_up_ignored(why=dry_run).
+
+WATCH LIVE (console + the match log live_play_<ts>.jsonl; events: play with follow_up:true, follow_up_scheduled,
+ follow_up_cancelled, confirmed/unconfirmed with follow_up:true, end.follow_ups_fired)
+ - Each pair: B's `play` follow_up event 4-6 ticks after A's `play`; both `confirmed`; B's confirmation about (gap + 24) ticks after
+   its decision and about the same few ticks after A's.   Read it with:
+     icebow/.venv/Scripts/python.exe scratchpad/gauntlet/L74/latency2/analyze_probe.py scratchpad/gauntlet/L68/live_reader/live_play_<ts>.jsonl
+   Columns: gap_decision (target 4-6), gap_landing (the combo's number), confirm_A / confirm_B, outcome.
+ - Per confirmed event: elixir_drop (A about its cost, B about its cost) and err_tiles of B (<= 1.5 like any tap).
+ - Console: no "[live] an input tap timed out".  No second `fast_input_unavailable`.
+
+GO / NO-GO (decide after 2 matches, >= 5 pairs)
+ GO     >= 4 of 5 pairs both_confirmed, median gap_landing <= 8 ticks, no extra lockout (no A or non-probe play unconfirmed that
+        a plain run would not have had), B err_tiles normal.   Then Q2 follow-up (below), then hand to the combo worker.
+ STOP   any `5_unconfirmed` stop; 2 or more B refusals in the first 5 pairs (B_unconfirmed); any A refused because a B was
+        planned; tap_timeout; B lands on a wrong slot/card (confirmed name differs); the bot stops making its own plays after a
+        pair.  If B is refused and the log shows elixir_B (at its tap) < cost(A)+cost(B) - regen, the game charges differently
+        than assumed: keep the flag OFF and report the numbers; do not tune around it live.
+
+OPTIONAL SECOND STAGE (only after GO, one more friendly match): is the reservation too strict?  Re-run with `--probe-spare 0`
+ (both just affordable) and read how many B are refused vs `--probe-spare 2`.  Testing the naive rule (tap B when raw elixir
+ covers B but not A+B) needs a code switch that does not exist yet; build it only if the combo's 9-elixir requirement
+ (window_table2.txt) turns out to be what limits it.
+
+REVERT (nothing is deployed by this test)
+ - Stop the test (Ctrl-C ends the match loop; the finally block closes the persistent shell and stops the reader process as on any run).
+ - Restart the ranked supervisor exactly as before (start_live.sh): it never passes --follow-up-taps and never loads probe_live.py,
+   so the behaviour is the pre-change one (default_parity.py proves the logs/taps are identical).
+ - If the branch was merged locally for the test: `git revert` the merge, or reset the checkout to main; LIVE_OPTIONS and
+   CKPT_OVERRIDE are not edited by anything here.
+ - A probe pair leaves at most two cheap troops/spells on my own half: no persistent state.
+
+RESULT 2026-10-09 (3 friendly matches, probe_live.py, --device cpu): 11 of 12 pairs both_confirmed; gap_decision 4 every time;
+ gap_landing median 0, mean 1.1, max 3 (the first taps took ~4 ticks on this CPU-starved host, so the second went out together
+ with it); spare 0 (A+B exactly covered) 6/6 -> the game charges both and accepts B when A+B is covered.
+ The one refused B (121307, Skeletons@3558 + Tornado@3562): NOT an elixir or slot problem (elixir_B 6.20, 3 + 1 needed; the
+ slot pattern equals the successes; the game never charged it: elixir at 3660 = 8.70 = no Tornado). The screen recording
+ shows the Tornado card raised/selected 0.35 s, 0.7 s AND 1.3 s after the first decision while the other cards stay greyed,
+ whereas in the one success I compared (122012, tick 3490) both slots are empty by +1.3 s: the hand tap registered, the board tap (28 ms later, same as in the
+ successes) did not place it = a lost board tap at the UI, which also leaves the card selected. Base rate in the same logs:
+ 5 of 153 ordinary first plays unconfirmed (3.3%), so 1 of 12 (95% CI 0.4-38%) cannot be told from background loss; no
+ timing / CPU / slot variable separates it. Nothing to fix; keep watching B-refusals per 20 pairs in later runs.
+
+WHAT TO SEND BACK
+ analyze_probe.py output for both matches + the end events (follow_ups_fired / cancelled / unfired) + the first 3 pairs'
+ jsonl lines (play, tap_timing, confirmed) so the numbers can be re-derived.  Then:
+   - gap_decision, gap_landing medians -> rerun window_table2.py with the measured values (edit GAPS)
+   - Q2 verdict -> the elixir rule in live_play.follow_verdict (reserved cost) stays or loosens

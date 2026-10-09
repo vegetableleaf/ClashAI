@@ -36,7 +36,36 @@ def hazard_step_s(prev, tick):
     return min(HAZARD_STEP_CAP_S, (tick - prev[0]) * 0.05)
 
 
-class GenPilot(LegacyGenPilot):
+class FollowUpPlanner:
+    """--follow-up-taps (L74 latency2): the decision layer's way to ask for a SECOND play before the first is confirmed.
+    A decision dict that wants one carries ``d['follow_ups'] = [self.plan_follow_up(frame, d, 'Tornado', xy, after_ticks=N)]``;
+    live_play.py taps it N game ticks after the first decision (own affordability check, cancelled if the first is refused).
+    Stateless: it only resolves the card in the CURRENT hand, so it changes no decision unless a caller uses it."""
+
+    def plan_follow_up(self, frame, first, name, xy, after_ticks, within_ticks=20, afford_ticks=None, require_first=True):
+        """-> a decision-shaped dict for card ``name`` at my-frame cell ``xy``, to be tapped ``after_ticks`` game ticks after
+        ``first`` (the dict of the play it follows) and no later than ``within_ticks`` past that; None when the card is not in
+        my hand outside ``first``'s slot (a card that only arrives in the slot ``first`` frees cannot be pipelined).
+        ``afford_ticks``: elixir horizon of its affordability check (None = live_play.FOLLOW_AFFORD_TICKS);
+        ``require_first``: cancel it when ``first`` is refused (default; False = play it regardless)."""
+        from .live_mem import deck_of
+        if after_ticks < 0 or within_ticks < 0 or not (0.0 <= xy[0] <= 1.0 and 0.0 <= xy[1] <= 1.0):
+            raise ValueError(f'follow-up needs after_ticks/within_ticks >= 0 and xy in [0, 1]: {after_ticks}, {within_ticks}, {xy}')
+        side = my_side_of(frame)
+        me = next(p for p in frame['players'] if int(p['side']) == side)
+        _, names = deck_of(frame, side)
+        forms = list(me.get('deck_form_flags') or [0] * 8)
+        for pos, di in enumerate(me['hand_deck_indices']):
+            if di < 0 or pos == first['hand_pos'] or str(names[di]).lower() != str(name).lower():
+                continue
+            return dict(play=True, p_play=float(first['p_play']), hand_pos=pos, no_affordable=False, deck_index=int(di),
+                        card=self._card(names[di]), form=int(forms[di]), name=names[di], xy=(float(xy[0]), float(xy[1])),
+                        follow=dict(after_ticks=int(after_ticks), within_ticks=int(within_ticks), afford_ticks=afford_ticks,
+                                    require_first=bool(require_first)))
+        return None
+
+
+class GenPilot(FollowUpPlanner, LegacyGenPilot):
     def __init__(self, *args, decision_options=None, decision_seed=0, public_audit=False, **kwargs):
         super().__init__(*args, **kwargs)
         self.decision_options = decision_options or DecisionOptions()

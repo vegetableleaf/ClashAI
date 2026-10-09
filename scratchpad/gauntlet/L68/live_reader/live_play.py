@@ -17,6 +17,10 @@ matches once that file exists.
 --menu-guard (OPT-IN since 2026-09-30): classify a full screencap every <= 2 s during the match and stop on any menu.
 Off by default: those PNG screencaps saturated adb live (live_play_20260930_184444: tap_ms median 3021 / max 5407,
 frame backlog 72, 5 of 17 taps unconfirmed, the bot leaked). The tick-advance gate and first-frame rule stay on.
+--follow-up-taps (OPT-IN, L74 latency2): a decision may carry follow_ups (pilot.plan_follow_up): second plays tapped N ticks
+after the first decision WITHOUT waiting for its ~24-tick confirmation (the pending lock otherwise means >= 26 ticks between
+plays). Own affordability check (elixir minus every unconfirmed tap), <= 2 taps outstanding, cancelled when the first play is
+refused or the slot changed; no decision while one is scheduled. Plan + test: scratchpad/gauntlet/L74/latency2/live_test_plan.txt.
 """
 from __future__ import annotations
 
@@ -87,6 +91,48 @@ def release_ticks(elixir: float, name: str, tick: int, arrival_ticks: float, mar
     cost = card_cost(vocab.engine_key(name)) or 0.0
     need = next((k for k in range(CONFIRM_TICKS + 1) if elixir + regen_between(tick, tick + k) >= cost), CONFIRM_TICKS)
     return min(CONFIRM_TICKS, math.ceil(max(arrival_ticks, need)) + CONFIRM_BASE + int(margin))
+
+
+FOLLOW_MAX_OUT = 2        # --follow-up-taps: taps outstanding (tapped, not confirmed) at once; a follow-up waits at the cap
+from pipeline.e1_eval import FOLLOW_AFFORD_TICKS, follow_up_have  # noqa: E402  default afford horizon (6 ticks) + the SIM's formula
+
+
+def card_cost_of(name: str) -> float:
+    """Elixir cost of a hand card by display name; unknown (Mirror, pad slot) = 0 = never blocks, as allowed_slots."""
+    from pipeline import vocab
+    from pipeline.opp_elixir_count import card_cost
+    return card_cost(vocab.engine_key(name)) or 0.0
+
+
+def follow_verdict(fu: dict, tick: int, me: dict, pending: list, cost=card_cost_of) -> tuple:
+    """--follow-up-taps: what to do with scheduled follow-up ``fu`` on the frame at ``tick`` (``me`` = my player on it,
+    ``pending`` = my tapped, unconfirmed plays) -> ("wait", why) | ("cancel", why) | ("fire", reserved elixir).
+    ``fu``: d = the follow-up's decision-shaped dict (hand_pos, deck_index, name, follow{after_ticks, within_ticks,
+    afford_ticks, require_first}), first = the pending entry of the play it follows (state 'unconfirmed' once refused),
+    due / expire = absolute fire window in game ticks, blocked = the last reason it waited.
+    Its OWN affordability check: the game charges a tap when it lands (~22 ticks later), so the reader still shows the
+    elixir of every outstanding tap unspent -> my elixir `afford_ticks` ahead MINUS the cost of every unconfirmed tap
+    must cover the follow-up. A follow-up never fires late (past expire), never into a slot that changed or is busy."""
+    d, first = fu["d"], fu.get("first")
+    if d["follow"].get("require_first", True) and first is not None and first.get("state") == "unconfirmed":
+        return "cancel", "first_unconfirmed"          # the play it follows was refused: do not play half a combo
+    if me["hand_deck_indices"][d["hand_pos"]] != d["deck_index"]:
+        return "cancel", "slot_changed"               # the card is no longer there: never tap a slot we do not know
+    if tick > fu["expire"]:
+        return "cancel", fu.get("blocked") or "late"
+    if tick < fu["due"]:
+        return "wait", "early"
+    if any(p["d"]["hand_pos"] == d["hand_pos"] for p in pending):
+        return "cancel", "slot_busy"                  # that slot already has a tap outstanding: no second tap on it
+    if len(pending) >= FOLLOW_MAX_OUT:
+        return "wait", "outstanding"
+    horizon = d["follow"].get("afford_ticks")
+    horizon = FOLLOW_AFFORD_TICKS if horizon is None else int(horizon)
+    reserved = sum(cost(p["d"]["name"]) for p in pending)
+    have = follow_up_have(me["elixir_raw"] / 1e4, tick, horizon, reserved)     # e1_eval: the SIM's Match.apply uses the same
+    if have + 1e-6 < cost(d["name"]):
+        return "wait", "unaffordable"
+    return "fire", reserved
 
 
 def clock_verdict(tick: int, last_tick: int, idle_s: float) -> str:
@@ -323,6 +369,13 @@ def main() -> int:
                     help="OPT-IN (L74): declare a tap unconfirmed this many ticks after its EXPECTED confirmation "
                          "(max(tap arrival, ticks until affordable) + 22) instead of after a flat 60 ticks (capped at "
                          "60). 8 = p99 + 4 of the measured residual (afford_arrival.txt (d))")
+    ap.add_argument("--follow-up-taps", action="store_true",
+                    help="OPT-IN (L74 latency2): honour decision['follow_ups'] -- planned second plays (pilot.plan_follow_up, "
+                         "e.g. the Tornado of a Rocket+Tornado plan) tapped while the first play is still unconfirmed, "
+                         "instead of waiting its ~1.2 s confirmation. Each follows a play, at its own tick, with its own "
+                         "affordability check (my elixir minus every unconfirmed tap); at most 2 taps outstanding; cancelled "
+                         "when the first play is refused or its slot changed. No decision is made while one is scheduled. "
+                         "Off = unchanged: follow_ups are logged (follow_up_ignored) and not played")
     ap.add_argument("--no-opp-counter", action="store_true",
                     help="feed the model opponent elixir = unknown instead of the public-events counter")
     ap.add_argument("--menu-guard", action="store_true",
@@ -616,7 +669,8 @@ def latency_log(a) -> dict:
     """The L74 timing / input options, for the --check JSON (the start event logs the same values)."""
     return dict(extrapolate=getattr(a, "extrapolate", None), afford_ticks=getattr(a, "afford_ticks", None),
                 early_release_margin=getattr(a, "early_release_margin", None),
-                fast_input=bool(getattr(a, "fast_input", False)), tap_gap_ms=getattr(a, "tap_gap_ms", 50))
+                fast_input=bool(getattr(a, "fast_input", False)), tap_gap_ms=getattr(a, "tap_gap_ms", 50),
+                **({"follow_up_taps": True} if getattr(a, "follow_up_taps", False) else {}))
 
 
 def anti_leak_log(a) -> dict:
@@ -658,7 +712,9 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
       **({"own_effects": True} if getattr(a, "own_effects", False) else {}),
       fast_input=bool(getattr(a, "fast_input", False)), tap_gap_ms=getattr(a, "tap_gap_ms", 50),
       afford_ticks=getattr(pilot, "afford_ticks", None), early_release_margin=getattr(a, "early_release_margin", None),
-      identity_ext=bool(getattr(pilot, "identity_ext", False)))
+      identity_ext=bool(getattr(pilot, "identity_ext", False)),
+      **({"follow_up_taps": True} if getattr(a, "follow_up_taps", False) else {}))
+    follow = bool(getattr(a, "follow_up_taps", False))
     release_margin = getattr(a, "early_release_margin", None)
     tap_gap = getattr(a, "tap_gap_ms", 50)
     tap_sleep = f" sleep {tap_gap / 1000:g};" if tap_gap > 0 else ""    # default 50 -> "...; sleep 0.05; ..." as before
@@ -705,7 +761,11 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
             time.sleep(0.5)
         W(event="stop", why="reader_closed_4x")
 
-    t0, pending, fails, played, confirmed, last_tick, last_adv = time.time(), None, 0, 0, 0, -1, time.time()
+    # pending = my tapped, unconfirmed plays, oldest first: one at a time, two only through --follow-up-taps (sched =
+    # follow-ups waiting for their tick; no decision is made while either is non-empty)
+    t0, pending, fails, played, confirmed, last_tick, last_adv = time.time(), [], 0, 0, 0, -1, time.time()
+    sched: list = []
+    follow_n = {"fired": 0, "cancelled": 0}
     released: dict = {}   # --early-release-margin: hand slot -> its early-released tap, until it lands late or is re-tapped,
                           # or CONFIRM_TICKS pass after its release (a slot rotates only when OUR card in it is played)
     fails_run = 0   # CONSECUTIVE unconfirmed taps: 5 in a row = real malfunction (5 slow taps over a match under load is not)
@@ -843,7 +903,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                     elif tick - ab_pending["tick"] > CONFIRM_TICKS:
                         W(event="ability_unconfirmed", tick=tick, button_after=st)
                         ab_pending = None
-                elif st == "ready" and not pending and newest and advanced and guard_clear():
+                elif st == "ready" and not pending and not sched and newest and advanced and guard_clear():
                     press, why = should_press(f, side, hids, pilot=None if a.no_iw_pro_gate else pilot,
                                               p_star=getattr(a, "iw_press_pstar", None))
                     if press:
@@ -855,7 +915,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                             ab_pending = {"t": now, "tick": tick, "elixir_raw": me["elixir_raw"]}
             for rp, rel in list(released.items()):       # --early-release-margin: released taps that land late
                 if (me["hand_deck_indices"][rp] != rel["me"]["hand_deck_indices"][rp]
-                        and not (pending and pending["d"]["hand_pos"] == rp)):
+                        and not any(pd["d"]["hand_pos"] == rp for pd in pending)):
                     rd = rel["d"]
                     pilot.record_play(rd["card"], rd["form"], rd["xy"], tick * 0.05)
                     confirmed += 1                       # a late landing IS a confirmation: undo its release's
@@ -866,17 +926,18 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                     del released[rp]
                 elif tick - rel["tick"] > rel["release"] + CONFIRM_TICKS:     # watched CONFIRM_TICKS past its release
                     del released[rp]
-            if pending:
-                old = pending["me"]
-                pos = pending["d"]["hand_pos"]
+            had = bool(pending)                          # a tapped play awaits its confirmation: this frame never decides
+            for pd in list(pending):                     # each outstanding tap confirms on ITS OWN slot rotation
+                old = pd["me"]
+                pos = pd["d"]["hand_pos"]
                 rotated = me["hand_deck_indices"][pos] != old["hand_deck_indices"][pos]
                 dropped = old["elixir_raw"] - me["elixir_raw"]     # logged only: regen during the ~28-tick landing
                 if rotated:   # (~1 elixir in 2x, ~1.5 in 3x) outgrows a Skeletons' cost, so "elixir dropped" missed
                     # 16 of 23 real plays and stopped matches (L68 2026-09-29); a slot rotates only when its card is played
-                    d = pending["d"]
+                    d = pd["d"]
                     cid = me["deck_card_ids"][d["deck_index"]]
                     new = [e for e in f["entities"] if e["side"] == side and e["card_id"] == cid
-                           and e["address"] not in pending["addrs"]]
+                           and e["address"] not in pd["addrs"]]
                     err = None
                     if new:
                         ex, ey = my_frame_xy(new[0], side)
@@ -887,19 +948,67 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                     confirmed += 1
                     fails_run = 0
                     W(event="confirmed", tick=tick, name=d["name"], intended=d["xy"], elixir_drop=dropped / 1e4,
-                      spawn=[my_frame_xy(e, side) for e in new[:1]], err_tiles=err, latency_s=round(now - pending["t"], 3))
-                    pending = None
-                elif tick - pending["tick"] > pending.get("release", CONFIRM_TICKS):
+                      spawn=[my_frame_xy(e, side) for e in new[:1]], err_tiles=err, latency_s=round(now - pd["t"], 3),
+                      **({"follow_up": True} if pd.get("follow_up") else {}))
+                    pd["state"] = "confirmed"
+                    pending.remove(pd)
+                elif tick - pd["tick"] > pd.get("release", CONFIRM_TICKS):
                     fails += 1
                     fails_run += 1
-                    W(event="unconfirmed", tick=tick, name=pending["d"]["name"], intended=pending["d"]["xy"],
-                      p_play=pending["d"]["p_play"], elixir=old["elixir_raw"] / 1e4, fails=fails,
-                      **({"release_ticks": pending["release"]} if "release" in pending else {}))
-                    if pending.get("release", CONFIRM_TICKS) < CONFIRM_TICKS:
-                        released[pending["d"]["hand_pos"]] = pending    # an early release: watch for a late landing
-                    pending = None
-                    if fails_run >= 5:
-                        W(event="stop", why="5_unconfirmed"); break
+                    W(event="unconfirmed", tick=tick, name=pd["d"]["name"], intended=pd["d"]["xy"],
+                      p_play=pd["d"]["p_play"], elixir=old["elixir_raw"] / 1e4, fails=fails,
+                      **({"release_ticks": pd["release"]} if "release" in pd else {}),
+                      **({"follow_up": True} if pd.get("follow_up") else {}))
+                    if pd.get("release", CONFIRM_TICKS) < CONFIRM_TICKS:
+                        released[pd["d"]["hand_pos"]] = pd          # an early release: watch for a late landing
+                    pd["state"] = "unconfirmed"
+                    pending.remove(pd)
+            if fails_run >= 5:
+                W(event="stop", why="5_unconfirmed"); break
+            stop_now = False
+            for fu in list(sched):                       # --follow-up-taps: scheduled second plays (sched empty = skipped)
+                if not advanced:                         # a frozen clock fires and cancels nothing
+                    break
+                act, why = follow_verdict(fu, tick, me, pending)
+                if act == "wait":
+                    if why != "early":
+                        fu["blocked"] = why              # what held it, for the cancel reason at its expiry
+                    continue
+                if act == "fire" and not guard_clear():
+                    continue                             # the menu guard is not (freshly) clear: wait, as the first tap does
+                d = fu["d"]
+                sched.remove(fu)
+                if act == "cancel":
+                    follow_n["cancelled"] += 1
+                    W(event="follow_up_cancelled", tick=tick, name=d["name"], why=why, waited_ticks=tick - fu["tick0"])
+                    continue
+                hand, board = lay.hand(d["hand_pos"]), lay.board(d["xy"], side, even=d["name"] in EVEN_BUILDINGS)
+                el_b = me["elixir_raw"] / 1e4
+                W(event="play", tick=tick, t_dev=t_dev, name=d["name"], p_play=round(d["p_play"], 4), forced=False, elixir=el_b,
+                  hand_pos=d["hand_pos"], xy=[round(v, 4) for v in d["xy"]], tap_hand=hand, tap_board=board,
+                  follow_up=True, gap_ticks=tick - fu["tick0"], reserved_elixir=why, outstanding=len(pending))
+                played += 1
+                follow_n["fired"] += 1
+                t_tap = time.time()
+                if not input_cmd(f"input tap {hand[0]} {hand[1]};{tap_sleep} input tap {board[0]} {board[1]}"):
+                    print("[live] an input tap timed out -- no more taps this match (it may still land late)", flush=True)
+                    W(event="stop", why="tap_timeout", tick=tick, tap_ms=round((time.time() - t_tap) * 1000), follow_up=True)
+                    stop_now = True
+                    break
+                t_done = time.time()
+                W(event="tap_timing", tick=tick, decide_ms=0, tap_ms=round((t_done - t_tap) * 1000),
+                  frame_age_backlog=q.qsize(), recv_age_ms=round((t_tap - t_recv) * 1000), follow_up=True,
+                  fast_input=FAST["shell"] is not None)
+                entry = {"d": d, "me": me, "t": now, "tick": tick, "addrs": {e["address"] for e in f["entities"]},
+                         "follow_up": True}
+                if release_margin is not None:           # the reserved elixir is not mine to count in "affordable by"
+                    entry["release"] = release_ticks(max(0.0, el_b - why), d["name"], tick, (t_done - t_recv) * 20,
+                                                     release_margin)
+                released.pop(d["hand_pos"], None)
+                pending.append(entry)
+            if stop_now:
+                break
+            if had or pending or sched:                  # off: exactly `had` (a single pending play blocks decisions)
                 continue
             if not newest or not advanced:               # stale frame: newer ones queued / the clock did not move
                 continue
@@ -943,6 +1052,9 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
               **({"hazard_play": True} if d.get("hazard_play") else {}),
               **({"why": d["why"], "lethal_rocket": d["lethal_rocket"]} if d.get("why") == "lethal_rocket" else {}))
             played += 1
+            if d.get("follow_ups") and (a.dry_run or not follow):   # planned second plays that will not be tapped
+                W(event="follow_up_ignored", tick=tick, why="dry_run" if a.dry_run else "flag_off",
+                  names=[fd["name"] for fd in d["follow_ups"]])
             if a.dry_run or not guard_clear():           # re-checked right before the input
                 continue
             t_tap = time.time()
@@ -957,10 +1069,17 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
               **({"sample_age_ms": round((t_dec - lag_min - t_dev) * 1000),
                   "tap_end_ms": round((t_done - lag_min - t_dev) * 1000)} if lag_min < float("inf") else {}),
               fast_input=FAST["shell"] is not None)
-            pending = {"d": d, "me": me, "t": now, "tick": tick, "addrs": {e["address"] for e in f["entities"]}}
+            entry = {"d": d, "me": me, "t": now, "tick": tick, "addrs": {e["address"] for e in f["entities"]}}
             if release_margin is not None:               # --early-release-margin: expected confirmation + margin
-                pending["release"] = release_ticks(el, d["name"], tick, (t_done - t_recv) * 20, release_margin)
+                entry["release"] = release_ticks(el, d["name"], tick, (t_done - t_recv) * 20, release_margin)
             released.pop(d["hand_pos"], None)            # the same slot tapped again: its rotation is this tap's
+            pending.append(entry)
+            for fd in (d.get("follow_ups") or ()) if follow else ():   # --follow-up-taps: planned second plays of this one
+                fw = fd["follow"]
+                sched.append(dict(d=fd, first=entry, tick0=tick, due=tick + int(fw["after_ticks"]),
+                                  expire=tick + int(fw["after_ticks"]) + int(fw.get("within_ticks", 20))))
+                W(event="follow_up_scheduled", tick=tick, name=fd["name"], hand_pos=fd["hand_pos"],
+                  xy=[round(v, 4) for v in fd["xy"]], first=d["name"], **fw)
     finally:
         with spawn_lock:
             stopping.set()                               # the pump may not start another sampler from here on
@@ -983,7 +1102,9 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
             button.stop()
         if rec:
             W(event="recording", segments=rec.stop())
-        W(event="end", played=played, confirmed=confirmed, fails=fails, seconds=round(time.time() - t0, 1))
+        W(event="end", played=played, confirmed=confirmed, fails=fails, seconds=round(time.time() - t0, 1),
+          **({"follow_ups_fired": follow_n["fired"], "follow_ups_cancelled": follow_n["cancelled"],
+              "follow_ups_unfired": len(sched)} if follow else {}))
         log.close()
         print(json.dumps({"played": played, "confirmed": confirmed, "fails": fails, "log": log.name}))
         if rec and clip_caption is not None:             # owner 2026-10-06: restore the 60-s Discord clip (Codex removed it)
