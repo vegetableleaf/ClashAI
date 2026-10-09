@@ -5235,6 +5235,16 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   Ubuntu 24.04, py3.12/3.13, no Rust). $0.82/h. Setup worker a2ef9aca: venv + torch cu128, RoyaleSim Linux build,
 >   needed data only (no secrets/reader), bit-exact SIM check vs VM backup, /workspace/POD_README.md. A friend's GCP
 >   free-trial n2-standard-128 may follow (free trial likely capped at 8 vCPU until upgraded).
+> * **POD READY (a2ef9aca):** /workspace/clashbot (main 51b9806 + six worker branches from a bundle), venv /workspace/venv
+>   py3.12 (3.13 breaks torch import there), torch 2.11+cu128, ROYALE_RUNTIME=20261006-linux = PyPI wheels (royalesim
+>   0.1.17 / royalegym 0.1.18; no Rust). Base arm seeds 0:140 evo = VM backup 140/140 bit-identical. ~47 games/min at 28
+>   procs. Disk 12/30 GB. README /workspace/POD_README.md (copy in the session temp). Shared protocol: per-worker
+>   worktrees /workspace/wt_*, `flock /workspace/cpu.lock` for SIM (<= 28 procs), `flock /workspace/gpu.lock` for GPU,
+>   results /workspace/results/* copied back (not persistent). Queue: rocket combo SIM -> own-cycle (GPU now; SIM after)
+>   -> defence E2 (both locks) -> card-wait patience. Owner also asked for general fast consecutive plays -> a996a070
+>   `--pipeline-decisions` (model decides while a play is pending; shared follow-up rules).
+> * log-air block merge candidate df66b0d (conflict in test_live_options resolved: main's card_levels assertion + the
+>   branch's log_air tests) -> blind verifier a842013f.
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under
 >   ROYALE_RUNTIME=simforms-linux (VM ~/simforms). SIM 960: 634 vs pinned 635 (169/170). Needs blind verify before the
