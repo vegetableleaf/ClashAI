@@ -5348,6 +5348,16 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   y=16 (rocket_value_min_y) -> centre pushed to the half line, not the clump; measure before calling it a net gain.
 >   LIVE_OPTIONS += --rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-tornado only
 >   --follow-up-taps (EXTRA_LIVE_FLAGS). Revert: LIVE_OPTIONS.pre_combo_backup. Restart via restart_live.py 00:01.
+> * **Split-game (forked) test RESULTS (mechanic_fork merged; 240 seeds x evo/lad each; B = mechanic, A = model):**
+>   sneaky lock: pull success B 192 vs A 97 of 582 (+16.3 pp), tower diff +112 at 10 s, but end-of-match wins -9.8 pp
+>   [-14.5, -5.1]. Late tower Rocket (4,374 opps / 476 matches): +177 tower HP at 10 s, -110 at 20 s, wins -14.2 pp
+>   [+-3.5]; worse with a big push (-17.4) than without (-13.7). Patience: -25 at 10 s, wins -4.0 [-8.7, +0.8].
+>   All three: works (or not) locally, LOSES later. CAVEATS (b): opportunities are 'Rocket affordable' (not the
+>   doctrine's ~8+ elixir), and EVERY forced deviation from the RL policy has lost so far -> next test is a PLACEBO
+>   fork (force the model's own 2nd-best action at the same moments): if that also loses ~10 pp, the cost is generic
+>   off-plan deviation (incumbent bias, owner's eval concern), not the mechanic. Split by own elixir at the moment too.
+> * Card levels (owner 10-10): Knight, X-Bow, Rocket, Tornado, Tesla 16; Ice Wizard 14; others 15. --card-levels
+>   only feeds Rocket/Log lethal maths (Rocket=16 Log=15 deployed) -> no change needed.
 > * **Rocket+Tornado combo SIM (a67f26ce, f022854; pod; delay-0 wrapper):** pull works -- clump value in blast at impact
 >   61% (combo) vs 15% (lone Rocket, same moment), destroyed +.34 elixir/fire [-.08, +.74] (tanks survive ~1480 dmg).
 >   Wins: no combo arm beats its lone twin; cb9 -.2 pp [-1.3, +.8] (6% of matches fire), cb7 -1.9, cb5 -5.0; air pool cb7
