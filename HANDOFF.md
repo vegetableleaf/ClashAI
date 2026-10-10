@@ -5418,6 +5418,21 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   after its current seed, drop S6, run S9XL (D2, D3, D10 at ~2,500 moments each) -> S10XL if a label is clear -> CHAIN_DONE
 >   -> S11 Log Bait. Worker aa832b87. Emote spam ON (3.0 s; live test 6/6) in icebow + bait LIVE_OPTIONS (c56652e).
 >   Hero IW presses: new model 0.45/match vs old 1.43 (IW plays 3.16 vs 3.97; SIM has no Hero IW).
+> * **10-10 night state (lead usage 95%, cutoff 98%):**
+>   - E5 (3 seeds) all failed: s7 -8.65 pp, s8 -4.17, s9 tripwire at u14. S6 own-cycle killed (owner choice).
+>   - Owner: icebow before Log Bait; ALL drills D1-D9 (+D10); 'keep rewriting until a strategy works'; Codex for heavy
+>     code. Codex wrote drills XL2 (branch l74-drills-xl2 @2430d8f: D5/D6 arms, D7/D8 drill arms, pro_when.py 'would a pro
+>     do it here' logistic fits, dev-pick/test-confirm variant search, S9XL2/S10XL2, run_xl2.sh -> ICEBOW_DONE).
+>     pro_when AUC: D1 .69 D2 .75 D3 .71 D4 .70 D5 .57 D6 .80 (10 pos) D7 .70 D8 .59 D9 .71. Smoke OK (forced actions,
+>     faithful replays, disjoint seeds 8000-20480, TEST-only labels). run_xl2.sh PID 23631 on pod 1 waits for S10XL/DONE.
+>     ETA problem: 50-60 h (each variant replays all 4,000 matches) -> Codex speed-up ticket (skip empty matches, one pass
+>     for all DEV variants) in progress; then redeploy.
+>   - POD 1 64.247.206.76:17497 (30.6 vCPU): S9XL (D2/D3/D10 ~2,500 each) posted 19:13 EDT; S10XL running. POD 2
+>     81.27.69.177:23358 (15.3 vCPU): S11 Log Bait (base forms) running since 22:58 UTC, ETA ~01:15 UTC, checker PID
+>     35956 posts to Discord + copies to C:/Users/benpe/pod_backup_weekend/bait. Pod-1 S11 gate killed.
+>   - share/clashbot_icebow_e4u20_20261010/ (1.9 GB, git-excluded): live + RL ckpts (optimizer state in ckpt['rl']),
+>     configs, repo zip, reader files + reader_config (owner-approved for a friend), gen v3.2 fv5 dataset, S1 dataset,
+>     ghost_pool, pro corpus v6 tgz. No webhook.
 > * **LIVE DECK SWITCH + LOG BAIT SPECIALIST (owner 10-10).** `bash scratchpad/gauntlet/L70/live/start_live.sh [icebow|bait] [--check]`
 >   (default icebow = byte-identical to before). The choice is persisted in `L70/live/LIVE_DECK`, so supervisor restarts
 >   (`L74/deploy/restart_live.py` just re-runs run_live.sh; unchanged) keep the deck; `live_config.sh` turns it into DECK_ARGS
