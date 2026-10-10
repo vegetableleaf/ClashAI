@@ -5372,6 +5372,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   **E4 (= E3, branch_actors 6 -> 18; 10-14 labels/update):** u10 591 (-4.1, p .044), **u20 646 (+1.7 vs base,
 >   p .42; vs live -2.0, p .34)**, u30 590 (-4.2, p .040). Non-monotone -> u20 replication on disjoint seeds 480:960
 >   queued (/workspace/results/defence_e4/rep_480_960/). Not deployable regardless: no CellRefine/TowerRefine heads.
+> * **E4 u20 replication (seeds 480:960):** base 613 vs u20 611.5 (172/174, p .96) -> the +1.7 was noise. Held: frozen-
+>   affordable runs .80 -> .66 at equal wins. Checkpoints copied to C:/Users/benpe/pod_backup_20261010/rdef_e4/.
+> * **Live 10-09/10 night:** 21:13 -> 06:40, +68 W / +43 L (61%); 11,816 trophies seen 00:16. STOPPED 06:40: nav loop on
+>   Trophy Road (collect -> popup -> close_x, 300 s, x10 restarts -> limit). Owner to collect by hand + start_live.sh;
+>   nav fix for that popup owed (Tuesday). Pod: drain streams results to pod_backup_20261010 then stops the pod
+>   (STOP_POD_APPROVED set 07:3x). Next session: re-setup pod from POD_README; placebo fork; heads re-stack for E4-type
+>   arms; flying-unit input; Log Bait branch (Tuesday).
 > * **Rocket+Tornado combo SIM (a67f26ce, f022854; pod; delay-0 wrapper):** pull works -- clump value in blast at impact
 >   61% (combo) vs 15% (lone Rocket, same moment), destroyed +.34 elixir/fire [-.08, +.74] (tanks survive ~1480 dmg).
 >   Wins: no combo arm beats its lone twin; cb9 -.2 pp [-1.3, +.8] (6% of matches fire), cb7 -1.9, cb5 -5.0; air pool cb7
