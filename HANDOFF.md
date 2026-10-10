@@ -5426,7 +5426,8 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >     pro_when AUC: D1 .69 D2 .75 D3 .71 D4 .70 D5 .57 D6 .80 (10 pos) D7 .70 D8 .59 D9 .71. Smoke OK (forced actions,
 >     faithful replays, disjoint seeds 8000-20480, TEST-only labels). run_xl2.sh PID 23631 on pod 1 waits for S10XL/DONE.
 >     ETA problem: 50-60 h (each variant replays all 4,000 matches) -> Codex speed-up ticket (skip empty matches, one pass
->     for all DEV variants) in progress; then redeploy.
+>     for all DEV variants) DEPLOYED e48dae8 in /workspace/wk_xl2 (pod tests 51 passed; the waiting run_xl2.sh poller
+>     picks it up). Codex estimate 2.1-2.7x -> S9XL2 ~19-29 h after S10XL; then S10XL2 ~2 h; then ICEBOW_DONE.
 >   - POD 1 64.247.206.76:17497 (30.6 vCPU): S9XL (D2/D3/D10 ~2,500 each) posted 19:13 EDT; S10XL running. POD 2
 >     81.27.69.177:23358 (15.3 vCPU): S11 Log Bait (base forms) running since 22:58 UTC, ETA ~01:15 UTC, checker PID
 >     35956 posts to Discord + copies to C:/Users/benpe/pod_backup_weekend/bait. Pod-1 S11 gate killed.
