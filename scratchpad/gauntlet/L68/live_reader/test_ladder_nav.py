@@ -104,6 +104,9 @@ def _reward_reveal_check():
     rng = np.random.default_rng(0)
     bg = np.full((1600, 900, 3), 90, np.uint8)
     card = bg.copy(); card[600:880, 330:570] = rng.integers(0, 255, (280, 240, 3), dtype=np.uint8)
+    chest = card.copy()                                            # no title above the item = the unopened chest
+    assert not is_reward_reveal(chest)
+    card[340:460, 260:640] = (rng.integers(0, 2, (120, 380, 1)) * 255).astype(np.uint8)   # the item title: white text
     assert is_reward_reveal(card)
     bar = card.copy(); bar[:120] = rng.integers(0, 255, (120, 900, 3), dtype=np.uint8)
     assert not is_reward_reveal(bar)

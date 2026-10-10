@@ -421,7 +421,10 @@ def is_reward_reveal(img) -> bool:
     g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY).astype(np.float32)
     card = g[int(h * .36):int(h * .56), int(w * .36):int(w * .64)].std()
     side = max(g[int(h * .2):int(h * .7), :int(w * .24)].std(), g[int(h * .2):int(h * .7), int(w * .76):].std())
-    return bool(card > 35 and side < 19 and g[:int(h * .08)].std() < 10)
+    # the item's big title ("Gold", "Wizard") sits in this band; the unopened chest has only a small star there
+    # (10-10: contents 50-77, closed chest 34-37 -> owner: never post the chest itself)
+    title = g[int(h * .2):int(h * .3), int(w * .25):int(w * .75)].std()
+    return bool(card > 35 and side < 19 and title > 44 and g[:int(h * .08)].std() < 10)
 
 
 def grab(adb: list[str]):
