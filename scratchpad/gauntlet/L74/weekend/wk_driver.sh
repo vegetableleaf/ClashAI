@@ -14,7 +14,7 @@ CK_OLD=$CKR/rseries_r3c/rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt
 CK_NEW=$CKR/rdef_e4/rdef_e4_u0020_barrel2k_cellref_towerref_w2.pt
 CK_BASE=$CKR/rseries_r3c/rseries_r3c_u0030_barrel.pt
 ALL="S2 S4 S3 S8 S7 S9 S10 S5 S6"
-TRAIN=" S5 S6 S10 "
+TRAIN=" S5 S6 S10 S10XL "
 say() { echo "$@" >> $D/SUMMARY.txt; }
 
 evenv() { export REPO=$1 PY ROYALE_RUNTIME OUT=$R/_evout EVAL_DIR=$EV EVAL_FLAGS=live NICE= CORES=28 GPU=0 EVAL_WORKERS=14; mkdir -p $EV; }
@@ -128,7 +128,7 @@ s9_run() {  # s9_run CKPT OUTDIR SEEDS_EVO SEEDS_LAD : pass 1 (state dump) -> mo
     s=$3; [ $c = lad ] && s=$4
     mkdir -p $O/dump_$c
     CENSUS_FILE=$O/census_$c.json DUMP_DIR=$O/dump_$c bash $W/run_wk.sh dump $O/p1_$c $s 28 $c 0 $ck > $O/p1_$c.log 2>&1
-    CB_MAIN=$WK $PY $W/moments_from_dump.py $O/dump_$c/ $O/moments_$c.json 3 200 150 > $O/moments_$c.txt 2>&1
+    CB_MAIN=$WK $PY $W/moments_from_dump.py $O/dump_$c/ $O/moments_$c.json 3 200 ${MAXN:-150} > $O/moments_$c.txt 2>&1
     CENSUS_FILE=$O/census_$c.json MECH_GAP=100 MECH_MAXFORK=1 ROWS_DIR=$O/rows_$c MOMENTS=$O/moments_$c.json bash $W/run_wk.sh drills $O/p2_$c $s 28 $c 2 $ck > $O/p2_$c.log 2>&1
     rm -rf $O/dump_$c
   done
@@ -152,6 +152,43 @@ st_S10() {
   s9_run $WK/$OUTC $D/re 3000:3150 3150:3300
   $PY $W/wk_stats.py s10 $R/S9/p2_evo,$R/S9/p2_lad $D/re/p2_evo,$D/re/p2_lad $V $ok "$(head -1 $D/eval.txt)" $D/fork.txt
   cat $D/fork.txt >> $D/SUMMARY.txt
+}
+
+# ---------------------------------------------------------------------------------------------------- S9XL / S10XL  (owner re-route 2026-10-10)
+# bash wk_driver.sh S9XL S10XL : D2 + D3 (S9's mechanics) and D10 (S3's prevent mechanic) at ~2,500 forked moments each, fresh seeds 5000+
+# (disjoint from S2 0:480, S3 0:240, S9 1000:1600, S10 3000:3300), archetype-weighted census (60% unfavourable), match end, common random numbers.
+st_S9XL() {
+  cd $WK; mkdir -p $D
+  export KEEP_DRILLS=D2,D3 MAXN=1300                 # per census: ~2.9 D2 and D3 moments per match -> 500 matches give ~1450 of each; keep <= 1300
+  s9_run $CK_NEW $D 5000:5500 5500:6000
+  unset KEEP_DRILLS MAXN
+  for c in evo lad; do                               # D10: S3's prevent forks (<= 3 per match, gap 100) on the same weighted census; ~1.6 per match
+    s=6000:6550; [ $c = lad ] && s=6550:7100
+    CENSUS_FILE=$D/census_$c.json MECH_GAP=100 ROWS_DIR=$D/prev_rows_$c bash $W/run_wk.sh prevent $D/prev_$c $s 28 $c 2 $CK_NEW > $D/prev_$c.log 2>&1
+  done
+  $PY $W/wk_xl_stats.py $D/SUMMARY.txt $D/verdicts.json $D/p2_evo,$D/p2_lad,$D/prev_evo,$D/prev_lad $R/S9/p2_evo,$R/S9/p2_lad,$R/S3/evo,$R/S3/lad > $D/stats.out 2>&1
+  say "seeds: D2/D3 5000:6000 (dump + forks), D10 prevent 6000:7100; census 50/50 evo+ladder pool re-weighted to ~60% unfavourable archetypes as in S9; the earlier S3 D10 sample used the unweighted census"
+}
+st_S10XL() {
+  V=$R/S9XL/verdicts.json
+  if ! grep -q -E '"(do|alt)"' $V 2>/dev/null; then say "skipped: no S9XL drill label (win CI excluding 0, XL or pooled)"; return; fi
+  trenv $DEF 9 2; evenv $DEF; RL_OF=$RLD; cd $WK
+  OUTC=$CKR/wk_s10xl/wk_s10xl.pt; mkdir -p $(dirname $WK/$OUTC)
+  X=$R/S9XL; RW=$R/S9/rows_evo,$R/S9/rows_lad,$X/rows_evo,$X/rows_lad,$X/prev_rows_evo,$X/prev_rows_lad
+  MT=$R/S9/p2_evo,$R/S9/p2_lad,$X/p2_evo,$X/p2_lad,$X/prev_evo,$X/prev_lad
+  # start = the live E4 graft ($CK_NEW), KL anchor to it on ordinary rows, moments from the 60%-unfavourable census (the bad matchups are oversampled by construction)
+  $PY $W/train_drills.py --ckpt $CK_NEW --rows $RW --matches $MT --verdicts $V --out $WK/$OUTC --epochs 3 --max-min 60 > $D/train.out 2>&1 \
+    || { say "VERDICT: training did not run: $(tail -1 $D/train.out)"; return; }
+  say "train: $(tail -1 $D/train.out)"
+  ev live_new $CK_NEW 0:480; ev wk_s10xl $WK/$OUTC 0:480
+  cmp live_new_lv wk_s10xl_lv s10 > $D/eval.txt; cat $D/eval.txt >> $D/SUMMARY.txt
+  ok=0; grep -q '^VERDICT: non-inferior' $D/eval.txt && ok=1
+  KD=$($PY -c "import json;print(','.join(k for k,v in json.load(open('$V')).items() if v in ('do','alt') and k!='D10'))")
+  export KEEP_DRILLS=${KD:-NONE} MAXN=500
+  s9_run $WK/$OUTC $D/re 7200:7500 7500:7800; unset KEEP_DRILLS MAXN
+  $PY $W/wk_stats.py s10 $R/S9/p2_evo,$R/S9/p2_lad,$X/p2_evo,$X/p2_lad,$X/prev_evo,$X/prev_lad $D/re/p2_evo,$D/re/p2_lad $V $ok "$(head -1 $D/eval.txt)" $D/fork.txt
+  cat $D/fork.txt >> $D/SUMMARY.txt
+  if grep -q "^VERDICT: candidate" $D/fork.txt; then say "S10XL VERDICT: candidate: ask owner to deploy (never auto)"; else say "S10XL VERDICT: no gain"; fi
 }
 
 # ---------------------------------------------------------------------------------------------------- main

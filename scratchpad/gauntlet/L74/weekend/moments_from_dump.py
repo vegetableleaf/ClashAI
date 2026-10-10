@@ -9,6 +9,8 @@ import drills as D          # CB_MAIN must point at the repo root (drills.py MAI
 dump, out = sys.argv[1], sys.argv[2]
 cap, gap = (int(sys.argv[3]) if len(sys.argv) > 3 else 3), (int(sys.argv[4]) if len(sys.argv) > 4 else 200)
 KEEP = {"D1": "do", "D2": "dohold", "D3": "dohold", "D4": "do", "D9": "dohold"}
+if os.environ.get("KEEP_DRILLS"):      # S9XL: only these drills (comma list)
+    KEEP = {k: v for k, v in KEEP.items() if k in os.environ["KEEP_DRILLS"].split(",")}
 res, n = {}, collections.Counter()
 for m in D.load_sim(dump if dump.endswith("/") else dump + "/"):
     recs = [r for r in D.harvest(m) if KEEP.get(r["drill"]) == r["kind"]]
