@@ -5411,6 +5411,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   Pod stays ON. Owner archetypes (live, 921 matches, result from final towers): golem 27% (37), lava 30% (23), pekka+
 >   bridge 38% (13), RG 50% (22), RG+Monk 90% (10), hyperbait 62% (42); the 5 owner-named weighted to 60% of training
 >   opponents. S4 (done): tower Rocket loses at >= 8 elixir too (-11.3 pp, n 204, CI < 0) and -14.5 below 8.
+> * **Weekend results 10-10 evening (pod wk/):** S2 new live (E4 graft) vs old +0.94 pp [-2.73, +4.61] not worse
+>   (hyperbait 67->83, lava 59->54); S3 prevent-vs-delay -1.3 [-5.8, +3.2] (tower @20 +39 [-5, +84]); S7 engine 0.1.25
+>   old live -1.35 [-5.5, +2.8] unpaired; S8 Log Bait 93.1% (evos load); S9 drills D1/D2/D3/D4/D9 all 'no difference'
+>   at ~160-300 moments (+-5-8 pp; D2 tower @20 +95 [+27, +162]) -> S10 skipped. Owner chose 'Bigger drills': stop E5
+>   after its current seed, drop S6, run S9XL (D2, D3, D10 at ~2,500 moments each) -> S10XL if a label is clear -> CHAIN_DONE
+>   -> S11 Log Bait. Worker aa832b87. Emote spam ON (3.0 s; live test 6/6) in icebow + bait LIVE_OPTIONS (c56652e).
+>   Hero IW presses: new model 0.45/match vs old 1.43 (IW plays 3.16 vs 3.97; SIM has no Hero IW).
 > * **LIVE DECK SWITCH + LOG BAIT SPECIALIST (owner 10-10).** `bash scratchpad/gauntlet/L70/live/start_live.sh [icebow|bait] [--check]`
 >   (default icebow = byte-identical to before). The choice is persisted in `L70/live/LIVE_DECK`, so supervisor restarts
 >   (`L74/deploy/restart_live.py` just re-runs run_live.sh; unchanged) keep the deck; `live_config.sh` turns it into DECK_ARGS
