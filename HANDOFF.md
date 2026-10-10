@@ -5365,6 +5365,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   defence_e3. NOTE the fast base itself is -3.6 pp vs live (heads missing): any RL arm must be re-stacked before live.
 > * Live: chest-contents posts (ladder_nav is_reward_reveal) + stop no longer waits on clip renders (8324ee2);
 >   restarted 01:43:59 with combo + log-air + chest posts.
+> * **Fast-plays RL (l74-fastplay-rl, 25 upd from fast base, eval at u15 both; 960 paired):** base_off 630; ctl_off 613
+>   (-1.8 vs base, p .40: plain RL barely drifts); fp_off 539 (-9.5: pipelined training HURT normal play); fp_pd2 553
+>   vs ctl_pd2 565 (-1.25, n.s.); Tornado second-card share 32% unchanged -> hypothesis (b) NOT supported at this budget.
+> * **Defence E3 (match-end outcome_towers labels):** u10 629 (= base), u20 573, u30 580; only 2-6 labels/update.
+>   **E4 (= E3, branch_actors 6 -> 18; 10-14 labels/update):** u10 591 (-4.1, p .044), **u20 646 (+1.7 vs base,
+>   p .42; vs live -2.0, p .34)**, u30 590 (-4.2, p .040). Non-monotone -> u20 replication on disjoint seeds 480:960
+>   queued (/workspace/results/defence_e4/rep_480_960/). Not deployable regardless: no CellRefine/TowerRefine heads.
 > * **Rocket+Tornado combo SIM (a67f26ce, f022854; pod; delay-0 wrapper):** pull works -- clump value in blast at impact
 >   61% (combo) vs 15% (lone Rocket, same moment), destroyed +.34 elixir/fire [-.08, +.74] (tanks survive ~1480 dmg).
 >   Wins: no combo arm beats its lone twin; cb9 -.2 pp [-1.3, +.8] (6% of matches fire), cb7 -1.9, cb5 -5.0; air pool cb7
