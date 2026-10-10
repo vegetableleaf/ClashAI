@@ -5425,6 +5425,18 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   vs the untrained generalist, 480 paired games each, both playing Log Bait. Gated on CHAIN_DONE (gpu.lock then cpu.lock); results
 >   /workspace/results/wk/S11_bait/, backed up to C:/Users/benpe/pod_backup_weekend/bait/ by s11_checker.sh. S8 baseline: the generalist
 >   already wins 93% as Log Bait in the sim, so expect a small measurable gain at best.
+> * **EMOTE SPAM (owner 10-10, built, DEFAULT OFF, NOT in any LIVE_OPTIONS).** `live_play.py --emote-spam on` (+ `--emote-interval-s 1.35`,
+>   `--emote-gap-ms 150`, `--emote-guard 0.75`; all four deployable from LIVE_OPTIONS via `pipeline/live_options.py` EXTRA_LIVE_FLAGS).
+>   At a decision that is WAIT, with no pending / scheduled follow-up / ability tap, >= interval since the last emote's first tap, and
+>   p_play < guard x the gate tau in force (0 = guard off), it sends ONE command `input tap 88 1365; sleep 0.15; input tap 710 1195`
+>   (chat button, then the owner's emote; 900x1600, scaled by the screen) through `input_cmd` = the card-tap channel (persistent shell with
+>   --fast-input), so ordering with card taps is guaranteed and an emote can never sit between a card tap and its board tap. A card /
+>   ability tap decided < 0.6 s after an emote's first tap waits out the rest (event `emote_hold`, held_ms); per match the `end` event
+>   gets `emotes` and `emote_holds`, each emote logs `emote` (tick, n, guard = p_play/tau). Interval < 1.3 s is refused (the cooldown).
+>   Code: `L68/live_reader/emote_spam.py` + live_play.py; tests `L68/live_reader/test_emote_spam.py` (12). UNVERIFIED live: back-to-back
+>   reliability (that the panel always closes) -- run `icebow/.venv/Scripts/python.exe scratchpad/gauntlet/L74/emote/emote_reliability.py
+>   --fast-input` inside a Classic 1v1 (20 emotes, hand-area classifier, taps chat once to close a stuck panel), then add
+>   `--emote-spam on` to the LIVE_OPTIONS file. Concern: the in-match HeroButton / MenuGuard screenshots could catch the panel for ~0.4 s.
 > * **Rocket+Tornado combo SIM (a67f26ce, f022854; pod; delay-0 wrapper):** pull works -- clump value in blast at impact
 >   61% (combo) vs 15% (lone Rocket, same moment), destroyed +.34 elixir/fire [-.08, +.74] (tanks survive ~1480 dmg).
 >   Wins: no combo arm beats its lone twin; cb9 -.2 pp [-1.3, +.8] (6% of matches fire), cb7 -1.9, cb5 -5.0; air pool cb7

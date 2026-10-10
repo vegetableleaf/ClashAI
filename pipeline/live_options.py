@@ -27,6 +27,10 @@ EXTRA_LIVE_FLAGS = (('--own-effects', dict(action='store_true')),
                     ('--early-release-margin', dict(type=int)),
                     ('--extrapolate', dict(type=int)),
                     ('--identity-ext', dict(choices=('off', 'on'), default='off')),   # L74 identity extension
+                    ('--emote-spam', dict(choices=('off', 'on'), default='off')),   # L74 emote spam during WAIT (owner 2026-10-10)
+                    ('--emote-interval-s', dict(type=float)),
+                    ('--emote-gap-ms', dict(type=int)),
+                    ('--emote-guard', dict(type=float)),
                     ('--follow-up-taps', dict(action='store_true')))   # L74 latency2; --rocket-tornado on|only needs it (live_play refuses without)
 
 
