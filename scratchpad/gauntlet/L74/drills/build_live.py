@@ -14,7 +14,7 @@ Own frame tiles: my king (9,3), princesses (3.5,6.5)/(14.5,6.5); my half y <= 16
 """
 import os, sys, glob, gzip, pickle, time, collections, json
 HERE = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/") + "/"
-MAIN = "C:/Users/benpe/ClashBot/"
+MAIN = os.environ.get("CB_MAIN", "C:/Users/benpe/ClashBot/")
 sys.path.insert(0, MAIN + "scratchpad/gauntlet/L74/loss_review"); sys.path.insert(0, MAIN)
 import review as V            # sets below-normal priority
 from pipeline import vocab, body_identity as BI

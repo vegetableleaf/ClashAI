@@ -32,7 +32,9 @@ import random
 import sys
 
 sys.path.insert(0, os.getcwd())
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "weekend"))
 import numpy as np  # noqa: E402
+import drill_arms as DA  # noqa: E402  (L74 weekend: prevent / drills arms)
 
 from pipeline import e1_eval as E  # noqa: E402
 from pipeline import search_s0 as S  # noqa: E402
@@ -45,6 +47,13 @@ H = (200, 400)                                         # +10 s, +20 s
 OBS_TICKS = 300                                        # X-Bow target sampled for 15 s after the root
 LOCK_WIN, LOCK_NEED, DELAY = 80, 40, 26                # owner's success: on a princess 2 s in a row, starting <= 4 s after landing
 _CHECKS = [0]
+WK = MECH in ("prevent", "drills")                    # weekend mechanics: scripted arms (drill_arms.py)
+ROWS_DIR = os.environ.get("ROWS_DIR", "")            # drills / prevent: the model's input row at every fork (+ ordinary rows) for S10
+MOMENTS = {}
+if MECH == "drills" and os.environ.get("MOMENTS"):    # {tag: [{"t": decision tick, "drill", "kind", "info"}]} from moments_from_dump.py
+    for _tag, _l in json.load(open(os.environ["MOMENTS"])).items():
+        for _mo in _l:
+            MOMENTS.setdefault(_tag, {}).setdefault(int(_mo["t"]), []).append(_mo)
 
 
 def mech_cfg(cfg):
@@ -55,13 +64,13 @@ def mech_cfg(cfg):
     if MECH == "combo":            # rocket_value2 variants.json "cb9" (branch a67f26ce f5ba591)
         return {**cfg, "rocket_value": 9.0, "rocket_tornado": "only", "rocket_value_mode": "damage",
                 "rocket_value_hitbox": "edge"}
-    if MECH in ("rocket_tower", "placebo"):     # no decision option: the probe is rocket_tower_choice (the cfg is unchanged)
+    if MECH in ("rocket_tower", "placebo", "prevent", "drills"):     # no decision option: the probe is rocket_tower_choice (the cfg is unchanged)
         return cfg
     raise ValueError(MECH)
 
 
 REARM = int(os.environ.get("MECH_REARM", "200" if MECH == "rocket_tower" else "0"))   # > 0: a persisting trigger re-arms after this many ticks
-MAXFORK = int(os.environ.get("MECH_MAXFORK", "3" if MECH == "placebo" else "0"))   # > 0: at most this many forks per match
+MAXFORK = int(os.environ.get("MECH_MAXFORK", "3" if MECH in ("placebo", "prevent", "drills") else "0"))   # > 0: at most this many forks per match
 
 
 def rocket_tower_choice(s, allowed):
@@ -122,6 +131,8 @@ def trigger(side, dA, dB):
         return dB.get("why") == "rocket_tornado"
     if MECH == "rocket_tower":     # the deployed lethal rules already Rocket that moment: not an opportunity
         return dB.get("why") == "rocket_tower" and not str(dA.get("why")).startswith("lethal")
+    if MECH in ("prevent", "drills"):   # S3 / D10: the weekend prevent-vs-delay moment
+        return dB.get("why") == "prevent" or (dB.get("play") and dB.get("script") is not None)
     if MECH == "placebo":          # the same moment as rocket_tower
         return dB.get("why") == "placebo" and not str(dA.get("why")).startswith("lethal")
     return (dA["play"] and dA["why"] not in ("stall", "lethal_rocket", "lethal_log") and side.costs[dA["slot"]] < 4
@@ -160,14 +171,17 @@ def decide_round(m, ds, probe_cfg=None):
         probe = None
         if s is m.learner and probe_cfg is not None and MECH == "rocket_tower":
             probe = rocket_tower_choice(s, allowed) or {"play": False, "slot": -1, "cell": -1, "why": "none"}
-        elif s is m.learner and probe_cfg is not None and MECH != "placebo":    # before the real decide mutates per-match state
+        elif s is m.learner and probe_cfg is not None and MECH != "placebo" and not WK:    # before the real decide mutates per-match state
             c = side_copy(s, probe_cfg)
             probe = decide(m, c, p, enc, heads, allowed, stalled)
         d = decide(m, s, p, enc, heads, allowed, stalled)
         if s is m.learner and probe_cfg is not None and MECH == "placebo":
             probe = placebo_choice(s, enc, heads, allowed, d) or {"play": False, "slot": -1, "cell": -1, "why": "none"}
+        cx = {"enc": enc, "heads": heads, "allowed": allowed, "hand": hand, "bs": s._cur[1], "tick": int(s._cur[0])}
+        if s is m.learner and probe_cfg is not None and WK:
+            probe = DA.prevent_probe(m, s, cx, d) or {"play": False, "slot": -1, "cell": -1, "why": "none"}
         if s is m.learner:
-            ctx = {"p": float(p), "d": d, "probe": probe, "tick": int(s._cur[0])}
+            ctx = {"p": float(p), "d": d, "probe": probe, "tick": int(s._cur[0]), **cx}
         todo.append([s, p, d])
     return todo, ctx
 
@@ -261,7 +275,7 @@ class Track:
         return r
 
 
-def run_branch(m, todo, d_ours, blob, t0, pool_env, hold, blockers=()):
+def run_branch(m, todo, d_ours, blob, t0, pool_env, hold, blockers=(), script=None):
     """Fork ``m`` (post-decide, pre-apply), apply this round with our decision ``d_ours``, run to the end."""
     G = (random.getstate(), np.random.get_state(), _torch_state())
     f = S.fork_into(m, pool_env, blob)
@@ -291,9 +305,17 @@ def run_branch(m, todo, d_ours, blob, t0, pool_env, hold, blockers=()):
                 for row in todo2:
                     if row[0] is f.learner:
                         row[2] = ctx["probe"]
+        if script is not None and not script.done and ctx is not None:     # weekend scripted arm (drill_arms.Hold / Prevent)
+            d2 = script.step(f, ctx)
+            if d2 is not None:
+                for row in todo2:
+                    if row[0] is f.learner:
+                        row[2] = d2
         for s, p, d in todo2:
             s.apply(p, d)
     r = tr.out(f)
+    if script is not None:
+        r["script"] = script.report(f.learner)
     if hold:
         r["held_decisions"] = held
     random.setstate(G[0]), np.random.set_state(G[1]), _torch_set(G[2])
@@ -329,6 +351,13 @@ def mech_round(self, m, ds, arm, st, rng):
             mm["forks"] += 1
             mm["start"] = t
             self._mech_fork(m, todo, ctx, first=new)
+    if MECH == "drills" and ctx is not None:        # S9: forks at the drill moments of this decision tick; S10: ordinary rows
+        tag, t = m.spec["tag"], ctx["tick"]
+        for mo in MOMENTS.get(tag, {}).get(t, ()):
+            m._mech["hit"] += 1
+            self._mech_fork(m, todo, ctx, moment=mo)
+        if ROWS_DIR and DA.is_ordinary(tag, t):
+            DA.save_row(ROWS_DIR, f"ord_{tag}_{t}", m.learner, ctx)
     for s, p, d in todo:
         s.apply(p, d)
 
@@ -350,8 +379,11 @@ def push_value(m):
     return v
 
 
-def mech_fork(self, m, todo, ctx, first=True):
-    dA, dB, t0 = ctx["d"], ctx["probe"], ctx["tick"]
+def mech_fork(self, m, todo, ctx, first=True, moment=None):
+    dA, dB, t0 = ctx["d"], dict(ctx["probe"]), ctx["tick"]
+    script = dB.pop("script", None)
+    if moment is not None:
+        dB = {"play": False, "slot": -1, "cell": -1, "why": "moment"}      # placeholder: the arms are built below
     L = m.learner
     bs = L._cur[1]
     rec = {"t0": t0, "first": bool(first), "p": round(ctx["p"], 4), "elixir": float(bs.my_elixir), "t_sec": float(bs.t_sec),
@@ -383,7 +415,27 @@ def mech_fork(self, m, todo, ctx, first=True):
         m._mech["skipped"].append({"t0": t0, "err": str(ex), "buffs": sorted(
             {b for e in m.env.core.state().entities for b in map(str, getattr(e, "buffs", ()))})})
         return
-    if not rec["same"]:
+    arms = None
+    if moment is not None:
+        arms = DA.build_arms(moment, m, L, ctx)
+        rec.update(drill=moment["drill"], kind=moment.get("kind"), info=moment.get("info"))
+        if "_skip" in arms:
+            m._mech["no_arm"].append({"t0": t0, "drill": moment["drill"], "why": arms["_skip"]})
+            return
+    elif WK:
+        arms, rec["drill"] = {"do": {"root": dB, "script": script}}, "D10"
+    if arms is not None:
+        rec["same"], rec["arms"] = False, {}
+        for nm, a in arms.items():
+            rec["arms"][nm] = run_branch(m, todo, a["root"], blob, t0, envs[0], hold=False, script=a["script"])
+        if MECH == "prevent":
+            rec["Bres"] = rec["arms"]["do"]
+        rec["roots"] = {nm: {k: a["root"].get(k) for k in ("play", "slot", "cell", "why")} for nm, a in arms.items()}
+        ex = {"tick": t0, "drill": rec["drill"]}
+        for nm, a in arms.items():
+            ex.update({f"{nm}_play": int(bool(a["root"]["play"])), f"{nm}_slot": int(a["root"]["slot"]), f"{nm}_cell": int(a["root"]["cell"])})
+        DA.save_row(ROWS_DIR, f"fork_{rec['drill']}_{m.spec['tag']}_{t0}", L, ctx, ex)
+    elif not rec["same"]:
         rec["Bres"] = run_branch(m, todo, dB, blob, t0, envs[0], hold=(MECH == "patience"), blockers=blk)
     if _CHECKS[0] < CHECK:
         _CHECKS[0] += 1
@@ -393,7 +445,7 @@ def mech_fork(self, m, todo, ctx, first=True):
 
 def mech_play(self, arm, m, deadline=None):
     cfg = m.learner.cfg
-    m._mech = {"cfg_on": mech_cfg(cfg), "triggers": 0, "forks": 0, "last": None, "start": None, "open": [], "skipped": []}
+    m._mech = {"cfg_on": mech_cfg(cfg), "triggers": 0, "forks": 0, "last": None, "start": None, "open": [], "skipped": [], "no_arm": [], "hit": 0}
     out = _orig_play(self, arm, m, deadline)
     recs = []
     for o in m._mech["open"]:
@@ -404,7 +456,8 @@ def mech_play(self, arm, m, deadline=None):
             r["A_tornado_2s"] = any(card(m.learner, s) == "tornado" and r["t0"] <= land <= r["t0"] + 40 + DELAY
                                     for land, s, _, _ in m.learner.done_plays[r["n_done0"]:])
         recs.append(r)
-    out["mech"] = _plain({"name": MECH, "trigger_decisions": m._mech["triggers"], "episodes": len(recs), "opps": recs, "skipped_unsnapshottable": m._mech["skipped"]})
+    out["mech"] = _plain({"name": MECH, "trigger_decisions": m._mech["triggers"], "episodes": len(recs), "opps": recs, "skipped_unsnapshottable": m._mech["skipped"], "no_arm": m._mech["no_arm"],
+                     "moments": [sum(len(v) for v in MOMENTS.get(m.spec["tag"], {}).values()), m._mech["hit"]]})
     return out
 
 

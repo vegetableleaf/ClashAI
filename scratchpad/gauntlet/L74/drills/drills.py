@@ -21,7 +21,7 @@ try:
     import ctypes; ctypes.windll.kernel32.SetPriorityClass(ctypes.windll.kernel32.GetCurrentProcess(), 0x4000)
 except Exception: pass
 HERE = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/") + "/"
-MAIN = "C:/Users/benpe/ClashBot/"
+MAIN = os.environ.get("CB_MAIN", "C:/Users/benpe/ClashBot/")
 OUT = HERE + "out/"
 sys.path.insert(0, MAIN); sys.path.insert(0, HERE)
 LOGDIR = MAIN + "scratchpad/gauntlet/L68/live_reader/"

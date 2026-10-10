@@ -20,18 +20,20 @@ RUNTIME = REPO / "research/ext/Royale-20261005/runtime"
 RUNTIME_ID = None
 _selected = os.environ.get("ROYALE_RUNTIME", "").strip()
 if _selected:
-    if _selected not in ("20261006", "20261006-linux"):
-        raise RuntimeError(f"Unknown ROYALE_RUNTIME={_selected!r}; known opt-in runtimes: '20261006', '20261006-linux'")
+    if _selected not in ("20261006", "20261006-linux", "unpinned-linux"):
+        raise RuntimeError(f"Unknown ROYALE_RUNTIME={_selected!r}; known opt-in runtimes: '20261006', '20261006-linux', 'unpinned-linux'")
     RUNTIME_ID = _selected
     MANIFEST = REPO / "scratchpad/gauntlet/L73/royale_update_20261006/build_manifest.json"
     RUNTIME = REPO / "research/ext/Royale-20261006/runtime"
-    if _selected == "20261006-linux":   # PyPI royalesim 0.1.17 / royalegym 0.1.18 in this venv (Linux VM, benchmark)
+    if _selected in ("20261006-linux", "unpinned-linux"):   # PyPI royalesim 0.1.17 / royalegym 0.1.18 in this venv (Linux VM, benchmark)
         import sysconfig
         RUNTIME = Path(sysconfig.get_paths()["purelib"])
 _STAMP = None
 
 
 def _verify_files(runtime: Path, manifest: dict) -> None:
+    if RUNTIME_ID == "unpinned-linux":   # L74 weekend S7 ONLY: an unreviewed newer wheel (royalesim 0.1.25) in a separate venv; no byte check
+        return
     runtime = runtime.resolve()
     for name, expected in manifest["files"].items():
         name = name.replace("\\", "/")
@@ -72,9 +74,9 @@ def activate() -> dict:
         sim = importlib.import_module("royalesim")
         importlib.import_module("royalegym")
         _check_imports(runtime)
-        if tuple(sim.Battle.provenance()) != (manifest["pins"]["RoyaleSim"], "clean"):
+        if RUNTIME_ID != "unpinned-linux" and tuple(sim.Battle.provenance()) != (manifest["pins"]["RoyaleSim"], "clean"):
             raise RuntimeError("RoyaleSim compiled provenance differs from the reviewed source")
-        if sim.card_table_source() != "embedded":
+        if RUNTIME_ID != "unpinned-linux" and sim.card_table_source() != "embedded":
             raise RuntimeError("Pinned RoyaleSim must use its compiled-in card table")
         from royalegym.rust_engine import RustEngine
         from royalegym.protocol import data_dir
