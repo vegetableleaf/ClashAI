@@ -615,12 +615,10 @@ def main() -> int:
                     print(f"[live] run stopped after match {k + 1}: {why}", flush=True)
                     break
     finally:
-        for p, name in renders:                          # stopping is safe: let the background renders finish
-            try:
-                p.wait(timeout=900)                      # a hung renderer must not hold the supervisor forever
-            except subprocess.TimeoutExpired:
-                p.kill()
-            if p.returncode:
+        for p, name in renders:                          # owner 2026-10-10: never hold a stop/restart on a render;
+            if p.poll() is None:                         # the renderer is its own process and finishes (and posts) alone
+                print(f"[overlay] render of {name} still running -- left to finish on its own", flush=True)
+            elif p.returncode:
                 print(f"[overlay] render failed (exit {p.returncode}); re-render with overlay_replay.py {name}")
                 rc = 1
     return rc
