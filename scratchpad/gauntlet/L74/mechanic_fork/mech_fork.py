@@ -55,12 +55,13 @@ def mech_cfg(cfg):
     if MECH == "combo":            # rocket_value2 variants.json "cb9" (branch a67f26ce f5ba591)
         return {**cfg, "rocket_value": 9.0, "rocket_tornado": "only", "rocket_value_mode": "damage",
                 "rocket_value_hitbox": "edge"}
-    if MECH == "rocket_tower":     # no decision option: the probe is rocket_tower_choice (the cfg is unchanged)
+    if MECH in ("rocket_tower", "placebo"):     # no decision option: the probe is rocket_tower_choice (the cfg is unchanged)
         return cfg
     raise ValueError(MECH)
 
 
 REARM = int(os.environ.get("MECH_REARM", "200" if MECH == "rocket_tower" else "0"))   # > 0: a persisting trigger re-arms after this many ticks
+MAXFORK = int(os.environ.get("MECH_MAXFORK", "3" if MECH == "placebo" else "0"))   # > 0: at most this many forks per match
 
 
 def rocket_tower_choice(s, allowed):
@@ -91,6 +92,25 @@ def rocket_tower_choice(s, allowed):
             "why": "rocket_tower", "lane": best[0], "tower_hp": best[1]}
 
 
+def placebo_choice(s, enc, heads, allowed, dA):
+    """PLACEBO (owner 2026-10-10): same opportunity as rocket_tower (rocket_tower_choice is not None, A not lethal), B =
+    the model's own SECOND choice, forced. A plays -> the highest-probability play with a DIFFERENT card (card head,
+    hand-masked, as search_s0.shortlist) at that card's best cell (cell head argmax); A waits -> the model's top play.
+    Rockets are never candidates (B must not duplicate the mechanic). -> decision dict or None."""
+    import torch
+    rt = rocket_tower_choice(s, allowed)
+    if rt is None:
+        return None
+    with torch.no_grad():
+        lg = heads["card"][0].masked_fill(~torch.from_numpy(np.asarray(allowed, bool)).to(heads["card"].device), float("-inf"))
+        for slot in (int(i) for i in torch.argsort(lg, descending=True).tolist()):
+            if not allowed[slot] or (dA["play"] and slot == dA["slot"]) or card(s, slot) == "rocket":
+                continue
+            cell = int(s.model.cell_logits(enc, torch.tensor([slot], device=lg.device))[0].argmax())
+            return {"play": True, "slot": slot, "cell": cell, "why": "placebo", "lane": rt["lane"], "tower_hp": rt["tower_hp"]}
+    return None
+
+
 def card(side, slot):
     return str(side.deck.cards[slot]).split("@")[0].lower() if slot is not None and slot >= 0 else None
 
@@ -102,6 +122,8 @@ def trigger(side, dA, dB):
         return dB.get("why") == "rocket_tornado"
     if MECH == "rocket_tower":     # the deployed lethal rules already Rocket that moment: not an opportunity
         return dB.get("why") == "rocket_tower" and not str(dA.get("why")).startswith("lethal")
+    if MECH == "placebo":          # the same moment as rocket_tower
+        return dB.get("why") == "placebo" and not str(dA.get("why")).startswith("lethal")
     return (dA["play"] and dA["why"] not in ("stall", "lethal_rocket", "lethal_log") and side.costs[dA["slot"]] < 4
             and not dB["play"])
 
@@ -138,10 +160,12 @@ def decide_round(m, ds, probe_cfg=None):
         probe = None
         if s is m.learner and probe_cfg is not None and MECH == "rocket_tower":
             probe = rocket_tower_choice(s, allowed) or {"play": False, "slot": -1, "cell": -1, "why": "none"}
-        elif s is m.learner and probe_cfg is not None:    # before the real decide mutates per-match state
+        elif s is m.learner and probe_cfg is not None and MECH != "placebo":    # before the real decide mutates per-match state
             c = side_copy(s, probe_cfg)
             probe = decide(m, c, p, enc, heads, allowed, stalled)
         d = decide(m, s, p, enc, heads, allowed, stalled)
+        if s is m.learner and probe_cfg is not None and MECH == "placebo":
+            probe = placebo_choice(s, enc, heads, allowed, d) or {"play": False, "slot": -1, "cell": -1, "why": "none"}
         if s is m.learner:
             ctx = {"p": float(p), "d": d, "probe": probe, "tick": int(s._cur[0])}
         todo.append([s, p, d])
@@ -301,7 +325,8 @@ def mech_round(self, m, ds, arm, st, rng):
         new = mm["last"] is None or t - mm["last"] > GAP
         rearm = not new and REARM > 0 and t - mm["start"] >= REARM
         mm["last"] = t
-        if new or rearm:
+        if (new or rearm) and not (MAXFORK and mm["forks"] >= MAXFORK):
+            mm["forks"] += 1
             mm["start"] = t
             self._mech_fork(m, todo, ctx, first=new)
     for s, p, d in todo:
@@ -343,7 +368,7 @@ def mech_fork(self, m, todo, ctx, first=True):
     if MECH == "patience":
         from pipeline.decision_options import enemy_near_tower
         rec["near8"] = bool(enemy_near_tower(bs, 8.0))          # --patience-exempt 8 would NOT hold this one
-    if MECH == "rocket_tower":
+    if MECH in ("rocket_tower", "placebo"):
         r0 = snap(m)
         rec.update(lane=dB.get("lane"), tower_hp=dB.get("tower_hp"), push_val=round(push_value(m), 2),
                    tau_threat=bool(getattr(L, "tau_threat", False)), hazard_threat=bool(getattr(L, "threatened", False)),
@@ -368,7 +393,7 @@ def mech_fork(self, m, todo, ctx, first=True):
 
 def mech_play(self, arm, m, deadline=None):
     cfg = m.learner.cfg
-    m._mech = {"cfg_on": mech_cfg(cfg), "triggers": 0, "last": None, "start": None, "open": [], "skipped": []}
+    m._mech = {"cfg_on": mech_cfg(cfg), "triggers": 0, "forks": 0, "last": None, "start": None, "open": [], "skipped": []}
     out = _orig_play(self, arm, m, deadline)
     recs = []
     for o in m._mech["open"]:
