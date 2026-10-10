@@ -1,0 +1,9 @@
+159 matches with a first rv9 fire
+outcome base -> arm: {(0.0, 0.0): 41, (1.0, 1.0): 66, (1.0, 0.0): 37, (0.0, 1.0): 15} | net wins -22.0
+base at the same decision:  [('ice_wizard', 34), ('tesla_evo', 31), ('knight_evo', 25), ('the_log', 24), ('skeletons', 22), ('rocket', 10), ('tornado', 9), ('x_bow', 4)]
+base at the same decision (play?):  Counter({True: 92, False: 67})
+bodies in the blast (all fires): [('skeletons', 52), ('elite_barbarians', 23), ('battle_ram', 23), ('ram_rider', 20), ('inferno_dragon', 17), ('golem', 16), ('giant', 13), ('skeleton_dragons', 13), ('bowler', 12), ('electro_giant', 12), ('lava_hound', 12), ('baby_dragon', 10), ('balloon', 10), ('pekka', 9), ('witch', 9), ('dark_prince', 9), ('golden_knight', 9), ('giant_skeleton', 8), ('monk', 8), ('lumberjack', 8)]
+mean blast value 10.61, mean bodies 2.96, my elixir at the fire 7.15
++ 3s n=158: en arm-base +0.07 | me arm-base -2.19 | el arm-base -2.49 | tow arm-base -0.00
++ 6s n=158: en arm-base -2.48 | me arm-base -2.34 | el arm-base -1.33 | tow arm-base -0.02
++10s n=158: en arm-base -1.29 | me arm-base -1.64 | el arm-base -0.50 | tow arm-base -0.04

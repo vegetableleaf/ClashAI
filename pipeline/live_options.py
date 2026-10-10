@@ -26,7 +26,8 @@ EXTRA_LIVE_FLAGS = (('--own-effects', dict(action='store_true')),
                     ('--afford-ticks', dict(type=int)),
                     ('--early-release-margin', dict(type=int)),
                     ('--extrapolate', dict(type=int)),
-                    ('--identity-ext', dict(choices=('off', 'on'), default='off')))   # L74 identity extension
+                    ('--identity-ext', dict(choices=('off', 'on'), default='off')),   # L74 identity extension
+                    ('--follow-up-taps', dict(action='store_true')))   # L74 latency2; --rocket-tornado on|only needs it (live_play refuses without)
 
 
 def _decision_parser(prog, allow_abbrev=True):

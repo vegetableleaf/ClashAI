@@ -467,3 +467,59 @@ def extrapolate(obs: Mapping[str, Any], prev: Optional[Mapping[str, Any]], h: in
         out['extrapolated_public_objects'], out['public_lookahead_counts'] = advance_public_objects(
             public_objects, previous_objects, object_gap_ticks, h)
     return out
+
+
+# ---------------------------------------------------------------- --pipeline-plays: my PENDING plays on the board
+EVEN_KEYS = {"tesla"}                 # 2x2 buildings snap to their tapped tile's lower-left corner (live_gen.EVEN_BUILDINGS)
+LOG_AIR_TICKS = 9                     # the Log rolls from the tap from ~9 ticks after the act (RoyaleSim probe, L74)
+
+
+def pending_board(pending, my_side: int, view_tick: int) -> tuple[list, list, list]:
+    """My pending plays as RoyaleSim shows them ``view_tick - land`` ticks after they executed (L74
+    probe_sim_objects.py; a play shows nothing on its own landing tick). ``pending``: dicts ``card`` (any spelling
+    ``card_key`` reads), ``x``, ``y`` (the tap, RAW engine units), ``land`` (its execution tick). -> (bodies
+    [(card key, x, y, id < 0 unique per play and body)], projectile rows (key, side, x, y, tx, ty, ms), effect rows
+    (key, side, x, y, ms)) in raw units, the ``extrapolated_public_objects`` row shapes. Taps snap to the tile centre (2x2: the tile's lower-left corner).
+      troop / building: ``count`` bodies at the tap (count 3: the triangle of radius summon_radius / cos 30 deg);
+      projectile spell (Rocket, Fireball): from my king tower at its catalog speed, catalog time to impact;
+      the Log: airborne from 3000 behind the tap to it, then rolling 200 / tick toward tap + 10100 (time unknown);
+      area spell (Tornado): at the tap, remaining life_duration_ms - 50 / tick."""
+    from .dataset_gen import card_key
+    from .projectile_observation import catalog_tti
+    fwd = 1.0 if int(my_side) == 0 else -1.0
+    kx, ky = 9000.0, KING_Y if fwd > 0 else BOARD_Y - KING_Y
+    bodies, shots, areas = [], [], []
+    for p in pending:
+        key, age = card_key(str(p["card"])), int(view_tick) - int(p["land"])
+        c = catalog().get(key)
+        if c is None or age < 1:
+            continue
+        corner = key in EVEN_KEYS
+        x, y = (math.floor(float(v) / 1000) * 1000.0 + (0.0 if corner else 500.0) for v in (p["x"], p["y"]))
+        if c.get("kind") in ("troop", "building"):
+            n = max(1, int(c.get("count") or 1))
+            r = float(c.get("summon_radius_milli") or 0) / math.cos(math.pi / (2 * n)) if n > 1 else 0.0
+            for k in range(n):            # ponytail: the measured 3-body triangle; other counts use the same ring rule
+                a = math.pi / 2 + 2 * math.pi * k / n
+                bodies.append((key, x + r * math.cos(a), y + fwd * r * math.sin(a), -(int(p["land"]) * 8 + k + 1)))
+            continue
+        pr = c.get("projectile") or {}
+        area = (c.get("spell") or {}).get("area_effect_object") or {}
+        roll = pr.get("spawn_projectile") or {}
+        if roll.get("projectile_range_milli"):                           # the Log
+            if age < LOG_AIR_TICKS:
+                shots.append((key, int(my_side), x, y - fwd * (pr["min_distance_milli"] - pr["speed"] * age), x, y, None))
+            else:
+                shots.append((key, int(my_side), x, y + fwd * roll["speed"] * (age - LOG_AIR_TICKS), x,
+                              y + fwd * roll["projectile_range_milli"], None))
+        elif pr.get("speed"):                                            # Rocket, Fireball: from my king tower
+            d = math.hypot(x - kx, y - ky)
+            f = min(1.0, pr["speed"] * age / d) if d else 1.0
+            if f < 1.0:
+                px, py = kx + (x - kx) * f, ky + (y - ky) * f
+                shots.append((key, int(my_side), px, py, x, y, catalog_tti(key, px, py, x, y)))
+        elif area.get("life_duration_ms"):                               # Tornado and other area spells
+            ms = float(area["life_duration_ms"]) - 50.0 * age
+            if ms > 0:
+                areas.append((key, int(my_side), x, y, ms))
+    return bodies, shots, areas

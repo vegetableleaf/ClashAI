@@ -1,5 +1,6 @@
 """LIVE_OPTIONS: deployed decision options for live_play.py; explicit flags win, --no-live-options ignores the file."""
 import argparse
+import importlib.util
 import json
 import subprocess
 import sys
@@ -37,7 +38,8 @@ BUNDLE = ('--gate-decode hazard_below_tau --gate-hazard-min-elixir 9 --iw-press-
           '--rocket-dead-target block '   # 2026-10-09 03:0x (blind re-verified afe3214)
           '--lethal-log on --tau-threatened 0.2 '   # 2026-10-09 05:xx (blind af471193, merge 766e008)
           '--card-levels Rocket=16 Log=15 '   # 2026-10-09 13:xx (owner card levels; blind af0555f2)
-          '--log-air block')   # 2026-10-09 evening (owner: hold + Skeleton Barrel exempt; blind a1d953e2 on bd4c8ca)
+          '--log-air block '   # 2026-10-09 evening (owner: hold + Skeleton Barrel exempt; blind a1d953e2 on bd4c8ca)
+          '--rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-tornado only --follow-up-taps')   # 2026-10-09 cb9 combo (merge f5ba591)
 DEPLOYED_FILE = DEPLOYED.rstrip('\n') + ' ' + BUNDLE + '\n'
 
 
@@ -58,6 +60,8 @@ def test_checked_in_file_applies_every_bundle_option():
     assert opts.lethal_log == 'on' and opts.tau_threatened == 0.2
     assert dict(opts.card_levels) == {'Rocket': 16, 'Log': 15}
     assert opts.log_air == 'block'
+    assert (opts.rocket_value, opts.rocket_value_mode, opts.rocket_value_hitbox, opts.rocket_tornado) == (9.0, 'damage', 'edge', 'only')
+    assert a.follow_up_taps is True      # the Tornado follow-up is tapped; live_play refuses rocket_tornado on|only without it
 
 
 def test_file_present_applies_it(tmp_path):
@@ -310,6 +314,29 @@ def test_tau_threatened_deployable_from_the_file(tmp_path):
     assert parse([], tmp_path / 'missing')[0].tau_threatened is None
 
 
+def test_rocket_value_deployable_from_the_file(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'
+    f.write_text(DEPLOYED + '--rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-value-min-elixir 9 '
+                 '--rocket-value-idle on --rocket-value-lead on --rocket-value-min-y 21\n')
+    opts, rec = parse([], f)
+    assert (opts.rocket_value, opts.rocket_value_mode, opts.rocket_value_hitbox, opts.rocket_value_min_elixir) == (9.0, 'damage', 'edge', 9.0)
+    assert (opts.rocket_value_idle, opts.rocket_value_lead, opts.rocket_value_min_y) == ('on', 'on', 21.0)
+    assert rec['from_file']['rocket_value'] == 9.0 and rec['from_file']['rocket_value_mode'] == 'damage'
+    opts, rec = parse(['--rocket-value', '0'], f)                              # explicit wins
+    assert opts.rocket_value == 0.0 and rec["explicit"] == ["rocket_value"]
+    d = parse([], tmp_path / 'missing')[0]
+    assert d.rocket_value == 0.0 and d.rocket_value_mode == 'cost' and d.rocket_value_hitbox == 'centre' and d.rocket_value_lead == 'off'
+
+
+@pytest.mark.skipif(not CKPT.is_file() or importlib.util.find_spec('cv2') is None, reason='live checkpoint / cv2 not present')
+def test_check_json_reports_rocket_value(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'
+    f.write_text(DEPLOYED + '--rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-value-min-elixir 9\n')
+    out = run_live_play('--check', '--ckpt', str(CKPT), '--live-options-file', str(f))
+    assert out.returncode == 0, out.stdout + out.stderr
+    check = json.loads(out.stdout.strip().splitlines()[-1])
+    assert check['decision_options']['rocket_value'] == 9.0 and check['decision_options']['rocket_value_mode'] == 'damage'
+    assert check['live_options']['from_file']['rocket_value_min_elixir'] == 9.0
 CARD_LEVELS = '--card-levels Rocket=16 Log=15 Knight=16 Xbow=16 IceWizard=14\n'
 
 
@@ -349,3 +376,41 @@ def test_check_json_reports_log_air(tmp_path):
     assert out.returncode == 0, out.stdout + out.stderr
     check = json.loads(out.stdout.strip().splitlines()[-1])
     assert check['check'] == 'LIVE_CHECK_PASS' and check['decision_options']['log_air'] == 'retarget'
+
+
+def test_rocket_tornado_deployable_from_the_file(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'
+    f.write_text(DEPLOYED + '--rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-tornado only\n')
+    opts, rec = parse([], f)
+    assert (opts.rocket_value, opts.rocket_tornado) == (9.0, 'only') and rec['from_file']['rocket_tornado'] == 'only'
+    opts, rec = parse(['--rocket-tornado', 'off'], f)                                  # explicit wins
+    assert opts.rocket_tornado == 'off' and 'rocket_tornado' in rec['explicit']
+    assert parse([], tmp_path / 'missing')[0].rocket_tornado == 'off'
+    g = tmp_path / 'LO2'; g.write_text(DEPLOYED + '--rocket-tornado on\n')
+    with pytest.raises(ValueError, match='rocket_value'):                                # the combo needs its V
+        parse([], g)
+
+
+@pytest.mark.skipif(not CKPT.is_file() or importlib.util.find_spec('cv2') is None, reason='live checkpoint / cv2 not present')
+def test_check_json_reports_rocket_tornado(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'
+    f.write_text(DEPLOYED + '--rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-tornado only\n')
+    out = run_live_play('--check', '--ckpt', str(CKPT), '--live-options-file', str(f), '--follow-up-taps')   # DEPLOYED lacks it: pass it
+    assert out.returncode == 0, out.stdout + out.stderr
+    check = json.loads(out.stdout.strip().splitlines()[-1])
+    assert check['decision_options']['rocket_tornado'] == 'only' and check['live_options']['from_file']['rocket_tornado'] == 'only'
+
+
+def test_follow_up_taps_deployable_from_the_file(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + '--follow-up-taps')
+    ap = parser(f); ap.add_argument('--follow-up-taps', action='store_true')
+    assert parse_with_live_options(ap, [])[0].follow_up_taps is True
+    ap = parser(tmp_path / 'missing'); ap.add_argument('--follow-up-taps', action='store_true')
+    assert parse_with_live_options(ap, [])[0].follow_up_taps is False
+
+
+def test_live_play_refuses_rocket_tornado_without_follow_up_taps(tmp_path):
+    f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED)
+    for mode in ('on', 'only'):
+        out = run_live_play('--check', '--rocket-value', '9', '--rocket-tornado', mode, '--live-options-file', str(f))
+        assert out.returncode == 2 and f'--rocket-tornado {mode} plays its Tornado as a follow-up tap' in out.stdout, out.stdout + out.stderr

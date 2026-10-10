@@ -1,0 +1,10 @@
+base
+rv9 --rocket-value 9
+plc9 --rocket-value 9
+de9 --rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge
+de9_e9 --rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-value-min-elixir 9
+de9_idle --rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-value-idle on
+de9_lead --rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-value-lead on
+de11 --rocket-value 11 --rocket-value-mode damage --rocket-value-hitbox edge
+de7_e9 --rocket-value 7 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-value-min-elixir 9
+de9_e8 --rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-value-min-elixir 8

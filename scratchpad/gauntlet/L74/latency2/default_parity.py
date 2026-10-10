@@ -22,7 +22,12 @@ import pytest  # noqa: E402
 rev = sys.argv[1] if len(sys.argv) > 1 else "HEAD"
 old_src = subprocess.run(["git", "show", f"{rev}:scratchpad/gauntlet/L68/live_reader/live_play.py"], cwd=REPO,
                          capture_output=True, text=True, check=True).stdout
-old_path = LP_DIR / "_live_play_old_tmp.py"
+# the old copy lives in a temp dir OUTSIDE the repo; its one __file__ use (HERE, from which REPO and the log dir derive) is pinned
+# to the real live_reader directory so it behaves exactly as if it sat there
+assert "HERE = Path(__file__).resolve().parent" in old_src
+old_src = old_src.replace("HERE = Path(__file__).resolve().parent", f"HERE = Path({str(LP_DIR)!r})")
+tmpdir = tempfile.TemporaryDirectory()
+old_path = Path(tmpdir.name) / "_live_play_old_tmp.py"
 old_path.write_text(old_src, encoding="utf-8", newline="\n")
 try:
     spec = importlib.util.spec_from_file_location("_live_play_old_tmp", old_path)
@@ -83,4 +88,4 @@ try:
     print("DEFAULT_PARITY_PASS" if not bad else f"DEFAULT_PARITY_FAIL {bad}")
     raise SystemExit(1 if bad else 0)
 finally:
-    old_path.unlink(missing_ok=True)
+    tmpdir.cleanup()

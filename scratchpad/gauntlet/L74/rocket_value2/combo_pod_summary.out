@@ -1,0 +1,126 @@
+=== census evo,lad
+BASE (scout): n=480 (evo 240, lad 240) wins 337.0
+
+== cb7: simulated 88 of 480 (fires 71 = 0.148/match in 55 matches); wins -9.0 vs base | better 9 worse 18 (sign p=0.122) | win-rate delta -0.0187 [-0.0396,+0.0021] -> non-inferior (lower > -0.03): False
+   evo: simulated 45, net wins -4.0 (better 7 worse 11)
+   lad: simulated 43, net wins -5.0 (better 2 worse 7)
+   Tornado follow-ups (combo second tap): {'cancelled_first_unconfirmed': 8, 'fired': 63}
+   my tower HP left per match -69, enemy tower HP left +23 | controls (simulated, no fire): 33, differing from BASE: 0
+
+== cb7_ro: simulated 88 of 480 (fires 67 = 0.140/match in 55 matches); wins -9.0 vs base | better 7 worse 16 (sign p=0.093) | win-rate delta -0.0187 [-0.0396,+0.0000] -> non-inferior (lower > -0.03): False
+   evo: simulated 45, net wins -3.0 (better 4 worse 7)
+   lad: simulated 43, net wins -6.0 (better 3 worse 9)
+   my tower HP left per match -72, enemy tower HP left +90 | controls (simulated, no fire): 33, differing from BASE: 0
+
+== cb9: simulated 47 of 480 (fires 34 = 0.071/match in 30 matches); wins -1.0 vs base | better 3 worse 4 (sign p=1.000) | win-rate delta -0.0021 [-0.0125,+0.0083] -> non-inferior (lower > -0.03): True
+   evo: simulated 24, net wins +1.0 (better 2 worse 1)
+   lad: simulated 23, net wins -2.0 (better 1 worse 3)
+   Tornado follow-ups (combo second tap): {'fired': 31, 'cancelled_first_unconfirmed': 3}
+   my tower HP left per match -9, enemy tower HP left +2 | controls (simulated, no fire): 17, differing from BASE: 0
+
+== cb9_ro: simulated 47 of 480 (fires 39 = 0.081/match in 30 matches); wins -6.0 vs base | better 1 worse 7 (sign p=0.070) | win-rate delta -0.0125 [-0.0250,-0.0021] -> non-inferior (lower > -0.03): True
+   evo: simulated 24, net wins -1.0 (better 1 worse 2)
+   lad: simulated 23, net wins -5.0 (better 0 worse 5)
+   my tower HP left per match -66, enemy tower HP left +11 | controls (simulated, no fire): 17, differing from BASE: 0
+
+== cb5: simulated 153 of 480 (fires 157 = 0.327/match in 112 matches); wins -24.0 vs base | better 10 worse 34 (sign p=0.000) | win-rate delta -0.0500 [-0.0771,-0.0229] -> non-inferior (lower > -0.03): False
+   evo: simulated 81, net wins -9.0 (better 7 worse 16)
+   lad: simulated 72, net wins -15.0 (better 3 worse 18)
+   Tornado follow-ups (combo second tap): {'fired': 124, 'cancelled_first_unconfirmed': 33}
+   my tower HP left per match -168, enemy tower HP left +158 | controls (simulated, no fire): 41, differing from BASE: 0
+
+== cb5_ro: simulated 153 of 480 (fires 163 = 0.340/match in 112 matches); wins -24.0 vs base | better 11 worse 35 (sign p=0.001) | win-rate delta -0.0500 [-0.0771,-0.0229] -> non-inferior (lower > -0.03): False
+   evo: simulated 81, net wins -9.0 (better 9 worse 18)
+   lad: simulated 72, net wins -15.0 (better 2 worse 17)
+   my tower HP left per match -158, enemy tower HP left +190 | controls (simulated, no fire): 41, differing from BASE: 0
+
+== cb7_th: simulated 19 of 480 (fires 3 = 0.006/match in 3 matches); wins +0.0 vs base | better 0 worse 0 (sign p=1.000) | win-rate delta +0.0000 [+0.0000,+0.0000] -> non-inferior (lower > -0.03): True
+   evo: simulated 9, net wins +0.0 (better 0 worse 0)
+   lad: simulated 10, net wins +0.0 (better 0 worse 0)
+   Tornado follow-ups (combo second tap): {'fired': 2, 'cancelled_first_unconfirmed': 1}
+   my tower HP left per match +1, enemy tower HP left +5 | controls (simulated, no fire): 16, differing from BASE: 0
+
+== cb7_th_ro: simulated 19 of 480 (fires 4 = 0.008/match in 3 matches); wins +0.0 vs base | better 0 worse 0 (sign p=1.000) | win-rate delta +0.0000 [+0.0000,+0.0000] -> non-inferior (lower > -0.03): True
+   evo: simulated 9, net wins +0.0 (better 0 worse 0)
+   lad: simulated 10, net wins +0.0 (better 0 worse 0)
+   my tower HP left per match +0, enemy tower HP left +3 | controls (simulated, no fire): 16, differing from BASE: 0
+
+== cbon7_th: simulated 60 of 480 (fires 47 = 0.098/match in 44 matches); wins -9.0 vs base | better 1 worse 10 (sign p=0.012) | win-rate delta -0.0187 [-0.0333,-0.0063] -> non-inferior (lower > -0.03): False
+   evo: simulated 31, net wins -3.0 (better 1 worse 4)
+   lad: simulated 29, net wins -6.0 (better 0 worse 6)
+   Tornado follow-ups (combo second tap): {'fired': 2, 'cancelled_first_unconfirmed': 1}
+   my tower HP left per match -12, enemy tower HP left +39 | controls (simulated, no fire): 16, differing from BASE: 0
+
+== de7_th: simulated 58 of 480 (fires 45 = 0.094/match in 42 matches); wins -9.0 vs base | better 1 worse 10 (sign p=0.012) | win-rate delta -0.0187 [-0.0333,-0.0063] -> non-inferior (lower > -0.03): False
+   evo: simulated 31, net wins -3.0 (better 1 worse 4)
+   lad: simulated 27, net wins -6.0 (better 0 worse 6)
+   my tower HP left per match -13, enemy tower HP left +35 | controls (simulated, no fire): 16, differing from BASE: 0
+
+== de9_e8: simulated 43 of 480 (fires 31 = 0.065/match in 27 matches); wins -2.0 vs base | better 3 worse 5 (sign p=0.727) | win-rate delta -0.0042 [-0.0167,+0.0083] -> non-inferior (lower > -0.03): True
+   evo: simulated 18, net wins +0.0 (better 2 worse 2)
+   lad: simulated 25, net wins -2.0 (better 1 worse 3)
+   my tower HP left per match -47, enemy tower HP left +13 | controls (simulated, no fire): 16, differing from BASE: 0
+=== census air
+BASE (scout): n=240 (air 240) wins 131.0
+
+== cb7: simulated 54 of 240 (fires 49 = 0.204/match in 37 matches); wins +4.0 vs base | better 8 worse 4 (sign p=0.388) | win-rate delta +0.0167 [-0.0125,+0.0458] -> non-inferior (lower > -0.03): True
+   air: simulated 54, net wins +4.0 (better 8 worse 4)
+   Tornado follow-ups (combo second tap): {'fired': 33, 'cancelled_first_unconfirmed': 16}
+   my tower HP left per match +3, enemy tower HP left -45 | controls (simulated, no fire): 17, differing from BASE: 0
+
+== cb7_ro: simulated 54 of 240 (fires 54 = 0.225/match in 37 matches); wins -1.0 vs base | better 6 worse 7 (sign p=1.000) | win-rate delta -0.0042 [-0.0333,+0.0250] -> non-inferior (lower > -0.03): False
+   air: simulated 54, net wins -1.0 (better 6 worse 7)
+   my tower HP left per match -51, enemy tower HP left +16 | controls (simulated, no fire): 17, differing from BASE: 0
+
+== cb9: simulated 25 of 240 (fires 14 = 0.058/match in 13 matches); wins +3.0 vs base | better 5 worse 2 (sign p=0.453) | win-rate delta +0.0125 [-0.0083,+0.0333] -> non-inferior (lower > -0.03): True
+   air: simulated 25, net wins +3.0 (better 5 worse 2)
+   Tornado follow-ups (combo second tap): {'fired': 11, 'cancelled_first_unconfirmed': 3}
+   my tower HP left per match -18, enemy tower HP left -52 | controls (simulated, no fire): 12, differing from BASE: 0
+
+== cb9_ro: simulated 25 of 240 (fires 16 = 0.067/match in 13 matches); wins +1.0 vs base | better 2 worse 1 (sign p=1.000) | win-rate delta +0.0042 [-0.0083,+0.0208] -> non-inferior (lower > -0.03): True
+   air: simulated 25, net wins +1.0 (better 2 worse 1)
+   my tower HP left per match -28, enemy tower HP left -43 | controls (simulated, no fire): 12, differing from BASE: 0
+
+== cb5: simulated 84 of 240 (fires 69 = 0.287/match in 55 matches); wins -1.0 vs base | better 7 worse 8 (sign p=1.000) | win-rate delta -0.0042 [-0.0333,+0.0250] -> non-inferior (lower > -0.03): False
+   air: simulated 84, net wins -1.0 (better 7 worse 8)
+   Tornado follow-ups (combo second tap): {'fired': 53, 'cancelled_first_unconfirmed': 16}
+   my tower HP left per match -23, enemy tower HP left -24 | controls (simulated, no fire): 29, differing from BASE: 0
+
+== cb5_ro: simulated 84 of 240 (fires 67 = 0.279/match in 55 matches); wins -5.0 vs base | better 8 worse 13 (sign p=0.383) | win-rate delta -0.0208 [-0.0583,+0.0167] -> non-inferior (lower > -0.03): False
+   air: simulated 84, net wins -5.0 (better 8 worse 13)
+   my tower HP left per match -239, enemy tower HP left -27 | controls (simulated, no fire): 29, differing from BASE: 0
+
+== cb7_th: simulated 8 of 240 (fires 0 = 0.000/match in 0 matches); wins +0.0 vs base | better 0 worse 0 (sign p=1.000) | win-rate delta +0.0000 [+0.0000,+0.0000] -> non-inferior (lower > -0.03): True
+   air: simulated 8, net wins +0.0 (better 0 worse 0)
+   my tower HP left per match +0, enemy tower HP left +0 | controls (simulated, no fire): 8, differing from BASE: 0
+
+== cb7_th_ro: simulated 8 of 240 (fires 0 = 0.000/match in 0 matches); wins +0.0 vs base | better 0 worse 0 (sign p=1.000) | win-rate delta +0.0000 [+0.0000,+0.0000] -> non-inferior (lower > -0.03): True
+   air: simulated 8, net wins +0.0 (better 0 worse 0)
+   my tower HP left per match +0, enemy tower HP left +0 | controls (simulated, no fire): 8, differing from BASE: 0
+
+== cbon7_th: simulated 35 of 240 (fires 31 = 0.129/match in 27 matches); wins +0.0 vs base | better 4 worse 4 (sign p=1.000) | win-rate delta +0.0000 [-0.0250,+0.0250] -> non-inferior (lower > -0.03): True
+   air: simulated 35, net wins +0.0 (better 4 worse 4)
+   my tower HP left per match +9, enemy tower HP left -32 | controls (simulated, no fire): 8, differing from BASE: 0
+
+== de7_th: simulated 35 of 240 (fires 31 = 0.129/match in 27 matches); wins +0.0 vs base | better 4 worse 4 (sign p=1.000) | win-rate delta +0.0000 [-0.0250,+0.0208] -> non-inferior (lower > -0.03): True
+   air: simulated 35, net wins +0.0 (better 4 worse 4)
+   my tower HP left per match +9, enemy tower HP left -32 | controls (simulated, no fire): 8, differing from BASE: 0
+
+== de9_e8: simulated 23 of 240 (fires 15 = 0.062/match in 15 matches); wins -1.0 vs base | better 0 worse 1 (sign p=1.000) | win-rate delta -0.0042 [-0.0125,+0.0000] -> non-inferior (lower > -0.03): True
+   air: simulated 23, net wins -1.0 (better 0 worse 1)
+   my tower HP left per match +13, enemy tower HP left +28 | controls (simulated, no fire): 8, differing from BASE: 0
+=== cb7 vs cb7_ro
+first combo fires per census: {'evo': 28, 'lad': 27, 'air': 37} | paired with the Rocket-alone twin and followed to impact: 91
+combo : clump value at the decision  836.4 (9.19/fire, 4.0 bodies); in the blast at the decision 18%, at impact 61%; destroyed by the Rocket board 20% (1.82/fire), bodies gone 44
+ro    : clump value at the decision  836.4 (9.19/fire, 4.0 bodies); in the blast at the decision 18%, at impact 15%; destroyed by the Rocket board 16% (1.48/fire), bodies gone 35
+paired combo - Rocket alone: destroyed +0.34 elixir/fire [-0.08,+0.74]; value in the blast at impact +4.23/fire; combo better 27 / worse 18 of 91
+=== cb9 vs cb9_ro
+first combo fires per census: {'evo': 15, 'lad': 15, 'air': 13} | paired with the Rocket-alone twin and followed to impact: 41
+combo : clump value at the decision  483.5 (11.79/fire, 4.7 bodies); in the blast at the decision 21%, at impact 58%; destroyed by the Rocket board 21% (2.44/fire), bodies gone 22
+ro    : clump value at the decision  483.5 (11.79/fire, 4.7 bodies); in the blast at the decision 21%, at impact 18%; destroyed by the Rocket board 18% (2.11/fire), bodies gone 17
+paired combo - Rocket alone: destroyed +0.32 elixir/fire [-0.35,+0.98]; value in the blast at impact +4.73/fire; combo better 15 / worse 11 of 41
+=== cb7_th vs cb7_th_ro
+first combo fires per census: {'evo': 1, 'lad': 2} | paired with the Rocket-alone twin and followed to impact: 3
+combo : clump value at the decision   29.1 (9.70/fire, 5.7 bodies); in the blast at the decision 10%, at impact 59%; destroyed by the Rocket board 41% (3.99/fire), bodies gone 3
+ro    : clump value at the decision   29.1 (9.70/fire, 5.7 bodies); in the blast at the decision 10%, at impact 24%; destroyed by the Rocket board 49% (4.73/fire), bodies gone 6
+paired combo - Rocket alone: destroyed -0.74 elixir/fire [-1.20,-0.48]; value in the blast at impact +3.40/fire; combo better 0 / worse 3 of 3

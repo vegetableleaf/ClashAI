@@ -5330,11 +5330,23 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   Valkyrie, Goblin Barrel, Princess, Cannon, Wall Breakers, Ice Spirit; two-lane chip pressure; match pro replays on
 >   the 8 base keys (evo/hero forms may differ). First checks: corpus count; the generalist live ckpt in SIM on this deck
 >   before any training; RoyaleSim evo Dart Goblin / evo Skeleton Army; reader coverage; X-Bow-only decision options off.
+> * **OWNER 10-09 ~22:50 (night authorization):** retry the crashed split-game jobs; stop the pod when its work is done;
+>   "switch on anything from the pod that passes review"; a failed review gets ONE re-attempt. Owner runs live overnight.
+> * **Pod results 10-09 night:** pipeline-decisions FINAL 960 paired vs off 665: pd0 535 (-13.5 pp), pd1 576 (-9.3),
+>   pd2 603 (-6.5, p .0011); Tornado share of <=24-tick second cards 27/28/31% (pros 11.9) -> all FAIL, not switchable.
+>   **Rocket+Tornado cb9 (edge-cell Tornado bug fixed, shared follow-up path):** 480 paired vs base -0.42 pp
+>   [-1.46, +0.63] NON-INFERIOR; air pool +1.25 [0, +2.9]; blast share at impact 81% vs 27% lone; destroyed +0.16
+>   elixir/fire [-0.52, +0.78]; ~0.085 fires/match -> merge candidate (a2bee806, cb_merge_combo) -> blind review ->
+>   live. Split-game: patience evo/lad + sneaky evo done; rocket_tower evo/lad + sneaky lad crashed ("snapshot entity
+>   tables are inconsistent") -> fix + rerun (ace646c5) after E2. E2 started 22:47 EDT (AB_DONE was never written by
+>   the pd script; lead touched it). Pod drain watcher (pod_drain.sh, nohup) copies to C:/Users/benpe/pod_backup_20261010
+>   and stops the pod only when STOP_POD_APPROVED exists there (lead creates it once pod work + reviews are done).
 > * **Rocket+Tornado combo SIM (a67f26ce, f022854; pod; delay-0 wrapper):** pull works -- clump value in blast at impact
 >   61% (combo) vs 15% (lone Rocket, same moment), destroyed +.34 elixir/fire [-.08, +.74] (tanks survive ~1480 dmg).
 >   Wins: no combo arm beats its lone twin; cb9 -.2 pp [-1.3, +.8] (6% of matches fire), cb7 -1.9, cb5 -5.0; air pool cb7
 >   +1.7 [-1.3, +4.6], cb9 +1.3 (n.s.). 11-33% of combo Rockets refused at landing (undiagnosed). Next: cb9 under live
 >   conditions on bb239f1, refusal diagnosis, then blind verification -> owner's friendly test.
+> * **cb9 merge candidate (cb_merge_combo, f5ba591 + main c20ac0e):** LIVE_OPTIONS += `--rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-tornado only --follow-up-taps`; `--follow-up-taps` is now in EXTRA_LIVE_FLAGS and live_play refuses `--rocket-tornado on|only` without it. Awaiting blind review; deploy = copy the file into the main checkout.
 > * Pod lock-order bug (lead's protocol: cpu then gpu) stalled 4 SIM jobs ~50 min; README now says GPU lock FIRST.
 > * **simforms (a4649cc8, b35f9c2/50b07b9, not merged):** RoyaleSim gains Hero Ice Wizard (snowman freeze 46 @ lvl 11, 2
 >   elixir, 5 s) + X-Bow 61; Evo Tesla / Evo Knight were already correct (HANDOFF 09-29 note stale). Under

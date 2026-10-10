@@ -119,6 +119,25 @@ class TestFollowUps(unittest.TestCase):
         self.assertEqual(m.result()["follow_ups"], {"cancelled_slot_changed": 1})
         self.assertEqual(m.result()["plays_attempted"], 1)              # live cancels it too: nothing is tapped / refused
 
+    def test_every_follow_up_reaches_the_engine_at_its_own_landing_tick_while_a_later_one_waits(self):
+        # follow-up 1 (slot 5, 3 elixir) fires at once and lands with the first play at T + 26; follow-up 2 (slot 1, 4 elixir)
+        # cannot be paid from T + 26 (it was, before) until T + 40. The engine must not run on to T + 40 before it is sent follow-up 1.
+        poor = _Env(lambda t: 6.2 if t < T + 26 else (3.0 if t < T + 40 else 9.0))
+        m, env, _ = run([spec(slot=5, after=2), spec(slot=1, after=4, within_ticks=40)], env=poor)
+        self.assertEqual(acts(env)[:2], [T + D, T + D])                    # first play and follow-up 1, at their landing tick
+        self.assertEqual(len(acts(env)), 3)
+        self.assertEqual(acts(env)[2], m.result()["plays"][2]["land_tick"])  # follow-up 2 too: recorded tick == engine tick
+        self.assertEqual([p["land_tick"] for p in m.result()["plays"][:2]], [T + D, T + D])
+        self.assertGreaterEqual(acts(env)[2], T + 40)
+        # and the elixir the SIM believes it has after the landing is the engine's: follow-up 1 is no longer "outstanding"
+        self.assertEqual(m.result()["follow_ups"], {"fired": 2})
+
+    def test_follow_ups_are_judged_on_the_frame_grid_after_the_first_tap_returned(self):
+        # asked 3 ticks after the decision: the first frame at or after it is T + 4 (frames are 2 ticks apart from T), and it
+        # lands at the first play's landing + (4 - 2)
+        _, env, _ = run([spec(after=3)])
+        self.assertEqual(acts(env), [T + D, T + D + 2])
+
     def test_no_key_is_byte_identical_to_a_play_without_follow_ups(self):
         a, ea, ta = run(None, script=[PLAY, PLAY])
         b, eb, tb = AD._scripted([PLAY, PLAY], D, env=_Env())
@@ -131,11 +150,6 @@ class TestFollowUps(unittest.TestCase):
         self.assertEqual(spec(after=4)["require_first"], True)
         with self.assertRaises(ValueError):
             E.follow_up_spec(0, 0, -1)
-        side = E.SelfPlaySide.__new__(E.SelfPlaySide)
-        side._record = lambda p, d: T
-        side.env, side.cfg, side.delay = SimpleNamespace(hero_abilities=False), {"decide_every": 10}, D
-        with self.assertRaises(NotImplementedError):
-            side.apply(0.9, dict(PLAY, follow_ups=[spec()]))
 
 
 class TestSharedVerdict(unittest.TestCase):

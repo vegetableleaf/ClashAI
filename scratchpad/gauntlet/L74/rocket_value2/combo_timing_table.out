@@ -1,0 +1,14 @@
+d tiles from my king -> flight, window [lo,hi] (decision gap >= 4), request (after, within)
+  d= 5 flight  16 window (4, 4) request (6, 0)
+  d= 7 flight  22 window (4, 10) request (9, 3)
+  d= 9 flight  28 window (4, 16) request (12, 6)
+  d=11 flight  33 window (4, 21) request (14, 9)
+  d=13 flight  39 window (6, 27) request (18, 11)
+  d=15 flight  45 window (12, 33) request (24, 11)
+  d=17 flight  51 window (18, 39) request (30, 11)
+  d=20 flight  59 window (26, 47) request (38, 11)
+  d=23 flight  68 window (35, 56) request (47, 11)
+min gap  4: cells with a time 78.1%, with a window >= 5 ticks 67.0%
+min gap 10: cells with a time 60.6%, with a window >= 5 ticks 45.6%
+min gap 26: cells with a time 10.6%, with a window >= 5 ticks 2.9%
+min gap 30: cells with a time 2.9%, with a window >= 5 ticks 0.3%

@@ -1,0 +1,20 @@
+logs 70 of 482; play decisions rebuilt: 2637
+model gate p on 'A pending' states: median 0.074 (the same decisions before A: 0.407); tau by phase (0.35, 0.45, 0.55)
+share with p > tau (a threshold second play at the first window decision): 0.049  [n=128]
+  1x: 0.071 of 1039   (median elixir left after A: 2.8)
+  2x: 0.042 of 977   (median elixir left after A: 1.9)
+  OT: 0.021 of 621   (median elixir left after A: 1.6)
+by first card (A): share wanting a second play now | top second cards among those
+  Skeletons  n= 495 wants 0.103   second: Tornado 17, Log 11, Tesla 8, Knight 7
+  Knight     n= 464 wants 0.028   second: Tornado 7, IceWizard 3, Log 2, Skeletons 1
+  IceWizard  n= 462 wants 0.028   second: Tornado 9, Log 4
+  Log        n= 414 wants 0.065   second: Tornado 14, Knight 5, Skeletons 3, Tesla 2
+  Tesla      n= 322 wants 0.040   second: Log 4, Tornado 4, Skeletons 2, IceWizard 2
+  Xbow       n= 242 wants 0.000   second: 
+  Tornado    n= 201 wants 0.055   second: Tesla 3, IceWizard 3, Knight 2, Skeletons 2
+  Rocket     n=  37 wants 0.000   second: 
+top ordered pairs among 'wants': Skeletons->Tornado: 17, Log->Tornado: 14, Skeletons->Log: 11, IceWizard->Tornado: 9, Skeletons->Tesla: 8, Knight->Tornado: 7, Skeletons->Knight: 7, Skeletons->IceWizard: 5, Log->Knight: 5, Tesla->Log: 4
+
+PROS (icebow, 2244 sides): consecutive plays <= 24 ticks apart: 5435 of 93244 = 0.058 per play
+  top pairs (share of those): Log->Skeletons 0.063, Tesla->Skeletons 0.061, IceWizard->Skeletons 0.057, Skeletons->Log 0.043, Skeletons->IceWizard 0.042, Knight->Skeletons 0.037, IceWizard->Log 0.037, Skeletons->Knight 0.036, Tornado->Skeletons 0.035, Tesla->Log 0.032, Rocket->Tornado 0.029, Knight->Log 0.029, Skeletons->Tesla 0.028, Log->IceWizard 0.026
+  second card mix: Skeletons 0.282, Log 0.174, Knight 0.136, IceWizard 0.131, Tornado 0.119, Tesla 0.105, Rocket 0.029, Xbow 0.023

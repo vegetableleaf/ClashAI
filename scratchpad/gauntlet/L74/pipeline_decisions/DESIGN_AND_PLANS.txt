@@ -1,0 +1,100 @@
+--pipeline-decisions: design, why the earlier attempts failed, the SIM A/B plan (pod), the supervised live test plan.   2026-10-09
+Opt-in everywhere; default off = byte-identical (default_parity.py, 7/7 identical vs main).  Nothing deployed, nothing run on the emulator.
+
+1. WHAT IT IS
+   The MODEL may decide again while one of its own plays is tapped-but-unconfirmed (live) / decided-but-not-landed (SIM), instead of
+   the hard lock.  Rules (live and SIM share them; the verdict is e1_eval.follow_up_verdict, the same function the follow-up taps use):
+    * newest frame only; SIM: on the 2-tick reader-frame grid from the first frame after the first tap returned
+    * at most FOLLOW_MAX_OUT = 2 outstanding; no decision at the cap; the frame that shows the last landing never decides
+    * the pending play is a play already made: its bodies / spell on the look-ahead board (extrapolate.pending_board), my hand + next as
+      e1_eval.pending_hand shows them, my elixir minus its cost, newest past play, own_effects at its landing tick
+    * the pending card's hand position is masked (cost inf live, hand mask SIM): never re-picked, never re-tapped
+    * elixir = mine (afford_ticks / look-ahead ahead) minus every unconfirmed tap, in the mask AND in the final shared verdict
+    * gate / card / cell are the model's own; the decision options apply unchanged; lethal Rocket does not fire while a play is pending;
+      the hazard decoder's step = real ticks since the previous decision (0 right after a play)
+    * a refused first play changes nothing: the second decision stands on its own (live test: second play still tapped, own outcome)
+    * one knob, default 0: --pipeline-tau-delta X adds X to the gate threshold ONLY while a play is pending
+   Code: pipeline/e1_eval.py (Match + SelfPlaySide = the search_s0 benchmark path; SelfPlayMatch.due lands each play at its own tick),
+   pipeline/live_gen.py (pending view), live_gen_v2.py (tau delta, lethal), decision_options.py (per-row tau_delta / hazard step),
+   extrapolate.pending_board (ported from the failed v2 branch), search_s0.py (--pipeline-decisions / --pipeline-tau-delta /
+   --record-plays), live_play.py (--pipeline-decisions / --pipeline-tau-delta).
+
+2. THE TWO EARLIER ATTEMPTS (HANDOFF "PIPELINED SECOND PLAYS", branch worktree-agent-a613a3951c4d5dae9, L74/pipeline_plays) AND WHY THIS ONE
+   v1 (--pipeline-plays): SIM v3 960 paired OFF 628 vs ON 487 (114 better / 255 worse, p < 1e-4); with the pending bodies on the board 534.
+   v2: OFF 634 / pending view 570 (121/185, p .0003) / + hazard decoding while pending 584 (144/194, p .0076).
+   Measured causes: (a) consecutive plays <= 20 ticks .195 / .086 / .077 vs pros .044 (the pending lock had been a RATE LIMITER on the
+   threshold gate); (b) the second CARD: P(Tornado | Tornado affordable) at second plays .50 vs pros .16 (bot 30 ticks after a play .09-.12);
+   elixir at play 7.14 -> 6.79, at big-push start 5.13 -> 4.81; (c) diagnostics: the model on PRO second-play rows picks Tornado .111 (pros
+   .162), through the pending view .111-.121 -> neither model nor view over-picks; the SIM .45-.50 is SIM-specific (look-ahead with the
+   pending effect, SIM board states, or a gate x card selection effect); no single view part fixes it (largest: no look-ahead .353;
+   no elixir deduction .216); the decisive check (fork the SIM, land the pending card for real, re-score) was never run.
+   Cadence arm (decide_every 10 vs 4): push-start elixir 4.50 vs 4.00 -> any decision-rate increase overspends.
+   How this design answers them (and what it does NOT):
+    1. rate limiter: the window is still bounded (<= 2 outstanding; no decision at the cap; the landing frame never decides) AND the
+       gate sees the spent elixir + the play in its past, so p collapses right after a play (offline replay below: median gate p .46 ->
+       .09 on the state right after the model's own play).  The remaining risk is a gate that fires on p > tau within the window:
+       --pipeline-tau-delta is the one calibrated knob; the A/B arms pd1 / pd2 test it.  This is not a hardcoded second-play rule (default 0).
+    2. the card: the view is the complete one from v2 (bodies + projectile/area + hand/next + elixir + past + own_effects) PLUS the mask
+       and a verdict that cannot be bypassed; acceptance is judged on the Tornado share of second plays against the pros' (.119) --
+       it is a MEASURED bar, not assumed fixed.  The decisive "land it for real" check is a pod diagnostic (section 3, step 4).
+    3. overspending: elixir at play and at big-push start are in the bar (>= reference - 0.3).
+    4. byte-identical default, and the SIM runs the SAME rules (shared verdict, shared pending_hand, SelfPlaySide benchmark path) so the
+       A/B is fair; v1/v2 ran only the SIM on SelfPlaySide and the live path was a separate implementation.
+   Differences that remain between SIM and live: SIM decides on the frame grid only INSIDE a window (otherwise every 10 ticks), live
+   decides every frame; SIM has no hand-tap loss (live lost 1 board tap in 12 pairs); SIM B lands exactly delay ticks after its decision.
+
+2b. OFFLINE REPLAY ON LIVE LOGS (pd_replay.py, pd_replay.out; 70 logs of 10-08, 2,637 play decisions rebuilt as the model's own input,
+   then "A pending": hand slot -> next card, elixir minus cost, A newest past play, slot masked; bodies/spell and the board NOT advanced)
+    * gate p: median .407 on the decision states -> .074 right after the model's own play (it backs off by itself)
+    * p > tau (the deployed phase thresholds) at the first window decision: 4.9% of plays (1x 7.1%, 2x 4.2%, OT 2.1%); pros: 5.8% of consecutive
+      plays are <= 24 ticks apart.  By first card: Skeletons 10.3%, Log 6.5%, Tornado 5.5%, Tesla 4.0%, Knight 2.8%, IceWizard 2.8%, Xbow 0, Rocket 0.
+    * the second card among those wants: Tornado 40% (51 of 128) vs the pros' 12% of second plays -- the SIM's Tornado over-pick shows up
+      on LIVE states too (c: measured), so it is the model's own gate x card selection, not a SIM artefact.  Top pairs: Skeletons->Tornado 17,
+      Log->Tornado 14, Skeletons->Log 11, IceWizard->Tornado 9, Skeletons->Tesla 8 (pros: Log->Skeletons, Tesla->Skeletons, IceWizard->Skeletons).
+    * limits: one frame of the window (the state does not evolve), no pending bodies, next card unknown.  The window has ~12 decisions, so the
+      real rate is >= this; the SIM A/B measures it.
+
+3. SIM A/B PLAN (RunPod pod; pod_pipeline_decisions.sh, pod-ready, all paths env-driven)
+   step 1  PHASE=pre   unit tests + REAL-engine smoke (4 seeds x {off, pd0} x {evo, lad}): fails fast if the pending bodies / spell path
+                        (extrapolate.pending_board, Match._pending_raw) cannot run on RoyaleSim, if pd0 shows 0 pending decisions, if a
+                        model decision is ever blocked by the verdict (mask failure), or if a landing precedes its decision.
+   step 2  PHASE=ab    arms off, pd0, pd1 (+0.10), pd2 (+0.20); census EVO + ladder LAD; seeds 0:480 -> 960 paired per arm; live checkpoint
+                        41b52a83 + the deployed LIVE_OPTIONS decision flags (sim_flags.py strips the live-only ones); GEN v1 sampling opponents
+                        T .3; 30 processes (TOTAL), arms x census in parallel.  Cost: a pending window = ~12 extra decisions (2-tick grid):
+                        expect ~1.6-2x the compute of the OFF arm; run pd0 + off first (SEEDS=0:240) if the pod budget is tight.
+   step 3  PHASE=sum   pd_ab_summary.py: paired wins (+ sign test, per census), <= 24-tick pair share vs pros (.058), second-card mix vs pros,
+                        elixir at play, pending decisions / second plays per match, and the BAR line (wins >= ref - 1.5 pp AND pair share
+                        <= 2x pros AND elixir at play >= ref - 0.3 AND Tornado share <= 2x pros).  The bar is written before the run.
+   step 4  (only if pd0 or pd1 passes the bar, or if pd0 fails ONLY on the Tornado share): the decisive check the earlier worker never ran --
+                        pipeline/branching.py fork_into at a pending decision, land the pending play for real in the fork, re-score the
+                        model on the forked state, compare card choice / gate p with the pending-view state (view error vs model error).
+                        Not built yet (needs the fork helpers' pod copy); the harness for it is the existing search_s0 fork path.
+   Decision rules: pd0 PASS -> offer the live test (section 4); pd0 FAIL but pd1/pd2 PASS -> the knob is the finding, ask the owner
+   (it is a gate-threshold shift while pending, not a card rule); all FAIL -> close the idea for the model, keep --follow-up-taps for
+   planned combos.
+
+4. SUPERVISED LIVE TEST (friendlies vs the owner's 2nd account "ClashAI"; the owner accepts invites by hand; no nav change)
+   Preconditions: SIM step 2 not required for a first LOOK, but the live test is a look, never a deployment.  Offline gates green
+   (pytest list in the report, default_parity DEFAULT_PARITY_PASS, `live_play.py --check --pipeline-decisions` LIVE_CHECK_PASS with
+   "pipeline_decisions": true).  Ranked bot stopped between matches (scratchpad/gauntlet/L70/live/stop_live.sh), no live_play.py left,
+   MuMu open on the main menu, no other GPU/CPU job.
+   START THE BOT BEFORE THE BATTLE CLOCK RUNS (the coordinator's finding: attaching after the match ended stopped two runs on
+   battle_over_hands_visible at the results screen).  The loop waits for the clock (event waiting_clock at tick 0) and never decides or
+   stops before it runs.  Untested here: whether the reader process survives a long idle on the MENU (reader_closed is retried 4x, then the
+   run stops); if it stops that way, start it right after the invite is accepted, during the loading screen (as the ladder loop does):
+      icebow/.venv/Scripts/python.exe scratchpad/gauntlet/L68/live_reader/live_play.py --matches 1 --max-seconds 400 --pipeline-decisions
+      (+ the deployed LIVE_OPTIONS automatically; same --device the ranked supervisor uses: cpu)
+   then the owner sends / accepts the friendly invite; one run per match (two --matches 1 runs back to back are fine).
+   Matches: 3.  If the SIM arm pd1/pd2 won, use its --pipeline-tau-delta for matches 2-3; otherwise all three at 0.
+   WATCH (console + log; read with pd_live_report.py after each match):
+    - `play` events with pipelined:true (the second play) and their gap to the first (the lock was >= 26 ticks; expect 2-24)
+    - `pipeline_blocked` events: slot_busy / outstanding = the MASK failed (bug: stop); unaffordable = mask and verdict disagree (stop, report)
+    - unconfirmed / refused: pipelined plays refused > 1 of 5, or any 5_unconfirmed, or tap_timeout -> stop
+    - no tap on a slot that already has an outstanding tap; confirmed name == planned name for both taps
+    - pairs <= 24 ticks as a share of consecutive plays vs the pros' .058 (ranked baseline 0 by construction): > .12 or Tornado > 1/4 of
+      second plays = the SIM failure mode showing up live
+    - the usual: plays/match not above ~1.5x a ranked match, elixir at play not collapsing, no leak
+   GO  (look only): >= 4 of 5 pipelined plays confirmed, no mask failure, pair share <= 2x pros, card mix sane in >= 12 pairs.
+   STOP/REVERT: Ctrl-C (the finally block closes the persistent shell and the reader); restart the ranked supervisor as before (it never passes
+   --pipeline-decisions); nothing else was changed.  A lost board tap leaves a card selected (seen 1 of 12 in the follow-up test): the next
+   hand tap changes the selection, nothing to do.

@@ -1,0 +1,364 @@
+{
+"rv9": {
+"rocket_value": 9.0
+},
+"rv11": {
+"rocket_value": 11.0
+},
+"dc9": {
+"rocket_value": 9.0,
+"rocket_value_mode": "damage"
+},
+"ce9": {
+"rocket_value": 9.0,
+"rocket_value_hitbox": "edge"
+},
+"de7": {
+"rocket_value": 7.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge"
+},
+"de8": {
+"rocket_value": 8.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge"
+},
+"de9": {
+"rocket_value": 9.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge"
+},
+"de10": {
+"rocket_value": 10.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge"
+},
+"de11": {
+"rocket_value": 11.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge"
+},
+"de12": {
+"rocket_value": 12.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge"
+},
+"de13": {
+"rocket_value": 13.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge"
+},
+"de9_e8": {
+"rocket_value": 9.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_min_elixir": 8.0
+},
+"de9_e9": {
+"rocket_value": 9.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_min_elixir": 9.0
+},
+"de9_e9.5": {
+"rocket_value": 9.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_min_elixir": 9.5
+},
+"de7_e9": {
+"rocket_value": 7.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_min_elixir": 9.0
+},
+"de8_e9": {
+"rocket_value": 8.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_min_elixir": 9.0
+},
+"de7_idle": {
+"rocket_value": 7.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_idle": "on"
+},
+"de9_idle": {
+"rocket_value": 9.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_idle": "on"
+},
+"de9_idle_e8": {
+"rocket_value": 9.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_idle": "on",
+"rocket_value_min_elixir": 8.0
+},
+"ke5": {
+"rocket_value": 5.0,
+"rocket_value_mode": "kill",
+"rocket_value_hitbox": "edge"
+},
+"ke6": {
+"rocket_value": 6.0,
+"rocket_value_mode": "kill",
+"rocket_value_hitbox": "edge"
+},
+"ke7": {
+"rocket_value": 7.0,
+"rocket_value_mode": "kill",
+"rocket_value_hitbox": "edge"
+},
+"ke8": {
+"rocket_value": 8.0,
+"rocket_value_mode": "kill",
+"rocket_value_hitbox": "edge"
+},
+"ke9": {
+"rocket_value": 9.0,
+"rocket_value_mode": "kill",
+"rocket_value_hitbox": "edge"
+},
+"de9_y21": {
+"rocket_value": 9.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_min_y": 21.0
+},
+"de7_y21": {
+"rocket_value": 7.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_min_y": 21.0
+},
+"de9_y23": {
+"rocket_value": 9.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_min_y": 23.0
+},
+"de7_y23": {
+"rocket_value": 7.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_min_y": 23.0
+},
+"de9_lead": {
+"rocket_value": 9.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_lead": "on"
+},
+"de11_lead": {
+"rocket_value": 11.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_lead": "on"
+},
+"de9_drift": {
+"rocket_value": 9.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_lead": "drift"
+},
+"de9_blend": {
+"rocket_value": 9.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_lead": "blend"
+},
+"de11_drift": {
+"rocket_value": 11.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_lead": "drift"
+},
+"de11_blend": {
+"rocket_value": 11.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_lead": "blend"
+},
+"de7_l3": {
+"rocket_value": 7.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_max_left": 3.0
+},
+"de9_l3": {
+"rocket_value": 9.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_max_left": 3.0
+},
+"de9_l5": {
+"rocket_value": 9.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_max_left": 5.0
+},
+"ke6_l3": {
+"rocket_value": 6.0,
+"rocket_value_mode": "kill",
+"rocket_value_hitbox": "edge",
+"rocket_value_max_left": 3.0
+},
+"ke5_l2": {
+"rocket_value": 5.0,
+"rocket_value_mode": "kill",
+"rocket_value_hitbox": "edge",
+"rocket_value_max_left": 2.0
+},
+"ke7_l3": {
+"rocket_value": 7.0,
+"rocket_value_mode": "kill",
+"rocket_value_hitbox": "edge",
+"rocket_value_max_left": 3.0
+},
+"ke6_l3_e8": {
+"rocket_value": 6.0,
+"rocket_value_mode": "kill",
+"rocket_value_hitbox": "edge",
+"rocket_value_max_left": 3.0,
+"rocket_value_min_elixir": 8.0
+},
+"de7_l3_e8": {
+"rocket_value": 7.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_max_left": 3.0,
+"rocket_value_min_elixir": 8.0
+},
+"de7_l3_y21": {
+"rocket_value": 7.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_max_left": 3.0,
+"rocket_value_min_y": 21.0
+},
+"de7_l3_idle": {
+"rocket_value": 7.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_max_left": 3.0,
+"rocket_value_idle": "on"
+},
+"de5_th": {
+"rocket_value": 5.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_threat": "on"
+},
+"de7_th": {
+"rocket_value": 7.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_threat": "on"
+},
+"de9_th": {
+"rocket_value": 9.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_threat": "on"
+},
+"de7_th_l3": {
+"rocket_value": 7.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_threat": "on",
+"rocket_value_max_left": 3.0
+},
+"de7_th_idle": {
+"rocket_value": 7.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_threat": "on",
+"rocket_value_idle": "on"
+},
+"ke5_th": {
+"rocket_value": 5.0,
+"rocket_value_mode": "kill",
+"rocket_value_hitbox": "edge",
+"rocket_value_threat": "on"
+},
+"ke7_th": {
+"rocket_value": 7.0,
+"rocket_value_mode": "kill",
+"rocket_value_hitbox": "edge",
+"rocket_value_threat": "on"
+},
+"de7_th_y21": {
+"rocket_value": 7.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_threat": "on",
+"rocket_value_min_y": 21.0
+},
+"de7_y21_e8": {
+"rocket_value": 7.0,
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge",
+"rocket_value_min_y": 21.0,
+"rocket_value_min_elixir": 8.0
+},
+"cb7": {
+"rocket_value": 7.0,
+"rocket_tornado": "only",
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge"
+},
+"cb7_ro": {
+"rocket_value": 7.0,
+"rocket_tornado": "rocket_only",
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge"
+},
+"cb9": {
+"rocket_value": 9.0,
+"rocket_tornado": "only",
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge"
+},
+"cb9_ro": {
+"rocket_value": 9.0,
+"rocket_tornado": "rocket_only",
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge"
+},
+"cb7_th": {
+"rocket_value": 7.0,
+"rocket_tornado": "only",
+"rocket_value_threat": "on",
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge"
+},
+"cb7_th_ro": {
+"rocket_value": 7.0,
+"rocket_tornado": "rocket_only",
+"rocket_value_threat": "on",
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge"
+},
+"cbon7_th": {
+"rocket_value": 7.0,
+"rocket_tornado": "on",
+"rocket_value_threat": "on",
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge"
+},
+"cb5": {
+"rocket_value": 5.0,
+"rocket_tornado": "only",
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge"
+},
+"cb5_ro": {
+"rocket_value": 5.0,
+"rocket_tornado": "rocket_only",
+"rocket_value_mode": "damage",
+"rocket_value_hitbox": "edge"
+}
+}

@@ -1,0 +1,31 @@
+BASE (scout): n=312 (evo 156, lad 156) wins 223.0
+
+== rv9: simulated 70 of 312 (fires 72 = 0.231/match in 48 matches); wins -9.0 vs base | better 4 worse 13 (sign p=0.049) | win-rate delta -0.0288 [-0.0545,-0.0032] -> non-inferior (lower > -0.03): False
+   evo: simulated 36, net wins -4.0 (better 3 worse 7)
+   lad: simulated 34, net wins -5.0 (better 1 worse 6)
+   my tower HP left per match -74, enemy tower HP left +75 | controls (simulated, no fire): 23, differing from BASE: 0
+
+== plc9: simulated 72 of 312 (fires 77 = 0.247/match in 49 matches); wins -25.0 vs base | better 1 worse 26 (sign p=0.000) | win-rate delta -0.0801 [-0.1122,-0.0513] -> non-inferior (lower > -0.03): False
+   evo: simulated 35, net wins -10.0 (better 1 worse 11)
+   lad: simulated 37, net wins -15.0 (better 0 worse 15)
+   my tower HP left per match -224, enemy tower HP left +271 | controls (simulated, no fire): 24, differing from BASE: 0
+
+== de9: simulated 62 of 312 (fires 57 = 0.183/match in 37 matches); wins -8.0 vs base | better 4 worse 12 (sign p=0.077) | win-rate delta -0.0256 [-0.0513,-0.0032] -> non-inferior (lower > -0.03): False
+   evo: simulated 32, net wins -5.0 (better 3 worse 8)
+   lad: simulated 30, net wins -3.0 (better 1 worse 4)
+   my tower HP left per match -20, enemy tower HP left +70 | controls (simulated, no fire): 25, differing from BASE: 0
+
+== de9_e8: simulated 32 of 312 (fires 9 = 0.029/match in 8 matches); wins -1.0 vs base | better 1 worse 2 (sign p=1.000) | win-rate delta -0.0032 [-0.0160,+0.0064] -> non-inferior (lower > -0.03): True
+   evo: simulated 17, net wins +0.0 (better 1 worse 1)
+   lad: simulated 15, net wins -1.0 (better 0 worse 1)
+   my tower HP left per match +9, enemy tower HP left +17 | controls (simulated, no fire): 24, differing from BASE: 0
+
+== de7_th: simulated 34 of 312 (fires 12 = 0.038/match in 11 matches); wins -2.0 vs base | better 0 worse 2 (sign p=0.500) | win-rate delta -0.0064 [-0.0160,+0.0000] -> non-inferior (lower > -0.03): True
+   evo: simulated 17, net wins +0.0 (better 0 worse 0)
+   lad: simulated 17, net wins -2.0 (better 0 worse 2)
+   my tower HP left per match -15, enemy tower HP left +39 | controls (simulated, no fire): 23, differing from BASE: 0
+
+== de5_th: simulated 6 of 312 (fires 5 = 0.016/match in 4 matches); wins +0.0 vs base | better 0 worse 0 (sign p=1.000) | win-rate delta +0.0000 [+0.0000,+0.0000] -> non-inferior (lower > -0.03): True
+   evo: simulated 6, net wins +0.0 (better 0 worse 0)
+   lad: simulated 0, net wins +0.0 (better 0 worse 0)
+   my tower HP left per match -6, enemy tower HP left +2 | controls (simulated, no fire): 3, differing from BASE: 0
