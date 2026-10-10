@@ -5403,6 +5403,14 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   observation confirmed; TowerRefine graft restores most, not all.
 > * Delay-vs-prevent (owner): 84% of live Log/Tornado plays are the model's own choice (p_play >= .35); rules add a
 >   little (16.3% vs 10.7% for defenders) (L74/deploy/delay_vs_prevent.py). Weekend pod plan proposed to owner.
+> * **WEEKEND QUEUE LAUNCHED 10-10 16:00 UTC** (owner-approved; pod 64.247.206.76:17497, driver PID 13498; branch
+>   l74-weekend 0d036ee in C:/Users/benpe/cb_weekend, not merged). Stages S2 graft-vs-old 960 (checker AUTO-REVERTS only
+>   if CI upper < 0 -- owner rule), S4, S3 prevent-vs-delay, S8 Log Bait, S7 royalesim 0.1.25, S9 drill forks (D1-D4,
+>   D9, D10), S10 drill training on the live graft (KL-anchored), S5 E5 x3 seeds, S6 own-cycle by RL. ~12-13 h.
+>   Laptop checker PID 262613 posts each SUMMARY to Discord, streams results to C:/Users/benpe/pod_backup_weekend/.
+>   Pod stays ON. Owner archetypes (live, 921 matches, result from final towers): golem 27% (37), lava 30% (23), pekka+
+>   bridge 38% (13), RG 50% (22), RG+Monk 90% (10), hyperbait 62% (42); the 5 owner-named weighted to 60% of training
+>   opponents. S4 (done): tower Rocket loses at >= 8 elixir too (-11.3 pp, n 204, CI < 0) and -14.5 below 8.
 > * **Rocket+Tornado combo SIM (a67f26ce, f022854; pod; delay-0 wrapper):** pull works -- clump value in blast at impact
 >   61% (combo) vs 15% (lone Rocket, same moment), destroyed +.34 elixir/fire [-.08, +.74] (tanks survive ~1480 dmg).
 >   Wins: no combo arm beats its lone twin; cb9 -.2 pp [-1.3, +.8] (6% of matches fire), cb7 -1.9, cb5 -5.0; air pool cb7
