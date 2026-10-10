@@ -5379,6 +5379,11 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   nav fix for that popup owed (Tuesday). Pod: drain streams results to pod_backup_20261010 then stops the pod
 >   (STOP_POD_APPROVED set 07:3x). Next session: re-setup pod from POD_README; placebo fork; heads re-stack for E4-type
 >   arms; flying-unit input; Log Bait branch (Tuesday).
+> * **10-10 ~09:4x (owner): E4 u20 is the LIVE checkpoint** (CKPT_OVERRIDE -> icebow/data/bench/rl_royale/rdef_e4/
+>   rdef_e4_u0020.pt, sha 7fb66681; --check PASS with full LIVE_OPTIONS). No CellRefine/TowerRefine heads: SIM ~2-4 pp
+>   below the previous live (646 vs 665, p .34); freezes -17%. Judge live by freezes/match + drill moments. Undo:
+>   CKPT_OVERRIDE.pre_e4_backup. Chest posts now need the item title band (no unopened-chest frames; 86801b3).
+>   Placebo fork (worker a45c79e4) running on the LAPTOP (pod stopped 07:42), rocket_tower moments, B = model's 2nd choice.
 > * **Rocket+Tornado combo SIM (a67f26ce, f022854; pod; delay-0 wrapper):** pull works -- clump value in blast at impact
 >   61% (combo) vs 15% (lone Rocket, same moment), destroyed +.34 elixir/fire [-.08, +.74] (tanks survive ~1480 dmg).
 >   Wins: no combo arm beats its lone twin; cb9 -.2 pp [-1.3, +.8] (6% of matches fire), cb7 -1.9, cb5 -5.0; air pool cb7
