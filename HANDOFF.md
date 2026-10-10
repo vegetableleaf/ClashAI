@@ -5389,6 +5389,11 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   projectile_target_* input (5 tensors), CellRefine, TowerRefine. Grafted all 42 add-on tensors from the live ckpt onto
 >   E4 u20 (its trunk drifted 0.74% of |weights| from the fast base). --check PASS. UNTESTED in SIM (pod stopped): the
 >   add-ons were trained on the fast-base trunk. Script: L74/deploy/graft_heads.py. Undo: CKPT_OVERRIDE.pre_e4_backup.
+> * **10-10 10:16 REVERTED to the previous live model** (owner: E4 graft 'horrible': wasted Tornados, towers lost in
+>   the first minute, elixir leaks while run over). Measured on its 5 live matches vs 317 old-model matches
+>   (L74/deploy/e4_live_check.py): tower lost <60 s 20% vs 7%; s at full elixir with an enemy on our half 3.0 vs 1.2;
+>   Tornados 3.0 vs 2.1/match. n=5: direction matches the owner, not significant. SIM said E4 froze LESS (.66 vs .80)
+>   -> another sim-vs-live gap (cf. D3). Graft vs E4-trunk not separated. Graft ckpt kept (CKPT_OVERRIDE.e4_graft).
 > * **Rocket+Tornado combo SIM (a67f26ce, f022854; pod; delay-0 wrapper):** pull works -- clump value in blast at impact
 >   61% (combo) vs 15% (lone Rocket, same moment), destroyed +.34 elixir/fire [-.08, +.74] (tanks survive ~1480 dmg).
 >   Wins: no combo arm beats its lone twin; cb9 -.2 pp [-1.3, +.8] (6% of matches fire), cb7 -1.9, cb5 -5.0; air pool cb7
