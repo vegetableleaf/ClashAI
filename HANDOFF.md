@@ -5323,6 +5323,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   live / 11.4 SIM / 10.4 pros (27-30% only in pipeline-decisions arms). Too rare to train: D6b, D6 DO, D8 DO (need
 >   forced-DO forks), D1 HOLD borderline. Phase 2 HELD; next: SIM rates for every drill + input-swap on live D3 moments
 >   (supplement on/off split first). Pending copy-back: E2 results (/workspace/results/defence/) when they exist.
+>   Usage at 10% (owner, 10-09 evening): all workers STOPPED; pod jobs continue unattended (ab -> rocket live2 ->
+>   mech_fork (MECH_DONE) -> E2; board probe on gpu.lock). Morning: copy back /workspace/results/{pipeline,rocket,
+>   mech_fork,defence,board_probe} BEFORE any pod stop, one summary. Owner runs live overnight (log-air block on).
+> * **OWNER: new branch, Log Bait deck (start Tuesday 10-13 after usage reset):** Evo Dart Goblin, Evo Skeleton Army,
+>   Valkyrie, Goblin Barrel, Princess, Cannon, Wall Breakers, Ice Spirit; two-lane chip pressure; match pro replays on
+>   the 8 base keys (evo/hero forms may differ). First checks: corpus count; the generalist live ckpt in SIM on this deck
+>   before any training; RoyaleSim evo Dart Goblin / evo Skeleton Army; reader coverage; X-Bow-only decision options off.
 > * **Rocket+Tornado combo SIM (a67f26ce, f022854; pod; delay-0 wrapper):** pull works -- clump value in blast at impact
 >   61% (combo) vs 15% (lone Rocket, same moment), destroyed +.34 elixir/fire [-.08, +.74] (tanks survive ~1480 dmg).
 >   Wins: no combo arm beats its lone twin; cb9 -.2 pp [-1.3, +.8] (6% of matches fire), cb7 -1.9, cb5 -5.0; air pool cb7
