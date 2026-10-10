@@ -414,3 +414,17 @@ def test_live_play_refuses_rocket_tornado_without_follow_up_taps(tmp_path):
     for mode in ('on', 'only'):
         out = run_live_play('--check', '--rocket-value', '9', '--rocket-tornado', mode, '--live-options-file', str(f))
         assert out.returncode == 2 and f'--rocket-tornado {mode} plays its Tornado as a follow-up tap' in out.stdout, out.stdout + out.stderr
+
+
+def test_bait_deck_options_are_generic_and_leave_xbow_and_spell_options_at_defaults():
+    f = REPO / 'scratchpad/gauntlet/L70/live/bait/LIVE_OPTIONS'      # the Log Bait deck has no X-Bow / Rocket / Log / Tornado
+    ap = parser(f); ap.add_argument('--own-effects', action='store_true')
+    a, rec = parse_with_live_options(ap, [])
+    opts = options_from_config(config_from_args(a))
+    plain, _ = parse([], f.with_name('missing'))
+    for k in ('xbow_class', 'xbow_class_floor', 'xbow_dead_lane', 'spell_aim', 'log_aim', 'log_air', 'lethal_rocket',
+              'lethal_log', 'rocket_dead_target', 'rocket_value', 'rocket_tornado', 'gate_decode', 'card_levels', 'tau_phase'):
+        assert getattr(opts, k) == getattr(plain, k), k
+    assert (a.fast_input, a.tap_gap_ms, a.afford_ticks, a.extrapolate, a.identity_ext, a.hero_ability_spec, a.own_effects) == \
+        (True, 0, 23, 24, 'on', 'supplement', True)
+    assert not a.follow_up_taps and rec['explicit'] == [] and rec['status'] == 'applied'

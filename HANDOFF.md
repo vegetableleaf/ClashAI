@@ -5411,6 +5411,20 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   Pod stays ON. Owner archetypes (live, 921 matches, result from final towers): golem 27% (37), lava 30% (23), pekka+
 >   bridge 38% (13), RG 50% (22), RG+Monk 90% (10), hyperbait 62% (42); the 5 owner-named weighted to 60% of training
 >   opponents. S4 (done): tower Rocket loses at >= 8 elixir too (-11.3 pp, n 204, CI < 0) and -14.5 below 8.
+> * **LIVE DECK SWITCH + LOG BAIT SPECIALIST (owner 10-10).** `bash scratchpad/gauntlet/L70/live/start_live.sh [icebow|bait] [--check]`
+>   (default icebow = byte-identical to before). The choice is persisted in `L70/live/LIVE_DECK`, so supervisor restarts
+>   (`L74/deploy/restart_live.py` just re-runs run_live.sh; unchanged) keep the deck; `live_config.sh` turns it into DECK_ARGS
+>   (bait = `--ckpt-override-file L70/live/bait/CKPT_OVERRIDE --live-options-file L70/live/bait/LIVE_OPTIONS`; refuses if a bait file
+>   is missing) and run_live.sh logs `deck=` in its `[sup] start` line. bait/CKPT_OVERRIDE = the generalist (towerref_w2) until the
+>   specialist exists; bait/LIVE_OPTIONS = generic options only (no X-Bow / Rocket / Log / Tornado rule). Both `--check`s print
+>   LIVE_CHECK_PASS; test_live_options.py pins the bait file. The three scripts were replaced by atomic mv while the supervisor ran.
+>   TRAINING (owner: base cards only, so the checkpoint inherits when every card is unlocked on the 2nd account): pod stage **S11_bait**
+>   (branch l74-weekend weekend/s11_*.sh, bait_base_rl.py): RL 60 updates from rseries_r3c_u0030_barrel, learner deck FIXED to Dart Goblin,
+>   Skeleton Army, Valkyrie, Goblin Barrel, Princess, Cannon, Wall Breakers, Ice Spirit in BASE forms (S8 used evo Dart Goblin / Skeleton
+>   Army; the deck now differs), archetype-weighted census opponents, ckpt every 10; then graft the add-on heads and eval u30/u60 (+graft)
+>   vs the untrained generalist, 480 paired games each, both playing Log Bait. Gated on CHAIN_DONE (gpu.lock then cpu.lock); results
+>   /workspace/results/wk/S11_bait/, backed up to C:/Users/benpe/pod_backup_weekend/bait/ by s11_checker.sh. S8 baseline: the generalist
+>   already wins 93% as Log Bait in the sim, so expect a small measurable gain at best.
 > * **Rocket+Tornado combo SIM (a67f26ce, f022854; pod; delay-0 wrapper):** pull works -- clump value in blast at impact
 >   61% (combo) vs 15% (lone Rocket, same moment), destroyed +.34 elixir/fire [-.08, +.74] (tanks survive ~1480 dmg).
 >   Wins: no combo arm beats its lone twin; cb9 -.2 pp [-1.3, +.8] (6% of matches fire), cb7 -1.9, cb5 -5.0; air pool cb7

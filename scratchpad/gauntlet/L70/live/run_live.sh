@@ -37,9 +37,9 @@ if [ "$(running)" -gt 0 ]; then
   fi
 fi
 while [ ! -e $L/STOP ]; do
-  echo "[sup] start (restarts used $restarts/$MAX) $(date)" >> $L/supervisor.log
+  echo "[sup] start (restarts used $restarts/$MAX) deck=$LIVE_DECK_EFFECTIVE $(date)" >> $L/supervisor.log
   $PY -u "$LIVE_ENTRY" --ladder --matches 400 \
-    "${CKPT_ARGS[@]}" --tau 0.35 --no-anti-leak --max-seconds 600 \
+    "${CKPT_ARGS[@]}" "${DECK_ARGS[@]}" --tau 0.35 --no-anti-leak --max-seconds 600 \
     --clip-every 1800 --overlay reader --stop-file $L/STOP ${LIVE_ARGS:-} >> $L/overnight.out 2>&1   # LIVE_ARGS: owner A/Bs, e.g. "--tau-alternate 0.35 0.45"
   rc=$?
   why=$(last_stop)
