@@ -36,6 +36,7 @@ from __future__ import annotations
 import json
 import random
 import subprocess
+import threading
 import time
 import urllib.request
 import uuid
@@ -551,7 +552,13 @@ class LadderNavRunner:
                             # first real MuMu frames of the trophy-road reward choice
                             shots.mkdir(exist_ok=True)
                             tag = "" if p[1] in ("tap_through", "battle") else f"_{p[1]}"
-                            cv2.imwrite(str(shots / f"{stamp}_{nav.taps:02d}{tag}_{int(time.time() * 1000) % 10**6:06d}.png"), img)
+                            png = shots / f"{stamp}_{nav.taps:02d}{tag}_{int(time.time() * 1000) % 10**6:06d}.png"
+                            cv2.imwrite(str(png), img)
+                            if p[1] == "tap_through" and nav.via_main and not self.dry_run:
+                                # owner 2026-10-10: every chest screen the bot taps through -> Discord (off-thread)
+                                from discord_clip import post_clip
+                                threading.Thread(target=post_clip, args=(png, "GAMBLING RESULT", "image/png"),
+                                                 daemon=True).start()
                         if p[1] == "reward_card":
                             W(event="reward_pick", side=("left", "right")[nav.pick], point=p[2], seed=self.seed)
                             print(f"[ladder] reward choice: random pick = {('left', 'right')[nav.pick]} card", flush=True)

@@ -89,7 +89,7 @@ def encode_clip(video: Path, output: Path, seconds: float) -> None:
         raise
 
 
-def post_clip(clip: Path, caption: str) -> bool:
+def post_clip(clip: Path, caption: str, mime: str = "video/mp4") -> bool:
     """Never expose server response text, exception text, or the secret URL."""
     try:
         if not 0 < clip.stat().st_size <= MAX_BYTES:
@@ -107,7 +107,7 @@ def post_clip(clip: Path, caption: str) -> bool:
         body = (f"--{boundary}\r\nContent-Disposition: form-data; name=\"payload_json\"\r\n"
                 "Content-Type: application/json\r\n\r\n").encode() + payload
         body += (f"\r\n--{boundary}\r\nContent-Disposition: form-data; name=\"files[0]\"; "
-                 f"filename={filename}\r\nContent-Type: video/mp4\r\n\r\n").encode()
+                 f"filename={filename}\r\nContent-Type: {mime}\r\n\r\n").encode()
         body += clip.read_bytes() + f"\r\n--{boundary}--\r\n".encode()
         request = urllib.request.Request(webhook_url, data=body, headers={
             "Content-Type": f"multipart/form-data; boundary={boundary}",
