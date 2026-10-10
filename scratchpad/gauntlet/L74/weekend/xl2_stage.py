@@ -42,7 +42,7 @@ def s9(a, summary):
     # D4 fixed definition above remains measured; its optional best-air action is
     # searched separately, with ONLY the fresh TEST label entering training.
     for dr in ("D4", "D5", "D6", "D7", "D8"):
-        result = search(dr, runner.evaluate, Path(a.out) / (dr + "_search.json"))
+        result = search(dr, runner.evaluate, Path(a.out) / (dr + "_search.json"), evaluate_many=runner.evaluate_many)
         manifest["searches"][dr] = result
         manifest["verdicts"][dr] = result["label"]
         summary.append(f"{dr}: comparisons={len(result['comparisons'])}, selected on DEV={result['selected']}")

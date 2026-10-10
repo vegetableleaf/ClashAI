@@ -128,6 +128,62 @@ Only a strictly positive paired 95% lower bound earns
 
 ## Local verification limits
 
+### S9XL2 replay optimization
+
+`run_xl2.sh` and its lock/marker order are unchanged. S9XL2 now selects the
+original `s0:gen:<seed>` jobs with at least one **sampled** moment for the drill.
+It still replays from match start to match end, including the prefix before the
+first moment. Dump sampling, the 1250-per-census cap, opponent selection and
+seed ranges are unchanged. Ordinary rows and incidental D10 records now cover
+only these replayed matches; empty matches no longer produce fork-pass rows.
+
+All DEV variants of a drill share one pass per census. The XL2-only adapter
+`xl2_fork.py` uses the existing branch implementation and checks that the root
+snapshot stays identical. It executes every variant's B, shares one own-A/ALT
+branch, and reuses that branch for requested Acheck comparisons against the
+original continuation. Python/numpy/torch RNG restoration and both sides'
+copied generators stay in the original `run_branch` / `fork_into` path. Fixed
+and TEST use the original single-variant runner with sparse seeds. The TEST
+winner, label rule, SUMMARY format and per-variant output paths are unchanged.
+Match files are sorted by seed before estimation to avoid worker completion
+order changing floating-point reduction order. Runtime timing and process
+diagnostic counters are not byte-identical to the old redundant runs.
+
+After each split's dump is harvested, **before its fork passes**, S9XL2 prints
+`XL2 WORK <split>: ...` in `stage.log` and updates `S9XL2/workload.json` with
+per-drill/per-census counts. `moments` is the kept count; `nonempty_matches` is
+the distinct tag count. Branch counts are budgets before no-arm or snapshot
+failures, with separate upper bounds for incidental D10 and replay checks.
+TEST budgets assume one selected variant per drill; no eligible DEV winner
+means that drill's TEST work is omitted.
+
+Let `M[s,d]` be kept moments across both censuses and `R[s,d]` their distinct
+match tags. `V[D4]=5`; `V[D5..D8]=4`.
+
+| S9XL2 work | Match replays before | Match replays after | Target fork branches before | Target fork branches after |
+|---|---:|---:|---:|---:|
+| Dumps, all three splits | 12,000 | 12,000 | 0 | 0 |
+| Fixed D1/D4/D9 | 12,000 | sum R[fixed,d] | 2 sum M[fixed,d] | same |
+| DEV D4-D8 (21 variant evaluations) | 84,000 | sum R[dev,d] | sum 2 V[d] M[dev,d] | sum (V[d]+1) M[dev,d] |
+| TEST D4-D8 | 20,000 | sum R[test,d] | 2 sum M[test,d] | same |
+
+There are 29 old fork evaluations and 13 new passes (each split across two
+censuses). At the cap of 2500 moments for every drill/split, target branches
+are **145,000 -> 105,000**: fixed 15,000 -> 15,000; DEV 105,000 -> 65,000;
+TEST 25,000 -> 25,000. Because each match supplies at most three moments,
+fork-pass replays are then **116,000 -> 10,842-32,500** (3.6-10.7x fewer).
+Including dumps gives **128,000 -> 22,842-44,500** (2.9-5.6x fewer).
+
+An illustrative cost model with each target branch costing half a full match
+gives `(128000 + .5*145000) / (12000 + sum(R) + .5*105000)` = **2.1-2.7x**
+at full caps, excluding incidental D10/checks and dump/I/O overhead. Applied
+to the ticket's 50-60 hour baseline, that is roughly **19-29 hours**, not a
+measured runtime. Rare drills can save much more because the old passes still
+replayed all 4000 matches. A universal 10x wall-time claim is not supported
+without the pod's actual dump counts and branch timings. No SIM benchmark was
+run locally. S10XL2 work remains unchanged (training plus 1920 evaluation
+matches / 960 pairs; no fork branches).
+
 Synthetic pytest tests and Python import/syntax/legacy-preservation checks run
 without SIM. The Windows sandbox cannot launch Git Bash or Dash
 (`CreateFileMapping ... Win32 error 5`), so run the `--shell` preflight above on

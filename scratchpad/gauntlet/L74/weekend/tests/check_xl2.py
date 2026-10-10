@@ -59,7 +59,7 @@ def verify():
     for path in ("scratchpad/gauntlet/L74/drills/drills.py", WK + "moments_from_dump.py", WK + "train_drills.py",
                  WK + "run_wk.sh", WK + "wk_xl_stats.py"):
         assert (ROOT / path).read_text() == original(path), path
-    for name in ("pro_when", "xl2_selectors", "drill_arms", "variant_search", "xl2_stage"):
+    for name in ("pro_when", "xl2_selectors", "drill_arms", "variant_search", "xl2_stage", "xl2_fork"):
         sys.path[:0] = [str(ROOT), str(ROOT / WK), str(ROOT / "scratchpad/gauntlet/L74/drills")]
         module = importlib.import_module(name)
         compile(Path(module.__file__).read_text(), module.__file__, "exec")

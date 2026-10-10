@@ -91,7 +91,7 @@ def choose(dev):
     return max(eligible, key=lambda v: dev[v]["mean"])
 
 
-def search(drill, evaluate, out, seeds=SEEDS):
+def search(drill, evaluate, out, seeds=SEEDS, evaluate_many=None):
     validate_seeds(seeds)
     out = Path(out)
     if out.exists():
@@ -102,8 +102,14 @@ def search(drill, evaluate, out, seeds=SEEDS):
         out.write_text(json.dumps(report, indent=2) + "\n")
     save()
     try:
-        for variant in variants(drill):
-            report["dev"][variant] = evaluate("dev", drill, variant)
+        if evaluate_many is None:
+            for variant in variants(drill):
+                report["dev"][variant] = evaluate("dev", drill, variant)
+                save()
+        else:
+            report["dev"] = evaluate_many("dev", drill, variants(drill))
+            if list(report["dev"]) != variants(drill):
+                raise ValueError("incomplete or reordered DEV variants")
             save()
         populations = {v["opportunity_sha256"] for v in report["dev"].values() if "opportunity_sha256" in v}
         if len(populations) > 1:
@@ -127,10 +133,11 @@ def command(args, env, log, cwd):
         subprocess.run([str(x) for x in args], cwd=cwd, env={**os.environ, **env}, stdout=f, stderr=subprocess.STDOUT, check=True)
 
 
-def read_matches(path, bounds):
+def read_matches(path, bounds, seeds=None):
     rows = [json.loads(l) for l in (Path(path) / "matches.jsonl").read_text().splitlines() if l.strip()]
     actual = [int(r["seed"]) for r in rows]
-    if sorted(actual) != list(range(*bounds)) or any(r.get("skipped") or r.get("wall_truncated") for r in rows):
+    wanted = list(range(*bounds)) if seeds is None else sorted(seeds)
+    if sorted(actual) != wanted or any(r.get("skipped") or r.get("wall_truncated") for r in rows):
         raise ValueError(f"incomplete/duplicated/skipped matches: {path}")
     for r in rows:
         for o in r.get("mech", {}).get("opps", []):
@@ -139,7 +146,36 @@ def read_matches(path, bounds):
             for branch in [o.get("Ares", {}), *o.get("arms", {}).values()]:
                 if branch.get("end", {}).get("over") is False:
                     raise ValueError(f"fork did not reach match end: {path}")
-    return rows
+    return sorted(rows, key=lambda r: int(r["seed"]))
+
+
+def moment_seeds(moments, bounds):
+    """Select jobs by exact existing tag, never renumber seeds/opponents."""
+    seeds = []
+    for tag, items in moments.items():
+        if not items:
+            continue
+        seed = int(tag.rsplit(":", 1)[-1])
+        if tag != f"s0:gen:{seed}" or not bounds[0] <= seed < bounds[1]:
+            raise ValueError("unexpected moment tag: " + tag)
+        seeds.append(seed)
+    return sorted(seeds)
+
+
+def workload(split, drill, candidates, bounds):
+    """Exact sampled counts, with branch budgets before runtime arm rejects.
+
+    Auxiliary D10 forks/checks are reported separately: at most one D10 per
+    replay, plus MECH_CHECK=2 checks per worker/census/pass. Shared DEV reuses
+    its moment A as Acheck, so only incidental D10 needs an extra check.
+    """
+    moments = [mo for _, mo, _ in candidates if mo["drill"] == drill]
+    matches = len({tag for tag, mo, _ in candidates if mo["drill"] == drill})
+    v = len(variants(drill)) if split == "dev" else 1
+    return dict(moments=len(moments), nonempty_matches=matches, variants=v,
+                replays_before=(bounds[1] - bounds[0]) * v, replays_after=matches,
+                forks_before=2 * len(moments) * v,
+                forks_after=(v + 1 if split == "dev" else 2) * len(moments))
 
 
 class PodRunner:
@@ -149,6 +185,23 @@ class PodRunner:
         self.ckpt, self.py, self.workers, self.maxn = ckpt, py, workers, maxn
         self.models = json.loads(Path(models).read_text())["models"]
         self.prepared = {}
+        self.work = {}
+
+    def report_work(self, split, data):
+        drills = ("D1", "D4", "D9") if split == "fixed" else ("D4", "D5", "D6", "D7", "D8")
+        counts = {dr: {c: workload(split, dr, kept, SEEDS[split][c])
+                       for c, (_, _, kept) in data.items()} for dr in drills}
+        totals = {k: sum(v[k] for cs in counts.values() for v in cs.values())
+                  for k in ("moments", "nonempty_matches", "replays_before", "replays_after", "forks_before", "forks_after")}
+        totals.update(dump_matches=sum(hi - lo for lo, hi in SEEDS[split].values()),
+                      incidental_d10_forks_before_max=totals["replays_before"],
+                      incidental_d10_forks_after_max=totals["replays_after"],
+                      replay_check_forks_before_max=2 * self.workers * len(data) * sum(
+                          len(variants(dr)) if split == "dev" else 1 for dr in drills),
+                      replay_check_forks_after_max=2 * self.workers * len(data) * len(drills))
+        self.work[split] = dict(by_drill=counts, totals=totals)
+        (self.out / "workload.json").write_text(json.dumps(self.work, indent=2) + "\n")
+        print(f"XL2 WORK {split}: {json.dumps(totals)}", flush=True)
 
     def prepare(self, split):
         if split in self.prepared:
@@ -208,39 +261,72 @@ class PodRunner:
             (root / "opportunities.json").write_text(json.dumps(kept))
             data[census] = (root, weighted, kept)
         self.prepared[split] = data
+        self.report_work(split, data)
         return data
 
     def evaluate(self, split, drill, variant=None):
-        rows, paths, rowdirs = [], [], []
+        return self.evaluate_many(split, drill, [variant])[variant]
+
+    def evaluate_many(self, split, drill, choices):
+        from xl2_fork import project
+        if not choices or len(set(choices)) != len(choices) or (len(choices) > 1 and split != "dev"):
+            raise ValueError("only DEV may score multiple variants")
+        rows = {v: [] for v in choices}
+        paths, rowdirs = {v: [] for v in choices}, {v: [] for v in choices}
         for census, (root, weighted, candidates) in self.prepare(split).items():
-            name = variant or "fixed"
-            dest = root / drill / name
-            dest.mkdir(parents=True)  # never append to a previous result
-            moments = {}
-            for tag, mo, p in candidates:
-                if mo["drill"] != drill:
-                    continue
-                if variant and variant.startswith("DO_when_") and p is None:
-                    raise ValueError("missing pro model for " + drill)
-                moments.setdefault(tag, []).append({**mo, **({"variant": variant, "p_pro": p} if variant else {})})
-            moment_file = dest / "moments.json"
-            moment_file.write_text(json.dumps(moments))
+            dests = {v: root / drill / (v or "fixed") for v in choices}
+            for variant, dest in dests.items():
+                dest.mkdir(parents=True)  # never append to a previous result
+                (dest / "rows").mkdir()
+                moments = {}
+                for tag, mo, p in candidates:
+                    if mo["drill"] != drill:
+                        continue
+                    if variant and variant.startswith("DO_when_") and p is None:
+                        raise ValueError("missing pro model for " + drill)
+                    moments.setdefault(tag, []).append({**mo, **({"variant": variant, "p_pro": p} if variant else {})})
+                (dest / "moments.json").write_text(json.dumps(moments))
             bounds = SEEDS[split][census]
-            command(["bash", HERE / "run_wk.sh", "drills", dest / "forks", f"{bounds[0]}:{bounds[1]}", self.workers, census, 2, self.ckpt],
-                    {"PY": self.py, "CB_MAIN": str(self.repo) + "/", "CENSUS_FILE": str(weighted), "MOMENTS": str(moment_file),
-                     "ROWS_DIR": str(dest / "rows"), "MECH_GAP": "100", "MECH_MAXFORK": "1"}, dest / "fork.log", self.repo)
-            got = read_matches(dest / "forks", bounds)
+            seeds = moment_seeds(moments, bounds)
+            dest = dests[choices[0]]
+            env = {"PY": self.py, "CB_MAIN": str(self.repo) + "/", "CENSUS_FILE": str(weighted),
+                   "MOMENTS": str(dest / "moments.json"), "ROWS_DIR": str(dest / "rows"),
+                   "MECH_GAP": "100", "MECH_MAXFORK": "1"}
+            if len(choices) > 1:
+                env.update(PY=f"{self.py} {HERE / 'xl2_fork.py'}",
+                           XL2_VARIANT_ROWS=json.dumps({v: str(d / "rows") for v, d in dests.items()}))
+            if seeds:
+                command(["bash", HERE / "run_wk.sh", "drills", dest / "forks", ",".join(map(str, seeds)),
+                         self.workers, census, 2, self.ckpt], env, dest / "fork.log", self.repo)
+            else:
+                (dest / "forks").mkdir()
+                (dest / "forks" / "matches.jsonl").write_text("")
+                (dest / "forks" / "run.json").write_text(json.dumps(dict(seeds=[], reason="no sampled drill moments")))
+                (dest / "forks" / "summary.json").write_text(json.dumps(dict(per_arm_opp={}, paired_vs_plain={})))
+                (dest / "fork.log").write_text("No sampled drill moments; zero replay jobs.\n")
+            got = read_matches(dest / "forks", bounds, seeds=seeds)
             # Dumps must reproduce the original match, not just reach some ticks.
             expected = sum(len(v) for v in moments.values())
             reached = sum(r.get("mech", {}).get("moments", [0, 0])[1] for r in got)
             if reached != expected:
                 raise ValueError(f"moment replay coverage {reached}/{expected}")
-            rows += got
-            paths.append(str(dest / "forks"))
-            rowdirs.append(str(dest / "rows"))
-        result = estimate(rows, drill, variant)
-        result.update(match_dirs=paths, row_dirs=rowdirs)
-        return result
+            # Preserve every per-variant output path and record schema. Hold the
+            # shared input in memory before replacing the first variant's file.
+            for variant, target in dests.items():
+                projected = [project(r, variant) for r in got] if len(choices) > 1 else got
+                (target / "forks").mkdir(exist_ok=True)
+                if target != dest:
+                    for filename in ("run.json", "summary.json"):
+                        value = json.loads((dest / "forks" / filename).read_text())
+                        if filename == "run.json":
+                            value["out"] = str(target / "forks")
+                        (target / "forks" / filename).write_text(json.dumps(value, indent=1))
+                    (target / "fork.log").write_text((dest / "fork.log").read_text())
+                (target / "forks" / "matches.jsonl").write_text("".join(json.dumps(r) + "\n" for r in projected))
+                rows[variant] += projected
+                paths[variant].append(str(target / "forks"))
+                rowdirs[variant].append(str(target / "rows"))
+        return {v: dict(estimate(rows[v], drill, v), match_dirs=paths[v], row_dirs=rowdirs[v]) for v in choices}
 
 
 def main():
@@ -251,7 +337,7 @@ def main():
     a = ap.parse_args()
     runner = PodRunner(a.repo, a.out, a.ckpt, a.models)
     for dr in a.drills.split(","):
-        search(dr, runner.evaluate, Path(a.out) / (dr + "_search.json"))
+        search(dr, runner.evaluate, Path(a.out) / (dr + "_search.json"), evaluate_many=runner.evaluate_many)
 
 
 if __name__ == "__main__":
