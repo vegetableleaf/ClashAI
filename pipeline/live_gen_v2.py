@@ -253,7 +253,7 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
                 self._hazard_prev = (tick, False)
             return self._audited(d)
         combo = self.rocket_tornado(info, allowed, playing)
-        if combo is not None:                           # not in the SIM (decide_batch refuses it): the pipelined second tap is live only
+        if combo is not None:                           # the SIM runs the same rule in decide_batch (follow_up_spec); here the Tornado is the pipelined second tap (plan_follow_up)
             pos, cell, (lo, hi), value = combo
             card, form = info['hand'][pos]
             xy = cell_xy(cell, self.grid)

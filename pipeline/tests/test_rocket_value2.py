@@ -582,3 +582,47 @@ def test_tornado_centre_is_the_middle_of_the_plateau_not_its_corner_and_never_th
     far_edge = rocket_bodies(board(unit('giant', 0.2, 22.0), unit('knight', 1.0, 22.5), unit('knight', 0.5, 23.5)), 'cost')
     _, c = best_tornado_centre(far_edge, 'lattice')
     assert x[c] >= 1.0                                                                 # the board edge is excluded even when the clump hugs it
+
+
+# ---- buildings never move in the Tornado: they count toward the combo only inside the Rocket's own blast at the aim point ---------------
+from pipeline.decision_options import immobile_keys  # noqa: E402
+
+
+def test_immobile_keys_come_from_the_catalog_types():
+    keys = immobile_keys()
+    assert {'tombstone', 'tesla', 'cannon', 'x_bow', 'goblin_hut', 'furnace'} <= keys       # the Furnace is kind 'troop' in the catalog, its unit has speed 0
+    assert not {'knight', 'lava_pups', 'skeletons', 'fire_spirit', 'golemite', 'goblin_barrel'} & keys
+
+
+def test_combo_ignores_buildings_far_from_the_clump():
+    combo8 = DecisionOptions(rocket_value=8.0, rocket_tornado='on')                           # the pups hold 7.0: only the buildings could tip it
+    far = [unit('furnace', 9.0, 13.0)] + [unit('tombstone', 8.5, 13.0) for _ in range(3)]    # inside the 5.5 pull of a centre at y ~ 18, outside every blast
+    bs = board(*split_pups(), *far, elixir=9.5)
+    bodies = rocket_bodies(bs, 'cost')
+    assert best_tornado_centre(bodies, 'lattice')[0] == pytest.approx(7.0)                   # was 7 + 4 + 9 = 20 with the buildings pulled
+    assert rocket_tornado_choice(combo8, HAND, [True] * 4, bs, 'lattice') is None
+    walkers = [unit('knight', 9.0, 13.0), unit('knight', 8.5, 13.0)]                          # the same spots held by troops: the pull does gather them
+    assert rocket_tornado_choice(combo8, HAND, [True] * 4, board(*split_pups(), *walkers, elixir=9.5), 'lattice') is not None
+
+
+def test_combo_counts_a_building_inside_the_blast():
+    pups = split_pups()
+    assert best_tornado_centre(rocket_bodies(board(*pups, unit('tesla', 9.0, 22.0)), 'cost'), 'lattice')[0] == pytest.approx(11.0)   # 7 + Tesla 4: the Rocket hits it where it stands
+    assert best_tornado_centre(rocket_bodies(board(*pups, unit('tesla', 9.0, 13.0)), 'cost'), 'lattice')[0] == pytest.approx(7.0)
+    combo11 = DecisionOptions(rocket_value=11.0, rocket_tornado='on')
+    assert rocket_tornado_choice(combo11, HAND, [True] * 4, board(*pups, unit('tesla', 9.0, 22.0), elixir=9.5), 'lattice') is not None
+
+
+# the live board of replay live_play_20261009_100736 at tick 4950 (public.model_bodies, enemy side): a Furnace and three Tombstones at the
+# back, 6.5+ tiles from the troops, were 11.5 of the 14.5 "pullable" value; the Rocket at the combo centre would hit ~3 elixir
+BOARD_100736_T4950 = [('knight', 12.92, 17.52, 0.4552661381653454), ('tombstone', 8.5, 9.5, None), ('tombstone', 8.5, 9.5, 0.6068052930056711),
+                      ('tombstone', 8.5, 9.5, 0.8827977315689981), ('skeletons', 5.73, 13.77, 1.0), ('skeletons', 9.25, 11.47, 1.0),
+                      ('furnace', 13.62, 14.61, 1.0), ('fire_spirit', 10.52, 16.25, 1.0)]
+
+
+def test_live_replay_100736_tick_4950_does_not_fire():
+    bs = board(*(unit(n, x, y, h) for n, x, y, h in BOARD_100736_T4950), elixir=10.0)
+    o = DecisionOptions(rocket_value=9.0, rocket_value_mode='damage', rocket_value_hitbox='edge', rocket_tornado='only')
+    value, _ = best_tornado_centre(rocket_bodies(bs, 'damage'), 'lattice', 'edge')
+    assert value < 9.0
+    assert rocket_tornado_choice(o, ['Knight', 'Log', 'Tornado', 'Rocket'], [True] * 4, bs, 'lattice') is None

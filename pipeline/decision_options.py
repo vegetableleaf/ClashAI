@@ -1237,6 +1237,18 @@ def rocket_unit_table():
     return table
 
 
+@lru_cache(maxsize=1)
+def immobile_keys():
+    """{vocab key} of the bodies that never move, so a Tornado cannot pull them: the catalog cards of kind 'building', plus any
+    card whose own unit has speed 0 (the catalog files the Furnace, FirespiritHut, as kind 'troop' but its unit is immobile)."""
+    import json
+    from . import vocab
+    from .body_identity import CATALOG
+    catalog = json.loads(CATALOG.read_text(encoding='utf-8'))
+    return frozenset(vocab.engine_key(c['name']) for c in catalog['cards'] if c.get('kind') == 'building' or (
+        c.get('kind') == 'troop' and (catalog['units'].get(c['name']) or {}).get('speed') == 0))
+
+
 def unit_values():
     """{vocab key: elixir value of one full-HP body} (rocket_unit_table's first column)."""
     return {k: v[0] for k, v in rocket_unit_table().items()}
@@ -1455,6 +1467,7 @@ COMBO_EDGE_MARGIN_TILES = 1.0     # a combo is never aimed within this of the bo
 
 def best_tornado_centre(bodies, grid, hitbox='centre', min_y=MY_HALF_MIN_Y_TILES):
     """-> (value, cell) for the Tornado centre on my half whose pull radius holds the most value; (0.0, None) without bodies.
+    Buildings (immobile_keys) are not pulled: they count only inside the Rocket's own blast around the centre (where the Rocket aims).
     Many centres tie on a spread clump (a plateau): the one picked is the plateau's MIDDLE for the bodies it pulls, the cell with the
     smallest value-weighted mean distance to them -- the pull gathers them there and the Rocket (radius 2.0) lands on that point.
     The first-index tie-break of iteration 3 took the plateau's corner, (0.0, 16.0): all 78 of those SIM combos were refused at landing
@@ -1465,6 +1478,11 @@ def best_tornado_centre(bodies, grid, hitbox='centre', min_y=MY_HALF_MIN_Y_TILES
     reach = tornado_radius_tiles() + (bodies[:, 4] if hitbox == 'edge' else np.zeros(len(bodies)))
     dist = np.hypot(x[:, None] - bodies[None, :, 1], y[:, None] - bodies[None, :, 2])
     inside = dist <= reach[None, :]
+    from . import vocab
+    fixed = np.array([vocab.base_key(vocab.UNIT_VOCAB[int(c)]) in immobile_keys() for c in bodies[:, 0]], dtype=bool)
+    if fixed.any():      # a building does not move in the pull: it counts only where the Rocket aimed at the centre hits it, where it stands
+        blast = rocket_radius_tiles() + (bodies[:, 4] if hitbox == 'edge' else np.zeros(len(bodies)))
+        inside = inside & (~fixed[None, :] | (dist <= blast[None, :]))
     ok = (y >= min_y) & (x >= COMBO_EDGE_MARGIN_TILES) & (x <= 18.0 - COMBO_EDGE_MARGIN_TILES) & (y <= 32.0 - COMBO_EDGE_MARGIN_TILES)
     value = np.where(ok, inside @ bodies[:, 3], -1.0)
     top = float(value.max())
