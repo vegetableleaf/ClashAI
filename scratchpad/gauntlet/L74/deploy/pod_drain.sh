@@ -11,7 +11,7 @@ PY=icebow/.venv/Scripts/python.exe
 log() { echo "$(date '+%F %T') $*"; }
 post() { printf '%s\n' "$1" > $OUT/_msg.txt; $PY scratchpad/gauntlet/L69/discord/post.py $OUT/_msg.txt; }
 # ponytail: the idle test is a process-name scan; it does not know about jobs started later by hand
-BUSY='[f]lock /workspace|[r]equeue2.sh|[m]ech_pod_launch|[m]ech_pod_queue|[p]od_e2_driver|[s]earch_s0|[r]l_royale|[r]un_probe|[r]ocket_chain'   # [x] = no self-match
+BUSY='[f]lock /workspace|[r]equeue2.sh|[m]ech_pod_launch|[m]ech_pod_queue|[p]od_e2_driver|[s]earch_s0|[r]l_royale|[r]un_probe|[r]ocket_chain|[f]p_eval_gate|[p]od_e3|[f]p_driver'   # [x] = no self-match
 
 idle=0
 while [ $idle -lt 2 ]; do                       # two quiet checks in a row, 5 min apart
@@ -21,14 +21,10 @@ while [ $idle -lt 2 ]; do                       # two quiet checks in a row, 5 m
   log "busy processes: $n (quiet checks $idle/2)"; [ $idle -lt 2 ] && sleep 300
 done
 
-log "queue empty -- packing"
-$SSH 'cd /workspace && git -C clashbot bundle create /workspace/branches.bundle --all 2>/dev/null;
-  tar czf /workspace/drain.tgz results branches.bundle POD_README.md *.sh $(ls -d wt_*/scratchpad/gauntlet/L74 2>/dev/null) 2>/dev/null;
-  sha256sum /workspace/drain.tgz' > $OUT/remote_sha.txt || { log "pack failed"; post "Pod drain: packing FAILED, pod left running"; exit 1; }
-$SCP root@64.247.206.120:/workspace/drain.tgz $OUT/drain.tgz || { log "copy failed"; post "Pod drain: copy FAILED, pod left running"; exit 1; }
-r=$(cut -d' ' -f1 $OUT/remote_sha.txt); l=$(sha256sum $OUT/drain.tgz | cut -d' ' -f1)
-if [ "$r" != "$l" ] || ! tar tzf $OUT/drain.tgz > /dev/null; then
-  log "verify failed ($r vs $l)"; post "Pod drain: copy did not verify, pod left running"; exit 1; fi
+log "queue empty -- streaming the archive (pod disk is nearly full: no tarball on the pod)"
+$SSH 'cd /workspace && git -C clashbot bundle create /tmp/branches.bundle --all 2>/dev/null; cp /tmp/branches.bundle results/ 2>/dev/null;
+  tar czf - results POD_README.md *.sh $(ls -d wt_*/scratchpad/gauntlet/L74 clashbot/icebow/data/bench/rl_royale/{fp_pipe,fp_ctl,rdef_e2,rdef_e3} 2>/dev/null) 2>/dev/null' > $OUT/drain.tgz   || { log "stream failed"; post "Pod drain: copy FAILED, pod left running"; exit 1; }
+if ! tar tzf $OUT/drain.tgz > /dev/null; then log "archive unreadable"; post "Pod drain: copy did not verify, pod left running"; exit 1; fi
 sz=$(du -h $OUT/drain.tgz | cut -f1); touch $OUT/COPIED_OK
 log "copied and verified ($sz)"
 post "Pod queue finished; all results copied to the laptop and verified ($sz). Pod is idle (\$0.82/h) until stopped."
