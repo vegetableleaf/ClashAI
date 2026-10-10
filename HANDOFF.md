@@ -5341,6 +5341,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   tables are inconsistent") -> fix + rerun (ace646c5) after E2. E2 started 22:47 EDT (AB_DONE was never written by
 >   the pd script; lead touched it). Pod drain watcher (pod_drain.sh, nohup) copies to C:/Users/benpe/pod_backup_20261010
 >   and stops the pod only when STOP_POD_APPROVED exists there (lead creates it once pod work + reviews are done).
+> * **Rocket+Tornado combo LIVE 2026-10-10 00:01 EDT (merge 916b9cd = 652fe90 + fix 114fcb6).** Blind 1 FAIL (buildings
+>   counted as pullable); fix: immobile_keys (catalog kind building or unit speed 0) count only inside the Rocket blast;
+>   blind 2 PASS_WITH_NOTES. SIM re-run: main -0.63 pp [-1.67, +0.21], air +1.25 [0, +2.92], 0 refused combo taps,
+>   blast share at impact 84% vs 26% lone, destroyed +0.09 elixir/fire [-0.63, +0.76]. OPEN: 40/46 combo cells sit on
+>   y=16 (rocket_value_min_y) -> centre pushed to the half line, not the clump; measure before calling it a net gain.
+>   LIVE_OPTIONS += --rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-tornado only
+>   --follow-up-taps (EXTRA_LIVE_FLAGS). Revert: LIVE_OPTIONS.pre_combo_backup. Restart via restart_live.py 00:01.
 > * **Rocket+Tornado combo SIM (a67f26ce, f022854; pod; delay-0 wrapper):** pull works -- clump value in blast at impact
 >   61% (combo) vs 15% (lone Rocket, same moment), destroyed +.34 elixir/fire [-.08, +.74] (tanks survive ~1480 dmg).
 >   Wins: no combo arm beats its lone twin; cb9 -.2 pp [-1.3, +.8] (6% of matches fire), cb7 -1.9, cb5 -5.0; air pool cb7
