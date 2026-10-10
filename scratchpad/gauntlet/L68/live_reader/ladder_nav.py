@@ -413,6 +413,17 @@ def discord_alert(text: str, png: Path | None) -> bool:
     return ok
 
 
+def is_reward_reveal(img) -> bool:
+    """A chest-contents screen: one card in the middle, plain patterned background at the sides, no top bar.
+    Fitted on 21 live tap-through frames 10-09/10 (reveals: side std 8-14, top <= 5; badge 24, chest/menus >= 41)."""
+    # ponytail: three contrast thresholds, not a classifier; refit if a new reveal style is missed or misfires
+    h, w = img.shape[:2]
+    g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY).astype(np.float32)
+    card = g[int(h * .36):int(h * .56), int(w * .36):int(w * .64)].std()
+    side = max(g[int(h * .2):int(h * .7), :int(w * .24)].std(), g[int(h * .2):int(h * .7), int(w * .76):].std())
+    return bool(card > 35 and side < 19 and g[:int(h * .08)].std() < 10)
+
+
 def grab(adb: list[str]):
     from hero_button import parse_raw_screencap
     try:
@@ -554,8 +565,8 @@ class LadderNavRunner:
                             tag = "" if p[1] in ("tap_through", "battle") else f"_{p[1]}"
                             png = shots / f"{stamp}_{nav.taps:02d}{tag}_{int(time.time() * 1000) % 10**6:06d}.png"
                             cv2.imwrite(str(png), img)
-                            if p[1] == "tap_through" and nav.via_main and not self.dry_run:
-                                # owner 2026-10-10: every chest screen the bot taps through -> Discord (off-thread)
+                            if p[1] == "tap_through" and is_reward_reveal(img) and not self.dry_run:
+                                # owner 2026-10-10: chest CONTENTS only (daily and trophy-road chests) -> Discord
                                 from discord_clip import post_clip
                                 threading.Thread(target=post_clip, args=(png, "GAMBLING RESULT", "image/png"),
                                                  daemon=True).start()

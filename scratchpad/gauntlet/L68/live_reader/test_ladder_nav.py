@@ -96,3 +96,21 @@ nav.acted("battle", 0.5)
 NG = {"screen": "nograb", "scores": {}}
 assert all(nav.plan(NG, t)[0] == "wait" for t in (1, 5, 30)) and nav.plan(NG, 62)[0] == "stop"   # never handoff/tap
 print("nograb checks passed")
+
+
+def _reward_reveal_check():
+    """Synthetic frames: a card on a plain background is a reveal; a top bar or busy sides is not."""
+    from ladder_nav import is_reward_reveal
+    rng = np.random.default_rng(0)
+    bg = np.full((1600, 900, 3), 90, np.uint8)
+    card = bg.copy(); card[600:880, 330:570] = rng.integers(0, 255, (280, 240, 3), dtype=np.uint8)
+    assert is_reward_reveal(card)
+    bar = card.copy(); bar[:120] = rng.integers(0, 255, (120, 900, 3), dtype=np.uint8)
+    assert not is_reward_reveal(bar)
+    busy = card.copy(); busy[320:1100, :200] = rng.integers(0, 255, (780, 200, 3), dtype=np.uint8)
+    assert not is_reward_reveal(busy)
+    assert not is_reward_reveal(bg)
+    print("reward reveal checks passed")
+
+
+_reward_reveal_check()
