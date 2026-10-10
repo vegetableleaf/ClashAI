@@ -22,7 +22,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument("--ckpt", required=True); ap.add_argument("--rows", required=True); ap.add_argument("--matches", required=True)
 ap.add_argument("--verdicts", required=True); ap.add_argument("--out", required=True)
 ap.add_argument("--epochs", type=int, default=3); ap.add_argument("--max-min", type=float, default=60.0)
-ap.add_argument("--lr", type=float, default=2e-5); ap.add_argument("--kl", type=float, default=50.0)
+ap.add_argument("--lr", type=float, default=1e-5); ap.add_argument("--kl", type=float, default=50.0)
 ap.add_argument("--max-drift", type=float, default=0.01); ap.add_argument("--bs", type=int, default=64); ap.add_argument("--ord-bs", type=int, default=256)
 ap.add_argument("--device", default="cuda"); ap.add_argument("--tau", type=float, default=0.35)
 a = ap.parse_args()
@@ -103,6 +103,8 @@ g0_a, c0_a = start_out(anchor)
 g0_h, c0_h = start_out(hold)
 allowed_h = torch.from_numpy(np.stack([r["allowed"] for r in hold])).to(dev)
 top0 = c0_h.masked_fill(~allowed_h, -1e9).argmax(-1)
+_t2 = c0_h.masked_fill(~allowed_h, -1e9).topk(2, -1).values
+material = (_t2[:, 0] - _t2[:, 1]) >= 0.05      # rows whose start top-1 / top-2 logit margin is >= 0.05; a flip of a near-tie is not a behaviour change
 play0 = (torch.sigmoid(g0_h) > a.tau)
 
 
@@ -124,7 +126,7 @@ def drift():
         gs.append(h["gate"].float()); cs.append(h["card"].float())
     g, c = torch.cat(gs), torch.cat(cs)
     top = c.masked_fill(~allowed_h, -1e9).argmax(-1)
-    return float((top != top0).float().mean()), float(((torch.sigmoid(g) > a.tau) != play0).float().mean())
+    return float(((top != top0) & material).float().mean()), float(((torch.sigmoid(g) > a.tau) != play0).float().mean())
 
 
 opt = torch.optim.AdamW(model.parameters(), lr=a.lr, weight_decay=0.0)
@@ -132,6 +134,7 @@ logit_tau = math.log(a.tau / (1 - a.tau))
 best = {k: v.detach().clone() for k, v in model.state_dict().items()}
 log = []
 stopped = "epochs done"
+nstep = 0
 for ep in range(a.epochs):
     order = rng.permutation(len(drill))
     for i in range(0, len(order), a.bs):
@@ -163,9 +166,19 @@ for ep in range(a.epochs):
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
         opt.step()
         log.append((float(loss), float(kl)))
+        nstep += 1
+        if nstep % 2 == 0:                                   # drift guard every 5 steps: keep the last state within the budget
+            dt, dp = drift()
+            if dt > a.max_drift:
+                model.load_state_dict(best)
+                stopped = f"step {nstep}: top card moved {100 * dt:.2f}% > {100 * a.max_drift:.0f}%: kept the state at step {nstep - 2}"
+                break
+            best = {k: v.detach().clone() for k, v in model.state_dict().items()}
+    if stopped.startswith("step"):
+        break
     dt, dp = drift()
     print(f"epoch {ep + 1}: drill loss {np.mean([l[0] for l in log[-50:]]):.3f} kl {np.mean([l[1] for l in log[-50:]]):.4f} | "
-          f"held-out ordinary rows: top-card change {100 * dt:.2f}%  play/no-play change {100 * dp:.2f}%", flush=True)
+          f"held-out ordinary rows: top-card change (start margin >= 0.05) {100 * dt:.2f}%  play/no-play change {100 * dp:.2f}%", flush=True)
     if dt > a.max_drift:
         model.load_state_dict(best)
         stopped = f"epoch {ep + 1} moved the top card {100 * dt:.2f}% > {100 * a.max_drift:.0f}%: kept epoch {ep}"

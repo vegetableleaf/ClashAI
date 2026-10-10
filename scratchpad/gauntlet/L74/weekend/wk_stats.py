@@ -35,6 +35,11 @@ def verdict(mu, hw):
     return "DO better" if mu - hw > 0 else ("HOLD better" if mu + hw < 0 else "no difference")
 
 
+def faith(rows):
+    ch = [o for r in rows for o in r["mech"]["opps"] if "Acheck" in o]
+    return f"faithfulness (A replayed from the snapshot == the original continuation, end-state hash): {sum(o['Acheck']['end']['h'] == o['Ares']['end']['h'] for o in ch)}/{len(ch)}"
+
+
 def s3(dirs, out):
     rows = load(dirs)
     opps = [(r["_cl"], o) for r in rows for o in r["mech"]["opps"] if "Bres" in o]
@@ -49,6 +54,7 @@ def s3(dirs, out):
     pl = [x for x in sc if x.get("played")]
     L.append(f"B placed a defender in {len(pl)}/{len(sc)}; accepted {sum(bool(x.get('accepted')) for x in pl)}; mean wait {sum(x['waited'] for x in pl) / max(1, len(pl)):.1f} ticks; "
              f"A cards: {dict(sorted(__import__('collections').Counter(o['A_card'] for _, o in opps).items()))}")
+    L.append(faith(rows))
     mu, hw = w[0], w[1]
     ok = mu is not None and hw is not None and mu - hw > 0
     L.append("VERDICT: " + ("prevent beats delay: drill D10 confirmed" if ok else
@@ -66,7 +72,7 @@ def s9(dirs, out, vjson):
                 by.setdefault(o["drill"], []).append((r["_cl"], o))
     L, V = ["S9 drills phase 2: fork scoring (SIM, match end, common random numbers). DO = first option, HOLD = the contrasted option (named per drill).",
             f"matches {len(rows)}; moments reached/expected per match summed: {sum(r['mech'].get('moments', [0, 0])[1] for r in rows)}/{sum(r['mech'].get('moments', [0, 0])[0] for r in rows)}; "
-            f"no-arm skips {sum(len(r['mech'].get('no_arm', [])) for r in rows)}"], {}
+            f"no-arm skips {sum(len(r['mech'].get('no_arm', [])) for r in rows)}; " + faith(rows)], {}
     for dr in ("D1", "D2", "D3", "D4", "D9", "D10"):
         ops = by.get(dr, [])
         if not ops:

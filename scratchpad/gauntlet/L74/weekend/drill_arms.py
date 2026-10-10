@@ -27,7 +27,15 @@ def spe(t_sec):
 
 
 def cname(L, slot):
-    return str(L.deck.cards[slot]).split("@")[0].lower() if slot is not None and slot >= 0 else None
+    """deck card -> 'tesla', 'knight', 'icewizard', 'xbow', 'log' ...  (the sim deck names are slugs: tesla_evo, ice_wizard, x_bow, the_log)"""
+    if slot is None or slot < 0:
+        return None
+    n = str(L.deck.cards[slot]).split("@")[0].lower()
+    for suf in ("_evo", "_hero"):
+        if n.endswith(suf):
+            n = n[:-len(suf)]
+    n = n.replace("_", "")
+    return "log" if n == "thelog" else n
 
 
 def tiles(grid, n):
@@ -154,22 +162,36 @@ class Prevent:
 
 
 # ---------------------------------------------------------------------------------------------------- prevent opportunity
+STAT = {}      # reasons the prevent opportunity did not fire (per process; mech_play copies it into the match record)
+
+
+def _no(why):
+    STAT[why] = STAT.get(why, 0) + 1
+
+
 def prevent_probe(m, s, ctx, dA):
     """-> the B decision (+ "script") or None.  ctx: enc, heads, allowed, hand, tick, bs."""
-    if not dA["play"] or str(dA.get("why", "")).startswith("lethal") or getattr(s, "pending", None) is not None:
+    if not dA["play"]:
         return None
+    _no("model plays")
+    if str(dA.get("why", "")).startswith("lethal") or getattr(s, "pending", None) is not None:
+        return _no("lethal/pending") or None
     if cname(s, dA["slot"]) not in ("log", "tornado"):
         return None
+    _no("spell Log/Tornado")
     bs = ctx["bs"]
     cand = [i for i in range(8) if ctx["hand"][i] and cname(s, i) in DEF]
+    if os.environ.get("WK_DEBUG"):
+        print("DBG", [(cname(s, i), bool(ctx["hand"][i]), bool(ctx["allowed"][i])) for i in range(8)], flush=True)
     if not cand:
-        return None
+        return _no("no defender in hand") or None
     el = float(bs.my_elixir)
     need = min(s.costs[i] for i in cand) - el
     if need > 2.0 / spe(float(bs.t_sec)):
-        return None
+        return _no("defender not affordable within 2 s") or None
     if ground_push_value(m) < 4.0:
-        return None
+        return _no("ground push < 4") or None
+    _no("OPPORTUNITY")
     d = defender_play(s, ctx)
     sc = Prevent(ctx["tick"])
     if d is not None:                                  # affordable now: place it instead of the spell
