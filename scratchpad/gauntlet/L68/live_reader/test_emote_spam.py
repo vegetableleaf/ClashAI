@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import sys
+import time
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -22,9 +23,10 @@ class WaitPilot(Pilot):
 
     def __init__(self, play_from=10 ** 9, p_play=0.0):
         super().__init__()
-        self.play_from, self.p_play = play_from, p_play
+        self.play_from, self.p_play, self.times = play_from, p_play, []
 
     def decide(self, f):
+        self.times.append(time.time())
         if f["game_tick"] >= self.play_from:
             return super().decide(f)
         return {"play": False, "p_play": self.p_play, "gate_tau": self.gate_tau, "public_audit": {}}
@@ -72,9 +74,11 @@ def test_off_sends_nothing_and_logs_nothing_new(monkeypatch, tmp_path):
 
 
 def test_on_emotes_on_wait_at_the_interval(monkeypatch, tmp_path):
-    cmds, ev = spam(monkeypatch, tmp_path, WaitPilot())
+    pilot = WaitPilot()
+    cmds, ev = spam(monkeypatch, tmp_path, pilot)
     n = sum(e["event"] == "emote" for e in ev)
-    assert cmds == [EMOTE] * n and 2 <= n <= 7, (n, cmds)      # ~1.8 s of frames / 0.3 s, never faster
+    span = pilot.times[-1] - pilot.times[0]                   # the wall time the decisions covered
+    assert cmds == [EMOTE] * n and 2 <= n <= span / 0.3 + 1, (n, span, cmds)   # one per 0.3 s at most, and it does fire
     e = next(e for e in ev if e["event"] == "emote")
     assert e["guard"] == 0.0 and e["tick"] >= 150
     assert next(e for e in ev if e["event"] == "start")["emote_spam"] == "on"
