@@ -39,7 +39,8 @@ BUNDLE = ('--gate-decode hazard_below_tau --gate-hazard-min-elixir 9 --iw-press-
           '--lethal-log on --tau-threatened 0.2 '   # 2026-10-09 05:xx (blind af471193, merge 766e008)
           '--card-levels Rocket=16 Log=15 '   # 2026-10-09 13:xx (owner card levels; blind af0555f2)
           '--log-air block '   # 2026-10-09 evening (owner: hold + Skeleton Barrel exempt; blind a1d953e2 on bd4c8ca)
-          '--rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-tornado only --follow-up-taps')   # 2026-10-09 cb9 combo (merge f5ba591)
+          '--rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-tornado only --follow-up-taps '   # 2026-10-09 cb9 combo (merge f5ba591)
+          '--emote-spam on --emote-interval-s 3.0')   # 2026-10-10 owner emotes; live test: 3.0 s 6/6, ~2.1 s fails every 2nd
 DEPLOYED_FILE = DEPLOYED.rstrip('\n') + ' ' + BUNDLE + '\n'
 
 
