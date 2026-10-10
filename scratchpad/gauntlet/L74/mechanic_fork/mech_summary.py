@@ -55,6 +55,9 @@ def main(argv):
     out = {"mechanic": name, "matches": len(rows), "opportunities": len(opps),
            "trigger_decisions": sum(r["mech"]["trigger_decisions"] for r in rows),
            "matches_with_opportunity": sum(1 for r in rows if r["mech"]["opps"])}
+    sk = [x for r in rows for x in r["mech"].get("skipped_unsnapshottable", [])]
+    out["skipped_unsnapshottable"] = len(sk)          # engine could not restore the snapshot (live Bowler-hero buff): not counted above
+    out["skipped_matches"] = sum(1 for r in rows if r["mech"].get("skipped_unsnapshottable"))
     out["opps_per_match"] = out["opportunities"] / max(1, len(rows))
     forked = [(c, o) for c, o in opps if "Bres" in o]
     out["forked"] = len(forked)
@@ -170,6 +173,7 @@ def main(argv):
     print(f"== {name}: {out['matches']} matches, {out['opportunities']} opportunities "
           f"({out['opps_per_match']:.2f}/match; {out['matches_with_opportunity']} matches with >= 1), "
           f"{out['forked']} forked, {out['same_as_model']} same as the model, {out['trigger_decisions']} trigger decisions")
+    print(f"skipped (engine cannot snapshot a live Bowler-hero buff): {out['skipped_unsnapshottable']} rounds in {out['skipped_matches']} matches")
     print("faithfulness:", json.dumps(fa))
     print("B root play:", json.dumps(out["B_root_play"]))
     for scope in ("forked", "all"):

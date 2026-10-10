@@ -352,6 +352,12 @@ def mech_fork(self, m, todo, ctx, first=True):
     blk = root_blockers(m) if MECH == "sneaky" else ()
     blob = m.env.core.save_state()
     envs = self._pool(1)
+    try:                                              # the engine cannot restore its own snapshot while a Bowler-hero
+        envs[0].core.load_state(blob)                 # ability buff is live (measured 16/16 rounds; 0/242 otherwise): skip
+    except ValueError as ex:                          # that opportunity for A and B alike, and count it (never silent)
+        m._mech["skipped"].append({"t0": t0, "err": str(ex), "buffs": sorted(
+            {b for e in m.env.core.state().entities for b in map(str, getattr(e, "buffs", ()))})})
+        return
     if not rec["same"]:
         rec["Bres"] = run_branch(m, todo, dB, blob, t0, envs[0], hold=(MECH == "patience"), blockers=blk)
     if _CHECKS[0] < CHECK:
@@ -362,7 +368,7 @@ def mech_fork(self, m, todo, ctx, first=True):
 
 def mech_play(self, arm, m, deadline=None):
     cfg = m.learner.cfg
-    m._mech = {"cfg_on": mech_cfg(cfg), "triggers": 0, "last": None, "start": None, "open": []}
+    m._mech = {"cfg_on": mech_cfg(cfg), "triggers": 0, "last": None, "start": None, "open": [], "skipped": []}
     out = _orig_play(self, arm, m, deadline)
     recs = []
     for o in m._mech["open"]:
@@ -373,7 +379,7 @@ def mech_play(self, arm, m, deadline=None):
             r["A_tornado_2s"] = any(card(m.learner, s) == "tornado" and r["t0"] <= land <= r["t0"] + 40 + DELAY
                                     for land, s, _, _ in m.learner.done_plays[r["n_done0"]:])
         recs.append(r)
-    out["mech"] = _plain({"name": MECH, "trigger_decisions": m._mech["triggers"], "episodes": len(recs), "opps": recs})
+    out["mech"] = _plain({"name": MECH, "trigger_decisions": m._mech["triggers"], "episodes": len(recs), "opps": recs, "skipped_unsnapshottable": m._mech["skipped"]})
     return out
 
 
