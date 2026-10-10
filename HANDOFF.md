@@ -5358,6 +5358,13 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   off-plan deviation (incumbent bias, owner's eval concern), not the mechanic. Split by own elixir at the moment too.
 > * Card levels (owner 10-10): Knight, X-Bow, Rocket, Tornado, Tesla 16; Ice Wizard 14; others 15. --card-levels
 >   only feeds Rocket/Log lethal maths (Rocket=16 Log=15 deployed) -> no change needed.
+> * **Defence E2 FAIL (960 paired, live flags):** live 665, fast base r3cb 630, E2 u10 592 / u20 577 / u30 571 (u10 vs
+>   base -4.0 pp, p .047); frozen-affordable runs/match .79 -> .58-.64 (defends more, wins less). Labels were towers_mat
+>   at a 30 s horizon; the split-game test says forced plays gain at 10 s and lose by 20 s / match end -> E3 = same arm,
+>   branches scored at match end (or >= 90 s) (worker afe4eb0d), queued after fast-plays FP_DONE -> /workspace/results/
+>   defence_e3. NOTE the fast base itself is -3.6 pp vs live (heads missing): any RL arm must be re-stacked before live.
+> * Live: chest-contents posts (ladder_nav is_reward_reveal) + stop no longer waits on clip renders (8324ee2);
+>   restarted 01:43:59 with combo + log-air + chest posts.
 > * **Rocket+Tornado combo SIM (a67f26ce, f022854; pod; delay-0 wrapper):** pull works -- clump value in blast at impact
 >   61% (combo) vs 15% (lone Rocket, same moment), destroyed +.34 elixir/fire [-.08, +.74] (tanks survive ~1480 dmg).
 >   Wins: no combo arm beats its lone twin; cb9 -.2 pp [-1.3, +.8] (6% of matches fire), cb7 -1.9, cb5 -5.0; air pool cb7
