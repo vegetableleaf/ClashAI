@@ -457,7 +457,7 @@ def mech_play(self, arm, m, deadline=None):
                                     for land, s, _, _ in m.learner.done_plays[r["n_done0"]:])
         recs.append(r)
     out["mech"] = _plain({"name": MECH, "trigger_decisions": m._mech["triggers"], "episodes": len(recs), "opps": recs, "skipped_unsnapshottable": m._mech["skipped"], "no_arm": m._mech["no_arm"],
-                     "moments": [sum(len(v) for v in MOMENTS.get(m.spec["tag"], {}).values()), m._mech["hit"]]})
+                     "probe_stats": dict(DA.STAT), "moments": [sum(len(v) for v in MOMENTS.get(m.spec["tag"], {}).values()), m._mech["hit"]]})
     return out
 
 

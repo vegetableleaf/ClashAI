@@ -100,8 +100,8 @@ st_S7() {  # engine royalesim 0.1.25
   say "S7 engine: $($V/bin/pip list 2>/dev/null | grep -i -E '^royale' | tr '\n' ' ')(venv25 = new wheels first on the path, torch/numpy from the main venv)"
   mkdir -p /workspace/sd25; cd /workspace/sd25
   $V/bin/pip download -q --no-binary :all: --no-deps royalegym==0.1.22 -d . 2>&1 | tail -1; tar xzf royalegym-0.1.22.tar.gz
-  (cd royalegym-0.1.22 && timeout 1500 $V/bin/python -m pytest -q -x tests 2>&1 | tail -5) > $D/royalegym_tests.txt 2>&1
-  say "royalegym 0.1.22 own tests (sdist tests/, -x): $(tail -1 $D/royalegym_tests.txt); royalesim's tests are Rust (cargo), no toolchain on the pod: not run"
+  (cd royalegym-0.1.22 && PYTHONPATH=tests timeout 1500 $V/bin/python -m pytest -q --continue-on-collection-errors tests 2>&1 | tail -8) > $D/royalegym_tests.txt 2>&1
+  say "royalegym 0.1.22 own tests (sdist tests/; the sdist lacks tests/_decks.py, so modules importing it error at collection): $(tail -1 $D/royalegym_tests.txt); royalesim's tests are Rust (cargo), no toolchain on the pod: not run"
   evenv $DEF; RL_OF=$RLD
   ev live_old $CK_OLD 0:480                    # the 0.1.17 / 20261006 reference (skipped when S2 already ran it)
   cp $WK/pipeline/royale_runtime.py $DEF/pipeline/royale_runtime.py
@@ -129,7 +129,7 @@ s9_run() {  # s9_run CKPT OUTDIR SEEDS_EVO SEEDS_LAD : pass 1 (state dump) -> mo
     mkdir -p $O/dump_$c
     CENSUS_FILE=$O/census_$c.json DUMP_DIR=$O/dump_$c bash $W/run_wk.sh dump $O/p1_$c $s 28 $c 0 $ck > $O/p1_$c.log 2>&1
     CB_MAIN=$WK $PY $W/moments_from_dump.py $O/dump_$c/ $O/moments_$c.json 3 200 150 > $O/moments_$c.txt 2>&1
-    CENSUS_FILE=$O/census_$c.json MECH_GAP=100 ROWS_DIR=$O/rows_$c MOMENTS=$O/moments_$c.json bash $W/run_wk.sh drills $O/p2_$c $s 28 $c 2 $ck > $O/p2_$c.log 2>&1
+    CENSUS_FILE=$O/census_$c.json MECH_GAP=100 MECH_MAXFORK=1 ROWS_DIR=$O/rows_$c MOMENTS=$O/moments_$c.json bash $W/run_wk.sh drills $O/p2_$c $s 28 $c 2 $ck > $O/p2_$c.log 2>&1
     rm -rf $O/dump_$c
   done
 }

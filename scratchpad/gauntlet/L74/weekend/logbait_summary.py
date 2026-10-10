@@ -15,12 +15,19 @@ ab = collections.Counter()
 for r in rows:
     for card, k in (r.get("ability_presses", {}).get(str(r["learner_side"])) or {}).items():
         ab[card] += k
+cards = collections.Counter()
+for r in rows:
+    b = r.get("behaviour") or {}
+    b = b if isinstance(b, dict) else eval(b)
+    for ph in (b.get("phase_cards") or {}).values():
+        cards.update(ph)
 by = {}
 for r in rows:
     a = A.classify(r["opp_deck"]); x = by.setdefault(a, [0, 0.0]); x[0] += 1; x[1] += win(r) + 0.5 * (r["outcome"] == "draw")
 L = ["S8 Log Bait baseline: old live model (towerref_w2), learner deck Evo Dart Goblin, Evo Skeleton Army, Valkyrie, Goblin Barrel, Princess, Cannon, Wall Breakers, Ice Spirit",
      f"{n} games (seeds 0:240 evo + 0:240 lad, the usual opponents T .3, live flags): win {100 * p:.1f}% [{100 * (p - hw):.1f}, {100 * (p + hw):.1f}] (W {w} D {d} L {n - w - d})",
      f"form_fallbacks per match (engine's report of cards that fell back to the base form): {dict(fb)}",
+     f"cards the learner played (all matches): {dict(cards.most_common(10))}",
      f"hero/evo ability presses by the learner: {dict(ab)}",
      "by opponent archetype: " + ", ".join(f"{a} n {c} win {100 * s / c:.0f}%" for a, (c, s) in sorted(by.items()))]
 L.append("VERDICT: baseline recorded; evo forms " + ("loaded as decked (no fallbacks reported)" if set(fb) <= {"[]", "null"} else "NOT all loaded: see form_fallbacks"))
