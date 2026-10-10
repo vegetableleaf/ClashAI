@@ -5384,6 +5384,11 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   below the previous live (646 vs 665, p .34); freezes -17%. Judge live by freezes/match + drill moments. Undo:
 >   CKPT_OVERRIDE.pre_e4_backup. Chest posts now need the item title band (no unopened-chest frames; 86801b3).
 >   Placebo fork (worker a45c79e4) running on the LAPTOP (pod stopped 07:42), rocket_tower moments, B = model's 2nd choice.
+> * **Owner: 'wire the add-ons'. LIVE checkpoint now rdef_e4_u0020_barrel2k_cellref_towerref_w2.pt (sha 430faaee).**
+>   The live model = fast base trunk + exactly 3 add-ons (measured: 98/98 other tensors identical): the barrel2k
+>   projectile_target_* input (5 tensors), CellRefine, TowerRefine. Grafted all 42 add-on tensors from the live ckpt onto
+>   E4 u20 (its trunk drifted 0.74% of |weights| from the fast base). --check PASS. UNTESTED in SIM (pod stopped): the
+>   add-ons were trained on the fast-base trunk. Script: L74/deploy/graft_heads.py. Undo: CKPT_OVERRIDE.pre_e4_backup.
 > * **Rocket+Tornado combo SIM (a67f26ce, f022854; pod; delay-0 wrapper):** pull works -- clump value in blast at impact
 >   61% (combo) vs 15% (lone Rocket, same moment), destroyed +.34 elixir/fire [-.08, +.74] (tanks survive ~1480 dmg).
 >   Wins: no combo arm beats its lone twin; cb9 -.2 pp [-1.3, +.8] (6% of matches fire), cb7 -1.9, cb5 -5.0; air pool cb7
