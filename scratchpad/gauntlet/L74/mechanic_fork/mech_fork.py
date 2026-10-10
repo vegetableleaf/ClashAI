@@ -73,32 +73,7 @@ REARM = int(os.environ.get("MECH_REARM", "200" if MECH == "rocket_tower" else "0
 MAXFORK = int(os.environ.get("MECH_MAXFORK", "3" if MECH in ("placebo", "prevent", "drills") else "0"))   # > 0: at most this many forks per match
 
 
-def rocket_tower_choice(s, allowed):
-    """Owner 2026-10-09 ("rocket an enemy tower to gain or maintain a damage lead in 2x and overtime"): 2x or overtime
-    (decision_options.phase_index of the decision board's time >= 1), nothing pending, an affordable Rocket slot, an
-    alive ENEMY PRINCESS. Tower = the lowest-HP alive enemy princess (lethal_rocket_target's order, any HP); never the
-    king (tower doctrine; a lethal king is not handled here). Aim = lethal_rocket_cell (the princess centre).
-    -> decision dict or None. Public: the decision board's time, my hand / elixir mask, the public crown towers."""
-    from pipeline.decision_options import lethal_rocket_cell, phase_index
-    from pipeline.obs_contract import _engine_xy
-    bs = s._cur[1]
-    if getattr(s, "pending", None) is not None or phase_index([float(bs.t_sec)])[0] < 1:
-        return None
-    slots = [i for i, n in enumerate(s.deck.cards) if n is not None and str(n).lower() == "rocket" and allowed[i]]
-    if not slots:
-        return None
-    crown = ((s.state or {}).get("episode") or {}).get("crown_towers", [])
-    best = None
-    for t in crown:
-        if int(t["side"]) == s.side or t.get("type") != "princess" or t.get("destroyed") or not t["hp"] > 0:
-            continue
-        x, _ = _engine_xy(float(t["x"]), float(t["y"]), s.side == 1)
-        if best is None or t["hp"] < best[1]:
-            best = ("L" if x < .5 else "R", int(t["hp"]))
-    if best is None:
-        return None
-    return {"play": True, "slot": slots[0], "cell": int(lethal_rocket_cell(best[0], s.cfg["grid"])),
-            "why": "rocket_tower", "lane": best[0], "tower_hp": best[1]}
+rocket_tower_choice = DA.rocket_tower_choice
 
 
 def placebo_choice(s, enc, heads, allowed, dA):
@@ -434,6 +409,10 @@ def mech_fork(self, m, todo, ctx, first=True, moment=None):
         ex = {"tick": t0, "drill": rec["drill"]}
         for nm, a in arms.items():
             ex.update({f"{nm}_play": int(bool(a["root"]["play"])), f"{nm}_slot": int(a["root"]["slot"]), f"{nm}_cell": int(a["root"]["cell"])})
+        if moment is not None and moment.get("variant"):
+            rec["variant"] = moment["variant"]
+            rec["p_pro"] = moment.get("p_pro")
+            ex["variant"] = moment["variant"]
         DA.save_row(ROWS_DIR, f"fork_{rec['drill']}_{m.spec['tag']}_{t0}", L, ctx, ex)
     elif not rec["same"]:
         rec["Bres"] = run_branch(m, todo, dB, blob, t0, envs[0], hold=(MECH == "patience"), blockers=blk)

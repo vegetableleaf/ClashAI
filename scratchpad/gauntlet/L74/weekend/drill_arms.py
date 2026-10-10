@@ -203,6 +203,10 @@ def prevent_probe(m, s, ctx, dA):
 # ---------------------------------------------------------------------------------------------------- drill arms
 def build_arms(mo, m, s, ctx):
     """-> {"do": {"root", "script"}, "alt": {...}} or {"_skip": reason}.  First option = DO, second = ALT (see summary)."""
+    if mo.get("variant"):
+        return variant_arms(mo, m, s, ctx)
+    if mo["drill"] in ("D5", "D6", "D7", "D8"):
+        return xl2_arms(mo, m, s, ctx)
     dr, info, bs, t0 = mo["drill"], mo.get("info") or {}, ctx["bs"], ctx["tick"]
     if dr == "D1":
         k = pick(s, ctx, DEF)
@@ -246,6 +250,126 @@ def build_arms(mo, m, s, ctx):
     return {"_skip": "unknown drill " + str(dr)}
 
 
+def xl2_arms(mo, m, s, ctx):
+    """New root-only DO / HOLD arms. HOLD keeps the named spell this decision."""
+    dr, bs = mo["drill"], ctx["bs"]
+    if getattr(s, "pending", None) is not None:
+        return {"_skip": "play pending"}
+    if dr == "D5":
+        k = pick(s, ctx, ("log",))
+        if k is None:
+            return {"_skip": "Log not allowed"}
+        from pipeline import vocab
+        from pipeline.decision_options import rocket_unit_table
+        import sys
+        from pathlib import Path
+        sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "drills"))
+        from sneaky_rule import unit_params
+        table = rocket_unit_table()
+        targets, small, barrels = [], [], []
+        # Maximise public ground value in the whole corridor, including the
+        # selected barrel landing point. Air units other than barrels never count.
+        for u in bs.units:
+            if int(u.side) != 1 or (u.hp_frac is not None and u.hp_frac <= 0):
+                continue
+            name = vocab.base_key(vocab.UNIT_VOCAB[int(u.cls)])
+            row = table.get(name)
+            if name in ("goblin_barrel", "skeleton_barrel"):
+                value = 3.0
+                if (1 - u.y) * 32.0 <= 18:
+                    barrels.append((u.x * 18.0, (1 - u.y) * 32.0))
+            elif row is not None and unit_params(int(u.cls))[0] == "troop":
+                value = float(row[0])
+                if value <= 1.0 and (1 - u.y) * 32.0 <= 18:
+                    small.append((u.x * 18.0, (1 - u.y) * 32.0))
+            else:
+                continue
+            targets.append((u.x * 18.0, (1 - u.y) * 32.0, value))
+        info = mo.get("info") or {}
+        if info.get("barrel"):
+            targets.append((info["x"], info["y"], 3.0))
+            barrels.append((info["x"], info["y"]))
+        if not targets:
+            return {"_skip": "no Log targets"}
+        import torch
+        with torch.no_grad():
+            logits = s.model.cell_logits(ctx["enc"], torch.tensor([k], device=ctx["heads"]["card"].device))[0]
+        X, Y = tiles(s.cfg["grid"], len(logits))
+        score = sum(v * ((abs(X - x) <= 2.7) & (Y <= y) & (y - Y <= 10.6)) for x, y, v in targets)
+        def corridor(x, y):
+            return (abs(X - x) <= 2.7) & (Y <= y) & (y - Y <= 10.6)
+        swarm_count = sum((corridor(x, y).astype(int) for x, y in small), np.zeros(len(X), int))
+        barrel_hit = sum((corridor(x, y).astype(int) for x, y in barrels), np.zeros(len(X), int)) > 0
+        eligible = (Y <= 18) & (score > 0) & ((swarm_count >= 3) | barrel_hit)
+        if not eligible.any():
+            return {"_skip": "no Log corridor"}
+        best = score[eligible].max()
+        d = play(s, ctx, k, "d5_do", lambda X, Y: eligible & (score == best))
+    elif dr == "D6":
+        from pipeline.decision_options import DecisionOptions, rocket_value_choice, rocket_value_cell
+        # The deployed drift lead projects catalog movement through flight time;
+        # no unobserved engine velocity or enemy state enters the aim.
+        options = DecisionOptions(rocket_value=10.0, rocket_value_lead="drift", rocket_value_hitbox="edge")
+        hit = rocket_value_choice(options, s.deck.cards, ctx["allowed"], bs, s.cfg["grid"])
+        if hit is None:
+            return {"_skip": "no >=10 impact clump on own half"}
+        import torch
+        k, eligible, value = hit
+        with torch.no_grad():
+            logits = s.model.cell_logits(ctx["enc"], torch.tensor([k], device=ctx["heads"]["card"].device))[0]
+        d = dict(play=True, slot=int(k), cell=int(rocket_value_cell(logits, eligible)), why="d6_do")
+    elif dr == "D7":
+        if str(ctx["d"].get("why", "")).startswith("lethal"):
+            return {"_skip": "model already takes lethal"}
+        d = rocket_tower_choice(s, ctx["allowed"])
+        if d is None:
+            return {"_skip": "no late tower Rocket"}
+    elif dr == "D8":
+        import sys
+        from pathlib import Path
+        sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "drills"))
+        from sneaky_rule import sneaky_lock_choice
+        from types import SimpleNamespace
+        hit = sneaky_lock_choice(SimpleNamespace(sneaky_lock="on"), bs, s.deck.cards, ctx["allowed"], s.cfg["grid"])
+        if hit is None:
+            return {"_skip": "no sneaky-lock plan"}
+        d = dict(play=True, slot=int(hit[0]), cell=int(hit[1]), why="sneaky_lock")
+    else:
+        raise ValueError(dr)
+    return {"do": {"root": d, "script": None}, "alt": {"root": dict(NOPLAY), "script": None}}
+
+
+def variant_arms(mo, m, s, ctx):
+    """For search, B is the variant and ALT is exactly A (not a forced wait).
+
+    Build the plain arm before applying q so all q use the same feasible population.
+    A rejected WHEN gate retains the opportunity and copies A, including follow-ups.
+    """
+    variant = mo["variant"]
+    arms = build_arms({k: v for k, v in mo.items() if k != "variant"}, m, s, ctx)
+    if "_skip" in arms:
+        return arms
+    if variant == "DO_best_air":
+        if mo["drill"] != "D4":
+            raise ValueError("best-air variant only belongs to D4")
+        slot = pick(s, ctx, ("tesla", "icewizard", "rocket"))
+        if slot is None:
+            return {"_skip": "no air-capable card allowed"}
+        arms["do"] = {"root": play(s, ctx, slot, "d4_best_air"), "script": None}
+    if variant.startswith("DO_when_"):
+        q = float(variant.removeprefix("DO_when_"))
+        if q not in (.3, .5, .7) or "p_pro" not in mo:
+            raise ValueError("WHEN variant requires a fitted public probability and q in .3/.5/.7")
+        if not 0 <= float(mo["p_pro"]) <= 1:
+            raise ValueError("invalid pro probability")
+        if float(mo["p_pro"]) < q:
+            arms["do"] = {"root": dict(ctx["d"]), "script": None}
+    elif variant not in ("DO", "DO_best_air"):
+        raise ValueError("unknown XL2 variant: " + variant)
+    arms["alt"] = {"root": dict(ctx["d"]), "script": None}
+    return arms
+
+
 # ---------------------------------------------------------------------------------------------------- training rows
 def save_row(rows_dir, name, L, ctx, extra=None):
     """The model's input row at this decision + the allowed mask (+ target arrays) for S10.  Public input only."""
@@ -264,3 +388,32 @@ def save_row(rows_dir, name, L, ctx, extra=None):
 
 def is_ordinary(tag, tick, every=25):
     return zlib.crc32(f"{tag}:{tick}:ord".encode()) % every == 0
+
+
+# Shared verbatim with the original rocket_tower mechanic.
+def rocket_tower_choice(s, allowed):
+    """Owner 2026-10-09 ("rocket an enemy tower to gain or maintain a damage lead in 2x and overtime"): 2x or overtime
+    (decision_options.phase_index of the decision board's time >= 1), nothing pending, an affordable Rocket slot, an
+    alive ENEMY PRINCESS. Tower = the lowest-HP alive enemy princess (lethal_rocket_target's order, any HP); never the
+    king (tower doctrine; a lethal king is not handled here). Aim = lethal_rocket_cell (the princess centre).
+    -> decision dict or None. Public: the decision board's time, my hand / elixir mask, the public crown towers."""
+    from pipeline.decision_options import lethal_rocket_cell, phase_index
+    from pipeline.obs_contract import _engine_xy
+    bs = s._cur[1]
+    if getattr(s, "pending", None) is not None or phase_index([float(bs.t_sec)])[0] < 1:
+        return None
+    slots = [i for i, n in enumerate(s.deck.cards) if n is not None and str(n).lower() == "rocket" and allowed[i]]
+    if not slots:
+        return None
+    crown = ((s.state or {}).get("episode") or {}).get("crown_towers", [])
+    best = None
+    for t in crown:
+        if int(t["side"]) == s.side or t.get("type") != "princess" or t.get("destroyed") or not t["hp"] > 0:
+            continue
+        x, _ = _engine_xy(float(t["x"]), float(t["y"]), s.side == 1)
+        if best is None or t["hp"] < best[1]:
+            best = ("L" if x < .5 else "R", int(t["hp"]))
+    if best is None:
+        return None
+    return {"play": True, "slot": slots[0], "cell": int(lethal_rocket_cell(best[0], s.cfg["grid"])),
+            "why": "rocket_tower", "lane": best[0], "tower_hp": best[1]}

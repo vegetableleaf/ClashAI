@@ -14,7 +14,7 @@ CK_OLD=$CKR/rseries_r3c/rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt
 CK_NEW=$CKR/rdef_e4/rdef_e4_u0020_barrel2k_cellref_towerref_w2.pt
 CK_BASE=$CKR/rseries_r3c/rseries_r3c_u0030_barrel.pt
 ALL="S2 S4 S3 S8 S7 S9 S10 S5 S6"
-TRAIN=" S5 S6 S10 S10XL "
+TRAIN=" S5 S6 S10 S10XL S10XL2 "
 say() { echo "$@" >> $D/SUMMARY.txt; }
 
 evenv() { export REPO=$1 PY ROYALE_RUNTIME OUT=$R/_evout EVAL_DIR=$EV EVAL_FLAGS=live NICE= CORES=28 GPU=0 EVAL_WORKERS=14; mkdir -p $EV; }
@@ -190,6 +190,18 @@ st_S10XL() {
   cat $D/fork.txt >> $D/SUMMARY.txt
   if grep -q "^VERDICT: candidate" $D/fork.txt; then say "S10XL VERDICT: candidate: ask owner to deploy (never auto)"; else say "S10XL VERDICT: no gain"; fi
 }
+
+# ---------------------------------------------------------------------------------------------------- S9XL2 / S10XL2 (opt-in; legacy bodies above unchanged)
+xl2_stage() {
+  local here repo
+  here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+  repo=${XL2_REPO:-$(cd "$here/../../../.." && pwd)}
+  "$PY" "$here/xl2_stage.py" "$1" --repo "$repo" --results "$R" \
+    --ckpt "${XL2_CKPT:-$CK_NEW}" --models "${PRO_WHEN:-$repo/scratchpad/gauntlet/L74/drills/data/pro_when.json}" \
+    --workers "${XL2_WORKERS:-28}"
+}
+st_S9XL2() { xl2_stage S9XL2; }
+st_S10XL2() { xl2_stage S10XL2; }
 
 # ---------------------------------------------------------------------------------------------------- main
 if [ "$1" = __run ]; then D=$R/$2; mkdir -p $D; "st_$2"; exit $?; fi
