@@ -5384,6 +5384,25 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   below the previous live (646 vs 665, p .34); freezes -17%. Judge live by freezes/match + drill moments. Undo:
 >   CKPT_OVERRIDE.pre_e4_backup. Chest posts now need the item title band (no unopened-chest frames; 86801b3).
 >   Placebo fork (worker a45c79e4) running on the LAPTOP (pod stopped 07:42), rocket_tower moments, B = model's 2nd choice.
+> * **Owner: 'wire the add-ons'. LIVE checkpoint now rdef_e4_u0020_barrel2k_cellref_towerref_w2.pt (sha 430faaee).**
+>   The live model = fast base trunk + exactly 3 add-ons (measured: 98/98 other tensors identical): the barrel2k
+>   projectile_target_* input (5 tensors), CellRefine, TowerRefine. Grafted all 42 add-on tensors from the live ckpt onto
+>   E4 u20 (its trunk drifted 0.74% of |weights| from the fast base). --check PASS. UNTESTED in SIM (pod stopped): the
+>   add-ons were trained on the fast-base trunk. Script: L74/deploy/graft_heads.py. Undo: CKPT_OVERRIDE.pre_e4_backup.
+> * **10-10 10:16 REVERTED to the previous live model** (owner: E4 graft 'horrible': wasted Tornados, towers lost in
+>   the first minute, elixir leaks while run over). Measured on its 5 live matches vs 317 old-model matches
+>   (L74/deploy/e4_live_check.py): tower lost <60 s 20% vs 7%; s at full elixir with an enemy on our half 3.0 vs 1.2;
+>   Tornados 3.0 vs 2.1/match. n=5: direction matches the owner, not significant. SIM said E4 froze LESS (.66 vs .80)
+>   -> another sim-vs-live gap (cf. D3). Graft vs E4-trunk not separated. Graft ckpt kept (CKPT_OVERRIDE.e4_graft).
+> * 10:25 owner: "I DIDNT SAY TO REVERT" -> E4 graft restored live (memory never-revert-owner-live-choice).
+> * **PLACEBO (new pod 64.247.206.76:17497, l74-placebo 1a85308): harness NOT biased.** Same 351 rocket_tower moments
+>   (120 evo matches): placebo (model's 2nd choice forced) win +1.7 pp +-7.6, end tower -39 +-255; tower Rocket -16.5
+>   +-7.9, end -1146 +-346. Faithful 56/56. => forced mechanics genuinely lose in SIM; drills must teach WHEN.
+> * **OT Rocket offline compare (40 old-model OT matches, same states; L74/deploy/ot_rocket_compare.py):** P(Rocket now)
+>   OLD .074 / NEW graft .064 (-.011 [-.018, -.004]) / RAW E4 .049; top card Rocket 11.4% / 8.3% / 2.4% -> owner's
+>   observation confirmed; TowerRefine graft restores most, not all.
+> * Delay-vs-prevent (owner): 84% of live Log/Tornado plays are the model's own choice (p_play >= .35); rules add a
+>   little (16.3% vs 10.7% for defenders) (L74/deploy/delay_vs_prevent.py). Weekend pod plan proposed to owner.
 > * **Rocket+Tornado combo SIM (a67f26ce, f022854; pod; delay-0 wrapper):** pull works -- clump value in blast at impact
 >   61% (combo) vs 15% (lone Rocket, same moment), destroyed +.34 elixir/fire [-.08, +.74] (tanks survive ~1480 dmg).
 >   Wins: no combo arm beats its lone twin; cb9 -.2 pp [-1.3, +.8] (6% of matches fire), cb7 -1.9, cb5 -5.0; air pool cb7
