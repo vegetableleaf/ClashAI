@@ -5418,6 +5418,12 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   after its current seed, drop S6, run S9XL (D2, D3, D10 at ~2,500 moments each) -> S10XL if a label is clear -> CHAIN_DONE
 >   -> S11 Log Bait. Worker aa832b87. Emote spam ON (3.0 s; live test 6/6) in icebow + bait LIVE_OPTIONS (c56652e).
 >   Hero IW presses: new model 0.45/match vs old 1.43 (IW plays 3.16 vs 3.97; SIM has no Hero IW).
+> * **10-11 morning (lead):** CAL (harder opponents, 480/learner): OLD win% a 63.3 / b 51.7 / c 51.5 / e 54.2; E4 - OLD
+>   +3.8 / +5.2 / **+5.9 [+0.6, +11.3]** / +3.5 -> SIM ranks E4 ABOVE OLD with every opponent. LIVE (icebow, results from
+>   final towers, L74/deploy/live_model_record.py): OLD 206-173 = 54.4% +-5.0 (n 379); E4 20-32 = 38.5% +-13.2 (n 52)
+>   -> about -16 pp live (trophy level not controlled). => SIM-vs-live disagreement measured both ways. Candidate cause
+>   (b): Hero IW does not exist in SIM; E4 presses the IW ability 0.45/match vs OLD 1.43 live. Live stays OLD (owner).
+>   S9XL2b/S10XL2b crashed (D4 DEV fork pass) -> fix + relaunch worker a6e976f0.
 > * **10-10 night state (lead usage 95%, cutoff 98%):**
 >   - E5 (3 seeds) all failed: s7 -8.65 pp, s8 -4.17, s9 tripwire at u14. S6 own-cycle killed (owner choice).
 >   - Owner: icebow before Log Bait; ALL drills D1-D9 (+D10); 'keep rewriting until a strategy works'; Codex for heavy
