@@ -8,7 +8,9 @@ NAMES = {'S2': 'New live model vs old (960 sim games)', 'S3': 'Prevent vs delay 
          'S10': 'Drill training', 'S10XL': 'Drill training on D2 + D3', 'S9XL2': "Drill scoring, all drills + 'when pros would'",
          'S10XL2': 'Drill training on every confirmed drill', 'S11_bait': 'Log Bait training (base cards)',
          'ADAPT': 'Adaptive-opponent training',
-         'BAIT_CMP': 'Log Bait specialist vs generalist'}
+         'BAIT_CMP': 'Log Bait specialist vs generalist',
+         'MEMP1': 'Match memory: pro dataset with histories', 'MEMP2': 'Match memory: memory-only pretraining',
+         'MEMP3': 'Match memory: adaptive league training', 'MEMP4': 'Match memory: 960-game test vs the old live model'}
 NEXT = {'S10XL': 'Next: the all-drills scoring run starts automatically.',
         'S9XL2': 'Next: training on the confirmed drills starts automatically.',
         'S10XL2': "If it says 'candidate', reply to approve a deploy -- nothing deploys on its own.",
@@ -38,8 +40,9 @@ def readable(text: str) -> str:
     stage, body = (m.group(1), m.group(2)) if m else ('', text)
     lines = [l for l in body.splitlines() if l.strip()]
     verdicts = [_plain(l.split('VERDICT:', 1)[1]) for l in lines if 'VERDICT:' in l]
-    key = [_plain(l) for l in lines if 'VERDICT:' not in l and re.search(r'label|vs |win|%|points|pp', l)]
-    out = [f"**{NAMES.get(stage, stage or 'Pod stage')} -- finished**"]
+    key = [_plain(l) for l in lines if 'VERDICT:' not in l and re.search(r'label|vs |win|%|points|pp|Improvement|Memory benefit', l)]
+    seed = re.match(r'seed ([AB])\b', lines[0]) if lines else None      # relay puts 'seed A/B' on the first body line
+    out = [f"**{NAMES.get(stage, stage or 'Pod stage')}{' (seed ' + seed.group(1) + ')' if seed else ''} -- finished**"]
     if verdicts:
         out.append('**Verdict:** ' + ' / '.join(dict.fromkeys(verdicts)))
     out += ['- ' + k[:230] for k in key[:10]]
