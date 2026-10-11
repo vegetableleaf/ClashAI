@@ -9,6 +9,46 @@ from pathlib import Path
 import numpy as np
 
 
+def select_npz_rows(path, key, indices):
+    """Stream selected rows of a large, C-order numeric NPZ member.
+
+    Pro-agreement must not inflate the entire padded match history into RAM.
+    Sorted replay row indexes permit forward-only decompression.
+    """
+    import zipfile
+    indices = np.asarray(indices, dtype=np.int64)
+    if len(indices) > 1 and np.any(np.diff(indices) <= 0):
+        raise ValueError('row indices must be strictly increasing')
+    with zipfile.ZipFile(path) as archive, archive.open(key+'.npy') as f:
+        version = np.lib.format.read_magic(f)
+        if version == (1, 0):
+            shape, fortran, dtype = np.lib.format.read_array_header_1_0(f)
+        elif version == (2, 0):
+            shape, fortran, dtype = np.lib.format.read_array_header_2_0(f)
+        else:
+            raise ValueError('unsupported npy header')
+        if fortran or dtype.hasobject or not shape:
+            raise ValueError('requires a C-order numeric row array')
+        if len(indices) and (indices[0] < 0 or indices[-1] >= shape[0]):
+            raise IndexError('dataset row out of range')
+        out = np.empty((len(indices), *shape[1:]), dtype=dtype)
+        width = int(np.prod(shape[1:]))*dtype.itemsize
+        position = 0
+        for i, row in enumerate(indices):
+            remaining = (int(row)-position)*width
+            while remaining:
+                chunk = f.read(min(remaining, 1024*1024))
+                if not chunk:
+                    raise ValueError('truncated history array')
+                remaining -= len(chunk)
+            data = f.read(width)
+            if len(data) != width:
+                raise ValueError('truncated history row')
+            out[i] = np.frombuffer(data, dtype=dtype).reshape(shape[1:])
+            position = int(row)+1
+    return out
+
+
 def load_mapped(path, cache):
     """Extract an immutable NPZ into a fresh cache, validating member names/CRC.
 
@@ -33,8 +73,8 @@ def load_mapped(path, cache):
                 shutil.copyfileobj(src, dst, length=1048576)
             arrays[name[:-4]] = np.load(cache/name, mmap_mode='c', allow_pickle=False)
     meta = json.loads(str(arrays.pop('meta')))
-    if meta.get('feature_version') != 4:
-        raise ValueError('Memory-mapped training is scoped to version4')
+    if meta.get('feature_version') not in (4, 5, 6):
+        raise ValueError('Memory-mapped training requires public feature version 4, 5 or 6')
     return arrays, meta
 
 
