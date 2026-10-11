@@ -152,15 +152,20 @@ def train(c, name, out):
     return saved
 
 
-def eval_command(ck, out, census, start, workers=20):
-    return [sys.executable, "-m", "pipeline.search_s0", "--out", str(out), "--seeds", f"{start}:{start + 480}",
+# --smoke (review only): 2 tiny cycles in a scratch dir/prefix, 8 eval games, <= 3 processes. Production values untouched.
+SMOKE_CFG = dict(n_actors=2, E=2, G=2, in_flight=2, screen_entries=2, screen_seeds=[0], proagree_rows=200,
+                 league_snapshot_every=1, save_every=1)
+
+
+def eval_command(ck, out, census, start, workers=20, games=480):
+    return [sys.executable, "-m", "pipeline.search_s0", "--out", str(out), "--seeds", f"{start}:{start + games}",
             "--opps", "gen", "--arms", "plain", "--gen", str(ck), "--opp-gen", str(CAL_C),
             "--forms-mode", "deck", "--device", "cpu", "--workers", str(workers), "--tail-cap", "7200",
             "--tau-plain", "0.35", "--census", str(census), "--hero-abilities", "--ability-policy", "v2",
             "--behaviour-telemetry", "--opp-policy", "sample", "--opp-T", "0.1", *LIVE_FLAGS]
 
 
-def summary(ev):
+def summary(ev, games=480):
     import wk_compare as W
     # Reject skips, duplicates, missing pairs and wrong totals instead of silently
     # comparing a favourable subset. Each arm plays exactly 960 games.
@@ -169,7 +174,7 @@ def summary(ev):
         records[arm] = {}
         for census in ("evo", "lad"):
             rows = [json.loads(s) for s in (ev / f"{arm}_{census}" / "matches.jsonl").read_text().splitlines()]
-            if len(rows) != 480 or any(r.get("skipped") or r.get("outcome") not in ("win", "draw", "loss") for r in rows):
+            if len(rows) != games or any(r.get("skipped") or r.get("outcome") not in ("win", "draw", "loss") for r in rows):
                 raise ValueError(f"incomplete evaluation: {arm}_{census}")
             for r in rows:
                 key = (census, r["tag"])
@@ -179,14 +184,14 @@ def summary(ev):
     if records["old"] != records["adaptive"]:
         raise ValueError("evaluation pairing/decks differ")
     n, _, _, mu, lo, hi = W.diff(str(ev), "old", "adaptive")
-    if n != 960:
-        raise ValueError(f"expected 960 paired games, got {n}")
+    if n != 2 * games:
+        raise ValueError(f"expected {2 * games} paired games, got {n}")
     verdict = "Improvement shown" if lo > 0 else "Worse" if hi < 0 else "Improvement not established"
     return (f"VERDICT: {verdict}. Nothing deployed.\n" + W.line(str(ev), "old", "adaptive") + "\n" +
             W.arch_table(str(ev), "old", "adaptive") + "\nFixed opponent: calibrated set c, T=0.1; census decks; S2/CAL live flags.\n")
 
 
-def execute(out):
+def execute(out, smoke=False):
     import torch
     import yaml
     out.mkdir(parents=True, exist_ok=True)
@@ -202,11 +207,13 @@ def execute(out):
         atomic_json(deck, weighted_sixty(json.loads(deck.read_text())))
     manifest = out / "cycles.json"
     state = json.loads(manifest.read_text()) if manifest.exists() else {"completed": [], "external": []}
-    plans = cycle_plan()
+    games, workers = (8, 2) if smoke else (480, 20)
+    plans = cycle_plan(*(("wk_adapt_smoke", 2, 1, 1) if smoke else ()))
     for plan in plans:
         if plan["cycle"] in state["completed"]:
             continue
         c = config_for(base, "main", plan, deck, state["external"])
+        c.update(SMOKE_CFG if smoke else {})
         main = train(c, plan["main_run"], out)
         frozen = REPO / plan["frozen"]
         weights = {k: v for k, v in main.items() if k != "rl"}
@@ -220,6 +227,7 @@ def execute(out):
         state["active"] = {**plan, "frozen_sha256": frozen_hash}
         atomic_json(manifest, state)
         exp = config_for(base, "exploiter", plan, deck, [])
+        exp.update(SMOKE_CFG if smoke else {})
         train(exp, plan["exploiter_run"], out)
         if hashlib.sha256(frozen.read_bytes()).hexdigest() != frozen_hash:
             raise RuntimeError("exploiter changed the frozen main checkpoint")
@@ -244,11 +252,13 @@ def execute(out):
                 if dest.exists():
                     # Preserve failed output; search_s0 requires an empty dir.
                     dest.rename(ev / f"{arm}_{census}.partial_{time.time_ns()}")
-                run(eval_command(ck, dest, decks, start), ev / f"{arm}_{census}.log")
-    (out / "SUMMARY.txt").write_text(summary(ev), encoding="utf-8")
+                run(eval_command(ck, dest, decks, start, workers, games), ev / f"{arm}_{census}.log")
+    (out / "SUMMARY.txt").write_text(summary(ev, games), encoding="utf-8")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", type=Path, required=True)
-    execute(parser.parse_args().out.resolve())
+    parser.add_argument("--smoke", action="store_true")
+    a = parser.parse_args()
+    execute(a.out.resolve(), a.smoke)

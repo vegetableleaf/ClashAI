@@ -237,6 +237,18 @@ def test_weighted_decks_and_fixed_eval():
     assert D.config_for(cfg(), "main", D.cycle_plan()[0], "decks.json", [])["proagree_data_gen"] == str(D.DATA)
 
 
+def test_training_rollouts_are_plain_model_no_live_rules():
+    # Owner 10-11: training runs the PLAIN model (no LIVE_OPTIONS decision rules); only the final eval carries them.
+    from pipeline import decision_options as DO, rl_royale as RL
+    for phase in ("main", "exploiter"):
+        c = D.config_for(cfg(), phase, D.cycle_plan()[0], "decks.json", [])
+        assert not set(c) & set(DO.DecisionOptions.__dataclass_fields__)
+        for kind in ("rollout", "screen"):
+            base = {**c, "tau": .27, "afford_mask": True, "stall_seconds": 12, "obs": "live", "grid": 1,
+                    "decide_every": 10, "T": .5}
+            assert not DO.options_from_config(RL.actor_cfg(base, kind, 0, "cpu")).active
+
+
 def test_shell_wait_locks_and_failure_contract():
     shell = (Path(D.__file__).parent / "run_adaptive.sh").read_text()
     assert shell.index("while [ ! -f /workspace/results/wk/ICEBOW_DONE ]") < shell.index("flock /workspace/gpu.lock")
