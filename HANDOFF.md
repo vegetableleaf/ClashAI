@@ -11283,3 +11283,17 @@ Notification: posted; evidence `.foreman\codex_autopilot\runs\rseries_r1t_v3_u00
 ClashBot milestone: rseries_r1t_v3_u0155 historical acceptance instruments finished. Paired299 ghost vs live u0155: -1.34 pp [95% CI -4.68,+2.01]. Accepted plays/min 9.552; Rocket share 1.166%. gen: 18/24 vs live 14/24, +16.67 pp [-8.33,+41.67]; s1: 22/24 vs live 24/24, -8.33 pp [-20.83,+0.00]. The ghost CI includes no change. 8 behaviour metrics remain unmeasured, so full updated acceptance is incomplete. No deployment recommendation can be established from this partial suite; owner approval is required. Next: complete behaviour/source validation. Evidence: .foreman/codex_autopilot/runs/rseries_r1t_v3_u0155_acceptance.json
 
 Notification: posted; evidence `.foreman\codex_autopilot\runs\rseries_r1t_v3_u0155_acceptance.json`.
+
+## TUESDAY QUEUE (owner 10-11): elixir-queue mechanic
+Owner: playing an N-elixir card at N-0.5 elixir QUEUES it: placed semi-transparent, deploys when elixir reaches N, THEN the
+1 s deploy delay. Not modelled in training. Example: a Tesla tapped at 3.5 elixir lands late, and a Hog passes its spot.
+Live already taps early on purpose (`--afford-ticks 23`: a card counts as affordable if elixir reaches its cost within ~1.15 s).
+1. MEASURE LIVE: per play, elixir at the tap (own_elixir_raw) vs cost, and tap -> confirmed (deployed) time. Report the share
+   of queued plays, the queue-time distribution, and per card (Tesla, X-Bow, Knight...) whether a win condition crossed the
+   placement during the queue.
+2. SIM: check whether RoyaleSim queues, refuses (TOO_EARLY / refused) or deploys early taps instantly. If it doesn't queue
+   like the game, add the queue to the SelfPlaySide harness (place at tap, wait until elixir >= N, then the normal deploy
+   delay), so training and the forked tests see the delay. Then re-measure the live model in SIM.
+3. LEARNED FIX: train or fine-tune with the queue modelled, so the model learns to wait for full elixir or aim the building
+   where the threat WILL be. Re-tune afford_ticks from the step-1 data. Only if needed, a temporary live rule: no queued
+   building when a fast win condition is within ~N tiles.
