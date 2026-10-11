@@ -25,9 +25,10 @@ def plans(prefix='wk_memory'):
     return out
 
 
-def config(base, phase, plan, deck, external, init, data, cap):
+def config(base, phase, plan, deck, external, init, data, cap, actors=20, seed=74):
     c = A.config_for(base, phase, plan, deck, external)
-    c.update(history_events=True, history_cap=cap, proagree_data_gen=str(data))
+    c.update(history_events=True, history_cap=cap, proagree_data_gen=str(data), n_actors=actors)
+    c['seed'] += seed - 74  # seed 74 (A) leaves the adaptive seeds unchanged; B shifts all of them
     if phase == 'main':
         c['init'] = str(init)
     # No decision_options / LIVE_OPTIONS: inherited adaptive training is plain.
@@ -59,7 +60,9 @@ def recipe(a):
         'match_memory.py', 'history_encoder.py', 'model_gen.py', 'model_v3.py', 'public_observation.py',
         'dataset_gen.py', 'dataset_spool.py', 'add_memory.py', 'train_memory.py',
         'e1_eval.py', 'rl_royale.py', 'adaptive_opponents.py', 'rl_royale.yaml')]
-    return dict(args={k: str(v) for k, v in vars(a).items()}, init=digest(a.init),
+    # P1 is seed- and core-count-independent so a second seed can adopt the first seed's dataset.
+    skip = ('seed', 'actors', 'workers') if a.phase == 'P1' else ()
+    return dict(args={k: str(v) for k, v in vars(a).items() if k not in skip}, init=digest(a.init),
                 template=digest(a.template), sources={str(p): digest(p) for p in sources})
 
 
@@ -141,10 +144,10 @@ def execute(a):
     elif a.phase == 'P2':
         from pipeline.add_memory import convert
         init = out / 'memory_zero_init.pt'
-        torch.manual_seed(74)
+        torch.manual_seed(a.seed)
         convert(a.init, init, cap=a.cap)
         A.run([sys.executable, '-m', 'pipeline.train_memory', '--init', init, '--data', data,
-               '--out', pretrained, '--epochs', str(a.epochs), '--kl', str(a.kl), '--device', 'cuda'], out / 'pretrain.log')
+               '--out', pretrained, '--epochs', str(a.epochs), '--kl', str(a.kl), '--seed', str(a.seed), '--device', 'cuda'], out / 'pretrain.log')
         summary = 'VERDICT: memory-only imitation complete; base frozen and KL anchored.\n' + pretrained.with_suffix('.metrics.json').read_text()
         artifacts = [pretrained, pretrained.with_suffix('.metrics.json')]
     elif a.phase == 'P3':
@@ -158,7 +161,7 @@ def execute(a):
         for plan in plans(a.prefix):
             if plan['cycle'] in state['completed']:
                 continue
-            c = config(base, 'main', plan, deck, state['external'], pretrained, data, a.cap)
+            c = config(base, 'main', plan, deck, state['external'], pretrained, data, a.cap, a.actors, a.seed)
             main = A.train(c, plan['main_run'], out)
             frozen = REPO / plan['frozen']
             weights = {k: v for k, v in main.items() if k != 'rl'}
@@ -169,7 +172,7 @@ def execute(a):
             else:
                 A.save_checkpoint(frozen, weights)
             frozen_digest = digest(frozen)
-            c = config(base, 'exploiter', plan, deck, [], pretrained, data, a.cap)
+            c = config(base, 'exploiter', plan, deck, [], pretrained, data, a.cap, a.actors, a.seed)
             A.train(c, plan['exploiter_run'], out)
             if digest(frozen) != frozen_digest:
                 raise ValueError('frozen opponent changed')
@@ -184,7 +187,7 @@ def execute(a):
             A.atomic_json(path, state)
         # Train once more against all three enrolled exploiters, including cycle 3.
         final = dict(plans(a.prefix)[-1], main_target=80)
-        c = config(base, 'main', final, deck, state['external'], pretrained, data, a.cap)
+        c = config(base, 'main', final, deck, state['external'], pretrained, data, a.cap, a.actors, a.seed)
         A.train(c, final['main_run'], out)
         summary = 'VERDICT: adaptive memory league complete: 80 main updates, 3 x 15 exploiter updates.\n' + json.dumps(state, indent=2)
         artifacts = [REPO/A.checkpoint(final['main_run']), path]
@@ -220,6 +223,8 @@ def main(argv=None):
     p.add_argument('--kl', type=float, default=1.0)
     p.add_argument('--workers', type=int, default=20)
     p.add_argument('--prefix', default='wk_memory')
+    p.add_argument('--actors', type=int, default=20)
+    p.add_argument('--seed', type=int, default=74)
     a = p.parse_args(argv)
     a.results = a.results.resolve()
     execute(a)

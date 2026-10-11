@@ -127,3 +127,14 @@ def test_phase_three_orchestration_and_resume_without_sim(tmp_path, monkeypatch)
     monkeypatch.setattr(D, 'recipe', lambda a: {'fixed': 'changed'})
     with pytest.raises(ValueError, match='recipe changed'):
         D.execute(a)
+
+
+def test_actor_count_and_seed_override_leave_defaults_unchanged():
+    plan = D.plans()[0]
+    base = dict(stall_elixir=None)
+    a = D.config(base, 'main', plan, 'd', [], 'm.pt', 'x.npz', 256)
+    b = D.config(base, 'main', plan, 'd', [], 'm.pt', 'x.npz', 256, 12, 75)
+    assert (a['n_actors'], a['seed']) == (20, 74) and (b['n_actors'], b['seed']) == (12, 75)
+    e = D.config(base, 'exploiter', plan, 'd', [], 'm.pt', 'x.npz', 256, 12, 75)
+    assert e['seed'] == 7401 + 1
+    assert {k: v for k, v in a.items() if k not in ('n_actors', 'seed')} == {k: v for k, v in b.items() if k not in ('n_actors', 'seed')}
