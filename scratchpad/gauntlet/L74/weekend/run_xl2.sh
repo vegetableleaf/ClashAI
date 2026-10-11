@@ -29,6 +29,8 @@ trap 'exit 143' TERM
 failed=0
 for s in S9XL2 S10XL2; do
   mkdir -p "$R/$s"
+  # Pod split: S10XL2 needs the second pod's S9XL2 drills (the laptop relay touches POD2_DONE after copying them in).
+  [ "$s" != S10XL2 ] || [ -z "${XL2_WAIT_POD2:-}" ] || while [ ! -e "$R/S9XL2/POD2_DONE" ]; do sleep 60; done
   if [ "$s" = S10XL2 ]; then
     # Global order: GPU FIRST, then CPU, held through training and paired eval.
     flock /workspace/gpu.lock flock /workspace/cpu.lock bash "$HERE/wk_driver.sh" __run "$s" > "$R/$s/stage.log" 2>&1

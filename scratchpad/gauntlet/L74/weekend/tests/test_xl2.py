@@ -337,3 +337,20 @@ def test_eval_requires_960_pairs_and_reports_archetypes(tmp_path):
 def test_legacy_definitions_unchanged():
     from check_xl2 import verify
     verify()
+
+
+def test_s10_merges_pod2_part_and_requires_every_drill(tmp_path):
+    (tmp_path / "S9XL2").mkdir()
+    (tmp_path / "S9XL2" / "SUCCESS").touch()
+    ck = tmp_path / "ck.pt"; ck.write_bytes(b"x")
+    sha = ST.checkpoint_hash(ck)
+    part = lambda fixed, ds: dict(ckpt=str(ck), sha256=sha, complete=True, fixed={d: {} for d in fixed},
+                                  searches={d: {} for d in ds}, verdicts={})
+    (tmp_path / "S9XL2" / "manifest.json").write_text(json.dumps(part(["D1", "D4", "D9"], ["D4", "D7", "D8"])))
+    ns = NS(results=str(tmp_path), ckpt=str(ck), repo=str(tmp_path), out=str(tmp_path / "S10XL2"), workers=1)
+    with pytest.raises(ValueError, match="drill from the pod split is missing"):
+        ST.s10(ns, [])
+    (tmp_path / "S9XL2" / "manifest.pod2.json").write_text(json.dumps(part([], ["D5", "D6"])))
+    with pytest.raises(Exception) as e:  # passes the completeness gate, then stops at the missing S9XL inputs
+        ST.s10(ns, [])
+    assert "missing" not in str(e.value)

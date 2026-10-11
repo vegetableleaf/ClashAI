@@ -30,7 +30,8 @@ def s9(a, summary):
     runner = PodRunner(a.repo, a.out, str(ckpt), a.models, workers=a.workers)
     manifest = dict(ckpt=str(ckpt), sha256=fingerprint, seeds=SEEDS, fixed={}, searches={}, verdicts={})
     summary.append("SIM only; match-end win B - own A, CR1 95% CI clustered by match; weighted S9 census (~60% unfavourable).")
-    for dr in ("D1", "D4", "D9"):
+    mine = set(a.drills.split(","))  # pod split: same seeds and sampling per drill, only the owner pod runs it
+    for dr in [d for d in ("D1", "D4", "D9") if d in mine]:
         result = runner.evaluate("fixed", dr)
         manifest["fixed"][dr] = result
         manifest["verdicts"][dr] = label(result)
@@ -41,7 +42,7 @@ def s9(a, summary):
             summary.append(f"SAMPLE SHORTFALL: {dr} {result['n']} scored moments; target about 2500. No unseen results invented.")
     # D4 fixed definition above remains measured; its optional best-air action is
     # searched separately, with ONLY the fresh TEST label entering training.
-    for dr in ("D4", "D5", "D6", "D7", "D8"):
+    for dr in [d for d in ("D4", "D5", "D6", "D7", "D8") if d in mine]:
         result = search(dr, runner.evaluate, Path(a.out) / (dr + "_search.json"), evaluate_many=runner.evaluate_many)
         manifest["searches"][dr] = result
         manifest["verdicts"][dr] = result["label"]
@@ -52,8 +53,8 @@ def s9(a, summary):
     if checkpoint_hash(ckpt) != fingerprint:
         raise ValueError("baseline checkpoint changed during S9XL2")
     manifest["complete"] = True
-    write_json(Path(a.out) / "manifest.json", manifest)
-    write_json(Path(a.out) / "verdicts.json", manifest["verdicts"])
+    write_json(Path(a.out) / f"manifest{a.part}.json", manifest)
+    write_json(Path(a.out) / f"verdicts{a.part}.json", manifest["verdicts"])
     summary.append("VERDICT: labels recorded; TEST never pooled with DEV; no deployment.")
 
 
@@ -160,6 +161,15 @@ def s10(a, summary):
     manifest = json.loads((root / "S9XL2" / "manifest.json").read_text())
     if not manifest.get("complete") or checkpoint_hash(manifest["ckpt"]) != manifest["sha256"]:
         raise ValueError("S9XL2 baseline changed or manifest incomplete")
+    part = root / "S9XL2" / "manifest.pod2.json"  # drills run on the second pod, copied back by the laptop relay
+    if part.exists():
+        p2 = json.loads(part.read_text())
+        if not p2.get("complete") or p2["sha256"] != manifest["sha256"]:
+            raise ValueError("pod-2 S9XL2 part incomplete or measured a different baseline")
+        for k in ("fixed", "searches", "verdicts"):
+            manifest[k].update(p2[k])
+    if {"D1", "D4", "D9"} - set(manifest["fixed"]) or {"D4", "D5", "D6", "D7", "D8"} - set(manifest["searches"]):
+        raise ValueError("S9XL2 incomplete: a drill from the pod split is missing")
     ckpt = Path(a.ckpt)
     ckpt = ckpt if ckpt.is_absolute() else Path(a.repo) / ckpt
     if checkpoint_hash(ckpt) != manifest["sha256"]:
@@ -199,13 +209,15 @@ def main():
     ap.add_argument("--repo", required=True); ap.add_argument("--results", default="/workspace/results/wk")
     ap.add_argument("--ckpt", required=True); ap.add_argument("--models", required=True)
     ap.add_argument("--workers", type=int, default=28)
+    ap.add_argument("--drills", default=os.environ.get("XL2_DRILLS", "D1,D4,D5,D6,D7,D8,D9"))
+    ap.add_argument("--part", default=os.environ.get("XL2_PART", ""))  # ".pod2": second-pod subset, no S10XL wait
     a = ap.parse_args()
     a.out = str(Path(a.results) / a.stage)
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     summary, rc = [a.stage], 0
     try:
-        if not (Path(a.results) / "S10XL" / "DONE").exists():
+        if not a.part and not (Path(a.results) / "S10XL" / "DONE").exists():
             raise ValueError("must wait for S10XL/DONE")
         if (out / "DONE").exists():
             raise ValueError("stage already completed; refusing to overwrite its evidence")
