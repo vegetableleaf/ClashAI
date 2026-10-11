@@ -11309,3 +11309,14 @@ Live already taps early on purpose (`--afford-ticks 23`: a card counts as afford
   dealt per lane, the opponent's spell timing) or attention over the full match history, trained by RL against the
   adaptive opponents / exploiters, which punish repeated plays. Needs a new input schema, so RL from imitation with the
   new columns; avoid imitation-only fine-tunes (they drift).
+- Owner 10-11, memory v2 item (early-game UNCERTAINTY / risk): early in a match the opponent's deck is mostly unknown. An
+  aggressive offensive X-Bow is risky, more so when the opponent elixir estimate is high (they can punish it).
+  Plan (Tuesday):
+  (1) MEASURE first: live + pro corpus, offensive X-Bow rate in the first ~60-90 s vs the number of opponent cards
+      revealed and the opponent elixir estimate; the model vs pros in the same states, and how often early aggression is
+      punished.
+  (2) A public DECK-BELIEF feature: P(opponent holds each punisher card / archetype | the cards revealed so far), from
+      ladder/census deck statistics (public population data, never the actual hidden deck), plus "cards revealed so
+      far". Plug it into memory v2 next to the event history.
+  (3) Train by reward in the adaptive league, where exploiters punish early over-aggression. Add an "early aggression
+      punished" metric to every eval.
