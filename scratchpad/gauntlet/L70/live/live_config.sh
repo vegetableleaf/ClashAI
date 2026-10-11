@@ -22,6 +22,11 @@ load_live_config() {
       DECK_ARGS=(--ckpt-override-file "$L/bait/CKPT_OVERRIDE" --live-options-file "$L/bait/LIVE_OPTIONS") ;;
     *) echo "refusing: deck must be icebow or bait (got '$LIVE_DECK_EFFECTIVE')" >&2; return 2 ;;
   esac
+  # emote spam: LIVE_EMOTES env (start_live.sh --emotes) or the persisted $L/LIVE_EMOTES file; default off
+  LIVE_EMOTES_EFFECTIVE="${LIVE_EMOTES:-$(tr -d '
+' < "$L/LIVE_EMOTES" 2>/dev/null)}"
+  LIVE_EMOTES_EFFECTIVE="${LIVE_EMOTES_EFFECTIVE:-off}"
+  if [ "$LIVE_EMOTES_EFFECTIVE" = on ]; then DECK_ARGS+=(--emote-spam on --emote-interval-s 3.0); fi
   CKPT_ARGS=()
   if [ -n "${CKPT:-}" ]; then CKPT_ARGS=(--ckpt "$CKPT"); fi
 }
