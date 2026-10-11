@@ -5431,6 +5431,11 @@ Last updated: **2026-10-04 23:13 EDT** (Q1/Q2 CPU verified; curriculum prepared;
 >   - POD 1 64.247.206.76:17497 (30.6 vCPU): S9XL (D2/D3/D10 ~2,500 each) posted 19:13 EDT; S10XL running. POD 2
 >     81.27.69.177:23358 (15.3 vCPU): S11 Log Bait (base forms) running since 22:58 UTC, ETA ~01:15 UTC, checker PID
 >     35956 posts to Discord + copies to C:/Users/benpe/pod_backup_weekend/bait. Pod-1 S11 gate killed.
+>   - **XL2 POD SPLIT (10-11, branch l74-drills-xl2 @c283922; pod 1 got it as a patch):** pod 1 run_xl2.sh PID 25264 (XL2_DRILLS=D1,D4,D7,D8,D9, XL2_WAIT_POD2=1;
+>     waits for S10XL/DONE as before) ; pod 2 S9XL2 D5,D6 queued behind S11 on cpu.lock (flock PID 2282, XL2_PART=.pod2, 13 workers, /workspace/wk_xl2;
+>     starts ~01:15 UTC, no S10XL wait). Same seeds/sampling per drill; both pods redo the dev/test dumps, so the real speed-up is only ~1.2-1.3x (est. S9XL2 15-23 h).
+>   - Relay (laptop, win PID 54376, L74/deploy/pod2_relay.sh, log pod_backup_weekend/pod2/relay.log): copies pod-2 D5/D6 into pod 1 wk/S9XL2 + POD2_DONE (S10XL2 waits for it,
+>     merges manifest.pod2.json, fails if a drill is missing); then stops pod 2 after S11 DONE + bait copy + 2 idle checks. Never stops pod 1.
 >   - share/clashbot_icebow_e4u20_20261010/ (1.9 GB, git-excluded): live + RL ckpts (optimizer state in ckpt['rl']),
 >     configs, repo zip, reader files + reader_config (owner-approved for a friend), gen v3.2 fv5 dataset, S1 dataset,
 >     ghost_pool, pro corpus v6 tgz. No webhook.
