@@ -106,7 +106,8 @@ class S1Model(nn.Module):
         self.register_buffer("patch_xy", torch.stack([(px.flatten() + 0.5) / PATCH_X, (py.flatten() + 0.5) / PATCH_Y], -1).float())
 
     # ---- encoder -------------------------------------------------------------------------------------
-    def encode(self, tok: torch.Tensor, mask: torch.Tensor, sc: torch.Tensor, past: torch.Tensor) -> dict:
+    def encode(self, tok: torch.Tensor, mask: torch.Tensor, sc: torch.Tensor, past: torch.Tensor,
+               global_residual: Optional[torch.Tensor] = None) -> dict:
         B, U, _ = tok.shape
         cls = tok[..., 0].long().clamp(0, vocab.N_VOCAB - 1)
         cls = torch.where(mask, cls, torch.full_like(cls, vocab.N_VOCAB))   # pad id = N_VOCAB
@@ -123,6 +124,8 @@ class S1Model(nn.Module):
         pxy = past[..., 1:3].clamp(0, 1)
         g_in = torch.cat([sc, torch.cat([ps, pxy, _fourier(pxy, self.nf), (past[..., 3:4] / 30.0)], -1).flatten(1)], -1)
         g = self.global_in(g_in).unsqueeze(1)
+        if global_residual is not None:
+            g = g + global_residual.unsqueeze(1)
         x = torch.cat([g + self.type_emb.weight[0], p + self.type_emb.weight[1], u + self.type_emb.weight[2]], 1)
         pad = torch.cat([torch.zeros(B, 1 + N_PATCHES, dtype=torch.bool, device=tok.device), ~mask], 1)
         h = self.norm(self.encoder(x, src_key_padding_mask=pad))

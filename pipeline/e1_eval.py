@@ -537,7 +537,8 @@ GEN_V31_KEYS = ('opp_cycle', 'projectiles', 'effects', 'own_ability')
 
 def gen_row_keys(model):
     version = getattr(model, 'feature_version', 1)
-    return GEN_ROW_KEYS + (GEN_V3_KEYS if version >= 3 else ()) + (GEN_V31_KEYS if version >= 4 else ())
+    return (GEN_ROW_KEYS + (GEN_V3_KEYS if version >= 3 else ()) + (GEN_V31_KEYS if version >= 4 else ())
+            + (('history_events',) if hasattr(model, 'history') else ()))
 
 
 def policy_feature_version(policy):
@@ -548,6 +549,9 @@ def enable_sim_features(env, *policies):
     version = max(policy_feature_version(p) for p in policies)
     if version >= 3 or hasattr(env, "feature_version"):
         env.feature_version = version
+    history = any(hasattr(getattr(p, "model", p), "history") for p in policies)
+    if history or hasattr(env, 'history_events'):
+        env.history_events = history
     return version
 
 
@@ -816,7 +820,8 @@ class Match:
         if self.feature_version >= 4:
             from pipeline.public_observation import PublicObserver
             if self.public is None:
-                self.public = PublicObserver(self.side, schedule=getattr(self.env, 'elixir_regen_schedule', None))
+                self.public = PublicObserver(self.side, schedule=getattr(self.env, 'elixir_regen_schedule', None),
+                                             history_events=getattr(self.env, 'history_events', False))
             self.public.own_events=[e for e in getattr(self.env,'public_plays',[])+getattr(self.env,'own_ability_events',[]) if e['side']==self.side]
             self.public.update(self.state, source='sim')
         if self.extrap:                                      # cfg["extrapolate_ticks"]; 0 -> this block is skipped
@@ -944,6 +949,9 @@ class Match:
         self._gen_row = policy.row(*self._obs, *policy.slot_ident(self.engine_deck, self.deck_index_of_slot))
         if getattr(policy.model, "feature_version", 1) >= 3:
             self._gen_row.update(sim_v3_features(self, policy))
+        if hasattr(policy.model, 'history'):
+            self._gen_row['history_events'] = self.public.history_tokens(
+                self._cur[0], policy.gid, policy.model.history.cap)
         return self._gen_row
 
     def pre(self, hand) -> tuple[float, np.ndarray, bool]:
@@ -1183,7 +1191,7 @@ class Match:
             tok, mask, sc, past = self._obs
             row = {"tok": tok, "mask": mask, "sc": sc, "past": past}
             if self._gen_row is not None:                     # GenPolicy: the generalist's input row (zeroed sc,
-                row = {k: self._gen_row[k] for k in self._gen_row if k in GEN_ROW_KEYS + GEN_V3_KEYS + GEN_V31_KEYS}
+                row = {k: self._gen_row[k] for k in self._gen_row if k in GEN_ROW_KEYS + GEN_V3_KEYS + GEN_V31_KEYS + ("history_events",)}
             if cfg.get("record_phi"):                         # rl_royale shaping (R2): what Phi needs, own view
                 from pipeline.reward_shaping import phi_record
                 row = {**row, "phi_state": phi_record(self.state, self.side)}
@@ -1354,6 +1362,8 @@ class Match:
         if tj and 'opp_cycle' in tj[0]:
             for key in GEN_V31_KEYS:
                 out[key] = stack(key).astype(np.float32)
+        if tj and "history_events" in tj[0]:
+            out["history_events"] = stack("history_events").astype(np.float32)
         if tj and "phi_state" in tj[0]:                      # cfg["record_phi"]: reward_shaping.phi_record rows
             out["phi_state"] = stack("phi_state").astype(np.float64)
         if tj and "tick" in tj[0]:                           # cfg["record_tick"]: each row's decision tick

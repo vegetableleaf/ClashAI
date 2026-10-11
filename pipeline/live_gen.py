@@ -222,7 +222,7 @@ class GenPilot:
             battle = (frame.get('chain') or {}).get('battle')
             if (getattr(self, 'public', None) is None or self.public.side != side or
                     (battle is not None and self.public_battle is not None and battle != self.public_battle)):
-                self.public = PublicObserver(side)
+                self.public = PublicObserver(side, history_events=hasattr(self.model, "history"))
             if battle is not None:
                 self.public_battle = battle
             self.opp_est = self.public.update(frame, source='reader')
@@ -353,6 +353,9 @@ class GenPilot:
                 for key, value in self.public.features(int(frame['game_tick']), self.gid,
                         objects_override=frame.get('extrapolated_public_objects')).items():
                     b[key] = T(value, torch.float32)
+                if hasattr(self.model, 'history'):
+                    b['history_events'] = T(self.public.history_tokens(
+                        self.public.last_tick, self.gid, self.model.history.cap), torch.float32)
                 if getattr(self, "hero_ability_spec", "off") != "off":   # same rows / events / tick as features()
                     from bisect import bisect_right
                     from .own_ability import tokens

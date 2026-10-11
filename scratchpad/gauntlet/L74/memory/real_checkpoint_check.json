@@ -1,0 +1,18 @@
+{
+  "source": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\rl_royale\\rseries_r3c\\rseries_r3c_u0030_barrel.pt",
+  "source_sha256": "1878f2420d0ab6c9f59a5acb69a14ef5716a0181bb87dca8b07d63400ea06010",
+  "feature_version": 6,
+  "batch_rows": 4,
+  "exact_heads": [
+    "card",
+    "cell",
+    "g",
+    "gate",
+    "value",
+    "wait"
+  ],
+  "memory_parameters": 100928,
+  "memory_state_keys": 35,
+  "injection": "global input token before trunk attention",
+  "result": "BYTE_EXACT_ZERO_INIT_IDENTITY"
+}

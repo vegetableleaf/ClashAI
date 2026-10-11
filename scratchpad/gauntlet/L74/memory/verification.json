@@ -1,0 +1,19 @@
+{
+  "command": "C:/Users/benpe/ClashBot/icebow/.venv/Scripts/python.exe scratchpad/gauntlet/L74/memory/check_offline.py",
+  "cwd": "C:\\Users\\benpe\\cb_memory",
+  "shell": "PowerShell",
+  "exit_status": 0,
+  "expect": "MEMORY_OFFLINE_ACCEPTANCE_PASSED",
+  "match": true,
+  "output_sha256": "7a3246ca16a5e82f137ca88fdff2547e347a2a4fb00f386a73d1795731004d4d",
+  "output_bytes": 922,
+  "passed": 124,
+  "deselected": 1,
+  "exclusion": "pre-existing TestActorExitWithUnreadPut: sandbox Windows named pipes blocked",
+  "runtime": "CPU only; no simulator, live process, GPU or network execution",
+  "limitations": [
+    "Bash startup denied; wrapper reviewed statically only",
+    "SIM/CUDA throughput and playing strength unmeasured",
+    "Automatic approval review blocked recursive cleanup of five temporary test directories"
+  ]
+}

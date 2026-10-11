@@ -460,7 +460,7 @@ def branch_row(s, allowed: np.ndarray, p: float, T: float, stalled: bool = False
     tok/mask/sc/past), with the trajectory fields ``Match._traj_arrays`` stacks: a gate-only row (gate_sampled, not
     played), so ``policy_terms`` recomputes exactly the gate logit x the PPO loss uses."""
     if s._gen_row is not None:
-        row = {k: s._gen_row[k] for k in s._gen_row if k in E.GEN_ROW_KEYS + E.GEN_V3_KEYS + E.GEN_V31_KEYS}
+        row = {k: s._gen_row[k] for k in s._gen_row if k in E.GEN_ROW_KEYS + E.GEN_V3_KEYS + E.GEN_V31_KEYS + ("history_events",)}
     else:
         tok, mask, sc, past = s._obs
         row = {"tok": tok, "mask": mask, "sc": sc, "past": past}
@@ -1135,6 +1135,8 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
         extra += E.GEN_V3_KEYS
     if gen and 'opp_cycle' in results[use[0]]['traj']:
         extra += E.GEN_V31_KEYS
+    if gen and "history_events" in results[use[0]]["traj"]:
+        extra += ("history_events",)
     B = {k: cat(lambda j, k=k: results[j]["traj"][k][keep[j]]) for k in TRAJ_KEYS + extra}
     for k in ("lp_gate", "lp_card", "lp_cell"):
         B[k] = cat(lambda j, k=k: results[j]["traj"][k][keep[j]])
@@ -1267,6 +1269,9 @@ def gen_v3val_arrays(path: Path, n: int = 0) -> tuple[dict, dict]:
     if 'opp_cycle' in z:
         for key in E.GEN_V31_KEYS:
             out[key] = z[key][idx]
+    if "history_events" in z:
+        from pipeline.dataset_spool import select_npz_rows
+        out["history_events"] = select_npz_rows(path, 'history_events', idx)
     return out, json.loads(str(z["meta"]))
 
 
@@ -2042,7 +2047,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
             raise SystemExit(f"bad override {ov!r} (want key=value)")
         k, v = ov.split("=", 1)
         if (k not in cfg and k != "ability_policy" and k not in BRANCH_DEFAULTS   # optional: absent = generic / off
-                and k not in VALUE_PHI_KEYS and k not in AO.DEFAULTS and k != "league_learner_icebow_share"):
+                and k not in ("history_events", "history_cap") and k not in VALUE_PHI_KEYS and k not in AO.DEFAULTS and k != "league_learner_icebow_share"):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
         cfg[k] = yaml.safe_load(v)
     if type(cfg["hero_abilities"]) is not bool:
@@ -2059,7 +2064,8 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
 
 def config_sha(cfg: dict) -> str:
     # Off is the historical configuration, including checkpoint resume hashes.
-    cfg = AO.canonical_config(cfg)
+    from pipeline.match_memory import canonical_config
+    cfg = canonical_config(AO.canonical_config(cfg))
     if cfg.get("hero_abilities") is False:
         cfg = {k: v for k, v in cfg.items() if k != "hero_abilities"}
     if cfg.get("ability_policy", "generic") == "generic":
@@ -2149,6 +2155,10 @@ class Learner:
             self.minfo = {"gen": True, "grid": str(ick["args"].get("grid", "lattice"))}   # = e1_eval.load_policy's
         else:
             self.model, self.minfo = ep.load_model(self.init_path, str(self.dev))
+        if 'history_events' in cfg and bool(cfg['history_events']) != hasattr(self.model, 'history'):
+            raise ValueError('history_events must match the init checkpoint; use pipeline.add_memory')
+        if hasattr(self.model, 'history') and int(cfg.get('history_cap', self.model.history.cap)) != self.model.history.cap:
+            raise ValueError('history_cap must match the init checkpoint')
         self.init_meta = {"args": dict(ick["args"]), "deck": ick["deck"], "epoch": ick["epoch"], "n_params": ick["n_params"]}
         self.grid = self.minfo["grid"]
         self.league = None                                    # league on: {"snapshots": [{id, update, path}]}

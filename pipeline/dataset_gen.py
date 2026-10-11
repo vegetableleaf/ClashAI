@@ -233,7 +233,7 @@ class _PublicRows(_Rows):
         super().add(body_only_board(replace(bs, opp_elixir=None)), **kwargs)
 
 
-def replay_rows(path: str, wait_stride: int = 40, play_window: int = 20, shift_ticks: int = 0, feature_version: int = 1) -> dict[str, Any]:
+def replay_rows(path: str, wait_stride: int = 40, play_window: int = 20, shift_ticks: int = 0, feature_version: int = 1, history_events: bool = False, history_cap: int = 256) -> dict[str, Any]:
     """One replay file -> its rows with card identities as indices into the returned local ``keys`` (-1 = pad)."""
     global _ICEBOW
     try:
@@ -270,7 +270,7 @@ def replay_rows(path: str, wait_stride: int = 40, play_window: int = 20, shift_t
             unknown = {k: v for k, v in st.items() if k.startswith('native_unknown_card_id:') and v}
             if unknown:
                 raise ValueError(f'gen_v3.1 exact forms require catalog coverage: {unknown}')
-            observers = recording_observers(rec)
+            observers = recording_observers(rec, history_events=history_events)
             actual_plays = sorted([e for o in observers for e in o.plays], key=lambda e: (e['tick'], e['side'], e['card']))
         rows = (_PublicRows if feature_version >= 4 else _Rows)(feature_version)
         for s in ((0,) if mirror else (0, 1)):                   # a mirror match is built once, both sides
@@ -309,6 +309,7 @@ def replay_rows(path: str, wait_stride: int = 40, play_window: int = 20, shift_t
                 for s, t in zip(side, a['tick'])])
         return {
             **extra,
+            **({"history_archive": [o.history for o in observers]} if history_events else {}),
             "path": path, "tag": str(rec["tag"]), "keys": keys, "stats": st,
             "deck_keys": {s: sorted(keys[i] for i in ktbl[s, :8]) for s in (0, 1) if decks[s] is not None},
             "icebow_sides": deck_sides(rec, _ICEBOW),
@@ -340,7 +341,10 @@ def v3val_tags(npz: Path = V3VAL_NPZ) -> set[str]:
 
 def build(corpora: list[Path], out: Path, *, grid: str = "lattice", limit: int = 0, workers: int = 4,
           wait_stride: int = 40, play_window: int = 20, val_pct: int = 10, v3val_npz: Path = V3VAL_NPZ,
-          shift_ticks: int = 0, feature_version: int = 1, log=sys.stderr) -> dict[str, Any]:
+          shift_ticks: int = 0, feature_version: int = 1, history_events: bool = False,
+          history_cap: int = 256, log=sys.stderr) -> dict[str, Any]:
+    if history_events and (feature_version < 4 or history_cap <= 0):
+        raise ValueError('history requires public recording features >=4 and positive cap')
     t0 = time.time()
     files, seen = [], set()
     for c in corpora:
@@ -354,7 +358,7 @@ def build(corpora: list[Path], out: Path, *, grid: str = "lattice", limit: int =
     if limit:
         files = files[:limit]
     keep_val = v3val_tags(v3val_npz)
-    jobs = [(f, wait_stride, play_window, shift_ticks, feature_version) for f in files]
+    jobs = [(f, wait_stride, play_window, shift_ticks, feature_version, history_events, history_cap) for f in files]
     spool = None
     if feature_version >= 4 and workers == 1:
         # Full projectile arrays must not compete with the live reader for RAM.
@@ -445,6 +449,9 @@ def build(corpora: list[Path], out: Path, *, grid: str = "lattice", limit: int =
                 cols[key] = r[key].copy()
                 local = cols[key][..., 0].astype(np.int64)-1
                 cols[key][..., 0] = lut[local]
+        if history_events:
+            cols["history_events"] = np.stack([r["history_archive"][int(s)].tokens(int(t), int(s), gid, history_cap)
+                                               for t, s in zip(r["tick"], side)])
         for k, v in cols.items():
             if disk_parts is not None:
                 disk_parts.append(k, v)
@@ -481,6 +488,9 @@ def build(corpora: list[Path], out: Path, *, grid: str = "lattice", limit: int =
         "decks": decks, "built": time.strftime("%Y-%m-%d %H:%M:%S"),
         "stats": {**dict(st), "unmapped": sorted(unmapped)},
     }
+    if history_events:
+        from .match_memory import COLS
+        meta.update(history_events=True, history_cap=history_cap, history_cols=list(COLS))
     if feature_version >= 3:
         meta.update(feature_version=feature_version, OPP_PAST_K=PAST_K, evolution_cycles=evolution_cycles(),
                     new_features={"unit_form_shape": list(arrs["unit_form"].shape),
@@ -520,6 +530,8 @@ def build(corpora: list[Path], out: Path, *, grid: str = "lattice", limit: int =
 def main(argv: Optional[list[str]] = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
     ap.add_argument("--feature-version", type=int, choices=(1, 2, 3, 4, 5), default=1)
+    ap.add_argument("--history-events", action="store_true")
+    ap.add_argument("--history-cap", type=int, default=256)
     ap.add_argument("--corpus", type=Path, nargs="+", required=True)
     ap.add_argument("--out", type=Path, required=True)
     ap.add_argument("--grid", choices=("floor", "lattice"), default="lattice")
@@ -533,7 +545,8 @@ def main(argv: Optional[list[str]] = None) -> int:
     a = ap.parse_args(argv)
     s = build(a.corpus, a.out, grid=a.grid, limit=a.limit, workers=a.workers, wait_stride=a.wait_stride,
               play_window=a.play_window, val_pct=a.val_pct, v3val_npz=a.v3val_npz,
-              shift_ticks=a.shift_ticks, feature_version=a.feature_version)
+              shift_ticks=a.shift_ticks, feature_version=a.feature_version,
+              history_events=a.history_events, history_cap=a.history_cap)
     print(json.dumps(s, default=str))
     return 0
 

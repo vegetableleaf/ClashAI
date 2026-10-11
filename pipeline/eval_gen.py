@@ -50,7 +50,7 @@ class GenRows(Rows):
         self.opp_past = torch.as_tensor(arrs["opp_past"], device=device) if "opp_past" in arrs else None
         self.opp_cycle = torch.as_tensor(arrs['opp_cycle'], device=device) if 'opp_cycle' in arrs else None
         # Keep the larger public-object arrays on CPU; gather only this batch.
-        self.public_objects = {k: torch.as_tensor(arrs[k]) for k in ('projectiles', 'effects', 'own_ability', 'rocket_context_probability') if k in arrs}
+        self.public_objects = {k: torch.as_tensor(arrs[k]) for k in ('projectiles', 'effects', 'own_ability', 'rocket_context_probability', 'history_events') if k in arrs}
         if (self.unit_form is None) != (self.opp_past is None):
             raise ValueError("v3 rows require both unit_form and opp_past")
 
@@ -208,14 +208,8 @@ def per_deck(arrs: dict, rowlog: list) -> dict:
 
 
 def load_model(ckpt: Path, device) -> tuple[GenModel, dict]:
-    st = torch.load(ckpt, map_location=device)
-    if not st.get("gen"):
-        raise SystemExit(f"{ckpt} is not a generalist checkpoint (no 'gen' key)")
-    a = st["args"]
-    model = GenModel(d=int(a["d"]), layers=int(a["layers"]), d_c=int(st["d_c"]), n_cards=len(st["card_vocab"]),
-                     feature_version=int(a.get("feature_version", 1))).to(device)
-    model.load_state_dict(st["model"])
-    return model, st
+    from .model_gen import load_model as load_generalist
+    return load_generalist(ckpt, device)
 
 
 def val_rows(arrs: dict, sample: int = 0) -> np.ndarray:

@@ -1,3 +1,32 @@
+## 2026-10-11 - L74 match memory: Phase A offline implementation
+
+Owner ticket on branch `l74-match-memory`: shared public event builder across SIM,
+GenPilot/PublicObserver and pro-dataset paths; configurable 256-event cap; opt-in
+100,928-parameter history transformer with zero-gated residual into the trunk's
+global input token; converter and memory-only imitation with a mandatory KL
+anchor; RL trajectory/pro-agreement/league support; four-phase pod driver.
+
+**Measured offline:** 124 pytest cases passed, one pre-existing Windows named-pipe
+lifecycle case deselected. No simulator ran. Real fast checkpoint
+`rseries_r3c_u0030_barrel.pt` converted and reloaded with byte-identical outputs on
+four synthetic CPU rows for gate/card/cell/wait/value/g. Details and source SHA:
+`scratchpad/gauntlet/L74/memory/real_checkpoint_check.json`; test receipt:
+`TEST_RESULTS.txt` and `verification.json` in that directory. Six acceptance gates
+met for this code/tests/driver scope; no pod performance claim.
+
+**Pod only, not launched:** P1 native pro histories; P2 memory-only imitation;
+P3 adaptive main to 20/40/60 plus three 15-update memory-snapshot exploiters, then
+main to 80 so all three are used; P4 graft, old/memory/zero-history arms at 960
+games each against fixed E4 u20 T=0.1, census and CAL/S2 evaluation flags, paired
+contrasts and per-archetype tables. Commands, locks, compute estimates and public
+observation limitations: `scratchpad/gauntlet/L74/memory/README.txt`.
+
+Bash startup is sandbox-blocked; shell wrapper reviewed statically, execution and
+`bash -n` remain pod checks. No network, live launcher/LIVE_OPTIONS/deployment or
+Git commit changed. Only GenPilot's required library input adapter changed.
+Automatic approval review blocked cleanup of five disposable test directories;
+no product artifact is blocked. Changes remain in this worktree for review.
+
 **Reader purge (L74/reader_purge):** the public repo no longer holds the memory reader's sources, binaries, offset notes or launch values.
 live_play.py now reads the root address, context offset and per-reader device binary and arguments from the local, untracked
 `icebow/data/reader_config.json` (loader: `pipeline/reader_config.py`; clear error when absent; `CLASHBOT_READER_CONFIG` overrides the path).

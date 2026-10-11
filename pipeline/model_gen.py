@@ -97,7 +97,7 @@ class CellRefine(nn.Module):
 
 class GenModel(S1Model):
     def __init__(self, d: int = 128, layers: int = 4, heads: int = 4, n_fourier: int = 8, dropout: float = 0.1,
-                 d_c: int = 64, n_cards: int = N_CARDS, feature_version: int = 1):
+                 d_c: int = 64, n_cards: int = N_CARDS, feature_version: int = 1, history_events: bool = False, history_cap: int = 256):
         super().__init__(d=d, layers=layers, heads=heads, n_fourier=n_fourier, dropout=dropout)
         del self.card_head, self.wait_head, self.card_emb       # the deck-slot heads; pointers replace them
         self.d_c, self.n_cards = d_c, n_cards
@@ -129,6 +129,14 @@ class GenModel(S1Model):
             self.projectile_target_in = nn.Sequential(nn.Linear(d_c+7, d), nn.GELU(), nn.Linear(d, d))
             self.projectile_target_spread = nn.Conv2d(d, d, 3, padding=1, groups=d, bias=False)
             nn.init.zeros_(self.projectile_target_spread.weight)
+
+        if history_events:
+            self.add_history(cap=history_cap)
+
+    def add_history(self, **cfg):
+        from .history_encoder import HistoryEncoder
+        self.history = HistoryEncoder(self.d, self.n_cards, **cfg).to(self.cell_emb.device)
+        return self.history
 
     def target_patches(self, b: dict) -> torch.Tensor:
         """Learned generic target/nearby-patch features; no card-specific rule.
@@ -186,7 +194,11 @@ class GenModel(S1Model):
         tok = b["tok"]
         if self.feature_version >= 3:
             tok = torch.cat([tok, b["unit_form"].to(tok.dtype).unsqueeze(-1)], -1)
-        enc = self.encode(tok, b["mask"], self.global_features(b), empty)
+        if hasattr(self, 'history'):
+            enc = self.encode(tok, b["mask"], self.global_features(b), empty,
+                              global_residual=self.history(b['history_events']))
+        else:
+            enc = self.encode(tok, b["mask"], self.global_features(b), empty)
         if self.feature_version >= 6:
             enc = dict(enc, p=enc['p'] + self.target_patches(b))
         if getattr(self, "cell_refine", None) is not None:
@@ -222,6 +234,9 @@ class GenModel(S1Model):
         if getattr(self, "tower_refine", None) is None and "tower_refine.cfg" in state_dict:
             c, layers, hidden, card, cell = (int(v) for v in state_dict["tower_refine.cfg"])
             self.add_tower_refine(c=c, layers=layers, hidden=hidden, card=bool(card), cell=bool(cell))
+        if 'history.cfg' in state_dict and not hasattr(self, 'history'):
+            cap, width, layers, heads = map(int, state_dict['history.cfg'])
+            self.add_history(cap=cap, width=width, layers=layers, heads=heads)
         return super().load_state_dict(state_dict, strict=strict, assign=assign)
 
     def heads_gen(self, enc: dict, b: dict) -> dict:
@@ -297,4 +312,10 @@ def load_model(ckpt, device):
     model = GenModel(d=int(a["d"]), layers=int(a["layers"]), d_c=int(st["d_c"]),
                      n_cards=len(st["card_vocab"]), feature_version=int(a.get("feature_version", 1))).to(device)
     model.load_state_dict(st["model"])
+    if a.get('history_events', False) != hasattr(model, 'history'):
+        raise ValueError('history checkpoint config/weights disagree')
+    if hasattr(model, 'history'):
+        if a.get('history_cap', 256) != model.history.cap:
+            raise ValueError('history checkpoint cap mismatch')
+        model.history.zero_history = bool(a.get('history_zero', False))
     return model, st

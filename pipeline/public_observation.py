@@ -96,14 +96,21 @@ def public_frame(frame, *, source):
 
 
 class PublicObserver:
-    def __init__(self, side, *, schedule=None):
+    def __init__(self, side, *, schedule=None, history_events=False):
         self.side = int(side)
         if self.side not in (0, 1):
             raise ValueError('Invalid observer side')
         self.schedule = schedule
+        self.history_events = bool(history_events)
         self.reset()
 
     def reset(self):
+        self.history = None
+        if self.history_events:
+            from .match_memory import PublicHistory
+            self.history = PublicHistory()
+            self.history_peer = PublicObserver(1-self.side, schedule=self.schedule)
+            self.history_play_counts = [0, 0]
         self.body = PlayDetector()
         self.body.my_side = self.side
         self.counter = OppElixirCounter(schedule=self.schedule)
@@ -175,7 +182,20 @@ class PublicObserver:
             self.counter.play(tick, key, card_cost(key))
             self.ticks.append(tick)
             self.estimates.append(self.counter.est)
+        if self.history is not None:
+            self.history_peer.update(frame, source=source)
+            for i, plays in enumerate((self.plays, self.history_peer.plays)):
+                self.history.plays(plays[self.history_play_counts[i]:])
+                self.history_play_counts[i] = len(plays)
+            self.history.abilities(self.own_events, tick)
+            self.history.frame(frame, source=source, tick=tick)
         return self.estimate_at(tick)
+
+    def history_tokens(self, tick, gid, cap=256):
+        if self.history is None:
+            raise ValueError('history observation was not enabled at match start')
+        self.history.abilities(self.own_events, self.last_tick)
+        return self.history.tokens(tick, self.side, gid, cap)
 
     def estimate_at(self, tick):
         """Causal public counter, excluding same-tick sightings like opp_past."""
@@ -233,7 +253,7 @@ def opponent_cycle(plays, tick, side, gid):
     return out
 
 
-def recording_observers(rec):
+def recording_observers(rec, *, history_events=False):
     """Use recorded board frames, not private command/play_frames records.
 
     These board snapshots are normally <= record_every ticks apart but the
@@ -242,7 +262,7 @@ def recording_observers(rec):
     """
     if rec.get('record_native') is not True or rec.get('record_full') is not True:
         raise ValueError('gen_v3.1 requires record_native=true and record_full=true')
-    observers = [PublicObserver(0), PublicObserver(1)]
+    observers = [PublicObserver(0, history_events=history_events), PublicObserver(1, history_events=history_events)]
     for observer in observers:
         observer.own_events=[dict(e) for e in rec.get('log',[]) if int(e['side'])==observer.side and e.get('accepted') and e.get('card')]
     for frame in sorted(rec['frames'], key=lambda f: int(f['tick'])):
