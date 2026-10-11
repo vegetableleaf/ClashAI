@@ -11297,3 +11297,10 @@ Live already taps early on purpose (`--afford-ticks 23`: a card counts as afford
 3. LEARNED FIX: train or fine-tune with the queue modelled, so the model learns to wait for full elixir or aim the building
    where the threat WILL be. Re-tune afford_ticks from the step-1 data. Only if needed, a temporary live rule: no queued
    building when a fast win condition is within ~N tiles.
+- Owner 10-11 decision: if the drills produce no labels, invest in ADAPTIVE OPPONENTS (PFSP + styles + exploiters).
+- Owner question, our OWN mid-match adaptability (Tuesday design item): the policy sees only the current board, the last 3
+  own plays, the last 3 opponent plays and the 8-card opponent cycle. It has no memory of "what has failed this match".
+  Proposal: public match-summary features (per-lane push outcomes, how the opponent answered our X-Bow / Rocket, damage
+  dealt per lane, the opponent's spell timing) or attention over the full match history, trained by RL against the
+  adaptive opponents / exploiters, which punish repeated plays. Needs a new input schema, so RL from imitation with the
+  new columns; avoid imitation-only fine-tunes (they drift).
