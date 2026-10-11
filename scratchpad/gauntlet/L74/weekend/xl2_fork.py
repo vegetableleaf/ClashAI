@@ -46,7 +46,8 @@ def install(M, outputs):
 
         def arms(mo, match, learner, context):
             result = build(mo, match, learner, context)
-            if "_skip" not in result:
+            # variant_arms re-enters DA.build_arms for the plain arms (no "variant"); only the outer call is the shared A
+            if mo.get("variant") and "_skip" not in result:
                 alt = result["alt"]
                 if alt["script"] is not None or alt["root"] != ctx["d"]:
                     raise ValueError("XL2 shared A requires the complete own decision")

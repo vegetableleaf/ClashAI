@@ -285,3 +285,19 @@ def test_one_pass_equals_separate_passes_on_stub_engine(monkeypatch, choices):
     assert len(branch_calls) == 4 * (1 + len(choices)) + 4  # shared A, every B, incidental D10/check
     for tag, tick in {(tag, tick) for tag, tick, _ in snapshots}:
         assert len({blob for t, n, blob in snapshots if (t, n) == (tag, tick)}) == 1
+
+
+@pytest.mark.parametrize("mo", [dict(drill="D4", info=dict(fly=(4, 10), tower="mL")), dict(drill="D7")])
+def test_shared_a_accepts_real_variant_arms(side, monkeypatch, mo):
+    # The stub tests above replace build_arms; the real variant_arms re-enters DA.build_arms
+    # (plain arms) and used to trip the shared-A check (S9XL2b D4 crash).
+    import drill_arms as A
+    s, ctx = side
+    seen = []
+    M = NS(DA=A, run_branch=None, _CHECKS=[0], S=NS(Runner=NS()),
+           mech_fork=lambda self, m, todo, c, first=True, moment=None: seen.append(A.build_arms(moment, m, s, c)))
+    for name in ("build_arms", "save_row"):
+        monkeypatch.setattr(A, name, getattr(A, name))  # restore on teardown (the adapter patches the module)
+    F.install(M, {"DO": "DO"})
+    M.S.Runner._mech_fork(NS(), NS(_mech=dict(no_arm=[], skipped=[])), [], ctx, moment=dict(mo, variant="DO"))
+    assert seen[0]["alt"]["root"] == ctx["d"]
