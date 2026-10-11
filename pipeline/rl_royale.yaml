@@ -38,6 +38,19 @@ league_mix: {latest: 0.35, older: 0.25, init: 0.2, s1: 0.2}   # opponent draw; r
 league_snapshot_every: 10   # freeze the learner into the pool every N updates (<run>_snap_u{NNNN}.pt beside the
                             # checkpoints: weights + load metadata only). Keys checked at startup (rl_royale.validate_league)
 league_snapshot_keep: 8     # the pool keeps the newest K snapshots (an evicted snapshot file is deleted)
+# ---- adaptive opponents (optional, DEFAULT OFF; absent keys preserve historical config hashes)
+# league_pfsp: 'off'        # hard: init + snapshots + external (+ S1 when league_mix.s1 > 0), replaces category weights
+#                          # P proportional to (1-win_score_EMA)^gamma + floor
+# league_pfsp_gamma: 2.0
+# league_pfsp_floor: 0.05   # strictly positive; EMA alpha=.05, unseen opponent p=.5, draws=.5
+# league_external: []      # frozen exploiter checkpoint paths, retained independently of snapshot eviction
+# league_frozen_opponent: null  # exploiter only: this checkpoint alone, playing the main's icebow deck
+# opp_style: 'off'         # on: per-match opponent ONLY; public opp_elixir counter required for adaptive runs
+# opp_style_aggression: [-0.08, 0.08] # subtract from opponent tau (positive = more aggressive)
+# opp_style_lane_bias: [-0.7, 0.7]   # log probability preference, positive = left in opponent's frame
+# opp_style_temperature: [0.8, 1.2]  # multiplier of T (sampling policy)
+# opp_style_spell_delay: [0, 4]      # extra landing delay in ticks for spells
+# opp_style_bank: [0.0, 4.0]         # own elixir floor unless a visible enemy is on our half
 league_icebow_share: 0.2    # P(deck = icebow), learner and opponent alike (the S1 specialist: always icebow)
 # league_learner_icebow_share: null   # optional: P(learner deck = icebow) ONLY (null = league_icebow_share); opponents keep league_icebow_share
 league_deck_alpha: 0.5      # other decks: P ~ max(sides^alpha, floor * mean(sides^alpha)) over the census decks

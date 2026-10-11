@@ -1524,6 +1524,8 @@ class SelfPlaySide(Match):
             for side, commands in self._ability_commands.items():
                 self.env.queue_abilities(side, commands, self.delay)
         de, delay = self.cfg["decide_every"], self.delay
+        if "_opp_style" in self.cfg:
+            delay += int(d.get("_style_delay", 0))
         if d["play"] and d.get("follow_ups"):                 # follow_up_spec second plays: the ghost Match's rules (module comment)
             if self.pipe:
                 raise ValueError("follow_ups and pipeline_decisions are separate mechanisms: use one")
@@ -1649,6 +1651,8 @@ class SelfPlayMatch:
         env.reset(decks[0], decks[1], int(spec["seed"]))
         tag = str(spec["tag"])
         self.learner = SelfPlaySide(env, spec["learner_deck"], L, tag, k, cfg, learner)
+        from pipeline.adaptive_opponents import style_config
+        opp_cfg = style_config(opp_cfg, int(spec["seed"]), int(k))
         self.opp = SelfPlaySide(env, spec["opp_deck"], 1 - L, f"{tag}:opp", k, opp_cfg, opponent)
         self.learner.other, self.opp.other = self.opp, self.learner
         self.sides = sorted((self.learner, self.opp), key=lambda s: s.side)
@@ -1693,6 +1697,8 @@ class SelfPlayMatch:
         r = self.learner.result()
         o, minutes = self.opp, self.env.tick * TICK_S / 60.0
         r["league"] = dict(self.spec)
+        if "_opp_style" in o.cfg:
+            r["opp_style"] = dict(o.cfg["_opp_style"])
         r["opp_side"] = {"side": o.side, "policy": o.cfg["policy"], "plays_attempted": o.n_att,
                          "plays_accepted": o.n_acc, "plays_per_min": round(o.n_att / minutes, 3) if minutes else None,
                          "stall_fired": o.n_stall, "decisions": o.n_dec}
@@ -1755,7 +1761,10 @@ def run_selfplay_batch(make_env, learner, opponents: dict, jobs, cfg: dict, n: i
             s.prepare()
         groups: dict = {}
         for s in due:
-            groups.setdefault(id(s.model), []).append(s)
+            # A caller may reuse a policy object for both sides; style decode
+            # must still never enter the learner's group.
+            key = (id(s.model), "opponent_style") if "_opp_style" in s.cfg else id(s.model)
+            groups.setdefault(key, []).append(s)
         todo = []
         for sides in groups.values():
             model, c = sides[0].model, sides[0].cfg
@@ -1767,9 +1776,13 @@ def run_selfplay_batch(make_env, learner, opponents: dict, jobs, cfg: dict, n: i
             allowed = np.stack([x[1] for x in pre])
             stalled = np.array([x[2] for x in pre], dtype=bool)
             from .decision_options import match_kwargs
-            decisions = live_decide_batch(model, enc, heads, p, allowed, stalled, tau=c["tau"], device=c["device"],
-                                          **match_kwargs(sides)) \
-                if c["policy"] == "live" else sample_decide_batch(model, enc, heads, p, allowed, stalled, sides, c)
+            if "_opp_style" in c:
+                from pipeline.adaptive_opponents import styled_decisions
+                decisions = styled_decisions(model, enc, heads, p, allowed, stalled, sides)
+            else:
+                decisions = (live_decide_batch(model, enc, heads, p, allowed, stalled, tau=c["tau"], device=c["device"],
+                                              **match_kwargs(sides)) if c["policy"] == "live" else
+                             sample_decide_batch(model, enc, heads, p, allowed, stalled, sides, c))
             todo += [(s, p[r], decisions[r]) for r, s in enumerate(sides)]
         for s, pr, d in todo:
             s.apply(pr, d)
