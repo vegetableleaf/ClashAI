@@ -115,7 +115,7 @@ def test_phase_three_orchestration_and_resume_without_sim(tmp_path, monkeypatch)
 
     monkeypatch.setattr(D.A, 'train', fake_train)
     monkeypatch.setattr(D.A, 'run', fake_run)
-    a = SimpleNamespace(results=results, phase='P3', prefix='test_memory', cap=8)
+    a = SimpleNamespace(results=results, phase='P3', prefix='test_memory', cap=8, actors=20, seed=74)
     D.execute(a)
     assert len(calls) == 7
     assert len(calls[-1][1]['league_external']) == 3
