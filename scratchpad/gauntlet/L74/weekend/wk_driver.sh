@@ -204,7 +204,7 @@ st_S9XL2() { xl2_stage S9XL2; }
 st_S10XL2() { xl2_stage S10XL2; }
 
 # ---------------------------------------------------------------------------------------------------- main
-if [ "$1" = __run ]; then D=$R/$2; mkdir -p $D; "st_$2"; exit $?; fi
+if [ "$1" = __run ]; then D=$R/$2; case $2 in S9XL2|S10XL2) D=$R/$2${XL2_SUFFIX:-};; esac; mkdir -p $D; "st_$2"; exit $?; fi
 mkdir -p $R; STAGES=${*:-$ALL}
 for s in $STAGES; do
   D=$R/$s; mkdir -p $D; rm -f $D/DONE

@@ -156,12 +156,13 @@ def eval_verdict(eval_dir, base="live", candidate="candidate"):
 
 def s10(a, summary):
     root = Path(a.results)
-    if not (root / "S9XL2" / "SUCCESS").exists():
+    s9d = "S9XL2" + getattr(a, "suffix", "")  # CAL re-run: same stage under a new dir name (env XL2_SUFFIX), default unchanged
+    if not (root / s9d / "SUCCESS").exists():
         raise ValueError("S9XL2 failed or is incomplete; no training")
-    manifest = json.loads((root / "S9XL2" / "manifest.json").read_text())
+    manifest = json.loads((root / s9d / "manifest.json").read_text())
     if not manifest.get("complete") or checkpoint_hash(manifest["ckpt"]) != manifest["sha256"]:
         raise ValueError("S9XL2 baseline changed or manifest incomplete")
-    part = root / "S9XL2" / "manifest.pod2.json"  # drills run on the second pod, copied back by the laptop relay
+    part = root / s9d / "manifest.pod2.json"  # drills run on the second pod, copied back by the laptop relay
     if part.exists():
         p2 = json.loads(part.read_text())
         if not p2.get("complete") or p2["sha256"] != manifest["sha256"]:
@@ -194,7 +195,7 @@ def s10(a, summary):
             dump = ev / f"{name}_{census}_dump"
             dump.mkdir()
             dest = ev / f"{name}_{census}"
-            weighted = root / "S9XL2" / "fixed" / census / "census.json"
+            weighted = root / s9d / "fixed" / census / "census.json"
             command(["bash", HERE / "run_wk.sh", "dump", dest, "20000:20480", a.workers, census, 0, model],
                     {"PY": sys.executable, "DUMP_DIR": str(dump), "CENSUS_FILE": str(weighted)}, ev / f"{name}_{census}.log", a.repo)
             read_matches(dest, bounds)
@@ -210,12 +211,15 @@ def main():
     ap.add_argument("--ckpt", required=True); ap.add_argument("--models", required=True)
     ap.add_argument("--workers", type=int, default=28)
     ap.add_argument("--drills", default=os.environ.get("XL2_DRILLS", "D1,D4,D5,D6,D7,D8,D9"))
+    ap.add_argument("--suffix", default=os.environ.get("XL2_SUFFIX", ""))  # stage dir name suffix, e.g. "b"
     ap.add_argument("--part", default=os.environ.get("XL2_PART", ""))  # ".pod2": second-pod subset, no S10XL wait
     a = ap.parse_args()
-    a.out = str(Path(a.results) / a.stage)
+    a.out = str(Path(a.results) / (a.stage + a.suffix))
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
-    summary, rc = [a.stage], 0
+    summary, rc = [a.stage + a.suffix], 0
+    if os.environ.get("OPP_GEN"):  # CAL pick (run_wk.sh switches); unset = gen_v1_s0 at T 0.3
+        summary.append(f"Opponent set (CAL pick {os.environ.get('PICK_SET', '?')}): OPP_GEN={os.environ['OPP_GEN']} OPP_T={os.environ.get('OPP_T', '0.3')}")
     try:
         if not a.part and not (Path(a.results) / "S10XL" / "DONE").exists():
             raise ValueError("must wait for S10XL/DONE")

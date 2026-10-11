@@ -55,10 +55,15 @@ def verify():
     extra = script.index("# ---------------------------------------------------------------------------------------------------- S9XL2 / S10XL2")
     main = script.index("# ---------------------------------------------------------------------------------------------------- main", extra)
     stripped = (script[:extra] + script[main:]).replace('TRAIN=" S5 S6 S10 S10XL S10XL2 "', 'TRAIN=" S5 S6 S10 S10XL "')
+    # CAL switch (default off): the __run line may carry the XL2_SUFFIX case for the XL2 stage dirs
+    stripped = stripped.replace(' case $2 in S9XL2|S10XL2) D=$R/$2${XL2_SUFFIX:-};; esac;', '')
     assert stripped == original(WK + "wk_driver.sh"), "legacy driver drift"
     for path in ("scratchpad/gauntlet/L74/drills/drills.py", WK + "moments_from_dump.py", WK + "train_drills.py",
                  WK + "run_wk.sh", WK + "wk_xl_stats.py"):
-        assert (ROOT / path).read_text() == original(path), path
+        cur = (ROOT / path).read_text()
+        if path.endswith("run_wk.sh"):  # CAL switches (default off): opponent model and temperature from env
+            cur = cur.replace("${OPP_GEN:-icebow/data/pipeline/gen_v1_s0/gen_s0.pt}   # opponent model + temperature: env switches (L74 CAL pick), defaults = the S2 benchmark", "icebow/data/pipeline/gen_v1_s0/gen_s0.pt").replace("${OPP_T:-0.3}", "0.3")
+        assert cur == original(path), path
     for name in ("pro_when", "xl2_selectors", "drill_arms", "variant_search", "xl2_stage", "xl2_fork"):
         sys.path[:0] = [str(ROOT), str(ROOT / WK), str(ROOT / "scratchpad/gauntlet/L74/drills")]
         module = importlib.import_module(name)

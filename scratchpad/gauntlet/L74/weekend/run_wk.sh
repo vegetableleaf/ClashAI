@@ -5,7 +5,7 @@
 export ROYALE_RUNTIME=${ROYALE_RUNTIME:-20261006-linux} OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
 M=$1; O=$2; S=$3; W=$4; C=$5; K=${6:-0}; CK=$7
 PY=${PY:-/workspace/venv/bin/python}
-GEN1=icebow/data/pipeline/gen_v1_s0/gen_s0.pt
+GEN1=${OPP_GEN:-icebow/data/pipeline/gen_v1_s0/gen_s0.pt}   # opponent model + temperature: env switches (L74 CAL pick), defaults = the S2 benchmark
 D=scratchpad/gauntlet/L70/pool_forms/loadable_decks.json
 [ "$C" = lad ] && D=scratchpad/gauntlet/L73/rl_r2/loadable_decks_ladder.json
 LV=(--xbow-class class_sample --xbow-class-floor 0.3 --tau-phase 0.35 0.45 0.55 --spell-aim rocket_area --own-effects
@@ -18,4 +18,4 @@ SCRIPT=scratchpad/gauntlet/L74/mechanic_fork/mech_fork.py
 [ "$M" = dump ] && SCRIPT=scratchpad/gauntlet/L74/drills/sim_dump.py
 CB_MAIN=$PWD MECH=$M MECH_CHECK=$K nice -n 10 $PY $SCRIPT --out $O --seeds $S --opps gen \
   --arms plain --gen $CK --opp-gen $GEN1 --forms-mode deck --device cpu --workers $W --tail-cap 7200 --tau-plain 0.35 \
-  --census $D --hero-abilities --ability-policy v2 --opp-policy sample --opp-T 0.3 "${LV[@]}"
+  --census $D --hero-abilities --ability-policy v2 --opp-policy sample --opp-T ${OPP_T:-0.3} "${LV[@]}"
