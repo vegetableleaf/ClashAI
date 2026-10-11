@@ -6,7 +6,8 @@ NAMES = {'S2': 'New live model vs old (960 sim games)', 'S3': 'Prevent vs delay 
          'S5': 'Defence training E5', 'S6': 'Own-cycle training', 'S7': 'New simulator version check',
          'S8': 'Log Bait baseline', 'S9': 'Drill scoring (small)', 'S9XL': 'Drill scoring, large (D2 D3 D10)',
          'S10': 'Drill training', 'S10XL': 'Drill training on D2 + D3', 'S9XL2': "Drill scoring, all drills + 'when pros would'",
-         'S10XL2': 'Drill training on every confirmed drill', 'S11_bait': 'Log Bait training (base cards)'}
+         'S10XL2': 'Drill training on every confirmed drill', 'S11_bait': 'Log Bait training (base cards)',
+         'ADAPT': 'Adaptive-opponent training'}
 NEXT = {'S10XL': 'Next: the all-drills scoring run starts automatically.',
         'S9XL2': 'Next: training on the confirmed drills starts automatically.',
         'S10XL2': "If it says 'candidate', reply to approve a deploy -- nothing deploys on its own.",
