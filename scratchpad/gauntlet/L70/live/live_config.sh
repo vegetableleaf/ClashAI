@@ -27,6 +27,11 @@ load_live_config() {
 ' < "$L/LIVE_EMOTES" 2>/dev/null)}"
   LIVE_EMOTES_EFFECTIVE="${LIVE_EMOTES_EFFECTIVE:-off}"
   if [ "$LIVE_EMOTES_EFFECTIVE" = on ]; then DECK_ARGS+=(--emote-spam on --emote-interval-s 3.0); fi
+  # fast consecutive plays (owner 10-12): no restraint (tau delta 0); default ON, start_live.sh --no-fast-plays turns them off
+  LIVE_FAST_EFFECTIVE="${LIVE_FAST:-$(tr -d '
+' < "$L/LIVE_FAST" 2>/dev/null)}"
+  LIVE_FAST_EFFECTIVE="${LIVE_FAST_EFFECTIVE:-on}"
+  if [ "$LIVE_FAST_EFFECTIVE" = on ]; then DECK_ARGS+=(--pipeline-decisions --pipeline-tau-delta 0); fi
   CKPT_ARGS=()
   if [ -n "${CKPT:-}" ]; then CKPT_ARGS=(--ckpt "$CKPT"); fi
 }
