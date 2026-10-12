@@ -1,2 +1,0 @@
---xbow-class class_sample --xbow-class-floor 0.3 --tau-phase 0.35 0.45 0.55 --spell-aim rocket_area --own-effects
---rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-value-min-elixir 9 --rocket-value-idle on --rocket-value-lead on --rocket-value-min-y 21
