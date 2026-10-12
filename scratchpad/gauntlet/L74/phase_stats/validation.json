@@ -1,0 +1,36 @@
+{
+  "created_utc": "2026-10-12T14:50:21.535332+00:00",
+  "shell": "PowerShell",
+  "cwd": "C:\\Users\\benpe\\ClashBot",
+  "tests": {
+    "command": "python -B scratchpad/gauntlet/L74/phase_stats/verify_report.py --tests",
+    "exit_code": 0,
+    "result": "3 passed; SYNTHETIC_TESTS_OK",
+    "pytest_interpreter": "icebow/.venv/Scripts/python.exe",
+    "plugin_autoload": false,
+    "bytecode": false,
+    "cacheprovider": false
+  },
+  "artifact_check": {
+    "command": "python -B scratchpad/gauntlet/L74/phase_stats/verify_report.py",
+    "exit_code": 0,
+    "result": "ARTIFACTS_OK 771 matches; 26278 bot plays; 65678 human plays"
+  },
+  "gates": {
+    "met": 4,
+    "unmet": 0,
+    "abandoned": 0
+  },
+  "scope": "All task-authored mutations confined to this directory; no network, runtime code imports, runtime modifications, commits or live-control actions.",
+  "artifacts": {
+    "enemy_spells.jsonl": "af74d50578856311f48e10b4601bd39d9e5034e28da742cfc9e88a812af8e775",
+    "phase_stats.py": "31ab60f577a78128a947579bdc0f9abb260f200ce5ec07582cb9294c4878c8dd",
+    "plays.jsonl": "d0ec440c0aca1555e740ccefbb48800388c50c9123b9bd37537567552d6a73af",
+    "pro_plays.jsonl": "8ef47c1bef64100f33c4126c281c403cf8c01fb6e6cbb0b05dec58e4252e521d",
+    "pushes.jsonl": "a25437198e2778d0a6d499caccc88e03a3329f378944145979e8bc59b12f723f",
+    "report.json": "0901e855eee76f279f4478c36310d5948bede408123893bcb38829dcadab9c2c",
+    "report.md": "e1bc717d4fc1c31a3d78332b28c26c7989b87fb72547758af1395b73b03be301",
+    "test_phase_stats.py": "19780cd735cef1362d26546a5103e497e3b6727536d79cbe6bdb52331f047eb8",
+    "verify_report.py": "c2db7c879a2084bdc3ad90a94377b9bdddb932ef1461bd9171661f057a3d4f05"
+  }
+}
