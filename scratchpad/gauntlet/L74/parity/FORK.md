@@ -1,5 +1,10 @@
 # RoyaleSim fork and live parity foundation
 
+**PARITY v2:** [V2.md](V2.md) documents the opt-in mechanics replay, logged-hand
+hydration, cycle-agnostic public injection, unsupported-old pairing and current
+pod command. The strict eight-card/deal requirements below describe the original
+default path, which remains available with the v2 flag unset.
+
 Local branch `clashbot` was created from **cached** `origin/HEAD` = `origin/main`
 at `cacb7005f0e441797c533e91ab4f44820f9919d4` (royalesim 0.1.33).
 The previous local main remains `369fe33dc729b4a38dce831714724135fa7216ca`.

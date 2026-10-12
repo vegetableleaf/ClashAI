@@ -1,0 +1,92 @@
+{
+  "tests": {
+    "command": [
+      "C:\\Users\\benpe\\ClashBot\\icebow\\.venv\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L74\\parity\\tests",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "-p",
+      "no:tmpdir"
+    ],
+    "shell": "PowerShell (direct subprocess)",
+    "cwd": "C:\\Users\\benpe\\ClashBot",
+    "exit_code": 0,
+    "output_sha256": "938547f7dcf9287cc98c488140f33de93e751efa6f6ed37d0210701baa8c92c2",
+    "output": "...........................                                              [100%]\n27 passed in 1.30s\n"
+  },
+  "planning": {
+    "command": [
+      "C:\\Users\\benpe\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L74\\parity\\driver.py",
+      "plan",
+      "--mechanics-replay",
+      "--cohort",
+      "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L74\\parity\\output\\cohort100\\sources",
+      "--out",
+      "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L74\\parity\\output\\cohort100_v2_bba0384a"
+    ],
+    "shell": "PowerShell (direct subprocess)",
+    "cwd": "C:\\Users\\benpe\\ClashBot",
+    "exit_code": 0,
+    "output_sha256": "b7322879922cbd8ecbab2e70d3cbdda6202ff4a44041ae0115cedc14401faf63",
+    "output": "PARITY_PLANNED 100/100; NO_SIM; counts={'decisions_total': 32442, 'decisions_used': 32442, 'measurement_rows': 32442, 'next_card_observed': 0, 'opponent_injections': 2888, 'own_plays': 3594, 'plays_total': 6482, 'plays_used': 6482}\n",
+    "report": {
+      "status": "PLANNING_ONLY_NO_SIM",
+      "mode": "mechanics",
+      "selected": 100,
+      "usable_matches": 100,
+      "expected_all_three_matches": 0,
+      "expected_new_fork_only_matches": 100,
+      "counts": {
+        "decisions_total": 32442,
+        "decisions_used": 32442,
+        "measurement_rows": 32442,
+        "next_card_observed": 0,
+        "opponent_injections": 2888,
+        "own_plays": 3594,
+        "plays_total": 6482,
+        "plays_used": 6482
+      },
+      "skip_reasons": {},
+      "expected_unsupported_reasons": {
+        "unsupported_old_IceWizard_hero": 100
+      },
+      "frozen_cohort": "scratchpad/gauntlet/L74/parity/output/cohort100/sources",
+      "hydrated_cohort": "scratchpad/gauntlet/L74/parity/output/cohort100_v2_bba0384a/sources",
+      "harness_hashes": {
+        "core.py": "f1f9e3f11a76b5a025eac9ec59c40a75ef965d31da3ec598fc1dbc22fc2a18b6",
+        "driver.py": "4b350c0c666096e93c3bdc179188ac6d1f47643aafd36b1ae9debcb976a632cd",
+        "planning.py": "60849d805e3b8c1cb19dc20566e39d9fb2109706ed111f450a117504144fffb7",
+        "mechanics.py": "b842b44938da0c8e522b21bbf65aed21c5734e8e8cafbd534e24657b6a6ffded"
+      }
+    }
+  },
+  "contract": {
+    "engine_source": {
+      "research\\ext\\Royale\\RoyaleSim": {
+        "py.rs": "8113da8f65509c58c4fce7b447b9be97598dca1284acc07c7c7eef5b49c3f7ab",
+        "state.rs": "6ee15143ea110f3b6ad7e943a12e67fabc0970b6bfc1996bd662cfe9c1772566"
+      },
+      "research\\ext\\Royale-20261006\\RoyaleSim": {
+        "py.rs": "52980ce0d71f0f3e832de00b1a5a8735323c4521e452f2182e4121fed229273c",
+        "state.rs": "830a936684d6bcd90a83ec873fb410a67f12bb90b087d4ac504d01d455b03e8d"
+      }
+    },
+    "default_off": true,
+    "python_syntax": "passed",
+    "files": {
+      "build_fork.sh": "1c2baa3e06989904af727114cdb1ee8fcee5475cfa15e94c0690ba054e2e2b14",
+      "core.py": "f1f9e3f11a76b5a025eac9ec59c40a75ef965d31da3ec598fc1dbc22fc2a18b6",
+      "driver.py": "4b350c0c666096e93c3bdc179188ac6d1f47643aafd36b1ae9debcb976a632cd",
+      "mechanics.py": "b842b44938da0c8e522b21bbf65aed21c5734e8e8cafbd534e24657b6a6ffded",
+      "pin_fork.py": "afaa29d59d8ae4a7354effae7539016ee88e55e1e6f310f4738a082e5607680c",
+      "planning.py": "60849d805e3b8c1cb19dc20566e39d9fb2109706ed111f450a117504144fffb7",
+      "run_parity.sh": "3cf9e6e69021266a6250c93b0eca4a8e010c840a7ef30b14f64e22d0ae4f207a",
+      "verify.py": "59d94f17ce3b65709329c8f6ea537c21a51d2bfddba4a24e2097450747c6ca58",
+      "verify_v2.py": "267d6d42b8218dde62a978ba61fe13b955e43e40dd34798364a3a28c05a34707"
+    }
+  }
+}

@@ -133,7 +133,8 @@ def test_ranking_frequency_and_impacts_not_swarm_multiplied():
 
 def test_summary_pairs_same_completed_matches_and_nulls():
     def result(rt, match):
-        return dict(runtime=rt,match=match,samples=[],commands=[],divergence_seconds=None,divergence_tick=None)
+        sample = dict(match=match, tick=1, rows=c.compare({'t':body(-1,tower=True)}, {'t':body(-1,tower=True)}))
+        return dict(runtime=rt,match=match,samples=[sample],commands=[],divergence_seconds=None,divergence_tick=None)
     r = d.summarize([{},{}], [result('old','a'),result('old','b'),result('new','a')], ['old','new'])
     assert r['paired_matches'] == ['a']
     assert r['runtimes']['old']['completed'] == 2

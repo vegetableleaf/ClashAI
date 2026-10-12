@@ -11,6 +11,7 @@ MATCHES=${MATCHES:-100}
 SINCE=${SINCE:-20261008}
 # Logs do not expose levels. No implicit level-15 claim: caller must opt in.
 extra=()
+if [[ ${MECHANICS_REPLAY:-0} == 1 ]]; then extra+=(--mechanics-replay); fi
 if [[ -n ${ASSUME_LEVEL:-} ]]; then extra+=(--assume-level "$ASSUME_LEVEL"); fi
 if [[ -n ${COHORT:-} ]]; then extra+=(--cohort "$COHORT"); fi
 [[ $# == 0 ]] || { echo 'Use documented environment variables; no positional arguments' >&2; exit 2; }
