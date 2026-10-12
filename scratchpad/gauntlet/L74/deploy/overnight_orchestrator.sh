@@ -51,7 +51,7 @@ copy_stage() {   # name remote-dir : tar, verify (gzip -t, sha256 of every membe
   gzip -t $ON/$name.tgz && rm -rf $ON/x_$name && mkdir -p $ON/x_$name && tar xzf $ON/$name.tgz -C $ON/x_$name || return 1
   tar tzf $ON/$name.tgz | grep -v '/$' > $ON/$name.members && [ -s $ON/$name.members ] || return 1
   $S5 "cd /workspace && while read f; do sha256sum \"\$f\"; done" < $ON/$name.members | sort -k2 > $ON/$name.sha.remote || return 1
-  (cd $ON/x_$name && while read f; do sha256sum "$f"; done < $ON/$name.members | sort -k2) > $ON/$name.sha.local || return 1
+  (cd $ON/x_$name && while read f; do sha256sum "$f"; done < $ON/$name.members | sed 's/ \*/  /' | sort -k2) > $ON/$name.sha.local || return 1   # Git-Bash sha256sum prints 'hash *path'
   cmp -s $ON/$name.sha.remote $ON/$name.sha.local && [ -s $ON/$name.sha.local ]
 }
 pod_wait_done() {   # name

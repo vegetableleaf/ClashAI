@@ -53,7 +53,7 @@ echo "== helpers selftest"; $PY $D/overnight_helpers.py selftest | grep -q PASS 
 
 echo "== A: TORNADO fails gate (a) -> retry r1 (2x epochs, 2x lr) passes -> deploy r1, 20-match test, ADAPT passes -> switch"
 setup A; tornado_fixture not True False True; retry_fixture TORNADO_r1 candidate True True True; adapt_fixture pass
-echo 1 > $S/running; (sleep 25; echo 0 > $S/running) &
+echo 1 > $S/running; (until [ -e $S/live/STOP ]; do sleep 1; done; echo 0 > $S/running) &   # fake supervisor ends after STOP, like the real one
 run_scn
 has $S/on/orchestrator.log "launch retry TORNADO_r1 \[--epochs 10 --lr 0.0002 --kl 100\]" "rule (a): 2x epochs, 2x lr"
 has $(P) "TORNADO_r1 verdict: candidate" "r1 accepted"
@@ -109,14 +109,14 @@ hasnt $S/on/orchestrator.log "launch retry" "no retry on a crash"
 has $(P) "no attempt passed" "nothing deployed"
 
 echo "== F: ORCH_STOP stops it"
-setup F; rm $S/td/COPIED_OK; (sleep 3; touch $S/on/ORCH_STOP) &
+setup F; rm $S/td/COPIED_OK; (until grep -q "orchestrator armed" $S/on/orchestrator.log 2>/dev/null; do sleep 1; done; touch $S/on/ORCH_STOP) &
 run_scn
 has $(P) "stopped by ORCH_STOP" "ORCH_STOP honoured"
 
 
 echo "== G: all 3 Tornado attempts fail and the last one CLEARLY (wins-with-fast-plays range all below 0); ADAPT passes -> ADAPT alone, via stop + start icebow"
 setup G; tornado_fixture not False True True; retry_fixture TORNADO_r1 not False True True; HON_CI="-4.00 pp [-6.00, -1.00]" retry_fixture TORNADO_r2 not False True True; adapt_fixture pass
-echo 1 > $S/running; (sleep 40; echo 0 > $S/running) &
+echo 1 > $S/running; (until [ -e $S/live/STOP ]; do sleep 1; done; echo 0 > $S/running) &
 run_scn
 has $S/on/orchestrator.log "clear-fail check: clear" "clear fail detected on the last attempt"
 has $(P) "ADAPT alone (Tornado fix clearly failed): live model change" "ADAPT alone switched in"

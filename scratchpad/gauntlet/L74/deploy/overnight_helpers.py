@@ -48,9 +48,29 @@ def verdict(path):
         off_bad = any(l.endswith('_off') and not ni for l, ni, _ in g)
         tor_bad = any(l.endswith('_on') and not tk for l, _, tk in g)
         on_bad = any(l.endswith('_on') and not ni for l, ni, _ in g)
-        rule = 'c' if off_bad else 'a' if tor_bad else 'b' if on_bad else 'none'    # first match in order (c), (a), (b)
+        # 10-12 (measured on TORNADO: hard_off -0.94 [-3.12, +1.25] = a noise-level miss, while the Tornado share barely
+        # moved 26.0% -> 25.3%): (c) a stronger anchor only shrinks the change, so it leads only when ordinary play is CLEARLY
+        # hurt (whole CI < 0); otherwise the Tornado gate (a), then wins with pipelining (b), then the plain (c) miss.
+        off_hurt = any(l.endswith('_off') and hi < 0 for l, hi in _ci_hi(t).items())
+        rule = 'c' if off_hurt else 'a' if tor_bad else 'b' if on_bad else 'c' if off_bad else 'none'
         return dict(verdict='not_candidate', rule=rule, gates=gl)
     return dict(verdict='failed', rule='none', gates=gl, first=first[:200])
+
+
+def _ci_hi(text):
+    """{label: upper CI bound of fixed-live} for the icebow section."""
+    out, label, deck = {}, None, 'icebow'
+    for line in text.splitlines():
+        m = re.match(r'^(icebow|bait): ', line)
+        if m:
+            deck, label = m.group(1), None; continue
+        m = re.match(r'^(\w+_(?:on|off)): paired n=', line)
+        if m:
+            label = m.group(1); continue
+        m = re.search(r'fixed-live\s+[+-]?[\d.]+ pp \[([+-]?[\d.]+), ([+-]?[\d.]+)\]', line)
+        if m and label and deck == 'icebow':
+            out[label] = float(m.group(2))
+    return out
 
 
 def clearfail(path):
@@ -206,7 +226,14 @@ def selftest():
     assert verdict(w('a', body(True, True, False, True, True)))['rule'] == 'a'
     assert verdict(w('b', body(False, True, True, True, True)))['rule'] == 'b'
     assert verdict(w('cc', body(True, True, True, True, False)))['rule'] == 'c'
-    assert verdict(w('mix', body(False, True, False, True, False)))['rule'] == 'c'      # several failed -> (c) first
+    assert verdict(w('mix', body(False, True, False, True, False)))['rule'] == 'a'      # off only missed the bound -> (a) leads
+    hurt = body(True, False, False, True, True).replace('fixed-live +0 pp [-1, 1]; non-inferior=True; Tornado gate=True\nold_on',
+                                                         'fixed-live +0 pp [-1, 1]; non-inferior=True; Tornado gate=True\nold_on')
+    hurt = hurt.replace('hard_off: paired n=960\n  fixed-live +0 pp [-1, 1]', 'hard_off: paired n=960\n  fixed-live -2.0 pp [-4.0, -0.5]')
+    assert verdict(w('hurt', hurt))['rule'] == 'c'                                      # ordinary play clearly hurt -> (c) first
+    real_t = '/c/Users/benpe/pod_backup_weekend/tornado/x_TORNADO/results/wk/TORNADO/SUMMARY.txt'
+    if os.path.exists(real_t):                                                          # the 10-12 run: Tornado share barely moved
+        assert verdict(real_t)['rule'] == 'a' and clearfail(real_t) == 'clear', verdict(real_t)
     assert verdict(w('mix2', body(False, True, False, True, True)))['rule'] == 'a'      # (a) before (b)
     assert verdict(w('f', 'VERDICT: FAILED (exit 1). See run.log\n'))['verdict'] == 'failed'
     assert verdict(os.path.join(d, 'nope'))['verdict'] == 'missing'

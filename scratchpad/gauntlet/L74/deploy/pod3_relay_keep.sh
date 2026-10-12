@@ -22,7 +22,7 @@ copy_stage() {
   gzip -t $OUT/$name.tgz && rm -rf $OUT/x_$name && mkdir -p $OUT/x_$name && tar xzf $OUT/$name.tgz -C $OUT/x_$name || return 1
   tar tzf $OUT/$name.tgz | grep -v '/$' > $OUT/$name.members && [ -s $OUT/$name.members ] || return 1
   $S3 "cd /workspace && while read f; do sha256sum \"\$f\"; done" < $OUT/$name.members | sort -k2 > $OUT/$name.sha.remote || return 1
-  (cd $OUT/x_$name && while read f; do sha256sum "$f"; done < $OUT/$name.members | sort -k2) > $OUT/$name.sha.local || return 1
+  (cd $OUT/x_$name && while read f; do sha256sum "$f"; done < $OUT/$name.members | sed 's/ \*/  /' | sort -k2) > $OUT/$name.sha.local || return 1   # Git-Bash sha256sum prints 'hash *path'
   cmp -s $OUT/$name.sha.remote $OUT/$name.sha.local && [ -s $OUT/$name.sha.local ]
 }
 
