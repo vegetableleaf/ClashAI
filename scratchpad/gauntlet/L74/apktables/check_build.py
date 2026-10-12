@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Offline APK table audit. Python 3.11+ and local Git; no SIM imports or writes."""
+"""Offline APK/device table audit. Python 3.11+ and local Git; no SIM writes."""
 from __future__ import annotations
 
 import argparse
@@ -17,7 +17,8 @@ sys.dont_write_bytecode = True
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[3]
 sys.path.insert(0, str(HERE))
-from decoder import extract, sha
+from decoder import extract, overlay_device, sha
+from levels import level_report, card_at_level, sanity_table
 from compare import (ICEBOW, cards_by_name, projection, compare_cards, opponent_counts,
                      check_levels, build_changes)
 
@@ -55,7 +56,7 @@ def unit_references(obj, path=''):
 
 
 def normalize(tables: Path, repo: Path, ref: str, out: Path) -> tuple[dict, dict]:
-    """Reuse the pinned SIM joins, but feed only this APK's decoded assets.
+    """Reuse pinned SIM joins, feeding the effective decoded device/APK assets.
 
     Mechanics validation refusals are retained; hero base stats are read apart
     from the release's ability interpreter. This proves table parity, not runtime parity.
@@ -76,9 +77,9 @@ def normalize(tables: Path, repo: Path, ref: str, out: Path) -> tuple[dict, dict
     sys.modules['extract_cards'] = e
     spec.loader.exec_module(e)
     v = dataclasses.replace(e.VINTAGES['160402017'], key='apktables', raw=tables,
-        update=None, additions=False, version='local-apk-tables',
-        warning='Packaged APK data only; no content updates. SIM parser interpretation, not runtime proof.',
-        source='local APK extraction; see extraction.json', vintage='supplied APK', roster_dating='not inferred')
+        update=None, additions=False, version='local-effective-tables',
+        warning='Effective local tables. SIM parser interpretation, not runtime proof.',
+        source='local extraction/overlay; see extraction.json', vintage='supplied local tables', roster_dating='not inferred')
     heroes = dict(e.HERO_FORMS)
     e.HERO_FORMS = {}
     e.CENSUS = []
@@ -109,7 +110,7 @@ def normalize(tables: Path, repo: Path, ref: str, out: Path) -> tuple[dict, dict
         evidence['recovered_basic_stats'] = recovered
         for form, (base, stem) in heroes.items():
             if not all(p.exists() for p in e.hero_files(v, stem)):
-                evidence['refusals'].append([form, 'hero files absent from APK'])
+                evidence['refusals'].append([form, 'hero files absent from effective tables'])
                 continue
             try:
                 h = e.load_tables(v, hero={form: (base, stem)})
@@ -191,11 +192,11 @@ def fmt(value):
 
 def report_markdown(report):
     lines = ['# APKTABLES private report', '',
-        f"Build label: `{report['label']}`; APK set SHA256 `{report['manifest']['fingerprint']}`.",
+        f"Build label: `{report['label']}`; effective source SHA256 `{report['manifest']['fingerprint']}`.",
         f"Decoded {len(report['manifest']['files'])} CSV/TOML assets; failures {len(report['manifest']['failures'])}; conflicts {len(report['manifest']['conflicts'])}.",
         '', 'Exact values: milliseconds, millitiles, raw table speeds, unified level-1 stats where the object ladder says base_level=1. Null is not zero. Missing is not equality.',
         'Equal means equal stored projections, not measured behavior. Null spell deploy times have no explicit card override; any engine/global default remains outside this comparison. Crown-tower percentages reflect the parser interpretation of raw damage encodings.',
-        'Only packaged data was inspected; installed/downloaded content updates and engine behavior are outside this comparison.',
+        ('Truth: pulled device updates over APK fallback. Engine behavior is outside this comparison.' if report['manifest'].get('device_update') else 'Truth: packaged APK only; downloaded updates and engine behavior are outside this comparison.'),
         'Normalization uses the pinned SIM source joins, so shared interpretation errors remain possible. Hero ability mechanics and auxiliary hero spawners are not interpreted.',
         '', '## Opponent selection', '', report['opponents']['basis'], '',
         f"{report['opponents']['census_decks']} census decks, {report['opponents']['census_selected_sides']} weighted sides; {report['opponents']['pro2_rows']} PRO2 replay rows.", '',
@@ -204,19 +205,28 @@ def report_markdown(report):
         lines.append(f"|{r['rank']}|{r['card']}|{r['census']}|{r['pro2']}|{r['total']}|")
     for label, results in report['comparisons'].items():
         lines += ['', f'## {label}: icebow and top 60', '',
-                  '|Card|Status|SIM value → APK value (exact field)|', '|---|---|---|']
+                  '|Card|Status|SIM value → effective truth (exact field)|', '|---|---|---|']
         for r in results:
             if r['card'] not in report['main_names']:
                 continue
             detail = '; '.join(f"`{x['field']}`: `{fmt(x['before'])}` → `{fmt(x['after'])}`" for x in r['differences'])
             if r['status'] == 'missing_card':
-                detail = f"APK present={r['apk_present']}, SIM present={r['sim_present']}"
+                detail = f"Truth present={r['apk_present']}, SIM present={r['sim_present']}"
             lines.append(f"|{r['card']}|{r['status']}|{detail or 'All projected fields equal'}|")
         variants = [r for r in results if r['card'] not in report['main_names'] and r['status'] != 'equal']
-        lines += ['', '### Observed opponent forms: mismatches / missing', '', '|Form|Status|SIM → APK|', '|---|---|---|']
+        lines += ['', '### Observed opponent forms: mismatches / missing', '', '|Form|Status|SIM → truth|', '|---|---|---|']
         for r in variants:
             detail = '; '.join(f"`{x['field']}`: `{fmt(x['before'])}` → `{fmt(x['after'])}`" for x in r['differences'])
-            lines.append(f"|{r['card']}|{r['status']}|{detail or ('APK present='+str(r.get('apk_present'))+', SIM present='+str(r.get('sim_present')))}|")
+            lines.append(f"|{r['card']}|{r['status']}|{detail or ('Truth present='+str(r.get('apk_present'))+', SIM present='+str(r.get('sim_present')))}|")
+    lines += ['', '## Requested level sanity checks', '',
+              'floor(base × effective rarity multiplier / 100). Object rarity determines stat scaling; unlock rarity determines card availability.',
+              'Primary ordinary hit damage and per-unit HP; no shield added to HP. A dash means no direct stat, not zero. Damage-over-time is reported as DPS, not invented per-hit damage; related-unit and effect values are in per_level.json.',
+              f"rarities.csv source: {report['rarities_source']}. X-Bow L11 calibration: {fmt(report['xbow_l11'])}.", '',
+              *sanity_table(report['per_level'])]
+    if report['manifest'].get('device_update'):
+        lines += ['', '## Device precedence and APK fallbacks', '',
+                  f"{len(report['manifest']['device_update']['files'])} device tables; {len(report['manifest']['apk_fallbacks'])} APK fallback tables. Missing update files fall back as whole files, not missing rows.",
+                  '', *[f'- `{p}`: APK fallback (absent from update)' for p in report['manifest']['apk_fallbacks']]]
     lines += ['', '## Configured level caps', '', '|Card|Configured|Min|Cap|Status|', '|---|---:|---:|---:|---|']
     for r in report['levels']:
         lines.append(f"|{r['card']}|{r['level']}|{r.get('minimum','?')}|{r.get('cap','?')}|{r['status']}|")
@@ -241,6 +251,7 @@ def report_markdown(report):
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('apk_dir', type=Path)
+    ap.add_argument('--device-update', type=Path, help='pulled update/ directory; overrides APK files, absent files fall back')
     ap.add_argument('--selected-table', type=Path, help='JSON exported from selected_card_data() on the pod, if desired')
     ap.add_argument('--sim-repo', type=Path, default=ROOT/'research/ext/Royale/RoyaleSim')
     ap.add_argument('--parser-ref', default=PARSER_REF, help='local Git commit with reviewed parser and selected data; never fetched')
@@ -265,6 +276,8 @@ def main(argv=None):
     previous = json.loads(previous_path.read_text(encoding='utf-8')) if previous_path else None
     try:
         manifest = extract(args.apk_dir.resolve(), run/'tables')
+        if args.device_update:
+            manifest = overlay_device(args.device_update, run/'tables', manifest)
         write_json(run/'extraction.json', manifest)
         if manifest['failures'] or manifest['conflicts']:
             raise ValueError('incomplete extraction or conflicting splits; see extraction.json; baseline preserved')
@@ -273,7 +286,7 @@ def main(argv=None):
         write_json(run/'cards.json', doc)
         write_json(run/'normalization.json', norm)
         sources = dict(parser=norm['sources'], parser_ref=args.parser_ref, apk_dir=str(args.apk_dir.resolve()), tables={},
-                       tool={n:sha((HERE/n).read_bytes()) for n in ('check_build.py','compare.py','decoder.py')})
+                       tool={n:sha((HERE/n).read_bytes()) for n in ('check_build.py','compare.py','decoder.py','levels.py')})
         sims = {}
         old_paths = args.old_table or sorted((args.sim_repo/'data/derived').glob('cards*.json'))
         for path in old_paths:
@@ -293,17 +306,28 @@ def main(argv=None):
         snapshot = dict(manifest=manifest, projection_version=4, card_stats={n: projection(c) for n,c in cards_by_name(doc).items()},
                         normalization=norm, label=args.label or args.apk_dir.parent.name)
         changes = build_changes(previous, snapshot)
+        per_level = level_report(doc, [x['card'] for x in opponents['top']])
+        xbow = cards_by_name(doc).get('Xbow')
+        xbow_l11 = card_at_level(xbow, 11, doc['rarities']) if xbow else None
+        rarities_source = manifest['files'].get('csv_logic/rarities.csv', {}).get('source', 'apk')
         report = dict(label=snapshot['label'], manifest=manifest, normalization=norm, sources=sources,
                       main_names=main_names, opponents=opponents, changes=changes,
+                      per_level=per_level, xbow_l11=xbow_l11, rarities_source=rarities_source,
                       comparisons={label: compare_cards(doc, sim, names) for label, sim in sims.items()},
                       levels=check_levels(args.live_options.read_text(encoding='utf-8-sig'), doc))
         write_json(run/'snapshot.json', snapshot)
         write_json(run/'report.json', report)
+        write_json(run/'per_level.json', per_level)
         (run/'REPORT.md').write_text(report_markdown(report), encoding='utf-8')
         write_json(run/'changes.json', changes)
         write_json(out/'latest.tmp', dict(snapshot=str(run/'snapshot.json'), report=str(run/'REPORT.md')))
         (out/'latest.tmp').replace(latest)
         print(f"Decoded {len(manifest['files'])} tables; normalization limitations: {len(norm['refusals'])}")
+        if args.device_update:
+            print(f"Device tables: {len(manifest['device_update']['files'])}; APK fallbacks: {len(manifest['apk_fallbacks'])} (listed in REPORT.md and extraction.json)")
+        print('rarities.csv source:', rarities_source)
+        print('\n'.join(sanity_table([r for r in per_level if r['side'] == 'owner'])))
+        print('X-Bow L11:', xbow_l11['damage'] if xbow_l11 else 'missing')
         for label, rows in report['comparisons'].items():
             print(label + ': ' + ', '.join(f'{s}={sum(r["status"]==s for r in rows)}' for s in ('equal','mismatch','missing_card')))
         print('Levels:', json.dumps(report['levels']))

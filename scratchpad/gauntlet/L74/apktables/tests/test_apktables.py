@@ -22,6 +22,7 @@ sys.path.insert(0, str(HERE))
 import decoder
 import compare
 import check_build
+import levels
 
 TABLE = b'Name,Value\nString,Int\nSynthetic,7\n'
 
@@ -173,6 +174,88 @@ class CsvTests(unittest.TestCase):
                 decoder.csv_records(data)
 
 
+class DeviceTests(TemporaryCase):
+    apk = ExtractTests.apk
+    def test_device_precedence_absent_fallback_and_new_file(self):
+        self.apk('base.apk', {'assets/csv_logic/synthetic.csv': TABLE,
+                             'assets/csv_logic/fallback.csv': TABLE})
+        update = self.root / 'update'
+        (update / 'csv_logic').mkdir(parents=True)
+        changed = TABLE.replace(b',7', b',24')
+        (update / 'csv_logic/synthetic.csv').write_bytes(sc_lzma(changed))
+        (update / 'csv_logic/new.toml').write_bytes(b'[Synthetic]\nDamage=24\n')
+        dest = self.root / 'decoded'
+        result = decoder.overlay_device(update, dest, decoder.extract(self.root, dest))
+        self.assertEqual((dest/'csv_logic/synthetic.csv').read_bytes(), changed)
+        self.assertEqual((dest/'csv_logic/fallback.csv').read_bytes(), TABLE)
+        self.assertEqual(result['apk_fallbacks'], ['csv_logic/fallback.csv'])
+        entry = result['files']['csv_logic/synthetic.csv']
+        self.assertEqual(entry['source'], 'device_update')
+        self.assertEqual(entry['apk']['sha256'], decoder.sha(TABLE))
+        self.assertEqual(entry['codec'], 'sc-lzma-9')
+        self.assertEqual(len(result['device_update']['files']), 2)
+        self.assertNotEqual(result['fingerprint'], result['apk_fingerprint'])
+
+    def test_corrupt_present_device_table_is_failure_not_fallback(self):
+        self.apk('base.apk', {'assets/csv_logic/synthetic.csv': TABLE})
+        update = self.root/'update'
+        (update/'csv_logic').mkdir(parents=True)
+        (update/'csv_logic/synthetic.csv').write_bytes(b'\xff\xfe')
+        dest = self.root/'decoded'
+        result = decoder.overlay_device(update, dest, decoder.extract(self.root, dest))
+        self.assertEqual(len(result['failures']), 1)
+        self.assertEqual(result['failures'][0]['source'], 'device_update')
+
+    def test_wrong_device_directory_rejected(self):
+        with self.assertRaisesRegex(ValueError, 'csv_logic'):
+            decoder.overlay_device(self.root, self.root/'decoded', {})
+
+
+class LevelTests(unittest.TestCase):
+    # Small synthetic ladders; only the X-Bow calibration uses the measured value.
+    rarities = {'Common': {'relative_level': 0, 'level_count': 16,
+                           'multiplier_percent_by_level': [100] * 10 + [256] * 6},
+                'Epic': {'relative_level': 5, 'level_count': 11,
+                         'multiplier_percent_by_level': [100] * 11}}
+
+    def test_xbow_common_l11_is_61_despite_epic_unlock_rarity(self):
+        card = {'name': 'Xbow', 'rarity': 'Epic', 'damage': 24, 'hitpoints': 625,
+                'level_scaling': {'ladder_rarity': 'Common'}}
+        row = levels.card_at_level(card, 11, self.rarities)
+        self.assertEqual(row['rarity'], 'Common')
+        self.assertEqual(row['damage'], 61)
+        self.assertEqual(row['hitpoints'], 1600)
+
+    def test_absolute_multiplier_floor_offsets_null_and_bounds(self):
+        self.assertEqual(levels.scale_stat(24, 'Common', 11, self.rarities), 61)
+        self.assertEqual(levels.scale_stat(24, 'Epic', 6, self.rarities), 24)
+        self.assertEqual(levels.scale_stat(0, 'Common', 1, self.rarities), 0)
+        self.assertIsNone(levels.scale_stat(None, 'Common', 1, self.rarities))
+        for rarity, level in [('Common', 0), ('Common', 17), ('Epic', 5), ('Common', 1.5)]:
+            with self.subTest(rarity=rarity, level=level), self.assertRaises(ValueError):
+                levels.scale_stat(24, rarity, level, self.rarities)
+
+    def test_related_unit_uses_own_rarity_and_missing_damage_not_zero(self):
+        card = {'name': 'Synthetic', 'rarity': 'Common',
+                'related_units': {'spawn': {'rarity': 'Epic', 'damage': 24}}}
+        row = levels.card_at_level(card, 11, self.rarities)
+        self.assertIsNone(row['damage'])
+        self.assertEqual(row['stats']['related_units.spawn.damage'], 24)
+
+    def test_statless_card_still_validates_level(self):
+        card = {'name': 'Synthetic', 'rarity': 'Common'}
+        self.assertEqual(levels.card_at_level(card, 0, self.rarities)['status'], 'unresolved_ladder')
+
+    def test_owner_levels_and_opponents_are_separate(self):
+        doc = {'cards': [{'name': n, 'rarity': 'Common', 'damage': 24} for n in compare.ICEBOW],
+               'rarities': self.rarities}
+        rows = levels.level_report(doc, ['Xbow', 'IceWizard'])
+        own = {r['card']: r['level'] for r in rows if r['side']=='owner'}
+        self.assertEqual(own, dict(Xbow=16, Tesla=16, Knight=16, Rocket=16, Tornado=16,
+                                   IceWizard=14, IceWizard_hero=14, Skeletons=15, Log=15))
+        self.assertEqual([r['level'] for r in rows if r['side']=='opponent'], [15, 15])
+
+
 class CompareTests(unittest.TestCase):
     def test_missing_null_and_zero_are_distinct(self):
         self.assertEqual(compare.diff_values({}, {'damage': None}),
@@ -321,6 +404,17 @@ class IntegrationTests(TemporaryCase):
             repeated = json.loads((Path(second['snapshot']).parent / 'changes.json').read_text())
             self.assertEqual(repeated['files'], [])
             self.assertEqual(repeated['cards'], [])
+            update = self.root/'update'
+            (update/'csv_logic').mkdir(parents=True)
+            (update/'csv_logic/synthetic.csv').write_bytes(sc_lzma(TABLE.replace(b',7', b',24')))
+            device_argv = argv + ['--device-update', str(update)]
+            self.assertEqual(check_build.main(device_argv), 0)
+            second = json.loads((out/'latest.json').read_text())
+            snap = json.loads(Path(second['snapshot']).read_text())
+            self.assertEqual(snap['card_stats']['Alpha']['damage'], 24)
+            (update/'csv_logic/synthetic.csv').write_bytes(b'\xff\xfe')
+            self.assertEqual(check_build.main(device_argv), 1)
+            self.assertEqual(json.loads((out/'latest.json').read_text()), second)
             self.apk('base.apk', {'assets/csv_logic/synthetic.csv': b'\xff\xfe'})
             self.assertEqual(check_build.main(argv), 1)
             self.assertEqual(json.loads((out / 'latest.json').read_text()), second)

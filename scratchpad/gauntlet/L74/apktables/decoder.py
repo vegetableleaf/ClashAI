@@ -127,6 +127,55 @@ def extract(apk_dir: Path, dest: Path) -> dict:
     return manifest
 
 
+def overlay_device(update: Path, dest: Path, manifest: dict) -> dict:
+    """Replace whole table files from a pulled update; absent files retain APK data.
+
+    A present but undecodable update is a failure, never a silent APK fallback.
+    Metadata is hashed for provenance; non-table assets are not decoded/copied.
+    """
+    update = update.resolve()
+    if not (update / 'csv_logic').is_dir():
+        raise ValueError('--device-update must contain csv_logic/')
+    manifest['apk_fingerprint'] = manifest['fingerprint']
+    device = manifest['device_update'] = dict(path=str(update), metadata={}, files=[], input_files=0)
+    for entry in manifest['files'].values():
+        entry['source'] = 'apk_fallback'
+    for path in sorted(update.rglob('*')):
+        if not path.is_file():
+            continue
+        device['input_files'] += 1
+        rel = path.relative_to(update).as_posix()
+        if rel in ('fingerprint.json', 'data_manifest.toml'):
+            device['metadata'][rel] = dict(sha256=sha(path.read_bytes()), bytes=path.stat().st_size)
+        if not (rel.split('/')[0].startswith('csv_') and path.suffix.lower() in ('.csv', '.toml')):
+            continue
+        entry = dict(source='device_update', path=rel)
+        try:
+            if not path.resolve().is_relative_to(update):
+                raise ValueError('device table escapes update directory')
+            if path.stat().st_size > MAX_BYTES:
+                raise ValueError('device table exceeds limit')
+            raw = path.read_bytes()
+            data, codec = decode(raw)
+            data.decode('utf-8-sig')
+            entry.update(input_sha256=sha(raw), sha256=sha(data), bytes=len(data), codec=codec)
+            if rel in manifest['files']:
+                entry['apk'] = manifest['files'][rel]
+            target = dest / rel
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(data)
+            manifest['files'][rel] = entry
+            device['files'].append(rel)
+        except (ValueError, lzma.LZMAError, zlib.error, UnicodeError, OSError) as ex:
+            manifest['failures'].append(dict(**entry, error=str(ex)))
+    if not device['files'] and not manifest['failures']:
+        raise ValueError('no device CSV/TOML table assets found')
+    manifest['apk_fallbacks'] = sorted(p for p, e in manifest['files'].items() if e['source'] == 'apk_fallback')
+    manifest['fingerprint'] = sha(repr((manifest['apk_fingerprint'],
+        sorted((p, e['source'], e['sha256']) for p, e in manifest['files'].items()), device['metadata'])).encode())
+    return manifest
+
+
 def csv_records(data: bytes) -> dict:
     """Read the two-header SC CSV layout, preserving continuation row positions."""
     rows = list(csv.reader(io.StringIO(data.decode('utf-8-sig'))))
