@@ -1,2 +1,4 @@
 merge_tmp/
 *.log
+.test_deps/
+.test_work/
