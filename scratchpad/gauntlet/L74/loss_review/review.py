@@ -22,7 +22,7 @@ except Exception:
 import json, glob, math, bisect, time, datetime, argparse, collections, re, random
 
 HERE = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/") + "/"
-MAIN = "C:/Users/benpe/ClashBot/"
+MAIN = os.environ.get("CB_MAIN", "C:/Users/benpe/ClashBot/")
 LOGDIR = MAIN + "scratchpad/gauntlet/L68/live_reader/"
 NAVGLOB = LOGDIR + "ladder_nav_*.jsonl"
 OVN = MAIN + "scratchpad/gauntlet/L70/live/overnight.out"          # read only

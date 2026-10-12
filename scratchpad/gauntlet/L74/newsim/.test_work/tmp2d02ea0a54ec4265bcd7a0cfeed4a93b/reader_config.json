@@ -1,0 +1,1 @@
+{"root_rva": "R", "root_ctx": "C", "readers": {"v2": {"binary": "/dev/b2", "args": " --a 1 --b"}, "v1": {"binary": "/dev/b1", "args": ""}}}

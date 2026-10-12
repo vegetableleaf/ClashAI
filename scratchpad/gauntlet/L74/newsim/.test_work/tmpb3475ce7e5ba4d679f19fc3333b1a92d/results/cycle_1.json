@@ -1,0 +1,17 @@
+{
+  "cycle": 1,
+  "main_run": "newsim_fast_main",
+  "main_target": 20,
+  "main_start": 0,
+  "frozen": "icebow\\data\\bench\\rl_royale\\newsim_fast_main\\frozen_c1.pt",
+  "exploiter_run": "newsim_fast_exp1",
+  "exploiter_target": 15,
+  "exploiter_init": "icebow\\data\\bench\\rl_royale\\rseries_r3c\\rseries_r3c_u0030_barrel.pt",
+  "frozen_sha256": "cdce31377726b7d6f598102281efe4f9fbd5486c1769f57b609f42e44b630406",
+  "external": [
+    "icebow\\data\\bench\\rl_royale\\wk_adapt_exp1\\wk_adapt_exp1_u0015.pt",
+    "icebow\\data\\bench\\rl_royale\\wk_adapt_exp2\\wk_adapt_exp2_u0015.pt",
+    "icebow\\data\\bench\\rl_royale\\wk_adapt_exp3\\wk_adapt_exp3_u0015.pt",
+    "icebow\\data\\bench\\rl_royale\\newsim_fast_exp1\\newsim_fast_exp1_u0015.pt"
+  ]
+}

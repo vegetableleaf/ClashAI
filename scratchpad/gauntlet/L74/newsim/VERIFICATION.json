@@ -1,0 +1,80 @@
+{
+  "status": "IMPLEMENTED_ACCEPTANCE_BLOCKED",
+  "branch": "l74-newsim",
+  "head": "a10e4fd50190b29dea8b408b0b3325939613b5dd",
+  "incoming": "72468ffbb7aed0dd9a9cad6f95f93a056d310e85",
+  "committed": false,
+  "merge": "content integrated; Git metadata denied",
+  "focused_final": {
+    "passed": 132,
+    "deselected": 1,
+    "warnings": 24,
+    "seconds": 62.97,
+    "exit_code": 0,
+    "sim_imported": false,
+    "newsim_tests": 36
+  },
+  "focused_with_heroiw": {
+    "passed": 149,
+    "failed": 1,
+    "deselected": 1,
+    "failure": "missing live_card_catalog.json"
+  },
+  "full_pipeline_collection": {
+    "errors": 12,
+    "skipped": 2
+  },
+  "remaining_pipeline_modules": {
+    "passed": 783,
+    "failed": 512,
+    "skipped": 48,
+    "warnings": 115,
+    "seconds": 460.2
+  },
+  "source_audit": {
+    "incoming_paths": 65,
+    "live_scripts_changed": false,
+    "python_syntax": "passed"
+  },
+  "shell_check": "Bash initialization failed: CreateFileMapping Win32 error 5; source reviewed only",
+  "pod_launched": false,
+  "network_used": false,
+  "deployed": false,
+  "gates": {
+    "met": 3,
+    "abandoned": 2,
+    "unmet": 0
+  },
+  "blockers": [
+    "Git linked-worktree metadata is outside writable root",
+    "Full-suite runtime/catalog/ignored fixture and host IPC prerequisites unavailable",
+    "Local Bash cannot initialize"
+  ],
+  "cleanup": "Agent-created tmp1rdriaac directory left; automatic approval review rejected cleanup: blocked by policy",
+  "logs": {
+    "final_tests.log": {
+      "sha256": "61b6e9d68900f7f5343524ed0bd858427c43d8edfb85c29137053774414ee334",
+      "bytes": 5538
+    },
+    "focused_tests.log": {
+      "sha256": "792a2f29ed35f61f1bc0d4f8705a1a8bdc1edc38cee7b10b12671a1b215383a4",
+      "bytes": 12284
+    },
+    "newsim_tests.log": {
+      "sha256": "57f2767b9263688631b1d9f08cb60f1b8b0c972583c815f2096ff950d1ee53e4",
+      "bytes": 9666
+    },
+    "pipeline_available.log": {
+      "sha256": "7053a87f252b7a10f6efab20e627d1d8e44a7ffc03c759ac2cd7bba77e08bd39",
+      "bytes": 2559984
+    },
+    "pipeline_tests.log": {
+      "sha256": "c41ca94b443d5ecf457c51ac406ed07b7258cad91a83a1288290f6596c2fc1e1",
+      "bytes": 24028
+    },
+    "pro2_rebuild.log": {
+      "sha256": "1d507549459392af3afff145279b8b217c6f1e02e95c7b5c7d288a770deb77bb",
+      "bytes": 2738
+    }
+  }
+}

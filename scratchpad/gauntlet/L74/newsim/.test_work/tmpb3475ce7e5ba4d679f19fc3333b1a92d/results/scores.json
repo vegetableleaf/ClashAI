@@ -1,0 +1,66 @@
+{
+  "CAL_off": {
+    "pairs": 960,
+    "old_pct": 50.0,
+    "new_pct": 50.0,
+    "delta_pp": 0.0,
+    "lo_pp": 0.0,
+    "hi_pp": 0.0
+  },
+  "CAL_on": {
+    "pairs": 960,
+    "old_pct": 50.0,
+    "new_pct": 50.0,
+    "delta_pp": 0.0,
+    "lo_pp": 0.0,
+    "hi_pp": 0.0
+  },
+  "CAL_old_fast_change": {
+    "pairs": 960,
+    "old_pct": 50.0,
+    "new_pct": 50.0,
+    "delta_pp": 0.0,
+    "lo_pp": 0.0,
+    "hi_pp": 0.0
+  },
+  "CAL_new_fast_change": {
+    "pairs": 960,
+    "old_pct": 50.0,
+    "new_pct": 50.0,
+    "delta_pp": 0.0,
+    "lo_pp": 0.0,
+    "hi_pp": 0.0
+  },
+  "P2_off": {
+    "pairs": 960,
+    "old_pct": 50.0,
+    "new_pct": 50.0,
+    "delta_pp": 0.0,
+    "lo_pp": 0.0,
+    "hi_pp": 0.0
+  },
+  "P2_on": {
+    "pairs": 960,
+    "old_pct": 50.0,
+    "new_pct": 50.0,
+    "delta_pp": 0.0,
+    "lo_pp": 0.0,
+    "hi_pp": 0.0
+  },
+  "P2_old_fast_change": {
+    "pairs": 960,
+    "old_pct": 50.0,
+    "new_pct": 50.0,
+    "delta_pp": 0.0,
+    "lo_pp": 0.0,
+    "hi_pp": 0.0
+  },
+  "P2_new_fast_change": {
+    "pairs": 960,
+    "old_pct": 50.0,
+    "new_pct": 50.0,
+    "delta_pp": 0.0,
+    "lo_pp": 0.0,
+    "hi_pp": 0.0
+  }
+}

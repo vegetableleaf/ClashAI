@@ -1,0 +1,69 @@
+{
+  "arm": "base",
+  "tag": "newsim_base",
+  "learner_pipeline_frac": 0.0,
+  "workers": 24,
+  "max_processes": 28,
+  "init": "icebow\\data\\bench\\rl_royale\\wk_adapt_main\\wk_adapt_main_latest.pt",
+  "extra_exploiters": [
+    "icebow\\data\\bench\\rl_royale\\wk_adapt_exp1\\wk_adapt_exp1_u0015.pt",
+    "icebow\\data\\bench\\rl_royale\\wk_adapt_exp2\\wk_adapt_exp2_u0015.pt",
+    "icebow\\data\\bench\\rl_royale\\wk_adapt_exp3\\wk_adapt_exp3_u0015.pt"
+  ],
+  "runtime": "20261012-linux",
+  "cycles": [
+    {
+      "cycle": 1,
+      "main_run": "newsim_base_main",
+      "main_target": 20,
+      "main_start": 0,
+      "frozen": "icebow\\data\\bench\\rl_royale\\newsim_base_main\\frozen_c1.pt",
+      "exploiter_run": "newsim_base_exp1",
+      "exploiter_target": 15,
+      "exploiter_init": "icebow\\data\\bench\\rl_royale\\rseries_r3c\\rseries_r3c_u0030_barrel.pt"
+    },
+    {
+      "cycle": 2,
+      "main_run": "newsim_base_main",
+      "main_target": 40,
+      "main_start": 20,
+      "frozen": "icebow\\data\\bench\\rl_royale\\newsim_base_main\\frozen_c2.pt",
+      "exploiter_run": "newsim_base_exp2",
+      "exploiter_target": 15,
+      "exploiter_init": "icebow\\data\\bench\\rl_royale\\rseries_r3c\\rseries_r3c_u0030_barrel.pt"
+    },
+    {
+      "cycle": 3,
+      "main_run": "newsim_base_main",
+      "main_target": 60,
+      "main_start": 40,
+      "frozen": "icebow\\data\\bench\\rl_royale\\newsim_base_main\\frozen_c3.pt",
+      "exploiter_run": "newsim_base_exp3",
+      "exploiter_target": 15,
+      "exploiter_init": "icebow\\data\\bench\\rl_royale\\rseries_r3c\\rseries_r3c_u0030_barrel.pt"
+    }
+  ],
+  "fresh_runtime_state": true,
+  "evaluations": [
+    {
+      "pool": "CAL",
+      "pipeline": false,
+      "pairs": 960
+    },
+    {
+      "pool": "CAL",
+      "pipeline": true,
+      "pairs": 960
+    },
+    {
+      "pool": "P2",
+      "pipeline": false,
+      "pairs": 960
+    },
+    {
+      "pool": "P2",
+      "pipeline": true,
+      "pairs": 960
+    }
+  ]
+}
