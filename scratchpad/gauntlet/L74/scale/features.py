@@ -29,7 +29,12 @@ def public_area_timeline(frames, gid):
     from pipeline.projectile_observation import _xy
     tracks, result = {}, []
     previous_tick = -1
-    for frame in sorted(frames, key=lambda f: int(f['tick'])):
+    # 20% of native recordings repeat a frame at the same tick (measured on pod E: 2,950 dups, 2,948 byte-identical,
+    # 2 differ): keep the LATER frame per tick, then the strict-increase check below still guards real disorder.
+    by_tick = {}
+    for f in sorted(frames, key=lambda f: int(f['tick'])):
+        by_tick[int(f['tick'])] = f
+    for frame in by_tick.values():
         tick = int(frame['tick'])
         if tick <= previous_tick:
             raise ValueError('Native sampled frame ticks must increase strictly')

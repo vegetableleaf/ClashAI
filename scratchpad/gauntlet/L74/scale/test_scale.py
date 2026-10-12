@@ -275,3 +275,10 @@ def test_four_arm_cpu_integration(work_dir,monkeypatch):
     from pipeline.model_gen import load_model
     with pytest.raises(ValueError,match='Unsupported checkpoint architecture'):
         load_model(out/'D.pt','cpu')
+
+
+def test_area_timeline_keeps_later_duplicate_tick_frame():
+    # native recordings can repeat their last frame at the same tick (pod E, 10-12): later frame wins, no raise
+    f = lambda t: {'tick': t, 'public_objects': {'area_effects': []}}  # noqa: E731
+    out = public_area_timeline([f(0), f(10), f(10)], {})
+    assert [t for t, _ in out] == [0, 10]
