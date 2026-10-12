@@ -7,14 +7,21 @@ import time
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
+
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import emote_spam as es  # noqa: E402
 import live_play as lp  # noqa: E402
-from test_fast_input import Pilot, play  # noqa: E402
+from test_fast_input import Pilot, play, rframe  # noqa: E402
 
 EMOTE = "input tap 88 1365; sleep 0.15; input tap 710 1195"
 CARD = "input tap 279 1424; sleep 0.05; input tap 450 791"
+
+
+@pytest.fixture(autouse=True)
+def isolated_emote_clock(monkeypatch):
+    monkeypatch.setattr(es, "CLOCK", es.EmoteClock())
 
 
 class WaitPilot(Pilot):
@@ -119,7 +126,7 @@ def test_check_passes_with_emote_spam_on(monkeypatch, tmp_path, capsys):
     assert lp.main() == 0
     out = json.loads(capsys.readouterr().out.strip().splitlines()[-1])
     assert out["check"] == "LIVE_CHECK_PASS" and (out["emote_spam"], out["emote_interval_s"], out["emote_gap_ms"],
-                                                 out["emote_guard"]) == ("on", 1.35, 150, 0.75)
+                                                 out["emote_guard"]) == ("on", 3.0, 150, 0.75)
 
 
 def test_below_the_cooldown_is_refused(monkeypatch, tmp_path, capsys):
@@ -141,4 +148,162 @@ def test_deployable_from_live_options(monkeypatch, tmp_path, capsys):
                                                                            decision_options=kw["decision_options"]))
     assert lp.main() == 0
     out = json.loads(capsys.readouterr().out.strip().splitlines()[-1])
-    assert (out["emote_spam"], out["emote_gap_ms"], out["emote_interval_s"], out["emote_guard"]) == ("on", 120, 1.35, 0.75)
+    assert (out["emote_spam"], out["emote_gap_ms"], out["emote_interval_s"], out["emote_guard"]) == ("on", 120, 3.0, 0.75)
+
+
+class FakeClock:
+    def __init__(self):
+        self.now, self.wall_offset = 1000.0, 10000.0
+
+    def monotonic(self):
+        return self.now
+
+    def time(self):
+        return self.now + self.wall_offset
+
+    def sleep(self, seconds):
+        self.now += seconds
+
+
+@pytest.mark.parametrize("outcome", [True, False, "raise"])
+def test_attempt_clock_guards_failures_two_taps_and_wall_jumps(monkeypatch, outcome):
+    clock, limiter, starts, taps = FakeClock(), es.EmoteClock(), [], []
+    monkeypatch.setattr(es, "time", clock)
+
+    def send(cmd):
+        assert cmd == EMOTE
+        starts.append(clock.now)
+        taps.append(("chat", clock.now))
+        clock.sleep(0.15)
+        taps.append(("emote", clock.now))
+        if outcome == "raise":
+            raise OSError("failed tap")
+        return outcome
+
+    def attempt(**kw):
+        return limiter.attempt(send, EMOTE, 3.0, **dict(dict(busy=False, p_play=0.0, tau=.35, guard=.75), **kw))
+
+    def fire():
+        if outcome == "raise":
+            with pytest.raises(OSError):
+                attempt()
+        else:
+            assert attempt() is outcome
+
+    fire()
+    assert limiter.hold() == pytest.approx(.45)     # hold starts at chat dispatch, not command completion
+    clock.now = 1002.999
+    clock.wall_offset += 3600                       # a wall-clock jump cannot release the limiter
+    assert attempt() is None
+    clock.now = 1003.0
+    assert attempt(p_play=.3) is None and attempt(busy=True) is None
+    assert limiter.last_t == 1000.0                 # skips do not reset or consume the attempt clock
+    fire()                                         # exactly the start + interval, not end + interval
+    clock.wall_offset -= 7200
+    clock.now = 1005.999
+    assert attempt() is None
+    clock.now = 1006.0
+    fire()
+    assert starts == [1000.0, 1003.0, 1006.0]
+    emotes = [t for kind, t in taps if kind == "emote"]
+    assert all(b - a >= 3.0 for a, b in zip(emotes, emotes[1:]))
+
+
+def clocked_match(monkeypatch, tmp_path, clock, offsets, pilot=None, **options):
+    """Drive the actual match loop synchronously: no threads, device, model, or real sleeps."""
+    import queue
+    import threading
+
+    base = clock.now
+    frames = iter((base + dt, rframe(150 + i * 2)) for i, dt in enumerate(offsets))
+
+    class Frames:
+        def get(self, timeout=None):
+            item = next(frames, None)
+            if item is None:
+                return None
+            at, line = item
+            clock.now = max(clock.now, at)
+            return clock.time(), line
+
+        def empty(self):
+            return True
+
+        def qsize(self):
+            return 0
+
+    monkeypatch.setattr(queue, "Queue", Frames)
+    monkeypatch.setattr(threading, "Thread", lambda **kw: SimpleNamespace(start=lambda: None, join=lambda **kw: None))
+    monkeypatch.setattr(es, "time", clock)
+    monkeypatch.setattr(lp, "time", SimpleNamespace(time=clock.time, monotonic=clock.monotonic, sleep=clock.sleep,
+                                                   strftime=lambda fmt: "fake"))
+    return play(monkeypatch, tmp_path, pilot=pilot or WaitPilot(), **options)
+
+
+@pytest.mark.parametrize("fast", [False, True])
+@pytest.mark.parametrize("fail_first", [False, True])
+def test_match_boundaries_failed_taps_and_transports_share_clock(monkeypatch, tmp_path, fast, fail_first):
+    import fast_input
+    clock, starts = FakeClock(), []
+
+    class Shell:
+        def __init__(self, *a):
+            pass
+
+        def run(self, cmd, **kw):
+            if cmd == "true":
+                return True
+            assert cmd == EMOTE
+            starts.append(clock.now)
+            clock.sleep(.15)                         # the chat-button + emote command
+            return not (fail_first and len(starts) == 1)
+
+        def close(self):
+            pass
+
+    if fast:
+        monkeypatch.setattr(fast_input, "PersistentShell", Shell)
+    else:
+        monkeypatch.setattr(lp, "input_cmd", Shell().run)
+    options = dict(emote_spam="on", emote_interval_s=3.0, emote_gap_ms=150, emote_guard=.75, fast_input=fast)
+    _, first = clocked_match(monkeypatch, tmp_path, clock, [0, 0], **options)
+    assert any(e["event"] == "stop" and e["why"] == "tap_timeout" for e in first) == fail_first
+    clock.now = 1000.25
+    second_dir = tmp_path / "next"
+    second_dir.mkdir()
+    _, second = clocked_match(monkeypatch, second_dir, clock, [0, 0, 2.749, 2.75, 5.749, 5.75], **options)
+    assert starts == [1000.0, 1003.0, 1006.0]
+    events = [e for e in first + second if e["event"] == "emote"]
+    assert [e["attempt_monotonic_s"] for e in events] == starts
+    assert [e["n"] for e in events] == [1, 1, 2]       # counts reset, the cooldown does not
+
+
+def test_slow_emote_logging_cannot_shorten_dispatch_gap(monkeypatch, tmp_path):
+    clock, starts = FakeClock(), []
+    dumps = json.dumps
+
+    def slow_log(obj, **kw):
+        if obj.get("event") == "emote" and len(starts) <= 1:
+            clock.sleep(.8)
+        return dumps(obj, **kw)
+
+    monkeypatch.setattr(lp.json, "dumps", slow_log)
+    monkeypatch.setattr(lp, "input_cmd", lambda cmd: starts.append(clock.now) or True)
+    clocked_match(monkeypatch, tmp_path, clock, [0, 0, 2.999, 3, 5.999, 6],
+                  emote_spam="on", emote_interval_s=3.0, emote_gap_ms=150, emote_guard=.75)
+    assert starts == [1000.0, 1003.0, 1006.0]
+
+
+def test_explicit_off_is_byte_identical_and_never_uses_emote_clock(monkeypatch, tmp_path):
+    class ForbiddenClock:
+        def __getattribute__(self, name):
+            pytest.fail("emote-spam off touched the emote clock")
+
+    monkeypatch.setattr(es, "CLOCK", ForbiddenClock())
+    baseline = tmp_path / "baseline"
+    baseline.mkdir()
+    cmds, _ = clocked_match(monkeypatch, baseline, FakeClock(), [0, .1, .2, .3], pilot=WaitPilot(play_from=154))
+    off_cmds, _ = clocked_match(monkeypatch, tmp_path, FakeClock(), [0, .1, .2, .3], pilot=WaitPilot(play_from=154),
+                               emote_spam="off", emote_interval_s=3.0, emote_gap_ms=150, emote_guard=.75)
+    assert cmds == off_cmds and CARD in cmds
+    assert (baseline / "live_play_fake.jsonl").read_bytes() == (tmp_path / "live_play_fake.jsonl").read_bytes()

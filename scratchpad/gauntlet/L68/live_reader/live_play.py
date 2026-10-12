@@ -384,8 +384,8 @@ def main() -> int:
     ap.add_argument("--emote-spam", choices=("off", "on"), default="off",
                     help="OPT-IN (owner 2026-10-10): at a WAIT decision with nothing pending, tap the chat button then the "
                          "owner's emote (emote_spam.py), one per --emote-interval-s. Off = byte-identical")
-    ap.add_argument("--emote-interval-s", type=float, default=1.35,
-                    help="with --emote-spam on: seconds between emotes (the game's cooldown is 1.3; default 1.35)")
+    ap.add_argument("--emote-interval-s", type=float, default=3.0,
+                    help="with --emote-spam on: seconds between emote attempts (game cooldown 1.3; owner 10-12: default 3.0)")
     ap.add_argument("--emote-gap-ms", type=int, default=150,
                     help="with --emote-spam on: pause between the chat-button tap and the emote tap (default 150)")
     ap.add_argument("--emote-guard", type=float, default=0.75,
@@ -755,7 +755,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
       **({"pipeline_decisions": True, "pipeline_tau_delta": getattr(a, "pipeline_tau_delta", 0.0)}
          if getattr(a, "pipeline_decisions", False) else {}))
     emote_on = getattr(a, "emote_spam", "off") == "on"
-    emo = {"t": float("-inf"), "n": 0, "holds": 0}   # --emote-spam: first-tap time of the last emote, counts
+    emo = {"n": 0, "holds": 0}   # --emote-spam: per-match counts; the attempt clock survives match boundaries
+    emote_clock = (emote_spam.EmoteClock() if a.dry_run else emote_spam.CLOCK) if emote_on else None
     follow = bool(getattr(a, "follow_up_taps", False))
     pipe = bool(getattr(a, "pipeline_decisions", False))
     release_margin = getattr(a, "early_release_margin", None)
@@ -774,7 +775,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
 
     def emote_hold(tick):
         """--emote-spam: a card / ability tap waits until the emote panel is closed (0.6 s after its first tap)."""
-        wait = emote_spam.hold_s(time.time(), emo["t"]) if emote_on else 0.0
+        wait = emote_clock.hold() if emote_on else 0.0
         if wait > 0:
             emo["holds"] += 1
             W(event="emote_hold", tick=tick, held_ms=round(wait * 1000))
@@ -1102,15 +1103,19 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                   public=d['public_audit'])
                 last_audit_tick = tick
             if not d["play"]:
-                if emote_on and guard_clear() and emote_spam.emote_due(
-                        time.time(), emo["t"], a.emote_interval_s, False, bool(pending or sched or ab_pending),
-                        d.get("p_play", 0.0), d.get("gate_tau", pilot.gate_tau), a.emote_guard):
-                    emo["t"] = time.time()               # first-tap time: the interval and the 0.6 s card-tap hold run from it
+                emote_ok = None
+                if emote_on and guard_clear():
+                    emote_ok = emote_clock.attempt(
+                        (lambda cmd: True) if a.dry_run else input_cmd,
+                        emote_spam.emote_cmd(lay.w, lay.h, a.emote_gap_ms), a.emote_interval_s,
+                        busy=bool(pending or sched or ab_pending), p_play=d.get("p_play", 0.0),
+                        tau=d.get("gate_tau", pilot.gate_tau), guard=a.emote_guard)
+                if emote_ok is not None:
                     emo["n"] += 1
-                    W(event="emote", tick=tick, n=emo["n"],
+                    W(event="emote", tick=tick, n=emo["n"], attempt_monotonic_s=emote_clock.last_t,
                       guard=round(d.get("p_play", 0.0) / max(d.get("gate_tau", pilot.gate_tau), 1e-9), 3),
                       **({"dry_run": True} if a.dry_run else {}))
-                    if not a.dry_run and not input_cmd(emote_spam.emote_cmd(lay.w, lay.h, a.emote_gap_ms)):
+                    if not emote_ok:
                         print("[live] an emote input timed out -- no more taps this match (it may still land late)", flush=True)
                         W(event="stop", why="tap_timeout", tick=tick, input="emote"); break
                 continue
