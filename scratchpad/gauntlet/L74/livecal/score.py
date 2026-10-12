@@ -75,8 +75,8 @@ def metrics(sim, live, groups):
                 orderings=sum(p['primary'] for p in pairs), pairs=pairs)
 
 
-def matrices(plan, rows):
-    """Reject missing/duplicate/extra/truncated observations rather than score biased survivors."""
+def indexed_results(plan, rows):
+    """Validate observed games without filling absent observations."""
     ids = [g['id'] for g in plan['groups']]
     pools = [p['id'] for p in plan['pools']]
     keys = [(c, s) for c in ('evo', 'lad') for s in range(plan['seed_start'], plan['seed_start']+plan['k']//2)]
@@ -89,8 +89,17 @@ def matrices(plan, rows):
         if r.get('skipped') or r.get('wall_truncated') or r.get('outcome') not in ('win', 'loss', 'draw'):
             raise ValueError(f'invalid or truncated result: {key}')
         got[key] = float(r['outcome'] == 'win')
+    return got, expected
+
+
+def matrices(plan, rows):
+    """Reject missing/duplicate/extra/truncated observations rather than score biased survivors."""
+    got, expected = indexed_results(plan, rows)
     if set(got) != expected:
         raise ValueError(f'incomplete results: {len(got)}/{len(expected)}')
+    ids = [g['id'] for g in plan['groups']]
+    pools = [p['id'] for p in plan['pools']]
+    keys = [(c, s) for c in ('evo', 'lad') for s in range(plan['seed_start'], plan['seed_start']+plan['k']//2)]
     return {p: np.array([[got[p, g, c, s] for c, s in keys] for g in ids]) for p in pools}
 
 
@@ -136,8 +145,46 @@ def evaluate(plan, rows, boots=2000, seed=74012):
                              'Live bootstrap assumes independent matches within groups; no session-cluster correction.'])
 
 
+def evaluate_finished(plan, rows, boots=2000):
+    """Score complete pools only; report every unfinished checkpoint x pool arm.
+
+    Dropping individual groups would change the calibration population, so their
+    finished peers in an incomplete pool receive descriptive rates only.
+    """
+    if boots < 1:
+        raise ValueError('bootstrap count must be positive')
+    got, expected = indexed_results(plan, rows)
+    if set(got) == expected:
+        return evaluate(plan, rows, boots)
+    missing, finished = [], []
+    for p in plan['pools']:
+        for g in plan['groups']:
+            values = [v for (pool, group, _, _), v in got.items() if (pool, group) == (p['id'], g['id'])]
+            arm = dict(pool=p['id'], group=g['id'], games=len(values), expected_games=plan['k'])
+            if len(values) != plan['k']:
+                missing.append(arm)
+            else:
+                finished.append(dict(**arm, sim=sum(values)/len(values), live=g['win_rate']))
+    excluded = {a['pool'] for a in missing}
+    complete = [p for p in plan['pools'] if p['id'] not in excluded]
+    report = evaluate({**plan, 'pools': complete}, [r for r in rows if r['pool'] not in excluded], boots) if complete else dict(
+        pools={}, bootstrap_replicates=boots, limitations=[])
+    report['available_best_pool'] = report.get('best_pool')
+    report.update(verdict=f'INCOMPLETE: {len(missing)} missing or unfinished arms; no overall pool can be named.',
+                  best_pool=None, missing_arms=missing, finished_arms=finished, excluded_pools=sorted(excluded))
+    return report
+
+
 def summary(report):
-    lines = [report['verdict'], 'Best pool by sign agreement, then Spearman, then offset MAE. No deployment.']
+    lines = [report['verdict']]
+    if report.get('missing_arms'):
+        lines.append('Complete pools scored below; unfinished pools excluded from ranking. No imputation. No deployment.')
+        for a in report['missing_arms']:
+            lines.append(f"MISSING ARM {a['pool']}/{a['group']}: {a['games']}/{a['expected_games']} games")
+        for a in report['finished_arms']:
+            lines.append(f"FINISHED ARM {a['pool']}/{a['group']}: {a['games']} games; SIM={a['sim']:.6f}; live={a['live']:.6f}")
+    else:
+        lines.append('Best pool by sign agreement, then Spearman, then offset MAE. No deployment.')
     for p, r in report['pools'].items():
         lines.append(f"{p}: {r['agreements']}/{r['orderings']} orderings; Spearman={r['spearman']}; "
                      f"offset={100*r['offset']:.2f} pp; offset MAE={100*r['offset_mae']:.2f} pp; CI95={r['ci95']}")

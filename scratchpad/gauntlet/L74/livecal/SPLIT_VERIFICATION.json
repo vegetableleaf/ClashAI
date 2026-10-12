@@ -1,0 +1,25 @@
+{
+  "command": "C:\\Users\\benpe\\ClashBot\\icebow\\.venv\\Scripts\\python.exe -B -m pytest scratchpad/gauntlet/L74/livecal -q -p no:cacheprovider",
+  "cwd": "C:\\Users\\benpe\\ClashBot",
+  "shell": "PowerShell (Python subprocess capture)",
+  "exit_code": 0,
+  "match": true,
+  "tests_passed": 48,
+  "output_sha256": "3ac53bca9f40dc1eec9f3ba65a750f100a065e2e2ea232c09e52ce2478511e85",
+  "path_sha256": "3d558a0928cb8b944d60d8fcf85d45aab913ff1021edbcc0bfb05799c372aee9",
+  "sim_games_run": 0,
+  "network_used": false,
+  "shell_validation": "Source review only; bash -n blocked by CreateFileMapping Win32 error 5.",
+  "game_counts": {
+    "A": 14400,
+    "C": 9600
+  },
+  "workers": {
+    "A": 28,
+    "C": 25
+  },
+  "eta_minutes": {
+    "A": 306.3829787234043,
+    "C": 228.7659574468085
+  }
+}

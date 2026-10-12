@@ -161,6 +161,79 @@ At 47 games/minute with 28 workers: full **24,000 games = 8 h 31 min**; quick
 would reduce these to 19,200/4,800 games. `--workers N` accepts 1..28; `--k K`
 accepts multiples of four. Use `LIVECAL_OUT`, not `--out`, with the shell driver.
 
+### Optional two-pod split and offline merge
+
+Both features are opt-in; omitting `--pools` still runs all available pools.
+`--pools P1,P3` selects just those pools. Selection filters the full schedule
+without renumbering checkpoint/fast groups, changing seeds, or redrawing opponent
+assignments (including P4 and P5). Requested IDs must be distinct and available
+in the frozen manifest. Every part must use the same copied manifest/censuses,
+code, and K; do not independently regenerate preparation between parts.
+
+Pod A (28 workers, P1/P2/P3):
+
+```bash
+cd /workspace/ClashBot
+PART=A PY=/workspace/venv/bin/python bash scratchpad/gauntlet/L74/livecal/run_livecal.sh --pools P1,P2,P3 --workers 28
+```
+
+Pod C (25 workers, P4/P5):
+
+```bash
+cd /workspace/ClashBot
+PART=C PY=/workspace/venv/bin/python bash scratchpad/gauntlet/L74/livecal/run_livecal.sh --pools P4,P5 --workers 25
+```
+
+`PART=A` names `/workspace/results/LIVECAL_A`; `PART=C` names
+`/workspace/results/LIVECAL_C`. PART permits letters, digits, `_` and `-` only.
+An explicit `LIVECAL_OUT` overrides PART. With neither set, the original
+`/workspace/results/LIVECAL` default remains. All arguments, including `--pools`,
+pass through to Python. Each pod holds its own `/workspace/cpu.lock`.
+
+Each pool has 10 x 480 = 4,800 games in the frozen manifest:
+
+| Part | Games | Workers | Estimated games/min | ETA |
+|---|---:|---:|---:|---|
+| A: P1/P2/P3 | 14,400 | 28 | 47.00 | 5 h 06 min |
+| C: P4/P5 | 9,600 | 25 | 41.96 | 3 h 49 min |
+
+Rates assume linear worker scaling from 47 games/min per 28 workers. Simultaneous
+completion is about 5 h 06 min, plus lock wait, startup and scoring; actual pool
+speeds can differ. Optional `--quick` on **both** commands reduces the parts to
+3,600/2,400 games, about 1 h 17 min / 57 min respectively. Part summaries rank
+only their selected pools and say `PART ONLY`; merge to choose across all pools.
+
+After copying the complete A and C result directories back to
+`C:/Users/benpe/ClashBot/scratchpad/gauntlet/L74/livecal/results/LIVECAL_A` and
+`.../results/LIVECAL_C`, run this on the laptop (PowerShell):
+
+```powershell
+Set-Location C:\Users\benpe\ClashBot
+icebow/.venv/Scripts/python.exe -B scratchpad/gauntlet/L74/livecal/livecal.py --merge scratchpad/gauntlet/L74/livecal/results/LIVECAL_A scratchpad/gauntlet/L74/livecal/results/LIVECAL_C --out scratchpad/gauntlet/L74/livecal/results/LIVECAL_MERGED
+```
+
+Merge reads each saved `plan.json` and `matches.jsonl`; it needs no checkpoint
+files, original live logs, network, SIM runtime, or local manifest. It writes
+`plan.json`, the union `matches.jsonl`, `score.json`, `SUMMARY.txt` and `DONE` to a
+fresh output directory. Complete coverage uses exactly the full-run scorer,
+including deterministic bootstrap intervals, summary format and `exit_code=0`.
+Use the same `--bootstrap` as a reference run when comparing scores.
+
+An arm is a checkpoint/fast group x pool, complete only after all K expected
+census/seed observations are present. Missing or partial arms are listed by
+pool/group with observed/expected counts in `score.json` and `SUMMARY.txt`;
+merge returns 1 and writes `DONE` with `exit_code=1`. No outcomes are imputed.
+Complete pools are still scored; finished arms in incomplete pools have
+descriptive rates, but those pools are excluded from ranking and no overall
+winner is named. A failed/interrupted part can contribute its flushed matches;
+unaggregated chunk files are not recovered automatically. A missing matches file
+counts as zero observations, including a plan-only directory.
+
+Identical overlapping results are deduplicated. Conflicting results, changed
+plans/truth/checkpoint identities, invalid outcomes, and mismatched pairing or
+opponent receipts fail closed. Original unsplit result directories are also
+accepted. Merge never changes input directories and refuses a reused output.
+
 Optional offline regeneration on the laptop (refreshes the frozen sample):
 
 ```powershell
@@ -180,7 +253,8 @@ scoring tests, paired scheduling, hash/receipt handling, fake-worker aggregation
 failure artifacts, optional P4, and a generated command accepted by the real
 search_s0 argument parser (`--help`, zero games). All 13 checkpoint files also
 loaded through `e1_eval.load_policy` on CPU with the same `lattice` grid; the
-receipt is `POLICY_LOAD_CHECK.json`. The 24 pytest cases pass without SIM.
+receipt is `POLICY_LOAD_CHECK.json`. The original 24 pytest cases and new
+split/merge coverage pass without SIM; current counts are in `SPLIT_VERIFICATION.json`.
 Linux shell execution and actual
 SIM games remain pod-side validation; this Windows sandbox could not start Git
 Bash (CreateFileMapping access denied). No network or live actions were taken.

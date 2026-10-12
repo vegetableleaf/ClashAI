@@ -3,3 +3,4 @@ __pycache__/
 .test_tmp/
 .test_work/
 verification_plan/
+results/

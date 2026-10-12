@@ -123,7 +123,7 @@ def prepare(truth_path, out, backup=BACKUP, root=ROOT):
     return manifest
 
 
-def schedule(manifest, k=480, seed_start=740000):
+def schedule(manifest, k=480, seed_start=740000, pools=None):
     if k < 4 or k % 4:
         raise ValueError('K must be a positive multiple of four (two censuses, two sides)')
     plan = {**manifest, 'k': k, 'seed_start': seed_start, 'jobs': []}
@@ -150,6 +150,17 @@ def schedule(manifest, k=480, seed_start=740000):
                                                  seeds=seeds[start:start+12]))
     plan['games'] = len(manifest['groups'])*len(manifest['pools'])*k
     plan['eta_hours_28_procs'] = plan['games']/47/60
+    if pools is not None:
+        selected = [p.strip() for p in pools.split(',')] if isinstance(pools, str) else list(pools)
+        available = {p['id'] for p in manifest['pools']}
+        if not selected or len(set(selected)) != len(selected) or set(selected) - available:
+            raise ValueError(f'pools must be distinct available IDs: {", ".join(sorted(available))}')
+        # Filter only after the full schedule is built. Never renumber groups or redraw assignments.
+        plan['all_pools'] = manifest['pools']
+        plan['pools'] = [p for p in manifest['pools'] if p['id'] in selected]
+        plan['jobs'] = [j for j in plan['jobs'] if j['pool'] in selected]
+        plan['games'] = sum(len(j['seeds']) for j in plan['jobs'])
+        plan['eta_hours_28_procs'] = plan['games']/47/60
     return plan
 
 
@@ -238,6 +249,54 @@ def worker():
     return S.main(args)
 
 
+def merge(directories):
+    """Read copied plans/results, with no checkpoint files or SIM runtime required.
+
+    A failed/interrupted part can contribute finished arms from its flushed matches.
+    Identical overlap is a set union; contradictory observations fail closed.
+    """
+    from score import indexed_results
+    combined, reference, full = {}, None, None
+    derived = {'k', 'seed_start', 'jobs', 'games', 'eta_hours_28_procs', 'all_pools'}
+    for directory in directories:
+        directory = Path(directory)
+        part = json.loads((directory/'plan.json').read_text(encoding='utf8'))
+        manifest = {k: v for k, v in part.items() if k not in derived}
+        manifest['pools'] = part.get('all_pools', part['pools'])
+        contract = (manifest, part['k'], part['seed_start'])
+        if reference is not None and contract != reference:
+            raise ValueError(f'incompatible experiment plans: {directory}')
+        reference = contract
+        full = schedule(manifest, part['k'], part['seed_start'])
+        selected = [p['id'] for p in part['pools']] if 'all_pools' in part else None
+        if part != schedule(manifest, part['k'], part['seed_start'], pools=selected):
+            raise ValueError(f'changed or invalid schedule: {directory}')
+        path = directory/'matches.jsonl'
+        rows = [json.loads(s) for s in path.read_text(encoding='utf8').splitlines() if s.strip()] if path.exists() else []
+        indexed_results(part, rows)  # Reject duplicates, unexpected seeds, and invalid outcomes within a part.
+        hashes = {f['path']: f['sha256'] for f in part['files']}
+        expected = {(j['pool'], j['group'], j['census'], s): j for j in part['jobs'] for s in j['seeds']}
+        for row in rows:
+            key = row['pool'], row['group'], row['census'], row['seed']
+            job = expected[key]
+            if (row.get('arm') != 'plain' or row.get('searched') != 0 or
+                    row.get('opp_gen_sha256') != hashes[job['opponent']['path']]):
+                raise ValueError(f'policy/opponent receipt mismatch: {key}')
+            if key in combined and combined[key] != row:
+                raise ValueError(f'conflicting result: {key}')
+            combined[key] = row
+    if full is None:
+        raise ValueError('merge requires at least one result directory')
+    paired = {}
+    for key, row in combined.items():
+        pair = row['pool'], row['census'], row['seed']
+        design = row['opp_gen_sha256'], row['opp_deck'], row['learner_side']
+        if pair in paired and paired[pair] != design:
+            raise ValueError(f'common random number design mismatch at {key}')
+        paired[pair] = design
+    return full, [combined[key] for key in sorted(combined)]
+
+
 def main():
     if len(sys.argv) > 1 and sys.argv[1] == '--worker':
         return worker()
@@ -252,7 +311,13 @@ def main():
     ap.add_argument('--workers', type=int, default=28)
     ap.add_argument('--bootstrap', type=int, default=2000)
     ap.add_argument('--plan-only', action='store_true')
+    ap.add_argument('--pools', help='comma-separated pool IDs; default: every available pool')
+    ap.add_argument('--merge', nargs='+', type=Path, help='score the union of copied result directories, without SIM')
     a = ap.parse_args()
+    if a.merge and (a.prepare or a.pools is not None or a.quick or a.k is not None or a.plan_only):
+        ap.error('--merge uses the saved plans; cannot combine with --prepare, --pools, --quick, --k or --plan-only')
+    if a.prepare and a.pools is not None:
+        ap.error('--pools selects run jobs, not preparation inputs')
     if a.prepare:
         m = prepare(a.truth, a.manifest.parent, a.backup)
         print(f"prepared {len(m['groups'])} arms, {len(m['pools'])} pools; {m['p4_note']}")
@@ -265,18 +330,33 @@ def main():
     try:
         if not 1 <= a.workers <= 28:
             raise ValueError('workers must be between 1 and 28')
-        manifest = json.loads(a.manifest.read_text(encoding='utf8'))
-        plan = schedule(manifest, a.k if a.k is not None else 120 if a.quick else 480)
+        if a.merge:
+            plan, rows = merge(a.merge)
+        else:
+            manifest = json.loads(a.manifest.read_text(encoding='utf8'))
+            plan = schedule(manifest, a.k if a.k is not None else 120 if a.quick else 480, pools=a.pools)
         dump(a.out/'plan.json', plan)
         if a.plan_only:
-            (a.out/'SUMMARY.txt').write_text(f"PLAN ONLY: no pool ranked; {plan['games']} games, about {plan['eta_hours_28_procs']:.2f} hours at 47 games/min.\n", encoding='utf8')
+            rate = 47*a.workers/28
+            (a.out/'SUMMARY.txt').write_text(f"PLAN ONLY: no pool ranked; {plan['games']} games, about {plan['games']/rate/60:.2f} hours at {rate:.2f} games/min ({a.workers} workers).\n", encoding='utf8')
         else:
-            run(plan, a.manifest.parent.resolve(), a.out.resolve(), a.workers)
-            from score import evaluate, summary
-            rows = [json.loads(s) for s in (a.out/'matches.jsonl').read_text().splitlines()]
-            report = evaluate(plan, rows, a.bootstrap)
+            from score import evaluate, evaluate_finished, summary
+            if a.merge:
+                with (a.out/'matches.jsonl').open('w', encoding='utf8') as f:
+                    for row in rows:
+                        f.write(json.dumps(row)+'\n')
+                report = evaluate_finished(plan, rows, a.bootstrap)
+            else:
+                run(plan, a.manifest.parent.resolve(), a.out.resolve(), a.workers)
+                rows = [json.loads(s) for s in (a.out/'matches.jsonl').read_text().splitlines()]
+                report = evaluate(plan, rows, a.bootstrap)
             dump(a.out/'score.json', report)
-            (a.out/'SUMMARY.txt').write_text(summary(report), encoding='utf8')
+            note = ''
+            if 'all_pools' in plan and len(plan['pools']) < len(plan['all_pools']):
+                note = '\nPART ONLY: ranked selected pools; merge all parts for the full experiment.\n'
+            (a.out/'SUMMARY.txt').write_text(summary(report)+note, encoding='utf8')
+            if report.get('missing_arms'):
+                return 1  # finally writes DONE with the initial nonzero rc.
         rc = 0
     except Exception as exc:
         (a.out/'SUMMARY.txt').write_text(f"FAILED: no pool can be named. {type(exc).__name__}: {exc}\nSee driver.log and chunks/*.log. No deployment.\n", encoding='utf8')

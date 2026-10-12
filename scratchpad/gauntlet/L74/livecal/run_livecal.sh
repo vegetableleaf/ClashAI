@@ -1,14 +1,18 @@
 #!/usr/bin/env bash
-# From the pod repo root: bash scratchpad/gauntlet/L74/livecal/run_livecal.sh [--quick]
+# From the pod repo root: PART=A bash scratchpad/gauntlet/L74/livecal/run_livecal.sh --pools P1,P2,P3
 set -Eeuo pipefail
 HERE=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 REPO=$(cd "$HERE/../../../.." && pwd)
-OUT=${LIVECAL_OUT:-/workspace/results/LIVECAL}
+if [[ -n ${PART:-} && ! $PART =~ ^[A-Za-z0-9_-]+$ ]]; then
+  echo 'PART must contain only letters, digits, underscores or hyphens.' >&2
+  exit 2
+fi
+OUT=${LIVECAL_OUT:-/workspace/results/LIVECAL${PART:+_$PART}}
 PY=${PY:-/workspace/venv/bin/python}
 mkdir -p "$OUT"
 # Reject reruns without touching their artifacts.
 if [[ -e "$OUT/DONE" || -e "$OUT/plan.json" || -e "$OUT/chunks" ]]; then
-  echo "Output already used: $OUT. Set LIVECAL_OUT to a fresh directory." >&2
+  echo "Output already used: $OUT. Set PART or LIVECAL_OUT to a fresh directory." >&2
   exit 2
 fi
 finish() {
