@@ -1,0 +1,59 @@
+2026-10-11, C:/Users/benpe/cb_tornado, branch l74-tornado-fix
+
+Final verification: 51 passed, 6 skipped, 22 warnings in 20.42s; exit 0.
+All tests run on CPU. No simulator, GPU training or network ran.
+Warnings: existing PyTorch norm_first/nested_tensor notice.
+Six skips: pipeline/tests/test_dataset_gen.py, absent corpus_v6 replay fixtures.
+
+Python: C:/Users/benpe/ClashBot/icebow/.venv/Scripts/python.exe (torch 2.11.0+cu128)
+Pytest argv:
+  -q -p no:cacheprovider
+  pipeline/tests/test_pending.py
+  pipeline/tests/test_tornado_driver.py
+  pipeline/tests/test_e1_pipeline_decisions.py
+  pipeline/tests/test_e1_action_delay.py
+  pipeline/tests/test_dataset_gen.py
+  pipeline/tests/test_model_gen.py
+
+Environment adaptation for the managed Windows sandbox:
+  PYTHONDONTWRITEBYTECODE=1; torch.set_num_threads(1).
+  Invoked pytest.main(argv) in Python. During this test process only, replaced
+  tempfile.mkdtemp with a UUID-named directory under the tornado artifact
+  folder created with Path.mkdir(mode=0o777), preserving inherited workspace
+  ACLs. The existing model roundtrip test otherwise fails before its first
+  assertion because Python 3.13 private temp-directory ACLs deny file writes.
+  New tests reuse the repository's memory_fixtures.tmp_path for the same reason.
+  No product behavior or existing test source was modified for this workaround.
+
+Earlier failures resolved:
+  Standard pytest temp fixture/legacy tempfile ACL errors as described above.
+  A KL positive-control test initially added a constant to every query weight;
+  LayerNorm's near-zero feature sum canceled that perturbation. Corrected the
+  test to perturb one weight and distinct card biases; no production KL change.
+
+New tests (13): inclusive extraction (0/24 ticks), >24/padded/negative/NaN ages,
+WAIT exclusion, ordinary WAIT exclusion, exact labels and deck filtering,
+shifted corpus refusal, corrupt-label refusal; known drift and KL gradients,
+optional cell head, independent ordinary anchor calculation, frozen memory /
+refinement / trunk state, default import/checkpoint/RNG parity, CPU trainer
+save/reload, held-out sample separation and no eligible checkpoint refusal;
+960-game paired plans, correct opponent temperatures and pipeline modes,
+accepted-landing telemetry, confidence intervals, candidate and failure cases,
+strict result loader, WAIT_FOR/locks/DONE shell contract.
+
+Real checkpoint schema check (CPU, no updates):
+  rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt loaded successfully.
+  checkpoint feature_version=6, source dataset feature_version=5;
+  vocabulary and grid equal. Trainable: card_q.weight, card_q.bias, card_b.weight;
+  total 8,380 parameters. Other parameters frozen.
+
+Real corpus extraction (no SIM): see local_pending.json, source hash and all
+counts/mixes. 71,708 total pending rows; Icebow 5,469 (4,809 train / 660 val).
+
+Shell limitation:
+  C:/Program Files/Git/bin/bash.exe -n run_tornado_fix.sh could not start:
+  CreateFileMapping, Win32 error 5. Static contract/review passed; Linux
+  bash -n remains the documented pod preflight. No shell execution claimed.
+
+Acceptance ledger: G1-G4 met for offline implementation / test / driver scope.
+Actual GPU fine-tuning and paired SIM results are deliberately unrun pod work.

@@ -1,0 +1,57 @@
+﻿{
+    "branch":  "l74-tornado-fix",
+    "test_result":  "51 passed, 6 skipped, 22 warnings in 20.42s",
+    "test_exit_code":  0,
+    "sim_ran":  false,
+    "gpu_training_ran":  false,
+    "files":  [
+                  {
+                      "path":  "HANDOFF.md",
+                      "sha256":  "205f6121eb114a74b835996f281777269fc1254c144de12c1744581b1d79da81"
+                  },
+                  {
+                      "path":  "pipeline/pending_states.py",
+                      "sha256":  "0ad1379f58dfe0ef7b9084669fba952f352406ebf25ae76f592791b2fc54b49c"
+                  },
+                  {
+                      "path":  "pipeline/tests/test_pending.py",
+                      "sha256":  "6e97a04ba0700b6557da9ec18f041be0f268ffbf0d6845c8ab0f37beb1ff7942"
+                  },
+                  {
+                      "path":  "pipeline/tests/test_tornado_driver.py",
+                      "sha256":  "e3fd0beef7abf932c981f586c245c15fc279b613d00a5f9863413d6ebc60f2aa"
+                  },
+                  {
+                      "path":  "pipeline/train_pending.py",
+                      "sha256":  "39fc7589e36c4a48948f99ebea90a54b643c0e6915d621b1ec10b861ee681476"
+                  },
+                  {
+                      "path":  "scratchpad/gauntlet/L74/tornado/.gitignore",
+                      "sha256":  "21715257dba019ec028ebef53384e53959d332c34c2502196a754bad494edfe5"
+                  },
+                  {
+                      "path":  "scratchpad/gauntlet/L74/tornado/GATES.md",
+                      "sha256":  "55c2b112146bdd2191085e814a3dec058381c38edffa8e801406a4e924014997"
+                  },
+                  {
+                      "path":  "scratchpad/gauntlet/L74/tornado/README.txt",
+                      "sha256":  "87d6461bf62f5c48e96a0a49e9ba1da3d9aa1cfa9437fc2b3a67bff7ea1c7983"
+                  },
+                  {
+                      "path":  "scratchpad/gauntlet/L74/tornado/TEST_RESULTS.txt",
+                      "sha256":  "2f782b030b15b4772b51a2a0f64156264ebfb94ca5aa47ce4ef785fcabc813a2"
+                  },
+                  {
+                      "path":  "scratchpad/gauntlet/L74/tornado/driver.py",
+                      "sha256":  "68d04712a2f3afcf3db332dc0a6888276cfc35bd9f74f970e630208581e5ae7f"
+                  },
+                  {
+                      "path":  "scratchpad/gauntlet/L74/tornado/local_pending.json",
+                      "sha256":  "30dcdd8d1f388e6ad968f3bc2991e234933b52a2d81a386454ae7b9d0adc6dfc"
+                  },
+                  {
+                      "path":  "scratchpad/gauntlet/L74/tornado/run_tornado_fix.sh",
+                      "sha256":  "1ad4e9167fc2875f6c9087b4a538a31990ba1b841e56c5adfc1d0fb8c8eabafe"
+                  }
+              ]
+}

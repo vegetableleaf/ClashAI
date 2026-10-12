@@ -1,3 +1,35 @@
+## 2026-10-11 - L74 learned Tornado fast-follow fix: offline implementation
+
+Owner ticket, branch `l74-tornado-fix`; changes left uncommitted for the lead.
+New `pipeline/pending_states.py` extracts source-hash-bound dataset_gen indexes
+and actual pro card/cell labels. On the unshifted public fv5 corpus: **71,708**
+fast-follow rows across all decks; **5,469 Icebow** (4,809 train / 660 validation).
+Icebow second-card shares: Skeletons 28.195%, Log 17.462%, Knight 13.622%,
+Ice Wizard 13.147%, Tornado **11.903%**, Tesla 10.459%, Rocket 2.907%, X-Bow 2.304%.
+Full extraction receipt: `scratchpad/gauntlet/L74/tornado/local_pending.json`.
+
+`pipeline/train_pending.py` trains only the card pointer (8,380 parameters on
+the real live checkpoint), optional cell parameters, pending-only pro CE,
+ordinary-state KL=100 on up to 100k train rows, and <1% top-card drift on up
+to 30k replay-held-out ordinary rows. All other state is frozen and verified.
+Only improved held-out pending CE within the drift bound is saved.
+
+**Measured offline:** 51 pytest cases passed, 6 existing corpus_v6 fixture cases
+skipped; no SIM. Real live checkpoint loads, feature 6 / dataset feature 5,
+grid and vocabulary match. Receipt, limitations and commands:
+`scratchpad/gauntlet/L74/tornado/README.txt` and `TEST_RESULTS.txt`.
+Git Bash startup is sandbox-blocked (Win32 error 5); `bash -n` remains pod preflight.
+
+**Pod only, not launched:** `run_tornado_fix.sh` waits on WAIT_FOR, then locks
+GPU/CPU; 960 games per model/opponent/mode, paired live/fixed, hard E4 T=.1 and
+old gen_v1 T=.3, pipeline ON tau delta 0 and OFF; 7,680 games total. Candidate
+requires Tornado <=2x pros plus paired win-CI lower bound >-3 pp with pipelining,
+and ordinary non-inferiority, independently against both opponents. Default
+result `/workspace/results/wk/TORNADO/SUMMARY.txt` + DONE. Bait has no Tornado;
+optional generalist-base bait experiment is supported and documented.
+No trained-model performance claim, network, deployment, runtime default,
+live process, or Git commit changed.
+
 ## 2026-10-11 - L74 match memory: Phase A offline implementation
 
 Owner ticket on branch `l74-match-memory`: shared public event builder across SIM,
