@@ -1,0 +1,30 @@
+Source -> pod repo-relative destination | bytes | SHA256
+C:\Users\benpe\ClashBot\icebow\data\bench\rl_royale\rseries_r1e31\rseries_r1e31_u0155.pt -> icebow/data/bench/rl_royale/rseries_r1e31/rseries_r1e31_u0155.pt | 18336318 | 76fdfaacbd9c2049cc88792278f06e3f73a56eaf9653791e922d9332dd6751cd
+C:\Users\benpe\ClashBot\icebow\data\bench\development_iteration_5_20261005\tower_spatial_v7\candidate.pt -> icebow/data/bench/development_iteration_5_20261005/tower_spatial_v7/candidate.pt | 18511947 | 2feffe4f0990d93721ceb0b6661338f52e7f935e85b80e29535ea713ad6569a0
+C:\Users\benpe\ClashBot\icebow\data\bench\rl_royale\rseries_r2l\rseries_r2l_u0120.pt -> icebow/data/bench/rl_royale/rseries_r2l/rseries_r2l_u0120.pt | 18331904 | 16305cc7f8221c318b14e6181df80dd4fde5eac9f3d8a8b6b7bbeb2d9574899b
+C:\Users\benpe\ClashBot\icebow\data\bench\rl_royale\rseries_r3c\rseries_r3c_u0030_barrel2k_cellref.pt -> icebow/data/bench/rl_royale/rseries_r3c/rseries_r3c_u0030_barrel2k_cellref.pt | 28172029 | e7359f2b173ee65f9656d6f5e25a097e365d7812c5f2ef63febbbf47ddbb5e3b
+C:\Users\benpe\ClashBot\icebow\data\bench\rl_royale\rseries_r3c\rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt -> icebow/data/bench/rl_royale/rseries_r3c/rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt | 28552552 | 41b52a8375483f7c3350b1837a3432f354e34304e87da8fa6fe508d7160fe6d8
+C:\Users\benpe\ClashBot\icebow\data\bench\rl_royale\rdef_e4\rdef_e4_u0020_barrel2k_cellref_towerref_w2.pt -> icebow/data/bench/rl_royale/rdef_e4/rdef_e4_u0020_barrel2k_cellref_towerref_w2.pt | 28768563 | 430faaee52d9aebc788a780cc6a5977d25e7c7126ae4abd9726829dc2751062a
+C:\Users\benpe\ClashBot\icebow\data\bench\rl_royale\adapt_fix\adapt_fixed.pt -> icebow/data/bench/rl_royale/adapt_fix/adapt_fixed.pt | 7093297 | 9723b7eb9611502a54e970c02dbedb1f9c7e2534691b1520db76c59284aabba6
+C:\Users\benpe\ClashBot\icebow\data\bench\rl_royale\adapt_fix\adapt_alone.pt -> icebow/data/bench/rl_royale/adapt_fix/adapt_alone.pt | 19540245 | ab5a5383108a2bf65a6f31473137f4d49f665f1232f7c4f9032220f77551faa8
+C:\Users\benpe\ClashBot\icebow\data\pipeline\gen_v1_s0\gen_s0.pt -> icebow/data/pipeline/gen_v1_s0/gen_s0.pt | 5398413 | 05db85a0a141126223a892787aacc13f291de24a2adeab5c5875531094ce6c53
+C:\Users\benpe\pod_backup_weekend\pod3\x_ADAPT\wk_adapt\icebow\data\bench\rl_royale\wk_adapt_main\wk_adapt_main_latest.pt -> icebow/data/bench/rl_royale/wk_adapt_main/wk_adapt_main_latest.pt | 18691098 | 55c8f49e8ed39a474cf9d1d8a95d0f40d7a10dd7c5db955d32a079448f96b60b
+C:\Users\benpe\pod_backup_weekend\pod3\x_ADAPT\wk_adapt\icebow\data\bench\rl_royale\wk_adapt_exp1\wk_adapt_exp1_latest.pt -> icebow/data/bench/rl_royale/wk_adapt_exp1/wk_adapt_exp1_latest.pt | 18694401 | 733dd2fb1c5a760ffd4679805ed21ad5ff6805689b3270c07555467629ac6dc5
+C:\Users\benpe\pod_backup_weekend\pod3\x_ADAPT\wk_adapt\icebow\data\bench\rl_royale\wk_adapt_exp2\wk_adapt_exp2_latest.pt -> icebow/data/bench/rl_royale/wk_adapt_exp2/wk_adapt_exp2_latest.pt | 18694401 | 1f69813e2c7b609082774dd3eff38389cb0d6a3191b9cec7d4a412f878e4bc79
+C:\Users\benpe\pod_backup_weekend\pod3\x_ADAPT\wk_adapt\icebow\data\bench\rl_royale\wk_adapt_exp3\wk_adapt_exp3_latest.pt -> icebow/data/bench/rl_royale/wk_adapt_exp3/wk_adapt_exp3_latest.pt | 18694401 | 2e7db358c96317c45bd68d873896f80d4182a55722b6689be74211a210b83939
+Total checkpoint bytes: 247479569
+
+Also copy the new livecal directory and use the existing full repo + installed Royale runtime.
+Pinned runtime support files (repo-relative path | bytes | SHA256):
+pipeline/search_s0.py | 53829 | bba614506c307939e89bc4022a21559c1a01726c624143eed655ca899045bdc2
+pipeline/e1_eval.py | 128949 | d705a219b58ed8c4f8c174d01c9a0d488135a3f44b750545fd778aaba1336634
+pipeline/royale_env.py | 37415 | 10e9ed57b4464fa8f55b0218b61feabe5cabfb586f7435287c2cf2bad00580a4
+pipeline/rl_royale.py | 184468 | b6d7515e6f67dc33667c13fcdd2fa6942b0b1e636777084d4f79b4ed44ff8319
+pipeline/decision_options.py | 113330 | 80bcc86046d9b6487de4b1dd4b71f08f6af9e3025a9d7656c15901829b61e476
+pipeline/obs_contract.py | 37399 | 910a7133a29ea7de8bb7a8776ef0ad16b056eb511709722934aabd0864eb6f5d
+pipeline/public_observation.py | 12542 | 50778418de5903875a5bec62cfe58cd442a1ec4ed641dbd3db00c7f225be2734
+pipeline/extrapolate.py | 32937 | e496f1e0c85aa2123e733f674cde49df3d4ed4bc653f02132b880b23c5545509
+pipeline/model_gen.py | 18736 | 37b9913369b863bcf0d00c5f8ff50f5352365bdede960c0838eecbad660b569d
+pipeline/dataset_gen.py | 30206 | 62551c4796e718a418e0a5db82de06ae4bcc84103db703b3c1346d020ee93b6d
+scratchpad/gauntlet/L70/abilities/ability_policy.py | 3930 | 657bca5b807f16b4df7516d80c4a22f892458229eabe6f3b48a31ab4f846c697
+scratchpad/gauntlet/L70/abilities/ability_models_v2.json | 141235 | 4ab666438e19db4df1577f2e963f408ef1fd10980f25ba726f426530f0210b1f

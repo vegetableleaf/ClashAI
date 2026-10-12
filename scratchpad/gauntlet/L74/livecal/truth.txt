@@ -1,0 +1,26 @@
+Main-account Icebow; wins / all selected matches; 95% Wilson CI.
+Missing pipeline_decisions is fast-off (phase_stats convention); recorded-count is retained in JSON.
+Group | checkpoint | fast | era | n | W/L/D | win % [95% CI] | bytes verified
+5852f0fe0701 | rseries_r1e31_u0155.pt | False | 6d80df0e95 | 188 | 95/93/0 | 50.5 [43.4, 57.6] | True
+16fd7e6ad3f9 | rseries_r1e31_u0155.pt | False | 0bc5dd76dc | 117 | 54/62/1 | 46.2 [37.4, 55.2] | True
+bb4d3657be62 | rseries_r3c_u0030_barrel2k_cellref.pt | False | 0357839d74 | 77 | 42/35/0 | 54.5 [43.5, 65.2] | True
+09d7f25c0324 | rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt | False | 79d431f779 | 41 | 22/19/0 | 53.7 [38.7, 67.9] | True
+5aad386d155c | rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt | False | 312a058d3a | 87 | 43/44/0 | 49.4 [39.2, 59.7] | True
+355b28de2f77 | rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt | False | 693546eeec | 127 | 73/54/0 | 57.5 [48.8, 65.7] | True
+07105d42ec50 | rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt | True | 693546eeec | 98 | 46/52/0 | 46.9 [37.4, 56.7] | True
+a598c0514ed4 | adapt_fixed.pt | True | 693546eeec | 46 | 20/26/0 | 43.5 [30.2, 57.8] | True
+6c046cde3a19 | adapt_alone.pt | True | 693546eeec | 24 | 10/14/0 | 41.7 [24.5, 61.2] | True (small n; report only)
+372f4ea72e1a | adapt_alone.pt | False | 693546eeec | 11 | 7/4/0 | 63.6 [35.4, 84.8] | True (small n; report only)
+Accepted: 1042; exclusions: {'no_public_decisions': 694, 'other_account_tower_signature': 487, 'no_xbow_in_own_hand': 3, 'no_end_event': 3}
+
+Descriptive family totals (mixed eras):
+rseries_r1e31_u0155 fast=False: 149/155/1, n=305, 48.9% [43.3, 54.4]
+candidate fast=False: 5/10/0, n=15, 33.3% [15.2, 58.3]
+rseries_r2l_u0120 fast=False: 3/3/0, n=6, 50.0% [18.8, 81.2]
+rseries_r3c_u0030_barrel2k_cellref fast=False: 54/44/1, n=99, 54.5% [44.8, 64.0]
+old fast=False: 218/181/1, n=400, 54.5% [49.6, 59.3]
+E4 fast=False: 16/22/0, n=38, 42.1% [27.9, 57.8]
+old fast=True: 46/52/0, n=98, 46.9% [37.4, 56.7]
+adapt_fixed fast=True: 20/26/0, n=46, 43.5% [30.2, 57.8]
+adapt_alone fast=True: 10/14/0, n=24, 41.7% [24.5, 61.2]
+adapt_alone fast=False: 7/4/0, n=11, 63.6% [35.4, 84.8]

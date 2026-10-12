@@ -1,0 +1,3045 @@
+{
+  "schema": 1,
+  "truth_sha256": "a514afeb903ede6eaa6a25e39f7b0e27bc9d14123c93bc64b54bfaeb67807396",
+  "groups": [
+    {
+      "id": "g00",
+      "checkpoint": "icebow/data/bench/rl_royale/rseries_r1e31/rseries_r1e31_u0155.pt",
+      "checkpoint_sha256": "76fdfaacbd9c2049cc88792278f06e3f73a56eaf9653791e922d9332dd6751cd",
+      "family": "rseries_r1e31_u0155",
+      "fast": false,
+      "n": 305,
+      "wins": 149,
+      "losses": 155,
+      "draws": 1,
+      "eras": [
+        {
+          "id": "5852f0fe0701",
+          "era": "6d80df0e95",
+          "n": 188,
+          "wins": 95,
+          "losses": 93,
+          "draws": 0,
+          "mismatches": {
+            "xbow_class": {
+              "live": "not recorded",
+              "sim": "class_sample"
+            },
+            "xbow_class_floor": {
+              "live": "not recorded",
+              "sim": 0.3
+            },
+            "tau_phase": {
+              "live": "not recorded",
+              "sim": [
+                0.35,
+                0.45,
+                0.55
+              ]
+            },
+            "spell_aim": {
+              "live": "argmax",
+              "sim": "rocket_area"
+            },
+            "gate_decode": {
+              "live": "not recorded",
+              "sim": "hazard_below_tau"
+            },
+            "gate_hazard_min_elixir": {
+              "live": "not recorded",
+              "sim": 9
+            },
+            "log_aim": {
+              "live": "not recorded",
+              "sim": "log_barrel"
+            },
+            "lethal_rocket": {
+              "live": "not recorded",
+              "sim": "ot_behind"
+            },
+            "xbow_dead_lane": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "gate_hazard_threatened": {
+              "live": "not recorded",
+              "sim": 2
+            },
+            "rocket_dead_target": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "tau_threatened": {
+              "live": "not recorded",
+              "sim": 0.2
+            },
+            "lethal_log": {
+              "live": "not recorded",
+              "sim": "on"
+            }
+          },
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 26,
+            "opp_counter": true,
+            "anti_leak": false,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "argmax"
+            },
+            "feature_version": 4
+          }
+        },
+        {
+          "id": "16fd7e6ad3f9",
+          "era": "0bc5dd76dc",
+          "n": 117,
+          "wins": 54,
+          "losses": 62,
+          "draws": 1,
+          "mismatches": {
+            "xbow_class": {
+              "live": "argmax",
+              "sim": "class_sample"
+            },
+            "xbow_class_floor": {
+              "live": 0.2,
+              "sim": 0.3
+            },
+            "tau_phase": {
+              "live": null,
+              "sim": [
+                0.35,
+                0.45,
+                0.55
+              ]
+            },
+            "spell_aim": {
+              "live": "argmax",
+              "sim": "rocket_area"
+            },
+            "gate_decode": {
+              "live": "not recorded",
+              "sim": "hazard_below_tau"
+            },
+            "gate_hazard_min_elixir": {
+              "live": "not recorded",
+              "sim": 9
+            },
+            "log_aim": {
+              "live": "not recorded",
+              "sim": "log_barrel"
+            },
+            "lethal_rocket": {
+              "live": "not recorded",
+              "sim": "ot_behind"
+            },
+            "xbow_dead_lane": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "gate_hazard_threatened": {
+              "live": "not recorded",
+              "sim": 2
+            },
+            "rocket_dead_target": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "tau_threatened": {
+              "live": "not recorded",
+              "sim": 0.2
+            },
+            "lethal_log": {
+              "live": "not recorded",
+              "sim": "on"
+            }
+          },
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 26,
+            "opp_counter": true,
+            "anti_leak": false,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "argmax",
+              "tau_phase": null,
+              "xbow_class": "argmax",
+              "xbow_class_floor": 0.2
+            },
+            "feature_version": 4
+          }
+        }
+      ],
+      "win_rate": 0.4885245901639344,
+      "ci95": [
+        0.4329172886724588,
+        0.5444173709070795
+      ],
+      "reportable": true
+    },
+    {
+      "id": "g01",
+      "checkpoint": "icebow/data/bench/development_iteration_5_20261005/tower_spatial_v7/candidate.pt",
+      "checkpoint_sha256": "2feffe4f0990d93721ceb0b6661338f52e7f935e85b80e29535ea713ad6569a0",
+      "family": "candidate",
+      "fast": false,
+      "n": 15,
+      "wins": 5,
+      "losses": 10,
+      "draws": 0,
+      "eras": [
+        {
+          "id": "534747d76733",
+          "era": "8f50712ca6",
+          "n": 15,
+          "wins": 5,
+          "losses": 10,
+          "draws": 0,
+          "mismatches": {
+            "xbow_class": {
+              "live": "not recorded",
+              "sim": "class_sample"
+            },
+            "xbow_class_floor": {
+              "live": "not recorded",
+              "sim": 0.3
+            },
+            "tau_phase": {
+              "live": "not recorded",
+              "sim": [
+                0.35,
+                0.45,
+                0.55
+              ]
+            },
+            "spell_aim": {
+              "live": "argmax",
+              "sim": "rocket_area"
+            },
+            "gate_decode": {
+              "live": "not recorded",
+              "sim": "hazard_below_tau"
+            },
+            "gate_hazard_min_elixir": {
+              "live": "not recorded",
+              "sim": 9
+            },
+            "log_aim": {
+              "live": "not recorded",
+              "sim": "log_barrel"
+            },
+            "lethal_rocket": {
+              "live": "not recorded",
+              "sim": "ot_behind"
+            },
+            "xbow_dead_lane": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "gate_hazard_threatened": {
+              "live": "not recorded",
+              "sim": 2
+            },
+            "rocket_dead_target": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "tau_threatened": {
+              "live": "not recorded",
+              "sim": 0.2
+            },
+            "lethal_log": {
+              "live": "not recorded",
+              "sim": "on"
+            }
+          },
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 26,
+            "opp_counter": true,
+            "anti_leak": false,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "argmax"
+            },
+            "feature_version": 7
+          }
+        }
+      ],
+      "win_rate": 0.3333333333333333,
+      "ci95": [
+        0.15176100694691236,
+        0.5828687484878701
+      ],
+      "reportable": false
+    },
+    {
+      "id": "g02",
+      "checkpoint": "icebow/data/bench/rl_royale/rseries_r2l/rseries_r2l_u0120.pt",
+      "checkpoint_sha256": "16305cc7f8221c318b14e6181df80dd4fde5eac9f3d8a8b6b7bbeb2d9574899b",
+      "family": "rseries_r2l_u0120",
+      "fast": false,
+      "n": 6,
+      "wins": 3,
+      "losses": 3,
+      "draws": 0,
+      "eras": [
+        {
+          "id": "b874cf5288c0",
+          "era": "eac33a0a87",
+          "n": 6,
+          "wins": 3,
+          "losses": 3,
+          "draws": 0,
+          "mismatches": {
+            "xbow_class": {
+              "live": "argmax",
+              "sim": "class_sample"
+            },
+            "xbow_class_floor": {
+              "live": 0.2,
+              "sim": 0.3
+            },
+            "tau_phase": {
+              "live": null,
+              "sim": [
+                0.35,
+                0.45,
+                0.55
+              ]
+            },
+            "spell_aim": {
+              "live": "argmax",
+              "sim": "rocket_area"
+            },
+            "gate_decode": {
+              "live": "not recorded",
+              "sim": "hazard_below_tau"
+            },
+            "gate_hazard_min_elixir": {
+              "live": "not recorded",
+              "sim": 9
+            },
+            "log_aim": {
+              "live": "not recorded",
+              "sim": "log_barrel"
+            },
+            "lethal_rocket": {
+              "live": "not recorded",
+              "sim": "ot_behind"
+            },
+            "xbow_dead_lane": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "gate_hazard_threatened": {
+              "live": "not recorded",
+              "sim": 2
+            },
+            "rocket_dead_target": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "tau_threatened": {
+              "live": "not recorded",
+              "sim": 0.2
+            },
+            "lethal_log": {
+              "live": "not recorded",
+              "sim": "on"
+            }
+          },
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 26,
+            "opp_counter": true,
+            "anti_leak": false,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "argmax",
+              "tau_phase": null,
+              "xbow_class": "argmax",
+              "xbow_class_floor": 0.2
+            },
+            "feature_version": 5
+          }
+        }
+      ],
+      "win_rate": 0.5,
+      "ci95": [
+        0.18761280689940868,
+        0.8123871931005913
+      ],
+      "reportable": false
+    },
+    {
+      "id": "g03",
+      "checkpoint": "icebow/data/bench/rl_royale/rseries_r3c/rseries_r3c_u0030_barrel2k_cellref.pt",
+      "checkpoint_sha256": "e7359f2b173ee65f9656d6f5e25a097e365d7812c5f2ef63febbbf47ddbb5e3b",
+      "family": "rseries_r3c_u0030_barrel2k_cellref",
+      "fast": false,
+      "n": 99,
+      "wins": 54,
+      "losses": 44,
+      "draws": 1,
+      "eras": [
+        {
+          "id": "bb4d3657be62",
+          "era": "0357839d74",
+          "n": 77,
+          "wins": 42,
+          "losses": 35,
+          "draws": 0,
+          "mismatches": {
+            "spell_aim": {
+              "live": "argmax",
+              "sim": "rocket_area"
+            },
+            "gate_decode": {
+              "live": "not recorded",
+              "sim": "hazard_below_tau"
+            },
+            "gate_hazard_min_elixir": {
+              "live": "not recorded",
+              "sim": 9
+            },
+            "log_aim": {
+              "live": "not recorded",
+              "sim": "log_barrel"
+            },
+            "lethal_rocket": {
+              "live": "not recorded",
+              "sim": "ot_behind"
+            },
+            "xbow_dead_lane": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "gate_hazard_threatened": {
+              "live": "not recorded",
+              "sim": 2
+            },
+            "rocket_dead_target": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "tau_threatened": {
+              "live": "not recorded",
+              "sim": 0.2
+            },
+            "lethal_log": {
+              "live": "not recorded",
+              "sim": "on"
+            }
+          },
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 26,
+            "opp_counter": true,
+            "anti_leak": true,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "argmax",
+              "tau_phase": [
+                0.35,
+                0.45,
+                0.55
+              ],
+              "xbow_class": "class_sample",
+              "xbow_class_floor": 0.3
+            },
+            "feature_version": 6
+          }
+        },
+        {
+          "id": "af824000c14b",
+          "era": "a620e96e0a",
+          "n": 10,
+          "wins": 5,
+          "losses": 5,
+          "draws": 0,
+          "mismatches": {
+            "spell_aim": {
+              "live": "argmax",
+              "sim": "rocket_area"
+            },
+            "gate_decode": {
+              "live": "not recorded",
+              "sim": "hazard_below_tau"
+            },
+            "gate_hazard_min_elixir": {
+              "live": "not recorded",
+              "sim": 9
+            },
+            "log_aim": {
+              "live": "not recorded",
+              "sim": "log_barrel"
+            },
+            "lethal_rocket": {
+              "live": "not recorded",
+              "sim": "ot_behind"
+            },
+            "xbow_dead_lane": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "gate_hazard_threatened": {
+              "live": "not recorded",
+              "sim": 2
+            },
+            "rocket_dead_target": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "tau_threatened": {
+              "live": "not recorded",
+              "sim": 0.2
+            },
+            "lethal_log": {
+              "live": "not recorded",
+              "sim": "on"
+            }
+          },
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 26,
+            "opp_counter": true,
+            "anti_leak": false,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "argmax",
+              "tau_phase": [
+                0.35,
+                0.45,
+                0.55
+              ],
+              "xbow_class": "class_sample",
+              "xbow_class_floor": 0.3
+            },
+            "feature_version": 6
+          }
+        },
+        {
+          "id": "a99c9050ac89",
+          "era": "f372ac7ab6",
+          "n": 5,
+          "wins": 3,
+          "losses": 2,
+          "draws": 0,
+          "mismatches": {
+            "gate_decode": {
+              "live": "not recorded",
+              "sim": "hazard_below_tau"
+            },
+            "gate_hazard_min_elixir": {
+              "live": "not recorded",
+              "sim": 9
+            },
+            "log_aim": {
+              "live": "not recorded",
+              "sim": "log_barrel"
+            },
+            "lethal_rocket": {
+              "live": "not recorded",
+              "sim": "ot_behind"
+            },
+            "xbow_dead_lane": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "gate_hazard_threatened": {
+              "live": "not recorded",
+              "sim": 2
+            },
+            "rocket_dead_target": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "tau_threatened": {
+              "live": "not recorded",
+              "sim": 0.2
+            },
+            "lethal_log": {
+              "live": "not recorded",
+              "sim": "on"
+            }
+          },
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 26,
+            "opp_counter": true,
+            "anti_leak": false,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "rocket_area",
+              "tau_phase": [
+                0.35,
+                0.45,
+                0.55
+              ],
+              "xbow_class": "class_sample",
+              "xbow_class_floor": 0.3
+            },
+            "feature_version": 6
+          }
+        },
+        {
+          "id": "2ce962c821d9",
+          "era": "5e9b864d3f",
+          "n": 1,
+          "wins": 0,
+          "losses": 0,
+          "draws": 1,
+          "mismatches": {
+            "xbow_class": {
+              "live": "argmax",
+              "sim": "class_sample"
+            },
+            "xbow_class_floor": {
+              "live": 0.2,
+              "sim": 0.3
+            },
+            "tau_phase": {
+              "live": null,
+              "sim": [
+                0.35,
+                0.45,
+                0.55
+              ]
+            },
+            "spell_aim": {
+              "live": "argmax",
+              "sim": "rocket_area"
+            },
+            "gate_decode": {
+              "live": "not recorded",
+              "sim": "hazard_below_tau"
+            },
+            "gate_hazard_min_elixir": {
+              "live": "not recorded",
+              "sim": 9
+            },
+            "log_aim": {
+              "live": "not recorded",
+              "sim": "log_barrel"
+            },
+            "lethal_rocket": {
+              "live": "not recorded",
+              "sim": "ot_behind"
+            },
+            "xbow_dead_lane": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "gate_hazard_threatened": {
+              "live": "not recorded",
+              "sim": 2
+            },
+            "rocket_dead_target": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "tau_threatened": {
+              "live": "not recorded",
+              "sim": 0.2
+            },
+            "lethal_log": {
+              "live": "not recorded",
+              "sim": "on"
+            }
+          },
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 26,
+            "opp_counter": true,
+            "anti_leak": false,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "argmax",
+              "tau_phase": null,
+              "xbow_class": "argmax",
+              "xbow_class_floor": 0.2
+            },
+            "feature_version": 6
+          }
+        },
+        {
+          "id": "a656befa70f0",
+          "era": "108fb49662",
+          "n": 4,
+          "wins": 3,
+          "losses": 1,
+          "draws": 0,
+          "mismatches": {
+            "gate_decode": {
+              "live": "not recorded",
+              "sim": "hazard_below_tau"
+            },
+            "gate_hazard_min_elixir": {
+              "live": "not recorded",
+              "sim": 9
+            },
+            "log_aim": {
+              "live": "argmax",
+              "sim": "log_barrel"
+            },
+            "lethal_rocket": {
+              "live": "not recorded",
+              "sim": "ot_behind"
+            },
+            "xbow_dead_lane": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "gate_hazard_threatened": {
+              "live": "not recorded",
+              "sim": 2
+            },
+            "rocket_dead_target": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "tau_threatened": {
+              "live": "not recorded",
+              "sim": 0.2
+            },
+            "lethal_log": {
+              "live": "not recorded",
+              "sim": "on"
+            }
+          },
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 26,
+            "opp_counter": true,
+            "anti_leak": false,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "rocket_area",
+              "tau_phase": [
+                0.35,
+                0.45,
+                0.55
+              ],
+              "xbow_class": "class_sample",
+              "xbow_class_floor": 0.3,
+              "log_aim": "argmax"
+            },
+            "feature_version": 6
+          }
+        },
+        {
+          "id": "a21bdb6a4f6e",
+          "era": "f373177491",
+          "n": 2,
+          "wins": 1,
+          "losses": 1,
+          "draws": 0,
+          "mismatches": {
+            "gate_decode": {
+              "live": "not recorded",
+              "sim": "hazard_below_tau"
+            },
+            "gate_hazard_min_elixir": {
+              "live": "not recorded",
+              "sim": 9
+            },
+            "log_aim": {
+              "live": "argmax",
+              "sim": "log_barrel"
+            },
+            "lethal_rocket": {
+              "live": "not recorded",
+              "sim": "ot_behind"
+            },
+            "xbow_dead_lane": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "gate_hazard_threatened": {
+              "live": "not recorded",
+              "sim": 2
+            },
+            "rocket_dead_target": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "tau_threatened": {
+              "live": "not recorded",
+              "sim": 0.2
+            },
+            "lethal_log": {
+              "live": "not recorded",
+              "sim": "on"
+            }
+          },
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 26,
+            "opp_counter": true,
+            "anti_leak": false,
+            "own_effects": true,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "rocket_area",
+              "tau_phase": [
+                0.35,
+                0.45,
+                0.55
+              ],
+              "xbow_class": "class_sample",
+              "xbow_class_floor": 0.3,
+              "log_aim": "argmax"
+            },
+            "feature_version": 6
+          }
+        }
+      ],
+      "win_rate": 0.5454545454545454,
+      "ci95": [
+        0.44750518311955134,
+        0.6400080411009974
+      ],
+      "reportable": true
+    },
+    {
+      "id": "g04",
+      "checkpoint": "icebow/data/bench/rl_royale/rseries_r3c/rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt",
+      "checkpoint_sha256": "41b52a8375483f7c3350b1837a3432f354e34304e87da8fa6fe508d7160fe6d8",
+      "family": "old",
+      "fast": false,
+      "n": 400,
+      "wins": 218,
+      "losses": 181,
+      "draws": 1,
+      "eras": [
+        {
+          "id": "d09778590103",
+          "era": "f373177491",
+          "n": 15,
+          "wins": 6,
+          "losses": 9,
+          "draws": 0,
+          "mismatches": {
+            "gate_decode": {
+              "live": "not recorded",
+              "sim": "hazard_below_tau"
+            },
+            "gate_hazard_min_elixir": {
+              "live": "not recorded",
+              "sim": 9
+            },
+            "log_aim": {
+              "live": "argmax",
+              "sim": "log_barrel"
+            },
+            "lethal_rocket": {
+              "live": "not recorded",
+              "sim": "ot_behind"
+            },
+            "xbow_dead_lane": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "gate_hazard_threatened": {
+              "live": "not recorded",
+              "sim": 2
+            },
+            "rocket_dead_target": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "tau_threatened": {
+              "live": "not recorded",
+              "sim": 0.2
+            },
+            "lethal_log": {
+              "live": "not recorded",
+              "sim": "on"
+            }
+          },
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 26,
+            "opp_counter": true,
+            "anti_leak": false,
+            "own_effects": true,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "rocket_area",
+              "tau_phase": [
+                0.35,
+                0.45,
+                0.55
+              ],
+              "xbow_class": "class_sample",
+              "xbow_class_floor": 0.3,
+              "log_aim": "argmax"
+            },
+            "feature_version": 6
+          }
+        },
+        {
+          "id": "5c6ac617c122",
+          "era": "e79cec0948",
+          "n": 9,
+          "wins": 6,
+          "losses": 3,
+          "draws": 0,
+          "mismatches": {
+            "gate_decode": {
+              "live": "threshold",
+              "sim": "hazard_below_tau"
+            },
+            "gate_hazard_min_elixir": {
+              "live": 0.0,
+              "sim": 9
+            },
+            "log_aim": {
+              "live": "argmax",
+              "sim": "log_barrel"
+            },
+            "lethal_rocket": {
+              "live": "not recorded",
+              "sim": "ot_behind"
+            },
+            "xbow_dead_lane": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "gate_hazard_threatened": {
+              "live": "not recorded",
+              "sim": 2
+            },
+            "rocket_dead_target": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "tau_threatened": {
+              "live": "not recorded",
+              "sim": 0.2
+            },
+            "lethal_log": {
+              "live": "not recorded",
+              "sim": "on"
+            }
+          },
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0,
+            "gate_hazard_quiet": false
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 26,
+            "opp_counter": true,
+            "anti_leak": false,
+            "own_effects": true,
+            "iw_press_pstar": null,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "rocket_area",
+              "tau_phase": [
+                0.35,
+                0.45,
+                0.55
+              ],
+              "xbow_class": "class_sample",
+              "xbow_class_floor": 0.3,
+              "log_aim": "argmax",
+              "gate_decode": "threshold",
+              "gate_hazard_min_elixir": 0.0,
+              "gate_hazard_quiet": false
+            },
+            "feature_version": 6
+          }
+        },
+        {
+          "id": "74f7488acd10",
+          "era": "495b89ef3c",
+          "n": 17,
+          "wins": 10,
+          "losses": 7,
+          "draws": 0,
+          "mismatches": {
+            "lethal_rocket": {
+              "live": "ot",
+              "sim": "ot_behind"
+            },
+            "xbow_dead_lane": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "gate_hazard_threatened": {
+              "live": "not recorded",
+              "sim": 2
+            },
+            "rocket_dead_target": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "tau_threatened": {
+              "live": "not recorded",
+              "sim": 0.2
+            },
+            "lethal_log": {
+              "live": "not recorded",
+              "sim": "on"
+            }
+          },
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0,
+            "gate_hazard_quiet": false
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 26,
+            "opp_counter": true,
+            "anti_leak": false,
+            "own_effects": true,
+            "iw_press_pstar": 0.03,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "rocket_area",
+              "tau_phase": [
+                0.35,
+                0.45,
+                0.55
+              ],
+              "xbow_class": "class_sample",
+              "xbow_class_floor": 0.3,
+              "log_aim": "log_barrel",
+              "gate_decode": "hazard_below_tau",
+              "gate_hazard_min_elixir": 9.0,
+              "gate_hazard_quiet": false,
+              "lethal_rocket": "ot"
+            },
+            "feature_version": 6
+          }
+        },
+        {
+          "id": "95ddad57d821",
+          "era": "a37f9ea425",
+          "n": 5,
+          "wins": 2,
+          "losses": 3,
+          "draws": 0,
+          "mismatches": {
+            "lethal_rocket": {
+              "live": "ot",
+              "sim": "ot_behind"
+            },
+            "xbow_dead_lane": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "gate_hazard_threatened": {
+              "live": "not recorded",
+              "sim": 2
+            },
+            "rocket_dead_target": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "tau_threatened": {
+              "live": "not recorded",
+              "sim": 0.2
+            },
+            "lethal_log": {
+              "live": "not recorded",
+              "sim": "on"
+            }
+          },
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0,
+            "gate_hazard_quiet": false
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 26,
+            "opp_counter": true,
+            "anti_leak": false,
+            "own_effects": true,
+            "fast_input": true,
+            "tap_gap_ms": 50,
+            "iw_press_pstar": 0.03,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "rocket_area",
+              "tau_phase": [
+                0.35,
+                0.45,
+                0.55
+              ],
+              "xbow_class": "class_sample",
+              "xbow_class_floor": 0.3,
+              "log_aim": "log_barrel",
+              "gate_decode": "hazard_below_tau",
+              "gate_hazard_min_elixir": 9.0,
+              "gate_hazard_quiet": false,
+              "lethal_rocket": "ot"
+            },
+            "feature_version": 6
+          }
+        },
+        {
+          "id": "ed5baa6f0851",
+          "era": "abdd755727",
+          "n": 5,
+          "wins": 2,
+          "losses": 3,
+          "draws": 0,
+          "mismatches": {
+            "lethal_rocket": {
+              "live": "ot",
+              "sim": "ot_behind"
+            },
+            "xbow_dead_lane": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "gate_hazard_threatened": {
+              "live": "not recorded",
+              "sim": 2
+            },
+            "rocket_dead_target": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "tau_threatened": {
+              "live": "not recorded",
+              "sim": 0.2
+            },
+            "lethal_log": {
+              "live": "not recorded",
+              "sim": "on"
+            }
+          },
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0,
+            "gate_hazard_quiet": false
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 26,
+            "opp_counter": true,
+            "anti_leak": false,
+            "own_effects": true,
+            "fast_input": true,
+            "tap_gap_ms": 0,
+            "iw_press_pstar": 0.03,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "rocket_area",
+              "tau_phase": [
+                0.35,
+                0.45,
+                0.55
+              ],
+              "xbow_class": "class_sample",
+              "xbow_class_floor": 0.3,
+              "log_aim": "log_barrel",
+              "gate_decode": "hazard_below_tau",
+              "gate_hazard_min_elixir": 9.0,
+              "gate_hazard_quiet": false,
+              "lethal_rocket": "ot"
+            },
+            "feature_version": 6
+          }
+        },
+        {
+          "id": "9929c56a5fe8",
+          "era": "e493794f21",
+          "n": 21,
+          "wins": 11,
+          "losses": 10,
+          "draws": 0,
+          "mismatches": {
+            "gate_hazard_threatened": {
+              "live": "not recorded",
+              "sim": 2
+            },
+            "rocket_dead_target": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "tau_threatened": {
+              "live": "not recorded",
+              "sim": 0.2
+            },
+            "lethal_log": {
+              "live": "not recorded",
+              "sim": "on"
+            }
+          },
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0,
+            "gate_hazard_quiet": false
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 24,
+            "opp_counter": true,
+            "anti_leak": false,
+            "own_effects": true,
+            "afford_ticks": 23,
+            "early_release_margin": null,
+            "fast_input": true,
+            "tap_gap_ms": 0,
+            "hero_ability_spec": "off",
+            "iw_press_pstar": 0.03,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "rocket_area",
+              "tau_phase": [
+                0.35,
+                0.45,
+                0.55
+              ],
+              "xbow_class": "class_sample",
+              "xbow_class_floor": 0.3,
+              "log_aim": "log_barrel",
+              "gate_decode": "hazard_below_tau",
+              "gate_hazard_min_elixir": 9.0,
+              "gate_hazard_quiet": false,
+              "lethal_rocket": "ot_behind",
+              "xbow_dead_lane": "block"
+            },
+            "feature_version": 6
+          }
+        },
+        {
+          "id": "624cbed116ca",
+          "era": "ee81ebfa01",
+          "n": 19,
+          "wins": 10,
+          "losses": 8,
+          "draws": 1,
+          "mismatches": {
+            "gate_hazard_threatened": {
+              "live": "not recorded",
+              "sim": 2
+            },
+            "rocket_dead_target": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "tau_threatened": {
+              "live": "not recorded",
+              "sim": 0.2
+            },
+            "lethal_log": {
+              "live": "not recorded",
+              "sim": "on"
+            }
+          },
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0,
+            "gate_hazard_quiet": false
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 24,
+            "opp_counter": true,
+            "anti_leak": false,
+            "own_effects": true,
+            "afford_ticks": 23,
+            "early_release_margin": null,
+            "fast_input": true,
+            "tap_gap_ms": 0,
+            "hero_ability_spec": "supplement",
+            "iw_press_pstar": 0.03,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "rocket_area",
+              "tau_phase": [
+                0.35,
+                0.45,
+                0.55
+              ],
+              "xbow_class": "class_sample",
+              "xbow_class_floor": 0.3,
+              "log_aim": "log_barrel",
+              "gate_decode": "hazard_below_tau",
+              "gate_hazard_min_elixir": 9.0,
+              "gate_hazard_quiet": false,
+              "lethal_rocket": "ot_behind",
+              "xbow_dead_lane": "block"
+            },
+            "feature_version": 6
+          }
+        },
+        {
+          "id": "0d1e72ea0ffe",
+          "era": "fd614e7a25",
+          "n": 2,
+          "wins": 2,
+          "losses": 0,
+          "draws": 0,
+          "mismatches": {
+            "rocket_dead_target": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "tau_threatened": {
+              "live": "not recorded",
+              "sim": 0.2
+            },
+            "lethal_log": {
+              "live": "not recorded",
+              "sim": "on"
+            }
+          },
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0,
+            "gate_hazard_quiet": false,
+            "gate_hazard_threat_radius": 0.0
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 24,
+            "opp_counter": true,
+            "anti_leak": false,
+            "own_effects": true,
+            "afford_ticks": 23,
+            "early_release_margin": 8,
+            "fast_input": true,
+            "tap_gap_ms": 0,
+            "hero_ability_spec": "supplement",
+            "iw_press_pstar": 0.03,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "rocket_area",
+              "tau_phase": [
+                0.35,
+                0.45,
+                0.55
+              ],
+              "xbow_class": "class_sample",
+              "xbow_class_floor": 0.3,
+              "log_aim": "log_barrel",
+              "gate_decode": "hazard_below_tau",
+              "gate_hazard_min_elixir": 9.0,
+              "gate_hazard_quiet": false,
+              "gate_hazard_threatened": 2.0,
+              "gate_hazard_threat_radius": 0.0,
+              "lethal_rocket": "ot_behind",
+              "xbow_dead_lane": "block"
+            },
+            "feature_version": 6
+          }
+        },
+        {
+          "id": "09d7f25c0324",
+          "era": "79d431f779",
+          "n": 41,
+          "wins": 22,
+          "losses": 19,
+          "draws": 0,
+          "mismatches": {
+            "rocket_dead_target": {
+              "live": "not recorded",
+              "sim": "block"
+            },
+            "tau_threatened": {
+              "live": "not recorded",
+              "sim": 0.2
+            },
+            "lethal_log": {
+              "live": "not recorded",
+              "sim": "on"
+            }
+          },
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0,
+            "gate_hazard_quiet": false,
+            "gate_hazard_threat_radius": 0.0
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 24,
+            "opp_counter": true,
+            "anti_leak": false,
+            "own_effects": true,
+            "afford_ticks": 23,
+            "early_release_margin": 8,
+            "fast_input": true,
+            "tap_gap_ms": 0,
+            "hero_ability_spec": "supplement",
+            "iw_press_pstar": 0.03,
+            "identity_ext": true,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "rocket_area",
+              "tau_phase": [
+                0.35,
+                0.45,
+                0.55
+              ],
+              "xbow_class": "class_sample",
+              "xbow_class_floor": 0.3,
+              "log_aim": "log_barrel",
+              "gate_decode": "hazard_below_tau",
+              "gate_hazard_min_elixir": 9.0,
+              "gate_hazard_quiet": false,
+              "gate_hazard_threatened": 2.0,
+              "gate_hazard_threat_radius": 0.0,
+              "lethal_rocket": "ot_behind",
+              "xbow_dead_lane": "block"
+            },
+            "feature_version": 6
+          }
+        },
+        {
+          "id": "031fbd108186",
+          "era": "51ffbaf9ae",
+          "n": 29,
+          "wins": 17,
+          "losses": 12,
+          "draws": 0,
+          "mismatches": {
+            "tau_threatened": {
+              "live": "not recorded",
+              "sim": 0.2
+            },
+            "lethal_log": {
+              "live": "not recorded",
+              "sim": "on"
+            }
+          },
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0,
+            "gate_hazard_quiet": false,
+            "gate_hazard_threat_radius": 0.0
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 24,
+            "opp_counter": true,
+            "anti_leak": false,
+            "own_effects": true,
+            "afford_ticks": 23,
+            "early_release_margin": 8,
+            "fast_input": true,
+            "tap_gap_ms": 0,
+            "hero_ability_spec": "supplement",
+            "iw_press_pstar": 0.03,
+            "identity_ext": true,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "rocket_area",
+              "tau_phase": [
+                0.35,
+                0.45,
+                0.55
+              ],
+              "xbow_class": "class_sample",
+              "xbow_class_floor": 0.3,
+              "log_aim": "log_barrel",
+              "gate_decode": "hazard_below_tau",
+              "gate_hazard_min_elixir": 9.0,
+              "gate_hazard_quiet": false,
+              "gate_hazard_threatened": 2.0,
+              "gate_hazard_threat_radius": 0.0,
+              "lethal_rocket": "ot_behind",
+              "xbow_dead_lane": "block",
+              "rocket_dead_target": "block"
+            },
+            "feature_version": 6
+          }
+        },
+        {
+          "id": "5aad386d155c",
+          "era": "312a058d3a",
+          "n": 87,
+          "wins": 43,
+          "losses": 44,
+          "draws": 0,
+          "mismatches": {},
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0,
+            "gate_hazard_quiet": false,
+            "gate_hazard_threat_radius": 0.0
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 24,
+            "opp_counter": true,
+            "anti_leak": false,
+            "own_effects": true,
+            "afford_ticks": 23,
+            "early_release_margin": 8,
+            "fast_input": true,
+            "tap_gap_ms": 0,
+            "hero_ability_spec": "supplement",
+            "iw_press_pstar": 0.03,
+            "identity_ext": true,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "rocket_area",
+              "tau_phase": [
+                0.35,
+                0.45,
+                0.55
+              ],
+              "xbow_class": "class_sample",
+              "xbow_class_floor": 0.3,
+              "log_aim": "log_barrel",
+              "gate_decode": "hazard_below_tau",
+              "gate_hazard_min_elixir": 9.0,
+              "gate_hazard_quiet": false,
+              "gate_hazard_threatened": 2.0,
+              "gate_hazard_threat_radius": 0.0,
+              "lethal_rocket": "ot_behind",
+              "lethal_log": "on",
+              "xbow_dead_lane": "block",
+              "rocket_dead_target": "block",
+              "tau_threatened": 0.2
+            },
+            "feature_version": 6
+          }
+        },
+        {
+          "id": "befb39691423",
+          "era": "a04d5a1783",
+          "n": 18,
+          "wins": 11,
+          "losses": 7,
+          "draws": 0,
+          "mismatches": {},
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0,
+            "log_air": "block",
+            "gate_hazard_quiet": false,
+            "gate_hazard_threat_radius": 0.0,
+            "card_levels": [
+              [
+                "Log",
+                15
+              ],
+              [
+                "Rocket",
+                16
+              ]
+            ]
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 24,
+            "opp_counter": true,
+            "anti_leak": false,
+            "own_effects": true,
+            "afford_ticks": 23,
+            "early_release_margin": 8,
+            "fast_input": true,
+            "tap_gap_ms": 0,
+            "hero_ability_spec": "supplement",
+            "iw_press_pstar": 0.03,
+            "identity_ext": true,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "rocket_area",
+              "tau_phase": [
+                0.35,
+                0.45,
+                0.55
+              ],
+              "xbow_class": "class_sample",
+              "xbow_class_floor": 0.3,
+              "log_aim": "log_barrel",
+              "log_air": "block",
+              "gate_decode": "hazard_below_tau",
+              "gate_hazard_min_elixir": 9.0,
+              "gate_hazard_quiet": false,
+              "gate_hazard_threatened": 2.0,
+              "gate_hazard_threat_radius": 0.0,
+              "lethal_rocket": "ot_behind",
+              "lethal_log": "on",
+              "xbow_dead_lane": "block",
+              "rocket_dead_target": "block",
+              "tau_threatened": 0.2,
+              "card_levels": [
+                [
+                  "Log",
+                  15
+                ],
+                [
+                  "Rocket",
+                  16
+                ]
+              ]
+            },
+            "feature_version": 6
+          }
+        },
+        {
+          "id": "355b28de2f77",
+          "era": "693546eeec",
+          "n": 127,
+          "wins": 73,
+          "losses": 54,
+          "draws": 0,
+          "mismatches": {},
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0,
+            "log_air": "block",
+            "gate_hazard_quiet": false,
+            "gate_hazard_threat_radius": 0.0,
+            "rocket_value": 9.0,
+            "rocket_value_mode": "damage",
+            "rocket_value_min_y": 16.0,
+            "rocket_value_max_left": 99.0,
+            "rocket_value_threat": "off",
+            "rocket_tornado": "only",
+            "rocket_value_hitbox": "edge",
+            "rocket_value_lead": "off",
+            "rocket_value_idle": "off",
+            "rocket_value_min_elixir": 0.0,
+            "card_levels": [
+              [
+                "Log",
+                15
+              ],
+              [
+                "Rocket",
+                16
+              ]
+            ]
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 24,
+            "opp_counter": true,
+            "anti_leak": false,
+            "own_effects": true,
+            "afford_ticks": 23,
+            "early_release_margin": 8,
+            "fast_input": true,
+            "tap_gap_ms": 0,
+            "hero_ability_spec": "supplement",
+            "iw_press_pstar": 0.03,
+            "identity_ext": true,
+            "follow_up_taps": true,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "rocket_area",
+              "tau_phase": [
+                0.35,
+                0.45,
+                0.55
+              ],
+              "xbow_class": "class_sample",
+              "xbow_class_floor": 0.3,
+              "log_aim": "log_barrel",
+              "log_air": "block",
+              "gate_decode": "hazard_below_tau",
+              "gate_hazard_min_elixir": 9.0,
+              "gate_hazard_quiet": false,
+              "gate_hazard_threatened": 2.0,
+              "gate_hazard_threat_radius": 0.0,
+              "lethal_rocket": "ot_behind",
+              "lethal_log": "on",
+              "xbow_dead_lane": "block",
+              "rocket_dead_target": "block",
+              "tau_threatened": 0.2,
+              "rocket_value": 9.0,
+              "rocket_value_mode": "damage",
+              "rocket_value_min_y": 16.0,
+              "rocket_value_max_left": 99.0,
+              "rocket_value_threat": "off",
+              "rocket_tornado": "only",
+              "rocket_value_hitbox": "edge",
+              "rocket_value_lead": "off",
+              "rocket_value_idle": "off",
+              "rocket_value_min_elixir": 0.0,
+              "card_levels": [
+                [
+                  "Log",
+                  15
+                ],
+                [
+                  "Rocket",
+                  16
+                ]
+              ]
+            },
+            "feature_version": 6
+          }
+        },
+        {
+          "id": "9be8a0f800ba",
+          "era": "9f9a4fe0c8",
+          "n": 3,
+          "wins": 2,
+          "losses": 1,
+          "draws": 0,
+          "mismatches": {
+            "xbow_class": {
+              "live": "argmax",
+              "sim": "class_sample"
+            },
+            "xbow_class_floor": {
+              "live": 0.2,
+              "sim": 0.3
+            },
+            "tau_phase": {
+              "live": null,
+              "sim": [
+                0.35,
+                0.45,
+                0.55
+              ]
+            },
+            "spell_aim": {
+              "live": "argmax",
+              "sim": "rocket_area"
+            },
+            "gate_decode": {
+              "live": "threshold",
+              "sim": "hazard_below_tau"
+            },
+            "gate_hazard_min_elixir": {
+              "live": 0.0,
+              "sim": 9
+            },
+            "log_aim": {
+              "live": "argmax",
+              "sim": "log_barrel"
+            },
+            "lethal_rocket": {
+              "live": "off",
+              "sim": "ot_behind"
+            },
+            "xbow_dead_lane": {
+              "live": "allow",
+              "sim": "block"
+            },
+            "gate_hazard_threatened": {
+              "live": 0.0,
+              "sim": 2
+            },
+            "rocket_dead_target": {
+              "live": "allow",
+              "sim": "block"
+            },
+            "tau_threatened": {
+              "live": null,
+              "sim": 0.2
+            },
+            "lethal_log": {
+              "live": "off",
+              "sim": "on"
+            }
+          },
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0,
+            "log_air": "off",
+            "gate_hazard_quiet": false,
+            "gate_hazard_threat_radius": 0.0,
+            "rocket_value": 0.0,
+            "rocket_value_mode": "cost",
+            "rocket_value_min_y": 16.0,
+            "rocket_value_max_left": 99.0,
+            "rocket_value_threat": "off",
+            "rocket_tornado": "off",
+            "rocket_value_hitbox": "centre",
+            "rocket_value_lead": "off",
+            "rocket_value_idle": "off",
+            "rocket_value_min_elixir": 0.0,
+            "card_levels": null
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 24,
+            "opp_counter": true,
+            "anti_leak": false,
+            "own_effects": true,
+            "afford_ticks": 23,
+            "early_release_margin": null,
+            "fast_input": true,
+            "tap_gap_ms": 0,
+            "hero_ability_spec": "supplement",
+            "iw_press_pstar": null,
+            "identity_ext": true,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "argmax",
+              "tau_phase": null,
+              "xbow_class": "argmax",
+              "xbow_class_floor": 0.2,
+              "log_aim": "argmax",
+              "log_air": "off",
+              "gate_decode": "threshold",
+              "gate_hazard_min_elixir": 0.0,
+              "gate_hazard_quiet": false,
+              "gate_hazard_threatened": 0.0,
+              "gate_hazard_threat_radius": 0.0,
+              "lethal_rocket": "off",
+              "lethal_log": "off",
+              "xbow_dead_lane": "allow",
+              "rocket_dead_target": "allow",
+              "tau_threatened": null,
+              "rocket_value": 0.0,
+              "rocket_value_mode": "cost",
+              "rocket_value_min_y": 16.0,
+              "rocket_value_max_left": 99.0,
+              "rocket_value_threat": "off",
+              "rocket_tornado": "off",
+              "rocket_value_hitbox": "centre",
+              "rocket_value_lead": "off",
+              "rocket_value_idle": "off",
+              "rocket_value_min_elixir": 0.0,
+              "card_levels": null
+            },
+            "feature_version": 6
+          }
+        },
+        {
+          "id": "41c92b1c89b8",
+          "era": "dff9ad09b9",
+          "n": 2,
+          "wins": 1,
+          "losses": 1,
+          "draws": 0,
+          "mismatches": {},
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0,
+            "log_air": "block",
+            "gate_hazard_quiet": false,
+            "gate_hazard_threat_radius": 0.0,
+            "rocket_value": 9.0,
+            "rocket_value_mode": "damage",
+            "rocket_value_min_y": 16.0,
+            "rocket_value_max_left": 99.0,
+            "rocket_value_threat": "off",
+            "rocket_tornado": "only",
+            "rocket_value_hitbox": "edge",
+            "rocket_value_lead": "off",
+            "rocket_value_idle": "off",
+            "rocket_value_min_elixir": 0.0,
+            "card_levels": [
+              [
+                "Log",
+                15
+              ],
+              [
+                "Rocket",
+                16
+              ]
+            ]
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 24,
+            "opp_counter": true,
+            "anti_leak": false,
+            "own_effects": true,
+            "afford_ticks": 23,
+            "early_release_margin": 8,
+            "fast_input": true,
+            "tap_gap_ms": 0,
+            "hero_ability_spec": "supplement",
+            "iw_press_pstar": 0.03,
+            "identity_ext": true,
+            "follow_up_taps": true,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "rocket_area",
+              "tau_phase": [
+                0.35,
+                0.45,
+                0.55
+              ],
+              "xbow_class": "class_sample",
+              "xbow_class_floor": 0.3,
+              "log_aim": "log_barrel",
+              "log_air": "block",
+              "gate_decode": "hazard_below_tau",
+              "gate_hazard_min_elixir": 9.0,
+              "gate_hazard_quiet": false,
+              "gate_hazard_threatened": 2.0,
+              "gate_hazard_threat_radius": 0.0,
+              "lethal_rocket": "ot_behind",
+              "lethal_log": "on",
+              "xbow_dead_lane": "block",
+              "rocket_dead_target": "block",
+              "tau_threatened": 0.2,
+              "rocket_value": 9.0,
+              "rocket_value_mode": "damage",
+              "rocket_value_min_y": 16.0,
+              "rocket_value_max_left": 99.0,
+              "rocket_value_threat": "off",
+              "rocket_tornado": "only",
+              "rocket_value_hitbox": "edge",
+              "rocket_value_lead": "off",
+              "rocket_value_idle": "off",
+              "rocket_value_min_elixir": 0.0,
+              "card_levels": [
+                [
+                  "Log",
+                  15
+                ],
+                [
+                  "Rocket",
+                  16
+                ]
+              ]
+            },
+            "feature_version": 6
+          }
+        }
+      ],
+      "win_rate": 0.545,
+      "ci95": [
+        0.4960015667969213,
+        0.5931422955491075
+      ],
+      "reportable": true
+    },
+    {
+      "id": "g05",
+      "checkpoint": "icebow/data/bench/rl_royale/rdef_e4/rdef_e4_u0020_barrel2k_cellref_towerref_w2.pt",
+      "checkpoint_sha256": "430faaee52d9aebc788a780cc6a5977d25e7c7126ae4abd9726829dc2751062a",
+      "family": "E4",
+      "fast": false,
+      "n": 38,
+      "wins": 16,
+      "losses": 22,
+      "draws": 0,
+      "eras": [
+        {
+          "id": "f8070d2e40c6",
+          "era": "693546eeec",
+          "n": 9,
+          "wins": 4,
+          "losses": 5,
+          "draws": 0,
+          "mismatches": {},
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0,
+            "log_air": "block",
+            "gate_hazard_quiet": false,
+            "gate_hazard_threat_radius": 0.0,
+            "rocket_value": 9.0,
+            "rocket_value_mode": "damage",
+            "rocket_value_min_y": 16.0,
+            "rocket_value_max_left": 99.0,
+            "rocket_value_threat": "off",
+            "rocket_tornado": "only",
+            "rocket_value_hitbox": "edge",
+            "rocket_value_lead": "off",
+            "rocket_value_idle": "off",
+            "rocket_value_min_elixir": 0.0,
+            "card_levels": [
+              [
+                "Log",
+                15
+              ],
+              [
+                "Rocket",
+                16
+              ]
+            ]
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 24,
+            "opp_counter": true,
+            "anti_leak": false,
+            "own_effects": true,
+            "afford_ticks": 23,
+            "early_release_margin": 8,
+            "fast_input": true,
+            "tap_gap_ms": 0,
+            "hero_ability_spec": "supplement",
+            "iw_press_pstar": 0.03,
+            "identity_ext": true,
+            "follow_up_taps": true,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "rocket_area",
+              "tau_phase": [
+                0.35,
+                0.45,
+                0.55
+              ],
+              "xbow_class": "class_sample",
+              "xbow_class_floor": 0.3,
+              "log_aim": "log_barrel",
+              "log_air": "block",
+              "gate_decode": "hazard_below_tau",
+              "gate_hazard_min_elixir": 9.0,
+              "gate_hazard_quiet": false,
+              "gate_hazard_threatened": 2.0,
+              "gate_hazard_threat_radius": 0.0,
+              "lethal_rocket": "ot_behind",
+              "lethal_log": "on",
+              "xbow_dead_lane": "block",
+              "rocket_dead_target": "block",
+              "tau_threatened": 0.2,
+              "rocket_value": 9.0,
+              "rocket_value_mode": "damage",
+              "rocket_value_min_y": 16.0,
+              "rocket_value_max_left": 99.0,
+              "rocket_value_threat": "off",
+              "rocket_tornado": "only",
+              "rocket_value_hitbox": "edge",
+              "rocket_value_lead": "off",
+              "rocket_value_idle": "off",
+              "rocket_value_min_elixir": 0.0,
+              "card_levels": [
+                [
+                  "Log",
+                  15
+                ],
+                [
+                  "Rocket",
+                  16
+                ]
+              ]
+            },
+            "feature_version": 6
+          }
+        },
+        {
+          "id": "a4e87678581d",
+          "era": "ae3919018c",
+          "n": 2,
+          "wins": 1,
+          "losses": 1,
+          "draws": 0,
+          "mismatches": {},
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0,
+            "log_air": "block",
+            "gate_hazard_quiet": false,
+            "gate_hazard_threat_radius": 0.0,
+            "rocket_value": 9.0,
+            "rocket_value_mode": "damage",
+            "rocket_value_min_y": 16.0,
+            "rocket_value_max_left": 99.0,
+            "rocket_value_threat": "off",
+            "rocket_tornado": "only",
+            "rocket_value_hitbox": "edge",
+            "rocket_value_lead": "off",
+            "rocket_value_idle": "off",
+            "rocket_value_min_elixir": 0.0,
+            "card_levels": [
+              [
+                "Log",
+                15
+              ],
+              [
+                "Rocket",
+                16
+              ]
+            ]
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 24,
+            "opp_counter": true,
+            "anti_leak": false,
+            "own_effects": true,
+            "afford_ticks": 23,
+            "early_release_margin": 8,
+            "fast_input": true,
+            "tap_gap_ms": 0,
+            "hero_ability_spec": "supplement",
+            "iw_press_pstar": 0.03,
+            "identity_ext": true,
+            "follow_up_taps": true,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "rocket_area",
+              "tau_phase": [
+                0.35,
+                0.45,
+                0.55
+              ],
+              "xbow_class": "class_sample",
+              "xbow_class_floor": 0.3,
+              "log_aim": "log_barrel",
+              "log_air": "block",
+              "gate_decode": "hazard_below_tau",
+              "gate_hazard_min_elixir": 9.0,
+              "gate_hazard_quiet": false,
+              "gate_hazard_threatened": 2.0,
+              "gate_hazard_threat_radius": 0.0,
+              "lethal_rocket": "ot_behind",
+              "lethal_log": "on",
+              "xbow_dead_lane": "block",
+              "rocket_dead_target": "block",
+              "tau_threatened": 0.2,
+              "rocket_value": 9.0,
+              "rocket_value_mode": "damage",
+              "rocket_value_min_y": 16.0,
+              "rocket_value_max_left": 99.0,
+              "rocket_value_threat": "off",
+              "rocket_tornado": "only",
+              "rocket_value_hitbox": "edge",
+              "rocket_value_lead": "off",
+              "rocket_value_idle": "off",
+              "rocket_value_min_elixir": 0.0,
+              "card_levels": [
+                [
+                  "Log",
+                  15
+                ],
+                [
+                  "Rocket",
+                  16
+                ]
+              ]
+            },
+            "feature_version": 6
+          }
+        },
+        {
+          "id": "374047566a51",
+          "era": "dff9ad09b9",
+          "n": 27,
+          "wins": 11,
+          "losses": 16,
+          "draws": 0,
+          "mismatches": {},
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0,
+            "log_air": "block",
+            "gate_hazard_quiet": false,
+            "gate_hazard_threat_radius": 0.0,
+            "rocket_value": 9.0,
+            "rocket_value_mode": "damage",
+            "rocket_value_min_y": 16.0,
+            "rocket_value_max_left": 99.0,
+            "rocket_value_threat": "off",
+            "rocket_tornado": "only",
+            "rocket_value_hitbox": "edge",
+            "rocket_value_lead": "off",
+            "rocket_value_idle": "off",
+            "rocket_value_min_elixir": 0.0,
+            "card_levels": [
+              [
+                "Log",
+                15
+              ],
+              [
+                "Rocket",
+                16
+              ]
+            ]
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 24,
+            "opp_counter": true,
+            "anti_leak": false,
+            "own_effects": true,
+            "afford_ticks": 23,
+            "early_release_margin": 8,
+            "fast_input": true,
+            "tap_gap_ms": 0,
+            "hero_ability_spec": "supplement",
+            "iw_press_pstar": 0.03,
+            "identity_ext": true,
+            "follow_up_taps": true,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "rocket_area",
+              "tau_phase": [
+                0.35,
+                0.45,
+                0.55
+              ],
+              "xbow_class": "class_sample",
+              "xbow_class_floor": 0.3,
+              "log_aim": "log_barrel",
+              "log_air": "block",
+              "gate_decode": "hazard_below_tau",
+              "gate_hazard_min_elixir": 9.0,
+              "gate_hazard_quiet": false,
+              "gate_hazard_threatened": 2.0,
+              "gate_hazard_threat_radius": 0.0,
+              "lethal_rocket": "ot_behind",
+              "lethal_log": "on",
+              "xbow_dead_lane": "block",
+              "rocket_dead_target": "block",
+              "tau_threatened": 0.2,
+              "rocket_value": 9.0,
+              "rocket_value_mode": "damage",
+              "rocket_value_min_y": 16.0,
+              "rocket_value_max_left": 99.0,
+              "rocket_value_threat": "off",
+              "rocket_tornado": "only",
+              "rocket_value_hitbox": "edge",
+              "rocket_value_lead": "off",
+              "rocket_value_idle": "off",
+              "rocket_value_min_elixir": 0.0,
+              "card_levels": [
+                [
+                  "Log",
+                  15
+                ],
+                [
+                  "Rocket",
+                  16
+                ]
+              ]
+            },
+            "feature_version": 6
+          }
+        }
+      ],
+      "win_rate": 0.42105263157894735,
+      "ci95": [
+        0.2785227481181953,
+        0.5780792938687267
+      ],
+      "reportable": true
+    },
+    {
+      "id": "g06",
+      "checkpoint": "icebow/data/bench/rl_royale/rseries_r3c/rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt",
+      "checkpoint_sha256": "41b52a8375483f7c3350b1837a3432f354e34304e87da8fa6fe508d7160fe6d8",
+      "family": "old",
+      "fast": true,
+      "n": 98,
+      "wins": 46,
+      "losses": 52,
+      "draws": 0,
+      "eras": [
+        {
+          "id": "07105d42ec50",
+          "era": "693546eeec",
+          "n": 98,
+          "wins": 46,
+          "losses": 52,
+          "draws": 0,
+          "mismatches": {},
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0,
+            "log_air": "block",
+            "gate_hazard_quiet": false,
+            "gate_hazard_threat_radius": 0.0,
+            "rocket_value": 9.0,
+            "rocket_value_mode": "damage",
+            "rocket_value_min_y": 16.0,
+            "rocket_value_max_left": 99.0,
+            "rocket_value_threat": "off",
+            "rocket_tornado": "only",
+            "rocket_value_hitbox": "edge",
+            "rocket_value_lead": "off",
+            "rocket_value_idle": "off",
+            "rocket_value_min_elixir": 0.0,
+            "card_levels": [
+              [
+                "Log",
+                15
+              ],
+              [
+                "Rocket",
+                16
+              ]
+            ]
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 24,
+            "opp_counter": true,
+            "anti_leak": false,
+            "own_effects": true,
+            "afford_ticks": 23,
+            "early_release_margin": 8,
+            "fast_input": true,
+            "tap_gap_ms": 0,
+            "hero_ability_spec": "supplement",
+            "iw_press_pstar": 0.03,
+            "identity_ext": true,
+            "follow_up_taps": true,
+            "pipeline_tau_delta": 0.0,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "rocket_area",
+              "tau_phase": [
+                0.35,
+                0.45,
+                0.55
+              ],
+              "xbow_class": "class_sample",
+              "xbow_class_floor": 0.3,
+              "log_aim": "log_barrel",
+              "log_air": "block",
+              "gate_decode": "hazard_below_tau",
+              "gate_hazard_min_elixir": 9.0,
+              "gate_hazard_quiet": false,
+              "gate_hazard_threatened": 2.0,
+              "gate_hazard_threat_radius": 0.0,
+              "lethal_rocket": "ot_behind",
+              "lethal_log": "on",
+              "xbow_dead_lane": "block",
+              "rocket_dead_target": "block",
+              "tau_threatened": 0.2,
+              "rocket_value": 9.0,
+              "rocket_value_mode": "damage",
+              "rocket_value_min_y": 16.0,
+              "rocket_value_max_left": 99.0,
+              "rocket_value_threat": "off",
+              "rocket_tornado": "only",
+              "rocket_value_hitbox": "edge",
+              "rocket_value_lead": "off",
+              "rocket_value_idle": "off",
+              "rocket_value_min_elixir": 0.0,
+              "card_levels": [
+                [
+                  "Log",
+                  15
+                ],
+                [
+                  "Rocket",
+                  16
+                ]
+              ]
+            },
+            "feature_version": 6
+          }
+        }
+      ],
+      "win_rate": 0.46938775510204084,
+      "ci95": [
+        0.37360789598305366,
+        0.567477083043199
+      ],
+      "reportable": true
+    },
+    {
+      "id": "g07",
+      "checkpoint": "icebow/data/bench/rl_royale/adapt_fix/adapt_fixed.pt",
+      "checkpoint_sha256": "9723b7eb9611502a54e970c02dbedb1f9c7e2534691b1520db76c59284aabba6",
+      "family": "adapt_fixed",
+      "fast": true,
+      "n": 46,
+      "wins": 20,
+      "losses": 26,
+      "draws": 0,
+      "eras": [
+        {
+          "id": "a598c0514ed4",
+          "era": "693546eeec",
+          "n": 46,
+          "wins": 20,
+          "losses": 26,
+          "draws": 0,
+          "mismatches": {},
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0,
+            "log_air": "block",
+            "gate_hazard_quiet": false,
+            "gate_hazard_threat_radius": 0.0,
+            "rocket_value": 9.0,
+            "rocket_value_mode": "damage",
+            "rocket_value_min_y": 16.0,
+            "rocket_value_max_left": 99.0,
+            "rocket_value_threat": "off",
+            "rocket_tornado": "only",
+            "rocket_value_hitbox": "edge",
+            "rocket_value_lead": "off",
+            "rocket_value_idle": "off",
+            "rocket_value_min_elixir": 0.0,
+            "card_levels": [
+              [
+                "Log",
+                15
+              ],
+              [
+                "Rocket",
+                16
+              ]
+            ]
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 24,
+            "opp_counter": true,
+            "anti_leak": false,
+            "own_effects": true,
+            "afford_ticks": 23,
+            "early_release_margin": 8,
+            "fast_input": true,
+            "tap_gap_ms": 0,
+            "hero_ability_spec": "supplement",
+            "iw_press_pstar": 0.03,
+            "identity_ext": true,
+            "follow_up_taps": true,
+            "pipeline_tau_delta": 0.0,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "rocket_area",
+              "tau_phase": [
+                0.35,
+                0.45,
+                0.55
+              ],
+              "xbow_class": "class_sample",
+              "xbow_class_floor": 0.3,
+              "log_aim": "log_barrel",
+              "log_air": "block",
+              "gate_decode": "hazard_below_tau",
+              "gate_hazard_min_elixir": 9.0,
+              "gate_hazard_quiet": false,
+              "gate_hazard_threatened": 2.0,
+              "gate_hazard_threat_radius": 0.0,
+              "lethal_rocket": "ot_behind",
+              "lethal_log": "on",
+              "xbow_dead_lane": "block",
+              "rocket_dead_target": "block",
+              "tau_threatened": 0.2,
+              "rocket_value": 9.0,
+              "rocket_value_mode": "damage",
+              "rocket_value_min_y": 16.0,
+              "rocket_value_max_left": 99.0,
+              "rocket_value_threat": "off",
+              "rocket_tornado": "only",
+              "rocket_value_hitbox": "edge",
+              "rocket_value_lead": "off",
+              "rocket_value_idle": "off",
+              "rocket_value_min_elixir": 0.0,
+              "card_levels": [
+                [
+                  "Log",
+                  15
+                ],
+                [
+                  "Rocket",
+                  16
+                ]
+              ]
+            },
+            "feature_version": 6
+          }
+        }
+      ],
+      "win_rate": 0.43478260869565216,
+      "ci95": [
+        0.3020904595919057,
+        0.5775281722337178
+      ],
+      "reportable": true
+    },
+    {
+      "id": "g08",
+      "checkpoint": "icebow/data/bench/rl_royale/adapt_fix/adapt_alone.pt",
+      "checkpoint_sha256": "ab5a5383108a2bf65a6f31473137f4d49f665f1232f7c4f9032220f77551faa8",
+      "family": "adapt_alone",
+      "fast": true,
+      "n": 24,
+      "wins": 10,
+      "losses": 14,
+      "draws": 0,
+      "eras": [
+        {
+          "id": "6c046cde3a19",
+          "era": "693546eeec",
+          "n": 24,
+          "wins": 10,
+          "losses": 14,
+          "draws": 0,
+          "mismatches": {},
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0,
+            "log_air": "block",
+            "gate_hazard_quiet": false,
+            "gate_hazard_threat_radius": 0.0,
+            "rocket_value": 9.0,
+            "rocket_value_mode": "damage",
+            "rocket_value_min_y": 16.0,
+            "rocket_value_max_left": 99.0,
+            "rocket_value_threat": "off",
+            "rocket_tornado": "only",
+            "rocket_value_hitbox": "edge",
+            "rocket_value_lead": "off",
+            "rocket_value_idle": "off",
+            "rocket_value_min_elixir": 0.0,
+            "card_levels": [
+              [
+                "Log",
+                15
+              ],
+              [
+                "Rocket",
+                16
+              ]
+            ]
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 24,
+            "opp_counter": true,
+            "anti_leak": false,
+            "own_effects": true,
+            "afford_ticks": 23,
+            "early_release_margin": 8,
+            "fast_input": true,
+            "tap_gap_ms": 0,
+            "hero_ability_spec": "supplement",
+            "iw_press_pstar": 0.03,
+            "identity_ext": true,
+            "follow_up_taps": true,
+            "pipeline_tau_delta": 0.0,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "rocket_area",
+              "tau_phase": [
+                0.35,
+                0.45,
+                0.55
+              ],
+              "xbow_class": "class_sample",
+              "xbow_class_floor": 0.3,
+              "log_aim": "log_barrel",
+              "log_air": "block",
+              "gate_decode": "hazard_below_tau",
+              "gate_hazard_min_elixir": 9.0,
+              "gate_hazard_quiet": false,
+              "gate_hazard_threatened": 2.0,
+              "gate_hazard_threat_radius": 0.0,
+              "lethal_rocket": "ot_behind",
+              "lethal_log": "on",
+              "xbow_dead_lane": "block",
+              "rocket_dead_target": "block",
+              "tau_threatened": 0.2,
+              "rocket_value": 9.0,
+              "rocket_value_mode": "damage",
+              "rocket_value_min_y": 16.0,
+              "rocket_value_max_left": 99.0,
+              "rocket_value_threat": "off",
+              "rocket_tornado": "only",
+              "rocket_value_hitbox": "edge",
+              "rocket_value_lead": "off",
+              "rocket_value_idle": "off",
+              "rocket_value_min_elixir": 0.0,
+              "card_levels": [
+                [
+                  "Log",
+                  15
+                ],
+                [
+                  "Rocket",
+                  16
+                ]
+              ]
+            },
+            "feature_version": 6
+          }
+        }
+      ],
+      "win_rate": 0.4166666666666667,
+      "ci95": [
+        0.24467347246538232,
+        0.6116566235061137
+      ],
+      "reportable": false
+    },
+    {
+      "id": "g09",
+      "checkpoint": "icebow/data/bench/rl_royale/adapt_fix/adapt_alone.pt",
+      "checkpoint_sha256": "ab5a5383108a2bf65a6f31473137f4d49f665f1232f7c4f9032220f77551faa8",
+      "family": "adapt_alone",
+      "fast": false,
+      "n": 11,
+      "wins": 7,
+      "losses": 4,
+      "draws": 0,
+      "eras": [
+        {
+          "id": "372f4ea72e1a",
+          "era": "693546eeec",
+          "n": 11,
+          "wins": 7,
+          "losses": 4,
+          "draws": 0,
+          "mismatches": {},
+          "other_live_decision_options": {
+            "card_choice": "argmax",
+            "card_ratio": 0.7,
+            "card_T": 1.0,
+            "log_air": "block",
+            "gate_hazard_quiet": false,
+            "gate_hazard_threat_radius": 0.0,
+            "rocket_value": 9.0,
+            "rocket_value_mode": "damage",
+            "rocket_value_min_y": 16.0,
+            "rocket_value_max_left": 99.0,
+            "rocket_value_threat": "off",
+            "rocket_tornado": "only",
+            "rocket_value_hitbox": "edge",
+            "rocket_value_lead": "off",
+            "rocket_value_idle": "off",
+            "rocket_value_min_elixir": 0.0,
+            "card_levels": [
+              [
+                "Log",
+                15
+              ],
+              [
+                "Rocket",
+                16
+              ]
+            ]
+          },
+          "live_settings": {
+            "tau": 0.35,
+            "extrapolate": 24,
+            "opp_counter": true,
+            "anti_leak": false,
+            "own_effects": true,
+            "afford_ticks": 23,
+            "early_release_margin": 8,
+            "fast_input": true,
+            "tap_gap_ms": 0,
+            "hero_ability_spec": "supplement",
+            "iw_press_pstar": 0.03,
+            "identity_ext": true,
+            "follow_up_taps": true,
+            "decision_options": {
+              "card_choice": "argmax",
+              "card_ratio": 0.7,
+              "card_T": 1.0,
+              "spell_aim": "rocket_area",
+              "tau_phase": [
+                0.35,
+                0.45,
+                0.55
+              ],
+              "xbow_class": "class_sample",
+              "xbow_class_floor": 0.3,
+              "log_aim": "log_barrel",
+              "log_air": "block",
+              "gate_decode": "hazard_below_tau",
+              "gate_hazard_min_elixir": 9.0,
+              "gate_hazard_quiet": false,
+              "gate_hazard_threatened": 2.0,
+              "gate_hazard_threat_radius": 0.0,
+              "lethal_rocket": "ot_behind",
+              "lethal_log": "on",
+              "xbow_dead_lane": "block",
+              "rocket_dead_target": "block",
+              "tau_threatened": 0.2,
+              "rocket_value": 9.0,
+              "rocket_value_mode": "damage",
+              "rocket_value_min_y": 16.0,
+              "rocket_value_max_left": 99.0,
+              "rocket_value_threat": "off",
+              "rocket_tornado": "only",
+              "rocket_value_hitbox": "edge",
+              "rocket_value_lead": "off",
+              "rocket_value_idle": "off",
+              "rocket_value_min_elixir": 0.0,
+              "card_levels": [
+                [
+                  "Log",
+                  15
+                ],
+                [
+                  "Rocket",
+                  16
+                ]
+              ]
+            },
+            "feature_version": 6
+          }
+        }
+      ],
+      "win_rate": 0.6363636363636364,
+      "ci95": [
+        0.35379677689163724,
+        0.8483377638586862
+      ],
+      "reportable": false
+    }
+  ],
+  "pools": [
+    {
+      "id": "P1",
+      "members": [
+        {
+          "path": "icebow/data/bench/rl_royale/rdef_e4/rdef_e4_u0020_barrel2k_cellref_towerref_w2.pt",
+          "temperature": 0.1
+        }
+      ]
+    },
+    {
+      "id": "P2",
+      "members": [
+        {
+          "path": "icebow/data/pipeline/gen_v1_s0/gen_s0.pt",
+          "temperature": 0.3
+        }
+      ]
+    },
+    {
+      "id": "P3",
+      "members": [
+        {
+          "path": "icebow/data/pipeline/gen_v1_s0/gen_s0.pt",
+          "temperature": 1.0
+        }
+      ]
+    },
+    {
+      "id": "P4",
+      "members": [
+        {
+          "path": "icebow/data/bench/rl_royale/wk_adapt_main/wk_adapt_main_latest.pt",
+          "temperature": 0.3
+        },
+        {
+          "path": "icebow/data/bench/rl_royale/wk_adapt_exp1/wk_adapt_exp1_latest.pt",
+          "temperature": 0.3
+        },
+        {
+          "path": "icebow/data/bench/rl_royale/wk_adapt_exp2/wk_adapt_exp2_latest.pt",
+          "temperature": 0.3
+        },
+        {
+          "path": "icebow/data/bench/rl_royale/wk_adapt_exp3/wk_adapt_exp3_latest.pt",
+          "temperature": 0.3
+        }
+      ]
+    },
+    {
+      "id": "P5",
+      "members": [
+        {
+          "path": "icebow/data/pipeline/gen_v1_s0/gen_s0.pt",
+          "temperature": 0.3
+        },
+        {
+          "path": "icebow/data/bench/rl_royale/rdef_e4/rdef_e4_u0020_barrel2k_cellref_towerref_w2.pt",
+          "temperature": 0.1
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "path": "icebow/data/bench/rl_royale/rseries_r1e31/rseries_r1e31_u0155.pt",
+      "source": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\rl_royale\\rseries_r1e31\\rseries_r1e31_u0155.pt",
+      "bytes": 18336318,
+      "sha256": "76fdfaacbd9c2049cc88792278f06e3f73a56eaf9653791e922d9332dd6751cd"
+    },
+    {
+      "path": "icebow/data/bench/development_iteration_5_20261005/tower_spatial_v7/candidate.pt",
+      "source": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\development_iteration_5_20261005\\tower_spatial_v7\\candidate.pt",
+      "bytes": 18511947,
+      "sha256": "2feffe4f0990d93721ceb0b6661338f52e7f935e85b80e29535ea713ad6569a0"
+    },
+    {
+      "path": "icebow/data/bench/rl_royale/rseries_r2l/rseries_r2l_u0120.pt",
+      "source": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\rl_royale\\rseries_r2l\\rseries_r2l_u0120.pt",
+      "bytes": 18331904,
+      "sha256": "16305cc7f8221c318b14e6181df80dd4fde5eac9f3d8a8b6b7bbeb2d9574899b"
+    },
+    {
+      "path": "icebow/data/bench/rl_royale/rseries_r3c/rseries_r3c_u0030_barrel2k_cellref.pt",
+      "source": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\rl_royale\\rseries_r3c\\rseries_r3c_u0030_barrel2k_cellref.pt",
+      "bytes": 28172029,
+      "sha256": "e7359f2b173ee65f9656d6f5e25a097e365d7812c5f2ef63febbbf47ddbb5e3b"
+    },
+    {
+      "path": "icebow/data/bench/rl_royale/rseries_r3c/rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt",
+      "source": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\rl_royale\\rseries_r3c\\rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt",
+      "bytes": 28552552,
+      "sha256": "41b52a8375483f7c3350b1837a3432f354e34304e87da8fa6fe508d7160fe6d8"
+    },
+    {
+      "path": "icebow/data/bench/rl_royale/rdef_e4/rdef_e4_u0020_barrel2k_cellref_towerref_w2.pt",
+      "source": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\rl_royale\\rdef_e4\\rdef_e4_u0020_barrel2k_cellref_towerref_w2.pt",
+      "bytes": 28768563,
+      "sha256": "430faaee52d9aebc788a780cc6a5977d25e7c7126ae4abd9726829dc2751062a"
+    },
+    {
+      "path": "icebow/data/bench/rl_royale/adapt_fix/adapt_fixed.pt",
+      "source": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\rl_royale\\adapt_fix\\adapt_fixed.pt",
+      "bytes": 7093297,
+      "sha256": "9723b7eb9611502a54e970c02dbedb1f9c7e2534691b1520db76c59284aabba6"
+    },
+    {
+      "path": "icebow/data/bench/rl_royale/adapt_fix/adapt_alone.pt",
+      "source": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\bench\\rl_royale\\adapt_fix\\adapt_alone.pt",
+      "bytes": 19540245,
+      "sha256": "ab5a5383108a2bf65a6f31473137f4d49f665f1232f7c4f9032220f77551faa8"
+    },
+    {
+      "path": "icebow/data/pipeline/gen_v1_s0/gen_s0.pt",
+      "source": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\pipeline\\gen_v1_s0\\gen_s0.pt",
+      "bytes": 5398413,
+      "sha256": "05db85a0a141126223a892787aacc13f291de24a2adeab5c5875531094ce6c53"
+    },
+    {
+      "path": "icebow/data/bench/rl_royale/wk_adapt_main/wk_adapt_main_latest.pt",
+      "source": "C:\\Users\\benpe\\pod_backup_weekend\\pod3\\x_ADAPT\\wk_adapt\\icebow\\data\\bench\\rl_royale\\wk_adapt_main\\wk_adapt_main_latest.pt",
+      "bytes": 18691098,
+      "sha256": "55c8f49e8ed39a474cf9d1d8a95d0f40d7a10dd7c5db955d32a079448f96b60b"
+    },
+    {
+      "path": "icebow/data/bench/rl_royale/wk_adapt_exp1/wk_adapt_exp1_latest.pt",
+      "source": "C:\\Users\\benpe\\pod_backup_weekend\\pod3\\x_ADAPT\\wk_adapt\\icebow\\data\\bench\\rl_royale\\wk_adapt_exp1\\wk_adapt_exp1_latest.pt",
+      "bytes": 18694401,
+      "sha256": "733dd2fb1c5a760ffd4679805ed21ad5ff6805689b3270c07555467629ac6dc5"
+    },
+    {
+      "path": "icebow/data/bench/rl_royale/wk_adapt_exp2/wk_adapt_exp2_latest.pt",
+      "source": "C:\\Users\\benpe\\pod_backup_weekend\\pod3\\x_ADAPT\\wk_adapt\\icebow\\data\\bench\\rl_royale\\wk_adapt_exp2\\wk_adapt_exp2_latest.pt",
+      "bytes": 18694401,
+      "sha256": "1f69813e2c7b609082774dd3eff38389cb0d6a3191b9cec7d4a412f878e4bc79"
+    },
+    {
+      "path": "icebow/data/bench/rl_royale/wk_adapt_exp3/wk_adapt_exp3_latest.pt",
+      "source": "C:\\Users\\benpe\\pod_backup_weekend\\pod3\\x_ADAPT\\wk_adapt\\icebow\\data\\bench\\rl_royale\\wk_adapt_exp3\\wk_adapt_exp3_latest.pt",
+      "bytes": 18694401,
+      "sha256": "2e7db358c96317c45bd68d873896f80d4182a55722b6689be74211a210b83939"
+    }
+  ],
+  "censuses": {
+    "evo": {
+      "path": "census_evo.json",
+      "sha256": "0faaa50224f4bd940993645c04583bba5c664727e0d79ee34136d8c3aabac7f3",
+      "source": "scratchpad/gauntlet/L70/pool_forms/loadable_decks.json",
+      "source_sha256": "95507a080eeb678efd39f4e8041e2d6a72ba6a1f79fc63d101b22f7250004fbe"
+    },
+    "lad": {
+      "path": "census_lad.json",
+      "sha256": "8c28ab94fa00a4a0b46c4cb781d703b42f2a6ed81880e11e7a360435efa1c9ee",
+      "source": "scratchpad/gauntlet/L73/rl_r2/loadable_decks_ladder.json",
+      "source_sha256": "d9638a4c89038e36c91e1bd9a76538b3e21b608e7289912d257a69de370aa4f8"
+    }
+  },
+  "runtime_files": [
+    {
+      "path": "pipeline/search_s0.py",
+      "bytes": 53829,
+      "sha256": "bba614506c307939e89bc4022a21559c1a01726c624143eed655ca899045bdc2"
+    },
+    {
+      "path": "pipeline/e1_eval.py",
+      "bytes": 128949,
+      "sha256": "d705a219b58ed8c4f8c174d01c9a0d488135a3f44b750545fd778aaba1336634"
+    },
+    {
+      "path": "pipeline/royale_env.py",
+      "bytes": 37415,
+      "sha256": "10e9ed57b4464fa8f55b0218b61feabe5cabfb586f7435287c2cf2bad00580a4"
+    },
+    {
+      "path": "pipeline/rl_royale.py",
+      "bytes": 184468,
+      "sha256": "b6d7515e6f67dc33667c13fcdd2fa6942b0b1e636777084d4f79b4ed44ff8319"
+    },
+    {
+      "path": "pipeline/decision_options.py",
+      "bytes": 113330,
+      "sha256": "80bcc86046d9b6487de4b1dd4b71f08f6af9e3025a9d7656c15901829b61e476"
+    },
+    {
+      "path": "pipeline/obs_contract.py",
+      "bytes": 37399,
+      "sha256": "910a7133a29ea7de8bb7a8776ef0ad16b056eb511709722934aabd0864eb6f5d"
+    },
+    {
+      "path": "pipeline/public_observation.py",
+      "bytes": 12542,
+      "sha256": "50778418de5903875a5bec62cfe58cd442a1ec4ed641dbd3db00c7f225be2734"
+    },
+    {
+      "path": "pipeline/extrapolate.py",
+      "bytes": 32937,
+      "sha256": "e496f1e0c85aa2123e733f674cde49df3d4ed4bc653f02132b880b23c5545509"
+    },
+    {
+      "path": "pipeline/model_gen.py",
+      "bytes": 18736,
+      "sha256": "37b9913369b863bcf0d00c5f8ff50f5352365bdede960c0838eecbad660b569d"
+    },
+    {
+      "path": "pipeline/dataset_gen.py",
+      "bytes": 30206,
+      "sha256": "62551c4796e718a418e0a5db82de06ae4bcc84103db703b3c1346d020ee93b6d"
+    },
+    {
+      "path": "scratchpad/gauntlet/L70/abilities/ability_policy.py",
+      "bytes": 3930,
+      "sha256": "657bca5b807f16b4df7516d80c4a22f892458229eabe6f3b48a31ab4f846c697"
+    },
+    {
+      "path": "scratchpad/gauntlet/L70/abilities/ability_models_v2.json",
+      "bytes": 141235,
+      "sha256": "4ab666438e19db4df1577f2e963f408ef1fd10980f25ba726f426530f0210b1f"
+    }
+  ],
+  "p4_note": "uniform main + three final exploiters, T=.3 (temperature fixed by experiment)",
+  "protocol": "S2/CAL bundle + recorded pipeline_decisions. Distinct eras audited; pooled per checkpoint/fast for scoring.",
+  "assumptions": [
+    "S2/CAL tau .35, own effects, forms deck, hero abilities v2; no anti-stall.",
+    "SIM fixed 26-tick action delay and extrapolation; device timing/identity/emotes not modeled.",
+    "Later live Rocket/Tornado, Log-air, card-level and follow-up options are outside S2/CAL.",
+    "Earlier era decision differences and historical anti-leak are standardized to S2/CAL, not reproduced.",
+    "No claim of exact live execution parity. Era-specific truth is in truth.json."
+  ]
+}

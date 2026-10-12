@@ -1,0 +1,70 @@
+{
+  "policies": [
+    {
+      "path": "icebow/data/bench/rl_royale/rseries_r1e31/rseries_r1e31_u0155.pt",
+      "grid": "lattice",
+      "feature_version": 4
+    },
+    {
+      "path": "icebow/data/bench/development_iteration_5_20261005/tower_spatial_v7/candidate.pt",
+      "grid": "lattice",
+      "feature_version": 7
+    },
+    {
+      "path": "icebow/data/bench/rl_royale/rseries_r2l/rseries_r2l_u0120.pt",
+      "grid": "lattice",
+      "feature_version": 5
+    },
+    {
+      "path": "icebow/data/bench/rl_royale/rseries_r3c/rseries_r3c_u0030_barrel2k_cellref.pt",
+      "grid": "lattice",
+      "feature_version": 6
+    },
+    {
+      "path": "icebow/data/bench/rl_royale/rseries_r3c/rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt",
+      "grid": "lattice",
+      "feature_version": 6
+    },
+    {
+      "path": "icebow/data/bench/rl_royale/rdef_e4/rdef_e4_u0020_barrel2k_cellref_towerref_w2.pt",
+      "grid": "lattice",
+      "feature_version": 6
+    },
+    {
+      "path": "icebow/data/bench/rl_royale/adapt_fix/adapt_fixed.pt",
+      "grid": "lattice",
+      "feature_version": 6
+    },
+    {
+      "path": "icebow/data/bench/rl_royale/adapt_fix/adapt_alone.pt",
+      "grid": "lattice",
+      "feature_version": 6
+    },
+    {
+      "path": "icebow/data/pipeline/gen_v1_s0/gen_s0.pt",
+      "grid": "lattice",
+      "feature_version": 1
+    },
+    {
+      "path": "icebow/data/bench/rl_royale/wk_adapt_main/wk_adapt_main_latest.pt",
+      "grid": "lattice",
+      "feature_version": 6
+    },
+    {
+      "path": "icebow/data/bench/rl_royale/wk_adapt_exp1/wk_adapt_exp1_latest.pt",
+      "grid": "lattice",
+      "feature_version": 6
+    },
+    {
+      "path": "icebow/data/bench/rl_royale/wk_adapt_exp2/wk_adapt_exp2_latest.pt",
+      "grid": "lattice",
+      "feature_version": 6
+    },
+    {
+      "path": "icebow/data/bench/rl_royale/wk_adapt_exp3/wk_adapt_exp3_latest.pt",
+      "grid": "lattice",
+      "feature_version": 6
+    }
+  ],
+  "sim_games": 0
+}
