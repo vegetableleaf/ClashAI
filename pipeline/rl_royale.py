@@ -2759,6 +2759,8 @@ class Learner:
         base.update({k: self.cfg.get(k) for k in COND_KEYS})
         base["gen"] = getattr(self, "gen", None)
         base["runtime"] = getattr(self, "runtime", None)
+        base["seed"] = self.cfg["seed"]                                       # rollout_jobs: per-(update, job) pipelining draw
+        base["learner_pipeline_frac"] = self.cfg.get("learner_pipeline_frac", 0)   # 0 = no learner pipelining (default)
         base["league_opp_policy"] = self.cfg.get("league_opp_policy", "sample")
         if AO.mode(self.cfg.get("opp_style", "off")) == "on":
             base.update({k: self.cfg.get(k, AO.DEFAULTS[k]) for k in AO.STYLE_KEYS})
