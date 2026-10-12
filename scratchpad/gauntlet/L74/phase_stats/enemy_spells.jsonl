@@ -1,8 +1,8 @@
 {"match": "live_play_20261008_000526.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 221, "last_tick": 357, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 996}
 {"match": "live_play_20261008_000526.jsonl", "name": "Log", "tower": "own_left", "tick": 675, "last_tick": 725, "sources": ["projectile_target"], "associated_hp_loss": 51}
 {"match": "live_play_20261008_000526.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 828, "last_tick": 916, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 498}
-{"match": "live_play_20261008_000526.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 1676, "last_tick": 1765, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 264}
 {"match": "live_play_20261008_000526.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 1676, "last_tick": 1717, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261008_000526.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 1676, "last_tick": 1765, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 264}
 {"match": "live_play_20261008_000526.jsonl", "name": "Log", "tower": "own_left", "tick": 1909, "last_tick": 1959, "sources": ["projectile_target"], "associated_hp_loss": 51}
 {"match": "live_play_20261008_000526.jsonl", "name": "Log", "tower": "own_right", "tick": 2456, "last_tick": 2476, "sources": ["projectile_target"], "associated_hp_loss": 51}
 {"match": "live_play_20261008_000526.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2711, "last_tick": 2835, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 996}
@@ -137,8 +137,8 @@
 {"match": "live_play_20261008_041846.jsonl", "name": "Arrows", "tower": "own_right", "tick": 2638, "last_tick": 2638, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261008_041846.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 3140, "last_tick": 3218, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 182}
 {"match": "live_play_20261008_041846.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3208, "last_tick": 3208, "sources": ["projectile_target"], "associated_hp_loss": 0}
-{"match": "live_play_20261008_042832.jsonl", "name": "Arrows", "tower": "own_left", "tick": 1048, "last_tick": 1068, "sources": ["projectile_target"], "associated_hp_loss": 387}
 {"match": "live_play_20261008_042832.jsonl", "name": "Arrows", "tower": "own_king", "tick": 1048, "last_tick": 1058, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261008_042832.jsonl", "name": "Arrows", "tower": "own_left", "tick": 1048, "last_tick": 1068, "sources": ["projectile_target"], "associated_hp_loss": 387}
 {"match": "live_play_20261008_043206.jsonl", "name": "Arrows", "tower": "own_king", "tick": 3929, "last_tick": 3939, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261008_043206.jsonl", "name": "Arrows", "tower": "own_right", "tick": 3929, "last_tick": 3939, "sources": ["projectile_target"], "associated_hp_loss": 99}
 {"match": "live_play_20261008_043206.jsonl", "name": "Arrows", "tower": "own_king", "tick": 5415, "last_tick": 5433, "sources": ["projectile_target"], "associated_hp_loss": 0}
@@ -156,8 +156,8 @@
 {"match": "live_play_20261008_051147.jsonl", "name": "Log", "tower": "own_right", "tick": 3721, "last_tick": 3769, "sources": ["projectile_target"], "associated_hp_loss": 51}
 {"match": "live_play_20261008_051147.jsonl", "name": "Log", "tower": "own_king", "tick": 4316, "last_tick": 4356, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261008_052253.jsonl", "name": "Arrows", "tower": "own_right", "tick": 2599, "last_tick": 2609, "sources": ["projectile_target"], "associated_hp_loss": 120}
-{"match": "live_play_20261008_052253.jsonl", "name": "Arrows", "tower": "own_left", "tick": 4362, "last_tick": 4372, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261008_052253.jsonl", "name": "Arrows", "tower": "own_king", "tick": 4362, "last_tick": 4362, "sources": ["projectile_target"], "associated_hp_loss": 17}
+{"match": "live_play_20261008_052253.jsonl", "name": "Arrows", "tower": "own_left", "tick": 4362, "last_tick": 4372, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261008_053459.jsonl", "name": "BarbLog", "tower": "own_right", "tick": 951, "last_tick": 1071, "sources": ["spell_body"], "associated_hp_loss": 558}
 {"match": "live_play_20261008_053459.jsonl", "name": "Snowball", "tower": "own_right", "tick": 1636, "last_tick": 1656, "sources": ["projectile_target"], "associated_hp_loss": 169}
 {"match": "live_play_20261008_053459.jsonl", "name": "BarbLog", "tower": "own_left", "tick": 2330, "last_tick": 2391, "sources": ["spell_body"], "associated_hp_loss": 279}
@@ -165,9 +165,9 @@
 {"match": "live_play_20261008_053459.jsonl", "name": "BarbLog", "tower": "own_right", "tick": 2887, "last_tick": 2917, "sources": ["spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261008_053459.jsonl", "name": "Snowball", "tower": "own_right", "tick": 3135, "last_tick": 3155, "sources": ["projectile_target"], "associated_hp_loss": 65}
 {"match": "live_play_20261008_053843.jsonl", "name": "Arrows", "tower": "own_left", "tick": 708, "last_tick": 718, "sources": ["projectile_target"], "associated_hp_loss": 0}
-{"match": "live_play_20261008_054125.jsonl", "name": "Arrows", "tower": "own_left", "tick": 1965, "last_tick": 1975, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261008_054125.jsonl", "name": "Arrows", "tower": "own_king", "tick": 1965, "last_tick": 1975, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261008_054125.jsonl", "name": "Arrows", "tower": "own_right", "tick": 1965, "last_tick": 1975, "sources": ["projectile_target"], "associated_hp_loss": 386}
+{"match": "live_play_20261008_054125.jsonl", "name": "Arrows", "tower": "own_left", "tick": 1965, "last_tick": 1975, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261008_054125.jsonl", "name": "BarbLog", "tower": "own_left", "tick": 4559, "last_tick": 4559, "sources": ["spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261008_064904.jsonl", "name": "Log", "tower": "own_right", "tick": 1867, "last_tick": 1917, "sources": ["projectile_target"], "associated_hp_loss": 51}
 {"match": "live_play_20261008_064904.jsonl", "name": "Log", "tower": "own_left", "tick": 2443, "last_tick": 2494, "sources": ["projectile_target"], "associated_hp_loss": 51}
@@ -190,8 +190,8 @@
 {"match": "live_play_20261008_070456.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 989, "last_tick": 1047, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 1486}
 {"match": "live_play_20261008_070456.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 1846, "last_tick": 1918, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 1400}
 {"match": "live_play_20261008_070456.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 1964, "last_tick": 1974, "sources": ["spell_body"], "associated_hp_loss": 1400}
-{"match": "live_play_20261008_070456.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 3176, "last_tick": 3236, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 212}
 {"match": "live_play_20261008_070456.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 3176, "last_tick": 3206, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261008_070456.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 3176, "last_tick": 3236, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 212}
 {"match": "live_play_20261008_070456.jsonl", "name": "Fireball", "tower": "own_right", "tick": 3414, "last_tick": 3424, "sources": ["projectile_target"], "associated_hp_loss": 230}
 {"match": "live_play_20261008_070456.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 3670, "last_tick": 3670, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261008_070456.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 3734, "last_tick": 3734, "sources": ["spell_body"], "associated_hp_loss": 0}
@@ -215,8 +215,8 @@
 {"match": "live_play_20261008_075921.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 829, "last_tick": 1017, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 1826}
 {"match": "live_play_20261008_075921.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 1848, "last_tick": 1994, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 1323}
 {"match": "live_play_20261008_075921.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2941, "last_tick": 3007, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 1126}
-{"match": "live_play_20261008_075921.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3502, "last_tick": 3514, "sources": ["projectile_target"], "associated_hp_loss": 746}
 {"match": "live_play_20261008_075921.jsonl", "name": "Arrows", "tower": "own_king", "tick": 3502, "last_tick": 3514, "sources": ["projectile_target"], "associated_hp_loss": 120}
+{"match": "live_play_20261008_075921.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3502, "last_tick": 3514, "sources": ["projectile_target"], "associated_hp_loss": 746}
 {"match": "live_play_20261008_080233.jsonl", "name": "Log", "tower": "own_left", "tick": 799, "last_tick": 840, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261008_080233.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 1885, "last_tick": 1989, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 1138}
 {"match": "live_play_20261008_080233.jsonl", "name": "Log", "tower": "own_right", "tick": 3064, "last_tick": 3094, "sources": ["projectile_target"], "associated_hp_loss": 39}
@@ -261,8 +261,8 @@
 {"match": "live_play_20261008_092543.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2815, "last_tick": 2875, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 96}
 {"match": "live_play_20261008_092543.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 3287, "last_tick": 3291, "sources": ["projectile_target"], "associated_hp_loss": 364}
 {"match": "live_play_20261008_092543.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 3337, "last_tick": 3398, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 364}
-{"match": "live_play_20261008_093217.jsonl", "name": "Arrows", "tower": "own_left", "tick": 703, "last_tick": 711, "sources": ["projectile_target"], "associated_hp_loss": 798}
 {"match": "live_play_20261008_093217.jsonl", "name": "Arrows", "tower": "own_king", "tick": 703, "last_tick": 711, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261008_093217.jsonl", "name": "Arrows", "tower": "own_left", "tick": 703, "last_tick": 711, "sources": ["projectile_target"], "associated_hp_loss": 798}
 {"match": "live_play_20261008_093217.jsonl", "name": "Fireball", "tower": "own_left", "tick": 3342, "last_tick": 3372, "sources": ["projectile_target"], "associated_hp_loss": 253}
 {"match": "live_play_20261008_094140.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 1086, "last_tick": 1214, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 604}
 {"match": "live_play_20261008_094140.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2507, "last_tick": 2535, "sources": ["projectile_target"], "associated_hp_loss": 740}
@@ -271,8 +271,8 @@
 {"match": "live_play_20261008_094513.jsonl", "name": "Arrows", "tower": "own_right", "tick": 752, "last_tick": 772, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261008_094513.jsonl", "name": "Arrows", "tower": "own_right", "tick": 3529, "last_tick": 3549, "sources": ["projectile_target"], "associated_hp_loss": 99}
 {"match": "live_play_20261008_095835.jsonl", "name": "Rocket", "tower": "own_right", "tick": 3861, "last_tick": 3892, "sources": ["projectile_target"], "associated_hp_loss": 304}
-{"match": "live_play_20261008_100604.jsonl", "name": "Arrows", "tower": "own_left", "tick": 4349, "last_tick": 4359, "sources": ["projectile_target"], "associated_hp_loss": 99}
 {"match": "live_play_20261008_100604.jsonl", "name": "Arrows", "tower": "own_king", "tick": 4349, "last_tick": 4359, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261008_100604.jsonl", "name": "Arrows", "tower": "own_left", "tick": 4349, "last_tick": 4359, "sources": ["projectile_target"], "associated_hp_loss": 99}
 {"match": "live_play_20261008_100604.jsonl", "name": "Arrows", "tower": "own_left", "tick": 5436, "last_tick": 5456, "sources": ["projectile_target"], "associated_hp_loss": 99}
 {"match": "live_play_20261008_100604.jsonl", "name": "Arrows", "tower": "own_left", "tick": 5729, "last_tick": 5739, "sources": ["projectile_target"], "associated_hp_loss": 99}
 {"match": "live_play_20261008_101437.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 1115, "last_tick": 1245, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 4049}
@@ -310,8 +310,8 @@
 {"match": "live_play_20261008_134526.jsonl", "name": "Log", "tower": "own_right", "tick": 2965, "last_tick": 3015, "sources": ["projectile_target"], "associated_hp_loss": 47}
 {"match": "live_play_20261008_134846.jsonl", "name": "BarbLog", "tower": "own_right", "tick": 1009, "last_tick": 1037, "sources": ["spell_body"], "associated_hp_loss": 440}
 {"match": "live_play_20261008_134846.jsonl", "name": "BarbLog", "tower": "own_right", "tick": 1085, "last_tick": 1217, "sources": ["spell_body"], "associated_hp_loss": 2398}
-{"match": "live_play_20261008_134846.jsonl", "name": "BarbLog", "tower": "own_left", "tick": 2588, "last_tick": 2668, "sources": ["spell_body"], "associated_hp_loss": 3934}
 {"match": "live_play_20261008_134846.jsonl", "name": "BarbLog", "tower": "own_king", "tick": 2588, "last_tick": 2588, "sources": ["spell_body"], "associated_hp_loss": 493}
+{"match": "live_play_20261008_134846.jsonl", "name": "BarbLog", "tower": "own_left", "tick": 2588, "last_tick": 2668, "sources": ["spell_body"], "associated_hp_loss": 3934}
 {"match": "live_play_20261008_151208.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 191, "last_tick": 265, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261008_151208.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2186, "last_tick": 2278, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 4424}
 {"match": "live_play_20261008_151208.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2328, "last_tick": 2338, "sources": ["spell_body"], "associated_hp_loss": 2450}
@@ -321,21 +321,21 @@
 {"match": "live_play_20261008_151523.jsonl", "name": "Log", "tower": "own_left", "tick": 1434, "last_tick": 1464, "sources": ["projectile_target"], "associated_hp_loss": 47}
 {"match": "live_play_20261008_151523.jsonl", "name": "Log", "tower": "own_left", "tick": 2775, "last_tick": 2800, "sources": ["projectile_target"], "associated_hp_loss": 47}
 {"match": "live_play_20261008_151523.jsonl", "name": "Log", "tower": "own_left", "tick": 3375, "last_tick": 3406, "sources": ["projectile_target"], "associated_hp_loss": 47}
-{"match": "live_play_20261008_151841.jsonl", "name": "Arrows", "tower": "own_left", "tick": 916, "last_tick": 936, "sources": ["projectile_target"], "associated_hp_loss": 108}
 {"match": "live_play_20261008_151841.jsonl", "name": "Arrows", "tower": "own_king", "tick": 916, "last_tick": 936, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261008_151841.jsonl", "name": "Arrows", "tower": "own_left", "tick": 916, "last_tick": 936, "sources": ["projectile_target"], "associated_hp_loss": 108}
 {"match": "live_play_20261008_151841.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3478, "last_tick": 3488, "sources": ["projectile_target"], "associated_hp_loss": 396}
 {"match": "live_play_20261008_152744.jsonl", "name": "Arrows", "tower": "own_king", "tick": 1587, "last_tick": 1587, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261008_152744.jsonl", "name": "Arrows", "tower": "own_right", "tick": 1587, "last_tick": 1587, "sources": ["projectile_target"], "associated_hp_loss": 4}
 {"match": "live_play_20261008_152744.jsonl", "name": "Fireball", "tower": "own_left", "tick": 3565, "last_tick": 3575, "sources": ["projectile_target"], "associated_hp_loss": 639}
-{"match": "live_play_20261008_152744.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3685, "last_tick": 3695, "sources": ["projectile_target"], "associated_hp_loss": 1753}
 {"match": "live_play_20261008_152744.jsonl", "name": "Arrows", "tower": "own_king", "tick": 3685, "last_tick": 3695, "sources": ["projectile_target"], "associated_hp_loss": 1855}
+{"match": "live_play_20261008_152744.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3685, "last_tick": 3695, "sources": ["projectile_target"], "associated_hp_loss": 1753}
 {"match": "live_play_20261008_152744.jsonl", "name": "Fireball", "tower": "own_king", "tick": 4360, "last_tick": 4390, "sources": ["projectile_target"], "associated_hp_loss": 2648}
-{"match": "live_play_20261008_152744.jsonl", "name": "Arrows", "tower": "own_left", "tick": 4416, "last_tick": 4416, "sources": ["projectile_target"], "associated_hp_loss": 255}
 {"match": "live_play_20261008_152744.jsonl", "name": "Arrows", "tower": "own_king", "tick": 4416, "last_tick": 4416, "sources": ["projectile_target"], "associated_hp_loss": 476}
+{"match": "live_play_20261008_152744.jsonl", "name": "Arrows", "tower": "own_left", "tick": 4416, "last_tick": 4416, "sources": ["projectile_target"], "associated_hp_loss": 255}
 {"match": "live_play_20261008_155513.jsonl", "name": "Arrows", "tower": "own_king", "tick": 733, "last_tick": 743, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261008_155513.jsonl", "name": "Arrows", "tower": "own_right", "tick": 733, "last_tick": 743, "sources": ["projectile_target"], "associated_hp_loss": 108}
-{"match": "live_play_20261008_155513.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3061, "last_tick": 3081, "sources": ["projectile_target"], "associated_hp_loss": 108}
 {"match": "live_play_20261008_155513.jsonl", "name": "Arrows", "tower": "own_king", "tick": 3061, "last_tick": 3071, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261008_155513.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3061, "last_tick": 3081, "sources": ["projectile_target"], "associated_hp_loss": 108}
 {"match": "live_play_20261008_161522.jsonl", "name": "Log", "tower": "own_left", "tick": 2479, "last_tick": 2529, "sources": ["projectile_target"], "associated_hp_loss": 51}
 {"match": "live_play_20261008_161522.jsonl", "name": "Log", "tower": "own_left", "tick": 3284, "last_tick": 3334, "sources": ["projectile_target"], "associated_hp_loss": 102}
 {"match": "live_play_20261008_161522.jsonl", "name": "Log", "tower": "own_left", "tick": 3961, "last_tick": 3993, "sources": ["projectile_target"], "associated_hp_loss": 51}
@@ -354,8 +354,8 @@
 {"match": "live_play_20261008_162655.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2151, "last_tick": 2265, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 400}
 {"match": "live_play_20261008_162655.jsonl", "name": "Rocket", "tower": "own_left", "tick": 2357, "last_tick": 2394, "sources": ["projectile_target"], "associated_hp_loss": 497}
 {"match": "live_play_20261008_162655.jsonl", "name": "Log", "tower": "own_left", "tick": 2604, "last_tick": 2654, "sources": ["projectile_target"], "associated_hp_loss": 56}
-{"match": "live_play_20261008_162655.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 2854, "last_tick": 2946, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 318}
 {"match": "live_play_20261008_162655.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2854, "last_tick": 2916, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
+{"match": "live_play_20261008_162655.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 2854, "last_tick": 2946, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 318}
 {"match": "live_play_20261008_162655.jsonl", "name": "Log", "tower": "own_left", "tick": 3252, "last_tick": 3288, "sources": ["projectile_target"], "associated_hp_loss": 256}
 {"match": "live_play_20261008_162655.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 3288, "last_tick": 3381, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 256}
 {"match": "live_play_20261008_163007.jsonl", "name": "Snowball", "tower": "own_right", "tick": 1694, "last_tick": 1714, "sources": ["projectile_target"], "associated_hp_loss": 65}
@@ -403,8 +403,8 @@
 {"match": "live_play_20261008_215018.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 3009, "last_tick": 3107, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261008_215018.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 4141, "last_tick": 4151, "sources": ["projectile_target"], "associated_hp_loss": 2435}
 {"match": "live_play_20261008_220134.jsonl", "name": "Log", "tower": "own_left", "tick": 1971, "last_tick": 2013, "sources": ["projectile_target"], "associated_hp_loss": 51}
-{"match": "live_play_20261008_220134.jsonl", "name": "Log", "tower": "own_left", "tick": 2796, "last_tick": 2836, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261008_220134.jsonl", "name": "Log", "tower": "own_king", "tick": 2796, "last_tick": 2836, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261008_220134.jsonl", "name": "Log", "tower": "own_left", "tick": 2796, "last_tick": 2836, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261008_220134.jsonl", "name": "Log", "tower": "own_right", "tick": 3439, "last_tick": 3495, "sources": ["projectile_target"], "associated_hp_loss": 51}
 {"match": "live_play_20261008_220809.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 769, "last_tick": 821, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 1826}
 {"match": "live_play_20261008_220809.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 865, "last_tick": 945, "sources": ["spell_body"], "associated_hp_loss": 1992}
@@ -412,34 +412,34 @@
 {"match": "live_play_20261008_220809.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2725, "last_tick": 2791, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 332}
 {"match": "live_play_20261008_220809.jsonl", "name": "Log", "tower": "own_left", "tick": 3079, "last_tick": 3126, "sources": ["projectile_target"], "associated_hp_loss": 47}
 {"match": "live_play_20261008_220809.jsonl", "name": "Log", "tower": "own_left", "tick": 3755, "last_tick": 3809, "sources": ["projectile_target"], "associated_hp_loss": 47}
-{"match": "live_play_20261008_230248.jsonl", "name": "Arrows", "tower": "own_left", "tick": 1327, "last_tick": 1347, "sources": ["projectile_target"], "associated_hp_loss": 108}
 {"match": "live_play_20261008_230248.jsonl", "name": "Arrows", "tower": "own_king", "tick": 1327, "last_tick": 1347, "sources": ["projectile_target"], "associated_hp_loss": 0}
-{"match": "live_play_20261008_230248.jsonl", "name": "Arrows", "tower": "own_left", "tick": 2284, "last_tick": 2304, "sources": ["projectile_target"], "associated_hp_loss": 615}
+{"match": "live_play_20261008_230248.jsonl", "name": "Arrows", "tower": "own_left", "tick": 1327, "last_tick": 1347, "sources": ["projectile_target"], "associated_hp_loss": 108}
 {"match": "live_play_20261008_230248.jsonl", "name": "Arrows", "tower": "own_king", "tick": 2284, "last_tick": 2304, "sources": ["projectile_target"], "associated_hp_loss": 0}
-{"match": "live_play_20261008_230248.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3375, "last_tick": 3386, "sources": ["projectile_target"], "associated_hp_loss": 1122}
+{"match": "live_play_20261008_230248.jsonl", "name": "Arrows", "tower": "own_left", "tick": 2284, "last_tick": 2304, "sources": ["projectile_target"], "associated_hp_loss": 615}
 {"match": "live_play_20261008_230248.jsonl", "name": "Arrows", "tower": "own_king", "tick": 3375, "last_tick": 3386, "sources": ["projectile_target"], "associated_hp_loss": 0}
-{"match": "live_play_20261008_230607.jsonl", "name": "Arrows", "tower": "own_left", "tick": 1040, "last_tick": 1050, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261008_230248.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3375, "last_tick": 3386, "sources": ["projectile_target"], "associated_hp_loss": 1122}
 {"match": "live_play_20261008_230607.jsonl", "name": "Arrows", "tower": "own_king", "tick": 1040, "last_tick": 1050, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261008_230607.jsonl", "name": "Arrows", "tower": "own_right", "tick": 1040, "last_tick": 1050, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261008_230607.jsonl", "name": "Arrows", "tower": "own_left", "tick": 1040, "last_tick": 1050, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261008_230607.jsonl", "name": "Arrows", "tower": "own_left", "tick": 2415, "last_tick": 2425, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261008_231739.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2489, "last_tick": 2497, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261008_231739.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2545, "last_tick": 2545, "sources": ["spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261008_231739.jsonl", "name": "GoblinBarrel", "tower": "own_king", "tick": 2599, "last_tick": 2607, "sources": ["spell_body"], "associated_hp_loss": 1457}
-{"match": "live_play_20261008_231739.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3241, "last_tick": 3251, "sources": ["projectile_target"], "associated_hp_loss": 99}
 {"match": "live_play_20261008_231739.jsonl", "name": "Arrows", "tower": "own_king", "tick": 3241, "last_tick": 3251, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261008_231739.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3241, "last_tick": 3251, "sources": ["projectile_target"], "associated_hp_loss": 99}
 {"match": "live_play_20261008_232056.jsonl", "name": "Fireball", "tower": "own_right", "tick": 395, "last_tick": 425, "sources": ["projectile_target"], "associated_hp_loss": 230}
 {"match": "live_play_20261008_232056.jsonl", "name": "Log", "tower": "own_left", "tick": 705, "last_tick": 756, "sources": ["projectile_target"], "associated_hp_loss": 51}
 {"match": "live_play_20261008_232056.jsonl", "name": "Fireball", "tower": "own_left", "tick": 3390, "last_tick": 3390, "sources": ["projectile_target"], "associated_hp_loss": 230}
 {"match": "live_play_20261008_233456.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 171, "last_tick": 260, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 200}
 {"match": "live_play_20261008_233456.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 877, "last_tick": 925, "sources": ["projectile_target"], "associated_hp_loss": 0}
-{"match": "live_play_20261008_233456.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 1709, "last_tick": 1793, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 106}
 {"match": "live_play_20261008_233456.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 1709, "last_tick": 1772, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
+{"match": "live_play_20261008_233456.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 1709, "last_tick": 1793, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 106}
 {"match": "live_play_20261008_233456.jsonl", "name": "GoblinBarrel", "tower": "own_king", "tick": 2370, "last_tick": 2380, "sources": ["spell_body"], "associated_hp_loss": 400}
 {"match": "live_play_20261008_233456.jsonl", "name": "Fireball", "tower": "own_left", "tick": 2748, "last_tick": 2768, "sources": ["projectile_target"], "associated_hp_loss": 210}
 {"match": "live_play_20261008_233456.jsonl", "name": "Log", "tower": "own_left", "tick": 2984, "last_tick": 3035, "sources": ["projectile_target"], "associated_hp_loss": 51}
 {"match": "live_play_20261008_233456.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 3237, "last_tick": 3307, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
-{"match": "live_play_20261008_233456.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 3946, "last_tick": 4016, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 106}
 {"match": "live_play_20261008_233456.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 3946, "last_tick": 3974, "sources": ["projectile_target"], "associated_hp_loss": 210}
+{"match": "live_play_20261008_233456.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 3946, "last_tick": 4016, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 106}
 {"match": "live_play_20261008_233456.jsonl", "name": "Fireball", "tower": "own_left", "tick": 4016, "last_tick": 4047, "sources": ["projectile_target"], "associated_hp_loss": 210}
 {"match": "live_play_20261008_233456.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 4710, "last_tick": 4815, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 600}
 {"match": "live_play_20261008_233456.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 5039, "last_tick": 5095, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
@@ -449,8 +449,8 @@
 {"match": "live_play_20261008_235224.jsonl", "name": "Arrows", "tower": "own_left", "tick": 677, "last_tick": 697, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261008_235224.jsonl", "name": "Fireball", "tower": "own_left", "tick": 1442, "last_tick": 1472, "sources": ["projectile_target"], "associated_hp_loss": 673}
 {"match": "live_play_20261008_235224.jsonl", "name": "Fireball", "tower": "own_left", "tick": 2776, "last_tick": 2796, "sources": ["projectile_target"], "associated_hp_loss": 253}
-{"match": "live_play_20261008_235224.jsonl", "name": "Arrows", "tower": "own_left", "tick": 2979, "last_tick": 2997, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261008_235224.jsonl", "name": "Arrows", "tower": "own_king", "tick": 2979, "last_tick": 2997, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261008_235224.jsonl", "name": "Arrows", "tower": "own_left", "tick": 2979, "last_tick": 2997, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261008_235701.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 724, "last_tick": 797, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261008_235701.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 1886, "last_tick": 1992, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 182}
 {"match": "live_play_20261008_235701.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2535, "last_tick": 2581, "sources": ["projectile_target"], "associated_hp_loss": 2450}
@@ -466,10 +466,10 @@
 {"match": "live_play_20261009_000019.jsonl", "name": "Arrows", "tower": "own_king", "tick": 5341, "last_tick": 5351, "sources": ["projectile_target"], "associated_hp_loss": 618}
 {"match": "live_play_20261009_000019.jsonl", "name": "Arrows", "tower": "own_right", "tick": 5341, "last_tick": 5351, "sources": ["projectile_target"], "associated_hp_loss": 312}
 {"match": "live_play_20261009_000019.jsonl", "name": "Arrows", "tower": "own_king", "tick": 5788, "last_tick": 5788, "sources": ["projectile_target"], "associated_hp_loss": 108}
-{"match": "live_play_20261009_000539.jsonl", "name": "Arrows", "tower": "own_left", "tick": 2465, "last_tick": 2485, "sources": ["projectile_target"], "associated_hp_loss": 108}
 {"match": "live_play_20261009_000539.jsonl", "name": "Arrows", "tower": "own_king", "tick": 2465, "last_tick": 2485, "sources": ["projectile_target"], "associated_hp_loss": 0}
-{"match": "live_play_20261009_000539.jsonl", "name": "Arrows", "tower": "own_left", "tick": 4643, "last_tick": 4643, "sources": ["projectile_target"], "associated_hp_loss": 621}
+{"match": "live_play_20261009_000539.jsonl", "name": "Arrows", "tower": "own_left", "tick": 2465, "last_tick": 2485, "sources": ["projectile_target"], "associated_hp_loss": 108}
 {"match": "live_play_20261009_000539.jsonl", "name": "Arrows", "tower": "own_king", "tick": 4643, "last_tick": 4643, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261009_000539.jsonl", "name": "Arrows", "tower": "own_left", "tick": 4643, "last_tick": 4643, "sources": ["projectile_target"], "associated_hp_loss": 621}
 {"match": "live_play_20261009_000539.jsonl", "name": "Arrows", "tower": "own_left", "tick": 5484, "last_tick": 5494, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261009_001101.jsonl", "name": "Arrows", "tower": "own_king", "tick": 1041, "last_tick": 1062, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261009_001101.jsonl", "name": "Arrows", "tower": "own_right", "tick": 1041, "last_tick": 1062, "sources": ["projectile_target"], "associated_hp_loss": 3044}
@@ -515,13 +515,13 @@
 {"match": "live_play_20261009_020914.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 378, "last_tick": 426, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261009_020914.jsonl", "name": "Log", "tower": "own_left", "tick": 1219, "last_tick": 1259, "sources": ["projectile_target"], "associated_hp_loss": 56}
 {"match": "live_play_20261009_020914.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 1379, "last_tick": 1469, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 364}
-{"match": "live_play_20261009_020914.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 2390, "last_tick": 2486, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 192}
 {"match": "live_play_20261009_020914.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2390, "last_tick": 2456, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
+{"match": "live_play_20261009_020914.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 2390, "last_tick": 2486, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 192}
 {"match": "live_play_20261009_020914.jsonl", "name": "GoblinBarrel", "tower": "own_king", "tick": 2466, "last_tick": 2486, "sources": ["spell_body"], "associated_hp_loss": 182}
 {"match": "live_play_20261009_020914.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2894, "last_tick": 2994, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 839}
 {"match": "live_play_20261009_020914.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 3485, "last_tick": 3555, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
-{"match": "live_play_20261009_020914.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 4005, "last_tick": 4085, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 192}
 {"match": "live_play_20261009_020914.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 4005, "last_tick": 4075, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
+{"match": "live_play_20261009_020914.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 4005, "last_tick": 4085, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 192}
 {"match": "live_play_20261009_020914.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 4420, "last_tick": 4430, "sources": ["projectile_target"], "associated_hp_loss": 364}
 {"match": "live_play_20261009_020914.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 4475, "last_tick": 4514, "sources": ["spell_body"], "associated_hp_loss": 364}
 {"match": "live_play_20261009_021314.jsonl", "name": "BarbLog", "tower": "own_left", "tick": 749, "last_tick": 779, "sources": ["spell_body"], "associated_hp_loss": 0}
@@ -535,8 +535,8 @@
 {"match": "live_play_20261009_022126.jsonl", "name": "BarbLog", "tower": "own_right", "tick": 3924, "last_tick": 3970, "sources": ["spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261009_022126.jsonl", "name": "Graveyard", "tower": "own_right", "tick": 4597, "last_tick": 4746, "sources": ["spell_body"], "associated_hp_loss": 223}
 {"match": "live_play_20261009_022126.jsonl", "name": "Graveyard", "tower": "own_king", "tick": 4716, "last_tick": 4716, "sources": ["spell_body"], "associated_hp_loss": 0}
-{"match": "live_play_20261009_023220.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3510, "last_tick": 3528, "sources": ["projectile_target"], "associated_hp_loss": 506}
 {"match": "live_play_20261009_023220.jsonl", "name": "Arrows", "tower": "own_king", "tick": 3510, "last_tick": 3528, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261009_023220.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3510, "last_tick": 3528, "sources": ["projectile_target"], "associated_hp_loss": 506}
 {"match": "live_play_20261009_023534.jsonl", "name": "Fireball", "tower": "own_king", "tick": 172, "last_tick": 212, "sources": ["projectile_target"], "associated_hp_loss": 210}
 {"match": "live_play_20261009_023851.jsonl", "name": "Log", "tower": "own_left", "tick": 492, "last_tick": 542, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261009_023851.jsonl", "name": "Fireball", "tower": "own_right", "tick": 4315, "last_tick": 4341, "sources": ["projectile_target"], "associated_hp_loss": 253}
@@ -654,13 +654,13 @@
 {"match": "live_play_20261009_052302.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 1036, "last_tick": 1065, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261009_052302.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 2480, "last_tick": 2530, "sources": ["spell_body"], "associated_hp_loss": 1578}
 {"match": "live_play_20261009_052302.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 3181, "last_tick": 3199, "sources": ["projectile_target"], "associated_hp_loss": 1299}
-{"match": "live_play_20261009_052302.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 3245, "last_tick": 3305, "sources": ["spell_body"], "associated_hp_loss": 1699}
 {"match": "live_play_20261009_052302.jsonl", "name": "Arrows", "tower": "own_king", "tick": 3245, "last_tick": 3245, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261009_052302.jsonl", "name": "Arrows", "tower": "own_right", "tick": 3245, "last_tick": 3245, "sources": ["projectile_target"], "associated_hp_loss": 1699}
+{"match": "live_play_20261009_052302.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 3245, "last_tick": 3305, "sources": ["spell_body"], "associated_hp_loss": 1699}
 {"match": "live_play_20261009_052302.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 3725, "last_tick": 3761, "sources": ["projectile_target"], "associated_hp_loss": 665}
 {"match": "live_play_20261009_052302.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 3805, "last_tick": 3825, "sources": ["spell_body"], "associated_hp_loss": 665}
-{"match": "live_play_20261009_052302.jsonl", "name": "GoblinBarrel", "tower": "own_king", "tick": 3815, "last_tick": 3905, "sources": ["spell_body"], "associated_hp_loss": 200}
 {"match": "live_play_20261009_052302.jsonl", "name": "Arrows", "tower": "own_king", "tick": 3815, "last_tick": 3825, "sources": ["projectile_target"], "associated_hp_loss": 200}
+{"match": "live_play_20261009_052302.jsonl", "name": "GoblinBarrel", "tower": "own_king", "tick": 3815, "last_tick": 3905, "sources": ["spell_body"], "associated_hp_loss": 200}
 {"match": "live_play_20261009_052302.jsonl", "name": "Arrows", "tower": "own_right", "tick": 3815, "last_tick": 3825, "sources": ["projectile_target"], "associated_hp_loss": 665}
 {"match": "live_play_20261009_052625.jsonl", "name": "Snowball", "tower": "own_left", "tick": 3236, "last_tick": 3256, "sources": ["projectile_target"], "associated_hp_loss": 251}
 {"match": "live_play_20261009_052625.jsonl", "name": "BarbLog", "tower": "own_left", "tick": 4015, "last_tick": 4015, "sources": ["spell_body"], "associated_hp_loss": 65}
@@ -678,29 +678,29 @@
 {"match": "live_play_20261009_054250.jsonl", "name": "BarbLog", "tower": "own_left", "tick": 5601, "last_tick": 5665, "sources": ["spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261009_054250.jsonl", "name": "Graveyard", "tower": "own_right", "tick": 5691, "last_tick": 5724, "sources": ["spell_body"], "associated_hp_loss": 238}
 {"match": "live_play_20261009_054250.jsonl", "name": "Graveyard", "tower": "own_right", "tick": 5769, "last_tick": 5773, "sources": ["spell_body"], "associated_hp_loss": 285}
-{"match": "live_play_20261009_054757.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3087, "last_tick": 3107, "sources": ["projectile_target"], "associated_hp_loss": 108}
 {"match": "live_play_20261009_054757.jsonl", "name": "Arrows", "tower": "own_king", "tick": 3087, "last_tick": 3107, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261009_054757.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3087, "last_tick": 3107, "sources": ["projectile_target"], "associated_hp_loss": 108}
 {"match": "live_play_20261009_055110.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 252, "last_tick": 382, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 1000}
 {"match": "live_play_20261009_055110.jsonl", "name": "GoblinBarrel", "tower": "own_king", "tick": 332, "last_tick": 336, "sources": ["spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261009_055110.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 1423, "last_tick": 1517, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 2200}
 {"match": "live_play_20261009_055110.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 1565, "last_tick": 1565, "sources": ["spell_body"], "associated_hp_loss": 1720}
-{"match": "live_play_20261009_055110.jsonl", "name": "Arrows", "tower": "own_left", "tick": 1645, "last_tick": 1655, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261009_055110.jsonl", "name": "Arrows", "tower": "own_king", "tick": 1645, "last_tick": 1655, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261009_055110.jsonl", "name": "Arrows", "tower": "own_left", "tick": 1645, "last_tick": 1655, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261009_055110.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2526, "last_tick": 2590, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261009_055110.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 3125, "last_tick": 3187, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
-{"match": "live_play_20261009_055110.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3279, "last_tick": 3289, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261009_055110.jsonl", "name": "Arrows", "tower": "own_king", "tick": 3279, "last_tick": 3289, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261009_055110.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3279, "last_tick": 3289, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261009_055427.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 946, "last_tick": 1083, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 910}
 {"match": "live_play_20261009_055427.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2122, "last_tick": 2232, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 546}
 {"match": "live_play_20261009_055427.jsonl", "name": "Log", "tower": "own_left", "tick": 2670, "last_tick": 2716, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261009_055427.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 3545, "last_tick": 3585, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 1352}
 {"match": "live_play_20261009_055427.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 3641, "last_tick": 3677, "sources": ["spell_body"], "associated_hp_loss": 646}
-{"match": "live_play_20261009_055745.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3463, "last_tick": 3463, "sources": ["projectile_target"], "associated_hp_loss": 627}
 {"match": "live_play_20261009_055745.jsonl", "name": "Arrows", "tower": "own_king", "tick": 3463, "last_tick": 3463, "sources": ["projectile_target"], "associated_hp_loss": 0}
-{"match": "live_play_20261009_055745.jsonl", "name": "Arrows", "tower": "own_left", "tick": 4220, "last_tick": 4230, "sources": ["projectile_target"], "associated_hp_loss": 120}
+{"match": "live_play_20261009_055745.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3463, "last_tick": 3463, "sources": ["projectile_target"], "associated_hp_loss": 627}
 {"match": "live_play_20261009_055745.jsonl", "name": "Arrows", "tower": "own_king", "tick": 4220, "last_tick": 4230, "sources": ["projectile_target"], "associated_hp_loss": 0}
-{"match": "live_play_20261009_055745.jsonl", "name": "Arrows", "tower": "own_left", "tick": 4813, "last_tick": 4823, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261009_055745.jsonl", "name": "Arrows", "tower": "own_left", "tick": 4220, "last_tick": 4230, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261009_055745.jsonl", "name": "Arrows", "tower": "own_king", "tick": 4813, "last_tick": 4823, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261009_055745.jsonl", "name": "Arrows", "tower": "own_left", "tick": 4813, "last_tick": 4823, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261009_055745.jsonl", "name": "Arrows", "tower": "own_king", "tick": 5906, "last_tick": 5916, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261009_055745.jsonl", "name": "Arrows", "tower": "own_right", "tick": 5906, "last_tick": 5927, "sources": ["projectile_target"], "associated_hp_loss": 190}
 {"match": "live_play_20261009_060326.jsonl", "name": "Graveyard", "tower": "own_left", "tick": 2734, "last_tick": 2878, "sources": ["spell_body"], "associated_hp_loss": 756}
@@ -783,8 +783,8 @@
 {"match": "live_play_20261009_081507.jsonl", "name": "Log", "tower": "own_left", "tick": 3467, "last_tick": 3497, "sources": ["projectile_target"], "associated_hp_loss": 51}
 {"match": "live_play_20261009_083825.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 755, "last_tick": 872, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 728}
 {"match": "live_play_20261009_083825.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 1562, "last_tick": 1654, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 182}
-{"match": "live_play_20261009_083825.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 2437, "last_tick": 2506, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 96}
 {"match": "live_play_20261009_083825.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2437, "last_tick": 2506, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 364}
+{"match": "live_play_20261009_083825.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 2437, "last_tick": 2506, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 96}
 {"match": "live_play_20261009_083825.jsonl", "name": "GoblinBarrel", "tower": "own_king", "tick": 2504, "last_tick": 2506, "sources": ["spell_body"], "associated_hp_loss": 182}
 {"match": "live_play_20261009_083825.jsonl", "name": "Rocket", "tower": "own_left", "tick": 2826, "last_tick": 2876, "sources": ["projectile_target"], "associated_hp_loss": 497}
 {"match": "live_play_20261009_083825.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2968, "last_tick": 3032, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
@@ -811,38 +811,38 @@
 {"match": "live_play_20261009_090821.jsonl", "name": "Arrows", "tower": "own_right", "tick": 980, "last_tick": 996, "sources": ["projectile_target"], "associated_hp_loss": 518}
 {"match": "live_play_20261009_091139.jsonl", "name": "Arrows", "tower": "own_left", "tick": 2687, "last_tick": 2707, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261009_091139.jsonl", "name": "Snowball", "tower": "own_left", "tick": 4659, "last_tick": 4669, "sources": ["projectile_target"], "associated_hp_loss": 73}
-{"match": "live_play_20261009_091139.jsonl", "name": "Arrows", "tower": "own_left", "tick": 4931, "last_tick": 4943, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261009_091139.jsonl", "name": "Arrows", "tower": "own_king", "tick": 4931, "last_tick": 4943, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261009_091139.jsonl", "name": "Arrows", "tower": "own_left", "tick": 4931, "last_tick": 4943, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261009_091139.jsonl", "name": "Snowball", "tower": "own_left", "tick": 5968, "last_tick": 5978, "sources": ["projectile_target"], "associated_hp_loss": 0}
-{"match": "live_play_20261009_093205.jsonl", "name": "Arrows", "tower": "own_left", "tick": 2336, "last_tick": 2347, "sources": ["projectile_target"], "associated_hp_loss": 99}
 {"match": "live_play_20261009_093205.jsonl", "name": "Arrows", "tower": "own_king", "tick": 2336, "last_tick": 2347, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261009_093205.jsonl", "name": "Arrows", "tower": "own_left", "tick": 2336, "last_tick": 2347, "sources": ["projectile_target"], "associated_hp_loss": 99}
 {"match": "live_play_20261009_093205.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3096, "last_tick": 3112, "sources": ["projectile_target"], "associated_hp_loss": 99}
-{"match": "live_play_20261009_093205.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3843, "last_tick": 3843, "sources": ["projectile_target"], "associated_hp_loss": 99}
 {"match": "live_play_20261009_093205.jsonl", "name": "Arrows", "tower": "own_king", "tick": 3843, "last_tick": 3843, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261009_093205.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3843, "last_tick": 3843, "sources": ["projectile_target"], "associated_hp_loss": 99}
 {"match": "live_play_20261009_093205.jsonl", "name": "Arrows", "tower": "own_right", "tick": 4936, "last_tick": 4948, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261009_094618.jsonl", "name": "Snowball", "tower": "own_left", "tick": 3024, "last_tick": 3044, "sources": ["projectile_target"], "associated_hp_loss": 65}
-{"match": "live_play_20261009_130225.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3147, "last_tick": 3158, "sources": ["projectile_target"], "associated_hp_loss": 733}
 {"match": "live_play_20261009_130225.jsonl", "name": "Arrows", "tower": "own_king", "tick": 3147, "last_tick": 3158, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261009_130225.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3147, "last_tick": 3158, "sources": ["projectile_target"], "associated_hp_loss": 733}
 {"match": "live_play_20261009_211759.jsonl", "name": "Log", "tower": "own_right", "tick": 2591, "last_tick": 2641, "sources": ["projectile_target"], "associated_hp_loss": 51}
 {"match": "live_play_20261009_211759.jsonl", "name": "Log", "tower": "own_left", "tick": 3385, "last_tick": 3435, "sources": ["projectile_target"], "associated_hp_loss": 51}
 {"match": "live_play_20261009_231045.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 272, "last_tick": 350, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 182}
 {"match": "live_play_20261009_231045.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 1587, "last_tick": 1635, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261009_231045.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 2663, "last_tick": 2729, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
-{"match": "live_play_20261009_231045.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3136, "last_tick": 3153, "sources": ["projectile_target"], "associated_hp_loss": 108}
 {"match": "live_play_20261009_231045.jsonl", "name": "Arrows", "tower": "own_king", "tick": 3136, "last_tick": 3153, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261009_231045.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3136, "last_tick": 3153, "sources": ["projectile_target"], "associated_hp_loss": 108}
 {"match": "live_play_20261009_231045.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 3295, "last_tick": 3357, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261009_231045.jsonl", "name": "GoblinBarrel", "tower": "own_king", "tick": 3381, "last_tick": 3381, "sources": ["spell_body"], "associated_hp_loss": 182}
 {"match": "live_play_20261009_231045.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 3895, "last_tick": 3929, "sources": ["projectile_target"], "associated_hp_loss": 546}
 {"match": "live_play_20261009_231045.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 3975, "last_tick": 3979, "sources": ["spell_body"], "associated_hp_loss": 546}
 {"match": "live_play_20261009_231045.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 4640, "last_tick": 4734, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 182}
 {"match": "live_play_20261009_231045.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 5349, "last_tick": 5405, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
-{"match": "live_play_20261009_231045.jsonl", "name": "Arrows", "tower": "own_left", "tick": 5807, "last_tick": 5807, "sources": ["projectile_target"], "associated_hp_loss": 108}
 {"match": "live_play_20261009_231045.jsonl", "name": "Arrows", "tower": "own_king", "tick": 5807, "last_tick": 5807, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261009_231045.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 5807, "last_tick": 5836, "sources": ["projectile_target"], "associated_hp_loss": 108}
-{"match": "live_play_20261009_231609.jsonl", "name": "Arrows", "tower": "own_left", "tick": 2678, "last_tick": 2694, "sources": ["projectile_target"], "associated_hp_loss": 108}
+{"match": "live_play_20261009_231045.jsonl", "name": "Arrows", "tower": "own_left", "tick": 5807, "last_tick": 5807, "sources": ["projectile_target"], "associated_hp_loss": 108}
 {"match": "live_play_20261009_231609.jsonl", "name": "Arrows", "tower": "own_king", "tick": 2678, "last_tick": 2688, "sources": ["projectile_target"], "associated_hp_loss": 0}
-{"match": "live_play_20261009_231609.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3361, "last_tick": 3371, "sources": ["projectile_target"], "associated_hp_loss": 301}
+{"match": "live_play_20261009_231609.jsonl", "name": "Arrows", "tower": "own_left", "tick": 2678, "last_tick": 2694, "sources": ["projectile_target"], "associated_hp_loss": 108}
 {"match": "live_play_20261009_231609.jsonl", "name": "Arrows", "tower": "own_king", "tick": 3361, "last_tick": 3371, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261009_231609.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3361, "last_tick": 3371, "sources": ["projectile_target"], "associated_hp_loss": 301}
 {"match": "live_play_20261009_231956.jsonl", "name": "Fireball", "tower": "own_left", "tick": 1569, "last_tick": 1600, "sources": ["projectile_target"], "associated_hp_loss": 253}
 {"match": "live_play_20261009_232318.jsonl", "name": "Fireball", "tower": "own_left", "tick": 2627, "last_tick": 2657, "sources": ["projectile_target"], "associated_hp_loss": 253}
 {"match": "live_play_20261009_234819.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 231, "last_tick": 365, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 1000}
@@ -915,8 +915,8 @@
 {"match": "live_play_20261010_022009.jsonl", "name": "Log", "tower": "own_right", "tick": 2726, "last_tick": 2766, "sources": ["projectile_target"], "associated_hp_loss": 51}
 {"match": "live_play_20261010_022703.jsonl", "name": "Fireball", "tower": "own_left", "tick": 505, "last_tick": 526, "sources": ["projectile_target"], "associated_hp_loss": 230}
 {"match": "live_play_20261010_024404.jsonl", "name": "Arrows", "tower": "own_left", "tick": 2987, "last_tick": 2987, "sources": ["projectile_target"], "associated_hp_loss": 0}
-{"match": "live_play_20261010_024404.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3579, "last_tick": 3579, "sources": ["projectile_target"], "associated_hp_loss": 264}
 {"match": "live_play_20261010_024404.jsonl", "name": "Arrows", "tower": "own_king", "tick": 3579, "last_tick": 3579, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261010_024404.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3579, "last_tick": 3579, "sources": ["projectile_target"], "associated_hp_loss": 264}
 {"match": "live_play_20261010_024720.jsonl", "name": "Fireball", "tower": "own_left", "tick": 715, "last_tick": 735, "sources": ["projectile_target"], "associated_hp_loss": 253}
 {"match": "live_play_20261010_024720.jsonl", "name": "Log", "tower": "own_left", "tick": 1398, "last_tick": 1448, "sources": ["projectile_target"], "associated_hp_loss": 56}
 {"match": "live_play_20261010_024720.jsonl", "name": "Log", "tower": "own_left", "tick": 3109, "last_tick": 3159, "sources": ["projectile_target"], "associated_hp_loss": 56}
@@ -927,14 +927,14 @@
 {"match": "live_play_20261010_033557.jsonl", "name": "Fireball", "tower": "own_left", "tick": 2027, "last_tick": 2055, "sources": ["projectile_target"], "associated_hp_loss": 230}
 {"match": "live_play_20261010_033916.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 794, "last_tick": 832, "sources": ["projectile_target"], "associated_hp_loss": 245}
 {"match": "live_play_20261010_033916.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2036, "last_tick": 2116, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 400}
-{"match": "live_play_20261010_033916.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 2796, "last_tick": 2898, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 318}
 {"match": "live_play_20261010_033916.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2796, "last_tick": 2888, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 400}
+{"match": "live_play_20261010_033916.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 2796, "last_tick": 2898, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 318}
 {"match": "live_play_20261010_033916.jsonl", "name": "Log", "tower": "own_left", "tick": 2968, "last_tick": 3021, "sources": ["projectile_target"], "associated_hp_loss": 51}
 {"match": "live_play_20261010_033916.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 3235, "last_tick": 3325, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 638}
 {"match": "live_play_20261010_033916.jsonl", "name": "Log", "tower": "own_right", "tick": 3564, "last_tick": 3614, "sources": ["projectile_target"], "associated_hp_loss": 51}
 {"match": "live_play_20261010_033916.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 3710, "last_tick": 3764, "sources": ["projectile_target"], "associated_hp_loss": 0}
-{"match": "live_play_20261010_033916.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 4251, "last_tick": 4331, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 318}
 {"match": "live_play_20261010_033916.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 4251, "last_tick": 4319, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 51}
+{"match": "live_play_20261010_033916.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 4251, "last_tick": 4331, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 318}
 {"match": "live_play_20261010_033916.jsonl", "name": "Log", "tower": "own_left", "tick": 4376, "last_tick": 4397, "sources": ["projectile_target"], "associated_hp_loss": 51}
 {"match": "live_play_20261010_033916.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 4587, "last_tick": 4701, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261010_034923.jsonl", "name": "Rocket", "tower": "own_left", "tick": 1738, "last_tick": 1788, "sources": ["projectile_target"], "associated_hp_loss": 497}
@@ -960,9 +960,9 @@
 {"match": "live_play_20261010_042928.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 410, "last_tick": 454, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261010_042928.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 1475, "last_tick": 1631, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 4424}
 {"match": "live_play_20261010_042928.jsonl", "name": "GoblinBarrel", "tower": "own_king", "tick": 2558, "last_tick": 2642, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
-{"match": "live_play_20261010_043403.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3687, "last_tick": 3707, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261010_043403.jsonl", "name": "Arrows", "tower": "own_king", "tick": 3687, "last_tick": 3707, "sources": ["projectile_target"], "associated_hp_loss": 99}
 {"match": "live_play_20261010_043403.jsonl", "name": "Arrows", "tower": "own_right", "tick": 3687, "last_tick": 3707, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261010_043403.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3687, "last_tick": 3707, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261010_043403.jsonl", "name": "Arrows", "tower": "own_king", "tick": 4482, "last_tick": 4490, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261010_043403.jsonl", "name": "Arrows", "tower": "own_right", "tick": 4482, "last_tick": 4490, "sources": ["projectile_target"], "associated_hp_loss": 99}
 {"match": "live_play_20261010_043403.jsonl", "name": "Arrows", "tower": "own_right", "tick": 5339, "last_tick": 5339, "sources": ["projectile_target"], "associated_hp_loss": 294}
@@ -987,14 +987,14 @@
 {"match": "live_play_20261010_045901.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 151, "last_tick": 209, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261010_045901.jsonl", "name": "GoblinBarrel", "tower": "own_king", "tick": 229, "last_tick": 249, "sources": ["spell_body"], "associated_hp_loss": 600}
 {"match": "live_play_20261010_045901.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 910, "last_tick": 1040, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 1342}
-{"match": "live_play_20261010_045901.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 2131, "last_tick": 2221, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 318}
 {"match": "live_play_20261010_045901.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2131, "last_tick": 2241, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 800}
+{"match": "live_play_20261010_045901.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 2131, "last_tick": 2221, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 318}
 {"match": "live_play_20261010_045901.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 3357, "last_tick": 3430, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261010_045901.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 3952, "last_tick": 4018, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
-{"match": "live_play_20261010_045901.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 4364, "last_tick": 4403, "sources": ["projectile_target"], "associated_hp_loss": 318}
 {"match": "live_play_20261010_045901.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 4364, "last_tick": 4403, "sources": ["projectile_target"], "associated_hp_loss": 400}
-{"match": "live_play_20261010_045901.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 4448, "last_tick": 4469, "sources": ["spell_body"], "associated_hp_loss": 318}
+{"match": "live_play_20261010_045901.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 4364, "last_tick": 4403, "sources": ["projectile_target"], "associated_hp_loss": 318}
 {"match": "live_play_20261010_045901.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 4448, "last_tick": 4459, "sources": ["spell_body"], "associated_hp_loss": 400}
+{"match": "live_play_20261010_045901.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 4448, "last_tick": 4469, "sources": ["spell_body"], "associated_hp_loss": 318}
 {"match": "live_play_20261010_050823.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 200, "last_tick": 302, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 400}
 {"match": "live_play_20261010_050823.jsonl", "name": "Log", "tower": "own_left", "tick": 1118, "last_tick": 1169, "sources": ["projectile_target"], "associated_hp_loss": 51}
 {"match": "live_play_20261010_050823.jsonl", "name": "Log", "tower": "own_right", "tick": 2296, "last_tick": 2346, "sources": ["projectile_target"], "associated_hp_loss": 51}
@@ -1041,12 +1041,12 @@
 {"match": "live_play_20261010_100451.jsonl", "name": "Fireball", "tower": "own_left", "tick": 1548, "last_tick": 1579, "sources": ["projectile_target"], "associated_hp_loss": 253}
 {"match": "live_play_20261010_100451.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2234, "last_tick": 2286, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 1162}
 {"match": "live_play_20261010_100451.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2342, "last_tick": 2372, "sources": ["spell_body"], "associated_hp_loss": 1162}
-{"match": "live_play_20261010_100451.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 2965, "last_tick": 3033, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 264}
 {"match": "live_play_20261010_100451.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2965, "last_tick": 3033, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
+{"match": "live_play_20261010_100451.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 2965, "last_tick": 3033, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 264}
 {"match": "live_play_20261010_100451.jsonl", "name": "Fireball", "tower": "own_left", "tick": 3260, "last_tick": 3260, "sources": ["projectile_target"], "associated_hp_loss": 253}
 {"match": "live_play_20261010_100451.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 3520, "last_tick": 3674, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 166}
-{"match": "live_play_20261010_101148.jsonl", "name": "Arrows", "tower": "own_left", "tick": 495, "last_tick": 505, "sources": ["projectile_target"], "associated_hp_loss": 108}
 {"match": "live_play_20261010_101148.jsonl", "name": "Arrows", "tower": "own_king", "tick": 495, "last_tick": 505, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261010_101148.jsonl", "name": "Arrows", "tower": "own_left", "tick": 495, "last_tick": 505, "sources": ["projectile_target"], "associated_hp_loss": 108}
 {"match": "live_play_20261010_101407.jsonl", "name": "Log", "tower": "own_right", "tick": 3095, "last_tick": 3095, "sources": ["projectile_target"], "associated_hp_loss": 43}
 {"match": "live_play_20261010_101407.jsonl", "name": "Arrows", "tower": "own_king", "tick": 3780, "last_tick": 3780, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261010_101407.jsonl", "name": "Arrows", "tower": "own_right", "tick": 3780, "last_tick": 3780, "sources": ["projectile_target"], "associated_hp_loss": 108}
@@ -1070,8 +1070,8 @@
 {"match": "live_play_20261010_104136.jsonl", "name": "Arrows", "tower": "own_right", "tick": 1729, "last_tick": 1739, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261010_104136.jsonl", "name": "Arrows", "tower": "own_left", "tick": 2496, "last_tick": 2506, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261010_104136.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3164, "last_tick": 3174, "sources": ["projectile_target"], "associated_hp_loss": 426}
-{"match": "live_play_20261010_104136.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3557, "last_tick": 3557, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261010_104136.jsonl", "name": "Arrows", "tower": "own_king", "tick": 3557, "last_tick": 3557, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261010_104136.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3557, "last_tick": 3557, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261010_142319.jsonl", "name": "Log", "tower": "own_right", "tick": 637, "last_tick": 687, "sources": ["projectile_target"], "associated_hp_loss": 51}
 {"match": "live_play_20261010_142319.jsonl", "name": "Log", "tower": "own_left", "tick": 1741, "last_tick": 1791, "sources": ["projectile_target"], "associated_hp_loss": 51}
 {"match": "live_play_20261010_142319.jsonl", "name": "Log", "tower": "own_right", "tick": 4262, "last_tick": 4312, "sources": ["projectile_target"], "associated_hp_loss": 51}
@@ -1080,8 +1080,8 @@
 {"match": "live_play_20261010_142319.jsonl", "name": "Log", "tower": "own_right", "tick": 5557, "last_tick": 5597, "sources": ["projectile_target"], "associated_hp_loss": 51}
 {"match": "live_play_20261010_142319.jsonl", "name": "Log", "tower": "own_right", "tick": 5860, "last_tick": 5896, "sources": ["projectile_target"], "associated_hp_loss": 51}
 {"match": "live_play_20261010_150631.jsonl", "name": "Rocket", "tower": "own_right", "tick": 2752, "last_tick": 2802, "sources": ["projectile_target"], "associated_hp_loss": 173}
-{"match": "live_play_20261010_151159.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3404, "last_tick": 3404, "sources": ["projectile_target"], "associated_hp_loss": 1106}
 {"match": "live_play_20261010_151159.jsonl", "name": "Arrows", "tower": "own_king", "tick": 3404, "last_tick": 3404, "sources": ["projectile_target"], "associated_hp_loss": 99}
+{"match": "live_play_20261010_151159.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3404, "last_tick": 3404, "sources": ["projectile_target"], "associated_hp_loss": 1106}
 {"match": "live_play_20261010_152733.jsonl", "name": "Fireball", "tower": "own_right", "tick": 2745, "last_tick": 2766, "sources": ["projectile_target"], "associated_hp_loss": 253}
 {"match": "live_play_20261010_153601.jsonl", "name": "Log", "tower": "own_left", "tick": 3046, "last_tick": 3096, "sources": ["projectile_target"], "associated_hp_loss": 47}
 {"match": "live_play_20261010_153601.jsonl", "name": "Log", "tower": "own_left", "tick": 3435, "last_tick": 3470, "sources": ["projectile_target"], "associated_hp_loss": 47}
@@ -1107,8 +1107,8 @@
 {"match": "live_play_20261010_210750.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 662, "last_tick": 827, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 2328}
 {"match": "live_play_20261010_210750.jsonl", "name": "GoblinBarrel", "tower": "own_king", "tick": 739, "last_tick": 759, "sources": ["spell_body"], "associated_hp_loss": 200}
 {"match": "live_play_20261010_210750.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 1587, "last_tick": 1682, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 200}
-{"match": "live_play_20261010_210750.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 2431, "last_tick": 2507, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 106}
 {"match": "live_play_20261010_210750.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2431, "last_tick": 2537, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 919}
+{"match": "live_play_20261010_210750.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 2431, "last_tick": 2507, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 106}
 {"match": "live_play_20261010_210750.jsonl", "name": "GoblinBarrel", "tower": "own_king", "tick": 2507, "last_tick": 2527, "sources": ["spell_body"], "associated_hp_loss": 106}
 {"match": "live_play_20261010_210750.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2990, "last_tick": 3062, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 546}
 {"match": "live_play_20261010_210750.jsonl", "name": "Rocket", "tower": "own_left", "tick": 3024, "last_tick": 3082, "sources": ["projectile_target"], "associated_hp_loss": 546}
@@ -1129,8 +1129,8 @@
 {"match": "live_play_20261011_122008.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 2641, "last_tick": 2733, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 382}
 {"match": "live_play_20261011_122008.jsonl", "name": "GoblinBarrel", "tower": "own_king", "tick": 3478, "last_tick": 3478, "sources": ["spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261011_122326.jsonl", "name": "BarbLog", "tower": "own_left", "tick": 3578, "last_tick": 3588, "sources": ["spell_body"], "associated_hp_loss": 0}
-{"match": "live_play_20261011_122644.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3249, "last_tick": 3269, "sources": ["projectile_target"], "associated_hp_loss": 1258}
 {"match": "live_play_20261011_122644.jsonl", "name": "Arrows", "tower": "own_king", "tick": 3249, "last_tick": 3269, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261011_122644.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3249, "last_tick": 3269, "sources": ["projectile_target"], "associated_hp_loss": 1258}
 {"match": "live_play_20261011_123000.jsonl", "name": "Rocket", "tower": "own_right", "tick": 3621, "last_tick": 3666, "sources": ["projectile_target"], "associated_hp_loss": 230}
 {"match": "live_play_20261011_123320.jsonl", "name": "Graveyard", "tower": "own_left", "tick": 3372, "last_tick": 3516, "sources": ["spell_body"], "associated_hp_loss": 293}
 {"match": "live_play_20261011_175514.jsonl", "name": "Arrows", "tower": "own_king", "tick": 1260, "last_tick": 1285, "sources": ["projectile_target"], "associated_hp_loss": 0}
@@ -1149,13 +1149,13 @@
 {"match": "live_play_20261011_182916.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 223, "last_tick": 383, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 1641}
 {"match": "live_play_20261011_182916.jsonl", "name": "GoblinBarrel", "tower": "own_king", "tick": 301, "last_tick": 311, "sources": ["spell_body"], "associated_hp_loss": 200}
 {"match": "live_play_20261011_182916.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 854, "last_tick": 960, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 2301}
-{"match": "live_play_20261011_182916.jsonl", "name": "Arrows", "tower": "own_left", "tick": 1578, "last_tick": 1604, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261011_182916.jsonl", "name": "Arrows", "tower": "own_king", "tick": 1578, "last_tick": 1604, "sources": ["projectile_target"], "associated_hp_loss": 834}
+{"match": "live_play_20261011_182916.jsonl", "name": "Arrows", "tower": "own_left", "tick": 1578, "last_tick": 1604, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261011_182916.jsonl", "name": "GoblinBarrel", "tower": "own_king", "tick": 1754, "last_tick": 1805, "sources": ["projectile_target"], "associated_hp_loss": 1918}
 {"match": "live_play_20261011_182916.jsonl", "name": "GoblinBarrel", "tower": "own_king", "tick": 1850, "last_tick": 1921, "sources": ["spell_body"], "associated_hp_loss": 2318}
 {"match": "live_play_20261011_182916.jsonl", "name": "GoblinBarrel", "tower": "own_king", "tick": 2541, "last_tick": 2706, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 1720}
-{"match": "live_play_20261011_182916.jsonl", "name": "Arrows", "tower": "own_left", "tick": 2620, "last_tick": 2640, "sources": ["projectile_target"], "associated_hp_loss": 482}
 {"match": "live_play_20261011_182916.jsonl", "name": "Arrows", "tower": "own_king", "tick": 2620, "last_tick": 2640, "sources": ["projectile_target"], "associated_hp_loss": 1720}
+{"match": "live_play_20261011_182916.jsonl", "name": "Arrows", "tower": "own_left", "tick": 2620, "last_tick": 2640, "sources": ["projectile_target"], "associated_hp_loss": 482}
 {"match": "live_play_20261011_182916.jsonl", "name": "GoblinBarrel", "tower": "own_king", "tick": 3016, "last_tick": 3120, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261011_182916.jsonl", "name": "GoblinBarrel", "tower": "own_king", "tick": 3544, "last_tick": 3680, "sources": ["spell_body"], "associated_hp_loss": 1530}
 {"match": "live_play_20261011_184450.jsonl", "name": "BarbLog", "tower": "own_left", "tick": 2569, "last_tick": 2571, "sources": ["spell_body"], "associated_hp_loss": 0}
@@ -1176,8 +1176,8 @@
 {"match": "live_play_20261011_191850.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2375, "last_tick": 2439, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 2000}
 {"match": "live_play_20261011_191850.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2485, "last_tick": 2515, "sources": ["spell_body"], "associated_hp_loss": 1400}
 {"match": "live_play_20261011_192842.jsonl", "name": "Arrows", "tower": "own_left", "tick": 469, "last_tick": 479, "sources": ["projectile_target"], "associated_hp_loss": 490}
-{"match": "live_play_20261011_192842.jsonl", "name": "Arrows", "tower": "own_left", "tick": 1788, "last_tick": 1809, "sources": ["projectile_target"], "associated_hp_loss": 1088}
 {"match": "live_play_20261011_192842.jsonl", "name": "Arrows", "tower": "own_king", "tick": 1788, "last_tick": 1809, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261011_192842.jsonl", "name": "Arrows", "tower": "own_left", "tick": 1788, "last_tick": 1809, "sources": ["projectile_target"], "associated_hp_loss": 1088}
 {"match": "live_play_20261011_194945.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 1357, "last_tick": 1415, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 400}
 {"match": "live_play_20261011_194945.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 2375, "last_tick": 2481, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 400}
 {"match": "live_play_20261011_194945.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 3061, "last_tick": 3087, "sources": ["projectile_target"], "associated_hp_loss": 400}
@@ -1189,8 +1189,8 @@
 {"match": "live_play_20261011_195630.jsonl", "name": "Fireball", "tower": "own_left", "tick": 2618, "last_tick": 2638, "sources": ["projectile_target"], "associated_hp_loss": 230}
 {"match": "live_play_20261011_195630.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3025, "last_tick": 3035, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261011_195630.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 3595, "last_tick": 3647, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
-{"match": "live_play_20261011_195630.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 4135, "last_tick": 4235, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 176}
 {"match": "live_play_20261011_195630.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 4135, "last_tick": 4215, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 498}
+{"match": "live_play_20261011_195630.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 4135, "last_tick": 4235, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 176}
 {"match": "live_play_20261011_230758.jsonl", "name": "BarbLog", "tower": "own_right", "tick": 2189, "last_tick": 2331, "sources": ["spell_body", "projectile_target"], "associated_hp_loss": 1978}
 {"match": "live_play_20261011_230758.jsonl", "name": "BarbLog", "tower": "own_right", "tick": 5045, "last_tick": 5075, "sources": ["spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261011_231556.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 845, "last_tick": 947, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 332}
@@ -1201,21 +1201,21 @@
 {"match": "live_play_20261011_231556.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 5197, "last_tick": 5297, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 498}
 {"match": "live_play_20261011_231556.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 5569, "last_tick": 5651, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 166}
 {"match": "live_play_20261011_231556.jsonl", "name": "Rocket", "tower": "own_left", "tick": 5815, "last_tick": 5873, "sources": ["projectile_target"], "associated_hp_loss": 1269}
-{"match": "live_play_20261011_231556.jsonl", "name": "Arrows", "tower": "own_left", "tick": 5978, "last_tick": 5998, "sources": ["projectile_target"], "associated_hp_loss": 36}
 {"match": "live_play_20261011_231556.jsonl", "name": "Arrows", "tower": "own_king", "tick": 5978, "last_tick": 5998, "sources": ["projectile_target"], "associated_hp_loss": 36}
+{"match": "live_play_20261011_231556.jsonl", "name": "Arrows", "tower": "own_left", "tick": 5978, "last_tick": 5998, "sources": ["projectile_target"], "associated_hp_loss": 36}
 {"match": "live_play_20261011_232117.jsonl", "name": "Arrows", "tower": "own_left", "tick": 1171, "last_tick": 1181, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261011_232117.jsonl", "name": "Fireball", "tower": "own_left", "tick": 1984, "last_tick": 2004, "sources": ["projectile_target"], "associated_hp_loss": 253}
 {"match": "live_play_20261011_232117.jsonl", "name": "Fireball", "tower": "own_left", "tick": 3940, "last_tick": 3970, "sources": ["projectile_target"], "associated_hp_loss": 373}
-{"match": "live_play_20261011_232117.jsonl", "name": "Arrows", "tower": "own_left", "tick": 4038, "last_tick": 4058, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261011_232117.jsonl", "name": "Arrows", "tower": "own_king", "tick": 4038, "last_tick": 4058, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261011_232117.jsonl", "name": "Arrows", "tower": "own_left", "tick": 4038, "last_tick": 4058, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261011_232117.jsonl", "name": "Arrows", "tower": "own_left", "tick": 5396, "last_tick": 5410, "sources": ["projectile_target"], "associated_hp_loss": 234}
 {"match": "live_play_20261011_232117.jsonl", "name": "Fireball", "tower": "own_left", "tick": 5663, "last_tick": 5688, "sources": ["projectile_target"], "associated_hp_loss": 373}
 {"match": "live_play_20261011_232117.jsonl", "name": "Arrows", "tower": "own_left", "tick": 5715, "last_tick": 5725, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261011_233011.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 426, "last_tick": 516, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 200}
 {"match": "live_play_20261011_233011.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 1849, "last_tick": 1904, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261011_233011.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2586, "last_tick": 2714, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 1055}
-{"match": "live_play_20261011_233011.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3133, "last_tick": 3147, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261011_233011.jsonl", "name": "Arrows", "tower": "own_king", "tick": 3133, "last_tick": 3147, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261011_233011.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3133, "last_tick": 3147, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261011_233011.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 3222, "last_tick": 3334, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 1000}
 {"match": "live_play_20261011_233011.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 3887, "last_tick": 3922, "sources": ["projectile_target"], "associated_hp_loss": 1022}
 {"match": "live_play_20261011_233011.jsonl", "name": "GoblinBarrel", "tower": "own_king", "tick": 3997, "last_tick": 4009, "sources": ["spell_body"], "associated_hp_loss": 0}
@@ -1265,14 +1265,14 @@
 {"match": "live_play_20261012_011934.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 232, "last_tick": 288, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261012_011934.jsonl", "name": "GoblinBarrel", "tower": "own_king", "tick": 309, "last_tick": 319, "sources": ["spell_body"], "associated_hp_loss": 182}
 {"match": "live_play_20261012_011934.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 1515, "last_tick": 1567, "sources": ["projectile_target"], "associated_hp_loss": 0}
-{"match": "live_play_20261012_011934.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 2262, "last_tick": 2330, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261012_011934.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2262, "last_tick": 2350, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 182}
+{"match": "live_play_20261012_011934.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 2262, "last_tick": 2330, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261012_011934.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2834, "last_tick": 2956, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 1344}
 {"match": "live_play_20261012_011934.jsonl", "name": "Rocket", "tower": "own_left", "tick": 2903, "last_tick": 2956, "sources": ["projectile_target"], "associated_hp_loss": 1225}
 {"match": "live_play_20261012_011934.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 3303, "last_tick": 3367, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261012_011934.jsonl", "name": "Log", "tower": "own_right", "tick": 3715, "last_tick": 3766, "sources": ["projectile_target"], "associated_hp_loss": 51}
-{"match": "live_play_20261012_011934.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 3949, "last_tick": 4041, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 288}
 {"match": "live_play_20261012_011934.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 3949, "last_tick": 4041, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 728}
+{"match": "live_play_20261012_011934.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 3949, "last_tick": 4041, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 288}
 {"match": "live_play_20261012_011934.jsonl", "name": "Log", "tower": "own_left", "tick": 4304, "last_tick": 4356, "sources": ["projectile_target"], "associated_hp_loss": 51}
 {"match": "live_play_20261012_011934.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 4520, "last_tick": 4589, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261012_011934.jsonl", "name": "Rocket", "tower": "own_left", "tick": 4702, "last_tick": 4763, "sources": ["projectile_target"], "associated_hp_loss": 497}
@@ -1280,8 +1280,8 @@
 {"match": "live_play_20261012_011934.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 5049, "last_tick": 5178, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 910}
 {"match": "live_play_20261012_011934.jsonl", "name": "Log", "tower": "own_right", "tick": 5121, "last_tick": 5168, "sources": ["projectile_target"], "associated_hp_loss": 51}
 {"match": "live_play_20261012_011934.jsonl", "name": "Rocket", "tower": "own_left", "tick": 5270, "last_tick": 5322, "sources": ["projectile_target"], "associated_hp_loss": 497}
-{"match": "live_play_20261012_011934.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 5543, "last_tick": 5625, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 96}
 {"match": "live_play_20261012_011934.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 5543, "last_tick": 5595, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261012_011934.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 5543, "last_tick": 5625, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 96}
 {"match": "live_play_20261012_011934.jsonl", "name": "Rocket", "tower": "own_left", "tick": 5666, "last_tick": 5718, "sources": ["projectile_target"], "associated_hp_loss": 164}
 {"match": "live_play_20261012_012439.jsonl", "name": "Log", "tower": "own_left", "tick": 1404, "last_tick": 1454, "sources": ["projectile_target"], "associated_hp_loss": 671}
 {"match": "live_play_20261012_012439.jsonl", "name": "Log", "tower": "own_left", "tick": 3446, "last_tick": 3486, "sources": ["projectile_target"], "associated_hp_loss": 51}
@@ -1329,8 +1329,8 @@
 {"match": "live_play_20261012_024511.jsonl", "name": "Graveyard", "tower": "own_king", "tick": 2898, "last_tick": 2938, "sources": ["spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261012_024511.jsonl", "name": "Graveyard", "tower": "own_left", "tick": 3650, "last_tick": 3674, "sources": ["spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261012_024511.jsonl", "name": "Graveyard", "tower": "own_king", "tick": 3674, "last_tick": 3674, "sources": ["spell_body"], "associated_hp_loss": 0}
-{"match": "live_play_20261012_024830.jsonl", "name": "Arrows", "tower": "own_left", "tick": 731, "last_tick": 741, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261012_024830.jsonl", "name": "Arrows", "tower": "own_king", "tick": 731, "last_tick": 741, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261012_024830.jsonl", "name": "Arrows", "tower": "own_left", "tick": 731, "last_tick": 741, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261012_024830.jsonl", "name": "Arrows", "tower": "own_king", "tick": 1992, "last_tick": 2012, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261012_024830.jsonl", "name": "Arrows", "tower": "own_right", "tick": 1992, "last_tick": 2012, "sources": ["projectile_target"], "associated_hp_loss": 3583}
 {"match": "live_play_20261012_025738.jsonl", "name": "Graveyard", "tower": "own_right", "tick": 3619, "last_tick": 3670, "sources": ["spell_body"], "associated_hp_loss": 0}
@@ -1347,13 +1347,13 @@
 {"match": "live_play_20261012_034214.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 200, "last_tick": 292, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 182}
 {"match": "live_play_20261012_034214.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 1612, "last_tick": 1666, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261012_034214.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 2937, "last_tick": 3003, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
-{"match": "live_play_20261012_040029.jsonl", "name": "Arrows", "tower": "own_left", "tick": 1892, "last_tick": 1908, "sources": ["projectile_target"], "associated_hp_loss": 238}
 {"match": "live_play_20261012_040029.jsonl", "name": "Arrows", "tower": "own_king", "tick": 1892, "last_tick": 1902, "sources": ["projectile_target"], "associated_hp_loss": 0}
-{"match": "live_play_20261012_040029.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3558, "last_tick": 3578, "sources": ["projectile_target"], "associated_hp_loss": 108}
+{"match": "live_play_20261012_040029.jsonl", "name": "Arrows", "tower": "own_left", "tick": 1892, "last_tick": 1908, "sources": ["projectile_target"], "associated_hp_loss": 238}
 {"match": "live_play_20261012_040029.jsonl", "name": "Arrows", "tower": "own_king", "tick": 3558, "last_tick": 3578, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261012_040029.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3558, "last_tick": 3578, "sources": ["projectile_target"], "associated_hp_loss": 108}
 {"match": "live_play_20261012_040655.jsonl", "name": "Arrows", "tower": "own_right", "tick": 2866, "last_tick": 2886, "sources": ["projectile_target"], "associated_hp_loss": 0}
-{"match": "live_play_20261012_041014.jsonl", "name": "Arrows", "tower": "own_left", "tick": 2452, "last_tick": 2462, "sources": ["projectile_target"], "associated_hp_loss": 40}
 {"match": "live_play_20261012_041014.jsonl", "name": "Arrows", "tower": "own_king", "tick": 2452, "last_tick": 2462, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261012_041014.jsonl", "name": "Arrows", "tower": "own_left", "tick": 2452, "last_tick": 2462, "sources": ["projectile_target"], "associated_hp_loss": 40}
 {"match": "live_play_20261012_041333.jsonl", "name": "Arrows", "tower": "own_king", "tick": 762, "last_tick": 774, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261012_041333.jsonl", "name": "Arrows", "tower": "own_right", "tick": 762, "last_tick": 774, "sources": ["projectile_target"], "associated_hp_loss": 108}
 {"match": "live_play_20261012_041333.jsonl", "name": "Arrows", "tower": "own_right", "tick": 2765, "last_tick": 2785, "sources": ["projectile_target"], "associated_hp_loss": 108}
@@ -1361,9 +1361,9 @@
 {"match": "live_play_20261012_041652.jsonl", "name": "Graveyard", "tower": "own_king", "tick": 1361, "last_tick": 1471, "sources": ["spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261012_041652.jsonl", "name": "Graveyard", "tower": "own_left", "tick": 2692, "last_tick": 2814, "sources": ["spell_body"], "associated_hp_loss": 703}
 {"match": "live_play_20261012_041652.jsonl", "name": "Graveyard", "tower": "own_king", "tick": 2788, "last_tick": 2788, "sources": ["spell_body"], "associated_hp_loss": 0}
-{"match": "live_play_20261012_042004.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3024, "last_tick": 3044, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261012_042004.jsonl", "name": "Arrows", "tower": "own_king", "tick": 3024, "last_tick": 3034, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261012_042004.jsonl", "name": "Arrows", "tower": "own_right", "tick": 3024, "last_tick": 3034, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261012_042004.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3024, "last_tick": 3044, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261012_042004.jsonl", "name": "Arrows", "tower": "own_right", "tick": 3821, "last_tick": 3832, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261012_042820.jsonl", "name": "Log", "tower": "own_left", "tick": 663, "last_tick": 713, "sources": ["projectile_target"], "associated_hp_loss": 51}
 {"match": "live_play_20261012_042820.jsonl", "name": "Log", "tower": "own_right", "tick": 1668, "last_tick": 1708, "sources": ["projectile_target"], "associated_hp_loss": 51}
@@ -1375,8 +1375,8 @@
 {"match": "live_play_20261012_043441.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 504, "last_tick": 614, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 664}
 {"match": "live_play_20261012_043441.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 1212, "last_tick": 1297, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261012_043441.jsonl", "name": "GoblinBarrel", "tower": "own_king", "tick": 1297, "last_tick": 1297, "sources": ["spell_body"], "associated_hp_loss": 0}
-{"match": "live_play_20261012_043441.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 2369, "last_tick": 2422, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 404}
 {"match": "live_play_20261012_043441.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2369, "last_tick": 2422, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
+{"match": "live_play_20261012_043441.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 2369, "last_tick": 2422, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 404}
 {"match": "live_play_20261012_043441.jsonl", "name": "GoblinBarrel", "tower": "own_king", "tick": 2442, "last_tick": 2452, "sources": ["spell_body"], "associated_hp_loss": 332}
 {"match": "live_play_20261012_043441.jsonl", "name": "Log", "tower": "own_left", "tick": 2844, "last_tick": 2894, "sources": ["projectile_target"], "associated_hp_loss": 47}
 {"match": "live_play_20261012_043441.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 2974, "last_tick": 3032, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
@@ -1408,12 +1408,12 @@
 {"match": "live_play_20261012_050818.jsonl", "name": "Arrows", "tower": "own_right", "tick": 4494, "last_tick": 4504, "sources": ["projectile_target"], "associated_hp_loss": 996}
 {"match": "live_play_20261012_051257.jsonl", "name": "Arrows", "tower": "own_right", "tick": 2951, "last_tick": 2961, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261012_051614.jsonl", "name": "Fireball", "tower": "own_left", "tick": 3050, "last_tick": 3070, "sources": ["projectile_target"], "associated_hp_loss": 253}
-{"match": "live_play_20261012_052655.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3211, "last_tick": 3221, "sources": ["projectile_target"], "associated_hp_loss": 1427}
 {"match": "live_play_20261012_052655.jsonl", "name": "Arrows", "tower": "own_king", "tick": 3211, "last_tick": 3221, "sources": ["projectile_target"], "associated_hp_loss": 0}
-{"match": "live_play_20261012_052655.jsonl", "name": "Arrows", "tower": "own_left", "tick": 4190, "last_tick": 4204, "sources": ["projectile_target"], "associated_hp_loss": 120}
+{"match": "live_play_20261012_052655.jsonl", "name": "Arrows", "tower": "own_left", "tick": 3211, "last_tick": 3221, "sources": ["projectile_target"], "associated_hp_loss": 1427}
 {"match": "live_play_20261012_052655.jsonl", "name": "Arrows", "tower": "own_king", "tick": 4190, "last_tick": 4204, "sources": ["projectile_target"], "associated_hp_loss": 0}
-{"match": "live_play_20261012_052655.jsonl", "name": "Arrows", "tower": "own_left", "tick": 4664, "last_tick": 4674, "sources": ["projectile_target"], "associated_hp_loss": 117}
+{"match": "live_play_20261012_052655.jsonl", "name": "Arrows", "tower": "own_left", "tick": 4190, "last_tick": 4204, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261012_052655.jsonl", "name": "Arrows", "tower": "own_king", "tick": 4664, "last_tick": 4674, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261012_052655.jsonl", "name": "Arrows", "tower": "own_left", "tick": 4664, "last_tick": 4674, "sources": ["projectile_target"], "associated_hp_loss": 117}
 {"match": "live_play_20261012_053120.jsonl", "name": "Log", "tower": "own_left", "tick": 931, "last_tick": 971, "sources": ["projectile_target"], "associated_hp_loss": 51}
 {"match": "live_play_20261012_053120.jsonl", "name": "Fireball", "tower": "own_left", "tick": 1496, "last_tick": 1526, "sources": ["projectile_target"], "associated_hp_loss": 253}
 {"match": "live_play_20261012_053120.jsonl", "name": "Log", "tower": "own_right", "tick": 1944, "last_tick": 1994, "sources": ["projectile_target"], "associated_hp_loss": 51}
@@ -1465,13 +1465,13 @@
 {"match": "live_play_20261012_061554.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 200, "last_tick": 254, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261012_061554.jsonl", "name": "GoblinBarrel", "tower": "own_king", "tick": 284, "last_tick": 294, "sources": ["spell_body"], "associated_hp_loss": 182}
 {"match": "live_play_20261012_061554.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 715, "last_tick": 847, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 910}
-{"match": "live_play_20261012_061554.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 1546, "last_tick": 1632, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 192}
 {"match": "live_play_20261012_061554.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 1546, "last_tick": 1632, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 854}
+{"match": "live_play_20261012_061554.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 1546, "last_tick": 1632, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 192}
 {"match": "live_play_20261012_061554.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2613, "last_tick": 2662, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261012_061554.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 3134, "last_tick": 3225, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 546}
 {"match": "live_play_20261012_061554.jsonl", "name": "Log", "tower": "own_left", "tick": 3309, "last_tick": 3359, "sources": ["projectile_target"], "associated_hp_loss": 51}
-{"match": "live_play_20261012_061554.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 3721, "last_tick": 3799, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 96}
 {"match": "live_play_20261012_061554.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 3721, "last_tick": 3763, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261012_061554.jsonl", "name": "GoblinBarrel", "tower": "own_right", "tick": 3721, "last_tick": 3799, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 96}
 {"match": "live_play_20261012_061554.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 4421, "last_tick": 4515, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 546}
 {"match": "live_play_20261012_061554.jsonl", "name": "Rocket", "tower": "own_left", "tick": 4803, "last_tick": 4863, "sources": ["projectile_target"], "associated_hp_loss": 757}
 {"match": "live_play_20261012_061554.jsonl", "name": "Log", "tower": "own_left", "tick": 4941, "last_tick": 4986, "sources": ["projectile_target"], "associated_hp_loss": 25}
@@ -1550,8 +1550,8 @@
 {"match": "live_play_20261012_085657.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 1190, "last_tick": 1282, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 546}
 {"match": "live_play_20261012_085657.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 2337, "last_tick": 2383, "sources": ["projectile_target"], "associated_hp_loss": 0}
 {"match": "live_play_20261012_085657.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 3195, "last_tick": 3255, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
-{"match": "live_play_20261012_090033.jsonl", "name": "Arrows", "tower": "own_left", "tick": 681, "last_tick": 702, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261012_090033.jsonl", "name": "Arrows", "tower": "own_king", "tick": 681, "last_tick": 692, "sources": ["projectile_target"], "associated_hp_loss": 0}
+{"match": "live_play_20261012_090033.jsonl", "name": "Arrows", "tower": "own_left", "tick": 681, "last_tick": 702, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261012_090033.jsonl", "name": "BarbLog", "tower": "own_king", "tick": 2222, "last_tick": 2282, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 0}
 {"match": "live_play_20261012_090033.jsonl", "name": "Arrows", "tower": "own_left", "tick": 2637, "last_tick": 2658, "sources": ["projectile_target"], "associated_hp_loss": 120}
 {"match": "live_play_20261012_102521.jsonl", "name": "Rocket", "tower": "own_right", "tick": 3158, "last_tick": 3208, "sources": ["projectile_target"], "associated_hp_loss": 453}
@@ -1566,3 +1566,9 @@
 {"match": "live_play_20261012_102841.jsonl", "name": "Rocket", "tower": "own_left", "tick": 3724, "last_tick": 3774, "sources": ["projectile_target"], "associated_hp_loss": 453}
 {"match": "live_play_20261012_102841.jsonl", "name": "Log", "tower": "own_right", "tick": 4106, "last_tick": 4156, "sources": ["projectile_target"], "associated_hp_loss": 51}
 {"match": "live_play_20261012_102841.jsonl", "name": "GoblinBarrel", "tower": "own_left", "tick": 4176, "last_tick": 4342, "sources": ["projectile_target", "spell_body"], "associated_hp_loss": 364}
+{"match": "live_play_20261012_104929.jsonl", "name": "Log", "tower": "own_left", "tick": 2747, "last_tick": 2797, "sources": ["projectile_target"], "associated_hp_loss": 43}
+{"match": "live_play_20261012_104929.jsonl", "name": "Log", "tower": "own_left", "tick": 4838, "last_tick": 4876, "sources": ["projectile_target"], "associated_hp_loss": 43}
+{"match": "live_play_20261012_104929.jsonl", "name": "Log", "tower": "own_left", "tick": 5155, "last_tick": 5203, "sources": ["projectile_target"], "associated_hp_loss": 205}
+{"match": "live_play_20261012_104929.jsonl", "name": "Log", "tower": "own_left", "tick": 5421, "last_tick": 5469, "sources": ["projectile_target"], "associated_hp_loss": 151}
+{"match": "live_play_20261012_104929.jsonl", "name": "Log", "tower": "own_left", "tick": 5597, "last_tick": 5644, "sources": ["projectile_target"], "associated_hp_loss": 5}
+{"match": "live_play_20261012_105449.jsonl", "name": "Snowball", "tower": "own_left", "tick": 229, "last_tick": 249, "sources": ["projectile_target"], "associated_hp_loss": 60}

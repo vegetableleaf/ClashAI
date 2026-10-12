@@ -19,9 +19,11 @@ from pathlib import Path
 import re
 import statistics
 from urllib.parse import parse_qs, urlparse
+import video_metrics as vm
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[3]
+ARCH_ORDER = vm.archetype_order(ROOT)
 LIVE = ROOT / 'scratchpad/gauntlet/L68/live_reader'
 PRO = Path('C:/Users/benpe/Downloads/raw2/raw')
 CATALOG = ROOT / 'research/ext/cr-native-sandbox/native_core/data/live_card_catalog.json'
@@ -66,6 +68,19 @@ def zone(y):
     if y <= 18:
         return 'bridge'
     return 'own_front' if y < 24 else 'own_back'
+
+
+def xbow_class(y):
+    return 'unavailable' if y is None else 'bridge' if 16 <= y <= 21 else 'defensive' if y > 21 else 'enemy_side'
+
+
+def human_xy(p, perspective=None):
+    """data-i is the replay team orientation (constant for both teams), not player side."""
+    if p['x'] is None or p['y'] is None or p.get('index') not in ('0', '1'):
+        return None, None
+    side = perspective or p['side']
+    rotate = (side == 't') == (p['index'] == '1')
+    return (18-p['x'], 32-p['y']) if rotate else (p['x'], p['y'])
 
 
 def norm(s):
@@ -454,7 +469,7 @@ def analyse_live(name, data, catalog, names, play_out, push_out, spell_out):
         if p['quiet_defence_proxy']:
             add(m,ph,'quiet_defence_plays');add(m,ph,'quiet_defence_elixir',cost or 0)
         if p['name']=='Xbow':
-            p['xbow_class']='bridge' if 16<=y<=21 else 'defensive' if y>21 else 'enemy_side'
+            p['xbow_class']=xbow_class(y)
             add(m,ph,'xbow_class.'+p['xbow_class']);add(m,ph,f'xbow_cell.{int(x)},{int(y)}')
             val(m,ph,'xbow_elixir',p['elixir_public_before']);val(m,ph,'xbow_enemy_units_on_our_side',p['enemy_units_on_our_side'])
             locks=[]
@@ -571,6 +586,7 @@ def analyse_live(name, data, catalog, names, play_out, push_out, spell_out):
     for ph in PHASES:
         for spell in ('Earthquake','Fireball','Lightning','Poison','Rocket','Log','Arrows','BarbLog','Vines','Snowball','Zap'):
             m['phases'][ph]['counts'].setdefault('enemy_spell_contact.'+spell,0)
+    vm.bot(m, ds, unit_states, confirmed, damage, all_episodes, catalog, ARCH_ORDER, towers, own_xy, in_spell)
     return m
 
 
@@ -597,9 +613,10 @@ def analyse_pro(path,play_out):
     q=parse_qs(urlparse(j.get('request_url','')).query)
     crowns=[int(q[k][0]) if q.get(k) else None for k in ('team_crowns','opponent_crowns')]
     abilities={(t,'t' if s=='blue' else 'o',c) for t,s,c,a in parser.timeline if a}
+    valid=[p for p in parser.plays if (p['tick'],p['side'],p['card']) not in abilities and p['card']!='_invalid']
     out=[]
     for side,idx in [('t',0),('o',1)]:
-        plays=[p for p in parser.plays if p['side']==side and (p['tick'],side,p['card']) not in abilities and p['card']!='_invalid']
+        plays=[p for p in valid if p['side']==side]
         xbow=any(p['card'] in ('x-bow','xbow') for p in plays)
         a,b=crowns[idx],crowns[1-idx]
         m={'id':path.stem+':'+side,'replay_id':path.stem,'source':'pro','xbow':xbow,
@@ -608,24 +625,32 @@ def analyse_pro(path,play_out):
            'sha256':hashlib.sha256(raw).hexdigest(),'last_tick':parser.end_seconds*20,
            'phases':{p:blank_phase() for p in PHASES}}
         for ph,lo,hi in slices(0,min(parser.end_seconds*20,6000)):m['phases'][ph]['seconds']=(hi-lo)/20
+        oriented=[dict(p,x=human_xy(p,side)[0],y=human_xy(p,side)[1]) for p in valid]
+        vm.human(m,[p for p in oriented if p['side']==side],[p for p in oriented if p['side']!=side],ARCH_ORDER)
         for p in plays:
             ph=phase(p['tick'])
             if not ph:continue
             add(m,ph,'plays');add(m,ph,'cards.'+p['card'])
-            if p['x'] is None or p['y'] is None:
+            x,y=human_xy(p)
+            if x is None or y is None:
                 add(m,ph,'placement_unavailable')
+                if p['card'] in ('x-bow','xbow'):add(m,ph,'xbow_class.unavailable')
                 play_out.write(json.dumps({'match':m['id'],'tick':p['tick'],'card':p['card'],'x':None,'y':None,'phase':ph})+'\n')
                 continue
-            # RoyaleAPI blue/team own edge y=0; rotate to own edge y=32.
-            x,y=(18-p['x'],32-p['y']) if side=='t' else (p['x'],p['y'])
+            # data-i=1: team at y=0; data-i=0: team at y=32.
             add(m,ph,'placements.'+lane(x)+'.'+zone(y))
             if p['card'] in ('x-bow','xbow'):
-                cls='bridge' if 16<=y<=21 else 'defensive' if y>21 else 'enemy_side'
+                cls=xbow_class(y)
                 add(m,ph,'xbow_class.'+cls);add(m,ph,f'xbow_cell.{int(x)},{int(y)}')
+                old_y=32-p['y'] if side=='t' else p['y']
+                add(m,ph,'xbow_old_class.'+xbow_class(old_y))
+                add(m,ph,'xbow_orientation.'+str(p.get('index')))
             if p['card']=='rocket' and any(in_spell('Rocket',(x,y),tw,True) for tw in ((3.5,6.5),(14.5,6.5),(9,3))):add(m,ph,'rocket_on_tower_geometry')
-            play_out.write(json.dumps({'match':m['id'],'tick':p['tick'],'card':p['card'],'x':x,'y':y,'phase':ph})+'\n')
+            play_out.write(json.dumps({'match':m['id'],'tick':p['tick'],'card':p['card'],'x':x,'y':y,'phase':ph,
+                                       'raw_x':p['x'],'raw_y':p['y'],'side':side,'orientation':p.get('index')})+'\n')
         out.append(m)
-    return out,None,{'plays':len(parser.plays),'timeline':len(parser.timeline),'attributes':dict(parser.attrs)}
+    return out,None,{'plays':len(parser.plays),'timeline':len(parser.timeline),'attributes':dict(parser.attrs),
+                     'orientation_values':sorted({str(p.get('index')) for p in valid})}
 
 
 def group_summary(matches,cluster_pro=False):
@@ -671,8 +696,12 @@ def paired_comparison(matches):
 
 def fmt_rate(summary,ph,key):
     r=summary[ph]['rates'].get(key)
-    if not r or r['per_minute'] is None:return 'unavailable'
-    ci=r['ci95'];c=f" [{ci[0]:.2f}, {ci[1]:.2f}]" if ci else ' [CI unavailable]'
+    if not r:
+        n=summary[ph]['n_clusters']; secs=summary[ph]['seconds']
+        r=rate([0]*n,[secs/n]*n) if n else rate([],[])
+    if r['per_minute'] is None:return 'unavailable (n=0; 95% CI not estimable)'
+    ci=r['ci95'];digits=4 if ci and 0<ci[1]<0.01 else 2
+    c=f" [{ci[0]:.{digits}f}, {ci[1]:.{digits}f}]" if ci else ' [95% CI not estimable]'
     return f"{r['per_minute']:.2f}{c}; total={r['count']:g}, n={r['n_matches']}m"
 
 
@@ -752,12 +781,108 @@ def write_report(r):
             '## Audit files','',
             '`report.json` contains all rate denominators/CIs, outcome splits, checkpoint × fast-plays splits, per-match phase summaries, coverage and input hashes. `plays.jsonl` holds confirmed bot play states and X-Bow/spell receipts. `pushes.jsonl` holds engagements. `enemy_spells.jsonl` holds public contact candidates. `pro_plays.jsonl` holds parsed human plays. No opponent hidden state is exported.','',
             'Rerun: `python phase_stats.py --since 20261008`. Tests: use an installed pytest interpreter with `-B -m pytest -q -p no:cacheprovider test_phase_stats.py`; disable plugin autoload.']
+    lines=lines[:3]+['']+video_report(r)+['','## Previous-ticket measurements (regenerated)','']+lines[3:]
     (HERE/'report.md').write_text('\n'.join(lines)+'\n',encoding='utf8')
+
+
+VIDEO_SUPPORT = {
+    'a': {'label':'bot only','human':None,'bot':'First-seen enemy body placement and no observed engagement proxy; six-second coverage required.'},
+    'b': {'label':'bot vs icebow-like humans','human':'Timing/lane only; exact HTML placements.','bot':'First-seen enemy body placement proxy; own public elixir at onset and response.'},
+    'c': {'label':'bot only','human':None,'bot':'Observed tank river crossing, reactive Tesla delay and survival to push end.'},
+    'd': {'label':'bot only','human':None,'bot':'Defensive troop lateral offset while a known ground troop is on our side.'},
+    'e': {'label':'bot only','human':None,'bot':'Support/tank public body disappearance intervals, with ties and censoring.'},
+    'f': {'label':'bot only','human':None,'bot':'Maximum simultaneous clumped bodies per existing enemy spell tower-contact episode.'},
+    'g': {'label':'bot vs icebow-like humans','human':'Placements/archetype only; damage unavailable.','bot':'Observed-card census archetype; placements and all-source enemy tower HP loss in full next 20s.'},
+    'h': {'label':'bot only','human':None,'bot':'Observed HP-state exposure, offensive commits and all-source own tower HP loss in full next 20s.'}}
+VIDEO_METHODS = [
+    'Each table labels bot only or bot vs icebow-like humans. If the overlap cohort is smaller than 15 sides, comparison columns explicitly use X-Bow + Tesla fallback; the exact overlap cohort is also retained. Sides qualify from all observed cards, not a reconstructed hidden deck. Big losses overlap losses. Draws remain in all.',
+    'All brackets are approximate 95% CIs. Rates use match/replay-cluster ratio-of-sums intervals; means use the same cluster ratio with event counts as denominator. Fractions use a cluster-effective-size Wilson envelope around the sandwich interval, keeping nonzero uncertainty at 0/100%. n is independent clusters for rates, event observations for means/fractions; C states cluster count. No-data and one-cluster continuous/rate intervals are explicitly not estimable. Rates always retain numerator and exposure. Human sides share replay clusters.',
+    'Human orientation evidence: data-i is constant across both teams in each HTML replay. Index 1 puts team at raw y<16, index 0 puts team at raw y>16; opponent is opposite. Rotate x and y only when that side is at the top. Raw coordinates, side and orientation are saved in pro_plays.jsonl. Missing/unknown orientation is unavailable, never silently guessed. X-Bow classes bridge (16<=y<=21), defensive (>21), enemy_side (<16), unavailable partition every X-Bow.',
+    'Bot enemy placements are first-seen public nonspell bodies, excluding bodies present at the first decision and after >2s gaps; same-card bodies within 1s and 5 tiles are grouped. Spawned tokens, evolution changes, duplicate identities and transforms can still masquerade as placements; spells without a persistent body are absent. This is a lower-coverage placement proxy, not a confirmed enemy card-play feed. Observation intervals and source keys are saved. Human placements are exact HTML markers. No enemy elixir or hand is used.',
+    '(a) Cheap play strictly after a first-seen enemy placement by <=4s. Assess only a complete 6s decision window, no gap >2s, fresh board, and an observed spawned troop matched by card, <=3 tiles, <=3s; unmatched troops are unknown. Engagement proxy: matched troop within 2.5 tiles of enemy body/tower; Log swept footprint intersects enemy body/tower. This cannot certify targeting or actual hits. Empty-proxy count and nominal own card elixir use total phase minutes; candidates/assessed counts disclose missing coverage.',
+    '(b) Enemy raw placement transformed into our frame must have y<9. First own X-Bow/Knight/Rocket strictly later by <=6s in the other x<9/x>=9 lane is a response. Each enemy placement is an opportunity; overlapping windows may share a response. Fraction excludes incomplete windows; opportunity/rate counts and exclusions are retained. Bot own elixir at first public enemy sighting and last public decision before response are separate. Human elixir is unavailable.',
+    '(c) Tank names (catalog IDs resolve to names) include Giant, Golem, Royal/Electro/Goblin Giant, PEKKA, Lava Hound, Hog Rider, Ram Rider/Battle Ram, Balloon, Mega Knight. Same tracked body must cross y<16 to y>=16 within 3s. First-seen intrusions are excluded. Push ends after 3s with no nonbuilding enemy on our side in the crossing lane; gaps >2s/end censor it. First Tesla after crossing, on our side and same lane or within 2 tiles of centre, supplies delay; existing Teslas are flagged separately. Response delays are conditional on observed responses, not zero for missing responses. Newly placed Tesla is matched to a body within 1.5 tiles/3s. Survival requires closed push and matched identity alive at end, or confirmed disappearance before end; unmatched/censored is null.',
+    '(d) Own Knight/Ice Wizard/Skeletons at y>=16 with a known enemy ground troop at y>=16. Lateral offset is absolute x minus lane centre 3.5/14.5; signed inward offset is also exported. Centre pull means >=1.5 tiles inward; all other placements are side. Flying catalog aliases are excluded, unknown bodies are excluded, ambiguous transformation forms remain a limitation. Position does not prove a successful pull.',
+    '(e) Support set is non-tank enemy troops within 6 tiles of tank at crossing. Public disappearance requires last observed body then two missing decisions within 3s, before tiebreak. Lifespans split after >3s gaps to reduce address reuse. Supports-first requires every support disappearance upper bound <= tank last-visible tick; tank-first requires tank disappearance upper bound <= every support last-visible tick. Overlapping intervals or mixed support order are separate; censored observations are excluded from assessed fraction. Death transforms/visibility gaps are not certified kills.',
+    '(f) Existing enemy_spells episodes are tower contacts, not all enemy casts. At each observed matching spell footprint, retain own bodies having another own body within 2.5 tiles inside the footprint. Report maximum simultaneous count and corresponding nominal catalog elixir per episode, excluding towers. Separate clusters may be included; unknown costs are counted, not imputed. A spell touching two towers may appear twice, as in the original episode definition; summons/copy spells remain contact proxies. Counts do not prove damage or deaths.',
+    '(g) Read the literal ARCH precedence list from crapi/census.py without executing it; normalize catalog/HTML names. First matching observed card wins, else Other. Bot uses only visible bodies/projectiles; human uses observed cards. Spawned cards can bias bot archetype. Placement rate denominator is phase exposure of matches in that archetype. Damage averages include only full, gap-free next 20s and are all sources, never X-Bow-attributable.',
+    '(h) State is sum of public remaining own tower HP minus enemy tower HP, >+1000 ahead, <-1000 behind, otherwise level. Missing towers count zero (public disappearance may flicker); all known king/princess HP is included. State exposure uses only decision intervals <=2s, split at phase boundaries. Commits: bridge X-Bow or Knight (16<=y<=21), Rocket whose geometry touches an enemy tower. Count only commits within a valid observed state interval. Per-state rates divide by time in that state, not all match time. HP taken means own tower HP lost over the next 20s, all sources, only complete windows; overlapping windows can count the same damage.',
+    'Video receipts: video_events.jsonl contains event kinds, matches, phases, eligibility, body identities, timing and disappearance intervals. report.json retains all outcome splits and denominators, cohort IDs, observed opponent cards/archetype and per-match state exposure. Older measurements below preserve their original definitions; their broad human cohorts are historical comparison context, not the new icebow comparison.'
+]
+
+
+def vf(s):
+    if s['value'] is None:return 'unavailable; n=0; 95% CI not estimable'
+    ci=s['ci95']; ci_text=f'[{ci[0]:.3f}, {ci[1]:.3f}]' if ci else '[95% CI not estimable]'
+    return f"{s['value']:.3f} {ci_text}; n={s['n']:g}, C={s['n_clusters']}; total={s['numerator']:g}, den={s['denominator']:.3f}"
+
+
+def video_findings(r):
+    b=r['video_metrics']['bot']['all']; h=r['video_metrics']['humans']['all']; c=r['human_comparison']
+    def f(k,p='1x'):return vf(b[p]['metrics'][k])
+    old=r['pros']['xbow']['all']['1x']['rates'].get('xbow_old_class.enemy_side',{}).get('count',0)
+    arch=max((k for k in b['1x']['metrics'] if k.startswith('xbow.')),
+             key=lambda k:b['1x']['metrics'][k]['numerator']).split('.',1)[1]
+    return [
+        f"Bot vs icebow-like humans (placement audit uses all human X-Bow sides): {old:g} first-phase X-Bows were misrotated into enemy_side. Corrected bridge/min {fmt_rate(r['pros']['xbow']['all'],'1x','xbow_class.bridge')}; defensive/min {fmt_rate(r['pros']['xbow']['all'],'1x','xbow_class.defensive')}.",
+        f"Bot vs icebow-like humans: {c['icebow_like_n']} sides overlap at least five Icebow cards; {c['xbow_tesla_n']} have X-Bow + Tesla. Selected comparison {c['selected']} has {c['selected_n']} sides.",
+        f"Bot only: the largest first-phase X-Bow placement group is observed {arch}: placements/min {f('xbow.'+arch)}; following enemy tower HP loss over a complete 20s {f('xbow_damage.'+arch)}. Damage includes every source.",
+        f"Bot only: first-phase active-opponent empty-engagement proxy plays/min {f('cycle_empty')}; nominal elixir/min {f('cycle_empty_elixir')}.",
+        f"Bot vs icebow-like humans: first-phase opposite-lane response fraction bot {f('pressure_response_fraction')}; comparison {vf(h['1x']['metrics']['pressure_response_fraction'])}. Enemy bot placements are first-sighting proxies.",
+        f"Bot only: first-phase Tesla delay after tank crossing {f('tank_tesla_delay')} seconds; survival fraction among resolved matched Teslas {f('tank_tesla_survival')}.",
+        f"Bot only: first-phase defensive troop lateral offset averages {f('pull_offset')} tiles.",
+        f"Bot only: first-phase all-supports-before-tank disappearance fraction {f('kill_supports_first_fraction')}.",
+        f"Bot only: first-phase enemy spell contacts with clumping/min {f('clump_episodes')}; nominal clustered elixir/min {f('clump_elixir')}.",
+        f"Bot only: first-phase offensive commits/min while ahead {f('commit.ahead')}; while behind {f('commit.behind')}. Following own tower HP loss while behind {f('commit_damage.behind')}."
+    ]
+
+
+def video_report(r):
+    c=r['human_comparison']; selected='icebow-like humans' if c['selected']=='icebow_like' else 'X-Bow + Tesla fallback humans'
+    lines=['## Corrected human X-Bow placement','',
+           'Bot vs icebow-like humans — placement audit below uses all observed human X-Bow sides to reconcile the original bug. '+VIDEO_METHODS[2],
+           '', '| Phase / histogram class | Bot per minute | Human X-Bow sides per minute |','|---|---|---|']
+    for ph in PHASES:
+        for cls in ('bridge','defensive','enemy_side','unavailable'):
+            lines.append('| '+ph+' '+cls+' | '+fmt_rate(r['bot']['all'],ph,'xbow_class.'+cls)+' | '+fmt_rate(r['pros']['xbow']['all'],ph,'xbow_class.'+cls)+' |')
+        lines.append('| '+ph+' total | '+fmt_rate(r['bot']['all'],ph,'cards.Xbow')+' | '+fmt_rate(r['pros']['xbow']['all'],ph,'cards.x-bow')+' |')
+    lines+=['','## Video metrics','',
+            f"Bot vs icebow-like humans: overlap >=5/8 n={c['icebow_like_n']} sides; X-Bow + Tesla n={c['xbow_tesla_n']} sides. Selected: {selected}, n={c['selected_n']}. "+('The icebow-like cohort is below 15 sides; fallback is mandatory.' if c['icebow_like_n']<15 else 'The minimum 15-side criterion is met.'),
+            '',VIDEO_METHODS[1],'','### Top ten follow-up findings','']
+    lines += [f'{i}. {text}' for i,text in enumerate(r['video_findings'],1)]
+    lines += ['','### Metric support','', '| Metric | Comparison | Public data support |','|---|---|---|']
+    for key,s in VIDEO_SUPPORT.items():lines.append(f"| {key} | {s['label']} | {s['bot']} Human: {s['human'] or 'unavailable'} |")
+    # Card and placement comparison includes outcomes as well as all sides.
+    cards=[('Skeletons','Skeletons','skeletons'),('Log','Log','the-log'),('Knight','Knight','knight'),('Ice Wizard','IceWizard','ice-wizard'),('Tornado','Tornado','tornado'),('Tesla','Tesla','tesla'),('X-Bow','Xbow','x-bow'),('Rocket','Rocket','rocket')]
+    for split in ('all','wins','losses','big_losses'):
+        bs=r['bot'][split];hs=r['pros']['comparison'][split]
+        lines+=['',f'### Bot vs icebow-like humans — {split}; human column = {selected}','',
+                '| Phase / card or placement | Bot /min [95% CI] | Human /min [95% CI] |','|---|---|---|']
+        keys=[(label,'cards.'+bk,'cards.'+hk) for label,bk,hk in cards]
+        keys += [(cls+' X-Bow','xbow_class.'+cls,'xbow_class.'+cls) for cls in ('bridge','defensive','enemy_side','unavailable')]
+        keys += [('Rocket tower','rocket_on_tower','rocket_on_tower_geometry')]
+        keys += [(ln+' '+z,'placements.'+ln+'.'+z,'placements.'+ln+'.'+z) for ln in ('left','right') for z in ('enemy_side','bridge','own_front','own_back')]
+        for ph in PHASES:
+            for label,bk,hk in keys:lines.append('| '+ph+' '+label+' | '+fmt_rate(bs,ph,bk)+' | '+fmt_rate(hs,ph,hk)+' |')
+    for split in ('all','wins','losses','big_losses'):
+        bs=r['video_metrics']['bot'][split];hs=r['video_metrics']['humans'][split]
+        lines+=['',f'### Video outcomes: {split}','',
+                'Bot only unless the comparison column says bot vs icebow-like humans. Per-minute values use phase minutes except state/archetype rows, which use their own exposure. Means/fractions show event n and cluster C. Human column = '+selected+'.','',
+                '| Phase / metric (unit) | Comparison | Bot [95% CI] | Human [95% CI] |','|---|---|---|']
+        keys=sorted({k for ph in PHASES for k in bs[ph]['metrics']} | {k for ph in PHASES for k in hs[ph]['metrics']})
+        for key in keys:
+            comparable=key.startswith('pressure_') and key not in ('pressure_elixir','pressure_response_elixir') or key.startswith('xbow.')
+            for ph in PHASES:
+                b=bs[ph]['metrics'].get(key);h=hs[ph]['metrics'].get(key)
+                label='bot vs icebow-like humans' if comparable else 'bot only'
+                lines.append(f"| {ph} {key} ({b['unit'] if b else h['unit']}) | {label} | {vf(b) if b else 'no archetype exposure; n=0'} | {vf(h) if comparable and h else 'unavailable'} |")
+    lines+=['','### Video definitions, exclusions and censoring','']+['- '+x for x in VIDEO_METHODS]
+    return lines
 
 
 METHODOLOGY = [
     'Rate CIs: ratio-of-sums, match-cluster delta-method normal 95% intervals; human sides cluster by replay. Nonnegative lower bounds are truncated at zero. Zero events use a rule-of-three-style upper bound. Small groups and rare events have approximate coverage; one-cluster CIs are unavailable. Means have their actual observation n; repeated decisions are not independent matches.',
-    'Lane uses own-frame x<9 left, otherwise right. Zones use y<15 enemy side, 15–18 bridge, >18–<24 own front, >=24 own back; own edge is y=32. The broader X-Bow offensive bridge class is y=16–21; deeper bows are defensive. Cells are floor(tile x), floor(tile y). Pro blue coordinates are rotated 180 degrees; bot raw bodies rotate only for observer side 0. Bot play/model xy has mirrored x: placement x=18−18*xy[0], y=32*xy[1]. This is checked against actual post-confirmation public X-Bow/Tesla body coordinates; placement alignment errors are reported.',
+    'Lane uses own-frame x<9 left, otherwise right. Zones use y<15 enemy side, 15–18 bridge, >18–<24 own front, >=24 own back; own edge is y=32. The broader X-Bow offensive bridge class is y=16–21; deeper bows are defensive. Cells are floor(tile x), floor(tile y). Human coordinates use data-i: rotate team when index=1, opponent when index=0; bot raw bodies rotate only for observer side 0. Bot play/model xy has mirrored x: placement x=18−18*xy[0], y=32*xy[1]. This is checked against actual post-confirmation public X-Bow/Tesla body coordinates; placement alignment errors are reported.',
     'At-play board and elixir use the last PUBLIC decision at or before the confirmed tap attempt, max age 2s for board. Raw elixir is preferred over the play-event forecast; both are retained. Tower HP means include present towers only; destroyed/missing towers are explicit in event receipts. Units are bodies (buildings included at play); Hero Ice Wizard floating-cube duplicates are removed by category/position.',
     'Nominal body elixir = catalog card cost / standard spawn count. It is NOT actual opponent spend: spawned tokens, split cards, evolutions, death spawns, abilities, duplicate identities and transformations can violate it. Unknown IDs are counted and receive no imputed value. Exact enemy committed/killed elixir and exact elixir trades are unavailable.',
     'Push starts when the same observed enemy body moves from y<16 to y>=16 within <=3s, in a lane without an active engagement. Ends after 3s with no enemy on our side in that lane. First-seen intrusions are counted separately and do not masquerade as bridge crossings. Elixir is the first post-crossing public sample, with interval uncertainty exported; flying river crossings are included.',
@@ -789,10 +914,18 @@ METRIC_SUPPORT = {
 
 
 def main():
-    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--since',default='20261008');args=ap.parse_args()
+    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--since',default='20261008')
+    ap.add_argument('--input-manifest',type=Path,help='Reuse the candidate file list from a previous report.json (read-only).')
+    args=ap.parse_args()
     dt.datetime.strptime(args.since,'%Y%m%d')
     catalog,names=load_catalog();matches=[];excluded=collections.Counter();input_files=[]
     sources=sorted(p for p in LIVE.glob('live_play_*.jsonl') if p.name[10:18]>=args.since)
+    if args.input_manifest:
+        manifest=json.loads(args.input_manifest.read_text(encoding='utf8'))
+        filenames=[row['file'] for row in manifest['inputs']]
+        if any(Path(name).name!=name or not name.startswith('live_play_') for name in filenames):
+            raise ValueError('Invalid candidate filename in manifest')
+        sources=[LIVE/name for name in filenames]
     # Snapshot list now: files created later belong to the next run.
     with (HERE/'plays.jsonl').open('w',encoding='utf8') as po,(HERE/'pushes.jsonl').open('w',encoding='utf8') as pu,(HERE/'enemy_spells.jsonl').open('w',encoding='utf8') as so:
         for i,f in enumerate(sources):
@@ -857,7 +990,30 @@ def main():
        'paired':paired_comparison(matches),'methodology':METHODOLOGY,'metric_support':METRIC_SUPPORT,
        'pro_coverage':{'files':len(pro_files),'usable_replays':len(seen),'sides':len(pros),'xbow_sides':sum(m['xbow'] for m in pros),'errors':dict(pro_errors),'pages':coverage},
        'inputs':input_files,'data_sources':{'catalog':str(CATALOG),'catalog_sha256':hashlib.sha256(CATALOG.read_bytes()).hexdigest(),'body_counts':str(STATS),'body_counts_sha256':hashlib.sha256(STATS.read_bytes()).hexdigest()}}
+    ice=[m for m in pros if m['icebow_like']]
+    fallback=[m for m in pros if m['xbow_tesla']]
+    comparison=ice if len(ice)>=15 else fallback
+    r['pros']['icebow_like']=all_splits(ice,True)
+    r['pros']['xbow_tesla']=all_splits(fallback,True)
+    r['pros']['comparison']=all_splits(comparison,True)
+    r['human_comparison']={'icebow_like_n':len(ice),'xbow_tesla_n':len(fallback),
+                           'selected_n':len(comparison),'selected':'icebow_like' if len(ice)>=15 else 'xbow_tesla',
+                           'minimum_overlap':5,'minimum_sides':15,'ids':[m['id'] for m in comparison]}
+    r['video_metrics']={'bot':vm.summarize(matches),'humans':vm.summarize(comparison,True),
+                        'icebow_like_humans':vm.summarize(ice,True),
+                        'support':VIDEO_SUPPORT,'methodology':VIDEO_METHODS}
+    archetype_path=ROOT/'scratchpad/gauntlet/L74/crapi/census.py'
+    r['data_sources']['archetype_mapping']={'path':str(archetype_path),'sha256':hashlib.sha256(archetype_path.read_bytes()).hexdigest(),'order':ARCH_ORDER}
+    r['input_snapshot']={'manifest':str(args.input_manifest) if args.input_manifest else None,'candidate_files':len(sources)}
+    with (HERE/'video_events.jsonl').open('w',encoding='utf8') as vo:
+        for m in matches+pros:
+            for e in m['video']['events']:
+                vo.write(json.dumps({'match':m['id'],'source':m['source'],**e})+'\n')
+            m['video_event_counts']=dict(collections.Counter(e['kind'] for e in m['video']['events']))
+            m['video_exposure']=m['video']['exposure']
     r['findings']=findings(r)
+    r['video_findings']=video_findings(r)
+    for m in matches+pros:m.pop('video')
     for m in matches+pros:
         for s in m['phases'].values():s['samples']={k:sample(v) for k,v in s['samples'].items()}
     r['matches']=matches;r['pro_matches']=pros

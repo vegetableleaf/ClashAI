@@ -1,36 +1,57 @@
 {
-  "created_utc": "2026-10-12T14:50:21.535332+00:00",
+  "created_utc": "2026-10-12T15:22:30.026021+00:00",
   "shell": "PowerShell",
   "cwd": "C:\\Users\\benpe\\ClashBot",
   "tests": {
-    "command": "python -B scratchpad/gauntlet/L74/phase_stats/verify_report.py --tests",
+    "command": [
+      "C:\\Users\\benpe\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "-B",
+      "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L74\\phase_stats\\verify_report.py",
+      "--tests"
+    ],
     "exit_code": 0,
-    "result": "3 passed; SYNTHETIC_TESTS_OK",
-    "pytest_interpreter": "icebow/.venv/Scripts/python.exe",
-    "plugin_autoload": false,
-    "bytecode": false,
-    "cacheprovider": false
+    "expected": "SYNTHETIC_TESTS_OK",
+    "matched": true,
+    "output_sha256": "8eb48ec78e38227148f42705114a41acb8b73de6ca7e58ca386f7904a8c5e7f1",
+    "result": "...........                                                              [100%]\n11 passed in 0.26s\nSYNTHETIC_TESTS_OK"
   },
   "artifact_check": {
-    "command": "python -B scratchpad/gauntlet/L74/phase_stats/verify_report.py",
+    "command": [
+      "C:\\Users\\benpe\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "-B",
+      "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L74\\phase_stats\\verify_report.py"
+    ],
     "exit_code": 0,
-    "result": "ARTIFACTS_OK 771 matches; 26278 bot plays; 65678 human plays"
+    "expected": "ARTIFACTS_OK",
+    "matched": true,
+    "output_sha256": "e00cb788d92a84090ce869a7172ed7827068dcabf649c43a3b3ff311b17b9dae",
+    "result": "ARTIFACTS_OK 775 matches; 26453 bot plays; 65678 human plays"
   },
   "gates": {
-    "met": 4,
+    "met": 8,
     "unmet": 0,
     "abandoned": 0
   },
-  "scope": "All task-authored mutations confined to this directory; no network, runtime code imports, runtime modifications, commits or live-control actions.",
+  "scope": "All production output paths are HERE-rooted; helper has no writes. Standard-library allowlist and forbidden-import positive control passed. No network, GPU, runtime imports, live-control changes or commits. Test bytecode/cache/plugin autoload disabled. Scoped staged diff is empty. No external approval store written; user-authorized tests executed directly.",
+  "counts": {
+    "bot_matches": 775,
+    "human_sides": 1696,
+    "icebow_like_sides": 41
+  },
   "artifacts": {
-    "enemy_spells.jsonl": "af74d50578856311f48e10b4601bd39d9e5034e28da742cfc9e88a812af8e775",
-    "phase_stats.py": "31ab60f577a78128a947579bdc0f9abb260f200ce5ec07582cb9294c4878c8dd",
-    "plays.jsonl": "d0ec440c0aca1555e740ccefbb48800388c50c9123b9bd37537567552d6a73af",
-    "pro_plays.jsonl": "8ef47c1bef64100f33c4126c281c403cf8c01fb6e6cbb0b05dec58e4252e521d",
-    "pushes.jsonl": "a25437198e2778d0a6d499caccc88e03a3329f378944145979e8bc59b12f723f",
-    "report.json": "0901e855eee76f279f4478c36310d5948bede408123893bcb38829dcadab9c2c",
-    "report.md": "e1bc717d4fc1c31a3d78332b28c26c7989b87fb72547758af1395b73b03be301",
-    "test_phase_stats.py": "19780cd735cef1362d26546a5103e497e3b6727536d79cbe6bdb52331f047eb8",
-    "verify_report.py": "c2db7c879a2084bdc3ad90a94377b9bdddb932ef1461bd9171661f057a3d4f05"
+    ".gitignore": "0374773b454af07e6584dfaa1e4f3124892fc3b61d61b3775f467f38ab885ab4",
+    "enemy_spells.jsonl": "9fc18e0bd6a509325ed723307e235c7de98c4b9cfddbb6ad13187498bc128f04",
+    "GATES.md": "a717697be75ba82c9ac32355674e8894bb2e4671e5d155d8be8df5a7c9756ffd",
+    "phase_stats.py": "40018559d046b76eba0015e843ca68c36424cdd515f737410e6a56787b99d9ca",
+    "plays.jsonl": "73b803ab8a8509275c55f9f62f7a406055f329b2b6fe25ceb4ee4f09444e6483",
+    "pro_plays.jsonl": "0368496d1a9e3a4b822bd29be3af93bb275498355d577e52e5ae96b46ac00f08",
+    "pushes.jsonl": "46fe25d22538f45b679c1548b046971cdacafc921c2d6bb0631b4a9c3a161054",
+    "report.json": "d4e2ac654384e03c20e6519ff4da77a3e4aeb0a0a965c5da4f7ae274e3e6e3a9",
+    "report.md": "665bd571d05b521009e178080557765ef18e7d1f44502ee3c217d551a6600942",
+    "run.log": "59822854926379e5d9741e6c135c5e30a661dda2b256a120af229afc702ec5fe",
+    "test_phase_stats.py": "34f96dc5f333569a850e272e15bf5a86882b79e213e4286521369b5c4b334564",
+    "verify_report.py": "0d288dbd544562dc57d0289c46ac8c18648962a174b35a081904db110276fa80",
+    "video_events.jsonl": "b2cc73590e4d80435b3307b1fb7b6e9a6c0c3cbe2fab731496dc1f4ede546332",
+    "video_metrics.py": "105621af18d583011982a5ca82b1d02ab83429c8b97da3b4649929ca3204a993"
   }
 }
