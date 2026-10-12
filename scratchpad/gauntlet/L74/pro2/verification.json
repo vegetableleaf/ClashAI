@@ -1,0 +1,25 @@
+{
+  "tests": {
+    "command": [
+      "C:\\Users\\benpe\\ClashBot\\icebow\\.venv\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L74\\pro2\\tests",
+      "-q",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "cwd": "C:\\Users\\benpe\\ClashBot",
+    "exit_code": 0,
+    "output_sha256": "4a24bf462a1cdeb101c58326d9f068a7422e04602407c9872c2cee9677dda828",
+    "summary": "20 passed in 1.79s"
+  },
+  "contract": {
+    "format_chain_lines": 10,
+    "python_compile": true,
+    "bash_execution": "UNAVAILABLE_WINDOWS_ACCESS_DENIED",
+    "simulator_execution": "NOT_RUN"
+  },
+  "platform": "nt",
+  "interpreter": "C:\\Users\\benpe\\ClashBot\\icebow\\.venv\\Scripts\\python.exe"
+}

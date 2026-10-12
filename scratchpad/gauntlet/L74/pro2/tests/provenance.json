@@ -1,0 +1,12 @@
+[
+  {
+    "fixture": "raw2.json",
+    "source_sha256": "b0be3b196123341f805730f8840aeff304aa40fabe2b8b13d89f8591f945c6d1",
+    "trim": "First three markers plus first ability; matching timeline entries, all public card-summary images, end marker. Preserve numeric attributes/crowns. Replace battle ID. Omit text, image URLs, player tags, names, selection metadata and all other URL fields."
+  },
+  {
+    "fixture": "bait.json",
+    "source_sha256": "7bdf0424f279407e1275f807121df41e50fa5ba453889a6211f6a752570c1d29",
+    "trim": "First three markers plus first ability; matching timeline entries, all public card-summary images, end marker. Preserve numeric attributes/crowns. Replace battle ID. Omit text, image URLs, player tags, names, selection metadata and all other URL fields."
+  }
+]

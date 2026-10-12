@@ -1,0 +1,72 @@
+{
+  "status": "SOURCE_CONVERTED_SIM_PENDING",
+  "counts": {
+    "input_files": 1083,
+    "new_replays": 1069,
+    "plays": 83733,
+    "ability_events": 3613,
+    "visible_evolution_events": 0,
+    "visible_hero_events": 0,
+    "crawl_ready": 1064,
+    "source_blocked": 5,
+    "input_duplicate": 14,
+    "existing_corpus": 0,
+    "parse_error": 0,
+    "battle_time_available": 0
+  },
+  "input_groups": {
+    "0": 848,
+    "1": 235
+  },
+  "deck_sides": {
+    "icebow-like": 48,
+    "other X-Bow": 7,
+    "Log Bait": 379,
+    "other": 1704
+  },
+  "source_play_events_by_phase": {
+    "1x": 29344,
+    "2x": 41324,
+    "3x": 13045,
+    "postgame": 20
+  },
+  "dataset_rows_by_phase": null,
+  "divergence_rows": null,
+  "blockers": {
+    "incomplete_or_ambiguous_deck:0": 2,
+    "incomplete_or_ambiguous_deck:1": 4,
+    "invalid_card": 5,
+    "play_outside_deck:0": 4,
+    "play_outside_deck:1": 5,
+    "unpositioned_play": 5
+  },
+  "existing_index": {
+    "recordings": 14818,
+    "unique_battle_ids": 14661,
+    "time_deck_source_rows": 2403
+  },
+  "limitations": [
+    "Pages contain no body snapshots: unit-missing/position fidelity is unavailable.",
+    "Unmarked evolution/hero forms are unknown, not confirmed base.",
+    "Battle-time dedupe unavailable when no battle timestamp is present; capture time is not used."
+  ],
+  "catalog_preflight": {
+    "unsupported_card_sides": {
+      "minion-giant": 209
+    },
+    "replays_with_unsupported_cards": 197,
+    "replays_with_ability_events": 951,
+    "ability_events_without_known_champion_or_visible_hero": 1855
+  },
+  "crawl_ready_deck_sides": {
+    "other": 1694,
+    "icebow-like": 48,
+    "Log Bait": 379,
+    "other X-Bow": 7
+  },
+  "crawl_ready_source_play_events_by_phase": {
+    "1x": 29216,
+    "2x": 41186,
+    "3x": 12999
+  }
+}
