@@ -11350,4 +11350,20 @@ Live already taps early on purpose (`--afford-ticks 23`: a card counts as afford
     - Fixed: `tornado_relay2.sh`, `pod3_relay_keep.sh`, `overnight_orchestrator.sh copy_stage` (sed `s/ \*/  /`); pod1_final_relay + memory_relay already had it. All three were stopped by PID / ORCH_STOP, edited, and restarted 03:01 EDT.
     - TORNADO re-copied + verified 76/76; ADAPT copied.
   - **Dry-run fixtures made timing-proof:** the fake supervisor ends on STOP; scenario F touches ORCH_STOP after "armed". The laptop is slow while live plays (≈2 min per scenario). 8/8 PASS.
+- **10-12 morning — overnight outcome (measured):**
+  - **Tornado r1** (`--epochs 10 --lr 0.0002 --kl 100`): pending CE 0.7884, unchanged from attempt 1. Tornado share 25.4% (live 26.0%). hard_on −0.52 [−2.71, +1.67] (non-inferior); hard_off −1.35 [−3.54, +0.83].
+  - **Tornado r2** (lr 4e-4): train_pending refused, "no epoch improved pending validation within the ordinary drift bound". The method is exhausted, not an infra failure.
+  - **Clear-fail defect (mine):** clearfail read the LAST attempt; r2 had no eval lines, so it returned gray, and the orchestrator deployed ADAPT+fix at 04:35 EDT instead of ADAPT alone. ADAPT+fix live: 18-22 (45.0%) over 40 matches; live Tornado second-card share 20.9%. Old model: 206-173 (54.4% ±5.0).
+  - **Owner rule applied by hand 07:34 EDT:**
+    - Steps: ORCH_STOP, `adapt_fix/adapt_alone.pt` (sha ab5a5383, = pod3 `adaptive_final_grafted.pt`), `--check` LIVE_CHECK_PASS, `restart_live.py`; the live log confirms adapt_alone.pt.
+    - Undo: `cp scratchpad/gauntlet/L70/live/CKPT_OVERRIDE.pre_adapt_alone_backup scratchpad/gauntlet/L70/live/CKPT_OVERRIDE` + `restart_live.py`.
+    - ADAPT+fix differs from ADAPT in only 0.74% of ordinary top-card choices.
+  - **Orchestrator fix if reused:** judge clear-fail on the last EVALUATED attempt; a later failed or untrained attempt can't make it grey. Not coded; the orchestrator is stopped.
+- **Pod 1 stopped 07:40 EDT:**
+  - **Why:** idle since 06:31 EDT; the 30G disk filled (ENOSPC), so S9XL2b died at D7.
+  - **Drill results, TEST split, DO_when_0.3 vs own:** D4 −0.88 ± 1.28 pp (n 2498), D5 −0.37 ± 0.51 (n 2450), D6 −0.46 ± 0.90 (n 217). All label none. D7 crashed; D8, D9, S10XL2b and ICEBOW_DONE never ran.
+  - **Copy-back, verified (sha256 equal):** `pod_backup_weekend/pod1_final/S9XL2b_partial/` (search JSONs, stage.log, plus `S9XL2b_full.tgz` 565 MB, 570,972 files) and `pod1_final/pod1_rest.tgz` (S9XL, evals, xl2smoke, S10XL, S9, top-level logs).
+  - **Not copied (superseded crash leftovers):** S9XL2b_failed 2.2G, S9XL2_killed 676M.
+  - **Stop trick:** `runpodctl config` needs HOME on a writable disk; use `HOME=/dev/shm` when / is full. Pod 1 relay killed by PID.
+  - **Drill line, counting the earlier S9XL2b interim:** no label for D1, D4, D5, D6 and D10; D2 + D3 trained and lost (−3.3). Owner rule: no drill results means invest in adaptive. D8/D9 are owner-optional.
 - Offline test: `bash scratchpad/gauntlet/L74/deploy/overnight_dryrun.sh` (DRY=1, fake SUMMARY + fake live logs, 6 scenarios incl. rules a/b/c, all-fail, check-fail revert, live-dies-3-restarts, crash, ORCH_STOP) = PASS; `overnight_helpers.py selftest`. Not exercised on the real pod: retry_driver.py / run_adaptfix.sh (only py_compile + import on pod 5).
