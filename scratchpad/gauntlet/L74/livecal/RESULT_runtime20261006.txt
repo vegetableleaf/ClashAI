@@ -1,0 +1,36 @@
+pool P1 reproduces 2 of 2 live orderings
+Best pool by sign agreement, then Spearman, then offset MAE. No deployment.
+P1: 2/2 orderings; Spearman=0.3142857142857143; offset=2.95 pp; offset MAE=2.42 pp; CI95={'spearman': [-0.4285714285714286, 0.942857142857143], 'offset': [-0.027782327092454942, 0.06951793570689142], 'offset_mae': [0.019468393174906787, 0.08553804373289145], 'agreements': [0.0, 2.0]}
+  old > E4: live +12.39 pp [-0.038980263157894726, 0.2881874999999999], SIM +0.63 pp [-0.05416666666666664, 0.060416666666666674]; agreement bootstrap=0.545
+  fast-off > fast-on (old): live +7.56 pp [-0.039363520408163266, 0.18724999999999994], SIM +8.54 pp [0.029166666666666674, 0.13963541666666643]; agreement bootstrap=0.900
+  adapt_fixed vs old (fast-on) (report only): live -3.46 pp [-0.20861801242236028, 0.14824755989352234], SIM -3.12 pp [-0.0854166666666667, 0.027083333333333404]; agreement bootstrap=0.611
+  adapt_alone vs old (fast-on) (report only): live -5.27 pp [-0.27040816326530615, 0.1760204081632653], SIM -1.46 pp [-0.06874999999999998, 0.03750000000000003]; agreement bootstrap=0.564
+  adapt_alone vs old (fast-off) (report only): live +9.14 pp [-0.20892613636363636, 0.3741534090909087], SIM +4.79 pp [-0.008385416666666742, 0.10624999999999996]; agreement bootstrap=0.697
+P2: 1/2 orderings; Spearman=-0.028571428571428574; offset=-9.36 pp; offset MAE=4.26 pp; CI95={'spearman': [-0.5428571428571429, 0.8285714285714287], 'offset': [-0.15977632055842184, -0.05599735867262094], 'offset_mae': [0.02739248472826081, 0.09896100624365585], 'agreements': [0.0, 2.0]}
+  old > E4: live +12.39 pp [-0.038980263157894726, 0.2881874999999999], SIM -6.04 pp [-0.11255208333333337, -0.008281250000000255]; agreement bootstrap=0.078
+  fast-off > fast-on (old): live +7.56 pp [-0.039363520408163266, 0.18724999999999994], SIM +7.08 pp [0.012499999999999956, 0.12916666666666665]; agreement bootstrap=0.896
+  adapt_fixed vs old (fast-on) (report only): live -3.46 pp [-0.20861801242236028, 0.14824755989352234], SIM +1.46 pp [-0.04166666666666674, 0.07291666666666663]; agreement bootstrap=0.432
+  adapt_alone vs old (fast-on) (report only): live -5.27 pp [-0.27040816326530615, 0.1760204081632653], SIM +0.21 pp [-0.054166666666666585, 0.05833333333333335]; agreement bootstrap=0.462
+  adapt_alone vs old (fast-off) (report only): live +9.14 pp [-0.20892613636363636, 0.3741534090909087], SIM +2.29 pp [-0.03541666666666665, 0.07916666666666672]; agreement bootstrap=0.623
+P3: 0/2 orderings; Spearman=-0.14285714285714288; offset=-42.81 pp; offset MAE=3.79 pp; CI95={'spearman': [-0.7714285714285715, 0.7142857142857143], 'offset': [-0.4679968307707973, -0.36190602355072465], 'offset_mae': [0.026504463018521857, 0.09172377499570505], 'agreements': [0.0, 2.0]}
+  old > E4: live +12.39 pp [-0.038980263157894726, 0.2881874999999999], SIM -4.38 pp [-0.07708333333333339, -0.008333333333333415]; agreement bootstrap=0.070
+  fast-off > fast-on (old): live +7.56 pp [-0.039363520408163266, 0.18724999999999994], SIM -1.04 pp [-0.04583333333333339, 0.025000000000000022]; agreement bootstrap=0.333
+  adapt_fixed vs old (fast-on) (report only): live -3.46 pp [-0.20861801242236028, 0.14824755989352234], SIM -3.54 pp [-0.07291666666666663, 0.0021354166666664805]; agreement bootstrap=0.630
+  adapt_alone vs old (fast-on) (report only): live -5.27 pp [-0.27040816326530615, 0.1760204081632653], SIM -3.96 pp [-0.07500000000000007, -0.002083333333333326]; agreement bootstrap=0.669
+  adapt_alone vs old (fast-off) (report only): live +9.14 pp [-0.20892613636363636, 0.3741534090909087], SIM +2.71 pp [-0.008333333333333304, 0.06255208333333305]; agreement bootstrap=0.679
+P4: 1/2 orderings; Spearman=0.028571428571428574; offset=-4.76 pp; offset MAE=4.51 pp; CI95={'spearman': [-0.6, 0.8285714285714287], 'offset': [-0.0975858807103318, 0.014698426744020991], 'offset_mae': [0.02893886723810443, 0.10126579716497242], 'agreements': [0.0, 2.0]}
+  old > E4: live +12.39 pp [-0.038980263157894726, 0.2881874999999999], SIM -8.33 pp [-0.13755208333333338, -0.027083333333333348]; agreement bootstrap=0.067
+  fast-off > fast-on (old): live +7.56 pp [-0.039363520408163266, 0.18724999999999994], SIM +6.04 pp [0.002083333333333326, 0.11666666666666664]; agreement bootstrap=0.882
+  adapt_fixed vs old (fast-on) (report only): live -3.46 pp [-0.20861801242236028, 0.14824755989352234], SIM +2.71 pp [-0.027083333333333293, 0.08333333333333331]; agreement bootstrap=0.409
+  adapt_alone vs old (fast-on) (report only): live -5.27 pp [-0.27040816326530615, 0.1760204081632653], SIM +1.67 pp [-0.03963541666666669, 0.07708333333333328]; agreement bootstrap=0.420
+  adapt_alone vs old (fast-off) (report only): live +9.14 pp [-0.20892613636363636, 0.3741534090909087], SIM +5.21 pp [-0.002135416666666656, 0.11041666666666666]; agreement bootstrap=0.704
+P5: 1/2 orderings; Spearman=0.028571428571428574; offset=-3.84 pp; offset MAE=3.45 pp; CI95={'spearman': [-0.48571428571428577, 0.8857142857142858], 'offset': [-0.1009619008650405, 0.002369491309207543], 'offset_mae': [0.02177702984814861, 0.09208407907979245], 'agreements': [0.0, 2.0]}
+  old > E4: live +12.39 pp [-0.038980263157894726, 0.2881874999999999], SIM -2.08 pp [-0.07499999999999996, 0.029166666666666674]; agreement bootstrap=0.240
+  fast-off > fast-on (old): live +7.56 pp [-0.039363520408163266, 0.18724999999999994], SIM +8.13 pp [0.022916666666666696, 0.13541666666666663]; agreement bootstrap=0.898
+  adapt_fixed vs old (fast-on) (report only): live -3.46 pp [-0.20861801242236028, 0.14824755989352234], SIM +0.21 pp [-0.05416666666666664, 0.05833333333333329]; agreement bootstrap=0.480
+  adapt_alone vs old (fast-on) (report only): live -5.27 pp [-0.27040816326530615, 0.1760204081632653], SIM +0.00 pp [-0.054166666666666696, 0.054166666666666696]; agreement bootstrap=0.487
+  adapt_alone vs old (fast-off) (report only): live +9.14 pp [-0.20892613636363636, 0.3741534090909087], SIM +3.12 pp [-0.025000000000000022, 0.08749999999999991]; agreement bootstrap=0.655
+In-sample pool selection and offset fitting; validate on future live checkpoints.
+Live comparisons are observational and mixed-era, not randomized causal effects.
+SIM uses the S2/CAL bundle; see plan flag mismatches and fixed runtime assumptions.
+Live bootstrap assumes independent matches within groups; no session-cluster correction.
