@@ -9,6 +9,7 @@ import copy
 import hashlib
 import json
 from pathlib import Path
+import re
 import subprocess
 import sys
 import time
@@ -32,12 +33,12 @@ LIVE_FLAGS = ["--xbow-class", "class_sample", "--xbow-class-floor", "0.3", "--ta
               "--tau-threatened", "0.2", "--lethal-log", "on"]
 
 
-def cycle_plan(prefix="wk_adapt", cycles=3, main_updates=20, exploiter_updates=15):
+def cycle_plan(prefix="wk_adapt", cycles=3, main_updates=20, exploiter_updates=15, start_update=0):
     if min(cycles, main_updates, exploiter_updates) <= 0:
         raise ValueError("cycle budgets must be positive")
     main = f"{prefix}_main"
-    return [dict(cycle=c, main_run=main, main_target=c * main_updates,
-                 main_start=(c - 1) * main_updates,
+    return [dict(cycle=c, main_run=main, main_target=start_update + c * main_updates,
+                 main_start=start_update + (c - 1) * main_updates,
                  frozen=str(CKROOT / main / f"frozen_c{c}.pt"),
                  exploiter_run=f"{prefix}_exp{c}", exploiter_target=exploiter_updates,
                  exploiter_init=str(FAST)) for c in range(1, cycles + 1)]
@@ -47,9 +48,9 @@ def checkpoint(run):
     return CKROOT / run / f"{run}_latest.pt"
 
 
-def config_for(base, phase, plan, deck_path, external):
+def config_for(base, phase, plan, deck_path, external, init=FAST):
     c = copy.deepcopy(base)
-    c.update(init=str(FAST), proagree_data_gen=str(DATA), league=True, league_pfsp="hard", opp_style="on", opp_elixir="counter",
+    c.update(init=str(init), proagree_data_gen=str(DATA), league=True, league_pfsp="hard", opp_style="on", opp_elixir="counter",
              league_pfsp_gamma=2.0, league_pfsp_floor=.05, league_snapshot_every=5, league_snapshot_keep=12,
              league_external=list(external), league_decks=str(deck_path), league_deck_alpha=1.0,
              league_mix={"latest": .5, "older": .25, "init": .25, "s1": 0.0},
@@ -77,6 +78,44 @@ def enroll(main_checkpoint, exploiter_path):
     ck["rl"]["league"].setdefault("ratings", {}).setdefault(
         "external:" + str(exploiter_path), {"p": .5, "games": 0})
     return ck
+
+
+def continuation_seed(init, external):
+    """Fork RL state without changing its reference policy or opponent identities.
+
+    Weights-only init deliberately starts a fresh learner. Restored snapshots
+    may name the old pod worktree; relocate only that known checkpoint subtree.
+    The trainer only deletes snapshots owned by its new run, never ADAPT's.
+    """
+    import torch
+    ck = torch.load(REPO / init, map_location="cpu", weights_only=True)
+    league = ck.get("rl", {}).get("league")
+    if league is None:
+        print(f"INIT {init}: fresh league and PFSP ratings (no rl.league).", flush=True)
+        return None, str(init), 0, list(dict.fromkeys(external))
+    ck = copy.deepcopy(ck)
+    rl = ck["rl"]
+    for snap in rl["league"].get("snapshots", []):
+        path = Path(snap["path"])
+        marker = CKROOT.as_posix() + "/"
+        if (path.is_absolute() or path.as_posix().startswith("/")) and marker in path.as_posix():
+            local = CKROOT / path.as_posix().split(marker, 1)[1]
+            if (REPO / local).is_file():
+                snap["path"] = local.as_posix()
+        if not (REPO / snap["path"]).is_file():
+            raise FileNotFoundError(snap["path"])
+    for path in external:
+        ck = enroll(ck, path)
+    # Resume loads the learner weights from ck; init remains the original
+    # frozen KL reference / PFSP init opponent, preserving the experiment.
+    anchor = rl.get("init") or rl["config"]["init"]
+    pool = ck["rl"]["league"].get("external", [])
+    for path in [anchor, *pool]:
+        if not (REPO / path).is_file():
+            raise FileNotFoundError(REPO / path)
+    print(f"INIT {init}: restored league and PFSP ratings at update {rl['update']}; "
+          f"reference={anchor}; {len(pool)} frozen exploiters.", flush=True)
+    return ck, anchor, int(rl["update"]), list(pool)
 
 
 def weighted_sixty(data):
@@ -191,13 +230,17 @@ def summary(ev, games=480):
             W.arch_table(str(ev), "old", "adaptive") + "\nFixed opponent: calibrated set c, T=0.1; census decks; S2/CAL live flags.\n")
 
 
-def execute(out, smoke=False):
+def execute(out, smoke=False, init=None, extra_exploiters=(), cycles=3, tag="adapt"):
     import torch
     import yaml
+    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]*", tag) or cycles <= 0:
+        raise ValueError("tag must be a simple name; cycles must be positive")
+    if smoke and (init is not None or extra_exploiters or cycles != 3 or tag != "adapt"):
+        raise ValueError("--smoke cannot be combined with continuation options")
     out.mkdir(parents=True, exist_ok=True)
     (out / "DONE").unlink(missing_ok=True)
     base = yaml.safe_load((REPO / "pipeline/rl_royale.yaml").read_text())
-    for path in (FAST, OLD, CAL_C, EVO, LAD, DATA):
+    for path in (FAST, OLD, CAL_C, EVO, LAD, DATA, *([init] if init is not None else []), *extra_exploiters):
         if not (REPO / path).is_file():
             raise FileNotFoundError(REPO / path)
     deck = out / "decks_rl.json"
@@ -208,11 +251,32 @@ def execute(out, smoke=False):
     manifest = out / "cycles.json"
     state = json.loads(manifest.read_text()) if manifest.exists() else {"completed": [], "external": []}
     games, workers = (8, 2) if smoke else (480, 20)
-    plans = cycle_plan(*(("wk_adapt_smoke", 2, 1, 1) if smoke else ()))
+    anchor, start = FAST, 0
+    if init is not None or extra_exploiters or cycles != 3 or tag != "adapt":
+        options = dict(init=str(init) if init is not None else None,
+                       extra_exploiters=list(extra_exploiters), cycles=cycles, tag=tag)
+        if manifest.exists() and state.get("options") != options:
+            raise ValueError("output directory belongs to different continuation options")
+        seed, anchor, start, external = (continuation_seed(init, extra_exploiters) if init is not None
+                                       else (None, FAST, 0, list(dict.fromkeys(extra_exploiters))))
+        dest = REPO / checkpoint(f"wk_{tag}_main")
+        if not manifest.exists():
+            if dest.exists():
+                raise FileExistsError(f"refusing to overwrite existing run: {dest}")
+            state.update(options=options, external=external)
+            atomic_json(manifest, state)
+        if seed is not None and not dest.exists():
+            if state["completed"]:
+                raise FileNotFoundError(dest)
+            save_checkpoint(dest, seed)
+    elif "options" in state:
+        raise ValueError("output directory belongs to a continuation; supply its options")
+    plans = (cycle_plan("wk_adapt_smoke", 2, 1, 1) if smoke else
+             cycle_plan(f"wk_{tag}", cycles, start_update=start))
     for plan in plans:
         if plan["cycle"] in state["completed"]:
             continue
-        c = config_for(base, "main", plan, deck, state["external"])
+        c = config_for(base, "main", plan, deck, state["external"], init=anchor)
         c.update(SMOKE_CFG if smoke else {})
         main = train(c, plan["main_run"], out)
         frozen = REPO / plan["frozen"]
@@ -256,9 +320,19 @@ def execute(out, smoke=False):
     (out / "SUMMARY.txt").write_text(summary(ev, games), encoding="utf-8")
 
 
-if __name__ == "__main__":
+def parse_args(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--smoke", action="store_true")
-    a = parser.parse_args()
-    execute(a.out.resolve(), a.smoke)
+    parser.add_argument("--init", type=Path, help="main starting checkpoint; restore RL league when present")
+    parser.add_argument("--extra-exploiters", default="", help="comma-separated frozen checkpoint paths")
+    parser.add_argument("--cycles", type=int, default=3)
+    parser.add_argument("--tag", default="adapt", help="output prefix wk_<tag> (default: adapt)")
+    a = parser.parse_args(argv)
+    a.extra_exploiters = [p.strip() for p in a.extra_exploiters.split(",") if p.strip()]
+    return a
+
+
+if __name__ == "__main__":
+    a = parse_args()
+    execute(a.out.resolve(), a.smoke, a.init, a.extra_exploiters, a.cycles, a.tag)

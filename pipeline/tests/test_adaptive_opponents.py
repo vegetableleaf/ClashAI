@@ -301,7 +301,8 @@ def test_rollout_records_per_match_style_and_ratings():
     assert all(r["event"] == "opponent_style" and r["update"] == 3 for r in events)
 
 
-def test_driver_all_cycles_and_eval_with_fake_training(tmp_path, monkeypatch):
+@pytest.mark.parametrize("continuation", [None, "restored", "fresh"])
+def test_driver_all_cycles_and_eval_with_fake_training(tmp_path, monkeypatch, continuation):
     # Full orchestration, including persisted frozen copies, pool enrollment,
     # restart, graft command and paired report. Subprocesses are all replaced.
     monkeypatch.setattr(D, "REPO", tmp_path)
@@ -312,20 +313,42 @@ def test_driver_all_cycles_and_eval_with_fake_training(tmp_path, monkeypatch):
     (tmp_path / "pipeline").mkdir()
     (tmp_path / "pipeline/rl_royale.yaml").write_text(yaml.safe_dump(cfg()))
     calls, evals = [], []
+    options = {}
+    offset = 60 if continuation == "restored" else 0
+    initial_external = 1 if continuation else 0
+    if continuation:
+        seed = {"model": {"w": torch.tensor([60.])}}
+        if continuation == "restored":
+            seed["rl"] = {"update": 60, "init": str(D.FAST), "optimizer": {"step": 60},
+                          "league": {"snapshots": [], "external": [],
+                                     "ratings": {"init": {"p": .72, "games": 900}}}}
+        D.save_checkpoint(tmp_path / "seed.pt", seed)
+        options = dict(init=Path("seed.pt"), extra_exploiters=[str(D.OLD)], cycles=3, tag="adapt2")
 
     def fake_train(c, name, out):
         path = tmp_path / D.checkpoint(name)
         if path.exists():
             ck = torch.load(path, weights_only=True)
         else:
-            ck = {"model": {"w": torch.zeros(1)}, "rl": {"league": {"snapshots": [], "ratings": {}}, "update": 0}}
+            ck = {"model": {"w": torch.zeros(1)}, "rl": {"league": {"snapshots": [], "ratings": {},
+                  "external": list(c["league_external"])}, "update": 0}}
+            if continuation == "fresh" and "league_frozen_opponent" not in c:
+                assert c["init"] == "seed.pt"
+                ck["model"] = torch.load(tmp_path / c["init"], weights_only=True)["model"]
         if "league_frozen_opponent" in c:
             frozen = torch.load(tmp_path / c["league_frozen_opponent"], weights_only=True)
             assert "rl" not in frozen
-            assert frozen["model"]["w"].item() == 20 * (len(calls) // 2 + 1)
+            assert frozen["model"]["w"].item() == offset + 20 * (len(calls) // 2 + 1)
             assert c["init"] == str(D.FAST)
         else:
-            assert len(c["league_external"]) == len(calls) // 2
+            assert len(c["league_external"]) == initial_external + len(calls) // 2
+            if continuation == "restored":
+                assert ck["rl"]["league"]["ratings"]["init"] == {"p": .72, "games": 900}
+                assert ck["rl"]["optimizer"] == {"step": 60}
+                if not calls:
+                    assert ck["model"]["w"].item() == 60
+                    assert ck["rl"]["update"] == 60
+                assert c["init"] == str(D.FAST)
         ck["rl"]["update"] = c["max_updates"]
         ck["model"]["w"] = torch.tensor([float(c["max_updates"])])
         D.save_checkpoint(path, ck)
@@ -354,13 +377,17 @@ def test_driver_all_cycles_and_eval_with_fake_training(tmp_path, monkeypatch):
     monkeypatch.setattr(D, "train", fake_train)
     monkeypatch.setattr(D, "run", fake_run)
     out = tmp_path / "ADAPT"
-    D.execute(out)
+    D.execute(out, **options)
     assert len(calls) == 6 and len(evals) == 4
     state = json.loads((out / "cycles.json").read_text())
-    assert state["completed"] == [1, 2, 3] and len(state["external"]) == 3
+    assert state["completed"] == [1, 2, 3] and len(state["external"]) == 3 + initial_external
+    assert [c["max_updates"] for name, c in calls[::2]] == [offset + u for u in (20, 40, 60)]
+    if continuation:
+        assert all(name.startswith("wk_adapt2_") for name, _ in calls)
+        assert not (tmp_path / D.checkpoint("wk_adapt_main")).exists()
     assert (out / "SUMMARY.txt").read_text().startswith("VERDICT: Improvement shown.")
     assert "960 paired games" in (out / "SUMMARY.txt").read_text()
-    D.execute(out)  # completed phases are not trained/evaluated a second time
+    D.execute(out, **options)  # completed phases are not trained/evaluated a second time
     assert len(calls) == 6 and len(evals) == 4
     p = out / "eval/adaptive_evo/matches.jsonl"
     original = p.read_text()
@@ -372,3 +399,85 @@ def test_driver_all_cycles_and_eval_with_fake_training(tmp_path, monkeypatch):
     p.write_text("\n".join(map(json.dumps, rows)))
     with pytest.raises(ValueError, match="pairing/decks differ"):
         D.summary(out / "eval")
+
+
+def test_adapt2_options_and_names():
+    a = D.parse_args(["--out", "out"])
+    assert (a.init, a.extra_exploiters, a.cycles, a.tag, a.smoke) == (None, [], 3, "adapt", False)
+    a = D.parse_args(["--out", "out", "--init", "main.pt", "--extra-exploiters", "a.pt, b.pt",
+                      "--cycles", "4", "--tag", "adapt2"])
+    assert (a.init, a.extra_exploiters, a.cycles, a.tag) == (Path("main.pt"), ["a.pt", "b.pt"], 4, "adapt2")
+    plans = D.cycle_plan("wk_adapt2", 4, start_update=60)
+    assert [p["main_target"] for p in plans] == [80, 100, 120, 140]
+    assert plans[-1]["exploiter_run"] == "wk_adapt2_exp4"
+    assert all(p["exploiter_init"] == str(D.FAST) and p["exploiter_target"] == 15 for p in plans)
+
+
+def test_driver_defaults_match_pre_adapt2_bytes():
+    # Golden independently captured from git 2bfafbf's driver. Normalize only
+    # platform separators and the Python executable, not any experiment value.
+    payload = {"plan": D.cycle_plan(), "configs": [
+        D.config_for({}, phase, plan, "decks.json", [])
+        for plan in D.cycle_plan() for phase in ("main", "exploiter")],
+        "eval": [D.eval_command("candidate.pt", "eval", census, start)[1:]
+                 for census, start in ((D.EVO, 30000), (D.LAD, 30480))]}
+    data = json.dumps(payload, sort_keys=True, default=str).replace("\\\\", "/").encode()
+    assert hashlib.sha256(data).hexdigest() == "a364b5ad03d882428ecc4a529cbeb1f848554b6e6700fd8ac24cce1259ee8fc7"
+
+
+def test_adapt2_seed_preserves_league_and_grows_pool(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(D, "REPO", tmp_path)
+    snap = D.CKROOT / "wk_adapt_main/wk_adapt_main_snap_u0060.pt"
+    for path in (D.FAST, snap, Path("exp1.pt"), Path("exp2.pt")):
+        path = tmp_path / path
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("fixture")
+    seed = {"model": {"w": torch.ones(1)}, "rl": {"update": 60, "init": str(D.FAST),
+            "optimizer": {"step": 60}, "rng": {"sentinel": 123}, "league": {
+                "snapshots": [{"id": "snap_u0060", "update": 60, "path": "/workspace/wk_adapt/" + snap.as_posix()}],
+                "external": ["exp1.pt"], "ratings": {"init": {"p": .8, "games": 40},
+                "external:exp1.pt": {"p": .2, "games": 70}}}}}
+    D.save_checkpoint(tmp_path / "seed.pt", seed)
+    before = (tmp_path / "seed.pt").read_bytes()
+    saved, anchor, start, pool = D.continuation_seed(Path("seed.pt"), ["exp1.pt", "exp2.pt", "exp2.pt"])
+    assert (anchor, start, pool) == (str(D.FAST), 60, ["exp1.pt", "exp2.pt"])
+    assert saved["rl"]["optimizer"] == seed["rl"]["optimizer"] and saved["rl"]["rng"] == seed["rl"]["rng"]
+    league = saved["rl"]["league"]
+    assert league["snapshots"][0]["path"] == snap.as_posix()
+    for key, rating in seed["rl"]["league"]["ratings"].items():
+        assert league["ratings"][key] == rating
+    assert league["ratings"]["external:exp2.pt"] == {"p": .5, "games": 0}
+    c = D.config_for(cfg(), "main", D.cycle_plan()[0], "decks.json", pool)
+    assert len(A.opponent_pool(league["snapshots"], c, league)) == 4
+    assert (tmp_path / "seed.pt").read_bytes() == before
+    assert "restored league and PFSP ratings at update 60" in capsys.readouterr().out
+    (tmp_path / snap).unlink()
+    with pytest.raises(FileNotFoundError):
+        D.continuation_seed(Path("seed.pt"), [])
+
+
+@pytest.mark.parametrize("rl", [None, {"update": 60}])
+def test_adapt2_seed_without_league_is_fresh(tmp_path, monkeypatch, capsys, rl):
+    monkeypatch.setattr(D, "REPO", tmp_path)
+    seed = {"model": {"w": torch.ones(1)}}
+    if rl is not None:
+        seed["rl"] = rl
+    D.save_checkpoint(tmp_path / "seed.pt", seed)
+    assert D.continuation_seed(Path("seed.pt"), ["exp.pt"]) == (None, "seed.pt", 0, ["exp.pt"])
+    assert "fresh league and PFSP ratings" in capsys.readouterr().out
+
+
+def test_adapt2_shell_wait_locks_failure_and_eval_reuse():
+    shell = (Path(D.__file__).parent / "run_adapt2.sh").read_text()
+    assert "ETA:" in shell and "OUT=/workspace/results/wk/ADAPT2" in shell
+    assert 'WAIT_FOR=${WAIT_FOR:-/workspace/results/wk/ADAPT/DONE}' in shell
+    assert shell.index("trap finish EXIT") < shell.index('while [ ! -f "$WAIT_FOR" ]') < shell.index("flock /workspace/gpu.lock")
+    assert 'flock /workspace/gpu.lock flock /workspace/cpu.lock "$PY"' in shell
+    assert 'touch "$OUT/DONE"' in shell and '> "$OUT/SUMMARY.txt"' in shell
+    assert "trap 'exit 130' INT" in shell and "trap 'exit 143' TERM" in shell
+    assert '--cycles 3 --tag adapt2' in shell and "wk_adapt_main_latest.pt" in shell
+    for i in (1, 2, 3):
+        assert f"wk_adapt_exp{i}_u0015.pt" in shell
+    assert "--smoke" not in shell
+    c = D.config_for(cfg(), "main", D.cycle_plan()[0], "decks.json", [])
+    assert c["n_actors"] == 20 and c["actor_threads"] == 1 and not c["branch_gate"]
