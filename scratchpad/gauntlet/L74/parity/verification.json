@@ -1,0 +1,701 @@
+{
+  "tests": {
+    "command": [
+      "C:\\Users\\benpe\\ClashBot\\icebow\\.venv\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L74\\parity\\tests",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "-p",
+      "no:tmpdir"
+    ],
+    "cwd": "C:\\Users\\benpe\\ClashBot",
+    "exit_code": 0,
+    "output_sha256": "21767cf9080b06528d1e4d055e1229c3c4c582728771a5700a29a92def184d71",
+    "output": ".................                                                        [100%]\n17 passed in 0.76s\n"
+  },
+  "fork": {
+    "head": "cacb7005f0e441797c533e91ab4f44820f9919d4",
+    "upstream": "refs/remotes/origin/main",
+    "patches": "0"
+  },
+  "selection": {
+    "selected": 100,
+    "excluded": 12,
+    "seconds": 24.963600300019607,
+    "deck_complete_candidates": 34,
+    "blockers": {
+      "public_deck_side_0_has_6_cards": 19,
+      "public_deck_side_1_has_6_cards": 3,
+      "public_deck_side_0_has_7_cards": 33,
+      "public_deck_side_0_has_5_cards": 8,
+      "public_deck_side_1_has_7_cards": 3
+    },
+    "decisions": 32442,
+    "plays": 6482,
+    "own_plays": 3594,
+    "proxy_enemy_plays": 2888,
+    "cohort_sha256": "6802002005bf23e81f185e6f4baaa99f3fa851d6e71f49493508eaabb274be8b",
+    "matches": [
+      {
+        "match": "live_play_20261008_000102",
+        "sha256": "fa369d14f7b201e29f0010705d341c9b183cffdd94ba5b2a734e4e7dcec448b7",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_000526",
+        "sha256": "999c4f2e8530c3918b6f742ec13700da104f4bb1ad80dee37f104cbdc1ffb584",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_000844",
+        "sha256": "bd5f6367a6aecc9ed521ece48e070906f2102f2ae02e1b26b074c34ac50ba832",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_001328",
+        "sha256": "506b49404e4bbdc196dd4a9ca9c0b5956880fb5920be104550a7f13ebaec81fc",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_001649",
+        "sha256": "0e8c120214ed9497cee1c3f63c8096de6006c3f1ecac5fcb26a7a0e2bac04e26",
+        "blocks": [
+          "public_deck_side_0_has_6_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_002006",
+        "sha256": "47f335f969c96d397b18a71c551bec37757fd53452a32839ed82fab8c4820763",
+        "blocks": [
+          "public_deck_side_1_has_6_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_002502",
+        "sha256": "cb8b83a331d3d5ce4cb9788a5f552319be57671256d7a5152a06c1bb854b2c93",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_003019",
+        "sha256": "e2b02cd19b467e112744fd9eb1a9ef0eb3f2fa3aa2bbf5c2add37e53c9d7fdf2",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_003333",
+        "sha256": "fb58d630b75c2d4bece807234e3001408570ccb37d6a69a3674255545c99f2bf",
+        "blocks": [
+          "public_deck_side_0_has_6_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_003700",
+        "sha256": "4856205e422b156293e3584ad90fd82d56d2d50432de0f242d3b6c3e58535ae4",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_004223",
+        "sha256": "1a8aedd852efbda3ce4c2180e2cad18a28a6a9a0cf3881a01f270d9f144ea4ee",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_004702",
+        "sha256": "6a3ddafd814c039bfa7d5ad95a943e85dd50af53829377562b0f40eb02f216c7",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_005019",
+        "sha256": "877c8302295b16fdac54723b76ff61d6625b5df7220b06890cecd57600904391",
+        "blocks": [
+          "public_deck_side_0_has_6_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_005338",
+        "sha256": "802cd65ef35a27dc1176c8d61db7568f3e7b797385edd8193d8f21ea8e123865",
+        "blocks": [
+          "public_deck_side_0_has_6_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_005749",
+        "sha256": "1eb7e8b0a886afae52a269cec975eeb2b836fcf1c95a0f2438d613fb0e59d1a3",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_005958",
+        "sha256": "29ffc01b77b334a19db7f84632d29652dad3e39d4746bdd98d3a6d5c1c16e7cb",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_010523",
+        "sha256": "4acc3296cb0b595bd7081aee336e799c218710721a28e1cefdd17a7b6fd2781e",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_010911",
+        "sha256": "14f68e9b5bd3e8cf3128fa85161b1033f57b5701218fd204f4c30a024421b15f",
+        "blocks": [
+          "public_deck_side_0_has_5_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_011022",
+        "sha256": "7ca73bfa8d1177ad9741a4e80a3468152a520a9b28313ac0345f7deb311db19a",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_011543",
+        "sha256": "78c357233382a891c7556479970137beb7a895a92e1c5f57149b0e08cb26d850",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_011947",
+        "sha256": "253be5db914949eda17bbad98c35257dd3271c6388b989fb9f71cd65a87ca1a7",
+        "blocks": [
+          "public_deck_side_0_has_6_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_012304",
+        "sha256": "c2d26ffb765b8f7678944f22d539f113320d7923ed0af32380a14e0c650aaf3b",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_012624",
+        "sha256": "1a73b8bf22d8935a7452ce171e7e8322a5fad433a8da2cf2238b2df4d803d0f8",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_012941",
+        "sha256": "f03c85bff42cbfd9344f60454ec9fd732a7a987ebbf45dcf922ffdac761b1b15",
+        "blocks": [
+          "public_deck_side_0_has_6_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_013301",
+        "sha256": "055cb5bca69ae2f342358fae3789a649ad492ee31e5623409c2e7f7a29c86ca9",
+        "blocks": [
+          "public_deck_side_0_has_6_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_013653",
+        "sha256": "d8ce1178ae24c8da49915e468bc48b510ced3593a9ee16c3c0788eb99182a505",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_014010",
+        "sha256": "0d501789812a3b37ff8d1de6f12bf44a531d35bf34ccbe2874123eb07ad20356",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_014423",
+        "sha256": "d0c387a5696ee83c067714d7e4ebd4e499eb6d31fe91f636d4e0c124ca52082e",
+        "blocks": [
+          "public_deck_side_0_has_5_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_014741",
+        "sha256": "de1fd991bfa4c3b2c9c55379a075a2cf9ccea5ebd4d0f6ee3c54266bbba4cd39",
+        "blocks": [
+          "public_deck_side_0_has_6_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_015121",
+        "sha256": "dec9f18bd6107c065c375aacb13e8e0554793139236562b32afcfede8dc91437",
+        "blocks": [
+          "public_deck_side_0_has_6_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_015534",
+        "sha256": "746990b695186288b94aa5282d80c418ad471ed788f771643245eda0462fc3b3",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_015852",
+        "sha256": "05e2f637460d73372204931fba45f7dbe92c4aed2cd35a47769ce4dc05c03dac",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_020205",
+        "sha256": "b6a9df85f77bf5d198af80536eddf91ba772a34d00f20b9a08c58da45e7f883a",
+        "blocks": [
+          "public_deck_side_0_has_5_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_020623",
+        "sha256": "ea29740236a293e1dc5df58deeb0fb8ab5403fcaaad6deda2aa2c20d7a67ea1a",
+        "blocks": [
+          "public_deck_side_0_has_5_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_021000",
+        "sha256": "2cc6780215adf859849fe31dad6a1aed869fd8a54832a59700957b7dfd579c66",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_021310",
+        "sha256": "705a5f8d2ab0efe950fa4c2ca9e12d8b2ef21604b471cab353d7b7de1f7aa6f9",
+        "blocks": [
+          "public_deck_side_0_has_5_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_021627",
+        "sha256": "3b802f168d70daa4210719c43eac17b175a296022fbc3af8607d3ca03a0499c0",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_021852",
+        "sha256": "1df25c293d145f3e496a61221e76d50671e31ce8f7ade047bb9232d27fa60491",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_022210",
+        "sha256": "561eef30d68abd1d74535967d969560416f61748c2fb66ae54a94c39aeddb7ad",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_022529",
+        "sha256": "14b9467532a0c7a50d00851727dd5b43e7d82e3efb5f2576d6a32be6ab364dd0",
+        "blocks": [
+          "public_deck_side_1_has_6_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_022819",
+        "sha256": "2a669988ce8f53301b0fd74c87ae871e3910fc9d58daced73e749f2582fa61af",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_023138",
+        "sha256": "3fbb17ba659bc40af70e525a8ff856b1b18d6563ee2dc5976ed3bdfc12f6a8fd",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_023452",
+        "sha256": "6b469e6e636350507a199fac1dad1a7b35aafa82f1343bbc16f5d01783abe94a",
+        "blocks": [
+          "public_deck_side_0_has_6_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_023941",
+        "sha256": "f68366cafad126b37609d1fb536d5f72ee6559879630ab5c514837de1771a749",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_024519",
+        "sha256": "4b979a4a35eb514407c517e9fd02a45ef3a3e41fb9e98d427e72dd6c588b67ed",
+        "blocks": [
+          "public_deck_side_1_has_6_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_024837",
+        "sha256": "8454d44dafdd0ecb2737a38046fbef8b5ba4f367ee12ef3a655bf4864e8d4e49",
+        "blocks": [
+          "public_deck_side_0_has_6_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_025155",
+        "sha256": "a6a47f9fa7af4385a0962f1be07327cd5ee6702bcbbf8da37d3f07818f77a86e",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_025512",
+        "sha256": "cfd54e6d22b548c2932b2a6271d4f3ce1a0ba83431c8eda0d9f2f6352dddde89",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_030035",
+        "sha256": "bad086d33004f06e55a239eff2926bee727ec9338193f59765e377e3c7d3f81a",
+        "blocks": [
+          "public_deck_side_0_has_6_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_030356",
+        "sha256": "074ddcceac75bc3b0844d971a922990ace704fcc487423d269010f3421b4ab54",
+        "blocks": [
+          "public_deck_side_0_has_5_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_030558",
+        "sha256": "865ddcbae3ac3e0b9616f126f7ecde2bc69683f00b82161ea20d7dafe3ee0820",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_030914",
+        "sha256": "3acf2e9b7f867e84e1baf35ddd9727ad30fb2c187ea052efed32333a82e9c7ea",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_031437",
+        "sha256": "56f86a021a3c67e69e04d31281193eaeee176eaa55ac0145471754864232d663",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_031817",
+        "sha256": "ef114af9d702e75d29637075197b92319d6f9262204162be207d7c49f886e56a",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_032136",
+        "sha256": "063beeea4ef56b69f230126dc54c9b00c58b1d0aa2c9011eef0bdcea15b31959",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_032447",
+        "sha256": "ff3103cf98d77383995d54bf04fa1c4917cf02edcf5f416d38afe0e10724fab3",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_033011",
+        "sha256": "59c01a033953ac4221edffc32d915b432b373f18a60cc005e6ff630a126be07d",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_033329",
+        "sha256": "47cfb43341cc45859309a3bf3cec16ced1a77bce8688a87ec9319af4b702b016",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_033553",
+        "sha256": "6e65a398e703c3699ca0bb86ec3a6bf77568a677ee06bd850e01a69e73bc3042",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_040027",
+        "sha256": "8337b6c16374c70a7fb4ed8795626842491ab5d83755817ecdae904bf4009fab",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_040548",
+        "sha256": "3824094c31adfa85ca581db28f42d6ac4b0f0b867b3fac72fccbd06c577c4e48",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_040905",
+        "sha256": "7865ff2270e75994875f72d773a76e669c68274f9ce97ac5af81d3516676f78e",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_041224",
+        "sha256": "cbe9af5321ab8d5fe86732f2a98ca350fcc265e835e2a296978c7c6325edd739",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_041536",
+        "sha256": "28c10f65882206463aeeee7ce6de3a674063ae9c48add088a34ac5a58c7e52ec",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_041846",
+        "sha256": "1191b67d8527190ee55edfbeb8e674e5f99422fadc247511f38ebdb50bf3afb9",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_042206",
+        "sha256": "fa116dbc7d1aa590f2c40bb186d15d3c40897c7a8e18637f12ef98090976acf6",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_042524",
+        "sha256": "eecec9aade7c9acad0487dffacb1cfda9e09323db1d3b82964ef4c2022c49656",
+        "blocks": [
+          "public_deck_side_0_has_6_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_042832",
+        "sha256": "6860bf66cf1126942f08984806e13bf6f054fdae3594eb54eb543890963439e1",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_043206",
+        "sha256": "cda83007865bc8718666f2e03d1ca6dee285b77fd2cef87969c05763b78453f0",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_043718",
+        "sha256": "93fadb1046effc0f572587e6396a0880f42c5f1f96d1c06190714a15357f43f9",
+        "blocks": [
+          "public_deck_side_1_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_044029",
+        "sha256": "def335715193e6a1cb9a57a47e8aea781d44817008077577b86ef937a3986b03",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_044350",
+        "sha256": "054d207a387fb822d91973807598bd0c686cbd8c089ee1deb40609eaea32516d",
+        "blocks": [
+          "public_deck_side_0_has_5_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_044910",
+        "sha256": "8c8758a75c0c543130c81e71124d7a56dd681715ef731ffb20a3c2aa57076540",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_045336",
+        "sha256": "dc8db8bef25b4767cad1d9d66121a9a4fe6ec00eb07657e541f9e279f9fc237e",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_045649",
+        "sha256": "c0c2cc8af76b38c70fa883b9c9fdef9405d37d82794eb2943e78cf8c7babff31",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_050135",
+        "sha256": "f44c939c93ad9ad90a14dca3111d43da4898f3446e125ffb135d96212b2a4f6b",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_050511",
+        "sha256": "bb4258329c988f78284e24a72113e72b92a72f2c3ca84d6f81c843e0d5441b8b",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_050835",
+        "sha256": "dcb6f2494eee5e8b467f9a112e7d990c4f036fcbc9be10ed3b41cddf98017353",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_051147",
+        "sha256": "37977bca10c6cf2bc04a7acfe4fc6a5251a473071e459f113a2a7b3b845450f2",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_051619",
+        "sha256": "fe9ba973c38a0edde13861056bda6c57d59e68d462db6292cc8d3c80431153c1",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_051936",
+        "sha256": "be5e73d032b540b7243b61f1dac05b475b11c21652f43cf6989e37579128a87d",
+        "blocks": [
+          "public_deck_side_0_has_6_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_052253",
+        "sha256": "22d8190f4499f2362337bcaf38b7a60fe65f5d441ae359fdf4dfaf2919692000",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_052647",
+        "sha256": "37fb7a5f412a067b1ea259efd4a7b1966f359d968d571e6604688cd839b44b57",
+        "blocks": [
+          "public_deck_side_0_has_6_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_053140",
+        "sha256": "18a8a8e9ba45dabee29dc77d483bdc3114630bc0415628ce9792e7ea4c2a2f89",
+        "blocks": [
+          "public_deck_side_0_has_6_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_053459",
+        "sha256": "ca8d445cef4a567b4124aa44995228a8aae6ca387613a839d8ed05b366c8e1d6",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_053843",
+        "sha256": "d237291327e22251da4a165eb062d8c0a48423aa6ffe91529d2805b99bcdad36",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_054125",
+        "sha256": "bb8b0ddfdb497541c9f135d2899a4fce3a62f0888c4586b54e8b403ce3492a4d",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_054539",
+        "sha256": "f5f9d2312be4e0e89a3b038cc8e76d59a8629f728b9b80969de606dc77a22981",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_064904",
+        "sha256": "c8351df79774e54b4c4435b359a992436178ac63b1dc441e3e22a19cf2dea977",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_065416",
+        "sha256": "d63a88861ffb362632b6c7d183616e49c58451d3ee0b1b9eca10d4a51d76d3ef",
+        "blocks": []
+      },
+      {
+        "match": "live_play_20261008_065933",
+        "sha256": "4ba621daeb457ee32cadc5b107d62ec2b922e6741acca508b2082e6d176b61bb",
+        "blocks": [
+          "public_deck_side_0_has_6_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_070144",
+        "sha256": "6be9ae1d9dc3540deb3e6f95e8842980643631f3217f1f8d8ef56643b38d43ad",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_070456",
+        "sha256": "1973bdbab546d15e3b220429fbb10809bee82767af7222b1615edae9e4de3793",
+        "blocks": [
+          "public_deck_side_1_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_070820",
+        "sha256": "b7d47761aa3d3951abb0284f95f2fe39a0c19262c2e0d4febb0313adb0686de7",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_071136",
+        "sha256": "a418c477992565a11e374afbc8c9ad00bcfc2716cb8f8f91e8b1d3dfcc5054ee",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_071450",
+        "sha256": "969f18e63f93ea20d132c93a51ea0242fa6fd2580e791524c3d2067569fdb2ea",
+        "blocks": [
+          "public_deck_side_0_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_071631",
+        "sha256": "c7981b3a32a0582854402cb5849573abd1b4db1823706b344c917569bf354c80",
+        "blocks": [
+          "public_deck_side_0_has_6_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_072007",
+        "sha256": "87daf19a317ac7299a530906ab1e648a82670f8da6a4ea3cc7481a077cd646c1",
+        "blocks": [
+          "public_deck_side_0_has_5_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_072530",
+        "sha256": "af430017a1ffee82b42178d050d2ec304f082540b7c81da483df1a5447fe4d67",
+        "blocks": [
+          "public_deck_side_1_has_7_cards"
+        ]
+      },
+      {
+        "match": "live_play_20261008_072958",
+        "sha256": "8964e332ae12febd3cb89495b3de75013186243798dda51c2ee3b3da7bb405b7",
+        "blocks": [
+          "public_deck_side_0_has_6_cards"
+        ]
+      }
+    ]
+  },
+  "contract": {
+    "python_syntax": "passed",
+    "shell_source": "reviewed; Bash execution pending",
+    "files": {
+      "build_fork.sh": "1c2baa3e06989904af727114cdb1ee8fcee5475cfa15e94c0690ba054e2e2b14",
+      "core.py": "f1f9e3f11a76b5a025eac9ec59c40a75ef965d31da3ec598fc1dbc22fc2a18b6",
+      "driver.py": "addf65bd703b0d1800039c6c607bb7cd2381916c6036dee4eeed92fc784a74bf",
+      "pin_fork.py": "afaa29d59d8ae4a7354effae7539016ee88e55e1e6f310f4738a082e5607680c",
+      "run_parity.sh": "6f9a1f26708bafa83987cea3ace8306e82de65c1fcd7b19c0e49ac94ecb7cf7c",
+      "verify.py": "59d94f17ce3b65709329c8f6ea537c21a51d2bfddba4a24e2097450747c6ca58"
+    }
+  },
+  "existing_runtime_regression": {
+    "command": "icebow/.venv/Scripts/python.exe -m pytest pipeline/tests/test_heroiw.py -k runtime_selection_without_sim -q -p no:cacheprovider -p no:tmpdir",
+    "exit_code": 0,
+    "passed": 5,
+    "deselected": 14,
+    "tool_receipt": "20a78a"
+  },
+  "linux_validation": {
+    "status": "not_run",
+    "bash_syntax_attempt": "failed before parsing: CreateFileMapping, Win32 error 5",
+    "actual_sim_imported_by_checks": false,
+    "pod_started": false
+  }
+}

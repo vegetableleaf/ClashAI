@@ -1,0 +1,4 @@
+__pycache__/
+pytest_tmp*/
+test_artifacts/
+local_audit/audit_cache/

@@ -1,0 +1,75 @@
+{
+  "timestamp_utc": "2026-10-12T21:38:21.284592+00:00",
+  "status": "HARNESS_VERIFIED_POD_EXECUTION_PENDING",
+  "tests": {
+    "command": "research/ext/Royale/.venv/Scripts/python.exe -m pytest scratchpad/gauntlet/L74/scale/test_scale.py -q -p no:tmpdir -p no:cacheprovider",
+    "cwd": "C:\\Users\\benpe\\ClashBot",
+    "shell": "PowerShell",
+    "exit_code": 0,
+    "passed": 15,
+    "seconds": 61.94,
+    "warnings": 4,
+    "output_sha256": "6aa8afea04e6db92828fa0779b47b11dac29b6a4a5cf57c0569592ff21778941"
+  },
+  "real_audit": {
+    "exit_code": 0,
+    "marker": "SCALE_AUDIT_PASS",
+    "report_sha256": "b47cb640ee6d2c23a124504016e19bb3826532409e050332983a59c4d43fd706",
+    "replays": 6,
+    "rows": 1514,
+    "area_tokens": 413,
+    "known_ages": 405,
+    "nonzero_ages": 353,
+    "bridge_rows": 183,
+    "all_six_native_source_hashes_rechecked": true
+  },
+  "toy_integration": {
+    "report": "scratchpad\\gauntlet\\L74\\scale\\test_artifacts\\c3d5648dba6d4770b8907c2f17fc94c8\\results\\report.json",
+    "report_sha256": "55efaaf37395519dbfb3327b183b83d0c87008590bbd737a3eca9ba4bdc0b62d",
+    "arms": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "status": "SMOKE ONLY",
+    "trained_checkpoints_reloaded": true
+  },
+  "actual_vocab_parameters": {
+    "A": 1519656,
+    "B": 4706088,
+    "C": 1916200,
+    "D": 1519784
+  },
+  "public_training_contract": "require_complete_training(meta, allow_causal_tti_unknowns=True): PASS",
+  "source_sha256": {
+    "features.py": "7aaa839120092a16b88e47ad12ba46833e31e3c9d135a32762c649fa2f5d9f45",
+    "metrics.py": "c4b3363fd0aea75e27381267c02ae5ec7647c9fd534c1eafcd08ddd8c93c8482",
+    "run_scale.sh": "8447fb24b004f592e6b1f802a18ed3732df9278f8469ba61232112737509bebc",
+    "scale.py": "37696011b23b77fd3b4cab7e54d8a57570a623bc1164510add3012bfeabf4f0f",
+    "test_scale.py": "e6b3abf792c42bbb6b8d4732b0709452b552b530857e9d78d51f3c21478e725a"
+  },
+  "limitations": [
+    "No L40 training or scientific result: local GPU is RTX 5050; network prohibited.",
+    "Bash syntax/runtime check could not start: Git Bash CreateFileMapping Win32 error 5.",
+    "Native audit is six replays; pod performs full replay alignment before training."
+  ],
+  "earlier_attempts": [
+    "First pytest attempt: 11 completed cases then tmpdir ACL error; no completed suite result.",
+    "Second pytest attempt: 14 passed in 60.64s; final changed-source suite above supersedes it."
+  ],
+  "no_network": true,
+  "no_deployment": true,
+  "pipeline_edits": false,
+  "live_script_edits": false,
+  "uncommitted": true,
+  "gates": {
+    "met": 2,
+    "unmet": 0,
+    "abandoned_handoff": 2,
+    "handoffs": [
+      "G3: Linux launcher runtime verification",
+      "G4: full L40 measurements"
+    ]
+  }
+}
