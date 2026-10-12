@@ -20,14 +20,21 @@ RUNTIME = REPO / "research/ext/Royale-20261005/runtime"
 RUNTIME_ID = None
 _selected = os.environ.get("ROYALE_RUNTIME", "").strip()
 if _selected:
-    if _selected not in ("20261006", "20261006-linux"):
-        raise RuntimeError(f"Unknown ROYALE_RUNTIME={_selected!r}; known opt-in runtimes: '20261006', '20261006-linux'")
+    if _selected not in ("20261006", "20261006-linux", "20261012", "20261012-linux"):
+        raise RuntimeError(f"Unknown ROYALE_RUNTIME={_selected!r}; known opt-in runtimes: "
+                           "'20261006', '20261006-linux', '20261012', '20261012-linux'")
     RUNTIME_ID = _selected
     MANIFEST = REPO / "scratchpad/gauntlet/L73/royale_update_20261006/build_manifest.json"
     RUNTIME = REPO / "research/ext/Royale-20261006/runtime"
     if _selected == "20261006-linux":   # PyPI royalesim 0.1.17 / royalegym 0.1.18 in this venv (Linux VM, benchmark)
         import sysconfig
         RUNTIME = Path(sysconfig.get_paths()["purelib"])
+    if _selected in ("20261012", "20261012-linux"):
+        MANIFEST = REPO / "scratchpad/gauntlet/L74/heroiw/build_manifest.json"
+        RUNTIME = REPO / "research/ext/Royale-20261012/runtime"
+        if _selected.endswith('-linux'):
+            import sysconfig
+            RUNTIME = Path(sysconfig.get_paths()["purelib"])
 _STAMP = None
 
 
@@ -66,6 +73,12 @@ def activate() -> dict:
             raise RuntimeError(f"Pinned Royale build manifest missing: {MANIFEST}")
         contents = MANIFEST.read_bytes()
         manifest = json.loads(contents)
+        if RUNTIME_ID in ('20261012', '20261012-linux'):
+            from importlib.metadata import distributions
+            installed = {d.metadata['Name'].lower(): d.version for d in distributions(path=[str(runtime)])}
+            for name, version in manifest['versions'].items():
+                if installed.get(name) != version:
+                    raise RuntimeError(f"Pinned {name} must be {version}, got {installed.get(name)!r}")
         _verify_files(runtime, manifest)
         sys.path.insert(0, str(runtime))
         importlib.invalidate_caches()
@@ -80,9 +93,10 @@ def activate() -> dict:
         from royalegym.protocol import data_dir
         if data_dir().resolve() != runtime / "royalesim/data":
             raise RuntimeError("RoyaleGym data path differs from the pinned runtime")
+        from .royale_heroiw import engine_options
         _STAMP = dict(schema=1, pins=manifest["pins"], wheels=manifest["wheels"],
                       manifest_sha256=hashlib.sha256(contents).hexdigest(),
-                      card_table=RustEngine().card_table_stamp())
+                      card_table=RustEngine(**engine_options()).card_table_stamp())
         if RUNTIME_ID:
             _STAMP["runtime_id"] = RUNTIME_ID
     return json.loads(json.dumps(_STAMP))
@@ -97,6 +111,8 @@ def _same_engine(stamp: dict | None):
     s = dict(stamp)
     if s.get("runtime_id") in ("20261006", "20261006-linux"):
         s["runtime_id"] = "20261006"
+    if s.get("runtime_id") in ("20261012", "20261012-linux"):
+        s["runtime_id"] = "20261012"
     return s
 
 
