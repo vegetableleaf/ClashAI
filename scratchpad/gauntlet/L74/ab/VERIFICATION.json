@@ -1,0 +1,67 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "gate": "G1",
+      "command": [
+        "C:\\Users\\benpe\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L74\\ab\\test_live_ab.py",
+        "counting"
+      ],
+      "cwd": "C:\\Users\\benpe\\ClashBot",
+      "shell": "none; explicit subprocess argv from PowerShell-hosted Python",
+      "exit_code": 0,
+      "expectation": "COUNTING_PASS",
+      "matched": true,
+      "output_sha256": "89ba285ed595eca6409b2359726614aad0cd68950645fefa520fd5ae99c4a926",
+      "output_bytes": 651
+    },
+    {
+      "gate": "G2",
+      "command": [
+        "C:\\Users\\benpe\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L74\\ab\\test_live_ab.py",
+        "safety"
+      ],
+      "cwd": "C:\\Users\\benpe\\ClashBot",
+      "shell": "none; explicit subprocess argv from PowerShell-hosted Python",
+      "exit_code": 0,
+      "expectation": "SAFETY_PASS",
+      "matched": true,
+      "output_sha256": "810d58fd3e6b877cfd3837823bc67801f67721127f6dfcca0f523ed85af3d64e",
+      "output_bytes": 1436
+    },
+    {
+      "gate": "G3",
+      "command": [
+        "C:\\Users\\benpe\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L74\\ab\\live_ab.py",
+        "--dry-run"
+      ],
+      "cwd": "C:\\Users\\benpe\\ClashBot",
+      "shell": "none; explicit subprocess argv from PowerShell-hosted Python",
+      "exit_code": 0,
+      "expectation": "DRYRUN_PASS",
+      "matched": true,
+      "output_sha256": "959b5032126a35c6a36f0dc3d3c1dd7a1e0ea5191dfe38341fa3b3d346227761",
+      "output_bytes": 2252
+    }
+  ],
+  "test_count": 24,
+  "live_launched": false,
+  "discord_posts_sent": 0,
+  "subprocess_network_calls_from_dry_run": 0,
+  "source_sha256": {
+    "live_ab.py": "1456ca913c524cbeef077d807989e773f18ed4ff745f819554577b988e4a6222",
+    "ab_dryrun.py": "b2a2037641f9a1bc3ae5c3150d99bad5e7944db4407988411920516018925f8f",
+    "test_live_ab.py": "a79326287db28856a506f9b322d88400b987598e0f7471cb32aad22eb205fac0",
+    "README.md": "7730df2899c797af6a34f36916a7c327015ab2ac8255449e48ad1abb227f4805"
+  },
+  "protected_source_sha256": {
+    "scratchpad/gauntlet/L70/live/start_live.sh": "56091aa3a7f17341599a0e441a9a413a9e81f7a318c236272b4c114cb1a27f95",
+    "scratchpad/gauntlet/L70/live/run_live.sh": "55feee15aac1949a7920b4bcf9e04f317ed92c4085c01a3e64e4ab271e20506b",
+    "scratchpad/gauntlet/L70/live/live_config.sh": "587ca05a233ab5ee03d5da8754f5773756749d75f4182e09dca03b389e87390e",
+    "scratchpad/gauntlet/L74/deploy/restart_live.py": "ac1984974c33f22d0152eb6fdf6227e6fd731e8a973eb699da07df81223d4001",
+    "scratchpad/gauntlet/L69/discord/post.py": "a3980544b01d93004fc2924591a25ba8cbd74716cc6b7eddf0eb61b224d57214"
+  }
+}
