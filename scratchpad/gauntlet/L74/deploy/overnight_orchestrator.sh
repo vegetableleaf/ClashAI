@@ -28,7 +28,7 @@ POLL=${POLL:-60}; STEP=${STEP:-15}; GRACE=${GRACE:-900}; STALL=${STALL:-2700}; N
 K="-o BatchMode=yes -o ConnectTimeout=20 -o ServerAliveInterval=30 -i $HOME/.ssh/runpod_clashbot"
 S5="ssh $K -p 19084 root@64.247.206.120"
 mkdir -p "$ON"
-rm -f $ON/LADDER_DONE $ON/ADAPT_RESOLVED $ON/ADAPT_STATUS $ON/POD5_RELEASE $ON/ORCH_STOP
+rm -f $ON/LAST_ATTEMPT $ON/LADDER_DONE $ON/ADAPT_RESOLVED $ON/ADAPT_STATUS $ON/POD5_RELEASE $ON/ORCH_STOP
 
 log() { echo "$(date '+%F %T') $*" >> $ON/orchestrator.log; }
 post() {
@@ -182,7 +182,7 @@ ladder() {   # sets WINNER (attempt name or NONE)
     esac
     rule=$(jv "$v" rule)
     if [ "$(jv "$v" verdict)" = failed ] && [ $attempt -gt 0 ]; then rule=c; fi         # a retry that could not train under the drift cap -> stronger anchor
-    if [ "$rule" = none ] || [ $attempt -ge 2 ]; then WINNER=NONE; break; fi
+    if [ "$rule" = none ] || [ $attempt -ge 2 ]; then WINNER=NONE; echo $name > $ON/LAST_ATTEMPT; break; fi   # ended on evidence (not infra)
     attempt=$((attempt+1)); r=TORNADO_r$attempt
     nx=$($H nextparams "$params" $rule); params=$(jv "$nx" params); args=$(jv "$nx" args)
     post "[overnight] $name verdict: $(jv "$v" verdict), failed-gate rule ($rule): $(jv "$v" gates | head -c 300). Retry $attempt on pod 5 as $r with train args [$args]; eval = 960 ON + 960 OFF vs live, harder opponent."
@@ -223,11 +223,25 @@ if [ "$WINNER" != NONE ]; then
   fi
 fi
 waitf $ON/ADAPT_RESOLVED
-if [ "$(cat $ON/ADAPT_STATUS 2>/dev/null)" = built ]; then
+# owner 10-12: if the Tornado fix CLEARLY failed (no grey area), the adaptive model deploys by itself (without the pending-head fix)
+AST=$(cat $ON/ADAPT_STATUS 2>/dev/null); CF=gray; SRC=
+[ "$WINNER" = NONE ] && [ -e $ON/LAST_ATTEMPT ] && CF=$($H clearfail $(adir $(cat $ON/LAST_ATTEMPT))/SUMMARY.txt)
+log "ADAPT status $AST, Tornado clear-fail check: $CF"
+if [ "$CF" = clear ] && { [ "$AST" = built ] || [ "$AST" = fixfailed ]; }; then
+  SRC=$(find $P3/x_ADAPT -name adaptive_final_grafted.pt | head -1); DST=adapt_alone.pt; LBL="ADAPT alone (Tornado fix clearly failed)"
+elif [ "$AST" = built ]; then
+  SRC=$(adir ADAPTFIX)/adapt_fixed.pt; DST=adapt_fixed.pt; LBL="ADAPT+fix"
+fi
+if [ -n "$SRC" ]; then
   if [ $LIVE_BROKEN = 1 ]; then
-    post "[overnight] ADAPT+fix is built ($(adir ADAPTFIX)/adapt_fixed.pt) but live is broken, so it was not switched in."
-  elif deploy_model $(adir ADAPTFIX)/adapt_fixed.pt adapt adapt_fixed.pt "ADAPT+fix"; then
-    live_phase "ADAPT+fix" $ADAPT_N restart
+    post "[overnight] $LBL is ready ($SRC) but live is broken, so it was not switched in."
+  elif deploy_model "$SRC" adapt $DST "$LBL"; then
+    # start (not restart): whatever runs now may be another deck (bait); stop it between matches, then start icebow
+    if [ "$(live_count)" -gt 0 ] && ! stop_and_wait 2400; then
+      cp $L/CKPT_OVERRIDE.pre_adapt_backup $L/CKPT_OVERRIDE; post "[overnight] live did not stop in 40 min; CKPT_OVERRIDE reverted, $LBL NOT deployed"
+    else
+      live_phase "$LBL" $ADAPT_N start
+    fi
   fi
 fi
 log "orchestrator finished"; post "[overnight] orchestrator finished. Log: $ON/orchestrator.log"

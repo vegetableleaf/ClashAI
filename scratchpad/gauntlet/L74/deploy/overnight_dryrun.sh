@@ -15,7 +15,7 @@ mk_summary() {
   mkdir -p $(dirname $1)
   { if [ $2 = candidate ]; then echo "VERDICT: candidate"; elif [ $2 = failed ]; then echo "VERDICT: FAILED (exit 1). See run.log"; else echo "VERDICT: not candidate"; fi
     echo "Nothing deployed."; echo; echo "icebow: x"
-    echo "hard_on: paired n=960"; echo "  fixed-live -1.00 pp [-2.00, +0.10]; non-inferior=$3; Tornado gate=$4"
+    echo "hard_on: paired n=960"; echo "  fixed-live ${HON_CI:--1.00 pp [-2.00, +0.10]}; non-inferior=$3; Tornado gate=$4"
     echo "hard_off: paired n=960"; echo "  fixed-live +0.00 pp [-1.00, +1.00]; non-inferior=$5; Tornado gate=True"
     if [ -n "$6" ]; then echo "old_on: paired n=960"; echo "  fixed-live +0 pp; non-inferior=True; Tornado gate=True"; echo "old_off: paired n=960"; echo "  fixed-live +0 pp; non-inferior=True; Tornado gate=True"; fi
   } > $1
@@ -96,7 +96,7 @@ has $(P) "ADAPT failed" "ADAPT failed post"
 
 echo "== D: TORNADO candidate at once; live dies before 20 -> <=3 restarts then give up; ADAPT built but NOT switched"
 setup D; tornado_fixture candidate True True True; adapt_fixture pass
-run_scn FAKE_N=5
+run_scn FAKE_N=4   # 4 starts x 4 = 16 < 20, so it must give up (5 hit exactly 20 = timing flake)
 has $(P) "restart 3 of 3" "3 restarts posted"
 has $(P) "giving up" "gave up after 3"
 has $(P) "live is broken, so it was not switched in" "ADAPT not switched when live broken"
@@ -113,5 +113,23 @@ setup F; rm $S/td/COPIED_OK; (sleep 3; touch $S/on/ORCH_STOP) &
 run_scn
 has $(P) "stopped by ORCH_STOP" "ORCH_STOP honoured"
 
+
+echo "== G: all 3 Tornado attempts fail and the last one CLEARLY (wins-with-fast-plays range all below 0); ADAPT passes -> ADAPT alone, via stop + start icebow"
+setup G; tornado_fixture not False True True; retry_fixture TORNADO_r1 not False True True; HON_CI="-4.00 pp [-6.00, -1.00]" retry_fixture TORNADO_r2 not False True True; adapt_fixture pass
+echo 1 > $S/running; (sleep 40; echo 0 > $S/running) &
+run_scn
+has $S/on/orchestrator.log "clear-fail check: clear" "clear fail detected on the last attempt"
+has $(P) "ADAPT alone (Tornado fix clearly failed): live model change" "ADAPT alone switched in"
+has $S/live/CKPT_OVERRIDE "adapt_fix/adapt_alone.pt" "CKPT_OVERRIDE = ADAPT alone"
+has $S/on/orchestrator.log "live start: ADAPT alone" "started (icebow deck), not restarted"
+hasnt $(P) "ADAPT+fix: live model change" "ADAPT+fix not used"
+
+echo "== H: all 3 fail but in the grey area (range crosses 0, Tornado gate ok); ADAPT passes -> ADAPT+fix as before, via start"
+setup H; tornado_fixture not False True True; retry_fixture TORNADO_r1 not False True True; retry_fixture TORNADO_r2 not False True True; adapt_fixture pass
+run_scn
+has $S/on/orchestrator.log "clear-fail check: gray" "grey area detected"
+has $(P) "ADAPT+fix: live model change" "ADAPT+fix switched in"
+has $S/on/orchestrator.log "live start: ADAPT+fix" "ADAPT+fix started (icebow deck)"
+hasnt $(P) "ADAPT alone" "ADAPT alone not used"
 echo; [ $FAILS = 0 ] && echo "DRYRUN PASS ($T)" || echo "DRYRUN FAILED: $FAILS ($T)"
 exit $FAILS

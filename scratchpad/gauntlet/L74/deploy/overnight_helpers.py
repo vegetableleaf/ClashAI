@@ -53,6 +53,27 @@ def verdict(path):
     return dict(verdict='failed', rule='none', gates=gl, first=first[:200])
 
 
+def clearfail(path):
+    """Owner 10-12: 'clear' if the Tornado fix CLEARLY failed -- a hard_on/hard_off fixed-live CI entirely below 0, or the
+    Tornado gate False on hard_on; otherwise 'gray' (only the non-inferiority bound was missed). Icebow section only
+    (an optional bait section has no Tornado). Missing/unreadable summary -> 'gray'."""
+    label, deck = None, 'icebow'
+    for line in (_read(path) or '').splitlines():
+        m = re.match(r'^(icebow|bait): ', line)
+        if m:
+            deck, label = m.group(1), None; continue
+        m = re.match(r'^(\w+_(?:on|off)): paired n=', line)
+        if m:
+            label = m.group(1); continue
+        if deck == 'icebow' and label in ('hard_on', 'hard_off'):
+            m = re.search(r'fixed-live\s+[+-]?[\d.]+ pp \[([+-]?[\d.]+), ([+-]?[\d.]+)\]', line)
+            if m and float(m.group(2)) < 0:
+                return 'clear'
+            if label == 'hard_on' and 'Tornado gate=False' in line:
+                return 'clear'
+    return 'gray'
+
+
 def nextparams(prev, rule):
     p = dict(BASE, **prev)
     if rule == 'a':                                        # Tornado share still too high: more training, stronger head step
@@ -191,6 +212,17 @@ def selftest():
     assert verdict(os.path.join(d, 'nope'))['verdict'] == 'missing'
     # a candidate whose first line merely contains the word must not match 'not candidate' as candidate
     assert verdict(w('nc', 'VERDICT: not candidate\n'))['verdict'] == 'not_candidate'
+    real = lambda hon_ci, ton='True', hoff_ci='[-1.00, +1.00]': (
+        'VERDICT: not candidate\nx\n\nicebow: not candidate\nhard_on: paired n=960\n  fixed: wins=1\n'
+        f'  fixed-live -2.00 pp {hon_ci}; non-inferior=False; Tornado gate={ton}\n'
+        f'hard_off: paired n=960\n  fixed-live +0.00 pp {hoff_ci}; non-inferior=True; Tornado gate=True\n')
+    assert clearfail(w('g', real('[-4.50, +0.40]'))) == 'gray'
+    assert clearfail(w('c1', real('[-6.00, -1.00]'))) == 'clear'                       # fast-play wins all below 0
+    assert clearfail(w('c2', real('[-4.50, +0.40]', hoff_ci='[-3.00, -0.20]'))) == 'clear'   # ordinary play all below 0
+    assert clearfail(w('c3', real('[-4.50, +0.40]', ton='False'))) == 'clear'          # Tornado habit not fixed
+    assert clearfail(w('bt', real('[-4.50, +0.40]') + '\nbait: not candidate\nhard_on: paired n=960\n'
+                       '  fixed-live -5.00 pp [-7.00, -2.00]; non-inferior=False; Tornado gate=False\n')) == 'gray'   # bait ignored
+    assert clearfail(os.path.join(d, 'nope')) == 'gray' and clearfail(w('f2', 'VERDICT: FAILED\n')) == 'gray'
     a1 = nextparams({}, 'a'); assert a1['args'] == '--epochs 10 --lr 0.0002 --kl 100', a1
     a2 = nextparams(a1['params'], 'c'); assert a2['args'] == '--epochs 10 --lr 0.0001 --kl 200', a2
     assert nextparams({}, 'b')['args'].endswith('--train-cell')
@@ -211,6 +243,7 @@ if __name__ == '__main__':
     cmd = a[0]
     if cmd == 'verdict': r = verdict(a[1])
     elif cmd == 'adapt': r = adapt(a[1])
+    elif cmd == 'clearfail': print(clearfail(a[1])); sys.exit(0)
     elif cmd == 'nextparams': r = nextparams(json.loads(a[1]), a[2])
     elif cmd == 'count': r = count(a[1], a[2], a[3], int(a[4]) if len(a) > 4 else None)
     elif cmd == 'running': r = running()
