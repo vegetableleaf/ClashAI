@@ -1,0 +1,63 @@
+{
+    "G1":  {
+               "command":  [
+                               "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe",
+                               "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L74\\livephi\\verify.py",
+                               "dataset"
+                           ],
+               "cwd":  "C:\\Users\\benpe\\ClashBot",
+               "shell":  "direct executable (shell=False), launched from PowerShell",
+               "exit_code":  0,
+               "expected":  "DATASET VERIFIED",
+               "matched":  true,
+               "output_sha256":  "a43c2f3f875e16bc82d3e2ce168dc9e5975dd72de8895a9267af43f58f8793c7",
+               "seconds":  9.59425020008348,
+               "output":  "DATASET VERIFIED 772 268175 phase_stats overlap 772\r\n"
+           },
+    "G2":  {
+               "command":  [
+                               "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe",
+                               "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L74\\livephi\\verify.py",
+                               "evaluation"
+                           ],
+               "cwd":  "C:\\Users\\benpe\\ClashBot",
+               "shell":  "direct executable (shell=False), launched from PowerShell",
+               "exit_code":  0,
+               "expected":  "EVALUATION VERIFIED",
+               "matched":  true,
+               "output_sha256":  "837d3ed82b6932e69d37560b60dacdc6eb58bea62457d054225a6b78f55b53cd",
+               "seconds":  6.591704500024207,
+               "output":  "C:\\Users\\benpe\\ClashBot\\pipeline\\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True\r\n  self.encoder = nn.TransformerEncoder(enc, layers)\r\nEVALUATION VERIFIED reject\r\n"
+           },
+    "G3":  {
+               "command":  [
+                               "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe",
+                               "-m",
+                               "pytest",
+                               "pipeline/tests/test_live_phi.py",
+                               "pipeline/tests/test_reward_shaping.py",
+                               "pipeline/tests/test_value_phi.py::TestMath",
+                               "scratchpad/gauntlet/L74/livephi/test_data.py",
+                               "-q",
+                               "-p",
+                               "no:cacheprovider"
+                           ],
+               "cwd":  "C:\\Users\\benpe\\ClashBot",
+               "shell":  "direct executable (shell=False), launched from PowerShell",
+               "exit_code":  0,
+               "expected":  "passed",
+               "matched":  true,
+               "output_sha256":  "1c47d40beb7e9380465a7e162a69608e8b7a23252c502a037e604186b5055cc2",
+               "seconds":  8.427755300072022,
+               "output":  ".........................                                                [100%]\r\n============================== warnings summary ===============================\r\npipeline/tests/test_live_phi.py::TestLivePhi::test_default_config_hash_and_collate_unchanged\r\npipeline/tests/test_live_phi.py::TestLivePhi::test_live_mode_collate_uses_same_potential_math\r\n  C:\\Users\\benpe\\ClashBot\\pipeline\\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True\r\n    self.encoder = nn.TransformerEncoder(enc, layers)\r\n\r\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\r\n25 passed, 2 warnings in 6.50s\r\n"
+           },
+    "sources":  {
+                    "pipeline\\live_phi.py":  "244ae835105a380652eb03a88d5db8c7ef3f2e43d32cd44974665f0eb51bfa7f",
+                    "pipeline\\rl_royale.py":  "8a5ce5f2fc19d0bd80179d1938d24d5e73c5051cf4ef53667b5a51652252f66b",
+                    "pipeline\\tests\\test_live_phi.py":  "4ec6c727a738d015cbaba8803ea1c9557c92e8595cd4b605b297b432c5a1e6dc",
+                    "scratchpad\\gauntlet\\L74\\livephi\\phi_live.pt":  "aaeaab1a399fd12e034e8e3623d7bb164325991a9e4592438ad727a564bb91e8",
+                    "scratchpad\\gauntlet\\L74\\livephi\\results.json":  "53f076e8156276bb3a886383d0ca5fbf46267bddef4dd75402462e965dee167e",
+                    "scratchpad\\gauntlet\\L74\\livephi\\REPORT.md":  "ad72d70d9da95b370f4bfe33286a405fd20eef1c6cd66236afb3748c08c1ece5"
+                },
+    "report_only_revision":  "After passing G1/G2/G3, report table now also displays already-verified smoothed behavior contrasts. No implementation or results changed."
+}

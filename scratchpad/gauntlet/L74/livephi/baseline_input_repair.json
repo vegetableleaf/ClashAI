@@ -1,0 +1,23 @@
+{
+  "matches": 219,
+  "changed_elements": {
+    "tok": 0,
+    "mask": 0,
+    "sc": 0,
+    "unit_form": 0,
+    "past": 0,
+    "hand_card": 0,
+    "hand_form": 0,
+    "next_card": 0,
+    "next_form": 0,
+    "deck_card": 0,
+    "deck_form": 0,
+    "opp_past": 23834,
+    "own_ability": 12459,
+    "opp_cycle": 33094,
+    "projectiles": 0,
+    "effects": 0
+  },
+  "training_features_bit_identical": true,
+  "input_revision": 3
+}

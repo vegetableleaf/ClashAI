@@ -1,0 +1,12 @@
+[
+  {
+    "fastpath": true,
+    "seconds": 0.6033899000613019,
+    "max_abs_error": 0.0
+  },
+  {
+    "fastpath": false,
+    "seconds": 4.235056099947542,
+    "max_abs_error": 2.086162567138672e-07
+  }
+]

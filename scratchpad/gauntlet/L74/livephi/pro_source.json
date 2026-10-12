@@ -1,0 +1,9 @@
+{
+  "path": "icebow\\data\\pipeline\\gen_dataset_v32_fv5.npz",
+  "sha256": "29ecefa9d3025a51d7d4e4cbf67ad15a6fe79a9fd7b222b394dd391e0bc76530",
+  "l73_path": "scratchpad/gauntlet/L73/phi_eval/phi_v32.npz",
+  "rows": 45431,
+  "exact_sc_and_label_parity": true,
+  "feature_version": 5,
+  "checkpoint_vocab_equal": true
+}

@@ -1,0 +1,4 @@
+*.npz
+pro_shards/
+test_tmp/
+*.log

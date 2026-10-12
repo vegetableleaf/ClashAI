@@ -62,6 +62,8 @@ One update (``Learner.one_update``):
      seconds of the match's kept rows (by tick), of P(win) - P(loss) from the value head of a FROZEN net
      (shaping_phi_ckpt, default the init; loaded once by the learner, never trained) on the row's own model inputs
      (``value_phi_rewards``); |Phi| <= shaping_w_value. Actors only add the tick record (``record_tick``).
+     ``shaping: live_phi`` uses the same causal smoothing and residual critic with 2 P(win)-1 from the frozen
+     public-board MLP (pipeline.live_phi). Null shaping_phi_ckpt resolves to L74/livephi/phi_live.pt. Default off.
      ``gae_gamma_unit: tick`` (gae only; default row = gae_gamma per kept row): gamma_t = gae_gamma_tick ** (ticks
      from kept row t to the next kept row, ``row_gammas``), in GAE AND in F_t, from the ``tick`` rows e1_eval records
      under ``record_tick``. ``gae_terminal_gap: true`` (default false, gae + tick only) also discounts the terminal
@@ -160,7 +162,7 @@ def actor_cfg(base: dict, kind: str, aid: int, dev: str) -> dict:
     cfg.update(condition_cfg(base))
     if kind == "rollout" and base.get("shaping", "none") == "tower_crown":
         cfg["record_phi"] = True                              # R2: each row carries reward_shaping.phi_record
-    if kind == "rollout" and (base.get("gae_gamma_unit", "row") == "tick" or base.get("shaping") == "value_phi"):
+    if kind == "rollout" and (base.get("gae_gamma_unit", "row") == "tick" or base.get("shaping") in ("value_phi", "live_phi")):
         cfg["record_tick"] = True                             # each row carries its decision tick
     return cfg
 
@@ -182,7 +184,7 @@ def loo_advantage(R, clip: float = 2.0) -> np.ndarray:
 
 # ---- per-decision credit (R1, scratchpad/gauntlet/L69/reward_plan.md): ``advantage: gae`` -------------------------
 ADV_MODES = ("match_loo", "gae")
-SHAPING_MODES = ("none", "tower_crown", "value_phi")   # R2 (reward_plan.md 2 / 3b) / lever C: potential shaping, gae only
+SHAPING_MODES = ("none", "tower_crown", "value_phi", "live_phi")   # R2 (reward_plan.md 2 / 3b) / lever C: potential shaping, gae only
 GAE_DEFAULTS = {"advantage": "match_loo", "gae_gamma": 0.999, "gae_lambda": 0.95, "vf_coef": 0.5, "vf_clip": 0.2,
                 "critic_warmup_updates": 0,     # a config WITHOUT these keys (a run started before R1) = match_loo
                 "shaping": "none", "shaping_w_tower": 0.3, "shaping_w_crown": 0.3,   # ... and no shaping (R2)
@@ -246,7 +248,7 @@ def adv_cfg(cfg: dict) -> dict:
     if not (num(sc) and sc > 0.0):
         bad.append(f"shaping_critic_scale must be a finite number > 0, got {sc!r}")
     elif c["shaping"] != "none" and not bad:
-        if c["shaping"] == "value_phi":                        # |Phi| <= w_value (a mean of V in [-1, 1], x w)
+        if c["shaping"] in ("value_phi", "live_phi"):                        # |Phi| <= w_value (a mean of V in [-1, 1], x w)
             need, why = 1.0 + vp["shaping_w_value"], "1 + w_value"
         else:
             need = 1.0 + c["shaping_w_tower"] + 2.0 / 3.0 * c["shaping_w_crown"]   # max |G - Phi| before the end
@@ -259,7 +261,7 @@ def adv_cfg(cfg: dict) -> dict:
                        f"predicts G, not the residual (G - Phi) / scale)")
     if bad:
         raise SystemExit("bad advantage config: " + "; ".join(bad))
-    if c["shaping"] == "value_phi":
+    if c["shaping"] in ("value_phi", "live_phi"):
         c.update(vp)
     return c
 
@@ -1150,7 +1152,7 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
         if gamma_tick is not None:
             gr = {j: row_gammas(results[j]["traj"]["tick"][keep[j]], gamma_tick) for j in use}
             B["gamma_row"] = cat(lambda j: gr[j])
-        if shaping is not None and shaping.get("mode") == "value_phi":     # lever C: the frozen net on B's inputs
+        if shaping is not None and shaping.get("mode") in ("value_phi", "live_phi"):     # lever C: the frozen net on B's inputs
             raw = np.asarray(shaping["phi_fn"](B), dtype=np.float64)
             off = dict(zip(use, np.cumsum([0] + [n_rows[j] for j in use])))
             sh = {}
@@ -1170,8 +1172,9 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
           "mixed_group_share": mixed / max(len(groups), 1), "mean_abs_A": float(np.abs(A).mean()) if len(A) else 0.0,
           "rows": int(len(B["A"])), "rows_played": int(B["played"].sum()), "rows_gate": int(B["gate_sampled"].sum()),
           "decisions": int(sum(len(r["traj"]["played"]) for r in results))}
-    if sh is not None and shaping.get("mode") == "value_phi":
+    if sh is not None and shaping.get("mode") in ("value_phi", "live_phi"):
         st["shaping"] = value_phi_stats([sh[j] for j in use], [reward(results[j]["outcome"]) for j in use])
+        st["shaping"]["mode"] = shaping["mode"]
     elif sh is not None:
         st["shaping"] = shaping_stats([sh[j] for j in use])
     return B, st
@@ -2148,7 +2151,7 @@ class Learner:
         self.ref = copy.deepcopy(self.model).eval()
         for p in self.ref.parameters():
             p.requires_grad_(False)
-        if adv_cfg(cfg)["shaping"] == "value_phi":            # lever C: the frozen Phi net, loaded once from FILE
+        if adv_cfg(cfg)["shaping"] in ("value_phi", "live_phi"):            # lever C: the frozen Phi net, loaded once from FILE
             self.phi_net = self._load_phi_net(ick)            # (never self.model / a resumed one), never trained
         self.model.eval()                                     # eval() for rollout AND update (E1 3.3 dropout trap)
         self.opt = torch.optim.Adam(self.model.parameters(), lr=float(cfg["lr"]))
@@ -2286,6 +2289,13 @@ class Learner:
         """``shaping: value_phi``: the frozen net (``shaping_phi_ckpt``, null = the init) on the learner device, eval,
         no grad. Refuses a checkpoint whose row inputs differ from the learner's (gen / feature_version / d_c /
         card_vocab), since Phi runs on the learner's recorded rows."""
+        if adv_cfg(self.cfg)["shaping"] == "live_phi":
+            from pipeline.live_phi import DEFAULT_CHECKPOINT, load
+            ck = adv_cfg(self.cfg)["shaping_phi_ckpt"] or DEFAULT_CHECKPOINT
+            try:
+                return load(REPO / ck, self.dev, int(ick["args"].get("feature_version", 1)))
+            except (OSError, ValueError, RuntimeError) as exc:
+                raise SystemExit(f"live_phi checkpoint {ck}: {exc}") from exc
         ck = adv_cfg(self.cfg)["shaping_phi_ckpt"] or self.cfg["init"]
         path = REPO / ck
         if not path.exists():
@@ -2305,6 +2315,14 @@ class Learner:
 
     def _phi_values(self, Bn: dict) -> np.ndarray:
         """``value_rows`` of the frozen Phi net on the numpy batch ``collate`` built (its model-input keys only)."""
+        if adv_cfg(self.cfg)["shaping"] == "live_phi":
+            with torch.no_grad():
+                values = []
+                for start in range(0, len(Bn["sc"]), 2048):
+                    b = {k: torch.as_tensor(Bn[k][start:start + 2048], device=self.dev)
+                         for k in ("tok", "mask", "sc")}
+                    values.append(self.phi_net(b).cpu())
+                return torch.cat(values).numpy() if values else np.zeros(0, np.float32)
         keys = E.gen_row_keys(self.phi_net) if "hand_card" in Bn else ("tok", "mask", "sc", "past")
         return value_rows(self.phi_net, to_device({k: Bn[k] for k in (*keys, "A")}, self.dev)).cpu().numpy()
 
@@ -2505,8 +2523,8 @@ class Learner:
         gae_on = ac["advantage"] == "gae"
         shp = ({"gamma": ac["gae_gamma"], "w_tower": ac["shaping_w_tower"], "w_crown": ac["shaping_w_crown"]}
                if ac["shaping"] == "tower_crown" else None)
-        if ac["shaping"] == "value_phi":
-            shp = {"mode": "value_phi", "gamma": ac["gae_gamma"], "w_value": ac["shaping_w_value"],
+        if ac["shaping"] in ("value_phi", "live_phi"):
+            shp = {"mode": ac["shaping"], "gamma": ac["gae_gamma"], "w_value": ac["shaping_w_value"],
                    "window_ticks": int(round(ac["shaping_phi_window_s"] / E.TICK_S)), "phi_fn": self._phi_values}
         tick_unit = gae_on and ac["gae_gamma_unit"] == "tick"
         Bn, bst = collate(results, float(cfg["adv_clip"]), advantage=ac["advantage"], shaping=shp,
@@ -2656,11 +2674,11 @@ class Learner:
                     f"{f((gst['vf_trunk_share'] or {}).get('share'))}" if gae_on else "")
                  + (f" | shape |F| {f(shs['mean_abs_F'], '{:.4f}')} (t {f(shs['mean_abs_tower'], '{:.4f}')} c "
                     f"{f(shs['mean_abs_crown'], '{:.4f}')}) |Phi| {f(shs['mean_abs_phi'], '{:.4f}')} dom "
-                    f"{f(shs['shaping_dominates'])}" if shs and shs.get("mode") != "value_phi" else "")
+                    f"{f(shs['shaping_dominates'])}" if shs and shs.get("mode") not in ("value_phi", "live_phi") else "")
                  + (f" | vphi |F| {f(shs['mean_abs_F'], '{:.4f}')} |Phi| {f(shs['mean_abs_phi'], '{:.4f}')} share "
                     f"{f(gst['phi_share'])} dPhi std {f(shs['phi_step_std'], '{:.4f}')} (raw "
                     f"{f(shs['raw_step_std'], '{:.4f}')}) end-corr {f(shs['phi_end_corr'], '{:+.3f}')}"
-                    if shs and shs.get("mode") == "value_phi" else "")
+                    if shs and shs.get("mode") in ("value_phi", "live_phi") else "")
                  + (f" | branch n {brst['n']}/{brst['emitted']} hold+ {f(brst['hold_better_share'])} d "
                     f"{f(brst['mean_delta'], '{:+.3f}')}"
                     + "".join(f" [{ph} {v['n']} {f(v['hold_better_share'])} {f(v['mean_delta'], '{:+.3f}')}]"
