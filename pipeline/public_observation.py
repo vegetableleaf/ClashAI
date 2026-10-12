@@ -60,7 +60,7 @@ def public_frame(frame, *, source):
             side, x, y, hp, mhp = (e[k] for k in ('side', 'x', 'y', 'hp', 'max_hp'))
             if source == 'sim':
                 key = vocab.engine_key(e.get('name', ''))
-                cid = _native_ids().get((key, entity_form(e)), -1)
+                cid = e.get('public_card_id', _native_ids().get((key, entity_form(e)), -1))
                 eid = e['entity_id']
             else:
                 cid = int(e['card_id'])

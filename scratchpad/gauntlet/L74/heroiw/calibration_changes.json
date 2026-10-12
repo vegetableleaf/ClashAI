@@ -1,0 +1,932 @@
+{
+  "arena.TERRITORY_MODEL": {
+    "old": "enemy_tower_no_deploy_rects",
+    "new": "enemy_tower_no_deploy_rects_open_bridge",
+    "meaning": ""
+  },
+  "targeting.SUMMON_LANE_FLIP_SCOPE": {
+    "old": null,
+    "new": "client16402_rings_only",
+    "meaning": "every_summon: the engine's; a member of any troop card of two or more members carries the deploy point's x and has its lane flipped against it when created (`summon_lane_flip`). client16402_rings_only: a line card's members (SummonWidth, one kind, `lays_a_line`) carry no deploy x and keep the lane of their own point."
+  },
+  "targeting.GHOST_PAIR_FIRST_FRAME": {
+    "old": "targetable",
+    "new": "client15535_untargetable",
+    "meaning": "targetable: the engine's; the pair, made in the Spawn phase, may be taken in that tick's Target phase. client15535_untargetable: it is no one's target on its first frame (entity.rs acquirable_from = its spawn tick + 1), and may be from its second."
+  },
+  "targeting.BUILDING_SCAN_X_CUT": {
+    "old": null,
+    "new": "client_sight_clip_side",
+    "meaning": "centre_6750: the engine's; a buildings-only walker ignores a player building more than 6750 across in x, centre to centre. client16402_edge_6700_melee: a buildings-only walker that attacks with a projectile has no x cut; a melee one ignores a building when |dx| + its radius - the building's radius > 6700 (target.rs BUILDING_SCAN_EDGE_DX)."
+  },
+  "targeting.EQUAL_DISTANCE_TIE": {
+    "old": "own_frame_high_x",
+    "new": "client15535_later_created",
+    "meaning": "Which of two candidates a scan ranks at one distance (targeting.TARGET_RANK_DISTANCE) it takes first: own_frame_low_x, the one with the lower x in the attacker's own frame (then the lower y, then the earlier created); own_frame_high_x, the higher own-frame x (then the same). Both read the attacker's own frame, so both are seat-symmetric. client15535_later_created: the later created of the two first, whatever the frame (the client's scan keeping the last of equals), in the client's creation order: each side's king, then its princess towers the lower arena x first, then its units (target.rs `client_creation_rank`; the engine creates each side's own-left princess tower first, so by team_seq a Blue unit on x 9000 took Red's left tower where the client's took the right, sweep-GoblinDrill t328)."
+  },
+  "targeting.UPPERCUT_FLIGHT_TARGETABILITY": {
+    "old": null,
+    "new": "client15535_airborne",
+    "meaning": "ground: the engine's; a unit in the Evo Mega Knight's uppercut flight stays a ground target for every attacker. client15535_airborne: from its first flight step (the hit's tick + 2) to its last it is a target only for an attacker that attacks air, read in the Target phase as a slap's flight (targeting.SLAP_FLIGHT_TARGETABILITY = client15535_airborne): a ground-only holder drops it on the tick after its first step and may take it again on the tick after its last. Target selection only."
+  },
+  "targeting.LAUNCH_BEYOND_KEEP": {
+    "old": null,
+    "new": "client15535_plain_keep",
+    "meaning": "rescan: the engine's; a projectile troop that launched at its target from beyond its reach (entity.rs launched_beyond) drops its hold and rescans on the next tick, so a target past its sight is lost. client15535_plain_keep: the launch ends the hold past reach, not the plain keep; within Range + both radii + LOGIC_RANGE_EXTENSION_TO_KEEP_TARGET the troop keeps the target (and walks to it), past it it rescans. Crown towers and buildings are unchanged."
+  },
+  "targeting.SLAP_FLIGHT_TARGETABILITY": {
+    "old": "ground",
+    "new": "client15535_airborne",
+    "meaning": "ground: a unit in a Hero Giant's slap flight stays a ground target for every attacker (the engine's). client15535_airborne: from the throw to its landing (slap_pass's land, flight_ms after its first step) it is a target only for an attacker that attacks air, read in the Target phase as targeting.LEAPING_UNIT_TARGETABILITY = airborne reads a river leap: a ground-only holder drops it on its first flight step (its swing cancelled, as for any target it can no longer target) and may take it again on the tick after the landing. Target selection only: collisions, area damage and spells are slap_pass's."
+  },
+  "targeting.SLAP_FLIGHT_SIGHT_HOLD": {
+    "old": null,
+    "new": "client15535_let_go",
+    "meaning": "held: the engine's; a chaser holds a target in a Hero Giant's slap flight past its round sight as it holds any target (targeting.CHASE_HOLD_PAST_LIMIT). client15535_let_go: a target in a slap flight (`slap_air`, read under targeting.SLAP_FLIGHT_TARGETABILITY = client15535_airborne) is not held past the holder's round sight, SightRange + both radii centre to centre: the holder takes the rescan's target, or none and walks to its default tower."
+  },
+  "targeting.KNOCKED_TARGET_HOLD": {
+    "old": "held_while_knocked",
+    "new": "client15535_sight_keep",
+    "meaning": "held_while_knocked: a unit in a knockback (the fixed-distance slide or the ladder) keeps whatever target it had and scans nothing (the engine's). client15535_sight_keep: it keeps a crown tower, and any other target while the centre distance is within its sight toward it + both radii + LOGIC_RANGE_EXTENSION_TO_KEEP_TARGET on the start-of-tick positions; past that it lets go and rescans, as a stunned unit does when its stun ends. A hook's drag and a stun keep the old rule under both."
+  },
+  "targeting.KNOCKED_LOST_TARGET": {
+    "old": null,
+    "new": "client15535_rescans",
+    "meaning": "held_none: the engine's; a unit on a knockback ladder (a push's, or its own attack's recoil) whose target is gone holds no target and scans nothing until the ladder ends (target.rs decide's knocked branch). client15535_rescans: such a unit (not stunned, hooked or sliding) decides as one off the ladder would: the post-kill wait, then the scan, so its next target can come during the ladder; the ladder still holds its walk and its attack."
+  },
+  "targeting.NEWBORN_FIRST_TARGET": {
+    "old": null,
+    "new": "client15535_tick_survivors",
+    "meaning": "scan_at_emission: the engine's; an emitted unit's first target pass (first_update, at the end of Move) reads the board as the emission finds it, so it can take an enemy a shot will kill later in the tick. client15535_tick_survivors: that pass leaves out the enemies the tick's landing shots will kill (tick_landing_deaths: homing projectiles in flight, not fresh, whose step this tick reaches their aim, their damage summed per target against its hitpoints)."
+  },
+  "targeting.DRILL_RISE_TARGETABLE": {
+    "old": null,
+    "new": "client15535_targetable_on_rise",
+    "meaning": "hidden_through_rise: the engine's; an Evo Goblin Drill building gone under on T is Hidden (untargetable, unhurt) through HideTime and DRILL_RISE_TICKS, Up on T + 39's Resolve. client15535_targetable_on_rise: Up on T + 20's Resolve (HideTime), a target and a hittable building on its rise; its LifeTime drain hold and its spawner hold unchanged."
+  },
+  "targeting.DOOMED_DROP_SPEAR_MEMBERS": {
+    "old": null,
+    "new": "client15535_projectile",
+    "meaning": "melee: the engine's; an Evo Elite Barbarian member (its row's Projectile taken off by the loader so it never shoots) handles a doomed target as a melee unit (target.rs drops_when_doomed reads no projectile), and its spear in flight is left out of the doomed set under targeting.DOOMED_SET_SHOTS = client_homing_only (its firer's card fires no homing projectile). client15535_projectile: a member whose evo carries a SpearDef is a projectile attacker for targeting.DOOMED_TARGET_DROP, and a spear in flight (combat.rs Projectile::trail) counts in the doomed set as the homing shot it is."
+  },
+  "targeting.CHASE_HOLD_SCOPE": {
+    "old": "every_holder",
+    "new": "client15535_walkers_only",
+    "meaning": "every_holder: the engine's; whatever the holder is doing, a troop target its keep tests let go past round sight is kept when the rescan finds nothing in sight (targeting.CHASE_HOLD_PAST_LIMIT decides past the chase-drop limit). client15535_walkers_only: only a holder that walks as the Target phase begins (target.rs walking_now, no swing under way) keeps it; one still in its attack (or between swings, attack_ms > 0) lets it go and takes what the rescan finds, else its crown tower."
+  },
+  "targeting.CHASE_DROP_KNOCKED_TARGET": {
+    "old": "client_holds_knocked",
+    "new": "client15535_holds_unless_nearer",
+    "meaning": "client_holds_knocked: under targeting.CHASE_DROP_RANGE = client_sight_minus_1000, a troop whose troop target is sliding under a knockback (the fixed-distance slide or the 16.402 ladder; a hook's drag is not one) beyond its keep reach, and still within its sight, holds that target through the slide: neither the chase drop nor a rescan lets it go, as the engine already holds an attacker's own target while the attacker slides. After the slide the target stands where the push left it; past the limit, which it has not been inside since (the Target phase records the chase-drop edge only within the limit), it is walked after and rescanned as any troop taken past the limit, and dropped only on a later crossing from inside. drops_knocked: the old arm, shipped until the 2026-09-27 round-4 flip (scored on RoyaleSim fc4dbe4), which treats a sliding target as any other. client15535_holds_unless_nearer: client_holds_knocked, except that the rescan still takes an enemy it ranks nearer than the sliding target (`scan`'s key); the hold keeps the chase drop off the target, not the nearest-enemy rescan."
+  },
+  "targeting.SNIPE_REPICK": {
+    "old": "nearest_ahead",
+    "new": "client15535_last_target_first",
+    "meaning": "nearest_ahead: the engine's; after a snipe leaves and she lets its target go, her next snipe target is the nearest ahead of her within SnipeSideClip, as her first. client15535_last_target_first: her last snipe's target first, while it lives, fits her reach within LockedTargetSnipeSideClip plus its radius and the shots in flight do not doom it; else the nearest ahead."
+  },
+  "targeting.SNIPE_LOCK_RELEASE": {
+    "old": null,
+    "new": "client15535_min_plus_radius_keep_windup",
+    "meaning": "ahead_below_min: the engine's; her snipe target is kept while it stands SnipeMinRange (6000) or more ahead within LockedTargetSnipeSideClip; let go, her windup restarts and she re-picks the nearest in the band on that tick. client15535_min_plus_radius_keep_windup: the kept target is let go on the first tick it stands less than SnipeMinRange + its radius ahead on that tick's positions after the move; she holds it on as an ordinary target (no re-pick that tick), her windup running on, so her next shot is a plain one at its completion. The side clip's release is unchanged."
+  },
+  "targeting.CHASE_DROP_MEASURE": {
+    "old": "max_abs",
+    "new": "client15535_lane_dy",
+    "meaning": "max_abs: the engine's; the chase-drop limit is compared with max(|dx|, |dy|) of the two start-of-tick centres. client15535_lane_dy: with |dy| alone, the lane's axis, wherever the limit is read (the edge's inside and past, the rescan's pass-over, the hold past round sight)."
+  },
+  "targeting.CHASE_DROP_WALKING_AWAY": {
+    "old": "any_target",
+    "new": "client15535_growing_away",
+    "meaning": "Which troops past the chase-drop limit a walking chaser lets go and a rescan passes over. any_target: the edge lets a held troop go whatever it does, and a rescan passes over the troop just let go while it stands past the limit. client_walking_away: the edge lets a held troop go only when it walks away (it walks, not attacking, deploying, held or sliding, with its facing pointing away from the chaser on the start-of-tick positions), and a rescan passes over every troop past the limit that walks away. A troop taken past the limit is kept under both, as targeting.CHASE_DROP_RANGE says."
+  },
+  "targeting.WALKING_KEEP_REACH": {
+    "old": "own_radius",
+    "new": "client15535_walking_reach",
+    "meaning": "own_radius: the engine's; every keep test of target.rs decide (the projectile attacker's reach + LOGIC_RANGE_EXTENSION_TO_KEEP_TARGET, the plain keep at Range + that extension) adds the holder's own CollisionRadius. client15535_walking_reach: a holder that walks (target.rs walking_now: not in its attack, not deploying, stunned, knocked or pushed; and no swing under way, attack_ms 0) adds the radius it walks to (walking_own_radius: 0 for a VariableDamage2 or combo row under targeting.VARIABLE_DAMAGE_WALK_REACH's shipped arm, its own for every other), so past Range + 25 + the target's radius it rescans and a nearer enemy is taken; standing, its own radius under both arms."
+  },
+  "targeting.CHASE_RESCAN_PASS_OVER": {
+    "old": "drop_tick",
+    "new": "client16402_receding_or_behind_every_rescan",
+    "meaning": "Read only under targeting.CHASE_DROP_WALKING_AWAY = client15535_growing_away. drop_tick: the engine's; the drop tick's own rescan passes over every troop past the chase-drop limit that walks away, the troop let go stays barred while past it, and any other rescan takes a troop past the limit at plain sight. client15535_receding_lane_walk: as drop_tick, and also every rescan of a unit that walked into its last Target phase and left it holding no target (walking on for its tower) passes over every troop past the limit whose measured distance grew since that phase, whatever the troop does; a unit that spent that phase deploying, in its attack or holding a troop takes them. client15535_receding_or_behind: as client15535_receding_lane_walk, and also every rescan that is not a chase drop's own passes over every troop past the limit that stands behind the unit (toward its own side, along y on the start-of-tick positions), whatever either does."
+  },
+  "targeting.LAUNCH_BEYOND_POSITION": {
+    "old": "start_of_tick",
+    "new": "client16402_after_move_buildings_and_towers",
+    "meaning": "start_of_tick: the engine's; a projectile attacker's launch at its target is judged against its reach on the launch tick's start positions, and one from beyond ends the hold past reach (PROJECTILE_HOLD_BEYOND_REACH) on the next tick. client15535_after_move: for a crown tower the launch is judged on the next tick's start positions (its target where the launch tick's move left it), against its plain reach; beyond it, the hold ends and the tower rescans. Other shooters as start_of_tick. client16402_after_move_buildings_and_towers: as client15535_after_move, for a building as well as a crown tower (a candidate, parity r70: client 16.402's attack divergences on the ob6 live set, buildings 10 of 14 fire ticks, crown towers 129 of 134)."
+  },
+  "collision.GUARD_PRESS_CONTACT": {
+    "old": null,
+    "new": "client16402_unpushed",
+    "meaning": "pushed: the engine's; under collision.HELD_UNIT_CONTACT = client16402_speed_zero_update the held Little Prince takes the contact update of any held unit. client16402_unpushed: under his press's hold (the guard's hold tag) he takes none; a knockback, a hook or a pull still moves him."
+  },
+  "collision.ATTRACT_CONTACT_MEAN": {
+    "old": null,
+    "new": "client15535_in_mean",
+    "meaning": "after_mean: the engine's; move16402 move_towards adds the pull after the contact mean (capped at 150). client15535_in_mean: a pulled ground unit with at least one contact this tick adds the pull to its contact accumulator as one entry per pulling source, so its step is the walk plus tdiv(pull + the pushes, sources + contacts) (the 150 cap applied to that mean as to any); with no contact the pull is applied whole, as under after_mean."
+  },
+  "collision.CAGE_CAPTIVE_AVOIDANCE": {
+    "old": null,
+    "new": "client15535_masked",
+    "meaning": "scanned: the engine's; a caged captive is a held unit and scans as collision.HELD_UNIT_AVOIDANCE says (under scanned, the cage on its point starts a turn at once). client15535_masked: from its grab through its release hold (EvoBoard cages' captive past its grab tick; EvoBoard freed) a captive runs no avoidance scan, its offset decaying as an attacker's; its first walk after the release scans afresh."
+  },
+  "collision.DRILL_RISE_BODY": {
+    "old": null,
+    "new": "client15535_hide_time_plus_3",
+    "meaning": "hide_time: the engine's; an Evo Goblin Drill building gone under on T meets no body on T .. T + 19 (HideTime). client15535_hide_time_plus_3: on T .. T + 22 (card.rs DRILL_RISE_BODY_EXTRA_TICKS 3), a static body again from T + 23."
+  },
+  "placement.RELOCATION_TIE_ORDER": {
+    "old": "placer_frame_first_found",
+    "new": "client15535_interleaved_ring",
+    "meaning": "placer_frame_first_found: equally near relocations of a building tap go to the first found in the ring order built in the placer's frame (the seats mirror; the engine's). client15535_arena_clockwise: they go to the first in the fixed arena order -y, -x, +y, +x seen from the tap, the directions between in turn (clockwise from -y), for both seats. A tunneller's tie keeps its own rule (further forward in the placer's frame). client15535_interleaved_ring: they go to the first in the client's ring order (state.rs client_ring_offsets: for i in 0..2r the ring's four sides in turn, (i - r, -r), (-r, r - i), (r - i, r), (r, i - r), in arena coordinates), for both seats."
+  },
+  "placement.TROOP_RELOCATION_TIE_ORDER": {
+    "old": "placer_frame_first_found",
+    "new": "client15535_arena_clockwise",
+    "meaning": "placer_frame_first_found: equally near relocations of a troop tap (ring_nearest_fit: off an own crown tower or building when the axis push does not fit, off an own live bottle) go to the first found in the ring walk built in the placer's frame (the seats mirror; the engine's). client15535_arena_clockwise: they go to the first in the fixed arena order -y, -x, +y, +x seen from the tap (clockwise from -y for the directions between), for both seats."
+  },
+  "placement.ENEMY_BUILDING_TAPS": {
+    "old": null,
+    "new": "client15535_tile_box_ring",
+    "meaning": "ignored: the engine's; a troop tap is moved off the placer's own crown towers and buildings alone, and every box is centred on its building's point. client15535_half_tile_box_ring: an enemy building's box moves the tap too, by the ring search alone (no axis push), and every building's box is anchored at its point rounded down to the half-tile grid (a building laid on a tile already stands there). client15535_tile_box_ring: the same ring search, but every building's box has its low corner rounded down to the tile grid in arena coordinates, floor1000(p - n x 1000 / 2)."
+  },
+  "pathfinding.LADDER_PLAN_SEGMENT": {
+    "old": null,
+    "new": "walk_tick",
+    "meaning": "walk_tick: the engine's; a route planned on a pushback-ladder tick (knockback.LADDER_PATH_REQUEST) leaves its segment unfrozen, and the first walk step after the ladder freezes it from that tick's start point. client15535_plan_tick: the plan freezes it at once, segment_dir from the start-of-tick point toward the route's next node; the ladder runs no reached test, and the first walk step keeps it."
+  },
+  "pathfinding.HERO_TOMB_DUMMY_OBSTACLE": {
+    "old": null,
+    "new": "none",
+    "meaning": "none: the engine's; a Hero Tombstone's tomb leaves the path grid (build_obstacles' live buildings) at its death. client15535_dummy_box: until its visual dummy leaves (card.rs HERO_TOMB_DUMMY_TICKS after the press, its run kept that long; unpressed, its run's end with the waiting monster), a dead tomb's box stays an obstacle of its side at its point (TombRun::at) with its form's CollisionRadius, counted in that side's friendly-occluder epoch, so its departure arms the friendly-building replan."
+  },
+  "combat.GUARD_FREE_TICK": {
+    "old": null,
+    "new": "free_on_arrival_plus_1",
+    "meaning": "free_on_arrival_plus_1: the engine's; landed, the guard takes its first target and step on its arrival + 1 (its immunity through the arrival + 1, its load timer reset and its run ended on the arrival + 2). client16402_held_through_arrival_plus_1: it holds through the arrival + 1 (no target, no step), so both come on the arrival + 2; the rest as before."
+  },
+  "combat.GUARD_BIRTH_POINT": {
+    "old": null,
+    "new": "client16402_behind_2000_first_step",
+    "meaning": "client15535_fixed_offset: the engine's; the guard is born at the Little Prince's point + (18, -1944) in his side's frame and stands until its charge. client16402_behind_2000_first_step: it is born 2000 behind his point (his side's frame; AppearBehindAtDistance) and takes its first update on its birth tick, so its first frame shows one step of the 16.402 move pass."
+  },
+  "combat.BUILDING_DEPLOY_LAST_TICK": {
+    "old": null,
+    "new": "client16402_hiders_only",
+    "meaning": "after_countdown: the engine's; a building's deploy countdown ends at the end of Move (match.TICK_ORDER = client16402) and it targets and attacks from the next tick. client16402_acts_on_last_tick: on the tick its countdown ends it targets and attacks already (decide and phase_attack read it as deployed when its timer is at one tick, it is not stunned under status.STUN_PAUSES_DEPLOY_TIMER and not under ground), and a hiding building (the Tesla) that holds a target when the countdown ends starts up with its wait full, not under ground. client16402_hiders_only: client16402_acts_on_last_tick for a hiding building alone (the Tesla); every other building as after_countdown (a candidate, parity r71: parity's r71 census of the live8 set (client 16.402): a building's first attack on its deploy end E + 1 for the Cannon 541 of 568 (on E 1), the Inferno Tower 44 of 44, the X-Bow 23 of 23, the Mortar 18 of 18, the Bomb Tower 27 of 29, the Goblin Cage 22 of 23; the Tesla on E 133 of 137)."
+  },
+  "combat.GUARD_PRESS_HOLD": {
+    "old": null,
+    "new": "client16402_three_ticks_longer",
+    "meaning": "table_time: the engine's; the press lands his hold (its buff, the guard's hold tag) for the hold's table time. client16402_three_ticks_longer: the same hold for GUARD_PRESS_HOLD_EXTRA_TICKS (3) ticks more, so his first step after it is on the press + 33."
+  },
+  "combat.GUARD_LANDING_HITS": {
+    "old": null,
+    "new": "client16402_through_landing_ticks",
+    "meaning": "charge_steps_only: the engine's; the guard hits each enemy ground troop within its reach once, on its charge's steps (its arrival's included). client16402_through_landing_ticks: the same, and on each tick after its arrival through GUARD_LANDING_HIT_TICKS (3) it hits an enemy ground troop in its reach that it has not hit (its push, the ladder, stops at the arrival as before); free on its arrival + GUARD_LANDING_TICKS as before."
+  },
+  "combat.CHAIN_HOP_DEAD_TARGET": {
+    "old": null,
+    "new": "client16402_hops_on_from_last_point",
+    "meaning": "ends: the engine's; a chained shot whose target died before it landed lands on nothing and the chain ends. client16402_hops_on_from_last_point: a hop (not the fired shot) whose target died before it landed lands on the target's last point (where its aim stopped following) and goes on from there to the closest enemy it has not hit within the chain's radius, waiting CHAIN_HOP_WAIT_TICKS and flying at the shot's speed as any hop; the dead target counts as one of the chain's hits."
+  },
+  "combat.TOWER_TROOP_BURST": {
+    "old": null,
+    "new": "client16402_burst_attack",
+    "meaning": "row_hit_speed: her row's HitSpeed for good. client16402_burst_attack: the burst, charges and recharge as the client runs them."
+  },
+  "combat.DASH_TRIGGER_BUILDING": {
+    "old": null,
+    "new": "client16402_square",
+    "meaning": "centre_plus_radius: DashRange + the target's radius for every kind. client16402_square: a building or a crown tower by its square."
+  },
+  "combat.DASH_CHAIN_TARGETS": {
+    "old": null,
+    "new": "client16402_ground_targetable",
+    "meaning": "troops: a later hop takes troops alone. client16402_ground_targetable: any targetable ground enemy, the nearest by centre."
+  },
+  "combat.GUARD_CHARGE_IMMUNITY": {
+    "old": null,
+    "new": "client16402_charge_immune",
+    "meaning": "none: the guard takes every hit in its charge. client16402_charge_immune: no hit from its first charge frame through the tick after its arrival."
+  },
+  "combat.RAMP_PRESS_HOLD": {
+    "old": null,
+    "new": "client16402_tag_held",
+    "meaning": "reset: his own press resets the ramp as a stun does. client16402_tag_held: a ramp held while tagged keeps its count and its level through his own press."
+  },
+  "combat.RANGE_POINT_SHOT": {
+    "old": null,
+    "new": "client_range_point",
+    "meaning": "to_target: aimed at the target's centre. client_range_point: ProjectileRange from the attacker's own point toward the target, fixed; it lands there the tick after the fire."
+  },
+  "combat.TOWER_TROOP_DAMAGE_LADDER": {
+    "old": null,
+    "new": "client16402_card_ladder",
+    "meaning": "tower_ladder: parity's r62 reading; a tower troop's damage on the crown tower ladder. client16402_card_ladder: the Dagger Duchess's and the Cannoneer's on their record's card ladder at the tower level; the Chef's on the tower ladder."
+  },
+  "combat.WARP_LAW": {
+    "old": null,
+    "new": "client16402_brake_and_return",
+    "meaning": "client15535_ladder: the engine's; WARP_FIRST_STEP then + / - accel about speed, no return. client16402_brake_and_return: the braking law above, and the row's return block (the 160402017 row's; a row with none warps out alone)."
+  },
+  "combat.DASH_CHAIN_AIM": {
+    "old": "target_centre",
+    "new": "client15535_goal_cell",
+    "meaning": "target_centre: the engine's; each sub-step of a dash chain's dash heads for its target's centre where the pass has it. client15535_goal_cell: it heads for the centre of the dash's 500-cell, the one holding the point own radius + the target's radius short of the target's centre on the line to him on a chain's first dash (its press row; a pending press's run: its first dash tick), his own radius alone on a later one (its Poise), taken on the tick the chain aims and held to the landing (state.rs ChainRun::aim, dash_goal_native); the range test still reads the target."
+  },
+  "combat.DASH_RANGE_TARGET_POINT": {
+    "old": null,
+    "new": "client15535_pass_point",
+    "meaning": "start_of_tick: the engine's; each half-step of a dash with no DashConstantTime tests Range + both radii against its target's start-of-tick point. client15535_pass_point: against the target's point in the move pass so far (`bodies`), moved when the target updates before the dasher, as the engine's dash chains read it."
+  },
+  "combat.LOAD_TIMER_TARGET_LOSS": {
+    "old": "runs_on",
+    "new": "client16402_hit_hold_lag",
+    "meaning": "client16402_hit_hold_lag (parity r64, 2026-10-09): as client15535_stands_while_held, but a hold a hit's buff lands (a projectile's, a chain's, an attack buff's; not an area's) on an unheld unit runs the timer once more on the next tick before it stands; client 16.402: 46 of 46 hit-delivered stuns and freezes in step (31 Ice Spirit freezes, 15 Electro Dragon / Electro Wizard / Electro Spirit stuns), the Electro Wizard's deploy zap 4 of 4 and 9 holds with no damage as the 15.535 arm (agents8/angrybarb; sp-il-2c295ac9 t462). runs_on: the engine's; the load timer runs down 50 a tick in every state. client15535_stands_after_walk_loss: a unit that loses, while walking (its attack idle), the target it held, dead or alive, runs its timer down on that tick and then holds it until it takes a target again. client15535_stands_while_held: the timer stands on every tick its unit is stunned, frozen, slid or dragged (the hold's landing tick runs; a knockback ladder is not a hold, the timer runs on through it) and runs on in every other state, a lost or dead target included."
+  },
+  "combat.LOAD_FIRST_HIT_LEAVE": {
+    "old": "runs_on",
+    "new": "client15535_refund_at_death",
+    "meaning": "runs_on: the engine's; a LoadFirstHit unit that leaves its attack before the attack fires keeps the load timer its entry reset to LoadTime, counting down. client15535_windup_refunded: its load timer reads LoadTime less its progress, floored at 0, so a Sparky charged before its lock is charged again and its next lock starts at progress LoadTime + 50 (combat.LOAD_FIRST_HIT). client15535_refund_at_death: client15535_windup_refunded, and a target that died after the unit's own turn on the last tick (the Target phase finds it dead only now) gave the windup back on its death tick: the timer reads LoadTime less its progress less one tick."
+  },
+  "combat.UPPERCUT_STAND": {
+    "old": null,
+    "new": "client15535_until_load_100",
+    "meaning": "none: the engine's; the Evo Mega Knight walks to his next target at once. client15535_until_load_100: an Evo Mega Knight whose last attack was his uppercut (his count back at 0), out of his attack, does not walk while his load timer is above 100: a stand, his contact kept, as a post-kill wait's (state.rs phase_path16402_for)."
+  },
+  "combat.REFLECT_RANGED": {
+    "old": null,
+    "new": "client16402_landing_edge",
+    "meaning": "melee_only: the engine's; a melee hit is answered when the attacker's edge is within ReflectedAttackRadius of the reflecting unit's centre; a shot is never answered. client16402_landing_edge: a homing shot is answered when it lands on the reflecting unit and a melee hit when it lands, each when the attacker's edge is within ReflectedAttackRadius of the reflecting unit's edge; a crown tower takes ReflectAttackCrownTowerDamage, every other attacker ReflectedAttackDamage, both at the reflecting unit's level, with the ZapFreeze stun."
+  },
+  "combat.HELD_SHOT_TEST": {
+    "old": "tested",
+    "new": "client15535_untested",
+    "meaning": "tested: the engine's; a pellet held by its row's RandomDelay tests for hits at its launch point on each stand tick, and a hit consumes it. client15535_untested: it tests nothing while it stands; it is tested on its creation tick (the creation reach, as before) and from its first step on, at the stepped point against post-move positions. A power shot's one-tick side copies (no stop on hit) are not affected."
+  },
+  "combat.POST_KILL_DOOM_ETA": {
+    "old": null,
+    "new": "client_within_600",
+    "meaning": "ignored: the engine's; clause (c) of combat.POST_KILL_RETARGET_WAIT counts the victim doomed when the homing shots in flight cover its hitpoints. client_within_600: and the last of them lands within target.rs DOOMED_ETA_LIMIT_MS (600 ms), as targeting.DOOMED_TARGET_DROP's doomed set reads."
+  },
+  "combat.DOOMED_READ_IN_PASS": {
+    "old": null,
+    "new": "client15535_at_turn",
+    "meaning": "start_of_pass: the engine's; under client_sequential_strike an attacker that decides on the pass's starting hitpoints (in its attack, or in reach of its target) reads its target's doom (the homing shots in flight at the tick's start against its hitpoints; combat.POST_KILL_RETARGET_WAIT's clause (c)) on them too. client15535_at_turn: the doomed test reads the hitpoints as the pass has left them at its turn, after the strikes of units created before it; the decision still reads the pass's start."
+  },
+  "combat.CAGE_CAPTIVE_SHOTS": {
+    "old": "after_shots_hidden_on_snap",
+    "new": "client15535_before_shots_hidden_after_snap",
+    "meaning": "after_shots_hidden_on_snap: the engine's; the cages' pass runs after the projectiles step in the Projectile phase (a homing shot flies at the captive's point before this tick's drag step), and the captive's hide (invisible, no hit lands) lands on the snap tick. client15535_before_shots_hidden_after_snap: the cages' pass runs before the projectiles step (a homing shot flies at the dragged point, and at the cage's point on the snap tick), and the hide lands on the tick after the snap."
+  },
+  "combat.CAGE_RELEASE_SCAN": {
+    "old": "stunned",
+    "new": "client15535_scans_while_held",
+    "meaning": "stunned: the engine's; the captive is stunned through its hold (CAGE_RELEASE_HOLD_TICKS + 1 ticks), scanning nothing until the stun runs out. client15535_scans_while_held: the hold stops its move alone (the move pass skips it, EvoBoard freed): it takes its target on the tick after the cage's death, standing, and walks the tick after."
+  },
+  "combat.GUARD_CHARGE_STEP": {
+    "old": "rescaled",
+    "new": "client16402_cell_aim",
+    "meaning": "rescaled: the engine's; GUARD_STEP a tick along the line to his point + GUARD_END_OFFSET, the vector rescaled to it, the last step snapped onto that point. client15535_substeps_to_aim: each tick GUARD_SPEED in pieces of 250 and 150, each re-aimed at his point + GUARD_AIM_OFFSET (250, 3250) through move16402::tunnel_step, ending before a piece that starts within GUARD_STOP (250) of it."
+  },
+  "combat.RAMP_GRACE_RESET": {
+    "old": null,
+    "new": "client16402_below_zero",
+    "meaning": "at_zero: the engine's; the grace runs down 50 a moving tick to zero and the count goes when it is zero. client16402_below_zero: it runs to one tick below zero and the count goes when it is below zero, one moving tick later."
+  },
+  "combat.RAMP_GRACE_MOVE": {
+    "old": "point_changed",
+    "new": "client15535_own_walk",
+    "meaning": "point_changed: the engine's; the grace (card.rs RampDef, max(0, grace - 50 * is_moving)) runs down on every tick his point changed. client15535_own_walk: only on a tick his own walk stepped (the last move pass's requested step); a push or a knockback while he attacks is no move."
+  },
+  "combat.RAMP_STUN_RESTART": {
+    "old": "paused",
+    "new": "client15535_restart",
+    "meaning": "paused: the engine's; a stun pauses the Little Prince's attack cycle like any unit's (status.STUN_ATTACK_TIMER_MODEL = pause), his progress kept, his ramp count 0 (ramp_pass). client15535_restart: a stun restarts it as it restarts a damage ramp's (combat.VARIABLE_DAMAGE): the swing Idle, progress 0, his load timer held through the stun; the resume rescan's fresh start (progress = LoadTime less the load timer) times his next shot."
+  },
+  "combat.SIEGE_RESET_HOLD": {
+    "old": "next_tick",
+    "new": "client15535_two_tick_hold",
+    "meaning": "next_tick: the engine's; at the reset the hero takes its target back and swings on the next tick. client15535_two_tick_hold: it is held SIEGE_RESET_HOLD_TICKS (2) more, its scan and its swing waiting as a stun's do, and swings on the reset + 3."
+  },
+  "combat.LOAD_FIRST_HIT_KILL_WAIT": {
+    "old": "waits",
+    "new": "client15535_skipped",
+    "meaning": "waits: the engine's; a LoadFirstHit unit serves the post-kill wait under its condition as any unit does. client15535_skipped: it serves none and takes the next target on the tick after the loss."
+  },
+  "combat.DASH_CHAIN_IMMUNITY": {
+    "old": "none",
+    "new": "client15535_whole_chain",
+    "meaning": "none: the engine's; the chain makes him immune to nothing. client15535_whole_chain: every hit on him is dropped from the press row while the chain runs past its wait for a first target (Seek), and for DashImmuneToDamageTime after its end (entity.rs dash_immune, as a dash's)."
+  },
+  "combat.EVO_CHAIN_SHOT_LAUNCH": {
+    "old": "fire_tick",
+    "new": "client15535_next_tick",
+    "meaning": "fire_tick: the engine's; an Evo Electro Dragon's shot leaves on his fire tick, its first step the next tick, as every projectile attacker's does. client15535_next_tick: it waits a tick before its first step (its chain's ChainHop::wait 1), so it lands a tick later; his hops are unchanged (combat.EVO_CHAIN_HOP_WAIT)."
+  },
+  "combat.LOST_TARGET_SWING": {
+    "old": "cancelled",
+    "new": "client15535_runs_on_in_reach",
+    "meaning": "cancelled: the engine's; a lock target.rs decide cancels (the target untargetable, or inside the MinimumRange) resets the swing (progress 0) whatever the unit takes next. client15535_runs_on_in_reach: when the unit takes another target standing in its attack range on that tick (state.rs switched_in_reach, combat.RETARGET_PROGRESS = keep_when_dead_or_in_reach), the swing runs on onto it; otherwise the cancel resets it as before."
+  },
+  "combat.WARP_HIDING": {
+    "old": "arrival",
+    "new": "client15535_first_step",
+    "meaning": "arrival: the engine's and the table's reading; a warping hero (card.rs WarpDef) takes its strike buff, the invisible MegaMinion_hero_Damage_Buff no enemy keeps or takes it under (target.rs invisible_at), on its arrival (state.rs land_warps). client15535_first_step: it takes it on its first warp step too (state.rs warp_pass), the arrival landing it again with its time from there: hidden through the warp. A shot already flying still lands under both."
+  },
+  "combat.NET_LAUNCH": {
+    "old": "extra_and_wait",
+    "new": "client15535_edge_next_tick",
+    "meaning": "extra_and_wait: the engine's; an Evo Hunter's net starts ProjectileStartRadius plus its ProjectileStartExtraRadius from him and waits a tick before its first step. client15535_edge_next_tick: it starts his collision radius plus its ProjectileStartExtraRadius from him (600 + 200 = 800, not his ProjectileStartRadius 1,000) and first steps on the next tick."
+  },
+  "combat.NET_CAST_WINDOW": {
+    "old": null,
+    "new": "client15535_shot_window",
+    "meaning": "target_hold: the engine's; a ready net is cast once its Hunter has held his target NET_TARGET_HOLD_TICKS (5) and it stands within the net's reach. client15535_shot_window: no hold; it is cast on the first tick, the target within reach, that is not on or within NET_SHOT_WINDOW_TICKS (4) after his load timer was set to LoadTime (a shot, or his attack's entry), nor, while he attacks, within the 4 before his next shot."
+  },
+  "combat.DART_POISON_PULSE": {
+    "old": null,
+    "new": "client15535_pulses_singleton",
+    "meaning": "single_take: the engine's; an area takes what it reaches once, first_ms after it is made, at the stack's level when it was made, and deals delay_ms after that. client15535_pulses_singleton: an area made at M pulses every first_ms through card.rs DART_POISON_AREA_LIFE_MS (M + 5, + 10, + 15); each pulse takes every enemy in reach (Radius + the unit's edge) that has no poison damage pending from any area, after the damages due that tick have landed; a taken unit loses the level's damage delay_ms after the take, at the level its run's stack has at the take."
+  },
+  "combat.NET_INITIAL_COOLDOWN": {
+    "old": "after_deploy",
+    "new": "client15535_from_creation",
+    "meaning": "after_deploy: the engine's; an Evo Hunter's net is first ready DeployTime + InitialCooldown after his creation (state.rs evo_created's NetRun ready_at). client15535_from_creation: InitialCooldown after his creation, the clock running through his deploy; net_pass still casts nothing while he deploys. Either way he must hold the target NET_TARGET_HOLD_TICKS with it in reach, and the net is thrown TrapCastTime later."
+  },
+  "combat.EVO_CHAIN_HOP_FIRST_STEP": {
+    "old": "next_tick",
+    "new": "client15535_creation_tick",
+    "meaning": "next_tick: the engine's; an Evo Electro Dragon's hop, released where its shot or the hop before it landed, first steps on the next tick, as every released shot does. client15535_creation_tick: it takes its first step in the same Projectile pass as the landing that released it (a first hop within a step of its target lands on the shot's tick; a later hop's wait, combat.EVO_CHAIN_HOP_WAIT, counts that tick), and so does every hop those steps release."
+  },
+  "combat.EVO_IMPACT_AREA_ANCHOR": {
+    "old": null,
+    "new": "client15535_follows_target",
+    "meaning": "landing_point: the engine's; the impact area (card.rs EVO_IMPACT_AREA) stands where the shot landed. client15535_follows_target: it rides the unit the shot landed on, moved to that unit's point each update (after the Move), and stays where the unit died."
+  },
+  "combat.EVO_CHAIN_HOP_WAIT": {
+    "old": "at_once",
+    "new": "client16402_every_hop",
+    "meaning": "at_once: the engine's; every evolved hop flies from the unit hit on the tick after the hit. client15535_two_ticks: the first hop flies at once; every later one waits EVO_CHAIN_HOP_WAIT_TICKS (2) on the unit hit, then flies (combat.rs ChainHop::wait)."
+  },
+  "combat.PASS_KILL_CHASE": {
+    "old": "start_of_pass",
+    "new": "client15535_chaser_past_keep_reads_pass",
+    "meaning": "start_of_pass: the engine's; under match.TICK_ORDER = client_sequential_strike every attacker reads the hitpoints as the pass found them, so a kill earlier in the pass reaches it on the next tick and starts combat.POST_KILL_RETARGET_WAIT's wait there. client15535_chaser_reads_pass: an attacker whose target stands out of its attack reach on the start-of-tick positions reads the pass's kills, as a walker out of reach does, and when its target lies at 0 hp it takes the decision's next target at once with no wait (its swing dropped when that target is out of reach, combat.CORPSE_SWITCH_REACH); an attacker in reach still reads the pass as it began and waits."
+  },
+  "combat.RETARGET_WAIT_REACH_LOSS": {
+    "old": "client_after_reach_loss",
+    "new": "client15535_after_reach_loss_variable_rows",
+    "meaning": "client_after_reach_loss: a unit whose row sets VariableDamage, in its attack, whose target, still on the board, is outside its attack reach on the Target phase's start-of-tick positions, and which the decision neither keeps nor replaces by an enemy already inside that reach, starts combat.POST_KILL_RETARGET_WAIT's wait as a kill would, under the same exemptions but the doomed one ((a) an OverrideAttackFinishTime unit, (b) attack progress 0 at the loss): no target and no walk for five Target phases, its attack progress 0 at once, and the decision's target on the sixth. Every other unit takes the decision's target at once, as under kill_only. kill_only: today's engine, where only a dead target starts the wait. client15535_after_reach_loss_combo: client_after_reach_loss with its scope read on a row whose VariableDamage columns the engine loads as a combo (the Monk) as well as on the inferno's ramp. Under client15535_after_reach_loss_combo a Monk waits even when the decision's new target already stands in his reach (the exemption is the inferno's alone)."
+  },
+  "combat.RETARGET_WAIT_WHILE_HELD": {
+    "old": "client_paused",
+    "new": "client16402_first_held_counts",
+    "meaning": "client_paused: combat.POST_KILL_RETARGET_WAIT's wait counts only the Target phases on which its unit is not held by a stun or a freeze (entity.rs held); a held phase holds the unit with no target and the count resumes after, the attack progress zeroed on the fifth counted phase and the decision taken on the sixth. runs_through: today's engine, the wait counts every phase, and a unit whose wait ended while it was frozen rescans on resume."
+  },
+  "combat.TIMED_JUMP_BLOW_STOP": {
+    "old": "flies_to_goal",
+    "new": "client15535_stops_at_blow",
+    "meaning": "flies_to_goal: the engine's; a timed jump (DashConstantTime) moves JumpSpeed a tick on to its goal after its blow, and a ground jumper over water is put on land on the jump's end. client15535_stops_at_blow: the blow (the entry + DashConstantTime / 50) ends the motion where it struck, after that tick's step; a ground jumper over water is put on land on that tick, and it holds there to the jump's end."
+  },
+  "combat.LAUNCH_PAST_TARGET": {
+    "old": "clamped",
+    "new": "client15535_homing_unclamped",
+    "meaning": "clamped: a shot starts at min(ProjectileStartRadius, the distance to its target) along the aim from its source (the engine's). client15535_homing_unclamped: a homing shot (the row's Homing) starts its whole ProjectileStartRadius out along the aim even past a nearer target, and flies back to it; a non-homing shot, a thrown spear and a hook keep the clamped point (unmeasured)."
+  },
+  "combat.SPARK_LANDING_REACH": {
+    "old": null,
+    "new": "client16402_start_extra",
+    "meaning": "projectile_radius: the engine's; on the landing tick each spark hits an enemy within ProjectileRadius + its radius of the landing point, as in flight. client16402_start_extra: on the landing tick within ProjectileRadius + the spark row's ProjectileStartExtraRadius + its radius; in flight ProjectileRadius + its radius, as before."
+  },
+  "combat.DIRECT_HIT_BUFF_COUNTDOWN": {
+    "old": "resolve_landing",
+    "new": "client15535_landing_tick",
+    "meaning": "resolve_landing: the engine's; the buff an instant hit lands (the melee entry, the single-target hit, its extra bolts, an instant splash) is queued with its whole BuffTime and lands in Resolve after the tick's countdown, as a projectile's buff does on its arrival tick: a D-ms hold on tick N holds N+1 .. N+ceil(D / 50). client15535_landing_tick: it is counted down on its landing tick (queued with BuffTime less one tick), as a hold landing in the attacker's turn is: N+1 .. N+ceil(D / 50) - 1. A projectile's buff is unchanged under both."
+  },
+  "combat.SPIN_BEGIN": {
+    "old": "press_tick",
+    "new": "client15535_next_tick",
+    "meaning": "press_tick: the engine's; a Hero Valkyrie's spin begins on the tick her button fires, when a target stands in its circle: its first 150 step and its first blow on that tick. client15535_next_tick: it begins no earlier than the tick after; on the press tick she walks at her own speed."
+  },
+  "combat.DEATH_BLOW_VICTIM_REAP": {
+    "old": null,
+    "new": "client15535_same_reap",
+    "meaning": "next_tick: the engine's; a unit a death blow landed in the Reap takes to 0 dies in the next tick's Resolve and stands the tick out with its hitpoints at 0 or below. client15535_same_reap: it dies in that Reap, a further wave of the Reap's death steps (its souls, death spawns, areas and blows, elixir, the despawn), until a wave kills nothing; the clones, released units, copies and Spectrals of every wave are made after the last."
+  },
+  "combat.KAMIKAZE_LAUNCH_PASS": {
+    "old": "buffered",
+    "new": "client15535_launcher_reads_start_undoomed",
+    "meaning": "buffered: the engine's; a kamikaze's own death (combat.KAMIKAZE_DEATH = at_fire) waits in the tick's hit buffer for Resolve, so every unit of the pass finds it standing. client15535_gone_at_launch: under match.TICK_ORDER = client_sequential_strike its self-hit lands at its launch as a direct strike's does, and an attacker reading the pass's start hitpoints reads it at 0 too (state.rs Scratch::launched): every later unit of the pass finds it gone. Its death stays in Resolve and Reap. client15535_launcher_reads_start: as client15535_gone_at_launch, but a kamikaze whose own launch is due in its turn (in its attack, its progress reaching HitSpeed this tick) reads one that launched earlier in the pass at its start hitpoints, so it keeps it and launches at it too. client15535_launcher_reads_start_undoomed: as client15535_launcher_reads_start, but a launched kamikaze the homing shots in flight at it doom (their sum above 0, the last landing within 600 ms) stays gone to the launcher, which, its target doomed, is freed from the post-kill wait (clause (c)) and walks off."
+  },
+  "combat.FAR_SHOT_SELECT_MOMENT": {
+    "old": "as_attack_select",
+    "new": "client15535_at_load_start",
+    "meaning": "as_attack_select: the engine's; the Evo Archer's entry is chosen as combat.ATTACK_SELECT_MOMENT says (at_swing_start: a fresh cycle's first tick and the hit that ends a swing, for the next one). client15535_at_load_start: on the tick her swing's load starts (her progress reaching HitSpeed - LoadTime in its cycle), against her target on that tick's start positions, and at no other moment."
+  },
+  "match.BATTLE_END": {
+    "old": null,
+    "new": "rules",
+    "meaning": "rules: a fallen King ends the battle at once, a crown lead at regular time's end or in overtime ends it, and overtime's end decides a level one. overtime_end: nothing ends the battle before overtime's end; regular time's end starts overtime whatever the crowns, a fallen King leaves the battle running, and at overtime's end the rules decide as they would (the crowns, else match.OVERTIME_TIEBREAK)."
+  },
+  "spells.PULSING_AREA_LIFE": {
+    "old": null,
+    "new": "client16402_last_update_inclusive",
+    "meaning": "life_exclusive: the engine's; a standing pulsing area applies while its life left is above 0 and goes after the update that spends it. client16402_last_update_inclusive: an area pulsing slower than every tick that pulls nothing updates once more, on which its life reads 0, and applies there when its HitSpeed is due (the Poison's 33rd application, on its first frame + 160), as the hero areas do under spells.ATTACHED_AREA_TIMING = client16402_offsetless_first_update. An every-tick area (the Tornado) and a pulling one keep the old life."
+  },
+  "spells.ATTACHED_AREA_TIMING": {
+    "old": null,
+    "new": "client16402_offsetless_first_update",
+    "meaning": "first_ms_offset: the engine's; the first hit HitSpeed - HitSpeedOffset of the area's age away, its life LifeDuration. client16402_offsetless_first_update: a hero area with no offset pulsing slower than every tick hits on its first update and lives LifeDuration + a tick (its last update inclusive)."
+  },
+  "spells.RELEASE_GROUND_POINT": {
+    "old": null,
+    "new": "client16402_one_unit",
+    "meaning": "none: the engine's; the ring is laid around the landing point (the snapped tap). client16402_one_unit: a ground unit's ring is laid around the landing point moved one native unit as formation.GROUND_DEPLOY_POINT client16402_one_unit moves a ground summon's (absolute x one lower on the arena's left half, absolute y one lower for a side-1 owner); a flying unit's around the landing point. An Evo Goblin Barrel's decoy (cast at the play's point mirrored) is laid around its own landing point, unshifted. A rolling spell's release (the Barbarian Barrel's Barbarian) is laid at its own point, unshifted."
+  },
+  "spells.PULSING_AREA_EFFECT": {
+    "old": "hit_speed_offset",
+    "new": "hit_speed_offset_full_wait",
+    "meaning": "hit_speed_offset: a pulsing area's first application waits the HitSpeedOffset listed in hit_speed_offset_ms for the card that made it, counted from 50 ms on L, so it falls on L + HitSpeedOffset / 50 - 1; a card not listed applies on L. hit_speed_offset_ms is client 16.402's HitSpeedOffset column for the loadable cards whose pulsing area carries one; an offset of 50 or less is the same as none."
+  },
+  "spells.STRIKE_AREA_END": {
+    "old": "at_life_end",
+    "new": "with_last_strike",
+    "meaning": "at_life_end: today's engine. A striking area ends with its last scheduled strike, or on the update its life reaches 0 if that comes first, so a strike due at exactly the LifeDuration is lost (HitSpeed 500 over a LifeDuration of 1500 strikes on D + 10 and D + 20). with_last_strike: the area ends with its last scheduled strike, so a strike due at exactly the LifeDuration still falls (the same row strikes on D + 10, D + 20 and D + 30). The two arms are the same for HitSpeed 460, whose third strike is due 120 ms inside the life."
+  },
+  "spells.CLONE_OFFSET": {
+    "old": "owner_axis_slide_over_hold",
+    "new": "client15535_column_edge_slide",
+    "meaning": "Where a copy the Clone makes appears and how the pair separates: on the original's spot, then the two slide CLONE_DISTANCE_Y / 2 a tick each along the owner's y axis over the hold, the original toward the enemy. client15535_column_edge_slide: each of the two walks CLONE_DISTANCE_Y / 2 a tick over the hold toward the centre of the edge cell of its own 500 path-grid column, the original the enemy's edge row and the copy its own side's, its step fixed on C in the walk arithmetic (heading to 256 truncated, times 125 / 256 truncated)."
+  },
+  "spells.CLONE_SLIDE_ROUTE": {
+    "old": null,
+    "new": "client15535_dropped",
+    "meaning": "kept: the engine's; the route waits out the slide and the unit walks it on along the segment it held before the slide. client15535_dropped: the route is dropped on the slide's last tick (state.rs step_knock_slides) and the replan gate plans afresh from where the slide left the unit on the next tick."
+  },
+  "spells.CLONE_HOLD_DEPLOY": {
+    "old": "hold_time",
+    "new": "client15535_covers_deploy_late_walk",
+    "meaning": "hold_time: the engine's; the Clone holds its pair the hold's time (500 ms) whatever the original's deploy, after which a pair still deploying is an unheld body the contact law pushes. client15535_covers_deploy: the pair is held max(the hold's time, the original's deploy left on the cast tick), both of them, so neither is pushed nor released before then. client15535_covers_deploy_late_walk: the pair is held its original's deploy left on C before C's count (no target, no update, no push), takes its targets and starts its attack on the tick after, and walks and meets the contact law from the tick after that."
+  },
+  "spells.CAPTURE_ROUTE": {
+    "old": null,
+    "new": "client15535_dropped_at_join",
+    "meaning": "kept: the engine's; a captive keeps the route, its goal and segment through the capture (the carry moves its point only) and walks the rest of it when let go. client15535_dropped_at_join: on the tick it joins the ball (`SpellOut::joined`) its route, goal and segment are dropped, as combat.HOOK_DRAG_ROUTE = client16402_dropped drops a dragged unit's, and the replan gate plans afresh where it is let go."
+  },
+  "knockback.GUARD_PUSH_ATTACK_RESET": {
+    "old": null,
+    "new": "client16402_reset",
+    "meaning": "frozen: the push only starts the ladder; the swing freezes through it. client16402_reset: the push that lands resets the swing as a landed knock does."
+  },
+  "knockback.COMBO_STEP_OFFSET": {
+    "old": null,
+    "new": "unrotated",
+    "meaning": "unrotated: the engine's; the hit tick's ladder step (ladder_step_now) takes no rotation, and the move pass's decay of the victim's offset on that tick stands. client15535_held_offset: knockback.COMBO_PUSHBACK's at-hit undo restores the victim's start-of-tick avoidance offset with its point and stomp clock, and the hit tick's step turns by it (move16402 move_towards' avoidance rotation), as the move pass turns every later step."
+  },
+  "knockback.UPPERCUT_FLIGHT_CONTACT": {
+    "old": null,
+    "new": "stunned_body",
+    "meaning": "stunned_body: the engine's; a unit the Evo Mega Knight's uppercut throws is stunned through its flight and stays a contact body its neighbours' scans meet. client15535_out_of_pass: on its flight ticks (uppercut_pass's steps) it is out of the move pass as a slap's flight is: it takes no contact update of its own and no neighbour meets it."
+  },
+  "knockback.TROOP_DEATH_PUSHBACK": {
+    "old": "not_read",
+    "new": "client16402_with_blow",
+    "meaning": "not_read: the engine's; a dying troop's DeathPushBack is not read and its death blow only damages. client15535_ladder: every unit the blow hits that a spell's push could move (a troop, IgnorePushback respected, a deploying one per knockback.AFFECTS_DEPLOYING_UNITS) takes the knockback ladder of DeathPushBack from the death point, its first step on the death tick when the troop was struck down in the sequential pass, else on the next tick. client16402_with_blow: client15535_ladder's pushes armed with the death blow at the next tick's Resolve (after the buffered blow lands there), the first step on T + 2 however the troop died."
+  },
+  "status.WARP_BACK_CLOAK": {
+    "old": null,
+    "new": "with_the_trigger",
+    "meaning": "with_the_trigger: the engine's; the cloak lands on the Boss Bandit's trigger (the press + 3 after EARLY_TRIGGER_TICKS), and enemies holding her drop her from the next Target phase. client16402_trigger_plus_1: it lands a tick later (`magic_pass`, the run's made + 1), so her holders let her go a tick later; the warp, warp_delay_ms after the trigger, is unchanged."
+  },
+  "status.LIFT_TIMING": {
+    "old": null,
+    "new": "client_next_tick_late_descent",
+    "meaning": "engine_reading: the engine's; in the air from the trigger, descending from TotalTime - TransitionTime. client_next_tick_late_descent: in the air from the trigger + 1, descending (own row, attack reset and held) from the lift's last tick, the hold TransitionTime long."
+  },
+  "status.DEFLECT_BUFF_LANDING": {
+    "old": null,
+    "new": "client_after_hits_tick_short",
+    "meaning": "at_trigger: the engine's; the buff lands at the trigger (Status) for its BuffTime, so the trigger tick's hits and one tick past the client's window are reduced. client_after_hits_tick_short: it lands after the trigger tick's hits, for BuffTime less a tick."
+  },
+  "status.ATTRACT_ONSET": {
+    "old": "area_first_tick",
+    "new": "client_next_tick",
+    "meaning": "client_next_tick: a pulling area effect (status.ATTRACT_LAW) moves its victims on the tick after each of its own ticks, its first pull on the tick after it lands and its last on the tick after it ends (the engine keeps the area one tick past its life, applying nothing, for that pull), the same number of moves. area_first_tick: today's engine, the pull on each of the area's own ticks."
+  },
+  "status.ATTRACT_WATER_EDGE": {
+    "old": "walk_rule",
+    "new": "client15535_pull_stops",
+    "meaning": "walk_rule: the engine's; a pulled step takes the walk's water rule, so only a deploying ground unit stops at a water cell's edge. client15535_pull_stops: a ground unit whose step has a pull in it stops at a water cell's edge, per axis (move16402.rs grid_move's flag), whatever else is in the step."
+  },
+  "status.FIRST_HIT_BUFF_COUNTDOWN": {
+    "old": "landing_tick",
+    "new": "client15535_from_next_tick",
+    "meaning": "landing_tick: the engine's; the Evo Minion Horde ghost (card.rs EvoDef::first_hit) is landed before the tick's own countdown, so a D-ms ghost on tick H holds H + 1 .. H + D / 50 - 1. client15535_from_next_tick: it is counted down from the next tick, H + 1 .. H + D / 50, as a projectile's buff landing in Resolve is."
+  },
+  "status.HEAL_PULSE_LANDING": {
+    "old": "after_hits",
+    "new": "client15535_before_buffered_hits",
+    "meaning": "after_hits: the engine's; the tick's buff heals land after every hit Resolve takes from the damage buffer, each capped at the hitpoints missing then. client15535_before_buffered_hits: they land before those hits (a shot's landing, an area's pulse, a damage-over-time pulse), after the strikes the sequential pass landed at once; the Evo Witch's soul heals land after the hits under both arms."
+  },
+  "status.BUFF_DEATH_SPAWN_UNDELAYED_DEPLOY": {
+    "old": null,
+    "new": "client15535_unit_deploy_time",
+    "meaning": "zero: the engine's; a buff death spawn whose row leaves DeathSpawnDeployDelay blank acts on the tick it appears (no deploy). client15535_unit_deploy_time: it deploys its unit's own DeployTime, as a row that sets DeathSpawnDeployDelay does under status.BUFF_DEATH_SPAWN_DEPLOY_TIME = unit_deploy_time."
+  },
+  "status.BUFF_DEATH_SPAWN_FIRST_UPDATE": {
+    "old": null,
+    "new": "client15535_doomed_parent",
+    "meaning": "next_tick: the engine's; a buff's death spawn first moves on the tick after it appears. client15535_doomed_parent: when its parent died of the damage the move pass's doomed mask read, it takes its first update on its creation tick with the dying parent a static blocker in its avoidance scan, as a unit's own death spawn does (spawner.SPAWNED_FIRST_STEP); otherwise the next tick."
+  },
+  "hide.HELD_THROUGH_HIDE": {
+    "old": null,
+    "new": "client16402_kept",
+    "meaning": "dropped: a held Tesla is let go when it goes under. client16402_kept: kept through the hide by a walker always, by a projectile attacker within its keep reach; never acquired under ground."
+  },
+  "hide.SHOT_AT_HIDING_BUILDING": {
+    "old": "dropped",
+    "new": "client15535_lands",
+    "meaning": "dropped: the engine's; every hit on a hidden building is dropped (hide.HIDDEN_IMMUNE_TO_DAMAGE), a shot's at it included. client15535_lands: a shot's hit on the building it was fired at lands although that building went under during the flight; a splash's hits on other hidden buildings are dropped."
+  },
+  "hide.DRILL_UNDER_SHOT": {
+    "old": null,
+    "new": "client15535_dropped",
+    "meaning": "lands: the engine's; a shot at an Evo Goblin Drill building that goes under follows hide.SHOT_AT_HIDING_BUILDING, as a Tesla's does. client15535_dropped: from the tick the building goes under, a shot flying at it no longer follows it and lands on nothing (step_projectiles treats its target as gone); a splash shot still bursts where it lands, as before."
+  },
+  "spawner.EVO_BARREL_DROP_TICK": {
+    "old": null,
+    "new": "client16402_tick_later",
+    "meaning": "client15535_fuse: the engine's; the health line's drop on its fuse + a tick, the death's on its fuse. client16402_tick_later: each a tick later."
+  },
+  "spawner.EVO_COPY_TICK": {
+    "old": null,
+    "new": "client16402_next_tick",
+    "meaning": "hit_tick: the engine's; the copy in the hit's own Reap. client16402_next_tick: in the next tick's Reap, ahead of the hitter's point then (the earned copy saved over the tick)."
+  },
+  "spawner.ABILITY_BOMB_FUSE": {
+    "old": null,
+    "new": "client16402_two_ticks_after_fuse",
+    "meaning": "client15535_tick_after_fuse: the engine's; the dropped bomb strikes the tick after its fuse runs out. client16402_two_ticks_after_fuse: its fuse a tick longer, so it strikes on the drop + DeployTime / 50 + 1."
+  },
+  "spawner.CONTAINER_BURST_PUSH": {
+    "old": "none",
+    "new": "client15535_contact_push",
+    "meaning": "none: a container's members are laid and slide around the point it fell on (the engine's: a container is a fuse with no body). client15535_contact_push: on its burst tick the point is pushed once as the 16.402 separation scan pushes a body of no radius and no mass (every ground unit whose circle covers it, where this tick's move left it: d x mag / |d|, mag = min(its radius - |d|, 300) x its mass, at most 299, + 1; the mean capped at 150), and the members are laid around the pushed point; their slides end around the point it fell on. The container's own damage is not moved."
+  },
+  "spawner.DEATH_RING_AXIS": {
+    "old": "raw_direction",
+    "new": "client16402_heading_octant128",
+    "meaning": "raw_direction: the engine's; a facing ring's angle (spawner.DEATH_SPAWN_LAYOUT's facing_ring and facing_ring_rounded) is read off the raw direction from the death point to the dying unit's target, else its facing. client15535_unit_heading: off that direction normalized to 256 native units per axis, truncated: the heading the members start with. Only the ring's angle changes; the members' heading does not."
+  },
+  "spawner.DEATH_RING_DIRECTION": {
+    "old": "target_first",
+    "new": "client15535_facing",
+    "meaning": "target_first: the engine's; a facing ring lies toward the dying unit's target from the death point, else along its facing. client15535_walk_step: a unit that walked on its death tick lays it along that step (its point less its point before the tick's walk); one that stood keeps the target's direction. client15535_facing: a unit whose own walk stepped on its death tick lays it along its facing after that tick's move pass, the heading it walked on, not its step (a walk sliding along an edge steps off its heading); one whose walk did not step keeps the target's direction."
+  },
+  "spawner.DEATH_SPAWN_PROJECTILE": {
+    "old": "none",
+    "new": "client_projectile",
+    "meaning": "client_projectile: when a unit whose row has a DeathSpawnProjectile dies, that projectile acts at its death point on the second tick after its last one: its area damage (Damage at the dead unit's level, to enemies whose centre is within Radius plus their own radius) and its SpawnCharacter, created there for the dead unit's side at its level (a ground unit on water is placed on land). The spawned unit is its own row from then on: the PhoenixEgg's spawner makes the new Phoenix. none: today's engine, where the column is not read."
+  },
+  "spawner.BARREL_DROP_POINT": {
+    "old": null,
+    "new": "client15535_after_move",
+    "meaning": "status_phase: the engine's; the health-line drop falls from the barrel's point when the Status phase sees it at or below the line, before its step that tick. client15535_after_move: from its point after that step (the drop made in the Status phase and placed at the Projectile phase's start, after the move), the fuse unchanged."
+  },
+  "spawner.DEATH_PROJECTILE_COPIES": {
+    "old": null,
+    "new": "client15535_per_death_spawn_member",
+    "meaning": "one: the engine's; a death whose row carries a DeathSpawnProjectile leaves one (spawner.DEATH_SPAWN_PROJECTILE). client15535_per_death_spawn_member: it leaves one for each member of its own death spawn (DeathSpawnCount), one when it has none, all standing on the death point, each with its own hops and hit lists."
+  },
+  "spawner.CONTAINER_RING_WATER": {
+    "old": null,
+    "new": "client15535_clamp_from_burst_point",
+    "meaning": "eject_nearest_land: the engine's; a container ring's point on water is put on the nearest passable ground (Arena::nearest_passable_ground). client15535_clamp_from_burst_point: member k is born at move16402 grid_move(C, its ring offset) with the water flag, C the burst point: an axis crossing into a water cell stops at the edge of C's own cell, even when C's cell is water, so a member may be born on the river; its slide (death_slide_step, the same clamp) keeps it in C's cell."
+  },
+  "spawner.DEATH_BOMB_TIMING_SCOPE": {
+    "old": "containers",
+    "new": "client15535_every_bomb",
+    "meaning": "containers: the engine's; spawner.DEATH_BOMB_SPAWN_TIMING times a container alone and a plain bomb lands on the tick after its fuse runs out. client15535_every_bomb: it times every death bomb, so under at_fuse_end a plain bomb lands on its fuse's last tick. A bomb a button drops (the Mighty Miner's, CardDef::dropped_by_ability) keeps the tick after its fuse under both arms."
+  },
+  "spawner.DEATH_BOMB_SPAWN_TIMING": {
+    "old": "at_fuse_end",
+    "new": "units_at_fuse_end",
+    "meaning": "Scope: a death bomb that carries a death spawn (a container, the Skeleton Barrel's). at_fuse_end: its hit and its units on the tick its fuse runs out. units_at_fuse_end: the units then, the hit on the next tick. with_the_hit: both on the tick after the fuse runs out, as a plain bomb lands. A plain bomb (the Balloon's, the Giant Skeleton's, the Bomb Tower's) lands on the tick after its fuse under every value."
+  },
+  "spawner.DEATH_SPAWN_RING": {
+    "old": {
+      "arm": "client_fixed_ring_listed",
+      "units": [
+        "GoblinDrill",
+        "ElixirGolem1",
+        "ElixirGolem2"
+      ]
+    },
+    "new": {
+      "arm": "client_fixed_ring_listed",
+      "units": [
+        "GoblinDrill",
+        "ElixirGolem1",
+        "ElixirGolem2",
+        "GoblinDrill_EV1"
+      ]
+    },
+    "meaning": "client_fixed_ring_listed: a dying unit whose row name is in value.units, whose SpawnAngleShift is blank and whose row does not set DeathSpawnPushback lays member k of n at DeathSpawnRadius on the fixed angle -(k + 1) x 360 / n in the native frame (0 = +x), whatever its heading and side: a pair on the x axis, the first-created member on -x. none: every such row keeps spawner.DEATH_SPAWN_LAYOUT. The angles are spawner.DEATH_SPAWN_PUSHBACK's troop ring, here at the full radius and with no slide."
+  },
+  "spawner.SPECTRAL_PARENT_BLOCKER": {
+    "old": "none",
+    "new": "client15535_static_walker_group",
+    "meaning": "none: the engine's; a Spectral's first update (spawner.SPECTRAL_FIRST_UPDATE = client15535_same_tick) meets none of the tick's dead, so it walks straight. client15535_static: every soldier dying on that tick is a static blocker of its first avoidance scan, on the soldier's point and layer, as a death spawn's dying parent is. client15535_static_walker_group: client15535_static, each dying soldier grouped in the avoidance index as the walker it was (its circle grown by 250; move16402 Body::group_walker), the vote still reading it as static."
+  },
+  "spawner.SPECTRAL_FIRST_UPDATE": {
+    "old": "none",
+    "new": "client15535_same_tick_apart",
+    "meaning": "none: the engine's; a Spectral stands where it was made, with no target, until the next tick's passes. client15535_same_tick: it takes its whole first update on the tick it is made (state.rs first_update, as an Evo Skeletons copy does): it acquires, enters its attack on a target in reach or else takes one walk step through the avoidance turn and the contact law, meeting none of the tick's dead. client15535_same_tick_apart: client15535_same_tick, each Spectral's first update hiding the tick's other new Spectrals from both its scans (state.rs first_update apart), so its separation meets the survivors alone."
+  },
+  "spawner.TOMB_PRESS_SPAWN_FIRST_UPDATE": {
+    "old": null,
+    "new": "client15535_start_of_tick",
+    "meaning": "post_move: the engine's; a Hero Tombstone's death spawn after its press kill takes its first update at the end of the Reap on the other units' points after this tick's move. client15535_start_of_tick: it reads the other units at their start-of-tick points (the move pass's Scratch::pre) for its contact pushes, its target and its first route's goal."
+  },
+  "spawner.HERO_TOMB_EMISSION_NUDGE": {
+    "old": null,
+    "new": "client15535_right_one",
+    "meaning": "none: the engine's; a Skeleton a Hero Tombstone emits takes the contact law's push from its tomb on its first update, radial. client15535_right_one: one whose only contact on that update is its live hero tomb, touching at overlap 0, lands 1 further to its right in its side's frame (FITTED)."
+  },
+  "spawner.SPECTRAL_BIRTH_POINT": {
+    "old": "soldier_point",
+    "new": "client15535_water_nudge",
+    "meaning": "soldier_point: the engine's; an Evo Skeleton Army Spectral is made on its soldier's death point. client15535_water_nudge: on the death point, except when its half-tile cell is WATER: then 1 native unit to its right, (Q.x + 1, Q.y); the soldier's blocker (spawner.SPECTRAL_PARENT_BLOCKER) stays on Q."
+  },
+  "spawner.FIRST_STEP_DYING_CONTACT": {
+    "old": "pushed",
+    "new": "client15535_avoidance_only",
+    "meaning": "Read only under spawner.FIRST_STEP_DYING_BODIES = client16402_seen. pushed: the engine's; a unit's creation-tick first update meets the units dying on its tick (the doomed in that pass, the Reap's dead that released nothing) in both scans, the avoidance scan and the separation scan. client15535_avoidance_only: it meets them in the avoidance scan alone; they turn it and drop its waypoint as any static body, and push it nowhere."
+  },
+  "spawner.THROWN_UNIT_DEATH_BLOW": {
+    "old": "reached",
+    "new": "client15535_unreached",
+    "meaning": "reached: the engine's; the unit a throw puts down (throw_pass, the Projectile phase) stands when that tick's Reap lays its death blows, so a blow of the unit its landing killed reaches it. client15535_unreached: no death blow of the throw's landing tick reaches the unit it put down (it is put down after them; its landing blow still strikes that tick)."
+  },
+  "spawner.ACTION_GROUP_SPAWN_ORDER": {
+    "old": "listed",
+    "new": "client15535_reversed",
+    "meaning": "listed: the engine's; an action group's spawns due on one tick (the Evo Goblin Drill's hide pair, state.rs drill_pass) are created in the group's listed order. client15535_reversed: last listed first."
+  },
+  "spawner.SOUL_OFFSET_ROUNDING": {
+    "old": "floor",
+    "new": "client15535_toward_zero",
+    "meaning": "floor: the engine's; soul_pass shifts sin1024 x radius right by 10, so a negative offset rounds away from zero. client15535_toward_zero: it divides by 1024, rounding toward zero, so a negative offset that does not divide whole stands 1 nearer the King."
+  },
+  "spawner.SOUL_POINT_BASE": {
+    "old": "pre_move",
+    "new": "client15535_post_move",
+    "meaning": "pre_move: the engine's; a Skeleton King's area (`soul_pass`) runs in the Status phase, so each copy is drawn around the King as he stood when the tick began. client15535_post_move: it runs at the top of Reap, after the tick's move, so each copy is drawn around him as he stands then; the client's generator, which these areas alone draw from, keeps its draw order, and the copy is released on the same tick."
+  },
+  "spawner.EVO_COPY_COUNT": {
+    "old": "after_reap",
+    "new": "client15535_at_hit",
+    "meaning": "after_reap: a copy an Evo Skeleton's hit earned is made at the tick's Reap while the group holds fewer than GroupMaxSize living members then, after the tick's deaths (the engine's). client15535_at_hit: the room is read at the hit, from the members alive then (the tick's dying ones among them, reaped later) plus the copies the group's earlier hits of the tick earned; the copy is made at the Reap as before."
+  },
+  "spawner.EVO_COPY_POINT": {
+    "old": "client15535_ahead_outward_behind",
+    "new": "client15535_ahead_outward_behind_clamped",
+    "meaning": "ahead_only: the copy is made EVO_COPY_AHEAD_MILLI (1000) ahead of where its hitter stands after the tick's move, in the arena's y toward the enemy, whatever lies there (the engine before this key). client15535_ahead_outward_behind: the first of AHEAD, OUTWARD (x toward the nearer side: -x when the hitter stands left of the centre line, +x otherwise) and BEHIND, each 1000 from the hitter, where a ground unit's centre can stand (Arena::is_passable_ground: in bounds, touching no water); none standing keeps the ahead point."
+  },
+  "spawner.RING_POINT_BOUNDS": {
+    "old": null,
+    "new": "client16402_half_cell_clamp",
+    "meaning": "none: the engine's; the ring point is used where it falls, on or off the arena. client16402_half_cell_clamp: clamped into [cell / 2, width - cell / 2] x [cell / 2, height - cell / 2] (250 native from every edge), as formation_members_with clamps a summon's members."
+  },
+  "transform.DISMOUNT_LEAP_STEP": {
+    "old": "rebind_first",
+    "new": "client15535_leap_lands_first",
+    "meaning": "rebind_first: the engine's; the hero becomes its walking row at the trigger, before the tick's move pass, and a leap ending in that move is dropped (the walking row has none: a walk step). client15535_leap_lands_first: a hero freed on its leap's last tick takes that tick's leap step as its mounted row and becomes its walking row after the move pass, before its first hop (state.rs dismount_hops on the run's first tick)."
+  },
+  "transform.DISMOUNT_MOUNT_BIRTH": {
+    "old": "fitted_offset",
+    "new": "client15535_hero_point",
+    "meaning": "fitted_offset: the engine's; the mount is put down on the trigger at the hero's start-of-tick point + card.rs DISMOUNT_MOUNT_OFFSET, with no update until its second frame. client15535_hero_point: born on the hero's point after the hero's own move on the trigger tick and before its first hop, taking its first full update that tick (first_update), whose scans meet the hero's body standing there (a mover of its walking row, its heading not counted) unless the hero leapt on the trigger tick."
+  },
+  "transform.DISMOUNT_MOUNT_ACQUIRE": {
+    "old": "at_once",
+    "new": "client15535_8th_frame",
+    "meaning": "at_once: the engine's; the mount is released with no acquire delay. client15535_8th_frame: it waits as an action's troop does under targeting.SPAWNED_UNIT_ACQUIRE_DELAY: no enemy takes it before its F + 7."
+  },
+  "transform.DISMOUNT_MOUNT_HOLD_BODY": {
+    "old": "collides",
+    "new": "client15535_no_body",
+    "meaning": "collides: the engine's; the Hero Dark Prince's mount, held by its stun timer from DISMOUNT_MOUNT_HOLD_FROM_TICKS after its first frame to its NO_MOVE's end (dismount_pass), meets bodies as any stunned unit does. client15535_no_body: while that hold lasts its body meets no unit: it neither pushes nor is pushed."
+  },
+  "transform.TOMB_MONSTER_STEP_SCOPE": {
+    "old": null,
+    "new": "client16402_until_kill",
+    "meaning": "every_press: the engine's; card.rs TOMB_MONSTER_STEP the tick after every press, and a monster pressed with its tomb gone meets bodies from the trigger's tick. client15535_tomb_standing: the step only while the tomb stands; pressed with its tomb gone the monster takes no step and keeps its no-body on the trigger's tick, meeting bodies from the next."
+  },
+  "transform.DISMOUNT_HOP_WATER": {
+    "old": "keep_water",
+    "new": "client15535_land_row_centre",
+    "meaning": "keep_water: the engine's; a hop's point (200 back, clamped as a scheduled spawn's) is kept, water included. client15535_land_row_centre: a ground hero whose hop point lies on the river is put on the centre of the land half-tile row nearest it along y, its x kept (state.rs land_row_centre)."
+  },
+  "transform.FALL_GROUNDING": {
+    "old": "status_rebind",
+    "new": "client15535_late_kept_walk",
+    "meaning": "status_rebind: the engine's; on the landing tick, in the Status phase, the hog becomes its grounded row and leaves the air, before the Target phase and the move pass read it, and the in-place transformation drops its walk (route, segment, avoidance offset). client15535_late_kept_walk: on the tick after the landing tick, after the Target phase and before the move pass, keeping its walk (route, route goal, segment, carry, step count, plan clock, avoidance offset, stomp clock); its path is still dropped ResetPath after the landing tick, and its blow still lands on the tick after the landing tick."
+  },
+  "movement.DEPLOY_WATER_EDGE": {
+    "old": null,
+    "new": "client16402_ground_only",
+    "meaning": "every_deploying_unit: the engine's; the walk branch's step of a deploying unit, a flyer's too, stops on the last dry cell's edge. client16402_ground_only: a deploying flyer's step crosses the water; a ground one stops as before."
+  },
+  "movement.SPAWN_PATHFIND_MORPH_AREA": {
+    "old": null,
+    "new": "client16402_two_ticks_late",
+    "meaning": "at_surface: the area on the tick the dig comes up, its hit on the building's first frame. client16402_two_ticks_late: two ticks later, at the building's point while it stands."
+  },
+  "movement.CAST_HOLD_HEADING": {
+    "old": "counted",
+    "new": "client15535_not_counted",
+    "meaning": "counted: the engine's; a casting unit's heading counts as a walker's in its neighbours' avoidance scans. client15535_not_counted: it does not count, as an attacking unit's does not (the unit held by its own ability's cast: its button's entry casting, its hold running)."
+  },
+  "movement.CHAIN_LANDED_BODY": {
+    "old": "landed_body",
+    "new": "client15535_no_body_to_end",
+    "meaning": "landed_body: the engine's; a dash chain's champion is no contact body while he dashes (the Dash phase) and a body again from the tick after a landing. client15535_no_body_to_end: no body in the Landed phase either, nor on the tick his chain ends (state.rs Scratch::chain_ended): a body again from the tick after that, or from his Poise when another hop follows."
+  },
+  "movement.JUMP_LANDING_SCOPE": {
+    "old": "move_pass",
+    "new": "client15535_whole_tick",
+    "meaning": "move_pass: the engine's; under movement.JUMP_LANDING_CONTACT = client_next_tick the lander is out of its landing tick's move pass, and a unit taking its first update after the pass on that tick (a death spawn, an Evo Skeleton's copy) meets it as any body. client15535_whole_tick: it is out of every contact pass of its landing tick, the first updates after the move pass included."
+  },
+  "movement.KNOCKED_DOOMED_AVOIDANCE": {
+    "old": "static",
+    "new": "client15535_knocked_mover",
+    "meaning": "static: the engine's; under movement.DYING_UNIT_VISIBILITY = client_doomed_static a troop whose death is settled before the move pass is static to every avoidance scan. client15535_knocked_mover: such a troop whose knockback ladder is under way in the pass (an Evo Cannon bomb's push, armed before it) is met by the avoidance scan as any other body, its heading counted as its state has it; its contact is unchanged."
+  },
+  "movement.CAPTURE_DRAG_FACING": {
+    "old": null,
+    "new": "client15535_faces_ball",
+    "meaning": "walk_facing: the engine's; a dragged captive keeps its facing (its last walk's), and its scan (it is held) looks along it. client15535_faces_ball: on every drag tick its facing is set to the unit vector from its new point to the ball's, 256 long (spell.rs capture_roll, written in phase_projectile); riding the ball (on its point) it keeps the last; its next tick's scan looks along it."
+  },
+  "movement.DEATH_BOMB_AVOIDANCE": {
+    "old": "none",
+    "new": "client15535_static_blocker",
+    "meaning": "none: the engine's; a death bomb on its fuse is no body in the move pass and movers walk through its circle. client15535_static_blocker: it is a static blocker of its row's CollisionRadius (450) where it lies, from the tick after its parent's death to its blast: the avoidance scan meets it, the separation scan does not."
+  },
+  "movement.KAMIKAZE_DEATH_CONTACT": {
+    "old": "as_doomed",
+    "new": "client15535_avoided_not_pushed",
+    "meaning": "as_doomed: under movement.DYING_UNIT_VISIBILITY = client_doomed_static a kamikaze whose death is settled before the move pass is a static body to the separation and the avoidance scans (the engine's). client15535_avoided_not_pushed: it pushes nobody (no separation body) on its death tick, and its body stays in the avoidance scans, as a deflecting Monk's does. Inert under whole_tick and creation_order_before_victim."
+  },
+  "movement.STRUCK_CONTACT_ORDER": {
+    "old": "whole_pass",
+    "new": "client15535_before_pass",
+    "meaning": "whole_pass: the engine's; under match.TICK_ORDER = client_sequential_strike a troop struck down in the pass is a body to every mover's separation and takes its own update (DYING_UNIT_VISIBILITY decides its avoidance reading). client15535_after_striker: it is a body to the separation of the movers created before its first striker only (not to the striker's own move: it strikes, then moves), and takes no update of its own when that striker was created before it; its avoidance reading is unchanged. client15535_before_pass: the struck troop is a body to no mover's separation in the move pass (every direct strike of the sequential pass lands before it), whatever the mover's creation order against its striker; its own update and its avoidance reading as client15535_after_striker's."
+  },
+  "movement.DOOMED_OWN_UPDATE": {
+    "old": "walks",
+    "new": "client15535_struck_stays",
+    "meaning": "walks: under movement.DYING_UNIT_VISIBILITY = client_doomed_static a troop whose death is settled before the move pass takes its update like any other (walk and push) and is a static body to the rest (the engine's). client15535_kamikaze_stays: a doomed kamikaze (it dies on its own hit: the Battle Ram, the Spirits, the Wall Breakers) takes no update of its own and stays where the tick found it, still a static body to the rest; every other doomed troop walks. Stopping every doomed troop lost the scenes where a troop struck by another dies (sweep-Tombstone, sweep-Skeletons, sp-hogs-cannon-s0). Inert under whole_tick and creation_order_before_victim. client15535_struck_stays: as client15535_kamikaze_stays, and under match.TICK_ORDER = client_sequential_strike a troop struck down in the tick's pass also takes no update of its own when a troop's single-target strike felled it (the striker's row sets no AreaDamageRadius) or its first lethal striker came before it in the pass; a later troop's SPLASH strike leaves it walking in its own turn, as a later building's beam does."
+  },
+  "movement.HELD_WAYPOINT_TEST": {
+    "old": "not_run",
+    "new": "client15535_run",
+    "meaning": "not_run: the engine's; a unit held by a freeze or a stun runs no waypoint reached test, its route waiting out the hold. client15535_run: a held unit aiming at its next waypoint at speed 0 (movement.HELD_FACING = client15535_toward_waypoint) runs the reached test on every held tick, on the point the contact law moved it to, and pops the waypoint it passes, as a walking unit does."
+  },
+  "movement.HELD_FACING": {
+    "old": "unchanged",
+    "new": "client15535_toward_waypoint",
+    "meaning": "unchanged: a held unit (collision.HELD_UNIT_CONTACT = client16402_speed_zero_update) aims at itself at speed 0, so its facing stays (the engine's). client15535_toward_waypoint: a held unit with a route aims at its next waypoint at speed 0: no step and no reached test, and its facing turns toward the waypoint."
+  },
+  "movement.AVOIDANCE_OBSTACLE_TAG": {
+    "old": "not_read",
+    "new": "client15535_unpushed_obstacle",
+    "meaning": "not_read: the tag is not read; its carrier is a mover like any other (the engine's). client15535_unpushed_obstacle: a unit whose row's GameTagsToSet carries AVOIDANCE_AS_OBSTACLE (cards.json avoidance_as_obstacle: the Evo Skeleton Army's General, the Phoenix's egg, the Elite Archer hero's dummy) runs none of its own separation scans, so contact never moves it, is still a body to its neighbours' separation (it pushes them), and is a static obstacle to every avoidance scan; a knockback still moves it."
+  },
+  "movement.DEFLECT_STAY_TIME": {
+    "old": "active_time",
+    "new": "client15535_tick_short",
+    "meaning": "active_time: the engine's; the Deflect's stay (his ability's NO_MOVE_ALLOW_ATTRACT, the buff that holds his own separation) lasts the Deflect's active time from its trigger. client15535_tick_short: it lasts one tick less, so his own separation first moves him the tick after his deflect state ends."
+  },
+  "movement.DEFLECT_CONTACT": {
+    "old": "hidden",
+    "new": "client15535_pushes",
+    "meaning": "hidden: the engine's; a Monk whose deflect is active is met by no unit's separation, his body kept for avoidance. client15535_pushes: he stays a body to his neighbours' separation, so he pushes them; under both arms no one pushes him (his stay) and every avoidance scan meets him as a static obstacle."
+  },
+  "formation.LINE_TERRITORY": {
+    "old": null,
+    "new": "client16402_troop_territory",
+    "meaning": "own_half: the engine's; a line's ground point stands short of LINE_OWN_HALF_Y in the owner's frame, so a line tapped into an opened pocket is laid on the nearest own-half tile. client16402_troop_territory: it stands wherever its card's troop territory reaches (arena.rs `territory_zone`: the river band closed, the enemy towers' rects; an opened pocket included), so a line tapped into a pocket stands on the tap's tile."
+  },
+  "formation.STAGGER_WAIT": {
+    "old": "client16402_untargetable_immovable",
+    "new": "client16402_untargetable_immovable_unhittable",
+    "meaning": "client16402_untargetable_immovable: while a member's deploy timer exceeds its own DeployTime, no attacker can target it and the move pass leaves it where it is (no walk, no separation push); it still stands in the way, so units that overlap it are pushed off it as today. When the wait ends it is an ordinary deploying unit. deploying: today's engine, the wait counted as part of the deploy, so a waiting member is targeted and pushed like any deploying unit."
+  },
+  "formation.LINE_LANE": {
+    "old": "tap",
+    "new": "client15535_line_centre",
+    "meaning": "tap: the engine's; a line's members (formation.rs member_offset) take the lane of the tap the player made, before formation.rs line_centre moves the line. client15535_line_centre: the lane of the place line_centre found (the line's centre); the place itself is found as before."
+  },
+  "formation.LINE_KING_BACK_ROW": {
+    "old": null,
+    "new": "client16402_open",
+    "meaning": "closed: the engine's; no line centre in the king's columns below row 5 (line_centre_client: tiles; line_centre: its ground point's zone below 5000) and no member in x 7000 to 11000 below y 4000. client16402_open: the same zone and member rule from the second row up (y 1000, formation.rs LINE_KING_BACK_ROW_Y): the back row behind the king is open to the line, its centre on the tiles the arena's back row opens whole (x 6000 to 12000, LINE_BACK_ROW_OPEN_X; arena.json back_row_open_half_cols 11 to 24)."
+  },
+  "formation.LINE_CENTRE_SEARCH": {
+    "old": "ring_corner_walk",
+    "new": "client15535_interleaved_first_ring",
+    "meaning": "ring_corner_walk: the engine's formation.rs line_centre, in the owner's frame: each ring walked from its top-left corner down its left edge, along its bottom, up its right edge and back along its top, the nearest over every ring, the king's zone judged on the ground point. client15535_interleaved_first_ring: the client's search (formation.rs line_centre_client): absolute coordinates, the four sides of each ring interleaved, the first of equals kept, the search stopped at the end of the first ring holding a place, the king's zone judged on the centre tile."
+  },
+  "formation.LINE_FRAME": {
+    "old": "rotation",
+    "new": "client15535_y_reflection",
+    "meaning": "rotation: the engine's; side 1's line place (formation.rs line_centre) is looked for in the owner's frame, the 180-degree rotation. client15535_y_reflection: in the y-reflection, x kept (the tap, the members' offsets and the ground point mirrored in x from the rotation), the place mirrored back; side 0's is unchanged."
+  },
+  "formation.ARMY_GENERAL_POINT": {
+    "old": null,
+    "new": "client15535_ground_point",
+    "meaning": "tap: the engine's; the General's explicit offset (1000 behind, in the owner's frame) is taken from the play's point. client15535_ground_point: from the soldiers' ring centre, the play's point moved by formation.GROUND_DEPLOY_POINT (one native unit, x on the arena's left half, y for side 1, signed in the owner's frame as the ring's)."
+  },
+  "enchant.ON_BUFF_PAUSE": {
+    "old": "none",
+    "new": "client16402_conditional_no_move",
+    "meaning": "none: he walks and attacks on through his enchants. client16402_conditional_no_move: from each launch's tick L he attacks nothing through L + 13; a swing under way is dropped and he stands (the conditional NO_MOVE), a walking one walks on; his Cooldown runs from the hold's end."
+  },
+  "cards.CLIENT16402_VALUES": {
+    "old": {
+      "arm": "client16402",
+      "table": "cards-15535.1",
+      "values": {
+        "IceSpirits": {
+          "Hitpoints": 84
+        },
+        "IceGolemite": {
+          "Hitpoints": 480,
+          "AreaBuffTime": 2500
+        },
+        "GoblinBrawler": {
+          "Hitpoints": 438
+        },
+        "HealSpirit": {
+          "Hitpoints": 84
+        },
+        "FireSpirits": {
+          "Hitpoints": 84,
+          "ProjectileDamage": 84
+        },
+        "Bomber": {
+          "ProjectileDamage": 83
+        },
+        "Fireball": {
+          "CrownTowerDamagePercent": -77
+        },
+        "Freeze": {
+          "AreaBuffTime": 3500
+        }
+      }
+    },
+    "new": {
+      "arm": "client16402",
+      "table": "cards-15535.1",
+      "values": {
+        "IceSpirits": {
+          "Hitpoints": 84
+        },
+        "IceGolemite": {
+          "Hitpoints": 480,
+          "AreaBuffTime": 2500
+        },
+        "GoblinBrawler": {
+          "Hitpoints": 438
+        },
+        "GoblinCage_EV1_GoblinBrawler": {
+          "Hitpoints": 438
+        },
+        "HealSpirit": {
+          "Hitpoints": 84
+        },
+        "FireSpirits": {
+          "Hitpoints": 84,
+          "ProjectileDamage": 84
+        },
+        "Bomber": {
+          "ProjectileDamage": 83
+        },
+        "Fireball": {
+          "CrownTowerDamagePercent": -77
+        },
+        "Freeze": {
+          "AreaBuffTime": 3500
+        }
+      }
+    },
+    "meaning": "client16402: at load, each named card's named column is replaced by the value given, before any level scaling; cards.json stays the 15.535.29 extraction. none: today's engine, the tables' values. value.table names the one table the values correct, by its version: cards-15535.1, the table cards.json holds. They apply to that table only. There a card name or a column that does not fit is refused, never skipped. Every other table runs its own values: cards-2018.json is the 2018 game (IceSpirits 90, IceGolemite 595, Bomber 128, a Fireball crown share of 40 %, and no GoblinBrawler), and the fallback set and a test's own table carry none of the five. AreaHitSpeed is a striking area's HitSpeed (Lightning), and its strike gaps are rebuilt from it by the tables' own rule (HitSpeed repeated while the sum is at most LifeDuration). AreaBuffTime is the BuffTime of the area a card puts down: a spell's own area (the Freeze) or the area its death leaves (the Ice Golem's slow); the area's LifeDuration stays the table's."
+  },
+  "cards.CARD_TABLE": {
+    "old": null,
+    "new": "client15535",
+    "meaning": "The card table a battle loads (card.rs CardDb::load_table): through the Python binding (Battle(..., calibration_overrides={'cards.CARD_TABLE': '\"client160402017_20261006\"'}); Battle.card_table() names the table), in a replay_parity run (--calibration-override), and when a snapshot is restored (its own calibration's arm). client160402017 is for a capture recorded before the 2026-10-06 update (a replay fixture made with tools/make_replay_fixture.py --table 160402017); a wheel carries no copy of it. cards.CLIENT16402_VALUES corrects the 15.535.29 table only."
+  }
+}

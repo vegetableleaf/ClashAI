@@ -216,6 +216,8 @@ def catalog_card_form(card_id: int) -> tuple[Optional[str], int]:
 
 def entity_form(entity: Mapping[str, Any]) -> int:
     """SIM status bits take precedence over native ids (the two id spaces differ)."""
+    if entity.get('public_card_id') == 203000023 and entity.get('public_form') == 2:
+        return 2  # Explicit named SIM body/cube identity; a cube has no engine hero status bit.
     if "status_flags" in entity:
         flags = int(entity["status_flags"])
         return 0 if flags < 0 else 2 if flags & 16 else 1 if flags & 8 else 0

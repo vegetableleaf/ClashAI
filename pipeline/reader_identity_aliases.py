@@ -6,6 +6,7 @@ measurement (L70 reader, October4) identifies 203000023 as Hero Ice Wizard.
 
 HERO_ICE_WIZARD_ID = 203000023
 ICE_WIZARD_ID = 26000023
+HERO_ICE_WIZARD_NAMES = ('IceWizardHero', 'IceWizardHeroFloatingCube', 'IceWizardHero_IceCube')
 
 
 def extend_names(names):

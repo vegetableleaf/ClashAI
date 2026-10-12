@@ -61,7 +61,13 @@ def catalog(hero_spec='off'):
         raise ValueError(f'hero_spec {hero_spec!r} not in {HERO_SPECS}')
     from .obs_contract import REPO
     from .dataset_gen import card_key
-    data=json.loads((REPO/'research/ext/Royale/RoyaleSim/data/derived/cards.json').read_text())
+    from . import royale_heroiw
+    if royale_heroiw.ENABLED:
+        from .royale_runtime import activate
+        activate()
+        data = royale_heroiw.selected_card_data()
+    else:
+        data=json.loads((REPO/'research/ext/Royale/RoyaleSim/data/derived/cards.json').read_text())
     out = {(card_key(c.get('form_of',c['name'])),form):dict(c['ability'],deploy_ms=c.get('deploy_time_ms') or 0)
            for form,source in ((0,'cards'),(2,'hero_forms')) for c in data[source] if c.get('ability')}
     if hero_spec == 'supplement':

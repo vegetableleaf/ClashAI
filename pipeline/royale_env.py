@@ -30,6 +30,7 @@ from collections import Counter
 from typing import Optional
 
 from pipeline.royale_runtime import activate as _activate_runtime
+from pipeline import royale_heroiw as heroiw
 
 _activate_runtime()
 
@@ -173,8 +174,8 @@ class RoyalePoolEnv:
         self.ability_policy = ability_policy
         if forms_mode not in FORMS_MODES:
             raise ValueError(f"forms_mode {forms_mode!r} not in {FORMS_MODES}")
-        self.forms_mode = forms_mode
-        self.core = RustEngine()
+        self.forms_mode = 'deck' if heroiw.ENABLED else forms_mode
+        self.core = RustEngine(**heroiw.engine_options())
         self.ids = {c.name: c.card_id for c in self.core.cards()}
         self.names = {v: k for k, v in self.ids.items()}
         self.decision_ticks, self.elixir_slack, self.tail_cap = int(decision_ticks), int(elixir_slack), int(tail_cap)
@@ -199,8 +200,11 @@ class RoyalePoolEnv:
         self.form_fallbacks, self.loaded_forms = [], {}
         for s in (0, 1):
             self.loaded_forms[s] = []
-            for cid, f in zip(self.deck_ids[s], wanted[s]):
+            requested = heroiw.deck_forms([self.names[c] for c in self.deck_ids[s]], wanted[s])
+            for cid, f in zip(self.deck_ids[s], requested):
                 if f and not self._form_loads(s, cid, f):
+                    if heroiw.ENABLED and self.names[cid] == 'IceWizard' and f == 2:
+                        raise UnsupportedDeck('Selected Hero Ice Wizard runtime refused form 2')
                     self.form_fallbacks.append((s, self.names[cid], f))
                     f = 0
                 self.loaded_forms[s].append(f)
@@ -342,7 +346,9 @@ class RoyalePoolEnv:
             # BattleState has no attack range. Read the engine-selected table, including
             # hero-local summoned units (e.g. Hero Barbarian Barrel), not base-card stats.
             embedded = embedded_card_table()
-            if embedded is not None:
+            if heroiw.ENABLED:
+                data = heroiw.selected_card_data()
+            elif embedded is not None:
                 data = json.loads(embedded)
             else:
                 path, _ = engine_cards_json_path()
@@ -385,14 +391,14 @@ class RoyalePoolEnv:
             cid = row[3]
             if cid not in self._hero_ids[side] or (side, button) in pending:
                 continue
-            cost = row[2] if cid in self._champ_ids[side] else self._hero_costs[cid]
+            cost = row[2] if heroiw.ENABLED or cid in self._champ_ids[side] else self._hero_costs[cid]
             if cost is None or st.players[side].elixir_milli < cost * 1000:
                 continue
             if self.core.check_deploy(DeployCommand(side, HAND_SIZE + button, 0, 0)) != DeployStatus.OK:
                 continue
             # a champion is its biggest living body (Goblinstein is doctor + monster); a hero its newest
             hero = max((e for e in st.entities if e.team == side and e.card_id == cid and e.hp > 0
-                        and e.status_flags >= 0 and e.status_flags & STATUS_HERO),
+                        and heroiw.controller_body(e.status_flags, cid in self._champ_ids[side])),
                        key=(lambda e: (e.max_hp, e.uid)) if cid in self._champ_ids[side] else (lambda e: e.uid),
                        default=None)
             if hero is None:
@@ -500,6 +506,7 @@ class RoyalePoolEnv:
                                      if c != EMPTY_CARD],
                             "next_deck_index": deck.index(p.next_card) if p.next_card in deck else None})
         ents, towers = [], []
+        unit_types = self.core.unit_types() if heroiw.ENABLED else None
         for e in st.entities:
             if e.kind in (EntityKind.KING_TOWER, EntityKind.PRINCESS_TOWER):
                 towers.append({"side": e.team, "type": "king" if e.kind == EntityKind.KING_TOWER else "princess",
@@ -510,6 +517,12 @@ class RoyalePoolEnv:
                              "kind": 12 if e.deploy_ticks > 0 else int(e.kind)})
                 if self.feature_version >= 3:
                     ents[-1]["status_flags"] = int(e.status_flags)
+                if unit_types is not None:
+                    unit_name = unit_types[e.unit_type] if 0 <= e.unit_type < len(unit_types) else ''
+                    public_id = heroiw.public_identity(unit_name)
+                    if public_id is not None:
+                        ents[-1].update(name='IceWizard', public_card_id=public_id, public_form=2,
+                                        unit_name=unit_name)
         effects = [{"side": s.team, "x": s.x / SCALE, "y": s.y / SCALE, "name": self.names.get(s.card_id, str(s.card_id))}
                    for s in st.spells]
         out = {"tick": st.tick, "players": players, "entities": ents, "effects": effects,

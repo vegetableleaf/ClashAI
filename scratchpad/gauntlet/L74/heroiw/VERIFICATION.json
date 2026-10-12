@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-12",
+  "shell": "powershell",
+  "cwd": "C:\\Users\\benpe\\ClashBot",
+  "exit_code": 0,
+  "pytest_passed": 70,
+  "pytest_seconds": 13.37,
+  "expect": "HEROIW_OFFLINE_OK",
+  "expect_matched": true,
+  "success_line_sha256": "29e61819b9bc5486a598aa6877aca1c721c3a5d98460774b9a36c2ef62020ecb",
+  "sim_imported": false,
+  "network_used": false,
+  "pod_launched": false,
+  "bash_syntax": "Not executed: Git Bash CreateFileMapping Win32 error 5 before parsing",
+  "files": {
+    "pipeline/royale_runtime.py": "91966517328c4e1c2b31aff172e71de0c200fdbea0a8affa162ad3f665ace082",
+    "pipeline/royale_heroiw.py": "d472d2527aa7929a48277b211b27c20d7511ff56aa629f046126f19833bf36c0",
+    "pipeline/royale_env.py": "64d390f8a606010542c93de1913019c42162f2f44cd62bc286b53d071c2500dc",
+    "pipeline/reader_identity_aliases.py": "aca75faf512c7161f6d7a23c97b667db2927477830ea22e524b4eb8ca897b7ad",
+    "pipeline/obs_contract.py": "b65a58bc80d84dbad27f7c81766c1ce57196387afa7916a9eafb22858227cb04",
+    "pipeline/public_observation.py": "126ecbc26dc92dcb05e193ccf4b72f3bfc370c7b778b2277c0f81c965520729b",
+    "pipeline/own_ability.py": "cefc24b1e77e226ff0232a58761e2cde0173a31982b74fdfa920ec68697c3c7b",
+    "pipeline/tests/test_heroiw.py": "6ede438bca1d1ec47e5bd86341ded30aa79ae2f7069f075f0dc837b0189fcf24",
+    "scratchpad/gauntlet/L74/heroiw/freeze_sources.py": "d53e439a6036dcffd8083dd327d6b5c6a87a70b5c612eef386db46374f3abba9",
+    "scratchpad/gauntlet/L74/heroiw/smoke.py": "0f890bace6ae8cc6c033ea5936eaf2143f0a1597e85d0a9b52d9ac1cdd568371",
+    "scratchpad/gauntlet/L74/heroiw/validate.py": "b63da155f753d1f60051be3d364cd61f58f43c0099f068cf6af2d6636fc7280a",
+    "scratchpad/gauntlet/L74/heroiw/verify_offline.py": "d52d6355a4a9210fd1538471e76719664d3e1c29bdd9b62639ff0ab2d061c962",
+    "scratchpad/gauntlet/L74/heroiw/run_heroiw.sh": "042b61e8174c3eb23489a78663318f8677d64666f4c9eb68d215bcb441db6a84",
+    "scratchpad/gauntlet/L74/heroiw/build_manifest.json": "bd7db6c0f42baa1b1bb93dd938957f8a77186a7591efff368aee948698121552"
+  },
+  "supplemental_check": {
+    "command": "research/ext/Royale/.venv/Scripts/python.exe -m pytest pipeline/tests/test_heroiw.py -q -p no:cacheprovider",
+    "passed": 19,
+    "seconds": 5.37,
+    "exit_code": 0,
+    "reason": "Rechecked after preserving structured default values in offline source audit utility"
+  }
+}
