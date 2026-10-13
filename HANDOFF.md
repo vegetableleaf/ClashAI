@@ -38,7 +38,16 @@ pod1013a`, C PID 81260 -> `pod1013c`; each copies + verifies, posts Discord, sto
   SkeletonArmy, Bats: 57 -> 14 plays); now banks only while the focus card is in hand. Zap evo is never 'seen'
   (instant spell, no unit; only the player's evo counter shows it) -- harness limit. SANITY4 on pod A (relay
   pod1013a_s4). Full-cohort PARITY (1,368 sources, `pods1013/parity/cohort_all`) arms A-D on pod C -> slim copy via
-  relay pod1013c_parity. test_iwdiag 24/25 (the failing
+  relay pod1013c_parity.
+- **Owner ~18:00: removed 49 .claude/worktrees** (untracked/dirty files archived to `pod_backup_weekend/worktree_archive_
+  20261013/`, 20 junctions unlinked first, targets verified; 46 agent branches kept); disk 27 -> 69 GB free. Keep
+  overlayed_replays (owner cleans it). Full-cohort PARITY (1,367): tap 1.180 -> spawn 0.831 tiles; both-present units
+  56.5% within 1/4 tile, 65% within 1/2; 43% of unit observations one-sided (mostly harness: divergence, injection).
+- **Training review** `L74/TRAINING_REVIEW_20261013.md`; owner: start step 1, keep rules OUT of training (the model
+  must learn them so they can be removed live). **GAP_r1 (`L74/gap/FINDING.md`):** r1 with the RL rollout sampler wins
+  16.67% vs greedy 42.08% = +25.42 pp [+20.42, +30.42] (decoding only); timing rules -3.12 [-8.54, +2.29], overrides
+  +2.50 [-1.88, +6.88]: the live rule stack is neutral in the SIM. Live rule use (1,950 matches): overrides ~0.34/match,
+  hazard forced 3% of plays, ~15 frames/match held back by phase/threat tau. test_iwdiag 24/25 (the failing
   `test_device_evidence_matches_local_sources` is stale since this morning's supplement 1 -> 2 change).
 - v8: owner reports a rebuilt run; I did not verify or advise on it (safety stops). oracle-2 kept warm per owner.
 
