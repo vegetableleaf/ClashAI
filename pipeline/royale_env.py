@@ -164,6 +164,11 @@ class RoyalePoolEnv:
         if ability_policy == "v2" and not hero_abilities:
             raise ValueError("ability_policy v2 needs hero_abilities=True")
         self.ability_policy = ability_policy
+        if heroiw.live_press_enabled():
+            if ability_policy != 'v2' or not hero_abilities:
+                raise ValueError('Live IW press rule needs hero_abilities and ability_policy v2')
+            from .royale_iw_policy import LiveIWPolicy
+            self._iw_policy = LiveIWPolicy()
         if forms_mode not in FORMS_MODES:
             raise ValueError(f"forms_mode {forms_mode!r} not in {FORMS_MODES}")
         self.forms_mode = 'deck' if heroiw.ENABLED else forms_mode
@@ -308,6 +313,8 @@ class RoyalePoolEnv:
         return len(self._ghosts) - self._gi + len(self._pending)
 
     def _reset_abilities(self) -> None:
+        if getattr(self, '_iw_policy', None) is not None:
+            self._iw_policy.reset()
         if self.feature_version >= 4:
             self.own_ability_events = []
         if getattr(self, 'behaviour_telemetry', None) is not None:
@@ -361,6 +368,8 @@ class RoyalePoolEnv:
         ``ability_policy`` "v2": the press DECISION is the per-ability calibrated model's (``_v2_gate``) instead of the
         range rule -- a seeded draw per (match, side, hero uid, tick), so the same call twice in one tick answers the same.
         """
+        if getattr(self, '_iw_policy', None) is not None:
+            self._iw_policy.observe(self, side)
         if not self.hero_abilities or not self._hero_ids[side]:
             return []
         if self.ability_policy == "v2":
@@ -410,6 +419,8 @@ class RoyalePoolEnv:
                    and (e.x - hero.x) ** 2 + (e.y - hero.y) ** 2 <= reach ** 2 for e in st.entities)
 
     def _v2_gate(self, button, cid, hero, st) -> bool:
+        if self.names[cid] == 'IceWizard' and getattr(self, '_iw_policy', None) is not None:
+            return self._iw_policy.gate(self, hero, st)
         key = V2_KEYS.get(self.names[cid])
         if key is None:                     # no v2 model (hero Ice Wizard, ...): the old rule, counted at the press
             return self._near(button, cid, hero, st)
@@ -426,6 +437,8 @@ class RoyalePoolEnv:
 
     def _v2_recheck(self, button, cid, hero, st) -> bool:
         """At landing the decision is made; only a fallback ability re-asks its (range) rule."""
+        if self.names[cid] == 'IceWizard' and getattr(self, '_iw_policy', None) is not None:
+            return True
         return V2_KEYS.get(self.names[cid]) is not None or self._near(button, cid, hero, st)
 
     def _ability_features(self, side: int, hero, st, dep_tick: int) -> list[float]:
