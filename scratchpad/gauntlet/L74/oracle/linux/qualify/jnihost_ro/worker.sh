@@ -10,6 +10,6 @@ case "${1:-}" in
         shift
         ns_run python3 "$Q/${action}.py" "$@"
         ;;
-    *) echo 'usage: worker.sh build | run --emulator-pid PID [options] | review RUN [--finding FILE]'; exit 64 ;;
+    *) echo 'usage: worker.sh build | run --emulator-pid PID [--preload-dependencies] [options] | review RUN [--finding FILE]'; exit 64 ;;
 esac
 assert_isolated

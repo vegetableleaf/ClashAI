@@ -5,7 +5,7 @@ from common import STAGES, BOUNDARY, SITES, require, ignored, read_json, write_j
 
 
 def validate_result(result):
-    require(result['schema_version'] == 1 and result['runtime_version'] == '160402012', 'RESULT_VERSION')
+    require(result['schema_version'] == 2 and result['runtime_version'] == '160402012', 'RESULT_VERSION')
     require(result['policy'] == {'client_launched': False, 'bridge_writes': 0, 'code_patches': 0,
             'environment_spoofing': False, 'unpacking': False, 'patches_qualified': 0}, 'RESULT_POLICY')
     require(result['status'] in ('blocked', 'collected'), 'RESULT_STATUS')
@@ -17,13 +17,24 @@ def complete_sequence(result):
     expected = []
     for stage in STAGES:
         expected.extend(((stage, 'before'), (stage, 'after')))
-        if stage in ('jni_on_load', 'native_libraries_loaded', 'application_create', 'create_game_main'):
+        if stage == 'jni_on_load':
             expected.append((stage, 'observation'))
     expected.extend(((BOUNDARY, 'before'), (BOUNDARY, 'boundary')))
     actual = [(e['stage'], e['event']) for e in result['events']]
     if actual != expected: return False
+    if any(e['schema_version'] != 2 or type(e['pid']) is not int or e['pid'] <= 0 for e in result['events']): return False
     if len({e['pid'] for e in result['events']}) != 1: return False
     if any(e['token'] != result['token'] for e in result['events']): return False
+    loader = result['identity'].get('loader')
+    if not loader: return False
+    expected_loader = {'stub_loader_verified': True, 'apk_paths': ':'.join(loader['apk_paths']),
+                       'native_search_path': ':'.join(loader['native_search_paths']),
+                       'preload': result['identity']['preload_enabled']}
+    if result['events'][1]['value'] != expected_loader: return False
+    preload = next(e for e in result['events'] if e['stage'] == 'dependency_preload' and e['event'] == 'after')
+    if type(preload['value']) is not int or preload['value'] != len(result['identity']['preloads']): return False
+    if not result['identity']['preload_enabled'] and result['identity']['preloads']: return False
+    if result['last_completed'] != 'jni_on_load' or result['failure_stage'] is not None: return False
     bases = []
     for e in result['events']:
         if e['event'] != 'observation': continue
@@ -64,7 +75,7 @@ def finding_check(finding, result, out):
 def assess(result, out, finding=None):
     validate_result(result)
     if result['receipts']: verify_hashes(result['receipts'], out)
-    answer = {'schema_version': 1, 'classification': 'unclassified', 'stop_required': True,
+    answer = {'schema_version': 2, 'classification': 'unclassified', 'stop_required': True,
               'last_completed': result['last_completed'], 'failure_stage': result['failure_stage'],
               'libg_loaded': any(e['stage'] == 'jni_on_load' and e['event'] == 'after' for e in result['events']),
               'reason': 'A crash, timeout, obfuscated exception, missing JNI method or null pointer does not establish cause.',
@@ -73,7 +84,7 @@ def assess(result, out, finding=None):
     host_text = ''
     for name in result.get('host_output', {}).values():
         host_text += (out / name).read_text(encoding='utf-8', errors='replace')
-    if result['host_error'] or result['status'] == 'blocked' or 'HOST_UNSUPPORTED_CALLBACK:' in host_text:
+    if result['host_error'] or result['status'] == 'blocked' or 'HOST_' in host_text:
         answer.update(classification='blocked', reason='Host precondition, isolation, artifact or unsupported callback failed; do not infer a libg refusal.')
     elif result['isolation_before'] is None or result['isolation_after'] is None or result['identity'] is None:
         answer.update(classification='blocked', reason='Missing isolation or identity receipt.')
@@ -85,8 +96,8 @@ def assess(result, out, finding=None):
             answer['required_sites'] = finding['site_ids']
             answer['site_attribution'] = 'manual source/runtime attribution, not independent patch qualification'
     elif result['returncode'] == 0 and not result['timeout'] and complete_sequence(result):
-        answer.update(classification='a', stop_required=False,
-                      reason='libg loaded and the normal minimal init calls returned; stopped before direct resources and patch-dependent GameMain init.')
+        answer.update(classification='a', stop_required=True,
+                      reason='libg load returned through the verified APK-aware stub; stopped before any client lifecycle or native startup call.')
     return answer
 
 

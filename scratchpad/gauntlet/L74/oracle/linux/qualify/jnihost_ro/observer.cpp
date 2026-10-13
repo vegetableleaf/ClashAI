@@ -16,7 +16,7 @@ static void fail(JNIEnv* env, const char* message) {
 }
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_royale_nativehost_JniHost_nativeRead(JNIEnv* env, jclass, jstring path) {
+Java_royale_nativehost_AppLibraryLoader_nativeRead(JNIEnv* env, jclass, jstring path) {
     const char* chars = env->GetStringUTFChars(path, nullptr);
     if (!chars) return nullptr;
     // Never load libg here, never call JNI_OnLoad ourselves.

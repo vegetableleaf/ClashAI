@@ -31,16 +31,22 @@ def main():
     assert observer_safe(source)
     assert not observer_safe(source + '\nmprotect();'), 'mutation detector positive control'
     java = (HERE / 'JniHost.java').read_text()
-    assert re.findall(r'private static native \w+ (\w+)', java) == ['nativeRead']
+    stub = (HERE / 'AppLibraryLoader.java').read_text()
+    assert re.findall(r'public static native \w+ (\w+)', stub) == ['nativeRead']
     for forbidden in ('nativeInit', 'nativePump', 'nativeStep', 'nativeAct', 'nOnCreate(', 'nOnStart(',
-                      'nOnResume(', 'new Surface', 'ServerSocket', 'Runtime.getRuntime().exec', 'setDeviceVerificationResult('):
-        assert forbidden not in java, 'forbidden host API'
+                      'nOnResume(', 'nOnNativeLibrariesLoaded(', 'nOnApplicationCreate(', 'createGameMain(',
+                      'com.supercell', 'dzmxszrox', 'ActivityThread', 'createPackageContext', 'new Surface', 'ServerSocket', 'Runtime.getRuntime().exec', 'setDeviceVerificationResult('):
+        assert forbidden not in java + stub, 'forbidden host API'
+    assert 'System.loadLibrary("g")' in stub
+    assert 'System.load(' not in java and 'System.loadLibrary(' not in java
+    assert 'stub.getClassLoader() != loader' in java
+    assert 'Class.forName("royale.nativehost.AppLibraryLoader", false, loader)' in java
     readme = (HERE / 'README.md').read_text()
     for sites in SITES.values():
         for site in sites: assert '`' + site + '`' in readme
     assert len({s for sites in SITES.values() for s in sites}) == 11
     ignored(PRIVATE / 'runtime-160402012-x86_64.json')
-    ignored(HERE.parents[2] / '.local/jnihost-ro-build/build.json')
+    ignored(HERE.parents[2] / '.local/jnihost-ro-build-v6/build.json')
     print('JNIHOST_RO_PRIVACY_OK')
 
 

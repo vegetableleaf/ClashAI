@@ -1,219 +1,197 @@
-# ORACLE v5: private read-only JniHost qualification
+# ORACLE v6: APK-aware, load-only JniHost
 
-Status: worker kit, not a runtime qualification. The local verification receipt
-records offline tests and compilation only. No client, libg or emulator was run
-while preparing this kit. Leave everything uncommitted.
+Status: an offline-built worker kit, not Android runtime qualification. See
+`VERIFICATION.json` for measured checks. No client, libg, emulator or network was
+run during v6 preparation. Changes are intentionally uncommitted.
 
-## Contract and exact stopping point
+## Contract and class ownership
 
-The worker starts only `app_process /system/bin royale.nativehost.JniHost` with
-our private DEX and observer. `GameApp` is the upstream Java descriptor/context
-shell, not the installed GameApp Activity or Application. No `am start`, monkey,
-APK dex loading, account login, service, Surface, replay, battle or frame loop.
-The installed original library enters through `System.load` and the VM's real
-`JNI_OnLoad`; the observer never calls that export itself.
+The worker starts only `app_process /system/bin royale.nativehost.JniHost`.
+Its CLASSPATH contains **only** `jnihost-ro.jar`, with our JniHost class. There
+are no upstream GameApp/TitanApplication descriptor shells in either built DEX.
+No package context, Application, Activity, service, asset initialization, native
+startup routine, game loop, replay or battle is invoked by this host.
 
-The sequence is:
+The collector reads the installed package's exact base and split APK paths using
+`pm path`, verifies their hashes/version against the private manifest, and reads
+the native library directory from `dumpsys package`. Base comes first, then
+sorted splits; paths must share the same installation root. `nativeLibraryDir`
+with an ABI suffix and `legacyNativeLibraryDir` without one are accepted only
+when they agree on the installed x86_64 directory.
 
-1. Load the observation-only bridge; emit a before/after marker.
-2. `System.load` the installed libg, then read module base and JNI delta.
-3. Obtain the installed package's assets using upstream ActivityThread context
-   creation. Use flags zero to exclude installed client code.
-4. Bind the upstream context shell; call `TitanApplication.nOnNativeLibrariesLoaded()`.
-5. Call `GameApp.nOnApplicationCreate()`.
-6. Call `GameApp.createGameMain(...)` through its normal registered JNI method.
-   Arguments use the upstream descriptor/display configuration, fresh host
-   scratch directories and actual available disk space. Observe GameMain if
-   published. A null pointer remains absent, never a successful object.
-7. Exit before `nativeInitResources` and `nativeInitGameMain`. No hidden extra
-   init function, scheduled task or retry follows this marker.
+The host constructs `dalvik.system.PathClassLoader` with:
 
-Only observation reads exist in the bridge: `dlopen` with `RTLD_NOLOAD`, `dlsym`,
-`dladdr`, then read-only `/proc/self/mem` reads of the candidate GameMain slot
-and its vtable for identity. The vtable check is not exported as extra state.
-There is no write API, target function-pointer call, protection change, code
-patch, debugger, unpacker or decryptor. Reads are not atomic. The real native
-initializers naturally mutate their own objects/files; this is allowed native
-initialization, not a claim that libg is a pure function. No data flags are set.
+- DEX path: our separate `jnihost-loader.jar`, installed base APK, every split.
+- Native search path: installed native directory, each installed APK's
+  `!/lib/x86_64` directory, then our private guest scratch directory (observer).
+- Parent: `JniHost.class.getClassLoader()`; context loader is also set to this child.
 
-The original upstream bridge is copied for provenance but **never compiled or
-loaded**. Its broad runtime observation and all mutating APIs are excluded.
-The binding and v4 supplement supply only three private observation constants;
-hashes tie these to the existing private evidence. They are static candidates,
-not independently confirmed live addresses.
+The child stub is loaded without initialization using `Class.forName(..., false,
+loader)`. Its defining loader must equal the new loader or the host stops with
+`HOST_STUB_PARENT_SHADOW`. The stub is intentionally absent from the parent DEX.
+Static invocation then initializes only our stub, which has no static initializer.
+All load calls occur in `royale.nativehost.AppLibraryLoader`:
+`System.load` for our observer, optional dependency preloads, then exactly one
+`System.loadLibrary("g")`. Android invokes JNI_OnLoad; we never call it manually.
 
-### Why the copy differs from upstream
+This follows the documented [PathClassLoader constructor](https://developer.android.com/reference/dalvik/system/PathClassLoader)
+and [JNI_OnLoad class lookup semantics](https://github.com/android/ndk/wiki/JNI).
+It supplies classes and native lookup paths, but is not a full application
+context. The FMOD failure's missing-class diagnosis is still **untested**.
 
-Upstream `GameApp.isEmulator()` returns false. This private copy returns true
-because this worker exclusively accepts the AOSP emulator. Android properties,
-root status, verified-boot state, proc files and security policy remain intact.
-`getAPKPath()` returns the actual installed source path when the shell exists;
-otherwise it stops with a host-contract error.
+The observer is loaded through the same child as libg, so its `RTLD_NOLOAD`
+lookup uses that native namespace. The only exported JNI method is the stub's
+`nativeRead`. It uses `dlopen(RTLD_NOLOAD)`, `dlsym`, `dladdr` and read-only
+`/proc/self/mem` reads to check the JNI delta and candidate GameMain identity.
+No bridge write API, patch, protection change, captured-image load, unpacking,
+decryption, native function-pointer call or fabricated environment value exists.
+Original app APKs/libraries/data are never modified by our code. Only our host
+artifacts and receipts are written to fresh private scratch locations.
 
-Upstream ApplicationUtilBase, QuagoManager, BatteryMonitor, ThermalMonitor and
-SnowplowTitan have synthetic device values or no-op adapter methods. The private
-build preserves their native declarations, but concrete public callbacks stop
-with `HOST_UNSUPPORTED_CALLBACK` instead of fabricating results or suppressing
-an attestation path. A volatile latch also stops the next host stage if native
-code clears that Java exception. This is a host limitation, never evidence that
-libg itself refused. Do not replace that failure with a permissive adapter.
-Other upstream UI/offline-service shells are retained; no property-hiding code
-or new success response is introduced. Upstream sources remain unchanged.
+## Exact host run order
 
-The maximal implemented profile is upstream's minimal initialization, with a
-conservative cap before direct resources. Upstream direct resource setup is
-call-only but uses many old-version private entry points and constructs native
-strings; this kit does not pretend those bindings are ported to the installed
-version. A successful minimal profile therefore does **not** prove that the
-very next call needs a patch. Direct resource callability is unmeasured.
-The subsequent GameMain initializer is the known upstream patch boundary.
+1. `class_loader`: construct the APK-aware loader and verify the stub's defining
+   loader. Record APK/native paths and preload mode in a private event.
+2. `observer_load`: load our read-only observer through the child stub.
+3. `dependency_preload`: default is an explicit no-op, recorded as zero loads.
+   With the opt-in flag, call `System.load` for each validated dependency in order.
+4. `jni_on_load`: the stub calls `System.loadLibrary("g")`; record return and
+   module/JNI/GameMain observation. An absent GameMain remains absent.
+5. `stop_after_library_load`: emit the boundary and exit. No subsequent native
+   init or client lifecycle method is called, even after success.
 
-## Worker run order (Linux x86_64, offline)
+Any exception, signal, timeout, unsupported callback or missing class ends the
+single attempt. Do not invent missing JNI methods or call protection to fix it.
+If evidence establishes libg's own refusal, STOP with outcome **(b)**. No spoofing,
+emulator hiding, integrity/anti-debug bypass, SELinux relaxation or network to
+Supercell is permitted. The host does not reference or probe `dzmxszrox`.
 
-All SDK/JDK/NDK/system-image inputs and Python `jsonschema` (offline tests only)
-must already exist. Do not run online SDK
-setup, download dependencies, fetch assets, connect a remote ADB endpoint or
-relax SELinux. The installed exact split set must already match the private
-artifact manifest. Do not invoke v4's full-client launch/collection workflow.
+## Worker commands (existing isolated Linux x86_64 emulator)
+
+All JDK/SDK/NDK/system-image inputs and Python `jsonschema` must already exist.
+Do not download tools/assets, launch the full client, or connect remote ADB.
+Use the existing kit's loopback-only network namespace and API 32 guest. If no
+owned guest exists, use `linux/boot.sh 1` only with a trusted offline AVD that
+does not auto-start the client. An already running client blocks collection;
+the worker never stops it or shared emulator services.
 
 From the repository root:
 
 ```bash
 Q=scratchpad/gauntlet/L74/oracle/linux/qualify/jnihost_ro
-# Optional: only when an ORACLE guest is not already running, boot the existing
-# offline AVD. This script contains no client launch or SDK installation.
-bash scratchpad/gauntlet/L74/oracle/linux/boot.sh 1
-
-# Parse the small shell wrapper on the worker before using it.
 bash -n "$Q/worker.sh"
 python3 "$Q/test_jnihost_ro.py"
 python3 "$Q/verify.py"
 bash "$Q/worker.sh" build
-
-# Use the actual owned qemu-system-x86_64 PID, not an adb PID or unrelated guest.
-# The existing .local/emulator-5554.launcher-pid is a candidate; verify it with ps.
+# Confirm the actual owned QEMU PID, namespace, port and oracle_ AVD first.
 bash "$Q/worker.sh" run --emulator-pid "$ORACLE_EMULATOR_PID" --serial emulator-5554
-
-# Read the new private run's result.json, review.json and captured command logs.
-# Optional read-only re-review; RUN is that private run directory.
+# RUN is the newly created private result directory printed/recorded by the worker.
 bash "$Q/worker.sh" review "$RUN"
 ```
 
-The existing boot script's historical AVD name contains an old API label; its
-live API check must still report 32. Reuse an existing correctly isolated guest
-when available. Neither this kit nor its review stops shared emulator services.
-Do not boot from an untrusted snapshot that starts the client. If the client is
-already running, v5 blocks without stopping it.
+Default build: `scratchpad/gauntlet/L74/oracle/.local/jnihost-ro-build-v6/`.
+The new build path separates incompatible v5 artifacts; it does not authorize
+retries after refusal. The collector verifies build/source hashes, pushes only
+our two DEX jars and observer, checks guest hashes, and enforces a 45-second
+stock guest timeout plus a 60-second ADB wait. APK and native backing identities
+are checked again after collection. Network checks before and after require
+only `lo`, loopback routes, matching process network namespaces and owned QEMU.
+No outside service may change that namespace during the attempt.
 
-The wrapper checks the kit's loopback-only namespace. Inside it the collector
-checks IPv4 and IPv6 routes, the exact emulator PID/port/AVD, ownership and
-network-namespace identity. The only allowed interface is `lo`; every route
-must use it. Host ADB connectivity is explicitly local to that namespace.
-Emulator guest NAT may exist, but its QEMU process has no external interface or
-route. Do not attach a veth, proxy, VPN, forwarded device or external backend.
-The emulator must have been launched in this namespace with the kit's boot
-script, not migrated from an online namespace with inherited external sockets.
-The collector checks isolation again immediately before and after the host.
-No outside service may reconfigure this namespace during the attempt.
+`ATTEMPT.json` is written exclusively before the sole launch. Reusing an
+attempted build fails before device access. Do not delete its latch, switch
+flags or manufacture another build to retry a suspected refusal. Logs and
+scratch artifacts remain for review; no cleanup callback runs on failure.
 
-The collector verifies the installed package version and exact APK split
-hashes. If PackageManager installed an ordinary native file, its hash must
-match. Otherwise it selects the matched installed APK member and asks Android's
-standard linker to map it directly. This route is selected before launch; there
-is no extraction, reconstructed ELF, captured-image loading, manual decryption
-or alternate load attempt. A compressed/unmappable member is a linker failure
-and STOP, never permission to unpack it. APK-member identity comes from the
-verified whole-APK digest plus the private member manifest, not a new member
-extraction. The backing file is hashed again afterwards.
+### Explicit preload fallback (default off)
 
-Only our own observer and DEX are pushed, into a fresh private guest scratch
-directory. Each guest artifact is hash-checked. The native observer has only
-system-library dependencies. Stock guest `timeout` gives the entire host 45
-seconds; the ADB wait is capped at 60 seconds. Success explicitly exits the host
-to end any native threads. Failure never runs a cleanup native callback.
+Merely having `preload.txt` in the private build has **no effect**. To select it
+before an independently authorized first attempt, add `--preload-dependencies`
+to `worker.sh run`. This is a compatibility option, never an automatic second
+attempt after a failed class-loader load. The class-loader route remains active.
 
-`ATTEMPT.json` is created exclusively in the private build before launch. A
-second attempt from that build is rejected. Do not delete the latch, use another
-build to evade it, or retry a suspected refusal. Nothing here starts an automatic
-repair or fallback path. Guest logs and scratch files remain for review.
+The file lists the statically reviewed DT_NEEDED closure, one basename per line,
+deepest dependency first: libc++_shared, SCID, FMOD, FMOD Studio, Sentry and
+Sentry Android (use their actual `lib*.so` names). Names must be unique, limited to those six reviewed siblings, and present
+in the private native manifest; libg and unrelated libraries are rejected. Missing/invalid files block;
+nothing is silently skipped. Installed native files are hash-checked; otherwise
+only the verified APK member is selected for the standard Android linker.
+There is no extraction or retry if that member cannot be mapped. The selected
+paths, file digest and native backing hashes are private receipts.
 
-## Files and private outputs
+## Classes touched and risks
 
-- `JniHost.java`, `observer.cpp`: offset-free host and read-only observer.
-- `build.py`: private upstream copy, conservative adapter changes, Java/DEX and
-  Android shared-library compilation, imports/exports/dependency audit.
-- `common.py`, `run.py`, `worker.sh`: identity, isolation and one-attempt collection.
-- `results.schema.json`, `review.py`: result schema and evidence-bound review.
-- `test_jnihost_ro.py`, `verify.py`, `GATES.md`, `VERIFICATION.json`: offline checks.
+**Directly touched by the stub:** `royale.nativehost.AppLibraryLoader`,
+`java.lang.Object`, `java.lang.String` and `java.lang.System` (including array
+forms). It references no app class, constructs no app object, and has no static
+initializer. The observer can create only a platform `java.lang.IllegalStateException`.
 
-Private build: `scratchpad/gauntlet/L74/oracle/.local/jnihost-ro-build/`.
-Private observations:
-`scratchpad/gauntlet/L70/reader/oracle_160402012/runtime_qualification/jnihost_ro/`.
-The code verifies git-ignore coverage and rejects tracked/out-of-checkout output
-paths. Build manifests, private header, source copy, binaries, commands, process
-paths, logcat, pointers, hashes of target artifacts and manual findings remain
-there. Public source contains no target offsets or target hashes.
+**Host framework classes:** `dalvik.system.PathClassLoader`, `java.lang.Class`,
+`ClassLoader`, `Thread`, `System`, `String`, `Object`, `Throwable`, `Exception`,
+`IllegalArgumentException`, `IllegalStateException`, reflection `Method` and
+`InvocationTargetException`, `java.util.Arrays`, `org.json.JSONObject`,
+`android.os.Process`, plus compiler/runtime support such as `StringBuilder`
+and `java.io.PrintStream`. No client Application, Activity, protection or SDK
+class is explicitly loaded, instantiated or invoked by host/stub code.
 
-## Classification and presentation-site review
+**Indirect execution is not proven absent.** Native constructors/JNI_OnLoad may
+resolve and initialize app classes such as `org.fmod.*`, Sentry or SCID classes;
+the actual transitive set is unmeasured. Their static initializers may load more
+libraries, expect app context, write their own state, spawn threads or refuse.
+Making APK classes available does not itself initialize every APK class. We do
+not proactively look up those SDK classes. DT_NEEDED maps native dependencies;
+it does not promise that each dependency's Java-facing JNI_OnLoad is invoked.
+Explicit preloading does invoke the VM load path for each selected dependency.
+
+This is read-only instrumentation, **not a side-effect sandbox for arbitrary
+native initializers**. Offline network isolation prevents external connections,
+but the loader cannot guarantee native code never attempts file writes or
+transitive protection access. If receipts show a prohibited path or refusal,
+stop; do not call, suppress, stub, patch or spoof it. In particular never inspect
+or call `dzmxszrox` to repair a load. No runtime qualification is claimed here. Local Git Bash could not start
+(Win32 error 5), so `bash -n worker.sh` must be checked on the Linux worker.
+
+## Review and private evidence
+
+Events are `ORACLE_V6`, schema version 2. v5 records cannot be promoted to v6
+success. Success requires the exact ordered load-only event sequence, verified
+child loader and matching paths/mode, preload count, JNI identity, exit zero,
+and intact identity/isolation receipts. A review never authorizes another run.
 
 | Outcome | Evidence and decision |
 |---|---|
-| **(a)** | Exact ordered before/after/observation sequence, matching JNI delta, successful process exit, intact identity and isolation receipts, ending at the explicit minimal-init boundary. Report the last completed stage and actual GameMain status. No rendering failure is claimed. |
-| **(b)** | Explicit diagnostic attributable to **libg's own refusal**, reviewed against the same attempt's output. STOP. No property, Java contract, loader, integrity, anti-debug or anti-tamper workaround. |
-| **(c)** | Diagnostic/source attribution demonstrates a rendering dependency at the recorded failed stage. Report the evidenced site IDs from the map below. STOP before any patch; no site becomes patch-qualified. |
-| `blocked` | Missing toolchain/identity/isolation, unsupported host callback, security denial or collection failure. No runtime cause is inferred. |
-| `unclassified` | Generic crash, signal, timeout, linkage/registration error, obfuscated exception or incomplete sequence. Retain progress, mark cause unknown, STOP and report. Never guess (b) or (c). |
+| **(a)** | Load and observation returned; stopped at the load-only boundary. GameMain absence is valid. No application, engine or rendering qualification. |
+| **(b)** | Receipt-bound manual attribution to libg's own refusal. STOP. |
+| **(c)** | Receipt-bound rendering attribution at the actual failing stage. STOP; no patches qualified. |
+| `blocked` | Host/precondition/identity/isolation failure. Do not infer libg refusal. |
+| `unclassified` | Generic crash, timeout, bad JNI version, missing class, registration failure or incomplete sequence. Cause unknown; STOP. |
 
-The current kit cannot reach the later direct-resource/GameMain/loading/Home
-steps. The following is an **upstream source map**, not evidence that the
-installed version requires any of these patches. A rendering failure before
-that boundary needs its own attribution; do not assign all eleven sites to it.
+To attribute (b)/(c), use an ignored finding JSON: `kind` (`libg_refusal` or
+`rendering_dependency`), `origin: "libg"`, `reviewer`, `rationale`,
+`result_sha256`, `stage` matching the failed stage, and `evidence` with `file`,
+`sha256`, one-based inclusive `line_start`/`line_end`, exact `excerpt` from this
+attempt's stdout/stderr. For (c), include `site_group`, nonempty `site_ids`, and
+`site_mapping_basis`. Run `worker.sh review "$RUN" --finding "$PRIVATE_FINDING"`.
+It writes `review-attributed.json` without replacing the original result/review.
+Hash/line checks authenticate the receipt; causal attribution is the reviewer's
+judgment. A host error cannot be overridden with a refusal finding.
 
-| Upstream step | Presentation sites referenced there |
+The retained upstream presentation-site map is historical source context only;
+v6 calls none of these steps and qualifies no patch:
+
+| Upstream step | Site IDs |
 |---|---|
-| GameMain init renderer setup | `renderer_bootstrap_call`, `renderer_device_block`, `renderer_resolution_call`, `renderer_objects_block`, `renderer_late_configure_call` |
-| Resource variant selection (shim installed by nativeInitGameMain) | `headless_resource_variant` |
+| GameMain renderer | `renderer_bootstrap_call`, `renderer_device_block`, `renderer_resolution_call`, `renderer_objects_block`, `renderer_late_configure_call` |
+| Resource variant | `headless_resource_variant` |
 | Loading completion | `loading_presentation_call`, `loading_platform_ui_call` |
-| Manager/Home presentation | `game_presentation_toggle`, `home_resolution_block`, `home_graphics_create_call` |
+| Manager/Home | `game_presentation_toggle`, `home_resolution_block`, `home_graphics_create_call` |
 
-Source basis: upstream `android_probe/java/royale/nativehost/JniHost.java`,
-`android_probe/native/jni_bridge.cpp` (`nativeCreateGameMain`, `nativeInitResources`,
-`nativeInitGameMain`, `nativePumpManager`, `nativeInitManager`), and
-`docs/SANDBOX_RUNTIME_TECHNICAL.zh-CN.md` sections 9-11. The build preserves their
-hashes privately. Existing private binding evidence is not promoted by this map.
-
-To attribute (b)/(c), write an ignored private finding JSON with `kind`
-(`libg_refusal` or `rendering_dependency`), `origin: "libg"`, `reviewer`,
-`rationale`, `result_sha256`, `stage` equal to the result's failed stage, and
-`evidence` containing `file`, `sha256`, one-based inclusive `line_start` and
-`line_end`, and the exact `excerpt`. The evidence file must be that attempt's
-host stdout or stderr. For (c), also provide `site_group` (a key in the review's
-upstream map), nonempty `site_ids` and `site_mapping_basis` explaining the
-source/runtime connection. Then run:
-
-```bash
-bash "$Q/worker.sh" review "$RUN" --finding "$PRIVATE_FINDING"
-```
-
-This writes `review-attributed.json`; it never overwrites the raw result, prior
-review or binding. Hash/line matching authenticates the cited receipt, while
-causal attribution remains the named reviewer's judgment. A manual finding
-cannot override a host/isolation error. No review authorizes another run.
-
-## Risks and limits
-
-The upstream Java descriptor set targets an older runtime. A new registration
-contract may fail at JNI_OnLoad; report it without inventing missing methods or
-loading the protected client's classes. libg may independently refuse the host.
-The truthful/fail-closed adapters can stop initialization earlier than upstream's
-permissive stubs. Assets supplied by the installed package may be insufficient
-offline. No assets are downloaded and no account state is imported.
-
-This probe deliberately does not port direct-resource bindings, test rendering
-patches or exercise battle behavior. A successful (a) qualifies only this
-bounded init path. Null/unreadable/unverified GameMain is retained explicitly.
-File hashes do not prove runtime memory never changes itself; no whole-module
-memory dump or decryption is attempted. SDK/NDK compilation proves syntax/linking,
-not Linux process launch, Android JNI registration, init success or patch safety.
-Local Bash syntax execution is recorded separately from offline compiler checks;
-the worker must perform its `bash -n` check before use.
+Private runtime receipts remain under
+`scratchpad/gauntlet/L70/reader/oracle_160402012/runtime_qualification/jnihost_ro/`.
+Private builds contain the generated binding header, binaries, command logs and
+source/artifact hashes. Public code/docs/tests remain offset-free. `build.py`
+checks DEX class separation and observer exports/imports; `run.py` collects once;
+`review.py` and `results.schema.json` describe load-only evidence;
+`test_jnihost_ro.py`, `verify.py`, `GATES.md` and `VERIFICATION.json` record offline
+verification. Compilation and mocked-device tests do not prove Android native
+namespace resolution, FMOD/Sentry/SCID registration, or successful libg loading.

@@ -1,8 +1,8 @@
 {
-  "schema_version": 1,
-  "timestamp_utc": "2026-10-13T04:49:17.780045+00:00",
+  "schema_version": 2,
+  "timestamp_utc": "2026-10-13T05:09:34.999308+00:00",
   "status": "OFFLINE_KIT_VERIFIED_RUNTIME_NOT_RUN",
-  "offline_test_count": 26,
+  "offline_test_count": 37,
   "checks": [
     {
       "command": [
@@ -14,7 +14,7 @@
       "exit_code": 0,
       "expect": "JNIHOST_RO_TESTS_OK",
       "matched": true,
-      "output_sha256": "bd0516b58a4141a867d36170220ddbd83836976c0fc273cfb4bfb30cba21f87f"
+      "output_sha256": "ee51ecff1d07f4aec0ce888799be41206e154553b84d2dbdcff8e316cd3dad67"
     },
     {
       "command": [
@@ -35,17 +35,20 @@
     "tools": [
       "JDK 17 javac",
       "D8",
-      "NDK clang++"
+      "NDK clang++",
+      "javap"
     ],
-    "warnings": "Java deprecated API notices only",
-    "private_build_directory": "scratchpad/gauntlet/L74/oracle/.local/jnihost-ro-compile-v5-final",
+    "private_build_directory": "scratchpad/gauntlet/L74/oracle/.local/jnihost-ro-compile-v6-final",
+    "separate_dex_ownership_checked": true,
+    "client_shells_compiled": false,
+    "stub_has_static_initializer": false,
     "observer_export_count": 1,
     "system_dependencies_only": true,
-    "final_source_and_upstream_hashes_verified": true
+    "final_source_and_artifact_hashes_verified": true
   },
   "shell_check": {
     "status": "blocked_on_local_windows",
-    "reason": "Git Bash could not create its file mapping: Win32 error 5. Worker must run bash -n worker.sh. No Linux shell validation claimed."
+    "reason": "Git Bash could not create its file mapping: Win32 error 5. Run bash -n worker.sh on the Linux worker; no Linux syntax execution claimed."
   },
   "runtime": {
     "executed": false,
@@ -55,16 +58,16 @@
     "patches_qualified": 0
   },
   "manual_review": {
-    "scope": "Minimal normal JNI lifecycle ends after CreateGameMain; direct-resource bindings are not ported and patch-dependent init is excluded.",
-    "isolation": "Existing loopback-only namespace, explicit local ADB, emulator PID namespace and ownership checks before/after. Linux runtime checks are unrun.",
-    "adapters": "Truthful emulator result, actual APK path/disk space, device and attestation callbacks fail closed with latch.",
-    "classification": "Progress is separate from cause; b/c need private receipt-bound manual attribution. Unknown crashes remain unknown. All eleven upstream sites mapped without patch authorization.",
-    "privacy": "Generated header, binaries, upstream source copy, target hashes and runtime receipt paths are ignored and untracked. Public sources offset-free."
+    "scope": "Child-defined stub loads observer and libg in the same namespace; host exits after load/observation with no client lifecycle calls.",
+    "fallback": "preload.txt ignored by default; flag selects before the sole attempt, six known siblings only, no retry.",
+    "classes": "Stub directly references only itself and java.lang.Object/String/System. Indirect native/JNI class initialization unmeasured.",
+    "classification": "v6 schema and exact load-only sequence; b/c require receipt-bound attribution; unknown failures remain unknown.",
+    "privacy": "Private artifacts and bindings remain ignored; public source/docs pass offset and target-hash scan."
   },
   "gates": {
     "met": 4,
     "unmet": 0,
     "abandoned": 0,
-    "scope": "Offline preparation only; Android execution and Linux Bash validation are worker checks."
+    "scope": "Offline build task only; Android execution and Linux Bash validation remain worker checks."
   }
 }

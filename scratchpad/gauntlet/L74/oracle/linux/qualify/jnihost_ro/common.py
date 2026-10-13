@@ -9,11 +9,10 @@ sys.path.append(str(HERE.parent))
 from qualify import (ROOT, PRIVATE, Blocked, require, digest, ignored, isolated,
                      Device, installed_check, binding_load)
 
-BUILD = HERE.parents[2] / '.local/jnihost-ro-build'
+BUILD = HERE.parents[2] / '.local/jnihost-ro-build-v6'
 RUNS = PRIVATE / 'runtime_qualification/jnihost_ro'
-STAGES = ('observer_load', 'jni_on_load', 'package_context', 'native_libraries_loaded',
-          'application_create', 'create_game_main')
-BOUNDARY = 'stop_before_direct_resources_and_game_main_init'
+STAGES = ('class_loader', 'observer_load', 'dependency_preload', 'jni_on_load')
+BOUNDARY = 'stop_after_library_load'
 SITES = {
     'game_main_init': ['renderer_bootstrap_call', 'renderer_device_block',
                       'renderer_resolution_call', 'renderer_objects_block',

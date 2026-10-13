@@ -1,4 +1,4 @@
-"""Offline private-copy build. No downloads, target execution or APK extraction."""
+"""Offline two-DEX build. No downloads, target execution or APK extraction."""
 import argparse
 import os
 from pathlib import Path
@@ -8,64 +8,20 @@ import subprocess
 import sys
 from common import HERE, ROOT, BUILD, require, ignored, load_inputs, digest, write_json, isolated
 
-UPSTREAM = ROOT / 'research/ext/cr-native-sandbox/android_probe'
-DENY_CLASSES = ('ApplicationUtilBase', 'QuagoManager', 'BatteryMonitor', 'ThermalMonitor', 'SnowplowTitan')
-
-
-def deny_callbacks(source, name):
-    # These reviewed upstream sources have simple method bodies. Work backwards
-    # so replacements do not change earlier match positions. Native descriptors
-    # remain untouched; calling an unsupported host callback must STOP.
-    pattern = re.compile(r'^    public (?![^\n]*\bnative\b)[^;={}]+\([^;{}]*\)\s*\{', re.M)
-    matches = list(pattern.finditer(source))
-    require(bool(matches), 'CALLBACK_SOURCE_DRIFT')
-    for match in reversed(matches):
-        start = match.end()
-        depth, end = 1, start
-        while depth:
-            require(end < len(source), 'CALLBACK_PARSE_FAILED')
-            depth += (source[end] == '{') - (source[end] == '}')
-            end += 1
-        method = re.search(r'(\w+)\s*\(', match.group())[1]
-        message = name + '.' + method
-        source = source[:start] + '\n        throw royale.nativehost.JniHost.unsupportedCallback("' + message + '");\n    ' + source[end - 1:]
-    source = source.replace('m_cachedAndroidId = "headless-native-host"', 'm_cachedAndroidId = null')
-    return source
-
-
 def prepare(build):
     build = ignored(build)
     require(not build.exists(), 'BUILD_EXISTS_RETAINED')
     b, manifest, values, inputs = load_inputs()
-    require(UPSTREAM.is_dir(), 'UPSTREAM_MISSING')
-    upstream_hashes = {str(p.relative_to(ROOT)): digest(p) for p in sorted(UPSTREAM.rglob('*')) if p.is_file()}
     build.mkdir(parents=True, mode=511 if sys.platform == 'win32' else 448)
-    shutil.copytree(UPSTREAM, build / 'android_probe')
-    java = build / 'android_probe/java'
-    shutil.copyfile(HERE / 'JniHost.java', java / 'royale/nativehost/JniHost.java')
-    app = java / 'com/supercell/titan/GameApp.java'
-    source = app.read_text(encoding='utf-8')
-    old = 'public static boolean isEmulator() {\n        return false;\n    }'
-    require(source.count(old) == 1, 'EMULATOR_CALLBACK_SOURCE_DRIFT')
-    # Truthful for the required AOSP emulator, not an environment disguise.
-    source = source.replace(old, old.replace('false', 'true'))
-    apk_path = 'public static String getAPKPath() {\n        return "";\n    }'
-    require(source.count(apk_path) == 1, 'APK_CALLBACK_SOURCE_DRIFT')
-    source = source.replace(apk_path, 'public static String getAPKPath() {\n'
-                            '        if (instance == null) throw royale.nativehost.JniHost.unsupportedCallback("GameApp.getAPKPath");\n'
-                            '        return instance.getApplicationInfo().sourceDir;\n    }')
-    app.write_text(source, encoding='utf-8', newline='\n')
-    for name in DENY_CLASSES:
-        p = java / ('com/supercell/titan/' + name + '.java')
-        p.write_text(deny_callbacks(p.read_text(encoding='utf-8'), name), encoding='utf-8', newline='\n')
-    shutil.copyfile(HERE / 'observer.cpp', build / 'observer.cpp')
+    for name in ('JniHost.java', 'AppLibraryLoader.java', 'observer.cpp'):
+        shutil.copyfile(HERE / name, build / name)
     header = ''.join('#define ' + key + ' ' + str(value) + 'ULL\n' for key, value in zip(
         ('EXPECTED_JNI_DELTA', 'GAME_MAIN_GLOBAL', 'GAME_MAIN_VTABLE'), values))
     (build / 'private_binding.h').write_text(header, encoding='utf-8', newline='\n')
-    return {'schema_version': 1, 'inputs': inputs, 'upstream': upstream_hashes,
+    return {'schema_version': 2, 'inputs': inputs,
             'sources': {p.name: digest(p) for p in HERE.iterdir() if p.suffix in ('.py', '.java', '.cpp', '.sh')},
             'libg_sha256': b['libg_sha256'], 'jni_delta': str(values[0]),
-            'upstream_bridge_compiled': False, 'environment_callback_policy': 'truthful_emulator_other_device_callbacks_fail_closed'}
+            'client_shells_compiled': False, 'profile': 'load_only'}
 
 
 def compile_build(build, sdk, jdk):
@@ -76,33 +32,45 @@ def compile_build(build, sdk, jdk):
     jar = sdk / 'platforms/android-35/android.jar'
     d8 = sdk / 'cmdline-tools/latest/lib/r8.jar'
     require(all(p.exists() for p in (ndk / ('clang++' + suffix), jdk / ('bin/javac' + suffix), jar, d8)), 'OFFLINE_TOOLCHAIN_MISSING')
-    classes = build / 'classes'
-    classes.mkdir()
+    host_classes = build / 'host-classes'
+    child_classes = build / 'child-classes'
+    host_classes.mkdir()
+    child_classes.mkdir()
     commands = [
         [str(ndk / ('clang++' + suffix)), '--target=x86_64-linux-android32', '-std=c++17', '-shared', '-fPIC',
          '-O2', '-Wall', '-Wextra', '-Werror', '-static-libstdc++', '-DORACLE_READ_ONLY=1', '-Wl,-z,defs',
          str(build / 'observer.cpp'), '-ldl', '-o', str(build / 'libjnihost_ro.so')],
-        [str(jdk / ('bin/javac' + suffix)), '--release', '8', '-classpath', str(jar), '-d', str(classes)] +
-        [str(p) for p in sorted((build / 'android_probe/java').rglob('*.java'))],
     ]
+    for source, dest in (('JniHost.java', host_classes), ('AppLibraryLoader.java', child_classes)):
+        commands.append([str(jdk / ('bin/javac' + suffix)), '--release', '8', '-classpath', str(jar),
+                         '-d', str(dest), str(build / source)])
+    for classes, name in ((host_classes, 'jnihost-ro.jar'), (child_classes, 'jnihost-loader.jar')):
+        commands.append([str(jdk / ('bin/java' + suffix)), '-cp', str(d8), 'com.android.tools.r8.D8',
+                         '--min-api', '32', '--lib', str(jar), '--output', str(build / name)] +
+                        [str(classes / ('royale/nativehost/' + ('JniHost' if classes == host_classes else 'AppLibraryLoader') + '.class'))])
     with (build / 'build.log').open('xb') as log:
         for command in commands:
             subprocess.run(command, stdout=log, stderr=log, check=True, timeout=120)
-        dex_command = [str(jdk / ('bin/java' + suffix)), '-cp', str(d8), 'com.android.tools.r8.D8',
-                       '--min-api', '32', '--lib', str(jar), '--output', str(build / 'jnihost-ro.jar')] + \
-                      [str(p) for p in sorted(classes.rglob('*.class'))]
-        subprocess.run(dex_command, stdout=log, stderr=log, check=True, timeout=120)
+    # No upstream shells or child stub in the parent DEX, no host in the child DEX.
+    import zipfile
+    for name, wanted, forbidden in (
+            ('jnihost-ro.jar', b'Lroyale/nativehost/JniHost;', b'Lroyale/nativehost/AppLibraryLoader;'),
+            ('jnihost-loader.jar', b'Lroyale/nativehost/AppLibraryLoader;', b'Lroyale/nativehost/JniHost;')):
+        with zipfile.ZipFile(build / name) as archive:
+            dex = archive.read('classes.dex')
+        require(wanted in dex and forbidden not in dex and b'Lcom/supercell/' not in dex,
+                'DEX_CLASS_OWNERSHIP')
     imports = subprocess.check_output([str(ndk / ('llvm-nm' + suffix)), '-u', str(build / 'libjnihost_ro.so')], timeout=30).decode()
     (build / 'imports.txt').write_text(imports, encoding='utf-8')
     require(not re.search(r'\b(mprotect|ptrace|pwrite|process_vm_writev|socket|connect|sendto|memcpy|memset)\b', imports), 'FORBIDDEN_IMPORT')
     exports = subprocess.check_output([str(ndk / ('llvm-nm' + suffix)), '-D', '--defined-only', str(build / 'libjnihost_ro.so')], timeout=30).decode()
     (build / 'exports.txt').write_text(exports, encoding='utf-8')
-    require(re.findall(r'\bJava_\w+', exports) == ['Java_royale_nativehost_JniHost_nativeRead'], 'UNEXPECTED_BRIDGE_API')
+    require(re.findall(r'\bJava_\w+', exports) == ['Java_royale_nativehost_AppLibraryLoader_nativeRead'], 'UNEXPECTED_BRIDGE_API')
     dynamic = subprocess.check_output([str(ndk / ('llvm-readelf' + suffix)), '-d', str(build / 'libjnihost_ro.so')], timeout=30).decode()
     require(set(re.findall(r'Shared library: \[([^]]+)\]', dynamic)).issubset({'libdl.so', 'libm.so', 'libc.so'}), 'NON_SYSTEM_OBSERVER_DEPENDENCY')
     (build / 'dynamic.txt').write_text(dynamic, encoding='utf-8')
-    receipt['artifacts'] = {p: digest(build / p) for p in ('libjnihost_ro.so', 'jnihost-ro.jar', 'private_binding.h', 'imports.txt', 'exports.txt', 'dynamic.txt')}
-    receipt['commands'] = commands + [dex_command]
+    receipt['artifacts'] = {p: digest(build / p) for p in ('libjnihost_ro.so', 'jnihost-ro.jar', 'jnihost-loader.jar', 'private_binding.h', 'imports.txt', 'exports.txt', 'dynamic.txt')}
+    receipt['commands'] = commands
     receipt['runtime_tested'] = False
     write_json(build / 'build.json', receipt)
     return receipt
