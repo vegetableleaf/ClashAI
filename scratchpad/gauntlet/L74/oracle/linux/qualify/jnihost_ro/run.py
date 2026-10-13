@@ -57,8 +57,8 @@ def new_result(token):
 def loader_paths(installed, info):
     paths = [r['path'] for r in installed]
     require(paths and len(paths) == len(set(paths)), 'APK_PATHS_EMPTY_OR_DUPLICATE')
-    require(all(re.fullmatch(r'/data/app/[A-Za-z0-9_+=~-]+(?:/[A-Za-z0-9_+=~-]+)*/[A-Za-z0-9_.+=~-]+\.apk', p)
-                for p in paths), 'APK_PATH_INVALID')
+    require(all(re.fullmatch(r'/data/app/[A-Za-z0-9_+=~-]+(?:/[A-Za-z0-9_.+=~-]+)*/[A-Za-z0-9_.+=~-]+\.apk', p)
+                for p in paths) and not any('..' in p for p in paths), 'APK_PATH_INVALID')
     bases = [p for p in paths if p.endswith('/base.apk')]
     require(len(bases) == 1, 'APK_BASE_REQUIRED')
     parent = bases[0].rsplit('/', 1)[0]
