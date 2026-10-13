@@ -78,8 +78,21 @@ public final class JniHost {
             // libg's DT_NEEDED sibling libscid_sdk.so lives in the same app lib dir, which the app_process host's
             // linker namespace does not search (attempt 20261013T045305Z: UnsatisfiedLinkError). Load it first by
             // absolute path -- ordinary dependency loading, no patching or environment changes.
-            java.io.File scid = new java.io.File(new java.io.File(libg).getParentFile(), "libscid_sdk.so");
-            if (scid.isFile()) System.load(scid.getAbsolutePath());
+            // Generalised (attempt ...045519Z hit libc++_shared.so next): root/preload.txt lists libg's app-dir DT_NEEDED
+            // closure in dependency order (deepest first), generated statically with readelf by the worker.
+            java.io.File libDir = new java.io.File(libg).getParentFile();
+            java.io.File order = new java.io.File(root, "preload.txt");
+            if (order.isFile()) {
+                for (String name : new String(java.nio.file.Files.readAllBytes(order.toPath()), "UTF-8").split("\n")) {
+                    name = name.trim();
+                    if (name.isEmpty() || name.contains("/")) continue;
+                    java.io.File dep = new java.io.File(libDir, name);
+                    if (dep.isFile()) System.load(dep.getAbsolutePath());
+                }
+            } else {
+                java.io.File scid = new java.io.File(libDir, "libscid_sdk.so");
+                if (scid.isFile()) System.load(scid.getAbsolutePath());
+            }
             // The VM, not our bridge, invokes the real JNI_OnLoad exactly once.
             System.load(libg);
             after(libg);
