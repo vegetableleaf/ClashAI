@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "status": "OFFLINE_PREPARATION_VERIFIED_RUNTIME_NOT_RUN",
+  "checked_at_utc": "2026-10-13T04:02:09.693870+00:00",
+  "tests_passed": 13,
+  "checks": [
+    {
+      "command": [
+        "C:\\Users\\benpe\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scratchpad\\gauntlet\\L74\\oracle\\linux\\qualify\\test_qualify.py"
+      ],
+      "cwd": "C:\\Users\\benpe\\ClashBot",
+      "execution": "direct subprocess from PowerShell",
+      "exit_code": 0,
+      "expected_marker": "QUALIFY_OFFLINE_TESTS_OK",
+      "matched": true,
+      "output_sha256": "9d0a8cb87e1cfbf50e9c983a1687cdb463a01d3957ce5bee6127e212f0d02790"
+    },
+    {
+      "command": [
+        "C:\\Users\\benpe\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scratchpad\\gauntlet\\L74\\oracle\\linux\\qualify\\verify.py"
+      ],
+      "cwd": "C:\\Users\\benpe\\ClashBot",
+      "execution": "direct subprocess from PowerShell",
+      "exit_code": 0,
+      "expected_marker": "QUALIFY_PRIVACY_OK",
+      "matched": true,
+      "output_sha256": "0b9cc2a519a2d652c551001e75f33eb8219e50bcb9980074cc74c846896274f3"
+    }
+  ],
+  "v3_regression": "ORACLE_V3_OFFLINE_EVIDENCE_PASS; NATIVE_NOT_RUN; DEPLOYABLE_NO",
+  "results_schema": "Validated with installed jsonschema Draft202012Validator; complete unique IDs enforced by review.py",
+  "original_apk_elf": "Parsed locally: five PT_LOAD and one PT_DYNAMIC; no module executed",
+  "manual_review": {
+    "deployment": "Exact API31 default x86_64, five splits, hashes/signers/version, private read-only build, namespace isolation and install/collect distinction documented",
+    "coverage": "All 18 lifecycle entries and 10 unproven sites mapped; proven resolution retained separately",
+    "limitations": "No exact entry proof from polling; no all-path write exclusion from finite watchpoints; unreachable states and protection risk remain gaps"
+  },
+  "not_run": [
+    "VM SSH connection",
+    "Android native build",
+    "APK or probe installation",
+    "Target execution",
+    "Runtime memory observation",
+    "Hardware debugging",
+    "Network access"
+  ],
+  "shell_syntax": "NOT_VERIFIED: Git Bash failed before parsing with CreateFileMapping Win32 error 5",
+  "shellcheck": "NOT_AVAILABLE_LOCALLY; worker check documented",
+  "patches_qualified": 0,
+  "commits": 0,
+  "files": {
+    "build.sh": "68721d0440ab96d59b8fc743813596e653419f56784f376a356d5fb3f455eab7",
+    "observer.c": "3108802c2166a6781eeaef5e2882a7af3d8ac84f2023666ef88321a267c0baab",
+    "qualify.py": "1e83de04db93ebca60612997100847f836a57bf9c5ed6538c5ec950d6cd40564",
+    "README.md": "6eb6c923652bd62497025ab03285bbea923816f552cbab2fe10ef3fb34e9e480",
+    "results.schema.json": "83103cdd56996320ad492ce05e8c06e36bd0ca246491030c40ba43f4bad7afa0",
+    "review.py": "4ae62c6c7b6efbdecc3a19bb1d560c462715787f745b4574579f16746355663c",
+    "test_qualify.py": "4ac2ce0dace97aaba1da27f851044c50a3c03abae0e5f266dcbf1f5e1196ba66",
+    "verify.py": "50a0305b295b991d4e763299b9b7af5a23691ea889c4cfa4f285caa8a4efd999",
+    "worker.sh": "4fa50b6d42a0fe3e72da76d00e1c88cf3a3104f97631d711325077a21fe2ff35"
+  }
+}

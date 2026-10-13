@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ORACLE read-only qualification result (PRIVATE)",
+  "type": "object",
+  "required": ["schema_version", "status", "binding_sha256", "target_writes", "software_breakpoints", "patches_qualified", "method", "execution_confirmed", "probes", "sites", "limitations"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"enum": ["NOT_RUN", "PREPARED", "OBSERVED_PARTIAL", "BLOCKED"]},
+    "binding_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "target_writes": {"const": 0},
+    "software_breakpoints": {"const": 0},
+    "patches_qualified": {"const": 0},
+    "method": {"const": "external_proc_read_polling"},
+    "execution_confirmed": {"const": false},
+    "probes": {
+      "type": "array", "minItems": 18, "maxItems": 18,
+      "items": {"type": "object", "required": ["id", "status", "evidence", "limitation"], "properties": {
+        "id": {"enum": ["jni_on_load", "create_game_main", "game_main_init", "data_tables_load_range", "data_load_task_start", "data_load_task_pump", "data_load_task_complete", "loading_state_update", "loading_state_complete", "resource_request_list_constructor", "resource_request_list_append", "resource_request_list_load", "build_battlefield_cache", "manager_update", "battle_load_replay", "state_factory", "battle_core_update", "skip_core_and_presentation_flag"]},
+        "status": {"enum": ["NOT_OBSERVED", "OBSERVED", "NEEDS_REVIEW", "BLOCKED", "SKIPPED_PROTECTION_RISK", "UNREACHABLE_OFFLINE", "UNREACHABLE_NO_LOGIN"]},
+        "evidence": {"type": "array", "items": {"type": "string"}},
+        "limitation": {"type": "string", "minLength": 1}
+      }, "additionalProperties": false}
+    },
+    "sites": {
+      "type": "array", "minItems": 11, "maxItems": 11,
+      "items": {"type": "object", "required": ["id", "status", "patch_qualified", "evidence"], "properties": {
+        "id": {"enum": ["renderer_bootstrap_call", "renderer_device_block", "renderer_resolution_call", "renderer_objects_block", "renderer_late_configure_call", "loading_presentation_call", "loading_platform_ui_call", "game_presentation_toggle", "home_resolution_block", "home_graphics_create_call", "headless_resource_variant"]},
+        "status": {"enum": ["NOT_RUN", "UNRESOLVED_IDENTITY", "OBSERVED_BOUNDED", "SKIPPED_PROTECTION_RISK", "UNREACHABLE_OFFLINE", "UNREACHABLE_NO_LOGIN"]},
+        "patch_qualified": {"const": false},
+        "evidence": {"type": "array", "items": {"type": "string"}}
+      }, "additionalProperties": false}
+    },
+    "limitations": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "identity": {"type": "object"},
+    "observations": {"type": "object"},
+    "environment": {"type": "object"},
+    "installed": {"type": "array"},
+    "probe_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "sample_count": {"type": "integer", "minimum": 0},
+    "logcat_scope": {"type": "string"},
+    "blocker": {"type": "string"},
+    "cleanup_error": {"type": "string"}
+  },
+  "additionalProperties": false
+}
