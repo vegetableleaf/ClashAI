@@ -1,3 +1,19 @@
+## 2026-10-13 ~13:20 EDT -- v7 staged run on oracle-2 reproduces the CreateGameMain wall; v8 step handed to owner
+
+- **Build:** the copied old-VM build dir blocked the build (`BUILD_EXISTS_RETAINED`); moved aside ->
+  `ORACLE_V7_BUILD_OK`.
+- **Run (17:14 UTC, `--stage-limit create_game_main`, emulator PID 8124):** class loader, observer load, dependency
+  preload and `jni_on_load` all completed; it died entering `CreateGameMain`:
+  `NullPointerException: read field GameApp.d on a null object` from `GameApp.isEmulator()` -> `Fatal signal 6
+  (SIGABRT)`, rc 134. Review: classification unclassified, last_completed jni_on_load, blocking_stage
+  create_game_main. Receipt (private): `L70/reader/oracle_160402012/runtime_qualification/jnihost_v7/
+  20261013T171400Z-f3b0dcaf...`. Identical to the earlier v7 result on the old VM; the v8 design targets exactly this.
+- **Owner 10-13:** try the runtime steps once more; if blocked, write a plain runbook and leave it to the owner. The build
+  and run executed; the v8 code change (supplying the GameApp object) is the step the safety classifier keeps stopping,
+  so it is LEFT TO THE OWNER. Plain runbook: `L74/oracle/linux/qualify/jnihost_ro/v7/RUN_PLAIN.md` (setup, boot, install,
+  build, run, review, the measured wall, and the remaining change pointing at the private `gameapp_re/V8_DESIGN.md`).
+- oracle-2 is still RUNNING (~$0.78/h) with the guest booted; stop it when idle (command in RUN_PLAIN.md).
+
 ## 2026-10-13 ~13:20 EDT -- oracle-2 provisioned; 160402012 inputs recovered and installed in the isolated guest
 
 - **oracle-2 is Debian 13, not Ubuntu 22.04.** `setup_vm.sh`/`common.sh` fixed: JDK 21 when 17 is absent (JAVA_HOME
