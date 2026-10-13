@@ -29,6 +29,8 @@ import livecal  # noqa: E402
 
 TIMING = {'tau_phase', 'gate_decode', 'gate_hazard_min_elixir', 'gate_hazard_threatened', 'tau_threatened'}
 ARMS = ('D0', 'D1', 'D2', 'D3')
+# 10-13 head decomposition of D0: ONE head drawn as in RL rollouts, the others greedy as D1 (gate tau .35).
+HEAD_ARMS = {'G': ('gate', '0.27'), 'C': ('card', '.35'), 'X': ('cell', '.35')}
 STEPS = [('D1', 'D0', 'decoding: greedy vs RL sampler'), ('D2', 'D1', '+ timing rules'),
          ('D3', 'D2', '+ card/cell overrides'), ('D3', 'D0', 'whole gap: live stack vs RL sampler')]
 
@@ -50,6 +52,10 @@ def command(arm, job, census, dest, python):
     if arm == 'D0':
         cmd[cmd.index('--tau-plain')+1] = '0.27'
         return cmd + ['--learner-policy', 'sample', '--learner-T', '0.5']
+    if arm in HEAD_ARMS:
+        head, tau = HEAD_ARMS[arm]
+        cmd[cmd.index('--tau-plain')+1] = tau
+        return cmd + ['--learner-policy', 'sample', '--learner-T', '0.5', '--learner-sample-heads', head]
     if arm == 'D2':
         return cmd + flags(TIMING)
     if arm == 'D3':
@@ -106,16 +112,18 @@ def run_arm(arm, plan, inputs, out, python, workers):
 
 def summarize(out):
     from validate import paired_drift
-    rows = {a: [json.loads(s) for s in (out/a/'matches.jsonl').read_text().splitlines() if s.strip()] for a in ARMS}
+    present = [a for a in (*ARMS, *HEAD_ARMS) if (out/a/'matches.jsonl').is_file()]
+    rows = {a: [json.loads(s) for s in (out/a/'matches.jsonl').read_text().splitlines() if s.strip()] for a in present}
     lines = ['GAP: one checkpoint, four decision setups; 480 paired games each (CAL c, E4 T .1; Hero IW + live press).',
              'Draws count as non-wins. Paired deltas, 10,000 bootstrap draws within census/side.']
-    for a in ARMS:
+    for a in present:
         r = rows[a]
         w = sum(x['outcome'] == 'win' for x in r)
         lines.append(f"{a}: win {100*w/len(r):.2f}% ({w}/{len(r)}); plays/game {sum(x['plays_accepted'] for x in r)/len(r):.1f}; "
                      f"tower HP diff/game {sum(x['tower_hp_diff'] for x in r)/len(r):+.0f}")
     report = {}
-    for new, old, label in STEPS:
+    steps = STEPS + [(h, 'D1', f'only the {HEAD_ARMS[h][0]} head sampled vs all greedy') for h in HEAD_ARMS]
+    for new, old, label in [st for st in steps if st[0] in rows and st[1] in rows]:
         d = paired_drift(rows[old], rows[new], expected=480)
         report[f'{new}-{old}'] = d
         lines.append(f"{new} - {old} ({label}): {d['delta_pp']:+.2f} pp [{d['ci95_pp'][0]:+.2f}, {d['ci95_pp'][1]:+.2f}]")

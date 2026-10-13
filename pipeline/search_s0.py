@@ -582,7 +582,8 @@ def _init_worker(args: dict) -> None:
     if args.get('decision_options'):
         learner_cfg.update(args['decision_options'])
     if args.get('learner_policy', 'live') == 'sample':   # 10-13: rl_royale's rollout sampler for OUR side (actor_cfg)
-        learner_cfg.update(policy='sample', T=float(args['learner_T']))
+        learner_cfg.update(policy='sample', T=float(args['learner_T']),
+                           sample_heads=tuple(args.get('learner_sample_heads', ('gate', 'card', 'cell'))))
     if args.get('behaviour_telemetry'):
         learner_cfg['behaviour_telemetry'] = True
     if args.get('predict_drops'):
@@ -733,6 +734,8 @@ def main(argv=None) -> int:
                     help="10-13 train/deploy gap: sample = OUR side draws gate/card/cell like rl_royale rollouts (tempered at "
                          "--learner-T, gate centred on --tau-plain); no decision options; default live = unchanged")
     ap.add_argument("--learner-T", type=float, default=0.5)
+    ap.add_argument("--learner-sample-heads", default="gate,card,cell",
+                    help="with --learner-policy sample: heads that are drawn; the rest take the greedy live choice (eval only)")
     ap.add_argument("--tau-plain", type=float, default=None,
                     help="lead 2026-10-06: the plain arm's gate threshold (default None = TAU_PLAIN 0.35, unchanged)")
     ap.add_argument("--predict-drops", action="store_true",
@@ -763,6 +766,8 @@ def main(argv=None) -> int:
     decision_active = options_from_config(decision_cfg).active
     if a.learner_policy == 'sample' and a.arms != 'plain':
         ap.error('--learner-policy sample needs --arms plain')
+    if not set(a.learner_sample_heads.split(',')) <= {'gate', 'card', 'cell'}:
+        ap.error('--learner-sample-heads takes a comma list of gate, card, cell')
     if a.learner_policy == 'sample' and decision_active:
         ap.error('--learner-policy sample is the plain RL rollout sampler; it takes no decision options')
     if decision_active and a.arms != 'plain':
@@ -802,6 +807,7 @@ def main(argv=None) -> int:
         wargs['tau_plain'] = float(a.tau_plain)
     if a.learner_policy != 'live':
         wargs['learner_policy'], wargs['learner_T'] = a.learner_policy, float(a.learner_T)
+        wargs['learner_sample_heads'] = [h for h in a.learner_sample_heads.split(',') if h]
     if a.predict_drops:
         wargs['predict_drops'] = True
     if a.own_effects:
@@ -811,7 +817,7 @@ def main(argv=None) -> int:
         wargs['pipeline_tau_delta'] = a.pipeline_tau_delta
     if a.record_plays:
         wargs['record_plays'] = True
-    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays') or v) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
+    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays') or v) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
                                                 "gen_sha256": sha256(REPO / a.gen), "opp_gen_sha256": opp_sha,
                                                 "s1_sha256": sha256(REPO / a.s1),
                                                 "tau_plain": TAU_PLAIN, "tau_opp": TAU_OPP, "crown_w": CROWN_W,

@@ -467,9 +467,13 @@ def sample_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.n
     ``matches[r]`` needs only a ``.rng_behave`` (an ``np.random.Generator``); ``run_batch`` passes ``Match``
     instances, the single-row caller (``Match.decide_row``) passes ``[self]``.
     Returns dicts with the live-decide keys (play/slot/cell/why) PLUS the record fields from the spec:
-    allowed, stalled, gate_sampled, lp_gate, lp_card, lp_cell (float64), p_gate (untempered sigmoid), T."""
+    allowed, stalled, gate_sampled, lp_gate, lp_card, lp_cell (float64), p_gate (untempered sigmoid), T.
+    ``cfg['sample_heads']`` (default all three = unchanged): a head left out takes the live greedy choice instead of a
+    draw (gate: p > tau; card/cell: argmax) and its log-prob stays 0 -- an EVAL-ONLY decomposition (10-13 GAP), not for
+    PPO rows."""
     import torch
     tau, T = float(cfg["tau"]), float(cfg.get("T", 0.5))
+    heads_sampled = frozenset(cfg.get("sample_heads", ("gate", "card", "cell")))
     B = allowed.shape[0]
     p = np.asarray(p, dtype=np.float64)
     any_allowed = allowed.any(axis=1)
@@ -481,7 +485,9 @@ def sample_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.n
     g = np.zeros(B, dtype=bool)
     lp_gate = np.zeros(B, dtype=np.float64)
     for r in range(B):
-        if gate_sampled[r]:
+        if gate_sampled[r] and "gate" not in heads_sampled:
+            g[r] = p[r] > tau                                  # greedy gate, as live_decide
+        elif gate_sampled[r]:
             g[r] = matches[r].rng_behave.random() < p_b[r]
             lp_gate[r] = math.log(p_b[r] if g[r] else 1.0 - p_b[r])
     play = any_allowed & (stalled | g)
@@ -494,7 +500,9 @@ def sample_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.n
         card_logits = card_logits.masked_fill(~torch.from_numpy(allowed).to(card_logits.device), float("-inf"))
         card_probs = torch.softmax(card_logits.double() / T, dim=-1).cpu().numpy()          # [B, 8]
         for r in range(B):
-            if play[r]:
+            if play[r] and "card" not in heads_sampled:
+                slot[r] = int(card_logits[r].argmax().item())  # greedy card, as live_decide
+            elif play[r]:
                 probs = card_probs[r]
                 c = int(matches[r].rng_behave.choice(N_SLOTS, p=probs))
                 slot[r] = c
@@ -507,6 +515,9 @@ def sample_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.n
             cell_logits = model.cell_logits(sub_enc, slot_t)
             cell_probs = torch.softmax(cell_logits.double() / T, dim=-1).cpu().numpy()      # [len(play_idx), 2304]
             for j, r in enumerate(play_idx):
+                if "cell" not in heads_sampled:
+                    cell[r] = int(cell_probs[j].argmax())          # greedy cell, as live_decide
+                    continue
                 probs = cell_probs[j]
                 x = int(matches[r].rng_behave.choice(N_CELLS, p=probs))
                 cell[r] = x

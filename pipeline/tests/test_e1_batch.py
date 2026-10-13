@@ -130,6 +130,28 @@ class TestSampleAtLowTMatchesLive(unittest.TestCase):
                 self.assertEqual(sample[r]["cell"], live[r]["cell"], r)
         self.assertGreater(n_play, 0)                            # the comparison is non-trivial
 
+    def test_sample_heads_greedy_heads_equal_live(self):
+        """10-13 GAP decomposition: a head left out of ``sample_heads`` is the live greedy choice at ANY T."""
+        rng = np.random.default_rng(11)
+        b = 16
+        *_, enc, heads, p, hand = _rows(rng, self.model, b)
+        allowed = np.stack([rng.random(N_SLOTS) < 0.7 for _ in range(b)])
+        stalled = rng.random(b) < 0.3
+        live = E.live_decide_batch(self.model, enc, heads, p, allowed, stalled, tau=TAU)
+        cfg = {"tau": TAU, "T": 0.5}
+        none = E.sample_decide_batch(self.model, enc, heads, p, allowed, stalled,
+                                     [_FakeMatch(i) for i in range(b)], dict(cfg, sample_heads=()))
+        cell = E.sample_decide_batch(self.model, enc, heads, p, allowed, stalled,
+                                     [_FakeMatch(i) for i in range(b)], dict(cfg, sample_heads=("cell",)))
+        for r in range(b):
+            self.assertEqual((none[r]["play"], none[r]["slot"] if live[r]["play"] else -9, none[r]["cell"]),
+                             (live[r]["play"], live[r]["slot"] if live[r]["play"] else -9, live[r]["cell"]), r)
+            self.assertEqual((none[r]["lp_gate"], none[r]["lp_card"], none[r]["lp_cell"]), (0.0, 0.0, 0.0))
+            self.assertEqual(cell[r]["play"], live[r]["play"], r)
+            if live[r]["play"]:
+                self.assertEqual(cell[r]["slot"], live[r]["slot"], r)
+        self.assertTrue(any(c["lp_cell"] != 0.0 for c in cell if c["play"]))   # the cell really was drawn
+
 
 # ------------------------------------------------------------------------------------------------------
 class TestLogProbRecompute(unittest.TestCase):
