@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "timestamp_utc": "2026-10-13T04:49:17.780045+00:00",
+  "status": "OFFLINE_KIT_VERIFIED_RUNTIME_NOT_RUN",
+  "offline_test_count": 26,
+  "checks": [
+    {
+      "command": [
+        "python",
+        "scratchpad/gauntlet/L74/oracle/linux/qualify/jnihost_ro/test_jnihost_ro.py"
+      ],
+      "cwd": "C:\\Users\\benpe\\ClashBot",
+      "shell": "PowerShell invoking Python directly",
+      "exit_code": 0,
+      "expect": "JNIHOST_RO_TESTS_OK",
+      "matched": true,
+      "output_sha256": "bd0516b58a4141a867d36170220ddbd83836976c0fc273cfb4bfb30cba21f87f"
+    },
+    {
+      "command": [
+        "python",
+        "scratchpad/gauntlet/L74/oracle/linux/qualify/jnihost_ro/verify.py"
+      ],
+      "cwd": "C:\\Users\\benpe\\ClashBot",
+      "shell": "PowerShell invoking Python directly",
+      "exit_code": 0,
+      "expect": "JNIHOST_RO_PRIVACY_OK",
+      "matched": true,
+      "output_sha256": "e99a0ea81411e7e06ca7fbf360dc3dbe6c28bf5696c89b031aed1657fb849078"
+    }
+  ],
+  "compile": {
+    "status": "passed",
+    "platform": "Windows host, Android x86_64 API 32 target",
+    "tools": [
+      "JDK 17 javac",
+      "D8",
+      "NDK clang++"
+    ],
+    "warnings": "Java deprecated API notices only",
+    "private_build_directory": "scratchpad/gauntlet/L74/oracle/.local/jnihost-ro-compile-v5-final",
+    "observer_export_count": 1,
+    "system_dependencies_only": true,
+    "final_source_and_upstream_hashes_verified": true
+  },
+  "shell_check": {
+    "status": "blocked_on_local_windows",
+    "reason": "Git Bash could not create its file mapping: Win32 error 5. Worker must run bash -n worker.sh. No Linux shell validation claimed."
+  },
+  "runtime": {
+    "executed": false,
+    "client_launched": false,
+    "libg_loaded": false,
+    "network_access_attempted": false,
+    "patches_qualified": 0
+  },
+  "manual_review": {
+    "scope": "Minimal normal JNI lifecycle ends after CreateGameMain; direct-resource bindings are not ported and patch-dependent init is excluded.",
+    "isolation": "Existing loopback-only namespace, explicit local ADB, emulator PID namespace and ownership checks before/after. Linux runtime checks are unrun.",
+    "adapters": "Truthful emulator result, actual APK path/disk space, device and attestation callbacks fail closed with latch.",
+    "classification": "Progress is separate from cause; b/c need private receipt-bound manual attribution. Unknown crashes remain unknown. All eleven upstream sites mapped without patch authorization.",
+    "privacy": "Generated header, binaries, upstream source copy, target hashes and runtime receipt paths are ignored and untracked. Public sources offset-free."
+  },
+  "gates": {
+    "met": 4,
+    "unmet": 0,
+    "abandoned": 0,
+    "scope": "Offline preparation only; Android execution and Linux Bash validation are worker checks."
+  }
+}

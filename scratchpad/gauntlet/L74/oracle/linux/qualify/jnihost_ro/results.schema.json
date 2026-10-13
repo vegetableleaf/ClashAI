@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ORACLE v5 private worker result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "token", "runtime_version", "policy", "status", "events", "last_completed", "failure_stage", "returncode", "timeout", "host_error", "isolation_before", "isolation_after", "identity", "receipts", "limitation"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "token": {"type": "string", "pattern": "^[a-f0-9]{32}$"},
+    "runtime_version": {"const": "160402012"},
+    "policy": {"const": {"client_launched": false, "bridge_writes": 0, "code_patches": 0, "environment_spoofing": false, "unpacking": false, "patches_qualified": 0}},
+    "status": {"enum": ["blocked", "collected"]},
+    "events": {"type": "array", "items": {"type": "object", "additionalProperties": false,
+      "required": ["schema_version", "token", "pid", "stage", "event", "value"],
+      "properties": {
+        "schema_version": {"const": 1}, "token": {"type": "string", "pattern": "^[a-f0-9]{32}$"},
+        "pid": {"type": "integer", "minimum": 1},
+        "stage": {"enum": ["observer_load", "jni_on_load", "package_context", "native_libraries_loaded", "application_create", "create_game_main", "stop_before_direct_resources_and_game_main_init"]},
+        "event": {"enum": ["before", "after", "observation", "boundary", "error"]},
+        "value": {"type": ["null", "string", "object"]}
+      },
+      "allOf": [{"if": {"properties": {"event": {"const": "observation"}}}, "then": {"properties": {"value": {"$ref": "#/$defs/observation"}}}}]
+    }},
+    "last_completed": {"type": ["string", "null"]},
+    "failure_stage": {"type": ["string", "null"]},
+    "returncode": {"type": ["integer", "null"]},
+    "timeout": {"type": "boolean"},
+    "host_error": {"type": ["string", "null"]},
+    "isolation_before": {"type": ["object", "null"]},
+    "isolation_after": {"type": ["object", "null"]},
+    "identity": {"type": ["object", "null"]},
+    "receipts": {"type": "object", "additionalProperties": {"type": "string", "pattern": "^[a-f0-9]{64}$"}},
+    "host_output": {"type": "object", "required": ["stdout", "stderr"], "additionalProperties": false,
+      "properties": {"stdout": {"type": "string"}, "stderr": {"type": "string"}}},
+    "limitation": {"type": "string"}
+  },
+  "$defs": {
+    "observation": {"type": "object", "additionalProperties": false,
+      "required": ["module_base", "jni_delta", "game_main", "game_main_status", "atomic"],
+      "properties": {
+        "module_base": {"type": "string", "pattern": "^[1-9][0-9]*$"},
+        "jni_delta": {"type": "string", "pattern": "^[1-9][0-9]*$"},
+        "game_main": {"type": ["string", "null"], "pattern": "^[1-9][0-9]*$"},
+        "game_main_status": {"enum": ["unreadable", "absent", "identified", "unverified_pointer"]},
+        "atomic": {"const": false}
+      }
+    }
+  }
+}
