@@ -2,6 +2,7 @@
 import argparse
 import json
 from pathlib import Path
+import os
 import random
 
 
@@ -23,6 +24,7 @@ def main():
     assert spec['ability']['max_charges'] == 1 and spec['ability']['cooldown_ms'] is None
     assert catalog()['ice-wizard', 2]['mana_cost'] == 2
     receipts = []
+    normal = os.environ.get('ROYALE_HEROIW_FORM', 'hero') == 'normal'
     for seed in range(8):
         # Pin the scenario cards in the opening hand while retaining the production seeded deal.
         # Only the setup order changes; every card deployment and press remains a legal command.
@@ -35,6 +37,19 @@ def main():
         iw, giant = decks[0].index('IceWizard'), decks[1].index('Giant')
         env = RoyaleSelfPlayEnv(forms_mode='deck', hero_abilities=True, ability_policy='v2', feature_version=5)
         env.reset(*decks, seed)
+        if normal:   # ROYALE_HEROIW_FORM=normal (IWDIAG N1): no hero, no button, no cube -- verify form + a full game
+            assert env.loaded_forms[0][iw] != 2, 'ROYALE_HEROIW_FORM=normal must load the non-hero Ice Wizard'
+            assert env.core._battle.card_table() == 'cards-160402017-20261006.1'
+            deployed = False
+            while not env.done:
+                if not deployed and env.deck_ids[0][iw] in env.core.state().players[0].hand:
+                    deployed = env.act(0, iw, 3500, 13500)['accepted']
+                env.advance_to(env.tick+1)
+            assert deployed and env.terminated, f'seed {seed}: normal IW deployed={deployed}, terminated={env.terminated}'
+            receipts.append(dict(seed=seed, form='normal', deployed=deployed, final_tick=env.tick, outcome=env.outcome(0)))
+            a.out.write_text(json.dumps(dict(runtime=stamp, games=receipts), indent=2)+'\n')
+            print(f'SMOKE seed {seed}: normal-form Ice Wizard deployed and completed game verified', flush=True)
+            continue
         assert env.loaded_forms[0][iw] == 2 and not any(n == 'IceWizard' for _, n, _ in env.form_fallbacks)
         assert env.core._battle.card_table() == 'cards-160402017-20261006.1'
         spawned = pressed = cube = False
