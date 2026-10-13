@@ -1,0 +1,1090 @@
+{
+  "status": "OFFLINE_BASELINE_TRIAGE_AND_REPLAN_NO_SIM",
+  "results": "C:\\Users\\benpe\\pod_backup_weekend\\podD\\x_PARITY_v2\\results\\PARITY_v2",
+  "catalog_sha256": "7b01d9ac62e5035493131e974913fd00d6b67dd735703c28f5f496ec6a11722b",
+  "body_count_table_sha256": "b115766e1ebab7aec5c80d442d23d5a186c463591ebb228afabf82ee1e2df928",
+  "matches": 100,
+  "decision_rows": 25236,
+  "unavailable_decisions": 7206,
+  "new_fork_samples_identical": true,
+  "confirmed_mechanic_errors": [],
+  "overall": {
+    "unit_rows": 136737,
+    "matched": 61761,
+    "missing_sim": 31351,
+    "missing_live": 43625,
+    "position_mae": 1.3871228322528844,
+    "hp_mae": 291.33011123524557,
+    "tower_hp_mae": 383.5756650901567,
+    "tower_rows": 135320
+  },
+  "changes": {
+    "matches": 100,
+    "original_opponent_injections": 2888,
+    "retained_opponent_injections": 2225,
+    "own_plays_unchanged": 3594,
+    "excluded": 663,
+    "form_pinned": 2225,
+    "nonbase_form_pinned": 423,
+    "timing_changed": 2224,
+    "position_changed": 20,
+    "retained_tick_or_position_changed": 2224,
+    "matches_with_changes": 100,
+    "excluded_or_retimed_or_retargeted": 2887
+  },
+  "exclusion_and_inference_reasons": {
+    "proxy_body_not_uniquely_identified": 15,
+    "visibility_interval_midpoint": 2205,
+    "miner_tunnel_deploy_unobserved": 31,
+    "parent_id_child_body": 485,
+    "drill_travel_to_surface_target": 20,
+    "drill_surface_or_child_not_new_deploy": 29,
+    "drill_destination_unresolved": 10,
+    "spawn_or_play_ambiguous_near_parent": 2,
+    "charger_initial_motion_or_charge_unresolved": 43,
+    "variant_or_transform_not_certified_play": 14,
+    "moving_or_unresolved_building_body": 34
+  },
+  "changes_by_group": {
+    "AngryBarbarians": {
+      "original": 34,
+      "retained": 34,
+      "retimed_or_retargeted": 34
+    },
+    "Archer": {
+      "original": 4,
+      "retained": 4,
+      "retimed_or_retargeted": 4
+    },
+    "ArcherQueen": {
+      "original": 18,
+      "retained": 18,
+      "retimed_or_retargeted": 18
+    },
+    "Assassin": {
+      "original": 13,
+      "retained": 13,
+      "retimed_or_retargeted": 13
+    },
+    "AxeMan": {
+      "original": 36,
+      "retained": 36,
+      "retimed_or_retargeted": 36
+    },
+    "BabyDragon": {
+      "original": 32,
+      "retained": 32,
+      "retimed_or_retargeted": 32
+    },
+    "Balloon": {
+      "original": 30,
+      "retained": 30,
+      "retimed_or_retargeted": 30
+    },
+    "BarbarianHut": {
+      "original": 15,
+      "retained": 4,
+      "retimed_or_retargeted": 4,
+      "excluded": 11
+    },
+    "Barbarians": {
+      "original": 29,
+      "retained": 29,
+      "retimed_or_retargeted": 29
+    },
+    "Bats": {
+      "original": 28,
+      "retained": 26,
+      "retimed_or_retargeted": 26,
+      "excluded": 2
+    },
+    "BattleHealer": {
+      "original": 30,
+      "retained": 30,
+      "retimed_or_retargeted": 30
+    },
+    "BattleRam": {
+      "original": 40,
+      "excluded": 18,
+      "retained": 22,
+      "retimed_or_retargeted": 22
+    },
+    "Berserker": {
+      "original": 29,
+      "retained": 29,
+      "retimed_or_retargeted": 29
+    },
+    "BlowdartGoblin": {
+      "original": 23,
+      "retained": 23,
+      "retimed_or_retargeted": 23
+    },
+    "BombTower": {
+      "original": 10,
+      "retained": 9,
+      "retimed_or_retargeted": 9,
+      "excluded": 1
+    },
+    "Bomber": {
+      "original": 32,
+      "retained": 32,
+      "retimed_or_retargeted": 32
+    },
+    "BossBandit": {
+      "original": 17,
+      "retained": 17,
+      "retimed_or_retargeted": 17
+    },
+    "Bowler": {
+      "original": 23,
+      "retained": 23,
+      "retimed_or_retargeted": 23
+    },
+    "Cannon": {
+      "original": 45,
+      "retained": 44,
+      "retimed_or_retargeted": 44,
+      "excluded": 1
+    },
+    "DarkPrince": {
+      "original": 30,
+      "retained": 18,
+      "retimed_or_retargeted": 18,
+      "excluded": 12
+    },
+    "DarkWitch": {
+      "original": 90,
+      "retained": 25,
+      "retimed_or_retargeted": 25,
+      "excluded": 65
+    },
+    "DartBarrell": {
+      "original": 4,
+      "retained": 4,
+      "retimed_or_retargeted": 4
+    },
+    "ElectroDragon": {
+      "original": 33,
+      "retained": 33,
+      "retimed_or_retargeted": 33
+    },
+    "ElectroGiant": {
+      "original": 6,
+      "retained": 6,
+      "retimed_or_retargeted": 6
+    },
+    "ElectroSpirit": {
+      "original": 25,
+      "retained": 25,
+      "retimed_or_retargeted": 25
+    },
+    "ElectroWizard": {
+      "original": 25,
+      "retained": 25,
+      "retimed_or_retargeted": 24
+    },
+    "EliteArcher": {
+      "original": 16,
+      "retained": 16,
+      "retimed_or_retargeted": 16
+    },
+    "Elixir Collector": {
+      "original": 5,
+      "retained": 5,
+      "retimed_or_retargeted": 5
+    },
+    "ElixirGolem": {
+      "original": 214,
+      "retained": 120,
+      "retimed_or_retargeted": 120,
+      "excluded": 94
+    },
+    "FireSpirits": {
+      "original": 40,
+      "retained": 40,
+      "retimed_or_retargeted": 40
+    },
+    "Firecracker": {
+      "original": 64,
+      "retained": 64,
+      "retimed_or_retargeted": 64
+    },
+    "FirespiritHut": {
+      "original": 28,
+      "excluded": 28
+    },
+    "Fisherman": {
+      "original": 5,
+      "retained": 5,
+      "retimed_or_retargeted": 5
+    },
+    "Ghost": {
+      "original": 13,
+      "retained": 13,
+      "retimed_or_retargeted": 13
+    },
+    "Giant": {
+      "original": 6,
+      "retained": 6,
+      "retimed_or_retargeted": 6
+    },
+    "GiantSkeleton": {
+      "original": 27,
+      "retained": 27,
+      "retimed_or_retargeted": 27
+    },
+    "GoblinCage": {
+      "original": 8,
+      "retained": 4,
+      "retimed_or_retargeted": 4,
+      "excluded": 4
+    },
+    "GoblinDemolisher": {
+      "original": 5,
+      "retained": 5,
+      "retimed_or_retargeted": 5
+    },
+    "GoblinDrill": {
+      "original": 96,
+      "retained": 20,
+      "retimed_or_retargeted": 20,
+      "excluded": 76
+    },
+    "GoblinGang": {
+      "original": 25,
+      "retained": 25,
+      "retimed_or_retargeted": 25
+    },
+    "GoblinGiant": {
+      "original": 67,
+      "retained": 6,
+      "retimed_or_retargeted": 6,
+      "excluded": 61
+    },
+    "GoblinHut": {
+      "original": 3,
+      "retained": 1,
+      "retimed_or_retargeted": 1,
+      "excluded": 2
+    },
+    "GoblinMachine": {
+      "original": 7,
+      "retained": 7,
+      "retimed_or_retargeted": 7
+    },
+    "Goblins": {
+      "original": 20,
+      "retained": 20,
+      "retimed_or_retargeted": 20
+    },
+    "Goblinstein": {
+      "original": 4,
+      "retained": 4,
+      "retimed_or_retargeted": 4
+    },
+    "GoldenKnight": {
+      "original": 38,
+      "retained": 38,
+      "retimed_or_retargeted": 38
+    },
+    "Golem": {
+      "original": 22,
+      "retained": 13,
+      "retimed_or_retargeted": 13,
+      "excluded": 9
+    },
+    "HogRider": {
+      "original": 59,
+      "retained": 59,
+      "retimed_or_retargeted": 59
+    },
+    "Hunter": {
+      "original": 17,
+      "retained": 17,
+      "retimed_or_retargeted": 17
+    },
+    "IceGolemite": {
+      "original": 11,
+      "retained": 11,
+      "retimed_or_retargeted": 11
+    },
+    "IceSpirits": {
+      "original": 50,
+      "retained": 50,
+      "retimed_or_retargeted": 50
+    },
+    "IceWizard": {
+      "original": 5,
+      "retained": 5,
+      "retimed_or_retargeted": 5
+    },
+    "InfernoDragon": {
+      "original": 42,
+      "retained": 42,
+      "retimed_or_retargeted": 42
+    },
+    "InfernoTower": {
+      "original": 13,
+      "retained": 12,
+      "retimed_or_retargeted": 12,
+      "excluded": 1
+    },
+    "Knight": {
+      "original": 58,
+      "retained": 58,
+      "retimed_or_retargeted": 58
+    },
+    "LavaHound": {
+      "original": 9,
+      "retained": 5,
+      "retimed_or_retargeted": 5,
+      "excluded": 4
+    },
+    "LittlePrince": {
+      "original": 4,
+      "retained": 4,
+      "retimed_or_retargeted": 4
+    },
+    "MegaKnight": {
+      "original": 47,
+      "retained": 47,
+      "retimed_or_retargeted": 47
+    },
+    "MegaMinion": {
+      "original": 13,
+      "retained": 13,
+      "retimed_or_retargeted": 13
+    },
+    "MergeMaiden_Mounted": {
+      "original": 5,
+      "excluded": 5
+    },
+    "MergeMaiden_Normal": {
+      "original": 9,
+      "excluded": 9
+    },
+    "MightyMiner": {
+      "original": 13,
+      "retained": 13,
+      "retimed_or_retargeted": 13
+    },
+    "Miner": {
+      "original": 31,
+      "excluded": 31
+    },
+    "MiniPekka": {
+      "original": 43,
+      "retained": 43,
+      "retimed_or_retargeted": 43
+    },
+    "MiniSparkys": {
+      "original": 12,
+      "retained": 12,
+      "retimed_or_retargeted": 12
+    },
+    "MinionHorde": {
+      "original": 20,
+      "retained": 20,
+      "retimed_or_retargeted": 20
+    },
+    "Minions": {
+      "original": 11,
+      "retained": 11,
+      "retimed_or_retargeted": 11
+    },
+    "Monk": {
+      "original": 17,
+      "retained": 17,
+      "retimed_or_retargeted": 17
+    },
+    "Mortar": {
+      "original": 25,
+      "retained": 14,
+      "retimed_or_retargeted": 14,
+      "excluded": 11
+    },
+    "MovingCannon": {
+      "original": 21,
+      "retained": 21,
+      "retimed_or_retargeted": 21
+    },
+    "Musketeer": {
+      "original": 43,
+      "retained": 43,
+      "retimed_or_retargeted": 43
+    },
+    "Pekka": {
+      "original": 12,
+      "retained": 12,
+      "retimed_or_retargeted": 12
+    },
+    "Prince": {
+      "original": 23,
+      "excluded": 13,
+      "retained": 10,
+      "retimed_or_retargeted": 10
+    },
+    "Princess": {
+      "original": 33,
+      "retained": 33,
+      "retimed_or_retargeted": 33
+    },
+    "RageBarbarian": {
+      "original": 10,
+      "retained": 10,
+      "retimed_or_retargeted": 10
+    },
+    "RamRider": {
+      "original": 20,
+      "excluded": 20
+    },
+    "Rascals": {
+      "original": 7,
+      "retained": 7,
+      "retimed_or_retargeted": 7
+    },
+    "RoyalGiant": {
+      "original": 10,
+      "retained": 10,
+      "retimed_or_retargeted": 10
+    },
+    "RoyalHogs": {
+      "original": 40,
+      "retained": 40,
+      "retimed_or_retargeted": 40
+    },
+    "RoyalRecruits": {
+      "original": 45,
+      "retained": 45,
+      "retimed_or_retargeted": 45
+    },
+    "SkeletonArmy": {
+      "original": 55,
+      "retained": 55,
+      "retimed_or_retargeted": 55
+    },
+    "SkeletonBalloon": {
+      "original": 71,
+      "retained": 36,
+      "retimed_or_retargeted": 36,
+      "excluded": 35
+    },
+    "SkeletonDragons": {
+      "original": 20,
+      "retained": 20,
+      "retimed_or_retargeted": 20
+    },
+    "SkeletonKing": {
+      "original": 42,
+      "retained": 42,
+      "retimed_or_retargeted": 42
+    },
+    "SkeletonWarriors": {
+      "original": 17,
+      "retained": 17,
+      "retimed_or_retargeted": 17
+    },
+    "Skeletons": {
+      "original": 87,
+      "retained": 87,
+      "retimed_or_retargeted": 87
+    },
+    "SpearGoblins": {
+      "original": 14,
+      "retained": 14,
+      "retimed_or_retargeted": 14
+    },
+    "SuspiciousBush": {
+      "original": 21,
+      "retained": 21,
+      "retimed_or_retargeted": 21
+    },
+    "Tesla": {
+      "original": 19,
+      "retained": 19,
+      "retimed_or_retargeted": 19
+    },
+    "ThreeMusketeers": {
+      "original": 11,
+      "retained": 11,
+      "retimed_or_retargeted": 11
+    },
+    "Tombstone": {
+      "original": 51,
+      "retained": 11,
+      "retimed_or_retargeted": 11,
+      "excluded": 40
+    },
+    "Valkyrie": {
+      "original": 31,
+      "retained": 31,
+      "retimed_or_retargeted": 31
+    },
+    "Wallbreakers": {
+      "original": 36,
+      "retained": 36,
+      "retimed_or_retargeted": 36
+    },
+    "Witch": {
+      "original": 153,
+      "retained": 43,
+      "retimed_or_retargeted": 43,
+      "excluded": 110
+    },
+    "WitchMother": {
+      "original": 12,
+      "retained": 12,
+      "retimed_or_retargeted": 12
+    },
+    "Wizard": {
+      "original": 27,
+      "retained": 27,
+      "retimed_or_retargeted": 27
+    },
+    "ZapMachine": {
+      "original": 29,
+      "retained": 29,
+      "retimed_or_retargeted": 29
+    }
+  },
+  "age_basis": "since first observed live body; actual spawn unavailable; left-censored",
+  "age_boundaries_ticks": [
+    0,
+    40,
+    100,
+    200
+  ],
+  "age_without_live_body_rows": 43625,
+  "opening_left_censored_rows": 95,
+  "age_mae": {
+    "0-2 s": {
+      "unit_rows": 21386,
+      "matched": 11954,
+      "missing_sim": 9432,
+      "position_mae": 1.0504239951029921,
+      "hp_mae": 179.5267692822486,
+      "tower_hp_mae": null,
+      "tower_rows": 0
+    },
+    "2-5 s": {
+      "unit_rows": 22561,
+      "matched": 15782,
+      "missing_sim": 6779,
+      "position_mae": 1.3689785624418098,
+      "hp_mae": 246.08611075909263,
+      "tower_hp_mae": null,
+      "tower_rows": 0
+    },
+    "5-10 s": {
+      "unit_rows": 24097,
+      "missing_sim": 6990,
+      "matched": 17107,
+      "position_mae": 1.5495063249019865,
+      "hp_mae": 319.13497398725667,
+      "tower_hp_mae": null,
+      "tower_rows": 0
+    },
+    ">10 s": {
+      "unit_rows": 25068,
+      "missing_sim": 8150,
+      "matched": 16918,
+      "position_mae": 1.4777574437140502,
+      "hp_mae": 384.4191393781771,
+      "tower_hp_mae": null,
+      "tower_rows": 0
+    }
+  },
+  "match_time_mae": {
+    "0-30 s": {
+      "unit_rows": 14904,
+      "matched": 9459,
+      "missing_sim": 1909,
+      "missing_live": 3536,
+      "position_mae": 1.5193971051995991,
+      "hp_mae": 195.0800296014378,
+      "tower_hp_mae": 53.838138507918984,
+      "tower_rows": 23551
+    },
+    "30-60 s": {
+      "unit_rows": 29295,
+      "matched": 13295,
+      "missing_sim": 4654,
+      "missing_live": 11346,
+      "position_mae": 1.3747784546155004,
+      "hp_mae": 274.3232794283565,
+      "tower_hp_mae": 236.14323481561823,
+      "tower_rows": 29504
+    },
+    "60-120 s": {
+      "unit_rows": 40085,
+      "matched": 19129,
+      "missing_sim": 8889,
+      "missing_live": 12067,
+      "position_mae": 1.3280406927328545,
+      "hp_mae": 291.0663390663391,
+      "tower_hp_mae": 421.63955454732934,
+      "tower_rows": 48490
+    },
+    "120-180 s": {
+      "unit_rows": 48137,
+      "missing_sim": 14455,
+      "matched": 18413,
+      "missing_live": 15269,
+      "position_mae": 1.373819544247809,
+      "hp_mae": 349.98088307174277,
+      "tower_hp_mae": 653.0271883077512,
+      "tower_rows": 31337
+    },
+    "180+ s": {
+      "unit_rows": 4316,
+      "matched": 1465,
+      "missing_live": 1407,
+      "missing_sim": 1444,
+      "position_mae": 1.583758901742407,
+      "hp_mae": 333.40819112627986,
+      "tower_hp_mae": 1132.5397867104184,
+      "tower_rows": 2438
+    }
+  },
+  "top8": [
+    {
+      "group": "GoblinDrill movement/combat",
+      "frequency": 910,
+      "exposures": 910,
+      "matches": 6,
+      "mean_unit_hp_error": 1332.6630036630036,
+      "mean_tower_hp_error": 485.48996336996333,
+      "mean_position_error_tiles": 11.894658906703885,
+      "mean_own_elixir_error": null,
+      "command_rejections": 0,
+      "impact": 5037.60523132973,
+      "attribution": "association_only",
+      "first_observation": {
+        "tracks": 111,
+        "first_row_mismatch": 111,
+        "first_row_missing": 87
+      }
+    },
+    {
+      "group": "GoblinHut movement/combat",
+      "frequency": 12,
+      "exposures": 12,
+      "matches": 1,
+      "mean_unit_hp_error": 434.1363636363636,
+      "mean_tower_hp_error": 1012.5,
+      "mean_position_error_tiles": 1.195003138423907,
+      "mean_own_elixir_error": null,
+      "command_rejections": 0,
+      "impact": 4736.970010812088,
+      "attribution": "association_only",
+      "first_observation": {
+        "tracks": 4,
+        "first_row_mismatch": 4,
+        "first_row_missing": 4
+      }
+    },
+    {
+      "group": "Prince movement/combat",
+      "frequency": 377,
+      "exposures": 380,
+      "matches": 6,
+      "mean_unit_hp_error": 353.90909090909093,
+      "mean_tower_hp_error": 1006.0050877192983,
+      "mean_position_error_tiles": 1.1419707216277948,
+      "mean_own_elixir_error": null,
+      "command_rejections": 0,
+      "impact": 4509.1395040743955,
+      "attribution": "association_only",
+      "first_observation": {
+        "tracks": 19,
+        "first_row_mismatch": 19,
+        "first_row_missing": 19
+      }
+    },
+    {
+      "group": "Valkyrie movement/combat",
+      "frequency": 621,
+      "exposures": 621,
+      "matches": 10,
+      "mean_unit_hp_error": 476.95098039215685,
+      "mean_tower_hp_error": 896.6511003757381,
+      "mean_position_error_tiles": 1.5952938985156242,
+      "mean_own_elixir_error": null,
+      "command_rejections": 0,
+      "impact": 4296.514723437493,
+      "attribution": "association_only",
+      "first_observation": {
+        "tracks": 30,
+        "first_row_mismatch": 30,
+        "first_row_missing": 29
+      }
+    },
+    {
+      "group": "13000043 movement/combat",
+      "frequency": 37,
+      "exposures": 37,
+      "matches": 1,
+      "mean_unit_hp_error": null,
+      "mean_tower_hp_error": 934.6067567567567,
+      "mean_position_error_tiles": null,
+      "mean_own_elixir_error": null,
+      "command_rejections": 0,
+      "impact": 4011.3999999999996,
+      "attribution": "association_only",
+      "first_observation": {
+        "tracks": 2,
+        "first_row_mismatch": 2,
+        "first_row_missing": 2
+      }
+    },
+    {
+      "group": "GoblinGiant movement/combat",
+      "frequency": 613,
+      "exposures": 613,
+      "matches": 8,
+      "mean_unit_hp_error": 1518.4715799614642,
+      "mean_tower_hp_error": 434.99755301794454,
+      "mean_position_error_tiles": 1.0206620719225405,
+      "mean_own_elixir_error": null,
+      "command_rejections": 0,
+      "impact": 3823.333871982429,
+      "attribution": "association_only",
+      "first_observation": {
+        "tracks": 88,
+        "first_row_mismatch": 85,
+        "first_row_missing": 71,
+        "first_row_aligned": 3,
+        "later_divergence": 2
+      }
+    },
+    {
+      "group": "MergeMaiden_Normal movement/combat",
+      "frequency": 102,
+      "exposures": 102,
+      "matches": 3,
+      "mean_unit_hp_error": 335.2432432432432,
+      "mean_tower_hp_error": 769.1818627450981,
+      "mean_position_error_tiles": 1.4833915941528926,
+      "mean_own_elixir_error": null,
+      "command_rejections": 0,
+      "impact": 3606.388285011474,
+      "attribution": "association_only",
+      "first_observation": {
+        "tracks": 6,
+        "first_row_mismatch": 6,
+        "first_row_missing": 6
+      }
+    },
+    {
+      "group": "Tombstone movement/combat",
+      "frequency": 392,
+      "exposures": 392,
+      "matches": 3,
+      "mean_unit_hp_error": 101.30062893081761,
+      "mean_tower_hp_error": 402.8743197278912,
+      "mean_position_error_tiles": 1.353167922925745,
+      "mean_own_elixir_error": null,
+      "command_rejections": 0,
+      "impact": 3433.31878176761,
+      "attribution": "association_only",
+      "first_observation": {
+        "tracks": 64,
+        "first_row_mismatch": 64,
+        "first_row_missing": 49
+      }
+    }
+  ],
+  "group_age_mae": {
+    "GoblinDrill": {
+      "0-2 s": {
+        "unit_rows": 324,
+        "missing_sim": 231,
+        "matched": 93,
+        "position_mae": 10.79965023484656,
+        "hp_mae": 1587.247311827957,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      },
+      "2-5 s": {
+        "unit_rows": 112,
+        "matched": 34,
+        "missing_sim": 78,
+        "position_mae": 14.167041001596612,
+        "hp_mae": 892.8235294117648,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      },
+      "5-10 s": {
+        "unit_rows": 3,
+        "missing_sim": 3,
+        "position_mae": null,
+        "hp_mae": null,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      },
+      ">10 s": {
+        "position_mae": null,
+        "hp_mae": null,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      }
+    },
+    "GoblinHut": {
+      "0-2 s": {
+        "unit_rows": 13,
+        "missing_sim": 4,
+        "matched": 9,
+        "position_mae": 0.923823452814058,
+        "hp_mae": 558.5555555555555,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      },
+      "2-5 s": {
+        "unit_rows": 14,
+        "matched": 14,
+        "position_mae": 1.9775454231760563,
+        "hp_mae": 435.7857142857143,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      },
+      "5-10 s": {
+        "unit_rows": 2,
+        "matched": 2,
+        "position_mae": 0.0,
+        "hp_mae": 937.5,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      },
+      ">10 s": {
+        "position_mae": null,
+        "hp_mae": null,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      }
+    },
+    "Prince": {
+      "0-2 s": {
+        "unit_rows": 57,
+        "missing_sim": 22,
+        "matched": 35,
+        "position_mae": 0.3209271910346636,
+        "hp_mae": 170.62857142857143,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      },
+      "2-5 s": {
+        "unit_rows": 77,
+        "matched": 72,
+        "missing_sim": 5,
+        "position_mae": 0.7298395407544185,
+        "hp_mae": 270.72222222222223,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      },
+      "5-10 s": {
+        "unit_rows": 113,
+        "matched": 93,
+        "missing_sim": 20,
+        "position_mae": 1.1625249827458695,
+        "hp_mae": 327.258064516129,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      },
+      ">10 s": {
+        "unit_rows": 109,
+        "matched": 86,
+        "missing_sim": 23,
+        "position_mae": 1.79892912057735,
+        "hp_mae": 526.9651162790698,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      }
+    },
+    "Valkyrie": {
+      "0-2 s": {
+        "unit_rows": 95,
+        "missing_sim": 30,
+        "matched": 65,
+        "position_mae": 0.4243416486595355,
+        "hp_mae": 206.8,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      },
+      "2-5 s": {
+        "unit_rows": 146,
+        "matched": 137,
+        "missing_sim": 9,
+        "position_mae": 1.0198293342592772,
+        "hp_mae": 366.3868613138686,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      },
+      "5-10 s": {
+        "unit_rows": 167,
+        "matched": 147,
+        "missing_sim": 20,
+        "position_mae": 1.7554407103279839,
+        "hp_mae": 605.3809523809524,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      },
+      ">10 s": {
+        "unit_rows": 89,
+        "matched": 59,
+        "missing_sim": 30,
+        "position_mae": 3.822564410504581,
+        "hp_mae": 711.3220338983051,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      }
+    },
+    "13000043": {
+      "0-2 s": {
+        "unit_rows": 8,
+        "missing_sim": 8,
+        "position_mae": null,
+        "hp_mae": null,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      },
+      "2-5 s": {
+        "unit_rows": 12,
+        "missing_sim": 12,
+        "position_mae": null,
+        "hp_mae": null,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      },
+      "5-10 s": {
+        "unit_rows": 20,
+        "missing_sim": 20,
+        "position_mae": null,
+        "hp_mae": null,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      },
+      ">10 s": {
+        "unit_rows": 22,
+        "missing_sim": 22,
+        "position_mae": null,
+        "hp_mae": null,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      }
+    },
+    "GoblinGiant": {
+      "0-2 s": {
+        "unit_rows": 271,
+        "missing_sim": 175,
+        "matched": 96,
+        "position_mae": 1.1109543967691538,
+        "hp_mae": 1308.0520833333333,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      },
+      "2-5 s": {
+        "unit_rows": 258,
+        "matched": 134,
+        "missing_sim": 124,
+        "position_mae": 0.8660568964660716,
+        "hp_mae": 1774.2089552238806,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      },
+      "5-10 s": {
+        "unit_rows": 396,
+        "matched": 223,
+        "missing_sim": 173,
+        "position_mae": 0.7595710770599372,
+        "hp_mae": 1510.354260089686,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      },
+      ">10 s": {
+        "unit_rows": 509,
+        "matched": 370,
+        "missing_sim": 139,
+        "position_mae": 1.101950615342362,
+        "hp_mae": 1617.6702702702703,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      }
+    },
+    "MergeMaiden_Normal": {
+      "0-2 s": {
+        "unit_rows": 18,
+        "missing_sim": 6,
+        "matched": 12,
+        "position_mae": 0.3953775528354911,
+        "hp_mae": 240.16666666666666,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      },
+      "2-5 s": {
+        "unit_rows": 33,
+        "matched": 32,
+        "missing_sim": 1,
+        "position_mae": 1.3633278822860218,
+        "hp_mae": 312.25,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      },
+      "5-10 s": {
+        "unit_rows": 36,
+        "missing_sim": 11,
+        "matched": 25,
+        "position_mae": 2.0833687902442395,
+        "hp_mae": 390.04,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      },
+      ">10 s": {
+        "unit_rows": 6,
+        "matched": 5,
+        "missing_sim": 1,
+        "position_mae": 1.8631470688058953,
+        "hp_mae": 436.6,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      }
+    },
+    "Tombstone": {
+      "0-2 s": {
+        "unit_rows": 210,
+        "missing_sim": 143,
+        "matched": 67,
+        "position_mae": 2.963414517917092,
+        "hp_mae": 156.19402985074626,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      },
+      "2-5 s": {
+        "unit_rows": 199,
+        "matched": 69,
+        "missing_sim": 130,
+        "position_mae": 2.2728130873187857,
+        "hp_mae": 162.33333333333334,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      },
+      "5-10 s": {
+        "unit_rows": 57,
+        "matched": 31,
+        "missing_sim": 26,
+        "position_mae": 0.3284051106694764,
+        "hp_mae": 59.38709677419355,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      },
+      ">10 s": {
+        "unit_rows": 54,
+        "matched": 53,
+        "missing_sim": 1,
+        "position_mae": 0.0,
+        "hp_mae": 31.60377358490566,
+        "tower_hp_mae": null,
+        "tower_rows": 0
+      }
+    }
+  }
+}

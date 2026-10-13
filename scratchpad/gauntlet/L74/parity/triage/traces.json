@@ -1,0 +1,6631 @@
+{
+  "GoblinDrill": [
+    {
+      "match": "live_play_20261008_000844",
+      "identity": "unit:27000013:0:1",
+      "first_seen_tick": 1130,
+      "first_mismatch_tick": 1130,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_000844.json",
+      "source": "sources/live_play_20261008_000844.json",
+      "rows": [
+        {
+          "sample_index": 83,
+          "row_index": 6,
+          "tick": 1130,
+          "age_ticks": 0,
+          "identity": "unit:27000013:0:1",
+          "live": {
+            "x": 9235,
+            "y": 4164,
+            "hp": 3720,
+            "max_hp": 3720,
+            "card_id": 27000013
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 84,
+          "row_index": 6,
+          "tick": 1140,
+          "age_ticks": 10,
+          "identity": "unit:27000013:0:1",
+          "live": {
+            "x": 9247,
+            "y": 7164,
+            "hp": 3720,
+            "max_hp": 3720,
+            "card_id": 27000013
+          },
+          "position_error_tiles": 1.1899180644061171,
+          "hp_error": 1821,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 85,
+          "row_index": 6,
+          "tick": 1151,
+          "age_ticks": 21,
+          "identity": "unit:27000013:0:1",
+          "live": {
+            "x": 9247,
+            "y": 10464,
+            "hp": 3720,
+            "max_hp": 3720,
+            "card_id": 27000013
+          },
+          "position_error_tiles": 4.470828223047716,
+          "hp_error": 1821,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 86,
+          "row_index": 6,
+          "tick": 1157,
+          "age_ticks": 27,
+          "identity": "unit:27000013:0:1",
+          "live": {
+            "x": 10356,
+            "y": 11852,
+            "hp": 3720,
+            "max_hp": 3720,
+            "card_id": 27000013
+          },
+          "position_error_tiles": 6.007049192407201,
+          "hp_error": 1821,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 87,
+          "row_index": 7,
+          "tick": 1185,
+          "age_ticks": 55,
+          "identity": "unit:27000013:0:1",
+          "live": {
+            "x": 13748,
+            "y": 18840,
+            "hp": 3720,
+            "max_hp": 3720,
+            "card_id": 27000013
+          },
+          "position_error_tiles": 13.68974448264101,
+          "hp_error": 2069,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 88,
+          "row_index": 7,
+          "tick": 1195,
+          "age_ticks": 65,
+          "identity": "unit:27000013:0:1",
+          "live": {
+            "x": 13748,
+            "y": 21840,
+            "hp": 3720,
+            "max_hp": 3720,
+            "card_id": 27000013
+          },
+          "position_error_tiles": 16.536296562410822,
+          "hp_error": 2164,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 89,
+          "row_index": 7,
+          "tick": 1205,
+          "age_ticks": 75,
+          "identity": "unit:27000013:0:1",
+          "live": {
+            "x": 15227,
+            "y": 24227,
+            "hp": 3720,
+            "max_hp": 3720,
+            "card_id": 27000013
+          },
+          "position_error_tiles": 19.2613358311411,
+          "hp_error": 2260,
+          "missing": null,
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 1130,
+          "previous_tick": 1119,
+          "side": 0,
+          "name": "GoblinDrill",
+          "card_id": 27000013,
+          "x": 9235,
+          "y": 4164,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 10,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 1130,
+          "resolved_xy": [
+            9000.0,
+            6000.0
+          ]
+        },
+        {
+          "tick": 1215,
+          "previous_tick": 1205,
+          "side": 0,
+          "name": "GoblinDrill",
+          "card_id": 27000013,
+          "x": 17000,
+          "y": 26000,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 12,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 1215,
+          "resolved_xy": [
+            17000.0,
+            26000.0
+          ]
+        }
+      ]
+    },
+    {
+      "match": "live_play_20261008_000844",
+      "identity": "unit:27000013:0:2",
+      "first_seen_tick": 1215,
+      "first_mismatch_tick": 1215,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_000844.json",
+      "source": "sources/live_play_20261008_000844.json",
+      "rows": [
+        {
+          "sample_index": 90,
+          "row_index": 8,
+          "tick": 1215,
+          "age_ticks": 0,
+          "identity": "unit:27000013:0:2",
+          "live": {
+            "x": 17000,
+            "y": 26000,
+            "hp": 1899,
+            "max_hp": 1908,
+            "card_id": 27000013
+          },
+          "position_error_tiles": 16.522049297832275,
+          "hp_error": 1606,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 91,
+          "row_index": 8,
+          "tick": 1225,
+          "age_ticks": 10,
+          "identity": "unit:27000013:0:2",
+          "live": {
+            "x": 17000,
+            "y": 26000,
+            "hp": 1580,
+            "max_hp": 1908,
+            "card_id": 27000013
+          },
+          "position_error_tiles": 15.484059965009177,
+          "hp_error": 1287,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 92,
+          "row_index": 8,
+          "tick": 1235,
+          "age_ticks": 20,
+          "identity": "unit:27000013:0:2",
+          "live": {
+            "x": 17000,
+            "y": 26000,
+            "hp": 1412,
+            "max_hp": 1908,
+            "card_id": 27000013
+          },
+          "position_error_tiles": 14.325156753069058,
+          "hp_error": 1119,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 93,
+          "row_index": 8,
+          "tick": 1245,
+          "age_ticks": 30,
+          "identity": "unit:27000013:0:2",
+          "live": {
+            "x": 17000,
+            "y": 26000,
+            "hp": 998,
+            "max_hp": 1908,
+            "card_id": 27000013
+          },
+          "position_error_tiles": 13.141575894846097,
+          "hp_error": 705,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 94,
+          "row_index": 8,
+          "tick": 1255,
+          "age_ticks": 40,
+          "identity": "unit:27000013:0:2",
+          "live": {
+            "x": 17000,
+            "y": 26000,
+            "hp": 745,
+            "max_hp": 1908,
+            "card_id": 27000013
+          },
+          "position_error_tiles": 11.975860428378413,
+          "hp_error": 452,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 95,
+          "row_index": 9,
+          "tick": 1257,
+          "age_ticks": 42,
+          "identity": "unit:27000013:0:2",
+          "live": {
+            "x": 17000,
+            "y": 26000,
+            "hp": 726,
+            "max_hp": 1908,
+            "card_id": 27000013
+          },
+          "position_error_tiles": 11.738878523947676,
+          "hp_error": 433,
+          "missing": null,
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 1130,
+          "previous_tick": 1119,
+          "side": 0,
+          "name": "GoblinDrill",
+          "card_id": 27000013,
+          "x": 9235,
+          "y": 4164,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 10,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 1130,
+          "resolved_xy": [
+            9000.0,
+            6000.0
+          ]
+        },
+        {
+          "tick": 1215,
+          "previous_tick": 1205,
+          "side": 0,
+          "name": "GoblinDrill",
+          "card_id": 27000013,
+          "x": 17000,
+          "y": 26000,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 12,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 1215,
+          "resolved_xy": [
+            17000.0,
+            26000.0
+          ]
+        },
+        {
+          "tick": 1255,
+          "previous_tick": 1245,
+          "side": 0,
+          "name": "GoblinDrill",
+          "card_id": 27000013,
+          "x": 16677,
+          "y": 27144,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 13,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 1255,
+          "resolved_xy": [
+            17000.0,
+            27000.0
+          ]
+        }
+      ]
+    },
+    {
+      "match": "live_play_20261008_000844",
+      "identity": "unit:27000013:0:3",
+      "first_seen_tick": 1255,
+      "first_mismatch_tick": 1255,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_000844.json",
+      "source": "sources/live_play_20261008_000844.json",
+      "rows": [
+        {
+          "sample_index": 94,
+          "row_index": 9,
+          "tick": 1255,
+          "age_ticks": 0,
+          "identity": "unit:27000013:0:3",
+          "live": {
+            "x": 16677,
+            "y": 27144,
+            "hp": 293,
+            "max_hp": 293,
+            "card_id": 27000013
+          },
+          "position_error_tiles": 13.839485142157566,
+          "hp_error": 3427,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 95,
+          "row_index": 10,
+          "tick": 1257,
+          "age_ticks": 2,
+          "identity": "unit:27000013:0:3",
+          "live": {
+            "x": 16437,
+            "y": 27152,
+            "hp": 293,
+            "max_hp": 293,
+            "card_id": 27000013
+          },
+          "position_error_tiles": 13.253136723055412,
+          "hp_error": 3427,
+          "missing": null,
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 1215,
+          "previous_tick": 1205,
+          "side": 0,
+          "name": "GoblinDrill",
+          "card_id": 27000013,
+          "x": 17000,
+          "y": 26000,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 12,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 1215,
+          "resolved_xy": [
+            17000.0,
+            26000.0
+          ]
+        },
+        {
+          "tick": 1255,
+          "previous_tick": 1245,
+          "side": 0,
+          "name": "GoblinDrill",
+          "card_id": 27000013,
+          "x": 16677,
+          "y": 27144,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 13,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 1255,
+          "resolved_xy": [
+            17000.0,
+            27000.0
+          ]
+        }
+      ]
+    },
+    {
+      "match": "live_play_20261008_000844",
+      "identity": "unit:27000013:0:4",
+      "first_seen_tick": 1307,
+      "first_mismatch_tick": 1307,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_000844.json",
+      "source": "sources/live_play_20261008_000844.json",
+      "rows": [
+        {
+          "sample_index": 96,
+          "row_index": 10,
+          "tick": 1307,
+          "age_ticks": 0,
+          "identity": "unit:27000013:0:4",
+          "live": {
+            "x": 15699,
+            "y": 26407,
+            "hp": 293,
+            "max_hp": 293,
+            "card_id": 27000013
+          },
+          "position_error_tiles": 13.03686024317205,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 1215,
+          "previous_tick": 1205,
+          "side": 0,
+          "name": "GoblinDrill",
+          "card_id": 27000013,
+          "x": 17000,
+          "y": 26000,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 12,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 1215,
+          "resolved_xy": [
+            17000.0,
+            26000.0
+          ]
+        },
+        {
+          "tick": 1255,
+          "previous_tick": 1245,
+          "side": 0,
+          "name": "GoblinDrill",
+          "card_id": 27000013,
+          "x": 16677,
+          "y": 27144,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 13,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 1255,
+          "resolved_xy": [
+            17000.0,
+            27000.0
+          ]
+        }
+      ]
+    }
+  ],
+  "Valkyrie": [
+    {
+      "match": "live_play_20261008_001328",
+      "identity": "unit:26000011:0:1",
+      "first_seen_tick": 221,
+      "first_mismatch_tick": 221,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_001328.json",
+      "source": "sources/live_play_20261008_001328.json",
+      "rows": [
+        {
+          "sample_index": 6,
+          "row_index": 7,
+          "tick": 221,
+          "age_ticks": 0,
+          "identity": "unit:26000011:0:1",
+          "live": {
+            "x": 3620,
+            "y": 14651,
+            "hp": 2302,
+            "max_hp": 2302,
+            "card_id": 26000011
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 7,
+          "row_index": 7,
+          "tick": 251,
+          "age_ticks": 30,
+          "identity": "unit:26000011:0:1",
+          "live": {
+            "x": 3750,
+            "y": 15470,
+            "hp": 1912,
+            "max_hp": 2302,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.12041594578792295,
+          "hp_error": 469,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 8,
+          "row_index": 7,
+          "tick": 281,
+          "age_ticks": 60,
+          "identity": "unit:26000011:0:1",
+          "live": {
+            "x": 3790,
+            "y": 17254,
+            "hp": 1912,
+            "max_hp": 2302,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.07810249675906654,
+          "hp_error": 469,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 9,
+          "row_index": 10,
+          "tick": 311,
+          "age_ticks": 90,
+          "identity": "unit:26000011:0:1",
+          "live": {
+            "x": 5371,
+            "y": 17922,
+            "hp": 1912,
+            "max_hp": 2302,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.2748763358312243,
+          "hp_error": 469,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 10,
+          "row_index": 9,
+          "tick": 321,
+          "age_ticks": 100,
+          "identity": "unit:26000011:0:1",
+          "live": {
+            "x": 5836,
+            "y": 17837,
+            "hp": 1912,
+            "max_hp": 2302,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.29523719277895866,
+          "hp_error": 469,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 11,
+          "row_index": 7,
+          "tick": 331,
+          "age_ticks": 110,
+          "identity": "unit:26000011:0:1",
+          "live": {
+            "x": 6341,
+            "y": 18093,
+            "hp": 1593,
+            "max_hp": 2302,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.8250684820061909,
+          "hp_error": 788,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 12,
+          "row_index": 7,
+          "tick": 341,
+          "age_ticks": 120,
+          "identity": "unit:26000011:0:1",
+          "live": {
+            "x": 6802,
+            "y": 18463,
+            "hp": 1435,
+            "max_hp": 2302,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 1.4161867814663431,
+          "hp_error": 946,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 13,
+          "row_index": 6,
+          "tick": 351,
+          "age_ticks": 130,
+          "identity": "unit:26000011:0:1",
+          "live": {
+            "x": 7249,
+            "y": 18852,
+            "hp": 1435,
+            "max_hp": 2302,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 1.5425968365065448,
+          "hp_error": 469,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 14,
+          "row_index": 6,
+          "tick": 361,
+          "age_ticks": 140,
+          "identity": "unit:26000011:0:1",
+          "live": {
+            "x": 7689,
+            "y": 19247,
+            "hp": 958,
+            "max_hp": 2302,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 1.53874819252534,
+          "hp_error": 788,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 15,
+          "row_index": 6,
+          "tick": 371,
+          "age_ticks": 150,
+          "identity": "unit:26000011:0:1",
+          "live": {
+            "x": 7689,
+            "y": 19247,
+            "hp": 800,
+            "max_hp": 2302,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.9436238657431254,
+          "hp_error": 627,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 16,
+          "row_index": 6,
+          "tick": 381,
+          "age_ticks": 160,
+          "identity": "unit:26000011:0:1",
+          "live": {
+            "x": 7689,
+            "y": 19247,
+            "hp": 481,
+            "max_hp": 2302,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.3535562190090849,
+          "hp_error": 788,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 17,
+          "row_index": 6,
+          "tick": 391,
+          "age_ticks": 170,
+          "identity": "unit:26000011:0:1",
+          "live": {
+            "x": 7689,
+            "y": 19247,
+            "hp": 323,
+            "max_hp": 2302,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.012041594578792296,
+          "hp_error": 627,
+          "missing": null,
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 221,
+          "previous_tick": 193,
+          "side": 0,
+          "name": "Valkyrie",
+          "card_id": 26000011,
+          "x": 3620,
+          "y": 14651,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 2,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 221,
+          "resolved_xy": [
+            3500.0,
+            14500.0
+          ]
+        }
+      ]
+    },
+    {
+      "match": "live_play_20261008_001328",
+      "identity": "unit:26000011:0:2",
+      "first_seen_tick": 1142,
+      "first_mismatch_tick": 1142,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_001328.json",
+      "source": "sources/live_play_20261008_001328.json",
+      "rows": [
+        {
+          "sample_index": 87,
+          "row_index": 7,
+          "tick": 1142,
+          "age_ticks": 0,
+          "identity": "unit:26000011:0:2",
+          "live": {
+            "x": 3499,
+            "y": 14500,
+            "hp": 2302,
+            "max_hp": 2302,
+            "card_id": 26000011
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 88,
+          "row_index": 6,
+          "tick": 1152,
+          "age_ticks": 10,
+          "identity": "unit:26000011:0:2",
+          "live": {
+            "x": 3499,
+            "y": 14500,
+            "hp": 2302,
+            "max_hp": 2302,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 469,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 89,
+          "row_index": 6,
+          "tick": 1162,
+          "age_ticks": 20,
+          "identity": "unit:26000011:0:2",
+          "live": {
+            "x": 3481,
+            "y": 14556,
+            "hp": 2204,
+            "max_hp": 2302,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.05882176467941097,
+          "hp_error": 567,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 90,
+          "row_index": 6,
+          "tick": 1164,
+          "age_ticks": 22,
+          "identity": "unit:26000011:0:2",
+          "live": {
+            "x": 3459,
+            "y": 14672,
+            "hp": 2204,
+            "max_hp": 2302,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.059033888572581766,
+          "hp_error": 567,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 91,
+          "row_index": 6,
+          "tick": 1195,
+          "age_ticks": 53,
+          "identity": "unit:26000011:0:2",
+          "live": {
+            "x": 3534,
+            "y": 16314,
+            "hp": 1812,
+            "max_hp": 2302,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.41886752082251494,
+          "hp_error": 640,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 92,
+          "row_index": 6,
+          "tick": 1205,
+          "age_ticks": 63,
+          "identity": "unit:26000011:0:2",
+          "live": {
+            "x": 3585,
+            "y": 16345,
+            "hp": 1616,
+            "max_hp": 2302,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.39362926720456143,
+          "hp_error": 836,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 93,
+          "row_index": 6,
+          "tick": 1215,
+          "age_ticks": 73,
+          "identity": "unit:26000011:0:2",
+          "live": {
+            "x": 3585,
+            "y": 16345,
+            "hp": 1518,
+            "max_hp": 2302,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.39362926720456143,
+          "hp_error": 615,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 94,
+          "row_index": 6,
+          "tick": 1225,
+          "age_ticks": 83,
+          "identity": "unit:26000011:0:2",
+          "live": {
+            "x": 3585,
+            "y": 16345,
+            "hp": 1101,
+            "max_hp": 2302,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.39362926720456143,
+          "hp_error": 1032,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 95,
+          "row_index": 6,
+          "tick": 1227,
+          "age_ticks": 85,
+          "identity": "unit:26000011:0:2",
+          "live": {
+            "x": 3585,
+            "y": 16345,
+            "hp": 1101,
+            "max_hp": 2302,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.39362926720456143,
+          "hp_error": 1032,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 96,
+          "row_index": 10,
+          "tick": 1257,
+          "age_ticks": 115,
+          "identity": "unit:26000011:0:2",
+          "live": {
+            "x": 3585,
+            "y": 16345,
+            "hp": 390,
+            "max_hp": 2302,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.1690354992301913,
+          "hp_error": 1424,
+          "missing": null,
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 1142,
+          "previous_tick": 1131,
+          "side": 0,
+          "name": "Valkyrie",
+          "card_id": 26000011,
+          "x": 3499,
+          "y": 14500,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 14,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 1142,
+          "resolved_xy": [
+            3500.0,
+            14500.0
+          ]
+        }
+      ]
+    },
+    {
+      "match": "live_play_20261008_002006",
+      "identity": "unit:26000011:1:1",
+      "first_seen_tick": 1390,
+      "first_mismatch_tick": 1390,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_002006.json",
+      "source": "sources/live_play_20261008_002006.json",
+      "rows": [
+        {
+          "sample_index": 103,
+          "row_index": 6,
+          "tick": 1390,
+          "age_ticks": 0,
+          "identity": "unit:26000011:1:1",
+          "live": {
+            "x": 15500,
+            "y": 17499,
+            "hp": 2525,
+            "max_hp": 2525,
+            "card_id": 26000011
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 104,
+          "row_index": 6,
+          "tick": 1400,
+          "age_ticks": 10,
+          "identity": "unit:26000011:1:1",
+          "live": {
+            "x": 15500,
+            "y": 17499,
+            "hp": 2525,
+            "max_hp": 2525,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 246,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 105,
+          "row_index": 6,
+          "tick": 1411,
+          "age_ticks": 21,
+          "identity": "unit:26000011:1:1",
+          "live": {
+            "x": 15234,
+            "y": 16977,
+            "hp": 2525,
+            "max_hp": 2525,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.5278825626974242,
+          "hp_error": 246,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 106,
+          "row_index": 6,
+          "tick": 1421,
+          "age_ticks": 31,
+          "identity": "unit:26000011:1:1",
+          "live": {
+            "x": 15048,
+            "y": 16415,
+            "hp": 2427,
+            "max_hp": 2525,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.5331735177219514,
+          "hp_error": 166,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 107,
+          "row_index": 6,
+          "tick": 1431,
+          "age_ticks": 41,
+          "identity": "unit:26000011:1:1",
+          "live": {
+            "x": 14917,
+            "y": 15838,
+            "hp": 2329,
+            "max_hp": 2525,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.532024435529046,
+          "hp_error": 175,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 108,
+          "row_index": 6,
+          "tick": 1441,
+          "age_ticks": 51,
+          "identity": "unit:26000011:1:1",
+          "live": {
+            "x": 14853,
+            "y": 15248,
+            "hp": 2231,
+            "max_hp": 2525,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.533944753696485,
+          "hp_error": 184,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 109,
+          "row_index": 5,
+          "tick": 1452,
+          "age_ticks": 62,
+          "identity": "unit:26000011:1:1",
+          "live": {
+            "x": 14812,
+            "y": 14658,
+            "hp": 2035,
+            "max_hp": 2525,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.47329589053783255,
+          "hp_error": 202,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 110,
+          "row_index": 4,
+          "tick": 1462,
+          "age_ticks": 72,
+          "identity": "unit:26000011:1:1",
+          "live": {
+            "x": 14812,
+            "y": 14658,
+            "hp": 1937,
+            "max_hp": 2525,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 211,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 111,
+          "row_index": 4,
+          "tick": 1472,
+          "age_ticks": 82,
+          "identity": "unit:26000011:1:1",
+          "live": {
+            "x": 14812,
+            "y": 14658,
+            "hp": 1681,
+            "max_hp": 2525,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 378,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 112,
+          "row_index": 4,
+          "tick": 1483,
+          "age_ticks": 93,
+          "identity": "unit:26000011:1:1",
+          "live": {
+            "x": 14812,
+            "y": 14658,
+            "hp": 1425,
+            "max_hp": 2525,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 298,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 113,
+          "row_index": 4,
+          "tick": 1487,
+          "age_ticks": 97,
+          "identity": "unit:26000011:1:1",
+          "live": {
+            "x": 14797,
+            "y": 14421,
+            "hp": 1327,
+            "max_hp": 2525,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.23747420912595962,
+          "hp_error": 396,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 114,
+          "row_index": 7,
+          "tick": 1515,
+          "age_ticks": 125,
+          "identity": "unit:26000011:1:1",
+          "live": {
+            "x": 14616,
+            "y": 12960,
+            "hp": 1011,
+            "max_hp": 2525,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 1.8308451600285591,
+          "hp_error": 307,
+          "missing": null,
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 1390,
+          "previous_tick": 1380,
+          "side": 1,
+          "name": "Valkyrie",
+          "card_id": 26000011,
+          "x": 15500,
+          "y": 17499,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 15,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 1390,
+          "resolved_xy": [
+            15500.0,
+            17500.0
+          ]
+        }
+      ]
+    },
+    {
+      "match": "live_play_20261008_002006",
+      "identity": "unit:26000011:1:2",
+      "first_seen_tick": 2638,
+      "first_mismatch_tick": 2638,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_002006.json",
+      "source": "sources/live_play_20261008_002006.json",
+      "rows": [
+        {
+          "sample_index": 210,
+          "row_index": 6,
+          "tick": 2638,
+          "age_ticks": 0,
+          "identity": "unit:26000011:1:2",
+          "live": {
+            "x": 14500,
+            "y": 17499,
+            "hp": 2525,
+            "max_hp": 2525,
+            "card_id": 26000011
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 211,
+          "row_index": 6,
+          "tick": 2648,
+          "age_ticks": 10,
+          "identity": "unit:26000011:1:2",
+          "live": {
+            "x": 14500,
+            "y": 17499,
+            "hp": 2310,
+            "max_hp": 2525,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 142,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 212,
+          "row_index": 6,
+          "tick": 2658,
+          "age_ticks": 20,
+          "identity": "unit:26000011:1:2",
+          "live": {
+            "x": 14500,
+            "y": 17499,
+            "hp": 1991,
+            "max_hp": 2525,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 246,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 213,
+          "row_index": 6,
+          "tick": 2668,
+          "age_ticks": 30,
+          "identity": "unit:26000011:1:2",
+          "live": {
+            "x": 14500,
+            "y": 17499,
+            "hp": 1991,
+            "max_hp": 2525,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 73,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 214,
+          "row_index": 6,
+          "tick": 2678,
+          "age_ticks": 40,
+          "identity": "unit:26000011:1:2",
+          "live": {
+            "x": 14500,
+            "y": 17499,
+            "hp": 1672,
+            "max_hp": 2525,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 246,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 215,
+          "row_index": 6,
+          "tick": 2689,
+          "age_ticks": 51,
+          "identity": "unit:26000011:1:2",
+          "live": {
+            "x": 14500,
+            "y": 17499,
+            "hp": 1672,
+            "max_hp": 2525,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 246,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 216,
+          "row_index": 5,
+          "tick": 2700,
+          "age_ticks": 62,
+          "identity": "unit:26000011:1:2",
+          "live": {
+            "x": 14550,
+            "y": 17153,
+            "hp": 1353,
+            "max_hp": 2525,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.11845674315968678,
+          "hp_error": 246,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 217,
+          "row_index": 5,
+          "tick": 2728,
+          "age_ticks": 90,
+          "identity": "unit:26000011:1:2",
+          "live": {
+            "x": 14089,
+            "y": 15876,
+            "hp": 740,
+            "max_hp": 2525,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.5230086041357255,
+          "hp_error": 150,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 218,
+          "row_index": 5,
+          "tick": 2738,
+          "age_ticks": 100,
+          "identity": "unit:26000011:1:2",
+          "live": {
+            "x": 13983,
+            "y": 16129,
+            "hp": 252,
+            "max_hp": 2525,
+            "card_id": 26000011
+          },
+          "position_error_tiles": 0.22852789764052878,
+          "hp_error": 319,
+          "missing": null,
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 2638,
+          "previous_tick": 2628,
+          "side": 1,
+          "name": "Valkyrie",
+          "card_id": 26000011,
+          "x": 14500,
+          "y": 17499,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 30,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 2638,
+          "resolved_xy": [
+            14500.0,
+            17500.0
+          ]
+        }
+      ]
+    }
+  ],
+  "Prince": [
+    {
+      "match": "live_play_20261008_002006",
+      "identity": "unit:26000016:1:1",
+      "first_seen_tick": 165,
+      "first_mismatch_tick": 165,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_002006.json",
+      "source": "sources/live_play_20261008_002006.json",
+      "rows": [
+        {
+          "sample_index": 2,
+          "row_index": 6,
+          "tick": 165,
+          "age_ticks": 0,
+          "identity": "unit:26000016:1:1",
+          "live": {
+            "x": 6499,
+            "y": 27499,
+            "hp": 2790,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 3,
+          "row_index": 9,
+          "tick": 195,
+          "age_ticks": 30,
+          "identity": "unit:26000016:1:1",
+          "live": {
+            "x": 6037,
+            "y": 27037,
+            "hp": 2790,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.05939696961966999,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 4,
+          "row_index": 9,
+          "tick": 206,
+          "age_ticks": 41,
+          "identity": "unit:26000016:1:1",
+          "live": {
+            "x": 5575,
+            "y": 26575,
+            "hp": 2790,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.05939696961966999,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 5,
+          "row_index": 9,
+          "tick": 216,
+          "age_ticks": 51,
+          "identity": "unit:26000016:1:1",
+          "live": {
+            "x": 5239,
+            "y": 26092,
+            "hp": 2790,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.059169248769948064,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 6,
+          "row_index": 9,
+          "tick": 220,
+          "age_ticks": 55,
+          "identity": "unit:26000016:1:1",
+          "live": {
+            "x": 5159,
+            "y": 25868,
+            "hp": 2790,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.05946427498927402,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 7,
+          "row_index": 9,
+          "tick": 250,
+          "age_ticks": 85,
+          "identity": "unit:26000016:1:1",
+          "live": {
+            "x": 4585,
+            "y": 23036,
+            "hp": 2790,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.11884864324004712,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 8,
+          "row_index": 10,
+          "tick": 260,
+          "age_ticks": 95,
+          "identity": "unit:26000016:1:1",
+          "live": {
+            "x": 4352,
+            "y": 21876,
+            "hp": 2790,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.11941942890501528,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 9,
+          "row_index": 10,
+          "tick": 271,
+          "age_ticks": 106,
+          "identity": "unit:26000016:1:1",
+          "live": {
+            "x": 4286,
+            "y": 20563,
+            "hp": 2790,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.12001666550941997,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 10,
+          "row_index": 10,
+          "tick": 279,
+          "age_ticks": 114,
+          "identity": "unit:26000016:1:1",
+          "live": {
+            "x": 4270,
+            "y": 19603,
+            "hp": 2790,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.1200041665943312,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 11,
+          "row_index": 11,
+          "tick": 318,
+          "age_ticks": 153,
+          "identity": "unit:26000016:1:1",
+          "live": {
+            "x": 4367,
+            "y": 15259,
+            "hp": 2790,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 1.9806981092534015,
+          "hp_error": 319,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 12,
+          "row_index": 11,
+          "tick": 328,
+          "age_ticks": 163,
+          "identity": "unit:26000016:1:1",
+          "live": {
+            "x": 5746,
+            "y": 14663,
+            "hp": 2471,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.8671355142075545,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 13,
+          "row_index": 11,
+          "tick": 338,
+          "age_ticks": 173,
+          "identity": "unit:26000016:1:1",
+          "live": {
+            "x": 6362,
+            "y": 14103,
+            "hp": 2471,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.8663602022253792,
+          "hp_error": 612,
+          "missing": null,
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 165,
+          "previous_tick": 161,
+          "side": 1,
+          "name": "Prince",
+          "card_id": 26000016,
+          "x": 6499,
+          "y": 27499,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 1,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 165,
+          "resolved_xy": [
+            6500.0,
+            27500.0
+          ]
+        }
+      ]
+    },
+    {
+      "match": "live_play_20261008_002006",
+      "identity": "unit:26000016:1:2",
+      "first_seen_tick": 1038,
+      "first_mismatch_tick": 1038,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_002006.json",
+      "source": "sources/live_play_20261008_002006.json",
+      "rows": [
+        {
+          "sample_index": 77,
+          "row_index": 8,
+          "tick": 1038,
+          "age_ticks": 0,
+          "identity": "unit:26000016:1:2",
+          "live": {
+            "x": 8499,
+            "y": 19499,
+            "hp": 2790,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 78,
+          "row_index": 9,
+          "tick": 1070,
+          "age_ticks": 32,
+          "identity": "unit:26000016:1:2",
+          "live": {
+            "x": 7684,
+            "y": 19358,
+            "hp": 2790,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.3462268042771963,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 79,
+          "row_index": 9,
+          "tick": 1080,
+          "age_ticks": 42,
+          "identity": "unit:26000016:1:2",
+          "live": {
+            "x": 7134,
+            "y": 19128,
+            "hp": 2790,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.6206262965746779,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 80,
+          "row_index": 8,
+          "tick": 1090,
+          "age_ticks": 52,
+          "identity": "unit:26000016:1:2",
+          "live": {
+            "x": 6834,
+            "y": 18678,
+            "hp": 2790,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.5518523353216873,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 81,
+          "row_index": 8,
+          "tick": 1100,
+          "age_ticks": 62,
+          "identity": "unit:26000016:1:2",
+          "live": {
+            "x": 6512,
+            "y": 18005,
+            "hp": 2790,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.4864092926743896,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 82,
+          "row_index": 8,
+          "tick": 1106,
+          "age_ticks": 68,
+          "identity": "unit:26000016:1:2",
+          "live": {
+            "x": 5906,
+            "y": 17267,
+            "hp": 2790,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.4359288932842144,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 83,
+          "row_index": 8,
+          "tick": 1148,
+          "age_ticks": 110,
+          "identity": "unit:26000016:1:2",
+          "live": {
+            "x": 4269,
+            "y": 12197,
+            "hp": 2790,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.05714017850864661,
+          "hp_error": 158,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 84,
+          "row_index": 8,
+          "tick": 1158,
+          "age_ticks": 120,
+          "identity": "unit:26000016:1:2",
+          "live": {
+            "x": 4759,
+            "y": 11657,
+            "hp": 2400,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.8724093076073868,
+          "hp_error": 74,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 85,
+          "row_index": 8,
+          "tick": 1168,
+          "age_ticks": 130,
+          "identity": "unit:26000016:1:2",
+          "live": {
+            "x": 4595,
+            "y": 11288,
+            "hp": 2400,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 1.5834118226159613,
+          "hp_error": 74,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 86,
+          "row_index": 8,
+          "tick": 1178,
+          "age_ticks": 140,
+          "identity": "unit:26000016:1:2",
+          "live": {
+            "x": 4454,
+            "y": 10715,
+            "hp": 2400,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 1.2300768268689561,
+          "hp_error": 84,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 87,
+          "row_index": 8,
+          "tick": 1188,
+          "age_ticks": 150,
+          "identity": "unit:26000016:1:2",
+          "live": {
+            "x": 4380,
+            "y": 10125,
+            "hp": 2400,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.6360416653018889,
+          "hp_error": 242,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 88,
+          "row_index": 8,
+          "tick": 1198,
+          "age_ticks": 160,
+          "identity": "unit:26000016:1:2",
+          "live": {
+            "x": 4336,
+            "y": 9535,
+            "hp": 2400,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.08185963596303125,
+          "hp_error": 242,
+          "missing": null,
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 1038,
+          "previous_tick": 1036,
+          "side": 1,
+          "name": "Prince",
+          "card_id": 26000016,
+          "x": 8499,
+          "y": 19499,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 12,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 1038,
+          "resolved_xy": [
+            8500.0,
+            19500.0
+          ]
+        }
+      ]
+    },
+    {
+      "match": "live_play_20261008_002006",
+      "identity": "unit:26000016:1:3",
+      "first_seen_tick": 2578,
+      "first_mismatch_tick": 2578,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_002006.json",
+      "source": "sources/live_play_20261008_002006.json",
+      "rows": [
+        {
+          "sample_index": 206,
+          "row_index": 5,
+          "tick": 2578,
+          "age_ticks": 0,
+          "identity": "unit:26000016:1:3",
+          "live": {
+            "x": 14500,
+            "y": 21499,
+            "hp": 2790,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 207,
+          "row_index": 5,
+          "tick": 2588,
+          "age_ticks": 10,
+          "identity": "unit:26000016:1:3",
+          "live": {
+            "x": 14500,
+            "y": 21499,
+            "hp": 2692,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 98,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 208,
+          "row_index": 5,
+          "tick": 2596,
+          "age_ticks": 18,
+          "identity": "unit:26000016:1:3",
+          "live": {
+            "x": 14559,
+            "y": 21271,
+            "hp": 2594,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.23551008470976353,
+          "hp_error": 107,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 209,
+          "row_index": 6,
+          "tick": 2628,
+          "age_ticks": 50,
+          "identity": "unit:26000016:1:3",
+          "live": {
+            "x": 14624,
+            "y": 21044,
+            "hp": 1879,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.47159410513703415,
+          "hp_error": 120,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 210,
+          "row_index": 7,
+          "tick": 2638,
+          "age_ticks": 60,
+          "identity": "unit:26000016:1:3",
+          "live": {
+            "x": 14624,
+            "y": 21044,
+            "hp": 1781,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.47159410513703415,
+          "hp_error": 111,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 211,
+          "row_index": 7,
+          "tick": 2648,
+          "age_ticks": 70,
+          "identity": "unit:26000016:1:3",
+          "live": {
+            "x": 14624,
+            "y": 21044,
+            "hp": 1360,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.47159410513703415,
+          "hp_error": 132,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 212,
+          "row_index": 7,
+          "tick": 2658,
+          "age_ticks": 80,
+          "identity": "unit:26000016:1:3",
+          "live": {
+            "x": 14624,
+            "y": 21044,
+            "hp": 1164,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.47159410513703415,
+          "hp_error": 54,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 213,
+          "row_index": 7,
+          "tick": 2668,
+          "age_ticks": 90,
+          "identity": "unit:26000016:1:3",
+          "live": {
+            "x": 14624,
+            "y": 21044,
+            "hp": 743,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.47159410513703415,
+          "hp_error": 278,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 214,
+          "row_index": 7,
+          "tick": 2678,
+          "age_ticks": 100,
+          "identity": "unit:26000016:1:3",
+          "live": {
+            "x": 14624,
+            "y": 21044,
+            "hp": 645,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.47159410513703415,
+          "hp_error": 6,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 215,
+          "row_index": 7,
+          "tick": 2689,
+          "age_ticks": 111,
+          "identity": "unit:26000016:1:3",
+          "live": {
+            "x": 14624,
+            "y": 21044,
+            "hp": 126,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.47159410513703415,
+          "hp_error": 335,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 216,
+          "row_index": 6,
+          "tick": 2700,
+          "age_ticks": 122,
+          "identity": "unit:26000016:1:3",
+          "live": {
+            "x": 14647,
+            "y": 20989,
+            "hp": 28,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.3545320859950479,
+          "hp_error": 344,
+          "missing": null,
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 2578,
+          "previous_tick": 2567,
+          "side": 1,
+          "name": "Prince",
+          "card_id": 26000016,
+          "x": 14500,
+          "y": 21499,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 28,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 2578,
+          "resolved_xy": [
+            14500.0,
+            21500.0
+          ]
+        }
+      ]
+    },
+    {
+      "match": "live_play_20261008_002006",
+      "identity": "unit:26000016:1:4",
+      "first_seen_tick": 3110,
+      "first_mismatch_tick": 3110,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_002006.json",
+      "source": "sources/live_play_20261008_002006.json",
+      "rows": [
+        {
+          "sample_index": 246,
+          "row_index": 8,
+          "tick": 3110,
+          "age_ticks": 0,
+          "identity": "unit:26000016:1:4",
+          "live": {
+            "x": 3459,
+            "y": 16327,
+            "hp": 2790,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 247,
+          "row_index": 8,
+          "tick": 3120,
+          "age_ticks": 10,
+          "identity": "unit:26000016:1:4",
+          "live": {
+            "x": 3459,
+            "y": 16327,
+            "hp": 2790,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.17658992043715294,
+          "hp_error": 293,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 248,
+          "row_index": 8,
+          "tick": 3131,
+          "age_ticks": 21,
+          "identity": "unit:26000016:1:4",
+          "live": {
+            "x": 3459,
+            "y": 16327,
+            "hp": 2790,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.17658992043715294,
+          "hp_error": 293,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 249,
+          "row_index": 9,
+          "tick": 3141,
+          "age_ticks": 31,
+          "identity": "unit:26000016:1:4",
+          "live": {
+            "x": 3459,
+            "y": 16327,
+            "hp": 2467,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.17658992043715294,
+          "hp_error": 30,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 250,
+          "row_index": 9,
+          "tick": 3143,
+          "age_ticks": 33,
+          "identity": "unit:26000016:1:4",
+          "live": {
+            "x": 3459,
+            "y": 16327,
+            "hp": 2467,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.17658992043715294,
+          "hp_error": 30,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 251,
+          "row_index": 8,
+          "tick": 3171,
+          "age_ticks": 61,
+          "identity": "unit:26000016:1:4",
+          "live": {
+            "x": 3459,
+            "y": 16327,
+            "hp": 2144,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.6731894235651656,
+          "hp_error": 623,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 252,
+          "row_index": 10,
+          "tick": 3199,
+          "age_ticks": 89,
+          "identity": "unit:26000016:1:4",
+          "live": {
+            "x": 3442,
+            "y": 16827,
+            "hp": 1431,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.181198785867897,
+          "hp_error": 203,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 253,
+          "row_index": 10,
+          "tick": 3209,
+          "age_ticks": 99,
+          "identity": "unit:26000016:1:4",
+          "live": {
+            "x": 3442,
+            "y": 16827,
+            "hp": 1431,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.181198785867897,
+          "hp_error": 203,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 254,
+          "row_index": 10,
+          "tick": 3219,
+          "age_ticks": 109,
+          "identity": "unit:26000016:1:4",
+          "live": {
+            "x": 3442,
+            "y": 16827,
+            "hp": 1431,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.181198785867897,
+          "hp_error": 615,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 255,
+          "row_index": 9,
+          "tick": 3227,
+          "age_ticks": 117,
+          "identity": "unit:26000016:1:4",
+          "live": {
+            "x": 3442,
+            "y": 16827,
+            "hp": 1431,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.181198785867897,
+          "hp_error": 615,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 256,
+          "row_index": 9,
+          "tick": 3273,
+          "age_ticks": 163,
+          "identity": "unit:26000016:1:4",
+          "live": {
+            "x": 3423,
+            "y": 16845,
+            "hp": 1082,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.15953056133543816,
+          "hp_error": 637,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 257,
+          "row_index": 9,
+          "tick": 3283,
+          "age_ticks": 173,
+          "identity": "unit:26000016:1:4",
+          "live": {
+            "x": 3423,
+            "y": 16845,
+            "hp": 1082,
+            "max_hp": 2790,
+            "card_id": 26000016
+          },
+          "position_error_tiles": 0.5058557106527513,
+          "hp_error": 637,
+          "missing": null,
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 3110,
+          "previous_tick": 3078,
+          "side": 1,
+          "name": "Prince",
+          "card_id": 26000016,
+          "x": 3459,
+          "y": 16327,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 38,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 3110,
+          "resolved_xy": [
+            3500.0,
+            16500.0
+          ]
+        }
+      ]
+    }
+  ],
+  "MergeMaiden_Normal": [
+    {
+      "match": "live_play_20261008_003019",
+      "identity": "unit:26000104:0:1",
+      "first_seen_tick": 1163,
+      "first_mismatch_tick": 1163,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_003019.json",
+      "source": "sources/live_play_20261008_003019.json",
+      "rows": [
+        {
+          "sample_index": 79,
+          "row_index": 7,
+          "tick": 1163,
+          "age_ticks": 0,
+          "identity": "unit:26000104:0:1",
+          "live": {
+            "x": 3499,
+            "y": 14500,
+            "hp": 1484,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 80,
+          "row_index": 7,
+          "tick": 1173,
+          "age_ticks": 10,
+          "identity": "unit:26000104:0:1",
+          "live": {
+            "x": 3499,
+            "y": 14500,
+            "hp": 1165,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 145,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 81,
+          "row_index": 7,
+          "tick": 1183,
+          "age_ticks": 20,
+          "identity": "unit:26000104:0:1",
+          "live": {
+            "x": 3499,
+            "y": 14500,
+            "hp": 1165,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 145,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 82,
+          "row_index": 7,
+          "tick": 1193,
+          "age_ticks": 30,
+          "identity": "unit:26000104:0:1",
+          "live": {
+            "x": 3499,
+            "y": 14500,
+            "hp": 959,
+            "max_hp": 1629,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 32,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 83,
+          "row_index": 7,
+          "tick": 1203,
+          "age_ticks": 40,
+          "identity": "unit:26000104:0:1",
+          "live": {
+            "x": 3499,
+            "y": 14500,
+            "hp": 959,
+            "max_hp": 1629,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 0.62522395987358,
+          "hp_error": 32,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 84,
+          "row_index": 7,
+          "tick": 1213,
+          "age_ticks": 50,
+          "identity": "unit:26000104:0:1",
+          "live": {
+            "x": 3499,
+            "y": 14500,
+            "hp": 959,
+            "max_hp": 1629,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 1.5024806155155548,
+          "hp_error": 32,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 85,
+          "row_index": 6,
+          "tick": 1223,
+          "age_ticks": 60,
+          "identity": "unit:26000104:0:1",
+          "live": {
+            "x": 3575,
+            "y": 14849,
+            "hp": 640,
+            "max_hp": 1629,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 1.9923378227599855,
+          "hp_error": 32,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 86,
+          "row_index": 6,
+          "tick": 1235,
+          "age_ticks": 72,
+          "identity": "unit:26000104:0:1",
+          "live": {
+            "x": 3873,
+            "y": 15867,
+            "hp": 640,
+            "max_hp": 1629,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 1.949825889662972,
+          "hp_error": 32,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 87,
+          "row_index": 6,
+          "tick": 1245,
+          "age_ticks": 82,
+          "identity": "unit:26000104:0:1",
+          "live": {
+            "x": 4394,
+            "y": 16577,
+            "hp": 321,
+            "max_hp": 1629,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 1.767196650064729,
+          "hp_error": 32,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 88,
+          "row_index": 6,
+          "tick": 1255,
+          "age_ticks": 92,
+          "identity": "unit:26000104:0:1",
+          "live": {
+            "x": 5463,
+            "y": 17000,
+            "hp": 321,
+            "max_hp": 1629,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 0.6206657715711411,
+          "hp_error": 126,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 89,
+          "row_index": 6,
+          "tick": 1265,
+          "age_ticks": 102,
+          "identity": "unit:26000104:0:1",
+          "live": {
+            "x": 6027,
+            "y": 17128,
+            "hp": 2,
+            "max_hp": 1629,
+            "card_id": 26000104
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 90,
+          "row_index": 6,
+          "tick": 1275,
+          "age_ticks": 112,
+          "identity": "unit:26000104:0:1",
+          "live": {
+            "x": 6027,
+            "y": 17128,
+            "hp": 2,
+            "max_hp": 1629,
+            "card_id": 26000104
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 1163,
+          "previous_tick": 1153,
+          "side": 0,
+          "name": "MergeMaiden_Normal",
+          "card_id": 26000104,
+          "x": 3499,
+          "y": 14500,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 9,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 1163,
+          "resolved_xy": [
+            3500.0,
+            14500.0
+          ]
+        }
+      ]
+    },
+    {
+      "match": "live_play_20261008_003019",
+      "identity": "unit:26000104:0:2",
+      "first_seen_tick": 2409,
+      "first_mismatch_tick": 2409,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_003019.json",
+      "source": "sources/live_play_20261008_003019.json",
+      "rows": [
+        {
+          "sample_index": 185,
+          "row_index": 7,
+          "tick": 2409,
+          "age_ticks": 0,
+          "identity": "unit:26000104:0:2",
+          "live": {
+            "x": 3499,
+            "y": 14500,
+            "hp": 1484,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 186,
+          "row_index": 7,
+          "tick": 2413,
+          "age_ticks": 4,
+          "identity": "unit:26000104:0:2",
+          "live": {
+            "x": 3499,
+            "y": 14500,
+            "hp": 1484,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 145,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 187,
+          "row_index": 13,
+          "tick": 2444,
+          "age_ticks": 35,
+          "identity": "unit:26000104:0:2",
+          "live": {
+            "x": 3499,
+            "y": 15867,
+            "hp": 1484,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 0.31384868965793056,
+          "hp_error": 145,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 188,
+          "row_index": 12,
+          "tick": 2455,
+          "age_ticks": 46,
+          "identity": "unit:26000104:0:2",
+          "live": {
+            "x": 4171,
+            "y": 16578,
+            "hp": 1484,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 0.30729301977103224,
+          "hp_error": 145,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 189,
+          "row_index": 12,
+          "tick": 2465,
+          "age_ticks": 56,
+          "identity": "unit:26000104:0:2",
+          "live": {
+            "x": 4971,
+            "y": 16967,
+            "hp": 1484,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 0.9373158485804025,
+          "hp_error": 145,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 190,
+          "row_index": 12,
+          "tick": 2475,
+          "age_ticks": 66,
+          "identity": "unit:26000104:0:2",
+          "live": {
+            "x": 5389,
+            "y": 17115,
+            "hp": 1484,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 1.3766074240683144,
+          "hp_error": 145,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 191,
+          "row_index": 9,
+          "tick": 2485,
+          "age_ticks": 76,
+          "identity": "unit:26000104:0:2",
+          "live": {
+            "x": 5389,
+            "y": 17115,
+            "hp": 1484,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 1.2562579352983207,
+          "hp_error": 145,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 192,
+          "row_index": 9,
+          "tick": 2496,
+          "age_ticks": 87,
+          "identity": "unit:26000104:0:2",
+          "live": {
+            "x": 5389,
+            "y": 17115,
+            "hp": 1484,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 1.3911351479996472,
+          "hp_error": 145,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 193,
+          "row_index": 8,
+          "tick": 2500,
+          "age_ticks": 91,
+          "identity": "unit:26000104:0:2",
+          "live": {
+            "x": 5389,
+            "y": 17115,
+            "hp": 1365,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 1.417967559572503,
+          "hp_error": 264,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 194,
+          "row_index": 8,
+          "tick": 2530,
+          "age_ticks": 121,
+          "identity": "unit:26000104:0:2",
+          "live": {
+            "x": 7519,
+            "y": 18641,
+            "hp": 1365,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 1.1101824174431876,
+          "hp_error": 264,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 195,
+          "row_index": 8,
+          "tick": 2542,
+          "age_ticks": 133,
+          "identity": "unit:26000104:0:2",
+          "live": {
+            "x": 8271,
+            "y": 18952,
+            "hp": 1365,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 1.350502869304616,
+          "hp_error": 134,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 196,
+          "row_index": 8,
+          "tick": 2552,
+          "age_ticks": 143,
+          "identity": "unit:26000104:0:2",
+          "live": {
+            "x": 8271,
+            "y": 18952,
+            "hp": 1365,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 1.4396086273706477,
+          "hp_error": 134,
+          "missing": null,
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 2409,
+          "previous_tick": 2379,
+          "side": 0,
+          "name": "MergeMaiden_Normal",
+          "card_id": 26000104,
+          "x": 3499,
+          "y": 14500,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 21,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 2409,
+          "resolved_xy": [
+            3500.0,
+            14500.0
+          ]
+        }
+      ]
+    },
+    {
+      "match": "live_play_20261008_003019",
+      "identity": "unit:26000104:0:3",
+      "first_seen_tick": 3309,
+      "first_mismatch_tick": 3309,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_003019.json",
+      "source": "sources/live_play_20261008_003019.json",
+      "rows": [
+        {
+          "sample_index": 255,
+          "row_index": 14,
+          "tick": 3309,
+          "age_ticks": 0,
+          "identity": "unit:26000104:0:3",
+          "live": {
+            "x": 14556,
+            "y": 8361,
+            "hp": 1484,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 256,
+          "row_index": 14,
+          "tick": 3315,
+          "age_ticks": 6,
+          "identity": "unit:26000104:0:3",
+          "live": {
+            "x": 14556,
+            "y": 8361,
+            "hp": 1161,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 0.14985659811966906,
+          "hp_error": 468,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 257,
+          "row_index": 13,
+          "tick": 3347,
+          "age_ticks": 38,
+          "identity": "unit:26000104:0:3",
+          "live": {
+            "x": 14556,
+            "y": 8361,
+            "hp": 838,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 1.7386445870274925,
+          "hp_error": 791,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 258,
+          "row_index": 13,
+          "tick": 3357,
+          "age_ticks": 48,
+          "identity": "unit:26000104:0:3",
+          "live": {
+            "x": 14556,
+            "y": 8361,
+            "hp": 838,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 2.6337435334519568,
+          "hp_error": 791,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 259,
+          "row_index": 13,
+          "tick": 3367,
+          "age_ticks": 58,
+          "identity": "unit:26000104:0:3",
+          "live": {
+            "x": 14556,
+            "y": 8361,
+            "hp": 515,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 3.533189069381937,
+          "hp_error": 1114,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 260,
+          "row_index": 13,
+          "tick": 3375,
+          "age_ticks": 66,
+          "identity": "unit:26000104:0:3",
+          "live": {
+            "x": 14556,
+            "y": 8361,
+            "hp": 515,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 4.252810952769944,
+          "hp_error": 1114,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 261,
+          "row_index": 9,
+          "tick": 3405,
+          "age_ticks": 96,
+          "identity": "unit:26000104:0:3",
+          "live": {
+            "x": 14706,
+            "y": 10045,
+            "hp": 515,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 5.201857456716783,
+          "hp_error": 1114,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 262,
+          "row_index": 9,
+          "tick": 3415,
+          "age_ticks": 106,
+          "identity": "unit:26000104:0:3",
+          "live": {
+            "x": 14727,
+            "y": 10945,
+            "hp": 515,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 5.109411805677832,
+          "hp_error": 1114,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 263,
+          "row_index": 9,
+          "tick": 3427,
+          "age_ticks": 118,
+          "identity": "unit:26000104:0:3",
+          "live": {
+            "x": 14736,
+            "y": 12025,
+            "hp": 515,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 4.907093335162885,
+          "hp_error": 1114,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 264,
+          "row_index": 10,
+          "tick": 3437,
+          "age_ticks": 128,
+          "identity": "unit:26000104:0:3",
+          "live": {
+            "x": 14739,
+            "y": 12925,
+            "hp": 515,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 4.640722896273812,
+          "hp_error": 1114,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 265,
+          "row_index": 9,
+          "tick": 3447,
+          "age_ticks": 138,
+          "identity": "unit:26000104:0:3",
+          "live": {
+            "x": 14739,
+            "y": 13825,
+            "hp": 515,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 4.532067519355818,
+          "hp_error": 1114,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 266,
+          "row_index": 9,
+          "tick": 3457,
+          "age_ticks": 148,
+          "identity": "unit:26000104:0:3",
+          "live": {
+            "x": 14739,
+            "y": 14725,
+            "hp": 515,
+            "max_hp": 1484,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 4.463695778164099,
+          "hp_error": 956,
+          "missing": null,
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 3309,
+          "previous_tick": 3297,
+          "side": 0,
+          "name": "MergeMaiden_Normal",
+          "card_id": 26000104,
+          "x": 14556,
+          "y": 8361,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 35,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 3309,
+          "resolved_xy": [
+            14500.0,
+            8500.0
+          ]
+        }
+      ]
+    },
+    {
+      "match": "live_play_20261008_010911",
+      "identity": "unit:26000104:0:1",
+      "first_seen_tick": 689,
+      "first_mismatch_tick": 689,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_010911.json",
+      "source": "sources/live_play_20261008_010911.json",
+      "rows": [
+        {
+          "sample_index": 46,
+          "row_index": 52,
+          "tick": 689,
+          "age_ticks": 0,
+          "identity": "unit:26000104:0:1",
+          "live": {
+            "x": 2499,
+            "y": 14500,
+            "hp": 1629,
+            "max_hp": 1629,
+            "card_id": 26000104
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 47,
+          "row_index": 52,
+          "tick": 699,
+          "age_ticks": 10,
+          "identity": "unit:26000104:0:1",
+          "live": {
+            "x": 2499,
+            "y": 14500,
+            "hp": 1511,
+            "max_hp": 1629,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 118,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 48,
+          "row_index": 51,
+          "tick": 709,
+          "age_ticks": 20,
+          "identity": "unit:26000104:0:1",
+          "live": {
+            "x": 2742,
+            "y": 14930,
+            "hp": 1511,
+            "max_hp": 1629,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 0.493911935470282,
+          "hp_error": 118,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 49,
+          "row_index": 50,
+          "tick": 719,
+          "age_ticks": 30,
+          "identity": "unit:26000104:0:1",
+          "live": {
+            "x": 3292,
+            "y": 15074,
+            "hp": 1511,
+            "max_hp": 1629,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 0.46515051327500434,
+          "hp_error": 118,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 50,
+          "row_index": 54,
+          "tick": 729,
+          "age_ticks": 40,
+          "identity": "unit:26000104:0:1",
+          "live": {
+            "x": 3273,
+            "y": 15697,
+            "hp": 1511,
+            "max_hp": 1629,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 0.49977294844759257,
+          "hp_error": 118,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 51,
+          "row_index": 54,
+          "tick": 739,
+          "age_ticks": 50,
+          "identity": "unit:26000104:0:1",
+          "live": {
+            "x": 3313,
+            "y": 16273,
+            "hp": 1511,
+            "max_hp": 1629,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 0.7913039870997745,
+          "hp_error": 118,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 52,
+          "row_index": 53,
+          "tick": 749,
+          "age_ticks": 60,
+          "identity": "unit:26000104:0:1",
+          "live": {
+            "x": 3484,
+            "y": 17064,
+            "hp": 1511,
+            "max_hp": 1629,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 0.9222667726856476,
+          "hp_error": 118,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 53,
+          "row_index": 51,
+          "tick": 759,
+          "age_ticks": 70,
+          "identity": "unit:26000104:0:1",
+          "live": {
+            "x": 3512,
+            "y": 17531,
+            "hp": 1511,
+            "max_hp": 1629,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 1.3435750816385363,
+          "hp_error": 118,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 54,
+          "row_index": 55,
+          "tick": 769,
+          "age_ticks": 80,
+          "identity": "unit:26000104:0:1",
+          "live": {
+            "x": 3366,
+            "y": 17818,
+            "hp": 1511,
+            "max_hp": 1629,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 1.9303152592258084,
+          "hp_error": 118,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 55,
+          "row_index": 60,
+          "tick": 775,
+          "age_ticks": 86,
+          "identity": "unit:26000104:0:1",
+          "live": {
+            "x": 3327,
+            "y": 18352,
+            "hp": 1511,
+            "max_hp": 1629,
+            "card_id": 26000104
+          },
+          "position_error_tiles": 1.9340488618439815,
+          "hp_error": 118,
+          "missing": null,
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 689,
+          "previous_tick": 679,
+          "side": 0,
+          "name": "MergeMaiden_Normal",
+          "card_id": 26000104,
+          "x": 2499,
+          "y": 14500,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 11,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 689,
+          "resolved_xy": [
+            2500.0,
+            14500.0
+          ]
+        }
+      ]
+    }
+  ],
+  "Tombstone": [
+    {
+      "match": "live_play_20261008_003700",
+      "identity": "unit:27000009:0:1",
+      "first_seen_tick": 2006,
+      "first_mismatch_tick": 2006,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_003700.json",
+      "source": "sources/live_play_20261008_003700.json",
+      "rows": [
+        {
+          "sample_index": 161,
+          "row_index": 9,
+          "tick": 2006,
+          "age_ticks": 0,
+          "identity": "unit:27000009:0:1",
+          "live": {
+            "x": 9500,
+            "y": 9500,
+            "hp": 701,
+            "max_hp": 701,
+            "card_id": 27000009
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 162,
+          "row_index": 9,
+          "tick": 2016,
+          "age_ticks": 10,
+          "identity": "unit:27000009:0:1",
+          "live": {
+            "x": 9500,
+            "y": 9500,
+            "hp": 696,
+            "max_hp": 701,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 74,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 163,
+          "row_index": 9,
+          "tick": 2026,
+          "age_ticks": 20,
+          "identity": "unit:27000009:0:1",
+          "live": {
+            "x": 9500,
+            "y": 9500,
+            "hp": 684,
+            "max_hp": 701,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 86,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 164,
+          "row_index": 9,
+          "tick": 2036,
+          "age_ticks": 30,
+          "identity": "unit:27000009:0:1",
+          "live": {
+            "x": 9500,
+            "y": 9500,
+            "hp": 672,
+            "max_hp": 701,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 86,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 165,
+          "row_index": 9,
+          "tick": 2046,
+          "age_ticks": 40,
+          "identity": "unit:27000009:0:1",
+          "live": {
+            "x": 9500,
+            "y": 9500,
+            "hp": 661,
+            "max_hp": 701,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 84,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 166,
+          "row_index": 8,
+          "tick": 2056,
+          "age_ticks": 50,
+          "identity": "unit:27000009:0:1",
+          "live": {
+            "x": 9500,
+            "y": 9500,
+            "hp": 649,
+            "max_hp": 701,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 83,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 167,
+          "row_index": 8,
+          "tick": 2066,
+          "age_ticks": 60,
+          "identity": "unit:27000009:0:1",
+          "live": {
+            "x": 9500,
+            "y": 9500,
+            "hp": 638,
+            "max_hp": 701,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 81,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 168,
+          "row_index": 8,
+          "tick": 2077,
+          "age_ticks": 71,
+          "identity": "unit:27000009:0:1",
+          "live": {
+            "x": 9500,
+            "y": 9500,
+            "hp": 625,
+            "max_hp": 701,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 80,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 169,
+          "row_index": 8,
+          "tick": 2087,
+          "age_ticks": 81,
+          "identity": "unit:27000009:0:1",
+          "live": {
+            "x": 9500,
+            "y": 9500,
+            "hp": 613,
+            "max_hp": 701,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 79,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 170,
+          "row_index": 8,
+          "tick": 2097,
+          "age_ticks": 91,
+          "identity": "unit:27000009:0:1",
+          "live": {
+            "x": 9500,
+            "y": 9500,
+            "hp": 602,
+            "max_hp": 701,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 78,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 171,
+          "row_index": 8,
+          "tick": 2108,
+          "age_ticks": 102,
+          "identity": "unit:27000009:0:1",
+          "live": {
+            "x": 9500,
+            "y": 9500,
+            "hp": 589,
+            "max_hp": 701,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 77,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 172,
+          "row_index": 8,
+          "tick": 2118,
+          "age_ticks": 112,
+          "identity": "unit:27000009:0:1",
+          "live": {
+            "x": 9500,
+            "y": 9500,
+            "hp": 577,
+            "max_hp": 701,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 76,
+          "missing": null,
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 2006,
+          "previous_tick": 1970,
+          "side": 0,
+          "name": "Tombstone",
+          "card_id": 27000009,
+          "x": 9500,
+          "y": 9500,
+          "source": "first_seen_body_proxy",
+          "bodies": 3,
+          "row": 21,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 2006,
+          "resolved_xy": [
+            9500.0,
+            9500.0
+          ]
+        },
+        {
+          "tick": 2097,
+          "previous_tick": 2087,
+          "side": 0,
+          "name": "Tombstone",
+          "card_id": 27000009,
+          "x": 10004,
+          "y": 11505,
+          "source": "first_seen_body_proxy",
+          "bodies": 2,
+          "row": 22,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 2097,
+          "resolved_xy": [
+            10500.0,
+            12500.0
+          ]
+        }
+      ]
+    },
+    {
+      "match": "live_play_20261008_003700",
+      "identity": "unit:27000009:0:2",
+      "first_seen_tick": 2016,
+      "first_mismatch_tick": 2016,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_003700.json",
+      "source": "sources/live_play_20261008_003700.json",
+      "rows": [
+        {
+          "sample_index": 162,
+          "row_index": 10,
+          "tick": 2016,
+          "age_ticks": 0,
+          "identity": "unit:27000009:0:2",
+          "live": {
+            "x": 9878,
+            "y": 11379,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 163,
+          "row_index": 10,
+          "tick": 2026,
+          "age_ticks": 10,
+          "identity": "unit:27000009:0:2",
+          "live": {
+            "x": 10610,
+            "y": 12111,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 1.4806815998046303,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 164,
+          "row_index": 10,
+          "tick": 2036,
+          "age_ticks": 20,
+          "identity": "unit:27000009:0:2",
+          "live": {
+            "x": 11240,
+            "y": 12741,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 1.336431816442575,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 165,
+          "row_index": 10,
+          "tick": 2046,
+          "age_ticks": 30,
+          "identity": "unit:27000009:0:2",
+          "live": {
+            "x": 11870,
+            "y": 13371,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 1.336431816442575,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 166,
+          "row_index": 9,
+          "tick": 2056,
+          "age_ticks": 40,
+          "identity": "unit:27000009:0:2",
+          "live": {
+            "x": 12500,
+            "y": 14001,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 1.336431816442575,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 167,
+          "row_index": 9,
+          "tick": 2066,
+          "age_ticks": 50,
+          "identity": "unit:27000009:0:2",
+          "live": {
+            "x": 13130,
+            "y": 14631,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 1.336431816442575,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 168,
+          "row_index": 9,
+          "tick": 2077,
+          "age_ticks": 61,
+          "identity": "unit:27000009:0:2",
+          "live": {
+            "x": 13753,
+            "y": 15387,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 1.3347992358403566,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 169,
+          "row_index": 9,
+          "tick": 2087,
+          "age_ticks": 71,
+          "identity": "unit:27000009:0:2",
+          "live": {
+            "x": 14008,
+            "y": 16248,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 1.33608420393327,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 170,
+          "row_index": 9,
+          "tick": 2097,
+          "age_ticks": 81,
+          "identity": "unit:27000009:0:2",
+          "live": {
+            "x": 14131,
+            "y": 17131,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 1.3367322095318868,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 171,
+          "row_index": 9,
+          "tick": 2108,
+          "age_ticks": 92,
+          "identity": "unit:27000009:0:2",
+          "live": {
+            "x": 14194,
+            "y": 18110,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 1.338665753651747,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 2006,
+          "previous_tick": 1970,
+          "side": 0,
+          "name": "Tombstone",
+          "card_id": 27000009,
+          "x": 9500,
+          "y": 9500,
+          "source": "first_seen_body_proxy",
+          "bodies": 3,
+          "row": 21,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 2006,
+          "resolved_xy": [
+            9500.0,
+            9500.0
+          ]
+        },
+        {
+          "tick": 2097,
+          "previous_tick": 2087,
+          "side": 0,
+          "name": "Tombstone",
+          "card_id": 27000009,
+          "x": 10004,
+          "y": 11505,
+          "source": "first_seen_body_proxy",
+          "bodies": 2,
+          "row": 22,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 2097,
+          "resolved_xy": [
+            10500.0,
+            12500.0
+          ]
+        }
+      ]
+    },
+    {
+      "match": "live_play_20261008_003700",
+      "identity": "unit:27000009:0:3",
+      "first_seen_tick": 2026,
+      "first_mismatch_tick": 2026,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_003700.json",
+      "source": "sources/live_play_20261008_003700.json",
+      "rows": [
+        {
+          "sample_index": 163,
+          "row_index": 11,
+          "tick": 2026,
+          "age_ticks": 0,
+          "identity": "unit:27000009:0:3",
+          "live": {
+            "x": 9903,
+            "y": 11403,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 164,
+          "row_index": 11,
+          "tick": 2036,
+          "age_ticks": 10,
+          "identity": "unit:27000009:0:3",
+          "live": {
+            "x": 10533,
+            "y": 12033,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 1.336431816442575,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 165,
+          "row_index": 11,
+          "tick": 2046,
+          "age_ticks": 20,
+          "identity": "unit:27000009:0:3",
+          "live": {
+            "x": 11163,
+            "y": 12663,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 1.336431816442575,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 166,
+          "row_index": 10,
+          "tick": 2056,
+          "age_ticks": 30,
+          "identity": "unit:27000009:0:3",
+          "live": {
+            "x": 11793,
+            "y": 13293,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 1.336431816442575,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 167,
+          "row_index": 10,
+          "tick": 2066,
+          "age_ticks": 40,
+          "identity": "unit:27000009:0:3",
+          "live": {
+            "x": 12423,
+            "y": 13923,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 1.336431816442575,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 168,
+          "row_index": 10,
+          "tick": 2077,
+          "age_ticks": 51,
+          "identity": "unit:27000009:0:3",
+          "live": {
+            "x": 13116,
+            "y": 14616,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 1.336431816442575,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 169,
+          "row_index": 10,
+          "tick": 2087,
+          "age_ticks": 61,
+          "identity": "unit:27000009:0:3",
+          "live": {
+            "x": 13692,
+            "y": 15288,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 1.3296804127308184,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 170,
+          "row_index": 10,
+          "tick": 2097,
+          "age_ticks": 71,
+          "identity": "unit:27000009:0:3",
+          "live": {
+            "x": 13992,
+            "y": 16123,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 1.3174160314798056,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 171,
+          "row_index": 10,
+          "tick": 2108,
+          "age_ticks": 82,
+          "identity": "unit:27000009:0:3",
+          "live": {
+            "x": 14134,
+            "y": 17092,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 1.3343237987834886,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 172,
+          "row_index": 10,
+          "tick": 2118,
+          "age_ticks": 92,
+          "identity": "unit:27000009:0:3",
+          "live": {
+            "x": 14190,
+            "y": 17982,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 1.3372079120316331,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 173,
+          "row_index": 10,
+          "tick": 2129,
+          "age_ticks": 103,
+          "identity": "unit:27000009:0:3",
+          "live": {
+            "x": 14219,
+            "y": 18969,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 1.3438935969785704,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 2006,
+          "previous_tick": 1970,
+          "side": 0,
+          "name": "Tombstone",
+          "card_id": 27000009,
+          "x": 9500,
+          "y": 9500,
+          "source": "first_seen_body_proxy",
+          "bodies": 3,
+          "row": 21,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 2006,
+          "resolved_xy": [
+            9500.0,
+            9500.0
+          ]
+        },
+        {
+          "tick": 2097,
+          "previous_tick": 2087,
+          "side": 0,
+          "name": "Tombstone",
+          "card_id": 27000009,
+          "x": 10004,
+          "y": 11505,
+          "source": "first_seen_body_proxy",
+          "bodies": 2,
+          "row": 22,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 2097,
+          "resolved_xy": [
+            10500.0,
+            12500.0
+          ]
+        }
+      ]
+    },
+    {
+      "match": "live_play_20261008_003700",
+      "identity": "unit:27000009:0:4",
+      "first_seen_tick": 2097,
+      "first_mismatch_tick": 2097,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_003700.json",
+      "source": "sources/live_play_20261008_003700.json",
+      "rows": [
+        {
+          "sample_index": 170,
+          "row_index": 11,
+          "tick": 2097,
+          "age_ticks": 0,
+          "identity": "unit:27000009:0:4",
+          "live": {
+            "x": 10004,
+            "y": 11505,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 171,
+          "row_index": 11,
+          "tick": 2108,
+          "age_ticks": 11,
+          "identity": "unit:27000009:0:4",
+          "live": {
+            "x": 10768,
+            "y": 12269,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 1.6086000124331716,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 172,
+          "row_index": 11,
+          "tick": 2118,
+          "age_ticks": 21,
+          "identity": "unit:27000009:0:4",
+          "live": {
+            "x": 11398,
+            "y": 12899,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 2.3440686850005057,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 173,
+          "row_index": 11,
+          "tick": 2129,
+          "age_ticks": 32,
+          "identity": "unit:27000009:0:4",
+          "live": {
+            "x": 12091,
+            "y": 13592,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 2.501837924406775,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 174,
+          "row_index": 10,
+          "tick": 2140,
+          "age_ticks": 43,
+          "identity": "unit:27000009:0:4",
+          "live": {
+            "x": 12784,
+            "y": 14285,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 2.4452004007851786,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 175,
+          "row_index": 9,
+          "tick": 2150,
+          "age_ticks": 53,
+          "identity": "unit:27000009:0:4",
+          "live": {
+            "x": 13414,
+            "y": 14915,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 2.4188381508484604,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 176,
+          "row_index": 10,
+          "tick": 2152,
+          "age_ticks": 55,
+          "identity": "unit:27000009:0:4",
+          "live": {
+            "x": 13540,
+            "y": 15041,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 2.4162305353587437,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 177,
+          "row_index": 11,
+          "tick": 2184,
+          "age_ticks": 87,
+          "identity": "unit:27000009:0:4",
+          "live": {
+            "x": 14193,
+            "y": 17795,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 2.4954712981719505,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 178,
+          "row_index": 12,
+          "tick": 2194,
+          "age_ticks": 97,
+          "identity": "unit:27000009:0:4",
+          "live": {
+            "x": 14224,
+            "y": 18690,
+            "hp": 108,
+            "max_hp": 108,
+            "card_id": 27000009
+          },
+          "position_error_tiles": 2.515504919494295,
+          "hp_error": 11,
+          "missing": null,
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 2006,
+          "previous_tick": 1970,
+          "side": 0,
+          "name": "Tombstone",
+          "card_id": 27000009,
+          "x": 9500,
+          "y": 9500,
+          "source": "first_seen_body_proxy",
+          "bodies": 3,
+          "row": 21,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 2006,
+          "resolved_xy": [
+            9500.0,
+            9500.0
+          ]
+        },
+        {
+          "tick": 2097,
+          "previous_tick": 2087,
+          "side": 0,
+          "name": "Tombstone",
+          "card_id": 27000009,
+          "x": 10004,
+          "y": 11505,
+          "source": "first_seen_body_proxy",
+          "bodies": 2,
+          "row": 22,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 2097,
+          "resolved_xy": [
+            10500.0,
+            12500.0
+          ]
+        },
+        {
+          "tick": 2184,
+          "previous_tick": 2152,
+          "side": 0,
+          "name": "Tombstone",
+          "card_id": 27000009,
+          "x": 10516,
+          "y": 12017,
+          "source": "first_seen_body_proxy",
+          "bodies": 2,
+          "row": 25,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 2184,
+          "resolved_xy": [
+            13500.0,
+            12500.0
+          ]
+        }
+      ]
+    }
+  ],
+  "GoblinGiant": [
+    {
+      "match": "live_play_20261008_012304",
+      "identity": "unit:26000060:0:1",
+      "first_seen_tick": 1104,
+      "first_mismatch_tick": 1104,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_012304.json",
+      "source": "sources/live_play_20261008_012304.json",
+      "rows": [
+        {
+          "sample_index": 88,
+          "row_index": 7,
+          "tick": 1104,
+          "age_ticks": 0,
+          "identity": "unit:26000060:0:1",
+          "live": {
+            "x": 9500,
+            "y": 500,
+            "hp": 4519,
+            "max_hp": 4519,
+            "card_id": 26000060
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 89,
+          "row_index": 7,
+          "tick": 1106,
+          "age_ticks": 2,
+          "identity": "unit:26000060:0:1",
+          "live": {
+            "x": 9500,
+            "y": 500,
+            "hp": 4519,
+            "max_hp": 4519,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.8995137575379267,
+          "hp_error": 4326,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 90,
+          "row_index": 7,
+          "tick": 1132,
+          "age_ticks": 28,
+          "identity": "unit:26000060:0:1",
+          "live": {
+            "x": 10076,
+            "y": 1076,
+            "hp": 4519,
+            "max_hp": 4519,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 1.22061664743686,
+          "hp_error": 4326,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 91,
+          "row_index": 8,
+          "tick": 1142,
+          "age_ticks": 38,
+          "identity": "unit:26000060:0:1",
+          "live": {
+            "x": 10440,
+            "y": 1650,
+            "hp": 4519,
+            "max_hp": 4519,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.9039386041098145,
+          "hp_error": 4326,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 92,
+          "row_index": 8,
+          "tick": 1152,
+          "age_ticks": 48,
+          "identity": "unit:26000060:0:1",
+          "live": {
+            "x": 10768,
+            "y": 2084,
+            "hp": 4519,
+            "max_hp": 4519,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.7766092968797116,
+          "hp_error": 4326,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 93,
+          "row_index": 8,
+          "tick": 1162,
+          "age_ticks": 58,
+          "identity": "unit:26000060:0:1",
+          "live": {
+            "x": 11120,
+            "y": 2500,
+            "hp": 4519,
+            "max_hp": 4519,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.7813385949765952,
+          "hp_error": 4326,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 94,
+          "row_index": 8,
+          "tick": 1172,
+          "age_ticks": 68,
+          "identity": "unit:26000060:0:1",
+          "live": {
+            "x": 11580,
+            "y": 3008,
+            "hp": 4519,
+            "max_hp": 4519,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.9137313609590074,
+          "hp_error": 4326,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 95,
+          "row_index": 8,
+          "tick": 1182,
+          "age_ticks": 78,
+          "identity": "unit:26000060:0:1",
+          "live": {
+            "x": 11956,
+            "y": 3408,
+            "hp": 4519,
+            "max_hp": 4519,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.7956161134617624,
+          "hp_error": 4326,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 96,
+          "row_index": 8,
+          "tick": 1192,
+          "age_ticks": 88,
+          "identity": "unit:26000060:0:1",
+          "live": {
+            "x": 12379,
+            "y": 3852,
+            "hp": 4519,
+            "max_hp": 4519,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.8594143354634015,
+          "hp_error": 4326,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 97,
+          "row_index": 9,
+          "tick": 1198,
+          "age_ticks": 94,
+          "identity": "unit:26000060:0:1",
+          "live": {
+            "x": 12633,
+            "y": 4166,
+            "hp": 4519,
+            "max_hp": 4519,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.9224993224929762,
+          "hp_error": 4326,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 98,
+          "row_index": 9,
+          "tick": 1226,
+          "age_ticks": 122,
+          "identity": "unit:26000060:0:1",
+          "live": {
+            "x": 13092,
+            "y": 5727,
+            "hp": 4519,
+            "max_hp": 4519,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.9444876918202799,
+          "hp_error": 4326,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 99,
+          "row_index": 9,
+          "tick": 1236,
+          "age_ticks": 132,
+          "identity": "unit:26000060:0:1",
+          "live": {
+            "x": 12725,
+            "y": 6115,
+            "hp": 4519,
+            "max_hp": 4519,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.773204371430995,
+          "hp_error": 4326,
+          "missing": null,
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 1104,
+          "previous_tick": 1094,
+          "side": 0,
+          "name": "GoblinGiant",
+          "card_id": 26000060,
+          "x": 9500,
+          "y": 500,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 6,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 1104,
+          "resolved_xy": [
+            9500.0,
+            500.0
+          ]
+        },
+        {
+          "tick": 1132,
+          "previous_tick": 1106,
+          "side": 0,
+          "name": "GoblinGiant",
+          "card_id": 26000060,
+          "x": 9967,
+          "y": 184,
+          "source": "first_seen_body_proxy",
+          "bodies": 2,
+          "row": 8,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 1132,
+          "resolved_xy": [
+            9500.0,
+            500.0
+          ]
+        }
+      ]
+    },
+    {
+      "match": "live_play_20261008_012304",
+      "identity": "unit:26000060:0:2",
+      "first_seen_tick": 1132,
+      "first_mismatch_tick": 1132,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_012304.json",
+      "source": "sources/live_play_20261008_012304.json",
+      "rows": [
+        {
+          "sample_index": 90,
+          "row_index": 8,
+          "tick": 1132,
+          "age_ticks": 0,
+          "identity": "unit:26000060:0:2",
+          "live": {
+            "x": 9367,
+            "y": 523,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.6305632402860161,
+          "hp_error": 4326,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 91,
+          "row_index": 9,
+          "tick": 1142,
+          "age_ticks": 10,
+          "identity": "unit:26000060:0:2",
+          "live": {
+            "x": 9638,
+            "y": 1118,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 1.0264253504273948,
+          "hp_error": 4326,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 92,
+          "row_index": 9,
+          "tick": 1152,
+          "age_ticks": 20,
+          "identity": "unit:26000060:0:2",
+          "live": {
+            "x": 9930,
+            "y": 1610,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 1.0858199666611403,
+          "hp_error": 4326,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 93,
+          "row_index": 9,
+          "tick": 1162,
+          "age_ticks": 30,
+          "identity": "unit:26000060:0:2",
+          "live": {
+            "x": 10312,
+            "y": 2106,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 1.0805415309001316,
+          "hp_error": 4326,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 94,
+          "row_index": 9,
+          "tick": 1172,
+          "age_ticks": 40,
+          "identity": "unit:26000060:0:2",
+          "live": {
+            "x": 10726,
+            "y": 2563,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 1.011747498143682,
+          "hp_error": 4326,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 95,
+          "row_index": 9,
+          "tick": 1182,
+          "age_ticks": 50,
+          "identity": "unit:26000060:0:2",
+          "live": {
+            "x": 11094,
+            "y": 2978,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 1.0687647075011413,
+          "hp_error": 4326,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 96,
+          "row_index": 9,
+          "tick": 1192,
+          "age_ticks": 60,
+          "identity": "unit:26000060:0:2",
+          "live": {
+            "x": 11511,
+            "y": 3438,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 1.0648610237960634,
+          "hp_error": 4326,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 97,
+          "row_index": 10,
+          "tick": 1198,
+          "age_ticks": 66,
+          "identity": "unit:26000060:0:2",
+          "live": {
+            "x": 11901,
+            "y": 3541,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 1.003207854833683,
+          "hp_error": 4326,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 98,
+          "row_index": 10,
+          "tick": 1226,
+          "age_ticks": 94,
+          "identity": "unit:26000060:0:2",
+          "live": {
+            "x": 12632,
+            "y": 4880,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.9467718838241871,
+          "hp_error": 4326,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 99,
+          "row_index": 10,
+          "tick": 1236,
+          "age_ticks": 104,
+          "identity": "unit:26000060:0:2",
+          "live": {
+            "x": 12067,
+            "y": 5502,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 1.0875922949340897,
+          "hp_error": 4326,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 100,
+          "row_index": 10,
+          "tick": 1246,
+          "age_ticks": 114,
+          "identity": "unit:26000060:0:2",
+          "live": {
+            "x": 12194,
+            "y": 6078,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 1.0549587669667473,
+          "hp_error": 4326,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 101,
+          "row_index": 10,
+          "tick": 1256,
+          "age_ticks": 124,
+          "identity": "unit:26000060:0:2",
+          "live": {
+            "x": 12437,
+            "y": 6529,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 1.116288493177279,
+          "hp_error": 4326,
+          "missing": null,
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 1104,
+          "previous_tick": 1094,
+          "side": 0,
+          "name": "GoblinGiant",
+          "card_id": 26000060,
+          "x": 9500,
+          "y": 500,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 6,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 1104,
+          "resolved_xy": [
+            9500.0,
+            500.0
+          ]
+        },
+        {
+          "tick": 1132,
+          "previous_tick": 1106,
+          "side": 0,
+          "name": "GoblinGiant",
+          "card_id": 26000060,
+          "x": 9967,
+          "y": 184,
+          "source": "first_seen_body_proxy",
+          "bodies": 2,
+          "row": 8,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 1132,
+          "resolved_xy": [
+            9500.0,
+            500.0
+          ]
+        }
+      ]
+    },
+    {
+      "match": "live_play_20261008_012304",
+      "identity": "unit:26000060:0:3",
+      "first_seen_tick": 1132,
+      "first_mismatch_tick": 1132,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_012304.json",
+      "source": "sources/live_play_20261008_012304.json",
+      "rows": [
+        {
+          "sample_index": 90,
+          "row_index": 9,
+          "tick": 1132,
+          "age_ticks": 0,
+          "identity": "unit:26000060:0:3",
+          "live": {
+            "x": 9967,
+            "y": 184,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.502143405811527,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 91,
+          "row_index": 10,
+          "tick": 1142,
+          "age_ticks": 10,
+          "identity": "unit:26000060:0:3",
+          "live": {
+            "x": 10198,
+            "y": 718,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.11399122773266372,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 92,
+          "row_index": 10,
+          "tick": 1152,
+          "age_ticks": 20,
+          "identity": "unit:26000060:0:3",
+          "live": {
+            "x": 10462,
+            "y": 1172,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.20863365021012312,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 93,
+          "row_index": 10,
+          "tick": 1162,
+          "age_ticks": 30,
+          "identity": "unit:26000060:0:3",
+          "live": {
+            "x": 10828,
+            "y": 1650,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.12841339493993606,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 94,
+          "row_index": 10,
+          "tick": 1172,
+          "age_ticks": 40,
+          "identity": "unit:26000060:0:3",
+          "live": {
+            "x": 11242,
+            "y": 2107,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.06140032573203501,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 95,
+          "row_index": 10,
+          "tick": 1182,
+          "age_ticks": 50,
+          "identity": "unit:26000060:0:3",
+          "live": {
+            "x": 11602,
+            "y": 2513,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.17751901306620652,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 96,
+          "row_index": 10,
+          "tick": 1192,
+          "age_ticks": 60,
+          "identity": "unit:26000060:0:3",
+          "live": {
+            "x": 12010,
+            "y": 2963,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.10696261028976434,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 97,
+          "row_index": 11,
+          "tick": 1198,
+          "age_ticks": 66,
+          "identity": "unit:26000060:0:3",
+          "live": {
+            "x": 12506,
+            "y": 3213,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.04022437072223753,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 98,
+          "row_index": 11,
+          "tick": 1226,
+          "age_ticks": 94,
+          "identity": "unit:26000060:0:3",
+          "live": {
+            "x": 13314,
+            "y": 4790,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.1945893111144597,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 99,
+          "row_index": 11,
+          "tick": 1236,
+          "age_ticks": 104,
+          "identity": "unit:26000060:0:3",
+          "live": {
+            "x": 12694,
+            "y": 5216,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.1526106156202772,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 100,
+          "row_index": 11,
+          "tick": 1246,
+          "age_ticks": 114,
+          "identity": "unit:26000060:0:3",
+          "live": {
+            "x": 12833,
+            "y": 5825,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.1039471019317037,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 101,
+          "row_index": 11,
+          "tick": 1256,
+          "age_ticks": 124,
+          "identity": "unit:26000060:0:3",
+          "live": {
+            "x": 13103,
+            "y": 6356,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.21114213222377007,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 1104,
+          "previous_tick": 1094,
+          "side": 0,
+          "name": "GoblinGiant",
+          "card_id": 26000060,
+          "x": 9500,
+          "y": 500,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 6,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 1104,
+          "resolved_xy": [
+            9500.0,
+            500.0
+          ]
+        },
+        {
+          "tick": 1132,
+          "previous_tick": 1106,
+          "side": 0,
+          "name": "GoblinGiant",
+          "card_id": 26000060,
+          "x": 9967,
+          "y": 184,
+          "source": "first_seen_body_proxy",
+          "bodies": 2,
+          "row": 8,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 1132,
+          "resolved_xy": [
+            9500.0,
+            500.0
+          ]
+        }
+      ]
+    },
+    {
+      "match": "live_play_20261008_012304",
+      "identity": "unit:26000060:0:4",
+      "first_seen_tick": 1637,
+      "first_mismatch_tick": null,
+      "first_mismatch_age_ticks": null,
+      "report": "new/live_play_20261008_012304.json",
+      "source": "sources/live_play_20261008_012304.json",
+      "rows": [
+        {
+          "sample_index": 132,
+          "row_index": 9,
+          "tick": 1637,
+          "age_ticks": 0,
+          "identity": "unit:26000060:0:4",
+          "live": {
+            "x": 13722,
+            "y": 21794,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.096317184344228,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 133,
+          "row_index": 9,
+          "tick": 1647,
+          "age_ticks": 10,
+          "identity": "unit:26000060:0:4",
+          "live": {
+            "x": 13722,
+            "y": 21794,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.096317184344228,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 134,
+          "row_index": 9,
+          "tick": 1657,
+          "age_ticks": 20,
+          "identity": "unit:26000060:0:4",
+          "live": {
+            "x": 13722,
+            "y": 21794,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.096317184344228,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 135,
+          "row_index": 8,
+          "tick": 1667,
+          "age_ticks": 30,
+          "identity": "unit:26000060:0:4",
+          "live": {
+            "x": 13722,
+            "y": 21794,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.096317184344228,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 136,
+          "row_index": 8,
+          "tick": 1677,
+          "age_ticks": 40,
+          "identity": "unit:26000060:0:4",
+          "live": {
+            "x": 13722,
+            "y": 21794,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.096317184344228,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 137,
+          "row_index": 9,
+          "tick": 1727,
+          "age_ticks": 90,
+          "identity": "unit:26000060:0:4",
+          "live": {
+            "x": 13443,
+            "y": 21903,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.35281298162057473,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 138,
+          "row_index": 9,
+          "tick": 1737,
+          "age_ticks": 100,
+          "identity": "unit:26000060:0:4",
+          "live": {
+            "x": 13443,
+            "y": 21903,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.35281298162057473,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        },
+        {
+          "sample_index": 139,
+          "row_index": 9,
+          "tick": 1747,
+          "age_ticks": 110,
+          "identity": "unit:26000060:0:4",
+          "live": {
+            "x": 13443,
+            "y": 21903,
+            "hp": 193,
+            "max_hp": 193,
+            "card_id": 26000060
+          },
+          "position_error_tiles": 0.34732837488463275,
+          "hp_error": 0,
+          "missing": null,
+          "mismatch": false
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 1637,
+          "previous_tick": 1627,
+          "side": 0,
+          "name": "GoblinGiant",
+          "card_id": 26000060,
+          "x": 14721,
+          "y": 21735,
+          "source": "first_seen_body_proxy",
+          "bodies": 2,
+          "row": 15,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": false,
+          "reason": "OUT_OF_TERRITORY",
+          "engine_tick": 1637,
+          "resolved_xy": [
+            14721.0,
+            21735.0
+          ]
+        }
+      ]
+    }
+  ],
+  "13000043": [
+    {
+      "match": "live_play_20261008_043718",
+      "identity": "unit:13000043:1:1",
+      "first_seen_tick": 2126,
+      "first_mismatch_tick": 2126,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_043718.json",
+      "source": "sources/live_play_20261008_043718.json",
+      "rows": [
+        {
+          "sample_index": 169,
+          "row_index": 8,
+          "tick": 2126,
+          "age_ticks": 0,
+          "identity": "unit:13000043:1:1",
+          "live": {
+            "x": 13800,
+            "y": 17499,
+            "hp": 1949,
+            "max_hp": 1949,
+            "card_id": 13000043
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 170,
+          "row_index": 8,
+          "tick": 2136,
+          "age_ticks": 10,
+          "identity": "unit:13000043:1:1",
+          "live": {
+            "x": 13800,
+            "y": 17499,
+            "hp": 1949,
+            "max_hp": 1949,
+            "card_id": 13000043
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 171,
+          "row_index": 8,
+          "tick": 2146,
+          "age_ticks": 20,
+          "identity": "unit:13000043:1:1",
+          "live": {
+            "x": 13795,
+            "y": 17410,
+            "hp": 1949,
+            "max_hp": 1949,
+            "card_id": 13000043
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 172,
+          "row_index": 8,
+          "tick": 2156,
+          "age_ticks": 30,
+          "identity": "unit:13000043:1:1",
+          "live": {
+            "x": 13484,
+            "y": 16680,
+            "hp": 1949,
+            "max_hp": 1949,
+            "card_id": 13000043
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 173,
+          "row_index": 8,
+          "tick": 2166,
+          "age_ticks": 40,
+          "identity": "unit:13000043:1:1",
+          "live": {
+            "x": 13446,
+            "y": 16623,
+            "hp": 1949,
+            "max_hp": 1949,
+            "card_id": 13000043
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 174,
+          "row_index": 8,
+          "tick": 2176,
+          "age_ticks": 50,
+          "identity": "unit:13000043:1:1",
+          "live": {
+            "x": 13385,
+            "y": 16290,
+            "hp": 1949,
+            "max_hp": 1949,
+            "card_id": 13000043
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 175,
+          "row_index": 8,
+          "tick": 2186,
+          "age_ticks": 60,
+          "identity": "unit:13000043:1:1",
+          "live": {
+            "x": 13392,
+            "y": 15619,
+            "hp": 1949,
+            "max_hp": 1949,
+            "card_id": 13000043
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 176,
+          "row_index": 8,
+          "tick": 2196,
+          "age_ticks": 70,
+          "identity": "unit:13000043:1:1",
+          "live": {
+            "x": 13606,
+            "y": 15036,
+            "hp": 1949,
+            "max_hp": 1949,
+            "card_id": 13000043
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 177,
+          "row_index": 8,
+          "tick": 2206,
+          "age_ticks": 80,
+          "identity": "unit:13000043:1:1",
+          "live": {
+            "x": 13879,
+            "y": 14691,
+            "hp": 1949,
+            "max_hp": 1949,
+            "card_id": 13000043
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 178,
+          "row_index": 6,
+          "tick": 2216,
+          "age_ticks": 90,
+          "identity": "unit:13000043:1:1",
+          "live": {
+            "x": 13879,
+            "y": 14691,
+            "hp": 1791,
+            "max_hp": 1949,
+            "card_id": 13000043
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 179,
+          "row_index": 6,
+          "tick": 2226,
+          "age_ticks": 100,
+          "identity": "unit:13000043:1:1",
+          "live": {
+            "x": 13300,
+            "y": 14089,
+            "hp": 1791,
+            "max_hp": 1949,
+            "card_id": 13000043
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 180,
+          "row_index": 6,
+          "tick": 2236,
+          "age_ticks": 110,
+          "identity": "unit:13000043:1:1",
+          "live": {
+            "x": 13400,
+            "y": 13208,
+            "hp": 1633,
+            "max_hp": 1949,
+            "card_id": 13000043
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": []
+    },
+    {
+      "match": "live_play_20261008_043718",
+      "identity": "unit:13000043:1:2",
+      "first_seen_tick": 2126,
+      "first_mismatch_tick": 2126,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_043718.json",
+      "source": "sources/live_play_20261008_043718.json",
+      "rows": [
+        {
+          "sample_index": 169,
+          "row_index": 9,
+          "tick": 2126,
+          "age_ticks": 0,
+          "identity": "unit:13000043:1:2",
+          "live": {
+            "x": 15200,
+            "y": 17499,
+            "hp": 1949,
+            "max_hp": 1949,
+            "card_id": 13000043
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 170,
+          "row_index": 9,
+          "tick": 2136,
+          "age_ticks": 10,
+          "identity": "unit:13000043:1:2",
+          "live": {
+            "x": 15200,
+            "y": 17499,
+            "hp": 1949,
+            "max_hp": 1949,
+            "card_id": 13000043
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 171,
+          "row_index": 9,
+          "tick": 2146,
+          "age_ticks": 20,
+          "identity": "unit:13000043:1:2",
+          "live": {
+            "x": 15211,
+            "y": 17230,
+            "hp": 1949,
+            "max_hp": 1949,
+            "card_id": 13000043
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 172,
+          "row_index": 9,
+          "tick": 2156,
+          "age_ticks": 30,
+          "identity": "unit:13000043:1:2",
+          "live": {
+            "x": 15228,
+            "y": 16600,
+            "hp": 1949,
+            "max_hp": 1949,
+            "card_id": 13000043
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 173,
+          "row_index": 9,
+          "tick": 2166,
+          "age_ticks": 40,
+          "identity": "unit:13000043:1:2",
+          "live": {
+            "x": 15228,
+            "y": 16600,
+            "hp": 1949,
+            "max_hp": 1949,
+            "card_id": 13000043
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 174,
+          "row_index": 9,
+          "tick": 2176,
+          "age_ticks": 50,
+          "identity": "unit:13000043:1:2",
+          "live": {
+            "x": 15228,
+            "y": 16600,
+            "hp": 1949,
+            "max_hp": 1949,
+            "card_id": 13000043
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 175,
+          "row_index": 9,
+          "tick": 2186,
+          "age_ticks": 60,
+          "identity": "unit:13000043:1:2",
+          "live": {
+            "x": 15300,
+            "y": 16588,
+            "hp": 1949,
+            "max_hp": 1949,
+            "card_id": 13000043
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 176,
+          "row_index": 9,
+          "tick": 2196,
+          "age_ticks": 70,
+          "identity": "unit:13000043:1:2",
+          "live": {
+            "x": 15354,
+            "y": 16587,
+            "hp": 1949,
+            "max_hp": 1949,
+            "card_id": 13000043
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 177,
+          "row_index": 9,
+          "tick": 2206,
+          "age_ticks": 80,
+          "identity": "unit:13000043:1:2",
+          "live": {
+            "x": 15359,
+            "y": 16587,
+            "hp": 1949,
+            "max_hp": 1949,
+            "card_id": 13000043
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 178,
+          "row_index": 7,
+          "tick": 2216,
+          "age_ticks": 90,
+          "identity": "unit:13000043:1:2",
+          "live": {
+            "x": 15359,
+            "y": 16587,
+            "hp": 1949,
+            "max_hp": 1949,
+            "card_id": 13000043
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 179,
+          "row_index": 7,
+          "tick": 2226,
+          "age_ticks": 100,
+          "identity": "unit:13000043:1:2",
+          "live": {
+            "x": 15015,
+            "y": 15790,
+            "hp": 1949,
+            "max_hp": 1949,
+            "card_id": 13000043
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 180,
+          "row_index": 7,
+          "tick": 2236,
+          "age_ticks": 110,
+          "identity": "unit:13000043:1:2",
+          "live": {
+            "x": 14889,
+            "y": 14963,
+            "hp": 1949,
+            "max_hp": 1949,
+            "card_id": 13000043
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": []
+    }
+  ],
+  "GoblinHut": [
+    {
+      "match": "live_play_20261008_053140",
+      "identity": "unit:27000001:0:1",
+      "first_seen_tick": 3569,
+      "first_mismatch_tick": 3569,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_053140.json",
+      "source": "sources/live_play_20261008_053140.json",
+      "rows": [
+        {
+          "sample_index": 285,
+          "row_index": 8,
+          "tick": 3569,
+          "age_ticks": 0,
+          "identity": "unit:27000001:0:1",
+          "live": {
+            "x": 9500,
+            "y": 10500,
+            "hp": 1885,
+            "max_hp": 1885,
+            "card_id": 27000001
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 286,
+          "row_index": 8,
+          "tick": 3579,
+          "age_ticks": 10,
+          "identity": "unit:27000001:0:1",
+          "live": {
+            "x": 9500,
+            "y": 10500,
+            "hp": 1885,
+            "max_hp": 1885,
+            "card_id": 27000001
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 171,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 287,
+          "row_index": 7,
+          "tick": 3589,
+          "age_ticks": 20,
+          "identity": "unit:27000001:0:1",
+          "live": {
+            "x": 9500,
+            "y": 10500,
+            "hp": 1876,
+            "max_hp": 1885,
+            "card_id": 27000001
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 162,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 288,
+          "row_index": 7,
+          "tick": 3600,
+          "age_ticks": 31,
+          "identity": "unit:27000001:0:1",
+          "live": {
+            "x": 9500,
+            "y": 10500,
+            "hp": 1842,
+            "max_hp": 1885,
+            "card_id": 27000001
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 159,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 289,
+          "row_index": 7,
+          "tick": 3610,
+          "age_ticks": 41,
+          "identity": "unit:27000001:0:1",
+          "live": {
+            "x": 9500,
+            "y": 10500,
+            "hp": 1810,
+            "max_hp": 1885,
+            "card_id": 27000001
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 244,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 290,
+          "row_index": 7,
+          "tick": 3620,
+          "age_ticks": 51,
+          "identity": "unit:27000001:0:1",
+          "live": {
+            "x": 9500,
+            "y": 10500,
+            "hp": 1779,
+            "max_hp": 1885,
+            "card_id": 27000001
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 331,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 291,
+          "row_index": 7,
+          "tick": 3631,
+          "age_ticks": 62,
+          "identity": "unit:27000001:0:1",
+          "live": {
+            "x": 9500,
+            "y": 10500,
+            "hp": 1744,
+            "max_hp": 1885,
+            "card_id": 27000001
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 505,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 292,
+          "row_index": 7,
+          "tick": 3641,
+          "age_ticks": 72,
+          "identity": "unit:27000001:0:1",
+          "live": {
+            "x": 9500,
+            "y": 10500,
+            "hp": 1713,
+            "max_hp": 1885,
+            "card_id": 27000001
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 592,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 293,
+          "row_index": 7,
+          "tick": 3651,
+          "age_ticks": 82,
+          "identity": "unit:27000001:0:1",
+          "live": {
+            "x": 9500,
+            "y": 10500,
+            "hp": 1681,
+            "max_hp": 1885,
+            "card_id": 27000001
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 677,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 294,
+          "row_index": 7,
+          "tick": 3661,
+          "age_ticks": 92,
+          "identity": "unit:27000001:0:1",
+          "live": {
+            "x": 9500,
+            "y": 10500,
+            "hp": 1650,
+            "max_hp": 1885,
+            "card_id": 27000001
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 764,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 295,
+          "row_index": 7,
+          "tick": 3672,
+          "age_ticks": 103,
+          "identity": "unit:27000001:0:1",
+          "live": {
+            "x": 9500,
+            "y": 10500,
+            "hp": 1615,
+            "max_hp": 1885,
+            "card_id": 27000001
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 938,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 296,
+          "row_index": 7,
+          "tick": 3676,
+          "age_ticks": 107,
+          "identity": "unit:27000001:0:1",
+          "live": {
+            "x": 9500,
+            "y": 10500,
+            "hp": 1603,
+            "max_hp": 1885,
+            "card_id": 27000001
+          },
+          "position_error_tiles": 0.0,
+          "hp_error": 937,
+          "missing": null,
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 3569,
+          "previous_tick": 3559,
+          "side": 0,
+          "name": "GoblinHut",
+          "card_id": 27000001,
+          "x": 9500,
+          "y": 10500,
+          "source": "first_seen_body_proxy",
+          "bodies": 2,
+          "row": 50,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 3569,
+          "resolved_xy": [
+            9500.0,
+            10500.0
+          ]
+        },
+        {
+          "tick": 3631,
+          "previous_tick": 3620,
+          "side": 0,
+          "name": "GoblinHut",
+          "card_id": 27000001,
+          "x": 10639,
+          "y": 11135,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 51,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 3631,
+          "resolved_xy": [
+            12500.0,
+            11500.0
+          ]
+        }
+      ]
+    },
+    {
+      "match": "live_play_20261008_053140",
+      "identity": "unit:27000001:0:2",
+      "first_seen_tick": 3589,
+      "first_mismatch_tick": 3589,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_053140.json",
+      "source": "sources/live_play_20261008_053140.json",
+      "rows": [
+        {
+          "sample_index": 287,
+          "row_index": 8,
+          "tick": 3589,
+          "age_ticks": 0,
+          "identity": "unit:27000001:0:2",
+          "live": {
+            "x": 10997,
+            "y": 10575,
+            "hp": 212,
+            "max_hp": 212,
+            "card_id": 27000001
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 288,
+          "row_index": 8,
+          "tick": 3600,
+          "age_ticks": 11,
+          "identity": "unit:27000001:0:2",
+          "live": {
+            "x": 11037,
+            "y": 10577,
+            "hp": 212,
+            "max_hp": 212,
+            "card_id": 27000001
+          },
+          "position_error_tiles": 0.11901680553602503,
+          "hp_error": 19,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 289,
+          "row_index": 8,
+          "tick": 3610,
+          "age_ticks": 21,
+          "identity": "unit:27000001:0:2",
+          "live": {
+            "x": 11037,
+            "y": 10577,
+            "hp": 212,
+            "max_hp": 212,
+            "card_id": 27000001
+          },
+          "position_error_tiles": 1.1041829558546898,
+          "hp_error": 19,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 290,
+          "row_index": 8,
+          "tick": 3620,
+          "age_ticks": 31,
+          "identity": "unit:27000001:0:2",
+          "live": {
+            "x": 11037,
+            "y": 10577,
+            "hp": 212,
+            "max_hp": 212,
+            "card_id": 27000001
+          },
+          "position_error_tiles": 2.231415021908744,
+          "hp_error": 19,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 291,
+          "row_index": 8,
+          "tick": 3631,
+          "age_ticks": 42,
+          "identity": "unit:27000001:0:2",
+          "live": {
+            "x": 11146,
+            "y": 10475,
+            "hp": 212,
+            "max_hp": 212,
+            "card_id": 27000001
+          },
+          "position_error_tiles": 3.415498353095782,
+          "hp_error": 19,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 292,
+          "row_index": 8,
+          "tick": 3641,
+          "age_ticks": 52,
+          "identity": "unit:27000001:0:2",
+          "live": {
+            "x": 11247,
+            "y": 10338,
+            "hp": 212,
+            "max_hp": 212,
+            "card_id": 27000001
+          },
+          "position_error_tiles": 4.2546315939220865,
+          "hp_error": 19,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 293,
+          "row_index": 8,
+          "tick": 3651,
+          "age_ticks": 62,
+          "identity": "unit:27000001:0:2",
+          "live": {
+            "x": 11247,
+            "y": 10338,
+            "hp": 212,
+            "max_hp": 212,
+            "card_id": 27000001
+          },
+          "position_error_tiles": 4.2546315939220865,
+          "hp_error": 19,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 294,
+          "row_index": 8,
+          "tick": 3661,
+          "age_ticks": 72,
+          "identity": "unit:27000001:0:2",
+          "live": {
+            "x": 11247,
+            "y": 10338,
+            "hp": 212,
+            "max_hp": 212,
+            "card_id": 27000001
+          },
+          "position_error_tiles": 4.2546315939220865,
+          "hp_error": 19,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 295,
+          "row_index": 8,
+          "tick": 3672,
+          "age_ticks": 83,
+          "identity": "unit:27000001:0:2",
+          "live": {
+            "x": 11247,
+            "y": 10338,
+            "hp": 212,
+            "max_hp": 212,
+            "card_id": 27000001
+          },
+          "position_error_tiles": 4.2546315939220865,
+          "hp_error": 19,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 296,
+          "row_index": 8,
+          "tick": 3676,
+          "age_ticks": 87,
+          "identity": "unit:27000001:0:2",
+          "live": {
+            "x": 11531,
+            "y": 10430,
+            "hp": 212,
+            "max_hp": 212,
+            "card_id": 27000001
+          },
+          "position_error_tiles": 4.011747000995951,
+          "hp_error": 19,
+          "missing": null,
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 3569,
+          "previous_tick": 3559,
+          "side": 0,
+          "name": "GoblinHut",
+          "card_id": 27000001,
+          "x": 9500,
+          "y": 10500,
+          "source": "first_seen_body_proxy",
+          "bodies": 2,
+          "row": 50,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 3569,
+          "resolved_xy": [
+            9500.0,
+            10500.0
+          ]
+        },
+        {
+          "tick": 3631,
+          "previous_tick": 3620,
+          "side": 0,
+          "name": "GoblinHut",
+          "card_id": 27000001,
+          "x": 10639,
+          "y": 11135,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 51,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 3631,
+          "resolved_xy": [
+            12500.0,
+            11500.0
+          ]
+        },
+        {
+          "tick": 3676,
+          "previous_tick": 3672,
+          "side": 0,
+          "name": "GoblinHut",
+          "card_id": 27000001,
+          "x": 10782,
+          "y": 10040,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 52,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 3676,
+          "resolved_xy": [
+            10500.0,
+            7500.0
+          ]
+        }
+      ]
+    },
+    {
+      "match": "live_play_20261008_053140",
+      "identity": "unit:27000001:0:3",
+      "first_seen_tick": 3631,
+      "first_mismatch_tick": 3631,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_053140.json",
+      "source": "sources/live_play_20261008_053140.json",
+      "rows": [
+        {
+          "sample_index": 291,
+          "row_index": 9,
+          "tick": 3631,
+          "age_ticks": 0,
+          "identity": "unit:27000001:0:3",
+          "live": {
+            "x": 10639,
+            "y": 11135,
+            "hp": 212,
+            "max_hp": 212,
+            "card_id": 27000001
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        },
+        {
+          "sample_index": 292,
+          "row_index": 9,
+          "tick": 3641,
+          "age_ticks": 10,
+          "identity": "unit:27000001:0:3",
+          "live": {
+            "x": 10894,
+            "y": 11288,
+            "hp": 212,
+            "max_hp": 212,
+            "card_id": 27000001
+          },
+          "position_error_tiles": 1.6199320973423545,
+          "hp_error": 1502,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 293,
+          "row_index": 9,
+          "tick": 3651,
+          "age_ticks": 20,
+          "identity": "unit:27000001:0:3",
+          "live": {
+            "x": 10894,
+            "y": 11288,
+            "hp": 212,
+            "max_hp": 212,
+            "card_id": 27000001
+          },
+          "position_error_tiles": 1.6199320973423545,
+          "hp_error": 1502,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 294,
+          "row_index": 9,
+          "tick": 3661,
+          "age_ticks": 30,
+          "identity": "unit:27000001:0:3",
+          "live": {
+            "x": 10894,
+            "y": 11288,
+            "hp": 212,
+            "max_hp": 212,
+            "card_id": 27000001
+          },
+          "position_error_tiles": 1.6199320973423545,
+          "hp_error": 1474,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 295,
+          "row_index": 9,
+          "tick": 3672,
+          "age_ticks": 41,
+          "identity": "unit:27000001:0:3",
+          "live": {
+            "x": 10894,
+            "y": 11288,
+            "hp": 212,
+            "max_hp": 212,
+            "card_id": 27000001
+          },
+          "position_error_tiles": 1.6199320973423545,
+          "hp_error": 1443,
+          "missing": null,
+          "mismatch": true
+        },
+        {
+          "sample_index": 296,
+          "row_index": 9,
+          "tick": 3676,
+          "age_ticks": 45,
+          "identity": "unit:27000001:0:3",
+          "live": {
+            "x": 10894,
+            "y": 11288,
+            "hp": 212,
+            "max_hp": 212,
+            "card_id": 27000001
+          },
+          "position_error_tiles": 1.6199320973423545,
+          "hp_error": 1431,
+          "missing": null,
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 3569,
+          "previous_tick": 3559,
+          "side": 0,
+          "name": "GoblinHut",
+          "card_id": 27000001,
+          "x": 9500,
+          "y": 10500,
+          "source": "first_seen_body_proxy",
+          "bodies": 2,
+          "row": 50,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 3569,
+          "resolved_xy": [
+            9500.0,
+            10500.0
+          ]
+        },
+        {
+          "tick": 3631,
+          "previous_tick": 3620,
+          "side": 0,
+          "name": "GoblinHut",
+          "card_id": 27000001,
+          "x": 10639,
+          "y": 11135,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 51,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 3631,
+          "resolved_xy": [
+            12500.0,
+            11500.0
+          ]
+        },
+        {
+          "tick": 3676,
+          "previous_tick": 3672,
+          "side": 0,
+          "name": "GoblinHut",
+          "card_id": 27000001,
+          "x": 10782,
+          "y": 10040,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 52,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 3676,
+          "resolved_xy": [
+            10500.0,
+            7500.0
+          ]
+        }
+      ]
+    },
+    {
+      "match": "live_play_20261008_053140",
+      "identity": "unit:27000001:0:4",
+      "first_seen_tick": 3676,
+      "first_mismatch_tick": 3676,
+      "first_mismatch_age_ticks": 0,
+      "report": "new/live_play_20261008_053140.json",
+      "source": "sources/live_play_20261008_053140.json",
+      "rows": [
+        {
+          "sample_index": 296,
+          "row_index": 10,
+          "tick": 3676,
+          "age_ticks": 0,
+          "identity": "unit:27000001:0:4",
+          "live": {
+            "x": 10782,
+            "y": 10040,
+            "hp": 212,
+            "max_hp": 212,
+            "card_id": 27000001
+          },
+          "position_error_tiles": null,
+          "hp_error": null,
+          "missing": "sim",
+          "mismatch": true
+        }
+      ],
+      "nearby_commands": [
+        {
+          "tick": 3631,
+          "previous_tick": 3620,
+          "side": 0,
+          "name": "GoblinHut",
+          "card_id": 27000001,
+          "x": 10639,
+          "y": 11135,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 51,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 3631,
+          "resolved_xy": [
+            12500.0,
+            11500.0
+          ]
+        },
+        {
+          "tick": 3676,
+          "previous_tick": 3672,
+          "side": 0,
+          "name": "GoblinHut",
+          "card_id": 27000001,
+          "x": 10782,
+          "y": 10040,
+          "source": "first_seen_body_proxy",
+          "bodies": 1,
+          "row": 52,
+          "mode": "public_injection",
+          "slot": 0,
+          "accepted": true,
+          "reason": "OK",
+          "engine_tick": 3676,
+          "resolved_xy": [
+            10500.0,
+            7500.0
+          ]
+        }
+      ]
+    }
+  ]
+}

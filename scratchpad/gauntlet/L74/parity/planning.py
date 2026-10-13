@@ -71,7 +71,9 @@ def forced_deal(hand, next_card, deck):
                 next_observed=nxt is not None, order=known+queue)
 
 
-def plan(source, enabled=False):
+def plan(source, enabled=False, fix_artefacts=False):
+    if fix_artefacts and not enabled:
+        raise ValueError('artefact_fixes_require_mechanics_replay')
     if not enabled:
         return dict(mode='strict_deal', blocks=list(source['blocks']), actions=[], decisions=[], skips=[])
     side = source['observer_side']
@@ -92,8 +94,19 @@ def plan(source, enabled=False):
         blocks.append('no_usable_logged_own_hands')
     by_tick = {r['tick']: r for r in decisions}
     actions = []
+    repairs, inference_receipts = {}, []
+    if fix_artefacts:
+        from .core import ps
+        from .inference import repair_injections
+        repairs, inference_receipts = repair_injections(source, ps.load_catalog()[0])
+    inference_by_row = {r['row']: r for r in inference_receipts}
     for i, play in enumerate(source['plays']):
         if play['side'] != side:
+            if fix_artefacts:
+                if i not in repairs:
+                    skips.append(dict(kind='play', row=i, tick=play['tick'], reason=inference_by_row[i]['reason']))
+                    continue
+                play = repairs[i]
             actions.append(dict(play, row=i, mode='public_injection', slot=0))
             continue
         # Never repair with a future hand, including across an invalid latest row.
@@ -114,7 +127,10 @@ def plan(source, enabled=False):
             roster.append(enemy[name])
     required_cards = own_deck+roster
     unsupported = (OLD_HERO_REASON if any(c['name']=='IceWizard' and c['form']==2 for c in required_cards) else None)
+    if fix_artefacts:
+        actions.sort(key=lambda a: (a['tick'], a['row']))
     return dict(mode='mechanics', blocks=blocks, decisions=decisions, actions=actions, skips=skips,
+                artefact_fixes=fix_artefacts, inference_receipts=inference_receipts,
                 own_deck=own_deck, opponent_roster=roster, old_unsupported=unsupported,
                 counts=dict(decisions_total=len(source.get('own_decisions', [])), decisions_used=len(decisions),
                             next_card_observed=sum(d['next_observed'] for d in decisions),
@@ -124,10 +140,10 @@ def plan(source, enabled=False):
                             measurement_rows=len(source['frames'])))
 
 
-def planning_report(cohort, enabled=False):
+def planning_report(cohort, enabled=False, fix_artefacts=False):
     rows = []
     for source in cohort:
-        p = plan(source, enabled)
+        p = plan(source, enabled, fix_artefacts)
         rows.append(dict(match=source['match'], sha256=source['sha256'], usable=not p['blocks'],
                          blocks=p['blocks'], skips=p['skips'], counts=p.get('counts', {}),
                          old_unsupported=p.get('old_unsupported')))

@@ -1,3 +1,4 @@
 output/
 __pycache__/
 .pytest_cache/
+triage/plans.json

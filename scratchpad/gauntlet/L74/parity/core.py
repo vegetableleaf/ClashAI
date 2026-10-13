@@ -142,8 +142,9 @@ class Tracks:
     Local identity preserves order through motion/death. Reused addresses after
     >60 ticks split, matching phase_stats. Same-tick ties use x,y,key and are uncertain.
     """
-    def __init__(self):
+    def __init__(self, role_limits=None):
         self.seen = {}; self.counts = Counter()
+        self.role_limits = role_limits or {}
 
     def assign(self, tick, bodies):
         out = {}
@@ -151,12 +152,20 @@ class Tracks:
             if b.get('tower'):
                 key = f"tower:{b['side']}:" + ('king' if abs(b['x']-9000)<1000 else ('left' if b['x']<9000 else 'right'))
             else:
-                local = (b['card_id'], b['side'], b['key'])
+                role = ''
+                limits = self.role_limits.get((b['card_id'], b['side']))
+                if limits:
+                    name, maximum = limits
+                    role = 'child' if b['max_hp'] < .45*maximum else (
+                        'travel' if name == 'GoblinDrill' and b['max_hp'] >= .8*maximum else 'parent')
+                local = (b['card_id'], b['side'], b['key'], role)
                 if local not in self.seen or tick-self.seen[local][1] > 60:
-                    group = (b['card_id'], b['side']); self.counts[group] += 1
+                    group = (b['card_id'], b['side'], role); self.counts[group] += 1
                     self.seen[local] = (self.counts[group], tick)
                 order, _ = self.seen[local]; self.seen[local] = (order, tick)
                 key = f"unit:{b['card_id']}:{b['side']}:{order}"
+                if role:
+                    key += ':'+role
             if key in out:
                 raise ValueError('duplicate_body_identity:' + key)
             out[key] = b

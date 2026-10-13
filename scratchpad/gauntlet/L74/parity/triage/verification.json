@@ -1,0 +1,37 @@
+{
+  "command": [
+    "C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe",
+    "-m",
+    "pytest",
+    "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L74\\parity\\tests",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "-p",
+    "no:tmpdir"
+  ],
+  "cwd": "C:\\Users\\benpe\\ClashBot",
+  "shell": "direct subprocess from PowerShell",
+  "exit_code": 0,
+  "success": true,
+  "output": "..................................................                       [100%]\n50 passed in 2.29s\n",
+  "output_sha256": "3c6ba5ae9fe18e9b0890a2450bd599bbd3e9be0056dfc4ca8673c583fd27bff6",
+  "file_sha256": {
+    "core.py": "fe956ee707028ba6e1d11f375ef4056b491d43799eac85d54f51ffe5ec9c6e86",
+    "driver.py": "9ea21f26e1a96e26b89697394c8afbed887ce0124ee345b5cc6d32595ddf5569",
+    "inference.py": "cb1baed0d94ac110c211c8987563ab96318e72705e7f3666e5b7ec77ab40d556",
+    "mechanics.py": "99a43845d0078bcf92181c4fba16c1bb7daf8a5a27fc057bc2668b2979f7aea0",
+    "pin_fork.py": "afaa29d59d8ae4a7354effae7539016ee88e55e1e6f310f4738a082e5607680c",
+    "planning.py": "213db8f20c1caac916dfd8a8dd88742e1c6b9fb3d31af1fb91a99a7d6749ccc6",
+    "triage_analysis.py": "2fe7df5fa36f3e3e291066007f3275f826d50b402fc8688998df833a3f53bcd3",
+    "verify.py": "59d94f17ce3b65709329c8f6ea537c21a51d2bfddba4a24e2097450747c6ca58",
+    "verify_triage.py": "638485b1d6426b506a7ac615feeb2f9b52109764dab5cb2ac5c55aa40d91b127",
+    "verify_v2.py": "267d6d42b8218dde62a978ba61fe13b955e43e40dd34798364a3a28c05a34707",
+    "tests/test_parity.py": "129c1cb32689cc8e0fcfd0769adf752f4eb6da27415543565872feb4afa15182",
+    "tests/test_triage.py": "a213d764d5e4c2756df79bfdcdbaa10738221f93a13a0f8a0411efa4d9e28d8b",
+    "tests/test_v2.py": "5ce6f56862bb3677a4e93dd50dbeb05355d4ff38e98be8cc59b217dbc4b7b800",
+    "run_parity.sh": "f6fcba17eeba06670c1c736d328ac87a21e677bc97f167b66048d33a5d34521f",
+    "TRIAGE.md": "1d9dc84c22ab9f9ae23490acbac1a7c47d58ea65119d224ddaf30f44970eb512"
+  },
+  "validation_scope": "synthetic and offline only; no real-engine replay or pod launch"
+}

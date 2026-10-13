@@ -62,8 +62,24 @@ class SnapshotReplay:
                 self.internal[name] = internal
         if set(self.internal) != set(names):
             raise ValueError('parity_internal_card_mapping_incomplete')
+        self.form_templates = {}
+        for name, form in sorted({(p['name'], p['observed_form']) for p in plan['actions']
+                                 if 'observed_form' in p}):
+            if form == 0:
+                self.form_templates[name, form] = []
+                continue
+            probe.reset(424242, [[ids[name]], []], 0, 0, None, None, [],
+                        forms=[[form], []], levels=[[level], []], tower_levels=[level]*2)
+            player = json.loads(probe.save())['players'][0]
+            internal = self.internal[name]
+            evo = [e for e in player.get('evo', []) if e['card']==internal]
+            if form == 1 and len(evo) != 1:
+                raise ValueError('parity_observed_evolution_not_supported:'+name)
+            if form == 2 and internal not in player.get('heroes', []):
+                raise ValueError('parity_observed_hero_not_supported:'+name)
+            self.form_templates[name, form] = evo
 
-    def sync(self, side, hand, queue, inject=False):
+    def sync(self, side, hand, queue, inject=False, observed=None):
         before = json.loads(self.battle.save())
         after = deepcopy(before)
         player = after['players'][side]
@@ -73,12 +89,23 @@ class SnapshotReplay:
         if inject:
             # Synthetic affordability, not measured/inferred enemy elixir.
             player['mana'] = after['calib']['max_mana'] * after['mana_unit']
+        if observed is not None:
+            name, form = observed
+            card = self.internal[name]
+            # Only the injected card's public form is forced. Counters are
+            # synthetic, not inferred from hidden opponent cycle/deck state.
+            evo = deepcopy(self.form_templates[name, form])
+            for entry in evo:
+                entry['plays'] = entry['cycles']
+            player['evo'] = [e for e in player.get('evo', []) if e['card']!=card]+evo
+            player['heroes'] = [c for c in player.get('heroes', []) if c!=card]+([card] if form==2 else [])
         if after != before:
             load_edited(self.battle, before, after)
 
     def action(self, play):
         if play['mode'] == 'public_injection':
-            self.sync(play['side'], [play['name'], None, None, None], [], inject=True)
+            observed = (play['name'], play['observed_form']) if 'observed_form' in play else None
+            self.sync(play['side'], [play['name'], None, None, None], [], inject=True, observed=observed)
         else:
             self.sync(play['side'], play['hand'], play['queue'])
         return play['slot']
