@@ -1,0 +1,97 @@
+{
+  "schema_version": 7,
+  "timestamp_utc": "2026-10-13T05:38:09.030174+00:00",
+  "status": "OFFLINE_IMPLEMENTED_RUNTIME_AND_LINUX_SHELL_HANDOFF_REQUIRED",
+  "offline_test_count": 32,
+  "v6_regression_tests": 37,
+  "checks": [
+    {
+      "name": "v7_tests",
+      "argv": [
+        "C:\\Users\\benpe\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L74\\oracle\\linux\\qualify\\jnihost_ro\\v7\\test_v7.py"
+      ],
+      "cwd": "C:\\Users\\benpe\\ClashBot",
+      "shell": "PowerShell invoking Python directly",
+      "exit_code": 0,
+      "expect": "ORACLE_V7_TESTS_OK",
+      "matched": true,
+      "output_sha256": "f693a52d49de2495551e006b64086209990bc7ecf372de11ca0b863738ebf95e"
+    },
+    {
+      "name": "privacy",
+      "argv": [
+        "C:\\Users\\benpe\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L74\\oracle\\linux\\qualify\\jnihost_ro\\v7\\verify.py"
+      ],
+      "cwd": "C:\\Users\\benpe\\ClashBot",
+      "shell": "PowerShell invoking Python directly",
+      "exit_code": 0,
+      "expect": "ORACLE_V7_PRIVACY_OK",
+      "matched": true,
+      "output_sha256": "af0a369c45b93c891371895070b848b890db887224a7c001f2a50dd3baab7f1f"
+    },
+    {
+      "name": "build_hashes",
+      "argv": [
+        "C:\\Users\\benpe\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L74\\oracle\\linux\\qualify\\jnihost_ro\\v7\\check_build.py",
+        "--build-dir",
+        "scratchpad\\gauntlet\\L74\\oracle\\.local\\jnihost-ro-compile-v7-final"
+      ],
+      "cwd": "C:\\Users\\benpe\\ClashBot",
+      "shell": "PowerShell invoking Python directly",
+      "exit_code": 0,
+      "expect": "ORACLE_V7_BUILD_HASHES_OK",
+      "matched": true,
+      "output_sha256": "afe41c78f0af1fcbcba55dbe9f02ff4fabf4b4a3f4a63b80202dc3974dc2db94"
+    }
+  ],
+  "compile": {
+    "status": "passed",
+    "private_build_directory": "scratchpad/gauntlet/L74/oracle/.local/jnihost-ro-compile-v7-final",
+    "separate_dex_ownership_checked": true,
+    "client_shells_compiled": false,
+    "observer_jni_exports": 2,
+    "system_dependencies_only": true,
+    "target_values": "private runtime JSON; generated header contains enum keys only",
+    "source_artifact_hashes_rechecked": true
+  },
+  "runtime": {
+    "v7_executed": false,
+    "stage_reached": null,
+    "blocking_stage": null,
+    "attributed_sites": [],
+    "patches_applied": 0,
+    "patches_qualified": 0,
+    "network_access_attempted": false,
+    "reason": "Windows execution environment; isolated GCP worker unavailable under no-network boundary"
+  },
+  "v6_baseline": {
+    "receipt_revalidated": true,
+    "classification": "a",
+    "last_completed": "jni_on_load",
+    "private_receipt": "scratchpad/gauntlet/L70/reader/oracle_160402012/runtime_qualification/jnihost_ro/20261013T051149Z-0aa93892ab1c4a2489b0f7d2a6bc7c76"
+  },
+  "shell_check": {
+    "status": "blocked_before_parsing",
+    "exit_code": 1,
+    "reason": "Git Bash CreateFileMapping failed with Win32 error 5; Linux bash -n remains required"
+  },
+  "manual_review": {
+    "readme": "README.md",
+    "classification": "REVIEW.md",
+    "missing_location_recipe": true,
+    "unsupported_upstream_bootstrap": "No Activity shell, resource prelude or manager pre-pump; missing native prerequisites stop the requested chain"
+  },
+  "gates": {
+    "met": 4,
+    "unmet": 0,
+    "abandoned": 2,
+    "abandoned_ids": [
+      "G5",
+      "G6"
+    ],
+    "scope": "Runtime attempt and Linux shell verification require worker handoff"
+  }
+}
