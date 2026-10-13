@@ -1,11 +1,3 @@
-## 2026-10-13 ~14:00 EDT -- owner attempt identical; v8 GameApp steps cannot come from Claude
-
-- Owner's attempt (17:42 UTC, run `20261013T174207Z-30b9caa4...`) = same CreateGameMain crash as 17:14; kit sources on the
-  VM unchanged (identical to the laptop), so the stock kit ran. The FileExistsError was a second `review` on the same run
-  folder (reviews are once per run; harmless). RUN_PLAIN.md now explains both (9c85dac).
-- Owner asked for from-scratch steps for the GameApp-object change; the answer was stopped by the safety classifier.
-  Claude will not provide or re-route those steps. Open: owner's choice of next direction; oracle-2 still billing.
-
 ## 2026-10-13 ~13:20 EDT -- v7 staged run on oracle-2 reproduces the CreateGameMain wall; v8 step handed to owner
 
 - **Build:** the copied old-VM build dir blocked the build (`BUILD_EXISTS_RETAINED`); moved aside ->
