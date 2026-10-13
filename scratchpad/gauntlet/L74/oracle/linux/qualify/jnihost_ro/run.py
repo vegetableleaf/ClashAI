@@ -125,6 +125,10 @@ def run_once(args, out, result):
     for name in ('jnihost-ro.jar', 'libjnihost_ro.so'):
         d.call('push', str(build / name), remote + '/' + name)
         require(d.call('shell', 'sha256sum', remote + '/' + name).split()[0] == built['artifacts'][name], 'GUEST_ARTIFACT_DRIFT')
+    # Static dependency order for libg's app-dir DT_NEEDED closure (generated from readelf, private build dir).
+    if (build / 'preload.txt').is_file():
+        d.call('push', str(build / 'preload.txt'), remote + '/preload.txt')
+        require(d.call('shell', 'sha256sum', remote + '/preload.txt').split()[0] == digest(build / 'preload.txt'), 'GUEST_PRELOAD_DRIFT')
     # Check the stock guest timeout tool before consuming the one-attempt latch.
     d.call('shell', 'timeout', '-s', 'KILL', '2', '/system/bin/true')
     result['isolation_before'] = isolation(args.emulator_pid, args.serial)
