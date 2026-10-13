@@ -1,3 +1,20 @@
+## 2026-10-13 ~08:55 EDT -- new account's first session: helpers restarted, re-attempt 1 gate block read
+
+- **Relays + battery guard died with the old session** (their logs stop 08:27-08:34 EDT): nohup does NOT survive a
+  session close. Restarted via WMI `Invoke-CimMethod Win32_Process Create` (parent WmiPrvSE, outside the session):
+  battery_guard Windows PID 81412 (logged "started" 08:56); pod C relay Windows PID 81192 -> pod_relay2.sh podC
+  64.247.206.120 14457 NEWSIM_base /workspace/results/NEWSIM_base + EXTRA (wt_newsim newsim_base_main, _exp1-3,
+  scratchpad/gauntlet/L68/rl/newsim_base_main). Check them with PowerShell `Get-CimInstance Win32_Process`. Try-1 hash
+  lists renamed `podC/NEWSIM_base_try1.{members,sha.*}`. The PAUSE header's "08:30 UTC" was 08:30 EDT (12:30 UTC).
+- pod D: stopped by its relay 08:31 EDT. pod 3: ssh refused 08:57 EDT (owner: RunPod page). Live run_live/live_play alive.
+- **Re-attempt 1 (normal IW), gate block measured from the finished eval logs (driver's own read_evaluation/compare):**
+  training done (u60 + 3 exploiter cycles; main train wins ~35%/update vs 20-28% in try 1), grafted 11:20 UTC.
+  CAL off old 46.15% vs new 44.69% = **-1.46 pp [-5.33, +2.42] -> fails the lower > -3 bar** (try 1: -0.52 [-4.19,
+  +3.15]). CAL on +0.52 [-3.23, +4.27]. Fast-play cost: old -8.44 [-12.13, -4.75], new -6.46 [-10.15, -2.77]. P2 blocks
+  still running; SUMMARY ~13:45 UTC; the relay copies, posts, then stops pod C after 2 h idle (KEEP absent).
+- **Power caveat:** at 960 pairs the CI half-width is ~3.9 pp, so a model exactly equal to old passes "lower > -3" only
+  if its point estimate is >= ~+0.9 pp. Re-attempt 2 (the last) needs either a real gain or more pairs; owner's call.
+
 ## 2026-10-13 ~08:30 UTC PAUSE -- owner moving to another Claude account. A new session starts HERE.
 
 **Live (do not revert; owner's choice):** Stage 1 ADAPT2 on the MAIN icebow account, fast plays off, emotes off,
