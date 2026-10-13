@@ -1,0 +1,38 @@
+{
+  "ability_cost": 2,
+  "deploy_cost": 3,
+  "ability_row": {
+    "ManaCost": 2,
+    "MaxCharges": 1,
+    "RefundWindow": 50,
+    "OnActivationAction": "IceWizardHero_ability_activation_actions"
+  },
+  "ability_row_name": "ABILITY.IceWizardHero_ability",
+  "deploy_row": {
+    "Name": "IceWizard_hero",
+    "ManaCost": "3",
+    "SummonCharacter": ""
+  },
+  "files": {
+    "csv_logic/characters/hero_form/ice_wizard_hero.toml": {
+      "path": "scratchpad/gauntlet/L74/apktables/out/device_builds/20261012T221627332682Z-50188/tables/csv_logic/characters/hero_form/ice_wizard_hero.toml",
+      "sha256": "5ff1a2901a258c820713c9cf13b1bbfe76c379ebdb8efafd5b3f2a925821dcd2",
+      "source": "device_update"
+    },
+    "csv_logic/spells_hero_form.csv": {
+      "path": "scratchpad/gauntlet/L74/apktables/out/device_builds/20261012T221627332682Z-50188/tables/csv_logic/spells_hero_form.csv",
+      "sha256": "b6bbd7e2598a92330f9f9b237363f1541f3a305bbba1a0463c38f8bc454b9f82",
+      "source": "apk_fallback"
+    }
+  },
+  "extraction_fingerprint": "7871ef765e799971fcc2127e87b1693888a3f598cb409d034336752ad6eb9d26",
+  "selected_sim_source": {
+    "pin": "cacb7005f0e441797c533e91ab4f44820f9919d4",
+    "table": "data/derived/cards-160402017-20261006.json",
+    "sha256": "babaa3d129e370c5838f12001683e2a5579dbaec581fd94968e689aacfc3fb60",
+    "ability_cost": 2,
+    "deploy_cost": 3
+  },
+  "live_supplement_cost": 1,
+  "conclusion": "Device 2; SIM selected source 2; HEROIW prior smoke charged 2. No table/adapter cost mismatch. Supplement 1 conflicts; left unchanged. Pod records actual wheel table and zero-tick debit per attempt."
+}

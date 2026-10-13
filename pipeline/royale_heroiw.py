@@ -1,4 +1,6 @@
 """Source-reviewed, opt-in 0.1.33 adapter helpers; importing this needs no SIM."""
+import os
+
 from .royale_runtime import RUNTIME_ID
 from .reader_identity_aliases import HERO_ICE_WIZARD_ID, HERO_ICE_WIZARD_NAMES
 
@@ -15,8 +17,21 @@ def engine_options():
 def deck_forms(names, forms):
     out = list(forms)
     if ENABLED and frozenset(names) == ICEBOW:
-        out[list(names).index('IceWizard')] = 2
+        mode = os.environ.get('ROYALE_HEROIW_FORM', 'hero')
+        if mode not in ('hero', 'normal'):
+            raise ValueError('ROYALE_HEROIW_FORM must be hero or normal')
+        out[list(names).index('IceWizard')] = 0 if mode == 'normal' else 2
     return out
+
+
+def live_press_enabled():
+    """SIM-only opt-in; unset preserves HEROIW's v2 generic IW fallback."""
+    mode = os.environ.get('ROYALE_HEROIW_PRESS', 'off')
+    if mode not in ('off', 'live'):
+        raise ValueError('ROYALE_HEROIW_PRESS must be off or live')
+    if mode == 'live' and not ENABLED:
+        raise ValueError('ROYALE_HEROIW_PRESS=live needs the Hero IW runtime')
+    return mode == 'live'
 
 
 def public_identity(unit_name):
