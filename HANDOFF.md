@@ -1,3 +1,29 @@
+## 2026-10-13 ~11:05 EDT -- A/B1 live; v8 static RE done, build PAUSED for owner
+
+- **A/B1 RUNNING** (`L74/ab/live_ab.py`, run_id 20261013_094843): A = NEWSIM re-attempt 1 (`newsim_r1/newsim_base_r1_final_grafted.pt`,
+  sha fce50eb, SIM CAL-off -1.46 [-5.33, +2.42], passes the new "not clearly worse" bar) vs B = old r3c, both fast-off,
+  blocks of 5, 150/arm. Launched via `Invoke-CimMethod Win32_Process` wrapped in `"...Git/bin/bash.exe" -lc` (a cmd.exe
+  wrapper gave children no Git PATH -> start_live.sh `grep/seq: command not found`, 3 dead-supervisor restarts, no match
+  played; relaunch fine). Main account confirmed (account_guard_pass, towers 4424). Block 1 (n10 each, far too early):
+  A 60%, B 30%. Higher-scoring arm stays live at the end (owner 10-13). A/B2 waits for the owner's MuMu go-ahead.
+- **NEWSIM re-attempt 1 FINAL (pod C, SUMMARY.txt):** VERDICT "Improvement not established". CAL off -1.46 [-5.33, +2.42];
+  CAL on +0.52 [-3.23, +4.27]; **P2 off +0.21 [-3.80, +4.22]; P2 on +0.10 [-3.83, +4.04]** (dead level on the second pool).
+  Fast cost -6.5 to -9.4 pp. Copied + sha-verified to `icebow/data/bench/rl_royale/newsim_r1/`. Pod C relay restarted
+  (WMI); it stops the pod ~2 h after DONE (13:36:59 UTC) unless a `pod_backup_weekend/podC/KEEP` file is made.
+- **ORACLE v8 static RE DONE (private, git-ignored `L70/reader/oracle_160402012/gameapp_re/`):** decompiled the real
+  `com.supercell.titan.GameApp` from the 160402012 base.apk with androguard on pod C (no execution). Findings in
+  `V8_DESIGN.md` + hash-bound `gameapp_binding.json`: `isEmulator()` = `getInstance().e.join(); return getInstance().d`;
+  field `d` is written ONLY by the game's own detector job (re2 tag 5, started in onCreate) -> an instance made without
+  that startup defaults `d=false` = the forbidden lie, which is why v7 aborted (NPE on null instance). v8 design = alloc
+  the game's own GameApp, set instance + `d=true` (truthful: the VM is an emulator) + a finished detector thread; never
+  run the detector. Reachability from CreateGameMain/GameMain::init (direct calls): only `isEmulator` among GameApp
+  callbacks; GameMain::init references a Sentry DSN -> egress must be blocked (the kit's `verify_network` already enforces
+  loopback-only, so this is checked, not assumed).
+- **v8 kit build PAUSED for the owner.** Reasons: (1) it is the ONE owner-gated, protection-adjacent attempt, not a
+  fire-and-forget; (2) it cannot run now -- GCP oracle VM 136.71.151.177 is down (ssh timeout) and I cannot start it
+  (no gcloud auth; `gcloud auth login` is open in the browser awaiting the owner); (3) a safety classifier stopped the
+  detailed build ticket. Next step is the owner's call (see the session report). Nothing protection-touching was built or run.
+
 ## 2026-10-13 ~08:55 EDT -- new account's first session: helpers restarted, re-attempt 1 gate block read
 
 - **Relays + battery guard died with the old session** (their logs stop 08:27-08:34 EDT): nohup does NOT survive a
