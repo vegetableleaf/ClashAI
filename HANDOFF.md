@@ -1,4 +1,53 @@
-## 2026-10-13 ~12:00 EDT -- PARITY: own-troop error is a ~1 s harness timing offset; oracle-2 up, v8 parked
+## 2026-10-13 ~11:50 EDT PAUSE -- owner restarting from another session. A new session starts HERE.
+
+**Running (all launched via WMI, outside any Claude session; check with PowerShell `Get-CimInstance Win32_Process`):**
+- **Live A/B1** (`L74/ab/live_ab.py`, run_id `20261013_094843_05dad0bc`, runner PID 36344, parent bash 6848):
+  A = NEWSIM re-attempt 1 `icebow/data/bench/rl_royale/newsim_r1/newsim_base_r1_final_grafted.pt` (sha fce50eb) vs
+  B = old `rseries_r3c/rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt`, both fast-off, blocks of 5, 150/arm.
+  At 11:47: 34 matches, 6 blocks, every match passed the main-account guard (towers 4424); last report at 10/arm
+  A 6-4, B 3-7 (meaningless at n 10). ETA ~20 h total -> ~06:00 EDT 10-14. Progress: `L74/ab/events.jsonl`,
+  `L74/ab/ab1_run_20261013.out`, Discord every 10/arm. **Clean stop:** `touch scratchpad/gauntlet/L74/ab/STOP_AB`
+  (ends at a block boundary, restores CKPT_OVERRIDE/LIVE_FAST). At the end the runner restores ADAPT2 and stops;
+  **owner rule: the higher-scoring arm then goes live** -- switch CKPT_OVERRIDE to it, `--check`, start on the MAIN
+  account (`bash scratchpad/gauntlet/L70/live/start_live.sh icebow --no-fast-plays`), post Discord.
+- **Battery guard** PID 81412 (WMI). **No relays running:** pod C stopped itself 11:38 after a verified copy.
+- **Launch pattern for anything long-lived:** PowerShell `Invoke-CimMethod Win32_Process -MethodName Create` with
+  the command wrapped in `"C:\Program Files\Git\bin\bash.exe" -lc "..."`. nohup children die with the session; a
+  `cmd.exe /c` wrapper gives no Git PATH (start_live then fails: `grep/seq: command not found`).
+
+**Cloud:** all RunPod pods stopped (C 11:38, D 08:31; pod 3 unreachable since 08:03, memory seed B never copied --
+owner: RunPod page). GCP `clashbot-oracle-2` (project `clashbot-oracle`, us-east1-c, n2-standard-16) is **RUNNING
+and billing ~$0.78/h**, nested virtualization ON (`/dev/kvm` + kvm_intel present), **IP 34.23.102.150 (ephemeral:
+it changed on the last restart)**, still bare (no SDK/AVD/APK). ssh `clashbot@<IP>` with `~/.ssh/runpod_clashbot`.
+gcloud: `C:\Users\benpe\tools\google-cloud-sdk\bin\gcloud.cmd` (signed in, project clashbot-oracle). gcloud 587
+cannot set nested virt; use `scratchpad/gauntlet/L74/oracle/linux/gcp_enable_nested_virt.py` (Compute REST API).
+Old `clashbot-oracle` (us-central1-a) TERMINATED.
+
+**Owner's latest instruction (10-13, not yet started):** "go on with the next steps. Use Codex Astra on xhigh to
+unpark and set up v8." Nothing was dispatched. Note: the safety classifier stopped three of this session's responses
+while they were authoring v8 implementation/setup steps in detail. The v8 design already lives in the private,
+git-ignored `scratchpad/gauntlet/L70/reader/oracle_160402012/gameapp_re/` (`V8_DESIGN.md`, hash-bound
+`gameapp_binding.json`, static reports). The intended route was a fable-foreman Codex dispatch
+(`scripts/codex-dispatch.sh <ticket> gpt-6-astra xhigh workspace-write <artifact.jsonl>`) whose ticket only points
+at those files and the v7 kit (`L74/oracle/linux/qualify/jnihost_ro/v7/`), with offline build + unit tests and no
+device/VM/network run; VM provisioning and the single attempt come after. Owner v8 rulings (10-13): the game's own
+GameApp class with the TRUE emulator answer; only an answer-caused refusal/crash ends the route (a host-wiring gap
+gets diagnosed and one owner-approved retry); ceiling manager_update; egress blocked (the kit's `verify_network`
+requires loopback-only). VM provisioning needs the official Android cmdline-tools installed first (PORT.md:197-201),
+then `L74/oracle/linux/setup_vm.sh 1` and `boot.sh 1`.
+
+**Next, in order:**
+1. A/B1 -> switch live to the higher-scoring arm when it ends (above). A/B2 waits for the owner's MuMu go-ahead.
+2. v8 per the owner's instruction above.
+3. PARITY: inject own plays at the observed spawn tick (`parity/core.py:65`, `driver.py:154-168`), re-pair swarm
+   members by position, rerun PARITY on a pod, re-measure the headline (see `parity/own_timing/FINDING.md`).
+4. Exact-sim items still open from the earlier PAUSE: unmapped 13000043, GoblinHut, RamRider, ElectroGiant; SIM Hero IW
+   ability as a parity target.
+
+**Traps:** never `python -`; never `git add -A` (stage explicit paths; the repo is public); Git-Bash sha256 prints
+`*`; pod SSH ports and GCP ephemeral IPs change on restart; Win PIDs differ from MSYS PIDs.
+
+## 2026-10-13 ~11:40 EDT -- PARITY: own-troop error is a ~1 s harness timing offset; oracle-2 up, v8 parked
 
 - **PARITY finding (`L74/parity/own_timing/FINDING.md`, scripts beside it; offline, on the fixed rerun on disk):** on
   own confirmed-tap units, buildings match (Tesla 0.02-0.08, X-Bow 0.08-0.19 tiles) but troops run ahead of the real
