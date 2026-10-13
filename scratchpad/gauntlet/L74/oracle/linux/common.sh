@@ -9,6 +9,9 @@ ORACLE_STATE="$ORACLE_DIR/.local"
 export ANDROID_SDK_ROOT="${ANDROID_SDK_ROOT:-$HOME/Android/Sdk}"
 export ANDROID_HOME="$ANDROID_SDK_ROOT"
 export ANDROID_AVD_HOME="$ORACLE_STATE/avd"
+# Whichever JDK is installed (17 on Ubuntu 22.04, 21 on Debian 13); 17 before setup_vm.sh has installed one.
+_java=$(readlink -f "$(command -v java 2>/dev/null)" 2>/dev/null || true)
+export JAVA_HOME="${JAVA_HOME:-${_java:+${_java%/bin/java}}}"
 export JAVA_HOME="${JAVA_HOME:-/usr/lib/jvm/java-17-openjdk-amd64}"
 export PATH="$JAVA_HOME/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH"
 SDKMANAGER="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"

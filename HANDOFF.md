@@ -1,3 +1,29 @@
+## 2026-10-13 ~13:20 EDT -- oracle-2 provisioned; 160402012 inputs recovered and installed in the isolated guest
+
+- **oracle-2 is Debian 13, not Ubuntu 22.04.** `setup_vm.sh`/`common.sh` fixed: JDK 21 when 17 is absent (JAVA_HOME
+  taken from the installed java), official `cmdline-tools;latest` fetched from Google's SDK manifest and checked
+  against the manifest's size + SHA-1 (commandlinetools-linux-16111833, 181,052,239 B), plus libxkbfile1/libsm6/
+  libice6 (emulator), git and python3-jsonschema (kit checks). Installed: emulator 37.2.12, platform-tools 37.0.1,
+  build-tools 35, platform 35, NDK 27.3.13750724, system image android-32 default x86_64. KVM usable.
+- **Guest booted** (`boot.sh 1`): emulator-5554, API 32, x86_64, root, inside the loopback-only namespace
+  `cr-oracle-1000`; isolation asserted before and after (= owner decision: outbound blocked). The renderer flag
+  `swiftshader_indirect` was accepted by emulator 37.2.12 (no renderer change needed).
+- **Private inputs recovered from the OLD VM's disk:** old `clashbot-oracle` (us-central1-a) cannot start
+  (`ZONE_RESOURCE_POOL_EXHAUSTED` for n2-standard-8). Snapshot `oracle-old-disk-20261013` (11.2 GB stored, KEPT as a
+  backup) -> temporary pd-standard disk in us-east1-c (pd-balanced hit the 250 GB regional SSD quota) -> attached
+  read-only to oracle-2 -> old `~/oracle` copied to `~/oracle_old` -> temp disk detached and deleted. The old VM and its
+  disk are untouched. Old vs laptop private files: 953 identical, only the 2 fixed setup scripts differ; laptop-only
+  `gameapp_re/` copied over (hashes match). Merged into oracle-2 `~/ClashBot` with no-clobber; `.gitignore` +
+  laptop `.git/info/exclude` copied so the kit's privacy checks behave as on the laptop (`share/` is excluded ONLY by
+  the local exclude file, not by `.gitignore`).
+- **APK splits installed in the isolated guest:** versionCode 160402012, minSdk 32, primaryCpuAbi x86_64; all five
+  installed split SHA-256s equal `artifact_manifest.json`. Install only, the game was not launched. Isolation
+  re-asserted after.
+- **v7 kit on Linux:** `test_v7.py` ORACLE_V7_TESTS_OK, `verify.py` ORACLE_V7_PRIVACY_OK. `worker.sh build` returned
+  BUILD_BLOCKED: the copied build dir already holds the old VM's 05:40 build + its ATTEMPT.json (single-attempt latch).
+- **Safety:** a 5th response on this line was stopped by the safety classifier (13:2x, while working on the kit
+  build). Do not re-author that content.
+
 ## 2026-10-13 ~12:40 EDT -- owner answers (new session); A/B1 auto-switch armed
 
 - **A/B1 had NOT finished** (12:15: A 21, B 20 of 150/arm; at 12:39 A 15W/10L 60.0% [40.7, 76.6], B 7W/14L 33.3%

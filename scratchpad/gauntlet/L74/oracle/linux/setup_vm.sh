@@ -8,11 +8,35 @@ instances "${1:-1}"
 lock_state
 [[ -e /dev/kvm ]] || fail '/dev/kvm missing: provision nested virtualization first'
 sudo apt-get update
-sudo apt-get install -y openjdk-17-jdk-headless python3 python3-venv unzip zip \
+# Ubuntu 22.04 has JDK 17; Debian 13 (GCP clashbot-oracle-2) only 21. The SDK tools and D8 accept either.
+jdk=openjdk-17-jdk-headless
+apt-cache show "$jdk" >/dev/null 2>&1 || jdk=openjdk-21-jdk-headless
+sudo apt-get install -y "$jdk" python3 python3-venv unzip zip \
     ca-certificates iproute2 util-linux cpu-checker libgl1 libpulse0 \
-    libnss3 libx11-6 libxcb1 libxcomposite1 libxcursor1 libxi6 libxtst6 shellcheck
+    libnss3 libx11-6 libxcb1 libxcomposite1 libxcursor1 libxi6 libxtst6 shellcheck curl \
+    libxkbfile1 libsm6 libice6 git python3-jsonschema
+java_bin=$(readlink -f "$(command -v java)")
+export JAVA_HOME=${java_bin%/bin/java} PATH="${java_bin%/java}:$PATH"
 sudo usermod -aG kvm "$ORACLE_USER"
-[[ -x $SDKMANAGER ]] || fail 'Install official Linux Command-line Tools in $ANDROID_SDK_ROOT/cmdline-tools/latest first (PORT.md)'
+if [[ ! -x $SDKMANAGER ]]; then
+    # Official stable cmdline-tools;latest from Google's SDK manifest, checked against the manifest's size and SHA-1.
+    read -r url sum size < <(curl -fsS https://dl.google.com/android/repository/repository2-3.xml | python3 -c '
+import sys, xml.etree.ElementTree as E
+for p in E.parse(sys.stdin).getroot().iter("remotePackage"):
+    if p.get("path") == "cmdline-tools;latest":
+        for a in p.iter("archive"):
+            if a.findtext("host-os") == "linux":
+                c = a.find("complete"); print(c.findtext("url"), c.findtext("checksum"), c.findtext("size"))') || true
+    [[ -n ${url:-} ]] || fail 'cmdline-tools;latest (linux) not found in the SDK manifest'
+    zip="$ORACLE_STATE/$url"
+    curl -fsS -o "$zip" "https://dl.google.com/android/repository/$url"
+    [[ $(stat -c %s "$zip") == "$size" && $(sha1sum "$zip" | cut -d' ' -f1) == "$sum" ]] || fail "$url size/SHA-1 mismatch"
+    rm -rf "$ORACLE_STATE/cmdline-tools" "$ANDROID_SDK_ROOT/cmdline-tools/latest"
+    mkdir -p "$ANDROID_SDK_ROOT/cmdline-tools"
+    unzip -q "$zip" -d "$ORACLE_STATE"
+    mv "$ORACLE_STATE/cmdline-tools" "$ANDROID_SDK_ROOT/cmdline-tools/latest"
+    printf '%s size=%s sha1=%s\n' "$url" "$size" "$sum" >> "$ORACLE_STATE/logs/cmdline-tools.txt"
+fi
 [[ -x $AVDMANAGER ]] || fail 'avdmanager missing'
 mkdir -p "$ANDROID_AVD_HOME"
 # A finite input avoids yes|sdkmanager triggering SIGPIPE under pipefail.
