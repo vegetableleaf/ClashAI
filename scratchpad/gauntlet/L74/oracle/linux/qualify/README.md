@@ -52,7 +52,7 @@ permissions. Raw maps, pointers, hashes, logcat and symbol deltas are private.
 
 ## Exact environment and deployment order
 
-Use **`system-images;android-31;default;x86_64`**, AOSP Android 12/API 31,
+Use **`system-images;android-32;default;x86_64`**, AOSP Android 12L/API 32 (build 160402012 declares minSdk 32; API 31 fails INSTALL_FAILED_OLDER_SDK),
 root-capable userdebug/eng, profile `pixel_2`. Do not substitute Google Play,
 Google APIs, ARM translation or a different API. This is the image selected by
 the existing setup, not a claim that this game build has passed on it.

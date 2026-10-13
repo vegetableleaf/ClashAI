@@ -51,7 +51,7 @@ PY
     ns_run "$ADB" -s "$serial" root
     ns_run timeout 30 "$ADB" -s "$serial" wait-for-device
     [[ $(ns_run "$ADB" -s "$serial" shell id -u | tr -d '\r') == 0 ]] || fail 'AOSP root check failed'
-    [[ $(ns_run "$ADB" -s "$serial" shell getprop ro.build.version.sdk | tr -d '\r') == 31 ]] || fail 'Wrong guest API'
+    [[ $(ns_run "$ADB" -s "$serial" shell getprop ro.build.version.sdk | tr -d '\r') == 32 ]] || fail 'Wrong guest API'
     [[ $(ns_run "$ADB" -s "$serial" shell getprop ro.product.cpu.abi | tr -d '\r') == x86_64 ]] || fail 'Wrong guest ABI'
     printf 'PREPARED_ONLY slot=%s serial=%s service_port=%s namespace=%s\n' "$i" "$serial" "$service_port" "$ORACLE_NS"
 done

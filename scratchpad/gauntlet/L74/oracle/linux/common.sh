@@ -15,7 +15,7 @@ SDKMANAGER="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
 AVDMANAGER="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/avdmanager"
 EMULATOR="$ANDROID_SDK_ROOT/emulator/emulator"
 ADB="$ANDROID_SDK_ROOT/platform-tools/adb"
-SYSTEM_IMAGE='system-images;android-31;default;x86_64'
+SYSTEM_IMAGE='system-images;android-32;default;x86_64'  # 160402012 needs minSdk 32 (API 31 install fails INSTALL_FAILED_OLDER_SDK)
 ORACLE_NS="cr-oracle-$UID"
 ORACLE_USER=$(id -un)
 mkdir -p "$ORACLE_STATE/logs"

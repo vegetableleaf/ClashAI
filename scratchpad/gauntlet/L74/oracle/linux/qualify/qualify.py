@@ -106,7 +106,7 @@ class Device:
     def check(self):
         isolated()
         require(self.call('shell', 'id', '-u').strip() == '0', 'ROOT_ADBD_REQUIRED_NO_POLICY_CHANGE')
-        require(self.call('shell', 'getprop', 'ro.build.version.sdk').strip() == '31', 'API_MISMATCH')
+        require(self.call('shell', 'getprop', 'ro.build.version.sdk').strip() == '32', 'API_MISMATCH')  # 160402012 splits declare minSdk 32 (10-13)
         require(self.call('shell', 'getprop', 'ro.product.cpu.abi').strip() == 'x86_64', 'ABI_MISMATCH')
         require(self.call('shell', 'getprop', 'ro.build.type').strip() in ('eng', 'userdebug'),
                 'AOSP_DEBUG_IMAGE_REQUIRED')

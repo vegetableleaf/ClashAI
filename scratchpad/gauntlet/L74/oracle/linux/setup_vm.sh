@@ -32,7 +32,7 @@ import pathlib, sys
 p = pathlib.Path(sys.argv[1])
 text = p.read_text()
 values = dict(line.split('=', 1) for line in text.splitlines() if '=' in line)
-if values.get('image.sysdir.1', '').replace('\\', '/').rstrip('/') != 'system-images/android-31/default/x86_64':
+if values.get('image.sysdir.1', '').replace('\\', '/').rstrip('/') != 'system-images/android-32/default/x86_64':
     raise SystemExit('Existing AVD image mismatch; refusing to replace it')
 updates = {'hw.cpu.ncore': '4', 'hw.ramSize': '4096', 'disk.dataPartition.size': '10G'}
 if all(values.get(k) == v for k, v in updates.items()):
