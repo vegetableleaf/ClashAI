@@ -24,7 +24,12 @@ pod1013a`, C PID 81260 -> `pod1013c`; each copies + verifies, posts Discord, sto
   the presses (N0: 6.58/game, 13.2 elixir) displacing X-Bows (placements 3.64 vs 4.10, X-Bow tower dmg 1,325 vs 1,742/game);
   the hero body's -3.3 is not established. Earlier N2 (live rule, 2.36 presses) 40.0% = still ~-8 vs never pressing.
   Open: does a press cost the same live? Live median elixir drop/press 1.143 (n 763) vs device cost 2, and the device
-  ability has RefundWindow = 50 -- untested refund hypothesis; check the live drop distribution offline. test_iwdiag 24/25 (the failing
+  ability has RefundWindow = 50. **Owner 10-13 ~17:00: confirmed in game, the ability costs 2** -> the 1.14 median is a
+  sampling artefact; refund hypothesis dropped. SIM's charge is right.
+- **A/B1 interim (108/300, ~17:00):** A NEWSIM r1 32W/23L 58.2% vs B old 21W/32L 39.6%, +18.6 pp Newcombe [-0.2, +35.6],
+  Fisher p 0.058. Leaning A, not settled; B far below its 54.5% history. SIM had said -1.46 [-5.3, +2.4].
+- **Upstream truth corpus:** RoyaleSim `docs/replay-parity.md`: private per-tick recordings (73+ client-16.402 battles,
+  50 ms, both sides) + `replay_parity.rs`; published 56.5% non-tower unit-ticks within 1/4 tile. See memory. test_iwdiag 24/25 (the failing
   `test_device_evidence_matches_local_sources` is stale since this morning's supplement 1 -> 2 change).
 - v8: owner reports a rebuilt run; I did not verify or advise on it (safety stops). oracle-2 kept warm per owner.
 
