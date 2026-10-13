@@ -24,14 +24,18 @@ def deck_forms(names, forms):
     return out
 
 
-def live_press_enabled():
-    """SIM-only opt-in; unset preserves HEROIW's v2 generic IW fallback."""
+def press_mode():
+    """SIM-only opt-in; unset/off preserves HEROIW's v2 generic IW fallback, never = the IW ability is never pressed."""
     mode = os.environ.get('ROYALE_HEROIW_PRESS', 'off')
-    if mode not in ('off', 'live'):
-        raise ValueError('ROYALE_HEROIW_PRESS must be off or live')
-    if mode == 'live' and not ENABLED:
-        raise ValueError('ROYALE_HEROIW_PRESS=live needs the Hero IW runtime')
-    return mode == 'live'
+    if mode not in ('off', 'live', 'never'):
+        raise ValueError('ROYALE_HEROIW_PRESS must be off, live or never')
+    if mode != 'off' and not ENABLED:
+        raise ValueError(f'ROYALE_HEROIW_PRESS={mode} needs the Hero IW runtime')
+    return mode
+
+
+def live_press_enabled():
+    return press_mode() == 'live'
 
 
 def public_identity(unit_name):
