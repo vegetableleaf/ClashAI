@@ -65,7 +65,7 @@ def verify_network(links, routes):
 
 
 def verify_emulator_command(argv, serial):
-    require(argv and Path(argv[0]).name in ('qemu-system-x86_64', 'emulator'), 'NOT_EMULATOR_PROCESS')
+    require(argv and Path(argv[0]).name in ('qemu-system-x86_64', 'qemu-system-x86_64-headless', 'emulator'), 'NOT_EMULATOR_PROCESS')
     require('-port' in argv and argv[argv.index('-port') + 1] == serial.split('-')[1], 'EMULATOR_PORT_MISMATCH')
     require('-avd' in argv and argv[argv.index('-avd') + 1].startswith('oracle_'), 'NOT_ORACLE_AVD')
     require(not any(a in argv for a in ('-http-proxy', '-netdev', '-net', '-netsim-args')), 'UNREVIEWED_NETWORK_BACKEND')

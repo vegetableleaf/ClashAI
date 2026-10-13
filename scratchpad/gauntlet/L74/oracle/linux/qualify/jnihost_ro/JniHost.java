@@ -75,6 +75,11 @@ public final class JniHost {
             System.load(root + "/libjnihost_ro.so");
             emit("after", null);
             begin("jni_on_load");
+            // libg's DT_NEEDED sibling libscid_sdk.so lives in the same app lib dir, which the app_process host's
+            // linker namespace does not search (attempt 20261013T045305Z: UnsatisfiedLinkError). Load it first by
+            // absolute path -- ordinary dependency loading, no patching or environment changes.
+            java.io.File scid = new java.io.File(new java.io.File(libg).getParentFile(), "libscid_sdk.so");
+            if (scid.isFile()) System.load(scid.getAbsolutePath());
             // The VM, not our bridge, invokes the real JNI_OnLoad exactly once.
             System.load(libg);
             after(libg);
