@@ -1,17 +1,14 @@
-# OWN_TIMING -- own-troop parity divergence is a harness timing offset (2026-10-13)
+# OWN_TIMING
 
-Offline, read-only analysis of the PARITY fixed-injection rerun
-(`pod_backup_weekend/podD/x_PARITY_fixed/results/PARITY_v2_fixed_injection/new/`, runtime 0.1.33, 100 live matches;
-rows carry raw paired live/sim x,y in native units, 1000 per tile). Own plays only (`source == confirmed_own_tap`):
-known tap tick, card and spawn point, so none of the opponent-injection artefacts that sank TRIAGE's eight groups.
-Each script takes the `new/` dir (plus the `sources/` dir for `queue_direct.py`) and prints its table.
+Offline analysis of own-troop PARITY divergence. Results and reading: [FINDING.md](FINDING.md).
 
-## Results
+Each script takes the PARITY fixed-rerun `new/` directory and prints its table (`queue_direct.py` also takes the
+matching `sources/` directory):
 
-| Script | Question | Answer |
-|---|---|---|
-| `own_early.py` | Error vs time since tap | Buildings (Tesla, X-Bow) match: <= 0.2 tiles at every age. Troops drift AHEAD (toward the enemy) and it grows: Knight +0.13 -> +1.89 tiles, Skeletons +0.51 -> +2.39 from 1 s to 4 s+. Lateral error stays ~0.1. |
-| `queue_split.py` | Grows with tap->confirm gap? | No dose-response. Weak test: the gap is >= 1.15 s for EVERY card, buildings included. |
-| `onset_speed.py` | When does walking start? (live walkers >= 1 tile forward) | Live median 2.90 s after tap, sim ~1.95-2.00 s: the sim starts 0.5 s (Skeletons) / 1.0 s (Knight) earlier. Frames are ~0.5 s apart, so the sign is robust and the size is +- 0.5 s. Its speed table is confounded by that onset gap. |
-| `queue_direct.py` | Elixir-queue cause? (elixir at the tap from `sources/`) | CONTRADICTED: the gap is fully present at full elixir (Skeletons -0.50 s n 214, Knight -1.00 s n 89); almost no plays were queued. |
-| `time_align.py` | Pure timing offset? Best per-unit shift tau |
+```bash
+python own_early.py    <new_dir>              # error vs time since the tap, buildings vs troops
+python onset_speed.py  <new_dir>              # motion onset and speed, forward-walking troops
+python queue_split.py  <new_dir>              # error vs tap->confirm gap
+python queue_direct.py <new_dir> <sources_dir> # onset gap vs elixir at the tap
+python time_align.py   <new_dir>              # best per-unit time shift and residual error
+```
