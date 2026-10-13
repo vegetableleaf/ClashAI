@@ -11,13 +11,14 @@ wheel qualification remain pending. Changes are intentionally uncommitted.
 First have the fork build from `../parity/build_fork.sh` installed and pinned at
 `research/ext/Royale-fork/`, and a separate Python environment containing the
 cached **royalesim 0.1.33** wheel. No installation or network operation occurs in
-this launcher. It holds `/workspace/cpu.lock` and starts only its own workers.
+this launcher. The CLI holds an exclusive `flock` on `/workspace/cpu.lock`
+through worker cleanup and report publication, including direct Python invocations.
 
 ```bash
 DIFFSIM_PYTHON=/workspace/venv33/bin/python \
 ORACLE_PYTHON=/workspace/venv33/bin/python \
 bash scratchpad/gauntlet/L74/diffsim/run_diffsim.sh \
-  --full-matches 1000 --skirmishes 100 \
+  --workers 12 --resume --full-matches 1000 --skirmishes 100 \
   --out /workspace/results/DIFFSIM_SANITY
 ```
 
@@ -28,6 +29,45 @@ No process swaps binary modules. Both use the same explicit card-table option
 activation verifies the existing build manifest, installed files and compiled
 provenance through `pipeline.royale_runtime.activate()`. A candidate `--candidate
 wheel --candidate-python ...` can instead use another compatible wheel.
+
+`--workers N` counts **pairs**, default 1: twelve pairs use 24 engine subprocesses
+plus the coordinator. A stable SHA256 of the scenario id assigns each case to a
+single persistent pair. Reports and artifacts merge in the original six-digit
+case-id order, with the serial runner's trace numbering, even when minimization
+uses many discarded trials. Trace comparison runs inside the candidate subprocess,
+so JSON parsing/alignment also scales across pairs without a coordinator GIL
+bottleneck or extra processes. Default unlimited minimization runs concurrently on
+the same pool; `--minimize-limit N` selects successful repros in case order and
+serializes those budget decisions to preserve the original failure semantics.
+
+The process cap is `2*N <= floor(effective CPU quota - 2)`, taking the minimum of
+CPU affinity, CPU count and visible cgroup v1/v2 quotas (including ancestors).
+Requests above the cap fail before starting workers; they are not silently
+clamped. A 27-vCPU pod permits twelve pairs. Native mode needs N independent,
+already-running loopback sandboxes at `--native-port + pair_index`.
+
+`--resume` can start a new directory or continue a matching one. Keep the same
+cohort/options and engine runtimes; the pair count may change. Completed
+`cases/<id>.json` files are atomic commit markers; both successful and error cases
+are skipped. Hidden `.pending/`, `.resume/` and `.work/` data preserve completed
+out-of-order jobs, minimization counters and interrupted publication. Each attempt
+uses separate staging paths so surviving children cannot overwrite resumed work. Keep these
+alongside the results. In-flight, uncheckpointed jobs are rerun; interrupted
+minimization restarts from its frozen case. Completed legacy serial directories
+can also be adopted, except cases with failed minimizations whose discarded trial
+counters were never recorded. Resume refuses changed recipes/configuration or
+missing retained traces. It cannot detect an engine binary replaced in place;
+keep runtimes pinned. A fully completed resume reuses the existing dated history
+entry. Worker crashes are recorded as case errors, and their pair is recreated
+for subsequent cases. Worker response timeouts and child cleanup are bounded.
+On Linux, owned workers also request a parent-death signal so a killed
+coordinator does not leave simulations consuming the next run's CPU budget.
+
+Report/history measurement bytes are independent of worker count. As before,
+independent runs have different `created_utc`/history dates, absolute artifact
+roots and gzip timestamps; parity tests fix the clock and normalize only the
+destination roots, and compare decompressed trace bytes. A no-op resume preserves
+the original report and history bytes.
 
 Expected sanity result: 100% exact exposed-state traces and identical completed
 results when the fork has the same mechanics/data as 0.1.33. This has **not** been
@@ -125,7 +165,8 @@ inject initial units, so generated shared suites use ordinary deploy plays.
 
 `out/<run>/recipe.json` binds inputs, seeds, scope and tolerances.
 `scenarios/` stores requested and frozen JSON. `candidate/` and `oracle/` contain
-gzip JSONL traces and worker stderr. Native/common runs additionally preserve
+gzip JSONL traces; `.work/<attempt>/pair-*/{candidate,oracle}/worker.stderr.log` records
+each pair's diagnostics. Native/common runs additionally preserve
 unprojected `.full.jsonl.gz` diagnostic traces for both engines. `cases/` has first-divergence tick, seconds,
 field, values, involved cards, coverage and engine provenance. Frames stream to
 disk; no full trace is retained in RAM. Engine workers stay alive across cases.
@@ -161,7 +202,7 @@ Zero-sized categories are null, never 100%. CIs are descriptive for correlated
 unit suites. `history/<UTC-date-time>-<hash>.json` is append-only by unique file;
 no previous result is overwritten. Stand-in/fake results never count as native
 evidence. `owner_goal_proven` remains false until native qualification can support
-that claim. Output directories must be new.
+that claim. Output directories must be new unless `--resume` is supplied.
 
 ## Native oracle: source-reviewed, VM UNTESTED
 
@@ -218,14 +259,20 @@ python scratchpad/gauntlet/L74/diffsim/verify.py
 planted interaction and initial-unit minimization, deterministic generation,
 engine-legal policy/replay, attribution, CI/error denominators/history, mocked
 public adapter calls, and actual separate-process FakeEngine CLI integration.
+`tests/test_parallel.py` adds serial-reference/default/four-pair byte parity,
+concurrent shard execution, pooled minimization, resumed partial publication,
+legacy and completed resume, process crash/recovery, timeout/reaping, CPU quota
+fixtures and the Linux lock call contract. No real pod throughput is claimed.
 `VERIFICATION.json` binds source hashes to the test receipt and explicitly marks
 both real adapters untested. Test artifacts stay under ignored `test-output/`.
 Python 3.10+ and the standard library suffice for tests and harness orchestration;
 engine environments must satisfy their own wheel/bindings requirements.
 
 Files: `core.py` contract/comparison; `adapters.py`; `generators.py`; `runner.py`
-execution/isolation; `worker.py`; `analysis.py` minimization/attribution/metrics;
-`cli.py`; `run_diffsim.sh`; `tests/`; `verify.py`; `GATES.md`; this README.
+execution/isolation; `pool.py` sharding/checkpoints/ordered merge; `resources.py`
+CPU budget/lease; `worker.py`; `analysis.py` minimization/attribution/metrics;
+`cli.py`; `run_diffsim.sh`; `tests/`; `verify.py`; `GATES.md`;
+`PARALLEL_GATES.md`; this README.
 The local Bash binary failed to start (Windows CreateFileMapping error 5), so
 shell execution/syntax qualification and the wheel sanity run are pending on Linux.
 

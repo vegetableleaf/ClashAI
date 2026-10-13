@@ -71,9 +71,27 @@ def forced_deal(hand, next_card, deck):
                 next_observed=nxt is not None, order=known+queue)
 
 
-def plan(source, enabled=False, fix_artefacts=False):
+OWN_TIMINGS = ('tap', 'spawn', 'spawn_mid')
+
+
+def own_spawn_tick(play, frame_ticks, timing):
+    """Tick to inject an own play. 'tap' = the logged tap (old default). The live client spawns the unit ~1.15 s
+    after the tap (own_timing/FINDING.md): 'spawn' = the confirmation frame (first frame showing the spawn);
+    'spawn_mid' = midway between that frame and the previous frame (frames are ~0.5 s apart)."""
+    if timing == 'tap':
+        return play['tick']
+    conf = play['confirmation_tick']
+    if timing == 'spawn':
+        return conf
+    prev = max((t for t in frame_ticks if t < conf), default=play['tick'])
+    return (max(prev, play['tick']) + conf) // 2
+
+
+def plan(source, enabled=False, fix_artefacts=False, own_timing='tap'):
     if fix_artefacts and not enabled:
         raise ValueError('artefact_fixes_require_mechanics_replay')
+    if own_timing not in OWN_TIMINGS or (own_timing != 'tap' and not enabled):
+        raise ValueError('own_timing_requires_mechanics_replay')
     if not enabled:
         return dict(mode='strict_deal', blocks=list(source['blocks']), actions=[], decisions=[], skips=[])
     side = source['observer_side']
@@ -100,6 +118,7 @@ def plan(source, enabled=False, fix_artefacts=False):
         from .inference import repair_injections
         repairs, inference_receipts = repair_injections(source, ps.load_catalog()[0])
     inference_by_row = {r['row']: r for r in inference_receipts}
+    frame_ticks = [f['tick'] for f in source['frames']]
     for i, play in enumerate(source['plays']):
         if play['side'] != side:
             if fix_artefacts:
@@ -116,7 +135,8 @@ def plan(source, enabled=False, fix_artefacts=False):
         if dec is None or play['name'] not in dec['hand']:
             skips.append(dict(kind='play', row=i, tick=play['tick'], reason=reason)); continue
         actions.append(dict(play, row=i, mode='logged_hand', slot=dec['hand'].index(play['name']),
-                            hand_tick=dec['tick'], hand=dec['hand'], queue=dec['queue']))
+                            hand_tick=dec['tick'], hand=dec['hand'], queue=dec['queue'], tap_tick=play['tick'],
+                            tick=own_spawn_tick(play, frame_ticks, own_timing)))
     # An injection roster is not an inferred enemy deck. No unplayed candidates.
     enemy = {c['name']: c for c in source['decks'][str(1-side)]}
     roster = []
@@ -127,10 +147,10 @@ def plan(source, enabled=False, fix_artefacts=False):
             roster.append(enemy[name])
     required_cards = own_deck+roster
     unsupported = (OLD_HERO_REASON if any(c['name']=='IceWizard' and c['form']==2 for c in required_cards) else None)
-    if fix_artefacts:
+    if fix_artefacts or own_timing != 'tap':
         actions.sort(key=lambda a: (a['tick'], a['row']))
     return dict(mode='mechanics', blocks=blocks, decisions=decisions, actions=actions, skips=skips,
-                artefact_fixes=fix_artefacts, inference_receipts=inference_receipts,
+                artefact_fixes=fix_artefacts, own_timing=own_timing, inference_receipts=inference_receipts,
                 own_deck=own_deck, opponent_roster=roster, old_unsupported=unsupported,
                 counts=dict(decisions_total=len(source.get('own_decisions', [])), decisions_used=len(decisions),
                             next_card_observed=sum(d['next_observed'] for d in decisions),

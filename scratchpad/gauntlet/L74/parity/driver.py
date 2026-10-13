@@ -15,7 +15,7 @@ import time
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[3]
 sys.path.insert(0, str(ROOT))
-from scratchpad.gauntlet.L74.parity.core import Tracks, compare, mean, ps, rank, select
+from scratchpad.gauntlet.L74.parity.core import SwarmPairing, Tracks, compare, mean, ps, rank, select
 from scratchpad.gauntlet.L74.parity.planning import hydrate, plan, planning_report, OLD_HERO_REASON
 
 RUNTIMES = {'old': ('20261006-linux', '0.1.17'), 'new': ('20261012-linux', '0.1.33'), 'fork': ('fork', None)}
@@ -61,7 +61,7 @@ def snapshot(sim, battle, native, names, side):
     return state, bodies, own['elixir_milli']/1000
 
 
-def drive(source, runtime, mechanics_replay=False, fix_artefacts=False):
+def drive(source, runtime, mechanics_replay=False, fix_artefacts=False, own_timing='tap', pair_swarms=False):
     if fix_artefacts and not mechanics_replay:
         raise ValueError('artefact_fixes_require_mechanics_replay')
     # Environment set BEFORE importing any engine; process never switches runtimes.
@@ -82,7 +82,7 @@ def drive(source, runtime, mechanics_replay=False, fix_artefacts=False):
     cat = json.loads(battle.catalogue_json())
     names = [dict(zip(sim.CATALOGUE_FIELDS, row))['name'] for row in cat]
     ids = {name: i for i, name in enumerate(names)}
-    replay_plan = plan(source, True, fix_artefacts) if mechanics_replay else None
+    replay_plan = plan(source, True, fix_artefacts, own_timing) if mechanics_replay else None
     if replay_plan and replay_plan['blocks']:
         raise ValueError(';'.join(replay_plan['blocks']))
     if runtime == 'old' and replay_plan and replay_plan['old_unsupported']:
@@ -144,6 +144,7 @@ def drive(source, runtime, mechanics_replay=False, fix_artefacts=False):
         from scratchpad.gauntlet.L74.parity.inference import role_limits
         limits = role_limits(source, catalog)
     live_tracks, sim_tracks = Tracks(limits), Tracks(limits)
+    pairing = SwarmPairing() if pair_swarms else None
     plays = replay_plan['actions'] if replay_plan else source['plays']
     cursor = 0; commands = []; samples = []; divergence = None
     last_sample_commands = 0
@@ -175,6 +176,8 @@ def drive(source, runtime, mechanics_replay=False, fix_artefacts=False):
             if divergence is None: divergence = tick
             continue
         live = live_tracks.assign(tick, frame['bodies']); predicted = sim_tracks.assign(tick, bodies)
+        if pairing:
+            predicted = pairing.apply(live, predicted, live_tracks.births, sim_tracks.births)
         rows = compare(live, predicted)
         if fix_artefacts:
             # Preserve paired raw public values for the next triage. V2 stored
@@ -200,7 +203,7 @@ def drive(source, runtime, mechanics_replay=False, fix_artefacts=False):
                 first_rejected_command_tick=min((p['tick'] for p in commands if not p['accepted']), default=None),
                 status='EXPLORATORY_MECHANICS' if adapter else 'EXPLORATORY_RECONSTRUCTION',
                 replay_mode='mechanics' if adapter else 'strict_deal',
-                artefact_fixes=fix_artefacts,
+                artefact_fixes=fix_artefacts, own_timing=own_timing, pair_swarms=pair_swarms,
                 inference_receipts=replay_plan.get('inference_receipts', []) if replay_plan else [],
                 planning_counts=replay_plan['counts'] if replay_plan else None,
                 planning_skips=replay_plan['skips'] if replay_plan else [], source_sha256=source['sha256'])
@@ -330,7 +333,7 @@ def text_report(report):
     return '\n'.join(lines)+'\n'
 
 
-def worker_job(python, runtime, source, dest, mechanics_replay=False, fix_artefacts=False):
+def worker_job(python, runtime, source, dest, mechanics_replay=False, fix_artefacts=False, own_timing='tap', pair_swarms=False):
     env = dict(os.environ, ROYALE_RUNTIME=RUNTIMES[runtime][0], PYTHONDONTWRITEBYTECODE='1',
                OMP_NUM_THREADS='1', MKL_NUM_THREADS='1', OPENBLAS_NUM_THREADS='1', PYTHONNOUSERSITE='1')
     cmd = [str(python), str(HERE/'driver.py'), 'worker', '--runtime', runtime, '--source', str(source), '--out', str(dest)]
@@ -338,6 +341,7 @@ def worker_job(python, runtime, source, dest, mechanics_replay=False, fix_artefa
         cmd.append('--mechanics-replay')
     if fix_artefacts:
         cmd.append('--fix-artefacts')
+    cmd += ['--own-timing', own_timing] + (['--pair-swarms-by-position'] if pair_swarms else [])
     try:
         with dest.with_suffix('.log').open('w', encoding='utf8') as log:
             done = subprocess.run(cmd, env=env, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT, timeout=1800)
@@ -358,6 +362,8 @@ def main():
     ap.add_argument('--source', type=Path)
     ap.add_argument('--mechanics-replay', action='store_true', help='PARITY ONLY: logged own hands and synthetic public opponent injection; default off')
     ap.add_argument('--fix-artefacts', action='store_true', help='Offline public-body inference and ambiguous-injection exclusion; requires --mechanics-replay; default off')
+    ap.add_argument('--own-timing', choices=['tap', 'spawn', 'spawn_mid'], default='tap', help='Own-play injection tick (planning.own_spawn_tick); non-tap requires --mechanics-replay; default tap')
+    ap.add_argument('--pair-swarms-by-position', action='store_true', help='Re-pair same-batch swarm members by position (core.SwarmPairing); default off')
     ap.add_argument('--cohort', type=Path, help='Reuse a prior sanitized sources directory exactly; no live re-selection')
     ap.add_argument('--live', type=Path, default=ps.LIVE)
     ap.add_argument('--since', default='20261008')
@@ -369,15 +375,15 @@ def main():
     ap.add_argument('--fork-python', type=Path, default=Path('/workspace/venv33/bin/python'))
     ap.add_argument('--out', type=Path, required=True)
     a = ap.parse_args()
-    if a.fix_artefacts and not a.mechanics_replay:
-        ap.error('--fix-artefacts requires --mechanics-replay')
+    if (a.fix_artefacts or a.own_timing != 'tap') and not a.mechanics_replay:
+        ap.error('--fix-artefacts and --own-timing spawn* require --mechanics-replay')
     if not 1 <= a.workers <= 24 or a.matches < 1:
         ap.error('workers must be 1..24; matches must be positive')
     if a.mode == 'worker':
         if len(a.runtime) != 1 or not a.source:
             ap.error('worker needs one runtime and --source')
         try:
-            result = drive(json.loads(a.source.read_text(encoding='utf8')), a.runtime[0], a.mechanics_replay, a.fix_artefacts)
+            result = drive(json.loads(a.source.read_text(encoding='utf8')), a.runtime[0], a.mechanics_replay, a.fix_artefacts, a.own_timing, a.pair_swarms_by_position)
         except Exception as e:
             result = dict(match=a.source.stem, runtime=a.runtime[0], error=type(e).__name__+':'+str(e))
         write(a.out, result)
@@ -424,7 +430,7 @@ def main():
                               skip_reason=';'.join(blocks), skip_reasons=blocks)
                 write(folder/(row['match']+'.json'), result); results.append(result)
             else:
-                jobs.append((getattr(a,rt+'_python'), rt, sources/(row['match']+'.json'), folder/(row['match']+'.json'), a.mechanics_replay, a.fix_artefacts))
+                jobs.append((getattr(a,rt+'_python'), rt, sources/(row['match']+'.json'), folder/(row['match']+'.json'), a.mechanics_replay, a.fix_artefacts, a.own_timing, a.pair_swarms_by_position))
     print(f'Jobs={len(jobs)}, workers={a.workers}; unbenchmarked estimate 5-30 min for 300 jobs, excluding build/lock wait.', flush=True)
     with ThreadPoolExecutor(max_workers=a.workers) as pool:
         futures = [pool.submit(worker_job, *job) for job in jobs]

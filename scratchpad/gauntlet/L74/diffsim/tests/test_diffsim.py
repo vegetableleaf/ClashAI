@@ -7,6 +7,7 @@ from contextlib import contextmanager
 import uuid
 from types import SimpleNamespace
 import unittest
+from unittest.mock import patch
 
 from scratchpad.gauntlet.L74.diffsim.adapters import FakeEngine, ForkEngine, NativeEngine
 from scratchpad.gauntlet.L74.diffsim.analysis import attribute, metrics, minimize, proportion, save_history, signature
@@ -25,7 +26,11 @@ def artifacts():
     # Default ACL inheritance avoids Python 3.13 mode-0700 on managed Windows.
     path = TEMP / uuid.uuid4().hex
     path.mkdir()
-    yield path
+    # Functional tests may run on laptops or CI with no /workspace and tiny CPU
+    # quotas. Resource policy has dedicated fixtures in test_parallel.py.
+    with patch("scratchpad.gauntlet.L74.diffsim.cli.cpu_lock"), \
+         patch("scratchpad.gauntlet.L74.diffsim.cli.check_workers", side_effect=lambda n: n):
+        yield path
 
 
 def case():
@@ -196,6 +201,18 @@ class GeneratorTests(unittest.TestCase):
             validate(s)
         self.assertNotEqual(random_scenario(1, cards, names), random_scenario(2, cards, names))
         self.assertEqual(random_scenario(1, cards, names, full=True)["duration_ticks"], 7200)
+
+    def test_random_decks_legal_with_champions(self):
+        # 10-13 pod DIAG1: 11/100 cases "duplicate deck card", 6 champion levels < 11 -- generator bugs, not divergences.
+        cards, _ = catalog()
+        champs = sorted(n for n, c in cards.items() if c["ability"])
+        names = champs + ["Knight", "Archer", "Fireball", "Tesla", "Skeletons", "Goblins", "Giant", "Musketeer",
+                          "Log", "Valkyrie"]
+        for seed in range(2000):
+            for d in random_scenario(seed, cards, names)["decks"]:
+                self.assertEqual(len({c["card"] for c in d}), 8, d)
+                self.assertLessEqual(sum(cards[c["card"]]["ability"] or c["form"] == 2 for c in d), 1, d)
+                self.assertTrue(all(c["level"] >= 11 for c in d if cards[c["card"]]["ability"]), d)
 
     def test_census_ranking_and_missing_mapping(self):
         cards, _ = catalog()

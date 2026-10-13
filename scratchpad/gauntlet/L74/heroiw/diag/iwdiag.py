@@ -18,11 +18,13 @@ sys.path[:0] = [str(ROOT), str(LIVE), str(HERE.parent)]
 ARMS = dict(N0=('20261012-linux', 'hero', 'off'),
             N1=('20261012-linux', 'normal', 'off'),
             N2=('20261012-linux', 'hero', 'live'),
-            O0=('20261006-linux', 'hero', 'off'))
+            O0=('20261006-linux', 'hero', 'off'),
+            N3=('20261012-linux', 'hero', 'never'))
 LABELS = dict(N0='0.1.33 Hero IW; existing v2 generic IW proximity fallback (no IW ability head)',
               N1='N0 with IceWizard NORMAL form only',
               N2='N0 with live IW geometry + deterministic p >= .03 rule only',
-              O0='0.1.17 old-runtime reference')
+              O0='0.1.17 old-runtime reference',
+              N3='N0 with the IW ability NEVER pressed (hero body only)')
 
 
 def read(path):
@@ -41,10 +43,10 @@ def rows(path):
     return [json.loads(line) for line in Path(path).read_text().splitlines() if line.strip()]
 
 
-def eta(workers):
+def eta(workers, games=1920):
     # Prior HEROIW throughput = 47 games/min at 28 processes. Per-tick
     # telemetry has not been benchmarked; give 2-4x allowance, no precision claim.
-    baseline = 1920/(47*workers/28)/60
+    baseline = games/(47*workers/28)/60
     return f'{2*baseline:.1f}-{4*baseline:.1f} hours at {workers} workers, excluding cpu.lock wait (unmeasured telemetry allowance)'
 
 
@@ -183,14 +185,14 @@ def run_arm(arm, python, plan, inputs, out, workers):
 
 def summarize(all_rows, workers, expected=480):
     from validate import paired_drift
-    if set(all_rows) != set(ARMS):
-        raise ValueError('require all four arms')
+    if 'N0' not in all_rows or not set(all_rows) <= set(ARMS):
+        raise ValueError('require N0 (the paired reference) and known arms')
     reports = {}
     lines = [f'COMPLETE: IWDIAG | ETA budget: {eta(workers)}',
              f'{expected} paired games per arm; old live checkpoint; CAL set c; seeds 741200..741439 in evo and lad.',
              'Draws count as non-wins. Deltas are ARM minus N0; 10,000 paired bootstrap draws within census/side.',
              'N0 preserves HEROIW: IW uses the generic proximity fallback under v2, NOT a learned ability head.']
-    for arm in ARMS:
+    for arm in all_rows:
         rr = all_rows[arm]
         paired = paired_drift(all_rows['N0'], rr, expected=expected)
         expected_keys = {(c, s) for c in ('evo', 'lad') for s in range(741200, 741200+expected//2)}
@@ -204,7 +206,7 @@ def summarize(all_rows, workers, expected=480):
             if r['learner_side'] != r['seed'] % 2:
                 raise ValueError('wrong learner side')
             own_forms = d['loaded_forms'].get(str(r['learner_side']), d['loaded_forms'].get(r['learner_side']))
-            if own_forms[2] != (2 if arm in ('N0', 'N2') else 0):
+            if own_forms[2] != (2 if arm in ('N0', 'N2', 'N3') else 0):
                 raise ValueError('wrong learner IW form')
             for field in ('iw_scheduled', 'iw_attempts', 'iw_accepted', 'iw_elixir', 'xbow_placements',
                           'xbow_impact_hp_loss', 'xbow_contested_hp_loss', 'xbow_impact_windows'):
@@ -212,7 +214,7 @@ def summarize(all_rows, workers, expected=480):
                     raise ValueError(f'invalid metric {field}')
             if not 0 <= d['iw_accepted'] <= d['iw_attempts'] <= d['iw_scheduled']:
                 raise ValueError('invalid per-game press denominators')
-            if arm in ('N1', 'O0') and (d['iw_scheduled'] or d['iw_elixir']):
+            if arm in ('N1', 'O0', 'N3') and (d['iw_scheduled'] or d['iw_elixir']):
                 raise ValueError('normal IW unexpectedly pressed or spent ability elixir')
             press_counter = r['ability_presses'].get(str(r['learner_side']), r['ability_presses'].get(r['learner_side'], {}))
             if d['iw_accepted'] != press_counter.get('IceWizard', 0):
@@ -266,11 +268,11 @@ def run(args):
         raise ValueError('workers must be 1..25')
     plan = prepare(args.out/'inputs')
     dump(args.out/'device_cost.json', read(HERE/'device_cost.json'))
-    print(f'IWDIAG 1,920 games | ETA {eta(args.workers)}', flush=True)
-    for arm in ARMS:
+    print(f'IWDIAG {480*len(args.arms)} games ({",".join(args.arms)}) | ETA {eta(args.workers, 480*len(args.arms))}', flush=True)
+    for arm in args.arms:
         python = args.old_python if arm == 'O0' else args.new_python
         run_arm(arm, str(python), plan, args.out/'inputs', args.out/arm, args.workers)
-    report, summary = summarize({arm: rows(args.out/arm/'matches.jsonl') for arm in ARMS}, args.workers)
+    report, summary = summarize({arm: rows(args.out/arm/'matches.jsonl') for arm in args.arms}, args.workers)
     dump(args.out/'score.json', report)
     (args.out/'SUMMARY.txt').write_text(summary, encoding='utf8')
 
@@ -283,7 +285,11 @@ def main():
     ap.add_argument('--old-python', type=Path, default=Path('/workspace/venv/bin/python'))
     ap.add_argument('--new-python', type=Path, default=Path('/workspace/venv33/bin/python'))
     ap.add_argument('--workers', type=int, default=25)
+    ap.add_argument('--arms', type=lambda v: v.split(','), default=['N0', 'N1', 'N2', 'O0'],
+                    help='comma list; N0 (the paired reference) first; N3 = never press (10-13)')
     args = ap.parse_args()
+    if args.arms[0] != 'N0' or not set(args.arms) <= set(ARMS):
+        ap.error('--arms must start with N0 and name known arms')
     run(args)
 
 

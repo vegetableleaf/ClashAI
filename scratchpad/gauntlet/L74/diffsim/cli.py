@@ -3,14 +3,16 @@ import argparse
 from datetime import datetime, timezone
 import hashlib
 import json
+import os
 from pathlib import Path
 import sys
 
 from .adapters import ROOT
-from .analysis import attribute, metrics, minimize, save_history, signature
+from .analysis import attribute, metrics, save_history
 from .core import json_dump
 from .generators import catalog, chosen_cards, digest, random_scenario, unit_suites
-from .runner import Worker, paired
+from .pool import atomic_json, read_json, run_cases
+from .resources import check_workers, cpu_lock
 
 HERE = Path(__file__).resolve().parent
 
@@ -40,6 +42,8 @@ def parser():
     p.add_argument("--history", type=Path, default=HERE / "history")
     p.add_argument("--minimize-limit", type=int, help="optional first N divergences; default minimizes all failures")
     p.add_argument("--timeout", type=int, default=600, help="seconds per scenario per owned worker")
+    p.add_argument("--workers", type=int, default=1, help="isolated engine pairs (2 processes each); capped at (CPU quota-2)/2")
+    p.add_argument("--resume", action="store_true", help="skip completed cases in the matching output directory")
     return p
 
 
@@ -50,7 +54,6 @@ def main(argv=None):
             or (a.unit_limit is not None and a.unit_limit < 0)):
         raise ValueError("counts must be nonnegative and timeout positive")
     a.out = a.out.resolve()
-    a.out.mkdir(parents=True, exist_ok=False)
     tolerances = json.loads(a.tolerances.read_text()) if a.tolerances else {}
     if any(type(v) not in (int, float) or not 0 <= v < float("inf") for v in tolerances.values()):
         raise ValueError("invalid tolerances")
@@ -82,64 +85,62 @@ def main(argv=None):
                       comparison_scope=("synthetic FakeEngine state only" if "fake" in a.oracle or "fake" in a.candidate else
                                         "narrow common public fields; VM UNTESTED" if profile == "common"
                                         else "all exposed fork public state; quantized timers/elixir"))
-    json_dump(a.out / "recipe.json", provenance)
-    rows, repros = [], []
-    candidate = oracle = None
-    try:
-        candidate = Worker(a.candidate_python, a.candidate, a.out / "candidate", runtime=a.candidate_runtime, timeout=a.timeout)
-        oracle = Worker(a.oracle_python, a.oracle, a.out / "oracle", runtime=a.oracle_runtime,
-                        native_manifest=a.native_manifest, native_template=a.native_template,
-                        native_port=a.native_port, timeout=a.timeout,
-                        expected_version="0.1.33" if a.oracle == "wheel" else None)
-        for i, s in enumerate(scenarios):
-            key = f"{i:06d}"
-            json_dump(a.out / "scenarios" / f"{key}-requested.json", s)
-            row = None
-            try:
-                row, frozen = paired(candidate, oracle, s, profile, tolerances)
-                json_dump(a.out / "scenarios" / f"{key}.json", frozen)
-                if row["divergence"] and (a.minimize_limit is None or len(repros) < a.minimize_limit):
-                    wanted = signature(row["divergence"])
-                    def predicate(trial):
-                        try:
-                            result, _ = paired(candidate, oracle, trial, profile)
-                            # Trials are disposable owned files; retained full traces are untouched.
-                            for path in result["traces"].values():
-                                Path(path).unlink()
-                            for path in result["full_diagnostic_traces"].values():
-                                if path:
-                                    Path(path).unlink()
-                            return result["divergence"] is not None and signature(result["divergence"]) == wanted
-                        except (ValueError, RuntimeError):
-                            return False
-                    minimal, info = minimize(frozen, predicate)
-                    verified, _ = paired(candidate, oracle, minimal, profile)
-                    if not verified["divergence"] or signature(verified["divergence"]) != wanted:
-                        raise RuntimeError("final minimized repro failed independent replay")
-                    repro = dict(id=key, divergence=verified["divergence"], minimization=info,
-                                 original_id=s["id"], traces=verified["traces"])
-                    json_dump(a.out / "repros" / f"{key}.json", minimal)
-                    json_dump(a.out / "repros" / f"{key}.evidence.json", repro)
-                    repros.append(repro)
-            except Exception as exc:
-                if row is not None:
-                    row["minimization_error"] = f"{type(exc).__name__}: {exc}"
-                else:
-                    row = dict(id=s["id"], suite=s["suite"], status="error", exact=False, completed=False,
-                               result_match=False, error=f"{type(exc).__name__}: {exc}")
-            rows.append(row)
-            json_dump(a.out / "cases" / f"{key}.json", row)
-            print(f"{i+1}/{len(scenarios)} {s['suite']} {row['status']} exact={row['exact']}", flush=True)
-    finally:
-        for worker in (candidate, oracle):
-            if worker:
-                worker.close()
+    check_workers(a.workers)
+    if a.oracle == "native" and a.native_port + a.workers - 1 > 65535:
+        raise ValueError("native worker ports exceed 65535")
+    # Scheduling is deliberately absent from the measurement recipe/history.
+    # Bind engine selection separately so a resumed directory cannot mix runtimes.
+    execution = {name: getattr(a, name) for name in (
+        "candidate_python", "oracle_python", "candidate_runtime", "oracle_runtime",
+        "native_manifest", "native_template", "native_port")}
+    execution["runtime_environment"] = os.environ.get("ROYALE_RUNTIME")
+    execution["native_inputs"] = {name: digest(getattr(a, name)) for name in
+                                  ("native_manifest", "native_template") if getattr(a, name)}
+    with cpu_lock():
+        exists = a.out.exists()
+        if exists and not a.resume:
+            raise FileExistsError(a.out)
+        if exists and a.resume:
+            if read_json(a.out / "recipe.json") != provenance:
+                raise ValueError("resume recipe differs from requested cohort/options")
+            if (a.out / ".execution.json").exists() and read_json(a.out / ".execution.json") != execution:
+                raise ValueError("resume engine configuration differs")
+        a.out.mkdir(parents=True, exist_ok=True)
+        atomic_json(a.out / "recipe.json", provenance)
+        atomic_json(a.out / ".execution.json", execution)
+        rows, repros = run_cases(a, scenarios, profile, tolerances)
+        return write_report(a, rows, repros, provenance)
+
+
+def write_report(a, rows, repros, provenance):
     report = metrics(rows, provenance)
     report["minimized_repros"] = len(repros)
     report["unminimized_divergences"] = sum(bool(r.get("divergence")) for r in rows) - len(repros)
     json_dump(a.out / "attribution.json", attribute(repros))
-    json_dump(a.out / "report.json", report)
-    history_path = save_history(a.history, report)
+    # Persist the reporting clock before appending history. If killed just after
+    # that append, resume finds its exact content hash rather than duplicating it.
+    finalizing = a.out / ".finalizing.json"
+    old_path = finalizing if finalizing.exists() else a.out / "report.json"
+    if a.resume and old_path.exists():
+        old_report = read_json(old_path)
+        old_body = {k: v for k, v in old_report.items() if k != "created_utc"}
+        if old_body == {k: v for k, v in report.items() if k != "created_utc"}:
+            report = old_report
+    atomic_json(finalizing, report)
+    previous = a.out / ".history.json"
+    history_path = None
+    if a.resume and previous.exists():
+        receipt = read_json(previous)
+        if Path(receipt["path"]).is_file() and read_json(Path(receipt["path"])) == report:
+            history_path = Path(receipt["path"])
+    if a.resume and history_path is None:
+        digest = hashlib.sha256(json.dumps(report, sort_keys=True, allow_nan=False).encode()).hexdigest()[:12]
+        history_path = next((p for p in sorted(a.history.glob(f"*-{digest}.json"))
+                             if read_json(p) == report), None)
+    if history_path is None:
+        history_path = save_history(a.history, report)
+    atomic_json(a.out / "report.json", report)
+    atomic_json(previous, {"path": str(history_path)})
     lines = [f"DIFFSIM {report['measurement']}", f"Requested={len(rows)} errors={report['errors']}",
              f"Profile: {provenance['comparison_scope']}", ""]
     for name, v in {**report["suites"], "short_horizon_exact": report["short_horizon_exact"],
@@ -148,6 +149,7 @@ def main(argv=None):
         lines.append(f"{name}: {v['successes']}/{v['total']} = {v['percent']}%; Wilson 95% CI {v['ci95_percent']}")
     lines.extend(["", "Owner real-game goal proven: NO", f"Dated history: {history_path}"])
     (a.out / "SUMMARY.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    finalizing.unlink()
     print("\n".join(lines))
     return 0 if report["all_sanity_exact"] else 1
 

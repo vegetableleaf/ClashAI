@@ -10,10 +10,13 @@ import sys
 import traceback
 
 from .adapters import FakeEngine, ForkEngine, NativeEngine
-from .runner import execute
+from .core import compare_traces
+from .runner import execute, trace
+from .resources import bind_worker_to_parent
 
 
 def main():
+    bind_worker_to_parent()
     p = argparse.ArgumentParser()
     p.add_argument("--engine", choices=["fork", "wheel", "native", "fake", "fake-bug"], required=True)
     p.add_argument("--runtime")
@@ -57,6 +60,13 @@ def main():
                         lambda state: f.write(json.dumps(state, sort_keys=True, allow_nan=False) + "\n"), request["profile"],
                         (lambda state: full.write(json.dumps(state, sort_keys=True, allow_nan=False) + "\n")) if full else None)
                     result["full_trace"] = str(full_path) if full_path else None
+                if request.get("reference_trace"):
+                    reference = request["reference_trace"]
+                    exact = compare_traces(trace(path), trace(reference))
+                    tolerant = (compare_traces(trace(path), trace(reference), request["tolerances"])
+                                if request.get("tolerances") else exact)
+                    result["comparison"] = dict(exact=exact.json() if exact else None,
+                                                tolerant=tolerant.json() if tolerant else None)
                 # Do not send a large final board through the response pipe.
                 result["final"] = {"tick": result["final"]["tick"], "result": result["final"]["result"]}
                 print(json.dumps(result, allow_nan=False), flush=True)

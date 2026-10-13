@@ -128,7 +128,8 @@ def unit_suites(seed, names, cards):
     for name in names:
         forms = [f for f in cards[name]["forms"] if f] or ([0] if cards[name]["ability"] else [])
         for form in forms:
-            s = make("forms", f"{name}-form-{form}", [deck([name]), deck(["Knight"])], duration=3000)
+            # 300 s: expensive evolutions need several focus plays before the evolved one (10-13: 8/35 never evolved in 150 s)
+            s = make("forms", f"{name}-form-{form}", [deck([name]), deck(["Knight"])], duration=6000)
             s["decks"][0][0]["form"] = form
             s["policy"] = dict(seed=s["seed"], interval=10, focus=name, ability=True,
                                ability_cards=[name], active_sides=[0, 1])
@@ -145,7 +146,7 @@ def random_scenario(seed, cards, names, full=False):
         selected = rng.sample(sorted(names), 8)
         # Standard deck limits: max two evo and one hero/champion.
         evo, hero = 0, 0
-        d = []
+        d, used = [], set(selected)
         for name in selected:
             eligible = [0] + ([1] if 1 in cards[name]["forms"] and evo < 2 else [])
             if 2 in cards[name]["forms"] and hero < 1:
@@ -154,14 +155,15 @@ def random_scenario(seed, cards, names, full=False):
             evo += form == 1
             hero += form == 2 or cards[name]["ability"]
             if hero > 1:
-                # Replace a second base champion with an unused non-champion.
-                replacements = [n for n in sorted(names) if n not in selected and not cards[n]["ability"]]
+                # Replace a second base champion with an unused non-champion (never re-iterated: no duplicate card).
+                replacements = [n for n in sorted(names) if n not in used and not cards[n]["ability"]]
                 if not replacements:
                     raise ValueError("chosen set cannot make a legal single-champion deck")
                 name, form = rng.choice(replacements), 0
-                selected.append(name)
+                used.add(name)
                 hero -= 1
-            d.append(dict(card=name, form=form, level=rng.randint(9, 16)))
+            # Champions exist from level 11 (engine: "valid 1..=7" champion-local levels).
+            d.append(dict(card=name, form=form, level=rng.randint(11 if cards[name]["ability"] else 9, 16)))
         ds.append(d)
     s = scenario(seed, "full" if full else "skirmish", "random", ds,
                  duration=7200 if full else rng.randint(10, 30)*HZ)
@@ -198,7 +200,12 @@ class LegalPolicy:
             if self.spec.get("ability") and bodies and self.rng.random() < .35:
                 actions.append(dict(type="ability", side=side, card=self.rng.choice(bodies)["card"], tick=tick))
                 continue
+            # The focus side banks elixir for the focus card / ability: fillers only near full elixir (10-13: cheap
+            # fillers starved expensive evolutions and hero presses). Elixir units are 1/10000.
+            saving = focus is not None and any(c["card"] == focus for c in entries)
             for c in entries:
+                if saving and c["card"] != focus and engine.state()["elixir"][side] < 95000:
+                    break
                 found = False
                 for _ in range(12):
                     x = self.rng.randrange(2, 16)*1000 + 500

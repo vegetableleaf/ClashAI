@@ -9,6 +9,7 @@ TICK_S = 0.05
 BUILDINGS = {'Tesla', 'Xbow'}
 src, out = sys.argv[1], (sys.argv[2] if len(sys.argv) > 2 else None)
 
+tap_tick = lambda c: c.get('tap_tick', c['tick'])   # injected later than the tap in --own-timing spawn* runs
 traj = []   # one entry per own unit identity: card, side, tap tick, list of (age_ticks, live xy, sim xy)
 for path in sorted(glob.glob(src + '/*.json')):
     d = json.load(open(path))
@@ -26,14 +27,14 @@ for path in sorted(glob.glob(src + '/*.json')):
     for ident, rows in seen.items():
         rows.sort(key=lambda t: t[0])
         first_tick, cid = rows[0][0], rows[0][1]
-        prior = [c for c in taps if c['card_id'] == cid and c['tick'] <= first_tick]
+        prior = [c for c in taps if c['card_id'] == cid and tap_tick(c) <= first_tick]
         if cid not in names or not prior:
             continue
-        tap = max(prior, key=lambda c: c['tick'])
-        if first_tick - tap['tick'] > 60:        # first sighting >3 s after the tap: not a fresh deploy, skip
+        tap = max(prior, key=tap_tick)
+        if first_tick - tap_tick(tap) > 60:        # first sighting >3 s after the tap: not a fresh deploy, skip
             continue
-        traj.append(dict(card=names[cid], side=own, match=d['match'], tap=tap['tick'], spawn=(tap['x'], tap['y']),
-                         pts=[(t - tap['tick'], (lv['x'], lv['y']), (sm['x'], sm['y'])) for t, _, lv, sm in rows]))
+        traj.append(dict(card=names[cid], side=own, match=d['match'], tap=tap_tick(tap), spawn=(tap['x'], tap['y']),
+                         pts=[(t - tap_tick(tap), (lv['x'], lv['y']), (sm['x'], sm['y'])) for t, _, lv, sm in rows]))
 
 
 def fwd(side):

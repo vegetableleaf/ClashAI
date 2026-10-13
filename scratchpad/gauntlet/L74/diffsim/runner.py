@@ -11,7 +11,7 @@ import subprocess
 import sys
 import threading
 
-from .core import compare_traces, validate
+from .core import validate
 from .generators import LegalPolicy
 
 
@@ -112,6 +112,7 @@ class Worker:
         self.directory.mkdir(parents=True, exist_ok=True)
         self.timeout = timeout
         self.counter = 0
+        self.failed = False
         cmd = [str(python), "-m", "scratchpad.gauntlet.L74.diffsim.worker", "--engine", engine]
         for flag, value in (("--runtime", runtime), ("--native-manifest", native_manifest),
                             ("--native-template", native_template), ("--native-port", native_port)):
@@ -119,31 +120,50 @@ class Worker:
                 cmd.extend([flag, str(value)])
         if expected_version:
             cmd.extend(["--expected-version", expected_version])
-        env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1", PIP_NO_INDEX="1")
-        self.stderr = (self.directory / "worker.stderr.log").open("w", encoding="utf-8")
-        self.proc = subprocess.Popen(cmd, cwd=Path(__file__).resolve().parents[4], env=env,
-                                     stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=self.stderr,
-                                     text=True, encoding="utf-8", bufsize=1)
+        env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1", PIP_NO_INDEX="1",
+                   DIFFSIM_PARENT_PID=str(os.getpid()))
+        # A replacement worker shares its pair's log; retain the crash that
+        # caused the restart instead of truncating the error's referenced file.
+        self.stderr = (self.directory / "worker.stderr.log").open("a", encoding="utf-8")
+        try:
+            self.proc = subprocess.Popen(cmd, cwd=Path(__file__).resolve().parents[4], env=env,
+                                         stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=self.stderr,
+                                         text=True, encoding="utf-8", bufsize=1)
+        except BaseException:
+            self.stderr.close()
+            raise
         self.responses = Queue()
         def read():
-            for line in self.proc.stdout:
-                self.responses.put(line)
-            self.responses.put(None)
+            try:
+                for line in self.proc.stdout:
+                    self.responses.put(line)
+            finally:
+                self.responses.put(None)
         self.reader = threading.Thread(target=read, daemon=True)
         self.reader.start()
 
-    def run(self, s, profile="public"):
+    def run(self, s, profile="public", reference_trace=None, tolerances=None):
+        if self.failed or self.proc.poll() is not None:
+            raise RuntimeError("engine worker exited; see " + self.stderr.name)
         self.counter += 1
         out = self.directory / f"trace-{self.counter:07d}.jsonl.gz"
-        self.proc.stdin.write(json.dumps(dict(scenario=s, trace=str(out), profile=profile)) + "\n")
-        self.proc.stdin.flush()
+        try:
+            self.proc.stdin.write(json.dumps(dict(scenario=s, trace=str(out), profile=profile,
+                                                 reference_trace=str(reference_trace) if reference_trace else None,
+                                                 tolerances=tolerances)) + "\n")
+            self.proc.stdin.flush()
+        except (OSError, ValueError) as exc:
+            self.failed = True
+            raise RuntimeError("engine worker exited; see " + self.stderr.name) from exc
         try:
             response = self.responses.get(timeout=self.timeout)
         except Empty as exc:
+            self.failed = True
             self.close()
             raise TimeoutError("owned engine worker timed out") from exc
         if response is None:
-            raise RuntimeError("engine worker exited; see " + str(self.directory / "worker.stderr.log"))
+            self.failed = True
+            raise RuntimeError("engine worker exited; see " + self.stderr.name)
         data = json.loads(response)
         if data.get("error"):
             raise RuntimeError(data["error"])
@@ -151,12 +171,20 @@ class Worker:
 
     def close(self):
         if self.proc.poll() is None:
-            self.proc.stdin.close()
+            try:
+                self.proc.stdin.close()
+            except OSError:
+                pass
             try:
                 self.proc.wait(timeout=5)
             except subprocess.TimeoutExpired:
                 self.proc.terminate()
-                self.proc.wait(timeout=5)
+                try:
+                    self.proc.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    self.proc.kill()
+                    self.proc.wait(timeout=5)
+        self.reader.join(timeout=5)
         self.stderr.close()
         self.proc.stdout.close()
 
@@ -164,9 +192,11 @@ class Worker:
 def paired(candidate, oracle, s, profile="public", tolerances=None):
     # Oracle materializes once; the candidate receives the exact frozen actions.
     right, rp = oracle.run(s, profile)
-    left, lp = candidate.run(right["scenario"], profile)
-    exact_diff = compare_traces(trace(lp), trace(rp))
-    tolerant_diff = compare_traces(trace(lp), trace(rp), tolerances) if tolerances else exact_diff
+    left, lp = candidate.run(right["scenario"], profile, rp, tolerances)
+    # Comparison runs in the candidate process, so CPU-heavy JSON/alignment work
+    # scales across pairs too, without another pool or more engine processes.
+    exact_diff = left["comparison"]["exact"]
+    tolerant_diff = left["comparison"]["tolerant"]
     completed = left["final"]["result"]["terminal"] and right["final"]["result"]["terminal"]
     valid = right["coverage_ok"] and right["fixed_rejections"] == 0 and right["unexecuted_plays"] == 0
     if s["suite"] == "full":
@@ -174,8 +204,8 @@ def paired(candidate, oracle, s, profile="public", tolerances=None):
     row = dict(id=s["id"], suite=s["suite"], status="ok" if valid else "coverage_incomplete",
                exact=valid and exact_diff is None, within_tolerance=valid and tolerant_diff is None,
                completed=completed, result_match=completed and left["final"]["result"] == right["final"]["result"],
-               divergence=exact_diff.json() if exact_diff else None,
-               tolerance_divergence=tolerant_diff.json() if tolerant_diff else None,
+               divergence=exact_diff,
+               tolerance_divergence=tolerant_diff,
                traces={"candidate": str(lp), "oracle": str(rp)},
                hashes={"candidate": left["trace_sha256"], "oracle": right["trace_sha256"]},
                frames={"candidate": left["frames"], "oracle": right["frames"]},

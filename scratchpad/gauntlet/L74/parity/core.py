@@ -4,6 +4,7 @@ from __future__ import annotations
 from collections import Counter, defaultdict
 import hashlib
 import importlib.util
+from itertools import permutations
 import json
 import math
 from pathlib import Path
@@ -145,6 +146,7 @@ class Tracks:
     def __init__(self, role_limits=None):
         self.seen = {}; self.counts = Counter()
         self.role_limits = role_limits or {}
+        self.births = {}  # output key -> tick first assigned
 
     def assign(self, tick, bodies):
         out = {}
@@ -166,10 +168,50 @@ class Tracks:
                 key = f"unit:{b['card_id']}:{b['side']}:{order}"
                 if role:
                     key += ':'+role
+                self.births.setdefault(key, tick)
             if key in out:
                 raise ValueError('duplicate_body_identity:' + key)
             out[key] = b
         return out
+
+
+class SwarmPairing:
+    """Re-pair members of one swarm (same card/side/role, born on the same tick in BOTH engines) by position.
+
+    Spawn-ordinal pairing breaks same-tick ties by x,y and can cross-pair formation members (FINDING.md: Skeletons
+    residual). At the first sample where every member of a live batch is present in both engines, the
+    minimum-total-distance assignment is fixed for the rest of the match; it is never re-optimised later.
+    """
+    def __init__(self):
+        self.fixed = {}; self.done = set()
+
+    @staticmethod
+    def best(keys, live, sim):
+        """sim key -> live key over one batch, minimising total distance."""
+        d = lambda a, b: math.hypot(live[a]['x']-sim[b]['x'], live[a]['y']-sim[b]['y'])
+        if len(keys) <= 7:
+            perm = min(permutations(keys), key=lambda p: sum(d(a, b) for a, b in zip(keys, p)))
+            return dict(zip(perm, keys))
+        # ponytail: greedy nearest pair above 7 members (Skeleton Army); exact assignment if it ever matters
+        out, used = {}, set()
+        for _, a, b in sorted((d(a, b), a, b) for a in keys for b in keys):
+            if a not in used and b not in out:
+                out[b] = a; used.add(a)
+        return out
+
+    def apply(self, live, sim, live_births, sim_births):
+        batches = defaultdict(list)
+        for k in live:
+            if k.startswith('unit:') and k not in self.done:
+                _, card, side, _, *role = k.split(':')
+                batches[card, side, tuple(role), live_births[k]].append(k)
+        for keys in batches.values():
+            if len(keys) > 1 and not all(k in sim for k in keys):
+                continue  # wait until every member exists in both engines
+            if len(keys) > 1 and len({sim_births[k] for k in keys}) == 1:
+                self.fixed.update(self.best(sorted(keys), live, sim))
+            self.done.update(keys)  # singletons / non-batches in the sim keep ordinal pairing
+        return {self.fixed.get(k, k): v for k, v in sim.items()}
 
 
 def compare(live, sim, position_threshold=0.5, hp_threshold=1):

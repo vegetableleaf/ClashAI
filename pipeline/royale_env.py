@@ -172,6 +172,7 @@ class RoyalePoolEnv:
         if ability_policy == "v2" and not hero_abilities:
             raise ValueError("ability_policy v2 needs hero_abilities=True")
         self.ability_policy = ability_policy
+        self._iw_never = heroiw.press_mode() == 'never'
         if heroiw.live_press_enabled():
             if ability_policy != 'v2' or not hero_abilities:
                 raise ValueError('Live IW press rule needs hero_abilities and ability_policy v2')
@@ -400,6 +401,8 @@ class RoyalePoolEnv:
             cid = row[3]
             if cid not in self._hero_ids[side] or (side, button) in pending:
                 continue
+            if self._iw_never and self.names[cid] == 'IceWizard':
+                continue   # ROYALE_HEROIW_PRESS=never (IWDIAG N3): every press path goes through here
             cost = row[2] if heroiw.ENABLED or cid in self._champ_ids[side] else self._hero_costs[cid]
             if cost is None or st.players[side].elixir_milli < cost * 1000:
                 continue

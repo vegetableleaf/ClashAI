@@ -61,7 +61,12 @@ def test_press_opt_in_and_invalid_flags(monkeypatch):
     monkeypatch.setattr(H, 'ENABLED', True)
     monkeypatch.setenv('ROYALE_HEROIW_PRESS', 'live')
     assert H.live_press_enabled()
+    monkeypatch.setenv('ROYALE_HEROIW_PRESS', 'never')
+    assert H.press_mode() == 'never' and not H.live_press_enabled()
     monkeypatch.setattr(H, 'ENABLED', False)
+    with pytest.raises(ValueError, match='runtime'):
+        H.press_mode()
+    monkeypatch.setenv('ROYALE_HEROIW_PRESS', 'live')
     with pytest.raises(ValueError, match='runtime'):
         H.live_press_enabled()
     monkeypatch.setenv('ROYALE_HEROIW_PRESS', 'typo')
@@ -250,7 +255,7 @@ def fixture_rows(arm, k=8):
                  opp_gen_sha256='same', outcome='win' if arm == 'N1' else 'loss', searched=0, wall_truncated=False,
                  ability_presses={str(seed % 2): {'IceWizard': int(hero)}},
                  iwdiag=dict(arm=arm, runtime={'runtime_id': D.ARMS[arm][0]}, form=D.ARMS[arm][1], press=D.ARMS[arm][2],
-                             loaded_forms={str(seed % 2): [0, 1, 2 if arm in ('N0', 'N2') else 0, 0, 0, 1, 0, 0]},
+                             loaded_forms={str(seed % 2): [0, 1, 2 if arm in ('N0', 'N2', 'N3') else 0, 0, 0, 1, 0, 0]},
                              iw_table_cost=2 if arm != 'O0' else None,
                              press_receipts=[dict(accepted=True, spent=2)] if hero else [],
                              iw_scheduled=2*int(hero), iw_attempts=int(hero), iw_accepted=int(hero), iw_elixir=2*int(hero), xbow_placements=3,
@@ -284,6 +289,14 @@ def test_paired_summary_and_rejection_controls():
     bad['N0'][0]['iwdiag']['press_receipts'] = []
     with pytest.raises(ValueError, match='incomplete press'):
         D.summarize(bad, 25, expected=8)
+    bad = copy.deepcopy(data)
+    bad['N3'][0]['iwdiag']['iw_scheduled'] = 1          # N3 = never press
+    with pytest.raises(ValueError, match='unexpectedly pressed'):
+        D.summarize(bad, 25, expected=8)
+    report, _ = D.summarize({a: data[a] for a in ('N0', 'N1', 'N3')}, 25, expected=8)   # --arms subset
+    assert set(report) == {'N0', 'N1', 'N3'}
+    with pytest.raises(ValueError, match='N0'):
+        D.summarize({a: data[a] for a in ('N1', 'N3')}, 25, expected=8)
 
 
 def test_schedule_and_exact_one_change_per_new_arm():

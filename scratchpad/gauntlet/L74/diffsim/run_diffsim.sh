@@ -7,8 +7,8 @@ PYTHON=${DIFFSIM_PYTHON:-/workspace/venv33/bin/python}
 ORACLE_PYTHON=${ORACLE_PYTHON:-/workspace/venv33/bin/python}
 [[ $(uname -s) == Linux ]] || { echo 'Linux pod launcher only' >&2; exit 2; }
 [[ -x "$PYTHON" && -x "$ORACLE_PYTHON" ]] || { echo 'Preinstall both Python runtimes offline' >&2; exit 2; }
-exec 9>/workspace/cpu.lock
-flock 9
+# The CLI holds flock(/workspace/cpu.lock), including direct Python invocations.
+# Do not take it here too: a second open-file description would deadlock.
 export PIP_NO_INDEX=1 PIP_DISABLE_PIP_VERSION_CHECK=1 PYTHONDONTWRITEBYTECODE=1
 export ROYALE_RUNTIME=fork
 cd "$REPO"
