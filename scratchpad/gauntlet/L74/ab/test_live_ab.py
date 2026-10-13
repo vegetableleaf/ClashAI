@@ -272,6 +272,22 @@ class Cases(unittest.TestCase):
         self.assertEqual(f.starts, ['A'])
         self.assertEqual((f.live/'LIVE_OPTIONS').read_bytes(), b'external update')
 
+    def test_safety_arm_extra_options(self):
+        # B = same model + --no-ability: LIVE_OPTIONS is written per arm, the other arm's header never counts,
+        # and the original LIVE_OPTIONS comes back (assert_restored).
+        tmp = FixtureDirectory()
+        self.addCleanup(tmp.cleanup)
+        fake = FakeSupervisor(tmp.name, noise=True, extra={'B': '--no-ability'})
+        r = Runner(fake.arms, fake, live=fake.live, logs=fake.logs, output=fake.output, block=3, total=7,
+                   poll=1, stall=8, grace=1, stop_timeout=3, clock=fake, now=fake.time)
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(r.execute(), 0)
+        fake.assert_restored()
+        base = b'{"untouched":true}'
+        self.assertEqual({k: v for k, v in fake.options_seen}, {'A': base + b'\n', 'B': base + b' --no-ability\n'})
+        self.assertEqual(r.count(fake.arms[0]), 7)
+        self.assertEqual(r.count(fake.arms[1]), 7)
+
     def test_reporting_intervals(self):
         lo, hi = wilson(5, 10)
         self.assertAlmostEqual(lo, 0.2365930905)

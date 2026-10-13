@@ -44,11 +44,14 @@ def observe(frame, side, source):
 
 # Hero forms the pinned RoyaleSim cards.json lacks (L74 econ2 parity fix). Without a spec, tokens() leaves a live controller
 # 'readiness unknown' (ready_known 0, charges -1, cooldown -1) -- a state absent from training (695,286 hero ability rows,
-# all ready_known 1) that measurably inflates the gate. Values: elixir drop per confirmed press 1.143 (n 763: 1 + regen
-# during confirmation) (a); <= 1 press per life in 98.6% of 2,825 lives and the button 'absent' after a press (a, max 1
+# all ready_known 1) that measurably inflates the gate. Values: ability cost 2 elixir = device-update table
+# ABILITY.IceWizardHero_ability.ManaCost (scratchpad/gauntlet/L74/heroiw/diag/device_cost.json) (a); the live median drop per
+# confirmed press 1.143 (n 763) agrees -- regen during confirmation can only shrink the drop, so cost 1 could never read
+# above 1 (was mana_cost 1 until 2026-10-13, read backwards as '1 + regen'); <= 1 press per life in 98.6% of 2,825
+# lives and the button 'absent' after a press (a, max 1
 # charge, no cooldown -- as every other hero in cards.json); deploy -> first 'ready' <= 2.3 s at 2 s button sampling,
 # consistent with the 1000 ms deploy every hero form uses (b). Measured: scratchpad/gauntlet/L74/econ2/diag_hero.py.
-SUPPLEMENT = {('ice-wizard', 2): dict(name='IceWizardHero_Ability', mana_cost=1, max_charges=1, cooldown_ms=None,
+SUPPLEMENT = {('ice-wizard', 2): dict(name='IceWizardHero_Ability', mana_cost=2, max_charges=1, cooldown_ms=None,
                                       deploy_ms=1000, source='L74 econ2 live record (diag_hero.py)')}
 # The supplement is OPT-IN and passed explicitly (live-only flag --hero-ability-spec): 'off' (default, every SIM /
 # training / native path) = the pinned cards.json only, byte-identical to before; 'supplement' = + SUPPLEMENT.

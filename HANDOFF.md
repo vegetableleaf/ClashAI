@@ -1,3 +1,58 @@
+## 2026-10-13 ~08:30 UTC PAUSE -- owner moving to another Claude account. A new session starts HERE.
+
+**Live (do not revert; owner's choice):** Stage 1 ADAPT2 on the MAIN icebow account, fast plays off, emotes off,
+`CKPT_OVERRIDE` = `icebow/data/bench/rl_royale/adapt2/adapt2_final_grafted.pt` (sha 6389ce3f). run_live.sh PID 415316,
+live_play PID 432105 (`--matches 400`).
+
+**Pods / VM at pause:**
+- **pod C** (`ssh -p 14457 root@64.247.206.120`, key `~/.ssh/runpod_clashbot`): NEWSIM re-attempt 1 of 2 = v1 retrained
+  with `ROYALE_HEROIW_FORM=normal` (branch l74-newsim 090219c, worktree `C:/Users/benpe/wt_newsim`). Relay PID 456615
+  (`pod_relay2.sh podC ... NEWSIM_base`) copies to `pod_backup_weekend/podC/x_NEWSIM_base` + `COPIED_NEWSIM_base`.
+  KEEP released 10-13: the pod stops itself 2 h after the job ends.
+- **pod D** (`-p 27346 root@64.247.206.80`): idle for hours; KEEP released, its relay requests the stop. DIFFSIM_SANITY
+  never wrote DONE; summary copied by hand to `pod_backup_weekend/podD/x_DIFFSIM_SANITY` (stand-in only, NOT real-game:
+  full-match trace exact 798/1000 = 79.8% [77.2, 82.2], short horizon 76/100, duel 3969/3969, building 225/225, forms
+  27/35, 226 errors of 5405 requested). The 1.2 GB `cases/` stayed on pod D's volume.
+- **pod 3**: ssh fails since 10-13 ~08:03 (stopped or reset); `pod3_relay_keep.sh` PID 320385 still polls. Memory seed B
+  was never copied back (no COPIED marker). Owner: check the RunPod page.
+- **GCP VM 136.71.151.177** (oracle, AOSP API 32): idle emulator, ~$0.39/h. Owner may stop it while paused (disk stays).
+- Process check (Windows PIDs differ from MSYS): read `/proc/<pid>/cmdline`; kill by exact PID only.
+
+**Tied to the OLD Claude session (may die with it):** `battery_guard.py` (PID 21941) -- restart with
+`icebow/.venv/Scripts/python.exe scratchpad/gauntlet/L73/battery_guard.py`. Relays were started with nohup (they
+probably survive; untested for a session close) -- verify they are alive after the switch.
+
+**Done 10-13 (this batch):**
+- Hero IW ability `pipeline/own_ability.py` SUPPLEMENT mana_cost 1 -> 2 (device-update ManaCost 2, `heroiw/diag/
+  device_cost.json`; the live median drop per press 1.143, n 763, is > 1, which a cost of 1 can never produce). Measured
+  by grep: no live input or decision reads mana_cost (tokens() uses charges/cooldown/deploy; presses follow the on-screen
+  button), so no live restart was needed -- a record fix.
+- Ability A/B tooling: `--no-ability` is now deployable through LIVE_OPTIONS (`pipeline/live_options.py`
+  EXTRA_LIVE_FLAGS); `live_ab.py --arm-extra KEY=FLAGS` writes LIVE_OPTIONS per arm, counts a match only when its header
+  (`live_options.from_file`) carries exactly that arm's flags, and restores the original LIVE_OPTIONS. Dry-run 25/25,
+  live-option tests 49 + 1 new pass. With no --arm-extra the runner behaves exactly as before.
+- Deleted the 13 GB regenerable SCALE `dataset_cache` (owner OK).
+
+**Next, in order (all owner-approved):**
+1. Re-attempt 1 verdict (`podC/x_NEWSIM_base/**/SUMMARY.txt`). PASS -> A/B1: stop Stage 1 between matches, VERIFY MuMu is
+   on the main account (towers 4424), then `live_ab.py --arm "A:v1:<ckpt>:off" --arm
+   "B:old:C:/Users/benpe/ClashBot/icebow/data/bench/rl_royale/rseries_r3c/rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt:off"
+   --block 5 --total 150`. FAIL -> re-attempt 2 (the LAST), chosen by diagnosis. Caveat for any verdict: v1 trained and
+   evaluated with the NORMAL Ice Wizard; live plays Hero IW + the press rule.
+2. After A/B1, WAIT for the owner's go-ahead (Instagram clip on MuMu) before A/B2 (v1 vs v2; v2 fast ON only if SIM
+   ON >= OFF).
+3. Ability A/B, short (owner): both arms the current live checkpoint, `--arm "A:pressed:<ckpt>:off" --arm
+   "B:nopress:<ckpt>:off" --arm-extra B=--no-ability --block 5 --total 40`. 40/arm only detects a large effect (~20 pp);
+   say so in the report. Fit it around A/B1 and the owner's MuMu time.
+4. Oracle v8: ONE truthful "yes, emulator" attempt, owner-approved 10-13 (memory exact-simulator-priority). STOP this route
+   for good if libg or its protection refuses; no other answer is ever tried.
+5. Exact-simulator track: parity cleanup (unmapped 13000043, GoblinHut, RamRider, ElectroGiant), SIM Hero IW ability as a
+   parity target, the ~1.1 s elixir-queue rule as the first fork fix.
+
+**Traps:** never `python -` (memory stdin-python-repl-trap: it hung 8 times, and killing old ones replayed their command
+chains -- `cb_weekend/.../s11_bait.sh` restored); never `git add -A` (Codex output); Git-Bash sha256 prints `*`; pod SSH
+ports change when a pod restarts.
+
 **2026-10-13 ORACLE v6 (Codex, uncommitted; Android runtime unrun):** `scratchpad/gauntlet/L74/oracle/linux/qualify/jnihost_ro/` now builds separate host/child DEX jars. The child PathClassLoader includes verified installed base/splits and native paths; its own stub loads the read-only observer and calls System.loadLibrary("g") in the same namespace. Upstream client descriptor shells and all post-load lifecycle/startup calls removed; exact boundary is stop_after_library_load. preload.txt is ignored unless --preload-dependencies is selected before the sole attempt; no fallback/retry after failure. Offline: 37 tests, public privacy scan, javac/D8/Android observer build, DEX ownership and observer audits passed (VERIFICATION.json; four offline gates met). Local Bash cannot start (Win32 error 5), so Linux shell validation and actual libg/FMOD registration remain worker checks. FMOD missing-class diagnosis is untested. Stub directly touches only itself and java.lang.Object/String/System; indirect JNI/static initializer side effects remain unmeasured. No target/client/network execution, protection access or spoofing; libg refusal means STOP (b). README contains run order, direct class list, risks and private receipt locations.
 
 **2026-10-12 HEROIW (Codex, uncommitted; pod validation pending):** Added opt-in `ROYALE_RUNTIME=20261012(-linux)` for royalesim 0.1.33 + royalegym 0.1.23, current-client card table, icebow Hero IW form 2, existing v2 ability path, and public body/cube aliases. Unset/20261006 pins unchanged; no live scripts/options edited, no deployment or pod launch. Offline verification: 70 pytest cases passed, no engine modules imported (`scratchpad/gauntlet/L74/heroiw/VERIFICATION.json`). Job: `WORKERS=25 bash scratchpad/gauntlet/L74/heroiw/run_heroiw.sh`; separate /workspace/venv33, cpu.lock, eight-game smoke, 480 OLD/NEW CAL-c pairs, LIVECAL P1/P2/P5 into /workspace/results/LIVECAL_NEW, verdict-first HEROIW/SUMMARY.txt and DONE. Estimated 6-7 hours with a compatible archived old baseline, 12-13 with a fresh one. Wheel API/provenance and actual gameplay/results remain unconfirmed offline; local Bash could not start (Win32 access denied). Hero IW uses the existing v2 generic fallback, not a newly fitted model or live iw_press_pstar. Source-reviewed behavior changes and exact limitations: `scratchpad/gauntlet/L74/heroiw/README.md`.

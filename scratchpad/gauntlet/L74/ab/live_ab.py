@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 from collections import Counter
+import dataclasses
 from dataclasses import dataclass
 from datetime import datetime
 import hashlib
@@ -52,6 +53,11 @@ class Arm:
     ckpt: Path
     fast: bool
     sha: str
+    extra: str = ''   # --arm-extra: LIVE_OPTIONS flags appended for this arm only (e.g. --no-ability)
+
+    @property
+    def dests(self):
+        return frozenset(t[2:].split('=', 1)[0].replace('-', '_') for t in self.extra.split() if t.startswith('--'))
 
     @classmethod
     def parse(cls, text):
@@ -125,7 +131,7 @@ class Match:
                 if self.head is None:
                     if j.get('event') != 'start':
                         self.bad = True
-                    self.head = {k: j.get(k) for k in ('ckpt', 'ckpt_sha256', 'pipeline_decisions', 'dry_run')}
+                    self.head = {k: j.get(k) for k in ('ckpt', 'ckpt_sha256', 'pipeline_decisions', 'dry_run', 'live_options')}
                 ev = j.get('event')
                 if ev == 'decision':
                     d = project(j)
@@ -141,13 +147,15 @@ class Match:
                 if isinstance(j.get('trophies_total'), (int, float)):
                     self.trophies = j['trophies_total']
 
-    def matches(self, arm):
+    def matches(self, arm, dests=frozenset()):
         h = self.head or {}
         # Missing pipeline_decisions means OFF in the current writer; missing SHA never matches.
         fast = h.get('pipeline_decisions')
+        # Per-arm extra flags: the header's LIVE_OPTIONS record must hold exactly this arm's share of them.
+        from_file = (h.get('live_options') or {}).get('from_file') or {}
         return (h.get('ckpt_sha256') == arm.sha and bool(h.get('ckpt'))
                 and (fast is None or type(fast) is bool) and (fast is True) == arm.fast
-                and not h.get('dry_run'))
+                and not h.get('dry_run') and all((d in from_file) == (d in arm.dests) for d in dests))
 
     def outcome(self):
         if not self.closed or not self.last or self.bad:
@@ -294,7 +302,15 @@ class Runner:
         self.active = None
         self.controlled = False
         self.snapshots = {}
+        # Any --arm-extra moves LIVE_OPTIONS from protected (never written) to controlled (per arm, then restored).
+        self.extra_dests = frozenset().union(*(a.dests for a in arms))
         self.output.mkdir(parents=True, exist_ok=True)
+
+    def options_for(self, arm):
+        base = self.snapshots['LIVE_OPTIONS']
+        if base is None:
+            raise Abort('--arm-extra needs an existing LIVE_OPTIONS file to extend.')
+        return base.rstrip(b'\r\n') + (b' ' + arm.extra.encode() if arm.extra else b'') + b'\n'
 
     def event(self, kind, **kw):
         append(self.output / 'events.jsonl', dict(run_id=self.run_id, t=self.now(), event=kind, **kw))
@@ -382,7 +398,8 @@ class Runner:
     def scan(self):
         self.check_protected()
         if ((self.live / 'CKPT_OVERRIDE').read_text().strip() != self.active.ckpt.as_posix() or
-            (self.live / 'LIVE_FAST').read_text().strip() != ('on' if self.active.fast else 'off')):
+            (self.live / 'LIVE_FAST').read_text().strip() != ('on' if self.active.fast else 'off') or
+            (self.extra_dests and (self.live / 'LIVE_OPTIONS').read_bytes() != self.options_for(self.active))):
             raise Abort('An external writer changed the active arm settings; STOP requested.')
         for p in sorted(self.logs.glob('live_play_*.jsonl')):
             if p.name in self.existing:
@@ -400,7 +417,7 @@ class Runner:
                 guard(m.first)
                 m.guarded = True
                 self.event('account_guard_pass', match_file=p.name)
-            if not m.matches(self.active) or not m.guarded:
+            if not m.matches(self.active, self.extra_dests) or not m.guarded:
                 continue
             out = m.outcome()
             if out and p.name not in self.seen:
@@ -422,7 +439,7 @@ class Runner:
                 if not counted:
                     self.event('overflow', match_file=p.name)
         n = self.count(self.active) - self.block_before
-        pending = any(name not in self.attempt_existing and m.matches(self.active) and m.guarded and not m.closed
+        pending = any(name not in self.attempt_existing and m.matches(self.active, self.extra_dests) and m.guarded and not m.closed
                       for name, m in self.matches.items())
         # STOP is read between matches. Arm it as soon as the block's final match is underway.
         if n >= self.target or (n >= self.target-1 and pending):
@@ -438,6 +455,8 @@ class Runner:
             raise Abort('Refusing to change settings while a live process is running.')
         atomic(self.live / 'CKPT_OVERRIDE', (arm.ckpt.as_posix()+'\n').encode())
         atomic(self.live / 'LIVE_FAST', ('on\n' if arm.fast else 'off\n').encode())
+        if self.extra_dests:
+            atomic(self.live / 'LIVE_OPTIONS', self.options_for(arm))
         if not self.control.check(arm):
             raise Abort(f'{arm.key}: offline check did not return LIVE_CHECK_PASS with the expected SHA.')
         self.event('check_pass', arm=arm.key, ckpt_sha256=arm.sha)
@@ -468,17 +487,19 @@ class Runner:
                 return 0
             backup = self.output / 'backups' / self.run_id
             backup.mkdir(parents=True)
-            for name in ('CKPT_OVERRIDE', 'LIVE_FAST'):
+            controlled = ('CKPT_OVERRIDE', 'LIVE_FAST') + (('LIVE_OPTIONS',) if self.extra_dests else ())
+            for name in controlled:
                 p = self.live / name
                 self.snapshots[name] = p.read_bytes() if p.exists() else None
                 if self.snapshots[name] is not None:
                     (backup / name).write_bytes(self.snapshots[name])
             (backup / 'manifest.json').write_text(json.dumps({k: v is not None for k, v in self.snapshots.items()}))
             self.protected = {self.live / n: (self.live / n).read_bytes() if (self.live / n).exists() else None
-                              for n in ('LIVE_OPTIONS', 'LIVE_DECK', 'LIVE_EMOTES', 'HAND_READER_ENABLED')}
+                              for n in ('LIVE_OPTIONS', 'LIVE_DECK', 'LIVE_EMOTES', 'HAND_READER_ENABLED')
+                              if n not in controlled}
             self.controlled = True
             self.event('run_start', block_size=self.block, total_per_arm=self.total,
-                       arms=[dict(arm=a.key, label=a.label, ckpt=str(a.ckpt), sha256=a.sha, fast=a.fast)
+                       arms=[dict(arm=a.key, label=a.label, ckpt=str(a.ckpt), sha256=a.sha, fast=a.fast, extra=a.extra)
                              for a in self.arms], backup=str(backup))
             self.wait_stop()
             self.block_index = 0
@@ -535,7 +556,7 @@ class Runner:
                         else:
                             atomic(p, data)
                     self.event('restored', settings=list(self.snapshots))
-                    self.post('Original CKPT_OVERRIDE and LIVE_FAST restored; live remains stopped.')
+                    self.post(f'Original {" and ".join(self.snapshots)} restored; live remains stopped.')
             except BaseException:
                 # A crash/failed restoration leaves the lock and backup as recovery evidence.
                 raise
@@ -547,6 +568,8 @@ class Runner:
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--arm', action='append', type=Arm.parse)
+    p.add_argument('--arm-extra', action='append', default=[], metavar='KEY=FLAGS',
+                   help='LIVE_OPTIONS flags appended for one arm only, e.g. B=--no-ability; matches must log them')
     p.add_argument('--block', type=int, default=5)
     p.add_argument('--total', type=int, default=150)
     p.add_argument('--dry-run', action='store_true', help='run the complete offline fake-supervisor acceptance suite')
@@ -558,6 +581,10 @@ def main():
         return run_suite('all')
     if not args.arm or len(args.arm) != 2 or {a.key for a in args.arm} != {'A', 'B'}:
         p.error('exactly one --arm A:label:ckpt:on|off and --arm B:label:ckpt:on|off are required')
+    extra = dict(e.split('=', 1) for e in args.arm_extra if '=' in e)
+    if len(extra) != len(args.arm_extra) or not set(extra) <= {'A', 'B'} or not all(v.strip() for v in extra.values()):
+        p.error('--arm-extra must be A=FLAGS or B=FLAGS, at most once per arm')
+    args.arm = [dataclasses.replace(a, extra=extra.get(a.key, '').strip()) for a in args.arm]
     if any(not math.isfinite(v) or v <= 0 for v in (args.block, args.total, args.poll, args.stall_seconds)):
         p.error('block, total, poll and stall-seconds must be positive')
     try:

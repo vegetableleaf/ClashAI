@@ -31,7 +31,7 @@ def emit(path, *events):
 
 
 class FakeSupervisor:
-    def __init__(self, root, scenario='normal', *, noise=False, absent=False):
+    def __init__(self, root, scenario='normal', *, noise=False, absent=False, extra=None):
         self.root = Path(root)
         self.live, self.logs, self.output = [self.root / n for n in ('live', 'logs', 'ab')]
         for p in (self.live, self.logs, self.output):
@@ -50,13 +50,14 @@ class FakeSupervisor:
         for key in ('A', 'B'):
             path = self.root / (key + ' model.pt')
             path.write_bytes(key.encode())
-            self.arms.append(Arm(key, 'fake '+key, path, key == 'B', sha256(path)))
+            self.arms.append(Arm(key, 'fake '+key, path, key == 'B', sha256(path), (extra or {}).get(key, '')))
         self.scenario, self.noise = scenario, noise
         self.t = datetime(2030, 1, 1).timestamp()
         self.alive = False
         self.current = None
         self.arm = None
-        self.starts, self.checks, self.posts, self.sequence = [], [], [], []
+        self.starts, self.checks, self.posts, self.sequence, self.options_seen = [], [], [], [], []
+        self.from_file = {}
         self.serial = self.completed = 0
         self.noise_done = False
         self.stop_seen_while_active = 0
@@ -80,6 +81,7 @@ class FakeSupervisor:
         assert (self.live / 'CKPT_OVERRIDE').read_text().strip() == arm.ckpt.as_posix()
         assert (self.live / 'LIVE_FAST').read_text().strip() == ('on' if arm.fast else 'off')
         self.checks.append(arm.key)
+        self.options_seen.append((arm.key, (self.live / 'LIVE_OPTIONS').read_bytes()))
         return self.scenario != 'check_fail'
 
     def start(self, arm):
@@ -87,6 +89,9 @@ class FakeSupervisor:
         assert self.checks[-1] == arm.key
         (self.live / 'STOP').unlink(missing_ok=True)
         self.arm = arm
+        # live_play logs the LIVE_OPTIONS flags it applied as live_options.from_file (dest -> value).
+        self.from_file = {t[2:].replace('-', '_'): True for t in (self.live / 'LIVE_OPTIONS').read_text().split()
+                          if t.startswith('--')}
         self.starts.append(arm.key)
         self.alive = self.scenario != 'dead'
         self.current = None
@@ -102,7 +107,8 @@ class FakeSupervisor:
                             + f'_{self.serial:04d}{tag}.jsonl')
 
     def header(self, **overrides):
-        h = dict(event='start', ckpt=str(self.arm.ckpt), ckpt_sha256=self.arm.sha, dry_run=False)
+        h = dict(event='start', ckpt=str(self.arm.ckpt), ckpt_sha256=self.arm.sha, dry_run=False,
+                 live_options=dict(from_file=dict(self.from_file)))
         if self.arm.fast:
             h['pipeline_decisions'] = True
         h.update(overrides)
@@ -112,6 +118,9 @@ class FakeSupervisor:
         variants = [dict(ckpt_sha256='0'*64), dict(pipeline_decisions=not self.arm.fast),
                     dict(ckpt_sha256=None), dict(dry_run=True), dict(pipeline_decisions='false'),
                     dict(pipeline_decisions=1)]
+        flags = frozenset().union(*(a.dests for a in self.arms))
+        if flags:   # the other arm's LIVE_OPTIONS share: must never count for this arm
+            variants.append(dict(live_options=dict(from_file={d: True for d in flags - self.arm.dests})))
         for h in variants:
             emit(self.filename('_noise'), self.header(**h), decision(), decision(3000, enemy=2),
                  dict(event='end'))

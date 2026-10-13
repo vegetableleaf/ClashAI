@@ -428,3 +428,19 @@ def test_bait_deck_options_are_generic_and_leave_xbow_and_spell_options_at_defau
     assert (a.fast_input, a.tap_gap_ms, a.afford_ticks, a.extrapolate, a.identity_ext, a.hero_ability_spec, a.own_effects) == \
         (True, 0, 23, 24, 'on', 'supplement', True)
     assert not a.follow_up_taps and rec['explicit'] == [] and rec['status'] == 'applied'
+
+
+def test_no_ability_from_file_is_logged(tmp_path):
+    """L74 ability A/B: an arm's LIVE_OPTIONS '--no-ability' reaches live_play and its header (from_file)."""
+    import argparse
+    from pipeline.decision_options import add_arguments
+    from pipeline.live_options import add_live_options_arguments, parse_with_live_options
+    f = tmp_path / "LIVE_OPTIONS"
+    ap = argparse.ArgumentParser(); add_arguments(ap)
+    ap.add_argument("--no-ability", action="store_true"); add_live_options_arguments(ap, f)
+    f.write_text("--spell-aim rocket_area --no-ability\n")
+    a, rec = parse_with_live_options(ap, [])
+    assert a.no_ability is True and rec["from_file"]["no_ability"] is True
+    f.write_text("--spell-aim rocket_area\n")
+    a, rec = parse_with_live_options(ap, [])
+    assert a.no_ability is False and "no_ability" not in rec["from_file"]
