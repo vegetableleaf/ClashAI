@@ -1,0 +1,26 @@
+{
+  "status": "STOP_EVIDENCE_VERIFIED_NOT_A_PORT",
+  "checks": [
+    "private ignored and untracked",
+    "public address scan with positive control",
+    "export and source hashes",
+    "symbol-bound partial guard",
+    "all patches disabled",
+    "Python AST",
+    "LF shell files",
+    "v2 stop diagnostic"
+  ],
+  "native_acceptance": "NOT_RUN",
+  "patch_sites_qualified": 0,
+  "files": {
+    "V2_REPORT.md": "f978f00b3768d0630b15579d8ed9f3d425a26b97eaed984120fab3681437dd57",
+    "GATES_V2.md": "1284dcd7e7b136ee7601c249f54b4b0aca7c164e3b9e8a9816044ba2bd58fa6b",
+    "PORT.md": "219adc6435762c337f2e52c6ae80944d7355d2691f5d32c23b048cc51b182b5c",
+    "ACCEPTANCE.md": "5c85ae985b4e4b7ea9bdf73278b17ef90506addda1186d0b907a47c9879d48d0",
+    "linux/boot.sh": "6fb4d3141b8bee0fadc9d119a14a7fd9639fd8a579b9ec76c5135eec5de2a417",
+    "linux/common.sh": "23d732089dac49f001eaad3eddd6b12c9acebe12761feedd53d8692b15ef8dc0",
+    "linux/deploy.sh": "2b1d3c041a101c89f7ae147b1b2753e55c0645cd0e678f0a5cf164abba148082",
+    "linux/health.sh": "b624ab7c3197e1ed8ba75fb90178d88a2c0c61da718dbf7781f400ec178ffad8",
+    "linux/setup_vm.sh": "84a998a297ba9819c77f2e81321c35f482120e44a4bf0dee9764ede0d9ac79d0"
+  }
+}

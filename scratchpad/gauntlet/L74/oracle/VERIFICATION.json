@@ -1,0 +1,56 @@
+{
+  "status": "STATIC_CHECKS_ONLY_NATIVE_BLOCKED",
+  "checks": {
+    "deliverables_present": true,
+    "public_address_literal_check": true,
+    "negative_controls": true,
+    "private_artifacts_git_ignored": true,
+    "source_hashes_unchanged": true,
+    "python_ast": true,
+    "bash_files_lf": true,
+    "deploy_and_health_fail_closed_source_check": true
+  },
+  "check_evidence": {
+    "cwd": "C:\\Users\\benpe\\ClashBot",
+    "shell": "PowerShell",
+    "python_ast_only": true,
+    "success_token": "ORACLE_STATIC_CHECKS_PASS",
+    "expected_stdout_sha256": "8e917392d64afd634228811bf5297be15332ca1f79a3c2691637812ea5644f02"
+  },
+  "measured_counts": {
+    "functions": 74565,
+    "selected_decompilations": 493,
+    "source_constants": 101,
+    "numeric_source_sites": 3224,
+    "apks": 5,
+    "native_libraries": 14,
+    "apk_asset_files": 423
+  },
+  "not_executed": [
+    "bash -n",
+    "shellcheck",
+    "VM connection",
+    "KVM boot",
+    "Android SDK install",
+    "probe build",
+    "APK install",
+    "native service",
+    "native acceptance",
+    "determinism test"
+  ],
+  "bash_blocker": "Git Bash CreateFileMapping failed with Win32 error 5 before any script ran",
+  "native_blocker": "V2 literal port writes a mixed native tick/presentation gate; presentation-only proof and target binding are unqualified",
+  "files": {
+    "PORT.md": "219adc6435762c337f2e52c6ae80944d7355d2691f5d32c23b048cc51b182b5c",
+    "ACCEPTANCE.md": "5c85ae985b4e4b7ea9bdf73278b17ef90506addda1186d0b907a47c9879d48d0",
+    "GATES.md": "ebe94400c0d0621fb5df10ef734011a6e640699c33a5e6f2d4bdd7b054f18802",
+    "GATES_V2.md": "1284dcd7e7b136ee7601c249f54b4b0aca7c164e3b9e8a9816044ba2bd58fa6b",
+    "V2_REPORT.md": "f978f00b3768d0630b15579d8ed9f3d425a26b97eaed984120fab3681437dd57",
+    ".gitignore": "5fe496a917a6009e370a0368f1f3bf898b3972513ffa0ba7bb8d4ff69c67fdf5",
+    "linux/common.sh": "23d732089dac49f001eaad3eddd6b12c9acebe12761feedd53d8692b15ef8dc0",
+    "linux/setup_vm.sh": "84a998a297ba9819c77f2e81321c35f482120e44a4bf0dee9764ede0d9ac79d0",
+    "linux/boot.sh": "6fb4d3141b8bee0fadc9d119a14a7fd9639fd8a579b9ec76c5135eec5de2a417",
+    "linux/deploy.sh": "2b1d3c041a101c89f7ae147b1b2753e55c0645cd0e678f0a5cf164abba148082",
+    "linux/health.sh": "b624ab7c3197e1ed8ba75fb90178d88a2c0c61da718dbf7781f400ec178ffad8"
+  }
+}

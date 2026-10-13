@@ -1,0 +1,41 @@
+{
+  "status": "ORACLE_V3_OFFLINE_EVIDENCE_PASS",
+  "deployable": false,
+  "native_acceptance": "NOT_RUN",
+  "required_entries": 18,
+  "high_static_required_entries": 18,
+  "sites_reviewed": 11,
+  "patches_qualified": 0,
+  "capture_regions_verified": 11,
+  "manifest_negative_cases": 8,
+  "checks": [
+    "private ignored and untracked",
+    "public address scan with positive control",
+    "capture, export, source and retained evidence hashes",
+    "required entries and site coverage",
+    "Python AST and LF shell files",
+    "Python preflight exit 78 including spoofed manifest"
+  ],
+  "shell_execution": "NOT_VERIFIED: Git Bash CreateFileMapping Win32 error 5",
+  "shellcheck": "UNAVAILABLE",
+  "public_files": {
+    "ACCEPTANCE.md": "be46ffeb276089a6c3c4f41e68d1ae87ce05a96c31067353a1fc471d043ce3b0",
+    "binding_status.py": "66c87dca1d2710f53b0aab11c9ffe919e26cbb8d798c0b843f67c84eacd0db14",
+    "GATES.md": "ebe94400c0d0621fb5df10ef734011a6e640699c33a5e6f2d4bdd7b054f18802",
+    "GATES_V2.md": "1284dcd7e7b136ee7601c249f54b4b0aca7c164e3b9e8a9816044ba2bd58fa6b",
+    "GATES_V3.md": "84a0d0e0127a0ec04f70f174aea8a18f283ece234d526cf261248a6aac33127b",
+    "PORT.md": "dea23d1e9d3fc724a9acdd5658943fe42fddbc92633f08f2f7741a13a8bb2df8",
+    "V2_REPORT.md": "db9dc69e374378a7f5c347d341d2ee37f0c92cab050709aa6698d312655a5293",
+    "V3_REPORT.md": "045cd27a97b0947f40013cdad62d079c671e9ba903855bc1d675c1460d6f9998",
+    "VERIFICATION.json": "23c43d478c15b34f685b8ec8746c4924a46987df957ff8c71e1037093a49be92",
+    "VERIFICATION_V2.json": "3eeac8b60bf1a833d1552006aa7620287f2f96abaa5d609a2458392e151e287f",
+    "verify_artifacts.py": "0f8f0f8cab24e3407adbe0bdff41a52d20aba49084b5f6d665cc104032bb3a07",
+    "verify_v2.py": "41703335454c795e50e6a7c0f8b1c5b7cf73cdec2b8f0d9c4692d465e25a1c09",
+    "verify_v3.py": "86472dc786b6468fad6f4098c560ebb4c02304ed2d960867eb3272ad594614a7",
+    "linux/boot.sh": "6fb4d3141b8bee0fadc9d119a14a7fd9639fd8a579b9ec76c5135eec5de2a417",
+    "linux/common.sh": "a1e294e5ce02b29155049edd75ab4dab5754956f4bb87a62bd4a014558c56738",
+    "linux/deploy.sh": "fac80c7f44605798e0dea0cc7fd06f43f6babd236e523c462fdcd08e4e0d3965",
+    "linux/health.sh": "013a5f000f702b854832183559c6e854daf6af7c0709d1bccb6c28701b7df33d",
+    "linux/setup_vm.sh": "84a998a297ba9819c77f2e81321c35f482120e44a4bf0dee9764ede0d9ac79d0"
+  }
+}
