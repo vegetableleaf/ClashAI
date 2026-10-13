@@ -1,3 +1,22 @@
+## 2026-10-13 ~12:00 EDT -- PARITY: own-troop error is a ~1 s harness timing offset; oracle-2 up, v8 parked
+
+- **PARITY finding (`L74/parity/own_timing/FINDING.md`, scripts beside it; offline, on the fixed rerun on disk):** on
+  own confirmed-tap units, buildings match (Tesla 0.02-0.08, X-Bow 0.08-0.19 tiles) but troops run ahead of the real
+  game (Knight 0.54 -> 1.37, Skeletons 0.97 -> 2.82 tiles over 1-4 s, almost all forward). A per-unit time shift of
+  **+1.25 s (Knight) / +1.05 s (Skeletons)** collapses the error **1.289 -> 0.115 tiles (Knight)** and 1.919 -> 0.527
+  (Skeletons). Cause consistent with the evidence: the harness deploys own plays at the TAP tick (`core.py:65`,
+  `driver.py:154-168`) while the real client spawns ~1.15+ s later (FORK.md:171). Contradicted: "fork has no deploy
+  delay" (sim onset ~2.0 s) and "elixir queue" (gap present at full elixir). Speed difference NOT established
+  (confounded). Skeleton residual: swarm mis-pairing suspected, untested. The 1.29-1.39-tile headline is inflated by
+  this artefact. Next: inject own plays at the observed spawn tick and rerun PARITY; re-pair swarms by position.
+- **Oracle VM:** owner started `clashbot-oracle-2` (project `clashbot-oracle`, zone us-east1-c, n2-standard-16). I
+  enabled nested virtualization via the Compute REST API (gcloud 587's `update` lacks the flag and `update-from-file`
+  rejects the export's `SUSPEND_SAFE_FPR` disk feature). `/dev/kvm` + `kvm_intel` now present. **External IP changed
+  on that restart: 34.148.24.79 -> 34.23.102.150** (ephemeral). VM is bare (no SDK/AVD/APK). gcloud on the laptop:
+  `C:\Users\benpe\tools\google-cloud-sdk\bin\gcloud.cmd`, signed in as the owner, project set to clashbot-oracle.
+- **v8 PARKED:** the native-oracle setup line was stopped by the safety classifier twice this session. Not continued
+  and not re-routed to another worker. Owner decides; the VM is billing while idle (~$0.78/h).
+
 ## 2026-10-13 ~11:05 EDT -- A/B1 live; v8 static RE done, build PAUSED for owner
 
 - **A/B1 RUNNING** (`L74/ab/live_ab.py`, run_id 20261013_094843): A = NEWSIM re-attempt 1 (`newsim_r1/newsim_base_r1_final_grafted.pt`,
