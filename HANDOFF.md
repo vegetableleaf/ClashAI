@@ -29,7 +29,16 @@ pod1013a`, C PID 81260 -> `pod1013c`; each copies + verifies, posts Discord, sto
 - **A/B1 interim (108/300, ~17:00):** A NEWSIM r1 32W/23L 58.2% vs B old 21W/32L 39.6%, +18.6 pp Newcombe [-0.2, +35.6],
   Fisher p 0.058. Leaning A, not settled; B far below its 54.5% history. SIM had said -1.46 [-5.3, +2.4].
 - **Upstream truth corpus:** RoyaleSim `docs/replay-parity.md`: private per-tick recordings (73+ client-16.402 battles,
-  50 ms, both sides) + `replay_parity.rs`; published 56.5% non-tower unit-ticks within 1/4 tile. See memory. test_iwdiag 24/25 (the failing
+  50 ms, both sides) + `replay_parity.rs`; published 56.5% non-tower unit-ticks within 1/4 tile. See memory.
+- **Owner ~17:30: upstream REFUSED the recordings.** Use our logs: 2,621 files (3.5 GB); usable 1,364 main + 554 second
+  account (since 10-05; 0.5 s frames, opponent plays inferred, levels assumed 15). Per-tick logging after A/B1 ends;
+  laptop disk 98% full (27 GB free): cleanup list awaits owner OK (49 old .claude/worktrees 54 GB -- archive their 1
+  dirty + 11 untracked first, junction trap; overlayed_replays 20 GB mp4 still being written; corpus_gen_pilot 16 GB).
+- DIFFSIM SANITY3: 0 errors, all 100% except forms 31/35. Always-on elixir banking starved CHEAP evos (Skeletons,
+  SkeletonArmy, Bats: 57 -> 14 plays); now banks only while the focus card is in hand. Zap evo is never 'seen'
+  (instant spell, no unit; only the player's evo counter shows it) -- harness limit. SANITY4 on pod A (relay
+  pod1013a_s4). Full-cohort PARITY (1,368 sources, `pods1013/parity/cohort_all`) arms A-D on pod C -> slim copy via
+  relay pod1013c_parity. test_iwdiag 24/25 (the failing
   `test_device_evidence_matches_local_sources` is stale since this morning's supplement 1 -> 2 change).
 - v8: owner reports a rebuilt run; I did not verify or advise on it (safety stops). oracle-2 kept warm per owner.
 

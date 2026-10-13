@@ -5,7 +5,7 @@
 set -u
 cd /workspace/clashbot
 export PYTHONPATH=$PWD OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1
-OUT=/workspace/results/PARITY_T; COHORT=${COHORT:-/workspace/parity_fixed/sources}; mkdir -p $OUT
+OUT=${OUT:-/workspace/results/PARITY_T}; COHORT=${COHORT:-/workspace/parity_fixed/sources}; mkdir -p $OUT
 run() { name=$1; shift
   flock /workspace/cpu.lock /workspace/venv33/bin/python scratchpad/gauntlet/L74/parity/driver.py run --runtime fork \
     --cohort $COHORT --mechanics-replay --fix-artefacts --workers 24 --out $OUT/$name "$@" > $OUT/$name.log 2>&1

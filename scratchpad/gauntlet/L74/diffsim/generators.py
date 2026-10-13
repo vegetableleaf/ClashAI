@@ -174,6 +174,12 @@ def random_scenario(seed, cards, names, full=False):
     return s
 
 
+def in_hand(engine, side, card):
+    players = engine.state().get("extra", {}).get("players")
+    player = next((p for p in players or [] if p.get("team") == side), None)
+    return bool(player) and card in (player.get("hand") or [])
+
+
 class LegalPolicy:
     """Random but engine-validated hand, elixir and placement legality.
 
@@ -200,9 +206,10 @@ class LegalPolicy:
             if self.spec.get("ability") and bodies and self.rng.random() < .35:
                 actions.append(dict(type="ability", side=side, card=self.rng.choice(bodies)["card"], tick=tick))
                 continue
-            # The focus side banks elixir for the focus card / ability: fillers only near full elixir (10-13: cheap
-            # fillers starved expensive evolutions and hero presses). Elixir units are 1/10000.
-            saving = focus is not None and any(c["card"] == focus for c in entries)
+            # While the focus card waits in hand unaffordable, bank elixir: fillers only near full (10-13: cheap fillers
+            # starved expensive evolutions). Banking ALWAYS starved cheap evolutions instead (too few cycles), so a focus
+            # card out of hand cycles freely. Engines without a public hand keep the old behaviour. Elixir: 1/10000.
+            saving = focus is not None and any(c["card"] == focus for c in entries) and in_hand(engine, side, focus)
             for c in entries:
                 if saving and c["card"] != focus and engine.state()["elixir"][side] < 95000:
                     break
