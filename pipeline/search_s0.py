@@ -500,7 +500,7 @@ class Runner:
         for s in ds:
             p, enc, heads, hand = forward(s)
             _, allowed, stalled = s.pre(hand)
-            if s is not m.learner and s.cfg.get("policy") == "sample":   # --opp-policy sample (lead 2026-10-08)
+            if s.cfg.get("policy") == "sample":   # --opp-policy sample (lead 2026-10-08); --learner-policy sample (10-13)
                 d = E.sample_decide_batch(s.model, enc, heads, [p], allowed[None], np.array([stalled]), [s], s.cfg)[0]
             else:
                 d = live_decide_batch(s.model, enc, heads, [p], allowed[None], np.array([stalled]), tau=s.cfg["tau"],
@@ -581,6 +581,8 @@ def _init_worker(args: dict) -> None:
     learner_cfg = live_cfg(args.get('tau_plain', TAU_PLAIN), gi['grid'], dev)
     if args.get('decision_options'):
         learner_cfg.update(args['decision_options'])
+    if args.get('learner_policy', 'live') == 'sample':   # 10-13: rl_royale's rollout sampler for OUR side (actor_cfg)
+        learner_cfg.update(policy='sample', T=float(args['learner_T']))
     if args.get('behaviour_telemetry'):
         learner_cfg['behaviour_telemetry'] = True
     if args.get('predict_drops'):
@@ -727,6 +729,10 @@ def main(argv=None) -> int:
                     help="sample: opponents draw the gate/card/cell like rl_royale's league (tempered at --opp-T, "
                          "per-match seeded RNG); live (default, unchanged) = the greedy gate, which can stand off")
     ap.add_argument("--opp-T", type=float, default=0.3)
+    ap.add_argument("--learner-policy", choices=("live", "sample"), default="live",
+                    help="10-13 train/deploy gap: sample = OUR side draws gate/card/cell like rl_royale rollouts (tempered at "
+                         "--learner-T, gate centred on --tau-plain); no decision options; default live = unchanged")
+    ap.add_argument("--learner-T", type=float, default=0.5)
     ap.add_argument("--tau-plain", type=float, default=None,
                     help="lead 2026-10-06: the plain arm's gate threshold (default None = TAU_PLAIN 0.35, unchanged)")
     ap.add_argument("--predict-drops", action="store_true",
@@ -755,6 +761,10 @@ def main(argv=None) -> int:
     a = ap.parse_args(argv)
     decision_cfg = config_from_args(a)
     decision_active = options_from_config(decision_cfg).active
+    if a.learner_policy == 'sample' and a.arms != 'plain':
+        ap.error('--learner-policy sample needs --arms plain')
+    if a.learner_policy == 'sample' and decision_active:
+        ap.error('--learner-policy sample is the plain RL rollout sampler; it takes no decision options')
     if decision_active and a.arms != 'plain':
         ap.error('decision options require --arms plain; search experiments are separate')
     if a.ability_policy == "v2" and not a.hero_abilities:
@@ -790,6 +800,8 @@ def main(argv=None) -> int:
         wargs['opp_policy'], wargs['opp_T'] = a.opp_policy, float(a.opp_T)
     if a.tau_plain is not None:
         wargs['tau_plain'] = float(a.tau_plain)
+    if a.learner_policy != 'live':
+        wargs['learner_policy'], wargs['learner_T'] = a.learner_policy, float(a.learner_T)
     if a.predict_drops:
         wargs['predict_drops'] = True
     if a.own_effects:
@@ -799,7 +811,7 @@ def main(argv=None) -> int:
         wargs['pipeline_tau_delta'] = a.pipeline_tau_delta
     if a.record_plays:
         wargs['record_plays'] = True
-    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays') or v) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
+    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays') or v) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
                                                 "gen_sha256": sha256(REPO / a.gen), "opp_gen_sha256": opp_sha,
                                                 "s1_sha256": sha256(REPO / a.s1),
                                                 "tau_plain": TAU_PLAIN, "tau_opp": TAU_OPP, "crown_w": CROWN_W,
