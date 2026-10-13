@@ -169,7 +169,7 @@ def installed_check(device, manifest):
     actual = []
     for line in paths:
         path = line.removeprefix('package:')
-        require(re.fullmatch(r'/data/app/[A-Za-z0-9_./+=-]+\.apk', path), 'INSTALLED_PATH_INVALID')
+        require(re.fullmatch(r'/data/app/[A-Za-z0-9_./+=~-]+\.apk', path), 'INSTALLED_PATH_INVALID')
         sha = device.call('shell', 'sha256sum', path).split()[0]
         actual.append({'path': path, 'sha256': sha})
     require(sorted(a['sha256'] for a in actual) == sorted(a['sha256'] for a in manifest['apks']),
@@ -532,7 +532,7 @@ def main():
                 if mapped_path.endswith('.apk'):
                     require(mapped_path in [r['path'] for r in result['installed']], 'MAPPED_APK_NOT_INSTALLED')
                 else:
-                    require(re.fullmatch(r'/data/app/[A-Za-z0-9_./+=-]+/libg\.so', mapped_path),
+                    require(re.fullmatch(r'/data/app/[A-Za-z0-9_./+=~-]+/libg\.so', mapped_path),
                             'MODULE_OVERLAY_OR_UNTRUSTED_PATH')
                     require(d.call('shell', 'sha256sum', mapped_path).split()[0] == b['libg_sha256'],
                             'LOADED_MODULE_FILE_HASH')
