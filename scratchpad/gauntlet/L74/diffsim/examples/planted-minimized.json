@@ -1,0 +1,124 @@
+{
+  "arena": 54000000,
+  "decks": [
+    [
+      {
+        "card": "Knight",
+        "form": 0,
+        "level": 11
+      },
+      {
+        "card": "Noise",
+        "form": 0,
+        "level": 11
+      },
+      {
+        "card": "Archer",
+        "form": 0,
+        "level": 11
+      },
+      {
+        "card": "Goblins",
+        "form": 0,
+        "level": 11
+      },
+      {
+        "card": "Giant",
+        "form": 0,
+        "level": 11
+      },
+      {
+        "card": "Musketeer",
+        "form": 0,
+        "level": 11
+      },
+      {
+        "card": "Fireball",
+        "form": 0,
+        "level": 11
+      },
+      {
+        "card": "Arrows",
+        "form": 0,
+        "level": 11
+      }
+    ],
+    [
+      {
+        "card": "Archers",
+        "form": 0,
+        "level": 11
+      },
+      {
+        "card": "Noise",
+        "form": 0,
+        "level": 11
+      },
+      {
+        "card": "Knight",
+        "form": 0,
+        "level": 11
+      },
+      {
+        "card": "Archer",
+        "form": 0,
+        "level": 11
+      },
+      {
+        "card": "Goblins",
+        "form": 0,
+        "level": 11
+      },
+      {
+        "card": "Giant",
+        "form": 0,
+        "level": 11
+      },
+      {
+        "card": "Musketeer",
+        "form": 0,
+        "level": 11
+      },
+      {
+        "card": "Fireball",
+        "form": 0,
+        "level": 11
+      }
+    ]
+  ],
+  "duration_ticks": 6,
+  "id": "skirmish-41-planted",
+  "plays": [
+    {
+      "card": "Knight",
+      "form": 0,
+      "side": 0,
+      "tick": 3,
+      "type": "deploy",
+      "x": 162000,
+      "y": 216000
+    },
+    {
+      "card": "Archers",
+      "form": 0,
+      "side": 1,
+      "tick": 5,
+      "type": "deploy",
+      "x": 162000,
+      "y": 360000
+    }
+  ],
+  "schema_version": 1,
+  "seed": 41,
+  "side": 1,
+  "suite": "skirmish",
+  "tower_levels": [
+    11,
+    11
+  ],
+  "tower_troops": [
+    159000000,
+    159000000
+  ],
+  "units": []
+}

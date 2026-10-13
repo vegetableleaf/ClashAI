@@ -1,0 +1,23 @@
+{
+  "tests": 26,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "engine_imports": [],
+  "wall_seconds": 7.871123000048101,
+  "sources": {
+    "__init__.py": "9081db14bc6e82c735b05e75fac9b9f510fe6dfa4751a29ec75e5f3d6e1a0d96",
+    "adapters.py": "309f6a17d8ae4414db55a048ebcce1550d77dc1a858a1494724cdbab85ac143b",
+    "analysis.py": "6ecabc52ec8a0342b6cf0e7215fe7a9911d43b416428e7e074e0d486cbdb5416",
+    "cli.py": "1c988e2437de0fe6218c911ecf406087f65fa73aafc68679254055a778255706",
+    "core.py": "f169fa4c7ba3c0649a6a5f7c243acffa422be6c526de920fcd00491a6284c8be",
+    "generators.py": "77c5b719146ce08267fd55330fb4b15525321758f0a66dd5e903500fe8ccc4ed",
+    "runner.py": "a14ba26690ce6f9ec98b0cbbabb646fed392f17fe797b3db44179c6ba3b511ab",
+    "tests\\__init__.py": "0e0c534e3f8383a112048136854887a5769f23a4f2ab7fc3558db382755b18aa",
+    "tests\\test_diffsim.py": "71081f3723941632cc3da6f2588e5d3192a7bf138a3c1d02bbacd3951ec2ba1c",
+    "verify.py": "94dcb588e89d81f1ad0aa1f833f855dee2b9b731a27ea10bb0f694f8f5fa7c30",
+    "worker.py": "6a1b26545021b39b43fac045c3f9625b3fdc7a13aee36bae090a5e20d7627012"
+  },
+  "native_vm_tested": false,
+  "fork_wheel_tested": false
+}
