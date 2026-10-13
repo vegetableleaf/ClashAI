@@ -14,6 +14,18 @@
   still running; SUMMARY ~13:45 UTC; the relay copies, posts, then stops pod C after 2 h idle (KEEP absent).
 - **Power caveat:** at 960 pairs the CI half-width is ~3.9 pp, so a model exactly equal to old passes "lower > -3" only
   if its point estimate is >= ~+0.9 pp. Re-attempt 2 (the last) needs either a real gain or more pairs; owner's call.
+- **OWNER RULINGS 10-13 (supersede the PAUSE list below where they differ):**
+  - SIM bar = pre-filter only: pass unless CLEARLY worse (paired 95% CI upper < 0); live decides. Re-attempt 1 PASSES
+    -> **A/B1 runs with it** (start as soon as pod C's copy lands; ~20 h, not 12: ADAPT2 measured ~4 min/match).
+    After A/B1 the HIGHER-scoring arm stays live. Re-attempt 2 DROPPED. Ability A/B DROPPED (measure in the exact sim).
+    A/B2 still waits for the owner's go-ahead.
+  - Exact simulator: "tick-identical" INCLUDES short-term state (pathing, collisions, movement), not only results.
+    Old-build oracle (150535029) only IF oracle v8 fails. Core rebuild in Rust from decrypted code authorized, gated on
+    first-divergence evidence (keep RoyaleSim's interface). Untested suspicion: 18,000 units/tile (SIM) vs 1,000 (engine).
+  - Compute: up to 6 pods + 2 VMs at once, each with copy-back + auto-stop. Log Bait and all new training PARKED.
+- **Live, measured 10-13 (scorecard.py 20261012):** ADAPT2 nofast since 10-12 19:40: W97 L102 D2 = 48.7% +-6.9
+  (n 201), trophies 12030 -> 12034. Old r3c fast-off reference 54.5% (n 399): ~-5.8 pp, z~1.3, unpaired. SIM had said
+  ADAPT2 +2.29 [-1.57, +6.15].
 
 ## 2026-10-13 ~08:30 UTC PAUSE -- owner moving to another Claude account. A new session starts HERE.
 
