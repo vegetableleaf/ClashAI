@@ -127,6 +127,21 @@ scratchpad/gauntlet/L70/reader/oracle_160402012/gameapp_re/V8_DESIGN.md
 This is the step I (Claude) keep getting stopped on by the safety system, which is why it is left to
 you. Everything up to and including the run/review loop above is working and verified.
 
+## Messages you will see, and what they mean
+
+- `ORACLE_V7_UNCLASSIFIED: STOP; zero patches` -- the attempt stopped at some stage and the tool cannot name
+  the cause on its own. Read the review (below) to see which stage. It is not an error in your setup.
+- `FileExistsError ... review-rechecked.json` -- you ran `review` a second time on the same run folder. Each
+  run folder is reviewed **once**; the first review is already saved there as `review.json` /
+  `review-rechecked.json`. Harmless; just read those files:
+  ```bash
+  python3 -m json.tool "<PRIVATE_RUN folder>/review.json" | grep -E 'classification|last_completed|blocking_stage'
+  ```
+- **Same crash every time?** Re-running the attempt with the kit unchanged reproduces the same result
+  (measured twice on 2026-10-13: 17:14 and 17:42 UTC, identical). Only a change to the kit can move it
+  past `CreateGameMain`; after changing it, rebuild (step 1, moving the old build folder aside) and then
+  make a new attempt.
+
 ## Rules that stay in force
 
 - **No internet for the game.** It runs only inside the sealed `cr-oracle-1000` namespace. The
