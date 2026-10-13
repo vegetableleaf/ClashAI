@@ -1,0 +1,22 @@
+{
+  "status": "offline checks passed; no SIM executed",
+  "games_per_arm": 480,
+  "arms": 4,
+  "total_games": 1920,
+  "workers_cap": 25,
+  "eta": "1.5-3.1 hours at 25 workers, excluding cpu.lock wait (unmeasured telemetry allowance)",
+  "device_cost_evidence": "device_cost.json",
+  "shell_parse": "Git Bash -n attempted; blocked by Windows sandbox CreateFileMapping error 5. Static launcher assertions passed.",
+  "sources": {
+    "pipeline/royale_heroiw.py": "4c37b84841de9e76424dc2ddfbb45a2e615d6ca34d74725c79e94231b18cf351",
+    "pipeline/royale_env.py": "df63f2d410905dd826a3604fab31bd18cadeeb4f172794a521facca54a8338d2",
+    "pipeline/royale_iw_policy.py": "4b18cbd12173328b5d3a8c7ebdbb8d6996b3a12a0567c0ec5d6258d59872db97",
+    "pipeline/tests/test_iwdiag.py": "40e089801c32bb39f210159d8bfa52d2cfce075564e80c4af1e13521d443f8df",
+    "scratchpad/gauntlet/L74/heroiw/diag/cost_evidence.py": "b80d9683435f4f3650d4d0d67cd5febaeabef7ea71809740459cbebf5343864e",
+    "scratchpad/gauntlet/L74/heroiw/diag/iwdiag.py": "36d575941294e5172e52bc0423c40ea1ae4c8982d0b15dd350980fe6f2631ab0",
+    "scratchpad/gauntlet/L74/heroiw/diag/metrics.py": "3a605757245bee2b5889119558ce74237be1375d7899940cf44b2487e3e31e97",
+    "scratchpad/gauntlet/L74/heroiw/diag/verify.py": "1a67edf61d4c67cd1d2be788e4f65656de1c42999b0d0353a27970bb46bac4aa",
+    "scratchpad/gauntlet/L74/heroiw/diag/run_iwdiag.sh": "3d3a94de8ff9be450084e2ecdb2300cfdd263f1f4e1865557e862cd23ae559e1",
+    "scratchpad/gauntlet/L74/heroiw/diag/device_cost.json": "ac1f0558e5b307b16b509a773e3b4e8e39165b93bebf00cf3ba5aa6356e2e845"
+  }
+}
