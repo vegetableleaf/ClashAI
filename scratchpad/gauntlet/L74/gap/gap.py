@@ -75,11 +75,12 @@ def digest(p):
     return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 
 
-def prepare(directory, ckpt, seed_start=741200):
+def prepare(directory, ckpt, seed_start=741200, opp=None, opp_T=.1):
     original = json.loads((LIVE/'manifest.json').read_text(encoding='utf8'))
-    files = [ckpt, livecal.E4, livecal.GEN]
+    opp = opp or livecal.E4              # 10-14 opponent calibration: --opp-ckpt / --opp-T (default = CAL set c)
+    files = [ckpt, opp, livecal.GEN]
     manifest = dict(schema=1, groups=[dict(id='g00', checkpoint=ckpt, fast=False)],
-                    pools=[dict(id='P1', members=[dict(path=livecal.E4, temperature=.1)])],
+                    pools=[dict(id='P1', members=[dict(path=opp, temperature=opp_T)])],
                     files=[dict(path=f, bytes=(ROOT/f).stat().st_size, sha256=digest(ROOT/f)) for f in files],
                     censuses={})
     directory.mkdir(parents=True)
@@ -153,10 +154,12 @@ def main():
     ap.add_argument('--summarize-only', action='store_true')
     ap.add_argument('--seed-start', type=int, default=741200, help='fresh seeds = a new paired set (10-14)')
     ap.add_argument('--iw-form', choices=('hero', 'normal'), default='hero', help='normal = r1 training condition')
+    ap.add_argument('--opp-ckpt', default=None, help='opponent generalist (default E4 = CAL set c)')
+    ap.add_argument('--opp-T', type=float, default=.1, help='opponent sampling temperature (default .1 = CAL set c)')
     ap.add_argument('--iw-press', choices=('live', 'never'), default='live', help='never = Hero IW never pressed (A/B3 twin)')
     a = ap.parse_args()
     if not a.summarize_only:
-        plan = prepare(a.out/'inputs', a.ckpt, a.seed_start)
+        plan = prepare(a.out/'inputs', a.ckpt, a.seed_start, a.opp_ckpt, a.opp_T)
         for arm in a.arms.split(','):
             run_arm(arm, plan, a.out/'inputs', a.out/arm, a.python, a.workers, a.iw_form, a.iw_press)
     summarize(a.out)
