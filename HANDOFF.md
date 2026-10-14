@@ -1,3 +1,20 @@
+## 2026-10-14 ~14:40 EDT -- step 4 (distill the deployed player into the model) ready for a pod; nothing run
+
+- `L74/distill/` (agent-built, reviewed; new files only, 9 laptop tests pass): DISTILL_PLAN.md, gen_distill.py (gap.py's
+  own D3 path; per learner decision records the model's input row + the FINAL decision after rules/heads; generation seeds
+  750000+, refuses the 741200/742000 eval seeds), train_distill.py (imitation dataset format + the imitation trainer's
+  losses; samples rows like the pro set: 1 wait row / 2 s, none within 1 s before a play, so play stays ~29% not 11%),
+  score_distill.py, run_distill.sh smoke|gen|train|score|all. Estimate ~3 h/pod: 2,400 games (~103k play + 200k wait
+  rows) ~75 min, train minutes, 3 x 960-pair scoring ~90 min.
+- Measured: r1 D3 games average 378 learner decisions (3:57 incl. OT), 43.0 plays, 24 s/game at 14 workers.
+- Key design call (owner): r1's add-ons are worth +2.19 [-1.88, +6.15] -- inside 960-pair noise, so distilling r1 can
+  only show "not worse". ADAPT's are worth +8.75 -> ADAPT is the measurable test of the METHOD (student
+  wk_adapt_main_latest.pt; verify the grafted teacher's sha against FINDING.md's 47.08% run.json first).
+- Known limits: randomized rules (hazard gate draw, X-Bow class sampling) distil to their average; own_effects look-ahead
+  input differs between teacher and D1 (untested); live-only rules (log_air, rocket_value/tornado + follow-ups, card_levels,
+  afford 23/extrapolate 24) are not in SIM D3; the value head also trains on SIM outcomes; no student-plays/teacher-labels
+  rounds yet.
+
 ## 2026-10-14 ~14:10 EDT -- r1's live economy, decomposed (econ2, same definitions as pros); matchup weighting check
 
 - `econ2.py live` now includes r1 (168 matches, 638 pushes; `L74/econ2/econ2_live_20261014.txt`). Pros = report_fix.out.
