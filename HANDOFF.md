@@ -1,3 +1,19 @@
+## 2026-10-14 ~19:50 EDT -- owner: "why is the model spamming cheap cards on repeat?" -> cheap-card LOOPS, measured
+
+- A/B3 at 48/45 matches: A never-press 19-29 (39.6%), B press rule 23-22 (51.1%) -- inside noise; direction opposite to the
+  SIM twin's +3.3 for never-press.
+- Per-minute cheap-card rates are flat (Skeletons+Log ~3.4/min in every group), but the play SEQUENCES show loops: e.g.
+  live_play_20261014_192644 13-171 s = Tornado -> Log -> IceWiz -> Skeletons -> Knight -> repeat, each at ~2.2 elixir every
+  3-4 s, X-Bow once. Loop = >= 8 consecutive non-X-Bow/Rocket/Tesla plays at < 3 elixir, each <= 6 s apart:
+  r1 (A/B1 A) 20/150 matches (13.3%), those matches 1-19; old model (A/B1 B) 8/150 (5.3%), 0-8; A/B3 never 6/48 (0-6),
+  A/B3 press 4/45 (0-4). => arrived with r1 (live since 10-13/14), not with today's code.
+- Loop plays (r1, 336): 93% with enemy units on my half (other plays 55%); 61% under `--tau-threatened 0.2` (other 15%);
+  all 'gate'. = panic defence: under sustained pressure the lowered threshold plays every card the moment it is affordable.
+  Consistent with option 1 (RL drift: r1 +11.8 pp over pros at 0-4 elixir under attack). Cause vs effect UNTESTED
+  (loop matches are high-pressure matches).
+- `gap.py --drop KEY` (removes live-stack keys from D3); `L74/reward/tau_threat_pod.sh` queued on pod 12037 after the river
+  A/B: r1 D3 without tau_threatened vs the existing D3 rows (402/960). Live change = owner's call.
+
 ## 2026-10-14 ~19:55 EDT -- DISTILLATION ITERATION 1 (ADAPT) FAILED: student -8.33 pp; forgetting contradicted; DAgger next
 
 - Pod 12037 (copy `pod_backup_weekend/pod1014b_distill/`, sha-verified; `L74/distill/results/ITER1_SUMMARY.txt`), 960 pairs:
