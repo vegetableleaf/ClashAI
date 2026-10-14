@@ -92,7 +92,10 @@ pod1013a`, C PID 81260 -> `pod1013c`; each copies + verifies, posts Discord, sto
   tg60g vs r1g -3.85 [-7.81, +0.00] (fresh alone -5.83 [-11.25, -0.42]); tg60g vs ctrl +2.08 [-1.77, +5.83]; r1g vs
   OLD -2.60 [-6.56, +1.35] in SIM while live A/B1 has r1 ahead ~10 pp. **Continuing RL past r1 degrades the deployed
   player in the SIM; T_gate softens but does not prevent it.** Staged tg60g marked NOT RECOMMENDED (RECEIPT.md).
-  Running: r1's own trajectory in deployed form (ADAPT init, u020, u040, u060 grafted; 960 pairs) = 'does RL help?'.
+  **r1's own trajectory, deployed form (grafted, live stack, Hero IW + press, 960 pairs):** ADAPT init 47.08% -> u020
+  46.15 -> u040 44.06 -> u060 41.88 (= r1g game for game) -> ctrl u120 35.94; u060 vs init -5.21 [-9.17, -1.25]: RL made
+  the deployed player steadily WORSE in the SIM (live A/B1 disagrees: r1 leads). Confound under test: r1 TRAINED with the
+  NORMAL Ice Wizard but is scored with the hero -> re-scoring the trajectory with `gap.py --iw-form normal` (TRAJN).
 - PARITY early endings (`own_timing/EARLY_END.md`): 84/100 SIM replays end early, 60 at 3:00 regulation with a
   different tower down than live -> downstream of divergence (plausible); needs state-injected per-tick comparison. test_iwdiag 24/25 (the failing
   `test_device_evidence_matches_local_sources` is stale since this morning's supplement 1 -> 2 change).
