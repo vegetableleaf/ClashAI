@@ -1,3 +1,17 @@
+## 2026-10-14 ~17:40 EDT -- OPTION 1 VERDICT: not imitation fit; RL drift + own-state shift -> RL needed (owner: then retry shaping)
+
+- `L74/econ2/PRO_EAGERNESS.md` (+ tables, json, pro_eagerness.py; agent-built, run on pod 12037 GPU, 4 min): pro VAL
+  349,264 rows (bot's-deck subset 38,317 / 284 replays) vs ADAPT's own SIM states (2,400 distill games, re-sampled like
+  pro rows). 1x, 0-4 elixir, % of rows with gate > tau: APPROACH pros 8.3 | imitation gen_v32_s0 5.8 | ADAPT 10.7 |
+  r1 11.6 | ADAPT on own SIM states 16.4 (own - pro +5.7 [3.0, 8.4], reweighted +3.3 [0.5, 5.6]); UNDER_ATTACK pros
+  17.6 | 19.8 | 24.8 | r1 29.4 | own 24.8 (shift ~0).
+- (c) imitation fit as the cause: CONTRADICTED (gen_v32_s0 calibrated). (a) RL drift on pro states grows down the
+  lineage (under attack +2.2 -> +7.2 -> +11.8 pp). (a) own-state shift = ~2/3 of ADAPT's 1x approach excess.
+  `--tau-threatened 0.2` contributes under attack (24% of low-elixir under-attack plays below the normal tau).
+- Consequences in REWARD_ARCHITECTURE.md: new F6 (leash to the imitation gate, its own arm: removes the drift part) and
+  step 0 marked done. The own-state part needs on-policy RL (F3 + A2). Untested: r1's own-state shift (needs r1-teacher
+  distill rows, ~75 min pod).
+
 ## 2026-10-14 ~17:10 EDT -- CALIBRATION RESULT + CORRECTION: the SIM is level 11, live level 15; the "half as hard" was mostly that
 
 - CORRECTION (my 15:40 entry + Discord): punish.py used a fixed 1000-HP loss on both sides, but RoyaleSim plays every card

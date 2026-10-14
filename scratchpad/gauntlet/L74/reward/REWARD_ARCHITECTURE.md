@@ -52,6 +52,7 @@ So the architecture has three kinds of pieces:
 | O14 | Past shaping: R2 tower+crown potential -0.7 [-4.0, +2.7]; R4c value-head potential ~= baseline; a free-standing penalty emptied the bar (91% of steps at 0-2 elixir) |
 | O15 | Rules + grafted heads worth +8.75 pp on ADAPT, +2.2 on r1; refitting the heads did not help (REFIT_RESULT.md) |
 | O16 | SIM opponents already match live push rate and size; opponent choice moves r1's SIM win rate 40.6-54.6%; SIM is level 11, live level 15 |
+| O17 | Option 1 (econ2/PRO_EAGERNESS.md): the pure imitation model's gate is calibrated on pro states (approach +1.3 [-0.3, 3.0]); RL made it progressively more eager ON PRO STATES (under attack, 1x, 0-4 elixir: imitation +2.2 -> ADAPT +7.2 -> r1 +11.8 pp over pros); and on the bot's OWN states ADAPT plays more again in the approach window (+5.7 [3.0, 8.4] raw, +3.3 reweighted) = ~2/3 of the approach excess. The live rule `--tau-threatened 0.2` adds under-attack plays (24% of them are below the normal threshold) |
 
 **Owner strategy (S)** — MiyagiCR transcripts (`Downloads/transcripts`), doctrine memories.
 
@@ -103,6 +104,7 @@ So the architecture has three kinds of pieces:
 | F3 | **Calibrated, weighted opponents**: league mix with E4 @ .03 (closest low-elixir penalty, +23.0 vs live +26.9) and gen_v1 @ .3 (closest overall), archetype-weighted per S18 (already 60% unfavourable) | O5, O16: the environment itself must punish what live punishes, or no reward can make a habit worth keeping | This is what makes behaviour stick **after** shaping is removed: if the opponents punish overspending, not overspending stays optimal with the plain win/loss reward |
 | F4 | **Exploration that looks like deployment**: learner gate at low temperature (T_gate, built), exploration on card/cell | O3: the learner currently trains on games 25 pp worse than it plays; credit learned there does not transfer | Its own arm (T_gate 0.1 was tested on match_loo: no gain; re-test under F1, where it can matter) |
 | F5 | **Level-normalised HP**: every HP term as a fraction of max HP | O16: the SIM is level 11, live is level 15 (x1.45); absolute HP thresholds mismeasure | Unit test: same Φ for the same fractional state at both levels |
+| F6 | **Anchor the leash to the imitation model, not to each run's own start** (at least for the gate head): KL to the pro-trained gate, so RL can only move it where winning pays | O17: the eagerness grows down the lineage (imitation -> ADAPT -> r1) because each run's KL anchor is its own, already-drifted init (il-pivot memory: verified in code) | Its own arm. It removes the RL-drift part of O17 (larger for r1); it cannot touch the own-state part, which needs on-policy terms (A2, F3) |
 
 ---
 
@@ -304,7 +306,8 @@ C1 posture by matchup/phase vs pro labels, per-archetype win rates.
 
 | Step | Change | Needs | Decides |
 |---|---|---|---|
-| 0 | Option 1 (running): is the economy habit imitation-fit or distribution-shift? | — | If imitation-fit: a supervised fix first; RL steps below still follow |
+| 0 | Option 1 — DONE (O17): not imitation fit; RL drift + own-state shift (~2/3 of the approach excess) | — | RL with an on-policy signal is needed (steps 1-3); F6 removes the drift part |
+| 0b | F6 leash to the imitation gate | small code change | Removes RL drift (O17) |
 | 1 | F3 calibrated opponents (environment only) | pod | Does RL learn the economy at all when punished like live? |
 | 2 | F1 per-decision credit (gae + critic warm-up) | built | Whether shaping can work at all here |
 | 3 | + A1 + A2 (score-aware tower + solvency) | new Φ code | The biggest measured loss factor (O4/O5) |
