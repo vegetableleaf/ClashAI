@@ -85,7 +85,16 @@ pod1013a`, C PID 81260 -> `pod1013c`; each copies + verifies, posts Discord, sto
   Staged (NOT live): `icebow/data/bench/rl_royale/rltest/rltest_tg01_u0060_grafted.pt` (992f5890, RECEIPT.md).
   Graft-split running (ungrafted D3 of ctrl60/init/tg60) to see if grafted heads break as RL drifts.
 - PARITY catalog: evo ids 13000043/13000075 mapped (7,181 fewer unmatched on 1,367 matches); hero E-Wiz 203000042
-  NOT (0.1.33 refuses: 'surge' ability not simulated -- upstream gap). A/B1 at 02:45: A 54-46 (54.0%), B 43-54 (44.3%). test_iwdiag 24/25 (the failing
+  NOT (0.1.33 refuses: 'surge' ability not simulated -- upstream gap). A/B1 at 02:45: A 54-46 (54.0%), B 43-54 (44.3%).
+- **Graft split (D3 ungrafted vs grafted):** graft ctrl60 -3.54 [-8.96, +1.88], tg60 0.00, r1 +0.62; rules (D3 vs D1)
+  ctrl60 -2.92, init +1.88 -- no single cause. **960 pairs (fresh seeds 742000 added), live stack grafted:** r1g 41.88%,
+  tg60g 38.02%, ctrl60g 35.94%, OLD 44.48%. ctrl60g vs r1g -5.94 [-9.69, -2.29] (fresh seeds alone -5.83, REPLICATED);
+  tg60g vs r1g -3.85 [-7.81, +0.00] (fresh alone -5.83 [-11.25, -0.42]); tg60g vs ctrl +2.08 [-1.77, +5.83]; r1g vs
+  OLD -2.60 [-6.56, +1.35] in SIM while live A/B1 has r1 ahead ~10 pp. **Continuing RL past r1 degrades the deployed
+  player in the SIM; T_gate softens but does not prevent it.** Staged tg60g marked NOT RECOMMENDED (RECEIPT.md).
+  Running: r1's own trajectory in deployed form (ADAPT init, u020, u040, u060 grafted; 960 pairs) = 'does RL help?'.
+- PARITY early endings (`own_timing/EARLY_END.md`): 84/100 SIM replays end early, 60 at 3:00 regulation with a
+  different tower down than live -> downstream of divergence (plausible); needs state-injected per-tick comparison. test_iwdiag 24/25 (the failing
   `test_device_evidence_matches_local_sources` is stale since this morning's supplement 1 -> 2 change).
 - v8: owner reports a rebuilt run; I did not verify or advise on it (safety stops). oracle-2 kept warm per owner.
 
