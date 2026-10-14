@@ -1,3 +1,15 @@
+## 2026-10-14 ~20:25 EDT -- --tornado-river SIM A/B: +0.52 pp [-0.21, +1.35]; the deployed combo itself -1.04 in SIM
+
+- Pod 12037 (copy `pod_backup_weekend/pod1014b_river/`, sha-verified), r1 full graft D3 + deployed combo flags (rocket_value 9
+  damage edge, rocket_tornado only), 960 pairs, runtime 0.1.33: river off 392/960, on 397/960 = +0.52 pp [-0.21, +1.35];
+  15 outcomes differ; Tornado follow-ups fired 89 -> 82. Passes the SIM pre-filter. LIVE_OPTIONS change after A/B3 = owner's
+  call (the A/B runner protects LIVE_OPTIONS mid-run).
+- vs the same stack WITHOUT the combo flags (TWIN_live 402/960): combo river-off -1.04 [-2.19, +0.10], river-on -0.52
+  [-1.67, +0.52]. The bolted-on combo does not pay in SIM (matches the 10-11 cb tests) -> B7 (learn it as one decision).
+- Distillation pro-agreement jsons in that copy (RIVER_DISTILL/pro_*.json). Note: the DAgger test file has 17 tests (not 18).
+- Pod 12037 queue: TAU_THREAT A/B (r1 D3 without tau_threatened, ~1 h) -> DAgger iteration 2 (`L74/distill/dagger_queue_pod.sh`,
+  /workspace/cb_dag, ~3.5 h; results /workspace/results/DISTILL_DAGGER).
+
 ## 2026-10-14 ~20:10 EDT -- distillation iteration 2 (DAgger) built, not run
 
 - `L74/distill/` (agent, reviewed): gen_distill `--teacher T --p-teacher p` (student plays gap's D1; the teacher's D3 rules +
