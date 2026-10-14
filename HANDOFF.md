@@ -78,7 +78,14 @@ pod1013a`, C PID 81260 -> `pod1013c`; each copies + verifies, posts Discord, sto
   the uploaded script blocked the first launch -- stripped on the pods), then greedy D1, graft from OLD, live-stack
   D3 (+ OLD D3 on pod C) on the GAP_r1 games. Relays pod1014a_long / pod1014c_long.
 - **Tornado parity (`parity/own_timing/TORNADO.md`):** paired units end ~1 s after our Tornado within ~0.1 tiles of
-  live; the Tornado's PARITY rank is inherited pre-cast error. Masses: 16/16 equal to device (contradicted). test_iwdiag 24/25 (the failing
+  live; the Tornado's PARITY rank is inherited pre-cast error. Masses: 16/16 equal to device (contradicted).
+- **RL 60 updates (480 paired, CAL c):** greedy D1 vs init: ctrl +2.92 [-2.50, +8.33], T_gate +0.42 [-5.21, +6.04].
+  Live stack, grafted (D3): **ctrl vs r1g -6.04 [-11.25, -0.83] (FAILS pre-filter)**; T_gate vs r1g -1.88 [-7.71, +3.76]
+  (passes, not better); T_gate vs ctrl +4.17 [-1.25, +9.58]; T_gate vs OLD -0.42; r1g vs OLD +1.46 [-4.17, +7.08].
+  Staged (NOT live): `icebow/data/bench/rl_royale/rltest/rltest_tg01_u0060_grafted.pt` (992f5890, RECEIPT.md).
+  Graft-split running (ungrafted D3 of ctrl60/init/tg60) to see if grafted heads break as RL drifts.
+- PARITY catalog: evo ids 13000043/13000075 mapped (7,181 fewer unmatched on 1,367 matches); hero E-Wiz 203000042
+  NOT (0.1.33 refuses: 'surge' ability not simulated -- upstream gap). A/B1 at 02:45: A 54-46 (54.0%), B 43-54 (44.3%). test_iwdiag 24/25 (the failing
   `test_device_evidence_matches_local_sources` is stale since this morning's supplement 1 -> 2 change).
 - v8: owner reports a rebuilt run; I did not verify or advise on it (safety stops). oracle-2 kept warm per owner.
 
