@@ -1,3 +1,11 @@
+## 2026-10-14 ~13:00 EDT -- A/B2 RUNNING (owner go-ahead); loss review rerun
+
+- A/B2 run `20261014_125931_5a47a538` (WMI, `L74/ab/run_ab2.sh`, log ab2_launch.out / ab2_run.out / ab2_autoswitch.out):
+  A ho = r1 heads-only graft (5ca58ddd) vs B v1 = r1 full graft (fce50ebb, incumbent), 150/arm, auto-switch armed.
+  The owner's clip left LIVE_DECK=bait + LIVE_EMOTES=on; the launcher backed both up (`L70/live/backup_pre_ab2_20261014_1259`)
+  and set icebow + emotes off (A/B1 ran without; emotes add 0.6 s card-tap holds). Re-enable emotes with `--emotes`.
+- Standing loss review rerun on all logs since 10-08 (`L74/loss_review/run_20261014.out`, below-normal priority).
+
 ## 2026-10-14 ~12:40 EDT -- head refit on r1's own trunk: NOT better in the SIM; owner pod stopped
 
 - `L74/rltest/REFIT_RESULT.md`: refit (CellRefine + TowerRefine fitted on newsim_base_main_u0060, sha 08457f1e) D3 960

@@ -26,6 +26,7 @@ BK=$L/backup_pre_ab2_$(date +%Y%m%d_%H%M); mkdir -p $BK
 for f in CKPT_OVERRIDE LIVE_FAST LIVE_DECK LIVE_EMOTES LIVE_OPTIONS; do [ -e $L/$f ] && cp -p $L/$f $BK/; done
 log "backed up live settings to $BK"
 printf 'icebow\n' > $L/LIVE_DECK
+printf 'off\n' > $L/LIVE_EMOTES     # the A/B measures play (A/B1 ran without; emotes add 0.6 s card-tap holds)
 log "starting A/B2"
 $PY $AB/live_ab.py --arm "$A" --arm "$B" --block 5 --total 150 >> $AB/ab2_run.out 2>&1 &
 runner=$!
