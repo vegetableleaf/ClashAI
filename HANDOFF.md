@@ -1,3 +1,19 @@
+## 2026-10-14 ~14:15 EDT -- finer live logs built (off); A/B3 running correctly; correction on the economy gap
+
+- A/B3 first matches: main account (guard pass), arm A header carries `--iw-press never`, its log shows
+  `ability_withheld` with the button still watched. test_live_options.py fails WHILE arm A is active (the runner appends
+  the arm's flag to LIVE_OPTIONS; restored at the end) -- expected, not a bug.
+- `live_play.py --log-frames` (EXTRA_LIVE_FLAGS, default off): the existing 'frame' event (bodies, elixir) on EVERY
+  reader frame (~0.1 s = 2 ticks at --interval-ms 100) without screen recording; same taps (test_log_frames.py).
+  Current logs: board only in 'decision' events every 10 ticks, ~1.3 MB/match; with frames est. ~5 MB/match. True 1-tick
+  (50 ms) sampling would change the decision loop's frame rate (cadence affects spending: econ_gap cadence arm) -- not done.
+  Enable after A/B3 (add `--log-frames` to LIVE_OPTIONS + update test_live_options pin); parity sources then need a
+  'frame' reader (parity/planning.py reads decision events only).
+- CORRECTION (my 13:20 entry): the live-vs-SIM economy decomposition DID land (econ_gap 31cdf2e, econ2 48e9727, root cause
+  a64e5b4: Hero IW readiness encoded UNKNOWN live -> eager gate; fix = hero_ability_spec supplement, deployed). r1 still
+  meets 66% of pushes < 4 elixir, so a gap remains; `L74/econ2/econ2.py sim` + econ_sim.sh measure it for r1 on a pod.
+- Step 4 (distill the deployed player into the model): a background agent is writing L74/distill/ (plan + scripts, no runs).
+
 ## 2026-10-14 ~13:45 EDT -- A/B2 STOPPED (owner), A/B3 = Hero IW never-press vs the press rule
 
 - Owner ~13:30: "go straight to the ice wizard ability press test. Stop A/B2". A/B2 stopped via STOP_AB at the block

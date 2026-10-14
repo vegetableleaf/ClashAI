@@ -412,6 +412,9 @@ def main() -> int:
     ap.add_argument("--no-ability", action="store_true",
                     help="never press the hero ability button (default: pressed by hero_button.should_press when the "
                          "deck holds a hero and the button reads ready)")
+    ap.add_argument("--log-frames", action="store_true",
+                    help="owner 2026-10-14 finer logs: write the 'frame' event (board bodies, elixir) for EVERY reader "
+                         "frame (~0.1 s at --interval-ms 100) without screen recording; ~5 MB/match. Play is unchanged")
     ap.add_argument("--iw-press", choices=("rule", "never"), default="rule",
                     help="owner 2026-10-14 ability A/B: never = the hero button is still watched and should_press still "
                          "runs (logged as ability_withheld), but no ability tap is sent; unlike --no-ability, which also "
@@ -957,7 +960,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
             if emote_on:                                 # owner 10-14: board events -> queued reactions
                 react.observe(f, side, tick, getattr(getattr(pilot, "public", None), "plays", None) or [],
                               emote_spam.time.monotonic())
-            if rec:                                          # what the model perceived, for overlay_replay.py
+            if rec or getattr(a, "log_frames", False):   # what the model perceived (overlay_replay.py; parity data)
                 opp = next(p for p in f["players"] if p["side"] != side)
                 # ents: side, x, y, card_id, hp, max_hp, kind, address (address/kind = the opp-elixir counter's play
                 # detection). opp_elixir_true_EVAL_ONLY grades that counter offline; it is never fed to the model.
