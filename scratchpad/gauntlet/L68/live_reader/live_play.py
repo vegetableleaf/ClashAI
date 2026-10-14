@@ -412,6 +412,10 @@ def main() -> int:
     ap.add_argument("--no-ability", action="store_true",
                     help="never press the hero ability button (default: pressed by hero_button.should_press when the "
                          "deck holds a hero and the button reads ready)")
+    ap.add_argument("--iw-press", choices=("rule", "never"), default="rule",
+                    help="owner 2026-10-14 ability A/B: never = the hero button is still watched and should_press still "
+                         "runs (logged as ability_withheld), but no ability tap is sent; unlike --no-ability, which also "
+                         "stops the button screenshots. Default rule = unchanged")
     ap.add_argument("--matches", type=int, default=1,
                     help="play this many matches back to back (default 1 = one match, no navigation). > 1 needs "
                          "--friend: between matches friend_nav.py starts the next FRIENDLY 1v1 against that friend's "
@@ -800,6 +804,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
     button = None if a.no_ability else HeroButton(ADB, lay.w, lay.h, HERE / "ability_crops", period_s=2.0,
                                                   on_frame=guard.feed if guard else None)
     ab_pending, last_bstate = None, None
+    ab_withheld = -10 ** 9                               # --iw-press never: tick of the last ability_withheld log line
     sampler, extra = READERS[a.reader]
     cmd = (f"{sampler} $(pidof com.supercell.clashroyale) {a.interval_ms} {RVA} {ROOT_CTX}"
            f"{extra}")                                   # extra = the reader's remaining arguments (local reader config)
@@ -984,7 +989,11 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                 elif st == "ready" and not pending and not sched and newest and advanced and guard_clear():
                     press, why = should_press(f, side, hids, pilot=None if a.no_iw_pro_gate else pilot,
                                               p_star=getattr(a, "iw_press_pstar", None))
-                    if press:
+                    if press and getattr(a, "iw_press", "rule") == "never":
+                        if tick - ab_withheld >= 20:     # at most one line per second while the button stays ready
+                            W(event="ability_withheld", tick=tick, why=why, elixir=me["elixir_raw"] / 1e4)
+                            ab_withheld = tick
+                    elif press:
                         W(event="ability", tick=tick, t_dev=t_dev, why=why, tap=list(button.point),
                           elixir=me["elixir_raw"] / 1e4)
                         if not a.dry_run and guard_clear():

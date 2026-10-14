@@ -1,3 +1,16 @@
+## 2026-10-14 ~13:45 EDT -- A/B2 STOPPED (owner), A/B3 = Hero IW never-press vs the press rule
+
+- Owner ~13:30: "go straight to the ice wizard ability press test. Stop A/B2". A/B2 stopped via STOP_AB at the block
+  boundary 13:40 (5 matches/arm, all main account; auto-switch: no switch). Not a result.
+- New `live_play.py --iw-press {rule,never}` (EXTRA_LIVE_FLAGS; default rule = unchanged): never = the hero button is
+  still screenshotted and should_press still runs (event `ability_withheld`, <= 1/s) but no tap -- one change, unlike
+  `--no-ability`, which also stops the button screenshots. Test `L68/live_reader/test_iw_press.py`.
+- `ab_autoswitch.py --arm-extra` (same syntax as live_ab): a winning flag arm's flags are appended to LIVE_OPTIONS
+  (backup LIVE_OPTIONS.pre_ab_autoswitch_backup); before, a flag-arm win would have gone live WITHOUT its flag.
+- A/B3 `L74/ab/run_ab3.sh` (WMI; ab3_launch/ab3_run/ab3_autoswitch.out): A nopress (`--iw-press never`) vs B press
+  (incumbent; tie keeps B), both r1 full graft fce50ebb, 150/arm. SIM prior: never-press +8 pp (N3 48.1 vs N2 40.0).
+- Owner: keep going on plan steps 1-6 while pods are unavailable; tell the owner when pods are needed.
+
 ## 2026-10-14 ~13:20 EDT -- loss review rerun (2,863 logs): r1 has the same economy problem; live-vs-SIM gap is NOT play rate
 
 - `L74/loss_review/report.md` regenerated (R-lineage 2,169 matches). Top factor unchanged: pushes met with < 4 elixir

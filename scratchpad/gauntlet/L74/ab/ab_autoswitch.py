@@ -11,6 +11,7 @@ the first match (two own princesses at max HP 4424 = MAIN account); a wrong acco
   python ab_autoswitch.py --selftest
 """
 import argparse
+import dataclasses
 import json
 import shutil
 import sys
@@ -29,6 +30,11 @@ def decide(rows, total):
         return None
     s = statistics(rows)
     return 'A' if s['A']['win_rate'] > s['B']['win_rate'] else 'B'
+
+
+def with_extra(options, extra):
+    """LIVE_OPTIONS bytes plus an arm's flags, exactly as live_ab.Runner.options_for writes them."""
+    return options.rstrip(b'\r\n') + (b' ' + extra.encode() if extra else b'') + b'\n'
 
 
 def summary(rows):
@@ -83,6 +89,8 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--run-id')
     ap.add_argument('--arm', action='append', type=Arm.parse)
+    ap.add_argument('--arm-extra', action='append', default=[], metavar='KEY=FLAGS',
+                    help="the same per-arm LIVE_OPTIONS flags given to live_ab.py; a winner's flags go live with it")
     ap.add_argument('--total', type=int, default=150)
     ap.add_argument('--poll', type=float, default=60)
     ap.add_argument('--guard-wait', type=float, default=2700, help='seconds to wait for the first match')
@@ -92,7 +100,8 @@ def main():
         return selftest()
     if not a.run_id or not a.arm or sorted(x.key for x in a.arm) != ['A', 'B']:
         ap.error('--run-id and one --arm A:... and one --arm B:... are required')
-    arms = {x.key: x for x in a.arm}
+    extra = dict(e.split('=', 1) for e in a.arm_extra)
+    arms = {x.key: dataclasses.replace(x, extra=extra.get(x.key, '').strip()) for x in a.arm}
     say(f'watching run {a.run_id}; A={arms["A"].ckpt.name} B={arms["B"].ckpt.name}')
 
     ok = wait_runner(a.poll)
@@ -116,8 +125,14 @@ def main():
     backup = LIVE / 'CKPT_OVERRIDE.pre_ab_autoswitch_backup'
     shutil.copyfile(ckpt, backup)
     atomic(ckpt, (arm.ckpt.as_posix() + '\n').encode())
+    opts, opts_backup = LIVE / 'LIVE_OPTIONS', LIVE / 'LIVE_OPTIONS.pre_ab_autoswitch_backup'
+    if arm.extra:                                       # a flag arm (e.g. --iw-press never): its flags go live too
+        shutil.copyfile(opts, opts_backup)
+        atomic(opts, with_extra(opts.read_bytes(), arm.extra))
     if not ctl.check(arm):
         shutil.copyfile(backup, ckpt)
+        if arm.extra:
+            shutil.copyfile(opts_backup, opts)
         ctl.post(f':rotating_light: [A/B auto-switch] --check FAILED for {arm.key} {arm.label}; CKPT_OVERRIDE '
                  'restored, live stays stopped.')
         say('check failed; restored')
@@ -127,7 +142,7 @@ def main():
     say(f'started live on {arm.key} {arm.label} ({arm.ckpt})')
     ctl.post(f'[A/B auto-switch] A/B finished. {summary(rows)}. Higher arm {arm.key} ({arm.label}) is now LIVE: '
              f'{arm.ckpt.name} sha {arm.sha[:8]}, fast {"on" if arm.fast else "off"}. 150/arm resolves ~+-11 pp, so a '
-             f'gap inside that is not established. Undo: copy {backup.name} over CKPT_OVERRIDE and restart.')
+             f'gap inside that is not established. Undo: copy {backup.name} over CKPT_OVERRIDE' + (f' and {opts_backup.name} over LIVE_OPTIONS' if arm.extra else '') + ' and restart.')
     res = account_check(ctl, arm, before, a.guard_wait, 15)
     if res is None:
         ctl.post(f':rotating_light: [A/B auto-switch] live started but no {arm.key} match seen in '
@@ -148,6 +163,8 @@ def selftest():
     assert decide(rows(90, 59, 80, 70), 150) is None          # A one short: no switch
     assert decide(rows(12, 9, 7, 13), 150) is None            # stopped early
     assert decide(rows(90, 60, 80, 70) + [dict(arm='A', counted=False, result='W')] * 5, 150) == 'A'
+    assert with_extra(b'--a 1\r\n', '--iw-press never') == b'--a 1 --iw-press never\n'
+    assert with_extra(b'--a 1\n', '') == b'--a 1\n'
     print('selftest OK')
     return 0
 

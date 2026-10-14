@@ -32,7 +32,8 @@ EXTRA_LIVE_FLAGS = (('--own-effects', dict(action='store_true')),
                     ('--emote-gap-ms', dict(type=int)),
                     ('--emote-guard', dict(type=float)),
                     ('--emote-idle-p', dict(type=float)),   # owner 2026-10-14: reactive emotes, idle chance per second
-                    ('--no-ability', dict(action='store_true')),   # L74 ability A/B arm (owner 2026-10-13): never press
+                    ('--no-ability', dict(action='store_true')),
+                    ('--iw-press', dict(choices=('rule', 'never'), default='rule')),   # owner 2026-10-14: press A/B arm   # L74 ability A/B arm (owner 2026-10-13): never press
                     ('--follow-up-taps', dict(action='store_true')))   # L74 latency2; --rocket-tornado on|only needs it (live_play refuses without)
 
 
