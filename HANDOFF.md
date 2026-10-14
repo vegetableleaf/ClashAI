@@ -95,7 +95,10 @@ pod1013a`, C PID 81260 -> `pod1013c`; each copies + verifies, posts Discord, sto
   **r1's own trajectory, deployed form (grafted, live stack, Hero IW + press, 960 pairs):** ADAPT init 47.08% -> u020
   46.15 -> u040 44.06 -> u060 41.88 (= r1g game for game) -> ctrl u120 35.94; u060 vs init -5.21 [-9.17, -1.25]: RL made
   the deployed player steadily WORSE in the SIM (live A/B1 disagrees: r1 leads). Confound under test: r1 TRAINED with the
-  NORMAL Ice Wizard but is scored with the hero -> re-scoring the trajectory with `gap.py --iw-form normal` (TRAJN).
+  NORMAL Ice Wizard but is scored with the hero. **TRAJN (normal IW, 0 presses): init 50.31 -> u020 47.19 -> u040
+  48.12 -> u060 45.42; u060 vs init -4.90 [-8.85, -0.83] -> confound CONTRADICTED** (the decline holds under r1's own
+  training condition). Running: the same trajectory as plain greedy D1 (no rules, ungrafted) -- if flat there, the
+  deployment add-ons (hand-tuned rules + heads grafted from another trunk) stop fitting as RL drifts.
 - PARITY early endings (`own_timing/EARLY_END.md`): 84/100 SIM replays end early, 60 at 3:00 regulation with a
   different tower down than live -> downstream of divergence (plausible); needs state-injected per-tick comparison. test_iwdiag 24/25 (the failing
   `test_device_evidence_matches_local_sources` is stale since this morning's supplement 1 -> 2 change).
