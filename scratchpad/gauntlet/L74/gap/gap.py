@@ -75,7 +75,7 @@ def digest(p):
     return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 
 
-def prepare(directory, ckpt):
+def prepare(directory, ckpt, seed_start=741200):
     original = json.loads((LIVE/'manifest.json').read_text(encoding='utf8'))
     files = [ckpt, livecal.E4, livecal.GEN]
     manifest = dict(schema=1, groups=[dict(id='g00', checkpoint=ckpt, fast=False)],
@@ -89,7 +89,7 @@ def prepare(directory, ckpt):
         dest = directory/f'cal_{name}.json'
         dest.write_bytes((ROOT/rel).read_bytes())
         manifest['censuses'][name] = dict(path=dest.name, sha256=digest(dest), source=rel)
-    plan = livecal.schedule(manifest, k=480, seed_start=741200, pools='P1')
+    plan = livecal.schedule(manifest, k=480, seed_start=seed_start, pools='P1')
     (directory/'plan.json').write_text(json.dumps(plan, indent=1))
     return plan
 
@@ -133,7 +133,7 @@ def summarize(out):
     steps = STEPS + [(h, 'D1', f'only the {HEAD_ARMS[h][0]} head sampled vs all greedy') for h in HEAD_ARMS]
     steps += [(a, 'D1', f'tau {v[0]}, T {v[1]}, T_gate {v[2] or v[1]}, sampled {v[3]} vs all greedy') for a, v in SWEEP.items()]
     for new, old, label in [st for st in steps if st[0] in rows and st[1] in rows]:
-        d = paired_drift(rows[old], rows[new], expected=480)
+        d = paired_drift(rows[old], rows[new], expected=480)   # same seeds within one out dir
         report[f'{new}-{old}'] = d
         lines.append(f"{new} - {old} ({label}): {d['delta_pp']:+.2f} pp [{d['ci95_pp'][0]:+.2f}, {d['ci95_pp'][1]:+.2f}]")
     (out/'score.json').write_text(json.dumps(report, indent=1))
@@ -149,9 +149,10 @@ def main():
     ap.add_argument('--workers', type=int, default=25)
     ap.add_argument('--arms', default=','.join(ARMS))
     ap.add_argument('--summarize-only', action='store_true')
+    ap.add_argument('--seed-start', type=int, default=741200, help='fresh seeds = a new paired set (10-14)')
     a = ap.parse_args()
     if not a.summarize_only:
-        plan = prepare(a.out/'inputs', a.ckpt)
+        plan = prepare(a.out/'inputs', a.ckpt, a.seed_start)
         for arm in a.arms.split(','):
             run_arm(arm, plan, a.out/'inputs', a.out/arm, a.python, a.workers)
     summarize(a.out)
