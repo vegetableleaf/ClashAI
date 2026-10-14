@@ -117,10 +117,10 @@ def compact_bodies(M, src, fam, file, ids=True, opx=(), pl=(), ab=(), dec=(), ex
 
 
 def live_mode():
-    fam = {"stack": "barrel2k_cellref.pt", "towerref": "towerref_w2", "r1e": "r1e31"}
+    fam = {"stack": "barrel2k_cellref.pt", "towerref": "towerref_w2", "r1e": "r1e31", "r1": "newsim_base_r1_final_grafted.pt"}
     import time
     out = []; now = time.time()
-    for f in sorted(glob.glob(G.LOGDIR + "live_play_20261004_2*.jsonl") + glob.glob(G.LOGDIR + "live_play_2026100[5-9]_*.jsonl")):
+    for f in sorted(glob.glob(G.LOGDIR + "live_play_20261004_2*.jsonl") + glob.glob(G.LOGDIR + "live_play_2026100[5-9]_*.jsonl") + glob.glob(G.LOGDIR + "live_play_202610[1-3][0-9]_*.jsonl")):
         if now - os.path.getmtime(f) < 600: continue                   # a match still being played
         with open(f, encoding="utf8", errors="replace") as fh: st = json.loads(fh.readline())
         if st.get("dry_run"): continue
@@ -341,7 +341,7 @@ def report(names):
         ms = load(n)
         if n == "live":                                   # split by family; anti-leak ON matches marked
             R["live_all"] = analyse(ms)
-            for f in ("stack", "towerref", "r1e"): R["live_" + f] = analyse([m for m in ms if m["fam"] == f and not m.get("al")])
+            for f in ("stack", "towerref", "r1e", "r1"): R["live_" + f] = analyse([m for m in ms if m["fam"] == f and not m.get("al")])
         else: R[n] = analyse(ms)
     json.dump(R, open(HERE + "econ2_" + "_".join(names) + ".json", "w"))
     return R
