@@ -1,3 +1,15 @@
+## 2026-10-14 ~20:10 EDT -- distillation iteration 2 (DAgger) built, not run
+
+- `L74/distill/` (agent, reviewed): gen_distill `--teacher T --p-teacher p` (student plays gap's D1; the teacher's D3 rules +
+  heads label the student's own state; p = share of teacher actions executed); train_distill multi-dir union, `--cell-kl W`
+  (cell head KL to plain), `--rehearse NPZ --rehearse-frac F`; score_distill dagger arms + `--pro` cell-NLL bar (+0.3);
+  run_distill.sh `dagger_smoke` / `dagger` (rounds p .5 then 0, 3 x 480 fresh games each, seeds 760000/770000; KL variant
+  trained on the same data). 18 tests pass. Est. ~3.3-3.8 h on one pod. Label caveat: the teacher label is D3 rules +
+  heads on the student's row WITHOUT own_effects look-ahead (cannot be both "exact D3" and "same row").
+- Fixed: gap.run_arm's positional `extra` (and now `drop`) broke gen_distill's command wrapper on current main (iteration 1
+  ran on older gap.py, unaffected). Wrapper now takes (extra, drop, *, ...) + a test.
+- Run when a pod frees (commands in the agent report / DISTILL_PLAN.md "Iteration 2").
+
 ## 2026-10-14 ~19:50 EDT -- owner: "why is the model spamming cheap cards on repeat?" -> cheap-card LOOPS, measured
 
 - A/B3 at 48/45 matches: A never-press 19-29 (39.6%), B press rule 23-22 (51.1%) -- inside noise; direction opposite to the

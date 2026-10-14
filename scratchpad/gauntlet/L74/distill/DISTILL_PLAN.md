@@ -130,3 +130,104 @@ bootstrap draws within census/side), as in FINDING.md / REFIT_RESULT.md.
 `gen_distill.py` (generator), `train_distill.py` (row builder + fine-tune), `score_distill.py` (960-pair report),
 `run_distill.sh` (pod runner: smoke | gen | train | score | all), `test_distill.py` (9 tests, CPU, ~20 s):
 `icebow/.venv/Scripts/python.exe -m pytest -q -p no:cacheprovider scratchpad/gauntlet/L74/distill/test_distill.py`
+
+## Iteration 2: DAgger rounds (code + tests 2026-10-14; nothing run on the SIM yet)
+
+### Why (iteration 1, ADAPT, 960 pairs; `results/ITER1_SUMMARY.txt`)
+Teacher D3 47.08%, plain ADAPT D1 38.33%, distilled student D1 30.00% = -8.33 pp [-12.19, -4.48] vs plain (tower HP
+diff/game ~-1700 vs ~-1030). Held-out agreement with the teacher rose (gate .86 -> .94, card .83 -> .91, cell .52 -> .62);
+pro VAL (v3val, 12,237 rows) top-1 kept (cell .199 -> .205, card .655 -> .646, gate bal .749 -> .769), cell NLL 3.10 ->
+4.71. Forgetting: contradicted. Leading hypothesis, untested: covariate shift (risk 5 above) -- the student only saw
+states the TEACHER reaches. DAgger labels the student's OWN states with the teacher's decision.
+
+### What changed (all in `scratchpad/gauntlet/L74/distill/`; no repo file changed)
+- `gen_distill.py --teacher T --p-teacher p`: the learner = the acting student under gap's D1 command, unchanged; the
+  worker's `apply` wrapper computes the teacher's D3 decision on the same prepared state and the same input row
+  (`Teacher.decide` = `search_s0.Runner.round` for one side: teacher forward -> `pre` -> `live_decide_batch` with
+  `match_kwargs` under the D3 cfg; the D3 flags are exactly what gap's D3 command adds to D1's). Recorded: the
+  student's row, the teacher's decision as the label (`play/slot/cell/why/p`), the student's own (`s_*`) and
+  `teacher_exec`. With probability p the teacher's action is executed, else the student's (own per-match stream; p 0
+  never draws). The rule state (threat / dead tower / lethal history, `rng_decision_options`) lives on the side, so it
+  evolves along the student's trajectory as D3's would along its own. Refuses a teacher with another vocab / feature
+  version (= another input row).
+- BUG FIX: `distill_command` broke with gap.py b62f394 (`run_arm` now passes `extra` as a 6th positional argument,
+  which landed in `_orig` -> `TypeError`); iteration 1 ran on the older gap.py. Any rerun of `gen` on current main would
+  have failed at the first worker. Fixed + test.
+- `train_distill.py`: `--data` takes several dirs (union, the iteration-1 row sampling for each game); val per dir
+  (`src<k>`); DAgger games add on-policy agreement counts to the stats (`gate_agree`, `card_agree`, `cell_agree` over
+  all decisions, `teacher_play`, `student_play`, `teacher_exec`); `--cell-kl W` (W x KL(plain init || student) on the
+  cell head over the batch's play rows, same mirrored inputs and card, the plain model frozen); `--rehearse NPZ
+  --rehearse-frac F` (F of every batch = pro TRAIN rows of `gen_dataset_v32_fv5.npz`). All off = iteration 1's trainer,
+  bit for bit (test against commit c66f6af).
+- `score_distill.py`: runs `dagger_D1`, `daggerkl_D1`, `iter1_D1` + their pairs; `--pro NAME=eval_gen.json` prints the
+  v3val cell NLL against the bar (reference + 0.3, owner).
+- `run_distill.sh dagger_smoke | dagger` (header comment has the env). Round k (P_SCHEDULE "0.5 0"): the latest
+  student plays D1 on DBLOCKS 3 x 480 fresh games (seeds 750000 + 10000 k: 760000.., 770000..; never the eval seeds or
+  iteration 1's 750000..754999), the teacher labels every decision; then train FROM THE PLAIN INIT on iteration 1's
+  2,400 teacher games + every round so far (standard DAgger aggregation; also keeps the KL anchor = the init). After the
+  last round: the same final union + `--cell-kl 1` -> `dagger_r2_kl.pt`; eval_gen pro VAL for plain, dagger_r2,
+  dagger_r2_kl; both students D1 on the 960 pairs; iteration 1's plain_D1 / teacher_D3 / student_D1 are linked, not
+  rerun. Per-round D1 win lines of the generation games go to run.log (p 0 round = the previous student's own D1 on
+  1,440 unpaired games, free). Finished parts are skipped on a rerun.
+
+### Design choices and where they deviate from the request
+1. "Exactly D3" vs "same input row" cannot both hold: D3's `--own-effects` is a look-ahead that changes the model INPUT.
+   The label is D3's rules + grafted heads on the student's row; the look-ahead is not applied
+   (`meta.own_effects_not_applied`). It only matters within 7.5 s of an own Log / Tornado / Rocket / IW press; the
+   share of DAgger rows with an own spell in `past` within 7.5 s (computable from the recorded rows) bounds it. The
+   student never sees the look-ahead at D1 anyway.
+2. In DAgger games every teacher play label is a PLAY row (`accepted` = label): the teacher's play was mostly not
+   executed, so there is no landing to check. Iteration 1 dropped 3,922 refused/unlanded of 111,161 plays (3.5%).
+3. Gate base rate (plausible, untested): while the student waits and the teacher wants to play, the teacher says play at
+   every 10-tick decision until the state changes, and each becomes a PLAY row (waits stay 1 per 40 ticks). That
+   shifts the gate's play/wait mix toward play vs iteration 1 (PLAY rows = 107,239 of 936,813 decisions). The check:
+   `teacher_play / dagger_decisions` and `play_rows` in the train logs, plays/game in SUMMARY (iteration 1 student 41.6,
+   plain 42.3, teacher 44.5). If the student over-plays, the fix is to sample play labels like waits in DAgger games.
+4. One change per experiment: the DAgger loop trains WITHOUT the KL term (DAgger rows = the one change vs iteration 1);
+   the KL student is trained on the same final rows (+KL = the one change vs dagger_D1). Rehearsal is a flag only, off.
+5. KL weight 1 = the largest weight whose per-state optimum, q = (e_teacher + W p_plain) / (1 + W), still keeps the
+   teacher's cell as the argmax. It does NOT guarantee the +0.3 NLL bar: the bound on a training state is plain NLL +
+   ln((1 + W) / W) = +0.69 at W 1; a guarantee needs W >= 2.86, where plain's argmax can win back the cells the rules
+   chose (Rocket / Log aims) -- an owner trade-off if W 1 fails the bar. Note also: cell NLL is calibration; D1 decodes
+   the argmax, so a pure calibration fix (a temperature) would not change D1 play at all. The bar protects the pro
+   knowledge; it is not by itself a win-rate lever.
+
+### Expected cost (13-worker pod; estimates from iteration 1's timings unless stated)
+- dagger_smoke ~3 min. Per round: 1,440 games; iteration 1's D3 ran 2,400 games in 88.7 min -> ~53 min, plus the
+  teacher forward on every learner decision (a third forward per decision; overhead unmeasured, estimate +15-35%):
+  ~60-72 min. Two rounds ~2.0-2.4 h.
+- Train: iteration 1 = 1.9 min for 2,400 files / 303k rows. Round 1 ~485k rows ~3 min, round 2 ~665k rows ~4 min, KL
+  ~6 min (second forward) -- estimates. Pro VAL: 3 x eval_gen (~12 GB RAM each, the whole npz) ~10-15 min, unmeasured.
+- Score: iteration 1 = 29 min per 960-game arm -> 2 arms ~1 h. Total ~3.3-3.8 h. Disk ~+170 MB of game files.
+
+### Pod commands (repo root, current main + this dir, LF endings)
+    sed -i 's/\r$//' scratchpad/gauntlet/L74/distill/run_distill.sh
+    export R=/workspace/results/DISTILL_DAGGER R1=/workspace/results/DISTILL_ADAPT \
+      TEACHER=icebow/data/bench/rl_royale/wk_adapt_main/wk_adapt_main_latest_grafted.pt \
+      STUDENT=icebow/data/bench/rl_royale/wk_adapt_main/wk_adapt_main_latest.pt \
+      OUT=icebow/data/bench/rl_royale/distill/distill_adapt_d3.pt
+    sha256sum $TEACHER $STUDENT $OUT          # 4893e67a.. 55c8f49e.. a152cc46.. (iteration 1's ckpts.sha)
+    bash scratchpad/gauntlet/L74/distill/run_distill.sh dagger_smoke; tail -2 $R/run.log
+    nohup bash scratchpad/gauntlet/L74/distill/run_distill.sh dagger > /dev/null 2>&1 &   # -> $R/SUMMARY.txt, $R/DONE_dagger
+If $R1 is gone: upload `pod_backup_weekend/pod1014b_distill/DISTILL_ADAPT/{gen,eval}` to it (150 MB) and
+`pod_backup_weekend/pod1014b_distill/icebow/.../distill/distill_adapt_d3.pt` to $OUT; the plain ADAPT ($STUDENT) is in
+`pod_backup_weekend/pod3/x_ADAPT/wk_adapt/icebow/data/bench/rl_royale/wk_adapt_main/`. Needs
+`icebow/data/pipeline/gen_dataset_v32_fv5.npz` (PRO). gen and score wait on /workspace/cpu.lock like iteration 1.
+
+### Reading the result
+- PRIMARY `dagger_D1 - plain_D1` (iteration 1: -8.33). `dagger_D1 - iter1_D1` = what the student-state rows added.
+- Covariate shift directly: `gate_agree / dagger_decisions` (student's choice vs the teacher's label on the states the
+  rollout reached) against the .94 measured on the teacher's own states. Round 1 (p .5) mixes in the teacher's actions,
+  so it understates the shift for the iteration-1 student; round 2 (p 0) is clean on-policy agreement, but for
+  dagger_r1. The clean test for the iteration-1 student is a p 0 round with it (`P_SCHEDULE="0 0.5 0"`, +~1 h). Much
+  lower than .94 = shift confirmed; about .94 = shift is not the cause and DAgger should not help (then look at the
+  value head / SIM-outcome confound, risk 4).
+- `daggerkl_D1 - dagger_D1` and the pro VAL lines: the calibration guard's cost or gain at equal rows.
+
+### Tests (17, CPU, ~27 s; same command as above)
+New: the 6-argument `run_arm` call; the DAgger command = gap's D1 + exactly D3's extra flags, and the worker strips them
+before livecal; the teacher label equals gap's D3 path (search_s0.Runner.round with the teacher, real BoardStates,
+the full LIVE flags, 24 decisions incl. a hazard draw) for p 0 / 1 / 0.5, the executed action is the student's (p 0),
+the teacher's (p 1) or per the mix, the rule RNG state ends identical, the recorded row is the student's (a no-rules
+mutant matches 9 / 24 labels, the real hook 24 / 24); another vocab is refused; the DAgger game file; defaults
+bit-identical to c66f6af's trainer; union + per-dir val + agreement stats + KL + rehearsal; the KL formula; the pro bar.

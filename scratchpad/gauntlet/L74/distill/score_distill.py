@@ -4,6 +4,8 @@
 
 EVAL_DIR holds gap.py outputs named <run>_<seed>/<arm>/matches.jsonl, run in RUNS, seed in SEEDS. --ref-teacher: a
 path pattern of earlier teacher D3 gap.py outputs, e.g. '/workspace/ref/D3_full_{seed}' (pod1014_refit), checked game for game.
+Iteration 2: dagger_D1 / daggerkl_D1 (the DAgger students), iter1_D1 (iteration 1's student; run_distill.sh links it and
+iteration 1's plain_D1 / teacher_D3); --pro NAME=eval_gen.json (first = the reference) adds the pro VAL check.
 """
 from __future__ import annotations
 
@@ -16,11 +18,18 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'heroiw'))
 from validate import paired_drift  # noqa: E402
 
 SEEDS = (741200, 742000)
-RUNS = {'student_D1': 'D1', 'teacher_D3': 'D3', 'plain_D1': 'D1', 'student_D3': 'D3'}
+RUNS = {'student_D1': 'D1', 'teacher_D3': 'D3', 'plain_D1': 'D1', 'student_D3': 'D3', 'iter1_D1': 'D1',
+        'dagger_D1': 'D1', 'daggerkl_D1': 'D1'}
 PAIRS = [('student_D1', 'teacher_D3', 'PRIMARY: distilled model, greedy, no add-ons - deployed teacher stack'),
          ('student_D1', 'plain_D1', 'distillation gain over the start (both greedy, no add-ons)'),
          ('teacher_D3', 'plain_D1', 'add-on value to transfer (FINDING.md r1: +2.19 [-1.88, +6.15])'),
-         ('student_D3', 'student_D1', 'the rule stack (no refine heads) on top of the distilled model')]
+         ('student_D3', 'student_D1', 'the rule stack (no refine heads) on top of the distilled model'),
+         ('dagger_D1', 'plain_D1', 'ITERATION 2: DAgger student vs the plain start (iteration 1: -8.33 [-12.19, -4.48])'),
+         ('dagger_D1', 'iter1_D1', 'DAgger rows added vs teacher-state rows only'),
+         ('dagger_D1', 'teacher_D3', 'DAgger student - deployed teacher stack'),
+         ('daggerkl_D1', 'dagger_D1', '+ cell KL to the plain model (same rows)'),
+         ('daggerkl_D1', 'plain_D1', 'DAgger + cell KL student vs the plain start')]
+PRO_BAR = 0.3                        # owner 10-14: pro VAL cell NLL may not rise more than this over the plain model
 
 
 def load(path):
@@ -56,12 +65,28 @@ def report(got, ref=None):
     return '\n'.join(lines)+'\n'
 
 
+def pro_report(named):
+    """[(name, eval_gen json path)], the first = the reference (plain): v3val (12,237 pro VAL rows) cell NLL vs the bar."""
+    res = [(n, json.loads(Path(p).read_text())['v3val']['model']) for n, p in named]
+    ref_name, ref = res[0]
+    lines = [f'Pro VAL (v3val, {ref["n"]} rows, {ref["n_play"]} plays): cell NLL bar = {ref_name} + {PRO_BAR}']
+    for n, m in res:
+        d = m['cell_nll'] - ref['cell_nll']
+        verdict = '' if n == ref_name else ' PASS' if d <= PRO_BAR else ' FAIL'
+        lines.append(f"{n}: cell_nll {m['cell_nll']:.3f} ({d:+.3f}{verdict}); cell_half {m['cell_half_top1']:.3f} "
+                     f"card {m['card_top1']:.3f} gate_bal {m['gate_bal_acc']:.3f}")
+    return '\n'.join(lines)+'\n'
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('eval_dir', type=Path)
     ap.add_argument('--ref-teacher', help="pattern with {seed}")
+    ap.add_argument('--pro', action='append', default=[], help='NAME=eval_gen json; the first is the reference')
     a = ap.parse_args()
     text = report(runs(a.eval_dir), a.ref_teacher)
+    if a.pro:
+        text += pro_report([x.split('=', 1) for x in a.pro])
     (a.eval_dir/'SUMMARY.txt').write_text(text)
     print(text, end='')
 
