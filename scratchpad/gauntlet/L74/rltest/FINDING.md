@@ -34,3 +34,24 @@ The staged T_gate model (`icebow/data/bench/rl_royale/rltest/`) is NOT recommend
 - Consequence for the training architecture: anything bolted on after training (rules, grafted heads) loses fit as RL
   proceeds; the model must learn what they do (owner's goal) or be trained with them in place.
 - Caveat: the SIM's ranking of r1 vs the old live model (-2.60 [-6.56, +1.35]) disagrees with live A/B1 so far (r1 ahead).
+
+## 3. Which add-on lost its value: rules vs grafted heads (960 pairs; D3 ungrafted isolates the rules)
+
+| Checkpoint | Rules (D3 ungrafted - D1) | Grafted heads (D3 grafted - D3 ungrafted) |
+|---|---|---|
+| ADAPT final | +2.92 [-0.94, +6.77] | **+5.83 [+1.98, +9.69]** |
+| update 20 | +0.94 [-2.92, +4.79] | +4.38 [+0.52, +8.33] |
+| update 40 | -0.62 [-4.38, +3.23] | +2.92 [-0.94, +6.88] |
+| update 60 (r1) | +1.15 [-2.60, +5.00] | +1.04 [-3.02, +5.00] |
+
+- **Measured:** the decay is mostly the grafted heads (r3c-trunk CellRefine + TowerRefine); the rules are worth ~1-3 pp in
+  the SIM throughout.
+- **Measured (code):** `weekend/graft_generic.py` also copies OLD's `projectile_target_in.*` (5 tensors) over the arm's
+  OWN RL-trained ones (max |delta| 0.38 on r1, 0.37 on ADAPT). Testing a heads-only graft that keeps the arm's own
+  projectile layers (`G1`, running).
+- **G1 result (heads-only graft, 960 pairs):** r1: heads-only 43.33% vs full graft 41.88% = +1.46 [+0.00, +2.92]; ADAPT:
+  -1.04 [-2.60, +0.52]. So overwriting r1's own projectile layers costs ~1.5 pp (borderline); heads-only vs ungrafted:
+  ADAPT +4.79 [+1.04, +8.65], r1 +2.50 [-1.56, +6.46]. Main loss = heads fitted on r3c's trunk no longer fit r1's trunk.
+  Proposed fix (not started; owner decision): re-fit CellRefine/TowerRefine on each new RL trunk (`pipeline/
+  train_cell_refine.py` + the tower-refine trainer) instead of grafting r3c's; and stop grafting `projectile_target_*`.
+  r1 heads-only checkpoint (pod C only, `newsim_base_main_u0060_g1.pt`, sha 5ca58ddd) = a +1.5 pp SIM candidate, not staged.

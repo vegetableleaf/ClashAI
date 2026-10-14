@@ -99,6 +99,11 @@ pod1013a`, C PID 81260 -> `pod1013c`; each copies + verifies, posts Discord, sto
   48.12 -> u060 45.42; u060 vs init -4.90 [-8.85, -0.83] -> confound CONTRADICTED** (the decline holds under r1's own
   training condition). Running: the same trajectory as plain greedy D1 (no rules, ungrafted) -- if flat there, the
   deployment add-ons (hand-tuned rules + heads grafted from another trunk) stop fitting as RL drifts.
+- **RESULT (`L74/rltest/FINDING.md`):** plain greedy over r1's run +1.35 [-2.50, +5.10] (RL did NOT hurt the policy); the
+  add-ons' value fell +8.75 -> +2.19 pp, mostly the GRAFTED HEADS (+5.83 on ADAPT -> +1.04 on r1; rules ~1-3 pp
+  throughout). `graft_generic.py` also overwrites the arm's own RL-trained `projectile_target_in.*` (5 tensors):
+  heads-only graft on r1 +1.46 [+0.00, +2.92] vs full graft. Proposed (owner decision): re-fit refine heads per
+  trunk; stop grafting projectile_target_*. A/B1 ~07:30: A 62-63 (49.6%), B 57-64 (47.1%) at 125/121.
 - PARITY early endings (`own_timing/EARLY_END.md`): 84/100 SIM replays end early, 60 at 3:00 regulation with a
   different tower down than live -> downstream of divergence (plausible); needs state-injected per-tick comparison. test_iwdiag 24/25 (the failing
   `test_device_evidence_matches_local_sources` is stale since this morning's supplement 1 -> 2 change).
