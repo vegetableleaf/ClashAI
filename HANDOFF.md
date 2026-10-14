@@ -51,7 +51,19 @@ pod1013a`, C PID 81260 -> `pod1013c`; each copies + verifies, posts Discord, sto
 - **GAP heads + sweep (`L74/gap/FINDING.md`):** the sampled GATE costs -20.42 pp (card -6.04, cell -2.29 n.s.), same
   plays/game -> timing. Gate T_gate .1 = greedy (-0.42 [-5.62, +5.00]); T .2 -6.46; centre .35 at T .5 -12.50.
   R1 (gate .1, card/cell .5) -13.54; R2 (all .2) -8.12. Next proposal: one-change RL test of the rollout gate
-  temperature (needs T_gate in rl_royale's behaviour AND update log-probs; r1's trainer lives on l74-newsim). test_iwdiag 24/25 (the failing
+  temperature (needs T_gate in rl_royale's behaviour AND update log-probs; r1's trainer lives on l74-newsim).
+- **~22:00: l74-newsim merged on branch `l74-merge-newsim`** (worktree C:/Users/benpe/wt_merge; 5 conflicts resolved; tests:
+  failures = pre-existing + worktree-env only). NOT yet on main: live restarts re-read pipeline/, so main fast-forwards
+  after A/B1. **RL `T_gate`** (learner gate temperature; null = T, default cfg byte-identical; rollout sampler, PPO ratio,
+  KL ref, monitors; opponents keep T; 87 tests pass). **RL test running** (`L74/rltest/run_rltest.sh`): r1's exact cfg,
+  20 updates from newsim_base_main_u0060, ctrl (pod A) vs T_gate .1 (pod C); then greedy D1 + sampler D0 scoring on the
+  GAP_r1 games (pod A also scores the init). Relays pod1013a_rlt / pod1013c_rlt. Deck file = ADAPT's decks_rl.json
+  (ADAPT and MEMP3 copies identical; r1's own copy lost: ASSUMED identical). RoyaleSim data/ from the laptop (cards.json
+  9547932d; the pod's fork-built copy c68d6c01 differs) -- first launch crashed without it; restarted both arms.
+- **A/B1 runner DIED ~19:23** (last event 'start B'; counted 145/300: A 43-32 57.3%, B 30-40 42.9%). ab_autoswitch,
+  battery_guard and 5 relays died in the same 19:15-19:23 window (cause unknown; other projects' + another Claude
+  account's processes run on the laptop). 34 live matches since then used r3c, r1 AND wk_bait_u0060_g (Log Bait);
+  LIVE_FAST is 'on' (A/B1 arms were off); CKPT_OVERRIDE = r3c. No live process at ~22:10. Nothing restarted: owner's call. test_iwdiag 24/25 (the failing
   `test_device_evidence_matches_local_sources` is stale since this morning's supplement 1 -> 2 change).
 - v8: owner reports a rebuilt run; I did not verify or advise on it (safety stops). oracle-2 kept warm per owner.
 
