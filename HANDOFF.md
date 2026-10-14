@@ -1,3 +1,14 @@
+## 2026-10-14 ~13:20 EDT -- loss review rerun (2,863 logs): r1 has the same economy problem; live-vs-SIM gap is NOT play rate
+
+- `L74/loss_review/report.md` regenerated (R-lineage 2,169 matches). Top factor unchanged: pushes met with < 4 elixir
+  67% (pros 24%), lost-episode +15.6 pp [13.1, 17.9] within match. Golem 38% vs 54% without.
+- r1 alone, A/B1 window (151 matches each): r1 meets 66% of pushes with < 4 elixir (median 2.5); old model 66% (3.0).
+  Raw lost-episode rate < 4 vs >= 4 elixir: r1 50% vs 27%. RL did not touch the economy.
+- Measured: NOT the play rate. Same model (r1 full graft): SIM D3 10.58 plays/min (960 games) vs live 9.63 confirmed/min
+  (163 matches). The 10-08 open question (SIM economy near pros, live not; decomposition never landed) stays open.
+  Next measurement: SIM elixir-at-push-start with the review's own episode definition (needs SIM frame logs), to split
+  "the model spends badly" from "human opponents punish spending the SIM opponent does not".
+
 ## 2026-10-14 ~13:00 EDT -- A/B2 RUNNING (owner go-ahead); loss review rerun
 
 - A/B2 run `20261014_125931_5a47a538` (WMI, `L74/ab/run_ab2.sh`, log ab2_launch.out / ab2_run.out / ab2_autoswitch.out):
