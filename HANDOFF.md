@@ -63,7 +63,14 @@ pod1013a`, C PID 81260 -> `pod1013c`; each copies + verifies, posts Discord, sto
 - **A/B1 runner DIED ~19:23** (last event 'start B'; counted 145/300: A 43-32 57.3%, B 30-40 42.9%). ab_autoswitch,
   battery_guard and 5 relays died in the same 19:15-19:23 window (cause unknown; other projects' + another Claude
   account's processes run on the laptop). 34 live matches since then used r3c, r1 AND wk_bait_u0060_g (Log Bait);
-  LIVE_FAST is 'on' (A/B1 arms were off); CKPT_OVERRIDE = r3c. No live process at ~22:10. Nothing restarted: owner's call. test_iwdiag 24/25 (the failing
+  LIVE_FAST is 'on' (A/B1 arms were off); CKPT_OVERRIDE = r3c. No live process at ~22:10. Nothing restarted: owner's call.
+- **Owner ~22:45: resume A/B1 once Roblox is closed; ~23:00 owner asleep: keep testing/collecting/delivering models
+  overnight** (memory overnight-2026-10-13). `live_ab.py --resume-run` (counted rows + run_id + ORIGINAL backup carry
+  over; 27 tests) via `L74/ab/resume_ab1.sh` (WMI): Roblox closed -> Log Bait settings backed up to
+  `L70/live/backup_pre_ab1_resume_20261013_2303`, LIVE_DECK=icebow, dead lock moved aside, **resumed 23:04** (runner pid
+  82900, B block first), auto-switch re-armed, battery_guard restarted (WMI pid 34256).
+- PARITY_ALL post-fix ranking (association): GiantBuffer, Phoenix, SkeletonArmy, RoyalRecruits, unmapped 203000042,
+  RoyalHogs, MegaKnight, Giant, OUR Tornado pull (21.7k exposures), unmapped 13000043; sim_terminated 57.7k rows. test_iwdiag 24/25 (the failing
   `test_device_evidence_matches_local_sources` is stale since this morning's supplement 1 -> 2 change).
 - v8: owner reports a rebuilt run; I did not verify or advise on it (safety stops). oracle-2 kept warm per owner.
 
