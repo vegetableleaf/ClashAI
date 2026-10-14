@@ -1,3 +1,13 @@
+## 2026-10-14 ~12:40 EDT -- head refit on r1's own trunk: NOT better in the SIM; owner pod stopped
+
+- `L74/rltest/REFIT_RESULT.md`: refit (CellRefine + TowerRefine fitted on newsim_base_main_u0060, sha 08457f1e) D3 960
+  pairs 39.58% vs r1 full graft (live) 41.88% = -2.29 [-6.15, +1.56], vs heads-only graft 43.33% = -3.75 [-7.50, +0.10],
+  vs r1 with no heads -1.25 [-5.21, +2.71]. Pod reproduced the 10-14 rows game for game. Offline fit as good as r3c's;
+  closed-loop value none. Barrel-branch recipe step ruled out (it only trains the projectile layers r1 already has).
+  Not staged; files on `pod_backup_weekend/pod1014_refit/`. A/B2 stays heads-only vs full graft.
+- Pod 81.27.69.179:37620 (cgroup 13.6 cores, not 128): stopped 12:3x via runpodctl from inside after sha-verified copies.
+- `git archive HEAD` is 986 MB (L67 parquet replays); pod bundles must exclude L67/L72/templates/video-analytics/webcache.
+
 ## 2026-10-14 ~11:30 EDT -- reactive emotes (owner spec), head refit running on the owner's new pod
 
 - **Emotes are reactive now (owner 10-14; `--emote-spam on` = `start_live.sh icebow --emotes`; LIVE_EMOTES file still
