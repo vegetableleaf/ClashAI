@@ -1,0 +1,8 @@
+DISTILL scoring: 960 paired games (seeds 741200 + 742000), CAL c, E4 T .1, Hero IW + live press.
+Draws count as non-wins. Paired deltas: 10,000 bootstrap draws within census/side (validate.paired_drift).
+student_D1: win 30.00% (288/960); plays/game 41.6
+teacher_D3: win 47.08% (452/960); plays/game 44.5
+plain_D1: win 38.33% (368/960); plays/game 42.3
+student_D1 - teacher_D3: -17.08 pp [-20.73, -13.44]  PRIMARY: distilled model, greedy, no add-ons - deployed teacher stack
+student_D1 - plain_D1: -8.33 pp [-12.19, -4.48]  distillation gain over the start (both greedy, no add-ons)
+teacher_D3 - plain_D1: +8.75 pp [+4.79, +12.60]  add-on value to transfer (FINDING.md r1: +2.19 [-1.88, +6.15])

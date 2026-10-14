@@ -1,3 +1,17 @@
+## 2026-10-14 ~19:55 EDT -- DISTILLATION ITERATION 1 (ADAPT) FAILED: student -8.33 pp; forgetting contradicted; DAgger next
+
+- Pod 12037 (copy `pod_backup_weekend/pod1014b_distill/`, sha-verified; `L74/distill/results/ITER1_SUMMARY.txt`), 960 pairs:
+  teacher D3 47.08% (reproduces FINDING.md), plain ADAPT D1 38.33% (reproduces), distilled student D1 30.00%:
+  -8.33 pp [-12.19, -4.48] vs plain, -17.08 vs teacher. Tower HP diff/game student ~-1700 vs plain ~-1030.
+- Held-out agreement with the teacher rose (gate .86->.94, card .83->.91, cell .52->.62). Pro VAL (12,237 rows): top-1
+  kept (cell .199->.205, card .655->.646, gate bal .749->.769) but cell NLL 3.10 -> 4.71 (overconfident: the teacher's
+  rule/head cells are one-hot targets). (c) forgetting as the cause: CONTRADICTED. Leading (b): covariate shift -- trained on
+  the teacher's states, plays from its own.
+- Iteration 2 (agent building, code only): DAgger rounds (student acts, teacher's D3 labels the student's states), union
+  with iteration-1 rows, cell calibration guard (label smoothing / KL to plain), optional pro-row rehearsal.
+- Pod 12037 now runs `L74/reward/river_distill_pod.sh` from /workspace/cb_new (current main): the --tornado-river SIM A/B
+  (r1 full graft D3 + deployed combo flags, river off vs on, 960 pairs each; ~2 h).
+
 ## 2026-10-14 ~19:40 EDT -- TORNADO vs RIVER: SIM 0.1.33 correct, 0.1.17 wrong; our combo aim + look-ahead ignored it -> fix built (off)
 
 - `L74/reward/TORNADO_RIVER.md` (agent; probe + live audit): RoyaleSim 0.1.33 (`status.ATTRACT_WATER_EDGE =
