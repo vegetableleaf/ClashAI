@@ -1,0 +1,298 @@
+[
+  {
+    "path": "pipeline/adaptive_opponents.py",
+    "sha256": "c9178e40677f9e5a8209948f1d7c25adebd37a9b182c4bed511f7a8ba6423e57"
+  },
+  {
+    "path": "pipeline/e1_eval.py",
+    "sha256": "e166b8a28a16dd0954a282f0c4e9af48bb02c0b7ccdf29398a681dfe862e8c30"
+  },
+  {
+    "path": "pipeline/rl_royale.py",
+    "sha256": "f6ee18925b7427b7e29830eb075a7e8e020308608abdea11d4ce8f3e8ce88682"
+  },
+  {
+    "path": "pipeline/rl_royale.yaml",
+    "sha256": "08252fa6400a05b9ef06f6cba7508562a2737bbd87d2400b074faeb99d3fcc8e"
+  },
+  {
+    "path": "pipeline/royale_runtime.py",
+    "sha256": "c6471b49ce6998b23856adce31939c50daa394486ea8101ce75c6ca6000be91d"
+  },
+  {
+    "path": "pipeline/tests/test_adaptive_opponents.py",
+    "sha256": "cde88073808d3e3c34ef55f44f97c94938225a5cc14e4eaceeac035e0b2dad95"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/drills/build_live.py",
+    "sha256": "4c5ae944b11f1b8530fe2f81e25ac51e692ff4b0ea31677317ec5ce7135f6c3e"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/drills/build_pros.py",
+    "sha256": "31a1744cad4ea93344057cd0bd06077b529104481a3beabe29734486b486d49f"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/drills/drills.py",
+    "sha256": "19a4d9c04bfd1289531005e1172f248a533daca5711be0e64f71ef266d32396d"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/drills/pro_when.py",
+    "sha256": "40ccda86f1e9cc7e6459004ba3b8bf04aa79e129652f2b6db102d583eaf05429"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/drills/xl2_selectors.py",
+    "sha256": "8ee24b7fd08e0191c1739aee92202653e6fc4431f2702a051da952d886c907e6"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/loss_review/review.py",
+    "sha256": "9cca73c3c0920ac954f452a10ad1be90d20ed81b2fbaefc47713f5a340927bea"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/mechanic_fork/mech_fork.py",
+    "sha256": "5fb5c06f2b38f7fe84a2d61a7eee00145b5f6481438752bcf778051f0da51e9e"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/mechanic_fork/placebo_summary.py",
+    "sha256": "bba9007e087b49090923627c26fa1def9baab4f6a8266f0eaf33b776164e5d67"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/mechanic_fork/prio_guard.ps1",
+    "sha256": "e2a39a0b8ad9ed6322ef87a49ceb45ce3d778389a1710aee3b9469b57dd98f94"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/mechanic_fork/run_placebo.sh",
+    "sha256": "6c7cf9ad2dee164c144f09f30055f7ca6305290e40d9ca3421131c82985e3b12"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/GATES.md",
+    "sha256": "bc1fbb0f347464f76508e77486b1d66afa1d13420e85e9e099d1107ccec8b26d"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/GATES_XL2.md",
+    "sha256": "be9a450e8677ed684979890705af2d7799437801fbccf7b715512afc57562df4"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/XL2.md",
+    "sha256": "8fd7da987c0348d3869157480533d3d19c46978006b3143dd470fc39ec590024"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/adaptive/GATES.md",
+    "sha256": "ef46156406dff70f961efd4576fef4a49595ca4db5d0766fd678fbb8cccfd55c"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/adaptive/README.txt",
+    "sha256": "21a371dd9dba9cd57f441203e051a570497e560ae17d2cce2e3e5c34f302e53b"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/adaptive/TEST_RESULTS.txt",
+    "sha256": "c1117df97cd0f56725a29cd0521e33522b1b31602adaf1dd3b14cc5adda1eaa6"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/adaptive/adapt2/GATES.md",
+    "sha256": "d5c7ebe83d01c0df4d8b09e1df6dbf4b789a6406193536a23589a7f780ad3660"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/adaptive/adapt2/POD_FILES.tsv",
+    "sha256": "55341dd16ebc87d9b61c9f983e181aad8be94694c0b2baad29193651d0c5366f"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/adaptive/adapt2/README.txt",
+    "sha256": "d906c684e690b4d34f72a85ab347b8922f4d5bbc0e8851569d971685369aa36c"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/adaptive/adapt2/TEST_RESULTS.txt",
+    "sha256": "3df0aa34154807488a0779654bce23127ecf1463400893acbc13d2605a154294"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/adaptive/check_offline.py",
+    "sha256": "dbd3eff68de437dd48cbdfaa75873ec1ddeb25dc507dc2605e0a98024abd9f17"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/adaptive/driver.py",
+    "sha256": "7e773454c1aadc07835cf1f3a86689dcaf2757e43e2d75b1d87f8b77f1ef7855"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/adaptive/run_adapt2.sh",
+    "sha256": "24af2539385f7a74e36d7066bcc987cb5113bb3974634db970ef682ad78adf08"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/adaptive/run_adaptive.sh",
+    "sha256": "6282526e16a4394033c64f2ed3457b076398b0604817ee85733a928df2247a96"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/archetypes.py",
+    "sha256": "4556996cc4fee057fd31a7fc1d7e4e948d2056383b991d272ae0bc1cdc935ae1"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/bait_base_rl.py",
+    "sha256": "aa511ad9c83bf5d8d6cd22ead558dc2bcf771b37388ceeb450618d8e625221bf"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/bait_base_s0.py",
+    "sha256": "a66b5d36867c879b80f15ea2581d15e53185e03eb7851123d43638aa03d1110a"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/cal_run.sh",
+    "sha256": "f7662d566cc23705245b3d19cd7a654aa26501f2ead88aaf3bc70195600ddef9"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/cal_summary.py",
+    "sha256": "11927003f11ed0391076af762a2894d1dd799f64f0f198807681a93193fa3a87"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/drill_arms.py",
+    "sha256": "5b8c8906d168d6d381041c07e38a6ca0d330535089f012f9c7943fa4f7dc5e83"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/graft_generic.py",
+    "sha256": "aac135c5775fbcb9f15774fefc578ba9a4846f949a5eb61387ca62c84179ec0e"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/live_history.py",
+    "sha256": "469d86c157437120e27652639529e91b7a7613cd7cd4cbde405c223cbbbbc115"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/logbait_s0.py",
+    "sha256": "94dfeb1fcc9704085f73db3dbcb3affb706b61f1f77a5b5170fbb0570e2f716e"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/logbait_summary.py",
+    "sha256": "dec77cad93ab18c7a4a86839b1940ffc3cd41a88649592daa06bdfd71161ebc8"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/mk_owncycle_init.py",
+    "sha256": "57a1ae3885d5b8df5a76b6708576461c9e83bbd00899004ef7f04e129c6672c7"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/mk_weighted_decks.py",
+    "sha256": "9fb38424a7ce75b0cd65846ba01b0c5b37bec8e9c81769a7192065a96b57c65e"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/moments_from_dump.py",
+    "sha256": "0c95db1f3bbe120db15847e5bb8c4e869ec74f0758cc54a44ed8f405178db2e8"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/run_wk.sh",
+    "sha256": "513b8f3427d626b543ff7dfa3c52dbf07cf306ea19ad79b09ab10586241f895b"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/run_xl2.sh",
+    "sha256": "a1c3f19ee3086fa79a7466f176e6e350ddc729bfaffd9bf9a76a977433fdba34"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/s11_bait.sh",
+    "sha256": "2bf7d2487c93d687a0693dd6ddf34dbedc58c28d2535ea51934cc67945f9ff0a"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/s11_checker.sh",
+    "sha256": "ad95ae9691c533b0805792363bdb2e34f62994e7943f763c9fe5692bbb815950"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/s11_gate.sh",
+    "sha256": "e0351b94c987dae0ad47ad162943e611a47a1d0d64e3397397b29fe77f610576"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/s11_summary.py",
+    "sha256": "47643f0d41c7fe697616735f3794ea3d3b52fb17232a7b5cecf01647f41e2453"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/s4_elixir_split.py",
+    "sha256": "f76de769b0a4756e7a4e8b49ca9752a4845fa38972b22d692825dd7cb2f4d28a"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/tests/check_xl2.py",
+    "sha256": "561daaa870d35683e63aee4ebe93cdc597de184519c169686b1cb50d24383fde"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/tests/conftest.py",
+    "sha256": "b79a34096d0134534f0a4dbb215cf8c9a8cf63d9d0ab18754e15e9379766c749"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/tests/test_cal.py",
+    "sha256": "522e8b7406cc9b68de6511760ebd99ccc1ad55ae222e9e311ce5bcd5d3b0cfdc"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/tests/test_xl2.py",
+    "sha256": "6d7fc952613faf7fd09c278ba72dc76249f9ce4be8c8fc0df6bc194c1a6fe9bc"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/tests/test_xl2_fast.py",
+    "sha256": "22d4a1e040e619fc45f62689629260a29ff8c172d302252e161096ac08fa3f70"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/train_drills.py",
+    "sha256": "ae09f4d1b010bba2a69411abe2ec69ea371dfe9f471100b06a6789f9f49fb1c3"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/variant_search.py",
+    "sha256": "144f5682d417c3a567b33d41567ceea49a34013afb950b137429f25e6f582145"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/wk_checker.sh",
+    "sha256": "caf79c39b57257916e1bce5c03287769493489656821b0cf01f038c4f4baf278"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/wk_compare.py",
+    "sha256": "3e02c8b96de2080d7d66f9081a6bb7b36b4affb35e930e5f212778acd259bce2"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/wk_driver.sh",
+    "sha256": "361ff314fd92c81e646a8defa70afe6f6dac6633ba7de17cf87ef08463e07c9b"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/wk_stats.py",
+    "sha256": "1a97174a5748694e9ff4e5e7f8ad9362136c6e8ff42518c1e228b7bc80b292ee"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/wk_xl_stats.py",
+    "sha256": "0467d00f65afbe44c0b615164a82b931538137d06999551329910dfb435485a3"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/xl2_fork.py",
+    "sha256": "399090c7b328d953382da64404875a5cb401f699f5e8bf9555c2d6d3139555ba"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/xl2_stage.py",
+    "sha256": "7249a34ac77e78ca1b46b2465473753bcbb3bfd164ff70491b0ed13688e01193"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/weekend/xl2b_pod2.sh",
+    "sha256": "710f09b4ea7d085ff73a2694ec5a7bf0620eb38ba84e185747c27e2b215e5e56"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/newsim/census.py",
+    "sha256": "88305c403dffc9b33d2d0fd840f52f84cab49d3c82f285f8025eaed990bde16d"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/newsim/driver.py",
+    "sha256": "037163f7a960caed30ef61bc35153850c4331b63e1122241ab62c4f90c5d2015"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/newsim/evaluate.py",
+    "sha256": "59e4ef4349861c29df1e413584b12e986a7486e5808a9717e824e9ff45a69d8d"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/newsim/metrics.py",
+    "sha256": "fc9f04a14b4c4214739f1bf6956e1203f825a090f1566919dfefd32076138be1"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/newsim/rebuild_csv.py",
+    "sha256": "2c1a49187e7f648a2de96473eaa4aa8b19fc7cb97c145ced5dce919c080ccadf"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/newsim/test_newsim.py",
+    "sha256": "986605ec603e25c14ca6706ff7d192793fe8f1e5124b89bc1dae99c834ae53eb"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/newsim/verify_delivery.py",
+    "sha256": "0e52d2546610518f410a2626758d9461aaacd8d851f1c38b7a7426c5af01363d"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/newsim/verify_offline.py",
+    "sha256": "72bed6097a537d540dedf92742213f8b839bfe16dedd0ca0bff6ade7a3f7049b"
+  },
+  {
+    "path": "scratchpad/gauntlet/L74/newsim/run_newsim.sh",
+    "sha256": "931451d14ee7d283666a27fe04106fc0e54c98e2a69b80f6c5ceaa892abcd36a"
+  }
+]

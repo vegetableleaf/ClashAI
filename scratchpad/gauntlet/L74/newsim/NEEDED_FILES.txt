@@ -1,0 +1,49 @@
+Transfer the integrated wt_newsim source tree (including untracked adaptive and
+NEWSIM files). Do not copy just Git HEAD: this sandbox cannot commit the merge.
+Use an isolated pod checkout, not a live checkout. No network in this launcher.
+
+Existing pod environment:
+  /workspace/venv/bin/python with the ADAPT training dependencies (torch, numpy,
+  PyYAML, etc.). Override OLD_PY only if its Python ABI matches the new venv.
+  Either an already verified /workspace/venv33, or offline Linux wheels in
+  /workspace/wheelhouse (WHEELHOUSE override): royalesim 0.1.33, royalegym 0.1.23.
+
+Required data paths relative to the pod source root:
+  scratchpad/gauntlet/L74/pro2/output/battles.csv
+    Rebuilt in wt_newsim, ignored by Git; 1064 battles, SHA256:
+    5dd8fb02a71ed99d8fd0ebdb2b891ac8f3a45f45db9fec3b0c7950b63473be81
+  icebow/data/bench/rl_royale/wk_adapt_main/wk_adapt_main_latest.pt
+  icebow/data/bench/rl_royale/wk_adapt_exp1/wk_adapt_exp1_u0015.pt
+  icebow/data/bench/rl_royale/wk_adapt_exp2/wk_adapt_exp2_u0015.pt
+  icebow/data/bench/rl_royale/wk_adapt_exp3/wk_adapt_exp3_u0015.pt
+  icebow/data/bench/rl_royale/rseries_r3c/rseries_r3c_u0030_barrel.pt
+  icebow/data/bench/rl_royale/rseries_r3c/rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt
+  icebow/data/bench/rl_royale/rdef_e4/rdef_e4_u0020_barrel2k_cellref_towerref_w2.pt
+  icebow/data/pipeline/gen_v1_s0/gen_s0.pt
+  icebow/data/pipeline/s1_icebow_v6aug_s1.pt
+  icebow/data/pipeline/gen_dataset_v32_fv5.npz
+  icebow/data/ghost_pool/pool_env_v1.jsonl
+  icebow/data/ghost_pool/pool_env_v1_split.json
+  research/ext/Royale/RoyaleSim/data/derived/cards.json
+  research/ext/cr-native-sandbox/native_core/data/live_card_catalog.json
+
+Keep all tracked config/catalog/calibration and code assets, particularly:
+  pipeline/** and icebow/config/**
+  scratchpad/gauntlet/L74/newsim/** (omit .test_deps, .test_work, merge_tmp)
+  scratchpad/gauntlet/L74/heroiw/**
+  scratchpad/gauntlet/L74/weekend/**
+  scratchpad/gauntlet/L74/phase_stats/video_metrics.py
+  scratchpad/gauntlet/L70/abilities/ability_policy.py and ability_models_v2.json
+  scratchpad/gauntlet/L70/pool_forms/loadable_decks.json
+  scratchpad/gauntlet/L73/rl_r2/loadable_decks_ladder.json
+  scratchpad/gauntlet/L70/gen_v31/xbow_reach_public.json
+  scratchpad/gauntlet/L71/royale_update_20261005/build_manifest.json
+  scratchpad/gauntlet/L73/royale_update_20261006/build_manifest.json
+
+Old ADAPT snapshots, optimizer state and runtime are NOT needed for NEWSIM:
+weights initialize a fresh new-runtime run, with exp1-3 explicitly enrolled.
+
+After execution, back up the whole /workspace/results/NEWSIM_<arm>/ directory.
+It contains final_grafted.pt, input hashes, runtime stamp, census counts/drops,
+cycle configs/receipts, training logs, all evaluation JSONL/phase event receipts,
+scores.json, SUMMARY.txt and DONE. DONE includes exit_code; read the verdict.

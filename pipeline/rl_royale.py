@@ -116,6 +116,7 @@ if str(REPO) not in sys.path:
 
 from pipeline import e1_eval as E                                               # noqa: E402
 from pipeline import reward_shaping as RS                                       # noqa: E402
+from pipeline import adaptive_opponents as AO                                  # noqa: E402
 from pipeline.model_v3 import hand_mask_from_sc                                 # noqa: E402
 
 RUN_ROOT = REPO / "scratchpad" / "gauntlet" / "L68" / "rl"
@@ -946,11 +947,19 @@ class Guards:
         return None
 
 
-def rollout_jobs(jobs, update: int) -> list[tuple]:
+def rollout_jobs(jobs, update: int, learner_pipeline_frac: float = 0.0, seed: int = 0) -> list[tuple]:
     """(entry_index, entry, g) -> ``run_batch`` jobs carrying their per-match cfg overrides (4th element): the
     behaviour seed index and the obs seed are per (entry, g), not per batch (test_rl_royale.TestRolloutJobsSeeds)."""
-    return [(i, entry, g, {"rollout_index": int(g), "update": int(update),
+    result = [(i, entry, g, {"rollout_index": int(g), "update": int(update),
                            "obs_seed": rl_obs_seed(str(entry["tag"]), int(g), int(update))}) for i, entry, g in jobs]
+    if learner_pipeline_frac:
+        # Independent per-match RNG: worker count/order and league sampling are unchanged.
+        # Bernoulli probability, not a quota over an actor's variable-size batch.
+        for _, entry, g, over in result:
+            key = f"{seed}:{entry['tag']}:{g}:{update}:learner_pipeline".encode()
+            draw = int.from_bytes(hashlib.sha256(key).digest()[:8], "big") / 2**64
+            over.update(pipeline_decisions=draw < learner_pipeline_frac, pipeline_tau_delta=0.0)
+    return result
 
 
 # ------------------------------------------------------------------------------------------------------
@@ -994,6 +1003,7 @@ def sample_deck(rng: np.random.Generator, census: list[dict], p: np.ndarray, ice
 
 def validate_league(cfg: dict) -> None:
     """The league keys, checked before anything runs (SystemExit with the offending key and value)."""
+    AO.validate(cfg)
     bad = []
     for k in ("league_snapshot_every", "league_snapshot_keep"):
         v = cfg.get(k)
@@ -1048,7 +1058,7 @@ def sample_opponent(rng: np.random.Generator, snaps: list[dict], mix: dict, init
 
 
 def sample_matchups(rng: np.random.Generator, n: int, update: int, snaps: list[dict], cfg: dict, census: list[dict],
-                    p: np.ndarray) -> list[dict]:
+                    p: np.ndarray, league_state=None) -> list[dict]:
     """``n`` league matchups (one LOO group each): opponent (``sample_opponent``), learner deck (``sample_deck``),
     opponent deck (the same rule; ALWAYS icebow for the S1 specialist, the only deck it can play), learner side
     (uniform) and the env's deal seed -- drawn in that order per matchup from ``rng`` (the learner's own, so resume
@@ -1058,9 +1068,11 @@ def sample_matchups(rng: np.random.Generator, n: int, update: int, snaps: list[d
     lshare = cfg.get("league_learner_icebow_share")
     lshare = cfg["league_icebow_share"] if lshare is None else lshare      # null = the shared rule (league1/1b)
     for i in range(int(n)):
-        opp = sample_opponent(rng, snaps, cfg["league_mix"], cfg["init"], cfg["league_specialist"])
+        adaptive = cfg.get("league_pfsp") == "hard" or cfg.get("league_frozen_opponent")
+        opp = (AO.sample_opponent(rng, snaps, cfg, league_state or {}) if adaptive else
+               sample_opponent(rng, snaps, cfg["league_mix"], cfg["init"], cfg["league_specialist"]))
         ld = sample_deck(rng, census, p, lshare)
-        od = ICEBOW_DECK if opp["type"] == "s1" else sample_deck(rng, census, p, cfg["league_icebow_share"])
+        od = ICEBOW_DECK if opp["type"] in ("s1", "frozen") else sample_deck(rng, census, p, cfg["league_icebow_share"])
         out.append({"tag": f"sp{int(update):04d}_{i:02d}", "opp": opp,
                     "learner_deck": ld["engine"], "learner_deck_name": ld["name"], "learner_bucket": ld["bucket"],
                     "opp_deck": od["engine"], "opp_deck_name": od["name"],
@@ -1076,7 +1088,9 @@ def league_monitors(results: list[dict]) -> dict:
         w, l_ = sum(r["outcome"] == "win" for r in rs), sum(r["outcome"] == "loss" for r in rs)
         return {"n": n, "W": w, "L": l_, "D": n - w - l_, "winrate": w / n if n else None}
     minutes = sum(r["seconds"] for r in results) / 60.0
-    return {"by_opp": {t: wdl([r for r in results if r["league"]["opp"]["type"] == t]) for t in ("init", "snapshot", "s1")},
+    types = ["init", "snapshot", "s1"]
+    types += sorted({r["league"]["opp"]["type"] for r in results} - set(types))
+    return {"by_opp": {t: wdl([r for r in results if r["league"]["opp"]["type"] == t]) for t in types},
             "by_deck": {b: wdl([r for r in results if r["league"]["learner_bucket"] == b]) for b in DECK_BUCKETS},
             "draws": sum(r["outcome"] == "draw" for r in results),
             "plays_per_min": sum(r["plays_attempted"] for r in results) / minutes if minutes else None,
@@ -1686,14 +1700,17 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
                     opp_cache[pth] = (pol, str(mi.get("grid", "floor")))
                 opps = {j[1]["opp"]["id"]: (opp_cache[j[1]["opp"]["path"]][0],
                                             {**cfg, "policy": base["league_opp_policy"], "record": False,
+                                             **{k: base[k] for k in AO.STYLE_KEYS if k in base},
                                              "grid": opp_cache[j[1]["opp"]["path"]][1]}) for j in jobs}
                 E.run_selfplay_batch(lambda: RoyaleSelfPlayEnv(decision_ticks=int(base["decide_every"]), forms_mode=fm,
                                                                hero_abilities=base.get("hero_abilities", False),
                                                                ability_policy=base.get("ability_policy", "generic")), model, opps,
-                                     rollout_jobs(jobs, update), cfg, n_fl, on_result=on_result, on_skip=on_skip,
+                                     rollout_jobs(jobs, update, base.get("learner_pipeline_frac", 0), base["seed"]),
+                                     cfg, n_fl, on_result=on_result, on_skip=on_skip,
                                      skip=(UnsupportedDeck,))
             else:
-                it = rollout_jobs(jobs, update) if kind == "rollout" else jobs     # screen: eval obs seed of (tag, k)
+                it = (rollout_jobs(jobs, update, base.get("learner_pipeline_frac", 0), base["seed"])
+                      if kind == "rollout" else jobs)     # screen: eval obs seed of (tag, k)
                 E.run_batch(lambda: RoyalePoolEnv(decision_ticks=int(base["decide_every"]), forms_mode=fm,
                                                                hero_abilities=base.get("hero_abilities", False),
                                                                ability_policy=base.get("ability_policy", "generic")), model, deck, it, cfg,
@@ -2038,7 +2055,8 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
             raise SystemExit(f"bad override {ov!r} (want key=value)")
         k, v = ov.split("=", 1)
         if (k not in cfg and k != "ability_policy" and k not in BRANCH_DEFAULTS   # optional: absent = generic / off
-                and k not in VALUE_PHI_KEYS):
+                and k not in VALUE_PHI_KEYS and k not in AO.DEFAULTS
+                and k not in ("league_learner_icebow_share", "learner_pipeline_frac")):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
         cfg[k] = yaml.safe_load(v)
     if type(cfg["hero_abilities"]) is not bool:
@@ -2049,11 +2067,20 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
         raise SystemExit(f"ability_policy must be generic or v2, got {cfg['ability_policy']!r}")
     if cfg.get("ability_policy") == "v2" and not cfg["hero_abilities"]:
         raise SystemExit("ability_policy v2 needs hero_abilities=true")
+    AO.validate(cfg)
+    frac = cfg.get("learner_pipeline_frac", 0.0)
+    if isinstance(frac, bool) or not isinstance(frac, (int, float)) or not 0 <= frac <= 1:
+        raise SystemExit("learner_pipeline_frac must be a finite number in [0, 1]")
+    if frac and int(cfg.get("action_delay_ticks", 0)) <= 0:
+        raise SystemExit("learner_pipeline_frac needs action_delay_ticks > 0")
     return cfg
 
 
 def config_sha(cfg: dict) -> str:
     # Off is the historical configuration, including checkpoint resume hashes.
+    cfg = AO.canonical_config(cfg)
+    if cfg.get("learner_pipeline_frac", 0) == 0:
+        cfg = {k: v for k, v in cfg.items() if k != "learner_pipeline_frac"}
     if cfg.get("hero_abilities") is False:
         cfg = {k: v for k, v in cfg.items() if k != "hero_abilities"}
     if cfg.get("ability_policy", "generic") == "generic":
@@ -2184,6 +2211,7 @@ class Learner:
         self.census_p = deck_weights([d["sides"] for d in self.census], cfg["league_deck_alpha"],
                                      cfg["league_deck_floor"])
         self.league = {"snapshots": []}
+        AO.sync_pool(self.league, cfg)
 
     def _snapshot_payload(self) -> dict:
         """What a FROZEN opponent needs and nothing else: the weights + the keys ``e1_eval.load_policy`` /
@@ -2220,6 +2248,7 @@ class Learner:
         keep = int(self.cfg["league_snapshot_keep"])
         evicted = snaps[:-keep]
         del snaps[:-keep]
+        AO.sync_pool(self.league, self.cfg)
         return snaps[-1]["id"], [REPO / e["path"] for e in evicted]
 
     def _delete_evicted(self, files: list[Path]) -> list[str]:
@@ -2430,6 +2459,7 @@ class Learner:
         self.guards = Guards(self.cfg, rl["guards"])
         if getattr(self, "league", None) is not None:
             self.league = dict(rl.get("league") or {"snapshots": []})
+            AO.sync_pool(self.league, self.cfg)
         if "leash" not in rl["config"] and self.cfg.get("leash", "cell") != "cell":
             self.log(f"[rl] RESUME of a run from before the leash key: leash stays 'cell' (was {self.cfg['leash']!r} "
                      f"in this config) -- the old run's beta rule")
@@ -2444,11 +2474,18 @@ class Learner:
     def rollout(self, u: int) -> tuple[list[dict], dict]:
         E_, G = int(self.cfg["E"]), int(self.cfg["G"])
         if getattr(self, "league", None) is not None:           # league: E self-play matchups x G rollouts
-            specs = sample_matchups(self.rng, E_, u, self.league["snapshots"], self.cfg, self.census, self.census_p)
+            specs = sample_matchups(self.rng, E_, u, self.league["snapshots"], self.cfg, self.census, self.census_p,
+                                    **({"league_state": self.league} if self.cfg.get("league_pfsp") == "hard" else {}))
             jobs = [(i, sp, g) for i, sp in enumerate(specs) for g in range(G)]
             res, skipped, st = self.actors.run("selfplay", u, state_bytes(self.model), jobs)
             if skipped:
                 self.log(f"[rl] WARNING {len(skipped)} self-play rollout(s) skipped: {skipped[:3]}")
+            if self.cfg.get("league_pfsp") == "hard":
+                AO.update_ratings(self.league, res)
+            if AO.mode(self.cfg.get("opp_style", "off")) == "on":
+                for r in sorted(res, key=lambda r: (r["league"]["tag"], r["k"])):
+                    self.log.json({"event": "opponent_style", "update": u, "tag": r["league"]["tag"],
+                                   "k": r["k"], "opp": r["league"]["opp"]["id"], "style": r["opp_style"]})
             return res, {"picked": [], "actors": st, "skipped": len(skipped),
                          "league": [{"opp": sp["opp"]["id"], "learner_deck": sp["learner_deck_name"],
                                      "opp_deck": sp["opp_deck_name"], "side": sp["learner_side"]} for sp in specs]}
@@ -2468,7 +2505,8 @@ class Learner:
         rng = np.random.default_rng(zlib.crc32(f"branch:{int(self.cfg['seed'])}:{int(u)}".encode()))
         n = int(bc["branch_actors"])
         specs = sample_matchups(rng, BRANCH_SPECS_PER_SEND * n, u, self.league["snapshots"], self.cfg, self.census,
-                                self.census_p)
+                                self.census_p,
+                                **({"league_state": self.league} if self.cfg.get("league_pfsp") == "hard" else {}))
         self.branch_pool.send(u, state_bytes(self.model), [specs[w::n] for w in range(n)])
 
     def _branch_optimizer(self, bc: dict):
@@ -2739,7 +2777,11 @@ class Learner:
         base.update({k: self.cfg.get(k) for k in COND_KEYS})
         base["gen"] = getattr(self, "gen", None)
         base["runtime"] = getattr(self, "runtime", None)
+        base["seed"] = self.cfg["seed"]                                       # rollout_jobs: per-(update, job) pipelining draw
+        base["learner_pipeline_frac"] = self.cfg.get("learner_pipeline_frac", 0)   # 0 = no learner pipelining (default)
         base["league_opp_policy"] = self.cfg.get("league_opp_policy", "sample")
+        if AO.mode(self.cfg.get("opp_style", "off")) == "on":
+            base.update({k: self.cfg.get(k, AO.DEFAULTS[k]) for k in AO.STYLE_KEYS})
         base["hero_abilities"] = self.cfg.get("hero_abilities", False)
         if type(base["hero_abilities"]) is not bool:
             raise SystemExit("hero_abilities must be a bool")

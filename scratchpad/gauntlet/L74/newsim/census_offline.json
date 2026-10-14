@@ -1,0 +1,48 @@
+{
+  "status": "Offline names from existing loadable censuses; new runtime resets pending",
+  "rows": 1064,
+  "battles": 1064,
+  "duplicate_battles": 0,
+  "accepted_sides": 1919,
+  "dropped_sides": 209,
+  "unique_decks": 370,
+  "deduped_deck_sides": 1549,
+  "unloadable_card_occurrences": {
+    "minion-giant": 209
+  },
+  "archetypes": {
+    "other": {
+      "decks": 146,
+      "sides": 711
+    },
+    "weak_other": {
+      "decks": 130,
+      "sides": 542
+    },
+    "pekka_bridge": {
+      "decks": 18,
+      "sides": 113
+    },
+    "royal_giant": {
+      "decks": 6,
+      "sides": 48
+    },
+    "hyperbait": {
+      "decks": 30,
+      "sides": 347
+    },
+    "golem": {
+      "decks": 25,
+      "sides": 124
+    },
+    "lava_hound": {
+      "decks": 12,
+      "sides": 30
+    },
+    "royal_giant_monk": {
+      "decks": 3,
+      "sides": 4
+    }
+  },
+  "sha256": "5dd8fb02a71ed99d8fd0ebdb2b891ac8f3a45f45db9fec3b0c7950b63473be81"
+}

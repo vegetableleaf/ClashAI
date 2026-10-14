@@ -16,7 +16,7 @@ sys.path.insert(0, HERE)
 import build_live as BL               # sets below-normal priority (via review), MAIN on sys.path
 from build_live import V, vocab, BI, catalog_card_form, AIR, cval
 
-CORPUS = "C:/Users/benpe/ClashBot/scratchpad/gauntlet/ext/corpus_v6/icebow_public_v1/j*/replay_*.json"
+CORPUS = os.environ.get("PRO_CORPUS", "C:/Users/benpe/ClashBot/scratchpad/gauntlet/ext/corpus_v6/icebow_public_v1/j*/replay_*.json")
 BASE = {"Xbow", "Skeletons", "Log", "Knight", "Tesla", "Tornado", "IceWizard", "Rocket"}
 CARD = {"x-bow": "Xbow", "the-log": "Log", "ice-wizard": "IceWizard", "skeletons": "Skeletons", "knight": "Knight", "tesla": "Tesla",
         "tornado": "Tornado", "rocket": "Rocket"}
