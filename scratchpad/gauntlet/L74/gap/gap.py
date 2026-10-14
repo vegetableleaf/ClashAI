@@ -94,9 +94,11 @@ def prepare(directory, ckpt, seed_start=741200):
     return plan
 
 
-def run_arm(arm, plan, inputs, out, python, workers):
+def run_arm(arm, plan, inputs, out, python, workers, iw_form='hero'):
     out.mkdir()
-    env = dict(os.environ, ROYALE_RUNTIME='20261012-linux', ROYALE_HEROIW_FORM='hero', ROYALE_HEROIW_PRESS='live',
+    # iw_form normal (10-14): r1's TRAINING condition (no hero, so no press rule) instead of the live condition.
+    env = dict(os.environ, ROYALE_RUNTIME='20261012-linux', ROYALE_HEROIW_FORM=iw_form,
+               ROYALE_HEROIW_PRESS='live' if iw_form == 'hero' else 'off',
                OMP_NUM_THREADS='1', MKL_NUM_THREADS='1', OPENBLAS_NUM_THREADS='1', PYTHONDONTWRITEBYTECODE='1',
                PYTHONPATH=str(ROOT))
     def one(item):
@@ -150,11 +152,12 @@ def main():
     ap.add_argument('--arms', default=','.join(ARMS))
     ap.add_argument('--summarize-only', action='store_true')
     ap.add_argument('--seed-start', type=int, default=741200, help='fresh seeds = a new paired set (10-14)')
+    ap.add_argument('--iw-form', choices=('hero', 'normal'), default='hero', help='normal = r1 training condition')
     a = ap.parse_args()
     if not a.summarize_only:
         plan = prepare(a.out/'inputs', a.ckpt, a.seed_start)
         for arm in a.arms.split(','):
-            run_arm(arm, plan, a.out/'inputs', a.out/arm, a.python, a.workers)
+            run_arm(arm, plan, a.out/'inputs', a.out/arm, a.python, a.workers, a.iw_form)
     summarize(a.out)
 
 
