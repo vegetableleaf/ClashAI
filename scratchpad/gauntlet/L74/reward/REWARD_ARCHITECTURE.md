@@ -76,6 +76,7 @@ So the architecture has three kinds of pieces:
 | S16 | Ahead 1-0: defend out the match; 1-1: take the OTHER princess; never the king tower |
 | S17 | Overtime: always Rocket a princess that one Rocket finishes |
 | S18 | Train hard on unfavourable matchups: hyperbait, PEKKA bridge spam, Lava, RG (+Monk), Golem |
+| S19 | (owner 10-14) Rocket-cycle an enemy princess even when it is not finishable, to gain or keep a damage lead: it pays off through the end-of-overtime TIEBREAKER (weakest standing tower loses). A long-horizon strategy, hard to instil |
 
 **Owner complaints (C)** — memories overnight-2026-10-08, tower-targeting-doctrine, HANDOFF 10-02.
 
@@ -127,6 +128,12 @@ budgeted at |Φ| <= 0.5 x the terminal reward (lesson 7 in §6).
   priorities the win/loss reward already implies. The critic (F1/F2) absorbs it, so after the weight is annealed to 0
   the value function still prefers saving a near-dead tower. The "never king" part is ALSO a hard rule (D1), because a
   potential only shifts odds.
+- **A1b — tiebreak margin (S19).** The SIM plays out the real tiebreaker (`RoyaleSim state.rs::overtime_tiebreak`: level
+  on crowns at the end of overtime -> the side whose weakest standing tower has less HP loses). Add
+  `Φ_tb = w_tb(t)·(min own standing-tower HP frac − min enemy standing-tower HP frac)`, with `w_tb(t)` ~0 in 1x and
+  rising through 2x and overtime, so chip damage concentrated on ONE enemy princess earns credit long before the match
+  ends. Potential form, so it only speeds learning what the tiebreaker already rewards; the reward itself is the real
+  rule. Acceptance: Rocket-on-tower chip rate vs pros, damage concentration on the weakest enemy princess, tiebreak wins.
 - **Hack risk / guard.** Concave `h` could teach "let healthy towers soak damage forever" — that is S5's own advice
   (tank with the tower) and is bounded by the terminal reward. Alarm: share of matches losing a tower in 1x vs init.
 
@@ -201,7 +208,7 @@ policy-invariant when the critic is corrected for it (Wiewiora, Cottrell & Elkan
 | B1 | Cycle discipline: negative for a ≤ 2-elixir play that is neither an answer nor pressure within N s of an opponent placement | S1, S2; O6 (cheap plays at < 5 elixir 2-3x pros, WR 44% vs 62%); C10 | Advice only biases exploration; the habit stays if F3's opponents punish it (they do: O5). Acceptance: cheap taps at < 5 elixir per minute toward pros |
 | B2 | Counter class: positive when the card's class matches the threat class (Hunter matrix: Tesla vs win condition, IW vs swarm, Skeletons as distraction); negative for answering an ignorable threat (triage table) | S13, S14.1, S14.4; C3 (Tesla on Bats) | Φ values from the Hunter/pro response matrix (measured, 189 plays) — learned evidence, not opinion. Acceptance: response-class agreement with pros by threat class |
 | B3 | X-Bow commit value: Φ(s, X-Bow placement) = estimated lock value given the opponent's public elixir, their counters seen and not yet cycled back, the lane's tower state | O8 (-405 HP when committed into a full bar); S4 (counters out of cycle -> break through), S10 (passive when countered), S2 (pressure the opposite lane after a cheap back card); C7 (dead lane, 1-1 other princess) | Φ is FIT on our SIM X-Bow outcomes (damage in 20 s by context), refreshed each league epoch, so it tracks what actually works for the current model. Acceptance: X-Bows committed into >= 7 public opp elixir toward pros' share; X-Bow damage per placement up |
-| B4 | Rocket value: Φ(s, Rocket at target) = expected value removed (units + tower), with a large term when it finishes a princess | O9 (15% of losses one Rocket short; 0.29 Rockets/match vs ~2); S13 (Rocket+Tornado); C5 | Rare action → advice is the right tool (a state term would never single it out). The OT finish stays a hard decode rule (D2) because it must be ~100% |
+| B4 | Rocket value: Φ(s, Rocket at target) = expected value removed (units + tower), with a large term when it finishes a princess, and tower chip on the WEAKEST enemy princess valued at its tiebreak worth (A1b's weight at that moment) | O9 (15% of losses one Rocket short; 0.29 Rockets/match vs ~2); S13 (Rocket+Tornado); S19 (Rocket cycling toward the tiebreaker); C5 | Rare action → advice is the right tool (a state term would never single it out). The chip value is fit from SIM outcomes (P(win) change per 100 HP of weakest-tower margin by phase), so it tracks the real tiebreaker. The OT finish stays a hard decode rule (D2) because it must be ~100% |
 | B5 | Defensive reserve when ahead: negative for spending an evo or the last win-condition answer on offence while ahead | S5 (keep evos for defence; zero risk when ahead) | Only active in the "ahead" crown state (context from F2) |
 | B6 | Hero IW ability: priced by its measured value (elixir removed / damage prevented by the freeze), never a flat bonus | O13, C9 (trigger-happy; never-press +3.3 pp in SIM) | Depends on live A/B3: if never-press wins live, the ability is a learned action with this advice instead of a rule |
 
@@ -213,7 +220,8 @@ The owner's concern: tower-damage shaping cannot teach *how aggressive or defens
 and the match phase. This layer is the part designed for that.
 
 ### C1. A posture head (hierarchical control)
-- **Form.** A small extra head chooses a **posture** z ∈ {defend, balanced, pressure} every ~10 s, from the context
+- **Form.** A small extra head chooses a **posture** z ∈ {defend, balanced, pressure, spell-cycle} every ~10 s
+  (spell-cycle = S10/S19: hold the win condition, Rocket/Log the weakest princess to build or keep a tiebreak lead), from the context
   (matchup archetype, phase, crown state, elixir trade, win-condition viability from B3, opponent counters seen). The
   play policy conditions on z (an input token), and the A/B weights depend on z: under `defend`, A1's own-tower weight
   and A2's solvency weight are high and B3's commit value is discounted; under `pressure`, the enemy-tower weight is
