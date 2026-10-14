@@ -1,3 +1,17 @@
+## 2026-10-14 ~16:00 EDT -- OPPONENT CALIBRATION started (owner: "Start on that as soon as possible"; training fix may follow)
+
+- Goal: SIM opponents whose pushes cost what live pushes cost, so RL is punished for the overspending habit like live.
+  Owner framing: calibration is one of many ways to exploit the model's weaknesses.
+- Tools: `gap.py --opp-ckpt/--opp-T` (defaults = CAL set c: E4 @ .1), `L74/econ2/calib_opp_pod.sh NAME:OPP:T ...`
+  (r1 full graft D3 learner, seed set 741200, 480 games/arm, econ telemetry in an isolated copy that also gets the new
+  gap.py from /workspace/in), `calib_report.py RAWDIR NAME...` (pressure + push danger + win, distance vs live r1).
+- Baseline (E4 @ .1, 960 games) vs live r1: pushes/min 1.09 vs 1.19, push value 8.4 vs 8.6, time vm>=3 35% vs 37% --
+  pressure already close (as 10-08 found) -- but pushes lost 25.3% / 11.4% (< 4 / >= 4 elixir) vs 45.7% / 18.8% live,
+  and r1 wins 41.9% in SIM vs 52.9% live (crowns-derived, review ledger). SIM opponents beat r1 by DEFENDING; live
+  players hurt it by PUSHING. Distance 0.205.
+- Arms running: pod 42548 e4_T03, old_T10 (OLD r3c), gen1_T30 (gen_v1 @ .3); pod 12037 r1_T10, r1_T03 (r1 as opponent).
+  Next levers if none fits: opponent deck mix vs live 12k decks (census), opponent checkpoint mixtures.
+
 ## 2026-10-14 ~15:40 EDT -- ECON RESULT: r1 overspends in the SIM too (model habit), and the SIM punishes it half as hard
 
 - Pod 15477 (econ, stopped after sha-verified copy `pod_backup_weekend/pod1014b_econ/`): r1 full graft D3 960 games with
