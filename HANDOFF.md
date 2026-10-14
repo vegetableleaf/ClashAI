@@ -1,3 +1,19 @@
+## 2026-10-14 ~17:10 EDT -- CALIBRATION RESULT + CORRECTION: the SIM is level 11, live level 15; the "half as hard" was mostly that
+
+- CORRECTION (my 15:40 entry + Discord): punish.py used a fixed 1000-HP loss on both sides, but RoyaleSim plays every card
+  AND tower at level 11 (king 4824 / princess 3052; RoyaleSim docs/game-values.md) while live is level 15 (7032 / 4424,
+  x1.45). Same FRACTION of tower HP => SIM threshold 690 (punish.SIM_LOST_HP). Re-scored, low-elixir penalty: live +26.9
+  [+19.4, +34.5]; SIM E4@.1 (CAL c) +17.1 [+14.1, +19.9] (lost 34.1% / 17.0% vs live 45.7% / 18.8%). The SIM punishes
+  ~2/3 as hard, not half; pushes at >= 4 elixir are about as dangerous as live.
+- Opponent screen (r1 full graft D3, 480 games/arm, `L74/econ2/calib_20261014.txt`, copies pod_backup_weekend/pod1014b_calib):
+  E4@.03 penalty +23.0 [+18.8, +26.8] (win 40.6%); OLD@.1 +19.2 (42.9%); gen_v1@.3 +20.5 (54.6%; distance 0.080, best
+  overall: win rate ~live 52.9%); r1@.1 (49.6%) / r1@.03 (44.6%) lowest danger. Push rate/value ~live in every arm.
+  Remaining SIM-vs-live gap: how OFTEN r1 meets pushes < 4 elixir (SIM 46-51% vs live 66%) = the live-only third.
+- Implication: the SIM already punishes low elixir substantially (+17 to +23 pp) and RL still did not change the habit
+  => the bottleneck is RL learning it from a +-1 terminal reward (60 updates, KL leash), more than the SIM's incentive.
+  Harder/decisive opponents (E4@.03) close most of the remaining incentive gap. A direct training fix is now the lead.
+- Pod 42548 stopped after sha-verified copies. Pod 12037 still distilling ADAPT.
+
 ## 2026-10-14 ~16:20 EDT -- A/B3 SIM twin: never-press +3.33 pp [+0.62, +6.15] for r1 (960 pairs)
 
 - Pod 42548 `twin` (copy `pod_backup_weekend/pod1014b_twin/`, sha-verified): r1 full graft D3, live press rule 402/960

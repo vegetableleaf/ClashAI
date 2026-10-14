@@ -12,15 +12,18 @@ sys.path.insert(0, HERE)
 import econ2 as E  # noqa: E402
 
 WIN, LOST_HP = 300, 1000
+# the SIM plays every card and tower at level 11 (princess 3052 HP), live at level 15 (4424): same rule = the same
+# FRACTION of tower HP, so the SIM threshold is 1000 x 3052 / 4424 = 690 (both sides' damage scales alike)
+SIM_LOST_HP = round(LOST_HP * 3052 / 4424)
 
 
-def lost(towers, tp):
+def lost(towers, tp, thr=LOST_HP):
     """towers: [(tick, hp_total, n_alive)] ascending -> lost-episode flag for a push starting at tp, None if unseen."""
     base = next((x for x in towers if x[0] >= tp), None)
     if base is None:
         return None
     win = [x for x in towers if tp <= x[0] <= tp + WIN]
-    return base[1] - min(x[1] for x in win) >= LOST_HP or min(x[2] for x in win) < base[2]
+    return base[1] - min(x[1] for x in win) >= thr or min(x[2] for x in win) < base[2]
 
 
 def sim_towers(d, name="r1"):
@@ -49,7 +52,7 @@ def live_towers(path):
     return tw
 
 
-def rows(ms, towers):
+def rows(ms, towers, thr=LOST_HP):
     out = []                                           # per match: [(low elixir?, lost?)]
     for m in ms:
         tw = towers(m)
@@ -58,7 +61,7 @@ def rows(ms, towers):
         r = []
         for tp in m["ps"]:
             e = m["el"][m["T"].index(tp)]
-            f = lost(tw, tp)
+            f = lost(tw, tp, thr)
             if e is not None and f is not None:
                 r.append((e < 4, f))
         if r:
@@ -83,6 +86,6 @@ def summary(name, per_match, B=2000, seed=3):
 if __name__ == "__main__":
     sim_dir = sys.argv[1]; before = sys.argv[2] if len(sys.argv) > 2 else "20261014_1343"
     st = sim_towers(sim_dir)
-    summary("SIM r1 (D3, 960 games)", rows(E.load("sim_r1"), lambda m: st.get(m["file"])))
+    summary("SIM r1 (D3, 960 games)", rows(E.load("sim_r1"), lambda m: st.get(m["file"]), SIM_LOST_HP))
     live = [m for m in E.load("live") if m["fam"] == "r1" and not m.get("al") and os.path.basename(m["file"])[10:23] < before]
     summary(f"LIVE r1 (before {before})", rows(live, lambda m: live_towers(os.path.join(E.G.LOGDIR, os.path.basename(m["file"])))))

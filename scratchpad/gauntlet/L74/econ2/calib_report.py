@@ -12,9 +12,9 @@ import punish as P  # noqa: E402
 TARGETS = ("push_pm", "push_v", "t_vm3", "lost_lo", "lost_hi", "share_lo", "win")
 
 
-def row(ms, towers):
+def row(ms, towers, thr=P.LOST_HP):
     r = E.pressure(ms)
-    per = P.rows(ms, towers)
+    per = P.rows(ms, towers, thr)
     lo = [f for m in per for low, f in m if low]; hi = [f for m in per for low, f in m if not low]
     r.update(lost_lo=sum(lo) / max(1, len(lo)), lost_hi=sum(hi) / max(1, len(hi)), share_lo=len(lo) / max(1, len(lo) + len(hi)),
              win=r["win"] / max(1, r["n"] - r["draw"]))
@@ -32,7 +32,7 @@ def main(rawdir, names, before="20261014_1343"):
     rows["live_r1"]["win"] = w / max(1, w + l)
     for n in names:
         st = P.sim_towers(rawdir, n)
-        rows["sim_" + n] = row(E.load("sim_" + n), lambda m, st=st: st.get(m["file"]))
+        rows["sim_" + n] = row(E.load("sim_" + n), lambda m, st=st: st.get(m["file"]), P.SIM_LOST_HP)
     ref = rows["live_r1"]
     print("| source | matches | win | pushes/min | push value | time vm>=3 | pushes met < 4 elixir | lost < 4 | lost >= 4 | distance |")
     for k, r in rows.items():
