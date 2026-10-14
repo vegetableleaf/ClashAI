@@ -1,3 +1,27 @@
+## 2026-10-14 ~11:30 EDT -- reactive emotes (owner spec), head refit running on the owner's new pod
+
+- **Emotes are reactive now (owner 10-14; `--emote-spam on` = `start_live.sh icebow --emotes`; LIVE_EMOTES file still
+  off, so A/B2 runs without emotes).** `L68/live_reader/emote_spam.py` Reactions + live_play wiring:
+  start "Good luck!" then bottom-left; 800+ HP lost by one own tower in a push (no gap > 5 s) -> bottom 3rd; own princess
+  lost -> top-left; enemy princess taken -> bottom 2nd or "Well played!"; opponent plays a 7+ elixir card (public
+  observer's plays, card_cost) -> "Wow!" or top 2nd; own X-Bow "lock" -> "Thanks!" or top 3rd; results screen (both hands
+  visible 5 frames): win -> bottom-right, loss -> top-right (crowns, then lowest tower HP). Else, at eligible WAIT, a random
+  one of the 8 emotes with `--emote-idle-p` (default 0.1) per second. EVERY emote keeps `--emote-interval-s` 3.0 (one clock;
+  the end emote waits on the frame loop, sleeping only at the stop frame). Reactions queue, dedupe by kind, go stale after
+  8 s; a tower loss drops a queued damage reaction.
+- Layout measured on the lead's 10-10 full screenshot (f4e7cd66 scratchpad emo3.png, 900x1600) = the owner's grid: emotes
+  x 234/393/551/710, y 1060/1195 (bottom-right = the live-verified 710,1195); phrases Good luck (293,1382), Well played
+  (530,1382), Wow (765,1382), Thanks (293,1468).
+- **Untested live:** (1) X-Bow lock is a heuristic (no target ids in the reader): an enemy tower lost HP on >= 3 frames in
+  2 s while an own X-Bow is within 13 tiles (king 13.5); a troop hitting the tower too can trigger it. (2) Whether the
+  chat button works on the results screen (end emote). (3) Phrase boxes sit over the hand: if the chat tap ever fails to
+  open the panel, a phrase tap selects a hand card (the 10-10 run at 3 s spacing: 6/6 readable shots closed cleanly).
+- Tests: test_emote_spam.py 28 pass; all live_reader + live_options: 236 pass, 2 fail = test_live_entry preflight/manual_run
+  (pre-existing: also fail on HEAD without this change; they expect no deployed LIVE_OPTIONS). New tests (7): layout, each trigger, staleness/idle, result, a full fake match checking
+  >= 3.0 s between all 4 emotes incl. the end one). `start_live.sh icebow --emotes --check` LIVE_CHECK_PASS.
+- Head refit: owner started pod 81.27.69.179:37620 (L40; key runpod_clashbot); a background agent is setting it up
+  (podxfer bundles + data_rl + current main) and runs refit_heads.sh + D3 960-pair scoring vs full / heads-only graft.
+
 ## 2026-10-14 ~10:00 EDT -- A/B1 final (r1 live), l74-merge-newsim merged to main, A/B2 staged
 
 - **A/B1 final** (150/arm, run 20261013_094843_05dad0bc): A r1 full graft 76W/74L 50.7% [42.7, 58.6] vs B old r3c

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import random
 import sys
 import time
 from pathlib import Path
@@ -20,8 +21,12 @@ CARD = "input tap 279 1424; sleep 0.05; input tap 450 791"
 
 
 @pytest.fixture(autouse=True)
-def isolated_emote_clock(monkeypatch):
+def isolated_emote_clock(monkeypatch, request):
     monkeypatch.setattr(es, "CLOCK", es.EmoteClock())
+    if "reactive" not in request.node.name:       # the 10-10 wiring tests: no start reaction, idle = the bottom-right emote
+        monkeypatch.setattr(es, "REACTIONS", dict(es.REACTIONS, start=[()]))
+        monkeypatch.setattr(es, "EMOTES", {"br": es.EMOTES["br"]})
+        monkeypatch.setattr(es, "IDLE_ROLL_S", 0.0)
 
 
 class WaitPilot(Pilot):
@@ -40,7 +45,7 @@ class WaitPilot(Pilot):
 
 
 def spam(monkeypatch, tmp_path, pilot, **kw):
-    kw = dict(dict(emote_spam="on", emote_interval_s=0.3, emote_gap_ms=150, emote_guard=0.75), **kw)
+    kw = dict(dict(emote_spam="on", emote_interval_s=0.3, emote_gap_ms=150, emote_guard=0.75, emote_idle_p=1.0), **kw)
     cmds, ev = play(monkeypatch, tmp_path, pilot=pilot, pace=0.02, tap_gap_ms=50, **kw)
     return cmds, ev
 
@@ -265,7 +270,8 @@ def test_match_boundaries_failed_taps_and_transports_share_clock(monkeypatch, tm
         monkeypatch.setattr(fast_input, "PersistentShell", Shell)
     else:
         monkeypatch.setattr(lp, "input_cmd", Shell().run)
-    options = dict(emote_spam="on", emote_interval_s=3.0, emote_gap_ms=150, emote_guard=.75, fast_input=fast)
+    options = dict(emote_spam="on", emote_interval_s=3.0, emote_gap_ms=150, emote_guard=.75, emote_idle_p=1.0,
+                   fast_input=fast)
     _, first = clocked_match(monkeypatch, tmp_path, clock, [0, 0], **options)
     assert any(e["event"] == "stop" and e["why"] == "tap_timeout" for e in first) == fail_first
     clock.now = 1000.25
@@ -290,7 +296,7 @@ def test_slow_emote_logging_cannot_shorten_dispatch_gap(monkeypatch, tmp_path):
     monkeypatch.setattr(lp.json, "dumps", slow_log)
     monkeypatch.setattr(lp, "input_cmd", lambda cmd: starts.append(clock.now) or True)
     clocked_match(monkeypatch, tmp_path, clock, [0, 0, 2.999, 3, 5.999, 6],
-                  emote_spam="on", emote_interval_s=3.0, emote_gap_ms=150, emote_guard=.75)
+                  emote_spam="on", emote_interval_s=3.0, emote_gap_ms=150, emote_guard=.75, emote_idle_p=1.0)
     assert starts == [1000.0, 1003.0, 1006.0]
 
 
@@ -307,3 +313,171 @@ def test_explicit_off_is_byte_identical_and_never_uses_emote_clock(monkeypatch, 
                                emote_spam="off", emote_interval_s=3.0, emote_gap_ms=150, emote_guard=.75)
     assert cmds == off_cmds and CARD in cmds
     assert (baseline / "live_play_fake.jsonl").read_bytes() == (tmp_path / "live_play_fake.jsonl").read_bytes()
+
+
+# ---- owner 2026-10-14: reactive emotes ---------------------------------------------------------------------------------
+TOWERS = [(0, 9000, 3000, 12, 7032), (0, 3500, 6500, 13, 4424), (0, 14500, 6500, 13, 4424),
+          (1, 9000, 29000, 12, 7032), (1, 3500, 25500, 13, 4424), (1, 14500, 25500, 13, 4424)]
+
+
+def board(hp=None, gone=(), extra=()):
+    """Six crown towers (address 't<i>'), hp overrides by index, indices in `gone` absent, plus extra bodies."""
+    hp = hp or {}
+    ents = [dict(side=s, x=x, y=y, card_id=-1, kind=k, hp=hp.get(i, m), max_hp=m, address=f"t{i}")
+            for i, (s, x, y, k, m) in enumerate(TOWERS) if i not in gone]
+    return {"entities": ents + list(extra)}
+
+
+class Rng:
+    """random.Random stand-in: choice takes alternative `pick`, random() returns `r`."""
+    def __init__(self, pick=0, r=0.0):
+        self.pick, self.r = pick, r
+
+    def choice(self, seq):
+        return seq[self.pick % len(seq)]
+
+    def random(self):
+        return self.r
+
+
+def drain(r, now=0.0):
+    out = []
+    while r.queue:
+        out.append(r.pick(now))
+    return out
+
+
+def started(rng=None, idle_p=0.0):
+    r = es.Reactions(idle_p, rng or Rng())
+    r.observe(board(), 0, 150, [], 0.0)
+    assert drain(r) == [("start", "good_luck"), ("start", "bl")]    # "Good luck!" then the bottom-left emote
+    return r
+
+
+def test_reactive_layout_matches_the_calibrated_emote_and_the_owner_grid():
+    assert es.EMOTES["br"] == (710, 1195) and es.emote_cmd(900, 1600, 150) == EMOTE    # the live-verified tap
+    assert sorted({x for x, _ in es.EMOTES.values()}) == [234, 393, 551, 710]
+    assert sorted({y for _, y in es.EMOTES.values()}) == [1060, 1195]
+    assert es.emote_cmd(900, 1600, 0, "wow") == "input tap 88 1365; input tap 765 1382"
+
+
+def test_reactive_start_tower_events_and_damage():
+    r = started()
+    r.observe(board({1: 4000}), 0, 160, [], 1.0)
+    r.observe(board({1: 3700}), 0, 200, [], 1.0)                       # 724 lost in one push: nothing yet
+    assert not r.queue
+    r.observe(board({1: 3600}), 0, 250, [], 1.0)                       # 824 with gaps <= 5 s -> bottom 3rd
+    assert drain(r, 1.0) == [("tower_damage", "b3")]
+    r.observe(board({1: 3000}), 0, 400, [], 2.0)                       # 150 ticks later: a new push, 600 so far
+    assert not r.queue
+    for t in (410, 412):
+        r.observe(board(gone={2, 4}), 0, t, [], 3.0)                   # 2 frames without the towers: not yet
+    assert not r.queue
+    r.observe(board(gone={2, 4}), 0, 414, [], 3.0)
+    assert drain(r, 3.0) == [("tower_lost", "tl"), ("tower_taken", "b2")]
+    r2 = started(Rng(pick=1))
+    for t in (160, 162, 164):
+        r2.observe(board(gone={5}), 0, t, [], 1.0)
+    assert drain(r2, 1.0) == [("tower_taken", "well_played")]
+
+
+def test_reactive_tower_lost_replaces_a_queued_damage_reaction_and_glitches_do_not_count():
+    r = started()
+    r.observe(board({1: 3500}), 0, 160, [], 1.0)
+    assert [q[:2] for q in r.queue] == [["tower_damage", "b3"]]
+    for t in (162, 164, 166):
+        r.observe(board(gone={1}), 0, t, [], 1.0)
+    assert drain(r, 1.0) == [("tower_lost", "tl")]
+    for t in (170, 172, 174, 176):
+        r.observe(board(gone={0, 3, 4, 5}), 0, t, [], 1.0)             # kings missing = an unreadable frame
+    assert not r.queue
+
+
+def test_reactive_big_card_and_x_bow_lock_alternate_with_their_phrase():
+    for pick, want in ((0, "wow"), (1, "t2")):
+        r = started(Rng(pick=pick))
+        r.observe(board(), 0, 160, [{"card": "Knight"}], 1.0)          # 3 elixir: nothing
+        assert not r.queue
+        r.observe(board(), 0, 162, [{"card": "Knight"}, {"card": "Golem"}], 1.0)
+        assert drain(r, 1.0) == [("big_card", want)]
+    xbow = dict(side=0, x=3500, y=14500, card_id=27000008, kind=0, hp=1000, max_hp=1000, address="xb")
+    for pick, want in ((0, "thanks"), (1, "t3")):
+        r = started(Rng(pick=pick))
+        for i, t in enumerate((160, 170, 180, 190)):
+            r.observe(board({4: 4400 - 30 * i}, extra=[xbow]), 0, t, [], 1.0)
+        assert drain(r, 1.0) == [("xbow_lock", want)]
+        r.observe(board({4: 4000}, extra=[xbow]), 0, 200, [], 1.0)
+        assert not r.queue                                              # once per X-Bow
+    far = dict(xbow, y=9000, address="xb2")                            # defensive X-Bow: out of reach of the tower
+    r = started()
+    for i, t in enumerate((160, 170, 180, 190)):
+        r.observe(board({4: 4400 - 30 * i}, extra=[far]), 0, t, [], 1.0)
+    assert not r.queue
+
+
+def test_reactive_stale_drop_and_idle_is_random_among_the_8():
+    r = started(Rng(r=0.0), idle_p=0.5)
+    r.observe(board(), 0, 160, [{"card": "Golem"}], 1.0)
+    assert r.pick(1.0 + es.STALE_S + 0.1)[0] == "idle"                 # the reaction went stale; idle rolled instead
+    assert r.pick(1.0 + es.STALE_S + 0.5) is None                      # one roll per second
+    r.rng = Rng(r=0.9)
+    assert r.pick(20.0) is None                                        # 0.9 >= idle_p
+    rr = es.Reactions(1.0, random.Random(0))
+    assert {rr.pick(t)[1] for t in range(200)} == set(es.EMOTES)
+
+
+def test_reactive_result_from_crowns_then_lowest_tower():
+    r = started()
+    r.observe(board(gone={4}), 0, 300, [], 1.0)
+    assert r.result() == "win"
+    r.observe(board(gone={1, 2}), 0, 302, [], 1.0)
+    assert r.result() == "loss"
+    r.observe(board({1: 100, 4: 200}), 0, 304, [], 1.0)
+    assert r.result() == "loss"
+    r.observe(board(gone={3, 4, 5}), 1, 306, [], 1.0)                 # seen from side 1: its king is gone
+    assert r.result() == "loss"
+
+
+def tframe(tick, gone=(), both=False):
+    f = json.loads(rframe(tick))
+    f["entities"] = board(gone=gone)["entities"]
+    if both:
+        f["players"][1]["hand_deck_indices"] = [1, 2, 3, 4]
+    return json.dumps(f) + "\n"
+
+
+def test_reactive_match_keeps_3_s_between_all_emotes_and_sends_the_end_emote(monkeypatch, tmp_path):
+    import queue
+    import threading
+    clock, sent = FakeClock(), []
+    monkeypatch.setattr(lp, "input_cmd", lambda cmd: sent.append((clock.now, cmd)) or True)
+    frames = iter([tframe(t, gone={4} if t >= 200 else ()) for t in range(150, 230, 2)] +
+                  [tframe(232 + 2 * i, gone={4}, both=True) for i in range(25)])
+
+    class Frames:
+        def get(self, timeout=None):
+            ln = next(frames, None)
+            if ln is None:
+                return None
+            clock.now += 0.2
+            return clock.time(), ln
+
+        def empty(self):
+            return True
+
+        def qsize(self):
+            return 0
+
+    monkeypatch.setattr(queue, "Queue", Frames)
+    monkeypatch.setattr(threading, "Thread", lambda **kw: SimpleNamespace(start=lambda: None, join=lambda **kw: None))
+    monkeypatch.setattr(es, "time", clock)
+    monkeypatch.setattr(lp, "time", SimpleNamespace(time=clock.time, monotonic=clock.monotonic, sleep=clock.sleep,
+                                                   strftime=lambda fmt: "fake"))
+    _, ev = play(monkeypatch, tmp_path, pilot=WaitPilot(), emote_spam="on", emote_interval_s=3.0, emote_gap_ms=150,
+                 emote_guard=.75, emote_idle_p=0.0)
+    got = [(e["kind"], e["target"]) for e in ev if e["event"] == "emote"]
+    assert got[:2] == [("start", "good_luck"), ("start", "bl")] and got[-1] == ("win", "br"), got
+    assert got[2] in (("tower_taken", "b2"), ("tower_taken", "well_played")) and len(got) == 4, got
+    assert sent[-1][1] == EMOTE                                         # the win emote is the bottom-right one
+    times = [t for t, _ in sent]
+    assert len(times) == 4 and all(b - a >= 3.0 for a, b in zip(times, times[1:])), times

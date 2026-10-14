@@ -382,8 +382,9 @@ def main() -> int:
                          "pending card's hand slot masked, elixir minus every unconfirmed tap, the pending play seen as "
                          "executed (board, hand, elixir, own_effects). Off = unchanged (default byte-identical)")
     ap.add_argument("--emote-spam", choices=("off", "on"), default="off",
-                    help="OPT-IN (owner 2026-10-10): at a WAIT decision with nothing pending, tap the chat button then the "
-                         "owner's emote (emote_spam.py), one per --emote-interval-s. Off = byte-identical")
+                    help="OPT-IN (owner 2026-10-10, reactive 10-14): at a WAIT decision with nothing pending, tap the chat "
+                         "button then an emote / phrase (emote_spam.py Reactions: board events, else a random idle emote), "
+                         "at most one per --emote-interval-s. Off = byte-identical")
     ap.add_argument("--emote-interval-s", type=float, default=3.0,
                     help="with --emote-spam on: seconds between emote attempts (game cooldown 1.3; owner 10-12: default 3.0)")
     ap.add_argument("--emote-gap-ms", type=int, default=150,
@@ -391,6 +392,9 @@ def main() -> int:
     ap.add_argument("--emote-guard", type=float, default=0.75,
                     help="with --emote-spam on: skip an emote when the model's p_play >= this x the gate tau in force "
                          "(it is about to play; 0 disables)")
+    ap.add_argument("--emote-idle-p", type=float, default=0.1,
+                    help="with --emote-spam on: with no reaction queued, the chance per second of eligible WAIT to send a "
+                         "random one of the 8 emotes (default 0.1; 1 = at every opportunity)")
     ap.add_argument("--pipeline-tau-delta", type=float, default=0.0,
                     help="with --pipeline-decisions: add this to the play-gate threshold while a play is pending (default 0 = "
                          "the model's own tau; the earlier SIM failures had the gate firing 2-3x the pro rate in the window)")
@@ -487,9 +491,9 @@ def main() -> int:
         print(f"refusing: --early-release-margin must be in [0, {CONFIRM_TICKS}]")
         return 2
     if a.emote_spam == "on" and not (a.emote_interval_s >= emote_spam.MIN_INTERVAL_S and 0 <= a.emote_gap_ms <= 500
-                                     and 0 <= a.emote_guard <= 2):
+                                     and 0 <= a.emote_guard <= 2 and 0 <= a.emote_idle_p <= 1):
         print(f"refusing: --emote-interval-s must be >= {emote_spam.MIN_INTERVAL_S} (the emote cooldown), --emote-gap-ms in "
-              "[0, 500], --emote-guard in [0, 2]")
+              "[0, 500], --emote-guard in [0, 2], --emote-idle-p in [0, 1]")
         return 2
     if a.iw_press_pstar is not None and a.no_iw_pro_gate:
         print("[live] note: --no-iw-pro-gate skips the pro gate, so --iw-press-pstar %g has no effect" % a.iw_press_pstar,
@@ -696,7 +700,8 @@ def emote_log(a) -> dict:
     """--emote-spam and its options, only when on (off: the logs are unchanged)."""
     if getattr(a, "emote_spam", "off") != "on":
         return {}
-    return dict(emote_spam="on", emote_interval_s=a.emote_interval_s, emote_gap_ms=a.emote_gap_ms, emote_guard=a.emote_guard)
+    return dict(emote_spam="on", emote_interval_s=a.emote_interval_s, emote_gap_ms=a.emote_gap_ms, emote_guard=a.emote_guard,
+                emote_idle_p=getattr(a, "emote_idle_p", 0.1))
 
 
 def latency_log(a) -> dict:
@@ -757,6 +762,17 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
     emote_on = getattr(a, "emote_spam", "off") == "on"
     emo = {"n": 0, "holds": 0}   # --emote-spam: per-match counts; the attempt clock survives match boundaries
     emote_clock = (emote_spam.EmoteClock() if a.dry_run else emote_spam.CLOCK) if emote_on else None
+    react = emote_spam.Reactions(getattr(a, "emote_idle_p", 0.1)) if emote_on else None
+    end_emote = None                                     # 'win' / 'loss' once the results screen shows, until sent
+    emote_send = (lambda cmd: True) if a.dry_run else input_cmd
+
+    def emote_fire(tick, kind, target, **log):
+        """Send one emote / phrase now (the caller checked the clock); False = the input timed out."""
+        ok = emote_clock.fire(emote_send, emote_spam.emote_cmd(lay.w, lay.h, a.emote_gap_ms, target))
+        emo["n"] += 1
+        W(event="emote", tick=tick, n=emo["n"], kind=kind, target=target, attempt_monotonic_s=emote_clock.last_t, **log,
+          **({"dry_run": True} if a.dry_run else {}))
+        return ok
     follow = bool(getattr(a, "follow_up_taps", False))
     pipe = bool(getattr(a, "pipeline_decisions", False))
     release_margin = getattr(a, "early_release_margin", None)
@@ -911,6 +927,12 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
             vis = [p["side"] for p in f["players"] if any(i >= 0 for i in p["hand_deck_indices"])]
             if len(vis) != 1:
                 both_vis += 1
+                if emote_on and both_vis == 5 and (guard is None or not guard.menu):   # ~0.5 s of the results screen
+                    end_emote = react.result()           # owner 10-14: win -> bottom-right, loss -> top-right
+                if end_emote and (emote_clock.wait_s(a.emote_interval_s) == 0 or both_vis >= 20):
+                    time.sleep(emote_clock.wait_s(a.emote_interval_s))   # every emote keeps the interval, even the last
+                    emote_fire(tick, end_emote, emote_spam.REACTIONS[end_emote][0][0])
+                    end_emote = None
                 if both_vis >= 20:                       # ~2 s of it: the match is over
                     W(event="stop", why="battle_over_hands_visible", tick=tick); break
                 continue
@@ -927,6 +949,9 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
             side = next(p["side"] for p in f["players"] if any(i >= 0 for i in p["hand_deck_indices"]))
             me = next(p for p in f["players"] if p["side"] == side)
             t_dev = f["sample_monotonic_us"] / 1e6
+            if emote_on:                                 # owner 10-14: board events -> queued reactions
+                react.observe(f, side, tick, getattr(getattr(pilot, "public", None), "plays", None) or [],
+                              emote_spam.time.monotonic())
             if rec:                                          # what the model perceived, for overlay_replay.py
                 opp = next(p for p in f["players"] if p["side"] != side)
                 # ents: side, x, y, card_id, hp, max_hp, kind, address (address/kind = the opp-elixir counter's play
@@ -1103,19 +1128,14 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                   public=d['public_audit'])
                 last_audit_tick = tick
             if not d["play"]:
-                emote_ok = None
-                if emote_on and guard_clear():
-                    emote_ok = emote_clock.attempt(
-                        (lambda cmd: True) if a.dry_run else input_cmd,
-                        emote_spam.emote_cmd(lay.w, lay.h, a.emote_gap_ms), a.emote_interval_s,
-                        busy=bool(pending or sched or ab_pending), p_play=d.get("p_play", 0.0),
-                        tau=d.get("gate_tau", pilot.gate_tau), guard=a.emote_guard)
-                if emote_ok is not None:
-                    emo["n"] += 1
-                    W(event="emote", tick=tick, n=emo["n"], attempt_monotonic_s=emote_clock.last_t,
-                      guard=round(d.get("p_play", 0.0) / max(d.get("gate_tau", pilot.gate_tau), 1e-9), 3),
-                      **({"dry_run": True} if a.dry_run else {}))
-                    if not emote_ok:
+                pick = None
+                if emote_on and guard_clear() and emote_clock.ready(
+                        a.emote_interval_s, busy=bool(pending or sched or ab_pending), p_play=d.get("p_play", 0.0),
+                        tau=d.get("gate_tau", pilot.gate_tau), guard=a.emote_guard):
+                    pick = react.pick(emote_spam.time.monotonic())
+                if pick is not None:
+                    if not emote_fire(tick, *pick,
+                                      guard=round(d.get("p_play", 0.0) / max(d.get("gate_tau", pilot.gate_tau), 1e-9), 3)):
                         print("[live] an emote input timed out -- no more taps this match (it may still land late)", flush=True)
                         W(event="stop", why="tap_timeout", tick=tick, input="emote"); break
                 continue
