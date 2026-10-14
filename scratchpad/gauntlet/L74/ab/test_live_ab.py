@@ -69,6 +69,41 @@ class Cases(unittest.TestCase):
         self.assertTrue((f.output/'results.jsonl').read_text().startswith('{"previous_run":true}\n'))
         self.assertFalse(any('preexisting' in x['match_file'] for x in r.rows))
 
+    def _prior_run(self, f, rid='RID', a=3, b=1, sha=None):
+        rows = [dict(run_id=rid, block=0, match_file=f'C:/old/live_play_2026010{i}_000000.jsonl', arm=k, label='x',
+                     ckpt_sha256=sha or next(x.sha for x in f.arms if x.key == k), fast=False, counted=True, result='W')
+                for i, k in enumerate(['A'] * a + ['B'] * b)]
+        (f.output/'results.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in rows))
+        bk = f.output/'backups'/rid
+        bk.mkdir(parents=True)
+        for name, data in f.originals.items():
+            (bk/name).write_bytes(data)
+        (bk/'manifest.json').write_text(json.dumps({n: True for n in f.originals}))
+        # Foreign values written after the runner died: the end-of-run restore must use the backup, not these.
+        (f.live/'CKPT_OVERRIDE').write_bytes(b'C:/someone else.pt\n')
+        (f.live/'LIVE_FAST').write_bytes(b'on\n')
+
+    def test_resume_continues_counts_and_restores_original_backup(self):
+        def prepare(f, r):
+            self._prior_run(f)
+            r.resume('RID')
+        f, r, code = self.scenario(prepare=prepare)              # scenario asserts the ORIGINAL settings were restored
+        self.assertEqual(code, 0)
+        self.assertEqual([r.count(a) for a in r.arms], [7, 7])
+        self.assertEqual(f.starts[0], 'B')                       # B had fewer counted matches
+        self.assertEqual(sum(1 for x in r.rows if 'C:/old/' in x['match_file']), 4)
+        self.assertTrue(all(json.loads(x)['run_id'] == 'RID' for x in (f.output/'results.jsonl').read_text().splitlines()))
+
+    def test_resume_refuses_changed_checkpoint(self):
+        tmp = FixtureDirectory()
+        self.addCleanup(tmp.cleanup)
+        f = FakeSupervisor(tmp.name, 'normal')
+        self._prior_run(f, sha='0' * 64)
+        r = Runner(f.arms, f, live=f.live, logs=f.logs, output=f.output, block=3, total=7, poll=1, stall=8, grace=1,
+                   stop_timeout=3, clock=f, now=f.time)
+        with self.assertRaises(Abort):
+            r.resume('RID')
+
     def test_count_partial(self):
         f, r, code = self.scenario('partial', block=1, total=2)
         self.assertEqual(code, 0)

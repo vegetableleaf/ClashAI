@@ -305,6 +305,23 @@ class Runner:
         # Any --arm-extra moves LIVE_OPTIONS from protected (never written) to controlled (per arm, then restored).
         self.extra_dests = frozenset().union(*(a.dests for a in arms))
         self.output.mkdir(parents=True, exist_ok=True)
+        self.resumed = False
+
+    def resume(self, run_id):
+        """10-13: continue a run whose runner died without its clean stop. Its counted rows, run_id and ORIGINAL
+        settings backup carry over (restored at the end, not today's values); checkpoint hashes must equal the recorded
+        ones. The dead runner's RUNNING.lock is removed by the operator only after verifying that process is gone."""
+        lines = (self.output / 'results.jsonl').read_text(encoding='utf8').splitlines()
+        rows = [r for r in (json.loads(x) for x in lines if x.strip()) if r.get('run_id') == run_id]
+        if not rows:
+            raise Abort(f'resume: no rows recorded for run {run_id}')
+        for arm in self.arms:
+            if {r['ckpt_sha256'] for r in rows if r['arm'] == arm.key} - {arm.sha}:
+                raise Abort(f'resume: arm {arm.key} checkpoint differs from the one recorded for {run_id}')
+        if not (self.output / 'backups' / run_id / 'manifest.json').is_file():
+            raise Abort(f'resume: original-settings backup missing for {run_id}')
+        self.run_id, self.rows, self.resumed = run_id, rows, True
+        self.seen = {Path(r['match_file']).name for r in rows}
 
     def options_for(self, arm):
         base = self.snapshots['LIVE_OPTIONS']
@@ -486,23 +503,31 @@ class Runner:
                 self.post('STOP_AB already present; no live controls changed.')
                 return 0
             backup = self.output / 'backups' / self.run_id
-            backup.mkdir(parents=True)
             controlled = ('CKPT_OVERRIDE', 'LIVE_FAST') + (('LIVE_OPTIONS',) if self.extra_dests else ())
-            for name in controlled:
-                p = self.live / name
-                self.snapshots[name] = p.read_bytes() if p.exists() else None
-                if self.snapshots[name] is not None:
-                    (backup / name).write_bytes(self.snapshots[name])
-            (backup / 'manifest.json').write_text(json.dumps({k: v is not None for k, v in self.snapshots.items()}))
+            if self.resumed:   # the originals from the run's own start, never today's (possibly foreign) values
+                present = json.loads((backup / 'manifest.json').read_text())
+                if set(present) != set(controlled):
+                    raise Abort('resume: the backup does not cover exactly the controlled settings')
+                self.snapshots = {n: (backup / n).read_bytes() if present[n] else None for n in controlled}
+            else:
+                backup.mkdir(parents=True)
+                for name in controlled:
+                    p = self.live / name
+                    self.snapshots[name] = p.read_bytes() if p.exists() else None
+                    if self.snapshots[name] is not None:
+                        (backup / name).write_bytes(self.snapshots[name])
+                (backup / 'manifest.json').write_text(json.dumps({k: v is not None for k, v in self.snapshots.items()}))
             self.protected = {self.live / n: (self.live / n).read_bytes() if (self.live / n).exists() else None
                               for n in ('LIVE_OPTIONS', 'LIVE_DECK', 'LIVE_EMOTES', 'HAND_READER_ENABLED')
                               if n not in controlled}
             self.controlled = True
-            self.event('run_start', block_size=self.block, total_per_arm=self.total,
+            self.event('run_resume' if self.resumed else 'run_start', block_size=self.block, total_per_arm=self.total,
+                       counted={a.key: self.count(a) for a in self.arms},
                        arms=[dict(arm=a.key, label=a.label, ckpt=str(a.ckpt), sha256=a.sha, fast=a.fast, extra=a.extra)
                              for a in self.arms], backup=str(backup))
             self.wait_stop()
-            self.block_index = 0
+            # A resumed run continues with the arm that has fewer counted matches (A on a tie).
+            self.block_index = int(self.resumed and self.count(self.arms[1]) < self.count(self.arms[0]))
             while not all(self.count(a) >= self.total for a in self.arms):
                 if self.boundary_stop or (self.output / 'STOP_AB').exists():
                     self.post('STOP_AB / signal: clean block boundary reached.')
@@ -575,6 +600,7 @@ def main():
     p.add_argument('--dry-run', action='store_true', help='run the complete offline fake-supervisor acceptance suite')
     p.add_argument('--poll', type=float, default=1.0)
     p.add_argument('--stall-seconds', type=float, default=1200)
+    p.add_argument('--resume-run', help='continue this run_id after its runner died (see Runner.resume)')
     args = p.parse_args()
     if args.dry_run:
         from test_live_ab import run_suite
@@ -590,6 +616,8 @@ def main():
     try:
         runner = Runner(sorted(args.arm, key=lambda a: a.key), RealControl(HERE),
                         block=args.block, total=args.total, poll=args.poll, stall=args.stall_seconds)
+        if args.resume_run:
+            runner.resume(args.resume_run)
         def stop_at_boundary(signum, frame):
             runner.boundary_stop = True
         signal.signal(signal.SIGINT, stop_at_boundary)
