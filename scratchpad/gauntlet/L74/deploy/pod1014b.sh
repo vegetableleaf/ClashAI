@@ -10,7 +10,7 @@ set -Eeuo pipefail
 CB=/workspace/clashbot; IN=/workspace/in; PY=/workspace/venv33/bin/python; R=/workspace/results
 RL=icebow/data/bench/rl_royale; OLD=$RL/rseries_r3c/rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt
 cd $CB
-export PYTHONPATH=$CB ROYALE_RUNTIME=20261012-linux OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1
+export UV_HTTP_TIMEOUT=600 PYTHONPATH=$CB ROYALE_RUNTIME=20261012-linux OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1
 mkdir -p $R
 case $1 in
 stage)
@@ -22,7 +22,8 @@ stage)
   $PY -c "import torch" 2>/dev/null || uv pip install -q -p $PY --reinstall-package torch torch --index-url https://download.pytorch.org/whl/cu128
   $PY -c "import torch; assert torch.cuda.is_available(); print(torch.__version__, torch.cuda.get_device_name(0))"
   $PY -c "from pipeline.royale_runtime import activate; print(activate()['runtime_id'])"
-  echo "cpu quota: $(cat /sys/fs/cgroup/cpu.max 2>/dev/null)"
+  echo "cpu quota: $(cat /sys/fs/cgroup/cpu.max /sys/fs/cgroup/cpu/cpu.cfs_quota_us 2>/dev/null | tr "
+" " " || true)"
   touch /workspace/STAGE_OK ;;
 econ)
   exec >> $R/econ.log 2>&1
