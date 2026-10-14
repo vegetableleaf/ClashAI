@@ -104,6 +104,11 @@ pod1013a`, C PID 81260 -> `pod1013c`; each copies + verifies, posts Discord, sto
   throughout). `graft_generic.py` also overwrites the arm's own RL-trained `projectile_target_in.*` (5 tensors):
   heads-only graft on r1 +1.46 [+0.00, +2.92] vs full graft. Proposed (owner decision): re-fit refine heads per
   trunk; stop grafting projectile_target_*. A/B1 ~07:30: A 62-63 (49.6%), B 57-64 (47.1%) at 125/121.
+- **~07:45: both pods STOPPED by me** (j4rx3tiqf9ygh2 = pod A, c10km6gfl8b61p = pod C; all score rows + checkpoints on
+  the laptop under `pod_backup_weekend/pods1013/rltest/` and `.../pod1014*_long/`). The long-run relays had stalled
+  after 05:59 while their processes lived on (second silent relay failure tonight) -> killed. Restarting pods needs
+  the owner (no RunPod key on the laptop). Still running: A/B1 runner + auto-switch + battery guard (WMI).
+  `main` still to fast-forward to `l74-merge-newsim` after A/B1 ends.
 - PARITY early endings (`own_timing/EARLY_END.md`): 84/100 SIM replays end early, 60 at 3:00 regulation with a
   different tower down than live -> downstream of divergence (plausible); needs state-injected per-tick comparison. test_iwdiag 24/25 (the failing
   `test_device_evidence_matches_local_sources` is stale since this morning's supplement 1 -> 2 change).
