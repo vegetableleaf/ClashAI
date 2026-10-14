@@ -1,3 +1,16 @@
+## 2026-10-14 ~15:00 EDT -- 3 owner pods: econ (r1 SIM economy), distill on ADAPT (owner: ADAPT first), A/B3 SIM twin
+
+- Pods (key `~/.ssh/runpod_clashbot`; owner lists id_ed25519 but runpod_clashbot works): 
+  `-p 12037 root@64.247.206.79` (cgroup 27.2 cores) = distill_adapt; `-p 15477 root@64.247.206.120` = econ;
+  `-p 42548 root@64.247.206.120` = twin. Bundles: `pod1014b/` in my scratchpad (repo.tgz = main 5c154c8.. without
+  L67/L72/templates/webcache; data_rl.tgz; rsdata; ckpts.tgz = OLD 41b52a83, ADAPT wk_adapt_main_latest 55c8f49e,
+  r1 full graft fce50ebb). Driver `L74/deploy/pod1014b.sh stage|econ|distill_adapt|twin`; results /workspace/results.
+- distill_adapt: teacher = graft_generic(wk_adapt_main_latest, OLD) exactly as rltest's 47.08% row; smoke first, then
+  run_distill.sh all. Built-in checks: teacher D3 must reproduce 47.08% and plain D1 38.33% on the 960 pairs.
+- econ: telemetry must not change play (r1 D3 402/960 expected). twin: r1 full graft D3, press live (= 402/960) vs
+  never -> SIM prediction for live A/B3 on the SAME model (a direct sim-vs-live check on one change).
+- No pod stopping yet: each chain ends with a marker (*_OK / *_FAILED / TWIN_DONE); copy back + verify, then stop.
+
 ## 2026-10-14 ~14:40 EDT -- step 4 (distill the deployed player into the model) ready for a pod; nothing run
 
 - `L74/distill/` (agent-built, reviewed; new files only, 9 laptop tests pass): DISTILL_PLAN.md, gen_distill.py (gap.py's
