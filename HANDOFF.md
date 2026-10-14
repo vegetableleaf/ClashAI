@@ -1,3 +1,16 @@
+## 2026-10-14 ~14:10 EDT -- r1's live economy, decomposed (econ2, same definitions as pros); matchup weighting check
+
+- `econ2.py live` now includes r1 (168 matches, 638 pushes; `L74/econ2/econ2_live_20261014.txt`). Pros = report_fix.out.
+  My elixir: eligible-time mean 5.23 -> at the opponent's commit 5.59 -> at push start 3.16 (pros 6.22 -> 6.44 -> 5.87).
+  NOT selection (r1 is above its mean when they commit); r1 SPENDS 2.43 between commit and push start (pros 0.57).
+  1x, 15 s before a push: r1 spends 8.20 in 2.84 plays (pros 6.33 in 2.02); 2.91 of it while the enemy tank is still on
+  THEIR half and 2.41 more with units on their half; by card Tesla 1.73, Xbow 1.55, IceWizard 1.44, Knight 1.31 per push.
+  Opponent counter at commit 8.91 (pros' opponents 3.99) -- live opponents commit with full elixir.
+- SIM side for r1 (same definitions): `L74/econ2/econ_r1_pod.sh` (pod, ~1.2 h) -- answers whether the SIM r1 also spends
+  ~2.4 on the approach (then: a training target) or not (then: SIM opponents do not push like live ones).
+- r1 WAS trained with the owner's matchup weighting: ADAPT decks_rl.json gives unfavourable archetypes 60% of sampling
+  (the cap; 263 of 999 decks). Golem is still the worst live matchup (38% vs 54%).
+
 ## 2026-10-14 ~14:15 EDT -- finer live logs built (off); A/B3 running correctly; correction on the economy gap
 
 - A/B3 first matches: main account (guard pass), arm A header carries `--iw-press never`, its log shows

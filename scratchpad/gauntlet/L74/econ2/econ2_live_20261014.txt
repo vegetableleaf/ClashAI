@@ -1,0 +1,105 @@
+
+## Q1a  P(push starts within 3 s | 5 s) by MY elixir, eligible states (no push in the last 4 s); strata phase x opponent counter, weighted to live_all
+| source | n | 0-2 | 2-4 | 4-6 | 6-8 | 8-10 | 0-4 / 6-10 ratio (5 s) |
+| live_all | 1660 | 6.8% / 11.3% | 5.7% / 9.5% | 5.9% / 10.1% | 5.1% / 9.9% | 3.7% / 7.9% | 1.16 |
+| live_stack | 26 | 5.4% / 9.8% | 4.8% / 8.5% | 6.2% / 10.5% | 4.8% / 9.3% | 3.2% / 8.3% | 1.04 |
+| live_towerref | 1035 | 6.9% / 11.3% | 5.9% / 9.6% | 6.1% / 10.4% | 5.4% / 10.3% | 3.9% / 8.5% | 1.12 |
+| live_r1e | 354 | 6.1% / 10.3% | 5.2% / 8.8% | 4.9% / 8.6% | 3.8% / 8.1% | 2.0% / 5.9% | 1.36 |
+| live_r1 | 168 | 8.7% / 14.5% | 6.9% / 11.0% | 6.4% / 10.8% | 5.3% / 10.6% | 3.7% / 7.4% | 1.41 |
+
+## Q1b  opponent plays per second (public counter drops) | big plays (>= 5) by MY elixir; strata phase x counter, weighted to live_all
+| live_all | 0.140 / 0.028 | 0.136 / 0.030 | 0.140 / 0.032 | 0.119 / 0.027 | 0.105 / 0.024 | ratio 0-4/6-10 all 1.23 big 1.15 |
+| live_stack | 0.128 / 0.016 | 0.145 / 0.029 | 0.145 / 0.027 | 0.114 / 0.016 | 0.115 / 0.033 | ratio 0-4/6-10 all 1.19 big 0.91 |
+| live_towerref | 0.140 / 0.029 | 0.135 / 0.030 | 0.142 / 0.032 | 0.121 / 0.027 | 0.107 / 0.024 | ratio 0-4/6-10 all 1.21 big 1.14 |
+| live_r1e | 0.153 / 0.031 | 0.143 / 0.032 | 0.136 / 0.030 | 0.111 / 0.025 | 0.093 / 0.023 | ratio 0-4/6-10 all 1.46 big 1.33 |
+| live_r1 | 0.121 / 0.024 | 0.117 / 0.024 | 0.139 / 0.032 | 0.121 / 0.027 | 0.110 / 0.025 | ratio 0-4/6-10 all 1.03 big 0.92 |
+
+## Q1b'  exact opponent plays per second by MY elixir (no strata; SIM engine log / pro log)
+
+## Q1c  selection decomposition (means): my elixir over eligible time (weighted to the push phase mix) -> at the opponent's commit (first sighting of the push's units) -> at push start; opponent counter (+26 forecast)
+| source | pushes | eligible-time mean | at commit | at push start | timing (commit - time) | reaction (push - commit) | commit lead s (median) | opp counter at commit / push start | my - opp at push start |
+| live_all | 4738 (4730 with commit) | 5.07 | 5.73 | 3.21 | 0.67 | -2.53 | 10.5 | 8.84 / 4.84 | -1.64 |
+| live_stack | 93 (93 with commit) | 5.28 | 6.25 | 3.53 | 0.98 | -2.72 | 10.0 | 9.08 / 5.10 | -1.56 |
+| live_towerref | 2657 (2654 with commit) | 5.28 | 5.92 | 3.39 | 0.64 | -2.53 | 10.7 | 8.79 / 4.82 | -1.43 |
+| live_r1e | 1058 (1054 with commit) | 4.51 | 5.31 | 2.73 | 0.80 | -2.59 | 10.9 | 8.90 / 4.80 | -2.07 |
+| live_r1 | 638 (637 with commit) | 5.23 | 5.59 | 3.16 | 0.36 | -2.43 | 9.8 | 8.91 / 4.94 | -1.77 |
+
+## Q2  15 s before the push: elixir accounting, means per push, by phase of the push. e(end) = e(start) + regen - spend - abilities + resid
+| source | phase | pushes | window s | e(start) | regen | wasted | spend | plays | abilities | e(push) | resid |
+| live_all | 1x | 2136 | 15.10 | 5.89 | 5.23 | 0.16 | 8.40 | 2.87 | 0.07 | 2.89 | 0.23 |
+| live_all | 2x+OT | 2581 | 15.38 | 4.46 | 11.08 | 0.06 | 12.18 | 4.11 | 0.16 | 3.47 | 0.28 |
+| live_stack | 1x | 43 | 15.02 | 6.33 | 5.05 | 0.32 | 7.65 | 2.70 | 0.12 | 3.45 | -0.16 |
+| live_stack | 2x+OT | 49 | 15.43 | 4.70 | 11.34 | 0.15 | 12.39 | 4.31 | 0.18 | 3.59 | 0.13 |
+| live_towerref | 1x | 1203 | 15.12 | 6.07 | 5.23 | 0.17 | 8.58 | 2.91 | 0.06 | 3.03 | 0.37 |
+| live_towerref | 2x+OT | 1440 | 15.35 | 4.63 | 11.08 | 0.05 | 12.16 | 4.03 | 0.15 | 3.68 | 0.28 |
+| live_r1e | 1x | 491 | 15.06 | 5.75 | 5.23 | 0.15 | 8.17 | 2.77 | 0.08 | 2.81 | 0.07 |
+| live_r1e | 2x+OT | 565 | 15.43 | 3.81 | 11.01 | 0.03 | 12.39 | 4.36 | 0.15 | 2.67 | 0.40 |
+| live_r1 | 1x | 275 | 15.03 | 5.34 | 5.22 | 0.14 | 8.20 | 2.84 | 0.05 | 2.32 | 0.01 |
+| live_r1 | 2x+OT | 361 | 15.40 | 4.71 | 11.06 | 0.11 | 11.90 | 3.94 | 0.16 | 3.83 | 0.11 |
+
+## Q2  opponent commit -> push start: elixir accounting, means per push, by phase of the push. e(end) = e(start) + regen - spend - abilities + resid
+| source | phase | pushes | window s | e(start) | regen | wasted | spend | plays | abilities | e(push) | resid |
+| live_all | 1x | 2152 | 12.57 | 6.46 | 4.35 | 0.14 | 8.09 | 2.72 | 0.06 | 2.89 | 0.22 |
+| live_all | 2x+OT | 2578 | 10.60 | 4.79 | 7.56 | 0.04 | 8.98 | 3.10 | 0.12 | 3.47 | 0.23 |
+| live_stack | 1x | 44 | 14.07 | 7.56 | 4.65 | 0.38 | 8.48 | 2.82 | 0.14 | 3.47 | -0.12 |
+| live_stack | 2x+OT | 49 | 8.95 | 5.05 | 6.50 | 0.09 | 7.86 | 2.82 | 0.10 | 3.59 | -0.00 |
+| live_towerref | 1x | 1216 | 12.48 | 6.59 | 4.30 | 0.15 | 8.15 | 2.74 | 0.05 | 3.04 | 0.35 |
+| live_towerref | 2x+OT | 1438 | 10.72 | 5.00 | 7.67 | 0.05 | 9.08 | 3.09 | 0.13 | 3.68 | 0.22 |
+| live_r1e | 1x | 490 | 13.21 | 6.42 | 4.60 | 0.12 | 8.25 | 2.74 | 0.07 | 2.79 | 0.09 |
+| live_r1e | 2x+OT | 564 | 10.52 | 3.98 | 7.45 | 0.01 | 8.98 | 3.18 | 0.10 | 2.67 | 0.33 |
+| live_r1 | 1x | 276 | 11.63 | 5.87 | 4.07 | 0.08 | 7.61 | 2.63 | 0.05 | 2.30 | 0.01 |
+| live_r1 | 2x+OT | 361 | 10.78 | 5.18 | 7.63 | 0.06 | 8.97 | 3.07 | 0.12 | 3.83 | 0.11 |
+
+## Q2b  [w15] spend per push by board state at the tap | by card | by elixir at the tap (0-2/2-4/4-6/6-8/8-10). my_big = >= 3 elixir of enemy on my half; my_small = .5-3 on my half; their_tank = none on mine, a unit >= 5 on theirs; their_half; empty
+| source | phase | my_big | my_small | their_tank | their_half | empty | Xbow | Rocket | Tesla | Knight | IceWizard | Tornado | Log | Skeletons | e0 | e2 | e4 | e6 | e8 |
+| live_all | 1x | 2.14 | 0.51 | 3.24 | 2.20 | 0.31 | 1.56 | 0.19 | 1.84 | 1.45 | 1.49 | 0.45 | 0.86 | 0.55 | 0.20 | 1.54 | 1.92 | 1.94 | 2.81 |
+| live_all | 2x+OT | 4.82 | 1.08 | 3.45 | 2.28 | 0.56 | 1.72 | 0.85 | 2.46 | 2.24 | 2.29 | 0.72 | 1.17 | 0.74 | 0.36 | 3.08 | 3.17 | 4.23 | 1.35 |
+| live_stack | 1x | 2.79 | 0.35 | 2.77 | 1.53 | 0.21 | 1.12 | 0.14 | 1.77 | 1.19 | 1.53 | 0.56 | 0.79 | 0.56 | 0.14 | 1.12 | 2.16 | 1.47 | 2.77 |
+| live_stack | 2x+OT | 5.53 | 0.90 | 3.16 | 2.43 | 0.37 | 1.71 | 0.37 | 2.78 | 2.57 | 2.02 | 0.80 | 1.35 | 0.80 | 0.37 | 2.76 | 3.92 | 4.22 | 1.12 |
+| live_towerref | 1x | 2.19 | 0.48 | 3.36 | 2.25 | 0.31 | 1.59 | 0.24 | 1.89 | 1.48 | 1.52 | 0.45 | 0.86 | 0.55 | 0.15 | 1.39 | 1.92 | 2.05 | 3.07 |
+| live_towerref | 2x+OT | 4.56 | 1.07 | 3.52 | 2.47 | 0.55 | 1.72 | 1.08 | 2.43 | 2.19 | 2.29 | 0.64 | 1.11 | 0.70 | 0.26 | 2.41 | 3.15 | 4.74 | 1.59 |
+| live_r1e | 1x | 2.07 | 0.49 | 3.27 | 2.06 | 0.27 | 1.60 | 0.13 | 1.79 | 1.47 | 1.40 | 0.44 | 0.81 | 0.52 | 0.21 | 1.70 | 1.89 | 1.85 | 2.52 |
+| live_r1e | 2x+OT | 4.97 | 1.05 | 3.61 | 2.19 | 0.57 | 1.67 | 0.29 | 2.60 | 2.43 | 2.42 | 0.84 | 1.32 | 0.83 | 0.60 | 5.12 | 3.42 | 2.86 | 0.39 |
+| live_r1 | 1x | 1.85 | 0.59 | 2.91 | 2.41 | 0.43 | 1.55 | 0.09 | 1.73 | 1.31 | 1.44 | 0.60 | 0.92 | 0.56 | 0.44 | 1.94 | 1.85 | 1.73 | 2.24 |
+| live_r1 | 2x+OT | 5.20 | 1.25 | 3.06 | 1.83 | 0.56 | 1.88 | 1.01 | 2.30 | 2.10 | 2.04 | 0.76 | 1.08 | 0.71 | 0.42 | 2.51 | 2.52 | 4.39 | 2.06 |
+
+## Q2b  [wc] spend per push by board state at the tap | by card | by elixir at the tap (0-2/2-4/4-6/6-8/8-10). my_big = >= 3 elixir of enemy on my half; my_small = .5-3 on my half; their_tank = none on mine, a unit >= 5 on theirs; their_half; empty
+| source | phase | my_big | my_small | their_tank | their_half | empty | Xbow | Rocket | Tesla | Knight | IceWizard | Tornado | Log | Skeletons | e0 | e2 | e4 | e6 | e8 |
+| live_all | 1x | 1.99 | 0.46 | 3.70 | 1.92 | 0.02 | 1.61 | 0.15 | 1.84 | 1.34 | 1.38 | 0.43 | 0.83 | 0.51 | 0.19 | 1.41 | 1.88 | 1.92 | 2.69 |
+| live_all | 2x+OT | 3.52 | 0.77 | 3.23 | 1.45 | 0.01 | 1.01 | 0.50 | 2.02 | 1.74 | 1.76 | 0.52 | 0.86 | 0.57 | 0.25 | 2.29 | 2.56 | 2.99 | 0.89 |
+| live_stack | 1x | 2.50 | 0.34 | 3.86 | 1.77 | 0.00 | 1.91 | 0.14 | 1.91 | 0.95 | 1.50 | 0.68 | 0.86 | 0.52 | 0.16 | 0.98 | 2.23 | 1.25 | 3.86 |
+| live_stack | 2x+OT | 3.69 | 0.29 | 2.27 | 1.61 | 0.00 | 0.98 | 0.12 | 1.88 | 1.96 | 1.29 | 0.24 | 0.78 | 0.61 | 0.22 | 1.69 | 2.53 | 2.65 | 0.76 |
+| live_towerref | 1x | 2.06 | 0.44 | 3.70 | 1.93 | 0.02 | 1.61 | 0.19 | 1.88 | 1.33 | 1.38 | 0.43 | 0.82 | 0.51 | 0.14 | 1.28 | 1.86 | 2.03 | 2.84 |
+| live_towerref | 2x+OT | 3.39 | 0.79 | 3.32 | 1.57 | 0.01 | 0.98 | 0.68 | 2.07 | 1.74 | 1.77 | 0.47 | 0.83 | 0.55 | 0.18 | 1.82 | 2.65 | 3.42 | 1.00 |
+| live_r1e | 1x | 1.93 | 0.44 | 4.08 | 1.80 | 0.01 | 1.81 | 0.13 | 1.87 | 1.43 | 1.30 | 0.37 | 0.84 | 0.49 | 0.20 | 1.64 | 1.92 | 1.82 | 2.67 |
+| live_r1e | 2x+OT | 3.58 | 0.74 | 3.38 | 1.26 | 0.01 | 1.01 | 0.16 | 2.06 | 1.79 | 1.80 | 0.62 | 0.93 | 0.60 | 0.45 | 3.74 | 2.56 | 1.95 | 0.28 |
+| live_r1 | 1x | 1.67 | 0.53 | 3.19 | 2.18 | 0.03 | 1.41 | 0.07 | 1.62 | 1.26 | 1.36 | 0.55 | 0.83 | 0.50 | 0.38 | 1.70 | 1.79 | 1.77 | 1.96 |
+| live_r1 | 2x+OT | 3.83 | 0.86 | 2.93 | 1.35 | 0.01 | 1.21 | 0.47 | 1.93 | 1.65 | 1.74 | 0.58 | 0.83 | 0.58 | 0.28 | 1.93 | 2.15 | 3.09 | 1.52 |
+
+## P1  per phase: my elixir over eligible time -> at the opponent's commit -> at push start (means; live - SIM with 95% bootstrap CI over pushes)
+| pair | phase | pushes L/S | time mean L/S | at commit L/S | at push L/S | commit lead s L/S (median) | d commit [CI] | d reaction [CI] | d push [CI] |
+
+## P2  15 s before a push, by board state at the moment: seconds per push in it, spend rate (elixir/s), spend per push; live - SIM spend split into board-time mix vs spend rate (Shapley over trigger x my-elixir cells)
+| pair | phase | state | s/push L/S | elixir/s L/S | spend/push L/S | d spend | from board-time mix | from spend rate |
+
+## Q2d  [w15] spend per push by card within each board state (elixir per push; columns = cards Xbow, Rocket, Tesla, Knight, IceWizard, Tornado, Log, Skeletons)
+| my_big | live_r1e | 1x | 0.00 | 0.01 | 0.35 | 0.44 | 0.48 | 0.27 | 0.33 | 0.19 | 2.07 |
+| my_big | live_r1e | 2x+OT | 0.39 | 0.02 | 0.87 | 1.10 | 1.06 | 0.49 | 0.67 | 0.38 | 4.97 |
+| my_big | live_towerref | 1x | 0.08 | 0.02 | 0.37 | 0.49 | 0.48 | 0.21 | 0.31 | 0.22 | 2.19 |
+| my_big | live_towerref | 2x+OT | 0.33 | 0.19 | 0.82 | 0.93 | 0.96 | 0.44 | 0.55 | 0.34 | 4.56 |
+| my_small | live_r1e | 1x | 0.04 | 0.01 | 0.07 | 0.11 | 0.12 | 0.03 | 0.07 | 0.04 | 0.49 |
+| my_small | live_r1e | 2x+OT | 0.07 | 0.00 | 0.21 | 0.19 | 0.29 | 0.07 | 0.13 | 0.08 | 1.05 |
+| my_small | live_towerref | 1x | 0.05 | 0.01 | 0.08 | 0.09 | 0.11 | 0.02 | 0.07 | 0.04 | 0.48 |
+| my_small | live_towerref | 2x+OT | 0.09 | 0.08 | 0.23 | 0.19 | 0.22 | 0.05 | 0.12 | 0.08 | 1.07 |
+| their_tank | live_r1e | 1x | 0.73 | 0.10 | 0.95 | 0.60 | 0.45 | 0.07 | 0.21 | 0.15 | 3.27 |
+| their_tank | live_r1e | 2x+OT | 0.46 | 0.22 | 0.97 | 0.66 | 0.62 | 0.16 | 0.29 | 0.22 | 3.61 |
+| their_tank | live_towerref | 1x | 0.64 | 0.16 | 0.93 | 0.55 | 0.53 | 0.11 | 0.25 | 0.17 | 3.36 |
+| their_tank | live_towerref | 2x+OT | 0.44 | 0.53 | 0.80 | 0.58 | 0.67 | 0.09 | 0.25 | 0.17 | 3.52 |
+| their_half | live_r1e | 1x | 0.65 | 0.01 | 0.42 | 0.29 | 0.32 | 0.06 | 0.20 | 0.12 | 2.06 |
+| their_half | live_r1e | 2x+OT | 0.40 | 0.04 | 0.52 | 0.41 | 0.37 | 0.11 | 0.22 | 0.12 | 2.19 |
+| their_half | live_towerref | 1x | 0.62 | 0.03 | 0.48 | 0.34 | 0.36 | 0.10 | 0.22 | 0.10 | 2.25 |
+| their_half | live_towerref | 2x+OT | 0.51 | 0.23 | 0.55 | 0.44 | 0.41 | 0.06 | 0.17 | 0.10 | 2.47 |
+| empty | live_r1e | 1x | 0.18 | 0.00 | 0.00 | 0.04 | 0.03 | 0.01 | 0.01 | 0.01 | 0.27 |
+| empty | live_r1e | 2x+OT | 0.34 | 0.00 | 0.04 | 0.07 | 0.07 | 0.01 | 0.01 | 0.03 | 0.57 |
+| empty | live_towerref | 1x | 0.19 | 0.00 | 0.02 | 0.02 | 0.04 | 0.00 | 0.01 | 0.01 | 0.31 |
+| empty | live_towerref | 2x+OT | 0.35 | 0.07 | 0.03 | 0.05 | 0.03 | 0.00 | 0.01 | 0.01 | 0.55 |
