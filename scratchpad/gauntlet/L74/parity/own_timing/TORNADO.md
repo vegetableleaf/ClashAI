@@ -21,3 +21,11 @@ cast point, live vs sim (tiles). Association only: unit mix and survival differ 
 - **Plausible, untested:** the gap is mostly inherited starting-position error (sim units start farther from the cast
   point, so more of them sit outside the Tornado radius). Next: restrict to units inside the radius in BOTH engines at
   the cast frame and compare the pull; per-tick logs would remove the 0.5 s frame limit.
+
+## Paired refinement (`tornado_pair.py`, units inside 5 tiles in BOTH engines at the cast frame, same unit ~1 s later)
+- The pull difference tracks the starting-distance difference about 1:1 (Lava Hound start +0.71 -> pull +0.64;
+  Firecracker +0.44 -> +0.44; Dark Witch +0.35 -> +0.34; Minion Horde -0.29 -> -0.19, n 281), so units END in nearly
+  the same place: distance after ~1 s live vs sim Lava 1.36 / 1.43, Firecracker 0.30 / 0.31, Minion Horde 1.47 / 1.36.
+- Goblin Gang paired: 0.74 / 0.71 (the bin-level 0.66 / 0.07 above was a unit-mix artefact).
+- **Measured conclusion:** the SIM's Tornado pull reproduces the live end positions to ~0.1 tiles; its high rank in the
+  PARITY error list is inherited pre-cast position error, not a Tornado mechanic error. Not a fix target.
