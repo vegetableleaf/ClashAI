@@ -70,7 +70,15 @@ pod1013a`, C PID 81260 -> `pod1013c`; each copies + verifies, posts Discord, sto
   `L70/live/backup_pre_ab1_resume_20261013_2303`, LIVE_DECK=icebow, dead lock moved aside, **resumed 23:04** (runner pid
   82900, B block first), auto-switch re-armed, battery_guard restarted (WMI pid 34256).
 - PARITY_ALL post-fix ranking (association): GiantBuffer, Phoenix, SkeletonArmy, RoyalRecruits, unmapped 203000042,
-  RoyalHogs, MegaKnight, Giant, OUR Tornado pull (21.7k exposures), unmapped 13000043; sim_terminated 57.7k rows. test_iwdiag 24/25 (the failing
+  RoyalHogs, MegaKnight, Giant, OUR Tornado pull (21.7k exposures), unmapped 13000043; sim_terminated 57.7k rows.
+- **RL test, 20 updates (greedy D1, 480 paired vs init newsim_base_main_u0060):** ctrl +2.08 [-3.54, +7.71]; T_gate .1
+  +0.00 [-5.83, +5.62]; tg01 vs ctrl -2.08 [-7.71, +3.33] = no measurable change in either (KL gate .035).
+  Side effect measured: tg01 sampled at the OLD T .5 -11.46 [-15.21, -7.71] (its gate logits re-scaled). Copies
+  `pods1013/rltest/`. **Continued both to 60 updates** (`run_rltest.sh long`, resume max_updates=60 only; CRLF in
+  the uploaded script blocked the first launch -- stripped on the pods), then greedy D1, graft from OLD, live-stack
+  D3 (+ OLD D3 on pod C) on the GAP_r1 games. Relays pod1014a_long / pod1014c_long.
+- **Tornado parity (`parity/own_timing/TORNADO.md`):** paired units end ~1 s after our Tornado within ~0.1 tiles of
+  live; the Tornado's PARITY rank is inherited pre-cast error. Masses: 16/16 equal to device (contradicted). test_iwdiag 24/25 (the failing
   `test_device_evidence_matches_local_sources` is stale since this morning's supplement 1 -> 2 change).
 - v8: owner reports a rebuilt run; I did not verify or advise on it (safety stops). oracle-2 kept warm per owner.
 
