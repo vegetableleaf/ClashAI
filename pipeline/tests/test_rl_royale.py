@@ -50,7 +50,8 @@ class _FakeMatch:
         self.rng_behave = np.random.default_rng(seed)
 
 
-def _synth_match(model, rng: np.random.Generator, n: int, seed: int, all_allowed: bool = False) -> dict:
+def _synth_match(model, rng: np.random.Generator, n: int, seed: int, all_allowed: bool = False,
+                 T_gate=None) -> dict:
     """``n`` decisions of one fake match through the real sampler -> ``Match._traj_arrays`` layout."""
     toks, masks, scs, pasts = [], [], [], []
     for _ in range(n):
@@ -72,7 +73,7 @@ def _synth_match(model, rng: np.random.Generator, n: int, seed: int, all_allowed
         allowed[rng.random(n) < 0.15] = False                  # some "nothing affordable" rows -> dropped by collate
     stalled = rng.random(n) < 0.1
     fm = _FakeMatch(seed)
-    ds = E.sample_decide_batch(model, enc, heads, p, allowed, stalled, [fm] * n, {"tau": TAU, "T": T})
+    ds = E.sample_decide_batch(model, enc, heads, p, allowed, stalled, [fm] * n, {"tau": TAU, "T": T, "T_gate": T_gate})
     rows = [{"tok": toks[r], "mask": masks[r], "sc": scs[r], "past": pasts[r], "allowed": d["allowed"],
              "stalled": d["stalled"], "gate_sampled": d["gate_sampled"], "played": d["play"], "slot": d["slot"],
              "cell": d["cell"], "lp_gate": d["lp_gate"], "lp_card": d["lp_card"], "lp_cell": d["lp_cell"],
@@ -80,10 +81,10 @@ def _synth_match(model, rng: np.random.Generator, n: int, seed: int, all_allowed
     return E.Match._traj_arrays(SimpleNamespace(traj=rows))
 
 
-def _results(model, spec, seed=0, all_allowed=False) -> list[dict]:
+def _results(model, spec, seed=0, all_allowed=False, T_gate=None) -> list[dict]:
     """spec: [(entry_index, g, n_decisions, outcome)] -> rollout result records with ``traj``."""
     rng = np.random.default_rng(seed)
-    return [{"entry_index": i, "k": g, "outcome": o, "traj": _synth_match(model, rng, n, 100 * i + g, all_allowed)}
+    return [{"entry_index": i, "k": g, "outcome": o, "traj": _synth_match(model, rng, n, 100 * i + g, all_allowed, T_gate)}
             for i, g, n, o in spec]
 
 
@@ -169,6 +170,38 @@ class TestOnPolicy(unittest.TestCase):
         self.assertLess(out["first"]["kl_cell"], 1e-8)
         self.assertGreater(out["kl_cell"], 0.0)               # it moved after steps at lr 1e-3
         self.assertEqual(out["steps"], 2 * -(-len(self.B["A"]) // 32))
+
+
+class TestOnPolicyTGate(unittest.TestCase):
+    """10-13 GAP: with ``T_gate`` (the learner's own gate temperature) rollouts, PPO recompute and ref terms agree."""
+    TG = 0.1
+
+    @classmethod
+    def setUpClass(cls):
+        cls.model = _tiny_model(1)
+        res = _results(cls.model, [(0, 0, 40, "win"), (0, 1, 35, "loss"), (1, 0, 30, "draw"), (1, 1, 25, "win")],
+                       seed=3, T_gate=cls.TG)
+        cls.B = RL.to_device(RL.collate(res)[0], "cpu")
+
+    def test_recompute_matches_only_with_T_gate(self):
+        idx = torch.arange(len(self.B["A"]))
+        with torch.no_grad():
+            good = RL.policy_terms(self.model, self.B, idx, TAU, T, T_gate=self.TG)
+            bad = RL.policy_terms(self.model, self.B, idx, TAU, T)
+        for k in ("lp_gate", "lp_card", "lp_cell"):
+            self.assertLess(float((good[k] - self.B[k]).abs().max()), 1e-5, k)
+        self.assertGreater(float((bad["lp_gate"] - self.B["lp_gate"]).abs().max()), 1e-3)   # T_gate really matters
+
+    def test_ppo_first_minibatch_on_policy_with_T_gate(self):
+        model = copy.deepcopy(self.model)
+        ref = copy.deepcopy(self.model).eval()
+        R = RL.ref_terms(ref, self.B, TAU, T, T_gate=self.TG)
+        opt = torch.optim.Adam(model.parameters(), lr=1e-3)
+        cfg = {"minibatch": 32, "ppo_epochs": 2, "tau": TAU, "T": T, "T_gate": self.TG, "clip": 0.2, "grad_clip": 0.5}
+        out = RL.ppo_update(model, opt, self.B, R, cfg, 0.3, np.random.default_rng(0))
+        self.assertIsNone(out["nonfinite"])
+        self.assertLess(out["first"]["ratio_maxdev"], 1e-4)
+        self.assertLess(out["first"]["kl_gate"], 1e-8)
 
 
 # ------------------------------------------------------------------------------------------------------

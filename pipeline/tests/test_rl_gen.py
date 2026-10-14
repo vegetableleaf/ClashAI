@@ -264,7 +264,7 @@ class TestConditions(unittest.TestCase):
 
     def test_keys_reach_rollout_and_screen_cfg(self):
         cfg = dict(CFG, actor_threads=1, actor_device="cpu", tau=TAU, T=T, afford_mask=True, stall_elixir=9,
-                   stall_seconds=12, obs="live", decide_every=10, in_flight=2, **self.LIVE)
+                   stall_seconds=12, obs="live", decide_every=10, in_flight=2, seed=0, **self.LIVE)   # a real learner always has seed (rl_royale __init__)
         for gen in (None, {"d_c": 8, "card_vocab": VOCAB}):
             L = _stub_learner(cfg, gen, _tiny_gen(0), self.tmp)
             base = L.actor_base()
