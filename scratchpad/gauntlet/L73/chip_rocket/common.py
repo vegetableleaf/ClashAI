@@ -1,13 +1,15 @@
 """Shared: streaming npz row loader + GenRows for selected rows of gen_dataset_v32_fv5 (copied from L73/rocket_lead/model_forward_rk.py)."""
 import json, sys, zipfile
 import numpy as np
-sys.path.insert(0, "C:/Users/benpe/ClashBot")
-NPZ = "C:/Users/benpe/ClashBot/icebow/data/pipeline/gen_dataset_v32_fv5.npz"
+from pathlib import Path
+ROOT = Path(__file__).resolve().parents[4]   # repo root, so this also runs on a Linux pod (10-14 head refit)
+sys.path.insert(0, str(ROOT))
+NPZ = str(ROOT / "icebow/data/pipeline/gen_dataset_v32_fv5.npz")
 KEYS = ["sc", "hand_card", "hand_form", "next_card", "next_form", "deck_card", "deck_form", "past", "y_gate", "y_card", "y_hand_pos", "y_xy",
         "y_wait_card", "y_wait_dt", "y_crowns", "tick", "side", "rep", "split", "deck_id", "opp_past", "opp_cycle", "projectiles", "effects", "own_ability", "y_cell"]
-CK = {"live": "C:/Users/benpe/ClashBot/icebow/data/bench/rl_royale/rseries_r3c/rseries_r3c_u0030_barrel2k_cellref.pt",
-      "R1e": "C:/Users/benpe/ClashBot/icebow/data/bench/rl_royale/rseries_r1e31/rseries_r1e31_u0155.pt",
-      "gen_v32": "C:/Users/benpe/ClashBot/icebow/data/pipeline/gen_v32_s0/gen_s0.pt"}
+CK = {"live": str(ROOT / "icebow/data/bench/rl_royale/rseries_r3c/rseries_r3c_u0030_barrel2k_cellref.pt"),
+      "R1e": str(ROOT / "icebow/data/bench/rl_royale/rseries_r1e31/rseries_r1e31_u0155.pt"),
+      "gen_v32": str(ROOT / "icebow/data/pipeline/gen_v32_s0/gen_s0.pt")}
 
 
 def take(zf, name, idx):
