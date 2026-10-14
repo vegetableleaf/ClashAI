@@ -46,7 +46,7 @@ def flags(keys):
     return out
 
 
-def command(arm, job, census, dest, python, extra=()):
+def command(arm, job, census, dest, python, extra=(), drop=()):
     cmd = livecal.command(job, census, dest, python=python)
     tail = ['--own-effects', *livecal.LV]
     if cmd[-len(tail):] != tail:
@@ -67,6 +67,9 @@ def command(arm, job, census, dest, python, extra=()):
     if arm == 'D2':
         return cmd + flags(TIMING)
     if arm == 'D3':
+        if drop:                                 # --drop: live-stack keys removed (10-14 tau_threatened A/B)
+            tail = ['--own-effects'] + [x for k, v in livecal.LIVE.items() if k not in drop
+                                        for x in ['--'+k.replace('_', '-'), *map(str, v if isinstance(v, list) else [v])]]
         return cmd + tail + list(extra)          # --extra: more decision flags on the live stack (10-14 river A/B)
     return cmd
 
@@ -95,7 +98,7 @@ def prepare(directory, ckpt, seed_start=741200, opp=None, opp_T=.1):
     return plan
 
 
-def run_arm(arm, plan, inputs, out, python, workers, iw_form='hero', iw_press='live', extra=()):
+def run_arm(arm, plan, inputs, out, python, workers, iw_form='hero', iw_press='live', extra=(), drop=()):
     out.mkdir()
     # iw_form normal (10-14): r1's TRAINING condition (no hero, so no press rule) instead of the live condition.
     env = dict(os.environ, ROYALE_RUNTIME='20261012-linux', ROYALE_HEROIW_FORM=iw_form,
@@ -105,7 +108,7 @@ def run_arm(arm, plan, inputs, out, python, workers, iw_form='hero', iw_press='l
     def one(item):
         i, job = item
         dest = out/f'{i:05d}'
-        cmd = command(arm, job, inputs/plan['censuses'][job['census']]['path'], dest, python, extra)
+        cmd = command(arm, job, inputs/plan['censuses'][job['census']]['path'], dest, python, extra, drop)
         with dest.with_suffix('.log').open('w', encoding='utf8') as log:
             subprocess.run(cmd, cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT, check=True)
         rows = [json.loads(s) for s in (dest/'matches.jsonl').read_text().splitlines() if s.strip()]
@@ -154,6 +157,7 @@ def main():
     ap.add_argument('--summarize-only', action='store_true')
     ap.add_argument('--seed-start', type=int, default=741200, help='fresh seeds = a new paired set (10-14)')
     ap.add_argument('--iw-form', choices=('hero', 'normal'), default='hero', help='normal = r1 training condition')
+    ap.add_argument('--drop', default='', help='comma list of live-stack keys removed from D3 (e.g. tau_threatened)')
     ap.add_argument('--extra', default='', help='extra decision flags appended to the D3 command (quoted string)')
     ap.add_argument('--opp-ckpt', default=None, help='opponent generalist (default E4 = CAL set c)')
     ap.add_argument('--opp-T', type=float, default=.1, help='opponent sampling temperature (default .1 = CAL set c)')
@@ -162,7 +166,8 @@ def main():
     if not a.summarize_only:
         plan = prepare(a.out/'inputs', a.ckpt, a.seed_start, a.opp_ckpt, a.opp_T)
         for arm in a.arms.split(','):
-            run_arm(arm, plan, a.out/'inputs', a.out/arm, a.python, a.workers, a.iw_form, a.iw_press, a.extra.split())
+            run_arm(arm, plan, a.out/'inputs', a.out/arm, a.python, a.workers, a.iw_form, a.iw_press, a.extra.split(),
+                    tuple(x for x in a.drop.split(',') if x))
     summarize(a.out)
 
 
