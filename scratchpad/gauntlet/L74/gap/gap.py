@@ -31,6 +31,9 @@ TIMING = {'tau_phase', 'gate_decode', 'gate_hazard_min_elixir', 'gate_hazard_thr
 ARMS = ('D0', 'D1', 'D2', 'D3')
 # 10-13 head decomposition of D0: ONE head drawn as in RL rollouts, the others greedy as D1 (gate tau .35).
 HEAD_ARMS = {'G': ('gate', '0.27'), 'C': ('card', '.35'), 'X': ('cell', '.35')}
+# 10-13 rollout-decoder candidates: (tau, T, T_gate or None, heads). Gc/G2/G1 separate the gate's centre and temperature.
+SWEEP = {'Gc': ('.35', '0.5', None, 'gate'), 'G2': ('0.27', '0.5', '0.2', 'gate'), 'G1': ('0.27', '0.5', '0.1', 'gate'),
+         'R1': ('0.27', '0.5', '0.1', 'gate,card,cell'), 'R2': ('0.27', '0.2', None, 'gate,card,cell')}
 STEPS = [('D1', 'D0', 'decoding: greedy vs RL sampler'), ('D2', 'D1', '+ timing rules'),
          ('D3', 'D2', '+ card/cell overrides'), ('D3', 'D0', 'whole gap: live stack vs RL sampler')]
 
@@ -52,6 +55,11 @@ def command(arm, job, census, dest, python):
     if arm == 'D0':
         cmd[cmd.index('--tau-plain')+1] = '0.27'
         return cmd + ['--learner-policy', 'sample', '--learner-T', '0.5']
+    if arm in SWEEP:
+        tau, T, T_gate, heads = SWEEP[arm]
+        cmd[cmd.index('--tau-plain')+1] = tau
+        return cmd + ['--learner-policy', 'sample', '--learner-T', T, '--learner-sample-heads', heads] + (
+            ['--learner-T-gate', T_gate] if T_gate else [])
     if arm in HEAD_ARMS:
         head, tau = HEAD_ARMS[arm]
         cmd[cmd.index('--tau-plain')+1] = tau
@@ -112,7 +120,7 @@ def run_arm(arm, plan, inputs, out, python, workers):
 
 def summarize(out):
     from validate import paired_drift
-    present = [a for a in (*ARMS, *HEAD_ARMS) if (out/a/'matches.jsonl').is_file()]
+    present = [a for a in (*ARMS, *HEAD_ARMS, *SWEEP) if (out/a/'matches.jsonl').is_file()]
     rows = {a: [json.loads(s) for s in (out/a/'matches.jsonl').read_text().splitlines() if s.strip()] for a in present}
     lines = ['GAP: one checkpoint, four decision setups; 480 paired games each (CAL c, E4 T .1; Hero IW + live press).',
              'Draws count as non-wins. Paired deltas, 10,000 bootstrap draws within census/side.']
@@ -123,6 +131,7 @@ def summarize(out):
                      f"tower HP diff/game {sum(x['tower_hp_diff'] for x in r)/len(r):+.0f}")
     report = {}
     steps = STEPS + [(h, 'D1', f'only the {HEAD_ARMS[h][0]} head sampled vs all greedy') for h in HEAD_ARMS]
+    steps += [(a, 'D1', f'tau {v[0]}, T {v[1]}, T_gate {v[2] or v[1]}, sampled {v[3]} vs all greedy') for a, v in SWEEP.items()]
     for new, old, label in [st for st in steps if st[0] in rows and st[1] in rows]:
         d = paired_drift(rows[old], rows[new], expected=480)
         report[f'{new}-{old}'] = d

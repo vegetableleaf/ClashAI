@@ -474,6 +474,7 @@ def sample_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.n
     import torch
     tau, T = float(cfg["tau"]), float(cfg.get("T", 0.5))
     heads_sampled = frozenset(cfg.get("sample_heads", ("gate", "card", "cell")))
+    T_gate = float(cfg.get("T_gate") or T)                     # 10-13 GAP: the gate's own temperature (default = T)
     B = allowed.shape[0]
     p = np.asarray(p, dtype=np.float64)
     any_allowed = allowed.any(axis=1)
@@ -481,7 +482,7 @@ def sample_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.n
     logit_tau = math.log(tau / (1.0 - tau))
     z_gate = heads["gate"].detach().cpu().numpy().astype(np.float64)
     with np.errstate(over="ignore"):
-        p_b = 1.0 / (1.0 + np.exp(-(z_gate - logit_tau) / T))
+        p_b = 1.0 / (1.0 + np.exp(-(z_gate - logit_tau) / T_gate))
     g = np.zeros(B, dtype=bool)
     lp_gate = np.zeros(B, dtype=np.float64)
     for r in range(B):

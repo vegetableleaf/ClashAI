@@ -27,3 +27,17 @@ Paired deltas (10,000 bootstrap draws within census/side):
   does not reproduce, so the SIM cannot credit them. Consequence for the owner's goal (the model learns the rules,
   then they are removed): the SIM can only teach a rule once it reproduces the condition the rule fixes.
 - Limits: one checkpoint, one opponent pool, 480 pairs (+-5 pp).
+
+## Head decomposition (GAP_r1_heads, same seeds, vs D1 copied from GAP_r1)
+One head drawn as in RL rollouts (T .5), the other two greedy as D1:
+
+| Arm | Win | Delta vs D1 (95% CI) |
+|---|---|---|
+| G gate sampled (tau .27) | 21.67% | **-20.42 pp [-26.04, -14.79]** |
+| C card sampled | 36.04% | -6.04 [-11.04, -1.04] |
+| X cell sampled | 39.79% | -2.29 [-7.50, +2.92] |
+
+**Contradicted:** "cell sampling is the main cause" (my guess). The gate is: plays/game are unchanged (40.2), so the
+cost is play TIMING, the same number of cards at random moments. Consistent with the economy/timing loss mechanism.
+Next (running, GAP_r1_sweep): gate centre vs temperature (Gc tau .35; G2 T_gate .2; G1 T_gate .1) and two rollout
+candidates (R1: T_gate .1 + card/cell T .5; R2: all heads T .2).

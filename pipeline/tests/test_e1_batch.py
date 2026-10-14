@@ -151,6 +151,9 @@ class TestSampleAtLowTMatchesLive(unittest.TestCase):
             if live[r]["play"]:
                 self.assertEqual(cell[r]["slot"], live[r]["slot"], r)
         self.assertTrue(any(c["lp_cell"] != 0.0 for c in cell if c["play"]))   # the cell really was drawn
+        cold = E.sample_decide_batch(self.model, enc, heads, p, allowed, stalled,       # T_gate -> 0: live's play/wait
+                                     [_FakeMatch(i) for i in range(b)], dict(cfg, T_gate=1e-4))
+        self.assertEqual([c["play"] for c in cold], [x["play"] for x in live])
 
 
 # ------------------------------------------------------------------------------------------------------
