@@ -322,13 +322,31 @@ def own_effect_list(own_effects, ents, my_side: int, lo: int, hi: int) -> list[d
             t0, t1 = t + 1, t + 1 + area["life_duration_ms"] // TICK_MS
             if t0 <= hi and t1 > lo + 1:
                 out.append(dict(kind="pull", x=x, y=y, t0=t0, t1=t1, r=area["radius_milli"],
-                                pct=area["buff"]["attract_percentage"], air=area["hits_air"], ground=area["hits_ground"]))
+                                pct=area["buff"]["attract_percentage"], air=area["hits_air"], ground=area["hits_ground"],
+                                river=bool(p.get("river"))))
         elif pr.get("pushback_milli") and pr.get("speed"):                               # Fireball, Rocket
             ti = t + math.ceil(math.hypot(x - kx, y - ky) / pr["speed"])
             if lo < ti <= hi:
                 out.append(dict(kind="push", x=x, y=y, t=ti, r=pr["radius_milli"], push=pr["pushback_milli"],
                                 all=pr["pushback_all"], air=pr["aoe_to_air"], ground=pr["aoe_to_ground"]))
     return out
+
+
+WATER_Y = (15000.0, 17000.0)                       # RoyaleSim arena water rows (frame-symmetric)
+BRIDGES_X = ((2500.0, 4500.0), (13500.0, 15500.0))  # walkable bridge columns (frame-symmetric)
+
+
+def water_stop(x0: float, y0: float, x1: float, y1: float) -> tuple:
+    """A GROUND body moving (x0, y0) -> (x1, y1) never ends on water: per axis, as RoyaleSim 0.1.33 grid_move under a pull
+    (L74/reward/TORNADO_RIVER.md) -- off a bridge it stops at the bank it came from; on a bridge it stops at the bridge's edge."""
+    def bridge(x):
+        return next(((lo, hi) for lo, hi in BRIDGES_X if lo <= x <= hi), None)
+    if not (WATER_Y[0] < y1 < WATER_Y[1]) or bridge(x1):
+        return x1, y1
+    b = bridge(x0)
+    if b and WATER_Y[0] < y0 < WATER_Y[1]:             # was on the bridge, pulled sideways off it: held at its edge
+        return min(max(x1, b[0]), b[1]), y1
+    return x1, (WATER_Y[1] if y0 >= WATER_Y[1] else WATER_Y[0] if y0 <= WATER_Y[0] else y1)
 
 
 def _unit(dx: float, dy: float, default: tuple) -> tuple:
@@ -410,10 +428,12 @@ def retrack(e: Mapping[str, Any], p: Optional[Mapping[str, Any]], gap: int, tick
         # happen there (it landed before the earlier sighting) -- keep the observed pace, drop the past ladders
         ladders[:] = [lad for lad in ladders if lad[0] > tick]
         vx, vy = (dx / gap, dy / gap) if gap > 0 else (0.0, 0.0)
+    river = not air and any(f["kind"] == "pull" and f.get("river") for f in fx)   # --tornado-river (owner 10-14)
     x, y = x0, y0
     for k in range(tick + 1, tick + int(h) + 1):
         m, ex, ey = act(k, x, y)
-        x, y = x + vx * m + ex, y + vy * m + ey
+        nx, ny = x + vx * m + ex, y + vy * m + ey
+        x, y = water_stop(x, y, nx, ny) if river else (nx, ny)
     if not touched:
         return None
     return min(max(x, 0.0), BOARD_X), min(max(y, 0.0), BOARD_Y)

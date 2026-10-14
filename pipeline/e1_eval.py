@@ -888,7 +888,10 @@ class Match:
         pend = [dict(card=self.deck.cards[d["slot"]], tick=int(land),
                      **dict(zip("xy", self.ep.cell_to_engine(d["cell"], self.mirror, self.cfg["grid"]))))
                 for land, _, d, _ in self.pend]                # cfg["pipeline_decisions"]: pending plays at their landing tick
-        return [p for p in self.own_fx + abil + pend if tick - OWN_FX_TICKS <= p["tick"]]
+        out = [p for p in self.own_fx + abil + pend if tick - OWN_FX_TICKS <= p["tick"]]
+        if self.cfg.get("tornado_river") == "on":             # --tornado-river (owner 10-14): pulls hold ground bodies at the bank
+            out = [dict(p, river=True) for p in out]
+        return out
 
     def _pending_raw(self, raw: dict, view_tick: int) -> dict:
         """``raw`` (the look-ahead state) plus my pending plays as the engine will show them at ``view_tick``

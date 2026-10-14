@@ -1,3 +1,20 @@
+## 2026-10-14 ~19:40 EDT -- TORNADO vs RIVER: SIM 0.1.33 correct, 0.1.17 wrong; our combo aim + look-ahead ignored it -> fix built (off)
+
+- `L74/reward/TORNADO_RIVER.md` (agent; probe + live audit): RoyaleSim 0.1.33 (`status.ATTRACT_WATER_EDGE =
+  client15535_pull_stops`) holds ground troops at the bank (Knight/Goblin/Skeleton), air crosses, bridge troops slide along
+  the bridge -- matches the owner. The OLD 0.1.17 runtime (`20261006-linux`, `walk_rule`) drags them through the water:
+  34/46 L74 scripts used it, incl. the Rocket+Tornado verdicts (likely overstated). r1 trained on 0.1.33.
+- Live combo aim `decision_options.best_tornado_centre` had no river rule: 45/56 live combos counted enemy-bank ground
+  troops as pulled, 43/56 aimed at the river centre y 16.0, enemy-bank ground = 48.6% of counted value, >= 6/56 would not
+  have fired. `extrapolate` (own-effects look-ahead) also dragged them over the river.
+- FIX built, DEFAULT OFF: `--tornado-river on` (DecisionOptions; LIVE_OPTIONS-deployable): the aim counts an enemy-bank
+  ground body (off the bridge columns) only if the Rocket blast covers its held point at the bank (`river_held`), and the
+  own Tornado's effect record carries `river` so `extrapolate.water_stop` holds ground bodies at the bank / bridge edge.
+  Tests `pipeline/tests/test_tornado_river.py` (5) + 194 existing pass (test_r8 needs gymnasium, absent on the laptop).
+  Next: SIM A/B (0.1.33) of the combo with tornado_river off vs on, then owner deploy decision after A/B3.
+- Owner question (parity priority?): answered -- the learner is the binding constraint now (RL does not improve even in
+  the SIM); parity stays a targeted parallel track (mechanics that flip decisions); transfer measured via SIM twins of live A/Bs.
+
 ## 2026-10-14 ~19:05 EDT -- architecture APPROVED (owner); first RL arms running; Rocket-tiebreak + Tornado-river added
 
 - Owner approved REWARD_ARCHITECTURE.md; added S19 (Rocket-cycle a princess for the end-of-OT tiebreaker -> A1b tiebreak

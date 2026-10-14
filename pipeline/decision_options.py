@@ -48,6 +48,8 @@ class DecisionOptions:
     rocket_value_threat: str = 'off'        # 'on': only while a tower of mine is under fire with an enemy body near it (tau_threat_state)
     rocket_tornado: str = 'off'             # 'on': + Rocket and Tornado on a clump too spread for one blast; 'only': without the lone rule;
                                             # 'rocket_only': SIM measurement ablation (the same Rocket, no Tornado)
+    tornado_river: str = 'off'              # 'on' (owner 10-14): a Tornado cannot drag GROUND troops over the river (RoyaleSim 0.1.33
+                                            # status.ATTRACT_WATER_EDGE): combo aim + own-effects look-ahead hold them at the bank
     rocket_value_hitbox: str = 'centre'     # 'edge': a body is in the blast when its hitbox touches the radius
     rocket_value_lead: str = 'off'          # 'on' / 'drift' / 'blend': aim at where the bodies will be when the Rocket lands
     rocket_value_idle: str = 'off'          # 'on': only at a decision where the model itself would not play (displaces nothing)
@@ -97,7 +99,8 @@ class DecisionOptions:
             raise ValueError('rocket_value must be finite and >= 0')
         for k, ok in (('rocket_value_mode', ('cost', 'damage', 'kill')), ('rocket_value_hitbox', ('centre', 'edge')),
                       ('rocket_value_lead', ('off', 'on', 'drift', 'blend')), ('rocket_value_idle', ('off', 'on')),
-                      ('rocket_value_threat', ('off', 'on')), ('rocket_tornado', ('off', 'on', 'only', 'rocket_only'))):
+                      ('rocket_value_threat', ('off', 'on')), ('rocket_tornado', ('off', 'on', 'only', 'rocket_only')),
+                      ('tornado_river', ('off', 'on'))):
             if getattr(self, k) not in ok:
                 raise ValueError(f'{k} must be one of {ok}')
         if not math.isfinite(self.rocket_value_min_elixir) or not 0 <= self.rocket_value_min_elixir <= 10:
@@ -216,6 +219,10 @@ def add_arguments(parser):
                              'in hand and both affordable: Rocket at the pull centre now, the Tornado there as a follow-up tap timed so the '
                              'Rocket lands inside the pull (rocket_tornado_plan). on = alongside the lone rule, only = the combo without the lone rule, '
                              'rocket_only = SIM measurement ablation: the same Rocket at the same moment, no Tornado (not for live)')
+    parser.add_argument('--tornado-river', choices=('off', 'on'), default='off',
+                        help='owner 2026-10-14: a Tornado cannot drag GROUND troops over the river (held at the bank; air crosses; '
+                             'bridges are walkable). on: the Rocket+Tornado aim counts an enemy-bank ground body only where the river '
+                             'holds it, and the own-effects look-ahead stops ground bodies at the bank. off = unchanged')
     parser.add_argument('--rocket-value-max-left', type=float, default=99.0, metavar='L',
                         help='no fire when the bodies in the best blast would still hold more than L elixir of value after the '
                              'Rocket (a Golem keeps 5.7 of its 8): the Rocket then only strips the support and the elixir it '
@@ -1465,7 +1472,26 @@ def elixir_regen_per_tick(bs):
 COMBO_EDGE_MARGIN_TILES = 1.0     # a combo is never aimed within this of the board's side edge (SIM: EVERY Rocket at the first column, x = 0.0, was refused)
 
 
-def best_tornado_centre(bodies, grid, hitbox='centre', min_y=MY_HALF_MIN_Y_TILES):
+RIVER_Y_TILES = (15.0, 17.0)               # water rows (RoyaleSim arena: y 15000-17000)
+BRIDGE_X_TILES = ((2.5, 4.5), (13.5, 15.5))  # walkable bridge columns (x 2500-4500, 13500-15500)
+
+
+def river_held(bodies):
+    """[n] bool: GROUND bodies on the ENEMY bank (board y <= 15, me at the bottom) off the bridge columns -- a Tornado on my half
+    holds them at the bank (y 15) instead of dragging them over (owner 10-14; RoyaleSim 0.1.33 client15535_pull_stops, measured
+    L74/reward/TORNADO_RIVER.md). Air bodies (catalog flying) cross."""
+    if not len(bodies):
+        return np.zeros(0, dtype=bool)
+    traits = log_air_traits()
+    air = np.array([bool(traits.get(int(c), (False, 0.0))[0]) for c in bodies[:, 0]], dtype=bool)
+    x = bodies[:, 1]
+    on_bridge = np.zeros(len(bodies), dtype=bool)
+    for lo, hi in BRIDGE_X_TILES:
+        on_bridge |= (x >= lo) & (x <= hi)
+    return ~air & ~on_bridge & (bodies[:, 2] <= RIVER_Y_TILES[0])
+
+
+def best_tornado_centre(bodies, grid, hitbox='centre', min_y=MY_HALF_MIN_Y_TILES, river=False):
     """-> (value, cell) for the Tornado centre on my half whose pull radius holds the most value; (0.0, None) without bodies.
     Buildings (immobile_keys) are not pulled: they count only inside the Rocket's own blast around the centre (where the Rocket aims).
     Many centres tie on a spread clump (a plateau): the one picked is the plateau's MIDDLE for the bodies it pulls, the cell with the
@@ -1483,6 +1509,13 @@ def best_tornado_centre(bodies, grid, hitbox='centre', min_y=MY_HALF_MIN_Y_TILES
     if fixed.any():      # a building does not move in the pull: it counts only where the Rocket aimed at the centre hits it, where it stands
         blast = rocket_radius_tiles() + (bodies[:, 4] if hitbox == 'edge' else np.zeros(len(bodies)))
         inside = inside & (~fixed[None, :] | (dist <= blast[None, :]))
+    if river:            # --tornado-river: an enemy-bank ground body is held at the bank -- it counts only if the Rocket covers that point
+        held = river_held(bodies)
+        if held.any():
+            blast = rocket_radius_tiles() + (bodies[:, 4] if hitbox == 'edge' else np.zeros(len(bodies)))
+            at_bank = np.hypot(x[:, None] - bodies[None, :, 1], y[:, None] - RIVER_Y_TILES[0])
+            inside = inside & (~held[None, :] | (at_bank <= blast[None, :]))
+            dist = np.where(held[None, :], at_bank, dist)      # the plateau tie-break uses where they really end up
     ok = (y >= min_y) & (x >= COMBO_EDGE_MARGIN_TILES) & (x <= 18.0 - COMBO_EDGE_MARGIN_TILES) & (y <= 32.0 - COMBO_EDGE_MARGIN_TILES)
     value = np.where(ok, inside @ bodies[:, 3], -1.0)
     top = float(value.max())
@@ -1511,7 +1544,8 @@ def rocket_tornado_choice(options, names, allowed, bs, grid, pending=False, min_
         return None
     bodies = rocket_bodies(bs, options.rocket_value_mode)
     single, _ = best_rocket_clump(bodies, grid, options.rocket_value_hitbox, None, options.rocket_value_min_y)
-    value, cell = best_tornado_centre(bodies, grid, options.rocket_value_hitbox, options.rocket_value_min_y)
+    value, cell = best_tornado_centre(bodies, grid, options.rocket_value_hitbox, options.rocket_value_min_y,
+                                      river=options.tornado_river == 'on')
     if cell is None or single + 1e-9 >= options.rocket_value or value + 1e-9 < options.rocket_value:
         return None
     x, y = cell_centres_tiles(grid)

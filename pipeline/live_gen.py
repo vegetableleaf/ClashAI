@@ -97,14 +97,15 @@ def legal_cells(entities, side: int, card_id: int, name: str, grid: str = "latti
 OWN_FX_TICKS = 150                   # as e1_eval: own plays older than 7.5 s act on nothing
 
 
-def own_effects_raw(own_fx, side: int, tick: int) -> list:
+def own_effects_raw(own_fx, side: int, tick: int, river: bool = False) -> list:
     """GenPilot.own_fx (model-frame xy, live_play.my_frame_xy) -> extrapolate's own_effects (raw engine units)."""
     out = []
     for p in own_fx:
         if tick - OWN_FX_TICKS <= p["tick"]:
             x, y = p["xy"][0] * 18000.0, (1 - p["xy"][1]) * 32000.0
             x, y = (18000.0 - x, 32000.0 - y) if side == 1 else (x, y)
-            out.append(dict(card=p["card"], x=x, y=y, tick=p["tick"], ability=p.get("ability", False)))
+            out.append(dict(card=p["card"], x=x, y=y, tick=p["tick"], ability=p.get("ability", False),
+                            **({"river": True} if river else {})))
     return out
 
 
@@ -293,7 +294,8 @@ class GenPilot:
                 object_context = dict(object_context, drops=self.drops.pending)
             if getattr(self, 'own_fx', None) is not None:      # + a pending play at its expected landing tick
                 fx = self.own_fx + [dict(card=card_key(q["name"]), xy=q["xy"], tick=q["land"]) for q in pend]
-                object_context = dict(object_context, own_effects=own_effects_raw(fx, side, tick))
+                object_context = dict(object_context, own_effects=own_effects_raw(
+                    fx, side, tick, river=getattr(getattr(self, 'decision_options', None), 'tornado_river', 'off') == 'on'))
             frame = extrapolate(frame, prev, self.ext_h, side, **object_context)
             if opp is not None:
                 opp = min(10.0, opp + regen_between(tick, tick + self.ext_h))
