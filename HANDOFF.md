@@ -1,3 +1,18 @@
+## 2026-10-14 ~19:05 EDT -- architecture APPROVED (owner); first RL arms running; Rocket-tiebreak + Tornado-river added
+
+- Owner approved REWARD_ARCHITECTURE.md; added S19 (Rocket-cycle a princess for the end-of-OT tiebreaker -> A1b tiebreak
+  margin, B4 chip value, spell-cycle posture) and S20 (Tornado cannot drag ground troops over the river -> B7 Rocket+Tornado
+  as one decision with a river-aware pull model). RoyaleSim implements the tiebreak (`state.rs::overtime_tiebreak`).
+  A background agent tests whether the SIM's Tornado respects the river + audits our combo aim (TORNADO_RIVER.md).
+- `pipeline/rl_royale.py league_opp_T` (league opponents' sampling temperature; default = T, unchanged; test added).
+- Arms (one change each vs rltest_ctrl = r1 cfg 60 updates from newsim_base_main_u0060; `L74/rlarms/`):
+  pod `-p 19636 root@64.247.206.120` (27.2 cores) rlarm_gae = F1 (advantage gae, critic warm-up 5 -> 65 updates,
+  gae_gamma_unit tick); pod `-p 12787 root@64.247.206.76` (30.6 cores) rlarm_opp = F3 (league_opp_T 0.05 ONLY; r1's PFSP
+  + 5 exploiters unchanged). Each then grafts OLD's heads and scores D1 + D3 on 741200/742000. ETA ~5 h.
+- Owner question answered: generational / PBT training is feasible on pods (~115k RL matches/day/pod; 1M ~9 pod-days)
+  but the limits are SIM fidelity, selection noise (960 pairs ~+-4 pp), non-transitivity; recommended PBT (6-8 members)
+  once an architecture arm shows real improvement, with weekly live checks.
+
 ## 2026-10-14 ~17:40 EDT -- OPTION 1 VERDICT: not imitation fit; RL drift + own-state shift -> RL needed (owner: then retry shaping)
 
 - `L74/econ2/PRO_EAGERNESS.md` (+ tables, json, pro_eagerness.py; agent-built, run on pod 12037 GPU, 4 min): pro VAL
