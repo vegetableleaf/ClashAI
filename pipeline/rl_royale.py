@@ -161,6 +161,8 @@ def actor_cfg(base: dict, kind: str, aid: int, dev: str) -> dict:
            "decide_every": int(base["decide_every"]), "slot": aid, "port": 0, "T": float(base["T"]),
            "record": kind == "rollout"}
     cfg.update(condition_cfg(base))
+    if base.get("T_gate") is not None:                       # 10-13: learner gate temperature; absent = unchanged cfg
+        cfg["T_gate"] = float(base["T_gate"])
     if kind == "rollout" and base.get("shaping", "none") == "tower_crown":
         cfg["record_phi"] = True                              # R2: each row carries reward_shaping.phi_record
     if kind == "rollout" and (base.get("gae_gamma_unit", "row") == "tick" or base.get("shaping") in ("value_phi", "live_phi")):
@@ -1296,7 +1298,8 @@ def _logit(p: float) -> float:
     return math.log(p / (1.0 - p))
 
 
-def policy_terms(model, B: dict, idx, tau: float, T: float, value: bool = False, value_trunk: bool = True) -> dict:
+def policy_terms(model, B: dict, idx, tau: float, T: float, value: bool = False, value_trunk: bool = True,
+                 T_gate: Optional[float] = None) -> dict:
     """Recompute the behaviour log-probs of rows ``idx`` exactly as ``e1_eval.sample_decide_batch`` defined them:
     gate ``sigmoid((z - logit(tau)) / T)`` on gate-sampled rows; card softmax over ``allowed`` of the heads'
     hand-masked logits / T and cell softmax over 2,304 for the recorded slot / T on played rows; float64 after the
@@ -1317,7 +1320,7 @@ def policy_terms(model, B: dict, idx, tau: float, T: float, value: bool = False,
         cell_of = model.cell_logits
     allowed, gs, played = B["allowed"][idx], B["gate_sampled"][idx], B["played"][idx]
     slot, cell = B["slot"][idx], B["cell"][idx]
-    x = (heads["gate"].double() - _logit(tau)) / T
+    x = (heads["gate"].double() - _logit(tau)) / (T_gate or T)          # T_gate: the sampler's own gate temperature
     card_lp = torch.log_softmax(heads["card"].double().masked_fill(~allowed, CARD_FILL) / T, dim=-1)
     lp_gate = torch.where(gs, torch.where(played, Fn.logsigmoid(x), Fn.logsigmoid(-x)), torch.zeros_like(x))
     lp_card = torch.zeros_like(x)
@@ -1426,7 +1429,7 @@ def cat_ent(lp):
 
 
 @torch.no_grad()
-def ref_terms(ref, B: dict, tau: float, T: float, chunk: int = 512) -> dict:
+def ref_terms(ref, B: dict, tau: float, T: float, chunk: int = 512, T_gate: Optional[float] = None) -> dict:
     """Frozen-ref tempered distributions for every row, once per update (E1 3.4): gate x [N], card log-probs [N, 8],
     cell log-probs [P, 2304] for the P played rows (``play_pos`` maps a row to its position, -1 if not played)."""
     N = len(B["A"])
@@ -1434,7 +1437,7 @@ def ref_terms(ref, B: dict, tau: float, T: float, chunk: int = 512) -> dict:
     xs, cards, cells = [], [], []
     for s in range(0, N, chunk):
         idx = torch.arange(s, min(s + chunk, N), device=dev)
-        t = policy_terms(ref, B, idx, tau, T)
+        t = policy_terms(ref, B, idx, tau, T, T_gate=T_gate)
         xs.append(t["x"]); cards.append(t["card_lp"])
         if t["cell_lp"] is not None:
             cells.append(t["cell_lp"])
@@ -1452,7 +1455,7 @@ def ref_terms(ref, B: dict, tau: float, T: float, chunk: int = 512) -> dict:
 
 
 def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: float, beta: float,
-                   n_total: int, vf: Optional[dict] = None) -> tuple[torch.Tensor, dict]:
+                   n_total: int, vf: Optional[dict] = None, T_gate: Optional[float] = None) -> tuple[torch.Tensor, dict]:
     """PPO-clip on the joint log pi = lp_gate + g (lp_card + lp_cell) (E1 3.3) with per-match weights, scaled by
     n_total / |mb| so each minibatch estimates the full-batch loss; + beta (mean KL_gate + mean KL_card + mean KL_cell).
     ``vf`` (gae mode: {coef, clip, policy}): + coef x the PPO-clipped value loss 0.5 max((V - ret)^2, (V_old +
@@ -1460,7 +1463,7 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
     loss ALONE (no L_pg, no KL term); ``trunk_grad`` False (default True) = the value loss trains value_head only.
     None = the match_loo loss, unchanged."""
     t = policy_terms(model, B, idx, tau, T, value=vf is not None,
-                     value_trunk=True if vf is None else bool(vf.get("trunk_grad", True)))
+                     value_trunk=True if vf is None else bool(vf.get("trunk_grad", True)), T_gate=T_gate)
     lp_new = t["lp_gate"] + t["lp_card"] + t["lp_cell"]
     ratio = torch.exp(lp_new - B["lp_old"][idx])
     A, w = B["A"][idx], B["w"][idx]
@@ -1499,7 +1502,7 @@ def vf_grad_share(model, B: dict, R: dict, cfg: dict, beta: float, vf: dict) -> 
     value_head that the value loss reaches through the trunk features. -> {share = |g_v| / (|g_v| + |g_pg|), norms}."""
     N = len(B["A"])
     idx = torch.arange(0, N, max(1, N // int(cfg["minibatch"])), device=B["A"].device)[:int(cfg["minibatch"])]
-    kw = dict(tau=cfg["tau"], T=cfg["T"], clip=cfg["clip"], beta=beta, n_total=N)
+    kw = dict(tau=cfg["tau"], T=cfg["T"], clip=cfg["clip"], beta=beta, n_total=N, T_gate=cfg.get("T_gate"))
     params = [p for n, p in model.named_parameters() if p.requires_grad and not n.startswith("value_head.")]
     l_v, _ = minibatch_loss(model, B, R, idx, vf={**vf, "policy": False, "trunk_grad": True}, **kw)
     g_reach = torch.autograd.grad(l_v, params, allow_unused=True)
@@ -1554,7 +1557,7 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
         for s in range(0, N, mb):
             idx = perm[s:s + mb]
             loss, st = minibatch_loss(model, B, R, idx, tau=cfg["tau"], T=cfg["T"], clip=cfg["clip"], beta=beta,
-                                      n_total=N, vf=vf)
+                                      n_total=N, vf=vf, T_gate=cfg.get("T_gate"))
             if first is None:
                 first = st
             if not torch.isfinite(loss):
@@ -1699,7 +1702,7 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
                     pol, mi = E.load_policy(REPO / pth, dev)
                     opp_cache[pth] = (pol, str(mi.get("grid", "floor")))
                 opps = {j[1]["opp"]["id"]: (opp_cache[j[1]["opp"]["path"]][0],
-                                            {**cfg, "policy": base["league_opp_policy"], "record": False,
+                                            {**cfg, "policy": base["league_opp_policy"], "record": False, "T_gate": None,
                                              **{k: base[k] for k in AO.STYLE_KEYS if k in base},
                                              "grid": opp_cache[j[1]["opp"]["path"]][1]}) for j in jobs}
                 E.run_selfplay_batch(lambda: RoyaleSelfPlayEnv(decision_ticks=int(base["decide_every"]), forms_mode=fm,
@@ -1896,7 +1899,7 @@ def branch_worker_main(wid: int, in_q, out_q, base: dict) -> None:
         return True
 
     lcfg = actor_cfg(base, "screen", wid, dev)                # the greedy live rule, unrecorded
-    ocfg = {**actor_cfg(base, "rollout", wid, dev), "policy": base["league_opp_policy"], "record": False}
+    ocfg = {**actor_cfg(base, "rollout", wid, dev), "policy": base["league_opp_policy"], "record": False, "T_gate": None}
     sp_env = (lambda: RoyaleSelfPlayEnv(decision_ticks=int(base["decide_every"]), forms_mode=base.get("forms_mode", "base"),
                                         hero_abilities=base.get("hero_abilities", False),
                                         ability_policy=base.get("ability_policy", "generic")))
@@ -2553,7 +2556,7 @@ class Learner:
             self._branch_send(u, branch_cfg(cfg))
         results, rinfo = self.rollout(u)
         t_roll = time.perf_counter() - t0
-        mon = rollout_monitors(results, cfg["tau"], cfg["T"])
+        mon = rollout_monitors(results, cfg["tau"], cfg.get("T_gate") or cfg["T"])   # p_b monitor = the gate actually sampled
         league = getattr(self, "league", None) is not None
         if league:
             mon["league"] = league_monitors(results)
@@ -2572,7 +2575,7 @@ class Learner:
         del results
         t1 = time.perf_counter()
         B = to_device(Bn, self.dev)
-        R = ref_terms(self.ref, B, cfg["tau"], cfg["T"])
+        R = ref_terms(self.ref, B, cfg["tau"], cfg["T"], T_gate=cfg.get("T_gate"))
         beta_used = self.beta
         vf = gst = None
         warm = gae_on and self.update < ac["critic_warmup_updates"]        # critic warm-up: policy frozen
@@ -2778,6 +2781,12 @@ class Learner:
         base["gen"] = getattr(self, "gen", None)
         base["runtime"] = getattr(self, "runtime", None)
         base["seed"] = self.cfg["seed"]                                       # rollout_jobs: per-(update, job) pipelining draw
+        tg = self.cfg.get("T_gate")
+        if tg is not None and not (isinstance(tg, (int, float)) and not isinstance(tg, bool) and 0 < tg <= 10):
+            raise SystemExit(f"T_gate must be null or a number in (0, 10], got {tg!r}")
+        if tg is not None and self.cfg.get("branch_gate"):
+            raise SystemExit("T_gate with branch_gate is not supported (branch_terms parameterise the gate with T)")
+        base["T_gate"] = tg
         base["learner_pipeline_frac"] = self.cfg.get("learner_pipeline_frac", 0)   # 0 = no learner pipelining (default)
         base["league_opp_policy"] = self.cfg.get("league_opp_policy", "sample")
         if AO.mode(self.cfg.get("opp_style", "off")) == "on":

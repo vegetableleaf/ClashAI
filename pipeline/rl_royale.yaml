@@ -97,6 +97,8 @@ actor_timeout_s: 3600       # one actor job slower than this counts as a crash (
 
 # ---- behaviour policy (plan "Behaviour policy" = E1 3.3) and the live rule (E1 2.3)
 T: 0.5                      # temperature of the gate / card / cell sampling (E1 3.3, plan default)
+T_gate: null                # 10-13 GAP: the LEARNER's gate temperature (null = T). Rollouts, PPO ratio and KL use it;
+                            # league opponents keep T. At T .5 the sampled gate cost -20 pp vs greedy, at .1 -0.4 (L74/gap)
 tau: 0.27                   # live gate threshold; the sampled gate is sigmoid((z - logit(tau)) / T) (E1 2.3/3.3)
 afford_mask: true           # allowed = in hand AND cost <= floored elixir (E1 2.3)
 stall_elixir: null          # owner 2026-10-07: anti-stall REMOVED permanently (live has none); rl_royale refuses a number
