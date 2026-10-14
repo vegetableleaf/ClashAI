@@ -1,3 +1,19 @@
+## 2026-10-14 ~10:00 EDT -- A/B1 final (r1 live), l74-merge-newsim merged to main, A/B2 staged
+
+- **A/B1 final** (150/arm, run 20261013_094843_05dad0bc): A r1 full graft 76W/74L 50.7% [42.7, 58.6] vs B old r3c
+  69W/81L 46.0% [38.2, 54.0]; B-A -4.7 pp [-15.7, +6.6] (not established). Auto-switch put A live 09:05 (account check
+  passed); owner stopped live ~09:48 to film. CKPT_OVERRIDE = `newsim_r1/newsim_base_r1_final_grafted.pt` (fce50ebb).
+- **Merged l74-merge-newsim into main (77f4dd7).** Live-path effect: e1_eval T_gate/sample_heads are opt-in (unchanged
+  without the cfg keys); royale_runtime only adds 'unpinned-linux'. Pipeline tests 89 pass, A/B 27 pass, autoswitch
+  selftest OK. `live_reader/test_pipeline_decisions.py::test_second_decision_while_the_first_is_pending_both_confirm`
+  failed 1 of 5 runs (timing test; live_reader untouched by the merge; untested whether it also flakes pre-merge).
+  `start_live.sh icebow --check`: LIVE_CHECK_PASS for both A/B2 arms on the merged code.
+- **A/B2 staged, NOT started:** `L74/ab/run_ab2.sh` (launch via WMI on the owner's MuMu go-ahead). A = heads-only graft
+  `rltest/r1_u0060_heads_only_graft.pt` (5ca58ddd) vs B = r1 full graft (incumbent; exact tie keeps B). One change:
+  A keeps r1's own projectile_target_* layers (SIM +1.46 [+0.00, +2.92]).
+- **Head refit:** ready (c5948f9, `rltest/refit_heads.sh`), blocked on a GPU pod (owner must start one; no RunPod key here).
+- Upstream: RoyaleSim +1 new (39e7d48, CI only: downstream job checks out "RoyaleBot"); 0.1.34 already known; not pulled.
+
 ## 2026-10-13 ~16:30 EDT -- 3 owner pods: DIFFSIM self-check green except forms coverage, PARITY own-timing fix, Hero IW N3 arm
 
 Pods (key `~/.ssh/runpod_clashbot`, NOT id_ed25519; 27 effective cores each, L40): A `-p 43696 root@64.247.206.120`,
