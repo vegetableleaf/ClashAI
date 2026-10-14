@@ -116,7 +116,8 @@ def plan(source, enabled=False, fix_artefacts=False, own_timing='tap'):
     if fix_artefacts:
         from .core import ps
         from .inference import repair_injections
-        repairs, inference_receipts = repair_injections(source, ps.load_catalog()[0])
+        from .core import load_catalog
+        repairs, inference_receipts = repair_injections(source, load_catalog()[0])
     inference_by_row = {r['row']: r for r in inference_receipts}
     frame_ticks = [f['tick'] for f in source['frames']]
     for i, play in enumerate(source['plays']):

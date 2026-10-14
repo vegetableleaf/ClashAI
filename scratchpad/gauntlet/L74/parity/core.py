@@ -17,6 +17,28 @@ sys.path.insert(0, str(PHASE))  # phase_stats's existing video_metrics import
 import phase_stats as ps
 
 
+# Reader ids absent from the pinned live catalog, mapped as the live identity layer does (pipeline/body_identity.py
+# EXT_CARD_IDS): evolution / hero forms of catalog cards that RoyaleSim 0.1.33 loads. Without them those bodies never
+# pair and the SIM plays the base card (10-14: unmapped 13000043 / 203000042 in the PARITY_ALL error ranking).
+EXT_FORMS = {13000043: ('AngryBarbarians', 'evolution_form_id'), 13000075: ('ElectroGiant', 'evolution_form_id'),
+             203000042: ('ElectroWizard', 'hero_form_id')}
+
+
+def load_catalog():
+    """phase_stats.load_catalog + EXT_FORMS (PARITY only; phase_stats itself is shared and stays unchanged)."""
+    by_id, by_name = ps.load_catalog()
+    for cid, (name, field) in EXT_FORMS.items():
+        c = by_name.get(name)
+        if c is None or c.get(field) not in (None, cid):
+            continue
+        c = dict(c, **{field: cid})
+        by_name[name] = c
+        for f in ('card_id', 'evolution_form_id', 'hero_form_id'):
+            if c.get(f) is not None:
+                by_id[c[f]] = c
+    return by_id, by_name
+
+
 def mean(xs):
     xs = [x for x in xs if x is not None]
     return statistics.fmean(xs) if xs else None
@@ -123,7 +145,7 @@ def prepare(path, data, catalog, names, assumed_level=None):
 
 
 def select(live, since='20261008', limit=100, assumed_level=None):
-    catalog, names = ps.load_catalog()
+    catalog, names = load_catalog()
     selected, excluded = [], []
     for path in sorted(Path(live).glob('live_play_*.jsonl')):
         if path.name[10:18] < since:

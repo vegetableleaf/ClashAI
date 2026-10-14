@@ -39,3 +39,11 @@ def test_singletons_and_off_by_default_untouched():
     live = live_t.assign(10, [b(1000, 1000, 'a')])
     sim = sim_t.assign(10, [b(5000, 5000, 's')])
     assert pairing.apply(live, sim, live_t.births, sim_t.births) == sim
+
+
+def test_ext_forms_map_reader_ids_to_catalog_forms():
+    by_id, by_name = c.load_catalog()
+    assert by_id[13000043]['display_name'] == 'AngryBarbarians' and by_id[13000043]['evolution_form_id'] == 13000043
+    assert by_id[203000042]['display_name'] == 'ElectroWizard' and by_id[203000042]['hero_form_id'] == 203000042
+    assert by_name['AngryBarbarians']['card_id'] in by_id      # base id still maps to the same (augmented) entry
+    assert by_id[203000023]['display_name'] == 'IceWizard'     # phase_stats' own alias untouched

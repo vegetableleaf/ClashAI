@@ -15,7 +15,7 @@ import time
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[3]
 sys.path.insert(0, str(ROOT))
-from scratchpad.gauntlet.L74.parity.core import SwarmPairing, Tracks, compare, mean, ps, rank, select
+from scratchpad.gauntlet.L74.parity.core import SwarmPairing, Tracks, compare, load_catalog, mean, ps, rank, select
 from scratchpad.gauntlet.L74.parity.planning import hydrate, plan, planning_report, OLD_HERO_REASON
 
 RUNTIMES = {'old': ('20261006-linux', '0.1.17'), 'new': ('20261012-linux', '0.1.33'), 'fork': ('fork', None)}
@@ -76,7 +76,7 @@ def drive(source, runtime, mechanics_replay=False, fix_artefacts=False, own_timi
     import royalesim as sim
     if not mechanics_replay:
         from research.sandbox_tools.replay_drive import infer_deals
-    catalog, native = ps.load_catalog()
+    catalog, native = load_catalog()
     opts = {} if runtime == 'old' else {'calibration_overrides': {'cards.CARD_TABLE': json.dumps('client160402017_20261006')}}
     battle = sim.Battle(None, [[0, 1, 2], [0, 2, 1]], **opts)
     cat = json.loads(battle.catalogue_json())
@@ -230,7 +230,7 @@ def metrics(rows, matches, common_ticks, catalog):
 
 
 def summarize(cohort, results, runtimes):
-    catalog, _ = ps.load_catalog()
+    catalog, _ = load_catalog()
     reports = {rt: [] for rt in runtimes}; failures = []; skips = []
     by_key = {(r['runtime'], r['match']): r for r in results}
     for result in results:
