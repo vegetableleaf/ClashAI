@@ -1,3 +1,12 @@
+## 2026-10-14 ~16:20 EDT -- A/B3 SIM twin: never-press +3.33 pp [+0.62, +6.15] for r1 (960 pairs)
+
+- Pod 42548 `twin` (copy `pod_backup_weekend/pod1014b_twin/`, sha-verified): r1 full graft D3, live press rule 402/960
+  (reproduces r1g 480/480 on both seed sets) vs `--iw-press never` 434/960 (45.21%): +3.33 pp [+0.62, +6.15]; seed sets
+  separately +4.58 [+0.62, +8.54] / +2.08 [-1.88, +6.04]. Smaller than IWDIAG3's +8 (N3 vs N2, other model/setup).
+  This is the SIM's prediction for live A/B3 on the SAME model: compare when A/B3 ends (150/arm resolves ~+-11 pp, so a
+  live result inside that band neither confirms nor refutes +3.3; the direction is the check).
+- Pod 42548 still runs calibration arms (e4_T03, old_T10, gen1_T30); not stopped.
+
 ## 2026-10-14 ~16:00 EDT -- OPPONENT CALIBRATION started (owner: "Start on that as soon as possible"; training fix may follow)
 
 - Goal: SIM opponents whose pushes cost what live pushes cost, so RL is punished for the overspending habit like live.
