@@ -41,3 +41,22 @@ One head drawn as in RL rollouts (T .5), the other two greedy as D1:
 cost is play TIMING, the same number of cards at random moments. Consistent with the economy/timing loss mechanism.
 Next (running, GAP_r1_sweep): gate centre vs temperature (Gc tau .35; G2 T_gate .2; G1 T_gate .1) and two rollout
 candidates (R1: T_gate .1 + card/cell T .5; R2: all heads T .2).
+
+## Rollout-decoder sweep (GAP_r1_sweep, vs the same D1)
+
+| Arm | Setting | Win | Delta vs greedy D1 (95% CI) |
+|---|---|---|---|
+| G (above) | gate only, tau .27, T .5 | 21.67% | -20.42 [-26.04, -14.79] |
+| Gc | gate only, tau .35, T .5 | 29.58% | -12.50 [-17.92, -6.88] |
+| G2 | gate only, tau .27, T_gate .2 | 35.62% | -6.46 [-11.88, -1.04] |
+| G1 | gate only, tau .27, T_gate .1 | 41.67% | **-0.42 [-5.62, +5.00]** |
+| R1 | all heads; T_gate .1, card/cell T .5 | 28.54% | -13.54 [-18.96, -7.92] |
+| R2 | all heads; T .2 | 33.96% | -8.12 [-13.75, -2.50] |
+
+- **Measured:** the gate's temperature is the main knob: at T_gate .1 the sampled gate is indistinguishable from
+  greedy (-0.4). Centring on the deploy tau (.35) recovers ~8 of the 20 pp at T .5.
+- Card + cell sampling at T .5 still costs ~13 pp together (R1), more than the single-head arms suggest (-6.0, -2.3);
+  at T .2 everything together costs -8.1 (R2).
+- Plausible, untested: a rollout decoder of gate T .1 + card/cell T ~.2 lands within a few pp of greedy while keeping
+  card/cell exploration. RL exploration needs SOME action variance across the 4 rollouts per matchup, so the colder
+  the decoder, the weaker the learning signal: that trade-off can only be measured in an RL run.

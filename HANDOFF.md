@@ -47,7 +47,11 @@ pod1013a`, C PID 81260 -> `pod1013c`; each copies + verifies, posts Discord, sto
   must learn them so they can be removed live). **GAP_r1 (`L74/gap/FINDING.md`):** r1 with the RL rollout sampler wins
   16.67% vs greedy 42.08% = +25.42 pp [+20.42, +30.42] (decoding only); timing rules -3.12 [-8.54, +2.29], overrides
   +2.50 [-1.88, +6.88]: the live rule stack is neutral in the SIM. Live rule use (1,950 matches): overrides ~0.34/match,
-  hazard forced 3% of plays, ~15 frames/match held back by phase/threat tau. test_iwdiag 24/25 (the failing
+  hazard forced 3% of plays, ~15 frames/match held back by phase/threat tau.
+- **GAP heads + sweep (`L74/gap/FINDING.md`):** the sampled GATE costs -20.42 pp (card -6.04, cell -2.29 n.s.), same
+  plays/game -> timing. Gate T_gate .1 = greedy (-0.42 [-5.62, +5.00]); T .2 -6.46; centre .35 at T .5 -12.50.
+  R1 (gate .1, card/cell .5) -13.54; R2 (all .2) -8.12. Next proposal: one-change RL test of the rollout gate
+  temperature (needs T_gate in rl_royale's behaviour AND update log-probs; r1's trainer lives on l74-newsim). test_iwdiag 24/25 (the failing
   `test_device_evidence_matches_local_sources` is stale since this morning's supplement 1 -> 2 change).
 - v8: owner reports a rebuilt run; I did not verify or advise on it (safety stops). oracle-2 kept warm per owner.
 
