@@ -44,6 +44,6 @@ def test_singletons_and_off_by_default_untouched():
 def test_ext_forms_map_reader_ids_to_catalog_forms():
     by_id, by_name = c.load_catalog()
     assert by_id[13000043]['display_name'] == 'AngryBarbarians' and by_id[13000043]['evolution_form_id'] == 13000043
-    assert by_id[203000042]['display_name'] == 'ElectroWizard' and by_id[203000042]['hero_form_id'] == 203000042
+    assert 203000042 not in by_id                                  # hero E-Wiz: the SIM cannot load its ability
     assert by_name['AngryBarbarians']['card_id'] in by_id      # base id still maps to the same (augmented) entry
     assert by_id[203000023]['display_name'] == 'IceWizard'     # phase_stats' own alias untouched
