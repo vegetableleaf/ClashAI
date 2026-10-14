@@ -701,3 +701,9 @@ class TestActorExitWithUnreadPut(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_league_opp_T_defaults_to_T_and_overrides_it():
+    from pipeline.rl_royale import opp_T
+    assert opp_T({"T": 0.5}) == 0.5 and opp_T({"T": 0.5, "league_opp_T": None}) == 0.5
+    assert opp_T({"T": 0.5, "league_opp_T": 0.05}) == 0.05

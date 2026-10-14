@@ -150,6 +150,13 @@ def condition_cfg(c: dict) -> dict:
             "extrapolate_ticks": h}
 
 
+def opp_T(base: dict) -> float:
+    """League opponents' sampling temperature: `league_opp_T` (10-14 opponent calibration: decisive opponents punish like
+    live) or, unset, the learner's T as before."""
+    t = base.get("league_opp_T")
+    return float(base["T"] if t is None else t)
+
+
 def actor_cfg(base: dict, kind: str, aid: int, dev: str) -> dict:
     """The e1_eval match cfg an actor runs a job under: ``rollout`` = the tempered sampler, recorded; ``screen`` = the
     greedy live rule. BOTH carry the base's condition keys (``condition_cfg``), so train and screen conditions match."""
@@ -1031,6 +1038,8 @@ def validate_league(cfg: dict) -> None:
         v = cfg.get(k)
         if not (isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v) and v >= 0):
             bad.append(f"{k} must be a finite number >= 0, got {v!r}")
+    if cfg.get("league_opp_T") is not None and not float(cfg["league_opp_T"]) > 0:
+        bad.append(f"league_opp_T must be > 0 (or null = T), got {cfg['league_opp_T']!r}")
     if cfg.get("league_opp_policy") not in ("live", "sample"):
         bad.append(f"league_opp_policy must be live or sample, got {cfg.get('league_opp_policy')!r}")
     if bad:
@@ -1703,6 +1712,7 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
                     opp_cache[pth] = (pol, str(mi.get("grid", "floor")))
                 opps = {j[1]["opp"]["id"]: (opp_cache[j[1]["opp"]["path"]][0],
                                             {**cfg, "policy": base["league_opp_policy"], "record": False, "T_gate": None,
+                                             "T": opp_T(base),
                                              **{k: base[k] for k in AO.STYLE_KEYS if k in base},
                                              "grid": opp_cache[j[1]["opp"]["path"]][1]}) for j in jobs}
                 E.run_selfplay_batch(lambda: RoyaleSelfPlayEnv(decision_ticks=int(base["decide_every"]), forms_mode=fm,
@@ -1899,7 +1909,8 @@ def branch_worker_main(wid: int, in_q, out_q, base: dict) -> None:
         return True
 
     lcfg = actor_cfg(base, "screen", wid, dev)                # the greedy live rule, unrecorded
-    ocfg = {**actor_cfg(base, "rollout", wid, dev), "policy": base["league_opp_policy"], "record": False, "T_gate": None}
+    ocfg = {**actor_cfg(base, "rollout", wid, dev), "policy": base["league_opp_policy"], "record": False, "T_gate": None,
+            "T": opp_T(base)}
     sp_env = (lambda: RoyaleSelfPlayEnv(decision_ticks=int(base["decide_every"]), forms_mode=base.get("forms_mode", "base"),
                                         hero_abilities=base.get("hero_abilities", False),
                                         ability_policy=base.get("ability_policy", "generic")))
@@ -2059,7 +2070,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
         k, v = ov.split("=", 1)
         if (k not in cfg and k != "ability_policy" and k not in BRANCH_DEFAULTS   # optional: absent = generic / off
                 and k not in VALUE_PHI_KEYS and k not in AO.DEFAULTS
-                and k not in ("league_learner_icebow_share", "learner_pipeline_frac")):
+                and k not in ("league_learner_icebow_share", "learner_pipeline_frac", "league_opp_T")):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
         cfg[k] = yaml.safe_load(v)
     if type(cfg["hero_abilities"]) is not bool:

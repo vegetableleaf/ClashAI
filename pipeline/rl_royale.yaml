@@ -52,6 +52,7 @@ league_snapshot_keep: 8     # the pool keeps the newest K snapshots (an evicted 
 # opp_style_temperature: [0.8, 1.2]  # multiplier of T (sampling policy)
 # opp_style_spell_delay: [0, 4]      # extra landing delay in ticks for spells
 # opp_style_bank: [0.0, 4.0]         # own elixir floor unless a visible enemy is on our half
+# league_opp_T: null       # 10-14: league opponents' sampling temperature (null = T); calibration: decisive opponents punish like live
 league_icebow_share: 0.2    # P(deck = icebow), learner and opponent alike (the S1 specialist: always icebow)
 # league_learner_icebow_share: null   # optional: P(learner deck = icebow) ONLY (null = league_icebow_share); opponents keep league_icebow_share
 league_deck_alpha: 0.5      # other decks: P ~ max(sides^alpha, floor * mean(sides^alpha)) over the census decks
