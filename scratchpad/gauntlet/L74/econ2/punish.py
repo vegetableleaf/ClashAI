@@ -23,10 +23,10 @@ def lost(towers, tp):
     return base[1] - min(x[1] for x in win) >= LOST_HP or min(x[2] for x in win) < base[2]
 
 
-def sim_towers(d):
+def sim_towers(d, name="r1"):
     out = {}
     for c in ("evo", "lad"):
-        for l in open(os.path.join(d, f"r1_{c}", "matches.jsonl")):
+        for l in open(os.path.join(d, f"{name}_{c}", "matches.jsonl")):
             r = json.loads(l)
             side = r["learner_side"]
             tw = [(f[0], sum(t[4] for t in f[3] if t[0] == side and t[4] > 0), sum(t[0] == side and t[4] > 0 for t in f[3]))
