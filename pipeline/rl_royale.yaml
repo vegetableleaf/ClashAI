@@ -93,6 +93,7 @@ actor_threads: 2            # torch CPU threads per actor (the box is shared; e1
 actor_timeout_s: 3600       # one actor job slower than this counts as a crash (restart once, then stop)
 
 T: 0.5                      # temperature of the gate / card / cell sampling (E1 3.3, plan default)
+T_gate: null                # 10-13 GAP: the LEARNER's gate temperature (null = T). Rollouts, PPO ratio and KL use it;
 tau: 0.27
 afford_mask: true           # allowed = in hand AND cost <= floored elixir (E1 2.3)
 stall_elixir: null
