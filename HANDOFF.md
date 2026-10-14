@@ -1,3 +1,18 @@
+## 2026-10-14 ~15:40 EDT -- ECON RESULT: r1 overspends in the SIM too (model habit), and the SIM punishes it half as hard
+
+- Pod 15477 (econ, stopped after sha-verified copy `pod_backup_weekend/pod1014b_econ/`): r1 full graft D3 960 games with
+  econ telemetry = 402/960, identical to the reference (telemetry does not change play). `econ2.py report live sim_r1`
+  -> `L74/econ2/econ2_live_sim_r1_20261014.txt`. (econ2 sim mode needs ~/ClashBot -> repo symlink on pods.)
+- Elixir at the opponent's commit -> at push start: pros 6.44 -> 5.87 (spend 0.57 on the approach); SIM r1 5.61 -> 4.12
+  (1.49); LIVE r1 5.59 -> 3.16 (2.43). ~2/3 of the gap to pros (1.75 of 2.71) is the MODEL (present in the SIM),
+  ~1/3 live-only. 1x, 15 s before a push: SIM spend 7.98 in 2.66 plays, live 8.20/2.84, pros 6.33/2.02.
+- `L74/econ2/punish.py` (same rule both sides: my towers lose >= 1000 HP or a tower falls within 15 s of push start):
+  SIM 50% of pushes met < 4 elixir, lost 25.3% (< 4) vs 11.4% (>= 4) = +13.9 pp [+11.4, +16.2]; LIVE 66%, 45.7% vs
+  18.8% = +26.9 pp [+19.4, +34.5]. The SIM punishes low elixir about HALF as hard, and SIM pushes are ~half as dangerous
+  at any elixir -> RL in the SIM has a weaker incentive to unlearn the habit. Association, not a causal estimate.
+- Implications (proposals, owner decision): (1) harder SIM opponents calibrated to live pressure (econ2 calib tooling:
+  OPP_T / OPP_TAU / opponent checkpoint) so pushes cost what they cost live; (2) a learned fix for approach spending.
+
 ## 2026-10-14 ~15:00 EDT -- 3 owner pods: econ (r1 SIM economy), distill on ADAPT (owner: ADAPT first), A/B3 SIM twin
 
 - Pods (key `~/.ssh/runpod_clashbot`; owner lists id_ed25519 but runpod_clashbot works): 
