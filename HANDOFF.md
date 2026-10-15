@@ -1,3 +1,15 @@
+## 2026-10-15 ~10:20 EDT -- FRESH-seed re-score (743000 + 744000, D3 deployed, 960 paired): F1 u65 +8.65 vs r1; longer adds nothing
+
+- Copy `pod_backup_weekend/pod1015_s5/FRESH/` (fresh_pod.sh on 19636): r1 417/960 43.4%, F1 u65 500 (52.1%), u150 499,
+  u250 525 (54.7%). Paired: **u65 - r1 +8.65 [+4.90, +12.60]**, u150 - r1 +8.54, u250 - r1 +11.25 [+7.19, +15.31];
+  u150 - u65 -0.10 [-4.17, +3.96]; u250 - u65 +2.60 [-1.56, +6.67]; u250 - u150 +2.71 n.s.
+- (a) The live model's SIM gain is not a selection artifact (old set +6.77, fresh +8.65). (c) u150's "+5 vs u65" on the
+  old set was selection on that set: fresh -0.10. Longer training: no significant gain. F1 u65 stays the right live model.
+- SIM vs live for the same pair (A/B5): SIM +8.7, live +2.7 n.s.; consistent with (b, plausible) the larger live
+  beatdown share (~50% vs 35%) where F1 gains nothing -> the beatdown gap is the lever (C2/F2 now, C1 next).
+- 19636 now runs the critic diagnostic (CRITIC_DIAG). New pod 216.81.245.71:49350 (27 cores, L40): critic_ctx smoke ->
+  gae_c2 seed 74.
+
 ## 2026-10-15 ~10:10 EDT -- owner rulings (C2/F2 then C1; F6 target mine; A3' whenever; 0.1.34 whenever); A/B5 done; builds
 
 - **Owner 10-15 ~09:10**: "Let's try C2/F2, then C1 afterwards. F6 gate target can be decided by you based on our previous
