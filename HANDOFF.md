@@ -1,3 +1,15 @@
+## 2026-10-15 ~01:55 EDT -- foundations factorial: per-decision credit (F1) is the active ingredient; F3 / F4 add nothing
+
+- 960 pairs, copies `pod_backup_weekend/pod1014b_arms/` (sha-verified), `L74/rlarms/arms_cmp.py`:
+  | arm | D3 vs r1 deployed | D1 vs r1 plain | vs F1 (D3 / D1) |
+  | gae (F1) | +6.77 [+2.81, +10.73] | +5.21 [+1.15, +9.27] | - |
+  | gae_tg (F1+F4) | +4.27 [+0.21, +8.33] | +3.85 [+0.00, +7.71] | -2.50 / -1.35 n.s. |
+  | gae_opp_tg (F1+F3+F4) | +4.58 [+0.62, +8.44] | +4.90 [+1.15, +8.75] | -2.19 / -0.31 n.s. |
+  | opp (F3 alone) | -2.71 [-6.35, +0.94] | -2.08 [-5.94, +1.77] | -9.48 / -7.29 |
+  Every gae arm beats r1, no non-gae arm does -> the F1 effect replicates across configs. Decisive opponents (F3) and the
+  low learner gate temperature (F4) add nothing measurable on top. Build step 3 on plain F1 (gae_solv / gae_tower are).
+- 15661 / 15118 now run gae_solv / gae_tower (started 05:41 / 05:44 UTC).
+
 ## 2026-10-15 ~01:25 EDT -- overnight pod queues (do NOT stop a pod while its queue_s3 job is pending)
 
 | pod | now | queued next (queue_s3.sh, /workspace/cb_s3 @ a208b22+) |
