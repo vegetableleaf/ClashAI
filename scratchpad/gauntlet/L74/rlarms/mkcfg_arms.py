@@ -12,9 +12,18 @@ arm, out = sys.argv[1], sys.argv[2]
 c = dict(torch.load(f"{RL}/newsim_r1/newsim_base_r1_final_grafted.pt", map_location="cpu", weights_only=False)["rl"]["config"])
 c.update(init=f"{RL}/newsim_base_main/newsim_base_main_u0060.pt", league_decks="icebow/data/rltest/decks_rl.json",
          max_updates=60)
+GAE = dict(advantage="gae", critic_warmup_updates=5, gae_lambda=0.95, gae_gamma=0.999, gae_gamma_unit="tick",
+           gae_gamma_tick=0.99994, vf_coef=0.5, shaping="none", max_updates=65)
+OPP = dict(league_opp_T=0.05)
+TG = dict(T_gate=0.1)          # F4: the learner's gate temperature (built 10-13; GAP: T .5 sampling loses 25 pp vs greedy)
 if arm == "gae":    # F1 per-decision credit: R2's GAE settings without its shaping; 5 critic-only updates -> 65 = 60 policy
-    c.update(advantage="gae", critic_warmup_updates=5, gae_lambda=0.95, gae_gamma=0.999, gae_gamma_unit="tick",
-             gae_gamma_tick=0.99994, vf_coef=0.5, shaping="none", max_updates=65)
+    c.update(GAE)
+elif arm in ("gae_opp", "gae_tg", "gae_opp_tg"):   # overnight factorial on the foundations (F1 x F3 x F4)
+    c.update(GAE)
+    if "opp" in arm:
+        c.update(OPP)
+    if "tg" in arm:
+        c.update(TG)
 elif arm == "opp":  # F3 calibrated opponents, ONE lever: every league opponent decisive (T .05 instead of the learner's .5;
     # calibration: E4 @ .03 low-elixir penalty +23.0 vs live +26.9, E4 @ .1 +17.1; calib_20261014.txt). r1's PFSP pool and
     # its 5 exploiter externals stay exactly as they were (adding E4 / gen_v1 to the pool = a later, separate arm).
