@@ -1,3 +1,17 @@
+## 2026-10-15 ~17:05 EDT -- F1 SEED 76 DEPLOYED (first candidate to beat live F1 on the live-mirrored SIM eval)
+
+- Live-mirrored SIM (D3, 960 paired, `L74/mix/live_cmp.py`, base = live F1 s74 u65 506/960 52.7%): **F1 s76 u65 550/960
+  57.3%, +4.58 pp [+0.62, +8.65]** (beatdown +6.1, rest +3.6); F1 s75 +3.12 n.s.; defensive tau (0.45/0.55/0.65) +3.33 n.s.
+  (beatdown +7.1 +- 5.8); aggressive tau +2.40 n.s.; r1 -8.23. Caveat: best of ~6 candidates (winner's curse; p ~0.03, not
+  multiplicity-corrected); s76 also beat s74 on the old set (+2.9).
+- Deployed 17:04 (`L74/deploy/deploy_s76.sh`): CKPT_OVERRIDE = rlarm_gae_s76_u0065_grafted.pt (4987c582, copied to
+  icebow/data/bench/rl_royale/rlarm_gae_s76/), LIVE_OPTIONS = default tau-phase (as measured; the defensive-tau file saved as
+  LIVE_OPTIONS.pre_s76_*), start_live.sh icebow --no-fast-plays (LIVE_FAST had been left ON by the owner's 16:35 bait session),
+  emotes off; first-match guard passed (main account, icebow). Revert = CKPT_OVERRIDE.pre_s76_*.
+- Incident: 16:35-16:58 the owner ran BAIT live on the second account; my defensive-tau restart (16:52, deploy_def_tau.sh)
+  restarted that bait run and the icebow-account guard set STOP after the 16:55 bait match. Owner chose "back to icebow".
+- Queued: s76 + defensive tau on the live pool (19636, f1s76_def) -> switch if it beats plain s76. gae_live s74/s75/s76 tonight.
+
 ## 2026-10-15 ~16:45 EDT -- owner: losing streak, "get a better model deployed"; grid / wrong-lane / MuMu window answers
 
 - Live F1 u65 since 09:10: 42W/36L 53.8% [42.8, 64.9] (78 matches; two 5-loss runs = normal variance at this rate).
