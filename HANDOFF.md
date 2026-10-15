@@ -1,3 +1,15 @@
+## 2026-10-15 ~13:55 EDT -- Tornado river fix (20 live matches): the combo fired once; A/B4 running
+
+- 20 river-on live matches (F1 u65, 12:22-13:45; guard passed: main account + icebow deck). `reward/TORNADO_USAGE_20.txt`:
+  20/20 matches had Rocket+Tornado in hand; over 4,787 sampled decision rows the river rule would have SUPPRESSED a combo on
+  11 and RE-AIMED one on 31 (sampled every 10 ticks: not distinct opportunities); the combo FIRED ONCE in 20 matches and that
+  one had no far-bank ground unit in reach. (a) The fix almost never changes play because the combo itself is rare live.
+- **A/B4 started 13:49** (run 20261015_134913_a674631a): A = notau (no --tau-threatened), B = tau 0.2 via --arm-extra, both
+  F1 u65 grafted (693889c3), fast off, river fix ON in both, 75/arm; ab_autoswitch armed with B's extra.
+- BUG/TODO: the chain's usage step crashed (CRLF in the path list; the first Discord report was the error). Reran by hand;
+  a `tr -d '\r'` fix attempt via sed wrote `tr -d ""` (no-op) into run_t20_ab4.sh line 55 -- NOT re-edited while the chain
+  (bash reading that file) still runs; fix it after A/B4 ends (use tr -d '\r').
+
 ## 2026-10-15 ~13:35 EDT -- C2 seed 74: +1.46 vs F1 (n.s.), same beatdown pattern; lambda .98 s75 queued; sampling question
 
 - rlarm_gae_c2 (critic_ctx arch, seed 74; copy `pod_backup_weekend/pod1014b_arms/rlarm_gae_c2*`, final e7944cb8): D1 453/960
