@@ -7,6 +7,7 @@
 #   Usage on a set-up pod (pod_setup_l74.sh):
 #     nohup bash scratchpad/gauntlet/L74/human/opp_behaviour_pod.sh > /workspace/oppbeh.log 2>&1 &
 #   Env: NAME (default LIVEPOOL_r1), OPP_T (default .1), OPP_CKPT (default: gap.py's E4), WORKERS (default 13), CK (learner)
+#        OPP_DE / OPP_RT = gap.py --opp-decide-every / --opp-reaction-ticks (10-15 human tempo, e6d105a); SEEDS (default both sets)
 #   Copy back (to the laptop): $O/sim_$NAME.json.gz -> scratchpad/gauntlet/L74/human/data/, then
 #     python opp_behaviour.py report --sim ECON_r1 $NAME      (first --sim = the primary comparison; put $NAME first for the live-mirrored one)
 set -Eeuo pipefail
@@ -22,9 +23,10 @@ sed -i "s/'--hero-abilities', '--ability-policy'/'--hero-abilities', '--behaviou
 grep -q "'--behaviour-telemetry'" "$ISO/scratchpad/gauntlet/L74/livecal/livecal.py"   # fail loudly if the layout moved
 grep -q -- "--census-file" "$ISO/scratchpad/gauntlet/L74/gap/gap.py"
 cd "$ISO"
-for s in 741200 742000; do
+for s in ${SEEDS:-741200 742000}; do
   $PY scratchpad/gauntlet/L74/gap/gap.py --ckpt $CK --out "$O/g_$s" --arms D3 --seed-start $s --workers $W --opp-T $T \
       --census-file scratchpad/gauntlet/L74/mix/decks_live_eval.json ${OPP_CKPT:+--opp-ckpt "$OPP_CKPT"} \
+      ${OPP_DE:+--opp-decide-every $OPP_DE} ${OPP_RT:+--opp-reaction-ticks $OPP_RT} \
       --python $PY > "$O/g_$s.log" 2>&1
 done
 echo "matches with telemetry: $(cat "$O"/g_*/D3/*/matches.jsonl | grep -c lr_frames) / $(cat "$O"/g_*/D3/*/matches.jsonl | wc -l)"
