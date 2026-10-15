@@ -1,3 +1,9 @@
+## 2026-10-15 ~08:55 EDT -- F1 s74 to 250 updates: plateau (+0.62 vs u150)
+
+- rlarm_gae resumed 150 -> 250 (copy `pod_backup_weekend/pod1014b_arms/rlarm_gae_to250*`): vs u150 D3 +0.62 [-3.23, +4.48],
+  D1 +0.52 n.s.; vs u65 D3 +5.62 [+1.77, +9.58]; vs r1 deployed +12.40 [+8.33, +16.35] (same 960 pairs the runs were
+  picked on -> inflated). The FRESH re-score (seeds 743000/744000: r1, u65, u150, u250) now runs on 19636.
+
 ## 2026-10-15 ~08:20 EDT -- longer training verdict over 3 seeds: NOT a reliable gain (+5.0 / +1.0 / -0.8)
 
 - rlarm_gae_s75 resumed 65 -> 150 (copy `pod_backup_weekend/pod1014b_arms/rlarm_gae_s75_to150*`, final ea69914a): D3 504/960
