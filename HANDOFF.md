@@ -1,3 +1,17 @@
+## 2026-10-14 ~22:20 EDT -- OVERNIGHT (owner asleep): RL architecture plan on 6 pods; morning report owed (nulls count)
+
+- Owner: "keep working on the model overnight, following the RL architecture plan ... some notable results from the RL by
+  tomorrow morning, even if it's a null". 3 more pods: `-p 37607 root@81.27.69.179` (13.6 cores), `-p 15118
+  root@64.247.206.80` (27.2), `-p 15661 root@64.247.206.79` (27.2); key runpod_clashbot.
+- Foundations factorial (all r1 cfg from newsim_base_main_u0060, scored D1 + D3 grafted on the 960 pairs vs rltest_ctrl):
+  19636 gae (F1) | 12787 opp (F3, league_opp_T .05) | 37607 gae_opp | 15661 gae_tg (F1+F4 T_gate .1) | 15118 gae_opp_tg.
+  F1/F3 finished training (65/60 updates; last-update training win rate gae .457, opp .285 -- decisive opponents are much
+  harder) and are scoring. 12037: DAgger iteration 2.
+- Code in progress (agent): F6 `kl_ref_gate` (gate leash to the imitation model gen_v32_s0) + arm kl_imit. Next agent after
+  it: A1/A2 potentials (score-aware tower + tiebreak margin, solvency) on the gae base, with the §9 pre-flight checks.
+- Queue as pods free: F1 resumed to 150 updates (does RL need longer?), F6 arm, A2 arm; every pod stopped after a
+  sha-verified copy-back when its queue is empty.
+
 ## 2026-10-14 ~21:00 EDT -- owner: after A/B3, tornado fix for 40 matches, then A/B4 -> chain armed (WMI)
 
 - `L74/ab/post_ab3_chain.sh` (WMI pid 60756, log `post_ab3_chain.out`, Discord each stage): waits for A/B3 + auto-switch
