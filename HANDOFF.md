@@ -1,3 +1,15 @@
+## 2026-10-15 ~07:55 EDT -- "longer training helps" does NOT replicate on seed 76 (u65 -> u150)
+
+- rlarm_gae_s76 resumed 65 -> 150 (seed=76; copy `pod_backup_weekend/pod1014b_arms/rlarm_gae_s76_to150*`, final
+  05247ad2): D3 487/960 50.73%, D1 419/960 43.65%. **vs its own u65: D3 -0.83 [-4.90, +3.12], D1 -5.83 [-9.79, -1.98]**
+  (plain model significantly WORSE); vs r1 deployed still +8.85 [+4.90, +12.92].
+- Seed 74 over the same stretch: D3 +5.00 [+1.04, +8.96], D1 +3.54 n.s. -> (c) the general claim "more updates of F1
+  keep paying" is contradicted; it is seed-dependent. Seed 75 to150 (12787) is the tie-breaker; to250 (19636) still runs.
+- Live implication: F1 u150 (s74) is the best single SIM model, but the u65 -> u150 gain is not a reliable property of
+  the recipe; picking the best of several seeds by the same 960 pairs also inflates its estimate (selection on the
+  eval set). A live candidate should be re-scored on FRESH seeds before any owner decision.
+- Pod 12037 STOPPED after the sha-verified copy.
+
 ## 2026-10-15 ~05:45 EDT -- A3' exchange rate measured: 1 princess tower of HP ~ 22-25 elixir of trade (2x/OT)
 
 - Data: 1000 r1-vs-gen_v1 SIM matches (il policy, `audit --dump-rows`; copy `pod_backup_weekend/pod1015_s5/ROWS_R1/`,
