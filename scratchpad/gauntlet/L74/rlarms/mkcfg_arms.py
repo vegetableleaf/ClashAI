@@ -1,10 +1,12 @@
 """Reward-architecture arms (owner-approved 10-14, L74/reward/REWARD_ARCHITECTURE.md), each ONE change vs rltest_ctrl
 (r1's exact config continued 60 policy updates from newsim_base_main_u0060, 10-13).
     python mkcfg_arms.py ARM OUT.yaml      ARM = gae (F1) | opp (F3) | kl_imit (F6) | gae_solv (A2) | gae_tower (A1+A1b)
-    | gae_trade (A3, step 5)
+    | gae_trade (A3, step 5) | gae_c2 (C2) | gae_f2 (F2)
 kl_imit needs KL_IMIT (below, not in git: icebow/data/) on the pod -> put it in ckpts.tgz; checked here by sha256.
 gae_solv / gae_tower (step 3) = arm gae + ONE potential (reward_shaping solvency / tower_score), its weights pinned in
 the yaml from reward_shaping.STATE_PHI_DEFAULTS (PYTHONPATH = the repo); pre-flight: L74/reward/preflight_a1a2.py.
+gae_c2 / gae_f2 = arm gae + ONE change, rl_royale ``critic_ctx``: the critic also sees the opponent's archetype (+ tank
+flag) [C2, "arch"], or archetype + match phase + crown state [F2, "full"]; public context only, policy unchanged.
 """
 import hashlib
 import sys
@@ -38,6 +40,8 @@ elif arm in ("gae_solv", "gae_tower", "gae_trade"):   # steps 3/5: F1 + ONE pote
     if arm == "gae_trade" and c.get("opp_elixir") not in ("counter", "counter_all"):
         raise SystemExit("gae_trade: r1's config must use the public opp_elixir counter")
     c.update(shaping=mode, **{k: v for k, v in STATE_PHI_DEFAULTS.items() if k.startswith(pre)})
+elif arm in ("gae_c2", "gae_f2"):   # C2 / F2: F1 + a context-aware critic (rl_royale CtxHead), nothing else
+    c.update(GAE, critic_ctx={"gae_c2": "arch", "gae_f2": "full"}[arm])
 elif arm in ("gae_opp", "gae_tg", "gae_opp_tg"):   # overnight factorial on the foundations (F1 x F3 x F4)
     c.update(GAE)
     if "opp" in arm:
@@ -52,4 +56,4 @@ else:
     raise SystemExit(f"unknown arm {arm!r}")
 yaml.safe_dump(c, open(out, "w"), sort_keys=False)
 print(arm, {k: c[k] for k in ("advantage", "max_updates", "league_pfsp", "T", "kl_ref_gate", "shaping",
-                              "shaping_critic_scale") if k in c}, c.get("league_opp_T"))
+                              "shaping_critic_scale", "critic_ctx") if k in c}, c.get("league_opp_T"))

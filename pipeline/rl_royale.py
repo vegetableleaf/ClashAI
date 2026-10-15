@@ -36,6 +36,10 @@ old KL_cell rule exactly (and what a run resumed from before the key keeps).
 F6 (``kl_ref_gate: <checkpoint>``, opt-in; absent / null = unchanged, same config hash): KL_gate (and the gate entropy
 baseline) is taken to that frozen net -- e.g. the imitation generalist -- instead of the run's own init; card and cell
 keep the init ref (``ref_terms(gate_ref=)``, ``Learner._load_gate_ref``). The update-0 KL check then skips KL_gate.
+C2 / F2 (``critic_ctx: arch | full``, gae only, opt-in; absent / null = unchanged, same config hash; L74
+reward/REWARD_ARCHITECTURE.md 5 / 2): rollout rows carry a public context (e1_eval ``Match._ctx_row``: opponent
+archetype + tank flag, match phase, crowns) and V = value_scalar(value_head(g) + ``CtxHead``(ctx, g)), the head owned
+by the Learner (not the model's state_dict; zero last layer = the plain critic at update 0; checkpoint rl["ctx_head"]).
 
     research/ext/Royale/.venv/Scripts/python.exe -m pipeline.rl_royale --config pipeline/rl_royale.yaml --run NAME
     ... --smoke          E=4, G=2, 1 actor, 2 updates + the checks below; prints SMOKE PASS, exits 0
@@ -183,6 +187,8 @@ def actor_cfg(base: dict, kind: str, aid: int, dev: str) -> dict:
         cfg["record_phi"] = base["shaping"]                   # step 3: the mode's reward_shaping.state_record row
     if kind == "rollout" and (base.get("gae_gamma_unit", "row") == "tick" or base.get("shaping") in ("value_phi", "live_phi")):
         cfg["record_tick"] = True                             # each row carries its decision tick
+    if kind == "rollout" and base.get("critic_ctx") is not None:
+        cfg["record_ctx"] = True                              # C2 / F2: each row carries e1_eval Match._ctx_row
     return cfg
 
 
@@ -218,6 +224,10 @@ GAMMA_UNITS = ("row", "tick")
 VALUE_PHI_KEYS = tuple(VALUE_PHI_DEFAULTS)              # optional config overrides (load_config)
 # step 3 (``shaping: solvency | tower_score``): optional keys outside GAE_DEFAULTS, returned only for those modes.
 STATE_PHI_KEYS = tuple(RS.STATE_PHI_DEFAULTS)
+# C2 / F2 (L74 REWARD_ARCHITECTURE.md 5 / 2; ``critic_ctx``, gae only, optional key: absent / null = off, same hash):
+# the critic also reads the row's public context (``CtxHead``); arch = opponent archetype + tank flag, full = + match
+# phase + own / foe crowns. adv_cfg returns the key only when set.
+CRITIC_CTX_MODES = (None, "arch", "full")
 
 
 def adv_cfg(cfg: dict) -> dict:
@@ -297,8 +307,15 @@ def adv_cfg(cfg: dict) -> dict:
         if c["critic_warmup_updates"] == 0:
             bad.append(f"shaping {c['shaping']!r} needs critic_warmup_updates > 0 (the pretrained value head "
                        f"predicts G, not the residual (G - Phi) / scale)")
+    cc = cfg.get("critic_ctx")
+    if cc not in CRITIC_CTX_MODES:
+        bad.append(f"critic_ctx must be one of {CRITIC_CTX_MODES}, got {cc!r}")
+    elif cc is not None and c["advantage"] != "gae":
+        bad.append(f"critic_ctx {cc!r} needs advantage gae (match_loo has no critic)")
     if bad:
         raise SystemExit("bad advantage config: " + "; ".join(bad))
+    if cc is not None:                                        # optional key: absent = the R1 dict exactly
+        c["critic_ctx"] = cc
     if c["shaping"] in ("value_phi", "live_phi"):
         c.update(vp)
     if c["shaping"] in RS.STATE_PHI_MODES:
@@ -768,6 +785,41 @@ def value_scalar(logits: torch.Tensor) -> torch.Tensor:
     return p[..., 4:].sum(-1) - p[..., :3].sum(-1)
 
 
+class CtxHead(torch.nn.Module):
+    """C2 / F2 (``critic_ctx``): a residual on the value head's 7 logits from the row's public context ``B["ctx"]``
+    ([arch_id, tank_flag, phase_id, own crowns, foe crowns], e1_eval ``Match._ctx_row``) and the trunk feature g the
+    value head reads: V = value_scalar(value_head(g) + CtxHead(ctx, g)). Owned by the Learner, never part of the
+    model's state_dict (grafting / live inference untouched). The last layer starts at exactly 0, so at update 0 V is
+    the plain critic's V bit for bit. Features: arch one-hot (``archetypes.ARCH_IDS``, 9) + tank (1); ``full`` also
+    phase one-hot (3) + own / foe crowns one-hot (4 + 4)."""
+
+    def __init__(self, mode: str, d_g: int, hidden: int = 64):
+        from pipeline.archetypes import ARCH_IDS
+        super().__init__()
+        self.mode, self.n_arch = mode, len(ARCH_IDS)
+        d_ctx = self.n_arch + 1 + (11 if mode == "full" else 0)
+        self.net = torch.nn.Sequential(torch.nn.Linear(d_ctx + int(d_g), hidden), torch.nn.ReLU(),
+                                       torch.nn.Linear(hidden, 7))
+        torch.nn.init.zeros_(self.net[2].weight)
+        torch.nn.init.zeros_(self.net[2].bias)
+
+    def features(self, ctx: torch.Tensor) -> torch.Tensor:
+        c = ctx.long()
+        f = [Fn.one_hot(c[:, 0], self.n_arch), c[:, 1:2].clamp(0, 1)]
+        if self.mode == "full":
+            f += [Fn.one_hot(c[:, 2], 3), Fn.one_hot(c[:, 3], 4), Fn.one_hot(c[:, 4], 4)]
+        return torch.cat(f, dim=1).float()
+
+    def forward(self, ctx: torch.Tensor, g: torch.Tensor) -> torch.Tensor:
+        return self.net(torch.cat([self.features(ctx).to(g.dtype), g], dim=1))
+
+
+def critic_logits(model, g: torch.Tensor, ctx_head=None, ctx=None) -> torch.Tensor:
+    """The critic's 7 logits on trunk feature g: ``model.value_head(g)`` (+ ``ctx_head(ctx, g)`` under critic_ctx)."""
+    out = model.value_head(g)
+    return out if ctx_head is None else out + ctx_head(ctx, g)
+
+
 def terminal_rewards(n_rows, outcomes) -> list[np.ndarray]:
     """Per-row step reward of each match: 0 on every row, ``reward(outcome)`` on its LAST contributing row (the
     outcome is the learner side's own, e1_eval ``_outcome``, whichever side it played). R2's shaping term adds onto
@@ -1193,6 +1245,8 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
     B["A"] = cat(lambda j: np.full(n_rows[j], A[j]))
     B["w"] = cat(lambda j: W[j])
     B["match"] = cat(lambda j: np.full(n_rows[j], j))
+    if use and "ctx" in results[use[0]]["traj"]:                     # critic_ctx: actor_cfg record_ctx rows
+        B["ctx"] = cat(lambda j: results[j]["traj"]["ctx"][keep[j]])
     sh = None
     if advantage == "gae":
         rs = terminal_rewards(n_rows, [r["outcome"] for r in results])
@@ -1346,7 +1400,7 @@ def _logit(p: float) -> float:
 
 
 def policy_terms(model, B: dict, idx, tau: float, T: float, value: bool = False, value_trunk: bool = True,
-                 T_gate: Optional[float] = None) -> dict:
+                 T_gate: Optional[float] = None, ctx_head=None) -> dict:
     """Recompute the behaviour log-probs of rows ``idx`` exactly as ``e1_eval.sample_decide_batch`` defined them:
     gate ``sigmoid((z - logit(tau)) / T)`` on gate-sampled rows; card softmax over ``allowed`` of the heads'
     hand-masked logits / T and cell softmax over 2,304 for the recorded slot / T on played rows; float64 after the
@@ -1355,7 +1409,8 @@ def policy_terms(model, B: dict, idx, tau: float, T: float, value: bool = False,
     sampler's own function -- so card = the hand-position logits on their deck slots (softmax over allowed slots ==
     over allowed hand positions) and cell = ``cell_logits_gen`` for the slot's card identity + form.
     ``value``: also ``v`` = ``value_scalar`` of the value head on the same forward (gae mode only); ``value_trunk``
-    False (``vf_trunk_grad: false``) detaches the trunk features under ``v``, so a loss on ``v`` reaches value_head only."""
+    False (``vf_trunk_grad: false``) detaches the trunk features under ``v``, so a loss on ``v`` reaches value_head only.
+    ``ctx_head`` (critic_ctx): ``v`` also adds the ``CtxHead`` residual on ``B["ctx"]`` (same g, same detach rule)."""
     if "hand_card" in B:
         pol = E.GenPolicy(model, ())
         enc, heads = pol.heads_t({k: B[k][idx] for k in E.gen_row_keys(model)})
@@ -1381,13 +1436,15 @@ def policy_terms(model, B: dict, idx, tau: float, T: float, value: bool = False,
         lp_cell = lp_cell.index_put((pi,), cell_lp.gather(1, cell[pi].unsqueeze(1)).squeeze(1))
     out = {"x": x, "card_lp": card_lp, "cell_lp": cell_lp, "lp_gate": lp_gate, "lp_card": lp_card, "lp_cell": lp_cell}
     if value:
-        out["v"] = value_scalar(model.value_head(enc["g"] if value_trunk else enc["g"].detach()))
+        g = enc["g"] if value_trunk else enc["g"].detach()
+        out["v"] = value_scalar(critic_logits(model, g, ctx_head, B["ctx"][idx] if ctx_head is not None else None))
     return out
 
 
 @torch.no_grad()
-def value_rows(model, B: dict, chunk: int = 512) -> torch.Tensor:
-    """V(s) (``value_scalar``) of every row under ``model``, no grad: the encoder + value head only."""
+def value_rows(model, B: dict, chunk: int = 512, ctx_head=None) -> torch.Tensor:
+    """V(s) (``value_scalar``) of every row under ``model``, no grad: the encoder + value head only (+ ``ctx_head``
+    on ``B["ctx"]`` under critic_ctx)."""
     N = len(B["A"])
     out = []
     for s in range(0, N, chunk):
@@ -1396,11 +1453,29 @@ def value_rows(model, B: dict, chunk: int = 512) -> torch.Tensor:
             enc = model.encode_gen({k: B[k][idx] for k in E.gen_row_keys(model)})
         else:
             enc = model.encode(B["tok"][idx], B["mask"][idx], B["sc"][idx], B["past"][idx])
-        out.append(value_scalar(model.value_head(enc["g"])))
+        out.append(value_scalar(critic_logits(model, enc["g"], ctx_head,
+                                              B["ctx"][idx] if ctx_head is not None else None)))
     return torch.cat(out) if out else torch.zeros(0, dtype=torch.float64, device=B["A"].device)
 
 
-def gae_batch(model, B: dict, cfg: dict) -> dict:
+def ctx_tank_stats(v_ev, ret, v_net, target, ctx, match) -> dict:
+    """critic_ctx diagnostics (logging only): rows split by the tank flag of their match's LAST kept row's context
+    (the opponent showed a tank by the end, or not) -> per group {rows, value_loss = mean 0.5 (v_net - target)^2,
+    explained_var of v_ev for ret} -- the same pairs as gae_batch's value_mae / explained_var, at the behaviour critic
+    (before this update's steps)."""
+    m = np.asarray(match)
+    last = np.r_[m[1:] != m[:-1], True] if len(m) else np.zeros(0, dtype=bool)
+    end = dict(zip(m[last].tolist(), np.asarray(ctx)[last, 1].tolist()))
+    tank = np.array([end[x] for x in m.tolist()], dtype=bool)
+    out = {}
+    for name, sel in (("tank", tank), ("no_tank", ~tank)):
+        n = int(sel.sum())
+        out[name] = {"rows": n, "value_loss": float((0.5 * (v_net[sel] - target[sel]) ** 2).mean()) if n else None,
+                     "explained_var": explained_variance(v_ev[sel], ret[sel]) if n else None}
+    return out
+
+
+def gae_batch(model, B: dict, cfg: dict, ctx_head=None) -> dict:
     """gae mode, once per update BEFORE any step (``model`` = the behaviour policy): ``v_old`` = V(s) per row, GAE over
     ``r_step`` -> ``ret`` (value target) and ``A`` normalised over the batch (mean 0, std 1). -> monitors (advantage
     mean / std BEFORE normalisation, return mean, V mean, explained variance of v_old for ret). The discount is
@@ -1422,9 +1497,11 @@ def gae_batch(model, B: dict, cfg: dict) -> dict:
     mean |A - GAE(r, v_net)| (what R1 would compute with the same net; 0 = shaping changed nothing), ``phi_share`` =
     mean |Phi| / mean |V_eff|, ``veff_mean``; ``explained_var`` is of V_eff for ret. Critic diagnostics (logging only):
     ``value_target_outside_share`` = share of v_net targets outside [-1, 1], ``value_saturation_share`` = share with
-    |v_net| > 0.95, ``value_mae`` = mean |v_net - target| (residual target with shaping, ret otherwise)."""
+    |v_net| > 0.95, ``value_mae`` = mean |v_net - target| (residual target with shaping, ret otherwise).
+    ``ctx_head`` (critic_ctx; needs ``B["ctx"]``): v_net includes the ``CtxHead`` residual, and ``ctx_tank`` splits
+    the value loss / explained variance by the match's final tank flag (``ctx_tank_stats``)."""
     c = adv_cfg(cfg)
-    v = value_rows(model, B)
+    v = value_rows(model, B, ctx_head=ctx_head)
     gam = B["gamma_row"].cpu().numpy() if "gamma_row" in B else c["gae_gamma"]
     vn, m, r = v.cpu().numpy(), B["match"].cpu().numpy(), B["r_step"].cpu().numpy()
     if "phi" not in B:
@@ -1449,6 +1526,8 @@ def gae_batch(model, B: dict, cfg: dict) -> dict:
     st.update({"value_target_outside_share": float((np.abs(target) > 1.0).mean()) if len(target) else None,
                "value_saturation_share": float((np.abs(vn) > 0.95).mean()) if len(vn) else None,
                "value_mae": float(np.abs(vn - target).mean()) if len(target) else None})
+    if ctx_head is not None:
+        st["ctx_tank"] = ctx_tank_stats(vn if "phi" not in B else veff, ret, vn, target, B["ctx"].cpu().numpy(), m)
     dev = B["A"].device
     B["A"] = torch.from_numpy((A - A.mean()) / (A.std() + 1e-8) if len(A) else A).to(dev)
     B["ret"] = torch.from_numpy(target).to(dev)
@@ -1513,9 +1592,11 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
     ``vf`` (gae mode: {coef, clip, policy}): + coef x the PPO-clipped value loss 0.5 max((V - ret)^2, (V_old +
     clip(V - V_old, +-clip) - ret)^2), per-match weighted like L_pg; ``policy`` False (critic warm-up) = the value
     loss ALONE (no L_pg, no KL term); ``trunk_grad`` False (default True) = the value loss trains value_head only.
+    ``vf["ctx_head"]`` (critic_ctx): V includes that ``CtxHead`` (its params get the value loss's gradient).
     None = the match_loo loss, unchanged."""
     t = policy_terms(model, B, idx, tau, T, value=vf is not None,
-                     value_trunk=True if vf is None else bool(vf.get("trunk_grad", True)), T_gate=T_gate)
+                     value_trunk=True if vf is None else bool(vf.get("trunk_grad", True)), T_gate=T_gate,
+                     ctx_head=None if vf is None else vf.get("ctx_head"))
     lp_new = t["lp_gate"] + t["lp_card"] + t["lp_cell"]
     ratio = torch.exp(lp_new - B["lp_old"][idx])
     A, w = B["A"][idx], B["w"][idx]
@@ -1551,7 +1632,8 @@ def vf_grad_share(model, B: dict, R: dict, cfg: dict, beta: float, vf: dict) -> 
     the KL monitors do not look). On ONE minibatch (``minibatch`` rows strided over the batch; no step, no .grad
     written, no RNG drawn): the gradient norms, on the TRUNK, of the value part of the loss as trained (vf_coef x L_v;
     exactly 0 with ``vf["trunk_grad"]`` False) and of the policy part (L_pg + beta KL). Trunk = every parameter but
-    value_head that the value loss reaches through the trunk features. -> {share = |g_v| / (|g_v| + |g_pg|), norms}."""
+    value_head that the value loss reaches through the trunk features (critic_ctx's Learner-owned ``CtxHead`` is not
+    a model parameter, so it is excluded too). -> {share = |g_v| / (|g_v| + |g_pg|), norms}."""
     N = len(B["A"])
     idx = torch.arange(0, N, max(1, N // int(cfg["minibatch"])), device=B["A"].device)[:int(cfg["minibatch"])]
     kw = dict(tau=cfg["tau"], T=cfg["T"], clip=cfg["clip"], beta=beta, n_total=N, T_gate=cfg.get("T_gate"))
@@ -1573,7 +1655,10 @@ def ppo_update(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
     """``ppo_epochs`` passes over the batch in random minibatches. Returns the monitors; ``first`` = epoch 0 minibatch 0
     (the on-policy check), ``nonfinite`` set (and the step skipped) on a non-finite loss or gradient norm.
     ``vf`` (gae mode, ``minibatch_loss``): + ``l_v``; ``vf["policy"]`` False = critic warm-up: ONLY ``value_head``
-    parameters get gradients (the trunk is shared with the policy heads, so training it would move the policy)."""
+    parameters get gradients (the trunk is shared with the policy heads, so training it would move the policy).
+    ``vf["ctx_head"]`` / ``vf["ctx_opt"]`` (critic_ctx): the Learner-owned ``CtxHead`` (not in ``model``, so never
+    frozen: it trains with the value head) and its own Adam, stepped with ``opt``; its grad norm is clipped
+    separately at grad_clip, so the model's clipping is exactly the plain critic's."""
     frozen = [p for n, p in model.named_parameters()
               if vf is not None and not vf["policy"] and not n.startswith("value_head.") and p.requires_grad]
     for p in frozen:
@@ -1594,6 +1679,7 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
     ratios, clips, gnorms = [], [], []
     mean = (lambda xs, k: float(np.mean([x[k] for x in xs if x[k] is not None])) if any(x[k] is not None for x in xs) else None)
     avg = (lambda xs: float(np.mean(xs)) if xs else None)
+    ctx_opt = None if vf is None else vf.get("ctx_opt")
 
     def summary(nonfinite: Optional[str]) -> dict:
         """Every key present even on the non-finite early exit (one_update logs them; None = not measured)."""
@@ -1615,10 +1701,17 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
             if not torch.isfinite(loss):
                 return summary(f"loss {float(loss.detach())} at epoch {ep} minibatch {s // mb}")
             opt.zero_grad(set_to_none=True)
+            if ctx_opt is not None:
+                ctx_opt.zero_grad(set_to_none=True)
             loss.backward()
             gn = torch.nn.utils.clip_grad_norm_(model.parameters(), float(cfg["grad_clip"]))
             if not torch.isfinite(gn):
                 return summary(f"grad norm {float(gn)} at epoch {ep} minibatch {s // mb}")
+            if ctx_opt is not None:
+                gc = torch.nn.utils.clip_grad_norm_(vf["ctx_head"].parameters(), float(cfg["grad_clip"]))
+                if not torch.isfinite(gc):
+                    return summary(f"ctx_head grad norm {float(gc)} at epoch {ep} minibatch {s // mb}")
+                ctx_opt.step()
             opt.step()
             (ep0 if ep == 0 else []).append(st)
             if ep == int(cfg["ppo_epochs"]) - 1:
@@ -2113,7 +2206,8 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
         k, v = ov.split("=", 1)
         if (k not in cfg and k != "ability_policy" and k not in BRANCH_DEFAULTS   # optional: absent = generic / off
                 and k not in VALUE_PHI_KEYS and k not in STATE_PHI_KEYS and k not in AO.DEFAULTS
-                and k not in ("league_learner_icebow_share", "learner_pipeline_frac", "league_opp_T", "kl_ref_gate")):
+                and k not in ("league_learner_icebow_share", "learner_pipeline_frac", "league_opp_T", "kl_ref_gate",
+                              "critic_ctx")):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
         cfg[k] = yaml.safe_load(v)
     if type(cfg["hero_abilities"]) is not bool:
@@ -2144,6 +2238,8 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "ability_policy"}
     if cfg.get("kl_ref_gate") is None:                       # F6 off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "kl_ref_gate"}
+    if cfg.get("critic_ctx") is None:                        # C2 / F2 off (absent or null) = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "critic_ctx"}
     return hashlib.sha256(json.dumps(cfg, sort_keys=True, default=str).encode()).hexdigest()
 
 
@@ -2242,6 +2338,8 @@ class Learner:
             self.phi_net = self._load_phi_net(ick)            # (never self.model / a resumed one), never trained
         self.model.eval()                                     # eval() for rollout AND update (E1 3.3 dropout trap)
         self.opt = torch.optim.Adam(self.model.parameters(), lr=float(cfg["lr"]))
+        if adv_cfg(cfg).get("critic_ctx") is not None:       # C2 / F2: the critic's context head + its own Adam
+            self._ctx_setup()
         if branch_cfg(cfg)["branch_gate"]:                    # opt3: the branch step's OWN Adam (never PPO's state)
             self.branch_opt = self._branch_optimizer(branch_cfg(cfg))
         self.beta, self.update = float(cfg["beta0"]), 0
@@ -2257,6 +2355,15 @@ class Learner:
         self.resumed = resume
         if resume:
             self._restore(self.ck_dir / f"{run}_latest.pt")
+
+    def _ctx_setup(self) -> None:
+        """critic_ctx: ``self.ctx_head`` (``CtxHead`` on the value head's input width; first layer drawn from a torch RNG
+        seeded with the run seed inside fork_rng, so the global torch RNG is untouched) and ``self.ctx_opt`` (Adam, lr).
+        Neither is in the model's state_dict; the checkpoint carries them under rl["ctx_head"] / rl["ctx_optimizer"]."""
+        with torch.random.fork_rng(devices=[]):
+            torch.manual_seed(int(self.cfg["seed"]))
+            self.ctx_head = CtxHead(self.cfg["critic_ctx"], self.model.value_head.in_features).to(self.dev)
+        self.ctx_opt = torch.optim.Adam(self.ctx_head.parameters(), lr=float(self.cfg["lr"]))
 
     def _league_setup(self) -> None:
         """League on (T12b): the learner must be the generalist; the deck pool + its sampling weights; opponents =
@@ -2486,6 +2593,8 @@ class Learner:
         return {"update": int(self.update), "beta": float(self.beta), "optimizer": self.opt.state_dict(),
                 **({"branch_optimizer": self.branch_opt.state_dict()}
                    if getattr(self, "branch_opt", None) is not None else {}),
+                **({"ctx_head": self.ctx_head.state_dict(), "ctx_optimizer": self.ctx_opt.state_dict()}
+                   if getattr(self, "ctx_head", None) is not None else {}),
                 "rng": _py(self.rng.bit_generator.state), "visits": list(map(int, self.visits)),
                 "config": _py(self.cfg), "config_sha256": config_sha(self.cfg), "run": self.run,
                 "init": str(self.cfg["init"]), "pool_sha256": self.pool_sha,
@@ -2540,6 +2649,13 @@ class Learner:
         self.opt.load_state_dict(rl["optimizer"])
         if getattr(self, "branch_opt", None) is not None and "branch_optimizer" in rl:
             self.branch_opt.load_state_dict(rl["branch_optimizer"])
+        if getattr(self, "ctx_head", None) is not None:      # critic_ctx
+            if "ctx_head" in rl:
+                self.ctx_head.load_state_dict(rl["ctx_head"])
+                self.ctx_opt.load_state_dict(rl["ctx_optimizer"])
+            else:
+                self.log("[rl] RESUME: the checkpoint has no ctx_head (run started without critic_ctx) -- it starts "
+                         "at zero (V = the plain critic's)")
         self.update, self.beta = int(rl["update"]), float(rl["beta"])
         self.rng.bit_generator.state = rl["rng"]
         self.visits = list(rl["visits"])
@@ -2667,9 +2783,12 @@ class Learner:
         beta_used = self.beta
         vf = gst = None
         warm = gae_on and self.update < ac["critic_warmup_updates"]        # critic warm-up: policy frozen
+        ctx_head = getattr(self, "ctx_head", None)            # critic_ctx (None = the plain critic)
         if gae_on:
-            gst = gae_batch(self.model, B, cfg)
+            gst = gae_batch(self.model, B, cfg, ctx_head=ctx_head)
             vf = {"coef": ac["vf_coef"], "clip": ac["vf_clip"], "policy": not warm, "trunk_grad": ac["vf_trunk_grad"]}
+            if ctx_head is not None:
+                vf.update(ctx_head=ctx_head, ctx_opt=self.ctx_opt)
             gst["vf_trunk_share"] = None if warm else vf_grad_share(self.model, B, R, cfg, beta_used, vf)
         upd = ppo_update(self.model, self.opt, B, R, cfg, beta_used, self.rng, vf=vf)
         t_upd = time.perf_counter() - t1
@@ -2690,7 +2809,8 @@ class Learner:
         if upd["nonfinite"]:
             reasons.append(f"non-finite {upd['nonfinite']}")
             crash = True
-        elif not all(bool(torch.isfinite(p).all()) for p in self.model.parameters()):
+        elif not all(bool(torch.isfinite(p).all()) for p in self.model.parameters()) or (
+                ctx_head is not None and not all(bool(torch.isfinite(p).all()) for p in ctx_head.parameters())):
             reasons.append("non-finite parameters after the update")
             crash = True
         bc, brst = branch_cfg(cfg), None
@@ -2733,7 +2853,8 @@ class Learner:
         if gae_on:
             rec["gae"] = {**gst, "l_v": upd["l_v"], "l_v_first": upd["l_v_first"], "critic_warmup": warm,
                           "gamma": ac["gae_gamma"], "lambda": ac["gae_lambda"], "vf_coef": ac["vf_coef"],
-                          "vf_trunk_grad": ac["vf_trunk_grad"], "shaping": ac["shaping"]}
+                          "vf_trunk_grad": ac["vf_trunk_grad"], "shaping": ac["shaping"],
+                          **({"critic_ctx": ac["critic_ctx"]} if ctx_head is not None else {})}
             if tick_unit:
                 rec["gae"].update({"gamma_unit": "tick", "gamma_tick": ac["gae_gamma_tick"],
                                    "gamma_row_mean": gamma_row_mean})
@@ -2901,6 +3022,8 @@ class Learner:
             base["shaping"] = self.cfg["shaping"]
         if self.cfg.get("gae_gamma_unit", "row") != "row":    # actor_cfg -> record_tick (absent by default)
             base["gae_gamma_unit"] = self.cfg["gae_gamma_unit"]
+        if self.cfg.get("critic_ctx") is not None:            # actor_cfg -> record_ctx (absent by default)
+            base["critic_ctx"] = self.cfg["critic_ctx"]
         return base
 
     def start_actors(self) -> None:

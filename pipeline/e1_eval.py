@@ -1188,6 +1188,20 @@ class Match:
     def _fresh_players(self) -> list:
         return self.env.eng.observe()["players"]
 
+    def _ctx_row(self, tick: int) -> list[int]:
+        """cfg["record_ctx"] (rl_royale critic_ctx), public information from this side's view only: [arch_id, tank_flag,
+        phase_id, own crowns, foe crowns]. arch / tank = ``archetypes.classify`` of the cumulative set (this match, this
+        side) of the OPPONENT's body names seen on the board at recorded decisions; phase 0 < 2400 <= 1 < 3600 <= 2 by
+        the decision tick; crowns = ``reward_shaping.crowns`` (the engine's when attached, else from the towers)."""
+        from pipeline import archetypes as AR
+        from pipeline import reward_shaping as RS
+        seen = self.__dict__.setdefault("_ctx_seen", set())
+        seen.update(AR.canon(e["name"]) for e in self.state.get("entities") or ()
+                    if int(e["side"]) != self.side and e.get("name"))
+        c = RS.crowns(self.state)
+        return [AR.ARCH_IDS.index(AR.classify(seen)) if seen else 0, int(bool(seen & AR.TANK)),
+                0 if tick < 2400 else 1 if tick < 3600 else 2, min(3, int(c[self.side])), min(3, int(c[1 - self.side]))]
+
     def _record(self, p: float, d: dict) -> int:
         """(b), first half: the decision's tallies and its cfg["record"] row. -> the decision tick."""
         cfg = self.cfg
@@ -1209,6 +1223,8 @@ class Match:
                        RS.state_record(cfg["record_phi"], self.state, self.side, self.env, mem)}
             if cfg.get("record_tick"):                        # rl_royale gae_gamma_unit tick: the decision tick
                 row = {**row, "tick": int(tick)}
+            if cfg.get("record_ctx"):                         # rl_royale critic_ctx: the decision's public context
+                row = {**row, "ctx": self._ctx_row(tick)}
             self.traj.append({**row, "allowed": d["allowed"],
                               "stalled": d["stalled"], "gate_sampled": d["gate_sampled"], "played": d["play"],
                               "slot": d["slot"], "cell": d["cell"], "lp_gate": d["lp_gate"], "lp_card": d["lp_card"],
@@ -1378,6 +1394,8 @@ class Match:
             out["phi_state"] = stack("phi_state").astype(np.float64)
         if tj and "tick" in tj[0]:                           # cfg["record_tick"]: each row's decision tick
             out["tick"] = scalar("tick", np.int64)
+        if tj and "ctx" in tj[0]:                            # cfg["record_ctx"]: [arch, tank, phase, own, foe crowns]
+            out["ctx"] = stack("ctx").astype(np.int64)
         return out
 
 
