@@ -1,7 +1,9 @@
 """Reward-architecture arms (owner-approved 10-14, L74/reward/REWARD_ARCHITECTURE.md), each ONE change vs rltest_ctrl
 (r1's exact config continued 60 policy updates from newsim_base_main_u0060, 10-13).
-    python mkcfg_arms.py ARM OUT.yaml      ARM = gae (F1) | opp (F3) | kl_imit (F6)
+    python mkcfg_arms.py ARM OUT.yaml      ARM = gae (F1) | opp (F3) | kl_imit (F6) | gae_solv (A2) | gae_tower (A1+A1b)
 kl_imit needs KL_IMIT (below, not in git: icebow/data/) on the pod -> put it in ckpts.tgz; checked here by sha256.
+gae_solv / gae_tower (step 3) = arm gae + ONE potential (reward_shaping solvency / tower_score), its weights pinned in
+the yaml from reward_shaping.STATE_PHI_DEFAULTS (PYTHONPATH = the repo); pre-flight: L74/reward/preflight_a1a2.py.
 """
 import hashlib
 import sys
@@ -27,6 +29,11 @@ if arm == "kl_imit":  # F6 ONE change: KL_gate to the imitation model instead of
     c.update(kl_ref_gate=KL_IMIT)
 elif arm == "gae":    # F1 per-decision credit: R2's GAE settings without its shaping; 5 critic-only updates -> 65 = 60 policy
     c.update(GAE)
+elif arm in ("gae_solv", "gae_tower"):   # step 3: F1 + ONE potential; same init, warm-up (5) and critic scale (1.5)
+    from pipeline.reward_shaping import STATE_PHI_DEFAULTS
+    c.update(GAE)
+    mode, pre = ("solvency", "shaping_solv_") if arm == "gae_solv" else ("tower_score", "shaping_ts_")
+    c.update(shaping=mode, **{k: v for k, v in STATE_PHI_DEFAULTS.items() if k.startswith(pre)})
 elif arm in ("gae_opp", "gae_tg", "gae_opp_tg"):   # overnight factorial on the foundations (F1 x F3 x F4)
     c.update(GAE)
     if "opp" in arm:
@@ -40,4 +47,5 @@ elif arm == "opp":  # F3 calibrated opponents, ONE lever: every league opponent 
 else:
     raise SystemExit(f"unknown arm {arm!r}")
 yaml.safe_dump(c, open(out, "w"), sort_keys=False)
-print(arm, {k: c[k] for k in ("advantage", "max_updates", "league_pfsp", "T", "kl_ref_gate") if k in c}, c.get("league_opp_T"))
+print(arm, {k: c[k] for k in ("advantage", "max_updates", "league_pfsp", "T", "kl_ref_gate", "shaping",
+                              "shaping_critic_scale") if k in c}, c.get("league_opp_T"))

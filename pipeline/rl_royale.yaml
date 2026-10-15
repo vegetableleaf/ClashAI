@@ -88,6 +88,8 @@ shaping_w_tower: 0.3        # plan 3b: |Phi| <= (5/3) w = 0.5 x the terminal rew
 shaping_w_crown: 0.3
 shaping_critic_scale: 1.5   # v_net (P(win) - P(loss), bounded [-1, 1]) learns (G - Phi) / scale; |G - Phi| < 1 + w_tower
                             # + (2/3) w_crown = 1.5 at w 0.3 (a smaller scale is refused); measured max |Phi| 0.388
+# step 3 (L74 REWARD_ARCHITECTURE.md A2 / A1+A1b): shaping solvency | tower_score, optional shaping_solv_* /
+# shaping_ts_* keys (absent here on purpose: defaults reward_shaping.STATE_PHI_DEFAULTS; scale >= 1 + phi_bound)
 
 # ---- actors (plan diff 5)
 n_actors: 3                 # actor processes (torch.multiprocessing, spawn)

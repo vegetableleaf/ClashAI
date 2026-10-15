@@ -1,3 +1,17 @@
+## 2026-10-15 ~01:00 EDT -- step 3 shaping built (A2 solvency, A1 tower_score + tiebreak), opt-in; arms gae_solv / gae_tower
+
+- `pipeline/reward_shaping.py` + rl_royale/e1_eval opt-in wiring (agent, reviewed; default hash unchanged): `shaping:
+  solvency` Phi = -w min(cap, max(0, sum_lane max(0, k T_lane - D_lane) - E_own)) (T = hp-scaled elixir value of enemy
+  troops on my half or moving toward me, per lane; spells / spell-made bodies excluded; D = my troops/buildings on my half
+  in that lane or near centre; w .04 k 1 cap 10, |Phi| <= .40); `shaping: tower_score` (own h(f) = 1-(1-f)^3 by crown
+  state, enemy mean over standing princesses, enemy king weight 0, tiebreak ramp from 2x to OT end, w_tb .15; |Phi| <= .45).
+  Critic scale refusal extended (>= 1 + bound). 20 new tests + 94 existing pass; preflight_a1a2.py offline passes
+  (telescoping residual <= 1.1e-16); live --check PASS (e1_eval touched, default path unchanged).
+- Risks (agent): solvency non-zero on ~4% of rows in a 2-match smoke (may be too sparse); Barrel/Graveyard pushes invisible;
+  air vs ground not modelled; tiebreak ignores the enemy king. Scripted-policy audit (`audit_a1a2`, ~1 h) not yet run.
+- Plan: gae_solv and gae_tower queued on pods 15661 / 15118 after their factorial arms (fresh checkout /workspace/cb_s3);
+  the audit on the next free pod.
+
 ## 2026-10-15 ~00:35 EDT -- distillation iteration 2 (DAgger): covariate shift CONTRADICTED as the cause; line parked
 
 - Pod 12037 (copy `pod_backup_weekend/pod1014b_dagger/`, `L74/distill/results/ITER2_DAGGER_SUMMARY.txt`), ADAPT, 960 pairs:

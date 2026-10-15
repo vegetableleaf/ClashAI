@@ -45,6 +45,14 @@ twin)
     grep -E "^D3:" $R/TWIN_${P}_$S/SUMMARY.txt || true
   done; done
   touch $R/TWIN_DONE ;;
-rlarm_gae|rlarm_opp|rlarm_gae_opp|rlarm_gae_tg|rlarm_gae_opp_tg|rlarm_kl_imit)   # REWARD_ARCHITECTURE.md steps 1-2 (F1 per-decision credit / F3 decisive opponents / F6 KL_gate to imitation), one change each
+rlarm_gae|rlarm_opp|rlarm_gae_opp|rlarm_gae_tg|rlarm_gae_opp_tg|rlarm_kl_imit|rlarm_gae_solv|rlarm_gae_tower)   # REWARD_ARCHITECTURE.md steps 1-3 (F1 per-decision credit / F3 decisive opponents / F6 KL_gate to imitation / step 3 = gae + ONE potential: A2 solvency, A1+A1b tower_score), one change each
   exec bash scratchpad/gauntlet/L74/rlarms/run_rlarm.sh ${1#rlarm_} ;;
+audit_a1a2)   # step-3 pre-flight 9.1-9.3 on SIM rollouts (L74/reward/preflight_a1a2.py audit): IL (gen_v1_s0) + r1 policies
+  exec >> $R/audit_a1a2.log 2>&1
+  for CK in icebow/data/pipeline/gen_v1_s0/gen_s0.pt $RL/newsim_r1/newsim_base_r1_final_grafted.pt; do
+    N=$(basename $(dirname $CK))
+    flock /workspace/cpu.lock $PY scratchpad/gauntlet/L74/reward/preflight_a1a2.py audit --out $R/AUDIT_A1A2_$N \
+      --ckpt $CK --matches ${MATCHES:-100} --workers ${WORKERS:-13} || echo "AUDIT EXIT $? $N"
+  done
+  touch $R/AUDIT_A1A2_DONE ;;
 esac

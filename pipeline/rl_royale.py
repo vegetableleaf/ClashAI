@@ -67,6 +67,10 @@ One update (``Learner.one_update``):
      (``value_phi_rewards``); |Phi| <= shaping_w_value. Actors only add the tick record (``record_tick``).
      ``shaping: live_phi`` uses the same causal smoothing and residual critic with 2 P(win)-1 from the frozen
      public-board MLP (pipeline.live_phi). Null shaping_phi_ckpt resolves to L74/livephi/phi_live.pt. Default off.
+     ``shaping: solvency | tower_score`` (L74 REWARD_ARCHITECTURE.md step 3: A2 / A1 + A1b): R2's machinery with Phi
+     from the mode's own public-state row (``reward_shaping.state_record`` at the actor, ``state_phi`` here with the
+     optional ``shaping_solv_*`` / ``shaping_ts_*`` keys, defaults ``reward_shaping.STATE_PHI_DEFAULTS``; absent = the
+     historical config and hash); shaping_critic_scale must be >= 1 + ``reward_shaping.phi_bound``.
      ``gae_gamma_unit: tick`` (gae only; default row = gae_gamma per kept row): gamma_t = gae_gamma_tick ** (ticks
      from kept row t to the next kept row, ``row_gammas``), in GAE AND in F_t, from the ``tick`` rows e1_eval records
      under ``record_tick``. ``gae_terminal_gap: true`` (default false, gae + tick only) also discounts the terminal
@@ -175,6 +179,8 @@ def actor_cfg(base: dict, kind: str, aid: int, dev: str) -> dict:
         cfg["T_gate"] = float(base["T_gate"])
     if kind == "rollout" and base.get("shaping", "none") == "tower_crown":
         cfg["record_phi"] = True                              # R2: each row carries reward_shaping.phi_record
+    elif kind == "rollout" and base.get("shaping") in RS.STATE_PHI_MODES:
+        cfg["record_phi"] = base["shaping"]                   # step 3: the mode's reward_shaping.state_record row
     if kind == "rollout" and (base.get("gae_gamma_unit", "row") == "tick" or base.get("shaping") in ("value_phi", "live_phi")):
         cfg["record_tick"] = True                             # each row carries its decision tick
     return cfg
@@ -197,7 +203,7 @@ def loo_advantage(R, clip: float = 2.0) -> np.ndarray:
 
 # ---- per-decision credit (R1, scratchpad/gauntlet/L69/reward_plan.md): ``advantage: gae`` -------------------------
 ADV_MODES = ("match_loo", "gae")
-SHAPING_MODES = ("none", "tower_crown", "value_phi", "live_phi")   # R2 (reward_plan.md 2 / 3b) / lever C: potential shaping, gae only
+SHAPING_MODES = ("none", "tower_crown", "value_phi", "live_phi") + RS.STATE_PHI_MODES   # R2 / lever C / step 3, gae only
 GAE_DEFAULTS = {"advantage": "match_loo", "gae_gamma": 0.999, "gae_lambda": 0.95, "vf_coef": 0.5, "vf_clip": 0.2,
                 "critic_warmup_updates": 0,     # a config WITHOUT these keys (a run started before R1) = match_loo
                 "shaping": "none", "shaping_w_tower": 0.3, "shaping_w_crown": 0.3,   # ... and no shaping (R2)
@@ -210,12 +216,15 @@ GAE_DEFAULTS = {"advantage": "match_loo", "gae_gamma": 0.999, "gae_lambda": 0.95
 VALUE_PHI_DEFAULTS = {"shaping_w_value": 0.5, "shaping_phi_window_s": 10.0, "shaping_phi_ckpt": None}
 GAMMA_UNITS = ("row", "tick")
 VALUE_PHI_KEYS = tuple(VALUE_PHI_DEFAULTS)              # optional config overrides (load_config)
+# step 3 (``shaping: solvency | tower_score``): optional keys outside GAE_DEFAULTS, returned only for those modes.
+STATE_PHI_KEYS = tuple(RS.STATE_PHI_DEFAULTS)
 
 
 def adv_cfg(cfg: dict) -> dict:
     """The R1 keys of a config (``GAE_DEFAULTS`` for missing ones), validated: SystemExit naming the bad key."""
     c = {k: cfg.get(k, v) for k, v in GAE_DEFAULTS.items()}
     vp = {k: cfg.get(k, v) for k, v in VALUE_PHI_DEFAULTS.items()}
+    sp = {k: cfg.get(k, v) for k, v in RS.STATE_PHI_DEFAULTS.items()}
     num = (lambda v: isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v))
     bad = []
     if c["advantage"] not in ADV_MODES:
@@ -241,6 +250,16 @@ def adv_cfg(cfg: dict) -> dict:
     for k in ("shaping_w_value", "shaping_phi_window_s"):
         if not (num(vp[k]) and vp[k] >= 0.0):
             bad.append(f"{k} must be a finite number >= 0, got {vp[k]!r}")
+    for k in ("shaping_solv_w", "shaping_solv_k", "shaping_ts_w_tb"):
+        if not (num(sp[k]) and sp[k] >= 0.0):
+            bad.append(f"{k} must be a finite number >= 0, got {sp[k]!r}")
+    if not (num(sp["shaping_solv_cap"]) and sp["shaping_solv_cap"] > 0.0):
+        bad.append(f"shaping_solv_cap must be a finite number > 0, got {sp['shaping_solv_cap']!r}")
+    if not (num(sp["shaping_ts_h_power"]) and sp["shaping_ts_h_power"] >= 1.0):
+        bad.append(f"shaping_ts_h_power must be a finite number >= 1 (h concave), got {sp['shaping_ts_h_power']!r}")
+    for k in ("shaping_ts_w_own", "shaping_ts_w_foe"):                   # [behind, even, ahead]
+        if not (isinstance(sp[k], (list, tuple)) and len(sp[k]) == 3 and all(num(x) and x >= 0.0 for x in sp[k])):
+            bad.append(f"{k} must be 3 finite numbers >= 0 [behind, even, ahead], got {sp[k]!r}")
     if not isinstance(c["vf_trunk_grad"], bool):
         bad.append(f"vf_trunk_grad must be true or false, got {c['vf_trunk_grad']!r}")
     elif not c["vf_trunk_grad"] and c["advantage"] != "gae":
@@ -263,6 +282,8 @@ def adv_cfg(cfg: dict) -> dict:
     elif c["shaping"] != "none" and not bad:
         if c["shaping"] in ("value_phi", "live_phi"):                        # |Phi| <= w_value (a mean of V in [-1, 1], x w)
             need, why = 1.0 + vp["shaping_w_value"], "1 + w_value"
+        elif c["shaping"] in RS.STATE_PHI_MODES:                             # |Phi| <= phi_bound on every reachable state
+            need, why = 1.0 + RS.phi_bound(c["shaping"], sp), "1 + reward_shaping.phi_bound"
         else:
             need = 1.0 + c["shaping_w_tower"] + 2.0 / 3.0 * c["shaping_w_crown"]   # max |G - Phi| before the end
             why = "1 + w_tower + (2/3) w_crown"
@@ -276,6 +297,8 @@ def adv_cfg(cfg: dict) -> dict:
         raise SystemExit("bad advantage config: " + "; ".join(bad))
     if c["shaping"] in ("value_phi", "live_phi"):
         c.update(vp)
+    if c["shaping"] in RS.STATE_PHI_MODES:
+        c.update(sp)
     return c
 
 
@@ -1205,6 +1228,8 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
         st["shaping"]["mode"] = shaping["mode"]
     elif sh is not None:
         st["shaping"] = shaping_stats([sh[j] for j in use])
+        if shaping.get("mode") in RS.STATE_PHI_MODES:
+            st["shaping"]["mode"] = shaping["mode"]
     return B, st
 
 
@@ -1247,10 +1272,15 @@ def shaping_rewards(phi_rows, shaping: dict) -> dict:
     - Phi(s_t) with gamma = ``gae_gamma`` per kept row (the GAE step unit; or the per-row ``gamma_row`` array under
     ``gae_gamma_unit: tick``) and Phi = 0 after the last kept row (the match end). -> numpy F, its weighted terms
     tower / crown (F = tower + crown), and Phi(s_t) per row (``phi``, the terminal 0 dropped) with its weighted
-    terms ``phi_tower`` / ``phi_crown``."""
+    terms ``phi_tower`` / ``phi_crown``. Step 3 (``shaping["mode"]`` solvency / tower_score): the rows are that mode's
+    ``reward_shaping.state_record`` rows, Phi = ``reward_shaping.state_phi`` with ``shaping["params"]`` -> F, phi."""
+    g = shaping["gamma"]
+    if shaping.get("mode") in RS.STATE_PHI_MODES:
+        ph = RS.state_phi(shaping["mode"], phi_rows, shaping["params"]) if len(phi_rows) else np.zeros(0)
+        out = RS.shaping_from_parts(ph.tolist(), [0.0] * len(ph), float(g) if np.ndim(g) == 0 else g, (1.0, 0.0))
+        return {"F": np.asarray(out["F"]), "phi": np.asarray(out["phi"][:-1])}
     pt, pc = (np.atleast_1d(x).astype(np.float64) for x in RS.phi_parts(phi_rows))
     wt, wc = float(shaping["w_tower"]), float(shaping["w_crown"])
-    g = shaping["gamma"]
     out = RS.shaping_from_parts(pt.tolist(), pc.tolist(), float(g) if np.ndim(g) == 0 else g, (wt, wc))
     return {"F": np.asarray(out["F"]), "tower": np.asarray(out["tower"]), "crown": np.asarray(out["crown"]),
             "phi": np.asarray(out["phi"][:-1]), "phi_tower": wt * pt, "phi_crown": wc * pc}
@@ -1262,7 +1292,8 @@ def shaping_stats(per_match: list[dict]) -> dict:
     return-to-go, so a value above 0.5 means shaping is louder than half of winning)."""
     c = (lambda k: np.concatenate([m[k] for m in per_match]) if per_match else np.zeros(0))
     m = (lambda k: float(np.abs(c(k)).mean()) if len(c(k)) else None)
-    st = {f"mean_abs_{k}": m(k) for k in ("F", "tower", "crown", "phi", "phi_tower", "phi_crown")}
+    keys = [k for k in ("F", "tower", "crown", "phi", "phi_tower", "phi_crown") if not per_match or k in per_match[0]]
+    st = {f"mean_abs_{k}": m(k) for k in keys}                          # step 3 modes: F and phi only
     st["max_abs_phi"] = float(np.abs(c("phi")).max()) if len(c("phi")) else None
     st["shaping_dominates"] = None if st["mean_abs_phi"] is None else st["mean_abs_phi"] / 1.0
     st["rows"] = int(len(c("F")))
@@ -2077,7 +2108,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
             raise SystemExit(f"bad override {ov!r} (want key=value)")
         k, v = ov.split("=", 1)
         if (k not in cfg and k != "ability_policy" and k not in BRANCH_DEFAULTS   # optional: absent = generic / off
-                and k not in VALUE_PHI_KEYS and k not in AO.DEFAULTS
+                and k not in VALUE_PHI_KEYS and k not in STATE_PHI_KEYS and k not in AO.DEFAULTS
                 and k not in ("league_learner_icebow_share", "learner_pipeline_frac", "league_opp_T", "kl_ref_gate")):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
         cfg[k] = yaml.safe_load(v)
@@ -2617,6 +2648,8 @@ class Learner:
         if ac["shaping"] in ("value_phi", "live_phi"):
             shp = {"mode": ac["shaping"], "gamma": ac["gae_gamma"], "w_value": ac["shaping_w_value"],
                    "window_ticks": int(round(ac["shaping_phi_window_s"] / E.TICK_S)), "phi_fn": self._phi_values}
+        if ac["shaping"] in RS.STATE_PHI_MODES:                # step 3: Phi from the actors' state_record rows
+            shp = {"mode": ac["shaping"], "gamma": ac["gae_gamma"], "params": {k: ac[k] for k in STATE_PHI_KEYS}}
         tick_unit = gae_on and ac["gae_gamma_unit"] == "tick"
         Bn, bst = collate(results, float(cfg["adv_clip"]), advantage=ac["advantage"], shaping=shp,
                           **({"gamma_tick": ac["gae_gamma_tick"]} if tick_unit else {}),
@@ -2772,7 +2805,10 @@ class Learner:
                     f"{f((gst['vf_trunk_share'] or {}).get('share'))}" if gae_on else "")
                  + (f" | shape |F| {f(shs['mean_abs_F'], '{:.4f}')} (t {f(shs['mean_abs_tower'], '{:.4f}')} c "
                     f"{f(shs['mean_abs_crown'], '{:.4f}')}) |Phi| {f(shs['mean_abs_phi'], '{:.4f}')} dom "
-                    f"{f(shs['shaping_dominates'])}" if shs and shs.get("mode") not in ("value_phi", "live_phi") else "")
+                    f"{f(shs['shaping_dominates'])}" if shs and shs.get("mode") is None else "")
+                 + (f" | {shs['mode']} |F| {f(shs['mean_abs_F'], '{:.4f}')} |Phi| {f(shs['mean_abs_phi'], '{:.4f}')} "
+                    f"max {f(shs['max_abs_phi'], '{:.4f}')} dom {f(shs['shaping_dominates'])}"
+                    if shs and shs.get("mode") in RS.STATE_PHI_MODES else "")
                  + (f" | vphi |F| {f(shs['mean_abs_F'], '{:.4f}')} |Phi| {f(shs['mean_abs_phi'], '{:.4f}')} share "
                     f"{f(gst['phi_share'])} dPhi std {f(shs['phi_step_std'], '{:.4f}')} (raw "
                     f"{f(shs['raw_step_std'], '{:.4f}')}) end-corr {f(shs['phi_end_corr'], '{:+.3f}')}"

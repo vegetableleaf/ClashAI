@@ -1199,9 +1199,11 @@ class Match:
             row = {"tok": tok, "mask": mask, "sc": sc, "past": past}
             if self._gen_row is not None:                     # GenPolicy: the generalist's input row (zeroed sc,
                 row = {k: self._gen_row[k] for k in self._gen_row if k in GEN_ROW_KEYS + GEN_V3_KEYS + GEN_V31_KEYS}
-            if cfg.get("record_phi"):                         # rl_royale shaping (R2): what Phi needs, own view
-                from pipeline.reward_shaping import phi_record
-                row = {**row, "phi_state": phi_record(self.state, self.side)}
+            if cfg.get("record_phi"):                         # rl_royale shaping: what Phi needs, own view (True =
+                from pipeline import reward_shaping as RS     # R2 tower_crown, else the step-3 mode's own row)
+                row = {**row, "phi_state": RS.phi_record(self.state, self.side) if cfg["record_phi"] is True else
+                       RS.state_record(cfg["record_phi"], self.state, self.side, self.env,
+                                       self.__dict__.setdefault("_phi_mem", {}))}
             if cfg.get("record_tick"):                        # rl_royale gae_gamma_unit tick: the decision tick
                 row = {**row, "tick": int(tick)}
             self.traj.append({**row, "allowed": d["allowed"],
