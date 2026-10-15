@@ -4,7 +4,7 @@
 #   continue:   run_rlarm2.sh resume ARM RUN N              (RUN's own config, --resume to N updates)
 # Then graft OLD's heads and score D1 + D3 on the 960 pairs (as run_rlarm.sh). Results /workspace/results/$RUN.
 set -Eeuo pipefail
-CB=/workspace/clashbot; PY=/workspace/venv33/bin/python; MODE=$1; ARM=$2; RUN=$3; shift 3
+CB=${CB:-/workspace/clashbot}; PY=/workspace/venv33/bin/python; MODE=$1; ARM=$2; RUN=$3; shift 3
 RL=icebow/data/bench/rl_royale; OLD=$RL/rseries_r3c/rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt
 O=/workspace/results/$RUN; mkdir -p $O
 exec >> $O/run.log 2>&1
