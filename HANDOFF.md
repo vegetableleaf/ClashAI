@@ -1,3 +1,15 @@
+## 2026-10-14 ~21:00 EDT -- owner: after A/B3, tornado fix for 40 matches, then A/B4 -> chain armed (WMI)
+
+- `L74/ab/post_ab3_chain.sh` (WMI pid 60756, log `post_ab3_chain.out`, Discord each stage): waits for A/B3 + auto-switch
+  (needs "started live on" AND "account check: True"), appends `--tornado-river on` to LIVE_OPTIONS (backup
+  `LIVE_OPTIONS.pre_tornado_river_*`, --check must pass), restart_live.py; after 40 finished river-on matches runs
+  `reward/tornado_usage.py` -> `reward/TORNADO_USAGE_40.txt`; then A/B4: STOP between matches, base LIVE_OPTIONS minus
+  `--tau-threatened 0.2` (backup `LIVE_OPTIONS.pre_ab4_*`), A notau vs B tau (`--arm-extra B=--tau-threatened 0.2`), same
+  CKPT_OVERRIDE, river fix ON in both arms, 150/arm, auto-switch with --arm-extra.
+- tornado_usage baseline on 40 river-OFF matches (15:00-19:00): of 6,696 sampled Rocket+Tornado-in-hand rows the river rule
+  would suppress 3 and re-aim 16; 4 combos fired.
+- A/B3 ETA: 93/300 at ~20:00 -> ends ~09-10 tomorrow; then ~2.5 h of river matches; then A/B4 (~20 h).
+
 ## 2026-10-14 ~20:45 EDT -- tau_threatened SIM A/B: no difference (-0.10 pp [-3.02, +2.92]); live A/B decides
 
 - Pod 12037 (copy `pod_backup_weekend/pod1014b_tau/`, sha-verified): r1 full graft D3 WITHOUT `--tau-threatened 0.2`
