@@ -3,6 +3,7 @@
 # gap.py --census-file L74/mix/decks_live_eval.json (opponents drawn with P(deck) ~ its live frequency; CAL c opponent
 # policy E4 T .1) on the standard paired seeds 741200 + 742000 (960 games), arms ARMS (default D3 = the live rule stack).
 #   live_eval_pod.sh WAIT NAME CKPT [ARMS]      (CB = checkout with gap.py --census-file; results /workspace/results/LIVEEVAL)
+#   EXTRA='--tau-phase 0.25 0.35 0.45' -> appended to D3 via gap.py --extra (argparse: the later flag wins) -- posture sweep
 set -Eeuo pipefail
 W=$1; NAME=$2; CK=$3; ARMS=${4:-D3}; CB=${CB:-/workspace/clashbot}; PY=/workspace/venv33/bin/python
 O=/workspace/results/LIVEEVAL; mkdir -p $O; exec >> $O/run.log 2>&1
@@ -15,7 +16,8 @@ sha256sum $CK >> $O/ckpts.sha
 for S in 741200 742000; do
   echo "$(date -u +%T) $NAME $S"
   flock /workspace/cpu.lock $PY scratchpad/gauntlet/L74/gap/gap.py --ckpt $CK --out $O/${NAME}_$S --arms $ARMS --seed-start $S \
-    --census-file scratchpad/gauntlet/L74/mix/decks_live_eval.json --workers ${WORKERS:-25} > $O/${NAME}_$S.log 2>&1 \
+    --census-file scratchpad/gauntlet/L74/mix/decks_live_eval.json --workers ${WORKERS:-25} ${EXTRA:+--extra "$EXTRA"} \
+    > $O/${NAME}_$S.log 2>&1 \
     || echo "GAP EXIT $? $NAME $S"
 done
 touch $O/${NAME}.DONE
