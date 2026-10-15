@@ -1,0 +1,37 @@
+live history: 2514 matches with an end/stop event; result inferred from the last decision's towers (crowns, then tower hp)
+other              n 1096 win  62.2% [59.4, 65.1]
+weak_other         n  995 win  43.1% [40.0, 46.2]
+hyperbait          n  131 win  55.7% [47.2, 64.2]
+golem              n  116 win  36.2% [27.5, 45.0]
+royal_giant        n   74 win  54.1% [42.7, 65.4]
+lava_hound         n   39 win  33.3% [18.5, 48.1]
+pekka_bridge       n   37 win  37.8% [22.2, 53.5]
+royal_giant_monk   n   26 win  84.6% [70.7, 98.5]
+other signature cards (n >= 15, win < 45%):
+  barbarianhut       n   33 win  18.2%
+  littleprince       n   32 win  18.8%
+  phoenix            n   21 win  23.8%
+  lavahound          n   39 win  33.3%
+  darkwitch          n   74 win  35.1%
+  skeletonballoon    n  177 win  35.6%
+  skeletonking       n  117 win  36.8%
+  firespirithut      n  117 win  36.8%
+  golem              n  117 win  36.8%
+  ragebarbarian      n  121 win  38.0%
+  witchmother        n   68 win  38.2%
+  megaknight         n  341 win  38.4%
+  angrybarbarians    n  184 win  39.1%
+  goblinstein        n   28 win  39.3%
+  ramrider           n  103 win  39.8%
+  bandit             n   79 win  40.5%
+  movingcannon       n   54 win  40.7%
+  elixirgolem        n  156 win  41.0%
+  minionhorde        n  160 win  41.2%
+  mergemaidenmounted n   21 win  42.9%
+  infernodragon      n  179 win  43.0%
+  royalrecruits      n  110 win  43.6%
+  firecracker        n  346 win  43.6%
+  mergemaidennormal  n   16 win  43.8%
+  dartbarrell        n   68 win  44.1%
+  royalghost         n  108 win  44.4%
+  threemusketeers    n   72 win  44.4%

@@ -1,7 +1,7 @@
 """Reward-architecture arms (owner-approved 10-14, L74/reward/REWARD_ARCHITECTURE.md), each ONE change vs rltest_ctrl
 (r1's exact config continued 60 policy updates from newsim_base_main_u0060, 10-13).
     python mkcfg_arms.py ARM OUT.yaml      ARM = gae (F1) | opp (F3) | kl_imit (F6) | gae_solv (A2) | gae_tower (A1+A1b)
-    | gae_trade (A3, step 5) | gae_c2 (C2) | gae_f2 (F2) | gae_f6lo (F6')
+    | gae_trade (A3, step 5) | gae_live (F1 + live-mirrored opponent decks, 10-15) | gae_c2 (C2) | gae_f2 (F2) | gae_f6lo (F6')
 kl_imit / gae_f6lo need KL_IMIT (below, not in git: icebow/data/) on the pod -> put it in ckpts.tgz; checked here by sha256.
 gae_solv / gae_tower (step 3) = arm gae + ONE potential (reward_shaping solvency / tower_score), its weights pinned in
 the yaml from reward_shaping.STATE_PHI_DEFAULTS (PYTHONPATH = the repo); pre-flight: L74/reward/preflight_a1a2.py.
@@ -53,6 +53,10 @@ elif arm in ("gae_opp", "gae_tg", "gae_opp_tg"):   # overnight factorial on the 
         c.update(OPP)
     if "tg" in arm:
         c.update(TG)
+elif arm == "gae_live":   # 10-15 owner-approved matchup mix: F1 + ONE change, opponent decks = the LIVE-MIRRORED pool
+    # (L74/mix/live_pool.py: 1,919 live 12k opponents completed from IL_Replay; sides = n_live + n_lost)
+    c.update(GAE)
+    c.update(league_decks="scratchpad/gauntlet/L74/mix/decks_live_train.json")
 elif arm == "opp":  # F3 calibrated opponents, ONE lever: every league opponent decisive (T .05 instead of the learner's .5;
     # calibration: E4 @ .03 low-elixir penalty +23.0 vs live +26.9, E4 @ .1 +17.1; calib_20261014.txt). r1's PFSP pool and
     # its 5 exploiter externals stay exactly as they were (adding E4 / gen_v1 to the pool = a later, separate arm).

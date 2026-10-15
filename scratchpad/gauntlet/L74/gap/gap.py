@@ -78,7 +78,7 @@ def digest(p):
     return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 
 
-def prepare(directory, ckpt, seed_start=741200, opp=None, opp_T=.1):
+def prepare(directory, ckpt, seed_start=741200, opp=None, opp_T=.1, census_file=None):
     original = json.loads((LIVE/'manifest.json').read_text(encoding='utf8'))
     opp = opp or livecal.E4              # 10-14 opponent calibration: --opp-ckpt / --opp-T (default = CAL set c)
     files = [ckpt, opp, livecal.GEN]
@@ -88,6 +88,13 @@ def prepare(directory, ckpt, seed_start=741200, opp=None, opp_T=.1):
                     censuses={})
     directory.mkdir(parents=True)
     for name, rel in livecal.CENSUS.items():
+        if census_file:   # 10-15 --census-file (live-mirrored pool): opp_deck_for draws with sqrt(sides) weights, so sides
+            data = json.loads(Path(census_file).read_text(encoding='utf8'))       # are squared -> P(deck) ~ n_live (the
+            decks = [dict(d, sides=float(d['sides']) ** 2) for d in data['decks']]  # floor 0.5 x mean lifts n_live=1 decks
+            dest = directory/f'cal_{name}.json'                                    # ~7%); slot 2 = the pool reversed, so
+            dest.write_text(json.dumps({**data, 'decks': decks if name == 'evo' else decks[::-1]}), encoding='utf8')
+            manifest['censuses'][name] = dict(path=dest.name, sha256=digest(dest), source=str(census_file))
+            continue                                                               # the same seed draws another deck
         if digest(ROOT/rel) != original['censuses'][name]['source_sha256']:
             raise ValueError(f'CAL census changed: {rel}')
         dest = directory/f'cal_{name}.json'
@@ -162,9 +169,10 @@ def main():
     ap.add_argument('--opp-ckpt', default=None, help='opponent generalist (default E4 = CAL set c)')
     ap.add_argument('--opp-T', type=float, default=.1, help='opponent sampling temperature (default .1 = CAL set c)')
     ap.add_argument('--iw-press', choices=('live', 'never'), default='live', help='never = Hero IW never pressed (A/B3 twin)')
+    ap.add_argument('--census-file', default=None, help='opponent deck pool replacing the CAL censuses (10-15: L74/mix/decks_live_eval.json)')
     a = ap.parse_args()
     if not a.summarize_only:
-        plan = prepare(a.out/'inputs', a.ckpt, a.seed_start, a.opp_ckpt, a.opp_T)
+        plan = prepare(a.out/'inputs', a.ckpt, a.seed_start, a.opp_ckpt, a.opp_T, a.census_file)
         for arm in a.arms.split(','):
             run_arm(arm, plan, a.out/'inputs', a.out/arm, a.python, a.workers, a.iw_form, a.iw_press, a.extra.split(),
                     tuple(x for x in a.drop.split(',') if x))
