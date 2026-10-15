@@ -1,3 +1,24 @@
+## 2026-10-15 ~15:15 EDT -- owner approved the plan + live-mirrored pool; C2 rejected; gae_live (2 seeds) training
+
+- **Owner 10-15 ~14:40**: plan approved (live-mix reweighting / trophy-cost ranking / human-likeness -> archetype
+  specialists from IL_Replay -> F1 retrained on the new pool -> parity loop -> KL-anchored exploiters) and "the live-mirrored
+  deck pool ... Let's go in that direction". Owner also proposed DROPPING live A/Bs for plain ladder climbing. My reply:
+  agree A/Bs at 75/arm only resolve ~16 pp; disagree that climbing is better evidence (+2 pp = ~1.2 trophies/match drift vs
+  ~+-370 trophies noise over 150 matches, plus trophy-level / meta / time confounds). Proposed: live = production on the
+  best model; SIM (live-mirrored eval) selects; live = automatic regression alarm vs the incumbent's 49.5% baseline; log
+  SIM-predicted vs live win rate per deployed model; live A/B only where the SIM is known wrong (abilities). Asked whether
+  to stop A/B4 now (awaiting).
+- **C2 rejected**: s75 vs same-seed F1 D3 -6.46 [-10.52, -2.60] (significantly worse); s74 +1.46 n.s. F2 s74 +2.60
+  [-1.46, +6.67] n.s.; F2 s75 (45503) pending.
+- **Live-mirrored pool** (`L74/mix/live_pool.py`, LIVE_POOL.md; worker T6, lead-checked): 1,919 live opponents -> 895
+  IL_Replay decks (829 exact containment, 1,086 approximate, 4 empty), all loadable (local RoyaleSelfPlayEnv);
+  `decks_live_eval.json` (sides = n_live) / `decks_live_train.json` (n_live + n_lost). Pool shares: MK 19.9% (live seen 16.2,
+  old 1.8), Firecracker 15.1 (16.8 / 2.5), Golem 5.6 (5.7 / 21.7). `gap.py --census-file` (sides squared: P(deck) ~ n_live;
+  verified MK 20.6% of 2,000 draws) + `L74/mix/live_eval_pod.sh`. Arm `gae_live` = F1 + league_decks = decks_live_train.json
+  (alpha 1, floor 0).
+- Running: 11740 gae_live s74, 45645 gae_live s75 (cb_s8 = 450a733; smoke first; then std eval + LIVE-pool eval D3);
+  19636 after F6' s74: live-pool baselines r1 + F1 u65 (D3, D1-on-grafted) -> /workspace/results/LIVEEVAL.
+
 ## 2026-10-15 ~14:25 EDT -- live-weighted SIM delta: archetype-class mix does NOT explain the SIM-live gap (correction)
 
 - `L74/mix/live_weighted.py` (now also reads live_cost.py rows): F1 vs r1 deployed re-weighted to the live archetype-class mix
