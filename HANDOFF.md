@@ -1,3 +1,16 @@
+## 2026-10-15 ~18:15 EDT -- owner: "doesn't know when to counterattack and when to defend" (MK + Witch at a low tower)
+
+- `L74/loss_review/wrong_lane_commit.py` (live, icebow main account since 10-13): matches with a WRONG-LANE COMMIT (>= 6 elixir
+  of our plays in the other lane within 200 ticks while >= 7 elixir of enemy troops is on our half at our princess < 50% hp):
+  r1 57/390 (14.6%), F1 s74 u65 30/158 (19.0%; diff +4.4 +- 7 n.s.), s76 1/5, u250 1/5. The owner's event = u250
+  live_play_20261015_173803 tick 3764: X-Bow + Knight (9 elixir) in the other lane while MegaKnight + Witch (17.7 elixir) were
+  on our half at our 0.48-hp tower. (a) chronic (~1 match in 6), not introduced by F1.
+- Learned fixes (owner: no habit rules): (1) gae_live (MK ~20% of training opponents vs 1.8% before) tonight -- first test of
+  whether exposure fixes the MK defence; (2) C1 posture head (owner had queued it after C2/F2; posture sweep supports it:
+  defensive tau +7.1 vs beatdown, aggressive leaning to the rest): every ~10 s a learned head picks defend / balanced /
+  pressure (= a gate-threshold / reserve offset), trained only on win/loss with F1's per-decision credit, init = balanced
+  (identical to F1), pro posture labels later.
+
 ## 2026-10-15 ~17:45 EDT -- live = F1 u250; owner complaints measured; lane RULE rejected by owner -> SIM-only probe + pro replays
 
 - **Live = F1 s74 u250** (rlarm_gae_u0250_grafted, 00c845c0) since 17:27 (deploy_ckpt.sh; guard passed): live-mirrored SIM
