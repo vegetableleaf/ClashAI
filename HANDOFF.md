@@ -1,3 +1,20 @@
+## 2026-10-15 ~17:45 EDT -- live = F1 u250; owner complaints measured; lane RULE rejected by owner -> SIM-only probe + pro replays
+
+- **Live = F1 s74 u250** (rlarm_gae_u0250_grafted, 00c845c0) since 17:27 (deploy_ckpt.sh; guard passed): live-mirrored SIM
+  580/960 60.4%, +7.71 pp [+3.85, +11.56] vs F1 u65 (beatdown +9.8, rest +6.4); vs s76 +3.12 n.s.; best on BOTH eval sets
+  (fresh-seed standard: +11.25 vs r1). F2 s74 +4.58 (= s76). s76 was live 17:04-17:27.
+- **Owner complaints (L74/loss_review/owner_three.py, live since 10-13)**: (1) cheap immediate defence -- chronic, NOT worse
+  with F1 (elixir at play r1 5.37 / F1 5.65; < 3 elixir 26.2% / 21.6%; Skeletons+Log ~30-32% of plays all models);
+  (2) Rocket vs X-Bow when >= 0.5 tower behind -- X-Bow ~7x Rocket, tower Rockets ~0 (rare by count; asked for timestamps);
+  (3) offensive X-Bows in BOTH lanes -- r1 65%, F1 82% of matches; 18% of both-lane vs 7% of one-lane matches end with both
+  enemy princesses damaged and none down.
+- **Owner: "i don't want hardcoded rules ... i want the model to learn the habits itself"** -> lane-focus decode rule (T9)
+  STOPPED, no changes left. Lane pattern vs winning is CONFOUNDED: both-lane matches win more (live r1 60.2% vs 24.6%, F1
+  53.8% vs 44.4%; SIM r1 48.2% vs 27.6%) and have ~2x the X-Bows (3.9 vs 2.1) -> the win/loss signal gives RL no obvious push
+  to concentrate. Owner APPROVED a SIM-only causal probe (`--probe-xbow-focus`, never live; T10 building) + pro replay
+  lane stats (T11). Decision rule: if concentrating wins more in SIM -> add a LEARNED incentive (crown-progress potential or
+  imitation anchor on X-Bow placement); if not -> the SIM does not reward it (environment/opponent realism work).
+
 ## 2026-10-15 ~17:05 EDT -- F1 SEED 76 DEPLOYED (first candidate to beat live F1 on the live-mirrored SIM eval)
 
 - Live-mirrored SIM (D3, 960 paired, `L74/mix/live_cmp.py`, base = live F1 s74 u65 506/960 52.7%): **F1 s76 u65 550/960
