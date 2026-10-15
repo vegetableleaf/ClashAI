@@ -1,3 +1,23 @@
+## 2026-10-15 ~03:30 EDT -- A3 trade potential FAILS its scripted audit -> gae_trade stopped at u18; redesign owed
+
+- AUDIT_S5 (copy `pod_backup_weekend/pod1015_s5/AUDIT_S5/`, same 100 seeds x 7 policies x 2 checkpoints as AUDIT_A1A2):
+  trade: **hold_to_10 out-credits il on BOTH checkpoints** (paired interior t +4.72 gen_v1, +2.76 r1) and
+  **never_spells out-credits il on r1** (t +6.25; interior +0.0036 vs il -0.0006), each while winning less. Verdict
+  STOP: redesign (§9.3 rule). Telescoping 5e-16, |Phi| reached the 0.24 bound. never / spam_one_card / never_buildings
+  are correctly below il.
+- **Process error (mine)**: gae_trade was launched before its own audit finished (the A1/A2 arms had set that
+  precedent). It is stopped (12787, u18, by exact PID; `rlarm_gae_trade/STOPPED_AUDIT_FAIL_u18`); nothing from it is
+  used. Rule from now on: a shaped arm starts only after ITS audit passes.
+- Diagnosis, (b) plausible, untested: Phi_trade ignores tower HP, so (1) an enemy unit killed by MY TOWER is pure
+  elixir gain for me (hold_to_10 lets the towers do the defending and is credited for it), and (2) a spell on a TOWER
+  (Rocket/Log chip) is pure elixir loss (r1 chips towers; never_spells avoids that loss). The plan's §3 A3 hack-risk
+  note missed both. It also supports the plan's own ordering (A3 only after / with A1): a trade term without a tower
+  term is exploitable.
+- Redesign to try next (not built): A3' = w clip(Delta_elixir + rho x (enemy tower hp lost - own tower hp lost, in
+  princess units), +-cap), with rho FIT from SIM outcomes (logistic P(win) on elixir margin vs tower margin by phase)
+  instead of hand-set; re-audit; only then an arm, and stacked with A1 if gae_tower passes.
+- 12787 now runs rlarm_gae_s75 resume 65 -> 150 (seed=75), the second replicate of "longer training helps".
+
 ## 2026-10-15 ~03:15 EDT -- F1 trained longer (65 -> 150 updates) is better again: deployed +11.77 vs r1, +5.00 vs u65
 
 - rlarm_gae resumed to 150 (seed 74; copy `pod_backup_weekend/pod1014b_arms/rlarm_gae_to150*`, final u0150 95799841,
