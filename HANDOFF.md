@@ -1,3 +1,18 @@
+## 2026-10-15 ~19:20 EDT -- gae_live s74 +4.79 over its twin on the live pool (extended to 250); no opponent is human in style AND strength
+
+- **gae_live s74 u65** (= F1 + league decks from the live-mirrored TRAIN pool, MK ~20% of opponents) on the live-mirrored eval:
+  552/960 57.5%, **+4.79 pp [+0.73, +8.75] vs its twin F1 s74 u65** (beatdown +4.2 +- 6.2, rest +5.2 +- 5.2); vs live u250 -2.92
+  [-6.88, +1.04]. Standard set +3.12 n.s. vs the twin. (a) training on the live-like mix helps on the live-like eval (train
+  and eval pools overlap by design: train weight n_live + n_lost, eval n_live). Extended to 250 updates on 11740 (cb_s8,
+  `run_rlarm2.sh resume gae_live rlarm_gae_live 250`, started 23:12 UTC, ~7.5 h), live-pool eval `gae_live_u250` queued after
+  it -> the fair comparison with u250. gae_live s75 / s76 still running (45645 / 49350).
+- **Opponent style vs strength (learner F1 u65, 480 games each; live F1 u65 51.4%, n 148)** -- style distance / F1 win%:
+  E4 T .1 raw (today) 0.97 / 52.9%; gen_v32_s0 T .1 raw 0.93 / 60.8%; gen_v32 d20 r20 0.69 / 70.2%; E4 d20 r20 0.70 / 73.5%;
+  gen_v1 T .3 d20 r20 0.54 / 78.1%. (a) every step toward human pace makes the opponent weaker; only today's E4 matches
+  human strength. Keep E4 raw for eval + training. A human-paced AND strong opponent needs better decisions under the tempo
+  limit -> candidate (b, untested): RL-train opponent policies (live-pool decks) AT human tempo against our model, from an
+  imitation init (league / archetype specialists). Parked behind C1 + gae_live.
+
 ## 2026-10-15 ~19:10 EDT -- X-Bow focus probe LOSES in SIM; human-tempo opponents are far too easy; live record per checkpoint
 
 - **`--probe-xbow-focus` (SIM-only, owner-approved; learner F1 u250, live-mirrored pool, D3, 960 paired)**: re-aimed 1,496 of
