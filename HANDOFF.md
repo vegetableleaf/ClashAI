@@ -1,3 +1,13 @@
+## 2026-10-15 ~08:20 EDT -- longer training verdict over 3 seeds: NOT a reliable gain (+5.0 / +1.0 / -0.8)
+
+- rlarm_gae_s75 resumed 65 -> 150 (copy `pod_backup_weekend/pod1014b_arms/rlarm_gae_s75_to150*`, final ea69914a): D3 504/960
+  52.50%, D1 429/960 44.69%; vs its u65 D3 +1.04 [-2.81, +4.90], D1 +0.42 n.s.; vs r1 deployed +10.62 [+6.77, +14.48].
+- u65 -> u150, deployed (D3), paired vs the same run's u65: **s74 +5.00 [+1.04, +8.96], s75 +1.04 n.s., s76 -0.83 n.s.**
+  (plain D1: +3.54, +0.42, -5.83 sig.). (c) The 03:15 entry's "trained longer is better again" was one lucky seed;
+  across seeds the mean is ~+1.7 pp, not distinguishable from 0. Corrected on Discord.
+- What stands: F1 at 65 updates beats r1 on every seed (+6.8 / +9.6 / +9.7); all u150s are also +8.9..+11.8 vs r1.
+- Pod 12787 STOPPED after the sha-verified copy. Remaining: 19636 (to250 -> FRESH re-score), 15118 (gae_tower s75).
+
 ## 2026-10-15 ~07:55 EDT -- "longer training helps" does NOT replicate on seed 76 (u65 -> u150)
 
 - rlarm_gae_s76 resumed 65 -> 150 (seed=76; copy `pod_backup_weekend/pod1014b_arms/rlarm_gae_s76_to150*`, final
