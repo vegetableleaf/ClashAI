@@ -1,3 +1,16 @@
+## 2026-10-15 ~13:35 EDT -- C2 seed 74: +1.46 vs F1 (n.s.), same beatdown pattern; lambda .98 s75 queued; sampling question
+
+- rlarm_gae_c2 (critic_ctx arch, seed 74; copy `pod_backup_weekend/pod1014b_arms/rlarm_gae_c2*`, final e7944cb8): D1 453/960
+  47.19%, D3 481/960 50.10%; vs r1 deployed +8.23 [+4.27, +12.19]; **vs F1 s74 D3 +1.46 [-2.60, +5.42]**, D1 +2.29 n.s.
+  Per archetype vs r1: beatdown +1.8 [-5.1, +8.7], rest +11.7 [+6.8, +16.6] -- the F1 pattern unchanged (fits the critic
+  diagnostic). Second seed (C2 s75, 45645) pending.
+- Pod 49350 now runs `rlarm_gae_lam98_s75` (gae_lambda 0.98, seed 75) so the lambda test has 2 seeds tonight.
+- Owner question "sim samples while live picks the top choice": SIM EVALS already decode like live (D1 greedy, D3 = the
+  live rule stack); sampling (T .5) is only in TRAINING rollouts (on-policy PPO needs it). The train/deploy mismatch (O3,
+  T .5 plays ~25 pp worse than greedy) was tested as F4 (T_gate .1): no gain on match_loo, and gae_tg added nothing on F1
+  (+4.27 vs F1's +6.77). Untested options: lower card/cell T too; greedy games for the critic only.
+- Tornado-20: 16/20 done at 13:24; A/B4 (notau vs tau, F1 u65 both, river on, 75/arm) starts after the 20th.
+
 ## 2026-10-15 ~12:20 EDT -- bait witness session (owner's classic challenge, Hero Valk / evo SkArmy / evo Barrel): reader covers it all
 
 - Owner played 2 classic-challenge games by hand (LEVEL 11 = the SIM's level) with the friend's deck (Hero Valkyrie, Evo
