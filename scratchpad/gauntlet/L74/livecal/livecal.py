@@ -164,13 +164,14 @@ def schedule(manifest, k=480, seed_start=740000, pools=None):
     return plan
 
 
-def command(job, census, out, python=sys.executable):
+def command(job, census, out, python=sys.executable, opp=()):
+    # opp: optional search_s0 opponent-tempo flags (--opp-decide-every / --opp-reaction-ticks); () = unchanged command
     cmd = [python, str(HERE/'livecal.py'), '--worker', '--out', str(out), '--seeds', ','.join(map(str, job['seeds'])),
            '--opps', 'gen', '--arms', 'plain', '--gen', job['checkpoint'], '--opp-gen', job['opponent']['path'],
            '--s1', GEN,  # search_s0 hashes this unused argument even with --opps gen; no S1 file needed.
            '--forms-mode', 'deck', '--device', 'cpu', '--workers', '1', '--threads', '1', '--tail-cap', '7200',
            '--tau-plain', '.35', '--census', str(census), '--hero-abilities', '--ability-policy', 'v2',
-           '--opp-policy', 'sample', '--opp-T', str(job['opponent']['temperature']), '--own-effects', *LV]
+           '--opp-policy', 'sample', '--opp-T', str(job['opponent']['temperature']), *opp, '--own-effects', *LV]
     if job['fast']:
         cmd += ['--pipeline-decisions', '--pipeline-tau-delta', '0']
     return cmd

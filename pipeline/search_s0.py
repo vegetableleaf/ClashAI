@@ -577,6 +577,9 @@ def _init_worker(args: dict) -> None:
     if args.get("opp_policy", "live") == "sample":   # lead 2026-10-08: the training league's sampling opponents (T),
         for o in opps.values():                       # so no-stall matches don't freeze in a mutual standoff
             o[1].update(policy="sample", T=float(args["opp_T"]))
+    if args.get("opp_decide_every") is not None or args.get("opp_reaction_ticks") is not None:   # L74 human tempo
+        opps = {i: (pol, E.opp_tempo(oc, args.get("opp_decide_every"), args.get("opp_reaction_ticks")))
+                for i, (pol, oc) in opps.items()}
     cap, fm = int(args["tail_cap"]), args.get("forms_mode", "base")
     learner_cfg = live_cfg(args.get('tau_plain', TAU_PLAIN), gi['grid'], dev)
     if args.get('decision_options'):
@@ -762,6 +765,10 @@ def main(argv=None) -> int:
     ap.add_argument("--forms-mode", default="base", choices=("base", "deck"),
                     help="RoyaleSim card forms: base = every card as its base card (today); deck = decked evolutions / "
                          "heroes the engine loads, refused forms fall back to base (royale_env docstring)")
+    ap.add_argument("--opp-decide-every", type=int, default=None,
+                    help="opponent side's decision interval in ticks (L74 human tempo, e1_eval.opp_tempo); default = ours (10)")
+    ap.add_argument("--opp-reaction-ticks", type=int, default=None,
+                    help="extra ticks added to the opponent's action delay (L74 human tempo); default none")
     ap.add_argument("--max-wall-min", type=float, default=0.0,
                     help="0 = none; else no match starts after this and running matches stop (wall_truncated)")
     a = ap.parse_args(argv)
@@ -777,6 +784,10 @@ def main(argv=None) -> int:
         ap.error('decision options require --arms plain; search experiments are separate')
     if a.ability_policy == "v2" and not a.hero_abilities:
         ap.error("--ability-policy v2 needs --hero-abilities")
+    try:
+        E.opp_tempo({}, a.opp_decide_every, a.opp_reaction_ticks)
+    except ValueError as exc:
+        ap.error(str(exc))
     if a.summarise:
         rows = [json.loads(x) for x in (a.summarise / "matches.jsonl").read_text(encoding="utf-8").splitlines() if x]
         s = summarise(rows)
@@ -821,7 +832,10 @@ def main(argv=None) -> int:
         wargs['pipeline_tau_delta'] = a.pipeline_tau_delta
     if a.record_plays:
         wargs['record_plays'] = True
-    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads', 'learner_T_gate') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays') or v) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
+    for k in ('opp_decide_every', 'opp_reaction_ticks'):
+        if getattr(a, k) is not None:
+            wargs[k] = getattr(a, k)
+    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads', 'learner_T_gate') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays') or v) and (k not in ('opp_decide_every', 'opp_reaction_ticks') or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
                                                 "gen_sha256": sha256(REPO / a.gen), "opp_gen_sha256": opp_sha,
                                                 "s1_sha256": sha256(REPO / a.s1),
                                                 "tau_plain": TAU_PLAIN, "tau_opp": TAU_OPP, "crown_w": CROWN_W,

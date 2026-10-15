@@ -46,8 +46,8 @@ def flags(keys):
     return out
 
 
-def command(arm, job, census, dest, python, extra=(), drop=()):
-    cmd = livecal.command(job, census, dest, python=python)
+def command(arm, job, census, dest, python, extra=(), drop=(), opp=()):
+    cmd = livecal.command(job, census, dest, python=python, opp=opp)   # opp: opponent-tempo flags, () = unchanged
     tail = ['--own-effects', *livecal.LV]
     if cmd[-len(tail):] != tail:
         raise ValueError('livecal.command layout changed; refusing to guess the rule flags')
@@ -72,6 +72,12 @@ def command(arm, job, census, dest, python, extra=(), drop=()):
                                         for x in ['--'+k.replace('_', '-'), *map(str, v if isinstance(v, list) else [v])]]
         return cmd + tail + list(extra)          # --extra: more decision flags on the live stack (10-14 river A/B)
     return cmd
+
+
+def opp_flags(decide_every=None, reaction_ticks=None):
+    """search_s0's opponent-tempo flags for the set values (L74 human tempo); both None = [] (the command unchanged)."""
+    return ([] if decide_every is None else ['--opp-decide-every', str(decide_every)]) + (
+        [] if reaction_ticks is None else ['--opp-reaction-ticks', str(reaction_ticks)])
 
 
 def digest(p):
@@ -105,7 +111,7 @@ def prepare(directory, ckpt, seed_start=741200, opp=None, opp_T=.1, census_file=
     return plan
 
 
-def run_arm(arm, plan, inputs, out, python, workers, iw_form='hero', iw_press='live', extra=(), drop=()):
+def run_arm(arm, plan, inputs, out, python, workers, iw_form='hero', iw_press='live', extra=(), drop=(), opp=()):
     out.mkdir()
     # iw_form normal (10-14): r1's TRAINING condition (no hero, so no press rule) instead of the live condition.
     env = dict(os.environ, ROYALE_RUNTIME='20261012-linux', ROYALE_HEROIW_FORM=iw_form,
@@ -115,7 +121,7 @@ def run_arm(arm, plan, inputs, out, python, workers, iw_form='hero', iw_press='l
     def one(item):
         i, job = item
         dest = out/f'{i:05d}'
-        cmd = command(arm, job, inputs/plan['censuses'][job['census']]['path'], dest, python, extra, drop)
+        cmd = command(arm, job, inputs/plan['censuses'][job['census']]['path'], dest, python, extra, drop, opp)
         with dest.with_suffix('.log').open('w', encoding='utf8') as log:
             subprocess.run(cmd, cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT, check=True)
         rows = [json.loads(s) for s in (dest/'matches.jsonl').read_text().splitlines() if s.strip()]
@@ -170,12 +176,15 @@ def main():
     ap.add_argument('--opp-T', type=float, default=.1, help='opponent sampling temperature (default .1 = CAL set c)')
     ap.add_argument('--iw-press', choices=('live', 'never'), default='live', help='never = Hero IW never pressed (A/B3 twin)')
     ap.add_argument('--census-file', default=None, help='opponent deck pool replacing the CAL censuses (10-15: L74/mix/decks_live_eval.json)')
+    ap.add_argument('--opp-decide-every', type=int, default=None, help='opponent decision interval, ticks (L74 human tempo)')
+    ap.add_argument('--opp-reaction-ticks', type=int, default=None, help='extra opponent action delay, ticks (L74 human tempo)')
     a = ap.parse_args()
+    opp = opp_flags(a.opp_decide_every, a.opp_reaction_ticks)
     if not a.summarize_only:
         plan = prepare(a.out/'inputs', a.ckpt, a.seed_start, a.opp_ckpt, a.opp_T, a.census_file)
         for arm in a.arms.split(','):
             run_arm(arm, plan, a.out/'inputs', a.out/arm, a.python, a.workers, a.iw_form, a.iw_press, a.extra.split(),
-                    tuple(x for x in a.drop.split(',') if x))
+                    tuple(x for x in a.drop.split(',') if x), opp)
     summarize(a.out)
 
 

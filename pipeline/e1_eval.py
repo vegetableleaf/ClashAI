@@ -1681,6 +1681,26 @@ class SelfPlaySide(Match):
                 "ghost_refuse_reasons": dict(o.refuse)}
 
 
+def opp_tempo(cfg: dict, decide_every=None, reaction_ticks=None) -> dict:
+    """L74 human tempo (opt-in; both None = ``cfg`` itself, byte-identical): a SelfPlayMatch OPPONENT side's cfg with its
+    own decision interval ``decide_every`` (ticks, int > 0) and ``reaction_ticks`` (int >= 0) added to its action delay,
+    so its play lands action_delay_ticks + reaction_ticks after its decision (SelfPlaySide.apply's delayed-play rule; its
+    hero-ability presses queue with the same delay). Never apply it to the learner's cfg. No grid constraint: each side
+    schedules from its OWN cfg (SelfPlaySide.next_tick) and SelfPlayMatch.due advances the env to the earliest; the env's
+    decision_ticks only seeds ability_policy v2's first per-side press dt (royale_env.ability_commands)."""
+    if decide_every is None and reaction_ticks is None:
+        return cfg
+    for name, v, lo in (("opp_decide_every", decide_every, 1), ("opp_reaction_ticks", reaction_ticks, 0)):
+        if v is not None and (type(v) is not int or v < lo):
+            raise ValueError(f"{name} must be an int >= {lo}, got {v!r}")
+    out = dict(cfg)
+    if decide_every is not None:
+        out["decide_every"] = decide_every
+    if reaction_ticks:
+        out["action_delay_ticks"] = int(cfg.get("action_delay_ticks") or 0) + reaction_ticks
+    return out
+
+
 class SelfPlayMatch:
     """One self-play match (L68 T12b): ``env.reset`` with spec's decks and deal seed, the learner on
     spec["learner_side"] under ``cfg`` and the frozen opponent on the other side under ``opp_cfg``. ``due()`` advances

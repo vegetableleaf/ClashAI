@@ -146,6 +146,9 @@ SMOKE = {"E": 4, "G": 2, "n_actors": 1, "in_flight": 8, "max_updates": 2, "scree
          "proagree_every": 1, "screen_every": 1, "save_every": 1, "league_snapshot_every": 1}
 TRAJ_KEYS = ("tok", "mask", "sc", "past", "allowed", "gate_sampled", "played", "slot", "cell")
 COND_KEYS = ("noise_off", "opp_elixir", "action_delay_ticks", "extrapolate_ticks")   # rl_royale.yaml "conditions"
+# L74 human tempo (optional keys, league only; absent / null = off, same hash): the league OPPONENT's decision interval
+# and extra reaction delay in ticks (e1_eval.opp_tempo); the learner's cfg never carries them.
+OPP_TEMPO_KEYS = ("opp_decide_every", "opp_reaction_ticks")
 
 
 def condition_cfg(c: dict) -> dict:
@@ -1926,6 +1929,8 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
                                              "T": opp_T(base),
                                              **{k: base[k] for k in AO.STYLE_KEYS if k in base},
                                              "grid": opp_cache[j[1]["opp"]["path"]][1]}) for j in jobs}
+                opps = {i: (pol, E.opp_tempo(oc, base.get("opp_decide_every"), base.get("opp_reaction_ticks")))
+                        for i, (pol, oc) in opps.items()}            # L74 human tempo: the OPPONENT's cfg only
                 E.run_selfplay_batch(lambda: RoyaleSelfPlayEnv(decision_ticks=int(base["decide_every"]), forms_mode=fm,
                                                                hero_abilities=base.get("hero_abilities", False),
                                                                ability_policy=base.get("ability_policy", "generic")), model, opps,
@@ -2120,8 +2125,8 @@ def branch_worker_main(wid: int, in_q, out_q, base: dict) -> None:
         return True
 
     lcfg = actor_cfg(base, "screen", wid, dev)                # the greedy live rule, unrecorded
-    ocfg = {**actor_cfg(base, "rollout", wid, dev), "policy": base["league_opp_policy"], "record": False, "T_gate": None,
-            "T": opp_T(base)}
+    ocfg = E.opp_tempo({**actor_cfg(base, "rollout", wid, dev), "policy": base["league_opp_policy"], "record": False,
+                        "T_gate": None, "T": opp_T(base)}, base.get("opp_decide_every"), base.get("opp_reaction_ticks"))
     sp_env = (lambda: RoyaleSelfPlayEnv(decision_ticks=int(base["decide_every"]), forms_mode=base.get("forms_mode", "base"),
                                         hero_abilities=base.get("hero_abilities", False),
                                         ability_policy=base.get("ability_policy", "generic")))
@@ -2282,7 +2287,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
         if (k not in cfg and k != "ability_policy" and k not in BRANCH_DEFAULTS   # optional: absent = generic / off
                 and k not in VALUE_PHI_KEYS and k not in STATE_PHI_KEYS and k not in AO.DEFAULTS
                 and k not in ("league_learner_icebow_share", "learner_pipeline_frac", "league_opp_T", "kl_ref_gate",
-                              "critic_ctx", "kl_ref_gate_max_elixir", "kl_ref_gate_target_frac")):
+                              "critic_ctx", "kl_ref_gate_max_elixir", "kl_ref_gate_target_frac") + OPP_TEMPO_KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
         cfg[k] = yaml.safe_load(v)
     if type(cfg["hero_abilities"]) is not bool:
@@ -2299,6 +2304,13 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
         raise SystemExit("learner_pipeline_frac must be a finite number in [0, 1]")
     if frac and int(cfg.get("action_delay_ticks", 0)) <= 0:
         raise SystemExit("learner_pipeline_frac needs action_delay_ticks > 0")
+    if any(cfg.get(k) is not None for k in OPP_TEMPO_KEYS):
+        if not cfg.get("league"):
+            raise SystemExit(f"{'/'.join(OPP_TEMPO_KEYS)} need league true (they set the self-play opponent's tempo)")
+        try:
+            E.opp_tempo({}, cfg.get("opp_decide_every"), cfg.get("opp_reaction_ticks"))
+        except ValueError as exc:
+            raise SystemExit(str(exc))
     return cfg
 
 
@@ -2319,6 +2331,7 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k not in ("kl_ref_gate_max_elixir", "kl_ref_gate_target_frac")}
     elif cfg.get("kl_ref_gate_target_frac") is None:         # F6' frac absent / null = the 0.5 default, one hash
         cfg = {**cfg, "kl_ref_gate_target_frac": GATE_LO_FRAC}
+    cfg = {k: v for k, v in cfg.items() if k not in OPP_TEMPO_KEYS or v is not None}   # human tempo off = historical hash
     return hashlib.sha256(json.dumps(cfg, sort_keys=True, default=str).encode()).hexdigest()
 
 
@@ -3165,6 +3178,9 @@ class Learner:
             base["critic_ctx"] = self.cfg["critic_ctx"]
         if self.cfg.get("kl_ref_gate_max_elixir") is not None:   # actor_cfg -> record_elixir (absent by default)
             base["kl_ref_gate_max_elixir"] = self.cfg["kl_ref_gate_max_elixir"]
+        for k in OPP_TEMPO_KEYS:                              # L74 human tempo -> the opponent's cfg (absent by default)
+            if self.cfg.get(k) is not None:
+                base[k] = self.cfg[k]
         return base
 
     def start_actors(self) -> None:
