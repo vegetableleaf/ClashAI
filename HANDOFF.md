@@ -1,3 +1,27 @@
+## 2026-10-15 ~19:10 EDT -- X-Bow focus probe LOSES in SIM; human-tempo opponents are far too easy; live record per checkpoint
+
+- **`--probe-xbow-focus` (SIM-only, owner-approved; learner F1 u250, live-mirrored pool, D3, 960 paired)**: re-aimed 1,496 of
+  4,739 offensive X-Bows (31.6%; >= 1 in 691/960 matches) -> **545/960 56.8% vs 580/960 60.4%, -3.65 pp [-6.67, -0.73]**;
+  crowns for -0.037 +- 0.031 / match, crowns against +0.037 +- 0.036, enemy tower hp left at the end +581 +- 96 (LESS total
+  damage), in re-aimed matches -5.1 +- 4.2 pp. (a) In the SIM, a blanket "aim offensive X-Bows at the weaker princess" is
+  worse than the model's own lane choice. Pre-agreed rule -> no lane-concentration incentive. Caveats: the probe re-aims every
+  time (a context-dependent focus could still help -- the C1 / RL job); SIM opponents may answer one-lane pressure better
+  than humans (pros split far less: icebow-8 34% vs ours 65-82%, PRO_XBOW_LANES.md) -- untested.
+- **Human-tempo sweep (L74/human/BEHAVIOUR.md section 3, learner F1 u65, 480 games each)**: style distance to live 12k
+  humans (RMS of per-feature effect sizes; floor 0.04): E4 default (today's eval/training opponent) 0.97, gen_v1 T .3 0.75,
+  **gen_v1 T .3 decide-every 20 + reaction 20 ticks 0.54** (best), E4 d20 r20 0.70. BUT strength: F1 u65 wins **52.9% vs E4
+  default** (live 51.4% today, n 148) and **78.1% vs gen_v1 d20 r20**, 73.5% vs E4 d20 r20, 67.5-68% vs any un-delayed
+  gen_v1. (a) Slowing the bots makes them look human and play far too weakly: humans are slower but choose better; today's
+  SIM opponent makes up for weaker choices with bot reflexes. Training vs slowed bots would teach beating weak opponents ->
+  NOT adopted. Running (45503, `L74/human/strong_opp_pod.sh`, cb_s10): imitation model gen_v32_s0 T .1 as the opponent at
+  raw and d20 r20 tempo -- wanted: distance ~0.5 AND F1 u65 ~53%.
+  (The gen3_d10_r0 sweep cell failed on a stale output dir from an earlier partial run, not a code fault.)
+- **Live W/L per checkpoint since 10-15 00:00** (`L74/mix/live_record.py`, result from the last decision's towers): r1 34-34
+  50.0%, F1 u65 76-72 51.4%, s76 2-3, **u250 13-12 52.0% [32, 72]**. On the ladder win rate drifts toward 50% as trophies
+  (and opponents) rise, so trophy slope -- not win% -- is the live measure (owner's 10-15 suggestion).
+- Standard set: gae_live s74 D3 497/960, +9.90 vs r1, **+3.12 n.s. vs its F1 twin (s74 u65)**; live-pool eval pending (11740).
+  F1 u150 on the live pool -3.54 n.s. vs u250. u250 stays best.
+
 ## 2026-10-15 ~18:20 EDT -- probe accepted; C1 build started; F6' s74 not a candidate; the two u250/s76 defensive-tau evals were INVALID
 
 - `--probe-xbow-focus` (16f1b44 + 6ee9ab9) blind-verified PASS_WITH_NOTES, pushed. Reading caveat: ~19 of the 103 cells that
