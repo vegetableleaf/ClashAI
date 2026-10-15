@@ -26,7 +26,8 @@ def main():
     ap.add_argument("--since", default="20261010")
     a = ap.parse_args()
     live = [r for r in json.load(open(a.live_json)) if r[0][10:18] >= a.since]
-    lw = collections.Counter(r[1] for r in live)
+    # live_history.py rows = [file, arch, res, seen]; live_cost.py rows = [file, res, seen] (icebow main account only)
+    lw = collections.Counter(r[1] if len(r) == 4 else A.classify(r[2]) for r in live)
     base, arm = load(a.base), load(a.arm)
     assert base.keys() == arm.keys(), "unpaired"
     by = collections.defaultdict(list)

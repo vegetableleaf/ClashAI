@@ -1,3 +1,13 @@
+## 2026-10-15 ~14:25 EDT -- live-weighted SIM delta: archetype-class mix does NOT explain the SIM-live gap (correction)
+
+- `L74/mix/live_weighted.py` (now also reads live_cost.py rows): F1 vs r1 deployed re-weighted to the live archetype-class mix
+  (archetypes.classify; 1,919 icebow main-account matches): s74 +6.77 -> +7.11 [+3.00, +11.21]; s75 +9.58 -> +9.87; s76
+  +9.69 -> +9.96. (c) My earlier "the larger live beatdown share explains SIM +8.7 vs live +2.7" is contradicted at the
+  archetype-class level (live and SIM class mixes are close: weak_other 44 vs 42%, other 38 vs 31%).
+- What does differ: specific 12k-meta decks. SIM EVAL deck share vs live seen share: Mega Knight 4.3 vs 16.2, Firecracker 3.6
+  vs 16.8, Mini PEKKA 8.3 vs 17.8, EGolem 2.4 vs 8.0, RR 2.3 vs 4.8; Golem 10.1 vs 5.7, E-Barbs 19.5 vs 8.9. The SIM can
+  barely measure the costliest live matchups. Proposed (awaiting owner): live-mirrored deck pool for eval AND training.
+
 ## 2026-10-15 ~14:10 EDT -- MATCHUP-MIX GAP (measured): training opponents are not the 12k ladder; Mega Knight is the #1 cost
 
 - `L74/mix/live_cost.py` (icebow MAIN account only: two 4424 princesses + no bait card; 1,919 matches since 10-01, overall
