@@ -1,3 +1,16 @@
+## 2026-10-15 ~02:45 EDT -- F1 (per-decision credit) = FIRST POSITIVE RL RESULT; F3 alone null
+
+- 960 pairs (copies `pod_backup_weekend/pod1014b_arms/`, sha-verified), r1 cfg continued from newsim_base_main_u0060:
+  F1 gae (65 updates = 5 critic warm-up + 60): D1 431/960 44.90%, D3 grafted 467/960 48.65%.
+  D3 vs r1 deployed (402) **+6.77 pp [+2.81, +10.73]**; D1 vs r1 plain (381) **+5.21 [+1.15, +9.27]**; D3 vs the old-credit
+  control (345) +12.71 [+8.85, +16.77]. Best D3 measured (ADAPT 47.08%). RL improved the plain policy for the first time.
+  F3 opp (league_opp_T .05, match_loo): D1 361 (37.60%), D3 376 (39.17%): vs control +3.23 [-0.52, +6.98], vs r1 -2.71
+  [-6.35, +0.94], D1 vs r1 -2.08 [-5.94, +1.77] -> null; training win rate .285 (much harder opponents).
+- Candidate staged (NOT live): `icebow/data/bench/rl_royale/rlarm_gae/rlarm_gae_u0065_grafted.pt` (693889c3), plain u0065
+  (64790072); live --check PASS. A live A/B needs the owner (queue: A/B3 -> tornado 40 -> A/B4 chain).
+- Running: 19636 F1 resumed to 150 updates (results rlarm_gae_to150); 12787 F1 replicate seed=75 (rlarm_gae_s75);
+  37607 gae_opp; 15661 gae_tg; 15118 gae_opp_tg; 12037 DAgger iter 2. F6 code agent running.
+
 ## 2026-10-14 ~22:20 EDT -- OVERNIGHT (owner asleep): RL architecture plan on 6 pods; morning report owed (nulls count)
 
 - Owner: "keep working on the model overnight, following the RL architecture plan ... some notable results from the RL by
