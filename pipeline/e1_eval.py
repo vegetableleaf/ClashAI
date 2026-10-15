@@ -434,13 +434,14 @@ def live_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.nda
                             **context)
     B = allowed.shape[0]
     p = np.asarray(p, dtype=np.float64)
+    tau_r = np.broadcast_to(np.asarray(tau, dtype=np.float64), (B,))   # rl_royale C1 posture: per-row tau (posture_live)
     any_allowed = allowed.any(axis=1)
     out: list[Optional[dict]] = [None] * B
     with torch.no_grad():
         logits = heads["card"].clone()
         logits = logits.masked_fill(~torch.from_numpy(allowed).to(logits.device), float("-inf"))
         slot = logits.argmax(dim=-1).cpu().numpy()
-        play = any_allowed & ((p > tau) | stalled)
+        play = any_allowed & ((p > tau_r) | stalled)
         play_idx = [r for r in range(B) if play[r]]
         cell = np.full(B, -1, dtype=np.int64)
         if play_idx:
@@ -455,8 +456,53 @@ def live_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.nda
             out[r] = {"play": False, "slot": int(slot[r]), "cell": -1, "why": "wait"}
         else:
             out[r] = {"play": True, "slot": int(slot[r]), "cell": int(cell[r]),
-                      "why": "stall" if p[r] <= tau else "gate"}
+                      "why": "stall" if p[r] <= tau_r[r] else "gate"}
     return out
+
+
+def posture_dtau(matches: Sequence, enc, cfg: dict) -> Optional[np.ndarray]:
+    """rl_royale C1 (``cfg["posture"]`` = {head, every, dtau, mode}; absent -> None and nothing is touched): the gate
+    threshold offset of each row's posture IN FORCE. A match chooses at its first decision and again once
+    ``every`` ticks have passed since its last choice (decision tick ``_cur[0]``), from ``head(enc["g"][r], ctx)`` with
+    ctx = ``Match._ctx_row`` (taken at EVERY decision, so the cumulative seen-set is record_ctx's); ``mode`` sample =
+    a draw from the match's own ``rng_behave`` (before its gate draw), argmax = the eval rule. Per match:
+    ``_posture`` (z, tick), ``_posture_new`` (log pi(z) when it chose at this decision, else None), ``posture_counts``
+    (decisions per posture) and ``posture_choices``."""
+    pc = cfg.get("posture")
+    if not pc:
+        return None
+    import torch
+    ctx = [m._ctx_row(int(m._cur[0])) for m in matches]
+    due = [r for r, m in enumerate(matches)
+           if getattr(m, "_posture", None) is None or int(m._cur[0]) - m._posture[1] >= int(pc["every"])]
+    for m in matches:
+        m._posture_new = None
+    if due:
+        g = enc["g"]
+        with torch.no_grad():
+            ix = torch.as_tensor(due, device=g.device)
+            lp = torch.log_softmax(pc["head"](g[ix], torch.as_tensor([ctx[r] for r in due], device=g.device))
+                                   .double(), dim=-1).cpu().numpy()
+        for j, r in enumerate(due):
+            m = matches[r]
+            z = int(m.rng_behave.choice(lp.shape[1], p=np.exp(lp[j]))) if pc["mode"] == "sample" else int(lp[j].argmax())
+            m._posture, m._posture_new = (z, int(m._cur[0])), float(lp[j][z])
+            m.posture_choices = getattr(m, "posture_choices", 0) + 1
+    for m in matches:
+        m.__dict__.setdefault("posture_counts", [0] * len(pc["dtau"]))[m._posture[0]] += 1
+    return np.array([float(pc["dtau"][m._posture[0]]) for m in matches], dtype=np.float64)
+
+
+def posture_live(matches: Sequence, enc, cfg: dict, tau, kw: dict) -> tuple:
+    """C1 posture on a LIVE (greedy) decide -> (tau, decide kwargs); no cfg["posture"] = (tau, kw) unchanged. With
+    decision options active the offset goes in as decide_batch's ``tau_delta`` (added after tau_phase / tau_threatened:
+    the threshold in force + dtau); otherwise the plain threshold becomes per row tau + dtau."""
+    dt = posture_dtau(matches, enc, cfg)
+    if dt is None:
+        return tau, kw
+    if kw.get("decision_options") is not None:
+        return tau, {**kw, "tau_delta": np.asarray(kw.get("tau_delta", 0.0), dtype=np.float64) + dt}
+    return float(tau) + dt, kw
 
 
 def sample_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.ndarray, matches: Sequence,
@@ -480,6 +526,10 @@ def sample_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.n
     any_allowed = allowed.any(axis=1)
     gate_sampled = any_allowed & ~stalled                      # forced (stalled) or impossible (no card) -> not sampled
     logit_tau = math.log(tau / (1.0 - tau))
+    dt = posture_dtau(matches, enc, cfg)                       # rl_royale C1 (None = no posture: all as before)
+    if dt is not None:
+        tau_r = tau + dt                                       # the threshold of each row's posture in force
+        logit_tau = np.log(tau_r / (1.0 - tau_r))
     z_gate = heads["gate"].detach().cpu().numpy().astype(np.float64)
     with np.errstate(over="ignore"):
         p_b = 1.0 / (1.0 + np.exp(-(z_gate - logit_tau) / T_gate))
@@ -487,7 +537,7 @@ def sample_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.n
     lp_gate = np.zeros(B, dtype=np.float64)
     for r in range(B):
         if gate_sampled[r] and "gate" not in heads_sampled:
-            g[r] = p[r] > tau                                  # greedy gate, as live_decide
+            g[r] = p[r] > (tau if dt is None else tau_r[r])    # greedy gate, as live_decide
         elif gate_sampled[r]:
             g[r] = matches[r].rng_behave.random() < p_b[r]
             lp_gate[r] = math.log(p_b[r] if g[r] else 1.0 - p_b[r])
@@ -537,6 +587,10 @@ def sample_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.n
                   "allowed": allowed[r].copy(), "stalled": bool(stalled[r]), "gate_sampled": bool(gate_sampled[r]),
                   "lp_gate": float(lp_gate[r]), "lp_card": float(lp_card[r]), "lp_cell": float(lp_cell[r]),
                   "p_gate": float(p[r]), "T": T}
+        if dt is not None:                                     # C1: the posture in force; its log-prob if chosen now
+            m = matches[r]
+            out[r].update(posture=int(m._posture[0]), posture_dtau=float(dt[r]), posture_new=m._posture_new is not None,
+                          posture_lp=0.0 if m._posture_new is None else m._posture_new)
     return out
 
 
@@ -994,9 +1048,10 @@ class Match:
         if policy == "live":
             from .decision_options import match_kwargs
             extras = match_kwargs([self])
-            if extras:
+            if extras or cfg.get("posture"):                  # rl_royale C1 posture: the batch decide takes a per-row tau
+                tau, extras = posture_live([self], enc, cfg, cfg['tau'], extras)
                 return live_decide_batch(model, enc, heads, [p], allowed[None], np.array([stalled]),
-                                         tau=cfg['tau'], device=device, **extras)[0]
+                                         tau=tau, device=device, **extras)[0]
             return live_decide(model, enc, heads, p, allowed, tau=cfg['tau'], stalled=stalled, device=device)
         if policy == "sample":
             return sample_decide_batch(model, enc, heads, [p], allowed[None, :], np.array([stalled]), [self], cfg)[0]
@@ -1230,6 +1285,8 @@ class Match:
                 row = {**row, "ctx": self._ctx_row(tick)}
             if cfg.get("record_elixir"):                      # rl_royale F6': my exact elixir at the decision tick,
                 row = {**row, "elixir": self._obs_elixir}     # from the raw state (prepare), set with self._obs
+            if "posture" in d:                                # rl_royale C1: the posture in force, its choice
+                row = {**row, **{k: d[k] for k in ("posture", "posture_dtau", "posture_lp", "posture_new")}}
             self.traj.append({**row, "allowed": d["allowed"],
                               "stalled": d["stalled"], "gate_sampled": d["gate_sampled"], "played": d["play"],
                               "slot": d["slot"], "cell": d["cell"], "lp_gate": d["lp_gate"], "lp_card": d["lp_card"],
@@ -1403,6 +1460,10 @@ class Match:
             out["ctx"] = stack("ctx").astype(np.int64)
         if tj and "elixir" in tj[0]:                         # cfg["record_elixir"]: own exact elixir per row
             out["elixir"] = scalar("elixir", np.float64)
+        if tj and "posture" in tj[0]:                        # cfg["posture"] (rl_royale C1): z in force, its dtau,
+            out.update(posture=scalar("posture", np.int64), posture_dtau=scalar("posture_dtau", np.float64),
+                       posture_lp=scalar("posture_lp", np.float64),           # log pi(z) on the rows that chose it
+                       posture_new=scalar("posture_new", bool))
         return out
 
 
@@ -1486,9 +1547,11 @@ def run_batch(make_env, model, deck, jobs, cfg: dict, n: int, on_result, on_skip
             allowed = np.stack([x[1] for x in pre])
             stalled = np.array([x[2] for x in pre], dtype=bool)
             from .decision_options import match_kwargs
-            decisions = live_decide_batch(model, enc, heads, p, allowed, stalled, tau=cfg["tau"],
-                                          device=cfg["device"], **match_kwargs(live)) if policy == "live" else \
-                sample_decide_batch(model, enc, heads, p, allowed, stalled, live, cfg)
+            if policy == "live":                             # (rl_royale C1: posture_live; no posture = unchanged)
+                tau, kw = posture_live(live, enc, cfg, cfg["tau"], match_kwargs(live))
+                decisions = live_decide_batch(model, enc, heads, p, allowed, stalled, tau=tau, device=cfg["device"], **kw)
+            else:
+                decisions = sample_decide_batch(model, enc, heads, p, allowed, stalled, live, cfg)
         else:                                                # random / none: cheap, no GPU call -> per-row is fine
             decisions = [m.decide_row(model, {k: v[r:r + 1] for k, v in enc.items()},
                                       {k: v[r:r + 1] for k, v in heads.items()}, p[r], hand[r])
@@ -1846,10 +1909,11 @@ def run_selfplay_batch(make_env, learner, opponents: dict, jobs, cfg: dict, n: i
             if "_opp_style" in c:
                 from pipeline.adaptive_opponents import styled_decisions
                 decisions = styled_decisions(model, enc, heads, p, allowed, stalled, sides)
+            elif c["policy"] == "live":                     # (rl_royale C1: posture_live; no posture = unchanged)
+                tau, kw = posture_live(sides, enc, c, c["tau"], match_kwargs(sides))
+                decisions = live_decide_batch(model, enc, heads, p, allowed, stalled, tau=tau, device=c["device"], **kw)
             else:
-                decisions = (live_decide_batch(model, enc, heads, p, allowed, stalled, tau=c["tau"], device=c["device"],
-                                              **match_kwargs(sides)) if c["policy"] == "live" else
-                             sample_decide_batch(model, enc, heads, p, allowed, stalled, sides, c))
+                decisions = sample_decide_batch(model, enc, heads, p, allowed, stalled, sides, c)
             todo += [(s, p[r], decisions[r]) for r, s in enumerate(sides)]
         for s, pr, d in todo:
             s.apply(pr, d)

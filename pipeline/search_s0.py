@@ -18,6 +18,11 @@ WHICH MODEL PLAYS WHICH ROLE
                  ``league1c_u*.pt``) be ours while the opponent stays the frozen gen_v1_s0. Its path and sha256 go in
                  run.json (``opp_gen``, ``opp_gen_sha256``) and in every match line. The ``s1`` opponent is ``--s1``.
   The candidate's grid must equal ``--opp-gen``'s (Runner checks it).
+  POSTURE (rl_royale C1): a ``--gen`` checkpoint carrying rl["posture_head"] plays its ARGMAX posture (re-chosen every
+  ``posture_every`` ticks from its g + public ctx) as a gate-threshold offset on our side: + dtau on the tau in force
+  (plain tau, or tau_phase / tau_threatened via decide_batch's tau_delta; e1_eval.posture_live; the sample policy
+  through sample_decide_batch); each match line gets ``posture_shares`` / ``posture_decisions`` / ``posture_choices``.
+  Our side inside a search fork does not apply it. No head = unchanged.
 
 DESIGN (lead-fixed, L69 ticket S0)
   Our side: icebow, ``gen_v1_s0`` on CPU, under the measured live condition (clean obs, opp-elixir counter, action
@@ -491,7 +496,20 @@ class Runner:
                 **({'behaviour': r['behaviour']} if 'behaviour' in r else {}),
                 **({'public_lookahead_counts': r['public_lookahead_counts']} if 'public_lookahead_counts' in r else {}),
                 **({k: r[k] for k in ("forms_mode", "form_fallbacks")} if "forms_mode" in r else {}),
+                **self.posture_fields(m.learner),
                 "wall_s": round(time.perf_counter() - t0, 1)}
+
+    @staticmethod
+    def posture_fields(side) -> dict:
+        """C1 (a checkpoint with a posture head, ``_init_worker``): our decisions' share under each posture (argmax) and
+        the number of choices; {} without a posture (the match line unchanged)."""
+        c = getattr(side, "posture_counts", None)
+        if c is None:
+            return {}
+        from pipeline.rl_royale import POSTURES
+        n = sum(c)
+        return {"posture_shares": {k: round(v / n, 4) for k, v in zip(POSTURES, c)}, "posture_decisions": n,
+                "posture_choices": int(getattr(side, "posture_choices", 0))}
 
     def round(self, m, ds, arm: str, st: dict, rng: random.Random) -> None:
         """One round of run_selfplay_batch for one match (prepare all, decide each on its own model, apply in side
@@ -505,9 +523,10 @@ class Runner:
             _, allowed, stalled = s.pre(hand)
             if s.cfg.get("policy") == "sample":   # --opp-policy sample (lead 2026-10-08); --learner-policy sample (10-13)
                 d = E.sample_decide_batch(s.model, enc, heads, [p], allowed[None], np.array([stalled]), [s], s.cfg)[0]
-            else:
-                d = live_decide_batch(s.model, enc, heads, [p], allowed[None], np.array([stalled]), tau=s.cfg["tau"],
-                                      device=s.cfg["device"], **decision_match_kwargs([s]))[0]
+            else:                                 # rl_royale C1: posture_live (no cfg posture = tau / kwargs unchanged)
+                tau, kw = E.posture_live([s], enc, s.cfg, s.cfg["tau"], decision_match_kwargs([s]))
+                d = live_decide_batch(s.model, enc, heads, [p], allowed[None], np.array([stalled]), tau=tau,
+                                      device=s.cfg["device"], **kw)[0]
             if s is m.learner and self.probe_xbow_focus and d["play"]:
                 d = self.probe_xbow(s, enc, d, st)
             if s is m.learner and arm == "never":
@@ -611,6 +630,11 @@ def _init_worker(args: dict) -> None:
         learner_cfg.update(policy='sample', T=float(args['learner_T']),
                            sample_heads=tuple(args.get('learner_sample_heads', ('gate', 'card', 'cell'))),
                            T_gate=args.get('learner_T_gate'))
+    from pipeline.rl_royale import load_posture_head
+    gp = REPO / args["gen"]                                 # rl_royale C1: a trained posture head -> argmax posture on
+    posture = load_posture_head(gp, dev) if gp.is_file() else None   # our gate (posture_live / sample_decide_batch);
+    if posture is not None:                                 # not a file = load_policy was stubbed (tests): no head
+        learner_cfg['posture'] = posture
     if args.get('behaviour_telemetry'):
         learner_cfg['behaviour_telemetry'] = True
     if args.get('predict_drops'):

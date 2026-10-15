@@ -1,3 +1,20 @@
+## 2026-10-15 ~20:00 EDT -- C1 built (+ posture_lr); gae_live replicate disagrees; lambda .98 closed; defensive tau HURTS u250
+
+- **C1 posture head stage A** (foreman worker DONE_WITH_CONCERNS; files pipeline/rl_royale.py, e1_eval.py, search_s0.py,
+  mkcfg_arms.py arm gae_c1 = gae + posture_head on, critic_ctx absent = ONE change; graft_generic unchanged, it keeps the rl
+  dict). Lead amendment: `posture_lr` (default 3e-4, own Adam) -- at the trunk lr 1e-5 with ~570 Adam steps / update the
+  head's logits move <= ~0.4 in 65 updates vs the ~2 needed to leave "balanced" (ln 8 init bias), a null result by
+  construction. Accepted worker notes: dtau also shifts tau_threatened (the threshold in force, as designed); D0 uses argmax;
+  search arms with rollout_self ignore the posture (D arms unaffected); CPU multi-thread learner not bit-reproducible.
+- **gae_live (live-pool training decks) replicate**: s75 vs its twin F1 s75 u65: live pool **-2.60 [-6.67, +1.35]**, standard
+  D3 **-5.31 [-9.27, -1.35]**; s74 was +4.79 / +3.12. (b) not established -- the 19:20 "helps" line rested on one seed
+  (corrected on Discord). s76 decides (49350, u52/65 at 20:00). s74 extension to 250 continues (candidate search vs u250).
+- **lambda .98**: s74 vs twin standard D3 +0.42 [-3.54, +4.48] (s75 was -2.19 n.s.) -> null on both seeds, CLOSED. Pod 23302
+  stopped after copy-back (sha-verified, pod1014b_arms/rlarm_gae_lam98).
+- **Defensive tau (0.45/0.55/0.65) on u250 (f1u250_def2, run.json tau_phase verified)**: 509/960 **-7.40 pp [-11.25, -3.54]**
+  vs u250 default (beatdown -5.8, rest -8.4); on u65 it was +3.33. (a) the best threshold is checkpoint-specific -- u250 has
+  adapted to the default; live keeps the default. Never move a decode threshold on a new checkpoint without re-measuring.
+
 ## 2026-10-15 ~19:20 EDT -- gae_live s74 +4.79 over its twin on the live pool (extended to 250); no opponent is human in style AND strength
 
 - **gae_live s74 u65** (= F1 + league decks from the live-mirrored TRAIN pool, MK ~20% of opponents) on the live-mirrored eval:
