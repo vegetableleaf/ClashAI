@@ -1,3 +1,15 @@
+## 2026-10-15 ~01:25 EDT -- overnight pod queues (do NOT stop a pod while its queue_s3 job is pending)
+
+| pod | now | queued next (queue_s3.sh, /workspace/cb_s3 @ a208b22+) |
+|---|---|---|
+| 15661 | gae_tg (F1+F4) | gae_solv (step 3 A2) -> results /workspace/results/rlarm_gae_solv |
+| 15118 | gae_opp_tg (F1+F3+F4) | gae_tower (step 3 A1+A1b) -> rlarm_gae_tower |
+| 12787 | gae_s75 (F1 replicate) | A1A2 scripted-policy audit -> /workspace/results/AUDIT_A1A2 |
+| 19636 | gae resumed to 150 | (none: stop after copy) |
+| 37607 | gae_opp (F1+F3, 13.6 cores) | (none) |
+| 12037 | gae_s76 (F1 replicate #2) | (none) |
+Live: A/B5 F1 vs r1 (75/arm) running; tornado-40 + A/B4 wait for the owner's clip.
+
 ## 2026-10-15 ~01:00 EDT -- step 3 shaping built (A2 solvency, A1 tower_score + tiebreak), opt-in; arms gae_solv / gae_tower
 
 - `pipeline/reward_shaping.py` + rl_royale/e1_eval opt-in wiring (agent, reviewed; default hash unchanged): `shaping:
