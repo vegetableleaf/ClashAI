@@ -1,3 +1,11 @@
+## 2026-10-15 ~09:10 EDT -- gae_tower seed 75: the beatdown hint does not replicate; step 3 null over 2 seeds
+
+- rlarm_gae_tower_s75 (copy `pod_backup_weekend/pod1014b_arms/rlarm_gae_tower_s75*`, final 730dc197): D3 469/960 48.85%;
+  vs F1 s75 D3 -2.60 [-6.56, +1.46], D1 -0.62 n.s.; vs r1 deployed +6.98 [+3.12, +10.94].
+- Pooled over seeds 74 + 75, tower arm minus the same-seed F1, paired: beatdown +3.1 [-1.9, +8.1] (n 674), rest -1.8
+  [-5.1, +1.6] (n 1246). (c) the 05:25 "+6.8 beatdown" hint was seed noise. A1+A1b = null.
+- Pod 15118 STOPPED after the sha-verified copy. Only 19636 (FRESH re-score) still runs.
+
 ## 2026-10-15 ~08:55 EDT -- F1 s74 to 250 updates: plateau (+0.62 vs u150)
 
 - rlarm_gae resumed 150 -> 250 (copy `pod_backup_weekend/pod1014b_arms/rlarm_gae_to250*`): vs u150 D3 +0.62 [-3.23, +4.48],
