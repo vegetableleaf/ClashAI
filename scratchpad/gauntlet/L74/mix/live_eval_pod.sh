@@ -16,7 +16,7 @@ sha256sum $CK >> $O/ckpts.sha
 for S in 741200 742000; do
   echo "$(date -u +%T) $NAME $S"
   flock /workspace/cpu.lock $PY scratchpad/gauntlet/L74/gap/gap.py --ckpt $CK --out $O/${NAME}_$S --arms $ARMS --seed-start $S \
-    --census-file scratchpad/gauntlet/L74/mix/decks_live_eval.json --workers ${WORKERS:-25} ${EXTRA:+--extra "$EXTRA"} \
+    --census-file scratchpad/gauntlet/L74/mix/decks_live_eval.json --workers ${WORKERS:-25} ${EXTRA:+--extra="$EXTRA"} \
     > $O/${NAME}_$S.log 2>&1 \
     || echo "GAP EXIT $? $NAME $S"
 done
