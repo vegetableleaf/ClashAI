@@ -287,6 +287,15 @@ def posture_cfg(cfg: dict) -> Optional[dict]:
             "lr": float(c["posture_lr"])}
 
 
+def store_posture_cfg(cfg: dict) -> Optional[dict]:
+    """Learner.__init__'s C1 step: validate (``posture_cfg``) and, with the head on, write EVERY POSTURE_DEFAULTS key
+    KeyError before update 0). -> posture_cfg's dict, or None."""
+    pc = posture_cfg(cfg)
+    if pc is not None:
+        cfg.update(posture_head=True, **{f"posture_{k}": v for k, v in pc.items()})
+    return pc
+
+
 def adv_cfg(cfg: dict) -> dict:
     """The R1 keys of a config (``GAE_DEFAULTS`` for missing ones), validated: SystemExit naming the bad key."""
     c = {k: cfg.get(k, v) for k, v in GAE_DEFAULTS.items()}
@@ -2601,9 +2610,7 @@ class Learner:
         adv_cfg(cfg)                                          # ... and the advantage (R1) keys
         if gate_lo_cfg(cfg) is not None:                      # ... and the F6' keys; the frac default stored
             cfg["kl_ref_gate_target_frac"] = gate_lo_cfg(cfg)["frac"]
-        pc = posture_cfg(cfg)                                 # ... and the C1 keys; the defaults stored
-        if pc is not None:
-            cfg.update(posture_head=True, **{f"posture_{k}": v for k, v in pc.items()})   # every POSTURE_DEFAULTS key
+        store_posture_cfg(cfg)                                # ... and the C1 keys; the defaults stored
         bc = branch_cfg(cfg)                                 # ... and the branch (opt3) keys
         if bc["branch_gate"]:
             try:
