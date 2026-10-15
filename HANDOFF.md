@@ -1,3 +1,20 @@
+## 2026-10-15 ~18:20 EDT -- probe accepted; C1 build started; F6' s74 not a candidate; the two u250/s76 defensive-tau evals were INVALID
+
+- `--probe-xbow-focus` (16f1b44 + 6ee9ab9) blind-verified PASS_WITH_NOTES, pushed. Reading caveat: ~19 of the 103 cells that
+  reach the left princess also reach the right one, so `probe_xbow_focus_changed` overstates real fire concentration; the
+  counters are per match row (not in gap SUMMARY). Run `f1u250_probe` on 19636 (cb_s11); compare
+  `live_cmp.py DIR --base f1u250 f1u250_probe`.
+- C1 posture head stage A (training + SIM only; design in the worker ticket: z in {defend, balanced, pressure} = gate tau offset
+  +0.10 / 0 / -0.10, chosen every 200 ticks by a small head on detached g + ctx, PPO term on the choosing rows, init
+  P(balanced) 0.8, argmax in SIM eval, kept outside the model state dict) -- foreman worker building.
+- Live-mirrored pool vs live F1 u250 (580/960): **F6' s74 538/960 -4.38 pp [-8.33, -0.42]** (vs its own base F1 u65 +3.33
+  n.s., beatdown +0.5) -> not a candidate.
+- **(c) f1u250_def and f1s76_def did NOT test the defensive tau**: run.json tau_phase = [0.35, 0.45, 0.55] (default); they ran
+  from checkout /workspace/cb_s8, whose live_eval_pod.sh predates EXTRA and ignored it silently (their numbers equal the
+  plain runs exactly). The 17:05 note "s76 + defensive tau queued" never produced a result. Requeued `f1u250_def2` on cb_s11
+  after the probe. live_eval_pod.sh now prints EXTRA in its queue line.
+- run_t20_ab4.sh line 55: the committed `tr -d "<literal CR>"` did strip CR (invisible in editors); rewritten as `tr -d '\r'`.
+
 ## 2026-10-15 ~18:15 EDT -- owner: "doesn't know when to counterattack and when to defend" (MK + Witch at a low tower)
 
 - `L74/loss_review/wrong_lane_commit.py` (live, icebow main account since 10-13): matches with a WRONG-LANE COMMIT (>= 6 elixir
