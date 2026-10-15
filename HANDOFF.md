@@ -1,3 +1,18 @@
+## 2026-10-15 ~14:10 EDT -- MATCHUP-MIX GAP (measured): training opponents are not the 12k ladder; Mega Knight is the #1 cost
+
+- `L74/mix/live_cost.py` (icebow MAIN account only: two 4424 princesses + no bait card; 1,919 matches since 10-01, overall
+  win 49.5%) and `L74/mix/MIX_GAP_1015.md`. Biggest trophy costs (n x (49.5% - win%)): Mega Knight 310 matches at 37.4%
+  (+37.5), Skeleton Balloon 151 at 34.4%, Mini PEKKA 341 at 43.1%, E-Barbs 170 at 37.6%, Firecracker 323 at 43.3%,
+  Skeleton Army, Barbarians, Golem 109 at 35.8%. Beatdown overall 763 (40%) at 42.9%.
+- Live vs TRAINING opponent decks (decks_rl.json weighted): Mega Knight 16.2% vs 1.8%, Firecracker 16.8 vs 2.5, Elixir Golem
+  8.0 vs 1.9, RR 4.8 vs 1.3, Mini PEKKA 17.8 vs 6.7, Hog 14.6 vs 6.8 -- while Golem 5.7 vs 21.7, E-Barbs 8.9 vs 24.9, Lava
+  1.9 vs 9.1, RG 4.1 vs 9.2. (a) The training census is the pro/IL meta + the 10-10 Golem/Lava/RG up-weighting; the costly
+  12k opponents are under-represented 2-9x. Owner's "more beatdown" idea: contradicted as stated (Golem/Lava already
+  over-weighted); the measured lever is a LIVE-MIRRORED deck pool (MK, Firecracker, EGolem, RR, Mini PEKKA ...).
+- Next (proposed to the owner): build a live-mirrored pool (live seen-card sets -> best-matching loadable IL_Replay decks,
+  weighted by live frequency x cost), re-weight the SIM eval to the live mix (`L74/mix/live_weighted.py`), then ONE arm: F1
+  trained on that pool (2 seeds) -> live A/B vs F1.
+
 ## 2026-10-15 ~13:55 EDT -- Tornado river fix (20 live matches): the combo fired once; A/B4 running
 
 - 20 river-on live matches (F1 u65, 12:22-13:45; guard passed: main account + icebow deck). `reward/TORNADO_USAGE_20.txt`:
