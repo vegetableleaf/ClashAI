@@ -360,6 +360,7 @@ def shortlist(model, enc, heads, allowed: np.ndarray, topk: int, cells: int) -> 
 class Runner:
     """Plays one (arm, opponent, seed) match. ``learner`` = our policy (also the rollout self-model of the opponent);
     ``opps`` = {id: (policy, cfg)}; ``make_env()`` -> RoyaleSelfPlayEnv."""
+    probe_xbow_focus = False    # --probe-xbow-focus (SIM-only measurement probe, owner 2026-10-15); False = unchanged
 
     def __init__(self, learner, opps: dict, learner_cfg: dict, make_env, *, horizon_s: float = 12.0,
                  interval: int = 1, topk: int = 4, cells: int = 3, scorer: Optional[Scorer] = None,
@@ -458,6 +459,8 @@ class Runner:
         rng = random.Random(zlib.crc32(f"{m.spec['tag']}:s0random".encode()))
         st = {"eligible": 0, "searched": 0, "unsearched": 0, "gate_skipped": 0, "search_s": 0.0, "overrides": 0,
               "chose_wait": 0, "plain_wait_overridden": 0, "moved_cell": 0, "n_cands": 0}
+        if self.probe_xbow_focus:   # the match row shows the probe ran: our X-Bow decisions seen / cells it moved
+            st.update(probe_xbow_focus_xbows=0, probe_xbow_focus_changed=0)
         t0, truncated = time.perf_counter(), False
         while True:
             if deadline is not None and time.time() > deadline:
@@ -505,6 +508,8 @@ class Runner:
             else:
                 d = live_decide_batch(s.model, enc, heads, [p], allowed[None], np.array([stalled]), tau=s.cfg["tau"],
                                       device=s.cfg["device"], **decision_match_kwargs([s]))[0]
+            if s is m.learner and self.probe_xbow_focus and d["play"]:
+                d = self.probe_xbow(s, enc, d, st)
             if s is m.learner and arm == "never":
                 d = NEVER_PLAY                              # our side never plays (stall rule included)
             elif s is m.learner and arm != "plain" and allowed.any():
@@ -516,6 +521,24 @@ class Runner:
             todo.append((s, p, d))
         for s, p, d in todo:
             s.apply(p, d)
+
+    def probe_xbow(self, s, enc, d: dict, st: dict) -> dict:
+        """--probe-xbow-focus on our decided play (decision_options.probe_xbow_focus_cell): an offensive X-Bow cell that
+        misses the focus enemy princess moves to the model's best cell reaching it. Counts into ``st``."""
+        import torch
+        from pipeline.decision_options import is_xbow, probe_xbow_focus_cell
+        if not is_xbow(s.deck.cards[d["slot"]]):
+            return d
+        st["probe_xbow_focus_xbows"] += 1
+        towers = s._cur[1].towers[3:6]                      # the decision's engine BoardState (my frame): K, L, R
+        with torch.no_grad():
+            logits = s.model.cell_logits(enc, torch.tensor([d["slot"]], device=s.cfg["device"]))[0]
+        cell = probe_xbow_focus_cell(logits, int(d["cell"]), tuple(bool(t.alive) for t in towers),
+                                     tuple(t.hp_frac for t in towers[1:]), s.cfg["grid"])
+        if cell == int(d["cell"]):
+            return d
+        st["probe_xbow_focus_changed"] += 1
+        return {**d, "cell": cell}
 
     def arm_decide(self, m, ds, arm, p, enc, heads, allowed, plain: dict, st: dict, rng, stalled: bool = False) -> dict:
         if arm == "search" and p < self.search_min_p and not stalled:
@@ -606,6 +629,7 @@ def _init_worker(args: dict) -> None:
                           horizon_s=args["horizon"], interval=args["interval"], topk=args["topk"], cells=args["cells"],
                           search_min_p=args["search_min_p"], rollout_self=args.get("rollout_self", "idle"),
                           scorer_version=args.get("scorer", "v1"))
+    _W["runner"].probe_xbow_focus = bool(args.get("probe_xbow_focus"))
     _W["census"] = league_decks(REPO / args.get("census", CENSUS))
 
 
@@ -769,6 +793,10 @@ def main(argv=None) -> int:
                     help="opponent side's decision interval in ticks (L74 human tempo, e1_eval.opp_tempo); default = ours (10)")
     ap.add_argument("--opp-reaction-ticks", type=int, default=None,
                     help="extra ticks added to the opponent's action delay (L74 human tempo); default none")
+    ap.add_argument("--probe-xbow-focus", action="store_true",
+                    help="SIM-ONLY measurement probe (owner 2026-10-15; never live): once an enemy princess is damaged, an "
+                         "offensive X-Bow of ours that misses the weaker alive princess moves to the model's best cell "
+                         "reaching it (decision_options.probe_xbow_focus_cell); rows count it. Needs --arms plain, live policy")
     ap.add_argument("--max-wall-min", type=float, default=0.0,
                     help="0 = none; else no match starts after this and running matches stop (wall_truncated)")
     a = ap.parse_args(argv)
@@ -782,6 +810,8 @@ def main(argv=None) -> int:
         ap.error('--learner-policy sample is the plain RL rollout sampler; it takes no decision options')
     if decision_active and a.arms != 'plain':
         ap.error('decision options require --arms plain; search experiments are separate')
+    if a.probe_xbow_focus and (a.arms != 'plain' or a.learner_policy != 'live'):
+        ap.error('--probe-xbow-focus needs --arms plain and --learner-policy live')
     if a.ability_policy == "v2" and not a.hero_abilities:
         ap.error("--ability-policy v2 needs --hero-abilities")
     try:
@@ -832,10 +862,12 @@ def main(argv=None) -> int:
         wargs['pipeline_tau_delta'] = a.pipeline_tau_delta
     if a.record_plays:
         wargs['record_plays'] = True
+    if a.probe_xbow_focus:
+        wargs['probe_xbow_focus'] = True
     for k in ('opp_decide_every', 'opp_reaction_ticks'):
         if getattr(a, k) is not None:
             wargs[k] = getattr(a, k)
-    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads', 'learner_T_gate') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays') or v) and (k not in ('opp_decide_every', 'opp_reaction_ticks') or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
+    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads', 'learner_T_gate') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays', 'probe_xbow_focus') or v) and (k not in ('opp_decide_every', 'opp_reaction_ticks') or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
                                                 "gen_sha256": sha256(REPO / a.gen), "opp_gen_sha256": opp_sha,
                                                 "s1_sha256": sha256(REPO / a.s1),
                                                 "tau_plain": TAU_PLAIN, "tau_opp": TAU_OPP, "crown_w": CROWN_W,

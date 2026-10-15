@@ -486,6 +486,38 @@ def xbow_dead_lane_cells(enemy_alive, grid):
     return xbow_offensive_cells((True, True, True), grid) & ~xbow_offensive_cells((False, left, right), grid)
 
 
+PROBE_XBOW_DAMAGED = 0.95   # an enemy princess counts as damaged below this public hp_frac
+
+
+def probe_xbow_focus_princess(alive, hp):
+    """SIM-ONLY measurement probe (owner 2026-10-15; search_s0 --probe-xbow-focus; NOT a DecisionOptions field, so no
+    live parser / LIVE_OPTIONS can carry it). ``alive`` = enemy (K, L, R) alive, ``hp`` = enemy (L, R) hp_frac (None =
+    full). -> 1 (L) / 2 (R), the princess offensive X-Bows are concentrated on, or None (no restriction): both alive ->
+    the strictly weaker one once either is below PROBE_XBOW_DAMAGED (exact tie -> None); one alive -> it; none -> None."""
+    _, al, ar = (bool(a) for a in alive)
+    hl, hr = (1.0 if h is None else float(h) for h in hp)
+    if al and ar:
+        if min(hl, hr) >= PROBE_XBOW_DAMAGED or hl == hr:
+            return None
+        return 1 if hl < hr else 2
+    return 1 if al else 2 if ar else None
+
+
+def probe_xbow_focus_cell(logits, cell, alive, hp, grid):
+    """-> the X-Bow cell under the probe (``cell`` when unchanged). Only an OFFENSIVE cell (reaches an alive enemy tower,
+    xbow_offensive_cells) that misses the focus princess moves, to the highest-logit cell reaching the focus princess
+    (the class-restricted argmax today's decode takes, masked); defensive cells, a cell already on the focus princess,
+    no focus, or no finite focus cell -> ``cell``. Focus cells reach an alive princess, so none is xbow_dead_lane-blocked."""
+    focus = probe_xbow_focus_princess(alive, hp)
+    if focus is None:
+        return cell
+    reach = xbow_offensive_cells((False, focus == 1, focus == 2), grid)
+    if reach[cell] or not xbow_offensive_cells(tuple(bool(a) for a in alive), grid)[cell]:
+        return cell
+    masked = logits.masked_fill(~torch.as_tensor(reach, device=logits.device), -torch.inf)
+    return int(masked.argmax()) if bool(torch.isfinite(masked).any()) else cell
+
+
 # ponytail: a body counts as hit when its centre is within the Rocket radius + this slack (no per-card hitbox radii);
 # generous on purpose -- a near-miss body keeps the cell allowed, so the block never removes a Rocket that would hit.
 ROCKET_BODY_SLACK_TILES = 0.5
