@@ -1,3 +1,25 @@
+## 2026-10-15 ~10:10 EDT -- owner rulings (C2/F2 then C1; F6 target mine; A3' whenever; 0.1.34 whenever); A/B5 done; builds
+
+- **Owner 10-15 ~09:10**: "Let's try C2/F2, then C1 afterwards. F6 gate target can be decided by you based on our previous
+  observations. Let's try the corrected trade term whenever. Adopt RoyaleSim 0.1.34 whenever convenient." Pods: I asked for
+  6 (4 minimum): each one-change arm needs 2 RL seeds (seed spread ~+-3 pp measured overnight).
+- **A/B5 FINISHED** 75/75 (run 20261014_225605_6aad54dc): F1 u65 39-36 (52.0%) vs r1 37-38 (49.3%), B-A -2.7 [-18.2, +13.0]
+  n.s.; auto-switch put **F1 u65 (693889c3) LIVE 09:10**, account check True (higher arm stays). By archetype (ab_arch.py,
+  147 counted): F1 vs r1 beatdown -14.7 [-39.4, +10.0], rest +16.1 [-4.7, +36.9] -- the SIM pattern's direction, n.s.
+- **F6' (my decision, documented)**: gate KL to imitation (gen_v32_s0) ONLY on rows with own elixir < 4, own adaptive
+  coefficient, target 0.5 x its update-0 value, outside the shared leash. Reason: 85% of the full-gate KL (0.449) is >= 4
+  elixir where r1 plays LESS than imitation; the eagerness is at 0-2 elixir (.147 vs .088). Acceptance: [0,2)-band play rate
+  toward imitation without a SIM win-rate loss. Building (T3).
+- **C2/F2 built, verified, pushed (a82b137)**: `critic_ctx: arch | full` (absent = unchanged hash/behaviour, tested vs
+  a8440d6): zero-init residual CtxHead on the value logits, kept OUT of the model state dict (graft/live untouched); actor
+  ctx = [arch_id (pipeline/archetypes.py, public opponent bodies seen so far), tank, phase, own/foe crowns]; arms gae_c2 /
+  gae_f2. Blind verifier PASS_WITH_NOTES (CUDA-RNG reseed in _ctx_setup -> fixed in T3). Owed: a pod --smoke with it on.
+- Caveat told to the owner: under GAE any state baseline leaves the policy gradient unbiased -> C2/F2 can only cut variance.
+  `critic_diag.py` (70980b0) measures whether F1's critic is worse on beatdown first; queued on 19636 after FRESH
+  (u0250 full league mix; u0065 --allow-missing), results /workspace/results/CRITIC_DIAG.
+- 0.1.34 (RoyaleSim upstream: Little Prince guard timing): adopt AFTER this batch (switching now would invalidate the three
+  0.1.33 F1 controls); needs a runtime build + re-baselines.
+
 ## 2026-10-15 ~09:10 EDT -- gae_tower seed 75: the beatdown hint does not replicate; step 3 null over 2 seeds
 
 - rlarm_gae_tower_s75 (copy `pod_backup_weekend/pod1014b_arms/rlarm_gae_tower_s75*`, final 730dc197): D3 469/960 48.85%;
