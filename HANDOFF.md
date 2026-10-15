@@ -1,3 +1,22 @@
+## 2026-10-15 ~16:10 EDT -- A/B4 stopped, live = F1 u65 + incumbent options + frame logging; F2 null; F6' s74; human-likeness
+
+- **A/B4 stopped 15:37** (owner): final B (tau 0.2) 7W/3L vs A notau, B-A +23.3 [-14.9, +52.4] n.s. -> incumbent tau 0.2 kept.
+  Live restarted 15:39: F1 u65 (693889c3), LIVE_OPTIONS = pre-A/B4 + `--log-frames` (929 frame events in the first match);
+  guard passed. test_live_options pin updated (+ --tornado-river on --log-frames): 43 pass in the icebow venv (the Royale
+  venv lacks live deps: 12 environment failures there, not regressions).
+- **F2 null**: s75 vs F1 s75 D3 -0.10 [-3.96, +3.75] (s74 +2.60 n.s.). C2 rejected earlier. -> the critic-context line is
+  closed (consistent with the critic diagnostic).
+- **F6' s74**: +9.58 vs r1, +2.81 [-1.15, +6.77] vs F1 s74 (n.s.). Behaviour: [0,2)-elixir play rate 0.317 (u0) -> 0.151
+  (u20) -> 0.176 (u64); low-row KL to imitation 0.352 -> 0.12-0.15 (target 0.176); elixir-at-play 4.27 -> 4.89 (F1 s74:
+  4.27 -> 5.16). F1's own band rates are not logged, so the [0,2) drop is not yet attributable to F6'. s75 pending.
+- **Human-likeness (L74/human/BEHAVIOUR.md, worker T7)**: SIM opponents vs 1,919 live 12k humans: 2x tempo 12.2 vs 8.6
+  plays/min (d +1.28); our play answered within 3 s 48% vs 26% (d +1.87; humans slightly BELOW chance); 1x tempo equal.
+  Most un-human: RG / PEKKA-BS / weak_other(MK...) archetypes; firecracker / skeletonballoon / MK cards. Of existing
+  opponent policies gen_v1_s0 @ T .3 is closest (0.68), E4 @ T .03 farthest (0.90). Caveats: spells mostly invisible to the
+  detector; live learner icebow vs SIM r1 (react_* includes our timing); deck mixes differ.
+- Next (b): cheapest human-likeness lever = opponent decision cadence / reaction delay in 2x + T .3 gen opponents,
+  calibrated with opp_behaviour.py, BEFORE training archetype specialists.
+
 ## 2026-10-15 ~15:30 EDT -- owner: stop A/B4, F1 with incumbent options; continue the plan + RL architecture (modified)
 
 - **Owner ~15:15**: "yes, stop A/B4, and keep F1 with the incumbent settings (as long as the tau setting you choose isn't

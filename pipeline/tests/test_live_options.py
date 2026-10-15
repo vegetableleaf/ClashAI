@@ -39,7 +39,9 @@ BUNDLE = ('--gate-decode hazard_below_tau --gate-hazard-min-elixir 9 --iw-press-
           '--lethal-log on --tau-threatened 0.2 '   # 2026-10-09 05:xx (blind af471193, merge 766e008)
           '--card-levels Rocket=16 Log=15 '   # 2026-10-09 13:xx (owner card levels; blind af0555f2)
           '--log-air block '   # 2026-10-09 evening (owner: hold + Skeleton Barrel exempt; blind a1d953e2 on bd4c8ca)
-          '--rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-tornado only --follow-up-taps')   # 2026-10-09 cb9 combo (merge f5ba591); emotes moved to start_live.sh --emotes (10-11)
+          '--rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-tornado only --follow-up-taps '
+          '--tornado-river on '   # 2026-10-15 owner: tornado-20 then kept (river rule: combo fired 1x in 20 matches)
+          '--log-frames')   # 2026-10-15 owner plan: per-frame truth for the parity loop (A/B4 stopped, stop_ab4.sh)   # 2026-10-09 cb9 combo (merge f5ba591); emotes moved to start_live.sh --emotes (10-11)
 DEPLOYED_FILE = DEPLOYED.rstrip('\n') + ' ' + BUNDLE + '\n'
 
 
