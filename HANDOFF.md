@@ -1,3 +1,15 @@
+## 2026-10-14 ~22:50 EDT -- A/B3 STOPPED (press rule kept); A/B5 = F1 vs r1 tonight; tornado-40 + A/B4 AFTER the owner's clip
+
+- Owner: test F1 live soon; decide on A/B3; if stopped, a shorter A/B5 of F1 tonight; morning: owner asks for the A/B5
+  analysis, records the daily clip, THEN MuMu goes to the 40 tornado-fix matches and A/B4.
+- A/B3 at 72/70: A never-press 27-45 (37.5% [27.2, 49.0]), B press 35-35 (50.0% [38.6, 61.4]); A-B -12.5 pp [-28.7, +3.7];
+  P(never-press better) ~0.07. Decision: STOP (STOP_AB 22:47), keep the press rule. The SIM twin predicted never-press
+  +3.33 [+0.62, +6.15]; live points the other way -- first clean SIM-vs-live transfer data point (disagreement).
+- post_ab3_chain.sh STOPPED (pids 18688/31716/60756 killed by exact pid) -- re-arm the tornado-40 -> A/B4 part only after
+  the owner's clip.
+- A/B5 `L74/ab/run_ab5.sh` (WMI pid 88920; ab5_launch/ab5_run/ab5_autoswitch.out): A f1 = rlarm_gae_u0065_grafted
+  (693889c3) vs B v1 = r1 full graft (fce50ebb, incumbent), press rule, 75/arm, auto-switch armed.
+
 ## 2026-10-15 ~02:45 EDT -- F1 (per-decision credit) = FIRST POSITIVE RL RESULT; F3 alone null
 
 - 960 pairs (copies `pod_backup_weekend/pod1014b_arms/`, sha-verified), r1 cfg continued from newsim_base_main_u0060:
