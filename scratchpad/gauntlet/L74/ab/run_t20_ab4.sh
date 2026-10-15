@@ -52,7 +52,7 @@ for f in sorted(glob.glob('$LOGS/live_play_*.jsonl')):
     if '\"event\": \"end\"' in body: n.append(f)
 print('\n'.join(n))"; }
 until [ "$(count_on | grep -c .)" -ge 20 ]; do sleep 300; done
-count_on | head -20 > $AB/tornado_river_20.list
+count_on | tr -d "" | head -20 > $AB/tornado_river_20.list   # python on Windows prints CRLF: strip it (10-15 bug)
 PYTHONPATH=. $PY scratchpad/gauntlet/L74/reward/tornado_usage.py $(cat $AB/tornado_river_20.list) > scratchpad/gauntlet/L74/reward/TORNADO_USAGE_20.txt 2>&1
 post "[ClashAI] Tornado river fix, 20 live matches: $(tail -1 scratchpad/gauntlet/L74/reward/TORNADO_USAGE_20.txt). Starting A/B4 (--tau-threatened off vs on, 75/arm)."
 

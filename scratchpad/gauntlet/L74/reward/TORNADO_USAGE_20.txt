@@ -1,0 +1,2 @@
+{"matches": 20, "rows": 4787, "suppressed": 11, "reaimed": 31, "fired": 1, "fired_relevant": 0}
+20 logs; 20 with Rocket+Tornado in hand at some point; 4787 sampled rows: the river rule SUPPRESSED a combo on 11, RE-AIMED one on 31; combos fired 1 (0 with enemy-bank ground in reach)
