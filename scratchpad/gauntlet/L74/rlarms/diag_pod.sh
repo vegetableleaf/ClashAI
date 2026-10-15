@@ -4,6 +4,7 @@
 # evicted, so the mix is init + externals + surviving snapshots -- stated in the output). -> /workspace/results/CRITIC_DIAG/.
 #   diag_pod.sh WAIT_DIR [MATCHES]      (CB=/workspace/clashbot; critic_diag.py must sit at its repo path in CB:
 #   it locates the repo from its own file, so a copy in /workspace/in fails with IndexError)
+# V(s) is scored on the GPU (--device cuda): on CPU with OMP_NUM_THREADS=1 the ~380k-row scoring ran > 1 h (10-15, killed)
 set -Eeuo pipefail
 W=$1; M=${2:-1000}; CB=${CB:-/workspace/clashbot}; PY=/workspace/venv33/bin/python; O=/workspace/results/CRITIC_DIAG
 RL=icebow/data/bench/rl_royale/rlarm_gae; CFG=/workspace/results/rlarm_gae/rlarm_gae.yaml
@@ -16,7 +17,7 @@ for U in 0250 0065; do
   X=(); [ $U = 0065 ] && X=(--allow-missing)
   echo "$(date -u +%T) u$U"
   flock /workspace/cpu.lock $PY scratchpad/gauntlet/L74/rlarms/critic_diag.py --ckpt $RL/rlarm_gae_u$U.pt --config $CFG --out $O/u$U \
-    --matches $M --workers ${WORKERS:-25} --seed-start 745000 "${X[@]}" > $O/u$U.log 2>&1 || echo "DIAG EXIT $? u$U"
+    --matches $M --workers ${WORKERS:-25} --seed-start 745000 --device cuda "${X[@]}" > $O/u$U.log 2>&1 || echo "DIAG EXIT $? u$U"
 done
 touch $O/DONE
 echo "$(date -u +%T) done"
