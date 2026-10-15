@@ -1,3 +1,19 @@
+## 2026-10-15 ~11:50 EDT -- F6' built + verified (2 passes after a repair); C2 s74 training; bundle pod1015 ready for new pods
+
+- **F6' (9f9e43c + repair f85a49e, pushed)**: `kl_ref_gate_max_elixir: 4.0` (+ `kl_ref_gate_target_frac: 0.5`, needs
+  kl_ref_gate) -> gate KL to imitation (gen_v32_s0, sha 61011b6c) only on rows with own elixir < 4; high rows keep F1's KL
+  to init; own adaptive beta_g (target 0.5 x update-0 low-row KL, persisted); shared leash sees high-row init KL only. Row
+  elixir = the RAW state's exact elixir at the decision tick (first revision used the extrapolated board, +0.46/+0.93:
+  blind verifier FAIL -> repaired, fresh verifier reproduced the fix in 11 probes incl. delay 26 + extrapolate 26). Guards:
+  update-0 low KL < 1e-4 refuses; beta_g pinned at max >= 3 updates with KL > 1.5 x target -> WARNING (no stop rule).
+  Logs per update: KL_gate_imit_low/target/beta_g, play rate by own-elixir band [0,2) [2,4) [4,7) [7,11), imitation's own
+  low-row play probability. Arm `gae_f6lo`. Also fixed: _ctx_setup now forks the CUDA RNG too (C2 s74 on 49350 runs the
+  pre-fix code; the learner draws no torch randomness after init -> no expected effect).
+- C2 s74 (`rlarm_gae_c2`, pod 216.81.245.71:49350) passed its critic_ctx smoke (2 updates + resume check) and trains
+  since 14:00 UTC (done ~18:00 UTC incl. scoring).
+- New-pod bundle: `<scratchpad>/pod1015/` (repo.tgz at 96b8ae3, ckpts.tgz += gen_v32_s0) + up.sh HOST PORT none, then
+  `ctx_pod.sh ARM SEED smoke` (smokes the ARM itself, then run_rlarm2 fresh). Queue: C2 s75, F2 s74, F2 s75, F6' s74/s75.
+
 ## 2026-10-15 ~10:20 EDT -- FRESH-seed re-score (743000 + 744000, D3 deployed, 960 paired): F1 u65 +8.65 vs r1; longer adds nothing
 
 - Copy `pod_backup_weekend/pod1015_s5/FRESH/` (fresh_pod.sh on 19636): r1 417/960 43.4%, F1 u65 500 (52.1%), u150 499,
