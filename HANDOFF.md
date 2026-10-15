@@ -1,3 +1,12 @@
+## 2026-10-15 ~03:05 EDT -- F1 third seed (s76): deployed +9.69 [+5.83, +13.65], plain +9.79 [+5.94, +13.75] vs r1
+
+- rlarm_gae_s76 (copy `pod_backup_weekend/pod1014b_arms/rlarm_gae_s76*`, final 630cc2f3): D1 475/960 49.48%, D3 495/960
+  51.56%. vs F1 s74: D3 +2.92 [-1.04, +6.98], D1 +4.58 [+0.62, +8.65].
+- **F1 over three RL seeds, deployed vs r1: +6.77 / +9.58 / +9.69** -- all three CIs above 0. Per archetype (ARCH_CMP_F1.txt
+  now has s76): beatdown +0.3 / +4.7 / +3.9 (all n.s.), rest +10.3 / +12.2 / +12.8 (all CI > 0). The beatdown gap
+  replicates too.
+- Live A/B5 runs seed 74 (the weakest of the three point estimates; the differences between seeds are n.s.).
+
 ## 2026-10-15 ~02:45 EDT -- step-3 scripted audit (REWARD_ARCHITECTURE §9.3): tower_score PASS; solvency one flag
 
 - Copy `pod_backup_weekend/pod1015_s5/AUDIT_A1A2/` (100 matches x 7 policies x 2 checkpoints, same seeds).
