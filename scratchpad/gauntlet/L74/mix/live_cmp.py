@@ -42,7 +42,10 @@ def main():
         if rows is None:
             print(f"{n:16} incomplete"); continue
         w = sum(r["outcome"] == "win" for r in rows)
-        d = paired_drift(base, rows, expected=len(base))
+        try:
+            d = paired_drift(base, rows, expected=len(base))
+        except ValueError:                                   # a seed set still running (partial matches.jsonl)
+            print(f"{n:16} incomplete ({len(rows)} rows)"); continue
         split = []
         for lab, keep in (("beatdown", True), ("rest", False)):
             x = [(r["outcome"] == "win") - (bk[(r["census"], r["seed"])]["outcome"] == "win")
