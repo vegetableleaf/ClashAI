@@ -1616,16 +1616,20 @@ def value_rows(model, B: dict, chunk: int = 512, ctx_head=None) -> torch.Tensor:
 
 
 @torch.no_grad()
-def posture_snapshot(model, head, B: dict) -> Optional[dict]:
-    """C1, once per update BEFORE the steps: the trunk g (``model``'s encoder, as policy_terms) and the head's
-    log-probs at every row that chose a posture. None without such rows."""
+def posture_snapshot(model, head, B: dict, chunk: int = 512) -> Optional[dict]:
+    """C1, once per update BEFORE the steps: the trunk g (``model``'s encoder, as policy_terms; ``chunk`` rows per
+    forward, as value_rows) and the head's log-probs at every row that chose a posture. None without such rows."""
     ch = B["posture_new"].nonzero().squeeze(-1)
     if not len(ch):
         return None
-    if "hand_card" in B:
-        g = model.encode_gen({k: B[k][ch] for k in E.gen_row_keys(model)})["g"]
-    else:
-        g = model.encode(B["tok"][ch], B["mask"][ch], B["sc"][ch], B["past"][ch])["g"]
+    gs = []
+    for s in range(0, len(ch), chunk):
+        c = ch[s:s + chunk]
+        if "hand_card" in B:
+            gs.append(model.encode_gen({k: B[k][c] for k in E.gen_row_keys(model)})["g"])
+        else:
+            gs.append(model.encode(B["tok"][c], B["mask"][c], B["sc"][c], B["past"][c])["g"])
+    g = torch.cat(gs)
     ctx = B["ctx"][ch]
     return {"g": g, "ctx": ctx, "lp": torch.log_softmax(head(g, ctx).double(), dim=-1)}
 
@@ -2625,8 +2629,7 @@ class Learner:
             cfg["kl_ref_gate_target_frac"] = gate_lo_cfg(cfg)["frac"]
         pc = posture_cfg(cfg)                                 # ... and the C1 keys; the defaults stored
         if pc is not None:
-            cfg.update(posture_head=True, posture_every=pc["every"], posture_dtau=pc["dtau"],
-                       posture_ent_coef=pc["ent_coef"])
+            cfg.update(posture_head=True, **{f"posture_{k}": v for k, v in pc.items()})   # every POSTURE_DEFAULTS key
         bc = branch_cfg(cfg)                                 # ... and the branch (opt3) keys
         if bc["branch_gate"]:
             try:

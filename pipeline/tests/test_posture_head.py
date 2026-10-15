@@ -154,6 +154,9 @@ class TestConfig(unittest.TestCase):
         self.assertIsNone(RL.posture_cfg({"posture_head": False}))
         self.assertEqual(RL.posture_cfg(ok), {"every": 200, "dtau": DTAU, "ent_coef": 0.01, "lr": 3e-4})
         self.assertEqual(RL.posture_cfg({**ok, "posture_lr": 1e-3})["lr"], 1e-3)
+        # Learner.__init__ stores {f"posture_{k}": v} back into cfg: the names must cover every default key (10-15:
+        # posture_lr was missed there and every pod smoke died with KeyError before update 0)
+        self.assertEqual({f"posture_{k}" for k in RL.posture_cfg(ok)}, set(RL.POSTURE_DEFAULTS))
         for bad in ({"posture_every": 100}, {"posture_head": None, "posture_dtau": DTAU},       # keys without the head
                     {**ok, "advantage": "match_loo"}, {"tau": TAU, "posture_head": True},      # needs gae
                     {**ok, "posture_head": "yes"}, {**ok, "posture_every": 0}, {**ok, "posture_every": 20.0},
