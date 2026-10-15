@@ -1,3 +1,22 @@
+## 2026-10-15 ~05:25 EDT -- Step 3 (A1/A2 potentials on F1): no measurable gain over F1; gae_opp confirms F3 adds nothing
+
+960 pairs each, vs r1 deployed D3 / vs F1 s74 (copies `pod_backup_weekend/pod1014b_arms/rlarm_gae_{solv,tower,opp}*`):
+
+| arm (seed 74, 65 upd) | D3 | vs r1 deployed | vs F1 s74 (D3) | beatdown / rest vs r1 |
+|---|---|---|---|---|
+| gae_solv (F1 + A2) | 494/960 51.46% | +9.58 [+5.52, +13.44] | +2.81 [-1.04, +6.67] | +2.7 n.s. / +13.3 |
+| gae_tower (F1 + A1+A1b) | 491/960 51.15% | +9.27 [+5.31, +13.13] | +2.50 [-1.46, +6.35] | **+6.8 [+0.1, +13.5]** / +10.6 |
+| gae_opp (F1 + F3) | 455/960 47.40% | +5.52 [+1.77, +9.38] | -1.25 [-5.10, +2.60] | +0.0 / +8.5 |
+| (F1 s75 / s76, no shaping) | 51.46% / 51.56% | +9.58 / +9.69 | +2.81 / +2.92 | +4.7 / +3.9 n.s. |
+
+- (a) measured: neither potential beats F1 beyond F1's own seed-to-seed spread (other F1 seeds are also +2.8/+2.9 over
+  s74). Step 3 = **null at 65 updates**. gae_opp repeats the factorial: F3 adds nothing on top of F1.
+- Hoarding alarms (A2's audit flag): clear -- gae_solv elixir-at-play 5.20 (F1 5.04-5.27), plays/game 41.5 (F1 41.5).
+- (b) hint only: gae_tower is the first arm whose beatdown CI clears 0 (barely). Replicate running: 15118
+  `rlarm_gae_tower_s75` (seed=75, cb_s3 run_rlarm2 fresh), compare paired vs F1 s75.
+- Owed (not measured): whether A2 moved the approach economy it targets (econ2 metrics on the D1/D3 matches).
+- Pod 15661 STOPPED (f1s1h7pj85l95a) after the sha-verified copy.
+
 ## 2026-10-15 ~03:30 EDT -- A3 trade potential FAILS its scripted audit -> gae_trade stopped at u18; redesign owed
 
 - AUDIT_S5 (copy `pod_backup_weekend/pod1015_s5/AUDIT_S5/`, same 100 seeds x 7 policies x 2 checkpoints as AUDIT_A1A2):
