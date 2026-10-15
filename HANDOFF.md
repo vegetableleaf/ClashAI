@@ -1,3 +1,21 @@
+## 2026-10-15 ~11:40 EDT -- CRITIC DIAGNOSTIC: F1's critic is NOT worse on beatdown -> the F2/C2 premise is contradicted
+
+- critic_diag.py on 19636 (copy `pod_backup_weekend/pod1015_s5/CRITIC_DIAG/`; V scored on GPU after a > 1 h single-thread CPU
+  attempt was killed), 1000 training-condition matches each (sample T .5, PFSP-hard league, icebow learner), match-clustered
+  bootstrap beatdown - rest:
+  - **u0250 (exact training mix)**: AUC 0.813 vs 0.814, diff -0.001 [-0.043, +0.044]; MSE diff -0.004 [-0.074, +0.061].
+  - **u0065 (partial mix: evicted snapshots dropped)**: beatdown BETTER: AUC +0.052 [+0.014, +0.090], MSE -0.076 [-0.132, -0.018].
+  - Phase: 1x AUC ~0.73-0.75, 2x/OT ~0.87-0.90 (early states are the hard part, for every matchup). 61% of training matches
+    are beatdown; the learner's training win rate vs beatdown (36-38%) is not below its rate vs the rest (30-40%).
+- (c) "the critic cannot judge beatdown games" is contradicted -> C2/F2 are unlikely to close the beatdown gap (they can only
+  cut variance, and there is no extra variance there to cut). The running C2/F2 arms finish anyway (cheap; they test the
+  variance effect on win rate overall).
+- Remaining hypotheses for the beatdown gap, all (b) untested: (1) credit HORIZON -- GAE lambda .95 at ~1 decision/s
+  credits ~20 decisions; beatdown is decided by preparing for a push 20-40 s ahead (cheap one-change test: gae_lambda
+  0.98); (2) posture / long-term strategy (C1, owner's next); (3) eval beatdown opponents differ from the training
+  league's (eval gap.py fixed policies vs PFSP snapshots + exploiters).
+- 19636 now trains F6' s74 (`rlarm_gae_f6lo`, checkout /workspace/cb_s7 = 96b8ae3, smoke first).
+
 ## 2026-10-15 ~11:50 EDT -- F6' built + verified (2 passes after a repair); C2 s74 training; bundle pod1015 ready for new pods
 
 - **F6' (9f9e43c + repair f85a49e, pushed)**: `kl_ref_gate_max_elixir: 4.0` (+ `kl_ref_gate_target_frac: 0.5`, needs
