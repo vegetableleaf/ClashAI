@@ -1,3 +1,18 @@
+## 2026-10-15 ~16:45 EDT -- owner: losing streak, "get a better model deployed"; grid / wrong-lane / MuMu window answers
+
+- Live F1 u65 since 09:10: 42W/36L 53.8% [42.8, 64.9] (78 matches; two 5-loss runs = normal variance at this rate).
+- Live-mirrored SIM (D3, 960): r1 44.5%, F1 u65 aggressive tau 55.1%, defensive tau 56.0% (default pending). Candidate
+  scoring on the live pool (to deploy the best if it clearly beats F1 u65): 19636 f1u250, f6lo_s74, f1u150; 45503 f1s75, f1s76,
+  f2s74 (tempo sweep paused, resumes after). Compare with `L74/mix/live_cmp.py LIVEEVAL_DIR`.
+- Grid: unchanged 36 x 64 half-tile lattice (2,304 cells; finer than 1 tile); nothing reverted.
+- Owner "more wrong-lane / centreline plays": (c) centre band |x-9| <= 1.5 t unchanged (r1 37.3%, F1 37.4%, older 39.8%);
+  (a) other-lane TROOP plays (Knight/Skeletons/IceWizard) while ONE enemy lane is on our half: F1 11.8% (879) vs r1 7.9%
+  (1,815), z ~3.1; older models 10.0%. Matches with more of them WIN more (F1 0: 47%, 1: 53%, 2+: 63%; confounded:
+  counter-pushes happen when comfortable). No hard-coded lane rule (owner: learned fixes).
+- MuMu windows "disappeared": MuMuManager info -> instance running, main_wnd 00221AAC / render 0B1914EA visible=False (not
+  minimized, on-screen rect) = HIDDEN (likely MuMu's boss key / tray hide; no script of mine calls MuMu window controls).
+  Restored with `MuMuManager.exe control -v 0 show_window` (errcode 0; both visible=True); emulator untouched.
+
 ## 2026-10-15 ~16:10 EDT -- A/B4 stopped, live = F1 u65 + incumbent options + frame logging; F2 null; F6' s74; human-likeness
 
 - **A/B4 stopped 15:37** (owner): final B (tau 0.2) 7W/3L vs A notau, B-A +23.3 [-14.9, +52.4] n.s. -> incumbent tau 0.2 kept.
