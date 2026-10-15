@@ -1,3 +1,17 @@
+## 2026-10-15 ~03:15 EDT -- F1 trained longer (65 -> 150 updates) is better again: deployed +11.77 vs r1, +5.00 vs u65
+
+- rlarm_gae resumed to 150 (seed 74; copy `pod_backup_weekend/pod1014b_arms/rlarm_gae_to150*`, final u0150 95799841,
+  grafted u0150_grafted): D1 465/960 48.44%, **D3 515/960 53.65% (best measured so far)**. vs r1 deployed **+11.77
+  [+7.81, +15.73]**; D1 vs r1 plain +8.75 [+4.79, +12.60]; **vs its own u65: D3 +5.00 [+1.04, +8.96]**, D1 +3.54
+  [-0.52, +7.60]. Per archetype: beatdown +5.0 [-2.1, +12.2] (still n.s.), rest +15.4 [+10.7, +20.1].
+- (a) measured on one seed: more updates of the same F1 run keep paying in the fixed 960-pair eval. Rollout win rate
+  vs the PFSP league stays ~0.44-0.52 throughout (the league adapts -- not a skill curve); elixir-at-play rose
+  4.5 -> 5.3 by u60 and drifted back to 4.65 by u150; KL to init 0.07 (gate) / 0.07 (cell).
+- Running: 19636 rlarm_gae resume 150 -> 250 (`/workspace/in/run_rlarm3.sh` = this commit's run_rlarm2.sh, whose
+  resume mode now forwards key=value overrides); 12037 rlarm_gae_s76 resume 65 -> 150 with seed=76 (replicate of
+  "longer helps"), after AUDIT_S5.
+- Live candidate note: A/B5 runs F1 u65 (s74). If u150 holds, it is the next live candidate (owner decides).
+
 ## 2026-10-15 ~03:05 EDT -- F1 third seed (s76): deployed +9.69 [+5.83, +13.65], plain +9.79 [+5.94, +13.75] vs r1
 
 - rlarm_gae_s76 (copy `pod_backup_weekend/pod1014b_arms/rlarm_gae_s76*`, final 630cc2f3): D1 475/960 49.48%, D3 495/960
