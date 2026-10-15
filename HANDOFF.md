@@ -1,3 +1,13 @@
+## 2026-10-15 ~00:35 EDT -- distillation iteration 2 (DAgger): covariate shift CONTRADICTED as the cause; line parked
+
+- Pod 12037 (copy `pod_backup_weekend/pod1014b_dagger/`, `L74/distill/results/ITER2_DAGGER_SUMMARY.txt`), ADAPT, 960 pairs:
+  DAgger student 29.17% (vs plain 38.33: -9.17 [-13.02, -5.21]; vs iteration 1: -0.83 [-4.27, +2.71]); + cell KL to plain
+  33.12% (+3.96 [+0.42, +7.50] vs DAgger; still -5.21 [-9.06, -1.25] vs plain). Pro VAL cell NLL: DAgger +1.77 (FAIL),
+  DAgger+KL +0.16 (PASS). (c) covariate shift as the main cause: contradicted; cell overconfidence explains ~4 pp; ~5 pp
+  unexplained (likely the rule-driven gate/card labels themselves). Parked behind F1 (which improves the deployed player
+  directly); an iteration 3 idea = learn only the add-on decisions (rows where rules/heads override the model) with KL on all heads.
+- Pod 12037 now: F1 replicate #2 (seed 76, `rlarm_gae_s76`, CB=/workspace/cb_dag).
+
 ## 2026-10-15 ~00:20 EDT -- F6 built (opt-in kl_ref_gate) but NOT run: the gate gap to imitation is mostly mid/high elixir
 
 - `pipeline/rl_royale.py kl_ref_gate: <ckpt>` (absent/null = unchanged hash; KL_gate + gate entropy baseline from that

@@ -1,0 +1,17 @@
+DISTILL scoring: 960 paired games (seeds 741200 + 742000), CAL c, E4 T .1, Hero IW + live press.
+Draws count as non-wins. Paired deltas: 10,000 bootstrap draws within census/side (validate.paired_drift).
+teacher_D3: win 47.08% (452/960); plays/game 44.5
+plain_D1: win 38.33% (368/960); plays/game 42.3
+iter1_D1: win 30.00% (288/960); plays/game 41.6
+dagger_D1: win 29.17% (280/960); plays/game 41.3
+daggerkl_D1: win 33.12% (318/960); plays/game 41.3
+teacher_D3 - plain_D1: +8.75 pp [+4.79, +12.60]  add-on value to transfer (FINDING.md r1: +2.19 [-1.88, +6.15])
+dagger_D1 - plain_D1: -9.17 pp [-13.02, -5.21]  ITERATION 2: DAgger student vs the plain start (iteration 1: -8.33 [-12.19, -4.48])
+dagger_D1 - iter1_D1: -0.83 pp [-4.27, +2.71]  DAgger rows added vs teacher-state rows only
+dagger_D1 - teacher_D3: -17.92 pp [-21.77, -13.96]  DAgger student - deployed teacher stack
+daggerkl_D1 - dagger_D1: +3.96 pp [+0.42, +7.50]  + cell KL to the plain model (same rows)
+daggerkl_D1 - plain_D1: -5.21 pp [-9.06, -1.25]  DAgger + cell KL student vs the plain start
+Pro VAL (v3val, 12237 rows, 3854 plays): cell NLL bar = plain + 0.3
+plain: cell_nll 3.104 (+0.000); cell_half 0.199 card 0.655 gate_bal 0.749
+dagger: cell_nll 4.873 (+1.769 FAIL); cell_half 0.201 card 0.641 gate_bal 0.770
+daggerkl: cell_nll 3.263 (+0.159 PASS); cell_half 0.200 card 0.637 gate_bal 0.770
