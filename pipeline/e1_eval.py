@@ -1225,6 +1225,8 @@ class Match:
                 row = {**row, "tick": int(tick)}
             if cfg.get("record_ctx"):                         # rl_royale critic_ctx: the decision's public context
                 row = {**row, "ctx": self._ctx_row(tick)}
+            if cfg.get("record_elixir"):                      # rl_royale F6': the exact own elixir at the decision
+                row = {**row, "elixir": float(bs.my_elixir)}  # (sc's is the floored / extrapolated view)
             self.traj.append({**row, "allowed": d["allowed"],
                               "stalled": d["stalled"], "gate_sampled": d["gate_sampled"], "played": d["play"],
                               "slot": d["slot"], "cell": d["cell"], "lp_gate": d["lp_gate"], "lp_card": d["lp_card"],
@@ -1396,6 +1398,8 @@ class Match:
             out["tick"] = scalar("tick", np.int64)
         if tj and "ctx" in tj[0]:                            # cfg["record_ctx"]: [arch, tank, phase, own, foe crowns]
             out["ctx"] = stack("ctx").astype(np.int64)
+        if tj and "elixir" in tj[0]:                         # cfg["record_elixir"]: own exact elixir per row
+            out["elixir"] = scalar("elixir", np.float64)
         return out
 
 

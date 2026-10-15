@@ -36,6 +36,12 @@ old KL_cell rule exactly (and what a run resumed from before the key keeps).
 F6 (``kl_ref_gate: <checkpoint>``, opt-in; absent / null = unchanged, same config hash): KL_gate (and the gate entropy
 baseline) is taken to that frozen net -- e.g. the imitation generalist -- instead of the run's own init; card and cell
 keep the init ref (``ref_terms(gate_ref=)``, ``Learner._load_gate_ref``). The update-0 KL check then skips KL_gate.
+F6' (``kl_ref_gate_max_elixir: X`` + optional ``kl_ref_gate_target_frac`` (default 0.5), needs kl_ref_gate; absent /
+null = F6 / F1 exactly, same hash; ``gate_lo_cfg``): only gate rows with own elixir < X (``row["elixir"]``, the
+actor's exact elixir at the decision, ``record_elixir``) are anchored to the kl_ref_gate net, with their OWN
+coefficient beta_g: L += beta_g KL_gate_imit(low rows); KL_gate (the ``kl_gate`` monitor, the shared leash, the update-0
+check) is the init-ref KL over the >= X rows only. beta_g adapts as ``adapt_beta`` around frac x KL_gate_imit_low
+measured on update 0's batch (the init vs the anchor); both ride in the checkpoint (rl["beta_g"], rl["gate_lo_target"]).
 C2 / F2 (``critic_ctx: arch | full``, gae only, opt-in; absent / null = unchanged, same config hash; L74
 reward/REWARD_ARCHITECTURE.md 5 / 2): rollout rows carry a public context (e1_eval ``Match._ctx_row``: opponent
 archetype + tank flag, match phase, crowns) and V = value_scalar(value_head(g) + ``CtxHead``(ctx, g)), the head owned
@@ -189,6 +195,8 @@ def actor_cfg(base: dict, kind: str, aid: int, dev: str) -> dict:
         cfg["record_tick"] = True                             # each row carries its decision tick
     if kind == "rollout" and base.get("critic_ctx") is not None:
         cfg["record_ctx"] = True                              # C2 / F2: each row carries e1_eval Match._ctx_row
+    if kind == "rollout" and base.get("kl_ref_gate_max_elixir") is not None:
+        cfg["record_elixir"] = True                           # F6': each row carries its exact own elixir
     return cfg
 
 
@@ -909,6 +917,38 @@ def adapt_beta(beta: float, kl_cell: float, target: float, lo: float = 0.03, hi:
     return float(min(max(beta, lo), hi))
 
 
+def gate_lo_cfg(cfg: dict) -> Optional[dict]:
+    """F6' keys, validated (SystemExit naming the key): None = off (``kl_ref_gate_max_elixir`` absent / null), else
+    {max_elixir, frac} (frac default 0.5). Needs kl_ref_gate; max_elixir a finite number > 0; frac in (0, 1]."""
+    mx, fr = cfg.get("kl_ref_gate_max_elixir"), cfg.get("kl_ref_gate_target_frac")
+    num = (lambda v: isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v))
+    if mx is None:
+        if fr is not None:
+            raise SystemExit("kl_ref_gate_target_frac needs kl_ref_gate_max_elixir")
+        return None
+    if cfg.get("kl_ref_gate") is None:
+        raise SystemExit("kl_ref_gate_max_elixir needs kl_ref_gate (the net the low-elixir gate rows are anchored to)")
+    if not (num(mx) and mx > 0):
+        raise SystemExit(f"kl_ref_gate_max_elixir must be a finite number > 0, got {mx!r}")
+    fr = 0.5 if fr is None else fr
+    if not (num(fr) and 0.0 < fr <= 1.0):
+        raise SystemExit(f"kl_ref_gate_target_frac must be a number in (0, 1], got {fr!r}")
+    return {"max_elixir": float(mx), "frac": float(fr)}
+
+
+ELIXIR_BANDS = ((0, 2), (2, 4), (4, 7), (7, 11))
+
+
+def elixir_band_play(el, gs, played) -> dict:
+    """F6' monitor: per own-elixir band [lo, hi), the gate-sampled rows and the share of them that played."""
+    el, gs, played = np.asarray(el, dtype=np.float64), np.asarray(gs, bool), np.asarray(played, bool)
+    out = {}
+    for lo, hi in ELIXIR_BANDS:
+        sel = gs & (el >= lo) & (el < hi)
+        out[f"[{lo},{hi})"] = {"rows": int(sel.sum()), "play_rate": float(played[sel].mean()) if sel.any() else None}
+    return out
+
+
 def hard_stop_reason(pa: dict, init: dict, cfg: dict) -> Optional[str]:
     """plan diff 3 HARD stop (single): cell or card < init - 3 pp, or gate_bal_acc < init - 0.05."""
     if pa["cell_half_top1"] < init["cell_half_top1"] - cfg["hard_cell_pp"] / 100:
@@ -1247,6 +1287,8 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
     B["match"] = cat(lambda j: np.full(n_rows[j], j))
     if use and "ctx" in results[use[0]]["traj"]:                     # critic_ctx: actor_cfg record_ctx rows
         B["ctx"] = cat(lambda j: results[j]["traj"]["ctx"][keep[j]])
+    if use and "elixir" in results[use[0]]["traj"]:                  # F6': actor_cfg record_elixir rows
+        B["elixir"] = cat(lambda j: results[j]["traj"]["elixir"][keep[j]])
     sh = None
     if advantage == "gae":
         rs = terminal_rewards(n_rows, [r["outcome"] for r in results])
@@ -1556,19 +1598,28 @@ def cat_ent(lp):
 
 @torch.no_grad()
 def ref_terms(ref, B: dict, tau: float, T: float, chunk: int = 512, T_gate: Optional[float] = None,
-              gate_ref=None) -> dict:
+              gate_ref=None, gate_lo_max: Optional[float] = None) -> dict:
     """Frozen-ref tempered distributions for every row, once per update (E1 3.4): gate x [N], card log-probs [N, 8],
     cell log-probs [P, 2304] for the P played rows (``play_pos`` maps a row to its position, -1 if not played).
     ``gate_ref`` (F6 ``kl_ref_gate``): the gate x -- and so KL_gate and the gate entropy baseline -- comes from this
-    second frozen net instead; card and cell stay ``ref``'s. None = unchanged."""
+    second frozen net instead; card and cell stay ``ref``'s. None = unchanged.
+    ``gate_lo_max`` (F6', needs gate_ref and ``B["elixir"]``): only rows with elixir < gate_lo_max (``R["low"]``) take
+    gate_ref's x; the others keep ``ref``'s (so the entropy baseline follows the split). ``R["kl_lo_init"]`` = mean
+    KL(ref gate || gate_ref gate) over the low gate-sampled rows (None without such rows): update 0's KL_gate_imit_low."""
     N = len(B["A"])
     dev = B["A"].device
-    xs, cards, cells = [], [], []
+    if gate_lo_max is not None and (gate_ref is None or "elixir" not in B):
+        raise ValueError("gate_lo_max needs gate_ref and the per-row elixir (actor_cfg record_elixir)")
+    xs, xis, cards, cells = [], [], [], []
     for s in range(0, N, chunk):
         idx = torch.arange(s, min(s + chunk, N), device=dev)
         t = policy_terms(ref, B, idx, tau, T, T_gate=T_gate)
         if gate_ref is not None:
-            t["x"] = policy_terms(gate_ref, B, idx, tau, T, T_gate=T_gate)["x"]
+            xg = policy_terms(gate_ref, B, idx, tau, T, T_gate=T_gate)["x"]
+            if gate_lo_max is None:
+                t["x"] = xg
+            else:
+                xis.append(xg)
         xs.append(t["x"]); cards.append(t["card_lp"])
         if t["cell_lp"] is not None:
             cells.append(t["cell_lp"])
@@ -1579,6 +1630,11 @@ def ref_terms(ref, B: dict, tau: float, T: float, chunk: int = 512, T_gate: Opti
          "cell_lp": torch.cat(cells) if cells else torch.zeros(0, E.N_CELLS, dtype=torch.float64, device=dev),
          "play_pos": play_pos}
     gs = B["gate_sampled"]
+    if gate_lo_max is not None:
+        low, xi = B["elixir"] < gate_lo_max, torch.cat(xis)
+        sel = gs & low
+        R["kl_lo_init"] = float(bern_kl(R["x"][sel], xi[sel]).mean()) if sel.any() else None
+        R["x"], R["low"] = torch.where(low, xi, R["x"]), low
     R["ent"] = {"gate": float(bern_ent(R["x"][gs]).mean()) if gs.any() else None,
                 "card": float(cat_ent(R["card_lp"][played]).mean()) if played.any() else None,
                 "cell": float(cat_ent(R["cell_lp"]).mean()) if len(R["cell_lp"]) else None}
@@ -1593,7 +1649,10 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
     clip(V - V_old, +-clip) - ret)^2), per-match weighted like L_pg; ``policy`` False (critic warm-up) = the value
     loss ALONE (no L_pg, no KL term); ``trunk_grad`` False (default True) = the value loss trains value_head only.
     ``vf["ctx_head"]`` (critic_ctx): V includes that ``CtxHead`` (its params get the value loss's gradient).
-    None = the match_loo loss, unchanged."""
+    None = the match_loo loss, unchanged.
+    ``R["low"]`` (F6' ``ref_terms(gate_lo_max=)``): KL_gate = the mean over the HIGH gate-sampled rows only, and
+    + ``R["beta_g"]`` x ``kl_gate_imit_low`` (the same per-row KL, mean over the LOW gate-sampled rows, to R's x there,
+    i.e. the anchor net's; None without such rows)."""
     t = policy_terms(model, B, idx, tau, T, value=vf is not None,
                      value_trunk=True if vf is None else bool(vf.get("trunk_grad", True)), T_gate=T_gate,
                      ctx_head=None if vf is None else vf.get("ctx_head"))
@@ -1604,10 +1663,20 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
     l_pg = (w * pg).sum() * (n_total / len(idx))
     gs, pl = B["gate_sampled"][idx], B["played"][idx]
     zero = lp_new.new_zeros(())
+    kl_gi = None
+    if "low" in R:                                            # F6': low rows -> their own term, high rows -> KL_gate
+        lo = R["low"][idx]
+        lo_gs = gs & lo
+        gs = gs & ~lo
+        if lo_gs.any():
+            kl_gi = bern_kl(t["x"][lo_gs], R["x"][idx][lo_gs]).mean()
     kl_g = bern_kl(t["x"][gs], R["x"][idx][gs]).mean() if gs.any() else zero
+    gs = B["gate_sampled"][idx]                               # the entropy monitor below: every gate-sampled row
     kl_c = cat_kl(t["card_lp"][pl], R["card_lp"][idx][pl]).mean() if pl.any() else zero
     kl_x = cat_kl(t["cell_lp"], R["cell_lp"][R["play_pos"][idx[pl]]]).mean() if pl.any() else zero
     loss = l_pg + beta * (kl_g + kl_c + kl_x)
+    if kl_gi is not None:
+        loss = loss + float(R["beta_g"]) * kl_gi
     if vf is not None:
         v, v_old, ret = t["v"], B["v_old"][idx], B["ret"][idx]
         v_clip = v_old + (v - v_old).clamp(-float(vf["clip"]), float(vf["clip"]))
@@ -1622,6 +1691,8 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
               "ent_gate": float(bern_ent(t["x"][gs]).mean()) if gs.any() else None,
               "ent_card": float(cat_ent(t["card_lp"][pl]).mean()) if pl.any() else None,
               "ent_cell": float(cat_ent(t["cell_lp"]).mean()) if pl.any() else None}
+        if "low" in R:
+            st["kl_gate_imit_low"] = None if kl_gi is None else float(kl_gi)
         if vf is not None:
             st["l_v"] = float(l_v)
     return loss, st
@@ -1686,6 +1757,7 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
         return {"first": first, "nonfinite": nonfinite, "steps": len(ratios),
                 "kl_gate": mean(last_ep, "kl_gate"), "kl_card": mean(last_ep, "kl_card"),
                 "kl_cell": mean(last_ep, "kl_cell"), "l_pg": mean(last_ep, "l_pg"),
+                **({"kl_gate_imit_low": mean(last_ep, "kl_gate_imit_low")} if "low" in R else {}),
                 "ent": {h: mean(ep0, f"ent_{h}") for h in ("gate", "card", "cell")},
                 "ratio_mean": avg(ratios), "clip_frac": avg(clips), "grad_norm_mean": avg(gnorms),
                 **({"l_v": mean(last_ep, "l_v"), "l_v_first": first["l_v"] if first else None} if vf is not None else {})}
@@ -2207,7 +2279,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
         if (k not in cfg and k != "ability_policy" and k not in BRANCH_DEFAULTS   # optional: absent = generic / off
                 and k not in VALUE_PHI_KEYS and k not in STATE_PHI_KEYS and k not in AO.DEFAULTS
                 and k not in ("league_learner_icebow_share", "learner_pipeline_frac", "league_opp_T", "kl_ref_gate",
-                              "critic_ctx")):
+                              "critic_ctx", "kl_ref_gate_max_elixir", "kl_ref_gate_target_frac")):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
         cfg[k] = yaml.safe_load(v)
     if type(cfg["hero_abilities"]) is not bool:
@@ -2240,6 +2312,8 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "kl_ref_gate"}
     if cfg.get("critic_ctx") is None:                        # C2 / F2 off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "critic_ctx"}
+    if cfg.get("kl_ref_gate_max_elixir") is None:            # F6' off (absent or null) = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k not in ("kl_ref_gate_max_elixir", "kl_ref_gate_target_frac")}
     return hashlib.sha256(json.dumps(cfg, sort_keys=True, default=str).encode()).hexdigest()
 
 
@@ -2308,7 +2382,8 @@ class Learner:
         self.init_path = REPO / cfg["init"]
         condition_cfg(cfg)                                    # validate the condition keys before anything runs
         adv_cfg(cfg)                                          # ... and the advantage (R1) keys
-        bc = branch_cfg(cfg)                                  # ... and the branch (opt3) keys
+        gate_lo_cfg(cfg)                                      # ... and the F6' keys
+        bc = branch_cfg(cfg)                                 # ... and the branch (opt3) keys
         if bc["branch_gate"]:
             try:
                 branch_impl()
@@ -2343,6 +2418,8 @@ class Learner:
         if branch_cfg(cfg)["branch_gate"]:                    # opt3: the branch step's OWN Adam (never PPO's state)
             self.branch_opt = self._branch_optimizer(branch_cfg(cfg))
         self.beta, self.update = float(cfg["beta0"]), 0
+        if gate_lo_cfg(cfg) is not None:                      # F6': the low-row anchor's coefficient + update-0 target
+            self.beta_g, self.gate_lo_target = float(cfg["beta0"]), None
         self.rng = np.random.default_rng(int(cfg["seed"]))
         self.train, self.heldout = self._entries()
         self.visits = [0] * len(self.train)
@@ -2358,9 +2435,10 @@ class Learner:
 
     def _ctx_setup(self) -> None:
         """critic_ctx: ``self.ctx_head`` (``CtxHead`` on the value head's input width; first layer drawn from a torch RNG
-        seeded with the run seed inside fork_rng, so the global torch RNG is untouched) and ``self.ctx_opt`` (Adam, lr).
+        seeded with the run seed inside fork_rng over the CPU AND every CUDA device -- torch.manual_seed seeds CUDA too --
+        so the global torch RNG states are untouched) and ``self.ctx_opt`` (Adam, lr).
         Neither is in the model's state_dict; the checkpoint carries them under rl["ctx_head"] / rl["ctx_optimizer"]."""
-        with torch.random.fork_rng(devices=[]):
+        with torch.random.fork_rng(devices=list(range(torch.cuda.device_count()))):
             torch.manual_seed(int(self.cfg["seed"]))
             self.ctx_head = CtxHead(self.cfg["critic_ctx"], self.model.value_head.in_features).to(self.dev)
         self.ctx_opt = torch.optim.Adam(self.ctx_head.parameters(), lr=float(self.cfg["lr"]))
@@ -2595,6 +2673,8 @@ class Learner:
                    if getattr(self, "branch_opt", None) is not None else {}),
                 **({"ctx_head": self.ctx_head.state_dict(), "ctx_optimizer": self.ctx_opt.state_dict()}
                    if getattr(self, "ctx_head", None) is not None else {}),
+                **({"beta_g": float(self.beta_g), "gate_lo_target": self.gate_lo_target}
+                   if getattr(self, "beta_g", None) is not None else {}),
                 "rng": _py(self.rng.bit_generator.state), "visits": list(map(int, self.visits)),
                 "config": _py(self.cfg), "config_sha256": config_sha(self.cfg), "run": self.run,
                 "init": str(self.cfg["init"]), "pool_sha256": self.pool_sha,
@@ -2657,6 +2737,10 @@ class Learner:
                 self.log("[rl] RESUME: the checkpoint has no ctx_head (run started without critic_ctx) -- it starts "
                          "at zero (V = the plain critic's)")
         self.update, self.beta = int(rl["update"]), float(rl["beta"])
+        if gate_lo_cfg(self.cfg) is not None:                 # F6': beta_g + the update-0 target (None = not measured)
+            self.beta_g, self.gate_lo_target = float(rl.get("beta_g", self.cfg["beta0"])), rl.get("gate_lo_target")
+            if "beta_g" not in rl:
+                self.log("[rl] RESUME: the checkpoint has no beta_g (run started without kl_ref_gate_max_elixir)")
         self.rng.bit_generator.state = rl["rng"]
         self.visits = list(rl["visits"])
         self.base = dict(rl["baselines"])
@@ -2779,7 +2863,20 @@ class Learner:
         t1 = time.perf_counter()
         B = to_device(Bn, self.dev)
         gate_ref = getattr(self, "gate_ref", None)            # F6 kl_ref_gate (None = the init ref for all heads)
-        R = ref_terms(self.ref, B, cfg["tau"], cfg["T"], T_gate=cfg.get("T_gate"), gate_ref=gate_ref)
+        glo = gate_lo_cfg(cfg)                                # F6' (None = off)
+        R = ref_terms(self.ref, B, cfg["tau"], cfg["T"], T_gate=cfg.get("T_gate"), gate_ref=gate_ref,
+                      **({"gate_lo_max": glo["max_elixir"]} if glo else {}))
+        if glo is not None:
+            if getattr(self, "beta_g", None) is None:
+                self.beta_g = float(cfg["beta0"])
+            if getattr(self, "gate_lo_target", None) is None:
+                if u != 0 or R["kl_lo_init"] is None:         # the target needs the init's own update-0 batch
+                    raise SystemExit(f"kl_ref_gate_max_elixir: no update-0 target (update {u}, low-row KL "
+                                     f"{R['kl_lo_init']}) -- a run started without the key, or no low gate rows")
+                self.gate_lo_target = glo["frac"] * R["kl_lo_init"]
+            R["beta_g"] = beta_g_used = self.beta_g
+            sel = B["gate_sampled"] & R["low"]
+            imit_p_low = float(torch.sigmoid(R["x"][sel]).mean()) if sel.any() else None
         beta_used = self.beta
         vf = gst = None
         warm = gae_on and self.update < ac["critic_warmup_updates"]        # critic warm-up: policy frozen
@@ -2795,9 +2892,15 @@ class Learner:
         first = upd["first"]
         if u == 0 and not upd["nonfinite"]:
             # kl_ref_gate: KL_gate is to another net, so > 0 by design; the ratio check still covers the gate's recompute
-            kl0 = (first["kl_card"], first["kl_cell"]) + ((first["kl_gate"],) if gate_ref is None else ())
+            # F6': KL_gate is the init ref's over the high rows only, so ~0 again; the low rows' imitation KL is not
+            kl0 = (first["kl_card"], first["kl_cell"]) + ((first["kl_gate"],) if gate_ref is None or glo else ())
             bad = first["ratio_maxdev"] >= ASSERT_RATIO or max(kl0) >= ASSERT_KL
-            if gate_ref is not None:
+            if glo is not None:
+                self.log(f"[rl] kl_ref_gate_max_elixir {glo['max_elixir']}: update-0 KL_gate_imit_low to "
+                         f"{cfg['kl_ref_gate']} = {R['kl_lo_init']:.4f} (full batch) -> beta_g target "
+                         f"{self.gate_lo_target:.4f} (x {glo['frac']}); KL_gate_init_high {first['kl_gate']:.3g} "
+                         f"(first minibatch); beta_g {beta_g_used:.3g}; ref gate entropy {R['ent']['gate']}")
+            elif gate_ref is not None:
                 self.log(f"[rl] kl_ref_gate: update-0 KL_gate to {cfg['kl_ref_gate']} = {first['kl_gate']:.4f} (first "
                          f"minibatch), {upd['kl_gate']:.4f} (last-epoch mean); kl_target {cfg['kl_target']}, leash "
                          f"{cfg.get('leash', 'cell')}; ref gate entropy {R['ent']['gate']}")
@@ -2827,6 +2930,9 @@ class Learner:
             if not warm:                                        # warm-up: no KL step (the policy did not move)
                 self.beta = adapt_beta(beta_used, kl_leash, float(cfg["kl_target"]), float(cfg["beta_min"]),
                                        float(cfg["beta_max"]))
+                if glo is not None and upd["kl_gate_imit_low"] is not None:   # F6': its own leash, same rule
+                    self.beta_g = adapt_beta(beta_g_used, upd["kl_gate_imit_low"], self.gate_lo_target,
+                                             float(cfg["beta_min"]), float(cfg["beta_max"]))
             if u == 0 and self.guards.s["base"] is None:
                 self.guards.set_baselines(mon)
                 self.log(f"[rl] update-0 plays/min baseline {self.guards.s['base']['plays_per_min']:.3f} (stop outside "
@@ -2858,6 +2964,15 @@ class Learner:
             if tick_unit:
                 rec["gae"].update({"gamma_unit": "tick", "gamma_tick": ac["gae_gamma_tick"],
                                    "gamma_row_mean": gamma_row_mean})
+        if glo is not None:                                    # F6' monitors (kl_gate above = KL_gate_init_high)
+            bands = elixir_band_play(Bn["elixir"], Bn["gate_sampled"], Bn["played"])
+            lo_sel = Bn["gate_sampled"] & (Bn["elixir"] < glo["max_elixir"])
+            rec["gate_lo"] = {"max_elixir": glo["max_elixir"], "kl_gate_imit_low": upd["kl_gate_imit_low"],
+                              "target": self.gate_lo_target, "beta_g_used": beta_g_used, "beta_g_next": self.beta_g,
+                              "kl_gate_init_high": upd["kl_gate"], "kl_lo_init": R["kl_lo_init"],
+                              "rows_low": int(lo_sel.sum()), "imit_p_play_low": imit_p_low,
+                              "learner_play_rate_low": float(Bn["played"][lo_sel].mean()) if lo_sel.any() else None,
+                              "play_rate_by_elixir": bands}
         if brst is not None:
             rec["branch"] = {**brst, "coef": bc["branch_coef"], "min_abs_delta": bc["branch_min_abs_delta"],
                              "buffer_cap": bc["branch_buffer"], "max_staleness": bc["branch_max_staleness"],
@@ -2938,6 +3053,11 @@ class Learner:
                     f"{f(gst['phi_share'])} dPhi std {f(shs['phi_step_std'], '{:.4f}')} (raw "
                     f"{f(shs['raw_step_std'], '{:.4f}')}) end-corr {f(shs['phi_end_corr'], '{:+.3f}')}"
                     if shs and shs.get("mode") in ("value_phi", "live_phi") else "")
+                 + (f" | gate_lo KL {f(upd['kl_gate_imit_low'], '{:.4f}')}/{f(self.gate_lo_target, '{:.4f}')} beta_g "
+                    f"{beta_g_used:.3g}->{self.beta_g:.3g} play<{glo['max_elixir']:g} "
+                    f"{f(rec['gate_lo']['learner_play_rate_low'])} (imit p {f(imit_p_low)}) bands "
+                    + "/".join(f(v["play_rate"]) for v in rec["gate_lo"]["play_rate_by_elixir"].values())
+                    if glo is not None else "")
                  + (f" | branch n {brst['n']}/{brst['emitted']} hold+ {f(brst['hold_better_share'])} d "
                     f"{f(brst['mean_delta'], '{:+.3f}')}"
                     + "".join(f" [{ph} {v['n']} {f(v['hold_better_share'])} {f(v['mean_delta'], '{:+.3f}')}]"
@@ -3024,6 +3144,8 @@ class Learner:
             base["gae_gamma_unit"] = self.cfg["gae_gamma_unit"]
         if self.cfg.get("critic_ctx") is not None:            # actor_cfg -> record_ctx (absent by default)
             base["critic_ctx"] = self.cfg["critic_ctx"]
+        if self.cfg.get("kl_ref_gate_max_elixir") is not None:   # actor_cfg -> record_elixir (absent by default)
+            base["kl_ref_gate_max_elixir"] = self.cfg["kl_ref_gate_max_elixir"]
         return base
 
     def start_actors(self) -> None:
