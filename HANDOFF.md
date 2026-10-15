@@ -1,3 +1,11 @@
+## 2026-10-15 ~02:15 EDT -- F1 REPLICATES (seed 75): deployed +9.58 [+5.73, +13.54] vs r1; best D3 measured 51.46%
+
+- rlarm_gae_s75 (same F1 config, RL seed 75; copy `pod_backup_weekend/pod1014b_arms/`): D1 425/960 44.27%, D3 494/960
+  51.46%. vs r1 deployed +9.58 [+5.73, +13.54]; D1 vs r1 plain +4.58 [+0.94, +8.33]; vs F1 seed 74: D3 +2.81 [-1.15, +6.77],
+  D1 -0.62 n.s. Two independent F1 runs both beat r1 -> the per-decision-credit effect is not a lucky seed.
+  Checkpoints: rlarm_gae_s75_u0065(_grafted).pt (final 25ee7757).
+- 12787 now runs the A1A2 scripted-policy audit (started 06:10 UTC).
+
 ## 2026-10-15 ~01:55 EDT -- foundations factorial: per-decision credit (F1) is the active ingredient; F3 / F4 add nothing
 
 - 960 pairs, copies `pod_backup_weekend/pod1014b_arms/` (sha-verified), `L74/rlarms/arms_cmp.py`:
