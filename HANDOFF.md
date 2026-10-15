@@ -1,3 +1,17 @@
+## 2026-10-15 ~02:45 EDT -- step-3 scripted audit (REWARD_ARCHITECTURE §9.3): tower_score PASS; solvency one flag
+
+- Copy `pod_backup_weekend/pod1015_s5/AUDIT_A1A2/` (100 matches x 7 policies x 2 checkpoints, same seeds).
+- **tower_score (A1+A1b): pass on both** -- every degenerate policy gets LESS interior shaping credit than the real
+  policy (paired t -1.8 .. -12.7); telescoping 2e-15; max |Phi| 0.35 (bound 0.45).
+- **solvency (A2): STOP flag on the IL checkpoint only** -- hold_to_10 gets more interior credit than IL (paired t
+  +2.19; +0.0007 per decision: -0.0004 vs -0.0011) while winning less (z -0.48 vs -0.39). On r1's checkpoint (the arms'
+  lineage) the same policy is t -0.34 -> pass. (a) measured: the hoarding hack the plan named for A2 is present but tiny
+  and checkpoint-dependent. Consequence: gae_solv (already running, started before the audit) must clear the hoarding
+  alarms (plays/match >= 50% of init; elixir-at-play within [0.6x, 1.5x]) before it counts, whatever its win rate.
+- Audit gap, (b) untested: spend_immediately has < 60 kept rows per match, so its INTERIOR credit is NaN for both modes
+  (the verdict cannot judge it); its total shaping (+0.034 / +0.038) is dominated by the end rows' -Phi(s_T).
+- The 3-mode re-audit (adds trade) runs on 12037 as AUDIT_S5. gae_trade started 06:27 UTC on 12787 (cb_s5).
+
 ## 2026-10-15 ~02:40 EDT -- F1's gain is NOT in the hard matchups (per-archetype, measured); A3 trade potential built + queued
 
 - **Per-archetype split** (`rlarms/arch_cmp.py`, `ARCH_CMP_F1.txt`; paired by (census, seed) vs r1 deployed D3, 960 pairs):
