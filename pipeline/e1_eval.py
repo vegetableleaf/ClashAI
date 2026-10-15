@@ -879,6 +879,9 @@ class Match:
         self._cur = (tick, bs, view)
         self._view_tick = tick + h
         self._obs = (tok, mask, sc, past)                    # kept for cfg["record"] (see apply())
+        if cfg.get("record_elixir"):                         # rl_royale F6': my exact elixir in the RAW state of
+            self._obs_elixir = float(next(pl for pl in self.state["players"]   # this tick (never the extrapolated /
+                                          if int(pl["side"]) == self.side)["elixir_exact"])   # pending-adjusted bs)
         return tok, mask, sc, past
 
     def _own_effects(self, tick: int) -> list:
@@ -1225,8 +1228,8 @@ class Match:
                 row = {**row, "tick": int(tick)}
             if cfg.get("record_ctx"):                         # rl_royale critic_ctx: the decision's public context
                 row = {**row, "ctx": self._ctx_row(tick)}
-            if cfg.get("record_elixir"):                      # rl_royale F6': the exact own elixir at the decision
-                row = {**row, "elixir": float(bs.my_elixir)}  # (sc's is the floored / extrapolated view)
+            if cfg.get("record_elixir"):                      # rl_royale F6': my exact elixir at the decision tick,
+                row = {**row, "elixir": self._obs_elixir}     # from the raw state (prepare), set with self._obs
             self.traj.append({**row, "allowed": d["allowed"],
                               "stalled": d["stalled"], "gate_sampled": d["gate_sampled"], "played": d["play"],
                               "slot": d["slot"], "cell": d["cell"], "lp_gate": d["lp_gate"], "lp_card": d["lp_card"],

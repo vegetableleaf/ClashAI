@@ -917,6 +917,9 @@ def adapt_beta(beta: float, kl_cell: float, target: float, lo: float = 0.03, hi:
     return float(min(max(beta, lo), hi))
 
 
+GATE_LO_FRAC, GATE_LO_MIN_KL = 0.5, 1e-4   # F6': default target fraction; the smallest usable update-0 low-row KL
+
+
 def gate_lo_cfg(cfg: dict) -> Optional[dict]:
     """F6' keys, validated (SystemExit naming the key): None = off (``kl_ref_gate_max_elixir`` absent / null), else
     {max_elixir, frac} (frac default 0.5). Needs kl_ref_gate; max_elixir a finite number > 0; frac in (0, 1]."""
@@ -930,7 +933,7 @@ def gate_lo_cfg(cfg: dict) -> Optional[dict]:
         raise SystemExit("kl_ref_gate_max_elixir needs kl_ref_gate (the net the low-elixir gate rows are anchored to)")
     if not (num(mx) and mx > 0):
         raise SystemExit(f"kl_ref_gate_max_elixir must be a finite number > 0, got {mx!r}")
-    fr = 0.5 if fr is None else fr
+    fr = GATE_LO_FRAC if fr is None else fr
     if not (num(fr) and 0.0 < fr <= 1.0):
         raise SystemExit(f"kl_ref_gate_target_frac must be a number in (0, 1], got {fr!r}")
     return {"max_elixir": float(mx), "frac": float(fr)}
@@ -2314,6 +2317,8 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "critic_ctx"}
     if cfg.get("kl_ref_gate_max_elixir") is None:            # F6' off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k not in ("kl_ref_gate_max_elixir", "kl_ref_gate_target_frac")}
+    elif cfg.get("kl_ref_gate_target_frac") is None:         # F6' frac absent / null = the 0.5 default, one hash
+        cfg = {**cfg, "kl_ref_gate_target_frac": GATE_LO_FRAC}
     return hashlib.sha256(json.dumps(cfg, sort_keys=True, default=str).encode()).hexdigest()
 
 
@@ -2382,7 +2387,8 @@ class Learner:
         self.init_path = REPO / cfg["init"]
         condition_cfg(cfg)                                    # validate the condition keys before anything runs
         adv_cfg(cfg)                                          # ... and the advantage (R1) keys
-        gate_lo_cfg(cfg)                                      # ... and the F6' keys
+        if gate_lo_cfg(cfg) is not None:                      # ... and the F6' keys; the frac default stored
+            cfg["kl_ref_gate_target_frac"] = gate_lo_cfg(cfg)["frac"]
         bc = branch_cfg(cfg)                                 # ... and the branch (opt3) keys
         if bc["branch_gate"]:
             try:
@@ -2873,6 +2879,10 @@ class Learner:
                 if u != 0 or R["kl_lo_init"] is None:         # the target needs the init's own update-0 batch
                     raise SystemExit(f"kl_ref_gate_max_elixir: no update-0 target (update {u}, low-row KL "
                                      f"{R['kl_lo_init']}) -- a run started without the key, or no low gate rows")
+                if R["kl_lo_init"] < GATE_LO_MIN_KL:          # the init already IS the anchor on these rows: a ~0
+                    raise SystemExit(f"kl_ref_gate_max_elixir: update-0 KL_gate_imit_low {R['kl_lo_init']:.3g} < "
+                                     f"{GATE_LO_MIN_KL} -- the init's low-elixir gate already matches "
+                                     f"{cfg['kl_ref_gate']}; the anchor is meaningless (beta_g would run to beta_max)")
                 self.gate_lo_target = glo["frac"] * R["kl_lo_init"]
             R["beta_g"] = beta_g_used = self.beta_g
             sel = B["gate_sampled"] & R["low"]
@@ -2933,6 +2943,14 @@ class Learner:
                 if glo is not None and upd["kl_gate_imit_low"] is not None:   # F6': its own leash, same rule
                     self.beta_g = adapt_beta(beta_g_used, upd["kl_gate_imit_low"], self.gate_lo_target,
                                              float(cfg["beta_min"]), float(cfg["beta_max"]))
+            if glo is not None:                               # F6' runaway monitor (owner-visible; no stop rule)
+                run = (not warm and beta_g_used >= float(cfg["beta_max"]) and upd["kl_gate_imit_low"] is not None
+                       and upd["kl_gate_imit_low"] > 1.5 * self.gate_lo_target)
+                self.beta_g_cap_streak = getattr(self, "beta_g_cap_streak", 0) + 1 if run else 0
+                if self.beta_g_cap_streak >= 3:
+                    self.log(f"[rl] WARNING u{u:04d}: beta_g at beta_max {cfg['beta_max']} for "
+                             f"{self.beta_g_cap_streak} consecutive updates and KL_gate_imit_low "
+                             f"{upd['kl_gate_imit_low']:.4f} still > 1.5 x target {self.gate_lo_target:.4f}")
             if u == 0 and self.guards.s["base"] is None:
                 self.guards.set_baselines(mon)
                 self.log(f"[rl] update-0 plays/min baseline {self.guards.s['base']['plays_per_min']:.3f} (stop outside "
@@ -2972,7 +2990,8 @@ class Learner:
                               "kl_gate_init_high": upd["kl_gate"], "kl_lo_init": R["kl_lo_init"],
                               "rows_low": int(lo_sel.sum()), "imit_p_play_low": imit_p_low,
                               "learner_play_rate_low": float(Bn["played"][lo_sel].mean()) if lo_sel.any() else None,
-                              "play_rate_by_elixir": bands}
+                              "play_rate_by_elixir": bands,
+                              "beta_g_cap_streak": getattr(self, "beta_g_cap_streak", 0)}
         if brst is not None:
             rec["branch"] = {**brst, "coef": bc["branch_coef"], "min_abs_delta": bc["branch_min_abs_delta"],
                              "buffer_cap": bc["branch_buffer"], "max_staleness": bc["branch_max_staleness"],
@@ -3053,7 +3072,7 @@ class Learner:
                     f"{f(gst['phi_share'])} dPhi std {f(shs['phi_step_std'], '{:.4f}')} (raw "
                     f"{f(shs['raw_step_std'], '{:.4f}')}) end-corr {f(shs['phi_end_corr'], '{:+.3f}')}"
                     if shs and shs.get("mode") in ("value_phi", "live_phi") else "")
-                 + (f" | gate_lo KL {f(upd['kl_gate_imit_low'], '{:.4f}')}/{f(self.gate_lo_target, '{:.4f}')} beta_g "
+                 + (f" | KL_gate_imit_low {f(upd['kl_gate_imit_low'], '{:.4f}')} (target {f(self.gate_lo_target, '{:.4f}')}) beta_g "
                     f"{beta_g_used:.3g}->{self.beta_g:.3g} play<{glo['max_elixir']:g} "
                     f"{f(rec['gate_lo']['learner_play_rate_low'])} (imit p {f(imit_p_low)}) bands "
                     + "/".join(f(v["play_rate"]) for v in rec["gate_lo"]["play_rate_by_elixir"].values())

@@ -80,6 +80,8 @@ class TestConfig(unittest.TestCase):
         self.assertNotIn(on, (RL.config_sha(cfg), RL.config_sha(g)))
         self.assertNotEqual(on, RL.config_sha(dict(g, kl_ref_gate_max_elixir=4.0, kl_ref_gate_target_frac=0.25)))
         self.assertNotEqual(on, RL.config_sha(dict(g, kl_ref_gate_max_elixir=2.0)))
+        for fr in (None, 0.5):                                                   # null = absent = the 0.5 default
+            self.assertEqual(on, RL.config_sha(dict(g, kl_ref_gate_max_elixir=4.0, kl_ref_gate_target_frac=fr)))
 
     def test_validation(self):
         self.assertIsNone(RL.gate_lo_cfg({}))
@@ -124,30 +126,53 @@ class TestRecording(unittest.TestCase):
     def truth(s, t):
         return ((7 * t + 3 * s) % 101) / 10.0
 
-    def _run(self, side, **cfg):
+    def _run(self, side, spy=None, **cfg):
+        """-> the learner's traj; ``spy`` (a list) collects (tick, the model's board elixir) per recorded decision --
+        the extrapolated / pending-adjusted ``bs`` the first version wrongly recorded."""
         from pipeline import e1_eval as E
         from pipeline.tests import test_league as TL
         learner, opp = E.GenPolicy(TL._tiny_gen(1), TL.VOCAB), E.GenPolicy(TL._tiny_gen(2), TL.VOCAB)
         jobs = [(0, TL._spec(0, "snapA", side), 0, {"rollout_index": 0, "update": 0})]
-        res, _ = TL._run(jobs, learner, {"snapA": (opp, TL._cfg("sample", record=False))},
-                         TL._cfg(record_tick=True, **cfg), make_env=lambda: TL._SPEnv(truth=self.truth), n=1)
+        orig = E.Match._record
+
+        def rec(m, p, d):
+            if spy is not None and m.cfg.get("record") and "lp_gate" in d:
+                spy.append((int(m._cur[0]), float(m._cur[1].my_elixir)))
+            return orig(m, p, d)
+        E.Match._record = rec
+        try:
+            res, _ = TL._run(jobs, learner, {"snapA": (opp, TL._cfg("sample", record=False, **cfg))},
+                             TL._cfg(record_tick=True, **cfg), make_env=lambda: TL._SPEnv(truth=self.truth), n=1)
+        finally:
+            E.Match._record = orig
         return res[0]["traj"]
 
     def test_rows(self):
-        for side in (0, 1):
-            tj = self._run(side, record_elixir=True)
-            el, tick = tj["elixir"], tj["tick"]
-            self.assertEqual((el.dtype, el.shape), (np.dtype(np.float64), tick.shape))
-            self.assertGreater(len(el), 3)
-            np.testing.assert_allclose(el, [min(10.0, self.truth(side, int(t))) for t in tick], atol=1e-9)
-            self.assertGreater(len(set(el.tolist())), 1)                              # non-vacuous
+        """row["elixir"] = the raw state's elixir_exact (the env's truth) at each recorded decision tick, for both
+        learner sides, with and without the 26-tick extrapolation the arm runs under."""
+        for h in (0, 26):
+            for side in (0, 1):
+                spy = []
+                tj = self._run(side, spy=spy, record_elixir=True, extrapolate_ticks=h)
+                el, tick = tj["elixir"], tj["tick"]
+                self.assertEqual((el.dtype, el.shape), (np.dtype(np.float64), tick.shape))
+                self.assertGreater(len(el), 3)
+                np.testing.assert_array_equal(el, [self.truth(side, int(t)) for t in tick], err_msg=f"h {h} side {side}")
+                self.assertGreater(len(set(el.tolist())), 1)                          # non-vacuous
+                self.assertEqual([t for t, _ in spy], tick.tolist())
+                board = np.array([b for _, b in spy])
+                if h:                                   # the extrapolated board is NOT the truth (the bug this pins)
+                    self.assertGreater(int((np.abs(board - el) > 0.1).sum()), len(el) // 2, f"side {side}")
+                else:
+                    np.testing.assert_allclose(board, np.minimum(el, 10.0), atol=1e-6)
 
     def test_absent_is_unchanged(self):
-        on, off = self._run(0, record_elixir=True), self._run(0)
-        self.assertNotIn("elixir", off)
-        self.assertEqual(sorted(off), sorted(k for k in on if k != "elixir"))
-        for k in off:
-            self.assertEqual(off[k].tobytes(), on[k].tobytes(), k)
+        for h in (0, 26):
+            on, off = self._run(0, record_elixir=True, extrapolate_ticks=h), self._run(0, extrapolate_ticks=h)
+            self.assertNotIn("elixir", off)
+            self.assertEqual(sorted(off), sorted(k for k in on if k != "elixir"))
+            for k in off:
+                self.assertEqual(off[k].tobytes(), on[k].tobytes(), (h, k))
 
 
 # ------------------------------------------------------------------------------------------------------
@@ -267,6 +292,36 @@ class TestSplit(_Tmp):
             self.assertTrue(any(m.startswith("[rl] kl_ref_gate_max_elixir 4.0: update-0 KL_gate_imit_low")
                                 for m in L.log.lines))
 
+    def test_zero_update0_kl_refuses(self):
+        """An anchor equal to the init on the low rows (update-0 KL ~0) would give a ~0 target: SystemExit."""
+        L = _lo_learner(self.model, self.el_results, self.tmp, self.model, critic_warmup_updates=0)
+        with self.assertRaises(SystemExit) as cm:
+            L.one_update(0)
+        self.assertIn("anchor is meaningless", str(cm.exception))
+        self.assertIsNone(getattr(L, "gate_lo_target", None))
+
+    def test_runaway_warning(self):
+        """beta_g pinned at beta_max with the low-row KL > 1.5 x target: the streak counts and a WARNING line from the
+        third consecutive update on; no stop (no crash, no stop reason)."""
+        L = _lo_learner(self.model, self.el_results, self.tmp, self.imit, critic_warmup_updates=0, beta0=3.0,
+                        kl_ref_gate_target_frac=0.1)              # target well below the reachable KL
+        streaks = []
+        for u in range(3):
+            rec, reasons, crash = L.one_update(u)
+            self.assertFalse(crash)
+            self.assertEqual(reasons, [])
+            g = rec["gate_lo"]
+            self.assertEqual(g["beta_g_used"], 3.0)
+            self.assertGreater(g["kl_gate_imit_low"], 1.5 * g["target"])
+            streaks.append(g["beta_g_cap_streak"])
+        self.assertEqual(streaks, [1, 2, 3])
+        warn = [m for m in L.log.lines if m.startswith("[rl] WARNING")]
+        self.assertEqual(len(warn), 1)
+        self.assertIn("u0002: beta_g at beta_max 3.0 for 3 consecutive updates", warn[0])
+        # below the cap: no streak
+        L2 = _lo_learner(self.model, self.el_results, self.tmp / "b", self.imit, critic_warmup_updates=0)
+        self.assertEqual(L2.one_update(0)[0]["gate_lo"]["beta_g_cap_streak"], 0)
+
     def test_adapt_rule(self):
         for kl, want in ((0.31, 0.6), (0.3, 0.3), (0.14, 0.3), (0.13, 0.15)):      # target 0.2: x2 > 0.3, /2 < 0.133
             self.assertAlmostEqual(RL.adapt_beta(0.3, kl, 0.2, 0.03, 3.0), want)
@@ -290,7 +345,8 @@ class TestSplit(_Tmp):
         for k in ("kl_gate_imit_low", "target", "beta_g_used", "beta_g_next", "kl_gate_init_high"):
             self.assertIsNotNone(g[k], k)
         self.assertEqual(g["kl_gate_init_high"], rec["kl_gate"])
-        self.assertIn("gate_lo KL", L.log.lines[-1])
+        self.assertIn(f"KL_gate_imit_low {g['kl_gate_imit_low']:.4f} (target {g['target']:.4f})", L.log.lines[-1])
+        self.assertEqual(g["beta_g_cap_streak"], 0)
 
     def test_one_update_end_to_end(self):
         L = _lo_learner(self.model, self.el_results, self.tmp, self.imit)          # warm-up 1, then 2 policy updates
