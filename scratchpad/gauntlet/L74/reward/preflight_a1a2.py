@@ -1,5 +1,7 @@
 """Step-3 pre-flight (REWARD_ARCHITECTURE.md section 9) for ``shaping: solvency`` (A2) and ``shaping: tower_score``
 (A1 + A1b), the potentials in pipeline/reward_shaping.py, at the weights the arms pin (STATE_PHI_DEFAULTS, or --set).
+10-15: + ``shaping: trade`` (A3, step 5). In the AUDIT its E_opp is the opponent's TRUE elixir standing in for the
+public counter (the scripted runner has no counter; measured counter error +0.3); training reads the counter only.
 
   offline (laptop, seconds, no engine):
     python scratchpad/gauntlet/L74/reward/preflight_a1a2.py offline [--set shaping_solv_w=0.05 ...]
@@ -40,7 +42,7 @@ sys.path[:0] = [str(REPO), str(REPO / "scratchpad/gauntlet/L69/rshape")]
 from pipeline import reward_shaping as RS                  # noqa: E402
 from pipeline import rl_royale as RL                       # noqa: E402
 
-MODES = {"solvency": "solv_rows", "tower_score": "ts_rows"}
+MODES = {"solvency": "solv_rows", "tower_score": "ts_rows", "trade": "tr_rows"}
 POLICIES = ("il", "never", "spend_immediately", "hold_to_10", "spam_one_card", "never_buildings", "never_spells")
 GAMMA_TICK, LAMS, INTERIOR_DROP = 0.99994, (1.0, 0.95), 60
 
@@ -54,7 +56,7 @@ def params(sets) -> dict:
             raise SystemExit(f"unknown key {k}; keys {sorted(p)}")
         p[k] = yaml.safe_load(v)
     for m in MODES:                                         # rl_royale's own validation (scale 1.5 as the arms)
-        RL.adv_cfg({"advantage": "gae", "critic_warmup_updates": 5, "shaping": m, **p})
+        RL.adv_cfg({"advantage": "gae", "critic_warmup_updates": 5, "shaping": m, "opp_elixir": "counter", **p})
     return p
 
 
@@ -72,7 +74,9 @@ def offline(p: dict) -> int:
     rng = np.random.default_rng(0)
     solv = np.concatenate([rng.uniform(0, 30, (20000, 4)), rng.uniform(0, 10, (20000, 1))], axis=1)
     solv = np.vstack([solv, [[40, 40, 0, 0, 0], [0, 0, 0, 0, 0]]])
-    reach = {"tower_score": RS.phi_tower_score(st_rows, p), "solvency": RS.phi_solvency(solv, p)}
+    trade = np.vstack([rng.uniform(0, 30, (20000, 4)), [[10, 40, 0, 0], [0, 0, 10, 40]]])
+    reach = {"tower_score": RS.phi_tower_score(st_rows, p), "solvency": RS.phi_solvency(solv, p),
+             "trade": RS.phi_trade(trade, p)}
     print(f"[offline] weights {p}")
     for m, ph in reach.items():
         b = RS.phi_bound(m, p)
@@ -81,7 +85,7 @@ def offline(p: dict) -> int:
         print(f"[offline] 9.2 {m:11s} bound |Phi| <= {b:.4f} (budget 0.5); reached {float(np.abs(ph).max()):.4f} on "
               f"{len(ph)} states (min {ph.min():+.4f} max {ph.max():+.4f}); critic scale needs >= {1 + b:.4f}"
               f" -> {'OK' if good else 'FAIL'}")
-    for m, rows in (("solvency", solv[:300]), ("tower_score", np.asarray(st_rows[:300]))):
+    for m, rows in (("solvency", solv[:300]), ("tower_score", np.asarray(st_rows[:300])), ("trade", trade[:300])):
         phi0 = float(RS.state_phi(m, rows[:1], p)[0])
         r1 = float(RL.shaping_rewards(rows, {"mode": m, "gamma": 1.0, "params": p})["F"].sum()) + phi0
         gam = rng.uniform(0.99, 1.0, len(rows))
@@ -124,6 +128,10 @@ class AuditRunner(C.ShapeRunner):
         rec["ticks"] = [int(x["tick"]) for x in rec["_states"]]
         rec["solv_rows"] = [RS.state_record("solvency", x, L, m.env, mem) for x in rec["_states"]]
         rec["ts_rows"] = [RS.state_record("tower_score", x, L, m.env, mem) for x in rec["_states"]]
+        rec["tr_rows"] = []
+        for x in rec["_states"]:                       # audit only: the true opp elixir stands in for the counter
+            mem["opp_est"] = next(float(q["elixir_exact"]) for q in x["players"] if int(q["side"]) != int(L))
+            rec["tr_rows"].append(RS.state_record("trade", x, L, m.env, mem))
         rec["unknown_card_bodies"] = sum(int(e["card_id"]) not in mem["cards"] for x in rec["_states"]
                                          for e in x.get("entities") or ())
         return rec

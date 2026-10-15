@@ -1201,9 +1201,12 @@ class Match:
                 row = {k: self._gen_row[k] for k in self._gen_row if k in GEN_ROW_KEYS + GEN_V3_KEYS + GEN_V31_KEYS}
             if cfg.get("record_phi"):                         # rl_royale shaping: what Phi needs, own view (True =
                 from pipeline import reward_shaping as RS     # R2 tower_crown, else the step-3 mode's own row)
+                mem = self.__dict__.setdefault("_phi_mem", {})
+                if cfg["record_phi"] == "trade":              # A3: the PUBLIC counter at this decision, never truth
+                    mem["opp_est"] = (None if not self.opp_mode else self.public.estimate_at(tick)
+                                      if self.public is not None else self.opp_estimate(tick))
                 row = {**row, "phi_state": RS.phi_record(self.state, self.side) if cfg["record_phi"] is True else
-                       RS.state_record(cfg["record_phi"], self.state, self.side, self.env,
-                                       self.__dict__.setdefault("_phi_mem", {}))}
+                       RS.state_record(cfg["record_phi"], self.state, self.side, self.env, mem)}
             if cfg.get("record_tick"):                        # rl_royale gae_gamma_unit tick: the decision tick
                 row = {**row, "tick": int(tick)}
             self.traj.append({**row, "allowed": d["allowed"],

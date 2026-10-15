@@ -1,3 +1,23 @@
+## 2026-10-15 ~02:40 EDT -- F1's gain is NOT in the hard matchups (per-archetype, measured); A3 trade potential built + queued
+
+- **Per-archetype split** (`rlarms/arch_cmp.py`, `ARCH_CMP_F1.txt`; paired by (census, seed) vs r1 deployed D3, 960 pairs):
+  F1 s74 / s75 vs NON-beatdown decks (623 games): **+10.3 [+5.5, +15.0] / +12.2 [+7.3, +17.1]**; vs beatdown
+  (Golem/Lava/RG/PEKKA/EG/3M/Giant/GG/EGolem, 337): **+0.3 [-6.7, +7.3] / +4.7 [-1.8, +11.3]**; the owner's hard list
+  alone (Golem/Lava/RG/PEKKA, 179): -0.6 / +2.2 n.s. Royal Giant is negative in both seeds (-20.0, -8.6; n 35, n.s.).
+  (a) measured: per-decision credit helps vs cycle/bait/bridge decks; (b) plausible, untested: the beatdown gap is the
+  posture/matchup problem C1/C2/F2 are designed for (a critic that cannot see the matchup gives every Golem game the
+  same baseline). gae_tg (F4) is the only arm with a positive hard-list point (+8.9 [-1.3, +19.2]) -- n.s.
+- **A3 trade potential (step 5) built**: `reward_shaping.trade_record/phi_trade`, mode `trade`, Phi = 0.03 x
+  clip((E_own + V_own) - (E_opp_public + V_opp), +-8) (|Phi| <= 0.24). E_opp = the actor's PUBLIC counter (e1_eval
+  `_record` puts it in the phi memory; adv_cfg refuses `trade` without `opp_elixir: counter`); a play is neutral when it
+  lands, a spell is worth what it removes (tests: Log-on-nothing = -cost x w). Arm `gae_trade` (mkcfg_arms) = F1 + this
+  ONE potential, seed 74. Pre-flight: offline PASS (bound 0.24 reached, telescoping 1e-15); scripted audit adds trade
+  (true opp elixir stands in for the counter in the audit only). 26 step-3 tests pass (87 with rl_royale/rl_gae).
+- **Plan deviation, flagged**: REWARD_ARCHITECTURE §3 A3 says "only added after A1+A2 are measured". This is A3 as its
+  OWN arm vs F1 (one change), run in parallel on otherwise idle pods, not stacked on A1/A2; stacking still waits.
+- Queue: 12787 runs `gae_trade` after the A1A2 audit (checkout /workspace/cb_s5 from repo_s5.tgz, `queue_s5.sh` =
+  this commit's queue_s3.sh with CS/RT/AUD); 12037 runs the 3-mode audit (AUDIT_S5) after the s76 replicate.
+
 ## 2026-10-15 ~02:15 EDT -- F1 REPLICATES (seed 75): deployed +9.58 [+5.73, +13.54] vs r1; best D3 measured 51.46%
 
 - rlarm_gae_s75 (same F1 config, RL seed 75; copy `pod_backup_weekend/pod1014b_arms/`): D1 425/960 44.27%, D3 494/960

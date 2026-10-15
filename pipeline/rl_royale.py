@@ -250,11 +250,15 @@ def adv_cfg(cfg: dict) -> dict:
     for k in ("shaping_w_value", "shaping_phi_window_s"):
         if not (num(vp[k]) and vp[k] >= 0.0):
             bad.append(f"{k} must be a finite number >= 0, got {vp[k]!r}")
-    for k in ("shaping_solv_w", "shaping_solv_k", "shaping_ts_w_tb"):
+    for k in ("shaping_solv_w", "shaping_solv_k", "shaping_ts_w_tb", "shaping_tr_w"):
         if not (num(sp[k]) and sp[k] >= 0.0):
             bad.append(f"{k} must be a finite number >= 0, got {sp[k]!r}")
     if not (num(sp["shaping_solv_cap"]) and sp["shaping_solv_cap"] > 0.0):
         bad.append(f"shaping_solv_cap must be a finite number > 0, got {sp['shaping_solv_cap']!r}")
+    if not (num(sp["shaping_tr_cap"]) and sp["shaping_tr_cap"] > 0.0):
+        bad.append(f"shaping_tr_cap must be a finite number > 0, got {sp['shaping_tr_cap']!r}")
+    if c["shaping"] == "trade" and cfg.get("opp_elixir") not in ("counter", "counter_all"):
+        bad.append("shaping trade needs opp_elixir counter (its Phi reads the PUBLIC opponent-elixir counter)")
     if not (num(sp["shaping_ts_h_power"]) and sp["shaping_ts_h_power"] >= 1.0):
         bad.append(f"shaping_ts_h_power must be a finite number >= 1 (h concave), got {sp['shaping_ts_h_power']!r}")
     for k in ("shaping_ts_w_own", "shaping_ts_w_foe"):                   # [behind, even, ahead]

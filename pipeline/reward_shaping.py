@@ -32,6 +32,10 @@ turns rows into Phi with the run's weights (``state_phi``); F, gamma and Phi = 0
                        + w_tb ramp(t) clip(own_tb - foe_tb, -1, 1)                        (``phi_tower_score``)
                  c = behind / even / ahead on crowns, h(f) = 1 - (1 - f)^p (concave: value mostly in standing), foe
                  king weight 0 always (also kept out of foe_tb), ramp 0 before 2x -> 1 at the end of overtime.
+    trade        row [E_own, V_own, E_opp, V_opp] (``trade_record``; A3, step 5), elixir: V = ``body_value`` of that side's
+                 bodies, E_opp = the PUBLIC opponent-elixir counter (the actor's ``opp_elixir: counter``), never the
+                 opponent's true elixir:  Phi = w clip((E_own + V_own) - (E_opp + V_opp), -cap, cap)   (``phi_trade``)
+                 A play is neutral when it lands (elixir becomes board value); a spell is worth what it removes.
 |Phi| <= ``phi_bound`` on every reachable state (tests + L74/reward/preflight_a1a2.py).
 """
 from __future__ import annotations
@@ -166,8 +170,9 @@ def trailing_mean(values: Sequence[float], ticks: Sequence[int], window_ticks: i
 # behind -> foe princesses weigh more. Even weights equal -> Phi = 0 at the start.
 STATE_PHI_DEFAULTS = {"shaping_solv_w": 0.04, "shaping_solv_k": 1.0, "shaping_solv_cap": 10.0,
                       "shaping_ts_w_own": [0.15, 0.2, 0.3], "shaping_ts_w_foe": [0.3, 0.2, 0.1],
-                      "shaping_ts_w_tb": 0.15, "shaping_ts_h_power": 3.0}
-STATE_PHI_MODES = ("solvency", "tower_score")
+                      "shaping_ts_w_tb": 0.15, "shaping_ts_h_power": 3.0,
+                      "shaping_tr_w": 0.03, "shaping_tr_cap": 8.0}      # trade: 0.03 x 8 = 0.24 (A3 "kept small")
+STATE_PHI_MODES = ("solvency", "tower_score", "trade")
 HALF_Y = 16000                  # own-frame y of the river centre (raw units, 1000 per tile; side 0 = Blue at low y)
 LANE_X = 9000                   # own-frame x < 9000 = left lane, else right
 CENTRE_BAND = 2500              # an own body within 2.5 tiles of the centre line can engage either lane
@@ -278,11 +283,35 @@ def phi_tower_score(rows, p: dict) -> np.ndarray:
     return own - foe + float(p["shaping_ts_w_tb"]) * ramp * np.clip(r[:, 6] - r[:, 7], -1.0, 1.0)
 
 
+def trade_record(state: dict, side: int, cards: dict, opp_est) -> list:
+    """A3's row from ``side``'s view: [E_own, V_own, E_opp, V_opp] (elixir). V = ``body_value`` summed over that side's
+    bodies (troops, buildings, deploying; a SPELL card's bodies and unknown cards never count), E_own = my exact elixir,
+    E_opp = ``opp_est``, the public counter's estimate (ValueError when None: no hidden opponent elixir, ever)."""
+    if opp_est is None:
+        raise ValueError("shaping trade needs the public opponent-elixir counter (config opp_elixir: counter)")
+    V = [0.0, 0.0]
+    for e in state.get("entities") or ():
+        v = body_value(e, cards)
+        if v is not None:
+            V[int(int(e["side"]) != int(side))] += v
+    me = next(p for p in state["players"] if int(p["side"]) == int(side))
+    return [float(me["elixir_exact"]), V[0], float(opp_est), V[1]]
+
+
+def phi_trade(rows, p: dict) -> np.ndarray:
+    """Phi per ``trade_record`` row: w clip((E_own + V_own) - (E_opp + V_opp), -cap, cap)."""
+    r = np.atleast_2d(np.asarray(rows, dtype=np.float64))
+    cap = float(p["shaping_tr_cap"])
+    return float(p["shaping_tr_w"]) * np.clip(r[:, 0] + r[:, 1] - r[:, 2] - r[:, 3], -cap, cap)
+
+
 def phi_bound(mode: str, p: dict) -> float:
     """max |Phi| over every reachable state: solvency w cap; tower_score max_c max(w_own[c], w_foe[c]) + w_tb (the
     own term is in [0, w_own], the foe term in [0, w_foe], the tiebreak term in [-w_tb, w_tb])."""
     if mode == "solvency":
         return float(p["shaping_solv_w"]) * float(p["shaping_solv_cap"])
+    if mode == "trade":
+        return float(p["shaping_tr_w"]) * float(p["shaping_tr_cap"])
     if mode == "tower_score":
         return max(max(float(a), float(b)) for a, b in zip(p["shaping_ts_w_own"], p["shaping_ts_w_foe"])) \
             + float(p["shaping_ts_w_tb"])
@@ -290,14 +319,19 @@ def phi_bound(mode: str, p: dict) -> float:
 
 
 def state_phi(mode: str, rows, p: dict) -> np.ndarray:
-    return {"solvency": phi_solvency, "tower_score": phi_tower_score}[mode](rows, p)
+    return {"solvency": phi_solvency, "tower_score": phi_tower_score, "trade": phi_trade}[mode](rows, p)
 
 
 def state_record(mode: str, state: dict, side: int, env, mem: dict) -> list:
     """The actor's per-decision row for ``mode`` (e1_eval ``record_phi``); ``mem`` = one dict per match and side
-    (solvency: the RoyaleSim card catalogue of ``env`` and the previous enemy positions)."""
+    (solvency: the RoyaleSim card catalogue of ``env`` and the previous enemy positions; trade: the catalogue and
+    ``mem["opp_est"]``, the public counter's estimate the actor put there for this decision)."""
     if mode == "tower_score":
         return tower_score_record(state, side)
+    if mode == "trade":
+        if "cards" not in mem:
+            mem["cards"] = card_table(env.core.cards())
+        return trade_record(state, side, mem["cards"], mem.get("opp_est"))
     if mode == "solvency":
         if "cards" not in mem:
             mem["cards"] = card_table(env.core.cards())

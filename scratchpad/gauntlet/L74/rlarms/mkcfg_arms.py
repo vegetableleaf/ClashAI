@@ -1,6 +1,7 @@
 """Reward-architecture arms (owner-approved 10-14, L74/reward/REWARD_ARCHITECTURE.md), each ONE change vs rltest_ctrl
 (r1's exact config continued 60 policy updates from newsim_base_main_u0060, 10-13).
     python mkcfg_arms.py ARM OUT.yaml      ARM = gae (F1) | opp (F3) | kl_imit (F6) | gae_solv (A2) | gae_tower (A1+A1b)
+    | gae_trade (A3, step 5)
 kl_imit needs KL_IMIT (below, not in git: icebow/data/) on the pod -> put it in ckpts.tgz; checked here by sha256.
 gae_solv / gae_tower (step 3) = arm gae + ONE potential (reward_shaping solvency / tower_score), its weights pinned in
 the yaml from reward_shaping.STATE_PHI_DEFAULTS (PYTHONPATH = the repo); pre-flight: L74/reward/preflight_a1a2.py.
@@ -29,10 +30,13 @@ if arm == "kl_imit":  # F6 ONE change: KL_gate to the imitation model instead of
     c.update(kl_ref_gate=KL_IMIT)
 elif arm == "gae":    # F1 per-decision credit: R2's GAE settings without its shaping; 5 critic-only updates -> 65 = 60 policy
     c.update(GAE)
-elif arm in ("gae_solv", "gae_tower"):   # step 3: F1 + ONE potential; same init, warm-up (5) and critic scale (1.5)
+elif arm in ("gae_solv", "gae_tower", "gae_trade"):   # steps 3/5: F1 + ONE potential; same init, warm-up (5), scale 1.5
     from pipeline.reward_shaping import STATE_PHI_DEFAULTS
     c.update(GAE)
-    mode, pre = ("solvency", "shaping_solv_") if arm == "gae_solv" else ("tower_score", "shaping_ts_")
+    mode, pre = {"gae_solv": ("solvency", "shaping_solv_"), "gae_tower": ("tower_score", "shaping_ts_"),
+                 "gae_trade": ("trade", "shaping_tr_")}[arm]
+    if arm == "gae_trade" and c.get("opp_elixir") not in ("counter", "counter_all"):
+        raise SystemExit("gae_trade: r1's config must use the public opp_elixir counter")
     c.update(shaping=mode, **{k: v for k, v in STATE_PHI_DEFAULTS.items() if k.startswith(pre)})
 elif arm in ("gae_opp", "gae_tg", "gae_opp_tg"):   # overnight factorial on the foundations (F1 x F3 x F4)
     c.update(GAE)

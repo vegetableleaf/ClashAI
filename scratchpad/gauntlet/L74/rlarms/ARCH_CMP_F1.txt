@@ -1,0 +1,37 @@
+archetype           n     r1            rlarm_gae         larm_gae_s75         rlarm_gae_tg            rlarm_opp
+Hog Rider          98  61.2%        +12.2 ±12.8pp         +2.0 ±11.7pp         +3.1 ±11.5pp         -8.2 ±11.3pp
+Golem              97  56.7%         +0.0 ±13.5pp         +7.2 ±10.8pp         +7.2 ±13.5pp         -6.2 ±13.1pp
+Balloon            93  35.5%        +19.4 ±14.1pp        +14.0 ±13.9pp         +3.2 ±13.2pp         +7.5 ±12.8pp
+Giant              71  45.1%         +2.8 ±15.7pp        +12.7 ±16.6pp         +9.9 ±16.8pp         -8.5 ±13.5pp
+Battle Ram         61  26.2%         +6.6 ±15.1pp         +4.9 ±16.8pp         +9.8 ±18.2pp         +1.6 ±16.2pp
+Royal Hogs         59  22.0%         +1.7 ±13.8pp        +15.3 ±15.6pp         +8.5 ±15.2pp         +0.0 ±11.6pp
+Graveyard          51  33.3%         +7.8 ±18.1pp        +13.7 ±18.2pp         +9.8 ±15.8pp         -5.9 ±13.9pp
+Goblin Barrel      47  31.9%        +14.9 ±14.6pp        +31.9 ±19.0pp        +12.8 ±16.5pp         +8.5 ±16.7pp
+Mortar             46  10.9%         +6.5 ±14.2pp         +6.5 ±14.2pp         +2.2 ±11.4pp         +0.0 ± 8.6pp
+Other              45  37.8%         +2.2 ±19.2pp         +6.7 ±15.8pp         +2.2 ±15.9pp         -6.7 ±14.5pp
+Lava Hound         44  40.9%        +11.4 ±15.9pp         -4.5 ±16.8pp         +6.8 ±20.5pp         -2.3 ±19.6pp
+Goblin Drill       40  57.5%        +12.5 ±17.5pp        +12.5 ±18.8pp         +2.5 ±21.6pp        +10.0 ±22.0pp
+Royal Giant        35  40.0%        -20.0 ±22.4pp         -8.6 ±23.2pp        +11.4 ±25.1pp        -17.1 ±17.0pp
+Three Musketeers   31  51.6%         +0.0 ±25.7pp        +16.1 ±22.4pp         -9.7 ±22.9pp         -6.5 ±18.0pp
+Electro Giant      27  51.9%         +7.4 ±20.7pp         +0.0 ±18.1pp        -22.2 ±19.1pp        -18.5 ±21.0pp
+Miner              20  40.0%        +15.0 ±21.4pp        +20.0 ±27.0pp         +0.0 ±28.4pp         +5.0 ±33.3pp
+Wall Breakers      19  36.8%         +5.3 ±27.9pp        +15.8 ±30.9pp         +0.0 ±33.5pp        -15.8 ±27.1pp
+Elixir Golem       19  84.2%        -10.5 ±29.6pp        -10.5 ±25.5pp        -21.1 ±28.4pp        -21.1 ±24.1pp
+Ram Rider          16  43.8%         -6.2 ±28.1pp        +12.5 ±35.2pp        -12.5 ±30.3pp        +12.5 ±30.3pp
+X-Bow              14  35.7%        +28.6 ±32.0pp        +28.6 ±38.0pp         +7.1 ±38.2pp         -7.1 ±38.2pp
+Goblin Giant       10  80.0%         +0.0 ±41.3pp         +0.0 ±41.3pp         +0.0 ±41.3pp        +10.0 ±35.2pp
+Mega Knight         7  28.6%        +14.3 ±28.0pp        +42.9 ±39.6pp         +0.0 ±42.8pp        +14.3 ±28.0pp
+Goblinstein         4  25.0%        +25.0 ±93.8pp         +0.0 ± 0.0pp        +25.0 ±93.8pp         +0.0 ± 0.0pp
+Royal Recruits      3   0.0%         +0.0 ± 0.0pp         +0.0 ± 0.0pp         +0.0 ± 0.0pp         +0.0 ± 0.0pp
+P.E.K.K.A           3   0.0%        +33.3 ±65.3pp        +66.7 ±65.3pp        +66.7 ±65.3pp        +33.3 ±65.3pp
+
+grouped (paired vs r1 deployed D3, 95% CI):
+rlarm_gae        owner-hard Golem/Lava/RG/PEKKA         n=179  -0.6 [-10.1,  +9.0]
+rlarm_gae        all beatdown (+EG/3M/Giant/GG/EGolem)  n=337  +0.3 [ -6.7,  +7.3]
+rlarm_gae        rest                                   n=623 +10.3 [ +5.5, +15.0]
+rlarm_gae_s75    owner-hard Golem/Lava/RG/PEKKA         n=179  +2.2 [ -6.4, +10.9]
+rlarm_gae_s75    all beatdown (+EG/3M/Giant/GG/EGolem)  n=337  +4.7 [ -1.8, +11.3]
+rlarm_gae_s75    rest                                   n=623 +12.2 [ +7.3, +17.1]
+rlarm_gae_tg     owner-hard Golem/Lava/RG/PEKKA         n=179  +8.9 [ -1.3, +19.2]
+rlarm_gae_tg     all beatdown (+EG/3M/Giant/GG/EGolem)  n=337  +3.0 [ -4.3, +10.3]
+rlarm_gae_tg     rest                                   n=623  +5.0 [ +0.2,  +9.8]

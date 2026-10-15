@@ -227,6 +227,42 @@ class TestTowerScore(unittest.TestCase):
         np.testing.assert_allclose(RS.tower_score_record(st, 0), RS.tower_score_record(mirror(st), 1))
 
 
+class TestTrade(unittest.TestCase):
+    """A3 (step 5): Phi = w clip((E_own + V_own) - (E_opp + V_opp), +-cap); E_opp is the public counter's estimate."""
+
+    def phi(self, st, est, side=0, **kw):
+        return float(RS.phi_trade(RS.trade_record(st, side, CARDS, est), {**P, **kw})[0])
+
+    def test_play_neutral_spell_priced_by_removal(self):
+        """Elixir that becomes a full-hp body keeps Phi; a 3-elixir spell that kills a 3-elixir body is 0 net, one
+        that kills nothing is -3 x w; spells' own bodies (Barrel goblins) never count."""
+        w = P["shaping_tr_w"]
+        before = sstate([ent(1, KNIGHT, 3000, 25000)], e0=6.0, e1=5.0)
+        self.assertAlmostEqual(self.phi(before, 5.0), w * (6 - 5 - 3))
+        placed = sstate([ent(0, KNIGHT, 3000, 9000), ent(1, KNIGHT, 3000, 25000)], e0=3.0, e1=5.0)
+        self.assertAlmostEqual(self.phi(placed, 5.0), self.phi(before, 5.0))
+        killed = sstate([], e0=3.0, e1=5.0)                       # a 3-elixir spell removed their Knight
+        self.assertAlmostEqual(self.phi(killed, 5.0), self.phi(before, 5.0))
+        wasted = sstate([ent(1, KNIGHT, 3000, 25000)], e0=3.0, e1=5.0)
+        self.assertAlmostEqual(self.phi(wasted, 5.0) - self.phi(before, 5.0), -3 * w)
+        goblins = sstate([ent(1, BARREL, 3000, 9000, hp=200, max_hp=200)], e0=3.0, e1=5.0)
+        self.assertAlmostEqual(self.phi(goblins, 5.0), w * (3 - 5))
+
+    def test_counter_only_and_hp_scaled(self):
+        st = sstate([ent(1, WITCH, 9000, 20000, hp=839 / 2)], e0=4.0, e1=0.0)   # the true opp elixir (0) is ignored
+        self.assertAlmostEqual(self.phi(st, 7.0), P["shaping_tr_w"] * (4 - 7 - 2.5))
+        with self.assertRaises(ValueError):
+            RS.trade_record(st, 0, CARDS, None)
+
+    def test_cap_bound_and_symmetry(self):
+        rich = sstate([ent(0, WITCH, 3000, 9000)] * 5, e0=10.0)
+        self.assertAlmostEqual(self.phi(rich, 0.0), RS.phi_bound("trade", P))
+        self.assertLessEqual(RS.phi_bound("trade", P), 0.5)
+        st = sstate([ent(0, KNIGHT, 3000, 9000), ent(1, WITCH, 9000, 20000, hp=400)], e0=2.0, e1=7.0)
+        self.assertAlmostEqual(self.phi(st, 7.0, side=0), -self.phi(st, 2.0, side=1))   # exact counters: zero-sum
+        self.assertAlmostEqual(self.phi(st, 6.0, side=0), self.phi(mirror(st), 6.0, side=1))
+
+
 # ------------------------------------------------------------------------------------------------------
 class TestBoundAndTelescoping(unittest.TestCase):
     def test_bound_holds_and_is_within_budget(self):
@@ -252,7 +288,8 @@ class TestBoundAndTelescoping(unittest.TestCase):
         rng = np.random.default_rng(1)
         for mode, rows in (("solvency", np.concatenate([rng.uniform(0, 12, (60, 4)), rng.uniform(0, 10, (60, 1))], 1)),
                            ("tower_score", np.concatenate([rng.uniform(0, 1, (60, 8)), rng.integers(0, 2, (60, 2)),
-                                                           np.sort(rng.integers(0, 7000, (60, 1)), 0)], 1))):
+                                                           np.sort(rng.integers(0, 7000, (60, 1)), 0)], 1)),
+                           ("trade", rng.uniform(0, 15, (60, 4)))):
             phi0 = RS.state_phi(mode, rows[:1], P)[0]
             sh = RL.shaping_rewards(rows, {"mode": mode, "gamma": 1.0, "params": P})
             self.assertAlmostEqual(float(sh["F"].sum()), -phi0, places=12)
@@ -276,18 +313,21 @@ class TestWiring(_Tmp):
         for r in out:
             n = len(r["traj"]["played"])
             r["traj"]["phi_state"] = (np.concatenate([rng.uniform(0, 12, (n, 4)), rng.uniform(0, 10, (n, 1))], 1)
-                                      if mode == "solvency" else
+                                      if mode == "solvency" else rng.uniform(0, 15, (n, 4)) if mode == "trade" else
                                       np.concatenate([rng.uniform(0, 1, (n, 8)), rng.integers(0, 2, (n, 2)),
                                                       np.arange(n)[:, None] * 100.0], 1))
         return out
 
     def test_adv_cfg(self):
-        base = {"advantage": "gae", "critic_warmup_updates": 1}
+        base = {"advantage": "gae", "critic_warmup_updates": 1, "opp_elixir": "counter"}
+        with self.assertRaises(SystemExit) as cm:                         # trade reads the public counter only
+            RL.adv_cfg({**base, "shaping": "trade", "opp_elixir": None})
+        self.assertIn("opp_elixir", str(cm.exception))
         for mode in RS.STATE_PHI_MODES:
             c = RL.adv_cfg({**base, "shaping": mode})
             self.assertEqual({k: c[k] for k in RL.STATE_PHI_KEYS}, P)
             for bad in ({"shaping": mode}, {**base, "shaping": mode, "critic_warmup_updates": 0},
-                        {**base, "shaping": mode, "shaping_critic_scale": 1.3}):
+                        {**base, "shaping": mode, "shaping_critic_scale": 0.95 + RS.phi_bound(mode, P)}):
                 with self.assertRaises(SystemExit, msg=bad):
                     RL.adv_cfg(bad)
         self.assertNotIn("shaping_solv_w", RL.adv_cfg({**base, "shaping": "tower_crown"}))
@@ -335,7 +375,7 @@ class TestWiring(_Tmp):
     def test_one_update(self):
         for mode in RS.STATE_PHI_MODES:
             L = _learner(RL, self.model, self._with_rows(mode, 2), self.tmp / mode, advantage="gae",
-                         critic_warmup_updates=1, shaping=mode)
+                         critic_warmup_updates=1, shaping=mode, opp_elixir="counter")
             for u in range(2):
                 rec, _, crash = L.one_update(u)
                 self.assertFalse(crash)
@@ -350,7 +390,7 @@ class TestRecording(unittest.TestCase):
     """e1_eval's real SelfPlayMatch on test_league's fake env (+ a catalogue, troop kinds, a fast Hog): one row per
     recorded decision from the LEARNER's side, = the mode's state_record."""
 
-    def _run(self, side, mode):
+    def _run(self, side, mode, **cfg):
         from pipeline import e1_eval as E
         from pipeline.tests import test_league as TL
 
@@ -369,7 +409,7 @@ class TestRecording(unittest.TestCase):
         learner, opp = E.GenPolicy(TL._tiny_gen(1), TL.VOCAB), E.GenPolicy(TL._tiny_gen(2), TL.VOCAB)
         jobs = [(0, TL._spec(0, "snapA", side), 0, {"rollout_index": 0, "update": 0})]
         res, envs = TL._run(jobs, learner, {"snapA": (opp, TL._cfg("sample", record=False))},
-                            TL._cfg(record_phi=mode), make_env=Env, n=1)
+                            TL._cfg(record_phi=mode, **cfg), make_env=Env, n=1)
         return res[0]["traj"]["phi_state"]
 
     def test_rows(self):
@@ -383,6 +423,12 @@ class TestRecording(unittest.TestCase):
         np.testing.assert_allclose(s0[1:, 1], hog)                         # then walking toward side 0 (right lane)
         self.assertTrue((s1[:, :2] == 0).all())                            # side 1: the fake Knight crawls < MOVE_EPS
         self.assertAlmostEqual(s1[0, 2], hog)                              # ... and its own Hog defends (own frame left)
+        tr = self._run(0, "trade", opp_elixir="counter")
+        self.assertEqual(tr.shape[1], 4)
+        np.testing.assert_allclose(tr[:, 3], hog)                          # the foe's Hog, full hp
+        self.assertTrue(((tr[:, 2] >= 0) & (tr[:, 2] <= 10)).all())        # the public counter's estimate
+        with self.assertRaises(ValueError):                                # no counter -> no trade rows, ever
+            self._run(0, "trade")
 
 
 if __name__ == "__main__":
