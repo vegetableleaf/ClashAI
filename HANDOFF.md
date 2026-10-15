@@ -1,3 +1,17 @@
+## 2026-10-15 ~05:45 EDT -- A3' exchange rate measured: 1 princess tower of HP ~ 22-25 elixir of trade (2x/OT)
+
+- Data: 1000 r1-vs-gen_v1 SIM matches (il policy, `audit --dump-rows`; copy `pod_backup_weekend/pod1015_s5/ROWS_R1/`,
+  398k kept rows, 983 decisive). `reward/fit_rho.py` -> `reward/RHO_FIT_R1.txt`: logistic P(win) on elixir margin
+  ((E+V)own - (E+V)opp, true opp elixir) and tower margin (princess units, king x 1.58), per phase, match bootstrap.
+  log-odds per elixir: 1x +0.067 [0.017, 0.127], 2x +0.137 [0.10, 0.17], OT +0.146 [0.11, 0.19]; per princess tower:
+  +2.9 / +3.1 / +3.7. **rho = 43 [23, 147] (1x), 22.5 [17, 32] (2x), 25 [19, 34] (OT) elixir per princess tower.**
+- (a) measured, associational (not causal): the elixir margin is a WEAK predictor next to the tower margin; A3's
+  failure is quantitatively explained (a Hog that deals 800 HP = 0.26 tower ~ 6.5 elixir before dying is a +2.5 trade
+  for the attacker, not -4).
+- Consequence for the plan: a correctly priced trade term is mostly a tower term (A1 already, null in step 3); its new
+  content (b_e x elixir margin) is small. A3' = w clip(b_e(phase) dE + b_t(phase) dT, +-c) is designed, NOT built:
+  low expected value after step 3's null; parked for the owner. Pod 37607 STOPPED (ude3e4ig9es410) after the copy.
+
 ## 2026-10-15 ~05:25 EDT -- Step 3 (A1/A2 potentials on F1): no measurable gain over F1; gae_opp confirms F3 adds nothing
 
 960 pairs each, vs r1 deployed D3 / vs F1 s74 (copies `pod_backup_weekend/pod1014b_arms/rlarm_gae_{solv,tower,opp}*`):
