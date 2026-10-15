@@ -1,3 +1,22 @@
+## 2026-10-15 ~12:20 EDT -- bait witness session (owner's classic challenge, Hero Valk / evo SkArmy / evo Barrel): reader covers it all
+
+- Owner played 2 classic-challenge games by hand (LEVEL 11 = the SIM's level) with the friend's deck (Hero Valkyrie, Evo
+  Skeleton Army, Evo Goblin Barrel, Princess, Dart Goblin, Wall Breakers, Ice Spirit, Cannon); recorded by `live_play.py
+  --dry-run --log-frames` with the bait ckpt/options (no taps): logs `L68/live_reader/live_play_20261015_120038.jsonl`
+  (game 1, full) and `..._120950.jsonl` (game 2 from tick 2665 only: game 1's process lingered ~5 min after its match, so
+  the recorder joined game 2 late). Report: `L74/bait_witness/witness.py LOG`.
+- (a) Reader coverage: EVERY own and enemy board id has a catalog name -- hero Valkyrie 203000011, evo SkArmy 13000012
+  (+ 2-max-hp bodies of the same id), barrel goblins 28000004 (202 hp; the evolved barrel adds 3 x 81-hp bodies), Cannon
+  27000000; enemy hero Dark Prince 203000027, hero Mini Pekka 203000018, evo Bats/Tesla/Inferno/BabyDragon. Hand forms
+  correct (Valkyrie 2, Barrel 1, SkArmy 1). NO alias / template work is needed (my earlier "template gap" was wrong: live
+  reads forms from memory; templates are the old CV path only).
+- (a) Hero button detector works on Valkyrie: 'ready' only at own elixir >= 3.44, 'grey' only <= 3.04 (ability cost 3).
+- Ability presses captured (unexplained 3-elixir drops): ~t311 (1 enemy: hero Dark Prince 2.8 t), ~t1853 (no enemy),
+  game 2 ~t3261 (GROUP: hero Mini Pekka 1.7 t, evo Inferno Dragon 2.3 t (air), evo Baby Dragon 2.7 t (air), Golem 3.1 t).
+  Frames carry every body's hp -> the ability's effect is measurable for the SIM parity check (bait phase 0).
+- The dry-run's own generic press rule would have pressed 48 times in game 1 (nearest enemy <= ~3.5 t): over-eager; the
+  bait press policy is part of the later bait work (B6). Live icebow is STOPPED (STOP file) since ~11:57.
+
 ## 2026-10-15 ~11:40 EDT -- CRITIC DIAGNOSTIC: F1's critic is NOT worse on beatdown -> the F2/C2 premise is contradicted
 
 - critic_diag.py on 19636 (copy `pod_backup_weekend/pod1015_s5/CRITIC_DIAG/`; V scored on GPU after a > 1 h single-thread CPU
