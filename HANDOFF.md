@@ -1,3 +1,20 @@
+## 2026-10-15 ~15:30 EDT -- owner: stop A/B4, F1 with incumbent options; continue the plan + RL architecture (modified)
+
+- **Owner ~15:15**: "yes, stop A/B4, and keep F1 with the incumbent settings (as long as the tau setting you choose isn't
+  clearly worse). continue ... the RL architecture work ... (with modifications depending on the current results)."
+  `ab/stop_ab4.sh` (WMI, log ab/stop_ab4.out): STOP_AB at the block boundary -> LIVE_OPTIONS = pre-A/B4 file (tau 0.2 +
+  river on) + `--log-frames` (parity data) -> check -> restart -> first-match guard. tau 0.2 kept: A/B4 3-3 vs 3-2, SIM
+  -0.10 (no evidence it is worse). TODO after: update pipeline/tests/test_live_options.py DEPLOYED_FILE pin.
+- **Live A/B policy (proposed, owner accepted stopping A/B4)**: live = production on the best model; SIM on the live-mirrored
+  eval selects; live regression alarm vs the incumbent's 49.5% (1,919 matches); log SIM-predicted vs live win rate per
+  deployed model; live A/B only where the SIM is known wrong (abilities).
+- **RL architecture status -> modifications**: F1 adopted; F3/F4 null; step 3 (A1/A2) null; A3 failed audit (A3' parked);
+  C2 REJECTED; F2 s74 n.s. (s75 pending); F6' / lambda .98 pending (2 seeds each). Modification: C1 (posture head) is a big
+  architecture change -> FIRST measure whether posture matters per matchup: posture sweep on the live pool (F1 u65, D3,
+  --tau-phase 0.25/0.35/0.45 aggressive vs 0.45/0.55/0.65 defensive vs default 0.35/0.45/0.55; per-archetype deltas;
+  queued on 45503 after F2 s75). Build C1 only if different archetypes prefer different postures.
+- Human-likeness tool dispatched (worker T7, L74/human/): opponent behaviour features live vs SIM per archetype.
+
 ## 2026-10-15 ~15:15 EDT -- owner approved the plan + live-mirrored pool; C2 rejected; gae_live (2 seeds) training
 
 - **Owner 10-15 ~14:40**: plan approved (live-mix reweighting / trophy-cost ranking / human-likeness -> archetype
