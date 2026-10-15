@@ -195,11 +195,20 @@ def audit(a, p) -> int:
         raise SystemExit(f"--policies must include il and be drawn from {POLICIES}")
 
     def reduce(rec):
-        return {"policy": rec["policy"], "seed": rec["seed"], "z": rec["z"], "kept": rec["kept_rows"],
-                "plays": rec["plays_accepted"], "unknown": rec["unknown_card_bodies"],
-                **{m: reduce_mode(rec, m, p) for m in MODES}}
+        out = {"policy": rec["policy"], "seed": rec["seed"], "z": rec["z"], "kept": rec["kept_rows"],
+               "plays": rec["plays_accepted"], "unknown": rec["unknown_card_bodies"],
+               **{m: reduce_mode(rec, m, p) for m in MODES}}
+        if a.dump_rows:                     # raw rows for fitting Phi weights offline (A3' tower exchange rate)
+            out["rows"] = {"ticks": rec["ticks"], "keep": [bool(k) for k in rec["keep"]],
+                           **{MODES[m]: np.asarray(rec[MODES[m]], dtype=float).round(4).tolist() for m in MODES}}
+        return out
 
     played = [r for r in C.play_all(a, pols, reduce) if r["kept"]]
+    if a.dump_rows:
+        import json
+        with open(a.out / "rows.jsonl", "w", encoding="utf-8") as fh:
+            for r in played:
+                fh.write(json.dumps({"policy": r["policy"], "seed": r["seed"], "z": r["z"], **r.pop("rows")}) + "\n")
     report = {"ckpt": a.ckpt, "weights": p, "gamma_tick": GAMMA_TICK, "interior_drop": INTERIOR_DROP,
               "unknown_card_bodies": sum(r["unknown"] for r in played), "modes": {}}
     stop = []
@@ -253,6 +262,7 @@ def main() -> int:
     au.add_argument("--ckpt", default="icebow/data/pipeline/gen_v1_s0/gen_s0.pt", help="our side's policy (il)")
     au.add_argument("--policies", default=",".join(POLICIES))
     au.add_argument("--set", action="append")
+    au.add_argument("--dump-rows", action="store_true", help="also write every match's raw rows to <out>/rows.jsonl")
     a = ap.parse_args()
     p = params(a.set)
     return offline(p) if a.cmd == "offline" else audit(a, p)
