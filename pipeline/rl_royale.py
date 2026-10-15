@@ -33,6 +33,9 @@ trains a pairwise logistic loss on the two classes' cell log-mass. Each kind has
 branch_xbow_coef); the one branch step sums coef_k x kind k's weighted mean loss.
 LEASH (T12b, owner ruling):``leash: max`` steers beta on max(KL_gate, KL_card, KL_cell) (``leash_kl``); ``cell`` = the
 old KL_cell rule exactly (and what a run resumed from before the key keeps).
+F6 (``kl_ref_gate: <checkpoint>``, opt-in; absent / null = unchanged, same config hash): KL_gate (and the gate entropy
+baseline) is taken to that frozen net -- e.g. the imitation generalist -- instead of the run's own init; card and cell
+keep the init ref (``ref_terms(gate_ref=)``, ``Learner._load_gate_ref``). The update-0 KL check then skips KL_gate.
 
     research/ext/Royale/.venv/Scripts/python.exe -m pipeline.rl_royale --config pipeline/rl_royale.yaml --run NAME
     ... --smoke          E=4, G=2, 1 actor, 2 updates + the checks below; prints SMOKE PASS, exits 0
@@ -1438,15 +1441,20 @@ def cat_ent(lp):
 
 
 @torch.no_grad()
-def ref_terms(ref, B: dict, tau: float, T: float, chunk: int = 512, T_gate: Optional[float] = None) -> dict:
+def ref_terms(ref, B: dict, tau: float, T: float, chunk: int = 512, T_gate: Optional[float] = None,
+              gate_ref=None) -> dict:
     """Frozen-ref tempered distributions for every row, once per update (E1 3.4): gate x [N], card log-probs [N, 8],
-    cell log-probs [P, 2304] for the P played rows (``play_pos`` maps a row to its position, -1 if not played)."""
+    cell log-probs [P, 2304] for the P played rows (``play_pos`` maps a row to its position, -1 if not played).
+    ``gate_ref`` (F6 ``kl_ref_gate``): the gate x -- and so KL_gate and the gate entropy baseline -- comes from this
+    second frozen net instead; card and cell stay ``ref``'s. None = unchanged."""
     N = len(B["A"])
     dev = B["A"].device
     xs, cards, cells = [], [], []
     for s in range(0, N, chunk):
         idx = torch.arange(s, min(s + chunk, N), device=dev)
         t = policy_terms(ref, B, idx, tau, T, T_gate=T_gate)
+        if gate_ref is not None:
+            t["x"] = policy_terms(gate_ref, B, idx, tau, T, T_gate=T_gate)["x"]
         xs.append(t["x"]); cards.append(t["card_lp"])
         if t["cell_lp"] is not None:
             cells.append(t["cell_lp"])
@@ -2070,7 +2078,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
         k, v = ov.split("=", 1)
         if (k not in cfg and k != "ability_policy" and k not in BRANCH_DEFAULTS   # optional: absent = generic / off
                 and k not in VALUE_PHI_KEYS and k not in AO.DEFAULTS
-                and k not in ("league_learner_icebow_share", "learner_pipeline_frac", "league_opp_T")):
+                and k not in ("league_learner_icebow_share", "learner_pipeline_frac", "league_opp_T", "kl_ref_gate")):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
         cfg[k] = yaml.safe_load(v)
     if type(cfg["hero_abilities"]) is not bool:
@@ -2099,6 +2107,8 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "hero_abilities"}
     if cfg.get("ability_policy", "generic") == "generic":
         cfg = {k: v for k, v in cfg.items() if k != "ability_policy"}
+    if cfg.get("kl_ref_gate") is None:                       # F6 off (absent or null) = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "kl_ref_gate"}
     return hashlib.sha256(json.dumps(cfg, sort_keys=True, default=str).encode()).hexdigest()
 
 
@@ -2192,6 +2202,7 @@ class Learner:
         self.ref = copy.deepcopy(self.model).eval()
         for p in self.ref.parameters():
             p.requires_grad_(False)
+        self.gate_ref = self._load_gate_ref(ick) if cfg.get("kl_ref_gate") is not None else None   # F6
         if adv_cfg(cfg)["shaping"] in ("value_phi", "live_phi"):            # lever C: the frozen Phi net, loaded once from FILE
             self.phi_net = self._load_phi_net(ick)            # (never self.model / a resumed one), never trained
         self.model.eval()                                     # eval() for rollout AND update (E1 3.3 dropout trap)
@@ -2354,6 +2365,34 @@ class Learner:
             raise SystemExit(f"shaping_phi_ckpt {ck}: not the 7-class crown-difference value head")
         for p in net.parameters():
             p.requires_grad_(False)
+        return net.eval()
+
+    def _load_gate_ref(self, ick: dict):
+        """F6 ``kl_ref_gate``: the frozen net the GATE's KL term is anchored to (card / cell keep the init ref). Refuses
+        a non-generalist init, a missing file, or a checkpoint whose card_vocab / d_c / grid / row inputs differ from
+        the init's. feature_version may differ while the row inputs are the same (fv5 vs fv6: fv6 only adds the
+        projectile-target branch, which feeds the cell patches, never the gate), so the fv5 imitation model loads as is."""
+        ck = self.cfg["kl_ref_gate"]
+        if not (isinstance(ck, str) and ck):
+            raise SystemExit(f"kl_ref_gate must be null or a checkpoint path, got {ck!r}")
+        if not self.gen:
+            raise SystemExit("kl_ref_gate needs a generalist init")
+        path = REPO / ck
+        if not path.exists():
+            raise SystemExit(f"kl_ref_gate {ck} not found")
+        gck = torch.load(path, map_location="cpu")
+        sig = (lambda c: (bool(c.get("gen")), c.get("d_c"), list(c.get("card_vocab") or []),
+                          str(c["args"].get("grid", "lattice"))))
+        if sig(gck) != sig(ick):
+            raise SystemExit(f"kl_ref_gate {ck}: gen / d_c / card_vocab / grid differ from the init's")
+        net = self._load_net(path)
+        if E.gen_row_keys(net) != E.gen_row_keys(self.model):
+            raise SystemExit(f"kl_ref_gate {ck}: row inputs differ from the init's (feature_version "
+                             f"{net.feature_version} vs {self.model.feature_version})")
+        for p in net.parameters():
+            p.requires_grad_(False)
+        self.log(f"[rl] kl_ref_gate: KL_gate anchored to {ck} (fv {net.feature_version}, sha256 "
+                 f"{hashlib.sha256(path.read_bytes()).hexdigest()[:16]}); card / cell stay on the init")
         return net.eval()
 
     def _phi_values(self, Bn: dict) -> np.ndarray:
@@ -2586,7 +2625,8 @@ class Learner:
         del results
         t1 = time.perf_counter()
         B = to_device(Bn, self.dev)
-        R = ref_terms(self.ref, B, cfg["tau"], cfg["T"], T_gate=cfg.get("T_gate"))
+        gate_ref = getattr(self, "gate_ref", None)            # F6 kl_ref_gate (None = the init ref for all heads)
+        R = ref_terms(self.ref, B, cfg["tau"], cfg["T"], T_gate=cfg.get("T_gate"), gate_ref=gate_ref)
         beta_used = self.beta
         vf = gst = None
         warm = gae_on and self.update < ac["critic_warmup_updates"]        # critic warm-up: policy frozen
@@ -2598,7 +2638,13 @@ class Learner:
         t_upd = time.perf_counter() - t1
         first = upd["first"]
         if u == 0 and not upd["nonfinite"]:
-            bad = first["ratio_maxdev"] >= ASSERT_RATIO or max(first["kl_gate"], first["kl_card"], first["kl_cell"]) >= ASSERT_KL
+            # kl_ref_gate: KL_gate is to another net, so > 0 by design; the ratio check still covers the gate's recompute
+            kl0 = (first["kl_card"], first["kl_cell"]) + ((first["kl_gate"],) if gate_ref is None else ())
+            bad = first["ratio_maxdev"] >= ASSERT_RATIO or max(kl0) >= ASSERT_KL
+            if gate_ref is not None:
+                self.log(f"[rl] kl_ref_gate: update-0 KL_gate to {cfg['kl_ref_gate']} = {first['kl_gate']:.4f} (first "
+                         f"minibatch), {upd['kl_gate']:.4f} (last-epoch mean); kl_target {cfg['kl_target']}, leash "
+                         f"{cfg.get('leash', 'cell')}; ref gate entropy {R['ent']['gate']}")
             assert not bad, (f"ON-POLICY CHECK FAILED at update 0 epoch 0 minibatch 0: max|ratio-1| "
                              f"{first['ratio_maxdev']:.3g} (< {ASSERT_RATIO}), KL gate/card/cell {first['kl_gate']:.3g}/"
                              f"{first['kl_card']:.3g}/{first['kl_cell']:.3g} (< {ASSERT_KL}), lp max diffs "

@@ -1,3 +1,15 @@
+## 2026-10-15 ~00:20 EDT -- F6 built (opt-in kl_ref_gate) but NOT run: the gate gap to imitation is mostly mid/high elixir
+
+- `pipeline/rl_royale.py kl_ref_gate: <ckpt>` (absent/null = unchanged hash; KL_gate + gate entropy baseline from that
+  frozen net; card/cell keep the init ref; refuses non-generalist init / missing file / differing vocab-d_c-grid-row inputs).
+  6 new tests (46 pass). Arm `kl_imit` in mkcfg_arms (ref = icebow/data/pipeline/gen_v32_s0/gen_s0.pt sha 61011b6c, fv5;
+  its gate == the fv6 branch copy's to 0.0 on 1,597 SIM + 2,000 pro rows; gitignored -> must ship in ckpts.tgz).
+- Measured (agent, laptop runtime 0.1.17, r1's own SIM play, T .5 sampler): update-0 KL_gate to imitation 0.449; ~85% of it
+  from rows at >= 4 elixir where r1 plays LESS than imitation (4-7: .069 vs .186; 7-11: .151 vs .371); only 0-2 elixir shows
+  the eagerness (.147 vs .088). With leash max + shared beta, beta hits its cap by ~update 4 and kl_gate_stop likely ends the
+  run ~update 6. NOT launched. Owner decision: a per-head gate target/beta (`kl_target_gate`, e.g. start ~0.3-0.45 and
+  tighten) -- kl_target is owner-controlled -- or anchor only low-elixir rows (a different change).
+
 ## 2026-10-14 ~22:50 EDT -- A/B3 STOPPED (press rule kept); A/B5 = F1 vs r1 tonight; tornado-40 + A/B4 AFTER the owner's clip
 
 - Owner: test F1 live soon; decide on A/B3; if stopped, a shorter A/B5 of F1 tonight; morning: owner asks for the A/B5

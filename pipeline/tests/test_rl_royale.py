@@ -664,6 +664,121 @@ class TestOneUpdate(unittest.TestCase):
         self.assertTrue(any("already exists" in m for m in L.log.lines))
 
 
+    def test_kl_ref_gate_update0(self):
+        """F6: KL_gate to a different gate net is > 0 at update 0 by design -> no on-policy assertion, logged."""
+        L = self._learner()
+        L.gate_ref = _tiny_model(7)
+        L.cfg["kl_ref_gate"] = "imit.pt"
+        rec, reasons, crash = L.one_update(0)
+        self.assertFalse(crash)
+        self.assertGreater(rec["first_minibatch"]["kl_gate"], 1e-4)
+        self.assertLess(max(rec["first_minibatch"]["kl_card"], rec["first_minibatch"]["kl_cell"]), RL.ASSERT_KL)
+        self.assertTrue(any(m.startswith("[rl] kl_ref_gate: update-0 KL_gate to imit.pt") for m in L.log.lines))
+
+
+# ------------------------------------------------------------------------------------------------------
+class TestKlRefGate(unittest.TestCase):
+    """F6 ``kl_ref_gate``: a second frozen net anchors KL_gate (and the gate entropy baseline) only."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.model = _tiny_model(1)
+        res = _results(cls.model, [(0, 0, 40, "win"), (0, 1, 35, "loss"), (1, 0, 30, "draw")], seed=3)
+        cls.B = RL.to_device(RL.collate(res)[0], "cpu")
+        cls.ref, cls.other = copy.deepcopy(cls.model).eval(), _tiny_model(2)
+
+    def test_absent_or_null_is_unchanged(self):
+        c = {"tau": TAU, "T": T, "leash": "max"}
+        self.assertEqual(RL.config_sha(c), RL.config_sha(dict(c, kl_ref_gate=None)))
+        self.assertNotEqual(RL.config_sha(c), RL.config_sha(dict(c, kl_ref_gate="x.pt")))
+        a, b = RL.ref_terms(self.ref, self.B, TAU, T), RL.ref_terms(self.ref, self.B, TAU, T, gate_ref=None)
+        for k in ("x", "card_lp", "cell_lp", "play_pos"):
+            self.assertTrue(torch.equal(a[k], b[k]), k)
+        self.assertEqual(a["ent"], b["ent"])
+
+    def test_gate_ref_only_moves_the_gate_term(self):
+        base = RL.ref_terms(self.ref, self.B, TAU, T)
+        R = RL.ref_terms(self.ref, self.B, TAU, T, gate_ref=self.other)
+        N = len(self.B["A"])
+        with torch.no_grad():
+            want = RL.policy_terms(self.other, self.B, torch.arange(N), TAU, T)["x"]
+        self.assertTrue(torch.equal(R["x"], want))
+        self.assertFalse(torch.equal(R["x"], base["x"]))
+        for k in ("card_lp", "cell_lp", "play_pos"):
+            self.assertTrue(torch.equal(R[k], base[k]), k)
+        self.assertEqual((R["ent"]["card"], R["ent"]["cell"]), (base["ent"]["card"], base["ent"]["cell"]))
+        self.assertNotEqual(R["ent"]["gate"], base["ent"]["gate"])
+        _, st = RL.minibatch_loss(self.model, self.B, R, torch.arange(N), tau=TAU, T=T, clip=0.2, beta=0.3, n_total=N)
+        self.assertGreater(st["kl_gate"], 1e-4)
+        self.assertLess(max(st["kl_card"], st["kl_cell"]), 1e-8)
+        self.assertLess(st["ratio_maxdev"], 1e-4)
+
+
+class TestLoadGateRef(unittest.TestCase):
+    """``Learner._load_gate_ref``: an fv5 generalist loads as the gate ref of an fv6 learner; mismatches refuse; the
+    fv6 projectile-target branch (even trained, non-zero) never reaches the gate."""
+
+    def setUp(self):
+        from pipeline.model_gen import GenModel
+        self.tmp = Path(tempfile.mkdtemp(prefix="rl_gate_ref_"))
+        self.addCleanup(shutil.rmtree, self.tmp, ignore_errors=True)
+        torch.manual_seed(0)
+        self.vocab = [f"c{i}" for i in range(124)]
+        self.GenModel = GenModel
+
+    def _save(self, name, fv=5, vocab=None, grid="lattice", gen=True):
+        m = self.GenModel(d=32, layers=1, d_c=16, n_cards=124, feature_version=fv)
+        ck = {"gen": gen, "args": {"d": 32, "layers": 1, "feature_version": fv, "grid": grid}, "d_c": 16,
+              "card_vocab": list(vocab or self.vocab), "model": m.state_dict()}
+        torch.save(ck, self.tmp / name)
+        return ck, m
+
+    def _learner(self, ref_name, gen=True):
+        ick, net = self._save("init.pt", fv=6)
+        L = RL.Learner.__new__(RL.Learner)
+        L.cfg, L.dev, L.model, L.log = {"kl_ref_gate": ref_name}, torch.device("cpu"), net.eval(), (lambda m: None)
+        L.gen = {"d_c": 16, "card_vocab": self.vocab} if gen else None
+        return L, ick
+
+    def test_fv5_ref_loads_for_fv6_learner(self):
+        self._save("imit.pt", fv=5)
+        L, ick = self._learner(str(self.tmp / "imit.pt"))
+        net = L._load_gate_ref(ick)
+        self.assertEqual(net.feature_version, 5)
+        self.assertFalse(net.training)
+        self.assertFalse(any(p.requires_grad for p in net.parameters()))
+
+    def test_refusals(self):
+        self._save("vocab.pt", vocab=[f"x{i}" for i in range(124)])
+        self._save("grid.pt", grid="floor")
+        self._save("fv3.pt", fv=3)
+        self._save("ok.pt")
+        for name, gen in (("missing.pt", True), ("vocab.pt", True), ("grid.pt", True), ("fv3.pt", True),
+                          ("ok.pt", False)):
+            L, ick = self._learner(str(self.tmp / name), gen=gen)
+            with self.assertRaises(SystemExit, msg=name):
+                L._load_gate_ref(ick)
+        L, ick = self._learner(True)
+        with self.assertRaises(SystemExit):
+            L._load_gate_ref(ick)
+
+    def test_projectile_branch_never_reaches_the_gate(self):
+        from pipeline.tests.test_spatial_projectiles import batch
+        torch.set_num_threads(1)
+        _, fv5 = self._save("imit.pt", fv=5)
+        fv6 = self.GenModel(d=32, layers=1, d_c=16, n_cards=124, feature_version=6)
+        fv6.load_state_dict(fv5.state_dict(), strict=False)
+        with torch.no_grad():
+            for n, p in fv6.named_parameters():
+                if n.startswith("projectile_target_"):
+                    p.normal_()                                  # a TRAINED (non-zero) branch, like gen_branch_s0
+        b = batch()
+        with torch.no_grad():
+            o5, o6 = fv5.eval()(b, card=b["card"], form=b["form"]), fv6.eval()(b, card=b["card"], form=b["form"])
+        self.assertTrue(torch.equal(o5["gate"], o6["gate"]))
+        self.assertFalse(torch.equal(o5["cell"], o6["cell"]))    # the branch is live -- it only feeds the cell
+
+
 # ------------------------------------------------------------------------------------------------------
 def _big_put_child(q, ev, nbytes):
     """An actor-like spawn child: the actor's queue setup (``rl_royale.actor_sender``), one large put that nobody will

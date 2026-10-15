@@ -45,6 +45,6 @@ twin)
     grep -E "^D3:" $R/TWIN_${P}_$S/SUMMARY.txt || true
   done; done
   touch $R/TWIN_DONE ;;
-rlarm_gae|rlarm_opp|rlarm_gae_opp|rlarm_gae_tg|rlarm_gae_opp_tg)   # REWARD_ARCHITECTURE.md steps 1-2 (F1 per-decision credit / F3 decisive opponents), one change each
+rlarm_gae|rlarm_opp|rlarm_gae_opp|rlarm_gae_tg|rlarm_gae_opp_tg|rlarm_kl_imit)   # REWARD_ARCHITECTURE.md steps 1-2 (F1 per-decision credit / F3 decisive opponents / F6 KL_gate to imitation), one change each
   exec bash scratchpad/gauntlet/L74/rlarms/run_rlarm.sh ${1#rlarm_} ;;
 esac
