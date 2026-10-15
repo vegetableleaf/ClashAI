@@ -1,3 +1,11 @@
+## 2026-10-14 ~20:45 EDT -- tau_threatened SIM A/B: no difference (-0.10 pp [-3.02, +2.92]); live A/B decides
+
+- Pod 12037 (copy `pod_backup_weekend/pod1014b_tau/`, sha-verified): r1 full graft D3 WITHOUT `--tau-threatened 0.2`
+  401/960 vs with (TWIN_live) 402/960 = -0.10 pp [-3.02, +2.92]; plays/game 42.6 vs 42.9. Passes the SIM pre-filter.
+  The live cheap-card loops (61% of loop plays under this rule) are a LIVE pattern the SIM score does not see; a live A/B
+  (rule off vs on, one change) is the decider -- proposed for after A/B3, owner's call.
+- Pod 12037 now runs DAgger iteration 2 (queue started automatically).
+
 ## 2026-10-14 ~20:25 EDT -- --tornado-river SIM A/B: +0.52 pp [-0.21, +1.35]; the deployed combo itself -1.04 in SIM
 
 - Pod 12037 (copy `pod_backup_weekend/pod1014b_river/`, sha-verified), r1 full graft D3 + deployed combo flags (rocket_value 9
