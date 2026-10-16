@@ -27,6 +27,10 @@ as executed (pilot.set_pending: its bodies / spell on the look-ahead board, hand
 play, own_effects), its hand slot is masked, elixir = mine minus every unconfirmed tap, and e1_eval.follow_up_verdict has the
 last word. Gate / card / cell stay the model's own; --pipeline-tau-delta raises the gate threshold only while one is pending
 (default 0). A refused first play changes nothing. The SIM twin: e1_eval cfg 'pipeline_decisions'.
+--capture-p2 (OPT-IN, parity data): the phase-2 capture runs beside the reader every match (P2Capture); its frames land in
+icebow/data/p2_captures/<live log stem>/. Play is unchanged.
+Refuses to start while another live_play process runs on this machine (two instances read / tap the same device) unless
+--allow-parallel; --check is exempt.
 """
 from __future__ import annotations
 
@@ -308,6 +312,96 @@ class ScreenRec:
         return out
 
 
+P2_DIR = REPO / "icebow" / "data" / "p2_captures"     # git-ignored: one folder per live log
+P2_HELPER = REPO / "scratchpad/gauntlet/L70/reader/re_phase2/validation/p2_capture.py"   # local-only (git-ignored)
+
+
+class P2Capture:
+    """--capture-p2: the phase-2 capture beside the reader, once per match, never in play's way.
+    Run start (prepare): the local-only helper pushes its pinned binary and checks its sha256 on the device.
+    Match: start() on the first clock-running frame with my side sends ONE `adb shell` start command from a side thread
+    (the sampler writes a per-match device file; no stream). finish(), after the match's own `pkill -f live_sampler`
+    (which stops this sampler too): stop it by exact PID if still alive, pull into P2_DIR/<live log stem>/, delete the
+    device files. finish() never raises: every failure becomes its single 'p2_capture' event (ok False, why)."""
+
+    def __init__(self, adb_fn=None, mod=None):
+        self.adb = adb_fn or (lambda *x, **k: adb(*x, **k))
+        self.mod, self.sha, self.why = mod, None, None
+        try:
+            if self.mod is None:
+                import importlib.util
+                spec = importlib.util.spec_from_file_location("p2_capture", P2_HELPER)
+                self.mod = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(self.mod)
+            self.sha = self.mod.push_and_verify(self.adb)
+        except Exception as exc:                         # noqa: BLE001 -- capture is optional; play never depends on it
+            self.mod, self.why = None, f"prepare: {exc!r}"[:300]
+        self.begin("")
+
+    def begin(self, tag: str) -> None:
+        self.tag, self.side, self.tick, self.proc, self.err, self.thread = tag, None, None, None, None, None
+
+    def start(self, side: int, tick: int, rva, ctx, interval_ms: int) -> None:
+        self.side, self.tick = side, tick
+        if self.mod is None:
+            return
+        cmd = self.mod.start_cmd(rva, ctx, side, self.tag, interval_ms=interval_ms)   # never logged (root values)
+        import threading
+        self.thread = threading.Thread(target=self._spawn, args=(cmd,), daemon=True)
+        self.thread.start()
+
+    def _spawn(self, cmd: str) -> None:
+        try:
+            self.proc = subprocess.Popen(ADB + ["shell", cmd], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, env=ENV)
+        except Exception as exc:                         # noqa: BLE001
+            self.err = repr(exc)[:200]
+
+    def finish(self, live_log: Path) -> dict:
+        rec = dict(event="p2_capture", side=self.side, start_tick=self.tick)
+        try:
+            if self.mod is None:
+                raise RuntimeError(self.why)
+            if self.side is None:
+                raise RuntimeError("not started: no clock-running frame with my side")
+            self.thread.join(timeout=10)
+            if self.err or self.proc is None:
+                raise RuntimeError(f"start: {self.err or 'adb shell not spawned'}")
+            stopped = (self.adb("shell", self.mod.stop_cmd(self.tag), timeout=10) or "").strip()
+            if self.proc.poll() is None:                 # the device sampler is gone: its host adb shell must end too
+                self.proc.terminate()
+            out = P2_DIR / live_log.stem
+            frames, n = self.mod.pull(self.adb, self.tag, str(out), timeout=120)
+            if not n:
+                raise RuntimeError("pulled frames file missing or empty (see stderr.txt in the capture folder)")
+            import hashlib
+            with open(frames, "rb") as h:
+                data = h.read()
+            run = dict(live_log=live_log.name, observer_side=self.side, start_tick=self.tick, binary_sha256=self.sha,
+                       frames_sha256=hashlib.sha256(data).hexdigest(), bytes=n, frames=data.count(b"\n"), stopped=stopped)
+            (out / "run.json").write_text(json.dumps(run, indent=1))
+            return dict(rec, ok=True, dir=str(out), bytes=n, frames=run["frames"], stopped=stopped,
+                        binary_sha256=self.sha)
+        except Exception as exc:                         # noqa: BLE001 -- one event, the run goes on
+            return dict(rec, ok=False, why=str(exc)[:300])
+
+
+def other_live_plays(procs=None) -> list:
+    """PIDs of OTHER live_play processes on this machine (python running a live_play*.py entry: live_play.py, live_play_v2.py,
+    the HAND_READER live_play_hand_v4.py), excluding this process and its ancestors (the venv launcher runs the same
+    command line as our parent)."""
+    import psutil
+    me = psutil.Process()
+    skip = {me.pid, *(p.pid for p in me.parents())}
+    out = []
+    for p in psutil.process_iter(["pid", "name", "cmdline"]) if procs is None else procs:
+        info = p.info
+        if info["pid"] in skip or "python" not in (info.get("name") or "").lower():
+            continue
+        if any(Path(c).name.startswith("live_play") and c.endswith(".py") for c in (info.get("cmdline") or [])[1:]):
+            out.append(info["pid"])
+    return sorted(out)
+
+
 def main() -> int:
     apply_reader_config(strict=True)                   # clear error, before anything else, when the local file is absent
     ap = argparse.ArgumentParser()
@@ -431,6 +525,15 @@ def main() -> int:
                     help="owner 2026-10-14 finer logs: write the 'frame' event (board bodies, elixir) for EVERY reader "
                          "frame (~0.1 s at --interval-ms 100) without screen recording; ~5 MB/match. Play is unchanged. "
                          "10-16: plus the parity extras ents_state / proj / fx (frame_extras)")
+    ap.add_argument("--capture-p2", action="store_true",
+                    help="OPT-IN parity data (owner 10-16 reader upgrade): every match also runs the phase-2 capture "
+                         "(status buffs, own ability state, hero cast) beside the reader -- one adb start command, output "
+                         "to a device file, pulled after the match into icebow/data/p2_captures/<live log stem>/. Needs the "
+                         "local-only helper + binary (sha-checked at run start); any failure is one p2_capture event and "
+                         "play goes on. Play is unchanged. Deployable from LIVE_OPTIONS")
+    ap.add_argument("--allow-parallel", action="store_true",
+                    help="start even while another live_play process runs on this machine (default: refuse -- two "
+                         "instances read and tap the same device)")
     ap.add_argument("--iw-press", choices=("rule", "never"), default="rule",
                     help="owner 2026-10-14 ability A/B: never = the hero button is still watched and should_press still "
                          "runs (logged as ability_withheld), but no ability tap is sent; unlike --no-ability, which also "
@@ -527,6 +630,12 @@ def main() -> int:
     if a.ckpt_alternate and (a.tau_alternate or a.ckpt):
         print("refusing: --ckpt-alternate cannot be combined with --tau-alternate or --ckpt (one A/B variable at a time)")
         return 2
+    if not a.check and not a.allow_parallel:     # 10-16: two instances (one dry-run) read the same device at once
+        others = other_live_plays()
+        if others:
+            print(f"refusing: another live_play is already running on this machine (PIDs {others}); stop it first, or "
+                  f"pass --allow-parallel if two instances are really intended", flush=True)
+            return 2
     selected, arms, pilots = None, None, None
     if a.ckpt_alternate:                         # the pair bypasses resolve_checkpoint / CKPT_OVERRIDE
         try:
@@ -594,6 +703,10 @@ def main() -> int:
         pilot = pilots[0]
     else:
         device, pilot = load_pilot(a, decision_cfg)
+    a.p2 = None
+    if a.capture_p2:                                     # once per run, before any match: push + sha check
+        a.p2 = P2Capture()
+        print(f"[live] --capture-p2: {'ready, binary sha256 ' + a.p2.sha[:12] if a.p2.mod else a.p2.why}", flush=True)
     renders: list = []                                   # background overlay renders of matches 1..N-1
     rc = 0                                               # 1 = the run stopped for any non-normal reason
     last_clip, no_start = -1e18, 0
@@ -784,7 +897,11 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
       **emote_log(a),
       **({"pipeline_decisions": True, "pipeline_tau_delta": getattr(a, "pipeline_tau_delta", 0.0)}
          if getattr(a, "pipeline_decisions", False) else {}),
-      **({"posture_head": posture_summary(pilot.posture)} if getattr(pilot, "posture", None) else {}))
+      **({"posture_head": posture_summary(pilot.posture)} if getattr(pilot, "posture", None) else {}),
+      **({"capture_p2": True} if getattr(a, "p2", None) is not None else {}))
+    cap = getattr(a, "p2", None)                         # --capture-p2 (None = off: nothing below runs)
+    if cap is not None:
+        cap.begin(stamp)
     emote_on = getattr(a, "emote_spam", "off") == "on"
     emo = {"n": 0, "holds": 0}   # --emote-spam: per-match counts; the attempt clock survives match boundaries
     emote_clock = (emote_spam.EmoteClock() if a.dry_run else emote_spam.CLOCK) if emote_on else None
@@ -964,6 +1081,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                     W(event="stop", why="battle_over_hands_visible", tick=tick); break
                 continue
             both_vis = 0
+            if cap is not None and cap.side is None:     # once per match; the adb call runs on a side thread
+                cap.start(vis[0], tick, RVA, ROOT_CTX, a.interval_ms)
             opp_est = pilot.observe(f)                   # public-events opp-elixir counter: EVERY active+coherent frame
             if not warmed:                               # the first CUDA forward took 1.6 s (2026-09-26 22:04) -- pay it
                 try:                                     # before the 150-tick input guard, not on the first real play
@@ -1252,6 +1371,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
         pump_t.join(timeout=10)                          # no sampler / pump of this match survives into the next
         if button:
             button.stop()
+        if cap is not None:                              # after the pkill above (it stops this sampler too): pull
+            W(**cap.finish(Path(log.name)))
         if rec:
             W(event="recording", segments=rec.stop())
         W(event="end", played=played, confirmed=confirmed, fails=fails, seconds=round(time.time() - t0, 1),
