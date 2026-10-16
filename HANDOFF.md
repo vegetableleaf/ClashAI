@@ -1,3 +1,26 @@
+## 2026-10-16 ~08:30 EDT -- overnight: NO successor (nothing wired; live config = u250 unchanged); C1 null; gae_live u250 null
+
+- Laptop rebooted overnight (owner did not know); the session's waiters died, so results were collected at 08:10 and all
+  pods stopped then (45503 / 45645 / 19636 idle since ~00:00-00:15, 11740 since 04:59 -- ~4-8 idle pod-hours; no
+  on-pod auto-stop existed for these chains). Copied back sha-verified: pod1014b_arms/rlarm_gae_c1{,_s75,_s76},
+  rlarm_gae_live_to250, pod1015_s5/LIVEEVAL c1_s7x + gae_live_u250; final ckpts in icebow/data/bench/rl_royale/
+  (c1 u65 raw+grafted 83e50a92/ac1c588e, s75 21124b96/aba24b68, s76 132ff18c/e0442d8d; gae_live u250 4f7f1586/4f5e68ab).
+- **C1 posture head (3 seeds, 65 updates) vs F1 twins**: standard D3 +4.79 [+0.94, +8.65] / +0.42 / -0.21 (mean +1.67);
+  live-mirrored pool +0.94 / -0.52 / -1.56 (mean -0.38); vs u250 -6.77 / -5.10 / -4.69. Posture applied in every eval match;
+  learned shares (eval) defend 32 / 90 / 55%, balanced 68 / 10 / 45%, **pressure 0%**. (a) the head learned "wait / save
+  more" but no win gain. (b) why, untested: a near-constant +0.10 threshold shift is something the gate can learn by
+  itself (the gate sees the same g), so the posture adds no information unless it varies with context -- it barely did.
+  Iteration ideas (park, owner call): a posture that controls something the gate cannot express alone (elixir reserve,
+  lane / target choice), or C1 on the u250 base.
+- **gae_live extended to 250 vs F1 u250**: live pool 561/960 -1.98 [-5.83, +1.98] (beatdown -6.3 +- 6.3); standard D3
+  -2.29 n.s., D1 +2.50 n.s. -> not a successor; the live-like mix gives no measurable gain at 250 updates either.
+- **Live**: CKPT_OVERRIDE still rlarm_gae_u0250_grafted (00c845c0), LIVE_OPTIONS / deck / fast-off / emotes-off unchanged;
+  MuMu closed by the owner ~20:00; no live run since. 
+- **RoyaleSim 0.1.35** upstream (10-16 01:33; r73 = eleven laws for client 16.402 scored on 785 live battles, + replay
+  fixture tooling); we run 0.1.33-era runtime 20261012-linux. Now is a batch boundary (no pods): adoption needs a new
+  runtime + re-baselining F1 u250 / r1 on it (old pairs do not carry over).
+- Pods: all 7 of the 10-15 set stopped (23302, 23303, 49350 last evening; 45503, 45645, 19636, 11740 this morning).
+
 ## 2026-10-15 ~20:45 EDT -- owner closed MuMu (wire-only tonight); C1 training x3 + stage B built; gae_live 3 seeds; F6' closed
 
 - **Owner ~20:00: "I closed MuMu ... If you manage to produce a successor overnight, report it to me and wire it into
