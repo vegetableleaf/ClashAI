@@ -1,0 +1,15 @@
+== p2_20261012T213148
+  BUFF IceWizardHeroSlow: 19 body-instances; durations [2500]; ms off per tick (median per body) [50.0, None]; config {'SpeedMultiplier': -30, 'HitSpeedMultiplier': -30, 'SpawnSpeedMultiplier': -30}; victims ['Bat', 'DarkWitch', 'ElixirGolem1', 'ElixirGolem2', 'ElixirGolem4', 'PrincessTower', 'RoyalGiant', 'Skeleton', 'Valkyrie']
+  BUFF IceWizardHeroCold: 8 body-instances; durations [2500]; ms off per tick (median per body) [50.0, None]; config {'SpeedMultiplier': -30, 'HitSpeedMultiplier': -30, 'SpawnSpeedMultiplier': -30}; victims ['Bat', 'ElixirGolem2', 'ElixirGolem4', 'Miner']
+  BUFF IceWizardHero_FreezeBuff_dummy: 3 body-instances; durations [150]; ms off per tick (median per body) [None]; config {'SpeedMultiplier': -100, 'HitSpeedMultiplier': -100, 'SpawnSpeedMultiplier': -100}; victims ['ElixirGolem2']
+  BUFF IceWizardHero_FreezeBuff: 3 body-instances; durations [999999]; ms off per tick (median per body) [50.0]; config {'SpeedMultiplier': -100, 'HitSpeedMultiplier': -100, 'SpawnSpeedMultiplier': -100}; victims ['ElixirGolem2']
+  WALK Bat: unslowed median 119.1 mt/tick (n=855), slowed 83.7 (n=50), ratio 0.703
+  WALK DarkWitch: unslowed median 59.4 mt/tick (n=289), slowed 42.0 (n=23), ratio 0.707
+  WALK ElixirGolem1: unslowed median 44.3 mt/tick (n=284), slowed 30.0 (n=7), ratio 0.677
+  WALK ElixirGolem2: unslowed median 59.3 mt/tick (n=150), slowed 41.6 (n=65), ratio 0.702
+  WALK ElixirGolem4: unslowed median 89.1 mt/tick (n=172), slowed 63.0 (n=79), ratio 0.707
+  WALK Miner: unslowed median 645.5 mt/tick (n=59), slowed 2.0 (n=4), ratio 0.003
+  WALK RoyalGiant: unslowed median 50.9 mt/tick (n=98), slowed 36.0 (n=52), ratio 0.707
+  WALK Skeleton: unslowed median 78.3 mt/tick (n=1974), slowed 41.1 (n=78), ratio 0.525
+  WALK Valkyrie: unslowed median 44.4 mt/tick (n=107), slowed 42.0 (n=36), ratio 0.946
+  TOWER PrincessTower shot intervals: unslowed [15, 15, 15, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 17, 17, 22], slowed [22, 23, 23, 24]

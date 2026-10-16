@@ -1,0 +1,22 @@
+== p2_20261016T120616
+  BUFF IceWizardHeroSlow: 8 body-instances; durations [2500]; ms off per tick (median per body) [50.0]; config {'SpeedMultiplier': -30, 'HitSpeedMultiplier': -30, 'SpawnSpeedMultiplier': -30}; victims ['Bowler', 'FireSpirits', 'Furnace_rework', 'Prince', 'RageBarbarian', 'RoyalHog']
+  BUFF IceWizardHero_FreezeBuff_dummy: 2 body-instances; durations [150]; ms off per tick (median per body) [None]; config {'SpeedMultiplier': -100, 'HitSpeedMultiplier': -100, 'SpawnSpeedMultiplier': -100}; victims ['FireSpirits', 'Furnace_rework']
+  BUFF IceWizardHero_FreezeBuff: 2 body-instances; durations [999999]; ms off per tick (median per body) [50.0]; config {'SpeedMultiplier': -100, 'HitSpeedMultiplier': -100, 'SpawnSpeedMultiplier': -100}; victims ['FireSpirits', 'Furnace_rework']
+  BUFF IceWizardHero_SlowBuff: 1 body-instances; durations [2000]; ms off per tick (median per body) [50.0]; config {'SpeedMultiplier': -30, 'HitSpeedMultiplier': -30, 'SpawnSpeedMultiplier': -30}; victims ['Furnace_rework']
+  WALK Bowler: unslowed median 44.3 mt/tick (n=338), slowed 31.0 (n=19), ratio 0.7
+  WALK FireSpirits: unslowed median 119.2 mt/tick (n=261), slowed 83.0 (n=3), ratio 0.696
+  WALK Furnace_rework: unslowed median 59.4 mt/tick (n=242), slowed 41.2 (n=23), ratio 0.694
+  WALK Prince: unslowed median 59.5 mt/tick (n=258), slowed 52.2 (n=10), ratio 0.877
+  WALK RoyalHog: unslowed median 118.9 mt/tick (n=411), slowed 63.5 (n=28), ratio 0.534
+== p2_20261016T121845
+  BUFF IceWizardHeroSlow: 1 body-instances; durations [2500]; ms off per tick (median per body) [50.0]; config {'SpeedMultiplier': -30, 'HitSpeedMultiplier': -30, 'SpawnSpeedMultiplier': -30}; victims ['PrincessTower']
+  TOWER PrincessTower shot intervals: unslowed [16, 16], slowed [21, 23, 24]
+== p2_20261016T122649
+  BUFF IceWizardHeroSlow: 16 body-instances; durations [2500]; ms off per tick (median per body) [50.0, None]; config {'SpeedMultiplier': -30, 'HitSpeedMultiplier': -30, 'SpawnSpeedMultiplier': -30}; victims ['FireSpirits', 'Furnace_EV1', 'Goblin', 'GoblinDrill', 'IceSpirits', 'KnightHero', 'Skeleton']
+  BUFF IceWizardHeroCold: 7 body-instances; durations [2500]; ms off per tick (median per body) [50.0, None]; config {'SpeedMultiplier': -30, 'HitSpeedMultiplier': -30, 'SpawnSpeedMultiplier': -30}; victims ['FireSpirits', 'Furnace_EV1', 'Goblin', 'KnightHero']
+  WALK FireSpirits: unslowed median 118.9 mt/tick (n=585), slowed 84.0 (n=15), ratio 0.706
+  WALK Furnace_EV1: unslowed median 59.4 mt/tick (n=182), slowed 41.9 (n=19), ratio 0.705
+  WALK Goblin: unslowed median 118.8 mt/tick (n=458), slowed 83.2 (n=71), ratio 0.7
+  WALK IceSpirits: unslowed median 119.1 mt/tick (n=138), slowed 83.7 (n=8), ratio 0.703
+  WALK KnightHero: unslowed median 59.4 mt/tick (n=342), slowed 41.3 (n=68), ratio 0.695
+  WALK Skeleton: unslowed median 89.1 mt/tick (n=1030), slowed 42.0 (n=19), ratio 0.471

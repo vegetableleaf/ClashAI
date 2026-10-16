@@ -165,7 +165,7 @@ def linear(f0, f1, dt, g):
     a0, a1 = f0.att.get(g), f1.att.get(g)
     if not a0 or not a1 or a0["target_gen"] in (None, "unlisted") or a0["target_gen"] != a1["target_gen"]:
         return None
-    if a0["seq_idx"] != -1 or a1["seq_idx"] != -1 or a0["progress_raw"] <= 0:
+    if a0["seq_idx"] not in (-1, 0) or a1["seq_idx"] not in (-1, 0) or a0["progress_raw"] <= 0:
         return None
     d = a1["progress_raw"] - a0["progress_raw"]
     if d <= 0 or d % dt:
@@ -372,7 +372,7 @@ def run(frames, n_active, blog=None, tables=TABLES, sim_path=SIM_CARDS):
             a0, b0, b1 = f0.att.get(g), f0.buffs.get(g), f1.buffs.get(g)
             if not a0 or not a1 or not b1 or a0["target_gen"] != a1["target_gen"] or a0["target_gen"] is None:
                 continue
-            if a0["seq_idx"] != -1 or a0["progress_raw"] <= 0 or not no_refresh(b0, b1):
+            if a0["seq_idx"] not in (-1, 0) or a0["progress_raw"] <= 0 or not no_refresh(b0, b1):
                 continue
             want = step_law(b1)
             if want == BASE_STEP:

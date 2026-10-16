@@ -1,0 +1,26 @@
+== p3_20261016T133738
+  BUFF IceWizardHeroCold: duration 2500 ms, SpeedMultiplier -30, HitSpeedMultiplier -30
+  BUFF IceWizardHeroSlow: duration 2500 ms, SpeedMultiplier -30, HitSpeedMultiplier -30
+  BUFF IceWizardHero_FreezeBuff: duration 999999 ms, SpeedMultiplier -100, HitSpeedMultiplier -100
+  BUFF IceWizardHero_FreezeBuff_dummy: duration 150 ms, SpeedMultiplier -100, HitSpeedMultiplier -100
+  STEP IceWizardHeroCold: n=3 steps {35: 3} seq_idx {0: 3} attackers {'BarrelGoblin': 3}
+  STEP IceWizardHeroSlow: n=125 steps {35: 125} seq_idx {0: 125} attackers {'GoblinDemolisher': 44, 'BombTower': 41, 'BattleHealer': 22, 'PrincessTower': 18}
+  STEP unbuffed: n=3102 steps {50: 3095, 100: 4, 25: 3} seq_idx {0: 3102} attackers {'PrincessTower': 979, 'Skeleton': 347, 'BombTower': 294, 'Xbow': 247, 'IceWizardHero': 196, 'IceWizardHeroFloatingCube': 194}
+  STEP other:Earthquake: n=83 steps {50: 83} seq_idx {0: 83} attackers {'Xbow': 83}
+  STEP other:Knight_Fortify_EV1: n=8 steps {50: 8} seq_idx {0: 8} attackers {'Knight_EV1': 8}
+  STEP other:Tornado: n=15 steps {50: 15} seq_idx {0: 15} attackers {'PrincessTower': 9, 'GoblinDemolisher': 6}
+  WALK IceWizardHero_FreezeBuff_dummy: BarrelGoblin 7.4/76.2=0.098 (n=3)
+  WALK IceWizardHeroSlow: BattleHealer 41.3/59.4=0.696 (n=11); BarrelGoblin 41.2/76.2=0.541 (n=3); GoblinDemolisher 41.4/59.3=0.697 (n=40); GoblinDemolisher_kamikaze_form 83.4/120.0=0.695 (n=12)
+  WALK IceWizardHeroCold: BarrelGoblin 81.1/76.2=1.064 (n=45)
+== p3_20261016T134735
+  BUFF IceWizardHeroSlow: duration 2500 ms, SpeedMultiplier -30, HitSpeedMultiplier -30
+  BUFF IceWizardHero_FreezeBuff: duration 999999 ms, SpeedMultiplier -100, HitSpeedMultiplier -100
+  BUFF IceWizardHero_FreezeBuff_dummy: duration 150 ms, SpeedMultiplier -100, HitSpeedMultiplier -100
+  BUFF IceWizardHero_SlowBuff: duration 2000 ms, SpeedMultiplier -30, HitSpeedMultiplier -30
+  STEP IceWizardHeroSlow: n=140 steps {35: 140} seq_idx {0: 140} attackers {'BabyDragon': 54, 'PrincessTower': 24, 'MegaMinion': 23, 'Pekka': 22, 'ElectroWizardHero': 17}
+  STEP IceWizardHero_SlowBuff: n=19 steps {35: 19} seq_idx {0: 19} attackers {'ElectroWizardHero': 11, 'BabyDragon': 8}
+  STEP unbuffed: n=2258 steps {50: 2252, 100: 4, 25: 2} seq_idx {0: 2258} attackers {'PrincessTower': 826, 'IceWizardHero': 346, 'IceWizardHeroFloatingCube': 343, 'BabyDragon': 204, 'KingTower': 147, 'ElectroWizardHero': 101}
+  STEP other:SkeletonArmy_EV1_Spectral_Invisibility_Buff: n=25 steps {50: 25} seq_idx {0: 25} attackers {'SkeletonArmy_EV1_Spectral': 25}
+  STEP other:Tornado: n=4 steps {50: 4} seq_idx {0: 4} attackers {'Pekka': 4}
+  WALK IceWizardHero_SlowBuff: Pekka 30.1/44.4=0.677 (n=18); MegaMinion 41.8/59.1=0.707 (n=6); BabyDragon 61.8/89.1=0.694 (n=9)
+  WALK IceWizardHeroSlow: BabyDragon 62.1/89.1=0.697 (n=28); ElectroWizardHero 62.2/89.0=0.699 (n=24); MegaMinion 41.1/59.1=0.696 (n=54); Pekka 30.4/44.4=0.684 (n=64)

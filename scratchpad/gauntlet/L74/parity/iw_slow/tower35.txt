@@ -1,0 +1,3 @@
+tower_base tower first buffed tick 17 buff ids [1] shooter hp-drop ticks [24, 46, 69, 92, 115, 138] intervals [22, 23, 23, 23, 23]
+tower_hero tower first buffed tick 125 buff ids [67] shooter hp-drop ticks [99, 115, 131, 152, 175, 197] intervals [16, 16, 21, 23, 22]
+tower_musk tower first buffed tick None buff ids [] shooter hp-drop ticks [24, 40, 56, 72, 88, 104] intervals [16, 16, 16, 16, 16]

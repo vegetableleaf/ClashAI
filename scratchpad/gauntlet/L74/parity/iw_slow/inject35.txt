@@ -1,0 +1,4 @@
+hero slow id 67
+A untouched : {'progress_gain_per_tick': {50: 119}, 'king_hit_ticks': [13, 37, 61, 85, 109], 'intervals': [24, 24, 24, 24]}
+  slot after load: {'id': 67, 'ms': 2500, 'pulse_ms': 0, 'pulse_amount': 0, 'source': None, 'src_level': 0, 'crown_amount': 0, 'reach_hidden': False}
+B injected  : {'progress_gain_per_tick': {35: 49, 50: 70}, 'king_hit_ticks': [19, 52, 76, 100], 'intervals': [33, 24, 24]}
