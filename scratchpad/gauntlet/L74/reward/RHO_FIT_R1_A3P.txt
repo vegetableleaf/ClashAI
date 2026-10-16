@@ -1,0 +1,5 @@
+# fit_rho.py --foe-king 0 pod_backup_weekend/pod1015_s5/ROWS_R1/rows.jsonl (A3' tower margin: foe king weight 0) -> pinned in reward_shaping.TRADE2_B
+983 decisive matches, 398101 rows
+1x: rows 205466  b_elixir +0.066 [0.017 0.127]  b_tower +2.890 [2.323 3.714]  rho = elixir per princess-tower +43.5 [ 23.2 151.1]
+2x: rows  91682  b_elixir +0.136 [0.099 0.174]  b_tower +3.060 [2.627 3.541]  rho = elixir per princess-tower +22.5 [17.1 32. ]
+OT: rows 100953  b_elixir +0.145 [0.11  0.185]  b_tower +3.570 [3.026 4.164]  rho = elixir per princess-tower +24.5 [18.7 33.4]

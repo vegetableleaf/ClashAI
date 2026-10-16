@@ -5,6 +5,8 @@ of HP). 95% CIs by bootstrapping MATCHES (rows within a match are not independen
   elixir margin = (E_own + V_own) - (E_opp + V_opp)                      (trade_record row; the audit's E_opp is TRUE)
   tower margin  = sum own princess hp frac + K x own king frac - same for the foe (princess units, K = king/princess hp)
     python fit_rho.py ROWS.jsonl [ROWS.jsonl ...]
+    python fit_rho.py --foe-king 0 ROWS.jsonl     A3' (reward_shaping phi_trade2): the FOE king's hp left out of the
+                                                 tower margin (A1's king weight 0; doctrine: never the king tower)
 """
 import json
 import sys
@@ -12,6 +14,7 @@ import sys
 import numpy as np
 
 K = 4824 / 3052                     # RoyaleSim level-11 king / princess max hp (reward_shaping.KING_PER_PRINCESS)
+K_FOE = K                           # weight of the FOE king in the tower margin (--foe-king; A3' uses 0)
 PHASES = (("1x", 0, 2400), ("2x", 2400, 3600), ("OT", 3600, 10 ** 9))
 
 
@@ -25,7 +28,7 @@ def load(paths):
             keep = np.asarray(r["keep"], bool)
             tr, ts, t = (np.asarray(r[k], float)[keep] for k in ("tr_rows", "ts_rows", "ticks"))
             e = tr[:, 0] + tr[:, 1] - tr[:, 2] - tr[:, 3]
-            tw = (ts[:, 1] + ts[:, 2] + K * ts[:, 0]) - (ts[:, 4] + ts[:, 5] + K * ts[:, 3])
+            tw = (ts[:, 1] + ts[:, 2] + K * ts[:, 0]) - (ts[:, 4] + ts[:, 5] + K_FOE * ts[:, 3])
             M.append((np.c_[e, tw, t], float(r["z"] > 0)))
     return M
 
@@ -70,4 +73,7 @@ def main(paths, boot=200, seed=0):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    args = sys.argv[1:]
+    if args[:1] == ["--foe-king"]:
+        K_FOE, args = float(args[1]), args[2:]
+    main(args)

@@ -36,7 +36,13 @@ turns rows into Phi with the run's weights (``state_phi``); F, gamma and Phi = 0
                  bodies, E_opp = the PUBLIC opponent-elixir counter (the actor's ``opp_elixir: counter``), never the
                  opponent's true elixir:  Phi = w clip((E_own + V_own) - (E_opp + V_opp), -cap, cap)   (``phi_trade``)
                  A play is neutral when it lands (elixir becomes board value); a spell is worth what it removes.
-|Phi| <= ``phi_bound`` on every reachable state (tests + L74/reward/preflight_a1a2.py).
+    trade2       A3' (10-16, A3 failed its audit by ignoring tower hp): row = trade row + [own king, own princess x2, foe
+                 king, foe princess x2 (hp fractions), tick] (``trade2_record``), Phi = w clip(b_e[ph] dE + b_t[ph] dT,
+                 -cap, cap) in log-odds of winning (``phi_trade2``): dE = A3's margin, dT = foe princess hp lost - own
+                 (princess + KING_PER_PRINCESS x king) hp lost, in princess towers (foe KING weight 0, as A1), b per
+                 phase from the logistic win fit (``TRADE2_B``). NOT in STATE_PHI_MODES: the trainer refuses it until
+                 its wiring ticket (e1_eval's counter for it, adv_cfg's counter check); L74/reward/preflight_a3p.py audits it.
+|Phi| <= ``phi_bound`` on every reachable state (tests + L74/reward/preflight_a1a2.py / preflight_a3p.py).
 """
 from __future__ import annotations
 
@@ -171,8 +177,17 @@ def trailing_mean(values: Sequence[float], ticks: Sequence[int], window_ticks: i
 STATE_PHI_DEFAULTS = {"shaping_solv_w": 0.04, "shaping_solv_k": 1.0, "shaping_solv_cap": 10.0,
                       "shaping_ts_w_own": [0.15, 0.2, 0.3], "shaping_ts_w_foe": [0.3, 0.2, 0.1],
                       "shaping_ts_w_tb": 0.15, "shaping_ts_h_power": 3.0,
-                      "shaping_tr_w": 0.03, "shaping_tr_cap": 8.0}      # trade: 0.03 x 8 = 0.24 (A3 "kept small")
+                      "shaping_tr_w": 0.03, "shaping_tr_cap": 8.0,      # trade: 0.03 x 8 = 0.24 (A3 "kept small")
+                      "shaping_t2_w": 0.04, "shaping_t2_cap": 6.0}      # trade2: 0.04 x 6 log-odds = 0.24; 1 princess
+#                                                                         tower lost in 2x = 0.04 x 3.06 = 0.12
 STATE_PHI_MODES = ("solvency", "tower_score", "trade")
+# A3' coefficients (log-odds of winning per elixir of trade margin, per princess tower of tower margin) by phase
+# [1x < T_2X, 2x < 3600, OT], scratchpad/gauntlet/L74/reward/RHO_FIT_R1_A3P.txt = fit_rho.py --foe-king 0 on
+# pod_backup_weekend/pod1015_s5/ROWS_R1 (r1 vs gen_v1, 1000 SIM matches, 983 decisive, 398k rows; match-bootstrap CIs):
+#   1x b_e 0.066 [0.017, 0.127] b_t 2.890 [2.32, 3.71]; 2x 0.136 [0.099, 0.174] 3.060 [2.63, 3.54];
+#   OT 0.145 [0.110, 0.185] 3.570 [3.03, 4.16]   (associational, not causal; the elixir margin is the weak predictor)
+TRADE2_B = ((0.066, 2.890), (0.136, 3.060), (0.145, 3.570))
+TRADE2_PHASE_TICKS = (2400, 3600)
 HALF_Y = 16000                  # own-frame y of the river centre (raw units, 1000 per tile; side 0 = Blue at low y)
 LANE_X = 9000                   # own-frame x < 9000 = left lane, else right
 CENTRE_BAND = 2500              # an own body within 2.5 tiles of the centre line can engage either lane
@@ -305,6 +320,29 @@ def phi_trade(rows, p: dict) -> np.ndarray:
     return float(p["shaping_tr_w"]) * np.clip(r[:, 0] + r[:, 1] - r[:, 2] - r[:, 3], -cap, cap)
 
 
+def trade2_record(state: dict, side: int, cards: dict, opp_est) -> list:
+    """A3''s row from ``side``'s view (11 floats): ``trade_record`` + ``tower_score_record``'s six hp fractions + tick."""
+    ts = tower_score_record(state, side)
+    return trade_record(state, side, cards, opp_est) + ts[:6] + [ts[10]]
+
+
+def trade2_parts(rows) -> tuple:
+    """(dE, dT, phase index) per ``trade2_record`` row (module docstring)."""
+    r = np.atleast_2d(np.asarray(rows, dtype=np.float64))
+    dE = r[:, 0] + r[:, 1] - r[:, 2] - r[:, 3]
+    own_lost = (1.0 - r[:, 5]) + (1.0 - r[:, 6]) + KING_PER_PRINCESS * (1.0 - r[:, 4])
+    dT = (1.0 - r[:, 8]) + (1.0 - r[:, 9]) - own_lost                      # r[:, 7] = foe king: weight 0
+    return dE, dT, np.searchsorted(TRADE2_PHASE_TICKS, r[:, 10], side="right")
+
+
+def phi_trade2(rows, p: dict) -> np.ndarray:
+    """Phi per ``trade2_record`` row: w clip(b_e[phase] dE + b_t[phase] dT, -cap, cap)."""
+    dE, dT, ph = trade2_parts(rows)
+    b = np.asarray(TRADE2_B)[ph]
+    cap = float(p["shaping_t2_cap"])
+    return float(p["shaping_t2_w"]) * np.clip(b[:, 0] * dE + b[:, 1] * dT, -cap, cap)
+
+
 def phi_bound(mode: str, p: dict) -> float:
     """max |Phi| over every reachable state: solvency w cap; tower_score max_c max(w_own[c], w_foe[c]) + w_tb (the
     own term is in [0, w_own], the foe term in [0, w_foe], the tiebreak term in [-w_tb, w_tb])."""
@@ -312,6 +350,8 @@ def phi_bound(mode: str, p: dict) -> float:
         return float(p["shaping_solv_w"]) * float(p["shaping_solv_cap"])
     if mode == "trade":
         return float(p["shaping_tr_w"]) * float(p["shaping_tr_cap"])
+    if mode == "trade2":
+        return float(p["shaping_t2_w"]) * float(p["shaping_t2_cap"])
     if mode == "tower_score":
         return max(max(float(a), float(b)) for a, b in zip(p["shaping_ts_w_own"], p["shaping_ts_w_foe"])) \
             + float(p["shaping_ts_w_tb"])
@@ -319,7 +359,8 @@ def phi_bound(mode: str, p: dict) -> float:
 
 
 def state_phi(mode: str, rows, p: dict) -> np.ndarray:
-    return {"solvency": phi_solvency, "tower_score": phi_tower_score, "trade": phi_trade}[mode](rows, p)
+    return {"solvency": phi_solvency, "tower_score": phi_tower_score, "trade": phi_trade,
+            "trade2": phi_trade2}[mode](rows, p)
 
 
 def state_record(mode: str, state: dict, side: int, env, mem: dict) -> list:
@@ -328,10 +369,10 @@ def state_record(mode: str, state: dict, side: int, env, mem: dict) -> list:
     ``mem["opp_est"]``, the public counter's estimate the actor put there for this decision)."""
     if mode == "tower_score":
         return tower_score_record(state, side)
-    if mode == "trade":
+    if mode in ("trade", "trade2"):
         if "cards" not in mem:
             mem["cards"] = card_table(env.core.cards())
-        return trade_record(state, side, mem["cards"], mem.get("opp_est"))
+        return (trade_record if mode == "trade" else trade2_record)(state, side, mem["cards"], mem.get("opp_est"))
     if mode == "solvency":
         if "cards" not in mem:
             mem["cards"] = card_table(env.core.cards())
