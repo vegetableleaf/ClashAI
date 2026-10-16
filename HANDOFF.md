@@ -1,3 +1,21 @@
+## 2026-10-16 ~23:00 EDT -- overnight monitoring; owner: AUTO-PROMOTE any checkpoint that beats u250 (wire + start live)
+
+- **Owner rule tonight:** a checkpoint that beats u250 gets wired AND a live run started (L74/deploy/deploy_ckpt.sh
+  without `wire`; it restarts live between matches + first-match guard); a later one that beats the promoted checkpoint
+  replaces it. Bar = live-mirrored pool (960 paired, 0.1.35) vs u250's 586/960 with the CI lower bound > 0, not worse on
+  the standard set. Cue (step c) or learned-press (gae_ab) models cannot go live yet (no live cue path / no stage B).
+- Merged reader ON for live by a local toggle (icebow/data/reader_notes/merged/live_env.sh; delete = v2), 296e85c.
+- Parity re-score with the DIAG2 fixes (FIGHTS35_CEIL8_DIAG2, 103 matches, K=8): strict normalised 0.911 [0.892, 0.929]
+  (was 0.888), core 0.880, all 0.794; X-Bow 0.953 meets; Skeletons 0.821, Evo Knight 0.845, Hero IW 0.890, Tesla 0.899.
+  Files: L74/parity/rescore_diag2_1016/.
+- T1 early read: t1_s74_u150 550/960 57.3%, -3.75 pp [-7.40, +0.10] vs u250 (u250 / u350 reads queued on 37671).
+- bait_gae_ab smoke PASS (warm start BCE 0.0828 -> 0.0747, floor 0.0739), training on 18869.
+- 8th pod 64.247.206.120:12331 (27.2 CPU, L40) being set up for step d (u250 + cues vs u250 control, Hero IW;
+  L74/cues/run_cues_pod.sh once step c lands) -- owner: STOP IT as soon as it is not needed.
+- Tools: L74/deploy/pull_cmp.sh HOST PORT DIR NAME (sha-verified pull + live_cmp vs u250), night_watch.sh (wakes on new
+  pod DONE markers). Working-tree HANDOFF.md is an OLD uncommitted copy carrying Codex's v8 section: never stage it;
+  prepend new sections to HEAD's version via hash-object/update-index.
+
 ## 2026-10-16 ~18:30 EDT -- FINAL HANDOFF of this session (usage cutoff); merged reader validated; next steps
 
 **Merged reader (step a) owner battle live_play_20261016_175459 (dry-run, --reader merged + --capture-p3):** S1 PASS
