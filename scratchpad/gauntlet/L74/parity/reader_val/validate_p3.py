@@ -13,6 +13,10 @@ Two predictions are printed side by side where they differ: the SIM's measured a
 calibration combat.ATTACK_CYCLE = progress_credit: a fresh cycle is credited LoadTime, +50 a tick, the hit lands on
 the tick progress reaches a multiple of HitSpeed, so the first hit comes (HitSpeed - LoadTime) / 50 - 1 ticks after
 the entry frame) and the static-analysis guess of the private notes (hit at phase LoadTime). The capture decides.
+
+Attack instants (V3/V5 phase, V10 first hit): projectile launches for shooters; for other units with LoadTime > 0 the
+load-timer re-arm (exact fire tick); clean target hp drops only for the rest. A phase is "hit" on the tick that CROSSES
+it (`candidates`): the counter carries the overshoot under a slow (ATTACK_PHASE_1016.md).
 """
 from __future__ import annotations
 
@@ -173,9 +177,30 @@ def linear(f0, f1, dt, g):
     return a0["progress_raw"], d // dt
 
 
-def candidates(p0, step, dt, hs):
-    """Phases (progress mod HitSpeed, after the tick's step) the attacker passed through during the interval."""
-    return {(p0 + step * k) % hs for k in range(1, dt + 1)}
+def candidates(p0, step, dt, hs, ks=None):
+    """Hit phases the attacker CROSSED during the interval (ticks ks, default 1..dt after f0): every multiple of
+    BASE_STEP in (progress - step, progress] of a tick, mod HitSpeed. The counter is never reset or snapped by a hit, so
+    under a slow (35/tick) a hit lands on the tick that passes the phase and the overshoot carries into the next cycle
+    (live 1016: Knight 1190 -> 1225 -> ... 2415 -> 3605, every load re-arm on the crossing tick; SIM combat.rs fires on
+    progress / HitSpeed growing). At +50 on the 50-grid this is exactly {progress mod HitSpeed}."""
+    out = set()
+    for k in ks or range(1, dt + 1):
+        x = p0 + step * k
+        out.update(m % hs for m in range(x // BASE_STEP * BASE_STEP, x - step, -BASE_STEP))
+    return out
+
+
+def rearm(f0, f1, g, lt):
+    """The attacker fired in (f0, f1]: its load timer ROSE (a fire re-arms it to LoadTime, then -50 a tick; a sample pair
+    whose tick gap over-reports the game advance -- 1016 t2700->2702, progress +50, load -50 -- only slows the fall).
+    -> (lo, hi) fire-tick bracket: (t, t) when LoadTime - load is a whole number of ticks inside the interval, else
+    (f0.tick + 1, f1.tick); None when it did not fire. Only for LoadTime > 0 (a LoadTime-0 unit's timer never moves)."""
+    a0, a1 = f0.att.get(g), f1.att.get(g)
+    dt = f1.tick - f0.tick
+    if lt <= 0 or not a0 or not a1 or a1["load_raw"] <= a0["load_raw"]:
+        return None
+    back, r = divmod(lt - a1["load_raw"], BASE_STEP)
+    return (f1.tick - back,) * 2 if not r and 0 <= back < dt else (f0.tick + 1, f1.tick)
 
 
 def fixed_phase(events):
@@ -219,6 +244,7 @@ def run(frames, n_active, blog=None, tables=TABLES, sim_path=SIM_CARDS):
             defs.setdefault(d["definition_id"], d)
         def_of.update(f.defid)
     hs_of = {g: defs[d]["HitSpeed"] for g, d in def_of.items() if d in defs and defs[d]["HitSpeed"] > 0}
+    lt_of = {g: defs[d]["LoadTime"] for g, d in def_of.items() if d in defs}
     by_name = {d["name"]: d for d in defs.values()}
 
     # V1 definition timings vs the device tables
@@ -255,7 +281,10 @@ def run(frames, n_active, blog=None, tables=TABLES, sim_path=SIM_CARDS):
                f"{v2['other', True]}/{v2['other', True] + v2['other', False]}; shooter target at either "
                f"bracketing sample {v2['either', True]}/{n2}")
 
-    # attack-instant events: projectile launches (shooters) and clean hp drops of the target (non-shooters)
+    # attack-instant events: projectile launches (shooters), the load-timer re-arm (non-shooters with LoadTime > 0:
+    # the exact fire tick) and clean hp drops of the target (other non-shooters). A target's hp drop is not a clean
+    # marker: a decaying building target (the X-Bow, 5-6 hp every 2 ticks) and other attackers make most of the
+    # opponent Tesla's 1016 drops (115 of 127 non-fire drops on the X-Bow)
     shooters = {g for g, *_ in launches}
     events, ev_ticks = collections.defaultdict(list), collections.defaultdict(list)
 
@@ -284,7 +313,13 @@ def run(frames, n_active, blog=None, tables=TABLES, sim_path=SIM_CARDS):
                 step_ok[name.get(g), lin[1] == BASE_STEP] += 1
             if g in shooters or g not in hs_of:
                 continue
-            if clean_drop(f0, f1, g, f0.att[g]["target_gen"]):
+            if lt_of.get(g, 0) > 0:
+                fire = rearm(f0, f1, g, lt_of[g])
+                if fire:
+                    ks = range(fire[0] - f0.tick, fire[1] - f0.tick + 1)
+                    events[name.get(g)].append(candidates(lin[0], lin[1], dt, hs_of[g], ks))
+                    ev_ticks[name.get(g)].append(fire[1])
+            elif clean_drop(f0, f1, g, f0.att[g]["target_gen"]):
                 events[name.get(g)].append(candidates(lin[0], lin[1], dt, hs_of[g]))
                 ev_ticks[name.get(g)].append(f1.tick)
     phase = {n: (fixed_phase(e), len(e)) for n, e in events.items()}
@@ -466,6 +501,11 @@ def run(frames, n_active, blog=None, tables=TABLES, sim_path=SIM_CARDS):
             if a0 and a0["load_raw"] > 0:
                 first[nm]["reentry_load_running"] += 1
                 continue
+            if not a0 and any(b["config"]["HitSpeedMultiplier"] <= -100 for b in f0.buffs.get(g) or []):
+                # the component is absent while frozen and comes back with the HELD progress (Tesla 1850 -> 1950
+                # across a 10-tick freeze): a resume, not a fresh cycle
+                first[nm]["resume_after_freeze"] += 1
+                continue
             acq = next((s.tick for s in reversed(series[:k]) if not s.att[g] or s.att[g]["target_gen"] != v), None)
             hit, conf, j = None, False, k
             while j + 1 < len(series) and series[j + 1].att[g] and series[j + 1].att[g]["target_gen"] == v:
@@ -473,6 +513,8 @@ def run(frames, n_active, blog=None, tables=TABLES, sim_path=SIM_CARDS):
                 if g in shooters:
                     if any(x[0] is h0 and x[1] is h1 for x in launch_at[g]):
                         hit = (h0.tick + 1, h1.tick)
+                elif lt_of.get(g, 0) > 0:
+                    hit = rearm(h0, h1, g, lt_of[g])
                 else:
                     c = clean_drop(h0, h1, g, v)
                     if c is not None:
@@ -492,14 +534,18 @@ def run(frames, n_active, blog=None, tables=TABLES, sim_path=SIM_CARDS):
             first[nm]["n"] += 1
             if pred is not None:
                 # the SIM delay split in two parts the capture pins down sharply:
-                # (a) entry credit: progress on the entry frame = LoadTime + 50 -> p1 = LoadTime + 50 + 50 x (ticks
+                # (a) entry credit: progress on the entry frame = LoadTime + step -> p1 = LoadTime + step x (1 + ticks
                 #     since entry), those ticks in [0, dt - 1];
                 # (b) the hit: on the tick progress reaches the next HitSpeed multiple -> f1 + (m - p1) / 50 must
                 #     fall inside the observed launch / hp-drop bracket (width = one sample gap).
+                # Both use the body's step at the entry sample (35 under the Ice Wizard slow: credit LoadTime + 35, the
+                # hit on the tick that crosses the multiple); a buff change before the hit is not modelled.
                 hs, lt = srow["hit_speed_ms"], srow.get("load_time_ms") or 0
-                since, rem = divmod(p1 - lt - BASE_STEP, BASE_STEP)
+                s = step_law(f1.buffs.get(g)) or BASE_STEP
+                since, rem = divmod(p1 - lt - s, s)
                 credit_ok = rem == 0 and 0 <= since < dt
-                sim_hit = f1.tick + (-(-p1 // hs) * hs - p1) // BASE_STEP
+                need = -(-p1 // hs) * hs - p1                 # progress still to go to the next HitSpeed multiple
+                sim_hit = f1.tick - (-need // s)               # + ceil(need / s) ticks
                 hit_ok = hit[0] <= sim_hit <= hit[1]
                 first[nm]["with_pred"] += 1
                 first[nm]["credit_ok"] += credit_ok
@@ -514,10 +560,10 @@ def run(frames, n_active, blog=None, tables=TABLES, sim_path=SIM_CARDS):
     out.append(f"V10 {verdict(n10 and in10 / n10 >= 0.9, n10 >= 5)} first hit on a fresh target vs SIM "
                f"(HitSpeed - LoadTime) / 50 - 1: entry credit AND hit tick as SIM {in10}/{n10} (need >= 5, >= 90%); "
                "per unit " + "; ".join(
-                   f"{n}: SIM {sim_first_hit_ticks(sim_row(srows, n))} ticks, credit LoadTime+50 {c['credit_ok']}/"
+                   f"{n}: SIM {sim_first_hit_ticks(sim_row(srows, n))} ticks, credit LoadTime+step {c['credit_ok']}/"
                    f"{c['with_pred']}, hit at next HitSpeed multiple {c['hit_ok']}/{c['with_pred']}, SIM delay in the "
                    f"model-free bracket {c['bracket_ok']}/{c['with_pred']} (measured {c['n']}, interrupted "
-                   f"{c['interrupted']}, confounded {c['confounded']}, reentry {c['reentry_load_running']})"
+                   f"{c['interrupted']}, confounded {c['confounded']}, reentry {c['reentry_load_running']}, resumed after a freeze {c['resume_after_freeze']})"
                    for n, c in sorted(first.items()) if c["n"] or c["interrupted"]))
     out.append(f"   V10 rows (first 10): {rows10[:10]}")
 

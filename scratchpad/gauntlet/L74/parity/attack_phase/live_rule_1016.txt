@@ -1,0 +1,170 @@
+== p3_20261016T133738
+  BarrelGoblin               unbuffed  linear=19 load_hit_on_crossing=19 load_reset=19
+      remainder at the hit tick (progress mod HitSpeed): {0: 19}
+  BattleHealer               slowed    linear=1 load_hit_on_crossing=1 load_reset=1
+      remainder at the hit tick (progress mod HitSpeed): {20: 1}
+  BattleHealer               unbuffed  linear=7 load_hit_on_crossing=7 load_reset=7
+      remainder at the hit tick (progress mod HitSpeed): {0: 7}
+  BlowdartGoblin             unbuffed  launch=22 launch_with_crossing=22 linear=22 load_hit_on_crossing=22 load_reset=22
+      remainder at the hit tick (progress mod HitSpeed): {0: 44}
+  BombTower                  slowed    launch=2 launch_with_crossing=2 linear=2 load_hit_on_crossing=2 load_reset=2
+      remainder at the hit tick (progress mod HitSpeed): {10: 2, 25: 2}
+  BombTower                  unbuffed  launch=18 launch_with_crossing=18 linear=18 load_hit_on_crossing=18 load_reset=18
+      remainder at the hit tick (progress mod HitSpeed): {0: 36}
+  GoblinDemolisher_kamikaze_form slowed    launch=3 launch_with_crossing=0 linear=3 load_reset=3 load_reset_unplaced=3
+      NO-CROSS launch t2863..2865 GoblinDemolisher_kamikaze_form p3240->3310 step 35 phases [875, 910]
+      NO-CROSS launch t2901..2903 GoblinDemolisher_kamikaze_form p1055->1125 step 35 phases [1090, 1125]
+      NO-CROSS launch t3528..3530 GoblinDemolisher_kamikaze_form p2165->2235 step 35 phases [1000, 1035]
+  GoblinDemolisher_kamikaze_form unbuffed  launch=14 launch_with_crossing=0 linear=14 load_reset=14 load_reset_unplaced=14
+      NO-CROSS launch t866..868 GoblinDemolisher_kamikaze_form p1000->1100 step 50 phases [1050, 1100]
+      NO-CROSS launch t1025..1027 GoblinDemolisher_kamikaze_form p1000->1100 step 50 phases [1050, 1100]
+      NO-CROSS launch t1047..1049 GoblinDemolisher_kamikaze_form p2100->2200 step 50 phases [950, 1000]
+      NO-CROSS launch t2540..2542 GoblinDemolisher_kamikaze_form p1000->1100 step 50 phases [1050, 1100]
+      NO-CROSS launch t2562..2564 GoblinDemolisher_kamikaze_form p2100->2200 step 50 phases [950, 1000]
+      NO-CROSS launch t2814..2817 GoblinDemolisher_kamikaze_form p1000->1150 step 50 phases [1050, 1100, 1150]
+  IceWizardHero              unbuffed  launch=14 launch_with_crossing=14 linear=14 load_hit_on_crossing=14 load_reset=14
+      remainder at the hit tick (progress mod HitSpeed): {0: 28}
+  IceWizardHeroFloatingCube  unbuffed  linear=14 load_hit_on_crossing=14 load_reset=14
+      remainder at the hit tick (progress mod HitSpeed): {0: 14}
+  Knight                     unbuffed  linear=6 load_hit_on_crossing=6 load_reset=6
+      remainder at the hit tick (progress mod HitSpeed): {0: 6}
+  Knight_EV1                 step50    linear=2 load_hit_on_crossing=2 load_reset=2
+      remainder at the hit tick (progress mod HitSpeed): {0: 2}
+  Knight_EV1                 unbuffed  linear=5 load_hit_on_crossing=5 load_reset=5
+      remainder at the hit tick (progress mod HitSpeed): {0: 5}
+  PrincessTower              slowed    launch=2 launch_with_crossing=2 linear=2
+      remainder at the hit tick (progress mod HitSpeed): {20: 1, 25: 1}
+  PrincessTower              step50    launch=1 launch_with_crossing=1 linear=1
+      remainder at the hit tick (progress mod HitSpeed): {0: 1}
+  PrincessTower              unbuffed  launch=115 launch_with_crossing=115 linear=115
+      remainder at the hit tick (progress mod HitSpeed): {0: 115}
+  Skeleton                   unbuffed  linear=37 load_hit_on_crossing=37 load_reset=37
+      remainder at the hit tick (progress mod HitSpeed): {0: 37}
+  Tesla                      unbuffed  linear=4 load_hit_on_crossing=4 load_reset=4
+      remainder at the hit tick (progress mod HitSpeed): {0: 4}
+  Tesla_EV1                  unbuffed  linear=1 load_hit_on_crossing=1 load_reset=1
+      remainder at the hit tick (progress mod HitSpeed): {0: 1}
+  Xbow                       step50    launch=22 launch_with_crossing=22 linear=22
+      remainder at the hit tick (progress mod HitSpeed): {0: 22}
+  Xbow                       unbuffed  launch=62 launch_with_crossing=62 linear=62
+      remainder at the hit tick (progress mod HitSpeed): {0: 62}
+  POST-FREEZE t3665 BarrelGoblin first-after-freeze? last frozen t3654 progress at hit 1100 step 50 crossing True
+== p3_20261016T134735
+  BabyDragon                 slowed    launch=4 launch_with_crossing=4 linear=4 load_hit_on_crossing=4 load_reset=4
+      remainder at the hit tick (progress mod HitSpeed): {15: 4, 20: 2, 25: 2}
+  BabyDragon                 unbuffed  launch=16 launch_with_crossing=16 linear=17 load_hit_on_crossing=17 load_reset=17
+      remainder at the hit tick (progress mod HitSpeed): {0: 29, 20: 4}
+  ElectroWizardHero          slowed    linear=1 load_hit_on_crossing=1 load_reset=1
+      remainder at the hit tick (progress mod HitSpeed): {30: 1}
+  ElectroWizardHero          step50    load_reset=1 nonlinear=1
+      NONLINEAR t2107->2109 ElectroWizardHero p1740->2100 step 50 load 1100->1150
+  ElectroWizardHero          unbuffed  linear=5 load_hit_on_crossing=5 load_reset=5
+      remainder at the hit tick (progress mod HitSpeed): {0: 5}
+  IceWizardHero              unbuffed  launch=21 launch_with_crossing=20 linear=20 load_hit_on_crossing=20 load_reset=21 nonlinear=2
+      remainder at the hit tick (progress mod HitSpeed): {0: 40}
+      NONLINEAR t2284->2285 IceWizardHero p3300->3400 step 50 load 0->1200
+      NONLINEAR t2285->2287 IceWizardHero p3400->3450 step 50 load 1200->1150
+  IceWizardHeroFloatingCube  unbuffed  linear=21 load_hit_on_crossing=21 load_reset=21
+      remainder at the hit tick (progress mod HitSpeed): {0: 21}
+  KingTower                  unbuffed  launch=16 launch_with_crossing=15 linear=16 load_hit_on_crossing=15 load_reset=15
+      remainder at the hit tick (progress mod HitSpeed): {0: 30}
+      NO-CROSS launch t3551..3553 KingTower p10050->10150 step 50 phases [100, 150]
+  MegaMinion                 slowed    launch=3 launch_with_crossing=3 linear=3 load_hit_on_crossing=3 load_reset=3
+      remainder at the hit tick (progress mod HitSpeed): {20: 6}
+  MegaMinion                 unbuffed  launch=3 launch_with_crossing=3 linear=3 load_hit_on_crossing=3 load_reset=3
+      remainder at the hit tick (progress mod HitSpeed): {0: 6}
+  Pekka                      slowed    linear=1 load_hit_on_crossing=1 load_reset=1
+      remainder at the hit tick (progress mod HitSpeed): {25: 1}
+  Pekka                      unbuffed  linear=2 load_hit_on_crossing=2 load_reset=2
+      remainder at the hit tick (progress mod HitSpeed): {0: 2}
+  PrincessTower              mixed     launch=1 mixed_step=1
+      t2143 PrincessTower p11100->11200 buffs ()->(('ZapFreeze', -100),)
+  PrincessTower              slowed    launch=2 launch_with_crossing=2 linear=2
+      remainder at the hit tick (progress mod HitSpeed): {25: 1, 30: 1}
+  PrincessTower              unbuffed  launch=98 launch_with_crossing=97 linear=97 nonlinear=1
+      remainder at the hit tick (progress mod HitSpeed): {0: 97}
+      NONLINEAR t2284->2285 PrincessTower p16750->16850 step 50 load 0->0
+  Skeleton                   unbuffed  linear=3 load_hit_on_crossing=3 load_reset=3
+      remainder at the hit tick (progress mod HitSpeed): {0: 3}
+  SkeletonArmy_EV1_Spectral  step50    linear=2 load_hit_on_crossing=2 load_reset=2
+      remainder at the hit tick (progress mod HitSpeed): {0: 2}
+  Tesla                      unbuffed  linear=7 load_hit_on_crossing=7 load_reset=7
+      remainder at the hit tick (progress mod HitSpeed): {0: 7}
+  Tesla_EV1                  unbuffed  linear=3 load_hit_on_crossing=3 load_reset=3
+      remainder at the hit tick (progress mod HitSpeed): {0: 3}
+  Xbow                       unbuffed  launch=15 launch_with_crossing=15 linear=15
+      remainder at the hit tick (progress mod HitSpeed): {0: 15}
+  POST-FREEZE t594 IceWizardHero first-after-freeze? last frozen t588 progress at hit 6800 step 50 crossing True
+  POST-FREEZE t2252 IceWizardHero first-after-freeze? last frozen t2201 progress at hit 1700 step 50 crossing True
+  POST-FREEZE t3213 IceWizardHero first-after-freeze? last frozen t3201 progress at hit 3400 step 50 crossing True
+  POST-FREEZE t3247 IceWizardHero first-after-freeze? last frozen t3201 progress at hit 5100 step 50 crossing True
+  POST-FREEZE t3281 IceWizardHero first-after-freeze? last frozen t3201 progress at hit 6800 step 50 crossing True
+  POST-FREEZE t3315 IceWizardHero first-after-freeze? last frozen t3201 progress at hit 8500 step 50 crossing True
+  POST-FREEZE t594 IceWizardHeroFloatingCube first-after-freeze? last frozen t588 progress at hit 6800 step 50 crossing True
+  POST-FREEZE t2252 IceWizardHeroFloatingCube first-after-freeze? last frozen t2201 progress at hit 1700 step 50 crossing True
+  POST-FREEZE t2286 IceWizardHeroFloatingCube first-after-freeze? last frozen t2201 progress at hit 3400 step 50 crossing True
+  POST-FREEZE t3213 IceWizardHeroFloatingCube first-after-freeze? last frozen t3201 progress at hit 3400 step 50 crossing True
+  POST-FREEZE t3247 IceWizardHeroFloatingCube first-after-freeze? last frozen t3201 progress at hit 5100 step 50 crossing True
+  POST-FREEZE t3281 IceWizardHeroFloatingCube first-after-freeze? last frozen t3201 progress at hit 6800 step 50 crossing True
+  POST-FREEZE t683 Tesla first-after-freeze? last frozen t676 progress at hit 2200 step 50 crossing True
+  POST-FREEZE t715 Tesla first-after-freeze? last frozen t712 progress at hit 3300 step 50 crossing True
+  POST-FREEZE t2055 Tesla first-after-freeze? last frozen t2051 progress at hit 4400 step 50 crossing True
+  POST-FREEZE t3368 BabyDragon first-after-freeze? last frozen t3337 progress at hit 1515 step 35 crossing True
+  POST-FREEZE t3411 BabyDragon first-after-freeze? last frozen t3405 progress at hit 1520 step 50 crossing True
+  POST-FREEZE t3441 BabyDragon first-after-freeze? last frozen t3405 progress at hit 3020 step 50 crossing True
+  POST-FREEZE t3496 BabyDragon first-after-freeze? last frozen t3405 progress at hit 1500 step 50 crossing True
+  POST-FREEZE t3526 BabyDragon first-after-freeze? last frozen t3405 progress at hit 3000 step 50 crossing True
+  POST-FREEZE t3556 BabyDragon first-after-freeze? last frozen t3405 progress at hit 4500 step 50 crossing True
+  POST-FREEZE t3446 Pekka first-after-freeze? last frozen t3401 progress at hit 1800 step 50 crossing True
+== p3_20261016T135619
+  Archer                     unbuffed  launch=27 launch_with_crossing=27 linear=27 load_hit_on_crossing=27 load_reset=27
+      remainder at the hit tick (progress mod HitSpeed): {0: 54}
+  Archer_EV1                 unbuffed  launch=11 launch_with_crossing=11 linear=11 load_hit_on_crossing=11 load_reset=11
+      remainder at the hit tick (progress mod HitSpeed): {0: 22}
+  IceWizardHero              slowed    launch=7 launch_with_crossing=7 linear=7 load_hit_on_crossing=7 load_reset=7
+      remainder at the hit tick (progress mod HitSpeed): {5: 4, 10: 4, 25: 6}
+  IceWizardHero              unbuffed  launch=38 launch_with_crossing=38 linear=38 load_hit_on_crossing=38 load_reset=38
+      remainder at the hit tick (progress mod HitSpeed): {0: 76}
+  IceWizardHeroFloatingCube  slowed    linear=7 load_hit_on_crossing=7 load_reset=7
+      remainder at the hit tick (progress mod HitSpeed): {5: 2, 10: 2, 25: 3}
+  IceWizardHeroFloatingCube  unbuffed  linear=38 load_hit_on_crossing=38 load_reset=38
+      remainder at the hit tick (progress mod HitSpeed): {0: 38}
+  Knight                     slowed    linear=8 load_hit_on_crossing=8 load_reset=8
+      remainder at the hit tick (progress mod HitSpeed): {5: 2, 15: 1, 20: 1, 25: 3, 30: 1}
+  Knight                     step50    linear=1 load_hit_on_crossing=1 load_reset=1
+      remainder at the hit tick (progress mod HitSpeed): {0: 1}
+  Knight                     unbuffed  linear=33 load_hit_on_crossing=33 load_reset=33
+      remainder at the hit tick (progress mod HitSpeed): {0: 33}
+  Knight_EV1                 slowed    linear=2 load_hit_on_crossing=2 load_reset=2
+      remainder at the hit tick (progress mod HitSpeed): {20: 1, 25: 1}
+  Knight_EV1                 step50    linear=3 load_hit_on_crossing=3 load_reset=3
+      remainder at the hit tick (progress mod HitSpeed): {0: 3}
+  Knight_EV1                 unbuffed  linear=7 load_hit_on_crossing=7 load_reset=7
+      remainder at the hit tick (progress mod HitSpeed): {0: 7}
+  PrincessTower              step50    launch=1 launch_with_crossing=1 linear=1
+      remainder at the hit tick (progress mod HitSpeed): {0: 1}
+  PrincessTower              unbuffed  launch=107 launch_with_crossing=105 linear=105 nonlinear=2
+      remainder at the hit tick (progress mod HitSpeed): {0: 105}
+      NONLINEAR t3159->3161 PrincessTower p800->850 step 50 load 0->0
+      NONLINEAR t3973->3974 PrincessTower p1550->1650 step 50 load 0->0
+  Skeleton                   unbuffed  linear=8 load_hit_on_crossing=8 load_reset=8
+      remainder at the hit tick (progress mod HitSpeed): {0: 8}
+  Tesla                      unbuffed  linear=16 load_hit_on_crossing=16 load_reset=16
+      remainder at the hit tick (progress mod HitSpeed): {0: 16}
+  Tesla_EV1                  unbuffed  linear=2 load_hit_on_crossing=2 load_reset=2
+      remainder at the hit tick (progress mod HitSpeed): {0: 2}
+  Xbow                       mixed     launch=2 mixed_step=2
+      t3829 Xbow p1120->1205 buffs (('IceWizardHeroSlow', -30),)->()
+      t5390 Xbow p3535->3605 buffs (('IceWizardHeroSlow', -30), ('IceWizardHero_SlowBuff', -30))->()
+  Xbow                       slowed    launch=32 launch_with_crossing=32 linear=32
+      remainder at the hit tick (progress mod HitSpeed): {0: 4, 5: 5, 10: 4, 15: 4, 20: 5, 25: 5, 30: 5}
+  Xbow                       unbuffed  launch=251 launch_with_crossing=250 linear=250 nonlinear=1
+      remainder at the hit tick (progress mod HitSpeed): {0: 232, 5: 18}
+      NONLINEAR t2835->2838 Xbow p3200->3300 step 50 load 0->0
+  POST-FREEZE t1671 Knight first-after-freeze? last frozen t1654 progress at hit 1225 step 35 crossing True
+  POST-FREEZE t1705 Knight first-after-freeze? last frozen t1654 progress at hit 2415 step 35 crossing True
+  POST-FREEZE t1739 Knight first-after-freeze? last frozen t1654 progress at hit 3605 step 35 crossing True
+  POST-FREEZE t2587 IceWizardHero first-after-freeze? last frozen t2461 progress at hit 1725 step 35 crossing True
+  POST-FREEZE t5651 IceWizardHero first-after-freeze? last frozen t5612 progress at hit 1700 step 50 crossing True
+  POST-FREEZE t2587 IceWizardHeroFloatingCube first-after-freeze? last frozen t2461 progress at hit 1725 step 35 crossing True
+  POST-FREEZE t5651 IceWizardHeroFloatingCube first-after-freeze? last frozen t5612 progress at hit 1700 step 50 crossing True

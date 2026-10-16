@@ -30,8 +30,10 @@ def defs(over=None):
     return out
 
 
-def battle(hit_shift=0, over=None, xbow=None):
-    """-> list of frame dicts. hit_shift moves every Knight hit earlier by that many ticks. xbow: None = the X-Bow
+def battle(hit_shift=0, over=None, xbow=None, slow=False):
+    """-> list of frame dicts. hit_shift moves every Knight hit earlier by that many ticks. slow: every Knight carries
+    IceWizardHeroSlow (-30): +35/tick, hits on the tick that crosses a HitSpeed multiple, overshoot carried (live and
+    SIM, ATTACK_PHASE_1016.md). Knights re-arm their load timer to LoadTime on entry and on every hit. xbow: None = the X-Bow
     keeps the tower while a Skeleton walks into its range; "bare" = it switches to the Skeleton at t210 with no reset;
     "frozen" = the same switch right after a Freeze on the X-Bow (t200-209)."""
     D = {d["name"]: d for d in defs(over)}
@@ -57,10 +59,16 @@ def battle(hit_shift=0, over=None, xbow=None):
                 body(k, "Knight", 0)
                 body(v, "Goblin", 1)
                 att[v] = dict(target_gen=None, progress=0, load=0)
+            if slow and t >= e - 15:
+                buffs[k] = [("IceWizardHeroSlow", -30, 99999 - 50 * t)]
             if t >= e - 6:
-                p = 0 if t < e else D["Knight"]["LoadTime"] + 50 + 50 * (t - e)
-                att[k] = dict(target_gen=v, progress=p, load=0)
-                if t >= e and (p + 50 * hit_shift) % D["Knight"]["HitSpeed"] == 0 and ents[v] > 100:
+                lt, hs, s = D["Knight"]["LoadTime"], D["Knight"]["HitSpeed"], 35 if slow else 50
+                p = 0 if t < e else lt + s + s * (t - e)
+                q = p + 50 * hit_shift
+                hit = t >= e and q // hs > (q - s) // hs
+                load = lt if t == e or hit else max(0, (att[k] or {}).get("load", 0) - 50)
+                att[k] = dict(target_gen=v, progress=p, load=load)
+                if hit and ents[v] > 100:
                     ents[v] -= 100
         # X-Bow on the enemy princess tower: entry 151, LoadTime 0 -> progress 50, launch at k*400
         if t == 140:
@@ -156,8 +164,8 @@ def main():
     assert froz["V5L"].split()[1] == "PASS" and "switches after a reset 1" in froz["V5L"], froz["V5L"]
     assert re.search(r"events=(\d+) fixed_phase=0 support=\1/\1 ", v["V3"]), v["V3"]
     assert "frozen: " in v["V6"] and "slow35: " in v["V6"], v["V6"]
-    assert "Knight: SIM 9 ticks, credit LoadTime+50 5/5, hit at next HitSpeed multiple 5/5" in v["V10"], v["V10"]
-    assert "Xbow: SIM 7 ticks, credit LoadTime+50 1/1, hit at next HitSpeed multiple 1/1" in v["V10"], v["V10"]
+    assert "Knight: SIM 9 ticks, credit LoadTime+step 5/5, hit at next HitSpeed multiple 5/5" in v["V10"], v["V10"]
+    assert "Xbow: SIM 7 ticks, credit LoadTime+step 1/1, hit at next HitSpeed multiple 1/1" in v["V10"], v["V10"]
     # a definition that disagrees with the device row and the SIM row
     bad, lines = verdicts(battle(over={"Knight": {"LoadTime": 600}}))
     assert bad["V1"].split()[1] == "FAIL" and bad["V9"].split()[1] == "FAIL", "\n".join(lines)
@@ -166,7 +174,15 @@ def main():
     early, lines = verdicts(battle(hit_shift=2))
     assert early["V3"].split()[1] == "PASS" and "fixed_phase=1100" in early["V3"], early["V3"]
     assert early["V10"].split()[1] == "FAIL" and re.search("Knight: .*?hit at next HitSpeed multiple [01]/5", early["V10"]), "\n".join(lines)
-    print("VALIDATE_P3_SYNTHETIC_OK: 5 scenarios;", v["V3"][:60])
+    # slowed Knights (+35/tick): hits on the crossing tick, remainders 0..30 carried -- still ONE phase (0) under the
+    # crossing model (the old exact-phase model scattered them over 5..30), first hit credit LoadTime + 35
+    sl, lines = verdicts(battle(slow=True))
+    assert sl["V3"].split()[1] == "PASS" and re.search(r"events=(\d+) fixed_phase=0 support=\1/\1 ", sl["V3"]), "\n".join(lines)
+    assert "Knight: SIM 9 ticks, credit LoadTime+step 5/5, hit at next HitSpeed multiple 5/5" in sl["V10"], sl["V10"]
+    # 1190 -> 1225 passes phase 0 (the live hit, remainder 25); 1225 -> 1260 passes phase 50 only
+    assert vp.candidates(1190, 35, 1, 1200) == {0} and vp.candidates(1225, 35, 1, 1200) == {50}, "crossing model"
+    assert vp.candidates(1150, 50, 1, 1200) == {0} and vp.candidates(1100, 50, 2, 1200) == {1150, 0}
+    print("VALIDATE_P3_SYNTHETIC_OK: 6 scenarios;", v["V3"][:60])
 
 
 if __name__ == "__main__":

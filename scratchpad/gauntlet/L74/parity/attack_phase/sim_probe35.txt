@@ -1,0 +1,81 @@
+== knight_none (Knight, 330 ticks) per-tick steps {50: 329} held ticks 0
+   unbuffed: hits=14 load_rearmed=14 step50=14 remainders {0: 14}
+   t9 unbuffed buffs [] progress 1150->1200 (step 50) remainder 0 load 300->700
+   t33 unbuffed buffs [] progress 2350->2400 (step 50) remainder 0 load 0->700
+   t57 unbuffed buffs [] progress 3550->3600 (step 50) remainder 0 load 0->700
+   t81 unbuffed buffs [] progress 4750->4800 (step 50) remainder 0 load 0->700
+   t105 unbuffed buffs [] progress 5950->6000 (step 50) remainder 0 load 0->700
+   t129 unbuffed buffs [] progress 7150->7200 (step 50) remainder 0 load 0->700
+   t153 unbuffed buffs [] progress 8350->8400 (step 50) remainder 0 load 0->700
+   t177 unbuffed buffs [] progress 9550->9600 (step 50) remainder 0 load 0->700
+   t201 unbuffed buffs [] progress 10750->10800 (step 50) remainder 0 load 0->700
+   t225 unbuffed buffs [] progress 11950->12000 (step 50) remainder 0 load 0->700
+   t249 unbuffed buffs [] progress 13150->13200 (step 50) remainder 0 load 0->700
+   t273 unbuffed buffs [] progress 14350->14400 (step 50) remainder 0 load 0->700
+   t297 unbuffed buffs [] progress 15550->15600 (step 50) remainder 0 load 0->700
+   t321 unbuffed buffs [] progress 16750->16800 (step 50) remainder 0 load 0->700
+== knight_hero (Knight, 230 ticks) per-tick steps {50: 36, 35: 193} held ticks 0
+   slowed: hits=5 load_rearmed=5 step35=5 remainders {0: 1, 5: 1, 15: 1, 25: 1, 30: 1}
+   unbuffed: hits=2 load_rearmed=2 step50=2 remainders {0: 2}
+   t9 unbuffed buffs [] progress 1150->1200 (step 50) remainder 0 load 300->700
+   t33 unbuffed buffs [] progress 2350->2400 (step 50) remainder 0 load 0->700
+   t66 slowed   buffs [67] progress 3565->3600 (step 35) remainder 0 load 0->700
+   t101 slowed   buffs [67] progress 4790->4825 (step 35) remainder 25 load 0->700
+   t135 slowed   buffs [67] progress 5980->6015 (step 35) remainder 15 load 0->700
+   t169 slowed   buffs [67] progress 7170->7205 (step 35) remainder 5 load 0->700
+   t204 slowed   buffs [67] progress 8395->8430 (step 35) remainder 30 load 0->700
+== knight_press (Knight, 210 ticks) per-tick steps {50: 36, 35: 72, 0: 101} held ticks 101
+   slowed: hits=2 load_rearmed=2 step35=2 remainders {0: 1, 25: 1}
+   unbuffed: hits=2 load_rearmed=2 step50=2 remainders {0: 2}
+   t9 unbuffed buffs [] progress 1150->1200 (step 50) remainder 0 load 300->700
+   t33 unbuffed buffs [] progress 2350->2400 (step 50) remainder 0 load 0->700
+   t66 slowed   buffs [67] progress 3565->3600 (step 35) remainder 0 load 0->700
+   t202 slowed   buffs [67, 1] progress 4790->4825 (step 35) remainder 25 load 0->700
+   press timeline (t, progress, load, buffs): [(70, 3740, 500, [67]), (75, 3880, 300, [67, 2]), (80, 3880, 300, [67, 68]), (85, 3880, 300, [67, 68]), (90, 3880, 300, [67, 68]), (95, 3880, 300, [67, 68]), (100, 3880, 300, [67, 68]), (105, 3880, 300, [67, 68]), (110, 3880, 300, [67, 68]), (115, 3880, 300, [67, 68]), (120, 3880, 300, [67, 68]), (125, 3880, 300, [67, 68]), (130, 3880, 300, [67, 68]), (135, 3880, 300, [67, 68]), (140, 3880, 300, [67, 68]), (145, 3880, 300, [67, 68]), (150, 3880, 300, [67, 68]), (155, 3880, 300, [67, 68]), (160, 3880, 300, [67, 68]), (165, 3880, 300, [67, 68]), (170, 3880, 300, [67, 68]), (175, 3880, 300, [67, 1]), (180, 4055, 50, [67, 1]), (185, 4230, 0, [67, 1]), (190, 4405, 0, [67, 1]), (195, 4580, 0, [67, 1]), (200, 4755, 0, [67, 1])]
+== xbow_none (Xbow, 420 ticks) per-tick steps {50: 419} held ticks 0
+   unbuffed: hits=52 load_rearmed=52 step50=52 remainders {0: 52}
+   t7 unbuffed buffs [] progress 350->400 (step 50) remainder 0 load 0->0
+   t15 unbuffed buffs [] progress 750->800 (step 50) remainder 0 load 0->0
+   t23 unbuffed buffs [] progress 1150->1200 (step 50) remainder 0 load 0->0
+   t31 unbuffed buffs [] progress 1550->1600 (step 50) remainder 0 load 0->0
+   t39 unbuffed buffs [] progress 1950->2000 (step 50) remainder 0 load 0->0
+   t47 unbuffed buffs [] progress 2350->2400 (step 50) remainder 0 load 0->0
+   t55 unbuffed buffs [] progress 2750->2800 (step 50) remainder 0 load 0->0
+   t63 unbuffed buffs [] progress 3150->3200 (step 50) remainder 0 load 0->0
+   t71 unbuffed buffs [] progress 3550->3600 (step 50) remainder 0 load 0->0
+   t79 unbuffed buffs [] progress 3950->4000 (step 50) remainder 0 load 0->0
+   t87 unbuffed buffs [] progress 4350->4400 (step 50) remainder 0 load 0->0
+   t95 unbuffed buffs [] progress 4750->4800 (step 50) remainder 0 load 0->0
+   t103 unbuffed buffs [] progress 5150->5200 (step 50) remainder 0 load 0->0
+   t111 unbuffed buffs [] progress 5550->5600 (step 50) remainder 0 load 0->0
+== xbow_hero (Xbow, 420 ticks) per-tick steps {35: 187, 50: 232} held ticks 0
+   slowed: hits=16 load_rearmed=16 step35=16 remainders {0: 3, 5: 2, 10: 2, 15: 2, 20: 3, 25: 2, 30: 2}
+   unbuffed: hits=29 load_rearmed=29 step50=29 remainders {45: 29}
+   t10 slowed   buffs [66] progress 365->400 (step 35) remainder 0 load 0->0
+   t22 slowed   buffs [66] progress 785->820 (step 35) remainder 20 load 0->0
+   t33 slowed   buffs [66] progress 1170->1205 (step 35) remainder 5 load 0->0
+   t45 slowed   buffs [66, 67] progress 1590->1625 (step 35) remainder 25 load 0->0
+   t56 slowed   buffs [67] progress 1975->2010 (step 35) remainder 10 load 0->0
+   t68 slowed   buffs [67] progress 2395->2430 (step 35) remainder 30 load 0->0
+   t79 slowed   buffs [67] progress 2780->2815 (step 35) remainder 15 load 0->0
+   t90 slowed   buffs [67] progress 3165->3200 (step 35) remainder 0 load 0->0
+   t102 slowed   buffs [67] progress 3585->3620 (step 35) remainder 20 load 0->0
+   t113 slowed   buffs [67] progress 3970->4005 (step 35) remainder 5 load 0->0
+   t125 slowed   buffs [67] progress 4390->4425 (step 35) remainder 25 load 0->0
+   t136 slowed   buffs [67] progress 4775->4810 (step 35) remainder 10 load 0->0
+   t148 slowed   buffs [67] progress 5195->5230 (step 35) remainder 30 load 0->0
+   t159 slowed   buffs [67] progress 5580->5615 (step 35) remainder 15 load 0->0
+== tesla_none (Tesla, 116 ticks) per-tick steps {50: 115} held ticks 0
+   unbuffed: hits=5 load_rearmed=5 step50=5 remainders {0: 5}
+   t7 unbuffed buffs [] progress 1050->1100 (step 50) remainder 0 load 400->700
+   t29 unbuffed buffs [] progress 2150->2200 (step 50) remainder 0 load 0->700
+   t51 unbuffed buffs [] progress 3250->3300 (step 50) remainder 0 load 0->700
+   t73 unbuffed buffs [] progress 4350->4400 (step 50) remainder 0 load 0->700
+   t95 unbuffed buffs [] progress 5450->5500 (step 50) remainder 0 load 0->700
+   tesla phases (t, phase, progress, target): [(0, 'Windup', 750, {'index': 2, 'generation': 1}), (6, 'Windup', 1050, {'index': 2, 'generation': 1}), (12, 'Windup', 1350, {'index': 2, 'generation': 1}), (18, 'Windup', 1650, {'index': 2, 'generation': 1}), (24, 'Windup', 1950, {'index': 2, 'generation': 1}), (30, 'Windup', 2250, {'index': 2, 'generation': 1}), (36, 'Windup', 2550, {'index': 2, 'generation': 1}), (42, 'Windup', 2850, {'index': 2, 'generation': 1}), (48, 'Windup', 3150, {'index': 2, 'generation': 1}), (54, 'Windup', 3450, {'index': 2, 'generation': 1}), (60, 'Windup', 3750, {'index': 2, 'generation': 1}), (66, 'Windup', 4050, {'index': 2, 'generation': 1}), (72, 'Windup', 4350, {'index': 2, 'generation': 1}), (78, 'Windup', 4650, {'index': 2, 'generation': 1}), (84, 'Windup', 4950, {'index': 2, 'generation': 1}), (90, 'Windup', 5250, {'index': 2, 'generation': 1}), (96, 'Windup', 5550, {'index': 2, 'generation': 1}), (102, 'Windup', 5850, {'index': 2, 'generation': 1}), (108, 'Windup', 6150, {'index': 2, 'generation': 1}), (114, 'Windup', 6450, {'index': 2, 'generation': 1})]
+== tesla_hero (Tesla, 97 ticks) per-tick steps {35: 96} held ticks 0
+   slowed: hits=3 load_rearmed=3 step35=3 remainders {0: 1, 5: 1, 20: 1}
+   t10 slowed   buffs [66] progress 1065->1100 (step 35) remainder 0 load 250->700
+   t42 slowed   buffs [66, 67] progress 2185->2220 (step 35) remainder 20 load 0->700
+   t73 slowed   buffs [67] progress 3270->3305 (step 35) remainder 5 load 0->700
+   tesla phases (t, phase, progress, target): [(0, 'Windup', 750, {'index': 6, 'generation': 0}), (6, 'Windup', 960, {'index': 6, 'generation': 0}), (12, 'Windup', 1170, {'index': 6, 'generation': 0}), (18, 'Windup', 1380, {'index': 6, 'generation': 0}), (24, 'Windup', 1590, {'index': 6, 'generation': 0}), (30, 'Windup', 1800, {'index': 6, 'generation': 0}), (36, 'Windup', 2010, {'index': 6, 'generation': 0}), (42, 'Cooldown', 2220, {'index': 6, 'generation': 0}), (48, 'Windup', 2430, {'index': 6, 'generation': 0}), (54, 'Windup', 2640, {'index': 6, 'generation': 0}), (60, 'Windup', 2850, {'index': 6, 'generation': 0}), (66, 'Windup', 3060, {'index': 6, 'generation': 0}), (72, 'Windup', 3270, {'index': 6, 'generation': 0}), (78, 'Windup', 3480, {'index': 6, 'generation': 0}), (84, 'Windup', 3690, {'index': 6, 'generation': 0}), (90, 'Windup', 3900, {'index': 6, 'generation': 0}), (96, 'Windup', 4110, {'index': 6, 'generation': 0})]

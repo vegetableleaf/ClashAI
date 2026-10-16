@@ -1,0 +1,43 @@
+== p3_20261016T133738
+  BarrelGoblin g5000057 frozen t2608..t2634 (26 ticks; att rows while frozen 0) | before t2606 tgt5000002 p0 L0 buffs ['IceWizardHeroSlow'] | after - | None
+  BarrelGoblin g5000058 frozen t2608..t2634 (26 ticks; att rows while frozen 0) | before t2606 tgt5000002 p0 L0 buffs ['IceWizardHeroSlow'] | after - | None
+  BarrelGoblin g5000059 frozen t2608..t2631 (23 ticks; att rows while frozen 0) | before t2606 tgt5000002 p835 L800 buffs ['IceWizardHeroSlow'] | after - | None
+  BarrelGoblin g5000096 frozen t3646..t3652 (6 ticks; att rows while frozen 0) | before t3644 tgt5000001 p1400 L500 buffs [] | after - | None
+  BarrelGoblin g5000097 frozen t3646..t3654 (8 ticks; att rows while frozen 1, progress [0], load [0]) | before t3644 tgt5000001 p0 L0 buffs [] | after t3657 tgt5000001 p0 L0 buffs [] | next hit t3665 progress 1100 step 50 crossing True
+== p3_20261016T134735
+  PrincessTower g5000004 frozen t2109..t2117 (8 ticks; att rows while frozen 0) | before t2107 tgt5000034 p9900 L0 buffs [] | after t2119 tgt5000034 p10000 L0 buffs [] | None
+  PrincessTower g5000004 frozen t2143..t2151 (8 ticks; att rows while frozen 1, progress [11200], load [0]) | before t2141 tgt5000034 p11100 L0 buffs [] | after t2153 tgtNone p11200 L0 buffs [] | None
+  PrincessTower g5000004 frozen t2179..t2187 (8 ticks; att rows while frozen 1, progress [12500], load [0]) | before t2177 tgt5000034 p12400 L0 buffs [] | after t2189 tgtNone p12500 L0 buffs [] | None
+  PrincessTower g5000004 frozen t2193..t2201 (8 ticks; att rows while frozen 0) | before t2191 tgt5000034 p12600 L0 buffs [] | after t2203 tgt5000034 p12700 L0 buffs [] | None
+  PrincessTower g5000004 frozen t3193..t3201 (8 ticks; att rows while frozen 0) | before t3191 tgt5000062 p12350 L0 buffs [] | after t3203 tgt5000062 p12450 L0 buffs [] | None
+  IceWizardHero g5000021 frozen t580..t588 (8 ticks; att rows while frozen 1, progress [6600], load [0]) | before t578 tgt5000023 p6500 L0 buffs [] | after t590 tgtNone p6600 L0 buffs [] | None
+  IceWizardHeroFloatingCube g5000022 frozen t580..t588 (8 ticks; att rows while frozen 1, progress [6600], load [0]) | before t578 tgt5000023 p6500 L0 buffs [] | after t590 tgtNone p6600 L0 buffs [] | None
+  Tesla g5000025 frozen t668..t676 (8 ticks; att rows while frozen 0) | before t666 tgt5000023 p1850 L0 buffs [] | after t678 tgt5000023 p1950 L0 buffs [] | next hit t683 progress 2200 step 50 crossing True
+  Tesla g5000025 frozen t704..t712 (8 ticks; att rows while frozen 0) | before t702 tgt5000023 p3150 L0 buffs [] | after t714 tgt5000023 p3250 L0 buffs [] | next hit t715 progress 3300 step 50 crossing True
+  Pekka g5000034 frozen t2187..t2225 (38 ticks; att rows while frozen 0) | before t2185 tgt5000004 p2860 L0 buffs ['IceWizardHeroSlow'] | after - | None
+  ElectroWizardHero g5000052 frozen t2187..t2285 (98 ticks; att rows while frozen 0) | before t2185 tgt5000004 p3900 L900 buffs [] | after t2287 att=None buffs ['IceWizardHeroSlow'] | None
+  Tesla g5000056 frozen t2043..t2051 (8 ticks; att rows while frozen 0) | before t2041 tgt5000034 p4200 L0 buffs [] | after t2053 tgt5000034 p4300 L0 buffs [] | next hit t2055 progress 4400 step 50 crossing True
+  IceWizardHero g5000057 frozen t2193..t2201 (8 ticks; att rows while frozen 0) | before t2191 tgt5000034 p3650 L950 buffs [] | after t2203 tgt5000034 p3750 L850 buffs [] | None
+  IceWizardHeroFloatingCube g5000058 frozen t2193..t2201 (8 ticks; att rows while frozen 0) | before t2191 tgt5000034 p3650 L950 buffs [] | after t2203 tgt5000034 p3750 L850 buffs [] | None
+  Pekka g5000062 frozen t3239..t3337 (98 ticks; att rows while frozen 0) | before t3237 tgt5000099 p0 L350 buffs ['IceWizardHeroSlow'] | after t3339 att=None buffs ['IceWizardHeroSlow'] | None
+  Pekka g5000062 frozen t3393..t3401 (8 ticks; att rows while frozen 1, progress [0], load [0]) | before t3391 tgt5000102 p0 L0 buffs ['IceWizardHeroSlow'] | after t3403 tgtNone p0 L0 buffs ['IceWizardHeroSlow'] | None
+  Xbow g5000063 frozen t2957..t2965 (8 ticks; att rows while frozen 0) | before t2955 tgt5000002 p5500 L0 buffs [] | after t2967 tgt5000080 p5600 L0 buffs [] | None
+  MegaMinion g5000094 frozen t3239..t3337 (98 ticks; att rows while frozen 0) | before t3237 tgt5000099 p0 L0 buffs ['IceWizardHeroSlow'] | after t3339 att=None buffs ['IceWizardHeroSlow'] | None
+  BabyDragon g5000098 frozen t3239..t3337 (98 ticks; att rows while frozen 0) | before t3237 tgt5000099 p0 L100 buffs [] | after t3339 att=None buffs ['IceWizardHeroSlow'] | None
+  BabyDragon g5000098 frozen t3397..t3405 (8 ticks; att rows while frozen 1, progress [1320], load [650]) | before t3395 tgt5000102 p1250 L750 buffs ['IceWizardHeroSlow'] | after t3407 tgtNone p1320 L600 buffs [] | None
+  IceWizardHero g5000099 frozen t3193..t3201 (8 ticks; att rows while frozen 0) | before t3191 tgt5000062 p2800 L100 buffs [] | after t3203 tgt5000062 p2900 L0 buffs [] | next hit t3213 progress 3400 step 50 crossing True
+  IceWizardHeroFloatingCube g5000100 frozen t3193..t3201 (8 ticks; att rows while frozen 0) | before t3191 tgt5000062 p2800 L100 buffs [] | after t3203 tgt5000062 p2900 L0 buffs [] | next hit t3213 progress 3400 step 50 crossing True
+== p3_20261016T135619
+  Knight g5000027 frozen t1634..t1654 (20 ticks; att rows while frozen 0) | before t1632 att=None buffs [] | after t1656 tgtNone p0 L0 buffs ['IceWizardHeroSlow'] | None
+  IceWizardHero g5000037 frozen t2441..t2461 (20 ticks; att rows while frozen 0) | before t2439 tgtNone p0 L550 buffs [] | after t2463 tgt5000002 p0 L400 buffs [] | None
+  IceWizardHeroFloatingCube g5000038 frozen t2441..t2461 (20 ticks; att rows while frozen 0) | before t2439 tgtNone p0 L550 buffs [] | after t2463 tgt5000002 p0 L400 buffs [] | None
+  Xbow g5000043 frozen t2972..t3019 (47 ticks; att rows while frozen 0) | before t2970 tgt5000048 p9390 L0 buffs ['IceWizardHeroSlow', 'IceWizardHeroSlow'] | after t3021 att=None buffs ['IceWizardHeroSlow'] | None
+  Knight g5000069 frozen t3825..t3845 (20 ticks; att rows while frozen 1, progress [1800], load [100]) | before t3823 tgt5000070 p1700 L200 buffs [] | after t3847 tgtNone p1800 L50 buffs [] | None
+  Xbow g5000085 frozen t4736..t4744 (8 ticks; att rows while frozen 1, progress [6100], load [0]) | before t4734 tgt5000084 p6000 L0 buffs [] | after t4746 tgtNone p6100 L0 buffs [] | None
+  Knight g5000086 frozen t4736..t4740 (4 ticks; att rows while frozen 0) | before t4734 tgt5000084 p5400 L100 buffs [] | after - | None
+  Xbow g5000105 frozen t5320..t5348 (28 ticks; att rows while frozen 0) | before t5318 tgt5000103 p2170 L0 buffs ['IceWizardHeroSlow'] | after t5350 att=None buffs ['IceWizardHeroSlow', 'IceWizardHeroSlow'] | None
+  Knight g5000109 frozen t5320..t5348 (28 ticks; att rows while frozen 0) | before t5318 tgt5000103 p1050 L250 buffs ['IceWizardHeroSlow'] | after t5350 att=None buffs ['IceWizardHeroSlow', 'IceWizardHeroSlow'] | None
+  Xbow g5000115 frozen t5592..t5612 (20 ticks; att rows while frozen 1, progress [2500], load [0]) | before t5590 tgt5000116 p2400 L0 buffs [] | after t5615 tgt5000120 p2550 L0 buffs [] | None
+  IceWizardHero g5000117 frozen t5592..t5612 (20 ticks; att rows while frozen 1, progress [0], load [200]) | before t5590 tgt5000002 p0 L300 buffs [] | after t5615 tgt5000002 p0 L100 buffs [] | None
+  IceWizardHeroFloatingCube g5000118 frozen t5592..t5612 (20 ticks; att rows while frozen 1, progress [0], load [200]) | before t5590 tgtNone p0 L300 buffs [] | after t5615 tgt5000002 p0 L100 buffs [] | None
+  Knight g5000131 frozen t5976..t5995 (19 ticks; att rows while frozen 0) | before t5974 tgt5000127 p0 L0 buffs [] | after t5997 tgtNone p0 L0 buffs [] | None

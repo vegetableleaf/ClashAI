@@ -1,0 +1,3 @@
+p3_20261016T133738 {('Tesla', 'fired'): 4, ('Tesla', 'no_fire'): 12, ('Tesla_EV1', 'fired'): 1} non-hit drop victims {'GoblinDemolisher_kamikaze_form': 12} drop sizes {6: 5, 7: 4, 109: 1, 3: 1, 115: 1}
+p3_20261016T134735 {('Tesla', 'fired'): 7, ('Tesla', 'no_fire'): 6, ('Tesla_EV1', 'fired'): 3, ('Tesla_EV1', 'no_fire'): 2} non-hit drop victims {'Pekka': 8} drop sizes {109: 6, 81: 2}
+p3_20261016T135619 {('Tesla', 'no_fire'): 105, ('Tesla', 'fired'): 16, ('Tesla_EV1', 'no_fire'): 22, ('Tesla_EV1', 'fired'): 2} non-hit drop victims {'Xbow': 115, 'Knight': 8, 'IceWizardHero_IceCube': 4} drop sizes {5: 76, 6: 39, 109: 3, 2: 2, 61: 2, 148: 1}
