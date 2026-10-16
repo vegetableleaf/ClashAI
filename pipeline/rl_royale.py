@@ -2637,7 +2637,7 @@ class Learner:
         adv_cfg(cfg)                                          # ... and the advantage (R1) keys
         if gate_lo_cfg(cfg) is not None:                      # ... and the F6' keys; the frac default stored
             cfg["kl_ref_gate_target_frac"] = gate_lo_cfg(cfg)["frac"]
-        store_posture_cfg(cfg)                                # ... and the C1 keys; the defaults stored
+        pc = store_posture_cfg(cfg)                           # ... and the C1 keys; the defaults stored
         bc = branch_cfg(cfg)                                 # ... and the branch (opt3) keys
         if bc["branch_gate"]:
             try:
