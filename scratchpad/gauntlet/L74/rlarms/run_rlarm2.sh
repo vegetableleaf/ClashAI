@@ -5,13 +5,13 @@
 #               ARM=gae_s76 RUN=rlarm_gae_s76 ... seed=76, its fresh-time override)
 # Then graft OLD's heads and score D1 + D3 on the 960 pairs (as run_rlarm.sh). Results /workspace/results/$RUN.
 set -Eeuo pipefail
-CB=${CB:-/workspace/clashbot}; PY=/workspace/venv33/bin/python; MODE=$1; ARM=$2; RUN=$3; shift 3
+CB=${CB:-/workspace/clashbot}; PY=${PY:-/workspace/venv33/bin/python}; RT=${RT:-20261012-linux}; MODE=$1; ARM=$2; RUN=$3; shift 3
 RL=icebow/data/bench/rl_royale; OLD=$RL/rseries_r3c/rseries_r3c_u0030_barrel2k_cellref_towerref_w2.pt
 O=/workspace/results/$RUN; mkdir -p $O
 exec >> $O/run.log 2>&1
 trap 'echo "exit_code=$?" > $O/DONE' EXIT
 cd $CB
-export PYTHONPATH=$CB ROYALE_RUNTIME=20261012-linux OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1
+export PYTHONPATH=$CB ROYALE_RUNTIME=$RT OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1
 if [ "$MODE" = fresh ]; then
   $PY scratchpad/gauntlet/L74/rlarms/mkcfg_arms.py $ARM $O/$RUN.yaml
   N=$(grep -E '^max_updates:' $O/$RUN.yaml | awk '{print $2}')

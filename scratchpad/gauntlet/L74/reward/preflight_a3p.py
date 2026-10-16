@@ -1,4 +1,5 @@
-"""A3' (``reward_shaping.phi_trade2``) pre-flight, OFFLINE on recorded rows (no engine, laptop minutes).
+"""A3' (``reward_shaping.phi_trade2``, crown term included since 10-16) pre-flight, OFFLINE on recorded rows (no
+engine, laptop minutes). The canonical audit (AUDIT_A3P.txt); it replaced preflight_a3p_crown.py, the variant's prototype.
 
 A3' rows are rebuilt from rows the pod audits already recorded: trade2_record = tr_row + ts_row[:6] + [ts_row tick]
 (tested in pipeline/tests/test_shaping_a3p.py), so every check below runs on the SAME matches A3 / A1 / A2 were audited
@@ -68,8 +69,7 @@ def load_audit(d):
 
 
 def reduce(m, mode, p):
-    """preflight_a1a2.reduce_mode for any RS.state_phi mode (rl_royale.shaping_rewards's arithmetic, done here because
-    trade2 is not yet a trainer mode)."""
+    """preflight_a1a2.reduce_mode for any RS.state_phi mode (rl_royale.shaping_rewards's arithmetic)."""
     rows, ticks = rows_of(m, mode)
     gam = RL.row_gammas(ticks, GAMMA_TICK)
     phi = RS.state_phi(mode, rows, p)
@@ -124,17 +124,17 @@ def pearson(S):
 
 
 def corr_check(M, b_of, cap, rng, boot=200):
-    """M = [(dE, dT, phase, z, fold)] per decisive match; b_of(fold, phase) -> (b_e, b_t). Per phase: r(Phi, z),
+    """M = [(dE, dT, dC, phase, z, fold)] per decisive match; b_of(fold, phase) -> (b_e, b_t, b_c). Per phase: r(Phi, z),
     r(dT, z), their difference with a match-bootstrap 95% CI."""
     out = {}
     for ph in range(3):
         xs, ts, ys, ids = [], [], [], []
-        for i, (dE, dT, P, z, f) in enumerate(M):
+        for i, (dE, dT, dC, P, z, f) in enumerate(M):
             k = P == ph
             if not k.any():
                 continue
-            be, bt = b_of(f, ph)
-            xs.append(np.clip(be * dE[k] + bt * dT[k], -cap, cap)); ts.append(dT[k])
+            be, bt, bc = b_of(f, ph)
+            xs.append(np.clip(be * dE[k] + bt * dT[k] + bc * dC[k], -cap, cap)); ts.append(dT[k])
             ys.append(np.full(k.sum(), z)); ids.append(np.full(k.sum(), i))
         x, t, y, mid = (np.concatenate(a) for a in (xs, ts, ys, ids))
         _, mid = np.unique(mid, return_inverse=True)
@@ -154,8 +154,8 @@ def decisive(ms, fold_of=None):
         if m["z"] == 0:
             continue
         rows, _ = rows_of(m, "trade2")
-        dE, dT, P = RS.trade2_parts(rows)
-        M.append((dE, dT, P, float(m["z"] > 0), fold_of(m) if fold_of else 0))
+        dE, dT, dC, P = RS.trade2_parts(rows)
+        M.append((dE, dT, dC, P, float(m["z"] > 0), fold_of(m) if fold_of else 0))
     return M
 
 
@@ -164,8 +164,8 @@ def crossfit(M, k=5):
     B = {}
     for f in range(k):
         for ph in range(3):
-            X = np.concatenate([np.c_[dE[P == ph], dT[P == ph]] for dE, dT, P, z, g in M if g != f])
-            y = np.concatenate([np.full((P == ph).sum(), z) for dE, dT, P, z, g in M if g != f])
+            X = np.concatenate([np.c_[dE[P == ph], dT[P == ph], dC[P == ph]] for dE, dT, dC, P, z, g in M if g != f])
+            y = np.concatenate([np.full((P == ph).sum(), z) for dE, dT, dC, P, z, g in M if g != f])
             B[f, ph] = tuple(fit_rho.logit(X, y)[1:])
     return B
 
@@ -230,7 +230,7 @@ def main() -> int:
     w, cap = float(p["shaping_t2_w"]), float(p["shaping_t2_cap"])
     fails, rng = [], np.random.default_rng(0)
     say = (lambda s: print(s, flush=True))
-    say(f"A3' trade2: Phi = {w} x clip(b_e dE + b_t dT, +-{cap}); TRADE2_B {RS.TRADE2_B} at ticks {RS.TRADE2_PHASE_TICKS}")
+    say(f"A3' trade2: Phi = {w} x clip(b_e dE + b_t dT + b_c dC, +-{cap}); TRADE2_B {RS.TRADE2_B} at ticks {RS.TRADE2_PHASE_TICKS}")
 
     bound = RS.phi_bound("trade2", p)
     il_ms, var = {}, {mo: {lam: [[], []] for lam in LAMS} for mo in MODES}
@@ -288,14 +288,15 @@ def main() -> int:
                 f"rows {n} -> {'PASS' if ok else 'FAIL'}")
             fails += [] if ok else [f"i:{label}:{ph}"]
     say("[i] cross-fit b per fold (1x / 2x / OT): " + "; ".join(
-        f"f{f} " + " ".join(f"{B[f, ph][0]:.3f}/{B[f, ph][1]:.2f}" for ph in range(3)) for f in range(5)))
+        f"f{f} " + " ".join(f"{B[f, ph][0]:.3f}/{B[f, ph][1]:.2f}/{B[f, ph][2]:.2f}" for ph in range(3))
+        for f in range(5)))
 
     # ii: trades
     for name, d, want, ok in trades_check(p):
         say(f"[ii] {name}: dPhi 1x {d[0]:+.4f} 2x {d[1]:+.4f} OT {d[2]:+.4f} (want {want:+d}) -> {'PASS' if ok else 'FAIL'}")
         fails += [] if ok else [f"ii:{name}"]
     for ph in range(3):
-        be, bt = RS.TRADE2_B[ph]
+        be, bt, _ = RS.TRADE2_B[ph]
         say(f"[ii] {PHASES[ph]}: Rocket (6) breaks even at {6 * be / bt:.3f} princess tower = {6 * be / bt * 3052:.0f} hp "
             f"(level 11); 1 princess tower = {bt / be:.1f} elixir")
 

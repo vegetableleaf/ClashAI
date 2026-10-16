@@ -1,72 +1,76 @@
-AUDIT_A3P -- A3' corrected trade potential (reward_shaping mode "trade2"), OFFLINE pre-flight, 2026-10-16
-=====================================================================================================
+AUDIT_A3P -- A3' trade potential WITH the crown term (reward_shaping mode "trade2"), OFFLINE pre-flight, 2026-10-16 (re-run)
+=====================================================================================================================
 
-VERDICT: FAIL on ONE check (ii: a spell/troop that FINISHES a princess in 1x/2x gets a small NEGATIVE dPhi).
-All other checks PASS, including the scripted audit A3 failed. A candidate fix (one crown term) passes every check
-(bottom); it changes the ticket's formula, so it is NOT built -- foreman/owner decision.
+VERDICT: FAIL on ONE check by its own point-estimate rule -- check i, 1x phase, 5-fold OUT-OF-FOLD b only:
+diff -0.0025 with a 95% CI [-0.0124, +0.0080] (indistinguishable from 0; before the crown term it was +0.0026
+[-0.0016, +0.0079], also inside noise). The same check PASSES in 1x in-sample (+0.0047) and on another policy (gen_v1
+il, +0.0110), and in 2x / OT everywhere. Every other check PASSES, including the finisher (ii), which failed before.
+History: the first A3' (no crown term, fa781ae) failed check ii (a Rocket/troop that FINISHES a princess got dPhi < 0 in
+1x/2x); lead decision 10-16 adopted the crown variant (prototype preflight_a3p_crown.py, now removed: preflight_a3p.py is
+the canonical audit and audits the built formula).
 
-Formula (pipeline/reward_shaping.py phi_trade2 / trade2_parts / trade2_record):
-  Phi = w * clip(b_e[ph] * dE + b_t[ph] * dT, -cap, +cap)          (inside the clip: log-odds of winning)
-  dE = (E_own + V_own) - (E_opp_public + V_opp)                     (A3's margin, elixir; same inputs as A3)
+Formula (pipeline/reward_shaping.py phi_trade2 / trade2_parts / trade2_record / TRADE2_B):
+  Phi = w * clip(b_e[ph] * dE + b_t[ph] * dT + b_c[ph] * dC, -cap, +cap)     (inside the clip: log-odds of winning)
+  dE = (E_own + V_own) - (E_opp_public + V_opp)                      (A3's margin, elixir; same inputs as A3)
   dT = foe princess hp lost - own (princess + 1.581 x king) hp lost, in princess towers; FOE KING weight 0 (A1, doctrine)
+  dC = foe princesses destroyed - own princesses destroyed            (the crown; kings excluded: a king ends the match)
   ph = 1x tick < 2400 | 2x < 3600 | OT
-  b (RHO_FIT_R1_A3P.txt = fit_rho.py --foe-king 0 on pod1015_s5/ROWS_R1, 983 decisive r1-vs-gen_v1 matches, 398k rows):
-      1x b_e 0.066 [0.017,0.127]  b_t 2.890 [2.32,3.71]   (1 princess tower = 43.8 elixir)
-      2x b_e 0.136 [0.099,0.174]  b_t 3.060 [2.63,3.54]   (22.5 elixir)
-      OT b_e 0.145 [0.110,0.185]  b_t 3.570 [3.03,4.16]   (24.6 elixir)
-  w = 0.04, cap = 6.0 log-odds  ->  |Phi| <= 0.24 (= A3's bound; budget 0.5). One princess tower lost in 2x = 0.12.
-  Phi(s0) = 0 (max |Phi(s0)| measured 0.0000 over every audit match, all policies, both ckpts). Terminal: Phi = 0 after the last kept row
-  (shaping_from_parts, unchanged; telescoping below).
+  b = CROWN_FIT_R1.txt (fit_crown.py on pod1015_s5/ROWS_R1, 983 decisive r1-vs-gen_v1 matches, 398k rows, logistic
+      z ~ dE + dT + dC per phase, 100 match bootstraps):
+      1x b_e 0.066 [0.023,0.126]  b_t 2.752 [2.13,3.55]  b_c 0.738 [-0.40,2.07]  (n.s.; crown margin on 1.9% of rows)
+      2x b_e 0.134 [0.098,0.169]  b_t 2.754 [2.37,3.37]  b_c 2.115 [1.33,4.31]   (8.9% of rows)
+      OT b_e 0.145 [0.108,0.182]  b_t 3.570 [3.04,4.30]  b_c 0 (pinned)          (0.0%: the first tower in OT ends the
+          match -> terminal reward; dC = 0 on every OT decision, so b_c[OT] multiplies 0 always)
+  w = 0.04, cap = 6.0 log-odds. Bound re-derived: the crown term is INSIDE the clip, so |Phi| <= w cap = 0.24 still
+  (budget 0.5); the trainer needs shaping_critic_scale >= 1 + 0.24 = 1.24 (rl_royale adv_cfg refuses less; arms 1.5).
+  One princess DESTROYED in 2x = 0.04 x (2.754 + 2.115) = 0.195 (was 0.12); two in 2x reach the clip.
+  Phi(s0) = 0 (max |Phi(s0)| 0.0000 over every audit match). Terminal: Phi = 0 after the last kept row.
 
-Data: pod_backup_weekend/pod1015_s5/AUDIT_S5/{gen_v1_s0,newsim_r1}/matches.jsonl (the SAME 100 seeds x 7 policies x 2
-checkpoints A1/A2/A3 were audited on; A3' rows rebuilt from the recorded tr_rows + ts_rows, test-pinned equal to
-trade2_record) + ROWS_R1/rows.jsonl. E_opp in these rows is the TRUE opponent elixir (as A3's audit; counter error +0.3).
-No pod rows needed.
-  python scratchpad/gauntlet/L74/reward/preflight_a3p.py          (full log: .foreman/scratch/a3p_audit.out, exit 1)
+Data: pod_backup_weekend/pod1015_s5/AUDIT_S5/{gen_v1_s0,newsim_r1}/matches.jsonl (100 seeds x 7 policies x 2 ckpts,
+the matches A1/A2/A3 were audited on; A3' rows rebuilt from tr_rows + ts_rows, test-pinned = trade2_record) +
+ROWS_R1/rows.jsonl. E_opp here = the TRUE opponent elixir (as A3's audit; the counter in training, error +0.3).
+  python scratchpad/gauntlet/L74/reward/preflight_a3p.py      (full log: .foreman/scratch/a3p_audit_crown.out, exit 1)
 
-| check | value | threshold | result |
+| check | value (gen_v1 / r1, or 1x / 2x / OT) | threshold | result |
 |---|---|---|---|
-| 0 harness | re-scored A3 trade + A1 tower_score paired t vs pod audit.json: max diff 0.0 (both ckpts) | < 1e-6 | PASS |
-| 9.1 telescoping | max residual 1.5e-15 (gen_v1), 1.6e-15 (r1) | < 1e-9 | PASS |
-| 9.2 bound | phi_bound 0.24; max |Phi| reached 0.2400 both ckpts | <= bound <= 0.5 | PASS |
-| 9.3 scripted, gen_v1 | paired interior t vs il: hold_to_10 -2.16, never_spells -1.53, never -7.73, spam -10.73, never_buildings -3.81 | no t > 2 while z < il | PASS |
-| 9.3 scripted, r1 | hold_to_10 -7.53, never_spells -1.62, never -10.71, spam -14.02, never_buildings -6.31 | same | PASS |
+| 0 harness | A3 trade + A1 tower_score paired t re-scored vs pod audit.json: max diff 0.0 (both ckpts) | < 1e-6 | PASS |
+| 9.1 telescoping | max residual 2.4e-15 / 3.4e-15 | < 1e-9 | PASS |
+| 9.2 bound | phi_bound 0.24; max |Phi| reached 0.2400 / 0.2400 | <= bound <= 0.5 | PASS |
+| 9.3 scripted, gen_v1 | paired interior t vs il: spam -10.58, hold_to_10 -2.20, never -7.39, never_spells -1.58, never_buildings -3.81 | no t > 2 while z < il | PASS |
+| 9.3 scripted, r1 | spam -13.97, never -10.50, never_buildings -5.71, hold_to_10 -6.57, never_spells -1.21 | same | PASS |
 |   (A3 on the same rows) | hold_to_10 +4.72 / +2.76, never_spells -0.12 / +6.25 -> STOP (reproduced exactly) | | ref |
-| i corr, 5-fold out-of-fold b (r1) | r(Phi,z) - r(dT,z): 1x +0.0026 [-0.0016,+0.0079], 2x +0.0229 [+0.0105,+0.0368], OT +0.0207 [+0.0104,+0.0326] | diff >= 0 | PASS |
-| i corr, gen_v1 il, pinned b | 1x +0.0125 [+0.0019,+0.0216], 2x +0.0090 [-0.0100,+0.0308], OT +0.0763 [+0.0250,+0.1342] | diff >= 0 | PASS |
-| ii neutral placement | 0 / 0 / 0 (1x/2x/OT) | 0 | PASS |
-| ii Log on nothing | -0.0053 / -0.0109 / -0.0116 | < 0 | PASS |
+| i corr, r1 5-fold OUT-OF-FOLD b | r(Phi,z) - r(dT,z): 1x -0.0025 [-0.0124,+0.0080], 2x +0.0215 [+0.0049,+0.0379], OT +0.0207 [+0.0104,+0.0326] | diff >= 0 | FAIL (1x) |
+| i corr, r1 pinned b (in-sample) | 1x +0.0047 [-0.0024,+0.0130], 2x +0.0227 [+0.0053,+0.0400], OT +0.0220 [+0.0110,+0.0320] | diff >= 0 | PASS |
+| i corr, gen_v1 il, pinned b | 1x +0.0110 [-0.0020,+0.0206], 2x +0.0233 [-0.0144,+0.0612], OT +0.0763 [+0.0250,+0.1342] | diff >= 0 | PASS |
+| ii neutral placement | 0 / 0 / 0 | 0 | PASS |
+| ii Log on nothing | -0.0053 / -0.0107 / -0.0116 | < 0 | PASS |
 | ii Fireball kills Witch (4 for 5) | +0.0026 / +0.0054 / +0.0058 | > 0 | PASS |
-| ii 8 elixir for 3 (C2) | -0.0132 / -0.0272 / -0.0290 | < 0 | PASS |
-| ii troop thrown at undefended tower, 0 dmg | -0.0106 / -0.0218 / -0.0232 | < 0 | PASS |
+| ii 8 elixir for 3 (C2) | -0.0132 / -0.0268 / -0.0290 | < 0 | PASS |
+| ii troop thrown at undefended tower, 0 dmg | -0.0106 / -0.0214 / -0.0232 | < 0 | PASS |
 | ii elixir leak at 10 | -0.0026 / -0.0054 / -0.0058 | < 0 | PASS |
-| ii MY TOWER kills their Hog after 800 dmg (A3's hold_to_10 hole) | -0.0197 / -0.0103 / -0.0142 | < 0 | PASS |
-| ii my Hog deals 800 then dies | +0.0197 / +0.0103 / +0.0142 | > 0 | PASS |
-| ii Rocket chip on a full princess (283 hp*) | -0.0051 / -0.0213 / -0.0215 | < 0 | PASS |
-| ii Rocket FINISHES a princess at 7% (crown) | -0.0077 / -0.0241 / +0.8382 (OT = terminal: +1 - Phi(s)) | > 0 | FAIL (1x, 2x) |
+| ii MY TOWER kills their Hog after 800 dmg (A3's hold_to_10 hole) | -0.0183 / -0.0074 / -0.0142 | < 0 | PASS |
+| ii my Hog deals 800 then dies | +0.0183 / +0.0074 / +0.0142 | > 0 | PASS |
+| ii Rocket chip on a full princess (283 hp*) | -0.0056 / -0.0219 / -0.0215 | < 0 | PASS |
+| ii Rocket FINISHES a princess at 7% (crown) | +0.0214 / +0.0602 / +0.8382 (OT = terminal: +1 - Phi(s)) | > 0 | PASS (was FAIL) |
 | ii hit foe KING 500 hp | 0 / 0 / 0 | 0 (doctrine) | PASS |
-| ii own king takes 500 hp | -0.0189 / -0.0201 / -0.0234 | < 0 | PASS |
-| iii lambda 1 return-to-go (critic target), il rows | Var shaped 0.6828 vs unshaped 0.7207 (ratio 0.947; A1 0.947, A3 0.983) | ratio <= 1 | PASS |
-| iii lambda .95 (V=0) shaping part vs terminal part | 0.00052 vs 0.02393 (ratio 0.022; A1 0.028, A3 0.088) | ratio <= 1 | PASS |
+| ii own king takes 500 hp | -0.0180 / -0.0180 / -0.0234 | < 0 | PASS |
+| iii lambda 1 return-to-go (critic target), il rows | Var shaped 0.6807 vs unshaped 0.7207 (ratio 0.944; A1 0.947, A3 0.983) | ratio <= 1 | PASS |
+| iii lambda .95 (V=0) shaping part vs terminal part | 0.00062 vs 0.02393 (ratio 0.026; A1 0.028, A3 0.088) | ratio <= 1 | PASS |
   * Rocket level-11 1232 dmg is a stat-sheet number, not read from the SIM; x 23% crown-tower damage (SIM cards.json).
-    Break-even Rocket chip: 418 hp (1x), 814 hp (2x), 744 hp (OT) at level 11.
+    Break-even Rocket chip (no crown): 439 hp (1x), 891 hp (2x), 744 hp (OT) at level 11.
 
-Why ii fails (measured, fit_crown.py -> CROWN_FIT_R1.txt): the fit is linear in hp, so a tower at 7% and a destroyed
-tower differ by only 0.07 x b_t. A destroyed princess carries extra win log-odds beyond its hp in 2x: b_c +2.115
-[+1.33, +4.31] (crown margin nonzero on 8.9% of 2x rows); 1x +0.738 [-0.40, +2.07] (n.s.); OT: no row has a crown
-margin (sudden death -- the terminal reward pays it). Size of the error at w 0.04: the finisher gets -0.024 instead of
-~+0.06 in 2x (0.03-0.08 of a win).
+Check i, 1x, read: the cross-fitted 1x b_c swings 0.31 .. 1.55 across the 5 folds (f0 0.71, f1 1.55, f2 0.93, f3 0.31,
+f4 0.43) -- the 1x crown coefficient is barely identified (1.9% of 1x rows carry a crown margin), so out of fold it adds
+noise to a phase where Phi and dT already correlate equally (0.2025 vs 0.2049). The two 1x requirements pull apart:
+b_c[1x] = 0 would restore the old OOF +0.0026 (also inside noise) but re-fail ii (a 1x finisher: 0.04 x (-6 x 0.066 +
+0.07 x 2.752) = -0.008). Kept at the fit's 0.738 (lead decision: the crown variant as fitted).
 
-Candidate fix (NOT built; scratchpad/gauntlet/L74/reward/preflight_a3p_crown.py, log .foreman/scratch/a3p_crown_variant.out):
-  Phi = w clip(b_e dE + b_t dT + b_c dC, +-6), dC = foe princesses destroyed - own, b from CROWN_FIT_R1.txt
-  (1x 0.066/2.752/0.738, 2x 0.134/2.754/2.115, OT 0.145/3.570/0): 9.1/9.2/9.3/ii/iii ALL PASS (exit 0); finisher
-  +0.0214 / +0.0602 / +0.8382; 9.3 t: hold_to_10 -2.20 / -6.57, never_spells -1.58 / -1.21; iii ratios 0.944 / 0.026.
-  Check i is not re-run for it (its code reads TRADE2_B).
+Swing (w = 0.04): per-match Phi max - min on il matches median 0.181 / 0.152, p90 0.245 / 0.229, max 0.288 / 0.282
+(gen_v1 / r1); mean |Phi| 0.041 / 0.028. Every t / correlation / sign above is w-INVARIANT (clip before w).
 
-Recommended w: 0.04 (cap 6). Per-match Phi swing (max - min) on il matches: median 0.162 / 0.146, p90 0.243 / 0.219,
-max 0.290 / 0.279 (gen_v1 / r1); mean |Phi| 0.038 / 0.028. Every t / correlation / sign above is w-INVARIANT (the clip
-acts on log-odds before w), so w only sets loudness; 0.04 keeps the swing at ~15% of the +-1 outcome and the bound at
-A3's 0.24. Trainer: shaping_critic_scale >= 1 + 0.24 (the arms' 1.5 is enough).
+Trainer wiring (10-16): trade2 in reward_shaping.STATE_PHI_MODES (-> rl_royale SHAPING_MODES); e1_eval records the public
+counter for it; adv_cfg needs opp_elixir counter, shaping_t2_w >= 0, shaping_t2_cap > 0, critic scale >= 1 + 0.24.
+Arm: mkcfg_arms.py gae_trade2 (= gae + shaping trade2, shaping_t2_w 0.04 / shaping_t2_cap 6.0 pinned).
 
-Known gaps (unchanged from the A1/A2 audit): spend_immediately has < 60 kept rows per match, so its interior credit is
-NaN and 9.3 cannot judge it; E_opp is the true elixir here, the counter in training.
+Known gaps (unchanged): spend_immediately has < 60 kept rows per match, so its interior credit is NaN and 9.3 cannot
+judge it; E_opp is the true elixir here, the counter in training.

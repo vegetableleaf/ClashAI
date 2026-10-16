@@ -1280,7 +1280,7 @@ class Match:
             if cfg.get("record_phi"):                         # rl_royale shaping: what Phi needs, own view (True =
                 from pipeline import reward_shaping as RS     # R2 tower_crown, else the step-3 mode's own row)
                 mem = self.__dict__.setdefault("_phi_mem", {})
-                if cfg["record_phi"] == "trade":              # A3: the PUBLIC counter at this decision, never truth
+                if cfg["record_phi"] in ("trade", "trade2"):  # A3 / A3': the PUBLIC counter at this decision, never truth
                     mem["opp_est"] = (None if not self.opp_mode else self.public.estimate_at(tick)
                                       if self.public is not None else self.opp_estimate(tick))
                 row = {**row, "phi_state": RS.phi_record(self.state, self.side) if cfg["record_phi"] is True else

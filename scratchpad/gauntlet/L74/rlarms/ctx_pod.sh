@@ -5,10 +5,10 @@
 # smoke: first a `rl_royale --smoke` of the ARM's own config (the verifiers' unchecked item: a real training smoke with the
 # new code on); the arm starts only on SMOKE PASS. Then run_rlarm2.sh fresh (train 65 updates, graft OLD's heads, D1 + D3 960 pairs).
 set -Eeuo pipefail
-ARM=$1; SEED=$2; CB=${CB:-/workspace/clashbot}; PY=/workspace/venv33/bin/python; R=/workspace/results
+ARM=$1; SEED=$2; CB=${CB:-/workspace/clashbot}; PY=${PY:-/workspace/venv33/bin/python}; RT=${RT:-20261012-linux}; R=/workspace/results
 mkdir -p $R; exec >> $R/ctx_pod_${ARM}_$SEED.log 2>&1
 cd $CB
-export PYTHONPATH=$CB ROYALE_RUNTIME=20261012-linux OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1
+export PYTHONPATH=$CB ROYALE_RUNTIME=$RT OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1
 sed -i 's/\r$//' scratchpad/gauntlet/L74/rlarms/*.sh
 if [ "${3:-}" = smoke ]; then
   SM=smoke_${ARM}_$SEED; echo "$(date -u +%T) smoke $ARM"

@@ -15,8 +15,7 @@ for line in open(sys.argv[1], encoding="utf-8"):
     k = np.asarray(r["keep"], bool)
     tr, ts = np.asarray(r["tr_rows"], float)[k], np.asarray(r["ts_rows"], float)[k]
     rows = np.c_[tr, ts[:, :6], ts[:, 10]]
-    dE, dT, P = RS.trade2_parts(rows)
-    dC = (rows[:, 8:10] <= 0).sum(1) - (rows[:, 5:7] <= 0).sum(1)
+    dE, dT, dC, P = RS.trade2_parts(rows)
     M.append((np.c_[dE, dT, dC], P, float(r["z"] > 0)))
 rng = np.random.default_rng(0)
 def fit(MM, ph):
