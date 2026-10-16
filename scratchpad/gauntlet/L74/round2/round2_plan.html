@@ -1,0 +1,313 @@
+<title>Icebow Round 2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column; summary + decisions first, then evidence, experiments by track, schedule, parked work. */
+:root {
+  --bg: #f4f6f8;          /* cold paper */
+  --surface: #ffffff;
+  --ink: #17212b;         /* slate ink */
+  --muted: #5a6876;
+  --rule: #d5dde5;
+  --accent: #1f6fa8;      /* glacier steel */
+  --accent-soft: #e3eef7;
+  --measured: #2f7d4f;    /* (a) measured */
+  --measured-soft: #e4f2e9;
+  --plausible: #9a6a12;   /* (b) plausible, untested */
+  --plausible-soft: #f7eedb;
+  --contra: #a33a32;      /* (c) contradicted */
+  --contra-soft: #f6e3e1;
+  --bar-sim: #1f6fa8;
+  --bar-live: #66737f;
+  --font-display: "Barlow Semi Condensed", "Arial Narrow", "Segoe UI", sans-serif;
+  --font-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #10161c; --surface: #18212a; --ink: #e3e9ef; --muted: #9aa8b5; --rule: #2b3743;
+    --accent: #6cb3e6; --accent-soft: #1b2e3d;
+    --measured: #6cc18f; --measured-soft: #18301f; --plausible: #e0b25c; --plausible-soft: #33281a;
+    --contra: #e8867c; --contra-soft: #3a1f1d; --bar-sim: #6cb3e6; --bar-live: #7d8b98;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #10161c; --surface: #18212a; --ink: #e3e9ef; --muted: #9aa8b5; --rule: #2b3743;
+  --accent: #6cb3e6; --accent-soft: #1b2e3d;
+  --measured: #6cc18f; --measured-soft: #18301f; --plausible: #e0b25c; --plausible-soft: #33281a;
+  --contra: #e8867c; --contra-soft: #3a1f1d; --bar-sim: #6cb3e6; --bar-live: #7d8b98;
+  color-scheme: dark;
+}
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.55; }
+.page { max-width: 760px; margin: 0 auto; padding-block: 28px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 40px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: 2.6rem; font-weight: 700; letter-spacing: 0.01em; }
+h2 { font-size: 1.65rem; font-weight: 600; }
+h3 { font-size: 1.2rem; font-weight: 600; }
+p { margin: 0; }
+.eyebrow { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.stack { display: grid; gap: 14px; }
+.lede { font-size: 1.12rem; }
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 0.92em; }
+.muted { color: var(--muted); }
+a { color: var(--accent); }
+header.top { display: grid; gap: 12px; border-bottom: 1px solid var(--rule); padding-bottom: 24px; }
+.ask { background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 10px; padding: 18px 20px; display: grid; gap: 10px; }
+.ask ol { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; }
+.chip { display: inline-block; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.04em; padding: 1px 7px; border-radius: 999px; white-space: nowrap; vertical-align: 1px; }
+.chip.a { color: var(--measured); background: var(--measured-soft); }
+.chip.b { color: var(--plausible); background: var(--plausible-soft); }
+.chip.c { color: var(--contra); background: var(--contra-soft); }
+ul.lessons { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+ul.lessons li { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: baseline; }
+ul.lessons li > span:last-child { min-width: 0; }
+/* chart */
+.chart { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 18px 18px 14px; display: grid; gap: 12px; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 0.85rem; color: var(--muted); }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+.rows { display: grid; gap: 14px; }
+.row { display: grid; grid-template-columns: 7.2rem 1fr; gap: 10px; align-items: center; }
+.row .label { font-size: 0.92rem; font-weight: 600; }
+.track { position: relative; height: 44px; }
+.track .bar { position: absolute; left: 0; height: 15px; border-radius: 0 3px 3px 0; }
+.track .bar.sim { top: 2px; background: var(--bar-sim); }
+.track .bar.live { top: 22px; background: var(--bar-live); }
+.track .ci { position: absolute; top: 40px; height: 2px; background: var(--ink); opacity: 0.55; }
+.label .sub { display: block; font-weight: 400; font-size: 0.74rem; color: var(--muted); font-family: var(--font-mono); }
+.track .val.in { color: var(--bg); font-weight: 500; line-height: 15px; }
+.track .val { position: absolute; font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink); white-space: nowrap; }
+.track .fifty { position: absolute; top: -4px; bottom: -4px; width: 0; border-left: 1px dashed var(--muted); }
+.axis { display: grid; grid-template-columns: 7.2rem 1fr; gap: 10px; }
+.axis .ticks { position: relative; height: 16px; font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); }
+.axis .ticks span { position: absolute; transform: translateX(-50%); }
+.note { font-size: 0.85rem; color: var(--muted); }
+/* experiments */
+.track-head { display: grid; gap: 6px; padding-top: 6px; }
+.exp { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 18px 20px; display: grid; gap: 10px; }
+.exp .head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; }
+.exp .id { font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent); font-weight: 500; }
+.exp dl { margin: 0; display: grid; grid-template-columns: 6.5rem 1fr; gap: 6px 12px; }
+.exp dt { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+.exp dd { margin: 0; min-width: 0; }
+.exp.gate { border-color: var(--accent); }
+.tag { font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent); border: 1px solid var(--accent); border-radius: 4px; padding: 0 6px; }
+.scroll { overflow-x: auto; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 0.92rem; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td { border-bottom: 0; }
+ul.plain { margin: 0; padding-left: 1.2em; display: grid; gap: 8px; }
+footer { border-top: 1px solid var(--rule); padding-top: 18px; font-size: 0.85rem; color: var(--muted); }
+@media (max-width: 520px) {
+  h1 { font-size: 2.1rem; }
+  .row, .axis { grid-template-columns: 5.4rem 1fr; }
+  .exp dl { grid-template-columns: 1fr; gap: 2px; }
+  .exp dt { padding-top: 8px; }
+}
+</style>
+
+<div class="page">
+
+<header class="top">
+  <div class="eyebrow">ClashBot · icebow · draft for owner review · 2026-10-16</div>
+  <h1>Icebow Round 2</h1>
+  <p class="lede">Round 1 found one thing that reliably makes the model stronger in the simulator: the F1 training method, trained for longer. Nine other single changes came out level with their twins, or worse. The live ladder has not yet confirmed that the simulator's gains are real, because live samples have been far too small to see them. Round 2 first settles that question. It then spends most pod time on what worked (longer, better-seeded training on the newer simulator) and on making the simulator's opponents punish what human 12–14k players punish.</p>
+  <p class="muted">Labels follow your three cases: <span class="chip a">(a) measured</span> <span class="chip b">(b) plausible, untested</span> <span class="chip c">(c) contradicted</span></p>
+</header>
+
+<section class="ask">
+  <h2>Decisions I need from you</h2>
+  <ol>
+    <li><strong>The calibration run (G1).</strong> About 300 live matches alternating u250 and the old r1 model in blocks of 5, roughly 18 hours of play spread over nights. It is the only test that tells us whether simulator gains show up live. If the simulator is right, r1 costs about 20–25 extra losses. Yes, a smaller version, or skip?</li>
+    <li><strong>Long runs (T1).</strong> Three pods for about a day each, training three seeds to 500 updates on RoyaleSim 0.1.35. OK?</li>
+    <li><strong>Which opponent project first:</strong> human-paced RL opponents (O1) or heavy-deck exploiters (O2)? Both need one pod. I lean O2 first, because it targets the matchups that cost the most trophies.</li>
+    <li><strong>The trade reward (T3), parked since 10-15.</strong> Still wanted after the pre-flight audit, or drop it?</li>
+  </ol>
+</section>
+
+<section class="stack">
+  <div class="eyebrow">Where we stand</div>
+  <h2>The simulator sees big gains; live cannot see them yet</h2>
+  <p>Trophies went from <span class="num">11,816</span> (10-10) to about <span class="num">12,300</span> (10-15 evening), with a best read of <span class="num">12,427</span>. That is roughly +100 a day of play. The chart compares each model's simulator win rate on the live-mirrored test (960 games) with its live record.</p>
+  <figure class="chart" aria-label="Simulator versus live win rate per model">
+    <div class="legend"><span><i style="background:var(--bar-sim)"></i>Simulator, live-mirrored test (n 960)</span><span><i style="background:var(--bar-live)"></i>Live, with 95% range</span></div>
+    <div class="rows">
+      <!-- scale: 30% at left edge, 70% at right edge -> pos = (v-30)/40*100 -->
+      <div class="row"><div class="label">r1<span class="sub">live n 70</span></div><div class="track">
+        <div class="fifty" style="left:50%"></div>
+        <div class="bar sim" style="width:36.25%"></div><span class="val" style="left:calc(36.25% + 6px);top:1px">44.5%</span>
+        <div class="bar live" style="width:57.25%"></div><div class="ci" style="left:28%;width:58.5%"></div><span class="val in" style="left:6px;top:21px">52.9%</span>
+      </div></div>
+      <div class="row"><div class="label">F1 u65<span class="sub">live n 73</span></div><div class="track">
+        <div class="fifty" style="left:50%"></div>
+        <div class="bar sim" style="width:56.75%"></div><span class="val" style="left:calc(56.75% + 6px);top:1px">52.7%</span>
+        <div class="bar live" style="width:58.5%"></div><div class="ci" style="left:30%;width:57%"></div><span class="val in" style="left:6px;top:21px">53.4%</span>
+      </div></div>
+      <div class="row"><div class="label">F1 u250<span class="sub">live n 22</span></div><div class="track">
+        <div class="fifty" style="left:50%"></div>
+        <div class="bar sim" style="width:76%"></div><span class="val" style="left:calc(76% + 6px);top:1px">60.4%</span>
+        <div class="bar live" style="width:61.25%"></div><div class="ci" style="left:9.25%;width:90.75%"></div><span class="val in" style="left:6px;top:21px">54.5%</span>
+      </div></div>
+    </div>
+    <div class="axis"><div></div><div class="ticks"><span style="left:0%">30%</span><span style="left:25%">40%</span><span style="left:50%">50%</span><span style="left:75%">60%</span><span style="left:100%">70%</span></div></div>
+    <figcaption class="note">r1 and F1 u65 alternated in blocks of 5 overnight 10-14/15, at the same trophy level: live difference +0.6 ± 16.4 points; the simulator predicted +8.2. u250's live record is a single evening (12 wins, 10 losses); its 95% range runs past the chart's right edge.</figcaption>
+  </figure>
+  <p><span class="chip a">(a)</span> Live samples so far cannot separate any two models. Detecting an 8-point difference with 80% power needs about 600 matches per model, roughly 35 hours each. Ordinary ladder play also pulls win rate toward 50% as trophies rise, so only a back-to-back comparison at the same trophy level, or trophy slope over many days, can measure strength.</p>
+</section>
+
+<section class="stack">
+  <div class="eyebrow">Round 1</div>
+  <h2>What round 1 taught us</h2>
+  <ul class="lessons">
+    <li><span class="chip a">(a)</span><span><strong>F1 is the one robust gain.</strong> GAE credit plus critic warm-up beat r1 by <span class="num">+6.8 / +9.6 / +9.7</span> on three seeds. Training seed 74 to 250 updates added <span class="num">+7.7</span> on the live-mirrored test. Longer training was mixed on the other seeds (<span class="num">+1.0 / −0.8</span> at 150 updates).</span></li>
+    <li><span class="chip a">(a)</span><span><strong>Nine single changes at 65 updates came out level with their twins or worse.</strong> Tower and solvency rewards, F3, F4, the critic context heads C2 (<span class="num">−6.5</span>) and F2, the low-elixir pro anchor F6′, λ 0.98, live-like opponent mix, and the posture head C1. A 960-game paired test only resolves differences of about 4 points or more.</span></li>
+    <li><span class="chip a">(a)</span><span><strong>Single seeds mislead.</strong> The live-like mix went <span class="num">+4.8</span> on one seed and <span class="num">−2.6</span> on the next; C1 went <span class="num">+4.8</span> then <span class="num">+0.4 / −0.2</span>. Any training claim needs three seeds.</span></li>
+    <li><span class="chip a">(a)</span><span><strong>Play/wait thresholds are model-specific.</strong> Defensive thresholds gave <span class="num">+3.3</span> on u65 and <span class="num">−7.4</span> on u250. Every new checkpoint needs its own quick threshold check before going live.</span></li>
+    <li><span class="chip a">(a)</span><span><strong>Our simulator bots match human strength but not human style.</strong> F1 u65 wins <span class="num">52.9%</span> against them vs <span class="num">51.4%</span> live, but they play about 40% faster and react about twice as often. Slowing them to human pace makes them far too easy (F1 wins <span class="num">70–78%</span>).</span></li>
+    <li><span class="chip c">(c)</span><span><strong>"Always focus offensive X-Bows on one tower" is worse in the simulator:</strong> <span class="num">−3.6</span> (95% range −6.7 to −0.7). Pros still split lanes far less than our bot (34% of matches vs 65–82%). Whether human defenders punish splitting more than our bots do is <span class="chip b">(b)</span> untested.</span></li>
+  </ul>
+</section>
+
+<section class="stack">
+  <div class="eyebrow">Round 2</div>
+  <h2>Proposed experiments</h2>
+  <p>Each experiment changes one thing against a matched control on the same engine, uses three seeds for any training claim, and states a decision rule before it runs. Pods end their own job chain with a self-stop.</p>
+
+  <div class="track-head"><h3>Gate · does the simulator measure live strength?</h3></div>
+  <article class="exp gate">
+    <div class="head"><span class="id">G1</span><h3>Live calibration run</h3><span class="tag">needs your live time</span></div>
+    <dl>
+      <dt>Why</dt><dd>Every training decision rests on the simulator. Its biggest predicted gap is u250 over r1 at <span class="num">+15.9</span> points. If live shows nothing like that, more simulator training is wasted until the simulator is fixed.</dd>
+      <dt>Test</dt><dd>About 150 matches each for u250 and r1, alternating blocks of 5 at the same trophy level, on the main account with the current options. 95% range ±11 points; about an 80% chance to confirm if the full simulator gap is real.</dd>
+      <dt>Decide</dt><dd>Live gap ≥ +8: trust the simulator for selection and push training (T1, T2). Live gap near 0: pause training work and put the pods on fidelity (S1, O1, O2).</dd>
+      <dt>Cost</dt><dd>~18 h of live play, no pods. About 20–25 extra losses on r1 if the simulator is right.</dd>
+    </dl>
+  </article>
+  <article class="exp">
+    <div class="head"><span class="id">G2</span><h3>Trophy-slope tracker</h3><span class="tag">laptop, cheap</span></div>
+    <dl>
+      <dt>Why</dt><dd>You suggested judging models by the ladder climb. The scorecard already reads trophies from the main menu; it just isn't reported.</dd>
+      <dt>Test</dt><dd>A daily Discord line: trophies per match and per hour for each checkpoint, plus the week's trend.</dd>
+      <dt>Cost</dt><dd>An hour of work; no pods.</dd>
+    </dl>
+  </article>
+
+  <div class="track-head"><h3>Simulator · make it teach what humans punish</h3></div>
+  <article class="exp">
+    <div class="head"><span class="id">S1</span><h3>RoyaleSim 0.1.35 + re-baseline</h3><span class="tag">running now</span></div>
+    <dl>
+      <dt>Why</dt><dd>Eleven new rules for the current client, checked against 785 real battles. Everything after this runs on the new engine.</dd>
+      <dt>Test</dt><dd>u250, u65 and r1 on both tests (6 × 960 games). Does the ranking hold, and by how much does each model move?</dd>
+      <dt>Decide</dt><dd>Ranking preserved: adopt 0.1.35 for all new runs. Ranking changes: report to you before any training on it.</dd>
+      <dt>Cost</dt><dd>1 pod, about 6 h.</dd>
+    </dl>
+  </article>
+  <article class="exp">
+    <div class="head"><span class="id">O1</span><h3>Human-paced opponents that are still strong</h3><span class="chip b">(b)</span></div>
+    <dl>
+      <dt>Why</dt><dd>Humans think slower but choose better. Our bots make up for weaker choices with instant reactions, so the model may learn to beat reflexes rather than decisions.</dd>
+      <dt>Test</dt><dd>RL-train opponent policies under human tempo limits (a decision every second, plus a 1 s reaction delay), starting from the pro-imitation model and playing against u250. Target: style gap ≤ 0.6 (today 0.97) and F1 u65 wins within ±3 points of its live rate. Then train icebow against them (3 seeds, one change vs F1).</dd>
+      <dt>Decide</dt><dd>Use them as the evaluation opponent only if both targets are met; adopt them in training only if the 3-seed run beats its twins on the live-mirrored test.</dd>
+      <dt>Cost</dt><dd>1 pod about 10 h for the opponents, then 3 pods about 4 h.</dd>
+    </dl>
+  </article>
+  <article class="exp">
+    <div class="head"><span class="id">O2</span><h3>Heavy-deck exploiters in the league</h3><span class="chip b">(b)</span></div>
+    <dl>
+      <dt>Why</dt><dd>Your earlier idea. More Mega Knight exposure through ordinary opponents did nothing for beatdown (<span class="num">+4.2 / −5.5 / +2.1</span> across seeds). Opponents trained specifically to beat our model with Golem, Lava, PEKKA bridge spam, Mega Knight and Royal Giant should find the holes ordinary opponents miss.</dd>
+      <dt>Test</dt><dd>Train one exploiter per archetype against frozen u250 until it wins clearly. Add them to the training league for 3 seeds and compare with F1 twins on the beatdown slice of the live-mirrored test.</dd>
+      <dt>Decide</dt><dd>Keep if the beatdown slice improves on all three seeds without losing the rest.</dd>
+      <dt>Cost</dt><dd>1 pod about 12 h for the exploiters, then 3 pods about 4 h.</dd>
+    </dl>
+  </article>
+  <article class="exp">
+    <div class="head"><span class="id">S2</span><h3>Parity loop from live frame logs</h3><span class="tag">background</span></div>
+    <dl>
+      <dt>Why</dt><dd>Frame logging has been on since 10-15. Each live fight replayed through the simulator shows which mechanics disagree, ranked by how often they decide a fight in our matchups.</dd>
+      <dt>Test</dt><dd>Top mismatches with evidence. Fixes go upstream or into our fork, one at a time, each with a re-baseline.</dd>
+      <dt>Cost</dt><dd>Mostly laptop analysis; occasional pod hours.</dd>
+    </dl>
+  </article>
+
+  <div class="track-head"><h3>Training · spend compute on what worked</h3></div>
+  <article class="exp">
+    <div class="head"><span class="id">T1</span><h3>Long F1 runs, three seeds, 500 updates</h3><span class="chip a">(a)</span> <span class="muted">direction measured</span></div>
+    <dl>
+      <dt>Why</dt><dd>Longer training is the only lever with a measured gain beyond F1 itself (u65 → u250 +7.7). It was seed-dependent, so pick the best checkpoint per seed rather than trusting one curve.</dd>
+      <dt>Test</dt><dd>Seeds 74/75/76 on 0.1.35, scored on the live-mirrored test at 150, 250, 350 and 500 updates.</dd>
+      <dt>Decide</dt><dd>Wire the best checkpoint only if it beats u250 on the same engine with the 95% range above zero and is not worse on the standard test; then T4 before it plays live.</dd>
+      <dt>Cost</dt><dd>3 pods about 24 h each.</dd>
+    </dl>
+  </article>
+  <article class="exp">
+    <div class="head"><span class="id">T2</span><h3>Pro anchor on every decision</h3><span class="chip b">(b)</span></div>
+    <dl>
+      <dt>Why</dt><dd>The original imitation-then-RL design kept the model close to pro play, but the code anchors each run to its own starting point. F6′ anchored only the play/wait choice at low elixir, and was null. RL may drift into habits pros avoid: both-lane X-Bows 82% vs pros 34%, and quick cheap defences.</dd>
+      <dt>Test</dt><dd>A KL leash to the pro-imitation model on gate, card and cell; 3 seeds × 65 updates vs F1 twins, plus habit counters (lane split, cheap-defence share, Rocket vs X-Bow when behind).</dd>
+      <dt>Decide</dt><dd>Keep if the live-mirrored test does not drop and at least two habit counters move toward pros; then add it to T1's recipe.</dd>
+      <dt>Cost</dt><dd>3 pods about 4 h.</dd>
+    </dl>
+  </article>
+  <article class="exp">
+    <div class="head"><span class="id">T3</span><h3>Trade reward that counts towers (A3′)</h3><span class="chip b">(b)</span></div>
+    <dl>
+      <dt>Why</dt><dd>You approved it "whenever" on 10-15. It values elixir trades against tower damage at the measured rate of about 22–25 elixir per princess tower. It targets Rocket-vs-X-Bow decisions when behind. The first version (A3) failed its audit because it ignored tower HP.</dd>
+      <dt>Test</dt><dd>Offline pre-flight audit first; only on PASS, 3 seeds × 65 vs F1 twins.</dd>
+      <dt>Cost</dt><dd>Laptop audit, then 3 pods about 4 h.</dd>
+    </dl>
+  </article>
+  <article class="exp">
+    <div class="head"><span class="id">T4</span><h3>Threshold check before every deploy</h3><span class="chip a">(a)</span> <span class="muted">need measured</span></div>
+    <dl>
+      <dt>Why</dt><dd>The same threshold change helped u65 and hurt u250.</dd>
+      <dt>Test</dt><dd>Default, −0.10 and +0.10 thresholds on the live-mirrored test for each candidate.</dd>
+      <dt>Decide</dt><dd>Move off the default only with the 95% range above zero.</dd>
+      <dt>Cost</dt><dd>1 pod about 1.5 h per candidate.</dd>
+    </dl>
+  </article>
+</section>
+
+<section class="stack">
+  <div class="eyebrow">Schedule</div>
+  <h2>Five pods, three phases</h2>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Phase</th><th>Pod 1</th><th>Pod 2</th><th>Pods 3–5</th><th>Laptop / live</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1</strong> · today–tomorrow</td><td>S1 re-baseline</td><td>Bait training</td><td>T2 pro anchor (3 seeds)</td><td>G2 tracker; G1 starts on your nights</td></tr>
+        <tr><td><strong>2</strong> · ~day 2–3</td><td>O2 exploiters</td><td>Bait round 2 (after the ability check)</td><td>T1 long runs (3 seeds, ~24 h), T2 folded in if it passed</td><td>G1 continues; S2 parity analysis</td></tr>
+        <tr><td><strong>3</strong> · ~day 4+</td><td>T4 on the best candidate</td><td>O1 opponents</td><td>O2 league runs or T3</td><td>Wire the winner; you run it live; G2 tracks the climb</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">If G1 shows the simulator gap does not transfer, phase 2 swaps T1 for O1 + S2 on pods 3–5.</p>
+</section>
+
+<section class="stack">
+  <div class="eyebrow">Not in round 2</div>
+  <h2>Parked or dropped, with the reason</h2>
+  <ul class="plain">
+    <li><strong>More posture / critic-context heads.</strong> C1 learned to wait more but won nothing; C2 lost 6.5. A head that only shifts the play threshold duplicates what the play/wait output can already learn.</li>
+    <li><strong>Slowed bots as opponents.</strong> Measured too easy (70–78% for F1).</li>
+    <li><strong>Hard-coded habit rules.</strong> Your rule; the forced X-Bow focus also lost in the simulator.</li>
+    <li><strong>Distillation into a student model.</strong> The student lost 9 points; parked since 10-15.</li>
+    <li><strong>λ 0.98, live-like reweighting alone.</strong> Null on all seeds.</li>
+  </ul>
+</section>
+
+<section class="stack">
+  <div class="eyebrow">Bait track</div>
+  <h2>Your friend's model</h2>
+  <p>Training starts today on pod 2 with the exact deck (Hero Valkyrie, Evo Skeleton Army, Evo Goblin Barrel, Princess, Dart Goblin, Wall Breakers, Ice Spirit, Cannon), using the F1 recipe. It is compared with the current bait model on 960 paired games. The Valkyrie ability is still pressed by a rule for now. Next come two pieces: a parity check of the ability against your recorded classic-challenge presses, and the learned ability press ("B6"), so RL can learn when the 3-elixir ability is worth it.</p>
+</section>
+
+<footer>
+  <p>Sources: HANDOFF.md (main, 9fa94c3 and later), live scorecard 10-10 → 10-15, live-mirrored and standard simulator tests in pod_backup_weekend. Nothing in this plan starts without your answers above, except S1, bait training, G2 and the T2 code build, which are already approved or laptop-only.</p>
+</footer>
+
+</div>

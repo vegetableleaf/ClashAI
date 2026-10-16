@@ -1,3 +1,18 @@
+## 2026-10-16 ~10:00 EDT -- owner: 2 pods (re-baseline + bait), round-2 plan drafted for review
+
+- Owner 10-16: "Let's do the re-baseline, and start bait training on one of the pods each ... draft up a second round of
+  tests/experiments to get our icebow model to improve and push to 14k trophies, then present it to me for review." Pods
+  81.27.69.177 -p 23419 (re-baseline, worker T13) and -p 23450 (bait, worker T14); key ~/.ssh/runpod_clashbot (the owner's
+  id_ed25519 does not exist on the laptop). 5 pods planned in total. Chains end with a self-stop if /workspace/AUTOSTOP exists.
+- **Round-2 plan** `L74/round2/round2_plan.html` (artifact https://claude.ai/artifact/KdPcLtbU4GhZU6CKc4nd5Z): gate G1 = live
+  calibration (~150 u250 + ~150 r1 interleaved in blocks of 5; SIM predicts +15.9), G2 trophy-slope tracker; S1 0.1.35
+  re-baseline, O1 human-paced RL opponents, O2 heavy-deck exploiters, S2 parity loop; T1 3 seeds x 500 updates on 0.1.35,
+  T2 KL to the pro-imitation model on all heads, T3 A3' trade reward (audit first), T4 per-checkpoint threshold check.
+  Owner decisions pending: G1 yes/size, T1 pods, O1 vs O2 first, T3 keep/drop.
+- (a) Live interleaved r1 vs F1 u65 (10-14 22:57 .. 10-15 09:04, blocks of 5, scorecard.py): F1 39-34 53.4%, r1 37-33
+  52.9%, +0.6 +- 16.4 pp (SIM live pool predicted +8.2). Trophies 11,816 (10-10) -> ~12,300 (10-15), best read 12,427.
+  An 8 pp live difference needs ~600 matches / arm for 80% power.
+
 ## 2026-10-16 ~08:30 EDT -- overnight: NO successor (nothing wired; live config = u250 unchanged); C1 null; gae_live u250 null
 
 - Laptop rebooted overnight (owner did not know); the session's waiters died, so results were collected at 08:10 and all
