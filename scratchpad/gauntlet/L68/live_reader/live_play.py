@@ -29,6 +29,8 @@ last word. Gate / card / cell stay the model's own; --pipeline-tau-delta raises 
 (default 0). A refused first play changes nothing. The SIM twin: e1_eval cfg 'pipeline_decisions'.
 --capture-p2 (OPT-IN, parity data): the phase-2 capture runs beside the reader every match (P2Capture); its frames land in
 icebow/data/p2_captures/<live log stem>/. Play is unchanged.
+--capture-p3 (OPT-IN, parity data): the same, with the phase-3 probe (a superset of phase 2; P3Capture) into
+icebow/data/p3_captures/<live log stem>/; it supersedes --capture-p2 when both are set (one capture per match).
 Refuses to start while another live_play process runs on this machine (two instances read / tap the same device) unless
 --allow-parallel; --check is exempt.
 """
@@ -314,6 +316,8 @@ class ScreenRec:
 
 P2_DIR = REPO / "icebow" / "data" / "p2_captures"     # git-ignored: one folder per live log
 P2_HELPER = REPO / "scratchpad/gauntlet/L70/reader/re_phase2/validation/p2_capture.py"   # local-only (git-ignored)
+P3_DIR = REPO / "icebow" / "data" / "p3_captures"     # git-ignored: one folder per live log
+P3_HELPER = REPO / "scratchpad/gauntlet/L70/reader/re_phase3/p3_capture.py"   # local-only (git-ignored)
 
 
 class P2Capture:
@@ -323,6 +327,10 @@ class P2Capture:
     (the sampler writes a per-match device file; no stream). finish(), after the match's own `pkill -f live_sampler`
     (which stops this sampler too): stop it by exact PID if still alive, pull into P2_DIR/<live log stem>/, delete the
     device files. finish() never raises: every failure becomes its single 'p2_capture' event (ok False, why)."""
+    KIND = "p2"
+
+    def paths(self):
+        return P2_HELPER, P2_DIR
 
     def __init__(self, adb_fn=None, mod=None):
         self.adb = adb_fn or (lambda *x, **k: adb(*x, **k))
@@ -330,7 +338,7 @@ class P2Capture:
         try:
             if self.mod is None:
                 import importlib.util
-                spec = importlib.util.spec_from_file_location("p2_capture", P2_HELPER)
+                spec = importlib.util.spec_from_file_location(f"{self.KIND}_capture", self.paths()[0])
                 self.mod = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(self.mod)
             self.sha = self.mod.push_and_verify(self.adb)
@@ -357,19 +365,21 @@ class P2Capture:
             self.err = repr(exc)[:200]
 
     def finish(self, live_log: Path) -> dict:
-        rec = dict(event="p2_capture", side=self.side, start_tick=self.tick)
+        rec = dict(event=f"{self.KIND}_capture", side=self.side, start_tick=self.tick)
         try:
             if self.mod is None:
                 raise RuntimeError(self.why)
             if self.side is None:
                 raise RuntimeError("not started: no clock-running frame with my side")
             self.thread.join(timeout=10)
+            # stop by exact PID BEFORE judging the start: the phase-3 probe survives `pkill -f live_sampler`, so a
+            # late / half-failed start must not leave it running ('gone' when nothing was started)
+            stopped = (self.adb("shell", self.mod.stop_cmd(self.tag), timeout=10) or "").strip()
             if self.err or self.proc is None:
                 raise RuntimeError(f"start: {self.err or 'adb shell not spawned'}")
-            stopped = (self.adb("shell", self.mod.stop_cmd(self.tag), timeout=10) or "").strip()
             if self.proc.poll() is None:                 # the device sampler is gone: its host adb shell must end too
                 self.proc.terminate()
-            out = P2_DIR / live_log.stem
+            out = self.paths()[1] / live_log.stem
             frames, n = self.mod.pull(self.adb, self.tag, str(out), timeout=120)
             if not n:
                 raise RuntimeError("pulled frames file missing or empty (see stderr.txt in the capture folder)")
@@ -383,6 +393,16 @@ class P2Capture:
                         binary_sha256=self.sha)
         except Exception as exc:                         # noqa: BLE001 -- one event, the run goes on
             return dict(rec, ok=False, why=str(exc)[:300])
+
+
+class P3Capture(P2Capture):
+    """--capture-p3: P2Capture with the phase-3 probe (local-only helper P3_HELPER, pinned sha) into P3_DIR. The probe's
+    name avoids 'live_sampler', so the match's `pkill -f live_sampler` does NOT stop it: finish()'s exact-PID stop does
+    (and the probe's own frame cap bounds it if live_play dies first)."""
+    KIND = "p3"
+
+    def paths(self):
+        return P3_HELPER, P3_DIR
 
 
 def other_live_plays(procs=None) -> list:
@@ -531,6 +551,11 @@ def main() -> int:
                          "to a device file, pulled after the match into icebow/data/p2_captures/<live log stem>/. Needs the "
                          "local-only helper + binary (sha-checked at run start); any failure is one p2_capture event and "
                          "play goes on. Play is unchanged. Deployable from LIVE_OPTIONS")
+    ap.add_argument("--capture-p3", action="store_true",
+                    help="OPT-IN parity data: as --capture-p2 with the phase-3 probe (attack target + phase; a superset "
+                         "of phase 2, so it supersedes --capture-p2) into icebow/data/p3_captures/<live log stem>/. The "
+                         "probe survives the match's pkill, so it is stopped by exact PID after the match. Deployable "
+                         "from LIVE_OPTIONS")
     ap.add_argument("--allow-parallel", action="store_true",
                     help="start even while another live_play process runs on this machine (default: refuse -- two "
                          "instances read and tap the same device)")
@@ -703,10 +728,11 @@ def main() -> int:
         pilot = pilots[0]
     else:
         device, pilot = load_pilot(a, decision_cfg)
-    a.p2 = None
-    if a.capture_p2:                                     # once per run, before any match: push + sha check
-        a.p2 = P2Capture()
-        print(f"[live] --capture-p2: {'ready, binary sha256 ' + a.p2.sha[:12] if a.p2.mod else a.p2.why}", flush=True)
+    a.p2 = None                                          # the per-match capture (P2Capture or P3Capture), or None
+    if a.capture_p2 or a.capture_p3:                     # once per run, before any match: push + sha check
+        a.p2 = (P3Capture if a.capture_p3 else P2Capture)()   # p3 is a superset: never two captures at once
+        print(f"[live] --capture-{a.p2.KIND}: {'ready, binary sha256 ' + a.p2.sha[:12] if a.p2.mod else a.p2.why}"
+              f"{' (supersedes --capture-p2)' if a.capture_p2 and a.capture_p3 else ''}", flush=True)
     renders: list = []                                   # background overlay renders of matches 1..N-1
     rc = 0                                               # 1 = the run stopped for any non-normal reason
     last_clip, no_start = -1e18, 0
@@ -898,8 +924,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
       **({"pipeline_decisions": True, "pipeline_tau_delta": getattr(a, "pipeline_tau_delta", 0.0)}
          if getattr(a, "pipeline_decisions", False) else {}),
       **({"posture_head": posture_summary(pilot.posture)} if getattr(pilot, "posture", None) else {}),
-      **({"capture_p2": True} if getattr(a, "p2", None) is not None else {}))
-    cap = getattr(a, "p2", None)                         # --capture-p2 (None = off: nothing below runs)
+      **({f"capture_{a.p2.KIND}": True} if getattr(a, "p2", None) is not None else {}))
+    cap = getattr(a, "p2", None)                         # --capture-p2/-p3 object (None = off: nothing below runs)
     if cap is not None:
         cap.begin(stamp)
     emote_on = getattr(a, "emote_spam", "off") == "on"
