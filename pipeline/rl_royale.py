@@ -1301,22 +1301,50 @@ def sample_opponent(rng: np.random.Generator, snaps: list[dict], mix: dict, init
     return {"id": sn["id"], "cat": cat, "type": "snapshot", "path": sn["path"]}
 
 
+def exploiter_league(cfg: dict) -> Optional[dict]:
+    """``league_exploiters`` (O2, owner 10-16; optional, absent / null = None = sample_matchups unchanged):
+    {ckpt, decks, share} -> {share, opp, decks, p}: a ``share`` of matchups is against the frozen ``ckpt`` playing
+    ``decks`` (a league_decks file, drawn with ``deck_weights`` under the run's alpha / floor). SystemExit on a bad value."""
+    x = cfg.get("league_exploiters")
+    if x is None:
+        return None
+    if not isinstance(x, dict) or set(x) != {"ckpt", "decks", "share"}:
+        raise SystemExit(f"league_exploiters must be {{ckpt, decks, share}}, got {x!r}")
+    sh = x["share"]
+    if isinstance(sh, bool) or not isinstance(sh, (int, float)) or not 0 < sh <= 1:
+        raise SystemExit(f"league_exploiters.share must be a number in (0, 1], got {sh!r}")
+    for k in ("ckpt", "decks"):
+        if not isinstance(x[k], str) or not (REPO / x[k]).is_file():
+            raise SystemExit(f"league_exploiters.{k} {x[k]!r} not found")
+    if not cfg.get("league") or cfg.get("league_frozen_opponent"):
+        raise SystemExit("league_exploiters needs league true and no league_frozen_opponent (that is the exploiter run)")
+    decks = league_decks(REPO / x["decks"])
+    return {"share": float(sh), "decks": decks,
+            "p": deck_weights([d["sides"] for d in decks], cfg["league_deck_alpha"], cfg["league_deck_floor"]),
+            "opp": {"id": "exploiter_league:" + x["ckpt"], "cat": "exploiter_league", "type": "exploiter_league",
+                    "path": x["ckpt"]}}
+
+
 def sample_matchups(rng: np.random.Generator, n: int, update: int, snaps: list[dict], cfg: dict, census: list[dict],
-                    p: np.ndarray, league_state=None) -> list[dict]:
+                    p: np.ndarray, league_state=None, exploiters: Optional[dict] = None) -> list[dict]:
     """``n`` league matchups (one LOO group each): opponent (``sample_opponent``), learner deck (``sample_deck``),
     opponent deck (the same rule; ALWAYS icebow for the S1 specialist, the only deck it can play), learner side
     (uniform) and the env's deal seed -- drawn in that order per matchup from ``rng`` (the learner's own, so resume
     continues the stream). ``league_learner_icebow_share`` (optional) replaces ``league_icebow_share`` for the
-    learner's deck only; the draw order is the same either way (an icebow hit skips the census ``choice``)."""
+    learner's deck only; the draw order is the same either way (an icebow hit skips the census ``choice``).
+    ``exploiters`` (``exploiter_league``; None = no extra draw, the stream above unchanged): first one uniform per
+    matchup; below ``share`` the opponent is the exploiter and its deck is drawn from the exploiter pool."""
     out = []
     lshare = cfg.get("league_learner_icebow_share")
     lshare = cfg["league_icebow_share"] if lshare is None else lshare      # null = the shared rule (league1/1b)
     for i in range(int(n)):
+        ex = exploiters is not None and rng.random() < exploiters["share"]
         adaptive = cfg.get("league_pfsp") == "hard" or cfg.get("league_frozen_opponent")
-        opp = (AO.sample_opponent(rng, snaps, cfg, league_state or {}) if adaptive else
+        opp = (exploiters["opp"] if ex else AO.sample_opponent(rng, snaps, cfg, league_state or {}) if adaptive else
                sample_opponent(rng, snaps, cfg["league_mix"], cfg["init"], cfg["league_specialist"]))
         ld = sample_deck(rng, census, p, lshare)
-        od = ICEBOW_DECK if opp["type"] in ("s1", "frozen") else sample_deck(rng, census, p, cfg["league_icebow_share"])
+        od = (exploiters["decks"][int(rng.choice(len(exploiters["decks"]), p=exploiters["p"]))] if ex else
+              ICEBOW_DECK if opp["type"] in ("s1", "frozen") else sample_deck(rng, census, p, cfg["league_icebow_share"]))
         out.append({"tag": f"sp{int(update):04d}_{i:02d}", "opp": opp,
                     "learner_deck": ld["engine"], "learner_deck_name": ld["name"], "learner_bucket": ld["bucket"],
                     "opp_deck": od["engine"], "opp_deck_name": od["name"],
@@ -2497,7 +2525,8 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
         if (k not in cfg and k != "ability_policy" and k not in BRANCH_DEFAULTS   # optional: absent = generic / off
                 and k not in VALUE_PHI_KEYS and k not in STATE_PHI_KEYS and k not in AO.DEFAULTS
                 and k not in ("league_learner_icebow_share", "learner_pipeline_frac", "league_opp_T", "kl_ref_gate",
-                              "critic_ctx", "kl_ref_gate_max_elixir", "kl_ref_gate_target_frac") + OPP_TEMPO_KEYS
+                              "critic_ctx", "kl_ref_gate_max_elixir", "kl_ref_gate_target_frac",
+                              "league_exploiters") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
         cfg[k] = yaml.safe_load(v)
@@ -2510,6 +2539,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
     if cfg.get("ability_policy") == "v2" and not cfg["hero_abilities"]:
         raise SystemExit("ability_policy v2 needs hero_abilities=true")
     AO.validate(cfg)
+    exploiter_league(cfg)                                     # O2: checked at start (files exist, league on); absent = no-op
     frac = cfg.get("learner_pipeline_frac", 0.0)
     if isinstance(frac, bool) or not isinstance(frac, (int, float)) or not 0 <= frac <= 1:
         raise SystemExit("learner_pipeline_frac must be a finite number in [0, 1]")
@@ -2536,6 +2566,8 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "ability_policy"}
     if cfg.get("kl_ref_gate") is None:                       # F6 off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "kl_ref_gate"}
+    if cfg.get("league_exploiters") is None:                 # O2 off (absent or null) = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "league_exploiters"}
     if cfg.get("critic_ctx") is None:                        # C2 / F2 off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "critic_ctx"}
     if cfg.get("kl_ref_gate_max_elixir") is None:            # F6' off (absent or null) = the historical hash
@@ -2733,6 +2765,7 @@ class Learner:
                                      cfg["league_deck_floor"])
         self.league = {"snapshots": []}
         AO.sync_pool(self.league, cfg)
+        self.exploiters = exploiter_league(cfg)               # O2: absent / null = None (matchups unchanged)
 
     def _snapshot_payload(self) -> dict:
         """What a FROZEN opponent needs and nothing else: the weights + the keys ``e1_eval.load_policy`` /
@@ -3048,7 +3081,8 @@ class Learner:
         E_, G = int(self.cfg["E"]), int(self.cfg["G"])
         if getattr(self, "league", None) is not None:           # league: E self-play matchups x G rollouts
             specs = sample_matchups(self.rng, E_, u, self.league["snapshots"], self.cfg, self.census, self.census_p,
-                                    **({"league_state": self.league} if self.cfg.get("league_pfsp") == "hard" else {}))
+                                    **({"league_state": self.league} if self.cfg.get("league_pfsp") == "hard" else {}),
+                                    exploiters=getattr(self, "exploiters", None))
             jobs = [(i, sp, g) for i, sp in enumerate(specs) for g in range(G)]
             res, skipped, st = self.actors.run("selfplay", u, self._actor_bytes(), jobs)
             if skipped:
@@ -3079,7 +3113,8 @@ class Learner:
         n = int(bc["branch_actors"])
         specs = sample_matchups(rng, BRANCH_SPECS_PER_SEND * n, u, self.league["snapshots"], self.cfg, self.census,
                                 self.census_p,
-                                **({"league_state": self.league} if self.cfg.get("league_pfsp") == "hard" else {}))
+                                **({"league_state": self.league} if self.cfg.get("league_pfsp") == "hard" else {}),
+                                exploiters=getattr(self, "exploiters", None))
         self.branch_pool.send(u, state_bytes(self.model), [specs[w::n] for w in range(n)])
 
     def _branch_optimizer(self, bc: dict):
