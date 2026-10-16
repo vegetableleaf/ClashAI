@@ -1,3 +1,40 @@
+## 2026-10-16 ~18:30 EDT -- FINAL HANDOFF of this session (usage cutoff); merged reader validated; next steps
+
+**Merged reader (step a) owner battle live_play_20261016_175459 (dry-run, --reader merged + --capture-p3):** S1 PASS
+(device sha = receipt 48176727...), S3 PASS (v2 rows identical 9245/9248 = 0.99968), S5 PASS (validate_p3 on the stream:
+Knight hit phase 15/15, X-Bow 52/52, targets 0.997, X-Bow lock held; V6 = known design gap), S7 PASS (BoardState
+identical with/without cue blocks 400/400 -> model inputs unaffected), S8 PASS (no readers left). S2 FAIL on size
+(extra bytes median 3633 / p95 5776 vs 3072 -> trim the per-buff text) and laptop-side cadence (2-tick gaps 0.942,
+backlog-0 0.9755; the recorder was CPU-starved ~100 ms/decision, same as the old reader + probe); read_us median 340 /
+p95 792 within budget. S4 0.99859 vs 0.999 (13 rows at 3 ticks: two readers sampling mid-update). Verdict: correct;
+usable for logging now via CLASHBOT_READER_EXTRA=icebow/data/reader_notes/merged/readers.local.json + --reader merged
+(push the binary with MSYS_NO_PATHCONV=1 -- Git Bash rewrites /data/... paths). Production default stays v2.
+A first attempt stalled at tick 89 (the game tick itself stopped: the side probe saw the same) -- not a reader fault.
+
+**Pods overnight (each self-stops via pod_watchdog 2 h after its DONE unless busy / KEEP):**
+- 216.81.245.71:37184 T1 s74; 64.247.206.76:18881 T1 s75; 64.247.206.76:10530 T1 s76 (500 updates, results 10-17
+  ~09:30 / afternoon; /workspace/results/t1_sNN/{SUMMARY.txt,LIVE/}).
+- 81.27.69.177:23419 exploiter -> its struggle eval -> gae_exploit seed 74; 81.27.69.179:37671 gae_exploit s75 (+ T1
+  early evals T1EARLY, parity re-score FIGHTS35_CEIL8_DIAG2); 81.27.69.177:23450 gae_trade2 s74 -> gae_exploit s76
+  (relay: L74/exploit/night_relay.sh, laptop-side copy of the exploiter ckpt; if it died, start the seeds by hand:
+  /workspace/gx_NN.sh pattern in the relay script).
+- 64.247.206.80:18869 (owner pod, 27.2 CPU): ab_chain = bait_gae_ab (learned Valkyrie press, runtime 20261012/venv33)
+  -> gae_ab (icebow HERO IW + learned press, 20261016) ; gh_chain = gae_hero (HERO IW, rule press; the twin) after
+  AB_ALL_DONE; watchdogs AB_ALL_DONE / GH_DONE.
+**Morning checklist for the next account:** copy back + sha-verify every result dir and the final checkpoints into
+C:\Users\benpe\pod_backup_weekend\ / icebow/data/bench/rl_royale/; score T1 / gae_exploit / gae_trade2 / gae_ab / gae_hero
+candidates on the LIVE-MIRRORED pool (L74/mix/live_eval_pod.sh with RT=20261016-linux PY=/workspace/venv35/bin/python)
+vs F1 u250's 0.1.35 baseline (pod_backup_weekend/rt35/RT35/live_f1u250_*) with L74/mix/live_cmp.py; a successor = CI > 0
+vs u250 + not worse on the standard set -> per-checkpoint threshold check (T4) -> wire with
+L74/deploy/deploy_ckpt.sh CKPT SHA16 "why" (it restarts live; use `wire` mode if the owner is not running live) and
+tell the owner. bait_gae_ab vs bait_gae: if better, refresh share/bait_friend_* for the friend (stage B live press
+still to build: live_play must call the ability head instead of hero_button.should_press).
+**Next work (owner targets):** reader-to-model steps c (new model inputs from pipeline/sim_unit_state.py at
+human-visible resolution) + d (imitation rebuild + RL retrain) BY THE WEEKEND, with the HERO Ice Wizard (+ learned press
+if gae_ab beats gae_hero) and the winning recipe from the morning; never drop the reader over a null result. Parity:
+captured logs now accumulate every live match (--capture-p3 on); re-run the scoreboard on them (raw agreement on fully
+captured logs; ~11% body-survival misses remain unexplained -> next diagnosis). Trim the merged reader's buff text (S2).
+
 ## 2026-10-16 ~18:00 EDT -- B6 stage A + reader step b committed; merged reader (step a) being built
 
 - **B6 learned ability press stage A (98ed369):** opt-in `ability_head`; v2 behaviour-cloning warm start; search_s0
