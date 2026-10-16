@@ -16,14 +16,14 @@ if [ "$MODE" = fresh ]; then
   $PY scratchpad/gauntlet/L74/rlarms/mkcfg_arms.py $ARM $O/$RUN.yaml
   N=$(grep -E '^max_updates:' $O/$RUN.yaml | awk '{print $2}')
   echo "$(date -u +%T) fresh $RUN ($ARM) overrides: $*"
-  ROYALE_HEROIW_FORM=normal flock /workspace/cpu.lock $PY -m pipeline.rl_royale --config $O/$RUN.yaml --run $RUN "$@" > $O/train.log 2>&1
+  ROYALE_HEROIW_FORM=${HEROIW_FORM:-normal} flock /workspace/cpu.lock $PY -m pipeline.rl_royale --config $O/$RUN.yaml --run $RUN "$@" > $O/train.log 2>&1
 else
   N=$1; shift; CFG=/workspace/results/rlarm_$ARM/rlarm_$ARM.yaml   # extra key=value (e.g. seed=76: a replicate's own seed)
   [ "$RUN" = "rlarm_$ARM" ] || { echo "resume must continue the arm's own run"; exit 2; }
   O=/workspace/results/${RUN}_to$N; mkdir -p $O; exec >> $O/run.log 2>&1
   trap 'echo "exit_code=$?" > $O/DONE' EXIT
   echo "$(date -u +%T) resume $RUN to $N"
-  ROYALE_HEROIW_FORM=normal flock /workspace/cpu.lock $PY -m pipeline.rl_royale --config $CFG --run $RUN --resume max_updates=$N "$@" > $O/train.log 2>&1
+  ROYALE_HEROIW_FORM=${HEROIW_FORM:-normal} flock /workspace/cpu.lock $PY -m pipeline.rl_royale --config $CFG --run $RUN --resume max_updates=$N "$@" > $O/train.log 2>&1
 fi
 cp scratchpad/gauntlet/L68/rl/$RUN/train_log.jsonl $O/ || true
 CK=$RL/$RUN/${RUN}_u$(printf '%04d' $N).pt; [ -f $CK ] || { echo "no final checkpoint $CK"; exit 3; }
