@@ -87,6 +87,21 @@ GUARD_BLIND_S = 30.0     # menu guard without a successful screen classification
 
 CONFIRM_BASE = 22        # L74 (afford_arrival.txt): an accepted tap's slot rotates ~22 ticks after it can be paid
 
+# --log-frames parity extras (owner 10-16 reader upgrade, L74/parity/READER_UPGRADE.md): PUBLIC board objects the v2
+# reader already samples but the 'frame' event dropped. Rows of these keys, in this order (missing key -> null).
+# ents_state is parallel to ents (same order). The players block is never read here.
+ENT_STATE_LOG = ("behavior_state_raw", "evo", "level", "category")
+PROJ_LOG = ("side", "x", "y", "card_id", "target_x", "target_y", "address", "generation_key", "source", "target")
+FX_LOG = ("side", "x", "y", "card_id", "remaining_ms", "level_raw", "address", "generation_key")
+
+
+def frame_extras(f: dict) -> dict:
+    """Parity-log fields for one reader frame: per-body state, projectiles, area effects (spells, ability areas)."""
+    def rows(objs, keys):
+        return [[o.get(k) for k in keys] for o in objs or ()]
+    return dict(ents_state=rows(f["entities"], ENT_STATE_LOG), proj=rows(f.get("projectiles"), PROJ_LOG),
+                fx=rows(f.get("effects"), FX_LOG))
+
 
 def release_ticks(elixir: float, name: str, tick: int, arrival_ticks: float, margin: int) -> int:
     """--early-release-margin: ticks after the decision frame at which a tap still not confirmed is declared refused =
@@ -414,7 +429,8 @@ def main() -> int:
                          "deck holds a hero and the button reads ready)")
     ap.add_argument("--log-frames", action="store_true",
                     help="owner 2026-10-14 finer logs: write the 'frame' event (board bodies, elixir) for EVERY reader "
-                         "frame (~0.1 s at --interval-ms 100) without screen recording; ~5 MB/match. Play is unchanged")
+                         "frame (~0.1 s at --interval-ms 100) without screen recording; ~5 MB/match. Play is unchanged. "
+                         "10-16: plus the parity extras ents_state / proj / fx (frame_extras)")
     ap.add_argument("--iw-press", choices=("rule", "never"), default="rule",
                     help="owner 2026-10-14 ability A/B: never = the hero button is still watched and should_press still "
                          "runs (logged as ability_withheld), but no ability tap is sent; unlike --no-ability, which also "
@@ -528,7 +544,7 @@ def main() -> int:
             loaded = [load_pilot(a, decision_cfg, ckpt=path) for path, _ in arms]
             print(json.dumps(dict(check='LIVE_CHECK_PASS', checkpoints=[
                 dict(checkpoint=path, sha256=sha, feature_version=pl.feature_version,
-                     **({'posture_head': posture_summary(pl.posture)} if pl.posture else {}))
+                     **({'posture_head': posture_summary(pl.posture)} if getattr(pl, 'posture', None) else {}))
                 for (path, sha), (_, pl) in zip(arms, loaded)], device=loaded[0][0], tau=a.tau, **anti_leak_log(a), **latency_log(a),
                 public_audit=a.public_audit, legal_guard=not getattr(a, 'no_legal_guard', False), predict_drops=a.predict_drops, own_effects=bool(getattr(a, 'own_effects', False)),
                 iw_press_pstar=a.iw_press_pstar, hero_ability_spec=getattr(a, "hero_ability_spec", "off"),
@@ -550,7 +566,7 @@ def main() -> int:
               public_audit=a.public_audit, legal_guard=getattr(pilot, 'legal_guard', None), predict_drops=a.predict_drops, own_effects=bool(getattr(a, 'own_effects', False)),
                 iw_press_pstar=a.iw_press_pstar, hero_ability_spec=getattr(a, "hero_ability_spec", "off"),
               identity_ext=bool(getattr(pilot, "identity_ext", False)), decision_options=vars(pilot.decision_options), live_options=a.live_options,
-              **({'posture_head': posture_summary(pilot.posture)} if pilot.posture else {}))))   # C1: absent = off
+              **({'posture_head': posture_summary(pilot.posture)} if getattr(pilot, 'posture', None) else {}))))   # C1: absent = off
         return 0
     nav = None
     if a.matches > 1 or a.nav_dry_run:
@@ -971,7 +987,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                 W(event="frame", t_dev=t_dev, tick=tick, my_side=side, elixir=me["elixir_raw"] / 1e4, backlog=q.qsize(),
                   opp_elixir_true_EVAL_ONLY=opp["elixir_raw"] / 1e4, opp_elixir_est=opp_est,
                   ents=[[e["side"], e["x"], e["y"], e["card_id"], e["hp"], e["max_hp"], e["kind"], e["address"]]
-                        for e in f["entities"]])
+                        for e in f["entities"]], **(frame_extras(f) if getattr(a, "log_frames", False) else {}))
             hids = hero_ids(me)
             if button:                                   # screenshot only after the hero was played (not in hand)
                 button.want = bool(hids) and any(i not in me["hand_deck_indices"] for i, fl in
