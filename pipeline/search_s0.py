@@ -22,6 +22,12 @@ WHICH MODEL PLAYS WHICH ROLE
   ``posture_every`` ticks from its g + public ctx) as a gate-threshold offset on our side: + dtau on the tau in force
   (plain tau, or tau_phase / tau_threatened via decide_batch's tau_delta; e1_eval.posture_live; the sample policy
   through sample_decide_batch); each match line gets ``posture_shares`` / ``posture_decisions`` / ``posture_choices``.
+  ABILITY (rl_royale B6): a ``--gen`` checkpoint carrying rl["ability_head"] decides OUR hero / champion presses
+  GREEDILY (press iff p > 0.5, e1_eval.ability_decide; needs --hero-abilities; the opponent keeps the rule); the line
+  gets ``ability_head`` {decisions, presses, p_mean}. ``--ability-stats`` (opt-in, any checkpoint) adds
+  ``ability_stats`` = our accepted presses, elixir on them, enemy bodies in the ability radius at the press and how many
+  of those lost HP / died within 2 s (royale_env ability_outcomes; any damage source). Our side in a fork does not
+  decide presses (its rule is off too).
   Our side inside a search fork does not apply it. No head = unchanged.
 
 DESIGN (lead-fixed, L69 ticket S0)
@@ -496,6 +502,7 @@ class Runner:
                 **({'behaviour': r['behaviour']} if 'behaviour' in r else {}),
                 **({'public_lookahead_counts': r['public_lookahead_counts']} if 'public_lookahead_counts' in r else {}),
                 **({k: r[k] for k in ("forms_mode", "form_fallbacks")} if "forms_mode" in r else {}),
+                **{k: r[k] for k in ("ability_head", "ability_stats") if k in r},   # B6 / --ability-stats
                 **self.posture_fields(m.learner),
                 "wall_s": round(time.perf_counter() - t0, 1)}
 
@@ -524,6 +531,7 @@ class Runner:
             if s.cfg.get("policy") == "sample":   # --opp-policy sample (lead 2026-10-08); --learner-policy sample (10-13)
                 d = E.sample_decide_batch(s.model, enc, heads, [p], allowed[None], np.array([stalled]), [s], s.cfg)[0]
             else:                                 # rl_royale C1: posture_live (no cfg posture = tau / kwargs unchanged)
+                E.ability_decide([s], enc, s.cfg)  # rl_royale B6: greedy learned press (no cfg ability = no-op)
                 tau, kw = E.posture_live([s], enc, s.cfg, s.cfg["tau"], decision_match_kwargs([s]))
                 d = live_decide_batch(s.model, enc, heads, [p], allowed[None], np.array([stalled]), tau=tau,
                                       device=s.cfg["device"], **kw)[0]
@@ -635,6 +643,14 @@ def _init_worker(args: dict) -> None:
     posture = load_posture_head(gp, dev) if gp.is_file() else None   # our gate (posture_live / sample_decide_batch);
     if posture is not None:                                 # not a file = load_policy was stubbed (tests): no head
         learner_cfg['posture'] = posture
+    from pipeline.rl_royale import load_ability_head
+    # rl_royale B6: the learned press, greedy. ponytail: only a .pt file is read (the posture test stubs load_policy
+    # with a .py path); a head inside a checkpoint of another suffix would be ignored.
+    ability = load_ability_head(gp, dev) if gp.is_file() and gp.suffix == ".pt" else None
+    if ability is not None:
+        if not args.get("hero_abilities"):
+            raise ValueError(f"{args['gen']} carries an ability head: run with --hero-abilities (else it never decides)")
+        learner_cfg['ability'] = ability
     if args.get('behaviour_telemetry'):
         learner_cfg['behaviour_telemetry'] = True
     if args.get('predict_drops'):
@@ -649,7 +665,8 @@ def _init_worker(args: dict) -> None:
     _W["runner"] = Runner(gen, opps, learner_cfg,
                           lambda: RoyaleSelfPlayEnv(decision_ticks=10, tail_cap=cap, forms_mode=fm,
                                                     hero_abilities=args.get("hero_abilities", False),
-                                                    ability_policy=args.get("ability_policy", "generic")),
+                                                    ability_policy=args.get("ability_policy", "generic"),
+                                                    ability_outcomes=bool(args.get("ability_stats"))),
                           horizon_s=args["horizon"], interval=args["interval"], topk=args["topk"], cells=args["cells"],
                           search_min_p=args["search_min_p"], rollout_self=args.get("rollout_self", "idle"),
                           scorer_version=args.get("scorer", "v1"))
@@ -810,6 +827,9 @@ def main(argv=None) -> int:
     ap.add_argument("--ability-policy", default="generic", choices=("generic", "v2"),
                     help="with --hero-abilities: generic = the range rule above (today); v2 = L70 per-ability calibrated "
                          "press model (heroes and champions; royale_env V2_KEYS)")
+    ap.add_argument("--ability-stats", action="store_true",
+                    help="with --hero-abilities: each line gets ability_stats (our presses, elixir on them, enemies in "
+                         "radius at the press and how many lost HP / died within 2 s); default off = unchanged")
     ap.add_argument("--forms-mode", default="base", choices=("base", "deck"),
                     help="RoyaleSim card forms: base = every card as its base card (today); deck = decked evolutions / "
                          "heroes the engine loads, refused forms fall back to base (royale_env docstring)")
@@ -838,6 +858,8 @@ def main(argv=None) -> int:
         ap.error('--probe-xbow-focus needs --arms plain and --learner-policy live')
     if a.ability_policy == "v2" and not a.hero_abilities:
         ap.error("--ability-policy v2 needs --hero-abilities")
+    if a.ability_stats and not a.hero_abilities:
+        ap.error("--ability-stats needs --hero-abilities")
     try:
         E.opp_tempo({}, a.opp_decide_every, a.opp_reaction_ticks)
     except ValueError as exc:
@@ -888,10 +910,12 @@ def main(argv=None) -> int:
         wargs['record_plays'] = True
     if a.probe_xbow_focus:
         wargs['probe_xbow_focus'] = True
+    if a.ability_stats:
+        wargs['ability_stats'] = True
     for k in ('opp_decide_every', 'opp_reaction_ticks'):
         if getattr(a, k) is not None:
             wargs[k] = getattr(a, k)
-    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads', 'learner_T_gate') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays', 'probe_xbow_focus') or v) and (k not in ('opp_decide_every', 'opp_reaction_ticks') or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
+    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads', 'learner_T_gate') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays', 'probe_xbow_focus', 'ability_stats') or v) and (k not in ('opp_decide_every', 'opp_reaction_ticks') or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
                                                 "gen_sha256": sha256(REPO / a.gen), "opp_gen_sha256": opp_sha,
                                                 "s1_sha256": sha256(REPO / a.s1),
                                                 "tau_plain": TAU_PLAIN, "tau_opp": TAU_OPP, "crown_w": CROWN_W,

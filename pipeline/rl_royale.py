@@ -54,6 +54,16 @@ argmax in screens and in search_s0 (e1_eval ``posture_dtau``). The choice is an 
 term on the row's GAE advantage + ``posture_ent_coef`` x its entropy (``minibatch_loss``); the gate's log-prob uses
 tau + dtau of the posture in force. The head is the Learner's (own Adam; checkpoint rl["posture_head"] + rl["posture"]
 metadata), sent to actors inside the weights message under ``POSTURE_SD`` keys (``actor_bytes`` / ``split_actor_sd``).
+B6 stage A (``ability_head: on``, gae only, opt-in; absent / null / false = unchanged, same config hash; owner 10-15/16:
+the bait deck's Hero Valkyrie ability): the LEARNER's hero / champion presses are decided by ``AbilityHead``(g detached,
+the button's public board features, royale_env ``_ability_head_features``) -- one Bernoulli press / no-press at each
+learner decision with a pressable button (e1_eval ``ability_decide``: sampled in rollouts, p > 0.5 in screens and
+search_s0); a press goes through the rule's own queue / recheck / ``eng.act`` path and the rule never presses for that
+side (``learned_sides``); opponents keep ``ability_policy``. Credit: its own PPO-clip term on the decision row's GAE
+advantage + ``ability_ent_coef`` x its entropy (``minibatch_loss``); own Adam (``ability_lr``); checkpoint
+rl["ability_head"] / ["ability_optimizer"] / ["ability"]; weights message keys ``ABILITY_SD``. Warm start
+(``_ability_warm_start``): ``ability_bc_matches`` rollouts with the RULE pressing record the rule's q at every pressable
+decision, the head is fitted to it (``ability_bc_fit``) before the init screen and u0000.
 
     research/ext/Royale/.venv/Scripts/python.exe -m pipeline.rl_royale --config pipeline/rl_royale.yaml --run NAME
     ... --smoke          E=4, G=2, 1 actor, 2 updates + the checks below; prints SMOKE PASS, exits 0
@@ -212,6 +222,8 @@ def actor_cfg(base: dict, kind: str, aid: int, dev: str) -> dict:
                           "mode": "sample" if kind == "rollout" else "argmax"}
     if kind == "rollout" and base.get("kl_ref_gate_max_elixir") is not None:
         cfg["record_elixir"] = True                           # F6': each row carries its exact own elixir
+    if base.get("ability") is not None:                       # B6: sampled in rollouts, greedy in screens; actor_main
+        cfg["ability"] = {"mode": "sample" if kind == "rollout" else "greedy"}   # attaches the head (or: label mode)
     return cfg
 
 
@@ -258,6 +270,60 @@ POSTURE_DEFAULTS = {"posture_every": 200, "posture_dtau": [0.10, 0.0, -0.10], "p
 POSTURE_KEYS = ("posture_head",) + tuple(POSTURE_DEFAULTS)
 POSTURE_HIDDEN, POSTURE_P_BALANCED = 64, 0.8        # PostureHead width; P(balanced) at init
 POSTURE_SD = "__posture__."                          # actor weights message: the head's tensors under this prefix
+# B6 stage A (``ability_head``, gae only, optional keys: absent / null / false = off, same hash): the LEARNER's hero /
+# champion ability presses decided by a learned Bernoulli head instead of the press rule (opponents keep the rule).
+ABILITY_DEFAULTS = {"ability_ent_coef": 0.01, "ability_lr": 3e-4,   # the posture head's lr (a fresh head moves at it)
+                    "ability_bc_matches": 128,     # imitation warm start: rollouts with the RULE pressing (labels)
+                    "ability_bc_steps": 300, "ability_bc_lr": 1e-3}  # ... full-batch soft-BCE steps on the rule's q
+ABILITY_KEYS = ("ability_head",) + tuple(ABILITY_DEFAULTS)
+ABILITY_HIDDEN, ABILITY_P0 = 64, 0.1                  # AbilityHead width; P(press) at init before the warm start
+ABILITY_SD = "__ability__."                          # actor weights message: the ability head's tensors
+SMOKE_AB_BC = 8                                      # --smoke with ability_head: warm-start rollouts (not 128)
+
+
+def ability_cfg(cfg: dict) -> Optional[dict]:
+    """The B6 keys of a config, validated (SystemExit naming the bad key): None when ``ability_head`` is absent / null /
+    false (the other ability keys must then be unset), else {ent_coef, lr, bc_matches, bc_steps, bc_lr}. Needs advantage
+    gae (the press is credited with its row's GAE advantage) and no branch_gate. hero_abilities false is ALLOWED (the
+    head then never sees a pressable button: a no-op the Learner logs), so the plain smoke runs with the key."""
+    on = cfg.get("ability_head")
+    if on is None or on is False:
+        stray = [k for k in ABILITY_DEFAULTS if cfg.get(k) is not None]
+        if stray:
+            raise SystemExit(f"bad ability config: {stray} set without ability_head on")
+        return None
+    num = (lambda v: isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v))
+    intk = (lambda v, lo: isinstance(v, int) and not isinstance(v, bool) and v >= lo)
+    c = {k: (v if cfg.get(k) is None else cfg[k]) for k, v in ABILITY_DEFAULTS.items()}
+    bad = []
+    if on is not True and on != "on":
+        bad.append(f"ability_head must be on / true (or absent / null / false), got {on!r}")
+    if not (num(c["ability_ent_coef"]) and c["ability_ent_coef"] >= 0.0):
+        bad.append(f"ability_ent_coef must be a finite number >= 0, got {c['ability_ent_coef']!r}")
+    for k in ("ability_lr", "ability_bc_lr"):
+        if not (num(c[k]) and c[k] > 0.0):
+            bad.append(f"{k} must be a finite number > 0, got {c[k]!r}")
+    for k in ("ability_bc_matches", "ability_bc_steps"):
+        if not intk(c[k], 0):
+            bad.append(f"{k} must be an integer >= 0, got {c[k]!r}")
+    if cfg.get("advantage", "match_loo") != "gae":
+        bad.append(f"ability_head needs advantage gae (refusing {cfg.get('advantage', 'match_loo')!r})")
+    if cfg.get("branch_gate"):
+        bad.append("ability_head with branch_gate is not supported (branch workers press with the rule)")
+    if bad:
+        raise SystemExit("bad ability config: " + "; ".join(bad))
+    return {"ent_coef": float(c["ability_ent_coef"]), "lr": float(c["ability_lr"]),
+            "bc_matches": int(c["ability_bc_matches"]), "bc_steps": int(c["ability_bc_steps"]),
+            "bc_lr": float(c["ability_bc_lr"])}
+
+
+def store_ability_cfg(cfg: dict) -> Optional[dict]:
+    """Learner.__init__'s B6 step: validate (``ability_cfg``) and, with the head on, write every ABILITY_DEFAULTS key
+    back into ``cfg`` as its validated value (the posture_lr lesson: every later reader finds every key)."""
+    ac = ability_cfg(cfg)
+    if ac is not None:
+        cfg.update(ability_head=True, **{f"ability_{k}": v for k, v in ac.items()})
+    return ac
 
 
 def posture_cfg(cfg: dict) -> Optional[dict]:
@@ -935,6 +1001,70 @@ def load_posture_head(path, device: str = "cpu") -> Optional[dict]:
             "mode": "argmax"}
 
 
+class AbilityHead(torch.nn.Module):
+    """B6 (``ability_head``): Linear(d_g + E.ABILITY_FEAT_N, 64) -> ReLU -> Linear(64, 1) = the press logit of one
+    pressable hero / champion button, from the trunk feature g (DETACHED: no ability gradient ever reaches the trunk,
+    whose KL leash only watches gate / card / cell) + the button's public board features
+    (``royale_env._ability_head_features``). Last layer weight 0, bias logit(ABILITY_P0) at init (the imitation warm
+    start, ``ability_bc_fit``, then refits it). Owned by the Learner, never part of the model's state_dict."""
+
+    def __init__(self, d_g: int, hidden: int = ABILITY_HIDDEN, n_feat: int = E.ABILITY_FEAT_N):
+        super().__init__()
+        self.net = torch.nn.Sequential(torch.nn.Linear(int(n_feat) + int(d_g), int(hidden)), torch.nn.ReLU(),
+                                       torch.nn.Linear(int(hidden), 1))
+        torch.nn.init.zeros_(self.net[2].weight)
+        with torch.no_grad():
+            self.net[2].bias.fill_(_logit(ABILITY_P0))
+
+    def forward(self, g: torch.Tensor, feat: torch.Tensor) -> torch.Tensor:
+        g = g.detach()
+        return self.net(torch.cat([feat.to(g.dtype), g], dim=1)).squeeze(-1)
+
+
+def load_ability_head(path, device: str = "cpu") -> Optional[dict]:
+    """search_s0: the trained ability head of an RL checkpoint (rl["ability_head"] + rl["ability"]) as an e1_eval
+    cfg["ability"] in GREEDY mode (press iff p > 0.5); None when the checkpoint has none."""
+    rl = torch.load(path, map_location="cpu").get("rl") or {}
+    if "ability_head" not in rl:
+        return None
+    meta = rl["ability"]
+    head = AbilityHead(int(meta["d_g"]), int(meta.get("hidden", ABILITY_HIDDEN)), int(meta.get("n_feat", E.ABILITY_FEAT_N)))
+    head.load_state_dict(rl["ability_head"])
+    return {"head": head.to(device).eval(), "mode": "greedy"}
+
+
+def trunk_g(model, B: dict, idx) -> torch.Tensor:
+    """The trunk feature g of rows ``idx`` (S1 encode or GenModel encode_gen, as policy_terms)."""
+    if "hand_card" in B:
+        return model.encode_gen({k: B[k][idx] for k in E.gen_row_keys(model)})["g"]
+    return model.encode(B["tok"][idx], B["mask"][idx], B["sc"][idx], B["past"][idx])["g"]
+
+
+def ability_bc_fit(head, g: torch.Tensor, feat: torch.Tensor, q: torch.Tensor, steps: int, lr: float) -> dict:
+    """The imitation warm start: the head's bias set to logit(mean q) (the rule's press rate per decision), then
+    ``steps`` full-batch Adam steps of soft BCE(sigmoid(head(g, feat)), q) -- q = the rule's own press probability at
+    that decision (v2: 1 - (1 - p)^dt; a range-rule card: whether it pressed). -> monitors (BCE before / after and its
+    floor = the mean entropy of q, mean q, mean p before / after). Deterministic (no RNG)."""
+    q = q.to(torch.float32)
+    qm = float(q.mean())
+    with torch.no_grad():
+        head.net[2].bias.fill_(_logit(min(max(qm, 1e-3), 1 - 1e-3)))
+    bce = (lambda: Fn.binary_cross_entropy_with_logits(head(g, feat), q))
+    with torch.no_grad():
+        b0, p0 = float(bce()), float(torch.sigmoid(head(g, feat)).mean())
+    opt = torch.optim.Adam(head.parameters(), lr=float(lr))
+    for _ in range(int(steps)):
+        opt.zero_grad(set_to_none=True)
+        loss = bce()
+        loss.backward()
+        opt.step()
+    with torch.no_grad():
+        qc = q.clamp(1e-6, 1 - 1e-6)
+        floor = float((-(qc * qc.log() + (1 - qc) * (1 - qc).log())).mean())
+        return {"n": int(len(q)), "q_mean": qm, "bce_before": b0, "bce_after": float(bce()), "bce_floor": floor,
+                "p_mean_before": p0, "p_mean_after": float(torch.sigmoid(head(g, feat)).mean()), "steps": int(steps)}
+
+
 def critic_logits(model, g: torch.Tensor, ctx_head=None, ctx=None) -> torch.Tensor:
     """The critic's 7 logits on trunk feature g: ``model.value_head(g)`` (+ ``ctx_head(ctx, g)`` under critic_ctx)."""
     out = model.value_head(g)
@@ -1414,6 +1544,8 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
         k = (t["gate_sampled"] | t["played"]) if len(t["played"]) else np.zeros(0, dtype=bool)
         if "posture_new" in t and len(t["played"]):          # C1: a row that chose the posture is kept (its log-prob)
             k = k | t["posture_new"]
+        if "ab_sampled" in t and len(t["played"]):           # B6: a row with a press decision is kept (its log-prob)
+            k = k | t["ab_sampled"]
         keep.append(k)
     n_rows = [int(k.sum()) for k in keep]
     W = match_weights(n_rows)
@@ -1442,6 +1574,12 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
         nc = {j: int(results[j]["traj"]["posture_new"][keep[j]].sum()) for j in use}
         Mp = max(1, sum(1 for n in nc.values() if n))           # w_post: each match's choices sum to 1/Mp
         B["w_post"] = cat(lambda j: np.where(results[j]["traj"]["posture_new"][keep[j]], 1.0 / (max(nc[j], 1) * Mp), 0.0))
+    if use and "ab_sampled" in results[use[0]]["traj"]:              # B6: the press decisions (actor cfg ability)
+        for k in ("ab_sampled", "ab_press", "ab_lp", "ab_feat"):
+            B[k] = cat(lambda j, k=k: results[j]["traj"][k][keep[j]])
+        na = {j: int(results[j]["traj"]["ab_sampled"][keep[j]].sum()) for j in use}
+        Ma = max(1, sum(1 for n in na.values() if n))           # w_ab: each match's decisions sum to 1/Ma
+        B["w_ab"] = cat(lambda j: np.where(results[j]["traj"]["ab_sampled"][keep[j]], 1.0 / (max(na[j], 1) * Ma), 0.0))
     sh = None
     if advantage == "gae":
         rs = terminal_rewards(n_rows, [r["outcome"] for r in results])
@@ -1841,7 +1979,7 @@ def ref_terms(ref, B: dict, tau: float, T: float, chunk: int = 512, T_gate: Opti
 
 def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: float, beta: float,
                    n_total: int, vf: Optional[dict] = None, T_gate: Optional[float] = None,
-                   posture: Optional[dict] = None) -> tuple[torch.Tensor, dict]:
+                   posture: Optional[dict] = None, ability: Optional[dict] = None) -> tuple[torch.Tensor, dict]:
     """PPO-clip on the joint log pi = lp_gate + g (lp_card + lp_cell) (E1 3.3) with per-match weights, scaled by
     n_total / |mb| so each minibatch estimates the full-batch loss; + beta (mean KL_gate + mean KL_card + mean KL_cell).
     ``vf`` (gae mode: {coef, clip, policy}): + coef x the PPO-clipped value loss 0.5 max((V - ret)^2, (V_old +
@@ -1855,7 +1993,10 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
     ``posture`` (C1 {head, ent_coef}): + its own PPO-clip term on the rows that CHOSE a posture, r = pi_new(z) /
     pi_old(z) (``B["posture_lp"]``) with the row's A, weighted by ``B["w_post"]`` (each match's choices sum to 1/M) and
     scaled like L_pg, minus ent_coef x the same-weighted entropy of the head; the head reads g detached, so this term
-    reaches the head only. Dropped with L_pg in the critic warm-up."""
+    reaches the head only. Dropped with L_pg in the critic warm-up.
+    ``ability`` (B6 {head, ent_coef}): the same construction for the press decisions (``B["ab_sampled"]`` rows):
+    r = pi_new(a) / pi_old(a) of the Bernoulli press (``B["ab_lp"]``), the row's A, weights ``B["w_ab"]``, minus
+    ent_coef x the head's weighted Bernoulli entropy; reaches the AbilityHead only (g detached)."""
     t = policy_terms(model, B, idx, tau, T, value=vf is not None,
                      value_trunk=True if vf is None else bool(vf.get("trunk_grad", True)), T_gate=T_gate,
                      ctx_head=None if vf is None else vf.get("ctx_head"))
@@ -1895,6 +2036,22 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
             with torch.no_grad():
                 pst.update(l_post=float(l_post), post_ratio_maxdev=float((pr - 1).abs().max()),
                            ent_posture=float(cat_ent(lp_all).mean()))
+    ast = None
+    if ability is not None:
+        ch = B["ab_sampled"][idx]
+        ast = {"l_ab": None, "ab_ratio_maxdev": None, "ent_ability": None, "ab_n": int(ch.sum())}
+        if ch.any():
+            ii = idx[ch]
+            za = ability["head"](t["g"][ch], B["ab_feat"][ii]).double()
+            lpa = torch.where(B["ab_press"][ii], Fn.logsigmoid(za), Fn.logsigmoid(-za))
+            ar = torch.exp(lpa - B["ab_lp"][ii])
+            Aa, wa = B["A"][ii], B["w_ab"][ii]
+            l_ab = (wa * -torch.min(ar * Aa, ar.clamp(1 - clip, 1 + clip) * Aa)).sum() * (n_total / len(idx))
+            ent_a = (wa * bern_ent(za)).sum() * (n_total / len(idx))
+            loss = loss + l_ab - float(ability["ent_coef"]) * ent_a
+            with torch.no_grad():
+                ast.update(l_ab=float(l_ab), ab_ratio_maxdev=float((ar - 1).abs().max()),
+                           ent_ability=float(bern_ent(za).mean()))
     if vf is not None:
         v, v_old, ret = t["v"], B["v_old"][idx], B["ret"][idx]
         v_clip = v_old + (v - v_old).clamp(-float(vf["clip"]), float(vf["clip"]))
@@ -1915,6 +2072,8 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
             st["l_v"] = float(l_v)
         if pst is not None:
             st.update(pst)
+        if ast is not None:
+            st.update(ast)
     return loss, st
 
 
@@ -1942,7 +2101,7 @@ def vf_grad_share(model, B: dict, R: dict, cfg: dict, beta: float, vf: dict) -> 
 
 
 def ppo_update(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.random.Generator,
-               vf: Optional[dict] = None, posture: Optional[dict] = None) -> dict:
+               vf: Optional[dict] = None, posture: Optional[dict] = None, ability: Optional[dict] = None) -> dict:
     """``ppo_epochs`` passes over the batch in random minibatches. Returns the monitors; ``first`` = epoch 0 minibatch 0
     (the on-policy check), ``nonfinite`` set (and the step skipped) on a non-finite loss or gradient norm.
     ``vf`` (gae mode, ``minibatch_loss``): + ``l_v``; ``vf["policy"]`` False = critic warm-up: ONLY ``value_head``
@@ -1951,20 +2110,21 @@ def ppo_update(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
     frozen: it trains with the value head) and its own Adam, stepped with ``opt``; its grad norm is clipped
     separately at grad_clip, so the model's clipping is exactly the plain critic's.
     ``posture`` (C1 {head, opt, ent_coef}): the posture term (``minibatch_loss``) and the head's own Adam, stepped with
-    ``opt``, grad norm clipped separately at grad_clip; no step in the critic warm-up (the term is dropped there)."""
+    ``opt``, grad norm clipped separately at grad_clip; no step in the critic warm-up (the term is dropped there).
+    ``ability`` (B6 {head, opt, ent_coef}): the press term and the AbilityHead's own Adam, exactly as ``posture``."""
     frozen = [p for n, p in model.named_parameters()
               if vf is not None and not vf["policy"] and not n.startswith("value_head.") and p.requires_grad]
     for p in frozen:
         p.requires_grad_(False)
     try:
-        return _ppo_steps(model, opt, B, R, cfg, beta, rng, vf, posture)
+        return _ppo_steps(model, opt, B, R, cfg, beta, rng, vf, posture, ability)
     finally:
         for p in frozen:
             p.requires_grad_(True)
 
 
 def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.random.Generator,
-               vf: Optional[dict], posture: Optional[dict] = None) -> dict:
+               vf: Optional[dict], posture: Optional[dict] = None, ability: Optional[dict] = None) -> dict:
     N = len(B["A"])
     dev = B["A"].device
     mb = int(cfg["minibatch"])
@@ -1974,12 +2134,15 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
     avg = (lambda xs: float(np.mean(xs)) if xs else None)
     ctx_opt = None if vf is None else vf.get("ctx_opt")
     post_opt = None if posture is None else posture["opt"]
+    ab_opt = None if ability is None else ability["opt"]
 
     def summary(nonfinite: Optional[str]) -> dict:
         """Every key present even on the non-finite early exit (one_update logs them; None = not measured)."""
         return {"first": first, "nonfinite": nonfinite, "steps": len(ratios),
                 **({"l_post": mean(last_ep, "l_post"), "ent_posture": mean(ep0, "ent_posture")}
                    if posture is not None else {}),
+                **({"l_ab": mean(last_ep, "l_ab"), "ent_ability": mean(ep0, "ent_ability")}
+                   if ability is not None else {}),
                 "kl_gate": mean(last_ep, "kl_gate"), "kl_card": mean(last_ep, "kl_card"),
                 "kl_cell": mean(last_ep, "kl_cell"), "l_pg": mean(last_ep, "l_pg"),
                 **({"kl_gate_imit_low": mean(last_ep, "kl_gate_imit_low")} if "low" in R else {}),
@@ -1993,7 +2156,8 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
             idx = perm[s:s + mb]
             loss, st = minibatch_loss(model, B, R, idx, tau=cfg["tau"], T=cfg["T"], clip=cfg["clip"], beta=beta,
                                       n_total=N, vf=vf, T_gate=cfg.get("T_gate"),
-                                      **({"posture": posture} if posture is not None else {}))
+                                      **({"posture": posture} if posture is not None else {}),
+                                      **({"ability": ability} if ability is not None else {}))
             if first is None:
                 first = st
             if not torch.isfinite(loss):
@@ -2003,6 +2167,8 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
                 ctx_opt.zero_grad(set_to_none=True)
             if post_opt is not None:
                 post_opt.zero_grad(set_to_none=True)
+            if ab_opt is not None:
+                ab_opt.zero_grad(set_to_none=True)
             loss.backward()
             gn = torch.nn.utils.clip_grad_norm_(model.parameters(), float(cfg["grad_clip"]))
             if not torch.isfinite(gn):
@@ -2017,6 +2183,11 @@ def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
                 if not torch.isfinite(gp):
                     return summary(f"posture_head grad norm {float(gp)} at epoch {ep} minibatch {s // mb}")
                 post_opt.step()
+            if ab_opt is not None:
+                ga = torch.nn.utils.clip_grad_norm_(ability["head"].parameters(), float(cfg["grad_clip"]))
+                if not torch.isfinite(ga):
+                    return summary(f"ability_head grad norm {float(ga)} at epoch {ep} minibatch {s // mb}")
+                ab_opt.step()
             opt.step()
             (ep0 if ep == 0 else []).append(st)
             if ep == int(cfg["ppo_epochs"]) - 1:
@@ -2113,6 +2284,9 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
             net = model = S1Model(d=int(base["d"]), layers=int(base["layers"])).to(dev).eval()
         pb = base.get("posture")                              # C1: the head's weights arrive with each message
         phead = PostureHead(int(pb["d_g"]), int(pb.get("hidden", POSTURE_HIDDEN))).to(dev).eval() if pb else None
+        ab = base.get("ability")                              # B6: likewise
+        ahead = AbilityHead(int(ab["d_g"]), int(ab.get("hidden", ABILITY_HIDDEN)),
+                            int(ab.get("n_feat", E.ABILITY_FEAT_N))).to(dev).eval() if ab else None
         send(("ready", aid, gen, os.getpid()))
     except Exception:
         send(("error", aid, gen, traceback.format_exc()))
@@ -2133,10 +2307,13 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
             if dev.startswith("cuda"):
                 torch.cuda.reset_peak_memory_stats()
             msd, psd = split_actor_sd(sd, dev)
+            asd = pop_prefix(msd, ABILITY_SD)
             net.load_state_dict(msd)
             net.eval()
             if psd:                                           # C1: this update's posture head
                 phead.load_state_dict(psd)
+            if asd:                                           # B6: this update's ability head
+                ahead.load_state_dict(asd)
 
             def mk_cfg(k):
                 """actor_cfg + the posture head when the message carried one (none: the ref's screen = no posture)."""
@@ -2146,6 +2323,13 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
                         c["posture"] = {**c["posture"], "head": phead}
                     else:
                         del c["posture"]
+                if "ability" in c:                            # B6: no head in the message -> the rule presses; a
+                    if asd:                                   # rollout then records the rule's labels (warm start)
+                        c["ability"] = {**c["ability"], "head": ahead}
+                    elif k == "rollout":
+                        c["ability"] = {"mode": "label"}
+                    else:
+                        del c["ability"]
                 return c
             cfg = mk_cfg(kind)
             results, skipped = [], []
@@ -2166,7 +2350,7 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
                 for pth in need - set(opp_cache):
                     pol, mi = E.load_policy(REPO / pth, dev)
                     opp_cache[pth] = (pol, str(mi.get("grid", "floor")))
-                ocfg0 = {k: v for k, v in cfg.items() if k != "posture"}     # C1: the learner's posture only
+                ocfg0 = {k: v for k, v in cfg.items() if k not in ("posture", "ability")}   # C1 / B6: the learner's only
                 opps = {j[1]["opp"]["id"]: (opp_cache[j[1]["opp"]["path"]][0],
                                             {**ocfg0, "policy": base["league_opp_policy"], "record": False, "T_gate": None,
                                              "T": opp_T(base),
@@ -2532,11 +2716,13 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                 and k not in ("league_learner_icebow_share", "learner_pipeline_frac", "league_opp_T", "kl_ref_gate",
                               "critic_ctx", "kl_ref_gate_max_elixir", "kl_ref_gate_target_frac",
                               "league_exploiters") + OPP_TEMPO_KEYS
-                and k not in POSTURE_KEYS):
+                and k not in POSTURE_KEYS and k not in ABILITY_KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
         cfg[k] = yaml.safe_load(v)
     if type(cfg["hero_abilities"]) is not bool:
         raise SystemExit("hero_abilities must be a bool")
+    if smoke and cfg.get("ability_head") not in (None, False) and cfg.get("ability_bc_matches") is None:
+        cfg["ability_bc_matches"] = SMOKE_AB_BC                # B6: a smoke-sized warm start (unless set explicitly)
     if cfg.get("stall_elixir") is not None:   # owner 2026-10-07: no anti-stall in training, ever (live has none)
         raise SystemExit("stall_elixir must be null: the anti-stall was removed permanently (owner 2026-10-07)")
     if cfg.get("ability_policy", "generic") not in ("generic", "v2"):
@@ -2586,6 +2772,11 @@ def config_sha(cfg: dict) -> str:
         cfg = {**cfg, "posture_head": True, **{k: (v if cfg.get(k) is None else cfg[k]) for k, v in POSTURE_DEFAULTS.items()}}
         if isinstance(cfg["posture_dtau"], (list, tuple)):
             cfg["posture_dtau"] = [float(x) for x in cfg["posture_dtau"]]
+    if cfg.get("ability_head") is None or cfg.get("ability_head") is False:   # B6 off (absent / null / false) = historical
+        cfg = {k: v for k, v in cfg.items() if k not in ABILITY_KEYS}
+    else:                                                    # B6 on: defaults filled, one hash for implicit / explicit
+        cfg = {**cfg, "ability_head": True,
+               **{k: (v if cfg.get(k) is None else cfg[k]) for k, v in ABILITY_DEFAULTS.items()}}
     return hashlib.sha256(json.dumps(cfg, sort_keys=True, default=str).encode()).hexdigest()
 
 
@@ -2609,22 +2800,29 @@ def state_bytes(model) -> bytes:
     return buf.getvalue()
 
 
-def actor_bytes(model, posture_head=None) -> bytes:
+def actor_bytes(model, posture_head=None, ability_head=None) -> bytes:
     """The actors' weights message: ``state_bytes(model)`` exactly without a head; C1 adds the posture head's tensors
-    under ``POSTURE_SD`` keys (``split_actor_sd`` separates them)."""
-    if posture_head is None:
+    under ``POSTURE_SD`` keys, B6 the ability head's under ``ABILITY_SD`` (``split_actor_sd`` / ``pop_prefix``)."""
+    if posture_head is None and ability_head is None:
         return state_bytes(model)
     buf = io.BytesIO()
     torch.save({**{k: v.detach().cpu() for k, v in model.state_dict().items()},
-                **{POSTURE_SD + k: v.detach().cpu() for k, v in posture_head.state_dict().items()}}, buf)
+                **({POSTURE_SD + k: v.detach().cpu() for k, v in posture_head.state_dict().items()}
+                   if posture_head is not None else {}),
+                **({ABILITY_SD + k: v.detach().cpu() for k, v in ability_head.state_dict().items()}
+                   if ability_head is not None else {})}, buf)
     return buf.getvalue()
+
+
+def pop_prefix(sd: dict, prefix: str) -> dict:
+    """Remove the ``prefix`` keys from ``sd`` (in place) -> them, prefix stripped ({} when none)."""
+    return {k[len(prefix):]: sd.pop(k) for k in [k for k in sd if k.startswith(prefix)]}
 
 
 def split_actor_sd(sd: bytes, dev) -> tuple[dict, dict]:
     """-> (the model's state_dict, the posture head's ({} when the message has none))."""
     msd = torch.load(io.BytesIO(sd), map_location=dev)
-    psd = {k[len(POSTURE_SD):]: msd.pop(k) for k in [k for k in msd if k.startswith(POSTURE_SD)]}
-    return msd, psd
+    return msd, pop_prefix(msd, POSTURE_SD)
 
 
 def screen_score(results: list[dict], init: Optional[dict]) -> dict:
@@ -2675,6 +2873,7 @@ class Learner:
         if gate_lo_cfg(cfg) is not None:                      # ... and the F6' keys; the frac default stored
             cfg["kl_ref_gate_target_frac"] = gate_lo_cfg(cfg)["frac"]
         pc = store_posture_cfg(cfg)                           # ... and the C1 keys; the defaults stored
+        abc = store_ability_cfg(cfg)                          # ... and the B6 keys; the defaults stored
         bc = branch_cfg(cfg)                                 # ... and the branch (opt3) keys
         if bc["branch_gate"]:
             try:
@@ -2709,6 +2908,8 @@ class Learner:
             self._ctx_setup()
         if pc is not None:                                    # C1: the posture head + its own Adam
             self._posture_setup()
+        if abc is not None:                                   # B6: the ability head + its own Adam
+            self._ability_setup()
         if branch_cfg(cfg)["branch_gate"]:                   # opt3: the branch step's OWN Adam (never PPO's state)
             self.branch_opt = self._branch_optimizer(branch_cfg(cfg))
         self.beta, self.update = float(cfg["beta0"]), 0
@@ -2750,11 +2951,85 @@ class Learner:
         return {"every": int(self.cfg["posture_every"]), "dtau": [float(x) for x in self.cfg["posture_dtau"]],
                 "d_g": int(self.model.value_head.in_features), "hidden": POSTURE_HIDDEN}
 
+    def _ability_setup(self) -> None:
+        """B6: ``self.ability_head`` (``AbilityHead`` on g's width; first layer drawn inside fork_rng from its own seed,
+        global torch RNG untouched) and ``self.ability_opt`` (Adam, ability_lr). Neither is in the model's state_dict;
+        the checkpoint carries rl["ability_head"] / ["ability_optimizer"] / ["ability"]."""
+        with torch.random.fork_rng(devices=list(range(torch.cuda.device_count()))):
+            torch.manual_seed(zlib.crc32(f"ability:{int(self.cfg['seed'])}".encode()))
+            self.ability_head = AbilityHead(self.model.value_head.in_features).to(self.dev)
+        self.ability_opt = torch.optim.Adam(self.ability_head.parameters(), lr=float(self.cfg["ability_lr"]))
+        self.ability_bc = None                                # the warm start's monitors (``_ability_warm_start``)
+
+    def _ability_meta(self) -> dict:
+        return {"d_g": int(self.model.value_head.in_features), "hidden": ABILITY_HIDDEN, "n_feat": E.ABILITY_FEAT_N,
+                "bc": _py(getattr(self, "ability_bc", None))}
+
+    def _ability_warm_start(self) -> None:
+        """B6 imitation warm start (fresh run, before the init screen and u0000): ``ability_bc_matches`` rollouts of the
+        INIT policy with the press RULE acting for the learner (the weights message carries no ability head -> the
+        actors' label mode), matchups / entries drawn from an rng of its own (the learner's rng untouched); every
+        learner decision with a pressable button gives (g of the row under the init, its features, the rule's q) ->
+        ``ability_bc_fit``. Without labels (no hero in any learner deck, hero_abilities off) the head keeps its init."""
+        cfg, n = self.cfg, int(self.cfg["ability_bc_matches"])
+        t = time.perf_counter()
+        if not cfg.get("hero_abilities"):
+            self.log("[rl] ability_head: hero_abilities is false -- no button is ever pressable, the head never decides "
+                     "(no warm start)")
+            return
+        if n == 0:
+            self.log("[rl] ability_head: ability_bc_matches 0 -- no imitation warm start (P(press) = ABILITY_P0)")
+            return
+        rng = np.random.default_rng(zlib.crc32(f"ability_bc:{int(cfg['seed'])}".encode()))
+        if getattr(self, "league", None) is not None:
+            specs = sample_matchups(rng, n, 0, self.league["snapshots"], cfg, self.census, self.census_p,
+                                    **({"league_state": self.league} if cfg.get("league_pfsp") == "hard" else {}),
+                                    exploiters=getattr(self, "exploiters", None))
+            kind, jobs = "selfplay", [(i, sp, 0) for i, sp in enumerate(specs)]
+        else:
+            pick = rng.choice(len(self.train), size=min(n, len(self.train)), replace=False)
+            kind, jobs = "rollout", [(int(i), self.train[int(i)], 0) for i in pick]
+        res, skipped, _ = self.actors.run(kind, 0, actor_bytes(self.model, getattr(self, "posture_head", None)), jobs)
+        from pipeline.royale_env import ABILITY_CARDS
+        names = list(ABILITY_CARDS) + ["other"]
+        rows = {k: [] for k in ("feat", "q")}
+        inp: dict = {}
+        cards: Counter = Counter()
+        for r in res:
+            tj = r["traj"]
+            if "ab_cand" not in tj or not len(tj["ab_cand"]):
+                continue
+            c = tj["ab_cand"]
+            rows["feat"].append(tj["ab_feat"][c])
+            rows["q"].append(tj["ab_q"][c])
+            for k in (E.gen_row_keys(self.model) if "hand_card" in tj else ("tok", "mask", "sc", "past")):
+                inp.setdefault(k, []).append(tj[k][c])
+            cards.update(names[i] for i in tj["ab_feat"][c][:, 18:].argmax(1))
+        nl = int(sum(len(x) for x in rows["q"]))
+        if not nl:
+            self.ability_bc = {"n": 0, "matches": len(res), "skipped": len(skipped)}
+            self.log(f"[rl] ability_head warm start: {len(res)} rule rollouts, NO pressable decision -- head kept at "
+                     f"its init (P(press) {ABILITY_P0})")
+            return
+        B = to_device({k: np.concatenate(v) for k, v in inp.items()}, self.dev)
+        with torch.no_grad():
+            g = torch.cat([trunk_g(self.model, B, torch.arange(s, min(s + 512, nl), device=self.dev))
+                           for s in range(0, nl, 512)])
+        feat = torch.as_tensor(np.concatenate(rows["feat"]), device=self.dev)
+        q = torch.as_tensor(np.concatenate(rows["q"]), device=self.dev)
+        st = ability_bc_fit(self.ability_head, g, feat, q, int(cfg["ability_bc_steps"]), float(cfg["ability_bc_lr"]))
+        self.ability_bc = {**st, "matches": len(res), "skipped": len(skipped), "by_card": dict(cards),
+                           "wall_s": time.perf_counter() - t}
+        self.log(f"[rl] ability_head warm start: {nl} labels from {len(res)} rule rollouts {dict(cards)}; rule q mean "
+                 f"{st['q_mean']:.4f}; BCE {st['bce_before']:.4f} -> {st['bce_after']:.4f} (floor {st['bce_floor']:.4f}); "
+                 f"head p mean {st['p_mean_before']:.4f} -> {st['p_mean_after']:.4f} ({self.ability_bc['wall_s']:.0f}s)")
+
     def _actor_bytes(self, model=None) -> bytes:
-        """The weights message: the posture head rides along only with the learner's own model (the frozen ref's
-        screen plays without a posture = the init's argmax, balanced, dtau 0)."""
-        ph = getattr(self, "posture_head", None)
-        return actor_bytes(model or self.model, ph if model is None or model is self.model else None)
+        """The weights message: the posture / ability heads ride along only with the learner's own model (the frozen
+        ref's screen plays without a posture = the init's argmax, balanced, dtau 0, and presses by the rule)."""
+        own = model is None or model is self.model
+        ph, ah = getattr(self, "posture_head", None), getattr(self, "ability_head", None)
+        return actor_bytes(model or self.model, ph if own else None, ah if own else None)
 
     def _league_setup(self) -> None:
         """League on (T12b): the learner must be the generalist; the deck pool + its sampling weights; opponents =
@@ -2989,6 +3264,8 @@ class Learner:
                    if getattr(self, "ctx_head", None) is not None else {}),
                 **({"posture_head": self.posture_head.state_dict(), "posture_optimizer": self.posture_opt.state_dict(),
                     "posture": self._posture_meta()} if getattr(self, "posture_head", None) is not None else {}),
+                **({"ability_head": self.ability_head.state_dict(), "ability_optimizer": self.ability_opt.state_dict(),
+                    "ability": self._ability_meta()} if getattr(self, "ability_head", None) is not None else {}),
                 **({"beta_g": float(self.beta_g), "gate_lo_target": self.gate_lo_target}
                    if getattr(self, "beta_g", None) is not None else {}),
                 "rng": _py(self.rng.bit_generator.state), "visits": list(map(int, self.visits)),
@@ -3059,6 +3336,14 @@ class Learner:
             else:
                 self.log("[rl] RESUME: the checkpoint has no posture_head (run started without it) -- it starts at its "
                          "init (P(balanced) 0.8)")
+        if getattr(self, "ability_head", None) is not None:  # B6
+            if "ability_head" in rl:
+                self.ability_head.load_state_dict(rl["ability_head"])
+                self.ability_opt.load_state_dict(rl["ability_optimizer"])
+                self.ability_bc = (rl.get("ability") or {}).get("bc")
+            else:
+                self.log(f"[rl] RESUME: the checkpoint has no ability_head (run started without it) -- it starts at its "
+                         f"init (P(press) {ABILITY_P0}), no warm start")
         self.update, self.beta = int(rl["update"]), float(rl["beta"])
         if gate_lo_cfg(self.cfg) is not None:                 # F6': beta_g + the update-0 target (None = not measured)
             self.beta_g, self.gate_lo_target = float(rl.get("beta_g", self.cfg["beta0"])), rl.get("gate_lo_target")
@@ -3184,6 +3469,8 @@ class Learner:
                           **({"gamma_tick": ac["gae_gamma_tick"]} if tick_unit else {}),
                           **({"gae_terminal_gap": True} if ac["gae_terminal_gap"] else {}))
         gamma_row_mean = float(Bn["gamma_row"].mean()) if tick_unit and len(Bn["gamma_row"]) else None
+        ab_acc = ([sum(dict(r.get("ability_presses", {}).get(r["side"], {})).values()) for r in results]
+                  if getattr(self, "ability_head", None) is not None else None)   # B6: engine-accepted learner presses
         del results
         t1 = time.perf_counter()
         B = to_device(Bn, self.dev)
@@ -3223,8 +3510,14 @@ class Learner:
                 raise SystemExit("posture_head: the rollout rows carry no posture / ctx (actor_cfg posture rows)")
             psnap = posture_snapshot(self.model, ph, B)
             post = {"head": ph, "opt": self.posture_opt, "ent_coef": float(cfg["posture_ent_coef"])}
+        ah, abl = getattr(self, "ability_head", None), None    # B6 (None = the press rule)
+        if ah is not None:
+            if "ab_sampled" not in B:
+                raise SystemExit("ability_head: the rollout rows carry no press decisions (actor_cfg ability rows)")
+            abl = {"head": ah, "opt": self.ability_opt, "ent_coef": float(cfg["ability_ent_coef"])}
         upd = ppo_update(self.model, self.opt, B, R, cfg, beta_used, self.rng, vf=vf,
-                         **({"posture": post} if post is not None else {}))
+                         **({"posture": post} if post is not None else {}),
+                         **({"ability": abl} if abl is not None else {}))
         t_upd = time.perf_counter() - t1
         first = upd["first"]
         if u == 0 and not upd["nonfinite"]:
@@ -3232,7 +3525,8 @@ class Learner:
             # F6': KL_gate is the init ref's over the high rows only, so ~0 again; the low rows' imitation KL is not
             kl0 = (first["kl_card"], first["kl_cell"]) + ((first["kl_gate"],) if gate_ref is None or glo else ())
             bad = first["ratio_maxdev"] >= ASSERT_RATIO or max(kl0) >= ASSERT_KL or (
-                (first.get("post_ratio_maxdev") or 0.0) >= ASSERT_RATIO)          # C1: the posture's own ratio
+                (first.get("post_ratio_maxdev") or 0.0) >= ASSERT_RATIO) or (     # C1: the posture's own ratio
+                (first.get("ab_ratio_maxdev") or 0.0) >= ASSERT_RATIO)            # B6: the press's own ratio
             if glo is not None:
                 self.log(f"[rl] kl_ref_gate_max_elixir {glo['max_elixir']}: update-0 KL_gate_imit_low to "
                          f"{cfg['kl_ref_gate']} = {R['kl_lo_init']:.4f} (full batch) -> beta_g target "
@@ -3245,7 +3539,8 @@ class Learner:
             assert not bad, (f"ON-POLICY CHECK FAILED at update 0 epoch 0 minibatch 0: max|ratio-1| "
                              f"{first['ratio_maxdev']:.3g} (< {ASSERT_RATIO}), KL gate/card/cell {first['kl_gate']:.3g}/"
                              f"{first['kl_card']:.3g}/{first['kl_cell']:.3g} (< {ASSERT_KL}), lp max diffs "
-                             f"{first['lp_maxdiff']}, posture max|ratio-1| {first.get('post_ratio_maxdev')} -- a bug "
+                             f"{first['lp_maxdiff']}, posture max|ratio-1| {first.get('post_ratio_maxdev')}, ability "
+                             f"max|ratio-1| {first.get('ab_ratio_maxdev')} -- a bug "
                              f"between the stored forward and the recompute")
         reasons, crash = [], False
         if upd["nonfinite"]:
@@ -3253,7 +3548,8 @@ class Learner:
             crash = True
         elif not all(bool(torch.isfinite(p).all()) for p in self.model.parameters()) or (
                 ctx_head is not None and not all(bool(torch.isfinite(p).all()) for p in ctx_head.parameters())) or (
-                ph is not None and not all(bool(torch.isfinite(p).all()) for p in ph.parameters())):
+                ph is not None and not all(bool(torch.isfinite(p).all()) for p in ph.parameters())) or (
+                ah is not None and not all(bool(torch.isfinite(p).all()) for p in ah.parameters())):
             reasons.append("non-finite parameters after the update")
             crash = True
         bc, brst = branch_cfg(cfg), None
@@ -3318,6 +3614,16 @@ class Learner:
                               "first_ratio_maxdev": first.get("post_ratio_maxdev") if first else None,
                               "every": cfg["posture_every"], "dtau": cfg["posture_dtau"],
                               "ent_coef": cfg["posture_ent_coef"]}
+        if ah is not None:                                     # B6 monitors (the sampled decisions of this batch)
+            sel = Bn["ab_sampled"].astype(bool)
+            lp, pr = Bn["ab_lp"][sel], Bn["ab_press"][sel].astype(bool)
+            p_press = np.where(pr, np.exp(lp), 1.0 - np.exp(lp))
+            rec["ability"] = {"decisions": int(sel.sum()), "press_rate": float(pr.mean()) if sel.any() else None,
+                              "p_mean": float(p_press.mean()) if sel.any() else None, "l_ab": upd["l_ab"],
+                              "ent_ability_ep0": upd["ent_ability"], "trained": not warm,
+                              "first_ratio_maxdev": first.get("ab_ratio_maxdev") if first else None,
+                              "accepted_per_match": float(np.mean(ab_acc)) if ab_acc else None,
+                              "ent_coef": cfg["ability_ent_coef"]}
         if glo is not None:                                    # F6' monitors (kl_gate above = KL_gate_init_high)
             bands = elixir_band_play(Bn["elixir"], Bn["gate_sampled"], Bn["played"])
             lo_sel = Bn["gate_sampled"] & (Bn["elixir"] < glo["max_elixir"])
@@ -3402,6 +3708,10 @@ class Learner:
                     + f" (d/b/p) choices {rec['posture']['share_choices']['n']} dtau {f(rec['posture']['mean_dtau'], '{:+.3f}')}"
                     f" H {f(rec['posture']['entropy'])} KL {f(rec['posture']['kl_prev'], '{:.5f}')}"
                     f" lpost {f(rec['posture']['l_post'], '{:+.4f}')}" if "posture" in rec else "")
+                 + (f" | ability dec {rec['ability']['decisions']} press {f(rec['ability']['press_rate'])} p "
+                    f"{f(rec['ability']['p_mean'])} acc/m {f(rec['ability']['accepted_per_match'], '{:.2f}')} H "
+                    f"{f(rec['ability']['ent_ability_ep0'])} lab {f(rec['ability']['l_ab'], '{:+.4f}')}"
+                    if "ability" in rec else "")
                  + (f" | shape |F| {f(shs['mean_abs_F'], '{:.4f}')} (t {f(shs['mean_abs_tower'], '{:.4f}')} c "
                     f"{f(shs['mean_abs_crown'], '{:.4f}')}) |Phi| {f(shs['mean_abs_phi'], '{:.4f}')} dom "
                     f"{f(shs['shaping_dominates'])}" if shs and shs.get("mode") is None else "")
@@ -3505,6 +3815,8 @@ class Learner:
             base["critic_ctx"] = self.cfg["critic_ctx"]
         if getattr(self, "posture_head", None) is not None:   # actor_cfg -> posture + record_ctx (absent by default)
             base["posture"] = self._posture_meta()
+        if getattr(self, "ability_head", None) is not None:   # actor_cfg -> ability (absent by default)
+            base["ability"] = {k: v for k, v in self._ability_meta().items() if k != "bc"}
         if self.cfg.get("kl_ref_gate_max_elixir") is not None:   # actor_cfg -> record_elixir (absent by default)
             base["kl_ref_gate_max_elixir"] = self.cfg["kl_ref_gate_max_elixir"]
         for k in OPP_TEMPO_KEYS:                              # L74 human tempo -> the opponent's cfg (absent by default)
@@ -3534,6 +3846,9 @@ class Learner:
                if adv_cfg(cfg)["advantage"] == "gae" else "")
             + (f"; POSTURE every {cfg['posture_every']} dtau {cfg['posture_dtau']} ent {cfg['posture_ent_coef']}"
                if getattr(self, "posture_head", None) is not None else "")
+            + (f"; ABILITY head (learner presses) ent {cfg['ability_ent_coef']} lr {cfg['ability_lr']} warm start "
+               f"{cfg['ability_bc_matches']} rule rollouts x {cfg['ability_bc_steps']} steps"
+               if getattr(self, "ability_head", None) is not None else "")
             + ("; BRANCH " + " ".join(f"{k}={v}" for k, v in branch_cfg(cfg).items() if k != "branch_gate"
                                       and (k not in R4_KEYS or branch_cfg(cfg)["branch_kinds"] != ["hold"]))
                if branch_cfg(cfg)["branch_gate"] else ""))
@@ -3550,6 +3865,8 @@ class Learner:
         log(f"[rl] init pro agreement ({pa['n']} VAL rows, {time.perf_counter() - t:.0f}s): cell "
             f"{pa['cell_half_top1']:.4f} card {pa['card_top1']:.4f} gate_bal {pa['gate_bal_acc']:.4f}")
         self.start_actors()
+        if getattr(self, "ability_head", None) is not None:   # B6: imitate the press rule before the init screen / u0000
+            self._ability_warm_start()
         t = time.perf_counter()
         sc = self.screen()
         self.base["init_screen"] = sc["per_key"]
@@ -3608,6 +3925,12 @@ def smoke_resume_check(cfg, run, run_dir, ck_dir, log, live: Learner) -> None:
     if getattr(live, "posture_head", None) is not None:      # C1: the head + its Adam came back
         checks["posture_head"] = all(torch.equal(a, b) for a, b in zip(live.posture_head.state_dict().values(),
                                                                        L2.posture_head.state_dict().values()))
+    if getattr(live, "ability_head", None) is not None:      # B6: the head + its Adam came back
+        checks["ability_head"] = all(torch.equal(a, b) for a, b in zip(live.ability_head.state_dict().values(),
+                                                                       L2.ability_head.state_dict().values()))
+        a1, a2 = live.ability_opt.state_dict()["state"], L2.ability_opt.state_dict()["state"]
+        checks["ability_opt"] = set(a1) == set(a2) and all(torch.equal(a1[k][m], a2[k][m].to(a1[k][m].device))
+                                                           for k in a1 for m in ("exp_avg", "exp_avg_sq"))
     if live.league is not None and not live.league["snapshots"]:
         raise SmokeFail("league smoke added no snapshot (set league_snapshot_every small)")
     step = float(next(iter(s2["state"].values()))["step"]) if s2["state"] else None

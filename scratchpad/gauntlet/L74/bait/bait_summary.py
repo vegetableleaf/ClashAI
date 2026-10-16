@@ -39,6 +39,19 @@ def describe(name, rs):
            f"  ability presses/match {dict((c, round(k / n, 3)) for c, k in presses.items())}; hero deploys/match "
            f"{dict((c, round(k / n, 3)) for c, k in deploys.items())}; presses/deploy "
            f"{dict((c, round(presses[c] / k, 3)) for c, k in deploys.items() if k)}; ability elixir/match {elixir / n:.2f}"]
+    st = [r['ability_stats'] for r in rs if r.get('ability_stats')]       # search_s0 --ability-stats (B6 evals)
+    if st:
+        t = {k: sum(s[k] for s in st) for k in ('presses', 'elixir', 'in_radius', 'hit_2s', 'killed_2s', 'presses_hit')}
+        p = max(t['presses'], 1)
+        out.append(f"  press outcomes ({len(st)} games): presses/match {t['presses'] / len(st):.3f}, ability elixir/match "
+                   f"{t['elixir'] / len(st):.2f}; per press: enemy bodies in radius {t['in_radius'] / p:.2f}, of them "
+                   f"lost HP within 2 s {t['hit_2s'] / p:.2f}, died within 2 s {t['killed_2s'] / p:.2f} (any damage "
+                   f"source); presses with >= 1 body hit {100 * t['presses_hit'] / p:.0f}%")
+    hd = [r['ability_head'] for r in rs if r.get('ability_head')]          # a checkpoint with a learned press (B6)
+    if hd:
+        d = sum(h['decisions'] for h in hd)
+        out.append(f"  learned press head: {d / n:.1f} decisions/match, pressed {sum(h['presses'] for h in hd) / max(d, 1):.3f} "
+                   f"of them, mean p {sum(h['p_mean'] * h['decisions'] for h in hd) / max(d, 1):.3f}")
     by = defaultdict(lambda: [0, 0])
     for r in rs:
         x = by[A.classify(r['opp_deck'])]

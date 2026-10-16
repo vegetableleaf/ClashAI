@@ -421,6 +421,63 @@ def random_decide(rng: random.Random, allowed: np.ndarray, p_random: float) -> d
     return {"play": True, "slot": slot, "cell": cell, "why": "random"}
 
 
+ABILITY_FEAT_N = 44   # = royale_env.ABILITY_FEAT_N (royalegym-free copy; pipeline/tests/test_ability_head.py checks it)
+
+
+def ability_defaults() -> dict:
+    """The per-decision ability record of a row with no ability decision (cfg["ability"] on)."""
+    return {"ab_sampled": False, "ab_press": False, "ab_lp": 0.0, "ab_feat": np.zeros(ABILITY_FEAT_N, np.float32),
+            "ab_cand": False, "ab_q": 0.0}
+
+
+def ability_decide(matches: Sequence, enc, cfg: dict) -> Optional[list]:
+    """rl_royale ``ability_head`` (B6 stage A; ``cfg["ability"]`` = {mode, head}; absent -> None, nothing touched). A
+    match whose ``prepare`` found pressable buttons of its side (``_ability_opts``, ``RoyalePoolEnv.ability_options``)
+    makes ONE decision on one of them (``n_dec`` mod their count): mode ``sample`` = Bernoulli(sigmoid(head(g[r], feat)))
+    from the match's own ``rng_ability`` (its gate / card / cell draws untouched), ``greedy`` = p > 0.5; a press puts the
+    option's command in ``_ability_commands[side]``, which ``apply`` queues through the rule's own press path. ``label``
+    (no head: the rule pressed) only records the option's features + the rule's q. -> per row the ``ability_defaults``
+    keys (record), filled where a decision / label was made."""
+    ab = cfg.get("ability")
+    if not ab:
+        return None
+    import torch
+    out = [ability_defaults() for _ in matches]
+    rows = [r for r, m in enumerate(matches) if getattr(m, "_ability_opts", None)]
+    pick = {r: matches[r]._ability_opts[matches[r].n_dec % len(matches[r]._ability_opts)] for r in rows}
+    for m in matches:
+        m._ability_opts = None
+    if ab["mode"] == "label":
+        for r in rows:
+            out[r].update(ab_cand=True, ab_feat=np.asarray(pick[r]["feat"], np.float32), ab_q=float(pick[r]["q"]))
+        return out
+    if not rows:
+        return out
+    g = enc["g"]
+    with torch.no_grad():
+        feat = torch.as_tensor(np.array([pick[r]["feat"] for r in rows], np.float32), device=g.device)
+        z = ab["head"](g[torch.as_tensor(rows, device=g.device)], feat).double().cpu().numpy()
+    for j, r in enumerate(rows):
+        m, o = matches[r], pick[r]
+        lp1, lp0 = -float(np.logaddexp(0.0, -z[j])), -float(np.logaddexp(0.0, z[j]))   # log p, log (1 - p)
+        if ab["mode"] == "sample":
+            if getattr(m, "rng_ability", None) is None:
+                m.rng_ability = np.random.default_rng(behave_seed(f"{m.tag}:ability", int(m.cfg.get("rollout_index", 0)),
+                                                                  int(m.cfg.get("update", 0))))
+            press = bool(m.rng_ability.random() < math.exp(lp1))
+        else:
+            press = lp1 > lp0
+        if press:
+            m._ability_commands[m.side] = [o["cmd"]]
+        s = m.__dict__.setdefault("ab_stats", {"decisions": 0, "presses": 0, "p_sum": 0.0})
+        s["decisions"] += 1
+        s["presses"] += int(press)
+        s["p_sum"] += math.exp(lp1)
+        out[r].update(ab_sampled=True, ab_press=press, ab_lp=lp1 if press else lp0,
+                      ab_feat=np.asarray(o["feat"], np.float32))
+    return out
+
+
 def live_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.ndarray, *, tau: float,
                        device: str = "cpu", decision_options=None, rngs=None, card_names=None, **context) -> list[dict]:
     """``live_decide`` over every row of a shared forward at once. The card argmax and the p-vs-tau compare are
@@ -604,6 +661,10 @@ def sample_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.n
             m = matches[r]
             out[r].update(posture=int(m._posture[0]), posture_dtau=float(dt[r]), posture_new=m._posture_new is not None,
                           posture_lp=0.0 if m._posture_new is None else m._posture_new)
+    ab = ability_decide(matches, enc, cfg)                     # rl_royale ability_head (None = off: rows unchanged)
+    if ab is not None:
+        for r in range(B):
+            out[r].update(ab[r])
     return out
 
 
@@ -888,6 +949,13 @@ class Match:
         if getattr(self.env, "hero_abilities", False):
             sides = [self.side] if isinstance(self, SelfPlaySide) else [0, 1]
             self._ability_commands = {s: self.env.ability_commands(s) for s in sides}
+            if cfg.get("ability"):                           # rl_royale ability_head: MY side's options (ability_decide)
+                rule = self._ability_commands[self.side]
+                if cfg["ability"]["mode"] != "label":         # the head decides: the rule never presses for my side
+                    self.env.learned_sides.add(self.side)
+                    self._ability_commands[self.side] = []
+                self._ability_opts = self.env.ability_options(self.side, rule if cfg["ability"]["mode"] == "label"
+                                                              else None)
         self._gen_row = None
         if self.last_play_tick is None:
             self.last_play_tick = tick                       # match start = first decision (anti-stall clock)
@@ -1060,6 +1128,7 @@ class Match:
         el_int, allowed, stalled = self.pre(hand)
         if policy == "live":
             from .decision_options import match_kwargs
+            ability_decide([self], enc, cfg)                  # rl_royale ability_head, greedy (no cfg key = no-op)
             extras = match_kwargs([self])
             if extras or cfg.get("posture"):                  # rl_royale C1 posture: the batch decide takes a per-row tau
                 tau, extras = posture_live([self], enc, cfg, cfg['tau'], extras)
@@ -1293,6 +1362,8 @@ class Match:
                 row = {**row, "elixir": self._obs_elixir}     # from the raw state (prepare), set with self._obs
             if "posture" in d:                                # rl_royale C1: the posture in force, its choice
                 row = {**row, **{k: d[k] for k in ("posture", "posture_dtau", "posture_lp", "posture_new")}}
+            if "ab_sampled" in d:                             # rl_royale ability_head: the press decision / label
+                row = {**row, **{k: d[k] for k in ability_defaults()}}
             self.traj.append({**row, "allowed": d["allowed"],
                               "stalled": d["stalled"], "gate_sampled": d["gate_sampled"], "played": d["play"],
                               "slot": d["slot"], "cell": d["cell"], "lp_gate": d["lp_gate"], "lp_card": d["lp_card"],
@@ -1396,6 +1467,11 @@ class Match:
                if getattr(env, "ability_policy", "generic") == "v2" else {}),
             **({"forms_mode": "deck", "form_fallbacks": [list(x) for x in env.form_fallbacks]}
                if getattr(env, "forms_mode", "base") == "deck" else {}),
+            **({"ability_head": {"decisions": self.ab_stats["decisions"], "presses": self.ab_stats["presses"],
+                                 "p_mean": round(self.ab_stats["p_sum"] / self.ab_stats["decisions"], 4)}}
+               if getattr(self, "ab_stats", None) else {}),        # rl_royale ability_head decisions (my side)
+            **({"ability_stats": env.ability_stats(self.side)}      # opt-in press outcomes (royale_env ability_outcomes)
+               if getattr(env, "ability_outcomes", False) and getattr(env, "hero_abilities", False) else {}),
         }
 
     def _outcome(self) -> tuple[str, tuple[int, int]]:
@@ -1470,6 +1546,10 @@ class Match:
             out.update(posture=scalar("posture", np.int64), posture_dtau=scalar("posture_dtau", np.float64),
                        posture_lp=scalar("posture_lp", np.float64),           # log pi(z) on the rows that chose it
                        posture_new=scalar("posture_new", bool))
+        if tj and "ab_sampled" in tj[0]:                     # cfg["ability"] (rl_royale ability_head): per row
+            out.update(ab_sampled=scalar("ab_sampled", bool), ab_press=scalar("ab_press", bool),
+                       ab_lp=scalar("ab_lp", np.float64), ab_feat=stack("ab_feat").astype(np.float32),
+                       ab_cand=scalar("ab_cand", bool), ab_q=scalar("ab_q", np.float64))
         return out
 
 
@@ -1554,6 +1634,7 @@ def run_batch(make_env, model, deck, jobs, cfg: dict, n: int, on_result, on_skip
             stalled = np.array([x[2] for x in pre], dtype=bool)
             from .decision_options import match_kwargs
             if policy == "live":                             # (rl_royale C1: posture_live; no posture = unchanged)
+                ability_decide(live, enc, cfg)               # rl_royale ability_head, greedy (no cfg key = no-op)
                 tau, kw = posture_live(live, enc, cfg, cfg["tau"], match_kwargs(live))
                 decisions = live_decide_batch(model, enc, heads, p, allowed, stalled, tau=tau, device=cfg["device"], **kw)
             else:
@@ -1916,6 +1997,7 @@ def run_selfplay_batch(make_env, learner, opponents: dict, jobs, cfg: dict, n: i
                 from pipeline.adaptive_opponents import styled_decisions
                 decisions = styled_decisions(model, enc, heads, p, allowed, stalled, sides)
             elif c["policy"] == "live":                     # (rl_royale C1: posture_live; no posture = unchanged)
+                ability_decide(sides, enc, c)               # rl_royale ability_head, greedy (no cfg key = no-op)
                 tau, kw = posture_live(sides, enc, c, c["tau"], match_kwargs(sides))
                 decisions = live_decide_batch(model, enc, heads, p, allowed, stalled, tau=tau, device=c["device"], **kw)
             else:
