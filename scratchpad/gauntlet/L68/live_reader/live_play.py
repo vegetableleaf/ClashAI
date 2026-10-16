@@ -981,11 +981,11 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                 react.observe(f, side, tick, getattr(getattr(pilot, "public", None), "plays", None) or [],
                               emote_spam.time.monotonic())
             if rec or getattr(a, "log_frames", False):   # what the model perceived (overlay_replay.py; parity data)
-                opp = next(p for p in f["players"] if p["side"] != side)
                 # ents: side, x, y, card_id, hp, max_hp, kind, address (address/kind = the opp-elixir counter's play
-                # detection). opp_elixir_true_EVAL_ONLY grades that counter offline; it is never fed to the model.
+                # detection). Owner 10-16: the opponent's TRUE elixir is no longer logged (no opponent private info
+                # anywhere); the public counter's estimate opp_elixir_est stays.
                 W(event="frame", t_dev=t_dev, tick=tick, my_side=side, elixir=me["elixir_raw"] / 1e4, backlog=q.qsize(),
-                  opp_elixir_true_EVAL_ONLY=opp["elixir_raw"] / 1e4, opp_elixir_est=opp_est,
+                  opp_elixir_est=opp_est,
                   ents=[[e["side"], e["x"], e["y"], e["card_id"], e["hp"], e["max_hp"], e["kind"], e["address"]]
                         for e in f["entities"]], **(frame_extras(f) if getattr(a, "log_frames", False) else {}))
             hids = hero_ids(me)
