@@ -1,3 +1,24 @@
+## 2026-10-15 ~20:45 EDT -- owner closed MuMu (wire-only tonight); C1 training x3 + stage B built; gae_live 3 seeds; F6' closed
+
+- **Owner ~20:00: "I closed MuMu ... If you manage to produce a successor overnight, report it to me and wire it into
+  live_play.py/start_live.sh, but don't start a live run yourself."** -> `L74/deploy/deploy_ckpt.sh CKPT SHA16 "why" wire`
+  (CKPT_OVERRIDE backup + offline `start_live.sh icebow --no-fast-plays --check` + Discord; no restart). No live process
+  running. Successor bar: beats u250 (00c845c0) on the live-mirrored eval with CI above 0, not worse on the standard set.
+- **C1 training** (arm gae_c1, cb_s13 = 4d7f7ee; behaviour = dbf8e72): s74 45503, s75 45645, s76 19636, started ~19:56 EDT,
+  live-pool evals queued (c1_s74 / c1_s75 / c1_s76). First launch died at startup (KeyError posture_lr, my amendment);
+  blind verify FAIL caught the same; fixed 4d7f7ee + guard dbf8e72. u0008-10: head learning (KL 0.001-0.003 / update after the
+  5-update critic warm-up), defend share 0.10 -> 0.14 on s74/s75; ~5,400 choices / update; no crash.
+- **C1 stage B (live posture inference) 90348bc**: GenPilot loads rl["posture_head"]; argmax via SIM's posture_dtau; ctx via
+  shared pure e1_eval.ctx_row; dtau after tau_phase/tau_threatened as SIM tau_delta; absent head byte-identical (incl. the
+  offline --check output with the live CKPT_OVERRIDE). 24 tests + live suites 133 + SIM 42. Blind verify running. Check a
+  head-carrying ckpt offline: `icebow/.venv/Scripts/python.exe scratchpad/gauntlet/L68/live_reader/live_play.py --ckpt X
+  --tau 0.35 --no-anti-leak --check` -> JSON has "posture_head": "on (...)". Open (b): reader tower glitches can mis-set
+  crowns in ctx for 10 s; live bodies may label arch differently from SIM -- check on recorded logs if C1 wins.
+- **gae_live 3 seeds vs twins** (live pool / standard D3): s74 +4.79 / +3.12, s75 -2.60 / -5.31, s76 +2.71 / +2.50 -> mean
+  **+1.63 / +0.10**, n.s.; no consistent beatdown gain (+4.2 / -5.5 / +2.1). s76 u65 vs u250 -0.42 n.s. (b) small at best.
+  s74 extension to 250 (11740) is the candidate test. Pod 49350 stopping after copy-back.
+- **F6' closed**: s75 live pool -1.25 [-5.31, +2.71] vs twin (s74 +3.33); standard +1.46 / +2.81. Pod 23303 stopped.
+
 ## 2026-10-15 ~20:00 EDT -- C1 built (+ posture_lr); gae_live replicate disagrees; lambda .98 closed; defensive tau HURTS u250
 
 - **C1 posture head stage A** (foreman worker DONE_WITH_CONCERNS; files pipeline/rl_royale.py, e1_eval.py, search_s0.py,
