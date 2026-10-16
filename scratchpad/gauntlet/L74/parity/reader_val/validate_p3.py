@@ -123,6 +123,24 @@ def step_law(buffs):
     return max(0, s * (100 - max([0] + [-v for v in m if v < 0])) // 100)
 
 
+RESET_WINDOW = 10   # ticks after a stun / freeze ends in which a re-scan may still land (the resume rescan is immediate)
+
+
+def is_reset_buff(b):
+    """A buff that resets targeting: a full stop (HitSpeedMultiplier -100: Freeze, Zap, Ice Spirit, Hero IW freeze)
+    or a stun / freeze / taunt by name."""
+    return b["config"]["HitSpeedMultiplier"] <= -100 or bool(re.search(r"stun|freeze|taunt|zap", b["name"], re.I))
+
+
+def troop_in_range(f, g, rng):
+    """Is an enemy non-tower body within the attacker's Range (centre distance; edges and radii not added)?"""
+    e = f.ents.get(g)
+    if not e or not rng or "x" not in e:
+        return False
+    return any(o["side"] != e["side"] and not f.name.get(h, "").endswith("Tower") and "x" in o
+               and (o["x"] - e["x"]) ** 2 + (o["y"] - e["y"]) ** 2 <= rng * rng for h, o in f.ents.items())
+
+
 def buff_key(buffs):
     return tuple(sorted((b["name"], b["config"]["HitSpeedMultiplier"]) for b in buffs or []))
 
@@ -310,8 +328,42 @@ def run(frames, n_active, blog=None, tables=TABLES, sim_path=SIM_CARDS):
                f"after kill {c4['kill']}) previous==old {c4['prev_ok']}/{n4} (need >= 90%); progress reset "
                f"{c4['reset']}/{n4} [notes predict reset; SIM keeps it on an in-reach switch]; first {rows4[:3]}")
 
-    c5, _ = retargets({"Xbow", "Xbow_EV1"})
-    out.append(phase_line("V5", "Xbow", f"; retarget resets {c5['reset']}/{c5['n']}"))
+    out.append(phase_line("V5", "Xbow"))
+
+    # V5L lock rule (owner 10-16): an attacker locked on a crown tower (in its attack: progress > 0) keeps it while
+    # troops come into range; it switches only after a stun / freeze / taunt reset. A switch away from a still-standing
+    # tower with no reset buff on the attacker in the last RESET_WINDOW ticks (and not to a Hero Knight) is a FAIL.
+    last_reset, c5, rows5 = {}, collections.Counter(), []
+    for f0, f1, dt in intervals(frames):
+        for f in (f0, f1):
+            for g, bs in f.buffs.items():
+                if any(is_reset_buff(b) for b in bs or []):
+                    last_reset[g] = f.tick
+        for g, a1 in f1.att.items():
+            a0 = f0.att.get(g)
+            if not a0 or not a1 or name.get(g, "").endswith("Tower") or a0["progress_raw"] <= 0:
+                continue
+            tw = a0["target_gen"]
+            if tw in (None, "unlisted") or not name.get(tw, "").endswith("Tower") or tw not in f1.ents:
+                continue
+            reset = f1.tick - last_reset.get(g, -10**9) <= RESET_WINDOW
+            y = a1["target_gen"]
+            if y == tw:
+                c5["held"] += 1
+                c5["held_troop_in_range"] += troop_in_range(f1, g, by_name.get(name.get(g), {}).get("Range"))
+                c5["held_through_reset"] += reset
+                continue
+            taunt = name.get(y) == "KnightHero"
+            c5["switch_after_reset" if reset or taunt else "switch_no_reset"] += 1
+            rows5.append(f"{'ok ' if reset or taunt else 'NO RESET '}{name.get(g)} t{f1.tick} ({V(f1.tick)}) "
+                         f"{name.get(tw)} -> {name.get(y, y)}{' (taunt)' if taunt else ''}")
+    lockers = sorted({name.get(g) for f in frames for g, a in f.att.items()
+                      if a and a["progress_raw"] > 0 and name.get(a["target_gen"], "").endswith("Tower")
+                      and not name.get(g, "").endswith("Tower")})
+    out.append(f"V5L {verdict(c5['switch_no_reset'] == 0, c5['held'] >= 10)} tower lock: held {c5['held']} intervals "
+               f"(an enemy troop within Range in {c5['held_troop_in_range']}, a reset buff present in "
+               f"{c5['held_through_reset']}); switches without stun/freeze/taunt {c5['switch_no_reset']} (need 0); "
+               f"switches after a reset {c5['switch_after_reset']}; lockers {lockers}; {rows5[:6]}")
 
     # V6 buffed step law: frozen -> 0, Hero IW slow (-30) -> 35, between refreshes
     c6 = collections.Counter()

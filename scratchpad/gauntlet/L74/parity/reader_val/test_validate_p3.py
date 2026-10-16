@@ -30,17 +30,21 @@ def defs(over=None):
     return out
 
 
-def battle(hit_shift=0, over=None):
-    """-> list of frame dicts. hit_shift moves every Knight hit earlier by that many ticks."""
+def battle(hit_shift=0, over=None, xbow=None):
+    """-> list of frame dicts. hit_shift moves every Knight hit earlier by that many ticks. xbow: None = the X-Bow
+    keeps the tower while a Skeleton walks into its range; "bare" = it switches to the Skeleton at t210 with no reset;
+    "frozen" = the same switch right after a Freeze on the X-Bow (t200-209)."""
     D = {d["name"]: d for d in defs(over)}
-    att, ents, side, name, buffs, proj = {}, {}, {}, {}, {}, {}
+    att, ents, side, name, buffs, proj, pos = {}, {}, {}, {}, {}, {}, {}
 
     def body(g, n, s, hp=1000):
         ents[g] = hp
         side[g], name[g] = s, n
+        pos.setdefault(g, (9000, 16000))
         att.setdefault(g, None)
     for g, n, s in ((5000000, "KingTower", 0), (5000001, "PrincessTower", 0), (5000003, "KingTower", 1),
                     (5000004, "PrincessTower", 1)):
+        pos[g] = (3500 if g % 3 else 9000, 25500 if s else 6500)
         body(g, n, s, 3000)
         att[g] = dict(target_gen=None, progress=0, load=0)
     frames, nkey, sample = [], [4000000], 0
@@ -60,10 +64,18 @@ def battle(hit_shift=0, over=None):
                     ents[v] -= 100
         # X-Bow on the enemy princess tower: entry 151, LoadTime 0 -> progress 50, launch at k*400
         if t == 140:
+            pos[5000050] = (3500, 16000)
             body(5000050, "Xbow", 0)
+        if t == 195:                     # a Skeleton walks into the X-Bow's range (9.5k of 11.5k) and stays
+            pos[5000080] = (3500, 18000)
+            body(5000080, "Skeleton", 1)
+            att[5000080] = dict(target_gen=None, progress=0, load=0)
+        if xbow == "frozen":
+            buffs[5000050] = [("Freeze", -100, 500 - 50 * (t - 200))] if 200 <= t < 210 else []
         if t >= 145:
             p = 0 if t < 151 else D["Xbow"]["LoadTime"] + 50 + 50 * (t - 151)
-            att[5000050] = dict(target_gen=5000004, progress=p, load=0)
+            tgt = 5000080 if xbow and t >= 210 else 5000004
+            att[5000050] = dict(target_gen=tgt, progress=p, load=0)
             if p and p % D["Xbow"]["HitSpeed"] == 0:
                 nkey[0] += 1
                 proj[nkey[0]] = [5000050, 5000004, 4]
@@ -111,7 +123,8 @@ def battle(hit_shift=0, over=None):
                   "buffs": [{"name": b, "remaining_ms_raw": r, "config": {"HitSpeedMultiplier": m}}
                             for b, m, r in buffs.get(g, [])]} for g in ents]
         frames.append({"game_tick": t, "battle_active": True, "read_us": 400 + sample % 50,
-                       "entities": [{"address": A(g), "category": g, "side": side[g], "hp": ents[g]} for g in ents],
+                       "entities": [{"address": A(g), "category": g, "side": side[g], "hp": ents[g],
+                                     "x": pos[g][0], "y": pos[g][1]} for g in ents],
                        "projectiles": [{"generation_key": k, "source": A(s), "target": A(v)} for k, (s, v, _) in proj.items()],
                        "effects": [], "phase2": {"units": units},
                        "phase3": {"valid": sample != 7, "bodies": bodies, "defs": defs(over) if sample == 1 else []}})
@@ -126,7 +139,7 @@ def verdicts(frames, **kw):
                 h.write(json.dumps(f) + "\n")
         fr, n = vp.load(p)
         lines = vp.run(fr, n, None, tables=os.path.join(d, "no_tables"), **kw)
-    return {ln.split()[0]: ln for ln in lines if ln[:1] == "V" and ln.split()[0][1:].isdigit()}, lines
+    return {ln.split()[0]: ln for ln in lines if re.match(r"V\d+L? ", ln)}, lines
 
 
 def main():
@@ -134,6 +147,13 @@ def main():
     for k in ("V1", "V2", "V3", "V4", "V5", "V6", "V8", "V9", "V10"):
         assert v[k].split()[1] == "PASS", "\n".join(lines)
     assert v["V7"].split()[1] == "SKIP", v["V7"]
+    assert v["V5L"].split()[1] == "PASS" and "switches without stun/freeze/taunt 0" in v["V5L"], v["V5L"]
+    assert int(re.search(r"an enemy troop within Range in (\d+)", v["V5L"]).group(1)) > 0, v["V5L"]
+    # the X-Bow lock rule: a bare switch to a troop FAILs, the same switch right after a Freeze is expected
+    bare, lines = verdicts(battle(xbow="bare"))
+    assert bare["V5L"].split()[1] == "FAIL" and "NO RESET Xbow t210" in bare["V5L"], bare["V5L"]
+    froz, lines = verdicts(battle(xbow="frozen"))
+    assert froz["V5L"].split()[1] == "PASS" and "switches after a reset 1" in froz["V5L"], froz["V5L"]
     assert re.search(r"events=(\d+) fixed_phase=0 support=\1/\1 ", v["V3"]), v["V3"]
     assert "frozen: " in v["V6"] and "slow35: " in v["V6"], v["V6"]
     assert "Knight: SIM 9 ticks, credit LoadTime+50 5/5, hit at next HitSpeed multiple 5/5" in v["V10"], v["V10"]
@@ -146,7 +166,7 @@ def main():
     early, lines = verdicts(battle(hit_shift=2))
     assert early["V3"].split()[1] == "PASS" and "fixed_phase=1100" in early["V3"], early["V3"]
     assert early["V10"].split()[1] == "FAIL" and re.search("Knight: .*?hit at next HitSpeed multiple [01]/5", early["V10"]), "\n".join(lines)
-    print("VALIDATE_P3_SYNTHETIC_OK: 3 scenarios;", v["V3"][:60])
+    print("VALIDATE_P3_SYNTHETIC_OK: 5 scenarios;", v["V3"][:60])
 
 
 if __name__ == "__main__":
