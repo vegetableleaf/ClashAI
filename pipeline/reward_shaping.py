@@ -37,10 +37,12 @@ turns rows into Phi with the run's weights (``state_phi``); F, gamma and Phi = 0
                  opponent's true elixir:  Phi = w clip((E_own + V_own) - (E_opp + V_opp), -cap, cap)   (``phi_trade``)
                  A play is neutral when it lands (elixir becomes board value); a spell is worth what it removes.
     trade2       A3' (10-16, A3 failed its audit by ignoring tower hp): row = trade row + [own king, own princess x2, foe
-                 king, foe princess x2 (hp fractions), tick] (``trade2_record``), Phi = w clip(b_e[ph] dE + b_t[ph] dT,
-                 -cap, cap) in log-odds of winning (``phi_trade2``): dE = A3's margin, dT = foe princess hp lost - own
-                 (princess + KING_PER_PRINCESS x king) hp lost, in princess towers (foe KING weight 0, as A1), b per
-                 phase from the logistic win fit (``TRADE2_B``). NOT in STATE_PHI_MODES: the trainer refuses it until
+                 king, foe princess x2 (hp fractions), tick] (``trade2_record``), Phi = w clip(b_e[ph] dE + b_t[ph] dT
+                 + b_c[ph] dC, -cap, cap) in log-odds of winning (``phi_trade2``): dE = A3's margin, dT = foe princess
+                 hp lost - own (princess + KING_PER_PRINCESS x king) hp lost, in princess towers (foe KING weight 0, as
+                 A1), dC = foe princesses destroyed - own (the crown a finisher takes: linear-in-hp alone paid a Rocket
+                 that FINISHES a 7% princess LESS than its 6 elixir), b per phase from the logistic win fit
+                 (``TRADE2_B``). The crown term sits inside the clip, so |Phi| <= w cap still (0.24).
 """
 from __future__ import annotations
 
@@ -177,12 +179,15 @@ STATE_PHI_DEFAULTS = {"shaping_solv_w": 0.04, "shaping_solv_k": 1.0, "shaping_so
                       "shaping_ts_w_tb": 0.15, "shaping_ts_h_power": 3.0,
                       "shaping_tr_w": 0.03, "shaping_tr_cap": 8.0,      # trade: 0.03 x 8 = 0.24 (A3 "kept small")
                       "shaping_t2_w": 0.04, "shaping_t2_cap": 6.0}      # trade2: 0.04 x 6 log-odds = 0.24; 1 princess
-#                                                                         tower lost in 2x = 0.04 x 3.06 = 0.12
-STATE_PHI_MODES = ("solvency", "tower_score", "trade")
-# A3' coefficients (log-odds of winning per elixir of trade margin, per princess tower of tower margin) by phase
-#   1x b_e 0.066 [0.017, 0.127] b_t 2.890 [2.32, 3.71]; 2x 0.136 [0.099, 0.174] 3.060 [2.63, 3.54];
-#   OT 0.145 [0.110, 0.185] 3.570 [3.03, 4.16]   (associational, not causal; the elixir margin is the weak predictor)
-TRADE2_B = ((0.066, 2.890), (0.136, 3.060), (0.145, 3.570))
+#                                         tower destroyed in 2x = 0.04 x (2.754 + 2.115) = 0.195; 2 in 2x hit the clip
+STATE_PHI_MODES = ("solvency", "tower_score", "trade", "trade2")
+# A3' coefficients (log-odds of winning per elixir of trade margin, per princess tower of hp margin, per princess tower
+#   1x b_e 0.066 [0.023, 0.126] b_t 2.752 [2.13, 3.55] b_c 0.738 [-0.40, 2.07] (crown margin on 1.9% of rows; n.s.)
+#   2x b_e 0.134 [0.098, 0.169] b_t 2.754 [2.37, 3.37] b_c 2.115 [1.33, 4.31] (8.9% of rows)
+#   OT b_e 0.145 [0.108, 0.182] b_t 3.570 [3.04, 4.30] b_c 0 (no OT row has a crown margin: the first tower taken in
+#      overtime ends the match, so the terminal reward pays it and dC = 0 on every OT decision; pinned 0, never used)
+#   (associational, not causal; the elixir margin is the weak predictor)
+TRADE2_B = ((0.066, 2.752, 0.738), (0.134, 2.754, 2.115), (0.145, 3.570, 0.0))
 TRADE2_PHASE_TICKS = (2400, 3600)
 HALF_Y = 16000                  # own-frame y of the river centre (raw units, 1000 per tile; side 0 = Blue at low y)
 LANE_X = 9000                   # own-frame x < 9000 = left lane, else right
@@ -323,20 +328,21 @@ def trade2_record(state: dict, side: int, cards: dict, opp_est) -> list:
 
 
 def trade2_parts(rows) -> tuple:
-    """(dE, dT, phase index) per ``trade2_record`` row (module docstring)."""
+    """(dE, dT, dC, phase index) per ``trade2_record`` row (module docstring)."""
     r = np.atleast_2d(np.asarray(rows, dtype=np.float64))
     dE = r[:, 0] + r[:, 1] - r[:, 2] - r[:, 3]
     own_lost = (1.0 - r[:, 5]) + (1.0 - r[:, 6]) + KING_PER_PRINCESS * (1.0 - r[:, 4])
     dT = (1.0 - r[:, 8]) + (1.0 - r[:, 9]) - own_lost                      # r[:, 7] = foe king: weight 0
-    return dE, dT, np.searchsorted(TRADE2_PHASE_TICKS, r[:, 10], side="right")
+    dC = (r[:, 8:10] <= 0).sum(axis=1) - (r[:, 5:7] <= 0).sum(axis=1)      # princesses destroyed: foe - own
+    return dE, dT, dC, np.searchsorted(TRADE2_PHASE_TICKS, r[:, 10], side="right")
 
 
 def phi_trade2(rows, p: dict) -> np.ndarray:
-    """Phi per ``trade2_record`` row: w clip(b_e[phase] dE + b_t[phase] dT, -cap, cap)."""
-    dE, dT, ph = trade2_parts(rows)
+    """Phi per ``trade2_record`` row: w clip(b_e[phase] dE + b_t[phase] dT + b_c[phase] dC, -cap, cap)."""
+    dE, dT, dC, ph = trade2_parts(rows)
     b = np.asarray(TRADE2_B)[ph]
     cap = float(p["shaping_t2_cap"])
-    return float(p["shaping_t2_w"]) * np.clip(b[:, 0] * dE + b[:, 1] * dT, -cap, cap)
+    return float(p["shaping_t2_w"]) * np.clip(b[:, 0] * dE + b[:, 1] * dT + b[:, 2] * dC, -cap, cap)
 
 
 def phi_bound(mode: str, p: dict) -> float:

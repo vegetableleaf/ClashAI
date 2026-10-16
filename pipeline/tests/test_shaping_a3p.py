@@ -1,10 +1,12 @@
-"""A3' (``reward_shaping.phi_trade2``, mode ``trade2``): Phi = w clip(b_e[phase] dE + b_t[phase] dT, +-cap).
+"""A3' (``reward_shaping.phi_trade2``, mode ``trade2``): Phi = w clip(b_e[phase] dE + b_t[phase] dT + b_c[phase] dC,
++-cap).
 
     research/ext/Royale/.venv/Scripts/python.exe -m pytest -q pipeline/tests/test_shaping_a3p.py
 
-Pure python on synthetic raw() states; no engine. Sign, clip / bound, phase constants (pinned = the fit file), foe
-king weight 0, terminal handling (telescoping), and that the existing modes are untouched (byte-identical Phi; trade2
-stays out of STATE_PHI_MODES, so the trainer refuses it until its wiring ticket).
+Pure python on synthetic raw() states; no engine. Sign, the crown term (a finisher gains), clip / bound, phase
+constants (pinned = the fit file CROWN_FIT_R1.txt), foe king weight 0, terminal handling (telescoping), the existing
+modes untouched (byte-identical Phi), and the trainer wiring (adv_cfg accepts trade2 with the public counter and a
+critic scale >= 1 + phi_bound; e1_eval records the counter for it).
 """
 from __future__ import annotations
 
@@ -65,6 +67,18 @@ class TestTrade2(unittest.TestCase):
         placed = state([ent(0, KNIGHT, 3000, 9000), ent(1, WITCH, 9000, 20000)], e0=2.0, tick=3000)
         self.assertAlmostEqual(phi(placed), phi(before))
 
+    def test_crown_term_finisher_gains(self):
+        """AUDIT_A3P check ii: a 6-elixir Rocket that FINISHES a 7% princess raises Phi in 1x and 2x (linear-in-hp alone
+        lowered it); the crown step itself is w b_c[phase]."""
+        for tick, ph in ((1000, 0), (3000, 1)):
+            before = phi(state(e0=10.0, foe=(1, .07, 1), tick=tick))
+            self.assertGreater(phi(state(e0=4.0, foe=(1, 0, 1), tick=tick)), before)
+            hp1 = 1 / 3052                                                 # the last 1 hp of a level-11 princess
+            self.assertAlmostEqual(phi(state(foe=(1, 0, 1), tick=tick)) - phi(state(foe=(1, hp1, 1), tick=tick)),
+                                   W * (RS.TRADE2_B[ph][2] + RS.TRADE2_B[ph][1] * hp1))
+            self.assertLess(phi(state(own=(1, 0, 1), tick=tick)), phi(state(own=(1, hp1, 1), tick=tick)))
+        self.assertEqual(RS.TRADE2_B[2][2], 0.0)                           # OT: a crown ends the match (terminal)
+
     def test_foe_king_weight_zero(self):
         self.assertEqual(phi(state(foe=(.3, 1, 1), tick=3000)), phi(state(tick=3000)))
 
@@ -88,9 +102,9 @@ class TestTrade2(unittest.TestCase):
         row = (lambda tick: [6, 0, 5, 0, 1, 1, 1, 1, 1, 1, tick])        # dE = +1, dT = 0 -> Phi = w b_e
         for tick, ph in ((0, 0), (2399, 0), (2400, 1), (3599, 1), (3600, 2), (7000, 2)):
             self.assertAlmostEqual(float(RS.phi_trade2([row(tick)], P)[0]), W * RS.TRADE2_B[ph][0])
-        fit = (REPO / "scratchpad/gauntlet/L74/reward/RHO_FIT_R1_A3P.txt").read_text(encoding="utf-8")
+        fit = (REPO / "scratchpad/gauntlet/L74/reward/CROWN_FIT_R1.txt").read_text(encoding="utf-8")
         got = [tuple(float(x) for x in m) for m in
-               re.findall(r"b_elixir \+([\d.]+) .*? b_tower \+([\d.]+)", fit)]
+               re.findall(r"b_e \+([\d.]+) .*? b_t \+([\d.]+) .*? b_c \+([\d.]+)", fit)]
         self.assertEqual(got, [tuple(b) for b in RS.TRADE2_B])
 
     def test_terminal_and_telescoping(self):
@@ -127,11 +141,34 @@ class TestAbsentModeIdentity(unittest.TestCase):
         self.assertEqual(hashlib.sha256(b"".join(o.tobytes() for o in out)).hexdigest(),
                          "486dbc7e6dd82f40a857454aa95ff4e6c0f2fdc98688172740d9f33b7309d9dc")
 
-    def test_trainer_refuses_trade2_until_wired(self):
-        self.assertEqual(RS.STATE_PHI_MODES, ("solvency", "tower_score", "trade"))
-        with self.assertRaises(SystemExit):
-            RL.adv_cfg({"advantage": "gae", "critic_warmup_updates": 5, "shaping": "trade2",
-                        "opp_elixir": "counter"})
+    def test_trainer_wiring(self):
+        """trade2 is a trainer mode: accepted with the public counter and shaping_critic_scale >= 1 + phi_bound
+        (= 1.24 at the defaults; the crown term is inside the clip), refused otherwise."""
+        self.assertIn("trade2", RS.STATE_PHI_MODES)
+        self.assertIn("trade2", RL.SHAPING_MODES)
+        base = {"advantage": "gae", "critic_warmup_updates": 5, "shaping": "trade2", "opp_elixir": "counter"}
+        c = RL.adv_cfg(base)
+        self.assertEqual((c["shaping"], c["shaping_t2_w"], c["shaping_t2_cap"], c["shaping_critic_scale"]),
+                         ("trade2", 0.04, 6.0, 1.5))
+        RL.adv_cfg({**base, "shaping_critic_scale": 1.24})
+        for bad, key in (({"shaping_critic_scale": 1.23}, "phi_bound"), ({"opp_elixir": None}, "opp_elixir"),
+                         ({"shaping_t2_w": -0.1}, "shaping_t2_w"), ({"shaping_t2_cap": 0}, "shaping_t2_cap"),
+                         ({"shaping_t2_w": 0.1}, "phi_bound")):           # 0.1 x 6 = 0.6 -> needs 1.6 > 1.5
+            with self.assertRaises(SystemExit, msg=bad) as cm:
+                RL.adv_cfg({**base, **bad})
+            self.assertIn(key, str(cm.exception))
+
+    def test_e1_eval_records_counter(self):
+        """e1_eval's real SelfPlayMatch (test_shaping_step3's recording harness): trade2 rows carry the PUBLIC counter
+        estimate, and without a counter there are no rows."""
+        from pipeline.tests.test_shaping_step3 import TestRecording
+        rec = TestRecording()
+        t2 = TestRecording._run(rec, 0, "trade2", opp_elixir="counter")
+        tr = TestRecording._run(rec, 0, "trade", opp_elixir="counter")
+        self.assertEqual(t2.shape[1], 11)
+        np.testing.assert_array_equal(t2[:, :4], tr)
+        with self.assertRaises(ValueError):
+            TestRecording._run(rec, 0, "trade2")
 
 
 if __name__ == "__main__":
