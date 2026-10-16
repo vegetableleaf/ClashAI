@@ -1,3 +1,20 @@
+## 2026-10-16 ~18:00 EDT -- B6 stage A + reader step b committed; merged reader (step a) being built
+
+- **B6 learned ability press stage A (98ed369):** opt-in `ability_head`; v2 behaviour-cloning warm start; search_s0
+  greedy press + `--ability-stats`; arms bait_gae_ab / gae_ab; `L74/bait/run_bait_ab.sh` (train 65 -> graft -> eval vs
+  bait_gae u65 19309b90). NOT RUN YET (no free pod). For ONE change vs bait_gae, run it on the SAME runtime bait_gae used:
+  `RT=20261012-linux PY=/workspace/venv33/bin/python` (the script defaults to 20261016). gae_ab (icebow Hero IW press)
+  needs ROYALE_HEROIW_FORM=hero, which also changes the deck vs arm gae -> owner decision. SIM v2 presses rarely (Hero
+  Valkyrie q ~0.026 per pressable decision) -> the warm start copies a low press rate. Stage B (live: live_play calls the
+  head instead of hero_button.should_press) not built; the owner will send it to the friend when ready.
+- **Reader step b (2689bfe):** pipeline/sim_unit_state.py = the live cues from a SIM battle (needs the 0.1.35 runtime;
+  memo for buff fractions; use hit_window_ms=100 to match live 2-tick sampling; SIM uid != live generation id).
+  Step a spec: L74/parity/READER_STREAM_SPEC.md (+ private notes). Steps c (model inputs) + d (imitation rebuild + RL
+  retrain) target THE WEEKEND (owner).
+- **Step a merged reader:** a worker is building it on 81.27.69.179:37671 (/workspace/re_merged), source + STATUS in
+  icebow/data/reader_notes/merged/ (gitignored). Then ONE owner validation battle (S1-S8: S3 v2-row identity >= 99.9%,
+  S7 BoardState identical with new blocks on/off, S1 binary hash recorded). Production reader stays the default.
+
 ## 2026-10-16 ~17:00 EDT -- CHECKPOINT before the usage cutoff (owner: stop at 99% usage; a second account continues)
 
 **Owner rules today (memory: usage-cutoff-and-reader-rule-1016, fight-parity-goal):** hard stop at 99% usage after
