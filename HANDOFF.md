@@ -1,3 +1,29 @@
+## 2026-10-16 ~12:45 EDT -- OWNER GOAL: fight parity > 95% / > 90% per card; reader upgrade validated on 3 owner battles
+
+- **Owner goal (10-16)**: SIM fight parity > 95% overall and > 90% for every card (memory fight-parity-goal). Agreed
+  measurement: tolerant per-card scoring vs a NOISE CEILING (L74/parity/CEILING.md, fights.py --ceiling K). Owner on my
+  ceiling pushback: "upgrade the reader ... are we going to give up?" -> reader upgrade is core parity work. Owner:
+  invisibility, Tesla hidden, charging, dash/jump wind-up, targeting, aggro pathing, projectiles, stun/slow/rage are VISUAL
+  CUES -> future MODEL INPUTS (at human-visible resolution); needs an input-format change + imitation rebuild + RL retrain,
+  once, after the reader is validated.
+- **Parity diagnosis (12e4e24)**: Log / Skeletons / Hero IW have NO SIM-law mismatch (own bodies agree 0.907 / 0.944 /
+  0.913); low fight scores = tower damage elsewhere in the window (attack-phase timing 47%, X-Bow hit timing 22%, cascades
+  21%). 4 harness fixes. **Ceiling (1ab6de0)** subset 7 matches: strict normalised 0.969 [0.940, 1.005], core 0.897, all
+  0.855; every core fail that the replays agree on has an unseen opponent button/spell. Full 84-match ceiling run: parity
+  pod 81.27.69.179:37671 (13.6 CPUs) once set up.
+- **Reader (eeaebbe, 539eadb, f3ab77a)**: v2 reader already sampled body state / projectiles / effects -> now logged under
+  --log-frames. 3 owner classic battles (dry-run; match 2 had an owner-started NON-dry-run live_play tapping 13 times ->
+  own plays mixed) validated: Tesla hidden/up, hero cast (opp Hero Knight x2), MK jump (state 3), river jump (5),
+  projectile source/target (X-Bow/IW split), Freeze/Tornado/Poison, buffs (phase-2 capture); Prince charge = speed only;
+  melee/Tesla target + attack wind-up NOT available -> phase-3 RE. Owner: true opponent elixir removed from logs.
+  Captures align on tick + generation id. Running: harness uses the new fields; auto phase-2 capture in live runs +
+  parallel-live_play guard; phase-3 RE scoping (build recipe + target/wind-up sources). NOT pursued: anything touching
+  protections or running game code outside the emulator (v8 line stays declined).
+- **Pods (7 now)**: 23419 re-baseline -> exploiter; 23450 bait; 37184 T1 s74; 64.247.206.76:18881 (30.6 CPUs) T1 s75 and
+  :10530 (30.6) T1 s76 (setting up; bundle uploads slow from the laptop); 81.27.69.179:37671 (13.6) parity. up.sh now
+  creates /workspace/in first (fresh pods failed without it). 0.1.35 keeps the ranking (u250 61.0% vs 60.4%, r1 43.75% vs
+  44.5% on the live pool).
+
 ## 2026-10-16 ~11:00 EDT -- owner answers on the round-2 plan; 3 pods busy; parity scoreboard; A3' audit; HEAD NameError fixed
 
 - **Owner answers**: (1) G1 live calibration SKIPPED ("spend those 18 hours making our simulator identical to the real
