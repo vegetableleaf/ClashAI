@@ -3,6 +3,8 @@
 # load_live_config [deck]: deck = icebow|bait; default = contents of $L/LIVE_DECK, else icebow (owner 2026-10-10).
 # icebow -> DECK_ARGS empty (defaults: $L/CKPT_OVERRIDE + $L/LIVE_OPTIONS); bait -> the bait specialist's own two files.
 load_live_config() {
+  # owner 10-16: local opt-in for the merged reader (git-ignored file; delete it to go back to the v2 reader)
+  [ -f icebow/data/reader_notes/merged/live_env.sh ] && . icebow/data/reader_notes/merged/live_env.sh
   PY=icebow/.venv/Scripts/python.exe
   HAND_READER_EFFECTIVE="${HAND_READER:-$(tr -d '\r\n' < "$L/HAND_READER_ENABLED" 2>/dev/null || printf 0)}"
   case "$HAND_READER_EFFECTIVE" in

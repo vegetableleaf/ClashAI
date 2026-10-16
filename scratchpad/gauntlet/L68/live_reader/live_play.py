@@ -463,7 +463,8 @@ def main() -> int:
                     help="PER-MATCH wall-clock cap (reset each match): overtime ends by 6,000 ticks = 300 s of "
                          "game time, + loading/countdown. Hitting it stops the whole run")
     ap.add_argument("--dry-run", action="store_true", help="decide and log, never tap")
-    ap.add_argument("--reader", choices=tuple(READERS), default="v2",
+    ap.add_argument("--reader", choices=tuple(READERS), default=(os.environ.get("CLASHBOT_READER", "v2") if os.environ.get("CLASHBOT_READER", "v2") in READERS else "v2"),   # local opt-in (live_env.sh)
+                   
                     help="memory reader: v2 (default since 2026-10-03: evolved units, projectiles, effects), v1, or an opt-in extra "
                          "reader named in the CLASHBOT_READER_EXTRA file")
     ap.add_argument("--overlay", choices=("both", "detector", "reader"), default="both",
