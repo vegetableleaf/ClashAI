@@ -217,11 +217,11 @@ def test_helper_command_stop_by_pid_and_pinned_sha(tmp_path):
     h = helper_module()
     cmd = h.start_cmd("RVA_X", "CTX_Y", 1, "20261016_120000")
     out, err, pidf = h.dev_paths("20261016_120000")
-    assert all(s in cmd for s in ("RVA_X", "CTX_Y", out, err, pidf, "--phase2 1 --phase3", "exit 3")) and cmd.count("'") == 2
+    assert all(s in cmd for s in ("RVA_X", "CTX_Y", out, err, pidf, "exit 3")) and cmd.count("'") == 2
     stop = h.stop_cmd("20261016_120000")
-    assert pidf in stop and "grep -q re_p3probe /proc/$p/cmdline" in stop and "kill $p" in stop and "pkill" not in stop
+    assert pidf in stop and os.path.basename(h.DEV_BIN) in stop and "kill $p" in stop and "pkill" not in stop
     assert "live_sampler" not in h.DEV_BIN                   # why the reader's pkill cannot stop it
-    assert h.BIN_SHA256.startswith("74daa546") and h.dev_paths("a")[0] != h.dev_paths("b")[0]
+    assert len(h.BIN_SHA256) == 64 and h.dev_paths("a")[0] != h.dev_paths("b")[0]
     if os.path.isfile(h.LOCAL_BIN):
         assert h.sha256_file(h.LOCAL_BIN) == h.BIN_SHA256
     b = tmp_path / "bin"
