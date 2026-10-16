@@ -17,6 +17,7 @@ Public reader values only. Reader addresses are hashed per match and never writt
   python fights.py run   --out DIR [--files 'glob'] [--limit N] [--workers N] [--window 240]
   python fights.py score --out DIR          # scoreboard.json + SCOREBOARD.txt from DIR/matches/*.json
   python fights.py buffs --out FILE         # phase-2 buff rows of the local captures, for PARITY_BUFFS=FILE (a pod)
+  python fights.py attacks --out FILE       # phase-3 attack rows of the local captures, for PARITY_ATTACKS=FILE (a pod)
   run --infer target,phase: opt-in attack target / phase inference at setup (infer_attacks)
 Engine: ROYALE_RUNTIME (pipeline.royale_runtime.activate) or PARITY_SIM_PATH=<unpacked wheel dir> (laptop prototype).
 """
@@ -201,6 +202,32 @@ def phase2_buffs(path):
                 if p.get('valid'):
                     out[j['game_tick']] = {u['generation']: [(b['name'], b['remaining_ms_raw']) for b in u['buffs']]
                                            for u in p.get('units', []) if u.get('buffs')}
+        return out
+    return {}
+
+
+def phase3_attacks(path):
+    """{tick: {generation id: [target gen, previous target gen, progress, load, pre-attack countdown, seq]}} from the
+    phase-3 capture whose run.json names this frame log (bodies with an attack component only; joined on tick +
+    generation id, never on address); {} when there is none. PARITY_ATTACKS=<file> (from `fights.py attacks --out
+    <file>`) replaces the capture directory, e.g. on a pod."""
+    if os.environ.get('PARITY_ATTACKS'):
+        rows = json.loads(Path(os.environ['PARITY_ATTACKS']).read_text()).get(Path(path).name, {})
+        return {int(t): {int(g): v for g, v in u.items()} for t, u in rows.items()}
+    for run in sorted(P3_DIR.glob('p3_*/run.json')):
+        try:
+            if json.loads(run.read_text()).get('live_log') != Path(path).name:
+                continue
+        except ValueError:
+            continue
+        out = {}
+        with open(run.parent/'frames.jsonl', 'rb') as f:
+            for raw in f:
+                j = json.loads(raw); p = j.get('phase3') or {}
+                if p.get('valid'):
+                    out[j['game_tick']] = {
+                        b['generation']: [a['target_gen'], a['prev_target_gen'], a['progress_raw'], a['load_raw'], a['pre_raw'], a['seq_idx']]
+                        for b in p.get('bodies', []) for a in [b.get('attack')] if a}
         return out
     return {}
 
@@ -902,6 +929,9 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
     seen_hide = {}
     edits, more = start_state(eng, m, fight, setup, start, events, catalog)
     flags.update(more)
+    # Phase-3 logs: every t0-board body's attack target and state as the reader shows it (observed: the ceiling keeps it)
+    more_edits, observed, more = phase3_state(eng, m, fight, setup, start, catalog)
+    edits += more_edits; flags.update(more)
     before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
     for ref, kv in edits:
         i = ent(E, ref)
@@ -911,6 +941,9 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
             if k == 'buff':
                 if not set_buff(E, i, *v):
                     flags['setup_buff_no_slot'] += 1
+            elif k == 'target':
+                j = ent(E, v) if v else None
+                E['target'][i] = {'index': j, 'generation': E['generation'][j]} if j is not None else None
             else:
                 E[k][i] = v
         if 'hide' in kv:
@@ -990,7 +1023,7 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
         ticked = sorted(((e['tick'] if rng is None else jitter_tick(e, rng)), i) for i, e in enumerate(evs))
         if rng is not None:
             b.load(base.encode() if isinstance(base, str) else base)
-            perturbed.update(perturb(eng, rng, hist, who, towers0, seen_hide, inferred))
+            perturbed.update(perturb(eng, rng, hist, who, towers0, seen_hide, inferred, observed))
         rows = []                  # (tick, live bodies, sim bodies)
         cursor = 0; refused = Counter(); over = False
         for tick, live in frames:
@@ -1098,7 +1131,7 @@ def engagement(m, fight, eng, catalog, back=60):
     return info
 
 
-def perturb(eng, rng, hist, who, towers0, seen=None, inferred=None):
+def perturb(eng, rng, hist, who, towers0, seen=None, inferred=None, observed=()):
     """Redraw, on the freshly set-up board, the per-unit state the reader cannot see, within what the live frames of the
     last 3 s allow (engagement(); CEILING.md). Per body or tower on the t0 board:
       * enemy in reach at t0 for e ticks: target uniform over the enemies in reach (a tower lock is kept); swing progress
@@ -1112,8 +1145,9 @@ def perturb(eng, rng, hist, who, towers0, seen=None, inferred=None):
     Hidden opponent spells are NOT injected. seen: {live id: 'Up' | 'Hidden'} Tesla states the reader showed at t0 (ext
     logs): a seen Hidden stays Hidden; a seen Up is never redrawn Hidden (Rising stays possible: the rise is shorter than
     one frame gap). inferred: {live id: (elapsed lo ms, elapsed hi ms, HitSpeed, LoadTime)} from the opt-in attack
-    inference: the swing is redrawn only within that range (the last hit's frame gap), its target is kept. Returns
-    counts of what was redrawn."""
+    inference: the swing is redrawn only within that range (the last hit's frame gap), its target is kept. observed:
+    live ids whose target and attack state were set from phase-3 rows (phase3_state): only their shield is redrawn.
+    Returns counts of what was redrawn."""
     from scratchpad.gauntlet.L74.parity.mechanics import load_edited
     b = eng.b
     before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
@@ -1145,6 +1179,9 @@ def perturb(eng, rng, hist, who, towers0, seen=None, inferred=None):
         e_t, r_t, near = h
         if E['shield'][i] > 0 and near:
             E['shield'][i] = rng.randint(0, E['shield'][i]); out['shield'] += 1
+        if lid in observed:
+            out['attack_observed'] += 1
+            continue
         up = True
         if c.get('hides_when_not_attacking'):
             ut, ht = c.get('up_time_ms') or 0, c.get('hide_time_ms') or 0
@@ -1474,6 +1511,64 @@ def start_state(eng, m, fight, setup, start, events, catalog):
     return out, flags
 
 
+def phase3_state(eng, m, fight, setup, start, catalog):
+    """Logs with phase-3 rows (m['attacks']): ([(ref, {SIM entity field: value})], {live id}, flags) -- the attack state
+    of every t0-board body (setup bodies and towers, not proxies) as the reader shows it at t0, or at t0 - 1 advanced one
+    tick by the measured rule (ATTACK_PHASE_1016: progress += step, 50 / 35 under an Ice Wizard slow / 0 frozen,
+    carried across hits; the load timer re-armed to LoadTime on the crossing tick, else -50, held while frozen):
+      * attack_ms = progress (the SIM's count-up counter, same rule), attack_load_ms = load;
+      * attack_phase: Idle at progress 0, Cooldown on the fire tick (progress mod HitSpeed < step), else Windup;
+      * target = the body / tower with the target's generation id (None when the reader shows none); target_locked as
+        the SIM sets it after a step (projectile attackers in Windup; probed on 0.1.35: Musketeer / X-Bow 1, Knight /
+        Tesla 0).
+    Not set (no SIM field): the previous target, the pre-attack countdown, the attack-sequence index (flagged when
+    non-zero). The live ids returned are observed: the ceiling does not redraw their attack state (perturb)."""
+    att = m.get('attacks') or {}
+    t0 = fight['t0']
+    tb = max((t for t in att if t0 - 1 <= t <= t0), default=None)
+    out, seen, flags = [], set(), Counter()
+    if tb is None:
+        return out, seen, flags
+    by = {bd['id']: bd for bd in setup}
+    gens = {bd['gen']: bd for bd in start if 'gen' in bd}
+
+    def ref_of(bd):
+        return ('tower', bd['side'], bd['x'], bd['y']) if bd['tower'] else (('body', by[bd['id']]) if bd['id'] in by else None)
+    buffs = (m.get('buffs') or {}).get(max((t for t in m.get('buffs') or {} if t0 - 6 <= t <= t0), default=None), {})
+    for g, (tg, _prev, prog, load, pre, seq) in att[tb].items():
+        bd = gens.get(g)
+        r = ref_of(bd) if bd and (bd['tower'] or not by.get(bd['id'], {}).get('proxy')) else None
+        if r is None or (bd['tower'] and bd['hp'] <= 0):
+            continue
+        st = eng.stats(('KingTower' if bd['id'].endswith('K') else 'PrincessTower') if bd['tower'] else catalog[bd['card_id']]['display_name'])
+        hs, lt = st.get('hit_speed_ms') or 0, max(0, st.get('load_time_ms') or 0)
+        if hs <= 0:
+            flags['setup_p3_no_hit_speed'] += 1; continue
+        names = [n for n, _ in buffs.get(g, ())]
+        # ponytail: Freeze / Rage-type buffs other than these names step 50; add their multipliers if a capture shows one
+        step = 0 if any('Freeze' in n or n in STUN_BUFFS for n in names) else 35 if any(n in SLOW_BUFFS for n in names) else 50
+        if tb < t0:
+            if prog > 0:
+                load = lt if (prog + step)//hs > prog//hs else load if step == 0 else max(0, load - 50)
+                prog += step
+            else:
+                load = max(0, load - 50)
+        tref = None
+        if tg is not None:
+            tbd = gens.get(tg)
+            tref = ref_of(tbd) if tbd and (tbd['tower'] or not by.get(tbd['id'], {}).get('proxy')) else None
+            if tref is None:
+                flags['setup_p3_target_unresolved'] += 1
+        phase = 'Idle' if prog <= 0 else 'Cooldown' if prog % hs < step else 'Windup'
+        out.append((r, dict(attack_ms=prog, attack_load_ms=load, attack_phase=phase, target=tref,
+                            target_locked=bool(st.get('projectile')) and phase == 'Windup' and tref is not None)))
+        seen.add(bd['id']); flags['setup_p3_attack'] += 1
+        flags['setup_p3_pre_unset'] += pre != 0
+        flags['setup_p3_seq_unset'] += seq != 0
+    flags['setup_p3_from_previous_tick'] += tb < t0 and bool(out)
+    return out, seen, +flags
+
+
 def set_buff(E, i, bid, ms):
     """Write buff `bid` with `ms` left into entity i's first free slot of a save's ents; False if none is free. The
     save's buffs list is FLAT (IW_SLOW_1016 §2): entity i owns buffs[i*slots:(i+1)*slots], slots = len(buffs) // n."""
@@ -1636,6 +1731,7 @@ def run_match(path, window, out_dir, ceiling=0):
     events, delay = deployments(m, catalog, eng.effect_life)
     fights = cut(m, events, window)
     m['buffs'] = phase2_buffs(path) if m['ext'] else {}
+    m['attacks'] = phase3_attacks(path) if m['ext'] else {}
     # levels from the bodies' max_hp: per (side, card); '*' = the side's modal level for cards never seen as a body
     levels, seen = {}, Counter()
     for t, bodies in m['frames']:
@@ -1691,6 +1787,8 @@ def run_match(path, window, out_dir, ceiling=0):
         summary.update(ext=True, phase2=bool(m['buffs']),
                        seen=dict(Counter(f"{e['kind']}:{'own' if e['side'] == m['side'] else 'opp'}:{e['name']}"
                                          for e in events if e['source'] in ('spell_seen', 'cast_seen'))))
+        if m['attacks']:
+            summary['phase3'] = True
     out.write_text(json.dumps(dict(summary=summary, fights=results), allow_nan=False))
     return summary
 
@@ -1972,7 +2070,7 @@ def text(sb, top=25):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('mode', choices=['run', 'score', 'buffs'])
+    ap.add_argument('mode', choices=['run', 'score', 'buffs', 'attacks'])
     ap.add_argument('--out', type=Path, required=True)
     ap.add_argument('--live', type=Path, default=ps.LIVE)
     ap.add_argument('--files', default='live_play_2026101[5-9]_*.jsonl')
@@ -1989,6 +2087,11 @@ def main():
         logs = {json.loads(r.read_text()).get('live_log') for r in sorted(P2_DIR.glob('*/run.json')) + sorted(P3_DIR.glob('p3_*/run.json'))}
         out = {n: phase2_buffs(n) for n in sorted(filter(None, logs))}
         a.out.write_text(json.dumps(out))
+        print({n: len(v) for n, v in out.items()}); return 0
+    if a.mode == 'attacks':    # phase-3 attack rows (generation ids, counters; no addresses) -> one file for PARITY_ATTACKS
+        logs = {json.loads(r.read_text()).get('live_log') for r in sorted(P3_DIR.glob('p3_*/run.json'))}
+        out = {n: phase3_attacks(n) for n in sorted(filter(None, logs))}
+        a.out.write_text(json.dumps(out, separators=(',', ':')))
         print({n: len(v) for n, v in out.items()}); return 0
     if a.mode == 'score':
         for mode in ('strict', 'core', 'all'):

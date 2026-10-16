@@ -217,3 +217,55 @@ Validation against the projectile truth (ext logs, ranged attackers, drop-only i
 | old 3 | on | 89 / 94 (stale 48) | 0.812, 0.809, 0.920, 0.879 | 0.682, 0.866, 0.788 |
 
 Reading: agreement moves up 0 to 3 pp (inside every CI), the ceiling up 3 to 5 pp because the perturbation is narrowed, so normalised scores fall. Not a parity gain on this n; keep it opt-in until the pod cohort (84 matches) says otherwise. Outputs: `.foreman/scratch/fights_newkeys/` (local).
+
+## 10. Phase-3 attack state at fight start (2026-10-16)
+Where a phase-3 capture (`re_phase3/p3_*/run.json`) names the frame log, `phase3_state` sets each t0-board body's attack
+state in the SIM save from the reader, joined on tick + generation id (never address). Pods: `fights.py attacks --out F`
+writes generation ids and counters only; `PARITY_ATTACKS=F` replaces the capture directory (round trip equal on 135037).
+
+| reader field | SIM save field | rule |
+|---|---|---|
+| progress | `attack_ms` | as read (same count-up law, ATTACK_PHASE_1016) |
+| load timer | `attack_load_ms` | as read |
+| (derived) | `attack_phase` | Idle at progress 0; Cooldown on the fire tick (progress mod HitSpeed < step); else Windup |
+| current target | `target` (+ `target_locked`) | the body / tower with that generation id; None if the reader shows none. Lock as the SIM sets it after a step: projectile attackers in Windup (probe: Musketeer / X-Bow 1, Knight / Tesla 0) |
+| previous target | none | not set: no SIM field |
+| pre-attack countdown | none | not set: no SIM field. Non-zero only on opponent Hero Electro Wizard (25 of 55,949 attack rows in the 3 captures); flag `setup_p3_pre_unset` |
+| attack sequence index | none set | 1 on Archer_EV1 (128 rows) and Hero Electro Wizard (38); the SIM's `attack_seq` meaning (melee entry / snipe) is not shown to match; flag `setup_p3_seq_unset` |
+
+The capture and the frame log are different samplers: a capture row sits on the t0 tick (1496 of 3035 frames in
+`T135619`) or one tick earlier (1526). A row one tick old is advanced by the measured rule (progress + 50 / 35 under an
+Ice Wizard slow / 0 frozen; load re-armed on the crossing, else -50, held while frozen): `setup_p3_from_previous_tick`.
+On 15 fights of 135037, 27 of 27 seeded troop states read back from the save unchanged.
+
+**Ceiling.** Bodies seeded from phase 3 are observed: `perturb` redraws only their shield (`attack_observed`). In the 3
+phase-3 logs the redraws fell from swing 2416 / reload 200 / Tesla 312 to swing 32 / Tesla 8 (12,304 observed skips).
+
+**Re-score, 3 phase-3 logs** (`20261016_133158/_134401/_135037`, K = 8, `PYTHONHASHSEED=0`, laptop). Strict = core here.
+
+| set | run | n | agree unperturbed | agree (vs perturbed) | ceiling | normalised [95% CI] | body miss live / ceiling |
+|---|---|---|---|---|---|---|---|
+| strict | before | 157 | 0.904 | 0.914 | 0.947 | 0.966 [0.905, 0.984] | 0.118 / 0.037 |
+| strict | after | 157 | 0.924 | 0.924 | 0.993 | 0.931 [0.905, 0.977] | 0.112 / 0.012 |
+| all | before | 200 | 0.830 | 0.839 | 0.930 | 0.902 [0.787, 0.943] | 0.155 / 0.049 |
+| all | after | 200 | 0.845 | 0.844 | 0.990 | 0.852 [0.781, 0.871] | 0.147 / 0.015 |
+
+Unperturbed flips: strict 3 fail -> agree (133158@2786 own X-Bow, 135037@1029 own Log, 135037@2569 opp Hero IW), 0
+the other way; all 5 up, 2 down (133158@3934 own Rocket, 135037@5288 own Knight: both carry `spell_in_flight_at_start`;
+in the Knight fight the SIM Knight ends at 159 hp before and dies after, live ends at 832, so both runs are far off).
+Every card has n < 30 here: no per-card verdict.
+
+**Reading.** The ceiling is now close to 1 on these logs, because almost nothing hidden is left to redraw at t0. The
+normalised score falls even though unperturbed agreement rises. What is left is not t0 attack-phase noise: live body
+misses are 0.112 against a ceiling of 0.012. Normalised scores from phase-3 logs and older logs use different ceilings,
+so they should not be pooled without saying so.
+
+**DIAG2 "killer in place, hit timing".** That class has 24 fights / 28 body pairs with pert 0 (`after3k_killer.json`). All
+of them are in logs without phase-3 data (10-15 logs, and 10-16 124905 / 125620 / 131434), so **0 resolve** with this
+change. In 24 of the 28 pairs the killer was on the t0 board, so a phase-3 capture of those matches would cover it. In the
+3 phase-3 logs the class has 1 fight before and after (`135037@5841`, own Hero IW): its killer, an opponent X-Bow, was
+played inside the window. Its first-shot timing comes from the deploy, not from the t0 state.
+
+**No phase-3 data -> unchanged:** on `20261015_001347`, `20261016_124905` and `20261016_131434` (156 fights, K = 8), every
+SCOREBOARD/CEILING txt+json file is byte-identical to f60747b's, and each `matches/*.json` differs only in `seconds`.
+Outputs: `.foreman/scratch/p3seed/` (local).

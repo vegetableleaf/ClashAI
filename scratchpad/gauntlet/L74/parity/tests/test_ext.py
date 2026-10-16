@@ -230,3 +230,53 @@ def test_spawner_timer_from_the_last_wave_seen():
     assert edits == [] and flags['setup_spawner_overdue'] == 1
     edits, flags = run([('a', 80), ('b', 90)], far=True)
     assert edits == [] and flags['setup_spawner_unseen'] == 1
+
+
+def test_phase3_state_seeds_target_and_attack_from_the_reader():
+    """Phase-3 rows at t0 set attack_ms / load / phase / target as read; a row one tick old is advanced by the measured
+    rule (slowed Knight 1190 -> 1225 crosses 1200: load re-armed, Cooldown; frozen: held); a proxy body, a target off
+    the board and the fields the SIM lacks are flagged, not set. The seeded ids are returned as observed."""
+    XBOW = next(k for k, v in CAT.items() if v['display_name'] == 'Xbow' and k < 100000000)
+    class E3(Eng):
+        S = dict(Eng.S, Knight=dict(hit_speed_ms=1200, load_time_ms=700), Xbow=dict(hit_speed_ms=400, projectile=dict(speed=1)),
+                 PrincessTower=dict(hit_speed_ms=800, projectile=dict(speed=1)))
+    bd = lambda i, card, g, side=1: dict(id=i, side=side, x=9000, y=10000 + g, card_id=card, hp=500, max_hp=500, kind=13,
+                                         tower=False, gen=g)
+    start = [bd('k', KNIGHT, 1), bd('x', XBOW, 2), bd('f', KNIGHT, 3), bd('p', KNIGHT, 4), bd('e', KNIGHT, 5, 0),
+             dict(id='T0L', side=0, x=3500, y=6500, hp=3052, tower=True, gen=9)]
+    setup = [dict(id=b['id'], side=b['side'], x=b['x'], y=b['y'], proxy=b['id'] == 'p') for b in start if not b['tower']]
+    rows = {1: [5, None, 1190, 0, 0, 0], 2: [9, 5, 2400, 0, 0, 1], 3: [5, None, 1850, 300, 0, 0],
+            4: [5, None, 600, 0, 0, 0], 5: [77, None, 0, 200, 40, 0]}
+    m = dict(attacks={100: rows}, buffs={98: {1: [('IceWizardHeroSlow', 2000)], 3: [('IceWizardHeroFreeze', 999999)]}})
+    edits, seen, flags = F.phase3_state(E3(), m, dict(t0=100), setup, start, CAT)
+    got = {r[1]['id']: kv for r, kv in edits}
+    assert seen == {'k', 'x', 'f', 'e'} and 'p' not in got                      # the proxy is not seeded
+    assert got['k'] == dict(attack_ms=1190, attack_load_ms=0, attack_phase='Windup', target=('body', setup[4]), target_locked=False)
+    assert got['x'] == dict(attack_ms=2400, attack_load_ms=0, attack_phase='Cooldown', target=('tower', 0, 3500, 6500),
+                            target_locked=False)                                # fire tick: Cooldown, so unlocked
+    assert got['e']['target'] is None and got['e']['attack_phase'] == 'Idle'
+    assert flags == dict(setup_p3_attack=4, setup_p3_target_unresolved=1, setup_p3_pre_unset=1, setup_p3_seq_unset=1)
+    m['attacks'] = {99: rows}                                                   # one tick old: advanced
+    got = {r[1]['id']: kv for r, kv in F.phase3_state(E3(), m, dict(t0=100), setup, start, CAT)[0]}
+    assert (got['k']['attack_ms'], got['k']['attack_load_ms'], got['k']['attack_phase']) == (1225, 700, 'Cooldown')
+    assert (got['f']['attack_ms'], got['f']['attack_load_ms']) == (1850, 300)    # frozen: both held
+    assert (got['x']['attack_ms'], got['x']['attack_phase'], got['x']['target_locked']) == (2450, 'Windup', True)
+    assert got['e']['attack_load_ms'] == 150
+    m['attacks'] = {98: rows}                                                   # older than one tick: nothing
+    assert F.phase3_state(E3(), m, dict(t0=100), setup, start, CAT)[0] == []
+
+
+def test_phase3_attacks_from_a_capture_or_the_exported_file(tmp_path, monkeypatch):
+    cap = tmp_path/'p3_x'; cap.mkdir()
+    (cap/'run.json').write_text(json.dumps(dict(live_log='live_play_a.jsonl')))
+    a = dict(target_gen=7, prev_target_gen=None, progress_raw=850, load_raw=0, pre_raw=0, seq_idx=0)
+    rows = [dict(game_tick=10, phase3=dict(valid=True, bodies=[dict(generation=5, attack=a), dict(generation=6, attack=None)])),
+            dict(game_tick=11, phase3=dict(valid=False, bodies=[]))]
+    (cap/'frames.jsonl').write_text(''.join(json.dumps(r) + '\n' for r in rows))
+    monkeypatch.setattr(F, 'P3_DIR', tmp_path)
+    monkeypatch.delenv('PARITY_ATTACKS', raising=False)
+    want = {10: {5: [7, None, 850, 0, 0, 0]}}
+    assert F.phase3_attacks('x/live_play_a.jsonl') == want and F.phase3_attacks('live_play_b.jsonl') == {}
+    f = tmp_path/'att.json'; f.write_text(json.dumps({'live_play_a.jsonl': want}))
+    monkeypatch.setenv('PARITY_ATTACKS', str(f))
+    assert F.phase3_attacks('live_play_a.jsonl') == want
