@@ -2,7 +2,7 @@
 (r1's exact config continued 60 policy updates from newsim_base_main_u0060, 10-13).
     python mkcfg_arms.py ARM OUT.yaml      ARM = gae (F1) | opp (F3) | kl_imit (F6) | gae_solv (A2) | gae_tower (A1+A1b)
     | gae_trade (A3, step 5) | gae_live (F1 + live-mirrored opponent decks, 10-15) | gae_c2 (C2) | gae_f2 (F2) | gae_f6lo (F6')
-    | gae_c1 (C1 stage A)
+    | gae_c1 (C1 stage A) | bait_gae (= gae; run through L74/bait/bait_rl.py)
 kl_imit / gae_f6lo need KL_IMIT (below, not in git: icebow/data/) on the pod -> put it in ckpts.tgz; checked here by sha256.
 gae_solv / gae_tower (step 3) = arm gae + ONE potential (reward_shaping solvency / tower_score), its weights pinned in
 the yaml from reward_shaping.STATE_PHI_DEFAULTS (PYTHONPATH = the repo); pre-flight: L74/reward/preflight_a1a2.py.
@@ -41,6 +41,8 @@ if arm == "kl_imit":  # F6 ONE change: KL_gate to the imitation model instead of
 elif arm == "gae_f6lo":   # F6': F1 + the imitation gate anchor on the < 4 elixir rows only, own coefficient
     c.update(GAE, kl_ref_gate=KL_IMIT, kl_ref_gate_max_elixir=4.0, kl_ref_gate_target_frac=0.5)
 elif arm == "gae":    # F1 per-decision credit: R2's GAE settings without its shaping; 5 critic-only updates -> 65 = 60 policy
+    c.update(GAE)
+elif arm == "bait_gae":   # 10-16 friend's bait deck: arm gae's config exactly; the learner deck is set by L74/bait/bait_rl.py
     c.update(GAE)
 elif arm in ("gae_solv", "gae_tower", "gae_trade"):   # steps 3/5: F1 + ONE potential; same init, warm-up (5), scale 1.5
     from pipeline.reward_shaping import STATE_PHI_DEFAULTS
