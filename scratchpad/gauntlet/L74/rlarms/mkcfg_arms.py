@@ -54,6 +54,8 @@ if arm == "kl_imit":  # F6 ONE change: KL_gate to the imitation model instead of
     c.update(kl_ref_gate=KL_IMIT)
 elif arm == "gae_f6lo":   # F6': F1 + the imitation gate anchor on the < 4 elixir rows only, own coefficient
     c.update(GAE, kl_ref_gate=KL_IMIT, kl_ref_gate_max_elixir=4.0, kl_ref_gate_target_frac=0.5)
+elif arm == "gae_hero":   # 10-16 owner: = gae; trained with HEROIW_FORM=hero (run_rlarm2.sh env) -- the rule-press twin of gae_ab
+    c.update(GAE)
 elif arm == "gae":    # F1 per-decision credit: R2's GAE settings without its shaping; 5 critic-only updates -> 65 = 60 policy
     c.update(GAE)
 elif arm == "bait_gae":   # 10-16 friend's bait deck: arm gae's config exactly; the learner deck is set by L74/bait/bait_rl.py
