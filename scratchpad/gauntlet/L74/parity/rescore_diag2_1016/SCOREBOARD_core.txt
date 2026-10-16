@@ -1,0 +1,82 @@
+fights 5391 (clean[core] 3396; by mode {'strict': 1809, 'core': 3396, 'all': 5391}) in 103 matches; outcome agree 0.662; 1/4-tile 0.82; skipped {'no_frames': 175, 'not_main_account': 11}; flags {'setup_spawner_unseen': 72, 'spell_in_flight_at_start': 629, 'setup_spawner_seen': 550, 'setup_child_skipped': 534, 'setup_snapped': 330, 'setup_form_swapped': 3206, 'setup_child_by_parent': 246, 'setup_child_as_card': 582, 'setup_target_tower': 612, 'play_refused': 309, 'setup_spawner_overdue': 17, 'opp_ability_unobserved': 2626, 'opp_spell_seen': 1179, 'spell_spawned_units_timing_unknown': 651, 'setup_spawn_refused': 130, 'setup_was_deploying': 93, 'ability_active_at_start': 144, 'sim_game_over': 183, 'setup_form_not_set': 116, 'setup_unmapped_body': 32, 'setup_shield_broken': 69, 'setup_target_seen': 584, 'setup_mid_jump': 22, 'setup_tesla_up': 117, 'setup_slow_buff': 56, 'setup_tesla_hidden': 129, 'setup_charge_progress': 20, 'status_unset': 21, 'setup_stun_buff': 1, 'setup_slow_shot': 126}; stamp {'schema': 1, 'pins': {'RoyaleSim': '4fd4d54cdcbf6469aff4e4d87cb0dba523d295bc', 'RoyaleGym': 'a7deb6e48c3580fe2cd7d856b7c7d19ce67f02f9'}, 'wheels': {'royalesim': 'royalesim==0.1.35', 'royalegym': 'royalegym==0.1.23'}, 'manifest_sha256': '81bb27943fe3d6650e9da992b1908bd3bb76492ff62ad4ea9447db7038e8db3b', 'card_table': {'cards_json_fnv1a64': '141b46fba8bae4fb', 'cards_vintage': '15.535.29 client (2026, LIVE build family)', 'cards_json_hash_source': 'embedded'}, 'runtime_id': '20261016-linux', 'royalesim': '0.1.35'}
+
+GROUPS by impact (fights/match x (1-outcome agree + mean tower err/1000))
+kind | group | n | /match | agree | alive | 1st death | tower err med/mean | death dt s (n) | 1/4 tile | impact
+ancho | own Log | 300 | 2.913 | 0.56 | 0.913 | 0.883 | 11.0/303.2 | 0.1 (971) | 0.743 | 2.1647 *
+      worst: live_play_20261015_183748@1500 terr 4735; live_play_20261015_180556@2425 terr 3167; live_play_20261015_185144@1628 terr 3163
+ancho | own IceWizard hero | 337 | 3.272 | 0.623 | 0.866 | 0.864 | 0/205.5 | 0.2 (115) | 0.833 | 1.9053 *
+      worst: live_play_20261015_185144@1537 terr 3397; live_play_20261015_175821@2089 terr 3163; live_play_20261015_173028@2738 terr 2580
+ancho | own Skeletons | 317 | 3.078 | 0.612 | 0.931 | 0.852 | 0/216.4 | 0.1 (819) | 0.833 | 1.8603 *
+      worst: live_play_20261015_185144@1586 terr 3237; live_play_20261016_153159@1610 terr 2713; live_play_20261015_160050@2844 terr 2365
+ancho | own Tesla | 214 | 2.078 | 0.645 | 0.893 | 0.921 | 0.0/190.8 | 0.2 (92) | 1.0 | 1.1343 *
+      worst: live_play_20261015_160403@727 terr 2160; live_play_20261016_131434@1579 terr 1568; live_play_20261015_125439@3144 terr 1764
+ancho | own Knight | 246 | 2.388 | 0.695 | 0.927 | 0.923 | 0.0/167.6 | 0.1 (77) | 0.752 | 1.1285 *
+      worst: live_play_20261015_032727@861 terr 2126; live_play_20261016_130008@2409 terr 2026; live_play_20261016_130952@3301 terr 1829
+ancho | own Xbow | 272 | 2.641 | 0.743 | 0.926 | 0.915 | 0.0/132.5 | 0.1 (44) | 0.995 | 1.0294 *
+      worst: live_play_20261016_153159@1610 terr 2713; live_play_20261015_160403@725 terr 2062; live_play_20261015_125439@3141 terr 1764
+ancho | own Tornado | 85 | 0.825 | 0.482 | 0.835 | 0.824 | 128/290.5 | 0.3 (195) | 0.659 | 0.6669 *
+      worst: live_play_20261016_153159@1690 terr 1793; live_play_20261015_160050@2735 terr 1486; live_play_20261015_175821@2155 terr 1400
+ancho | own Knight evo | 75 | 0.728 | 0.533 | 0.84 | 0.84 | 0/242.8 | 0.5 (13) | 0.705 | 0.5166 *
+      worst: live_play_20261015_021819@1649 terr 4555; live_play_20261015_182623@3458 terr 2096; live_play_20261015_182623@2028 terr 2100
+ancho | own Tesla evo | 70 | 0.68 | 0.629 | 0.886 | 0.871 | 0.0/128.2 | 0.3 (25) | 0.982 | 0.3395 *
+      worst: live_play_20261015_145128@4631 terr 1624; live_play_20261015_084925@1964 terr 1345; live_play_20261015_042030@4539 terr 882
+inter | own Log vs Firecracker | 28 | 0.272 | 0.393 | 0.857 | 0.893 | 225.0/432.0 | 0.2 (80) | 0.612 | 0.2825 *
+      worst: live_play_20261015_160050@2649 terr 1330; live_play_20261016_130008@2959 terr 1454; live_play_20261015_170420@467 terr 1239
+inter | own Log vs Witch | 32 | 0.311 | 0.562 | 0.844 | 0.969 | 47.0/454.4 | 0.1 (142) | 0.797 | 0.2771 *
+      worst: live_play_20261015_183748@1500 terr 4735; live_play_20261015_160050@2649 terr 1330; live_play_20261015_183748@841 terr 1445
+inter | own IceWizard hero vs Firecracker | 39 | 0.379 | 0.564 | 0.897 | 0.872 | 102/247.9 | 0.1 (17) | 0.841 | 0.2589 *
+      worst: live_play_20261015_032727@522 terr 1666; live_play_20261015_052128@3064 terr 685; live_play_20261016_130952@2485 terr 804
+ancho | opp SkeletonArmy | 47 | 0.456 | 0.745 | 0.894 | 0.936 | 0/296.6 | 0.1 (679) | 0.652 | 0.2518
+      worst: live_play_20261015_082928@243 terr 2410; live_play_20261015_173028@2712 terr 2286; live_play_20261015_091131@2585 terr 1960
+inter | opp SkeletonArmy vs IceWizard | 37 | 0.359 | 0.73 | 0.892 | 0.946 | 70/371.4 | 0.1 (540) | 0.63 | 0.2305 *
+      worst: live_play_20261015_082928@243 terr 2410; live_play_20261015_173028@2712 terr 2286; live_play_20261015_091131@2585 terr 1960
+inter | own Skeletons vs Witch | 29 | 0.282 | 0.586 | 0.931 | 0.828 | 0/390.3 | 0.1 (79) | 0.776 | 0.2264 *
+      worst: live_play_20261015_160050@2844 terr 2365; live_play_20261015_183748@1401 terr 1774; live_play_20261015_060252@472 terr 1443
+inter | opp SkeletonArmy vs Xbow | 33 | 0.32 | 0.697 | 0.879 | 0.939 | 73/401.8 | 0.1 (480) | 0.641 | 0.2258 *
+      worst: live_play_20261015_082928@243 terr 2410; live_play_20261015_173028@2712 terr 2286; live_play_20261015_091131@2585 terr 1960
+inter | own IceWizard hero vs Witch | 38 | 0.369 | 0.605 | 0.921 | 0.947 | 11.5/165.2 | 0.3 (10) | 0.796 | 0.2066 *
+      worst: live_play_20261015_162735@3197 terr 896; live_play_20261015_160050@3152 terr 671; live_play_20261016_124905@1705 terr 599
+inter | own IceWizard hero vs Pekka | 27 | 0.262 | 0.481 | 0.704 | 0.815 | 56/244.4 | 0.9 (9) | 0.809 | 0.2 *
+      worst: live_play_20261015_084925@2041 terr 2011; live_play_20261015_161848@841 terr 837; live_play_20261015_161848@3171 terr 847
+inter | own Log vs MiniPekka | 23 | 0.223 | 0.435 | 0.957 | 0.913 | 171/303.7 | 0.1 (70) | 0.698 | 0.194 *
+      worst: live_play_20261015_013641@581 terr 956; live_play_20261015_132700@3717 terr 834; live_play_20261015_175504@1873 terr 807
+inter | opp SkeletonArmy vs Tesla | 24 | 0.233 | 0.625 | 0.875 | 0.917 | 71.5/433.0 | 0.1 (342) | 0.636 | 0.1883 *
+      worst: live_play_20261015_173028@2712 terr 2286; live_play_20261015_091131@2585 terr 1960; live_play_20261016_130952@3299 terr 1829
+inter | own Log vs BlowdartGoblin | 27 | 0.262 | 0.556 | 0.926 | 0.889 | 77/272.6 | 0.1 (73) | 0.671 | 0.188 *
+      worst: live_play_20261015_160403@913 terr 1568; live_play_20261016_130008@2959 terr 1454; live_play_20261015_154645@2253 terr 980
+inter | own Skeletons vs Firecracker | 28 | 0.272 | 0.536 | 0.929 | 0.786 | 93.0/223.3 | 0.1 (79) | 0.702 | 0.1869 *
+      worst: live_play_20261015_160050@2844 terr 2365; live_play_20261015_160050@3180 terr 760; live_play_20261015_160722@2698 terr 723
+inter | own Log vs GoblinGang | 14 | 0.136 | 0.286 | 0.857 | 0.786 | 640.5/658.6 | 0.2 (55) | 0.773 | 0.1866 *
+      worst: live_play_20261015_035841@2325 terr 1565; live_play_20261015_160403@913 terr 1568; live_play_20261015_071341@356 terr 1345
+inter | own Log vs Valkyrie | 25 | 0.243 | 0.48 | 0.92 | 0.92 | 98/242.6 | 0.1 (127) | 0.751 | 0.1851 *
+      worst: live_play_20261015_170735@516 terr 1533; live_play_20261015_094522@4369 terr 686; live_play_20261015_175821@807 terr 670
+ancho | opp Minions | 23 | 0.223 | 0.478 | 0.87 | 0.913 | 98/281.7 | 0.1 (47) | 0.781 | 0.1794
+      worst: live_play_20261015_035841@2323 terr 1565; live_play_20261016_131434@1549 terr 1274; live_play_20261015_175504@2934 terr 1097
+
+UNITS (paired bodies) by n x survival disagreement
+unit | n | survival agree | dies live only | dies sim only | death dt s (sim-live) | 1/4 tile | pos med | hp err med | hp sim-live at end | deploy sim-live ticks (n)
+own Skeletons | 6378 | 0.937 | 259 | 145 | 0.1 (0.0) | 0.8 | 21 | 0 | 0.8 | 0 (3837)
+own IceWizard hero | 2706 | 0.911 | 195 | 45 | 0.2 (0.0) | 0.831 | 0 | 0 | 46.7 | 0.0 (1460)
+opp SkeletonArmy | 3531 | 0.951 | 84 | 90 | 0.1 (0.0) | 0.646 | 92 | 0 | 2.2 | 0 (2445)
+own Xbow | 2054 | 0.919 | 131 | 35 | 0.1 (0.0) | 1.0 | 0 | 1 | 96.6 | 0 (949)
+opp Witch | 2288 | 0.946 | 72 | 52 | 0.1 (0.0) | 0.685 | 89 | 0 | 4.4 | 0 (1491)
+own Tesla | 1603 | 0.934 | 76 | 30 | 0.1 (0.0) | 1.0 | 0 | 1 | 36.6 | 0 (905)
+own Knight | 1945 | 0.951 | 60 | 35 | 0.2 (0.0) | 0.769 | 27 | 0 | 69.3 | 0 (1029)
+opp ElixirGolem | 784 | 0.902 | 30 | 47 | 0.3 (0.0) | 0.585 | 256 | 0 | -30.9 | 0.0 (692)
+own Knight evo | 737 | 0.934 | 41 | 8 | 0.5 (0.3) | 0.751 | 33 | 63 | 90.9 | 0.0 (338)
+opp DarkWitch | 788 | 0.948 | 21 | 20 | 0.1 (0.0) | 0.678 | 119 | 0 | -9.9 | 0.0 (500)
+own Tesla evo | 594 | 0.934 | 34 | 5 | 0.1 (0.0) | 0.994 | 0 | 1 | 80.8 | 0.0 (320)
+opp SkeletonBalloon | 550 | 0.929 | 13 | 26 | 0.25 (0.0) | 0.539 | 267 | 0 | -4.8 | 0 (437)
+opp GoblinGang | 735 | 0.952 | 20 | 15 | 0.1 (0.0) | 0.735 | 12 | 0 | 6.9 | 0 (651)
+opp Tombstone | 484 | 0.93 | 18 | 16 | 0.1 (0.0) | 0.773 | 63 | 0 | 7.3 | 0 (331)
+opp Minions | 493 | 0.939 | 6 | 24 | 0.1 (0.0) | 0.798 | 19 | 0 | 1.0 | -2 (355)
+opp RoyalRecruits | 302 | 0.914 | 19 | 7 | 0.3 (0.0) | 0.78 | 27 | 0 | 26.2 | 0.0 (192)
+opp Barbarians | 268 | 0.91 | 10 | 14 | 0.3 (0.2) | 0.681 | 59 | 0 | 29.3 | 0 (165)
+opp RoyalHogs | 368 | 0.938 | 6 | 17 | 0.4 (0.0) | 0.649 | 107 | 0 | -32.0 | 0 (239)
+opp SkeletonArmy evo | 840 | 0.973 | 2 | 21 | 0.1 (0.0) | 0.641 | 111 | 0 | 0.3 | 0 (721)
+opp RoyalHogs evo | 189 | 0.894 | 9 | 11 | 0.3 (-0.2) | 0.537 | 191 | 0 | -57.5 | 0.0 (114)
+opp GoblinDrill | 68 | 0.735 | 8 | 10 | 3.2 (-3.1) | 0.179 | 300 | 0 | -39.1 | 0.0 (16)
+opp Skeletons | 473 | 0.962 | 5 | 13 | 0.1 (0.0) | 0.875 | 20 | 0 | -3.2 | -2 (343)
+opp MinionHorde | 216 | 0.921 | 13 | 4 | 0.6 (0.45) | 0.684 | 0 | 0 | 19.7 | 0 (143)
+opp BattleRam | 146 | 0.884 | 4 | 13 | 0.5 (0.0) | 0.675 | 96 | 0 | -76.2 | 0.0 (120)
+opp Firecracker | 253 | 0.941 | 10 | 5 | 0.1 (0.0) | 0.695 | 85 | 0 | -2.0 | 0.0 (140)
