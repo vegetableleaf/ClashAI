@@ -1,0 +1,12 @@
+== LIVE-MIRRORED POOL: D3, seeds 741200 + 742000; draws count as non-wins
+  f1u250  old 580/960 (60.4%)  new 586/960 (61.0%)  new-old  +0.62 pp [-0.62, +1.88] (paired)
+  f1u65   old 506/960 (52.7%)  new 518/960 (54.0%)  new-old  +1.25 pp [+0.00, +2.50] (paired)
+  r1      old 427/960 (44.5%)  new 420/960 (43.8%)  new-old  -0.73 pp [-1.98, +0.42] (paired)
+  f1u250 - r1     old +15.94 pp [+12.08, +19.90] (paired)  new +17.29 pp [+13.33, +21.25] (paired)  change  +1.35 pp [-0.42, +3.12] (paired)
+  f1u250 - f1u65  old  +7.71 pp [+3.85, +11.56] (paired)  new  +7.08 pp [+3.33, +10.83] (paired)  change  -0.62 pp [-2.40, +1.15] (paired)
+== STANDARD SET (CAL c): D3, seeds 741200 + 742000; draws count as non-wins
+  f1u250  old 521/960 (54.3%)  new 511/960 (53.2%)  new-old  -1.04 pp [-2.50, +0.31] (paired)
+  f1u65   old 467/960 (48.6%)  new 462/960 (48.1%)  new-old  -0.52 pp [-1.98, +0.83] (paired)
+  r1      old 402/960 (41.9%)  new 386/960 (40.2%)  new-old  -1.67 pp [-2.92, -0.42] (paired)
+  f1u250 - r1     old +12.40 pp [+8.44, +16.35] (paired)  new +13.02 pp [+9.06, +16.98] (paired)  change  +0.62 pp [-1.25, +2.50] (paired)
+  f1u250 - f1u65  old  +5.62 pp [+1.67, +9.58] (paired)  new  +5.10 pp [+1.25, +9.06] (paired)  change  -0.52 pp [-2.50, +1.46] (paired)
