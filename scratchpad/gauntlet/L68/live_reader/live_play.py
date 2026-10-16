@@ -42,7 +42,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[3]
 sys.path.insert(0, str(REPO))
-from pipeline.live_gen_v2 import GenPilot  # noqa: E402
+from pipeline.live_gen_v2 import GenPilot, posture_summary  # noqa: E402
 from pipeline.obs_contract import _catalog_names  # noqa: E402
 from hero_button import HeroButton, hero_ids, should_press  # noqa: E402
 from friend_nav import MenuGuard  # noqa: E402
@@ -527,7 +527,8 @@ def main() -> int:
         if a.check:
             loaded = [load_pilot(a, decision_cfg, ckpt=path) for path, _ in arms]
             print(json.dumps(dict(check='LIVE_CHECK_PASS', checkpoints=[
-                dict(checkpoint=path, sha256=sha, feature_version=pl.feature_version)
+                dict(checkpoint=path, sha256=sha, feature_version=pl.feature_version,
+                     **({'posture_head': posture_summary(pl.posture)} if pl.posture else {}))
                 for (path, sha), (_, pl) in zip(arms, loaded)], device=loaded[0][0], tau=a.tau, **anti_leak_log(a), **latency_log(a),
                 public_audit=a.public_audit, legal_guard=not getattr(a, 'no_legal_guard', False), predict_drops=a.predict_drops, own_effects=bool(getattr(a, 'own_effects', False)),
                 iw_press_pstar=a.iw_press_pstar, hero_ability_spec=getattr(a, "hero_ability_spec", "off"),
@@ -548,7 +549,8 @@ def main() -> int:
               feature_version=pilot.feature_version, device=device, tau=a.tau, **anti_leak_log(a), **latency_log(a),
               public_audit=a.public_audit, legal_guard=getattr(pilot, 'legal_guard', None), predict_drops=a.predict_drops, own_effects=bool(getattr(a, 'own_effects', False)),
                 iw_press_pstar=a.iw_press_pstar, hero_ability_spec=getattr(a, "hero_ability_spec", "off"),
-              identity_ext=bool(getattr(pilot, "identity_ext", False)), decision_options=vars(pilot.decision_options), live_options=a.live_options)))
+              identity_ext=bool(getattr(pilot, "identity_ext", False)), decision_options=vars(pilot.decision_options), live_options=a.live_options,
+              **({'posture_head': posture_summary(pilot.posture)} if pilot.posture else {}))))   # C1: absent = off
         return 0
     nav = None
     if a.matches > 1 or a.nav_dry_run:
@@ -765,7 +767,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
       **({"follow_up_taps": True} if getattr(a, "follow_up_taps", False) else {}),
       **emote_log(a),
       **({"pipeline_decisions": True, "pipeline_tau_delta": getattr(a, "pipeline_tau_delta", 0.0)}
-         if getattr(a, "pipeline_decisions", False) else {}))
+         if getattr(a, "pipeline_decisions", False) else {}),
+      **({"posture_head": posture_summary(pilot.posture)} if getattr(pilot, "posture", None) else {}))
     emote_on = getattr(a, "emote_spam", "off") == "on"
     emo = {"n": 0, "holds": 0}   # --emote-spam: per-match counts; the attempt clock survives match boundaries
     emote_clock = (emote_spam.EmoteClock() if a.dry_run else emote_spam.CLOCK) if emote_on else None
@@ -1116,6 +1119,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                                         land=pd["tick"] + (a.extrapolate or PIPELINE_LAND_TICKS)) for pd in pending])
             d = pilot.decide(f)
             decide_ms = round((time.time() - t_dec) * 1000)
+            if d.get("posture_new"):                    # C1: the posture head chose (first decision, then every `every` ticks)
+                W(event="posture", tick=tick, posture=d["posture"], posture_dtau=d["posture_dtau"])
             dec_times.append(decide_ms)
             # 2026-09-26: every bad live match that evening ran with the CPU loaded (training / screens / low-battery
             # throttle): decisions took 176-347 ms instead of ~40 ms, the loop fell behind, the bot leaked. Say so.
@@ -1135,7 +1140,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                   backlog=q.qsize(), forced=forced,
                   decision={k:d[k] for k in ('play','p_play','no_affordable','hand_pos','name','card','form','xy','gate_tau',
                                              'xy_unguarded','stalled','hazard_step_s','hazard_play','why',
-                                             'lethal_rocket') if k in d},
+                                             'lethal_rocket', 'posture', 'posture_dtau') if k in d},
                   **({"pending": [pd["d"]["name"] for pd in pending]} if pending else {}),
                   public=d['public_audit'])
                 last_audit_tick = tick
@@ -1175,7 +1180,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
               hand_pos=d["hand_pos"], xy=[round(v, 4) for v in d["xy"]], tap_hand=hand, tap_board=board,
               **({"hazard_play": True} if d.get("hazard_play") else {}),
               **({"why": d["why"], "lethal_rocket": d["lethal_rocket"]} if d.get("why") == "lethal_rocket" else {}),
-              **({"pipelined": True, "outstanding": len(pending)} if pending else {}))
+              **({"pipelined": True, "outstanding": len(pending)} if pending else {}),
+              **({"posture": d["posture"], "posture_dtau": d["posture_dtau"]} if "posture" in d else {}))
             played += 1
             pipe_n["second"] += bool(pending)
             if d.get("follow_ups") and (a.dry_run or not follow):   # planned second plays that will not be tapped

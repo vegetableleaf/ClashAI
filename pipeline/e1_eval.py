@@ -460,6 +460,19 @@ def live_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.nda
     return out
 
 
+def ctx_row(state: dict, side: int, tick: int, seen: set) -> list[int]:
+    """``Match._ctx_row``'s body, pure on its inputs (shared with live_gen_v2's posture): ``state`` = an engine
+    ``observe()``-shaped dict (entities with side / name; episode.crown_towers or crowns), ``seen`` = the caller's
+    cumulative set of opponent body names, updated IN PLACE."""
+    from pipeline import archetypes as AR
+    from pipeline import reward_shaping as RS
+    seen.update(AR.canon(e["name"]) for e in state.get("entities") or ()
+                if int(e["side"]) != side and e.get("name"))
+    c = RS.crowns(state)
+    return [AR.ARCH_IDS.index(AR.classify(seen)) if seen else 0, int(bool(seen & AR.TANK)),
+            0 if tick < 2400 else 1 if tick < 3600 else 2, min(3, int(c[side])), min(3, int(c[1 - side]))]
+
+
 def posture_dtau(matches: Sequence, enc, cfg: dict) -> Optional[np.ndarray]:
     """rl_royale C1 (``cfg["posture"]`` = {head, every, dtau, mode}; absent -> None and nothing is touched): the gate
     threshold offset of each row's posture IN FORCE. A match chooses at its first decision and again once
@@ -1251,14 +1264,7 @@ class Match:
         phase_id, own crowns, foe crowns]. arch / tank = ``archetypes.classify`` of the cumulative set (this match, this
         side) of the OPPONENT's body names seen on the board at recorded decisions; phase 0 < 2400 <= 1 < 3600 <= 2 by
         the decision tick; crowns = ``reward_shaping.crowns`` (the engine's when attached, else from the towers)."""
-        from pipeline import archetypes as AR
-        from pipeline import reward_shaping as RS
-        seen = self.__dict__.setdefault("_ctx_seen", set())
-        seen.update(AR.canon(e["name"]) for e in self.state.get("entities") or ()
-                    if int(e["side"]) != self.side and e.get("name"))
-        c = RS.crowns(self.state)
-        return [AR.ARCH_IDS.index(AR.classify(seen)) if seen else 0, int(bool(seen & AR.TANK)),
-                0 if tick < 2400 else 1 if tick < 3600 else 2, min(3, int(c[self.side])), min(3, int(c[1 - self.side]))]
+        return ctx_row(self.state, self.side, tick, self.__dict__.setdefault("_ctx_seen", set()))
 
     def _record(self, p: float, d: dict) -> int:
         """(b), first half: the decision's tallies and its cfg["record"] row. -> the decision tick."""

@@ -38,6 +38,24 @@ def hazard_step_s(prev, tick):
     return min(HAZARD_STEP_CAP_S, (tick - prev[0]) * 0.05)
 
 
+def load_posture(ckpt, device):
+    """C1 stage B: the checkpoint's trained posture head (rl_royale.load_posture_head: argmax, as search_s0) or None
+    when it carries none (rl_royale is not even imported then). Refuses a head whose d_g is not the trunk's width."""
+    st = torch.load(ckpt, map_location='cpu')
+    rl = st.get('rl') or {}
+    if 'posture_head' not in rl:
+        return None
+    if int(rl['posture']['d_g']) != int(st['args']['d']):
+        raise ValueError(f"posture head d_g {rl['posture']['d_g']} != the model's d {st['args']['d']} ({ckpt})")
+    from .rl_royale import load_posture_head
+    return load_posture_head(ckpt, str(device))
+
+
+def posture_summary(posture):
+    """--check / start log: how a wiring check sees the head (None = no head)."""
+    return None if posture is None else f"on (every {posture['every']}, dtau {posture['dtau']})"
+
+
 class FollowUpPlanner:
     """--follow-up-taps (L74 latency2): the decision layer's way to ask for a SECOND play before the first is confirmed.
     A decision dict that wants one carries ``d['follow_ups'] = [self.plan_follow_up(frame, d, 'Tornado', xy, after_ticks=N)]``;
@@ -88,6 +106,37 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
         self._princess_dead_state = None        # decision_options.princess_dead_state of the previous decision
         self._tau_threat_state = None           # decision_options.tau_threat_state of the previous decision
         self.rv_hist, self.rv_threat_state, self.rv_threatened = None, None, False   # rocket_value: lead history / tower-fire state
+        self.posture = load_posture(args[0] if args else kwargs['ckpt'], self.dev)   # C1 stage B; None = no head
+        if self.posture is not None and not self.decision_options.active:
+            raise ValueError('a posture-head checkpoint needs decision options active (live applies dtau where SIM '
+                             'decide_batch does: tau_delta after tau_phase / tau_threatened)')
+
+    def reset_posture(self):
+        """C1: forget the posture in force and the seen opponent cards (a new match chooses afresh)."""
+        for k in ('_posture', '_posture_new', '_ctx_seen', 'posture_counts', 'posture_choices'):
+            self.__dict__.pop(k, None)
+
+    def _posture_dtau(self, frame, g):
+        """C1 stage B: SIM's own e1_eval.posture_dtau (argmax head, chosen at the first decision and again once
+        ``every`` game ticks passed, held in between) with this pilot as the one match -> the dtau in force."""
+        from .e1_eval import posture_dtau
+        tick = int(frame['game_tick'])
+        if getattr(self, '_posture', None) is not None and tick < self._posture[1]:
+            self.reset_posture()                        # the game clock went backwards: a new match without reset_match
+        self._cur, self._ctx_frame = (tick,), frame
+        return float(posture_dtau([self], {'g': g}, {'posture': self.posture})[0])
+
+    def _ctx_row(self, tick):
+        """e1_eval.ctx_row (= SIM Match._ctx_row) on this decision's RAW reader frame, my side's view: the public
+        bodies (catalogued card ids only: SIM never names a body by a number) and the crown towers."""
+        from .e1_eval import ctx_row
+        from .live_mem import deck_of, to_observe
+        from .reader_identity_aliases import dedupe_hero_bodies
+        f = dedupe_hero_bodies(self._ctx_frame)
+        side = my_side_of(f)
+        state = to_observe(f, side, deck_of(f, side)[1])
+        state['entities'] = [e for e in state['entities'] if int(e['card_id']) >= 0 and not str(e['name']).isdigit()]
+        return ctx_row(state, side, tick, self.__dict__.setdefault('_ctx_seen', set()))
 
     def reset_match(self):
         super().reset_match()
@@ -101,6 +150,7 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
         self._lethal_hp_hist = None
         self._tau_threat_state = None
         self.rv_hist, self.rv_threat_state, self.rv_threatened = None, None, False   # rocket_value: lead history / tower-fire state
+        self.reset_posture()
 
     def row(self, frame):
         b, info = super().row(frame)
@@ -112,6 +162,9 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
     def _audited(self, decision):
         if getattr(self, 'public_audit', False):
             decision['public_audit'] = self._public_audit_snapshot
+        if getattr(self, 'posture', None) and getattr(self, '_posture', None) is not None:   # C1: the posture in force
+            decision.update(posture=self._posture[0], posture_dtau=float(self.posture['dtau'][self._posture[0]]),
+                            posture_new=self._posture_new is not None)
         return decision
 
     def _lethal_snapshot(self, frame, towers=None, side=None, names=None):
@@ -176,6 +229,8 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
                      if 'public_lookahead_counts' in info else {})
         out = self.model(b)
         p = float(torch.sigmoid(out['gate'][0]))
+        # C1: every decision, affordable or not (SIM posture_live runs before the decide): ctx seen-set + choice clock
+        dtau = self._posture_dtau(frame, out['g']) if getattr(self, 'posture', None) else None
         stalled = self.stalled(frame, info['el_int'])
         allowed = allowed_slots(np.array([h[0] > 0 for h in info['hand']]), info['costs'],
                                 info.get('el_afford', info['el_int']))     # --afford-ticks; default = el_int
@@ -208,8 +263,13 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
         tau = (float(gate_taus(options, self.gate_tau, [bs.t_sec], 1)[0]) if options.tau_phase is not None
                else self.gate_tau)
         tau = float(threat_taus(options, tau, tau_threat))   # tau_threatened: X while threatened, else unchanged
+        delta = None
         if info.get('pending'):                         # --pipeline-decisions: cfg["pipeline_tau_delta"], only while a play is pending
-            tau += float(getattr(self, 'pipeline_tau_delta', 0.0) or 0.0)
+            delta = float(getattr(self, 'pipeline_tau_delta', 0.0) or 0.0)
+        if dtau is not None:                            # C1: SIM decide_batch's tau_delta = (pipeline delta or 0) + dtau
+            delta = (delta or 0.0) + dtau
+        if delta is not None:
+            tau += delta
         playing = p > tau or stalled                    # SIM decide_batch: (p > tau) | stalled
         hazard = None
         if hazard_on:                                   # SIM decide_batch: the same hazard_draw on the same context
