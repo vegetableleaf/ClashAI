@@ -72,7 +72,20 @@ def test_frozen_and_stunned():
     assert unit(c, 'Knight', 1)['status']['frozen'] and unit(c, 'Knight', 1)['buffs']
     z = battle([(1, 'Knight', 9, 12)], ('Zap',))
     z.step([(0, 0, int(9 * K), int(12 * K))], 6)
-    assert unit(extract(z), 'Knight', 1)['status']['stunned']
+    zs = unit(extract(z), 'Knight', 1)['status']
+    assert zs['frozen'] and not zs['stunned']              # the engine's stun = frozen (live: ZapFreeze); 'stunned' is name-only
+
+
+def test_hero_buff_rows_and_tesla_deploy():
+    from pipeline import sim_unit_state as m
+    buffs = m._tbl(sim)['buffs']
+    assert buffs['IceWizardHeroSlow']['speed_multiplier_raw'] == -30       # nested row: only in the projectile / ability
+    assert m._statuses('IceWizardHeroSlow', buffs) == {'slowed'}
+    assert m._statuses('Freeze|ZapFreeze|GiantHero_Slap_Stun', buffs) == {'frozen'}   # merged id: no name-word tags
+    b = battle([], ('Tesla',))
+    b.step([(0, 0, int(9 * K), int(8 * K))], 2)            # played, still deploying
+    t = unit(extract(b), 'Tesla', 0)
+    assert t['state'] == 'deploying' and t['hide'] is None
 
 
 def test_tesla_hidden_then_up():

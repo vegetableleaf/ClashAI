@@ -19,17 +19,24 @@ Schema (None = not applicable / unknown):
          # walk speed and nothing above; idle = the rest (buildings, towers, a hidden Tesla). Status effects do NOT
          # change `state` (a frozen walker still reads 'moving'); read `status`.
       'charging': bool, 'charge_frac': 0..1,          # Prince / Dark Prince / Battle Ram: charged = speed doubled
-      'hide': 'up'|'hidden'|'rising'|None,            # Tesla-type only
-      'attack': {'target': uid|None, 'phase': 'idle'|'windup'|'hit', 'frac': 0..1|None,
+      'hide': 'up'|'hidden'|'rising'|None,            # Tesla-type only; None while it is deploying (live: state 4)
+      'attack': {'target': uid|None,   # the ACQUIRED target (inside sight range); the live reader's target also holds a far
+                 # default/path target (a tower 19 tiles away): drop it live when farther than sight + 1.5 tiles (S6_CUES_1016.md)
+                 'phase': 'idle'|'windup'|'hit', 'frac': 0..1|None,
                  'progress_ms': int, 'hit_speed_ms': int|None, 'load_ms': int},
          # progress_ms is the engine's count-up attack counter (carries across hits, 35/tick under a -30 slow, held
          # frozen); frac = (progress mod hit_speed) / hit_speed; 'hit' = the hit landed this tick (progress mod
          # hit_speed < hit_window_ms, progress > 0; default 50 = one tick, 100 for the live 2-tick sampling); 'idle' = no target or progress 0.
       'status': {'stunned','frozen','slowed','raged','taunted','invisible','shielded': bool,
+                 # frozen = speed and hit speed -100 from any source (Freeze, Zap, Tesla evo, stun: the engine has one stun
+                 # flag); stunned = only a buff whose own name says stun (rare); taunted: the SIM has no taunt buff (always
+                 # False, live shows Knight_hero_IsTauntedBuff); shielded: shield hp, Fortify (idle buff) or a shield buff
                  'slow_frac': remaining/total of the longest slow, or None},
       'buffs': [{'name': alias string "A|B" (names sharing one engine id), 'ms': remaining, 'frac': ms/total|None}]},
-      # frac needs `memo`: total = the largest ms this memo saw for (uid, buff); None without memo or for the
-      # 999999 "lives as long as the owner" sentinel. A buff first seen mid-way reads 1.0 until it is refreshed.
+      # frac needs `memo`: total = the card table's full duration of the buff where it names one (projectile
+      # buff_time_ms: the Ice Wizard slows 2500 ms), else the largest ms this memo saw for (uid, buff); None without
+      # memo or for the 999999 "lives as long as the owner" sentinel. An 'A|B' alias takes the longest table duration of
+      # its names, so the frac of a merged stun/freeze group is a lower bound only; read `slow_frac` for slows.
    'projectiles': [{'type': projectile table name, 'team', 'x','y','aim_x','aim_y': tiles,
                     'source': uid|None (firer gone), 'target': uid|None (homing target; None for ground-aimed),
                     'effect': {'buff': name, 'ms': int}|None, 'damage': int}],
@@ -48,6 +55,30 @@ _KINDS = {'Troop': 'troop', 'Building': 'building', 'PrincessTower': 'princess_t
 _tables, _unit_types = {}, {}
 
 
+def _all_buffs(d):
+    """(rows, totals): buff rows by name -- the top-level table plus the rows nested in projectiles / hero abilities (the
+    Hero Ice Wizard's IceWizardHeroSlow, ..._SlowBuff, FreezeBuff live only there; without them a slowed body read 'not
+    slowed') -- and each buff's full duration in ms where a sibling field names it (projectile buff_time_ms, ability
+    time_ms), so `frac` is right for a buff first seen mid-way (a fight started from a live board)."""
+    rows, totals = {}, {}
+
+    def walk(o):
+        if isinstance(o, dict):
+            for v in o.values():
+                if isinstance(v, dict) and 'speed_multiplier_raw' in v and isinstance(v.get('name'), str):
+                    rows.setdefault(v['name'], v)
+                    ms = o.get('buff_time_ms') or o.get('time_ms')
+                    if ms and ms < SENTINEL_MS:
+                        totals[v['name']] = max(totals.get(v['name'], 0), ms)
+            for v in o.values():
+                walk(v)
+        elif isinstance(o, list):
+            for v in o:
+                walk(v)
+    walk({k: v for k, v in d.items() if k != 'buffs'})
+    return rows | d['buffs'], totals
+
+
 def _tbl(sim):
     """Card/buff/projectile tables of the embedded 160402017 card table, indexed once per royalesim module."""
     t = _tables.get(id(sim))
@@ -56,7 +87,8 @@ def _tbl(sim):
         char = {c['name']: c for c in d['towers']} | {c['name']: c for c in d['cards']}
         for c in d['cards'] + d['evolutions'] + d['hero_forms']:      # unit type name -> its card row
             char.setdefault(c.get('summon_character'), c)
-        t = _tables[id(sim)] = dict(char=char, cards={c['name']: c for c in d['cards']}, buffs=d['buffs'],
+        rows, totals = _all_buffs(d)
+        t = _tables[id(sim)] = dict(char=char, cards={c['name']: c for c in d['cards']}, buffs=rows, totals=totals,
                                     proj=d['projectiles'])
     return t
 
@@ -81,7 +113,7 @@ def _statuses(alias, buffs):
         out.add('raged')
     for word, tag in (('taunt', 'taunted'), ('invisib', 'invisible'), ('stun', 'stunned'),
                       ('shield', 'shielded'), ('fortify', 'shielded')):
-        if word in low:
+        if word in low and '|' not in alias:      # an 'A|B' group is one engine id: which name is on the unit is unknown
             out.add(tag)
     return out
 
@@ -114,7 +146,6 @@ def extract(battle, memo=None, hit_window_ms=HIT_WINDOW_MS):
         else:
             phase = 'hit' if hs and prog % hs < hit_window_ms else 'windup'
         jumping = E['jumping'][i] or E['dash_state'][i] not in ('None', 'Standing')
-        hide = E['hide'][i].lower() if ct.get('hides_when_not_attacking') else None
         if 'underground' in flags:
             state = 'tunnelling'
         elif e['deploy_ticks'] > 0:
@@ -129,21 +160,31 @@ def extract(battle, memo=None, hit_window_ms=HIT_WINDOW_MS):
             state = 'moving'
         else:
             state = 'idle'
+        # a Tesla still deploying reads 'deploying' live (state 4), not up/hidden: the hide cue starts when the deploy ends
+        hide = E['hide'][i].lower() if ct.get('hides_when_not_attacking') and state != 'deploying' else None
         status = dict.fromkeys(('stunned', 'frozen', 'slowed', 'raged', 'taunted', 'invisible', 'shielded'), False)
-        status['stunned'] = e['stun_ticks'] > 0
+        status['frozen'] = e['stun_ticks'] > 0     # the engine's one stun flag = speed and hit speed -100 (Freeze, Zap, Tesla evo...)
         status['invisible'] = 'invisible' in flags
         status['shielded'] = e['shield'] > 0
         slow_frac, buffs = None, []
         for alias, ms in e['buffs']:
             frac = None
             if memo is not None and ms < SENTINEL_MS:
-                total = memo[uid[i], alias] = max(ms, memo.get((uid[i], alias), 0))
+                total = memo[uid[i], alias] = max(ms, memo.get((uid[i], alias), 0),
+                                                  *(T['totals'].get(a, 0) for a in alias.split('|')))
                 frac = round(ms / total, 3) if total else None
             for tag in _statuses(alias, T['buffs']):
                 status[tag] = True
                 if tag == 'slowed' and frac is not None:
                     slow_frac = max(slow_frac or 0, frac)
             buffs.append({'name': alias, 'ms': ms, 'frac': frac})
+        ib = ct.get('idle_buff')
+        if ib and state != 'engaged':
+            # BuffWhenNotAttacking (Evo Knight Knight_Fortify_EV1, Super Knight shield): the engine applies the effect
+            # implicitly, the live reader lists it as a buff for as long as the unit is not attacking
+            for tag in _statuses(ib['buff_name'], T['buffs']):
+                status[tag] = True
+            buffs.append({'name': ib['buff_name'], 'ms': ib['time_ms'], 'frac': None})
         status['slow_frac'] = slow_frac
         units.append({
             'uid': e['uid'], 'team': e['team'], 'kind': _KINDS[E['kind'][i]], 'name': name,

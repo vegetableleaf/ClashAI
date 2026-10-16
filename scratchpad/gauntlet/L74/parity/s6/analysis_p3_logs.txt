@@ -1,0 +1,301 @@
+logs ['20261016_133158', '20261016_134401', '20261016_135037', '20261016_162405', '20261016_175459'] fights 298 body-frames 402980 aligned 374193
+A rows 10689 (cue 6618), B rows 363504 (cue 213910); cue coverage 220528/374193
+
+== state ==
+state exact troops                           A  0.971 (10378/10689)   B  0.959 (121124/126358) 
+state exact towers                           A    n/a (0/0)   B  0.982 (232869/237146) 
+-- state live->sim, troops, A (n=10689)
+        6093  0.570  ('moving', 'moving')
+        3973  0.372  ('engaged', 'engaged')
+         312  0.029  ('idle', 'idle')
+         192  0.018  ('engaged', 'moving')
+          49  0.005  ('engaged', 'idle')
+          43  0.004  ('moving', 'engaged')
+          27  0.003  ('idle', 'engaged')
+-- state live->sim, troops, B (n=126358)
+       51659  0.409  ('moving', 'moving')
+       43303  0.343  ('engaged', 'engaged')
+       22664  0.179  ('deploying', 'deploying')
+        3497  0.028  ('idle', 'idle')
+        2495  0.020  ('engaged', 'moving')
+        1256  0.010  ('engaged', 'idle')
+         671  0.005  ('moving', 'engaged')
+         511  0.004  ('deploying', 'moving')
+         170  0.001  ('idle', 'engaged')
+          64  0.001  ('deploying', 'idle')
+          37  0.000  ('deploying', 'engaged')
+          30  0.000  ('moving', 'deploying')
+           1  0.000  ('casting', 'casting')
+-- state live->sim, towers, all (n=237146)
+      208086  0.877  ('idle', 'idle')
+       24783  0.105  ('engaged', 'engaged')
+        2662  0.011  ('engaged', 'idle')
+        1615  0.007  ('idle', 'engaged')
+-- special states: (raw live state, live class, sim class, name) (n=1)
+           1  1.000  (10, 'casting', 'casting', 'MegaMinionHero')
+-- raw live state values (troops) (n=137047)
+       58496  0.427  1
+       51268  0.374  2
+       23024  0.168  4
+        4006  0.029  0
+         252  0.002  11
+           1  0.000  10
+
+== charging (live derived from 2-frame speed; compared where derivable) ==
+charging bool, charger cards (live speed rule) A    n/a (0/0)   B    n/a (0/0) 
+charging bool, ALL moving troops (rule not restricted) A  0.991 (5401/5448)   B  0.988 (51565/52190) 
+-- non-charger live-rule True by name (n=672)
+         229  0.341  GoblinDemolisher_kamikaze_form
+         209  0.311  Skeleton
+          65  0.097  Archer
+          59  0.088  Knight
+          28  0.042  Pekka
+          20  0.030  SkeletonArmy_EV1_Soldier
+   SIM charge_frac > 0 on charger rows: 0; SIM charging True 0
+
+== Tesla hide ==
+-- hide live->sim, A (n=617)
+         343  0.556  ('up', 'up')
+         260  0.421  ('hidden', 'hidden')
+           8  0.013  ('hidden', 'up')
+           6  0.010  ('up', 'hidden')
+-- hide live->sim, B (n=8365)
+        4864  0.581  ('up', 'up')
+        2997  0.358  ('hidden', 'hidden')
+         284  0.034  ('up', 'hidden')
+         158  0.019  ('hidden', 'up')
+          37  0.004  (None, 'up')
+          14  0.002  ('up', 'rising')
+          10  0.001  (None, 'hidden')
+           1  0.000  ('hidden', 'rising')
+
+== attack ==
+hit_speed equal (cue rows)                   A  0.997 (6594/6617)   B  1.000 (212808/212826) 
+-- hit_speed live vs sim differing (n=18)
+          17  0.944  ('SkeletonArmy_EV1_Soldier', 1000, 1100)
+           1  0.056  ('GoblinDemolisher', 1200, 1100)
+target identical, all                        A  0.647 (4285/6618)   B  0.502 (107426/213910) 
+target identical, either side attacking      A  0.942 (2302/2443)   B  0.871 (38378/44050) 
+target identical, both attacking             A  0.981 (2265/2309)   B  0.956 (37958/39710) 
+target identical, troops                     A  0.647 (4285/6618)   B  0.707 (52228/73883) 
+target identical, towers                     A    n/a (0/0)   B  0.394 (55198/140027) 
+RULE target identical, all                   A  0.885 (5860/6618)   B  0.956 (204487/213910) 
+RULE target identical, troops                A  0.885 (5860/6618)   B  0.930 (68739/73883) 
+RULE target identical, towers                A    n/a (0/0)   B  0.969 (135748/140027) 
+RULE target identical, either attacking      A  0.942 (2302/2443)   B  0.863 (38029/44050) 
+RULE target identical, troops, live phase idle A  0.837 (3570/4266)   B  0.925 (44689/48330) 
+phase bucket exact                           A  0.969 (6411/6618)   B  0.965 (206437/213910) 
+phase exact, either attacking                A  0.915 (2236/2443)   B  0.830 (36577/44050) 
+idle-vs-active (hit|windup) agree            A  0.980 (6484/6618)   B  0.980 (209570/213910) 
+progress_ms exact                            A  0.919 (6080/6618)   B  0.889 (190187/213910) 
+progress_ms within 100                       A  0.961 (6357/6618)   B  0.952 (203546/213910) 
+load_ms within 50                            A  0.973 (6438/6618)   B  0.979 (209359/213910) 
+frac within 0.10 (both defined)              A  0.943 (2177/2309)   B  0.803 (31733/39527) 
+   frac |diff| median 0.0  p90 0.04500000000000004  n=2309
+   frac |diff| median 0.0  p90 0.18700000000000006  n=39527
+-- phase live->sim A (n=6618)
+        4175  0.631  ('idle', 'idle')
+        1985  0.300  ('windup', 'windup')
+         251  0.038  ('hit', 'hit')
+          83  0.013  ('idle', 'windup')
+          41  0.006  ('windup', 'idle')
+          37  0.006  ('hit', 'windup')
+          36  0.005  ('windup', 'hit')
+           8  0.001  ('idle', 'hit')
+           2  0.000  ('hit', 'idle')
+-- phase live->sim B (n=213910)
+      169860  0.794  ('idle', 'idle')
+       33293  0.156  ('windup', 'windup')
+        3284  0.015  ('hit', 'hit')
+        2086  0.010  ('idle', 'windup')
+        1794  0.008  ('windup', 'idle')
+        1590  0.007  ('hit', 'windup')
+        1543  0.007  ('windup', 'hit')
+         262  0.001  ('idle', 'hit')
+         198  0.001  ('hit', 'idle')
+-- target presence (live set, sim set, live phase) A troops (n=6618)
+        2145  0.324  (True, False, 'idle')
+        2046  0.309  (True, True, 'windup')
+        1943  0.294  (True, True, 'idle')
+         288  0.044  (True, True, 'hit')
+         104  0.016  (False, False, 'idle')
+          74  0.011  (False, True, 'idle')
+          16  0.002  (True, False, 'windup')
+           2  0.000  (True, False, 'hit')
+-- target presence (live set, sim set, live phase) A towers (n=0)
+
+== attack by attacker (rows where either side is attacking; A = first second, B = later) ==
+   PrincessTower              n_A    0 n_B 16636 | phase A    n/a B  0.810 | progress==  A    n/a B  0.556 | frac<=.1 A    n/a B  0.819
+   Xbow                       n_A  619 n_B  6525 | phase A  0.926 B  0.785 | progress==  A  0.887 B  0.442 | frac<=.1 A  0.915 B  0.509
+   IceWizardHero              n_A  337 n_B  3138 | phase A  0.955 B  0.925 | progress==  A  0.929 B  0.568 | frac<=.1 A  1.000 B  0.934
+   Knight                     n_A  328 n_B  2837 | phase A  0.963 B  0.895 | progress==  A  0.951 B  0.567 | frac<=.1 A  0.994 B  0.975
+   Tesla                      n_A  156 n_B  2477 | phase A  0.910 B  0.848 | progress==  A  0.821 B  0.453 | frac<=.1 A  1.000 B  0.855
+   Bat                        n_A  110 n_B  1476 | phase A  0.927 B  0.755 | progress==  A  0.718 B  0.297 | frac<=.1 A  1.000 B  0.804
+   Knight_EV1                 n_A  197 n_B  1287 | phase A  0.944 B  0.893 | progress==  A  0.751 B  0.505 | frac<=.1 A  1.000 B  0.936
+   Skeleton                   n_A   44 n_B  1185 | phase A  0.659 B  0.927 | progress==  A  0.091 B  0.593 | frac<=.1 A  1.000 B  0.974
+   AngryBarbarian             n_A   68 n_B  1081 | phase A  0.853 B  0.871 | progress==  A  0.324 B  0.341 | frac<=.1 A  0.787 B  0.902
+   MegaMinionHero             n_A   98 n_B   762 | phase A  0.837 B  0.825 | progress==  A  0.327 B  0.062 | frac<=.1 A  0.659 B  0.692
+   KingTower                  n_A    0 n_B   746 | phase A    n/a B  0.694 | progress==  A    n/a B  0.495 | frac<=.1 A    n/a B  0.700
+   BabyDragon                 n_A   70 n_B   663 | phase A  0.900 B  0.888 | progress==  A  0.671 B  0.193 | frac<=.1 A  0.940 B  0.883
+   Tesla_EV1                  n_A   36 n_B   644 | phase A  0.861 B  0.857 | progress==  A  0.694 B  0.519 | frac<=.1 A  1.000 B  1.000
+   AngryBarbarian_EV1         n_A   99 n_B   622 | phase A  0.828 B  0.768 | progress==  A  0.606 B  0.093 | frac<=.1 A  0.897 B  0.481
+
+== status ==
+status.stunned                               A  1.000 (6618/6618)   B  1.000 (213910/213910) 
+     B live-true 0: both 0, live-only 0, sim-only 0
+status.frozen                                A  0.998 (6602/6618)   B  0.999 (213707/213910) 
+     B live-true 875: both 687, live-only 188, sim-only 15
+       live-only live buffs: [(('ZapFreeze',), 77), (('IceWizardHeroSlow', 'IceWizardHeroSlow', 'IceWizardHero_FreezeBuff'), 24), (('IceWizardHeroSlow', 'IceWizardHero_FreezeBuff_dummy'), 23), (('Freeze',), 22)]
+       sim-only sim buffs: [(('Freeze|ZapFreeze|buff_goblinstein_doctor|Tesla_EV1_WithDamage|GiantHero_Slap_Stun|IceWizardHero_FreezeBuff_dummy',), 7), (('Freeze|ZapFreeze|buff_goblinstein_doctor|Tesla_EV1_WithDamage|GiantHero_Slap_Stun|IceWizardHero_FreezeBuff_dummy', 'Knight_Fortify_EV1'), 4), (('IceWizardHeroSlow', 'IceWizardHero_FreezeBuff'), 2), (('Freeze|ZapFreeze|buff_goblinstein_doctor|Tesla_EV1_WithDamage|GiantHero_Slap_Stun|IceWizardHero_FreezeBuff_dummy', 'IceWizardHeroSlow'), 1)]
+status.slowed                                A  0.998 (6608/6618)   B  0.998 (213471/213910) 
+     B live-true 3249: both 3000, live-only 249, sim-only 190
+       live-only live buffs: [(('IceWizardHeroSlow',), 131), (('IceWizardHeroSlow', 'IceWizardHero_FreezeBuff'), 87), (('IceWizardHeroSlow', 'IceWizardHeroSlow'), 11), (('IceWizardHeroSlow', 'IceWizardHero_FreezeBuff_dummy'), 11)]
+       sim-only sim buffs: [(('IceWizardHeroSlow',), 131), (('IceWizardHeroCold',), 44), (('IceWizardHeroSlow', 'Knight_Fortify_EV1'), 7), (('Freeze|ZapFreeze|buff_goblinstein_doctor|Tesla_EV1_WithDamage|GiantHero_Slap_Stun|IceWizardHero_FreezeBuff_dummy', 'IceWizardHeroSlow'), 6)]
+status.raged                                 A  0.968 (6406/6618)   B  0.996 (213003/213910) 
+     B live-true 2610: both 1887, live-only 723, sim-only 184
+       live-only live buffs: [(('Rage',), 702), (('IceWizardHeroSlow', 'Rage'), 13), (('IceWizardHeroCold', 'IceWizardHeroSlow', 'Rage'), 6), (('IceWizardHeroSlow', 'IceWizardHeroSlow', 'Rage'), 2)]
+       sim-only sim buffs: [(('BossBandit_ability_buff|SkeletonArmy_EV1_Spectral_Invisibility_Buff|RageBarbarianEvoGhostForeverInvisibleBuff|EliteArcherHero_Ability_Buff',), 110), (('Rage',), 71), (('IceWizardHeroSlow', 'Rage'), 2), (('Rage', 'Tornado'), 1)]
+status.taunted                               A  1.000 (6618/6618)   B  1.000 (213910/213910) 
+     B live-true 0: both 0, live-only 0, sim-only 0
+status.invisible                             A  1.000 (6618/6618)   B  1.000 (213909/213910) 
+     B live-true 126: both 126, live-only 0, sim-only 1
+       sim-only sim buffs: [(('BossBandit_ability_buff|SkeletonArmy_EV1_Spectral_Invisibility_Buff|RageBarbarianEvoGhostForeverInvisibleBuff|EliteArcherHero_Ability_Buff',), 1)]
+status.shielded                              A  0.995 (6586/6618)   B  0.998 (213540/213910) 
+     B live-true 1033: both 858, live-only 175, sim-only 195
+       live-only live buffs: [(('Knight_Fortify_EV1',), 175)]
+       sim-only sim buffs: [((), 103), (('Knight_Fortify_EV1',), 54), (('IceWizardHeroCold', 'Knight_Fortify_EV1'), 24), (('IceWizardHeroSlow', 'Knight_Fortify_EV1'), 10)]
+slow_frac within 0.15 (both defined)         A  0.936 (338/361)   B  0.947 (2840/3000) 
+   slow_frac |diff| median 0.0 n=3000
+RULE slow_frac (rem/table total) within 0.15 A  0.936 (338/361)   B  0.949 (2846/3000) 
+   RULE slow_frac |diff| median 0.0 n=3000
+slow_frac presence (live set == sim set)     A  0.998 (6608/6618)   B  0.998 (213471/213910) 
+-- live buff names (all cue rows) (n=11555)
+        3823  0.331  IceWizardHeroSlow
+        2827  0.245  Rage
+        1738  0.150  MegaMinionHeroBuffForBots
+        1124  0.097  Knight_Fortify_EV1
+         469  0.041  Tornado
+         398  0.034  Freeze
+         341  0.030  IceWizardHeroCold
+         205  0.018  IceWizardHero_FreezeBuff
+         204  0.018  Tesla_EV1_WithDamage
+         138  0.012  IceWizardHero_SlowBuff
+         109  0.009  SkeletonArmy_EV1_Spectral_Invisibility_Buff
+          77  0.007  ZapFreeze
+          23  0.002  IceWizardHero_FreezeBuff_dummy
+          17  0.001  GhostInvisibility
+          17  0.001  RageBarbarianEvoGhostForeverInvisibleBuff
+          17  0.001  RageBarbarianEvoGhostLifeControllerBuff
+          17  0.001  RageDummyBuff
+           6  0.001  Earthquake
+           5  0.000  GoblinDemolisher_ResetTargetBuff
+-- sim buff names (all cue rows) (n=7970)
+        3190  0.400  IceWizardHeroSlow
+        1966  0.247  Rage
+        1033  0.130  Knight_Fortify_EV1
+         558  0.070  Freeze|ZapFreeze|buff_goblinstein_doctor|Tesla_EV1_WithDamage|GiantHero_Slap_Stun|IceWizardHero_FreezeBuff_dummy
+         466  0.058  Tornado
+         385  0.048  IceWizardHeroCold
+         158  0.020  IceWizardHero_FreezeBuff
+         127  0.016  BossBandit_ability_buff|SkeletonArmy_EV1_Spectral_Invisibility_Buff|RageBarbarianEvoGhostForeverInvisibleBuff|EliteArcherHero_Ability_Buff
+          81  0.010  IceWizardSlowDown|IceWizardCold|IceGolemiteHero_Slow_Buff_Tower|IceWizardHeroCold|IceWizardHero_SlowBuff
+           6  0.001  Earthquake
+
+== projectiles (live ids; weapon shots = live projectiles whose card is not a spell; frames >= 40 ticks after the fight start) ==
+   weapon shots (src,tgt): frames 33588, live 23134, sim 23644, matched 17680, precision  0.748, recall  0.764, frames with identical multiset  0.751
+   weapon shots src only: frames 33588, live 23134, sim 23644, matched 18894, precision  0.799, recall  0.817, frames with identical multiset  0.774
+   weapon shots (src,tgt) with +-1 frame tolerance: live shot found in SIM  0.812 (16070/19788); SIM shot found in live  0.805 (16287/20234)
+   tower sources: live shots 13210, sim shots 13192
+   troop sources: live shots 9589, sim shots 10075
+   none sources: live shots 335, sim shots 377
+   matched-pair position error (mt): median 13, p90 1600, n=17680
+-- live weapon shot target is None (n=23134)
+       22206  0.960  False
+         928  0.040  True
+-- sim shot target is None (n=23644)
+       23101  0.977  False
+         543  0.023  True
+-- sim projectile types (n=23644)
+       12829  0.543  TowerPrincessProjectile
+        5616  0.238  xbow_projectile
+        1207  0.051  IceWizardHeroProjectile
+         708  0.030  BlowdartGoblinProjectile
+         574  0.024  ArcherArrow
+         523  0.022  None
+         457  0.019  BombTowerProjectile
+         363  0.015  KingProjectile
+         343  0.015  Archer_EV1_Arrow
+         334  0.014  GoblinDemolisherProjectile
+         308  0.013  BabyDragonProjectile
+         197  0.008  AxeMan_EV1_Projectile_Strong1
+-- live spell projectiles (name, src kind) (n=16644)
+       10414  0.626  ('Arrows', 'tower')
+        2878  0.173  ('Log', 'none')
+        1358  0.082  ('Rocket', 'tower')
+        1106  0.066  ('Fireball', 'tower')
+         457  0.027  ('Log', 'tower')
+         431  0.026  ('GoblinBarrel', 'tower')
+-- live weapon shots by shooter card (n=23134)
+       13210  0.571  None
+        4984  0.215  Xbow
+        1207  0.052  IceWizard
+         955  0.041  Archer
+         666  0.029  BlowdartGoblin
+         453  0.020  BombTower
+         347  0.015  GoblinDemolisher
+         312  0.013  BabyDragon
+         198  0.009  AxeMan
+         196  0.008  GoblinMachine
+         187  0.008  IceSpirits
+         142  0.006  GiantBuffer
+-- sim shots by projectile type (n=23644)
+       12829  0.543  TowerPrincessProjectile
+        5616  0.238  xbow_projectile
+        1207  0.051  IceWizardHeroProjectile
+         708  0.030  BlowdartGoblinProjectile
+         574  0.024  ArcherArrow
+         523  0.022  None
+         457  0.019  BombTowerProjectile
+         363  0.015  KingProjectile
+         343  0.015  Archer_EV1_Arrow
+         334  0.014  GoblinDemolisherProjectile
+         308  0.013  BabyDragonProjectile
+         197  0.008  AxeMan_EV1_Projectile_Strong1
+   A (dt<=20; the SIM starts with no shot in flight): live weapon shots 2127, sim shots 1582
+
+== areas (live fx rows vs SIM Pulsing areas) and spells in the air (live spell projectiles vs SIM non-Pulsing areas) ==
+   A: frames 3639, static-area name multiset equal  0.872, in-air spell multiset equal  0.896, remaining_ms |diff| median 50 p90 500 n=104
+   B: frames 36665, static-area name multiset equal  0.903, in-air spell multiset equal  0.948, remaining_ms |diff| median 50 p90 500 n=4401
+-- live fx names (n=9643)
+        2755  0.286  AngryBarbarians
+        2241  0.232  RageBarbarian
+        1070  0.111  Rage
+         903  0.094  Earthquake
+         594  0.062  GoblinMachine
+         579  0.060  Tesla
+         549  0.057  IceWizard
+         515  0.053  Tornado
+         415  0.043  BattleHealer
+          18  0.002  GoblinDemolisher
+           4  0.000  BombTower
+-- sim Pulsing area names (n=4705)
+        1732  0.368  RageBarbarian
+        1155  0.245  AngryBarbarians
+         860  0.183  Rage
+         510  0.108  Tornado
+         448  0.095  Earthquake
+-- sim in-air area (name, motion) (n=9663)
+        3123  0.323  ('Log', 'Rolling')
+        1543  0.160  ('Rocket', 'Flight')
+        1366  0.141  ('Fireball', 'Flight')
+        1196  0.124  ('Arrows', 'Flight')
+         555  0.057  ('Log', 'Airborne')
+         522  0.054  ('GoblinBarrel', 'Flight')
+         472  0.049  ('IceWizard', 'Attached')
+         400  0.041  ('BombTower', 'Flight')
+-- live in-air spell projectiles (n=20262)
+       12698  0.627  Arrows
+        3874  0.191  Log
+        1674  0.083  Rocket
+        1430  0.071  Fireball
+         586  0.029  GoblinBarrel
