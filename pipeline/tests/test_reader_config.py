@@ -65,3 +65,26 @@ def test_live_play_fills_from_config_and_requires_it(tmp_path, monkeypatch):
     sampler, extra = lp.READERS["v2"]
     assert (lp.RVA, lp.ROOT_CTX) == ("R", "C")
     assert f"{sampler} PID 100 {lp.RVA} {lp.ROOT_CTX}{extra}" == "/dev/b2 PID 100 R C --a 1 --b"
+
+
+def test_extra_readers_are_opt_in_and_never_replace(tmp_path, monkeypatch):
+    p = write(tmp_path)
+    monkeypatch.delenv(reader_config.EXTRA_ENV, raising=False)
+    assert set(reader_config.readers(reader_config.load(p))) == {"v1", "v2"}      # unset: exactly as before
+    extra = tmp_path / "extra.json"
+    extra.write_text(json.dumps({"readers": {"merged": {"binary": "/dev/bm", "args": " --a 1 --b --m"}}}))
+    monkeypatch.setenv(reader_config.EXTRA_ENV, str(extra))
+    r = reader_config.readers(reader_config.load(p))
+    assert r["merged"] == ("/dev/bm", " --a 1 --b --m") and r["v2"] == ("/dev/b2", " --a 1 --b")
+    extra.write_text(json.dumps({"readers": {"v2": {"binary": "/dev/evil", "args": ""}}}))
+    with pytest.raises(SystemExit) as e:
+        reader_config.load(p)
+    assert "may not replace" in str(e.value) and "v2" in str(e.value)
+    for bad in ("[]", '{"readers": []}', '{"readers": {"m": {"binary": 1, "args": ""}}}', "not json"):
+        extra.write_text(bad)
+        with pytest.raises(SystemExit):
+            reader_config.load(p)
+    monkeypatch.setenv(reader_config.EXTRA_ENV, str(tmp_path / "absent.json"))
+    with pytest.raises(SystemExit) as e:
+        reader_config.load(p)
+    assert "extra reader config unusable" in str(e.value)

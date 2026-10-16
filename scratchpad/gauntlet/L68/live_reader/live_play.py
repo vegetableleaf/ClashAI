@@ -31,6 +31,9 @@ last word. Gate / card / cell stay the model's own; --pipeline-tau-delta raises 
 icebow/data/p2_captures/<live log stem>/. Play is unchanged.
 --capture-p3 (OPT-IN, parity data): the same, with the phase-3 probe (a superset of phase 2; P3Capture) into
 icebow/data/p3_captures/<live log stem>/; it supersedes --capture-p2 when both are set (one capture per match).
+--reader <name> with CLASHBOT_READER_EXTRA (OPT-IN, validation runs): extra readers from a second local, git-ignored file
+(pipeline/reader_config.py; added under new names, never replacing one). A merged reader's cue blocks go to the 'frame'
+event under --log-frames (frame_extras) and its definitions to a 'cues_defs' event. The default reader is unchanged.
 Refuses to start while another live_play process runs on this machine (two instances read / tap the same device) unless
 --allow-parallel; --check is exempt.
 """
@@ -105,8 +108,12 @@ def frame_extras(f: dict) -> dict:
     """Parity-log fields for one reader frame: per-body state, projectiles, area effects (spells, ability areas)."""
     def rows(objs, keys):
         return [[o.get(k) for k in keys] for o in objs or ()]
-    return dict(ents_state=rows(f["entities"], ENT_STATE_LOG), proj=rows(f.get("projectiles"), PROJ_LOG),
-                fx=rows(f.get("effects"), FX_LOG))
+    ex = dict(ents_state=rows(f["entities"], ENT_STATE_LOG), proj=rows(f.get("projectiles"), PROJ_LOG),
+              fx=rows(f.get("effects"), FX_LOG))
+    if "cues_degraded" in f:   # opt-in merged reader (--reader <name> from CLASHBOT_READER_EXTRA): buffs + attack blocks
+        ex.update(cues_degraded=f["cues_degraded"], read_us=f.get("read_us"), phase2=f.get("phase2"),
+                  phase3=f.get("phase3"))
+    return ex
 
 
 def release_ticks(elixir: float, name: str, tick: int, arrival_ticks: float, margin: int) -> int:
@@ -457,7 +464,8 @@ def main() -> int:
                          "game time, + loading/countdown. Hitting it stops the whole run")
     ap.add_argument("--dry-run", action="store_true", help="decide and log, never tap")
     ap.add_argument("--reader", choices=tuple(READERS), default="v2",
-                    help="memory reader: v2 (default since 2026-10-03: evolved units, projectiles, effects) or v1")
+                    help="memory reader: v2 (default since 2026-10-03: evolved units, projectiles, effects), v1, or an opt-in extra "
+                         "reader named in the CLASHBOT_READER_EXTRA file")
     ap.add_argument("--overlay", choices=("both", "detector", "reader"), default="both",
                     help="replay style: detector = play.py-style YOLO boxes only (cosmetic, e.g. for posts), "
                          "reader = memory-reader markers + taps, both")
@@ -1070,6 +1078,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                 continue
             if isinstance(f.get("sample_monotonic_us"), (int, float)):
                 lag_min = min(lag_min, t_recv - f["sample_monotonic_us"] / 1e6)
+            if getattr(a, "log_frames", False) and ((f.get("phase3") or {}).get("defs")):   # merged reader: once per
+                W(event="cues_defs", tick=f.get("game_tick"), defs=f["phase3"]["defs"])     # reader process, any tick
             if not (f.get("battle_active") and f.get("coherent")):
                 if seen_active and now - last_adv > 3:
                     W(event="stop", why="battle_inactive"); break

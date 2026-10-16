@@ -9,6 +9,10 @@ machine that runs the live bot. Shape::
 
 ``load()`` raises ``ReaderConfigError`` (a ``SystemExit``, so a CLI exits with the message) when the file is missing
 or malformed.
+
+Opt-in extra readers (validation runs): when ``CLASHBOT_READER_EXTRA`` names a second local, git-ignored JSON file
+``{"readers": {"<name>": {"binary": ..., "args": ...}}}``, its readers are ADDED under new names (a name already in the
+main file is refused), so a run selects one only with ``live_play.py --reader <name>``; the default reader is unchanged.
 """
 from __future__ import annotations
 
@@ -19,6 +23,7 @@ from typing import Dict, Tuple
 
 CONFIG_PATH = Path(__file__).resolve().parents[1] / "icebow" / "data" / "reader_config.json"
 ENV_VAR = "CLASHBOT_READER_CONFIG"   # optional override (tests, a second checkout)
+EXTRA_ENV = "CLASHBOT_READER_EXTRA"  # optional: extra readers added under new names (never replacing one)
 
 
 def config_path() -> Path:
@@ -41,6 +46,18 @@ def load(path: Path | None = None) -> Dict:
             "file ({root_rva, root_ctx, readers: {name: {binary, args}}}) on the machine that runs live.") from None
     except (OSError, ValueError) as e:
         raise ReaderConfigError(f"reader config unreadable ({path}): {e}") from None
+    extra = os.environ.get(EXTRA_ENV)
+    if extra:
+        try:
+            add = json.loads(Path(extra).read_text(encoding="utf-8"))["readers"]
+            if not isinstance(add, dict):
+                raise TypeError("readers must be an object")
+            clash = set(add) & set(cfg.get("readers") or {})
+        except (OSError, ValueError, KeyError, TypeError) as e:
+            raise ReaderConfigError(f"extra reader config unusable ({extra}): {e!r}") from None
+        if clash:
+            raise ReaderConfigError(f"extra reader config ({extra}) may not replace readers {sorted(clash)}")
+        cfg.setdefault("readers", {}).update(add)
     try:
         if not isinstance(cfg["root_rva"], str) or not isinstance(cfg["root_ctx"], str):
             raise TypeError("root_rva / root_ctx must be strings")
