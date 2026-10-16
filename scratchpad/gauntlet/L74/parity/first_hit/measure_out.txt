@@ -1,0 +1,33 @@
+logs used 14 skipped []
+card            kind       n /runs   med      IQR mode   sh SIMeff SIMold  live   cad cadSIM
+PrincessTower   ranged   185   185  15.0   14-16    14 0.57   15.0   15.0  15.0  16.0   16.0
+IceWizard       ranged    66    66   9.0    8-10     8 0.58    9.0    9.0   9.0  34.0   34.0
+Xbow            ranged    45    45   7.0    6-8      6 0.56    7.0    7.0   7.0   8.0    8.0
+KingTower       ranged    28    28   8.0    8-10     8 0.64    9.0    9.0   9.0  20.0   20.0
+MinionHorde     ranged    12    12  10.0    8-10    10 0.50    9.0    9.0   9.0  24.0   24.0
+Bomber          ranged    11    11   2.0    2-4      2 0.55    3.0    3.0   3.0  36.0   36.0
+GoblinGang      ranged    11    11   9.0    8-10     8 0.64    9.0    9.0   9.0  32.0   32.0
+Skeletons       melee_crowded   10    16  10.0    6-22     6 0.30    9.0    9.0   9.0   nan   22.0
+Knight          melee      9    57   8.0    8-10     8 0.67    9.0    9.0   9.0   nan   24.0
+Firecracker     ranged     8     8  12.0   12-12    12 1.00   12.0   12.0  12.0   nan   60.0
+LavaHound       ranged     7     7  20.0   20-20    20 0.71   19.0   19.0  19.0  30.0   30.0
+Witch           ranged     7     7  13.0   13-14    13 1.00   13.0   13.0  13.0  22.0   22.0
+FirespiritHut   ranged     6     6  10.0   10-10    10 0.83    9.0    9.0   9.0  34.0   34.0
+GoblinGiant     ranged     6     6  14.0   13-14    14 1.00    9.0    9.0   9.0   nan   32.0
+Minions         ranged     6     6   9.5    9-10    10 0.83    9.0    9.0   9.0  24.0   24.0
+Tesla           melee      6    36   8.0    6-8      8 0.50    7.0    7.0   7.0   nan   22.0
+SkeletonArmy    melee_crowded    5     5  14.0   14-20    14 0.40    9.0    9.0   9.0   nan   22.0
+BabyDragon      ranged     4     4   5.5    5-6      6 0.75    5.0    5.0   5.0  30.0   30.0
+MegaMinion      ranged     4     4   7.0    6-10     6 0.50    7.0    7.0   7.0  30.0   30.0
+Tesla           melee_crowded    4     4   7.0    6-20     6 0.50    7.0    7.0   7.0   nan   22.0
+Witch           melee_crowded    4     4   9.5    9-14     2 0.25    9.0    9.0   9.0  22.0   22.0
+Bowler          ranged     3     3   9.0    8-10     8 0.67    9.0    9.0   9.0  50.5   50.0
+ElectroDragon   ranged     3     3  14.0   11-20    11 0.33   13.0   13.0  13.0  42.0   42.0
+Goblinstein     ranged     3     3   8.0    7-8      8 1.00    9.0    9.0   9.0  36.0   36.0
+Knight          melee_crowded    3     5   8.0    8-9      8 1.00    9.0    9.0   9.0   nan   24.0
+RoyalHogs       melee_crowded    3     3   8.0    3-8      8 0.67    7.0    7.0   7.0   nan   24.0
+BlowdartGoblin  ranged     2     2   6.0    6-6      6 1.00    6.0    6.0   6.0  16.0   16.0
+Musketeer       ranged     2     2  13.0   12-14    12 0.50   13.0   13.0  13.0  20.0   20.0
+ZapMachine      ranged     1     1  20.0   20-20    20 1.00   19.0   19.0  19.0   nan   80.0
+
+deploy (state-4 run, ticks): {'Skeletons': (187, 18, 20.0), 'IceWizard': (151, 20, 20.0), 'SkeletonArmy': (139, 20, 20.0), 'Knight': (67, 19, 20.0), 'Xbow': (48, 69.0, 70.0), 'Graveyard': (41, 10, None), 'Tesla': (40, 19.5, 20.0), 'FirespiritHut': (30, 10.0, 20.0), 'GoblinDrill': (22, 10.0, 20.0), 'Knight_evo': (19, 18, None), 'GoblinDrill_evo': (16, 10.0, None), 'BarbLog': (15, 20, None), 'Tesla_evo': (13, 19, None), 'IceSpirits': (13, 18, 20.0), 'Firecracker': (12, 18.0, 20.0), 'GoblinBarrel': (11, 22, None), 'Tombstone': (11, 19, 20.0), 'Bomber': (11, 20, 20.0), 'FirespiritHut_evo': (9, 10, None), 'Witch': (8, 18.5, 20.0), 'GoldenKnight': (8, 19.5, 20.0), 'GoblinGiant': (8, 15.5, 20.0), 'GoblinGang': (8, 19.5, 20.0), 'GiantSkeleton': (7, 19, 20.0), 'MegaMinion': (7, 20, 20.0), 'HogRider': (7, 18, 20.0), 'Valkyrie': (6, 20.0, 20.0), 'ElectroSpirit': (6, 19.0, 20.0), 'Goblinstein': (6, 19.0, 20.0), 'MinionHorde': (6, 18.5, 20.0), 'Bowler': (5, 18, 20.0), 'RoyalHogs': (5, 20, 20.0), 'RageBarbarian': (5, 20, 20.0), 'AngryBarbarians': (5, 20, 20.0), 'GoblinGiant_evo': (5, 18, None), 'Balloon': (5, 18, 20.0), 'Minions': (5, 20, 20.0), 'BabyDragon': (4, 19.5, 20.0), 'GoblinMachine': (4, 20.0, 20.0), 'Prince': (3, 19, 20.0), 'Musketeer': (3, 18, 20.0), 'RageBarbarian_evo': (3, 17, None), 'Bats': (3, 20, 20.0), 'RoyalDelivery': (3, 4, None), 'Witch_evo': (3, 19, None), 'Golem': (3, 60, 60.0), 'ElectroGiant': (3, 18, 20.0), 'ZapMachine': (3, 18, 20.0), 'ElectroDragon': (3, 20, 20.0), 'ElectroDragon_evo': (3, 20, None)}
