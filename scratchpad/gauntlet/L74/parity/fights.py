@@ -43,6 +43,13 @@ OWN_PRINCESS_MAX = 4424            # icebow main account signature (HANDOFF; ver
 GAP_SPLIT = 60                     # an address unseen this long is a new body (phase_stats Tracks rule)
 QUARTER = 250                      # millitiles: the 1/4-tile position metric (upstream replay_parity "<=250")
 NO_CARD = 65535
+TOWER_SLOTS = ((9000, 3000), (3500, 6500), (14500, 6500), (9000, 29000), (3500, 25500), (14500, 25500))
+# Live taps made short of elixir register only once the elixir is there (diag1016: all 215 own troop plays that came
+# 12+ ticks after the match's median tap->spawn delay were short at the tap, vs 4.9% of on-time ones; the extra delay
+# is the deficit x 45.5 ticks per elixir at single elixir, n 178; 22.9 at double, n 126). Spells and ability presses
+# have no body to time them by, so their tick adds this wait.
+TICKS_PER_ELIXIR = 45.5
+HERO_IW_ABILITY_COST = 2           # card table hero_forms IceWizard_hero ability.mana_cost
 PRIORITY = {'Xbow', 'Tesla', 'Tornado', 'Log', 'IceWizard', 'Rocket', 'Knight', 'Skeletons', 'MegaKnight', 'Golem',
             'ElixirGolem', 'SkeletonBalloon', 'Barbarians', 'Firecracker', 'MinionHorde', 'Giant'}
 
@@ -67,11 +74,11 @@ def read_match(path):
                 hands.append((j['tick'], {h['name']: int(h.get('form', 0)) for h in p.get('own_hand', [])}))
                 shots += [(j['tick'], q['side'], q['card_id']) for q in p.get('raw_projectiles', []) if q.get('card_id', -1) != -1]
             elif b'"play"' in head:
-                j = json.loads(raw); plays.append(dict(tick=j['tick'], name=j['name'], xy=j['xy']))
+                j = json.loads(raw); plays.append(dict(tick=j['tick'], name=j['name'], xy=j['xy'], elixir=j.get('elixir')))
             elif b'"confirmed"' in head or b'"unconfirmed"' in head:
                 j = json.loads(raw); outcome.append((j['event'], j['name'], j.get('intended')))
             elif b'"ability"' in head:
-                j = json.loads(raw); abilities.append(dict(tick=j['tick'], confirmed=False))
+                j = json.loads(raw); abilities.append(dict(tick=j['tick'], confirmed=False, elixir=j.get('elixir')))
             elif b'"ability_confirmed"' in head:
                 if abilities:
                     abilities[-1]['confirmed'] = True
@@ -95,7 +102,9 @@ def read_match(path):
     for t in ticks:
         bodies = []
         for s_, x, y, cid, hp, mx, kind, addr in frames[t]:
-            tower = cid == -1
+            # A card-less row is a tower only on a tower slot: the reader also shows card-less moving rows (293 or 915 hp,
+            # 491 of 182,352 frames), which took a tower's id and hp (diag1016: live tower damage < 0 in 12 fights).
+            tower = cid == -1 and any(abs(x-tx) < 600 and abs(y-ty) < 600 for tx, ty in TOWER_SLOTS)
             if tower:
                 bid = f'T{s_}' + ('K' if abs(x-9000) < 1000 else 'L' if x < 9000 else 'R')
             else:
@@ -151,6 +160,14 @@ def form_of(cid, c):
     return 2 if cid in (c.get('hero_form_id'), 203000023) else int(cid == c.get('evolution_form_id'))
 
 
+def elixir_wait(tick, elixir, cost):
+    """Ticks a tap made `cost - elixir` short waits before the live game plays it (TICKS_PER_ELIXIR; double elixir from
+    tick 2400, triple from 4800)."""
+    if elixir is None or cost is None or elixir >= cost:
+        return 0
+    return (cost - elixir) * TICKS_PER_ELIXIR / (1 if tick < 2400 else 2 if tick < 4800 else 3)
+
+
 def deployments(m, catalog):
     """Live deployments: new body groups (children of a living/just-dead same-card body, or role-children by max_hp,
     are the SIM's job, not plays), own confirmed spells, own Hero IW presses."""
@@ -200,10 +217,14 @@ def deployments(m, catalog):
         c = next((c for c in catalog.values() if c['display_name'] == p['name']), None)
         if i in used or not c or c.get('type') != 'spell':
             continue
-        out.append(dict(kind='play', side=m['side'], name=p['name'], form=p['form'], tick=round(p['tick']+delay),
-                        x=p['x'], y=p['y'], n=0, source='own_spell_tap+delay', tap=p['tick'], spell_spawned=False))
+        wait = elixir_wait(p['tick'], p.get('elixir'), c.get('elixir'))
+        out.append(dict(kind='play', side=m['side'], name=p['name'], form=p['form'], tick=round(p['tick']+delay+wait),
+                        x=p['x'], y=p['y'], n=0, source='own_spell_tap+delay', tap=p['tick'], spell_spawned=False,
+                        elixir_wait=round(wait)))
     for a in m['abilities']:
-        out.append(dict(kind='ability', side=m['side'], name='IceWizard', tick=round(a['tick']+delay), source='own_press'))
+        wait = elixir_wait(a['tick'], a.get('elixir'), HERO_IW_ABILITY_COST)
+        out.append(dict(kind='ability', side=m['side'], name='IceWizard', tick=round(a['tick']+delay+wait), source='own_press',
+                        elixir_wait=round(wait)))
     return sorted(out, key=lambda e: (e['tick'], e['side'], e['name'])), delay
 
 
@@ -348,6 +369,29 @@ class Engine:
         self._proxy[key] = out
         return out
 
+    def spell_damage(self, name, side, level):
+        """First hp drop a `side` cast of spell `name` at `level` deals to a still, huge-hp enemy Golem (None: no hit)."""
+        key = ('dmg', name, side, level)
+        if key not in self._form:
+            b, y = self.b, (20000 if side == 1 else 12000)            # the caster's own half: the Log is territory-bound
+            decks = [[self.ids[name]], [self.ids[name]]]
+            try:
+                b.reset(1, decks, 0, 200, [10000, 10000], None, [(1-side, self.ids['Golem'], 9000*18, y*18, 10**6)],
+                        levels=[[level], [level]], tower_levels=[15, 15])
+            except ValueError:                                      # no such level for this rarity
+                self._form[key] = None
+                return None
+            gi = self.F.index('card_id')
+            hp = lambda: next(dict(zip(self.F, r))['hp'] for r in json.loads(b.state_json())['entities'] if r[gi] == self.ids['Golem'])
+            hp0 = hp(); dmg = None
+            b.step([(side, 0, 9000*18, y*18)], 0)
+            for _ in range(100):
+                b.step([], 1)
+                if hp() < hp0:
+                    dmg = hp0 - hp(); break
+            self._form[key] = dmg
+        return self._form[key]
+
     def tower_level(self, king, princess):
         for lv in range(16, 0, -1):
             if lv not in self._tower:
@@ -411,7 +455,8 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
                 flags['setup_spawn_refused'] += 1; return
             x, y = near; flags['setup_snapped'] += 1
         spawns.append((bd['side'], eng.ids[name], round(x*18), round(y*18), max(1, bd['hp'])))
-        setup.append(dict(id=bd['id'], side=bd['side'], x=x, y=y, card_id=bd['card_id'], proxy=name != catalog[bd['card_id']]['display_name']))
+        setup.append(dict(id=bd['id'], side=bd['side'], x=x, y=y, card_id=bd['card_id'], proxy=name != catalog[bd['card_id']]['display_name'],
+                          worn=bd['hp'] < bd['max_hp']))
     for bd in start:
         if bd['tower']:
             continue
@@ -544,6 +589,24 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
             load_edited(b, before, after)
         except Exception:
             flags['setup_target_not_set'] += 1
+
+    # A shield breaks before any hp is lost, but a setup spawn gets a full one: a setup body below its max_hp has none left
+    # (diag1016: Royal Recruits and Dark Princes kept a shield the live unit had lost, and the Log broke it instead of
+    # hitting hp).
+    worn = [bd for bd in setup if bd.get('worn')]
+    if worn:
+        before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
+        team = ('Blue', 'Red')
+        for bd in worn:
+            i = next((i for i in range(len(E['card'])) if E['alive'][i] and E['team'][i] == team[bd['side']]
+                      and E['pos'][i] == {'x': round(bd['x']*18), 'y': round(bd['y']*18)} and E['kind'][i] in ('Troop', 'Building')), None)
+            if i is not None and E['shield'][i] > 0:
+                E['shield'][i] = 0; flags['setup_shield_broken'] += 1
+        if after != before:
+            try:
+                load_edited(b, before, after)
+            except Exception:
+                flags['setup_shield_not_set'] += 1
 
     def play(e):
         before = json.loads(b.save()); after = json.loads(json.dumps(before))
@@ -720,6 +783,7 @@ def run_match(path, window, out_dir):
     for s_ in (0, 1):
         mode = [lv for (ss, lv), _ in seen.most_common() if ss == s_]
         levels[s_, '*'] = mode[0] if mode else 15
+    levels.update(spell_levels(m, events, eng, catalog))
     t0b = m['frames'][0][1]
     tw = []
     for s_ in (0, 1):
@@ -759,6 +823,42 @@ def run_match(path, window, out_dir):
                    seconds=round(time.monotonic()-t_start, 1), stamp=eng.stamp)
     out.write_text(json.dumps(dict(summary=summary, fights=results), allow_nan=False))
     return summary
+
+
+def spell_drops(m, events, name, look=70):
+    """Single-frame hp drops on enemy non-tower bodies within `look` ticks of each own cast of spell `name`."""
+    ticks = [t for t, _ in m['frames']]
+    out = Counter()
+    for e in events:
+        if e['source'] != 'own_spell_tap+delay' or e['name'] != name:
+            continue
+        i = bisect_left(ticks, e['tick'] - 4)
+        win = [{b['id']: b for b in bodies} for t, bodies in m['frames'][max(0, i-1):] if t <= e['tick'] + look]
+        for a, b in zip(win, win[1:]):
+            for k, z in b.items():
+                if k in a and not z['tower'] and z['side'] != m['side'] and z['hp'] < a[k]['hp']:
+                    out[a[k]['hp'] - z['hp']] += 1
+    return out
+
+
+def spell_levels(m, events, eng, catalog, lo=6):
+    """{(own side, spell): level} for own spells whose SIM damage at that level is the most frequent exact live drop
+    (>= 2 drops). A spell is never seen as a body, so its level is otherwise the side's modal level: the own Log is
+    level 15 live (390 per hit, 465 drops) while the modal 16 hits for 429 (diag1016)."""
+    out = {}
+    for name in {e['name'] for e in events if e['source'] == 'own_spell_tap+delay'}:
+        if name not in eng.ids:
+            continue
+        drops = spell_drops(m, events, name)
+        score = []
+        for lv in range(16, lo-1, -1):
+            d = eng.spell_damage(name, m['side'], lv)
+            if d:
+                score.append((drops[d], lv))
+        best = max(score, default=(0, None))
+        if best[0] >= 2:
+            out[m['side'], name] = best[1]
+    return out
 
 
 # ---------------------------------------------------------------- scoreboard

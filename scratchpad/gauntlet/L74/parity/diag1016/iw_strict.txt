@@ -1,0 +1,70 @@
+live_play_20261015_001347 7
+live_play_20261015_005513 4
+live_play_20261015_011511 2
+live_play_20261015_015926 1
+live_play_20261015_021819 1
+live_play_20261015_025746 1
+live_play_20261015_032727 4
+live_play_20261015_035841 1
+live_play_20261015_042030 2
+live_play_20261015_044027 2
+live_play_20261015_050403 1
+live_play_20261015_052128 2
+live_play_20261015_054053 1
+live_play_20261015_060252 2
+live_play_20261015_062117 1
+live_play_20261015_065608 2
+live_play_20261015_071341 4
+live_play_20261015_073408 1
+live_play_20261015_075203 2
+live_play_20261015_081015 1
+live_play_20261015_082928 1
+live_play_20261015_084925 3
+live_play_20261015_091131 1
+live_play_20261015_112301 1
+live_play_20261015_122256 2
+live_play_20261015_125439 6
+live_play_20261015_132700 1
+live_play_20261015_135123 2
+live_play_20261015_141016 2
+live_play_20261015_142821 2
+live_play_20261015_145128 2
+live_play_20261015_154121 1
+live_play_20261015_154645 1
+live_play_20261015_155027 4
+live_play_20261015_155341 1
+live_play_20261015_155658 1
+live_play_20261015_160050 1
+live_play_20261015_161106 1
+live_play_20261015_161848 1
+live_play_20261015_162424 1
+live_play_20261015_162735 1
+live_play_20261015_163047 3
+live_play_20261015_170420 5
+live_play_20261015_170735 1
+live_play_20261015_171105 1
+live_play_20261015_172050 2
+live_play_20261015_172639 2
+live_play_20261015_173450 2
+live_play_20261015_174501 3
+live_play_20261015_175504 2
+live_play_20261015_175821 4
+live_play_20261015_180912 1
+live_play_20261015_181435 4
+live_play_20261015_182306 1
+live_play_20261015_182623 2
+live_play_20261015_183748 1
+live_play_20261015_183927 1
+live_play_20261015_184656 3
+live_play_20261015_184826 1
+IW bodies 113 dies live only 5 sim only 2
+mean damage taken live 352 sim 324
+drop values: live count - sim count (most live-heavy): [(52, 8), (147, 6), (279, 5), (260, 3), (173, 3), (343, 1), (241, 1), (158, 1), (238, 1), (342, 1), (197, 1), (306, 1)]
+most sim-heavy: [(20, -9), (142, -3), (171, -2), (286, -1), (390, -1), (399, -1), (312, -1), (680, -1), (338, -1), (421, -1), (383, -1), (565, -1)]
+{'m': '001347', 't0': 1434, 'live_dmg': 629, 'sim_dmg': 572, 'ldead': True, 'sdead': False}
+{'m': '005513', 't0': 2111, 'live_dmg': 882, 'sim_dmg': 0, 'ldead': True, 'sdead': False}
+{'m': '011511', 't0': 1630, 'live_dmg': 390, 'sim_dmg': 821, 'ldead': False, 'sdead': True}
+{'m': '084925', 't0': 3014, 'live_dmg': 677, 'sim_dmg': 676, 'ldead': True, 'sdead': False}
+{'m': '122256', 't0': 3179, 'live_dmg': 746, 'sim_dmg': 609, 'ldead': True, 'sdead': False}
+{'m': '170420', 't0': 1535, 'live_dmg': 894, 'sim_dmg': 894, 'ldead': False, 'sdead': True}
+{'m': '170420', 't0': 2964, 'live_dmg': 569, 'sim_dmg': 569, 'ldead': True, 'sdead': False}

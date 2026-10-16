@@ -131,3 +131,53 @@ def test_tower_locks():
     assert len(locks) == 1 and locks[0][1] == (0, 14500, 6500)
     m['frames'][2] = fb(122, 2480, 4858)                        # tower untouched -> no lock
     assert F.tower_locks(m, fight, setup, CAT) == []
+
+
+def test_cardless_row_off_a_tower_slot_is_not_a_tower(tmp_path):
+    # a moving card-less row (an Elixir Golem's blob) sharing the frame must not overwrite a tower's hp
+    ev = [frame(t, [[0, 14000 - 100*t, 17000, -1, 293, 293, 14, 'blob']], opp_hp=2905) for t in range(100, 110, 2)]
+    m, why = F.read_match(write(tmp_path, ev))
+    assert why is None
+    for _, bodies in m['frames']:
+        towers_ = [b for b in bodies if b['tower']]
+        assert len(towers_) == 6 and len({b['id'] for b in towers_}) == 6
+        assert next(b['hp'] for b in towers_ if b['id'] == 'T0L') == 2905
+        assert any(not b['tower'] and b['card_id'] == -1 for b in bodies)
+
+
+def test_spell_tick_waits_for_elixir(tmp_path):
+    ev = [frame(100, []), frame(102, [])]
+    ev += [dict(event='play', tick=104, name='Knight', xy=[0.5, 0.6562], elixir=6.0),
+           dict(event='confirmed', tick=128, name='Knight', intended=[0.5, 0.65625])]
+    ev += [frame(t, [[1, 9000, 21000, KNIGHT, 2822, 2822, 14, 'k']]) for t in range(128, 140, 2)]
+    ev += [dict(event='play', tick=200, name='Log', xy=[0.5, 0.6], elixir=1.5),          # 0.5 short at single elixir
+           dict(event='confirmed', tick=230, name='Log', intended=[0.5, 0.6]),
+           dict(event='play', tick=300, name='Log', xy=[0.5, 0.6], elixir=4.0),
+           dict(event='confirmed', tick=330, name='Log', intended=[0.5, 0.6])]
+    ev += [frame(t, []) for t in range(140, 400, 10)]
+    m, _ = F.read_match(write(tmp_path, ev))
+    events, delay = F.deployments(m, CAT)
+    logs = [e for e in events if e['name'] == 'Log']
+    assert [e['tick'] - e['tap'] for e in logs] == [round(delay + .5*F.TICKS_PER_ELIXIR), round(delay)]
+    assert F.elixir_wait(3000, 1.0, 2) == F.TICKS_PER_ELIXIR/2 and F.elixir_wait(100, None, 2) == 0
+
+
+def test_spell_drops_window():
+    def fb(t, hp):
+        return (t, [dict(id='p', side=0, x=9000, y=12000, card_id=KNIGHT, hp=hp, max_hp=2822, kind=15, tower=False)])
+    m = dict(side=1, frames=[fb(100, 2822), fb(104, 2432), fb(110, 2432), fb(200, 2042)])
+    ev = [dict(source='own_spell_tap+delay', name='Log', tick=102)]
+    assert F.spell_drops(m, ev, 'Log') == {390: 1}                  # the drop at 200 is outside the 70-tick window
+
+
+def test_spell_levels_pick_the_level_whose_damage_is_seen():
+    class Eng:
+        ids = {'Log': 1}
+        def spell_damage(self, name, side, lv):
+            return {16: 429, 15: 390, 14: 355}.get(lv)
+    def fb(t, hp, k='p'):
+        return (t, [dict(id=k, side=0, x=9000, y=12000, card_id=KNIGHT, hp=hp, max_hp=2822, kind=15, tower=False)])
+    m = dict(side=1, frames=[fb(100, 2822), fb(104, 2432), fb(300, 2432), fb(304, 2042)])
+    ev = [dict(source='own_spell_tap+delay', name='Log', tick=102), dict(source='own_spell_tap+delay', name='Log', tick=302)]
+    assert F.spell_levels(m, ev, Eng(), CAT) == {(1, 'Log'): 15}
+    assert F.spell_levels(dict(m, frames=m['frames'][:2]), ev, Eng(), CAT) == {}     # one drop is not enough
