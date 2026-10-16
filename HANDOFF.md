@@ -1,3 +1,36 @@
+## 2026-10-16 ~11:00 EDT -- owner answers on the round-2 plan; 3 pods busy; parity scoreboard; A3' audit; HEAD NameError fixed
+
+- **Owner answers**: (1) G1 live calibration SKIPPED ("spend those 18 hours making our simulator identical to the real
+  game"); my pushback given: engine parity is half the SIM (opponents = bots: style gap 0.97) and whole-match identity is
+  not reachable -> target = fight-outcome agreement on the mechanics that decide icebow's fights (S2). Live play still feeds
+  parity via frame logs. (2) T1 YES. (3) O2 exploiters FIRST + every other deck the model struggles against (not only heavy).
+  (4) A3' KEEP.
+- **Pods** (key ~/.ssh/runpod_clashbot; CHECK cpu.max, nproc lies): 81.27.69.177:23419 (15.3 CPUs) RT35 re-baseline on
+  0.1.35 (cb_rt35), then FIGHTS35 parity scoreboard (queued on cpu.lock); 81.27.69.177:23450 (15.3 CPUs) bait_gae
+  (cb_bait, ~19:00 UTC); 216.81.245.71:37184 (27.2 CPUs) T1 seed 74 (cb_t1 = 3073af1, `L74/t1/t1_chain.sh 74`, 500 updates
+  on 0.1.35, live-pool evals at u150/250/350/500). Every pod runs `pod_watchdog.sh DONE 7200` (self-stop 2 h after DONE
+  unless /workspace/KEEP). T1 started before the re-baseline verdict: stop it if 0.1.35 changes the model ranking.
+- **Bug (mine, fixed e5f100e)**: dbf8e72 left `pc` undefined in Learner.__init__ -> NameError for every config; found by
+  the bait worker's pod smoke. New rule (memory trainer-edit-preship-check): pyflakes undefined names + a real smoke
+  after any trainer edit.
+- **RoyaleSim 0.1.35** = runtime `20261016-linux` (19f6103): venv35, manifest L74/rt35/build_manifest.json, royalegym stays
+  0.1.23; gap.py --runtime; live_eval_pod.sh RT/PY/O env. No Python API change; 12 default behaviours changed (Log
+  ROLLING_HIT_SWEEP / SPARES_LEAPERS, Tornado GUARD_PRESS_ATTRACT, Lightning STRIKE_*). Old runtime reproduces 10-15
+  rows exactly; on 0.1.35, 4/24 test games differ.
+- **Bait** (c7e95fc, L74/bait/): learner deck fixed to the friend's deck (Valkyrie@hero, SkeletonArmy@evolution,
+  GoblinBarrel@evolution, Princess, BlowdartGoblin, Wallbreakers, IceSpirits, Cannon); eval = gap D3 minus every live key
+  (= the bait live stack). Gap found: live presses Valkyrie with a 5.5-tile placeholder (hero_button.should_press), SIM
+  uses ability_policy v2 -> port v2 to live or build B6.
+- **A3' (fa781ae, unwired)**: audit FAIL on one check (tower finisher dPhi < 0: win odds linear in HP); crown-margin
+  variant passes all; expected value low (mostly a tower term; A1 null). Next: crown term + trainer wiring after the O2
+  worker releases rl_royale.py.
+- **Parity S2 (a2b1422)**: fight-level scoreboard (L74/parity/fights.py) -- prototype 16 matches / 846 fights on 0.1.35:
+  strict outcome agreement 0.715, 1/4-tile 0.821; X-Bow lock/DPS 0.996 (core mechanics fine); top mismatches Elixir
+  Golem death spawns, Witch / Dark Witch, Skeleton Army, Mega Knight state, Log hit set (15% bodies differ). Blockers:
+  opponent hero presses not logged, invisible spells, per-unit state. Full run (94 frame-logged matches) queued on 23419.
+- Workers running: O2 exploiter league (struggle pool from live_cost_1001: MK 37%, Skeleton Balloon 34%, barbarians,
+  Golem, Mini PEKKA, Firecracker, Skeleton Army, ... CI upper < 49.5%).
+
 ## 2026-10-16 ~10:00 EDT -- owner: 2 pods (re-baseline + bait), round-2 plan drafted for review
 
 - Owner 10-16: "Let's do the re-baseline, and start bait training on one of the pods each ... draft up a second round of
