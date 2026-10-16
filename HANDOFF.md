@@ -1,3 +1,38 @@
+## 2026-10-16 ~23:55 EDT -- FINAL HANDOFF #2 (usage 98%; owner switches accounts tonight) -- what the next account must do
+
+**Owner rules in force tonight:** AUTO-PROMOTE (section below: a checkpoint beating u250 on the live pool, CI lower > 0, not
+worse on the standard set -> deploy_ckpt.sh WITHOUT `wire` = switch + start live; a later better one replaces it; cue or
+learned-press models cannot go live yet). No NEW tasks. Stop pod 8 as soon as it is not needed. Merged reader ON (toggle).
+
+**Laptop-side jobs DIE with this session -- restart them from the new account:**
+1. Watcher: `bash scratchpad/gauntlet/L74/deploy/night_watch.sh C:/Users/benpe/AppData/Local/Temp/claude/night_seen.txt`
+   (exits printing new pod DONE markers; already-seen list in that file). Each event: `pull_cmp.sh HOST PORT DIR NAME`.
+2. T1 early reads (u250, u350 of s74 on 37671): `bash scratchpad/gauntlet/L74/t1/early_eval.sh 74 216.81.245.71 37184
+   81.27.69.179 37671 "250 350"` (u150 done: 550/960, -3.75 pp [-7.40, +0.10] vs u250).
+3. Exploiter relay: `bash scratchpad/gauntlet/L74/exploit/night_relay.sh` (exploiter 23419 -> gae_exploit seeds 74/75/76;
+   if the exploiter already finished and seeds are not running, start them by hand per the relay's gx_NN.sh pattern).
+**Pod-side chains survive (setsid) and self-stop (pod_watchdog, 2 h after DONE):** T1 s74/s75/s76 (37184/18881/10530,
+results ~10-17 09:30+); gae_trade2 s74 (23450); bait_gae_ab training on 18869 (SMOKE PASS) -> gae_ab (Hero IW + learned
+press) -> gae_hero (twin, gh_chain.sh attached 23:47 after the first waiter stalled; watchdog GH_DONE).
+
+**Step c (cue inputs) -- worker was still building at handoff:** spec scratchpad/gauntlet/L74/cues/STEP_C_SPEC.md, runner
+L74/cues/run_cues_pod.sh, tests pipeline/tests/test_cue_inputs.py; uncommitted edits in pipeline/model_gen.py,
+rl_royale.py, e1_eval.py, mkcfg_arms.py (arms gae_cue_u250 / gae_ctl_u250). The S6 result was sent to it: drop taunted /
+stunned / projectile effect / Rage+Poison buff frac; live mapping rules in S6_CUES_1016.md. BEFORE using it: read its
+report, run pyflakes + both smokes (cue_inputs=on / absent -> SMOKE PASS) + the tests, verify absent = identical, commit.
+**Pod 8 = 64.247.206.120:12331 (owner-rented, 27.2 CPU, L40; key ~/.ssh/runpod_clashbot):** base setup done (up.sh), u250
+raw + grafted shipped sha-verified (raw restored locally from pod_backup_weekend/pod1014b_arms). Runtime 0.1.35 setup:
+/workspace/cue_setup.sh (unpacks /workspace/in/repo_head.tgz to /workspace/cb_cue + setup_rt35; touches
+/workspace/RT35_READY) -- a re-upload of repo_head.tgz was still running at handoff (slow link; verify its sha first).
+Then ship the COMMITTED step-c code (git archive) into /workspace/cb_cue, and launch detached:
+`CB=/workspace/cb_cue RT=20261016-linux PY=/workspace/venv35/bin/python HEROIW_FORM=hero ROYALE_HEROIW_FORM=hero
+WORKERS=26 bash scratchpad/gauntlet/L74/cues/run_cues_pod.sh` + `pod_watchdog.sh /workspace/results/CUES_ALL_DONE 7200`.
+If step c is not ready soon, STOP pod 8 (owner pays) and re-rent later. Copy back sha-verified before any stop.
+
+**Today's measured results:** parity strict 0.911 [0.892, 0.929] (was 0.888; X-Bow 0.953 meets; Skeletons 0.821 / Evo
+Knight 0.845 / Hero IW 0.890 / Tesla 0.899); S6 cue fields safe (state 0.954, hide 0.974, charging 0.962, phase 0.969,
+statuses >= 0.994, IW slow 0.967; attack target needs the live sight rule 0.50 -> 0.96), 85219f4.
+
 ## 2026-10-16 ~23:00 EDT -- overnight monitoring; owner: AUTO-PROMOTE any checkpoint that beats u250 (wire + start live)
 
 - **Owner rule tonight:** a checkpoint that beats u250 gets wired AND a live run started (L74/deploy/deploy_ckpt.sh
