@@ -1,3 +1,40 @@
+## 2026-10-16 ~17:00 EDT -- CHECKPOINT before the usage cutoff (owner: stop at 99% usage; a second account continues)
+
+**Owner rules today (memory: usage-cutoff-and-reader-rule-1016, fight-parity-goal):** hard stop at 99% usage after
+HANDOFF + memory; never drop the upgraded reader because a model using it is null vs u250 (the inputs are worth having;
+redesign training instead); reader-to-model steps a (fields into the main reader stream) + b (SIM exports the same
+fields) NOW, c (new model inputs at human-visible resolution) + d (rebuild imitation base + RL retrain) BY THE WEEKEND.
+Owner game facts: invisible units are visible to players (translucent) -> public; X-Bow locked on a tower never retargets
+without a stun / freeze / taunt reset.
+
+**State of play**
+- Live icebow = F1 u250 (00c845c0), LIVE_OPTIONS now ends `--log-frames --capture-p3` (5e4818f; backup
+  LIVE_OPTIONS.pre_capture_p3_*): every live match logs body state / projectiles / effects AND a per-match phase-3 capture
+  (targets, attack progress, buffs) in icebow/data/p3_captures/<log stem>/ (~10-19 MB). Device test PASS (162405).
+  Turn off = remove --capture-p3. live_play refuses a second instance (--allow-parallel to override).
+- Bait for the friend: bait_gae u65 (19309b90) 78.3% vs current wk_bait 75.1% (+3.23 [-0.21, +6.77] n.s.; vs untrained
+  +11.25); share/bait_friend_20261016/ (ckpt + SHA256SUMS + README) -- owner sends it. Valkyrie ability = rule (B6 below).
+- Parity (goal 95% overall / 90% per card): full scoreboard 0.888 normalised (CEILING35_1016_strict.txt); DIAG2 fixes
+  (f60747b) subset 0.914; phase-3 seeding (5acc7f3): on fully captured logs the ceiling is ~0.99 and RAW agreement is the
+  honest number (0.924 strict on 3 matches); do not pool normalised scores of old vs fully captured logs. SIM == live on:
+  card timings (V9), first hits, unslowed + slowed attack cycles (remainder carries), freeze resume, X-Bow lock, Tesla
+  retarget, IW slow (-30%, 2500 ms). Open: units dying differently ~11% vs ~1% ceiling on captured logs (not attack-phase
+  noise -> the next diagnosis target); Goblin Demolisher kamikaze timing; V6 freeze check design.
+- Running on pods (all with on-pod watchdogs: self-stop 2 h after their DONE unless busy / /workspace/KEEP):
+  T1 (F1 recipe to 500 updates on 0.1.35, t1_chain.sh): s74 216.81.245.71:37184 (~09:30 EDT 10-17 + evals),
+  s75 64.247.206.76:18881, s76 64.247.206.76:10530 (~afternoon 10-17). Early reads: L74/t1/early_eval.sh queues s74
+  u150/250/350 live-pool evals on the parity pod 81.27.69.179:37671 (results /workspace/results/T1EARLY there).
+  Exploiter (arm exploit) 81.27.69.177:23419 (~21:45 EDT done + struggle eval) -> L74/exploit/night_relay.sh copies its
+  checkpoint and starts gae_exploit seeds 75 (37671), 76 (23450 after trade2 s74), 74 (23419 after the exploiter eval);
+  each ends with struggle_eval_pod.sh (candidate vs u250 on the struggle pool). STILL OWED in the morning: the
+  live-mirrored (live_eval_pod.sh) + standard evals of the gae_exploit and T1 winners vs u250 on 0.1.35
+  (RT35 baselines in C:\Users\benpe\pod_backup_weekend\rt35\RT35). Trade reward A3' (gae_trade2) s74 on 81.27.69.177:23450
+  (seeds 75/76 deferred). Parity re-score with DIAG2 fixes: 37671 /workspace/results/FIGHTS35_CEIL8_DIAG2.
+- Builds in flight (workers): B6 learned hero-ability press stage A (royale_env / rl_royale / e1_eval / search_s0 +
+  arms bait_gae_ab, gae_ab); reader step b (pipeline/sim_unit_state.py) + step a spec (L74/parity/READER_STREAM_SPEC.md).
+- Copy-back + pod stop discipline: every result must be sha-verified into C:\Users\benpe\pod_backup_weekend\ before a pod
+  stops; checkpoints worth keeping go to icebow/data/bench/rl_royale/.
+
 ## 2026-10-16 ~14:00 EDT -- first full goal scoreboard; phase-3 probe validated on 3 owner battles; IW slow is fine
 
 - **Goal scoreboard** (99 frame-logged matches, 0.1.35, ceiling K=8; L74/parity/CEILING35_1016_*.txt): strict overall
