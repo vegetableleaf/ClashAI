@@ -16,6 +16,7 @@ Public reader values only. Reader addresses are hashed per match and never writt
 
   python fights.py run   --out DIR [--files 'glob'] [--limit N] [--workers N] [--window 240]
   python fights.py score --out DIR          # scoreboard.json + SCOREBOARD.txt from DIR/matches/*.json
+  run --infer target,phase: opt-in attack target / phase inference at setup (infer_attacks)
 Engine: ROYALE_RUNTIME (pipeline.royale_runtime.activate) or PARITY_SIM_PATH=<unpacked wheel dir> (laptop prototype).
 """
 from __future__ import annotations
@@ -60,6 +61,14 @@ DIGGERS = {'Miner', 'GoblinDrill'}  # tunnel in: seen active on their way, deplo
 TOWER_RADIUS = 1400                # millitiles, king (princess 1000): attribution slack, not a law
 PRIORITY = {'Xbow', 'Tesla', 'Tornado', 'Log', 'IceWizard', 'Rocket', 'Knight', 'Skeletons', 'MegaKnight', 'Golem',
             'ElixirGolem', 'SkeletonBalloon', 'Barbarians', 'Firecracker', 'MinionHorde', 'Giant'}
+# Frame logs with the reader's per-body state / projectile / effect keys (--log-frames from 10-16, READER_VALIDATION_1016.md)
+# are "ext" logs; everything below is used only for them, so older logs replay exactly as before.
+SPELL_SOURCES = ('own_spell_tap+delay', 'spell_seen')
+P2_DIR = ROOT/'scratchpad/gauntlet/L70/reader/re_phase2/validation'    # phase-2 captures: run.json names its frame log
+CAST, MID_JUMP = 10, (3, 5, 6)     # behavior_state_raw: hero cast; Mega Knight jump, river jump, tunnelling
+STUN_BUFFS = ('Freeze', 'Tesla_EV1_WithDamage')   # phase-2 buff names the SIM holds as stun_ms (Freeze spell -> stun_ms, probed)
+SENTINEL_MS = 100000               # buff/effect remaining above this is "lives with its source", not a time
+CHARGE_PER_MT = 4                  # SIM 0.1.35 charge_progress: +240 per tick at speed 60 (59 mt/tick), charged at range_raw x 40
 
 
 # ---------------------------------------------------------------- live side (no engine import)
@@ -69,6 +78,7 @@ def read_match(path):
     frames, plays, outcome, abilities = {}, [], [], []
     hands = []                      # (tick, {name: form}) from public own_hand
     shots = []                      # (tick, side, card_id) public in-flight projectiles at decision ticks
+    extra = {}                      # ext logs: tick -> (ents_state, proj, fx)
     side = None
     with open(path, 'rb') as f:
         for raw in f:
@@ -77,6 +87,8 @@ def read_match(path):
                 j = json.loads(raw)
                 side = j['my_side']
                 frames[j['tick']] = j['ents']           # duplicate tick: keep the last read
+                if 'ents_state' in j:
+                    extra[j['tick']] = (j['ents_state'], j.get('proj') or [], j.get('fx') or [])
             elif b'"decision"' in head:
                 j = json.loads(raw); p = j.get('public') or {}
                 hands.append((j['tick'], {h['name']: int(h.get('form', 0)) for h in p.get('own_hand', [])}))
@@ -95,7 +107,9 @@ def read_match(path):
     ticks = sorted(frames)
     first = frames[ticks[0]]
     own_pr = {e[5] for e in first if e[3] == -1 and e[0] == side and e[6] == 13 and abs(e[1]-9000) > 1000}
-    if own_pr != {OWN_PRINCESS_MAX}:
+    # Level-capped (classic / friendly) battles show capped towers on every account: an ext log counts when the own hand
+    # is the icebow deck (the owner's 10-16 classic battles: princess 3052).
+    if own_pr != {OWN_PRINCESS_MAX} and not (extra and any('Xbow' in h for _, h in hands)):
         return None, 'not_main_account'
     # confirmed own plays: each play is followed by exactly one confirmed/unconfirmed event, in order
     plays = [dict(p, xy=o[2] or p['xy']) for p, o in zip(plays, outcome) if o[0] == 'confirmed' and o[1] == p['name']]
@@ -107,8 +121,9 @@ def read_match(path):
         p['x'], p['y'] = x, y
     salt = hashlib.sha256(Path(path).name.encode()).hexdigest()[:8]
     seen, ids, out = {}, Counter(), []
+    proj, fx = {}, {}
     for t in ticks:
-        bodies = []
+        bodies, where = [], {}
         for s_, x, y, cid, hp, mx, kind, addr in frames[t]:
             # A card-less row is a tower only on a tower slot: the reader also shows card-less moving rows (293 or 915 hp,
             # 491 of 182,352 frames), which took a tower's id and hp (diag1016: live tower damage < 0 in 12 fights).
@@ -125,6 +140,15 @@ def read_match(path):
                 seen[k] = (last[0], t, cid)
                 bid = last[0]
             bodies.append(dict(id=bid, side=s_, x=x, y=y, card_id=cid, hp=hp, max_hp=mx, kind=kind, tower=tower))
+            where[addr] = bid
+        if t in extra:
+            # ents_state is parallel to ents: [behavior_state_raw, evo, level, generation id]. A projectile's source and
+            # target are resolved to this frame's body ids (in-frame join only; the address is never kept).
+            st, pr, ef = extra[t]
+            for bd, s in zip(bodies, st):
+                bd['state'], bd['gen'] = s[0], s[3]
+            proj[t] = [(p[0], p[1], p[2], p[3], p[4], p[5], p[7], where.get(p[8]), where.get(p[9])) for p in pr]
+            fx[t] = [(e[0], e[1], e[2], e[3], e[4], e[5], e[7]) for e in ef]
         out.append((t, bodies))
     # The reader shows some bodies twice (Hero Ice Wizard: a second row on the same point that keeps full hp all its
     # life). A track co-located with another same-card, same-max_hp track on >= 90% of its samples is a shadow if its hp is higher.
@@ -144,7 +168,27 @@ def read_match(path):
            for (a, b), k in both.items() if k >= .9*min(n[a], n[b])}
     out = [(t, [bd for bd in bodies if bd['id'] not in dup]) for t, bodies in out]
     return dict(match=Path(path).stem, side=side, frames=out, plays=plays, shots=shots,
-                abilities=[a for a in abilities if a['confirmed']]), None
+                abilities=[a for a in abilities if a['confirmed']], ext=bool(extra), proj=proj, fx=fx), None
+
+
+def phase2_buffs(path):
+    """{tick: {generation id: [(buff name, remaining ms)]}} from the phase-2 capture whose run.json names this frame log
+    (joined on tick + generation id only, READER_VALIDATION_1016.md); {} when there is none."""
+    for run in sorted(P2_DIR.glob('*/run.json')):
+        try:
+            if json.loads(run.read_text()).get('live_log') != Path(path).name:
+                continue
+        except ValueError:
+            continue
+        out = {}
+        with open(run.parent/'frames.jsonl', 'rb') as f:
+            for raw in f:
+                j = json.loads(raw); p = j.get('phase2') or {}
+                if p.get('valid'):
+                    out[j['game_tick']] = {u['generation']: [(b['name'], b['remaining_ms_raw']) for b in u['buffs']]
+                                           for u in p.get('units', []) if u.get('buffs')}
+        return out
+    return {}
 
 
 def tracks(frames):
@@ -178,9 +222,82 @@ def elixir_wait(tick, elixir, cost):
     return (cost - elixir) * TICKS_PER_ELIXIR / (1 if tick < 2400 else 2 if tick < 4800 else 3)
 
 
-def deployments(m, catalog):
+def seen_casts(m, catalog, life=None):
+    """Ext logs: spells (both sides) from projectile / effect rows, and hero ability casts (both sides) from state-10
+    bursts or, for an instant-cast hero, its ability effect row. Every tick is the SIM's play/press tick: the SIM
+    creates the spell / starts the cast on the tick after the command (probed on 0.1.35: Rocket, Log, Tornado, Poison,
+    Freeze, Goblin Barrel, Hero Knight, Hero Ice Wizard), so a first sighting in (prev frame, first] gives tick =
+    mid-gap - 1, as for a body. An effect row counts down 50 ms a tick from its full life: its creation tick is exact.
+    life: spell name -> area-effect life ms (None: first sighting = creation)."""
+    ticks = [t for t, _ in m['frames']]
+    def gap(first):
+        prev = ticks[max(0, bisect_left(ticks, first)-1)]
+        prev = prev if prev < first else first - 2
+        return dict(tick=(prev + 1 + first)//2 - 1, lo=prev, hi=max(prev, first-1))
+    kind = lambda cid: (catalog.get(cid) or {}).get('type')
+    name = lambda cid: (catalog.get(cid) or {}).get('display_name')
+    shots, fxs = {}, {}
+    for t in ticks:
+        for p in m['proj'].get(t, ()):
+            if kind(p[3]) == 'spell':
+                r = shots.setdefault(p[6], dict(first=t, side=p[0], cid=p[3], x=p[4], y=p[5]))
+                r['last'] = t
+        for e in m['fx'].get(t, ()):
+            r = fxs.setdefault(e[6], dict(first=t, side=e[0], cid=e[3], x=e[1], y=e[2], rem=e[4]))
+            r['last'] = t
+    out = []
+    # Projectile spells: a throw then a roll (Log, Barbarian Barrel) or waves (Arrows) are one cast; the cast point is
+    # the first shot's target point (READER_VALIDATION_1016: target point = cast point, source = King Tower).
+    for r in sorted(shots.values(), key=lambda r: r['first']):
+        c = next((c for c in out if c['side'] == r['side'] and c['cid'] == r['cid'] and r['first'] - c['seen'] <= 30), None)
+        if c:
+            c['end'] = max(c['end'], r['last']); continue
+        out.append(dict(gap(r['first']), kind='play', side=r['side'], cid=r['cid'], name=name(r['cid']), form=0,
+                        x=r['x'], y=r['y'], n=0, source='spell_seen', spell_spawned=False, seen=r['first'], end=r['last']))
+    for r in sorted(fxs.values(), key=lambda r: r['first']):
+        if kind(r['cid']) != 'spell' or any(c['side'] == r['side'] and c['cid'] == r['cid'] and c['seen'] <= r['first'] <= c['end'] + 20
+                                            for c in out):
+            continue
+        full = life(name(r['cid'])) if life else None
+        made = r['first'] - (round((full - r['rem'])/50) if full and 0 < r['rem'] <= full else 0)
+        out.append(dict(kind='play', side=r['side'], cid=r['cid'], name=name(r['cid']), form=0, tick=made-1, lo=made-1,
+                        hi=made-1, x=r['x'], y=r['y'], n=0, source='spell_seen', spell_spawned=False, seen=r['first'],
+                        end=r['last'], made=made))
+    # Hero casts: the first state-10 frame of a burst; an instant hero (no cast time) shows only its ability effect,
+    # card = the hero's card (Hero Ice Wizard: the freeze area). Champions are not counted here (untested on video).
+    casts, prev = [], {}
+    for t, bodies in m['frames']:
+        for bd in bodies:
+            c = catalog.get(bd['card_id'])
+            if bd['tower'] or c is None or form_of(bd['card_id'], c) != 2:
+                continue
+            if bd.get('state') == CAST and prev.get(bd['id']) != CAST:
+                casts.append((t, bd['side'], c['display_name']))
+            prev[bd['id']] = bd.get('state')
+    heroes = {}
+    for t, bodies in m['frames']:
+        for bd in bodies:
+            c = catalog.get(bd['card_id'])
+            if not bd['tower'] and c and form_of(bd['card_id'], c) == 2:
+                heroes.setdefault((bd['side'], c['display_name']), []).append(t)
+    for r in sorted(fxs.values(), key=lambda r: r['first']):
+        k = (r['side'], name(r['cid']))
+        if kind(r['cid']) == 'spell' or not any(abs(t - r['first']) <= 4 for t in heroes.get(k, ())):
+            continue
+        if not any(s == k[0] and n == k[1] and -10 <= r['first'] - t <= 40 for t, s, n in casts):
+            casts.append((r['first'], k[0], k[1]))
+    for t, s, n in sorted(casts):
+        out.append(dict(gap(t), kind='ability', side=s, name=n, source='cast_seen', seen=t, end=t))
+    for e in out:
+        e.pop('cid', None)
+    return sorted(out, key=lambda e: (e['tick'], e['side'], e['name']))
+
+
+def deployments(m, catalog, life=None):
     """Live deployments: new body groups (children of a living/just-dead same-card body, or role-children by max_hp,
-    are the SIM's job, not plays), own confirmed spells, own Hero IW presses."""
+    are the SIM's job, not plays), own confirmed spells, own Hero IW presses. Ext logs: spells and hero casts of both
+    sides as seen (seen_casts); an own tap or press stays only where nothing was seen for it."""
+    seen = seen_casts(m, catalog, life) if m.get('ext') else []
     tr = sorted(tracks(m['frames']).values(), key=lambda r: (r['first'], r['id']))
     t_start = m['frames'][0][0]
     top = defaultdict(int)
@@ -197,6 +314,10 @@ def deployments(m, catalog):
                           and math.hypot(at(q, r['first'])[1]-r['x'], at(q, r['first'])[2]-r['y']) < 3000 for q in tr)
         if near_parent or r['max_hp'] < .45*top[r['side'], r['card_id']]:
             continue
+        c = catalog[r['card_id']]
+        if c.get('type') == 'spell' and any(e['kind'] == 'play' and e['side'] == r['side'] and e['name'] == c['display_name']
+                                            and e['seen'] <= r['first'] <= e['end'] + 60 for e in seen):
+            continue           # a seen Goblin Barrel / Barbarian Barrel cast: the SIM spawns its bodies
         g = next((g for g in groups if g['side'] == r['side'] and g['card_id'] == r['card_id']
                   and r['first']-g['tick'] <= 6 and math.hypot(g['x']-r['x'], g['y']-r['y']) < 4000), None)
         if g:
@@ -238,14 +359,20 @@ def deployments(m, catalog):
         c = next((c for c in catalog.values() if c['display_name'] == p['name']), None)
         if i in used or not c or c.get('type') != 'spell':
             continue
+        if any(e['side'] == m['side'] and e['name'] == p['name'] and p['tick'] <= e['tick'] <= p['tick'] + 100 for e in seen):
+            continue           # seen cast replaces the tap estimate
         wait = elixir_wait(p['tick'], p.get('elixir'), c.get('elixir'))
         out.append(dict(kind='play', side=m['side'], name=p['name'], form=p['form'], tick=round(p['tick']+delay+wait),
                         x=p['x'], y=p['y'], n=0, source='own_spell_tap+delay', tap=p['tick'], spell_spawned=False,
                         elixir_wait=round(wait), jit=jit))
     for a in m['abilities']:
         wait = elixir_wait(a['tick'], a.get('elixir'), HERO_IW_ABILITY_COST)
-        out.append(dict(kind='ability', side=m['side'], name='IceWizard', tick=round(a['tick']+delay+wait), source='own_press',
+        tick = round(a['tick']+delay+wait)
+        if any(e['kind'] == 'ability' and e['side'] == m['side'] and abs(e['tick'] - tick) <= 30 for e in seen):
+            continue
+        out.append(dict(kind='ability', side=m['side'], name='IceWizard', tick=tick, source='own_press',
                         elixir_wait=round(wait), jit=jit))
+    out += seen
     return sorted(out, key=lambda e: (e['tick'], e['side'], e['name'])), delay
 
 
@@ -311,6 +438,10 @@ class Engine:
 
     def stats(self, name):
         return self._stats.get(name, {})
+
+    def effect_life(self, name, key='life_duration_ms'):
+        """Area-effect life (or buff time) of spell `name`, ms (card table); None without one."""
+        return ((self.stats(name).get('spell') or {}).get('area_effect_object') or {}).get(key)
 
     def reach(self, name):
         """Attack reach (range + own radius, millitiles) of engine card `name`, for tower-damage attribution."""
@@ -463,7 +594,7 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
     t0, t1 = fight['t0'], fight['t1']
     anchor = events[fight['anchor']]
     spell = None
-    if anchor['source'] == 'own_spell_tap+delay' and anchor['name'] in eng.ids:
+    if anchor['source'] in SPELL_SOURCES and anchor['name'] in eng.ids:
         # probed before this fight's reset (spell_damage resets the battle); cached by spell_levels
         d = eng.spell_damage(anchor['name'], anchor['side'], levels.get((anchor['side'], anchor['name'])) or levels.get((anchor['side'], '*')) or 15)
         c = eng.stats(anchor['name']); sp = (c.get('projectile') or {}).get('spawn_projectile') or {}
@@ -524,23 +655,27 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
             add(bd, c['display_name'])
     evs = [events[j] for j in fight['events']]
     # Opponent champion / hero buttons are not logged: a fight with one on the board cannot replay its presses.
+    # Ext logs show hero casts (seen_casts: they are events); champions stay unobserved.
     heroes = set()
     for _, bodies in frames:
         for bd in bodies:
             c = catalog.get(bd['card_id'])
-            if c and not bd['tower'] and bd['side'] != m['side'] and (form_of(bd['card_id'], c) == 2 or
+            if c and not bd['tower'] and bd['side'] != m['side'] and (form_of(bd['card_id'], c) == 2 and not m['ext'] or
                                                                    eng.cat[eng.ids[c['display_name']]].get('champion') if c['display_name'] in eng.ids else False):
                 heroes.add(c['display_name'])
     for h in heroes:
         flags['opp_ability_unobserved:'+h] += 1
-    # Opponent spells are not in the frames; a decision-tick projectile sighting marks the fight (Zap, Lightning,
-    # Earthquake, Poison and Freeze are not projectiles and stay invisible).
-    for t, s_, cid in m['shots']:
+    # Opponent spells are not in old frames; a decision-tick projectile sighting marks the fight (Zap, Lightning,
+    # Earthquake, Poison and Freeze are not projectiles and stay invisible). Ext logs replay every seen spell instead.
+    for t, s_, cid in ([] if m['ext'] else m['shots']):
         c = catalog.get(cid)
         if s_ != m['side'] and c and c.get('type') == 'spell' and t0-30 <= t <= t1:
             flags['opp_spell_seen:'+c['display_name']] += 1
     for e in events:           # an effect already running at t0 is not public state: the fight cannot start from it
         if e['source'] == 'own_spell_tap+delay' and t0-60 <= e['tick'] < t0:
+            flags['spell_in_flight_at_start'] += 1
+        # a seen spell still flying / its area still on the board at t0; a Freeze's state is its stuns (set below)
+        if e['source'] == 'spell_seen' and e['tick'] < t0 <= e['end'] and e['name'] != 'Freeze':
             flags['spell_in_flight_at_start'] += 1
         if e['kind'] == 'ability' and t0-100 <= e['tick'] < t0:
             flags['ability_active_at_start'] += 1
@@ -549,8 +684,9 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
             flags['event_card_missing'] += 1
         if e.get('spell_spawned'):
             flags['spell_spawned_units_timing_unknown'] += 1
-    if any(e['kind'] == 'ability' for e in evs):
-        need(m['side'], 'IceWizard', 2)
+    for e in evs:
+        if e['kind'] == 'ability':
+            need(e['side'], e['name'], 2)
     for s_ in (0, 1):
         if not decks[s_]:
             need(s_, 'Knight', 0)
@@ -614,20 +750,29 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
     # Target state is not public, and a setup spawn starts with none, so it may pick a nearer troop where the live unit
     # kept shooting a tower (a locked X-Bow). Lock a setup body onto an enemy tower when the body stood still over the
     # last second, the tower is in reach (14 tiles centre to centre for a building, 7 for a troop) and that tower lost hp in that second.
-    locks = tower_locks(m, fight, setup, catalog)
+    # Ext logs replace the guess: a projectile in flight up to t0 names its shooter's target (seen_targets).
+    team = ('Blue', 'Red')
+
+    def ent(E, ref):
+        """SIM entity index of ('body', setup body) (its exact setup point) or ('tower', side, x, y)."""
+        if ref[0] == 'tower':
+            return next((i for i in range(len(E['card'])) if E['alive'][i] and E['team'][i] == team[ref[1]]
+                         and E['kind'][i] in ('KingTower', 'PrincessTower') and abs(E['pos'][i]['x']-ref[2]*18) < 18000
+                         and abs(E['pos'][i]['y']-ref[3]*18) < 18000), None)
+        bd = ref[1]
+        return next((i for i in range(len(E['card'])) if E['alive'][i] and E['team'][i] == team[bd['side']]
+                     and E['pos'][i] == {'x': round(bd['x']*18), 'y': round(bd['y']*18)} and E['kind'][i] in ('Troop', 'Building')), None)
+    locks = (seen_targets(m, fight, setup, start) if m['ext'] else
+             [(('body', bd), ('tower',)+tw) for bd, tw in tower_locks(m, fight, setup, catalog)])
     if locks:
         before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
-        team = ('Blue', 'Red')
-        for bd, (tside, tx, ty) in locks:
-            i = next((i for i in range(len(E['card'])) if E['alive'][i] and E['team'][i] == team[bd['side']]
-                      and E['pos'][i] == {'x': round(bd['x']*18), 'y': round(bd['y']*18)} and E['kind'][i] in ('Troop', 'Building')), None)
-            t = next((i for i in range(len(E['card'])) if E['alive'][i] and E['team'][i] == team[tside]
-                      and E['kind'][i] in ('KingTower', 'PrincessTower') and abs(E['pos'][i]['x']-tx*18) < 18000
-                      and abs(E['pos'][i]['y']-ty*18) < 18000), None)
+        for src, tgt in locks:
+            i = ent(E, src)
+            t = ent(E, tgt)
             if i is None or t is None:
                 continue
             E['target'][i] = {'index': t, 'generation': E['generation'][t]}; E['target_locked'][i] = True
-            flags['setup_target_tower'] += 1
+            flags['setup_target_seen' if m['ext'] else 'setup_target_tower'] += 1
         try:
             load_edited(b, before, after)
         except Exception:
@@ -650,6 +795,72 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
                 load_edited(b, before, after)
             except Exception:
                 flags['setup_shield_not_set'] += 1
+
+    # Ext logs: Tesla hidden/up, charge, and stun-type status at t0 as the reader shows them (start_state).
+    seen_hide = {}
+    if m['ext']:
+        edits, more = start_state(eng, m, fight, setup, start, events, catalog)
+        flags.update(more)
+        before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
+        for ref, kv in edits:
+            i = ent(E, ref)
+            if i is None:
+                flags['setup_state_not_found'] += 1; continue
+            for k, v in kv.items():
+                E[k][i] = v
+            if 'hide' in kv:
+                seen_hide[ref[1]['id']] = kv['hide']
+        if after != before:
+            try:
+                load_edited(b, before, after)
+            except Exception:
+                flags['setup_state_not_set'] += 1
+
+    # Opt-in inference (PARITY_INFER=target,phase; item 8): the SIM's attack clock advances 50 ms a tick while engaged
+    # and a hit lands (melee) / launches (ranged) each time it reaches a multiple of HitSpeed (probed on 0.1.35), so a
+    # body that last hit e ms before t0 gets attack_ms = e mod HitSpeed and its reload left; its target = that victim.
+    infer = set(filter(None, os.environ.get('PARITY_INFER', '').split(',')))
+    inferred = {}
+    if infer:
+        before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
+        refs = {bd['id']: ('body', bd) for bd in setup if not bd.get('proxy')}
+        refs.update({bd['id']: ('tower', bd['side'], bd['x'], bd['y']) for bd in start if bd['tower'] and bd['hp'] > 0})
+        idx = {k: ent(E, r) for k, r in refs.items()}
+        live0 = {bd['id']: bd for bd in start}
+        atk = {}
+        for k, i in idx.items():
+            if i is None:
+                continue
+            bd = live0[k]
+            st = eng.stats(('KingTower' if k.endswith('K') else 'PrincessTower') if bd['tower'] else catalog[bd['card_id']]['display_name'])
+            if not st.get('hit_speed_ms') or not E['damage'][i] or E['hide'][i] == 'Hidden':
+                continue
+            atk[k] = dict(dmg=E['damage'][i], dmg_tower=E['damage'][i]*(st.get('crown_tower_damage_percent') or 100)//100,
+                          reach=(st.get('range_milli') or 0) + E['radius'][i]/18 + 800, hs=st['hit_speed_ms'],
+                          lt=st.get('load_time_ms') or 0, speed=(st.get('projectile') or {}).get('speed'))
+        for k, (lo, hi, v) in infer_attacks(m, fight, atk).items():
+            i, a = idx[k], atk[k]
+            j = idx.get(v)
+            if 'target' in infer and j is not None and not E['target_locked'][i]:
+                E['target'][i] = {'index': j, 'generation': E['generation'][j]}; E['target_locked'][i] = True
+                flags['infer_target'] += 1
+            if 'phase' in infer:
+                e = round((t0 - (lo + hi)/2))*50
+                # no hit for over a cycle (two for a projectile attacker, whose newest shot is often still in flight at t0:
+                # on the 10-16 ext logs its drop-based phase mod HitSpeed was within 100 ms of the seen launch in 65 of 74
+                # such cases): not fighting steadily, leave the setup default
+                if e > a['hs']*(2 if a['speed'] else 1) + 100:
+                    flags['infer_phase_stale'] += 1; continue
+                ms = e % a['hs']
+                E['attack_ms'][i] = ms; E['attack_phase'][i] = 'Windup' if ms else 'Cooldown'
+                E['attack_load_ms'][i] = max(0, a['lt'] - e)
+                inferred[k] = ((t0 - hi)*50, (t0 - lo)*50, a['hs'], a['lt'])
+                flags['infer_phase'] += 1
+        if after != before:
+            try:
+                load_edited(b, before, after)
+            except Exception:
+                flags['infer_not_set'] += 1; inferred = {}
 
     def play(e):
         before = json.loads(b.save()); after = json.loads(json.dumps(before))
@@ -674,7 +885,7 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
         ticked = sorted(((e['tick'] if rng is None else jitter_tick(e, rng)), i) for i, e in enumerate(evs))
         if rng is not None:
             b.load(base.encode() if isinstance(base, str) else base)
-            perturbed.update(perturb(eng, rng, hist, who, towers0))
+            perturbed.update(perturb(eng, rng, hist, who, towers0, seen_hide, inferred))
         rows = []                  # (tick, live bodies, sim bodies)
         cursor = 0; refused = Counter(); over = False
         for tick, live in frames:
@@ -781,7 +992,7 @@ def engagement(m, fight, eng, catalog, back=60):
     return info
 
 
-def perturb(eng, rng, hist, who, towers0):
+def perturb(eng, rng, hist, who, towers0, seen=None, inferred=None):
     """Redraw, on the freshly set-up board, the per-unit state the reader cannot see, within what the live frames of the
     last 3 s allow (engagement(); CEILING.md). Per body or tower on the t0 board:
       * enemy in reach at t0 for e ticks: target uniform over the enemies in reach (a tower lock is kept); swing progress
@@ -792,7 +1003,11 @@ def perturb(eng, rng, hist, who, towers0):
       * a Tesla: Rising (in reach for less than UpTime), Up (in reach, or out of reach for less than HideTime), else
         Hidden, from the same history; its timer +-100 ms (one frame);
       * a shield still up at setup, on a body that had an enemy within 8 tiles: uniform over [0, shield].
-    Hidden opponent spells are NOT injected. Returns counts of what was redrawn."""
+    Hidden opponent spells are NOT injected. seen: {live id: 'Up' | 'Hidden'} Tesla states the reader showed at t0 (ext
+    logs): a seen Hidden stays Hidden; a seen Up is never redrawn Hidden (Rising stays possible: the rise is shorter than
+    one frame gap). inferred: {live id: (elapsed lo ms, elapsed hi ms, HitSpeed, LoadTime)} from the opt-in attack
+    inference: the swing is redrawn only within that range (the last hit's frame gap), its target is kept. Returns
+    counts of what was redrawn."""
     from scratchpad.gauntlet.L74.parity.mechanics import load_edited
     b = eng.b
     before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
@@ -833,11 +1048,22 @@ def perturb(eng, rng, hist, who, towers0):
                 st, ms, cap = 'Up', ht - (r_t or 0)*50, ht
             else:
                 st, ms, cap = 'Hidden', 0, 0
+            if seen and lid in seen:
+                if seen[lid] == 'Hidden':
+                    st, ms, cap = 'Hidden', 0, 0
+                elif st == 'Hidden':
+                    st, ms, cap = 'Up', ht, ht
             E['hide'][i] = st
             E['hide_ms'][i] = max(0, min(cap, ms + rng.choice((-100, -50, 0, 50, 100)))) if cap else 0
             up = st == 'Up'; out['tesla_'+st] += 1
             if not up:
                 E['target'][i] = None; E['target_locked'][i] = False; E['attack_ms'][i] = 0; E['attack_phase'][i] = 'Idle'
+        if inferred and lid in inferred and up:
+            elo, ehi, hs, lt = inferred[lid]
+            e = rng.randrange(elo, ehi + 1, 50)
+            E['attack_ms'][i] = e % hs; E['attack_phase'][i] = 'Windup' if e % hs else 'Cooldown'
+            E['attack_load_ms'][i] = max(0, lt - e); out['swing_inferred'] += 1
+            continue
         hs, lt = c.get('hit_speed_ms') or 0, c.get('load_time_ms') or 0
         if hs <= 0 or c.get('load_first_hit') or not up:
             continue
@@ -948,6 +1174,146 @@ def card_agree(a, b):
     mis = sum(not same(x, y) for x, y in pairs)
     tower_ok = abs(a['tower']-b['tower']) <= max(TOWER_FLOOR, TOWER_REL*max(a['tower'], b['tower']))
     return mis <= int(SWARM_SLACK*len(pairs)) and tower_ok, mis, len(pairs), tower_ok
+
+
+def seen_targets(m, fight, setup, start, look=20):
+    """Ext logs: [(source ref, target ref)] from projectiles in flight in the `look` ticks up to t0 whose shooter and target
+    are both on the t0 board (ranged units and towers; the latest shot per shooter wins). The reader's target is the
+    engine's (target point = target body, READER_VALIDATION_1016). ref: ('body', setup body) | ('tower', side, x, y).
+    Tesla and melee targets have no projectile and stay unset."""
+    t0, i0 = fight['t0'], fight['frame0']
+    by = {bd['id']: bd for bd in setup}
+    towers = {bd['id']: ('tower', bd['side'], bd['x'], bd['y']) for bd in start if bd['tower'] and bd['hp'] > 0}
+    ref = lambda k: ('body', by[k]) if k in by else towers.get(k)
+    last = {}
+    for t, _ in m['frames'][max(0, i0-look):i0+1]:
+        if t < t0 - look:
+            continue
+        for p in m['proj'].get(t, ()):
+            s, g = (ref(p[7]) if p[7] else None), (ref(p[8]) if p[8] else None)
+            if s and g:
+                last[p[7]] = (s, g)
+    return list(last.values())
+
+
+def infer_attacks(m, fight, atk, look=100):
+    """Opt-in (PARITY_INFER, item 8): each t0-board attacker's last hit before t0, inferred from the live frames of the
+    last `look` ticks. atk: {live id: dict(dmg, dmg_tower, reach, speed)} (speed: projectile mt/tick, None = melee/instant).
+      * a victim's one-gap hp drop equal (+-1) to exactly one in-reach enemy's per-hit damage (or +-2 to exactly one pair's
+        sum) is that attacker's hit, somewhere in (earlier frame, later frame]; a projectile attacker's hit is its launch,
+        so the travel time (distance / speed) is taken off;
+      * ext logs: a ranged attacker's launches are its projectiles' first sightings (source = that body), victim = target.
+    Returns {live id: (lo, hi, victim id)}: the last hit's tick range and its victim (nearest one for a splash)."""
+    t0, i0 = fight['t0'], fight['frame0']
+    fr = [f for f in m['frames'][max(0, i0-80):i0+1] if f[0] >= t0 - look]
+    ext = {a for a, s in atk.items() if s['speed'] and m.get('ext')}
+    seen = {p[6] for p in m.get('proj', {}).get(fr[0][0], ())} if fr else set()
+    last = {}
+
+    def credit(a, lo, hi, v, d):
+        if a not in last or (hi, -d) >= (last[a][1], -last[a][3]):
+            last[a] = (lo, hi, v, d)
+    for (ta, A), (tb, B) in zip(fr, fr[1:]):
+        prev = {bd['id']: bd for bd in A}
+        for p in m.get('proj', {}).get(tb, ()):
+            if p[6] not in seen:
+                seen.add(p[6])
+                if p[7] in ext and p[8] and p[7] in prev and p[8] in prev:
+                    credit(p[7], ta+1, tb, p[8], math.hypot(prev[p[7]]['x']-prev[p[8]]['x'], prev[p[7]]['y']-prev[p[8]]['y']))
+        for v in B:
+            p = prev.get(v['id'])
+            if not p or v['hp'] >= p['hp']:
+                continue
+            d = p['hp'] - v['hp']
+            dist = {a: math.hypot(prev[a]['x']-p['x'], prev[a]['y']-p['y']) for a in atk
+                    if a in prev and a not in ext and prev[a]['side'] != v['side']}
+            cand = [a for a, x in dist.items() if x <= atk[a]['reach']]
+            dd = lambda a: atk[a]['dmg_tower'] if v['tower'] else atk[a]['dmg']
+            hits = [a for a in cand if abs(d - dd(a)) <= 1]
+            if not hits:
+                two = [(a, b) for j, a in enumerate(cand) for b in cand[j+1:] if abs(d - dd(a) - dd(b)) <= 2]
+                hits = list(two[0]) if len(two) == 1 else []
+            if len(hits) > 2 or (len(hits) == 2 and abs(d - dd(hits[0]) - dd(hits[1])) > 2):
+                continue                                   # several attackers deal this damage: ambiguous
+            for a in hits:
+                tr = math.ceil(dist[a]/atk[a]['speed']) if atk[a]['speed'] else 0
+                credit(a, ta+1-tr, tb-tr, v['id'], dist[a])
+    return {a: r[:3] for a, r in last.items()}
+
+
+def start_state(eng, m, fight, setup, start, events, catalog):
+    """Ext logs: ([(ref, {SIM entity field: value})], flags) for the t0 board, from what the reader shows:
+      * Tesla: behavior_state_raw 0 = Hidden, 2 = Up (hide timer full);
+      * a charger (card table 'charge') walking in state 1: charged if its last frame gap ran >= 1.6x its walk speed,
+        else charge_progress = walked millitiles x CHARGE_PER_MT (below the charge threshold);
+      * a body in a Mega Knight jump, river jump or tunnel (state 3 / 5 / 6): no SIM setup -> flag setup_mid_jump;
+      * stun-type status: from the phase-2 buffs at t0 (STUN_BUFFS -> stun_ms; any other buff is flagged status_unset:<name>),
+        else from a seen Freeze still running (bodies and towers within its radius at the cast -> stun_ms left).
+    A proxy (child set up as another card) gets nothing."""
+    t0, i0 = fight['t0'], fight['frame0']
+    out, flags = [], Counter()
+    live = {bd['id']: bd for bd in start}
+    by = {bd['id']: bd for bd in setup}
+    hist = defaultdict(list)
+    for t, bodies in m['frames'][max(0, i0-60):i0+1]:
+        for bd in bodies:
+            hist[bd['id']].append((t, bd['x'], bd['y'], bd.get('state')))
+    for bd in setup:
+        a = live.get(bd['id'])
+        st = a.get('state') if a else None
+        if st is None or bd.get('proxy'):
+            continue
+        c = eng.stats(catalog[a['card_id']]['display_name'])
+        if st in MID_JUMP:
+            flags[f'setup_mid_jump:{st}'] += 1
+        if c.get('hides_when_not_attacking') and st in (0, 2):
+            out.append((('body', bd), dict(hide='Up', hide_ms=c.get('hide_time_ms') or 0) if st == 2 else dict(hide='Hidden', hide_ms=0)))
+            flags['setup_tesla_' + ('up' if st == 2 else 'hidden')] += 1
+        ch = c.get('charge')
+        if ch and st == 1 and len(hist[bd['id']]) >= 2:
+            h = hist[bd['id']]
+            (ta, xa, ya, _), (tb, xb, yb, _) = h[-2], h[-1]
+            if math.hypot(xb-xa, yb-ya)/max(1, tb-ta) >= 1.6*(c.get('speed') or 60):
+                out.append((('body', bd), dict(charged=True, charge_progress=0))); flags['setup_charged'] += 1
+            else:
+                walked = 0.
+                for (_, x0, y0, s0), (_, x1, y1, _) in zip(h[-2::-1], h[::-1]):
+                    if s0 != 1:
+                        break
+                    walked += math.hypot(x1-x0, y1-y0)
+                full = (ch.get('charge_range_raw') or 0)*10*CHARGE_PER_MT
+                out.append((('body', bd), dict(charge_progress=min(round(walked*CHARGE_PER_MT), max(0, full-1)))))
+                flags['setup_charge_progress'] += 1
+    buffs = m.get('buffs') or {}
+    tb = max((t for t in buffs if t0-6 <= t <= t0), default=None)
+    def ref_of(bd):
+        return ('tower', bd['side'], bd['x'], bd['y']) if bd['tower'] else (('body', by[bd['id']]) if bd['id'] in by else None)
+    if tb is not None:
+        gens = {bd['gen']: bd for bd in start if 'gen' in bd}
+        for g, rows in buffs[tb].items():
+            bd = gens.get(g)
+            r = ref_of(bd) if bd else None
+            for name, rem in rows:
+                rem -= 50*(t0-tb)
+                if r is None or rem <= 0 or rem > SENTINEL_MS:
+                    continue
+                if name in STUN_BUFFS:
+                    out.append((r, dict(stun_ms=rem))); flags['setup_stun_buff'] += 1
+                else:
+                    flags['status_unset:'+name] += 1
+        return out, flags
+    bt, rad = eng.effect_life('Freeze', 'buff_time_ms') or 3500, eng.stats('Freeze').get('area_damage_radius_milli') or 3000
+    for e in events:
+        if e.get('source') != 'spell_seen' or e['name'] != 'Freeze' or not e.get('made') or not e['made'] <= t0 < e['made'] + bt//50:
+            continue
+        at = next((bodies for t, bodies in m['frames'] if t >= e['made']), [])
+        hit = {bd['id'] for bd in at if bd['side'] != e['side'] and (not bd['tower'] or bd['hp'] > 0)
+               and math.hypot(bd['x']-e['x'], bd['y']-e['y']) <= rad + (1000 if bd['tower'] else 500)}
+        for k in hit:
+            r = ref_of(live[k]) if k in live else None
+            if r:
+                out.append((r, dict(stun_ms=bt - 50*(t0-e['made'])))); flags['setup_stun_fx'] += 1
+    return out, flags
 
 
 def tower_locks(m, fight, setup, catalog, look=20):
@@ -1077,9 +1443,10 @@ def run_match(path, window, out_dir, ceiling=0):
         res = dict(match=Path(path).stem, skipped=reason)
         out.write_text(json.dumps(dict(summary=res)))
         return res
-    events, delay = deployments(m, catalog)
-    fights = cut(m, events, window)
     eng = Engine()
+    events, delay = deployments(m, catalog, eng.effect_life)
+    fights = cut(m, events, window)
+    m['buffs'] = phase2_buffs(path) if m['ext'] else {}
     # levels from the bodies' max_hp: per (side, card); '*' = the side's modal level for cards never seen as a body
     levels, seen = {}, Counter()
     for t, bodies in m['frames']:
@@ -1131,22 +1498,28 @@ def run_match(path, window, out_dir, ceiling=0):
                    ground_samples=dict(ground), ground_in_impassable=dict(blocked),
                    spell_delay_ticks=delay, levels={f'{s}:{n}': v for (s, n), v in levels.items()}, tower_levels=tw,
                    seconds=round(time.monotonic()-t_start, 1), stamp=eng.stamp, ceiling_k=ceiling)
+    if m['ext']:
+        summary.update(ext=True, phase2=bool(m['buffs']),
+                       seen=dict(Counter(f"{e['kind']}:{'own' if e['side'] == m['side'] else 'opp'}:{e['name']}"
+                                         for e in events if e['source'] in ('spell_seen', 'cast_seen'))))
     out.write_text(json.dumps(dict(summary=summary, fights=results), allow_nan=False))
     return summary
 
 
-def spell_drops(m, events, name, look=70):
-    """Single-frame hp drops on enemy non-tower bodies within `look` ticks of each own cast of spell `name`."""
+def spell_drops(m, events, name, look=70, side=None):
+    """Single-frame hp drops on enemy non-tower bodies within `look` ticks of each `side` (default own) cast of spell
+    `name`."""
+    side = m['side'] if side is None else side
     ticks = [t for t, _ in m['frames']]
     out = Counter()
     for e in events:
-        if e['source'] != 'own_spell_tap+delay' or e['name'] != name:
+        if e['source'] not in SPELL_SOURCES or e['name'] != name or e.get('side', m['side']) != side:
             continue
         i = bisect_left(ticks, e['tick'] - 4)
         win = [{b['id']: b for b in bodies} for t, bodies in m['frames'][max(0, i-1):] if t <= e['tick'] + look]
         for a, b in zip(win, win[1:]):
             for k, z in b.items():
-                if k in a and not z['tower'] and z['side'] != m['side'] and z['hp'] < a[k]['hp']:
+                if k in a and not z['tower'] and z['side'] != side and z['hp'] < a[k]['hp']:
                     out[a[k]['hp'] - z['hp']] += 1
     return out
 
@@ -1156,18 +1529,20 @@ def spell_levels(m, events, eng, catalog, lo=6):
     (>= 2 drops). A spell is never seen as a body, so its level is otherwise the side's modal level: the own Log is
     level 15 live (390 per hit, 465 drops) while the modal 16 hits for 429 (diag1016)."""
     out = {}
-    for name in {e['name'] for e in events if e['source'] == 'own_spell_tap+delay'}:
+    spells = [e for e in events if e['source'] in SPELL_SOURCES]
+    for name in {e['name'] for e in spells}:          # a set, as before: old logs keep their levels' key order
         if name not in eng.ids:
             continue
-        drops = spell_drops(m, events, name)
-        score = []
-        for lv in range(16, lo-1, -1):
-            d = eng.spell_damage(name, m['side'], lv)
-            if d:
-                score.append((drops[d], lv))
-        best = max(score, default=(0, None))
-        if best[0] >= 2:
-            out[m['side'], name] = best[1]
+        for side in sorted({e.get('side', m['side']) for e in spells if e['name'] == name}):
+            drops = spell_drops(m, events, name, side=side)
+            score = []
+            for lv in range(16, lo-1, -1):
+                d = eng.spell_damage(name, side, lv)
+                if d:
+                    score.append((drops[d], lv))
+            best = max(score, default=(0, None))
+            if best[0] >= 2:
+                out[side, name] = best[1]
     return out
 
 
@@ -1179,7 +1554,7 @@ def fight_verdict(r, tower_tol):
     board when it was cast."""
     a = r['anchor']
     bodies = [b for b in r['bodies'] if b['paired']]
-    if a['source'] == 'own_spell_tap+delay':
+    if a['source'] in SPELL_SOURCES:
         focus = [b for b in bodies if b['setup'] and b['side'] != a['side']]
     else:
         focus = [b for b in bodies if b['name'] == a['name'] and b['side'] == a['side'] and not b['setup']
@@ -1200,7 +1575,8 @@ def fight_verdict(r, tower_tol):
 
 CLEAN_BLOCKERS = ('opp_spell_seen', 'opp_ability_unobserved', 'setup_child_skipped', 'setup_form_not_set', 'setup_was_deploying', 'spell_in_flight_at_start',
                   'ability_active_at_start', 'setup_unmapped_body', 'setup_spawn_refused', 'event_card_missing',
-                  'spell_spawned_units_timing_unknown', 'card_not_in_sim', 'play_refused', 'sim_game_over')
+                  'spell_spawned_units_timing_unknown', 'card_not_in_sim', 'play_refused', 'sim_game_over',
+                  'setup_mid_jump')
 
 
 HIDDEN_INFO = ('opp_spell_seen', 'opp_ability_unobserved')
@@ -1418,6 +1794,7 @@ def main():
     ap.add_argument('--workers', type=int, default=1)
     ap.add_argument('--ceiling', type=int, default=0, help='noise ceiling: K perturbed SIM replays per fight (0 = off; CEILING.md)')
     ap.add_argument('--clean', choices=['strict', 'core', 'all'], default='strict', help='score: which fights count (is_clean)')
+    ap.add_argument('--infer', default='', help="opt-in attack inference at setup: 'target', 'phase' or 'target,phase' (PARITY_INFER)")
     a = ap.parse_args()
     if a.mode == 'score':
         for mode in ('strict', 'core', 'all'):
@@ -1429,6 +1806,8 @@ def main():
         paths = paths[:a.limit]
     if a.max_fights:
         os.environ['PARITY_MAX_FIGHTS'] = str(a.max_fights)
+    if a.infer:
+        os.environ['PARITY_INFER'] = a.infer
     t = time.monotonic()
     with ProcessPoolExecutor(max_workers=a.workers) as pool:
         futs = {pool.submit(run_match, str(p), a.window, str(a.out), a.ceiling): p for p in paths}

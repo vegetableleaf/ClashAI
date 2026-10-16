@@ -183,3 +183,37 @@ cd /workspace/cb_rt35 && CEILING=8 nohup bash scratchpad/gauntlet/L74/parity/run
   (a same-card replay within 12 s).
 - **Spell tick spread.** The draw uses the match's troop residuals (−3…+3). The 13 casts that DIAG §2 found 8 or more
   ticks late (unknown cause) sit outside this range.
+
+## 8. Reader fields in the replay (ext frame logs, 2026-10-16)
+`fights.py` now uses the 10-16 reader fields wherever a frame log carries them (`ents_state`, `proj`, `fx`; READER_VALIDATION_1016.md) and the phase-2 buffs when `re_phase2/validation/*/run.json` names the log. Logs without the keys replay exactly as before: on 3 old logs (`20261015_151727`, `_155027`, `_162215`, 121 fights, K = 8, `PYTHONHASHSEED=0`) every SCOREBOARD/CEILING txt+json file is byte-identical to HEAD, and each `matches/*.json` differs only in the wall-clock `seconds` field.
+
+| item | what the replay does now (ext logs only) |
+|---|---|
+| hero casts | `seen_casts`: an opponent (or own) hero's first state-10 frame of a burst, or for an instant hero its ability effect row, is a press at mid-gap - 1 (SIM probe: press at t -> casting / spent at t+1). `opp_ability_unobserved` is no longer set for heroes; champions keep it (untested on video) |
+| spells, both sides | `seen_casts`: projectile spells at the first shot's target point (throw + roll = one cast), effect spells at the effect's point with the cast tick from remaining_ms (life from the card table), played at creation - 1. A Goblin/Barbarian Barrel's bodies are left to the SIM; an own tap with a seen cast is not added again. `opp_spell_seen` is no longer used; a seen spell still flying / an area still on the board at t0 is `spell_in_flight_at_start` (Freeze excepted: its state is set as stuns) |
+| targets | `seen_targets` replaces the guessed `tower_locks`: the latest projectile in the 20 ticks to t0 whose shooter and target are on the board sets the shooter's target (locked) |
+| Tesla / charge / jump | `start_state`: Tesla state 0 -> Hidden, 2 -> Up (the ceiling keeps the seen state); a charger walking: charged at >= 1.6x walk speed, else `charge_progress` = walked mt x 4 (SIM probe); state 3 / 5 / 6 at t0 -> new strict blocker `setup_mid_jump` (no SIM setup for a body mid-dash, mid-river-jump or underground) |
+| status at t0 | phase-2 buffs: `Freeze`, `Tesla_EV1_WithDamage` -> `stun_ms`; every other buff is counted as `status_unset:<name>` (informational). Without phase 2: a seen Freeze still running -> `stun_ms` on bodies and towers within its radius at the cast |
+
+**Owner matches** (`20261016_115958/_121354/_122204`, level-11 classic towers 3052). HEAD skips all three (`not_main_account`); an ext log now counts when the own hand holds the X-Bow. "Before" = HEAD with only that gate relaxed. K = 8, laptop, 3 workers.
+
+| run | fights strict / core / all | strict: n, agree unperturbed, agree [CI], ceiling, normalised [CI] | all: n, agree [CI], ceiling, normalised [CI] |
+|---|---|---|---|
+| before (HEAD + gate) | 43 / 69 / 105 | 43, 0.605, 0.634 [0.475, 0.823], 0.858, 0.739 [0.610, 0.886] | 105, 0.606 [0.524, 0.794], 0.872, 0.695 [0.605, 0.829] |
+| after | 70 / 70 / 126 | 70, 0.700, 0.727 [0.505, 0.961], 0.903, 0.805 [0.558, 0.961] | 126, 0.703 [0.589, 0.886], 0.901, 0.780 [0.645, 0.931] |
+
+Core = strict after: every hidden-information exclusion in these matches is now replayed. +21 fights, mostly new seen-spell anchors (own Log 9, own Tornado 4: own spells in these dry-run logs had no tap events). Remaining blockers (fights; sole blocker): `spell_in_flight_at_start` 27 (13), `setup_child_skipped` 18 (9), `ability_active_at_start` 8 (7), `setup_mid_jump:6` 8 (4), `setup_spawn_refused` 5, `sim_game_over` 4 (2), `play_refused:OUT_OF_TERRITORY` 2 (2; a first-seen own Ice Wizard in the mixed-control match 2), `setup_mid_jump:3` and `:5` 1 each. Every n per card is < 30: no goal verdict.
+
+## 9. Attack target / phase inference (opt-in: `run --infer target,phase`, env `PARITY_INFER`)
+SIM probe (0.1.35): `attack_ms` advances 50 ms a tick while engaged and a hit lands (melee) or launches (ranged) at each multiple of HitSpeed (`Cooldown` that tick, `attack_load_ms` reset to LoadTime). `infer_attacks` finds each t0-board attacker's last hit in the 100 ticks before t0: a victim's one-gap hp drop equal (+-1) to exactly one in-reach enemy's SIM per-hit damage (or +-2 to exactly one pair), less projectile travel; on ext logs a ranged attacker's launches are its projectiles' first sightings. Setup then gets target = that victim (locked) and `attack_ms` = elapsed mod HitSpeed, reload left = LoadTime - elapsed; skipped when no hit for > 1 cycle (> 2 for a projectile attacker). The ceiling redraws an inferred swing only within the last hit's frame gap.
+
+Validation against the projectile truth (ext logs, ranged attackers, drop-only inference vs seen launch, n = 132): same victim 120 (0.909); phase mod HitSpeed within 100 ms in 117 (median 50 ms). The raw last-hit tick is a cycle early in most cases (the newest shot is still in flight at t0), which is why the stale limit is 2 cycles for projectile attackers. **Melee phase has no ground truth** (phase-3 RE).
+
+| set | run | bodies with inferred phase / target (of setup) | strict: agree unperturbed, agree, ceiling, normalised | all: agree, ceiling, normalised |
+|---|---|---|---|---|
+| owner 3 | off | - (418) | 0.700, 0.727, 0.903, 0.805 | 0.703, 0.901, 0.780 |
+| owner 3 | on | 209 / 52 (stale 59) | 0.714, 0.720, 0.939, 0.767 | 0.704, 0.934, 0.754 |
+| old 3 | off | - (479) | 0.781, 0.777, 0.868, 0.895 | 0.671, 0.836, 0.803 |
+| old 3 | on | 89 / 94 (stale 48) | 0.812, 0.809, 0.920, 0.879 | 0.682, 0.866, 0.788 |
+
+Reading: agreement moves up 0 to 3 pp (inside every CI), the ceiling up 3 to 5 pp because the perturbation is narrowed, so normalised scores fall. Not a parity gain on this n; keep it opt-in until the pod cohort (84 matches) says otherwise. Outputs: `.foreman/scratch/fights_newkeys/` (local).
