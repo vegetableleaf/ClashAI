@@ -50,6 +50,14 @@ TOWER_SLOTS = ((9000, 3000), (3500, 6500), (14500, 6500), (9000, 29000), (3500, 
 # have no body to time them by, so their tick adds this wait.
 TICKS_PER_ELIXIR = 45.5
 HERO_IW_ABILITY_COST = 2           # card table hero_forms IceWizard_hero ability.mana_cost
+# Tolerant card-level scoring (owner goal 10-16; CEILING.md). A card's bodies agree when they end alive/dead the same and
+# deaths are within DEATH_TOL ticks (0.5 s); a swarm may miss floor(SWARM_SLACK x n) bodies. Its tower damage agrees
+# within max(TOWER_FLOOR, TOWER_REL x the larger side). TOWER_FLOOR ~ one X-Bow bolt (98) and above one Log crown hit (51).
+DEATH_TOL, SWARM_SLACK, TOWER_FLOOR, TOWER_REL = 10, .1, 100, .1
+SPELL_WINDOW = 60                  # ticks after a cast in which a drop/death counts as the spell's hit
+DIGGERS = {'Miner', 'GoblinDrill'}  # tunnel in: seen active on their way, deploying where they surface (Knight etc. can show
+                                   # 13/15 -> 12/14 too: 31 of 531 Knights, so the rule is by card)
+TOWER_RADIUS = 1400                # millitiles, king (princess 1000): attribution slack, not a law
 PRIORITY = {'Xbow', 'Tesla', 'Tornado', 'Log', 'IceWizard', 'Rocket', 'Knight', 'Skeletons', 'MegaKnight', 'Golem',
             'ElixirGolem', 'SkeletonBalloon', 'Barbarians', 'Firecracker', 'MinionHorde', 'Giant'}
 
@@ -153,6 +161,8 @@ def tracks(frames):
             r['traj'].append((t, b['x'], b['y']))
             if r['active'] is None and b['kind'] in (13, 15):
                 r['active'] = t
+            elif r['active'] is not None and b['kind'] in (12, 14) and 'land' not in r and t - r['first'] <= 80:
+                r['land'] = (t, b['x'], b['y'])     # active first, deploying later: a digger (Miner) surfacing here
     return tr
 
 
@@ -194,7 +204,7 @@ def deployments(m, catalog):
             g['x'] += (r['x']-g['x'])/n; g['y'] += (r['y']-g['y'])/n
         else:
             groups.append(dict(side=r['side'], card_id=r['card_id'], tick=r['first'], x=r['x'], y=r['y'], members=[r]))
-    out, used, delays = [], set(), []
+    out, used, delays, waits = [], set(), [], []
     ticks = [t for t, _ in m['frames']]
     for g in groups:
         c = catalog[g['card_id']]
@@ -202,17 +212,28 @@ def deployments(m, catalog):
         # seen]: play so that the SIM's unit is born mid-gap.
         prev = ticks[bisect_left(ticks, g['tick'])-1]
         tick = (prev + 1 + g['tick'])//2 - 1
+        # lo..hi: every tick the live creation could have come from (the frame gap); the ceiling draws from it
         ev = dict(kind='play', side=g['side'], name=c['display_name'], form=form_of(g['card_id'], c), tick=tick,
                   x=round(g['x']), y=round(g['y']), n=len(g['members']), source='first_seen',
-                  spell_spawned=c.get('type') == 'spell')
+                  spell_spawned=c.get('type') == 'spell', lo=prev, hi=max(prev, g['tick']-1))
+        land = [r['land'] for r in g['members'] if 'land' in r] if c['display_name'] in DIGGERS else []
+        if land:
+            # A Miner is seen tunnelling from its own side (active rows) before it surfaces (deploying rows): the play's
+            # point is where it surfaces, not where it was first seen (ceiling subset: every opp Miner was replayed
+            # walking from near its king tower, 0 tower damage vs 93-342 live).
+            ev.update(x=round(statistics.fmean(p[1] for p in land)), y=round(statistics.fmean(p[2] for p in land)), dig=True)
         if g['side'] == m['side']:
             cand = [i for i, p in enumerate(m['plays']) if i not in used and p['name'] == ev['name']
                     and 0 <= g['tick']-p['tick'] <= 80]
             if cand:
                 i = cand[-1]; used.add(i); p = m['plays'][i]
                 ev.update(x=p['x'], y=p['y'], source='own_tap', tap=p['tick']); delays.append(tick-p['tick'])
+                waits.append(elixir_wait(p['tick'], p.get('elixir'), c.get('elixir')))
         out.append(ev)
     delay = statistics.median(delays) if delays else 23
+    # A spell's tick (tap + delay + wait) errs like a troop play's: this match's own troop residuals, clipped to the
+    # p5..p95 band of 10-15 matches (-3..+3 ticks; 87% within +-2), are the ceiling's draw for spells and presses.
+    jit = sorted(max(-3, min(3, round(d - delay - w))) for d, w in zip(delays, waits)) or [0]
     for i, p in enumerate(m['plays']):
         c = next((c for c in catalog.values() if c['display_name'] == p['name']), None)
         if i in used or not c or c.get('type') != 'spell':
@@ -220,11 +241,11 @@ def deployments(m, catalog):
         wait = elixir_wait(p['tick'], p.get('elixir'), c.get('elixir'))
         out.append(dict(kind='play', side=m['side'], name=p['name'], form=p['form'], tick=round(p['tick']+delay+wait),
                         x=p['x'], y=p['y'], n=0, source='own_spell_tap+delay', tap=p['tick'], spell_spawned=False,
-                        elixir_wait=round(wait)))
+                        elixir_wait=round(wait), jit=jit))
     for a in m['abilities']:
         wait = elixir_wait(a['tick'], a.get('elixir'), HERO_IW_ABILITY_COST)
         out.append(dict(kind='ability', side=m['side'], name='IceWizard', tick=round(a['tick']+delay+wait), source='own_press',
-                        elixir_wait=round(wait)))
+                        elixir_wait=round(wait), jit=jit))
     return sorted(out, key=lambda e: (e['tick'], e['side'], e['name'])), delay
 
 
@@ -282,6 +303,19 @@ class Engine:
         self._tower = {}
         self._form = {}
         self._proxy, self._own_unit = {}, None
+        try:                       # card-table rows (hit speed, load time, range, hide timers) for the ceiling and attribution
+            d = json.loads(sim.EMBEDDED_CARDS_160402017_JSON)
+            self._stats = {c['name']: c for c in d['cards']} | {t['name']: t for t in d['towers']}
+        except (AttributeError, KeyError, ValueError):
+            self._stats = {}
+
+    def stats(self, name):
+        return self._stats.get(name, {})
+
+    def reach(self, name):
+        """Attack reach (range + own radius, millitiles) of engine card `name`, for tower-damage attribution."""
+        c = self.stats(name)
+        return (c.get('range_milli') or 1000) + (c.get('collision_radius_milli') or 500)
 
     def passable(self, x, y):
         hx, hy = int(x//500), int(y//500)
@@ -424,9 +458,18 @@ class Engine:
         return st, out
 
 
-def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top):
+def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top, ceiling=0):
     sim, b = eng.sim, eng.b
     t0, t1 = fight['t0'], fight['t1']
+    anchor = events[fight['anchor']]
+    spell = None
+    if anchor['source'] == 'own_spell_tap+delay' and anchor['name'] in eng.ids:
+        # probed before this fight's reset (spell_damage resets the battle); cached by spell_levels
+        d = eng.spell_damage(anchor['name'], anchor['side'], levels.get((anchor['side'], anchor['name'])) or levels.get((anchor['side'], '*')) or 15)
+        c = eng.stats(anchor['name']); sp = (c.get('projectile') or {}).get('spawn_projectile') or {}
+        reach = max(c.get('area_damage_radius_milli') or 0, (c.get('spell') or {}).get('radius_milli') or 0,
+                    (sp.get('projectile_range_milli') or 0) + (sp.get('projectile_radius_milli') or 0)) + TOWER_RADIUS
+        spell = dict(d=d or 0, dt=(d or 0)*(c.get('crown_tower_damage_percent') or 100)/100, x=anchor['x'], y=anchor['y'], reach=reach)
     frames = [fr for fr in m['frames'] if t0 <= fr[0] <= t1]
     start = frames[0][1]
     flags = Counter()
@@ -625,28 +668,286 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
         r = b.step([(e['side'], slot, round(e['x']*18) if 'x' in e else 0, round(e['y']*18) if 'y' in e else 0)], 0)[0]
         return sim.DEPLOY_REASONS[r[1]]
 
-    rows = []                  # (tick, live bodies, sim bodies)
-    cursor = 0; refused = Counter()
-    for tick, live in frames:
-        while cursor < len(evs) and evs[cursor]['tick'] <= tick:
-            e = evs[cursor]; cursor += 1
-            now = json.loads(b.state_json())['tick']
-            if now < e['tick']:
-                b.step([], e['tick']-now)
-            reason = play(e)
-            if reason != 'OK':
-                refused[reason] += 1
-        st = json.loads(b.state_json())
-        if st['tick'] < tick:
-            b.step([], tick-st['tick'])
-        st, simb = eng.bodies(by_name)
-        if st['tick'] != tick:
-            flags['sim_game_over'] += 1
-            break
-        rows.append((tick, live, simb))
+    def simulate(rng=None):
+        """(rows, refused, game over). rng None: the replay as built. Else: the setup state reloaded, hidden state redrawn
+        (perturb) and each play's tick redrawn from its frame gap / the match's tap residuals (noise ceiling)."""
+        ticked = sorted(((e['tick'] if rng is None else jitter_tick(e, rng)), i) for i, e in enumerate(evs))
+        if rng is not None:
+            b.load(base.encode() if isinstance(base, str) else base)
+            perturbed.update(perturb(eng, rng, hist, who, towers0))
+        rows = []                  # (tick, live bodies, sim bodies)
+        cursor = 0; refused = Counter(); over = False
+        for tick, live in frames:
+            while cursor < len(ticked) and ticked[cursor][0] <= tick:
+                et, i = ticked[cursor]; cursor += 1
+                now = json.loads(b.state_json())['tick']
+                if now < et:
+                    b.step([], et-now)
+                reason = play(evs[i])
+                if reason != 'OK':
+                    refused[reason] += 1
+            st = json.loads(b.state_json())
+            if st['tick'] < tick:
+                b.step([], tick-st['tick'])
+            st, simb = eng.bodies(by_name)
+            if st['tick'] != tick:
+                over = True
+                break
+            rows.append((tick, live, simb))
+        return rows, refused, over
+
+    base = b.save(); perturbed = Counter()
+    rows, refused, over = simulate()
+    if over:
+        flags['sim_game_over'] += 1
     for k, v in refused.items():
         flags['play_refused:'+k] += v
-    return measure(rows, setup, flags, catalog, eng.stamp)
+    res = measure(rows, setup, flags, catalog, eng.stamp)
+    if not rows or anchor['kind'] != 'play':
+        return res
+    until = min((e['tick'] for e in evs if e['kind'] == 'play' and e['side'] == anchor['side'] and e['name'] == anchor['name']
+                 and e['tick'] > anchor['tick']), default=t1+1)
+    view = lambda rows_, k: card_view(rows_, k, initial_pairs(rows_, setup, catalog), anchor, until, spell, eng.reach, catalog)
+    card = dict(live=view(rows, 1), sim=[view(rows, 2)])
+    if ceiling:
+        import random
+        bad = Counter()
+        hist = engagement(m, fight, eng, catalog)
+        who = {(('Blue', 'Red')[sp[0]], sp[2], sp[3]): bd['id'] for sp, bd in zip(spawns, setup)}
+        towers0 = [(bd['id'], bd['side'], bd['x'], bd['y']) for bd in start if bd['tower']]
+        for k in range(1, ceiling+1):
+            rows_k, refused_k, over_k = simulate(random.Random(f"{m['match']}:{t0}:{fight['anchor']}:{k}"))
+            bad.update(refused_k); bad['game_over'] += over_k
+            card['sim'].append(view(rows_k, 2) if rows_k else None)
+        card['perturbed'] = dict(perturbed); card['ceiling_refused'] = dict(bad)
+    res['card'] = card
+    return res
+
+
+def jitter_tick(e, rng):
+    """A play's tick redrawn within what the live log cannot pin down: the frame gap for a first-seen body, the match's
+    own troop tap residuals for a spell or a press."""
+    if 'lo' in e:
+        return rng.randint(e['lo'], e['hi'])
+    if e.get('jit'):
+        return e['tick'] + rng.choice(e['jit'])
+    return e['tick']
+
+
+def engagement(m, fight, eng, catalog, back=60):
+    """{live id: (e, r, near)} from the live frames of the `back` ticks up to t0, for every body and tower on the t0
+    board: e = ticks it has had an enemy in attack reach without a break up to t0 (0: none at t0); r = ticks since an
+    enemy was last in reach (None: in reach at t0, or not in the window); near = an enemy within 8 tiles at any of those
+    frames. Reach = range + both collision radii; air / ground / buildings-only as the card table says."""
+    t0, i0 = fight['t0'], fight['frame0']
+    frames = [fr for fr in m['frames'][max(0, i0-40):i0+1] if fr[0] >= t0-back]
+
+    def card(bd):
+        if bd['tower']:
+            k = 'KingTower' if bd['id'].endswith('K') else 'PrincessTower'
+            return eng.stats(k), False, True
+        c = catalog.get(bd['card_id'])
+        name = c and c['display_name']
+        if name not in eng.ids:
+            return None
+        st = eng.stats(name)
+        return st, bool(eng.cat[eng.ids[name]]['flying']), st.get('kind') == 'building'
+    seen = {}
+    for t, bodies in frames:
+        live = [(bd, card(bd)) for bd in bodies if not bd['tower'] or bd['hp'] > 0]
+        live = [(bd, c) for bd, c in live if c]
+        for bd, (st, _, _) in live:
+            reach = (st.get('range_milli') or 0) + (st.get('collision_radius_milli') or 500)
+            inr = near = False
+            for od, (ost, ofly, obld) in live:
+                if od['side'] == bd['side']:
+                    continue
+                d = math.hypot(od['x']-bd['x'], od['y']-bd['y'])
+                near = near or d <= 8000
+                ok = (st.get('attacks_air') if ofly else st.get('attacks_ground', True)) and (obld or not st.get('target_only_buildings'))
+                inr = inr or (ok and d <= reach + (ost.get('collision_radius_milli') or 500))
+            r = seen.setdefault(bd['id'], dict(run=None, last=None, near=False))
+            r['near'] |= near
+            if inr:
+                r['last'] = t
+                r['run'] = t if r['run'] is None else r['run']
+            else:
+                r['run'] = None
+    info = {}
+    for k, r in seen.items():
+        at0 = r['last'] is not None and r['last'] == t0
+        info[k] = (t0 - r['run'] + 1 if at0 and r['run'] is not None else 0,
+                   None if at0 or r['last'] is None else t0 - r['last'], r['near'])
+    return info
+
+
+def perturb(eng, rng, hist, who, towers0):
+    """Redraw, on the freshly set-up board, the per-unit state the reader cannot see, within what the live frames of the
+    last 3 s allow (engagement(); CEILING.md). Per body or tower on the t0 board:
+      * enemy in reach at t0 for e ticks: target uniform over the enemies in reach (a tower lock is kept); swing progress
+        uniform over [0, HitSpeed) if e x 50 ms >= HitSpeed, else over [0, LoadTime + e x 50 + 100] (it came into reach
+        e ticks ago, maybe not fully reloaded);
+      * none in reach at t0, last in reach r ticks ago with r x 50 < LoadTime: reload uniform over [0, LoadTime - r x 50]
+        (it may have fired just before); otherwise fully reloaded (the setup default, untouched);
+      * a Tesla: Rising (in reach for less than UpTime), Up (in reach, or out of reach for less than HideTime), else
+        Hidden, from the same history; its timer +-100 ms (one frame);
+      * a shield still up at setup, on a body that had an enemy within 8 tiles: uniform over [0, shield].
+    Hidden opponent spells are NOT injected. Returns counts of what was redrawn."""
+    from scratchpad.gauntlet.L74.parity.mechanics import load_edited
+    b = eng.b
+    before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
+    names = {}
+    for row in json.loads(b.state_json())['entities']:
+        e = dict(zip(eng.F, row))
+        if e['card_id'] != -1:
+            names[('Blue', 'Red')[e['team']], e['x'], e['y']] = eng.cat[e['card_id']]['name']
+    live = [i for i in range(len(E['card'])) if E['alive'][i]]
+    towers = {'KingTower', 'PrincessTower'}
+    out = Counter()
+    for i in live:
+        kind, team, pos = E['kind'][i], E['team'][i], E['pos'][i]
+        if kind in towers:
+            side = ('Blue', 'Red').index(team)
+            if kind == 'KingTower' and not after['king_active'][side]:
+                continue
+            c = eng.stats(kind)
+            lid = next((k for k, s_, x, y in towers0 if s_ == side and math.hypot(x*18-pos['x'], y*18-pos['y']) < 18000), None)
+        elif kind in ('Troop', 'Building'):
+            c = eng.stats(names.get((team, pos['x'], pos['y'])))
+            lid = who.get((team, pos['x'], pos['y']))
+        else:
+            continue
+        h = hist.get(lid)
+        if h is None:
+            out['no_history'] += 1
+            continue
+        e_t, r_t, near = h
+        if E['shield'][i] > 0 and near:
+            E['shield'][i] = rng.randint(0, E['shield'][i]); out['shield'] += 1
+        up = True
+        if c.get('hides_when_not_attacking'):
+            ut, ht = c.get('up_time_ms') or 0, c.get('hide_time_ms') or 0
+            if e_t and e_t*50 < ut:
+                st, ms, cap = 'Rising', ut - e_t*50, ut
+            elif e_t or (r_t is not None and r_t*50 < ht):
+                st, ms, cap = 'Up', ht - (r_t or 0)*50, ht
+            else:
+                st, ms, cap = 'Hidden', 0, 0
+            E['hide'][i] = st
+            E['hide_ms'][i] = max(0, min(cap, ms + rng.choice((-100, -50, 0, 50, 100)))) if cap else 0
+            up = st == 'Up'; out['tesla_'+st] += 1
+            if not up:
+                E['target'][i] = None; E['target_locked'][i] = False; E['attack_ms'][i] = 0; E['attack_phase'][i] = 'Idle'
+        hs, lt = c.get('hit_speed_ms') or 0, c.get('load_time_ms') or 0
+        if hs <= 0 or c.get('load_first_hit') or not up:
+            continue
+        reach = (c.get('range_milli') or 0)*18 + E['radius'][i]
+        cand = []
+        for j in live:
+            if E['team'][j] == team or E['kind'][j] not in towers | {'Troop', 'Building'} or E['hide'][j] == 'Hidden':
+                continue
+            if c.get('target_only_buildings') and E['kind'][j] == 'Troop':
+                continue
+            if not (c.get('attacks_air') if E['flying'][j] else c.get('attacks_ground', True)):
+                continue
+            if math.hypot(E['pos'][j]['x']-pos['x'], E['pos'][j]['y']-pos['y']) <= reach + E['radius'][j]:
+                cand.append(j)
+        if cand and e_t:
+            if not (E['target_locked'][i] and E['target'][i]):
+                j = rng.choice(cand)
+                E['target'][i] = {'index': j, 'generation': E['generation'][j]}
+                out['target_ambiguous'] += len(cand) > 1
+            top = hs - 50 if e_t*50 >= hs else min(hs - 50, lt + e_t*50 + 100)
+            p = rng.randrange(0, top + 1, 50)
+            E['attack_ms'][i] = p; E['attack_phase'][i] = 'Windup' if p else 'Idle'; E['attack_load_ms'][i] = 0
+            out['swing'] += 1
+        elif not e_t and r_t is not None and r_t*50 < lt:
+            E['attack_load_ms'][i] = rng.randrange(0, lt - r_t*50 + 1, 50); out['reload'] += 1
+    if after != before:
+        try:
+            load_edited(b, before, after)
+        except Exception:
+            out['perturb_not_set'] += 1
+    return out
+
+
+def card_view(rows, which, pairs, anchor, until, spell, reach, catalog, window=SPELL_WINDOW):
+    """What the anchor card did in one run: which = 1 the live frames, 2 the SIM's. Bodies are keyed by live id (a SIM
+    body by its paired live id, else its own 's' id).
+      own:   death tick (None = alive at the window end) of every body of the anchor's side and card that is not on the
+             board at t0 and is born from anchor tick - 2 until the next same-card play (children included);
+      tower: tower damage attributed to those bodies: each tower drop between two frames is split evenly over the
+             distinct cards (the anchor's bodies counting as one) with a body in reach (range + radii) at the earlier frame;
+      for an own spell: hit = enemy bodies that, within `window` ticks of the cast, drop >= half its body damage d in
+             one frame gap, or vanish in one with hp <= d within `reach` of the cast point; enemy = death tick if killed
+             by the spell (gone within 2 frames of its first hit; a later death is other cards' doing), else None;
+             tower = the spell's crown damage per enemy tower in reach whose largest one-gap drop in that window is
+             >= 80% of it."""
+    inv = {s: a for a, s in pairs.items() if s} if which == 2 else {}
+    key = lambda bd: inv.get(bd['id'], bd['id'])
+    name = lambda bd: bd['name'] if which == 2 else catalog.get(bd['card_id'], {}).get('display_name')
+    t_end, tick, side = rows[-1][0], anchor['tick'], anchor['side']
+    at0 = {bd['id'] for bd in rows[0][which] if not bd['tower']}
+    life = {}
+    for t, *bodies in rows:
+        for bd in bodies[which-1]:
+            if not bd['tower']:
+                r = life.setdefault(key(bd), [t, t, bd['side'], name(bd), bd['id'] in at0])
+                r[1] = t
+    death = lambda k: life[k][1] if life[k][1] < t_end else None
+    if spell:
+        lo, hi = tick-2, tick+window
+        first, enemy, drop = {}, {}, defaultdict(int)     # first: key -> tick of its first spell-sized hit
+        for (ta, *ba), (tb, *bb) in zip(rows, rows[1:]):
+            if not lo <= tb <= hi:
+                continue
+            prev = {key(bd): bd for bd in ba[which-1]}
+            for bd in bb[which-1]:
+                k = key(bd); p = prev.get(k)
+                if bd['tower']:
+                    if p and bd['side'] != side and math.hypot(bd['x']-spell['x'], bd['y']-spell['y']) <= spell['reach']:
+                        drop[k] = max(drop[k], p['hp'] - max(0, bd['hp']))
+                elif bd['side'] != side and not k.startswith('s'):
+                    enemy[k] = None
+                    if p and p['hp'] - bd['hp'] >= spell['d']/2:
+                        first.setdefault(k, tb)
+            for k, p in prev.items():       # gone in this gap: a hit if the spell could kill it there
+                if not p['tower'] and p['side'] != side and not k.startswith('s') and death(k) == ta and p['hp'] <= spell['d'] \
+                        and math.hypot(p['x']-spell['x'], p['y']-spell['y']) <= spell['reach']:
+                    enemy[k] = None; first.setdefault(k, ta)
+        for k, t in first.items():          # killed by the spell: gone within 2 frames of its first hit
+            if death(k) is not None and death(k) <= t + 4:
+                enemy[k] = death(k)
+        tower = sum(spell['dt'] for v in drop.values() if spell['dt'] and v >= .8*spell['dt'])
+        return dict(spell=True, hit=sorted(first), enemy=enemy, tower=round(tower))
+    own = {k for k, r in life.items() if r[2] == side and r[3] == anchor['name'] and not r[4] and tick-2 <= r[0] < until}
+    tower = 0.
+    for (ta, *ba), (tb, *bb) in zip(rows, rows[1:]):
+        now = {bd['id']: bd['hp'] for bd in bb[which-1] if bd['tower']}
+        for tw in ba[which-1]:
+            dmg = tw['hp'] - max(0, now.get(tw['id'], 0)) if tw['tower'] else 0
+            if dmg <= 0:
+                continue
+            cards = {('A' if key(bd) in own else (bd['side'], name(bd))) for bd in ba[which-1]
+                     if not bd['tower'] and bd['side'] != tw['side'] and name(bd)
+                     and math.hypot(bd['x']-tw['x'], bd['y']-tw['y']) <= reach(name(bd)) + TOWER_RADIUS}
+            if 'A' in cards:
+                tower += dmg/len(cards)
+    return dict(spell=False, own=sorted((death(k) for k in own), key=lambda d: (d is None, d or 0)), tower=round(tower))
+
+
+def card_agree(a, b):
+    """(agree, body mismatches, bodies, tower ok) of two card views of the same fight (live vs SIM, or SIM vs SIM)."""
+    if a['spell']:
+        keys = set(a['hit']) | set(b['hit'])
+        pairs = [(a['enemy'].get(k, 'missing'), b['enemy'].get(k, 'missing')) for k in keys]
+    else:
+        n = max(len(a['own']), len(b['own']))
+        pairs = list(zip(a['own'] + ['missing']*(n-len(a['own'])), b['own'] + ['missing']*(n-len(b['own']))))
+    same = lambda x, y: 'missing' not in (x, y) and (x is None) == (y is None) and (x is None or abs(x-y) <= DEATH_TOL)
+    mis = sum(not same(x, y) for x, y in pairs)
+    tower_ok = abs(a['tower']-b['tower']) <= max(TOWER_FLOOR, TOWER_REL*max(a['tower'], b['tower']))
+    return mis <= int(SWARM_SLACK*len(pairs)) and tower_ok, mis, len(pairs), tower_ok
 
 
 def tower_locks(m, fight, setup, catalog, look=20):
@@ -693,13 +994,11 @@ def pair_frame(pairs, live, simb, catalog):
             pairs[a] = s_; taken.add(s_)
 
 
-def measure(rows, setup, flags, catalog, stamp):
-    if not rows:
-        return dict(flags=dict(flags), error='no_rows')
-    setup_ids = {bd['id'] for bd in setup}
-    pairs = {i: None for i in setup_ids}
-    # setup pairing: each setup spawn sits on its live point at t0 (spawn order is canonical, not list order). By point,
-    # not name, so a child set up as a proxy card (a Witch's Skeleton as a Skeletons body) pairs too.
+def initial_pairs(rows, setup, catalog=None):
+    """live id -> sim id. Setup pairing: each setup spawn sits on its live point at t0 (spawn order is canonical, not list
+    order). By point, not name, so a child set up as a proxy card (a Witch's Skeleton as a Skeletons body) pairs too.
+    With `catalog`, the pairing is also grown over every row (pair_frame), as measure() grows it."""
+    pairs = {bd['id']: None for bd in setup}
     _, live0, sim0 = rows[0]
     free = [s for s in sim0 if not s['tower']]
     for a in setup:
@@ -707,6 +1006,17 @@ def measure(rows, setup, flags, catalog, stamp):
             d, s = min((math.hypot(a['x']-s['x'], a['y']-s['y']), s['id']) for s in free if s['side'] == a['side'])                 if any(s['side'] == a['side'] for s in free) else (1e9, None)
             if d < 60:
                 pairs[a['id']] = s; free = [f for f in free if f['id'] != s]
+    if catalog is not None:
+        for _, live, simb in rows:
+            pair_frame(pairs, live, simb, catalog)
+    return pairs
+
+
+def measure(rows, setup, flags, catalog, stamp):
+    if not rows:
+        return dict(flags=dict(flags), error='no_rows')
+    setup_ids = {bd['id'] for bd in setup}
+    pairs = initial_pairs(rows, setup)
     life = {}                  # id -> [first, last, first active tick, card_id, side]  (live ids and sim ids)
     err = defaultdict(lambda: ([], []))
     signed = {}                # live id -> sim hp - live hp at the last common frame (+ = the SIM dealt less damage)
@@ -756,7 +1066,7 @@ def measure(rows, setup, flags, catalog, stamp):
     return dict(t_end=t_end, flags=dict(flags), bodies=bodies, sim_only=len(sim_only), towers=towers, stamp=stamp)
 
 
-def run_match(path, window, out_dir):
+def run_match(path, window, out_dir, ceiling=0):
     out = Path(out_dir)/'matches'/(Path(path).stem+'.json')
     if out.exists():
         return json.loads(out.read_text())['summary']
@@ -800,7 +1110,7 @@ def run_match(path, window, out_dir):
     for f in fights:
         anchor = events[f['anchor']]
         try:
-            r = run_fight(eng, m, events, f, catalog, by_name, levels, tw, top)
+            r = run_fight(eng, m, events, f, catalog, by_name, levels, tw, top, ceiling)
         except Exception as e:      # one fight's engine refusal must not drop the match
             r = dict(error=type(e).__name__+':'+str(e)[:200])
         r.update(t0=f['t0'], t1=f['t1'], anchor={k: anchor[k] for k in ('side', 'name', 'form', 'tick', 'source')},
@@ -820,7 +1130,7 @@ def run_match(path, window, out_dir):
     summary = dict(match=m['match'], side=m['side'], fights=len(results), errors=sum('error' in r for r in results),
                    ground_samples=dict(ground), ground_in_impassable=dict(blocked),
                    spell_delay_ticks=delay, levels={f'{s}:{n}': v for (s, n), v in levels.items()}, tower_levels=tw,
-                   seconds=round(time.monotonic()-t_start, 1), stamp=eng.stamp)
+                   seconds=round(time.monotonic()-t_start, 1), stamp=eng.stamp, ceiling_k=ceiling)
     out.write_text(json.dumps(dict(summary=summary, fights=results), allow_nan=False))
     return summary
 
@@ -904,6 +1214,94 @@ def is_clean(r, mode='strict'):
     return not any(k.startswith(CLEAN_BLOCKERS) and not k.startswith(skip) for k in r['flags'])
 
 
+GOAL_CARD, GOAL_ALL, GOAL_N = .90, .95, 30      # owner goal 10-16: normalised lower 95% CI per card / overall; min n
+
+
+def card_scores(r):
+    """One fight's tolerant card agreements (CEILING.md), or None without card views:
+    a0 live vs the unperturbed SIM; aK live vs the perturbed SIMs (mean); ceil the perturbed SIMs pairwise (mean);
+    plus body-mismatch and tower-failure counts for live (vs unperturbed) and ceiling (pairwise)."""
+    c = r.get('card')
+    if not c or c['sim'][0] is None:
+        return None
+    L, s0, P = c['live'], c['sim'][0], [s for s in c['sim'][1:] if s is not None]
+    a0 = card_agree(L, s0)
+    aP = [card_agree(L, s) for s in P]
+    pp = [card_agree(P[i], P[j]) for i in range(len(P)) for j in range(i+1, len(P))]
+    mean = lambda xs, k: sum(x[k] for x in xs)/len(xs)
+    return dict(a0=a0[0], aK=mean(aP, 0) if aP else a0[0], ceil=mean(pp, 0) if pp else None,
+                bmis=a0[1], bn=a0[2], tfail=not a0[3],
+                bmis_c=mean(pp, 1) if pp else None, bn_c=mean(pp, 2) if pp else None, tfail_c=1-mean(pp, 3) if pp else None)
+
+
+def boot_ci(items, f, B=2000, seed=0):
+    """95% percentile CI of f(list of values) under a bootstrap that resamples MATCHES (fights in a match share
+    windows and hidden state). items: [(match, value)]."""
+    import random
+    by = defaultdict(list)
+    for k, v in items:
+        by[k].append(v)
+    keys, rng, out = sorted(by), random.Random(seed), []
+    for _ in range(B):
+        v = f([x for k in rng.choices(keys, k=len(keys)) for x in by[k]])
+        if v is not None:
+            out.append(v)
+    out.sort()
+    return (round(out[int(.025*len(out))], 3), round(out[max(0, int(.975*len(out))-1)], 3)) if out else (None, None)
+
+
+def ceiling_table(out_dir, clean, mode):
+    """Per-card tolerant agreement vs the noise ceiling -> ceiling_{mode}.json + CEILING_{mode}.txt."""
+    groups = defaultdict(list)
+    for r in clean:
+        s = card_scores(r)
+        if s is None:
+            continue
+        a = r['anchor']
+        s.update(match=r['match'], outcome=r['verdict']['agree'])
+        groups[('own ' if r['own'] else 'opp ') + a['name'] + ('', ' evo', ' hero')[a['form']]].append(s)
+    agree = lambda xs: sum(x['aK'] for x in xs)/len(xs)
+    def norm(xs):
+        c = [x['ceil'] for x in xs if x['ceil'] is not None]
+        return agree(xs)/(sum(c)/len(c)) if c and sum(c) else None
+    def row(label, xs, goal):
+        ceil = [x['ceil'] for x in xs if x['ceil'] is not None]
+        items = [(x['match'], x) for x in xs]
+        nm = norm(xs); nlo, nhi = boot_ci(items, norm)
+        flag = ('insufficient n' if len(xs) < GOAL_N else 'no ceiling' if nm is None else
+                'MEETS' if nlo is not None and nlo >= goal else 'below')
+        bn, bnc = sum(x['bn'] for x in xs), sum(x['bn_c'] or 0 for x in xs)
+        return dict(card=label, n=len(xs), matches=len({x['match'] for x in xs}),
+                    agree_unperturbed=round(sum(x['a0'] for x in xs)/len(xs), 3),
+                    agree=round(agree(xs), 3), agree_ci=boot_ci(items, agree),
+                    ceiling=round(sum(ceil)/len(ceil), 3) if ceil else None,
+                    normalised=round(nm, 3) if nm is not None else None, normalised_ci=(nlo, nhi), goal=goal, flag=flag,
+                    whole_fight_outcome=round(sum(x['outcome'] for x in xs)/len(xs), 3),
+                    body_miss=round(sum(x['bmis'] for x in xs)/bn, 3) if bn else None,
+                    body_miss_ceiling=round(sum(x['bmis_c'] or 0 for x in xs)/bnc, 3) if bnc else None,
+                    tower_fail=round(sum(x['tfail'] for x in xs)/len(xs), 3),
+                    tower_fail_ceiling=round(sum(x['tfail_c'] for x in xs if x['tfail_c'] is not None)/len(ceil), 3) if ceil else None)
+    rows = sorted((row(k, v, GOAL_CARD) for k, v in groups.items()), key=lambda r: -r['n'])
+    every = [x for v in groups.values() for x in v]
+    overall = row('OVERALL', every, GOAL_ALL) if every else None
+    out = dict(mode=mode, definitions=dict(DEATH_TOL=DEATH_TOL, SWARM_SLACK=SWARM_SLACK, TOWER_FLOOR=TOWER_FLOOR,
+                                           TOWER_REL=TOWER_REL, SPELL_WINDOW=SPELL_WINDOW, GOAL_CARD=GOAL_CARD,
+                                           GOAL_ALL=GOAL_ALL, GOAL_N=GOAL_N),
+               k=max((len(r['card']['sim'])-1 for r in clean if r.get('card')), default=0), overall=overall, cards=rows)
+    Path(out_dir, f'ceiling_{mode}.json').write_text(json.dumps(out, indent=1))
+    f = lambda r: (f"{r['card']} | {r['n']} | {r['matches']} | {r['agree_unperturbed']} | {r['agree']} {list(r['agree_ci'])} | "
+                   f"{r['ceiling']} | {r['normalised']} {list(r['normalised_ci'])} | {r['flag']} | {r['whole_fight_outcome']} | "
+                   f"{r['body_miss']}/{r['body_miss_ceiling']} | {r['tower_fail']}/{r['tower_fail_ceiling']}")
+    L = [f"CEILING [{mode}] K={out['k']} perturbed replays per fight; tolerant card agreement (CEILING.md); goal: normalised "
+         f"lower 95% CI >= {GOAL_CARD} per card (n >= {GOAL_N}), >= {GOAL_ALL} overall", '',
+         'card | n | matches | agree unperturbed | agree (live vs perturbed) [95% CI] | ceiling (perturbed pairwise) | '
+         'normalised [95% CI] | flag | whole-fight outcome | body miss live/ceiling | tower fail live/ceiling']
+    L += [f(overall), ''] if overall else []
+    L += [f(r) for r in rows]
+    Path(out_dir, f'CEILING_{mode}.txt').write_text('\n'.join(L)+'\n')
+    return out
+
+
 def score(out_dir, tower_tol=150, worst=5, mode='strict'):
     files = sorted((Path(out_dir)/'matches').glob('*.json'))
     matches, fights, skipped = 0, [], Counter()
@@ -983,6 +1381,7 @@ def score(out_dir, tower_tol=150, worst=5, mode='strict'):
     out = dict(head=head, groups=rows, units=unit_rows)
     Path(out_dir, f'scoreboard_{mode}.json').write_text(json.dumps(out, indent=1))
     Path(out_dir, f'SCOREBOARD_{mode}.txt').write_text(text(out))
+    ceiling_table(out_dir, clean, mode)
     return out
 
 
@@ -1017,6 +1416,7 @@ def main():
     ap.add_argument('--max-fights', type=int, default=0, help='prototype: cap fights per match (0 = all)')
     ap.add_argument('--window', type=int, default=240, help='fight length, ticks (240 = 12 s)')
     ap.add_argument('--workers', type=int, default=1)
+    ap.add_argument('--ceiling', type=int, default=0, help='noise ceiling: K perturbed SIM replays per fight (0 = off; CEILING.md)')
     ap.add_argument('--clean', choices=['strict', 'core', 'all'], default='strict', help='score: which fights count (is_clean)')
     a = ap.parse_args()
     if a.mode == 'score':
@@ -1031,7 +1431,7 @@ def main():
         os.environ['PARITY_MAX_FIGHTS'] = str(a.max_fights)
     t = time.monotonic()
     with ProcessPoolExecutor(max_workers=a.workers) as pool:
-        futs = {pool.submit(run_match, str(p), a.window, str(a.out)): p for p in paths}
+        futs = {pool.submit(run_match, str(p), a.window, str(a.out), a.ceiling): p for p in paths}
         for n, f in enumerate(as_completed(futs), 1):
             try:
                 s = f.result()
