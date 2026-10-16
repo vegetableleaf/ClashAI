@@ -954,6 +954,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                     pilot.decide(f)
                 except Exception:                        # noqa: BLE001 -- warm-up only; the real decision retries
                     pass
+                getattr(pilot, 'reset_posture', lambda: None)()   # C1: the first REAL decision chooses (as SIM); no-op without a head
                 warmed = True
             if tick < UI_READY_MIN_TICK:
                 continue
