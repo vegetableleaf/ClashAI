@@ -41,6 +41,15 @@ def test_card_agree_tolerances():
     assert not F.card_agree(v([], 2000), v([], 2250))[0]
 
 
+def test_card_agree_window_end_censoring():
+    """A death in the last DEATH_TOL ticks against a body alive at the window end may be within tolerance after it:
+    not a miss. An earlier death still is; views without 'end' (older outputs) keep the strict rule."""
+    v = lambda own, end=None: dict(spell=False, own=own, tower=0, **({'end': end} if end else {}))
+    assert F.card_agree(v([232], 240), v([None], 240))[0] and F.card_agree(v([None], 240), v([230], 240))[0]
+    assert not F.card_agree(v([229], 240), v([None], 240))[0]
+    assert not F.card_agree(v([232]), v([None]))[0]
+
+
 def test_card_agree_spell_scores_the_union_of_bodies_hit():
     s = lambda hit, enemy: dict(spell=True, hit=hit, enemy=enemy, tower=0)
     a = s(['p', 'q'], {'p': 130, 'q': None, 'r': None})
@@ -62,7 +71,7 @@ def test_card_view_own_bodies_and_tower_share():
         rows.append((t, live, []))
     anchor = dict(kind='play', side=1, name='Knight', tick=103)
     v = F.card_view(rows, 1, {}, anchor, 999, None, lambda n: 1700, CAT)
-    assert v == dict(spell=False, own=[120, None], tower=100)                     # 200 split over 2 cards
+    assert v == dict(spell=False, own=[120, None], tower=100, end=140)            # 200 split over 2 cards
 
 
 def test_card_view_spell_hit_set_and_crown_damage():
@@ -101,6 +110,25 @@ def test_a_tunnelling_miner_is_played_where_it_surfaces(tmp_path):
     events, _ = F.deployments(m, CAT)
     e = next(e for e in events if e['name'] == 'Miner')
     assert (e['x'], e['y'], e.get('dig'), e['tick'], e['lo'], e['hi']) == (3000, 15000, True, 98, 98, 99)
+
+
+
+def test_a_royal_recruits_line_is_one_play(tmp_path):
+    """Six recruits first seen together, 2.8 tiles apart across the arena (live 044027 at 3012), are one play at their
+    centroid; the old 4-tile grouping made 3-4 plays of them and the SIM deployed 18-24 recruits."""
+    recruits = 26000047
+    towers = [[1, 9000, 29000, -1, 7032, 7032, 12, 'k1'], [1, 3500, 25500, -1, 4424, 4424, 13, 'p1'],
+              [1, 14500, 25500, -1, 4424, 4424, 13, 'p2'], [0, 9000, 3000, -1, 7728, 7728, 12, 'k0'],
+              [0, 3500, 6500, -1, 4858, 4858, 13, 'p3'], [0, 14500, 6500, -1, 4858, 4858, 13, 'p4']]
+    line = [[0, x, 14250 + 250*(i % 2), recruits, 796, 796, 14, f'r{i}'] for i, x in enumerate(range(3500, 17501, 2800))]
+    ev = [dict(event='frame', tick=t, my_side=1, ents=list(towers)) for t in (96, 98)]
+    ev += [dict(event='frame', tick=t, my_side=1, ents=towers + line) for t in (100, 102, 104)]
+    p = tmp_path / 'live_play_20261015_120000.jsonl'
+    p.write_text(''.join(json.dumps(e) + chr(10) for e in ev), encoding='utf8')
+    m, _ = F.read_match(p)
+    events, _ = F.deployments(m, CAT)
+    rr = [e for e in events if e['name'] == 'RoyalRecruits']
+    assert [(e['n'], e['x'], e['y']) for e in rr] == [(6, 10500, 14375)]
 
 
 class FakeEng:
@@ -147,3 +175,20 @@ def test_ceiling_table_flags(tmp_path):
     assert out['overall']['n'] == 35 and out['overall']['flag'] == 'below' and out['k'] == 8
     assert 'own Knight | 30 | 10 |' in (tmp_path/'CEILING_strict.txt').read_text()
     assert json.loads((tmp_path/'ceiling_strict.json').read_text())['definitions']['TOWER_FLOOR'] == 100
+
+
+def test_card_view_hero_roster_drops_an_ability_summon():
+    """Hero Ice Wizard: its ability's ice cube (352 hp at level 14) carries the hero's card in both views; with the roster
+    (the card's own unit hp) it is not one of the card's bodies, a body born with the play always is."""
+    hero = 203000023
+    rows = []
+    for t in range(100, 160, 2):
+        live = [b('w', 1, 9000, 20000, hero, 911)] if t >= 102 else []
+        if 130 <= t <= 150:
+            live.append(b('cube', 1, 9000, 20500, hero, 352))                      # pressed at 128, gone after 150
+        rows.append((t, live, []))
+    anchor = dict(kind='play', side=1, name='IceWizard', tick=101, form=2)
+    view = lambda roster: F.card_view(rows, 1, {}, anchor, 999, None, lambda n: 1700, CAT, roster=roster)
+    assert view(None)['own'] == [150, None]
+    assert view({911})['own'] == [None]
+    assert view({500})['own'] == [None]                                             # born with the play: kept

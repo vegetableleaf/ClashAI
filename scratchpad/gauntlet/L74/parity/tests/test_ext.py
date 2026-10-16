@@ -123,6 +123,12 @@ class Eng:
     def effect_life(self, name, key='life_duration_ms'):
         return 3500
 
+    def slow_ids(self):
+        return dict(hero_cold=66, hero=67, base=1)
+
+    def spawn_table(self, name, probe=True):
+        return {'Tombstone': {1: (500, 1), 2: (3500, 0)}}.get(name)
+
 
 def test_start_state_tesla_charge_jump_and_freeze():
     def bd(i, card, x, y, st, side=1):
@@ -145,11 +151,13 @@ def test_start_state_tesla_charge_jump_and_freeze():
     assert got['c'] == dict(charged=True, charge_progress=0)
     assert flags['setup_mid_jump:3'] == 1
     assert got['k'] == dict(stun_ms=3500 - 50*4) and got[(1, 3500, 6500)] == dict(stun_ms=3500 - 50*4)
-    # phase-2 buffs win over the effect: a Freeze buff on the Knight, a slow is only flagged
-    m['buffs'] = {98: {hash('k'): [('Freeze', 1000), ('IceWizardHeroSlow', 2000)]}}
+    # phase-2 buffs win over the effect: a Freeze buff on the Knight, an Ice Wizard slow is seeded as the SIM's buff,
+    # anything else is only flagged
+    m['buffs'] = {98: {hash('k'): [('Freeze', 1000), ('IceWizardHeroSlow', 2000), ('Rage', 1500)]}}
     edits, flags = F.start_state(Eng(), m, dict(t0=100, frame0=10), setup, start, [freeze], CAT)
     assert [(r[1]['id'], kv) for r, kv in edits if 'stun_ms' in kv] == [('k', dict(stun_ms=900))]
-    assert flags['status_unset:IceWizardHeroSlow'] == 1
+    assert [(r[1]['id'], kv) for r, kv in edits if 'buff' in kv] == [('k', dict(buff=(67, 1900)))]
+    assert flags['setup_slow_buff'] == 1 and flags['status_unset:Rage'] == 1 and not flags['status_unset:IceWizardHeroSlow']
 
 
 def test_mid_jump_is_a_strict_blocker():
@@ -171,3 +179,54 @@ def test_infer_attacks_last_hit_travel_and_ambiguity():
     twin = dict(atk, k2=dict(atk['k']))                                          # a second Knight in reach: the drop is ambiguous
     m2 = dict(frames=[(t, b + [dict(id='k2', side=1, x=9500, y=10000, hp=900, tower=False)]) for t, b in m['frames']])
     assert 'k' not in F.infer_attacks(m2, dict(t0=100, frame0=20), twin)
+
+
+def test_iw_shots_seed_the_slow_left_by_a_recent_hit():
+    """An Ice Wizard projectile last seen at t (it hits at t + 1) leaves IW_SLOW_MS - 50 x (t0 - t - 1) of slow; one
+    still flying at t0, or older than IW_SLOW_MS, seeds nothing; the latest hit per target wins; the form is the shot's."""
+    hero, base = 203000023, 26000023
+    proj = {60: [(1, 0, 0, hero, 0, 0, 1, 'w', 'a')],                          # re-armed by the hit after 80
+            80: [(1, 0, 0, hero, 0, 0, 2, 'w', 'a'), (1, 0, 0, KNIGHT, 0, 0, 3, 'x', 'b')],   # a Knight's shot: no slow
+            90: [(1, 0, 0, base, 0, 0, 4, None, 'c')],                          # shooter gone: the shot's card says base
+            100: [(1, 0, 0, hero, 0, 0, 5, 'w', 'd')]}                          # in flight at t0
+    m = dict(frames=[(t, []) for t in range(40, 102, 2)], proj=proj)
+    got = F.iw_shots(m, dict(t0=100, frame0=30), CAT)
+    assert got == {'a': (2, 2500 - 50*19), 'c': (0, 2500 - 50*9)}
+    m['proj'] = {40: [(1, 0, 0, hero, 0, 0, 1, 'w', 'a')]}                     # 2500 - 50 x 59 <= 0
+    assert F.iw_shots(m, dict(t0=100, frame0=30), CAT) == {}
+
+
+def test_set_buff_uses_the_entity_s_own_flat_slots():
+    empty = lambda: dict(id=0, ms=0, pulse_ms=0, source=None)
+    E = dict(alive=[True]*3, buffs=[empty() for _ in range(12)])
+    E['buffs'][4] = dict(empty(), id=9, ms=100)                                # entity 1's first slot is taken
+    assert F.set_buff(E, 1, 67, 1900) and E['buffs'][5] == dict(empty(), id=67, ms=1900)
+    assert [b['id'] for b in E['buffs']] == [0]*4 + [9, 67, 0, 0] + [0]*4
+    for j in range(6, 8):
+        E['buffs'][j]['id'] = 1
+    assert not F.set_buff(E, 1, 67, 1900)                                     # no free slot left
+
+
+def test_spawner_timer_from_the_last_wave_seen():
+    """A Tombstone whose last pair of skeletons was born at 79/89 (mid-gap of first sightings 80/90) is 3500 - 50 x 11
+    ms from its next wave at t0 = 100: what the SIM record holds 11 ticks after the 2nd child of a wave. A lone first
+    child gives the 1st-child state; a wave whose next child is overdue, or children too far from it, seed nothing."""
+    TOMB = next(k for k, v in CAT.items() if v['display_name'] == 'Tombstone' and k < 100000000)
+    tomb = lambda: dict(id='tb', side=0, x=9000, y=12000, card_id=TOMB, hp=400, max_hp=846, kind=13, tower=False)
+    kid = lambda i, t: dict(id=i, side=0, x=9100, y=12900, card_id=TOMB, hp=130, max_hp=130, kind=14, tower=False)
+    def run(births, t0=100, far=False):
+        frames = []
+        for t in range(40, t0 + 2, 2):
+            frames.append((t, [tomb()] + [dict(kid(i, b), y=12900 + (6000 if far else 0)) for i, b in births if b <= t]))
+        setup = [dict(id='tb', side=0, x=9000, y=12000)]
+        m = dict(frames=frames, buffs={})
+        i0 = [t for t, _ in frames].index(t0)
+        return F.start_state(Eng(), m, dict(t0=t0, frame0=i0), setup, frames[i0][1], [], CAT)
+    edits, flags = run([('a', 80), ('b', 90)])
+    assert [kv for _, kv in edits] == [dict(spawn_ms=3500 - 50*11, spawn_wave_left=0)] and flags['setup_spawner_seen'] == 1
+    edits, _ = run([('b', 98)])                                     # 1st child born 97: its 2nd is 500 - 150 ms away
+    assert [kv for _, kv in edits] == [dict(spawn_ms=500 - 50*3, spawn_wave_left=1)]
+    edits, flags = run([('b', 90)])                                  # 1st child born 89: its 2nd is overdue (not seen)
+    assert edits == [] and flags['setup_spawner_overdue'] == 1
+    edits, flags = run([('a', 80), ('b', 90)], far=True)
+    assert edits == [] and flags['setup_spawner_unseen'] == 1

@@ -16,6 +16,7 @@ Public reader values only. Reader addresses are hashed per match and never writt
 
   python fights.py run   --out DIR [--files 'glob'] [--limit N] [--workers N] [--window 240]
   python fights.py score --out DIR          # scoreboard.json + SCOREBOARD.txt from DIR/matches/*.json
+  python fights.py buffs --out FILE         # phase-2 buff rows of the local captures, for PARITY_BUFFS=FILE (a pod)
   run --infer target,phase: opt-in attack target / phase inference at setup (infer_attacks)
 Engine: ROYALE_RUNTIME (pipeline.royale_runtime.activate) or PARITY_SIM_PATH=<unpacked wheel dir> (laptop prototype).
 """
@@ -59,14 +60,22 @@ SPELL_WINDOW = 60                  # ticks after a cast in which a drop/death co
 DIGGERS = {'Miner', 'GoblinDrill'}  # tunnel in: seen active on their way, deploying where they surface (Knight etc. can show
                                    # 13/15 -> 12/14 too: 31 of 531 Knights, so the rule is by card)
 TOWER_RADIUS = 1400                # millitiles, king (princess 1000): attribution slack, not a law
+FORMATION_SPAN = 15000             # millitiles: the widest one-play formation (Royal Recruits: 6 bodies 2.8 tiles apart)
 PRIORITY = {'Xbow', 'Tesla', 'Tornado', 'Log', 'IceWizard', 'Rocket', 'Knight', 'Skeletons', 'MegaKnight', 'Golem',
             'ElixirGolem', 'SkeletonBalloon', 'Barbarians', 'Firecracker', 'MinionHorde', 'Giant'}
 # Frame logs with the reader's per-body state / projectile / effect keys (--log-frames from 10-16, READER_VALIDATION_1016.md)
 # are "ext" logs; everything below is used only for them, so older logs replay exactly as before.
 SPELL_SOURCES = ('own_spell_tap+delay', 'spell_seen')
 P2_DIR = ROOT/'scratchpad/gauntlet/L70/reader/re_phase2/validation'    # phase-2 captures: run.json names its frame log
+P3_DIR = ROOT/'scratchpad/gauntlet/L70/reader/re_phase3'                # phase-3 captures carry the same phase-2 buff rows
 CAST, MID_JUMP = 10, (3, 5, 6)     # behavior_state_raw: hero cast; Mega Knight jump, river jump, tunnelling
 STUN_BUFFS = ('Freeze', 'Tesla_EV1_WithDamage')   # phase-2 buff names the SIM holds as stun_ms (Freeze spell -> stun_ms, probed)
+# Ice Wizard slows (all -30% walk / attack / spawn, IW_SLOW_1016.md): live buff name -> the SIM buff it is seeded as
+# (Engine.slow_ids, probed: the SIM's after-slow and base deploy chill are its IceWizardSlowDown). The hero freeze
+# (999,999 sentinel) is not a time and stays unset (an ability inside 100 ticks of t0 is a strict blocker anyway).
+SLOW_BUFFS = {'IceWizardSlowDown': 'base', 'IceWizardCold': 'base', 'IceWizardHero_SlowBuff': 'base',
+              'IceWizardHeroSlow': 'hero', 'IceWizardHeroCold': 'hero_cold'}
+IW_SLOW_MS = 2500                  # an Ice Wizard shot's slow (both forms; re-armed on every hit)
 SENTINEL_MS = 100000               # buff/effect remaining above this is "lives with its source", not a time
 CHARGE_PER_MT = 4                  # SIM 0.1.35 charge_progress: +240 per tick at speed 60 (59 mt/tick), charged at range_raw x 40
 
@@ -173,8 +182,13 @@ def read_match(path):
 
 def phase2_buffs(path):
     """{tick: {generation id: [(buff name, remaining ms)]}} from the phase-2 capture whose run.json names this frame log
-    (joined on tick + generation id only, READER_VALIDATION_1016.md); {} when there is none."""
-    for run in sorted(P2_DIR.glob('*/run.json')):
+    (joined on tick + generation id only, READER_VALIDATION_1016.md); {} when there is none. Phase-3 captures carry the
+    same rows. PARITY_BUFFS=<file> (from `fights.py buffs --out <file>`: buff names and remaining ms only) replaces the
+    capture directories, e.g. on a pod that has no reader captures."""
+    if os.environ.get('PARITY_BUFFS'):
+        rows = json.loads(Path(os.environ['PARITY_BUFFS']).read_text()).get(Path(path).name, {})
+        return {int(t): {int(g): [tuple(b) for b in v] for g, v in u.items()} for t, u in rows.items()}
+    for run in sorted(P2_DIR.glob('*/run.json')) + sorted(P3_DIR.glob('p3_*/run.json')):
         try:
             if json.loads(run.read_text()).get('live_log') != Path(path).name:
                 continue
@@ -318,8 +332,11 @@ def deployments(m, catalog, life=None):
         if c.get('type') == 'spell' and any(e['kind'] == 'play' and e['side'] == r['side'] and e['name'] == c['display_name']
                                             and e['seen'] <= r['first'] <= e['end'] + 60 for e in seen):
             continue           # a seen Goblin Barrel / Barbarian Barrel cast: the SIM spawns its bodies
+        # One play's bodies: same side and card, first seen within 6 ticks of each other, within FORMATION_SPAN of the
+        # group's centroid (a Royal Recruits line spans 14 tiles and a Skeleton Army 5: a 4-tile rule split them into
+        # 3-4 / 2 plays, and the SIM then deployed 18-24 recruits).
         g = next((g for g in groups if g['side'] == r['side'] and g['card_id'] == r['card_id']
-                  and r['first']-g['tick'] <= 6 and math.hypot(g['x']-r['x'], g['y']-r['y']) < 4000), None)
+                  and r['first']-g['tick'] <= 6 and math.hypot(g['x']-r['x'], g['y']-r['y']) < FORMATION_SPAN), None)
         if g:
             g['members'].append(r); n = len(g['members'])
             g['x'] += (r['x']-g['x'])/n; g['y'] += (r['y']-g['y'])/n
@@ -557,6 +574,74 @@ class Engine:
             self._form[key] = dmg
         return self._form[key]
 
+    def slow_ids(self):
+        """{'base' | 'hero' | 'hero_cold': SIM buff id} of the Ice Wizard slows (SLOW_BUFFS). Ids are interned per table,
+        so they are read off a probe (IW_SLOW_1016 §2): a red Giant next to a hero IW played from hand carries the deploy
+        chill first, then the shot slow; next to a spawned base IW, the base slow. Resets the battle: call before a
+        fight's setup (cached)."""
+        if 'slow' not in self._form:
+            b, K, out = self.b, 18000, {}
+
+            def seen(forms, spawns, cmds):
+                b.reset(1, [[self.ids['IceWizard']], [self.ids['Giant']]], 0, 200, [10000, 10000], [[4824, 0, 0], [4824, 3052, 3052]],
+                        spawns, forms=forms, levels=[[11], [11]], tower_levels=[11, 11])
+                b.step(cmds, 0)
+                order = []
+                for _ in range(80):
+                    b.step([], 1)
+                    E = json.loads(b.save())['ents']
+                    n = len(E['alive']); slots = len(E['buffs']) // n
+                    g = next(i for i in range(n) if E['alive'][i] and E['team'][i] == 'Red' and E['kind'][i] == 'Troop')
+                    order += [s['id'] for s in E['buffs'][g*slots:(g+1)*slots] if s['id'] and s['id'] not in order]
+                return order
+            giant = (1, self.ids['Giant'], 9*K, 9*K, -1)
+            try:
+                hero = seen([[2], [0]], [giant], [(0, 0, 9*K, 7*K)])
+                base = seen([[0], [0]], [giant, (0, self.ids['IceWizard'], 9*K, 7*K, -1)], [])
+                if len(hero) >= 2 and base:
+                    out = dict(hero_cold=hero[0], hero=hero[1], base=base[0])
+            except (ValueError, StopIteration):
+                pass
+            self._form['slow'] = out
+        return self._form['slow']
+
+    def spawn_table(self, name, probe=True):
+        """{k: (spawn_ms, spawn_wave_left)} a spawner card's record holds on the tick its k-th child of a wave is born, in
+        the steady cycle (from the second wave on), probed on a lone setup spawn; None for a card that spawns no timed
+        waves. probe=False reads the cache only (a probe resets the battle: run_fight probes before its setup)."""
+        key = ('spawn', name)
+        if key not in self._form and probe:
+            st = self.stats(name)
+            out = None
+            if (st.get('spawner') or {}).get('pause_time_ms') or (st.get('interval_spawner') or {}).get('interval_ms'):
+                b = self.b
+                b.reset(1, [[self.ids['Knight']], [self.ids[name]]], 0, 200, None, [[4824, 0, 0], [4824, 0, 0]],
+                        [(1, self.ids[name], 9000*18, 24000*18, -1)], levels=[[15], [15]], tower_levels=[15, 15])
+                E = json.loads(b.save())['ents']
+                i = next(j for j in range(len(E['alive'])) if E['alive'][j] and E['kind'][j] not in ('KingTower', 'PrincessTower'))
+                seen = {j for j in range(len(E['alive'])) if E['alive'][j]}
+                births = []                  # (tick, children born, spawn_ms, wave_left)
+                for t in range(1, 640):
+                    b.step([], 1)
+                    E = json.loads(b.save())['ents']
+                    new = [j for j in range(len(E['alive'])) if E['alive'][j] and j not in seen and E['spawned_by'][j] is not None]
+                    seen |= {j for j in range(len(E['alive'])) if E['alive'][j]}
+                    if new:
+                        births.append((t, len(new), E['spawn_ms'][i], E['spawn_wave_left'][i]))
+                    if not E['alive'][i]:
+                        break
+                gap = ((st.get('spawner') or {}).get('interval_ms') or 0)//50 + 3
+                waves, k = [], 0
+                for j, (t, n, ms, wl) in enumerate(births):
+                    k = k + n if j and t - births[j-1][0] <= gap else n
+                    if not (j and t - births[j-1][0] <= gap):
+                        waves.append({})
+                    waves[-1][k] = (ms, wl)
+                if len(waves) >= 2:          # the second wave: a cycle that started from a wave, as a live one has
+                    out = waves[1]
+            self._form[key] = out
+        return self._form.get(key)
+
     def tower_level(self, king, princess):
         for lv in range(16, 0, -1):
             if lv not in self._tower:
@@ -601,8 +686,24 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
         reach = max(c.get('area_damage_radius_milli') or 0, (c.get('spell') or {}).get('radius_milli') or 0,
                     (sp.get('projectile_range_milli') or 0) + (sp.get('projectile_radius_milli') or 0)) + TOWER_RADIUS
         spell = dict(d=d or 0, dt=(d or 0)*(c.get('crown_tower_damage_percent') or 100)/100, x=anchor['x'], y=anchor['y'], reach=reach)
+    if m['ext']:
+        eng.slow_ids()             # probed before this fight's reset (it resets the battle); cached
+    roster = None
+    if anchor['kind'] == 'play' and anchor.get('form') == 2 and anchor['name'] in eng.ids:
+        # A hero's ability summon (Hero Ice Wizard: its IceWizardHero_IceCube, 352 hp at level 14, a 5 s body the live
+        # reader and the SIM both label with the hero's card) is ability state, not one of the card's bodies: the card
+        # view counts only the card's own units (unit_hitpoints roles at its level) and the bodies born with the play.
+        lvl = levels.get((anchor['side'], anchor['name'])) or levels.get((anchor['side'], '*')) or 15
+        try:
+            roster = {hp for _, _, hp in eng.b.unit_hitpoints(eng.ids[anchor['name']], lvl)}
+        except ValueError:
+            roster = None
     frames = [fr for fr in m['frames'] if t0 <= fr[0] <= t1]
     start = frames[0][1]
+    for bd in start:               # spawner cycles on the t0 board: probed before this fight's reset (it resets the battle)
+        c = catalog.get(bd['card_id'])
+        if not bd['tower'] and c and c['display_name'] in eng.ids:
+            eng.spawn_table(c['display_name'])
     flags = Counter()
     decks, forms, lv = [[], []], [[], []], [[], []]
 
@@ -796,25 +897,29 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
             except Exception:
                 flags['setup_shield_not_set'] += 1
 
-    # Ext logs: Tesla hidden/up, charge, and stun-type status at t0 as the reader shows them (start_state).
+    # Spawner timers from any frame log; ext logs also: Tesla hidden/up, charge, stun-type status and Ice Wizard slows at t0
+    # as the reader shows them (start_state; its ext parts read keys old logs do not have and add nothing there).
     seen_hide = {}
-    if m['ext']:
-        edits, more = start_state(eng, m, fight, setup, start, events, catalog)
-        flags.update(more)
-        before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
-        for ref, kv in edits:
-            i = ent(E, ref)
-            if i is None:
-                flags['setup_state_not_found'] += 1; continue
-            for k, v in kv.items():
+    edits, more = start_state(eng, m, fight, setup, start, events, catalog)
+    flags.update(more)
+    before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
+    for ref, kv in edits:
+        i = ent(E, ref)
+        if i is None:
+            flags['setup_state_not_found'] += 1; continue
+        for k, v in kv.items():
+            if k == 'buff':
+                if not set_buff(E, i, *v):
+                    flags['setup_buff_no_slot'] += 1
+            else:
                 E[k][i] = v
-            if 'hide' in kv:
-                seen_hide[ref[1]['id']] = kv['hide']
-        if after != before:
-            try:
-                load_edited(b, before, after)
-            except Exception:
-                flags['setup_state_not_set'] += 1
+        if 'hide' in kv:
+            seen_hide[ref[1]['id']] = kv['hide']
+    if after != before:
+        try:
+            load_edited(b, before, after)
+        except Exception:
+            flags['setup_state_not_set'] += 1
 
     # Opt-in inference (PARITY_INFER=target,phase; item 8): the SIM's attack clock advances 50 ms a tick while engaged
     # and a hit lands (melee) / launches (ranged) each time it reaches a multiple of HitSpeed (probed on 0.1.35), so a
@@ -918,7 +1023,8 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
         return res
     until = min((e['tick'] for e in evs if e['kind'] == 'play' and e['side'] == anchor['side'] and e['name'] == anchor['name']
                  and e['tick'] > anchor['tick']), default=t1+1)
-    view = lambda rows_, k: card_view(rows_, k, initial_pairs(rows_, setup, catalog), anchor, until, spell, eng.reach, catalog)
+    view = lambda rows_, k: card_view(rows_, k, initial_pairs(rows_, setup, catalog), anchor, until, spell, eng.reach, catalog,
+                                      roster=roster)
     card = dict(live=view(rows, 1), sim=[view(rows, 2)])
     if ceiling:
         import random
@@ -1097,7 +1203,7 @@ def perturb(eng, rng, hist, who, towers0, seen=None, inferred=None):
     return out
 
 
-def card_view(rows, which, pairs, anchor, until, spell, reach, catalog, window=SPELL_WINDOW):
+def card_view(rows, which, pairs, anchor, until, spell, reach, catalog, window=SPELL_WINDOW, roster=None):
     """What the anchor card did in one run: which = 1 the live frames, 2 the SIM's. Bodies are keyed by live id (a SIM
     body by its paired live id, else its own 's' id).
       own:   death tick (None = alive at the window end) of every body of the anchor's side and card that is not on the
@@ -1108,7 +1214,9 @@ def card_view(rows, which, pairs, anchor, until, spell, reach, catalog, window=S
              one frame gap, or vanish in one with hp <= d within `reach` of the cast point; enemy = death tick if killed
              by the spell (gone within 2 frames of its first hit; a later death is other cards' doing), else None;
              tower = the spell's crown damage per enemy tower in reach whose largest one-gap drop in that window is
-             >= 80% of it."""
+             >= 80% of it.
+    roster: max_hp values of the card's own units (hero anchors); a body with another max_hp born more than 12 ticks
+    after the play is an ability summon and is not one of the card's bodies."""
     inv = {s: a for a, s in pairs.items() if s} if which == 2 else {}
     key = lambda bd: inv.get(bd['id'], bd['id'])
     name = lambda bd: bd['name'] if which == 2 else catalog.get(bd['card_id'], {}).get('display_name')
@@ -1118,7 +1226,7 @@ def card_view(rows, which, pairs, anchor, until, spell, reach, catalog, window=S
     for t, *bodies in rows:
         for bd in bodies[which-1]:
             if not bd['tower']:
-                r = life.setdefault(key(bd), [t, t, bd['side'], name(bd), bd['id'] in at0])
+                r = life.setdefault(key(bd), [t, t, bd['side'], name(bd), bd['id'] in at0, bd['max_hp']])
                 r[1] = t
     death = lambda k: life[k][1] if life[k][1] < t_end else None
     if spell:
@@ -1145,8 +1253,9 @@ def card_view(rows, which, pairs, anchor, until, spell, reach, catalog, window=S
             if death(k) is not None and death(k) <= t + 4:
                 enemy[k] = death(k)
         tower = sum(spell['dt'] for v in drop.values() if spell['dt'] and v >= .8*spell['dt'])
-        return dict(spell=True, hit=sorted(first), enemy=enemy, tower=round(tower))
-    own = {k for k, r in life.items() if r[2] == side and r[3] == anchor['name'] and not r[4] and tick-2 <= r[0] < until}
+        return dict(spell=True, hit=sorted(first), enemy=enemy, tower=round(tower), end=t_end)
+    own = {k for k, r in life.items() if r[2] == side and r[3] == anchor['name'] and not r[4] and tick-2 <= r[0] < until
+           and (roster is None or r[5] in roster or r[0] <= tick + 12)}
     tower = 0.
     for (ta, *ba), (tb, *bb) in zip(rows, rows[1:]):
         now = {bd['id']: bd['hp'] for bd in bb[which-1] if bd['tower']}
@@ -1159,7 +1268,7 @@ def card_view(rows, which, pairs, anchor, until, spell, reach, catalog, window=S
                      and math.hypot(bd['x']-tw['x'], bd['y']-tw['y']) <= reach(name(bd)) + TOWER_RADIUS}
             if 'A' in cards:
                 tower += dmg/len(cards)
-    return dict(spell=False, own=sorted((death(k) for k in own), key=lambda d: (d is None, d or 0)), tower=round(tower))
+    return dict(spell=False, own=sorted((death(k) for k in own), key=lambda d: (d is None, d or 0)), tower=round(tower), end=t_end)
 
 
 def card_agree(a, b):
@@ -1170,7 +1279,13 @@ def card_agree(a, b):
     else:
         n = max(len(a['own']), len(b['own']))
         pairs = list(zip(a['own'] + ['missing']*(n-len(a['own'])), b['own'] + ['missing']*(n-len(b['own']))))
-    same = lambda x, y: 'missing' not in (x, y) and (x is None) == (y is None) and (x is None or abs(x-y) <= DEATH_TOL)
+    # A death in the last DEATH_TOL ticks of the window against a body alive at its end is not a disagreement: the alive
+    # one may die within DEATH_TOL after the end (interval censoring; views without 'end', older outputs, keep the
+    # strict rule).
+    end = min(a.get('end') or 10**9, b.get('end') or 10**9)
+    late = lambda d: d is not None and d >= end - DEATH_TOL
+    same = lambda x, y: 'missing' not in (x, y) and (((x is None) == (y is None) and (x is None or abs(x-y) <= DEATH_TOL))
+                                                     or (x is None and late(y)) or (y is None and late(x)))
     mis = sum(not same(x, y) for x, y in pairs)
     tower_ok = abs(a['tower']-b['tower']) <= max(TOWER_FLOOR, TOWER_REL*max(a['tower'], b['tower']))
     return mis <= int(SWARM_SLACK*len(pairs)) and tower_ok, mis, len(pairs), tower_ok
@@ -1284,6 +1399,41 @@ def start_state(eng, m, fight, setup, start, events, catalog):
                 full = (ch.get('charge_range_raw') or 0)*10*CHARGE_PER_MT
                 out.append((('body', bd), dict(charge_progress=min(round(walked*CHARGE_PER_MT), max(0, full-1)))))
                 flags['setup_charge_progress'] += 1
+    # Spawner timers: a setup spawn starts its cycle fresh (Fire Spirit Hut 1950 ms, Tombstone at once), the live one is
+    # mid-cycle. Its last wave is seen: children of the same side and card, smaller max_hp, first seen within 3.5 tiles
+    # of it. The SIM record is set to what it holds that many ticks after the same child of a wave (spawn_table).
+    tick_of = [t for t, _ in m['frames']]
+    tr = None
+    for bd in setup:
+        a = live.get(bd['id'])
+        tab = eng.spawn_table(catalog[a['card_id']]['display_name'], probe=False) if a and not bd.get('proxy') else None
+        if not tab:
+            continue
+        if tr is None:
+            tr = tracks(m['frames'][max(0, i0-200):i0+1])
+        kids = []
+        for r in tr.values():
+            if r['side'] != a['side'] or r['card_id'] != a['card_id'] or r['id'] == a['id'] or r['max_hp'] >= .9*a['max_hp']:
+                continue
+            p = next((q for q in hist.get(a['id'], ()) if q[0] == r['first']), None) or                 next(((t, b['x'], b['y']) for t, bodies in m['frames'][max(0, i0-200):i0+1] if t == r['first']
+                      for b in bodies if b['id'] == a['id']), None)
+            if p and math.hypot(p[1]-r['x'], p[2]-r['y']) <= 3500:
+                j = bisect_left(tick_of, r['first'])
+                prev = tick_of[j-1] if j else r['first'] - 2
+                kids.append((prev + 1 + r['first'])//2)
+        if not kids:
+            flags['setup_spawner_unseen'] += 1; continue
+        kids.sort()
+        last, k = kids[-1], 1
+        for t in kids[-2::-1]:
+            if last - t > 13:
+                break
+            k += 1
+        ms, wl = tab[min(tab, key=lambda q: abs(q - k))]
+        left = ms - 50*(t0 - last)
+        if left <= 0:
+            flags['setup_spawner_overdue'] += 1; continue
+        out.append((('body', bd), dict(spawn_ms=left, spawn_wave_left=wl))); flags['setup_spawner_seen'] += 1
     buffs = m.get('buffs') or {}
     tb = max((t for t in buffs if t0-6 <= t <= t0), default=None)
     def ref_of(bd):
@@ -1299,9 +1449,17 @@ def start_state(eng, m, fight, setup, start, events, catalog):
                     continue
                 if name in STUN_BUFFS:
                     out.append((r, dict(stun_ms=rem))); flags['setup_stun_buff'] += 1
+                elif name in SLOW_BUFFS and eng.slow_ids().get(SLOW_BUFFS[name]):
+                    out.append((r, dict(buff=(eng.slow_ids()[SLOW_BUFFS[name]], rem)))); flags['setup_slow_buff'] += 1
                 else:
                     flags['status_unset:'+name] += 1
         return out, flags
+    # No phase-2 rows: an Ice Wizard shot that hit a t0-board body within IW_SLOW_MS before t0 left its slow running.
+    for k, (form, rem) in iw_shots(m, fight, catalog).items():
+        r = ref_of(live[k]) if k in live else None
+        sid = eng.slow_ids().get('hero' if form == 2 else 'base')
+        if r and sid:
+            out.append((r, dict(buff=(sid, rem)))); flags['setup_slow_shot'] += 1
     bt, rad = eng.effect_life('Freeze', 'buff_time_ms') or 3500, eng.stats('Freeze').get('area_damage_radius_milli') or 3000
     for e in events:
         if e.get('source') != 'spell_seen' or e['name'] != 'Freeze' or not e.get('made') or not e['made'] <= t0 < e['made'] + bt//50:
@@ -1314,6 +1472,37 @@ def start_state(eng, m, fight, setup, start, events, catalog):
             if r:
                 out.append((r, dict(stun_ms=bt - 50*(t0-e['made'])))); flags['setup_stun_fx'] += 1
     return out, flags
+
+
+def set_buff(E, i, bid, ms):
+    """Write buff `bid` with `ms` left into entity i's first free slot of a save's ents; False if none is free. The
+    save's buffs list is FLAT (IW_SLOW_1016 §2): entity i owns buffs[i*slots:(i+1)*slots], slots = len(buffs) // n."""
+    slots = len(E['buffs']) // len(E['alive'])
+    j = next((i*slots + j for j in range(slots) if not E['buffs'][i*slots + j]['id']), None)
+    if j is None:
+        return False
+    E['buffs'][j] = dict(E['buffs'][j], id=bid, ms=ms)
+    return True
+
+
+def iw_shots(m, fight, catalog):
+    """Ext logs: {live id: (shooter form, slow ms left at t0)} for t0-board bodies an Ice Wizard projectile hit within
+    IW_SLOW_MS before t0 (shooter = the projectile's card, any form). A projectile is last seen the frame before it hits:
+    the hit is taken at that sighting + 1 tick; one still flying at t0 is left out (the SIM has no setup for it). The
+    latest hit per target wins (each hit re-arms the slow). Splash victims other than the target are not seen."""
+    t0, i0 = fight['t0'], fight['frame0']
+    shots = {}
+    for t, _ in m['frames'][max(0, i0-IW_SLOW_MS//50):i0+1]:
+        for p in m.get('proj', {}).get(t, ()):
+            c = catalog.get(p[3])
+            if c and c['display_name'] == 'IceWizard' and p[8]:
+                shots[p[6]] = (t, p[8], form_of(p[3], c))
+    out = {}
+    for last, tgt, form in sorted(shots.values()):
+        rem = IW_SLOW_MS - 50*(t0 - last - 1)
+        if last < t0 and 0 < rem <= IW_SLOW_MS:
+            out[tgt] = (form, rem)
+    return out
 
 
 def tower_locks(m, fight, setup, catalog, look=20):
@@ -1783,7 +1972,7 @@ def text(sb, top=25):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('mode', choices=['run', 'score'])
+    ap.add_argument('mode', choices=['run', 'score', 'buffs'])
     ap.add_argument('--out', type=Path, required=True)
     ap.add_argument('--live', type=Path, default=ps.LIVE)
     ap.add_argument('--files', default='live_play_2026101[5-9]_*.jsonl')
@@ -1796,6 +1985,11 @@ def main():
     ap.add_argument('--clean', choices=['strict', 'core', 'all'], default='strict', help='score: which fights count (is_clean)')
     ap.add_argument('--infer', default='', help="opt-in attack inference at setup: 'target', 'phase' or 'target,phase' (PARITY_INFER)")
     a = ap.parse_args()
+    if a.mode == 'buffs':      # phase-2 buff rows of every local capture -> one file for PARITY_BUFFS (no addresses)
+        logs = {json.loads(r.read_text()).get('live_log') for r in sorted(P2_DIR.glob('*/run.json')) + sorted(P3_DIR.glob('p3_*/run.json'))}
+        out = {n: phase2_buffs(n) for n in sorted(filter(None, logs))}
+        a.out.write_text(json.dumps(out))
+        print({n: len(v) for n, v in out.items()}); return 0
     if a.mode == 'score':
         for mode in ('strict', 'core', 'all'):
             score(a.out, mode=mode)
