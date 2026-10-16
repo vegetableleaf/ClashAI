@@ -1,3 +1,25 @@
+## 2026-10-16 ~14:00 EDT -- first full goal scoreboard; phase-3 probe validated on 3 owner battles; IW slow is fine
+
+- **Goal scoreboard** (99 frame-logged matches, 0.1.35, ceiling K=8; L74/parity/CEILING35_1016_*.txt): strict overall
+  normalised 0.888 [0.865, 0.910] vs goal 0.95; no card meets the per-card goal (lower CI >= 0.90): X-Bow 0.935, Log
+  0.929, opp Valkyrie 0.91, Tornado 0.90, Knight 0.896, Tesla 0.869, Hero IW 0.848, Skeletons 0.782. Gap = body survival
+  (live miss ~2x ceiling). Most logs predate the reader upgrade. Running: DIAG2 (Skeletons / Hero IW / Tesla body
+  misses + IW slow seeding at fight start).
+- **Phase-3 probe** (targets + attack progress; local-only binary sha16 74daa546; owner corrections: invisible units ARE
+  public -- translucent; X-Bow lock: no retarget without stun/freeze/taunt) validated on owner battles p3_20261016T133738 /
+  134735 / 135619: targets vs projectile targets 0.993-1.000; in-memory HitSpeed/LoadTime = SIM table (0 mismatches);
+  first hit on a fresh target as the SIM 79/87 (Knight duel match); X-Bow hit at phase 0 84/84 + 15/15 (SIM
+  progress_credit rule confirmed; the private notes' "phase = LoadTime" contradicted); X-Bow lock held (V5L 0 switches);
+  Tesla retarget keeps progress on an in-reach switch (SIM rule) 3/3; IW slow step 35 = 50 x 0.70 in 638/640.
+  Open: hit phase under SLOW (Knight 6/21, X-Bow 236/283 in the duel match) -> remainder handling? (worker running);
+  Goblin Demolisher kamikaze first hit 0/9 vs SIM.
+- **IW slow (c) "SIM never slows" CONTRADICTED** (bf21e77): buff id 0 was a save-format misread; SIM slows -30% move +
+  attack, 2500 ms re-armed, hero ability freeze ~98 ticks then 2000 ms slow; live identical. Training unaffected.
+- **First hit (c9d524a)**: runtimes load card table client160402017_20261006 = live on every timing field.
+- Validator fix: live single-sequence attackers have seq_idx 0 (not -1); V3/V5/V6 had dropped every live interval.
+- Capture ops trap: live_play exits at once ("battle_over_hands_visible") when started on a finished match's end
+  screen -> start captures from the main menu; the dry-run recorder lingers after its match (stop by exact PID).
+
 ## 2026-10-16 ~12:45 EDT -- OWNER GOAL: fight parity > 95% / > 90% per card; reader upgrade validated on 3 owner battles
 
 - **Owner goal (10-16)**: SIM fight parity > 95% overall and > 90% for every card (memory fight-parity-goal). Agreed
