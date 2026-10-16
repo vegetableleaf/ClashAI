@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "pins": {
+    "RoyaleSim": "4fd4d54cdcbf6469aff4e4d87cb0dba523d295bc",
+    "RoyaleGym": "a7deb6e48c3580fe2cd7d856b7c7d19ce67f02f9"
+  },
+  "versions": {
+    "royalesim": "0.1.35",
+    "royalegym": "0.1.23"
+  },
+  "wheels": {
+    "royalesim": "royalesim==0.1.35",
+    "royalegym": "royalegym==0.1.23"
+  },
+  "files": {
+    "royalesim/__init__.py": "6cdaea4a1e3bda9e1cad4d50b9f83741af6ca077aa7fedd1a407051a116dd1f2",
+    "royalesim/data/calibration.json": "fbf766d41f18da9a66a62c8f7af619bf377bbd6967fe9787804a31d6b930d820",
+    "royalesim/data/derived/arena.json": "7fbe4b0dce373d49ec69f1cdaeb65047b1602ea58dd6ce3a79dfe9be03fe7169",
+    "royalesim/data/derived/cards-15.535.json": "c68d6c011e0130649aa2647b21e293c8bf7141e32262bdfd8cc7592704229fdc",
+    "royalesim/data/derived/cards-2018.json": "ac63cff6160ab3df8242db9f0617917528e59a174acea9e1b3610cb29fd0862d",
+    "royalesim/data/derived/cards.json": "c68d6c011e0130649aa2647b21e293c8bf7141e32262bdfd8cc7592704229fdc",
+    "royalesim/data/derived/globals.json": "16fed1f222b4555e571cf3431d13efd2edfd0bf04e3a2042fde07888e11db217",
+    "royalesim/data/raw/retroroyale-2018/README.md": "8ac2b2505117f3a417b7cc201e87ca74f978c20e394636ab6c03f5f198382a92",
+    "royalesim/data/raw/retroroyale-2018/csv_logic/globals.csv": "96fd97686f93c3b6a622155bce61f973d6284f15f90006a592378d066335fa9a",
+    "royalesim/data/raw/retroroyale-2018/csv_logic/rarities.csv": "8b289dec57957db3a74ce7bae46f16b2e67785df85a2c641e4df1148fd4c6e7f",
+    "royalesim/py.typed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "royalesim/royalesim.abi3.so": "74640cafa906825631989d10631f2aa931d6eec87ecefdf8fed9226c6f456f45",
+    "royalegym/__init__.py": "cdc76bb9676a6c041f91c8928e7bfcfc8fb540a99fa894cb119445c3fb894b22",
+    "royalegym/action.py": "d64d5f6afd3de1597938883f88585e2e9a937f35ce4ff355a2437f3df2caae71",
+    "royalegym/done_condition.py": "2b13fc239f193e960751ae60f9e174b92e29371f340b27ea881b450a67ea107c",
+    "royalegym/env.py": "b63526bdcd33efe8b27d362552e091b9f1038482728af0afaaac06f87a9b89b2",
+    "royalegym/evaluate.py": "63793a55d93d855396b23d32519ef74b83d368fa247023aaa365dd49ddf7a8d8",
+    "royalegym/landing.py": "e535de316d99e5e0fab70045a41a4a2cb3dc1cae2a146495e217bdf07bef0caa",
+    "royalegym/mock_engine.py": "2f8626643a3c38d44787b97f026b3886f60f043e254924f93e311cddc036e179",
+    "royalegym/obs.py": "99582d2c532e98a46a3dabb311f8e8a8b3d3fa21d8d87c71c96715c8af9760ae",
+    "royalegym/opponents.py": "5894e8489b935da48eef1031348fc762e3dfd66655797ecc325f144e12ca8fd2",
+    "royalegym/protocol.py": "ee8bc409ccb2ef7a8263318b956a3579b11288007a22ab2e662dc2fbcacfba91",
+    "royalegym/py.typed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "royalegym/render.py": "f6f88ecf1fefbb37b6a55c5c944de8d06bc04776cc7a8fdca718cfd21e0ba1b1",
+    "royalegym/replay.py": "f0dea9cb4e1c3774a220f5792670e20cdb53642996676a553e5d699263ac8072",
+    "royalegym/reward.py": "cbfd511923868dd7515fb61c1d111bd6423a6ff7f5763f8d29e23c2901d450b1",
+    "royalegym/rust_engine.py": "dcba62c001be799fade3ba456d8402249ab1a2e9822f50e28cc56e217b8b4282",
+    "royalegym/selfplay.py": "cad77a66274a1dac912bb3a1009d32ad780e9cc6c157fadab067ba270eb05bc8",
+    "royalegym/state_mutator.py": "96fe2c899ed68ed6aef9fc18706f3e34ebd86a955b79a7f6357bad1e69ef13b3",
+    "royalegym/viser.py": "3bd579012556f6392f257d6daad79c9eb2044e50c520696df459f8aea9c73b7f"
+  },
+  "card_table": "client160402017_20261006",
+  "note": "Frozen from the installed purelib of /workspace/venv35 (PyPI wheels, Linux x86_64) by rt35/freeze_rt35.py; royalegym .py bytes == 20261012 manifest."
+}

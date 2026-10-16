@@ -20,9 +20,11 @@ RUNTIME = REPO / "research/ext/Royale-20261005/runtime"
 RUNTIME_ID = None
 _selected = os.environ.get("ROYALE_RUNTIME", "").strip()
 if _selected:
-    if _selected not in ("20261006", "20261006-linux", "20261012", "20261012-linux", "fork", "unpinned-linux"):
+    if _selected not in ("20261006", "20261006-linux", "20261012", "20261012-linux", "20261016-linux", "fork",
+                         "unpinned-linux"):
         raise RuntimeError(f"Unknown ROYALE_RUNTIME={_selected!r}; known opt-in runtimes: "
-                           "'20261006', '20261006-linux', '20261012', '20261012-linux', 'fork', 'unpinned-linux'")
+                           "'20261006', '20261006-linux', '20261012', '20261012-linux', '20261016-linux', 'fork', "
+                           "'unpinned-linux'")
     RUNTIME_ID = _selected
     MANIFEST = REPO / "scratchpad/gauntlet/L73/royale_update_20261006/build_manifest.json"
     RUNTIME = REPO / "research/ext/Royale-20261006/runtime"
@@ -35,6 +37,10 @@ if _selected:
         if _selected.endswith('-linux'):
             import sysconfig
             RUNTIME = Path(sysconfig.get_paths()["purelib"])
+    if _selected == "20261016-linux":   # PyPI royalesim 0.1.35 (r73) + royalegym 0.1.23 in a separate venv (L74 rt35 re-baseline)
+        import sysconfig
+        MANIFEST = REPO / "scratchpad/gauntlet/L74/rt35/build_manifest.json"
+        RUNTIME = Path(sysconfig.get_paths()["purelib"])
     if _selected == "fork":
         RUNTIME = REPO / "research/ext/Royale-fork/runtime"
         MANIFEST = RUNTIME.parent / "build_manifest.json"
@@ -78,7 +84,7 @@ def activate() -> dict:
             raise RuntimeError(f"Pinned Royale build manifest missing: {MANIFEST}")
         contents = MANIFEST.read_bytes()
         manifest = json.loads(contents)
-        if RUNTIME_ID in ('20261012', '20261012-linux', 'fork'):
+        if RUNTIME_ID in ('20261012', '20261012-linux', '20261016-linux', 'fork'):
             from importlib.metadata import distributions
             installed = {d.metadata['Name'].lower(): d.version for d in distributions(path=[str(runtime)])}
             for name, version in manifest['versions'].items():

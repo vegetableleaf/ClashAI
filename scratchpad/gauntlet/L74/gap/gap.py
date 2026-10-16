@@ -111,10 +111,11 @@ def prepare(directory, ckpt, seed_start=741200, opp=None, opp_T=.1, census_file=
     return plan
 
 
-def run_arm(arm, plan, inputs, out, python, workers, iw_form='hero', iw_press='live', extra=(), drop=(), opp=()):
+def run_arm(arm, plan, inputs, out, python, workers, iw_form='hero', iw_press='live', extra=(), drop=(), opp=(),
+            runtime='20261012-linux'):
     out.mkdir()
     # iw_form normal (10-14): r1's TRAINING condition (no hero, so no press rule) instead of the live condition.
-    env = dict(os.environ, ROYALE_RUNTIME='20261012-linux', ROYALE_HEROIW_FORM=iw_form,
+    env = dict(os.environ, ROYALE_RUNTIME=runtime, ROYALE_HEROIW_FORM=iw_form,   # runtime: --runtime (10-16 RT35)
                ROYALE_HEROIW_PRESS=iw_press if iw_form == 'hero' else 'off',   # never = the A/B3 SIM twin (10-14)
                OMP_NUM_THREADS='1', MKL_NUM_THREADS='1', OPENBLAS_NUM_THREADS='1', PYTHONDONTWRITEBYTECODE='1',
                PYTHONPATH=str(ROOT))
@@ -178,13 +179,14 @@ def main():
     ap.add_argument('--census-file', default=None, help='opponent deck pool replacing the CAL censuses (10-15: L74/mix/decks_live_eval.json)')
     ap.add_argument('--opp-decide-every', type=int, default=None, help='opponent decision interval, ticks (L74 human tempo)')
     ap.add_argument('--opp-reaction-ticks', type=int, default=None, help='extra opponent action delay, ticks (L74 human tempo)')
+    ap.add_argument('--runtime', default='20261012-linux', help='ROYALE_RUNTIME for the workers (10-16: 20261016-linux = 0.1.35)')
     a = ap.parse_args()
     opp = opp_flags(a.opp_decide_every, a.opp_reaction_ticks)
     if not a.summarize_only:
         plan = prepare(a.out/'inputs', a.ckpt, a.seed_start, a.opp_ckpt, a.opp_T, a.census_file)
         for arm in a.arms.split(','):
             run_arm(arm, plan, a.out/'inputs', a.out/arm, a.python, a.workers, a.iw_form, a.iw_press, a.extra.split(),
-                    tuple(x for x in a.drop.split(',') if x), opp)
+                    tuple(x for x in a.drop.split(',') if x), opp, a.runtime)
     summarize(a.out)
 
 
