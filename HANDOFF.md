@@ -1,3 +1,28 @@
+## 2026-10-17 11:13 EDT -- r4b swarm family: target splits are NOT a separate U; the ceiling is play-tick jitter; H-SWARM-MATCH needs the owner
+
+Worker report DONE_WITH_CONCERNS (scratchpad/gauntlet/L74/parity/diag_night/r4b/; pod P1 /workspace/w_r4b, results r4b_ptick).
+- (a) On captured logs the per-body state is observed: with per-body perturbation OFF the overall ceiling moves 0.956 -> 0.957 and
+  24 of 6,798 fights change (0 for Skeleton Army / Bats / Witch) -> the captured-log ceiling is almost entirely PLAY-TICK jitter
+  (frame-gap creation tick + own tap residuals) = exactly what reader phase 3b (26f2ee0) now captures.
+- (c) "swarm target splits are U": contradicted. 179 sibling splits in 83 fights: 124 downstream of an earlier divergence, 30 the
+  same choice 2-4 ticks apart (creation-tick offset), 13 near-ties, 12 real same-board disagreements split 6 / 6 -> no targeting law.
+- Failure classes (A perturbed-only / B unperturbed-only / C deterministic), raw gain if fixed: own Skeletons A+B 72 fights
+  (+0.062 upper bound = the spawn pin), C 49 (+0.089, almost all owned by OTHER cards: Blowdart targets Tesla in the SIM but our
+  Skeletons live x4 -> r4a; Tombstone / Giant Skeleton spawn timing x4; Witch kill timing x6; Mini PEKKA x3; unseen spawner timers
+  x3 (U: hut next-spawn timer); Knight / Evo Knight setup hp x3 -> r4c; ...). opp Skeleton Army C 14 (+0.219).
+- S-SKA (b): Skeleton Army members that start in step still drift 300-750 mt within 4-8 ticks near the river band in 3 fixtures
+  (221839@1889, 014323@3344, 094727@2993) -- steering / bridge cells; not pinned, no patch. Witch second wave 2-3 ticks early in the
+  SIM in 7 of 40 (small). No fork patch this round.
+- H-SWARM-MATCH (diag_night/r4b/H_swarm_match.patch, applies on HEAD; NOT landed -- a metric DEFINITION change, owner call):
+  card_agree zips the two sorted death lists, so one early/late body shifts every later pair (215432@1165: 1 displaced death
+  scores as 8 of 15 misses). The patch uses maximum one-to-one matching (the r3c twins rule, refactored into a shared helper).
+  Exact rescore of FIN5: Skeleton Army 0.650 -> 0.730 (+7 / -0 flips), Tombstone 0.734 -> 0.766, every other n >= 30 card
+  identical, OVERALL 0.896 -> 0.897; 0 verdict flips for any pair with < 10 bodies; 37 parity tests pass.
+- Estimate (b): own Skeletons reaches >= 0.95 lower bound only with BOTH the other-card C fixes and the spawn pin.
+- Reader item added: spawner buildings' next-spawn timer at t0 (Furnace / Barbarian Hut / Tombstone).
+- Laptop note 11:12: live logs CPU-STARVED (decisions 115-120 ms vs ~40); total CPU 60%; heavy processes = owner apps (Roblox
+  Studio + luau, Medal recorder) + the live run's own clip uploader; none of ours.
+
 ## 2026-10-17 11:10 EDT -- READER PHASE 3B DONE: exact creation tick of every new body (spawn-tick U closed on new captures); live restarting
 
 Worker report (DONE_WITH_CONCERNS; private details in icebow/data/reader_notes/READER_PHASE3_private.md section 8; tracked
