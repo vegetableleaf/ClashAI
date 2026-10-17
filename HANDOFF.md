@@ -1,3 +1,22 @@
+## 2026-10-17 12:07 EDT -- BIRTHS landed (spawn tick from reader 3b, +0.021 raw); step-d trigger = tier B + overall 0.975 (owner 10-17)
+
+- LANDED diag_night/r4d/births.patch (worker r4d DONE_WITH_CONCERNS): phase3_births() gives each new body its creation tick C
+  (validate_p3.creation_tick) from captures WITH the stamps; a play goes at the earliest member's card tick (or C - 1 for a
+  body made by another body) with lo = hi, so the ceiling no longer redraws its placement; spawned children set the spawner timer;
+  `fights.py attacks --out` writes a '_births' key (old exports still work). Spell-made bodies (Goblin Barrel goblins) keep the gap.
+  Measured on HEAD ff412ab, 12 stamped matches, 496 strict fights paired: raw 0.887 [0.864, 0.910] -> 0.908 [0.884, 0.931],
+  **paired +0.021 [+0.010, +0.032]**; ceiling 0.956 -> 0.995; normalised 0.928 -> 0.912 (the ceiling stops crediting placement
+  noise); SIM deploy end on the live tick 65.8% -> 99.5% of new bodies (3,410 / 3,427). Old logs byte-identical (12 FIN5 matches,
+  both bases). 26 fights up / 6 down by > 0.2; 4 flipped agree -> fail (112144@1834 Tesla, 114028@2324 Tesla evo, 114028@2645 opp
+  Mini PEKKA, 114028@5266 opp Dark Prince) = next-round candidates. SIM facts (a): first deploy step and spawner-given deploy
+  times already match live (Hero IW / IceCube +21 ticks, Brawler 500, Voodoo Hog 200, Barrel goblins 1100, drill 500) -> no fork
+  patch. Re-score tool: diag_night/r4d/rescore_r4d.sh {ship|run|report}. 91 tests pass on HEAD + births.
+- Owner 10-17 trigger: "Option B to start ... C is the ultimate goal, so don't discard C. 97.5% overall is still part of the
+  trigger." coverage.py now reports both tiers + the trigger: STEP D when overall raw lower CI >= 0.975 AND >= 90% of tier-B live
+  plays sit on cards that MEET (tier B = our whole deck incl. evo / hero forms + opp cards >= 0.3% of plays = 61 card labels,
+  83.1% of live plays; tier C = opp >= 0.2%: 96 labels, 91.7%). On FIN5 (pre-fix): overall 0.896 (lo 0.887) not met; tier B 0.134,
+  tier C 0.125 of plays meet. The work queue = coverage.py's list of tier-C cards not meeting, by live play share.
+
 ## 2026-10-17 12:00 EDT -- LIVE CARD CENSUS (2,054 main-account matches since 10-07): own deck 58.7% of plays; opponent meta is FLAT
 
 census_cards.py now rebuilds frames from decision snapshots (public raw_bodies, every ~20 ticks) for logs without frame events

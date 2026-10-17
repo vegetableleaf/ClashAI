@@ -76,6 +76,7 @@ TROOP_LOAD_MS = {'PrincessTower': 0, 'DaggerDuchess': 0, 'Cannoneer': 1400, 'Che
 P2_DIR = ROOT/'scratchpad/gauntlet/L70/reader/re_phase2/validation'    # phase-2 captures: run.json names its frame log
 P3_DIR = ROOT/'scratchpad/gauntlet/L70/reader/re_phase3'                # phase-3 captures carry the same phase-2 buff rows
 P3_LIVE = ROOT/'icebow/data/p3_captures'   # live --capture-p3 (5e4818f): same run.json + frames.jsonl layout, gitignored
+P3B_SMOKE = ROOT/'icebow/data/p3b_smoke'   # 10-17 phase-3b probe runs beside the live reader (READER_PHASE3B.md), gitignored
 
 
 def p3_runs():
@@ -252,6 +253,49 @@ def phase3_attacks(path):
     return {}
 
 
+def phase3_births(path):
+    """{generation id: [C, card tick]} for every body the capture first shows after its first frame, from the phase-3b
+    per-body fields (READER_PHASE3B.md; 400 / 403 inside their first-sighting gap): C = its creation frame tick
+    (reader_val/validate_p3.creation_tick: deploy stamp + 1 while deploying, else card tick + 1, else first sighting -
+    active ms / 50), card tick = the tick of the card play that made it (-1: made by another body). From the first
+    capture of this frame log that carries the stamps (live --capture-p3, then the 10-17 smoke runs); {} without one
+    (older captures: every placement keeps its frame gap). PARITY_ATTACKS=<file>: its '_births' rows."""
+    if os.environ.get('PARITY_ATTACKS'):
+        # ponytail: a second read of the file phase3_attacks reads (+~4 s a match on the 131 MB attacks5.json); one shared load if it matters
+        rows = json.loads(Path(os.environ['PARITY_ATTACKS']).read_text()).get('_births', {}).get(Path(path).name, {})
+        return {int(g): v for g, v in rows.items()}
+    from scratchpad.gauntlet.L74.parity.reader_val.validate_p3 import creation_tick
+    for run in p3_runs() + sorted(P3B_SMOKE.glob('*/run.json')):
+        try:
+            if json.loads(run.read_text()).get('live_log') != Path(path).name:
+                continue
+        except ValueError:
+            continue
+        out, seen, last = {}, set(), None
+        with open(run.parent/'frames.jsonl', 'rb') as f:
+            for raw in f:
+                j = json.loads(raw); p = j.get('phase3') or {}
+                if not (j.get('battle_active') and p.get('valid')):
+                    continue
+                if last is not None and j['game_tick'] < last:
+                    break                      # the next battle: generation ids start over
+                beh = {e['category']: e.get('behavior_state_raw') for e in j['entities']}
+                for b in p.get('bodies', []):
+                    g = b['generation']
+                    if g in seen or 'deploy_tick_raw' not in b:
+                        continue
+                    seen.add(g)
+                    c, _ = (None, None) if last is None else creation_tick(  # first frame: made before the capture
+                        j['game_tick'], b['deploy_remaining_raw'], b['deploy_tick_raw'], b['card_tick_raw'],
+                        b.get('active_ms_raw'), beh.get(g))
+                    if c is not None:
+                        out[g] = [c, b['card_tick_raw']]
+                last = j['game_tick']
+        if out:
+            return out
+    return {}
+
+
 def tracks(frames):
     tr = {}
     for t, bodies in frames:
@@ -261,7 +305,7 @@ def tracks(frames):
             r = tr.get(b['id'])
             if r is None:
                 tr[b['id']] = r = dict(id=b['id'], side=b['side'], card_id=b['card_id'], first=t, x=b['x'], y=b['y'],
-                                       max_hp=b['max_hp'], active=None, traj=[])
+                                       max_hp=b['max_hp'], active=None, traj=[], gen=b.get('gen'))
             r['last'] = t
             r['traj'].append((t, b['x'], b['y']))
             if r['active'] is None and b['kind'] in (13, 15):
@@ -466,9 +510,18 @@ def deployments(m, catalog, life=None, own_unit=None):
         prev = ticks[bisect_left(ticks, g['tick'])-1]
         tick = (prev + 1 + g['tick'])//2 - 1
         # lo..hi: every tick the live creation could have come from (the frame gap); the ceiling draws from it
+        lo, hi = prev, max(prev, g['tick']-1)
+        # Phase-3b captures (m['births']) time the play exactly: the card tick of the play that made its bodies (= deploy
+        # stamp for a card troop; the play itself for a staggered one, e.g. Recruits, whose deploys start later), for a
+        # body made by another one its creation tick - 1; the earliest member. Not redrawn by the ceiling (lo = hi). A
+        # spell's bodies (Goblin Barrel goblins: card tick = the cast) keep the gap: the play stands for their landing.
+        born = [k if k >= 0 else bc - 1 for r in g['members'] for bc, k in [m.get('births', {}).get(r['gen'], (None, -1))]
+                if bc is not None]
+        if born and c.get('type') != 'spell':
+            tick = lo = hi = min(born)
         ev = dict(kind='play', side=g['side'], name=c['display_name'], form=form_of(g['card_id'], c), tick=tick,
                   x=round(g['x']), y=round(g['y']), n=len(g['members']), source='first_seen',
-                  spell_spawned=c.get('type') == 'spell', lo=prev, hi=max(prev, g['tick']-1))
+                  spell_spawned=c.get('type') == 'spell', lo=lo, hi=hi)
         land = [r['land'] for r in g['members'] if 'land' in r] if c['display_name'] in DIGGERS else []
         if land:
             # A Miner is seen tunnelling from its own side (active rows) before it surfaces (deploying rows): the play's
@@ -2338,7 +2391,8 @@ def start_state(eng, m, fight, setup, start, events, catalog):
             if p and math.hypot(p[1]-r['x'], p[2]-r['y']) <= 3500:
                 j = bisect_left(tick_of, r['first'])
                 prev = tick_of[j-1] if j else r['first'] - 2
-                kids.append((prev + 1 + r['first'])//2)
+                # its creation tick from the phase-3b fields (m['births']) when the capture has them, else mid-gap
+                kids.append((m.get('births') or {}).get(r['gen'], ((prev + 1 + r['first'])//2,))[0])
         if not kids:
             flags['setup_spawner_unseen'] += 1; continue
         kids.sort()
@@ -2658,6 +2712,7 @@ def run_match(path, window, out_dir, ceiling=0):
         out.write_text(json.dumps(dict(summary=res)))
         return res
     eng = Engine()
+    m['births'] = phase3_births(path) if m['ext'] else {}
     events, delay = deployments(m, catalog, eng.effect_life, own_unit=lambda n, hp: eng.level(n, hp) is not None)
     fights = cut(m, events, window)
     m['buffs'] = phase2_buffs(path) if m['ext'] else {}
@@ -2748,6 +2803,8 @@ def run_match(path, window, out_dir, ceiling=0):
                                          for e in events if e['source'] in ('spell_seen', 'cast_seen'))))
         if m['attacks']:
             summary['phase3'] = True
+        if m['births']:
+            summary['phase3b_births'] = len(m['births'])
     out.write_text(json.dumps(dict(summary=summary, fights=results), allow_nan=False))
     return summary
 
@@ -3074,6 +3131,8 @@ def main():
     if a.mode == 'attacks':    # phase-3 attack rows (generation ids, counters; no addresses) -> one file for PARITY_ATTACKS
         logs = {json.loads(r.read_text()).get('live_log') for r in p3_runs()}
         out = {n: phase3_attacks(n) for n in sorted(filter(None, logs))}
+        # phase-3b creation ticks per generation id (phase3_births), for the logs whose capture has them
+        out['_births'] = {n: b for n in sorted(filter(None, logs)) for b in [phase3_births(n)] if b}
         a.out.write_text(json.dumps(out, separators=(',', ':')))
         print({n: len(v) for n, v in out.items()}); return 0
     if a.mode == 'score':
