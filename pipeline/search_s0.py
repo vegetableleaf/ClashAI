@@ -304,6 +304,81 @@ def tower_hp(st, team: int) -> int:
                    if e.team == team and e.kind in (EntityKind.KING_TOWER, EntityKind.PRINCESS_TOWER)))
 
 
+# ---- --habit-log (owner 10-17 live observations; MEASUREMENT ONLY, the decisions are never touched) -----------------
+# Board y, me at the bottom, 0..1 (engine_play.cell_center): live offensive X-Bows sit at 0.609 (lattice row 39, 19.5
+# tiles: the bridge lock row, reaching the enemy princess), defensive ones at 0.67-0.70 (rows 43-45); the cut is between.
+XBOW_BRIDGE_Y = 0.64
+LATE_TICK = 2400                        # double elixir (120 s): the "late stage"
+
+
+def _slug(name) -> str:
+    import re
+    return re.sub(r"[^a-z]", "", str(name).split("@")[0].lower())
+
+
+def habit_board(bs) -> dict:
+    """What our Rocket decision saw (its BoardState, my frame): enemy princesses (L, R) alive / hp_frac, enemy bodies."""
+    from pipeline.decision_options import enemy_body_tiles
+    return {"alive": [bool(t.alive) for t in bs.towers[4:6]], "hp": [t.hp_frac for t in bs.towers[4:6]],
+            "bodies": enemy_body_tiles(bs)}
+
+
+def habits(m) -> dict:
+    """--habit-log: the learner's play habits in one match, from its ACCEPTED plays (cell = the decided cell, my frame):
+    X-Bow in the opening hand (the deal's first four); the first two plays and whether an OFFENSIVE X-Bow (board y <
+    XBOW_BRIDGE_Y) is among them; Rockets whose blast covers an ALIVE enemy princess at the decision (catalog Rocket
+    radius + tower radius, rocket_target_cells' rule) -- of them the strictly lower-HP (or only) alive princess, and with no enemy
+    body in the blast (pure tower chip); Rockets / Logs the finisher rule forced (why lethal_rocket / lethal_log); late
+    (landing tick >= LATE_TICK) offensive X-Bows, Rockets, Rockets on a princess, Tornados (all / centre on the enemy half)."""
+    from pipeline.decision_options import (ENEMY_TOWERS_TILES, ROCKET_BODY_SLACK_TILES, cell_centres_tiles, is_xbow,
+                                           rocket_radius_tiles)
+    from pipeline.public_geometry import constants
+    side = m.learner
+    xs, ys = cell_centres_tiles(side.cfg["grid"])
+    r_tower = rocket_radius_tiles() + constants()["tower_radius"]["PrincessTower"] / 1000.0
+    r_body = rocket_radius_tiles() + ROCKET_BODY_SLACK_TILES
+    plays = [q for q in side.plays if q["accepted"]]
+    h = {k: 0 for k in ("xbow", "xbow_off", "rocket", "rocket_princess", "rocket_princess_lower", "rocket_princess_bodyless",
+                        "rocket_lethal", "log_lethal", "tornado")}
+    late = {k: 0 for k in ("xbow_off", "rocket", "rocket_princess", "tornado", "tornado_enemy_half")}
+    xbow_y, first2, off_first2 = [], [], False
+    for i, q in enumerate(plays):
+        x, y, card = float(xs[q["cell"]]), float(ys[q["cell"]]), _slug(q["card"])
+        is_late = int(q.get("land_tick", q["tick"])) >= LATE_TICK
+        if i < 2:
+            first2.append(card)
+        if is_xbow(q["card"]):
+            off = y / 32.0 < XBOW_BRIDGE_Y
+            h["xbow"] += 1
+            h["xbow_off"] += off
+            late["xbow_off"] += off and is_late
+            xbow_y.append(round(y / 32.0, 4))
+            off_first2 |= i < 2 and off
+        elif card == "rocket":
+            b = m.habit_dec.get(int(q["tick"]))
+            on = [math.hypot(x - tx, y - ty) <= r_tower and (b is None or b["alive"][j])
+                  for j, (tx, ty) in enumerate(ENEMY_TOWERS_TILES[1:])]
+            h["rocket"] += 1
+            h["rocket_lethal"] += q["why"] == "lethal_rocket"
+            late["rocket"] += is_late
+            if any(on):
+                h["rocket_princess"] += 1
+                late["rocket_princess"] += is_late
+                if b is not None:            # lower = the only alive princess, or the strictly lower-HP one (a tie: none)
+                    hp = {j: 1.0 if v is None else float(v) for j, (v, a) in enumerate(zip(b["hp"], b["alive"])) if a}
+                    low = min(hp, key=hp.get) if len(hp) == 1 or (len(hp) == 2 and hp[0] != hp[1]) else None
+                    h["rocket_princess_lower"] += low is not None and on[low]
+                    h["rocket_princess_bodyless"] += not any(math.hypot(x - bx, y - by) <= r_body for bx, by in b["bodies"])
+        elif card == "tornado":
+            h["tornado"] += 1
+            late["tornado"] += is_late
+            late["tornado_enemy_half"] += is_late and y / 32.0 < 0.5
+        elif card in ("log", "thelog"):
+            h["log_lethal"] += q["why"] == "lethal_log"
+    return {"xbow_open_hand": any(is_xbow(n) for n in m.env.deal[side.side][:4]), "first2": first2,
+            "xbow_off_first2": bool(off_first2), **h, "late": late, "xbow_y": xbow_y}
+
+
 # ------------------------------------------------------------------------------------------------------
 # forking
 # ------------------------------------------------------------------------------------------------------
@@ -464,6 +539,11 @@ class Runner:
         if rates is not None:
             from pipeline.rl_royale import draw_tower_troop
             spec["opp_tower"] = draw_tower_troop(rates, f"{int(seed)}:{','.join(map(str, opp_deck))}")
+        table = getattr(self, "live_levels", None)           # L74 factor D (--live-levels); None = no key (unchanged)
+        if table is not None:                                # drawn per (seed, opponent deck): paired across checkpoints
+            from pipeline.rl_royale import draw_live_levels
+            spec["levels"] = draw_live_levels(table, spec["learner_deck"], spec["opp_deck"],
+                                              f"{int(seed)}:{','.join(map(str, opp_deck))}")
         opp, ocfg = self.opps[opp_id]
         return E.SelfPlayMatch(self.make_env(), spec, 0, {**self.lcfg, "entry_index": 0}, {**ocfg, "entry_index": 0},
                                self.learner, opp)
@@ -476,6 +556,8 @@ class Runner:
               "chose_wait": 0, "plain_wait_overridden": 0, "moved_cell": 0, "n_cands": 0}
         if self.probe_xbow_focus:   # the match row shows the probe ran: our X-Bow decisions seen / cells it moved
             st.update(probe_xbow_focus_xbows=0, probe_xbow_focus_changed=0)
+        if getattr(self, "habit_log", False):
+            m.habit_dec = {}        # --habit-log: decision tick -> the board our Rocket decisions saw (habit_board)
         t0, truncated = time.perf_counter(), False
         while True:
             if deadline is not None and time.time() > deadline:
@@ -493,6 +575,7 @@ class Runner:
         return {"arm": arm, "opp": m.spec["opp"]["id"], "seed": int(m.spec["seed"]), "tag": m.spec["tag"],
                 "learner_side": L, "opp_deck": m.spec["opp_deck"], "outcome": r["outcome"],
                 **({"opp_tower": m.spec["opp_tower"]} if "opp_tower" in m.spec else {}),
+                **({"levels": m.spec["levels"]} if "levels" in m.spec else {}),
                 "crowns_for": r["crowns_for"], "crowns_against": r["crowns_against"],
                 "crowns_diff": r["crowns_for"] - r["crowns_against"],
                 "tower_hp_for": hp_for, "tower_hp_against": hp_against, "tower_hp_diff": hp_for - hp_against,
@@ -550,6 +633,8 @@ class Runner:
                     d = self.arm_decide(m, ds, arm, p, enc, heads, allowed, d, st, rng, stalled=bool(stalled))
                 else:
                     st["unsearched"] += 1                   # off-interval: the plain decision stands
+            if hasattr(m, "habit_dec") and s is m.learner and d["play"] and _slug(s.deck.cards[d["slot"]]) == "rocket":
+                m.habit_dec[int(s._cur[0])] = habit_board(s._cur[1])   # --habit-log: read only, the decision unchanged
             todo.append((s, p, d))
         for s, p, d in todo:
             s.apply(p, d)
@@ -678,6 +763,11 @@ def _init_worker(args: dict) -> None:
     _W["runner"].probe_xbow_focus = bool(args.get("probe_xbow_focus"))
     if args.get("opp_tower_troops") is not None:
         _W["runner"].opp_tower_troops = args["opp_tower_troops"]
+    if args.get("live_levels"):                             # L74 factor D: the measured live level table
+        from pipeline.rl_royale import live_levels
+        _W["runner"].live_levels = live_levels({"league": True, "live_levels": True})
+    if args.get("habit_log"):
+        _W["runner"].habit_log = True
     _W["census"] = league_decks(REPO / args.get("census", CENSUS))
 
 
@@ -715,6 +805,8 @@ def _run_job(job: tuple) -> dict:
     if _W.get("record_plays"):     # --record-plays: our plays [decision tick, landing tick, card, accepted, elixir seen]
         rec["own_plays"] = [[q["tick"], q.get("land_tick", q["tick"]), q["card"], q["accepted"], q["elixir_exact"]]
                             for q in _W["runner"].last_result["plays"]]
+    if getattr(_W["runner"], "habit_log", False):           # --habit-log: the learner's habit counts (measurement only)
+        rec["habits"] = habits(m)
     rec.update(_W.get("opp_meta") or {})
     return rec
 
@@ -852,6 +944,14 @@ def main(argv=None) -> int:
                     help="L74 troops: the opponent fields a crown tower troop at these rates, e.g. "
                          "DaggerDuchess:0.03,Cannoneer:0.03,ChefTower:0.01 (drawn per seed + opponent deck, so paired "
                          "across checkpoints; needs the RoyaleSim fork runtime); default none = the Princess (unchanged)")
+    ap.add_argument("--live-levels", action="store_true",
+                    help="L74 factor D: our cards / towers at our live levels, the opponent's drawn per seed + opponent deck "
+                         "from the live opponents (rl_royale.draw_live_levels, L74/levels/live_levels.json); rows carry "
+                         "'levels'. Default off = every card and tower at the engine default level 11 (unchanged)")
+    ap.add_argument("--habit-log", action="store_true",
+                    help="each match line gets 'habits' (search_s0.habits: opening-hand X-Bow, offensive X-Bow in the first "
+                         "two plays, Rockets on an enemy princess / forced by the finisher, late X-Bow / Rocket / Tornado); "
+                         "measurement only, decisions unchanged; default off = lines unchanged")
     ap.add_argument("--max-wall-min", type=float, default=0.0,
                     help="0 = none; else no match starts after this and running matches stop (wall_truncated)")
     a = ap.parse_args(argv)
@@ -871,6 +971,8 @@ def main(argv=None) -> int:
         ap.error("--ability-policy v2 needs --hero-abilities")
     if a.ability_stats and not a.hero_abilities:
         ap.error("--ability-stats needs --hero-abilities")
+    if a.live_levels and "search" in a.arms.split(","):
+        ap.error("--live-levels: the search arm's Scorer needs one tower level for both sides (engine_tower_level)")
     try:
         E.opp_tempo({}, a.opp_decide_every, a.opp_reaction_ticks)
     except ValueError as exc:
@@ -932,10 +1034,14 @@ def main(argv=None) -> int:
         wargs['ability_stats'] = True
     if a.opp_tower_troops is not None:
         wargs['opp_tower_troops'] = a.opp_tower_troops
+    if a.live_levels:
+        wargs['live_levels'] = True
+    if a.habit_log:
+        wargs['habit_log'] = True
     for k in ('opp_decide_every', 'opp_reaction_ticks'):
         if getattr(a, k) is not None:
             wargs[k] = getattr(a, k)
-    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads', 'learner_T_gate') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays', 'probe_xbow_focus', 'ability_stats') or v) and (k not in ('opp_decide_every', 'opp_reaction_ticks', 'opp_tower_troops') or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
+    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads', 'learner_T_gate') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays', 'probe_xbow_focus', 'ability_stats', 'live_levels', 'habit_log') or v) and (k not in ('opp_decide_every', 'opp_reaction_ticks', 'opp_tower_troops') or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
                                                 "gen_sha256": sha256(REPO / a.gen), "opp_gen_sha256": opp_sha,
                                                 "s1_sha256": sha256(REPO / a.s1),
                                                 "tau_plain": TAU_PLAIN, "tau_opp": TAU_OPP, "crown_w": CROWN_W,

@@ -1,0 +1,7 @@
+/workspace/cb_lv/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+checkpoint icebow/data/bench/rl_royale/rlarm_gae/rlarm_gae_u0250_grafted.pt feature_version 6 grid lattice
+1. identity: 664 board pairs (L11 vs live levels) over 118 cards; differing: 0; refused plays (skipped) {'Elixir Collector': 3, 'Mirror': 3}; hp_frac outside [0, 1]: []; unmapped at live levels {}
+2. absolute-hp inputs: level multiplier vs level 11 = {13: 1.207, 14: 1.324, 15: 1.453, 16: 1.598} -> ability-head hp sums x that factor; policy tokens: hp_frac only (level-free)
+3. L11: 8 matches; unmapped Counter(); degraded_obs 3796 of 3796 decisions; outcomes Counter({'loss': 4, 'win': 4}); plays 36.9/match
+3. live: 8 matches; unmapped Counter(); degraded_obs 3709 of 3709 decisions; outcomes Counter({'loss': 4, 'win': 4}); plays 27.2/match

@@ -1,0 +1,9 @@
+20:03:18 checks start
+EVAL rows HEAD == edited (options absent): BYTE-IDENTICAL
+(raw matches.jsonl differ: line order / wall fields)
+EVAL --habit-log rows minus 'habits' == absent rows
+lvsmoke_old: 1 SMOKE PASS; config sha 48c1874834a9
+lvsmoke_old2: 1 SMOKE PASS; config sha 48c1874834a9
+lvsmoke_new: 1 SMOKE PASS; config sha 48c1874834a9
+lvsmoke_on: 1 SMOKE PASS; config sha 5aa84433c588
+20:15:05 checks done

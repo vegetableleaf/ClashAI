@@ -1,0 +1,6 @@
+kept 310 ranked main-account matches (live_play_20261015_001347 .. live_play_20261017_095746); skipped {'no_frames': 180, 'not_main_account': 14, 'own_tower_not_15': 9}
+own tower {15: 310}; own cards (modal): {'IceWizard': 14, 'Knight': 16, 'Log': 15, 'Rocket': 16, 'Skeletons': 16, 'Tesla': 16, 'Tornado': 16, 'Xbow': 16}; default 16
+opp tower level: 13: 1 (0.3%), 14: 15 (4.8%), 15: 159 (51.3%), 16: 135 (43.5%)
+opp card level (2144 card-level readings): 6: 1 (0.0%), 7: 4 (0.2%), 9: 1 (0.0%), 10: 1 (0.0%), 11: 1 (0.0%), 12: 3 (0.1%), 13: 37 (1.7%), 14: 126 (5.9%), 15: 930 (43.4%), 16: 1040 (48.5%)
+opp card - opp tower level: -10: 1 (0.0%), -9: 1 (0.0%), -8: 3 (0.1%), -6: 1 (0.0%), -5: 1 (0.0%), -4: 1 (0.0%), -3: 12 (0.6%), -2: 55 (2.6%), -1: 495 (23.1%), +0: 972 (45.3%), +1: 542 (25.3%), +2: 58 (2.7%), +3: 2 (0.1%)
+cards read per opponent: median 7 ; with none: 1

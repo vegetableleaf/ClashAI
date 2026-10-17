@@ -1,0 +1,10 @@
+level 11: 271/480; live levels: 293/480; live - L11 +4.58 pp [-0.83, +10.00] (480 pairs)
+live levels, by opponent tower level: {13: '1/2', 14: '16/22', 15: '145/232', 16: '131/224'}
+/workspace/results/LV/hab_L11_u250/D3/matches.jsonl: 480 matches; X-Bow in opening hand 0.517; offensive X-Bow in first 2 plays 0.381 (given in hand 0.569)
+  per match: xbow 5.01, xbow_off 4.15, rocket 1.07, rocket_princess 0.94, rocket_princess_lower 0.80, rocket_princess_bodyless 0.84, rocket_lethal 0.22, log_lethal 0.01, tornado 1.51
+  late (tick >= 2400) per match: xbow_off 2.84, rocket 0.90, rocket_princess 0.82, tornado 1.10, tornado_enemy_half 0.35
+  X-Bow board y: {0.5781: 11, 0.6094: 1981, 0.6719: 95, 0.7031: 318, 0.7344: 1}
+/workspace/results/LV/hab_live_u250/D3/matches.jsonl: 480 matches; X-Bow in opening hand 0.517; offensive X-Bow in first 2 plays 0.379 (given in hand 0.565)
+  per match: xbow 4.60, xbow_off 3.81, rocket 1.05, rocket_princess 0.92, rocket_princess_lower 0.77, rocket_princess_bodyless 0.79, rocket_lethal 0.25, log_lethal 0.02, tornado 1.51
+  late (tick >= 2400) per match: xbow_off 2.45, rocket 0.88, rocket_princess 0.79, tornado 1.10, tornado_enemy_half 0.32
+  X-Bow board y: {0.5781: 6, 0.6094: 1821, 0.6719: 95, 0.7031: 282, 0.7344: 1, 0.9219: 1}

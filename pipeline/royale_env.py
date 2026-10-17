@@ -723,11 +723,14 @@ class RoyaleSelfPlayEnv(RoyalePoolEnv):
     ``raw()`` is the full two-sided state; each side mirrors it as today: ``from_engine(obs, side, ...)``. Its
     ``next_deck_index`` indexes the CALLER's deck order (``self.decks[side]``)."""
 
-    def reset(self, deck0, deck1, seed: int = 0, tower_troops=None) -> dict:
+    def reset(self, deck0, deck1, seed: int = 0, tower_troops=None, levels=None) -> dict:
         """``tower_troops`` (opt-in, L74 troops 10-17): [Blue, Red] crown tower troop names (rl_royale.TOWER_TROOPS;
         the engine refuses any other) or None for the Princess; needs the ClashBot RoyaleSim fork
         (Battle.set_tower_troops). None on an env that never fielded one = no engine call (unchanged); a later None
-        resets a reused env to Princess towers."""
+        resets a reused env to Princess towers.
+        ``levels`` (opt-in, L74 factor D 10-17): {"cards": [[8 levels in deck0 order], [8 in deck1 order]], "towers":
+        [Blue, Red]} -> MatchSetup.levels / tower_levels (permuted with the deal); None = the engine default (level 11
+        everywhere), the setup unchanged."""
         if tower_troops is not None or getattr(self, "_tower_troops", None) is not None:
             self.core._battle.set_tower_troops(*(tower_troops or (None, None)))
             self._tower_troops = tower_troops
@@ -751,8 +754,12 @@ class RoyaleSelfPlayEnv(RoyalePoolEnv):
         for s in (0, 1):
             random.Random(f"deal:{self.seed}:{s}").shuffle(orders[s])   # str seed: stable across processes
         self.deal = {s: [self.decks[s][i] for i in orders[s]] for s in (0, 1)}
-        self.core.reset(self.seed, self._setup({s: [self.deck_ids[s][i] for i in orders[s]] for s in (0, 1)}, orders,
-                                               wanted))
+        setup = self._setup({s: [self.deck_ids[s][i] for i in orders[s]] for s in (0, 1)}, orders, wanted)
+        if levels is not None:
+            import msgspec
+            setup = msgspec.structs.replace(setup, levels=[[int(levels["cards"][s][i]) for i in orders[s]] for s in (0, 1)],
+                                            tower_levels=[int(t) for t in levels["towers"]])
+        self.core.reset(self.seed, setup)
         self.public_plays = []
         self._ghosts, self._gi, self._pending = [], 0, []
         self.terminated, self.episode, self.eng.last_episode = False, {}, None

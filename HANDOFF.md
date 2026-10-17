@@ -1,3 +1,26 @@
+## 2026-10-17 16:28 EDT -- LIVE LEVELS option (factorial factor D) + eval HABIT LOGGING committed; our live levels measured
+
+Worker report DONE_WITH_CONCERNS (scratchpad/gauntlet/L74/levels/; backups pod_backup_weekend/pod1017_levels/).
+- Live levels (310 ranked main-account matches, fights.py per-match summaries ALL_I3 + FIN5; cross-checked with the reader's own
+  per-body level field): OUR towers 15; Knight / Skeletons / Tesla / X-Bow / Rocket / Tornado 16; Log 15; Ice Wizard (hero) 14 -- my
+  "our deck at L15" premise was wrong. Opponent towers 15 (51.3%) / 16 (43.5%) / 14 (4.8%); opponent cards 16 48.5%, 15 43.4%, 14
+  5.9%. Table live_levels.json (sha b32c0c76...). SIM training + eval today run EVERYTHING at level 11.
+- Option: `live_levels: true` (rl_royale; needs league true; draws one of the 310 live opponents per matchup from its own RNG stream
+  keyed on seed + tag; table sha joins config_sha) and `--live-levels` (search_s0 eval, paired per seed + opponent deck);
+  `--habit-log` adds a `habits` key per eval row (opening-hand X-Bow, offensive X-Bow in the first two plays, Rockets / princess
+  Rockets / lower-princess / bodyless / forced by the finishing rule, late-stage counts, X-Bow y). Absent = byte-identical
+  (config sha 48c1874834a9 x3, smoke lines identical, eval rows byte-identical on 6 seeds; habit rows minus `habits` = absent rows).
+  pyflakes clean on the pod (the laptop venv has no pyflakes). Same 7 pre-existing test failures on HEAD and edited.
+- Model inputs see hp / max_hp only (no level input); reward is hp-fraction based. Absolute-hp features exist only in the learned
+  ability-press head (not in the factorial yaml).
+- Extra (u250, 480 paired, habit log): live levels vs level 11 +4.58 [-0.83, +10.00] (n.s.). SIM reproduces the early bridge X-Bow
+  (56.9% / 56.5% of X-Bow-opening games) but NOT the rare rocket cycling (SIM u250 hits alive princesses unforced ~0.7 / match).
+- Factorial eval (owner: fork + troops at live rates) must ALSO carry --live-levels for every arm, else factor D is confounded
+  with the eval: EXTRA='--habit-log --live-levels --card-levels Rocket=16 Log=15 --opp-tower-troops DaggerDuchess:0.028,Cannoneer:0.028,ChefTower:0.014'.
+- Correction for the factorial plan: today's arms (cue, exu250, troops; and live Mark CXXXVIII) use the RULE hero press
+  (ability_policy v2); the learned press (gae_ab) has no live stage B and measured -1.15 vs the rule press. The factorial keeps the
+  rule press so its winners stay deployable (memory icebow-trains-with-hero-iw says "learned press" -- flagged to the owner).
+
 ## 2026-10-17 15:32 EDT -- factorial decisions (owner) + two observed habits measured; live-levels option being built
 
 - Owner 10-17: factorial graded on the FORK + TROOPS-at-live-rates eval (also the promotion bar from now on); factors A cue layer,

@@ -1,0 +1,223 @@
+........................................................................ [ 38%]
+.........F.F..F.................F.ss..........s...s.s................... [ 76%]
+.........sssssss.s.............sssssF.FF.....                            [100%]
+=================================== FAILURES ===================================
+____________ TestSelfPlay.test_failed_reset_leaves_state_untouched _____________
+
+self = <pipeline.tests.test_royale_selfplay.TestSelfPlay testMethod=test_failed_reset_leaves_state_untouched>
+
+    def test_failed_reset_leaves_state_untouched(self):
+        """T12b fix (b): validation happens before any assignment."""
+        env = RoyaleSelfPlayEnv()
+        env.reset(ICEBOW, HOGEQ, seed=5)
+        before = (dict(env.decks), dict(env.deck_ids), env.seed, env.tick)
+>       with self.assertRaises(UnsupportedDeck):
+E       AssertionError: UnsupportedDeck not raised
+
+pipeline/tests/test_royale_selfplay.py:149: AssertionError
+________ TestSelfPlay.test_raw_matches_pool_env_for_same_deal_and_plays ________
+
+self = <pipeline.tests.test_royale_selfplay.TestSelfPlay testMethod=test_raw_matches_pool_env_for_same_deal_and_plays>
+
+    def test_raw_matches_pool_env_for_same_deal_and_plays(self):
+        sp = RoyaleSelfPlayEnv()
+        sp.reset(ICEBOW, HOGEQ, seed=7)
+        # a pool entry whose deck lists ARE the self-play deal and whose scripts are empty -> deal_order = identity
+        item = lambda n: {"name": n, "slug": n}
+        entry = {"tag": "t", "icebow_side": 0, "ghost_side": 1, "icebow_deck": [item(n) for n in sp.deal[0]],
+                 "ghost_deck": [item(n) for n in sp.deal[1]], "icebow_commands": [], "ghost_commands": []}
+        pool = RoyalePoolEnv(seed=7)
+        pool.reset(entry)
+    
+        def same(a, b):
+            for pa, pb in zip(a.pop("players"), b.pop("players")):   # next_deck_index indexes each env's deck order
+                self.assertEqual(sp.decks[pa["side"]][pa.pop("next_deck_index")],
+                                 pool.final_decks[pb["side"]][pb.pop("next_deck_index")]["name"])
+                self.assertEqual(pa, pb)
+            self.assertEqual(a, b)
+    
+        same(sp.raw(), pool.raw())
+        for t in (90, 150):
+            for s in (0, 1):
+                cid = sp.core.state().players[s].hand[0]
+                nm = sp.names[cid]
+                ra = sp.act(s, sp.decks[s].index(nm), *CELL[s])
+                rb = pool.eng.act(side=s, deck_index=sp.deal[s].index(nm), x=CELL[s][0], y=CELL[s][1])
+                self.assertEqual(ra, rb)
+            sp.advance_to(t + 60)
+            pool._advance_to(t + 60)
+            same(sp.raw(), pool.raw())
+>       self.assertEqual(sp.core.state_hash(), pool.core.state_hash())
+E       AssertionError: 15568169531312640523 != 14529187579425140167
+
+pipeline/tests/test_royale_selfplay.py:107: AssertionError
+___________________ TestSelfPlay.test_unloadable_deck_raises ___________________
+
+self = <pipeline.tests.test_royale_selfplay.TestSelfPlay testMethod=test_unloadable_deck_raises>
+
+    def test_unloadable_deck_raises(self):
+        env = RoyaleSelfPlayEnv()
+>       with self.assertRaises(UnsupportedDeck):
+E       AssertionError: UnsupportedDeck not raised
+
+pipeline/tests/test_royale_selfplay.py:131: AssertionError
+______________ TestOppGen.test_match_line_and_run_json_record_it _______________
+
+self = <pipeline.tests.test_search_s0.TestOppGen testMethod=test_match_line_and_run_json_record_it>
+
+    def test_match_line_and_run_json_record_it(self):
+        import json
+        import tempfile
+        S._W.clear()
+        S._W["opp_meta"] = {"opp_gen": "B", "opp_gen_sha256": "abc"}
+        S._W["runner"] = SimpleNamespace(setup=lambda *a, **k: "m", play=lambda arm, m, d: {"arm": arm})
+        S._W["census"] = []
+>       rec = S._run_job(("plain", "s1", 0, 0.0))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+pipeline/tests/test_search_s0.py:550: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+job = ('plain', 's1', 0, 0.0)
+
+    def _run_job(job: tuple) -> dict:
+        arm, opp_id, seed, deadline = job
+        if deadline and time.time() > deadline:
+            return {"arm": arm, "opp": opp_id, "seed": seed, "skipped": "wall budget"}
+        got = setup_job(_W["runner"], _W["census"], opp_id, seed)
+        if got is None:
+            return {"arm": arm, "opp": opp_id, "seed": seed, "skipped": "no loadable deck"}
+        m, name = got
+        rec = _W["runner"].play(arm, m, deadline or None)
+        rec["opp_deck_name"] = name
+        for k in ("pipeline_decisions", "follow_ups"):         # the learner side's mechanism tallies (present only when the mechanism is on)
+>           if k in _W["runner"].last_result:
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'types.SimpleNamespace' object has no attribute 'last_result'
+
+pipeline/search_s0.py:803: AttributeError
+_____________ TestDeckMode.test_evolved_tesla_on_every_third_play ______________
+
+self = <pipeline.tests.test_royale_forms.TestDeckMode testMethod=test_evolved_tesla_on_every_third_play>
+
+    def test_evolved_tesla_on_every_third_play(self):
+        """Tesla@evolution plays its evolution on its 3rd and 6th play (STATUS_EVOLVED on the unit, the engine's
+        ``evo`` row says so beforehand); base mode never evolves it."""
+        for mode, want in (("deck", [False, False, True, False, False, True]), ("base", [False] * 6)):
+            env = RoyaleSelfPlayEnv(forms_mode=mode)
+            env.reset(ICEBOW, HOGEQ, 0)
+            cost = {c.name: c.elixir for c in env.core.cards()}
+            tesla = env.ids["Tesla"]
+            ti = env.deck_ids[0].index(tesla)
+            got, flagged = [], []
+            while len(got) < 6 and not env.done:
+                st = env.core.state()
+                me = st.players[0]
+                el = me.elixir_milli / 1000.0
+                if tesla in me.hand and el >= cost["Tesla"]:
+                    before = {e.uid for e in st.entities if e.card_id == tesla}
+                    evo = [r for r in me.evo if r[0] == tesla]
+                    flagged.append(bool(evo and evo[0][2]))
+                    self.assertTrue(env.act(0, ti, 5000, 12000)["accepted"])
+                    env.advance_to(env.tick + 20)
+                    new = [e for e in env.core.state().entities if e.card_id == tesla and e.uid not in before]
+                    self.assertEqual(len(new), 1)
+                    got.append(bool(status_of(new[0]) & STATUS_EVOLVED))
+                    continue
+                other = sorted((cost[env.names[c]], env.deck_ids[0].index(c)) for c in me.hand if c != tesla)
+                if tesla not in me.hand and other and other[0][0] <= el:      # cycle to the Tesla
+                    env.act(0, other[0][1], *CELL[0])
+                env.advance_to(env.tick + 20)
+>           self.assertEqual(got, want, mode)
+E           AssertionError: Lists differ: [False, False, True, False, False, True] != [False, False, False, False, False, False]
+E           
+E           First differing element 2:
+E           True
+E           False
+E           
+E           - [False, False, True, False, False, True]
+E           ?                ------              ^^^
+E           
+E           + [False, False, False, False, False, False]
+E           ?                              ^^^^^^^^^^^
+E            : base
+
+pipeline/tests/test_royale_forms.py:250: AssertionError
+___________ TestDeckMode.test_icebow_evolutions_load_hero_falls_back ___________
+
+self = <pipeline.tests.test_royale_forms.TestDeckMode testMethod=test_icebow_evolutions_load_hero_falls_back>
+
+    def test_icebow_evolutions_load_hero_falls_back(self):
+        env = RoyaleSelfPlayEnv(forms_mode="deck")
+        env.reset(ICEBOW_HERO, ["Knight@hero"] + HOGEQ[1:], 3)
+>       self.assertEqual(env.loaded_forms[0], [0, 1, 0, 0, 0, 1, 0, 0])      # Tesla, Knight evolve; IceWizard hero -> 0
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Lists differ: [0, 1, 2, 0, 0, 1, 0, 0] != [0, 1, 0, 0, 0, 1, 0, 0]
+E       
+E       First differing element 2:
+E       2
+E       0
+E       
+E       - [0, 1, 2, 0, 0, 1, 0, 0]
+E       ?        ---
+E       
+E       + [0, 1, 0, 0, 0, 1, 0, 0]
+E       ?              +++
+
+pipeline/tests/test_royale_forms.py:203: AssertionError
+___________ TestDeckMode.test_policy_form_inputs_follow_loaded_forms ___________
+
+self = <pipeline.tests.test_royale_forms.TestDeckMode testMethod=test_policy_form_inputs_follow_loaded_forms>
+
+    def test_policy_form_inputs_follow_loaded_forms(self):
+        """SelfPlaySide's engine deck -> GenPolicy.slot_ident forms: deck mode = what the engine loaded (Tesla 1,
+        Knight 1, the refused IceWizard hero 0); base mode = the decked suffix, as before (IceWizard 2)."""
+        from pipeline.dataset_gen import card_form
+        vocab, a, _ = tiny((ICEBOW_HERO, HOGEQ))
+        pol = E.GenPolicy(a, vocab)
+        cfg = {"policy": "live", "tau": 0.27, "afford_mask": True, "stall_elixir": 9.0, "stall_seconds": 12.0,
+               "obs": "live", "noise": None, "p_random": 0.0, "random_hand_only": False, "grid": "lattice",
+               "device": "cpu", "decide_every": 10, "slot": 0, "port": 0, "T": 0.5, "record": False}
+        from pipeline.e1_view import Noise
+        cfg["noise"] = Noise(**{n: False for n in E.NOISE_NAMES})
+        for mode, want in (("deck", {"Tesla": 1, "Knight": 1, "IceWizard": 0}),
+                           ("base", {"Tesla": 1, "Knight": 1, "IceWizard": 2})):
+            env = RoyaleSelfPlayEnv(forms_mode=mode)
+            spec = {"tag": "f", "learner_deck": ICEBOW_HERO, "opp_deck": HOGEQ, "learner_side": 0, "seed": 1}
+            m = E.SelfPlayMatch(env, spec, 0, cfg, cfg, pol, pol)
+            side = m.learner
+            _, form = pol.slot_ident(side.engine_deck, side.deck_index_of_slot)
+            by_name = {side.engine_deck[side.deck_index_of_slot[s]].split("@")[0]: int(form[s]) for s in range(8)}
+>           self.assertEqual({k: by_name[k] for k in want}, want, mode)
+E           AssertionError: {'Tesla': 1, 'Knight': 1, 'IceWizard': 2} != {'Tesla': 1, 'Knight': 1, 'IceWizard': 0}
+E           - {'IceWizard': 2, 'Knight': 1, 'Tesla': 1}
+E           ?               ^
+E           
+E           + {'IceWizard': 0, 'Knight': 1, 'Tesla': 1}
+E           ?               ^
+E            : deck
+
+pipeline/tests/test_royale_forms.py:272: AssertionError
+=============================== warnings summary ===============================
+pipeline/tests/test_league.py: 12 warnings
+pipeline/tests/test_rl_royale.py: 12 warnings
+pipeline/tests/test_royale_selfplay.py: 1 warning
+pipeline/tests/test_search_s0.py: 8 warnings
+pipeline/tests/test_opp_tempo.py: 5 warnings
+pipeline/tests/test_probe_xbow_focus.py: 1 warning
+pipeline/tests/test_cue_inputs.py: 3 warnings
+pipeline/tests/test_e1_follow_up_selfplay.py: 10 warnings
+pipeline/tests/test_royale_forms.py: 5 warnings
+  /workspace/cb_lv/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+    self.encoder = nn.TransformerEncoder(enc, layers)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED pipeline/tests/test_royale_selfplay.py::TestSelfPlay::test_failed_reset_leaves_state_untouched
+FAILED pipeline/tests/test_royale_selfplay.py::TestSelfPlay::test_raw_matches_pool_env_for_same_deal_and_plays
+FAILED pipeline/tests/test_royale_selfplay.py::TestSelfPlay::test_unloadable_deck_raises
+FAILED pipeline/tests/test_search_s0.py::TestOppGen::test_match_line_and_run_json_record_it
+FAILED pipeline/tests/test_royale_forms.py::TestDeckMode::test_evolved_tesla_on_every_third_play
+FAILED pipeline/tests/test_royale_forms.py::TestDeckMode::test_icebow_evolutions_load_hero_falls_back
+FAILED pipeline/tests/test_royale_forms.py::TestDeckMode::test_policy_form_inputs_follow_loaded_forms
+7 failed, 164 passed, 18 skipped, 57 warnings in 57.89s

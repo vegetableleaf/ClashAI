@@ -1,0 +1,16 @@
+draw {'learner': {'cards': [16, 16, 14, 16, 16, 16, 15, 16], 'tower': 15}, 'opp': {'cards': [16, 16, 16, 16, 16, 16, 16, 16], 'tower': 16, 'profile': 83}}
+PASS MatchSetup levels follow the deal: {0: {'IceWizard': 14, 'Tornado': 16, 'Knight': 16, 'Rocket': 16, 'Log': 15, 'Tesla': 16, 'Skeletons': 16, 'Xbow': 16}, 1: {'AngryBarbarians': 16, 'BattleRam': 16, 'Wizard': 16, 'BarbLog': 16, 'GiantSkeleton': 16, 'WitchMother': 16, 'Vines': 16, 'MiniSparkys': 16}}
+PASS our towers = live L15 (4424 / 7032): [4424, 4424, 7032]
+opp towers [4858, 4858, 7728] level 16
+PASS opening hand = deal[:4]: ['IceWizard', 'Tornado', 'Knight', 'Rocket'] / ['IceWizard', 'Tornado', 'Knight', 'Rocket']
+PASS side 0 IceWizard at level 14: body max_hp [911] has 911
+PASS side 1 AngryBarbarians at level 16: body max_hp [2143] has 2143
+PASS a later reset without levels is back to level 11: {0: [3052, 3052, 4824], 1: [3052, 3052, 4824]}
+PASS 1894 decks x (lo, hi, draw) x both sides load; refused: []
+loaded forms side 0 [0, 1, 2, 0, 0, 1, 0, 0] ; IceWizard form 2 level 14
+PASS Hero Ice Wizard at level 14: bodies [(911, 2, 'IceWizardHero')], base IceWizard L14 max_hp 911
+opp tower draws {13: 0.0029, 14: 0.0499, 15: 0.5123, 16: 0.4349} table {13: 0.0032, 14: 0.0484, 15: 0.5129, 16: 0.4355}
+PASS opponent tower level frequencies match the table (1.2 pp)
+opp card-level draws {6: 0.0004, 7: 0.0015, 9: 0.0008, 10: 0.0007, 11: 0.0005, 12: 0.0012, 13: 0.0164, 14: 0.0587, 15: 0.4354, 16: 0.4844}
+PASS same key, same levels
+PASS our side always {'cards': [16, 16, 14, 16, 16, 16, 15, 16], 'tower': 15}

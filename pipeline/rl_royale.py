@@ -1495,6 +1495,64 @@ def draw_tower_troop(rates: dict, key: str) -> Optional[str]:
     return None
 
 
+LIVE_LEVELS = REPO / "scratchpad/gauntlet/L74/levels/live_levels.json"   # live_levels.py output (measured, 10-17)
+
+
+def live_levels(cfg: dict) -> Optional[dict]:
+    """``live_levels`` (L74 factor D 10-17; optional, absent / null / false = None = matchups unchanged: every card and
+    tower at the engine default, level 11): true -> the measured live table LIVE_LEVELS -- our side at our live levels,
+    the opponent's drawn per match from the live opponents (``draw_live_levels``). Its file's sha256 enters config_sha.
+    Needs league true. SystemExit on a bad value."""
+    x = cfg.get("live_levels")
+    if x is None or x is False:
+        return None
+    if x is not True:
+        raise SystemExit(f"live_levels must be true, false or null, got {x!r}")
+    if not cfg.get("league"):
+        raise SystemExit("live_levels needs league true (it sets the self-play match levels)")
+    return _live_level_table()
+
+
+_LIVE_TABLE: dict = {}
+
+
+def _live_level_table() -> dict:
+    if not _LIVE_TABLE:
+        _LIVE_TABLE.update(json.loads(LIVE_LEVELS.read_text(encoding="utf-8")))
+    return _LIVE_TABLE
+
+
+def card_level(name: str, level: int) -> int:
+    """``level`` clamped into engine card ``name``'s level range (RoyaleSim catalog level_scaling, parse_card_levels'
+    rule: Champion 11-16, Legendary 9-16, Epic 6-16, Rare 3-16, Common 1-16); a card the catalog lacks: unchanged."""
+    import re
+    from pipeline.decision_options import _catalog_cards
+    ls = (_catalog_cards().get(re.sub(r"[^a-z]", "", name.lower())) or {}).get("level_scaling")
+    if not ls:
+        return int(level)
+    lo = max(ls["relative_level"] + 1, ls["base_level"])
+    hi = min(ls["relative_level"] + ls["level_count"], ls["base_level"] + len(ls["multiplier_percent_by_level"]) - 1)
+    return min(max(int(level), lo), hi)
+
+
+def draw_live_levels(table: dict, learner_deck, opp_deck, key: str) -> dict:
+    """One match's levels -> {"learner": {cards, tower}, "opp": {cards, tower, profile}} (cards in deck order), from a
+    stream of its own seeded by ``key`` (no other stream moves). Learner: our live level per card (table own.cards,
+    else own.default) and our tower level. Opponent: one live opponent drawn uniformly from opp_profiles (its tower
+    level and the levels read off its cards); each of the 8 cards takes a level drawn from that opponent's card levels
+    (its tower level when none was read). Every level is clamped into the card's range (``card_level``)."""
+    rng = np.random.default_rng(zlib.crc32(f"live_levels:{key}".encode()))
+    i = int(rng.integers(len(table["opp_profiles"])))
+    _, tower, seen = table["opp_profiles"][i]
+    own = table["own"]
+    base = [str(n["name"] if isinstance(n, dict) else n).split("@")[0] for n in learner_deck]
+    opp = [str(n["name"] if isinstance(n, dict) else n).split("@")[0] for n in opp_deck]
+    return {"learner": {"cards": [card_level(n, own["cards"].get(n, own["default"])) for n in base],
+                        "tower": int(own["tower"])},
+            "opp": {"cards": [card_level(n, int(seen[int(rng.integers(len(seen)))]) if seen else int(tower)) for n in opp],
+                    "tower": int(tower), "profile": i}}
+
+
 def sample_matchups(rng: np.random.Generator, n: int, update: int, snaps: list[dict], cfg: dict, census: list[dict],
                     p: np.ndarray, league_state=None, exploiters: Optional[dict] = None) -> list[dict]:
     """``n`` league matchups (one LOO group each): opponent (``sample_opponent``), learner deck (``sample_deck``),
@@ -1521,6 +1579,9 @@ def sample_matchups(rng: np.random.Generator, n: int, update: int, snaps: list[d
                     "learner_side": int(rng.integers(2)), "seed": int(rng.integers(2 ** 31 - 1))})
         if cfg.get("opp_tower_troops") is not None:          # L74 troops: absent / null = no key (unchanged)
             out[-1]["opp_tower"] = draw_tower_troop(cfg["opp_tower_troops"], f"{out[-1]['seed']}:{out[-1]['tag']}")
+        if cfg.get("live_levels"):                            # L74 factor D: absent / null / false = no key (unchanged)
+            out[-1]["levels"] = draw_live_levels(_live_level_table(), ld["engine"], od["engine"],
+                                                 f"{out[-1]['seed']}:{out[-1]['tag']}")
     return out
 
 
@@ -2754,7 +2815,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                 and k not in VALUE_PHI_KEYS and k not in STATE_PHI_KEYS and k not in AO.DEFAULTS
                 and k not in ("league_learner_icebow_share", "learner_pipeline_frac", "league_opp_T", "kl_ref_gate",
                               "critic_ctx", "kl_ref_gate_max_elixir", "kl_ref_gate_target_frac",
-                              "league_exploiters", "cue_inputs", "opp_tower_troops") + OPP_TEMPO_KEYS
+                              "league_exploiters", "cue_inputs", "opp_tower_troops", "live_levels") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
         cfg[k] = yaml.safe_load(v)
@@ -2773,6 +2834,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
     AO.validate(cfg)
     exploiter_league(cfg)                                     # O2: checked at start (files exist, league on); absent = no-op
     opp_tower_troops(cfg)                                     # L74 troops: checked at start; absent = no-op
+    live_levels(cfg)                                          # L74 factor D: checked (and the table read) at start
     frac = cfg.get("learner_pipeline_frac", 0.0)
     if isinstance(frac, bool) or not isinstance(frac, (int, float)) or not 0 <= frac <= 1:
         raise SystemExit("learner_pipeline_frac must be a finite number in [0, 1]")
@@ -2803,6 +2865,10 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "league_exploiters"}
     if cfg.get("opp_tower_troops") is None:                  # L74 troops off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "opp_tower_troops"}
+    if not cfg.get("live_levels"):                           # L74 factor D off (absent / null / false) = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "live_levels"}
+    else:                                                    # on: the table's bytes are part of the run (resume refuses a change)
+        cfg = {**cfg, "live_levels": hashlib.sha256(LIVE_LEVELS.read_bytes()).hexdigest()}
     if cfg.get("critic_ctx") is None:                        # C2 / F2 off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "critic_ctx"}
     if not cfg.get("cue_inputs"):                            # step c off (absent / null / false) = the historical hash
@@ -3438,7 +3504,9 @@ class Learner:
             return res, {"picked": [], "actors": st, "skipped": len(skipped),
                          "league": [{"opp": sp["opp"]["id"], "learner_deck": sp["learner_deck_name"],
                                      "opp_deck": sp["opp_deck_name"], "side": sp["learner_side"],
-                                     **({"opp_tower": sp["opp_tower"]} if "opp_tower" in sp else {})} for sp in specs]}
+                                     **({"opp_tower": sp["opp_tower"]} if "opp_tower" in sp else {}),
+                                     **({"opp_level": sp["levels"]["opp"]["tower"]} if "levels" in sp else {})}
+                                    for sp in specs]}
         pick = self.rng.choice(len(self.train), size=min(E_, len(self.train)), replace=False)
         for i in pick:
             self.visits[int(i)] += 1
