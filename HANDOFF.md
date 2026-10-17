@@ -1,3 +1,27 @@
+## 2026-10-17 10:37 EDT -- FIN5: first scores under the RAW goal (218 captured logs, 213 scored, 6,798 strict fights) + round-4 diagnosis launched
+
+HEAD 734b9a5 harness (I14 + raw goal + H-UNK) + fork clashbot36 bc2bf9d, K=8 (pod 216.81.151.5:15617 /workspace/results/FIN5;
+laptop copy pod_backup_weekend/parity1016/FIN5/, sha-verified). Raw = live vs perturbed SIMs, lower CI judged:
+| card (n) | raw [95% CI] | ceiling | normalised [95% CI] | flag |
+|---|---|---|---|---|
+| OVERALL (6798) | 0.896 [0.887, 0.906] | 0.956 | 0.937 [0.930, 0.945] | below (floor met) |
+| own Log (503) | 0.970 [0.956, 0.984] | 0.992 | 0.978 | MEETS |
+| own X-Bow (535) | 0.935 [0.915, 0.955] | 0.975 | 0.959 | below (floor met) |
+| own Tornado (136) | 0.940 [0.897, 0.978] | 0.994 | 0.946 | below (floor met) |
+| own Rocket (84) | 0.924 [0.869, 0.971] | 0.966 | 0.957 | below (floor met) |
+| own Knight (432) | 0.923 [0.902, 0.944] | 0.963 | 0.959 | below (floor met) |
+| own IW hero (656) | 0.920 [0.898, 0.940] | 0.975 | 0.944 | below (floor met) |
+| own Tesla (399) | 0.872 [0.839, 0.904] | 0.968 | 0.902 [0.869, 0.932] | below (floor MISSED) |
+| own Tesla evo (121) | 0.867 [0.810, 0.920] | 0.961 | 0.902 [0.845, 0.951] | below (floor MISSED) |
+| own Knight evo (157) | 0.860 [0.801, 0.915] | 0.980 | 0.877 [0.824, 0.928] | below (floor MISSED) |
+| own Skeletons (550) | 0.849 [0.823, 0.875] | 0.925 | 0.918 | below (floor met) |
+Opponent cards now reach n >= 30 and count: worst Skeleton Army 0.650 (64), Bats 0.747 (48), Hog Rider 0.815 (108), Blowdart 0.818
+(66), Witch 0.847 (99); meeting: Goblin Barrel 0.983, Ice Spirits 1.0. vs FIN_BEST (145 logs): normalised 0.941 -> 0.937, raw
+0.900 -> 0.896 (same within CI; bigger cohort + H-UNK).
+Round 4 (TICKET_R4.md in the parity1016 temp dir; three workers on P1, <= 8 workers each, own fork patches this round):
+r4a Tesla / Tesla evo / opp Hog; r4b own Skeletons / opp Skeleton Army / Bats / Witch (are swarm target splits still U with
+phase-3 targets?); r4c Knight evo / IW hero / Blowdart / Firecracker. P1 holds /workspace/KEEP + a 10 h deadline_stop backstop.
+
 ## 2026-10-17 10:13 EDT -- pods for 10-17 day + three jobs launched (parity FIN5, reader spawn timer, tower troops RL)
 
 - Owner offered 8 more pods today. Every 81.27.69.177 1x-L40 pod had a 15.3-CPU quota -> stopped (49j9d4fdsnvip6,
