@@ -1,3 +1,20 @@
+## 2026-10-17 11:53 EDT -- parity COVERAGE metric (owner 10-17) + live card census; spawn-tick interim gain; cue130 +5.94 vs u250
+
+- Owner 10-17: track "the share of live fights where the card meets the goal"; step d may start once MOST of the commonly-faced
+  cards meet the goal, the "commonly faced" cutoff set from our live-match data. Tools (committed):
+  scratchpad/gauntlet/L74/parity/coverage/census_cards.py (fights.py read_match + deployments, no engine: plays per card label
+  'own '/'opp ' + name + form, main-account logs) and coverage.py CEILING_JSON CENSUS_JSON [--common SHARE] (coverage = live play
+  share of cards flagged MEETS; an unproven card never counts; --selftest). Census of the 2,707 logs since 10-07 running on P1
+  (/workspace/census/).
+- r4d interim (spawn-tick births patch, diag_night/r4d/births.patch, NOT landed yet): 11 matches with the new fields, 416 strict
+  fights paired: raw 0.893 [0.868, 0.914] -> 0.916 [0.893, 0.936], paired diff +0.023 [+0.011, +0.035]; ceiling 0.958 -> 0.995;
+  normalised 0.932 -> 0.920 (the ceiling no longer credits placement noise); SIM deploy end on the live tick 65.9% -> 99.4% of new
+  bodies; old logs byte-identical. S-laws: the SIM already matches the first deploy step and spawner-given deploy times.
+- V11 on 6 live matches after the 11:17 restart: 732/732 creation ticks inside the frame gap, 0 null rows.
+- cue130 (pod 8): cues130_gae_cue_u250 live pool 643/960 (67.0%) vs u250 586 -> **+5.94 [+2.08, +9.90]**; NOT deployable (no live
+  cue path); its no-cue twin cues130_gae_ctl_u250 eval finishing -> decides cue effect vs extra training (at 65 updates the gain
+  was the training: ctl +3.44, cue +3.75).
+
 ## 2026-10-17 11:49 EDT -- r4c Knight evo / IW hero / Blowdart / Firecracker: H-TIMEOUT + H-RASCALS landed; Evo Knight reduction = 2 mechanisms
 
 Worker report DONE_WITH_CONCERNS (scratchpad/gauntlet/L74/parity/diag_night/r4c/; pod P1 /workspace/w_r4c, results r4c_*). Each
