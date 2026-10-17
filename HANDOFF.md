@@ -1,3 +1,14 @@
+## 2026-10-17 01:06 EDT -- auto-promote plumbing: live-pool evals QUEUED for the 4 promotable candidates
+
+- Queued (each waits for its chain's marker, then runs live_eval_pod.sh D3 on 0.1.35 into /workspace/results/LIVEEVAL/<NAME>_{741200,742000};
+  log /workspace/results/liveq_<NAME>.log): gx74_u65 on 23419 (cb_ex, rlarm_gae_exploit, waits rlarm_gae_exploit/DONE), gx75_u65 on 37671
+  (cb_par), gx76_u65 on 23450 (cb_t2), gaehero_u65 on 18869 (cb_ab, rlarm_gae_hero, waits GH_DONE; Hero IW + rule press = the only Hero-IW
+  candidate that can go live). Compare with  (vs live_f1u250 586/960);
+  promote only if the paired CI lower bound > 0 and not worse on the standard set. NOTE: the gae_exploit seeds train with
+  ROYALE_HEROIW_FORM=normal (started before the owner's Hero IW ruling) while evals use the hero form.
+- Progress at queue time: T1 s74 u306 / s75 u251 / s76 u245 (500 each); gae_exploit u26 / u40 / u20 (65); gae_ab trained (learned
+  press = not promotable); pod 8 gae_cue_u250 trained + grafted, gae_ctl_u250 training since 00:35 EDT.
+
 ## 2026-10-17 01:04 EDT -- I10: TOWER TROOPS set up (fork 39debe5 + harness): captured 0.937 -> 0.939; current best = I10 harness + fork 7abab5e
 
 - Fork clashbot35 (bundle pod_backup_weekend/fork35/clashbot35_7abab5e.bundle): 39debe5 Battle(..., tower_troops=[blue, red]) keyword
