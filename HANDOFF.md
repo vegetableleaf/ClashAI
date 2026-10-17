@@ -1,3 +1,27 @@
+## 2026-10-17 00:45 EDT -- 0.1.36 as released is net positive on the I7 harness (+0.006); per-law hook; spawn-tick pin raises raw but lowers normalised
+
+Skel worker round 2 (diag_night/skel/, pod B /workspace/results/I7_*), captured strict, vs I7 on 0.1.35 (0.930):
+- **0.1.36 per law** (27 changed laws, each reverted alone, K=0 a0 flips; runtime hook PARITY_OVERRIDES, now in fights.py,
+  unset = byte-identical): 0.1.36 as released a0 +8 / -2 = the sum of the per-law flips; ATTRACT_ONSET +4 / -2, SNIPE_TOWER_FILTER
+  +2 / 0 (one event), HIT_STUN_SPAN +1 / 0, LOST_TARGET_SHOT +1 / 0 (fragile), the other 23 no flips. **K=8: 0.930 -> 0.936
+  [0.915, 0.954]**, own Skeletons 0.873 -> 0.896, Knight 0.927 -> 0.931; opp LavaHound (n 3) 1.0 -> 0.667, MinionHorde (n 7)
+  0.691 -> 0.625. Best set on evidence = all of 0.1.36 -> **the fork should move to v0.1.36** (rebase S1 / S2 / tower troops on it).
+- **Spawn-tick U:** no reader field pins a body's creation tick (no deploy timer in live entities / phase-2 / phase-3; state 4 -> 1
+  is no sharper than the 2-tick frame gap). The reader would need each body's remaining deploy ms (engine deploy_ms) or spawn tick
+  at first sighting. A kinematic pin (walk_pin.patch: still for DeployTime, then full-speed steps -> round(d / Speed) fixes the tick)
+  pins 655 / 1,092 troop plays (one tick LATER than the mid-gap guess in 332): raw 0.885 -> 0.893, body misses 0.095 -> 0.076,
+  own Skeletons raw 0.808 -> 0.859 -- but the ceiling rises 0.952 -> 0.970 (observed state no longer drawn), so normalised FALLS
+  0.930 -> 0.920 (Knight 0.917, X-Bow 0.940, Tesla 0.817). NOT landed: it also leans on movement.DEPLOY_TIMING being right.
+  **METHOD ISSUE for the owner: observing more raises the ceiling and lowers the normalised score -- honest progress can read as a
+  drop; consider judging fully observed fights on raw agreement.**
+- Bridge: SIM bridges = arena.json half-columns 5-8 / 27-30 (arena.rs:730); live 976 / 11,002 river samples (8.9%) of walking
+  ground troops stand outside (median 316 mt over, 69% within the body's radius; swarms). The SIM's grid_move (move16402.rs:705)
+  already lets walking units be pushed over water (only deploying units are walled, b) -> the gap is the HARNESS snap; snap_restore
+  +2 / -2 -> not landed; no fork patch.
+- Evo Knight fortify divergence gone under I7; fortify_off +1 / -1 (not landed). Evo Tesla pulse at t0 is part of the Tesla's
+  emergence (no SIM area row) -> needs Tesla rise-state seeding (not built). Unseeded statuses in strict fights: ChefTower level buff
+  14 (3 fail; = tower troops), Rage 7, GoblinHero last-to-fall 6 (2 fail), Invisibility 5, Bush 3, Barbarian EVO rage 3.
+
 ## 2026-10-17 00:43 EDT -- I9 (doubled Lightning / Royal Delivery casts) landed; spell damage audit; first-hit + reflect laws match; TOWER TROOPS gap
 
 - **I9 = I8 + log K3** (seen_casts kept a spell's area row AND its projectile twin as two casts -> Lightning / Royal Delivery cast

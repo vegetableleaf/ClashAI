@@ -503,7 +503,12 @@ class Engine:
         if os.environ.get('ROYALE_RUNTIME') == '20261016-linux' and self.stamp['royalesim'] != '0.1.35':
             raise RuntimeError('ROYALE_RUNTIME=20261016-linux must be royalesim 0.1.35, got ' + str(self.stamp['royalesim']))
         self.sim = sim
-        self.b = sim.Battle(None, [[0, 1, 2], [0, 2, 1]], calibration_overrides={'cards.CARD_TABLE': json.dumps(CARD_TABLE)})
+        # PARITY_OVERRIDES='{"status.ATTRACT_ONSET": "<arm>", ...}': per-law calibration overrides for law A/Bs (diag_night/skel
+        # law_override_hook); unset = the runtime's own arms, outputs byte-identical
+        extra = {k: json.dumps(v) for k, v in json.loads(os.environ.get('PARITY_OVERRIDES') or '{}').items()}
+        self.b = sim.Battle(None, [[0, 1, 2], [0, 2, 1]], calibration_overrides={'cards.CARD_TABLE': json.dumps(CARD_TABLE), **extra})
+        if extra:
+            self.stamp['overrides'] = sorted(extra)
         self.cat = [dict(zip(sim.CATALOGUE_FIELDS, r)) for r in json.loads(self.b.catalogue_json())]
         self.ids = {c['name']: i for i, c in enumerate(self.cat)}
         self.F = list(sim.ENTITY_FIELDS)

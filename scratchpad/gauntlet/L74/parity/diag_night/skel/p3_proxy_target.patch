@@ -1,0 +1,13 @@
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -1814,7 +1814,9 @@
+         tref = None
+         if tg is not None:
+             tbd = gens.get(tg)
+-            tref = ref_of(tbd) if tbd and (tbd['tower'] or not by.get(tbd['id'], {}).get('proxy')) else None
++            # a proxy child sits on its live point: it is a target as any body (diag_night/skel 220124@2480: an Evo Knight's
++            # Tombstone-skeleton target was unresolved, so it never hit and kept its fortify)
++            tref = ref_of(tbd) if tbd else None
+             if tref is None:
+                 flags['setup_p3_target_unresolved'] += 1
+         phase = 'Idle' if prog <= 0 else 'Cooldown' if prog % hs < step else 'Windup'

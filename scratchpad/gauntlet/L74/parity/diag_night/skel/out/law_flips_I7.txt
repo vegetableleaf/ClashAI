@@ -1,0 +1,51 @@
+strict fights (0.1.36) 1000; a0 agree 0.1.35 890/1000, 0.1.36 896/1000
+0.1.35 -> 0.1.36 as released: +8 -2
+   + opp Archer 20261016_135037@3259
+   + opp Miner 20261016_165921@2628
+   + own Skeletons 20261016_165921@2630
+   + opp BarbLog 20261016_171357@418
+   + opp SkeletonBalloon 20261016_171824@206
+   + own Skeletons 20261016_214002@1724
+   + opp ElixirGolem 20261016_215432@1409
+   + own Tornado 20261016_215432@1411
+   - opp LavaHound 20261016_220124@3640
+   - own Tornado 20261016_221202@394
+
+per law (0.1.36 with that law reverted to its 0.1.35 arm; the law HELPS a fight that breaks when it is reverted):
+  AREA_EFFECT_ON_HIT                     helps 0  hurts 0  net +0
+  ATTRACT_ONSET                          helps 4  hurts 2  net +2
+       helps opp Archer 20261016_135037@3259
+       helps opp SkeletonBalloon 20261016_171824@206
+       helps opp ElixirGolem 20261016_215432@1409
+       helps own Tornado 20261016_215432@1411
+       hurts opp LavaHound 20261016_220124@3640
+       hurts own Tornado 20261016_221202@394
+  BUFF_DEATH_SPAWN_POINT                 helps 0  hurts 0  net +0
+  CAGE_DEPLOY_TAKE                       helps 0  hurts 0  net +0
+  CAGE_HOLD_START                        helps 0  hurts 0  net +0
+  CHAIN_LANDED_BODY                      helps 0  hurts 0  net +0
+  DASH_STAND_CONTACT                     helps 0  hurts 0  net +0
+  DASH_STAND_RETARGET                    helps 0  hurts 0  net +0
+  DOOMED_ENCHANT_BONUS                   helps 0  hurts 0  net +0
+  EVO_BARREL_DECOY_POINTS                helps 0  hurts 0  net +0
+  EVO_KILL_HEAL                          helps 0  hurts 0  net +0
+  FLAG_PRESS_WINDOW                      helps 0  hurts 0  net +0
+  GUARD_CHARGE_IMMUNITY                  helps 0  hurts 0  net +0
+  GUARD_LANDING_PUSH                     helps 0  hurts 0  net +0
+  GUARD_PRESS_CONTACT                    helps 0  hurts 0  net +0
+  HIT_STUN_SPAN                          helps 1  hurts 0  net +1
+       helps own Skeletons 20261016_214002@1724
+  LIVE_SPAWN_ROLL_BIRTH                  helps 0  hurts 0  net +0
+  LOST_TARGET_SHOT                       helps 1  hurts 0  net +1
+       helps opp BarbLog 20261016_171357@418
+  ON_BUFF_HOLD_CONTACT                   helps 0  hurts 0  net +0
+  ROLL_RELEASE_WATER_POINT               helps 0  hurts 0  net +0
+  SHIELD_TICK_SUM                        helps 0  hurts 0  net +0
+  SNIPE_TOWER_FILTER                     helps 2  hurts 0  net +2
+       helps opp Miner 20261016_165921@2628
+       helps own Skeletons 20261016_165921@2630
+  SPAWN_AREA_FIRST_PULSE                 helps 0  hurts 0  net +0
+  SPAWN_PATHFIND_SURFACE_CONTACT         helps 0  hurts 0  net +0
+  STRIKE_DUE                             helps 0  hurts 0  net +0
+  TOWER_TROOP_COOKING                    helps 0  hurts 0  net +0
+  WARP_BACK_LANDING                      helps 0  hurts 0  net +0

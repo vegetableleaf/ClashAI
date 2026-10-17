@@ -1,0 +1,13 @@
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -478,7 +478,9 @@
+         if os.environ.get('ROYALE_RUNTIME') == '20261016-linux' and self.stamp['royalesim'] != '0.1.35':
+             raise RuntimeError('ROYALE_RUNTIME=20261016-linux must be royalesim 0.1.35, got ' + str(self.stamp['royalesim']))
+         self.sim = sim
+-        self.b = sim.Battle(None, [[0, 1, 2], [0, 2, 1]], calibration_overrides={'cards.CARD_TABLE': json.dumps(CARD_TABLE)})
++        extra = {k: json.dumps(v) for k, v in json.loads(os.environ.get('PARITY_OVERRIDES') or '{}').items()}
++        self.b = sim.Battle(None, [[0, 1, 2], [0, 2, 1]], calibration_overrides={'cards.CARD_TABLE': json.dumps(CARD_TABLE), **extra})
++        self.stamp['overrides'] = sorted(extra)
+         self.cat = [dict(zip(sim.CATALOGUE_FIELDS, r)) for r in json.loads(self.b.catalogue_json())]
+         self.ids = {c['name']: i for i, c in enumerate(self.cat)}
+         self.F = list(sim.ENTITY_FIELDS)

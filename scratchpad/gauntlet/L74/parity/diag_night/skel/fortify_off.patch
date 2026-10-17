@@ -1,0 +1,34 @@
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -1176,6 +1176,31 @@
+             except Exception:
+                 flags['setup_shot_not_set'] += 1
+ 
++    # Evo Knight fortify (units Knight_EV1 idle_buff Knight_Fortify_EV1: DamageReduction 60, BuffWhenNotAttackingTime 50
++    # ms; calibration status.IDLE_BUFF off_after_hit_while_attacking): a setup spawn starts with it on (idle_back 0) and
++    # keeps it until its first hit. A live Evo Knight whose phase-2 rows at t0 lack the buff has hit already: idle_back
++    # past t0 + 1 keeps it off while it attacks (diag_night/skel: 44 of 120 t0-board Evo Knights of the strict captured
++    # fights; 7 of those fights fail). ponytail: Knight_EV1 only; other idle-buff units (Super Knight) when one is seen.
++    buffs0 = m.get('buffs') or {}
++    tb = max((t for t in buffs0 if t0 - 6 <= t <= t0), default=None)
++    if tb is not None:
++        before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
++        for bd in setup:
++            a = next((x for x in start if x['id'] == bd['id']), None)
++            c_ = catalog.get(a['card_id']) if a else None
++            if bd.get('proxy') or not c_ or c_['display_name'] != 'Knight' or form_of(a['card_id'], c_) != 1 or 'gen' not in a:
++                continue
++            if any(n == 'Knight_Fortify_EV1' for n, _ in buffs0[tb].get(a['gen'], ())):
++                continue
++            i = ent(E, ('body', bd))
++            if i is not None and 'idle_back' in E:
++                E['idle_back'][i] = t0 + 2; flags['setup_fortify_off'] += 1
++        if after != before:
++            try:
++                load_edited(b, before, after)
++            except Exception:
++                flags['setup_fortify_not_set'] += 1
++
+     # Opt-in inference (PARITY_INFER=target,phase; item 8): the SIM's attack clock advances 50 ms a tick while engaged
+     # and a hit lands (melee) / launches (ranged) each time it reaches a multiple of HitSpeed (probed on 0.1.35), so a
+     # body that last hit e ms before t0 gets attack_ms = e mod HitSpeed and its reload left; its target = that victim.

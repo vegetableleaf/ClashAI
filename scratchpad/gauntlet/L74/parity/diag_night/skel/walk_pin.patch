@@ -1,0 +1,68 @@
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -342,7 +342,7 @@
+     return sorted(out, key=lambda e: (e['tick'], e['side'], e['name']))
+ 
+ 
+-def deployments(m, catalog, life=None, own_unit=None):
++def deployments(m, catalog, life=None, own_unit=None, walk=None):
+     """Live deployments: new body groups (children of a living/just-dead same-card body, or role-children by max_hp,
+     are the SIM's job, not plays), own confirmed spells, own Hero IW presses. Ext logs: spells and hero casts of both
+     sides as seen (seen_casts); an own tap or press stays only where nothing was seen for it."""
+@@ -394,6 +394,10 @@
+         ev = dict(kind='play', side=g['side'], name=c['display_name'], form=form_of(g['card_id'], c), tick=tick,
+                   x=round(g['x']), y=round(g['y']), n=len(g['members']), source='first_seen',
+                   spell_spawned=c.get('type') == 'spell', lo=prev, hi=max(prev, g['tick']-1))
++        if walk and c.get('type') == 'troop':
++            pin = walk_pin(g['members'], walk(c['display_name']), prev, g['tick'])
++            if pin is not None:        # the creation tick is known: play on the tick before it, and the ceiling stops drawing it
++                ev.update(tick=pin - 1, lo=pin - 1, hi=pin - 1, pinned=True)
+         land = [r['land'] for r in g['members'] if 'land' in r] if c['display_name'] in DIGGERS else []
+         if land:
+             # A Miner is seen tunnelling from its own side (active rows) before it surfaces (deploying rows): the play's
+@@ -433,6 +437,35 @@
+     return sorted(out, key=lambda e: (e['tick'], e['side'], e['name'])), delay
+ 
+ 
++def walk_pin(members, stats, prev, first):
++    """Creation tick of a play's bodies from their first walking step, or None. calibration movement.DEPLOY_TIMING
++    (measured HIGH): a unit is immobile for DeployTime / 50 ticks after its creation tick c and takes its first full step
++    (Speed millitiles) on c + DeployTime / 50. A body standing still on two frames and then d away one frame (<= 3 ticks)
++    later took round(d / Speed) steps, the first on (that frame - steps + 1). diag_night/skel: the frame-gap guess
++    creates the unit on the earlier of the gap's two ticks, so the SIM walked 1 tick ahead of live in 57 of 131 own
++    Skeletons and 18 of 43 Knights. Bodies off an integer step count by > 0.15 (slowed, pushed, attacking) are not used;
++    the earliest qualifying body wins (multi-unit cards with a member deploy delay); it must fall in (prev, first]."""
++    v, D = stats
++    if not v or not D:
++        return None
++    cs = []
++    for r in members:
++        tr = r['traj']
++        for (ta, xa, ya), (tp, xp, yp), (tf, xf, yf) in zip(tr, tr[1:], tr[2:]):
++            if math.hypot(xp-xa, yp-ya) > 5:
++                continue                   # not standing yet (spawn spread / push during the deploy)
++            d = math.hypot(xf-xp, yf-yp)
++            if d <= 20:
++                continue
++            n = round(d / v)
++            if tf - tp <= 3 and 1 <= n <= tf - tp and abs(d / v - n) <= .15:
++                c = tf - n + 1 - D
++                if prev < c <= first:
++                    cs.append(c)
++            break
++    return min(cs) if cs else None
++
++
+ def cut(m, events, window):
+     """One fight per deployment: start = the last frame strictly before it; length `window` ticks."""
+     ticks = [t for t, _ in m['frames']]
+@@ -2011,7 +2044,8 @@
+         out.write_text(json.dumps(dict(summary=res)))
+         return res
+     eng = Engine()
+-    events, delay = deployments(m, catalog, eng.effect_life, own_unit=lambda n, hp: eng.level(n, hp) is not None)
++    events, delay = deployments(m, catalog, eng.effect_life, own_unit=lambda n, hp: eng.level(n, hp) is not None,
++                                walk=lambda n: ((eng.stats(n).get('speed') or 0), (eng.stats(n).get('deploy_time_ms') or 0)//50))
+     fights = cut(m, events, window)
+     m['buffs'] = phase2_buffs(path) if m['ext'] else {}
+     m['attacks'] = phase3_attacks(path) if m['ext'] else {}

@@ -1,0 +1,39 @@
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -894,6 +894,8 @@
+         spawns.append((bd['side'], eng.ids[name], round(x*18), round(y*18), max(1, bd['hp'])))
+         setup.append(dict(id=bd['id'], side=bd['side'], x=x, y=y, card_id=bd['card_id'], proxy=name != catalog[bd['card_id']]['display_name'],
+                           worn=bd['hp'] < bd['max_hp']))
++        if (x, y) != (bd['x'], bd['y']) and bd.get('state') in (1, 2):
++            setup[-1]['live_xy'] = (bd['x'], bd['y'])
+     for bd in start:
+         if bd['tower']:
+             continue
+@@ -1267,6 +1269,27 @@
+             rows.append((tick, live, simb))
+         return rows, refused, over
+ 
++    # Live ground bodies beside a bridge stand over SIM water cells (diag_night/skel: 8.9% of walking / attacking river-row
++    # samples, 69% of them within the body's radius; swarms pushed in crowds). The reset refuses or the setup snaps them;
++    # move16402 grid_move walls water only for deploying units, so a walking one goes back on its live point here, last,
++    # after every edit that finds a body by its setup point.
++    back = [(k, bd) for k, bd in enumerate(setup) if bd.get('live_xy')]
++    if back:
++        before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
++        for k, bd in back:
++            i = ent(E, ('body', bd))
++            if i is None:
++                continue
++            lx, ly = bd['live_xy']
++            E['pos'][i] = {'x': round(lx*18), 'y': round(ly*18)}
++            j = next((j for j, sp in enumerate(spawns) if sp[0] == bd['side'] and sp[2] == round(bd['x']*18) and sp[3] == round(bd['y']*18)), None)
++            if j is not None:
++                spawns[j] = spawns[j][:2] + (round(lx*18), round(ly*18)) + spawns[j][4:]
++            bd['x'], bd['y'] = lx, ly; flags['setup_snap_restored'] += 1
++        try:
++            load_edited(b, before, after)
++        except Exception:
++            flags['setup_snap_restore_failed'] += 1
+     base = b.save(); perturbed = Counter()
+     rows, refused, over = simulate()
+     if over:
