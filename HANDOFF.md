@@ -1,3 +1,11 @@
+## 2026-10-17 04:51 EDT -- T1 s74 u350 ties u250 (+0.31); learned vs rule ability press = no difference (-1.15); gae_hero live-pool eval running
+
+- T1 s74 u350 (37671 T1EARLY): live pool **589/960, +0.31 [-3.44, +4.17]** vs live u250 -> not a successor; trend on the 0.1.35 retrain
+  u150 -3.75, u250 -3.85, u350 +0.31 (more updates help it catch up). T1 finals (500) still training (s74 ~u330+, s75/s76 ~u270).
+- gae_hero (18869; Hero IW + RULE press, 65 upd, final 9d9c0d2b; copy pod_backup_weekend/pod1016_gae_hero): standard D3 491/960; vs its
+  learned-press twin gae_ab (480): **gae_ab - gae_hero -1.15 [-5.10, +2.92]** -> (a) the learned hero-ability press (B6 stage A) gives
+  no measurable gain over the rule at 65 updates (same as bait: the learned head copies a low press rate); gae_hero vs u250 on the
+  standard set -2.08 n.s. Its live-pool eval (gaehero_u65, queued on GH_DONE) is running = the auto-promote check.
 ## 2026-10-17 04:40 EDT -- I12 (Evo Musketeer snipes, Hero Balloon thrown trooper, spell probe out of tower range) = 0.942 on 97 matches; 2 slowed-timer laws
 
 Round-3a worker (diag_night/r3a/NOTES.txt; pod A /workspace/results/r3a_*), base CAP2_BEST (I11 + fork d80dcb5, 0.940):
