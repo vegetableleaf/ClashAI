@@ -1,3 +1,11 @@
+## 2026-10-17 06:57 EDT -- gae_exploit s76 live pool -4.27 vs u250; same-seed F1 twins for s75 / s76 now being scored (settles the exploiter question)
+
+- gx76_u65 (gae_exploit s76): live pool 545/960 -> vs u250 **-4.27 [-8.12, -0.31]**; vs F1 s74 u65 +2.81 [-1.25, +6.98] (different seed).
+  All three exploiter seeds sit above F1 s74's 518 (s74 +1.56 same seed, s75 +4.48, s76 +2.81) -- suggestive (b), but only s74 has its
+  own twin. No promotion.
+- Decisive check launched: F1 s75 u65 grafted (23450, name f1s75_u65) and F1 s76 u65 grafted (37671, f1s76_u65) on the same live pool /
+  0.1.35 / D3 (checkpoints from pod_backup_weekend/pod1014b_arms and icebow/data/bench/rl_royale/rlarm_gae_s76, sha-verified; grafted from
+  the same OLD r3c heads as the exploiter runs). Fresh self-stops on their DONE (+3600 s) because the old watchdogs exit if busy.
 ## 2026-10-17 06:24 EDT -- gae_exploit struggle-slice results, all 3 seeds: no gain on u250's struggle decks
 
 - STRUGGLE slice (struggle-pool decks, P ~ n_live, vs E4; candidate vs u250, 960 paired): s74 -0.62 [-4.69, +3.44], s75 -0.10
