@@ -5,7 +5,7 @@
   22 cue inputs add nothing measurable; the +3.4 / +3.75 over u250 is the extra Hero-IW training, not the cues. (b) the zero-init
   cue projection may need more updates to be used. ctl is promotable in principle (no cue inputs) but its CI lower bound -0.42 < 0 ->
   no auto-promote. Checkpoints backed up sha-verified: pod_backup_weekend/pod8_cues/ (u0065 + grafted, both twins, + results/CUES).
-- Pod 8 REUSED (owner: reuse all pods): /workspace/cue130.sh resumes both twins 65 -> 130 (, same yaml, Hero IW;
+- Pod 8 REUSED (owner: reuse all pods): /workspace/cue130.sh resumes both twins 65 -> 130 (rl_royale --resume max_updates=130, same yaml, Hero IW;
   "resumed at update 65" confirmed), grafts, live-pool evals cues130_gae_{cue,ctl}_u250; trap always touches CUES130_DONE; a fresh
   pod_watchdog (CUES130_DONE, 7200 s) self-stops the pod. NOTE: no watchdog was running on pod 8 before this (the 10-16 one was gone).
   ETA ~4 h per twin -> ~13:00 EDT.
