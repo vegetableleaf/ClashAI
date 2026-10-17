@@ -1,3 +1,14 @@
+## 2026-10-17 12:18 EDT -- OWNER: put the cue model live once the live cue path is verified; may revert if the s75 replicate contradicts
+
+- Owner 10-17: "once the live cue path is complete, wire the cue u130 checkpoint into live_play.py and start_live.sh, then restart
+  live on the new checkpoint, to see if it visibly performs better. If the seed 75 replicate turns out to contradict the gain,
+  you may switch it back at any point." (memory cue130-live-trial: the one pre-authorised exception to never-revert.)
+- Checkpoint staged on the laptop, sha-verified against pod 8 and its final130.sha: icebow/data/bench/rl_royale/rlarm_gae_cue_u250/
+  rlarm_gae_cue_u250_u0130.pt (e02b6a16...) + _grafted.pt (0fba110c...).
+- Gate before the switch: the live-cue worker's report (field table, flag-off byte-identity, feature parity, offline decision
+  check WITH this checkpoint), MuMu account check, restart between matches (restart_live.py). Revert target = u250 grafted
+  (CKPT_OVERRIDE today).
+
 ## 2026-10-17 12:11 EDT -- CUE INPUTS WORK AT 130 UPDATES: cue vs same-seed twin +5.10 [+1.35, +8.85]; replicate s75 + live cue path started
 
 - Pod 8 (64.247.206.120:12331), seed 74, live-mirrored pool D3, 960 paired (copies pod_backup_weekend/rt35/RT35/):
