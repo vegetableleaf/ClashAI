@@ -673,11 +673,57 @@ def sample_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.n
 # ------------------------------------------------------------------------------------------------------
 GEN_V3_KEYS = ("unit_form", "opp_past")
 GEN_V31_KEYS = ('opp_cycle', 'projectiles', 'effects', 'own_ability')
+GEN_CUE_KEYS = ("cue",)                # step c (rl_royale cue_inputs): a model with a cue layer takes them (sim_cue_rows)
+CUE_MATCH_TILES = 3.0                  # sim_cue_rows: a token takes the nearest same-side SIM body within this (tiles)
 
 
 def gen_row_keys(model):
     version = getattr(model, 'feature_version', 1)
-    return GEN_ROW_KEYS + (GEN_V3_KEYS if version >= 3 else ()) + (GEN_V31_KEYS if version >= 4 else ())
+    return (GEN_ROW_KEYS + (GEN_V3_KEYS if version >= 3 else ()) + (GEN_V31_KEYS if version >= 4 else ())
+            + (GEN_CUE_KEYS if getattr(model, "cue_in", None) is not None else ()))
+
+
+def require_cue_runtime():
+    """Cue inputs read pipeline.sim_unit_state, which needs RoyaleSim >= 0.1.35 (its 160402017 card table)."""
+    sim = sys.modules.get("royalesim")
+    if sim is None or not hasattr(sim, "EMBEDDED_CARDS_160402017_JSON") or not hasattr(sim.Battle, "unit_types_digest"):
+        raise RuntimeError("cue inputs need RoyaleSim >= 0.1.35 (ROYALE_RUNTIME=20261016-linux; laptop: the composite "
+                           "venv in scratchpad/gauntlet/L74/cues/STEP_C_SPEC.md); this runtime has "
+                           f"{getattr(sim, '__version__', None)!r}")
+
+
+def sim_cue_rows(match) -> np.ndarray:
+    """[MAX_U, CUE_N] float32 cue rows aligned with the prepared ``tok`` (model_gen.cue_vector; STEP_C_SPEC.md). The
+    SIM battle's units at the decision tick (sim_unit_state.extract, hit window 100 ms = the live 2-tick sampling,
+    per-match buff memo) are matched to the unit tokens (spell tokens and pads stay 0) by side + position: pairs taken
+    nearest-first, one body per token, within CUE_MATCH_TILES (the view may be extrapolated). Unmatched -> 0 (cue_known 0).
+    ponytail: position matching, not uid -- tokens carry no uid (the live reader will not have one either)."""
+    from pipeline.model_gen import CUE_N, cue_vector
+    from pipeline.sim_unit_state import extract
+    require_cue_runtime()
+    tok, mask = match._obs[0], match._obs[1]
+    out = np.zeros((len(tok), CUE_N), np.float32)
+    c = extract(match.env.core._battle, match.__dict__.setdefault("_cue_memo", {}), hit_window_ms=100)
+    towers = {u["uid"] for u in c["units"] if u["kind"] in ("princess_tower", "king_tower")}
+    bodies = [u for u in c["units"] if u["uid"] not in towers]
+    ti = np.flatnonzero(mask & (tok[:, 13] == 0) & ((tok[:, 1] > 0) | (tok[:, 2] > 0)))
+    if not len(ti) or not bodies:
+        return out
+    bx = np.array([u["x"] / 18.0 for u in bodies])
+    by = np.array([1.0 - u["y"] / 32.0 for u in bodies])
+    if match.side == 1:                                       # obs_contract._engine_xy: side 1 sees the board mirrored
+        bx, by = 1.0 - bx, 1.0 - by
+    mine = np.array([u["team"] == match.side for u in bodies])
+    d = np.hypot((tok[ti, 4:5] - bx) * 18.0, (tok[ti, 5:6] - by) * 32.0)
+    d[(tok[ti, 1:2] > 0) != mine] = np.inf
+    while True:
+        i, j = np.unravel_index(np.argmin(d), d.shape)
+        if not d[i, j] <= CUE_MATCH_TILES:
+            return out
+        u = bodies[j]
+        out[ti[i]] = cue_vector(u, u["attack"]["target"] in towers)
+        d[i, :] = np.inf
+        d[:, j] = np.inf
 
 
 def policy_feature_version(policy):
@@ -1097,6 +1143,8 @@ class Match:
         self._gen_row = policy.row(*self._obs, *policy.slot_ident(self.engine_deck, self.deck_index_of_slot))
         if getattr(policy.model, "feature_version", 1) >= 3:
             self._gen_row.update(sim_v3_features(self, policy))
+        if getattr(policy.model, "cue_in", None) is not None:    # step c: the model has a cue layer -> its cue rows
+            self._gen_row["cue"] = sim_cue_rows(self)
         return self._gen_row
 
     def pre(self, hand) -> tuple[float, np.ndarray, bool]:
@@ -1345,7 +1393,8 @@ class Match:
             tok, mask, sc, past = self._obs
             row = {"tok": tok, "mask": mask, "sc": sc, "past": past}
             if self._gen_row is not None:                     # GenPolicy: the generalist's input row (zeroed sc,
-                row = {k: self._gen_row[k] for k in self._gen_row if k in GEN_ROW_KEYS + GEN_V3_KEYS + GEN_V31_KEYS}
+                row = {k: self._gen_row[k] for k in self._gen_row
+                       if k in GEN_ROW_KEYS + GEN_V3_KEYS + GEN_V31_KEYS + GEN_CUE_KEYS}
             if cfg.get("record_phi"):                         # rl_royale shaping: what Phi needs, own view (True =
                 from pipeline import reward_shaping as RS     # R2 tower_crown, else the step-3 mode's own row)
                 mem = self.__dict__.setdefault("_phi_mem", {})
@@ -1534,6 +1583,8 @@ class Match:
         if tj and 'opp_cycle' in tj[0]:
             for key in GEN_V31_KEYS:
                 out[key] = stack(key).astype(np.float32)
+        if tj and "cue" in tj[0]:                            # step c: the cue rows the model saw
+            out["cue"] = stack("cue").astype(np.float32)
         if tj and "phi_state" in tj[0]:                      # cfg["record_phi"]: reward_shaping.phi_record rows
             out["phi_state"] = stack("phi_state").astype(np.float64)
         if tj and "tick" in tj[0]:                           # cfg["record_tick"]: each row's decision tick

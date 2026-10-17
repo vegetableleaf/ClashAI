@@ -33,6 +33,23 @@ N_FORMS = 4            # base / evo / hero / pad
 CARD_PAD, FORM_PAD = 0, 3
 IDENT = ("hand_card", "hand_form", "next_card", "next_form", "deck_card", "deck_form")
 
+# Step c (scratchpad/gauntlet/L74/cues/STEP_C_SPEC.md): human-visible per-unit cues, one CUE_N row per unit token
+# (b["cue"] [B, U, CUE_N]); a row of zeros = cue unknown. Fields = pipeline/sim_unit_state.extract's (= the live reader's).
+CUE_STATES = ("idle", "moving", "engaged", "deploying", "jumping", "tunnelling", "casting")
+CUE_PHASES = ("idle", "windup", "hit")
+# S6 (L74/parity/S6_CUES_1016.md): taunted (the SIM never sets it) and stunned (stun reads frozen) are not trainable
+CUE_STATUS = ("frozen", "slowed", "raged", "invisible", "shielded")
+CUE_N = 1 + len(CUE_STATES) + 2 + 2 + len(CUE_PHASES) + 1 + len(CUE_STATUS) + 1     # 22
+
+
+def cue_vector(u: dict, target_is_tower: bool) -> list:
+    """One unit (sim_unit_state.extract schema) -> its CUE_N floats: [cue_known=1, state one-hot 7, charging, Tesla
+    hidden, has_target, target_is_tower, attack phase one-hot 3, attack progress frac, status 5, slow_frac]."""
+    a, s = u["attack"], u["status"]
+    return ([1.0] + [float(u["state"] == k) for k in CUE_STATES] + [float(bool(u["charging"])), float(u["hide"] == "hidden")]
+            + [float(a["target"] is not None), float(bool(target_is_tower))] + [float(a["phase"] == k) for k in CUE_PHASES]
+            + [float(a["frac"] or 0.0)] + [float(bool(s[k])) for k in CUE_STATUS] + [float(s["slow_frac"] or 0.0)])
+
 
 class UnitFormInput(nn.Module):
     """V3: small actual-form embedding added to each entity embedding."""
@@ -186,7 +203,15 @@ class GenModel(S1Model):
         tok = b["tok"]
         if self.feature_version >= 3:
             tok = torch.cat([tok, b["unit_form"].to(tok.dtype).unsqueeze(-1)], -1)
-        enc = self.encode(tok, b["mask"], self.global_features(b), empty)
+        cue_in = getattr(self, "cue_in", None)
+        if cue_in is not None and "cue" in b:   # step c: + cue_in(cue) on each unit token's embedding (no bias: 0 -> 0)
+            hook = self.unit_in.register_forward_hook(lambda m, i, o: o + cue_in(b["cue"].to(o.dtype)))
+            try:
+                enc = self.encode(tok, b["mask"], self.global_features(b), empty)
+            finally:
+                hook.remove()
+        else:
+            enc = self.encode(tok, b["mask"], self.global_features(b), empty)
         if self.feature_version >= 6:
             enc = dict(enc, p=enc['p'] + self.target_patches(b))
         if getattr(self, "cell_refine", None) is not None:
@@ -208,9 +233,21 @@ class GenModel(S1Model):
         self.cell_refine = CellRefine(self.d, c, layers).to(self.cell_emb.device)
         return self.cell_refine
 
+    def add_cue_in(self) -> nn.Linear:
+        """Attach the step-c cue projection (CUE_N -> d, no bias), ZERO-initialised: every output is unchanged until it
+        trains; checkpoints holding ``cue_in.weight`` get it on load (and the model then takes b["cue"])."""
+        self.cue_in = nn.Linear(CUE_N, self.d, bias=False).to(self.cell_emb.device)
+        nn.init.zeros_(self.cue_in.weight)
+        return self.cue_in
+
     def load_state_dict(self, state_dict, strict: bool = True, assign: bool = False):
         # Opt-in by checkpoint CONTENT: every loader (load_model, eval_gen, rl_royale actors, live) goes through here,
         # so a state dict with the refinement builds it; one without leaves the model exactly as before.
+        if "cue_in.weight" in state_dict and getattr(self, "cue_in", None) is None:
+            self.add_cue_in()
+        elif strict and "cue_in.weight" not in state_dict and getattr(self, "cue_in", None) is not None:
+            # a pre-cue checkpoint into a model WITH the layer: that one key zero-filled, every other key still strict
+            state_dict = {**state_dict, "cue_in.weight": torch.zeros_like(self.cue_in.weight)}
         if getattr(self, "cell_refine", None) is None and any(k.startswith("cell_refine.") for k in state_dict):
             if "cell_refine.cfg" in state_dict:
                 c, layers = (int(v) for v in state_dict["cell_refine.cfg"])

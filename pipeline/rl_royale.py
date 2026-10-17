@@ -46,6 +46,9 @@ C2 / F2 (``critic_ctx: arch | full``, gae only, opt-in; absent / null = unchange
 reward/REWARD_ARCHITECTURE.md 5 / 2): rollout rows carry a public context (e1_eval ``Match._ctx_row``: opponent
 archetype + tank flag, match phase, crowns) and V = value_scalar(value_head(g) + ``CtxHead``(ctx, g)), the head owned
 by the Learner (not the model's state_dict; zero last layer = the plain critic at update 0; checkpoint rl["ctx_head"]).
+Step c (``cue_inputs: on``, generalist init, RoyaleSim >= 0.1.35; absent / null / false = unchanged, same config hash;
+L74/cues/STEP_C_SPEC.md): the init gets a ZERO ``GenModel.cue_in`` layer (in the state_dict, so actors / checkpoints /
+evals carry it); a model with it records per-unit-token cue rows (e1_eval ``sim_cue_rows``) and the learner feeds them.
 C1 stage A (``posture_head: true``, gae only, opt-in; absent / null / false = unchanged, same config hash; L74
 reward/REWARD_ARCHITECTURE.md 5 C1): a LEARNED posture z in {defend, balanced, pressure} = a gate-threshold offset
 ``posture_dtau`` (default +0.10 / 0 / -0.10) added to tau for every gate decision of the learner side, re-chosen every
@@ -667,7 +670,8 @@ def branch_row(s, allowed: np.ndarray, p: float, T: float, stalled: bool = False
     tok/mask/sc/past), with the trajectory fields ``Match._traj_arrays`` stacks: a gate-only row (gate_sampled, not
     played), so ``policy_terms`` recomputes exactly the gate logit x the PPO loss uses."""
     if s._gen_row is not None:
-        row = {k: s._gen_row[k] for k in s._gen_row if k in E.GEN_ROW_KEYS + E.GEN_V3_KEYS + E.GEN_V31_KEYS}
+        row = {k: s._gen_row[k] for k in s._gen_row
+               if k in E.GEN_ROW_KEYS + E.GEN_V3_KEYS + E.GEN_V31_KEYS + E.GEN_CUE_KEYS}
     else:
         tok, mask, sc, past = s._obs
         row = {"tok": tok, "mask": mask, "sc": sc, "past": past}
@@ -1557,6 +1561,8 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
         extra += E.GEN_V3_KEYS
     if gen and 'opp_cycle' in results[use[0]]['traj']:
         extra += E.GEN_V31_KEYS
+    if gen and "cue" in results[use[0]]["traj"]:                      # step c: the cue rows (a model with cue_in)
+        extra += E.GEN_CUE_KEYS
     B = {k: cat(lambda j, k=k: results[j]["traj"][k][keep[j]]) for k in TRAJ_KEYS + extra}
     for k in ("lp_gate", "lp_card", "lp_cell"):
         B[k] = cat(lambda j, k=k: results[j]["traj"][k][keep[j]])
@@ -2715,12 +2721,14 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                 and k not in VALUE_PHI_KEYS and k not in STATE_PHI_KEYS and k not in AO.DEFAULTS
                 and k not in ("league_learner_icebow_share", "learner_pipeline_frac", "league_opp_T", "kl_ref_gate",
                               "critic_ctx", "kl_ref_gate_max_elixir", "kl_ref_gate_target_frac",
-                              "league_exploiters") + OPP_TEMPO_KEYS
+                              "league_exploiters", "cue_inputs") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
         cfg[k] = yaml.safe_load(v)
     if type(cfg["hero_abilities"]) is not bool:
         raise SystemExit("hero_abilities must be a bool")
+    if cfg.get("cue_inputs") not in (None, False, True):     # step c (yaml "on" = true): absent / null / false = off
+        raise SystemExit(f"cue_inputs must be on / off (a bool) or null, got {cfg['cue_inputs']!r}")
     if smoke and cfg.get("ability_head") not in (None, False) and cfg.get("ability_bc_matches") is None:
         cfg["ability_bc_matches"] = SMOKE_AB_BC                # B6: a smoke-sized warm start (unless set explicitly)
     if cfg.get("stall_elixir") is not None:   # owner 2026-10-07: no anti-stall in training, ever (live has none)
@@ -2761,6 +2769,8 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "league_exploiters"}
     if cfg.get("critic_ctx") is None:                        # C2 / F2 off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "critic_ctx"}
+    if not cfg.get("cue_inputs"):                            # step c off (absent / null / false) = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "cue_inputs"}
     if cfg.get("kl_ref_gate_max_elixir") is None:            # F6' off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k not in ("kl_ref_gate_max_elixir", "kl_ref_gate_target_frac")}
     elif cfg.get("kl_ref_gate_target_frac") is None:         # F6' frac absent / null = the 0.5 default, one hash
@@ -2891,6 +2901,12 @@ class Learner:
             self.minfo = {"gen": True, "grid": str(ick["args"].get("grid", "lattice"))}   # = e1_eval.load_policy's
         else:
             self.model, self.minfo = ep.load_model(self.init_path, str(self.dev))
+        if cfg.get("cue_inputs"):                             # step c (L74/cues/STEP_C_SPEC.md): a ZERO cue layer on the
+            if not self.gen:                                  # init (kept if the init already has one); the rows follow
+                raise SystemExit("cue_inputs needs a generalist (GenModel) init")   # the model (e1_eval.gen_row_keys)
+            E.require_cue_runtime()
+            if getattr(self.model, "cue_in", None) is None:
+                self.model.add_cue_in()
         self.init_meta = {"args": dict(ick["args"]), "deck": ick["deck"], "epoch": ick["epoch"], "n_params": ick["n_params"]}
         self.grid = self.minfo["grid"]
         self.league = None                                    # league on: {"snapshots": [{id, update, path}]}

@@ -24,6 +24,11 @@ F1 u250 (league_frozen_opponent -> icebow deck, AO), decoded greedy (league_opp_
 trainer has no livecal rule layer, so not the D3 stack), unstyled (opp_style off), no PFSP / externals.
 gae_exploit = arm gae + ONE change, rl_royale ``league_exploiters``: share .3 of the icebow learner's matchups vs the
 trained exploiter (EXPLOITER_CKPT env, default the exploit run's u0065) playing struggle-pool decks; file checked here.
+gae_cue_u250 / gae_ctl_u250 (step c, owner 10-16; L74/cues/STEP_C_SPEC.md) = arm gae's recipe CONTINUED from F1 u250 (a
+fresh run, init = u250: fresh Adam, KL anchored to u250) for 65 updates; cue = + rl_royale ``cue_inputs: on`` (the ONLY
+difference), ctl = without it. Init = rlarm_gae_u0250.pt if present, else the live u250_grafted file with its grafted
+cell_refine / tower_refine dropped (written next to OUT.yaml; its projectile_target_* are the live ones). Run both with
+ROYALE_HEROIW_FORM=hero on runtime 20261016-linux (L74/cues/run_cues_pod.sh).
 """
 import os
 import hashlib
@@ -99,10 +104,24 @@ elif arm == "gae_exploit":   # O2 league integration: F1 + ONE change, 30% of ma
     if not os.path.isfile(ck):
         raise SystemExit(f"gae_exploit: exploiter checkpoint {ck} not found (train arm exploit first, or EXPLOITER_CKPT=)")
     c.update(GAE, league_exploiters={"ckpt": ck, "decks": STRUGGLE, "share": 0.3})
+elif arm in ("gae_cue_u250", "gae_ctl_u250"):   # step c: F1 u250 continued; cue_inputs the ONLY difference
+    init = f"{RL}/rlarm_gae/rlarm_gae_u0250.pt"
+    if not os.path.isfile(init):
+        if hashlib.sha256(open(F1_U250, "rb").read()).hexdigest() != F1_U250_SHA:
+            raise SystemExit(f"{F1_U250}: sha256 is not {F1_U250_SHA[:16]}...")
+        st = torch.load(F1_U250, map_location="cpu", weights_only=False)
+        st["model"] = {k: v for k, v in st["model"].items() if not k.startswith(("cell_refine.", "tower_refine."))}
+        st.pop("grafted_heads_from", None)
+        init = os.path.join(os.path.dirname(os.path.abspath(out)), "rlarm_gae_u0250_ungrafted.pt")
+        torch.save(st, init)
+        print(f"{arm}: no rlarm_gae_u0250.pt -> init {init} (u250_grafted minus cell/tower refine)")
+    c.update(GAE, init=init)
+    if arm == "gae_cue_u250":
+        c.update(cue_inputs=True)
 else:
     raise SystemExit(f"unknown arm {arm!r}")
 yaml.safe_dump(c, open(out, "w"), sort_keys=False)
 print(arm, {k: c[k] for k in ("advantage", "max_updates", "league_pfsp", "T", "kl_ref_gate", "shaping",
                               "shaping_critic_scale", "critic_ctx", "kl_ref_gate_max_elixir",
                               "kl_ref_gate_target_frac", "posture_head", "league_frozen_opponent", "league_exploiters",
-                              "league_decks", "league_opp_policy", "ability_head") if k in c}, c.get("league_opp_T"))
+                              "league_decks", "league_opp_policy", "ability_head", "init", "cue_inputs") if k in c}, c.get("league_opp_T"))
