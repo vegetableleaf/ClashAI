@@ -437,18 +437,35 @@ def cut(m, events, window):
     """One fight per deployment: start = the last frame strictly before it; length `window` ticks."""
     ticks = [t for t, _ in m['frames']]
     tr = tracks(m['frames'])
+    # A parent gone before the start frame whose death spawn is first seen after it (a Skeleton Balloon's skeletons land
+    # ~12 ticks after its death) is on no board and in no play, so the SIM would never make those bodies. Start on the
+    # parent's last frame instead: it is set up alive with its live hp, the shot that kills it is injected as in flight,
+    # and the SIM makes the children itself (diag_night/log, 171357@1655). (parent last seen, children first seen) pairs,
+    # by deployments()' near-parent rule.
+    fam, pend = defaultdict(list), set()
+    for r in tr.values():
+        fam[r['side'], r['card_id']].append(r)
+    for rs in fam.values():
+        for r in rs:
+            for q in rs:
+                if q is not r and q['last'] < r['first'] <= q['last'] + 15 and r['max_hp'] < q['max_hp']:
+                    at = max((p for p in q['traj'] if p[0] <= r['first']), default=q['traj'][0])
+                    if math.hypot(at[1] - r['x'], at[2] - r['y']) < 3000:
+                        pend.add((q['last'], r['first']))
     fights = []
     for k, ev in enumerate(events):
         if ev['kind'] != 'play':
             continue
         i = bisect_left(ticks, ev['tick']) - 1
         # A body still deploying at the start frame cannot be set up mid-deploy: start before it was born instead.
+        # A death spawn pending at the start frame: start on its parent's last frame (above).
         for _ in range(4):
             born = [tr[b['id']]['first'] for b in m['frames'][max(i, 0)][1]
                     if not b['tower'] and b['kind'] in (12, 14) and tr[b['id']]['first'] > ticks[max(i, 0)]-80]
-            if not born or i < 0:
+            dead = [lo for lo, hi in pend if i >= 0 and lo < ticks[i] < hi]
+            if not (born or dead) or i < 0:
                 break
-            i = bisect_left(ticks, min(born)) - 1
+            i = min(([bisect_left(ticks, min(born)) - 1] if born else []) + ([bisect_left(ticks, min(dead))] if dead else []))
         if i < 0:
             continue
         t0 = ticks[i]; t1 = t0 + window
@@ -2076,9 +2093,9 @@ def run_match(path, window, out_dir, ceiling=0):
     return summary
 
 
-def spell_drops(m, events, name, look=70, side=None):
-    """Single-frame hp drops on enemy non-tower bodies within `look` ticks of each `side` (default own) cast of spell
-    `name`."""
+def spell_drops(m, events, name, look=70, side=None, towers=False):
+    """Single-frame hp drops on enemy non-tower bodies (towers=True: on standing enemy crown towers) within `look`
+    ticks of each `side` (default own) cast of spell `name`."""
     side = m['side'] if side is None else side
     ticks = [t for t, _ in m['frames']]
     out = Counter()
@@ -2089,8 +2106,8 @@ def spell_drops(m, events, name, look=70, side=None):
         win = [{b['id']: b for b in bodies} for t, bodies in m['frames'][max(0, i-1):] if t <= e['tick'] + look]
         for a, b in zip(win, win[1:]):
             for k, z in b.items():
-                if k in a and not z['tower'] and z['side'] != side and z['hp'] < a[k]['hp']:
-                    out[a[k]['hp'] - z['hp']] += 1
+                if k in a and z['tower'] == towers and z['side'] != side and z['hp'] < a[k]['hp'] and (not towers or a[k]['hp'] > 0):
+                    out[a[k]['hp'] - (max(0, z['hp']) if towers else z['hp'])] += 1
     return out
 
 
@@ -2113,6 +2130,22 @@ def spell_levels(m, events, eng, catalog, lo=6):
             best = max(score, default=(0, None))
             if best[0] >= 2:
                 out[side, name] = best[1]
+                continue
+            # Fewer than 2 exact drops (an opponent spell is often cast once or twice: 221839's opponent Log is level 12,
+            # one exact 295 drop, while the side's modal troop level 16 hits for 429): the level with the most exact
+            # drops on bodies plus exact crown-tower drops (+-1, the crown rounding; only for a spell whose card carries
+            # its crown percent: an area spell's lives on its area object), if that level is the only one with the most
+            # (diag_night/log, second round).
+            pct = eng.stats(name).get('crown_tower_damage_percent')
+            towers = spell_drops(m, events, name, side=side, towers=True) if pct else Counter()
+            ev = Counter()
+            for lv in range(16, lo-1, -1):
+                d = eng.spell_damage(name, side, lv)
+                if d:
+                    ev[lv] = drops[d] + (sum(towers[round(d*pct/100) + j] for j in (-1, 0, 1)) if pct else 0)
+            top = ev.most_common(2)
+            if top and top[0][1] >= 1 and (len(top) == 1 or top[1][1] < top[0][1]):
+                out[side, name] = top[0][0]
     return out
 
 

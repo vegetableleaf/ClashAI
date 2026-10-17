@@ -1,3 +1,10 @@
+## 2026-10-17 ~01:35 EDT -- parity I8 (opponent spell levels + pending death spawns started alive) 0.932; own Log 0.988 MEETS
+
+- I8 = I7 + log K1 (spell level from exact damage evidence when < 2 exact drops) + K2 (a fight starting between a parent's
+  death and its children's first sighting starts on the parent's last frame, alive, killing shot in flight). Pod B CAP_I8 on
+  PyPI 0.1.35: overall **0.930 -> 0.932 [0.912, 0.950]**; own Log 0.975 -> **0.988 [0.957, 1.0] MEETS**; opp Log 0.5 -> 1.0;
+  other cards identical. MEETS under the raised goal so far: own IW hero 0.991 [0.968, 1.009], own Log 0.988 [0.957, 1.0].
+
 ## 2026-10-17 ~01:20 EDT -- FORK laws S1 + S2 measured: captured 0.930 -> 0.935 on the I7 harness; acquisition law matches live
 
 - **RoyaleSim fork `clashbot35` (worktree C:/Users/benpe/rsfork35; bundle pod_backup_weekend/fork35/clashbot35_3b80b20.bundle):**
