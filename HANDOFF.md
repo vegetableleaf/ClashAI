@@ -1,3 +1,18 @@
+## 2026-10-17 15:28 EDT -- round-4 tail landed: H-DECKMAP + H-TORNADO-DATE (r4e) + H-EKSEED (r4c); S-EK-RETARGET v2 measured (fork)
+
+Each measured alone vs FIN5 on the full 218-log cohort (pod P1 results r4e_D, r4e_T, r4c_ekseed, r4c_ekret2; /workspace/w_r4c/cmp.py):
+- H-DECKMAP (public hand + next paired exactly, the rest by sorted order; the SIM could play the wrong opponent card):
+  OVERALL 0.8961 -> 0.8963 (34 more strict fights); Mini PEKKA hero 0.784 -> 0.811, Rage Barbarian 0.834 -> 0.865, Angry
+  Barbarians 0.665 -> 0.698; small dips own Knight evo -0.006, opp Hog -0.010 (1-2 fights). Landed (a correctness fix).
+- H-TORNADO-DATE (the Tornado command on `made`, not `made - 1`; live first pull made + 3 in 268 / 290 casts): OVERALL 0.8961 ->
+  0.8968; own Tornado +0.0035, opp Witch +0.008, opp Skeletons +0.013; own Skeletons -0.001, Tesla -0.0013. Landed.
+- H-EKSEED (a set-up Evo Knight without a fortify row at t0 starts with the reduction off): OVERALL 0.8961 -> 0.8980; own Tesla
+  +0.0075, Tesla evo +0.008, opp Hog +0.021, IW hero +0.004, opp Log +0.021; own Knight -0.002, opp Fireball -0.007. Landed.
+- S-EK-RETARGET v2 (fork; the Idle tick between targets no longer re-arms the Evo Knight reduction unless the unit moved): OVERALL
+  +0.0012, own Knight evo 0.860 -> 0.878, opp Skeleton Army +0.025, Tombstone +0.027, Goblin Gang +0.035. To land as a fork commit
+  on clashbot36 (new head + bundle) -- in progress.
+- 91 parity tests pass with the three harness patches together.
+
 ## 2026-10-17 15:20 EDT -- TOWER TROOPS arms done: engine null, troop training null; live L15 vs SIM-training L11 towers found
 
 Full report: scratchpad/gauntlet/L74/troops/REPORT.md (committed). Copies pod_backup_weekend/pod1017_troops/.

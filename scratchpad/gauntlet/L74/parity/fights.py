@@ -69,6 +69,7 @@ PRIORITY = {'Xbow', 'Tesla', 'Tornado', 'Log', 'IceWizard', 'Rocket', 'Knight', 
 # Frame logs with the reader's per-body state / projectile / effect keys (--log-frames from 10-16, READER_VALIDATION_1016.md)
 # are "ext" logs; everything below is used only for them, so older logs replay exactly as before.
 SPELL_SOURCES = ('own_spell_tap+delay', 'spell_seen')
+PULL_AREAS = ('Tornado',)          # fx-dated pulling areas whose SIM command goes on the area's made tick (seen_casts)
 # Crown tower troops a side may field in its princess slots (RoyaleSim card.rs TOWER_TROOPS; their `units` rows): the
 # Dagger Duchess, the Cannoneer, the Royal Chef. Their table LoadTime (Princess 0): Duchess 0, Cannoneer 1400, Chef 200.
 TOWER_TROOPS = ('DaggerDuchess', 'Cannoneer', 'ChefTower')
@@ -377,8 +378,13 @@ def seen_casts(m, catalog, life=None):
             continue
         full = life(name(r['cid'])) if life else None
         made = r['first'] - (round((full - r['rem'])/50) if full and 0 < r['rem'] <= full else 0)
-        out.append(dict(kind='play', side=r['side'], cid=r['cid'], name=name(r['cid']), form=0, tick=made-1, lo=made-1,
-                        hi=made-1, x=r['x'], y=r['y'], n=0, source='spell_seen', spell_spawned=False, seen=r['first'],
+        # A pulling area (the Tornado) runs a tick later on its own clock than the SIM's area made the tick after the
+        # command: live victims are first pulled on made + 3 and first damaged on made + 13 (fx-dated casts on the 218
+        # captured logs: 268 of ~290 first pulled gaps, 166 of ~180 first pulse gaps), the SIM's on made + 2 / + 12 with the
+        # command on made - 1 (diag_night/r4e H-TORNADO-DATE): its command goes on `made`.
+        lag = 1 if name(r['cid']) in PULL_AREAS else 0
+        out.append(dict(kind='play', side=r['side'], cid=r['cid'], name=name(r['cid']), form=0, tick=made-1+lag, lo=made-1+lag,
+                        hi=made-1+lag, x=r['x'], y=r['y'], n=0, source='spell_seen', spell_spawned=False, seen=r['first'],
                         end=r['last'], made=made))
     # A cast whose area row comes FIRST and whose projectile rows follow (Lightning: the area at the cast point, then the
     # bolts on their targets ~20 ticks later; Royal Delivery: the area, then the box landing 40 ticks later) was kept
@@ -1312,7 +1318,22 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
             b.set_tower_troops(None, None)
     from scratchpad.gauntlet.L74.parity.mechanics import load_edited
     sv = json.loads(b.save()); pub = json.loads(b.state_json())
-    internal = {t: dict(zip(pub['players'][t]['deck'], sv['players'][t]['hand']+sv['players'][t]['queue'])) for t in (0, 1)}
+    # Catalogue id -> the engine's internal card id, per side. The public `deck` lists the cards in setup order, NOT the
+    # save's hand + queue (cycle) order: zipping the two played the wrong card whenever the reset put another card in
+    # hand slot 0 (diag_night/r4e H-DECKMAP: 034530@2567 played an Elixir Collector for the Angry Barbarians, deck
+    # [100, 20, 103, 31, 43, ...] vs hand [43, 20, 112, 31] + queue [109, ...]). The public hand and next card are in the
+    # save's order (exact); the internal ids grow with the catalogue ids, so the sorted lists pair the rest.
+    internal = {}
+    for t in (0, 1):
+        pp, sp = pub['players'][t], sv['players'][t]
+        mono = dict(zip(sorted(pp['deck']), sorted(sp['hand'] + sp['queue'])))
+        exact = dict(zip(pp['hand'] + ([pp['next_card']] if pp.get('next_card') is not None else []), sp['hand'] + sp['queue'][:1]))
+        if any(mono.get(c) != v for c, v in exact.items()):
+            flags['setup_deckmap_inexact'] += 1
+            mono.update(exact)
+        if mono != dict(zip(pp['deck'], sp['hand'] + sp['queue'])):
+            flags['setup_deckmap_fixed'] += 1
+        internal[t] = mono
     if any(king_awake) and sv.get('king_active') != king_awake:
         after = json.loads(json.dumps(sv)); after['king_active'] = king_awake
         try:
@@ -1716,6 +1737,34 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
                 load_edited(b, before, after)
             except Exception:
                 flags['setup_ghost_not_set'] += 1
+
+    # H-EKSEED: an Evo Knight's own reduction (Knight_Fortify_EV1) is off from its hit while it keeps attacking; a set-up one
+    # has idle_back 0 (on), so the SIM reduced hits the live Knight took whole (diag_night/r4c, 20261017_072528@2556: 63 vs
+    # 158). A set-up Evo Knight the t0 buff rows show WITHOUT its fortify (a tick with rows lists every unit carrying a buff)
+    # starts off: idle_back = tick + 2, which the SIM's idle_buff_pass extends while it attacks.
+    btick = max((t for t in m.get('buffs') or {} if t0 - 6 <= t <= t0), default=None)
+    if btick is not None:
+        bnow = m['buffs'][btick]
+        before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
+        live0 = {x['id']: x for x in start}
+        now = json.loads(b.state_json())['tick']
+        for bd in (setup if 'idle_back' in E else ()):
+            c = catalog.get(bd['card_id']) or {}
+            g = (live0.get(bd['id']) or {}).get('gen')
+            if bd.get('proxy') or c.get('display_name') != 'Knight' or form_of(bd['card_id'], c) != 1 or g is None:
+                continue
+            if any(n == 'Knight_Fortify_EV1' for n, _ in bnow.get(g, ())):
+                flags['setup_fortify_on'] += 1; continue
+            i = ent(E, ('body', bd))
+            if i is None:
+                flags['setup_fortify_not_found'] += 1; continue
+            E['idle_back'][i] = now + 2
+            flags['setup_fortify_off'] += 1
+        if after != before:
+            try:
+                load_edited(b, before, after)
+            except Exception:
+                flags['setup_fortify_not_set'] += 1
 
     if bombs:
         before = json.loads(b.save()); after = json.loads(json.dumps(before))
