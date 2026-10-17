@@ -1,3 +1,14 @@
+## 2026-10-17 18:00 EDT -- FACTORIAL launched: 16 runs on 4 pods (ETA 10-18 07:00-09:30 EDT); refs on the factorial eval
+
+- Worker DONE_WITH_CONCERNS; files scratchpad/gauntlet/L74/factorial/ (design, cfg/fact01-16.yaml, chain / pull / analyze).
+  2^(5-1) E = ABCD, seeds 301-316, 65 updates from u250, rule press; A cue layer, B exploiter league, C tower troops, D live levels,
+  E tower_score shaping (A1 yaml). Pods 23363 / 19400 / 34210 / 29286, 4 runs each; pod confounded with AB, AC, BC.
+  yaml diff check PASS (120 pairs), smokes PASS (all-on e496b7da4ba5; base = historical 48c1874834a9).
+- Eval = fork36 + troops at live rates + live levels + habit log (D3, 960 paired). References: u250 (ICEBOW Mark CXXIV) 570/960
+  (59.4%); live Mark CXXXVIII 607/960 (63.2%) = +3.85 [+0.42, +7.40] vs u250 on this eval.
+- Relay on the laptop (WMI, log pod_backup_weekend/pod1017_factorial/relay.log) copies each run back; pods write LAST (-> self-stop)
+  only after ALL_COPIED or 4 h after the queue ends (container disk: unpulled results die with the pod). Relaunch the relay after a
+  laptop reboot. Analyze: icebow/.venv/Scripts/python.exe scratchpad/gauntlet/L74/factorial/analyze.py.
 ## 2026-10-17 17:48 EDT -- Ranked: the navigator already handled it; added a home-mode label + template + tests (live-checked, 2 Ranked matches)
 
 - Owner 10-17: unlocked Ranked; "the navigator doesn't seem to recognize the ranked home screen". Measured (a): the Ranked home's

@@ -1,0 +1,343 @@
+{
+ "generator": "E = ABCD",
+ "resolution": "V",
+ "factors": {
+  "A": "cue layer",
+  "B": "exploiter league",
+  "C": "opp tower troops",
+  "D": "live levels",
+  "E": "tower shaping"
+ },
+ "on": {
+  "A": {
+   "cue_inputs": true
+  },
+  "B": {
+   "league_exploiters": {
+    "ckpt": "icebow/data/bench/rl_royale/rlarm_exploit/rlarm_exploit_u0065.pt",
+    "decks": "scratchpad/gauntlet/L74/exploit/decks_struggle.json",
+    "share": 0.3
+   }
+  },
+  "C": {
+   "opp_tower_troops": {
+    "DaggerDuchess": 0.028,
+    "Cannoneer": 0.028,
+    "ChefTower": 0.014
+   }
+  },
+  "D": {
+   "live_levels": true
+  },
+  "E": {
+   "shaping": "tower_score",
+   "shaping_ts_w_own": [
+    0.15,
+    0.2,
+    0.3
+   ],
+   "shaping_ts_w_foe": [
+    0.3,
+    0.2,
+    0.1
+   ],
+   "shaping_ts_w_tb": 0.15,
+   "shaping_ts_h_power": 3.0
+  }
+ },
+ "pod_confound": "pod = (sign AC, sign AB): pods confounded with AC, AB, BC (= BDE, CDE, ADE)",
+ "runs": [
+  {
+   "run": "fact01",
+   "seed": 301,
+   "signs": {
+    "A": -1,
+    "B": -1,
+    "C": -1,
+    "D": -1,
+    "E": 1
+   },
+   "pod": "81.27.69.177:23363",
+   "signs_str": "A-B-C-D-E+",
+   "queue": [
+    "81.27.69.177:23363",
+    3
+   ]
+  },
+  {
+   "run": "fact02",
+   "seed": 302,
+   "signs": {
+    "A": 1,
+    "B": -1,
+    "C": -1,
+    "D": -1,
+    "E": -1
+   },
+   "pod": "64.247.206.79:19400",
+   "signs_str": "A+B-C-D-E-",
+   "queue": [
+    "64.247.206.79:19400",
+    2
+   ]
+  },
+  {
+   "run": "fact03",
+   "seed": 303,
+   "signs": {
+    "A": -1,
+    "B": 1,
+    "C": -1,
+    "D": -1,
+    "E": -1
+   },
+   "pod": "216.81.245.71:34210",
+   "signs_str": "A-B+C-D-E-",
+   "queue": [
+    "216.81.245.71:34210",
+    1
+   ]
+  },
+  {
+   "run": "fact04",
+   "seed": 304,
+   "signs": {
+    "A": 1,
+    "B": 1,
+    "C": -1,
+    "D": -1,
+    "E": 1
+   },
+   "pod": "216.81.245.71:29286",
+   "signs_str": "A+B+C-D-E+",
+   "queue": [
+    "216.81.245.71:29286",
+    1
+   ]
+  },
+  {
+   "run": "fact05",
+   "seed": 305,
+   "signs": {
+    "A": -1,
+    "B": -1,
+    "C": 1,
+    "D": -1,
+    "E": -1
+   },
+   "pod": "216.81.245.71:29286",
+   "signs_str": "A-B-C+D-E-",
+   "queue": [
+    "216.81.245.71:29286",
+    2
+   ]
+  },
+  {
+   "run": "fact06",
+   "seed": 306,
+   "signs": {
+    "A": 1,
+    "B": -1,
+    "C": 1,
+    "D": -1,
+    "E": 1
+   },
+   "pod": "216.81.245.71:34210",
+   "signs_str": "A+B-C+D-E+",
+   "queue": [
+    "216.81.245.71:34210",
+    2
+   ]
+  },
+  {
+   "run": "fact07",
+   "seed": 307,
+   "signs": {
+    "A": -1,
+    "B": 1,
+    "C": 1,
+    "D": -1,
+    "E": 1
+   },
+   "pod": "64.247.206.79:19400",
+   "signs_str": "A-B+C+D-E+",
+   "queue": [
+    "64.247.206.79:19400",
+    3
+   ]
+  },
+  {
+   "run": "fact08",
+   "seed": 308,
+   "signs": {
+    "A": 1,
+    "B": 1,
+    "C": 1,
+    "D": -1,
+    "E": -1
+   },
+   "pod": "81.27.69.177:23363",
+   "signs_str": "A+B+C+D-E-",
+   "queue": [
+    "81.27.69.177:23363",
+    4
+   ]
+  },
+  {
+   "run": "fact09",
+   "seed": 309,
+   "signs": {
+    "A": -1,
+    "B": -1,
+    "C": -1,
+    "D": 1,
+    "E": -1
+   },
+   "pod": "81.27.69.177:23363",
+   "signs_str": "A-B-C-D+E-",
+   "queue": [
+    "81.27.69.177:23363",
+    5
+   ]
+  },
+  {
+   "run": "fact10",
+   "seed": 310,
+   "signs": {
+    "A": 1,
+    "B": -1,
+    "C": -1,
+    "D": 1,
+    "E": 1
+   },
+   "pod": "64.247.206.79:19400",
+   "signs_str": "A+B-C-D+E+",
+   "queue": [
+    "64.247.206.79:19400",
+    4
+   ]
+  },
+  {
+   "run": "fact11",
+   "seed": 311,
+   "signs": {
+    "A": -1,
+    "B": 1,
+    "C": -1,
+    "D": 1,
+    "E": 1
+   },
+   "pod": "216.81.245.71:34210",
+   "signs_str": "A-B+C-D+E+",
+   "queue": [
+    "216.81.245.71:34210",
+    3
+   ]
+  },
+  {
+   "run": "fact12",
+   "seed": 312,
+   "signs": {
+    "A": 1,
+    "B": 1,
+    "C": -1,
+    "D": 1,
+    "E": -1
+   },
+   "pod": "216.81.245.71:29286",
+   "signs_str": "A+B+C-D+E-",
+   "queue": [
+    "216.81.245.71:29286",
+    3
+   ]
+  },
+  {
+   "run": "fact13",
+   "seed": 313,
+   "signs": {
+    "A": -1,
+    "B": -1,
+    "C": 1,
+    "D": 1,
+    "E": 1
+   },
+   "pod": "216.81.245.71:29286",
+   "signs_str": "A-B-C+D+E+",
+   "queue": [
+    "216.81.245.71:29286",
+    4
+   ]
+  },
+  {
+   "run": "fact14",
+   "seed": 314,
+   "signs": {
+    "A": 1,
+    "B": -1,
+    "C": 1,
+    "D": 1,
+    "E": -1
+   },
+   "pod": "216.81.245.71:34210",
+   "signs_str": "A+B-C+D+E-",
+   "queue": [
+    "216.81.245.71:34210",
+    4
+   ]
+  },
+  {
+   "run": "fact15",
+   "seed": 315,
+   "signs": {
+    "A": -1,
+    "B": 1,
+    "C": 1,
+    "D": 1,
+    "E": -1
+   },
+   "pod": "64.247.206.79:19400",
+   "signs_str": "A-B+C+D+E-",
+   "queue": [
+    "64.247.206.79:19400",
+    5
+   ]
+  },
+  {
+   "run": "fact16",
+   "seed": 316,
+   "signs": {
+    "A": 1,
+    "B": 1,
+    "C": 1,
+    "D": 1,
+    "E": 1
+   },
+   "pod": "81.27.69.177:23363",
+   "signs_str": "A+B+C+D+E+",
+   "queue": [
+    "81.27.69.177:23363",
+    2
+   ]
+  }
+ ],
+ "refs": {
+  "ref_u250": {
+   "ckpt": "icebow/data/bench/rl_royale/rlarm_gae/rlarm_gae_u0250_grafted.pt",
+   "what": "ICEBOW Mark CXXIV (u250 grafted)",
+   "pod": "81.27.69.177:23363",
+   "queue": [
+    "81.27.69.177:23363",
+    1
+   ]
+  },
+  "ref_cxxxviii": {
+   "ckpt": "icebow/data/bench/rl_royale/rlarm_gae_cue_u250/rlarm_gae_cue_u250_u0130_grafted.pt",
+   "what": "ICEBOW Mark CXXXVIII (live)",
+   "pod": "64.247.206.79:19400",
+   "queue": [
+    "64.247.206.79:19400",
+    1
+   ]
+  }
+ }
+}
