@@ -1,0 +1,94 @@
+lock events 3338
+{'comparable': 1550, 'blocked replay': 1325, 'attacker/target not paired in SIM': 112, 'SIM locks it > 4 ticks from live': 76, 'SIM never locks the live target in the window': 36, 'SIM locks but never fires in the window': 41, 'child unit under its parent card (HitSpeed unknown)': 187, 'crown tower is a tower troop (cycle unknown to the SIM)': 11}
+
+ALL all                        n=1550 live  13 [7,15]  SIM  13 [7,15]  mean(L-S)  +0.03  median(L-S) +0  |d|>2  6.0%
+    melee                      n= 381 live  26 [12,45]  SIM  26 [11,45]  mean(L-S)  -0.00  median(L-S) +0  |d|>2 13.1%
+    ranged                     n=1169 live  10 [6,14]  SIM  10 [6,15]  mean(L-S)  +0.04  median(L-S) +0  |d|>2  3.7%
+    fresh deploy (first target) n= 156 live  10 [8,27]  SIM  11 [8,27]  mean(L-S)  -0.04  median(L-S) +0  |d|>2  5.1%
+    from none                  n= 797 live  14 [6,15]  SIM  14 [6,15]  mean(L-S)  +0.04  median(L-S) +0  |d|>2  6.9%
+    target died -> new         n= 129 live   5 [3,12]  SIM   5 [3,12]  mean(L-S)  -0.09  median(L-S) +0  |d|>2  3.9%
+    switch (prev alive)        n= 468 live  13 [8,33]  SIM  13 [9,34]  mean(L-S)  +0.07  median(L-S) +0  |d|>2  5.3%
+    slowed at lock             n=  68 live  21 [14,36]  SIM  21 [12,35]  mean(L-S)  +0.90  median(L-S) +0  |d|>2 17.6%
+
+per card (n >= 5), sorted by |mean(L-S)|:
+    Barbarians                 n=   8 live  41 [34,60]  SIM  41 [38,61]  mean(L-S)  +4.38  median(L-S) +0  |d|>2 50.0%
+    SkeletonArmy               n=   9 live  45 [38,54]  SIM  45 [40,55]  mean(L-S)  -2.44  median(L-S) -4  |d|>2 66.7%
+    Prince                     n=   8 live  21 [8,38]  SIM  26 [9,38]  mean(L-S)  -2.38  median(L-S) +0  |d|>2 25.0%
+    Goblins hero               n=  13 live  31 [17,33]  SIM  30 [15,35]  mean(L-S)  +1.77  median(L-S) +1  |d|>2 15.4%
+    BombTower                  n=   5 live   9 [8,16]  SIM   9 [9,16]  mean(L-S)  -1.40  median(L-S) +0  |d|>2 20.0%
+    Bomber                     n=   5 live  11 [2,12]  SIM  13 [3,14]  mean(L-S)  -1.40  median(L-S) -1  |d|>2 20.0%
+    Bats                       n=  25 live  17 [10,33]  SIM  18 [10,33]  mean(L-S)  -1.08  median(L-S) +0  |d|>2 20.0%
+    Archer                     n=   6 live  13 [10,14]  SIM  13 [9,15]  mean(L-S)  -0.67  median(L-S) +0  |d|>2 16.7%
+    Skeletons                  n=  46 live  27 [9,50]  SIM  27 [9,50]  mean(L-S)  +0.61  median(L-S) +0  |d|>2  8.7%
+    AngryBarbarians            n=   7 live  62 [42,75]  SIM  62 [42,77]  mean(L-S)  -0.57  median(L-S) +0  |d|>2  0.0%
+    Tesla                      n=  43 live   8 [6,14]  SIM   8 [6,14]  mean(L-S)  -0.51  median(L-S) +0  |d|>2 20.9%
+    MinionHorde                n=  50 live  17 [13,34]  SIM  17 [11,34]  mean(L-S)  +0.44  median(L-S) +0  |d|>2  8.0%
+    GoblinMachine              n=   9 live  56 [17,82]  SIM  56 [17,82]  mean(L-S)  +0.33  median(L-S) +0  |d|>2 11.1%
+    MegaKnight                 n=   9 live  36 [26,44]  SIM  36 [26,47]  mean(L-S)  -0.33  median(L-S) +0  |d|>2 33.3%
+    Knight                     n=  76 live  31 [14,49]  SIM  30 [13,49]  mean(L-S)  +0.29  median(L-S) +0  |d|>2  6.6%
+    MiniSparkys                n=   7 live  22 [15,26]  SIM  21 [15,26]  mean(L-S)  +0.29  median(L-S) +0  |d|>2  0.0%
+    SpearGoblins               n=  18 live  11 [9,13]  SIM  11 [8,13]  mean(L-S)  -0.22  median(L-S) +0  |d|>2 11.1%
+    Valkyrie                   n=   9 live  44 [41,50]  SIM  44 [39,50]  mean(L-S)  +0.22  median(L-S) +0  |d|>2  0.0%
+    Rascals                    n=   5 live  16 [13,23]  SIM  16 [13,22]  mean(L-S)  +0.20  median(L-S) +0  |d|>2  0.0%
+    IceWizard hero             n= 159 live   9 [8,9]  SIM   9 [8,9]  mean(L-S)  -0.19  median(L-S) +0  |d|>2  4.4%
+    KingTower                  n=  39 live   9 [8,13]  SIM   9 [8,13]  mean(L-S)  -0.18  median(L-S) +0  |d|>2  2.6%
+    BabyDragon                 n=  17 live  19 [8,28]  SIM  19 [10,28]  mean(L-S)  +0.18  median(L-S) +0  |d|>2 11.8%
+    Knight evo                 n=  26 live  35 [21,54]  SIM  35 [21,54]  mean(L-S)  +0.15  median(L-S) +0  |d|>2  7.7%
+    Xbow                       n= 142 live   5 [1,6]  SIM   4 [1,6]  mean(L-S)  +0.15  median(L-S) +0  |d|>2  4.9%
+    GoblinDemolisher           n=   7 live  16 [11,22]  SIM  16 [11,23]  mean(L-S)  -0.14  median(L-S) +0  |d|>2  0.0%
+    InfernoDragon              n=   7 live  22 [14,48]  SIM  21 [14,48]  mean(L-S)  +0.14  median(L-S) +0  |d|>2  0.0%
+    SkeletonDragons            n=  23 live  13 [6,32]  SIM  13 [6,33]  mean(L-S)  +0.13  median(L-S) +0  |d|>2  0.0%
+    MovingCannon               n=   9 live  12 [8,13]  SIM  11 [9,13]  mean(L-S)  -0.11  median(L-S) +0  |d|>2  0.0%
+    PrincessTower              n= 580 live  14 [5,15]  SIM  14 [5,15]  mean(L-S)  +0.11  median(L-S) +0  |d|>2  2.8%
+    Princess                   n=  10 live  13 [4,14]  SIM  13 [4,14]  mean(L-S)  -0.10  median(L-S) +0  |d|>2  0.0%
+    MegaMinion hero            n=  11 live  32 [12,47]  SIM  32 [13,47]  mean(L-S)  +0.09  median(L-S) +0  |d|>2  0.0%
+    Tesla evo                  n=  15 live   7 [7,14]  SIM   7 [7,14]  mean(L-S)  -0.07  median(L-S) +0  |d|>2  0.0%
+    BlowdartGoblin             n=  24 live   8 [6,10]  SIM   8 [6,10]  mean(L-S)  -0.04  median(L-S) +0  |d|>2  0.0%
+    Musketeer hero             n=  17 live  13 [12,13]  SIM  13 [12,13]  mean(L-S)  +0.00  median(L-S) +0  |d|>2  0.0%
+    Witch                      n=  21 live  13 [12,13]  SIM  13 [12,13]  mean(L-S)  +0.00  median(L-S) +0  |d|>2  0.0%
+
+focus cards (any n), by lock kind:
+    Assassin:switch            n=   4 live  46 [41,47]  SIM  47 [43,56]  mean(L-S)  -3.00  median(L-S) -1  |d|>2 25.0% [('214220', 300, 41, 43), ('214220', 2986, 6, 6), ('221839', 645, 47, 56), ('221839', 2154, 46, 47)]
+    ElectroGiant:switch        n=   1 live  85 [85,85]  SIM  85 [85,85]  mean(L-S)  +0.00  median(L-S) +0  |d|>2  0.0% [('200156', 2316, 85, 85)]
+    Tesla:none                 n=  26 live  14 [10,15]  SIM  14 [10,18]  mean(L-S)  -0.62  median(L-S) +0  |d|>2 34.6% [('162405', 2444, 15, 20), ('165317', 3236, 15, 20), ('165921', 1147, 14, 14), ('170249', 1452, 10, 10), ('170610', 1034, 14, 14), ('170610', 3086, 15, 18)]
+    Tesla:switch               n=  17 live   6 [6,6]  SIM   6 [6,7]  mean(L-S)  -0.35  median(L-S) +0  |d|>2  0.0% [('135037', 5442, 6, 7), ('135037', 5881, 6, 6), ('165317', 1466, 6, 7), ('165317', 1640, 5, 6), ('170610', 955, 6, 6), ('170610', 3052, 6, 7)]
+    Tesla evo:none             n=   7 live  14 [7,14]  SIM  14 [7,14]  mean(L-S)  +0.14  median(L-S) +0  |d|>2  0.0% [('135037', 4748, 14, 14), ('162405', 3297, 14, 14), ('162405', 3373, 7, 7), ('171357', 1947, 7, 7), ('175459', 2945, 7, 6), ('215752', 2012, 15, 15)]
+    Tesla evo:switch           n=   8 live   7 [7,7]  SIM   7 [7,8]  mean(L-S)  -0.25  median(L-S) +0  |d|>2  0.0% [('133158', 3704, 7, 7), ('170937', 2556, 7, 9), ('175459', 4632, 7, 6), ('213647', 3187, 7, 7), ('214220', 2519, 7, 7), ('214535', 3048, 6, 6)]
+    Valkyrie:none              n=   1 live  25 [25,25]  SIM  25 [25,25]  mean(L-S)  +0.00  median(L-S) +0  |d|>2  0.0% [('220623', 973, 25, 25)]
+    Valkyrie:dead              n=   2 live  50 [50,50]  SIM  50 [50,50]  mean(L-S)  +0.00  median(L-S) +0  |d|>2  0.0% [('213647', 1926, 50, 50), ('220623', 4712, 50, 50)]
+    Valkyrie:switch            n=   6 live  44 [41,66]  SIM  44 [39,66]  mean(L-S)  +0.33  median(L-S) +0  |d|>2  0.0% [('195328', 1421, 27, 27), ('213647', 2062, 44, 44), ('215432', 2218, 71, 71), ('215432', 3323, 41, 39), ('220623', 1062, 66, 66), ('220623', 2323, 41, 41)]
+    Valkyrie evo:fresh         n=   1 live  51 [51,51]  SIM  50 [50,50]  mean(L-S)  +1.00  median(L-S) +1  |d|>2  0.0% [('215432', 2773, 51, 50)]
+ElectroGiant non-comparable: Counter({'blocked': 2, 'lock off': 1})
+Assassin non-comparable: Counter({'no SIM lock': 1})
+Valkyrie non-comparable: Counter({'blocked': 11})
+
+slowed at lock, per card:
+    MinionHorde:slowed         n=  20 live  14 [14,24]  SIM  13 [12,23]  mean(L-S)  +0.75  median(L-S) +2  |d|>2 10.0% [('165635', 1413, 14, 12), ('165635', 1453, 47, 47), ('165635', 1413, 14, 12), ('165635', 1453, 31, 31), ('165635', 1413, 14, 12)]
+    Goblins hero:slowed        n=   7 live  17 [16,32]  SIM  16 [6,31]  mean(L-S)  +3.29  median(L-S) +1  |d|>2 28.6% [('171357', 2474, 16, 16), ('171357', 2474, 17, 14), ('171357', 3581, 6, 6), ('171357', 3621, 17, 1), ('214908', 4366, 33, 31)]
+    SkeletonDragons:slowed     n=   6 live  28 [10,39]  SIM  28 [9,39]  mean(L-S)  +0.17  median(L-S) +0  |d|>2  0.0% [('220124', 1757, 44, 44), ('220124', 2741, 10, 9), ('220124', 2743, 10, 11), ('220124', 2820, 39, 39), ('220124', 3596, 28, 28)]
+    Knight:slowed              n=   5 live  14 [14,65]  SIM  13 [12,61]  mean(L-S)  +1.60  median(L-S) +2  |d|>2 40.0% [('135037', 1658, 13, 13), ('135037', 1802, 84, 85), ('135037', 3173, 65, 61), ('135037', 5903, 14, 12), ('214908', 4675, 14, 11)]
+    SkeletonArmy:slowed        n=   3 live  46 [38,57]  SIM  42 [40,55]  mean(L-S)  +1.33  median(L-S) +2  |d|>2 33.3% [('215432', 1205, 57, 55), ('215432', 1199, 38, 40), ('215432', 1205, 46, 42)]
+    MegaKnight:slowed          n=   3 live  36 [24,64]  SIM  36 [21,64]  mean(L-S)  +1.00  median(L-S) +0  |d|>2 33.3% [('221202', 1022, 36, 36), ('221202', 1315, 24, 21), ('221202', 3391, 64, 64)]
+    InfernoDragon:slowed       n=   2 live  57 [38,57]  SIM  57 [38,57]  mean(L-S)  +0.00  median(L-S) +0  |d|>2  0.0% [('171824', 2154, 38, 38), ('171824', 4743, 57, 57)]
+    Tesla:slowed               n=   2 live  21 [10,21]  SIM  21 [10,21]  mean(L-S)  +0.00  median(L-S) +0  |d|>2  0.0% [('195328', 1407, 21, 21), ('195328', 1511, 10, 10)]
+    BabyDragon:slowed          n=   2 live  40 [8,40]  SIM  28 [20,28]  mean(L-S)  +0.00  median(L-S) +12  |d|>2 100.0% [('214002', 602, 40, 28), ('214002', 797, 8, 20)]
+    LavaHound:slowed           n=   2 live  27 [27,27]  SIM  27 [27,27]  mean(L-S)  +0.00  median(L-S) +0  |d|>2  0.0% [('220124', 2768, 27, 27), ('220124', 4890, 27, 27)]
+    Barbarians:slowed          n=   2 live  60 [40,60]  SIM  61 [40,61]  mean(L-S)  -0.50  median(L-S) +0  |d|>2  0.0% [('220124', 3506, 40, 40), ('220124', 3506, 60, 61)]
+    BombTower:slowed           n=   1 live  24 [24,24]  SIM  31 [31,31]  mean(L-S)  -7.00  median(L-S) -7  |d|>2 100.0% [('133158', 2029, 24, 31)]
+    GoblinDemolisher:slowed    n=   1 live  28 [28,28]  SIM  28 [28,28]  mean(L-S)  +0.00  median(L-S) +0  |d|>2  0.0% [('133158', 2875, 28, 28)]
+    IceWizard hero:slowed      n=   1 live  12 [12,12]  SIM  10 [10,10]  mean(L-S)  +2.00  median(L-S) +2  |d|>2  0.0% [('135037', 2575, 12, 10)]
+    Xbow:slowed                n=   1 live  10 [10,10]  SIM   4 [4,4]  mean(L-S)  +6.00  median(L-S) +6  |d|>2 100.0% [('135037', 3797, 10, 4)]
+    Musketeer hero:slowed      n=   1 live  20 [20,20]  SIM  21 [21,21]  mean(L-S)  -1.00  median(L-S) -1  |d|>2  0.0% [('165317', 3189, 20, 21)]
+    Miner:slowed               n=   1 live  13 [13,13]  SIM  12 [12,12]  mean(L-S)  +1.00  median(L-S) +1  |d|>2  0.0% [('170249', 2093, 13, 12)]
+    RageBarbarian:slowed       n=   1 live  26 [26,26]  SIM  26 [26,26]  mean(L-S)  +0.00  median(L-S) +0  |d|>2  0.0% [('175459', 2903, 26, 26)]
+    AngryBarbarians evo:slowed n=   1 live  27 [27,27]  SIM  25 [25,25]  mean(L-S)  +2.00  median(L-S) +2  |d|>2  0.0% [('175459', 3590, 27, 25)]
+    MegaMinion hero:slowed     n=   1 live  11 [11,11]  SIM   9 [9,9]  mean(L-S)  +2.00  median(L-S) +2  |d|>2  0.0% [('175459', 5324, 11, 9)]
+    Prince:slowed              n=   1 live  41 [41,41]  SIM  41 [41,41]  mean(L-S)  +0.00  median(L-S) +0  |d|>2  0.0% [('214908', 3281, 41, 41)]
+    Valkyrie:slowed            n=   1 live  25 [25,25]  SIM  25 [25,25]  mean(L-S)  +0.00  median(L-S) +0  |d|>2  0.0% [('220623', 973, 25, 25)]
+    MiniSparkys:slowed         n=   1 live  22 [22,22]  SIM  21 [21,21]  mean(L-S)  +1.00  median(L-S) +1  |d|>2  0.0% [('221202', 765, 22, 21)]
+    Witch:slowed               n=   1 live  18 [18,18]  SIM  16 [16,16]  mean(L-S)  +2.00  median(L-S) +2  |d|>2  0.0% [('221202', 1315, 18, 16)]
+    SkeletonWarriors:slowed    n=   1 live  13 [13,13]  SIM  13 [13,13]  mean(L-S)  +0.00  median(L-S) +0  |d|>2  0.0% [('221202', 3288, 13, 13)]
+
+candidates (n >= 5, |mean(L-S)| >= 1.5, |d|>2 share >= 30%): events
+   SkeletonArmy [('133158', 573, 'none', 'fresh', '', 68, 73, -2), ('133158', 573, 'none', 'fresh', '', 29, 35, -2), ('133158', 573, 'none', 'fresh', '', 31, 32, -2), ('133158', 573, 'none', 'fresh', '', 39, 45, -2), ('133158', 573, 'none', 'fresh', '', 54, 58, -2), ('215432', 1205, 'none', '', 'slow', 57, 55, -1), ('215432', 1199, 'dead', '', 'slow', 38, 40, 0), ('215432', 1199, 'dead', '', '', 45, 49, 0), ('215432', 1205, 'none', '', 'slow', 46, 42, -1)]
+   Barbarians [('220124', 3374, 'switch', '', '', 41, 41, 0), ('220124', 3506, 'switch', '', 'slow', 40, 40, -1), ('220124', 3374, 'switch', '', '', 60, 67, 0), ('220124', 3506, 'switch', '', 'slow', 60, 61, -1), ('220124', 4995, 'none', '', '', 28, 38, -1), ('220124', 4995, 'none', '', '', 34, 24, -1), ('220124', 4995, 'none', '', '', 87, 45, -1), ('220623', 5649, 'switch', '', '', 7, 6, -1)]

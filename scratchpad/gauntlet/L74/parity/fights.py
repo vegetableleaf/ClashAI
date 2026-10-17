@@ -312,6 +312,14 @@ def seen_casts(m, catalog, life=None):
         out.append(dict(kind='play', side=r['side'], cid=r['cid'], name=name(r['cid']), form=0, tick=made-1, lo=made-1,
                         hi=made-1, x=r['x'], y=r['y'], n=0, source='spell_seen', spell_spawned=False, seen=r['first'],
                         end=r['last'], made=made))
+    # A cast whose area row comes FIRST and whose projectile rows follow (Lightning: the area at the cast point, then the
+    # bolts on their targets ~20 ticks later; Royal Delivery: the area, then the box landing 40 ticks later) was kept
+    # twice above -- the area cast and a projectile 'cast' at a bolt's target -- and the SIM replayed it twice (two
+    # Lightnings on one Knight). The area row is the cast (its creation tick is exact): drop the projectile twin.
+    # (diag_night/log, spell audit: 8 Lightning and 4 Royal Delivery casts doubled on the ext logs.)
+    made = [c for c in out if 'made' in c]
+    out = [c for c in out if 'made' in c or not any(f['side'] == c['side'] and f['cid'] == c['cid']
+                                                     and f['made'] <= c['seen'] <= f['made'] + 45 for f in made)]
     # Hero casts: the first state-10 frame of a burst; an instant hero (no cast time) shows only its ability effect,
     # card = the hero's card (Hero Ice Wizard: the freeze area). Champions are not counted here (untested on video).
     casts, prev = [], {}

@@ -1,3 +1,30 @@
+## 2026-10-17 00:43 EDT -- I9 (doubled Lightning / Royal Delivery casts) landed; spell damage audit; first-hit + reflect laws match; TOWER TROOPS gap
+
+- **I9 = I8 + log K3** (seen_casts kept a spell's area row AND its projectile twin as two casts -> Lightning / Royal Delivery cast
+  twice; drop the projectile twin within 45 ticks of the same side's area row). No doubled cast in the 32 captured logs; on the 7
+  affected uncaptured logs 3 fixed / 0 broken (normalised 0.882 -> 0.903). 91 parity tests pass (exit 0).
+- **Spell damage audit (log worker; 85 ext logs, 15,957 drop rows; vs SIM per-level tables and the device-update toml formula):** 14
+  spells match live exactly at their levels (Poison, Log, Arrows, Fireball, Rocket, Lightning, Barbarian Barrel, Freeze, Rage, Vines,
+  Goblin Curse, Royal Delivery, Earthquake troops/buildings, Tornado troops). The Poison "158" lead is CONTRADICTED (c): those drops
+  are the opponent's L15 princess tower. Two SIM law gaps (a), neither explains a captured strict fail:
+  - Tornado CROWN-TOWER damage per hit: live 40 / 36 / 25 (L16 / L15 / L11), SIM 41 / 37 / 26. Live fits
+    floor(ceil(DPS x (100 + pct) / 100) x HitFrequency / 1000) (DPS 60, HitFrequency 550, pct -70); the SIM takes ceil(per_hit x pct/100)
+    in the buff pulse pass (state.rs ~17981 at v0.1.35, damage_against(kind, amount, def.crown_pct, rounding)).
+  - Earthquake on a TESLA: live 3 hits of 458 (L16) / 286 (L11), hidden or up; the SIM does 0 to a hidden Tesla. Device
+    [FILTER.EarthquakeMainTargets] excludes Tesla, [AEO.EarthquakeHiddenDamage] (112, DamagesHidden, every 1000 ms, life 3050)
+    hits it; the SIM data row exists (cards-160402017-20261006.json:19062 hidden_split) but hidden_split is in UNMODELLED_KEYS
+    (card.rs:6763). Fork patches specified, not yet built.
+- **First hit after lock (knight r5; 3,338 lock events, 1,550 comparable): live - SIM mean +0.03 ticks, 6.0% off by > 2** -> (c) no
+  first-hit law gap (Electro Giant 1 event 85 vs 85, Valkyrie 9 / 0% off, Assassin 4 events). Tesla from no target: 17/26 exact, 5 with
+  the SIM 5 ticks later (b: setup hide timer starts full?).
+- **Electro Giant reflect (tesla worker): (a) the SIM law matches live** (edge-to-edge 2000 mt incl. crown towers / buildings,
+  state.rs:27620 / :27641); "the SIM never reflects onto a Tesla" CONTRADICTED (c); 200156@2312 is a boundary case (edge gap 2016 mt,
+  < 1 tick of EG movement). Only 5 logs have an EG. Open (b): X-Bow recovery after a reflect stun ~20 ticks live vs ~13 SIM (1-2 cases).
+- **TOWER TROOPS (knight r5, a):** captured 221839 (opp Cannoneer: load 1400 / hit 2200) and 221202 (opp Royal Chef: load 200) are set up
+  as plain princess towers; 11 failing strict fights bounded (~half explained, b). The engine supports them (TOWER_TROOPS card.rs:8081,
+  BattleConfig.tower_troops state.rs:11035) but py.rs:1627's Battle constructor does not expose it -> tesla worker building the fork
+  kwarg + harness detection from the captured load timer. NOTE for training realism: SIM opponents never have tower troops.
+
 ## 2026-10-17 00:30 EDT -- COMBINED STATE: harness I8 + fork S1/S2 = captured 0.937 [0.918, 0.954] (start of night 0.877)
 
 (Clock check: the two entries above stamped ~01:20 / ~01:35 EDT were really ~00:15 / ~00:25 EDT. Stamps from here on use `date`.)
