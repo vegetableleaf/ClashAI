@@ -1,3 +1,18 @@
+## 2026-10-17 12:11 EDT -- CUE INPUTS WORK AT 130 UPDATES: cue vs same-seed twin +5.10 [+1.35, +8.85]; replicate s75 + live cue path started
+
+- Pod 8 (64.247.206.120:12331), seed 74, live-mirrored pool D3, 960 paired (copies pod_backup_weekend/rt35/RT35/):
+  cues130_gae_ctl_u250 (no cues) 594/960 -> vs u250 +0.83 [-3.02, +4.69]; cues130_gae_cue_u250 643/960 -> vs u250 **+5.94
+  [+2.08, +9.90]**, vs its twin **+5.10 [+1.35, +8.85]** (beatdown +0.3, rest +8.3). At 65 updates cue - ctl was +0.31: the
+  zero-init cue projection needs > 65 updates to be used ((b) from the 65-update entry is now (a) on one seed). CI = eval noise
+  only; seed-to-seed spread of a change has been ~+-2 pp -> replicate before calling it settled. Not deployable: no live cue path.
+- REPLICATE launched on pod 8: /workspace/cue130_s75.sh (same yamls, seed 75, max_updates 130, fresh from u250; twins verified to
+  differ only in cue_inputs) -> evals cue75_gae_{cue,ctl}_u250; watchdog on CUE75_DONE +3600 s (KEEP removed). ~13 h serial.
+- LIVE CUE PATH worker (offline only): field table for the 22 cue floats (training definition pipeline/sim_unit_state.py) vs what
+  live_play has at DECISION time (the p3 capture is pulled only after the match), opt-in builder, feature parity, offline --check.
+  No deploy / restart; a live A/B goes to the owner first.
+- FACTORIAL consequence: the cue factor needs >= 130 updates to show -> factorial runs at 130 updates (about double the cost:
+  ~7-8 h per run, ~28 h for 16 runs on 4 pods).
+
 ## 2026-10-17 12:07 EDT -- BIRTHS landed (spawn tick from reader 3b, +0.021 raw); step-d trigger = tier B + overall 0.975 (owner 10-17)
 
 - LANDED diag_night/r4d/births.patch (worker r4d DONE_WITH_CONCERNS): phase3_births() gives each new body its creation tick C
