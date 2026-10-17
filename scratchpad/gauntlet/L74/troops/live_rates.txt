@@ -1,0 +1,18 @@
+ALL captured: n = 218 matches
+  OPPONENT PrincessTower   203   93.1%  95% CI [89.0, 95.8]
+  OPPONENT DaggerDuchess     6    2.8%  95% CI [1.3, 5.9]
+  OPPONENT Cannoneer         6    2.8%  95% CI [1.3, 5.9]
+  OPPONENT ChefTower         3    1.4%  95% CI [0.5, 4.0]
+  OPPONENT any troop        15    6.9%  95% CI [4.2, 11.0]
+  OUR side PrincessTower   218  100.0%  95% CI [98.3, 100.0]
+  OUR side any troop         0    0.0%  95% CI [0.0, 1.7]
+RANKED main account (own princess 4424): n = 214 matches
+  OPPONENT PrincessTower   199   93.0%  95% CI [88.8, 95.7]
+  OPPONENT DaggerDuchess     6    2.8%  95% CI [1.3, 6.0]
+  OPPONENT Cannoneer         6    2.8%  95% CI [1.3, 6.0]
+  OPPONENT ChefTower         3    1.4%  95% CI [0.5, 4.0]
+  OPPONENT any troop        15    7.0%  95% CI [4.3, 11.2]
+  OUR side PrincessTower   214  100.0%  95% CI [98.2, 100.0]
+  OUR side any troop         0    0.0%  95% CI [0.0, 1.8]
+unmatched / ambiguous princess-slot max_hp (capture, own, opp): []
+own princess max_hp values: [((4424,), 214), ((3052,), 4)]

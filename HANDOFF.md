@@ -1,3 +1,20 @@
+## 2026-10-17 15:20 EDT -- TOWER TROOPS arms done: engine null, troop training null; live L15 vs SIM-training L11 towers found
+
+Full report: scratchpad/gauntlet/L74/troops/REPORT.md (committed). Copies pod_backup_weekend/pod1017_troops/.
+- Live: opponents field a tower troop in 7.0% [4.3, 11.2] of ranked matches (Duchess 2.8%, Cannoneer 2.8%, Chef 1.4%); our side
+  0 / 218 (always the Princess).
+- New runtime `fork36-linux` (fork clashbot36 bc2bf9d, manifest-pinned) + optional `opp_tower_troops` (trainer) /
+  `--opp-tower-troops` (search_s0 eval), both off by default and proven byte-identical when absent (3 smokes, eval rows cmp).
+- Arms (seed 74, u250 + 65 updates, Hero IW), all evaluated on fork36 + troops at live rates (D3, 960 paired):
+  A PyPI control 635, B fork engine 628, C fork + troops 603, u250 548 -> B - A -0.73 [-4.58, +3.02] (engine null), C - B -2.60
+  [-6.35, +1.15] (troops null; slice -3.96 [-7.71, -0.10]); one run per arm.
+- Eval-engine effect: A - u250 = +9.06 [+5.21, +12.92] on fork + troops vs +3.44 [-0.42, +7.50] on the 0.1.35 live pool -> the
+  promotion bar depends on the eval engine (owner decision).
+- FIDELITY FINDING: SIM training plays level-11 towers (princess 3052) on both sides; live is L15 (own princess 4424) vs
+  opponents L14-16. Tower hp / damage drive Rocket value, X-Bow lock time and every tower trade -> a SIM-vs-live mismatch in
+  the training env itself. Candidate base fix for the factorial (owner decision).
+- Pods: 23363 (2x L40) and 19400 held with /workspace/KEEP + 6 h deadline_stop (stop ~01:20 UTC unless busy); 34852 stopped.
+
 ## 2026-10-17 14:19 EDT -- Mark CXXXVIII revert test = LIVE performance (owner 10-17)
 
 - Owner 10-17: "make the live performance the revert test." Rule: after ~100 live ladder matches on ICEBOW Mark CXXXVIII: CUES

@@ -1464,6 +1464,37 @@ def exploiter_league(cfg: dict) -> Optional[dict]:
                     "path": x["ckpt"]}}
 
 
+TOWER_TROOPS = ("DaggerDuchess", "Cannoneer", "ChefTower")    # the RoyaleSim fork's crown tower troops (card.rs)
+
+
+def opp_tower_troops(cfg: dict) -> Optional[dict]:
+    """``opp_tower_troops`` (L74 troops 10-17; optional, absent / null = None = matchups unchanged): {name: P(the
+    opponent fields it)} over TOWER_TROOPS, sum <= 1 (the rest = the Princess), the live-measured rates. Needs the
+    RoyaleSim fork runtime (Battle.set_tower_troops) and league true. SystemExit on a bad value."""
+    x = cfg.get("opp_tower_troops")
+    if x is None:
+        return None
+    ok = isinstance(x, dict) and x and set(x) <= set(TOWER_TROOPS) and all(
+        isinstance(v, (int, float)) and not isinstance(v, bool) and 0 <= v <= 1 for v in x.values())
+    if not ok or sum(x.values()) > 1:
+        raise SystemExit(f"opp_tower_troops must be {{name: rate}} over {TOWER_TROOPS}, rates in [0, 1] summing "
+                         f"<= 1, got {x!r}")
+    if not cfg.get("league"):
+        raise SystemExit("opp_tower_troops needs league true (it sets the self-play opponent's crown towers)")
+    return {k: float(v) for k, v in x.items()}
+
+
+def draw_tower_troop(rates: dict, key: str) -> Optional[str]:
+    """One crown tower troop for a match (None = the Princess) from ``rates``, drawn from a stream of its own seeded
+    by ``key`` -- no other RNG stream (the learner's, a match's) moves, so the matchups are those of the option off."""
+    u, acc = float(np.random.default_rng(zlib.crc32(f"tower_troop:{key}".encode())).random()), 0.0
+    for name in sorted(rates):
+        acc += rates[name]
+        if u < acc:
+            return name
+    return None
+
+
 def sample_matchups(rng: np.random.Generator, n: int, update: int, snaps: list[dict], cfg: dict, census: list[dict],
                     p: np.ndarray, league_state=None, exploiters: Optional[dict] = None) -> list[dict]:
     """``n`` league matchups (one LOO group each): opponent (``sample_opponent``), learner deck (``sample_deck``),
@@ -1488,6 +1519,8 @@ def sample_matchups(rng: np.random.Generator, n: int, update: int, snaps: list[d
                     "learner_deck": ld["engine"], "learner_deck_name": ld["name"], "learner_bucket": ld["bucket"],
                     "opp_deck": od["engine"], "opp_deck_name": od["name"],
                     "learner_side": int(rng.integers(2)), "seed": int(rng.integers(2 ** 31 - 1))})
+        if cfg.get("opp_tower_troops") is not None:          # L74 troops: absent / null = no key (unchanged)
+            out[-1]["opp_tower"] = draw_tower_troop(cfg["opp_tower_troops"], f"{out[-1]['seed']}:{out[-1]['tag']}")
     return out
 
 
@@ -2721,7 +2754,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                 and k not in VALUE_PHI_KEYS and k not in STATE_PHI_KEYS and k not in AO.DEFAULTS
                 and k not in ("league_learner_icebow_share", "learner_pipeline_frac", "league_opp_T", "kl_ref_gate",
                               "critic_ctx", "kl_ref_gate_max_elixir", "kl_ref_gate_target_frac",
-                              "league_exploiters", "cue_inputs") + OPP_TEMPO_KEYS
+                              "league_exploiters", "cue_inputs", "opp_tower_troops") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
         cfg[k] = yaml.safe_load(v)
@@ -2739,6 +2772,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
         raise SystemExit("ability_policy v2 needs hero_abilities=true")
     AO.validate(cfg)
     exploiter_league(cfg)                                     # O2: checked at start (files exist, league on); absent = no-op
+    opp_tower_troops(cfg)                                     # L74 troops: checked at start; absent = no-op
     frac = cfg.get("learner_pipeline_frac", 0.0)
     if isinstance(frac, bool) or not isinstance(frac, (int, float)) or not 0 <= frac <= 1:
         raise SystemExit("learner_pipeline_frac must be a finite number in [0, 1]")
@@ -2767,6 +2801,8 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "kl_ref_gate"}
     if cfg.get("league_exploiters") is None:                 # O2 off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "league_exploiters"}
+    if cfg.get("opp_tower_troops") is None:                  # L74 troops off (absent or null) = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "opp_tower_troops"}
     if cfg.get("critic_ctx") is None:                        # C2 / F2 off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "critic_ctx"}
     if not cfg.get("cue_inputs"):                            # step c off (absent / null / false) = the historical hash
@@ -3401,7 +3437,8 @@ class Learner:
                                    "k": r["k"], "opp": r["league"]["opp"]["id"], "style": r["opp_style"]})
             return res, {"picked": [], "actors": st, "skipped": len(skipped),
                          "league": [{"opp": sp["opp"]["id"], "learner_deck": sp["learner_deck_name"],
-                                     "opp_deck": sp["opp_deck_name"], "side": sp["learner_side"]} for sp in specs]}
+                                     "opp_deck": sp["opp_deck_name"], "side": sp["learner_side"],
+                                     **({"opp_tower": sp["opp_tower"]} if "opp_tower" in sp else {})} for sp in specs]}
         pick = self.rng.choice(len(self.train), size=min(E_, len(self.train)), replace=False)
         for i in pick:
             self.visits[int(i)] += 1

@@ -1,0 +1,114 @@
+{
+ "1": {
+  "PrincessTower": 1400,
+  "king": 2400,
+  "DaggerDuchess": 1270,
+  "Cannoneer": 1200,
+  "ChefTower": 1240
+ },
+ "2": {
+  "PrincessTower": 1512,
+  "king": 2568,
+  "DaggerDuchess": 1371,
+  "Cannoneer": 1296,
+  "ChefTower": 1339
+ },
+ "3": {
+  "PrincessTower": 1624,
+  "king": 2736,
+  "DaggerDuchess": 1473,
+  "Cannoneer": 1392,
+  "ChefTower": 1438
+ },
+ "4": {
+  "PrincessTower": 1750,
+  "king": 2904,
+  "DaggerDuchess": 1587,
+  "Cannoneer": 1500,
+  "ChefTower": 1550
+ },
+ "5": {
+  "PrincessTower": 1890,
+  "king": 3096,
+  "DaggerDuchess": 1714,
+  "Cannoneer": 1620,
+  "ChefTower": 1674
+ },
+ "6": {
+  "PrincessTower": 2030,
+  "king": 3312,
+  "DaggerDuchess": 1841,
+  "Cannoneer": 1740,
+  "ChefTower": 1798
+ },
+ "7": {
+  "PrincessTower": 2184,
+  "king": 3528,
+  "DaggerDuchess": 1981,
+  "Cannoneer": 1872,
+  "ChefTower": 1934
+ },
+ "8": {
+  "PrincessTower": 2352,
+  "king": 3768,
+  "DaggerDuchess": 2133,
+  "Cannoneer": 2016,
+  "ChefTower": 2083
+ },
+ "9": {
+  "PrincessTower": 2534,
+  "king": 4008,
+  "DaggerDuchess": 2298,
+  "Cannoneer": 2172,
+  "ChefTower": 2244
+ },
+ "10": {
+  "PrincessTower": 2786,
+  "king": 4392,
+  "DaggerDuchess": 2527,
+  "Cannoneer": 2388,
+  "ChefTower": 2467
+ },
+ "11": {
+  "PrincessTower": 3052,
+  "king": 4824,
+  "DaggerDuchess": 2768,
+  "Cannoneer": 2616,
+  "ChefTower": 2703
+ },
+ "12": {
+  "PrincessTower": 3346,
+  "king": 5304,
+  "DaggerDuchess": 3035,
+  "Cannoneer": 2868,
+  "ChefTower": 2963
+ },
+ "13": {
+  "PrincessTower": 3668,
+  "king": 5832,
+  "DaggerDuchess": 3327,
+  "Cannoneer": 3144,
+  "ChefTower": 3248
+ },
+ "14": {
+  "PrincessTower": 4032,
+  "king": 6408,
+  "DaggerDuchess": 3657,
+  "Cannoneer": 3456,
+  "ChefTower": 3571
+ },
+ "15": {
+  "PrincessTower": 4424,
+  "king": 7032,
+  "DaggerDuchess": 4013,
+  "Cannoneer": 3792,
+  "ChefTower": 3918
+ },
+ "16": {
+  "PrincessTower": 4858,
+  "king": 7728,
+  "DaggerDuchess": 4406,
+  "Cannoneer": 4164,
+  "ChefTower": 4302
+ }
+}

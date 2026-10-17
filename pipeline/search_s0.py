@@ -460,6 +460,10 @@ class Runner:
     def setup(self, opp_id: str, seed: int, opp_deck: list, tag: Optional[str] = None):
         spec = {"tag": tag or f"s0:{opp_id}:{seed}", "opp": {"id": opp_id}, "learner_deck": list(E.ICEBOW_ENGINE_DECK),
                 "opp_deck": list(opp_deck), "learner_side": int(seed) % 2, "seed": int(seed)}
+        rates = getattr(self, "opp_tower_troops", None)      # L74 troops (--opp-tower-troops); None = no key (unchanged)
+        if rates is not None:
+            from pipeline.rl_royale import draw_tower_troop
+            spec["opp_tower"] = draw_tower_troop(rates, f"{int(seed)}:{','.join(map(str, opp_deck))}")
         opp, ocfg = self.opps[opp_id]
         return E.SelfPlayMatch(self.make_env(), spec, 0, {**self.lcfg, "entry_index": 0}, {**ocfg, "entry_index": 0},
                                self.learner, opp)
@@ -488,6 +492,7 @@ class Runner:
         hp_for, hp_against = tower_hp(cst, L), tower_hp(cst, 1 - L)
         return {"arm": arm, "opp": m.spec["opp"]["id"], "seed": int(m.spec["seed"]), "tag": m.spec["tag"],
                 "learner_side": L, "opp_deck": m.spec["opp_deck"], "outcome": r["outcome"],
+                **({"opp_tower": m.spec["opp_tower"]} if "opp_tower" in m.spec else {}),
                 "crowns_for": r["crowns_for"], "crowns_against": r["crowns_against"],
                 "crowns_diff": r["crowns_for"] - r["crowns_against"],
                 "tower_hp_for": hp_for, "tower_hp_against": hp_against, "tower_hp_diff": hp_for - hp_against,
@@ -671,6 +676,8 @@ def _init_worker(args: dict) -> None:
                           search_min_p=args["search_min_p"], rollout_self=args.get("rollout_self", "idle"),
                           scorer_version=args.get("scorer", "v1"))
     _W["runner"].probe_xbow_focus = bool(args.get("probe_xbow_focus"))
+    if args.get("opp_tower_troops") is not None:
+        _W["runner"].opp_tower_troops = args["opp_tower_troops"]
     _W["census"] = league_decks(REPO / args.get("census", CENSUS))
 
 
@@ -841,6 +848,10 @@ def main(argv=None) -> int:
                     help="SIM-ONLY measurement probe (owner 2026-10-15; never live): once an enemy princess is damaged, an "
                          "offensive X-Bow of ours that misses the weaker alive princess moves to the model's best cell "
                          "reaching it (decision_options.probe_xbow_focus_cell); rows count it. Needs --arms plain, live policy")
+    ap.add_argument("--opp-tower-troops", default=None,
+                    help="L74 troops: the opponent fields a crown tower troop at these rates, e.g. "
+                         "DaggerDuchess:0.03,Cannoneer:0.03,ChefTower:0.01 (drawn per seed + opponent deck, so paired "
+                         "across checkpoints; needs the RoyaleSim fork runtime); default none = the Princess (unchanged)")
     ap.add_argument("--max-wall-min", type=float, default=0.0,
                     help="0 = none; else no match starts after this and running matches stop (wall_truncated)")
     a = ap.parse_args(argv)
@@ -864,6 +875,13 @@ def main(argv=None) -> int:
         E.opp_tempo({}, a.opp_decide_every, a.opp_reaction_ticks)
     except ValueError as exc:
         ap.error(str(exc))
+    if a.opp_tower_troops is not None:
+        from pipeline.rl_royale import opp_tower_troops
+        try:
+            a.opp_tower_troops = opp_tower_troops({"league": True, "opp_tower_troops": {
+                k: float(v) for k, v in (x.split(":") for x in a.opp_tower_troops.split(","))}})
+        except (ValueError, SystemExit) as exc:
+            ap.error(f"--opp-tower-troops: {exc}")
     if a.summarise:
         rows = [json.loads(x) for x in (a.summarise / "matches.jsonl").read_text(encoding="utf-8").splitlines() if x]
         s = summarise(rows)
@@ -912,10 +930,12 @@ def main(argv=None) -> int:
         wargs['probe_xbow_focus'] = True
     if a.ability_stats:
         wargs['ability_stats'] = True
+    if a.opp_tower_troops is not None:
+        wargs['opp_tower_troops'] = a.opp_tower_troops
     for k in ('opp_decide_every', 'opp_reaction_ticks'):
         if getattr(a, k) is not None:
             wargs[k] = getattr(a, k)
-    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads', 'learner_T_gate') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays', 'probe_xbow_focus', 'ability_stats') or v) and (k not in ('opp_decide_every', 'opp_reaction_ticks') or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
+    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads', 'learner_T_gate') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays', 'probe_xbow_focus', 'ability_stats') or v) and (k not in ('opp_decide_every', 'opp_reaction_ticks', 'opp_tower_troops') or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
                                                 "gen_sha256": sha256(REPO / a.gen), "opp_gen_sha256": opp_sha,
                                                 "s1_sha256": sha256(REPO / a.s1),
                                                 "tau_plain": TAU_PLAIN, "tau_opp": TAU_OPP, "crown_w": CROWN_W,

@@ -723,7 +723,14 @@ class RoyaleSelfPlayEnv(RoyalePoolEnv):
     ``raw()`` is the full two-sided state; each side mirrors it as today: ``from_engine(obs, side, ...)``. Its
     ``next_deck_index`` indexes the CALLER's deck order (``self.decks[side]``)."""
 
-    def reset(self, deck0, deck1, seed: int = 0) -> dict:
+    def reset(self, deck0, deck1, seed: int = 0, tower_troops=None) -> dict:
+        """``tower_troops`` (opt-in, L74 troops 10-17): [Blue, Red] crown tower troop names (rl_royale.TOWER_TROOPS;
+        the engine refuses any other) or None for the Princess; needs the ClashBot RoyaleSim fork
+        (Battle.set_tower_troops). None on an env that never fielded one = no engine call (unchanged); a later None
+        resets a reused env to Princess towers."""
+        if tower_troops is not None or getattr(self, "_tower_troops", None) is not None:
+            self.core._battle.set_tower_troops(*(tower_troops or (None, None)))
+            self._tower_troops = tower_troops
         decks = {s: [str(it["name"] if isinstance(it, dict) else it).split("@")[0] for it in d]
                  for s, d in ((0, deck0), (1, deck1))}
         deck_ids = {s: [self.card_id(n) for n in decks[s]] for s in (0, 1)}

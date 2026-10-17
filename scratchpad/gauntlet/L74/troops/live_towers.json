@@ -1,0 +1,2634 @@
+[
+{
+"capture": "live_play_20261016_162405",
+"log": "live_play_20261016_162405.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+3052
+],
+"opp": [
+3052
+]
+},
+{
+"capture": "live_play_20261016_163559",
+"skipped": "no run.json"
+},
+{
+"capture": "live_play_20261016_164100",
+"log": "live_play_20261016_164100.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+3052
+],
+"opp": [
+3052
+]
+},
+{
+"capture": "live_play_20261016_164525",
+"log": "live_play_20261016_164525.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+3052
+],
+"opp": [
+3052
+]
+},
+{
+"capture": "live_play_20261016_165317",
+"log": "live_play_20261016_165317.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261016_165635",
+"log": "live_play_20261016_165635.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261016_165921",
+"log": "live_play_20261016_165921.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_170249",
+"log": "live_play_20261016_170249.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4406
+]
+},
+{
+"capture": "live_play_20261016_170610",
+"log": "live_play_20261016_170610.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261016_170937",
+"log": "live_play_20261016_170937.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261016_171357",
+"log": "live_play_20261016_171357.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_171824",
+"log": "live_play_20261016_171824.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_175305",
+"skipped": "no frame"
+},
+{
+"capture": "live_play_20261016_175459",
+"log": "live_play_20261016_175459.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+3052
+],
+"opp": [
+3052
+]
+},
+{
+"capture": "live_play_20261016_194856",
+"skipped": "no frame"
+},
+{
+"capture": "live_play_20261016_195328",
+"log": "live_play_20261016_195328.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_195810",
+"skipped": "no frame"
+},
+{
+"capture": "live_play_20261016_200156",
+"log": "live_play_20261016_200156.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_213647",
+"log": "live_play_20261016_213647.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261016_214002",
+"log": "live_play_20261016_214002.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261016_214220",
+"log": "live_play_20261016_214220.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_214535",
+"log": "live_play_20261016_214535.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261016_214908",
+"log": "live_play_20261016_214908.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_215432",
+"log": "live_play_20261016_215432.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_215752",
+"log": "live_play_20261016_215752.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_220124",
+"log": "live_play_20261016_220124.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_220623",
+"log": "live_play_20261016_220623.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_221202",
+"log": "live_play_20261016_221202.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4302
+]
+},
+{
+"capture": "live_play_20261016_221520",
+"log": "live_play_20261016_221520.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_221839",
+"log": "live_play_20261016_221839.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+3792
+]
+},
+{
+"capture": "live_play_20261016_222156",
+"log": "live_play_20261016_222156.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_222420",
+"log": "live_play_20261016_222420.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+3918
+]
+},
+{
+"capture": "live_play_20261016_222738",
+"log": "live_play_20261016_222738.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+3792
+]
+},
+{
+"capture": "live_play_20261016_223054",
+"log": "live_play_20261016_223054.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4032
+]
+},
+{
+"capture": "live_play_20261016_223620",
+"log": "live_play_20261016_223620.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_223952",
+"log": "live_play_20261016_223952.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_224529",
+"log": "live_play_20261016_224529.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_224847",
+"log": "live_play_20261016_224847.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_225206",
+"log": "live_play_20261016_225206.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_225518",
+"log": "live_play_20261016_225518.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_225838",
+"log": "live_play_20261016_225838.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_230355",
+"log": "live_play_20261016_230355.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4032
+]
+},
+{
+"capture": "live_play_20261016_230710",
+"log": "live_play_20261016_230710.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_231053",
+"log": "live_play_20261016_231053.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_231412",
+"log": "live_play_20261016_231412.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4032
+]
+},
+{
+"capture": "live_play_20261016_231750",
+"log": "live_play_20261016_231750.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_232221",
+"log": "live_play_20261016_232221.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+3657
+]
+},
+{
+"capture": "live_play_20261016_232540",
+"log": "live_play_20261016_232540.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_233007",
+"log": "live_play_20261016_233007.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_233321",
+"log": "live_play_20261016_233321.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+3792
+]
+},
+{
+"capture": "live_play_20261016_233637",
+"log": "live_play_20261016_233637.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_233956",
+"log": "live_play_20261016_233956.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_234407",
+"log": "live_play_20261016_234407.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4013
+]
+},
+{
+"capture": "live_play_20261016_234846",
+"log": "live_play_20261016_234846.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_235203",
+"log": "live_play_20261016_235203.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_235516",
+"log": "live_play_20261016_235516.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261016_235851",
+"log": "live_play_20261016_235851.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_000229",
+"log": "live_play_20261017_000229.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_000559",
+"log": "live_play_20261017_000559.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_000957",
+"log": "live_play_20261017_000957.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_001415",
+"log": "live_play_20261017_001415.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_001748",
+"log": "live_play_20261017_001748.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_002354",
+"log": "live_play_20261017_002354.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_002711",
+"log": "live_play_20261017_002711.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_003023",
+"log": "live_play_20261017_003023.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_003335",
+"log": "live_play_20261017_003335.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_003824",
+"log": "live_play_20261017_003824.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_004246",
+"log": "live_play_20261017_004246.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4406
+]
+},
+{
+"capture": "live_play_20261017_004607",
+"log": "live_play_20261017_004607.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_004922",
+"log": "live_play_20261017_004922.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4032
+]
+},
+{
+"capture": "live_play_20261017_005444",
+"log": "live_play_20261017_005444.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_005758",
+"log": "live_play_20261017_005758.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_010111",
+"log": "live_play_20261017_010111.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_010451",
+"log": "live_play_20261017_010451.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_010804",
+"log": "live_play_20261017_010804.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_011120",
+"log": "live_play_20261017_011120.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4013
+]
+},
+{
+"capture": "live_play_20261017_011413",
+"log": "live_play_20261017_011413.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_011731",
+"log": "live_play_20261017_011731.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_012118",
+"log": "live_play_20261017_012118.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_012441",
+"log": "live_play_20261017_012441.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4032
+]
+},
+{
+"capture": "live_play_20261017_012807",
+"log": "live_play_20261017_012807.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_013322",
+"log": "live_play_20261017_013322.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_013641",
+"log": "live_play_20261017_013641.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_014007",
+"log": "live_play_20261017_014007.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4032
+]
+},
+{
+"capture": "live_play_20261017_014323",
+"log": "live_play_20261017_014323.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_014644",
+"log": "live_play_20261017_014644.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_015149",
+"log": "live_play_20261017_015149.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_015555",
+"log": "live_play_20261017_015555.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_015935",
+"log": "live_play_20261017_015935.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_020500",
+"log": "live_play_20261017_020500.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_020842",
+"log": "live_play_20261017_020842.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_021337",
+"log": "live_play_20261017_021337.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_021702",
+"log": "live_play_20261017_021702.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4032
+]
+},
+{
+"capture": "live_play_20261017_022137",
+"log": "live_play_20261017_022137.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_022417",
+"log": "live_play_20261017_022417.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_022800",
+"log": "live_play_20261017_022800.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_023210",
+"log": "live_play_20261017_023210.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_023527",
+"log": "live_play_20261017_023527.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_024051",
+"log": "live_play_20261017_024051.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_024409",
+"log": "live_play_20261017_024409.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4032
+]
+},
+{
+"capture": "live_play_20261017_024728",
+"log": "live_play_20261017_024728.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_025048",
+"log": "live_play_20261017_025048.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_025408",
+"log": "live_play_20261017_025408.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_025725",
+"log": "live_play_20261017_025725.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_030310",
+"log": "live_play_20261017_030310.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_030443",
+"log": "live_play_20261017_030443.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_030833",
+"log": "live_play_20261017_030833.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_031152",
+"log": "live_play_20261017_031152.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_031510",
+"log": "live_play_20261017_031510.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_031826",
+"log": "live_play_20261017_031826.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_032250",
+"log": "live_play_20261017_032250.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_032807",
+"log": "live_play_20261017_032807.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_033125",
+"log": "live_play_20261017_033125.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_033456",
+"log": "live_play_20261017_033456.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_033756",
+"log": "live_play_20261017_033756.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_033859",
+"log": "live_play_20261017_033859.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_034212",
+"log": "live_play_20261017_034212.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_034530",
+"log": "live_play_20261017_034530.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4164
+]
+},
+{
+"capture": "live_play_20261017_034849",
+"log": "live_play_20261017_034849.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_035204",
+"log": "live_play_20261017_035204.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_035521",
+"log": "live_play_20261017_035521.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_035906",
+"log": "live_play_20261017_035906.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_040222",
+"log": "live_play_20261017_040222.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_040555",
+"log": "live_play_20261017_040555.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_040909",
+"log": "live_play_20261017_040909.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_041330",
+"log": "live_play_20261017_041330.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_041705",
+"log": "live_play_20261017_041705.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_041857",
+"log": "live_play_20261017_041857.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_042209",
+"log": "live_play_20261017_042209.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_042613",
+"log": "live_play_20261017_042613.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_043120",
+"log": "live_play_20261017_043120.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_043438",
+"log": "live_play_20261017_043438.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_044015",
+"log": "live_play_20261017_044015.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_044332",
+"log": "live_play_20261017_044332.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_044650",
+"log": "live_play_20261017_044650.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_045008",
+"log": "live_play_20261017_045008.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4032
+]
+},
+{
+"capture": "live_play_20261017_045421",
+"log": "live_play_20261017_045421.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_045733",
+"log": "live_play_20261017_045733.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_050051",
+"log": "live_play_20261017_050051.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_050540",
+"log": "live_play_20261017_050540.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_051049",
+"log": "live_play_20261017_051049.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_051554",
+"log": "live_play_20261017_051554.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_051913",
+"log": "live_play_20261017_051913.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_052321",
+"log": "live_play_20261017_052321.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_052637",
+"log": "live_play_20261017_052637.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_053201",
+"log": "live_play_20261017_053201.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_053624",
+"log": "live_play_20261017_053624.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_054016",
+"log": "live_play_20261017_054016.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_054527",
+"log": "live_play_20261017_054527.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_054852",
+"log": "live_play_20261017_054852.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_055336",
+"log": "live_play_20261017_055336.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_055812",
+"log": "live_play_20261017_055812.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_060339",
+"log": "live_play_20261017_060339.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_060649",
+"log": "live_play_20261017_060649.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_061002",
+"log": "live_play_20261017_061002.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_061258",
+"log": "live_play_20261017_061258.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4013
+]
+},
+{
+"capture": "live_play_20261017_062000",
+"log": "live_play_20261017_062000.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_062523",
+"log": "live_play_20261017_062523.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_062844",
+"log": "live_play_20261017_062844.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_063204",
+"log": "live_play_20261017_063204.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_063521",
+"log": "live_play_20261017_063521.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4032
+]
+},
+{
+"capture": "live_play_20261017_064045",
+"log": "live_play_20261017_064045.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_064612",
+"log": "live_play_20261017_064612.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_064908",
+"log": "live_play_20261017_064908.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+3456
+]
+},
+{
+"capture": "live_play_20261017_065239",
+"log": "live_play_20261017_065239.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_065553",
+"log": "live_play_20261017_065553.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_065951",
+"log": "live_play_20261017_065951.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_070322",
+"log": "live_play_20261017_070322.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_070848",
+"log": "live_play_20261017_070848.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_071134",
+"log": "live_play_20261017_071134.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_071515",
+"log": "live_play_20261017_071515.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_071833",
+"log": "live_play_20261017_071833.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+3346
+]
+},
+{
+"capture": "live_play_20261017_072200",
+"log": "live_play_20261017_072200.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+3668
+]
+},
+{
+"capture": "live_play_20261017_072528",
+"log": "live_play_20261017_072528.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_072843",
+"log": "live_play_20261017_072843.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_073400",
+"log": "live_play_20261017_073400.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_073920",
+"log": "live_play_20261017_073920.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+3571
+]
+},
+{
+"capture": "live_play_20261017_074238",
+"log": "live_play_20261017_074238.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_074557",
+"log": "live_play_20261017_074557.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_074910",
+"log": "live_play_20261017_074910.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_075225",
+"log": "live_play_20261017_075225.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_075552",
+"log": "live_play_20261017_075552.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4164
+]
+},
+{
+"capture": "live_play_20261017_080114",
+"log": "live_play_20261017_080114.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_080500",
+"log": "live_play_20261017_080500.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_080901",
+"log": "live_play_20261017_080901.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_081155",
+"log": "live_play_20261017_081155.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_081400",
+"log": "live_play_20261017_081400.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_081712",
+"log": "live_play_20261017_081712.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_082030",
+"log": "live_play_20261017_082030.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_082412",
+"log": "live_play_20261017_082412.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_082737",
+"log": "live_play_20261017_082737.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_083051",
+"log": "live_play_20261017_083051.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_083408",
+"log": "live_play_20261017_083408.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_083723",
+"log": "live_play_20261017_083723.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_084040",
+"log": "live_play_20261017_084040.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_084359",
+"log": "live_play_20261017_084359.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_084717",
+"log": "live_play_20261017_084717.jsonl",
+"tick": 151,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_084953",
+"log": "live_play_20261017_084953.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_085451",
+"log": "live_play_20261017_085451.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_085914",
+"log": "live_play_20261017_085914.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_090246",
+"log": "live_play_20261017_090246.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_090603",
+"log": "live_play_20261017_090603.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_091016",
+"log": "live_play_20261017_091016.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_091328",
+"log": "live_play_20261017_091328.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_091647",
+"log": "live_play_20261017_091647.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_092147",
+"log": "live_play_20261017_092147.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_092505",
+"log": "live_play_20261017_092505.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_092824",
+"log": "live_play_20261017_092824.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_093407",
+"log": "live_play_20261017_093407.jsonl",
+"tick": 150,
+"my_side": 0,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_093725",
+"log": "live_play_20261017_093725.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_094038",
+"log": "live_play_20261017_094038.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_094457",
+"log": "live_play_20261017_094457.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4032
+]
+},
+{
+"capture": "live_play_20261017_094727",
+"log": "live_play_20261017_094727.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4424
+]
+},
+{
+"capture": "live_play_20261017_095049",
+"log": "live_play_20261017_095049.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_095432",
+"log": "live_play_20261017_095432.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_095746",
+"log": "live_play_20261017_095746.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_100055",
+"log": "live_play_20261017_100055.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_100535",
+"log": "live_play_20261017_100535.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_100935",
+"log": "live_play_20261017_100935.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_101253",
+"log": "live_play_20261017_101253.jsonl",
+"tick": 150,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_101531",
+"log": "live_play_20261017_101531.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+},
+{
+"capture": "live_play_20261017_101849",
+"log": "live_play_20261017_101849.jsonl",
+"tick": 151,
+"my_side": 1,
+"own": [
+4424
+],
+"opp": [
+4858
+]
+}
+]

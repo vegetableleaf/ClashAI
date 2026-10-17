@@ -1914,7 +1914,11 @@ class SelfPlayMatch:
         L = int(spec["learner_side"])
         decks = {L: spec["learner_deck"], 1 - L: spec["opp_deck"]}
         enable_sim_features(env, learner, opponent)
-        env.reset(decks[0], decks[1], int(spec["seed"]))
+        if "opp_tower" in spec:                 # L74 troops (opt-in): the OPPONENT's crown tower troop; ours = Princess
+            env.reset(decks[0], decks[1], int(spec["seed"]),
+                      tower_troops=[None, spec["opp_tower"]] if L == 0 else [spec["opp_tower"], None])
+        else:
+            env.reset(decks[0], decks[1], int(spec["seed"]))
         tag = str(spec["tag"])
         self.learner = SelfPlaySide(env, spec["learner_deck"], L, tag, k, cfg, learner)
         from pipeline.adaptive_opponents import style_config
