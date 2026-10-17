@@ -1,0 +1,42 @@
+OVERALL base n 3190 raw 0.900 agree 0.900 ceil 0.957 norm 0.94 [0.927, 0.952]
+OVERALL arm  n 3184 raw 0.901 agree 0.900 ceil 0.957 norm 0.941 [0.928, 0.953]
+  own IceWizard hero       base n  309 raw 0.926 agree 0.931 ceil 0.983 norm 0.947 [0.922, 0.974]
+                           arm  n  309 raw 0.929 agree 0.934 ceil 0.983 norm 0.951 [0.925, 0.976]
+  own Skeletons            base n  269 raw 0.840 agree 0.843 ceil 0.936 norm 0.9 [0.866, 0.935]
+                           arm  n  269 raw 0.836 agree 0.841 ceil 0.936 norm 0.899 [0.864, 0.933]
+  own Xbow                 base n  253 raw 0.937 agree 0.927 ceil 0.97 norm 0.956 [0.928, 0.982]
+                           arm  n  253 raw 0.937 agree 0.927 ceil 0.97 norm 0.956 [0.928, 0.982]
+  own Log                  base n  248 raw 0.980 agree 0.980 ceil 0.993 norm 0.986 [0.971, 0.998]
+                           arm  n  247 raw 0.980 agree 0.980 ceil 0.993 norm 0.986 [0.971, 0.998]
+  own Knight               base n  199 raw 0.905 agree 0.906 ceil 0.96 norm 0.944 [0.91, 0.975]
+                           arm  n  199 raw 0.905 agree 0.906 ceil 0.96 norm 0.944 [0.91, 0.975]
+  own Tesla                base n  190 raw 0.884 agree 0.883 ceil 0.965 norm 0.915 [0.865, 0.958]
+                           arm  n  190 raw 0.884 agree 0.883 ceil 0.965 norm 0.915 [0.865, 0.958]
+  own Knight evo           base n   74 raw 0.865 agree 0.856 ceil 0.979 norm 0.875 [0.796, 0.944]
+                           arm  n   72 raw 0.861 agree 0.852 ceil 0.979 norm 0.871 [0.793, 0.942]
+  own Tornado              base n   65 raw 0.938 agree 0.937 ceil 0.988 norm 0.948 [0.881, 1.0]
+                           arm  n   65 raw 0.938 agree 0.937 ceil 0.988 norm 0.948 [0.881, 1.0]
+  own Tesla evo            base n   56 raw 0.804 agree 0.833 ceil 0.959 norm 0.869 [0.773, 0.956]
+                           arm  n   55 raw 0.818 agree 0.836 ceil 0.948 norm 0.882 [0.791, 0.967]
+  own Rocket               base n   42 raw 0.952 agree 0.932 ceil 0.95 norm 0.981 [0.924, 1.015]
+                           arm  n   42 raw 0.952 agree 0.932 ceil 0.95 norm 0.981 [0.924, 1.015]
+  opp Balloon hero         base n   22 raw 0.864 agree 0.920 ceil 0.966 norm 0.953 [0.879, 1.018]
+                           arm  n   20 raw 0.950 agree 0.981 ceil 0.989 norm 0.992 [0.974, 1.0]
+  opp Minions              base n   11 raw 0.818 agree 0.739 ceil 0.828 norm 0.892 [0.621, 1.006]
+                           arm  n   11 raw 0.909 agree 0.761 ceil 0.828 norm 0.92 [0.7, 1.007]
+  opp ElixirGolem          base n   11 raw 1.000 agree 0.989 ceil 0.961 norm 1.029 [0.986, 1.135]
+                           arm  n   11 raw 1.000 agree 0.920 ceil 0.906 norm 1.016 [0.941, 1.135]
+
+flips (a0) base -> arm; aK moves > 0.1
+  opp Balloon hero       20261016_220124@3869  gone from strict a0=0 aK=0.625
+  opp Balloon hero       20261016_235516@3728  gone from strict a0=0 aK=0.000
+  opp ElixirGolem        20261016_234407@3748  a0 1 -> 1  aK 0.875 -> 0.125  ceil 0.9285714285714286 -> 0.32142857142857145
+  opp Minions            20261017_021702@2433  a0 0 -> 1  aK 0.000 -> 0.250  ceil 0.5714285714285714 -> 0.5714285714285714
+  own IceWizard hero     20261016_234407@3243  a0 0 -> 1  aK 0.000 -> 1.000  ceil 1.0 -> 1.0
+  own Knight evo         20261016_220124@3795  gone from strict a0=1 aK=1.000
+  own Knight evo         20261016_234407@3309  gone from strict a0=1 aK=1.000
+  own Log                20261017_021702@3164  gone from strict a0=1 aK=1.000
+  own Skeletons          20261016_234407@3846  a0 1 -> 0  aK 1.000 -> 0.000  ceil 1.0 -> 1.0
+  own Skeletons          20261017_021702@2433  a0 0 -> 0  aK 0.000 -> 0.500  ceil 0.5714285714285714 -> 0.42857142857142855
+  own Tesla evo          20261016_220124@3871  gone from strict a0=1 aK=1.000
+  own Tesla evo          20261017_021702@2433  a0 0 -> 1  aK 0.000 -> 0.375  ceil 1.0 -> 0.4642857142857143

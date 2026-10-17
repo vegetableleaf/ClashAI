@@ -1,0 +1,53 @@
+r3a parity notes (night 10-16/17). Cards: own IW hero, X-Bow, Tornado, Knight, Rocket. Base = CAP2_BEST (pod B; fork
+rsfork_f36bug, HEAD fights.py md5 4175419...). Arms on pod A: /workspace/results/r3a_{snipe,hb,hb2,hb3,ringtaken,rkprobe,comb}
+(laptop copies C:/Users/benpe/AppData/Local/Temp/claude/parity1016/r3a/). Derived numbers only; no capture rows here.
+
+Base imperfect strict fights (fails_base.txt; first divergences first_base.txt):
+  IW hero 27 (16 deterministic = aK 0 / ceil 1.0; 15 of them on NEW matches), X-Bow 31 (11 det.), Tornado 5 (3 det.),
+  Knight 29 (12 det.), Rocket 5 (1 det.). The rest have ceiling < 1 (perturbed replays split) = U.
+
+HARNESS FIXES (each one change vs base, captured cohort 2, K=8, strict) -- cmp_*.txt
+  H-SNIPE  (H_snipe.patch / mk_snipe.py): set-up Evo Musketeer gets snipes left = 3 - live shots before t0 from > 7.5
+           tiles, in save()['evo']['snipers'] (state.rs evo_created: a set-up unit starts none). 2 fixed / 0 broken
+           (own IW 012807@3463, own Skeletons 012807@3429). OVERALL 0.940 -> 0.941 [0.928, 0.953]; IW 0.947 -> 0.951;
+           Skeletons 0.900 -> 0.904; every other card identical.
+  H-HB3    (H_hb.patch / mk_hb.py): a Hero Balloon Skeletrooper whose throw the reader saw (17 of 18) is replayed as an
+           ability press, put 2 + throw moves (table ramp, from the hero's point) before the trooper's first sighting
+           (matches the visible throw's first row on 165921 / 021702 / 234407@3305); a landing-blow 'cast' is replaced.
+           Fixed own IW 234407@3243 (live 3357 / SIM None -> 3357); 021702@2433 own Tesla evo / opp Minions / own
+           Skeletons 0 -> 0.375-0.5. OVERALL 0.940 -> 0.941 [0.929, 0.953]; IW 0.951; Skeletons 0.903; Tesla evo 0.869
+           -> 0.882; opp Balloon hero 0.953 -> 0.992. Knight evo 0.875 -> 0.871: 2 AGREEING fights (220124@3795,
+           234407@3309) leave strict by the existing ability_active_at_start blocker (the press is now seen); no
+           fight's agreement changed. Earlier versions: hb (fixed lag 12) 13 fights refused ABILITY_SPENT (the landing-
+           row cast doubled the press); hb2 (replace) broke own Skeletons 234407@3846 via the unseen throw -> hb3.
+  H-RKPROBE (H_rkprobe.patch / mk_rkprobe.py): Engine.spell_damage probe Golem moved to y 14500 / 17500 (9.7 tiles
+           from the caster's princess towers): the old probe read the tower arrow (158) for a Rocket at every level, so
+           the opponent Rocket's level was never inferred and the Rocket view used 158 as its damage. Fixed own X-Bow
+           014323@2720 (live Rocket 1975 on our X-Bow, SIM 2166 = one level high). X-Bow 0.956 -> 0.960 [0.932, 0.984];
+           OVERALL 0.941. opp Rocket (n 7, insufficient n) 1.025 -> 1.011: 214220@823 a0 1 -> 0 = a real disagreement
+           newly exposed (the SIM Rocket's crown hit 496 on T1L, live T1L untouched 823-880); 020842@4109 0.625 -> 1.
+  H-RINGTAKEN (H_ringtaken.patch): ring 'taken' = stop carriers on any row since the ring's creation. 0 fixed / 1 broken
+           (opp Goblins hero 170937@2577). (c) not landed.
+
+SIM LAWS (fork not touched; laws at tag v0.1.36)
+  S-AXE (a): live, a slowed Executioner's pingpong axe flies at the slowed rate: visible lifetime unslowed median 29
+    ticks (n 85), slowed at launch (IceWizardHeroSlow) median 42 (n 15) = 30 / 0.7. SIM combat.rs:2189 step_straight
+    `s.t += 1` each tick (period = PingpongVisualTime / 50, combat.rs:1387; the thrower's hold, throwers_out
+    combat.rs:566, follows the throw). Law: t advances compose(thrower HitSpeed, 50) / 50 a tick (Speed and HitSpeed are
+    both -30 under the IW slow: which column is not separable on this data). Fixture 235203@1938 (opp Executioner vs our
+    Hero IW, no other event): live throw seen 1996, IW hit 2006 and 2018 (-260 each), axe gone 2036, next throw 2065;
+    SIM 1994, 2002 / 2010, gone 2023, next 2052 -> SIM IW dies 2067, live 131 hp at 2085. Explains 1 deterministic IW
+    fail (verified); 19 strict fights hold a slowed throw, 6 imperfect (loss 5.25) = upper bound.
+  S-MKSTAND (a): live, a slowed Mega Knight's dash stand runs at the slowed rate: first still frame -> first jump frame
+    unslowed 18 ticks (n 38, 16-19), IW-slowed 25-27 (n 14, median 26 = 18 / 0.7). SIM state.rs:26016 / 26020
+    dash_mark = tick + DashCooldown / 50 - 1 fixed at the trigger. Law: the stand counts compose(HitSpeed, 50) per tick
+    to DashCooldown. Fixture 223054@1143: MK slowed by our Hero IW (hits 1223 / 1225), stands from 1233 at (3482, 13625);
+    live first jump frame 1259, lands 1275 (IW 911 -> 321); SIM 1251, lands 1267 (IW 911 -> 200, + knockback).
+    Explains 2 deterministic fails (own IW 223054@1143, own X-Bow 223054@1189: same jump); 25 strict fights hold a
+    slowed stand, 5 imperfect (loss 4.75). Secondary (b): landing damage live 590 vs SIM 711 on the same IW.
+
+COMBINED (H_comb_snipe_hb3_rkprobe.patch = SNIPE + HB3 + RKPROBE; r3a_comb, cmp_comb.txt): OVERALL 0.940 [0.927, 0.952]
+  -> 0.942 [0.929, 0.954] (n 3190 -> 3184); own IW hero 0.947 -> 0.954 [0.929, 0.979]; own Skeletons 0.900 -> 0.907;
+  own X-Bow 0.956 -> 0.960; own Tesla evo 0.869 -> 0.882; own Knight evo 0.875 -> 0.871 (2 agreeing fights leave strict:
+  ability_active_at_start); opp Rocket (n 7) 1.025 -> 1.011; Log / Knight / Tesla / Tornado / own Rocket unchanged.
+  5 deterministic fails fixed, 1 agreeing fight newly failing (opp Rocket 214220@823, a real disagreement exposed).

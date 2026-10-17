@@ -1,3 +1,23 @@
+## 2026-10-17 04:40 EDT -- I12 (Evo Musketeer snipes, Hero Balloon thrown trooper, spell probe out of tower range) = 0.942 on 97 matches; 2 slowed-timer laws
+
+Round-3a worker (diag_night/r3a/NOTES.txt; pod A /workspace/results/r3a_*), base CAP2_BEST (I11 + fork d80dcb5, 0.940):
+- **Landed (I12 = repo fights.py = r3a fights_comb.py):** H-SNIPE (a set-up Evo Musketeer gets the snipes she has left: 2 / 0), H-HB3
+  (the opponent Hero Balloon's thrown Skeletrooper replayed when the reader SAW the throw: 1 own IW + 3 partial / 0), H-RKPROBE (the
+  spell-damage probe moved out of tower range -- it had taken a tower arrow's 158 as the Rocket's damage: 1 / 1). Combined **0.940 ->
+  0.942 [0.929, 0.954]**, 5 fixed / 1 newly failing (opp Rocket 214220@823 = a real disagreement now exposed: the SIM Rocket hits our
+  left tower 496, live it takes nothing); own IW hero 0.947 -> **0.954 [0.929, 0.979]**, X-Bow 0.956 -> 0.960 [0.932, 0.984], Skeletons
+  0.907, Tesla evo 0.882; Knight evo 0.875 -> 0.871 (two agreeing fights leave strict: the now-seen Hero Balloon press trips the "hero
+  press within 100 ticks before t0" exclusion). H-RINGTAKEN contradicted (0 / 1), not landed. 91 parity tests pass.
+- **SIM laws (a), slowed timers -- live scales them by the slow, the SIM does not:**
+  - S-AXE: a slowed Executioner's axe flies at the slowed rate: live axe life 29 ticks unslowed (median, n 85), 42 under the Hero IW slow
+    at launch (n 15) = 30 / 0.7. SIM combat.rs:2189 step_straight (s.t += 1 every tick; period combat.rs:1387). Fixture 235203@1938.
+    19 strict fights hold a slowed throw, 6 imperfect.
+  - S-MKSTAND: a slowed Mega Knight stands longer before its jump: live 18 ticks unslowed (n 38), 25-27 slowed (n 14, median 26 = 18 / 0.7).
+    SIM state.rs:26016 / 26020 sets dash_mark once at the trigger with no slow. Fixture 223054@1143 (live jump 1259, SIM 1251; also own X-Bow
+    223054@1189). 25 strict fights hold a slowed stand, 5 imperfect. Secondary (b): landing damage 590 live vs 711 SIM on the same IW.
+- Remaining IW hero deterministic failures: 11 (setup chains, Ram Rider BolaSnare not set at t0 (4 fights carry it), a Giant Skeleton death
+  bomb with 0 ms left not seeded, Hero Mini PEKKA heal vs Log order, Skeleton Balloon child identity swaps (scoring), unseen Hero Balloon
+  throws). IW lower bound >= 0.95 needs ~7 of them fixed or more captured matches.
 ## 2026-10-17 04:29 EDT -- T1 s74 u250 early read: 549/960, -3.85 [-7.71, +0.00] vs live u250 -> not a successor
 
 - 37671 T1EARLY/t1_s74_u250 (F1 recipe retrained on 0.1.35, plain IW, at 250 of 500 updates; copy pod_backup_weekend/rt35/RT35/):

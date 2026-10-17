@@ -90,6 +90,9 @@ SLOW_BUFFS = {'IceWizardSlowDown': 'base', 'IceWizardCold': 'base', 'IceWizardHe
               'IceWizardHeroSlow': 'hero', 'IceWizardHeroCold': 'hero_cold'}
 IW_SLOW_MS = 2500                  # an Ice Wizard shot's slow (both forms; re-armed on every hit)
 SENTINEL_MS = 100000               # buff/effect remaining above this is "lives with its source", not a time
+SNIPE_AMMO, SNIPE_FROM_MT = 3, 7500           # Evo Musketeer AmmoCount (card table); a live shot from beyond 7.5 tiles is a snipe
+HERO_THROWERS = ('Balloon',)      # hero forms whose ability is a thrown unit (card.rs AbilityEffect::Throw)
+HB_SPEEDS = (201, 201, 201, 201, 243, 274, 299, 320, 338, 354, 368, 380, 391, 402, 411, 420)  # BalloonHero_Ability ramp, mt/tick
 GM_SIGNAL_MS, GM_COOLDOWN_MS = 1000, 5000   # fork state.rs ROCKET_SIGNAL_MS / ROCKET_COOLDOWN_MS
 EVO_RING_MS = 1500                 # an Evo Tesla ring's life (live area rows count 1500 -> 0, 50 a tick)
 CHARGE_PER_MT = 4                  # SIM 0.1.35 charge_progress: +240 per tick at speed 60 (59 mt/tick), charged at range_raw x 40
@@ -349,6 +352,47 @@ def seen_casts(m, catalog, life=None):
             continue
         if not any(s == k[0] and n == k[1] and -10 <= r['first'] - t <= 40 for t, s, n in casts):
             casts.append((r['first'], k[0], k[1]))
+    # The Hero Balloon's throw (card.rs AbilityEffect::Throw, its Skeletrooper) shows no cast state and no effect row: the
+    # reader sees only the Skeletrooper, a body of the hero's card with another max_hp, deploying (state 4) where it
+    # lands (diag_night/r3a 234407@3888: 688 / 688 hp at t3928 under a 2436 hp hero; no event, so the SIM never threw it,
+    # and 10 Hero Balloon troopers in imperfect strict fights were never made). The press is put before its first
+    # sighting by the SIM's press -> trooper lag: seek + spawn (2 ticks) + the throw's moves from the hero's point to the
+    # trooper's at the table's ramp (BalloonHero_Ability speeds, native millitiles a tick, a step up every 3 moves); the
+    # hero's point is read at the press tick so found (two passes). The throw itself is not public.
+    pos = {}
+    for t, bodies in m['frames']:
+        for bd in bodies:
+            pos[t, bd['id']] = (bd['x'], bd['y'])
+    def throw_lag(t, hero, at):
+        lag = 2
+        for _ in range(2):
+            hp_ = pos.get((min((tt for tt, _ in m['frames'] if tt >= t - lag), default=t), hero)) or pos.get((t, hero))
+            d, n, run = math.dist(hp_, at), 0, 0
+            while run < d and n < 200:
+                run += HB_SPEEDS[min(n // 3, len(HB_SPEEDS) - 1)]; n += 1
+            lag = 2 + n
+        return lag
+    born = {}
+    for t, bodies in m['frames']:
+        for bd in bodies:
+            c = catalog.get(bd['card_id'])
+            if bd['tower'] or c is None or c['display_name'] not in HERO_THROWERS or form_of(bd['card_id'], c) != 2 or bd['id'] in born:
+                continue
+            born[bd['id']] = t
+            hero = next((o for o in bodies if o['card_id'] == bd['card_id'] and o['side'] == bd['side'] and o['max_hp'] > bd['max_hp']
+                         and not o['tower']), None)
+            # only a throw the reader saw (a projectile row of the hero's card from the hero in the 40 ticks before; 17 of
+            # 18 on the captured logs): an unseen one (234407 t3928) is not public, and a guessed one landed 1.5 tiles off
+            # and broke an agreeing fight (234407@3846)
+            seen_throw = hero is not None and any(q[3] == bd['card_id'] and q[7] == hero['id']
+                                                  for tt in range(t - 40, t + 1) for q in m['proj'].get(tt, ()))
+            if bd.get('state') == 4 and seen_throw:
+                k = (bd['side'], c['display_name'])
+                tc = t - throw_lag(t, hero['id'], (bd['x'], bd['y']))
+                # the landing blow's area row, when the reader shows one, already made a 'cast' on the landing tick (one
+                # charge: a second press is refused ABILITY_SPENT): the throw's press replaces it
+                casts[:] = [(tt, s, n) for tt, s, n in casts if not (s == k[0] and n == k[1] and tc - 10 <= tt <= t + 5)]
+                casts.append((tc, k[0], k[1]))
     for t, s, n in sorted(casts):
         out.append(dict(gap(t), kind='ability', side=s, name=n, source='cast_seen', seen=t, end=t))
     for e in out:
@@ -709,7 +753,9 @@ class Engine:
         """First hp drop a `side` cast of spell `name` at `level` deals to a still, huge-hp enemy Golem (None: no hit)."""
         key = ('dmg', name, side, level)
         if key not in self._form:
-            b, y = self.b, (20000 if side == 1 else 12000)            # the caster's own half: the Log is territory-bound
+            # the caster's own half (the Log is territory-bound), 9.7 tiles from its princess towers: out of their reach,
+            # so a slow spell (Rocket, Fireball) lands before any arrow (diag_night/r3a; at 12000 / 20000 a Rocket read 158)
+            b, y = self.b, (17500 if side == 1 else 14500)
             decks = [[self.ids[name]], [self.ids[name]]]
             try:
                 b.reset(1, decks, 0, 200, [10000, 10000], None, [(1-side, self.ids['Golem'], 9000*18, y*18, 10**6)],
@@ -1334,6 +1380,43 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
                 load_edited(b, before, after)
             except Exception:
                 flags['setup_ring_not_set'] += 1
+
+    # An Evo Musketeer's snipes (state.rs `evo_created`, save()['evo']['snipers']: [unit, snipes left, aimed target]) start
+    # only on her creation from a play; a set-up one "starts none of these", so the SIM never snipes where the live one
+    # still held some (diag_night/r3a 012807@3463: live snipes at t0 + 138 (Skeleton) and t0 + 212 (our Hero IW, 12
+    # tiles), the SIM none; AmmoCount 3 in the card table). Left = 3 - her live shots before t0 from beyond
+    # SNIPE_FROM_MT (live: 3 per Musketeer, 7.9-28.9 tiles out; her ordinary shots <= 7.1).
+    if m['ext']:
+        before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
+        sn = (after.get('evo') or {}).get('snipers')
+        at = None
+        for bd in (setup if sn is not None else ()):
+            c = catalog.get(bd['card_id']) or {}
+            if bd.get('proxy') or c.get('display_name') != 'Musketeer' or form_of(bd['card_id'], c) != 1:
+                continue
+            at = at or dict(m['frames'])
+            i = ent(E, ('body', bd))
+            if i is None:
+                flags['setup_snipe_not_found'] += 1; continue
+            used, last = 0, None
+            for t in sorted(k for k in m['proj'] if k < t0):
+                lf = {x['id']: x for x in at.get(t, ())}
+                for q in m['proj'][t]:
+                    if q[7] != bd['id'] or not q[8] or q[8] not in lf or bd['id'] not in lf:
+                        continue
+                    if last and last[0] == q[8] and t - last[1] <= 4:
+                        last = (q[8], t); continue
+                    last = (q[8], t)
+                    a, v = lf[bd['id']], lf[q[8]]
+                    used += math.hypot(a['x'] - v['x'], a['y'] - v['y']) > SNIPE_FROM_MT
+            left = max(0, SNIPE_AMMO - used)
+            sn[:] = [s for s in sn if s[0]['index'] != i] + [[{'index': i, 'generation': E['generation'][i]}, left, None]]
+            flags['setup_snipes:%d' % left] += 1
+        if after != before:
+            try:
+                load_edited(b, before, after)
+            except Exception:
+                flags['setup_snipe_not_set'] += 1
 
     # Opt-in inference (PARITY_INFER=target,phase; item 8): the SIM's attack clock advances 50 ms a tick while engaged
     # and a hit lands (melee) / launches (ranged) each time it reaches a multiple of HitSpeed (probed on 0.1.35), so a

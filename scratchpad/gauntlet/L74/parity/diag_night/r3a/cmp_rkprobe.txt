@@ -1,0 +1,29 @@
+OVERALL base n 3190 raw 0.900 agree 0.900 ceil 0.957 norm 0.94 [0.927, 0.952]
+OVERALL arm  n 3190 raw 0.901 agree 0.900 ceil 0.957 norm 0.941 [0.927, 0.953]
+  own IceWizard hero       base n  309 raw 0.926 agree 0.931 ceil 0.983 norm 0.947 [0.922, 0.974]
+                           arm  n  309 raw 0.926 agree 0.931 ceil 0.983 norm 0.947 [0.922, 0.974]
+  own Skeletons            base n  269 raw 0.840 agree 0.843 ceil 0.936 norm 0.9 [0.866, 0.935]
+                           arm  n  269 raw 0.840 agree 0.843 ceil 0.936 norm 0.9 [0.866, 0.935]
+  own Xbow                 base n  253 raw 0.937 agree 0.927 ceil 0.97 norm 0.956 [0.928, 0.982]
+                           arm  n  253 raw 0.941 agree 0.931 ceil 0.97 norm 0.96 [0.932, 0.984]
+  own Log                  base n  248 raw 0.980 agree 0.980 ceil 0.993 norm 0.986 [0.971, 0.998]
+                           arm  n  248 raw 0.980 agree 0.980 ceil 0.993 norm 0.986 [0.971, 0.998]
+  own Knight               base n  199 raw 0.905 agree 0.906 ceil 0.96 norm 0.944 [0.91, 0.975]
+                           arm  n  199 raw 0.905 agree 0.906 ceil 0.96 norm 0.944 [0.91, 0.975]
+  own Tesla                base n  190 raw 0.884 agree 0.883 ceil 0.965 norm 0.915 [0.865, 0.958]
+                           arm  n  190 raw 0.884 agree 0.883 ceil 0.965 norm 0.915 [0.865, 0.958]
+  own Knight evo           base n   74 raw 0.865 agree 0.856 ceil 0.979 norm 0.875 [0.796, 0.944]
+                           arm  n   74 raw 0.865 agree 0.856 ceil 0.979 norm 0.875 [0.796, 0.944]
+  own Tornado              base n   65 raw 0.938 agree 0.937 ceil 0.988 norm 0.948 [0.881, 1.0]
+                           arm  n   65 raw 0.938 agree 0.937 ceil 0.988 norm 0.948 [0.881, 1.0]
+  own Tesla evo            base n   56 raw 0.804 agree 0.833 ceil 0.959 norm 0.869 [0.773, 0.956]
+                           arm  n   56 raw 0.804 agree 0.833 ceil 0.959 norm 0.869 [0.773, 0.956]
+  own Rocket               base n   42 raw 0.952 agree 0.932 ceil 0.95 norm 0.981 [0.924, 1.015]
+                           arm  n   42 raw 0.952 agree 0.932 ceil 0.95 norm 0.981 [0.924, 1.015]
+  opp Rocket               base n    7 raw 0.857 agree 0.946 ceil 0.923 norm 1.025 [1.0, 1.065]
+                           arm  n    7 raw 0.857 agree 0.929 ceil 0.918 norm 1.011 [1.0, 1.05]
+
+flips (a0) base -> arm; aK moves > 0.1
+  opp Rocket             20261016_214220@823  a0 1 -> 0  aK 1.000 -> 0.500  ceil 1.0 -> 0.42857142857142855
+  opp Rocket             20261017_020842@4109  a0 0 -> 1  aK 0.625 -> 1.000  ceil 0.4642857142857143 -> 1.0
+  own Xbow               20261017_014323@2720  a0 0 -> 1  aK 0.000 -> 1.000  ceil 1.0 -> 1.0

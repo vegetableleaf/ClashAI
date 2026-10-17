@@ -1,0 +1,19 @@
+--- fights_head.py	2026-10-17 03:06:06.630522700 -0400
++++ fights_ringtaken.py	2026-10-17 03:40:54.877585700 -0400
+@@ -1313,10 +1313,14 @@
+     if rings:
+         before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
+         rr = (after.get('evo') or {}).get('rings')
+-        buffs = (m.get('buffs') or {}).get(max((t for t in m.get('buffs') or {} if t0 - 6 <= t <= t0), default=None), {})
+-        hit = {g for g, v in buffs.items() if any(n == 'Tesla_EV1_WithDamage' for n, _ in v)}
++        # Taken = every enemy that carried the ring's stop on any phase-2 row from the ring's creation to t0 (the stop
++        # lasts 500 ms, the ring 1500: diag_night/r3a 223952@4462, a Prince stopped 4442-4450 had lost it by t0 4462 and
++        # the SIM's ring hit it again, 237, on t0 + 4).
++        rows_ = m.get('buffs') or {}
+         by = {bd['id']: bd for bd in setup}
+         for bd, made in (rings if rr is not None else ()):
++            hit = {g for t, u in rows_.items() if made - 2 <= t <= t0 for g, v in u.items()
++                   if any(n == 'Tesla_EV1_WithDamage' for n, _ in v)}
+             i = ent(E, ('body', bd))
+             if i is None:
+                 flags['setup_ring_not_found'] += 1; continue

@@ -1,0 +1,13 @@
+--- fights_head.py	2026-10-17 03:06:06.630522700 -0400
++++ fights_rkprobe.py	2026-10-17 04:01:31.611991200 -0400
+@@ -709,7 +709,9 @@
+         """First hp drop a `side` cast of spell `name` at `level` deals to a still, huge-hp enemy Golem (None: no hit)."""
+         key = ('dmg', name, side, level)
+         if key not in self._form:
+-            b, y = self.b, (20000 if side == 1 else 12000)            # the caster's own half: the Log is territory-bound
++            # the caster's own half (the Log is territory-bound), 9.7 tiles from its princess towers: out of their reach,
++            # so a slow spell (Rocket, Fireball) lands before any arrow (diag_night/r3a; at 12000 / 20000 a Rocket read 158)
++            b, y = self.b, (17500 if side == 1 else 14500)
+             decks = [[self.ids[name]], [self.ids[name]]]
+             try:
+                 b.reset(1, decks, 0, 200, [10000, 10000], None, [(1-side, self.ids['Golem'], 9000*18, y*18, 10**6)],

@@ -1,0 +1,54 @@
+--- fights_head.py	2026-10-17 03:06:06.630522700 -0400
++++ fights_snipe.py	2026-10-17 03:25:22.860800900 -0400
+@@ -90,6 +90,7 @@
+               'IceWizardHeroSlow': 'hero', 'IceWizardHeroCold': 'hero_cold'}
+ IW_SLOW_MS = 2500                  # an Ice Wizard shot's slow (both forms; re-armed on every hit)
+ SENTINEL_MS = 100000               # buff/effect remaining above this is "lives with its source", not a time
++SNIPE_AMMO, SNIPE_FROM_MT = 3, 7500           # Evo Musketeer AmmoCount (card table); a live shot from beyond 7.5 tiles is a snipe
+ GM_SIGNAL_MS, GM_COOLDOWN_MS = 1000, 5000   # fork state.rs ROCKET_SIGNAL_MS / ROCKET_COOLDOWN_MS
+ EVO_RING_MS = 1500                 # an Evo Tesla ring's life (live area rows count 1500 -> 0, 50 a tick)
+ CHARGE_PER_MT = 4                  # SIM 0.1.35 charge_progress: +240 per tick at speed 60 (59 mt/tick), charged at range_raw x 40
+@@ -1335,6 +1336,43 @@
+             except Exception:
+                 flags['setup_ring_not_set'] += 1
+ 
++    # An Evo Musketeer's snipes (state.rs `evo_created`, save()['evo']['snipers']: [unit, snipes left, aimed target]) start
++    # only on her creation from a play; a set-up one "starts none of these", so the SIM never snipes where the live one
++    # still held some (diag_night/r3a 012807@3463: live snipes at t0 + 138 (Skeleton) and t0 + 212 (our Hero IW, 12
++    # tiles), the SIM none; AmmoCount 3 in the card table). Left = 3 - her live shots before t0 from beyond
++    # SNIPE_FROM_MT (live: 3 per Musketeer, 7.9-28.9 tiles out; her ordinary shots <= 7.1).
++    if m['ext']:
++        before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
++        sn = (after.get('evo') or {}).get('snipers')
++        at = None
++        for bd in (setup if sn is not None else ()):
++            c = catalog.get(bd['card_id']) or {}
++            if bd.get('proxy') or c.get('display_name') != 'Musketeer' or form_of(bd['card_id'], c) != 1:
++                continue
++            at = at or dict(m['frames'])
++            i = ent(E, ('body', bd))
++            if i is None:
++                flags['setup_snipe_not_found'] += 1; continue
++            used, last = 0, None
++            for t in sorted(k for k in m['proj'] if k < t0):
++                lf = {x['id']: x for x in at.get(t, ())}
++                for q in m['proj'][t]:
++                    if q[7] != bd['id'] or not q[8] or q[8] not in lf or bd['id'] not in lf:
++                        continue
++                    if last and last[0] == q[8] and t - last[1] <= 4:
++                        last = (q[8], t); continue
++                    last = (q[8], t)
++                    a, v = lf[bd['id']], lf[q[8]]
++                    used += math.hypot(a['x'] - v['x'], a['y'] - v['y']) > SNIPE_FROM_MT
++            left = max(0, SNIPE_AMMO - used)
++            sn[:] = [s for s in sn if s[0]['index'] != i] + [[{'index': i, 'generation': E['generation'][i]}, left, None]]
++            flags['setup_snipes:%d' % left] += 1
++        if after != before:
++            try:
++                load_edited(b, before, after)
++            except Exception:
++                flags['setup_snipe_not_set'] += 1
++
+     # Opt-in inference (PARITY_INFER=target,phase; item 8): the SIM's attack clock advances 50 ms a tick while engaged
+     # and a hit lands (melee) / launches (ranged) each time it reaches a multiple of HitSpeed (probed on 0.1.35), so a
+     # body that last hit e ms before t0 gets attack_ms = e mod HitSpeed and its reload left; its target = that victim.

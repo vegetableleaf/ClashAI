@@ -1,0 +1,59 @@
+--- fights_head.py	2026-10-17 03:06:06.630522700 -0400
++++ fights_hb3.py	2026-10-17 04:09:59.002107000 -0400
+@@ -90,6 +90,8 @@
+               'IceWizardHeroSlow': 'hero', 'IceWizardHeroCold': 'hero_cold'}
+ IW_SLOW_MS = 2500                  # an Ice Wizard shot's slow (both forms; re-armed on every hit)
+ SENTINEL_MS = 100000               # buff/effect remaining above this is "lives with its source", not a time
++HERO_THROWERS = ('Balloon',)      # hero forms whose ability is a thrown unit (card.rs AbilityEffect::Throw)
++HB_SPEEDS = (201, 201, 201, 201, 243, 274, 299, 320, 338, 354, 368, 380, 391, 402, 411, 420)  # BalloonHero_Ability ramp, mt/tick
+ GM_SIGNAL_MS, GM_COOLDOWN_MS = 1000, 5000   # fork state.rs ROCKET_SIGNAL_MS / ROCKET_COOLDOWN_MS
+ EVO_RING_MS = 1500                 # an Evo Tesla ring's life (live area rows count 1500 -> 0, 50 a tick)
+ CHARGE_PER_MT = 4                  # SIM 0.1.35 charge_progress: +240 per tick at speed 60 (59 mt/tick), charged at range_raw x 40
+@@ -349,6 +351,47 @@
+             continue
+         if not any(s == k[0] and n == k[1] and -10 <= r['first'] - t <= 40 for t, s, n in casts):
+             casts.append((r['first'], k[0], k[1]))
++    # The Hero Balloon's throw (card.rs AbilityEffect::Throw, its Skeletrooper) shows no cast state and no effect row: the
++    # reader sees only the Skeletrooper, a body of the hero's card with another max_hp, deploying (state 4) where it
++    # lands (diag_night/r3a 234407@3888: 688 / 688 hp at t3928 under a 2436 hp hero; no event, so the SIM never threw it,
++    # and 10 Hero Balloon troopers in imperfect strict fights were never made). The press is put before its first
++    # sighting by the SIM's press -> trooper lag: seek + spawn (2 ticks) + the throw's moves from the hero's point to the
++    # trooper's at the table's ramp (BalloonHero_Ability speeds, native millitiles a tick, a step up every 3 moves); the
++    # hero's point is read at the press tick so found (two passes). The throw itself is not public.
++    pos = {}
++    for t, bodies in m['frames']:
++        for bd in bodies:
++            pos[t, bd['id']] = (bd['x'], bd['y'])
++    def throw_lag(t, hero, at):
++        lag = 2
++        for _ in range(2):
++            hp_ = pos.get((min((tt for tt, _ in m['frames'] if tt >= t - lag), default=t), hero)) or pos.get((t, hero))
++            d, n, run = math.dist(hp_, at), 0, 0
++            while run < d and n < 200:
++                run += HB_SPEEDS[min(n // 3, len(HB_SPEEDS) - 1)]; n += 1
++            lag = 2 + n
++        return lag
++    born = {}
++    for t, bodies in m['frames']:
++        for bd in bodies:
++            c = catalog.get(bd['card_id'])
++            if bd['tower'] or c is None or c['display_name'] not in HERO_THROWERS or form_of(bd['card_id'], c) != 2 or bd['id'] in born:
++                continue
++            born[bd['id']] = t
++            hero = next((o for o in bodies if o['card_id'] == bd['card_id'] and o['side'] == bd['side'] and o['max_hp'] > bd['max_hp']
++                         and not o['tower']), None)
++            # only a throw the reader saw (a projectile row of the hero's card from the hero in the 40 ticks before; 17 of
++            # 18 on the captured logs): an unseen one (234407 t3928) is not public, and a guessed one landed 1.5 tiles off
++            # and broke an agreeing fight (234407@3846)
++            seen_throw = hero is not None and any(q[3] == bd['card_id'] and q[7] == hero['id']
++                                                  for tt in range(t - 40, t + 1) for q in m['proj'].get(tt, ()))
++            if bd.get('state') == 4 and seen_throw:
++                k = (bd['side'], c['display_name'])
++                tc = t - throw_lag(t, hero['id'], (bd['x'], bd['y']))
++                # the landing blow's area row, when the reader shows one, already made a 'cast' on the landing tick (one
++                # charge: a second press is refused ABILITY_SPENT): the throw's press replaces it
++                casts[:] = [(tt, s, n) for tt, s, n in casts if not (s == k[0] and n == k[1] and tc - 10 <= tt <= t + 5)]
++                casts.append((tc, k[0], k[1]))
+     for t, s, n in sorted(casts):
+         out.append(dict(gap(t), kind='ability', side=s, name=n, source='cast_seen', seen=t, end=t))
+     for e in out:
