@@ -1,3 +1,18 @@
+## 2026-10-17 ~01:30 EDT -- parity I5 (shots at proxy bodies) 0.926; remaining-gap ranking; river hop is no law gap
+
+- I5 = I4 + knight H6: in-flight shots aimed at proxy-set-up children (Witch / Tombstone skeletons, Skeleton Balloon, Goblin
+  Hut spawns) are injected (they were skipped as 'target'): captured **0.924 -> 0.926 [0.906, 0.942]**, 1 fixed / 0 broken
+  (own Log 0.914 -> 0.926, Skeletons 0.869 -> 0.873). H5 (target-less splash shots as fixed-aim) measured 0 / 0 -> not landed.
+- Old logs with I3 (full 328-log run, pod B ALL_I3): 0.902 -> 0.908 [0.891, 0.925] (ceiling 0.885; most fixes need ext logs).
+- Dark Prince / Prince river hop vs bridge on all 50 ext logs: DP 21/23 agree, Prince 86/90, Hog 64/69 (control) -> (c) no law
+  difference; 214220@1332 is a single planner edge case (n 1).
+- **Remaining 115 captured strict failures at cf3d9ed (knight r3/cls_cf.txt):** U hidden state 30 (26%); same killer, hit time
+  / victim hp differs 29 (own Tesla 8 of its 10); killer targets a different body 22 (crown tower picks among near-equal
+  bodies 11); spell anchors 12 (own Log 7: hit set 3, kill timing 4); splash / area deaths 9 (own Skeletons 6); tower damage
+  only 9; killer absent 4. Missing shot templates (Goblin Giant, Lava Hound, Mortar, Rascals, Royal Giant) skip 16 strict
+  fights' shots (4 failing). Worker estimate (b): the 30 U fights alone cap harness/law fixes near 0.97 point estimate ->
+  the 97.5% goal also needs LESS hidden state (in-window play ticks / tap points, tower target ties).
+
 ## 2026-10-17 ~00:40 EDT -- parity I4: missing second-summon children cloned (H2'): captured 0.919 -> 0.924
 
 - knight worker H2' (diag_night/knight/h2b/): a child its parent's setup spawn does not make (Rascal Girls from a mid-fight

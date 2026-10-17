@@ -1,0 +1,126 @@
+own Log                  20261016_133158@650:Log                      spell hit set differs | live-only 0 sim-only 1
+own Xbow                 20261016_134401@2771:Xbow                    same attackers, hit timing/damage differs | t+75 hp L1598 S1595 atk L[] S[] pos0
+opp SkeletonArmy evo     20261016_134401@2866:SkeletonArmy            death/vanish without a prior hp split | t+90 live gone sim present
+opp Archer               20261016_135037@3259:Archer                  attacker targets differently (retarget / target choice) | t+80 hp L304 S243 atk L[] S['Xbow'] pos0
+own Knight evo           20261016_135037@4523:Knight                  same attackers, hit timing/damage differs | t+102 hp L1766 S1742 atk L['Knight', 'Xbow'] S['Knight', 'Xbow'] pos816
+own Tesla evo            20261016_135037@4681:Tesla                   attacker targets differently (retarget / target choice) | t+75 hp L930 S1131 atk L['Archer', 'Archer', 'Xbow'] S[] pos0
+opp BabyDragon           20261016_162405@1658:BabyDragon              U: ceiling reproduces live in >=25% of perturbed replays | 
+own Tesla                20261016_162405@2321:Tesla                   same attackers, hit timing/damage differs | t+158 hp L558 S862 atk L['GoblinMachine', 'Knight'] S['GoblinMachine', 'Knight'] pos0
+opp BlowdartGoblin       20261016_162405@2573:BlowdartGoblin          tower damage only | L560 S1245
+opp BabyDragon           20261016_162405@3350:BabyDragon              tower damage only | L840 S672
+opp GiantBuffer          20261016_162405@517:GiantBuffer              tower damage only | L611 S459
+own Tesla                20261016_162405@745:Tesla                    same attackers, hit timing/damage differs | t+24 hp L1180 S1178 atk L['BlowdartGoblin', 'GoblinMachine'] S['BlowdartGoblin', 'GoblinMachine'] pos0
+own Knight               20261016_165317@3238:Knight                  same attackers, hit timing/damage differs | t+82 hp L2475 S2822 atk L['Musketeer'] S['Musketeer'] pos571
+opp MinionHorde          20261016_165635@1377:MinionHorde             death/vanish without a prior hp split | t+140 live present sim gone
+opp GoblinDrill          20261016_165635@2401:GoblinDrill             death/vanish without a prior hp split | t+12 live present sim gone
+opp MinionHorde          20261016_165635@401:MinionHorde              same attackers, hit timing/damage differs | t+72 hp L334 S200 atk L[] S[] pos613
+own Skeletons            20261016_165635@403:Skeletons                U: ceiling reproduces live in >=25% of perturbed replays | 
+own Tornado              20261016_165635@459:Tornado                  spell kill timing | 
+opp IceGolemite          20261016_165921@2466:IceGolemite             U: ceiling reproduces live in >=25% of perturbed replays | 
+opp Miner                20261016_165921@2628:Miner                   attacker targets differently (retarget / target choice) | t+132 hp L1035 S1096 atk L['IceWizard', 'Skeletons', 'T1R'] S['IceWizard', 'Skeletons', 'Skeletons', 'T1R'] pos0
+own Skeletons            20261016_165921@2630:Skeletons               death/vanish without a prior hp split | t+66 live gone sim present
+opp Balloon hero         20261016_165921@3303:Balloon                 U: ceiling reproduces live in >=25% of perturbed replays | 
+own Xbow                 20261016_165921@3303:Xbow                    tower damage only | L1078 S1568
+own Skeletons            20261016_170249@2047:Skeletons               attacker targets differently (retarget / target choice) | t+202 hp L130 S11 atk L[] S['Bats', 'Bats', 'Bats'] pos606
+own Xbow                 20261016_170937@1544:Xbow                    U: ceiling reproduces live in >=25% of perturbed replays | 
+opp Goblins hero         20261016_170937@1545:Goblins                 U: ceiling reproduces live in >=25% of perturbed replays | 
+own Tesla evo            20261016_170937@2523:Tesla                   same attackers, hit timing/damage differs | t+24 hp L1886 S1882 atk L['Giant'] S['Giant'] pos0
+own Skeletons            20261016_170937@2551:Skeletons               death/vanish without a prior hp split | t+42 live gone sim present
+opp Goblins hero         20261016_170937@2577:Goblins                 attacker targets differently (retarget / target choice) | t+150 hp L17 S175 atk L['T1R'] S[] pos7
+own Skeletons            20261016_170937@4024:Skeletons               death/vanish without a prior hp split | t+58 live gone sim present
+opp GoblinCurse          20261016_170937@4076:GoblinCurse             spell hit set differs | live-only 1 sim-only 1
+own Log                  20261016_171357@1655:Log                     spell hit set differs | live-only 7 sim-only 0
+opp SkeletonBalloon      20261016_171357@263:SkeletonBalloon          U: ceiling reproduces live in >=25% of perturbed replays | 
+opp SkeletonBalloon      20261016_171357@3323:SkeletonBalloon         U: ceiling reproduces live in >=25% of perturbed replays | 
+own Skeletons            20261016_171357@340:Skeletons                U: ceiling reproduces live in >=25% of perturbed replays | 
+own IceWizard hero       20261016_171357@3571:IceWizard               U: ceiling reproduces live in >=25% of perturbed replays | 
+opp BarbLog              20261016_171357@418:BarbLog                  U: ceiling reproduces live in >=25% of perturbed replays | 
+own Log                  20261016_171357@4351:Log                     spell hit set differs | live-only 1 sim-only 0
+opp SkeletonBalloon      20261016_171824@1274:SkeletonBalloon         death/vanish without a prior hp split | t+128 live gone sim present
+opp SpearGoblins         20261016_171824@1296:SpearGoblins            U: ceiling reproduces live in >=25% of perturbed replays | 
+opp SkeletonBalloon      20261016_171824@206:SkeletonBalloon          U: ceiling reproduces live in >=25% of perturbed replays | 
+opp SkeletonBalloon evo  20261016_171824@2193:SkeletonBalloon         U: ceiling reproduces live in >=25% of perturbed replays | 
+opp SpearGoblins         20261016_171824@3328:SpearGoblins            same attackers, hit timing/damage differs | t+186 hp L75 S193 atk L[] S[] pos158
+opp SkeletonBalloon evo  20261016_171824@3981:SkeletonBalloon         anchor body never paired in SIM (formation / deploy point) | f753eefe
+own Tesla                20261016_175459@2289:Tesla                   same attackers, hit timing/damage differs | t+51 hp L894 S1114 atk L['AngryBarbarians', 'RageBarbarian'] S['AngryBarbarians', 'RageBarbarian'] pos0
+own Knight               20261016_175459@3198:Knight                  attacker body missing in one run (setup / play / spawn) | t+62 hp L1011 S1766 atk L['MegaMinion', 'MiniPekka'] S['MegaMinion'] pos66
+opp RageBarbarian evo    20261016_175459@4055:RageBarbarian           attacker targets differently (retarget / target choice) | t+116 hp L1173 S1282 atk L['T0L', 'T0R', 'Tesla'] S['T0L', 'Tesla'] pos563
+own Tesla                20261016_175459@4057:Tesla                   same attackers, hit timing/damage differs | t+48 hp L1180 S1178 atk L[] S[] pos0
+own Log                  20261016_175459@4799:Log                     spell kill timing | 
+opp Bats                 20261016_175459@485:Bats                     death/vanish without a prior hp split | t+220 live present sim gone
+own Tesla                20261016_175459@655:Tesla                    same attackers, hit timing/damage differs | t+24 hp L1099 S1097 atk L['AngryBarbarians', 'Bats', 'Bats'] S['AngryBarbarians', 'Bats', 'Bats'] pos0
+opp Witch                20261016_195328@2741:Witch                   attacker targets differently (retarget / target choice) | t+156 hp L32 S130 atk L['Xbow'] S[] pos3
+opp Arrows               20261016_200156@1335:Arrows                  spell kill timing | 
+own Tesla                20261016_200156@2312:Tesla                   same attackers, hit timing/damage differs | t+52 hp L1497 S1776 atk L['ElectroGiant'] S['ElectroGiant'] pos0
+opp Witch                20261016_200156@2569:Witch                   U: ceiling reproduces live in >=25% of perturbed replays | 
+own Xbow                 20261016_200156@2619:Xbow                    tower damage only | L345 S51
+own Skeletons            20261016_213647@3157:Skeletons               death/vanish without a prior hp split | t+149 live gone sim present
+own Skeletons            20261016_214002@1724:Skeletons               death/vanish without a prior hp split | t+36 live gone sim present
+opp MiniPekka hero       20261016_214002@2045:MiniPekka               anchor body never paired in SIM (formation / deploy point) | 8750fd33
+own Knight               20261016_214220@1332:Knight                  attacker targets differently (retarget / target choice) | t+32 hp L2436 S2822 atk L['DarkPrince'] S['Princess'] pos534
+opp Assassin             20261016_214220@1586:Assassin                attacker targets differently (retarget / target choice) | t+115 hp L892 S1022 atk L['Skeletons', 'Xbow'] S['Skeletons', 'Skeletons', 'Xbow'] pos643
+own Skeletons            20261016_214220@1658:Skeletons               death/vanish without a prior hp split | t+14 live gone sim present
+opp Princess evo         20261016_214220@3283:Princess                tower damage only | L490 S0
+own Skeletons            20261016_214535@1508:Skeletons               attacker targets differently (retarget / target choice) | t+164 hp L130 S11 atk L['Tombstone', 'Witch'] S['Tombstone'] pos352
+own Tesla evo            20261016_214535@2868:Tesla                   U: ceiling reproduces live in >=25% of perturbed replays | 
+opp Witch                20261016_214535@2974:Witch                   same attackers, hit timing/damage differs | t+176 hp L1341 S1183 atk L['Knight', 'T1R'] S['Knight', 'T1R'] pos3
+opp Tombstone            20261016_214535@3314:Tombstone               U: ceiling reproduces live in >=25% of perturbed replays | 
+own Skeletons            20261016_214908@2843:Skeletons               death/vanish without a prior hp split | t+74 live gone sim present
+own Tesla                20261016_214908@3240:Tesla                   same attackers, hit timing/damage differs | t+88 hp L1641 S1422 atk L['BlowdartGoblin'] S['BlowdartGoblin'] pos0
+opp BlowdartGoblin       20261016_214908@3290:BlowdartGoblin          anchor path diverged >1 tile before the hp split | t+162 hp L28 S379 atk L['Tesla'] S[] pos1071
+own Knight               20261016_214908@3324:Knight                  attacker targets differently (retarget / target choice) | t+54 hp L2287 S2506 atk L['BlowdartGoblin', 'Musketeer', 'Musketeer'] S['Musketeer', 'Musketeer'] pos0
+opp Musketeer hero       20261016_214908@3969:Musketeer               same attackers, hit timing/damage differs | t+44 hp L657 S523 atk L['Xbow'] S['Xbow'] pos16
+own Knight               20261016_214908@4081:Knight                  U: ceiling reproduces live in >=25% of perturbed replays | 
+own Skeletons            20261016_214908@432:Skeletons                U: ceiling reproduces live in >=25% of perturbed replays | 
+own Tesla                20261016_214908@5371:Tesla                   attacker targets differently (retarget / target choice) | t+54 hp L824 S1449 atk L['Musketeer', 'Prince'] S['Musketeer'] pos0
+opp Prince               20261016_214908@586:Prince                   U: ceiling reproduces live in >=25% of perturbed replays | 
+opp Musketeer hero       20261016_214908@745:Musketeer                U: ceiling reproduces live in >=25% of perturbed replays | 
+opp SkeletonArmy         20261016_215432@1165:SkeletonArmy            same attackers, hit timing/damage differs | t+32 hp L119 S1 atk L[] S[] pos540
+own Log                  20261016_215432@1319:Log                     spell kill timing | 
+opp ElixirGolem          20261016_215432@1409:ElixirGolem             same attackers, hit timing/damage differs | t+17 hp L2507 S2373 atk L[] S[] pos0
+own Tornado              20261016_215432@1411:Tornado                 spell hit set differs | live-only 1 sim-only 0
+opp Valkyrie evo         20261016_215432@2747:Valkyrie                tower damage only | L708 S234
+own IceWizard hero       20261016_215752@1323:IceWizard               U: ceiling reproduces live in >=25% of perturbed replays | 
+own Tesla evo            20261016_215752@1888:Tesla                   same attackers, hit timing/damage differs | t+24 hp L1886 S1882 atk L['GoblinGiant', 'GoblinMachine'] S['GoblinGiant', 'GoblinMachine'] pos0
+opp ElectroWizard        20261016_215752@1970:ElectroWizard           attacker targets differently (retarget / target choice) | t+154 hp L1037 S879 atk L['T1L'] S['Knight', 'T1L'] pos66
+own Tesla                20261016_215752@490:Tesla                    same attackers, hit timing/damage differs | t+24 hp L1886 S1882 atk L[] S[] pos0
+opp ElectroWizard        20261016_215752@602:ElectroWizard            attacker body missing in one run (setup / play / spawn) | t+181 hp L411 S60 atk L[] S['T1L', 'Tesla'] pos37
+own Skeletons            20261016_220124@2480:Skeletons               death/vanish without a prior hp split | t+140 live gone sim present
+opp SkeletonDragons      20261016_220124@3355:SkeletonDragons         attacker targets differently (retarget / target choice) | t+155 hp L737 S895 atk L['IceWizard', 'T1R'] S['IceWizard'] pos546
+own Tesla                20261016_220124@3502:Tesla                   U: ceiling reproduces live in >=25% of perturbed replays | 
+opp Balloon hero         20261016_220124@3869:Balloon                 same attackers, hit timing/damage differs | t+104 hp L2441 S2307 atk L[] S[] pos135
+opp Tombstone            20261016_220124@5010:Tombstone               U: ceiling reproduces live in >=25% of perturbed replays | 
+own IceWizard hero       20261016_220124@5322:IceWizard               same attackers, hit timing/damage differs | t+62 hp L543 S911 atk L[] S[] pos269
+opp BabyDragon           20261016_220623@1110:BabyDragon              attacker targets differently (retarget / target choice) | t+114 hp L1840 S1682 atk L['T1L'] S['T1L', 'T1R'] pos272
+own Log                  20261016_220623@1983:Log                     spell kill timing | 
+own Log                  20261016_220623@4095:Log                     spell kill timing | 
+own Skeletons            20261016_220623@4768:Skeletons               death/vanish without a prior hp split | t+46 live present sim gone
+opp Princess             20261016_221202@220:Princess                 tower damage only | L490 S735
+opp Wallbreakers         20261016_221202@3154:Wallbreakers            U: ceiling reproduces live in >=25% of perturbed replays | 
+opp SkeletonWarriors     20261016_221202@3264:SkeletonWarriors        death/vanish without a prior hp split | t+50 live gone sim present
+own Tornado              20261016_221202@3294:Tornado                 spell hit set differs | live-only 1 sim-only 0
+opp MinionHorde          20261016_221520@1133:MinionHorde             death/vanish without a prior hp split | t+156 live gone sim present
+own Knight               20261016_221520@1253:Knight                  U: ceiling reproduces live in >=25% of perturbed replays | 
+opp Princess             20261016_221520@222:Princess                 U: ceiling reproduces live in >=25% of perturbed replays | 
+own Xbow                 20261016_221520@2725:Xbow                    U: ceiling reproduces live in >=25% of perturbed replays | 
+own IceWizard hero       20261016_221520@2809:IceWizard               U: ceiling reproduces live in >=25% of perturbed replays | 
+opp MinionHorde          20261016_221520@3331:MinionHorde             same attackers, hit timing/damage differs | t+32 hp L368 S234 atk L[] S[] pos151
+opp SpearGoblins         20261016_221520@693:SpearGoblins             death/vanish without a prior hp split | t+197 live present sim gone
+own Knight               20261016_221839@1528:Knight                  same attackers, hit timing/damage differs | t+60 hp L2822 S2436 atk L['DarkPrince'] S['DarkPrince'] pos129
+opp Prince               20261016_221839@1574:Prince                  same attackers, hit timing/damage differs | t+84 hp L2790 S2632 atk L['T1R'] S['T1R'] pos120
+opp SkeletonArmy         20261016_221839@1791:SkeletonArmy            U: ceiling reproduces live in >=25% of perturbed replays | 
+own Skeletons            20261016_221839@1889:Skeletons               attacker targets differently (retarget / target choice) | t+32 hp L130 S22 atk L['SkeletonArmy', 'SkeletonArmy', 'SkeletonArmy', 'SkeletonArmy', 'SkeletonArmy', 'SkeletonArmy', 'SkeletonArmy'] S['SkeletonArmy', 'SkeletonArmy', 'SkeletonArmy', 'SkeletonArmy'] pos764
+opp Assassin             20261016_221839@2021:Assassin                anchor path diverged >1 tile before the hp split | t+170 hp L877 S1200 atk L['Knight', 'T1R'] S['Knight', 'T1R'] pos1165
+opp SkeletonArmy         20261016_221839@2816:SkeletonArmy            death/vanish without a prior hp split | t+100 live present sim gone
+opp Assassin             20261016_221839@589:Assassin                 attacker body missing in one run (setup / play / spawn) | t+137 hp L494 S376 atk L['Xbow'] S['IceWizard', 'Xbow'] pos90
+
+30 U: ceiling reproduces live in >=25% of perturbed replays
+24 same attackers, hit timing/damage differs
+18 death/vanish without a prior hp split
+16 attacker targets differently (retarget / target choice)
+8 tower damage only
+6 spell hit set differs
+6 spell kill timing
+3 attacker body missing in one run (setup / play / spawn)
+2 anchor body never paired in SIM (formation / deploy point)
+2 anchor path diverged >1 tile before the hp split

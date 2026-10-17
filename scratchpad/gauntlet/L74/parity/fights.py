@@ -1129,7 +1129,9 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
     # live target's SIM body.
     if shots:
         before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
-        by_setup = {bd['id']: bd for bd in setup if not bd.get('proxy')}
+        # proxies included (diag_night/knight H6): a Witch's / Tombstone's skeleton set up as a Skeletons body is a real
+        # SIM body on the live point; 13 + 7 + 2 strict t0 shots at them were skipped as 'target'
+        by_setup = {bd['id']: bd for bd in setup}
         towers_ = {bd['id']: ('tower', bd['side'], bd['x'], bd['y']) for bd in start if bd['tower'] and bd['hp'] > 0}
         ref = lambda k: ('body', by_setup[k]) if k in by_setup else towers_.get(k)
         for s_ in shots:
