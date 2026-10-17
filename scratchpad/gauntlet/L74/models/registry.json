@@ -3628,6 +3628,60 @@
     }
    ],
    "registered": "2026-10-17 (initial bulk registration)"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 139,
+   "word": "ENGINE",
+   "name": "ICEBOW Mark CXXXIX: ENGINE",
+   "run": "rlarm_gae_f36_u250",
+   "parent": "ICEBOW Mark CXXIV: LONGER",
+   "change": "u250 + 65 updates on the RoyaleSim fork (fork36-linux, clashbot36 bc2bf9d) instead of PyPI 0.1.35; troops arm B",
+   "created": "2026-10-17T14:34",
+   "eval": "fork36+troops D3 628/960; vs its PyPI twin -0.73 [-4.58, +3.02]",
+   "live": "",
+   "files": [
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_troops/f36/cb_tt/icebow/data/bench/rl_royale/rlarm_gae_f36_u250/rlarm_gae_f36_u250_u0065.pt",
+     "sha256": "c195f632ccbbf03d32c05f854b65ed0d6d90d92759fcc4c236f1518eb533d154",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CXXXIX_ENGINE.pt"
+    },
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_troops/f36/cb_tt/icebow/data/bench/rl_royale/rlarm_gae_f36_u250/rlarm_gae_f36_u250_u0065_grafted.pt",
+     "sha256": "4ac98b6bf8590b7f15205bd6537e0188a54317ba8e8b30dcbedeae3021cd79e6",
+     "role": "grafted",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CXXXIX_ENGINE_grafted.pt"
+    }
+   ],
+   "registered": "2026-10-17T15:21"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 140,
+   "word": "TOWERTROOPS",
+   "name": "ICEBOW Mark CXL: TOWERTROOPS",
+   "run": "rlarm_gae_f36tt_u250",
+   "parent": "ICEBOW Mark CXXIV: LONGER",
+   "change": "arm B + opponent crown tower troops at live rates (Duchess .028, Cannoneer .028, Chef .014); troops arm C",
+   "created": "2026-10-17T14:14",
+   "eval": "fork36+troops D3 603/960; vs arm B -2.60 [-6.35, +1.15]",
+   "live": "",
+   "files": [
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_troops/f36tt/cb_tt/icebow/data/bench/rl_royale/rlarm_gae_f36tt_u250/rlarm_gae_f36tt_u250_u0065.pt",
+     "sha256": "ff8139829d8cf7a77d6864e6e81d6c659104d269f73cb724b72ed857ae9934b1",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CXL_TOWERTROOPS.pt"
+    },
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_troops/f36tt/cb_tt/icebow/data/bench/rl_royale/rlarm_gae_f36tt_u250/rlarm_gae_f36tt_u250_u0065_grafted.pt",
+     "sha256": "bd55328d528b8f3b688dcdd332f82c612a4cfa226ce4813da535baef8f37e07d",
+     "role": "grafted",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CXL_TOWERTROOPS_grafted.pt"
+    }
+   ],
+   "registered": "2026-10-17T15:21"
   }
  ],
  "unmarked": [
