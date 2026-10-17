@@ -2809,6 +2809,14 @@ def pair_frame(pairs, live, simb, catalog):
     """Grow live-id -> sim-id pairing: same side, display name, form and max_hp within 40%, nearest within 2.5 tiles."""
     taken = set(pairs.values())
     cand = []
+    # H-EVO-CHILD (diag_night/r5b 130511@5790): a spawner's child carries its card id live, so an Evo Witch's Skeleton is
+    # card Witch form 1 while the SIM child is form 0 -> never paired (sim_only), e.g. 4 Skeletons our Tornado pulled and
+    # killed scored as 4 misses. A body with a same-card, same-side body of >= 1.5x its max_hp in the frame (its spawner)
+    # pairs across forms on exactly the same max_hp, as the Skeletrooper below.
+    big = defaultdict(int)
+    for a in live:
+        if not a['tower']:
+            big[a['card_id'], a['side']] = max(big[a['card_id'], a['side']], a['max_hp'])
     for a in live:
         if a['tower'] or pairs.get(a['id']) is not None:
             continue
@@ -2822,7 +2830,8 @@ def pair_frame(pairs, live, simb, catalog):
             # a Hero Balloon's thrown Skeletrooper: the hero's card id live (form 2), no hero flag in the SIM (form 0); paired
             # across forms on exactly the same max_hp (diag_night/r3c 234407@3888)
             trooper = f == 2 and s_['form'] == 0 and c['display_name'] in HERO_THROWERS and s_['max_hp'] == a['max_hp']
-            if (s_['form'] != f and not trooper) or not .6 <= s_['max_hp']/max(1, a['max_hp']) <= 1.67:
+            child = f != 0 and s_['form'] == 0 and s_['max_hp'] == a['max_hp'] and big[a['card_id'], a['side']] >= 1.5*a['max_hp']
+            if (s_['form'] != f and not trooper and not child) or not .6 <= s_['max_hp']/max(1, a['max_hp']) <= 1.67:
                 continue
             d = math.hypot(a['x']-s_['x'], a['y']-s_['y'])
             if d < 2500:

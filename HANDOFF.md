@@ -1,3 +1,17 @@
+## 2026-10-17 19:27 EDT -- H-EVO-CHILD landed (r5b; full cohort +8 / -0); r5b closed
+
+- H-EVO-CHILD (diag_night/r5b/H_evo_child_only.patch): live, a spawner's child carries its spawner's card id (an Evo Witch's
+  Skeleton = card Witch form 1; SIM child form 0), so pair_frame never paired them and a Tornado / Log kill scored misses. Pairs
+  across forms on exactly the same max_hp when a same-card same-side body >= 1.5x that max_hp is on the frame. vs FIN7: upgraded
+  +5 / -0 (OVERALL 0.9118 -> 0.9137; own Log 0.941 -> 0.959, Tornado 0.875 -> 0.904); full cohort +8 / -0 (0.9054 -> 0.9062).
+- TRAP (fixed by hand): the worker's H_evo_child.patch was cut against the FIN7 tree, so applying it whole on HEAD also DELETED
+  H-ZAP / H-SPAWN-BORN / H-SHADOW-SHORT / H-DISMOUNT (139 lines). Only its two pair_frame hunks were applied
+  (H_evo_child_only.patch). Check `git diff | grep -oE "H-[A-Z-]+"` before landing any worker patch.
+- r5b also: H-SHOT-AIM, H-DASH-DEPLOYED correct but 0 verdict changes (not landed). S-law leads: Tesla visible ~16 ticks after
+  deploy (census 419 deploys; needs a fork patch, the env flip STARTS_HIDDEN=false was net 0), Mega Knight re-target mid-stand +
+  dash goal one cell short, Royal Ghost visibility timing. Ruled out: "live acquires 1-2 ticks later" = fallback-row artifact
+  (same frame 320 / 366 when the live row exists).
+- 86 parity tests pass (5 need pipeline/ + research/sandbox_tools, absent from the pod bundle).
 ## 2026-10-17 19:13 EDT -- H-NEARPARENT landed (full cohort +0.0008, 11 up / 1 down); FIN8 started; owner ability-press question answered
 
 - H-NEARPARENT (diag_night/r5c/H_nearparent.patch): a body of the card's own unit next to a LIVING same-size body of its card is
