@@ -1,3 +1,27 @@
+## 2026-10-17 02:08 EDT -- I11 (Goblin Machine rocket clock + Evo Tesla ring seeded) = captured 0.947 on fork clashbot36; remaining-gap analysis
+
+Round-2 worker (diag_night/r2/; pod B results /workspace/results/r2_*, copies pod_backup_weekend/parity1016/R2/), base = I10 harness +
+/workspace/rsfork_f36 (0.945; a base-on-base rerun reproduced it exactly):
+- **Landed (I11):** H-GM -- a set-up Goblin Machine gets its cooldown, pending mark and in-flight rocket from its last live signal (it
+  marked on t0+1 before; live signal timing = the fork's 1000 ms mark-to-launch): 1 / 0, own Tesla evo 0.895 -> 0.952 (fixes the PyPI ->
+  fork break 162405@3238); H-RING -- an Evo Tesla ring still growing at t0 is seeded: 1 / 0. Combined **0.945 -> 0.947 [0.932, 0.962]**.
+  Knight evo reads 0.935 -> 0.914 with agreement unchanged (0.906): only 162405@2503's ceiling rose 0.571 -> 1.0 (observing more raises
+  the ceiling). Not landed: H-WAIT (post-kill wait, 0 / 0), H-FIRED (fired_at seeded, 2 / 1: breaks own X-Bow 214908@459), H-HERO (fallback
+  for the save bug: 0 / 0, fights become NO_HERO non-strict).
+- **SIM laws (fork not touched yet):**
+  - S-EK (a): the Evo Knight's 60% damage reduction (Knight_Fortify_EV1) is ON live while it deploys, OFF in the SIM (combat.rs:2100 at
+    v0.1.36: ents.deploy_ms[v] <= 0 && tick >= back). 23 live hits on deploying Evo Knights at ~40%; Bats 47 live vs 119 SIM (170249
+    t2147 / t2149); fixture 170249@2107 (also the tower-troop "break"); first divergence of X-Bow 200156@2619.
+  - S-retarget (b): the SIM moves an attacker onto a FRESHLY DEPLOYED enemy where live keeps its target (214908@5371 Prince mid
+    river-jump -> deploying Skeletons; 214908@2805 switch 8 ticks early; 175459@4057 Lumberjack; 165317@3238 partly; contradicted for
+    214535@2868). ~+0.04 on own Tesla if real; needs the scale test (every deploy near a walking enemy, live vs SIM switch tick).
+  - S-bug: after an opponent Hero Wizard's ability its entity carries a record with no ability (255, source 254) but hero_units still
+    lists it -> the engine rejects its OWN save() (state.rs:39866); fixture 221839@2432 save at 2606; errors 4 fights on PyPI and fork.
+- **Gap:** recovering EVERY imperfect captured fight would add +0.064; 0.975 needs +0.028 (~27 fights); no remaining mechanism is worth
+  more than ~4 fights; much of the rest is U (ceiling <= 0.46 fights). One fixed fight = +0.019 own Tesla, +0.015 Knight, +0.013-0.014
+  Skeletons / X-Bow, ~+0.05 on n~20 cards. With n 55-78 several per-card lower bounds stay near 0.95 even if every deterministic
+  failure is fixed (b) -> more captured matches are needed for the per-card goal regardless.
+
 ## 2026-10-17 01:24 EDT -- gae_ab (icebow Hero IW + LEARNED ability press, 65 upd) done: standard D3 480/960, -3.23 vs u250
 
 - 18869 rlarm_gae_ab (final 28e24c1c; copy pod_backup_weekend/pod1016_gae_ab): D1 465/960, D3 245 + 235 = 480/960 (50.0%) on the

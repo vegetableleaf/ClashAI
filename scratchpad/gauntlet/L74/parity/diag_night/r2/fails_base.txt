@@ -1,0 +1,83 @@
+own IceWizard hero   20261016_171357@3571  a0=0 aK=0.750 ceil=0.571 mis=1/1 | own live [3797] sim [3775] | tower live 0 sim 0
+own IceWizard hero   20261016_214908@4299  a0=1 aK=0.750 ceil=0.643 mis=0/1 | own live [4481] sim [4481] | tower live 0 sim 0
+own IceWizard hero   20261016_215752@1323  a0=0 aK=0.625 ceil=0.464 mis=1/1 | own live [1492] sim [None] | tower live 0 sim 0
+own IceWizard hero   20261016_220124@5322  a0=0 aK=0.000 ceil=1.0 mis=1/1 | own live [5450] sim [5429] | tower live 0 sim 0
+own IceWizard hero   20261016_220623@742   a0=1 aK=0.500 ceil=0.429 mis=0/1 | own live [None] sim [None] | tower live 0 sim 0
+own IceWizard hero   20261016_221520@2809  a0=0 aK=0.250 ceil=0.571 mis=1/1 | own live [2875] sim [2861] | tower live 0 sim 0
+own Knight           20261016_133158@3713  a0=1 aK=0.875 ceil=1.0 mis=0/1 | own live [3950] sim [3948] | tower live 0 sim 0
+own Knight           20261016_165317@3238  a0=0 aK=0.000 ceil=1.0 mis=1/1 | own live [3459] sim [None] | tower live 0 sim 0
+own Knight           20261016_171357@1169  a0=1 aK=0.500 ceil=0.429 mis=0/1 | own live [1379] sim [1379] | tower live 0 sim 0
+own Knight           20261016_171824@769   a0=1 aK=0.625 ceil=0.464 mis=0/1 | own live [969] sim [971] | tower live 0 sim 0
+own Knight           20261016_175459@3198  a0=0 aK=0.000 ceil=1.0 mis=1/1 | own live [3374] sim [None] | tower live 0 sim 0
+own Knight           20261016_214220@1332  a0=0 aK=0.000 ceil=1.0 mis=1/1 | own live [1522] sim [None] | tower live 0 sim 0
+own Knight           20261016_214908@461   a0=1 aK=0.625 ceil=0.464 mis=0/1 | own live [None] sim [None] | tower live 0 sim 0
+own Knight           20261016_214908@3324  a0=0 aK=0.000 ceil=1.0 mis=1/1 | own live [3422] sim [3440] | tower live 0 sim 0
+own Knight           20261016_214908@4081  a0=0 aK=0.250 ceil=0.571 mis=1/1 | own live [4297] sim [4211] | tower live 0 sim 0
+own Knight           20261016_220124@217   a0=1 aK=0.625 ceil=0.464 mis=0/1 | own live [455] sim [None] | tower live 0 sim 0
+own Knight           20261016_221520@1253  a0=0 aK=0.625 ceil=0.464 mis=1/1 | own live [None] sim [1473] | tower live 1067 sim 969
+own Knight           20261016_221839@1528  a0=0 aK=0.000 ceil=1.0 mis=1/1 | own live [None] sim [1756] | tower live 0 sim 0
+own Knight           20261016_221839@3015  a0=1 aK=0.750 ceil=0.714 mis=0/1 | own live [3237] sim [3237] | tower live 0 sim 0
+own Knight evo       20261016_135037@4523  a0=0 aK=0.000 ceil=1.0 mis=1/1 | own live [4736] sim [4752] | tower live 0 sim 0
+own Knight evo       20261016_162405@2503  a0=1 aK=0.250 ceil=0.571 mis=0/1 | own live [2617] sim [2627] | tower live 0 sim 0
+own Knight evo       20261016_170249@2107  a0=0 aK=0.875 ceil=0.821 mis=1/1 | own live [None] sim [2333] | tower live 98 sim 49
+own Log              20261016_215432@1319  a0=0 aK=0.000 ceil=1.0 mis=1/8 | spell live tower 0 sim 0
+own Rocket           20261016_162405@1746  a0=1 aK=0.375 ceil=0.464 mis=0/2 | spell live tower 0 sim 0
+own Skeletons        20261016_133158@1014  a0=1 aK=0.375 ceil=0.464 mis=0/3 | own live [1162, 1177, 1192] sim [1162, 1177, 1192] | tower live 0 sim 0
+own Skeletons        20261016_165635@403   a0=0 aK=0.375 ceil=0.464 mis=1/3 | own live [441, 443, 463] sim [441, 461, 465] | tower live 0 sim 0
+own Skeletons        20261016_165921@2630  a0=1 aK=0.875 ceil=0.75 mis=0/3 | own live [2694, 2778, 2856] sim [2694, 2780, 2856] | tower live 0 sim 0
+own Skeletons        20261016_170249@2047  a0=1 aK=0.625 ceil=0.464 mis=0/3 | own live [2235, 2245, 2273] sim [2235, 2245, 2273] | tower live 0 sim 0
+own Skeletons        20261016_170937@4024  a0=0 aK=0.250 ceil=1.0 mis=1/3 | own live [4040, 4070, 4080] sim [4040, 4064, 4068] | tower live 0 sim 0
+own Skeletons        20261016_171357@340   a0=0 aK=0.625 ceil=0.464 mis=1/3 | own live [390, 410, 436] sim [388, 432, 438] | tower live 0 sim 0
+own Skeletons        20261016_213647@3157  a0=0 aK=0.000 ceil=0.25 mis=2/3 | own live [3284, 3304, 3304] sim [3288, 3320, 3320] | tower live 0 sim 0
+own Skeletons        20261016_214002@1724  a0=1 aK=0.500 ceil=0.429 mis=0/3 | own live [1758, 1758, 1758] sim [1756, 1756, 1756] | tower live 0 sim 0
+own Skeletons        20261016_214220@1658  a0=0 aK=0.000 ceil=1.0 mis=3/3 | own live [1670, 1689, 1707] sim [1687, 1707, 1827] | tower live 0 sim 0
+own Skeletons        20261016_214535@1508  a0=0 aK=0.000 ceil=0.464 mis=1/3 | own live [1714, 1720, None] sim [1680, 1720, None] | tower live 0 sim 0
+own Skeletons        20261016_214908@432   a0=0 aK=0.375 ceil=0.179 mis=2/3 | own live [459, 473, None] sim [459, 580, 604] | tower live 0 sim 0
+own Skeletons        20261016_214908@2843  a0=0 aK=0.000 ceil=1.0 mis=3/3 | own live [2877, 2915, 2931] sim [2865, 2963, 2979] | tower live 0 sim 0
+own Skeletons        20261016_220124@2480  a0=0 aK=0.000 ceil=1.0 mis=1/3 | own live [2522, 2552, 2618] sim [2522, 2552, 2636] | tower live 0 sim 0
+own Skeletons        20261016_220124@4948  a0=1 aK=0.500 ceil=0.429 mis=0/3 | own live [5026, 5070, 5084] sim [5026, 5070, 5084] | tower live 0 sim 0
+own Skeletons        20261016_220623@4768  a0=0 aK=0.250 ceil=0.571 mis=1/3 | own live [4850, 4862, 4862] sim [4862, 4862, 4862] | tower live 0 sim 0
+own Skeletons        20261016_221202@3210  a0=1 aK=0.125 ceil=0.893 mis=0/3 | own live [3339, 3359, 3383] sim [3337, 3357, 3377] | tower live 0 sim 0
+own Skeletons        20261016_221839@1889  a0=0 aK=0.000 ceil=1.0 mis=2/3 | own live [1935, 1945, 1983] sim [1935, 1959, 1961] | tower live 0 sim 0
+own Tesla            20261016_162405@745   a0=0 aK=0.000 ceil=1.0 mis=1/1 | own live [803] sim [819] | tower live 0 sim 0
+own Tesla            20261016_171824@741   a0=1 aK=0.625 ceil=0.464 mis=0/1 | own live [947] sim [947] | tower live 0 sim 0
+own Tesla            20261016_175459@655   a0=0 aK=0.000 ceil=1.0 mis=1/1 | own live [784] sim [811] | tower live 0 sim 0
+own Tesla            20261016_175459@2289  a0=0 aK=0.000 ceil=1.0 mis=1/1 | own live [2386] sim [2407] | tower live 0 sim 0
+own Tesla            20261016_175459@4057  a0=0 aK=0.000 ceil=1.0 mis=1/1 | own live [4195] sim [4180] | tower live 0 sim 0
+own Tesla            20261016_200156@2312  a0=0 aK=0.000 ceil=1.0 mis=1/1 | own live [2458] sim [2470] | tower live 0 sim 0
+own Tesla            20261016_214908@704   a0=1 aK=0.625 ceil=0.464 mis=0/1 | own live [894] sim [894] | tower live 0 sim 0
+own Tesla            20261016_214908@5371  a0=0 aK=0.000 ceil=1.0 mis=1/1 | own live [5478] sim [5511] | tower live 0 sim 0
+own Tesla            20261016_215432@1049  a0=1 aK=0.625 ceil=1.0 mis=0/1 | own live [1267] sim [1275] | tower live 0 sim 0
+own Tesla            20261016_220124@3502  a0=0 aK=0.375 ceil=0.464 mis=1/1 | own live [3640] sim [3671] | tower live 0 sim 0
+own Tesla evo        20261016_135037@4681  a0=0 aK=0.000 ceil=1.0 mis=1/1 | own live [4794] sim [4826] | tower live 0 sim 0
+own Tesla evo        20261016_162405@3238  a0=0 aK=0.000 ceil=1.0 mis=1/1 | own live [3414] sim [3384] | tower live 0 sim 0
+own Tesla evo        20261016_214535@2868  a0=0 aK=0.625 ceil=0.464 mis=1/1 | own live [None] sim [3080] | tower live 0 sim 0
+own Tornado          20261016_220124@3665  a0=1 aK=0.875 ceil=0.75 mis=0/1 | spell live tower 0 sim 0
+own Tornado          20261016_221202@394   a0=0 aK=0.000 ceil=1.0 mis=1/1 | spell live tower 0 sim 0
+own Tornado          20261016_221202@3294  a0=0 aK=0.000 ceil=0.464 mis=1/2 | spell live tower 0 sim 0
+own Xbow             20261016_134401@2771  a0=0 aK=0.000 ceil=1.0 mis=1/1 | own live [2990] sim [3004] | tower live 793 sim 1194
+own Xbow             20261016_165921@3303  a0=0 aK=0.000 ceil=1.0 mis=0/1 | own live [None] sim [None] | tower live 1078 sim 1568
+own Xbow             20261016_170937@1544  a0=0 aK=0.625 ceil=0.464 mis=0/1 | own live [None] sim [None] | tower live 1078 sim 1372
+own Xbow             20261016_171357@4351  a0=1 aK=0.750 ceil=1.0 mis=0/1 | own live [4484] sim [4490] | tower live 51 sim 51
+own Xbow             20261016_200156@2619  a0=0 aK=0.000 ceil=1.0 mis=0/1 | own live [None] sim [None] | tower live 345 sim 51
+own Xbow             20261016_214908@3675  a0=1 aK=0.750 ceil=0.571 mis=0/1 | own live [None] sim [None] | tower live 51 sim 51
+own Xbow             20261016_215752@3640  a0=1 aK=0.750 ceil=0.571 mis=0/1 | own live [None] sim [None] | tower live 588 sim 588
+own Xbow             20261016_220124@215   a0=1 aK=0.500 ceil=0.429 mis=0/1 | own live [None] sim [None] | tower live 51 sim 51
+own Xbow             20261016_221520@2725  a0=0 aK=0.375 ceil=0.607 mis=0/1 | own live [2947] sim [2937] | tower live 1764 sim 1568
+
+flips C:/Users/benpe/pod_backup_weekend/parity1016/F36_PYPI -> C:/Users/benpe/pod_backup_weekend/parity1016/F36_FORK
+  opp GiantBuffer        20261016_162405@517  0 -> 1
+  own Tesla              20261016_162405@2321  0 -> 1
+  own Tesla evo          20261016_162405@3238  1 -> 0
+  own Skeletons          20261016_170249@2047  0 -> 1
+  own Knight evo         20261016_170249@2107  1 -> 0
+  own Tesla evo          20261016_170937@2523  0 -> 1
+  own Skeletons          20261016_170937@2551  0 -> 1
+  opp BlowdartGoblin     20261016_214908@2805  1 -> 0
+  own Tesla              20261016_214908@3240  0 -> 1
+  own Tesla              20261016_215752@490  0 -> 1
+  opp ElectroWizard      20261016_215752@602  0 -> 1
+  own Tesla evo          20261016_215752@1888  0 -> 1
+  opp Assassin           20261016_221839@2021  0 -> 1
+  opp MinionHorde        20261016_221839@2284  1 -> 0
+only in new [] only in old []

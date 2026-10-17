@@ -1,0 +1,52 @@
+--- /tmp/fights_head.py	2026-10-17 01:34:36.315276100 -0400
++++ fights_wait.py	2026-10-17 01:36:40.412279000 -0400
+@@ -90,6 +90,7 @@
+               'IceWizardHeroSlow': 'hero', 'IceWizardHeroCold': 'hero_cold'}
+ IW_SLOW_MS = 2500                  # an Ice Wizard shot's slow (both forms; re-armed on every hit)
+ SENTINEL_MS = 100000               # buff/effect remaining above this is "lives with its source", not a time
++POST_KILL_WAIT = 6                 # SIM calib post_kill_wait_ticks (0.1.36): the next target on loss + 6
+ CHARGE_PER_MT = 4                  # SIM 0.1.35 charge_progress: +240 per tick at speed 60 (59 mt/tick), charged at range_raw x 40
+ 
+ 
+@@ -728,7 +729,7 @@
+ 
+     def slow_ids(self):
+         """{'base' | 'hero' | 'hero_cold': SIM buff id} of the Ice Wizard slows (SLOW_BUFFS). Ids are interned per table,
+-        so they are read off a probe (IW_SLOW_1016 §2): a red Giant next to a hero IW played from hand carries the deploy
++        so they are read off a probe (IW_SLOW_1016 Â§2): a red Giant next to a hero IW played from hand carries the deploy
+         chill first, then the shot slow; next to a spawned base IW, the base slow. Resets the battle: call before a
+         fight's setup (cached)."""
+         if 'slow' not in self._form:
+@@ -1893,8 +1894,21 @@
+             if tref is None:
+                 flags['setup_p3_target_unresolved'] += 1
+         phase = 'Idle' if prog <= 0 else 'Cooldown' if prog % hs < step else 'Windup'
+-        out.append((r, dict(attack_ms=prog, attack_load_ms=load, attack_phase=phase, target=tref,
+-                            target_locked=bool(st.get('projectile')) and phase == 'Windup' and tref is not None)))
++        kv = dict(attack_ms=prog, attack_load_ms=load, attack_phase=phase, target=tref,
++                  target_locked=bool(st.get('projectile')) and phase == 'Windup' and tref is not None)
++        # combat.POST_KILL_RETARGET_WAIT: a unit whose target died holds with no target, its attack timer frozen, and
++        # takes its next target on loss + POST_KILL_WAIT (6 ticks; the loss = the first tick its target reads none).
++        # A setup body starts with no wait and took a new target on t0 + 1 (diag_night/r2 170937@4024: the Tesla's
++        # victim died at t0, live it took the Giant on t0 + 6 with its timer reset; the SIM fired at once, 12 ticks early).
++        if tg is None and prog > 0:
++            back = [(t, att[t][g][0], att[t][g][2]) for t in sorted(att) if t0 - POST_KILL_WAIT <= t <= t0 and g in att[t]]
++            had = [t for t, x, _ in back if x is not None]
++            none = [(t, p) for t, x, p in back if x is None and had and t > max(had)]
++            if none and len({p for _, p in none}) == 1:              # frozen while it holds
++                v = none[0][0] + POST_KILL_WAIT - t0
++                if v > 0:
++                    kv['retarget_wait'] = v; flags['setup_p3_post_kill_wait'] += 1
++        out.append((r, kv))
+         seen.add(bd['id']); flags['setup_p3_attack'] += 1
+         flags['setup_p3_pre_unset'] += pre != 0
+         flags['setup_p3_seq_unset'] += seq != 0
+@@ -1904,7 +1918,7 @@
+ 
+ def set_buff(E, i, bid, ms):
+     """Write buff `bid` with `ms` left into entity i's first free slot of a save's ents; False if none is free. The
+-    save's buffs list is FLAT (IW_SLOW_1016 §2): entity i owns buffs[i*slots:(i+1)*slots], slots = len(buffs) // n."""
++    save's buffs list is FLAT (IW_SLOW_1016 Â§2): entity i owns buffs[i*slots:(i+1)*slots], slots = len(buffs) // n."""
+     slots = len(E['buffs']) // len(E['alive'])
+     j = next((i*slots + j for j in range(slots) if not E['buffs'][i*slots + j]['id']), None)
+     if j is None:

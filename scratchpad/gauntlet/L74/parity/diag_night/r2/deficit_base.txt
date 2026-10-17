@@ -1,0 +1,11 @@
+OVERALL n 1000 deficit 60.71 -> +0.064 normalised if all recovered
+own IceWizard hero   n  92 ceil 0.975 deficit 1.32 (= +0.015 normalised) deterministic 1; one fight = +0.011
+own Log              n  81 ceil 1.000 deficit 1.00 (= +0.012 normalised) deterministic 1; one fight = +0.012
+own Skeletons        n  78 ceil 0.921 deficit 6.73 (= +0.094 normalised) deterministic 4; one fight = +0.014
+own Xbow             n  78 ceil 0.969 deficit 3.48 (= +0.046 normalised) deterministic 3; one fight = +0.013
+own Knight           n  69 ceil 0.947 deficit 5.45 (= +0.083 normalised) deterministic 5; one fight = +0.015
+own Tesla            n  55 ceil 0.971 deficit 6.46 (= +0.121 normalised) deterministic 6; one fight = +0.019
+own Rocket           n  21 ceil 0.974 deficit 0.09 (= +0.004 normalised) deterministic 0; one fight = +0.049
+own Knight evo       n  20 ceil 0.970 deficit 1.32 (= +0.068 normalised) deterministic 1; one fight = +0.052
+own Tornado          n  20 ceil 0.961 deficit 1.46 (= +0.076 normalised) deterministic 1; one fight = +0.052
+own Tesla evo        n  18 ceil 0.970 deficit 2.00 (= +0.115 normalised) deterministic 2; one fight = +0.057

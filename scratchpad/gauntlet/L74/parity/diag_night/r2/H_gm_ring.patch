@@ -1,0 +1,178 @@
+--- /tmp/fights_head.py	2026-10-17 01:34:36.315276100 -0400
++++ fights_gm_ring.py	2026-10-17 02:02:11.394395200 -0400
+@@ -90,6 +90,8 @@
+               'IceWizardHeroSlow': 'hero', 'IceWizardHeroCold': 'hero_cold'}
+ IW_SLOW_MS = 2500                  # an Ice Wizard shot's slow (both forms; re-armed on every hit)
+ SENTINEL_MS = 100000               # buff/effect remaining above this is "lives with its source", not a time
++GM_SIGNAL_MS, GM_COOLDOWN_MS = 1000, 5000   # fork state.rs ROCKET_SIGNAL_MS / ROCKET_COOLDOWN_MS
++EVO_RING_MS = 1500                 # an Evo Tesla ring's life (live area rows count 1500 -> 0, 50 a tick)
+ CHARGE_PER_MT = 4                  # SIM 0.1.35 charge_progress: +240 per tick at speed 60 (59 mt/tick), charged at range_raw x 40
+ 
+ 
+@@ -728,7 +730,7 @@
+ 
+     def slow_ids(self):
+         """{'base' | 'hero' | 'hero_cold': SIM buff id} of the Ice Wizard slows (SLOW_BUFFS). Ids are interned per table,
+-        so they are read off a probe (IW_SLOW_1016 §2): a red Giant next to a hero IW played from hand carries the deploy
++        so they are read off a probe (IW_SLOW_1016 Ã‚Â§2): a red Giant next to a hero IW played from hand carries the deploy
+         chill first, then the shot slow; next to a spawned base IW, the base slow. Resets the battle: call before a
+         fight's setup (cached)."""
+         if 'slow' not in self._form:
+@@ -935,6 +937,9 @@
+     shots = inflight_shots(m, fight, start, catalog, levels, tower_levels) if m['ext'] else []
+     for s_ in shots:               # templates probed before this fight's reset (a probe resets the battle); cached
+         s_['tpl'] = eng.shot_template(*s_['key'])
++    gm = gm_signals(m, fight, start, catalog) if m['ext'] else {}     # GM rocket template: probed before the reset too
++    gm_tpl = {s_: eng.shot_template('GoblinMachine', 0, levels.get((s_, 'GoblinMachine')) or levels.get((s_, '*')) or 15)
++              for s_, g in gm.items() if g['flying']}
+     decks, forms, lv = [[], []], [[], []], [[], []]
+ 
+     def need(side, name, form, level=None):
+@@ -1153,6 +1158,8 @@
+ 
+     def ent(E, ref):
+         """SIM entity index of ('body', setup body) (its exact setup point) or ('tower', side, x, y)."""
++        if ref[0] == 'none':
++            return None
+         if ref[0] == 'tower':
+             return next((i for i in range(len(E['card'])) if E['alive'][i] and E['team'][i] == team[ref[1]]
+                          and E['kind'][i] in ('KingTower', 'PrincessTower') and abs(E['pos'][i]['x']-ref[2]*18) < 18000
+@@ -1252,6 +1259,82 @@
+             except Exception:
+                 flags['setup_shot_not_set'] += 1
+ 
++    # The Goblin Machine's rocket (fork combat.GOBLIN_MACHINE_ROCKET; save()['evo']['rockets'], absent on PyPI): a setup GM
++    # starts with no cooldown and no mark, so it marked on t0 + 1 where the live one was on its 5000 ms cooldown, or had a
++    # mark pending (diag_night/r2 162405@3238: a mark on our King tower made on t0; 5 of the 14 strict fights with a
++    # signal on the t0 board were imperfect). Its last live signal (the GM card's area, life 9999, counting 50 a tick
++    # from its creation) gives the mark tick M: cooldown 5000 - 50 (t0 - M), and a mark still pending (rocket on M + 20)
++    # at the signal point, 1000 - 50 (t0 - M) left. A rocket already flying at t0 (a target-less GM projectile row) is
++    # injected at its live point aimed at that signal. ponytail: 50 ms a tick (an Ice Wizard slow runs the clock at 35),
++    # one GM per side (two GMs of a side: left as set up).
++    if gm:
++        before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
++        runs = (after.get('evo') or {}).get('rockets')
++        for bd in (setup if runs is not None else ()):
++            if bd.get('proxy') or catalog[bd['card_id']]['display_name'] != 'GoblinMachine' or bd['side'] not in gm:
++                continue
++            if sum(x['side'] == bd['side'] and catalog[x['card_id']]['display_name'] == 'GoblinMachine' for x in setup) != 1:
++                flags['setup_gm_ambiguous'] += 1; continue
++            i = ent(E, ('body', bd))
++            sig = gm[bd['side']]
++            if i is None or t0 - sig['M'] >= GM_COOLDOWN_MS//50:
++                continue
++            aim = {'x': round(sig['x']*18), 'y': round(sig['y']*18)}
++            foes = [j for j in range(len(E['alive'])) if E['alive'][j] and E['team'][j] != E['team'][i]
++                    and E['kind'][j] in ('Troop', 'Building', 'PrincessTower', 'KingTower') and not E['flying'][j]]
++            j = min(foes, key=lambda j: math.hypot(E['pos'][j]['x']-aim['x'], E['pos'][j]['y']-aim['y']), default=None)
++            left = GM_SIGNAL_MS - 50*(t0 - sig['M'])
++            mark = [aim, {'index': j, 'generation': E['generation'][j]}, left] if left > 0 and j is not None else None
++            runs.append({'id': {'index': i, 'generation': E['generation'][i]}, 'cooldown_ms': GM_COOLDOWN_MS - 50*(t0 - sig['M']),
++                         'mark': mark})
++            flags['setup_gm_mark' if mark else 'setup_gm_cooldown'] += 1
++            for x, y in sig['flying']:
++                tpl = gm_tpl.get(bd['side'])
++                if tpl is None or j is None or not tpl.get('fixed'):
++                    flags['setup_gm_rocket_skipped'] += 1; continue
++                p = json.loads(json.dumps(tpl))
++                p.update(team=E['team'][i], pos={'x': round(x*18), 'y': round(y*18)}, aim=aim,
++                         target={'index': j, 'generation': E['generation'][j]}, firer={'index': i, 'generation': E['generation'][i]},
++                         firer_card=E['card'][i], frac={'x': 0, 'y': 0})
++                after['projectiles'].append(p); flags['setup_gm_rocket_in_flight'] += 1
++        if after != before:
++            try:
++                load_edited(b, before, after)
++            except Exception:
++                flags['setup_gm_not_set'] += 1
++
++    # An Evo Tesla's ring (the area it makes as it surfaces: life 1500 ms, growing from Radius to MaxRadius; state.rs
++    # `ring_pass`, save()['evo']['rings']) still under way at t0 is not on a setup board, so the enemies it had yet to
++    # reach were never hit or stopped (diag_night/r2, skel 214908@2843: 350 ms left at t0, the Prince takes 237 and the
++    # stop live at t0 + 1, never in the SIM; 3 of the 5 strict fights with a ring on the t0 board imperfect). The ring is
++    # made `made` = t0 - (1500 - its row's remaining ms) / 50 on its Tesla's point; the enemies the reader shows carrying
++    # its stop (phase-2 Tesla_EV1_WithDamage) are taken already.
++    rings = [(bd, mk) for bd, mk in tesla_rings(m, fight, setup, start, catalog)] if m['ext'] else []
++    if rings:
++        before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
++        rr = (after.get('evo') or {}).get('rings')
++        buffs = (m.get('buffs') or {}).get(max((t for t in m.get('buffs') or {} if t0 - 6 <= t <= t0), default=None), {})
++        hit = {g for g, v in buffs.items() if any(n == 'Tesla_EV1_WithDamage' for n, _ in v)}
++        by = {bd['id']: bd for bd in setup}
++        for bd, made in (rings if rr is not None else ()):
++            i = ent(E, ('body', bd))
++            if i is None:
++                flags['setup_ring_not_found'] += 1; continue
++            taken = []
++            for x in start:
++                if x.get('gen') in hit and x['side'] != bd['side']:
++                    j = ent(E, ('tower', x['side'], x['x'], x['y']) if x['tower'] else ('body', by[x['id']]) if x['id'] in by else ('none',))
++                    if j is not None:
++                        taken.append({'index': j, 'generation': E['generation'][j]})
++            rr.append({'id': {'index': i, 'generation': E['generation'][i]}, 'team': E['team'][i], 'card': E['card'][i],
++                       'level': E['level'][i], 'at': dict(E['pos'][i]), 'made': made, 'taken': taken})
++            flags['setup_ring'] += 1
++        if after != before:
++            try:
++                load_edited(b, before, after)
++            except Exception:
++                flags['setup_ring_not_set'] += 1
++
+     # Opt-in inference (PARITY_INFER=target,phase; item 8): the SIM's attack clock advances 50 ms a tick while engaged
+     # and a hit lands (melee) / launches (ranged) each time it reaches a multiple of HitSpeed (probed on 0.1.35), so a
+     # body that last hit e ms before t0 gets attack_ms = e mod HitSpeed and its reload left; its target = that victim.
+@@ -1681,6 +1764,46 @@
+     return list(last.values())
+ 
+ 
++def gm_signals(m, fight, start, catalog, look=110):
++    """Ext logs: {side: dict(M, x, y, flying)} -- each side's latest Goblin Machine signal (an fx row of the GM's card) in
++    the `look` ticks up to t0: its creation tick M (the row counts 50 a tick down from 9999), its point, and the live points
++    of that side's target-less GM projectiles (rockets) in flight at t0."""
++    t0, i0 = fight['t0'], fight['frame0']
++    name = lambda cid: (catalog.get(cid) or {}).get('display_name')
++    out = {}
++    for t, _ in m['frames'][max(0, i0-look):i0+1]:
++        if t < t0 - look:
++            continue
++        for e in m['fx'].get(t, ()):
++            if name(e[3]) == 'GoblinMachine':
++                M = t - round((9999 - e[4])/50)
++                if e[0] not in out or M >= out[e[0]]['M']:
++                    out[e[0]] = dict(M=M, x=e[1], y=e[2], flying=[])
++    for p in m['proj'].get(t0, ()):
++        if name(p[3]) == 'GoblinMachine' and not p[8] and p[0] in out:
++            out[p[0]]['flying'].append((p[1], p[2]))
++    return out
++
++
++def tesla_rings(m, fight, setup, start, catalog):
++    """Ext logs: [(setup Evo Tesla body, ring creation tick)] for each Evo Tesla area row (the Tesla card's fx row) on the
++    t0 frame within 1000 of a same-side setup Evo Tesla: made = t0 - (EVO_RING_MS - remaining ms) / 50."""
++    t0 = fight['t0']
++    live = {bd['id']: bd for bd in start}
++    out = []
++    for e in m['fx'].get(t0, ()):
++        if (catalog.get(e[3]) or {}).get('display_name') != 'Tesla' or not 0 < e[4] <= EVO_RING_MS:
++            continue
++        for bd in setup:
++            a = live.get(bd['id'])
++            c = catalog.get(bd['card_id']) or {}
++            if (a and not bd.get('proxy') and bd['side'] == e[0] and c.get('display_name') == 'Tesla' and form_of(bd['card_id'], c) == 1
++                    and math.hypot(a['x'] - e[1], a['y'] - e[2]) <= 1000):
++                out.append((bd, t0 - round((EVO_RING_MS - e[4])/50)))
++                break
++    return out
++
++
+ def infer_attacks(m, fight, atk, look=100):
+     """Opt-in (PARITY_INFER, item 8): each t0-board attacker's last hit before t0, inferred from the live frames of the
+     last `look` ticks. atk: {live id: dict(dmg, dmg_tower, reach, speed)} (speed: projectile mt/tick, None = melee/instant).
+@@ -1904,7 +2027,7 @@
+ 
+ def set_buff(E, i, bid, ms):
+     """Write buff `bid` with `ms` left into entity i's first free slot of a save's ents; False if none is free. The
+-    save's buffs list is FLAT (IW_SLOW_1016 §2): entity i owns buffs[i*slots:(i+1)*slots], slots = len(buffs) // n."""
++    save's buffs list is FLAT (IW_SLOW_1016 Ã‚Â§2): entity i owns buffs[i*slots:(i+1)*slots], slots = len(buffs) // n."""
+     slots = len(E['buffs']) // len(E['alive'])
+     j = next((i*slots + j for j in range(slots) if not E['buffs'][i*slots + j]['id']), None)
+     if j is None:

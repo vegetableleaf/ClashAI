@@ -1,0 +1,95 @@
+--- /tmp/fights_head.py	2026-10-17 01:34:36.315276100 -0400
++++ fights_fired.py	2026-10-17 01:34:36.203321200 -0400
+@@ -728,7 +728,7 @@
+ 
+     def slow_ids(self):
+         """{'base' | 'hero' | 'hero_cold': SIM buff id} of the Ice Wizard slows (SLOW_BUFFS). Ids are interned per table,
+-        so they are read off a probe (IW_SLOW_1016 §2): a red Giant next to a hero IW played from hand carries the deploy
++        so they are read off a probe (IW_SLOW_1016 Â§2): a red Giant next to a hero IW played from hand carries the deploy
+         chill first, then the shot slow; next to a spawned base IW, the base slow. Resets the battle: call before a
+         fight's setup (cached)."""
+         if 'slow' not in self._form:
+@@ -1252,6 +1252,30 @@
+             except Exception:
+                 flags['setup_shot_not_set'] += 1
+ 
++    # A projectile attacker keeps a target the shots in flight will kill only if it has launched at it since acquiring it
++    # (targeting.DOOMED_TARGET_DROP = projectile_attackers_walk_drop: entity `fired_at`, written when it fires). A setup
++    # body starts with fired_at None, so the SIM dropped a doomed target the live shooter kept (diag_night/r2 214908@3324:
++    # the X-Bow left a 146-hp Prince doomed by an in-flight princess arrow for the Musketeer; live it shot the Prince).
++    # Ext logs: fired_at = the seeded target when the live log shows a shot from it at that target since it acquired it.
++    fired = fired_targets(m, fight, start) if m['ext'] else {}
++    if fired:
++        before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
++        refs = {bd['id']: ('body', bd) for bd in setup if not bd.get('proxy')}
++        refs.update({bd['id']: ('tower', bd['side'], bd['x'], bd['y']) for bd in start if bd['tower'] and bd['hp'] > 0})
++        idx = {k: ent(E, r) for k, r in refs.items()}
++        back = {i: k for k, i in idx.items() if i is not None}
++        for k, tg in fired.items():
++            i = idx.get(k)
++            if i is None or not E['target'][i]:
++                continue
++            if back.get(E['target'][i]['index']) in tg:
++                E['fired_at'][i] = dict(E['target'][i]); flags['setup_fired_at'] += 1
++        if after != before:
++            try:
++                load_edited(b, before, after)
++            except Exception:
++                flags['setup_fired_at_not_set'] += 1
++
+     # Opt-in inference (PARITY_INFER=target,phase; item 8): the SIM's attack clock advances 50 ms a tick while engaged
+     # and a hit lands (melee) / launches (ranged) each time it reaches a multiple of HitSpeed (probed on 0.1.35), so a
+     # body that last hit e ms before t0 gets attack_ms = e mod HitSpeed and its reload left; its target = that victim.
+@@ -1681,6 +1705,43 @@
+     return list(last.values())
+ 
+ 
++def fired_targets(m, fight, start, look=100):
++    """Ext logs: {live id: {live ids}} -- the t0-board bodies (towers included) a t0-board shooter has launched a projectile
++    at since it acquired its t0 target (a projectile's first sighting = its launch). With phase-3 rows the acquisition is
++    the last tick its target generation changed (within `look` ticks); without them only its latest shot counts."""
++    t0, i0 = fight['t0'], fight['frame0']
++    on = {bd['id'] for bd in start}
++    gen = {bd['id']: bd.get('gen') for bd in start}
++    shots, seen = defaultdict(list), set()
++    for t, _ in m['frames'][max(0, i0-look):i0+1]:
++        if t < t0 - look:
++            continue
++        for p in m['proj'].get(t, ()):
++            if p[6] in seen:
++                continue
++            seen.add(p[6])
++            if p[7] in on and p[8] in on:
++                shots[p[7]].append((t, p[8]))
++    att = m.get('attacks') or {}
++    ts = sorted(t for t in att if t0 - look <= t <= t0)
++    out = {}
++    for k, ss in shots.items():
++        g = gen.get(k)
++        rows = [(t, att[t][g][0]) for t in ts if g is not None and g in att[t]]
++        if not rows:
++            out[k] = {max(ss)[1]}
++            continue
++        cur, acq = rows[-1][1], t0 - look
++        for t, tg in reversed(rows):
++            if tg != cur:
++                acq = t; break
++        tg_ids = {bd for bd in on if gen.get(bd) is not None and gen[bd] == cur}
++        hit = {v for t, v in ss if t > acq and v in tg_ids}
++        if hit:
++            out[k] = hit
++    return out
++
++
+ def infer_attacks(m, fight, atk, look=100):
+     """Opt-in (PARITY_INFER, item 8): each t0-board attacker's last hit before t0, inferred from the live frames of the
+     last `look` ticks. atk: {live id: dict(dmg, dmg_tower, reach, speed)} (speed: projectile mt/tick, None = melee/instant).
+@@ -1904,7 +1965,7 @@
+ 
+ def set_buff(E, i, bid, ms):
+     """Write buff `bid` with `ms` left into entity i's first free slot of a save's ents; False if none is free. The
+-    save's buffs list is FLAT (IW_SLOW_1016 §2): entity i owns buffs[i*slots:(i+1)*slots], slots = len(buffs) // n."""
++    save's buffs list is FLAT (IW_SLOW_1016 Â§2): entity i owns buffs[i*slots:(i+1)*slots], slots = len(buffs) // n."""
+     slots = len(E['buffs']) // len(E['alive'])
+     j = next((i*slots + j for j in range(slots) if not E['buffs'][i*slots + j]['id']), None)
+     if j is None:

@@ -1,0 +1,46 @@
+--- /tmp/fights_head.py	2026-10-17 01:34:36.315276100 -0400
++++ fights_hero.py	2026-10-17 01:48:35.912894400 -0400
+@@ -728,7 +728,7 @@
+ 
+     def slow_ids(self):
+         """{'base' | 'hero' | 'hero_cold': SIM buff id} of the Ice Wizard slows (SLOW_BUFFS). Ids are interned per table,
+-        so they are read off a probe (IW_SLOW_1016 §2): a red Giant next to a hero IW played from hand carries the deploy
++        so they are read off a probe (IW_SLOW_1016 Â§2): a red Giant next to a hero IW played from hand carries the deploy
+         chill first, then the shot slow; next to a spawned base IW, the base slow. Resets the battle: call before a
+         fight's setup (cached)."""
+         if 'slow' not in self._form:
+@@ -1310,7 +1310,24 @@
+                     ev['plays'] = ev['cycles'] if e['form'] == 1 else 0
+         p['mana'] = after['calib']['max_mana']*after['mana_unit']; p['refill_ms'] = 0
+         if after != before:
+-            load_edited(b, before, after)
++            try:
++                load_edited(b, before, after)
++            except ValueError as ex:
++                # Engine bug (diag_night/r2): a hero whose record changed under its ability (an opponent Hero Wizard: 255,
++                # source 254, no ability on the record) is still in hero_units, so the engine's own save does not load.
++                # Drop the one hero_units entry whose removal makes it load (its button is spent by then).
++                if 'inconsistent' not in str(ex):
++                    raise
++                for h in list(after['hero_units']):
++                    keep = [x for x in after['hero_units'] if x is not h]
++                    try:
++                        load_edited(b, dict(before, hero_units=keep), dict(after, hero_units=keep))
++                    except ValueError:
++                        continue
++                    flags['hero_unit_dropped_unloadable'] += 1
++                    break
++                else:
++                    raise
+         slot = 0 if e['kind'] == 'play' else sim.HAND_SIZE
+         r = b.step([(e['side'], slot, round(e['x']*18) if 'x' in e else 0, round(e['y']*18) if 'y' in e else 0)], 0)[0]
+         return sim.DEPLOY_REASONS[r[1]]
+@@ -1904,7 +1921,7 @@
+ 
+ def set_buff(E, i, bid, ms):
+     """Write buff `bid` with `ms` left into entity i's first free slot of a save's ents; False if none is free. The
+-    save's buffs list is FLAT (IW_SLOW_1016 §2): entity i owns buffs[i*slots:(i+1)*slots], slots = len(buffs) // n."""
++    save's buffs list is FLAT (IW_SLOW_1016 Â§2): entity i owns buffs[i*slots:(i+1)*slots], slots = len(buffs) // n."""
+     slots = len(E['buffs']) // len(E['alive'])
+     j = next((i*slots + j for j in range(slots) if not E['buffs'][i*slots + j]['id']), None)
+     if j is None:
