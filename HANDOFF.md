@@ -1,3 +1,10 @@
+## 2026-10-17 07:38 EDT -- SETTLED: exploiter-league training gives no measurable live-pool gain (same-seed twins, 3 seeds)
+
+- New baselines (live pool, 0.1.35, D3; copies pod_backup_weekend/rt35/RT35/): F1 s75 u65 539/960 (-4.90 vs u250), F1 s76 u65 557/960
+  (-3.02 vs u250).
+- gae_exploit minus its SAME-SEED F1 twin: s74 **+1.56 [-2.60, +5.83]**, s75 **+2.29 [-1.67, +6.25]**, s76 **-1.25 [-5.11, +2.50]** ->
+  mean ~+0.9, none significant -> (c) for "exploiter-league training helps" at 65 updates; the earlier s75 "+4.48" was seed spread.
+  Also no struggle-slice gain on any seed (-0.62 / -0.10 / -1.67). gae_exu250 (exploiters on u250) still running = last test of the idea.
 ## 2026-10-17 06:57 EDT -- gae_exploit s76 live pool -4.27 vs u250; same-seed F1 twins for s75 / s76 now being scored (settles the exploiter question)
 
 - gx76_u65 (gae_exploit s76): live pool 545/960 -> vs u250 **-4.27 [-8.12, -0.31]**; vs F1 s74 u65 +2.81 [-1.25, +6.98] (different seed).
