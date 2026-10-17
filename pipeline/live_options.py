@@ -37,6 +37,7 @@ EXTRA_LIVE_FLAGS = (('--own-effects', dict(action='store_true')),
                     ('--log-frames', dict(action='store_true')),   # owner 2026-10-14: board every reader frame (parity data)
                     ('--capture-p2', dict(action='store_true')),   # owner 10-16: phase-2 capture beside the reader (parity data)
                     ('--capture-p3', dict(action='store_true')),   # phase-3 probe beside the reader (supersedes -p2)
+                    ('--cue-inputs', dict(choices=('off', 'on'), default='off')),   # step c: cue rows for a cue-layer model
                     ('--follow-up-taps', dict(action='store_true')))   # L74 latency2; --rocket-tornado on|only needs it (live_play refuses without)
 
 

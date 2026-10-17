@@ -83,7 +83,37 @@ Pod command (27-CPU pod with the 0.1.35 venv and the data of POD_README + `rlarm
     cd /workspace/clashbot && nohup bash scratchpad/gauntlet/L74/cues/run_cues_pod.sh > /dev/null 2>&1 &
     # done when /workspace/results/CUES_ALL_DONE exists; log /workspace/results/CUES/run.log
 
-## 6. Live mapping plan (NOT built here; the next ticket)
+## 6. Live path (BUILT 10-17: `pipeline/live_unit_state.py`, `live_play.py --cue-inputs on`)
+
+Status: built and checked offline; not deployed. `LIVE_OPTIONS` line: `--cue-inputs on` (needs the merged reader,
+`CLASHBOT_READER=merged`). Default off = unchanged; a model without `cue_in` ignores the flag (`--check` says
+`active: false`); a model WITH `cue_in` refuses to load without the flag or on reader v1 / v2. `GenPilot.row` builds
+`b["cue"]` from the decision frame BEFORE extrapolation (as `sim_cue_rows` reads the battle at the decision tick) with
+`align` = `sim_cue_rows`' match verbatim (test: same rows on random boards). Shared with training: card table
+(`sim_unit_state._tbl` over the same 160402017 JSON, sha-pinned; live reads the local copy
+`icebow/data/cue_table/cards-160402017-20261006.json`), `_statuses`, the slow_frac total formula, `cue_vector`,
+`CUE_MATCH_TILES`, table hit speed. The decision event carries `cue` = {degraded, bodies, known, nz[22]}.
+
+Live rules measured on fights.py replays (royalesim 0.1.35, the parity seeds), 22 floats per paired body-frame,
+A = setup bodies first second (definition), B = the rest (definition + SIM divergence). Sweep set 13 logs (413k
+aligned pairs); the three rules below were chosen there (S6 rules before -> after): all-22 agree A 0.791 -> 0.893,
+B 0.818 -> 0.905. HELD-OUT 12 other logs (331k pairs), rules frozen: A 0.890, B 0.876; lowest fields A has_target 0.936,
+frac 0.967, target_tower 0.958; everything else A >= 0.979.
+- target drop by EDGE distance (centre - both collision radii) > max(sight, range) + 1.5 tiles, and a table unit with no
+  attack (no range, no sight: Tombstone) holds no target: has_target A 0.873 -> 0.933 (X-Bow at max range was dropped).
+- raw state 2 with no acquired target -> moving (troop with walk speed) / idle: state A 0.959 -> 0.978.
+- shield-hp cards (Recruits, Dark Prince, Guards, Evo Wizard, Knight hero) shielded while hp == max hp (the stream
+  has no shield hp): shielded A 0.969 -> 0.994.
+
+Tools + outputs: `L74/cues/live/` -- `pcollect.py` / `run_par.sh` (pod: royalesim 0.1.35, the parity seeds, 4 workers;
+~5 min for 13 logs), `panalyze.py` (the per-float table: `parity_sweepset.txt`, `parity_heldout.txt`, before =
+`parity_sweepset_S6rules.txt`), `psweep*.py` (the rule sweeps), `dry_live.py` (the REAL `live_play.main` -- parser,
+LIVE_OPTIONS, refusals, load_pilot -- on recorded merged-reader frames, every device call patched to raise, plus a
+cue-blind twin), `drysum.py`, `ident.py` (HEAD vs working tree: every decision of the live u250 + deployed options
+equal, flag off and builder attached; 981 / 981 on two merged-reader logs).
+
+The original plan, kept for reference:
+
 
 `pipeline/live_unit_state.py cues(frame)` -> the `extract` schema from the merged reader's blocks, exactly the
 mapping already prototyped in `L74/parity/s6/live_cues.py live_cue` and `L74/parity/READER_STREAM_SPEC.md` section 5:

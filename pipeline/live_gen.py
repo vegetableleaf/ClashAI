@@ -147,6 +147,9 @@ class GenPilot:
     # OPT-IN (live_play.py --identity-ext on, L74): body_identity.extension() around the board's from_engine (new card
     # ids + ability / evo spawn bodies -> learned classes). False = off = unchanged.
     identity_ext = False
+    # OPT-IN (live_play.py --cue-inputs on, step c): a pipeline.live_unit_state.LiveCues feeding b["cue"] to a checkpoint
+    # with a cue layer (model_gen cue_in). None = off; a model without the layer never reads it (no-op).
+    cues = None
 
     def __init__(self, ckpt, device: str = "cpu", gate_tau: float = 0.5, use_counter: bool = True,
                  extrapolate_ticks: int = 0, predict_drops: bool = False, own_effects: bool = False,
@@ -198,6 +201,8 @@ class GenPilot:
 
     def reset_match(self) -> None:
         self.pending_plays = []
+        if getattr(self, "cues", None) is not None:
+            self.cues.reset()
         self.past.clear()
         self.last_play_tick = None
         self.history.clear()
@@ -277,7 +282,7 @@ class GenPilot:
     def row(self, frame: Mapping[str, Any]) -> tuple[dict, dict]:
         from .reader_identity_aliases import dedupe_hero_bodies
         frame = dedupe_hero_bodies(frame)        # lead 2026-10-06: the 203000023 Hero + FloatingCube pair -> one Hero
-        raw_tick = frame["game_tick"]
+        raw_frame, raw_tick = frame, frame["game_tick"]
         side = my_side_of(frame)
         _, names = deck_of(frame, side)
         me = next(p for p in frame["players"] if int(p["side"]) == side)
@@ -345,6 +350,12 @@ class GenPilot:
              "hand_card": T([h[0] for h in hand]), "hand_form": T([h[1] for h in hand]),
              "next_card": T([nxt[0]]).squeeze(0), "next_form": T([nxt[1]]).squeeze(0),
              "deck_card": T(np.asarray(deck)[order]), "deck_form": T(np.asarray(forms)[order])}
+        if getattr(self.model, "cue_in", None) is not None:    # step c: the decision frame's cues on the unit tokens
+            if getattr(self, "cues", None) is None:            # (STEP_C_SPEC section 6); refuse rather than play cue-blind
+                raise ValueError("this checkpoint has a cue layer: it needs a live cue source (live_play --cue-inputs on)")
+            prev = next((f for t, f in reversed(self.frames) if t < int(raw_tick)), None)
+            cue, self.cue_log = self.cues.rows(raw_frame, prev, tok, mask, side)
+            b["cue"] = T(cue, torch.float32)
         if getattr(self, "feature_version", 1) >= 3:
             from .dataset_gen import opponent_past
             from .obs_contract import to_unit_forms

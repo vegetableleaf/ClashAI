@@ -1,0 +1,24 @@
+A now 0.9594
+  no-target->moving/idle, out-of-range s2=None use_prog=False: 0.9781
+  no-target->moving/idle, out-of-range s2=None use_prog=True: 0.9781
+  no-target->moving/idle, out-of-range s2=0 use_prog=False: 0.9752
+  no-target->moving/idle, out-of-range s2=0 use_prog=True: 0.9782
+  no-target->moving/idle, out-of-range s2=500 use_prog=False: 0.9779
+  no-target->moving/idle, out-of-range s2=500 use_prog=True: 0.9782
+  no-target->moving/idle, out-of-range s2=1000 use_prog=False: 0.9780
+  no-target->moving/idle, out-of-range s2=1000 use_prog=True: 0.9782
+  no-target->moving/idle, out-of-range s2=2000 use_prog=False: 0.9781
+  no-target->moving/idle, out-of-range s2=2000 use_prog=True: 0.9782
+  has_target with kept():  0.9331
+B now 0.9563
+  no-target->moving/idle, out-of-range s2=None use_prog=False: 0.9747
+  no-target->moving/idle, out-of-range s2=None use_prog=True: 0.9747
+  no-target->moving/idle, out-of-range s2=0 use_prog=False: 0.9704
+  no-target->moving/idle, out-of-range s2=0 use_prog=True: 0.9748
+  no-target->moving/idle, out-of-range s2=500 use_prog=False: 0.9741
+  no-target->moving/idle, out-of-range s2=500 use_prog=True: 0.9748
+  no-target->moving/idle, out-of-range s2=1000 use_prog=False: 0.9747
+  no-target->moving/idle, out-of-range s2=1000 use_prog=True: 0.9748
+  no-target->moving/idle, out-of-range s2=2000 use_prog=False: 0.9747
+  no-target->moving/idle, out-of-range s2=2000 use_prog=True: 0.9748
+  has_target with kept():  0.9666

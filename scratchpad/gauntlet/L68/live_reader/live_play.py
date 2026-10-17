@@ -602,6 +602,11 @@ def main() -> int:
                     help="L74 identity extension (pipeline.body_identity.extension): new card ids and ability / evo "
                          "spawn bodies reach the model as learned classes. off (default) = unchanged. Deployable from "
                          "LIVE_OPTIONS")
+    ap.add_argument("--cue-inputs", choices=("off", "on"), default="off",
+                    help="step c (STEP_C_SPEC.md section 6): feed a checkpoint WITH a cue layer its 22 public cue floats per "
+                         "unit token from the merged reader's blocks (pipeline/live_unit_state.py). off (default) = "
+                         "unchanged; a model without the layer ignores it; a cue-layer model refuses to load without it. "
+                         "Needs a reader with cue blocks (not v1 / v2). Deployable from LIVE_OPTIONS")
     ap.add_argument("--ckpt-override-file", type=Path, default=REPO / "scratchpad/gauntlet/L70/live/CKPT_OVERRIDE",
                     help="default checkpoint selection; explicit --ckpt wins. A changed selection ends a default-selected run between matches")
     ap.add_argument("--nav-dry-run", action="store_true",
@@ -691,7 +696,8 @@ def main() -> int:
                 for (path, sha), (_, pl) in zip(arms, loaded)], device=loaded[0][0], tau=a.tau, **anti_leak_log(a), **latency_log(a),
                 public_audit=a.public_audit, legal_guard=not getattr(a, 'no_legal_guard', False), predict_drops=a.predict_drops, own_effects=bool(getattr(a, 'own_effects', False)),
                 iw_press_pstar=a.iw_press_pstar, hero_ability_spec=getattr(a, "hero_ability_spec", "off"),
-                decision_options=vars(loaded[0][1].decision_options), live_options=a.live_options)))
+                decision_options=vars(loaded[0][1].decision_options), live_options=a.live_options,
+                **({"cue_inputs": [cue_log(pl, a.reader) for _, pl in loaded]} if getattr(a, "cue_inputs", "off") == "on" else {}))))
             return 0
     else:
         from pipeline.live_checkpoint import resolve_checkpoint
@@ -709,7 +715,8 @@ def main() -> int:
               public_audit=a.public_audit, legal_guard=getattr(pilot, 'legal_guard', None), predict_drops=a.predict_drops, own_effects=bool(getattr(a, 'own_effects', False)),
                 iw_press_pstar=a.iw_press_pstar, hero_ability_spec=getattr(a, "hero_ability_spec", "off"),
               identity_ext=bool(getattr(pilot, "identity_ext", False)), decision_options=vars(pilot.decision_options), live_options=a.live_options,
-              **({'posture_head': posture_summary(pilot.posture)} if getattr(pilot, 'posture', None) else {}))))   # C1: absent = off
+              **({'posture_head': posture_summary(pilot.posture)} if getattr(pilot, 'posture', None) else {}),   # C1: absent = off
+              **({"cue_inputs": cue_log(pilot, a.reader)} if getattr(a, "cue_inputs", "off") == "on" else {}))))
         return 0
     nav = None
     if a.matches > 1 or a.nav_dry_run:
@@ -866,7 +873,23 @@ def load_pilot(a, decision_cfg, ckpt=None):
         pilot.pipeline_tau_delta = float(getattr(a, "pipeline_tau_delta", 0.0) or 0.0)
     if getattr(a, "anti_leak", False):          # default: the class's None = off, the decision rule unchanged
         pilot.anti_leak_elixir, pilot.anti_leak_seconds = a.anti_leak_elixir, a.anti_leak_seconds
+    if getattr(getattr(pilot, "model", None), "cue_in", None) is not None:   # step c cue model; else the flag is a no-op
+        if getattr(a, "cue_inputs", "off") != "on":
+            raise SystemExit(f"refusing: {ckpt or a.ckpt} has a cue layer (step c) -- run it with --cue-inputs on; "
+                             f"without its cue source it would play cue-blind")
+        if getattr(a, "reader", None) in ("v1", "v2"):
+            raise SystemExit(f"refusing: --cue-inputs needs a reader with cue blocks (the merged reader); --reader is {a.reader}")
+        from pipeline.live_unit_state import LiveCues
+        pilot.cues = LiveCues()                  # loads + sha-checks the card table the SIM embeds
     return device, pilot
+
+
+def cue_log(pilot, reader=None) -> dict:
+    """--cue-inputs on: what the --check JSON / start event report about the cue path of one loaded pilot."""
+    from pipeline.live_unit_state import TABLE_SHA256
+    if getattr(pilot, "cues", None) is None:
+        return dict(active=False, reader=reader, why="the checkpoint has no cue layer: --cue-inputs is a no-op for it")
+    return dict(active=True, reader=reader, table_sha256=TABLE_SHA256)
 
 
 def emote_log(a) -> dict:
@@ -928,6 +951,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
       fast_input=bool(getattr(a, "fast_input", False)), tap_gap_ms=getattr(a, "tap_gap_ms", 50),
       afford_ticks=getattr(pilot, "afford_ticks", None), early_release_margin=getattr(a, "early_release_margin", None),
       identity_ext=bool(getattr(pilot, "identity_ext", False)),
+      **({"cue_inputs": cue_log(pilot, a.reader)} if getattr(a, "cue_inputs", "off") == "on" else {}),
       **({"follow_up_taps": True} if getattr(a, "follow_up_taps", False) else {}),
       **emote_log(a),
       **({"pipeline_decisions": True, "pipeline_tau_delta": getattr(a, "pipeline_tau_delta", 0.0)}
@@ -1081,6 +1105,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                 lag_min = min(lag_min, t_recv - f["sample_monotonic_us"] / 1e6)
             if getattr(a, "log_frames", False) and ((f.get("phase3") or {}).get("defs")):   # merged reader: once per
                 W(event="cues_defs", tick=f.get("game_tick"), defs=f["phase3"]["defs"])     # reader process, any tick
+            if getattr(pilot, "cues", None) is not None:   # --cue-inputs: the merged reader's definitions, any frame
+                pilot.cues.observe(f)
             if not (f.get("battle_active") and f.get("coherent")):
                 if seen_active and now - last_adv > 3:
                     W(event="stop", why="battle_inactive"); break
@@ -1313,7 +1339,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                   backlog=q.qsize(), forced=forced,
                   decision={k:d[k] for k in ('play','p_play','no_affordable','hand_pos','name','card','form','xy','gate_tau',
                                              'xy_unguarded','stalled','hazard_step_s','hazard_play','why',
-                                             'lethal_rocket', 'posture', 'posture_dtau') if k in d},
+                                             'lethal_rocket', 'posture', 'posture_dtau', 'cue') if k in d},
                   **({"pending": [pd["d"]["name"] for pd in pending]} if pending else {}),
                   public=d['public_audit'])
                 last_audit_tick = tick

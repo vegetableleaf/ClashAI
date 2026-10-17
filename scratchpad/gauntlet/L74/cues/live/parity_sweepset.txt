@@ -1,0 +1,51 @@
+13 logs 493678 rows 1 fight errors
+aligned paired body-frames: A 33535, B 380121
+float          A agree                B agree                B counts: live!=0 / sim!=0 / both
+0  known       1.0000 (33535/33535)   1.0000 (380121/380121) 380121 / 380121 / 380121
+1  st_idle     0.9950 (33366/33535)   0.9923 (377192/380121) 19741 / 20386 / 18599
+2  st_moving   0.9819 (32927/33535)   0.9823 (373404/380121) 160162 / 160101 / 156773
+3  st_engaged  0.9797 (32853/33535)   0.9759 (370968/380121) 142672 / 142465 / 137992
+4  st_deploying 1.0000 (33535/33535)   0.9990 (379740/380121) 56535 / 56280 / 56217
+5  st_jumping  0.9991 (33505/33535)   0.9998 (380029/380121) 528 / 490 / 463
+6  st_tunnelling 0.9999 (33532/33535)   1.0000 (380121/380121) 315 / 315 / 315
+7  st_casting  0.9998 (33529/33535)   0.9997 (380025/380121) 168 / 84 / 78
+8  charging    0.9981 (33471/33535)   0.9990 (379757/380121) 907 / 1185 / 864
+9  tesla_hidden 0.9980 (33467/33535)   0.9966 (378837/380121) 10565 / 11375 / 10328
+10 has_target  0.9331 (31293/33535)   0.9669 (367524/380121) 212216 / 214489 / 207054
+11 target_tower 0.9564 (32074/33535)   0.9903 (376434/380121) 33731 / 36560 / 33302
+12 ph_idle     0.9795 (32847/33535)   0.9758 (370910/380121) 237695 / 237766 / 233125
+13 ph_windup   0.9770 (32765/33535)   0.9661 (367242/380121) 127218 / 127139 / 120739
+14 ph_hit      0.9949 (33365/33535)   0.9855 (374615/380121) 15208 / 15216 / 12459
+15 frac        0.9667 (32419/33535)   0.9431 (358502/380121) 132570 / 133072 / 126916
+16 frozen      0.9970 (33433/33535)   0.9974 (379120/380121) 3921 / 3632 / 3276
+17 slowed      0.9991 (33505/33535)   0.9940 (377858/380121) 23280 / 23841 / 22429
+18 raged       0.9926 (33286/33535)   0.9976 (379191/380121) 2868 / 2166 / 2052
+19 invisible   0.9999 (33532/33535)   0.9999 (380088/380121) 235 / 202 / 202
+20 shielded    0.9937 (33325/33535)   0.9933 (377571/380121) 19492 / 18242 / 17592
+21 slow_frac   0.9984 (33483/33535)   0.9916 (376933/380121) 23280 / 23841 / 22429
+A: all 22 floats agree on 0.8929 (29943/33535) of body-frames
+B: all 22 floats agree on 0.9052 (344077/380121) of body-frames
+A: mean L1 |live - sim| per body-frame 0.2453
+B: mean L1 |live - sim| per body-frame 0.2227
+
+largest B disagreements by unit name (name, direction): count
+  st_idle      [(('Tesla', 'sim>live'), 785), (('Tesla_EV1', 'sim>live'), 470), (('Xbow', 'sim>live'), 331), (('Tesla', 'live>sim'), 311), (('Xbow', 'live>sim'), 279)]
+  st_moving    [(('IceWizardHero', 'sim>live'), 442), (('Knight', 'live>sim'), 353), (('Knight', 'sim>live'), 341), (('IceWizardHero', 'live>sim'), 324), (('Skeleton', 'sim>live'), 308)]
+  st_engaged   [(('Tesla', 'live>sim'), 785), (('Tesla_EV1', 'live>sim'), 470), (('IceWizardHero', 'live>sim'), 418), (('IceWizardHero', 'sim>live'), 368), (('Knight', 'sim>live'), 353)]
+  st_deploying [(('Bat', 'live>sim'), 75), (('Skeleton', 'live>sim'), 68), (('Barbarian_EV1', 'live>sim'), 40), (('Skeleton', 'sim>live'), 36), (('AngryBarbarian_EV1', 'live>sim'), 17)]
+  st_jumping   [(('MegaKnight', 'live>sim'), 33), (('MegaKnight_EV1', 'live>sim'), 13), (('MegaKnight', 'sim>live'), 13), (('Assassin', 'sim>live'), 7), (('GoldenKnight', 'live>sim'), 6)]
+  st_casting   [(('BossBandit', 'live>sim'), 37), (('MusketeerHero', 'live>sim'), 27), (('Monk', 'live>sim'), 26), (('MusketeerHero', 'sim>live'), 5), (('BowlerHero_Siege', 'sim>live'), 1)]
+  charging     [(('Prince', 'sim>live'), 160), (('DarkPrince', 'sim>live'), 89), (('BattleRam', 'sim>live'), 49), (('Recruit_EV1', 'sim>live'), 13), (('Recruit', 'live>sim'), 13)]
+  tesla_hidden [(('Tesla', 'sim>live'), 563), (('Tesla_EV1', 'sim>live'), 484), (('Tesla', 'live>sim'), 141), (('Tesla_EV1', 'live>sim'), 96)]
+  has_target   [(('Skeleton', 'sim>live'), 832), (('GoblinCage', 'live>sim'), 797), (('Tesla', 'live>sim'), 785), (('Skeleton', 'live>sim'), 572), (('Knight', 'sim>live'), 523)]
+  target_tower [(('Skeleton', 'sim>live'), 569), (('Knight', 'sim>live'), 254), (('Xbow', 'sim>live'), 194), (('Knight_EV1', 'sim>live'), 150), (('Archer', 'sim>live'), 146)]
+  ph_idle      [(('Tesla', 'sim>live'), 785), (('Tesla_EV1', 'sim>live'), 470), (('IceWizardHero', 'sim>live'), 418), (('IceWizardHero', 'live>sim'), 368), (('Knight', 'live>sim'), 353)]
+  ph_windup    [(('Xbow', 'live>sim'), 964), (('Xbow', 'sim>live'), 924), (('Tesla', 'live>sim'), 868), (('IceWizardHero', 'live>sim'), 639), (('IceWizardHero', 'sim>live'), 565)]
+  ph_hit       [(('Xbow', 'live>sim'), 804), (('Xbow', 'sim>live'), 794), (('IceWizardHero', 'sim>live'), 262), (('IceWizardHero', 'live>sim'), 238), (('Tesla', 'live>sim'), 230)]
+  frac         [(('Xbow', 'sim>live'), 2449), (('Xbow', 'live>sim'), 1630), (('IceWizardHero', 'sim>live'), 1174), (('IceWizardHero', 'live>sim'), 1152), (('Tesla', 'live>sim'), 1125)]
+  frozen       [(('Xbow', 'live>sim'), 78), (('Barbarian', 'live>sim'), 74), (('Knight', 'live>sim'), 69), (('Pekka', 'live>sim'), 66), (('Knight_EV1', 'live>sim'), 63)]
+  slowed       [(('Bowler', 'sim>live'), 198), (('ElectroGiant', 'sim>live'), 184), (('Skeleton', 'live>sim'), 123), (('Wizard', 'sim>live'), 100), (('Cannon', 'live>sim'), 96)]
+  raged        [(('Bat', 'live>sim'), 418), (('AngryBarbarian', 'live>sim'), 122), (('AngryBarbarian_EV1', 'live>sim'), 94), (('RageBarbarian_EV1', 'live>sim'), 68), (('MegaMinionHero', 'live>sim'), 38)]
+  invisible    [(('BossBandit', 'live>sim'), 33)]
+  shielded     [(('Knight_EV1', 'live>sim'), 1103), (('Knight_EV1', 'sim>live'), 591), (('Recruit_EV1', 'live>sim'), 386), (('Recruit', 'live>sim'), 312), (('DarkPrince', 'live>sim'), 99)]
+  slow_frac    [(('ElectroGiant', 'sim>live'), 305), (('Bowler', 'sim>live'), 222), (('Skeleton', 'live>sim'), 120), (('IceWizardHero', 'live>sim'), 116), (('ElectroGiant', 'live>sim'), 111)]

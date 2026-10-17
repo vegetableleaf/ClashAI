@@ -1,0 +1,29 @@
+rows A 33535 B 380121
+
+== has_target agreement (A / B) by drop rule ==
+centre +0     0.7625 / 0.8312
+centre +1000  0.8581 / 0.9086
+centre +1500  0.8728 / 0.9200
+centre +2000  0.9009 / 0.9443
+centre +3000  0.9249 / 0.9591
+centre +4000  0.9244 / 0.9582
+edge   -500  0.8284 / 0.8867   +no-attack-drop 0.8357 / 0.8934
+edge   +0    0.8929 / 0.9376   +no-attack-drop 0.9002 / 0.9444
+edge   +500  0.9018 / 0.9449   +no-attack-drop 0.9091 / 0.9517
+edge   +1000 0.9133 / 0.9519   +no-attack-drop 0.9206 / 0.9587
+edge   +1500 0.9258 / 0.9598   +no-attack-drop 0.9331 / 0.9666
+edge   +2500 0.9233 / 0.9574   +no-attack-drop 0.9306 / 0.9642
+raw (no drop)  0.7009 / 0.7371
+A misses under edge+1000+no-attack (name, live raw tg, sim tg): [(('Skeleton', True, True), 309), (('Skeleton', True, False), 192), (('IceWizardHero', True, True), 159), (('Archer', True, True), 140), (('GoblinCage', True, False), 83), (('Bat', True, True), 72), (('Knight', True, True), 71), (('MusketeerHero', True, True), 69), (('SpearGoblin', True, True), 67), (('Barbarian', True, True), 66), (('Knight_EV1', True, True), 60), (('Tesla', True, True), 60)]
+
+== shielded on shield-hp cards: live buff rule vs + (hp >= max_hp) ==
+A: shield-card rows 1245: buff rule 0.2827, +hp==max 0.9639; all rows with the derived rule 0.9937
+   sim hp==max on shield rows when sim shielded: [((True, True), 893), ((False, False), 344), ((False, True), 8)]
+B: shield-card rows 13072: buff rule 0.2431, +hp==max 0.9345; all rows with the derived rule 0.9933
+   sim hp==max on shield rows when sim shielded: [((True, True), 9894), ((False, False), 2315), ((False, True), 863)]
+
+== state disagreements (A): (live raw, live has_target, prog>0) -> sim state ==
+A 1362 [((2, False, True, 'moving', 'troop'), 529), ((2, True, True, 'moving', 'troop'), 275), ((2, False, False, 'moving', 'troop'), 126), ((2, False, True, 'idle', 'building'), 126), ((1, True, False, 'engaged', 'troop'), 91), ((2, True, True, 'idle', 'building'), 83), ((2, False, False, 'idle', 'building'), 24), ((1, False, False, 'engaged', 'troop'), 23), ((0, True, False, 'moving', 'troop'), 18), ((3, True, False, 'moving', 'troop'), 16), ((0, True, False, 'engaged', 'troop'), 8), ((3, True, False, 'engaged', 'troop'), 8), ((16, False, False, 'moving', 'troop'), 8), ((0, False, False, 'engaged', 'building'), 7)]
+   state agreement now 0.9594, with raw-2-no-target rule 0.9620
+B 16608 [((2, False, True, 'moving', 'troop'), 4665), ((2, True, True, 'moving', 'troop'), 2779), ((2, False, False, 'moving', 'troop'), 2432), ((2, True, True, 'idle', 'building'), 1773), ((2, False, True, 'idle', 'building'), 1622), ((1, True, False, 'engaged', 'troop'), 1114), ((1, False, False, 'engaged', 'troop'), 534), ((2, False, False, 'idle', 'building'), 531), ((0, False, False, 'engaged', 'building'), 286), ((4, False, False, 'moving', 'troop'), 250), ((0, True, False, 'engaged', 'troop'), 82), ((2, False, True, 'moving', None), 60), ((2, True, False, 'moving', 'troop'), 52), ((10, True, False, 'engaged', 'troop'), 39)]
+   state agreement now 0.9563, with raw-2-no-target rule 0.9622

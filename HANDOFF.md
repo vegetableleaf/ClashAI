@@ -1,3 +1,26 @@
+## 2026-10-17 13:24 EDT -- LIVE CUE PATH committed (opt-in --cue-inputs on); all 22 cue floats live; cue effect itself in doubt
+
+Worker report DONE_WITH_CONCERNS (files below; tools + outputs scratchpad/gauntlet/L74/cues/live/; STEP_C_SPEC.md section 6).
+- pipeline/live_unit_state.py builds the 22 per-unit cue floats at DECISION time from the merged reader's blocks (no masking
+  needed; the post-match p3 capture is not used). Wiring: live_play.py `--cue-inputs on` (deployable from LIVE_OPTIONS); a
+  checkpoint without a cue layer ignores it (u250 --check: cue_inputs.active false); a cue-layer checkpoint refuses to load
+  without it or with reader v1 / v2. Card table: local sha-pinned icebow/data/cue_table/cards-160402017-20261006.json.
+- Feature parity vs the training definition (sim_unit_state), 12 held-out logs, 331k paired bodies: per-field agreement
+  0.93-1.00 (has_target .936 / .967, frac .967 / .925 within 0.10, rest >= .955); all-22-agree 0.890 (fight starts) / 0.876
+  (later frames) after 3 new rules swept on 13 other logs (engaged-without-target = moving/idle; no-attack units hold no
+  target; shield-hp cards shielded while hp == max). Optional reader addition: per-body shield hp (would make 'shielded' exact).
+- Flag OFF = unchanged: live u250 with the deployed options on 2 logs 981 / 981 identical decisions (HEAD vs working tree flag off
+  vs builder attached); --check byte-identical to HEAD. Tests: test_live_cues 45 + test_cue_inputs_live 9 pass; existing live /
+  cue tests 164 pass / 4 skip (lead re-ran: 61 pass, 4 skip); live_reader suite 2 failures in test_live_entry.py also fail on HEAD.
+- Offline decision check (dry_live.py: real live_play.main on recorded frames, every device call patched to raise) with
+  rlarm_gae_cue_u250_u0130_grafted (0fba110c...): 1,296 decisions, 0 degraded frames, 92-97% with cue rows, ~2 ms per decision.
+- CONCERN (a): vs the same model fed all-zero cues, the cues changed 1 / 538 and 0 / 758 play-or-wait decisions (median play-prob
+  shift 0.0004-0.0012; cue projection weight norm 0.18) -> the +5.10 cue-vs-twin gain is plausibly NOT from seeing cues (training-
+  run variance between twins). Test: zero cue_in.weight in a copy of u0130 (exactly cue-blind) and eval on the same D3 seeds:
+  ~643 / 960 = not the cues; ~594 = the cues.
+- Lead review: the troops worker's uncommitted e1_eval / rl_royale edits (live imports both) touch only training self-play
+  (opp_tower_troops, default off); the functions live calls are unchanged.
+
 ## 2026-10-17 12:59 EDT -- step-d trigger graded on UPGRADED (stamped) matches only, >= 100 matches (owner 10-17)
 
 - Owner 10-17: "switch the trigger to upgraded matches only for a fair grading. just make sure there is enough matches."
