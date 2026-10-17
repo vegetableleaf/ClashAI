@@ -1,3 +1,25 @@
+## 2026-10-17 11:10 EDT -- READER PHASE 3B DONE: exact creation tick of every new body (spawn-tick U closed on new captures); live restarting
+
+Worker report (DONE_WITH_CONCERNS; private details in icebow/data/reader_notes/READER_PHASE3_private.md section 8; tracked
+layout-free note scratchpad/gauntlet/L74/parity/READER_PHASE3B.md). The deploy countdown alone placed only 78-87% of new bodies in
+the right tick, so the probe now emits four per-body values from ONE extra read: `deploy_remaining_raw` (ms), `deploy_tick_raw`
+(battle tick the deploy began), `card_tick_raw` (tick a card play made it; -1 for objects made by objects), `active_ms_raw`
+(ms active; counts the stagger delay down in behaviour 11); plus DeployTime / DeployTimerDelay / DeployTimeAffectedByCharacterSpeed
+per definition. Measured on 3 live matches with the pinned probe (V11 PASS each): creation tick inside the frame gap 400/403 =
+99.3% (3 misses = frames whose state ran one tick ahead of the label); behaviour 4 <=> countdown > 0 on 80,473/80,473 rows; -50
+per tick 3,486/3,491; read cost +1 to +11 us median per frame, 0 read errors. Harness rule (validate_p3.creation_tick): deploy stamp
++ 1, else card tick + 1, else first sighting - active_ms / 50 (Witch skeletons, no timer: 32/32), else keep the gap window.
+Parity facts surfaced (b, untested in the SIM): Hero IW / its cube / IceCube / Goblin Drill / some staggered bodies take their first
+countdown step one tick later than card troops; spawned children carry spawner-given deploy times (Barbarian 1000, Brawler 500,
+Voodoo Hog 200, Drill goblins 500, Goblin Barrel goblins 1100-1150 = the barrel's); Evo Mega Knight is absent from the body list
+~4 ticks after its stamp.
+- Validator V11 + 10-scenario self-test (test_validate_p3.py is a script: `python test_validate_p3.py` -> VALIDATE_P3_SYNTHETIC_OK);
+  parity suite 91 pass. Probe pinned in the private re_phase3/ (rollback copy kept); nothing tracked carries offsets / hashes.
+- LIVE: restart between matches started 11:10 via restart_live.py (WMI-detached; STOP -> wait for the match -> run_live.sh,
+  same LIVE_OPTIONS incl. --capture-p3, same CKPT_OVERRIDE u250). New captures carry the four fields from the next match on.
+- Next: fights.py must USE the fields (place each new body on its creation tick; drop the gap from the ceiling draw for timed
+  bodies) -> re-score once enough new captures exist.
+
 ## 2026-10-17 10:54 EDT -- owner decisions: 16-run factorial after the tower-troop arms; step d waits for RAW parity; 4th pod
 
 - Owner 10-17: "run the factorial batch after the tower troop arms finish, at 16 runs. step d needs to wait for the raw score ...

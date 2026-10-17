@@ -60,6 +60,12 @@ class F:
         self.proj = {p["generation_key"]: (addr.get(p["source"]), addr.get(p["target"])) for p in j.get("projectiles", [])}
         self.fx_sides = {e["side"] for e in j.get("effects", [])}
         self.defs = j["phase3"]["defs"]
+        # phase 3b (READER_PHASE3B.md): remaining deploy ms per body; absent in older captures -> V11 SKIP
+        self.dep = {b["generation"]: b["deploy_remaining_raw"] for b in j["phase3"]["bodies"] if "deploy_remaining_raw" in b}
+        self.beh = {e["category"]: e.get("behavior_state_raw") for e in j["entities"]}
+        self.stick = {b["generation"]: b["deploy_tick_raw"] for b in j["phase3"]["bodies"] if "deploy_tick_raw" in b}
+        self.ctick = {b["generation"]: b["card_tick_raw"] for b in j["phase3"]["bodies"] if "card_tick_raw" in b}
+        self.act = {b["generation"]: b["active_ms_raw"] for b in j["phase3"]["bodies"] if "active_ms_raw" in b}
 
 
 def load(path):
@@ -229,6 +235,170 @@ def video_clock(blog):
 
 def verdict(ok, enough=True):
     return ("PASS" if ok else "FAIL") if enough else "SKIP"
+
+
+# Phase 3b (READER_PHASE3B.md). Frame-tick convention (measured 10-17 live smoke): a body created while the battle tick
+# reads X is first visible in the frame labelled X + 1, so its creation frame tick is deploy_tick_raw + 1 while it is
+# still deploying (card_tick_raw + 1 for a card-made object without a deploy; first - active_ms_raw / 50 for a
+# never-deploying child, whose active time is 0 on its creation frame). The countdown alone gives the same tick for
+# card-played troops only: they take their first -50 step on the creation tick (credit 1), while the Hero Ice Wizard,
+# its cube and other late-created bodies take it one tick later (credit 0).
+COUNTDOWN_CREDIT = 1
+
+
+def countdown_creation(first_tick, remaining, deploy_time, credit=COUNTDOWN_CREDIT):
+    """Creation frame tick from the countdown alone (pre-tick-field captures): (DeployTime - remaining) / 50 steps ran
+    by the frame. None when the countdown does not read back to a DeployTime start (no timer, other start, off grid)."""
+    if not deploy_time or not remaining or remaining > deploy_time or (deploy_time - remaining) % BASE_STEP:
+        return None
+    return first_tick - (deploy_time - remaining) // BASE_STEP + credit
+
+
+def creation_tick(first_tick, remaining, deploy_tick, card_tick, active=None, behaviour=None):
+    """Creation frame tick of a body at its FIRST sighting (frame first_tick) -> (tick, source) or (None, reason).
+    Still deploying: its deploy stamp; else a card-made object's card tick (diggers, the drill dig, a staggered recruit);
+    else a never-deploying child's active time (0 on its creation frame, +50 a tick); a body in its stagger (11) or
+    without any of these: None."""
+    if remaining is None:
+        return None, "null"
+    if remaining > 0 and deploy_tick and deploy_tick > 0:
+        return deploy_tick + 1, "deploy_tick"
+    if card_tick is not None and card_tick >= 0:
+        return card_tick + 1, "card_tick"
+    if behaviour == 11:
+        return None, "stagger"
+    if remaining == 0 and active is not None and active >= 0 and active % BASE_STEP == 0:
+        return first_tick - active // BASE_STEP, "active_ms"
+    return None, "no_tick"
+
+
+def deploy_lines(frames, defs, def_of, name):
+    """V11 (phase 3b): (a) every new body's creation tick inside its first-sighting gap (prev frame, first], from the
+    tick fields (or the countdown alone in a capture without them); (b) a card-made body's countdown started at
+    DeployTime on that tick, never later (a longer start carried by a spell, e.g. Goblin Barrel goblins, is listed
+    apart; a too-early tick already fails (a)); (c) -50 a tick while deploying (definitions not speed-scaled), zero
+    reached inside the gap; (d) behaviour
+    4 <=> countdown > 0; (e) the deploy stamp is constant for a body's life and changes only when a new deploy
+    starts (entry into behaviour 4), inside that gap."""
+    if not any(f.dep for f in frames):
+        return ["V11 SKIP no deploy_remaining_raw in this capture (pre-3b probe)"]
+    ticks = any(f.stick for f in frames)
+    dt_of = {g: defs[d].get("DeployTime") for g, d in def_of.items() if d in defs}
+    scaled = {g for g, d in def_of.items() if d in defs and defs[d].get("DeployTimeAffectedByCharacterSpeed")}
+    c, per, src = collections.Counter(), collections.defaultdict(collections.Counter), collections.Counter()
+    starts, bad_rows, credit = collections.defaultdict(collections.Counter), collections.Counter(), collections.Counter()
+    kids, longer = collections.defaultdict(collections.Counter), collections.defaultdict(collections.Counter)
+    kids_act = collections.Counter()
+    seen, prev = set(), None
+    for f in frames:
+        for g, r in f.dep.items():
+            c["rows"] += 1
+            if r is None:
+                c["null_rows"] += 1
+                continue
+            b = f.beh.get(g)
+            if b is not None:
+                c["state_rows"] += 1
+                if (b == 4) == (r > 0):
+                    c["state_ok"] += 1
+                else:
+                    bad_rows[name.get(g), b, r > 0] += 1
+            if g in seen or prev is None:
+                continue
+            seen.add(g)
+            n, d = name.get(g), dt_of.get(g)
+            starts[n][r] += 1
+            act = f.act.get(g)
+            if ticks:
+                ct, how = creation_tick(f.tick, r, f.stick.get(g), f.ctick.get(g), act, f.beh.get(g))
+            else:
+                ct = countdown_creation(f.tick, r, d)
+                how = "countdown" if ct is not None else ("no_timer" if r == 0 else "other_start")
+            src[how] += 1
+            if how == "stagger":
+                kids_act["stagger", n, act] += 1              # behaviour 11: stagger ms left, not an age
+            elif how == "active_ms":                          # (f) the alternative (+1 tick) shown beside it
+                for e in (0, 1):
+                    kids_act["e", e, "n"] += 1
+                    kids_act["e", e, "in"] += prev.tick < ct + e <= f.tick
+                kids_act["first_active", n, act] += 1
+            if ct is None:
+                per[n][how] += 1
+                continue
+            c["timed"] += 1
+            inside = prev.tick < ct <= f.tick
+            c["in_gap"] += inside
+            per[n]["in_gap" if inside else "out_of_gap"] += 1
+            if r > 0 and d and ticks:              # (b) the countdown read back to that creation tick
+                ctk = f.ctick.get(g)
+                if ctk is not None and ctk >= 0:   # card-made: started at DeployTime, or longer (spell-carried)
+                    k = (d - r) / BASE_STEP - (f.tick - ct)   # steps beyond the ticks since creation
+                    if k < 0:                      # a start above DeployTime: the carrier's (Goblin Barrel goblins)
+                        longer[n][r + BASE_STEP * (f.tick - ct + 1)] += 1
+                        continue
+                    c["cd_n"] += 1                 # k > 1 = the stamp is later than the countdown allows
+                    credit[n, k] += 1
+                    c["cd_ok"] += k in (0, 1)
+                else:                              # spawned child: its start, assuming the first step on the creation tick
+                    kids[n][r + BASE_STEP * (f.tick - ct + 1)] += 1
+        seen.update(g for g in f.dep if prev is None)
+        prev = f
+    for f0, f1, dt in intervals(frames):
+        for g, r1 in f1.dep.items():
+            r0 = f0.dep.get(g)
+            s0, s1 = f0.stick.get(g), f1.stick.get(g)
+            if ticks and s0 is not None and s1 is not None:
+                c["stamp_pairs"] += 1
+                if s0 != s1:                        # (e) re-stamped in (f0, f1]: only a new deploy, inside the gap
+                    c["chg_n"] += 1
+                    c["chg_ok"] += f1.beh.get(g) == 4 and f0.tick < s1 + 1 <= f1.tick
+            if r0 is None or r1 is None or r0 <= 0 or g in scaled:
+                continue
+            if r1 > 0:
+                c["step_n"] += 1
+                c["step_ok"] += r0 - r1 == BASE_STEP * dt
+            else:                      # deploy ended in (f0, f1]: the countdown would reach 0 at f0 + r0 / 50
+                c["end_n"] += 1
+                c["end_ok"] += f0.tick < f0.tick + -(-r0 // BASE_STEP) <= f1.tick
+    rate = c["in_gap"] / c["timed"] if c["timed"] else 0
+    st_rate = c["state_ok"] / c["state_rows"] if c["state_rows"] else 0
+    step_rate = c["step_ok"] / c["step_n"] if c["step_n"] else 1
+    cd_rate = c["cd_ok"] / c["cd_n"] if c["cd_n"] else 1
+    ok = (rate >= 0.95 and cd_rate >= 0.95 and step_rate >= 0.99 and c["end_ok"] == c["end_n"] and st_rate >= 0.99
+          and c["chg_ok"] == c["chg_n"])
+    how = ("deploy_tick_raw + 1 (deploying) / card_tick_raw + 1 / first - active_ms_raw / 50" if ticks
+           else f"countdown only: first - (DeployTime - remaining) / 50 + {COUNTDOWN_CREDIT}")
+    out = [f"V11 {verdict(ok, c['timed'] >= 20)} creation tick [{how}] inside (prev frame, first] {c['in_gap']}/"
+           f"{c['timed']} = {rate:.3f} (need >= 0.95, >= 20 bodies; sources {dict(src)}); card-made countdown = "
+           f"DeployTime started on it (step credit 0/1, not later) {c['cd_ok']}/{c['cd_n']} (need >= 0.95; longer "
+           f"carrier starts apart: {sum(sum(v.values()) for v in longer.values())}); -50/tick while "
+           f"deploying {c['step_ok']}/{c['step_n']}; "
+           f"zero reached inside the gap {c['end_ok']}/{c['end_n']}; behaviour 4 <=> remaining > 0 {c['state_ok']}/"
+           f"{c['state_rows']} ({st_rate:.4f}); deploy stamp changes {c['chg_n']} in {c['stamp_pairs']} sample pairs, all "
+           f"a new deploy inside the gap: {c['chg_ok']}/{c['chg_n']}; null rows {c['null_rows']}/{c['rows']}"]
+    out.append("   V11 per name (counts; first-sighting remaining values): " + "; ".join(
+        f"{n}: {dict(p)} {dict(starts[n].most_common(4))}" for n, p in sorted(per.items(), key=lambda x: -sum(x[1].values()))))
+    if credit:
+        lag = sorted({n for (n, k) in credit if k == 0})
+        out.append(f"   V11 countdown step credit on the creation tick (1 = first -50 on it, 0 = one tick later): "
+                   f"{sorted(credit.items(), key=lambda x: (str(x[0][0]), x[0][1]))}; credit-0 names {lag}")
+    if kids or longer:
+        out.append("   V11 deploy starts other than DeployTime, start ms (first step on the creation tick assumed): spawned "
+                   "children (card_tick -1) " + "; ".join(f"{n}: {dict(k.most_common(4))}" for n, k in sorted(kids.items()))
+                   + " | card-made, longer than DeployTime " + "; ".join(f"{n}: {dict(k.most_common(4))}"
+                                                                     for n, k in sorted(longer.items())))
+    if any(f.act for f in frames):
+        e_rates = {e: (kids_act["e", e, "in"], kids_act["e", e, "n"]) for e in (0, 1)}
+        first_act = collections.defaultdict(collections.Counter)
+        for (kind, n, v), k in kids_act.items():
+            if kind in ("first_active", "stagger"):
+                first_act[kind, n][v] += k
+        out.append(f"   V11 never-deploying children (no stamp, card_tick -1): creation = first - active_ms_raw / 50 + e "
+                   f"inside the gap: e=0 (used) {e_rates[0][0]}/{e_rates[0][1]}, e=1 {e_rates[1][0]}/{e_rates[1][1]}; first-sight "
+                   "active / stagger ms per name " + "; ".join(f"{k[1]} {k[0]}: {dict(v.most_common(4))}"
+                                                            for k, v in sorted(first_act.items(), key=lambda x: x[0][1])))
+    out.append(f"   V11 state/countdown disagreements (name, behaviour, remaining>0): {bad_rows.most_common(8)}")
+    return out
 
 
 def run(frames, n_active, blog=None, tables=TABLES, sim_path=SIM_CARDS):
@@ -566,6 +736,8 @@ def run(frames, n_active, blog=None, tables=TABLES, sim_path=SIM_CARDS):
                    f"{c['interrupted']}, confounded {c['confounded']}, reentry {c['reentry_load_running']}, resumed after a freeze {c['resume_after_freeze']})"
                    for n, c in sorted(first.items()) if c["n"] or c["interrupted"]))
     out.append(f"   V10 rows (first 10): {rows10[:10]}")
+
+    out += deploy_lines(frames, defs, def_of, name)
 
     out.append("-- per attacker: fixed hit phase (events, support), HitSpeed/LoadTime")
     for n, ((ph, sup), k) in sorted(phase.items(), key=lambda x: -x[1][1]):

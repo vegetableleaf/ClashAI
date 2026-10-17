@@ -139,6 +139,56 @@ def battle(hit_shift=0, over=None, xbow=None, slow=False):
     return frames
 
 
+BASE = 50
+
+
+def deploy_battle(stamp_shift=0, step=50, restamp=False):
+    """Phase 3b toy (laws measured live 10-17): a body made while the battle tick reads X is first visible in frame X+1;
+    it stamps deploy_tick = X (kept for life) and, if card-made, card_tick = X (else -1). Card troops take their first -50 on the
+    creation tick (credit 1), IW-style late bodies one tick later (credit 0); children start at 500; at 0 the behaviour
+    leaves 4. stamp_shift moves every deploy stamp; restamp re-stamps every Knight mid-life with no new deploy (a
+    stamp that follows the behaviour, which the live bodies never do); step is the countdown step."""
+    D = {d["name"]: d for d in defs()}
+    for d in D.values():
+        d.update(DeployTime=1000, DeployTimerDelay=0, DeployTimeAffectedByCharacterSpeed=0)
+    bodies = [(5000000 + i, "PrincessTower", None, None, None) for i in range(2)]
+    for i in range(24):                                  # (gen, name, created frame tick, start ms, credit, card-made)
+        bodies.append((5000100 + i, "Knight", 10 + 7 * i, 1000, (1, True)))
+    for i in range(4):
+        bodies.append((5000200 + i, "Giant", 13 + 31 * i, 1000, (0, True)))
+        bodies.append((5000300 + i, "Skeleton", 15 + 29 * i, 500, (1, False)))
+        bodies.append((5000400 + i, "Goblin", 20 + 23 * i, 0, (1, False)))
+    frames, sample = [], 0
+    for t in range(0, 220):
+        if t % 2 or (t % 18 == 0 and t):
+            continue
+        sample += 1
+        ents, rows = [], []
+        for g, n, c, start, how in bodies:
+            if c is not None and t < c:
+                continue
+            if c is None:
+                r, beh, st_, ct, act = 0, 0, 0, -1, 0
+            else:
+                credit, card = how
+                ran = max(0, t - c + credit)
+                r = max(0, start - step * ran) if start else 0
+                end = c - credit + -(-start // step) if start else None    # frame tick on which it reaches 0
+                beh = 4 if r > 0 else 1
+                st_ = (c - 1 + stamp_shift if not (restamp and n == "Knight" and r == 0) else end - 1) if start else 0
+                ct = c - 1 if card else -1
+                act = BASE * max(0, t - (end if start else c))      # e = 0: 0 on the creation / deploy-end frame
+            ents.append({"address": "0x%x" % (0x700000000000 + g * 16), "category": g, "side": 0, "hp": 500,
+                         "x": 9000, "y": 9000, "behavior_state_raw": beh})
+            rows.append({"generation": g, "definition_id": D[n]["definition_id"], "deploy_remaining_raw": r,
+                         "deploy_tick_raw": st_, "card_tick_raw": ct, "active_ms_raw": act, "attack": None, "null_reason": "no_component"})
+        frames.append({"game_tick": t, "battle_active": True, "read_us": 450, "entities": ents, "projectiles": [],
+                       "effects": [], "phase2": {"units": [{"generation": e["category"], "name": next(
+                           b[1] for b in bodies if b[0] == e["category"]), "side": 0, "buffs": []} for e in ents]},
+                       "phase3": {"valid": True, "bodies": rows, "defs": list(D.values()) if sample == 1 else []}})
+    return frames
+
+
 def verdicts(frames, **kw):
     with tempfile.TemporaryDirectory() as d:
         p = os.path.join(d, "frames.jsonl")
@@ -182,7 +232,26 @@ def main():
     # 1190 -> 1225 passes phase 0 (the live hit, remainder 25); 1225 -> 1260 passes phase 50 only
     assert vp.candidates(1190, 35, 1, 1200) == {0} and vp.candidates(1225, 35, 1, 1200) == {50}, "crossing model"
     assert vp.candidates(1150, 50, 1, 1200) == {0} and vp.candidates(1100, 50, 2, 1200) == {1150, 0}
-    print("VALIDATE_P3_SYNTHETIC_OK: 6 scenarios;", v["V3"][:60])
+    # phase 3b: a capture without the deploy fields skips V11; the measured laws pass; a stamp one tick late (outside
+    # the gap for every body first seen on its creation frame) or a -40 step fails
+    assert v["V11"].split()[1] == "SKIP", v["V11"]
+    dv, lines = verdicts(deploy_battle())
+    assert dv["V11"].split()[1] == "PASS", "\n".join(lines)
+    assert re.search(r"inside \(prev frame, first\] (\d+)/\1 = 1\.000", dv["V11"]), dv["V11"]
+    assert "creation = first - active_ms_raw / 50 + e inside the gap: e=0 (used) 4/4, e=1 2/4" in "\n".join(lines), "\n".join(lines)
+    assert "'active_ms': 4" in dv["V11"] and "credit-0 names ['Giant']" in "\n".join(lines), "\n".join(lines)
+    late, lines = verdicts(deploy_battle(stamp_shift=1))
+    assert late["V11"].split()[1] == "FAIL", late["V11"]
+    moved, lines = verdicts(deploy_battle(restamp=True))
+    assert moved["V11"].split()[1] == "FAIL" and "all a new deploy inside the gap: 0/24" in moved["V11"], moved["V11"]
+    slow, lines = verdicts(deploy_battle(step=40))
+    assert slow["V11"].split()[1] == "FAIL" and "-50/tick while deploying 0/" in slow["V11"], slow["V11"]
+    assert vp.countdown_creation(101, 950, 1000) == 101 and vp.countdown_creation(101, 900, 1000) == 100
+    assert vp.countdown_creation(101, 0, 1000) is None and vp.countdown_creation(101, 1200, 1000) is None
+    assert vp.creation_tick(101, 950, 99, -1) == (100, "deploy_tick") and vp.creation_tick(101, 0, 0, 77) == (78, "card_tick")
+    assert vp.creation_tick(101, 0, 0, -1, 100, 1) == (99, "active_ms") and vp.creation_tick(101, 0, 0, -1, 100, 11) == (None, "stagger")
+    assert vp.creation_tick(101, 0, 0, -1) == (None, "no_tick") and vp.creation_tick(101, None, 0, -1) == (None, "null")
+    print("VALIDATE_P3_SYNTHETIC_OK: 10 scenarios;", v["V3"][:60])
 
 
 if __name__ == "__main__":
