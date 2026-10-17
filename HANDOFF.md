@@ -1,3 +1,18 @@
+## 2026-10-17 01:20 EDT -- NEW BEST: fork clashbot36 (v0.1.36 + S2 + S1 + tower troops) = captured 0.945 [0.929, 0.961]
+
+- Port worker: branch clashbot36 (worktree C:/Users/benpe/rsfork36; bundle pod_backup_weekend/fork35/clashbot36_6323b7f.bundle, also
+  holds branch v036ctrl = 04ba4e7): 07a6420 S2 port (0.1.36 added a projectile 'pancake' field for the Chef law; both fields kept in
+  all 11 literals; the Chef pancake projectile gets fired_under None), c4af443 S1 port (rocket literal pancake false), 6d596f6 tower
+  troops (clean), 6323b7f docs counts re-run on 0.1.36 (583 -> 584 entries). cargo --profile gate 1926 passed / 0 failed / 3 ignored;
+  Python 1385 passed / 58 skipped / 1 xfail / 0 failed (pod B /workspace/vtest36). CONTROL: v036ctrl build = PyPI 0.1.36 fight for
+  fight (0 of 1596 records differ). Builds on pod B: /workspace/rsfork_f36 (6323b7f), rsfork_f36ctrl.
+- Captured strict, I10 harness (repo 69a529f), K=8, pod B: PyPI 0.1.36 0.938 [0.919, 0.955] -> + S1 S2 0.943 -> + tower troops
+  **0.945 [0.929, 0.961]** (raw 0.904). Per card: own IW hero 0.991 MEETS, own Log 0.988 MEETS, X-Bow 0.963, Knight evo 0.935,
+  Knight 0.931, Tornado (n 20) ~0.93, **Skeletons 0.917 [0.859, 0.968]**, Tesla evo 0.895, Tesla 0.885 [0.762, 0.978].
+  PyPI -> final fork: 10 fixed / 4 broken (S1 S2 8 / 2 as on 0.1.35; tower troops 2 / 2: own Knight evo 170249@2107 and opp Minion
+  Horde 221839@2284 new, uninvestigated). opp Goblins hero / Bats normalised fell only because their ceilings rose (n < 30).
+- Parity base going forward: fork clashbot36. The Tornado crown / Earthquake-on-Tesla patches (worker on clashbot35) must be ported to it.
+
 ## 2026-10-17 01:06 EDT -- auto-promote plumbing: live-pool evals QUEUED for the 4 promotable candidates
 
 - Queued (each waits for its chain's marker, then runs live_eval_pod.sh D3 on 0.1.35 into /workspace/results/LIVEEVAL/<NAME>_{741200,742000};
