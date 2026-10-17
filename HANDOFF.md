@@ -1,3 +1,14 @@
+## 2026-10-17 ~00:40 EDT -- parity I4: missing second-summon children cloned (H2'): captured 0.919 -> 0.924
+
+- knight worker H2' (diag_night/knight/h2b/): a child its parent's setup spawn does not make (Rascal Girls from a mid-fight
+  Rascals boy, Spear Goblins after their Goblin Giant died) is cloned from a probe play's entity row at the level whose hp table
+  matches live max_hp (live point / hp / side, deploy finished, no target, fresh sequence ids) and added to `setup` (pairing,
+  phase-3 seeding and in-flight shots see it). Captured strict vs I3: **0.919 [0.898, 0.937] -> 0.924 [0.904, 0.941]**,
+  4 fixed / 0 broken; own IW hero 0.969 -> 0.991, Log 0.889 -> 0.914, Knight 0.913 -> 0.927; other cards identical; 14 fights
+  got clones, 0 unprobed / not set; NO_HERO refusals 28 both arms (none strict). 171357@4572 leaves strict (sim_game_over:
+  the Rascals now take our princess in the SIM; whether live ended there too is unchecked (b)).
+- Repo fights.py = worker's fights_h2b.py except the raised goal constants; 91 tests pass, no undefined names.
+
 ## 2026-10-17 ~00:15 EDT -- parity harness I3 landed: captured 0.877 -> 0.919 (seed fix + Hero Goblins + snap + in-flight shots)
 
 Integration on the captured strict cohort (27 matches, royalesim 0.1.35, K=8; each step vs the previous, pod B

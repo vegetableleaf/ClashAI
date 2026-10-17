@@ -1,0 +1,133 @@
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -562,6 +562,47 @@
+                 self._form[key] = (ents['ents']['card'][n0], hero[0] if hero else None)
+         return self._form[key]
+ 
++    def child_entity(self, parent, form, max_hp):
++        """(entity columns, its 4 buff slots) of the `max_hp` second-summon unit a real play of `parent` in `form`
++        creates, at the level whose unit_hitpoints role row has that hp; None if no level / no such unit. Probed once in
++        a scratch battle (resets the battle: the caller restores its state by load_edited)."""
++        key = ('child', parent, form, max_hp)
++        if key in self._form:
++            return self._form[key]
++        from scratchpad.gauntlet.L74.parity.mechanics import load_edited
++        out, b, K = None, self.b, 18
++        lvl = None
++        for lv in range(16, 0, -1):
++            try:
++                rows = b.unit_hitpoints(self.ids[parent], lv)
++            except (ValueError, KeyError):
++                continue
++            if any(role == 'second_summon' and hp == max_hp for role, _, hp in rows[1:]):
++                lvl = lv; break
++        if lvl is not None:
++            try:
++                b.reset(1, [[self.ids['Knight']], [self.ids[parent]]], 0, 200, None, None, [], forms=[[0], [form]],
++                        levels=[[11], [lvl]], tower_levels=[11, 11])
++                sv = json.loads(b.save()); after = json.loads(json.dumps(sv))
++                for ev in after['players'][1]['evo']:
++                    ev['plays'] = ev['cycles'] if form == 1 else 0
++                after['players'][1]['mana'] = after['calib']['max_mana']*after['mana_unit']
++                if after != sv:
++                    load_edited(b, sv, after)
++                n0 = len(json.loads(b.save())['ents']['card'])
++                r = b.step([(1, 0, 9000*K, 22000*K)], 0)[0]
++                b.step([], 2)
++                E = json.loads(b.save())['ents']
++                i = next((i for i in range(n0, len(E['card'])) if E['alive'][i] and E['max_hp'][i] == max_hp
++                          and E['kind'][i] == 'Troop'), None) if self.sim.DEPLOY_REASONS[r[1]] == 'OK' else None
++                if i is not None:
++                    n = len(E['card'])
++                    out = ({k: v[i] for k, v in E.items() if isinstance(v, list) and len(v) == n}, E['buffs'][4*i:4*i+4])
++            except (ValueError, KeyError):
++                out = None
++        self._form[key] = out
++        return out
++
+     def child_proxy(self, parent, max_hp):
+         """(card, level) whose own unit is the unit `parent` makes with this max_hp (Witch's Skeleton -> Skeletons)."""
+         key = (parent, max_hp)
+@@ -813,6 +854,7 @@
+         return True
+ 
+     spawns, setup = [], []
++    by_parent = []                 # (live body, card, form): second-summon children left to the parent's setup spawn
+ 
+     def add(bd, name):
+         x, y = bd['x'], bd['y']
+@@ -838,7 +880,7 @@
+             # the same unit at the same max_hp, if one exists (Witch Skeleton -> Skeletons); else the fight is not clean.
+             proxy = eng.child_proxy(c['display_name'], bd['max_hp'])
+             if proxy and proxy[0] == '__parent__':
+-                flags['setup_child_by_parent'] += 1; continue
++                flags['setup_child_by_parent'] += 1; by_parent.append((bd, c['display_name'], form_of(bd['card_id'], c))); continue
+             if proxy is None or not need(bd['side'], proxy[0], 0, proxy[1]):
+                 flags['setup_child_skipped'] += 1; continue
+             flags['setup_child_as_card'] += 1
+@@ -942,6 +984,65 @@
+         except Exception:
+             flags['setup_form_not_set'] += len(formed)
+ 
++    # A second-summon child is left to its parent's setup spawn, which makes a Ram Rider's rider or a Goblin Giant's
++    # Spear Goblins; but a Rascals boy's spawn makes no girls, and Spear Goblins whose Giant died have no parent to come
++    # from (diag_night/knight: 171357, 2 girls at 417 hp missing, the Knight they killed live survived). Where the SIM
++    # holds fewer bodies of the card than setup spawns + such children, the children with no SIM body of their card
++    # within 1.5 tiles are cloned from the unit a real play of the parent creates (Engine.child_entity), at their live
++    # point, hp and side, active (deploy over), with no target; they join `setup` so pairing and the phase-3 seeds see
++    # them. Only the column values the clone must own are changed (identity, position, hp, timers, links).
++    if by_parent:
++        _, simb = eng.bodies(by_name)
++        have = Counter((s_['side'], s_['name']) for s_ in simb if not s_['tower'])
++        need_ = Counter((bd['side'], name) for bd, name, _ in by_parent)
++        for sp, bd in zip(spawns, setup):
++            need_[bd['side'], eng.cat[sp[1]]['name']] += 1
++        miss = []
++        for k_, n_ in need_.items():
++            lack = n_ - have[k_]
++            kids = [x for x in by_parent if (x[0]['side'], x[1]) == k_]
++            if lack <= 0 or not kids:
++                continue
++            far = [x for x in kids if not any(s_['side'] == k_[0] and s_.get('name') == k_[1] and
++                                               math.hypot(s_['x']-x[0]['x'], s_['y']-x[0]['y']) <= 1500 for s_ in simb)]
++            miss += (far + [x for x in kids if x not in far])[:lack]
++        if miss:
++            before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
++            tk = after['tick']
++            for bd, name, form in miss:
++                rec = eng.child_entity(name, form, bd['max_hp'])        # resets the battle; `after` restores it
++                if rec is None:
++                    flags['setup_child_skipped:by_parent_unprobed'] += 1; continue
++                cols, slots = rec
++                n = len(E['card'])
++                tm = ('Blue', 'Red')[bd['side']]
++                v = json.loads(json.dumps(cols))
++                v.update(team=tm, generation=0, alive=True, pos={'x': round(bd['x']*18), 'y': round(bd['y']*18)},
++                         hp=max(1, bd['hp']), team_seq=after['ents']['team_counter'][bd['side']], creation_seq=after['ents']['creation_counter'],
++                         spawn_tick=tk, last_plan_tick=tk, deploy_ms=0, stagger_ms=0, target=None, target_locked=False,
++                         attack_phase='Idle', attack_ms=0, attack_load_ms=0, fired_at=None, chase_dropped=None,
++                         chase_inside=None, chase_last_pos={'x': round(bd['x']*18), 'y': round(bd['y']*18)},
++                         attached_to=None, attach_offset={'x': 0, 'y': 0}, spawned_by=None, route=[], route_goal=None,
++                         seg_dir={'x': 0, 'y': 0}, move_frac={'x': 0, 'y': 0}, facing={'x': 0, 'y': 256 if bd['side'] == 0 else -256},
++                         spawn_lane=0 if bd['x'] < 9000 else 1)
++                missing_cols = [k for k, col in E.items() if isinstance(col, list) and len(col) == n and k not in v]
++                if missing_cols:
++                    flags['setup_child_skipped:by_parent_columns'] += 1; continue
++                for k, col in E.items():
++                    if isinstance(col, list) and len(col) == n:
++                        col.append(v[k])
++                E['buffs'].extend(json.loads(json.dumps(slots)))
++                E['team_counter'][bd['side']] += 1; E['creation_counter'] += 1
++                setup.append(dict(id=bd['id'], side=bd['side'], x=bd['x'], y=bd['y'], card_id=bd['card_id'], proxy=False,
++                                  worn=bd['hp'] < bd['max_hp']))
++                flags['setup_child_cloned'] += 1
++            try:
++                load_edited(b, before, after)
++            except Exception:
++                flags['setup_child_skipped:by_parent_not_set'] += 1
++                del setup[len(setup)-flags['setup_child_cloned']:]
++                flags['setup_child_cloned'] = 0
++
+     # Target state is not public, and a setup spawn starts with none, so it may pick a nearer troop where the live unit
+     # kept shooting a tower (a locked X-Bow). Lock a setup body onto an enemy tower when the body stood still over the
+     # last second, the tower is in reach (14 tiles centre to centre for a building, 7 for a troop) and that tower lost hp in that second.
