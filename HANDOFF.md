@@ -1,3 +1,21 @@
+## 2026-10-17 01:04 EDT -- I10: TOWER TROOPS set up (fork 39debe5 + harness): captured 0.937 -> 0.939; current best = I10 harness + fork 7abab5e
+
+- Fork clashbot35 (bundle pod_backup_weekend/fork35/clashbot35_7abab5e.bundle): 39debe5 Battle(..., tower_troops=[blue, red]) keyword
+  + set_tower_troops / tower_troops() (default None = engine unchanged; Python test test_tower_troops.py 5 tests); 7abab5e
+  docs/calibration.md counts refreshed (3b80b20 had broken test_ledger_census 2 tests). cargo 1888 / 1888; Python 1358 passed /
+  57 skipped / 1 xfail / 0 failed. Pod A build /workspace/rsfork_tt (cards.json = PyPI 0.1.35).
+- Harness (tesla worker H2_tower_troops.patch, landed): each side's tower troop detected EXACTLY from the princess-slot max hp
+  (every 10-16 princess-slot max hp matches one (tower, level): base hp Duchess 1270 / Cannoneer 1200 / Chef 1240 / Princess 1400
+  on the Princess ladder; the load-timer rule misses the Duchess, load 0 like the Princess); applied to all logs; guarded
+  (a SIM without set_tower_troops -> no detection, outputs unchanged: I10 on PyPI = I8 0.932 exactly). The old harness also had
+  those matches' tower LEVELS wrong (221202 15 -> 16, 221839 16 -> 15). Captured: Duchess 170249 L16, Cannoneer 221839 L15, Chef
+  221202 L16; our towers are Princess in all 27.
+- **Pod A CAP_I10F (I10 harness + rsfork_tt): 0.939 [0.920, 0.955]**, 2 fixed / 2 broken (own Skeletons 0.885 -> 0.894, opp
+  Assassin n 5 up; opp Minion Horde n 7 and own Knight evo raw down). The 11 failures in the Cannoneer / Chef matches are NOT
+  explained by the tower type. Unmodelled in the engine: Chef cooking, Duchess dagger charges; BattleConfig.king_level not
+  exposed (a king above its princesses, e.g. 231412).
+- Training note: SIM training opponents never field tower troops (6 of the 10-16 uncaptured logs + 3 captured have one).
+
 ## 2026-10-17 00:45 EDT -- 0.1.36 as released is net positive on the I7 harness (+0.006); per-law hook; spawn-tick pin raises raw but lowers normalised
 
 Skel worker round 2 (diag_night/skel/, pod B /workspace/results/I7_*), captured strict, vs I7 on 0.1.35 (0.930):

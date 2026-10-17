@@ -1,0 +1,186 @@
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -67,6 +67,10 @@
+ # Frame logs with the reader's per-body state / projectile / effect keys (--log-frames from 10-16, READER_VALIDATION_1016.md)
+ # are "ext" logs; everything below is used only for them, so older logs replay exactly as before.
+ SPELL_SOURCES = ('own_spell_tap+delay', 'spell_seen')
++# Crown tower troops a side may field in its princess slots (RoyaleSim card.rs TOWER_TROOPS; their `units` rows): the
++# Dagger Duchess, the Cannoneer, the Royal Chef. Their table LoadTime (Princess 0): Duchess 0, Cannoneer 1400, Chef 200.
++TOWER_TROOPS = ('DaggerDuchess', 'Cannoneer', 'ChefTower')
++TROOP_LOAD_MS = {'PrincessTower': 0, 'DaggerDuchess': 0, 'Cannoneer': 1400, 'ChefTower': 200}
+ P2_DIR = ROOT/'scratchpad/gauntlet/L70/reader/re_phase2/validation'    # phase-2 captures: run.json names its frame log
+ P3_DIR = ROOT/'scratchpad/gauntlet/L70/reader/re_phase3'                # phase-3 captures carry the same phase-2 buff rows
+ P3_LIVE = ROOT/'icebow/data/p3_captures'   # live --capture-p3 (5e4818f): same run.json + frames.jsonl layout, gitignored
+@@ -507,12 +511,41 @@
+         try:                       # card-table rows (hit speed, load time, range, hide timers) for the ceiling and attribution
+             d = json.loads(sim.EMBEDDED_CARDS_160402017_JSON)
+             self._stats = {c['name']: c for c in d['cards']} | {t['name']: t for t in d['towers']}
++            units = d.get('units') or {}
++            self._stats |= {n: units[n] for n in TOWER_TROOPS if isinstance(units, dict) and n in units}
+         except (AttributeError, KeyError, ValueError):
+             self._stats = {}
+ 
+     def stats(self, name):
+         return self._stats.get(name, {})
+ 
++    # The crown tower troop each side fields in the match being replayed (run_match sets it; None = the Princess).
++    troops = (None, None)
++
++    def tower_name(self, side, king):
++        """The card-table row of `side`'s king or princess-slot tower: KingTower, the side's tower troop, or PrincessTower."""
++        return 'KingTower' if king else (self.troops[side] or 'PrincessTower')
++
++    def troop_level(self, name, princess_max_hp):
++        """The tower level at which tower troop `name`'s princess-slot record has exactly this max_hp; None if none, or if
++        the SIM cannot field tower troops (Battle.set_tower_troops: the ClashBot RoyaleSim fork). Resets the battle."""
++        if not hasattr(self.b, 'set_tower_troops'):
++            return None
++        for lv in range(16, 0, -1):
++            key = ('troop', name, lv)
++            if key not in self._tower:
++                try:
++                    self.b.set_tower_troops(name, None)
++                    self.b.reset(1, [[0], [0]], 0, 200, None, None, [], tower_levels=[lv, lv])
++                    self._tower[key] = json.loads(self.b.state_json())['players'][0]['tower_max_hp'][1]
++                except ValueError:
++                    self._tower[key] = None
++                finally:
++                    self.b.set_tower_troops(None, None)
++            if self._tower[key] == princess_max_hp:
++                return lv
++        return None
++
+     def effect_life(self, name, key='life_duration_ms'):
+         """Area-effect life (or buff time) of spell `name`, ms (card table); None without one."""
+         return ((self.stats(name).get('spell') or {}).get('area_effect_object') or {}).get(key)
+@@ -759,9 +792,15 @@
+             b, K, out = self.b, 18, None
+             try:
+                 if name in ('PrincessTower', 'KingTower'):
+-                    b.reset(1, [[self.ids['Knight']], [self.ids['Knight']]], 0, 200, None, None,
+-                            [(1, self.ids['Golem'], 9000*K, (9500 if name == 'KingTower' else 11000)*K, 10**6)],
+-                            levels=[[11], [11]], tower_levels=[level, level])
++                    if form and hasattr(b, 'set_tower_troops'):      # a tower troop's own shot (Blue's princess slots)
++                        b.set_tower_troops(form, None)
++                    try:
++                        b.reset(1, [[self.ids['Knight']], [self.ids['Knight']]], 0, 200, None, None,
++                                [(1, self.ids['Golem'], 9000*K, (9500 if name == 'KingTower' else 11000)*K, 10**6)],
++                                levels=[[11], [11]], tower_levels=[level, level])
++                    finally:
++                        if form and hasattr(b, 'set_tower_troops'):
++                            b.set_tower_troops(None, None)
+                     if name == 'KingTower':
+                         sv = json.loads(b.save()); after = json.loads(json.dumps(sv)); after['king_active'] = [True, True]
+                         load_edited(b, sv, after)
+@@ -980,6 +1019,10 @@
+                 king_awake[bd['side']] = True
+     reset = lambda sp: b.reset(1, [[eng.ids[n] for n in decks[0]], [eng.ids[n] for n in decks[1]]], 0, t0,
+                                [10000, 10000], tower_hp, sp, forms=forms, levels=lv, tower_levels=tower_levels)
++    # A side's crown tower troop (run_match: Engine.troops) makes its princess slots at this reset; cleared after it, so
++    # the probes that reset the battle between fights keep the Princess.
++    if any(eng.troops):
++        b.set_tower_troops(*eng.troops); flags['setup_tower_troop'] += 1
+     try:
+         try:
+             reset(spawns)
+@@ -994,6 +1037,9 @@
+             reset(spawns)
+     except ValueError as e:
+         return dict(error='reset:'+str(e)[:200])
++    finally:
++        if any(eng.troops):
++            b.set_tower_troops(None, None)
+     from scratchpad.gauntlet.L74.parity.mechanics import load_edited
+     sv = json.loads(b.save()); pub = json.loads(b.state_json())
+     internal = {t: dict(zip(pub['players'][t]['deck'], sv['players'][t]['hand']+sv['players'][t]['queue'])) for t in (0, 1)}
+@@ -1209,7 +1255,7 @@
+             if i is None:
+                 continue
+             bd = live0[k]
+-            st = eng.stats(('KingTower' if k.endswith('K') else 'PrincessTower') if bd['tower'] else catalog[bd['card_id']]['display_name'])
++            st = eng.stats(eng.tower_name(bd['side'], k.endswith('K')) if bd['tower'] else catalog[bd['card_id']]['display_name'])
+             if not st.get('hit_speed_ms') or not E['damage'][i] or E['hide'][i] == 'Hidden':
+                 continue
+             atk[k] = dict(dmg=E['damage'][i], dmg_tower=E['damage'][i]*(st.get('crown_tower_damage_percent') or 100)//100,
+@@ -1336,8 +1382,7 @@
+ 
+     def card(bd):
+         if bd['tower']:
+-            k = 'KingTower' if bd['id'].endswith('K') else 'PrincessTower'
+-            return eng.stats(k), False, True
++            return eng.stats(eng.tower_name(bd['side'], bd['id'].endswith('K'))), False, True
+         c = catalog.get(bd['card_id'])
+         name = c and c['display_name']
+         if name not in eng.ids:
+@@ -1407,7 +1452,7 @@
+             side = ('Blue', 'Red').index(team)
+             if kind == 'KingTower' and not after['king_active'][side]:
+                 continue
+-            c = eng.stats(kind)
++            c = eng.stats(eng.tower_name(side, kind == 'KingTower'))
+             lid = next((k for k, s_, x, y in towers0 if s_ == side and math.hypot(x*18-pos['x'], y*18-pos['y']) < 18000), None)
+         elif kind in ('Troop', 'Building'):
+             c = eng.stats(names.get((team, pos['x'], pos['y'])))
+@@ -1815,7 +1860,7 @@
+         r = ref_of(bd) if bd and (bd['tower'] or not by.get(bd['id'], {}).get('proxy')) else None
+         if r is None or (bd['tower'] and bd['hp'] <= 0):
+             continue
+-        st = eng.stats(('KingTower' if bd['id'].endswith('K') else 'PrincessTower') if bd['tower'] else catalog[bd['card_id']]['display_name'])
++        st = eng.stats(eng.tower_name(bd['side'], bd['id'].endswith('K')) if bd['tower'] else catalog[bd['card_id']]['display_name'])
+         hs, lt = st.get('hit_speed_ms') or 0, max(0, st.get('load_time_ms') or 0)
+         if hs <= 0:
+             flags['setup_p3_no_hit_speed'] += 1; continue
+@@ -1889,7 +1934,9 @@
+         if not src or not tgt or (tgt['tower'] and tgt['hp'] <= 0):
+             continue
+         if src['tower']:
+-            key = ('KingTower' if src['id'].endswith('K') else 'PrincessTower', 0, tower_levels[src['side']])
++            king = src['id'].endswith('K')
++            key = ('KingTower' if king else 'PrincessTower', 0 if king else ((m.get('tower_troops') or (None, None))[src['side']] or 0),
++                   tower_levels[src['side']])
+         else:
+             c = catalog.get(src['card_id'])
+             if c is None:
+@@ -2052,6 +2099,34 @@
+         k = next((b['max_hp'] for b in t0b if b['tower'] and b['side'] == s_ and b['id'].endswith('K')), None)
+         p = next((b['max_hp'] for b in t0b if b['tower'] and b['side'] == s_ and not b['id'].endswith('K')), None)
+         tw.append(eng.tower_level(k, p) or levels[s_, '*'])
++    # CROWN TOWER TROOPS: a side whose princess-slot max_hp is no Princess level's but exactly one tower troop's at one
++    # level fields that troop at that level (diag_night/tesla tower_hp.py: each princess-slot max_hp on the 10-16 logs
++    # matches exactly one (tower, level); 3 of the 27 fully captured matches field a troop, each confirmed by its phase-3
++    # load timer: Cannoneer 1400, Chef 200, Duchess 0 as the Princess). Needs a SIM with Battle.set_tower_troops (the
++    # fork); a PyPI wheel keeps the Princess, as before.
++    troops = [None, None]
++    for s_ in (0, 1):
++        p = next((b['max_hp'] for b in t0b if b['tower'] and b['side'] == s_ and not b['id'].endswith('K')), None)
++        if p is None or any(v and v[1] == p for k_, v in eng._tower.items() if isinstance(k_, int)):
++            continue
++        for name in TOWER_TROOPS:
++            lv = eng.troop_level(name, p)
++            if lv:
++                troops[s_] = name; tw[s_] = lv
++                break
++    eng.troops = tuple(troops)
++    m['tower_troops'] = eng.troops
++    # the phase-3 load timers of the princess slots, as a check (a troop's LoadTime is its own)
++    loads = [0, 0]
++    gens = {}
++    for t, bodies in m['frames']:
++        for b in bodies:
++            if b['tower'] and not b['id'].endswith('K') and b.get('gen') is not None:
++                gens[b['gen']] = b['side']
++    for rows in (m.get('attacks') or {}).values():
++        for g, v in rows.items():
++            if g in gens:
++                loads[gens[g]] = max(loads[gens[g]], v[3] or 0)
+     top = defaultdict(int)
+     for r in tracks(m['frames']).values():
+         top[r['side'], r['card_id']] = max(top[r['side'], r['card_id']], r['max_hp'])
+@@ -2080,6 +2155,7 @@
+             if not eng.passable(bd['x'], bd['y']):
+                 blocked[c['display_name']] += 1
+     summary = dict(match=m['match'], side=m['side'], fights=len(results), errors=sum('error' in r for r in results),
++                   tower_troops=list(eng.troops), princess_slot_load_ms=loads if m.get('attacks') else None,
+                    ground_samples=dict(ground), ground_in_impassable=dict(blocked),
+                    spell_delay_ticks=delay, levels={f'{s}:{n}': v for (s, n), v in levels.items()}, tower_levels=tw,
+                    seconds=round(time.monotonic()-t_start, 1), stamp=eng.stamp, ceiling_k=ceiling)
