@@ -1,0 +1,36 @@
+diff --git a/scratchpad/gauntlet/L74/parity/fights.py b/scratchpad/gauntlet/L74/parity/diag_night/r3b/fights_arrows.py
+index d799eca..404274f 100644
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/diag_night/r3b/fights_arrows.py
+@@ -302,13 +302,20 @@ def seen_casts(m, catalog, life=None):
+             r['last'] = t
+     out = []
+     # Projectile spells: a throw then a roll (Log, Barbarian Barrel) or waves (Arrows) are one cast; the cast point is
+-    # the first shot's target point (READER_VALIDATION_1016: target point = cast point, source = King Tower).
++    # the first shot's target point (READER_VALIDATION_1016: target point = cast point, source = King Tower) -- for a
++    # spell of many shots first seen together (Arrows: 30 arrows on one frame, each aimed at its own point of the area)
++    # the centre of their target points (diag_night/r3b 000957@659: the first arrow's point lay 651 off that centre, the
++    # SIM's Arrows missed the Tesla the live ones hit three times).
+     for r in sorted(shots.values(), key=lambda r: r['first']):
+         c = next((c for c in out if c['side'] == r['side'] and c['cid'] == r['cid'] and r['first'] - c['seen'] <= 30), None)
+         if c:
++            if r['first'] == c['seen']:
++                c['aims'].append((r['x'], r['y']))
++                c['x'], c['y'] = (round(sum(a[0] for a in c['aims'])/len(c['aims'])), round(sum(a[1] for a in c['aims'])/len(c['aims'])))
+             c['end'] = max(c['end'], r['last']); continue
+         out.append(dict(gap(r['first']), kind='play', side=r['side'], cid=r['cid'], name=name(r['cid']), form=0,
+-                        x=r['x'], y=r['y'], n=0, source='spell_seen', spell_spawned=False, seen=r['first'], end=r['last']))
++                        x=r['x'], y=r['y'], n=0, source='spell_seen', spell_spawned=False, seen=r['first'], end=r['last'],
++                        aims=[(r['x'], r['y'])]))
+     for r in sorted(fxs.values(), key=lambda r: r['first']):
+         if kind(r['cid']) != 'spell' or any(c['side'] == r['side'] and c['cid'] == r['cid'] and c['seen'] <= r['first'] <= c['end'] + 20
+                                             for c in out):
+@@ -352,7 +359,7 @@ def seen_casts(m, catalog, life=None):
+     for t, s, n in sorted(casts):
+         out.append(dict(gap(t), kind='ability', side=s, name=n, source='cast_seen', seen=t, end=t))
+     for e in out:
+-        e.pop('cid', None)
++        e.pop('cid', None); e.pop('aims', None)
+     return sorted(out, key=lambda e: (e['tick'], e['side'], e['name']))
+ 
+ 

@@ -306,13 +306,20 @@ def seen_casts(m, catalog, life=None):
             r['last'] = t
     out = []
     # Projectile spells: a throw then a roll (Log, Barbarian Barrel) or waves (Arrows) are one cast; the cast point is
-    # the first shot's target point (READER_VALIDATION_1016: target point = cast point, source = King Tower).
+    # the first shot's target point (READER_VALIDATION_1016: target point = cast point, source = King Tower) -- for a
+    # spell of many shots first seen together (Arrows: 30 arrows on one frame, each aimed at its own point of the area)
+    # the centre of their target points (diag_night/r3b 000957@659: the first arrow's point lay 651 off that centre, the
+    # SIM's Arrows missed the Tesla the live ones hit three times).
     for r in sorted(shots.values(), key=lambda r: r['first']):
         c = next((c for c in out if c['side'] == r['side'] and c['cid'] == r['cid'] and r['first'] - c['seen'] <= 30), None)
         if c:
+            if r['first'] == c['seen']:
+                c['aims'].append((r['x'], r['y']))
+                c['x'], c['y'] = (round(sum(a[0] for a in c['aims'])/len(c['aims'])), round(sum(a[1] for a in c['aims'])/len(c['aims'])))
             c['end'] = max(c['end'], r['last']); continue
         out.append(dict(gap(r['first']), kind='play', side=r['side'], cid=r['cid'], name=name(r['cid']), form=0,
-                        x=r['x'], y=r['y'], n=0, source='spell_seen', spell_spawned=False, seen=r['first'], end=r['last']))
+                        x=r['x'], y=r['y'], n=0, source='spell_seen', spell_spawned=False, seen=r['first'], end=r['last'],
+                        aims=[(r['x'], r['y'])]))
     for r in sorted(fxs.values(), key=lambda r: r['first']):
         if kind(r['cid']) != 'spell' or any(c['side'] == r['side'] and c['cid'] == r['cid'] and c['seen'] <= r['first'] <= c['end'] + 20
                                             for c in out):
@@ -404,7 +411,7 @@ def seen_casts(m, catalog, life=None):
     for t, s, n in sorted(casts):
         out.append(dict(gap(t), kind='ability', side=s, name=n, source='cast_seen', seen=t, end=t))
     for e in out:
-        e.pop('cid', None)
+        e.pop('cid', None); e.pop('aims', None)
     return sorted(out, key=lambda e: (e['tick'], e['side'], e['name']))
 
 
@@ -1378,10 +1385,18 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
             elif k == 'target':
                 j = ent(E, v) if v else None
                 E['target'][i] = {'index': j, 'generation': E['generation'][j]} if j is not None else None
+            elif k.startswith('dash_') and k not in E:
+                flags['setup_dash_no_field'] += 1     # a runtime without the dash columns
             else:
                 E[k][i] = v
         if 'hide' in kv:
             seen_hide[ref[1]['id']] = kv['hide']
+    for ref, kv in edits:
+        i = ent(E, ref) if 'dash_state' in kv and 'dash_state' in E else None
+        if i is not None:
+            E['dash_target'][i] = E['target'][i]      # the stand's target = the t0 target (phase3_state, applied above)
+            if E['target'][i] is None:
+                E['dash_state'][i], E['dash_mark'][i] = 'None', 0; flags['setup_dash_stand_no_target'] += 1
     if after != before:
         try:
             load_edited(b, before, after)
@@ -2202,6 +2217,31 @@ def start_state(eng, m, fight, setup, start, events, catalog):
                 full = (ch.get('charge_range_raw') or 0)*10*CHARGE_PER_MT
                 out.append((('body', bd), dict(charge_progress=min(round(walked*CHARGE_PER_MT), max(0, full-1)))))
                 flags['setup_charge_progress'] += 1
+        # A dasher (card table 'dash': Bandit, Mega Knight) standing before its dash at t0: its stand clock runs from the
+        # first tick it did not step (T) to dash_mark = T + DashCooldown / 50 - 1 (state.rs `phase_path16402`), kept through
+        # a target switch (combat.DASH_STAND_RETARGET); a setup body starts with no stand and walks (diag_night/r3b
+        # 001415@341: the live Bandit stands 331-346 on our Skeletons, switches to the Tesla put down at 343 and dashes it on
+        # 347; the SIM Bandit walks to it). Stand = state 1, not moved since the previous frame, last step within the window;
+        # T from the last moving gap's step count. Its dash_target is the t0 target (phase3_state), set after the edits.
+        dash = c.get('dash')
+        if dash and st == 1 and len(hist[bd['id']]) >= 3:
+            h = hist[bd['id']]
+            j = next((j for j in range(len(h) - 1, 0, -1) if (h[j][1], h[j][2]) != (h[j-1][1], h[j-1][2])), None)
+            if j is not None and j < len(h) - 1 and all(q[3] == 1 for q in h[j-1:]):
+                gap = h[j][0] - h[j-1][0]
+                steps = min(gap, max(1, round(math.hypot(h[j][1]-h[j-1][1], h[j][2]-h[j-1][2]) / (c.get('speed') or 60))))
+                trig = h[j-1][0] + steps + 1
+                mark = trig + dash['cooldown_ms']//50 - 1
+                # fork combat.DASH_STAND_SLOW: a stand under an Ice Wizard slow at t0 (phase-2 rows) is taken slowed since
+                # its trigger: lag = (t0 - trigger) x (50 - 35) ms, due ceil(lag / 50) ticks after the mark.
+                # ponytail: the slow is read at t0 only (one buff row), not per elapsed tick.
+                b2 = (m.get('buffs') or {}).get(max((t for t in (m.get('buffs') or {}) if t0 - 6 <= t <= t0), default=None), {})
+                lag = (t0 - trig) * 15 if any(n in SLOW_BUFFS for n, _ in b2.get(a.get('gen'), ())) and t0 > trig else 0
+                if mark + -(-lag // 50) >= t0:
+                    out.append((('body', bd), dict(dash_state='Standing', dash_mark=mark, dash_blocked=False, dash_lag_ms=lag)))
+                    flags['setup_dash_stand' + ('_slowed' if lag else '')] += 1
+                else:
+                    flags['setup_dash_stand_overdue'] += 1
     # Spawner timers: a setup spawn starts its cycle fresh (Fire Spirit Hut 1950 ms, Tombstone at once), the live one is
     # mid-cycle. Its last wave is seen: children of the same side and card, smaller max_hp, first seen within 3.5 tiles
     # of it. The SIM record is set to what it holds that many ticks after the same child of a wave (spawn_table).

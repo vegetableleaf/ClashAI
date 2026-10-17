@@ -1,0 +1,17 @@
+diff --git a/scratchpad/gauntlet/L74/parity/fights.py b/scratchpad/gauntlet/L74/parity/diag_night/r3b/fights_unk.py
+index d799eca..e28b8ca 100644
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/diag_night/r3b/fights_unk.py
+@@ -1002,6 +1002,12 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
+                 heroes.add(c['display_name'])
+     for h in heroes:
+         flags['opp_ability_unobserved:'+h] += 1
++    # A body of a real card id the catalog does not map, played inside the window (core.py leaves the hero Electro Wizard
++    # 203000042 unmapped: the engine refuses its form, 'surge is not simulated'), is no event (deployments() drops it), so
++    # the SIM fights without it while the fight stayed strict (diag_night/r3b 004922@4012: its 350 zap on our Tesla, the
++    # live Tesla dies 4228, the SIM one lives). Card-less rows (-1: reader artefacts) are left alone.
++    for cid in {bd['card_id'] for _, bodies in frames for bd in bodies if not bd['tower'] and bd['card_id'] >= 0} - set(catalog):
++        flags[f'event_card_missing:unmapped_{cid}'] += 1
+     # Opponent spells are not in old frames; a decision-tick projectile sighting marks the fight (Zap, Lightning,
+     # Earthquake, Poison and Freeze are not projectiles and stay invisible). Ext logs replay every seen spell instead.
+     for t, s_, cid in ([] if m['ext'] else m['shots']):

@@ -1,3 +1,27 @@
+## 2026-10-17 05:50 EDT -- I14 harness (+ Arrows cast centroid, slowed dash-stand seed) + fork clashbot36 bc2bf9d (+ S-SPARK, S-DASH, S-AXE, S-MKSTAND)
+
+Round-3b worker (diag_night/r3b/NOTES_r3b.txt; pod B results /workspace/results/r3b_*, copies pod_backup_weekend/parity1016/R3B/):
+- **Fork clashbot36 head bc2bf9d** (bundle pod_backup_weekend/fork35/clashbot36_bc2bf9d.bundle; pod B build /workspace/rsfork_f36mk):
+  03fe37a hide.SPARK_HITS_HIDDEN (Firecracker shell sparks DO damage a hidden Tesla: 023527 t2715 867 -> 350, 012118 t3105 -427; darts /
+  arrows still 0 -- Princess arrows 37 / 39 no damage), 9b933a7 combat.DASH_STAND_RETARGET = client16402_kept_to_mark (a Bandit / Mega
+  Knight that switches target mid-stand still dashes on schedule; 0.1.36 MEASURED this arm at 84 / 86 but shipped `cancelled`,
+  calibration.json:1927 / state.rs:25980; fixture 001415@341), 69c7d9c combat.PINGPONG_SLOW (S-AXE), bc2bf9d combat.DASH_STAND_SLOW
+  (S-MKSTAND; both at the HitSpeed rate -- the data cannot separate HitSpeed from Speed under the IW slow). Each defaults to the live
+  arm, keeps the old arm for 15.535, Rust test + plant. cargo gate 355 binaries 1942 passed / 0 failed / 3 ignored; Python 1391 / 58 / 1.
+  No shared slow-timer path in the engine: slow-aware = attack clock, Goblin Machine cooldown, evo pulse clocks, Prince charge, + now axe
+  and dash stand; still unslowed (unmeasured) = load timer (flat by measurement), dash / jump flight, Golden Knight chain cooldown; Monk
+  not checked.
+- **Harness (landed, I14 = I13 + these):** H-ARROWS (an Arrows cast's point = centre of its 30 arrows' aims, not the first arrow's;
+  4 / 0) and the slowed dash-stand seed (diag_night/r3b/H_dash_stand_slowed_I12.patch: a dasher already standing at t0, under a slow, is
+  seeded -- S-MKSTAND alone was 0 / 2 because of exactly that, 0 / 0 with it). Worker's measure: I12 + bc2bf9d + H-ARROWS = **0.946
+  [0.932, 0.957]** on the 97-match cohort; own Tesla 0.932 [0.884, 0.972], Skeletons 0.916, Tesla evo 0.908, Knight evo 0.871.
+  NOT landed: H-UNK (fights with a hero Electro Wizard body leave strict -- an EXCLUSION, owner's call; the engine refuses that form,
+  "surge is not simulated"), H-DASH plain (adds nothing on top of S-DASH).
+- Specified, not built (b): H-RASCALS (the SIM places the boy 2 tiles ahead of the harness's play point: tap = boy - 2000; 32 strict
+  fights with a seen Rascals play, 7 imperfect), Evo Firecracker fireworks area on a hidden Tesla, Evo Knight reduction turning off
+  just before its first hit lands, Hero Balloon targeting a hidden evo Tesla (9 / ~900 live acquisitions).
+- FINAL refresh running (150 captured logs): pod B FIN_BEST (I14 + rsfork_f36mk), pod A FIN_BASE0 (795b155 + PyPI 0.1.35), FIN_I14P
+  (I14 + PyPI 0.1.35) -> /workspace/results/FIN_*; cohort files /workspace/caplogs3, attacks3.json, buffs3.json, run_cap3.sh.
 ## 2026-10-17 05:43 EDT -- CORRECTION: the exploiter-league "first significant gain" (s75 +4.48) was vs the WRONG twin; s74 (true twin) +1.56 n.s.
 
 - gx74_u65 (gae_exploit SEED 74) live pool: 533/960 -> vs u250 **-5.52 [-9.48, -1.56]**; vs live_f1u65 = F1 SEED 74 u65 (its true

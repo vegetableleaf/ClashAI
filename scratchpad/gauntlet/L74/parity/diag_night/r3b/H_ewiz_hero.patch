@@ -1,0 +1,14 @@
+diff --git a/scratchpad/gauntlet/L74/parity/core.py b/scratchpad/gauntlet/L74/parity/diag_night/r3b/core_ewiz.py
+index 0527f52..7770b7c 100644
+--- a/scratchpad/gauntlet/L74/parity/core.py
++++ b/scratchpad/gauntlet/L74/parity/diag_night/r3b/core_ewiz.py
+@@ -22,7 +22,8 @@ import phase_stats as ps
+ # the SIM plays the base card (10-14: unmapped 13000043 in the PARITY_ALL error ranking; mapped -> 7,181 fewer unmatched
+ # bodies on the same 1,367 matches). NOT 203000042 (Hero Electro Wizard): 0.1.33 refuses it ("ElectroWizardHero_Ability:
+ # effect surge is not simulated"), which failed 10 matches -- an upstream SIM gap, left unmapped.
+-EXT_FORMS = {13000043: ('AngryBarbarians', 'evolution_form_id'), 13000075: ('ElectroGiant', 'evolution_form_id')}
++EXT_FORMS = {13000043: ('AngryBarbarians', 'evolution_form_id'), 13000075: ('ElectroGiant', 'evolution_form_id'),
++             203000042: ('ElectroWizard', 'hero_form_id')}   # r3b: hero E-Wiz back (fork 0.1.36 has ElectroWizard_hero; dropped bodies kept fights strict)
+ 
+ 
+ def load_catalog():

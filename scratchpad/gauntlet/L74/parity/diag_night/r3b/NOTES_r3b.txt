@@ -1,0 +1,59 @@
+r3b (round 3, worker b) -- own Skeletons / Tesla / Knight evo / Tesla evo on the 102-log captured cohort (97 scored, 3190 strict)
+Base = CAP2_BEST (repo fights.py 8752093 + fork clashbot36 d80dcb5 = /workspace/rsfork_f36bug): 0.940 [0.927, 0.952].
+All runs: pod B, run_cap2.sh, K=8, 6 workers each, PYTHONHASHSEED=0. Results /workspace/results/r3b_*; copies pod_backup_weekend/parity1016/R3B/.
+
+Files here
+  fails_base_all.txt   every imperfect own strict fight in the base (fails.py from diag_night/r2)
+  args.txt             the 87 fights dossiered (a0 fail, or ceiling 1 with aK < 1) -> div.py dumps (session scratchpad, not repo)
+  cls.py / cls_base.txt  per fight: flags, events, first non-benign divergence, anchor-body first hp split with live/SIM attackers
+  track.py proj.py fx.py rowsof.py btl.py rec.py unk.py   single-fight probes (derived numbers only)
+  count_stand.py       strict fights with a standing dasher at t0 (7, 2 imperfect)
+  unk_fights.py        strict fights holding a body of an uncatalogued card id (hero E-Wiz 203000042: 21 fights / 9 fail; card -1 rows: 10 / 6)
+  hidden_shots.py      shots at a Tesla x its state at the shot's first row -> Firecracker shells at a hidden Tesla 3, 2 took hp
+  tesla_acq.py         live acquisitions of a Tesla by attacker card x Tesla state (hidden acquisitions 9 of ~900: no law)
+  evoknight_hits.py    Evo Knight hp drops by state / attack progress (fortify boundary in the first swing)
+  cards.py cmp_*.txt cards_*.txt   arm comparisons vs CAP2_BEST
+
+Patches (each vs repo HEAD fights.py, one change each)
+  H_dash_stand.patch        seed a dasher's running stand at t0 (dash_state Standing, dash_mark from the last step, dash_target = t0 target)
+  H_unmapped_card.patch     a body of a real card id the catalog does not map, in the window -> event_card_missing:unmapped_<id> (EXCLUSION)
+  H_spell_shot_centroid.patch  a projectile spell of many shots first seen together (Arrows) -> cast point = centre of their aims
+  H_ewiz_hero.patch (core.py)  map 203000042 to ElectroWizard hero: REJECTED, the engine refuses the form (surge not simulated), 20 errors in 134401
+
+Fork (C:/Users/benpe/rsfork36, branch clashbot36): hide.SPARK_HITS_HIDDEN = client16402_sparks_hit (tests/spark_hits_hidden.rs, plant spark_passes_hidden)
+
+Measured arms (vs CAP2_BEST 0.940 [0.927, 0.952]; cmp_*.txt / cards_*.txt; a0 flips fail->agree / agree->fail)
+  r3b_dash      H-DASH alone (fights_dash.py)                         0 / 0; own IW hero 015555@3344 aK 1.0 -> 0.5         NOT landed
+  r3b_keep      PARITY_OVERRIDES combat.DASH_STAND_RETARGET=client16402_kept_to_mark on rsfork_f36bug
+                                                                       5 / 1   overall 0.942 [0.929, 0.954]; Skel 0.908, Knight 0.949, Tesla 0.921, Tesla evo 0.875; opp MK 0.971
+  r3b_dashkeep  H-DASH + the override                                  same 5 / 1 + the IW aK drop (H-DASH adds nothing)
+  r3b_spark     rsfork_f36spark (hide.SPARK_HITS_HIDDEN)               2 / 0   overall 0.941; Tesla 0.921, Tesla evo 0.887; nothing else moved
+  r3b_arrows    fights_arrows.py (spell cast point = centre of a wave's aims) 4 / 0 overall 0.942 [0.928, 0.954]; Tesla 0.921, IW 0.951, opp Arrows 1.0
+  r3b_unk       fights_unk.py (EXCLUSION of in-window unmapped hero E-Wiz) 21 fights leave strict (9 fail, 12 agree); 0.942 [0.931, 0.953];
+                own Knight 0.944 -> 0.942 and 4 small opp cards drop (agreeing fights removed)
+  parity tests (test_fights/ceiling/ext) on the arrows / unk trees: 36 passed, 1 failed -- the same 1 fails on the base tree
+  (test_spell_levels_pick_the_level_whose_damage_is_seen: its stub Eng has no .stats; pre-existing)
+
+Fork commits (worktree C:/Users/benpe/rsfork36, branch clashbot36; each law defaults to the measured live arm, 15.535 keeps the old)
+  03fe37a hide.SPARK_HITS_HIDDEN = client16402_sparks_hit       (combat.rs straight_hits; tests/spark_hits_hidden.rs; plant spark_passes_hidden)
+  9b933a7 combat.DASH_STAND_RETARGET shipped = client16402_kept_to_mark  (calibration value only; 0.1.36's tests/dash_attack.rs; plant dash_stand_switch_cancels)
+  905c2a9 combat.PINGPONG_SLOW = client16402_thrower_hit_speed  (combat.rs step_straight + Straight::carry; tests/pingpong_slow.rs; plant pingpong_unslowed)   [lead's S-AXE]
+  bcc3ed8 combat.DASH_STAND_SLOW = client16402_hit_speed_rate   (state.rs phase_path16402 + entity dash_lag_ms; tests/dash_stand_slow.rs; plant dash_stand_unslowed) [lead's S-MKSTAND]
+  pod B builds: rsfork_f36spark (spark only), rsfork_f36r3b (9b933a7), rsfork_f36axe (905c2a9), rsfork_f36mk (bcc3ed8)
+  9b933a7 tests: cargo gate 353 binaries 1938 passed 0 failed 3 ignored; plants red; pytest 1389 passed 58 skipped 1 xfailed
+  r3b_f36r3b (9b933a7, I11) 0.943 [0.929, 0.955], 7 / 1; r3b_f36r3b_arrows (+ H-ARROWS) 0.944 [0.930, 0.956]
+  I12 base on 9b933a7 (r3b_i12base): 0.945 [0.931, 0.957] n 3184
+  I12-relative patch files: H_spell_shot_centroid_I12.patch, H_unmapped_card_I12.patch (git apply --check passes on repo HEAD 60bddf8)
+
+Lead's laws (after rewrite: 69c7d9c PINGPONG_SLOW, bc2bf9d DASH_STAND_SLOW; head bc2bf9d = pod B rsfork_f36mk tree;
+bundle C:/Users/benpe/pod_backup_weekend/fork35/clashbot36_bc2bf9d.bundle; earlier checkpoint clashbot36_9b933a7.bundle)
+  head tests (bcc3ed8 = bc2bf9d tree): cargo gate 355 binaries 1942 passed 0 failed 3 ignored; plants pingpong_unslowed / dash_stand_unslowed red;
+  pytest 1391 passed 58 skipped 1 xfailed
+  r3b_i12axe vs r3b_i12base: 1 / 0 (own IW 235203@1938, the fixture); IW 0.954 -> 0.957; OVERALL 0.945 -> 0.945 [0.932, 0.957]
+  r3b_i12mk vs r3b_i12axe:   0 / 2 (023527@1314 opp Hero MiniPekka, @1316 own Tesla: an MK standing slowed at t0, no seed)
+                             fixture 223054@1143: jump now t1259 / landing t1275 as live, still fails on the landing blow 590 live vs 711
+  r3b_i12mkdash (mk + fights_I12_dash_stand_slowed.py: seeded stand with slowed lag) vs r3b_i12axe: 0 / 0; IW 015555@3344 aK 1.0 -> 0.75
+  r3b_i12mkarrows (mk + H-ARROWS on I12) vs r3b_i12mk: 4 / 0; OVERALL 0.945 -> 0.946 [0.932, 0.957]; Tesla 0.932, IW 0.961
+  timers that read a slow: attack clock (HIT_SPEED_BUFF), GM rocket cooldown (fork S1), evo pulse clocks (hit_speed_scaled), Prince charge
+  (walk-step accumulator = Speed-scaled by construction); now also the pingpong throw and the dash stand. Not slowed (unmeasured): the load
+  timer (flat by measurement), the dash / jump flight (JumpSpeed, DashConstantTime), the Golden Knight chain cooldown (ticks), Monk not checked.
