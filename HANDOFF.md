@@ -1,3 +1,9 @@
+## 2026-10-17 06:24 EDT -- gae_exploit struggle-slice results, all 3 seeds: no gain on u250's struggle decks
+
+- STRUGGLE slice (struggle-pool decks, P ~ n_live, vs E4; candidate vs u250, 960 paired): s74 -0.62 [-4.69, +3.44], s75 -0.10
+  [-3.96, +3.75], s76 -1.67 [-5.42, +2.19] (a). The exploiter-league runs (65 updates from the r1-lineage init, plain IW) do not beat
+  u250 where u250 is weak. s76's live-pool eval (gx76_u65) now running on 23450 (self-stop armed on its DONE). The clean exploiter test
+  is gae_exu250 (u250 + exploiter league) on 18869 vs its control cues_gae_ctl_u250.
 ## 2026-10-17 06:04 EDT -- MORNING SUMMARY (night 10-16/17): parity 0.892 -> 0.941 on 145 captured matches; no auto-promotion; next steps
 
 **Final parity (145 fully captured live matches, 4,802 strict fights, K=8; pod B FIN_BEST, pod A FIN_BASE0 / FIN_I14P):**
