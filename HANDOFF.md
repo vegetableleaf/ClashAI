@@ -1,3 +1,18 @@
+## 2026-10-17 19:48 EDT -- FIN8 full cohort scored; H-POSTKILL landed (vs FIN8: full +10 / -3, upgraded +3 / -2, every break ceiling <= 0.75)
+
+- FIN8 (HEAD efc1e29 = all landed fixes through H-NEARPARENT; fork rsfork_f36ek; 337 captured logs, 0 crashes; pod 14009
+  /workspace/results/FIN8, FIN8_st, FIN8_stamped; laptop copy pod_backup_weekend/parity1016/FIN8_stamped):
+  full OVERALL raw 0.9084 (FIN7 0.9054); upgraded 104 matches raw 0.916 [0.903, 0.927], ceiling 0.99, normalised 0.925
+  [0.914, 0.936]. coverage.py (stamped, 104 >= 100 = valid): overall not met (goal lower CI 0.975); tier B 0.023 of plays meet
+  (need 0.9); tier C 0.021. Own upgraded: X-Bow 0.970 [0.948, 0.989], Log 0.954 [0.931, 0.974], IW hero 0.942, Knight 0.932,
+  Tesla 0.904, Skeletons 0.880 [0.838, 0.918], Knight evo 0.882, Tesla evo 0.918, Tornado 0.875 (n 43).
+  Misses by mass (n x (1-agree)), upgraded: Skeletons 34, Tesla 20, IW hero 18, Knight 15, Log 13 of ~284 = 35%.
+- H-POSTKILL v2 (diag_night/r5a/H_postkill.patch): seed the SIM's POST_KILL_RETARGET_WAIT for a unit whose target died 2+ ticks
+  before t0 and that has held its progress with no target since. Arm FIN8_pk vs FIN8: full 0.9084 -> 0.9090, 10 up / 3 down;
+  upgraded 0.9156 -> 0.9160, 3 up / 2 down (own Skeletons 0.880 -> 0.887). Breaks: 065951@1142 IW hero (ceiling 0.75),
+  114028@5298 IW hero (0.46), 143723@3285 opp Barbarians evo (0.46), 183552@2748 opp MegaKnight evo (0.46) = perturbation-
+  sensitive. 86 parity tests pass.
+- Not yet in a scored FIN: H-EVO-CHILD (a01fb19), H-POSTKILL (this). Pending: r5d H-CHILDFORM + fork S-TESLA-HOLD full checks.
 ## 2026-10-17 19:27 EDT -- H-EVO-CHILD landed (r5b; full cohort +8 / -0); r5b closed
 
 - H-EVO-CHILD (diag_night/r5b/H_evo_child_only.patch): live, a spawner's child carries its spawner's card id (an Evo Witch's

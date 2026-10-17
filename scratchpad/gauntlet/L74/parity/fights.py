@@ -2679,6 +2679,31 @@ def phase3_state(eng, m, fight, setup, start, catalog):
     def ref_of(bd):
         return ('tower', bd['side'], bd['x'], bd['y']) if bd['tower'] else (('body', by[bd['id']]) if bd['id'] in by else None)
     buffs = (m.get('buffs') or {}).get(max((t for t in m.get('buffs') or {} if t0 - 6 <= t <= t0), default=None), {})
+    fmap = {}
+
+    def post_kill_wait(g, tg, prog):
+        """H-POSTKILL (diag_night/r5a): the SIM retarget_wait at t0 of a unit serving combat.POST_KILL_RETARGET_WAIT, or 0.
+        Live: its target died on frame L (the first row without it; the victim is off the board there), it has held its
+        progress with no target since, and it takes its next target on L + 6. The engine counts the wait from the tick
+        after the loss (5 on L + 1, the decision on 0), so a unit set up at t0 in L + 1 .. L + 5 holds L + 6 - t0; a setup
+        unit with none scanned on t0 + 1 (112814@1051: a Prince and a Blowdart Goblin whose tower died on 1049 took our
+        Knight on t0 + 2, live they waited and took the nearer new Skeleton on 1055). Only a loss 2 or more ticks before
+        t0 is seeded: one tick with no target and the progress held is also what a unit exempt from the wait shows (it
+        takes its next target on L + 1; v1 seeded our X-Bow and a princess tower so, 113130@1660, 144040@2953,
+        141107@819)."""
+        if tg is not None or prog <= 0:
+            return 0
+        rows = [(t, att[t][g]) for t in sorted(att) if t0 - 7 <= t <= tb and g in att[t]]
+        had = [k for k, (_, a) in enumerate(rows) if a[0] is not None]
+        if not had or had[-1] == len(rows) - 1 or any(a[2] != prog for _, a in rows[had[-1]+1:]):
+            return 0
+        victim, L = rows[had[-1]][1][0], rows[had[-1]+1][0]
+        if not fmap:
+            fmap.update((t, bodies) for t, bodies in m['frames'] if t0 - 8 <= t <= t0)
+        if any(o.get('gen') == victim and o['hp'] > 0 for o in fmap.get(L, ())):
+            return 0          # the target is still on the board: a switch or a walk out of reach, no kill
+        rw = L + 6 - t0
+        return rw if 1 <= rw <= 4 else 0
     for g, (tg, _prev, prog, load, pre, seq) in att[tb].items():
         bd = gens.get(g)
         r = ref_of(bd) if bd and (bd['tower'] or not by.get(bd['id'], {}).get('proxy')) else None
@@ -2691,8 +2716,9 @@ def phase3_state(eng, m, fight, setup, start, catalog):
         names = [n for n, _ in buffs.get(g, ())]
         # ponytail: Freeze / Rage-type buffs other than these names step 50; add their multipliers if a capture shows one
         step = 0 if any('Freeze' in n or n in STUN_BUFFS for n in names) else 35 if any(n in SLOW_BUFFS for n in names) else 50
+        wait = post_kill_wait(g, tg, prog)
         if tb < t0:
-            if prog > 0:
+            if prog > 0 and not wait:         # the wait holds the progress (its load runs down: 112814 Prince 900, 800, 700)
                 load = lt if (prog + step)//hs > prog//hs else load if step == 0 else max(0, load - 50)
                 prog += step
             else:
@@ -2705,7 +2731,9 @@ def phase3_state(eng, m, fight, setup, start, catalog):
                 flags['setup_p3_target_unresolved'] += 1
         phase = 'Idle' if prog <= 0 else 'Cooldown' if prog % hs < step else 'Windup'
         out.append((r, dict(attack_ms=prog, attack_load_ms=load, attack_phase=phase, target=tref,
-                            target_locked=bool(st.get('projectile')) and phase == 'Windup' and tref is not None)))
+                            target_locked=bool(st.get('projectile')) and phase == 'Windup' and tref is not None,
+                            **({'retarget_wait': wait} if wait else {}))))
+        flags['setup_p3_postkill_wait'] += bool(wait)
         seen.add(bd['id']); flags['setup_p3_attack'] += 1
         flags['setup_p3_pre_unset'] += pre != 0
         flags['setup_p3_seq_unset'] += seq != 0
