@@ -1,3 +1,11 @@
+## 2026-10-17 08:40 EDT -- gae_exu250 (u250 + 65 updates WITH the exploiter league): +0.94 vs u250, -2.50 vs its no-exploiter control -> exploiter line closed
+
+- 18869 rlarm_gae_exu250 (copy pod_backup_weekend/pod1017_exu250, u0065 + grafted): live pool **595/960 (62.0%) -> vs u250 +0.94
+  [-2.92, +4.90]** (beatdown +0.8, rest +1.0) = not promotable; vs its control cues_gae_ctl_u250 (same u250 + 65 Hero-IW updates, no
+  exploiters) **-2.50 [-6.35, +1.25]** (beatdown -5.8 +- 6.1).
+- Exploiter-league training, 4 tests: same-seed twins s74 +1.56 / s75 +2.29 / s76 -1.25, on u250 -2.50 vs control, struggle slice
+  -0.62 / -0.10 / -1.67 -> (c) no measurable gain; the exploiter itself still finds real u250 weaknesses (+9.38 on the struggle slice),
+  so the weakness is real but this training does not fix it. Live stays u250. 18869 self-stops 2 h after EXU250_DONE.
 ## 2026-10-17 07:38 EDT -- SETTLED: exploiter-league training gives no measurable live-pool gain (same-seed twins, 3 seeds)
 
 - New baselines (live pool, 0.1.35, D3; copies pod_backup_weekend/rt35/RT35/): F1 s75 u65 539/960 (-4.90 vs u250), F1 s76 u65 557/960
