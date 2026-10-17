@@ -1,0 +1,83 @@
+diff --git a/scratchpad/gauntlet/L74/parity/fights.py b/scratchpad/gauntlet/L74/parity/diag_night/r3c/fights_bomb.py
+index 9b95da7..4473078 100644
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/diag_night/r3c/fights_bomb.py
+@@ -891,6 +891,28 @@ class Engine:
+             self._form[key] = out
+         return self._form[key]
+ 
++    def bomb_template(self, name, side, level):
++        """The death-bomb spell record (save()['spells'] row: SpellMotion::Flight with the bomb row's DeployTime as its delay,
++        state.rs `phase_reap`) a `side` `name` at `level` leaves when it dies, killed at 1 hp by the enemy princess tower;
++        None if its death leaves none. Resets the battle: call before a fight's setup (cached)."""
++        key = ('bomb', name, side, level)
++        if key not in self._form:
++            b, K, out = self.b, 18, None
++            y = 10000 if side == 1 else 22000
++            try:
++                b.reset(1, [[self.ids[name]], [self.ids[name]]], 0, 200, None, None, [(side, self.ids[name], 14500*K, y*K, 1)],
++                        levels=[[level], [level]], tower_levels=[11, 11])
++                for _ in range(150):
++                    b.step([], 1)
++                    sp = [s for s in json.loads(b.save())['spells'] if 'Flight' in s.get('motion', {})
++                          and s.get('team') == ('Blue', 'Red')[side]]
++                    if sp:
++                        out = sp[0]; break
++            except (ValueError, KeyError):
++                out = None
++            self._form[key] = out
++        return self._form[key]
++
+     def tower_level(self, king, princess):
+         for lv in range(16, 0, -1):
+             if lv not in self._tower:
+@@ -986,6 +1008,28 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
+     gm = gm_signals(m, fight, start, catalog) if m['ext'] else {}     # GM rocket template: probed before the reset too
+     gm_tpl = {s_: eng.shot_template('GoblinMachine', 0, levels.get((s_, 'GoblinMachine')) or levels.get((s_, '*')) or 15)
+               for s_, g in gm.items() if g['flying']}
++    # A death bomb on its fuse at t0 (a Giant Skeleton / Balloon / Bomb Tower whose death leaves one: card table death_spawn
++    # character *Bomb, no hitpoints, DeployTime 3000) is no body: the reader shows only its blast (the card's fx row, 60 ticks
++    # after the parent's first missing frame on 10 of 12 captured deaths), so a parent gone before t0 left nothing on the setup
++    # board (diag_night/r3c 004922@3452: a Giant Skeleton gone 3392, its bomb kills our full-hp Hero IW on 3453-3454 live,
++    # never in the SIM). SIM law (probed): the bomb spell is made on the death tick d with the row's DeployTime as delay,
++    # -50 a tick, lands on d + 61; the live death is put on the parent's first missing frame G (the fixture's IW alive on
++    # G + 60, gone on G + 62).
++    bombs = []
++    tr0 = tracks(m['frames'][max(0, fight['frame0'] - 40):fight['frame0'] + 1])
++    ticks0 = [t for t, _ in m['frames']]
++    for r in tr0.values():
++        c = catalog.get(r['card_id']) or {}
++        name = c.get('display_name')
++        if r['last'] >= t0 or name not in eng.ids or r['max_hp'] < .45*top[r['side'], r['card_id']]:
++            continue
++        if not str(((eng.stats(name).get('death_spawn') or {}).get('character') or '')).endswith('Bomb'):
++            continue
++        G = ticks0[bisect_left(ticks0, r['last']) + 1]
++        tpl = eng.bomb_template(name, r['side'], levels.get((r['side'], name)) or levels.get((r['side'], '*')) or 15)
++        fuse = tpl and tpl['motion']['Flight']['delay_ms']
++        if tpl and G <= t0 and t0 - G <= fuse//50:
++            bombs.append((r, tpl, fuse - 50*(t0 - G)))
+     decks, forms, lv = [[], []], [[], []], [[], []]
+ 
+     def need(side, name, form, level=None):
+@@ -1418,6 +1462,20 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
+             except Exception:
+                 flags['setup_snipe_not_set'] += 1
+ 
++    if bombs:
++        before = json.loads(b.save()); after = json.loads(json.dumps(before))
++        for r, tpl, left in bombs:
++            p = json.loads(json.dumps(tpl)); x, y = r['traj'][-1][1:]
++            p['team'] = ('Blue', 'Red')[r['side']]
++            # left <= 0: the fuse ran out on t0 (the SIM marks that tick with i32::MIN and lands the blast on the next)
++            p['motion']['Flight'].update(pos={'x': round(x*18), 'y': round(y*18)}, aim={'x': round(x*18), 'y': round(y*18)},
++                                         frac={'x': 0, 'y': 0}, delay_ms=left if left > 0 else -2**31)
++            after['spells'].append(p); flags['setup_death_bomb'] += 1
++        try:
++            load_edited(b, before, after)
++        except Exception:
++            flags['setup_death_bomb_not_set'] += 1
++
+     # Opt-in inference (PARITY_INFER=target,phase; item 8): the SIM's attack clock advances 50 ms a tick while engaged
+     # and a hit lands (melee) / launches (ranged) each time it reaches a multiple of HitSpeed (probed on 0.1.35), so a
+     # body that last hit e ms before t0 gets attack_ms = e mod HitSpeed and its reload left; its target = that victim.

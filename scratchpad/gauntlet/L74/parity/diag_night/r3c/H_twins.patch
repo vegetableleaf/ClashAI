@@ -1,0 +1,107 @@
+diff --git a/scratchpad/gauntlet/L74/parity/fights.py b/scratchpad/gauntlet/L74/parity/diag_night/r3c/fights_twins.py
+index 9b95da7..5497b4b 100644
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/diag_night/r3c/fights_twins.py
+@@ -1520,8 +1520,9 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
+         return res
+     until = min((e['tick'] for e in evs if e['kind'] == 'play' and e['side'] == anchor['side'] and e['name'] == anchor['name']
+                  and e['tick'] > anchor['tick']), default=t1+1)
++    twins = swarm_twins(m, fight) if spell else None
+     view = lambda rows_, k: card_view(rows_, k, initial_pairs(rows_, setup, catalog), anchor, until, spell, eng.reach, catalog,
+-                                      roster=roster)
++                                      roster=roster, twins=twins)
+     card = dict(live=view(rows, 1), sim=[view(rows, 2)])
+     if ceiling:
+         import random
+@@ -1716,7 +1717,7 @@ def rolled(roll, x, y, r, lo, hi):
+     return min(ya, yb) - roll['hd'] - r <= y <= max(ya, yb) + roll['hd'] + r
+ 
+ 
+-def card_view(rows, which, pairs, anchor, until, spell, reach, catalog, window=SPELL_WINDOW, roster=None):
++def card_view(rows, which, pairs, anchor, until, spell, reach, catalog, window=SPELL_WINDOW, roster=None, twins=None):
+     """What the anchor card did in one run: which = 1 the live frames, 2 the SIM's. Bodies are keyed by live id (a SIM
+     body by its paired live id, else its own 's' id).
+       own:   death tick (None = alive at the window end) of every body of the anchor's side and card that is not on the
+@@ -1775,6 +1776,8 @@ def card_view(rows, which, pairs, anchor, until, spell, reach, catalog, window=S
+                 enemy[k] = death(k)
+         tower = sum(spell['dt'] for v in drop.values() if spell['dt'] and v >= .8*spell['dt'])
+         out = dict(spell=True, hit=sorted(first), enemy=enemy, tower=round(tower), end=t_end)
++        if twins:
++            out['twins'] = {k: g for k, g in twins.items() if k in enemy or k in life}
+         if roll is not None:                # card_agree compares these bodies' deaths up to the earlier pass + 4
+             out.update(passed=first, died={k: death(k) for k, r in life.items() if r[2] != side and not k.startswith('s')})
+         return out
+@@ -1795,6 +1798,28 @@ def card_view(rows, which, pairs, anchor, until, spell, reach, catalog, window=S
+     return dict(spell=False, own=sorted((death(k) for k in own), key=lambda d: (d is None, d or 0)), tower=round(tower), end=t_end)
+ 
+ 
++def swarm_twins(m, fight, back=100):
++    """{live id: group} of indistinguishable swarm siblings around a fight: bodies of one side, card id and max_hp first seen
++    on the same frame near the same parent (a same-card body with more max_hp, born before, alive or gone at most 15 ticks
++    before, within 3 tiles: deployments()' near-parent rule), e.g. a Skeleton Balloon's 7 skeletons. Their spawn ring's
++    order is not public (diag_night/r3c 004922@1682: live and SIM Tornado kills on the same ticks, on swapped skeletons).
++    Only groups of 2+; a body first seen on the scan's first frame (birth unknown) is never grouped."""
++    fr = [f for f in m['frames'][max(0, fight['frame0'] - back):] if f[0] <= fight['t1']]
++    tr = tracks(fr)
++    at = lambda q, t: max((p for p in q['traj'] if p[0] <= t), default=q['traj'][0])
++    groups = defaultdict(list)
++    for r in tr.values():
++        if r['first'] == fr[0][0]:
++            continue
++        par = [(math.hypot(at(q, r['first'])[1] - r['x'], at(q, r['first'])[2] - r['y']), q['id']) for q in tr.values()
++               if q['side'] == r['side'] and q['card_id'] == r['card_id'] and q['max_hp'] > r['max_hp']
++               and q['first'] < r['first'] <= q['last'] + 15]
++        par = [p for p in par if p[0] < 3000]
++        if par:
++            groups[r['side'], r['card_id'], r['max_hp'], r['first'], min(par)[1]].append(r['id'])
++    return {k: n for n, ids in enumerate(v for v in groups.values() if len(v) > 1) for k in ids}
++
++
+ def card_agree(a, b):
+     """(agree, body mismatches, bodies, tower ok) of two card views of the same fight (live vs SIM, or SIM vs SIM)."""
+     if a['spell'] and 'passed' in a and 'passed' in b:
+@@ -1805,12 +1830,12 @@ def card_agree(a, b):
+                 return 'missing'
+             d = v['died'][k]
+             return d if d is not None and d <= h else None
+-        pairs = []
+-        for k in set(a['passed']) | set(b['passed']):
++        pairs, keys = [], sorted(set(a['passed']) | set(b['passed']))
++        for k in keys:
+             h = min(v['passed'][k] for v in (a, b) if k in v['passed']) + 4
+             pairs.append((fate(a, k, h), fate(b, k, h)))
+     elif a['spell']:
+-        keys = set(a['hit']) | set(b['hit'])
++        keys = sorted(set(a['hit']) | set(b['hit']))
+         pairs = [(a['enemy'].get(k, 'missing'), b['enemy'].get(k, 'missing')) for k in keys]
+     else:
+         n = max(len(a['own']), len(b['own']))
+@@ -1823,6 +1848,28 @@ def card_agree(a, b):
+     same = lambda x, y: 'missing' not in (x, y) and (((x is None) == (y is None) and (x is None or abs(x-y) <= DEATH_TOL))
+                                                      or (x is None and late(y)) or (y is None and late(x)))
+     mis = sum(not same(x, y) for x, y in pairs)
++    tw = {**(a.get('twins') or {}), **(b.get('twins') or {})} if a['spell'] else {}
++    if tw:
++        # Indistinguishable swarm siblings (swarm_twins: one parent, one frame, one card / max_hp; views since r3c) are
++        # compared as a multiset: the most of a group's live fates that can be matched one-to-one to its SIM fates by
++        # `same` (ascending, each to the earliest unused one it matches: a maximum matching for this tolerance) agree, the
++        # rest count as mismatches. A kill of a swapped sibling on the same tick agrees; a fate that differs still counts.
++        grp = defaultdict(lambda: ([], []))
++        mis = 0
++        for k, (x, y) in zip(keys, pairs):
++            if k in tw:
++                grp[tw[k]][0].append(x); grp[tw[k]][1].append(y)
++            else:
++                mis += not same(x, y)
++        order = lambda v: (v == 'missing', v is None, v if isinstance(v, int) else 0)
++        for xs, ys in grp.values():
++            free = sorted(ys, key=order)
++            for x in sorted(xs, key=order):
++                j = next((j for j, y in enumerate(free) if same(x, y)), None)
++                if j is None:
++                    mis += 1
++                else:
++                    free.pop(j)
+     tower_ok = abs(a['tower']-b['tower']) <= max(TOWER_FLOOR, TOWER_REL*max(a['tower'], b['tower']))
+     return mis <= int(SWARM_SLACK*len(pairs)) and tower_ok, mis, len(pairs), tower_ok
+ 

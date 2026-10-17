@@ -1,0 +1,368 @@
+diff --git a/scratchpad/gauntlet/L74/parity/fights.py b/scratchpad/gauntlet/L74/parity/diag_night/r3c/fights_comb.py
+index 9b95da7..7e51d4c 100644
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/diag_night/r3c/fights_comb.py
+@@ -88,6 +88,7 @@ STUN_BUFFS = ('Freeze', 'Tesla_EV1_WithDamage')   # phase-2 buff names the SIM h
+ # (999,999 sentinel) is not a time and stays unset (an ability inside 100 ticks of t0 is a strict blocker anyway).
+ SLOW_BUFFS = {'IceWizardSlowDown': 'base', 'IceWizardCold': 'base', 'IceWizardHero_SlowBuff': 'base',
+               'IceWizardHeroSlow': 'hero', 'IceWizardHeroCold': 'hero_cold'}
++SNARE_BUFF = 'BolaSnare'           # the Ram Rider's bola buff (phase-2 name = SIM table name; Engine.snare_id)
+ IW_SLOW_MS = 2500                  # an Ice Wizard shot's slow (both forms; re-armed on every hit)
+ SENTINEL_MS = 100000               # buff/effect remaining above this is "lives with its source", not a time
+ SNIPE_AMMO, SNIPE_FROM_MT = 3, 7500           # Evo Musketeer AmmoCount (card table); a live shot from beyond 7.5 tiles is a snipe
+@@ -386,6 +387,13 @@ def seen_casts(m, catalog, life=None):
+             # and broke an agreeing fight (234407@3846)
+             seen_throw = hero is not None and any(q[3] == bd['card_id'] and q[7] == hero['id']
+                                                   for tt in range(t - 40, t + 1) for q in m['proj'].get(tt, ()))
++            if bd.get('state') == 4 and hero is not None and not seen_throw:
++                # an unseen throw (234407 t3928): the trooper lands where and when it is first seen (diag_night/r3c); the
++                # landing blow's area row, if shown, made a 'cast' there, which this landing replaces
++                k = (bd['side'], c['display_name'])
++                casts[:] = [(tt, s, n) for tt, s, n in casts if not (s == k[0] and n == k[1] and t - 12 <= tt <= t + 5)]
++                out.append(dict(gap(t), kind='throw', side=bd['side'], name=c['display_name'], form=2, x=bd['x'], y=bd['y'],
++                                source='throw_landed', seen=t, end=t))
+             if bd.get('state') == 4 and seen_throw:
+                 k = (bd['side'], c['display_name'])
+                 tc = t - throw_lag(t, hero['id'], (bd['x'], bd['y']))
+@@ -805,6 +813,29 @@ class Engine:
+             self._form['slow'] = out
+         return self._form['slow']
+ 
++    def snare_id(self):
++        """SIM buff id of the Ram Rider's BolaSnare (SNARE_BUFF; ids are interned per table): the first buff a Ram Rider's
++        bola hangs on a Knight, probed once (diag_night/r3c: id 27, 2000 ms on the 160402017 table). None if the probe
++        sees none. Resets the battle: call before a fight's setup (cached)."""
++        if 'snare' not in self._form:
++            b, K, out = self.b, 18, None
++            try:
++                b.reset(1, [[self.ids['Knight']], [self.ids['RamRider']]], 0, 200, None, None,
++                        [(0, self.ids['Knight'], 9000*K, 14000*K, -1), (1, self.ids['RamRider'], 9000*K, 19000*K, -1)],
++                        levels=[[11], [11]], tower_levels=[11, 11])
++                E = json.loads(b.save())['ents']
++                kn = next(i for i in range(len(E['alive'])) if E['alive'][i] and E['team'][i] == 'Blue' and E['kind'][i] == 'Troop')
++                for _ in range(120):
++                    b.step([], 1)
++                    E = json.loads(b.save())['ents']; slots = len(E['buffs']) // len(E['alive'])
++                    out = next((s['id'] for s in E['buffs'][kn*slots:(kn+1)*slots] if s['id']), None)
++                    if out or not E['alive'][kn]:
++                        break
++            except (ValueError, KeyError, StopIteration):
++                out = None
++            self._form['snare'] = out
++        return self._form['snare']
++
+     def spawn_table(self, name, probe=True):
+         """{k: (spawn_ms, spawn_wave_left)} a spawner card's record holds on the tick its k-th child of a wave is born, in
+         the steady cycle (from the second wave on), probed on a lone setup spawn; None for a card that spawns no timed
+@@ -891,6 +922,58 @@ class Engine:
+             self._form[key] = out
+         return self._form[key]
+ 
++    def bomb_template(self, name, side, level):
++        """The death-bomb spell record (save()['spells'] row: SpellMotion::Flight with the bomb row's DeployTime as its delay,
++        state.rs `phase_reap`) a `side` `name` at `level` leaves when it dies, killed at 1 hp by the enemy princess tower;
++        None if its death leaves none. Resets the battle: call before a fight's setup (cached)."""
++        key = ('bomb', name, side, level)
++        if key not in self._form:
++            b, K, out = self.b, 18, None
++            y = 10000 if side == 1 else 22000
++            try:
++                b.reset(1, [[self.ids[name]], [self.ids[name]]], 0, 200, None, None, [(side, self.ids[name], 14500*K, y*K, 1)],
++                        levels=[[level], [level]], tower_levels=[11, 11])
++                for _ in range(150):
++                    b.step([], 1)
++                    sp = [s for s in json.loads(b.save())['spells'] if 'Flight' in s.get('motion', {})
++                          and s.get('team') == ('Blue', 'Red')[side]]
++                    if sp:
++                        out = sp[0]; break
++            except (ValueError, KeyError):
++                out = None
++            self._form[key] = out
++        return self._form[key]
++
++    def throw_template(self, name, level):
++        """A real in-flight throw record (save()['throws'] row, state.rs `ThrowRun`) of a Red hero `name` at `level` pressed in a
++        scratch battle (its card / level are what a landing reads); None if no throw starts. Resets the battle: call before a
++        fight's setup (cached)."""
++        key = ('throw', name, level)
++        if key not in self._form:
++            from scratchpad.gauntlet.L74.parity.mechanics import load_edited
++            b, K, out = self.b, 18, None
++            try:
++                b.reset(1, [[self.ids['Knight']], [self.ids[name]]], 0, 200, None, None, [(0, self.ids['Knight'], 9000*K, 20000*K, -1)],
++                        forms=[[0], [2]], levels=[[11], [level]], tower_levels=[11, 11])
++                def full():          # Red's elixir topped up (the play, then the press)
++                    sv = json.loads(b.save()); after = json.loads(json.dumps(sv))
++                    after['players'][1]['mana'] = after['calib']['max_mana']*after['mana_unit']
++                    load_edited(b, sv, after)
++                full()
++                b.step([(1, 0, 9000*K, 23000*K)], 0)
++                b.step([], 40)
++                full()
++                b.step([(1, self.sim.HAND_SIZE, 0, 0)], 0)
++                for _ in range(40):
++                    b.step([], 1)
++                    th = json.loads(b.save()).get('throws') or []
++                    if th:
++                        out = th[0]; break
++            except (ValueError, KeyError):
++                out = None
++            self._form[key] = out
++        return self._form[key]
++
+     def tower_level(self, king, princess):
+         for lv in range(16, 0, -1):
+             if lv not in self._tower:
+@@ -963,6 +1046,7 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
+                                    air=bool(sp.get('aoe_to_air'))), body=body)
+     if m['ext']:
+         eng.slow_ids()             # probed before this fight's reset (it resets the battle); cached
++        eng.snare_id()
+     roster = None
+     if anchor['kind'] == 'play' and anchor.get('form') == 2 and anchor['name'] in eng.ids:
+         # A hero's ability summon (Hero Ice Wizard: its IceWizardHero_IceCube, 352 hp at level 14, a 5 s body the live
+@@ -986,6 +1070,33 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
+     gm = gm_signals(m, fight, start, catalog) if m['ext'] else {}     # GM rocket template: probed before the reset too
+     gm_tpl = {s_: eng.shot_template('GoblinMachine', 0, levels.get((s_, 'GoblinMachine')) or levels.get((s_, '*')) or 15)
+               for s_, g in gm.items() if g['flying']}
++    # A death bomb on its fuse at t0 (a Giant Skeleton / Balloon / Bomb Tower whose death leaves one: card table death_spawn
++    # character *Bomb, no hitpoints, DeployTime 3000) is no body: the reader shows only its blast (the card's fx row, 60 ticks
++    # after the parent's first missing frame on 10 of 12 captured deaths), so a parent gone before t0 left nothing on the setup
++    # board (diag_night/r3c 004922@3452: a Giant Skeleton gone 3392, its bomb kills our full-hp Hero IW on 3453-3454 live,
++    # never in the SIM). SIM law (probed): the bomb spell is made on the death tick d with the row's DeployTime as delay,
++    # -50 a tick, lands on d + 61; the live death is put on the parent's first missing frame G (the fixture's IW alive on
++    # G + 60, gone on G + 62).
++    bombs = []
++    tr0 = tracks(m['frames'][max(0, fight['frame0'] - 40):fight['frame0'] + 1])
++    ticks0 = [t for t, _ in m['frames']]
++    for r in tr0.values():
++        c = catalog.get(r['card_id']) or {}
++        name = c.get('display_name')
++        if r['last'] >= t0 or name not in eng.ids or r['max_hp'] < .45*top[r['side'], r['card_id']]:
++            continue
++        if not str(((eng.stats(name).get('death_spawn') or {}).get('character') or '')).endswith('Bomb'):
++            continue
++        G = ticks0[bisect_left(ticks0, r['last']) + 1]
++        tpl = eng.bomb_template(name, r['side'], levels.get((r['side'], name)) or levels.get((r['side'], '*')) or 15)
++        fuse = tpl and tpl['motion']['Flight']['delay_ms']
++        if tpl and G <= t0 and t0 - G <= fuse//50:
++            bombs.append((r, tpl, fuse - 50*(t0 - G)))
++    throw_tpl = {}
++    for j in fight['events']:
++        e = events[j]
++        if e['kind'] == 'throw' and e['side'] not in throw_tpl:
++            throw_tpl[e['side']] = eng.throw_template(e['name'], levels.get((e['side'], e['name'])) or levels.get((e['side'], '*')) or 15)
+     decks, forms, lv = [[], []], [[], []], [[], []]
+ 
+     def need(side, name, form, level=None):
+@@ -1418,6 +1529,65 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
+             except Exception:
+                 flags['setup_snipe_not_set'] += 1
+ 
++    # An invisible-when-idle unit (the Royal Ghost: card table idle_invisibility; target.rs `invisible_at`) is visible from
++    # the tick after its last hit (state.rs: reveal_from = hit + 1) for its idle time + 5 ticks; a set-up one has
++    # reveal_from 0, "hidden from its first frame to its first hit", so no enemy could target a Ghost the live game showed
++    # revealed (diag_night/r3c). Its last live hit before t0 is read off its phase-3 progress rows (the count-up attack
++    # clock: a hit where progress crosses a multiple of HitSpeed, ATTACK_PHASE_1016; a row with no row of its own in the 6
++    # ticks before counts from 0). A Ghost the phase-2 rows show carrying its invisibility buff at t0 is hidden and left as set
++    # up (220623: the 'Invisibility' row is there exactly while it is hidden). ponytail: 50 ms a tick (an Ice Wizard slow
++    # runs the clock at 35: hit estimated early).
++    att = m.get('attacks') or {}
++    if att:
++        before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
++        live0 = {x['id']: x for x in start}
++        bnow = (m.get('buffs') or {}).get(max((t for t in m.get('buffs') or {} if t0 - 6 <= t <= t0), default=None), {})
++        for bd in (setup if 'reveal_from' in E else ()):
++            c = catalog.get(bd['card_id']) or {}
++            st = eng.stats(c.get('display_name'))
++            g, hs = (live0.get(bd['id']) or {}).get('gen'), st.get('hit_speed_ms') or 0
++            if bd.get('proxy') or not ((st.get('idle_invisibility') or {}).get('time_ms') or 0) > 0 or g is None or hs <= 0:
++                continue
++            i = ent(E, ('body', bd))
++            if i is None:
++                flags['setup_ghost_not_found'] += 1; continue
++            if any(n == st['idle_invisibility'].get('buff') for n, _ in bnow.get(g, ())):
++                flags['setup_ghost_hidden_seen'] += 1; continue
++            hit, prev = None, None
++            for t in sorted(t for t in att if t0 - 100 <= t <= t0):
++                row = att[t].get(g)
++                if row is None:
++                    continue
++                pb = row[2] or 0
++                pa = prev[1] if prev and t - prev[0] <= 6 and prev[1] <= pb else 0
++                if pb // hs > pa // hs:
++                    hit = t - (pb % hs)//50
++                prev = (t, pb)
++            if hit is not None:
++                E['reveal_from'][i] = hit + 1
++                flags['setup_ghost_revealed' if t0 < hit + 1 + st['idle_invisibility']['time_ms']//50 + 5 else 'setup_ghost_rehidden'] += 1
++            else:
++                flags['setup_ghost_hidden'] += 1
++        if after != before:
++            try:
++                load_edited(b, before, after)
++            except Exception:
++                flags['setup_ghost_not_set'] += 1
++
++    if bombs:
++        before = json.loads(b.save()); after = json.loads(json.dumps(before))
++        for r, tpl, left in bombs:
++            p = json.loads(json.dumps(tpl)); x, y = r['traj'][-1][1:]
++            p['team'] = ('Blue', 'Red')[r['side']]
++            # left <= 0: the fuse ran out on t0 (the SIM marks that tick with i32::MIN and lands the blast on the next)
++            p['motion']['Flight'].update(pos={'x': round(x*18), 'y': round(y*18)}, aim={'x': round(x*18), 'y': round(y*18)},
++                                         frac={'x': 0, 'y': 0}, delay_ms=left if left > 0 else -2**31)
++            after['spells'].append(p); flags['setup_death_bomb'] += 1
++        try:
++            load_edited(b, before, after)
++        except Exception:
++            flags['setup_death_bomb_not_set'] += 1
++
+     # Opt-in inference (PARITY_INFER=target,phase; item 8): the SIM's attack clock advances 50 ms a tick while engaged
+     # and a hit lands (melee) / launches (ranged) each time it reaches a multiple of HitSpeed (probed on 0.1.35), so a
+     # body that last hit e ms before t0 gets attack_ms = e mod HitSpeed and its reload left; its target = that victim.
+@@ -1466,6 +1636,16 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
+ 
+     def play(e):
+         before = json.loads(b.save()); after = json.loads(json.dumps(before))
++        if e['kind'] == 'throw':
++            # the unseen throw lands on the next throw pass: in flight, its aim reached (state.rs `throw_pass`)
++            tpl = throw_tpl.get(e['side'])
++            if tpl is None:
++                return 'NO_THROW_TEMPLATE'
++            p = json.loads(json.dumps(tpl)); pt = {'x': round(e['x']*18), 'y': round(e['y']*18)}
++            p.update(team=('Blue', 'Red')[e['side']], flying=True, pos=pt, aim=dict(pt), frac={'x': 0, 'y': 0}, target=None)
++            after['throws'] = (after.get('throws') or []) + [p]
++            load_edited(b, before, after)
++            return 'OK'
+         p = after['players'][e['side']]
+         if e['kind'] == 'play':
+             ic = internal[e['side']][eng.ids[e['name']]]
+@@ -1520,8 +1700,9 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
+         return res
+     until = min((e['tick'] for e in evs if e['kind'] == 'play' and e['side'] == anchor['side'] and e['name'] == anchor['name']
+                  and e['tick'] > anchor['tick']), default=t1+1)
++    twins = swarm_twins(m, fight) if spell else None
+     view = lambda rows_, k: card_view(rows_, k, initial_pairs(rows_, setup, catalog), anchor, until, spell, eng.reach, catalog,
+-                                      roster=roster)
++                                      roster=roster, twins=twins)
+     card = dict(live=view(rows, 1), sim=[view(rows, 2)])
+     if ceiling:
+         import random
+@@ -1716,7 +1897,7 @@ def rolled(roll, x, y, r, lo, hi):
+     return min(ya, yb) - roll['hd'] - r <= y <= max(ya, yb) + roll['hd'] + r
+ 
+ 
+-def card_view(rows, which, pairs, anchor, until, spell, reach, catalog, window=SPELL_WINDOW, roster=None):
++def card_view(rows, which, pairs, anchor, until, spell, reach, catalog, window=SPELL_WINDOW, roster=None, twins=None):
+     """What the anchor card did in one run: which = 1 the live frames, 2 the SIM's. Bodies are keyed by live id (a SIM
+     body by its paired live id, else its own 's' id).
+       own:   death tick (None = alive at the window end) of every body of the anchor's side and card that is not on the
+@@ -1775,6 +1956,8 @@ def card_view(rows, which, pairs, anchor, until, spell, reach, catalog, window=S
+                 enemy[k] = death(k)
+         tower = sum(spell['dt'] for v in drop.values() if spell['dt'] and v >= .8*spell['dt'])
+         out = dict(spell=True, hit=sorted(first), enemy=enemy, tower=round(tower), end=t_end)
++        if twins:
++            out['twins'] = {k: g for k, g in twins.items() if k in enemy or k in life}
+         if roll is not None:                # card_agree compares these bodies' deaths up to the earlier pass + 4
+             out.update(passed=first, died={k: death(k) for k, r in life.items() if r[2] != side and not k.startswith('s')})
+         return out
+@@ -1795,6 +1978,28 @@ def card_view(rows, which, pairs, anchor, until, spell, reach, catalog, window=S
+     return dict(spell=False, own=sorted((death(k) for k in own), key=lambda d: (d is None, d or 0)), tower=round(tower), end=t_end)
+ 
+ 
++def swarm_twins(m, fight, back=100):
++    """{live id: group} of indistinguishable swarm siblings around a fight: bodies of one side, card id and max_hp first seen
++    on the same frame near the same parent (a same-card body with more max_hp, born before, alive or gone at most 15 ticks
++    before, within 3 tiles: deployments()' near-parent rule), e.g. a Skeleton Balloon's 7 skeletons. Their spawn ring's
++    order is not public (diag_night/r3c 004922@1682: live and SIM Tornado kills on the same ticks, on swapped skeletons).
++    Only groups of 2+; a body first seen on the scan's first frame (birth unknown) is never grouped."""
++    fr = [f for f in m['frames'][max(0, fight['frame0'] - back):] if f[0] <= fight['t1']]
++    tr = tracks(fr)
++    at = lambda q, t: max((p for p in q['traj'] if p[0] <= t), default=q['traj'][0])
++    groups = defaultdict(list)
++    for r in tr.values():
++        if r['first'] == fr[0][0]:
++            continue
++        par = [(math.hypot(at(q, r['first'])[1] - r['x'], at(q, r['first'])[2] - r['y']), q['id']) for q in tr.values()
++               if q['side'] == r['side'] and q['card_id'] == r['card_id'] and q['max_hp'] > r['max_hp']
++               and q['first'] < r['first'] <= q['last'] + 15]
++        par = [p for p in par if p[0] < 3000]
++        if par:
++            groups[r['side'], r['card_id'], r['max_hp'], r['first'], min(par)[1]].append(r['id'])
++    return {k: n for n, ids in enumerate(v for v in groups.values() if len(v) > 1) for k in ids}
++
++
+ def card_agree(a, b):
+     """(agree, body mismatches, bodies, tower ok) of two card views of the same fight (live vs SIM, or SIM vs SIM)."""
+     if a['spell'] and 'passed' in a and 'passed' in b:
+@@ -1805,12 +2010,12 @@ def card_agree(a, b):
+                 return 'missing'
+             d = v['died'][k]
+             return d if d is not None and d <= h else None
+-        pairs = []
+-        for k in set(a['passed']) | set(b['passed']):
++        pairs, keys = [], sorted(set(a['passed']) | set(b['passed']))
++        for k in keys:
+             h = min(v['passed'][k] for v in (a, b) if k in v['passed']) + 4
+             pairs.append((fate(a, k, h), fate(b, k, h)))
+     elif a['spell']:
+-        keys = set(a['hit']) | set(b['hit'])
++        keys = sorted(set(a['hit']) | set(b['hit']))
+         pairs = [(a['enemy'].get(k, 'missing'), b['enemy'].get(k, 'missing')) for k in keys]
+     else:
+         n = max(len(a['own']), len(b['own']))
+@@ -1823,6 +2028,28 @@ def card_agree(a, b):
+     same = lambda x, y: 'missing' not in (x, y) and (((x is None) == (y is None) and (x is None or abs(x-y) <= DEATH_TOL))
+                                                      or (x is None and late(y)) or (y is None and late(x)))
+     mis = sum(not same(x, y) for x, y in pairs)
++    tw = {**(a.get('twins') or {}), **(b.get('twins') or {})} if a['spell'] else {}
++    if tw:
++        # Indistinguishable swarm siblings (swarm_twins: one parent, one frame, one card / max_hp; views since r3c) are
++        # compared as a multiset: the most of a group's live fates that can be matched one-to-one to its SIM fates by
++        # `same` (ascending, each to the earliest unused one it matches: a maximum matching for this tolerance) agree, the
++        # rest count as mismatches. A kill of a swapped sibling on the same tick agrees; a fate that differs still counts.
++        grp = defaultdict(lambda: ([], []))
++        mis = 0
++        for k, (x, y) in zip(keys, pairs):
++            if k in tw:
++                grp[tw[k]][0].append(x); grp[tw[k]][1].append(y)
++            else:
++                mis += not same(x, y)
++        order = lambda v: (v == 'missing', v is None, v if isinstance(v, int) else 0)
++        for xs, ys in grp.values():
++            free = sorted(ys, key=order)
++            for x in sorted(xs, key=order):
++                j = next((j for j, y in enumerate(free) if same(x, y)), None)
++                if j is None:
++                    mis += 1
++                else:
++                    free.pop(j)
+     tower_ok = abs(a['tower']-b['tower']) <= max(TOWER_FLOOR, TOWER_REL*max(a['tower'], b['tower']))
+     return mis <= int(SWARM_SLACK*len(pairs)) and tower_ok, mis, len(pairs), tower_ok
+ 
+@@ -2027,6 +2254,11 @@ def start_state(eng, m, fight, setup, start, events, catalog):
+                     out.append((r, dict(stun_ms=rem))); flags['setup_stun_buff'] += 1
+                 elif name in SLOW_BUFFS and eng.slow_ids().get(SLOW_BUFFS[name]):
+                     out.append((r, dict(buff=(eng.slow_ids()[SLOW_BUFFS[name]], rem)))); flags['setup_slow_buff'] += 1
++                elif name == SNARE_BUFF and eng.snare_id():
++                    # the Ram Rider's bola snare (-70 % speed, 2000 ms; the rider ranks its carriers last): a set-up target
++                    # had none, so it walked on at full speed (diag_night/r3c 001415@990: our Knight snared 1400 ms at t0
++                    # walked 17 mt a tick live; the set-up one was 0.5 tile ahead by t0 + 15 and took other targets)
++                    out.append((r, dict(buff=(eng.snare_id(), rem)))); flags['setup_snare_buff'] += 1
+                 else:
+                     flags['status_unset:'+name] += 1
+         return out, flags
+@@ -2200,7 +2432,11 @@ def pair_frame(pairs, live, simb, catalog):
+         for s_ in simb:
+             if s_['tower'] or s_['id'] in taken or s_['side'] != a['side'] or s_.get('name') != c['display_name']:
+                 continue
+-            if s_['form'] != form_of(a['card_id'], c) or not .6 <= s_['max_hp']/max(1, a['max_hp']) <= 1.67:
++            f = form_of(a['card_id'], c)
++            # a Hero Balloon's thrown Skeletrooper: the hero's card id live (form 2), no hero flag in the SIM (form 0); paired
++            # across forms on exactly the same max_hp (diag_night/r3c 234407@3888)
++            trooper = f == 2 and s_['form'] == 0 and c['display_name'] in HERO_THROWERS and s_['max_hp'] == a['max_hp']
++            if (s_['form'] != f and not trooper) or not .6 <= s_['max_hp']/max(1, a['max_hp']) <= 1.67:
+                 continue
+             d = math.hypot(a['x']-s_['x'], a['y']-s_['y'])
+             if d < 2500:

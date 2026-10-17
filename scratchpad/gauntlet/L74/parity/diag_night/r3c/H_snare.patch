@@ -1,0 +1,62 @@
+diff --git a/scratchpad/gauntlet/L74/parity/fights.py b/scratchpad/gauntlet/L74/parity/diag_night/r3c/fights_snare.py
+index 9b95da7..b3d903f 100644
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/diag_night/r3c/fights_snare.py
+@@ -88,6 +88,7 @@ STUN_BUFFS = ('Freeze', 'Tesla_EV1_WithDamage')   # phase-2 buff names the SIM h
+ # (999,999 sentinel) is not a time and stays unset (an ability inside 100 ticks of t0 is a strict blocker anyway).
+ SLOW_BUFFS = {'IceWizardSlowDown': 'base', 'IceWizardCold': 'base', 'IceWizardHero_SlowBuff': 'base',
+               'IceWizardHeroSlow': 'hero', 'IceWizardHeroCold': 'hero_cold'}
++SNARE_BUFF = 'BolaSnare'           # the Ram Rider's bola buff (phase-2 name = SIM table name; Engine.snare_id)
+ IW_SLOW_MS = 2500                  # an Ice Wizard shot's slow (both forms; re-armed on every hit)
+ SENTINEL_MS = 100000               # buff/effect remaining above this is "lives with its source", not a time
+ SNIPE_AMMO, SNIPE_FROM_MT = 3, 7500           # Evo Musketeer AmmoCount (card table); a live shot from beyond 7.5 tiles is a snipe
+@@ -805,6 +806,29 @@ class Engine:
+             self._form['slow'] = out
+         return self._form['slow']
+ 
++    def snare_id(self):
++        """SIM buff id of the Ram Rider's BolaSnare (SNARE_BUFF; ids are interned per table): the first buff a Ram Rider's
++        bola hangs on a Knight, probed once (diag_night/r3c: id 27, 2000 ms on the 160402017 table). None if the probe
++        sees none. Resets the battle: call before a fight's setup (cached)."""
++        if 'snare' not in self._form:
++            b, K, out = self.b, 18, None
++            try:
++                b.reset(1, [[self.ids['Knight']], [self.ids['RamRider']]], 0, 200, None, None,
++                        [(0, self.ids['Knight'], 9000*K, 14000*K, -1), (1, self.ids['RamRider'], 9000*K, 19000*K, -1)],
++                        levels=[[11], [11]], tower_levels=[11, 11])
++                E = json.loads(b.save())['ents']
++                kn = next(i for i in range(len(E['alive'])) if E['alive'][i] and E['team'][i] == 'Blue' and E['kind'][i] == 'Troop')
++                for _ in range(120):
++                    b.step([], 1)
++                    E = json.loads(b.save())['ents']; slots = len(E['buffs']) // len(E['alive'])
++                    out = next((s['id'] for s in E['buffs'][kn*slots:(kn+1)*slots] if s['id']), None)
++                    if out or not E['alive'][kn]:
++                        break
++            except (ValueError, KeyError, StopIteration):
++                out = None
++            self._form['snare'] = out
++        return self._form['snare']
++
+     def spawn_table(self, name, probe=True):
+         """{k: (spawn_ms, spawn_wave_left)} a spawner card's record holds on the tick its k-th child of a wave is born, in
+         the steady cycle (from the second wave on), probed on a lone setup spawn; None for a card that spawns no timed
+@@ -963,6 +987,7 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
+                                    air=bool(sp.get('aoe_to_air'))), body=body)
+     if m['ext']:
+         eng.slow_ids()             # probed before this fight's reset (it resets the battle); cached
++        eng.snare_id()
+     roster = None
+     if anchor['kind'] == 'play' and anchor.get('form') == 2 and anchor['name'] in eng.ids:
+         # A hero's ability summon (Hero Ice Wizard: its IceWizardHero_IceCube, 352 hp at level 14, a 5 s body the live
+@@ -2027,6 +2052,11 @@ def start_state(eng, m, fight, setup, start, events, catalog):
+                     out.append((r, dict(stun_ms=rem))); flags['setup_stun_buff'] += 1
+                 elif name in SLOW_BUFFS and eng.slow_ids().get(SLOW_BUFFS[name]):
+                     out.append((r, dict(buff=(eng.slow_ids()[SLOW_BUFFS[name]], rem)))); flags['setup_slow_buff'] += 1
++                elif name == SNARE_BUFF and eng.snare_id():
++                    # the Ram Rider's bola snare (-70 % speed, 2000 ms; the rider ranks its carriers last): a set-up target
++                    # had none, so it walked on at full speed (diag_night/r3c 001415@990: our Knight snared 1400 ms at t0
++                    # walked 17 mt a tick live; the set-up one was 0.5 tile ahead by t0 + 15 and took other targets)
++                    out.append((r, dict(buff=(eng.snare_id(), rem)))); flags['setup_snare_buff'] += 1
+                 else:
+                     flags['status_unset:'+name] += 1
+         return out, flags

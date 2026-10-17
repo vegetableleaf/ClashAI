@@ -1,0 +1,71 @@
+r3c parity notes (night 10-16/17): five setup / scoring gaps r3a found, one harness change each, vs the I12 base.
+Base = repo HEAD fights.py (60bddf8, md5 b4a26d35...) on fork rsfork_f36bug, captured cohort 2, K=8, strict; run on pod A
+as /workspace/results/r3c_base: OVERALL 0.942 [0.929, 0.954] (n 3184), identical to r3a_comb (deterministic).
+Arms: /workspace/results/r3c_{snare,ghost,bomb,twins,hbland} (laptop copies C:/Users/benpe/AppData/Local/Temp/claude/parity1016/r3c/).
+ghost / bomb / hbland re-run only the matches the patch can touch (aff_*.txt: a set-up Ghost / a GiantSkeleton, Balloon or
+BombTower body / a Hero Balloon body); every other match is the base's own result (subarm.sh; a fight depends on its own
+match only). Derived numbers only; no capture rows here.
+
+Scripts: arm.sh / subarm.sh / mktree.sh / smoke.sh (pod), mk_<arm>.py (HEAD fights.py -> fights_<arm>.py, UTF-8),
+H_<arm>.patch (diff vs HEAD), probes.py / probe_bomb*.py (SIM probes), live.py / bodyrows.py / bombfx.py (live rows),
+peek.py / scan.py / flagcount.py / affected.py (results), check_twins.py (H-TWINS self-check).
+
+SIM PROBES (fork rsfork_f36bug, measured)
+  BolaSnare: a Ram Rider's bola hangs SIM buff id 27 with 2000 ms on a Knight (slot keys id, ms, pulse_ms, ...).
+  Death bomb (GiantSkeleton, level 11): the bomb is a save()['spells'] row, motion Flight {pos = aim = death point,
+    delay_ms 3000}, card 149, damage 688, made on the death tick d (the first tick the parent is not alive); delay -50 a
+    tick, i32::MIN on d + 60, the blast lands on d + 61 (a Knight 1381 -> 693).
+  Ghost: a set-up Ghost has ents['reveal_from'] = 0 (target.rs invisible_at: 0 = hidden until its first hit).
+LIVE FACTS (captured logs, measured)
+  Death bombs: the reader shows no bomb body, only the card's fx row (life 0) after the parent's last sighting L: L + 62 on
+    10 of 12 Giant Skeleton deaths with one (004922 / 014644 / 223054 / 000957), L + 61 on 2 (= the first missing frame
+    G + 60 with the usual 2-tick gap). Fixture 004922@3452: GS last 3390, gone 3392, fx 3452, our IW 911/911 on 3452 and
+    gone on 3454 -> live blast on 3453-3454 = G + 61 (the SIM's d + 61 with d = G).
+  Ghost: the phase-2 rows carry 'Invisibility' (sentinel ms) exactly while the Ghost is hidden (220623 t1068-1140 hidden,
+    t1144-1226 visible after hits at ~1143 and 1180, hidden again t1228).
+  Hero Balloon unseen throw (234407 t3928): trooper 688 hp first seen deploying at (6066, 14750), 1.46 tiles from its
+    hero, no projectile row; it deploys 10 ticks (active t3938).
+
+ARMS (each one change vs r3c_base; strict, K=8; flips.py / flips_twins.py list every strict fight whose a0/aK/ceil moved)
+  H-SNARE  (mk_snare.py): phase-2 BolaSnare row at t0 -> SIM buff 27 with its remaining ms (Engine.snare_id probe).
+           4 strict fights seeded; 0 fixed / 0 broken; every score identical. 001415@990: the Knight's walk divergence
+           (t1005, 0.5 tile) and its target / death divergences are gone; the fight still fails on a later one (below).
+  H-GHOST  (mk_ghost.py): set-up Ghost reveal_from = last hit (phase-3 progress crossing a HitSpeed multiple) + 1, unless
+           the t0 buff row shows its Invisibility. 29 seeded (4 strict, all agreeing), 26 seen hidden; 0 fixed / 0 broken.
+           220623@930: our Knight + IW now target the Ghost on t934 as live (SIM had the Valkyrie); Valkyrie death 1150 -> 1160 = live.
+  H-BOMB   (mk_bomb.py): a GS / Balloon / Bomb Tower gone (first missing frame G) in the 60 ticks up to t0 -> its own bomb
+           spell (Engine.bomb_template) at its last point, delay 3000 - 50 (t0 - G) (i32::MIN at 0). 56 seeded (22 strict);
+           1 fixed: own Knight 022800@3751 a0 0 -> 1 (SIM Knight death None -> 3953, live 3955; aK 0 -> 0.625, ceil 1.0 ->
+           0.464); 0 broken. own Knight 0.944 -> 0.949 [0.918, 0.979]; OVERALL 0.942 -> 0.943 [0.930, 0.955].
+           004922@3452: our IW now dies 3453 with live; the fight still fails (X-Bow tower 1862 vs live 588, below).
+  H-TWINS  (mk_twins.py, scoring only): spell views carry swarm_twins groups (same side / card id / max_hp / first frame /
+           parent); card_agree matches a group's fates one-to-one (max matching under `same`). 137 strict spell fights carry
+           a group; exactly 1 changes: own Tornado 004922@1682 a0 0 -> 1 (aK 0 -> 1, ceil 1.0 unchanged). own Tornado 0.948
+           -> 0.964 [0.904, 1.004]; OVERALL 0.943 [0.930, 0.954]; no other strict fight's a0 / aK / ceil moved.
+  H-HBLAND (mk_hbland.py): an unseen Hero Balloon throw (trooper deploying, no projectile row from its hero in 40 ticks)
+           -> a 'throw' event at the trooper's first sighting that puts the SIM's own ThrowRun (Engine.throw_template) in
+           flight with its aim reached on the live point (the trooper, its landing blow and deploy are the engine's) + a
+           landing-row cast there removed + cross-form pairing (live form 2 / SIM form 0, same name, exactly equal max_hp,
+           Hero Balloon only: the landed SIM trooper on the live point did not pair). 1 unseen throw in the cohort.
+           Fixed own Tornado 234407@3888 a0 0 -> 1 (aK 0 -> 1); own Knight 234407@3798 still fails (SIM Knight now dies
+           4029 vs live 3967, was alive) and its ceiling drops 1.0 -> 0.571; 234407@3846 (the fight r3a's hb2 broke) still
+           agrees; no other fight moved. own Tornado 0.964; own Knight 0.944 -> 0.946 (from that ceiling drop, not a fix);
+           OVERALL 0.943 [0.930, 0.955].
+
+COMBINED (fights_comb.py = all five, mk_* applied in order snare, ghost, bomb, twins, hbland; H_comb_all5.patch; full run
+  r3c_comb, cmp_comb.txt): OVERALL 0.942 [0.929, 0.954] -> 0.944 [0.931, 0.955] (n 3184 both); own Tornado 0.948 ->
+  0.979 [0.929, 1.006]; own Knight 0.944 -> 0.952 [0.921, 0.981]; every other card (own and opp) identical. Exactly the
+  union of the per-arm changes (4 strict fights; no interaction, nothing broken): 004922@1682 Tornado, 234407@3888 Tornado,
+  022800@3751 Knight fixed; 234407@3798 Knight still failing with ceiling 1.0 -> 0.571.
+
+REMAINING (first divergence after the fix; measured from K=0 dossiers, smoke_<arm>.json)
+  001415@990 own IW hero (after H-SNARE): our Hero IW's ability (cast t1065; IceCube body t1069): live the Ram Rider's ram
+    and rider are held still (kind 14) at (14200, 22092) t1069 -> ~1173 and the rider fires no bola t1052 -> 1176; in the
+    SIM the rider keeps shooting our IW (hits t1071 / 1093 / 1159 / 1181) and the ram walks on (22697 by t1145) -> SIM IW
+    dies t1201, live alive at t1229. (b) the SIM's hero-IW hold does not catch / hold the Ram Rider as live does.
+  220623@1110 opp Baby Dragon (Ghost fight; H-GHOST correctly leaves it hidden, t0 row shows Invisibility): live the Ghost
+    crosses progress 3600 (a 2nd hit) at ~t1180 and stays visible to ~t1226 (T1R holds it t1168-1222); the SIM Ghost's
+    window ends ~t1190 (no 2nd hit), T1R retargets the Baby Dragon t1200 (live t1226) -> BD dies t1304 vs 1318. (b)
+  004922@3452 own X-Bow (after H-BOMB): our deploying Knight (t3524) loses 279 live on t3526-3528, none in the SIM; the
+    live X-Bow retargets a body (c0fceb, not named in the dossier) on t3542, the SIM's stays on T0R -> tower 1862 vs 588.
+  234407@3798 own Knight (after H-HBLAND): the SIM Knight now dies (t4029) but 62 ticks after live (t3967).

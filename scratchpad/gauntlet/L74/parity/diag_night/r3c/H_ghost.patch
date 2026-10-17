@@ -1,0 +1,56 @@
+diff --git a/scratchpad/gauntlet/L74/parity/fights.py b/scratchpad/gauntlet/L74/parity/diag_night/r3c/fights_ghost.py
+index 9b95da7..ef25e05 100644
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/diag_night/r3c/fights_ghost.py
+@@ -1418,6 +1418,51 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
+             except Exception:
+                 flags['setup_snipe_not_set'] += 1
+ 
++    # An invisible-when-idle unit (the Royal Ghost: card table idle_invisibility; target.rs `invisible_at`) is visible from
++    # the tick after its last hit (state.rs: reveal_from = hit + 1) for its idle time + 5 ticks; a set-up one has
++    # reveal_from 0, "hidden from its first frame to its first hit", so no enemy could target a Ghost the live game showed
++    # revealed (diag_night/r3c). Its last live hit before t0 is read off its phase-3 progress rows (the count-up attack
++    # clock: a hit where progress crosses a multiple of HitSpeed, ATTACK_PHASE_1016; a row with no row of its own in the 6
++    # ticks before counts from 0). A Ghost the phase-2 rows show carrying its invisibility buff at t0 is hidden and left as set
++    # up (220623: the 'Invisibility' row is there exactly while it is hidden). ponytail: 50 ms a tick (an Ice Wizard slow
++    # runs the clock at 35: hit estimated early).
++    att = m.get('attacks') or {}
++    if att:
++        before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
++        live0 = {x['id']: x for x in start}
++        bnow = (m.get('buffs') or {}).get(max((t for t in m.get('buffs') or {} if t0 - 6 <= t <= t0), default=None), {})
++        for bd in (setup if 'reveal_from' in E else ()):
++            c = catalog.get(bd['card_id']) or {}
++            st = eng.stats(c.get('display_name'))
++            g, hs = (live0.get(bd['id']) or {}).get('gen'), st.get('hit_speed_ms') or 0
++            if bd.get('proxy') or not ((st.get('idle_invisibility') or {}).get('time_ms') or 0) > 0 or g is None or hs <= 0:
++                continue
++            i = ent(E, ('body', bd))
++            if i is None:
++                flags['setup_ghost_not_found'] += 1; continue
++            if any(n == st['idle_invisibility'].get('buff') for n, _ in bnow.get(g, ())):
++                flags['setup_ghost_hidden_seen'] += 1; continue
++            hit, prev = None, None
++            for t in sorted(t for t in att if t0 - 100 <= t <= t0):
++                row = att[t].get(g)
++                if row is None:
++                    continue
++                pb = row[2] or 0
++                pa = prev[1] if prev and t - prev[0] <= 6 and prev[1] <= pb else 0
++                if pb // hs > pa // hs:
++                    hit = t - (pb % hs)//50
++                prev = (t, pb)
++            if hit is not None:
++                E['reveal_from'][i] = hit + 1
++                flags['setup_ghost_revealed' if t0 < hit + 1 + st['idle_invisibility']['time_ms']//50 + 5 else 'setup_ghost_rehidden'] += 1
++            else:
++                flags['setup_ghost_hidden'] += 1
++        if after != before:
++            try:
++                load_edited(b, before, after)
++            except Exception:
++                flags['setup_ghost_not_set'] += 1
++
+     # Opt-in inference (PARITY_INFER=target,phase; item 8): the SIM's attack clock advances 50 ms a tick while engaged
+     # and a hit lands (melee) / launches (ranged) each time it reaches a multiple of HitSpeed (probed on 0.1.35), so a
+     # body that last hit e ms before t0 gets attack_ms = e mod HitSpeed and its reload left; its target = that victim.

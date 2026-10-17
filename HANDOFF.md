@@ -1,3 +1,14 @@
+## 2026-10-17 05:37 EDT -- I13 (Ram Rider snare, Royal Ghost reveal, Giant Skeleton death bomb, twin-fate scoring, unseen Hero Balloon throw) = 0.944
+
+Round-3c worker (diag_night/r3c/NOTES.txt; pod A /workspace/results/r3c_*), base r3c_base = I12 = 0.942 [0.929, 0.954] (identical to r3a_comb):
+| fix | fights touched | fixed / broken | card change |
+|---|---|---|---|
+| Ram Rider BolaSnare (SIM buff 27) seeded with live remaining ms | 4 strict | 0 / 0 | none (state now right; 001415@990 still fails later: after our Hero IW ability the live ram + rider stand frozen 1069-1173, the SIM rider keeps hitting -> (b) the SIM's ability hold misses the Ram Rider) |
+| Royal Ghost seeded visible (reveal_from = last live hit + 1) unless t0 buff rows show 'Invisibility' | 29 (4 strict, all agreeing) | 0 / 0 | none (state right; 220623@1110 = a missed second Ghost hit, b) |
+| pending Giant Skeleton death bomb re-seeded as the SIM's own bomb with its live fuse (SIM lands 61 ticks after death; live blast row 60 after the first missing frame, 10/12) | 56 (22 strict) | 1 / 0 | own Knight 0.944 -> 0.949 |
+| twins (SCORING): indistinguishable siblings (same side / card / form / max_hp / first frame / parent) compared by their multiset of fates, one-to-one within the 0.5 s tolerance (self-check: a shifted or missing death still disagrees) | 137 strict spell fights have such a group | 1 / 0 | own Tornado 0.948 -> 0.964 |
+| unseen Hero Balloon throw landed as the SIM's own throw at the trooper's first sighting + cross-form pairing only for an equal-max_hp Hero Balloon body | 1 | 1 / 0 (234407@3846, which r3a's hb2 broke, still agrees) | Tornado 0.964; Knight 0.946 = a ceiling artefact (234407@3798) |
+| **all five (landed, I13)** | union | **3 / 0** | **overall 0.942 -> 0.944 [0.931, 0.955]**; own Tornado 0.979 [0.929, 1.006], own Knight 0.952 [0.921, 0.981]; every other card identical |
 ## 2026-10-17 05:16 EDT -- pod 18869 reused: gae_exu250 = u250 + 65 updates WITH the exploiter league (one change vs the control twin)
 
 - Why: the two positive RL signals tonight are (1) gae_exploit s75 +4.48 vs its F1 twin (exploiter league) and (2) the u250 + 65
