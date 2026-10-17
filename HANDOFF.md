@@ -1,3 +1,19 @@
+## 2026-10-17 10:13 EDT -- pods for 10-17 day + three jobs launched (parity FIN5, reader spawn timer, tower troops RL)
+
+- Owner offered 8 more pods today. Every 81.27.69.177 1x-L40 pod had a 15.3-CPU quota -> stopped (49j9d4fdsnvip6,
+  ogoxqb1hq8s8d5, vhvzy4btodbgf3, d19df57u9jbq2d, hw4qt47bnhgh0z). KEPT: P1 216.81.151.5:15617 (27.2 CPU, L40), P2
+  64.247.206.79:19400 (27.2, L40), P3 81.27.69.177:23363 (2x L40, 30.6 CPU; j654hjwh1t05w0). Key ~/.ssh/runpod_clashbot.
+- P1: parity round 5 = HEAD 734b9a5 harness (raw goal + H-UNK) + fork clashbot36 bc2bf9d, K=8, on 218 captured logs (was 145
+  scored / 150 captured); bundle code5.tgz / logs5.tgz / attacks5 / buffs5 (parity1016 temp dir); chain /workspace/in/chain5.sh
+  -> /workspace/results/FIN5; watchdog on FIN5/DONE +10800 s.
+- Reader phase 3b (worker, private notes icebow/data/reader_notes): locate the per-body spawn tick / deploy timer (the largest
+  remaining unobservable), add it to the phase-3 probe, rebuild on P2 (pinned gcc-13), pin the sha. Live restart between matches
+  happens AFTER it reports (owner OK 10-17). Nothing tracked carries offsets.
+- Tower troops RL (worker, P3 + light P2): live troop rates from the 218 logs; fork runtime id for training; option default OFF and
+  byte-identical when absent; arms A control (PyPI) / B fork engine / C fork + troops, one change each, same seed, 65 updates
+  from u250, all evaluated on fork + troops at live rates (960 paired seeds). Write-up scratchpad/gauntlet/L74/troops/REPORT.md.
+- Still running from the night: T1 s74 trained to u500 (eval chain on), s75 u445, s76 u440; pod 8 cue130 control twin.
+
 ## 2026-10-17 10:00 EDT -- parity goal now judged on RAW agreement (owner 10-17) + H-UNK landed (hero Electro Wizard fights leave strict)
 
 - Owner rule 10-17: RAW tolerant card agreement (live vs the K perturbed SIM replays) lower 95% CI >= 0.95 per card (n >= 30) and
