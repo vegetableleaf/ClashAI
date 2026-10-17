@@ -1,0 +1,127 @@
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -677,6 +677,49 @@
+             self._form[key] = out
+         return self._form.get(key)
+ 
++    def shot_template(self, name, form, level):
++        """A real in-flight projectile record (save()['projectiles'] row) shot by engine card `name` played in `form` at
++        `level`, or by a 'PrincessTower' / 'KingTower' at tower level `level`, at a still Golem: the template for a
++        projectile already flying at a fight's t0 (run_fight). None: the card shoots no projectile. Resets the battle:
++        call before a fight's setup (cached)."""
++        key = ('shot', name, form, level)
++        if key not in self._form:
++            from scratchpad.gauntlet.L74.parity.mechanics import load_edited
++            b, K, out = self.b, 18, None
++            try:
++                if name in ('PrincessTower', 'KingTower'):
++                    b.reset(1, [[self.ids['Knight']], [self.ids['Knight']]], 0, 200, None, None,
++                            [(1, self.ids['Golem'], 9000*K, (9500 if name == 'KingTower' else 11000)*K, 10**6)],
++                            levels=[[11], [11]], tower_levels=[level, level])
++                    if name == 'KingTower':
++                        sv = json.loads(b.save()); after = json.loads(json.dumps(sv)); after['king_active'] = [True, True]
++                        load_edited(b, sv, after)
++                    firer = lambda E, i: E['kind'][i] == name and E['team'][i] == 'Blue'
++                else:
++                    b.reset(1, [[self.ids['Knight']], [self.ids[name]]], 0, 200, None, None,
++                            [(0, self.ids['Golem'], 9000*K, 19500*K, 10**6)], forms=[[0], [form]], levels=[[11], [level]],
++                            tower_levels=[11, 11])
++                    sv = json.loads(b.save()); after = json.loads(json.dumps(sv))
++                    for ev in after['players'][1]['evo']:
++                        ev['plays'] = ev['cycles'] if form == 1 else 0
++                    after['players'][1]['mana'] = after['calib']['max_mana']*after['mana_unit']
++                    if after != sv:
++                        load_edited(b, sv, after)
++                    n0 = len(json.loads(b.save())['ents']['card'])
++                    b.step([(1, 0, 9000*K, 24000*K)], 0)
++                    firer = lambda E, i: i == n0
++                for _ in range(200):
++                    b.step([], 1)
++                    sv = json.loads(b.save())
++                    E = sv['ents']
++                    hit = [p for p in sv['projectiles'] if p.get('firer') and firer(E, p['firer']['index'])]
++                    if hit:
++                        out = hit[0]; break
++            except (ValueError, KeyError, StopIteration):
++                out = None
++            self._form[key] = out
++        return self._form[key]
++
+     def tower_level(self, king, princess):
+         for lv in range(16, 0, -1):
+             if lv not in self._tower:
+@@ -740,6 +783,9 @@
+         if not bd['tower'] and c and c['display_name'] in eng.ids:
+             eng.spawn_table(c['display_name'])
+     flags = Counter()
++    shots = inflight_shots(m, fight, start, catalog, levels, tower_levels) if m['ext'] else []
++    for s_ in shots:               # templates probed before this fight's reset (a probe resets the battle); cached
++        s_['tpl'] = eng.shot_template(*s_['key'])
+     decks, forms, lv = [[], []], [[], []], [[], []]
+ 
+     def need(side, name, form, level=None):
+@@ -962,6 +1008,32 @@
+         except Exception:
+             flags['setup_state_not_set'] += 1
+ 
++    # Ext logs: troop / building / tower projectiles already flying at t0 (the reader's proj rows) land in the live game
++    # a few ticks later; a setup board has none, so their damage (and splash, slow) was lost (diag_night/tesla: 11 of 17
++    # failing Tesla fights start with such a hit, e.g. a Blowdart dart 314 -> 163 on a Knight at t0 + 2). Each one is
++    # injected as the firer card's real projectile record (Engine.shot_template), at its live position, aimed at its
++    # live target's SIM body.
++    if shots:
++        before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
++        by_setup = {bd['id']: bd for bd in setup if not bd.get('proxy')}
++        towers_ = {bd['id']: ('tower', bd['side'], bd['x'], bd['y']) for bd in start if bd['tower'] and bd['hp'] > 0}
++        ref = lambda k: ('body', by_setup[k]) if k in by_setup else towers_.get(k)
++        for s_ in shots:
++            i, j = (ent(E, ref(s_['src'])) if ref(s_['src']) else None), (ent(E, ref(s_['tgt'])) if ref(s_['tgt']) else None)
++            if s_['tpl'] is None or i is None or j is None:
++                flags['setup_shot_skipped:' + ('no_template' if s_['tpl'] is None else 'source' if i is None else 'target')] += 1
++                continue
++            p = json.loads(json.dumps(s_['tpl']))
++            p.update(team=E['team'][i], pos={'x': round(s_['x']*18), 'y': round(s_['y']*18)}, aim=dict(E['pos'][j]),
++                     target={'index': j, 'generation': E['generation'][j]}, firer={'index': i, 'generation': E['generation'][i]},
++                     firer_card=E['card'][i], frac={'x': 0, 'y': 0})
++            after['projectiles'].append(p); flags['setup_shot_in_flight'] += 1
++        if after != before:
++            try:
++                load_edited(b, before, after)
++            except Exception:
++                flags['setup_shot_not_set'] += 1
++
+     # Opt-in inference (PARITY_INFER=target,phase; item 8): the SIM's attack clock advances 50 ms a tick while engaged
+     # and a hit lands (melee) / launches (ranged) each time it reaches a multiple of HitSpeed (probed on 0.1.35), so a
+     # body that last hit e ms before t0 gets attack_ms = e mod HitSpeed and its reload left; its target = that victim.
+@@ -1608,6 +1680,31 @@
+     return out
+ 
+ 
++def inflight_shots(m, fight, start, catalog, levels, tower_levels):
++    """Ext logs: the projectiles in flight at t0 (the t0 frame's proj rows) that a t0-board body or tower fired at a
++    t0-board body or tower -> [dict(src, tgt: live ids, x, y: its live position, key: Engine.shot_template key)]. Spells
++    are left out (seen casts; spell_in_flight_at_start), and so are shots without a source or a target (kamikaze Fire /
++    Ice Spirits, a Bowler's rolling boulder, an Executioner's returning axe)."""
++    by = {bd['id']: bd for bd in start}
++    out = []
++    for p in m['proj'].get(fight['t0'], ()):
++        if (catalog.get(p[3]) or {}).get('type') == 'spell':
++            continue
++        src, tgt = by.get(p[7]), by.get(p[8])
++        if not src or not tgt or (tgt['tower'] and tgt['hp'] <= 0):
++            continue
++        if src['tower']:
++            key = ('KingTower' if src['id'].endswith('K') else 'PrincessTower', 0, tower_levels[src['side']])
++        else:
++            c = catalog.get(src['card_id'])
++            if c is None:
++                continue
++            name = c['display_name']
++            key = (name, form_of(src['card_id'], c), levels.get((src['side'], name)) or levels.get((src['side'], '*')) or 15)
++        out.append(dict(src=src['id'], tgt=tgt['id'], x=p[1], y=p[2], key=key))
++    return out
++
++
+ def tower_locks(m, fight, setup, catalog, look=20):
+     """[(setup body, (tower side, x, y))] for setup bodies that were shooting an enemy tower at t0 (see run_fight)."""
+     t0 = fight['t0']; i0 = fight['frame0']

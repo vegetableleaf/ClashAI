@@ -1,0 +1,37 @@
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -342,7 +342,7 @@
+     return sorted(out, key=lambda e: (e['tick'], e['side'], e['name']))
+ 
+ 
+-def deployments(m, catalog, life=None):
++def deployments(m, catalog, life=None, own_unit=None):
+     """Live deployments: new body groups (children of a living/just-dead same-card body, or role-children by max_hp,
+     are the SIM's job, not plays), own confirmed spells, own Hero IW presses. Ext logs: spells and hero casts of both
+     sides as seen (seen_casts); an own tap or press stays only where nothing was seen for it."""
+@@ -361,9 +361,14 @@
+         near_parent = any(q['side'] == r['side'] and q['card_id'] == r['card_id'] and q['first'] < r['first'] - 4
+                           and q['first'] <= r['first'] <= q['last'] + 15
+                           and math.hypot(at(q, r['first'])[1]-r['x'], at(q, r['first'])[2]-r['y']) < 3000 for q in tr)
+-        if near_parent or r['max_hp'] < .45*top[r['side'], r['card_id']]:
+-            continue
+         c = catalog[r['card_id']]
++        # A hero's ability object can share the card id and dwarf its units (Hero Goblins: a 3720 / 4090 hp object over
++        # 293 / 323 hp goblins), so the max_hp rule dropped every Hero Goblins play as a role-child (diag_night/knight).
++        # A hero body whose max_hp IS the card's own unit at some level (own_unit = Engine.level) is a play's body.
++        child_by_hp = r['max_hp'] < .45*top[r['side'], r['card_id']] and not (
++            own_unit and form_of(r['card_id'], c) == 2 and own_unit(c['display_name'], r['max_hp']))
++        if near_parent or child_by_hp:
++            continue
+         if c.get('type') == 'spell' and any(e['kind'] == 'play' and e['side'] == r['side'] and e['name'] == c['display_name']
+                                             and e['seen'] <= r['first'] <= e['end'] + 60 for e in seen):
+             continue           # a seen Goblin Barrel / Barbarian Barrel cast: the SIM spawns its bodies
+@@ -1736,7 +1741,7 @@
+         out.write_text(json.dumps(dict(summary=res)))
+         return res
+     eng = Engine()
+-    events, delay = deployments(m, catalog, eng.effect_life)
++    events, delay = deployments(m, catalog, eng.effect_life, own_unit=lambda n, hp: eng.level(n, hp) is not None)
+     fights = cut(m, events, window)
+     m['buffs'] = phase2_buffs(path) if m['ext'] else {}
+     m['attacks'] = phase3_attacks(path) if m['ext'] else {}

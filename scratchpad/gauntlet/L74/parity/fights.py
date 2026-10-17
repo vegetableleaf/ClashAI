@@ -342,7 +342,7 @@ def seen_casts(m, catalog, life=None):
     return sorted(out, key=lambda e: (e['tick'], e['side'], e['name']))
 
 
-def deployments(m, catalog, life=None):
+def deployments(m, catalog, life=None, own_unit=None):
     """Live deployments: new body groups (children of a living/just-dead same-card body, or role-children by max_hp,
     are the SIM's job, not plays), own confirmed spells, own Hero IW presses. Ext logs: spells and hero casts of both
     sides as seen (seen_casts); an own tap or press stays only where nothing was seen for it."""
@@ -361,9 +361,14 @@ def deployments(m, catalog, life=None):
         near_parent = any(q['side'] == r['side'] and q['card_id'] == r['card_id'] and q['first'] < r['first'] - 4
                           and q['first'] <= r['first'] <= q['last'] + 15
                           and math.hypot(at(q, r['first'])[1]-r['x'], at(q, r['first'])[2]-r['y']) < 3000 for q in tr)
-        if near_parent or r['max_hp'] < .45*top[r['side'], r['card_id']]:
-            continue
         c = catalog[r['card_id']]
+        # A hero's ability object can share the card id and dwarf its units (Hero Goblins: a 3720 / 4090 hp object over
+        # 293 / 323 hp goblins), so the max_hp rule dropped every Hero Goblins play as a role-child (diag_night/knight).
+        # A hero body whose max_hp IS the card's own unit at some level (own_unit = Engine.level) is a play's body.
+        child_by_hp = r['max_hp'] < .45*top[r['side'], r['card_id']] and not (
+            own_unit and form_of(r['card_id'], c) == 2 and own_unit(c['display_name'], r['max_hp']))
+        if near_parent or child_by_hp:
+            continue
         if c.get('type') == 'spell' and any(e['kind'] == 'play' and e['side'] == r['side'] and e['name'] == c['display_name']
                                             and e['seen'] <= r['first'] <= e['end'] + 60 for e in seen):
             continue           # a seen Goblin Barrel / Barbarian Barrel cast: the SIM spawns its bodies
@@ -504,12 +509,20 @@ class Engine:
         hx, hy = int(x//500), int(y//500)
         return 0 <= hy < len(self.grid) and 0 <= hx < len(self.grid[0]) and bool(self.grid[hy][hx])
 
-    def nearest_passable(self, x, y, reach=2):
+    def nearest_passable(self, x, y, reach=2, inset=20):
+        """The nearest point inside a passable half-cell (`inset` millitiles in from its edge), not the cell's centre: a
+        live body 65 mt over the bridge edge was moved 380 mt to a centre, into a tower's reach 4 ticks early
+        (diag_night/knight 175459@3198)."""
         hx, hy = int(x//500), int(y//500)
-        cells = [(math.hypot(dx, dy), hx+dx, hy+dy) for dx in range(-reach, reach+1) for dy in range(-reach, reach+1)]
-        best = min((c for c in cells if 0 <= c[2] < len(self.grid) and 0 <= c[1] < len(self.grid[0]) and self.grid[c[2]][c[1]]),
-                   default=None)
-        return (best[1]*500+250, best[2]*500+250) if best else None
+        best = None
+        for cx in range(hx-reach, hx+reach+1):
+            for cy in range(hy-reach, hy+reach+1):
+                if 0 <= cy < len(self.grid) and 0 <= cx < len(self.grid[0]) and self.grid[cy][cx]:
+                    px = min(max(x, cx*500+inset), cx*500+500-inset); py = min(max(y, cy*500+inset), cy*500+500-inset)
+                    d = math.hypot(px-x, py-y)
+                    if best is None or d < best[0]:
+                        best = (d, px, py)
+        return (best[1], best[2]) if best else None
 
     def level(self, name, max_hp):
         """Card level whose own unit has exactly this max_hp; None if no level matches."""
@@ -677,6 +690,49 @@ class Engine:
             self._form[key] = out
         return self._form.get(key)
 
+    def shot_template(self, name, form, level):
+        """A real in-flight projectile record (save()['projectiles'] row) shot by engine card `name` played in `form` at
+        `level`, or by a 'PrincessTower' / 'KingTower' at tower level `level`, at a still Golem: the template for a
+        projectile already flying at a fight's t0 (run_fight). None: the card shoots no projectile. Resets the battle:
+        call before a fight's setup (cached)."""
+        key = ('shot', name, form, level)
+        if key not in self._form:
+            from scratchpad.gauntlet.L74.parity.mechanics import load_edited
+            b, K, out = self.b, 18, None
+            try:
+                if name in ('PrincessTower', 'KingTower'):
+                    b.reset(1, [[self.ids['Knight']], [self.ids['Knight']]], 0, 200, None, None,
+                            [(1, self.ids['Golem'], 9000*K, (9500 if name == 'KingTower' else 11000)*K, 10**6)],
+                            levels=[[11], [11]], tower_levels=[level, level])
+                    if name == 'KingTower':
+                        sv = json.loads(b.save()); after = json.loads(json.dumps(sv)); after['king_active'] = [True, True]
+                        load_edited(b, sv, after)
+                    firer = lambda E, i: E['kind'][i] == name and E['team'][i] == 'Blue'
+                else:
+                    b.reset(1, [[self.ids['Knight']], [self.ids[name]]], 0, 200, None, None,
+                            [(0, self.ids['Golem'], 9000*K, 19500*K, 10**6)], forms=[[0], [form]], levels=[[11], [level]],
+                            tower_levels=[11, 11])
+                    sv = json.loads(b.save()); after = json.loads(json.dumps(sv))
+                    for ev in after['players'][1]['evo']:
+                        ev['plays'] = ev['cycles'] if form == 1 else 0
+                    after['players'][1]['mana'] = after['calib']['max_mana']*after['mana_unit']
+                    if after != sv:
+                        load_edited(b, sv, after)
+                    n0 = len(json.loads(b.save())['ents']['card'])
+                    b.step([(1, 0, 9000*K, 24000*K)], 0)
+                    firer = lambda E, i: i == n0
+                for _ in range(200):
+                    b.step([], 1)
+                    sv = json.loads(b.save())
+                    E = sv['ents']
+                    hit = [p for p in sv['projectiles'] if p.get('firer') and firer(E, p['firer']['index'])]
+                    if hit:
+                        out = hit[0]; break
+            except (ValueError, KeyError, StopIteration):
+                out = None
+            self._form[key] = out
+        return self._form[key]
+
     def tower_level(self, king, princess):
         for lv in range(16, 0, -1):
             if lv not in self._tower:
@@ -740,6 +796,9 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
         if not bd['tower'] and c and c['display_name'] in eng.ids:
             eng.spawn_table(c['display_name'])
     flags = Counter()
+    shots = inflight_shots(m, fight, start, catalog, levels, tower_levels) if m['ext'] else []
+    for s_ in shots:               # templates probed before this fight's reset (a probe resets the battle); cached
+        s_['tpl'] = eng.shot_template(*s_['key'])
     decks, forms, lv = [[], []], [[], []], [[], []]
 
     def need(side, name, form, level=None):
@@ -962,6 +1021,32 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
         except Exception:
             flags['setup_state_not_set'] += 1
 
+    # Ext logs: troop / building / tower projectiles already flying at t0 (the reader's proj rows) land in the live game
+    # a few ticks later; a setup board has none, so their damage (and splash, slow) was lost (diag_night/tesla: 11 of 17
+    # failing Tesla fights start with such a hit, e.g. a Blowdart dart 314 -> 163 on a Knight at t0 + 2). Each one is
+    # injected as the firer card's real projectile record (Engine.shot_template), at its live position, aimed at its
+    # live target's SIM body.
+    if shots:
+        before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
+        by_setup = {bd['id']: bd for bd in setup if not bd.get('proxy')}
+        towers_ = {bd['id']: ('tower', bd['side'], bd['x'], bd['y']) for bd in start if bd['tower'] and bd['hp'] > 0}
+        ref = lambda k: ('body', by_setup[k]) if k in by_setup else towers_.get(k)
+        for s_ in shots:
+            i, j = (ent(E, ref(s_['src'])) if ref(s_['src']) else None), (ent(E, ref(s_['tgt'])) if ref(s_['tgt']) else None)
+            if s_['tpl'] is None or i is None or j is None:
+                flags['setup_shot_skipped:' + ('no_template' if s_['tpl'] is None else 'source' if i is None else 'target')] += 1
+                continue
+            p = json.loads(json.dumps(s_['tpl']))
+            p.update(team=E['team'][i], pos={'x': round(s_['x']*18), 'y': round(s_['y']*18)}, aim=dict(E['pos'][j]),
+                     target={'index': j, 'generation': E['generation'][j]}, firer={'index': i, 'generation': E['generation'][i]},
+                     firer_card=E['card'][i], frac={'x': 0, 'y': 0})
+            after['projectiles'].append(p); flags['setup_shot_in_flight'] += 1
+        if after != before:
+            try:
+                load_edited(b, before, after)
+            except Exception:
+                flags['setup_shot_not_set'] += 1
+
     # Opt-in inference (PARITY_INFER=target,phase; item 8): the SIM's attack clock advances 50 ms a tick while engaged
     # and a hit lands (melee) / launches (ranged) each time it reaches a multiple of HitSpeed (probed on 0.1.35), so a
     # body that last hit e ms before t0 gets attack_ms = e mod HitSpeed and its reload left; its target = that victim.
@@ -1074,7 +1159,10 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
         who = {(('Blue', 'Red')[sp[0]], sp[2], sp[3]): bd['id'] for sp, bd in zip(spawns, setup)}
         towers0 = [(bd['id'], bd['side'], bd['x'], bd['y']) for bd in start if bd['tower']]
         for k in range(1, ceiling+1):
-            rows_k, refused_k, over_k = simulate(random.Random(f"{m['match']}:{t0}:{fight['anchor']}:{k}"))
+            # Seeded on the fight's identity, not its event index: a harness change that adds an event earlier in the match
+            # must not re-draw every later fight's perturbations (diag_night/knight concern, measured 0.75 -> 0.625).
+            rows_k, refused_k, over_k = simulate(random.Random(
+                f"{m['match']}:{t0}:{anchor['tick']}:{anchor['side']}:{anchor['name']}:{k}"))
             bad.update(refused_k); bad['game_over'] += over_k
             card['sim'].append(view(rows_k, 2) if rows_k else None)
         card['perturbed'] = dict(perturbed); card['ceiling_refused'] = dict(bad)
@@ -1608,6 +1696,31 @@ def iw_shots(m, fight, catalog):
     return out
 
 
+def inflight_shots(m, fight, start, catalog, levels, tower_levels):
+    """Ext logs: the projectiles in flight at t0 (the t0 frame's proj rows) that a t0-board body or tower fired at a
+    t0-board body or tower -> [dict(src, tgt: live ids, x, y: its live position, key: Engine.shot_template key)]. Spells
+    are left out (seen casts; spell_in_flight_at_start), and so are shots without a source or a target (kamikaze Fire /
+    Ice Spirits, a Bowler's rolling boulder, an Executioner's returning axe)."""
+    by = {bd['id']: bd for bd in start}
+    out = []
+    for p in m['proj'].get(fight['t0'], ()):
+        if (catalog.get(p[3]) or {}).get('type') == 'spell':
+            continue
+        src, tgt = by.get(p[7]), by.get(p[8])
+        if not src or not tgt or (tgt['tower'] and tgt['hp'] <= 0):
+            continue
+        if src['tower']:
+            key = ('KingTower' if src['id'].endswith('K') else 'PrincessTower', 0, tower_levels[src['side']])
+        else:
+            c = catalog.get(src['card_id'])
+            if c is None:
+                continue
+            name = c['display_name']
+            key = (name, form_of(src['card_id'], c), levels.get((src['side'], name)) or levels.get((src['side'], '*')) or 15)
+        out.append(dict(src=src['id'], tgt=tgt['id'], x=p[1], y=p[2], key=key))
+    return out
+
+
 def tower_locks(m, fight, setup, catalog, look=20):
     """[(setup body, (tower side, x, y))] for setup bodies that were shooting an enemy tower at t0 (see run_fight)."""
     t0 = fight['t0']; i0 = fight['frame0']
@@ -1736,7 +1849,7 @@ def run_match(path, window, out_dir, ceiling=0):
         out.write_text(json.dumps(dict(summary=res)))
         return res
     eng = Engine()
-    events, delay = deployments(m, catalog, eng.effect_life)
+    events, delay = deployments(m, catalog, eng.effect_life, own_unit=lambda n, hp: eng.level(n, hp) is not None)
     fights = cut(m, events, window)
     m['buffs'] = phase2_buffs(path) if m['ext'] else {}
     m['attacks'] = phase3_attacks(path) if m['ext'] else {}
@@ -1885,7 +1998,7 @@ def is_clean(r, mode='strict'):
     return not any(k.startswith(CLEAN_BLOCKERS) and not k.startswith(skip) for k in r['flags'])
 
 
-GOAL_CARD, GOAL_ALL, GOAL_N = .90, .95, 30      # owner goal 10-16: normalised lower 95% CI per card / overall; min n
+GOAL_CARD, GOAL_ALL, GOAL_N = .95, .975, 30     # owner goal RAISED 10-16 night (was .90 / .95): normalised lower 95% CI per card / overall; min n
 
 
 def card_scores(r):

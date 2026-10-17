@@ -1,0 +1,39 @@
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -754,6 +754,7 @@
+         return True
+ 
+     spawns, setup = [], []
++    by_parent = []                 # (live body, card): second-summon children the parent's setup spawn is to make
+ 
+     def add(bd, name):
+         x, y = bd['x'], bd['y']
+@@ -779,7 +780,7 @@
+             # the same unit at the same max_hp, if one exists (Witch Skeleton -> Skeletons); else the fight is not clean.
+             proxy = eng.child_proxy(c['display_name'], bd['max_hp'])
+             if proxy and proxy[0] == '__parent__':
+-                flags['setup_child_by_parent'] += 1; continue
++                flags['setup_child_by_parent'] += 1; by_parent.append((bd, c['display_name'])); continue
+             if proxy is None or not need(bd['side'], proxy[0], 0, proxy[1]):
+                 flags['setup_child_skipped'] += 1; continue
+             flags['setup_child_as_card'] += 1
+@@ -883,6 +884,19 @@
+         except Exception:
+             flags['setup_form_not_set'] += len(formed)
+ 
++    # A second-summon child left to its parent's setup spawn (a Ram Rider's rider, Goblin Giant's Spear Goblins) is made
++    # by that spawn; a Rascals boy's spawn makes no girls (diag_night/knight: 171357, 2 girls at 417 hp missing, the
++    # Knight they killed live survived). A child with no SIM body of its card to stand for it is a skipped child.
++    if by_parent:
++        _, simb = eng.bodies(by_name)
++        have = Counter((s_['side'], s_['name']) for s_ in simb if not s_['tower'])
++        need_ = Counter((bd['side'], name) for bd, name in by_parent)
++        for sp, bd in zip(spawns, setup):
++            need_[bd['side'], eng.cat[sp[1]]['name']] += 1
++        for k_, n_ in need_.items():
++            if have[k_] < n_ and any((bd['side'], name) == k_ for bd, name in by_parent):
++                flags['setup_child_skipped:by_parent_not_made'] += n_ - have[k_]
++
+     # Target state is not public, and a setup spawn starts with none, so it may pick a nearer troop where the live unit
+     # kept shooting a tower (a locked X-Bow). Lock a setup body onto an enemy tower when the body stood still over the
+     # last second, the tower is in reach (14 tiles centre to centre for a building, 7 for a troop) and that tower lost hp in that second.

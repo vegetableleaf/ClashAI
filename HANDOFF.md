@@ -1,3 +1,27 @@
+## 2026-10-17 ~00:15 EDT -- parity harness I3 landed: captured 0.877 -> 0.919 (seed fix + Hero Goblins + snap + in-flight shots)
+
+Integration on the captured strict cohort (27 matches, royalesim 0.1.35, K=8; each step vs the previous, pod B
+/workspace/results/CAP_I0..I3):
+
+| step | overall normalised [CI] | unperturbed agree | note |
+|---|---|---|---|
+| base (795b155) | 0.877 [0.848, 0.901] | 0.841 | |
+| I0 ceiling seed = match:t0:anchor tick:side:name:k (was the anchor's EVENT INDEX) | 0.881 [0.854, 0.903] | 0.841 | unperturbed identical; +0.004 = reseed noise |
+| I1 + Hero Goblins ability object no longer dropped as a role-child (knight H1) | 0.889 [0.868, 0.907] | 0.846 | +9 fights now scored |
+| I2 + nearest passable point instead of the cell centre (knight H3) | 0.889 [0.869, 0.906] | 0.850 | |
+| **I3 + projectiles in flight at t0 injected (tesla H1, Engine.shot_template)** | **0.919 [0.898, 0.937]** | 0.880 | |
+
+I3 per card (normalised [CI]): own IW hero 0.969 [0.919, 1.005], X-Bow 0.963 [0.909, 1.001], Knight evo 0.932 (n 20), Knight
+0.913, Log 0.889 [0.779, 0.967] (ceiling 1.0), Tornado 0.878 (n 20), Skeletons 0.869, Tesla 0.829, Tesla evo 0.846 (n 18).
+Under the RAISED goal (GOAL_CARD .95 / GOAL_ALL .975 now in fights.py) no card meets yet (IW lower bound 0.919).
+- Fork SIM laws found by the Tesla worker (a), being implemented as clashbot35 fork patches: S1 Goblin Machine rocket never
+  fired by the SIM (no code at 0.1.35/0.1.36; 24 live rockets in 3 captured matches; would fix ~4 Tesla fights); S2 shots at an
+  already-HIDDEN Tesla land in the SIM (combat.rs shot_passes_hide vs hide.HELD_THROUGH_HIDE; live they do 0 damage).
+- Worker reports saved: diag_night/knight/REPORT.md, diag_night/tesla/REPORT.md (remaining: Log, Skeletons/Tornado; knight
+  worker building H2' = spawn missing second-summon children instead of excluding those fights).
+- Deploy / first-target is 0 or +2 ticks LATER live than SIM for every card (Tesla 73/73; Skeletons mean +0.81, Knight +0.77,
+  X-Bow +0.73): harness play-tick choice vs SIM law untested (b) -- a cross-card candidate.
+
 ## 2026-10-16 ~23:20 EDT -- fork build path validated; gae_trade2 s74 not a successor; tools in L74/parity/night1016/
 
 - **Fork for 0.1.35 patches:** git worktree `C:/Users/benpe/rsfork35`, branch `clashbot35` from tag v0.1.35 (4fd4d54 = the

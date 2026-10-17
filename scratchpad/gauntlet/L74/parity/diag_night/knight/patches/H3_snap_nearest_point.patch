@@ -1,0 +1,28 @@
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -504,12 +504,20 @@
+         hx, hy = int(x//500), int(y//500)
+         return 0 <= hy < len(self.grid) and 0 <= hx < len(self.grid[0]) and bool(self.grid[hy][hx])
+ 
+-    def nearest_passable(self, x, y, reach=2):
++    def nearest_passable(self, x, y, reach=2, inset=20):
++        """The nearest point inside a passable half-cell (`inset` millitiles in from its edge), not the cell's centre: a
++        live body 65 mt over the bridge edge was moved 380 mt to a centre, into a tower's reach 4 ticks early
++        (diag_night/knight 175459@3198)."""
+         hx, hy = int(x//500), int(y//500)
+-        cells = [(math.hypot(dx, dy), hx+dx, hy+dy) for dx in range(-reach, reach+1) for dy in range(-reach, reach+1)]
+-        best = min((c for c in cells if 0 <= c[2] < len(self.grid) and 0 <= c[1] < len(self.grid[0]) and self.grid[c[2]][c[1]]),
+-                   default=None)
+-        return (best[1]*500+250, best[2]*500+250) if best else None
++        best = None
++        for cx in range(hx-reach, hx+reach+1):
++            for cy in range(hy-reach, hy+reach+1):
++                if 0 <= cy < len(self.grid) and 0 <= cx < len(self.grid[0]) and self.grid[cy][cx]:
++                    px = min(max(x, cx*500+inset), cx*500+500-inset); py = min(max(y, cy*500+inset), cy*500+500-inset)
++                    d = math.hypot(px-x, py-y)
++                    if best is None or d < best[0]:
++                        best = (d, px, py)
++        return (best[1], best[2]) if best else None
+ 
+     def level(self, name, max_hp):
+         """Card level whose own unit has exactly this max_hp; None if no level matches."""
