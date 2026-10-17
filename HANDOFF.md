@@ -1,3 +1,23 @@
+## 2026-10-17 15:32 EDT -- factorial decisions (owner) + two observed habits measured; live-levels option being built
+
+- Owner 10-17: factorial graded on the FORK + TROOPS-at-live-rates eval (also the promotion bar from now on); factors A cue layer,
+  B exploiter league, C opponent tower troops, D live card / tower levels (new opt-in option), E tower-damage shaping (posture
+  head dropped); 65 updates; fixed: fork36 engine (bc2bf9d build already on 23363 / 19400), Hero IW + learned press, init u250.
+  2^(5-1) resolution V, 16 runs. Waits for factor D's option (worker building it + eval habit logging, scratchpad/gauntlet/L74/levels/).
+- Owner's observations of ICEBOW Mark CXXXVIII (habits to be LEARNED, no hardcoded rules): (1) "basically never rocket cycles a
+  lower enemy tower unless it was forced to by the finishing rocket rule"; (2) "tends to play Xbow at the bridge first or second
+  play ... before even knowing the enemy's deck and cycle".
+- Measured with card_use.py --habits (since 10-16 21:30): early bridge X-Bow (offensive X-Bow, intended y <= 0.64, among the first 2
+  plays, X-Bow in the opening hand): Mark CXXIV 57.7% of 111 matches, Mark CXXXVIII 57.1% of 14 -> the habit is OLD, not new.
+  Tower Rockets (aim on an enemy princess tower): CXXIV 0.60 / match (0.21 forced by the finishing rule, 0.38 cycling; any cycling
+  rocket in 29% of matches) vs CXXXVIII 0.31 (0.16 forced, 0.16 cycling; 16%) -> CXXXVIII cycles rockets less than half as often.
+  Late stage (31 matches): CXXXVIII late offensive X-Bows 2.18 / match vs CXXIV 1.90; late Rockets 0.36 vs 0.72; only 3 X-Bow-
+  unfavourable CXXXVIII matches so far.
+- Fork: EKRET2 commits (f5394bf + 72a18a5) fast-forwarded onto local rsfork36 clashbot36 -> head 72a18a5, bundle
+  pod_backup_weekend/fork35/clashbot36_72a18a5.bundle; the factorial keeps the bc2bf9d build (already on the pods); the next
+  parity run uses 72a18a5.
+- Stamped (upgraded) captures at 15:31: 68 -> the >= 100-match trigger cohort around 18:15.
+
 ## 2026-10-17 15:28 EDT -- round-4 tail landed: H-DECKMAP + H-TORNADO-DATE (r4e) + H-EKSEED (r4c); S-EK-RETARGET v2 measured (fork)
 
 Each measured alone vs FIN5 on the full 218-log cohort (pod P1 results r4e_D, r4e_T, r4c_ekseed, r4c_ekret2; /workspace/w_r4c/cmp.py):

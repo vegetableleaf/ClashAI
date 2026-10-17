@@ -85,6 +85,33 @@ def late(path):
     return unfavorable(opp) if opp else None, xb, rk, tn
 
 
+def tower_aim(xy):
+    """A Rocket aimed at an enemy princess tower (10-17 aims cluster at x 0.2 / 0.8, y 0.19-0.23; own side at the bottom)."""
+    return xy and (.1 <= xy[0] <= .3 or .7 <= xy[0] <= .9) and .15 <= xy[1] <= .27
+
+
+def habits(path):
+    """--habits (owner 10-17 observations; observe only, the fixes must be learned): (X-Bow in the opening hand?, an offensive
+    X-Bow among the first two plays?, tower Rockets, of them forced by the finishing-rocket rule). A forced one = a Rocket play
+    within 80 ticks after a decision carrying a lethal_rocket dict (the rule firing)."""
+    opening, plays, forced_ticks = None, [], []
+    for raw in open(path, 'rb'):
+        head = raw[:30]
+        if b'"decision"' in head:
+            j = json.loads(raw)
+            if opening is None:
+                opening = 'Xbow' in [h.get('name') for h in (j.get('public') or {}).get('own_hand', [])]
+            if isinstance((j.get('decision') or {}).get('lethal_rocket'), dict):
+                forced_ticks.append(j['tick'])
+        elif b'"confirmed"' in head:
+            j = json.loads(raw); plays.append((j.get('tick') or 0, j.get('name'), j.get('intended')))
+    plays.sort(key=lambda p: p[0])
+    early = any(n == 'Xbow' and xy and xy[1] <= OFFENSIVE_Y for _, n, xy in plays[:2])
+    rockets = [(t, xy) for t, n, xy in plays if n == 'Rocket' and tower_aim(xy)]
+    forced = sum(any(0 <= t - f <= 80 for f in forced_ticks) for t, _ in rockets)
+    return bool(opening), early, len(rockets), forced
+
+
 def mark_of(ck, cache={}):
     """The checkpoint's Mark name (registry lookup by sha256, hashed once per path), else its file name."""
     if ck not in cache:
@@ -114,6 +141,8 @@ def main(argv):
     ap.add_argument('--base', default='ICEBOW Mark CXXIV: LONGER')
     ap.add_argument('--late', action='store_true', help="owner 10-17: late-stage offensive X-Bows vs Rockets, by X-Bow-"
                     "unfavourable matchup (slower: runs fights.py play detection per match)")
+    ap.add_argument('--habits', action='store_true', help="owner 10-17: early bridge X-Bow (X-Bow in the opening hand) and "
+                    "tower Rockets the finishing rule did not force ('rocket cycling')")
     a = ap.parse_args(argv)
     cards = a.cards.split(',')
     res = results()
@@ -125,8 +154,18 @@ def main(argv):
         if not ck or not secs:
             continue
         rows[mark_of(ck)].append(dict(n=n, plays=plays, mins=secs/60, win=res[p.name][0] == 'WIN', tro=res[p.name][1],
-                                      late=late(p) if a.late else None))
+                                      late=late(p) if a.late else None, hab=habits(p) if a.habits else None))
     mean = lambda xs: sum(xs)/len(xs) if xs else float('nan')
+    if a.habits:
+        print('HABITS (observe only): early bridge X-Bow = an offensive X-Bow among the first 2 plays, in matches with X-Bow in the '
+              'opening hand; rocket cycling = tower Rockets the finishing rule did not force')
+        for mk, rs in sorted(rows.items(), key=lambda kv: -len(kv[1])):
+            op = [r for r in rs if r['hab'][0]]
+            free = [r['hab'][2] - r['hab'][3] for r in rs]
+            print(f"  {mk}: early bridge X-Bow in {mean([r['hab'][1] for r in op]):.3f} of {len(op)} X-Bow-opening matches "
+                  f"(win {mean([r['win'] for r in op if r['hab'][1]]):.3f} when it did, {mean([r['win'] for r in op if not r['hab'][1]]):.3f} "
+                  f"when not); tower Rockets {mean([r['hab'][2] for r in rs]):.2f} / match, forced {mean([r['hab'][3] for r in rs]):.2f}, "
+                  f"cycling {mean(free):.2f} / match, matches with any cycling rocket {mean([f > 0 for f in free]):.3f}")
     if a.late:
         print('LATE STAGE (tick >= %d): per Mark x matchup -- matches, win, offensive X-Bows / Rockets / Tornados per match' % LATE_TICK)
         for mk, rs in sorted(rows.items(), key=lambda kv: -len(kv[1])):
