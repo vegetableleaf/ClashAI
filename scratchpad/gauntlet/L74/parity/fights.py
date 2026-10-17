@@ -57,7 +57,9 @@ HERO_IW_ABILITY_COST = 2           # card table hero_forms IceWizard_hero abilit
 # deaths are within DEATH_TOL ticks (0.5 s); a swarm may miss floor(SWARM_SLACK x n) bodies. Its tower damage agrees
 # within max(TOWER_FLOOR, TOWER_REL x the larger side). TOWER_FLOOR ~ one X-Bow bolt (98) and above one Log crown hit (51).
 DEATH_TOL, SWARM_SLACK, TOWER_FLOOR, TOWER_REL = 10, .1, 100, .1
-SPELL_WINDOW = 60                  # ticks after a cast in which a drop/death counts as the spell's hit
+TIME_OUT_TICK = 6000               # the ladder match's end (180 s + 120 s overtime at 20 ticks/s), the live frames' tick base
+LEAD_AHEAD = {'Rascals': 2000}     # the SIM formation's lead body ahead of its play point (H-RASCALS). ponytail: hardcoded; probe the formation if another card needs it
+SPELL_WINDOW = 60                 # ticks after a cast in which a drop/death counts as the spell's hit
 DIGGERS = {'Miner', 'GoblinDrill'}  # tunnel in: seen active on their way, deploying where they surface (Knight etc. can show
                                    # 13/15 -> 12/14 too: 31 of 531 Knights, so the rule is by card)
 TOWER_RADIUS = 1400                # millitiles, king (princess 1000): attribution slack, not a law
@@ -473,6 +475,17 @@ def deployments(m, catalog, life=None, own_unit=None):
             # point is where it surfaces, not where it was first seen (ceiling subset: every opp Miner was replayed
             # walking from near its king tower, 0 tower damage vs 93-342 live).
             ev.update(x=round(statistics.fmean(p[1] for p in land)), y=round(statistics.fmean(p[2] for p in land)), dig=True)
+        elif c['display_name'] in LEAD_AHEAD:
+            # H-RASCALS: the group is the formation's lead body alone (the rest are children); the SIM stands it LEAD_AHEAD
+            # ahead of the play point, so the point is that far behind it (toward the side's own king).
+            ky = next((bd['y'] for bd in m['frames'][0][1] if bd['tower'] and bd['side'] == g['side'] and bd['id'].endswith('K')), None)
+            fwd = 1 if ky is not None and ky < 16000 else -1
+            rest = [q['y'] for q in tr if q['side'] == g['side'] and q['card_id'] == g['card_id'] and abs(q['first'] - g['tick']) <= 6
+                    and q['max_hp'] < .45*top[g['side'], g['card_id']]]
+            # only a full formation (the girls > 2000 behind; 2954 live): a river-edge play is compressed (1223) and the old
+            # point agreed there (diag_night/r4c rasgeom.py: 20261016_171357 / 214220 plays on y 14500)
+            if ky is not None and rest and (ev['y'] - statistics.fmean(rest))*fwd > LEAD_AHEAD[c['display_name']]:
+                ev['y'] = round(ev['y'] - LEAD_AHEAD[c['display_name']]*fwd)
         if g['side'] == m['side']:
             cand = [i for i, p in enumerate(m['plays']) if i not in used and p['name'] == ev['name']
                     and 0 <= g['tick']-p['tick'] <= 80]
@@ -1065,6 +1078,10 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
         except ValueError:
             roster = None
     frames = [fr for fr in m['frames'] if t0 <= fr[0] <= t1]
+    # H-TIMEOUT: nothing after the match time-out is a fight outcome: the live units decay to 0 over t6000-6017 and the SIM's go
+    # on t6002-6004, so a body alive at the time-out would 'die' 12-16 ticks apart (diag_night/r4c endtick.py: the 9 overtime
+    # matches of the 218-log cohort all end on t6000). ponytail: a fixed ladder time-out (3 + 2 min); other modes need theirs.
+    frames = [fr for fr in frames if fr[0] < TIME_OUT_TICK] or frames
     start = frames[0][1]
     for bd in start:               # spawner cycles on the t0 board: probed before this fight's reset (it resets the battle)
         c = catalog.get(bd['card_id'])

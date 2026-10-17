@@ -1,3 +1,23 @@
+## 2026-10-17 11:49 EDT -- r4c Knight evo / IW hero / Blowdart / Firecracker: H-TIMEOUT + H-RASCALS landed; Evo Knight reduction = 2 mechanisms
+
+Worker report DONE_WITH_CONCERNS (scratchpad/gauntlet/L74/parity/diag_night/r4c/; pod P1 /workspace/w_r4c, results r4c_*). Each
+fix measured alone vs FIN5 (734b9a5 + fork bc2bf9d):
+- LANDED H-TIMEOUT: frames cut at TIME_OUT_TICK 6000 (the ladder time-out; all 9 overtime matches lose every unit t6000-6017 live
+  vs t6002-6004 in the SIM). 1 fixed / 0 broken; 11 fights enter strict (all agree).
+- LANDED H-RASCALS (hand-merged over H-TIMEOUT; same code as diag_night/r4c/H_rascals.patch): the girls are children, so the boy's
+  first-seen point became the play point and the SIM stood the formation 2000 ahead of live; the point now goes LEAD_AHEAD 2000
+  behind the boy, only for a full formation (girls > 2000 behind; an ungated v1 broke 10 compressed river-edge plays). 6 fixed /
+  0 broken; 7 fights enter strict. Knight evo raw 0.860 -> 0.875, IW hero 0.920 -> 0.922, OVERALL 0.896 -> 0.898. 91 tests pass.
+- NOT landed: S-EK-RETARGET v1 (fork; engine idle_buff_pass lets the Idle tick between targets switch the Evo Knight reduction back
+  on): 20 fixed / 4 broken (the Knight walking to the tower with no target) -> v2 (also requires "did not move this tick") queued
+  on P1 /workspace/results/r4c_ekret2. H-EKSEED (a set-up Evo Knight without a fortify row at t0 starts with the reduction OFF;
+  explains r4a's 072528@2556: SIM 63 vs live 158) running at /workspace/results/r4c_ekseed. Chain ends r4c_chain.DONE; compare with
+  python3 /workspace/w_r4c/cmp.py /workspace/results/FIN5 <dir>.
+- Classes over 117 imperfect fights: U 56 (52 = spawn tick only, now captured by reader 3b); deterministic per card (Knight evo 17,
+  IW 35, Blowdart 6, Firecracker 4): target choice ~8 (S), building lifetime at setup 4 (reader: remaining life at t0), Ram Rider 3,
+  Elite Barbarians 3, chains from earlier deaths ~15, Hero IW reader shadow escaping dedup (H-SHADOW proposed, not built).
+- None of the four cards reaches the raw goal yet; combined estimate Knight evo ~0.89 (b).
+
 ## 2026-10-17 11:44 EDT -- r4a Tesla family: H-TARGETLESS landed (rolling boulders / Executioner axes in flight at t0); spawn tick = the big lever
 
 Worker report DONE_WITH_CONCERNS (scratchpad/gauntlet/L74/parity/diag_night/r4a/; pod P1 results r4a_roll, r4a_snaprest).
