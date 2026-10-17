@@ -1,3 +1,10 @@
+## 2026-10-17 01:24 EDT -- gae_ab (icebow Hero IW + LEARNED ability press, 65 upd) done: standard D3 480/960, -3.23 vs u250
+
+- 18869 rlarm_gae_ab (final 28e24c1c; copy pod_backup_weekend/pod1016_gae_ab): D1 465/960, D3 245 + 235 = 480/960 (50.0%) on the
+  0.1.35 standard seeds -> vs u250 (511) **-3.23 [-7.19, +0.83]** (beatdown -5.0 +- 6.6, rest -1.8 +- 5.2); F1 u65 (normal-IW trained)
+  is 462 on the same set. Not promotable (learned press has no live stage B). Its twin gae_hero (Hero IW + RULE press) started on
+  18869 after AB_ALL_DONE; its live-pool eval is queued (gaehero_u65). The learned-vs-rule press verdict = gae_ab vs gae_hero.
+
 ## 2026-10-17 01:20 EDT -- NEW BEST: fork clashbot36 (v0.1.36 + S2 + S1 + tower troops) = captured 0.945 [0.929, 0.961]
 
 - Port worker: branch clashbot36 (worktree C:/Users/benpe/rsfork36; bundle pod_backup_weekend/fork35/clashbot36_6323b7f.bundle, also
