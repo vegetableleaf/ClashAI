@@ -1,3 +1,20 @@
+## 2026-10-17 10:54 EDT -- owner decisions: 16-run factorial after the tower-troop arms; step d waits for RAW parity; 4th pod
+
+- Owner 10-17: "run the factorial batch after the tower troop arms finish, at 16 runs. step d needs to wait for the raw score ...
+  otherwise matches will quickly diverge over time." -> the normalised floor is not a step-d gate.
+- P4 = 64.247.206.120:34852 (pllfbwsj1byk8k; 1x L40; 27.2-CPU quota via cgroup v1 cpu.cfs_quota_us -- no cpu.max on this host)
+  -> given to the tower-troops worker so arms A / B / C run in parallel (they gate the factorial).
+- FACTORIAL DRAFT (finalised when the troop arms report): 16 runs = 2^(5-1), resolution V (I = ABCDE): every main effect and
+  every two-way interaction estimable, 3-way aliased with 2-way (assumed small). Candidate factors (2 levels, each already a tested
+  toggle): A cue inputs (step c), B exploiter league, C opponent tower troops (needs the fork engine), D posture head (C1), E tower
+  shaping (A1). Fixed in every run: init u250, Hero IW form + learned press (owner rule 10-16), engine = fork if arm B is not
+  worse than A (else PyPI 0.1.35 and C dropped), 65 updates (or 130 if cue130 shows longer helps), its own seed per run, same
+  eval (fork + troops at live rates, live-mirrored D3, 960 paired). Analysis: effect = mean(8 on) - mean(8 off); noise from the
+  measured seed-twin spread + eval SE, Lenth's pseudo-SE as cross-check (no replicate df at 16 runs). Rough noise (b): per-run SD
+  ~2.5 pp -> effect SE ~1.25 pp (95% +-2.5) vs +-4 pp for one A/B today. Cost ~4 h/run -> ~16 h on 4 pods.
+- Live run: NOT restarted yet -- the reader spawn-timer field is still being located; the current run (since 21:36) keeps
+  collecting phase-3 captures (228 now). Restart between matches once the new probe is validated.
+
 ## 2026-10-17 10:37 EDT -- FIN5: first scores under the RAW goal (218 captured logs, 213 scored, 6,798 strict fights) + round-4 diagnosis launched
 
 HEAD 734b9a5 harness (I14 + raw goal + H-UNK) + fork clashbot36 bc2bf9d, K=8 (pod 216.81.151.5:15617 /workspace/results/FIN5;
