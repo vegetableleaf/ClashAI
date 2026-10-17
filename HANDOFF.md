@@ -1,3 +1,28 @@
+## 2026-10-17 03:08 EDT -- HEADLINE on a 3x larger cohort: start-of-night 0.890 -> now 0.940 (97 fully captured matches, 3,190 strict fights)
+
+Cohort refreshed at 02:50 (all live captures so far: 102 logs -> 97 scored matches; pods: /workspace/caplogs2, attacks2.json,
+buffs2.json, /workspace/in/run_cap2.sh; laptop parity1016/{attacks2,buffs2,caplogs2}). Same 97 matches, K=8, strict, normalised [CI]:
+
+| card | n | start (795b155 + PyPI 0.1.35) | now (I11 + fork clashbot36 d80dcb5) | I11 on PyPI 0.1.35 |
+|---|---|---|---|---|
+| **OVERALL** | 3190 | **0.890 [0.874, 0.906]** | **0.940 [0.927, 0.952]** | 0.931 [0.918, 0.944] |
+| own Log | 248 | 0.822 | **0.986 [0.971, 0.998] MEETS** | 0.987 |
+| own Rocket | 42 | 0.974 | 0.981 [0.924, 1.015] | 0.981 |
+| own X-Bow | 253 | 0.943 | 0.956 [0.928, 0.982] | 0.951 |
+| own Tornado | 65 | 0.888 | 0.948 [0.881, 1.0] | 0.948 |
+| own IW hero | 309 | 0.927 | 0.947 [0.922, 0.974] | 0.947 |
+| own Knight | 199 | 0.905 | 0.944 [0.910, 0.975] | 0.939 |
+| own Tesla | 190 | 0.865 | 0.915 [0.865, 0.958] | 0.891 |
+| own Skeletons | 269 | 0.819 | 0.900 [0.866, 0.935] | 0.882 |
+| own Knight evo | 74 | 0.865 | 0.875 [0.796, 0.944] | 0.861 |
+| own Tesla evo | 56 | 0.811 | 0.869 [0.773, 0.956] | 0.835 |
+
+- Harness fixes are worth ~+0.041 overall on this cohort, the fork laws ~+0.009 (I11 on PyPI 0.1.35 vs on the fork).
+- The 27-match numbers were optimistic for IW hero (0.991 -> 0.947 with 3x the data): new matches carry failure types not seen
+  before -> round 3 (two fresh workers: r3a IW hero / X-Bow / Tornado / Knight on pod A; r3b Skeletons / Tesla / evo cards on
+  pod B, owns the fork) is diagnosing the new failures. Shared ticket parity1016/TICKET_R3.md.
+- Pods: CAP2_BEST / CAP2_P35 / CAP2_BASE0 on pod B /workspace/results/. Pod A has rsfork_f36bug copied (sha-verified).
+
 ## 2026-10-17 02:52 EDT -- fork clashbot36 head d80dcb5: + Tornado crown order, Earthquake hidden split, Evo Knight deploy protection, save fix (all tests green)
 
 - clashbot35 (bundle pod_backup_weekend/fork35/clashbot35_730d09f.bundle): f378cc1 status.BUFF_PULSE_CROWN_ORDER (Tornado crown hit
