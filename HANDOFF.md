@@ -1,3 +1,14 @@
+## 2026-10-17 ~00:55 EDT -- pod 8 cue chain RUNNING (22-feature cue smoke PASS on the pod); MuMu cause = VPN
+
+- Pod 8 (64.247.206.120:12331): smoke PASS 00:50 (22-feature cue layout, resume + round-trip checks), training
+  rlarm_gae_cue_u250 -> gae_ctl_u250 -> live-pool evals; /workspace/results/CUES/run.log; watchdog on CUES_ALL_DONE.
+  Fixes needed on this pod: the full-repo git archive is ~990 MB (link resets) -> shipped only the changed files
+  (git archive 4906edf -- <diff vs 7a3630a>); cb_cue/research is a real dir, so research/ext had to be symlinked to
+  /workspace/clashbot/research/ext (missing live_card_catalog.json crashed the first smoke).
+- Still UNVERIFIED: the no-key (cue_inputs absent) real smoke on 4906edf -- the control arm's own run is the first one.
+- MuMu freezes: owner found ProtonVPN had switched itself on after the reset; turned off. Consistent with the measured
+  absence of Android crash / ANR / low-memory records and likely also the tick-89 stall. Confirm with a few VPN-off matches.
+
 ## 2026-10-17 ~00:30 EDT -- step c COMMITTED (4906edf) + pod 8 chain launched; MuMu freezes
 
 - Step c: 22 cue floats/unit, zero-init projection (model == u250 at init), opt-in `cue_inputs`; absent = identical (tests
