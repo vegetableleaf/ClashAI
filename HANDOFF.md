@@ -1,3 +1,37 @@
+## 2026-10-16 ~22:45 EDT -- NIGHT (new account): parity FIRST, goal RAISED to 97.5% / 95% per card; captured-log baseline
+
+**Owner before bed (memory overnight-2026-10-16b-parity-night, fight-parity-goal):** monitor + AUTO-PROMOTE as before; work order
+= (1) fight parity to the NEW goal >= 97.5% overall / >= 95% EVERY card (tolerant outcome, normalised by the noise ceiling, per card
+on the 95% CI lower bound), (2) then reader steps c + d -- step d WAITS for parity (owner chose "wait", not masking; missing IL cue
+fields get SIM-replayed once parity is met). Reuse ALL pods as they finish (copy back first, every chain still self-stops).
+Morning report owed (chat + Discord).
+
+- Helpers restarted: early_eval.sh (WMI pid 39980; queued t1_s74_u250 on 37671 at 22:28), night_watch.sh in-session.
+- New owner pods: 216.81.245.71:18731 (27.2 CPU) = parity A, 64.247.206.76:14318 (30.6 CPU) = parity B (key runpod_clashbot;
+  the owner's id_ed25519 is not on the laptop); 81.27.69.179:37442 had 13.6 CPU -> STOPPED (b7lbogv8vjblri, owner's rule).
+  Setup: /workspace/cb_par (parity code + 328 frame logs + catalog + crapi/census.py + cards_stats.json), royalesim 0.1.35 and
+  0.1.36 pip --target /workspace/rs0.1.35|rs0.1.36 (0.1.35 cards.json c68d6c01 = rt35 manifest), runner /workspace/in/run_par.sh
+  VER OUT WORKERS (PARITY_SIM_PATH + PARITY_BUFFS/ATTACKS exports, no addresses). Laptop wheels: C:/Users/benpe/rt_wheels/.
+- **BUG fixed (H): fights.py read phase-3 captures only from L70/reader/re_phase3/p3_*; the live --capture-p3 files
+  (icebow/data/p3_captures/<stem>/, same layout) were never used** -> p3_runs() reads both. 91 parity tests pass.
+- **Captured-log baseline (0.1.35, K=8, strict; 27 fully captured matches / 993 fights vs 106 old / 1,833):**
+  captured: raw 0.836 [0.798, 0.867], ceiling 0.953, normalised **0.877 [0.848, 0.901]**; old: raw 0.800, ceiling 0.887,
+  normalised 0.902 [0.882, 0.921]. With the hidden state observed the ceiling rises and real gaps show (never pool the two).
+  Captured per card (raw / ceiling / normalised [CI]): **own Log 0.765 / 0.997 / 0.768 [0.669, 0.861] (n 81)**, own Tesla
+  0.764 / 0.975 / 0.781 (55), own Skeletons 0.744 / 0.900 / 0.817 (78), Tornado 0.81 / 0.974 / 0.831 (21), Knight 0.897 (70),
+  X-Bow 0.935 (78), Hero IW 0.940 (93), Rocket 0.984 (21). Under the new goal every card fails. Log is the clearest target:
+  its replays are near-deterministic (ceiling 0.997) yet disagree with live in 23% of fights.
+- **RoyaleSim 0.1.36 (upstream 10-16, 22 more client laws) on the same fights: no measurable gain** -- captured 0.880
+  [0.852, 0.902], old 0.902; Skeletons raw +0.025, Tornado (old logs) raw 0.698 -> 0.791 but its ceiling rose too. Parity
+  base stays 0.1.35 (= training runtime) for now. Copies: pod_backup_weekend/parity1016/F35_BASE, F36_BASE (+ _cap/_old).
+- Exploiter (23419) struggle eval: exploiter vs u250 54.17% vs E4 44.79%, **+9.38 [+5.42, +13.23]** -> it finds real u250
+  weaknesses; gae_exploit s74 now trains there (s75 on 37671, s76 on 23450 after trade2). Copy pod_backup_weekend/pod1016_exploit.
+- bait_gae_ab (learned Valkyrie press) 75.52% vs bait_gae u65 78.33%: -2.81 [-6.35, +0.62]; the head presses 0.36/match vs the
+  rule's 1.40 (copies the warm start's low rate) -> not a successor; pod_backup_weekend/pod1016_bait_ab.
+- Laptop: 3 orphaned `find / -maxdepth 6` from 10-16 sessions (~1 core each for hours) killed; laptop ~80% CPU with live
+  (MuMu) -> no heavy laptop runs. gcloud CLI broken on the laptop: cannot see whether clashbot-oracle-2 runs (owner asked to stop it).
+- HANDOFF timestamps 10-16 evening labelled "10-17 ~0x:xx EDT" were UTC (~4 h ahead of EDT).
+
 ## 2026-10-17 ~01:20 EDT -- exploiter relay FINISHED (no restart needed); disk cleanup
 
 - night_relay.sh done: exploiter ckpt 5deeb40a shipped; gae_exploit launchers running on 23419 (s74), 37671 (s75),

@@ -274,6 +274,7 @@ def test_phase3_attacks_from_a_capture_or_the_exported_file(tmp_path, monkeypatc
             dict(game_tick=11, phase3=dict(valid=False, bodies=[]))]
     (cap/'frames.jsonl').write_text(''.join(json.dumps(r) + '\n' for r in rows))
     monkeypatch.setattr(F, 'P3_DIR', tmp_path)
+    monkeypatch.setattr(F, 'P3_LIVE', tmp_path/'none')
     monkeypatch.delenv('PARITY_ATTACKS', raising=False)
     want = {10: {5: [7, None, 850, 0, 0, 0]}}
     assert F.phase3_attacks('x/live_play_a.jsonl') == want and F.phase3_attacks('live_play_b.jsonl') == {}

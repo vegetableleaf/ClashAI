@@ -69,6 +69,14 @@ PRIORITY = {'Xbow', 'Tesla', 'Tornado', 'Log', 'IceWizard', 'Rocket', 'Knight', 
 SPELL_SOURCES = ('own_spell_tap+delay', 'spell_seen')
 P2_DIR = ROOT/'scratchpad/gauntlet/L70/reader/re_phase2/validation'    # phase-2 captures: run.json names its frame log
 P3_DIR = ROOT/'scratchpad/gauntlet/L70/reader/re_phase3'                # phase-3 captures carry the same phase-2 buff rows
+P3_LIVE = ROOT/'icebow/data/p3_captures'   # live --capture-p3 (5e4818f): same run.json + frames.jsonl layout, gitignored
+
+
+def p3_runs():
+    """Every phase-3 capture: the manual probe runs and the live --capture-p3 ones."""
+    return sorted(P3_DIR.glob('p3_*/run.json')) + sorted(P3_LIVE.glob('*/run.json'))
+
+
 CAST, MID_JUMP = 10, (3, 5, 6)     # behavior_state_raw: hero cast; Mega Knight jump, river jump, tunnelling
 STUN_BUFFS = ('Freeze', 'Tesla_EV1_WithDamage')   # phase-2 buff names the SIM holds as stun_ms (Freeze spell -> stun_ms, probed)
 # Ice Wizard slows (all -30% walk / attack / spawn, IW_SLOW_1016.md): live buff name -> the SIM buff it is seeded as
@@ -189,7 +197,7 @@ def phase2_buffs(path):
     if os.environ.get('PARITY_BUFFS'):
         rows = json.loads(Path(os.environ['PARITY_BUFFS']).read_text()).get(Path(path).name, {})
         return {int(t): {int(g): [tuple(b) for b in v] for g, v in u.items()} for t, u in rows.items()}
-    for run in sorted(P2_DIR.glob('*/run.json')) + sorted(P3_DIR.glob('p3_*/run.json')):
+    for run in sorted(P2_DIR.glob('*/run.json')) + p3_runs():
         try:
             if json.loads(run.read_text()).get('live_log') != Path(path).name:
                 continue
@@ -214,7 +222,7 @@ def phase3_attacks(path):
     if os.environ.get('PARITY_ATTACKS'):
         rows = json.loads(Path(os.environ['PARITY_ATTACKS']).read_text()).get(Path(path).name, {})
         return {int(t): {int(g): v for g, v in u.items()} for t, u in rows.items()}
-    for run in sorted(P3_DIR.glob('p3_*/run.json')):
+    for run in p3_runs():
         try:
             if json.loads(run.read_text()).get('live_log') != Path(path).name:
                 continue
@@ -2084,12 +2092,12 @@ def main():
     ap.add_argument('--infer', default='', help="opt-in attack inference at setup: 'target', 'phase' or 'target,phase' (PARITY_INFER)")
     a = ap.parse_args()
     if a.mode == 'buffs':      # phase-2 buff rows of every local capture -> one file for PARITY_BUFFS (no addresses)
-        logs = {json.loads(r.read_text()).get('live_log') for r in sorted(P2_DIR.glob('*/run.json')) + sorted(P3_DIR.glob('p3_*/run.json'))}
+        logs = {json.loads(r.read_text()).get('live_log') for r in sorted(P2_DIR.glob('*/run.json')) + p3_runs()}
         out = {n: phase2_buffs(n) for n in sorted(filter(None, logs))}
         a.out.write_text(json.dumps(out))
         print({n: len(v) for n, v in out.items()}); return 0
     if a.mode == 'attacks':    # phase-3 attack rows (generation ids, counters; no addresses) -> one file for PARITY_ATTACKS
-        logs = {json.loads(r.read_text()).get('live_log') for r in sorted(P3_DIR.glob('p3_*/run.json'))}
+        logs = {json.loads(r.read_text()).get('live_log') for r in p3_runs()}
         out = {n: phase3_attacks(n) for n in sorted(filter(None, logs))}
         a.out.write_text(json.dumps(out, separators=(',', ':')))
         print({n: len(v) for n, v in out.items()}); return 0
