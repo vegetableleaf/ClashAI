@@ -1,3 +1,17 @@
+## 2026-10-17 18:28 EDT -- r5c landed: H-ZAP + H-SPAWN-BORN + H-SHADOW-SHORT (upgraded cohort vs FIN7 0.9118)
+
+Worker DONE_WITH_CONCERNS (diag_night/r5c/, fails_classified.txt: 58 failing upgraded fights on own IW 18 / Knight 13 / Log 15 /
+X-Bow 9 / Rocket 3; H 13, S 31, U 14).
+- H-ZAP: the reader never shows an opponent Zap (0 rows on 83 upgraded logs); inferred from exact same-gap level drops on bodies
+  (Barbarian-family reach excluded), grid-placed, replayed on the 1-tick delay; ZapFreeze added to STUN_BUFFS. 17 Zaps inferred;
+  10 fixed / 2 broken (132435@4551 X-Bow, 142144@3596 Wallbreakers evo, unexplained); OVERALL 0.9118 -> 0.9144, X-Bow 0.957 ->
+  0.962, Knight 0.938 -> 0.944, Skeletons 0.869 -> 0.882. Full cohort NOT run.
+- H-SPAWN-BORN: a set-up spawner with no wave seen yet now holds what a played one of age t0 - birth holds (SIM first-wave timing
+  = live: Witch / Fire Spirit Hut / Dark Witch +38, Tombstone +19, 77/77). 2 fixed; 2 became perturbation-sensitive; upgraded only.
+- H-SHADOW-SHORT: Hero IW reader shadow dedup tolerates one off sample (>= 4 samples); 4 tracks on 316 logs; 1 fixed / 0 broken both
+  cohorts.
+- Pending: H-NEARPARENT (2 / 0 upgraded; full-cohort r5c_np2rest running); r5d H-CHILDFORM (+6 / 0 upgraded; full run pending).
+- 91 parity tests pass with the three applied.
 ## 2026-10-17 18:00 EDT -- FACTORIAL launched: 16 runs on 4 pods (ETA 10-18 07:00-09:30 EDT); refs on the factorial eval
 
 - Worker DONE_WITH_CONCERNS; files scratchpad/gauntlet/L74/factorial/ (design, cfg/fact01-16.yaml, chain / pull / analyze).

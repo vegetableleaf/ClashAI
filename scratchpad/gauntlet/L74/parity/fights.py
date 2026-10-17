@@ -86,7 +86,8 @@ def p3_runs():
 
 
 CAST, MID_JUMP = 10, (3, 5, 6)     # behavior_state_raw: hero cast; Mega Knight jump, river jump, tunnelling
-STUN_BUFFS = ('Freeze', 'Tesla_EV1_WithDamage')   # phase-2 buff names the SIM holds as stun_ms (Freeze spell -> stun_ms, probed)
+STUN_BUFFS = ('Freeze', 'Tesla_EV1_WithDamage', 'ZapFreeze')   # phase-2 buff names the SIM holds as stun_ms (Freeze spell -> stun_ms,
+# probed; ZapFreeze: the Zap's -100 speed / hit-speed stun, flagged status_unset before H-ZAP, diag_night/r5c 112457@3032)
 # Ice Wizard slows (all -30% walk / attack / spawn, IW_SLOW_1016.md): live buff name -> the SIM buff it is seeded as
 # (Engine.slow_ids, probed: the SIM's after-slow and base deploy chill are its IceWizardSlowDown). The hero freeze
 # (999,999 sentinel) is not a time and stays unset (an ability inside 100 ticks of t0 is a strict blocker anyway).
@@ -202,7 +203,9 @@ def read_match(path):
                 if a != b:
                     both[a, b] += 1
     dup = {a if hp[a]/n[a] > hp[b]/n[b] or (hp[a]/n[a] == hp[b]/n[b] and a > b) else b
-           for (a, b), k in both.items() if k >= .9*min(n[a], n[b])}
+           # H-SHADOW-SHORT (diag_night/r5c): a short-lived shadow is off on one sample (its first: 130511@770, a Hero IW dead
+           # 8 ticks after its play, co-located on 4 of 5 samples), so one off sample is allowed once a pair has >= 4 samples
+           for (a, b), k in both.items() if k >= .9*min(n[a], n[b]) or k >= min(n[a], n[b]) - 1 >= 3}
     out = [(t, [bd for bd in bodies if bd['id'] not in dup]) for t, bodies in out]
     return dict(match=Path(path).stem, side=side, frames=out, plays=plays, shots=shots,
                 abilities=[a for a in abilities if a['confirmed']], ext=bool(extra), proj=proj, fx=fx), None
@@ -472,11 +475,88 @@ def seen_casts(m, catalog, life=None):
     return sorted(out, key=lambda e: (e['tick'], e['side'], e['name']))
 
 
-def deployments(m, catalog, life=None, own_unit=None):
+ZAP_HITS = {16: (306, 307, 77), 15: (279, 280, 70), 14: (254, 255, 64), 13: (231, 232, 58)}   # SIM Zap drops (troop, building,
+# crown tower) per level on the 160402017 table (diag_night/log/sim_spell_table.jsonl). ponytail: table constants; re-probe on a new table
+ZAP_R = 2500                       # ZapArea radius_milli (card table)
+ZAP_TWINS = ('Barbarians', 'BattleRam', 'BarbarianHut', 'EliteBarbarians')   # melee hits sized like a same-level Zap (124601@682)
+
+
+def unseen_zaps(m, catalog, seen, stats):
+    """H-ZAP (diag_night/r5c): the reader shows no Zap at all (no projectile, no area row on any of the 83 upgraded logs), so
+    an opponent Zap was never replayed while the fight stayed strict (132100@3454: our X-Bow and Tesla, 2.9 tiles apart,
+    -307 each in one frame gap = a level-16 Zap; the live X-Bow, stunned, retargets a Ronin, the SIM's keeps hitting the
+    tower: 1862 vs 980 tower damage). Its effect is public: one frame gap (<= 3 ticks) in which >= 2 bodies of one side
+    take that level's Zap drop (troop +-1, building + decay, crown tower +-1), or one does and another body within
+    2 x radius dies with hp <= the drop. Not when the same bodies repeat it within 12 ticks (a chaining attacker), an
+    Electro Wizard of the caster's side appeared in the 30 ticks before (its deploy zap), or a seen spell of that side
+    explains it. Cast point: the grid point (100 mt) covering every hit body (radius + body radius) and the most dead
+    ones, then the fewest untouched bodies of that side, then nearest the victims' centroid. Command tick: the drop shows
+    one tick after the SIM's command (probed: zapdelay.py), so the gap (ta, tb] gives tick ta..tb-1."""
+    rad = lambda b: (stats('PrincessTower') if b['tower'] else stats((catalog.get(b['card_id']) or {}).get('display_name'))
+                     ).get('collision_radius_milli') or 500
+    kind = lambda b: 'tower' if b['tower'] else (catalog.get(b['card_id']) or {}).get('type')
+    first = {}
+    for t, bodies in m['frames']:
+        for b in bodies:
+            first.setdefault(b['id'], (t, b))
+    ewiz = [(t, b['side']) for t, b in first.values() if (catalog.get(b['card_id']) or {}).get('display_name') == 'ElectroWizard']
+    cands, fr = [], m['frames']
+    for (ta, A), (tb, B) in zip(fr, fr[1:]):
+        if tb - ta > 3:
+            continue
+        pa, ids = {b['id']: b for b in A}, {b['id'] for b in B}
+        for v in (0, 1):
+            for lv, (zt, zb, zc) in ZAP_HITS.items():
+                hit = []
+                for b in B:
+                    p = pa.get(b['id'])
+                    if not p or b['side'] != v or p['hp'] <= 0 or b['hp'] < 0:
+                        continue
+                    d, k = p['hp'] - b['hp'], kind(b)
+                    # a body with a caster-side ZAP_TWINS troop within 2 tiles may have taken a melee hit of the same size (a level-L
+                    # Barbarian hits for that level's Zap damage: 124601@682 was two Barbarian swings, diag_night/r5c)
+                    melee = any(o['side'] != v and not o['tower'] and (catalog.get(o['card_id']) or {}).get('display_name') in ZAP_TWINS
+                                and math.hypot(o['x']-p['x'], o['y']-p['y']) <= 2000 + rad(o) + rad(p) for o in A)
+                    if not melee and (abs(d - zc) <= 1 if k == 'tower' else zb <= d <= zb + 5*(tb - ta) if k == 'building' else abs(d - zt) <= 1):
+                        hit.append(p)
+                dead = [p for k_, p in pa.items() if k_ not in ids and p['side'] == v and not p['tower'] and 0 < p['hp'] <= zt
+                        and hit and min(math.hypot(p['x']-h['x'], p['y']-h['y']) for h in hit) <= 2*ZAP_R]
+                if hit and len(hit) + len(dead) >= 2:
+                    rest = [p for p in A if p['side'] == v and p['id'] in ids and p not in hit and p['hp'] > 0]
+                    cands.append((tb, ta, v, lv, hit, dead, rest))
+    out = []
+    for c in cands:
+        tb, ta, v, lv, hit, dead, rest = c
+        vid = {p['id'] for p in hit}
+        if any(o is not c and o[0] != tb and abs(o[0] - tb) <= 12 and {p['id'] for p in o[4]} == vid for o in cands) \
+                or any(s == 1 - v and tb - 30 <= t <= tb for t, s in ewiz) \
+                or any(e['side'] == 1 - v and e['kind'] == 'play' and tb - 20 <= e['seen'] <= tb + 2 for e in seen) \
+                or any(o is not c and o[0] == tb and o[2] == v and (len(o[4]) + len(o[5]), o[3]) > (len(hit) + len(dead), lv) for o in cands):
+            continue
+        V = hit + dead
+        cx, cy = sum(p['x'] for p in V)/len(V), sum(p['y'] for p in V)/len(V)
+        best = None
+        for gx in range(int(min(p['x'] for p in V)) - ZAP_R, int(max(p['x'] for p in V)) + ZAP_R + 1, 100):
+            for gy in range(int(min(p['y'] for p in V)) - ZAP_R, int(max(p['y'] for p in V)) + ZAP_R + 1, 100):
+                cov = lambda p: math.hypot(p['x']-gx, p['y']-gy) <= ZAP_R + rad(p)
+                if not all(cov(p) for p in hit):
+                    continue
+                s = (sum(map(cov, dead)), -sum(map(cov, rest)), -math.hypot(gx-cx, gy-cy))
+                if best is None or s > best[0]:
+                    best = (s, gx, gy)
+        if best:
+            out.append(dict(kind='play', side=1-v, name='Zap', form=0, tick=(ta + 1 + tb)//2 - 1, lo=ta, hi=tb - 1, x=best[1],
+                            y=best[2], n=0, source='spell_seen', spell_spawned=False, seen=tb, end=tb, inferred=True))
+    return out
+
+
+def deployments(m, catalog, life=None, own_unit=None, stats=None):
     """Live deployments: new body groups (children of a living/just-dead same-card body, or role-children by max_hp,
     are the SIM's job, not plays), own confirmed spells, own Hero IW presses. Ext logs: spells and hero casts of both
     sides as seen (seen_casts); an own tap or press stays only where nothing was seen for it."""
     seen = seen_casts(m, catalog, life) if m.get('ext') else []
+    if m.get('ext') and stats:
+        seen += unseen_zaps(m, catalog, seen, stats)
     tr = sorted(tracks(m['frames']).values(), key=lambda r: (r['first'], r['id']))
     t_start = m['frames'][0][0]
     top = defaultdict(int)
@@ -957,6 +1037,37 @@ class Engine:
             self._form[key] = out
         return self._form.get(key)
 
+    def first_cycle(self, name, probe=True):
+        """{age: (spawn_ms, spawn_wave_left)} the record of a PLAYED spawner card holds `age` ticks after its creation tick,
+        up to its first wave (H-SPAWN-BORN, diag_night/r5c firstwave.py: first child at creation + 38 for Witch, Fire Spirit
+        Hut, Dark Witch and + 19 for Tombstone, the same in the SIM's played path and live, 77 / 77 Witches); None for a card
+        that spawns no timed waves. probe=False reads the cache only (a probe resets the battle)."""
+        key = ('first', name)
+        if key not in self._form and probe:
+            out = None
+            if self.spawn_table(name) is not None:
+                b = self.b
+                b.reset(1, [[self.ids['Knight']], [self.ids[name]]], 0, 200, [10000, 10000], [[4824, 0, 0], [4824, 0, 0]], [],
+                        levels=[[15], [15]], tower_levels=[15, 15])
+                b.step([(1, 0, 9000*18, 24000*18)], 0)
+                E = json.loads(b.save())['ents']
+                seen = {j for j in range(len(E['alive'])) if E['alive'][j]}
+                i, born, rec = None, None, {}
+                for t in range(1, 400):
+                    b.step([], 1)
+                    E = json.loads(b.save())['ents']
+                    new = [j for j in range(len(E['alive'])) if E['alive'][j] and j not in seen]
+                    if i is None:
+                        i = next((j for j in new if E['spawned_by'][j] is None), None)
+                        born = t
+                    if i is None:
+                        continue
+                    if any(E['spawned_by'][j] is not None for j in new) or not E['alive'][i]:
+                        out = rec; break
+                    rec[t - born] = (E['spawn_ms'][i], E['spawn_wave_left'][i])
+            self._form[key] = out
+        return self._form.get(key)
+
     def shot_template(self, name, form, level):
         """A real in-flight projectile record (save()['projectiles'] row) shot by engine card `name` played in `form` at
         `level`, or by a 'PrincessTower' / 'KingTower' at tower level `level`, at a still Golem: the template for a
@@ -1157,7 +1268,7 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
     for bd in start:               # spawner cycles on the t0 board: probed before this fight's reset (it resets the battle)
         c = catalog.get(bd['card_id'])
         if not bd['tower'] and c and c['display_name'] in eng.ids:
-            eng.spawn_table(c['display_name'])
+            eng.spawn_table(c['display_name']); eng.first_cycle(c['display_name'])
     flags = Counter()
     shots = inflight_shots(m, fight, start, catalog, levels, tower_levels) if m['ext'] else []
     for s_ in shots:               # templates probed before this fight's reset (a probe resets the battle); cached
@@ -2455,6 +2566,14 @@ def start_state(eng, m, fight, setup, start, events, catalog):
                 # its creation tick from the phase-3b fields (m['births']) when the capture has them, else mid-gap
                 kids.append((m.get('births') or {}).get(r['gen'], ((prev + 1 + r['first'])//2,))[0])
         if not kids:
+            # H-SPAWN-BORN (diag_night/r5c): no wave yet, but the capture timed its creation (phase-3b births): the record is
+            # what a played one holds that many ticks after its creation (Engine.first_cycle), not a fresh cycle from t0 --
+            # 162943@5518 a Witch made 32 ticks before t0 spawned on 5524 live, on 5538 in the SIM (first wave = creation + 38).
+            born = (m.get('births') or {}).get(a.get('gen'), (None,))[0]
+            first = eng.first_cycle(catalog[a['card_id']]['display_name'], probe=False) if born is not None else None
+            if first and t0 - born in first:
+                ms, wl = first[t0 - born]
+                out.append((('body', bd), dict(spawn_ms=ms, spawn_wave_left=wl))); flags['setup_spawner_born'] += 1; continue
             flags['setup_spawner_unseen'] += 1; continue
         kids.sort()
         last, k = kids[-1], 1
@@ -2774,7 +2893,7 @@ def run_match(path, window, out_dir, ceiling=0):
         return res
     eng = Engine()
     m['births'] = phase3_births(path) if m['ext'] else {}
-    events, delay = deployments(m, catalog, eng.effect_life, own_unit=lambda n, hp: eng.level(n, hp) is not None)
+    events, delay = deployments(m, catalog, eng.effect_life, own_unit=lambda n, hp: eng.level(n, hp) is not None, stats=eng.stats)
     fights = cut(m, events, window)
     m['buffs'] = phase2_buffs(path) if m['ext'] else {}
     m['attacks'] = phase3_attacks(path) if m['ext'] else {}
