@@ -1,0 +1,62 @@
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -713,8 +713,8 @@
+                     sv = json.loads(b.save())
+                     E = sv['ents']
+                     hit = [p for p in sv['projectiles'] if p.get('firer') and firer(E, p['firer']['index'])]
+-                    if hit:
+-                        out = hit[0]; break
++                    if hit:        # one shot; and how many the firer launches at once (the volley trim in inflight_shots)
++                        out = dict(hit[0], _volley=len(hit)); break
+             except (ValueError, KeyError, StopIteration):
+                 out = None
+             self._form[key] = out
+@@ -786,6 +786,19 @@
+     shots = inflight_shots(m, fight, start, catalog, levels, tower_levels) if m['ext'] else []
+     for s_ in shots:               # templates probed before this fight's reset (a probe resets the battle); cached
+         s_['tpl'] = eng.shot_template(*s_['key'])
++    # A volley the SIM launches as fewer shots than the live rows (the Princess: 5 arrow rows live, one SIM shot carrying
++    # the damage; diag_night/skel 221202@2961: 5 injected arrows killed a 276-hp Ice Wizard that live kept at 31) keeps,
++    # per source and target, the rows aimed nearest the target, as many as the SIM launches.
++    vol = defaultdict(list)
++    for s_ in shots:
++        vol[s_['src'], s_['tgt'], s_['born']].append(s_)
++    t0_by = {bd['id']: bd for bd in start}
++    for (_, tg, _), ss in vol.items():
++        n = (ss[0]['tpl'] or {}).get('_volley', 1)
++        if len(ss) > n:
++            b0 = t0_by[tg]
++            for s_ in sorted(ss, key=lambda s_: math.hypot(s_['ax']-b0['x'], s_['ay']-b0['y']))[n:]:
++                shots.remove(s_); flags['setup_shot_volley_trimmed'] += 1
+     decks, forms, lv = [[], []], [[], []], [[], []]
+ 
+     def need(side, name, form, level=None):
+@@ -1023,7 +1036,7 @@
+             if s_['tpl'] is None or i is None or j is None:
+                 flags['setup_shot_skipped:' + ('no_template' if s_['tpl'] is None else 'source' if i is None else 'target')] += 1
+                 continue
+-            p = json.loads(json.dumps(s_['tpl']))
++            p = json.loads(json.dumps(s_['tpl'])); p.pop('_volley', None)
+             p.update(team=E['team'][i], pos={'x': round(s_['x']*18), 'y': round(s_['y']*18)}, aim=dict(E['pos'][j]),
+                      target={'index': j, 'generation': E['generation'][j]}, firer={'index': i, 'generation': E['generation'][i]},
+                      firer_card=E['card'][i], frac={'x': 0, 'y': 0})
+@@ -1690,6 +1703,10 @@
+     Ice Spirits, a Bowler's rolling boulder, an Executioner's returning axe)."""
+     by = {bd['id']: bd for bd in start}
+     out = []
++    born = {}                      # shot id -> first frame it is seen (one volley: one source's shots first seen together)
++    for t, _ in m['frames'][max(0, fight['frame0']-40):fight['frame0']+1]:
++        for p in m['proj'].get(t, ()):
++            born.setdefault(p[6], t)
+     for p in m['proj'].get(fight['t0'], ()):
+         if (catalog.get(p[3]) or {}).get('type') == 'spell':
+             continue
+@@ -1704,7 +1721,7 @@
+                 continue
+             name = c['display_name']
+             key = (name, form_of(src['card_id'], c), levels.get((src['side'], name)) or levels.get((src['side'], '*')) or 15)
+-        out.append(dict(src=src['id'], tgt=tgt['id'], x=p[1], y=p[2], key=key))
++        out.append(dict(src=src['id'], tgt=tgt['id'], x=p[1], y=p[2], ax=p[4], ay=p[5], born=born.get(p[6]), key=key))
+     return out
+ 
+ 

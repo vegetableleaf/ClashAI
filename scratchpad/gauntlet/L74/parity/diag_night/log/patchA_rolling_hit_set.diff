@@ -1,0 +1,112 @@
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -721,6 +721,27 @@
+         reach = max(c.get('area_damage_radius_milli') or 0, (c.get('spell') or {}).get('radius_milli') or 0,
+                     (sp.get('projectile_range_milli') or 0) + (sp.get('projectile_radius_milli') or 0)) + TOWER_RADIUS
+         spell = dict(d=d or 0, dt=(d or 0)*(c.get('crown_tower_damage_percent') or 100)/100, x=anchor['x'], y=anchor['y'], reach=reach)
++        pj = c.get('projectile') or {}
++        if sp.get('projectile_range_milli') and sp.get('projectile_radius_milli') and sp.get('speed') and pj.get('speed'):
++            # A rolling spell (the Log, the Barbarian Barrel) hits only what its box rolls over: thrown from min_distance
++            # behind the cast point, it lands ceil(min_distance / throw speed) ticks after the play tick and rolls
++            # `speed` a tick (table units = millitiles a tick; measured on the 19 failing own-Log fights of the captured
++            # cohort: live and SIM rolls land within 1 tick of this and of each other). diag_night/log/REPORT.md.
++            def body(name, max_hp, form):
++                # (radius, flying) of a body; a child carries its parent's card (a Skeleton Balloon's skeletons):
++                # read the card whose own unit it is (Engine.child_proxy), a rider-like child as a ground body
++                if not form and name in eng.ids and eng.level(name, max_hp) is None:
++                    proxy = eng.child_proxy(name, max_hp)
++                    if not proxy or proxy[0] == '__parent__':
++                        return 500, False
++                    name = proxy[0]
++                st = eng.stats(name) or {}
++                return (st.get('collision_radius_milli') or 500,
++                        bool(eng.cat[eng.ids[name]]['flying']) if name in eng.ids else False)
++            spell.update(roll=dict(x=anchor['x'], y=anchor['y'], t=anchor['tick'] + math.ceil((pj.get('min_distance_milli') or 0)/pj['speed']),
++                                   v=sp['speed'], len=sp['projectile_range_milli'], hw=sp['projectile_radius_milli'],
++                                   hd=sp.get('projectile_radius_y_milli') or 0, fwd=1 if anchor['side'] == 0 else -1,
++                                   air=bool(sp.get('aoe_to_air'))), body=body)
+     if m['ext']:
+         eng.slow_ids()             # probed before this fight's reset (it resets the battle); cached
+     roster = None
+@@ -1248,6 +1269,16 @@
+     return out
+ 
+ 
++def rolled(roll, x, y, r, lo, hi):
++    """Does a rolling spell's box (roll: landing tick t, speed v, length len, half width hw, half depth hd, direction
++    fwd, centre x / y = the cast point) touch the disc (x, y, r) on some tick in lo..hi?"""
++    a, b = max(lo, roll['t']), min(hi, roll['t'] + math.ceil(roll['len']/roll['v']))
++    if a > b or abs(x - roll['x']) > roll['hw'] + r:
++        return False
++    ya, yb = (roll['y'] + roll['fwd']*min(roll['len'], roll['v']*(t - roll['t'])) for t in (a, b))
++    return min(ya, yb) - roll['hd'] - r <= y <= max(ya, yb) + roll['hd'] + r
++
++
+ def card_view(rows, which, pairs, anchor, until, spell, reach, catalog, window=SPELL_WINDOW, roster=None):
+     """What the anchor card did in one run: which = 1 the live frames, 2 the SIM's. Bodies are keyed by live id (a SIM
+     body by its paired live id, else its own 's' id).
+@@ -1276,7 +1307,8 @@
+     death = lambda k: life[k][1] if life[k][1] < t_end else None
+     if spell:
+         lo, hi = tick-2, tick+window
+-        first, enemy, drop = {}, {}, defaultdict(int)     # first: key -> tick of its first spell-sized hit
++        roll = spell.get('roll')
++        first, enemy, drop, under = {}, {}, defaultdict(int), set()   # first: key -> tick of its first spell-sized hit
+         for (ta, *ba), (tb, *bb) in zip(rows, rows[1:]):
+             if not lo <= tb <= hi:
+                 continue
+@@ -1288,17 +1320,27 @@
+                         drop[k] = max(drop[k], p['hp'] - max(0, bd['hp']))
+                 elif bd['side'] != side and not k.startswith('s'):
+                     enemy[k] = None
+-                    if p and p['hp'] - bd['hp'] >= spell['d']/2:
++                    if roll is None and p and p['hp'] - bd['hp'] >= spell['d']/2:
+                         first.setdefault(k, tb)
+-            for k, p in prev.items():       # gone in this gap: a hit if the spell could kill it there
+-                if not p['tower'] and p['side'] != side and not k.startswith('s') and death(k) == ta and p['hp'] <= spell['d'] \
+-                        and math.hypot(p['x']-spell['x'], p['y']-spell['y']) <= spell['reach']:
+-                    enemy[k] = None; first.setdefault(k, ta)
++            for k, p in prev.items():
++                if p['tower'] or p['side'] == side or k.startswith('s'):
++                    continue
++                if roll is not None:        # rolled over in this gap (the live roll lands 0-1 tick after the table's): pass tick = gap end
++                    r, fly = spell['body'](name(p), p['max_hp'], p['form'] if which == 2 else form_of(p['card_id'], catalog.get(p['card_id'], {})))
++                    if life[k][0] == ta and rolled(roll, p['x'], p['y'], r, ta - 1, ta):
++                        under.add(k)        # born under the box: not rolled over (live: the Hero Goblins' object, 0 of 3 hit)
++                    if k not in first and k not in under and (roll['air'] or not fly) and rolled(roll, p['x'], p['y'], r, ta - 1, tb):
++                        enemy[k] = None; first[k] = tb
++                elif death(k) == ta and p['hp'] <= spell['d'] and math.hypot(p['x']-spell['x'], p['y']-spell['y']) <= spell['reach']:
++                    enemy[k] = None; first.setdefault(k, ta)   # gone in this gap: a hit if the spell could kill it there
+         for k, t in first.items():          # killed by the spell: gone within 2 frames of its first hit
+             if death(k) is not None and death(k) <= t + 4:
+                 enemy[k] = death(k)
+         tower = sum(spell['dt'] for v in drop.values() if spell['dt'] and v >= .8*spell['dt'])
+-        return dict(spell=True, hit=sorted(first), enemy=enemy, tower=round(tower), end=t_end)
++        out = dict(spell=True, hit=sorted(first), enemy=enemy, tower=round(tower), end=t_end)
++        if roll is not None:                # card_agree compares these bodies' deaths up to the earlier pass + 4
++            out.update(passed=first, died={k: death(k) for k, r in life.items() if r[2] != side and not k.startswith('s')})
++        return out
+     own = {k for k, r in life.items() if r[2] == side and r[3] == anchor['name'] and not r[4] and tick-2 <= r[0] < until
+            and (roster is None or r[5] in roster or r[0] <= tick + 12)}
+     tower = 0.
+@@ -1318,7 +1360,19 @@
+ 
+ def card_agree(a, b):
+     """(agree, body mismatches, bodies, tower ok) of two card views of the same fight (live vs SIM, or SIM vs SIM)."""
+-    if a['spell']:
++    if a['spell'] and 'passed' in a and 'passed' in b:
++        # A rolling spell: every body its box rolled over in either run, compared by its death (any cause) up to the
++        # earlier pass + 4 ticks; a later death is other cards' doing (None), a body the run never had is 'missing'.
++        def fate(v, k, h):
++            if k not in v['died']:
++                return 'missing'
++            d = v['died'][k]
++            return d if d is not None and d <= h else None
++        pairs = []
++        for k in set(a['passed']) | set(b['passed']):
++            h = min(v['passed'][k] for v in (a, b) if k in v['passed']) + 4
++            pairs.append((fate(a, k, h), fate(b, k, h)))
++    elif a['spell']:
+         keys = set(a['hit']) | set(b['hit'])
+         pairs = [(a['enemy'].get(k, 'missing'), b['enemy'].get(k, 'missing')) for k in keys]
+     else:

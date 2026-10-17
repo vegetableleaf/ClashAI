@@ -1,0 +1,142 @@
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -677,6 +677,43 @@
+             self._form[key] = out
+         return self._form.get(key)
+ 
++    def shot_template(self, side, name=None, form=0, level=15, tower=None):
++        """(shot, shots per volley): the SIM's own in-flight projectile (a save()['projectiles'] row) of a `side` shooter
++        (card `name` played from hand in `form` at `level`, or tower 'K' / 'P' at tower level `level`) shooting an enemy
++        Golem out of the other towers' reach, and how many it fires at once; None if it fires none within 10 s. Resets the
++        battle: call before a fight's setup (cached)."""
++        key = ('shot', side, name, form, level, tower)
++        if key not in self._form:
++            b, team, out = self.b, ('Blue', 'Red')[side], None
++            fy = (lambda y: y) if side == 0 else (lambda y: 32000 - y)   # side 1 = the mirrored half
++            try:
++                if tower:
++                    gx, gy = (9000, fy(9500)) if tower == 'K' else (3500, fy(11500))
++                    hp = [[4824, 3052, 3052], [4824, 3052, 3052]]
++                    if tower == 'K':
++                        hp[side] = [4824, 0, 0]                          # princesses down: the king is awake
++                    b.reset(1, [[self.ids['Knight']], [self.ids['Knight']]], 0, 200, [10000, 10000], hp,
++                            [(1-side, self.ids['Golem'], gx*18, gy*18, 10**6)], levels=[[11], [11]], tower_levels=[level, level])
++                else:
++                    decks, forms, lvls = [[0], [0]], [[0], [0]], [[11], [11]]
++                    decks[side], forms[side], lvls[side] = [self.ids[name]], [form], [level]
++                    decks[1-side] = [self.ids['Golem']]
++                    b.reset(1, decks, 0, 200, [10000, 10000], None, [(1-side, self.ids['Golem'], 9000*18, fy(14000)*18, 10**6)],
++                            forms=forms, levels=lvls, tower_levels=[11, 11])
++                    b.step([(side, 0, 9000*18, fy(10000)*18)], 0)
++                for _ in range(200):
++                    b.step([], 1)
++                    sv = json.loads(b.save()); E = sv['ents']
++                    kinds = ({'KingTower'} if tower == 'K' else {'PrincessTower'}) if tower else {'Troop', 'Building'}
++                    me = {i for i in range(len(E['alive'])) if E['alive'][i] and E['team'][i] == team and E['kind'][i] in kinds}
++                    mine = [p for p in sv['projectiles'] if p['team'] == team and p.get('firer') and p['firer']['index'] in me]
++                    if mine:       # (one shot, shots per volley: the Princess's 5 arrows are 5 rows live)
++                        out = (mine[0], len(mine)); break
++            except (ValueError, KeyError):
++                out = None
++            self._form[key] = out
++        return self._form[key]
++
+     def tower_level(self, king, princess):
+         for lv in range(16, 0, -1):
+             if lv not in self._tower:
+@@ -739,6 +776,10 @@
+         c = catalog.get(bd['card_id'])
+         if not bd['tower'] and c and c['display_name'] in eng.ids:
+             eng.spawn_table(c['display_name'])
++    # Phase-3 logs: shots in flight at t0 are board state the setup lacks (diag_night/skel: 24 of 24 such shots in the
++    # failing own Skeletons / Tornado fights landed live and never in the SIM). Their SIM templates are probed before the
++    # reset. Only where the shooters' attack state is observed too: elsewhere perturb redraws a swing that just fired.
++    shots = in_flight(eng, m, fight, start, catalog, levels, tower_levels) if m['ext'] and m.get('attacks') else []
+     flags = Counter()
+     decks, forms, lv = [[], []], [[], []], [[], []]
+ 
+@@ -962,6 +1003,34 @@
+         except Exception:
+             flags['setup_state_not_set'] += 1
+ 
++    if shots:
++        before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
++        by = {bd['id']: bd for bd in setup}
++        live0 = {bd['id']: bd for bd in start}
++        ref_of = lambda k: (('tower', live0[k]['side'], live0[k]['x'], live0[k]['y']) if live0[k]['tower'] else
++                            ('body', by[k]) if k in by and not by[k].get('proxy') else None) if k in live0 else None
++        for s in shots:
++            if s['src'] and s['src'] not in observed:
++                # a living shooter whose attack state the capture did not give (a Goblin Giant's rider): its SIM swing is
++                # the setup default, and it may fire this shot again
++                flags['setup_shot_unobserved_shooter'] += 1; continue
++            tr, fr = ref_of(s['tgt']), ref_of(s['src']) if s['src'] else None
++            t = ent(E, tr) if tr else None
++            f = ent(E, fr) if fr else None
++            if s['tpl'] is None or t is None:
++                flags['setup_shot_unset'] += 1; continue
++            after['projectiles'].append(dict(json.loads(json.dumps(s['tpl'])), team=team[s['side']],
++                                             pos={'x': round(s['x']*18), 'y': round(s['y']*18)},
++                                             aim={'x': round(s['tx']*18), 'y': round(s['ty']*18)}, frac={'x': 0, 'y': 0},
++                                             target={'index': t, 'generation': E['generation'][t]}, fresh=False, held=False,
++                                             firer={'index': f, 'generation': E['generation'][f]} if f is not None else None))
++            flags['setup_shot_seeded'] += 1
++        if after != before:
++            try:
++                load_edited(b, before, after)
++            except Exception:
++                flags['setup_shot_not_set'] += 1
++
+     # Opt-in inference (PARITY_INFER=target,phase; item 8): the SIM's attack clock advances 50 ms a tick while engaged
+     # and a hit lands (melee) / launches (ranged) each time it reaches a multiple of HitSpeed (probed on 0.1.35), so a
+     # body that last hit e ms before t0 gets attack_ms = e mod HitSpeed and its reload left; its target = that victim.
+@@ -1608,6 +1677,49 @@
+     return out
+ 
+ 
++def in_flight(eng, m, fight, start, catalog, levels, tower_levels):
++    """Ext logs: [dict(side, x, y, tx, ty, src, tgt, tpl)] for the live shots of the t0 frame whose target is a t0-board body
++    or standing tower (unit shots: the projectile's card; tower shots: card -1 and a tower source). Spells are not shots
++    (spell_in_flight_at_start blocks those fights). tpl = the SIM's own shot of that firer (Engine.shot_template; this
++    probes, so call before the fight's reset)."""
++    live0 = {bd['id']: bd for bd in start}
++    t0, i0 = fight['t0'], fight['frame0']
++    born = {}                      # shot id -> first frame seen (a volley = one source's shots first seen together)
++    for t, _ in m['frames'][max(0, i0-40):i0+1]:
++        for p in m['proj'].get(t, ()):
++            born.setdefault(p[6], t)
++    out, volley = [], defaultdict(list)
++    for p in m['proj'].get(t0, ()):
++        side, x, y, cid, tx, ty, _, src, tgt = p
++        if tgt not in live0 or (live0[tgt]['tower'] and live0[tgt]['hp'] <= 0) or live0[tgt]['side'] == side:
++            continue
++        if cid == -1:
++            if not (src in live0 and live0[src]['tower']):
++                continue
++            tpl = eng.shot_template(side, tower='K' if src.endswith('K') else 'P', level=tower_levels[side])
++        else:
++            c = catalog.get(cid)
++            if c is None or c.get('type') == 'spell' or c['display_name'] not in eng.ids:
++                continue
++            body = live0.get(src)
++            form = form_of(body['card_id'], catalog[body['card_id']]) if body and not body['tower'] and body['card_id'] in catalog else form_of(cid, c)
++            name = c['display_name']
++            tpl = eng.shot_template(side, name, form, levels.get((side, name)) or levels.get((side, '*')) or 15)
++        s = dict(side=side, x=x, y=y, tx=tx, ty=ty, src=src if src in live0 else None, tgt=tgt, tpl=tpl and tpl[0],
++                 n=tpl[1] if tpl else 1)
++        volley[src, born.get(p[6], t0), tgt].append(s)
++        out.append(s)
++    # A volley the SIM fires as fewer shots (the Princess: 5 arrow rows live) keeps the rows aimed nearest the target, as
++    # many as the SIM fires.
++    drop = set()
++    for (src, _, tgt), ss in volley.items():
++        keep = ss[0]['n']
++        if len(ss) > keep:
++            b = live0[tgt]
++            drop |= {id(s) for s in sorted(ss, key=lambda s: math.hypot(s['tx']-b['x'], s['ty']-b['y']))[keep:]}
++    return [s for s in out if id(s) not in drop]
++
++
+ def tower_locks(m, fight, setup, catalog, look=20):
+     """[(setup body, (tower side, x, y))] for setup bodies that were shooting an enemy tower at t0 (see run_fight)."""
+     t0 = fight['t0']; i0 = fight['frame0']

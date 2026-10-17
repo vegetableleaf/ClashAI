@@ -1,0 +1,49 @@
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -432,6 +432,19 @@
+     """One fight per deployment: start = the last frame strictly before it; length `window` ticks."""
+     ticks = [t for t, _ in m['frames']]
+     tr = tracks(m['frames'])
++    # A parent gone before t0 whose death spawn is first seen after t0 (a Skeleton Balloon's skeletons land ~12 ticks after
++    # its death) is on no board and in no play: the SIM never makes those bodies (diag_night/log/REPORT.md, 171357@1655).
++    # Same near-parent rule as deployments(); (parent last seen, children first seen) per case.
++    fam, pend = defaultdict(list), set()
++    for r in tr.values():
++        fam[r['side'], r['card_id']].append(r)
++    for rs in fam.values():
++        for r in rs:
++            for q in rs:
++                if q is not r and q['last'] < r['first'] <= q['last'] + 15 and r['max_hp'] < q['max_hp']:
++                    at = max((p for p in q['traj'] if p[0] <= r['first']), default=q['traj'][0])
++                    if math.hypot(at[1] - r['x'], at[2] - r['y']) < 3000:
++                        pend.add((q['last'], r['first']))
+     fights = []
+     for k, ev in enumerate(events):
+         if ev['kind'] != 'play':
+@@ -449,7 +462,7 @@
+         t0 = ticks[i]; t1 = t0 + window
+         if t1 > ticks[-1]:
+             continue
+-        fights.append(dict(anchor=k, t0=t0, t1=t1, frame0=i,
++        fights.append(dict(anchor=k, t0=t0, t1=t1, frame0=i, pending=sum(lo < t0 < hi for lo, hi in pend),
+                            events=[j for j, e in enumerate(events) if t0 <= e['tick'] <= t1]))
+     return fights
+ 
+@@ -807,6 +820,8 @@
+         c = catalog.get(cid)
+         if s_ != m['side'] and c and c.get('type') == 'spell' and t0-30 <= t <= t1:
+             flags['opp_spell_seen:'+c['display_name']] += 1
++    if fight.get('pending'):
++        flags['death_spawn_pending_at_start'] += fight['pending']
+     for e in events:           # an effect already running at t0 is not public state: the fight cannot start from it
+         if e['source'] == 'own_spell_tap+delay' and t0-60 <= e['tick'] < t0:
+             flags['spell_in_flight_at_start'] += 1
+@@ -1871,7 +1886,7 @@
+ CLEAN_BLOCKERS = ('opp_spell_seen', 'opp_ability_unobserved', 'setup_child_skipped', 'setup_form_not_set', 'setup_was_deploying', 'spell_in_flight_at_start',
+                   'ability_active_at_start', 'setup_unmapped_body', 'setup_spawn_refused', 'event_card_missing',
+                   'spell_spawned_units_timing_unknown', 'card_not_in_sim', 'play_refused', 'sim_game_over',
+-                  'setup_mid_jump')
++                  'setup_mid_jump', 'death_spawn_pending_at_start')
+ 
+ 
+ HIDDEN_INFO = ('opp_spell_seen', 'opp_ability_unobserved')

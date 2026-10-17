@@ -1,3 +1,22 @@
+## 2026-10-17 ~00:35 EDT -- parity I6 (Log hit-set scoring) 0.929; own Log 0.975; Log itself matches live
+
+(Times: the three entries above stamped 00:15 / 00:40 / 01:30 were really ~23:45 / ~23:55 / ~00:05 EDT -- I estimated
+instead of reading the clock.)
+- I6 = I5 + log patch A (rolling spells only: the Log / Barbarian Barrel is credited with an enemy GROUND body only when its table
+  box rolls over it; bodies born under the box excluded; views without the new fields keep the old rule; 904/904 other views
+  byte-identical). Pod A CAP_I5 vs CAP_I6: overall **0.926 [0.906, 0.942] -> 0.929 [0.907, 0.946]**; **own Log 0.926 -> 0.975
+  [0.936, 1.0]** (n 81); opp Log 1.0 -> 0.5 (n 2: a real failure exposed -- opponent spell levels default because spell_levels()
+  reads our spells only; Log worker fixing); opp BarbLog 1.007 -> 0.984; all other own cards identical.
+- Log worker (diag_night/log/REPORT.md): the Log itself matches live (a): throw + landing (+9 ticks, same or 1 earlier) + 200 mt/tick
+  roll; hit set 0.986 (own strict, n 222); every live hit inside the SIM half-width 1950 + body radius. PARITY_SCOREBOARD #5 "which
+  units the Log hits" CONTRADICTED as a Log law (attribution window, displaced bodies, prior hp). Its patch C (exclusion) not landed.
+- Skel worker (diag_night/skel/REPORT.md): dot_crown (crown % from the buff for damage-over-time spells: Tornado 30%) Tornado
+  0.884 -> 0.934, 0 regressions -> I7 scoring; upstream 0.1.36 laws SNIPE_TOWER_FILTER + HIT_STUN_SPAN each fix 1 Skeletons fight,
+  ATTRACT_ONSET +1/-1 on Tornado (per-law adoption > taking 0.1.36 whole); bridge passability S candidate (b): live ground
+  troops outside the SIM bridge cells in 236 of 3,740 river samples; "SIM ahead +0.2-0.3 tiles" = the harness creates units on
+  the EARLIER tick of the 2-tick frame gap (U; reader would need deploy timer / spawn tick at first sighting) (c for "Skeleton
+  law"); "hit timing" class does not survive on captured logs (c).
+
 ## 2026-10-17 ~01:30 EDT -- parity I5 (shots at proxy bodies) 0.926; remaining-gap ranking; river hop is no law gap
 
 - I5 = I4 + knight H6: in-flight shots aimed at proxy-set-up children (Witch / Tombstone skeletons, Skeleton Balloon, Goblin

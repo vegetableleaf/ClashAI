@@ -1,0 +1,11 @@
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -1015,7 +1015,7 @@
+     # live target's SIM body.
+     if shots:
+         before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
+-        by_setup = {bd['id']: bd for bd in setup if not bd.get('proxy')}
++        by_setup = {bd['id']: bd for bd in setup}   # a proxy child (a Witch's Skeleton) sits on its live point: a target too
+         towers_ = {bd['id']: ('tower', bd['side'], bd['x'], bd['y']) for bd in start if bd['tower'] and bd['hp'] > 0}
+         ref = lambda k: ('body', by_setup[k]) if k in by_setup else towers_.get(k)
+         for s_ in shots:

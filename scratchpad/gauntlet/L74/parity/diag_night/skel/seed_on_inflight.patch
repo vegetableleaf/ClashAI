@@ -1,0 +1,14 @@
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -1146,7 +1146,10 @@
+         who = {(('Blue', 'Red')[sp[0]], sp[2], sp[3]): bd['id'] for sp, bd in zip(spawns, setup)}
+         towers0 = [(bd['id'], bd['side'], bd['x'], bd['y']) for bd in start if bd['tower']]
+         for k in range(1, ceiling+1):
+-            rows_k, refused_k, over_k = simulate(random.Random(f"{m['match']}:{t0}:{fight['anchor']}:{k}"))
++            # Seeded on the fight's identity, not its event index: a harness change that adds an event earlier in the match
++            # must not re-draw every later fight's perturbations (diag_night/knight concern, measured 0.75 -> 0.625).
++            rows_k, refused_k, over_k = simulate(random.Random(
++                f"{m['match']}:{t0}:{anchor['tick']}:{anchor['side']}:{anchor['name']}:{k}"))
+             bad.update(refused_k); bad['game_over'] += over_k
+             card['sim'].append(view(rows_k, 2) if rows_k else None)
+         card['perturbed'] = dict(perturbed); card['ceiling_refused'] = dict(bad)

@@ -1,0 +1,53 @@
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -342,7 +342,7 @@
+     return sorted(out, key=lambda e: (e['tick'], e['side'], e['name']))
+ 
+ 
+-def deployments(m, catalog, life=None):
++def deployments(m, catalog, life=None, unit_cap=None):
+     """Live deployments: new body groups (children of a living/just-dead same-card body, or role-children by max_hp,
+     are the SIM's job, not plays), own confirmed spells, own Hero IW presses. Ext logs: spells and hero casts of both
+     sides as seen (seen_casts); an own tap or press stays only where nothing was seen for it."""
+@@ -351,7 +351,13 @@
+     t_start = m['frames'][0][0]
+     top = defaultdict(int)
+     for r in tr:
+-        top[r['side'], r['card_id']] = max(top[r['side'], r['card_id']], r['max_hp'])
++        # unit_cap(card): 2 x the card's largest unit hp at level 16 (None: unknown). A troop card's body above it is no
++        # unit of the card (the Hero Goblins' 4,090-hp static object, born where the last goblin dies): not a parent whose
++        # max_hp makes the card's own plays look like role-children (diag_night/log/REPORT.md, 214908@225).
++        c = catalog.get(r['card_id']) or {}
++        cap = unit_cap(c.get('display_name')) if unit_cap and c.get('type') == 'troop' else None
++        if cap is None or r['max_hp'] <= cap:
++            top[r['side'], r['card_id']] = max(top[r['side'], r['card_id']], r['max_hp'])
+     groups = []
+     for r in tr:
+         if r['first'] == t_start or catalog.get(r['card_id']) is None:
+@@ -525,6 +531,17 @@
+                 return lv
+         return None
+ 
++    def unit_cap(self, name):
++        """2 x the largest unit hp (unit_hitpoints, every role) of card `name` at level 16; None if unknown."""
++        key = ('cap', name)
++        if key not in self._form:
++            try:
++                rows = self.b.unit_hitpoints(self.ids[name], 16) if name in self.ids else None
++            except ValueError:
++                rows = None
++            self._form[key] = 2*max(hp for _, _, hp in rows) if rows else None
++        return self._form[key]
++
+     def form_record(self, name, form, level):
+         """(engine record index, hero_units template) of `name` played in `form`; probed once by a real play."""
+         key = (name, form, level)
+@@ -1736,7 +1753,7 @@
+         out.write_text(json.dumps(dict(summary=res)))
+         return res
+     eng = Engine()
+-    events, delay = deployments(m, catalog, eng.effect_life)
++    events, delay = deployments(m, catalog, eng.effect_life, eng.unit_cap)
+     fights = cut(m, events, window)
+     m['buffs'] = phase2_buffs(path) if m['ext'] else {}
+     m['attacks'] = phase3_attacks(path) if m['ext'] else {}

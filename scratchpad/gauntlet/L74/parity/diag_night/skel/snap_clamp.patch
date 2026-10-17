@@ -1,0 +1,14 @@
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -809,7 +809,10 @@
+             near = eng.nearest_passable(x, y)
+             if near is None:
+                 flags['setup_spawn_refused'] += 1; return
+-            x, y = near; flags['setup_snapped'] += 1
++            # the point of that half-cell nearest the live one, not its centre (diag_night/skel: live ground bodies stand up
++            # to ~0.75 tile beside the SIM's bridge cells; a centre snap moved a Giant 565 mt, the clamp 274)
++            x, y = min(max(x, near[0] - 249), near[0] + 249), min(max(y, near[1] - 249), near[1] + 249)
++            flags['setup_snapped'] += 1
+         spawns.append((bd['side'], eng.ids[name], round(x*18), round(y*18), max(1, bd['hp'])))
+         setup.append(dict(id=bd['id'], side=bd['side'], x=x, y=y, card_id=bd['card_id'], proxy=name != catalog[bd['card_id']]['display_name'],
+                           worn=bd['hp'] < bd['max_hp']))

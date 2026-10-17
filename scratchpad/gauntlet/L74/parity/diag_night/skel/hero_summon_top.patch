@@ -1,0 +1,37 @@
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -342,7 +342,7 @@
+     return sorted(out, key=lambda e: (e['tick'], e['side'], e['name']))
+ 
+ 
+-def deployments(m, catalog, life=None):
++def deployments(m, catalog, life=None, own_hp=None):
+     """Live deployments: new body groups (children of a living/just-dead same-card body, or role-children by max_hp,
+     are the SIM's job, not plays), own confirmed spells, own Hero IW presses. Ext logs: spells and hero casts of both
+     sides as seen (seen_casts); an own tap or press stays only where nothing was seen for it."""
+@@ -352,6 +352,16 @@
+     top = defaultdict(int)
+     for r in tr:
+         top[r['side'], r['card_id']] = max(top[r['side'], r['card_id']], r['max_hp'])
++    if own_hp:
++        # A card's largest max_hp names its own unit only if it is one: a hero's ability summon labelled with the card
++        # (the Hero Goblins' flag, 3720 / 4090 hp) set it, and every later Goblins play (323 hp) was dropped as a child
++        # (diag_night/skel: 106 bodies in 5 of 55 ext logs). The top is taken over the card's own units where it has any.
++        own = defaultdict(int)
++        for r in tr:
++            c = catalog.get(r['card_id'])
++            if c and own_hp(c['display_name'], r['max_hp']):
++                own[r['side'], r['card_id']] = max(own[r['side'], r['card_id']], r['max_hp'])
++        top.update(own)
+     groups = []
+     for r in tr:
+         if r['first'] == t_start or catalog.get(r['card_id']) is None:
+@@ -1836,7 +1846,7 @@
+         out.write_text(json.dumps(dict(summary=res)))
+         return res
+     eng = Engine()
+-    events, delay = deployments(m, catalog, eng.effect_life)
++    events, delay = deployments(m, catalog, eng.effect_life, own_hp=lambda name, hp: eng.level(name, hp) is not None)
+     fights = cut(m, events, window)
+     m['buffs'] = phase2_buffs(path) if m['ext'] else {}
+     m['attacks'] = phase3_attacks(path) if m['ext'] else {}
