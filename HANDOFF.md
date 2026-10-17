@@ -1,3 +1,24 @@
+## 2026-10-17 11:44 EDT -- r4a Tesla family: H-TARGETLESS landed (rolling boulders / Executioner axes in flight at t0); spawn tick = the big lever
+
+Worker report DONE_WITH_CONCERNS (scratchpad/gauntlet/L74/parity/diag_night/r4a/; pod P1 results r4a_roll, r4a_snaprest).
+- LANDED H_targetless_shots.patch (on top of H-SWARM-MATCH; 91 tests pass): a target-less straight shot of a t0-board troop
+  in flight at t0 (Bowler boulder, Executioner axe with its pingpong clock + thrower, pellets whose target died) is injected with
+  its live path's already-hit set; 87 strict fights now get one. Measured on FIN5 (pre-swarm-fix base): own Tesla raw 0.872 ->
+  0.880, opp Hog Rider 0.815 -> 0.836, opp Log 0.936 -> 0.957, opp Minions 0.804 -> 0.817, OVERALL 0.896 -> 0.897. 6 fights fixed
+  (+1 partial); 3 broken -- own IW hero 003824@4161, own Knight 071833@3373, opp Cannon 050051@3923 -- each dossiered as a
+  pre-existing divergence that had agreed by coincidence (Executioner first hit now on the live tick, etc.).
+- Classification of 117 imperfect Tesla / Tesla evo / Hog fights: U spawn tick 52 (with only the first-seen frame-gap jitter off,
+  56 of 59 noisy fights become deterministic); H target-less shots 6 (fixed); other-body divergence with a known cause 12 (Evo
+  Knight 60% fortify 4 -> r4c; Prince charge path; Prince mid-river-jump retarget; Electro Giant 440 mt off; our Hero IW walking);
+  (b) SIM-law candidates, one fight each (Tornado pull vs projectile hold target.rs:109/:1290; Electro Giant reflect gap measured
+  after the move; Royal Giant not retargeting to an Evo Tesla ring; Mega Knight jump timing; Suspicious Bush; Inferno Dragon ramp
+  seed); unresolved deterministic cascades 33 (mostly near the river / bridges).
+- (c) Snap restore (put bridge-adjacent snapped bodies back at their live point): contradicted, overall unchanged, 13 fixed / 6
+  broken -> not landed.
+- Ceiling (b): spawn-tick pin upper bound Tesla +0.026, Tesla evo +0.037, Hog +0.074; even then Tesla ~0.91 / evo ~0.94 / Hog ~0.91
+  -- the 24 unresolved Tesla cascades are the remaining wall. Own taps cannot pin the creation tick (tap->play lag 22-25 ticks,
+  spread over 3 windows) -> the reader 3b stamps are the way.
+
 ## 2026-10-17 11:28 EDT -- H-SWARM-MATCH LANDED (owner OK 10-17): troop death lists compared by maximum one-to-one matching
 
 - fights.py card_agree: troop cards' death lists are now matched one-to-one (each live death to an unused SIM death within

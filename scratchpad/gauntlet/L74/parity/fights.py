@@ -1421,7 +1421,47 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
         by_setup = {bd['id']: bd for bd in setup}
         towers_ = {bd['id']: ('tower', bd['side'], bd['x'], bd['y']) for bd in start if bd['tower'] and bd['hp'] > 0}
         ref = lambda k: ('body', by_setup[k]) if k in by_setup else towers_.get(k)
+        back_frames = {t: bodies for t, bodies in m['frames'] if t0 - 40 <= t < t0}
         for s_ in shots:
+            if s_['tgt'] is None:
+                # A target-less straight shot (inflight_shots): the shooter's real straight record at its live point, flying to
+                # its live end point; an Executioner's axe (a pingpong throw) gets its throw clock from its distance out and
+                # holds its thrower; the enemies its live path already passed (centre within ProjectileRadius + radius on a
+                # frame of this leg up to t0) go in its hit set, so they are not hit twice.
+                i = ent(E, ref(s_['src'])) if ref(s_['src']) else None
+                st = json.loads(json.dumps((s_['tpl'] or {}).get('straight'))) if (s_['tpl'] or {}).get('straight') else None
+                if st is None or i is None:
+                    flags['setup_shot_skipped:targetless_' + ('not_straight' if st is None else 'source')] += 1
+                    continue
+                p = json.loads(json.dumps(s_['tpl']))
+                ox, oy = E['pos'][i]['x']/18, E['pos'][i]['y']/18
+                ax, ay = s_['aim']
+                leg = s_['track']
+                if st['period'] > 0:
+                    rng, s0 = max(1., math.hypot(ax-ox, ay-oy)), st['start']/18
+                    d = math.hypot(s_['x']-ox, s_['y']-oy)
+                    a = math.asin(min(1., max(0., (d-s0)/max(1., rng-s0))))*st['period']/math.pi
+                    back = bool(leg) and math.hypot(leg[-1][1]-ox, leg[-1][2]-oy) > d
+                    st['t'] = max(1, min(st['period'], round(st['period']-a if back else a)))
+                    st['thrower'] = {'index': i, 'generation': E['generation'][i]}
+                    st['carry'] = 0
+                    leg = [q for q in leg if (2*(st['t']-(t0-q[0])) > st['period']) == (2*st['t'] > st['period'])]
+                st['origin'] = dict(E['pos'][i]); st['hold'] = 0
+                side = by_setup[s_['src']]['side']
+                hit = set()
+                for t, x, y in leg + [(t0, s_['x'], s_['y'])]:
+                    for bd in (back_frames.get(t) or start):
+                        if bd['tower'] or bd['side'] == side or bd['id'] not in by_setup:
+                            continue
+                        j = ent(E, ('body', by_setup[bd['id']]))
+                        if j is not None and math.hypot(bd['x']-x, bd['y']-y) <= (st['reach'] + E['radius'][j])/18:
+                            hit.add(j)
+                st['hit'] = [{'index': j, 'generation': E['generation'][j]} for j in sorted(hit)]
+                p.update(team=E['team'][i], pos={'x': round(s_['x']*18), 'y': round(s_['y']*18)}, aim={'x': round(ax*18), 'y': round(ay*18)},
+                         target={'index': i, 'generation': E['generation'][i]}, firer={'index': i, 'generation': E['generation'][i]},
+                         firer_card=E['card'][i], frac={'x': 0, 'y': 0}, straight=st)
+                after['projectiles'].append(p); flags['setup_shot_targetless'] += 1
+                continue
             i, j = (ent(E, ref(s_['src'])) if ref(s_['src']) else None), (ent(E, ref(s_['tgt'])) if ref(s_['tgt']) else None)
             if s_['tpl'] is None or i is None or j is None:
                 flags['setup_shot_skipped:' + ('no_template' if s_['tpl'] is None else 'source' if i is None else 'target')] += 1
@@ -2432,14 +2472,27 @@ def iw_shots(m, fight, catalog):
 def inflight_shots(m, fight, start, catalog, levels, tower_levels):
     """Ext logs: the projectiles in flight at t0 (the t0 frame's proj rows) that a t0-board body or tower fired at a
     t0-board body or tower -> [dict(src, tgt: live ids, x, y: its live position, key: Engine.shot_template key)]. Spells
-    are left out (seen casts; spell_in_flight_at_start), and so are shots without a source or a target (kamikaze Fire /
-    Ice Spirits, a Bowler's rolling boulder, an Executioner's returning axe)."""
+    are left out (seen casts; spell_in_flight_at_start), and so are shots without a source (kamikaze Fire / Ice Spirits).
+    A TARGET-LESS shot of a t0-board troop (a Bowler's rolling boulder, an Executioner's axe, a pellet whose target died) comes
+    with aim (its live end point), track ([(tick, x, y)] of the same projectile serial before t0) and tgt None; run_fight
+    injects it only when the shooter's template is a straight shot (diag_night/r4a: 57 strict fights hold a rolling Bowler
+    boulder at t0, 32 an Executioner axe; 081712@3319 the boulder kills our Skeletons on t0 + 2 and takes 383 off the Tesla)."""
     by = {bd['id']: bd for bd in start}
     out = []
     for p in m['proj'].get(fight['t0'], ()):
         if (catalog.get(p[3]) or {}).get('type') == 'spell':
             continue
         src, tgt = by.get(p[7]), by.get(p[8])
+        if src and not src['tower'] and p[8] is None and p[3] != -1:
+            c = catalog.get(src['card_id'])
+            if c is None:
+                continue
+            name = c['display_name']
+            track = [(t, q[1], q[2]) for t in sorted(k for k in m['proj'] if fight['t0'] - 40 <= k < fight['t0'])
+                     for q in m['proj'][t] if q[6] == p[6]]
+            out.append(dict(src=src['id'], tgt=None, x=p[1], y=p[2], aim=(p[4], p[5]), track=track,
+                            key=(name, form_of(src['card_id'], c), levels.get((src['side'], name)) or levels.get((src['side'], '*')) or 15)))
+            continue
         if not src or not tgt or (tgt['tower'] and tgt['hp'] <= 0):
             continue
         if src['tower']:
