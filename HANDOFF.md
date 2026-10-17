@@ -1,3 +1,19 @@
+## 2026-10-17 13:37 EDT -- CHECKPOINT REGISTRY committed: "[DECK] Mark [Roman]: [CHANGE]", full history kept (owner 10-17)
+
+- Owner 10-17: every model checkpoint is named "[DECK] Mark [Roman numeral]: [one-word change]" (decks ICEBOW, Bait); past
+  checkpoints renamed. Owner on the numbering: "Keep the full history. Pre-imitation models are still important because it
+  shows how the ai evolved." -> the Aug-Sep sim-policy era stays as ICEBOW Marks I-XXVII.
+- scratchpad/gauntlet/L74/models/REGISTRY.md + registry.json: 141 Marks (ICEBOW I-CXXXVIII, Bait I-III), one per distinct model
+  (evaluated as a candidate, deployed live, or used as an init); 1,282 other hashed .pt files recorded as snapshots / seed
+  replicates / smoke, none unclassified. Originals NOT moved; 170 NTFS hard links (sha-verified) under
+  icebow/data/models/{ICEBOW,Bait}/ (git-ignored). register_ckpt.py: register / --name / --render / --relink / --selftest (PASS).
+- Key Marks: ICEBOW Mark XXVIII: IMITATION (s1_icebow_s0, first S1) ... XXXII: FIRSTLIGHT (live 09-08..12) ... LII: RL (R1e)
+  ... CXVII: GAE (F1 u65) ... **CXXIV: LONGER (u250, live until 13:29 today)** ... **CXXXVIII: CUES (cue130, live now)**. Bait
+  I: SPECIALIST (live bait override), II: GAE, III: ABILITY.
+- From now on: every new model gets the next Mark via register_ckpt.py, and reports name models by Mark (run id in brackets).
+- Open (registry worker): T1 / gae_exploit seeds and ctl_u250 u130 have no local file (pod-only, stopped pods) -> Marks without
+  files; a few pre-09-03 live periods and parents are inferred.
+
 ## 2026-10-17 13:31 EDT -- LIVE = ICEBOW Mark CXXXVIII: CUES (cue130, --cue-inputs on) since 13:29 EDT; cue-blind control running
 
 - Owner 10-17 instruction (memory cue130-live-trial). deploy_ckpt.sh (WMI-detached, Git bin bash): --check PASS with sha
