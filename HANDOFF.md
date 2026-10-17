@@ -3,7 +3,7 @@
 - Queued (each waits for its chain's marker, then runs live_eval_pod.sh D3 on 0.1.35 into /workspace/results/LIVEEVAL/<NAME>_{741200,742000};
   log /workspace/results/liveq_<NAME>.log): gx74_u65 on 23419 (cb_ex, rlarm_gae_exploit, waits rlarm_gae_exploit/DONE), gx75_u65 on 37671
   (cb_par), gx76_u65 on 23450 (cb_t2), gaehero_u65 on 18869 (cb_ab, rlarm_gae_hero, waits GH_DONE; Hero IW + rule press = the only Hero-IW
-  candidate that can go live). Compare with  (vs live_f1u250 586/960);
+  candidate that can go live). Compare with scratchpad/gauntlet/L74/deploy/pull_cmp.sh HOST PORT /workspace/results/LIVEEVAL NAME (vs live_f1u250 586/960);
   promote only if the paired CI lower bound > 0 and not worse on the standard set. NOTE: the gae_exploit seeds train with
   ROYALE_HEROIW_FORM=normal (started before the owner's Hero IW ruling) while evals use the hero form.
 - Progress at queue time: T1 s74 u306 / s75 u251 / s76 u245 (500 each); gae_exploit u26 / u40 / u20 (65); gae_ab trained (learned
