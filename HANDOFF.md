@@ -1,3 +1,13 @@
+## 2026-10-17 14:19 EDT -- Mark CXXXVIII revert test = LIVE performance (owner 10-17)
+
+- Owner 10-17: "make the live performance the revert test." Rule: after ~100 live ladder matches on ICEBOW Mark CXXXVIII: CUES
+  (live since 13:29), revert to ICEBOW Mark CXXIV: LONGER (u250) if its win rate is below u250's 51.2% (248 matches 10-16 21:30 ->
+  10-17 13:29), measured with scratchpad/gauntlet/L74/monitor/card_use.py. State the trophy level alongside (higher trophies =
+  harder opponents pull the win rate toward 50%). The seed-75 replicate no longer decides the revert: it tests whether the recipe
+  reproduces.
+- A background wait reports at 100 CXXXVIII matches (~21:30 EDT at ~12 / h); revert = deploy_ckpt.sh with
+  icebow/data/bench/rl_royale/rlarm_gae/rlarm_gae_u0250_grafted.pt (the cue flag is a no-op for u250).
+
 ## 2026-10-17 14:16 EDT -- CUE-BLIND CONTROL: Mark CXXXVIII's gain is NOT from the cue inputs (it is the training run)
 
 - cueblind130_gae_cue_u250 = ICEBOW Mark CXXXVIII: CUES with model.cue_in.weight zeroed (norm 0.1808 -> 0; exactly cue-blind),
