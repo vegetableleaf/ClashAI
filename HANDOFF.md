@@ -1,3 +1,11 @@
+## 2026-10-17 03:58 EDT -- STEP C first result: cue-input model gae_cue_u250 = live pool 622/960, +3.75 [-0.10, +7.71] vs u250 (control pending)
+
+- Pod 8 (64.247.206.120:12331) rlarm_gae_cue_u250 (u250 + 22 public cue floats per unit through a zero-init projection, 65 updates,
+  ROYALE_HEROIW_FORM=hero, runtime 0.1.35): live-mirrored pool D3 **622/960 (64.8%) vs u250 586/960 (61.0%): +3.75 pp [-0.10, +7.71]**
+  (beatdown +4.2 +- 6.1, rest +3.4 +- 5.0); copy pod_backup_weekend/rt35/RT35/cues_gae_cue_u250_*. The best point estimate so far,
+  CI lower bound just under 0. NOT attributable to the cues yet: the twin gae_ctl_u250 (same 65 updates + Hero IW, no cues) is
+  training / evaluating on pod 8 -- cue effect = cue - ctl. Not promotable either way (no live cue path; step d waits for parity).
+
 ## 2026-10-17 03:20 EDT -- gae_exploit s75 trained (65 upd); its struggle eval failed (u250 missing on the pod) -> fixed + requeued
 
 - 37671 rlarm_gae_exploit_s75: training reached u0065 (final + grafted present); DONE says exit_code=2 because struggle_eval_pod.sh
