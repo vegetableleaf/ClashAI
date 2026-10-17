@@ -1,3 +1,11 @@
+## 2026-10-17 03:20 EDT -- gae_exploit s75 trained (65 upd); its struggle eval failed (u250 missing on the pod) -> fixed + requeued
+
+- 37671 rlarm_gae_exploit_s75: training reached u0065 (final + grafted present); DONE says exit_code=2 because struggle_eval_pod.sh
+  needs icebow/data/bench/rl_royale/rlarm_gae/rlarm_gae_u0250_grafted.pt, absent from that checkout. The queued live-pool eval
+  (gx75_u65 -> /workspace/results/LIVEEVAL) has the checkpoint and is running = the auto-promote measure. Copied u250 (00c845c0,
+  sha-verified) to 37671 cb_par and 23450 cb_t2 (s76 at u43 would have hit the same); s75's struggle eval re-queued after its
+  live-pool eval (-> /workspace/results/struggle_s75.log, STRUGGLE/rlarm_gae_exploit_s75.SUMMARY.txt). 23419 already had u250.
+
 ## 2026-10-17 03:08 EDT -- HEADLINE on a 3x larger cohort: start-of-night 0.890 -> now 0.940 (97 fully captured matches, 3,190 strict fights)
 
 Cohort refreshed at 02:50 (all live captures so far: 102 logs -> 97 scored matches; pods: /workspace/caplogs2, attacks2.json,
