@@ -1,0 +1,30 @@
+2	{"tool_name":"Bash","tool_input":{"command":"python - <<'EOF'\nprint(1)\nEOF","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"icebow/.venv/Scripts/python.exe -","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"cd x && python3 - <<EOF\nEOF","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"ls\npython -\n","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"timeout 60 python -<x.py","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"echo hi | python3.13 -","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"PY=/c/x/python.exe; $PY - 2>/dev/null; cat > who.py <<EOF\nEOF","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"\"$PY\" - <<EOF\nEOF","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"${PY} -","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"x; $PY 2>/dev/null; y","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"python","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"ls && python3 2>&1","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"PYTHONPATH=. $P -","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"ls","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"python -c \"print(1)\"","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"python -u run.py --x -","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"python -m pytest -q","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"python file.py - foo","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"python \"file.py\"","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"$PY scratchpad/x.py --out $T/a.json > $T/a.out 2>&1; tail -1 $T/a.out","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"$P -m pytest -q x > $S/pt.out 2>&1; echo rc=$?","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"cd $S; ls; echo $PY -","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"ssh -p 1 root@h \"python3 - <<EOF\nEOF\"","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"git commit -m \"note: never use python - here\"","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"cat > f.md <<EOF\n- `python -` hangs\nEOF","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"for s in $(cat x); do echo $s; done","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"bash $H; K=\"-o a\" && ssh $K -p 1 h","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"[ \"$(git diff --cached --name-only | wc -l)\" = 1 ] && bash x.sh","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"icebow/.venv/Scripts/python.exe scratchpad/a.py $S/b.json","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"bash scratchpad/gauntlet/L74/parity/night1016/add_handoff.sh $T/e.md \"subject\"; git log --oneline -1","description":"x"}}

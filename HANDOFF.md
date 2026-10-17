@@ -1,3 +1,14 @@
+## 2026-10-17 12:27 EDT -- stdin-python hook extended: variable-invoked and no-script forms (a worker slipped past rule 1)
+
+- r4e set PY to the venv interpreter and later ran it through the variable with a bare dash argument and stderr to /dev/null:
+  the literal "python -" never appears, so the hook missed it; the call hung 120 s, two REPLs killed by exact PID. It also ran the
+  bare variable with only a redirection (empty PY -> no-op, but a set PY would open a REPL too).
+- .claude/hooks/block_stdin_python.sh now blocks, in command position: (1) python / python3[.N] / py [.exe] + a bare dash arg;
+  (2) the same through a shell variable ($PY, "${PY}"); (3) an interpreter or variable with no script, only redirections, then
+  the end of the command. Cases: .claude/hooks/block_stdin_python_cases.txt, runner test_block_stdin_python.sh -> 30/30 pass
+  (13 block, 17 pass incl. a script argument, -m pytest, echo of the variable, ssh-quoted pod commands, prose). The hook also
+  blocked my own inline test run of these strings, and a heredoc that QUOTED the bad command after a semicolon: prose that
+  reproduces a blocked command verbatim in command position is blocked too -- write such text with the file tool.
 ## 2026-10-17 12:24 EDT -- r4e worst opponent cards: H-REUSE + H-CLONE landed; H-DECKMAP / H-TORNADO-DATE still measuring
 
 Worker report DONE_WITH_CONCERNS (scratchpad/gauntlet/L74/parity/diag_night/r4e/, tools/fightlist.txt; pod results r4e_*).
