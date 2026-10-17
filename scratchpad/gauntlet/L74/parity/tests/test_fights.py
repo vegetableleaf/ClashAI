@@ -175,9 +175,14 @@ def test_spell_levels_pick_the_level_whose_damage_is_seen():
         ids = {'Log': 1}
         def spell_damage(self, name, side, lv):
             return {16: 429, 15: 390, 14: 355}.get(lv)
+        def stats(self, name):
+            return {}                      # no crown % on the card: tower drops are not used as evidence
     def fb(t, hp, k='p'):
         return (t, [dict(id=k, side=0, x=9000, y=12000, card_id=KNIGHT, hp=hp, max_hp=2822, kind=15, tower=False)])
     m = dict(side=1, frames=[fb(100, 2822), fb(104, 2432), fb(300, 2432), fb(304, 2042)])
     ev = [dict(source='own_spell_tap+delay', name='Log', tick=102), dict(source='own_spell_tap+delay', name='Log', tick=302)]
     assert F.spell_levels(m, ev, Eng(), CAT) == {(1, 'Log'): 15}
-    assert F.spell_levels(dict(m, frames=m['frames'][:2]), ev, Eng(), CAT) == {}     # one drop is not enough
+    # one exact drop: enough when it is the only level with evidence (log round 2: an opponent spell cast once or twice)
+    assert F.spell_levels(dict(m, frames=m['frames'][:2]), ev, Eng(), CAT) == {(1, 'Log'): 15}
+    # no drop that equals any level's damage: no level
+    assert F.spell_levels(dict(m, frames=[fb(100, 2822), fb(104, 2500)]), ev, Eng(), CAT) == {}
