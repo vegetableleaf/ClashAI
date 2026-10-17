@@ -1,3 +1,20 @@
+## 2026-10-16 ~23:20 EDT -- fork build path validated; gae_trade2 s74 not a successor; tools in L74/parity/night1016/
+
+- **Fork for 0.1.35 patches:** git worktree `C:/Users/benpe/rsfork35`, branch `clashbot35` from tag v0.1.35 (4fd4d54 = the
+  rt35 manifest pin; the old `clashbot` branch is plain 0.1.33 with zero patches). Pod B builds it with
+  `night1016/fork_build.sh NAME` (rustup 1.99.1 + /workspace/vfork maturin; bundle /workspace/in/fork35.bundle; installs
+  /workspace/rsfork_NAME). **CONTROL (a): the unpatched source build reproduces the PyPI 0.1.35 wheel fight-for-fight on all
+  32 captured matches** (night1016/same.py) -> a patch's score change is the patch.
+- Captured-only scoring: `night1016/run_cap.sh SIMDIR OUT WORKERS [CODEDIR]` (logs linked in /workspace/caplogs on both pods);
+  split old vs captured locally: `night1016/split_score.sh RUNDIR`. Pod setup: `night1016/setup_par.sh` (+ code2: crapi/census.py,
+  icebow/config/cards_stats.json; tar needs --no-same-owner on pods).
+- **gae_trade2 s74 (A3' trade potential, 65 upd, 0.1.35)** standard set D3 477/960: vs its twin F1 u65 (0.1.35 std 462)
+  **+1.56 [-2.40, +5.52]** (beatdown +7.9 +- 6.0 one seed, rest -3.3); vs live u250 (511) -3.54 [-7.50, +0.31] -> NOT a
+  successor (auto-promote bar not reachable). Copy pod_backup_weekend/pod1016_trade2 (u0065 + grafted). t2_chain.sh loops
+  seeds 74-76 but only s74 ran; gx_76 (gae_exploit s76) started after it as planned.
+- 4 diagnosis workers (Opus) running: own Log, own Tesla (pod A), own Skeletons+Tornado, own Knight + opponent cards (pod B);
+  shared ticket night1016/TICKET_COMMON.md; reports -> L74/parity/diag_night/<card>/REPORT.md.
+
 ## 2026-10-16 ~22:45 EDT -- NIGHT (new account): parity FIRST, goal RAISED to 97.5% / 95% per card; captured-log baseline
 
 **Owner before bed (memory overnight-2026-10-16b-parity-night, fight-parity-goal):** monitor + AUTO-PROMOTE as before; work order
