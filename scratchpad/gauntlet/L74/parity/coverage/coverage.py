@@ -16,6 +16,10 @@ import sys
 TIERS = {'B': .003, 'C': .002}
 TIER_SHARE = .90          # share of a tier's live plays whose card must meet (owner accepted with option B)
 GOAL_ALL = .975
+# Owner 10-17: grade on UPGRADED matches only (fights.py score --stamped: phase-3b creation ticks), "just make sure there is
+# enough matches": the trigger needs the stamped cohort with at least MIN_MATCHES scored matches (a bootstrap over a handful of
+# matches is not trustworthy, whatever its CI says). ponytail: a fixed floor; raise it if the CIs at 100 look unstable.
+MIN_MATCHES = 100
 
 
 def table(ceiling, census):
@@ -40,12 +44,16 @@ def report(ceiling, census):
     out, total = table(ceiling, census)
     ov = ceiling.get('overall') or {}
     lo = (ov.get('agree_ci') or (None, None))[0]
+    cohort, nm = ceiling.get('cohort', 'all'), ov.get('matches') or 0
+    valid = cohort == 'stamped' and nm >= MIN_MATCHES
     lines = [f"live census: {census['matches']} matches, {total} plays, {len(out)} cards",
+             f"graded cohort: {cohort}, {nm} matches -> " + ('valid for the trigger' if valid else
+             f"NOT valid for the trigger (needs the stamped cohort with >= {MIN_MATCHES} matches)"),
              f"overall raw {ov.get('agree')} lower CI {lo} (goal {GOAL_ALL}): {'MET' if lo is not None and lo >= GOAL_ALL else 'not met'}",
              f"COVERAGE (all live plays on a card that MEETS): {sum(r['share'] for r in out if r['flag'] == 'MEETS'):.3f}"]
     for name, thr in TIERS.items():
         t, s, met = tier(out, thr)
-        ok = lo is not None and lo >= GOAL_ALL and met >= TIER_SHARE
+        ok = valid and lo is not None and lo >= GOAL_ALL and met >= TIER_SHARE
         lines.append(f"tier {name} (own deck + opp >= {thr:.1%} of plays): {len(t)} cards = {s:.3f} of live plays; "
                      f"{met:.3f} of its plays meet (need {TIER_SHARE}) -> {'TRIGGER MET' if ok else 'not yet'}"
                      + (' [STEP D]' if name == 'B' else ' [ultimate goal]'))
@@ -59,7 +67,7 @@ def report(ceiling, census):
 
 if __name__ == '__main__':
     if sys.argv[1:2] == ['--selftest']:
-        ce = dict(overall=dict(agree=.98, agree_ci=(.976, .984)),
+        ce = dict(cohort='stamped', overall=dict(agree=.98, agree_ci=(.976, .984), matches=150),
                   cards=[dict(card='own A', n=400, agree=.99, agree_ci=(.97, 1), flag='MEETS'),
                          dict(card='opp B', n=40, agree=.99, agree_ci=(.96, 1), flag='MEETS'),
                          dict(card='opp C', n=40, agree=.80, agree_ci=(.7, .9), flag='below (floor met)')])
@@ -69,6 +77,11 @@ if __name__ == '__main__':
         assert total == 1000 and len(tb) == 4 and abs(mb - .94) < 1e-9   # meets: own A 0.90 + opp B 0.04 of 1.0
         assert [r['flag'] for r in out if r['card'] == 'opp D'] == ['not in cohort']       # an unproven card never counts
         assert any('TRIGGER MET' in x and '[STEP D]' in x for x in report(ce, cs))
+        ce['overall']['matches'] = 60                                                      # too few stamped matches blocks it
+        assert not any('TRIGGER MET' in x for x in report(ce, cs))
+        ce['overall']['matches'], ce['cohort'] = 150, 'all'                                # the full cohort never triggers
+        assert not any('TRIGGER MET' in x for x in report(ce, cs))
+        ce['cohort'] = 'stamped'
         ce['overall']['agree_ci'] = (.970, .984)                                           # overall below 0.975 blocks it
         assert not any('TRIGGER MET' in x for x in report(ce, cs))
         print('COVERAGE_SELFTEST_OK')

@@ -2998,7 +2998,7 @@ def ceiling_table(out_dir, clean, mode):
     rows = sorted((row(k, v, GOAL_CARD, FLOOR_CARD) for k, v in groups.items()), key=lambda r: -r['n'])
     every = [x for v in groups.values() for x in v]
     overall = row('OVERALL', every, GOAL_ALL, FLOOR_ALL) if every else None
-    out = dict(mode=mode, definitions=dict(DEATH_TOL=DEATH_TOL, SWARM_SLACK=SWARM_SLACK, TOWER_FLOOR=TOWER_FLOOR,
+    out = dict(mode=mode, cohort='stamped' if os.environ.get('PARITY_STAMPED') else 'all', definitions=dict(DEATH_TOL=DEATH_TOL, SWARM_SLACK=SWARM_SLACK, TOWER_FLOOR=TOWER_FLOOR,
                                            TOWER_REL=TOWER_REL, SPELL_WINDOW=SPELL_WINDOW, GOAL_CARD=GOAL_CARD,
                                            GOAL_ALL=GOAL_ALL, GOAL_N=GOAL_N, FLOOR_CARD=FLOOR_CARD, FLOOR_ALL=FLOOR_ALL),
                k=max((len(r['card']['sim'])-1 for r in clean if r.get('card')), default=0), overall=overall, cards=rows)
@@ -3024,6 +3024,10 @@ def score(out_dir, tower_tol=150, worst=5, mode='strict'):
         d = json.loads(p.read_text())
         if d['summary'].get('skipped'):
             skipped[d['summary']['skipped']] += 1; continue
+        if os.environ.get('PARITY_STAMPED') and not d['summary'].get('phase3b_births'):
+            # --stamped (owner 10-17): grade only matches whose capture times every new body exactly (reader 3b); older
+            # captures keep a frame-gap placement noise no fix can remove
+            skipped['not_stamped'] += 1; continue
         matches += 1
         for r in d['fights']:
             if 'error' in r:
@@ -3133,6 +3137,7 @@ def main():
     ap.add_argument('--workers', type=int, default=1)
     ap.add_argument('--ceiling', type=int, default=0, help='noise ceiling: K perturbed SIM replays per fight (0 = off; CEILING.md)')
     ap.add_argument('--clean', choices=['strict', 'core', 'all'], default='strict', help='score: which fights count (is_clean)')
+    ap.add_argument('--stamped', action='store_true', help='score: only matches with phase-3b creation ticks (the step-d trigger cohort)')
     ap.add_argument('--infer', default='', help="opt-in attack inference at setup: 'target', 'phase' or 'target,phase' (PARITY_INFER)")
     a = ap.parse_args()
     if a.mode == 'buffs':      # phase-2 buff rows of every local capture -> one file for PARITY_BUFFS (no addresses)
@@ -3148,6 +3153,8 @@ def main():
         a.out.write_text(json.dumps(out, separators=(',', ':')))
         print({n: len(v) for n, v in out.items()}); return 0
     if a.mode == 'score':
+        if a.stamped:
+            os.environ['PARITY_STAMPED'] = '1'
         for mode in ('strict', 'core', 'all'):
             score(a.out, mode=mode)
         print(text(score(a.out, mode=a.clean))); return 0

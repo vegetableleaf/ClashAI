@@ -1,3 +1,15 @@
+## 2026-10-17 12:59 EDT -- step-d trigger graded on UPGRADED (stamped) matches only, >= 100 matches (owner 10-17)
+
+- Owner 10-17: "switch the trigger to upgraded matches only for a fair grading. just make sure there is enough matches."
+- fights.py `score --stamped` keeps only matches whose summary has phase3b_births (reader-3b creation ticks; live since the 11:17
+  restart), skips the rest as not_stamped, and writes cohort='stamped' into ceiling_*.json.
+- coverage.py: the trigger is valid only on cohort 'stamped' with >= MIN_MATCHES = 100 scored matches (a bootstrap over a handful
+  of matches is not trustworthy); per-card n >= 30 + lower CI still apply. Self-test covers: too few matches, the full cohort,
+  overall below 0.975 -> no trigger. 91 parity tests pass.
+- Count at 12:59 EDT: 27 upgraded captures (11:17 -> 12:59, ~12 / h) -> 100 around ~19:00 EDT if live keeps running; tier-B
+  cards need far more (each tier-B card needs n >= 30 fights in this cohort).
+- The full-cohort score stays in the reports as history (FIN6 0.898).
+
 ## 2026-10-17 12:52 EDT -- FIN6 (all 10-17 fixes): 0.898 on the full cohort, 0.913 on the 16 stamped matches (ceiling 0.995)
 
 FIN6 = HEAD 1856e28 harness (swarm match, targetless, timeout, Rascals, births; NOT yet REUSE / CLONE / DECKMAP / TORNADO-DATE)
