@@ -1,3 +1,15 @@
+## 2026-10-17 00:30 EDT -- COMBINED STATE: harness I8 + fork S1/S2 = captured 0.937 [0.918, 0.954] (start of night 0.877)
+
+(Clock check: the two entries above stamped ~01:20 / ~01:35 EDT were really ~00:15 / ~00:25 EDT. Stamps from here on use `date`.)
+- Pod A CAP_I8F (I8 harness, /workspace/rsfork_s1 = clashbot35 3b80b20): overall **0.937 [0.918, 0.954]**, unperturbed 0.898,
+  ceiling 0.953. Per card (normalised [CI]): own IW hero 0.991 [0.968, 1.009] MEETS; own Log 0.988 [0.957, 1.0] MEETS; own Rocket
+  0.996 (n 21, insufficient); X-Bow 0.963 [0.909, 1.001]; Knight evo 0.932 (n 20); Tornado 0.930 (n 20); Knight 0.927 [0.873, 0.981];
+  Tesla evo 0.895 (n 18); Tesla 0.885 [0.762, 0.978]; Skeletons 0.885 [0.822, 0.941]. Goal 0.975 overall / 0.95 per-card lower bound.
+- Fixes tonight (each measured one at a time, 0 own-card regressions): ceiling seed on fight identity; Hero Goblins plays kept; nearest
+  passable snap; in-flight shots injected (+0.030, biggest); missing second-summon children cloned; shots at proxy bodies; Log
+  scored on its rolled-over set; DoT crown %; opponent spell levels; pending death spawns started alive; fork S2 hidden-Tesla
+  shots; fork S1 Goblin Machine rocket.
+
 ## 2026-10-17 ~01:35 EDT -- parity I8 (opponent spell levels + pending death spawns started alive) 0.932; own Log 0.988 MEETS
 
 - I8 = I7 + log K1 (spell level from exact damage evidence when < 2 exact drops) + K2 (a fight starting between a parent's
