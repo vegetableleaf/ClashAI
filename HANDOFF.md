@@ -1,3 +1,21 @@
+## 2026-10-17 19:13 EDT -- H-NEARPARENT landed (full cohort +0.0008, 11 up / 1 down); FIN8 started; owner ability-press question answered
+
+- H-NEARPARENT (diag_night/r5c/H_nearparent.patch): a body of the card's own unit next to a LIVING same-size body of its card is
+  a second play, not that body's child (40 such plays on 311 logs were dropped, never replayed). Full cohort (FIN7 base, arm
+  r5c_np2rest + r5c_np2st = 36 affected logs spliced): OVERALL 0.9054 -> 0.9062; 11 fights up / 1 down (054527@3453 own Knight
+  1.0 -> 0.625, its ceiling 0.464 = perturbation-sensitive). 86 parity tests pass on the FIN8 bundle (5 others need pipeline/ +
+  research/sandbox_tools, absent from the bundle; environment, not this patch).
+- FIN8 (pod 64.247.206.76:14009, fork rsfork_f36ek, HEAD code + NP, exports attacks8/buffs8 = 337 captured logs, 104 with
+  phase-3b births): FIN8_st (the 104 upgraded logs) first, then FIN8 (all 337). Recipe: parity1016/setup8.sh, run_cap8.sh,
+  run_cap8st.sh. Not in FIN8: H-CHILDFORM (r5d full check r5d_child_full running on 15617), H-EVO-CHILD (r5b, +5 / -0 upgraded,
+  full check r5b_child_n running).
+- Owner asked if live still uses the simple Hero IW press rule: YES (live_play --iw-press rule|never only; Mark CXXXVIII has no
+  ability head). Measured vs pros (mining.json, 161 pro matches / 1320 deploys): live CXXXVIII 70 matches 1.41 presses/match,
+  23% of 428 IW deploys pressed, median 2.8 s after deploy (IQR 2.4-4.5); pros 2.34/match, 32% [29, 34] of deploys, median
+  4.15 s (IQR 2.35-8.7). So NOT more presses than pros; earlier and on small clumps (clump value median 8, q25 6).
+  Learned press (gae_ab) measured -1.15 [-5.10, +2.92] vs its rule twin. Stage B (live_play --iw-press head) worker started
+  (scratchpad/gauntlet/L74/ability_live/); then one training run from Mark CXXXVIII + ability_head on, 65 upd, factorial eval
+  vs CXXXVIII; live A/B only if the SIM bar passes. Earliest live ~10-18 midday.
 ## 2026-10-17 18:28 EDT -- r5c landed: H-ZAP + H-SPAWN-BORN + H-SHADOW-SHORT (upgraded cohort vs FIN7 0.9118)
 
 Worker DONE_WITH_CONCERNS (diag_night/r5c/, fails_classified.txt: 58 failing upgraded fights on own IW 18 / Knight 13 / Log 15 /

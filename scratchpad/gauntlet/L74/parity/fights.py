@@ -568,10 +568,24 @@ def deployments(m, catalog, life=None, own_unit=None, stats=None):
             continue
         def at(q, t):           # q's last sampled point at or before t
             return max((p for p in q['traj'] if p[0] <= t), default=q['traj'][0])
-        near_parent = any(q['side'] == r['side'] and q['card_id'] == r['card_id'] and q['first'] < r['first'] - 4
-                          and q['first'] <= r['first'] <= q['last'] + 15
-                          and math.hypot(at(q, r['first'])[1]-r['x'], at(q, r['first'])[2]-r['y']) < 3000 for q in tr)
+        near = [q for q in tr if q['side'] == r['side'] and q['card_id'] == r['card_id'] and q['first'] < r['first'] - 4
+                and q['first'] <= r['first'] <= q['last'] + 15
+                and math.hypot(at(q, r['first'])[1]-r['x'], at(q, r['first'])[2]-r['y']) < 3000]
         c = catalog[r['card_id']]
+        # H-NEARPARENT (diag_night/r5c): a body of the card's own unit (a level's max_hp) next to a LIVING same-size body of
+        # its card is a second play, not that body's child (children are smaller, or born at their parent's death): 40 such
+        # plays on the 311 captured logs (25 own, every one confirmed: Hero IW x13, Tesla x5, Knight x3, ...; 120801@4021 a
+        # second Wizard 2.8 tiles from the first) were dropped and never replayed. Not for spells, evos (Evo Skeletons
+        # duplicate), champions (an ability may show a same-card body), a seen Mirror / Clone cast; an opponent body must be
+        # deploying when first seen (a play: its Hero Wizard / Elite Archer / Bowler re-plays deploy on a tile centre), an
+        # own body needs a confirmed play of its card.
+        f = form_of(r['card_id'], c)
+        replay = bool(near) and own_unit is not None and c.get('type') != 'spell' and f != 1 and not c.get('active_ability') \
+            and all(q['last'] > r['first'] + 2 and .95 <= q['max_hp']/max(1, r['max_hp']) <= 1.05 for q in near) \
+            and own_unit(c['display_name'], r['max_hp']) \
+            and not any(e['side'] == r['side'] and e['name'] in ('Mirror', 'Clone') and r['first'] - 60 <= e['tick'] <= r['first'] for e in seen) \
+            and (any(p['name'] == c['display_name'] and 0 <= r['first'] - p['tick'] <= 80 for p in m['plays']) if r['side'] == m['side'] else r['active'] is None or r['active'] > r['first'])
+        near_parent = bool(near) and not replay
         # A hero's ability object can share the card id and dwarf its units (Hero Goblins: a 3720 / 4090 hp object over
         # 293 / 323 hp goblins), so the max_hp rule dropped every Hero Goblins play as a role-child (diag_night/knight).
         # A hero body whose max_hp IS the card's own unit at some level (own_unit = Engine.level) is a play's body.
