@@ -817,7 +817,12 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
         c = eng.stats(anchor['name']); sp = (c.get('projectile') or {}).get('spawn_projectile') or {}
         reach = max(c.get('area_damage_radius_milli') or 0, (c.get('spell') or {}).get('radius_milli') or 0,
                     (sp.get('projectile_range_milli') or 0) + (sp.get('projectile_radius_milli') or 0)) + TOWER_RADIUS
-        spell = dict(d=d or 0, dt=(d or 0)*(c.get('crown_tower_damage_percent') or 100)/100, x=anchor['x'], y=anchor['y'], reach=reach)
+        # a damage-over-time spell deals its hits through its area's buff, whose crown % is the one that applies (Tornado:
+        # buff 30 %, area 100 %, top level none; diag_night/skel: live Tornado ticks on a crown tower are 40-41 of a 134 d,
+        # so the old dt = d made the >= 0.8 dt test fire only on coincident X-Bow + Tornado drops)
+        buff = ((c.get('spell') or {}).get('area_effect_object') or {}).get('buff') or {}
+        crown = c.get('crown_tower_damage_percent') or (buff.get('crown_tower_damage_percent') if buff.get('damage_per_second') else None) or 100
+        spell = dict(d=d or 0, dt=(d or 0)*crown/100, x=anchor['x'], y=anchor['y'], reach=reach)
         pj = c.get('projectile') or {}
         if sp.get('projectile_range_milli') and sp.get('projectile_radius_milli') and sp.get('speed') and pj.get('speed'):
             # A rolling spell (the Log, the Barbarian Barrel) hits only what its box rolls over: thrown from min_distance

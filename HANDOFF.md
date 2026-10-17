@@ -1,3 +1,9 @@
+## 2026-10-17 ~00:50 EDT -- parity I7 (damage-over-time crown %) 0.930; own Tornado 0.930
+
+- I7 = I6 + skel dot_crown (crown-tower % of a damage-over-time spell read from its area buff: Tornado 30%, not 100%): pod A
+  CAP_I7 overall **0.929 -> 0.930 [0.909, 0.947]**, own Tornado 0.878 -> 0.930 (n 20), all other cards identical. Applied by hand
+  (the patch's context collided with log patch A; same one-line change).
+
 ## 2026-10-17 ~00:35 EDT -- parity I6 (Log hit-set scoring) 0.929; own Log 0.975; Log itself matches live
 
 (Times: the three entries above stamped 00:15 / 00:40 / 01:30 were really ~23:45 / ~23:55 / ~00:05 EDT -- I estimated
