@@ -1,3 +1,17 @@
+## 2026-10-17 14:16 EDT -- CUE-BLIND CONTROL: Mark CXXXVIII's gain is NOT from the cue inputs (it is the training run)
+
+- cueblind130_gae_cue_u250 = ICEBOW Mark CXXXVIII: CUES with model.cue_in.weight zeroed (norm 0.1808 -> 0; exactly cue-blind),
+  same D3 live-mirrored seeds, pod 8 (no cpu lock, 12 workers): **636 / 960 (66.2%)**.
+  - vs Mark CXXXVIII with cues (643): **-0.73 [-3.65, +2.08]** -> (c) the "+5.10 cue vs twin" is NOT an effect of seeing cues.
+  - vs u250 (586): **+5.21 [+1.35, +9.06]** -> the checkpoint is genuinely better than u250 without its cues.
+  - vs the no-cue twin cues130_gae_ctl_u250 (594): +4.38 [+0.62, +8.12] -> the cue run's weights (its whole training
+    trajectory) differ from the twin's; with a zero-init cue layer of norm 0.18 the cues themselves are inert.
+- Matches the live cue worker's offline finding (cues vs zero cues: 1 / 538 play-or-wait decisions changed).
+- Consequences: (1) no revert -- the owner's revert condition is the s75 replicate contradicting the gain over u250, and the model
+  beats u250 cue-blind too; (2) the cue path stays on (harmless, verified) but is not what makes the model better; (3) the
+  seed-75 replicate now tests "does a run WITH a cue layer reliably beat its twin" (training-dynamics / seed luck), not cue use;
+  (4) the reduced Rocket / Tornado use live is the policy itself (cue-blind decides the same).
+
 ## 2026-10-17 14:01 EDT -- Rocket / Tornado use monitor: Mark CXXXVIII plays both spells about half as often as Mark CXXIV (8 matches)
 
 - Owner 10-17: "monitor Mark CXXXVIII's rocket and tornado use across matches. It seems a bit low, but it's been winning matches

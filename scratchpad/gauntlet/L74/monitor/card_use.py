@@ -56,6 +56,35 @@ def match(path, cards):
     return ck, n, plays, secs
 
 
+LATE_TICK = 2400          # double elixir (the last 60 s of regulation) onward = "late stage"
+OFFENSIVE_Y = .64         # X-Bow intended y (screen-normalised, own side at the bottom): 0.61 = at the bridge (offensive, 662 of
+                          # 838 on 10-17), 0.67-0.70 = back by our towers (defensive) -- a clean two-mode split
+
+
+def late(path):
+    """--late: (opponent X-Bow-unfavourable?, late offensive X-Bows, late Rockets, late Tornados) for one match. The matchup comes
+    from the opponent's played cards (fights.py play detection) through livecal.census.unfavorable (the owner's six archetypes)."""
+    sys.path.insert(0, str(REPO))
+    from scratchpad.gauntlet.L74.parity import fights as F
+    from scratchpad.gauntlet.L74.livecal.census import unfavorable
+    catalog, _ = F.load_catalog()
+    m, _ = F.read_match(path)
+    opp = set()
+    if m is not None:
+        events, _ = F.deployments(m, catalog)
+        opp = {ev['name'] for ev in events if ev.get('kind') == 'play' and ev['side'] != m['side']}
+    xb = rk = tn = 0
+    for raw in open(path, 'rb'):
+        if b'"confirmed"' in raw[:30]:
+            j = json.loads(raw)
+            if (j.get('tick') or 0) < LATE_TICK:
+                continue
+            name, xy = j.get('name'), j.get('intended') or (None, None)
+            xb += name == 'Xbow' and xy[1] is not None and xy[1] <= OFFENSIVE_Y
+            rk += name == 'Rocket'; tn += name == 'Tornado'
+    return unfavorable(opp) if opp else None, xb, rk, tn
+
+
 def mark_of(ck, cache={}):
     """The checkpoint's Mark name (registry lookup by sha256, hashed once per path), else its file name."""
     if ck not in cache:
@@ -83,6 +112,8 @@ def main(argv):
     ap.add_argument('--since', default='20261017_000000')
     ap.add_argument('--cards', default='Rocket,Tornado')
     ap.add_argument('--base', default='ICEBOW Mark CXXIV: LONGER')
+    ap.add_argument('--late', action='store_true', help="owner 10-17: late-stage offensive X-Bows vs Rockets, by X-Bow-"
+                    "unfavourable matchup (slower: runs fights.py play detection per match)")
     a = ap.parse_args(argv)
     cards = a.cards.split(',')
     res = results()
@@ -93,8 +124,18 @@ def main(argv):
         ck, n, plays, secs = match(p, cards)
         if not ck or not secs:
             continue
-        rows[mark_of(ck)].append(dict(n=n, plays=plays, mins=secs/60, win=res[p.name][0] == 'WIN', tro=res[p.name][1]))
+        rows[mark_of(ck)].append(dict(n=n, plays=plays, mins=secs/60, win=res[p.name][0] == 'WIN', tro=res[p.name][1],
+                                      late=late(p) if a.late else None))
     mean = lambda xs: sum(xs)/len(xs) if xs else float('nan')
+    if a.late:
+        print('LATE STAGE (tick >= %d): per Mark x matchup -- matches, win, offensive X-Bows / Rockets / Tornados per match' % LATE_TICK)
+        for mk, rs in sorted(rows.items(), key=lambda kv: -len(kv[1])):
+            for label, want in (('X-Bow-unfavourable', True), ('other', False)):
+                g = [r for r in rs if r['late'] and r['late'][0] is want]
+                if g:
+                    print(f"  {mk} | {label}: {len(g)} matches, win {mean([r['win'] for r in g]):.3f}, late offensive X-Bow "
+                          f"{mean([r['late'][1] for r in g]):.2f}, Rocket {mean([r['late'][2] for r in g]):.2f}, "
+                          f"Tornado {mean([r['late'][3] for r in g]):.2f}")
     for mk, rs in sorted(rows.items(), key=lambda kv: -len(kv[1])):
         print(f"\n{mk}: {len(rs)} matches, win {mean([r['win'] for r in rs]):.3f}, trophies/match {mean([r['tro'] for r in rs]):+.1f}, "
               f"plays/match {mean([r['plays'] for r in rs]):.1f}")
