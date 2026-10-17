@@ -165,10 +165,15 @@ def read_match(path):
                 # Address hashed per match only to join observations; never exported raw.
                 k = hashlib.sha256((salt+str(addr)).encode()).hexdigest()[:12]
                 last = seen.get(k)
-                if last is None or t-last[1] > GAP_SPLIT or last[2] != cid:
+                # An address the game hands to a new body of the same card inside GAP_SPLIT is a new body when max_hp
+                # jumps past the pairing band (a Skeleton Balloon's 773 -> one of its 119 skeletons 16 ticks after its
+                # death: diag_night/r4e H-REUSE, 2 of 2 such jumps on the 218 captured logs); a level step (an Evo
+                # Electro Giant's delevel, ~10 %) or a -1 reader row keeps the id.
+                jump = last is not None and mx > 0 and last[3] > 0 and not .6 <= mx/last[3] <= 1.67
+                if last is None or t-last[1] > GAP_SPLIT or last[2] != cid or jump:
                     ids[k] += 1
-                    last = (f'{k}.{ids[k]}', t, cid)
-                seen[k] = (last[0], t, cid)
+                    last = (f'{k}.{ids[k]}', t, cid, mx)
+                seen[k] = (last[0], t, cid, mx if mx > 0 else last[3])
                 bid = last[0]
             bodies.append(dict(id=bid, side=s_, x=x, y=y, card_id=cid, hp=hp, max_hp=mx, kind=kind, tower=tower))
             where[addr] = bid
@@ -1063,6 +1068,13 @@ class Engine:
     def bodies(self, catalog_by_name):
         st = json.loads(self.b.state_json())
         out = []
+        # A copy the Clone made reports its original's card in the SIM; the live reader shows it under the Clone card
+        # (1 hp): name it 'Clone' so it pairs with the live copy and is not one of the original card's bodies
+        # (diag_night/r4e H-CLONE: 235516@451 scored 4 SIM-only Minion Horde copies as misses).
+        try:
+            cloned = {u for u, c, _ in self.b.clone_states() if c}
+        except AttributeError:
+            cloned = set()
         for row in st['entities']:
             e = dict(zip(self.F, row))
             if e['card_id'] == -1:
@@ -1070,7 +1082,7 @@ class Engine:
                 out.append(dict(id=f"T{e['team']}" + ('K' if abs(x-9000) < 1000 else 'L' if x < 9000 else 'R'),
                                 side=e['team'], x=x, y=e['y']//18, hp=e['hp'], max_hp=e['max_hp'], tower=True))
                 continue
-            name = self.cat[e['card_id']]['name']
+            name = 'Clone' if e['uid'] in cloned else self.cat[e['card_id']]['name']
             c = catalog_by_name.get(name, {})
             form = 2 if e['status_flags'] & 16 else 1 if e['status_flags'] & 8 else 0
             out.append(dict(id=f"s{e['uid']}", side=e['team'], x=e['x']/18, y=e['y']/18, hp=e['hp'], max_hp=e['max_hp'],

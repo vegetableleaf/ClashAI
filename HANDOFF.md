@@ -1,3 +1,23 @@
+## 2026-10-17 12:24 EDT -- r4e worst opponent cards: H-REUSE + H-CLONE landed; H-DECKMAP / H-TORNADO-DATE still measuring
+
+Worker report DONE_WITH_CONCERNS (scratchpad/gauntlet/L74/parity/diag_night/r4e/, tools/fightlist.txt; pod results r4e_*).
+- LANDED H-REUSE: a reader address the game reuses for a new body of the same card within GAP_SPLIT starts a new id when max_hp
+  jumps outside 0.6-1.67 (a dead Skeleton Balloon's address -> one of its skeletons 14-16 ticks later; census: 2 Skeleton Balloon
+  + 1 Skeleton Army genuine reuses in 218 logs). Spliced into FIN5 on the 3 affected matches: Skeleton Balloon 0.576 -> 0.625
+  (+2 / -0), every other card identical.
+- LANDED H-CLONE: a body the engine flags as a clone is named 'Clone' (the live reader shows Clone copies under the Clone card).
+  7 Clone matches spliced: +8 fights over 7 cards (Skeleton Balloon, Rage Barbarian 0.834 -> 0.861, Bats, Blowdart, Elixir Golem,
+  Giant Skeleton +2, Ram Rider); 1 regression own Tornado 082412@1111 = a real difference the old naming hid. 91 tests pass.
+- PENDING (runs on P1 r4e_D / r4e_T): H-DECKMAP (run_fight zipped the public deck list with hand+queue in different orders, so
+  the SIM could play the WRONG opponent card: 034530@2567 Angry Barbarians deployed an Elixir Collector; fix pairs hand + next
+  exactly, the rest by sorted order; ~1% of fights change map); H-TORNADO-DATE (live Tornado pull / damage lands one tick later
+  than the SIM: first pull made + 3 in 268 / 290 casts, first damage made + 13 in 166 / 180; command on `made` instead of
+  `made - 1`; partial 154 / 218 matches: total aK +5.8, small own losses Skeletons -0.4, Tesla -0.5, Knight -0.2).
+- Minion Horde (raw 0.448, ceiling 0.618): no law -- live follows the SIM's touch-dilution rule given its own neighbours; one
+  touch changes the pull 2-4x, so the flock is chaotic. (b) a 6-body card with 0 allowed misses may never reach 0.95 raw.
+- S candidates (b): Evo Tesla second ring after an underground dip (235851@2321); Hero Mini PEKKA heal timing (065553@1030).
+  U: bodies living < one frame gap (171357@3323) -- per-tick frames or a spawn/death event stream would be needed.
+
 ## 2026-10-17 12:18 EDT -- OWNER: put the cue model live once the live cue path is verified; may revert if the s75 replicate contradicts
 
 - Owner 10-17: "once the live cue path is complete, wire the cue u130 checkpoint into live_play.py and start_live.sh, then restart
