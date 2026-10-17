@@ -1,0 +1,40 @@
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -437,18 +437,35 @@
+     """One fight per deployment: start = the last frame strictly before it; length `window` ticks."""
+     ticks = [t for t, _ in m['frames']]
+     tr = tracks(m['frames'])
++    # A parent gone before the start frame whose death spawn is first seen after it (a Skeleton Balloon's skeletons land
++    # ~12 ticks after its death) is on no board and in no play, so the SIM would never make those bodies. Start on the
++    # parent's last frame instead: it is set up alive with its live hp, the shot that kills it is injected as in flight,
++    # and the SIM makes the children itself (diag_night/log, 171357@1655). (parent last seen, children first seen) pairs,
++    # by deployments()' near-parent rule.
++    fam, pend = defaultdict(list), set()
++    for r in tr.values():
++        fam[r['side'], r['card_id']].append(r)
++    for rs in fam.values():
++        for r in rs:
++            for q in rs:
++                if q is not r and q['last'] < r['first'] <= q['last'] + 15 and r['max_hp'] < q['max_hp']:
++                    at = max((p for p in q['traj'] if p[0] <= r['first']), default=q['traj'][0])
++                    if math.hypot(at[1] - r['x'], at[2] - r['y']) < 3000:
++                        pend.add((q['last'], r['first']))
+     fights = []
+     for k, ev in enumerate(events):
+         if ev['kind'] != 'play':
+             continue
+         i = bisect_left(ticks, ev['tick']) - 1
+         # A body still deploying at the start frame cannot be set up mid-deploy: start before it was born instead.
++        # A death spawn pending at the start frame: start on its parent's last frame (above).
+         for _ in range(4):
+             born = [tr[b['id']]['first'] for b in m['frames'][max(i, 0)][1]
+                     if not b['tower'] and b['kind'] in (12, 14) and tr[b['id']]['first'] > ticks[max(i, 0)]-80]
+-            if not born or i < 0:
++            dead = [lo for lo, hi in pend if i >= 0 and lo < ticks[i] < hi]
++            if not (born or dead) or i < 0:
+                 break
+-            i = bisect_left(ticks, min(born)) - 1
++            i = min(([bisect_left(ticks, min(born)) - 1] if born else []) + ([bisect_left(ticks, min(dead))] if dead else []))
+         if i < 0:
+             continue
+         t0 = ticks[i]; t1 = t0 + window

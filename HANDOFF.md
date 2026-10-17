@@ -1,3 +1,24 @@
+## 2026-10-17 ~01:20 EDT -- FORK laws S1 + S2 measured: captured 0.930 -> 0.935 on the I7 harness; acquisition law matches live
+
+- **RoyaleSim fork `clashbot35` (worktree C:/Users/benpe/rsfork35; bundle pod_backup_weekend/fork35/clashbot35_3b80b20.bundle):**
+  eea4970 S2 `hide.SHOT_AT_HIDING_BUILDING = client16402_fired_up` (a shot passes a Tesla's hide only if the Tesla was UP when
+  it was fired; live: darts / arrows at a hidden Tesla do 0); 3b80b20 S1 `combat.GOBLIN_MACHINE_ROCKET = client16402_signal_rocket`
+  (the Goblin Machine marks a ground enemy -- an area "signal" at the aim point -- and rockets it 1000 ms later at its composed hit
+  speed, 5000 ms cooldown, window 2300-5000 mt edge-to-edge FITTED, nearest eligible matches 26/38 marks, a mark dropped while
+  stunned does not start the cooldown; table: speed 350, 119 dmg (304 at L11), crown 50%, splash 1500). cargo test 1888 / 1888.
+  Built on pod A (/workspace/rsfork_s1 includes S2). Tesla worker, on its in-flight base: S2 +1 / -1, S1 +7 / -1.
+- **On the I7 harness (pod A CAP_I7 PyPI vs CAP_I7F fork): overall 0.930 [0.909, 0.947] -> 0.935 [0.915, 0.951]; own Tesla 0.829
+  -> 0.885; Tesla evo 0.846 -> 0.895; Skeletons 0.873 -> 0.885**; opp BlowdartGoblin 0.674 (n 10; S2 exposes 214908@2805's earlier
+  divergence); other own cards identical. The fork is NOT the training runtime (0.1.35 PyPI) -- training moves to the patched
+  engine once parity is met (owner plan).
+- Knight worker r4 (diag_night/knight/r4/): crown-tower / Tesla / X-Bow TARGET ACQUISITION matches live -- clean events 957/999
+  (95.8%), live and SIM both "nearest" (95.2% / 94.6% of 478 multi-candidate events); disagreements trace to earlier divergence ->
+  (c) no acquisition law gap. "Every first-seen play +1 tick" arm: unperturbed 19 fixed / 28 broken -> (c). Shot templates for
+  Goblin Giant / Lava Hound / Mortar / Rascals / Royal Giant: 0 / 0 (not landed). Row-2 leads (b): Electro Giant +22 / Assassin
+  +17 / Valkyrie +16 ticks first hit after lock (n 1 each), unseeded charged Prince, Lumberjack rage, Evo Knight damage reduction.
+- Log worker r2: K1 opponent spell levels from exact drops (+1 / 0) and K2 pending death spawn = start the parent alive with its
+  killing shot in flight (+1 / 0, own Log 0.988 [0.957, 1.0] MEETS) -> integrating as I8.
+
 ## 2026-10-17 ~00:50 EDT -- parity I7 (damage-over-time crown %) 0.930; own Tornado 0.930
 
 - I7 = I6 + skel dot_crown (crown-tower % of a damage-over-time spell read from its area buff: Tornado 30%, not 100%): pod A

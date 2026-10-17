@@ -1,0 +1,18 @@
+acquisition events 1810 clean 999
+all {'princess': {'agree': 938, 'differ': 276, 'sim_none': 168}, 'ALL': {'agree': 1193, 'differ': 406, 'sim_none': 211}, '911609004cf0.1': {'agree': 1}, 'Xbow': {'agree': 166, 'differ': 88, 'sim_none': 16}, '4163d68ecd21.1': {'differ': 1}, '7299b9d3e870.2': {'agree': 1}, 'king': {'agree': 70, 'differ': 30, 'sim_none': 25}, 'f69f95a2384c.1': {'agree': 1}, '94bbfb2c12bd.1': {'agree': 1}, 'e2fc814a19e3.1': {'agree': 1}, '1427035259f4.2': {'agree': 1}, '72b0cda3d6c1.1': {'agree': 1}, 'af5ebcf00c2f.1': {'agree': 1}, '4e0a77e6acae.1': {'agree': 1}, 'a8a7ded16f90.1': {'differ': 1}, '0baecbea996e.1': {'agree': 1}, 'b2cb84306535.1': {'differ': 1}, 'e06cc8e6c94e.2': {'sim_none': 1}, 'd12d3ffbc15b.1': {'differ': 2}, '7e7010b07fa8.1': {'differ': 2}, '3e7fef1716f3.1': {'differ': 1}, '4b5a39bb3c9c.1': {'agree': 1}, '4b3e3c58df58.1': {'agree': 1}, '718d7f257ba9.2': {'agree': 1}, 'efea724ada9c.1': {'agree': 1, 'differ': 1}, '1c24b9e4d1fc.1': {'agree': 1}, '2bfbafe9796b.1': {'differ': 1}, '5e81976cbb15.1': {'agree': 1}, '2fd8935d263f.1': {'agree': 1}, '394d9fddd4f7.1': {'differ': 1}, '5677e93477d3.1': {'agree': 1}, 'f8737c3552a0.1': {'agree': 1}, '16e533e86074.2': {'differ': 1}, '80039bb94215.1': {'sim_none': 1}}
+clean {'princess': {'agree': 626, 'differ': 138, 'sim_none': 14}, 'ALL': {'agree': 779, 'differ': 204, 'sim_none': 16}, '911609004cf0.1': {'agree': 1}, 'Xbow': {'agree': 97, 'differ': 52}, '7299b9d3e870.2': {'agree': 1}, 'king': {'agree': 39, 'differ': 11, 'sim_none': 2}, 'f69f95a2384c.1': {'agree': 1}, '94bbfb2c12bd.1': {'agree': 1}, 'e2fc814a19e3.1': {'agree': 1}, '1427035259f4.2': {'agree': 1}, '72b0cda3d6c1.1': {'agree': 1}, 'af5ebcf00c2f.1': {'agree': 1}, '4e0a77e6acae.1': {'agree': 1}, '0baecbea996e.1': {'agree': 1}, 'd12d3ffbc15b.1': {'differ': 2}, '4b5a39bb3c9c.1': {'agree': 1}, '4b3e3c58df58.1': {'agree': 1}, '718d7f257ba9.2': {'agree': 1}, '1c24b9e4d1fc.1': {'agree': 1}, '5e81976cbb15.1': {'agree': 1}, '2fd8935d263f.1': {'agree': 1}, 'f8737c3552a0.1': {'agree': 1}, '16e533e86074.2': {'differ': 1}}
+
+clean disagreements 204
+{'pick not among 6 nearest': 194, 'tie<=100': 3, 'live nearer': 6, 'SIM nearer': 1} {'same card': 8, 'different card': 2}
+   ('20261016_170249', 1754, 'princess', 'SkeletonDragons', 9140, 15, 1632, 895, 'SkeletonDragons', 9140, 15, 1632, 895)
+   ('20261016_170937', 1644, 'Xbow', 'Goblins', 3990, 15, 1602, 293, 'Goblins', 4931, 15, 1602, 293)
+   ('20261016_171357', 418, 'princess', 'SkeletonBalloon', 8636, 15, 356, 119, 'SkeletonBalloon', 8741, 15, 356, 119)
+   ('20261016_171357', 4460, 'Xbow', 'SkeletonBalloon', 1571, 15, 4433, 119, 'SkeletonBalloon', 1612, 15, 4433, 119)
+   ('20261016_175459', 688, 'princess', 'Bats', 2181, 15, 489, 81, 'Bats', 2989, 15, 489, 81)
+   ('20261016_215432', 1247, 'princess', 'SkeletonArmy', 1041, 15, 1169, 1, 'SkeletonArmy', 1039, 15, 1169, 119)
+   ('20261016_215432', 1261, 'princess', 'SkeletonArmy', 947, 15, 1169, 1, 'SkeletonArmy', 1430, 15, 1169, 119)
+   ('20261016_220623', 1168, 'princess', 'Ghost', 2269, 15, 896, 840, 'BabyDragon', 4430, 15, 1114, 1840)
+   ('20261016_221520', 1243, 'princess', 'MinionHorde', 8951, 15, 1137, 139, 'MinionHorde', 9244, 15, 1137, 139)
+   ('20261016_221520', 1257, 'princess', 'MinionHorde', 6493, 15, 1137, 139, 'Witch', 6231, 15, 1155, 130)
+
+events with >= 2 candidates 478 {'nearest (centre)': 0.952, 'earliest born': 0.743, 'newest born': 0.745, 'lowest hp': 0.734, 'nearest non-deploying': 0.95, 'nearest deploying first': 0.941, 'SIM (replay)': 0.728}

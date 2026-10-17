@@ -7,7 +7,7 @@ if [ ! -x $HOME/.cargo/bin/cargo ]; then curl -sSf https://sh.rustup.rs | sh -s 
 source $HOME/.cargo/env; rustc --version
 [ -x /workspace/vfork/bin/python ] || { python3 -m venv /workspace/vfork && /workspace/vfork/bin/pip -q install "maturin>=1.15,<2" numpy msgspec; }
 P=/workspace/vfork/bin/python
-if [ -d /workspace/fork35/.git ]; then git -C /workspace/fork35 fetch -q /workspace/in/fork35.bundle clashbot35:refs/remotes/b/clashbot35 && git -C /workspace/fork35 checkout -q -B clashbot35 b/clashbot35
+if [ -d /workspace/fork35/.git ]; then git -C /workspace/fork35 fetch -q /workspace/in/fork35.bundle +clashbot35:refs/remotes/b/clashbot35 && git -C /workspace/fork35 checkout -q -B clashbot35 b/clashbot35
 else git clone -q -b clashbot35 /workspace/in/fork35.bundle /workspace/fork35; fi
 cd /workspace/fork35; echo "src $(git rev-parse --short HEAD) $(git log -1 --format=%s | cut -c1-80)"
 $P tools/extract_arena.py && $P tools/extract_cards.py --vintage 2018 && cp data/derived/cards-15.535.json data/derived/cards.json && $P tools/extract_globals.py && $P tools/stage_wheel_data.py

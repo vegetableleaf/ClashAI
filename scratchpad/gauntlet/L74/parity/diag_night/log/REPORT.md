@@ -78,3 +78,29 @@ diag_night/log/: patches (patchA_rolling_hit_set.diff, patchB_unit_cap_top.diff,
 (trace_log.py + traces/, hitset.py + hitset_sum.py, live_hits.py + hit_geom.py + miss_geom.py, compare.py, list_fail2.py,
 try_patch.py, top_pollution.py, pending_spawn.py, probe_*.py). Pod A authoritative: /workspace/results/log_J0, log_JA3,
 log_JA3B, log_JA3BC (other log_* dirs superseded). Runner /workspace/w_log/run2.sh.
+
+## Round 2 (vs I6, captured strict, pod A; one change each; worker report saved by the lead)
+
+| arm | own Log [CI] | OVERALL [CI] | fixed / broken | views changed |
+|---|---|---|---|---|
+| I6 (CAP_I6, sha 227a4b05) | 0.975 [0.936, 1.0] (n 81) | 0.929 [0.907, 0.946] | - | - |
+| K1 opponent spell levels (patchK1_opp_spell_levels.diff) | 0.975 | 0.930 [0.909, 0.947] | 1 / 0 (opp Log 221839@1142) | 6 of 1000; every other row byte-identical |
+| K2 pending death spawn: start the parent alive (patchK2_pending_spawn_parent_alive.diff) | **0.988 [0.957, 1.0] MEETS** | 0.930 [0.908, 0.948] | 1 / 0 (own Log 171357@1655) | 998 identical |
+
+- K1: spell_levels() already reads both sides on new logs but needs >= 2 drops that exactly equal one level's damage; below that it fell
+  back to the side's modal troop level. Fix: with < 2 exact drops pick the level with the most evidence (exact drops on our bodies +
+  crown-tower drops within +-1 of that level's tower damage, only for cards carrying their own crown %; Poison keeps it on the area
+  object, so excluded), used only if no other level ties. 221839@1142: the opponent Log hits our IW 911 -> 616 = 295 = level 12;
+  before, the SIM cast it at 16 (429) and killed the Tesla. Effective changes (each from exact drops): 221839 opp Log 16 -> 12;
+  214908 opp Arrows 16 -> 15 (tower -36 x3 = 178 x 20%); 200156 opp Fireball 15 -> 16 (tower -253 x2 = 1100 x 23%); 195328 own Log
+  16 -> 15; 214535 own Log 16 -> 15. Seen, not changed (b): 175459 (classic, level 11 cap) opponent Rage set to 15 from two drops of
+  260 -- likely coincidence; live Poison hits a Knight 158 / pulse and a tower 33, the SIM's level-16 Poison 147 -- possible SIM gap.
+- K2: in cut(), when the start frame falls between a parent's last sighting and its death-spawn children's first sighting (same
+  near-parent rule as deployments()), the fight starts on the parent's last frame, the parent alive with its live hp, its killing shot
+  injected by the in-flight code; the SIM kills it and makes the children. 171357@1655 -> t0 1650: Skeleton Balloon at 64 hp with the
+  princess shot in flight; the SIM drops 7 skeletons and the Log kills all 7 on the live ticks (1673-1683): 0/7 mismatches (was 7/7).
+  175459@4259 -> 4247 agreed before and after. 6 fights get a new start; none changes strict status. Replaces patch C.
+- Still failing own Log after K2: 215432@1319 = a Skeleton Army skeleton drifts to (10028, 21016) in the SIM (outside the roll),
+  our Knight kills it at 1349 -- swarm path divergence, plausibly unobservable (each skeleton's target / move / collision state).
+- Files: patchK1/K2 diffs (apply cleanly to I6 and to I7 7a4f3a0), fights_K1.py (1d1eed60), fights_K2.py (0ed92b64), opp_levels.py
+  (+ .txt), lv_diff.py, tower_drops.py, try2.py, recut.py; pod A /workspace/results/log_K1, log_K2.

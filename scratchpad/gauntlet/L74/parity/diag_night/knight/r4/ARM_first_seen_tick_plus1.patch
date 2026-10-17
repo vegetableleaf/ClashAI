@@ -1,0 +1,11 @@
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -407,6 +407,8 @@
+                 i = cand[-1]; used.add(i); p = m['plays'][i]
+                 ev.update(x=p['x'], y=p['y'], source='own_tap', tap=p['tick']); delays.append(tick-p['tick'])
+                 waits.append(elixir_wait(p['tick'], p.get('elixir'), c.get('elixir')))
++        if ev['source'] == 'first_seen':   # diag_night/knight arm: the live creation tick tested 1 tick later
++            ev['tick'] += 1
+         out.append(ev)
+     delay = statistics.median(delays) if delays else 23
+     # A spell's tick (tap + delay + wait) errs like a troop play's: this match's own troop residuals, clipped to the

@@ -1,0 +1,51 @@
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -750,8 +750,13 @@
+                         load_edited(b, sv, after)
+                     firer = lambda E, i: E['kind'][i] == name and E['team'][i] == 'Blue'
+                 else:
+-                    b.reset(1, [[self.ids['Knight']], [self.ids[name]]], 0, 200, None, None,
+-                            [(0, self.ids['Golem'], 9000*K, 19500*K, 10**6)], forms=[[0], [form]], levels=[[11], [level]],
++                    # The probe's target (diag_night/knight T3): a building for a buildings-only shooter (Lava Hound, Royal
++                    # Giant) or one with a minimum range (Mortar: the walking probe Golem came inside it), set beyond that range; else a Golem.
++                    st_ = self.stats(name)
++                    tgt_card = 'Cannon' if st_.get('target_only_buildings') or st_.get('minimum_range_milli') else 'Golem'
++                    gap = max(4500, (st_.get('minimum_range_milli') or 0) + 2500)
++                    b.reset(1, [[self.ids[tgt_card]], [self.ids[name]]], 0, 200, None, None,
++                            [(0, self.ids[tgt_card], 9000*K, (24000-gap)*K, 10**6)], forms=[[0], [form]], levels=[[11], [level]],
+                             tower_levels=[11, 11])
+                     sv = json.loads(b.save()); after = json.loads(json.dumps(sv))
+                     for ev in after['players'][1]['evo']:
+@@ -761,7 +766,8 @@
+                         load_edited(b, sv, after)
+                     n0 = len(json.loads(b.save())['ents']['card'])
+                     b.step([(1, 0, 9000*K, 24000*K)], 0)
+-                    firer = lambda E, i: i == n0
++                    # any unit the play made: the shooter may be its child (Spear Goblins on a Goblin Giant, Rascal Girls)
++                    firer = lambda E, i: i >= n0 and E['team'][i] == 'Red'
+                 for _ in range(200):
+                     b.step([], 1)
+                     sv = json.loads(b.save())
+@@ -1134,8 +1140,21 @@
+         by_setup = {bd['id']: bd for bd in setup}
+         towers_ = {bd['id']: ('tower', bd['side'], bd['x'], bd['y']) for bd in start if bd['tower'] and bd['hp'] > 0}
+         ref = lambda k: ('body', by_setup[k]) if k in by_setup else towers_.get(k)
++        live0 = {bd['id']: bd for bd in start}
++
++        def made_by_parent(k):
++            """A shooter the parent's setup spawn made (a Goblin Giant's Spear Goblins: no setup body of its own): the
++            nearest live troop of its team within 600 mt of its live point that is no setup body (diag_night/knight T3)."""
++            bd = live0.get(k)
++            if bd is None or bd['tower']:
++                return None
++            taken = {ent(E, ('body', sb)) for sb in setup}
++            best = min(((math.hypot(E['pos'][q]['x']/18 - bd['x'], E['pos'][q]['y']/18 - bd['y']), q) for q in range(len(E['card']))
++                        if E['alive'][q] and E['kind'][q] == 'Troop' and E['team'][q] == team[bd['side']] and q not in taken),
++                       default=(None, None))
++            return best[1] if best[0] is not None and best[0] <= 600 else None
+         for s_ in shots:
+-            i, j = (ent(E, ref(s_['src'])) if ref(s_['src']) else None), (ent(E, ref(s_['tgt'])) if ref(s_['tgt']) else None)
++            i, j = (ent(E, ref(s_['src'])) if ref(s_['src']) else made_by_parent(s_['src'])), (ent(E, ref(s_['tgt'])) if ref(s_['tgt']) else None)
+             if s_['tpl'] is None or i is None or j is None:
+                 flags['setup_shot_skipped:' + ('no_template' if s_['tpl'] is None else 'source' if i is None else 'target')] += 1
+                 continue

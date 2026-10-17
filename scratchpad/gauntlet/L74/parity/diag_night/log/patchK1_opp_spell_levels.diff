@@ -1,0 +1,49 @@
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -2071,9 +2071,9 @@
+     return summary
+ 
+ 
+-def spell_drops(m, events, name, look=70, side=None):
+-    """Single-frame hp drops on enemy non-tower bodies within `look` ticks of each `side` (default own) cast of spell
+-    `name`."""
++def spell_drops(m, events, name, look=70, side=None, towers=False):
++    """Single-frame hp drops on enemy non-tower bodies (towers=True: on standing enemy crown towers) within `look`
++    ticks of each `side` (default own) cast of spell `name`."""
+     side = m['side'] if side is None else side
+     ticks = [t for t, _ in m['frames']]
+     out = Counter()
+@@ -2084,8 +2084,8 @@
+         win = [{b['id']: b for b in bodies} for t, bodies in m['frames'][max(0, i-1):] if t <= e['tick'] + look]
+         for a, b in zip(win, win[1:]):
+             for k, z in b.items():
+-                if k in a and not z['tower'] and z['side'] != side and z['hp'] < a[k]['hp']:
+-                    out[a[k]['hp'] - z['hp']] += 1
++                if k in a and z['tower'] == towers and z['side'] != side and z['hp'] < a[k]['hp'] and (not towers or a[k]['hp'] > 0):
++                    out[a[k]['hp'] - (max(0, z['hp']) if towers else z['hp'])] += 1
+     return out
+ 
+ 
+@@ -2108,6 +2108,22 @@
+             best = max(score, default=(0, None))
+             if best[0] >= 2:
+                 out[side, name] = best[1]
++                continue
++            # Fewer than 2 exact drops (an opponent spell is often cast once or twice: 221839's opponent Log is level 12,
++            # one exact 295 drop, while the side's modal troop level 16 hits for 429): the level with the most exact
++            # drops on bodies plus exact crown-tower drops (+-1, the crown rounding; only for a spell whose card carries
++            # its crown percent: an area spell's lives on its area object), if that level is the only one with the most
++            # (diag_night/log, second round).
++            pct = eng.stats(name).get('crown_tower_damage_percent')
++            towers = spell_drops(m, events, name, side=side, towers=True) if pct else Counter()
++            ev = Counter()
++            for lv in range(16, lo-1, -1):
++                d = eng.spell_damage(name, side, lv)
++                if d:
++                    ev[lv] = drops[d] + (sum(towers[round(d*pct/100) + j] for j in (-1, 0, 1)) if pct else 0)
++            top = ev.most_common(2)
++            if top and top[0][1] >= 1 and (len(top) == 1 or top[1][1] < top[0][1]):
++                out[side, name] = top[0][0]
+     return out
+ 
+ 
