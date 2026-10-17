@@ -1,3 +1,8 @@
+## 2026-10-17 04:29 EDT -- T1 s74 u250 early read: 549/960, -3.85 [-7.71, +0.00] vs live u250 -> not a successor
+
+- 37671 T1EARLY/t1_s74_u250 (F1 recipe retrained on 0.1.35, plain IW, at 250 of 500 updates; copy pod_backup_weekend/rt35/RT35/):
+  live-mirrored pool 549/960 (57.2%) vs u250 586/960 -> **-3.85 [-7.71, +0.00]** (beatdown -5.0 +- 6.0, rest -3.1 +- 5.0); with u150
+  (-3.75) the 0.1.35 retrain trails the 0.1.33-trained live u250 at equal updates. u350 queued 03:05 on 37671; T1 finals (500) ~09:00+.
 ## 2026-10-17 04:21 EDT -- STEP C verdict at 65 updates: cues add nothing yet (cue - ctl +0.31 [-3.54, +4.17]); both twins continued to 130
 
 - Pod 8 control rlarm_gae_ctl_u250 (u250 + the same 65 updates, Hero IW, NO cues): live pool **619/960 (64.5%), +3.44 [-0.42, +7.50]**
