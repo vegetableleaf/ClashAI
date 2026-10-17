@@ -1,3 +1,11 @@
+## 2026-10-17 05:43 EDT -- CORRECTION: the exploiter-league "first significant gain" (s75 +4.48) was vs the WRONG twin; s74 (true twin) +1.56 n.s.
+
+- gx74_u65 (gae_exploit SEED 74) live pool: 533/960 -> vs u250 **-5.52 [-9.48, -1.56]**; vs live_f1u65 = F1 SEED 74 u65 (its true
+  same-seed twin) **+1.56 [-2.60, +5.83]** (beatdown +3.4, rest +0.3). n.s.
+- (c) for my 05:2x entry: live_f1u65 is F1 seed 74, so gx75's "+4.48 vs its F1 twin" compared seed 75 against seed 74 (seed spread
+  ~+-3 pp; F1 s75 was +3.12 over s74 on the 0.1.33 live pool) -> roughly +1.4 vs a same-seed twin, not established. Exploiter-league
+  training: no measurable gain on the live pool so far (s74 +1.56 n.s.; s76 pending). The gae_exu250 arm (exploiters on u250, pod
+  18869) stays the clean test vs its control (cues_gae_ctl_u250).
 ## 2026-10-17 05:37 EDT -- I13 (Ram Rider snare, Royal Ghost reveal, Giant Skeleton death bomb, twin-fate scoring, unseen Hero Balloon throw) = 0.944
 
 Round-3c worker (diag_night/r3c/NOTES.txt; pod A /workspace/results/r3c_*), base r3c_base = I12 = 0.942 [0.929, 0.954] (identical to r3a_comb):
