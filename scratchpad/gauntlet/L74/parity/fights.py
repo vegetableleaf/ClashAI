@@ -1166,6 +1166,12 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
                 heroes.add(c['display_name'])
     for h in heroes:
         flags['opp_ability_unobserved:'+h] += 1
+    # A body of a real card id the catalog does not map, played inside the window (core.py leaves the hero Electro Wizard
+    # 203000042 unmapped: the engine refuses its form, 'surge is not simulated'), is no event (deployments() drops it), so
+    # the SIM fights without it while the fight stayed strict (diag_night/r3b 004922@4012: its 350 zap on our Tesla, the
+    # live Tesla dies 4228, the SIM one lives). Card-less rows (-1: reader artefacts) are left alone.
+    for cid in {bd['card_id'] for _, bodies in frames for bd in bodies if not bd['tower'] and bd['card_id'] >= 0} - set(catalog):
+        flags[f'event_card_missing:unmapped_{cid}'] += 1
     # Opponent spells are not in old frames; a decision-tick projectile sighting marks the fight (Zap, Lightning,
     # Earthquake, Poison and Freeze are not projectiles and stay invisible). Ext logs replay every seen spell instead.
     for t, s_, cid in ([] if m['ext'] else m['shots']):
@@ -2764,7 +2770,11 @@ def is_clean(r, mode='strict'):
     return not any(k.startswith(CLEAN_BLOCKERS) and not k.startswith(skip) for k in r['flags'])
 
 
-GOAL_CARD, GOAL_ALL, GOAL_N = .95, .975, 30     # owner goal RAISED 10-16 night (was .90 / .95): normalised lower 95% CI per card / overall; min n
+# Owner goal 10-17: RAW agreement (live vs the perturbed SIMs) lower 95% CI >= .95 per card (n >= 30) and >= .975 overall, with
+# the normalised score's lower CI as a floor (>= .88 per card where possible, >= .92 overall). normalised = raw / ceiling and the
+# ceiling is <= 1, so a row that meets the raw goal always clears its floor: the floor only binds while raw is below goal.
+GOAL_CARD, GOAL_ALL, GOAL_N = .95, .975, 30
+FLOOR_CARD, FLOOR_ALL = .88, .92
 
 
 def card_scores(r):
@@ -2814,36 +2824,40 @@ def ceiling_table(out_dir, clean, mode):
     def norm(xs):
         c = [x['ceil'] for x in xs if x['ceil'] is not None]
         return agree(xs)/(sum(c)/len(c)) if c and sum(c) else None
-    def row(label, xs, goal):
+    def row(label, xs, goal, floor):
         ceil = [x['ceil'] for x in xs if x['ceil'] is not None]
         items = [(x['match'], x) for x in xs]
         nm = norm(xs); nlo, nhi = boot_ci(items, norm)
+        aci = boot_ci(items, agree)
+        floor_ok = nlo is not None and nlo >= floor
         flag = ('insufficient n' if len(xs) < GOAL_N else 'no ceiling' if nm is None else
-                'MEETS' if nlo is not None and nlo >= goal else 'below')
+                'MEETS' if aci[0] is not None and aci[0] >= goal and floor_ok else
+                'below (floor met)' if floor_ok else 'below (floor missed)')
         bn, bnc = sum(x['bn'] for x in xs), sum(x['bn_c'] or 0 for x in xs)
         return dict(card=label, n=len(xs), matches=len({x['match'] for x in xs}),
                     agree_unperturbed=round(sum(x['a0'] for x in xs)/len(xs), 3),
-                    agree=round(agree(xs), 3), agree_ci=boot_ci(items, agree),
+                    agree=round(agree(xs), 3), agree_ci=aci,
                     ceiling=round(sum(ceil)/len(ceil), 3) if ceil else None,
-                    normalised=round(nm, 3) if nm is not None else None, normalised_ci=(nlo, nhi), goal=goal, flag=flag,
+                    normalised=round(nm, 3) if nm is not None else None, normalised_ci=(nlo, nhi), goal=goal, floor=floor, flag=flag,
                     whole_fight_outcome=round(sum(x['outcome'] for x in xs)/len(xs), 3),
                     body_miss=round(sum(x['bmis'] for x in xs)/bn, 3) if bn else None,
                     body_miss_ceiling=round(sum(x['bmis_c'] or 0 for x in xs)/bnc, 3) if bnc else None,
                     tower_fail=round(sum(x['tfail'] for x in xs)/len(xs), 3),
                     tower_fail_ceiling=round(sum(x['tfail_c'] for x in xs if x['tfail_c'] is not None)/len(ceil), 3) if ceil else None)
-    rows = sorted((row(k, v, GOAL_CARD) for k, v in groups.items()), key=lambda r: -r['n'])
+    rows = sorted((row(k, v, GOAL_CARD, FLOOR_CARD) for k, v in groups.items()), key=lambda r: -r['n'])
     every = [x for v in groups.values() for x in v]
-    overall = row('OVERALL', every, GOAL_ALL) if every else None
+    overall = row('OVERALL', every, GOAL_ALL, FLOOR_ALL) if every else None
     out = dict(mode=mode, definitions=dict(DEATH_TOL=DEATH_TOL, SWARM_SLACK=SWARM_SLACK, TOWER_FLOOR=TOWER_FLOOR,
                                            TOWER_REL=TOWER_REL, SPELL_WINDOW=SPELL_WINDOW, GOAL_CARD=GOAL_CARD,
-                                           GOAL_ALL=GOAL_ALL, GOAL_N=GOAL_N),
+                                           GOAL_ALL=GOAL_ALL, GOAL_N=GOAL_N, FLOOR_CARD=FLOOR_CARD, FLOOR_ALL=FLOOR_ALL),
                k=max((len(r['card']['sim'])-1 for r in clean if r.get('card')), default=0), overall=overall, cards=rows)
     Path(out_dir, f'ceiling_{mode}.json').write_text(json.dumps(out, indent=1))
     f = lambda r: (f"{r['card']} | {r['n']} | {r['matches']} | {r['agree_unperturbed']} | {r['agree']} {list(r['agree_ci'])} | "
                    f"{r['ceiling']} | {r['normalised']} {list(r['normalised_ci'])} | {r['flag']} | {r['whole_fight_outcome']} | "
                    f"{r['body_miss']}/{r['body_miss_ceiling']} | {r['tower_fail']}/{r['tower_fail_ceiling']}")
-    L = [f"CEILING [{mode}] K={out['k']} perturbed replays per fight; tolerant card agreement (CEILING.md); goal: normalised "
-         f"lower 95% CI >= {GOAL_CARD} per card (n >= {GOAL_N}), >= {GOAL_ALL} overall", '',
+    L = [f"CEILING [{mode}] K={out['k']} perturbed replays per fight; tolerant card agreement (CEILING.md); goal: raw agreement "
+         f"(live vs perturbed) lower 95% CI >= {GOAL_CARD} per card (n >= {GOAL_N}), >= {GOAL_ALL} overall; floor: normalised lower "
+         f"95% CI >= {FLOOR_CARD} per card, >= {FLOOR_ALL} overall", '',
          'card | n | matches | agree unperturbed | agree (live vs perturbed) [95% CI] | ceiling (perturbed pairwise) | '
          'normalised [95% CI] | flag | whole-fight outcome | body miss live/ceiling | tower fail live/ceiling']
     L += [f(overall), ''] if overall else []

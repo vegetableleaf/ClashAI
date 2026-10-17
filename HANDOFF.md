@@ -1,3 +1,19 @@
+## 2026-10-17 10:00 EDT -- parity goal now judged on RAW agreement (owner 10-17) + H-UNK landed (hero Electro Wizard fights leave strict)
+
+- Owner rule 10-17: RAW tolerant card agreement (live vs the K perturbed SIM replays) lower 95% CI >= 0.95 per card (n >= 30) and
+  >= 0.975 overall; normalised score lower CI is a FLOOR: >= 0.88 per card where possible, >= 0.92 overall. fights.py ceiling_table:
+  flags `MEETS` / `below (floor met)` / `below (floor missed)`; constants FLOOR_CARD / FLOOR_ALL; test_ceiling updated; 91 tests pass.
+- Measured from the formula (a): normalised = raw / ceiling and the ceiling is <= 1, so normalised >= raw in every bootstrap
+  resample; a row meeting the raw goal always clears its floor. The floor binds only while raw is below goal (an interim bar).
+- Consequence (b): raw cannot sit far above the noise ceiling (0.955 overall on captured fights), so raw 0.975 overall needs the
+  reader to observe more (spawn tick / deploy timer first) as well as SIM / harness fixes. FIN_BEST raw today ~0.900 overall.
+- H-UNK (diag_night/r3b/H_unmapped_card_I12.patch, owner OK "for now"): a body of a real card id the catalog does not map (hero
+  Electro Wizard 203000042, its surge is not simulated) inside the window -> `event_card_missing:unmapped_<id>`, a strict blocker.
+  Measured in r3b: 21 fights leave strict (9 failing, 12 agreeing); normalised 0.942 [0.931, 0.953]. An exclusion, not a SIM fix:
+  revisit when the engine simulates the surge.
+- Pods: owner rented 4 more; 216.81.151.5:15617 and 64.247.206.79:19400 have a 27.2-CPU quota (L40, 50 GB) -> kept;
+  81.27.69.177:23592 / :23586 had 15.3 -> stopped (49j9d4fdsnvip6, ogoxqb1hq8s8d5). Key: ~/.ssh/runpod_clashbot.
+
 ## 2026-10-17 09:55 EDT -- PreToolUse hook blocks `python -` (owner-approved 10-17)
 
 - `.claude/hooks/block_stdin_python.sh` (tracked) + a PreToolUse(Bash) entry in `.claude/settings.local.json` (local, gitignored):

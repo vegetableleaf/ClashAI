@@ -172,7 +172,7 @@ def test_ceiling_table_flags(tmp_path):
     assert k['whole_fight_outcome'] == .5
     g = rows['opp Golem']
     assert (g['agree'], g['flag']) == (0.0, 'insufficient n')
-    assert out['overall']['n'] == 35 and out['overall']['flag'] == 'below' and out['k'] == 8
+    assert out['overall']['n'] == 35 and out['overall']['flag'] == 'below (floor missed)' and out['k'] == 8
     assert 'own Knight | 30 | 10 |' in (tmp_path/'CEILING_strict.txt').read_text()
     assert json.loads((tmp_path/'ceiling_strict.json').read_text())['definitions']['TOWER_FLOOR'] == 100
 
