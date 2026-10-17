@@ -884,9 +884,11 @@ class Engine:
         self._form[key] = out
         return out
 
-    def child_proxy(self, parent, max_hp):
-        """(card, level) whose own unit is the unit `parent` makes with this max_hp (Witch's Skeleton -> Skeletons)."""
-        key = (parent, max_hp)
+    def child_proxy(self, parent, max_hp, rider=True):
+        """(card, level) whose own unit is the unit `parent` makes with this max_hp (Witch's Skeleton -> Skeletons).
+        rider=False skips the second-summon rows: a Goblin Giant's Spear Goblin whose Giant is dead is the rider's death
+        spawn (the ground SpearGoblin, same hp), not the flying rider (H-DISMOUNT, diag_night/r5a)."""
+        key = (parent, max_hp) if rider else (parent, max_hp, 'dismounted')
         if key in self._proxy:
             return self._proxy[key]
         if self._own_unit is None:
@@ -906,7 +908,7 @@ class Engine:
                 rows = self.b.unit_hitpoints(self.ids[parent], lv)
             except (ValueError, KeyError):
                 continue
-            hit = next(((role, u) for role, u, hp in rows[1:] if hp == max_hp), None)
+            hit = next(((role, u) for role, u, hp in rows[1:] if hp == max_hp and (rider or role != 'second_summon')), None)
             if hit:
                 if hit[0] == 'second_summon':      # made by the parent's own setup spawn (a Ram Rider's rider)
                     self._proxy[key] = ('__parent__', None)
@@ -1342,6 +1344,14 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
             # Not the card's own unit at any level (max_hp says so): a child body (a Witch's Skeleton, a cube, a Golemite) is no card. Set it up as the card whose own unit is
             # the same unit at the same max_hp, if one exists (Witch Skeleton -> Skeletons); else the fight is not clean.
             proxy = eng.child_proxy(c['display_name'], bd['max_hp'])
+            if proxy and proxy[0] == '__parent__' and not any(
+                    o['side'] == bd['side'] and o['card_id'] == bd['card_id'] and not o['tower'] and
+                    eng.level(c['display_name'], o['max_hp']) is not None and math.hypot(o['x']-bd['x'], o['y']-bd['y']) <= 1500
+                    for o in start):
+                # H-DISMOUNT (diag_night/r5a): no mount of its card within 1.5 tiles -> the rider came down when its mount
+                # died; set it up as the rider's death spawn (ground), if the card has one at this hp. A clone of the rider
+                # stayed flying: 141825@1113, our Skeletons walked under two dismounted Spear Goblins they attack live.
+                proxy = eng.child_proxy(c['display_name'], bd['max_hp'], rider=False) or proxy
             if proxy and proxy[0] == '__parent__':
                 flags['setup_child_by_parent'] += 1; by_parent.append((bd, c['display_name'], form_of(bd['card_id'], c))); continue
             if proxy is None or not need(bd['side'], proxy[0], 0, proxy[1]):
