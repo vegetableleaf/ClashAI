@@ -1,3 +1,18 @@
+## 2026-10-17 ~00:30 EDT -- step c COMMITTED (4906edf) + pod 8 chain launched; MuMu freezes
+
+- Step c: 22 cue floats/unit, zero-init projection (model == u250 at init), opt-in `cue_inputs`; absent = identical (tests
+  vs 296e85c); arms gae_cue_u250 / gae_ctl_u250. UNVERIFIED: the 22-feature cue smoke + the no-key smoke (the laptop
+  smoke was killed: it stalled 4 h holding 2.5 GB while the owner's MuMu froze). Run the no-key smoke on a pod before
+  any other trainer run uses this HEAD ([[trainer-edit-preship-check]]).
+- Pod 8 (64.247.206.120:12331): /workspace/cue_launch.sh waits for /workspace/RT35_READY (cue_setup.sh), overlays
+  repo_c.tgz (4906edf) into /workspace/cb_cue, runs L74/cues/run_cues_pod.sh (smoke-gated; ~9-10 h est.), then touches
+  CUES_ALL_DONE (always) -> pod_watchdog stops the pod 2 h later. TRAP: if setup_rt35 fails, RT35_READY never appears
+  and the pod idles -- check /workspace/cue_setup.log + results/cue_launch.log early and stop the pod if stuck.
+  Results: /workspace/results/ (cue + ctl live-pool evals); compare gae_cue_u250 vs gae_ctl_u250 with live_cmp.
+- MuMu freezes (owner 10-16 night): game build 160402012 (09-23); NO crash / ANR / low-memory records in Android logs,
+  only force-stops by user request. Advised: do NOT update the game (the reader is tied to this build); restart MuMu; A/B
+  one match with v2 only (delete the merged toggle + drop --capture-p3); then MuMu renderer / resources.
+
 ## 2026-10-16 ~23:55 EDT -- FINAL HANDOFF #2 (usage 98%; owner switches accounts tonight) -- what the next account must do
 
 **Owner rules in force tonight:** AUTO-PROMOTE (section below: a checkpoint beating u250 on the live pool, CI lower > 0, not
