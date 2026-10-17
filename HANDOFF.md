@@ -1,3 +1,10 @@
+## 2026-10-17 11:20 EDT -- T1 seed 74 complete: no checkpoint beats u250 (u150 -3.75, u250 -3.85, u350 +0.31, u500 -0.94) -> no promotion
+
+- Live-mirrored pool (D3, 960 paired, 0.1.35) vs live u250 586/960: t1_s74_u500 577/960 **-0.94 [-4.79, +3.12]** (beatdown -0.5,
+  rest -1.2); u350 589/960 +0.31 [-3.44, +4.17]; u250 -3.85; u150 -3.75 (re-scores identical to the early reads: the eval is
+  deterministic). 500 more updates on seed 74 did not produce a better model than u250. Copies pod_backup_weekend/rt35/RT35/.
+- s75 / s76 still training (u445 / u440 at ~10:30). Live stays u250.
+
 ## 2026-10-17 11:17 EDT -- live restarted 11:17 with the phase-3b probe (sha prefix ee8556f550c4); restart_live.py stall fixed
 
 - Old run ended cleanly before match 217 (11:13; session W1568 L1422). The relaunch STALLED: restart_live.py starts run_live.sh with
