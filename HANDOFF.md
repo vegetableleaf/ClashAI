@@ -1,3 +1,11 @@
+## 2026-10-17 05:52 EDT -- pod self-stop audit: every pod now has a watchdog on its LAST job
+
+- Armed (pod_watchdog.sh -> /workspace/pod_watchdog_n.sh): 37671 on STRUGGLE/rlarm_gae_exploit_s75.DONE (+7200 s; it had none);
+  23450 on LIVEEVAL/gx76_u65.DONE (+7200 s; its existing watchdog fires 2 h after the chain's DONE and EXITS without stopping if the
+  queued live eval is still running); parity pods A 18731 / B 14318 on FIN_A.DONE / FIN_B.DONE (+9000 s, so they are still up when
+  the owner reads the morning report). Already armed: T1 pods on t1_sNN/DONE, 18869 on EXU250_DONE, pod 8 on CUES130_DONE, 23419 on
+  rlarm_gae_exploit/DONE (its live eval finished 05:42 -> stops ~07:00). TRAP noted: pod_watchdog exits for good if the pod is busy
+  at its single check -> arm it on the true last marker of a chain.
 ## 2026-10-17 05:50 EDT -- I14 harness (+ Arrows cast centroid, slowed dash-stand seed) + fork clashbot36 bc2bf9d (+ S-SPARK, S-DASH, S-AXE, S-MKSTAND)
 
 Round-3b worker (diag_night/r3b/NOTES_r3b.txt; pod B results /workspace/results/r3b_*, copies pod_backup_weekend/parity1016/R3B/):
