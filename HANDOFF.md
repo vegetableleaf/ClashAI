@@ -1,3 +1,20 @@
+## 2026-10-17 12:00 EDT -- LIVE CARD CENSUS (2,054 main-account matches since 10-07): own deck 58.7% of plays; opponent meta is FLAT
+
+census_cards.py now rebuilds frames from decision snapshots (public raw_bodies, every ~20 ticks) for logs without frame events
+(most logs before 10-16): 607 matches from frames + 1,447 from decisions; skipped 602 (other account) + 51. 119,090 plays,
+195 cards. Copy: pod_backup_weekend/parity1016/census/census_all.json (sha 7943953a...). Source bias check (plays / match,
+frames vs decisions): Skeletons 0.558 / 0.554, Hog 0.727 / 0.688, Electro Spirit 0.344 / 0.253, Ice Spirits 0.417 / 0.498 ->
+close enough for weights; very short-lived bodies can fall between decision samples (b).
+- Own deck = 58.7% of all live plays. 179 opponent cards: top 10 = 20.9% of opponent plays, top 30 = 46.4%, top 50 = 62.5%,
+  top 80 = 79.8%, ~107 cards for 90%. Opponent cards with >= 0.5% of all plays: 21 (36.8% of opp plays); >= 0.3%: 45 (59.1%);
+  >= 0.2%: 80 (79.8%). Only Skeleton Army-class staples reach ~16% of matches; most cards appear in 3-10% of matches.
+- COVERAGE on FIN5 (before today's harness fixes): 0.114 of all live plays sit on a card that MEETS (mostly own Log).
+- Certification time (b, from the census + FIN5's ~0.55 strict fights per play): a card needs ~85 strict fights at a true 98%
+  (~280 at 97%) to put its lower CI over 0.95 -> at 0.5% of plays ~530 live matches (~44 h at 12 / h), at 0.3% ~890 (~74 h), at
+  0.2% ~1,340 (~110 h). Statistics, not SIM quality, set the floor on how fast mid-frequency cards can pass.
+- Step-d trigger options for the owner (coverage = share of ALL live plays): A own + opp >= 0.5% (31 cards, 73.9% of plays);
+  B own + opp >= 0.3% (55 cards, 83.1%); C own + opp >= 0.2% (90 cards, 91.7%).
+
 ## 2026-10-17 11:53 EDT -- parity COVERAGE metric (owner 10-17) + live card census; spawn-tick interim gain; cue130 +5.94 vs u250
 
 - Owner 10-17: track "the share of live fights where the card meets the goal"; step d may start once MOST of the commonly-faced
