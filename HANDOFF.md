@@ -1,3 +1,12 @@
+## 2026-10-17 05:16 EDT -- pod 18869 reused: gae_exu250 = u250 + 65 updates WITH the exploiter league (one change vs the control twin)
+
+- Why: the two positive RL signals tonight are (1) gae_exploit s75 +4.48 vs its F1 twin (exploiter league) and (2) the u250 + 65
+  Hero-IW-update control twin +3.44 vs u250. gae_exu250 = the control's exact yaml (init rlarm_gae_u0250.pt raw, Hero IW, same league /
+  seeds / KL) + league_exploiters {ckpt rlarm_exploit_u0065.pt (5deeb40a), decks exploit/decks_struggle.json, share 0.3} -> compare vs
+  cues_gae_ctl_u250 (exploiters only) and vs u250 (auto-promote bar). Files shipped sha-verified (u250 raw + grafted, exploiter).
+- Chain /workspace/exu250.sh on 18869 (cb_ab, venv35, RT 20261016-linux, ROYALE_HEROIW_FORM=hero): train -> graft from u250 -> live-pool
+  eval exu250_u65 (/workspace/results/LIVEEVAL); trap always touches EXU250_DONE; pod_watchdog EXU250_DONE 7200 self-stops the pod.
+  Started 05:14 EDT; ~4 h train + ~1 h eval. (The GH_DONE watchdog on 18869 will see it busy and exit without stopping.)
 ## 2026-10-17 05:12 EDT -- live-pool verdicts: gae_exploit s75 +4.48 over its F1 twin (first sig. gain since F1); gae_hero = no Hero-IW training gain; no promotion
 
 Live-mirrored pool (D3, 960 paired, 0.1.35; copies pod_backup_weekend/rt35/RT35/<name>_*), vs live u250 (586) and vs F1 u65 (518, the
