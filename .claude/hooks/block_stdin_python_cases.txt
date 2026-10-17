@@ -30,3 +30,5 @@
 0	{"tool_name":"Bash","tool_input":{"command":"bash scratchpad/gauntlet/L74/parity/night1016/add_handoff.sh $T/e.md \"subject\"; git log --oneline -1","description":"x"}}
 0	{"tool_name":"Bash","tool_input":{"command":"CB=/workspace/cb_cue; PY=/workspace/venv35/bin/python; RT=20261016-linux","description":"x"}}
 0	{"tool_name":"Bash","tool_input":{"command":"x\nPY=/workspace/venv35/bin/python3\ny","description":"x"}}
+2	{"tool_name":"Bash","tool_input":{"command":"\"C:/Users/benpe/x/python.exe\" - <<EOF\nEOF","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"\"C:/Users/benpe/x/python.exe\" a.py","description":"x"}}
