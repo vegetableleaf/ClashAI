@@ -730,7 +730,7 @@ class Engine:
 
     def slow_ids(self):
         """{'base' | 'hero' | 'hero_cold': SIM buff id} of the Ice Wizard slows (SLOW_BUFFS). Ids are interned per table,
-        so they are read off a probe (IW_SLOW_1016 Ã‚Â§2): a red Giant next to a hero IW played from hand carries the deploy
+        so they are read off a probe (IW_SLOW_1016 §2): a red Giant next to a hero IW played from hand carries the deploy
         chill first, then the shot slow; next to a spawned base IW, the base slow. Resets the battle: call before a
         fight's setup (cached)."""
         if 'slow' not in self._form:
@@ -2027,7 +2027,7 @@ def phase3_state(eng, m, fight, setup, start, catalog):
 
 def set_buff(E, i, bid, ms):
     """Write buff `bid` with `ms` left into entity i's first free slot of a save's ents; False if none is free. The
-    save's buffs list is FLAT (IW_SLOW_1016 Ã‚Â§2): entity i owns buffs[i*slots:(i+1)*slots], slots = len(buffs) // n."""
+    save's buffs list is FLAT (IW_SLOW_1016 §2): entity i owns buffs[i*slots:(i+1)*slots], slots = len(buffs) // n."""
     slots = len(E['buffs']) // len(E['alive'])
     j = next((i*slots + j for j in range(slots) if not E['buffs'][i*slots + j]['id']), None)
     if j is None:

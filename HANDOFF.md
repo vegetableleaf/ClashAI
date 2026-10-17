@@ -1,3 +1,17 @@
+## 2026-10-17 02:22 EDT -- retargeting is NOT a law gap (c); comment mojibake from 89a3577 fixed
+
+- Round-2 worker S-retarget scale test (diag_night/r2/retgt*.py; 27 captured logs, 1,679 fights replayed from the frame before each
+  deploy, 5,373 cases of an enemy attacker that already had a target): keeps in both 4,731, switches in both 577, SIM switches + live
+  later 16, SIM only 16, live only 16, SIM setup-gap / earlier-divergence artefacts 17 -> **the SIM makes live's switch-or-keep choice in
+  98.8%**. Rule 1 (a): an attacker mid-attack keeps its target, live and SIM. Rule 2 (a): a walker headed for a tower / building switches
+  to a new enemy coming into sight, live and SIM. Timing: when both switch, live is 2 ticks LATER in 27% (earlier in 3%) = the harness
+  places new bodies on the EARLY tick of the 2-tick frame gap (the spawn-tick U again; reader would need spawn tick at first sighting).
+  The earlier "+0.04 on own Tesla" estimate is CONTRADICTED; at most ~1 fight (+0.001 overall).
+- Small leftovers (b): a fresh Hero IW draws 7 SIM-only switches (175459@4206 Lumberjack leaves our nearer Knight); a set-up Royal Ghost
+  starts never-revealed so the SIM treats it as invisible (harness gap, seed the reveal from its last live hit; target.rs:298
+  invisible_at); Suspicious Bush: live towers / buildings target it 8-12 ticks after it appears, the SIM never does (170937, 5 cases).
+- 89a3577 carried two mojibake comment lines (a worker's patch builder read fights.py in the Windows default encoding): fixed, comments only.
+
 ## 2026-10-17 02:08 EDT -- I11 (Goblin Machine rocket clock + Evo Tesla ring seeded) = captured 0.947 on fork clashbot36; remaining-gap analysis
 
 Round-2 worker (diag_night/r2/; pod B results /workspace/results/r2_*, copies pod_backup_weekend/parity1016/R2/), base = I10 harness +
