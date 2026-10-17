@@ -1,3 +1,21 @@
+## 2026-10-17 02:52 EDT -- fork clashbot36 head d80dcb5: + Tornado crown order, Earthquake hidden split, Evo Knight deploy protection, save fix (all tests green)
+
+- clashbot35 (bundle pod_backup_weekend/fork35/clashbot35_730d09f.bundle): f378cc1 status.BUFF_PULSE_CROWN_ORDER (Tornado crown hit
+  40 / 36 / 25 = live), 730d09f spells.HIDDEN_SPLIT (Earthquake's [AEO.EarthquakeHiddenDamage] on Tesla / Tesla_EV1 hidden or up;
+  hidden hits ~3 ticks after the main pulse, known to 3-5 ticks).
+- **clashbot36 (bundle clashbot36_d80dcb5.bundle; pod B builds rsfork_f36tq / rsfork_f36bug)**: d31dab2 + c79bbda (the two laws
+  ported), 3f54246 status.IDLE_BUFF_DEPLOY (Evo Knight Knight_Fortify_EV1 on while deploying), d80dcb5 engine save fix (an opponent
+  Hero Wizard after its ability no longer makes save() fail). Each law defaults to the measured live arm; the 15.535 client keeps
+  the old arms. cargo --profile gate 352 binaries / 1936 passed / 0 failed / 3 ignored; Python 1388 passed / 58 skipped / 1 xfail.
+- Scores (captured strict, I11 harness): 0.947 [0.931, 0.961] at every step; only flip = the fixture own Knight evo 170249@2107
+  (fail -> agree). Below the scoring tolerance, fidelity rose: Tornado tower damage exact in 50 of 57 changed slots (error 1458 ->
+  1287 on 0.1.36); Earthquake-on-Tesla deaths now on the live tick (133158 t3453, 231053 t2579 / t3186); the save fix recovers the 4
+  errored fights (they stay non-strict: the SIM refuses that opponent's Hero Wizard press, NO_HERO -- open).
+- All-logs cohort on the 0.1.35 fork + I10 (381 logs / 186 matches / 4,387 fights incl. 53 later logs): 0.933 [0.923, 0.943]
+  (pooled old + captured; for reference only).
+- The Tornado crown law also reaches other non-1 Hz pulse buffs (Evo Valkyrie mini tornado, Evo Firecracker fireworks, Super
+  Archer) -- unmeasured.
+
 ## 2026-10-17 02:22 EDT -- retargeting is NOT a law gap (c); comment mojibake from 89a3577 fixed
 
 - Round-2 worker S-retarget scale test (diag_night/r2/retgt*.py; 27 captured logs, 1,679 fights replayed from the frame before each
