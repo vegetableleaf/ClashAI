@@ -1,3 +1,12 @@
+## 2026-10-17 ~01:20 EDT -- exploiter relay FINISHED (no restart needed); disk cleanup
+
+- night_relay.sh done: exploiter ckpt 5deeb40a shipped; gae_exploit launchers running on 23419 (s74), 37671 (s75),
+  23450 (s76, after gae_trade2). Do NOT restart the relay. Still restart: night_watch.sh + early_eval.sh ("250 350").
+- Owner-requested cleanup: removed 8 clean worktrees (cb_drills2, cb_memory, cb_merge_combo, cb_tornado, ClashBot-parity,
+  wt_adapt2, wt_merge, wt_newsim; junctions deleted first) + dead task logs/archives: C: 37 -> 64 GB free. Kept (work
+  inside): cb_def_e3 (19 unpushed), wt_fp (9), cb_merge_fu/rdt2 (1 each), cb_weekend (dirty), cb_mechanic_fork/cb_placebo/
+  cb_merge_tau (untracked files), the Codex worktree. Second account's memory = junction .claude-acct2/projects/.../memory.
+
 ## 2026-10-17 ~00:55 EDT -- pod 8 cue chain RUNNING (22-feature cue smoke PASS on the pod); MuMu cause = VPN
 
 - Pod 8 (64.247.206.120:12331): smoke PASS 00:50 (22-feature cue layout, resume + round-trip checks), training
