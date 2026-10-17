@@ -189,6 +189,66 @@ def deploy_battle(stamp_shift=0, step=50, restamp=False):
     return frames
 
 
+def hidden_battle(bad_rate=False, heal_less=False, spawn_jump=False, shield_leak=False):
+    """Phase 3c toy (laws from the static notes): a Guard-like body with a 199 shield over 300 hp, damaged 40 a sample
+    (shield first); a 1000-hp building with LifeTime 30000 draining 166 hundredths a tick until it is gone; a spawner
+    (SpawnStartTime 1000, SpawnInterval 500, SpawnNumber 2, SpawnPauseTime 3500), timer held while deploying (first 10
+    ticks), then -50 a tick and re-armed on reaching 0. Faults: a wrong decay rate, a 'less' drain, a timer jump, hp lost
+    while the shield is up."""
+    D = {d["name"]: d for d in defs()}
+    for d in D.values():
+        d.update(ShieldHitpoints=0, LifeTime=0, LifeTimeTimerFlag=0, SpawnStartTime=0, SpawnInterval=0, SpawnNumber=0,
+                 SpawnPauseTime=0, SpawnLimit=0)
+    D["Knight"].update(ShieldHitpoints=100)                       # the shielded body (level-scaled to 199)
+    D["Tesla"].update(LifeTime=30000)
+    D["Giant"].update(SpawnStartTime=1000, SpawnInterval=500, SpawnNumber=2, SpawnPauseTime=3500)
+    rate = vp.decay_rate(1000, 30000) + (7 if bad_rate else 0)
+    hp_b, acc, shield, hp_k, timer, idx = 1000, 0, 199, 300, 1000, 0
+    frames = []
+    for t in range(0, 1300, 2):
+        if t:                                                     # two ticks per sample
+            for _ in range(2):
+                acc += rate
+                hp_b -= acc // 100; acc %= 100
+                if t > 10:
+                    timer -= 50
+                    if timer <= 0:
+                        idx += 1
+                        timer += 500 if idx < 2 else 3500
+                        idx %= 2
+            if heal_less and t == 400:
+                hp_b += 3
+            if spawn_jump and t % 100 == 0:
+                timer -= 7
+            dmg = 40 if t % 20 == 0 and hp_k > 0 else 0
+            take = min(shield, dmg); shield -= take
+            hp_k = max(0, hp_k - (dmg - take) - (5 if shield_leak and shield and t % 20 == 0 else 0))
+        ents, rows = [], []
+        def body(g, nm, hp, mx, sh_, shmax, acc_, rate_, tm, dep):
+            ents.append({"address": "0x%x" % (0x700000000000 + g * 16), "category": g, "side": 0, "hp": hp, "max_hp": mx,
+                         "x": 9000, "y": 9000, "behavior_state_raw": 4 if dep else 1})
+            rows.append({"generation": g, "definition_id": D[nm]["definition_id"], "deploy_remaining_raw": dep,
+                         "deploy_tick_raw": 0, "card_tick_raw": -1, "active_ms_raw": 50 * max(0, t - 10) if not dep else 0,
+                         "spawn_timer_ms_raw": tm, "spawn_wave_index_raw": 0, "spawn_count_raw": 0,
+                         "shield_hp_raw": sh_, "shield_max_raw": shmax, "life_decay_acc_raw": acc_,
+                         "life_decay_per_tick_raw": rate_, "life_timer_ms_raw": 0, "attack": None,
+                         "null_reason": "no_component", "attack_disabled": None})
+        body(5000001, "Knight", hp_k, 300, shield, 199, 0, 0, 0, 0)
+        if hp_b > 0:
+            body(5000002, "Tesla", hp_b, 1000, 0, 0, acc, rate, 0, 0)
+        body(5000003, "Giant", 2000, 2000, 0, 0, 0, 0, timer, 500 if t <= 10 else 0)
+        frames.append({"game_tick": t, "battle_active": True, "read_us": 450, "entities": ents, "projectiles": [],
+                       "effects": [], "phase2": {"units": [{"generation": e["category"], "name": n, "side": 0, "buffs": []}
+                                                           for e, n in zip(ents, ("Knight", "Tesla", "Giant")[:len(ents)] if hp_b > 0 else ("Knight", "Giant"))]},
+                       "phase3": {"valid": True, "bodies": rows, "defs": list(D.values()) if t == 0 else []}})
+    return frames
+
+
+def v12(frames):
+    _, lines = verdicts(frames)
+    return {ln.split()[0]: ln for ln in lines if ln.startswith("V12")}, lines
+
+
 def verdicts(frames, **kw):
     with tempfile.TemporaryDirectory() as d:
         p = os.path.join(d, "frames.jsonl")
@@ -251,7 +311,22 @@ def main():
     assert vp.creation_tick(101, 950, 99, -1) == (100, "deploy_tick") and vp.creation_tick(101, 0, 0, 77) == (78, "card_tick")
     assert vp.creation_tick(101, 0, 0, -1, 100, 1) == (99, "active_ms") and vp.creation_tick(101, 0, 0, -1, 100, 11) == (None, "stagger")
     assert vp.creation_tick(101, 0, 0, -1) == (None, "no_tick") and vp.creation_tick(101, None, 0, -1) == (None, "null")
-    print("VALIDATE_P3_SYNTHETIC_OK: 10 scenarios;", v["V3"][:60])
+    # phase 3c: older captures skip V12; the toy's laws pass; each fault fails its own sub-check
+    assert any(ln.startswith("V12 SKIP") for ln in verdicts(battle())[1]), "V12 skip"
+    h, lines = v12(hidden_battle())
+    for k in ("V12a", "V12b", "V12c"):
+        assert h[k].split()[1] == "PASS", "\n".join(lines)
+    assert "ShieldHitpoints per name {'Knight': [1.99]}" in h["V12a"] and "gone where the formula says 1/1" in h["V12b"], h
+    assert "'rearm_interval'" in h["V12c"] and "'rearm_pause'" in h["V12c"] and "{('Giant', 0): 1}" in h["V12c"], h["V12c"]
+    assert v12(hidden_battle(bad_rate=True))[0]["V12b"].split()[1] == "FAIL"
+    assert v12(hidden_battle(heal_less=True))[0]["V12b"].split()[1] == "FAIL"
+    assert v12(hidden_battle(spawn_jump=True))[0]["V12c"].split()[1] == "FAIL"
+    assert v12(hidden_battle(shield_leak=True))[0]["V12a"].split()[1] == "FAIL"
+    assert vp.decay_rate(1000, 30000) == 166 and vp.life_left_ticks(10, 50, 166) == 6 and vp.life_left_ticks(1, 0, 0) is None
+    d = {"SpawnInterval": 500, "SpawnPauseTime": 3500}
+    assert [vp.spawn_step_kind(*a, d) for a in ((900, 800, 2), (40, 440, 2), (40, 3440, 2), (900, 900, 2), (900, 893, 2))] == \
+        ["step", "rearm_interval", "rearm_pause", "held", "other"]
+    print("VALIDATE_P3_SYNTHETIC_OK: 15 scenarios;", v["V3"][:60])
 
 
 if __name__ == "__main__":

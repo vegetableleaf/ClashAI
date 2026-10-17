@@ -66,6 +66,8 @@ class F:
         self.stick = {b["generation"]: b["deploy_tick_raw"] for b in j["phase3"]["bodies"] if "deploy_tick_raw" in b}
         self.ctick = {b["generation"]: b["card_tick_raw"] for b in j["phase3"]["bodies"] if "card_tick_raw" in b}
         self.act = {b["generation"]: b["active_ms_raw"] for b in j["phase3"]["bodies"] if "active_ms_raw" in b}
+        # phase 3c (READER_PHASE3C.md): the whole body row, for the hidden-state fields; V12 SKIPs without them
+        self.row3c = {b["generation"]: b for b in j["phase3"]["bodies"] if "shield_hp_raw" in b}
 
 
 def load(path):
@@ -398,6 +400,174 @@ def deploy_lines(frames, defs, def_of, name):
                    "active / stagger ms per name " + "; ".join(f"{k[1]} {k[0]}: {dict(v.most_common(4))}"
                                                             for k, v in sorted(first_act.items(), key=lambda x: x[0][1])))
     out.append(f"   V11 state/countdown disagreements (name, behaviour, remaining>0): {bad_rows.most_common(8)}")
+    return out
+
+
+# Phase 3c (READER_PHASE3C.md): shield, lifetime decay, spawner timer, attack state of a disabled body. Laws (static, the
+# capture checks them): a shield absorbs damage before hp; a LifeTime building loses `decay_rate` hundredths of a hp a tick
+# into an accumulator, whole hp coming off the hp pool, never while deploying; a spawner's timer drops 50 a tick unbuffed and
+# on reaching 0 spawns and re-arms by SpawnInterval (inside a wave) or SpawnPauseTime (after the wave's last spawn).
+def decay_rate(max_hp, life_time):
+    """Lifetime decay per tick in hundredths of a hp, as the game sets it when the HP component is made."""
+    return max_hp * 100000 // life_time // 20
+
+
+def life_left_ticks(hp, acc, rate):
+    """Ticks of pure lifetime decay before hp reaches 0 (no damage, no heal); None without a decay."""
+    return -(-(hp * 100 - acc) // rate) if rate and rate > 0 else None
+
+
+def spawn_step_kind(t0, t1, dt, d, step=BASE_STEP):
+    """Classify one sample pair of a spawner's timer: step (-50 x dt), held, rearm_interval / rearm_pause (one spawn
+    inside the gap), rearm_2 (two), other."""
+    delta = t1 - t0
+    if delta == -step * dt:
+        return "step"
+    if delta == 0:
+        return "held"
+    extra = delta + step * dt
+    iv, pz = d.get("SpawnInterval") or 0, d.get("SpawnPauseTime") or 0
+    if extra in (iv, pz):
+        return "rearm_interval" if extra == iv else "rearm_pause"
+    if extra in (2 * iv, iv + pz):
+        return "rearm_2"
+    return "other"
+
+
+def hidden_lines(frames, defs, def_of, name):
+    """V12 (phase 3c): (a) shield: a body whose definition has ShieldHitpoints starts with shield == shield max > 0, and
+    its hp stays at max while the shield is up; no-shield bodies read 0 / 0; (b) lifetime decay rate == the
+    definition formula, and every sample pair of an active decaying building drains exactly dt x rate hundredths
+    (hp x 100 + accumulator) unless damaged (more) -- never less, except a heal; an undamaged one disappears where the
+    remaining-life formula says; (c) spawner timer: -50 a tick or one re-arm by SpawnInterval / SpawnPauseTime, and the
+    first active value vs SpawnStartTime (derivable?); (d) attack_disabled rows (attack bit clear) and their buffs."""
+    if not any(f.row3c for f in frames):
+        return ["V12 SKIP no phase-3c fields in this capture (pre-3c probe)"]
+    D = lambda g: defs.get(def_of.get(g), {})
+    # spawners = bodies whose timer moves at least once (a definition can carry spawn values without a spawn character:
+    # the Mega Knight's timer never moves)
+    tvals = collections.defaultdict(set)
+    for f in frames:
+        for g, r in f.row3c.items():
+            tvals[g].add(r.get("spawn_timer_ms_raw"))
+    spawners = {g for g, v in tvals.items() if len(v - {None}) > 1}
+    sh, dc, sp, dis, lt_t = (collections.Counter() for _ in range(5))
+    ratio, rate_bad, sp_bad, sp_first, dis_buffs = collections.defaultdict(set), [], [], collections.Counter(), collections.Counter()
+    first, rated, spf, last_exact, life_end, pend = set(), set(), set(), {}, collections.Counter(), {}
+    pend_d = {}
+    prev = None
+    for f in frames:
+        for g, r in f.row3c.items():
+            e, d = f.ents.get(g), D(g)
+            if e is None:
+                continue
+            if r["shield_hp_raw"] is None:
+                sh["null_rows"] += 1
+                continue
+            s, smax, hp, mx = r["shield_hp_raw"], r["shield_max_raw"], e["hp"], e["max_hp"]
+            if (d.get("ShieldHitpoints") or 0) > 0:
+                if g not in first:               # native shields start full; an ability shield (Hero Knight) at 0
+                    first.add(g); sh["first"] += 1; sh["first_full" if s == smax > 0 else "first_empty" if s == 0 < smax else "first_bad"] += 1
+                    ratio[name.get(g)].add(round(smax / d["ShieldHitpoints"], 3))
+            elif smax > 0:
+                sh["other_shield_bodies"] += 1
+            elif not f.buffs.get(g):
+                sh["none_rows"] += 1; sh["none_zero"] += s == 0 and smax == 0
+            lt = d.get("LifeTime") or 0
+            if lt > 0 and g not in rated:
+                rated.add(g); dc["rate_n"] += 1
+                if r["life_decay_per_tick_raw"] == decay_rate(mx, lt):
+                    dc["rate_ok"] += 1
+                else:
+                    rate_bad.append((name.get(g), mx, lt, r["life_decay_per_tick_raw"]))
+            if r.get("attack") is None and r.get("attack_disabled") is not None:
+                dis["rows"] += 1
+                for b in f.buffs.get(g) or ():
+                    dis_buffs[b["name"]] += 1
+                if not f.buffs.get(g):
+                    dis_buffs["(no buff) behaviour %s deploying %s" % (f.beh.get(g), (r.get("deploy_remaining_raw") or 0) > 0)] += 1
+        if prev is not None and f.tick > prev.tick:     # repeated-tick frames (match end) carry no step
+            dt = f.tick - prev.tick
+            for g, r0 in prev.row3c.items():
+                d, r, e0, e = D(g), f.row3c.get(g), prev.ents.get(g), f.ents.get(g)
+                lt = d.get("LifeTime") or 0
+                if r is None:                    # gone: was its last pair a pure drain, and does the formula place the end?
+                    if g in last_exact and lt > 0:
+                        hp0, acc0, rate0 = last_exact[g]
+                        left = life_left_ticks(hp0, acc0, rate0)
+                        life_end["in_gap" if left is not None and left <= dt else "later_or_killed"] += 1
+                    continue
+                if None in (r0["life_decay_acc_raw"], r["life_decay_acc_raw"]) or e0 is None or e is None:
+                    continue
+                if r0["shield_hp_raw"] > 0 and r["shield_hp_raw"] > 0:   # shield up on both: hp cannot drop
+                    sh["up_pairs"] += 1; sh["up_hp_kept"] += e["hp"] >= e0["hp"]
+                    sh["up_absorbed"] += r["shield_hp_raw"] < r0["shield_hp_raw"]
+                elif r0["shield_hp_raw"] == 0 < r["shield_hp_raw"]:
+                    sh["raised"] += 1
+                active = not (r0.get("deploy_remaining_raw") or r.get("deploy_remaining_raw")) and \
+                    f.beh.get(g) not in (4, 6, 11) and prev.beh.get(g) not in (4, 6, 11)
+                timer_ran = r["life_timer_ms_raw"] - r0["life_timer_ms_raw"] == BASE_STEP * dt
+                if lt > 0 and timer_ran and active:
+                    lt_t["timer"] += 1           # the timer-mode lifetime ran instead (flag + an unresolved body condition)
+                elif lt > 0 and active and e["hp"] > 0:
+                    drain = (e0["hp"] - e["hp"]) * 100 + r["life_decay_acc_raw"] - r0["life_decay_acc_raw"]
+                    want = dt * r["life_decay_per_tick_raw"]
+                    k = "exact" if drain == want else "more" if drain > want else "less"
+                    if k == "less" and drain == 0:
+                        k = "held"                   # nothing moved: the match-end freeze (the battle tick stops)
+                    if k == "less" and any(b["config"].get("HealPerSecond") for b in (f.buffs.get(g) or ())):
+                        k = "less_healed"
+                    q = pend_d.pop(g, None)          # the label artefact: two adjacent pairs, opposite errors, lawful sum
+                    if k in ("less", "more") and q and {k, q[0]} == {"less", "more"} and drain + q[1] == want + q[2]:
+                        dc[q[0]] -= 1; dc["label_artefact"] += 2; k = None
+                    else:
+                        dc[k] += 1
+                    pend_d[g] = (k, drain, want)
+                    if k == "exact":
+                        last_exact[g] = (e["hp"], r["life_decay_acc_raw"], r["life_decay_per_tick_raw"])
+                    else:
+                        last_exact.pop(g, None)
+                if g in spawners and \
+                        r0.get("spawn_timer_ms_raw") is not None and r.get("spawn_timer_ms_raw") is not None:
+                    k = spawn_step_kind(r0["spawn_timer_ms_raw"], r["spawn_timer_ms_raw"], dt, d)
+                    buffed = bool(f.buffs.get(g) or prev.buffs.get(g))
+                    dep = bool(r0.get("deploy_remaining_raw") or r.get("deploy_remaining_raw"))
+                    how = "deploying" if dep else "buffed" if buffed else "clean"
+                    q = pend.pop(g, None)            # the sampling artefact: one frame's state a tick off its label makes
+                    if k == "other" and q and q[0] == "other" and                             spawn_step_kind(q[1], r["spawn_timer_ms_raw"], q[2] + dt, d) != "other":
+                        sp[("other", q[3])] -= 1     # two adjacent 'other' pairs whose sum is lawful
+                        sp[("label_artefact", q[3])] += 1; k = "label_artefact"
+                        if sp_bad and sp_bad[-1][0] == name.get(g):
+                            sp_bad.pop()
+                    sp[(k, how)] += 1
+                    pend[g] = (k, r0["spawn_timer_ms_raw"], dt, how)
+                    if k == "other" and how == "clean" and len(sp_bad) < 8:
+                        sp_bad.append((name.get(g), prev.tick, f.tick, r0["spawn_timer_ms_raw"], r["spawn_timer_ms_raw"]))
+                    if not dep and g not in spf and r0.get("deploy_remaining_raw") == 0 and not buffed:
+                        spf.add(g)               # first active sample: SpawnStartTime - timer in ticks vs ticks deployed
+                        st0 = d.get("SpawnStartTime")
+                        if st0 is not None and r0.get("active_ms_raw") is not None:
+                            sp_first[(name.get(g), (st0 - r0["spawn_timer_ms_raw"]) // BASE_STEP - r0["active_ms_raw"] // BASE_STEP)] += 1
+        prev = f
+    ok_a = not sh["first_bad"] and sh["up_hp_kept"] == sh["up_pairs"] and sh["none_zero"] == sh["none_rows"]
+    out = [f"V12a {verdict(ok_a, sh['up_pairs'] >= 10 and sh['up_absorbed'] >= 1)} shield: first sight full {sh['first_full']} / empty (ability "
+           f"shield) {sh['first_empty']} / bad {sh['first_bad']}; shield raised later {sh['raised']}; pairs with the shield up "
+           f"{sh['up_pairs']}: hp not lost {sh['up_hp_kept']}, shield absorbed {sh['up_absorbed']}; bodies with a shield and no "
+           f"ShieldHitpoints rows {sh['other_shield_bodies']}; no-shield bodies 0/0 {sh['none_zero']}/{sh['none_rows']}, "
+           f"null rows {sh['null_rows']}; shield max / ShieldHitpoints per name {dict((k, sorted(v)) for k, v in ratio.items())}"]
+    n_b = dc["exact"] + dc["more"] + dc["less"]
+    out.append(f"V12b {verdict(dc['rate_ok'] == dc['rate_n'] and dc['less'] == 0 and dc['exact'] > 0, dc['rate_n'] >= 1 and n_b >= 20)} "
+               f"lifetime decay: rate == formula {dc['rate_ok']}/{dc['rate_n']} {rate_bad[:4]}; pairs drained exactly dt x rate "
+               f"{dc['exact']}, more (damage) {dc['more']}, less {dc['less']} (+ healed {dc['less_healed']}, label artefact pairs {dc['label_artefact']}, held at match end {dc['held']}); undamaged "
+               f"to the end and gone where the formula says {life_end['in_gap']}/{sum(life_end.values())}; pairs where the "
+               f"lifetime timer ran (+50/tick) instead {lt_t['timer']}")
+    clean = {k: v for (k, how), v in sp.items() if how == "clean"}
+    n_c = sum(clean.values())
+    out.append(f"V12c {verdict(clean.get('other', 0) <= 0.005 * n_c and clean.get('step', 0) > 0, n_c >= 20)} spawner timer "
+               f"({len(spawners)} spawner bodies: {sorted(collections.Counter(name.get(g) for g in spawners).items())}) (clean pairs) {clean}; deploying {dict((k, v) for (k, how), v in sp.items() if how == 'deploying')}; buffed "
+               f"{dict((k, v) for (k, how), v in sp.items() if how == 'buffed')}; other rows {sp_bad[:6]}; first active sample "
+               f"(SpawnStartTime - timer)/50 - active/50 per name {dict(sp_first)}")
+    out.append(f"V12d INFO attack_disabled rows {dis['rows']}; their buffs {dis_buffs.most_common(8)}")
     return out
 
 
@@ -738,6 +908,7 @@ def run(frames, n_active, blog=None, tables=TABLES, sim_path=SIM_CARDS):
     out.append(f"   V10 rows (first 10): {rows10[:10]}")
 
     out += deploy_lines(frames, defs, def_of, name)
+    out += hidden_lines(frames, defs, def_of, name)
 
     out.append("-- per attacker: fixed hit phase (events, support), HitSpeed/LoadTime")
     for n, ((ph, sup), k) in sorted(phase.items(), key=lambda x: -x[1][1]):
