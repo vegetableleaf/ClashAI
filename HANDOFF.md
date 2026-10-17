@@ -1,3 +1,15 @@
+## 2026-10-17 04:21 EDT -- STEP C verdict at 65 updates: cues add nothing yet (cue - ctl +0.31 [-3.54, +4.17]); both twins continued to 130
+
+- Pod 8 control rlarm_gae_ctl_u250 (u250 + the same 65 updates, Hero IW, NO cues): live pool **619/960 (64.5%), +3.44 [-0.42, +7.50]**
+  vs u250 (beatdown +6.6 +- 6.1, rest +1.4). **cue vs ctl: +0.31 [-3.54, +4.17]** (beatdown -2.4, rest +2.1) -> (a) at 65 updates the
+  22 cue inputs add nothing measurable; the +3.4 / +3.75 over u250 is the extra Hero-IW training, not the cues. (b) the zero-init
+  cue projection may need more updates to be used. ctl is promotable in principle (no cue inputs) but its CI lower bound -0.42 < 0 ->
+  no auto-promote. Checkpoints backed up sha-verified: pod_backup_weekend/pod8_cues/ (u0065 + grafted, both twins, + results/CUES).
+- Pod 8 REUSED (owner: reuse all pods): /workspace/cue130.sh resumes both twins 65 -> 130 (, same yaml, Hero IW;
+  "resumed at update 65" confirmed), grafts, live-pool evals cues130_gae_{cue,ctl}_u250; trap always touches CUES130_DONE; a fresh
+  pod_watchdog (CUES130_DONE, 7200 s) self-stops the pod. NOTE: no watchdog was running on pod 8 before this (the 10-16 one was gone).
+  ETA ~4 h per twin -> ~13:00 EDT.
+
 ## 2026-10-17 03:58 EDT -- STEP C first result: cue-input model gae_cue_u250 = live pool 622/960, +3.75 [-0.10, +7.71] vs u250 (control pending)
 
 - Pod 8 (64.247.206.120:12331) rlarm_gae_cue_u250 (u250 + 22 public cue floats per unit through a zero-init projection, 65 updates,
