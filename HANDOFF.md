@@ -1,3 +1,19 @@
+## 2026-10-17 05:12 EDT -- live-pool verdicts: gae_exploit s75 +4.48 over its F1 twin (first sig. gain since F1); gae_hero = no Hero-IW training gain; no promotion
+
+Live-mirrored pool (D3, 960 paired, 0.1.35; copies pod_backup_weekend/rt35/RT35/<name>_*), vs live u250 (586) and vs F1 u65 (518, the
+same-base 65-update twin trained with the plain IW):
+| candidate | vs u250 | vs F1 u65 |
+|---|---|---|
+| gx75_u65 (gae_exploit s75: F1 recipe + exploiter league, plain IW) | -2.60 [-6.35, +1.25] | **+4.48 [+0.52, +8.44]** (beatdown +4.5, rest +4.5) |
+| gaehero_u65 (gae_hero: F1 recipe, HERO IW + rule press) | -8.23 [-12.29, -4.17] | -1.15 [-5.21, +2.92] |
+| cues_gae_ctl_u250 (u250 + 65 Hero-IW updates) | +3.44 [-0.42, +7.50] | +10.52 |
+- (a) exploiter-league training is the first arm since F1 with a significant live-pool gain over its own F1 twin (one seed; s74 / s76
+  live-pool evals queued -> replication). It still trails the longer-trained u250. gae_exploit s74 on the STRUGGLE slice vs u250:
+  -0.62 [-4.69, +3.44] (its eval compares to u250, not to its twin).
+- (c) for "training with the Hero IW helps" at 65 updates from the r1-lineage init: gae_hero -1.15 vs the plain-IW twin. (b) the
+  u250 + 65 Hero-IW continuation (+3.44 vs u250) may mean it helps a mature model -- confounded with +65 updates; the 130-update
+  continuation on pod 8 + T1 (plain IW) are the comparison.
+- No candidate meets the auto-promote bar (CI lower > 0 vs u250); live stays u250.
 ## 2026-10-17 04:51 EDT -- T1 s74 u350 ties u250 (+0.31); learned vs rule ability press = no difference (-1.15); gae_hero live-pool eval running
 
 - T1 s74 u350 (37671 T1EARLY): live pool **589/960, +0.31 [-3.44, +4.17]** vs live u250 -> not a successor; trend on the 0.1.35 retrain
