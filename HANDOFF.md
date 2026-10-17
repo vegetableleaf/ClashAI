@@ -1,3 +1,13 @@
+## 2026-10-17 09:55 EDT -- PreToolUse hook blocks `python -` (owner-approved 10-17)
+
+- `.claude/hooks/block_stdin_python.sh` (tracked) + a PreToolUse(Bash) entry in `.claude/settings.local.json` (local, gitignored):
+  refuses `python -` / `python3[.N] -` / `py -` / `.../python.exe -` in command position with exit 2 and a "write the script to a
+  file" message. Pipe-tested on 17 cases (8 block, 9 pass: `-c`, `-u`, `-m`, `file.py -`, ssh-quoted pod commands, prose
+  mentions); live-tested in this session (blocked `false && python -`). Also removed the old allow rule for `python.exe -`.
+- Measured why it was needed: even `python - </dev/null` hung as a REPL on 10-17 (I wrote it as a placeholder line; killed by PID).
+- Gaps: the PowerShell tool is not covered; worktree-isolated subagents get the script (tracked) but maybe not the local settings
+  (untested). A fresh clone needs the settings entry re-added (see memory stdin-python-repl-trap).
+
 ## 2026-10-17 08:40 EDT -- gae_exu250 (u250 + 65 updates WITH the exploiter league): +0.94 vs u250, -2.50 vs its no-exploiter control -> exploiter line closed
 
 - 18869 rlarm_gae_exu250 (copy pod_backup_weekend/pod1017_exu250, u0065 + grafted): live pool **595/960 (62.0%) -> vs u250 +0.94
