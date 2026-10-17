@@ -25,6 +25,9 @@ SPEC = {
     # L68/live_reader/fixtures/content_update.png, copy it into raw/ before re-running)
     "cu_title":   ("content_update.png", (92, 706, 314, 750), (0, 400, 900, 1200), 0.85),
     "cu_restart": ("content_update.png", (94, 860, 194, 893), (0, 600, 900, 1300), 0.85),
+    # Ranked home (2026-10-17, owner unlocked Ranked at 13000): the mode button right of Battle shows a crossed-swords
+    # shield instead of the Trophy Road cup (badge excluded). Source = icebow/data/ranked_nav/ranked_home_01.png.
+    "ranked_btn": ("ranked_home.png", (655, 1222, 735, 1320), (560, 1100, 900, 1420), 0.85),
 }
 man = {}
 for n, (src, b, reg, thr) in SPEC.items():

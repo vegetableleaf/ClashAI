@@ -11,7 +11,7 @@ RAW = Path(__file__).resolve().parents[2] / "L70" / "ladder_nav" / "raw"
 if not RAW.exists():                                      # raw captures are untracked: a worktree reads the main checkout's
     RAW = Path("C:/Users/benpe/ClashBot/scratchpad/gauntlet/L70/ladder_nav/raw")
 clf = Classifier()
-want = {"res_1": "results", "res_8": "results", "main2": "main", "main4": "main", "promo_pass_x": "popup_x",
+want = {"res_1": "results", "res_8": "results", "main2": "main", "main4": "main", "ranked_home": "main", "promo_pass_x": "popup_x",
         "trophy_btn": "modes", "queue1": "loading", "queue2": "unknown", "tab_left": "unknown", "s_c": "unknown"}
 assert clf.classify(None)["screen"] == "nograb"
 tr = clf.classify(cv2.imread(str(RAW / "trophy_road.png")))
@@ -38,6 +38,27 @@ for n, s in want.items():
 r = clf.classify(cv2.imread(str(RAW / "res_8.png")))
 assert r["won"] is False                                  # the 20:21 match was a loss (WINNER over the opponent)
 assert clf.classify(cv2.imread(str(RAW / "main4.png")))["bonus"] is True
+# 2026-10-17 Trophy Road home at 13000 (Ranked just unlocked: new arena, no Daily Bonus, tutorial finger on the Game
+# Modes cup). Private captures in icebow/data/ranked_nav (git-ignored): skipped when absent.
+RN = Path(__file__).resolve().parents[3] / "icebow" / "data" / "ranked_nav"
+if not RN.exists():
+    RN = Path("C:/Users/benpe/ClashBot/icebow/data/ranked_nav")
+for n, mode in (("tr_home_13000", "trophy_road"), ("tr_home_13000_finger", "trophy_road"),
+                ("ranked_home_00", "ranked"), ("ranked_home_01", "ranked")):   # both homes: same Battle press
+    if (RN / f"{n}.png").exists():
+        got = clf.classify(cv2.imread(str(RN / f"{n}.png")))
+        assert got["screen"] == "main" and got["mode"] == mode and got["bonus"] is False, (n, got["scores"])
+        assert LadderNav(0, {}).plan(got, 1)[0] == "wait" and command_for("battle", got["battle"]) == "input tap 460 1245"
+    else:
+        print(f"skip: {n}.png not in {RN}")
+# live Ranked results 17:42 / 17:46: same Play Again + OK as Trophy Road; WINNER over our / their banner; no trophy number
+for n, won, screen in (("ranked_res_win", True, "results"), ("ranked_res_loss", False, "results"),
+                       ("ranked_searching", None, "unknown")):
+    if (RN / f"{n}.png").exists():
+        got = clf.classify(cv2.imread(str(RN / f"{n}.png")))
+        assert got["screen"] == screen and got.get("won") is won, (n, got["screen"], got.get("won"), got["scores"])
+    else:
+        print(f"skip: {n}.png not in {RN}")
 
 def res(won):
     return {"screen": "results", "play_again": (310, 1452), "ok": (590, 1452), "won": won, "scores": {}}

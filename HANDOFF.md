@@ -1,3 +1,22 @@
+## 2026-10-17 17:48 EDT -- Ranked: the navigator already handled it; added a home-mode label + template + tests (live-checked, 2 Ranked matches)
+
+- Owner 10-17: unlocked Ranked; "the navigator doesn't seem to recognize the ranked home screen". Measured (a): the Ranked home's
+  Battle button matches the existing template at 1.000 at the same point (460, 1245); a live check (start_live.sh icebow
+  --no-fast-plays, main account verified: princess 4424, Tesla / Tornado / Hero IW in hand) played 2 Ranked matches end to end
+  (win W1607 -> W1608, then a loss; Ranked results show the same Play Again + OK, a rank change "+1 / -1" instead of trophies ->
+  trophy reader None, logged "trophies n/a", no crash). The complaint did not reproduce.
+- Added: template ranked_btn (the crossed-swords Game Modes shield; 1.000 on 3 Ranked homes, max 0.468 on ~160 other frames); the
+  `main` screen now reports mode "ranked" / "trophy_road" (logged); Battle press unchanged; tests (Ranked / Trophy Road homes,
+  Ranked win / loss results, searching = unknown; skip cleanly without the private fixtures in icebow/data/ranked_nav/). 15
+  existing templates byte-identical after the rebuild.
+- Ranked home vs Trophy Road: league crest instead of the trophy number, "League 1" arena banner, crossed-swords shield instead of
+  the trophy cup, deck slot "1" instead of "5" (Ranked remembers its own slot; it held icebow today).
+- Still open: no mode alternation (switch = cup -> Game Modes sheet -> tile; needs an unlocked-sheet capture); the navigator
+  closes a manually opened Game Modes sheet, so switch modes with live stopped; Ranked progress not logged (rank change unread);
+  WINNER template cut from a pink loss banner scores median 0.833 / p5 0.75 vs threshold 0.80 on cyan wins (both modes; a
+  cyan template would fix rare win->draw miscounts -- separate change).
+- Live state: stopped (STOP file set), game on the Ranked results screen.
+
 ## 2026-10-17 16:28 EDT -- LIVE LEVELS option (factorial factor D) + eval HABIT LOGGING committed; our live levels measured
 
 Worker report DONE_WITH_CONCERNS (scratchpad/gauntlet/L74/levels/; backups pod_backup_weekend/pod1017_levels/).

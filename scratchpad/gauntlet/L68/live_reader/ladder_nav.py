@@ -231,7 +231,9 @@ class Classifier:
                     "sig": cv2.resize(cv2.cvtColor(img[150:1450], cv2.COLOR_BGR2GRAY), (45, 65),
                                       interpolation=cv2.INTER_AREA)}
         if "battle" in hit:
+            # Ranked and Trophy Road homes share the Battle button: same press; mode = the swords / cup button beside it
             return {"screen": "main", "battle": hit["battle"], "bonus": "daily_bonus" in hit, "scores": sc,
+                    "mode": "ranked" if "ranked_btn" in hit else "trophy_road",
                     "sig": cv2.resize(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), (45, 80), interpolation=cv2.INTER_AREA)}
         if "logo" in hit:
             return {"screen": "loading", "scores": sc}
@@ -538,7 +540,7 @@ class LadderNavRunner:
                         print(f"[ladder] trophies: {tot} total", flush=True)
                 if (scr["screen"], p[:2]) != last:
                     W(event="screen", screen=scr["screen"], plan=p, scores=scr["scores"],
-                      bonus=scr.get("bonus"), won=scr.get("won"))
+                      bonus=scr.get("bonus"), won=scr.get("won"), mode=scr.get("mode"))
                     print(f"[ladder] {scr['screen']}: {p}", flush=True)
                     last = (scr["screen"], p[:2])
                 if p[0] in ("handoff", "stop"):

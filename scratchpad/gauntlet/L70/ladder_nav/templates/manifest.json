@@ -258,6 +258,23 @@
     1300
    ],
    "threshold": 0.85
+  },
+  "ranked_btn": {
+   "file": "ranked_btn.png",
+   "source": "ranked_home.png",
+   "box": [
+    655,
+    1222,
+    735,
+    1320
+   ],
+   "region": [
+    560,
+    1100,
+    900,
+    1420
+   ],
+   "threshold": 0.85
   }
  }
 }
