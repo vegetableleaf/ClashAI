@@ -1,3 +1,13 @@
+## 2026-10-17 11:28 EDT -- H-SWARM-MATCH LANDED (owner OK 10-17): troop death lists compared by maximum one-to-one matching
+
+- fights.py card_agree: troop cards' death lists are now matched one-to-one (each live death to an unused SIM death within
+  DEATH_TOL; the r3c twins rule, refactored into the shared `unmatched()` helper) instead of zipping the two sorted lists, where one
+  early / late body shifted every later pair (215432@1165: 1 displaced death scored 8 of 15). Every real difference still counts
+  once; cards with < 10 bodies cannot change (0 misses allowed either way).
+- Measured on FIN5 (exact rescore of the stored card views, diag_night/r4b/cmp_swarm_match.txt): Skeleton Army raw 0.650 -> 0.730
+  (+7 / -0 fights), ceiling 0.838 -> 0.895; Tombstone 0.734 -> 0.766; every other n >= 30 card identical; OVERALL raw 0.896 ->
+  0.897, normalised 0.937 -> 0.938. 91 parity tests pass. FIN5 numbers in earlier entries are PRE-fix.
+
 ## 2026-10-17 11:20 EDT -- T1 seed 74 complete: no checkpoint beats u250 (u150 -3.75, u250 -3.85, u350 +0.31, u500 -0.94) -> no promotion
 
 - Live-mirrored pool (D3, 960 paired, 0.1.35) vs live u250 586/960: t1_s74_u500 577/960 **-0.94 [-4.79, +3.12]** (beatdown -0.5,

@@ -2048,7 +2048,27 @@ def card_agree(a, b):
     late = lambda d: d is not None and d >= end - DEATH_TOL
     same = lambda x, y: 'missing' not in (x, y) and (((x is None) == (y is None) and (x is None or abs(x-y) <= DEATH_TOL))
                                                      or (x is None and late(y)) or (y is None and late(x)))
+    order = lambda v: (v == 'missing', v is None, v if isinstance(v, int) else 0)
+
+    def unmatched(xs, ys):
+        # The most of xs that can be matched one-to-one to ys by `same` (ascending, each to the earliest unused one it
+        # matches: a maximum matching for this tolerance); returns how many of xs are left unmatched.
+        free, left = sorted(ys, key=order), 0
+        for x in sorted(xs, key=order):
+            j = next((j for j, y in enumerate(free) if same(x, y)), None)
+            if j is None:
+                left += 1
+            else:
+                free.pop(j)
+        return left
     mis = sum(not same(x, y) for x, y in pairs)
+    if not a['spell']:
+        # A troop card's bodies have no public identity, so their death lists are compared as multisets (H-SWARM-MATCH,
+        # diag_night/r4b): zipping the two sorted lists counts ONE body that dies early or late as a mismatch of every
+        # body after it (live [1183, 1205, 1239, ...] vs SIM [1205, 1227, 1243, ...] = 8 of 15), so a 15-body Skeleton
+        # Army failed its floor(0.1 x 15) = 1 allowed miss on one displaced death. With fewer than 10 bodies no miss is
+        # allowed and the verdict cannot change (a perfect matching of sorted lists is the sorted zip).
+        mis = unmatched([x for x, _ in pairs], [y for _, y in pairs])
     tw = {**(a.get('twins') or {}), **(b.get('twins') or {})} if a['spell'] else {}
     if tw:
         # Indistinguishable swarm siblings (swarm_twins: one parent, one frame, one card / max_hp; views since r3c) are
@@ -2062,15 +2082,7 @@ def card_agree(a, b):
                 grp[tw[k]][0].append(x); grp[tw[k]][1].append(y)
             else:
                 mis += not same(x, y)
-        order = lambda v: (v == 'missing', v is None, v if isinstance(v, int) else 0)
-        for xs, ys in grp.values():
-            free = sorted(ys, key=order)
-            for x in sorted(xs, key=order):
-                j = next((j for j, y in enumerate(free) if same(x, y)), None)
-                if j is None:
-                    mis += 1
-                else:
-                    free.pop(j)
+        mis += sum(unmatched(xs, ys) for xs, ys in grp.values())
     tower_ok = abs(a['tower']-b['tower']) <= max(TOWER_FLOOR, TOWER_REL*max(a['tower'], b['tower']))
     return mis <= int(SWARM_SLACK*len(pairs)) and tower_ok, mis, len(pairs), tower_ok
 
