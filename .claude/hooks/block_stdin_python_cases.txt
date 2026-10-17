@@ -28,3 +28,5 @@
 0	{"tool_name":"Bash","tool_input":{"command":"[ \"$(git diff --cached --name-only | wc -l)\" = 1 ] && bash x.sh","description":"x"}}
 0	{"tool_name":"Bash","tool_input":{"command":"icebow/.venv/Scripts/python.exe scratchpad/a.py $S/b.json","description":"x"}}
 0	{"tool_name":"Bash","tool_input":{"command":"bash scratchpad/gauntlet/L74/parity/night1016/add_handoff.sh $T/e.md \"subject\"; git log --oneline -1","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"CB=/workspace/cb_cue; PY=/workspace/venv35/bin/python; RT=20261016-linux","description":"x"}}
+0	{"tool_name":"Bash","tool_input":{"command":"x\nPY=/workspace/venv35/bin/python3\ny","description":"x"}}

@@ -10,7 +10,7 @@
 # quote is \" and the command's end is a bare " followed by , or }.
 in=$(cat)
 cp='(^|[;&|(]|[\]n|"command":")[[:space:]]*(([A-Za-z_][A-Za-z0-9_]*=[^[:space:]]*|timeout|nohup|env|time|[0-9]+[smh]?)[[:space:]]+)*'
-interp='([^[:space:];&|"]*[/\])?(python(3([.][0-9]+)?)?|py)([.]exe)?'
+interp='([^[:space:];&|"=]*[/\])?(python(3([.][0-9]+)?)?|py)([.]exe)?'   # no '=': `PY=/x/python;` assigns, it does not run
 var='[\]?"?[$][{]?[A-Za-z_][A-Za-z0-9_]*[}]?[\]?"?'
 dash='[[:space:]]+-([[:space:]]|[\]n|"|<)'
 bare='([[:space:]]+[0-9]?[<>]+&?[^[:space:];&|"]*)*[[:space:]]*([;&|]|[\]n|"[,}])'
