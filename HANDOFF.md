@@ -1,3 +1,19 @@
+## 2026-10-17 12:52 EDT -- FIN6 (all 10-17 fixes): 0.898 on the full cohort, 0.913 on the 16 stamped matches (ceiling 0.995)
+
+FIN6 = HEAD 1856e28 harness (swarm match, targetless, timeout, Rascals, births; NOT yet REUSE / CLONE / DECKMAP / TORNADO-DATE)
++ fork clashbot36 bc2bf9d, K=8, 250 captured logs (245 scored, 8,030 strict fights). Pod P1 /workspace/results/FIN6; laptop copy
+pod_backup_weekend/parity1016/FIN6/ (sha c817eaea... verified).
+- FULL cohort: raw **0.898 [0.890, 0.906]** (FIN5 0.896), ceiling 0.960, normalised 0.936 (floor met). Own: Log 0.972 MEETS; X-Bow
+  0.938; Knight 0.928; IW hero 0.919; Tesla 0.879 (floor missed); Knight evo 0.875 (floor missed); Skeletons 0.849.
+  coverage.py: overall not met; coverage 0.121; tier B 0.143 of plays meet (need 0.90); tier C 0.132.
+- Why the full cohort barely moves: births only applies to matches captured AFTER the 11:17 reader-3b restart (17 of 250); the
+  other 228 can never get exact spawn ticks, so their placement noise is permanent.
+- STAMPED cohort only (FIN6_stamped: 16 matches with births, 606 strict fights): raw **0.913 [0.892, 0.935]**, ceiling **0.995**,
+  normalised 0.917 [0.897, 0.940] -> "floor missed": with the ceiling ~1 the normalised floor (0.92) now acts as a raw floor.
+  Own: X-Bow 1.000 MEETS (n 40); Knight 0.976 (41); Log 0.960 (50); Skeletons 0.933 (63); IW hero 0.923 (55); Tesla 0.852 (38).
+- Proposal to the owner: judge the step-d trigger (and the per-card goal) on the STAMPED cohort only, since its noise is
+  removable; keep the full-cohort number as history. Live adds ~12 stamped matches / hour.
+
 ## 2026-10-17 12:27 EDT -- stdin-python hook extended: variable-invoked and no-script forms (a worker slipped past rule 1)
 
 - r4e set PY to the venv interpreter and later ran it through the variable with a bare dash argument and stderr to /dev/null:
