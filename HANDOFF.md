@@ -1,3 +1,20 @@
+## 2026-10-17 13:31 EDT -- LIVE = ICEBOW Mark CXXXVIII: CUES (cue130, --cue-inputs on) since 13:29 EDT; cue-blind control running
+
+- Owner 10-17 instruction (memory cue130-live-trial). deploy_ckpt.sh (WMI-detached, Git bin bash): --check PASS with sha
+  0fba110cb883ec1c, restart between matches 13:25 -> 13:29:27, first-match guard OK (icebow deck, 8 cards), Discord posted.
+  LIVE_OPTIONS += `--cue-inputs on` (backup LIVE_OPTIONS.pre_cue130_20261017_1324); CKPT_OVERRIDE backup
+  CKPT_OVERRIDE.pre_20261017_1325 (= u250, ICEBOW Mark CXXIV: LONGER). Account checked before: towers 4424, icebow hand.
+- First live match 132941: start event cue_inputs.active true, reader merged, table sha babaa3d1...; 182 / 182 decisions carry
+  decision.cue, 0 degraded, 0 errors, known > 0 on 164; decide_ms median 79 vs 87 / 106 on the two matches before (laptop load
+  from owner apps dominates), 0 cpu_starved (pre-switch 1 / 9).
+- REVERT RULE: back to u250 allowed if the seed-75 replicate contradicts the gain (pod 8 CUE75_DONE). To revert: deploy_ckpt.sh
+  with the u250 grafted path (the cue flag is a no-op for u250).
+- Cue-blind control (pod 8, no cpu lock, 12 workers nice 10): u0130 grafted with model.cue_in.weight zeroed (norm 0.1808) ->
+  cueblind130_gae_cue_u250 on the same D3 seeds; ~643 / 960 = gain not from cues, ~594 = from cues.
+- Hook fbb6792: `PY=/x/python;` (an assignment) no longer reads as a bare interpreter call (32 cases).
+- Checkpoint registry built (scratchpad/gauntlet/L74/models/, 141 Marks + 170 hard links under icebow/data/models/{ICEBOW,Bait}),
+  NOT committed yet: owner to confirm whether the Aug-Sep sim-policy era stays in the numbering (live u250 = CXXIV, cue = CXXXVIII).
+
 ## 2026-10-17 13:24 EDT -- LIVE CUE PATH committed (opt-in --cue-inputs on); all 22 cue floats live; cue effect itself in doubt
 
 Worker report DONE_WITH_CONCERNS (files below; tools + outputs scratchpad/gauntlet/L74/cues/live/; STEP_C_SPEC.md section 6).
