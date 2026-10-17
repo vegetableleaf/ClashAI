@@ -20,7 +20,9 @@ say(f'restarting live between matches to apply: {why}')
 if not stop_and_wait():
     say('live did not stop within 30 min -- restart abandoned, STOP left in place'); sys.exit(1)
 (L / 'STOP').unlink(missing_ok=True)
-subprocess.Popen([BASH, str(L / 'run_live.sh')], cwd=str(REPO), env={k: v for k, v in __import__("os").environ.items() if k != "LIVE_ARGS"}, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+# Git's bin\bash.exe wrapper, not ab_watch's usr\bin\bash.exe: launched without a shell PATH (WMI, 10-17) the bare usr\bin bash
+# has no date / tr / sleep, so run_live.sh's running() check reads "1" forever and its adopt loop spins without starting live.
+subprocess.Popen([r'C:\Program Files\Git\bin\bash.exe', str(L / 'run_live.sh')], cwd=str(REPO), env={k: v for k, v in __import__("os").environ.items() if k != "LIVE_ARGS"}, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                  creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP)
 time.sleep(90)
 say(f"live restarted ({why}); live processes now: {live_running()}")

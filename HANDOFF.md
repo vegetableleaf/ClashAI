@@ -1,3 +1,14 @@
+## 2026-10-17 11:17 EDT -- live restarted 11:17 with the phase-3b probe (sha prefix ee8556f550c4); restart_live.py stall fixed
+
+- Old run ended cleanly before match 217 (11:13; session W1568 L1422). The relaunch STALLED: restart_live.py starts run_live.sh with
+  ab_watch's `usr\bin\bash.exe`; launched from WMI (no shell PATH) that bash has no date / tr / sleep, so run_live.sh's running()
+  check returned "1" (its fail-safe) forever and the adopt loop spun spawning PowerShell (empty `$(date)` in supervisor.log was the
+  tell). Stopped the stuck supervisor by exact PID 5864 (no live_play was running, STOP absent), relaunched via WMI with
+  `C:\Program Files\Git\bin\bash.exe` (verified PATH under WMI first) -> "[sup] start 11:17:11", "--capture-p3: ready, binary sha256
+  ee8556f550c4" (the phase-3b build). Same LIVE_OPTIONS, same CKPT_OVERRIDE (u250).
+- Fix: restart_live.py now launches the Git\bin\bash.exe wrapper. Lesson: a WMI-launched process inherits no shell PATH -- use
+  the wrapper (or set PATH) for any bash script started that way.
+
 ## 2026-10-17 11:13 EDT -- r4b swarm family: target splits are NOT a separate U; the ceiling is play-tick jitter; H-SWARM-MATCH needs the owner
 
 Worker report DONE_WITH_CONCERNS (scratchpad/gauntlet/L74/parity/diag_night/r4b/; pod P1 /workspace/w_r4b, results r4b_ptick).
