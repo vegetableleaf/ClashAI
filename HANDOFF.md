@@ -1,3 +1,28 @@
+## 2026-10-17 06:04 EDT -- MORNING SUMMARY (night 10-16/17): parity 0.892 -> 0.941 on 145 captured matches; no auto-promotion; next steps
+
+**Final parity (145 fully captured live matches, 4,802 strict fights, K=8; pod B FIN_BEST, pod A FIN_BASE0 / FIN_I14P):**
+| card | n | start (795b155 + PyPI 0.1.35) | harness I14 + PyPI 0.1.35 | **I14 + fork clashbot36 bc2bf9d** |
+|---|---|---|---|---|
+| OVERALL | 4802 | 0.892 [0.880, 0.904] | 0.932 [0.921, 0.942] | **0.941 [0.931, 0.950]** |
+| own Log | 357 | 0.826 | 0.979 | **0.979 [0.963, 0.992] MEETS** |
+| own Rocket | 62 | 0.966 | 0.975 | 0.975 [0.932, 1.007] |
+| own X-Bow | 388 | 0.946 | 0.964 | 0.968 [0.946, 0.985] |
+| own Tornado | 89 | 0.870 | 0.968 | 0.962 [0.913, 1.001] |
+| own Knight | 307 | 0.914 | 0.951 | 0.958 [0.935, 0.979] |
+| own IW hero | 460 | 0.931 | 0.944 | 0.948 [0.923, 0.970] |
+| own Skeletons | 396 | 0.836 | 0.898 | 0.923 [0.897, 0.949] |
+| own Tesla | 296 | 0.853 | 0.868 | 0.899 [0.858, 0.936] |
+| own Tesla evo | 83 | 0.839 | 0.843 | 0.893 [0.822, 0.954] |
+| own Knight evo | 107 | 0.861 | 0.852 | 0.866 [0.792, 0.934] |
+Goal 0.975 overall / per-card lower bound 0.95: only own Log meets. Harness ~+0.040, fork laws ~+0.009.
+
+**Open decisions for the owner:** (1) metric: observing more raises the noise ceiling and lowers the normalised score (spawn-tick pin:
+raw up, normalised down) -- judge fully observed fights on raw agreement?; (2) H-UNK (drop fights with a hero Electro Wizard, an exclusion)
+-- not landed; (3) reader item: capture each body's spawn tick / remaining deploy ms at first sighting (the largest remaining U; needs
+MuMu); (4) SIM training opponents never field tower troops (3 of 27 captured matches had one); (5) a Claude Code hook to block `python -`
+(persistent config -> needs OK); (6) gcloud CLI broken on the laptop, oracle-2 status unknown.
+**Still running (self-stops armed):** T1 s74 u415 / s75 u360 / s76 u352 (500), gae_exu250 (u250 + exploiter league) u16 / 65 on 18869,
+cue130 twins on pod 8 (cue u93 / 130, then ctl), gae_exploit s76 on 23450, s75 struggle eval on 37671; parity pods A / B self-stop ~08:35.
 ## 2026-10-17 05:52 EDT -- pod self-stop audit: every pod now has a watchdog on its LAST job
 
 - Armed (pod_watchdog.sh -> /workspace/pod_watchdog_n.sh): 37671 on STRUGGLE/rlarm_gae_exploit_s75.DONE (+7200 s; it had none);
