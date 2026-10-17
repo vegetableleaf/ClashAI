@@ -1,3 +1,18 @@
+## 2026-10-17 14:01 EDT -- Rocket / Tornado use monitor: Mark CXXXVIII plays both spells about half as often as Mark CXXIV (8 matches)
+
+- Owner 10-17: "monitor Mark CXXXVIII's rocket and tornado use across matches. It seems a bit low, but it's been winning matches
+  so I'm not concerned yet." Tool: scratchpad/gauntlet/L74/monitor/card_use.py [--since] [--cards] [--base] -- per live ladder
+  match: Mark (start ckpt -> registry lookup), confirmed plays per card, length, ladder result + trophies (overnight.out line after
+  the match summary); per Mark means + match-bootstrap 95% CI vs the base Mark.
+- First read (since 10-16 21:30): ICEBOW Mark CXXIV: LONGER (u250) 248 matches, win 0.512, Rocket 0.77 / match (in 49% of
+  matches), Tornado 1.83 / match (77%); ICEBOW Mark CXXXVIII: CUES 8 matches, win 0.750 (+14.6 trophies / match), Rocket 0.38
+  (38%), Tornado 0.75 (50%). Differences: Rocket -0.40 [-0.74, -0.04], Tornado -1.08 [-1.65, -0.46], win rate +0.24 [-0.07,
+  +0.51] -> (a) on 8 matches the spell drop is outside noise; the win-rate gain is not yet.
+- The SIM eval records (gap.py matches.jsonl) carry no per-card play counts, so whether the SIM shows the same drop is untested.
+  Cheapest diagnosis if it persists: replay identical recorded live decisions through both checkpoints (cues/live/dry_live.py) and
+  compare their Rocket / Tornado choices -- isolates the policy from matchups.
+- Monitor re-runs automatically at 30 CXXXVIII matches.
+
 ## 2026-10-17 13:37 EDT -- CHECKPOINT REGISTRY committed: "[DECK] Mark [Roman]: [CHANGE]", full history kept (owner 10-17)
 
 - Owner 10-17: every model checkpoint is named "[DECK] Mark [Roman numeral]: [one-word change]" (decks ICEBOW, Bait); past
