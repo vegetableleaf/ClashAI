@@ -1,3 +1,20 @@
+## 2026-10-17 20:01 EDT -- B6 stage B built: live_play --iw-press head (opt-in; rule / never unchanged); owner: passing ability model deploys DIRECTLY
+
+- Owner 10-17 ~19:55: no live A/B for the ability model; a model with an ability head that passes the SIM bar vs Mark CXXXVIII
+  goes live directly, then its stats get reviewed over several matches (memory ability-model-direct-deploy).
+- `--iw-press head` (live_play.py + ability_head_live.py; LIVE_OPTIONS allows it): the checkpoint's head decides greedily
+  (e1_eval.ability_decide) on a ready button right after that frame's pilot.decide (its trunk g); refuses a ckpt without a head;
+  logs ability why="head p=..." + head_feat, ability_held <= 1/s. live_gen / live_gen_v2 keep last_g only when a head is loaded.
+- Feature parity: live builder vs RoyalePoolEnv._ability_head_features equal to 1e-9 on 400 random boards + 2 real SIM matches.
+  Approximate: enemy troop hp (level factor), feature 15 elixir values (11 / 136 cards differ), IW radius 2.5 tiles from the card
+  table. Tests: scratchpad/gauntlet/L74/ability_live/test_ability_live.py (8), pipeline/tests/test_ability_head.py (29) OK; rule /
+  never / default give the same event stream as 8c70811.
+- Offline replay (gae_ab head on 6 live logs): head 0.33 presses/match vs rule 1.67 vs SIM greedy 2.0. Partly cadence (button
+  screenshot every 2 s, stale ~half the frames), partly maybe board shift (untested).
+- FOUND: the button reads "ready" with no Ice Wizard on the board (180704 ticks 157-654, before the first deploy) and again after a
+  confirmed press. Head mode gates on a visible hero + unspent charge. The RULE path's exposure to this is unchecked.
+- The head reads its own trunk's g: it cannot be bolted onto CXXXVIII. Next: one run from CXXXVIII (cue_u250 lineage) with
+  ability_head on, 65 updates, then the factorial eval vs CXXXVIII.
 ## 2026-10-17 19:48 EDT -- FIN8 full cohort scored; H-POSTKILL landed (vs FIN8: full +10 / -3, upgraded +3 / -2, every break ceiling <= 0.75)
 
 - FIN8 (HEAD efc1e29 = all landed fixes through H-NEARPARENT; fork rsfork_f36ek; 337 captured logs, 0 crashes; pod 14009

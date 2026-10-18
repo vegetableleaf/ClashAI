@@ -230,6 +230,8 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
         lookahead = ({'public_lookahead_counts': info['public_lookahead_counts']}
                      if 'public_lookahead_counts' in info else {})
         out = self.model(b)
+        if getattr(self, 'ability', None) is not None:   # live_play --iw-press head (B6): this decision's trunk g
+            self.last_g = (int(frame['game_tick']), out['g'])
         p = float(torch.sigmoid(out['gate'][0]))
         # C1: every decision, affordable or not (SIM posture_live runs before the decide): ctx seen-set + choice clock
         dtau = self._posture_dtau(frame, out['g']) if getattr(self, 'posture', None) else None

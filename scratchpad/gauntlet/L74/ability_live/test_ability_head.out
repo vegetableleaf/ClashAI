@@ -1,0 +1,25 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+......C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+................C:\Users\benpe\ClashBot\pipeline\tests\test_ability_head.py:685: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\pytorch\torch\csrc\autograd\generated\python_variable_methods.cpp:837.)
+  b0 = float(L.ability_head.net[2].bias)
+......[s0] skip plain gen seed 0: stub
+{
+ "per_arm_opp": {},
+ "paired_vs_plain": {},
+ "wall_total_s": 0.0
+}
+[s0] skip plain gen seed 0: stub
+{
+ "per_arm_opp": {},
+ "paired_vs_plain": {},
+ "wall_total_s": 0.0
+}
+.
+----------------------------------------------------------------------
+Ran 29 tests in 91.968s
+
+OK
+exit=0

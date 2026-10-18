@@ -399,6 +399,8 @@ class GenPilot:
         lookahead = ({'public_lookahead_counts': info['public_lookahead_counts']}
                      if 'public_lookahead_counts' in info else {})
         out = self.model(b)
+        if getattr(self, "ability", None) is not None:   # live_play --iw-press head (B6): this decision's trunk g
+            self.last_g = (int(frame["game_tick"]), out["g"])
         p = float(torch.sigmoid(out["gate"][0]))
         stalled = self.stalled(frame, info["el_int"])
         # sim rule (e1_eval.live_decide): argmax over hand slots we can afford; none affordable -> wait

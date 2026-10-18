@@ -1,0 +1,78 @@
+checkpoint C:/Users/benpe/pod_backup_weekend/pod1016_gae_ab/cb_ab/icebow/data/bench/rl_royale/rlarm_gae_ab/rlarm_gae_ab_u0065_grafted.pt
+logs C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\live_play_20261017_18*.jsonl (first 6 with hero decisions)
+== live_play_20261017_180311.jsonl (side 1, IceWizard, hero_ability_spec supplement): 711 ready frames; 41 head decisions at logged decisions (not decided: {'head hero_unseen': 76, 'head spent': 4}); head presses 0 (0 decisions with p > 0.5); rule presses 2
+   p: min 0.0000 median 0.0001 max 0.2420
+   deploy t=21.1s: 20 head decisions, max p 0.002; head first press none; rule press none
+   deploy t=75.2s: 2 head decisions, max p 0.002; head first press none; rule press none
+   deploy t=124.7s: 0 head decisions, max p 0.000; head first press none; rule press 2.3s [iw_wincon RoyalHogs tesla_in_hand=False elixir=2.7 | pro_haz]
+   deploy t=152.3s: 10 head decisions, max p 0.002; head first press none; rule press none
+   deploy t=182.8s: 7 head decisions, max p 0.000; head first press none; rule press none
+   deploy t=208.3s: 2 head decisions, max p 0.242; head first press none; rule press 8.3s [iw_wincon RoyalHogs tesla_in_hand=True elixir=3.7 | pro_haza]
+   NaN / out-of-range: none
+== live_play_20261017_180704.jsonl (side 1, IceWizard, hero_ability_spec supplement): 947 ready frames; 45 head decisions at logged decisions (not decided: {'head hero_unseen': 108}); head presses 0 (0 decisions with p > 0.5); rule presses 0
+   p: min 0.0000 median 0.0013 max 0.0574
+   deploy t=39.9s: 7 head decisions, max p 0.000; head first press none; rule press none
+   deploy t=86.9s: 5 head decisions, max p 0.000; head first press none; rule press none
+   deploy t=123.8s: 6 head decisions, max p 0.001; head first press none; rule press none
+   deploy t=156.1s: 7 head decisions, max p 0.017; head first press none; rule press none
+   deploy t=182.6s: 1 head decisions, max p 0.004; head first press none; rule press none
+   deploy t=207.8s: 5 head decisions, max p 0.057; head first press none; rule press none
+   deploy t=239.6s: 4 head decisions, max p 0.014; head first press none; rule press none
+   deploy t=255.4s: 4 head decisions, max p 0.006; head first press none; rule press none
+   deploy t=271.1s: 6 head decisions, max p 0.006; head first press none; rule press none
+   deploy t=286.6s: 0 head decisions, max p 0.000; head first press none; rule press none
+   NaN / out-of-range: none
+== live_play_20261017_181222.jsonl (side 1, IceWizard, hero_ability_spec supplement): 440 ready frames; 58 head decisions at logged decisions (not decided: {'head hero_unseen': 14}); head presses 1 (1 decisions with p > 0.5); rule presses 3
+   p: min 0.0000 median 0.0002 max 0.5756
+   deploy t=13.3s: 4 head decisions, max p 0.014; head first press none; rule press none
+   deploy t=43.2s: 1 head decisions, max p 0.000; head first press none; rule press 4.4s [iw_clump n=4 value=5.0 target=Knight | pro_hazard p=0.0497 >]; head p on that frame 0.000
+   deploy t=88.0s: 24 head decisions, max p 0.006; head first press none; rule press none
+   deploy t=121.3s: 5 head decisions, max p 0.424; head first press none; rule press 11.0s [iw_clump n=3 value=7.2 target=Valkyrie | pro_hazard p=0.0423]
+   deploy t=150.0s: 14 head decisions, max p 0.188; head first press none; rule press none
+   deploy t=165.8s: 1 head decisions, max p 0.064; head first press none; rule press 9.0s [iw_clump n=3 value=11.0 target=Knight | pro_hazard p=0.0618 ]
+   deploy t=191.2s: 9 head decisions, max p 0.576; head first press 12.8s (p=0.576); rule press none
+   deploy t=209.3s: 0 head decisions, max p 0.000; head first press none; rule press none
+   NaN / out-of-range: none
+== live_play_20261017_181819.jsonl (side 0, IceWizard, hero_ability_spec supplement): 113 ready frames; 20 head decisions at logged decisions (not decided: {}); head presses 0 (0 decisions with p > 0.5); rule presses 1
+   p: min 0.0000 median 0.0000 max 0.0000
+   deploy t=22.2s: 0 head decisions, max p 0.000; head first press none; rule press 2.4s [iw_wincon BattleRam tesla_in_hand=False elixir=4.7 | pro_haz]
+   deploy t=117.5s: 20 head decisions, max p 0.000; head first press none; rule press none
+   NaN / out-of-range: none
+== live_play_20261017_182814.jsonl (side 0, IceWizard, hero_ability_spec supplement): 295 ready frames; 50 head decisions at logged decisions (not decided: {'head hero_unseen': 3}); head presses 0 (0 decisions with p > 0.5); rule presses 3
+   p: min 0.0000 median 0.0001 max 0.4370
+   deploy t=8.7s: 16 head decisions, max p 0.001; head first press none; rule press none
+   deploy t=39.5s: 18 head decisions, max p 0.007; head first press none; rule press none
+   deploy t=85.3s: 8 head decisions, max p 0.000; head first press none; rule press none
+   deploy t=128.2s: 2 head decisions, max p 0.015; head first press none; rule press none
+   deploy t=147.7s: 2 head decisions, max p 0.011; head first press none; rule press none
+   deploy t=173.3s: 2 head decisions, max p 0.028; head first press none; rule press 3.2s [iw_wincon MegaKnight tesla_in_hand=False elixir=5.1 | pro_ha]
+   deploy t=188.9s: 1 head decisions, max p 0.437; head first press none; rule press 1.0s [iw_clump n=3 value=14.0 target=RamRider | pro_hazard p=0.033]
+   deploy t=216.2s: 1 head decisions, max p 0.067; head first press none; rule press 2.8s [iw_clump n=4 value=8.5 target=Goblins | pro_hazard p=0.0887 ]; head p on that frame 0.067
+   NaN / out-of-range: none
+== live_play_20261017_183220.jsonl (side 0, IceWizard, hero_ability_spec supplement): 203 ready frames; 37 head decisions at logged decisions (not decided: {}); head presses 1 (2 decisions with p > 0.5); rule presses 1
+   p: min 0.0000 median 0.0082 max 0.8264
+   deploy t=17.9s: 5 head decisions, max p 0.022; head first press none; rule press 10.3s [iw_wincon MegaKnight tesla_in_hand=False elixir=2.4 | pro_ha]
+   deploy t=122.1s: 15 head decisions, max p 0.330; head first press none; rule press none
+   deploy t=142.7s: 0 head decisions, max p 0.000; head first press none; rule press none
+   deploy t=161.7s: 17 head decisions, max p 0.826; head first press 18.9s (p=0.826); rule press none
+   deploy t=182.2s: 0 head decisions, max p 0.000; head first press none; rule press none
+   NaN / out-of-range: none
+== all 6 matches: 251 head decisions, 3 with p > 0.5
+    0 age_s/30       min   0.0200  median   0.2933  max   0.9000
+    1 hero_hp        min   0.0220  median   1.0000  max   1.0000
+    2 near_unit/10   min   0.0955  median   0.7773  max   4.0000
+    3 near_struct/10 min   0.6324  median   1.3736  max   2.3990
+    4 n3/5           min   0.0000  median   0.0000  max   0.8000
+    5 hp3/2000       min   0.0000  median   0.0000  max   0.9313
+    6 n5/5           min   0.0000  median   0.0000  max   2.6000
+    7 hp5/2000       min   0.0000  median   0.0000  max   1.9301
+    8 hero_far_half  min   0.0000  median   0.0000  max   1.0000
+    9 near_tower/10  min   0.6892  median   1.5021  max   2.3990
+   10 elixir/10      min   0.2323  median   0.5229  max   1.0000
+   11 minute/3       min   0.0000  median   0.6667  max   1.0000
+   12 phase/3        min   0.3333  median   0.6667  max   1.0000
+   13 crowns/3       min   0.0000  median   0.0000  max   0.0000
+   14 n_rad/5        min   0.0000  median   0.0000  max   0.8000
+   15 el_rad/10      min   0.0000  median   0.0000  max   0.7000
+   16 tower_rad      min   0.0000  median   0.0000  max   0.0000
+   17 presses        min   0.0000  median   0.0000  max   0.0000

@@ -568,10 +568,12 @@ def main() -> int:
     ap.add_argument("--allow-parallel", action="store_true",
                     help="start even while another live_play process runs on this machine (default: refuse -- two "
                          "instances read and tap the same device)")
-    ap.add_argument("--iw-press", choices=("rule", "never"), default="rule",
+    ap.add_argument("--iw-press", choices=("rule", "never", "head"), default="rule",
                     help="owner 2026-10-14 ability A/B: never = the hero button is still watched and should_press still "
                          "runs (logged as ability_withheld), but no ability tap is sent; unlike --no-ability, which also "
-                         "stops the button screenshots. Default rule = unchanged")
+                         "stops the button screenshots. head (B6 stage B) = the checkpoint's LEARNED ability head decides "
+                         "instead of should_press, greedily, on a ready button after the frame's model decision "
+                         "(ability_head_live.py; refuses a checkpoint without a head). Default rule = unchanged")
     ap.add_argument("--matches", type=int, default=1,
                     help="play this many matches back to back (default 1 = one match, no navigation). > 1 needs "
                          "--friend: between matches friend_nav.py starts the next FRIENDLY 1v1 against that friend's "
@@ -663,6 +665,12 @@ def main() -> int:
     if a.iw_press_pstar is not None and a.no_iw_pro_gate:
         print("[live] note: --no-iw-pro-gate skips the pro gate, so --iw-press-pstar %g has no effect" % a.iw_press_pstar,
               flush=True)
+    if a.iw_press == "head" and a.no_ability:
+        print("refusing: --iw-press head decides on the watched hero button; --no-ability stops watching it")
+        return 2
+    if a.iw_press == "head" and (a.iw_press_pstar is not None or a.no_iw_pro_gate):
+        print("[live] note: --iw-press head replaces should_press, so --iw-press-pstar / --no-iw-pro-gate have no effect",
+              flush=True)
     if (a.matches > 1 or a.nav_dry_run) and not (a.friend or a.ladder):
         print("refusing: --matches > 1 and --nav-dry-run need --friend NAME or --ladder")
         return 2
@@ -716,7 +724,8 @@ def main() -> int:
                 iw_press_pstar=a.iw_press_pstar, hero_ability_spec=getattr(a, "hero_ability_spec", "off"),
               identity_ext=bool(getattr(pilot, "identity_ext", False)), decision_options=vars(pilot.decision_options), live_options=a.live_options,
               **({'posture_head': posture_summary(pilot.posture)} if getattr(pilot, 'posture', None) else {}),   # C1: absent = off
-              **({"cue_inputs": cue_log(pilot, a.reader)} if getattr(a, "cue_inputs", "off") == "on" else {}))))
+              **({"cue_inputs": cue_log(pilot, a.reader)} if getattr(a, "cue_inputs", "off") == "on" else {}),
+              **head_log(a))))
         return 0
     nav = None
     if a.matches > 1 or a.nav_dry_run:
@@ -881,7 +890,15 @@ def load_pilot(a, decision_cfg, ckpt=None):
             raise SystemExit(f"refusing: --cue-inputs needs a reader with cue blocks (the merged reader); --reader is {a.reader}")
         from pipeline.live_unit_state import LiveCues
         pilot.cues = LiveCues()                  # loads + sha-checks the card table the SIM embeds
+    if getattr(a, "iw_press", "rule") == "head":   # B6 stage B; rule / never: nothing loaded, unchanged
+        from ability_head_live import load_head
+        pilot.ability = load_head(ckpt or a.ckpt, device, pilot)   # refuses (SystemExit) a checkpoint without a head
     return device, pilot
+
+
+def head_log(a) -> dict:
+    """--iw-press head (B6 stage B), only when on: rule / never leave the --check JSON and the start event unchanged."""
+    return {"iw_press": "head"} if getattr(a, "iw_press", "rule") == "head" else {}
 
 
 def cue_log(pilot, reader=None) -> dict:
@@ -957,7 +974,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
       **({"pipeline_decisions": True, "pipeline_tau_delta": getattr(a, "pipeline_tau_delta", 0.0)}
          if getattr(a, "pipeline_decisions", False) else {}),
       **({"posture_head": posture_summary(pilot.posture)} if getattr(pilot, "posture", None) else {}),
-      **({f"capture_{a.p2.KIND}": True} if getattr(a, "p2", None) is not None else {}))
+      **({f"capture_{a.p2.KIND}": True} if getattr(a, "p2", None) is not None else {}), **head_log(a))
     cap = getattr(a, "p2", None)                         # --capture-p2/-p3 object (None = off: nothing below runs)
     if cap is not None:
         cap.begin(stamp)
@@ -1003,6 +1020,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                                                   on_frame=guard.feed if guard else None)
     ab_pending, last_bstate = None, None
     ab_withheld = -10 ** 9                               # --iw-press never: tick of the last ability_withheld log line
+    iw_head = getattr(a, "iw_press", "rule") == "head"   # B6 stage B: the learned head decides after pilot.decide(f)
+    head_due, ab_held = False, -10 ** 9                  # head: this frame's button is ready / tick of the last ability_held
     sampler, extra = READERS[a.reader]
     cmd = (f"{sampler} $(pidof com.supercell.clashroyale) {a.interval_ms} {RVA} {ROOT_CTX}"
            f"{extra}")                                   # extra = the reader's remaining arguments (local reader config)
@@ -1171,6 +1190,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                   ents=[[e["side"], e["x"], e["y"], e["card_id"], e["hp"], e["max_hp"], e["kind"], e["address"]]
                         for e in f["entities"]], **(frame_extras(f) if getattr(a, "log_frames", False) else {}))
             hids = hero_ids(me)
+            head_due = False                             # --iw-press head: set below for THIS frame only
             if button:                                   # screenshot only after the hero was played (not in hand)
                 button.want = bool(hids) and any(i not in me["hand_deck_indices"] for i, fl in
                                                  enumerate(me.get("deck_form_flags") or []) if int(fl) == 2)
@@ -1191,6 +1211,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                     elif tick - ab_pending["tick"] > CONFIRM_TICKS:
                         W(event="ability_unconfirmed", tick=tick, button_after=st)
                         ab_pending = None
+                elif iw_head and st == "ready" and not pending and not sched and newest and advanced and guard_clear():
+                    head_due = True                      # decided below, on this frame's model decision (its g)
                 elif st == "ready" and not pending and not sched and newest and advanced and guard_clear():
                     press, why = should_press(f, side, hids, pilot=None if a.no_iw_pro_gate else pilot,
                                               p_star=getattr(a, "iw_press_pstar", None))
@@ -1318,6 +1340,25 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                                         land=pd["tick"] + (a.extrapolate or PIPELINE_LAND_TICKS)) for pd in pending])
             d = pilot.decide(f)
             decide_ms = round((time.time() - t_dec) * 1000)
+            if head_due:                                 # --iw-press head: the button read ready on this frame
+                head_due = False
+                try:
+                    from ability_head_live import decide as head_decide
+                    press, why, feat = head_decide(pilot, f, side, hids)
+                except Exception as exc:                 # noqa: BLE001 -- a head failure must not end a live match
+                    press, why, feat = False, f"head error {exc!r}"[:200], None
+                hf = {"head_feat": [round(float(x), 4) for x in feat]} if feat is not None else {}
+                if press:
+                    W(event="ability", tick=tick, t_dev=t_dev, why=why, tap=list(button.point),
+                      elixir=me["elixir_raw"] / 1e4, **hf)
+                    if not a.dry_run and guard_clear():
+                        emote_hold(tick)
+                        if not input_cmd(f"input tap {button.point[0]} {button.point[1]}"):
+                            W(event="stop", why="tap_timeout", tick=tick, input="ability"); break
+                        ab_pending = {"t": now, "tick": tick, "elixir_raw": me["elixir_raw"]}
+                elif tick - ab_held >= 20:               # the head's holds, at most one line per second
+                    W(event="ability_held", tick=tick, why=why, elixir=me["elixir_raw"] / 1e4, **hf)
+                    ab_held = tick
             if d.get("posture_new"):                    # C1: the posture head chose (first decision, then every `every` ticks)
                 W(event="posture", tick=tick, posture=d["posture"], posture_dtau=d["posture_dtau"])
             dec_times.append(decide_ms)

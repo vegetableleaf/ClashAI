@@ -1,0 +1,5 @@
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED test_live_entry.py::test_preflight_loads_default_without_adb - Asserti...
+FAILED test_live_entry.py::test_manual_run_records_locally_and_explicit_wins
+2 failed, 124 passed, 2 warnings in 141.48s (0:02:21)

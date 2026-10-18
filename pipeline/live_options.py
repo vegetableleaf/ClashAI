@@ -33,7 +33,7 @@ EXTRA_LIVE_FLAGS = (('--own-effects', dict(action='store_true')),
                     ('--emote-guard', dict(type=float)),
                     ('--emote-idle-p', dict(type=float)),   # owner 2026-10-14: reactive emotes, idle chance per second
                     ('--no-ability', dict(action='store_true')),   # L74 ability A/B arm (owner 2026-10-13): never press
-                    ('--iw-press', dict(choices=('rule', 'never'), default='rule')),   # owner 2026-10-14: press A/B arm
+                    ('--iw-press', dict(choices=('rule', 'never', 'head'), default='rule')),   # owner 2026-10-14: press A/B arm; head = B6 learned press
                     ('--log-frames', dict(action='store_true')),   # owner 2026-10-14: board every reader frame (parity data)
                     ('--capture-p2', dict(action='store_true')),   # owner 10-16: phase-2 capture beside the reader (parity data)
                     ('--capture-p3', dict(action='store_true')),   # phase-3 probe beside the reader (supersedes -p2)

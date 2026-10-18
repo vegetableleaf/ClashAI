@@ -1,0 +1,15 @@
+E         + capture-p3 --cue-inputs on
+
+pipeline\tests\test_live_options.py:50: AssertionError
+============================== warnings summary ===============================
+pipeline/tests/test_posture_live.py::test_absent_head_recorded_stream_real_model_identical_to_head
+pipeline/tests/test_posture_live.py::test_head_on_recorded_stream_real_model
+pipeline/tests/test_posture_live.py::test_head_with_inactive_options_or_wrong_width_refuses
+pipeline/tests/test_own_ability_hero_iw.py::test_gen_pilot_switch_changes_only_the_hero_ability_token
+  C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+    self.encoder = nn.TransformerEncoder(enc, layers)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED pipeline/tests/test_live_options.py::test_checked_in_file_holds_the_deployed_options
+1 failed, 193 passed, 4 warnings in 246.15s (0:04:06)
