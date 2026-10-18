@@ -1,3 +1,16 @@
+## 2026-10-18 08:23 EDT -- fork: S-TESLA-UNDER-DAMAGE v2 LANDED on clashbot36 (4ae08e9f + a697d1f9 record fixes); wheel rsfork_fin13
+
+- clashbot36 = ... d40f331 + 4ae08e9f (hide.HIDDEN_IMMUNE_FROM = client16402_after_hide_time_fired_under_early) + a697d1f9 (the
+  verifier's 3 fixes: calibration text "step k = 10..12, ~550-600 ms, LOW / FITTED"; docs "single-target shot" only; the 600 ms
+  moved to the ledger key hide.FIRED_UNDER_WINDOW_MS, testable by override).
+- cargo test --profile gate 1,954 / 0 / 3 ignored. The 600 ms fixture fails at 700 (real check).
+- Null: fin11 default == fin13 with HIDDEN_IMMUNE_FROM = at_once on 3 logs; fin13 FIRED_UNDER_WINDOW_MS = 800 == the v1 rule.
+- Wheel P3 /workspace/rsfork_fin13 (de05bb6c...); bundle parity1016/clashbot36_fin13.bundle (head a697d1f9).
+- Gaps (not fixed):
+  - the new 16.402 laws (EVO_RING_STOP, REFLECT_WHILE_HELD, UPPERCUT_COUNT; HIDDEN_IMMUNE_FROM has no 15.535 entry at all) ->
+    15.535 replays run the new laws
+  - docs/calibration.md ledger count stale (596) -> tests/test_ledger_census.py fails (not in the cargo run)
+- RL training runtime still fork36-linux (bc2bf9d era): rebuild with the clashbot36 head for step d only.
 ## 2026-10-18 08:15 EDT -- Stage 2 S2-01..08 results (checker-verified); Phase D (deck-conditioned opponent, imitation recipe) launched seeds A + B
 
 - Report: workflow stage2-tonight (wf_9955b7dc-4ae); ledger scratchpad/gauntlet/L74/stage2/LEDGER.md, gate/FROZEN.txt (sha
