@@ -1,0 +1,293 @@
+From 82b414ade72057fc82423c456796569f53454c43 Mon Sep 17 00:00:00 2001
+From: r7c <r7c@local>
+Date: Sun, 18 Oct 2026 10:58:55 +0000
+Subject: [PATCH 1/2] status.BUFF_PULSE_REDUCTION = client16402_twice: a buff's
+ damage pulse takes its target's DamageReduction twice
+
+Mechanic: state.rs buff_pulse_pass pushed a buff's own damage pulse (status.rs pulse_amount: Poison, Tornado, Earthquake,
+the Goblin Curse) into the damage buffer whole, and Resolve reduced it once by the target's DamageReduction
+(combat.rs damage_reduction_of: the Evo Knight's idle Knight_Fortify_EV1 60, the Monk's shield, the hero Valkyrie's 15),
+so a Poison pulse on a fortified Evo Knight took 40 % (147 -> 58). New arm client16402_twice (shipped): buff_pulse_pass
+reduces the pulse by the reduction on that tick before it enters the buffer, and Resolve reduces it again (147 -> 58 ->
+23). Old arm once; CLIENT15535_ARMS keeps it (unread there), format-3 snapshots keep it. Damage that is not a buff's own
+pulse (a projectile's, an area's strike) is untouched.
+
+Minimal reproduction: tests/buff_pulse_reduction.rs: a blue Evo Knight (level 11) put down with nothing to fight and kept
+on its point, a red Poison on it; its first pulse is 40 % of 40 % of a plain Knight's under the new arm and 40 % under
+the old. Plant buff_pulse_reduced_once turns it red.
+
+Parity-Evidence: ClashBot scratchpad/gauntlet/L74/parity/diag_night/r7c (poisoncen.py, dotsum.py) on the 499 captured
+client 16.402 frame logs: a Poison pulse on an Evo Knight with its Knight_Fortify_EV1 row on took 21 / 23 (17 clean
+pulses in 8 battles) where the same pulse took 133 / 147 off the Ice Wizards under the same cloud on the same frames
+(133 -> 53 -> 21, 147 -> 58 -> 23) and 133 / 147 / 182 off an Evo Knight attacking (row off); a Tornado pulse 21 against
+134 on the Ice Wizard beside it (20261017_185542 t2836); an Earthquake pulse 15. Hits that are not a buff's own pulse are
+reduced once: the Mother Witch's curse shot 212 -> 84, the Blowdart poison area 93 -> 37 and 158 -> 63. Fixture
+liveplay 20261018_045719 t4328 / t4348 / t4368: our walking Evo Knight takes 23 per Poison pulse, the engine 58.
+---
+ crates/royalesim/src/client_arms.rs           |  2 +
+ crates/royalesim/src/state.rs                 | 36 +++++++++
+ .../royalesim/tests/buff_pulse_reduction.rs   | 74 +++++++++++++++++++
+ data/calibration.json                         | 13 ++++
+ docs/calibration.md                           | 16 ++--
+ 5 files changed, 133 insertions(+), 8 deletions(-)
+ create mode 100644 crates/royalesim/tests/buff_pulse_reduction.rs
+
+diff --git a/crates/royalesim/src/client_arms.rs b/crates/royalesim/src/client_arms.rs
+index f0fd46e..0d8834d 100644
+--- a/crates/royalesim/src/client_arms.rs
++++ b/crates/royalesim/src/client_arms.rs
+@@ -373,6 +373,7 @@ pub const CARD_VALUES_KEY: &str = "cards.CLIENT16402_VALUES";
+ ///   status.BUFF_PULSE_CROWN_ORDER = percent_of_pulse: a Tornado's crown-tower hit the percent of its pulse (unread there).
+ ///   status.IDLE_BUFF_DEPLOY = off_while_deploying: an idle buff off while its unit deploys (unread there).
+ ///   status.IDLE_BUFF_RETARGET = idle_returns: an own idle buff back on at a retarget (unread there).
++///   status.BUFF_PULSE_REDUCTION = once: a buff's damage pulse reduced once by its target's DamageReduction (unread there).
+ ///   hide.SPARK_HITS_HIDDEN = passes: a Firecracker spark passes a hidden building (unread there).
+ ///   combat.PINGPONG_SLOW = unslowed: a slowed Executioner's axe flies at the unslowed rate (unread there).
+ ///   combat.DASH_STAND_SLOW = unslowed: a slowed dasher stands its unslowed length (unread there).
+@@ -582,6 +583,7 @@ pub const CLIENT15535_ARMS: &[(&str, &str)] = &[
+     ("status.BUFF_PULSE_CROWN_ORDER", "\"percent_of_pulse\""),
+     ("status.IDLE_BUFF_DEPLOY", "\"off_while_deploying\""),
+     ("status.IDLE_BUFF_RETARGET", "\"idle_returns\""),
++    ("status.BUFF_PULSE_REDUCTION", "\"once\""),
+     ("hide.SPARK_HITS_HIDDEN", "\"passes\""),
+     ("combat.PINGPONG_SLOW", "\"unslowed\""),
+     ("combat.DASH_STAND_SLOW", "\"unslowed\""),
+diff --git a/crates/royalesim/src/state.rs b/crates/royalesim/src/state.rs
+index 1f2f3c9..6e82d94 100644
+--- a/crates/royalesim/src/state.rs
++++ b/crates/royalesim/src/state.rs
+@@ -1081,6 +1081,10 @@ pub struct Calib {
+     /// is the old arm, `IdleReturns`.
+     #[serde(default = "idle_buff_retarget_default")]
+     pub idle_buff_retarget: IdleBuffRetarget,
++    /// status.BUFF_PULSE_REDUCTION (`buff_pulse_pass`): how often a buff's own damage pulse takes its target's
++    /// DamageReduction. Added after SNAPSHOT_FORMAT 20; the `default` is the old arm, `Once`.
++    #[serde(default = "buff_pulse_reduction_default")]
++    pub buff_pulse_reduction: BuffPulseReduction,
+     /// targeting.INVISIBILITY (target.rs `invisible`). Added after SNAPSHOT_FORMAT 20; no battle saved before it held
+     /// an invisible unit.
+     #[serde(default = "invisibility_default")]
+@@ -3162,6 +3166,10 @@ fn idle_buff_deploy_default() -> IdleBuffDeploy {
+     IdleBuffDeploy::OffWhileDeploying
+ }
+ 
++fn buff_pulse_reduction_default() -> BuffPulseReduction {
++    BuffPulseReduction::Once
++}
++
+ fn idle_buff_retarget_default() -> IdleBuffRetarget {
+     IdleBuffRetarget::IdleReturns
+ }
+@@ -8767,6 +8775,18 @@ calib_enum!(
+         Client16402OnWhileDeploying = "client16402_on_while_deploying",
+     }
+ );
++calib_enum!(
++    /// status.BUFF_PULSE_REDUCTION -- how often a buff's OWN damage pulse (status.rs `pulse_amount`: Poison, Tornado,
++    /// Earthquake, the Goblin Curse; `buff_pulse_pass`) takes its target's DamageReduction (combat.rs
++    /// `damage_reduction_of`: the Evo Knight's idle 60, the Monk's shield, the hero Valkyrie's 15).
++    BuffPulseReduction {
++        /// The engine's: once, in Resolve, as every other hit.
++        Once = "once",
++        /// Twice: the pulse is reduced as it is dealt (`buff_pulse_pass`, the reduction on that tick) and again in
++        /// Resolve. Measured on client 16.402 live frames (ClashBot parity diag_night/r7c poisoncen.py / dotsum.py on the 499 captured logs): a Poison pulse on an Evo Knight with its Knight_Fortify_EV1 row on took 21 / 23 (17 clean pulses in 8 battles) where the same pulse took 133 / 147 off the other bodies under it (Ice Wizard; the 60 % twice: 133 -> 53 -> 21, 147 -> 58 -> 23) and 133 / 147 / 182 off an Evo Knight attacking (its row off); a Tornado pulse 21 against 134 on the Ice Wizard beside it (20261017_185542 t2836); an Earthquake pulse 15. Damage that is not a buff's own pulse (the Mother Witch's curse shot 212 -> 84, the Blowdart poison area 93 -> 37, 158 -> 63) is reduced once.
++        Client16402Twice = "client16402_twice",
++    }
++);
+ calib_enum!(
+     /// status.IDLE_BUFF_RETARGET -- whether a unit's OWN idle buff (status.IDLE_BUFF; card.rs `IdleBuffDef::own`, the Evo
+     /// Knight's Knight_Fortify_EV1) that its hit turned off comes back on through a retarget between two swings
+@@ -11228,6 +11248,7 @@ impl Calib {
+             idle_buff: pick(&v, &["status", "IDLE_BUFF", "value"], IdleBuffLaw::from_calibration_name)?,
+             idle_buff_deploy: pick(&v, &["status", "IDLE_BUFF_DEPLOY", "value"], IdleBuffDeploy::from_calibration_name)?,
+             idle_buff_retarget: pick(&v, &["status", "IDLE_BUFF_RETARGET", "value"], IdleBuffRetarget::from_calibration_name)?,
++            buff_pulse_reduction: pick(&v, &["status", "BUFF_PULSE_REDUCTION", "value"], BuffPulseReduction::from_calibration_name)?,
+             invisibility: pick(&v, &["targeting", "INVISIBILITY", "value"], Invisibility::from_calibration_name)?,
+             production_rate: pick(&v, &["economy", "PRODUCTION_RATE_IN_DOUBLE_ELIXIR", "value"], ProductionRate::from_calibration_name)?,
+             stun_pauses_production: boolean(&v, &["economy", "STUN_PAUSES_PRODUCTION", "value"])?,
+@@ -18923,6 +18944,19 @@ impl BattleState {
+                     } else {
+                         amount
+                     };
++                    // status.BUFF_PULSE_REDUCTION = client16402_twice: the pulse takes the target's DamageReduction as it is
++                    // dealt, and Resolve takes it again (an Evo Knight's 60 %: Poison 147 -> 58 -> 23). PLANT (regression)
++                    // buff_pulse_reduced_once: the new arm reduces once.
++                    #[cfg(not(clash_plant = "buff_pulse_reduced_once"))]
++                    let twice = self.cfg.calib.buff_pulse_reduction == BuffPulseReduction::Client16402Twice;
++                    #[cfg(clash_plant = "buff_pulse_reduced_once")]
++                    let twice = false;
++                    let dealt = if twice {
++                        let r = crate::combat::damage_reduction_of(&self.ents, &self.cfg.cards, &self.cfg.calib, self.tick, i);
++                        crate::combat::reduce_hit(dealt, r, self.cfg.calib.damage_reduction)
++                    } else {
++                        dealt
++                    };
+                     // A slot that reaches a building hidden under ground (the Vines' snare on an idle Tesla) hits it
+                     // there too (`BuffSlot::reach_hidden`); every other pulse is dropped on a hidden building.
+                     if dealt > 0 {
+@@ -39629,6 +39663,8 @@ fn migrate_v3(v: &mut Value, cards: &CardDb) -> Result<Vec<u16>, String> {
+     sh.insert("idle_buff_deploy".into(), serde_json::to_value(IdleBuffDeploy::OffWhileDeploying).map_err(|e| e.to_string())?);
+     // status.IDLE_BUFF_RETARGET: a format-3 battle's idle buffs came back on at a retarget (the old arm).
+     sh.insert("idle_buff_retarget".into(), serde_json::to_value(IdleBuffRetarget::IdleReturns).map_err(|e| e.to_string())?);
++    // status.BUFF_PULSE_REDUCTION: a format-3 battle's pulses took the reduction once (the old arm).
++    sh.insert("buff_pulse_reduction".into(), serde_json::to_value(BuffPulseReduction::Once).map_err(|e| e.to_string())?);
+     // status.BUFF_PULSE_CROWN_ORDER: a format-3 battle's pulses took their crown-tower percent of the pulse (the old arm).
+     sh.insert("buff_pulse_crown_order".into(), serde_json::to_value(PulseCrownOrder::PercentOfPulse).map_err(|e| e.to_string())?);
+     // combat.DASH_CHAIN_IMMUNITY: a format-3 battle's chains made no one immune (the old arm).
+diff --git a/crates/royalesim/tests/buff_pulse_reduction.rs b/crates/royalesim/tests/buff_pulse_reduction.rs
+new file mode 100644
+index 0000000..92a35ba
+--- /dev/null
++++ b/crates/royalesim/tests/buff_pulse_reduction.rs
+@@ -0,0 +1,74 @@
++//! status.BUFF_PULSE_REDUCTION: a buff's own damage pulse (Poison, Tornado, Earthquake) takes its target's DamageReduction
++//! twice: as `buff_pulse_pass` deals it and again in Resolve.
++//!
++//! THE READING (client 16.402 live frames, ClashBot parity diag_night/r7c poisoncen.py / dotsum.py): a Poison pulse took
++//! 21 / 23 off an Evo Knight with its Knight_Fortify_EV1 row on (17 clean pulses, 8 battles) and 133 / 147 off the Ice
++//! Wizards under the same cloud on the same frames: 133 -> 53 -> 21, 147 -> 58 -> 23.
++//!
++//! The scene: a blue Evo Knight (level 11) put down with nothing to fight and kept on its point, a red Poison on it; its
++//! first pulse against the same pulse on a plain blue Knight.
++//!
++//! PLANT (regression): buff_pulse_reduced_once -> `a_poison_pulse_takes_the_evo_knights_reduction_twice` red.
++//!   RUSTFLAGS='--cfg clash_plant="buff_pulse_reduced_once"' CARGO_TARGET_DIR=target/plant cargo test --profile gate
++//!   --test buff_pulse_reduction
++#![allow(unexpected_cfgs)]
++mod common;
++
++use royalesim::card::CardDb;
++use royalesim::fixed::{Vec2, SUBTILE_PER_MILLITILE as K};
++use royalesim::state::{BattleConfig, BattleState, BuffPulseReduction, Calib, CardTable};
++use royalesim::Team;
++
++fn n(x: i32, y: i32) -> Vec2 {
++    Vec2::new(x * K, y * K)
++}
++
++/// The first Poison pulse a blue `card` (Knight_EV1 or Knight) takes, kept on a point out of every tower's reach.
++fn first_pulse(arm: BuffPulseReduction, card: &str) -> i32 {
++    let mut cfg = BattleConfig::with_cards(CardDb::load_table(CardTable::Client160402017).expect("the 160402017 table"));
++    cfg.calib.card_table = CardTable::Client160402017;
++    cfg.calib.buff_pulse_reduction = arm;
++    cfg.decks = [vec!["Knight".into(), "Archer".into()], vec!["Poison".into()]];
++    cfg.forms = [vec![1, 0], Vec::new()];
++    cfg.card_level = [11, 11];
++    cfg.tower_level = [11, 11];
++    let mut s = BattleState::new(7, cfg);
++    common::past_deploy_lockout(&mut s);
++    let at = n(9000, 14500);
++    s.spawn_unit(Team::Blue, card, at, None).expect("the blue Knight");
++    s.tick();
++    let blue = common::find_live(&s, Team::Blue, card)[0].id;
++    for _ in 0..40 {
++        assert!(s.debug_set_pos(blue, at));
++        s.tick();
++    }
++    let top = s.entity(blue).expect("the Knight").max_hp;
++    assert!(s.debug_set_hp(blue, top));
++    s.spawn_unit(Team::Red, "Poison", at, None).expect("cast Poison");
++    for _ in 0..80 {
++        assert!(s.debug_set_pos(blue, at));
++        s.tick();
++        let hp = s.entity(blue).expect("the Knight").hp;
++        if hp < top {
++            return top - hp;
++        }
++    }
++    panic!("{arm:?} {card}: the Poison never pulsed");
++}
++
++/// Plant: buff_pulse_reduced_once.
++#[test]
++fn a_poison_pulse_takes_the_evo_knights_reduction_twice() {
++    let whole = first_pulse(BuffPulseReduction::Client16402Twice, "Knight");
++    assert_eq!(whole, first_pulse(BuffPulseReduction::Once, "Knight"), "a plain Knight's pulse moved with the arm");
++    let twice = first_pulse(BuffPulseReduction::Client16402Twice, "Knight_EV1");
++    let once = first_pulse(BuffPulseReduction::Once, "Knight_EV1");
++    // NOT VACUOUS: the engine's arm takes the 60 % once.
++    assert_eq!(once, (whole * 40) / 100, "once: the Evo Knight took {once} of a {whole} pulse");
++    assert_eq!(twice, (once * 40) / 100, "client16402_twice: the Evo Knight took {twice} of a {whole} pulse (once {once})");
++}
++
++#[test]
++fn the_shipped_arm_reduces_a_pulse_twice() {
++    assert_eq!(Calib::shipped().buff_pulse_reduction, BuffPulseReduction::Client16402Twice);
++}
+diff --git a/data/calibration.json b/data/calibration.json
+index 7077093..7621008 100644
+--- a/data/calibration.json
++++ b/data/calibration.json
+@@ -4893,6 +4893,19 @@
+       "promotion_rules": "replay_parity runs a client 15.535.29 capture at client15535_before_buffered_hits (examples/replay_parity/harness.rs CLIENT15535_ARMS).",
+       "engine": "state.rs phase_resolve (`heals_first`: land_buff_heals before combat::resolve), selected by Calib::heal_pulse_landing; tests/heal_pulse_landing.rs."
+     },
++    "BUFF_PULSE_REDUCTION": {
++      "value": "client16402_twice",
++      "candidates": [
++        "once",
++        "client16402_twice"
++      ],
++      "status": "measured",
++      "confidence": "MEDIUM for Poison on the Evo Knight's own reduction (Knight_Fortify_EV1) on client 16.402: 17 clean pulses in 8 battles, the others under the same pulse unreduced on the same frames; LOW for the Tornado and the Earthquake (one pulse each); the Monk's and the hero Valkyrie's reductions inferred.",
++      "provenance": "MEASURED by ClashBot parity (diag_night/r7c poisoncen.py + dotsum.py, 2026-10-18) on the 499 captured client 16.402 frame logs. Measured on client 16.402 live frames (ClashBot parity diag_night/r7c poisoncen.py / dotsum.py on the 499 captured logs): a Poison pulse on an Evo Knight with its Knight_Fortify_EV1 row on took 21 / 23 (17 clean pulses in 8 battles) where the same pulse took 133 / 147 off the other bodies under it (Ice Wizard; the 60 % twice: 133 -> 53 -> 21, 147 -> 58 -> 23) and 133 / 147 / 182 off an Evo Knight attacking (its row off); a Tornado pulse 21 against 134 on the Ice Wizard beside it (20261017_185542 t2836); an Earthquake pulse 15. Damage that is not a buff's own pulse (the Mother Witch's curse shot 212 -> 84, the Blowdart poison area 93 -> 37, 158 -> 63) is reduced once.",
++      "meaning": "once: the engine's; a buff's damage pulse is a hit like any other, reduced in Resolve. client16402_twice: buff_pulse_pass reduces the pulse by the target's DamageReduction on that tick before it enters the damage buffer, and Resolve reduces it again.",
++      "promotion_rules": "The test file (crates/royalesim/tests/buff_pulse_reduction.rs) passes.",
++      "engine": "state.rs buff_pulse_pass, selected by Calib::buff_pulse_reduction; plant buff_pulse_reduced_once; tests/buff_pulse_reduction.rs."
++    },
+     "BUFF_PULSE_AMOUNT": {
+       "value": "scaled_per_second_times_frequency",
+       "status": "measured",
+diff --git a/docs/calibration.md b/docs/calibration.md
+index 00f2b29..a60dfd9 100644
+--- a/docs/calibration.md
++++ b/docs/calibration.md
+@@ -70,7 +70,7 @@ equally well checked.
+ 
+ A re-read on 2026-09-22 went through 24 entries against the corpus, of the 148 the ledger held
+ that day. The ledger has grown since. Counted against it today, the re-read
+-went through 24 of the 592 entries. It moved no status and no value. What it turned up was in
++went through 24 of the 593 entries. It moved no status and no value. What it turned up was in
+ the evidence the statuses rest on: 42 places where a cited number, recording name or piece of
+ arithmetic does not hold. Take that as a reason to re-derive, not as 42 established defects.
+ Only a handful of the 42 have since been recomputed by hand, and one of those did not survive
+@@ -83,21 +83,21 @@ pinned by 34 members over 17 clean groups, the two seats' back-edge bounds are a
+ rather than half a row, side 1's river bound is one native unit looser than the rotation rather
+ than tighter, and side 0's range is pinned by nothing at all, which the entry now says.
+ 
+-568 entries have not been re-read. So, concretely (every count on this page comes from
++569 entries have not been re-read. So, concretely (every count on this page comes from
+ `python tools/ledger_census.py`, and `tests/test_ledger_census.py` fails when the page and the
+ ledger disagree, because these figures went stale twice in one afternoon before that gate existed):
+ 
+ - **The status on a key is worth trusting.** No status moved in the re-read.
+ - **The shape of an entry is worth trusting where a judgement was made, but it is not
+-  universal, so check rather than assume.** All 592 carry a status. That 592 counts TOP-LEVEL
++  universal, so check rather than assume.** All 593 carry a status. That 593 counts TOP-LEVEL
+   entries; one further entry, `pathfinding.PATHFINDING_COSTS.application`, is nested inside
+-  another and carries its own `measured` status, so counting every status in the file gives 593
+-  and 481 measured. The tools agree on 592 by convention, and the convention undercounts by one. 533 name the rivals the
+-  value was chosen against and 489 state what would move it, and 468 do both. The gap is mostly
++  another and carries its own `measured` status, so counting every status in the file gives 594
++  and 482 measured. The tools agree on 593 by convention, and the convention undercounts by one. 534 name the rivals the
++  value was chosen against and 490 state what would move it, and 469 do both. The gap is mostly
+   the 30 `datamined` keys, where the number was read out of a shipped table and no choice was
+   made, so a candidate list would be a category error; those carry a vintage and an engine
+   contract instead, which is the right shape for them. But the gap is not only those. 26 of
+-  the 480 `measured` entries name no rival at all, and 13 of those state no promotion criterion
++  the 481 `measured` entries name no rival at all, and 13 of those state no promotion criterion
+   either. This file's rule is that evidence is discrimination and never origin. A measured key
+   with no candidate list has therefore recorded nothing that it was discriminated against. Some
+   are harmless (`time.TICK_MS` has no plausible rival). `pathfinding.PATH_GOAL_RULE` and
+@@ -152,7 +152,7 @@ Everything below is at `guess`, `hypothesis`, `community` or `datamined`-but-unv
+ engine runs on a placeholder for these, so the behaviour it produces is not evidence about the
+ real game. Each row names what a recording would have to show. The ledger is the authority; this
+ table is a reading guide over it, and a key's own `status` and `promotion_rules` win where the two
+-disagree. Of the 592 top-level keys with a status, 480 are `measured`; one more entry, nested inside another, is measured too (593 in all).
++disagree. Of the 593 top-level keys with a status, 481 are `measured`; one more entry, nested inside another, is measured too (594 in all).
+ 
+ | Key | Value today | Status | Settled by |
+ |---|---|---|---|
+-- 
+2.43.0
+

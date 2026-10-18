@@ -1,0 +1,328 @@
+From d20a63d1f417a8fae54519ea5b41822524965c4d Mon Sep 17 00:00:00 2001
+From: r6c <r6c@local>
+Date: Sun, 18 Oct 2026 01:53:15 +0000
+Subject: [PATCH 2/2] status.IDLE_BUFF_HIT_TICK = client16402_off_on_hit_tick:
+ the Evo Knight takes whole the hits landing on its own hit tick
+
+Mechanic: combat.rs idle_on reads a unit's own idle buff at the tick's start state and state.rs idle_buff_pass moves it off
+only after Resolve, so the hits landing on the tick of the Evo Knight's own hit were reduced by Knight_Fortify_EV1 (60).
+New arm client16402_off_on_hit_tick (shipped): damage_reduction_of leaves the own idle buff out while the unit's attack
+phase is Cooldown (the tick its hit lands), so every hit of that tick's Resolve is taken whole. Old arm start_of_tick;
+CLIENT15535_ARMS keeps it (unread there), format-3 snapshots keep it. The Super Knight's area idle buff is not touched
+(no own buff).
+
+Minimal reproduction: tests/idle_buff_hit_tick.rs: a blue Evo Knight put down, a red Knight held out of sight until its
+deploy ends and then put inside its reach, both kept and topped up: both first hits land on one tick; the Evo Knight takes
+the red Knight's whole hit under the new arm and 40 % of it under the old. Plant idle_buff_reduces_own_hit_tick turns it red.
+
+Parity-Evidence: ClashBot scratchpad/gauntlet/L74/parity/diag_night/r6c (ekhit.py) on the 359 captured client 16.402 frame
+logs: Evo Knight engagements with the Knight_Fortify_EV1 row on before the windup and one enemy holding the Knight; in the 7
+whose enemy's phase-3 attack progress equals the Knight's on every common tick of [hit - 8, hit + 2] (both hits on one tick:
+Knight x5, Goblin Machine x2) the drop on that tick is the enemy's whole hit (293, 323, 323, 323, 293, 338, 338), where the
+engine took 40 %. liveplay 20261017_050051 t3053: two Evo Knights, reduced until the frame before, take 293 and 323 off each
+other on their common hit tick. 20261017_112814 t2042 and 20261017_111735 t3839: an Evo Mega Knight's 429 lands whole on our
+Evo Knight's hit tick; the engine took 171.
+---
+ crates/royalesim/src/client_arms.rs          |  2 +
+ crates/royalesim/src/combat.rs               |  9 ++-
+ crates/royalesim/src/state.rs                | 29 +++++++
+ crates/royalesim/tests/idle_buff.rs          |  6 +-
+ crates/royalesim/tests/idle_buff_hit_tick.rs | 85 ++++++++++++++++++++
+ data/calibration.json                        | 13 +++
+ docs/calibration.md                          | 16 ++--
+ 7 files changed, 150 insertions(+), 10 deletions(-)
+ create mode 100644 crates/royalesim/tests/idle_buff_hit_tick.rs
+
+diff --git a/crates/royalesim/src/client_arms.rs b/crates/royalesim/src/client_arms.rs
+index 0d8834d..19d16f6 100644
+--- a/crates/royalesim/src/client_arms.rs
++++ b/crates/royalesim/src/client_arms.rs
+@@ -374,6 +374,7 @@ pub const CARD_VALUES_KEY: &str = "cards.CLIENT16402_VALUES";
+ ///   status.IDLE_BUFF_DEPLOY = off_while_deploying: an idle buff off while its unit deploys (unread there).
+ ///   status.IDLE_BUFF_RETARGET = idle_returns: an own idle buff back on at a retarget (unread there).
+ ///   status.BUFF_PULSE_REDUCTION = once: a buff's damage pulse reduced once by its target's DamageReduction (unread there).
++///   status.IDLE_BUFF_HIT_TICK = start_of_tick: an own idle buff reduces the hits of its unit's hit tick (unread there).
+ ///   hide.SPARK_HITS_HIDDEN = passes: a Firecracker spark passes a hidden building (unread there).
+ ///   combat.PINGPONG_SLOW = unslowed: a slowed Executioner's axe flies at the unslowed rate (unread there).
+ ///   combat.DASH_STAND_SLOW = unslowed: a slowed dasher stands its unslowed length (unread there).
+@@ -584,6 +585,7 @@ pub const CLIENT15535_ARMS: &[(&str, &str)] = &[
+     ("status.IDLE_BUFF_DEPLOY", "\"off_while_deploying\""),
+     ("status.IDLE_BUFF_RETARGET", "\"idle_returns\""),
+     ("status.BUFF_PULSE_REDUCTION", "\"once\""),
++    ("status.IDLE_BUFF_HIT_TICK", "\"start_of_tick\""),
+     ("hide.SPARK_HITS_HIDDEN", "\"passes\""),
+     ("combat.PINGPONG_SLOW", "\"unslowed\""),
+     ("combat.DASH_STAND_SLOW", "\"unslowed\""),
+diff --git a/crates/royalesim/src/combat.rs b/crates/royalesim/src/combat.rs
+index a3c9e92..03bc49c 100644
+--- a/crates/royalesim/src/combat.rs
++++ b/crates/royalesim/src/combat.rs
+@@ -2141,7 +2141,14 @@ pub fn damage_reduction_of(ents: &Entities, cards: &CardDb, calib: &Calib, tick:
+     }
+     let mut r = ents.buff_slots(v).iter().filter(|s| !s.is_empty()).map(|s| cards.buffs[(s.id - 1) as usize].damage_reduction).max().unwrap_or(0);
+     if let Some(own) = cards.get(ents.card[v]).idle_buff.as_ref().and_then(|b| b.own) {
+-        if idle_on(ents, cards, calib, tick, v) {
++        // status.IDLE_BUFF_HIT_TICK = client16402_off_on_hit_tick: off for the hits landing on the unit's own hit's tick
++        // (its phase is Cooldown in that Resolve). PLANT (regression) idle_buff_reduces_own_hit_tick: the new arm reduces.
++        #[cfg(not(clash_plant = "idle_buff_reduces_own_hit_tick"))]
++        let hit_tick = calib.idle_buff_hit_tick == crate::state::IdleBuffHitTick::Client16402OffOnHitTick
++            && ents.attack_phase[v] == AttackPhase::Cooldown;
++        #[cfg(clash_plant = "idle_buff_reduces_own_hit_tick")]
++        let hit_tick = false;
++        if idle_on(ents, cards, calib, tick, v) && !hit_tick {
+             r = r.max(cards.buffs[own as usize].damage_reduction);
+         }
+     }
+diff --git a/crates/royalesim/src/state.rs b/crates/royalesim/src/state.rs
+index 6e82d94..05a7dff 100644
+--- a/crates/royalesim/src/state.rs
++++ b/crates/royalesim/src/state.rs
+@@ -1085,6 +1085,10 @@ pub struct Calib {
+     /// DamageReduction. Added after SNAPSHOT_FORMAT 20; the `default` is the old arm, `Once`.
+     #[serde(default = "buff_pulse_reduction_default")]
+     pub buff_pulse_reduction: BuffPulseReduction,
++    /// status.IDLE_BUFF_HIT_TICK (combat.rs `damage_reduction_of`): whether a unit's own idle buff reduces the hits landing
++    /// on the tick of its own hit. Added after SNAPSHOT_FORMAT 20; the `default` is the old arm, `StartOfTick`.
++    #[serde(default = "idle_buff_hit_tick_default")]
++    pub idle_buff_hit_tick: IdleBuffHitTick,
+     /// targeting.INVISIBILITY (target.rs `invisible`). Added after SNAPSHOT_FORMAT 20; no battle saved before it held
+     /// an invisible unit.
+     #[serde(default = "invisibility_default")]
+@@ -3174,6 +3178,10 @@ fn idle_buff_retarget_default() -> IdleBuffRetarget {
+     IdleBuffRetarget::IdleReturns
+ }
+ 
++fn idle_buff_hit_tick_default() -> IdleBuffHitTick {
++    IdleBuffHitTick::StartOfTick
++}
++
+ fn invisibility_default() -> Invisibility {
+     Invisibility::ClientUntilHit
+ }
+@@ -8787,6 +8795,24 @@ calib_enum!(
+         Client16402Twice = "client16402_twice",
+     }
+ );
++calib_enum!(
++    /// status.IDLE_BUFF_HIT_TICK -- whether a unit's OWN idle buff (status.IDLE_BUFF; card.rs `IdleBuffDef::own`, the Evo
++    /// Knight's Knight_Fortify_EV1) reduces the hits that land on the tick of the unit's own hit (combat.rs
++    /// `damage_reduction_of`; the unit's attack phase is Cooldown in that tick's Resolve).
++    IdleBuffHitTick {
++        /// The engine's: the buff is read at the tick's start state (combat.rs `idle_on`), and `idle_buff_pass` moves it
++        /// off after Resolve, so a hit landing with the unit's own is reduced.
++        StartOfTick = "start_of_tick",
++        /// Off on the hit's tick: every hit landing in the Resolve of the tick the unit's own hit lands is taken whole.
++        /// Measured on client 16.402 live frames (ClashBot parity diag_night/r6c ekhit.py on the 359 captured logs): 7 of 7
++        /// MIRROR duels (an enemy whose phase-3 attack clock reads the Evo Knight's own on every tick, so its hit lands on
++        /// the Knight's hit tick; Knight x5, Goblin Machine x2) took the attacker's whole hit on that tick (293 / 323 /
++        /// 338), with the reduction row on until the frame before; liveplay 20261017_050051 t3053 two Evo Knights, each
++        /// 60 % reduced until then, took 293 and 323 off each other on their common hit tick; 20261017_112814 t2042 an
++        /// Evo Mega Knight's 429 on our Evo Knight's hit tick (the engine 171).
++        Client16402OffOnHitTick = "client16402_off_on_hit_tick",
++    }
++);
+ calib_enum!(
+     /// status.IDLE_BUFF_RETARGET -- whether a unit's OWN idle buff (status.IDLE_BUFF; card.rs `IdleBuffDef::own`, the Evo
+     /// Knight's Knight_Fortify_EV1) that its hit turned off comes back on through a retarget between two swings
+@@ -11249,6 +11275,7 @@ impl Calib {
+             idle_buff_deploy: pick(&v, &["status", "IDLE_BUFF_DEPLOY", "value"], IdleBuffDeploy::from_calibration_name)?,
+             idle_buff_retarget: pick(&v, &["status", "IDLE_BUFF_RETARGET", "value"], IdleBuffRetarget::from_calibration_name)?,
+             buff_pulse_reduction: pick(&v, &["status", "BUFF_PULSE_REDUCTION", "value"], BuffPulseReduction::from_calibration_name)?,
++            idle_buff_hit_tick: pick(&v, &["status", "IDLE_BUFF_HIT_TICK", "value"], IdleBuffHitTick::from_calibration_name)?,
+             invisibility: pick(&v, &["targeting", "INVISIBILITY", "value"], Invisibility::from_calibration_name)?,
+             production_rate: pick(&v, &["economy", "PRODUCTION_RATE_IN_DOUBLE_ELIXIR", "value"], ProductionRate::from_calibration_name)?,
+             stun_pauses_production: boolean(&v, &["economy", "STUN_PAUSES_PRODUCTION", "value"])?,
+@@ -39665,6 +39692,8 @@ fn migrate_v3(v: &mut Value, cards: &CardDb) -> Result<Vec<u16>, String> {
+     sh.insert("idle_buff_retarget".into(), serde_json::to_value(IdleBuffRetarget::IdleReturns).map_err(|e| e.to_string())?);
+     // status.BUFF_PULSE_REDUCTION: a format-3 battle's pulses took the reduction once (the old arm).
+     sh.insert("buff_pulse_reduction".into(), serde_json::to_value(BuffPulseReduction::Once).map_err(|e| e.to_string())?);
++    // status.IDLE_BUFF_HIT_TICK: a format-3 battle's own idle buff reduced the hits landing with the unit's own (the old arm).
++    sh.insert("idle_buff_hit_tick".into(), serde_json::to_value(IdleBuffHitTick::StartOfTick).map_err(|e| e.to_string())?);
+     // status.BUFF_PULSE_CROWN_ORDER: a format-3 battle's pulses took their crown-tower percent of the pulse (the old arm).
+     sh.insert("buff_pulse_crown_order".into(), serde_json::to_value(PulseCrownOrder::PercentOfPulse).map_err(|e| e.to_string())?);
+     // combat.DASH_CHAIN_IMMUNITY: a format-3 battle's chains made no one immune (the old arm).
+diff --git a/crates/royalesim/tests/idle_buff.rs b/crates/royalesim/tests/idle_buff.rs
+index 67e1388..26168c4 100644
+--- a/crates/royalesim/tests/idle_buff.rs
++++ b/crates/royalesim/tests/idle_buff.rs
+@@ -150,7 +150,11 @@ fn an_idle_evo_knight_takes_80_of_a_202_hit() {
+     let ib = db.get(db.index("EvoKnightTest").unwrap_or_else(|| panic!("the synthetic Evo Knight is refused: {:?}", db.rejected))).idle_buff;
+     let own = ib.and_then(|b| b.own).expect("the Evo Knight's idle buff is its own");
+     assert_eq!(db.buffs[own as usize].damage_reduction, 60);
+-    let d = duel(level11(db), "EvoKnightTest", 400);
++    // status.IDLE_BUFF_HIT_TICK: the scene lets the Knight's first hit land on the Evo Knight's first-hit tick, which
++    // client16402_off_on_hit_tick takes whole (tests/idle_buff_hit_tick.rs); this pin is the reduction formula's.
++    let mut cfg = level11(db);
++    cfg.calib.idle_buff_hit_tick = royalesim::state::IdleBuffHitTick::StartOfTick;
++    let d = duel(cfg, "EvoKnightTest", 400);
+     let first = d.blue_first_hit.expect("the Evo Knight never hit the Knight");
+     let (k0, l0) = *d.blue_losses.first().expect("the Knight never hit the Evo Knight");
+     assert!(k0 <= first, "the Knight first hit on k{k0}, after the Evo Knight's first hit on k{first}: {:?}", d.blue_losses);
+diff --git a/crates/royalesim/tests/idle_buff_hit_tick.rs b/crates/royalesim/tests/idle_buff_hit_tick.rs
+new file mode 100644
+index 0000000..825801c
+--- /dev/null
++++ b/crates/royalesim/tests/idle_buff_hit_tick.rs
+@@ -0,0 +1,85 @@
++//! status.IDLE_BUFF_HIT_TICK: a unit's own idle buff (status.IDLE_BUFF; the Evo Knight's Knight_Fortify_EV1, DamageReduction
++//! 60) is off for the hits that land on the tick of the unit's own hit (combat.rs `damage_reduction_of`).
++//!
++//! THE READING (client 16.402 live frames, ClashBot parity diag_night/r6c ekhit.py): 7 of 7 mirror duels (an enemy whose
++//! attack clock reads the Evo Knight's on every tick, so both hits land on one tick) took the enemy's whole hit on it,
++//! the reduction on until the frame before; liveplay 20261017_050051 t3053 two Evo Knights take 293 and 323 off each other.
++//!
++//! The scene: a blue Evo Knight (level 11) put down, a red Knight (level 11) held out of sight until its deploy ends, then
++//! both on points inside their reach, kept there and topped up: both swings land on one tick; the first hp losses.
++//!
++//! PLANT (regression): idle_buff_reduces_own_hit_tick -> `a_hit_landing_with_the_evo_knights_own_is_taken_whole` red.
++//!   RUSTFLAGS='--cfg clash_plant="idle_buff_reduces_own_hit_tick"' CARGO_TARGET_DIR=target/plant cargo test --profile
++//!   gate --test idle_buff_hit_tick
++#![allow(unexpected_cfgs)]
++mod common;
++
++use royalesim::card::CardDb;
++use royalesim::fixed::{Vec2, SUBTILE_PER_MILLITILE as K};
++use royalesim::state::{BattleConfig, BattleState, Calib, CardTable, IdleBuffHitTick};
++use royalesim::Team;
++
++fn n(x: i32, y: i32) -> Vec2 {
++    Vec2::new(x * K, y * K)
++}
++
++/// (the blue Evo Knight's first hp loss, the red Knight's first hp loss, whether they were on one tick). Blue's princess
++/// towers down (its king's reach stops short of y 12000, as tests/evo_mega_knight.rs's scene): no tower in the trade.
++fn first_trade(arm: IdleBuffHitTick) -> (i32, i32, bool) {
++    let mut cfg = BattleConfig::with_cards(CardDb::load_table(CardTable::Client160402017).expect("the 160402017 table"));
++    cfg.calib.card_table = CardTable::Client160402017;
++    cfg.calib.idle_buff_hit_tick = arm;
++    cfg.decks = [vec!["Knight".into(), "Archer".into()], vec!["Knight".into()]];
++    cfg.forms = [vec![1, 0], Vec::new()];
++    cfg.card_level = [11, 11];
++    cfg.tower_level = [11, 11];
++    let mut s = BattleState::new(7, cfg);
++    common::past_deploy_lockout(&mut s);
++    let towers: Vec<_> = s.entities().filter(|e| e.team == Team::Blue && e.kind == royalesim::entity::EntityKind::PrincessTower).map(|e| e.id).collect();
++    for t in towers {
++        assert!(s.debug_set_hp(t, 0));
++    }
++    s.tick();
++    s.tick();
++    let (b_at, r_at, away) = (n(9000, 12500), n(9000, 13900), n(9000, 22500));
++    s.spawn_unit(Team::Blue, "Knight_EV1", b_at, None).expect("the Evo Knight");
++    let red = s.scenario_spawn_now(Team::Red, "Knight", away, None).expect("a red Knight");
++    s.tick();
++    let blue = common::find_live(&s, Team::Blue, "Knight_EV1")[0].id;
++    let (mut lb, mut lr) = (None, None);
++    for k in 0..200u32 {
++        let out = s.entity(blue).expect("the Evo Knight").deploying;
++        assert!(s.debug_set_pos(blue, b_at) && s.debug_set_pos(red, if out { away } else { r_at }));
++        let (tb, tr) = (s.entity(blue).unwrap().max_hp, s.entity(red).unwrap().max_hp);
++        assert!(s.debug_set_hp(blue, tb) && s.debug_set_hp(red, tr));
++        s.tick();
++        let (hb, hr) = (s.entity(blue).expect("the Evo Knight").hp, s.entity(red).expect("the red Knight").hp);
++        if lb.is_none() && hb < tb {
++            lb = Some((k, tb - hb));
++        }
++        if lr.is_none() && hr < tr {
++            lr = Some((k, tr - hr));
++        }
++        if let (Some((kb, db)), Some((kr, dr))) = (lb, lr) {
++            return (db, dr, kb == kr);
++        }
++    }
++    panic!("{arm:?}: the scene drifted: no trade of hits");
++}
++
++/// Plant: idle_buff_reduces_own_hit_tick.
++#[test]
++fn a_hit_landing_with_the_evo_knights_own_is_taken_whole() {
++    let (blue, red, together) = first_trade(IdleBuffHitTick::Client16402OffOnHitTick);
++    assert!(together, "the scene drifted: the two first hits were not on one tick ({blue}, {red})");
++    assert_eq!(blue, red, "client16402_off_on_hit_tick: the Evo Knight took {blue} on its own hit tick, the red Knight {red}");
++    // NOT VACUOUS: the engine's arm reduces it (60 %).
++    let (old, red_old, _) = first_trade(IdleBuffHitTick::StartOfTick);
++    assert_eq!(red_old, red, "the red Knight's hit changed with the arm");
++    assert!(old < blue && old == (red * 40) / 100, "start_of_tick: the Evo Knight took {old}, not 40 % of {red}");
++}
++
++#[test]
++fn the_shipped_arm_is_off_on_the_hit_tick() {
++    assert_eq!(Calib::shipped().idle_buff_hit_tick, IdleBuffHitTick::Client16402OffOnHitTick);
++}
+diff --git a/data/calibration.json b/data/calibration.json
+index 7621008..9ab157c 100644
+--- a/data/calibration.json
++++ b/data/calibration.json
+@@ -5066,6 +5066,19 @@
+       "promotion_rules": "A capture separating the return trigger: an Evo Knight standing next to an enemy it does not target.",
+       "engine": "state.rs idle_buff_pass, selected by Calib::idle_buff_retarget; plant idle_buff_returns_at_retarget."
+     },
++    "IDLE_BUFF_HIT_TICK": {
++      "value": "client16402_off_on_hit_tick",
++      "candidates": [
++        "start_of_tick",
++        "client16402_off_on_hit_tick"
++      ],
++      "status": "measured",
++      "confidence": "MEDIUM for the Evo Knight's own reduction (Knight_Fortify_EV1) on client 16.402: 7 of 7 mirror duels whose attacker's hit is on the Knight's hit tick by its attack clock; the order of a spell's hit against the unit's own in the same tick is not separated.",
++      "provenance": "MEASURED by ClashBot parity (diag_night/r6c ekhit.py, 2026-10-18) on the 359 captured client 16.402 frame logs: Evo Knight engagements with the reduction row on before the windup and one enemy holding the Knight: in the 7 whose enemy's phase-3 attack progress equals the Knight's on every common tick of [hit - 8, hit + 2] (both hits on one tick: Knight x5, Goblin Machine x2) the drop on that tick is the enemy's whole hit (293, 323, 323, 323, 293, 338, 338; its later hits the same), where start_of_tick takes 40 % (117 / 129 / 135). liveplay 20261017_050051 t3053: two Evo Knights, reduced until the frame before, take 293 and 323 off each other on their common hit tick. 20261017_112814 t2042 and 20261017_111735 t3839: an Evo Mega Knight's 429 lands whole on our Evo Knight's hit tick (the engine 171).",
++      "meaning": "start_of_tick: the engine's; the own idle buff is read at the tick's start state, so the hits of the unit's own hit tick are reduced. client16402_off_on_hit_tick: the hits landing in the Resolve of the tick the unit's own hit lands (its attack phase Cooldown) are taken whole.",
++      "promotion_rules": "The test file (crates/royalesim/tests/idle_buff_hit_tick.rs) passes.",
++      "engine": "combat.rs damage_reduction_of, selected by Calib::idle_buff_hit_tick; plant idle_buff_reduces_own_hit_tick; tests/idle_buff_hit_tick.rs."
++    },
+     "IDLE_BUFF_DEPLOY": {
+       "value": "client16402_on_while_deploying",
+       "candidates": [
+diff --git a/docs/calibration.md b/docs/calibration.md
+index a60dfd9..1a930c3 100644
+--- a/docs/calibration.md
++++ b/docs/calibration.md
+@@ -70,7 +70,7 @@ equally well checked.
+ 
+ A re-read on 2026-09-22 went through 24 entries against the corpus, of the 148 the ledger held
+ that day. The ledger has grown since. Counted against it today, the re-read
+-went through 24 of the 593 entries. It moved no status and no value. What it turned up was in
++went through 24 of the 594 entries. It moved no status and no value. What it turned up was in
+ the evidence the statuses rest on: 42 places where a cited number, recording name or piece of
+ arithmetic does not hold. Take that as a reason to re-derive, not as 42 established defects.
+ Only a handful of the 42 have since been recomputed by hand, and one of those did not survive
+@@ -83,21 +83,21 @@ pinned by 34 members over 17 clean groups, the two seats' back-edge bounds are a
+ rather than half a row, side 1's river bound is one native unit looser than the rotation rather
+ than tighter, and side 0's range is pinned by nothing at all, which the entry now says.
+ 
+-569 entries have not been re-read. So, concretely (every count on this page comes from
++570 entries have not been re-read. So, concretely (every count on this page comes from
+ `python tools/ledger_census.py`, and `tests/test_ledger_census.py` fails when the page and the
+ ledger disagree, because these figures went stale twice in one afternoon before that gate existed):
+ 
+ - **The status on a key is worth trusting.** No status moved in the re-read.
+ - **The shape of an entry is worth trusting where a judgement was made, but it is not
+-  universal, so check rather than assume.** All 593 carry a status. That 593 counts TOP-LEVEL
++  universal, so check rather than assume.** All 594 carry a status. That 594 counts TOP-LEVEL
+   entries; one further entry, `pathfinding.PATHFINDING_COSTS.application`, is nested inside
+-  another and carries its own `measured` status, so counting every status in the file gives 594
+-  and 482 measured. The tools agree on 593 by convention, and the convention undercounts by one. 534 name the rivals the
+-  value was chosen against and 490 state what would move it, and 469 do both. The gap is mostly
++  another and carries its own `measured` status, so counting every status in the file gives 595
++  and 483 measured. The tools agree on 594 by convention, and the convention undercounts by one. 535 name the rivals the
++  value was chosen against and 491 state what would move it, and 470 do both. The gap is mostly
+   the 30 `datamined` keys, where the number was read out of a shipped table and no choice was
+   made, so a candidate list would be a category error; those carry a vintage and an engine
+   contract instead, which is the right shape for them. But the gap is not only those. 26 of
+-  the 481 `measured` entries name no rival at all, and 13 of those state no promotion criterion
++  the 482 `measured` entries name no rival at all, and 13 of those state no promotion criterion
+   either. This file's rule is that evidence is discrimination and never origin. A measured key
+   with no candidate list has therefore recorded nothing that it was discriminated against. Some
+   are harmless (`time.TICK_MS` has no plausible rival). `pathfinding.PATH_GOAL_RULE` and
+@@ -152,7 +152,7 @@ Everything below is at `guess`, `hypothesis`, `community` or `datamined`-but-unv
+ engine runs on a placeholder for these, so the behaviour it produces is not evidence about the
+ real game. Each row names what a recording would have to show. The ledger is the authority; this
+ table is a reading guide over it, and a key's own `status` and `promotion_rules` win where the two
+-disagree. Of the 593 top-level keys with a status, 481 are `measured`; one more entry, nested inside another, is measured too (594 in all).
++disagree. Of the 594 top-level keys with a status, 482 are `measured`; one more entry, nested inside another, is measured too (595 in all).
+ 
+ | Key | Value today | Status | Settled by |
+ |---|---|---|---|
+-- 
+2.43.0
+

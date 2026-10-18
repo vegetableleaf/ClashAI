@@ -1,0 +1,6 @@
+card | n base -> arm | raw aK base -> arm
+own Knight evo | 214 -> 214 | 0.8943 -> 0.8960
+OVERALL | 8858 -> 8858 | 0.9250 -> 0.9251
+moved fights (a0 aK ceil):
+  20261018_045719@4164 own Knight evo: 0 0.625 1.0 -> 1 1.000 1.0
+aK up 1 / down 0

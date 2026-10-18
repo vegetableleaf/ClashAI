@@ -1,0 +1,23 @@
+card | n base -> arm | raw aK base -> arm
+own Skeletons | 1365 -> 1365 | 0.8640 -> 0.8647
+own Knight | 1071 -> 1071 | 0.9321 -> 0.9335
+opp HogRider | 269 -> 269 | 0.8964 -> 0.9001
+opp Knight hero | 220 -> 220 | 0.9653 -> 0.9699
+opp GoblinBarrel | 217 -> 217 | 0.9862 -> 0.9908
+opp Firecracker | 184 -> 184 | 0.9368 -> 0.9423
+opp Princess | 163 -> 164 | 0.9793 -> 0.9794
+opp SkeletonArmy | 133 -> 133 | 0.8167 -> 0.8242
+opp GoblinGang | 100 -> 100 | 0.8037 -> 0.8137
+OVERALL | 16506 -> 16507 | 0.9188 -> 0.9193
+moved fights (a0 aK ceil):
+  20261017_023527@609 opp Firecracker: 0 0.000 1.0 -> 1 1.000 1.0
+  20261017_051913@3724 opp SkeletonArmy: 0 0.000 1.0 -> 1 1.000 1.0
+  20261017_073400@3329 opp Princess: not strict -> 1 1.000 1.0
+  20261017_073400@5648 opp Knight hero: 0 0.000 1.0 -> 1 1.000 1.0
+  20261017_092505@3183 opp GoblinBarrel: 0 0.000 1.0 -> 1 1.000 1.0
+  20261017_210407@3264 opp HogRider: 0 0.000 1.0 -> 1 1.000 1.0
+  20261018_025652@4169 own Skeletons: 0 0.000 1.0 -> 1 1.000 1.0
+  20261018_025652@4990 own Knight: 0 0.000 1.0 -> 0 0.500 0.429
+  20261018_025652@5817 opp GoblinGang: 0 0.000 1.0 -> 1 1.000 1.0
+  20261018_025652@5817 own Knight: 0 0.000 1.0 -> 1 1.000 1.0
+aK up 9 / down 0

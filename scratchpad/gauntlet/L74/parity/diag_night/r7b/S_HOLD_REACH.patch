@@ -1,0 +1,250 @@
+From 547c84b64d84a4fa8982a0d14657a85956152eb6 Mon Sep 17 00:00:00 2001
+From: r7b <r7b@parity>
+Date: Sun, 18 Oct 2026 11:43:44 +0000
+Subject: [PATCH] targeting.HIDDEN_HOLD_REACH = client16402_any_reach: a
+ projectile attacker holding a Tesla that goes under keeps it past its keep
+ reach
+
+Mechanic: target.rs decide, under hide.HELD_THROUGH_HIDE, kept a building gone under ground for a melee walker always but for
+a projectile attacker only within Range + LOGIC_RANGE_EXTENSION_TO_KEEP_TARGET; past that it rescanned at once (a scan never
+takes a building under). New arm client16402_any_reach (shipped): every holder keeps it, the reach unread;
+HELD_THROUGH_HIDE's own clock (client16402_kept_hide_time: its HideTimeMs under) still ends the hold. Old arm
+projectile_keep_reach; CLIENT15535_ARMS keeps it; format-3 snapshots keep it. Plant hold_reach_dropped. Fixture:
+tests/hidden_hold_reach.rs (tests/hide.rs's Giant scene with a Royal Giant pinned 7000 off, past its 5000 Range).
+
+Parity-Evidence: ClashBot diag_night/r7b holdcen.py, 266 upgraded captured 16.402 logs with phase-3 attack rows: projectile
+attackers naming a Tesla on its last frame up and standing past Range + 500 of its edge let it go 12-20 ticks after its
+first frame under (after its attack 5 of 5 drops, after its deploy 10 of 11, 1 at 4-11), never within 3 ticks; in reach 37
+at 12-20, 2 within 3. liveplay 20261017_235525 t2664: a Royal Giant 5.7 tiles off our just-deployed Tesla holds it 17 ticks
+under, then takes the princess tower; the engine took the tower at once (K=0 death tick 2828 -> 2816 = live).
+---
+ crates/royalesim/src/client_arms.rs         |  3 +
+ crates/royalesim/src/state.rs               | 30 ++++++++++
+ crates/royalesim/src/target.rs              | 14 ++++-
+ crates/royalesim/tests/hidden_hold_reach.rs | 66 +++++++++++++++++++++
+ data/calibration.json                       | 14 +++++
+ 5 files changed, 126 insertions(+), 1 deletion(-)
+ create mode 100644 crates/royalesim/tests/hidden_hold_reach.rs
+
+diff --git a/crates/royalesim/src/client_arms.rs b/crates/royalesim/src/client_arms.rs
+index f0fd46e..3ceb2a7 100644
+--- a/crates/royalesim/src/client_arms.rs
++++ b/crates/royalesim/src/client_arms.rs
+@@ -378,6 +378,8 @@ pub const CARD_VALUES_KEY: &str = "cards.CLIENT16402_VALUES";
+ ///   combat.DASH_STAND_SLOW = unslowed: a slowed dasher stands its unslowed length (unread there).
+ ///   combat.EVO_RING_STOP = buff_only: an Evo Tesla ring stop is the buff alone (sp-form-Tesla-evo-s0 reads no target).
+ ///   combat.REFLECT_WHILE_HELD = answers: a held Electro Giant answers (unread there: its scenario holds no Giant).
++///   targeting.HIDDEN_HOLD_REACH = projectile_keep_reach: a projectile holder past its reach lets a Tesla under go (unread
++///   there: hide.HELD_THROUGH_HIDE = dropped).
+ ///   combat.UPPERCUT_COUNT = dash_blow_counts: the dash's blow counted (sp-form-MegaKnight-evo-s0 does not separate it).
+ pub const CLIENT15535_ARMS: &[(&str, &str)] = &[
+     ("movement.DYING_UNIT_VISIBILITY", "\"client_doomed_static\""),
+@@ -587,6 +589,7 @@ pub const CLIENT15535_ARMS: &[(&str, &str)] = &[
+     ("combat.DASH_STAND_SLOW", "\"unslowed\""),
+     ("combat.EVO_RING_STOP", "\"buff_only\""),
+     ("combat.REFLECT_WHILE_HELD", "\"answers\""),
++    ("targeting.HIDDEN_HOLD_REACH", "\"projectile_keep_reach\""),
+     ("combat.UPPERCUT_COUNT", "\"dash_blow_counts\""),
+ ];
+ 
+diff --git a/crates/royalesim/src/state.rs b/crates/royalesim/src/state.rs
+index 1f2f3c9..f99c04e 100644
+--- a/crates/royalesim/src/state.rs
++++ b/crates/royalesim/src/state.rs
+@@ -765,6 +765,11 @@ pub struct Calib {
+     /// after SNAPSHOT_FORMAT 20; the default is the old arm, `Answers`, what a battle saved before it ran.
+     #[serde(default = "reflect_while_held_default")]
+     pub reflect_while_held: ReflectWhileHeld,
++    /// targeting.HIDDEN_HOLD_REACH (target.rs `decide`: whether a projectile attacker holding a building that went under
++    /// keeps it past its keep reach). Added after SNAPSHOT_FORMAT 20; the default is the old arm, `ProjectileKeepReach`,
++    /// what a battle saved before it ran.
++    #[serde(default = "hidden_hold_reach_default")]
++    pub hidden_hold_reach: HiddenHoldReach,
+     /// spawner.ABILITY_BOMB_FUSE (the fuse of the bomb a lane switch drops, the Mighty Miner's, `fire_ability`). Added after SNAPSHOT_FORMAT 20; the default is the old arm,
+     /// `Client15535TickAfterFuse`, what a battle saved before it ran.
+     #[serde(default = "ability_bomb_fuse_default")]
+@@ -2775,6 +2780,10 @@ fn reflect_while_held_default() -> ReflectWhileHeld {
+     ReflectWhileHeld::Answers
+ }
+ 
++fn hidden_hold_reach_default() -> HiddenHoldReach {
++    HiddenHoldReach::ProjectileKeepReach
++}
++
+ fn ability_bomb_fuse_default() -> AbilityBombFuse {
+     AbilityBombFuse::Client15535TickAfterFuse
+ }
+@@ -9922,6 +9931,24 @@ calib_enum!(
+         Client16402HeldSilent = "client16402_held_silent",
+     }
+ );
++calib_enum!(
++    /// targeting.HIDDEN_HOLD_REACH -- see target.rs `decide` (hide.HELD_THROUGH_HIDE): whether a PROJECTILE attacker that
++    /// holds a building gone under ground keeps it while it stands past its keep reach (Range +
++    /// LOGIC_RANGE_EXTENSION_TO_KEEP_TARGET), as a melee walker does.
++    HiddenHoldReach {
++        /// The engine before this key: a projectile attacker past its keep reach lets the building go on the tick it goes
++        /// under and rescans (a scan never takes a building under ground).
++        ProjectileKeepReach = "projectile_keep_reach",
++        /// Every holder keeps it, its reach not read (hide.HELD_THROUGH_HIDE's own clock still lets it go once its time
++        /// under reaches its HideTimeMs). Measured on client 16.402 (ClashBot parity diag_night/r7b holdcen.py, the 266
++        /// upgraded captured frame logs with phase-3 attack rows): of the projectile attackers naming a Tesla on its last
++        /// frame up and standing past Range + 500 of its edge, after its attack 5 let it go 12-20 ticks after its first
++        /// frame under, 0 within 3 ticks (3 died first, 1 saw it rise), after its deploy 10 at 12-20 ticks, 1 at 4-11, 0
++        /// within 3 (2 rose); in reach 37 at 12-20, 2 within 3. liveplay 20261017_235525 t2664: a Royal Giant 5.7 tiles
++        /// off our just-deployed Tesla holds it 17 ticks under, then takes the princess tower (the engine took it at once).
++        Client16402AnyReach = "client16402_any_reach",
++    }
++);
+ calib_enum!(
+     /// spawner.ABILITY_BOMB_FUSE -- see `fire_ability` (`AbilityEffect::LaneSwitch`): when the bomb a champion's button
+     /// drops (the Mighty Miner's, card.rs `CardDef::dropped_by_ability`) strikes, from its drop.
+@@ -11149,6 +11176,7 @@ impl Calib {
+             reflect_ranged: pick(&v, &["combat", "REFLECT_RANGED", "value"], ReflectRanged::from_calibration_name)?,
+             evo_ring_stop: pick(&v, &["combat", "EVO_RING_STOP", "value"], EvoRingStop::from_calibration_name)?,
+             reflect_while_held: pick(&v, &["combat", "REFLECT_WHILE_HELD", "value"], ReflectWhileHeld::from_calibration_name)?,
++            hidden_hold_reach: pick(&v, &["targeting", "HIDDEN_HOLD_REACH", "value"], HiddenHoldReach::from_calibration_name)?,
+             ability_bomb_fuse: pick(&v, &["spawner", "ABILITY_BOMB_FUSE", "value"], AbilityBombFuse::from_calibration_name)?,
+             deflect_buff_landing: pick(&v, &["status", "DEFLECT_BUFF_LANDING", "value"], DeflectBuffLanding::from_calibration_name)?,
+             warp_law: pick(&v, &["combat", "WARP_LAW", "value"], WarpLaw::from_calibration_name)?,
+@@ -39935,6 +39963,8 @@ fn migrate_v3(v: &mut Value, cards: &CardDb) -> Result<Vec<u16>, String> {
+     sh.insert("evo_ring_stop".into(), serde_json::to_value(EvoRingStop::BuffOnly).map_err(|e| e.to_string())?);
+     // combat.REFLECT_WHILE_HELD: a format-3 battle's held reflecting units answered every hit (the old arm).
+     sh.insert("reflect_while_held".into(), serde_json::to_value(ReflectWhileHeld::Answers).map_err(|e| e.to_string())?);
++    // targeting.HIDDEN_HOLD_REACH: a format-3 battle's projectile holders let a building under go past their keep reach (the old arm).
++    sh.insert("hidden_hold_reach".into(), serde_json::to_value(HiddenHoldReach::ProjectileKeepReach).map_err(|e| e.to_string())?);
+     // spawner.ABILITY_BOMB_FUSE: a format-3 battle's dropped bomb struck the tick after its fuse (the same rule).
+     sh.insert("ability_bomb_fuse".into(), serde_json::to_value(AbilityBombFuse::Client15535TickAfterFuse).map_err(|e| e.to_string())?);
+     // status.DEFLECT_BUFF_LANDING: a format-3 battle's Deflect buff landed at the trigger for its BuffTime (the same rule).
+diff --git a/crates/royalesim/src/target.rs b/crates/royalesim/src/target.rs
+index 6854905..1870caa 100644
+--- a/crates/royalesim/src/target.rs
++++ b/crates/royalesim/src/target.rs
+@@ -431,6 +431,17 @@ pub fn acts_on_last_deploy_tick(calib: &Calib, e: &Entities, i: usize, hides: bo
+ 
+ /// hide.HELD_THROUGH_HIDE = client16402_kept in force.
+ #[inline]
++/// targeting.HIDDEN_HOLD_REACH = client16402_any_reach: does a projectile attacker keep a held building that went under
++/// whatever its reach (read by `decide` under hide.HELD_THROUGH_HIDE)?
++pub fn hold_any_reach(calib: &Calib) -> bool {
++    // PLANT (regression) hold_reach_dropped: the new arm still lets it go past the keep reach.
++    #[cfg(not(clash_plant = "hold_reach_dropped"))]
++    let on = calib.hidden_hold_reach == crate::state::HiddenHoldReach::Client16402AnyReach;
++    #[cfg(clash_plant = "hold_reach_dropped")]
++    let on = false;
++    on
++}
++
+ pub fn held_through_hide(calib: &Calib) -> bool {
+     // PLANT (regression) held_tesla_dropped: the new arm still drops a held Tesla when it goes under.
+     #[cfg(not(clash_plant = "held_tesla_dropped"))]
+@@ -1282,7 +1293,8 @@ pub fn decide(ctx: &TargetCtx, a: usize, scratch: &mut Vec<u32>) -> TargetDecisi
+                 let expired = ctx.calib.hide_held_through == crate::state::HeldThroughHide::Client16402KeptHideTime
+                     && e.hide[ti] == HideState::Hidden
+                     && ctx.cards.get(e.card[ti]).hide.is_some_and(|h| e.hide_ms[ti] >= h.hide_time_ms);
+-                if !expired && (card.projectile.is_none() || in_attack_range(ctx.calib, e.pos[a], keep, keep_own_radius(ctx, a, card), e.pos[ti], e.radius[ti])) {
++                // targeting.HIDDEN_HOLD_REACH = client16402_any_reach: a projectile attacker keeps it past its keep reach too.
++                if !expired && (card.projectile.is_none() || hold_any_reach(ctx.calib) || in_attack_range(ctx.calib, e.pos[a], keep, keep_own_radius(ctx, a, card), e.pos[ti], e.radius[ti])) {
+                     return TargetDecision { target: Some(t), cancel_attack: false, resumed: false, chase_dropped: None };
+                 }
+                 return TargetDecision { target: scan(ctx, a, scratch), cancel_attack: cancel, resumed: false, chase_dropped: None };
+diff --git a/crates/royalesim/tests/hidden_hold_reach.rs b/crates/royalesim/tests/hidden_hold_reach.rs
+new file mode 100644
+index 0000000..c5286e8
+--- /dev/null
++++ b/crates/royalesim/tests/hidden_hold_reach.rs
+@@ -0,0 +1,66 @@
++//! targeting.HIDDEN_HOLD_REACH: a projectile attacker holding a Tesla that goes under keeps it past its keep reach
++//! (target.rs `hold_any_reach`, read by `decide` under hide.HELD_THROUGH_HIDE).
++//!
++//! Measured on client 16.402 (ClashBot parity diag_night/r7b holdcen.py, 266 captured frame logs): projectile holders out of
++//! reach let a Tesla under go 12-20 ticks after its first frame under (15 of 16), never within 3 ticks.
++//!
++//! The scene (tests/hide.rs's Giant scene with a Royal Giant): a Blue Tesla up on a Red Knight beside it, a Red Royal Giant
++//! held 7000 below it (it takes the Tesla, its nearest building, past its 5000 Range and out of the Tesla's wake reach), the
++//! Knight killed; per tick after the kill, (the Tesla under, the Royal Giant's target is the Tesla).
++//!
++//! PLANTS (`RUSTFLAGS='--cfg clash_plant="NAME"' CARGO_TARGET_DIR=target/plant cargo test --profile gate --test
++//! hidden_hold_reach`): hold_reach_dropped -> `under_any_reach_a_royal_giant_past_its_reach_keeps_a_tesla_for_its_hide_time` red.
++#![allow(unexpected_cfgs)]
++mod common;
++
++use common::*;
++use royalesim::entity::HideState;
++use royalesim::fixed::{Vec2, SUBTILE};
++use royalesim::state::{BattleState, HeldThroughHide, HiddenHoldReach};
++use royalesim::Team;
++
++fn royal_giant_on_a_hiding_tesla(arm: HiddenHoldReach, n: usize) -> Vec<(bool, bool)> {
++    let mut cfg = config();
++    cfg.calib.hide_held_through = HeldThroughHide::Client16402KeptHideTime;
++    cfg.calib.hidden_hold_reach = arm;
++    let mut s = BattleState::new(7, cfg);
++    let at = Vec2::new(9 * SUBTILE, 12 * SUBTILE);
++    let tesla = s.scenario_spawn_now(Team::Blue, "Tesla", at, None).expect("the Tesla");
++    let knight = s.scenario_spawn_now(Team::Red, "Knight", Vec2::new(9 * SUBTILE, 14 * SUBTILE), None).expect("the Knight");
++    let rg_at = Vec2::new(9 * SUBTILE, 19 * SUBTILE);
++    let rg = s.scenario_spawn_now(Team::Red, "RoyalGiant", rg_at, None).expect("the Royal Giant");
++    for _ in 0..40 {
++        assert!(s.debug_set_pos(rg, rg_at));
++        s.tick();
++    }
++    assert_eq!(s.entity(tesla).expect("the Tesla").hide_state, HideState::Up, "precondition: the Tesla is up on the Knight");
++    assert_eq!(s.entity(rg).expect("the Royal Giant").target, Some(tesla), "precondition: the Royal Giant holds the Tesla");
++    assert!(s.debug_set_hp(knight, 0));
++    (0..n)
++        .map(|_| {
++            assert!(s.debug_set_pos(rg, rg_at));
++            s.tick();
++            (s.entity(tesla).expect("the Tesla").hide_state == HideState::Hidden, s.entity(rg).expect("the Royal Giant").target == Some(tesla))
++        })
++        .collect()
++}
++
++/// client16402_any_reach: the Royal Giant past its reach keeps the Tesla for its HideTimeMs under ground (the tick it went
++/// under and 15 more, as the Giant does under hide.HELD_THROUGH_HIDE = client16402_kept_hide_time), then lets it go.
++/// Plant: hold_reach_dropped.
++#[test]
++fn under_any_reach_a_royal_giant_past_its_reach_keeps_a_tesla_for_its_hide_time() {
++    let r = royal_giant_on_a_hiding_tesla(HiddenHoldReach::Client16402AnyReach, 60);
++    let first = r.iter().position(|x| x.0).expect("precondition: the Tesla went under");
++    let held = r[first..].iter().take_while(|x| x.0 && x.1).count();
++    assert_eq!(held, 16, "client16402_any_reach: held {held} ticks under, want 16: {r:?}");
++    assert!(r[first + held].0 && !r[first + held].1, "the Tesla still under and let go on its 17th tick: {r:?}");
++}
++
++/// projectile_keep_reach (the vacuity check): past its reach the Royal Giant lets the Tesla go on its first tick under.
++#[test]
++fn under_projectile_keep_reach_a_royal_giant_past_its_reach_lets_a_tesla_go_at_once() {
++    let r = royal_giant_on_a_hiding_tesla(HiddenHoldReach::ProjectileKeepReach, 60);
++    let first = r.iter().position(|x| x.0).expect("precondition: the Tesla went under");
++    assert!(!r[first].1, "projectile_keep_reach: the Royal Giant kept the Tesla under ground: {r:?}");
++}
+diff --git a/data/calibration.json b/data/calibration.json
+index 7077093..56d99f7 100644
+--- a/data/calibration.json
++++ b/data/calibration.json
+@@ -611,6 +611,20 @@
+       "promotion_rules": "replay_parity runs a client 15.535.29 capture at client15535_walking_reach (examples/replay_parity/harness.rs CLIENT15535_ARMS).",
+       "engine": "target.rs keep_own_radius, read by decide's keep tests, selected by Calib::walking_keep_reach; tests/walking_keep_reach.rs."
+     },
++    "HIDDEN_HOLD_REACH": {
++      "value": "client16402_any_reach",
++      "candidates": [
++        "projectile_keep_reach",
++        "client16402_any_reach"
++      ],
++      "status": "measured",
++      "confidence": "HIGH that a projectile attacker past its keep reach keeps a Tesla gone under for the hide's own clock (hide.HELD_THROUGH_HIDE = client16402_kept_hide_time), on client 16.402: after the Tesla's attack 5 of 5 such holders that let it go did so 12-20 ticks after its first frame under, after its deploy 10 of 11 (1 at 4-11), none within 3 ticks; the in-reach control 37 at 12-20, 2 within 3.",
++      "provenance": "MEASURED by ClashBot parity (diag_night/r7b holdcen.py, 2026-10-18) on the 266 upgraded captured client 16.402 frame logs with phase-3 attack rows: every enemy whose phase-3 target is a Tesla on the last frame before its first frame under (reader state 0), split by a projectile on its card and by its edge gap at that frame (past Range + 500 = out of reach), and the first frame it names another target. liveplay 20261017_235525 t2664: a Royal Giant (Range 5000) 5.7 tiles off our just-deployed Tesla holds it 17 ticks under; the engine let it go on t2664 and walked for the princess tower.",
++      "meaning": "projectile_keep_reach: the engine's; under hide.HELD_THROUGH_HIDE a melee walker keeps a building under ground, a projectile attacker only within Range + LOGIC_RANGE_EXTENSION_TO_KEEP_TARGET. client16402_any_reach: every holder keeps it, the reach unread; hide.HELD_THROUGH_HIDE's clock ends the hold.",
++      "open": "Whether the out-of-reach holder walks on toward the building under ground or stands (the census reads targets only).",
++      "promotion_rules": "Shipped on the hold census; client 15.535.29 keeps projectile_keep_reach (CLIENT15535_ARMS).",
++      "engine": "target.rs hold_any_reach, read by decide's hide.HELD_THROUGH_HIDE keep, selected by Calib::hidden_hold_reach; plant hold_reach_dropped; tests/hidden_hold_reach.rs."
++    },
+     "CHASE_RESCAN_PASS_OVER": {
+       "value": "client16402_receding_or_behind_every_rescan",
+       "candidates": ["drop_tick", "client15535_receding_lane_walk", "client15535_receding_or_behind", "client16402_receding_or_behind_every_rescan"],
+-- 
+2.43.0
+

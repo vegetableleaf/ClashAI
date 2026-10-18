@@ -1,3 +1,28 @@
+## 2026-10-18 14:35 EDT -- fork round 7 LANDED (PULSE + HITTICK + HOLD-REACH) and FIN13 scored: upgraded 0.926 [0.920, 0.932] on 403 matches; tier B 0.217 -> 0.278 (Tornado MEETS)
+
+- Fork clashbot36 (worktree C:/Users/benpe/rsfork36):
+  - commits: a697d1f9 + e0d7a709 S-PULSE-TWICE + 9ac10979 S-EK-HITTICK + 427597d3 S-HOLD-REACH
+  - the am was clean (3-way), from diag_night/r7c/fork/stack/0001-0002 + r7b/S_HOLD_REACH.patch
+  - cargo test --profile gate: 1960 / 0 / 3 ignored
+  - bundle: parity1016/clashbot36_fin14.bundle; wheel: P3 /workspace/rsfork_fin14c (tree 7ff40f45)
+- Each law re-measured alone vs FIN12; the closer's numbers are exactly the workers':
+  - S-PULSE-TWICE: +1 / -0 upgraded and full
+  - S-EK-HITTICK: +8 / -4 upgraded (0.9255), +16 / -8 full; all 4 upgraded downs are ceiling 1.0 with an earlier divergence on base
+  - S-HOLD-REACH: +5 / -2 upgraded (0.9254), +8 / -3 full; the downs are noise class
+  - Not landed: S-EVOWITCH-CLOCK (0 / 0, no cargo test; land after more data).
+- FIN13 (P3 /workspace/results/FIN13, FIN13_stamped):
+  - inputs: HEAD harness (cb13 = e15b284 code) + rsfork_fin14c + exports attacks13s / buffs13
+    (diag_night/r7_closer/export13.py: export_incr + _shields; 139 new captures) + caplogs13 (638 logs); 0 crashes
+  - upgraded: 0.926 [0.920, 0.932] on 13049 fights from 403 matches (ceiling 0.992, normalised 0.933)
+  - full: 0.922 [0.917, 0.927] on 630 matches
+  - same 499 logs vs FIN12: upgraded 0.9250 -> 0.9302 (+75 / -21), full 0.9188 -> 0.9227 (+141 / -56). This includes UD v2:
+    Tesla 0.914 -> 0.936, Tesla evo 0.903 -> 0.935, Knight evo 0.894 -> 0.903, Bats 0.768 -> 0.812.
+  - The 139 new matches score below the old ones (whole cohort 0.926 vs 0.930 on the old matches).
+  - coverage.py: tier B 0.217 -> 0.278, tier C 0.200 -> 0.261.
+  - own MEET: Log 0.971, X-Bow 0.968, Tornado 0.976 [0.953, 0.995]
+  - not yet: IW hero 0.940, Rocket 0.940, Knight 0.939, Tesla 0.930, Knight evo 0.911, Tesla evo 0.911, Skeletons 0.874
+- Full round-7 ledger (all 13 patches, verdicts, break explanations, bucket leads): diag_night/R7_SUMMARY.md. Comparison outputs:
+  diag_night/r7_closer/cmp/. The base for round 8 is FIN13.
 ## 2026-10-18 14:21 EDT - Codex worker ticket: verified copies and paired candidate report
 
 - Full report: [L74/codex1018/REPORT.md](scratchpad/gauntlet/L74/codex1018/REPORT.md), with candidate/behavior CIs,

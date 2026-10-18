@@ -20,3 +20,14 @@
   (Witch / Skeleton Army position + target splits) in both runs -> cascades; the 5th (010615@2921) is noise (base ceiling 0.571). -> LAND.
   Fork candidate (a697d1f9 + PULSE + HITTICK + HOLD-REACH): wheel /workspace/rsfork_fin14c (aa6b0fa1), cargo test --profile gate 1960/0/3 ignored.
   Waiting for my S-HOLD-REACH run (results/v7c_hr, 40 workers, verifier's wheel rsfork_v7_r7b).
+- 2026-10-18 13:31:07 Harness landed + pushed (e15b284). S-HOLD-REACH verified (my run results/v7c_hr, verifier-built wheel rsfork_v7_r7b): upgraded +5/-2
+  (0.9254), full +8/-3 = worker's exactly; downs 185911@2980 (arm ceiling 0.571, downstream of a +197 Tesla hp split) and 044347@229 (base ceiling 0.429): noise.
+  Verifier's build: cargo gate 1954/0, plant red. -> LAND.
+  Fork landed in C:/Users/benpe/rsfork36 clashbot36: a697d1f9 + e0d7a709 PULSE + 9ac10979 HITTICK + 427597d3 HOLD-REACH (git am -3 clean; tree 7ff40f45 =
+  the tested candidate). Bundle parity1016/clashbot36_fin14.bundle (sha256 1d45844635ebde9e...). Wheel P3 /workspace/rsfork_fin14c; cargo gate 1960/0/3.
+  FIN13 export running on the laptop (r7_closer/export13.py -> parity1016/attacks13s.json, buffs13.json, new13.txt).
+- 2026-10-18 13:49:01 FIN13 launched on P3 (/workspace/in/fin13_pod.sh): code /workspace/cb13 (= HEAD e15b284 harness), SIM /workspace/rsfork_fin14c,
+  exports attacks13s / buffs13 (export13.py: 499 reused + 139 new captures, births 405 logs, shields 110), caplogs13 = 638 logs, 48 workers, K=8, window 240.
+  Results /workspace/results/FIN13 and FIN13_stamped. Census for coverage: P3 /workspace/w_r7close/census_all.json (copy of P1 /workspace/census).
+- 2026-10-18 14:35:38 FIN13 DONE (0 crashes): upgraded 0.926 [0.920, 0.932] on 403 matches; full 0.922; same-499-log vs FIN12 +75/-21 (0.9250->0.9302); tier B 0.217->0.278
+  (Tornado MEETS). Details R7_SUMMARY.md + HANDOFF. Closer finished.
