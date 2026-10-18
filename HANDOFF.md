@@ -1,3 +1,15 @@
+## 2026-10-18 01:36 EDT -- cue_ctl result: CXXXVIII + 65 upd (rule press) +2.60 [-0.73, +6.04] vs CXXXVIII (not a clear gain; not deployed); head effect -7.60
+
+- Same factorial eval, both runs (worker report; backups pod1017_cue_ab/, pod1017_cue_ctl/):
+  - cue_ab 559/960, cue_ctl 632/960, CXXXVIII 607/960
+  - cue_ctl - CXXXVIII +2.60 [-0.73, +6.04] -> fails "clear and significant" (CI low < 0)
+  - cue_ab - cue_ctl -7.60 [-11.25, -3.85] -> the head hurts, not the extra training
+  - Greedy head: 4.08 presses / match vs rule 1.87, median 2.5 s after landing vs 4.0; Tornado -0.24 / match. In training the
+    per-decision press rate FELL 0.23 -> 0.15 -> a training / eval decoding mismatch is a lead (overpress worker told).
+- Checkpoints: icebow/data/bench/rl_royale/rlarm_gae_cue_ctl/ (grafted d8218e10) and rlarm_gae_cue_ab/ (grafted c87de95c).
+  cue_ctl is a fresh-seed candidate on 23408: its fresh eval will show whether +2.60 holds; the bar needs CI low > 0.
+- Uncommitted on the pods only: a 3-line --record-plays measurement patch to search_s0.py (no behaviour change; 960 / 960
+  rows reproduce).
 ## 2026-10-18 01:20 EDT -- rlarm_gae_cue_ab (CXXXVIII + learned IW press) CLEARLY WORSE: -5.00 [-8.65, -1.35]; NOT deployed; over-pressing diagnosis started
 
 - Promotion eval, same pod and command, both models (pod1017_cue_ab/results/eval; compare.py helpers): cue_ab vs CXXXVIII
