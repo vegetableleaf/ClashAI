@@ -1,0 +1,32 @@
+C:/Users/benpe/AppData/Local/Temp/claude/C--Users-benpe-ClashBot/f4e7cd66-2122-4134-a1d2-d45291b5bc2a/scratchpad/s2/m_il_13k.jsonl: 752 non-Hog base rows + 208 candidate Hog rows (of 960)
+C:/Users/benpe/AppData/Local/Temp/claude/C--Users-benpe-ClashBot/f4e7cd66-2122-4134-a1d2-d45291b5bc2a/scratchpad/s2/m_il_12k.jsonl: 752 non-Hog base rows + 208 candidate Hog rows (of 960)
+== merge: E4 full-pool rows with s2_hog_il u0065 Hog rows | full gate: GATE FAIL  (SIM games: CXXXVIII 960, CXXIV 960)
+ band 13k (CXXXVIII): FAIL
+  CXXXVIII  Hog win                  live  28.6% [13.8%, 50.0%] n 21       SIM  57.2% [50.4%, 63.7%] n 208      z -2.51 FAIL
+  CXXXVIII  overtime win             live  42.9% [29.1%, 57.8%] n 42       SIM  60.0% [56.0%, 64.0%] n 573      z -2.18 FAIL
+  CXXXVIII  OT share                 live  53.8% [42.9%, 64.5%] n 78       SIM  59.7% [56.6%, 62.7%] n 960      z -1.01 pass
+  CXXXVIII  overall (post-strat.)    live  44.9% [34.3%, 55.9%] n 78       SIM  61.0% (raw  61.3% [58.1%, 64.3%] n 960)  z -2.75 FAIL
+  OMNIBUS sum z^2 9.3 on df 2 (chi2_0.95 5.99) FAIL
+ band 12k (CXXIV): FAIL
+  CXXIV     Hog win                  live  59.3% [46.0%, 71.3%] n 54       SIM  45.7% [39.0%, 52.5%] n 208      z +1.78 pass
+  CXXIV     overtime win             live  62.8% [54.4%, 70.4%] n 137      SIM  58.9% [55.0%, 62.7%] n 630      z +0.84 pass
+  CXXIV     OT share                 live  45.7% [40.1%, 51.3%] n 300      SIM  65.6% [62.6%, 68.6%] n 960      z -6.18 FAIL
+  CXXIV     overall (post-strat.)    live  51.3% [45.7%, 56.9%] n 300      SIM  56.5% (raw  56.5% [53.3%, 59.6%] n 960)  z -1.56 pass
+  OMNIBUS sum z^2 30.8 on df 13 (chi2_0.95 22.36) FAIL
+  pooled    non-Hog regulation win   live  41.7% [34.5%, 49.2%] n 168      SIM  58.6% (live-share weighted; CXXXVIII SIM 204/312, CXXIV SIM 146/255)  z +3.67 FAIL
+C:/Users/benpe/AppData/Local/Temp/claude/C--Users-benpe-ClashBot/f4e7cd66-2122-4134-a1d2-d45291b5bc2a/scratchpad/s2/m_e4_13k.jsonl: 752 non-Hog base rows + 208 candidate Hog rows (of 960)
+C:/Users/benpe/AppData/Local/Temp/claude/C--Users-benpe-ClashBot/f4e7cd66-2122-4134-a1d2-d45291b5bc2a/scratchpad/s2/m_e4_12k.jsonl: 752 non-Hog base rows + 208 candidate Hog rows (of 960)
+== merge: E4 full-pool rows with s2_hog_e4 u0065 Hog rows | full gate: GATE FAIL  (SIM games: CXXXVIII 960, CXXIV 960)
+ band 13k (CXXXVIII): FAIL
+  CXXXVIII  Hog win                  live  28.6% [13.8%, 50.0%] n 21       SIM  56.2% [49.5%, 62.8%] n 208      z -2.42 FAIL
+  CXXXVIII  overtime win             live  42.9% [29.1%, 57.8%] n 42       SIM  59.9% [55.9%, 63.8%] n 596      z -2.17 FAIL
+  CXXXVIII  OT share                 live  53.8% [42.9%, 64.5%] n 78       SIM  62.1% [59.0%, 65.1%] n 960      z -1.44 pass
+  CXXXVIII  overall (post-strat.)    live  44.9% [34.3%, 55.9%] n 78       SIM  60.7% (raw  61.0% [57.9%, 64.1%] n 960)  z -2.71 FAIL
+  OMNIBUS sum z^2 8.8 on df 2 (chi2_0.95 5.99) FAIL
+ band 12k (CXXIV): FAIL
+  CXXIV     Hog win                  live  59.3% [46.0%, 71.3%] n 54       SIM  51.0% [44.2%, 57.7%] n 208      z +1.09 pass
+  CXXIV     overtime win             live  62.8% [54.4%, 70.4%] n 137      SIM  58.7% [54.9%, 62.4%] n 649      z +0.88 pass
+  CXXIV     OT share                 live  45.7% [40.1%, 51.3%] n 300      SIM  67.6% [64.6%, 70.5%] n 960      z -6.85 FAIL
+  CXXIV     overall (post-strat.)    live  51.3% [45.7%, 56.9%] n 300      SIM  57.5% (raw  57.6% [54.5%, 60.7%] n 960)  z -1.84 pass
+  OMNIBUS sum z^2 28.9 on df 13 (chi2_0.95 22.36) FAIL
+  pooled    non-Hog regulation win   live  41.7% [34.5%, 49.2%] n 168      SIM  58.6% (live-share weighted; CXXXVIII SIM 204/312, CXXIV SIM 146/255)  z +3.67 FAIL

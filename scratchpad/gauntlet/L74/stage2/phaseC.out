@@ -1,0 +1,66 @@
+== s2_hog_il u0025: HOG GATE FAIL (SIM CXXXVIII 960, CXXIV 960)
+  13k CXXXVIII  Hog win        live  28.6% [13.8%, 50.0%] n 21       SIM  61.0% [57.9%, 64.1%] n 960      z -3.01 FAIL
+  13k CXXXVIII  Hog OT share   live  61.9% [40.9%, 79.2%] n 21       SIM  61.9% [58.8%, 64.9%] n 960      z +0.00 pass
+      diag 13k Hog reg win: live  62.5% [30.6%, 86.3%] n 8  SIM  50.8% [45.7%, 55.9%] n 366
+      diag 13k Hog OT  win: live   7.7% [ 1.4%, 33.3%] n 13  SIM  67.3% [63.5%, 71.0%] n 594
+      diag 13k Hog regulation-loss rate: live  14.3% [ 5.0%, 34.6%] n 21  SIM  18.8% [16.4%, 21.3%] n 960
+  12k CXXIV     Hog win        live  59.3% [46.0%, 71.3%] n 54       SIM  57.8% [54.7%, 60.9%] n 960      z +0.21 pass
+  12k CXXIV     Hog OT share   live  57.4% [44.2%, 69.7%] n 54       SIM  70.3% [67.3%, 73.1%] n 960      z -2.01 FAIL
+      diag 12k Hog reg win: live  43.5% [25.6%, 63.2%] n 23  SIM  42.5% [36.9%, 48.3%] n 285
+      diag 12k Hog OT  win: live  71.0% [53.4%, 83.9%] n 31  SIM  64.3% [60.6%, 67.8%] n 675
+      diag 12k Hog regulation-loss rate: live  24.1% [14.6%, 36.9%] n 54  SIM  17.1% [14.8%, 19.6%] n 960
+== s2_hog_il u0045: HOG GATE FAIL (SIM CXXXVIII 960, CXXIV 960)
+  13k CXXXVIII  Hog win        live  28.6% [13.8%, 50.0%] n 21       SIM  56.8% [53.6%, 59.9%] n 960      z -2.58 FAIL
+  13k CXXXVIII  Hog OT share   live  61.9% [40.9%, 79.2%] n 21       SIM  67.0% [63.9%, 69.9%] n 960      z -0.49 pass
+      diag 13k Hog reg win: live  62.5% [30.6%, 86.3%] n 8  SIM  53.9% [48.4%, 59.4%] n 317
+      diag 13k Hog OT  win: live   7.7% [ 1.4%, 33.3%] n 13  SIM  58.2% [54.3%, 61.9%] n 643
+      diag 13k Hog regulation-loss rate: live  14.3% [ 5.0%, 34.6%] n 21  SIM  15.2% [13.1%, 17.6%] n 960
+  12k CXXIV     Hog win        live  59.3% [46.0%, 71.3%] n 54       SIM  50.2% [47.1%, 53.4%] n 960      z +1.29 pass
+  12k CXXIV     Hog OT share   live  57.4% [44.2%, 69.7%] n 54       SIM  72.6% [69.7%, 75.3%] n 960      z -2.41 FAIL
+      diag 12k Hog reg win: live  43.5% [25.6%, 63.2%] n 23  SIM  46.0% [40.1%, 52.0%] n 263
+      diag 12k Hog OT  win: live  71.0% [53.4%, 83.9%] n 31  SIM  51.8% [48.1%, 55.5%] n 697
+      diag 12k Hog regulation-loss rate: live  24.1% [14.6%, 36.9%] n 54  SIM  14.8% [12.7%, 17.2%] n 960
+== s2_hog_il u0065: HOG GATE FAIL (SIM CXXXVIII 960, CXXIV 960)
+  13k CXXXVIII  Hog win        live  28.6% [13.8%, 50.0%] n 21       SIM  51.2% [48.1%, 54.4%] n 960      z -2.06 FAIL
+  13k CXXXVIII  Hog OT share   live  61.9% [40.9%, 79.2%] n 21       SIM  67.6% [64.6%, 70.5%] n 960      z -0.55 pass
+      diag 13k Hog reg win: live  62.5% [30.6%, 86.3%] n 8  SIM  45.0% [39.6%, 50.6%] n 311
+      diag 13k Hog OT  win: live   7.7% [ 1.4%, 33.3%] n 13  SIM  54.2% [50.4%, 58.0%] n 649
+      diag 13k Hog regulation-loss rate: live  14.3% [ 5.0%, 34.6%] n 21  SIM  17.8% [15.5%, 20.4%] n 960
+  12k CXXIV     Hog win        live  59.3% [46.0%, 71.3%] n 54       SIM  45.9% [42.8%, 49.1%] n 960      z +1.91 pass
+  12k CXXIV     Hog OT share   live  57.4% [44.2%, 69.7%] n 54       SIM  68.1% [65.1%, 71.0%] n 960      z -1.64 pass
+      diag 12k Hog reg win: live  43.5% [25.6%, 63.2%] n 23  SIM  35.6% [30.5%, 41.1%] n 306
+      diag 12k Hog OT  win: live  71.0% [53.4%, 83.9%] n 31  SIM  50.8% [46.9%, 54.6%] n 654
+      diag 12k Hog regulation-loss rate: live  24.1% [14.6%, 36.9%] n 54  SIM  20.5% [18.1%, 23.2%] n 960
+== s2_hog_e4 u0025: HOG GATE FAIL (SIM CXXXVIII 960, CXXIV 960)
+  13k CXXXVIII  Hog win        live  28.6% [13.8%, 50.0%] n 21       SIM  54.1% [50.9%, 57.2%] n 960      z -2.32 FAIL
+  13k CXXXVIII  Hog OT share   live  61.9% [40.9%, 79.2%] n 21       SIM  74.1% [71.2%, 76.7%] n 960      z -1.25 pass
+      diag 13k Hog reg win: live  62.5% [30.6%, 86.3%] n 8  SIM  59.0% [52.8%, 65.0%] n 249
+      diag 13k Hog OT  win: live   7.7% [ 1.4%, 33.3%] n 13  SIM  52.3% [48.6%, 56.0%] n 711
+      diag 13k Hog regulation-loss rate: live  14.3% [ 5.0%, 34.6%] n 21  SIM  10.6% [ 8.8%, 12.7%] n 960
+  12k CXXIV     Hog win        live  59.3% [46.0%, 71.3%] n 54       SIM  51.0% [47.9%, 54.2%] n 960      z +1.18 pass
+  12k CXXIV     Hog OT share   live  57.4% [44.2%, 69.7%] n 54       SIM  80.6% [78.0%, 83.0%] n 960      z -4.10 FAIL
+      diag 12k Hog reg win: live  43.5% [25.6%, 63.2%] n 23  SIM  50.5% [43.4%, 57.6%] n 186
+      diag 12k Hog OT  win: live  71.0% [53.4%, 83.9%] n 31  SIM  51.2% [47.6%, 54.7%] n 774
+      diag 12k Hog regulation-loss rate: live  24.1% [14.6%, 36.9%] n 54  SIM   9.6% [ 7.9%, 11.6%] n 960
+== s2_hog_e4 u0045: HOG GATE FAIL (SIM CXXXVIII 960, CXXIV 960)
+  13k CXXXVIII  Hog win        live  28.6% [13.8%, 50.0%] n 21       SIM  52.8% [49.6%, 56.0%] n 960      z -2.20 FAIL
+  13k CXXXVIII  Hog OT share   live  61.9% [40.9%, 79.2%] n 21       SIM  77.1% [74.3%, 79.6%] n 960      z -1.63 pass
+      diag 13k Hog reg win: live  62.5% [30.6%, 86.3%] n 8  SIM  55.5% [48.8%, 61.9%] n 220
+      diag 13k Hog OT  win: live   7.7% [ 1.4%, 33.3%] n 13  SIM  52.0% [48.4%, 55.6%] n 740
+      diag 13k Hog regulation-loss rate: live  14.3% [ 5.0%, 34.6%] n 21  SIM  10.2% [ 8.4%, 12.3%] n 960
+  12k CXXIV     Hog win        live  59.3% [46.0%, 71.3%] n 54       SIM  43.8% [40.6%, 46.9%] n 960      z +2.23 FAIL
+  12k CXXIV     Hog OT share   live  57.4% [44.2%, 69.7%] n 54       SIM  81.4% [78.8%, 83.7%] n 960      z -4.29 FAIL
+      diag 12k Hog reg win: live  43.5% [25.6%, 63.2%] n 23  SIM  37.4% [30.7%, 44.7%] n 179
+      diag 12k Hog OT  win: live  71.0% [53.4%, 83.9%] n 31  SIM  45.2% [41.7%, 48.7%] n 781
+      diag 12k Hog regulation-loss rate: live  24.1% [14.6%, 36.9%] n 54  SIM  11.7% [ 9.8%, 13.9%] n 960
+== s2_hog_e4 u0065: HOG GATE FAIL (SIM CXXXVIII 960, CXXIV 960)
+  13k CXXXVIII  Hog win        live  28.6% [13.8%, 50.0%] n 21       SIM  51.9% [48.7%, 55.0%] n 960      z -2.11 FAIL
+  13k CXXXVIII  Hog OT share   live  61.9% [40.9%, 79.2%] n 21       SIM  74.8% [71.9%, 77.4%] n 960      z -1.34 pass
+      diag 13k Hog reg win: live  62.5% [30.6%, 86.3%] n 8  SIM  46.3% [40.1%, 52.6%] n 242
+      diag 13k Hog OT  win: live   7.7% [ 1.4%, 33.3%] n 13  SIM  53.8% [50.1%, 57.4%] n 718
+      diag 13k Hog regulation-loss rate: live  14.3% [ 5.0%, 34.6%] n 21  SIM  13.5% [11.5%, 15.9%] n 960
+  12k CXXIV     Hog win        live  59.3% [46.0%, 71.3%] n 54       SIM  47.5% [44.4%, 50.7%] n 960      z +1.68 pass
+  12k CXXIV     Hog OT share   live  57.4% [44.2%, 69.7%] n 54       SIM  75.8% [73.0%, 78.4%] n 960      z -3.04 FAIL
+      diag 12k Hog reg win: live  43.5% [25.6%, 63.2%] n 23  SIM  40.9% [34.8%, 47.4%] n 232
+      diag 12k Hog OT  win: live  71.0% [53.4%, 83.9%] n 31  SIM  49.6% [46.0%, 53.2%] n 728
+      diag 12k Hog regulation-loss rate: live  24.1% [14.6%, 36.9%] n 54  SIM  14.3% [12.2%, 16.6%] n 960

@@ -1,0 +1,9 @@
+kept 48 ranked main-account matches (live_play_20261017_162623 .. live_play_20261017_202142); skipped {}
+own tower {15: 48}; own cards (modal): {'IceWizard': 15, 'Knight': 16, 'Log': 15, 'Rocket': 16, 'Skeletons': 16, 'Tesla': 16, 'Tornado': 16, 'Xbow': 16}; default 16
+opp tower level: 15: 16 (33.3%), 16: 32 (66.7%)
+opp card level (354 card-level readings): 13: 4 (1.1%), 14: 14 (4.0%), 15: 108 (30.5%), 16: 228 (64.4%)
+opp card - opp tower level: -2: 8 (2.3%), -1: 85 (24.0%), +0: 191 (54.0%), +1: 70 (19.8%)
+cards read per opponent: median 8 ; with none: 0
+13k (new)  profiles  48  tower-16 share 32/48 = 66.7%  towers {15: 16, 16: 32}  mean card level 15.58
+current    profiles 310  tower-16 share 135/310 = 43.5%  towers {13: 1, 14: 15, 15: 159, 16: 135}  mean card level 15.36
+13k logs 87 with a harness summary 48

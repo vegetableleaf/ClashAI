@@ -1,0 +1,11 @@
+S2-05(c) classify SIM opponents by PLAYED cards: (b) rows not on disk. SIM matches.jsonl carries opp_deck (full deck),
+  opp_plays_accepted (a count) and ability_deployments only -- no per-card opponent play list. Live uses played cards, the SIM
+  the full deck, so live 'Other/no clear wincon' (wincon never shown) is over-filled relative to the SIM. Needs a search_s0
+  --record-plays style run (exists as a flag: run.json key 'record_plays') -- not run tonight.
+S2-05(d) population check (a): opp_behaviour.py's one detector on BOTH sides (diag/d_pod.sh on P5, report d_BEHAVIOUR_13k.md):
+  13k humans = the 35 newest 13k-band CXXXVIII logs (features only, no results used); SIM = the existing gen_v32_s0 set
+  S_v32_d10_r0 (960 matches, decide 10). Distance ALL 0.86 (floor 0.17); the 12k-human run (BEHAVIOUR.md, 1,919 live) gave 0.93.
+  Biggest gaps: react_3s 0.25 live vs 0.47 SIM (d +1.59), react_lift -0.07 vs 0.08 (d +1.75), react_s 6.13 vs 4.76 s
+  (d -1.31), ppm_2x 8.99 vs 11.77 (d +0.86). The imitation net answers our plays about twice as often within 3 s as 13k
+  humans do, and plays faster in double elixir. Distance > 0.3 -> per PLAN the crawl ticket OPENS (it is above 0.3 on both the
+  12k and the 13k population). Caveat: 35 live matches, mix-confounded at the archetype level (n < 5 for most styles).

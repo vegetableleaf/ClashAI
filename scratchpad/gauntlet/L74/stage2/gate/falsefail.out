@@ -1,0 +1,3 @@
+full gate, SIM n 960 per Mark: false-fail 128/400 = 32.0% (+- 4.6%)
+full gate, SIM n 1920 per Mark: false-fail 169/400 = 42.2% (+- 4.8%)
+hog gate, SIM n 960 per Mark: false-fail 78/400 = 19.5% (+- 3.9%)

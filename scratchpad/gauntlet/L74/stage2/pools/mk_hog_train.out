@@ -1,0 +1,2 @@
+train Hog decks 242 (sides 621); eval Hog decks 242 (sides 417)
+overlap by exact 8-card deck: 242 decks = 100.0% of eval decks, 100.0% of eval sides

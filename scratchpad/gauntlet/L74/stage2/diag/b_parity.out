@@ -1,0 +1,13 @@
+  Other/no clear wincon        live n  16  SIM-live gap  -13.1 pp   opp-card parity 0.873
+  Spawners (Witch/huts)        live n  24  SIM-live gap  -12.5 pp   opp-card parity 0.881
+  X-Bow/Mortar                 live n  22  SIM-live gap   -6.0 pp   opp-card parity 0.871
+  Ram/Bridge spam              live n  31  SIM-live gap   -3.4 pp   opp-card parity 0.867
+  Hog (incl. Royal Hogs)       live n  54  SIM-live gap   -0.1 pp   opp-card parity 0.870
+  Graveyard                    live n  16  SIM-live gap   +0.0 pp   opp-card parity 0.867
+  Lava Hound                   live n  11  SIM-live gap  +12.7 pp   opp-card parity 0.854
+  Balloon                      live n  15  SIM-live gap  +18.3 pp   opp-card parity 0.875
+  Mega Knight                  live n  19  SIM-live gap  +19.9 pp   opp-card parity 0.846
+  Golem                        live n  31  SIM-live gap  +23.6 pp   opp-card parity 0.858
+  Giant (incl. Goblin/Electro) live n  29  SIM-live gap  +23.6 pp   opp-card parity 0.860
+  Royal Giant                  live n  10  SIM-live gap  +48.1 pp   opp-card parity 0.862
+Spearman rho (gap vs parity) = -0.66 over 12 styles (|rho| > 0.59 needed for two-sided p < .05 at n = 12): a NEGATIVE rho = worse parity, bigger SIM optimism

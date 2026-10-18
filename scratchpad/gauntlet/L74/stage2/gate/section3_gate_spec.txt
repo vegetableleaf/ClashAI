@@ -1,0 +1,48 @@
+## 3. Gate spec
+
+**Bands.**
+- **13k** = Mark CXXXVIII at ≥ 13,000 trophies (live 35/78), levels = `levels13k.json`.
+- **12k** = Mark CXXIV, all 300 (12,000–12,999), levels = current `live_levels.json`.
+- **Band rule:** the same opponent checkpoint and settings in both bands; only the level profile differs. Both bands must pass.
+
+**SIM side.**
+- Promotion-eval conditions: fork36, D3 live stack, tower troops at live rates, `decks_live_eval.json`, Hero IW form.
+- 1,920 games per Mark (Hog alone needs about 870 at 13k; 12k needs about 2,000–2,700).
+- Style labels come from `live_eval.classify` on both sides.
+
+**Primary cells.** Each needs |z| < 1.96, where z = (SIM − live) / sqrt(var_SIM + var_live).
+
+| Cell | Band | Live | Allowed SIM range (at about 9× live n) | E4 today |
+|---|---|---|---|---|
+| Hog win | 13k | 6/21 | 8–49% | 66.3% fail |
+| Overtime win | 13k | 18/42 | 27–59% | 61.5% fail |
+| Overall, re-weighted to live style mix | 13k | 35/78 | 33–57% | 63.4% fail |
+| Overtime share | 13k | 42/78 | 43–65% | 60.3% pass |
+| Hog win | 12k | 32/54 | 46–73% | 59.1% pass |
+| Overtime win | 12k | 86/137 | 54–71% | 60.5% pass |
+| Overall, re-weighted | 12k | 154/300 | 45–57% | 59.0% fail |
+| Overtime share | 12k | 137/300 | 40–52% | 68.6% fail |
+| **Non-Hog regulation win, both Marks pooled** | both | 70/168 = 41.7% | about 34–50% (computed at actual n) | 57–78% fail |
+
+**Secondary (required).**
+- Per band, the sum of z² over styles with ≥ 10 live matches (the rest pooled) is below the 95% chi-square cutoff. E4 at 12k: 31.0 on 15 df, fail.
+- `L74/human/opp_behaviour.py` style distance ≤ 0.70. That is the best strong opponent so far; the noise floor is about 0.04–0.05. The threshold is a ledgered knob (b).
+
+**Diagnostics (reported, never gated).**
+- Hog × regulation/overtime 2×2 (13k Hog overtime live 1/13).
+- Regulation-loss rate: live 31.7% / 24.4%, SIM 13.5%.
+- Regulation win rate by seat.
+- Training-to-gate win-rate drop (frozen-seat gap).
+
+**Known weaknesses, stated plainly (a).**
+- At current 13k n, the gate rejects only errors of about 20 pp (Hog), 15 pp (overtime) and 12 pp (overall).
+- There is no multiple-testing correction, so a perfect opponent fails about 20–30% of the time. S2-02 measures the exact rate. This errs toward FAIL, which is the safe side.
+- A tuning-set pass is **provisional**; only S2-12 counts.
+
+**Held-out data.**
+1. `stage2/gate/gate_holdout.txt` (431 logs of both Marks): excluded by filename from any training corpus. The current opponent recipes use pro data (inside `gen_v32_s0`) and SIM RL only, so they are clean.
+2. Train vs gate deck pools: `decks_live_train.json` (and its Hog subset) for training; `decks_live_eval.json` / `decks_hog_eval.json` for the gate. Both were built 10-15 15:01, before CXXIV went live (a).
+3. Opponent seed split: the successor trains against seed A and is scored against seed B.
+4. Sealed block (S2-12): the current 117 + 300 matches are the tuning set; the next ≥ 150 graded 13k matches are the test set, with one look.
+5. The 13k level table uses levels only, never results.
+

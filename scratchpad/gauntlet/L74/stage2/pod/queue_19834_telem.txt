@@ -1,0 +1,3 @@
+telem T_il_u0065 /workspace/cb_tel icebow/data/bench/rl_royale/rlarm_gae/rlarm_gae_u0250_grafted.pt scratchpad/gauntlet/L74/stage2/mvp/decks_hog_eval.json --opp-ckpt icebow/data/bench/rl_royale/s2_hog_il/s2_hog_il_u0065.pt
+telem T_e4_u0065 /workspace/cb_tel icebow/data/bench/rl_royale/rlarm_gae/rlarm_gae_u0250_grafted.pt scratchpad/gauntlet/L74/stage2/mvp/decks_hog_eval.json --opp-ckpt icebow/data/bench/rl_royale/s2_hog_e4/s2_hog_e4_u0065.pt
+telem T_e4base /workspace/cb_tel icebow/data/bench/rl_royale/rlarm_gae/rlarm_gae_u0250_grafted.pt scratchpad/gauntlet/L74/stage2/mvp/decks_hog_eval.json

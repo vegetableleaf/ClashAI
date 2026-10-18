@@ -1,0 +1,217 @@
+== B0 E4 T.1 (baseline, existing rows): GATE FAIL (SIM CXXXVIII 960, CXXIV 960)
+   diag CXXXVIII: Hog reg (47, 69) OT (91, 139); non-Hog reg (204, 312); OT share 60.3%; reg-loss 13.5%; win 63.2%
+   diag CXXIV: Hog reg (25, 46) OT (98, 162); non-Hog reg (146, 255); OT share 68.6%; reg-loss 13.5%; win 59.4%
+ band 13k (CXXXVIII): FAIL
+  CXXXVIII  Hog win                  live  28.6% [13.8%, 50.0%] n 21       SIM  66.3% [59.7%, 72.4%] n 208      z -3.41 FAIL
+  CXXXVIII  overtime win             live  42.9% [29.1%, 57.8%] n 42       SIM  61.5% [57.5%, 65.4%] n 579      z -2.38 FAIL
+  CXXXVIII  OT share                 live  53.8% [42.9%, 64.5%] n 78       SIM  60.3% [57.2%, 63.4%] n 960      z -1.12 pass
+  CXXXVIII  overall (post-strat.)    live  44.9% [34.3%, 55.9%] n 78       SIM  63.4% (raw  63.2% [60.1%, 66.2%] n 960)  z -3.18 FAIL
+      Hog (incl. Royal Hogs)     live  28.6% [13.8%, 50.0%] n 21       SIM  66.3% [59.7%, 72.4%] n 208      z -3.41
+      rest                       live  50.9% [38.3%, 63.4%] n 57       SIM  62.4% [58.8%, 65.8%] n 752      z -1.72
+  OMNIBUS sum z^2 14.6 on df 2 (chi2_0.95 5.99) FAIL
+ band 12k (CXXIV): FAIL
+  CXXIV     Hog win                  live  59.3% [46.0%, 71.3%] n 54       SIM  59.1% [52.3%, 65.6%] n 208      z +0.02 pass
+  CXXIV     overtime win             live  62.8% [54.4%, 70.4%] n 137      SIM  60.5% [56.8%, 64.2%] n 659      z +0.49 pass
+  CXXIV     OT share                 live  45.7% [40.1%, 51.3%] n 300      SIM  68.6% [65.6%, 71.5%] n 960      z -7.20 FAIL
+  CXXIV     overall (post-strat.)    live  51.3% [45.7%, 56.9%] n 300      SIM  59.0% (raw  59.4% [56.2%, 62.4%] n 960)  z -2.28 FAIL
+      Balloon                    live  53.3% [30.1%, 75.2%] n 15       SIM  71.6% [61.4%, 80.0%] n 88       z -1.41
+      Giant (incl. Goblin/Electr live  44.8% [28.4%, 62.5%] n 29       SIM  68.4% [57.3%, 77.8%] n 76       z -2.23
+      Golem                      live  29.0% [16.1%, 46.6%] n 31       SIM  52.6% [44.2%, 60.8%] n 135      z -2.37
+      Graveyard                  live  50.0% [28.0%, 72.0%] n 16       SIM  50.0% [32.6%, 67.4%] n 28       z +0.00
+      Hog (incl. Royal Hogs)     live  59.3% [46.0%, 71.3%] n 54       SIM  59.1% [52.3%, 65.6%] n 208      z +0.02
+      Lava Hound                 live  27.3% [ 9.7%, 56.6%] n 11       SIM  40.0% [23.4%, 59.3%] n 25       z -0.73
+      Mega Knight                live  31.6% [15.4%, 54.0%] n 19       SIM  51.5% [39.7%, 63.2%] n 66       z -1.53
+      Other/no clear wincon      live  81.2% [57.0%, 93.4%] n 16       SIM  68.2% [53.4%, 80.0%] n 44       z +0.99
+      Ram/Bridge spam            live  54.8% [37.8%, 70.8%] n 31       SIM  51.5% [41.9%, 60.9%] n 103      z +0.33
+      Royal Giant                live  30.0% [10.8%, 60.3%] n 10       SIM  78.1% [61.2%, 89.0%] n 32       z -2.82
+      Spawners (Witch/huts)      live  79.2% [59.5%, 90.8%] n 24       SIM  66.7% [47.8%, 81.4%] n 27       z +1.00
+      X-Bow/Mortar               live  50.0% [30.7%, 69.3%] n 22       SIM  44.0% [31.2%, 57.7%] n 50       z +0.47
+      rest                       live  54.5% [34.7%, 73.1%] n 22       SIM  70.5% [59.6%, 79.5%] n 78       z -1.41
+  OMNIBUS sum z^2 27.7 on df 13 (chi2_0.95 22.36) FAIL
+  pooled    non-Hog regulation win   live  41.7% [34.5%, 49.2%] n 168      SIM  58.6% (live-share weighted; CXXXVIII SIM 204/312, CXXIV SIM 146/255)  z +3.67 FAIL
+== B1_e4T3: GATE FAIL (SIM CXXXVIII 960, CXXIV 960)
+   diag CXXXVIII: Hog reg (49, 81) OT (95, 127); non-Hog reg (207, 328); OT share 57.4%; reg-loss 15.9%; win 67.2%
+   diag CXXIV: Hog reg (34, 67) OT (88, 141); non-Hog reg (140, 258); OT share 66.1%; reg-loss 15.7%; win 58.1%
+ band 13k (CXXXVIII): FAIL
+  CXXXVIII  Hog win                  live  28.6% [13.8%, 50.0%] n 21       SIM  69.2% [62.7%, 75.1%] n 208      z -3.74 FAIL
+  CXXXVIII  overtime win             live  42.9% [29.1%, 57.8%] n 42       SIM  70.6% [66.7%, 74.2%] n 551      z -3.74 FAIL
+  CXXXVIII  OT share                 live  53.8% [42.9%, 64.5%] n 78       SIM  57.4% [54.2%, 60.5%] n 960      z -0.61 pass
+  CXXXVIII  overall (post-strat.)    live  44.9% [34.3%, 55.9%] n 78       SIM  67.3% (raw  67.2% [64.2%, 70.1%] n 960)  z -3.85 FAIL
+      Hog (incl. Royal Hogs)     live  28.6% [13.8%, 50.0%] n 21       SIM  69.2% [62.7%, 75.1%] n 208      z -3.74
+      rest                       live  50.9% [38.3%, 63.4%] n 57       SIM  66.6% [63.2%, 69.9%] n 752      z -2.41
+  OMNIBUS sum z^2 19.8 on df 2 (chi2_0.95 5.99) FAIL
+ band 12k (CXXIV): FAIL
+  CXXIV     Hog win                  live  59.3% [46.0%, 71.3%] n 54       SIM  58.7% [51.9%, 65.1%] n 208      z +0.08 pass
+  CXXIV     overtime win             live  62.8% [54.4%, 70.4%] n 137      SIM  60.5% [56.6%, 64.2%] n 635      z +0.50 pass
+  CXXIV     OT share                 live  45.7% [40.1%, 51.3%] n 300      SIM  66.1% [63.1%, 69.1%] n 960      z -6.36 FAIL
+  CXXIV     overall (post-strat.)    live  51.3% [45.7%, 56.9%] n 300      SIM  57.3% (raw  58.1% [55.0%, 61.2%] n 960)  z -1.78 pass
+      Balloon                    live  53.3% [30.1%, 75.2%] n 15       SIM  73.9% [63.8%, 81.9%] n 88       z -1.62
+      Giant (incl. Goblin/Electr live  44.8% [28.4%, 62.5%] n 29       SIM  67.1% [55.9%, 76.6%] n 76       z -2.09
+      Golem                      live  29.0% [16.1%, 46.6%] n 31       SIM  54.1% [45.7%, 62.3%] n 135      z -2.51
+      Graveyard                  live  50.0% [28.0%, 72.0%] n 16       SIM  50.0% [32.6%, 67.4%] n 28       z +0.00
+      Hog (incl. Royal Hogs)     live  59.3% [46.0%, 71.3%] n 54       SIM  58.7% [51.9%, 65.1%] n 208      z +0.08
+      Lava Hound                 live  27.3% [ 9.7%, 56.6%] n 11       SIM  44.0% [26.7%, 62.9%] n 25       z -0.95
+      Mega Knight                live  31.6% [15.4%, 54.0%] n 19       SIM  51.5% [39.7%, 63.2%] n 66       z -1.53
+      Other/no clear wincon      live  81.2% [57.0%, 93.4%] n 16       SIM  61.4% [46.6%, 74.3%] n 44       z +1.45
+      Ram/Bridge spam            live  54.8% [37.8%, 70.8%] n 31       SIM  54.4% [44.8%, 63.7%] n 103      z +0.05
+      Royal Giant                live  30.0% [10.8%, 60.3%] n 10       SIM  59.4% [42.3%, 74.5%] n 32       z -1.62
+      Spawners (Witch/huts)      live  79.2% [59.5%, 90.8%] n 24       SIM  63.0% [44.2%, 78.5%] n 27       z +1.27
+      X-Bow/Mortar               live  50.0% [30.7%, 69.3%] n 22       SIM  40.0% [27.6%, 53.8%] n 50       z +0.79
+      rest                       live  54.5% [34.7%, 73.1%] n 22       SIM  62.8% [51.7%, 72.7%] n 78       z -0.70
+  OMNIBUS sum z^2 24.0 on df 13 (chi2_0.95 22.36) FAIL
+  pooled    non-Hog regulation win   live  41.7% [34.5%, 49.2%] n 168      SIM  55.7% (live-share weighted; CXXXVIII SIM 207/328, CXXIV SIM 140/258)  z +3.05 FAIL
+== B2_gen10: GATE FAIL (SIM CXXXVIII 960, CXXIV 960)
+   diag CXXXVIII: Hog reg (58, 86) OT (91, 122); non-Hog reg (195, 335); OT share 56.1%; reg-loss 17.5%; win 67.1%
+   diag CXXIV: Hog reg (34, 67) OT (100, 141); non-Hog reg (183, 306); OT share 61.1%; reg-loss 16.2%; win 63.7%
+ band 13k (CXXXVIII): FAIL
+  CXXXVIII  Hog win                  live  28.6% [13.8%, 50.0%] n 21       SIM  71.6% [65.2%, 77.3%] n 208      z -4.02 FAIL
+  CXXXVIII  overtime win             live  42.9% [29.1%, 57.8%] n 42       SIM  72.5% [68.6%, 76.1%] n 539      z -4.06 FAIL
+  CXXXVIII  OT share                 live  53.8% [42.9%, 64.5%] n 78       SIM  56.1% [53.0%, 59.3%] n 960      z -0.39 pass
+  CXXXVIII  overall (post-strat.)    live  44.9% [34.3%, 55.9%] n 78       SIM  67.4% (raw  67.1% [64.0%, 70.0%] n 960)  z -3.86 FAIL
+      Hog (incl. Royal Hogs)     live  28.6% [13.8%, 50.0%] n 21       SIM  71.6% [65.2%, 77.3%] n 208      z -4.02
+      rest                       live  50.9% [38.3%, 63.4%] n 57       SIM  65.8% [62.4%, 69.1%] n 752      z -2.28
+  OMNIBUS sum z^2 21.4 on df 2 (chi2_0.95 5.99) FAIL
+ band 12k (CXXIV): FAIL
+  CXXIV     Hog win                  live  59.3% [46.0%, 71.3%] n 54       SIM  64.4% [57.7%, 70.6%] n 208      z -0.70 pass
+  CXXIV     overtime win             live  62.8% [54.4%, 70.4%] n 137      SIM  67.3% [63.4%, 71.0%] n 587      z -1.01 pass
+  CXXIV     OT share                 live  45.7% [40.1%, 51.3%] n 300      SIM  61.1% [58.0%, 64.2%] n 960      z -4.73 FAIL
+  CXXIV     overall (post-strat.)    live  51.3% [45.7%, 56.9%] n 300      SIM  63.9% (raw  63.7% [60.7%, 66.7%] n 960)  z -3.78 FAIL
+      Balloon                    live  53.3% [30.1%, 75.2%] n 15       SIM  72.7% [62.6%, 80.9%] n 88       z -1.51
+      Giant (incl. Goblin/Electr live  44.8% [28.4%, 62.5%] n 29       SIM  68.4% [57.3%, 77.8%] n 76       z -2.23
+      Golem                      live  29.0% [16.1%, 46.6%] n 31       SIM  58.5% [50.1%, 66.5%] n 135      z -2.97
+      Graveyard                  live  50.0% [28.0%, 72.0%] n 16       SIM  46.4% [29.5%, 64.2%] n 28       z +0.23
+      Hog (incl. Royal Hogs)     live  59.3% [46.0%, 71.3%] n 54       SIM  64.4% [57.7%, 70.6%] n 208      z -0.70
+      Lava Hound                 live  27.3% [ 9.7%, 56.6%] n 11       SIM  68.0% [48.4%, 82.8%] n 25       z -2.27
+      Mega Knight                live  31.6% [15.4%, 54.0%] n 19       SIM  65.2% [53.1%, 75.5%] n 66       z -2.61
+      Other/no clear wincon      live  81.2% [57.0%, 93.4%] n 16       SIM  65.9% [51.1%, 78.1%] n 44       z +1.15
+      Ram/Bridge spam            live  54.8% [37.8%, 70.8%] n 31       SIM  54.4% [44.8%, 63.7%] n 103      z +0.05
+      Royal Giant                live  30.0% [10.8%, 60.3%] n 10       SIM  71.9% [54.6%, 84.4%] n 32       z -2.38
+      Spawners (Witch/huts)      live  79.2% [59.5%, 90.8%] n 24       SIM  77.8% [59.2%, 89.4%] n 27       z +0.12
+      X-Bow/Mortar               live  50.0% [30.7%, 69.3%] n 22       SIM  58.0% [44.2%, 70.6%] n 50       z -0.63
+      rest                       live  54.5% [34.7%, 73.1%] n 22       SIM  66.7% [55.6%, 76.1%] n 78       z -1.05
+  OMNIBUS sum z^2 37.0 on df 13 (chi2_0.95 22.36) FAIL
+  pooled    non-Hog regulation win   live  41.7% [34.5%, 49.2%] n 168      SIM  59.5% (live-share weighted; CXXXVIII SIM 195/335, CXXIV SIM 183/306)  z +3.98 FAIL
+== B3_gen20: GATE FAIL (SIM CXXXVIII 960, CXXIV 960)
+   diag CXXXVIII: Hog reg (47, 68) OT (101, 140); non-Hog reg (219, 360); OT share 55.4%; reg-loss 16.9%; win 65.9%
+   diag CXXIV: Hog reg (34, 68) OT (105, 140); non-Hog reg (151, 292); OT share 62.5%; reg-loss 18.2%; win 60.4%
+ band 13k (CXXXVIII): FAIL
+  CXXXVIII  Hog win                  live  28.6% [13.8%, 50.0%] n 21       SIM  71.2% [64.7%, 76.9%] n 208      z -3.96 FAIL
+  CXXXVIII  overtime win             live  42.9% [29.1%, 57.8%] n 42       SIM  69.0% [64.9%, 72.8%] n 532      z -3.47 FAIL
+  CXXXVIII  OT share                 live  53.8% [42.9%, 64.5%] n 78       SIM  55.4% [52.3%, 58.5%] n 960      z -0.27 pass
+  CXXXVIII  overall (post-strat.)    live  44.9% [34.3%, 55.9%] n 78       SIM  66.3% (raw  65.9% [62.9%, 68.9%] n 960)  z -3.67 FAIL
+      Hog (incl. Royal Hogs)     live  28.6% [13.8%, 50.0%] n 21       SIM  71.2% [64.7%, 76.9%] n 208      z -3.96
+      rest                       live  50.9% [38.3%, 63.4%] n 57       SIM  64.5% [61.0%, 67.8%] n 752      z -2.06
+  OMNIBUS sum z^2 19.9 on df 2 (chi2_0.95 5.99) FAIL
+ band 12k (CXXIV): FAIL
+  CXXIV     Hog win                  live  59.3% [46.0%, 71.3%] n 54       SIM  66.8% [60.2%, 72.9%] n 208      z -1.04 pass
+  CXXIV     overtime win             live  62.8% [54.4%, 70.4%] n 137      SIM  65.8% [61.9%, 69.5%] n 600      z -0.68 pass
+  CXXIV     OT share                 live  45.7% [40.1%, 51.3%] n 300      SIM  62.5% [59.4%, 65.5%] n 960      z -5.16 FAIL
+  CXXIV     overall (post-strat.)    live  51.3% [45.7%, 56.9%] n 300      SIM  59.1% (raw  60.4% [57.3%, 63.5%] n 960)  z -2.33 FAIL
+      Balloon                    live  53.3% [30.1%, 75.2%] n 15       SIM  65.9% [55.5%, 75.0%] n 88       z -0.94
+      Giant (incl. Goblin/Electr live  44.8% [28.4%, 62.5%] n 29       SIM  67.1% [55.9%, 76.6%] n 76       z -2.09
+      Golem                      live  29.0% [16.1%, 46.6%] n 31       SIM  54.1% [45.7%, 62.3%] n 135      z -2.51
+      Graveyard                  live  50.0% [28.0%, 72.0%] n 16       SIM  50.0% [32.6%, 67.4%] n 28       z +0.00
+      Hog (incl. Royal Hogs)     live  59.3% [46.0%, 71.3%] n 54       SIM  66.8% [60.2%, 72.9%] n 208      z -1.04
+      Lava Hound                 live  27.3% [ 9.7%, 56.6%] n 11       SIM  44.0% [26.7%, 62.9%] n 25       z -0.95
+      Mega Knight                live  31.6% [15.4%, 54.0%] n 19       SIM  62.1% [50.1%, 72.9%] n 66       z -2.36
+      Other/no clear wincon      live  81.2% [57.0%, 93.4%] n 16       SIM  63.6% [48.9%, 76.2%] n 44       z +1.30
+      Ram/Bridge spam            live  54.8% [37.8%, 70.8%] n 31       SIM  47.6% [38.2%, 57.1%] n 103      z +0.71
+      Royal Giant                live  30.0% [10.8%, 60.3%] n 10       SIM  68.8% [51.4%, 82.0%] n 32       z -2.18
+      Spawners (Witch/huts)      live  79.2% [59.5%, 90.8%] n 24       SIM  55.6% [37.3%, 72.4%] n 27       z +1.79
+      X-Bow/Mortar               live  50.0% [30.7%, 69.3%] n 22       SIM  40.0% [27.6%, 53.8%] n 50       z +0.79
+      rest                       live  54.5% [34.7%, 73.1%] n 22       SIM  75.6% [65.1%, 83.8%] n 78       z -1.93
+  OMNIBUS sum z^2 33.6 on df 13 (chi2_0.95 22.36) FAIL
+  pooled    non-Hog regulation win   live  41.7% [34.5%, 49.2%] n 168      SIM  53.2% (live-share weighted; CXXXVIII SIM 219/360, CXXIV SIM 151/292)  z +2.55 FAIL
+== B4_gen40: GATE FAIL (SIM CXXXVIII 960, CXXIV 960)
+   diag CXXXVIII: Hog reg (56, 90) OT (77, 118); non-Hog reg (230, 381); OT share 50.9%; reg-loss 19.3%; win 62.4%
+   diag CXXIV: Hog reg (39, 76) OT (81, 132); non-Hog reg (163, 313); OT share 59.5%; reg-loss 19.5%; win 56.6%
+ band 13k (CXXXVIII): FAIL
+  CXXXVIII  Hog win                  live  28.6% [13.8%, 50.0%] n 21       SIM  63.9% [57.2%, 70.2%] n 208      z -3.16 FAIL
+  CXXXVIII  overtime win             live  42.9% [29.1%, 57.8%] n 42       SIM  64.0% [59.7%, 68.1%] n 489      z -2.71 FAIL
+  CXXXVIII  OT share                 live  53.8% [42.9%, 64.5%] n 78       SIM  50.9% [47.8%, 54.1%] n 960      z +0.49 pass
+  CXXXVIII  overall (post-strat.)    live  44.9% [34.3%, 55.9%] n 78       SIM  62.5% (raw  62.4% [59.3%, 65.4%] n 960)  z -3.01 FAIL
+      Hog (incl. Royal Hogs)     live  28.6% [13.8%, 50.0%] n 21       SIM  63.9% [57.2%, 70.2%] n 208      z -3.16
+      rest                       live  50.9% [38.3%, 63.4%] n 57       SIM  62.0% [58.4%, 65.4%] n 752      z -1.66
+  OMNIBUS sum z^2 12.7 on df 2 (chi2_0.95 5.99) FAIL
+ band 12k (CXXIV): FAIL
+  CXXIV     Hog win                  live  59.3% [46.0%, 71.3%] n 54       SIM  57.7% [50.9%, 64.2%] n 208      z +0.21 pass
+  CXXIV     overtime win             live  62.8% [54.4%, 70.4%] n 137      SIM  59.7% [55.6%, 63.7%] n 571      z +0.66 pass
+  CXXIV     OT share                 live  45.7% [40.1%, 51.3%] n 300      SIM  59.5% [56.3%, 62.5%] n 960      z -4.21 FAIL
+  CXXIV     overall (post-strat.)    live  51.3% [45.7%, 56.9%] n 300      SIM  56.7% (raw  56.6% [53.4%, 59.7%] n 960)  z -1.59 pass
+      Balloon                    live  53.3% [30.1%, 75.2%] n 15       SIM  65.9% [55.5%, 75.0%] n 88       z -0.94
+      Giant (incl. Goblin/Electr live  44.8% [28.4%, 62.5%] n 29       SIM  61.8% [50.6%, 71.9%] n 76       z -1.58
+      Golem                      live  29.0% [16.1%, 46.6%] n 31       SIM  50.4% [42.0%, 58.7%] n 135      z -2.15
+      Graveyard                  live  50.0% [28.0%, 72.0%] n 16       SIM  53.6% [35.8%, 70.5%] n 28       z -0.23
+      Hog (incl. Royal Hogs)     live  59.3% [46.0%, 71.3%] n 54       SIM  57.7% [50.9%, 64.2%] n 208      z +0.21
+      Lava Hound                 live  27.3% [ 9.7%, 56.6%] n 11       SIM  56.0% [37.1%, 73.3%] n 25       z -1.59
+      Mega Knight                live  31.6% [15.4%, 54.0%] n 19       SIM  45.5% [34.0%, 57.4%] n 66       z -1.08
+      Other/no clear wincon      live  81.2% [57.0%, 93.4%] n 16       SIM  63.6% [48.9%, 76.2%] n 44       z +1.30
+      Ram/Bridge spam            live  54.8% [37.8%, 70.8%] n 31       SIM  50.5% [41.0%, 59.9%] n 103      z +0.43
+      Royal Giant                live  30.0% [10.8%, 60.3%] n 10       SIM  68.8% [51.4%, 82.0%] n 32       z -2.18
+      Spawners (Witch/huts)      live  79.2% [59.5%, 90.8%] n 24       SIM  66.7% [47.8%, 81.4%] n 27       z +1.00
+      X-Bow/Mortar               live  50.0% [30.7%, 69.3%] n 22       SIM  42.0% [29.4%, 55.8%] n 50       z +0.63
+      rest                       live  54.5% [34.7%, 73.1%] n 22       SIM  64.1% [53.0%, 73.9%] n 78       z -0.82
+  OMNIBUS sum z^2 20.4 on df 13 (chi2_0.95 22.36) pass
+  pooled    non-Hog regulation win   live  41.7% [34.5%, 49.2%] n 168      SIM  53.5% (live-share weighted; CXXXVIII SIM 230/381, CXXIV SIM 163/313)  z +2.62 FAIL
+== B5_expl: GATE FAIL (SIM CXXXVIII 960, CXXIV 960)
+   diag CXXXVIII: Hog reg (29, 50) OT (70, 158); non-Hog reg (121, 235); OT share 70.3%; reg-loss 14.1%; win 51.7%
+   diag CXXIV: Hog reg (11, 36) OT (78, 172); non-Hog reg (89, 200); OT share 75.4%; reg-loss 14.2%; win 46.2%
+ band 13k (CXXXVIII): FAIL
+  CXXXVIII  Hog win                  live  28.6% [13.8%, 50.0%] n 21       SIM  47.6% [40.9%, 54.4%] n 208      z -1.67 pass
+  CXXXVIII  overtime win             live  42.9% [29.1%, 57.8%] n 42       SIM  51.3% [47.5%, 55.0%] n 675      z -1.06 pass
+  CXXXVIII  OT share                 live  53.8% [42.9%, 64.5%] n 78       SIM  70.3% [67.3%, 73.1%] n 960      z -3.03 FAIL
+  CXXXVIII  overall (post-strat.)    live  44.9% [34.3%, 55.9%] n 78       SIM  51.4% (raw  51.7% [48.5%, 54.8%] n 960)  z -1.11 pass
+      Hog (incl. Royal Hogs)     live  28.6% [13.8%, 50.0%] n 21       SIM  47.6% [40.9%, 54.4%] n 208      z -1.67
+      rest                       live  50.9% [38.3%, 63.4%] n 57       SIM  52.8% [49.2%, 56.3%] n 752      z -0.28
+  OMNIBUS sum z^2 2.9 on df 2 (chi2_0.95 5.99) pass
+ band 12k (CXXIV): FAIL
+  CXXIV     Hog win                  live  59.3% [46.0%, 71.3%] n 54       SIM  42.8% [36.3%, 49.6%] n 208      z +2.16 FAIL
+  CXXIV     overtime win             live  62.8% [54.4%, 70.4%] n 137      SIM  47.5% [43.9%, 51.2%] n 724      z +3.28 FAIL
+  CXXIV     OT share                 live  45.7% [40.1%, 51.3%] n 300      SIM  75.4% [72.6%, 78.0%] n 960      z -9.67 FAIL
+  CXXIV     overall (post-strat.)    live  51.3% [45.7%, 56.9%] n 300      SIM  45.7% (raw  46.2% [43.1%, 49.4%] n 960)  z +1.67 pass
+      Balloon                    live  53.3% [30.1%, 75.2%] n 15       SIM  46.6% [36.5%, 56.9%] n 88       z +0.48
+      Giant (incl. Goblin/Electr live  44.8% [28.4%, 62.5%] n 29       SIM  52.6% [41.6%, 63.5%] n 76       z -0.72
+      Golem                      live  29.0% [16.1%, 46.6%] n 31       SIM  54.1% [45.7%, 62.3%] n 135      z -2.51
+      Graveyard                  live  50.0% [28.0%, 72.0%] n 16       SIM  32.1% [17.9%, 50.7%] n 28       z +1.17
+      Hog (incl. Royal Hogs)     live  59.3% [46.0%, 71.3%] n 54       SIM  42.8% [36.3%, 49.6%] n 208      z +2.16
+      Lava Hound                 live  27.3% [ 9.7%, 56.6%] n 11       SIM  68.0% [48.4%, 82.8%] n 25       z -2.27
+      Mega Knight                live  31.6% [15.4%, 54.0%] n 19       SIM  43.9% [32.6%, 55.9%] n 66       z -0.96
+      Other/no clear wincon      live  81.2% [57.0%, 93.4%] n 16       SIM  47.7% [33.8%, 62.1%] n 44       z +2.32
+      Ram/Bridge spam            live  54.8% [37.8%, 70.8%] n 31       SIM  41.7% [32.7%, 51.4%] n 103      z +1.29
+      Royal Giant                live  30.0% [10.8%, 60.3%] n 10       SIM  62.5% [45.3%, 77.1%] n 32       z -1.80
+      Spawners (Witch/huts)      live  79.2% [59.5%, 90.8%] n 24       SIM  48.1% [30.7%, 66.0%] n 27       z +2.29
+      X-Bow/Mortar               live  50.0% [30.7%, 69.3%] n 22       SIM  24.0% [14.3%, 37.4%] n 50       z +2.18
+      rest                       live  54.5% [34.7%, 73.1%] n 22       SIM  47.4% [36.7%, 58.4%] n 78       z +0.59
+  OMNIBUS sum z^2 39.8 on df 13 (chi2_0.95 22.36) FAIL
+  pooled    non-Hog regulation win   live  41.7% [34.5%, 49.2%] n 168      SIM  45.7% (live-share weighted; CXXXVIII SIM 121/235, CXXIV SIM 89/200)  z +0.83 pass
+== B6 E4 T.1 + 13k levels (13k band; 12k = the E4 baseline rows): GATE FAIL (SIM CXXXVIII 960, CXXIV 960)
+   diag CXXXVIII: Hog reg (48, 65) OT (83, 143); non-Hog reg (203, 311); OT share 60.8%; reg-loss 13.0%; win 61.3%
+   diag CXXIV: Hog reg (25, 46) OT (98, 162); non-Hog reg (146, 255); OT share 68.6%; reg-loss 13.5%; win 59.4%
+ band 13k (CXXXVIII): FAIL
+  CXXXVIII  Hog win                  live  28.6% [13.8%, 50.0%] n 21       SIM  63.0% [56.2%, 69.3%] n 208      z -3.07 FAIL
+  CXXXVIII  overtime win             live  42.9% [29.1%, 57.8%] n 42       SIM  57.7% [53.7%, 61.6%] n 584      z -1.88 pass
+  CXXXVIII  OT share                 live  53.8% [42.9%, 64.5%] n 78       SIM  60.8% [57.7%, 63.9%] n 960      z -1.21 pass
+  CXXXVIII  overall (post-strat.)    live  44.9% [34.3%, 55.9%] n 78       SIM  61.4% (raw  61.3% [58.1%, 64.3%] n 960)  z -2.82 FAIL
+      Hog (incl. Royal Hogs)     live  28.6% [13.8%, 50.0%] n 21       SIM  63.0% [56.2%, 69.3%] n 208      z -3.07
+      rest                       live  50.9% [38.3%, 63.4%] n 57       SIM  60.8% [57.2%, 64.2%] n 752      z -1.47
+  OMNIBUS sum z^2 11.6 on df 2 (chi2_0.95 5.99) FAIL
+ band 12k (CXXIV): FAIL
+  CXXIV     Hog win                  live  59.3% [46.0%, 71.3%] n 54       SIM  59.1% [52.3%, 65.6%] n 208      z +0.02 pass
+  CXXIV     overtime win             live  62.8% [54.4%, 70.4%] n 137      SIM  60.5% [56.8%, 64.2%] n 659      z +0.49 pass
+  CXXIV     OT share                 live  45.7% [40.1%, 51.3%] n 300      SIM  68.6% [65.6%, 71.5%] n 960      z -7.20 FAIL
+  CXXIV     overall (post-strat.)    live  51.3% [45.7%, 56.9%] n 300      SIM  59.0% (raw  59.4% [56.2%, 62.4%] n 960)  z -2.28 FAIL
+      Balloon                    live  53.3% [30.1%, 75.2%] n 15       SIM  71.6% [61.4%, 80.0%] n 88       z -1.41
+      Giant (incl. Goblin/Electr live  44.8% [28.4%, 62.5%] n 29       SIM  68.4% [57.3%, 77.8%] n 76       z -2.23
+      Golem                      live  29.0% [16.1%, 46.6%] n 31       SIM  52.6% [44.2%, 60.8%] n 135      z -2.37
+      Graveyard                  live  50.0% [28.0%, 72.0%] n 16       SIM  50.0% [32.6%, 67.4%] n 28       z +0.00
+      Hog (incl. Royal Hogs)     live  59.3% [46.0%, 71.3%] n 54       SIM  59.1% [52.3%, 65.6%] n 208      z +0.02
+      Lava Hound                 live  27.3% [ 9.7%, 56.6%] n 11       SIM  40.0% [23.4%, 59.3%] n 25       z -0.73
+      Mega Knight                live  31.6% [15.4%, 54.0%] n 19       SIM  51.5% [39.7%, 63.2%] n 66       z -1.53
+      Other/no clear wincon      live  81.2% [57.0%, 93.4%] n 16       SIM  68.2% [53.4%, 80.0%] n 44       z +0.99
+      Ram/Bridge spam            live  54.8% [37.8%, 70.8%] n 31       SIM  51.5% [41.9%, 60.9%] n 103      z +0.33
+      Royal Giant                live  30.0% [10.8%, 60.3%] n 10       SIM  78.1% [61.2%, 89.0%] n 32       z -2.82
+      Spawners (Witch/huts)      live  79.2% [59.5%, 90.8%] n 24       SIM  66.7% [47.8%, 81.4%] n 27       z +1.00
+      X-Bow/Mortar               live  50.0% [30.7%, 69.3%] n 22       SIM  44.0% [31.2%, 57.7%] n 50       z +0.47
+      rest                       live  54.5% [34.7%, 73.1%] n 22       SIM  70.5% [59.6%, 79.5%] n 78       z -1.41
+  OMNIBUS sum z^2 27.7 on df 13 (chi2_0.95 22.36) FAIL
+  pooled    non-Hog regulation win   live  41.7% [34.5%, 49.2%] n 168      SIM  58.6% (live-share weighted; CXXXVIII SIM 203/311, CXXIV SIM 146/255)  z +3.66 FAIL

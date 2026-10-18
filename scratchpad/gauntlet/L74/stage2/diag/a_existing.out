@@ -1,0 +1,6 @@
+live CXXXVIII 13k              n   78 | Hog reg win  62.5% [30.6%, 86.3%] n 8      Hog OT win   7.7% [ 1.4%, 33.3%] n 13     non-Hog reg win  42.9% [26.5%, 60.9%] n 28     OT share 53.8% reg-loss 24.4%
+live CXXIV 12k                 n  300 | Hog reg win  43.5% [25.6%, 63.2%] n 23     Hog OT win  71.0% [53.4%, 83.9%] n 31     non-Hog reg win  41.4% [33.6%, 49.7%] n 140    OT share 45.7% reg-loss 31.7%
+SIM E4 vs CXXXVIII             n  960 | Hog reg win  68.1% [56.4%, 77.9%] n 69     Hog OT win  65.5% [57.2%, 72.9%] n 139    non-Hog reg win  65.4% [59.9%, 70.4%] n 312    OT share 60.3% reg-loss 13.5%
+SIM E4 vs CXXIV                n  960 | Hog reg win  54.3% [40.2%, 67.8%] n 46     Hog OT win  60.5% [52.8%, 67.7%] n 162    non-Hog reg win  57.3% [51.1%, 63.2%] n 255    OT share 68.6% reg-loss 13.5%
+SIM expl vs CXXXVIII (gap13k)  n  960 | Hog reg win  58.0% [44.2%, 70.6%] n 50     Hog OT win  44.3% [36.8%, 52.1%] n 158    non-Hog reg win  51.5% [45.1%, 57.8%] n 235    OT share 70.3% reg-loss 14.1%
+SIM expl vs CXXIV (STRUGGLE)   n  960 | Hog reg win  34.3% [20.8%, 50.8%] n 35     Hog OT win  48.9% [41.9%, 56.0%] n 190    non-Hog reg win  38.6% [31.2%, 46.5%] n 153    OT share 80.4% reg-loss 12.2%

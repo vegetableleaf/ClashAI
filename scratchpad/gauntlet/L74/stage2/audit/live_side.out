@@ -1,0 +1,64 @@
+S2-04 live-side fault audit (ladder-graded gated matches; flags defined in the docstring)
+
+== 13k Hog overtime: 13 matches, 1 won, 12 lost (deciding push found in 12/12)
+   fault      losses   5/ 12 = 41.7%   wins (most damaging push)   1/  1 = 100.0%
+   stall      losses   0/ 12 =  0.0%   wins (most damaging push)   0/  1 =  0.0%
+   gate_stuck losses   3/ 12 = 25.0%   wins (most damaging push)   1/  1 = 100.0%
+   starved    losses   2/ 12 = 16.7%   wins (most damaging push)   0/  1 =  0.0%
+   reader     losses   8/ 12 = 66.7%   wins (most damaging push)   0/  1 =  0.0%
+   no_answer  losses   0/ 12 =  0.0%   wins (most damaging push)   1/  1 = 100.0%
+   low_el     losses  10/ 12 = 83.3%   wins (most damaging push)   1/  1 = 100.0%
+   decide_ms median: losses 66.0  wins 62;  own elixir at the push: losses 2.67  wins 0.41
+   base rate (fault on the most damaging push of ALL CXXXVIII wins in the band): 8/35 = 22.9%
+== 12k Hog overtime (CXXIV, reference): 31 matches, 22 won, 9 lost (deciding push found in 9/9)
+   fault      losses   2/  9 = 22.2%   wins (most damaging push)  11/ 22 = 50.0%
+   stall      losses   0/  9 =  0.0%   wins (most damaging push)   0/ 22 =  0.0%
+   gate_stuck losses   0/  9 =  0.0%   wins (most damaging push)   5/ 22 = 22.7%
+   starved    losses   2/  9 = 22.2%   wins (most damaging push)   7/ 22 = 31.8%
+   reader     losses   7/  9 = 77.8%   wins (most damaging push)  18/ 22 = 81.8%
+   no_answer  losses   0/  9 =  0.0%   wins (most damaging push)   5/ 22 = 22.7%
+   low_el     losses   8/  9 = 88.9%   wins (most damaging push)  12/ 22 = 54.5%
+   decide_ms median: losses 82  wins 84.5;  own elixir at the push: losses 2.70  wins 3.30
+   base rate (fault on the most damaging push of ALL CXXIV wins in the band): 75/154 = 48.7%
+== 13k non-Hog regulation: 28 matches, 12 won, 16 lost (deciding push found in 15/16)
+   fault      losses   1/ 16 =  6.2%   wins (most damaging push)   2/ 12 = 16.7%
+   stall      losses   0/ 16 =  0.0%   wins (most damaging push)   0/ 12 =  0.0%
+   gate_stuck losses   0/ 16 =  0.0%   wins (most damaging push)   2/ 12 = 16.7%
+   starved    losses   1/ 16 =  6.2%   wins (most damaging push)   0/ 12 =  0.0%
+   reader     losses   6/ 16 = 37.5%   wins (most damaging push)   6/ 12 = 50.0%
+   no_answer  losses   0/ 16 =  0.0%   wins (most damaging push)   1/ 12 =  8.3%
+   low_el     losses  15/ 16 = 93.8%   wins (most damaging push)   4/ 12 = 33.3%
+   decide_ms median: losses 62.0  wins 58.0;  own elixir at the push: losses 1.87  wins 3.55
+   base rate (fault on the most damaging push of ALL CXXXVIII wins in the band): 8/35 = 22.9%
+== 12k non-Hog regulation: 140 matches, 58 won, 82 lost (deciding push found in 79/82)
+   fault      losses  23/ 82 = 28.0%   wins (most damaging push)  28/ 58 = 48.3%
+   stall      losses   2/ 82 =  2.4%   wins (most damaging push)   1/ 58 =  1.7%
+   gate_stuck losses   6/ 82 =  7.3%   wins (most damaging push)  17/ 58 = 29.3%
+   starved    losses  17/ 82 = 20.7%   wins (most damaging push)  11/ 58 = 19.0%
+   reader     losses  49/ 82 = 59.8%   wins (most damaging push)  34/ 58 = 58.6%
+   no_answer  losses   1/ 82 =  1.2%   wins (most damaging push)  11/ 58 = 19.0%
+   low_el     losses  65/ 82 = 79.3%   wins (most damaging push)  33/ 58 = 56.9%
+   decide_ms median: losses 82.0  wins 83.0;  own elixir at the push: losses 2.28  wins 3.29
+   base rate (fault on the most damaging push of ALL CXXIV wins in the band): 75/154 = 48.7%
+
+== explained share of each gap (upper bound: every EXCESS fault loss turned into a win)
+   13k Hog overtime         live win  7.7% (n 13)  SIM E4 65.5% (n 139)  gap +57.8 pp;  fault losses 5, excess over the all-wins rate 2.3 -> closes at most 17.4 pp = 30.1% of the gap  -> stays in Stage 2 (< half)
+   13k non-Hog regulation   live win 42.9% (n 28)  SIM E4 65.4% (n 312)  gap +22.5 pp;  fault losses 1, excess over the all-wins rate 0.0 -> closes at most  0.0 pp =  0.0% of the gap  -> stays in Stage 2 (< half)
+   12k non-Hog regulation   live win 41.4% (n 140)  SIM E4 57.3% (n 255)  gap +15.8 pp;  fault losses 23, excess over the all-wins rate 0.0 -> closes at most  0.0 pp =  0.0% of the gap  -> stays in Stage 2 (< half)
+
+== regulation by seat (all archetypes): our regulation WINS and regulation LOSSES, share of all matches
+   CXXXVIII  13k: live reg-win 21.8% reg-loss 24.4% (n 78)   SIM(E4) reg-win 26.1% reg-loss 13.5% (n 960)
+   CXXIV     12k: live reg-win 22.7% reg-loss 31.7% (n 300)   SIM(E4) reg-win 17.8% reg-loss 13.5% (n 960)
+   both seats under-take towers in the SIM if SIM reg-win < live reg-win AND SIM reg-loss < live reg-loss (-> engine-leaning)
+
+SIM comparison of the push-level flags: (b) the SIM rows (habit log) carry no per-push stall / elixir-at-push fields; the same review features would need SIM decision telemetry (cb_tel) -- not run.
+
+== reader-flag components over all gated matches (share of matches): losses | wins
+   CXXXVIII  cpu_starved > 0    34.9% (n 43) | 17.1% (n 35)
+   CXXXVIII  reader_closed > 0   0.0% (n 43) |  0.0% (n 35)
+   CXXXVIII  >= 3 unconfirmed   18.6% (n 43) | 17.1% (n 35)
+   CXXXVIII  freeze >= 5 s      14.0% (n 43) | 42.9% (n 35)
+   CXXIV     cpu_starved > 0    61.6% (n 146) | 67.5% (n 154)
+   CXXIV     reader_closed > 0   0.0% (n 146) |  0.0% (n 154)
+   CXXIV     >= 3 unconfirmed   12.3% (n 146) |  7.1% (n 154)
+   CXXIV     freeze >= 5 s      20.5% (n 146) | 35.1% (n 154)

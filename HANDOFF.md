@@ -1,3 +1,29 @@
+## 2026-10-18 08:15 EDT -- Stage 2 S2-01..08 results (checker-verified); Phase D (deck-conditioned opponent, imitation recipe) launched seeds A + B
+
+- Report: workflow stage2-tonight (wf_9955b7dc-4ae); ledger scratchpad/gauntlet/L74/stage2/LEDGER.md, gate/FROZEN.txt (sha
+  8ff35b58, written 23:42 EDT 10-17 BEFORE any result), phaseB.out, phaseC.out, diag/, audit/live_side.out. The independent
+  checker reproduced every cell (to 0.1 pp / 0.01 z).
+- Phase B: all 6 no-training options FAIL. Best B5 (exploiter) passes non-Hog regulation by stalling into OT (70-75%).
+- Phase C (Hog pair, il = gen_v32_s0 init vs e4 = RAW E4 init; 65 upd vs frozen CXXXVIII): no checkpoint passes. il u0065
+  fails only 13k Hog win (51.2% vs live 6 / 21, z -2.06). At equal strength il has -7.2 pp less OT share (13k) -> imitation =
+  a better base (b), NOT shown necessary.
+- STRUCTURAL: live 13k CXXXVIII vs Hog 28.6% < 12k CXXIV 59.3% (-30.7 pp), but in the SIM CXXXVIII beats CXXIV vs every opponent
+  -> both Hog cells pass only in a 0-1.5 pp window: either the 13k cell (n 21) is noise, or 13k players have something the SIM
+  lacks.
+- Live-side audit: our faults explain at most ~30% of the 13k Hog-OT gap. Elixir < 4 when the deciding push arrives: losses 79-94%
+  vs wins 33-57%.
+- Known weaknesses:
+  - the train and gate deck pools overlap 100% (weights differ only)
+  - the frozen gate's code uses a pooled z, its text an unpooled one (no verdict flips)
+  - B0-B5 scored the 13k band on the 12k level table (no verdict change)
+- Owner wants the deck-conditioned opponents done before the budget cut -> Phase D launched 12:14 UTC:
+  - s2_all_il_sA on 64.247.206.76:13396, s2_all_il_sB on 64.247.206.120:19834 (130 upd, ~8.7 h each)
+  - F1 (opponent tower shaping) skipped: the checker shows it is not aimed at the failing cell
+  - launcher bug fixed: `pgrep -f 'bash /workspace/s2/s2chain.sh'` self-matched its own ssh command line, so the chain never
+    started -> anchored ps check
+- Hero Bowler (owner note 10-18): 220 opponent plays in 52 / 2,054 matches (0.18% of plays). The SIM models the siege ability
+  (card.rs SiegeDef); the opponent presses via the v2 rule. Owed: a designed siege scenario to measure the model's counter
+  (Knight / Skeletons distraction, Tesla on top); upweight if it is weak.
 ## 2026-10-18 07:51 EDT -- UNDER-DAMAGE v2 verified "land with record fixes"; landing worker started; P3 disk-full incident 07:09 UTC
 
 - v2 verifier (P3 /workspace/w_v6t; laptop scratchpad v6t_out/): reproduces exactly vs v5d_th_full: full 0.9139 -> 0.9150 (+17

@@ -1,0 +1,24 @@
+Stage-2 gate FROZEN 2026-10-18T03:42:34Z (2026-10-18 ~00:0x EDT), BEFORE any candidate gate result was read.
+Gate = gate/gate_s2.py (full: 9 primary cells + 2 omnibus; hog: 4 cells) on gate/gate_fit.py; live side = live_targets.json (ladder-graded).
+Bands: 13k = CXXXVIII start >= 13000 (n 78), levels = stage2/levels/levels13k.json; 12k = CXXIV 12000-12999 (n 300), levels = L74/levels/live_levels.json.
+One checkpoint and one opponent setting must pass both bands; only the level table differs. No multiplicity correction (PLAN).
+Measured false-fail rate of a PERFECT opponent set (gate/falsefail.py, 400 parametric-bootstrap reps each; ffdiag 200 reps agrees: 32/34/34%):
+  full gate, SIM n 960 per Mark: false-fail 128/400 = 32.0% (+- 4.6%)
+  full gate, SIM n 1920 per Mark: false-fail 169/400 = 42.2% (+- 4.8%)
+  hog gate, SIM n 960 per Mark: false-fail 78/400 = 19.5% (+- 3.9%)
+  -> the full gate fails a perfect opponent about 1 time in 3 (PLAN expected 20-30% (b); measured 32-42% (a)); the hog gate about 1 in 5.
+  Each single cell is calibrated (4-6% per cell, 5% nominal); the rate comes from 11 tests, not from a biased cell.
+Note: the E4 T .1 baseline (existing ref_cxxxviii / ref_u250 promotion rows, already reported in e4_gate.out) was re-scored once with gate_s2.py
+      before this freeze (9th cell 58.6%, z +3.67 FAIL); no gate code changed after that. It is the known baseline, not a candidate.
+sha256:
+  dd57df9e4fc290ef142524dfd1efbbe4a755f9a9d033ab8db9c100126f2d8bfc  L74/stage2/gate/gate_fit.py
+  29f404245e42ac890b2482a075c8bf29fb13c12bd7a1e6e3c1c5570c3166390a  L74/stage2/gate/gate_s2.py
+  cbee1bd5d7a5ad6b59f10ec261210610ab032aa3602c3e9e2f2504b9302fd044  L74/stage2/gate/live_targets.json
+  a5ac9e5d0787ab7dadeee59b8b7433d72bd44ed0d2122ddeb2a518d45d474ddf  L74/stage2/gate/gate_holdout.txt
+  c900e09a5f6ac293ad345e55d607c3e1d5a2af426dc0830f805b6f12610d053c  L74/stage2/gate/section3_gate_spec.txt
+  ae9a722060e08a41a520a6ec0b4813a388a591baec47342d64f291cc5e08a05a  L74/stage2/gate/falsefail.py
+  3547c8d3228a18225e1a4adba5da0fcb877ab18fe40ae93ca40672405343cd7a  L74/stage2/levels/levels13k.json
+  b32c0c76f085e902befb2347c23782d029077cc3586bbc5112beee96dc91f57e  L74/levels/live_levels.json
+  ae52f472288594b6521590fb740d351548c1a79a43d7c9c60b940f6343faffe7  L74/stage2/mvp/decks_hog_eval.json
+  b3792b779bcf76b1b5e57d14460d3121ff03197dd8336fe8fefdad9c0e59a27a  L74/mix/decks_live_eval.json
+  11c3724f2a10754fddc20286dd70125f7b87c952b7a9d52b1a62c173a4416636  L73/live_eval/live_eval.py
