@@ -305,6 +305,35 @@ def phase3_births(path):
     return {}
 
 
+def phase3_shields(path):
+    """{tick: {generation id: shield hp}} for every body whose phase-3c capture row carries a shield (shield_max_raw > 0:
+    Guards, Royal Recruits, Dark Prince, Evo Wizard, Hero Knight; READER_PHASE3C.md), from the first capture of this frame
+    log that has the 3c fields; {} without one (older captures). PARITY_ATTACKS=<file>: its '_shields' rows."""
+    if os.environ.get('PARITY_ATTACKS'):
+        rows = json.loads(Path(os.environ['PARITY_ATTACKS']).read_text()).get('_shields', {}).get(Path(path).name, {})
+        return {int(t): {int(g): v for g, v in u.items()} for t, u in rows.items()}
+    for run in p3_runs():
+        try:
+            if json.loads(run.read_text()).get('live_log') != Path(path).name:
+                continue
+        except ValueError:
+            continue
+        out = {}
+        with open(run.parent/'frames.jsonl', 'rb') as f:
+            for raw in f:
+                if b'shield_max_raw' not in raw:
+                    continue
+                j = json.loads(raw); p = j.get('phase3') or {}
+                if p.get('valid'):
+                    u = {b['generation']: b['shield_hp_raw'] for b in p.get('bodies', [])
+                         if (b.get('shield_max_raw') or 0) > 0 and b.get('shield_hp_raw') is not None}
+                    if u:
+                        out[j['game_tick']] = u
+        if out:
+            return out
+    return {}
+
+
 def tracks(frames):
     tr = {}
     for t, bodies in frames:
@@ -666,10 +695,20 @@ def deployments(m, catalog, life=None, own_unit=None, stats=None):
         out.append(dict(kind='play', side=m['side'], name=p['name'], form=p['form'], tick=round(p['tick']+delay+wait),
                         x=p['x'], y=p['y'], n=0, source='own_spell_tap+delay', tap=p['tick'], spell_spawned=False,
                         elixir_wait=round(wait), jit=jit))
+    # H-PRESS-DEAD (diag_night/r6b): a press replayed from its tap (no cast seen) needs an own Hero Ice Wizard on the board at
+    # its tick; with none on the last frame at or before it, the live press did nothing (5 of the 20 tap-only presses of the
+    # 126 upgraded matches; 055812@4019 the hero died on 4175, the press estimate fell on 4189 and the SIM, whose hero
+    # lived on, froze an Electro Giant the live one never was).
+    own_hero = {t for t, bodies in m['frames'] if any(bd['side'] == m['side'] and not bd['tower'] and
+                (catalog.get(bd['card_id']) or {}).get('display_name') == 'IceWizard' and
+                form_of(bd['card_id'], catalog[bd['card_id']]) == 2 for bd in bodies)}
     for a in m['abilities']:
         wait = elixir_wait(a['tick'], a.get('elixir'), HERO_IW_ABILITY_COST)
         tick = round(a['tick']+delay+wait)
         if any(e['kind'] == 'ability' and e['side'] == m['side'] and abs(e['tick'] - tick) <= 30 for e in seen):
+            continue
+        k = bisect_left(ticks, tick + 1) - 1
+        if k < 0 or ticks[k] not in own_hero:
             continue
         out.append(dict(kind='ability', side=m['side'], name='IceWizard', tick=tick, source='own_press',
                         elixir_wait=round(wait), jit=jit))
@@ -844,6 +883,10 @@ class Engine:
             sv = json.loads(b.save()); after = json.loads(json.dumps(sv))
             for ev in after['players'][1]['evo']:
                 ev['plays'] = ev['cycles']
+            # H-FORM-ELIXIR (diag_night/r6c): the probe's elixir topped up, as child_entity's: a 7-elixir card (Evo Mega
+            # Knight, Evo P.E.K.K.A., Evo Electro Giant, Evo Royal Recruits) was refused at the reset's start elixir, so
+            # every set-up body of those forms flagged setup_form_not_set (345 fights with a set-up Evo Mega Knight, 0 strict)
+            after['players'][1]['mana'] = after['calib']['max_mana']*after['mana_unit']
             if after != sv:
                 load_edited(b, sv, after)
             n0 = len(json.loads(b.save())['ents']['card'])
@@ -1346,7 +1389,7 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
             x, y = near; flags['setup_snapped'] += 1
         spawns.append((bd['side'], eng.ids[name], round(x*18), round(y*18), max(1, bd['hp'])))
         setup.append(dict(id=bd['id'], side=bd['side'], x=x, y=y, card_id=bd['card_id'], proxy=name != catalog[bd['card_id']]['display_name'],
-                          worn=bd['hp'] < bd['max_hp']))
+                          worn=bd['hp'] < bd['max_hp'], as_card=name))
     for bd in start:
         if bd['tower']:
             continue
@@ -1594,14 +1637,30 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
     # A shield breaks before any hp is lost, but a setup spawn gets a full one: a setup body below its max_hp has none left
     # (diag1016: Royal Recruits and Dark Princes kept a shield the live unit had lost, and the Log broke it instead of
     # hitting hp).
-    worn = [bd for bd in setup if bd.get('worn')]
+    # H-SHIELD-3C (diag_night/r6b): a capture with the reader's phase-3c rows shows every body's shield hp: the setup body
+    # gets exactly that (and the ceiling does not redraw it, perturb). 201510@3062: Royal Recruits at full hp whose shields
+    # were gone took the Log's and our Ice Wizard's damage on their hp live; the set-up ones carried full shields. A body
+    # with no row keeps the rule above.
+    stick = max((t for t in m.get('shields') or {} if t0 - 2 <= t <= t0), default=None)
+    sh_now = m['shields'][stick] if stick is not None else {}
+    gen0 = {x['id']: x.get('gen') for x in start}
+    shield_seen = {bd['id'] for bd in setup if gen0.get(bd['id']) in sh_now}
+    worn = [bd for bd in setup if bd.get('worn') or bd['id'] in shield_seen]
     if worn:
         before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
         team = ('Blue', 'Red')
         for bd in worn:
             i = next((i for i in range(len(E['card'])) if E['alive'][i] and E['team'][i] == team[bd['side']]
                       and E['pos'][i] == {'x': round(bd['x']*18), 'y': round(bd['y']*18)} and E['kind'][i] in ('Troop', 'Building')), None)
-            if i is not None and E['shield'][i] > 0:
+            if i is None:
+                continue
+            if bd['id'] in shield_seen and E['shield'][i] > 0:
+                # a native shield only (the SIM's setup gives one): an ability shield (the Hero Knight's) is not a setup column
+                v = min(E['shield'][i], max(0, sh_now[gen0[bd['id']]]))
+                if v != E['shield'][i]:
+                    flags['setup_shield_seen_set'] += 1
+                E['shield'][i] = v; flags['setup_shield_seen'] += 1
+            elif bd.get('worn') and bd['id'] not in shield_seen and E['shield'][i] > 0:
                 E['shield'][i] = 0; flags['setup_shield_broken'] += 1
         if after != before:
             try:
@@ -1629,6 +1688,12 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
             elif k == 'target':
                 j = ent(E, v) if v else None
                 E['target'][i] = {'index': j, 'generation': E['generation'][j]} if j is not None else None
+            elif k == 'fired_at':
+                j = ent(E, v) if 'fired_at' in E else None
+                if j is None:
+                    flags['setup_fired_at_not_set'] += 1
+                else:
+                    E['fired_at'][i] = {'index': j, 'generation': E['generation'][j]}
             elif k.startswith('dash_') and k not in E:
                 flags['setup_dash_no_field'] += 1     # a runtime without the dash columns
             else:
@@ -1828,6 +1893,36 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
             except Exception:
                 flags['setup_snipe_not_set'] += 1
 
+    # H-MK-SEQ (diag_night/r6c): an Evo Mega Knight's uppercut is the swing his phase-3 attack row shows at sequence 0
+    # (seq_idx flips 0 -> 1 -> 0 at each swing, a jump leaves it; mkseq.py: 59 / 59 first swings at 0, 66 / 66 jumps
+    # unchanged, all 32 throws on a sequence-0 swing). A set-up one starts with no count in the SIM (save()['evo']
+    # ['uppercut_counts']: [unit, count]; his next swing's count is (count + 1) % 2, an uppercut on 0), so his next swing
+    # is set from his t0 row: seq 0 -> count 1; seq 1 -> 0 (or 2, below). ponytail: every = 2 (the only Evo Mega Knight).
+    att = m.get('attacks') or {}
+    if att:
+        before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
+        uc = (after.get('evo') or {}).get('uppercut_counts')
+        live0 = {x['id']: x for x in start}
+        for bd in (setup if uc is not None else ()):
+            c = catalog.get(bd['card_id']) or {}
+            if bd.get('proxy') or c.get('display_name') != 'MegaKnight' or form_of(bd['card_id'], c) != 1:
+                continue
+            g = (live0.get(bd['id']) or {}).get('gen')
+            row = next((att[t][g] for t in range(t0, t0 - 7, -1) if g is not None and g in att.get(t, {})), None)
+            i = ent(E, ('body', bd))
+            if row is None or row[5] not in (0, 1) or i is None:
+                flags['setup_mk_seq_unseen'] += 1; continue
+            # seq 1: his last swing was the uppercut; the fork's combat.UPPERCUT_STAND = client16402_after_throw holds him in
+            # its stand on a count of 0 and not on 2 (a killing uppercut, the same parity): 0 only while he stands (state 0)
+            n = 1 if row[5] == 0 else 0 if (live0.get(bd['id']) or {}).get('state') == 0 else 2
+            uc[:] = [u for u in uc if u[0]['index'] != i] + [[{'index': i, 'generation': E['generation'][i]}, n]]
+            flags['setup_mk_seq:%d' % row[5]] += 1
+        if after != before:
+            try:
+                load_edited(b, before, after)
+            except Exception:
+                flags['setup_mk_seq_not_set'] += 1
+
     # An invisible-when-idle unit (the Royal Ghost: card table idle_invisibility; target.rs `invisible_at`) is visible from
     # the tick after its last hit (state.rs: reveal_from = hit + 1) for its idle time + 5 ticks; a set-up one has
     # reveal_from 0, "hidden from its first frame to its first hit", so no enemy could target a Ghost the live game showed
@@ -1994,7 +2089,7 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
         ticked = sorted(((e['tick'] if rng is None else jitter_tick(e, rng)), i) for i, e in enumerate(evs))
         if rng is not None:
             b.load(base.encode() if isinstance(base, str) else base)
-            perturbed.update(perturb(eng, rng, hist, who, towers0, seen_hide, inferred, observed))
+            perturbed.update(perturb(eng, rng, hist, who, towers0, seen_hide, inferred, observed, shield_seen))
         rows = []                  # (tick, live bodies, sim bodies)
         cursor = 0; refused = Counter(); over = False
         for tick, live in frames:
@@ -2105,7 +2200,7 @@ def engagement(m, fight, eng, catalog, back=60):
     return info
 
 
-def perturb(eng, rng, hist, who, towers0, seen=None, inferred=None, observed=()):
+def perturb(eng, rng, hist, who, towers0, seen=None, inferred=None, observed=(), shield_seen=()):
     """Redraw, on the freshly set-up board, the per-unit state the reader cannot see, within what the live frames of the
     last 3 s allow (engagement(); CEILING.md). Per body or tower on the t0 board:
       * enemy in reach at t0 for e ticks: target uniform over the enemies in reach (a tower lock is kept); swing progress
@@ -2151,7 +2246,7 @@ def perturb(eng, rng, hist, who, towers0, seen=None, inferred=None, observed=())
             out['no_history'] += 1
             continue
         e_t, r_t, near = h
-        if E['shield'][i] > 0 and near:
+        if E['shield'][i] > 0 and near and lid not in shield_seen:
             E['shield'][i] = rng.randint(0, E['shield'][i]); out['shield'] += 1
         if lid in observed:
             out['attack_observed'] += 1
@@ -2657,7 +2752,7 @@ def start_state(eng, m, fight, setup, start, events, catalog):
 
 def phase3_state(eng, m, fight, setup, start, catalog):
     """Logs with phase-3 rows (m['attacks']): ([(ref, {SIM entity field: value})], {live id}, flags) -- the attack state
-    of every t0-board body (setup bodies and towers, not proxies) as the reader shows it at t0, or at t0 - 1 advanced one
+    of every t0-board body (setup bodies, proxies included, and towers) as the reader shows it at t0, or at t0 - 1 advanced one
     tick by the measured rule (ATTACK_PHASE_1016: progress += step, 50 / 35 under an Ice Wizard slow / 0 frozen,
     carried across hits; the load timer re-armed to LoadTime on the crossing tick, else -50, held while frozen):
       * attack_ms = progress (the SIM's count-up counter, same rule), attack_load_ms = load;
@@ -2666,7 +2761,18 @@ def phase3_state(eng, m, fight, setup, start, catalog):
         the SIM sets it after a step (projectile attackers in Windup; probed on 0.1.35: Musketeer / X-Bow 1, Knight /
         Tesla 0).
     Not set (no SIM field): the previous target, the pre-attack countdown, the attack-sequence index (flagged when
-    non-zero). The live ids returned are observed: the ceiling does not redraw their attack state (perturb)."""
+    non-zero). The live ids returned are observed: the ceiling does not redraw their attack state (perturb).
+    H-PROXY-P3 (diag_night/r6b): a child set up as the card whose own unit it is (a Witch's / Tombstone's / Graveyard's
+    Skeleton as a Skeletons body) is seeded too, with that card's HitSpeed / LoadTime (the unit the SIM runs), and can be
+    a target: before, its row was skipped, so it walked from t0 with no target while live it was on our Knight
+    (200646@3233: 4 Witch skeletons), and every body on it lost its target (setup_p3_target_unresolved).
+    H-FIRED-AT (diag_night/r6b): fired_at = the target, for a projectile attacker (a body whose card fires one, a crown
+    tower) the reader shows launching at it since it took it (a proj row from it at that target since the rows last
+    named another): the SIM's record of a launch at its target, which keeps a doomed target (targeting.DOOMED_TARGET_DROP:
+    a projectile attacker drops a unit the shots in flight will kill unless it has shot at it). A setup body had none, so
+    the in-flight shot injected at t0 doomed its own target and the attacker let go of it: 180704@2074, our X-Bow's bolt at
+    a 32 hp Skeleton -> the SIM X-Bow took the princess tower on t0 + 2, live it kept the Skeleton and then shot the
+    Hero Knight deploying 8 tiles away."""
     att = m.get('attacks') or {}
     t0 = fight['t0']
     tb = max((t for t in att if t0 - 1 <= t <= t0), default=None)
@@ -2681,7 +2787,7 @@ def phase3_state(eng, m, fight, setup, start, catalog):
     buffs = (m.get('buffs') or {}).get(max((t for t in m.get('buffs') or {} if t0 - 6 <= t <= t0), default=None), {})
     fmap = {}
 
-    def post_kill_wait(g, tg, prog):
+    def post_kill_wait(g, tg, prog, late=False):
         """H-POSTKILL (diag_night/r5a): the SIM retarget_wait at t0 of a unit serving combat.POST_KILL_RETARGET_WAIT, or 0.
         Live: its target died on frame L (the first row without it; the victim is off the board there), it has held its
         progress with no target since, and it takes its next target on L + 6. The engine counts the wait from the tick
@@ -2690,7 +2796,12 @@ def phase3_state(eng, m, fight, setup, start, catalog):
         Knight on t0 + 2, live they waited and took the nearer new Skeleton on 1055). Only a loss 2 or more ticks before
         t0 is seeded: one tick with no target and the progress held is also what a unit exempt from the wait shows (it
         takes its next target on L + 1; v1 seeded our X-Bow and a princess tower so, 113130@1660, 144040@2953,
-        141107@819)."""
+        141107@819).
+        H-POSTKILL-T0 (diag_night/r6d): `late` (a unit with no projectile, no attack-finish override, no load-first-hit:
+        what the SIM's wait never exempts) also seeds a loss on t0 - 1 or t0 itself (rw 5, 6). Live, those units took their
+        next target on exactly L + 6 in 140 of 162 such cases on the strict t0 boards of the 359 FIN9 logs (melee 94 / 109,
+        projectile-less buildings 46 / 53; upgraded only 52 / 62; pkcensus.py); the projectile units and towers, which show
+        the exemption, took theirs on L + 2 in 60 of 79 losses on t0 and stay unseeded."""
         if tg is not None or prog <= 0:
             return 0
         rows = [(t, att[t][g]) for t in sorted(att) if t0 - 7 <= t <= tb and g in att[t]]
@@ -2703,20 +2814,23 @@ def phase3_state(eng, m, fight, setup, start, catalog):
         if any(o.get('gen') == victim and o['hp'] > 0 for o in fmap.get(L, ())):
             return 0          # the target is still on the board: a switch or a walk out of reach, no kill
         rw = L + 6 - t0
-        return rw if 1 <= rw <= 4 else 0
+        return rw if 1 <= rw <= (6 if late else 4) else 0
     for g, (tg, _prev, prog, load, pre, seq) in att[tb].items():
         bd = gens.get(g)
-        r = ref_of(bd) if bd and (bd['tower'] or not by.get(bd['id'], {}).get('proxy')) else None
+        r = ref_of(bd) if bd else None
         if r is None or (bd['tower'] and bd['hp'] <= 0):
             continue
-        st = eng.stats(eng.tower_name(bd['side'], bd['id'].endswith('K')) if bd['tower'] else catalog[bd['card_id']]['display_name'])
+        st = eng.stats(eng.tower_name(bd['side'], bd['id'].endswith('K')) if bd['tower'] else
+                       by[bd['id']].get('as_card') or catalog[bd['card_id']]['display_name'])
         hs, lt = st.get('hit_speed_ms') or 0, max(0, st.get('load_time_ms') or 0)
         if hs <= 0:
             flags['setup_p3_no_hit_speed'] += 1; continue
+        flags['setup_p3_proxy'] += bool(not bd['tower'] and by[bd['id']].get('proxy'))
         names = [n for n, _ in buffs.get(g, ())]
         # ponytail: Freeze / Rage-type buffs other than these names step 50; add their multipliers if a capture shows one
         step = 0 if any('Freeze' in n or n in STUN_BUFFS for n in names) else 35 if any(n in SLOW_BUFFS for n in names) else 50
-        wait = post_kill_wait(g, tg, prog)
+        wait = post_kill_wait(g, tg, prog, late=not bd['tower'] and not st.get('projectile') and not st.get('override_attack_finish')
+                              and not st.get('load_first_hit'))
         if tb < t0:
             if prog > 0 and not wait:         # the wait holds the progress (its load runs down: 112814 Prince 900, 800, 700)
                 load = lt if (prog + step)//hs > prog//hs else load if step == 0 else max(0, load - 50)
@@ -2726,13 +2840,23 @@ def phase3_state(eng, m, fight, setup, start, catalog):
         tref = None
         if tg is not None:
             tbd = gens.get(tg)
-            tref = ref_of(tbd) if tbd and (tbd['tower'] or not by.get(tbd['id'], {}).get('proxy')) else None
+            tref = ref_of(tbd) if tbd else None
             if tref is None:
                 flags['setup_p3_target_unresolved'] += 1
         phase = 'Idle' if prog <= 0 else 'Cooldown' if prog % hs < step else 'Windup'
+        fired = None
+        if tref is not None and (bd['tower'] or st.get('projectile')):
+            since = tb          # the first row of the run of rows naming tg that ends at tb (100 ticks at most)
+            for t in range(tb - 1, t0 - 101, -1):
+                if g in att.get(t, ()):
+                    if att[t][g][0] != tg:
+                        break
+                    since = t
+            if any(q[7] == bd['id'] and q[8] == tbd['id'] for t in range(since - 2, t0 + 1) for q in (m.get('proj') or {}).get(t, ())):
+                fired = tref; flags['setup_p3_fired_at'] += 1
         out.append((r, dict(attack_ms=prog, attack_load_ms=load, attack_phase=phase, target=tref,
                             target_locked=bool(st.get('projectile')) and phase == 'Windup' and tref is not None,
-                            **({'retarget_wait': wait} if wait else {}))))
+                            **({'retarget_wait': wait} if wait else {}), **({'fired_at': fired} if fired else {}))))
         flags['setup_p3_postkill_wait'] += bool(wait)
         seen.add(bd['id']); flags['setup_p3_attack'] += 1
         flags['setup_p3_pre_unset'] += pre != 0
@@ -2954,6 +3078,7 @@ def run_match(path, window, out_dir, ceiling=0):
     fights = cut(m, events, window)
     m['buffs'] = phase2_buffs(path) if m['ext'] else {}
     m['attacks'] = phase3_attacks(path) if m['ext'] else {}
+    m['shields'] = phase3_shields(path) if m['ext'] else {}
     # levels from the bodies' max_hp: per (side, card); '*' = the side's modal level for cards never seen as a body
     levels, seen = {}, Counter()
     for t, bodies in m['frames']:
@@ -3375,6 +3500,8 @@ def main():
         out = {n: phase3_attacks(n) for n in sorted(filter(None, logs))}
         # phase-3b creation ticks per generation id (phase3_births), for the logs whose capture has them
         out['_births'] = {n: b for n in sorted(filter(None, logs)) for b in [phase3_births(n)] if b}
+        # phase-3c shield hp per generation id (phase3_shields), for the logs whose capture has them
+        out['_shields'] = {n: s for n in sorted(filter(None, logs)) for s in [phase3_shields(n)] if s}
         a.out.write_text(json.dumps(out, separators=(',', ':')))
         print({n: len(v) for n, v in out.items()}); return 0
     if a.mode == 'score':

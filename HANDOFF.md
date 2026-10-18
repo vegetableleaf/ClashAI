@@ -1,3 +1,28 @@
+## 2026-10-18 04:58 EDT -- parity round 6: harness fixes LANDED (r6b joint, H-POSTKILL-T0, H-FORM-ELIXIR + H-MK-SEQ), every one independently reproduced
+
+- Workflow parity-round6 (wf_72d868ba-9f3): 4 buckets + one verifier per 'land' patch, each verifier on a clean HEAD tree.
+  Measured vs FIN9:
+  - r6b joint H_r6b_all.patch (H-PROXY-P3 + H-FIRED-AT + H-SHIELD-3C + H-PRESS-DEAD): upgraded +27 / -3, OVERALL 0.9228 -> 0.9279
+    [0.917, 0.939]; own X-Bow 0.976 [0.958, 0.990] MEETS; own Log 0.971 [0.954, 0.986] MEETS; opp Valkyrie, opp Hero Knight
+    MEET. Full +70 / -13, 0.9124 -> 0.9163.
+  - r6d H-POSTKILL-T0 (a unit whose target left on its t0 row waits L + 6 - t0; projectile units exempt): upgraded +2 / -1,
+    full +9 / -3.
+  - r6c H-FORM-ELIXIR (form probes top up elixir: 140 more upgraded fights become scoreable, 0 verdicts moved; the headline drops
+    0.9228 -> 0.9181 because the new fights score lower; the honest count) + H-MK-SEQ (a set-up Evo MK's swing count from the
+    reader): marginal full +8 / -2.
+- Applied in sequence on 1d5f209-era fights.py (unchanged since). H-POSTKILL-T0's hunk 3 + its test were applied by hand after
+  r6b's context change (one line: `rw <= (6 if late else 4)`; the test appended). No landed H- tag removed; pyflakes clean;
+  parity tests 90 pass (5 known bundle-only failures).
+- NOT landed:
+  - H-ORDER (set-up creation order; +21 / -13 upgraded, +83 / -55 full): verifier needs_work.
+  - H-STEER (facing / avoidance seed): 30 / 30 full.
+  - H-NEGHP: land after more data.
+  - H-SHOT-AIM: null.
+- Data vs error (r6a): at today's agreement, Log needs ~634 upgraded fights and X-Bow ~590 to clear 0.95 by data alone. IW
+  hero 0.945, Skeletons 0.893, Knight 0.936, Tesla 0.915: more data cannot help, the errors must be fixed. OVERALL needs raw
+  ~0.986 for its lower CI to reach 0.975.
+- Fork laws verified 'land' (next commit): S-RING-STUN (+8 / -0 upgraded, +23 / -2 full), S-REFLECT-HELD (+2 / -0), S-UPPERCUT-COUNT
+  (+3 / -1), S-UPPERCUT-STAND (0 / 0 upgraded, +3 / -2 full). S-TESLA-UNDER-DAMAGE v2 is with its verifier.
 ## 2026-10-18 03:59 EDT -- ROOT CAUSE: training presses the Hero IW with the GENERIC rule (~5.4 / match), eval + live with the LIVE rule (~1.9); every Hero-IW model so far trained mismatched
 
 - Diagnosis (scratchpad/gauntlet/L74/ability_live/overpress/NOTES.md; eval rows pod_backup_weekend/overpress/):

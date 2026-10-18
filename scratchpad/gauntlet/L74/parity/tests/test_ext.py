@@ -88,6 +88,21 @@ def test_seen_spells_and_hero_casts_are_events():
     assert not any(e.get('spell_spawned') for e in ev)                         # the barrel's goblins come from the cast
 
 
+def test_a_tap_only_press_needs_a_live_own_hero(tmp_path):
+    """H-PRESS-DEAD: an own Hero IW press replayed from its tap (no cast seen) is kept only with an own Hero IW on the last frame
+    at or before its tick."""
+    HIW = next(k for k, v in CAT.items() if v['display_name'] == 'IceWizard' and F.form_of(k, v) == 2)
+    hero = [[1, 9000, 20000, HIW, 1000, 1000, 15, 'h']]
+    def press(alive_until):
+        ev = [HAND] + [xframe(t, hero if t <= alive_until else []) for t in range(100, 200, 2)]
+        ev += [dict(event='ability', tick=120, elixir=9), dict(event='ability_confirmed', tick=121)]
+        m, _ = F.read_match(write(tmp_path, ev, f'live_play_20261016_1200{alive_until % 100:02d}.jsonl'))
+        events, delay = F.deployments(m, CAT)
+        return [e for e in events if e['kind'] == 'ability']
+    assert len(press(198)) == 1                     # the hero lives through the press
+    assert press(130) == []                         # the hero died before the press tick (tap + delay)
+
+
 def test_old_log_events_have_no_seen_casts():
     m = ext_match(); m['ext'] = False
     ev, _ = F.deployments(m, CAT, LIFE)
@@ -235,7 +250,8 @@ def test_spawner_timer_from_the_last_wave_seen():
 def test_phase3_state_seeds_target_and_attack_from_the_reader():
     """Phase-3 rows at t0 set attack_ms / load / phase / target as read; a row one tick old is advanced by the measured
     rule (slowed Knight 1190 -> 1225 crosses 1200: load re-armed, Cooldown; frozen: held); a proxy body, a target off
-    the board and the fields the SIM lacks are flagged, not set. The seeded ids are returned as observed."""
+    the board and the fields the SIM lacks are flagged, not set. The seeded ids are returned as observed. H-PROXY-P3: a proxy
+    body (a child set up as another card) is seeded with its setup card's HitSpeed (as_card: Xbow 400, so 800 is a fire tick)."""
     XBOW = next(k for k, v in CAT.items() if v['display_name'] == 'Xbow' and k < 100000000)
     class E3(Eng):
         S = dict(Eng.S, Knight=dict(hit_speed_ms=1200, load_time_ms=700), Xbow=dict(hit_speed_ms=400, projectile=dict(speed=1)),
@@ -244,18 +260,20 @@ def test_phase3_state_seeds_target_and_attack_from_the_reader():
                                          tower=False, gen=g)
     start = [bd('k', KNIGHT, 1), bd('x', XBOW, 2), bd('f', KNIGHT, 3), bd('p', KNIGHT, 4), bd('e', KNIGHT, 5, 0),
              dict(id='T0L', side=0, x=3500, y=6500, hp=3052, tower=True, gen=9)]
-    setup = [dict(id=b['id'], side=b['side'], x=b['x'], y=b['y'], proxy=b['id'] == 'p') for b in start if not b['tower']]
+    setup = [dict(id=b['id'], side=b['side'], x=b['x'], y=b['y'], proxy=b['id'] == 'p', **({'as_card': 'Xbow'} if b['id'] == 'p' else {}))
+             for b in start if not b['tower']]
     rows = {1: [5, None, 1190, 0, 0, 0], 2: [9, 5, 2400, 0, 0, 1], 3: [5, None, 1850, 300, 0, 0],
-            4: [5, None, 600, 0, 0, 0], 5: [77, None, 0, 200, 40, 0]}
+            4: [5, None, 800, 0, 0, 0], 5: [77, None, 0, 200, 40, 0]}
     m = dict(attacks={100: rows}, buffs={98: {1: [('IceWizardHeroSlow', 2000)], 3: [('IceWizardHeroFreeze', 999999)]}})
     edits, seen, flags = F.phase3_state(E3(), m, dict(t0=100), setup, start, CAT)
     got = {r[1]['id']: kv for r, kv in edits}
-    assert seen == {'k', 'x', 'f', 'e'} and 'p' not in got                      # the proxy is not seeded
+    assert seen == {'k', 'x', 'f', 'p', 'e'}                                    # the proxy is seeded (H-PROXY-P3)
+    assert got['p'] == dict(attack_ms=800, attack_load_ms=0, attack_phase='Cooldown', target=('body', setup[4]), target_locked=False)
     assert got['k'] == dict(attack_ms=1190, attack_load_ms=0, attack_phase='Windup', target=('body', setup[4]), target_locked=False)
     assert got['x'] == dict(attack_ms=2400, attack_load_ms=0, attack_phase='Cooldown', target=('tower', 0, 3500, 6500),
                             target_locked=False)                                # fire tick: Cooldown, so unlocked
     assert got['e']['target'] is None and got['e']['attack_phase'] == 'Idle'
-    assert flags == dict(setup_p3_attack=4, setup_p3_target_unresolved=1, setup_p3_pre_unset=1, setup_p3_seq_unset=1)
+    assert flags == dict(setup_p3_attack=5, setup_p3_target_unresolved=1, setup_p3_pre_unset=1, setup_p3_seq_unset=1, setup_p3_proxy=1)
     m['attacks'] = {99: rows}                                                   # one tick old: advanced
     got = {r[1]['id']: kv for r, kv in F.phase3_state(E3(), m, dict(t0=100), setup, start, CAT)[0]}
     assert (got['k']['attack_ms'], got['k']['attack_load_ms'], got['k']['attack_phase']) == (1225, 700, 'Cooldown')
@@ -264,6 +282,26 @@ def test_phase3_state_seeds_target_and_attack_from_the_reader():
     assert got['e']['attack_load_ms'] == 150
     m['attacks'] = {98: rows}                                                   # older than one tick: nothing
     assert F.phase3_state(E3(), m, dict(t0=100), setup, start, CAT)[0] == []
+
+
+def test_phase3_state_seeds_fired_at_from_a_launch_since_the_target_was_taken():
+    """H-FIRED-AT: a projectile attacker (the X-Bow) whose proj row at its t0 target shows since its rows began naming that
+    target gets fired_at = it; a shot from before the switch, or a melee attacker (the Knight) with a row, gets none."""
+    XBOW = next(k for k, v in CAT.items() if v['display_name'] == 'Xbow' and k < 100000000)
+    class E3(Eng):
+        S = dict(Eng.S, Knight=dict(hit_speed_ms=1200, load_time_ms=700), Xbow=dict(hit_speed_ms=400, projectile=dict(speed=1)))
+    bd = lambda i, card, g, side=1: dict(id=i, side=side, x=9000, y=10000 + g, card_id=card, hp=500, max_hp=500, kind=13,
+                                         tower=False, gen=g)
+    start = [bd('x', XBOW, 2), bd('k', KNIGHT, 1), bd('e', KNIGHT, 5, 0), bd('o', KNIGHT, 7, 0)]
+    setup = [dict(id=b['id'], side=b['side'], x=b['x'], y=b['y']) for b in start]
+    att = {80: {2: [7, None, 2000, 0, 0, 0]}, 90: {2: [5, 7, 2200, 0, 0, 0]}, 100: {2: [5, 7, 2410, 0, 0, 0], 1: [5, None, 600, 0, 0, 0]}}
+    shot = lambda t, src, tgt: {t: [(1, 0, 0, XBOW, 0, 0, 1, src, tgt)]}
+    fired = lambda proj: {r[1]['id']: kv.get('fired_at') for r, kv in
+                          F.phase3_state(E3(), dict(attacks=att, buffs={}, proj=proj), dict(t0=100), setup, start, CAT)[0]}
+    assert fired(shot(95, 'x', 'e'))['x'] == ('body', setup[2])       # launched at e since it took e on 90
+    assert fired(shot(75, 'x', 'e'))['x'] is None                     # before the switch from o: no launch at e since
+    assert fired({**shot(95, 'x', 'e'), **{96: [(1, 0, 0, KNIGHT, 0, 0, 2, 'k', 'e')]}})['k'] is None   # a melee attacker
+    assert fired({})['x'] is None
 
 
 def test_phase3_attacks_from_a_capture_or_the_exported_file(tmp_path, monkeypatch):
@@ -281,3 +319,40 @@ def test_phase3_attacks_from_a_capture_or_the_exported_file(tmp_path, monkeypatc
     f = tmp_path/'att.json'; f.write_text(json.dumps({'live_play_a.jsonl': want}))
     monkeypatch.setenv('PARITY_ATTACKS', str(f))
     assert F.phase3_attacks('live_play_a.jsonl') == want
+
+
+def test_phase3_shields_from_a_3c_capture_or_the_exported_file(tmp_path, monkeypatch):
+    """H-SHIELD-3C: the shield hp of every body whose 3c row has a shield (shield_max_raw > 0), per tick; none without 3c."""
+    cap = tmp_path/'p3_y'; cap.mkdir()
+    (cap/'run.json').write_text(json.dumps(dict(live_log='live_play_c.jsonl')))
+    b = lambda g, s, mx: dict(generation=g, attack=None, shield_hp_raw=s, shield_max_raw=mx)
+    rows = [dict(game_tick=10, phase3=dict(valid=True, bodies=[b(5, 120, 349), b(6, 0, 0), b(7, 0, 349)])),
+            dict(game_tick=12, phase3=dict(valid=True, bodies=[dict(generation=5, attack=None)]))]
+    (cap/'frames.jsonl').write_text(''.join(json.dumps(r) + '\n' for r in rows))
+    monkeypatch.setattr(F, 'P3_DIR', tmp_path)
+    monkeypatch.setattr(F, 'P3_LIVE', tmp_path/'none')
+    monkeypatch.delenv('PARITY_ATTACKS', raising=False)
+    want = {10: {5: 120, 7: 0}}
+    assert F.phase3_shields('live_play_c.jsonl') == want and F.phase3_shields('live_play_d.jsonl') == {}
+    f = tmp_path/'att.json'; f.write_text(json.dumps({'_shields': {'live_play_c.jsonl': want}}))
+    monkeypatch.setenv('PARITY_ATTACKS', str(f))
+    assert F.phase3_shields('live_play_c.jsonl') == want
+
+
+def test_postkill_wait_seeds_a_loss_on_t0_for_units_the_wait_never_exempts():
+    """H-POSTKILL-T0: a Knight whose target left the board on its t0 row (progress held) waits L + 6 - t0 = 6 ticks; an
+    X-Bow (a projectile unit, which may show the doomed-target exemption) with the same rows is not seeded."""
+    XBOW = next(k for k, v in CAT.items() if v['display_name'] == 'Xbow' and k < 100000000)
+    class E3(Eng):
+        S = dict(Eng.S, Knight=dict(hit_speed_ms=1200, load_time_ms=700), Xbow=dict(hit_speed_ms=400, projectile=dict(speed=1)))
+    bd = lambda i, card, g, side=1: dict(id=i, side=side, x=9000, y=10000 + g, card_id=card, hp=500, max_hp=500, kind=13,
+                                         tower=False, gen=g)
+    start = [bd('k', KNIGHT, 1), bd('x', XBOW, 2)]
+    setup = [dict(id=b['id'], side=b['side'], x=b['x'], y=b['y'], proxy=False) for b in start]
+    victim = bd('v', KNIGHT, 7, 0)
+    att = {t: {1: [7 if t < 100 else None, None, 900, 0, 0, 0], 2: [7 if t < 100 else None, None, 300, 0, 0, 0]} for t in (96, 98, 100)}
+    m = dict(attacks=att, buffs={}, frames=[(96, [victim]), (98, [victim]), (100, [])])
+    edits, seen, flags = F.phase3_state(E3(), m, dict(t0=100), setup, start, CAT)
+    got = {r[1]['id']: kv for r, kv in edits}
+    assert got['k']['retarget_wait'] == 6 and 'retarget_wait' not in got['x']
+    assert flags['setup_p3_postkill_wait'] == 1
