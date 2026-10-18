@@ -1,3 +1,18 @@
+## 2026-10-18 01:12 EDT -- overnight queue state (pods all busy or queued); combo arms queued behind the factorial; probe result
+
+- Combo arms queued behind the factorial (waiters: CHAIN_DONE + every run COPIED + no python, then a real smoke, then the
+  chain on SMOKE PASS):
+  - 216.81.245.71:34210 combo_ctl then ref_cxxxviii (waiter PID 4742)
+  - 64.247.206.79:19400 combo_rew (PID 15660)
+  - code /workspace/cb_combo (hard-link copy of cb_tt + the ship.sh build tars at 4c70392; ship.sh's CBDIR mode would rm -rf
+    L74: not used). Factorial ends later than planned (34210 ~07:45-09:15 EDT, 19400 ~07:30-08:50); combo bundles ~12:00-13:30
+    EDT. Relay WMI PID 41080 -> pod_backup_weekend/pod1017_combo/relay.log.
+- Probe (gap13k_ref_cxxxviii, 23408): with the grafted exploiter as the opponent, CXXXVIII drops from 63.2% to 51.7% (all), from
+  65.8% to 51.5% (core decks) and from 70.4% to 52.7% (Hog). Live at 13k: core ~42%, Hog ~29%. A stronger SIM opponent closes
+  about half the gap: the baseline for Stage 2.
+- Pods: P1 15617 + P3 19899 parity round 6 (+ UD v2 worker on P3); P2 14009 cue_ab (done training; fresh eval on 23408); 38758
+  cue_ctl -> fresh_ref_cxxxviii -> ref_f36_u250_B -> succ_levels; 10757 succ_hist -> succ_ctl; 23408 probe (done) + cue fresh
+  evals; 13396 + 19834 Stage 2 tonight (S2-01..08); 4 factorial pods -> then combo_ctl / combo_rew (2) + S2-09 (2, to launch).
 ## 2026-10-18 00:34 EDT -- Rocket+Tornado rule changes DEPLOYED (owner plan, verify:A deploy); RL combo reward built (verify:B needs_work)
 
 - Workflow rocket-tornado-combo (wf_6aecc70f-0a7). Track A, all behind options (defaults byte-identical: 1,500 + 600 random
