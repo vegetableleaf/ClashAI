@@ -161,6 +161,8 @@ class _Core:
                     else int(any(v[0] == cid and v[2] for v in player.evo)))
         (r,) = env.core.step([DeployCommand(side, hand.index(cid), int(x) * SCALE, int(y) * SCALE)], 0)
         if r.status == DeployStatus.OK:
+            if getattr(env, "spell_tracker", None) is not None:   # rl_royale spell_value (opt-in): a Rocket arms it
+                env.spell_tracker.played(side, cid, before.tick)
             if env.ability_policy == "v2":      # the v2 press model's deployment clock + per-deployment denominator
                 env._last_play[side, cid] = int(before.tick)
                 if cid in env._hero_ids[side]:
@@ -327,9 +329,14 @@ class RoyalePoolEnv:
                 stop = min(stop, self._ability_pending[0][0])
             if self.ability_outcomes and self._ab_checks:
                 stop = min(stop, max(self._ab_checks[0]["due"], self.tick + 1))
+            trk = getattr(self, "spell_tracker", None)          # rl_royale spell_value (opt-in; None = unchanged):
+            if trk is not None and trk.busy(self.tick):          # one tick at a time while my Rocket is up
+                stop = self.tick + 1
             self.core.step([], stop - self.tick)
             st = self.core.state()
             self.tick = int(st.tick)
+            if trk is not None:
+                trk.observe(st)
             if telemetry is not None:
                 telemetry.observe(self)
             if self.ability_outcomes and self._ab_checks:

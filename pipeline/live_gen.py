@@ -300,7 +300,7 @@ class GenPilot:
             if getattr(self, 'own_fx', None) is not None:      # + a pending play at its expected landing tick
                 fx = self.own_fx + [dict(card=card_key(q["name"]), xy=q["xy"], tick=q["land"]) for q in pend]
                 object_context = dict(object_context, own_effects=own_effects_raw(
-                    fx, side, tick, river=getattr(getattr(self, 'decision_options', None), 'tornado_river', 'off') == 'on'))
+                    fx, side, tick, river=getattr(getattr(self, 'decision_options', None), 'tornado_river', 'off') in ('on', 'full')))
             frame = extrapolate(frame, prev, self.ext_h, side, **object_context)
             if opp is not None:
                 opp = min(10.0, opp + regen_between(tick, tick + self.ext_h))

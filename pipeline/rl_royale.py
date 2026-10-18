@@ -67,6 +67,10 @@ advantage + ``ability_ent_coef`` x its entropy (``minibatch_loss``); own Adam (`
 rl["ability_head"] / ["ability_optimizer"] / ["ability"]; weights message keys ``ABILITY_SD``. Warm start
 (``_ability_warm_start``): ``ability_bc_matches`` rollouts with the RULE pressing record the rule's q at every pressable
 decision, the head is fitted to it (``ability_bc_fit``) before the init screen and u0000.
+L74 combo (``spell_value_reward: on``, gae + league only, opt-in; absent / null / false = unchanged, same config hash; owner
+10-17, scratchpad/gauntlet/L74/combo/RL_COMBO_REWARD.md): the learner's Rocket impacts are measured in the engine
+(``spell_value.SpellTracker``) and each adds spell_value_w x (troop elixir removed, + a princess-in-blast bonus, - the Rocket's
+cost unless a princess was hit) to the r_step of the rows that decided the Rocket and its setup Tornado (``collate``).
 
     research/ext/Royale/.venv/Scripts/python.exe -m pipeline.rl_royale --config pipeline/rl_royale.yaml --run NAME
     ... --smoke          E=4, G=2, 1 actor, 2 updates + the checks below; prints SMOKE PASS, exits 0
@@ -154,6 +158,7 @@ if str(REPO) not in sys.path:
 
 from pipeline import e1_eval as E                                               # noqa: E402
 from pipeline import reward_shaping as RS                                       # noqa: E402
+from pipeline import spell_value as SV                                          # noqa: E402
 from pipeline import adaptive_opponents as AO                                  # noqa: E402
 from pipeline.model_v3 import hand_mask_from_sc                                 # noqa: E402
 
@@ -227,6 +232,8 @@ def actor_cfg(base: dict, kind: str, aid: int, dev: str) -> dict:
         cfg["record_elixir"] = True                           # F6': each row carries its exact own elixir
     if base.get("ability") is not None:                       # B6: sampled in rollouts, greedy in screens; actor_main
         cfg["ability"] = {"mode": "sample" if kind == "rollout" else "greedy"}   # attaches the head (or: label mode)
+    if kind == "rollout" and base.get("spell_value"):         # L74 combo: the learner's Rocket events + each row's tick
+        cfg["spell_track"] = cfg["record_tick"] = True        # (spell_value.row_rewards maps events to rows by tick)
     return cfg
 
 
@@ -377,6 +384,37 @@ def store_posture_cfg(cfg: dict) -> Optional[dict]:
     return pc
 
 
+# L74 combo (``spell_value_reward: on``, gae + league only, opt-in; absent / null / false = off, same hash; owner 10-17,
+# L74/combo/RL_COMBO_REWARD.md): per-row reward on the rows that decided OUR Rocket (+ its setup Tornado) = spell_value_w x
+# (the elixir of enemy bodies the blast removed, x (1 + tower_bonus) with a princess in it, - the Rocket's cost unless a
+# princess was hit), added to r_step (``collate``); the critic becomes the residual one (phi = 0) at shaping_critic_scale,
+# which must cover 1 + spell_value_match_cap. spell_value_w 0 = the measuring control (tracker, rows, critic scale, no reward).
+SPELL_KEYS = ("spell_value_reward",) + tuple(SV.DEFAULTS)
+
+
+def spell_cfg(cfg: dict) -> Optional[dict]:
+    """The combo-reward keys of a config, validated (SystemExit naming the bad key): None when ``spell_value_reward`` is
+    absent / null / false (the other spell_value keys must then be unset), else {spell_value_*: value} with the defaults."""
+    on = cfg.get("spell_value_reward")
+    if on is None or on is False:
+        stray = [k for k in SV.DEFAULTS if cfg.get(k) is not None]
+        if stray:
+            raise SystemExit(f"bad spell_value config: {stray} set without spell_value_reward on")
+        return None
+    num = (lambda v: isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v))
+    p = {k: (v if cfg.get(k) is None else cfg[k]) for k, v in SV.DEFAULTS.items()}
+    bad = [] if on is True else [f"spell_value_reward must be on / off (a bool), got {on!r}"]
+    bad += [f"{k} must be a finite number >= 0, got {v!r}" for k, v in p.items() if not (num(v) and v >= 0)]
+    bad += [f"{k} must be > 0" for k in ("spell_value_event_cap", "spell_value_match_cap") if num(p[k]) and p[k] <= 0]
+    if cfg.get("advantage", "match_loo") != "gae":
+        bad.append(f"spell_value_reward needs advantage gae (refusing {cfg.get('advantage', 'match_loo')!r})")
+    if not cfg.get("league"):
+        bad.append("spell_value_reward needs league true (the tracker rides on self-play matches)")
+    if bad:
+        raise SystemExit("bad spell_value config: " + "; ".join(bad))
+    return {k: float(v) for k, v in p.items()}
+
+
 def adv_cfg(cfg: dict) -> dict:
     """The R1 keys of a config (``GAE_DEFAULTS`` for missing ones), validated: SystemExit naming the bad key."""
     c = {k: cfg.get(k, v) for k, v in GAE_DEFAULTS.items()}
@@ -443,6 +481,7 @@ def adv_cfg(cfg: dict) -> dict:
     if not (vp["shaping_phi_ckpt"] is None or (isinstance(vp["shaping_phi_ckpt"], str) and vp["shaping_phi_ckpt"])):
         bad.append(f"shaping_phi_ckpt must be null (= init) or a checkpoint path, got {vp['shaping_phi_ckpt']!r}")
     sc = c["shaping_critic_scale"]
+    need = 1.0                                                               # |return| bound without shaping
     if not (num(sc) and sc > 0.0):
         bad.append(f"shaping_critic_scale must be a finite number > 0, got {sc!r}")
     elif c["shaping"] != "none" and not bad:
@@ -459,6 +498,15 @@ def adv_cfg(cfg: dict) -> dict:
         if c["critic_warmup_updates"] == 0:
             bad.append(f"shaping {c['shaping']!r} needs critic_warmup_updates > 0 (the pretrained value head "
                        f"predicts G, not the residual (G - Phi) / scale)")
+    sv = spell_cfg(cfg)                                                      # L74 combo: the return widens by its cap
+    if sv is not None and not bad:
+        need += sv["spell_value_match_cap"]
+        if sc < need:
+            bad.append(f"shaping_critic_scale {sc} < {need:.4f} = the return bound + spell_value_match_cap: the residual "
+                       f"target ret / scale could leave the value head's [-1, 1]")
+        if c["critic_warmup_updates"] == 0:
+            bad.append("spell_value_reward needs critic_warmup_updates > 0 (the pretrained value head predicts G, "
+                       "not G / scale)")
     cc = cfg.get("critic_ctx")
     if cc not in CRITIC_CTX_MODES:
         bad.append(f"critic_ctx must be one of {CRITIC_CTX_MODES}, got {cc!r}")
@@ -1612,7 +1660,7 @@ def _py(x):
 # ------------------------------------------------------------------------------------------------------
 def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_loo",
             shaping: Optional[dict] = None, gamma_tick: Optional[float] = None,
-            gae_terminal_gap: bool = False) -> tuple[dict, dict]:
+            gae_terminal_gap: bool = False, spell: Optional[dict] = None) -> tuple[dict, dict]:
     """Rollout result records (each with ``traj`` = ``Match._traj_arrays``) -> numpy batch of the CONTRIBUTING rows
     (gate sampled or card/cell played) with per-row A, per-match weight w, match id, and the stored log-probs.
     ``advantage="gae"`` adds ``r_step`` (``terminal_rewards``, the UNSHAPED win/loss reward); A stays the LOO value
@@ -1620,7 +1668,10 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
     row (``row_gammas`` of the traj ``tick``), the discount GAE and the shaping use. ``shaping`` (gae only; {gamma,
     w_tower, w_crown}; gamma replaced by ``gamma_row`` under gamma_tick): + ``phi`` (Phi(s_t)) per kept row (the
     residual critic's base, ``gae_batch``), and the F / Phi stats under ``st["shaping"]``. ``gae_terminal_gap``
-    discounts only the last reward by gamma_tick ** (end_tick - last_kept_tick); requires every result's end_tick."""
+    discounts only the last reward by gamma_tick ** (end_tick - last_kept_tick); requires every result's end_tick.
+    ``spell`` (gae only; ``spell_cfg``'s dict, L74 combo): + ``spell_value.row_rewards`` of each result's "spell" events on
+    its rows (by the traj ``tick``) into r_step, ``phi`` = 0 when no shaping made one (the residual critic at the config's
+    scale), and the per-update monitors under ``st["spell"]``."""
     if gae_terminal_gap:
         if advantage != "gae" or gamma_tick is None:
             raise ValueError("gae_terminal_gap true needs advantage gae AND gamma_tick (gae_gamma_unit tick)")
@@ -1689,6 +1740,14 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
                 if not np.isfinite(gap) or gap < 0:
                     raise ValueError(f"gae_terminal_gap: end_tick must be finite and >= last kept tick for result {j}")
                 rs[j][-1] *= gamma_tick ** gap
+        if spell is not None:                                 # L74 combo: the Rocket / setup-Tornado rows' reward
+            sp, lost = {}, 0
+            for j in use:
+                if "tick" not in results[j]["traj"]:
+                    raise ValueError("spell_value_reward needs the per-row tick (actor_cfg record_tick)")
+                sp[j] = SV.row_rewards(results[j].get("spell"), results[j]["plays"], results[j]["traj"]["tick"], spell)
+                lost += int(np.count_nonzero(sp[j]["r"][~keep[j]]))     # a played row is always kept: 0
+                rs[j] = rs[j] + sp[j]["r"][keep[j]]
         B["r_step"] = cat(lambda j: rs[j])
         gr = None
         if gamma_tick is not None:
@@ -1708,8 +1767,10 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
             sh = {j: shaping_rewards(results[j]["traj"]["phi_state"][keep[j]],
                                      shaping if gr is None else {**shaping, "gamma": gr[j]}) for j in use}
             B["phi"] = cat(lambda j: sh[j]["phi"])
-    elif shaping is not None or gamma_tick is not None:
-        raise ValueError("shaping / gamma_tick need advantage gae")
+        if spell is not None and "phi" not in B:              # L74 combo: residual critic with Phi = 0 (gae_batch)
+            B["phi"] = np.zeros(len(B["r_step"]))
+    elif shaping is not None or gamma_tick is not None or spell is not None:
+        raise ValueError("shaping / gamma_tick / spell need advantage gae")
     st = {"matches": len(results), "groups": len(groups), "mixed_groups": mixed,
           "mixed_group_share": mixed / max(len(groups), 1), "mean_abs_A": float(np.abs(A).mean()) if len(A) else 0.0,
           "rows": int(len(B["A"])), "rows_played": int(B["played"].sum()), "rows_gate": int(B["gate_sampled"].sum()),
@@ -1721,6 +1782,11 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
         st["shaping"] = shaping_stats([sh[j] for j in use])
         if shaping.get("mode") in RS.STATE_PHI_MODES:
             st["shaping"]["mode"] = shaping["mode"]
+    if spell is not None:                                     # L74 combo monitors (wins: rollout_monitors' winrate)
+        st["spell"] = {**SV.batch_stats([SV.match_summary(results[j].get("spell"), spell) for j in use],
+                                        [float(sp[j]["r"].sum()) for j in use]),
+                       "w": spell["spell_value_w"], "rows_rewarded": int(sum(np.count_nonzero(sp[j]["r"]) for j in use)),
+                       "rows_lost": lost, "unmapped_rockets": sum(e["row"] is None for j in use for e in sp[j]["events"])}
     return B, st
 
 
@@ -2816,7 +2882,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                 and k not in ("league_learner_icebow_share", "learner_pipeline_frac", "league_opp_T", "kl_ref_gate",
                               "critic_ctx", "kl_ref_gate_max_elixir", "kl_ref_gate_target_frac",
                               "league_exploiters", "cue_inputs", "opp_tower_troops", "live_levels") + OPP_TEMPO_KEYS
-                and k not in POSTURE_KEYS and k not in ABILITY_KEYS):
+                and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
         cfg[k] = yaml.safe_load(v)
     if type(cfg["hero_abilities"]) is not bool:
@@ -2889,6 +2955,11 @@ def config_sha(cfg: dict) -> str:
     else:                                                    # B6 on: defaults filled, one hash for implicit / explicit
         cfg = {**cfg, "ability_head": True,
                **{k: (v if cfg.get(k) is None else cfg[k]) for k, v in ABILITY_DEFAULTS.items()}}
+    if cfg.get("spell_value_reward") is None or cfg.get("spell_value_reward") is False:   # L74 combo off = historical
+        cfg = {k: v for k, v in cfg.items() if k not in SPELL_KEYS}
+    else:                                                    # on: defaults filled (floats), one hash for implicit / explicit
+        cfg = {**cfg, "spell_value_reward": True,
+               **{k: float(v if cfg.get(k) is None else cfg[k]) for k, v in SV.DEFAULTS.items()}}
     return hashlib.sha256(json.dumps(cfg, sort_keys=True, default=str).encode()).hexdigest()
 
 
@@ -3586,9 +3657,11 @@ class Learner:
         if ac["shaping"] in RS.STATE_PHI_MODES:                # step 3: Phi from the actors' state_record rows
             shp = {"mode": ac["shaping"], "gamma": ac["gae_gamma"], "params": {k: ac[k] for k in STATE_PHI_KEYS}}
         tick_unit = gae_on and ac["gae_gamma_unit"] == "tick"
+        sv = spell_cfg(cfg)                                   # L74 combo (None = off: the call unchanged)
         Bn, bst = collate(results, float(cfg["adv_clip"]), advantage=ac["advantage"], shaping=shp,
                           **({"gamma_tick": ac["gae_gamma_tick"]} if tick_unit else {}),
-                          **({"gae_terminal_gap": True} if ac["gae_terminal_gap"] else {}))
+                          **({"gae_terminal_gap": True} if ac["gae_terminal_gap"] else {}),
+                          **({"spell": sv} if sv is not None else {}))
         gamma_row_mean = float(Bn["gamma_row"].mean()) if tick_unit and len(Bn["gamma_row"]) else None
         ab_acc = ([sum(dict(r.get("ability_presses", {}).get(r["side"], {})).values()) for r in results]
                   if getattr(self, "ability_head", None) is not None else None)   # B6: engine-accepted learner presses
@@ -3943,6 +4016,8 @@ class Learner:
         for k in OPP_TEMPO_KEYS:                              # L74 human tempo -> the opponent's cfg (absent by default)
             if self.cfg.get(k) is not None:
                 base[k] = self.cfg[k]
+        if spell_cfg(self.cfg) is not None:                   # L74 combo -> actor_cfg spell_track (absent by default)
+            base["spell_value"] = True
         return base
 
     def start_actors(self) -> None:

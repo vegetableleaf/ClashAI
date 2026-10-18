@@ -1073,7 +1073,7 @@ class Match:
                      **dict(zip("xy", self.ep.cell_to_engine(d["cell"], self.mirror, self.cfg["grid"]))))
                 for land, _, d, _ in self.pend]                # cfg["pipeline_decisions"]: pending plays at their landing tick
         out = [p for p in self.own_fx + abil + pend if tick - OWN_FX_TICKS <= p["tick"]]
-        if self.cfg.get("tornado_river") == "on":             # --tornado-river (owner 10-14): pulls hold ground bodies at the bank
+        if self.cfg.get("tornado_river") in ("on", "full"):   # --tornado-river (owner 10-14): pulls hold ground bodies at the bank
             out = [dict(p, river=True) for p in out]
         return out
 
@@ -1773,11 +1773,14 @@ class SelfPlaySide(Match):
         if "_opp_style" in self.cfg:
             delay += int(d.get("_style_delay", 0))
         if d["play"] and d.get("follow_ups"):                 # follow_up_spec second plays: the ghost Match's rules (module comment)
-            if self.pipe:
-                raise ValueError("follow_ups and pipeline_decisions are separate mechanisms: use one")
             if not delay:
                 raise ValueError("follow_ups need cfg['action_delay_ticks'] > 0 in a SelfPlaySide")
             self._follow_start(p, d, tick)
+            if self.pipe:   # + cfg["pipeline_decisions"] (L74 fastplays P2, as live --follow-up-taps + --pipeline-decisions, live_play
+                # ~1306): no decision while a follow-up is scheduled (_follow_start); once resolved, _follow_resolved resumes on the
+                # reader-frame grid with fewer than FOLLOW_MAX_OUT plays out; the decision right after a play accrues no hazard step
+                self._pipe_ready = tick + int(self.cfg.get("follow_arrival_ticks", FOLLOW_ARRIVAL_TICKS))
+                self._hz_step_ticks = 0
             return
         if self.pipe:                                         # cfg["pipeline_decisions"]: plays wait in self.pend (SelfPlayMatch.due
             self._pipe_decided(p, d, tick)                    # lands them); the next decision is on the reader-frame grid
@@ -1858,6 +1861,8 @@ class SelfPlaySide(Match):
             f = self._fu
             self._fu = None
             self.next_tick = f["tick"] + self.cfg["decide_every"] * ((f["last"] - f["tick"]) // self.cfg["decide_every"] + 1)
+            if self.pipe:   # pipeline_decisions: the reader-frame grid from now, < FOLLOW_MAX_OUT plays out (live_play ~1306)
+                self.next_tick = self._pipe_next_tick(int(self.env.tick))
 
     def _land(self, p: float, d: dict, land: int, landed: bool, cur=None) -> bool:
         from pipeline.dataset_gen import card_key
@@ -1920,7 +1925,12 @@ class SelfPlayMatch:
         if "levels" in spec:                    # L74 factor D (opt-in): rl_royale.draw_live_levels, learner / opp -> sides
             lv = {L: spec["levels"]["learner"], 1 - L: spec["levels"]["opp"]}
             kw["levels"] = {"cards": [lv[0]["cards"], lv[1]["cards"]], "towers": [lv[0]["tower"], lv[1]["tower"]]}
+        if getattr(env, "spell_tracker", None) is not None:  # rl_royale spell_value (opt-in): a reused env's old tracker
+            env.spell_tracker = None
         env.reset(decks[0], decks[1], int(spec["seed"]), **kw)
+        if cfg.get("spell_track"):                           # ... and this match's: the learner's Rocket impacts
+            from pipeline.spell_value import SpellTracker
+            env.spell_tracker = SpellTracker(env, L)
         tag = str(spec["tag"])
         self.learner = SelfPlaySide(env, spec["learner_deck"], L, tag, k, cfg, learner)
         from pipeline.adaptive_opponents import style_config
@@ -1974,6 +1984,8 @@ class SelfPlayMatch:
         r["opp_side"] = {"side": o.side, "policy": o.cfg["policy"], "plays_attempted": o.n_att,
                          "plays_accepted": o.n_acc, "plays_per_min": round(o.n_att / minutes, 3) if minutes else None,
                          "stall_fired": o.n_stall, "decisions": o.n_dec}
+        if getattr(self.env, "spell_tracker", None) is not None:   # rl_royale spell_value: the learner's Rocket events
+            r["spell"] = list(self.env.spell_tracker.events)
         return r
 
 

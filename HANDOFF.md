@@ -1,3 +1,30 @@
+## 2026-10-18 00:34 EDT -- Rocket+Tornado rule changes DEPLOYED (owner plan, verify:A deploy); RL combo reward built (verify:B needs_work)
+
+- Workflow rocket-tornado-combo (wf_6aecc70f-0a7). Track A, all behind options (defaults byte-identical: 1,500 + 600 random
+  boards):
+  - --rocket-tornado-window measured: Rocket lands 7-24 ticks after the Tornado (7-40 on our side past the bridge); flight =
+    d / .35 + .5 (old formula 1.3-1.6 ticks high); fixed the affordability double count (6 of 127 follow-ups were lost).
+  - --rocket-tornado-order either: Tornado first when that leaves the wider window.
+  - --rocket-tornado-lone combo: the 'only'-mode block fix. The literal "lone Rocket instead" (best) was -1.15 [-2.81, +0.52]
+    and is NOT deployed.
+  - --tornado-river full: per-body pull paths incl. the bridge-edge stop (the 182814 miss).
+  - --rocket-value-min-y < 16 (enemy half): 27 / 33 misses early -> NOT deployed.
+  - King tower = no-go zone (owner doctrine). SIM P2 (fast plays + follow-ups) landed in e1_eval.
+- Promotion eval (960 paired, CXXXVIII): deployed set "newc" 612 vs current 610 = +0.21 [-0.73, +1.15]; combos 0.132 -> 0.102 /
+  match, misses 35% -> 27%, follow-ups lost 6 -> 0. All eval combos were at the bridge, so near-our-king and Tornado-first are
+  backed by scenarios only: (9, 23.5) and (6, 25) went 0% -> 100% fire, Tornado first. Cost: the river 'full' check is 22.8 ms
+  vs 6.3 ms on a 40-troop board -> watch CPU-STARVED.
+- LIVE_OPTIONS: --tornado-river on -> full + the three new flags (backup parity1016/LIVE_OPTIONS.pre_combo). test_live_options
+  fixed copy updated (it also lacked --cue-inputs on since 7c93f19). --check LIVE_CHECK_PASS. Restart between matches.
+- Track B (opt-in spell_value_reward in pipeline/spell_value.py + rl_royale / royale_env / search_s0; arms combo_ctl / combo_rew
+  / *_pipe in L74/combo/cfg): plumbing verified (hash unchanged when off, training bit-identical, one-key diffs, smokes real).
+  NEEDS WORK before training:
+  - (1) the hp share is not capped at 1 (overheal: Witch_EV1 = 7.2 elixir);
+  - (2) the princess path dominates: the cost waiver + the 4-elixir threshold pay a lone Witch at a princess +0.16 > a
+    10.7-elixir combo +0.095 -> fix to max(0, w x (G - cost)) on a princess hit;
+  - (3) dmg_w 0.5 penalises a 93% hit. The owner said "eliminating or heavily damaging", so I set dmg_w 1.0 (value x hp share
+    removed);
+  - (4) the near-our-king combo needs a < 12-tick second play: only arm 2 (learner_pipeline_frac 0.3) can learn it.
 ## 2026-10-18 00:16 EDT -- fork law S-TESLA-HOLD LANDED on clashbot36 (1e7d45f); S-TESLA-UNDER-DAMAGE needs work; FIN10 = v5d_th_full
 
 - Independent verifier (P3, FIN9 base, 359 logs): TH vs FIN9 full 0.9124 -> 0.9139 (aK +23 / -7; a0 +23 / -2), upgraded 0.9228 ->

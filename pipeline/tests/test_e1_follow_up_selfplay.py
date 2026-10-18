@@ -125,15 +125,26 @@ class TestSelfPlayFollowUps(unittest.TestCase):
             self.assertEqual(g_off, s_off, after)
             self.assertEqual(ghost.result()["follow_ups"], m.learner.follow_n and dict(m.learner.follow_n), after)
 
-    def test_flag_absent_is_unchanged_and_the_two_mechanisms_exclude_each_other(self):
+    def test_flag_absent_is_unchanged_and_follow_ups_need_a_delay(self):
         m, lt, _ = drive({0: (0, None), 1: (1, None)})
         self.assertEqual(lt[:3], [90, 120, 150])                            # the old single-play lock
         self.assertEqual(acts(m), [(116, 0), (146, 0)])
         self.assertFalse(getattr(m.learner, "follow_n", None))
         with self.assertRaises(ValueError):
-            drive({0: (0, [spec()])}, cfg_over=dict(pipeline_decisions=True))
-        with self.assertRaises(ValueError):
             drive({0: (0, [spec()])}, cfg_over=dict(action_delay_ticks=0))
+
+    def test_with_pipeline_decisions_as_live_follow_up_taps_plus_pipelined_decisions(self):
+        # L74 fastplays P2 landed 10-17 (was: "separate mechanisms" ValueError). live_play ~1306: no decision while the follow-up is
+        # scheduled; once it is resolved, decisions resume on the 2-tick frame grid with < FOLLOW_MAX_OUT plays outstanding
+        E.SelfPlaySide._pending_raw = lambda self, raw, vt: raw            # the engine's pending bodies are the pod smoke's business
+        m, lt, _ = drive({0: (0, [spec(after=4)])}, cfg_over=dict(pipeline_decisions=True))
+        self.assertEqual(acts(m), [(116, 0), (118, 0)])                     # the same landings as without pipelining
+        self.assertEqual(m.learner.follow_n, {"fired": 1})
+        # fired on frame 94 (two plays out: 116, 118); 116 = the first frame with one left out; 118's landing frame never decides
+        self.assertEqual(lt[:4], [90, 116, 120, 130])
+        off, lt_off, _ = drive({0: (0, [spec(after=4)])})
+        self.assertEqual(acts(off), acts(m))
+        self.assertEqual(lt_off[:2], [90, 120])                             # without it: the first grid tick after the last landing
 
 
 if __name__ == "__main__":

@@ -207,10 +207,12 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
             return None
         names = [info['names'][di] if di >= 0 else None for di in info['hand_deck_indices']]
         hit = rocket_value_choice(options, names, allowed, info['bs'], self.grid, holder=self, playing=bool(playing))
+        self._rv_lone = hit                                           # rocket_tornado_lone best may still play it in 'only' mode
         return None if options.rocket_tornado == 'only' else hit      # 'only': the combo without the lone rule (state still kept above)
 
     def rocket_tornado(self, info, allowed, playing=False):
-        """decision_options.rocket_tornado_choice on the live board -> (Rocket hand position, cell, (earliest, latest), value) or None.
+        """decision_options.rocket_tornado_choice on the live board -> (Rocket hand position, cell, (earliest, latest), value, order,
+        Tornado hand position) or None; order 'lone' (rocket_tornado_lone best) = play the lone Rocket instead (cell / window None).
         The lone rule has priority (the caller asks it first); idle / threat gates as the lone rule (threat from the state it kept)."""
         options = self.decision_options
         if options.rocket_tornado == 'off' or (options.rocket_value_idle == 'on' and playing):
@@ -219,7 +221,7 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
             return None
         names = [info['names'][di] if di >= 0 else None for di in info['hand_deck_indices']]
         hit = rocket_tornado_choice(options, names, allowed, info['bs'], self.grid)
-        return None if hit is None else (hit[0], hit[2], hit[3], hit[4])
+        return None if hit is None else (hit[0], hit[2], hit[3], hit[4], hit[5], hit[1])
 
     @torch.no_grad()
     def decide(self, frame):
@@ -299,6 +301,13 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
                 self._hazard_prev = (tick, False)
             return self._audited(d)
         rocket = self.rocket_value(info, allowed, playing)
+        combo = None
+        if rocket is None or getattr(options, 'rocket_tornado_lone', 'skip') != 'skip':
+            combo = self.rocket_tornado(info, allowed, playing)
+            if combo is not None and combo[4] == 'lone':    # rocket_tornado_lone best: the lone Rocket is the better play (SIM decide_batch)
+                rocket, combo = rocket or getattr(self, '_rv_lone', None), None
+            elif combo is not None:
+                rocket = None
         if rocket is not None:                          # SIM decide_batch: the same rule, below the lethal rule
             pos, eligible, value = rocket
             card, form = info['hand'][pos]
@@ -316,19 +325,22 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
                 d.update(hazard_step_s=step, hazard_play=False)
                 self._hazard_prev = (tick, False)
             return self._audited(d)
-        combo = self.rocket_tornado(info, allowed, playing)
-        if combo is not None:                           # the SIM runs the same rule in decide_batch (follow_up_spec); here the Tornado is the pipelined second tap (plan_follow_up)
-            pos, cell, (lo, hi), value = combo
+        if combo is not None:                           # the SIM runs the same rule in decide_batch (follow_up_spec); here the second card is the pipelined second tap (plan_follow_up)
+            pos, cell, (lo, hi), value, order, tpos = combo
+            pos = pos if order == 'rocket' else tpos    # order 'tornado' (rocket_tornado_order either): Tornado now, the Rocket follows
             card, form = info['hand'][pos]
             xy = cell_xy(cell, self.grid)
             d = dict(play=True, p_play=p, hand_pos=pos, no_affordable=False, stalled=stalled, why='rocket_tornado',
                      rocket_value=round(value, 3), deck_index=info['hand_deck_indices'][pos], card=card, form=form, bs=bs,
                      name=info['names'][info['hand_deck_indices'][pos]], xy=xy, **lookahead)
             after, within = rocket_tornado_timing((lo, hi))     # the middle of the window (SIM decide_batch asks for the same timing)
-            follow = self.plan_follow_up(frame, d, 'Tornado', xy, after_ticks=after, within_ticks=within)
-            if follow is not None:                      # the Tornado left the hand since: no combo, fall through to the model
+            follow = self.plan_follow_up(frame, d, 'Tornado' if order == 'rocket' else 'Rocket', xy, after_ticks=after,
+                                         within_ticks=within)
+            if follow is not None:                      # the second card left the hand since: no combo, fall through to the model
                 d['follow_ups'] = [follow]
                 d['rocket_tornado_window'] = (lo, hi)
+                if order != 'rocket':
+                    d['rocket_tornado_order'] = order
                 if options.tau_phase is not None or options.tau_threatened is not None:
                     d['gate_tau'] = tau
                 if tau_threat is not None:

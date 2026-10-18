@@ -747,6 +747,8 @@ def _init_worker(args: dict) -> None:
         learner_cfg['predict_drops'] = True
     if args.get('own_effects'):
         learner_cfg['own_effects'] = True
+    if args.get('spell_log'):                               # rl_royale spell_value's tracker (measurement only)
+        learner_cfg['spell_track'] = True
     if args.get('pipeline_decisions'):
         learner_cfg['pipeline_decisions'] = True
         if args.get('pipeline_tau_delta'):
@@ -805,8 +807,15 @@ def _run_job(job: tuple) -> dict:
     if _W.get("record_plays"):     # --record-plays: our plays [decision tick, landing tick, card, accepted, elixir seen]
         rec["own_plays"] = [[q["tick"], q.get("land_tick", q["tick"]), q["card"], q["accepted"], q["elixir_exact"]]
                             for q in _W["runner"].last_result["plays"]]
+        # ... + our accepted hero / champion presses [tick, card] (royale_env own_ability_events; feature_version >= 4)
+        rec["own_presses"] = [[int(e["tick"]), e["card"]] for e in getattr(m.env, "own_ability_events", ())
+                              if e["side"] == m.learner.side]
     if getattr(_W["runner"], "habit_log", False):           # --habit-log: the learner's habit counts (measurement only)
         rec["habits"] = habits(m)
+    if "spell" in _W["runner"].last_result:                 # --spell-log: our Rocket events + their spell_value summary
+        from pipeline.spell_value import match_summary
+        rec["spell"] = {"summary": match_summary(_W["runner"].last_result["spell"]),
+                        "events": _W["runner"].last_result["spell"]}
     rec.update(_W.get("opp_meta") or {})
     return rec
 
@@ -952,6 +961,10 @@ def main(argv=None) -> int:
                     help="each match line gets 'habits' (search_s0.habits: opening-hand X-Bow, offensive X-Bow in the first "
                          "two plays, Rockets on an enemy princess / forced by the finisher, late X-Bow / Rocket / Tornado); "
                          "measurement only, decisions unchanged; default off = lines unchanged")
+    ap.add_argument("--spell-log", action="store_true",
+                    help="each match line gets 'spell' (pipeline.spell_value: our Rocket impacts -- troop elixir value hit, "
+                         "princess in the blast, setup Tornado -- and their summary); measurement only, decisions unchanged "
+                         "(the engine steps one tick at a time while our Rocket is up); default off = lines unchanged")
     ap.add_argument("--max-wall-min", type=float, default=0.0,
                     help="0 = none; else no match starts after this and running matches stop (wall_truncated)")
     a = ap.parse_args(argv)
@@ -1038,10 +1051,12 @@ def main(argv=None) -> int:
         wargs['live_levels'] = True
     if a.habit_log:
         wargs['habit_log'] = True
+    if a.spell_log:
+        wargs['spell_log'] = True
     for k in ('opp_decide_every', 'opp_reaction_ticks'):
         if getattr(a, k) is not None:
             wargs[k] = getattr(a, k)
-    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads', 'learner_T_gate') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays', 'probe_xbow_focus', 'ability_stats', 'live_levels', 'habit_log') or v) and (k not in ('opp_decide_every', 'opp_reaction_ticks', 'opp_tower_troops') or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
+    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads', 'learner_T_gate') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays', 'probe_xbow_focus', 'ability_stats', 'live_levels', 'habit_log', 'spell_log') or v) and (k not in ('opp_decide_every', 'opp_reaction_ticks', 'opp_tower_troops') or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
                                                 "gen_sha256": sha256(REPO / a.gen), "opp_gen_sha256": opp_sha,
                                                 "s1_sha256": sha256(REPO / a.s1),
                                                 "tau_plain": TAU_PLAIN, "tau_opp": TAU_OPP, "crown_w": CROWN_W,

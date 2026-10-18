@@ -40,9 +40,10 @@ BUNDLE = ('--gate-decode hazard_below_tau --gate-hazard-min-elixir 9 --iw-press-
           '--card-levels Rocket=16 Log=15 '   # 2026-10-09 13:xx (owner card levels; blind af0555f2)
           '--log-air block '   # 2026-10-09 evening (owner: hold + Skeleton Barrel exempt; blind a1d953e2 on bd4c8ca)
           '--rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-tornado only --follow-up-taps '
-          '--tornado-river on '   # 2026-10-15 owner: tornado-20 then kept (river rule: combo fired 1x in 20 matches)
+          '--tornado-river full --rocket-tornado-window measured --rocket-tornado-order either --rocket-tornado-lone combo '   # 2026-10-18 owner combo plan (rule changes; +0.21 [-0.73, +1.15] vs the 10-15 river rule, verify:A deploy)
           '--log-frames '   # 2026-10-15 owner plan: per-frame truth for the parity loop (A/B4 stopped, stop_ab4.sh)
-          '--capture-p3')   # 2026-10-16 owner goal: fight parity -- per-match phase-3 capture (device test PASS 162405)   # 2026-10-09 cb9 combo (merge f5ba591); emotes moved to start_live.sh --emotes (10-11)
+          '--capture-p3 '
+          '--cue-inputs on')   # 2026-10-17 owner: ICEBOW Mark CXXXVIII (cue layer) live with the merged reader   # 2026-10-16 owner goal: fight parity -- per-match phase-3 capture (device test PASS 162405)   # 2026-10-09 cb9 combo (merge f5ba591); emotes moved to start_live.sh --emotes (10-11)
 DEPLOYED_FILE = DEPLOYED.rstrip('\n') + ' ' + BUNDLE + '\n'
 
 

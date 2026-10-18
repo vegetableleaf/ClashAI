@@ -49,7 +49,16 @@ class DecisionOptions:
     rocket_tornado: str = 'off'             # 'on': + Rocket and Tornado on a clump too spread for one blast; 'only': without the lone rule;
                                             # 'rocket_only': SIM measurement ablation (the same Rocket, no Tornado)
     tornado_river: str = 'off'              # 'on' (owner 10-14): a Tornado cannot drag GROUND troops over the river (RoyaleSim 0.1.33
-                                            # status.ATTRACT_WATER_EDGE): combo aim + own-effects look-ahead hold them at the bank
+                                            # status.ATTRACT_WATER_EDGE): combo aim + own-effects look-ahead hold them at the bank;
+                                            # 'full' (10-17): + both banks and the bridge edges, from the pull's path (pull_river_ends)
+    rocket_tornado_window: str = 'v1'       # 'measured' (10-17): pull-landing window + Rocket flight re-fit (PULL_LANDS_V2, FLIGHT_V2_OFFSET)
+    rocket_tornado_order: str = 'rocket'    # 'either' (10-17): also Tornado first + the Rocket as its follow-up, when that window is wider
+    rocket_tornado_lone: str = 'skip'       # 'best' (10-17): a clump one Rocket covers gets the combo if its pull gathers more value, else
+                                            # that lone Rocket (COMBO_GAIN_MIN; 'only' mode used to leave it with neither play); 'combo':
+                                            # the same combo, but no lone Rocket (the model plays where the pull adds nothing)
+    rocket_value_towers: str = 'off'        # 'on' (10-17): an alive enemy PRINCESS in the blast adds ROCKET_TOWER_VALUE elixir
+    rocket_tornado_lead: str = 'off'        # 'drift' (10-17): the pull is judged where enemy-half / bridge bodies will have walked to
+                                            # when the Tornado lands (combo_drift); my-half bodies stay (mostly engaged at my towers)
     rocket_value_hitbox: str = 'centre'     # 'edge': a body is in the blast when its hitbox touches the radius
     rocket_value_lead: str = 'off'          # 'on' / 'drift' / 'blend': aim at where the bodies will be when the Rocket lands
     rocket_value_idle: str = 'off'          # 'on': only at a decision where the model itself would not play (displaces nothing)
@@ -100,13 +109,19 @@ class DecisionOptions:
         for k, ok in (('rocket_value_mode', ('cost', 'damage', 'kill')), ('rocket_value_hitbox', ('centre', 'edge')),
                       ('rocket_value_lead', ('off', 'on', 'drift', 'blend')), ('rocket_value_idle', ('off', 'on')),
                       ('rocket_value_threat', ('off', 'on')), ('rocket_tornado', ('off', 'on', 'only', 'rocket_only')),
-                      ('tornado_river', ('off', 'on'))):
+                      ('tornado_river', ('off', 'on', 'full')), ('rocket_tornado_window', ('v1', 'measured')),
+                      ('rocket_tornado_order', ('rocket', 'either')), ('rocket_tornado_lone', ('skip', 'best', 'combo')),
+                      ('rocket_value_towers', ('off', 'on')), ('rocket_tornado_lead', ('off', 'drift'))):
             if getattr(self, k) not in ok:
                 raise ValueError(f'{k} must be one of {ok}')
         if not math.isfinite(self.rocket_value_min_elixir) or not 0 <= self.rocket_value_min_elixir <= 10:
             raise ValueError('rocket_value_min_elixir must be in [0, 10]')
-        if not math.isfinite(self.rocket_value_min_y) or not 16.0 <= self.rocket_value_min_y <= 32.0:
-            raise ValueError('rocket_value_min_y must be in [16, 32] tiles (my half)')
+        if not math.isfinite(self.rocket_value_min_y) or not 0.0 <= self.rocket_value_min_y <= 32.0:
+            raise ValueError('rocket_value_min_y must be in [0, 32] tiles (16 = my half; below 16 reaches onto the enemy half)')
+        if self.rocket_value_min_y < 16.0 and self.tornado_river == 'on':
+            raise ValueError("tornado_river on holds only enemy-bank bodies (a centre on my half): use 'full' with rocket_value_min_y < 16")
+        if self.rocket_tornado_order == 'either' and self.rocket_tornado == 'rocket_only':
+            raise ValueError('rocket_tornado_order either has no rocket_only ablation (its Rocket may be the follow-up)')
         if not math.isfinite(self.rocket_value_max_left) or self.rocket_value_max_left < 0:
             raise ValueError('rocket_value_max_left must be finite and >= 0 (99 = off)')
         if self.rocket_tornado != 'off' and self.rocket_value <= 0:
@@ -219,17 +234,39 @@ def add_arguments(parser):
                              'in hand and both affordable: Rocket at the pull centre now, the Tornado there as a follow-up tap timed so the '
                              'Rocket lands inside the pull (rocket_tornado_plan). on = alongside the lone rule, only = the combo without the lone rule, '
                              'rocket_only = SIM measurement ablation: the same Rocket at the same moment, no Tornado (not for live)')
-    parser.add_argument('--tornado-river', choices=('off', 'on'), default='off',
+    parser.add_argument('--tornado-river', choices=('off', 'on', 'full'), default='off',
                         help='owner 2026-10-14: a Tornado cannot drag GROUND troops over the river (held at the bank; air crosses; '
                              'bridges are walkable). on: the Rocket+Tornado aim counts an enemy-bank ground body only where the river '
-                             'holds it, and the own-effects look-ahead stops ground bodies at the bank. off = unchanged')
+                             'holds it, and the own-effects look-ahead stops ground bodies at the bank. full (10-17): the aim follows each '
+                             'ground body\'s pull path instead (either bank, and a body on a bridge pulled sideways stops at the bridge '
+                             'edge, RoyaleSim per-axis water stop) and counts it only if the blast covers where it ends. off = unchanged')
+    parser.add_argument('--rocket-tornado-window', choices=('v1', 'measured'), default='v1',
+                        help='owner 2026-10-17: measured = the Rocket must land 7..24 ticks after the Tornado (7..40 at a centre on my side '
+                             'past the bridge, y >= 19) and its flight is d / 0.35 + 0.5 ticks (fork36 sweep, L74/combo/fit_window.py); '
+                             'v1 = 12..33 and round(d / .35) + 2 (unchanged)')
+    parser.add_argument('--rocket-tornado-order', choices=('rocket', 'either'), default='rocket',
+                        help='owner 2026-10-17: either = also Tornado now and the Rocket as its follow-up tap, whichever order leaves the '
+                             'wider timing window (short flights near my towers); rocket = Rocket first only (unchanged)')
+    parser.add_argument('--rocket-tornado-lone', choices=('skip', 'best', 'combo'), default='skip',
+                        help='owner 2026-10-17: best = where one Rocket blast already holds V, the combo when its pull gathers more '
+                             'value than that blast (> COMBO_GAIN_MIN elixir), else that lone Rocket; skip = no combo there (unchanged; '
+                             'with --rocket-tornado only such a clump got neither play); combo = that combo, but never the lone Rocket '
+                             '(10-17 SIM: lone Rockets of best lost net 12 of 110 changed matches)')
+    parser.add_argument('--rocket-tornado-lead', choices=('off', 'drift'), default='off',
+                        help='owner 2026-10-17: drift = judge the pull where the bodies on the enemy half or a bridge will have walked to '
+                             'when the Tornado lands (decision -> Tornado deploy: 26 ticks + the follow-up gap): ground bodies toward '
+                             'their nearest bridge, then along it; air straight at my side; my half stays put. off = unchanged')
+    parser.add_argument('--rocket-value-towers', choices=('off', 'on'), default='off',
+                        help='owner 2026-10-17: on = an alive enemy PRINCESS tower inside the Rocket blast adds ROCKET_TOWER_VALUE elixir to '
+                             'the value (lone and combo); the enemy king is never in a blast or a Tornado (doctrine). off = unchanged')
     parser.add_argument('--rocket-value-max-left', type=float, default=99.0, metavar='L',
                         help='no fire when the bodies in the best blast would still hold more than L elixir of value after the '
                              'Rocket (a Golem keeps 5.7 of its 8): the Rocket then only strips the support and the elixir it '
                              'cost is missing against the tank. 99 = off')
     parser.add_argument('--rocket-value-min-y', type=float, default=16.0, metavar='Y',
                         help='the blast centre must be at board y >= Y tiles (me at the bottom, my half starts at 16, my princess '
-                             'towers stand at 25.5): a deep centre is short in the air and on a clump already at my towers')
+                             'towers stand at 25.5): a deep centre is short in the air and on a clump already at my towers; '
+                             'Y < 16 reaches onto the enemy half (with --tornado-river off or full)')
     parser.add_argument('--rocket-value-hitbox', choices=('centre', 'edge'), default='centre',
                         help='edge: a body is in the blast when its HITBOX touches the radius (centre distance <= radius + its '
                              'collision radius, the RoyaleSim rule); centre: its centre must be inside the radius')
@@ -1372,21 +1409,28 @@ def rocket_track(holder, tick, bodies, keep_ticks=40):
     return before
 
 
-def best_rocket_clump(bodies, grid, hitbox='centre', lead=None, min_y=MY_HALF_MIN_Y_TILES, with_left=False):
+def best_rocket_clump(bodies, grid, hitbox='centre', lead=None, min_y=MY_HALF_MIN_Y_TILES, with_left=False, towers=None):
     """-> (value, eligible) for the best Rocket blast CENTRED on my half: its value, and the [2304] bool cells (on my half) whose
     blast covers every body of that best clump. (0.0, None) with no body worth anything. ``hitbox`` 'centre' counts a body whose
     centre is within the Rocket radius, 'edge' one whose hitbox touches it (radius + the body's collision radius). ``lead`` =
     None, or the (decision tick, history, mode) of rocket_track / 'drift': the bodies are moved to where they will be when a Rocket aimed at the
-    cell lands (rocket_lands_in at the cell, found by one refinement from the static best cell)."""
+    cell lands (rocket_lands_in at the cell, found by one refinement from the static best cell). ``towers`` (rocket_value_towers on) =
+    the (L, R) enemy princess alive flags: a blast with bodies in it gains ROCKET_TOWER_VALUE per alive princess it covers (and its
+    eligible cells must cover that princess too). A blast never covers the enemy king (no cell on my half can)."""
     if not len(bodies):
         return (0.0, None, 0.0) if with_left else (0.0, None)
     x, y = cell_centres_tiles(grid)
     reach = rocket_radius_tiles() + (bodies[:, 4] if hitbox == 'edge' else np.zeros(len(bodies)))
-    mine = y >= min_y
+    cover = tower_cover_cells(grid, rocket_radius_tiles())
+    mine = (y >= min_y) & ~cover[0]                     # never the enemy king (doctrine): no-op for min_y >= 16
+    bonus = None if towers is None else tower_bonus(cover, towers)
 
     def blast(pos):
         inside = np.hypot(x[:, None] - pos[None, :, 0], y[:, None] - pos[None, :, 1]) <= reach[None, :]
-        return inside, np.where(mine, inside @ bodies[:, 3], -1.0)
+        v = inside @ bodies[:, 3]
+        if bonus is not None:                           # a princess counts only along with a clump
+            v = np.where(v > 0, v + bonus, v)
+        return inside, np.where(mine, v, -1.0)
 
     pos = bodies[:, 1:3]
     inside, value = blast(pos)
@@ -1405,7 +1449,42 @@ def best_rocket_clump(bodies, grid, hitbox='centre', lead=None, min_y=MY_HALF_MI
         return (0.0, None, 0.0) if with_left else (0.0, None)
     members = inside[best] & (bodies[:, 3] > 0)         # the clump: the bodies that count; a zero-value survivor need not be covered
     eligible = mine & inside[:, members].all(axis=1)
+    if bonus is not None:                               # ... and every alive princess that value counted
+        for j, alive in enumerate(towers):
+            if alive and cover[j + 1][best]:
+                eligible = eligible & cover[j + 1]
     return (float(value[best]), eligible, float(inside[best] @ bodies[:, 5])) if with_left else (float(value[best]), eligible)
+
+
+# ---- rocket_value_towers (owner 2026-10-17: "even more so if an enemy princess tower is caught in the blast radius along with the clump") ----
+# The Rocket's princess hit in elixir: rho = 22.5 (2x) / 25.1 (OT) elixir per whole princess tower (L74/reward/RHO_FIT_R1.txt, win model;
+# 1x 43 [23, 147] too wide to use) x the measured Rocket tower damage 497 / 4424 princess HP at live level 16 = 0.112 -> ~2.8 elixir.
+# ponytail: one constant (no phase, level or tower-HP scaling); a princess the Rocket finishes is the lethal rules' business.
+ROCKET_TOWER_VALUE = 2.8
+
+
+@lru_cache(maxsize=8)
+def tower_cover_cells(grid, reach):
+    """[3, 2304] bool (read-only): the cell centre is within ``reach`` tiles + the tower's catalog collision radius of the enemy
+    K, L, R (ENEMY_TOWERS_TILES)."""
+    from .public_geometry import constants
+    x, y = cell_centres_tiles(grid)
+    radii = constants()['tower_radius']
+    out = np.stack([np.hypot(x - tx, y - ty) <= reach + radii[k] / 1000.0
+                    for (tx, ty), k in zip(ENEMY_TOWERS_TILES, ('KingTower', 'PrincessTower', 'PrincessTower'))])
+    out.setflags(write=False)
+    return out
+
+
+def tower_bonus(cover, alive):
+    """[2304] elixir: ROCKET_TOWER_VALUE for each alive enemy princess (``alive`` = (L, R)) a blast at the cell covers."""
+    return ROCKET_TOWER_VALUE * (cover[1] * bool(alive[0]) + cover[2] * bool(alive[1]))
+
+
+def enemy_princesses_alive(bs):
+    """(L, R) public alive flags of the enemy princesses on a BoardState (towers[4:6]); (False, False) when it has no towers."""
+    t = tuple(getattr(bs, 'towers', ()) or ())
+    return (bool(t[4].alive), bool(t[5].alive)) if len(t) >= 6 else (False, False)
 
 
 def rocket_value_choice(options, names, allowed, bs, grid, pending=False, holder=None, playing=False):
@@ -1435,7 +1514,8 @@ def rocket_value_choice(options, names, allowed, bs, grid, pending=False, holder
         return None
     if float(bs.my_elixir) + 1e-9 < options.rocket_value_min_elixir or (watch and not threatened):
         return None
-    value, eligible, left = best_rocket_clump(bodies, grid, options.rocket_value_hitbox, lead, options.rocket_value_min_y, True)
+    value, eligible, left = best_rocket_clump(bodies, grid, options.rocket_value_hitbox, lead, options.rocket_value_min_y, True,
+                                              towers=enemy_princesses_alive(bs) if options.rocket_value_towers == 'on' else None)
     if eligible is None or value + 1e-9 < options.rocket_value or left > options.rocket_value_max_left + 1e-9:
         return None
     return slots[0], eligible, value
@@ -1496,6 +1576,59 @@ def rocket_tornado_plan(cx, cy, min_gap=LIVE_FOLLOW_MIN_GAP_TICKS):
     return (lo, hi) if lo <= hi else None
 
 
+# ---- rocket_tornado_window measured / rocket_tornado_order either (owner 2026-10-17 ~21:30: "make the listed rule changes") ----
+# Re-fit on the fast-plays timing sweep (fork36, engine only, oracle aim; pod1017_fastplays/fastplays/sweep.jsonl, L74/combo/fit_window.py):
+# L = Rocket impact - Tornado deploy, MEASURED per row. The group damage holds >= 80 % of the best combo and >= 1.5 x a lone Rocket for
+# L in: enemy king 4..33, enemy princess 6..29, enemy mid 6..24, enemy bank 6..33 (walking clumps spread again once the pull ends);
+# my bridge 3..47, my princess 4..45, my king 7..45 (clumps engaged at my towers stay gathered; the sweep stopped at L ~45). The ramp
+# below L ~7 is the pull still gathering. -> 7..24 everywhere (inside every measured window), 7..40 at a centre on my side past the
+# bridge exit (y >= 19: the three my-half scenarios sat at y 19.5..23).
+# Flight (deploy -> impact) = d / .35 + 0.52 on average (770 rows; measured - round(d / .35) in -1..+2); v1's round(d / .35) + 2 reads
+# 1.3-1.6 ticks high (live 182814 t3008: 33-35 measured vs 37 predicted).
+PULL_LANDS_V2 = (7, 24)
+PULL_LANDS_V2_MINE = (7, 40)
+PULL_V2_MINE_Y = 19.0
+FLIGHT_V2_OFFSET = 0.5
+# rocket_tornado_lone best: the combo when its pull gathers more than the best single blast holds (> COMBO_GAIN_MIN elixir more), else
+# the lone Rocket. No 3-elixir Tornado margin: the lone value is the decision instant's and its edge bodies walk out during the flight --
+# the fork36 sweep's ORACLE-aimed lone Rocket took 1102 / 2314 / 2200 hp of the my-king / my-princess / my-bridge columns where the
+# combo took 4206 / 4441 / 4496, and the 10-17 scenario re-run's lone rule (the margin 3 version) 1476 / 1840 / 1476.
+COMBO_GAIN_MIN = 0.5
+# rocket_tornado_window measured: the decision board's elixir is a LOOK-AHEAD one (extrapolate: SIM 26 ticks, live --extrapolate 24).
+# v1's check (board elixir - 6 + regen x earliest gap >= 3) counted those ticks twice: 6 of 127 cur combos (fast-plays offc) and 10 of 38
+# early 10-17 enemy-half combos lost their follow-up 'unaffordable'. measured: the follow-up's own verdict (e1_eval.follow_up_have: its
+# elixir FOLLOW_AFFORD_TICKS ahead minus the unlanded first card) at its due tick, from the de-looked-ahead elixir.
+COMBO_LOOKAHEAD_TICKS = 26
+COMBO_AFFORD_TICKS = 6       # = e1_eval.FOLLOW_AFFORD_TICKS (live_play's)
+
+
+def combo_flight_ticks(cx, cy, window='v1'):
+    """Rocket deploy -> impact at board tile (cx, cy): v1 = rocket_flight_ticks (int); measured = d / .35 + FLIGHT_V2_OFFSET."""
+    if window == 'v1':
+        return rocket_flight_ticks(cx, cy)
+    return math.hypot(cx - 9.0, cy - 28.65) / ROCKET_SPEED_TILES_PER_TICK + FLIGHT_V2_OFFSET
+
+
+def combo_window(cy, window='v1'):
+    """(earliest, latest) Rocket landing after the Tornado deploy, ticks, for a pull centred at board y ``cy``."""
+    if window == 'v1':
+        return PULL_LANDS_FROM, PULL_LANDS_TO
+    return PULL_LANDS_V2_MINE if cy >= PULL_V2_MINE_Y else PULL_LANDS_V2
+
+
+def combo_plan(cx, cy, order='rocket', window='v1', min_gap=LIVE_FOLLOW_MIN_GAP_TICKS):
+    """-> (earliest, latest) deploy gap (ticks) of the follow-up card after the first one so the Rocket lands inside the pull, or None.
+    order 'rocket': Rocket first, the Tornado g later -> the Rocket lands F - g after the Tornado; 'tornado': Tornado first, the Rocket
+    h later -> it lands F + h after it (F = combo_flight_ticks). v1 + rocket = rocket_tornado_plan exactly."""
+    if window == 'v1' and order == 'rocket':
+        return rocket_tornado_plan(cx, cy, min_gap)
+    f = combo_flight_ticks(cx, cy, window)
+    lf, lt = combo_window(cy, window)
+    lo, hi = (f - lt, f - lf) if order == 'rocket' else (lf - f, lt - f)
+    lo, hi = max(min_gap, math.ceil(lo - 1e-9)), math.floor(hi + 1e-9)
+    return (lo, hi) if lo <= hi else None
+
+
 def elixir_regen_per_tick(bs):
     """Public regeneration of MY elixir per tick on a BoardState: 1 per 2.8 s, x2 from 2:00, x3 in overtime."""
     return (3 if bs.overtime else 2 if bs.double_elixir else 1) / 56.0
@@ -1523,13 +1656,130 @@ def river_held(bodies):
     return ~air & ~on_bridge & (bodies[:, 2] <= RIVER_Y_TILES[0])
 
 
-def best_tornado_centre(bodies, grid, hitbox='centre', min_y=MY_HALF_MIN_Y_TILES, river=False):
+def water_stop_tiles(x0, y0, x1, y1):
+    """extrapolate.water_stop in board tiles, element-wise on arrays (the river and the bridges are symmetric in either side's frame):
+    a GROUND body moving (x0, y0) -> (x1, y1) never ends on water -- off a bridge it stops at the bank it came from, on a bridge at
+    the bridge's edge. -> (x, y)."""
+    r0, r1 = RIVER_Y_TILES
+    on1 = np.zeros(np.shape(x1), dtype=bool)
+    lo0, hi0 = np.full(np.shape(x0), -np.inf), np.full(np.shape(x0), np.inf)
+    on0 = np.zeros(np.shape(x0), dtype=bool)
+    for a, b in BRIDGE_X_TILES:
+        on1 |= (x1 >= a) & (x1 <= b)
+        m = (x0 >= a) & (x0 <= b)
+        lo0, hi0, on0 = np.where(m, a, lo0), np.where(m, b, hi0), on0 | m
+    wet = (y1 > r0) & (y1 < r1) & ~on1
+    bridge = on0 & (y0 > r0) & (y0 < r1)
+    return (np.where(wet & bridge, np.clip(x1, lo0, hi0), x1),
+            np.where(wet & ~bridge, np.where(y0 >= r1, r1, np.where(y0 <= r0, r0, y1)), y1))
+
+
+# tornado_river full (owner 10-17, the 182814 t3008 miss): RoyaleSim moves a pulled GROUND body per axis and never into water (TORNADO_RIVER.md;
+# L74/combo/bridge_probe.py on fork36: a Knight / Giant on the left bridge pulled toward (8.5, 16) is held at the bridge edge x 4.5 for the
+# whole pull, 4 tiles from the centre; toward a centre on land it leaves the bridge and arrives; a Ram Rider walking onto the bridge sticks
+# at x 5.0, 3.5 tiles off -- as live 182814 did, 4 tiles off). The value model follows each such body's pull path instead of assuming it
+# reaches the centre.
+PULL_STEP_PER_SPEED = 4.32      # RoyaleSim ATTRACT step = catalog speed x 360 / 100 milli-tiles per tick (Knight 216; probe 229 with its
+                                # walk), per rocket_bodies' speed column (catalog speed / 1200 tiles per tick)
+PULL_PATH_TICKS = 16            # pull ticks before the Rocket lands: the middle of PULL_LANDS_V2
+BRIDGE_WALK_TICKS = (0, 20, 40) # a ground body in a bridge column may walk this long along it before the pull starts (decision -> Tornado
+                                # deploy: ~28 Tornado first, 40 at live 182814): it must end inside the blast from EVERY start
+BRIDGE_SLACK_TILES = 0.5        # a body centre this close to a bridge column counts as in it (reader / hitbox: 182814's Mega Knight at x 13.23)
+
+
+def pull_river_ends(bodies, x, y, inside, dist, blast, fixed):
+    """tornado_river full: -> (inside, dist) with every (centre cell, GROUND body) pair whose pull meets the water re-judged by where the
+    pull leaves the body after PULL_PATH_TICKS (counted only if the Rocket blast at the centre covers that point; ``dist`` = that end's
+    distance, the plateau tie-break). Meets the water = the body and the centre on different banks (a centre in the river is on neither),
+    the body on a bridge, or the body in a bridge column within 2 tiles of the river (it may walk onto the bridge first: BRIDGE_WALK_TICKS).
+    Per tick: a pull step toward the centre of PULL_STEP_PER_SPEED x its speed, a bridge-column body also walks toward my side at its
+    catalog speed, then water_stop_tiles. Air bodies cross (unchanged); buildings never move (unchanged).
+    ponytail: straight-line pull + straight walk along the bridge, no pathing, no stop to attack; a simulated engine path is the upgrade."""
+    if not len(bodies):
+        return inside, dist
+    traits = log_air_traits()
+    air = np.array([bool(traits.get(int(c), (False, 0.0))[0]) for c in bodies[:, 0]], dtype=bool)
+    bx, by = bodies[:, 1], bodies[:, 2]
+    r0, r1 = RIVER_Y_TILES
+    column = np.zeros(len(bodies), dtype=bool)
+    for a, b in BRIDGE_X_TILES:
+        column |= (bx >= a - BRIDGE_SLACK_TILES) & (bx <= b + BRIDGE_SLACK_TILES)
+    near = column & (by >= r0 - 2.0) & (by <= r1 + 2.0)
+    far = (((by[None, :] <= r0) & (y[:, None] > r0)) | ((by[None, :] >= r1) & (y[:, None] < r1))
+           | ((by[None, :] > r0) & (by[None, :] < r1)))
+    ci, bi = np.nonzero(inside & (~air & ~fixed)[None, :] & (far | near[None, :]))
+    if not len(ci):
+        return inside, dist
+    w = np.array(BRIDGE_WALK_TICKS, dtype=np.float64)
+    ci, bi = np.repeat(ci, len(w)), np.repeat(bi, len(w))
+    speed = bodies[bi, 6]
+    walk = np.where(near[bi], speed, 0.0)
+    px = bx[bi].copy()
+    for a, b in BRIDGE_X_TILES:                         # a column body (slack) walks ON its bridge
+        m = near[bi] & (px >= a - BRIDGE_SLACK_TILES) & (px <= b + BRIDGE_SLACK_TILES)
+        px = np.where(m, np.clip(px, a, b), px)
+    py = by[bi] + walk * np.tile(w, len(ci) // len(w))
+    cx, cy, step = x[ci], y[ci], speed * PULL_STEP_PER_SPEED
+    for _ in range(PULL_PATH_TICKS):
+        dx, dy = cx - px, cy - py
+        d = np.hypot(dx, dy)
+        k = np.minimum(step, d) / np.maximum(d, 1e-9)
+        px, py = water_stop_tiles(px, py, px + dx * k, py + dy * k + walk)
+    end = np.hypot(cx - px, cy - py).reshape(-1, len(w))
+    ok = (end <= blast[bi].reshape(-1, len(w))).all(axis=1)
+    ci, bi = ci[::len(w)], bi[::len(w)]
+    inside, dist = inside.copy(), dist.copy()
+    inside[ci, bi] = ok
+    dist[ci, bi] = end.max(axis=1)
+    return inside, dist
+
+
+COMBO_DEPLOY_TICKS = 26         # decision -> the first card deployed: the SIM's action_delay_ticks; live tap-to-deploy 22-27 (fastplays)
+
+
+def combo_drift(bodies, ticks):
+    """rocket_tornado_lead drift: ``bodies`` (rocket_bodies rows) moved to where they will have walked ``ticks`` later at their catalog
+    speed. A GROUND body on the enemy half (y < 15) walks to its nearest bridge's entrance (the bridge's x range, y 15), then along the
+    bridge toward my side; one on a bridge walks along it; an AIR body there flies straight toward my side (+y). My half stays put (clumps
+    there are mostly engaged at my towers: the fork36 sweep's my-half windows stay gathered to L ~45); buildings never move.
+    (Why: smoke 10-17 seed 741201, an enemy-half combo judged on the decision board -- the push walked ~4 tiles toward the bridge in the
+    79 ticks to the Tornado's start and the Rocket took 4.6 of the 9.5 elixir expected.)
+    ponytail: straight lines to the bridge, no stop to attack; a measured velocity (rocket_value_lead blend) is the upgrade."""
+    out = np.array(bodies, dtype=np.float64, copy=True)
+    if not len(out) or ticks <= 0:
+        return out
+    from . import vocab
+    traits, still = log_air_traits(), immobile_keys()
+    r0, r1 = RIVER_Y_TILES
+    for i, b in enumerate(out):
+        x, y, left = float(b[1]), float(b[2]), float(b[6]) * ticks
+        if y >= r1 or left <= 0 or vocab.base_key(vocab.UNIT_VOCAB[int(b[0])]) in still:
+            continue
+        if bool(traits.get(int(b[0]), (False, 0.0))[0]):           # air: straight at my side
+            out[i, 2] = y + left
+            continue
+        lo, hi = min(BRIDGE_X_TILES, key=lambda br: abs((br[0] + br[1]) / 2 - x))
+        if y < r0:                                                  # to the bridge entrance first
+            tx = min(max(x, lo + .5), hi - .5)
+            d = math.hypot(tx - x, r0 - y)
+            step = min(d, left)
+            if d > 0:
+                x, y = x + (tx - x) * step / d, y + (r0 - y) * step / d
+            left -= step
+        out[i, 1], out[i, 2] = x, y + max(left, 0.0)
+    return out
+
+
+def best_tornado_centre(bodies, grid, hitbox='centre', min_y=MY_HALF_MIN_Y_TILES, river=False, towers=None):
     """-> (value, cell) for the Tornado centre on my half whose pull radius holds the most value; (0.0, None) without bodies.
     Buildings (immobile_keys) are not pulled: they count only inside the Rocket's own blast around the centre (where the Rocket aims).
     Many centres tie on a spread clump (a plateau): the one picked is the plateau's MIDDLE for the bodies it pulls, the cell with the
     smallest value-weighted mean distance to them -- the pull gathers them there and the Rocket (radius 2.0) lands on that point.
     The first-index tie-break of iteration 3 took the plateau's corner, (0.0, 16.0): all 78 of those SIM combos were refused at landing
-    (cb5 / cb7 / cb9, pod 10-09) and the pull would have dragged the clump to the edge."""
+    (cb5 / cb7 / cb9, pod 10-09) and the pull would have dragged the clump to the edge.
+    ``river`` True = tornado_river on (enemy-bank bodies held at the bank), 'full' = pull_river_ends. ``towers`` = rocket_value_towers'
+    (L, R) princess alive flags (best_rocket_clump's bonus, for the blast at the centre). A centre whose pull reaches the enemy king is
+    never chosen (doctrine: the Tornado's tower damage would wake it; no centre on my half can)."""
     if not len(bodies):
         return 0.0, None
     x, y = cell_centres_tiles(grid)
@@ -1538,18 +1788,22 @@ def best_tornado_centre(bodies, grid, hitbox='centre', min_y=MY_HALF_MIN_Y_TILES
     inside = dist <= reach[None, :]
     from . import vocab
     fixed = np.array([vocab.base_key(vocab.UNIT_VOCAB[int(c)]) in immobile_keys() for c in bodies[:, 0]], dtype=bool)
+    blast = rocket_radius_tiles() + (bodies[:, 4] if hitbox == 'edge' else np.zeros(len(bodies)))
     if fixed.any():      # a building does not move in the pull: it counts only where the Rocket aimed at the centre hits it, where it stands
-        blast = rocket_radius_tiles() + (bodies[:, 4] if hitbox == 'edge' else np.zeros(len(bodies)))
         inside = inside & (~fixed[None, :] | (dist <= blast[None, :]))
-    if river:            # --tornado-river: an enemy-bank ground body is held at the bank -- it counts only if the Rocket covers that point
+    if river == 'full':
+        inside, dist = pull_river_ends(bodies, x, y, inside, dist, blast, fixed)
+    elif river:          # --tornado-river: an enemy-bank ground body is held at the bank -- it counts only if the Rocket covers that point
         held = river_held(bodies)
         if held.any():
-            blast = rocket_radius_tiles() + (bodies[:, 4] if hitbox == 'edge' else np.zeros(len(bodies)))
             at_bank = np.hypot(x[:, None] - bodies[None, :, 1], y[:, None] - RIVER_Y_TILES[0])
             inside = inside & (~held[None, :] | (at_bank <= blast[None, :]))
             dist = np.where(held[None, :], at_bank, dist)      # the plateau tie-break uses where they really end up
-    ok = (y >= min_y) & (x >= COMBO_EDGE_MARGIN_TILES) & (x <= 18.0 - COMBO_EDGE_MARGIN_TILES) & (y <= 32.0 - COMBO_EDGE_MARGIN_TILES)
+    ok = ((y >= min_y) & (x >= COMBO_EDGE_MARGIN_TILES) & (x <= 18.0 - COMBO_EDGE_MARGIN_TILES) & (y <= 32.0 - COMBO_EDGE_MARGIN_TILES)
+          & (y >= COMBO_EDGE_MARGIN_TILES) & ~tower_cover_cells(grid, tornado_radius_tiles())[0])
     value = np.where(ok, inside @ bodies[:, 3], -1.0)
+    if towers is not None:                              # a princess in the Rocket blast at the centre, only along with a clump
+        value = np.where(value > 0, value + tower_bonus(tower_cover_cells(grid, rocket_radius_tiles()), towers), value)
     top = float(value.max())
     if top <= 0:
         return 0.0, None
@@ -1559,11 +1813,18 @@ def best_tornado_centre(bodies, grid, hitbox='centre', min_y=MY_HALF_MIN_Y_TILES
 
 
 def rocket_tornado_choice(options, names, allowed, bs, grid, pending=False, min_gap=LIVE_FOLLOW_MIN_GAP_TICKS):
-    """-> (rocket slot, tornado slot, cell, (earliest, latest), value) when the combo starts, else None: Rocket AND Tornado in hand
+    """-> (rocket slot, tornado slot, cell, (earliest, latest), value, order) when the combo starts, else None: Rocket AND Tornado in hand
     (``names`` = the hand), the Rocket affordable now and the Tornado affordable at the earliest follow-up time (regeneration counted),
     nothing pending, NO single Rocket blast already holds rocket_value (rocket_value_choice's), the Tornado pull around the best centre
     holds >= rocket_value, and a follow-up time at least WINDOW_MIN_WIDTH_TICKS wide exists. Same value mode / hitbox / min_y / min
-    elixir as the lone rule (the caller applies idle / threat)."""
+    elixir as the lone rule (the caller applies idle / threat).
+    ``order`` 'rocket' = Rocket now at the cell, the Tornado there as the follow-up (the only order before 10-17); 'tornado'
+    (rocket_tornado_order either) = Tornado now, the Rocket as the follow-up -- the order whose window (combo_plan) is wider, Rocket
+    first on a tie, the Tornado then affordable NOW. 'lone' (rocket_tornado_lone best): one blast already holds rocket_value and the
+    pull gathers no more than COMBO_GAIN_MIN beyond it, or no combo plan exists -> (rocket slot,
+    tornado slot, None, None, the lone value, 'lone'): the caller plays its rocket_value_choice hit, so no such clump is left with
+    neither play ('combo': None instead -- the model plays). rocket_tornado_lead drift: the pull is judged on combo_drift's bodies, moved for the decision -> Tornado deploy time
+    of the plan found on the decision board (one refinement)."""
     if options.rocket_tornado == 'off' or options.rocket_value <= 0 or pending:
         return None
     rockets = [i for i, n in enumerate(names) if n is not None and str(n).lower() == 'rocket' and allowed[i]]
@@ -1574,19 +1835,44 @@ def rocket_tornado_choice(options, names, allowed, bs, grid, pending=False, min_
         tornados = tornados if vocab.unit_id('tornado') in tuple(hand) else []
     if not rockets or not tornados or float(bs.my_elixir) + 1e-9 < options.rocket_value_min_elixir:
         return None
-    bodies = rocket_bodies(bs, options.rocket_value_mode)
-    single, _ = best_rocket_clump(bodies, grid, options.rocket_value_hitbox, None, options.rocket_value_min_y)
-    value, cell = best_tornado_centre(bodies, grid, options.rocket_value_hitbox, options.rocket_value_min_y,
-                                      river=options.tornado_river == 'on')
-    if cell is None or single + 1e-9 >= options.rocket_value or value + 1e-9 < options.rocket_value:
-        return None
     x, y = cell_centres_tiles(grid)
-    plan = rocket_tornado_plan(x[cell], y[cell], min_gap)
-    if plan is None or plan[1] - plan[0] + 1 < WINDOW_MIN_WIDTH_TICKS:
-        return None
-    if float(bs.my_elixir) - 6.0 + elixir_regen_per_tick(bs) * plan[0] < 3.0:       # Rocket 6 now, Tornado 3 at the follow-up time
-        return None
-    return rockets[0], tornados[0], int(cell), plan, value
+
+    def plan_at(c):                                 # -> (order, plan) with the wider window, Rocket first on a tie; None
+        plans = []
+        for order in ('rocket', 'tornado') if options.rocket_tornado_order == 'either' else ('rocket',):
+            plan = combo_plan(x[c], y[c], order, options.rocket_tornado_window, min_gap)
+            if plan is not None and plan[1] - plan[0] + 1 >= WINDOW_MIN_WIDTH_TICKS and (order == 'rocket' or allowed[tornados[0]]):
+                plans.append((plan[1] - plan[0], order, plan))
+        return max(plans, key=lambda q: q[0])[1:] if plans else None    # max keeps the first on a tie
+
+    bodies = rocket_bodies(bs, options.rocket_value_mode)
+    towers = enemy_princesses_alive(bs) if options.rocket_value_towers == 'on' else None
+    river = 'full' if options.tornado_river == 'full' else options.tornado_river == 'on'
+    single, _ = best_rocket_clump(bodies, grid, options.rocket_value_hitbox, None, options.rocket_value_min_y, towers=towers)
+    value, cell = best_tornado_centre(bodies, grid, options.rocket_value_hitbox, options.rocket_value_min_y, river=river, towers=towers)
+    if options.rocket_tornado_lead == 'drift' and cell is not None:
+        first = plan_at(cell)
+        if first is not None:
+            t = COMBO_DEPLOY_TICKS + ((first[1][0] + first[1][1]) // 2 if first[0] == 'rocket' else 0)
+            value, cell = best_tornado_centre(combo_drift(bodies, t), grid, options.rocket_value_hitbox, options.rocket_value_min_y,
+                                              river=river, towers=towers)
+    lone = options.rocket_tornado_lone in ('best', 'combo') and single + 1e-9 >= options.rocket_value
+    no = (rockets[0], tornados[0], None, None, single, 'lone') if lone and options.rocket_tornado_lone == 'best' else None
+    if cell is None or (single + 1e-9 >= options.rocket_value and not lone) or value + 1e-9 < options.rocket_value:
+        return no
+    if lone and value <= single + COMBO_GAIN_MIN + 1e-9:
+        return no
+    best = plan_at(cell)
+    if best is None:
+        return no
+    order, plan = best
+    if options.rocket_tornado_window == 'measured':  # 9 elixir by the follow-up's due tick, either order (COMBO_LOOKAHEAD_TICKS)
+        due = rocket_tornado_timing(plan)[0]
+        if float(bs.my_elixir) + elixir_regen_per_tick(bs) * (due + COMBO_AFFORD_TICKS - COMBO_LOOKAHEAD_TICKS) < 9.0 - 1e-9:
+            return no
+    elif float(bs.my_elixir) - 6.0 + elixir_regen_per_tick(bs) * plan[0] < 3.0:     # v1: Rocket 6 now, Tornado 3 at the earliest gap
+        return no
+    return rockets[0], tornados[0], int(cell), plan, value, order
 
 
 @torch.no_grad()
@@ -1672,31 +1958,44 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
     if options.rocket_value > 0:    # before lethal_rocket, which overrides it
         if rocket_value is None or grid is None or card_names is None:
             raise ValueError('rocket_value requires per-row boards, the grid and card names')
-        hits = {}
+        hits, lone = {}, {}
         for r in range(len(out)):
             hit = rocket_value_choice(options, card_names[r], allowed[r], rocket_value[r][0], grid, pending=rocket_value[r][1],
                                       holder=rocket_value[r][2], playing=bool(playing[r]))
             if hit is not None and options.rocket_tornado not in ('only', 'rocket_only'):      # those modes: the combo trigger alone
                 hits[r] = hit
+            elif hit is not None:
+                lone[r] = hit                       # ... unless rocket_tornado_lone best picks it over the combo (below)
+        combos = {}
+        if options.rocket_tornado != 'off':     # the combo: one card at the pull centre now, the other as a pipelined follow-up (e1_eval.follow_up_spec)
+            for r in range(len(out)):
+                bs, pending, holder = rocket_value[r]
+                if (r in hits and options.rocket_tornado_lone == 'skip') or (options.rocket_value_idle == 'on' and bool(playing[r])) or (
+                        options.rocket_value_threat == 'on' and not getattr(holder, 'rv_threatened', False)):
+                    continue
+                hit = rocket_tornado_choice(options, card_names[r], allowed[r], bs, grid, pending)
+                if hit is None:
+                    continue
+                if hit[5] == 'lone':                # rocket_tornado_lone best: the lone Rocket (rocket_value_choice's hit) is the better play
+                    if r in lone:
+                        hits[r] = lone[r]
+                    continue
+                hits.pop(r, None)
+                combos[r] = hit
         if hits:
-            ids = list(hits)
+            ids = sorted(hits)
             logits = model.cell_logits({k: v[torch.as_tensor(ids, device=device)] for k, v in enc.items()},
                                        torch.tensor([hits[r][0] for r in ids], device=device))
             for j, r in enumerate(ids):
                 out[r] = dict(play=True, slot=hits[r][0], cell=rocket_value_cell(logits[j], hits[r][1]), why='rocket_value')
-        if options.rocket_tornado != 'off':     # the combo: Rocket at the pull centre now, the Tornado as a pipelined follow-up (e1_eval.follow_up_spec)
+        if combos:
             from .e1_eval import follow_up_spec
-            for r in range(len(out)):
-                bs, pending, holder = rocket_value[r]
-                if r in hits or (options.rocket_value_idle == 'on' and bool(playing[r])) or (
-                        options.rocket_value_threat == 'on' and not getattr(holder, 'rv_threatened', False)):
-                    continue
-                hit = rocket_tornado_choice(options, card_names[r], allowed[r], bs, grid, pending)
-                if hit is not None:
-                    after, within = rocket_tornado_timing(hit[3])
-                    out[r] = dict(play=True, slot=hit[0], cell=hit[2], why='rocket_tornado')
-                    if options.rocket_tornado != 'rocket_only':
-                        out[r]['follow_ups'] = [follow_up_spec(hit[1], hit[2], after, within)]
+        for r, hit in combos.items():
+            after, within = rocket_tornado_timing(hit[3])
+            first, second = (hit[0], hit[1]) if hit[5] == 'rocket' else (hit[1], hit[0])    # order 'tornado': the Rocket follows
+            out[r] = dict(play=True, slot=first, cell=hit[2], why='rocket_tornado')
+            if options.rocket_tornado != 'rocket_only':
+                out[r]['follow_ups'] = [follow_up_spec(second, hit[2], after, within)]
     if options.lethal_rocket != 'off':
         if lethal is None or t_sec is None or grid is None or card_names is None:
             raise ValueError('lethal_rocket requires per-row crown towers, decision times, the grid and card names')

@@ -61,7 +61,8 @@ def test_default_off_flags_and_validation():
     assert options_from_config(config_from_args(ap.parse_args(['--rocket-value', '9', '--rocket-value-max-left', '3']))).rocket_value_max_left == 3.0
     for kw in (dict(rocket_value=-1.0), dict(rocket_value=float('nan')), dict(rocket_value=float('inf')), dict(rocket_value_mode='x'),
                dict(rocket_value_hitbox='x'), dict(rocket_value_lead='yes'), dict(rocket_value_idle='x'),
-               dict(rocket_value_min_elixir=11.0), dict(rocket_value_min_elixir=-1.0), dict(rocket_value_min_y=10.0),
+               dict(rocket_value_min_elixir=11.0), dict(rocket_value_min_elixir=-1.0), dict(rocket_value_min_y=-1.0),
+               dict(rocket_value_min_y=10.0, tornado_river='on'),     # 10-17: the enemy half is allowed, but not with the my-half bank model
                dict(rocket_value_min_y=40.0), dict(rocket_value_min_y=float('nan')), dict(rocket_value_max_left=-1.0), dict(rocket_value_threat='x')):
         with pytest.raises(ValueError):
             DecisionOptions(**kw)
