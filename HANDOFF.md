@@ -1,3 +1,8 @@
+## 2026-10-18 10:15 EDT -- API-key background workers (owner 10-18)
+
+- Heavy workers now run as headless `claude -p` billed to API keys in C:\Usersenpe\.anthropic_key.txt (profiles
+  bz-northwestern, bz-personal; format "name: key") via scratchpad/gauntlet/L74/deploy/api_worker.sh PROFILE PROMPT LOG.
+  The key goes only into the child env; never print / commit it (public repo). Tested OK 10:15. Memory api-key-workers.
 ## 2026-10-18 10:07 EDT -- step-d decisions (owner)
 
 - On scratchpad/gauntlet/L74/stepd/PLAN.md:
