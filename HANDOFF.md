@@ -1,3 +1,17 @@
+## 2026-10-18 00:16 EDT -- fork law S-TESLA-HOLD LANDED on clashbot36 (1e7d45f); S-TESLA-UNDER-DAMAGE needs work; FIN10 = v5d_th_full
+
+- Independent verifier (P3, FIN9 base, 359 logs): TH vs FIN9 full 0.9124 -> 0.9139 (aK +23 / -7; a0 +23 / -2), upgraded 0.9228 ->
+  0.9250 (+10 / -1). Downs: 151714@2792 explained (the Ghost now drops on the live tick; a live Firecracker takes the Tesla while
+  under, which no law allows); 014007@2134 real (two hits while under; UD fixes it); 001748@348 noise-sensitive; 4 ceiling-only.
+  A null run (old arm forced) reproduced FIN9 exactly. Fork tests 1,943 / 0. -> landed: research worktree C:/Users/benpe/rsfork36
+  branch clashbot36 = 72a18a5 + 1e7d45f (bundle parity1016/clashbot36_th.bundle). The verifier's equivalent wheel on P3:
+  /workspace/rsfork_v5d_th (fork f348916, same patch). FIN10 := P3 /workspace/results/v5d_th_full (HEAD harness + TH).
+- S-TESLA-UNDER-DAMAGE on top: full +17 / -4, upgraded +9 / -0 (own Tesla 0.913 -> 0.933), BUT 001748@280 contradicts the rule (a
+  Blowdart dart fired ~6 ticks AFTER the Tesla went under lands and kills it; live decay only). Census: no clean 16-tick step (hits
+  fall gradually), held frames take hits 7.3% vs 0.8% unheld. Suggested: keep shots fired after going under immune even inside
+  the window; coverage gaps (buffs / stun, FilterHidden spells, Evo ring, IW ice find, reflect). Iteration worker started.
+- RL training runtime (fork36-linux on the pods) NOT rebuilt: experiments in flight keep their engine. Rebuild with TH for the
+  next training wave only (one change: note it per run).
 ## 2026-10-17 23:13 EDT -- live logger fix (owner OK): one ladder result line per match; restart between matches
 
 - Root causes (overnight.out): (1) a trophy-road screen replaced the results screen, so no line (200646, 205409); (2) the run's
