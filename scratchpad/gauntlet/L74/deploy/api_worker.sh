@@ -10,5 +10,5 @@ K=$(awk -v p="$P" -F': *' '$1 == p {print $2; exit}' "$KF" | tr -d '\r\n ')
 [ -n "$K" ] || { echo "no key for profile '$P' in $KF" >> "$LOG"; exit 2; }
 cd /c/Users/benpe/ClashBot || exit 1
 echo "$(date '+%F %T') start profile=$P prompt=$PF" >> "$LOG"
-ANTHROPIC_API_KEY="$K" claude -p "$(cat "$PF")" --permission-mode bypassPermissions "$@" >> "$LOG" 2>&1
+ANTHROPIC_CUSTOM_HEADERS="anthropic-workspace-id: ${ANTHROPIC_WORKSPACE_ID:-wrkspc_0125vGHbxabgbTPGDuc8NGza}" ANTHROPIC_API_KEY="$K" claude -p "$(cat "$PF")" --permission-mode bypassPermissions "$@" >> "$LOG" 2>&1
 echo "$(date '+%F %T') exit $?" >> "$LOG"
