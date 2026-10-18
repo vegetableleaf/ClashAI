@@ -1,3 +1,23 @@
+## 2026-10-17 21:39 EDT -- owner asleep (night 10-17/18): overnight state, bars, watchers
+
+- Owner bars: the ability-output model goes live if NOT clearly worse vs CXXXVIII on the promotion eval (CI top >= 0); every other
+  successor needs CI low > 0 vs CXXXVIII (607/960). Deploy via deploy_ckpt.sh only; the upgraded reader / LIVE_OPTIONS stay
+  (the ability model adds --iw-press head). Pods: stop one only when no pod work is left. Morning report = done / findings /
+  next / needs from owner.
+- Owner combo plan: (1) rule changes now (Workflow rocket-tornado-combo wf_6aecc70f-0a7: refit pull window 4..28, Tornado-first
+  for short flights near OUR towers, fix the 'only'-mode block, enemy-half combos, bridge-edge hold, SIM P2), deploy if not
+  clearly worse; (2) RL combo reward (clump elixir value, + princess-in-blast bonus, net of cost), rule OFF in training, arms
+  ready for the morning pods. Measured near our king: Rocket flight 20 ticks, hitting gaps -24..+12, while normal decision pace
+  is >= 27-32 ticks -> the model's own Rocket -> Tornado is too late there (the owner's original complaint). Rule causes found in
+  decision_options: PULL_LANDS 12..33 (measured 4..28) leaves windows of [4, 8] (king) / [4, 6] (princess, < WINDOW_MIN_WIDTH
+  5 = never starts); no Tornado-first plan; 'only' mode gives NO Rocket when a lone Rocket would already hold rocket_value.
+- Factorial so far (analyze.py, 2/16): fact02 (A+ cue) 558/960, -5.10 [-8.85, -1.46] vs CXXXVIII; fact03 (B+ exploiter) 584/960,
+  -2.40 [-6.04, +1.25]. Registered ICEBOW Mark CXLII / CXLI. Relay (WMI pid 3752) alive.
+- Live: CXXXVIII 81 graded matches, win 53.1% vs CXXIV 51.2% (248): +1.9 [-10.0, +14.6], stays. Watcher for 100 graded matches.
+- Running: parity-round6 workflow (r6a-d + verifiers + IW false-ready audit), successor-research workflow, rocket-tornado-combo
+  workflow, S-TESLA-HOLD + UNDER-DAMAGE verifier (P3), r5d (P1), rlarm_gae_cue_ab (P2 14009), rlarm_gae_cue_ctl (38758, smoke
+  then 65 upd), factorial (4 pods). Idle-pod watcher: scratchpad/gauntlet/L74/deploy/idle_pod_watch.sh (SEEN =
+  parity1016/idle_seen.txt).
 ## 2026-10-17 21:13 EDT -- fast-plays SIM test done: keep fast plays OFF (-6.8 [-10.3, -3.1]); Rocket + Tornado timing measured
 
 - Mark CXXXVIII on the factorial eval (960 paired; off = the 607/960 reference row for row): fast plays ON 542/960, -6.77
