@@ -1,3 +1,12 @@
+## 2026-10-18 06:09 EDT -- H-ORDER (creation_seq only) LANDED per its verifier; FIN12 base (HEAD + rsfork_fin11) for round 7 on P1 + P3
+
+- H-ORDER cseq (diag_night/v6_r6a/H_order_cseq.patch): after setup, deal the existing creation_seq values out again over the
+  set-up bodies in LIVE generation order (the engine sorts its move pass and breaks avoidance / target ties by creation_seq).
+  - The team_seq half was DROPPED: it corrupted Goblin Giant rider seats (70 of 162 entries) and moved no verdict.
+  - Verifier vs FIN9: upgraded +21 / -13 (0.9228 -> 0.9246), full +83 / -54.
+  - Placebo on the unperturbed replay: live order +19 / -10, shuffled +15 / -13, reversed +4 / -10.
+  - The 13 upgraded breaks: 3 noise, 1 partial, 9 tie flips / tolerance crossings.
+  - Parity tests 91 pass (5 known bundle-only failures).
 ## 2026-10-18 06:04 EDT -- FIN11 scored: upgraded 0.924 [0.916, 0.931] on 265 matches; tier-B coverage 0.044 -> 0.217 (X-Bow + Log MEET); fork clashbot36 has 5 new laws
 
 - Fork clashbot36 (worktree C:/Users/benpe/rsfork36):

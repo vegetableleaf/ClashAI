@@ -2056,6 +2056,21 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
             except Exception:
                 flags['infer_not_set'] += 1; inferred = {}
 
+    # H-ORDER (diag_night/r6a): set-up bodies take the live creation order (live_creation_order).
+    gen0 = {x['id']: x.get('gen') for x in start}
+    before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
+    got = {}
+    for bd in setup:
+        i = ent(E, ('body', bd))
+        if i is not None and gen0.get(bd['id']) is not None and i not in got:
+            got[i] = gen0[bd['id']]
+    live_creation_order(E, got)
+    if after != before:
+        try:
+            load_edited(b, before, after); flags['setup_order_live'] += 1
+        except Exception:
+            flags['setup_order_not_set'] += 1
+
     def play(e):
         before = json.loads(b.save()); after = json.loads(json.dumps(before))
         if e['kind'] == 'throw':
@@ -2863,6 +2878,23 @@ def phase3_state(eng, m, fight, setup, start, catalog):
         flags['setup_p3_seq_unset'] += seq != 0
     flags['setup_p3_from_previous_tick'] += tb < t0 and bool(out)
     return out, seen, +flags
+
+
+def live_creation_order(E, gens):
+    """H-ORDER (diag_night/r6a): deal the creation_seq values of the save's entities `gens` ({index: live generation id})
+    out again in generation order (the same values: the counter stays consistent; team_seq is left alone, since
+    state.rs rider_arc_offset reads a rider's rank as team_seq[rider] - team_seq[mount] - 1). The SIM runs a tick's move updates in creation_seq order (a unit meets those made before it already
+    moved; state.rs phase_path16402_for) and breaks avoidance, targeting and spawn ties by creation_seq / team_seq, but
+    Battle.reset makes its spawns in a canonical order of its own (r6a seqprobe.py). The reader's generation id is the live
+    creation counter (r6a genmono.py: first sightings follow it on every consecutive pair). Returns E."""
+    for col, part in (('creation_seq', lambda i: 0),):
+        groups = defaultdict(list)
+        for i, g in gens.items():
+            groups[part(i)].append((g, i))
+        for lst in groups.values():
+            for (g, i), v in zip(sorted(lst), sorted(E[col][i] for _, i in lst)):
+                E[col][i] = v
+    return E
 
 
 def set_buff(E, i, bid, ms):

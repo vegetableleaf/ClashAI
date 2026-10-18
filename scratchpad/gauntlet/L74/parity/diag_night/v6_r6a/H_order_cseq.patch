@@ -1,0 +1,66 @@
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -1961,6 +1961,21 @@
+             except Exception:
+                 flags['infer_not_set'] += 1; inferred = {}
+ 
++    # H-ORDER (diag_night/r6a): set-up bodies take the live creation order (live_creation_order).
++    gen0 = {x['id']: x.get('gen') for x in start}
++    before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
++    got = {}
++    for bd in setup:
++        i = ent(E, ('body', bd))
++        if i is not None and gen0.get(bd['id']) is not None and i not in got:
++            got[i] = gen0[bd['id']]
++    live_creation_order(E, got)
++    if after != before:
++        try:
++            load_edited(b, before, after); flags['setup_order_live'] += 1
++        except Exception:
++            flags['setup_order_not_set'] += 1
++
+     def play(e):
+         before = json.loads(b.save()); after = json.loads(json.dumps(before))
+         if e['kind'] == 'throw':
+@@ -2741,6 +2756,23 @@
+     return out, seen, +flags
+ 
+ 
++def live_creation_order(E, gens):
++    """H-ORDER (diag_night/r6a): deal the creation_seq values of the save's entities `gens` ({index: live generation id})
++    out again in generation order (the same values: the counter stays consistent; team_seq is left alone, since
++    state.rs rider_arc_offset reads a rider's rank as team_seq[rider] - team_seq[mount] - 1). The SIM runs a tick's move updates in creation_seq order (a unit meets those made before it already
++    moved; state.rs phase_path16402_for) and breaks avoidance, targeting and spawn ties by creation_seq / team_seq, but
++    Battle.reset makes its spawns in a canonical order of its own (r6a seqprobe.py). The reader's generation id is the live
++    creation counter (r6a genmono.py: first sightings follow it on every consecutive pair). Returns E."""
++    for col, part in (('creation_seq', lambda i: 0),):
++        groups = defaultdict(list)
++        for i, g in gens.items():
++            groups[part(i)].append((g, i))
++        for lst in groups.values():
++            for (g, i), v in zip(sorted(lst), sorted(E[col][i] for _, i in lst)):
++                E[col][i] = v
++    return E
++
++
+ def set_buff(E, i, bid, ms):
+     """Write buff `bid` with `ms` left into entity i's first free slot of a save's ents; False if none is free. The
+     save's buffs list is FLAT (IW_SLOW_1016 §2): entity i owns buffs[i*slots:(i+1)*slots], slots = len(buffs) // n."""
+--- /dev/null
++++ b/scratchpad/gauntlet/L74/parity/tests/test_order.py
+@@ -0,0 +1,15 @@
++"""H-ORDER (diag_night/r6a): fights.live_creation_order deals creation_seq out in live generation order, team_seq untouched."""
++from pathlib import Path
++import sys
++
++ROOT = Path(__file__).resolve().parents[5]
++sys.path.insert(0, str(ROOT))
++from scratchpad.gauntlet.L74.parity import fights as F
++
++
++def test_live_creation_order_reorders_seq_values_in_generation_order():
++    E = dict(team=['Blue', 'Blue', 'Red', 'Red', 'Blue'], creation_seq=[6, 7, 8, 9, 2], team_seq=[3, 4, 3, 4, 1])
++    F.live_creation_order(E, {0: 103, 1: 101, 2: 100, 3: 102})       # index 4 (a tower) is not a set-up body
++    assert E['creation_seq'] == [9, 7, 6, 8, 2]
++    assert E['team_seq'] == [3, 4, 3, 4, 1]
++    assert F.live_creation_order(E, {}) is E and E['creation_seq'] == [9, 7, 6, 8, 2]
