@@ -1,0 +1,8 @@
+cubes 593 captures 296 frame dt 2
+cube life ticks: median 60 deciles [32, 42, 46, 50, 60, 78, 97, 98, 98]
+cube took damage (hp_min < max): 588 ; hp_last <= 0 or < max at end: 588
+frozen per cube: mean 1.96 zero-frozen cubes 36
+freeze ticks per body: median 44.0 deciles [14, 22, 30, 38, 44, 48, 58, 81, 96]
+frozen body distance to cube (tiles): median 1.66 max 3.56 share > 2.5 0.118
+enemies within 2.5 of cube never frozen per cube: mean 0.88
+after-slow durations [2000] bodies with after-slow 583 of 1162

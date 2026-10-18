@@ -1,0 +1,20 @@
+trials 100 errors []
+press cost (elixir debited): values [2.0] n 90
+refused first presses []
+re-press: tried 18000 accepted 0
+cubes per accepted press 1.0 cube life ticks median 48.0 deciles [45, 46, 47, 48, 48, 49, 49, 51, 94]
+cube hp0/hp_min/hp_last [(266, 56, 56), (266, 75, 75), (266, 80, 80), (266, 83, 83), (266, 86, 86), (266, 88, 88), (266, 91, 91)]
+frozen per press 1.7 freeze ticks median 49 deciles [28, 46, 48, 49, 49, 49, 50, 52, 65]
+frozen distance to cube median None max None
+  MegaKnight         cube life [48, 48, 48, 48, 48, 48, 48, 48, 48] frozen [('MegaKnight', 49, 135), ('MegaKnight', 49, 135), ('MegaKnight', 49, 135), ('MegaKnight', 49, 135), ('MegaKnight', 49, 135), ('MegaKnight', 49, 135)]
+  Knight             cube life [49, 49, 49, 49, 49, 49, 49, 49, 49] frozen [('Knight', 50, 135), ('Knight', 50, 135), ('Knight', 50, 135), ('Knight', 50, 135), ('Knight', 50, 135), ('Knight', 50, 135)]
+  Golem              cube life [45, 45, 45, 45, 45, 45, 45, 45, 45] frozen [('Golem', 46, 135), ('Golem', 46, 135), ('Golem', 46, 135), ('Golem', 46, 135), ('Golem', 46, 135), ('Golem', 46, 135)]
+  HogRider           cube life [51, 51, 51, 51, 51, 51, 51, 51, 51] frozen [('HogRider', 52, 353), ('HogRider', 52, 353), ('HogRider', 52, 353), ('HogRider', 52, 353), ('HogRider', 52, 353), ('HogRider', 52, 353)]
+  Valkyrie           cube life [49, 49, 49, 49, 49, 49, 49, 49, 49] frozen [('Valkyrie', 50, 135), ('Valkyrie', 50, 135), ('Valkyrie', 50, 135), ('Valkyrie', 50, 135), ('Valkyrie', 50, 135), ('Valkyrie', 50, 135)]
+  Musketeer          cube life [46, 46, 46, 46, 46, 46, 46, 46, 46] frozen [('Musketeer', 47, 135), ('Musketeer', 47, 135), ('Musketeer', 47, 135), ('Musketeer', 47, 135), ('Musketeer', 47, 135), ('Musketeer', 47, 135)]
+  Knight+Musketeer   cube life [48, 48, 48, 48, 48, 48, 48, 48, 48] frozen [('Knight', 49, 135), ('Musketeer', 49, 46), ('Knight', 49, 135), ('Musketeer', 49, 46), ('Knight', 49, 135), ('Musketeer', 49, 46)]
+  Giant+Musketeer    cube life [48, 48, 48, 48, 48, 48, 48, 48, 48] frozen [('Giant', 49, 135), ('Musketeer', 49, 135), ('Giant', 49, 135), ('Musketeer', 49, 135), ('Giant', 49, 135), ('Musketeer', 49, 135)]
+  GoblinGang         cube life [99, 99, 99, 99, 99, 99, 99, 99, 99] frozen [('Goblin_Stab', 28, 46), ('Goblin_Stab', 19, 46), ('Goblin_Stab', 28, 46), ('SpearGoblin', 65, 46), ('SpearGoblin', 65, 46), ('SpearGoblin', 65, 46)]
+  Pekka              cube life [47, 47, 47, 47, 47, 47, 47, 47, 47] frozen [('Pekka', 48, 135), ('Pekka', 48, 135), ('Pekka', 48, 135), ('Pekka', 48, 135), ('Pekka', 48, 135), ('Pekka', 48, 135)]
+no_target presses (ok, status, cost, marked, since_iw) [(True, 0, 2.0, 0, 1), (True, 0, 2.0, 0, 1), (True, 0, 2.0, 0, 1), (True, 0, 2.0, 0, 1), (True, 0, 2.0, 0, 1), (True, 0, 2.0, 0, 1), (True, 0, 2.0, 0, 1), (True, 0, 2.0, 0, 1), (True, 0, 2.0, 0, 1), (True, 0, 2.0, 0, 1)] cubes [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+dead IW button check_deploy [14, 14, 14, 14, 14, 14, 14, 14, 14, 14]

@@ -1,0 +1,3916 @@
+[
+{
+"push": "MegaKnight",
+"delay": 0,
+"seed": 1,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "MegaKnight",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "MegaKnight",
+"delay": 0,
+"seed": 1010,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "MegaKnight",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "MegaKnight",
+"delay": 0,
+"seed": 2003,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "MegaKnight",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "MegaKnight",
+"delay": 10,
+"seed": 179,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "MegaKnight",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "MegaKnight",
+"delay": 10,
+"seed": 1172,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "MegaKnight",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "MegaKnight",
+"delay": 10,
+"seed": 2171,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "MegaKnight",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "MegaKnight",
+"delay": 30,
+"seed": 512,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": 14,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "MegaKnight",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "MegaKnight",
+"delay": 30,
+"seed": 1523,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": 14,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "MegaKnight",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "MegaKnight",
+"delay": 30,
+"seed": 2514,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": 14,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "MegaKnight",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "MegaKnight",
+"delay": 0,
+"seed": 5,
+"mode": "no_target",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 63,
+"hp0": 266,
+"hp_last": 152,
+"hp_min": 152
+}
+],
+"frozen": [
+{
+"name": "MegaKnight",
+"ticks": 64,
+"d0": null,
+"dmg": 660
+}
+]
+},
+{
+"push": "Knight",
+"delay": 0,
+"seed": 1,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 49,
+"hp0": 266,
+"hp_last": 80,
+"hp_min": 80
+}
+],
+"frozen": [
+{
+"name": "Knight",
+"ticks": 50,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Knight",
+"delay": 0,
+"seed": 1010,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 49,
+"hp0": 266,
+"hp_last": 80,
+"hp_min": 80
+}
+],
+"frozen": [
+{
+"name": "Knight",
+"ticks": 50,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Knight",
+"delay": 0,
+"seed": 2003,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 49,
+"hp0": 266,
+"hp_last": 80,
+"hp_min": 80
+}
+],
+"frozen": [
+{
+"name": "Knight",
+"ticks": 50,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Knight",
+"delay": 10,
+"seed": 179,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 49,
+"hp0": 266,
+"hp_last": 80,
+"hp_min": 80
+}
+],
+"frozen": [
+{
+"name": "Knight",
+"ticks": 50,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Knight",
+"delay": 10,
+"seed": 1172,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 49,
+"hp0": 266,
+"hp_last": 80,
+"hp_min": 80
+}
+],
+"frozen": [
+{
+"name": "Knight",
+"ticks": 50,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Knight",
+"delay": 10,
+"seed": 2171,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 49,
+"hp0": 266,
+"hp_last": 80,
+"hp_min": 80
+}
+],
+"frozen": [
+{
+"name": "Knight",
+"ticks": 50,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Knight",
+"delay": 30,
+"seed": 512,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 49,
+"hp0": 266,
+"hp_last": 80,
+"hp_min": 80
+}
+],
+"frozen": [
+{
+"name": "Knight",
+"ticks": 50,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Knight",
+"delay": 30,
+"seed": 1523,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 49,
+"hp0": 266,
+"hp_last": 80,
+"hp_min": 80
+}
+],
+"frozen": [
+{
+"name": "Knight",
+"ticks": 50,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Knight",
+"delay": 30,
+"seed": 2514,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 49,
+"hp0": 266,
+"hp_last": 80,
+"hp_min": 80
+}
+],
+"frozen": [
+{
+"name": "Knight",
+"ticks": 50,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Knight",
+"delay": 0,
+"seed": 5,
+"mode": "no_target",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 62,
+"hp0": 266,
+"hp_last": 155,
+"hp_min": 155
+}
+],
+"frozen": [
+{
+"name": "Knight",
+"ticks": 63,
+"d0": null,
+"dmg": 660
+}
+]
+},
+{
+"push": "Golem",
+"delay": 0,
+"seed": 1,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 45,
+"hp0": 266,
+"hp_last": 91,
+"hp_min": 91
+}
+],
+"frozen": [
+{
+"name": "Golem",
+"ticks": 46,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Golem",
+"delay": 0,
+"seed": 1010,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 45,
+"hp0": 266,
+"hp_last": 91,
+"hp_min": 91
+}
+],
+"frozen": [
+{
+"name": "Golem",
+"ticks": 46,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Golem",
+"delay": 0,
+"seed": 2003,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 45,
+"hp0": 266,
+"hp_last": 91,
+"hp_min": 91
+}
+],
+"frozen": [
+{
+"name": "Golem",
+"ticks": 46,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Golem",
+"delay": 10,
+"seed": 179,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 45,
+"hp0": 266,
+"hp_last": 91,
+"hp_min": 91
+}
+],
+"frozen": [
+{
+"name": "Golem",
+"ticks": 46,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Golem",
+"delay": 10,
+"seed": 1172,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 45,
+"hp0": 266,
+"hp_last": 91,
+"hp_min": 91
+}
+],
+"frozen": [
+{
+"name": "Golem",
+"ticks": 46,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Golem",
+"delay": 10,
+"seed": 2171,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 45,
+"hp0": 266,
+"hp_last": 91,
+"hp_min": 91
+}
+],
+"frozen": [
+{
+"name": "Golem",
+"ticks": 46,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Golem",
+"delay": 30,
+"seed": 512,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 45,
+"hp0": 266,
+"hp_last": 91,
+"hp_min": 91
+}
+],
+"frozen": [
+{
+"name": "Golem",
+"ticks": 46,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Golem",
+"delay": 30,
+"seed": 1523,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 45,
+"hp0": 266,
+"hp_last": 91,
+"hp_min": 91
+}
+],
+"frozen": [
+{
+"name": "Golem",
+"ticks": 46,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Golem",
+"delay": 30,
+"seed": 2514,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 45,
+"hp0": 266,
+"hp_last": 91,
+"hp_min": 91
+}
+],
+"frozen": [
+{
+"name": "Golem",
+"ticks": 46,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Golem",
+"delay": 0,
+"seed": 5,
+"mode": "no_target",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 35,
+"hp0": 266,
+"hp_last": 118,
+"hp_min": 118
+}
+],
+"frozen": [
+{
+"name": "Golem",
+"ticks": 36,
+"d0": null,
+"dmg": 244
+}
+]
+},
+{
+"push": "HogRider",
+"delay": 0,
+"seed": 1,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 51,
+"hp0": 266,
+"hp_last": 75,
+"hp_min": 75
+}
+],
+"frozen": [
+{
+"name": "HogRider",
+"ticks": 52,
+"d0": null,
+"dmg": 353
+}
+]
+},
+{
+"push": "HogRider",
+"delay": 0,
+"seed": 1010,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 51,
+"hp0": 266,
+"hp_last": 75,
+"hp_min": 75
+}
+],
+"frozen": [
+{
+"name": "HogRider",
+"ticks": 52,
+"d0": null,
+"dmg": 353
+}
+]
+},
+{
+"push": "HogRider",
+"delay": 0,
+"seed": 2003,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 51,
+"hp0": 266,
+"hp_last": 75,
+"hp_min": 75
+}
+],
+"frozen": [
+{
+"name": "HogRider",
+"ticks": 52,
+"d0": null,
+"dmg": 353
+}
+]
+},
+{
+"push": "HogRider",
+"delay": 10,
+"seed": 179,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 51,
+"hp0": 266,
+"hp_last": 75,
+"hp_min": 75
+}
+],
+"frozen": [
+{
+"name": "HogRider",
+"ticks": 52,
+"d0": null,
+"dmg": 353
+}
+]
+},
+{
+"push": "HogRider",
+"delay": 10,
+"seed": 1172,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 51,
+"hp0": 266,
+"hp_last": 75,
+"hp_min": 75
+}
+],
+"frozen": [
+{
+"name": "HogRider",
+"ticks": 52,
+"d0": null,
+"dmg": 353
+}
+]
+},
+{
+"push": "HogRider",
+"delay": 10,
+"seed": 2171,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 51,
+"hp0": 266,
+"hp_last": 75,
+"hp_min": 75
+}
+],
+"frozen": [
+{
+"name": "HogRider",
+"ticks": 52,
+"d0": null,
+"dmg": 353
+}
+]
+},
+{
+"push": "HogRider",
+"delay": 30,
+"seed": 512,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 51,
+"hp0": 266,
+"hp_last": 75,
+"hp_min": 75
+}
+],
+"frozen": [
+{
+"name": "HogRider",
+"ticks": 52,
+"d0": null,
+"dmg": 353
+}
+]
+},
+{
+"push": "HogRider",
+"delay": 30,
+"seed": 1523,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 51,
+"hp0": 266,
+"hp_last": 75,
+"hp_min": 75
+}
+],
+"frozen": [
+{
+"name": "HogRider",
+"ticks": 52,
+"d0": null,
+"dmg": 353
+}
+]
+},
+{
+"push": "HogRider",
+"delay": 30,
+"seed": 2514,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 51,
+"hp0": 266,
+"hp_last": 75,
+"hp_min": 75
+}
+],
+"frozen": [
+{
+"name": "HogRider",
+"ticks": 52,
+"d0": null,
+"dmg": 353
+}
+]
+},
+{
+"push": "HogRider",
+"delay": 0,
+"seed": 5,
+"mode": "no_target",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 96,
+"hp0": 266,
+"hp_last": 64,
+"hp_min": 64
+}
+],
+"frozen": [
+{
+"name": "HogRider",
+"ticks": 97,
+"d0": null,
+"dmg": 967
+}
+]
+},
+{
+"push": "Valkyrie",
+"delay": 0,
+"seed": 1,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 49,
+"hp0": 266,
+"hp_last": 80,
+"hp_min": 80
+}
+],
+"frozen": [
+{
+"name": "Valkyrie",
+"ticks": 50,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Valkyrie",
+"delay": 0,
+"seed": 1010,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 49,
+"hp0": 266,
+"hp_last": 80,
+"hp_min": 80
+}
+],
+"frozen": [
+{
+"name": "Valkyrie",
+"ticks": 50,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Valkyrie",
+"delay": 0,
+"seed": 2003,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 49,
+"hp0": 266,
+"hp_last": 80,
+"hp_min": 80
+}
+],
+"frozen": [
+{
+"name": "Valkyrie",
+"ticks": 50,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Valkyrie",
+"delay": 10,
+"seed": 179,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 49,
+"hp0": 266,
+"hp_last": 80,
+"hp_min": 80
+}
+],
+"frozen": [
+{
+"name": "Valkyrie",
+"ticks": 50,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Valkyrie",
+"delay": 10,
+"seed": 1172,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 49,
+"hp0": 266,
+"hp_last": 80,
+"hp_min": 80
+}
+],
+"frozen": [
+{
+"name": "Valkyrie",
+"ticks": 50,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Valkyrie",
+"delay": 10,
+"seed": 2171,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 49,
+"hp0": 266,
+"hp_last": 80,
+"hp_min": 80
+}
+],
+"frozen": [
+{
+"name": "Valkyrie",
+"ticks": 50,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Valkyrie",
+"delay": 30,
+"seed": 512,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 49,
+"hp0": 266,
+"hp_last": 80,
+"hp_min": 80
+}
+],
+"frozen": [
+{
+"name": "Valkyrie",
+"ticks": 50,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Valkyrie",
+"delay": 30,
+"seed": 1523,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 49,
+"hp0": 266,
+"hp_last": 80,
+"hp_min": 80
+}
+],
+"frozen": [
+{
+"name": "Valkyrie",
+"ticks": 50,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Valkyrie",
+"delay": 30,
+"seed": 2514,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 49,
+"hp0": 266,
+"hp_last": 80,
+"hp_min": 80
+}
+],
+"frozen": [
+{
+"name": "Valkyrie",
+"ticks": 50,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Valkyrie",
+"delay": 0,
+"seed": 5,
+"mode": "no_target",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 62,
+"hp0": 266,
+"hp_last": 155,
+"hp_min": 155
+}
+],
+"frozen": [
+{
+"name": "Valkyrie",
+"ticks": 63,
+"d0": null,
+"dmg": 660
+}
+]
+},
+{
+"push": "Musketeer",
+"delay": 0,
+"seed": 1,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 46,
+"hp0": 266,
+"hp_last": 88,
+"hp_min": 88
+}
+],
+"frozen": [
+{
+"name": "Musketeer",
+"ticks": 47,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Musketeer",
+"delay": 0,
+"seed": 1010,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 46,
+"hp0": 266,
+"hp_last": 88,
+"hp_min": 88
+}
+],
+"frozen": [
+{
+"name": "Musketeer",
+"ticks": 47,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Musketeer",
+"delay": 0,
+"seed": 2003,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 46,
+"hp0": 266,
+"hp_last": 88,
+"hp_min": 88
+}
+],
+"frozen": [
+{
+"name": "Musketeer",
+"ticks": 47,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Musketeer",
+"delay": 10,
+"seed": 179,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": 14,
+"cubes": [
+{
+"life": 46,
+"hp0": 266,
+"hp_last": 88,
+"hp_min": 88
+}
+],
+"frozen": [
+{
+"name": "Musketeer",
+"ticks": 47,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Musketeer",
+"delay": 10,
+"seed": 1172,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": 14,
+"cubes": [
+{
+"life": 46,
+"hp0": 266,
+"hp_last": 88,
+"hp_min": 88
+}
+],
+"frozen": [
+{
+"name": "Musketeer",
+"ticks": 47,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Musketeer",
+"delay": 10,
+"seed": 2171,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": 14,
+"cubes": [
+{
+"life": 46,
+"hp0": 266,
+"hp_last": 88,
+"hp_min": 88
+}
+],
+"frozen": [
+{
+"name": "Musketeer",
+"ticks": 47,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Musketeer",
+"delay": 30,
+"seed": 512,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": 14,
+"cubes": [
+{
+"life": 46,
+"hp0": 266,
+"hp_last": 88,
+"hp_min": 88
+}
+],
+"frozen": [
+{
+"name": "Musketeer",
+"ticks": 47,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Musketeer",
+"delay": 30,
+"seed": 1523,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": 14,
+"cubes": [
+{
+"life": 46,
+"hp0": 266,
+"hp_last": 88,
+"hp_min": 88
+}
+],
+"frozen": [
+{
+"name": "Musketeer",
+"ticks": 47,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Musketeer",
+"delay": 30,
+"seed": 2514,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": 14,
+"cubes": [
+{
+"life": 46,
+"hp0": 266,
+"hp_last": 88,
+"hp_min": 88
+}
+],
+"frozen": [
+{
+"name": "Musketeer",
+"ticks": 47,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Musketeer",
+"delay": 0,
+"seed": 5,
+"mode": "no_target",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 57,
+"hp0": 266,
+"hp_last": 168,
+"hp_min": 168
+}
+],
+"frozen": [
+{
+"name": "Musketeer",
+"ticks": 55,
+"d0": null,
+"dmg": 462
+}
+]
+},
+{
+"push": "Knight+Musketeer",
+"delay": 0,
+"seed": 5,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "Knight",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+},
+{
+"name": "Musketeer",
+"ticks": 49,
+"d0": null,
+"dmg": 46
+}
+]
+},
+{
+"push": "Knight+Musketeer",
+"delay": 0,
+"seed": 1013,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "Knight",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+},
+{
+"name": "Musketeer",
+"ticks": 49,
+"d0": null,
+"dmg": 46
+}
+]
+},
+{
+"push": "Knight+Musketeer",
+"delay": 0,
+"seed": 2010,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "Knight",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+},
+{
+"name": "Musketeer",
+"ticks": 49,
+"d0": null,
+"dmg": 46
+}
+]
+},
+{
+"push": "Knight+Musketeer",
+"delay": 10,
+"seed": 180,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "Knight",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+},
+{
+"name": "Musketeer",
+"ticks": 49,
+"d0": null,
+"dmg": 46
+}
+]
+},
+{
+"push": "Knight+Musketeer",
+"delay": 10,
+"seed": 1180,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "Knight",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+},
+{
+"name": "Musketeer",
+"ticks": 49,
+"d0": null,
+"dmg": 46
+}
+]
+},
+{
+"push": "Knight+Musketeer",
+"delay": 10,
+"seed": 2188,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "Knight",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+},
+{
+"name": "Musketeer",
+"ticks": 49,
+"d0": null,
+"dmg": 46
+}
+]
+},
+{
+"push": "Knight+Musketeer",
+"delay": 30,
+"seed": 512,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": 14,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "Knight",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+},
+{
+"name": "Musketeer",
+"ticks": 49,
+"d0": null,
+"dmg": 46
+}
+]
+},
+{
+"push": "Knight+Musketeer",
+"delay": 30,
+"seed": 1527,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": 14,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "Knight",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+},
+{
+"name": "Musketeer",
+"ticks": 49,
+"d0": null,
+"dmg": 46
+}
+]
+},
+{
+"push": "Knight+Musketeer",
+"delay": 30,
+"seed": 2514,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": 14,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "Knight",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+},
+{
+"name": "Musketeer",
+"ticks": 49,
+"d0": null,
+"dmg": 46
+}
+]
+},
+{
+"push": "Knight+Musketeer",
+"delay": 0,
+"seed": 5,
+"mode": "no_target",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 62,
+"hp0": 266,
+"hp_last": 155,
+"hp_min": 155
+}
+],
+"frozen": [
+{
+"name": "Knight",
+"ticks": 63,
+"d0": null,
+"dmg": 660
+},
+{
+"name": "Musketeer",
+"ticks": 63,
+"d0": null,
+"dmg": 46
+}
+]
+},
+{
+"push": "Giant+Musketeer",
+"delay": 0,
+"seed": 5,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "Giant",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+},
+{
+"name": "Musketeer",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Giant+Musketeer",
+"delay": 0,
+"seed": 1013,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "Giant",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+},
+{
+"name": "Musketeer",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Giant+Musketeer",
+"delay": 0,
+"seed": 2010,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "Giant",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+},
+{
+"name": "Musketeer",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Giant+Musketeer",
+"delay": 10,
+"seed": 180,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "Giant",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+},
+{
+"name": "Musketeer",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Giant+Musketeer",
+"delay": 10,
+"seed": 1180,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "Giant",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+},
+{
+"name": "Musketeer",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Giant+Musketeer",
+"delay": 10,
+"seed": 2188,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "Giant",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+},
+{
+"name": "Musketeer",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Giant+Musketeer",
+"delay": 30,
+"seed": 512,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": 14,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "Giant",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+},
+{
+"name": "Musketeer",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Giant+Musketeer",
+"delay": 30,
+"seed": 1527,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": 14,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "Giant",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+},
+{
+"name": "Musketeer",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Giant+Musketeer",
+"delay": 30,
+"seed": 2514,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": 14,
+"cubes": [
+{
+"life": 48,
+"hp0": 266,
+"hp_last": 83,
+"hp_min": 83
+}
+],
+"frozen": [
+{
+"name": "Giant",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+},
+{
+"name": "Musketeer",
+"ticks": 49,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Giant+Musketeer",
+"delay": 0,
+"seed": 5,
+"mode": "no_target",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 59,
+"hp0": 266,
+"hp_last": 163,
+"hp_min": 163
+}
+],
+"frozen": [
+{
+"name": "Giant",
+"ticks": 60,
+"d0": null,
+"dmg": 462
+},
+{
+"name": "Musketeer",
+"ticks": 60,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "GoblinGang",
+"delay": 0,
+"seed": 1,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 99,
+"hp0": 266,
+"hp_last": 56,
+"hp_min": 56
+}
+],
+"frozen": [
+{
+"name": "Goblin_Stab",
+"ticks": 28,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "Goblin_Stab",
+"ticks": 19,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "Goblin_Stab",
+"ticks": 28,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+}
+]
+},
+{
+"push": "GoblinGang",
+"delay": 0,
+"seed": 1010,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 99,
+"hp0": 266,
+"hp_last": 56,
+"hp_min": 56
+}
+],
+"frozen": [
+{
+"name": "Goblin_Stab",
+"ticks": 28,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "Goblin_Stab",
+"ticks": 19,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "Goblin_Stab",
+"ticks": 28,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+}
+]
+},
+{
+"push": "GoblinGang",
+"delay": 0,
+"seed": 2003,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 99,
+"hp0": 266,
+"hp_last": 56,
+"hp_min": 56
+}
+],
+"frozen": [
+{
+"name": "Goblin_Stab",
+"ticks": 28,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "Goblin_Stab",
+"ticks": 19,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "Goblin_Stab",
+"ticks": 28,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+}
+]
+},
+{
+"push": "GoblinGang",
+"delay": 10,
+"seed": 179,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 99,
+"hp0": 266,
+"hp_last": 56,
+"hp_min": 56
+}
+],
+"frozen": [
+{
+"name": "Goblin_Stab",
+"ticks": 28,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "Goblin_Stab",
+"ticks": 19,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "Goblin_Stab",
+"ticks": 28,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+}
+]
+},
+{
+"push": "GoblinGang",
+"delay": 10,
+"seed": 1172,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 99,
+"hp0": 266,
+"hp_last": 56,
+"hp_min": 56
+}
+],
+"frozen": [
+{
+"name": "Goblin_Stab",
+"ticks": 28,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "Goblin_Stab",
+"ticks": 19,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "Goblin_Stab",
+"ticks": 28,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+}
+]
+},
+{
+"push": "GoblinGang",
+"delay": 10,
+"seed": 2171,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 99,
+"hp0": 266,
+"hp_last": 56,
+"hp_min": 56
+}
+],
+"frozen": [
+{
+"name": "Goblin_Stab",
+"ticks": 28,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "Goblin_Stab",
+"ticks": 19,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "Goblin_Stab",
+"ticks": 28,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+}
+]
+},
+{
+"push": "GoblinGang",
+"delay": 30,
+"seed": 512,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 99,
+"hp0": 266,
+"hp_last": 56,
+"hp_min": 56
+}
+],
+"frozen": [
+{
+"name": "Goblin_Stab",
+"ticks": 28,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "Goblin_Stab",
+"ticks": 19,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "Goblin_Stab",
+"ticks": 28,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+}
+]
+},
+{
+"push": "GoblinGang",
+"delay": 30,
+"seed": 1523,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 99,
+"hp0": 266,
+"hp_last": 56,
+"hp_min": 56
+}
+],
+"frozen": [
+{
+"name": "Goblin_Stab",
+"ticks": 28,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "Goblin_Stab",
+"ticks": 19,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "Goblin_Stab",
+"ticks": 28,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+}
+]
+},
+{
+"push": "GoblinGang",
+"delay": 30,
+"seed": 2514,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 99,
+"hp0": 266,
+"hp_last": 56,
+"hp_min": 56
+}
+],
+"frozen": [
+{
+"name": "Goblin_Stab",
+"ticks": 28,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "Goblin_Stab",
+"ticks": 19,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "Goblin_Stab",
+"ticks": 28,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 65,
+"d0": null,
+"dmg": 46
+}
+]
+},
+{
+"push": "GoblinGang",
+"delay": 0,
+"seed": 5,
+"mode": "no_target",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 99,
+"hp0": 266,
+"hp_last": 56,
+"hp_min": 56
+}
+],
+"frozen": [
+{
+"name": "Goblin_Stab",
+"ticks": 9,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "Goblin_Stab",
+"ticks": 26,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 45,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 78,
+"d0": null,
+"dmg": 46
+},
+{
+"name": "SpearGoblin",
+"ticks": 61,
+"d0": null,
+"dmg": 46
+}
+]
+},
+{
+"push": "Pekka",
+"delay": 0,
+"seed": 1,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 47,
+"hp0": 266,
+"hp_last": 86,
+"hp_min": 86
+}
+],
+"frozen": [
+{
+"name": "Pekka",
+"ticks": 48,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Pekka",
+"delay": 0,
+"seed": 1010,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 47,
+"hp0": 266,
+"hp_last": 86,
+"hp_min": 86
+}
+],
+"frozen": [
+{
+"name": "Pekka",
+"ticks": 48,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Pekka",
+"delay": 0,
+"seed": 2003,
+"mode": "normal",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 47,
+"hp0": 266,
+"hp_last": 86,
+"hp_min": 86
+}
+],
+"frozen": [
+{
+"name": "Pekka",
+"ticks": 48,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Pekka",
+"delay": 10,
+"seed": 179,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 47,
+"hp0": 266,
+"hp_last": 86,
+"hp_min": 86
+}
+],
+"frozen": [
+{
+"name": "Pekka",
+"ticks": 48,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Pekka",
+"delay": 10,
+"seed": 1172,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 47,
+"hp0": 266,
+"hp_last": 86,
+"hp_min": 86
+}
+],
+"frozen": [
+{
+"name": "Pekka",
+"ticks": 48,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Pekka",
+"delay": 10,
+"seed": 2171,
+"mode": "normal",
+"presses": [
+{
+"tick": 331,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 11
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 47,
+"hp0": 266,
+"hp_last": 86,
+"hp_min": 86
+}
+],
+"frozen": [
+{
+"name": "Pekka",
+"ticks": 48,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Pekka",
+"delay": 30,
+"seed": 512,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 47,
+"hp0": 266,
+"hp_last": 86,
+"hp_min": 86
+}
+],
+"frozen": [
+{
+"name": "Pekka",
+"ticks": 48,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Pekka",
+"delay": 30,
+"seed": 1523,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 47,
+"hp0": 266,
+"hp_last": 86,
+"hp_min": 86
+}
+],
+"frozen": [
+{
+"name": "Pekka",
+"ticks": 48,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Pekka",
+"delay": 30,
+"seed": 2514,
+"mode": "normal",
+"presses": [
+{
+"tick": 351,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 31
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 47,
+"hp0": 266,
+"hp_last": 86,
+"hp_min": 86
+}
+],
+"frozen": [
+{
+"name": "Pekka",
+"ticks": 48,
+"d0": null,
+"dmg": 135
+}
+]
+},
+{
+"push": "Pekka",
+"delay": 0,
+"seed": 5,
+"mode": "no_target",
+"presses": [
+{
+"tick": 321,
+"ok": true,
+"status": 0,
+"cost": 2.0,
+"marked_enemies": 0,
+"since_iw": 1
+}
+],
+"repress_accepted": 0,
+"repress_tried": 200,
+"dead_iw_check": null,
+"cubes": [
+{
+"life": 50,
+"hp0": 266,
+"hp_last": 187,
+"hp_min": 187
+}
+],
+"frozen": [
+{
+"name": "Pekka",
+"ticks": 51,
+"d0": null,
+"dmg": 462
+}
+]
+}
+]

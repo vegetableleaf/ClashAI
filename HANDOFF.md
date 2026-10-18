@@ -1,3 +1,28 @@
+## 2026-10-18 03:59 EDT -- ROOT CAUSE: training presses the Hero IW with the GENERIC rule (~5.4 / match), eval + live with the LIVE rule (~1.9); every Hero-IW model so far trained mismatched
+
+- Diagnosis (scratchpad/gauntlet/L74/ability_live/overpress/NOTES.md; eval rows pod_backup_weekend/overpress/):
+  - No chain sets ROYALE_HEROIW_PRESS, so royale_env._v2_gate falls back to the generic `_near` rule (any enemy within IW range
+    + 1.5 tiles).
+  - rl_royale.Learner._entries (~3237) can't even run the live rule (crash).
+  - The learned-head warm start cloned the generic rule (7.45 labels / match vs 2.27 live): -8.44 pp by itself. PPO LOWERED
+    presses 5.19 -> 4.08 and won back ~3.4 pp. "RL doubled presses" and "the SIM is exploitable" are (c) contradicted.
+- Ladder (960 paired games vs CXXXVIII live rule 607/960):
+  - IW never pressed +3.65 [+0.94, +6.35]
+  - live-rule warm start greedy +2.50 [-0.21, +5.21]
+  - live-rule warm start SAMPLED -0.21 [-3.12, +2.71] at 2.11 presses / match, 32% of deploys (= pros 2.34 / 32%)
+  - cue_ab greedy -5.00
+  - generic warm start -8.44
+  - CXXXVIII with the generic rule (the training env) -10.62
+  - In this SIM each press per match costs ~2.6 pp. Cost (2.0 elixir) and freeze length match live (SIM 2-14% longer).
+- NOT deployed: "IW never pressed" passes CI low > 0 in the SIM, but it's a play setting the owner rejected in spirit (the
+  ability is central to defence), and live value is untested -> OWNER DECISION.
+- Fix + retrain worker:
+  - rl_royale live-press training (opt-in key + guard: ability_head refuses a non-live press mode)
+  - opt-in sampled head decoding in eval / live
+  - cue_ab2 (live-rule warm start, live press in training) on 14009; cue_ctl2 (the same without a head) on 23408 after its
+    fresh evals
+- All in-flight training (factorial, succ_*, combo_*) still trains on the generic press: comparisons inside each set stay
+  fair; deployability is affected the same way it was for CXXXVIII.
 ## 2026-10-18 01:36 EDT -- cue_ctl result: CXXXVIII + 65 upd (rule press) +2.60 [-0.73, +6.04] vs CXXXVIII (not a clear gain; not deployed); head effect -7.60
 
 - Same factorial eval, both runs (worker report; backups pod1017_cue_ab/, pod1017_cue_ctl/):
