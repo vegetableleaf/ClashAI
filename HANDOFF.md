@@ -1,3 +1,21 @@
+## 2026-10-18 07:51 EDT -- UNDER-DAMAGE v2 verified "land with record fixes"; landing worker started; P3 disk-full incident 07:09 UTC
+
+- v2 verifier (P3 /workspace/w_v6t; laptop scratchpad v6t_out/): reproduces exactly vs v5d_th_full: full 0.9139 -> 0.9150 (+17
+  / -3), upgraded 0.9250 -> 0.9269 (+9 / -0). Nearly all of it is v1's 800 ms window. The 600 ms fired-under cut is FLAT (500 /
+  600 / 700 / 800: same upgraded, full +16 / -3 .. +17 / -4) and moves 2 of 11,631 fights; the split-half can't separate v2
+  from v1. Fixes before landing:
+  - (1) calibration text = step between k = 10 and 12 (~550-600 ms), untested on the harness
+  - (2) wording: only single-target direct hits count as "shots" (splash still gets the 800 ms)
+  - (3) move FIRED_UNDER_WINDOW_MS into a calibration value
+  -> the landing worker (wheel /workspace/rsfork_fin13 on P3, bundle parity1016/clashbot36_fin13.bundle).
+- INCIDENT: the v2 verifier's full cargo test filled P3's 50 GB disk at ~07:09 UTC. Lost logs:
+  - v6_r6a_cseq (FAILED): 20261017_084953, 090603, 092147, 092505
+  - v6_r6b_fa: 20261017_070322, 071134, 072528, 073920
+  - v6_r6b_all / px / ring_all also hold no-space crashes (unclear whether from the same event)
+  All 8 named logs predate the upgrade (no p3b births), so the upgraded-cohort numbers behind H-ORDER and H-FIRED-AT stand;
+  their full-cohort counts may be slightly off. FIN12 re-measures all of it (both pods clean: 0 crashes, 0 no-space).
+- Disk hygiene: P1 old caplogs5 / caplogs6 removed (12 GB free, 77%); P3 at 74%. Workers are told to keep >= 8 GB free and
+  delete their own cargo target dirs.
 ## 2026-10-18 07:49 EDT -- owner morning decisions; CLIII = new base; combo / ability re-planned from CLIII; pods 23408 stopped
 
 - Owner:
