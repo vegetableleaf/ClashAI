@@ -1,3 +1,25 @@
+## 2026-10-17 22:03 EDT -- successor research done (plateau = trophy floor; overtime / Hog); critics: plan flawed; monitor misses wins (fixed); CXXXVIII passes the 100-match revert test
+
+- Workflow successor-research (wf_b9775d1c-eb0); reports in scratchpad/gauntlet/L74/successor/ (cfg/, critic2/, critic_evidence/).
+  Loss review: 13,000 is a trophy FLOOR (losses at 13,000 cost 0), not a balance point. At 13k+ the losses sit in overtime
+  (5/24 won at 13k+; 0/13 entered behind on tower damage) and vs Hog / bridge spam; opponent card levels do NOT step up at 13k
+  (15.54 vs 15.55). Old shared weakness: pushes met with < 4 elixir (64-65% for both Marks).
+- Critics (3 lenses, all "flawed"):
+  - The monitor MISSED WINS when a trophy-road screen replaced the results screen (3 CXXXVIII wins at 13k), so 13k+ is ~40-44%,
+    not 35.9%.
+  - Overtime is not a SIM blind spot in general (CXXIV live 61.3% = SIM 61.5%).
+  - S2 HISTDECKS also cuts the owner's six from 60% to 20.8% of draws = two changes; it repeats gae_live (closed null). OWNER
+    DECISION, not launched.
+  - S3 tower_score only if factorial E > 0.
+  - Single-seed arms can't attribute effects under ~5-7 pp; treat arms as promotion candidates and gate them on fresh seeds.
+  - The troops-study arm B (rlarm_gae_f36_u250) gave +8-9 pp on fork + troops but the factorial base recipe gives ~0 on the
+    promotion eval: unexplained, needs one 18-min eval.
+- Fixed (monitor only, no live change): card_use.results infers a missing / n/a result from the '[ladder] trophies: N total'
+  readings around it (one unknown match per gap; 0 counts as LOSS only at the 13,000 floor); test test_card_use_results.py.
+  The live logger bug (no result line after a trophy-road screen) is unfixed: owner call / morning.
+- Revert test: CXXXVIII 103 graded matches, win 53.4% vs CXXIV 51.2% -> stays (vs CXXIV recent: +1.5 [-9.6, +13.1]).
+- Pod 38758 queue (worker): after cue_ctl -> fresh_ref_cxxxviii (seeds 743000 + 744000), ref_f36_u250_B, succ_levels (S1:
+  CXXXVIII + live_levels, 65 upd), fresh_succ_levels; relay to pod_backup_weekend/pod1017_successor/.
 ## 2026-10-17 21:39 EDT -- owner asleep (night 10-17/18): overnight state, bars, watchers
 
 - Owner bars: the ability-output model goes live if NOT clearly worse vs CXXXVIII on the promotion eval (CI top >= 0); every other

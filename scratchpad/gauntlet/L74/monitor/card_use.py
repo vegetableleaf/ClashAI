@@ -23,21 +23,36 @@ OUT = REPO / 'scratchpad/gauntlet/L70/live/overnight.out'
 sys.path.insert(0, str(REPO / 'scratchpad/gauntlet/L74/models'))
 
 
-def results():
+def results(lines=None):
     """{log name: (result, trophies)} from overnight.out: a match's summary JSON line names its log; the next
-    '[ladder] result:' line is that match's outcome."""
-    out, last = {}, None
-    for line in OUT.read_text(encoding='utf-8', errors='replace').splitlines():
+    '[ladder] result:' line is that match's outcome. A match with no result line (a trophy-road reward screen replaced the
+    results screen) or with 'trophies n/a' gets its change from the '[ladder] trophies: N total' readings around it, when it
+    is the only such match between two readings (critic 10-17: 3 CXXXVIII wins at 13k were missing): WIN if > 0, LOSS if < 0
+    or 0 at the 13,000 floor; otherwise it stays out."""
+    out, last, ev = {}, None, []          # ev: ('A', total) trophy readings and ('M', log) matches, in file order
+    for line in (OUT.read_text(encoding='utf-8', errors='replace').splitlines() if lines is None else lines):
         if line.startswith('{') and '"log"' in line:
             try:
-                last = Path(json.loads(line)['log']).name
+                last = Path(json.loads(line)['log']).name; ev.append(('M', last))
             except (ValueError, KeyError):
                 pass
+        elif line.startswith('[ladder] trophies:'):
+            m = re.match(r'\[ladder\] trophies: (\d+) total', line)
+            if m:
+                ev.append(('A', int(m[1])))
         elif line.startswith('[ladder] result:') and last:
             m = re.match(r'\[ladder\] result: (\w+).*?trophies ([+-]?\d+)', line)
             if m:
                 out[last] = (m[1], int(m[2]))
             last = None
+    anchors = [k for k, e in enumerate(ev) if e[0] == 'A']
+    for a, b in zip(anchors, anchors[1:]):
+        logs = [e[1] for e in ev[a + 1:b] if e[0] == 'M']
+        miss = [n for n in logs if n not in out]
+        if len(miss) == 1:
+            d = ev[b][1] - ev[a][1] - sum(out[n][1] for n in logs if n in out)
+            if d > 0 or d < 0 or ev[b][1] == 13000:
+                out[miss[0]] = ('WIN' if d > 0 else 'LOSS', d)
     return out
 
 
