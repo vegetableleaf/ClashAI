@@ -1,3 +1,21 @@
+## 2026-10-17 21:13 EDT -- fast-plays SIM test done: keep fast plays OFF (-6.8 [-10.3, -3.1]); Rocket + Tornado timing measured
+
+- Mark CXXXVIII on the factorial eval (960 paired; off = the 607/960 reference row for row): fast plays ON 542/960, -6.77
+  [-10.31, -3.12]; + the live combo rules (offc) 610/960, +0.31 [-0.73, +1.46]; live stack + fast plays -7.08 [-10.73, -3.44].
+  ON nearly doubles Tornados (1.12 -> 2.15 / match), mostly Skeletons -> Log / Tornado pairs; it adds no combos.
+- Timing (measured): tap-to-deploy live 22-27 ticks, SIM 26; Rocket flight ~ distance / 0.35 tiles per tick; Tornado 21-22
+  ticks. The Rocket must land 4-28 ticks after the Tornado starts, so near the ENEMY KING the Tornado tap belongs 32-56 ticks
+  AFTER the Rocket. Fast plays OFF can already do that (>= 30 ticks). "Tornado almost immediately after the Rocket" with both
+  on the same spot = 671 damage vs 2205 for a lone Rocket (contradicted). It works only if the Rocket leads the clump (4276,
+  SIM-perfect prediction; untested in the live stack).
+- Designed scenarios: at the enemy king the model always fires a lone Rocket and never a Tornado. The rocket_tornado rule
+  cannot fire on the enemy half (rocket_value_min_y 16). The owner's live miss was not found in the CXXXVIII logs (no combo near
+  the enemy king). The one logged total miss (182814 t3008): a correctly timed rule combo whose pull dragged bridge troops
+  into the bridge edge, ~4 tiles off centre.
+- Proposals (owner decides; no hard-coded rules): learned combo choice via RL; move rocket_value_min_y onto the enemy half
+  (rule); count the bridge-edge hold in the rule's value model; land SIM patch P2 (fast plays + combo rule together, as live).
+- Files: scratchpad/gauntlet/L74/fastplays/ (14 scripts); results pod_backup_weekend/pod1017_fastplays/ (1,411 files, sha
+  verified). Pod 38758 now runs the CONTROL rlarm_gae_cue_ctl (queue released 01:14 UTC by touching /workspace/fp/COPIED).
 ## 2026-10-17 20:48 EDT -- FIN9 scored (upgraded 0.923 [0.912, 0.934], 126 matches; tier-B coverage 0.044); S-TESLA-HOLD full +17 / -7, verifier running
 
 - FIN9 (P3 64.247.206.76:19899, HEAD 1d5f209, rsfork_f36ek, 359 logs, 0 crashes; laptop copy pod_backup_weekend/parity1016/
