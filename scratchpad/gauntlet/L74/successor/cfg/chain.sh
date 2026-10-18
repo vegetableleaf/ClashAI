@@ -9,11 +9,14 @@
 #                 the factorial EXTRA) = the exact command ref_cxxxviii (607 / 960) was scored with
 #   fresh_<x>     the same eval on FRESH seeds 743000 + 744000 (x = a trained succ_* run on this pod, or a refs.txt name)
 #   gap13k_<x>    13k-gap probe: the promotion eval with the EXPLOITER as the opponent (gap.py --opp-ckpt, T .1) instead of E4
+#   ref_<x>       the promotion eval (standard seeds) of a refs.txt checkpoint (e.g. ref_f36_u250_B = troops-study arm B)
+#   CB=<checkout> (default /workspace/cb_tt; pod 38758: /workspace/succ/cb, a fresh checkout -- its cb_tt has fast-plays edits).
+#   An eval counts only by its rows (960), never by live_eval_pod.sh's <run>.DONE (written after a gap.py failure too).
 #   a job = /workspace/succ/runs/<JOB>/ + DONE (or FAILED: skipped; delete it to retry); bundle out/<JOB>.tgz + .sha (the .sha
 #   last = the laptop's ready marker for pull.sh). Queue done -> CHAIN_DONE. NO pod stop, NO watchdog, NO LAST: /workspace/KEEP
 #   stays (owner 10-17: a pod is stopped only when no delegable work is left -- the laptop session decides, never this script).
 set -uo pipefail
-F=/workspace/succ; CB=/workspace/cb_tt; PY=/workspace/venvf36/bin/python; RT=fork36-linux
+F=/workspace/succ; CB=${CB:-/workspace/cb_tt}; PY=/workspace/venvf36/bin/python; RT=fork36-linux
 RL=icebow/data/bench/rl_royale; U250=$RL/rlarm_gae/rlarm_gae_u0250_grafted.pt; FD=scratchpad/gauntlet/L74/successor/cfg
 EXPL=$RL/rlarm_exploit/rlarm_exploit_u0065.pt
 EV_EXTRA='--habit-log --live-levels --card-levels Rocket=16 Log=15 --opp-tower-troops DaggerDuchess:0.028,Cannoneer:0.028,ChefTower:0.014'
@@ -31,6 +34,7 @@ next() {
 }
 bundle() { tar czf $F/out/$1.tgz -C $F/runs $1 && (cd $F/out && sha256sum $1.tgz > $1.tgz.sha) || log "bundle $1 failed"; }
 fail() { log "FAILED $1: $2"; touch $F/runs/$1/FAILED; bundle $1; }
+rows() { cat $F/runs/$1/eval/${1}_$2/D3/matches.jsonl $F/runs/$1/eval/${1}_$3/D3/matches.jsonl 2>/dev/null | grep -c '"outcome"'; }
 ckpt_of() {  # NAME -> grafted checkpoint of a trained succ_* run, else the refs.txt path
   local p=$RL/rlarm_$1/rlarm_${1}_u0065_grafted.pt
   [ -f $p ] && echo $p || awk -v r=$1 '$1 == r {print $2}' $FD/refs.txt
@@ -56,6 +60,9 @@ run_one() {
               [ -f "$ck" ] && [ -f $EXPL ] || { fail $r "missing checkpoint ($ck / $EXPL)"; return; }
               sha256sum $ck $EXPL > $D/eval_ckpt.sha; log "eval $r $ck (opponent = exploiter)"
               seeds_eval $r $ck $s1 $s2 --opp-ckpt $EXPL --opp-T .1 ;;
+    ref_*)    ck=$(ckpt_of $r)
+              [ -f "$ck" ] || { fail $r "missing checkpoint for $r (refs.txt)"; return; }
+              sha256sum $ck > $D/eval_ckpt.sha; log "eval $r $ck (standard seeds)"; seeds_eval $r $ck $s1 $s2 ;;
     succ_*)   R=rlarm_$r; ck=$RL/$R/${R}_u0065.pt
               if [ ! -f $ck ]; then
                 local RES=; [ -f $RL/$R/${R}_latest.pt ] && RES=--resume
@@ -70,14 +77,18 @@ run_one() {
               ln -f $ck ${ck%.pt}_grafted.pt $D/
               (cd $D && sha256sum $(basename $ck) $(basename ${ck%.pt}_grafted.pt) > final.sha)
               ck=${ck%.pt}_grafted.pt; sha256sum $ck > $D/eval_ckpt.sha; log "eval $r $ck"
-              [ -e $D/eval/$r.DONE ] || EXTRA="$EV_EXTRA" CB=$CB PY=$PY RT=$RT O=$D/eval WORKERS=${WORKERS:-26} \
-                bash scratchpad/gauntlet/L74/mix/live_eval_pod.sh none $r $ck D3 || log "EVAL EXIT $? $r" ;;
+              if [ "$(rows $r $s1 $s2)" != 960 ]; then          # a partial / failed eval is re-run from scratch
+                rm -rf $D/eval/${r}_$s1 $D/eval/${r}_$s2 $D/eval/$r.DONE
+                EXTRA="$EV_EXTRA" CB=$CB PY=$PY RT=$RT O=$D/eval WORKERS=${WORKERS:-26} \
+                  bash scratchpad/gauntlet/L74/mix/live_eval_pod.sh none $r $ck D3 || log "EVAL EXIT $? $r"
+              fi ;;
     *)        fail $r "unknown job kind"; return ;;
   esac
-  local n; n=$(cat $D/eval/${r}_$s1/D3/matches.jsonl $D/eval/${r}_$s2/D3/matches.jsonl 2>/dev/null | grep -c '"outcome"')
+  local n; n=$(rows $r $s1 $s2)
   [ "$n" = 960 ] || { fail $r "eval has $n / 960 rows"; return; }
   touch $D/DONE; bundle $r; log "DONE $r ($n games)"
 }
-log "chain start pid $$ (queue: $(grep -c . $F/queue.txt) lines)"
+rm -f $F/CHAIN_DONE                                       # a relaunched chain must not leave an old idle marker
+log "chain start pid $$ CB $CB (queue: $(grep -c . $F/queue.txt) lines)"
 while r=$(next); [ -n "$r" ]; do run_one $r; done
 touch $F/CHAIN_DONE; log "CHAIN_DONE (pod stays up: KEEP)"

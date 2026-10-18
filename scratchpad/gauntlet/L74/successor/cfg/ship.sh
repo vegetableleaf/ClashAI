@@ -14,11 +14,15 @@ if [ "$1" = build ]; then
   cp $L/successor/cfg/*.yaml $L/successor/cfg/*.py $L/successor/cfg/*.sh $L/successor/cfg/*.txt $L/successor/cfg/decks_hist.json \
     $S/stage/$L/successor/cfg/
   cp $RL/rlarm_gae_cue_u250/rlarm_gae_cue_u250_u0130.pt $S/stage/$RL/rlarm_gae_cue_u250/
-  ! grep -l $'\r' $S/stage/$L/successor/cfg/* || { echo "CRLF in a shipped file"; exit 1; }
+  mkdir -p $S/stage/$RL/rlarm_gae_f36_u250    # troops-study arm B grafted (refs.txt ref_f36_u250_B; critic 2 item 3)
+  cp /c/Users/benpe/pod_backup_weekend/pod1017_troops/f36/cb_tt/$RL/rlarm_gae_f36_u250/rlarm_gae_f36_u250_u0065_grafted.pt \
+    $S/stage/$RL/rlarm_gae_f36_u250/
+  ! grep -lU $'\r' $S/stage/$L/successor/cfg/* || { echo "CRLF in a shipped file"; exit 1; }   # -U: Git-Bash grep strips CR otherwise
   (cd $S/stage && tar cf $S/succ_overlay.tar * && find . -type f | sed 's|^\./||' | sort | xargs sha256sum | sed 's/ \*/  /') \
     > $S/succ_manifest.sha
   grep -q "^e02b6a166aee0c6f58f1f22ef5d699265fbeb5f177d0165c7c411ec50c9c859b  $RL/rlarm_gae_cue_u250/rlarm_gae_cue_u250_u0130.pt" $S/succ_manifest.sha
   grep -q "^2ef1142fd9f6ddabed2f56acf9468905492fe425aaeae50af37517d779b633ae  $L/successor/cfg/decks_hist.json" $S/succ_manifest.sha
+  grep -q "^4ac98b6bf8590b7f15205bd6537e0188a54317ba8e8b30dcbedeae3021cd79e6  $RL/rlarm_gae_f36_u250/rlarm_gae_f36_u250_u0065_grafted.pt" $S/succ_manifest.sha
   echo "built: $(wc -l < $S/succ_manifest.sha) files, $(du -h $S/succ_overlay.tar | cut -f1)"; exit 0
 fi
 H=$1; P=$2; Q=${3:-queue_$P.txt}

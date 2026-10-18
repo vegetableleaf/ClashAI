@@ -32,6 +32,9 @@ one_pod() {  # HOST PORT -> 0 = reachable, 1 = unreachable
   ready=$(ssh -n $K -p $P root@$H 'cd /workspace/succ 2>/dev/null || exit 0; for s in out/*.tgz.sha; do
       [ -e "$s" ] || continue; r=$(basename $s .tgz.sha); [ -e runs/$r/COPIED ] || echo $r; done') || return 1
   for r in $ready; do
+    if [ -e $LOC/$r/COPY_OK ] && [ "$(cut -d' ' -f1 $LOC/$r/COPY_OK)" != "$H:$P" ]; then   # same job name on two pods
+      log "$P $r: already copied from $(cut -d' ' -f1 $LOC/$r/COPY_OK) -- NOT overwritten"; continue
+    fi
     want=$(ssh -n $K -p $P root@$H "cat /workspace/succ/out/$r.tgz.sha" | awk '{print $1}')
     scp -q $K -P $P root@$H:/workspace/succ/out/$r.tgz $LOC/$r.tgz || { log "$P $r: scp failed"; continue; }
     got=$(sha256sum $LOC/$r.tgz | sed 's/ \*/  /' | awk '{print $1}')
