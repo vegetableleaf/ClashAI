@@ -1,3 +1,23 @@
+## 2026-10-17 20:34 EDT -- owner: NEVER stop pods; new pod P3; 13,063 trophies; FIN9 + parity round 6 (workflow) + IW press audit + control run
+
+- Owner 10-17 ~20:10: "don't close down a pod unless there is absolutely no more use for it in the long term". Done: /workspace/
+  KEEP on all 8 pods; deadline_stop timers killed by PID on 15617 (13 min from firing) and 14009; factorial + fast-plays pods had
+  NO KEEP (their watchdogs would have stopped them 300 s after LAST / COPIED). Memory stop-idle-pods rewritten (superseded).
+- New pod P3 = 64.247.206.76:19899 (30.6 CPU, 1x L40; key ~/.ssh/runpod_clashbot, NOT id_ed25519 which does not exist).
+  Pods now: factorial 81.27.69.177:23363, 64.247.206.79:19400, 216.81.245.71:34210, :29286; parity P1 216.81.151.5:15617, P2
+  64.247.206.76:14009 (now also the ability-head training run); fast-plays 216.81.245.71:38758; P3.
+- Trophies (overnight.out): 13,063. Mark CXXIV took ~12,000 -> 12,530 by the 13:29 switch; Mark CXXXVIII 12,530 -> 13,063 over 81
+  results (+6.6 / match). Owner: 14,000 next, then Ranked.
+- FIN9 on P3 (/workspace/results/FIN9, FIN9_stamped): HEAD 1d5f209 (all landed harness fixes), rsfork_f36ek, 359 logs, 126
+  upgraded; exports parity1016/attacks9.json + buffs9.json (sha in SHA9).
+- Parity round 6 = Workflow parity-round6 (run wf_72d868ba-9f3): r6a own Skeletons + swarm movement physics (fork, P3), r6b near-
+  pass X-Bow / Log / IW hero (P3), r6c Knight / Knight evo / Mega Knight / Royal Ghost (P1), r6d opp Witch / Bats / Goblin Gang /
+  Skeleton Army / Hog / Firecracker (P1); every 'land' patch gets an independent reproduction on a clean HEAD tree (verify:r6x).
+  Diag dirs diag_night/r6a..r6d. In parallel: IW rule-press false-ready audit (scratchpad/gauntlet/L74/ability_live/audit/).
+  r5d continues S-TESLA-HOLD full check + the Tesla post-deploy visibility law (r5b lead) on P1.
+- IW press: rlarm_gae_cue_ab (CXXXVIII + ability_head, 65 upd) on P2; CONTROL rlarm_gae_cue_ctl (CXXXVIII + 65 upd, rule press)
+  queued on 38758 after the fast-plays chain, so the head effect is separable from "more training". Owner: a model passing the
+  SIM bar vs CXXXVIII deploys DIRECTLY (no live A/B), then its live stats are reviewed.
 ## 2026-10-17 20:12 EDT -- H-CHILDFORM landed (r5d; full +13 / -0 vs FIN7), MERGED with H-EVO-CHILD into one rule
 
 - H-CHILDFORM (diag_night/r5d/H_childform.patch): a unit an evolved / hero body made (Evo Witch / Hero Tombstone Skeletons, Evo
