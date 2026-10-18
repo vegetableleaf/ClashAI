@@ -1,3 +1,13 @@
+## 2026-10-18 10:07 EDT -- step-d decisions (owner)
+
+- On scratchpad/gauntlet/L74/stepd/PLAN.md:
+  1. commit rl_royale after a pod smoke
+  2. re-score CLIII on fin13 for the gate
+  3. D1 on a temporary pod
+  4. LEAGUE arm yes, lowest priority
+  5. APPLY the 3x unfavourable-matchup weighting in imitation
+  6. REB leash = the CARD choice only, to CLIII, very loose (no other heads)
+- Usage is near the cutoff: the next session continues from here.
 ## 2026-10-18 09:04 EDT -- parity gap map toward the trigger (scratchpad/gauntlet/L74/parity/gapmap/)
 
 - The overall raw needed for the lower CI to reach 0.975 is ~0.978-0.979 (not 0.986: the CI narrows as misses fall). Now 0.925
