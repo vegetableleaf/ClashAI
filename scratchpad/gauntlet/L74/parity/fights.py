@@ -53,6 +53,7 @@ TOWER_SLOTS = ((9000, 3000), (3500, 6500), (14500, 6500), (9000, 29000), (3500, 
 # have no body to time them by, so their tick adds this wait.
 TICKS_PER_ELIXIR = 45.5
 HERO_IW_ABILITY_COST = 2           # card table hero_forms IceWizard_hero ability.mana_cost
+CUBE_LAG = 6                       # H-CUBE-DATE: the SIM makes a Hero IW ice cube 6 ticks after the press (cubeprobe.py)
 # Tolerant card-level scoring (owner goal 10-16; CEILING.md). A card's bodies agree when they end alive/dead the same and
 # deaths are within DEATH_TOL ticks (0.5 s); a swarm may miss floor(SWARM_SLACK x n) bodies. Its tower damage agrees
 # within max(TOWER_FLOOR, TOWER_REL x the larger side). TOWER_FLOOR ~ one X-Bow bolt (98) and above one Log crown hit (51).
@@ -497,8 +498,34 @@ def seen_casts(m, catalog, life=None):
                 # charge: a second press is refused ABILITY_SPENT): the throw's press replaces it
                 casts[:] = [(tt, s, n) for tt, s, n in casts if not (s == k[0] and n == k[1] and tc - 10 <= tt <= t + 5)]
                 casts.append((tc, k[0], k[1]))
+    # H-CUBE-DATE (diag_night/r7d): a Hero Ice Wizard cast dated from its state-10 frame put the SIM's ice cube 2-3 ticks
+    # late. The SIM makes the cube 6 ticks after the press (cubeprobe.py); the live cube's phase-3b creation tick C is 3
+    # (44) or 4 (31) ticks after the state-10 estimate on 60 upgraded logs (cubebirth.py), and on the bucket dossiers the
+    # live cube is first seen 4 ticks after the replayed press in 79 / 80 casts, the SIM's 6 in 73 / 75 (cubelag.py;
+    # 20261017_230816@475: the cube 4 ticks late froze a Witch wave late). The cube is the cast's public effect: a cast
+    # whose cube (a body of the hero's card, max hp below half the hero's) shows within 20 ticks is dated CUBE_LAG before
+    # the cube's creation tick when the capture stamps it (exact), else CUBE_LAG before its first sighting (the frame
+    # gap's width kept: the ceiling draws from it).
+    cubes = defaultdict(list)
+    seen_cube = set()
+    for t, bodies in m['frames']:
+        for bd in bodies:
+            c = catalog.get(bd['card_id'])
+            if bd['tower'] or c is None or c['display_name'] != 'IceWizard' or form_of(bd['card_id'], c) != 2 or bd['id'] in seen_cube:
+                continue
+            hero = max((o['max_hp'] for o in bodies if o['card_id'] == bd['card_id'] and o['side'] == bd['side'] and not o['tower']), default=0)
+            if 0 < bd['max_hp'] < hero / 2:
+                born = (m.get('births') or {}).get(bd.get('gen'))
+                seen_cube.add(bd['id']); cubes[bd['side']].append((t, born[0] if born else None))
     for t, s, n in sorted(casts):
-        out.append(dict(gap(t), kind='ability', side=s, name=n, source='cast_seen', seen=t, end=t))
+        e = dict(gap(t), kind='ability', side=s, name=n, source='cast_seen', seen=t, end=t)
+        cf = next((c for c in cubes.get(s, ()) if t <= c[0] <= t + 20), None) if n == 'IceWizard' else None
+        if cf is not None and cf[1] is not None:
+            e.update(tick=cf[1] - CUBE_LAG, lo=cf[1] - CUBE_LAG, hi=cf[1] - CUBE_LAG, cube=cf[0], cube_born=cf[1])
+        elif cf is not None:
+            d = cf[0] - CUBE_LAG - e['tick']
+            e.update(tick=e['tick'] + d, lo=e['lo'] + d, hi=e['hi'] + d, cube=cf[0])
+        out.append(e)
     for e in out:
         e.pop('cid', None); e.pop('aims', None)
     return sorted(out, key=lambda e: (e['tick'], e['side'], e['name']))
@@ -1389,7 +1416,7 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
             x, y = near; flags['setup_snapped'] += 1
         spawns.append((bd['side'], eng.ids[name], round(x*18), round(y*18), max(1, bd['hp'])))
         setup.append(dict(id=bd['id'], side=bd['side'], x=x, y=y, card_id=bd['card_id'], proxy=name != catalog[bd['card_id']]['display_name'],
-                          worn=bd['hp'] < bd['max_hp'], as_card=name))
+                          worn=bd['hp'] < bd['max_hp'], as_card=name, **({'live_xy': (bd['x'], bd['y'])} if (x, y) != (bd['x'], bd['y']) else {})))
     for bd in start:
         if bd['tower']:
             continue
@@ -1774,6 +1801,8 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
                      target={'index': j, 'generation': E['generation'][j]}, firer={'index': i, 'generation': E['generation'][i]},
                      firer_card=E['card'][i], frac={'x': 0, 'y': 0})
             after['projectiles'].append(p); flags['setup_shot_in_flight'] += 1
+            if s_.get('volley'):
+                flags['setup_shot_volley'] += 1         # H-VOLLEY: the central arrow of a multi-row volley, the rest dropped
         if after != before:
             try:
                 load_edited(b, before, after)
@@ -2070,6 +2099,30 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
             load_edited(b, before, after); flags['setup_order_live'] += 1
         except Exception:
             flags['setup_order_not_set'] += 1
+
+    # H-SNAP-BACK (diag_night/r7a): Battle.reset refuses a spawn on a water cell, so a live ground body inside the SIM's
+    # impassable half-cells is set up on the nearest passable point (add(), median 165 mt away for Skeletons); live, the
+    # body stands there and walks on (the river band at a bridge edge: 4,000+ live rows in 30 upgraded logs, and the SIM's
+    # own walkers enter those cells too, only a spawn may not). The save takes any point: after setup each snapped body is
+    # put back on its live point (pairing and the ceiling's history follow it).
+    back = [(j, bd) for j, bd in enumerate(setup) if bd.get('live_xy')]
+    if back:
+        before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
+        moved = []
+        for j, bd in back:
+            i = ent(E, ('body', bd))
+            if i is not None:
+                E['pos'][i] = {'x': round(bd['live_xy'][0]*18), 'y': round(bd['live_xy'][1]*18)}; moved.append((j, bd))
+        try:
+            if moved:
+                load_edited(b, before, after)
+            for j, bd in moved:
+                bd['x'], bd['y'] = bd['live_xy']
+                if j < len(spawns):
+                    spawns[j] = spawns[j][:2] + (round(bd['x']*18), round(bd['y']*18)) + spawns[j][4:]
+                flags['setup_snap_back'] += 1
+        except Exception:
+            flags['setup_snap_back_not_set'] += 1
 
     def play(e):
         before = json.loads(b.save()); after = json.loads(json.dumps(before))
@@ -2965,7 +3018,24 @@ def inflight_shots(m, fight, start, catalog, levels, tower_levels):
             name = c['display_name']
             key = (name, form_of(src['card_id'], c), levels.get((src['side'], name)) or levels.get((src['side'], '*')) or 15)
         out.append(dict(src=src['id'], tgt=tgt['id'], x=p[1], y=p[2], key=key))
-    return out
+    # H-VOLLEY (diag_night/r7d): the reader shows a volley as one projectile row per arrow -- the Princess's 5 arrows all
+    # name her target (volley.py: 602 of 845 Princess frames in 60 logs hold 5 rows at one target, no other firer ever more
+    # than 1) -- while the SIM fires the central one alone, on the firer -> target line (its native shot matches live row 1
+    # to the mt). Each row was injected as a homing shot with full damage: 20261017_210407@3264, 5 arrows at our Tesla took
+    # 1122 at t0 + 6 in the SIM, 231 live. Of one firer's rows at one target, only the one nearest that line is kept.
+    grp = defaultdict(list)
+    for s in out:
+        if s['tgt'] is not None:
+            grp[s['src'], s['tgt']].append(s)
+    drop = set()
+    for (a, b), ss in grp.items():
+        if len(ss) > 1:
+            A, B = by[a], by[b]
+            dx, dy = B['x'] - A['x'], B['y'] - A['y']
+            keep = min(ss, key=lambda s: abs((s['x'] - A['x'])*dy - (s['y'] - A['y'])*dx))
+            keep['volley'] = len(ss)
+            drop |= {id(s) for s in ss if s is not keep}
+    return [s for s in out if id(s) not in drop]
 
 
 def tower_locks(m, fight, setup, catalog, look=20):

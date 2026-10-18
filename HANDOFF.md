@@ -1,3 +1,22 @@
+## 2026-10-18 13:21 EDT -- round 7 harness LANDED: H-VOLLEY + H-CUBE-DATE v2 (joint) + H-SNAP-BACK (closer; every measurement reproduced)
+
+- Round-7 verifiers all died at ~11:42 (the lead's cap); the closer (API worker) finished their orphan arm runs and re-measured
+  each patch on clean HEAD vs FIN12 with diag_night/r5c/cmp.py (P1 / P3 /workspace/w_r7close). Summary: diag_night/R7_SUMMARY.md.
+- H-VOLLEY (verifier: land; only the central row of a multi-row Princess volley in flight at t0 is injected): upgraded +5 / -0
+  (0.9250 -> 0.9255), full +9 / -0.
+- H-CUBE-DATE v2 (a Hero IW cast dated CUBE_LAG = 6 ticks before its ice cube's phase-3b creation tick, else before its first
+  sighting): upgraded +27 / -12 (0.9263), full +51 / -26. The 12 upgraded downs: 8 cascades / tolerance crossings after an earlier
+  divergence present in both runs + 4 noise-origin; r7b's K=0 dossiers of the same fights show the cube on the live tick.
+- Joint (diag_night/r7d/H_r7d_joint_volley_cube.patch, result byte-identical to the verifier tree): upgraded +32 / -12
+  (0.9250 -> 0.9268), full +60 / -26 (0.9188 -> 0.9203).
+- H-SNAP-BACK (diag_night/r7a/H_snap_back.patch; a set-up body the spawn snapped off water / footprint cells is put back on its
+  live point with one save edit): closer's own all-499 run upgraded +15 / -5 (0.9260), full +34 / -18 (0.9195). The 4
+  deterministic downs: K=0 dossiers show both runs already diverging at +4..+18 ticks (Witch / Skeleton Army splits) = cascades.
+- NOT landed: H-FIXED-AIM v2 (reproduced +5 / -0, +9 / -0 but the SAME fights as H-VOLLEY: redundant); H-IW-PRESS-DATE (same
+  press tick B - 4 as H-CUBE-DATE v2: redundant; +29 / -12, +56 / -34 by its worker); H-PREROLL, H-TPL-ANYBODY (land after more
+  data); H-NEGHP (do not land: needs a reader fix).
+- Checks: tag grep on both patches empty; pyflakes clean; parity tests 93 pass + the 5 known bundle-only failures (fin11 and the
+  new fork wheel). Effects of the three together are measured by FIN13 (next entry).
 ## 2026-10-18 13:17 EDT -- step d: trainer code COMMITTED after a real fin13 pod smoke (owner decision 1); fin13 runtime built; D2a imitation training
 
 - Executor = headless API worker (relaunched 12:14; status scratchpad/gauntlet/L74/stepd/STATUS.md, read it first).

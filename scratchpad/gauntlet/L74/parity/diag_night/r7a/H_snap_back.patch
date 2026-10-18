@@ -1,0 +1,42 @@
+--- a/scratchpad/gauntlet/L74/parity/fights.py	2026-10-18 07:07:56.946431300 -0400
++++ b/scratchpad/gauntlet/L74/parity/fights.py	2026-10-18 07:27:34.333978300 -0400
+@@ -1389,7 +1389,7 @@
+             x, y = near; flags['setup_snapped'] += 1
+         spawns.append((bd['side'], eng.ids[name], round(x*18), round(y*18), max(1, bd['hp'])))
+         setup.append(dict(id=bd['id'], side=bd['side'], x=x, y=y, card_id=bd['card_id'], proxy=name != catalog[bd['card_id']]['display_name'],
+-                          worn=bd['hp'] < bd['max_hp'], as_card=name))
++                          worn=bd['hp'] < bd['max_hp'], as_card=name, **({'live_xy': (bd['x'], bd['y'])} if (x, y) != (bd['x'], bd['y']) else {})))
+     for bd in start:
+         if bd['tower']:
+             continue
+@@ -2071,6 +2071,30 @@
+         except Exception:
+             flags['setup_order_not_set'] += 1
+ 
++    # H-SNAP-BACK (diag_night/r7a): Battle.reset refuses a spawn on a water cell, so a live ground body inside the SIM's
++    # impassable half-cells is set up on the nearest passable point (add(), median 165 mt away for Skeletons); live, the
++    # body stands there and walks on (the river band at a bridge edge: 4,000+ live rows in 30 upgraded logs, and the SIM's
++    # own walkers enter those cells too, only a spawn may not). The save takes any point: after setup each snapped body is
++    # put back on its live point (pairing and the ceiling's history follow it).
++    back = [(j, bd) for j, bd in enumerate(setup) if bd.get('live_xy')]
++    if back:
++        before = json.loads(b.save()); after = json.loads(json.dumps(before)); E = after['ents']
++        moved = []
++        for j, bd in back:
++            i = ent(E, ('body', bd))
++            if i is not None:
++                E['pos'][i] = {'x': round(bd['live_xy'][0]*18), 'y': round(bd['live_xy'][1]*18)}; moved.append((j, bd))
++        try:
++            if moved:
++                load_edited(b, before, after)
++            for j, bd in moved:
++                bd['x'], bd['y'] = bd['live_xy']
++                if j < len(spawns):
++                    spawns[j] = spawns[j][:2] + (round(bd['x']*18), round(bd['y']*18)) + spawns[j][4:]
++                flags['setup_snap_back'] += 1
++        except Exception:
++            flags['setup_snap_back_not_set'] += 1
++
+     def play(e):
+         before = json.loads(b.save()); after = json.loads(json.dumps(before))
+         if e['kind'] == 'throw':

@@ -1,0 +1,64 @@
+diff -ru a/scratchpad/gauntlet/L74/parity/fights.py b/scratchpad/gauntlet/L74/parity/fights.py
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -1774,6 +1774,8 @@
+                      target={'index': j, 'generation': E['generation'][j]}, firer={'index': i, 'generation': E['generation'][i]},
+                      firer_card=E['card'][i], frac={'x': 0, 'y': 0})
+             after['projectiles'].append(p); flags['setup_shot_in_flight'] += 1
++            if s_.get('volley'):
++                flags['setup_shot_volley'] += 1         # H-VOLLEY: the central arrow of a multi-row volley, the rest dropped
+         if after != before:
+             try:
+                 load_edited(b, before, after)
+@@ -2965,7 +2967,24 @@
+             name = c['display_name']
+             key = (name, form_of(src['card_id'], c), levels.get((src['side'], name)) or levels.get((src['side'], '*')) or 15)
+         out.append(dict(src=src['id'], tgt=tgt['id'], x=p[1], y=p[2], key=key))
+-    return out
++    # H-VOLLEY (diag_night/r7d): the reader shows a volley as one projectile row per arrow -- the Princess's 5 arrows all
++    # name her target (volley.py: 602 of 845 Princess frames in 60 logs hold 5 rows at one target, no other firer ever more
++    # than 1) -- while the SIM fires the central one alone, on the firer -> target line (its native shot matches live row 1
++    # to the mt). Each row was injected as a homing shot with full damage: 20261017_210407@3264, 5 arrows at our Tesla took
++    # 1122 at t0 + 6 in the SIM, 231 live. Of one firer's rows at one target, only the one nearest that line is kept.
++    grp = defaultdict(list)
++    for s in out:
++        if s['tgt'] is not None:
++            grp[s['src'], s['tgt']].append(s)
++    drop = set()
++    for (a, b), ss in grp.items():
++        if len(ss) > 1:
++            A, B = by[a], by[b]
++            dx, dy = B['x'] - A['x'], B['y'] - A['y']
++            keep = min(ss, key=lambda s: abs((s['x'] - A['x'])*dy - (s['y'] - A['y'])*dx))
++            keep['volley'] = len(ss)
++            drop |= {id(s) for s in ss if s is not keep}
++    return [s for s in out if id(s) not in drop]
+ 
+ 
+ def tower_locks(m, fight, setup, catalog, look=20):
+diff -ru a/scratchpad/gauntlet/L74/parity/tests/test_fights.py b/scratchpad/gauntlet/L74/parity/tests/test_fights.py
+--- a/scratchpad/gauntlet/L74/parity/tests/test_fights.py
++++ b/scratchpad/gauntlet/L74/parity/tests/test_fights.py
+@@ -186,3 +186,22 @@
+     assert F.spell_levels(dict(m, frames=m['frames'][:2]), ev, Eng(), CAT) == {(1, 'Log'): 15}
+     # no drop that equals any level's damage: no level
+     assert F.spell_levels(dict(m, frames=[fb(100, 2822), fb(104, 2500)]), ev, Eng(), CAT) == {}
++
++
++def test_volley_rows_inject_one_central_arrow():
++    """H-VOLLEY: a firer's several in-flight rows at one target (the Princess's 5-arrow volley) inject only the row nearest
++    the firer -> target line; a lone row and other firers' rows are kept."""
++    catalog, by_name = load_catalog()
++    pid = by_name['Princess']['card_id']
++    bd = lambda i, side, x, y, cid: dict(id=i, side=side, x=x, y=y, card_id=cid, hp=500, max_hp=500, tower=False)
++    start = [bd('pr', 1, 14500, 17500, pid), bd('te', 0, 9000, 12000, 27000006), bd('kn', 0, 12000, 9000, KNIGHT),
++             bd('k2', 1, 12000, 9500, KNIGHT)]
++    rows = [(1, x, y, pid, 0, 0, s, 'pr', 'te') for s, (x, y) in enumerate(
++        [(14126, 17250), (14182, 17181), (14108, 17279), (14173, 17191), (14214, 17152)])]
++    rows.append((1, 13000, 11000, pid, 0, 0, 9, 'pr', 'kn'))     # a lone row at another target
++    m = dict(proj={100: rows})
++    out = F.inflight_shots(m, dict(t0=100), start, catalog, {}, (15, 15))
++    at_te = [(s['x'], s['y']) for s in out if s['tgt'] == 'te']
++    assert at_te == [(14182, 17181)]
++    assert next(s for s in out if s['tgt'] == 'te')['volley'] == 5
++    assert [s['tgt'] for s in out if s['tgt'] != 'te'] == ['kn'] and 'volley' not in out[-1]

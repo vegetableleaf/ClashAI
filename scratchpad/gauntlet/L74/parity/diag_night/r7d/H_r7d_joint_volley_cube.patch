@@ -1,0 +1,132 @@
+diff -ru a/scratchpad/gauntlet/L74/parity/fights.py b/scratchpad/gauntlet/L74/parity/fights.py
+--- a/scratchpad/gauntlet/L74/parity/fights.py
++++ b/scratchpad/gauntlet/L74/parity/fights.py
+@@ -53,6 +53,7 @@
+ # have no body to time them by, so their tick adds this wait.
+ TICKS_PER_ELIXIR = 45.5
+ HERO_IW_ABILITY_COST = 2           # card table hero_forms IceWizard_hero ability.mana_cost
++CUBE_LAG = 6                       # H-CUBE-DATE: the SIM makes a Hero IW ice cube 6 ticks after the press (cubeprobe.py)
+ # Tolerant card-level scoring (owner goal 10-16; CEILING.md). A card's bodies agree when they end alive/dead the same and
+ # deaths are within DEATH_TOL ticks (0.5 s); a swarm may miss floor(SWARM_SLACK x n) bodies. Its tower damage agrees
+ # within max(TOWER_FLOOR, TOWER_REL x the larger side). TOWER_FLOOR ~ one X-Bow bolt (98) and above one Log crown hit (51).
+@@ -497,8 +498,34 @@
+                 # charge: a second press is refused ABILITY_SPENT): the throw's press replaces it
+                 casts[:] = [(tt, s, n) for tt, s, n in casts if not (s == k[0] and n == k[1] and tc - 10 <= tt <= t + 5)]
+                 casts.append((tc, k[0], k[1]))
++    # H-CUBE-DATE (diag_night/r7d): a Hero Ice Wizard cast dated from its state-10 frame put the SIM's ice cube 2-3 ticks
++    # late. The SIM makes the cube 6 ticks after the press (cubeprobe.py); the live cube's phase-3b creation tick C is 3
++    # (44) or 4 (31) ticks after the state-10 estimate on 60 upgraded logs (cubebirth.py), and on the bucket dossiers the
++    # live cube is first seen 4 ticks after the replayed press in 79 / 80 casts, the SIM's 6 in 73 / 75 (cubelag.py;
++    # 20261017_230816@475: the cube 4 ticks late froze a Witch wave late). The cube is the cast's public effect: a cast
++    # whose cube (a body of the hero's card, max hp below half the hero's) shows within 20 ticks is dated CUBE_LAG before
++    # the cube's creation tick when the capture stamps it (exact), else CUBE_LAG before its first sighting (the frame
++    # gap's width kept: the ceiling draws from it).
++    cubes = defaultdict(list)
++    seen_cube = set()
++    for t, bodies in m['frames']:
++        for bd in bodies:
++            c = catalog.get(bd['card_id'])
++            if bd['tower'] or c is None or c['display_name'] != 'IceWizard' or form_of(bd['card_id'], c) != 2 or bd['id'] in seen_cube:
++                continue
++            hero = max((o['max_hp'] for o in bodies if o['card_id'] == bd['card_id'] and o['side'] == bd['side'] and not o['tower']), default=0)
++            if 0 < bd['max_hp'] < hero / 2:
++                born = (m.get('births') or {}).get(bd.get('gen'))
++                seen_cube.add(bd['id']); cubes[bd['side']].append((t, born[0] if born else None))
+     for t, s, n in sorted(casts):
+-        out.append(dict(gap(t), kind='ability', side=s, name=n, source='cast_seen', seen=t, end=t))
++        e = dict(gap(t), kind='ability', side=s, name=n, source='cast_seen', seen=t, end=t)
++        cf = next((c for c in cubes.get(s, ()) if t <= c[0] <= t + 20), None) if n == 'IceWizard' else None
++        if cf is not None and cf[1] is not None:
++            e.update(tick=cf[1] - CUBE_LAG, lo=cf[1] - CUBE_LAG, hi=cf[1] - CUBE_LAG, cube=cf[0], cube_born=cf[1])
++        elif cf is not None:
++            d = cf[0] - CUBE_LAG - e['tick']
++            e.update(tick=e['tick'] + d, lo=e['lo'] + d, hi=e['hi'] + d, cube=cf[0])
++        out.append(e)
+     for e in out:
+         e.pop('cid', None); e.pop('aims', None)
+     return sorted(out, key=lambda e: (e['tick'], e['side'], e['name']))
+@@ -1774,6 +1801,8 @@
+                      target={'index': j, 'generation': E['generation'][j]}, firer={'index': i, 'generation': E['generation'][i]},
+                      firer_card=E['card'][i], frac={'x': 0, 'y': 0})
+             after['projectiles'].append(p); flags['setup_shot_in_flight'] += 1
++            if s_.get('volley'):
++                flags['setup_shot_volley'] += 1         # H-VOLLEY: the central arrow of a multi-row volley, the rest dropped
+         if after != before:
+             try:
+                 load_edited(b, before, after)
+@@ -2965,7 +2994,24 @@
+             name = c['display_name']
+             key = (name, form_of(src['card_id'], c), levels.get((src['side'], name)) or levels.get((src['side'], '*')) or 15)
+         out.append(dict(src=src['id'], tgt=tgt['id'], x=p[1], y=p[2], key=key))
+-    return out
++    # H-VOLLEY (diag_night/r7d): the reader shows a volley as one projectile row per arrow -- the Princess's 5 arrows all
++    # name her target (volley.py: 602 of 845 Princess frames in 60 logs hold 5 rows at one target, no other firer ever more
++    # than 1) -- while the SIM fires the central one alone, on the firer -> target line (its native shot matches live row 1
++    # to the mt). Each row was injected as a homing shot with full damage: 20261017_210407@3264, 5 arrows at our Tesla took
++    # 1122 at t0 + 6 in the SIM, 231 live. Of one firer's rows at one target, only the one nearest that line is kept.
++    grp = defaultdict(list)
++    for s in out:
++        if s['tgt'] is not None:
++            grp[s['src'], s['tgt']].append(s)
++    drop = set()
++    for (a, b), ss in grp.items():
++        if len(ss) > 1:
++            A, B = by[a], by[b]
++            dx, dy = B['x'] - A['x'], B['y'] - A['y']
++            keep = min(ss, key=lambda s: abs((s['x'] - A['x'])*dy - (s['y'] - A['y'])*dx))
++            keep['volley'] = len(ss)
++            drop |= {id(s) for s in ss if s is not keep}
++    return [s for s in out if id(s) not in drop]
+ 
+ 
+ def tower_locks(m, fight, setup, catalog, look=20):
+diff -ru a/scratchpad/gauntlet/L74/parity/tests/test_fights.py b/scratchpad/gauntlet/L74/parity/tests/test_fights.py
+--- a/scratchpad/gauntlet/L74/parity/tests/test_fights.py
++++ b/scratchpad/gauntlet/L74/parity/tests/test_fights.py
+@@ -186,3 +186,46 @@
+     assert F.spell_levels(dict(m, frames=m['frames'][:2]), ev, Eng(), CAT) == {(1, 'Log'): 15}
+     # no drop that equals any level's damage: no level
+     assert F.spell_levels(dict(m, frames=[fb(100, 2822), fb(104, 2500)]), ev, Eng(), CAT) == {}
++
++
++def test_volley_rows_inject_one_central_arrow():
++    """H-VOLLEY: a firer's several in-flight rows at one target (the Princess's 5-arrow volley) inject only the row nearest
++    the firer -> target line; a lone row and other firers' rows are kept."""
++    catalog, by_name = load_catalog()
++    pid = by_name['Princess']['card_id']
++    bd = lambda i, side, x, y, cid: dict(id=i, side=side, x=x, y=y, card_id=cid, hp=500, max_hp=500, tower=False)
++    start = [bd('pr', 1, 14500, 17500, pid), bd('te', 0, 9000, 12000, 27000006), bd('kn', 0, 12000, 9000, KNIGHT),
++             bd('k2', 1, 12000, 9500, KNIGHT)]
++    rows = [(1, x, y, pid, 0, 0, s, 'pr', 'te') for s, (x, y) in enumerate(
++        [(14126, 17250), (14182, 17181), (14108, 17279), (14173, 17191), (14214, 17152)])]
++    rows.append((1, 13000, 11000, pid, 0, 0, 9, 'pr', 'kn'))     # a lone row at another target
++    m = dict(proj={100: rows})
++    out = F.inflight_shots(m, dict(t0=100), start, catalog, {}, (15, 15))
++    at_te = [(s['x'], s['y']) for s in out if s['tgt'] == 'te']
++    assert at_te == [(14182, 17181)]
++    assert next(s for s in out if s['tgt'] == 'te')['volley'] == 5
++    assert [s['tgt'] for s in out if s['tgt'] != 'te'] == ['kn'] and 'volley' not in out[-1]
++
++
++def test_hero_iw_cast_dated_from_its_cube():
++    """H-CUBE-DATE: a Hero IW cast (state-10 frame) whose ice cube is first seen within 20 ticks is dated CUBE_LAG before the
++    cube's sighting; without a cube it keeps the state-10 gap estimate."""
++    catalog, _ = load_catalog()
++    hero = dict(id='h', side=0, x=9000, y=8000, card_id=IW_HERO, hp=911, max_hp=911, tower=False, kind=13)
++    def fr(t, state, cube=False):
++        bodies = [dict(hero, state=state)]
++        if cube:
++            bodies.append(dict(id='c', side=0, x=9000, y=12000, card_id=IW_HERO, hp=352, max_hp=352, tower=False, kind=13, state=4))
++        return (t, bodies)
++    m = dict(frames=[fr(96, 1), fr(98, 1), fr(100, F.CAST), fr(102, F.CAST, cube=True), fr(104, 1, cube=True)], proj={}, fx={})
++    ab = [e for e in F.seen_casts(m, catalog) if e['kind'] == 'ability']
++    assert [(e["tick"], e.get("cube")) for e in ab] == [(102 - F.CUBE_LAG, 102)]
++    # a capture that stamps the cube's creation (phase-3b births) dates the press exactly: CUBE_LAG before it, no window
++    m["births"] = {77: [101, -1]}
++    m["frames"] = [(t, [dict(b, gen=77) if b["id"] == "c" else b for b in bodies]) for t, bodies in m["frames"]]
++    ab = [e for e in F.seen_casts(m, catalog) if e["kind"] == "ability"]
++    assert [(e["tick"], e["lo"], e["hi"], e.get("cube_born")) for e in ab] == [(101 - F.CUBE_LAG,) * 3 + (101,)]
++    del m["births"]
++    m['frames'] = [fr(96, 1), fr(98, 1), fr(100, F.CAST), fr(102, F.CAST), fr(104, 1)]
++    ab = [e for e in F.seen_casts(m, catalog) if e['kind'] == 'ability']
++    assert [(e['tick'], e.get('cube')) for e in ab] == [(98, None)]

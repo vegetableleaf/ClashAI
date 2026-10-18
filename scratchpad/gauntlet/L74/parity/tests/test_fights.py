@@ -186,3 +186,46 @@ def test_spell_levels_pick_the_level_whose_damage_is_seen():
     assert F.spell_levels(dict(m, frames=m['frames'][:2]), ev, Eng(), CAT) == {(1, 'Log'): 15}
     # no drop that equals any level's damage: no level
     assert F.spell_levels(dict(m, frames=[fb(100, 2822), fb(104, 2500)]), ev, Eng(), CAT) == {}
+
+
+def test_volley_rows_inject_one_central_arrow():
+    """H-VOLLEY: a firer's several in-flight rows at one target (the Princess's 5-arrow volley) inject only the row nearest
+    the firer -> target line; a lone row and other firers' rows are kept."""
+    catalog, by_name = load_catalog()
+    pid = by_name['Princess']['card_id']
+    bd = lambda i, side, x, y, cid: dict(id=i, side=side, x=x, y=y, card_id=cid, hp=500, max_hp=500, tower=False)
+    start = [bd('pr', 1, 14500, 17500, pid), bd('te', 0, 9000, 12000, 27000006), bd('kn', 0, 12000, 9000, KNIGHT),
+             bd('k2', 1, 12000, 9500, KNIGHT)]
+    rows = [(1, x, y, pid, 0, 0, s, 'pr', 'te') for s, (x, y) in enumerate(
+        [(14126, 17250), (14182, 17181), (14108, 17279), (14173, 17191), (14214, 17152)])]
+    rows.append((1, 13000, 11000, pid, 0, 0, 9, 'pr', 'kn'))     # a lone row at another target
+    m = dict(proj={100: rows})
+    out = F.inflight_shots(m, dict(t0=100), start, catalog, {}, (15, 15))
+    at_te = [(s['x'], s['y']) for s in out if s['tgt'] == 'te']
+    assert at_te == [(14182, 17181)]
+    assert next(s for s in out if s['tgt'] == 'te')['volley'] == 5
+    assert [s['tgt'] for s in out if s['tgt'] != 'te'] == ['kn'] and 'volley' not in out[-1]
+
+
+def test_hero_iw_cast_dated_from_its_cube():
+    """H-CUBE-DATE: a Hero IW cast (state-10 frame) whose ice cube is first seen within 20 ticks is dated CUBE_LAG before the
+    cube's sighting; without a cube it keeps the state-10 gap estimate."""
+    catalog, _ = load_catalog()
+    hero = dict(id='h', side=0, x=9000, y=8000, card_id=IW_HERO, hp=911, max_hp=911, tower=False, kind=13)
+    def fr(t, state, cube=False):
+        bodies = [dict(hero, state=state)]
+        if cube:
+            bodies.append(dict(id='c', side=0, x=9000, y=12000, card_id=IW_HERO, hp=352, max_hp=352, tower=False, kind=13, state=4))
+        return (t, bodies)
+    m = dict(frames=[fr(96, 1), fr(98, 1), fr(100, F.CAST), fr(102, F.CAST, cube=True), fr(104, 1, cube=True)], proj={}, fx={})
+    ab = [e for e in F.seen_casts(m, catalog) if e['kind'] == 'ability']
+    assert [(e["tick"], e.get("cube")) for e in ab] == [(102 - F.CUBE_LAG, 102)]
+    # a capture that stamps the cube's creation (phase-3b births) dates the press exactly: CUBE_LAG before it, no window
+    m["births"] = {77: [101, -1]}
+    m["frames"] = [(t, [dict(b, gen=77) if b["id"] == "c" else b for b in bodies]) for t, bodies in m["frames"]]
+    ab = [e for e in F.seen_casts(m, catalog) if e["kind"] == "ability"]
+    assert [(e["tick"], e["lo"], e["hi"], e.get("cube_born")) for e in ab] == [(101 - F.CUBE_LAG,) * 3 + (101,)]
+    del m["births"]
+    m['frames'] = [fr(96, 1), fr(98, 1), fr(100, F.CAST), fr(102, F.CAST), fr(104, 1)]
+    ab = [e for e in F.seen_casts(m, catalog) if e['kind'] == 'ability']
+    assert [(e['tick'], e.get('cube')) for e in ab] == [(98, None)]
