@@ -1,5 +1,48 @@
 # Step-d status
 
+## 2026-10-18 15:50 EDT -- milestone 7: D2 EVALUATED; REB init on its pods; LEAGUE arm training; smoke-check fix
+
+- D2b IL-cue-w s0 (30988, 18:56-19:27 UTC; sha 279b4f30...; pod_backup_weekend/stepd/d2/ + d2_relay/, sha-verified).
+  il_compare (stepd/il_compare.py; 349,264 val rows, 127,334 cue-attached, v3val 12,237; paired 95% CI over val matches):
+  - CUE EFFECT, cue-attached rows (cuew - nocuew0): gate NLL -0.0024 [-0.0028, -0.0019] vs seed noise (nocuew1 - nocuew0)
+    -0.0010 [-0.0019, +0.0001] -> a real but tiny gain (0.3622 -> 0.3599). cell NLL -0.0091 [-0.0120, -0.0061] is NOT
+    beyond the seed noise (-0.0089 [-0.0146, -0.0037]). card +0.0021 [-0.0006, +0.0049], wait -0.0020 [-0.0041, +0.0000]: n.s.
+    Pre-registered verdict: "cues help in imitation" holds on gate NLL only, and the size is small (a).
+  - HEALTH: cuew vs nocuew0 inside the seed noise on all val + v3val (largest: v3val cell-tile -0.0052 [-0.0109, +0.0006]).
+  - vs gen_v32_s0 (old base): all-val card -0.0008, cell-tile +0.0006, gate bal -0.0011 [-0.0021, -0.0002]: ~equal.
+  - Owed (plan section c, not run): the live dry check (dry_live.py, cue-zeroing decision changes) and the informational
+    SIM eval of IL-cue vs CLIII.
+- REB init relayed (relay_ckpt.sh, .part + sha + mv) to 19834 + 14009 at cb_stepd/icebow/data/pipeline/stepd_il/gen_cuew_s0.pt.
+- REAL REB smoke (30988: stepd_reb.yaml, init IL-cue-w, ability head, critic_warmup_updates=1): SMOKE PASS. Its update-0
+  pro agreement (1,000 rows): card .699 / cell .195 / gate .761 (CLIII .675 / .182 / .714).
+- Smoke-check fix (pipeline/rl_royale.py): the u0000 save/reload check compared floats exactly; with CLIII (fv6) + ability head
+  it failed twice on cell_nll alone (3.1361532936 vs 3.1361533864, every other metric equal = GPU reduction noise). Now floats
+  to 1e-6 relative. pyflakes clean; real smoke on 34210 A + B PASS.
+- stepd_ctrl_nos2 (34210) TRAINING since 19:32 UTC: ~2.5 min / update (125 s roll + 22 s upd) -> u130 ~01:00 UTC + evals.
+- Waiting: Stage 2 CHAIN_DONE (~21:10 UTC) -> CTRL starts on 13396 by itself; then relay s2_all_il_sA_u0130.pt to 19834 +
+  14009 -> REB + twin start (arm waiters).
+
+## 2026-10-18 15:05 EDT -- milestone 6: D1 DONE, D2b training, CLIII fin13 baseline, ability head ON, nos2 arm started
+
+- D1 (30988, fin13, 26 workers, 18:20-18:55 UTC; pod_backup_weekend/stepd/d1/): drive 1,829 s = 12,930 replays driven from
+  crawl commands; 734 no crawl source; 1,007 failed `unsupported_forms BarbarianLauncher` (hero Barbarian Barrel: fin13
+  cannot load it either). Sidecar (min fid 0.9 + token gate): rows attached 36.99% (1,301,155 / 3,517,863), play rows
+  31.4%, wait rows 39.2%, tokens known 27.7%; status no_cue_file 442,404 / no_frame_at_tick 405,483 / below_min_fid
+  1,368,821. v32_cue.npz sha 4cb48afe..., v32_w3.npy 83c66ad0... (= D2a's weights). The first D1 launch failed in 8 s:
+  ship_stepd.sh did not overlay the working-tree pro2/build_rows.py (on_frame hook); fixed (L74/pro2 in the overlay).
+- D2b (IL-cue-w s0) RUNNING on 30988 GPU since 18:56 UTC (d2b_cue_pod.sh pid 11487 / trainer 11492), ~1 h, then il_compare.
+  Incident: two triggers (an inline one I believed dead + its script replacement) both started D2b at 18:55; both were
+  killed at 13 s (same log file) and ONE run relaunched clean.
+- CLIII fin13 re-score (10757): std 633/960 (741200 308 + 742000 325), fresh 619/960 (743000 306 + 744000 313). Codex's
+  same-code fork36: 642 / 626. fork36 std rows from cb_stepd still running there.
+- Ability head decision: c3_ab vs c3_ctl (pair_cmp.py; rows pod_backup_weekend/stepd/c3_ab_eval/ + codex1018/10757):
+  std +1.46 [-1.98, +4.90] (667 vs 653), fresh -1.25 [-4.69, +2.19] (630 vs 642), pooled +0.10 [-2.29, +2.55] ->
+  not clearly worse -> ON in all four arms (ability_head: true, ability_features: freeze; evals --ability-head-decode=sample).
+- GO files written on 13396 / 19834 / 14009 (NO36=1) / 34210. Waiter bug found + fixed: `awk '$1 == "init:"'` also matched
+  league_mix's indented `init: 0.25`, so INIT was two lines and no arm could ever pass its input check; all four waiters were
+  killed by exact PID and relaunched with `awk '/^init: /'` (13396 pid 11015, 19834 pid 11344, 14009 pid 24335,
+  34210 pid 14464). stepd_ctrl_nos2 (34210) passed its inputs at 18:54 UTC -> smoke -> chain.
+
 ## 2026-10-18 14:15 EDT -- Codex handoff complete; D1 smoke failed after acquiring CPUs
 
 - All Codex cue/combo follow-ups are DONE (13,440 SIM games). Final cue archive: 2,008 files, SHA-verified at

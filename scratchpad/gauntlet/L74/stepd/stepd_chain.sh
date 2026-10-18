@@ -8,6 +8,7 @@
 #   RUN=stepd_ctrl setsid nohup bash /workspace/stepd/bin/stepd_chain.sh > /dev/null 2>&1 < /dev/null &
 set -uo pipefail
 CB=/workspace/cb_stepd; RUNN=${RUN:-stepd_ctrl}; NAME=${NAME:-$RUNN}; O=/workspace/stepd/rl_$NAME
+GO=/workspace/stepd/GO_$RUNN; [ -z "${REF:-}" ] && [ -s $GO ] && . $GO   # the lead's GO file may set DECODE=--ability-head-decode=sample
 RL=icebow/data/bench/rl_royale; U250=$RL/rlarm_gae/rlarm_gae_u0250_grafted.pt; Y=scratchpad/gauntlet/L74/stepd/cfg/$RUNN.yaml
 P13=/workspace/venvf13/bin/python; P36=/workspace/venvf36/bin/python
 EV_EXTRA="--habit-log --live-levels --card-levels Rocket=16 Log=15 --opp-tower-troops DaggerDuchess:0.028,Cannoneer:0.028,ChefTower:0.014 --record-plays --ability-stats${DECODE:+ $DECODE}"
@@ -31,6 +32,7 @@ ev() {   # ev CKPT TAG SEED RUNTIME PYTHON
 graft() { local G=${1%.pt}_grafted.pt; [ -f $G ] || $P13 scratchpad/gauntlet/L74/weekend/graft_generic.py $1 $U250 $G >> $O/graft.log 2>&1; echo $G; }
 evall() {   # evall GRAFTED TAG: the u130 set
   for S in 741200 742000 743000 744000; do ev $1 $2 $S fin13-linux $P13; done
+  [ -n "${NO36:-}" ] && return 0     # NO36=1: a pod whose /workspace/fork36 parity checkout breaks the fork36 wheel (14009)
   for S in 741200 742000; do ev $1 $2 $S fork36-linux $P36; done
 }
 pack() {    # /workspace/stepd/out/<NAME>.tgz + .sha for the laptop relay (stepd/pull_stepd.sh); u65 ckpts ride along

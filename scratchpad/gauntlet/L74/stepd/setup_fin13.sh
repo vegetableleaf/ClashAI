@@ -11,6 +11,7 @@ O=/workspace/stepd/fin13; mkdir -p $O /workspace/results; exec >> $O/setup.log 2
 trap 'echo "FIN13 SETUP FAILED line $LINENO (exit $?)"; touch $O/FAILED' ERR
 rm -f $O/FAILED $O/FIN13_OK
 CB=${CB:-/workspace/cb_stepd}; V=/workspace/venvf13; PY=$V/bin/python; SD=scratchpad/gauntlet/L74/stepd
+SRCV=${SRCV:-/workspace/venvf36}; [ -d $SRCV ] && [ ! -L $SRCV ] || { echo "SRCV $SRCV is not a real venv dir"; false; }
 echo "start $(date -u)"
 if [ -n "${BUILD:-}" ]; then
   [ -e /workspace/results/fork_fin13.DONE ] || BRANCH=clashbot36 BUNDLE=/workspace/in/clashbot36_a697d1f9.bundle \
@@ -22,7 +23,7 @@ fi
 [ -n "${BUILD:-}${FREEZE:-}" ] && rm -rf /workspace/fork13 /workspace/rsfork_fin13
 W=$(ls /workspace/in/fin13/royalesim-*.whl | head -1)
 echo "wheel $W $(sha256sum $W | cut -c1-16)"
-[ -x $PY ] || cp -al /workspace/venvf36 $V
+[ -x $PY ] || cp -al $SRCV $V    # SRCV = a real venv dir (never a symlink: cp -a would copy the link and the install would write through it)
 uv pip install -q -p $PY --no-deps --reinstall --link-mode=copy $W
 $PY -c "import importlib.metadata as m; print({k: m.version(k) for k in ('royalesim', 'royalegym', 'torch', 'numpy')})"
 cd $CB
@@ -32,7 +33,7 @@ if [ -n "${BUILD:-}${FREEZE:-}" ]; then
 fi
 ROYALE_RUNTIME=fin13-linux PYTHONPATH=$CB PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1 \
   $PY -c "from pipeline.royale_runtime import activate; s = activate(); print(s['runtime_id'], s['pins'], s['card_table'])"
-ROYALE_RUNTIME=fork36-linux PYTHONPATH=$CB PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1 \
-  /workspace/venvf36/bin/python -c "from pipeline.royale_runtime import activate; s = activate(); print('venvf36 intact', s['pins'])"
+[ -n "${SKIP36:-}" ] || ROYALE_RUNTIME=fork36-linux PYTHONPATH=$CB PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1 \
+  $SRCV/bin/python -c "from pipeline.royale_runtime import activate; s = activate(); print('venvf36 intact', s['pins'])"
 echo "done $(date -u)"
 touch $O/FIN13_OK

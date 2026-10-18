@@ -19,7 +19,7 @@ cd $REPO
 if [ "$1" = build ] || [ "$1" = code ]; then
   mkdir -p $S; rm -rf $S/stage; mkdir -p $S/stage
   git -c core.autocrlf=false archive --format=tar HEAD $DIRS | tar x -C $S/stage
-  for f in $(git ls-files -m -o --exclude-standard pipeline $L/stepd | grep -E '\.(py|sh|md|json|yaml)$' | grep -v '/tests/gen_v3/'); do
+  for f in $(git ls-files -m -o --exclude-standard pipeline $L/stepd $L/pro2 | grep -E '\.(py|sh|md|json|yaml)$' | grep -v '/tests/gen_v3/'); do
     mkdir -p $S/stage/$(dirname $f); tr -d '\r' < $f > $S/stage/$f
   done
   (cd $S/stage && tar cf $S/stepd_code.tar * && find . -type f | sed 's|^\./||' | sort | xargs sha256sum | sed 's/ \*/  /') > $S/code.sha

@@ -111,3 +111,5 @@ league_exploiters:
   decks: scratchpad/gauntlet/L74/mix/decks_live_train.json
   share: 0.3
 kl_ref_card: icebow/data/bench/rl_royale/rlarm_succ_levels/rlarm_succ_levels_u0065.pt
+ability_head: true
+ability_features: freeze

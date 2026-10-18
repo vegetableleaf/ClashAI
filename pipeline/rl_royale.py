@@ -4184,9 +4184,12 @@ class Learner:
         if smoke:
             m2 = self._load_net(path)
             pa2 = self.proagree(m2)
-            same = all(pa2[k] == pa[k] for k in pa)
+            # floats to 1e-6 relative: a save / load bug moves metrics far more; GPU reduction order alone moved cell_nll
+            # 3e-8 (step d 10-18, CLIII fv6 init + ability head: 3.1361532936 vs 3.1361533864, every other metric equal)
+            same = all(pa2[k] == pa[k] or (isinstance(pa[k], float) and math.isclose(pa2[k], pa[k], rel_tol=1e-6))
+                       for k in pa)
             log(f"[rl] SMOKE u0000 round trip via {'eval_gen' if self.gen else 'engine_play'}.load_model: pro "
-                f"agreement identical = {same}")
+                f"agreement identical (floats to 1e-6) = {same}")
             if not same:
                 raise SmokeFail(f"u0000 reload pro agreement {pa2} != in-memory init {pa}")
 

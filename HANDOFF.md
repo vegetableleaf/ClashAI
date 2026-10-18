@@ -1,3 +1,26 @@
+## 2026-10-18 15:44 EDT -- step d: D1 + D2 DONE (cues help imitation only on gate NLL, tiny); ability head ON in all arms; 4 RL arms armed, LEAGUE arm training
+
+- STATUS: scratchpad/gauntlet/L74/stepd/STATUS.md (pod table, PIDs, incidents). Results: pod_backup_weekend/stepd/.
+- D1 (30988, fin13): 12,930 / 14,661 pro replays re-driven in 30 min (734 no crawl source; 1,007 hero Barbarian Barrel forms
+  fin13 cannot load). Cues attached to 37.0% of rows (play 31.4%), the low end of the plan's 36-53%.
+- D2 (one pod / torch, all with the owner's x3 unfavourable weights, which reach 2.3% of rows): IL-nocue-w s0 / s1 and
+  IL-cue-w s0 (= REB init, 279b4f30). Paired over val matches: cue effect on cue-attached rows = gate NLL -0.0024
+  [-0.0028, -0.0019] vs seed noise -0.0010 (real, tiny); cell NLL -0.0091 is inside the seed noise (-0.0089); card / wait n.s.
+  Health within seed noise; the weighted line equals gen_v32_s0 on overall agreement. REB's case rests on the pro habits more
+  than on cues.
+- CLIII re-scored on fin13 (owner decision 2): std 633/960, fresh 619/960 (fork36 same-code 642 / 626). The step-d bar is
+  against these fin13 rows (stepd/readout.py).
+- Arm decisions: ability head ON (c3_ab vs c3_ctl pooled +0.10 [-2.29, +2.55], not clearly worse; evals decode sampled);
+  spell reward OFF (reward minus control +1.35 [-2.08, +4.69]). All arms: fin13, live IW press, live levels, cues, 130 updates,
+  card-only very loose leash (kl_heads [card], target 0.3, beta0 0.03), guards loosened (tripwire 5 / hard 8 pp).
+- Pods: 34210 stepd_ctrl_nos2 (CTRL minus Stage-2 opponents = LEAGUE attribution) TRAINING since 19:32 UTC; 13396 stepd_ctrl
+  starts at Stage 2 CHAIN_DONE; 19834 stepd_reb + 14009 stepd_rebc3 (CLIII card-anchor twin) start once s2_all_il_sA_u0130 is
+  relayed (stepd/relay_ckpt.sh). Each arm: own-pod smoke, train, graft, evals (fin13 std + fresh; fork36 std except 14009),
+  pack -> stepd/pull_stepd.sh. Arm waiters hold flock claim.lock, so stop_pod.sh refuses those pods.
+- Fixes committed here: rl_royale smoke round-trip check (floats to 1e-6; exact equality failed on GPU noise, 3e-8 in
+  cell_nll); arm_waiter init parse (league_mix's indented init: line); ship_stepd overlays L74/pro2.
+- NOTHING deployed. SIM passes are weak evidence (CLIII +4.4 SIM, ~0 live). fin14 (round 7's newer fork laws) exists; the
+  step-d arms stay on fin13 by design.
 ## 2026-10-18 14:35 EDT -- fork round 7 LANDED (PULSE + HITTICK + HOLD-REACH) and FIN13 scored: upgraded 0.926 [0.920, 0.932] on 403 matches; tier B 0.217 -> 0.278 (Tornado MEETS)
 
 - Fork clashbot36 (worktree C:/Users/benpe/rsfork36):

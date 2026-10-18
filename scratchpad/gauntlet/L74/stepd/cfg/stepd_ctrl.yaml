@@ -110,3 +110,5 @@ league_exploiters:
   ckpt: icebow/data/bench/rl_royale/s2_all_il_sA/s2_all_il_sA_u0130.pt
   decks: scratchpad/gauntlet/L74/mix/decks_live_train.json
   share: 0.3
+ability_head: true
+ability_features: freeze
