@@ -1,3 +1,27 @@
+## 2026-10-18 11:02 EDT -- habit diagnosis (scratchpad/gauntlet/L74/habits/): one SIM gap behind all 3 owner complaints; pods 29286 / 23363 / 38758 stopped
+
+- Early bridge X-Bow:
+  - within the first 2 plays: CLIII 41%, CXXXVIII 31%, pros 8-13% (pros wait until play 6-7, 58-63 s)
+  - aggregate win effect n.s.
+  - a heavy card on the X-Bow: CXXXVIII wins 40.5% vs 60.0%
+  - predictors: opponent elixir (<= 3: 4-10% heavy answer; >= 7: 34-36%), the heavy card possibly in hand (41-48% vs 17-20%),
+    the strict window (>= 6 elixir spent in the back in 10 s: 12.5% vs 35.5%); the loose window (any 4-cost in the back) is null
+- Heavy pushes (>= 10 elixir on our half): bot Rocket 3-4% vs pros 22-23%; cheap-only 62% vs 18%; Rocket in hand 92-100%
+- Rockets / match: pros 2.5, CXXIV 0.74, CXXXVIII 0.56, CLIII 0.41; SIM CLIII - CXXXVIII -0.10 [-0.17, -0.04]
+- ROOT: SIM opponents don't convert: a tower lost after a heavy answer on the X-Bow 0.7% SIM vs 6-7% live; after cheap-only
+  defence 7% vs 23-35%; the SIM sends fewer heavy pushes (1.20 vs ~1.95 / match).
+  - The model DOES use opp_elixir (zeroed: -4.4 pp; early X-Bow 39.8 -> 47.7%).
+  - The SIM counter is noisier than live (0.91 vs 0.40 mean abs error).
+  - Forced X-Bow gates in the SIM cost 6-26 pp (not a fix).
+  - The SIM promotion eval runs with the live rocket_tornado rule OFF (mismatch).
+- Levers:
+  1. Stage 2 opponents gated on those tower-conversion rates
+  2. the spell_value Rocket reward (combo_rew_c3 running) graded on cheap-only share / Rockets per minute
+  3. step d pro imitation, with the KL anchor to the IMITATION policy recommended (owner currently: card-only to CLIII, very
+     loose; asked)
+  4. a "heavy card possibly in hand" input
+- Pods STOPPED via stop_pod.sh: 216.81.245.71:29286, 81.27.69.177:23363 (factorial complete, 16 / 16 copied), 216.81.245.71:38758
+  (combo margin eval done).
 ## 2026-10-18 10:54 EDT -- SESSION HANDOVER (first account near its usage cap): full status for the next session
 
 **Live:** ICEBOW Mark CLIII: LEVELS (since 10-18 07:36; ckpt icebow/data/models/ICEBOW/ICEBOW_Mark_CLIII_LEVELS_grafted.pt,

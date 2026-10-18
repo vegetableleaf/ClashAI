@@ -1,0 +1,126 @@
+matches: Counter({'CXXIV': 300, 'CXXXVIII': 262, 'CLIII': 17})
+counter rebuilt == logged on 1138638 / 1152053 frames; matches with any rebase (estimate proven LOW): 33 of 579 ; rebases 139 adding 119.3 elixir
+
+## A-pro. FIRST bridge X-Bow of the match: when, at what opponent elixir, after what
+  group                    matches  with-bridge  t_first_s(med)  idx(med)  in-first-2  est(med)  band <=3/4-6/>=7     punish   heavy-next  win(with)
+  CXXIV                       300      0.980       33.8      3.0     32.0%    6.84  11.2%/34.4%/54.4%    44.6%    29.9%  52.0%
+  CXXXVIII                    262      0.977       41.8      4.0     32.0%    6.67  8.2%/38.7%/53.1%    43.8%    34.4%  49.2%
+  CLIII                        17      1.000       27.4      2.0     41.2%    5.95  17.6%/52.9%/29.4%    47.1%    47.1%  52.9%
+
+## A. Bridge X-Bows (16 <= y <= 20.5), live
+
+CXXIV: 857 bridge X-Bows in 294 matches; first-2-play share 11.0%; win 58.2%; life median 16.5 s (n 857)
+  split                     n    win%   heavy-at-it%  life_s  dmg   taken  est   punish%
+  all                        857   58.2% (0.519, 0.645)      30.5%   16.5   1550    223   7.2  30.3%
+  first X-Bow                294   52.0% (0.463, 0.575)      29.9%   17.1   2157    251   6.8  44.6%
+  early (first 2 plays)       94   47.9% (0.383, 0.574)      31.9%   16.4   2154    209   7.5  42.6%
+  est <=3                     56   58.9% (0.456, 0.722)       3.6%   17.4   2540    285   2.9  62.5%
+  est 4-6                    291   59.1% (0.511, 0.67)       30.2%   16.0   1672    273   5.4  54.0%
+  est >=7                    510   57.6% (0.499, 0.647)      33.5%   16.5   1372    188   8.7  13.3%
+  punish yes                 260   53.8% (0.457, 0.619)      30.4%   16.5   2003    187   5.9  100.0%
+  punish no                  597   60.1% (0.526, 0.672)      30.5%   16.5   1352    239   7.9  0.0%
+  punish no & est <=3         21   66.7% (0.429, 0.857)       4.8%   17.4   1986    572   2.8  0.0%
+  punish no & est 4-6        134   68.7% (0.583, 0.785)      25.4%   15.9   1330    350   5.4  0.0%
+  punish no & est >=7        442   57.2% (0.491, 0.65)       33.3%   16.6   1329    190   8.8  0.0%
+  first & punish no          163   50.3% (0.423, 0.583)      33.7%   16.7   1895    316   7.9  0.0%
+  first & punish yes         131   54.2% (0.458, 0.626)      25.2%   17.8   2483    171   5.5  100.0%
+  heavy came                 261   53.3% (0.445, 0.619)     100.0%   14.7   1214    160   7.7  30.3%
+  no heavy                   596   60.4% (0.534, 0.67)        0.0%   17.4   1697    251   7.1  30.4%
+
+CXXXVIII: 796 bridge X-Bows in 256 matches; first-2-play share 10.3%; win 55.2%; life median 15.95 s (n 796)
+  split                     n    win%   heavy-at-it%  life_s  dmg   taken  est   punish%
+  all                        796   55.2% (0.487, 0.618)      32.9%   15.9   1567    179   7.3  27.6%
+  first X-Bow                256   49.2% (0.434, 0.555)      34.4%   16.9   2194    217   6.9  43.8%
+  early (first 2 plays)       82   52.4% (0.415, 0.634)      29.3%   16.9   2463    293   6.8  53.7%
+  est <=3                     48   45.8% (0.283, 0.625)      10.4%   16.6   2569    201   2.7  79.2%
+  est 4-6                    237   60.3% (0.519, 0.681)      30.0%   16.1   1876    180   5.4  52.3%
+  est >=7                    511   53.6% (0.458, 0.61)       36.4%   15.7   1330    176   8.7  11.4%
+  punish yes                 220   49.1% (0.403, 0.578)      33.2%   16.5   2202    174   5.7  100.0%
+  punish no                  576   57.5% (0.498, 0.649)      32.8%   15.7   1325    180   8.0  0.0%
+  punish no & est <=3         10   70.0% (0.4, 0.923)        10.0%   12.8   2019    367   2.9  0.0%
+  punish no & est 4-6        113   69.0% (0.583, 0.789)      19.5%   16.2   1398    192   5.3  0.0%
+  punish no & est >=7        453   54.3% (0.462, 0.624)      36.6%   15.7   1291    173   8.7  0.0%
+  first & punish no          144   50.0% (0.424, 0.576)      31.2%   16.2   1838    202   8.2  0.0%
+  first & punish yes         112   48.2% (0.393, 0.571)      38.4%   17.8   2652    235   5.4  100.0%
+  heavy came                 262   42.7% (0.337, 0.524)     100.0%   14.9   1221    130   7.8  27.9%
+  no heavy                   534   61.2% (0.54, 0.684)        0.0%   16.6   1737    203   7.1  27.5%
+
+CLIII: 42 bridge X-Bows in 17 matches; first-2-play share 16.7%; win 64.3%; life median 18.9 s (n 42)
+  split                     n    win%   heavy-at-it%  life_s  dmg   taken  est   punish%
+  all                         42   64.3% (0.371, 0.857)      38.1%   18.9   2166    302   6.3  40.5%
+  first X-Bow                 17   52.9% (0.294, 0.765)      47.1%   20.4   2589    350   5.8  47.1%
+  early (first 2 plays)        7   42.9% ('', '')            71.4%   21.8   3795    440   5.6  71.4%
+  est <=3                      6   50.0% ('', '')            16.7%   18.9   2640    410   2.0  66.7%
+  est 4-6                     18   72.2% (0.438, 0.909)      38.9%   18.8   2366    298   5.2  55.6%
+  est >=7                     18   61.1% (0.286, 0.889)      44.4%   18.0   1807    270   8.7  16.7%
+  punish yes                  17   64.7% (0.368, 0.889)      47.1%   20.7   2720    355   4.8  100.0%
+  punish no                   25   64.0% (0.333, 0.893)      32.0%   16.9   1789    266   7.3  0.0%
+  punish no & est <=3          2   50.0% ('', '')             0.0%   20.0   2648   1230   2.5  0.0%
+  punish no & est 4-6          8   75.0% ('', '')            25.0%   14.1   1645     90   5.4  0.0%
+  punish no & est >=7         15   60.0% (0.25, 0.867)       40.0%   16.9   1751    230   8.9  0.0%
+  first & punish no            9   44.4% ('', '')            44.4%   19.2   1994    338   6.9  0.0%
+  first & punish yes           8   62.5% ('', '')            50.0%   21.5   3259    364   4.7  100.0%
+  heavy came                  16   43.8% (0.133, 0.778)     100.0%   19.1   2464    366   6.8  50.0%
+  no heavy                    26   76.9% (0.5, 0.938)         0.0%   18.3   1982    262   5.9  34.6%
+
+## B1. Heavy pushes, BODY-based (>= 10 elixir of opponent troops on our half), live
+
+CXXIV: 582 heavy pushes in 229 matches (value mean 11.2)
+  response          n   share   win%  [95% CI]           taken  lost_tw  cheap#  spent  rocket_in_hand  killed  trade
+  rocket+tornado     8    1.4%   50.0%                      1412  0.25   2.0  11.1  37.5%   11.9   +0.8
+  rocket            15    2.6%   53.3% (0.267, 0.8)         1167  0.27   1.2   9.0  60.0%   11.9   +2.9
+  cheap_only       363   62.4%   40.5% (0.327, 0.483)       1610  0.23   2.3   5.4  95.3%   10.4   +4.9
+  other            175   30.1%   45.1% (0.354, 0.558)        812  0.09   2.1   8.6  89.7%   10.5   +1.9
+  none              21    3.6%   66.7% (0.45, 0.864)         978  0.14   0.0   0.0  90.5%   11.4  +11.4
+  -- Rocket in hand at the event: 534 pushes; responses cheap_only 64.8%, other 29.4%, none 3.6%, rocket 1.7%, rocket+tornado 0.6%
+
+CXXXVIII: 515 heavy pushes in 200 matches (value mean 11.3)
+  response          n   share   win%  [95% CI]           taken  lost_tw  cheap#  spent  rocket_in_hand  killed  trade
+  rocket+tornado     6    1.2%   66.7%                      1421  0.00   2.7  12.0  16.7%    9.8   -2.2
+  rocket            11    2.1%   72.7% (0.455, 1.0)          111  0.09   0.5   8.1  63.6%   11.0   +2.9
+  cheap_only       322   62.5%   30.7% (0.23, 0.384)        1814  0.26   2.3   5.3  93.5%   10.4   +5.1
+  other            160   31.1%   30.6% (0.216, 0.409)       1063  0.14   1.8   8.4  91.2%   10.8   +2.4
+  none              16    3.1%   56.2% (0.312, 0.812)        620  0.00   0.0   0.0  93.8%   11.2  +11.2
+  -- Rocket in hand at the event: 470 pushes; responses cheap_only 64.0%, other 31.1%, none 3.2%, rocket 1.5%, rocket+tornado 0.2%
+
+CLIII: 26 heavy pushes in 12 matches (value mean 11.4)
+  response          n   share   win%  [95% CI]           taken  lost_tw  cheap#  spent  rocket_in_hand  killed  trade
+  cheap_only        17   65.4%   29.4% (0.056, 0.588)       2115  0.35   2.4   5.5  100.0%   10.3   +4.8
+  other              9   34.6%   44.4%                      1136  0.11   1.9   8.1  100.0%    9.4   +1.3
+  -- Rocket in hand at the event: 26 pushes; responses cheap_only 65.4%, other 34.6%
+
+## B2. Heavy pushes, PLAY-based (>= 10 elixir of opponent troops played in 15 s; same rule as pros / SIM), live
+
+CXXIV: 1129 heavy pushes in 275 matches (value mean 11.7)
+  response          n   share   win%  [95% CI]           taken  lost_tw  cheap#  spent  rocket_in_hand  
+  rocket+tornado    18    1.6%   38.9% (0.158, 0.632)       1143  0.17   3.1  14.3  83.3%
+  rocket            68    6.0%   61.8% (0.477, 0.746)        594  0.04   1.9  12.7  61.8%
+  cheap_only       354   31.4%   40.7% (0.332, 0.483)       1217  0.19   3.0   7.2  95.2%
+  other            681   60.3%   54.5% (0.478, 0.616)        553  0.06   2.5  11.4  93.1%
+  none               8    0.7%   50.0%                       141  0.12   0.0   0.0  100.0%
+  -- Rocket in hand at the event: 1036 pushes; responses other 61.2%, cheap_only 32.5%, rocket 4.1%, rocket+tornado 1.4%, none 0.8%
+
+CXXXVIII: 936 heavy pushes in 246 matches (value mean 11.6)
+  response          n   share   win%  [95% CI]           taken  lost_tw  cheap#  spent  rocket_in_hand  
+  rocket+tornado     7    0.7%   57.1%                       975  0.29   2.6  11.9  100.0%
+  rocket            37    4.0%   48.6% (0.3, 0.676)          457  0.16   1.8  13.0  56.8%
+  cheap_only       276   29.5%   38.4% (0.307, 0.461)       1117  0.14   3.0   7.0  92.4%
+  other            613   65.5%   44.9% (0.378, 0.525)        630  0.08   2.5  11.2  93.6%
+  none               3    0.3%   66.7%                        43  0.00   0.0   0.0  100.0%
+  -- Rocket in hand at the event: 860 pushes; responses other 66.7%, cheap_only 29.7%, rocket 2.4%, rocket+tornado 0.8%, none 0.3%
+
+CLIII: 56 heavy pushes in 17 matches (value mean 11.5)
+  response          n   share   win%  [95% CI]           taken  lost_tw  cheap#  spent  rocket_in_hand  
+  rocket+tornado     3    5.4%   33.3%                         0  0.00   2.0  11.7  66.7%
+  rocket             1    1.8%    0.0%                         0  0.00   2.0  12.0  0.0%
+  cheap_only        16   28.6%   31.2% (0.059, 0.692)       1089  0.19   3.2   7.4  100.0%
+  other             36   64.3%   58.3% (0.31, 0.853)         433  0.08   2.2  10.7  94.4%
+  -- Rocket in hand at the event: 52 pushes; responses other 65.4%, cheap_only 30.8%, rocket+tornado 3.8%
+
+## C. Rockets per match by use (aim) and by who played it (decision why)
+  CXXIV     matches  300  Rockets/match 0.74  tower 0.58  defence(our half) 0.12  enemy-half troops 0.04  | model 0.43  lethal rule 0.21  combo rule 0.10  late(>=2400) 0.60
+            Rockets/match 95% CI (0.637, 0.847)
+  CXXXVIII  matches  262  Rockets/match 0.56  tower 0.42  defence(our half) 0.10  enemy-half troops 0.03  | model 0.33  lethal rule 0.13  combo rule 0.08  late(>=2400) 0.43
+            Rockets/match 95% CI (0.454, 0.676)
+  CLIII     matches   17  Rockets/match 0.41  tower 0.18  defence(our half) 0.18  enemy-half troops 0.06  | model 0.18  lethal rule 0.06  combo rule 0.18  late(>=2400) 0.24
+            Rockets/match 95% CI (0.118, 0.824)

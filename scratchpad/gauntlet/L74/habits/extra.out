@@ -1,0 +1,75 @@
+## 1. Match level: the FIRST bridge X-Bow among the first 2 plays (early) vs later / none
+  CXXIV                matches   300  early 31.3%  win early 47.9% vs not 52.9%  diff -0.050 (-0.171, 0.071)
+      early & est>=7 60: 46.7%; est<7 34: 50.0%; no punish 54: 42.6%; punish 40: 55.0%; heavy came 30: 46.7%; no heavy 64: 48.4%
+  CXXXVIII             matches   262  early 31.3%  win early 52.4% vs not 46.1%  diff +0.063 (-0.071, 0.191)
+      early & est>=7 40: 50.0%; est<7 42: 54.8%; no punish 38: 52.6%; punish 44: 52.3%; heavy came 24: 33.3%; no heavy 58: 60.3%
+  CLIII                matches    17  early 41.2%  win early 42.9% vs not 60.0%  diff -0.171 (-0.614, 0.314)
+      early & est>=7 2: 0.0%; est<7 5: 60.0%; no punish 2: 0.0%; punish 5: 60.0%; heavy came 5: 40.0%; no heavy 2: 50.0%
+  pro icebow crawl2    matches  1405  early 12.1%  win early 52.4% vs not 46.6%  diff +0.057 (-0.023, 0.138)
+      early & est>=7 82: 48.8%; est<7 88: 55.7%; no punish 84: 45.2%; punish 86: 59.3%; heavy came 62: 46.8%; no heavy 108: 55.6%
+  pro icebow8 HF       matches   806  early 8.1%  win early 46.2% vs not 46.8%  diff -0.007 (-0.127, 0.123)
+      early & est>=7 28: 53.6%; est<7 37: 40.5%; no punish 28: 50.0%; punish 37: 43.2%; heavy came 26: 42.3%; no heavy 39: 48.7%
+  pro other X-Bow HF   matches  9896  early 13.1%  win early 52.6% vs not 51.1%  diff +0.015 (-0.015, 0.044)
+      early & est>=7 905: 51.5%; est<7 392: 55.1%; no punish 852: 51.8%; punish 445: 54.2%; heavy came 514: 51.8%; no heavy 783: 53.1%
+
+## 2. Opponent cycle at bridge X-Bows: P(heavy card / big spell at the X-Bow within 8 s) by heavy-out-of-hand
+  CXXIV                none shown yet: n 177 heavy-next 24.3% win 61.0% | heavy in hand possible: n 426 heavy-next 41.1% win 58.5% | every heavy out of hand: n 254 heavy-next 16.9% win 55.9%
+      est <=3  possible n 26 heavy 7.7% | out n 28 heavy 0.0%
+      est 4-6  possible n 144 heavy 45.1% | out n 118 heavy 14.4%
+      est >=7  possible n 256 heavy 42.2% | out n 108 heavy 24.1%
+  CXXXVIII             none shown yet: n 171 heavy-next 18.1% win 64.9% | heavy in hand possible: n 375 heavy-next 48.0% win 52.5% | every heavy out of hand: n 250 heavy-next 20.4% win 52.4%
+      est <=3  possible n 11 heavy 36.4% | out n 36 heavy 2.8%
+      est 4-6  possible n 108 heavy 37.0% | out n 85 heavy 25.9%
+      est >=7  possible n 256 heavy 53.1% | out n 129 heavy 21.7%
+  CLIII                none shown yet: n 9 heavy-next 44.4% win 77.8% | heavy in hand possible: n 19 heavy-next 36.8% win 57.9% | every heavy out of hand: n 14 heavy-next 35.7% win 64.3%
+      est <=3  possible n 2 heavy 50.0% | out n 4 heavy 0.0%
+      est 4-6  possible n 6 heavy 16.7% | out n 8 heavy 50.0%
+      est >=7  possible n 11 heavy 45.5% | out n 2 heavy 50.0%
+  pro icebow crawl2    none shown yet: n 661 heavy-next 30.1% win 54.9% | heavy in hand possible: n 2178 heavy-next 47.0% win 43.1% | every heavy out of hand: n 1244 heavy-next 24.8% win 46.5%
+      est <=3  possible n 176 heavy 31.2% | out n 117 heavy 6.0%
+      est 4-6  possible n 642 heavy 46.7% | out n 462 heavy 21.2%
+      est >=7  possible n 1360 heavy 49.2% | out n 665 heavy 30.7%
+  pro icebow8 HF       none shown yet: n 358 heavy-next 32.1% win 52.0% | heavy in hand possible: n 1124 heavy-next 40.4% win 47.6% | every heavy out of hand: n 675 heavy-next 22.7% win 49.2%
+      est <=3  possible n 90 heavy 26.7% | out n 65 heavy 9.2%
+      est 4-6  possible n 342 heavy 36.8% | out n 251 heavy 22.3%
+      est >=7  possible n 692 heavy 43.9% | out n 359 heavy 25.3%
+  pro other X-Bow HF   none shown yet: n 6304 heavy-next 31.2% win 57.4% | heavy in hand possible: n 19534 heavy-next 41.0% win 50.0% | every heavy out of hand: n 10437 heavy-next 22.7% win 50.3%
+      est <=3  possible n 1659 heavy 21.8% | out n 990 heavy 5.3%
+      est 4-6  possible n 6415 heavy 38.1% | out n 4038 heavy 18.9%
+      est >=7  possible n 11460 heavy 45.4% | out n 5409 heavy 28.8%
+
+## 3. Live X-Bow life (bridge X-Bows; censored at match end excluded)
+  CXXIV     n 790 life p10/25/50/75/90/max 9.3/12.7/16.5/20.4/25.3/33.3  share >= 25 s 11.0%
+      heavy came n 253 crushed(<12 s) 25.3% median life 14.7 dmg 1215 win 52.6%
+      no heavy   n 537 crushed(<12 s) 19.6% median life 17.5 dmg 1691 win 57.9%
+      est <=3  n 52 crushed 5.8% dmg 2555 heavy 3.8% win 55.8%
+      est 4-6  n 265 crushed 21.1% dmg 1702 heavy 31.7% win 57.4%
+      est >=7  n 473 crushed 23.3% dmg 1335 heavy 35.3% win 55.6%
+  CXXXVIII  n 720 life p10/25/50/75/90/max 9.5/12.4/16.0/20.1/24.7/33.2  share >= 25 s 9.4%
+      heavy came n 247 crushed(<12 s) 26.7% median life 14.7 dmg 1182 win 40.5%
+      no heavy   n 473 crushed(<12 s) 19.9% median life 16.9 dmg 1802 win 60.0%
+      est <=3  n 43 crushed 14.0% dmg 2676 heavy 9.3% win 41.9%
+      est 4-6  n 215 crushed 19.1% dmg 1990 heavy 32.1% win 58.6%
+      est >=7  n 462 crushed 24.5% dmg 1302 heavy 37.7% win 51.9%
+  CLIII     n 35 life p10/25/50/75/90/max 11.5/15.3/19.2/21.2/27.5/33.1  share >= 25 s 14.3%
+      heavy came n 16 crushed(<12 s) 6.2% median life 19.15 dmg 2464 win 43.8%
+      no heavy   n 19 crushed(<12 s) 15.8% median life 19.2 dmg 2139 win 78.9%
+      est <=3  n 6 crushed 16.7% dmg 2640 heavy 16.7% win 50.0%
+      est 4-6  n 16 crushed 6.2% dmg 2597 heavy 43.8% win 75.0%
+      est >=7  n 13 crushed 15.4% dmg 1743 heavy 61.5% win 53.8%
+
+## 4. Live heavy pushes (body-based) when the Rocket was in hand AND own elixir >= 6 at the event
+  CXXIV     85 of 582 pushes: other 44.7%, cheap_only 42.4%, rocket 7.1%, rocket+tornado 3.5%, none 2.4%  | tower HP taken: cheap_only 639, rocket(any) 310, other 549
+  CXXXVIII  81 of 515 pushes: other 55.6%, cheap_only 38.3%, rocket 3.7%, none 1.2%, rocket+tornado 1.2%  | tower HP taken: cheap_only 852, rocket(any) 191, other 1126
+  CLIII     3 of 26 pushes: other 66.7%, cheap_only 33.3%  | tower HP taken: cheap_only 2245, rocket(any) nan, other 374
+
+## 5. Rockets per match / per minute (match bootstrap), and differences
+  CXXIV                matches   300  Rockets/match 0.74 (0.637, 0.847)  per minute 0.213 (0.185, 0.24)  mean match 3.49 min
+  CXXXVIII             matches   262  Rockets/match 0.56 (0.454, 0.676)  per minute 0.165 (0.135, 0.196)  mean match 3.40 min
+  CLIII                matches    17  Rockets/match 0.41 (0.118, 0.824)  per minute 0.138 (0.037, 0.269)  mean match 2.99 min
+  pro icebow crawl2    matches  1405  Rockets/match 2.49 (2.394, 2.586)  per minute 0.627 (0.607, 0.647)  mean match 3.98 min
+  pro icebow8 HF       matches   806  Rockets/match 2.68 (2.543, 2.811)  per minute 0.653 (0.625, 0.68)  mean match 4.10 min
+  pro other X-Bow HF   matches  2608  Rockets/match 2.45 (2.363, 2.521)  per minute 0.616 (0.599, 0.632)  mean match 3.97 min
+  CLIII - CXXXVIII: per match (-0.149, (-0.489, 0.293))  per minute (-0.027, (-0.138, 0.123))
+  CXXXVIII - CXXIV: per match (-0.182, (-0.336, -0.029))  per minute (-0.048, (-0.09, -0.007))
+  CLIII - CXXIV: per match (-0.332, (-0.662, 0.119))  per minute (-0.076, (-0.184, 0.068))

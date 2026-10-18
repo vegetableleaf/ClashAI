@@ -1,0 +1,77 @@
+arms: {'base': 960, 'g5w': 960, 'z0': 960, 'g7w': 960, 'g5m': 960, 'z5': 960}
+
+## D. SIM counter (the model's public counter, untouched by the probes) vs TRUE opponent elixir: samples 178043, MAE 0.905, bias +0.733, within 1 72.5%, within 2 84.1%; single MAE 0.503 bias +0.374, double MAE 1.323 bias +1.124, triple MAE 2.328 bias +1.879
+
+## A-pro. FIRST bridge X-Bow of the match: when, at what opponent elixir, after what
+  group                    matches  with-bridge  t_first_s(med)  idx(med)  in-first-2  est(med)  band <=3/4-6/>=7     punish   heavy-next  win(with)
+  base                        960      0.995       33.3      2.0     40.0%    8.43  2.9%/22.4%/74.7%    40.9%    37.2%  67.2%
+  g5w                         960      0.698      141.1     15.0      6.0%    4.71  16.1%/47.0%/36.9%    56.3%    13.4%  53.3%
+  z0                          960      0.998       33.8      2.0     47.8%    0.00  100.0%/0.0%/0.0%    32.0%    40.2%  62.6%
+  g7w                         960      0.956       59.8      4.0     22.1%    6.46  5.0%/48.9%/46.1%    67.9%    27.6%  62.9%
+  g5m                         960      0.676      120.3     11.0      5.7%    4.57  20.3%/47.1%/32.5%    60.7%    13.6%  55.8%
+  z5                          960      0.993       32.8      2.0     44.6%    5.00  0.0%/100.0%/0.0%    36.9%    38.6%  65.5%
+
+## A-SIM. Bridge X-Bows, base arm (CLIII, promotion eval)
+
+base: 3761 bridge X-Bows in 955 matches; first-2-play share 10.2%; win 69.3%; life median 16.0 s (n 3747)
+  split                     n    win%   heavy-at-it%  life_s  dmg   taken  est   punish%
+  all                       3761   69.3% (0.661, 0.724)      32.1%   16.0   1149    230   7.5  36.3%
+  first X-Bow                955   67.2% (0.642, 0.702)      37.2%   18.0   1647    332   8.0  40.9%
+  early (first 2 plays)      382   68.6% (0.636, 0.733)      42.1%   17.5   1705    281   8.6  33.5%
+  est <=3                    195   76.4% (0.692, 0.83)        6.7%   18.0   1899    215   2.7  50.3%
+  est 4-6                   1015   65.6% (0.614, 0.7)        24.9%   16.5   1200    251   5.3  49.5%
+  est >=7                   2551   70.3% (0.67, 0.735)       37.0%   15.5   1071    223   8.8  29.9%
+  punish yes                1364   67.6% (0.636, 0.715)      26.9%   17.0   1350    244   7.1  100.0%
+  punish no                 2397   70.3% (0.668, 0.738)      35.1%   15.5   1034    222   7.7  0.0%
+  punish no & est <=3         97   77.3% (0.67, 0.861)        9.3%   16.0   1541    199   2.7  0.0%
+  punish no & est 4-6        513   65.3% (0.593, 0.712)      23.0%   15.5   1078    230   5.2  0.0%
+  punish no & est >=7       1787   71.4% (0.678, 0.749)      40.0%   15.0    994    221   8.7  0.0%
+  first & punish no          564   68.3% (0.644, 0.722)      45.4%   16.5   1378    281   8.8  0.0%
+  first & punish yes         391   65.7% (0.611, 0.703)      25.3%   20.0   2035    406   7.0  100.0%
+  heavy came                1209   66.8% (0.625, 0.711)     100.0%   12.5    720    175   8.0  30.4%
+  no heavy                  2552   70.5% (0.671, 0.739)       0.0%   17.5   1353    256   7.3  39.1%
+
+## D. SIM opponent (E4 T .1) answer to bridge X-Bows by opponent cycle: P(heavy at it in 8 s)
+  none shown: n 947 heavy 30.0% win 70.6% | heavy possible: n 1997 heavy 37.4% win 69.1% | heavy out: n 817 heavy 21.8% win 68.5%
+
+  SIM match level: first bridge X-Bow in the first 2 plays 382 matches win 68.6% vs 578 not 65.7%, diff (0.028, (-0.031, 0.089))
+  punish-window definitions (punish_sens.DEFS): P1 yes 1364 heavy 26.9% win 67.6% / no heavy 35.1% win 70.3% | P2 yes 976 heavy 24.0% win 71.0% / no heavy 35.0% win 68.8% | P3 yes 545 heavy 18.7% win 70.8% / no heavy 34.4% win 69.1% | P4 yes 655 heavy 16.0% win 72.8% / no heavy 35.5% win 68.6%
+  after the heavy answer (20 s): n 1209 our HP lost 415, towers lost 0.007 | no heavy n 2552: HP lost 378, towers lost 0.013
+
+## B1-SIM. Heavy pushes, BODY-based, base arm
+
+base: 1151 heavy pushes in 597 matches (value mean 11.5)
+  response          n   share   win%  [95% CI]           taken  lost_tw  cheap#  spent  rocket_in_hand  killed  trade
+  rocket            27    2.3%   66.7% (0.481, 0.852)        780  0.04   1.0   9.4  0.0%   10.9   +1.5
+  cheap_only       721   62.6%   56.6% (0.513, 0.621)       1127  0.07   2.3   5.4  0.0%   11.1   +5.6
+  other            363   31.5%   59.8% (0.527, 0.667)        881  0.04   2.0   8.8  0.0%   11.2   +2.5
+  none              40    3.5%   82.5% (0.7, 0.927)          743  0.03   0.0   0.0  0.0%   10.9  +10.9
+
+## B2-SIM. Heavy pushes, PLAY-based, base arm
+
+base: 4193 heavy pushes in 947 matches (value mean 11.6)
+  response          n   share   win%  [95% CI]           taken  lost_tw  cheap#  spent  rocket_in_hand  
+  rocket+tornado     3    0.1%   66.7%                       522  0.00   4.0  18.0  0.0%
+  rocket           244    5.8%   68.0% (0.614, 0.753)        550  0.01   1.8  13.1  0.0%
+  cheap_only       791   18.9%   57.6% (0.529, 0.623)        836  0.05   3.0   7.1  0.0%
+  other           3135   74.8%   65.8% (0.623, 0.693)        464  0.02   2.5  12.2  0.0%
+  none              20    0.5%   65.0% (0.429, 0.895)        589  0.00   0.0   0.0  0.0%
+
+## C. Rockets per match by use (aim) and by who played it (decision why)
+  base      matches  960  Rockets/match 0.61  tower 0.54  defence(our half) 0.04  enemy-half troops 0.03  | model 0.42  lethal rule 0.19  combo rule 0.00  late(>=2400) 0.51
+            Rockets/match 95% CI (0.56, 0.666)
+
+  SIM opponent heavy-push rate: body-based 1.20 / match, play-based 4.37 / match
+
+## E. Probe arms vs base (paired by seed + census; 960 games each when complete)
+  base  n  960 win 66.9%  bridge X-Bows/match 3.92  early first-2 39.8%  counter at our bridge X-Bows median 7.71 (<=3 5.2%, >=7 67.8%)  heavy-at-it 32.1%  Rockets/match 0.61  plays/match 34.9  gate 
+  g5w   n  960 win 40.9%  bridge X-Bows/match 1.31  early first-2 4.2%  counter at our bridge X-Bows median 4.50 (<=3 20.4%, >=7 31.8%)  heavy-at-it 15.9%  Rockets/match 0.92  plays/match 41.4  gate {'hab_gate_seen': 36561, 'hab_gate_refused': 35210, 'hab_gate_masked_play': 0}
+        - base: win (-0.2594, (-0.2938, -0.2229), 960)  tower HP diff (-2183.0437, (-2478.9521, -1870.5385), 960)
+  z0    n  960 win 62.5%  bridge X-Bows/match 4.02  early first-2 47.7%  counter at our bridge X-Bows median 0.00 (<=3 100.0%, >=7 0.0%)  heavy-at-it 34.7%  Rockets/match 0.65  plays/match 36.2  gate 
+        - base: win (-0.0437, (-0.075, -0.0104), 960)  tower HP diff (-244.6625, (-531.0823, 59.0656), 960)
+  g7w   n  960 win 60.6%  bridge X-Bows/match 2.97  early first-2 21.1%  counter at our bridge X-Bows median 6.29 (<=3 8.5%, >=7 42.1%)  heavy-at-it 27.0%  Rockets/match 0.71  plays/match 36.3  gate {'hab_gate_seen': 18224, 'hab_gate_refused': 15332, 'hab_gate_masked_play': 0}
+        - base: win (-0.0625, (-0.0938, -0.0312), 960)  tower HP diff (-554.1365, (-811.3667, -293.6292), 960)
+  g5m   n  960 win 46.5%  bridge X-Bows/match 1.19  early first-2 3.9%  counter at our bridge X-Bows median 4.50 (<=3 22.5%, >=7 30.4%)  heavy-at-it 15.8%  Rockets/match 2.16  plays/match 43.1  gate {'hab_gate_seen': 8964, 'hab_gate_refused': 7781, 'hab_gate_masked_play': 6551}
+        - base: win (-0.2042, (-0.2417, -0.1667), 960)  tower HP diff (-1851.899, (-2154.7354, -1535.0552), 960)
+  z5    n  960 win 65.0%  bridge X-Bows/match 3.92  early first-2 44.3%  counter at our bridge X-Bows median 5.00 (<=3 0.0%, >=7 0.0%)  heavy-at-it 32.7%  Rockets/match 0.63  plays/match 35.1  gate 
+        - base: win (-0.0187, (-0.0479, 0.0104), 960)  tower HP diff (-229.0698, (-467.8615, 12.1042), 960)

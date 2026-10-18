@@ -1,0 +1,13 @@
+PLAY-based heavy pushes: response share by the X-Bow player's own elixir at the event (counter over its own plays)
+  CXXIV                own >= 6 n   523  Rocket(any) 11.1%  cheap_only 10.9%  other 78.0%  none 0.0%  win 58.7%
+  CXXIV                own < 6  n   606  Rocket(any) 4.6%  cheap_only 49.0%  other 45.0%  none 1.3%  win 43.1%
+  CXXXVIII             own >= 6 n   464  Rocket(any) 5.4%  cheap_only 12.9%  other 81.7%  none 0.0%  win 43.5%
+  CXXXVIII             own < 6  n   472  Rocket(any) 4.0%  cheap_only 45.8%  other 49.6%  none 0.6%  win 43.0%
+  CLIII                own >= 6 n    24  Rocket(any) 12.5%  cheap_only 12.5%  other 75.0%  none 0.0%  win 45.8%
+  CLIII                own < 6  n    32  Rocket(any) 3.1%  cheap_only 40.6%  other 56.2%  none 0.0%  win 50.0%
+  pro icebow crawl2    own >= 6 n  3561  Rocket(any) 26.9%  cheap_only 8.6%  other 62.3%  none 2.2%  win 50.0%
+  pro icebow crawl2    own < 6  n  3233  Rocket(any) 17.7%  cheap_only 29.3%  other 51.4%  none 1.6%  win 48.3%
+  pro icebow8 HF       own >= 6 n  2107  Rocket(any) 25.4%  cheap_only 8.9%  other 62.8%  none 2.8%  win 50.5%
+  pro icebow8 HF       own < 6  n  2112  Rocket(any) 21.3%  cheap_only 26.1%  other 51.2%  none 1.5%  win 52.3%
+  pro other X-Bow HF   own >= 6 n  7478  Rocket(any) 25.7%  cheap_only 6.9%  other 65.5%  none 1.9%  win 54.6%
+  pro other X-Bow HF   own < 6  n  5055  Rocket(any) 17.7%  cheap_only 24.3%  other 56.3%  none 1.7%  win 53.8%

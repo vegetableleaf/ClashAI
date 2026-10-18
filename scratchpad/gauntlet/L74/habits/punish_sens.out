@@ -1,0 +1,36 @@
+## 1. P(heavy at our bridge X-Bow within 8 s) by punish-window definition (yes / no)
+  CXXIV                
+                      P1 yes 260 30.4% win 53.8% / no 597 30.5% win 60.1%
+                       P2 yes 212 28.8% win 49.5% / no 645 31.0% win 61.1%
+                       P3 yes 86 18.6% win 46.5% / no 771 31.8% win 59.5%
+                       P4 yes 130 15.4% win 56.2% / no 727 33.1% win 58.6%
+  CXXXVIII             
+                      P1 yes 220 33.2% win 49.1% / no 576 32.8% win 57.5%
+                       P2 yes 159 31.4% win 44.0% / no 637 33.3% win 57.9%
+                       P3 yes 88 12.5% win 40.9% / no 708 35.5% win 56.9%
+                       P4 yes 101 12.9% win 43.6% / no 695 35.8% win 56.8%
+  CLIII                
+                      P1 yes 17 47.1% win 64.7% / no 25 32.0% win 64.0%
+                       P2 yes 13 46.2% win 61.5% / no 29 34.5% win 65.5%
+                       P3 yes 6 50.0% win 33.3% / no 36 36.1% win 69.4%
+                       P4 yes 10 40.0% win 30.0% / no 32 37.5% win 75.0%
+  pro icebow crawl2    
+                      P1 yes 648 33.5% win 49.1% / no 3435 38.3% win 45.4%
+                       P2 yes 501 29.1% win 48.9% / no 3582 38.7% win 45.6%
+                       P3 yes 390 26.7% win 48.7% / no 3693 38.7% win 45.7%
+                       P4 yes 693 27.6% win 42.9% / no 3390 39.6% win 46.7%
+  pro icebow8 HF       
+                      P1 yes 313 34.5% win 47.6% / no 1844 33.3% win 49.0%
+                       P2 yes 240 30.8% win 45.8% / no 1917 33.8% win 49.2%
+                       P3 yes 195 26.2% win 44.6% / no 1962 34.2% win 49.2%
+                       P4 yes 344 24.4% win 41.3% / no 1813 35.2% win 50.2%
+  pro other X-Bow HF   
+                      P1 yes 5664 34.7% win 53.4% / no 30611 33.9% win 51.0%
+                       P2 yes 4000 29.7% win 53.9% / no 32275 34.6% win 51.1%
+                       P3 yes 2900 24.9% win 53.5% / no 33375 34.9% win 51.2%
+                       P4 yes 5351 23.4% win 48.5% / no 30924 35.9% win 51.9%
+
+## 2. Live: our tower HP / towers lost in the 20 s after the heavy answer vs 20 s after an unanswered X-Bow (+2 s)
+  CXXIV     heavy answer n 261: HP lost 491, towers lost 0.057 | no heavy n 596: HP lost 424, towers lost 0.039
+  CXXXVIII  heavy answer n 262: HP lost 571, towers lost 0.073 | no heavy n 534: HP lost 326, towers lost 0.049
+  CLIII     heavy answer n 16: HP lost 806, towers lost 0.062 | no heavy n 26: HP lost 306, towers lost 0.000
