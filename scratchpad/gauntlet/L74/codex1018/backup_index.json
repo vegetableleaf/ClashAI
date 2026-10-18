@@ -1,0 +1,634 @@
+{
+  "receipts": [
+    {
+      "host": "64.247.206.79",
+      "port": 10757,
+      "utc": "20261018T164835Z",
+      "roots": [
+        "/workspace/c3/results_c3_ctl/eval/c3_ctl_741200"
+      ],
+      "files": 166,
+      "archive_sha256": "d61c4634482baad2296c837b2942ea5b28ed6a2a37b61d9605c7727a9b87d3bf",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\10757\\20261018T164835Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.79",
+      "port": 10757,
+      "utc": "20261018T165257Z",
+      "roots": [
+        "/workspace/c3/results_c3_ctl/eval/c3_ctl_742000"
+      ],
+      "files": 166,
+      "archive_sha256": "7b7ee6099e60eba41ddcf72fcb139689a7e3f6284488ed923cd37bc80570ba29",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\10757\\20261018T165257Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.79",
+      "port": 10757,
+      "utc": "20261018T170213Z",
+      "roots": [
+        "/workspace/c3/results_c3_ctl/eval/c3_ctl_743000"
+      ],
+      "files": 166,
+      "archive_sha256": "9cba474327200ecb2b1d84e51e64d9252fcdfdbc68f0fadaa9c2e23e3dd0bc00",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\10757\\20261018T170213Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.79",
+      "port": 10757,
+      "utc": "20261018T171001Z",
+      "roots": [
+        "/workspace/c3/results_c3_ctl"
+      ],
+      "files": 679,
+      "archive_sha256": "26e5ebbe56296c06174a93d598f37869f83b8328af6ad3ef7df2f1f4a22f4944",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\10757\\20261018T171001Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.76",
+      "port": 13396,
+      "utc": "20261018T165038Z",
+      "roots": [
+        "/workspace/s2/runs/s2_all_il_sA_prep_smoke",
+        "/workspace/s2/runs/s2_all_il_sA_smoke"
+      ],
+      "files": 13,
+      "archive_sha256": "d8bbe20d884da462d9b257c623e2b94f0af602fe9f5e3c9c3c74d0cc50b5d793",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\13396\\20261018T165038Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.76",
+      "port": 14009,
+      "utc": "20261018T160111Z",
+      "roots": [
+        "/workspace/ab2/results_cue_ab2",
+        "/workspace/c3/results_clIII_ref"
+      ],
+      "files": 1354,
+      "archive_sha256": "fbdec6162566c20361deded3eb390ad206664b33ef39923d5d77ee716f684384",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\14009\\20261018T160111Z",
+      "verified": true
+    },
+    {
+      "host": "216.81.151.5",
+      "port": 15617,
+      "utc": "20261018T160310Z",
+      "roots": [
+        "/workspace/results/r7d_ewc",
+        "/workspace/results/r7c_ht",
+        "/workspace/results/r7d_vol",
+        "/workspace/results/r7d_tpl",
+        "/workspace/results/r7d_cube_st0",
+        "/workspace/results/r7d_cube_st1",
+        "/workspace/results/r7d_cube_st2",
+        "/workspace/results/r7c_pulse",
+        "/workspace/results/r7c_fixaim",
+        "/workspace/results/r7d_ng0",
+        "/workspace/results/r7d_ng1",
+        "/workspace/results/r7c_fixaim2",
+        "/workspace/results/r7d_ng2",
+        "/workspace/results/r7d_cube_un0",
+        "/workspace/results/r7d_cube_un1",
+        "/workspace/results/r7c_joint",
+        "/workspace/results/r7d_cube2_st0",
+        "/workspace/results/r7d_cube_un2",
+        "/workspace/results/r7d_cube2_st1",
+        "/workspace/results/r7d_cube2_st20",
+        "/workspace/results/r7d_cube2_st21",
+        "/workspace/results/r7d_cube2_st22",
+        "/workspace/results/r7d_joint_st0",
+        "/workspace/results/r7d_joint_st1",
+        "/workspace/results/r7d_joint_st2",
+        "/workspace/results/r7d_joint_un0",
+        "/workspace/results/r7d_joint_un2",
+        "/workspace/results/r7d_joint_un1",
+        "/workspace/results/v7_r7c_fixaim",
+        "/workspace/results/v7_r7c_pulse",
+        "/workspace/results/v7_r7c_pulse_rest",
+        "/workspace/results/v7_r7d_vol"
+      ],
+      "files": 4529,
+      "archive_sha256": "7e3fd32db422957cffca3a1e343dd00472a85ca38fbb5597f9b26aceff47d4f2",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\15617\\20261018T160310Z",
+      "verified": true
+    },
+    {
+      "host": "216.81.151.5",
+      "port": 15617,
+      "utc": "20261018T161352Z",
+      "roots": [
+        "/workspace/codex1018_parity",
+        "/workspace/results/v7_r7c_ht"
+      ],
+      "files": 515,
+      "archive_sha256": "368186cbe02db8a48a2c62aed2747dba2f7b7e4128b4a1c684bc5eff26746937",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\15617\\20261018T161352Z",
+      "verified": true
+    },
+    {
+      "host": "216.81.151.5",
+      "port": 15617,
+      "utc": "20261018T162032Z",
+      "roots": [
+        "/workspace/codex1018_parity"
+      ],
+      "files": 2,
+      "archive_sha256": "7491a8ea06abe7c26c0c129757a12c7906f4b393c0ea02495eab8d9d57bc4517",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\15617\\20261018T162032Z",
+      "verified": true
+    },
+    {
+      "host": "216.81.151.5",
+      "port": 15617,
+      "utc": "20261018T163820Z",
+      "roots": [
+        "/workspace/results/v7_r7d_joint",
+        "/workspace/results/v7_r7d_cube_arm",
+        "/workspace/results/v7_r7c_ht_stamped"
+      ],
+      "files": 1228,
+      "archive_sha256": "15e481d17a9900443324530bb78971b2de4e27b9da8c22298d4aab6b48edb785",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\15617\\20261018T163820Z",
+      "verified": true
+    },
+    {
+      "host": "216.81.151.5",
+      "port": 15617,
+      "utc": "20261018T164348Z",
+      "roots": [
+        "/workspace/codex1018_parity"
+      ],
+      "files": 2,
+      "archive_sha256": "53e4b16d4b37f2efc51028f9c9f4523342a612112f7664f4edfd1e562a54c7cf",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\15617\\20261018T164348Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.79",
+      "port": 19400,
+      "utc": "20261018T164843Z",
+      "roots": [
+        "/workspace/combo/runs/combo_ctl_c3/eval_off/combo_ctl_c3_741200",
+        "/workspace/combo/runs/combo_ctl_c3/eval_off/combo_ctl_c3_742000",
+        "/workspace/combo/runs/combo_ctl_c3/eval_offc/combo_ctl_c3_741200"
+      ],
+      "files": 498,
+      "archive_sha256": "d8bbf583f9e26c01c1c33d3c80542c5af9c41d8d82f4ad596bfe50ac9f0f3047",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\19400\\20261018T164843Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.79",
+      "port": 19400,
+      "utc": "20261018T165047Z",
+      "roots": [
+        "/workspace/combo/runs/combo_ctl_c3"
+      ],
+      "files": 688,
+      "archive_sha256": "c5d174d3b75663e6bc89894bed2cddadf8e57d651c6be0f1a2a5af52f3e6ff73",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\19400\\20261018T165047Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.79",
+      "port": 19400,
+      "utc": "20261018T170002Z",
+      "roots": [
+        "/workspace/codex1018_combo_eval/results/clIII_ref_741200"
+      ],
+      "files": 166,
+      "archive_sha256": "598dc4a8c202804e109a45fcfa486451824c315b24df5b913119a9ee48d3eb59",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\19400\\20261018T170002Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.79",
+      "port": 19400,
+      "utc": "20261018T171031Z",
+      "roots": [
+        "/workspace/codex1018_combo_eval/results/clIII_ref_742000"
+      ],
+      "files": 166,
+      "archive_sha256": "5ba7cf9002172580ffb112b40a04bd3ed72dac2e85fc1860bcae42663bfc1f96",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\19400\\20261018T171031Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.79",
+      "port": 19400,
+      "utc": "20261018T172038Z",
+      "roots": [
+        "/workspace/codex1018_combo_eval/results/clIII_ref_743000"
+      ],
+      "files": 166,
+      "archive_sha256": "fc51c9c5b154fcfd63d39cb4001162b9fed3976d234a677a90df2a92a2b6e386",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\19400\\20261018T172038Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.79",
+      "port": 19400,
+      "utc": "20261018T172939Z",
+      "roots": [
+        "/workspace/codex1018_combo_eval/results/clIII_ref_744000"
+      ],
+      "files": 166,
+      "archive_sha256": "2a31317180db756d27be1743fb0b49c7a9a92067c73cf93d237e696c569c6fbe",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\19400\\20261018T172939Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.79",
+      "port": 19400,
+      "utc": "20261018T174124Z",
+      "roots": [
+        "/workspace/codex1018_combo_eval/results/combo_ctl_c3_743000"
+      ],
+      "files": 166,
+      "archive_sha256": "0391b6bfff98e328fd3870e08270ce62cbdf30e3f8f15b5ff11e164d83e24d12",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\19400\\20261018T174124Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.79",
+      "port": 19400,
+      "utc": "20261018T174729Z",
+      "roots": [
+        "/workspace/codex1018_combo_eval/results"
+      ],
+      "files": 1006,
+      "archive_sha256": "b0679b9428948d6f81f16142faabff3f11916b20ccdc22925354fe0e7d558d89",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\19400\\20261018T174729Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.79",
+      "port": 19400,
+      "utc": "20261018T175636Z",
+      "roots": [
+        "/workspace/codex1018_combo_fresh_rules/results/combo_ctl_c3_743000"
+      ],
+      "files": 166,
+      "archive_sha256": "7abe1d5a17cfdb8c20f06c14330dfb845d9e82b9f103b9d003cfdb281063d375",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\19400\\20261018T175636Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.79",
+      "port": 19400,
+      "utc": "20261018T180427Z",
+      "roots": [
+        "/workspace/codex1018_combo_fresh_rules/results"
+      ],
+      "files": 338,
+      "archive_sha256": "d23ed204932941ec3d7e186579b5d14ea6527a93f8ddebb809dc923552324fc0",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\19400\\20261018T180427Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.120",
+      "port": 19834,
+      "utc": "20261018T165043Z",
+      "roots": [
+        "/workspace/s2/runs/s2_all_il_sB_smoke"
+      ],
+      "files": 6,
+      "archive_sha256": "1ec810c3aa75e9c2caa7dbb9d06f9bf4abbc6665383682ef9c5071083ae15942",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\19834\\20261018T165043Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.76",
+      "port": 19899,
+      "utc": "20261018T160702Z",
+      "roots": [
+        "/workspace/results/r7b_hr",
+        "/workspace/results/r7b_pd",
+        "/workspace/results/r7a_P2_oth",
+        "/workspace/results/r7a_P2_st",
+        "/workspace/results/r7a_S2_st",
+        "/workspace/results/r7b_pd_stamped",
+        "/workspace/results/r7b_pd5",
+        "/workspace/results/r7b_hr_stamped",
+        "/workspace/results/r7a_S2_oth",
+        "/workspace/results/r7a_J_st",
+        "/workspace/results/r7b_pd5_stamped",
+        "/workspace/results/v7_r7b_null",
+        "/workspace/results/FIN12"
+      ],
+      "files": 4851,
+      "archive_sha256": "9af8df05a0a6ccb62f03a8973a7f502a1fcc51a2d9e88c4a14b5511ef87d6e89",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\19899\\20261018T160702Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.76",
+      "port": 19899,
+      "utc": "20261018T161352Z",
+      "roots": [
+        "/workspace/codex1018_parity"
+      ],
+      "files": 2,
+      "archive_sha256": "7a01884659f105b3a6e76ba848551ee0459e68d80fa25c1885b009394c75fd3b",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\19899\\20261018T161352Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.76",
+      "port": 19899,
+      "utc": "20261018T161912Z",
+      "roots": [
+        "/workspace/codex1018_parity"
+      ],
+      "files": 2,
+      "archive_sha256": "01773f493c38dfc1df190204a4af071bda515aab69fd5a3f6b017b5f2f8496c0",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\19899\\20261018T161912Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.76",
+      "port": 19899,
+      "utc": "20261018T171854Z",
+      "roots": [
+        "/workspace/results/v7c_snap"
+      ],
+      "files": 513,
+      "archive_sha256": "1940981a73916e28fdf2ec2ca0dfb4defa90882e30401c2d962b9a79839934b2",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\19899\\20261018T171854Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.76",
+      "port": 19899,
+      "utc": "20261018T172939Z",
+      "roots": [
+        "/workspace/results/v7c_hr"
+      ],
+      "files": 513,
+      "archive_sha256": "e433f37d36ee5a5b3cece666f9c2ffc62aebc7e691029ed8300f9f8bf5eafd1d",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\19899\\20261018T172939Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.76",
+      "port": 19899,
+      "utc": "20261018T173241Z",
+      "roots": [
+        "/workspace/codex1018_parity"
+      ],
+      "files": 2,
+      "archive_sha256": "ddb60830f0e0d613bfd0410ae83e81cd6ed467f10a04561df7ddd50150a4eaaf",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\19899\\20261018T173241Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.80",
+      "port": 30988,
+      "utc": "20261018T163545Z",
+      "roots": [
+        "/workspace/codex1018/results/clIII_ref_741200",
+        "/workspace/codex1018/results/clIII_ref_742000"
+      ],
+      "files": 332,
+      "archive_sha256": "bec57c958f106b4d141e3d733b06741298d55f9c6b488d565a8207544bb74d49",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\30988\\20261018T163545Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.80",
+      "port": 30988,
+      "utc": "20261018T164349Z",
+      "roots": [
+        "/workspace/codex1018/results/clIII_ref_743000"
+      ],
+      "files": 166,
+      "archive_sha256": "266fdd9931538f6a94f714125c7d1448cafd32eb8f6d266dd5fa14b5a7985c19",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\30988\\20261018T164349Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.80",
+      "port": 30988,
+      "utc": "20261018T165249Z",
+      "roots": [
+        "/workspace/codex1018/results/clIII_ref_744000"
+      ],
+      "files": 166,
+      "archive_sha256": "d1be2527e30e65be9fe45529d4cf3c67fa170f174221ab3241135b2d022f6a50",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\30988\\20261018T165249Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.80",
+      "port": 30988,
+      "utc": "20261018T170202Z",
+      "roots": [
+        "/workspace/codex1018/results/cue_ab2_sample_741200"
+      ],
+      "files": 166,
+      "archive_sha256": "2d426619e3d69e92f6e27c3238f550e587c262a773f5eb2c48771b9a64a37a2d",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\30988\\20261018T170202Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.80",
+      "port": 30988,
+      "utc": "20261018T171249Z",
+      "roots": [
+        "/workspace/codex1018/results/cue_ab2_sample_742000"
+      ],
+      "files": 166,
+      "archive_sha256": "601a0b411bfdb2c0bde2d21f33530d39a37d827120f9ab953366fdd44b3007c0",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\30988\\20261018T171249Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.80",
+      "port": 30988,
+      "utc": "20261018T172235Z",
+      "roots": [
+        "/workspace/codex1018/results/cue_ab2_sample_743000"
+      ],
+      "files": 166,
+      "archive_sha256": "7a67adbe9c7bedc29443f594c4fc1f245718c3ada10d0dcd4bca5161f0bd8ff7",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\30988\\20261018T172235Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.80",
+      "port": 30988,
+      "utc": "20261018T173229Z",
+      "roots": [
+        "/workspace/codex1018/results/cue_ab2_sample_744000"
+      ],
+      "files": 166,
+      "archive_sha256": "a2620d64373e042a54c057dff5c8e7564f2204c397e2d666e72d601749250e6a",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\30988\\20261018T173229Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.80",
+      "port": 30988,
+      "utc": "20261018T174419Z",
+      "roots": [
+        "/workspace/codex1018/results/cue_ab2_741200"
+      ],
+      "files": 166,
+      "archive_sha256": "7333e0089f47007c4b54451324a991b3415ad30d79ac0b6d0eb3fe0fb68b9342",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\30988\\20261018T174419Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.80",
+      "port": 30988,
+      "utc": "20261018T175232Z",
+      "roots": [
+        "/workspace/codex1018/results/cue_ab2_742000"
+      ],
+      "files": 166,
+      "archive_sha256": "5e9d54068084f76363fb5a29f88686f5cd9b90b890f0d0eb4a0962551224234b",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\30988\\20261018T175232Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.80",
+      "port": 30988,
+      "utc": "20261018T180116Z",
+      "roots": [
+        "/workspace/codex1018/results/cue_ab2_743000"
+      ],
+      "files": 166,
+      "archive_sha256": "447ed63c1d3bc3d28debe1e2831446156135896da028b1f2423cdff116e9e5f5",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\30988\\20261018T180116Z",
+      "verified": true
+    },
+    {
+      "host": "64.247.206.80",
+      "port": 30988,
+      "utc": "20261018T181127Z",
+      "roots": [
+        "/workspace/codex1018/results"
+      ],
+      "files": 2008,
+      "archive_sha256": "18e83bb8c3ff8889e32a479a447c75df34d12e3ab3484f752a3b22e6f6f7bbef",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\30988\\20261018T181127Z",
+      "verified": true
+    },
+    {
+      "host": "216.81.245.71",
+      "port": 34210,
+      "utc": "20261018T164525Z",
+      "roots": [
+        "/workspace/combo/runs/combo_rew_c3"
+      ],
+      "files": 687,
+      "archive_sha256": "8ee6340a62bb7e5f77853eb9362c14a8bd157e2e4483bce6ee6dac3e7c227993",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\34210\\20261018T164525Z",
+      "verified": true
+    },
+    {
+      "host": "216.81.245.71",
+      "port": 34210,
+      "utc": "20261018T165701Z",
+      "roots": [
+        "/workspace/codex1018_combo_eval/results/combo_rew_c3_743000"
+      ],
+      "files": 166,
+      "archive_sha256": "60a57587d6a17d0e298343ebf4fd3a4f9cdf6254f504fd2f790417e70918db7b",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\34210\\20261018T165701Z",
+      "verified": true
+    },
+    {
+      "host": "216.81.245.71",
+      "port": 34210,
+      "utc": "20261018T170522Z",
+      "roots": [
+        "/workspace/codex1018_combo_eval/results/combo_rew_c3_744000"
+      ],
+      "files": 166,
+      "archive_sha256": "f86715e3b594887997b0eb2721c2fe0b5720a1f216272acde9c401547c14ae24",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\34210\\20261018T170522Z",
+      "verified": true
+    },
+    {
+      "host": "216.81.245.71",
+      "port": 34210,
+      "utc": "20261018T171257Z",
+      "roots": [
+        "/workspace/codex1018_combo_eval/results/clIII_ref_offc_741200"
+      ],
+      "files": 166,
+      "archive_sha256": "df872843d6777ce519d8aab7a354427985d4a330a8a583f04d4ab36cbc20f68b",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\34210\\20261018T171257Z",
+      "verified": true
+    },
+    {
+      "host": "216.81.245.71",
+      "port": 34210,
+      "utc": "20261018T172243Z",
+      "roots": [
+        "/workspace/codex1018_combo_eval/results"
+      ],
+      "files": 672,
+      "archive_sha256": "848b85dbfa3f715b90c7e0229a81ff935ccd3eef1a7335a310832052b8fa06d8",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\34210\\20261018T172243Z",
+      "verified": true
+    },
+    {
+      "host": "216.81.245.71",
+      "port": 34210,
+      "utc": "20261018T173101Z",
+      "roots": [
+        "/workspace/codex1018_combo_fresh_rules/results/clIII_ref_offc_743000"
+      ],
+      "files": 166,
+      "archive_sha256": "daa7e2d019593098d1a0f18fab0a0400b26bd07032fe35a8cda23c54de1020a7",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\34210\\20261018T173101Z",
+      "verified": true
+    },
+    {
+      "host": "216.81.245.71",
+      "port": 34210,
+      "utc": "20261018T174142Z",
+      "roots": [
+        "/workspace/codex1018_combo_fresh_rules/results/clIII_ref_offc_744000"
+      ],
+      "files": 166,
+      "archive_sha256": "1787e11ebee60754146a368cd7541aea424f6ac622d591f7f7e90a12b996b9bb",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\34210\\20261018T174142Z",
+      "verified": true
+    },
+    {
+      "host": "216.81.245.71",
+      "port": 34210,
+      "utc": "20261018T175252Z",
+      "roots": [
+        "/workspace/codex1018_combo_fresh_rules/results/combo_rew_c3_743000"
+      ],
+      "files": 166,
+      "archive_sha256": "8fe0c1382154336eb32a485901c332cd144059ec513cfae8e27e623e129767c5",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\34210\\20261018T175252Z",
+      "verified": true
+    },
+    {
+      "host": "216.81.245.71",
+      "port": 34210,
+      "utc": "20261018T175911Z",
+      "roots": [
+        "/workspace/codex1018_combo_fresh_rules/results"
+      ],
+      "files": 672,
+      "archive_sha256": "2af4261fe5d80d55d9543c4362846809b82fee32107418eba1ea3cc97cdb2da7",
+      "local": "C:\\Users\\benpe\\pod_backup_weekend\\codex1018\\34210\\20261018T175911Z",
+      "verified": true
+    }
+  ],
+  "archive_count": 48,
+  "unique_source_files": 20274,
+  "method": "Remote SHA-256 manifest; archive SHA-256 verification; safe extraction; every extracted file SHA-256 and byte count verified; Linux text and Git-Bash binary hash modes normalized"
+}

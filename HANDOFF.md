@@ -1,3 +1,24 @@
+## 2026-10-18 14:21 EDT - Codex worker ticket: verified copies and paired candidate report
+
+- Full report: [L74/codex1018/REPORT.md](scratchpad/gauntlet/L74/codex1018/REPORT.md), with candidate/behavior CIs,
+  27 round-7 paired arms, job snapshot and backup receipts. Checked all 13 handover ports and the three original workers.
+  Original executor/closer failed on workspace scope; Claude recovered them after dc5363e. The legacy combo relay failed;
+  Codex collected its finished replacement jobs. Current replacement workers are alive in the snapshot.
+- Ticket text corrected: very loose **card-only pro-imitation IL-cue KL anchor**, optional CLIII-anchor twin. Logged in
+  stepd/STATUS.md. The executor independently committed its implementation/smokes in 3f72766.
+- No completed candidate clears both seed-set gates. Versus CLIII edc82ada, sampled cue: standard +5.21 pp [+1.67, +8.85],
+  fresh +1.25 pp [-2.19, +4.69]; greedy cue: standard +4.69 pp [+1.15, +8.23], fresh +2.08 pp [-1.36, +5.52].
+  Each set is 960 paired games. C3 control and combo control/reward also have standard+fresh CIs in the report.
+- 48 SHA-verified archives / 20,274 unique source files are under
+  C:/Users/benpe/pod_backup_weekend/codex1018/. The 13,440-game Codex follow-ups are done and copied. Stage 2 A/B,
+  C3 ability and combined FIN13 remain active. D1 smoke exited 1 after CPU handoff: drive() rejected `on_frame`.
+  The alive executor owns that repair; it is the first next action. Other step-d work remains active/pending.
+- Round-7 joint parity: +0.174 pp [0.015, 0.342], raw 0.92677 [0.91921, 0.93407]; target unmet. Closer landed verified
+  harness fixes in e15b284; combined FIN13 is still running. Continue final-runtime qualification and pro-imitation
+  step-d work. Keep optional reward evidence-gated. Retain owner KEEP pods 15617/19899/13396/14009 and remaining work capacity.
+- No live switch, deployment, live run, pod stop or stop timer by Codex. CLIII's **+4.4 pp SIM but 47.8% live** has not
+  transferred. Working HANDOFF bytes preserved; this entry is prepended to HEAD's blob only.
+
 ## 2026-10-18 13:21 EDT -- round 7 harness LANDED: H-VOLLEY + H-CUBE-DATE v2 (joint) + H-SNAP-BACK (closer; every measurement reproduced)
 
 - Round-7 verifiers all died at ~11:42 (the lead's cap); the closer (API worker) finished their orphan arm runs and re-measured

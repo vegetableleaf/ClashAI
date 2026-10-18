@@ -1,0 +1,1090 @@
+[
+  {
+    "context": "cue_same_code",
+    "candidate": "cue_ab2_sample",
+    "comparisons": {
+      "std": {
+        "pairs": 960,
+        "old_win_rate": 0.66875,
+        "new_win_rate": 0.7208333333333333,
+        "delta_pp": 5.208333333333333,
+        "ci95_pp": [
+          1.6666666666666667,
+          8.854166666666668
+        ],
+        "method": "10000 paired bootstrap draws within census and learner side; draws count as non-wins",
+        "checkpoint_sha256": "fb777048e438a51ede685df20978195a3091ded7299c4d5fc93d022deea3ecd5",
+        "candidate_wins": 692,
+        "win_ci95": [
+          69.16194311850474,
+          74.82869415069761
+        ],
+        "baseline_wins": 642,
+        "baseline_win_ci95": [
+          63.83562338214447,
+          69.7798635877177
+        ],
+        "behaviour": {
+          "accepted_ability_presses_per_game": {
+            "baseline_mean": 1.7177083333333334,
+            "candidate_mean": 0.9302083333333333,
+            "delta": -0.7875,
+            "ci95": [
+              -0.903125,
+              -0.6822395833333336
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "rocket_per_game": {
+            "baseline_mean": 0.6125,
+            "candidate_mean": 0.5958333333333333,
+            "delta": -0.016666666666666666,
+            "ci95": [
+              -0.08440104166666668,
+              0.045859374999999855
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "tornado_per_game": {
+            "baseline_mean": 1.075,
+            "candidate_mean": 1.0666666666666667,
+            "delta": -0.008333333333333333,
+            "ci95": [
+              -0.10208333333333333,
+              0.0875
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "presses_froze_per_game": {
+            "baseline_mean": 1.171875,
+            "candidate_mean": 0.6979166666666666,
+            "delta": -0.4739583333333333,
+            "ci95": [
+              -0.5635416666666667,
+              -0.3854166666666667
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "frozen_elixir_per_game": {
+            "baseline_mean": 8.264858333333333,
+            "candidate_mean": 5.403141666666667,
+            "delta": -2.8617166666666667,
+            "ci95": [
+              -3.634283046875,
+              -2.1101415364583334
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          }
+        }
+      },
+      "fresh": {
+        "pairs": 960,
+        "old_win_rate": 0.6520833333333333,
+        "new_win_rate": 0.6645833333333333,
+        "delta_pp": 1.25,
+        "ci95_pp": [
+          -2.1875,
+          4.6875
+        ],
+        "method": "10000 paired bootstrap draws within census and learner side; draws count as non-wins",
+        "checkpoint_sha256": "fb777048e438a51ede685df20978195a3091ded7299c4d5fc93d022deea3ecd5",
+        "candidate_wins": 638,
+        "win_ci95": [
+          63.411356511070395,
+          69.37411843484458
+        ],
+        "baseline_wins": 626,
+        "baseline_win_ci95": [
+          62.14010146540707,
+          68.15533740866626
+        ],
+        "behaviour": {
+          "accepted_ability_presses_per_game": {
+            "baseline_mean": 1.7,
+            "candidate_mean": 0.9479166666666666,
+            "delta": -0.7520833333333333,
+            "ci95": [
+              -0.8740104166666666,
+              -0.6354166666666666
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "rocket_per_game": {
+            "baseline_mean": 0.571875,
+            "candidate_mean": 0.5520833333333334,
+            "delta": -0.019791666666666666,
+            "ci95": [
+              -0.08229166666666667,
+              0.039609374999999857
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "tornado_per_game": {
+            "baseline_mean": 1.1572916666666666,
+            "candidate_mean": 1.1552083333333334,
+            "delta": -0.0020833333333333333,
+            "ci95": [
+              -0.1,
+              0.10208333333333333
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "presses_froze_per_game": {
+            "baseline_mean": 1.1479166666666667,
+            "candidate_mean": 0.68125,
+            "delta": -0.4666666666666667,
+            "ci95": [
+              -0.5666666666666667,
+              -0.375
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "frozen_elixir_per_game": {
+            "baseline_mean": 7.923971875000001,
+            "candidate_mean": 5.039845833333334,
+            "delta": -2.884126041666667,
+            "ci95": [
+              -3.6903636718750006,
+              -2.1469867708333337
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          }
+        }
+      },
+      "pooled": {
+        "pairs": 1920,
+        "old_win_rate": 0.6604166666666667,
+        "new_win_rate": 0.6927083333333334,
+        "delta_pp": 3.2291666666666665,
+        "ci95_pp": [
+          0.7291666666666666,
+          5.677083333333333
+        ],
+        "method": "10000 paired bootstrap draws within census and learner side; draws count as non-wins",
+        "candidate_wins": 1330,
+        "win_ci95": [
+          67.17034917028433,
+          71.29435885475306
+        ],
+        "baseline_wins": 1268,
+        "baseline_win_ci95": [
+          63.89324672678749,
+          68.12602373729769
+        ]
+      }
+    },
+    "missing": [],
+    "standard_and_fresh_gain": false
+  },
+  {
+    "context": "cue_same_code",
+    "candidate": "cue_ab2",
+    "comparisons": {
+      "std": {
+        "pairs": 960,
+        "old_win_rate": 0.66875,
+        "new_win_rate": 0.715625,
+        "delta_pp": 4.6875,
+        "ci95_pp": [
+          1.1458333333333333,
+          8.229166666666666
+        ],
+        "method": "10000 paired bootstrap draws within census and learner side; draws count as non-wins",
+        "checkpoint_sha256": "fb777048e438a51ede685df20978195a3091ded7299c4d5fc93d022deea3ecd5",
+        "candidate_wins": 687,
+        "win_ci95": [
+          68.62730568327412,
+          74.32581655599421
+        ],
+        "baseline_wins": 642,
+        "baseline_win_ci95": [
+          63.83562338214447,
+          69.7798635877177
+        ],
+        "behaviour": {
+          "accepted_ability_presses_per_game": {
+            "baseline_mean": 1.7177083333333334,
+            "candidate_mean": 0.334375,
+            "delta": -1.3833333333333333,
+            "ci95": [
+              -1.4885416666666667,
+              -1.2833333333333334
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "rocket_per_game": {
+            "baseline_mean": 0.6125,
+            "candidate_mean": 0.559375,
+            "delta": -0.053125,
+            "ci95": [
+              -0.11669270833333334,
+              0.009375
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "tornado_per_game": {
+            "baseline_mean": 1.075,
+            "candidate_mean": 1.0791666666666666,
+            "delta": 0.004166666666666667,
+            "ci95": [
+              -0.09791666666666667,
+              0.10315104166666651
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "presses_froze_per_game": {
+            "baseline_mean": 1.171875,
+            "candidate_mean": 0.25729166666666664,
+            "delta": -0.9145833333333333,
+            "ci95": [
+              -0.9969010416666666,
+              -0.8374739583333335
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "frozen_elixir_per_game": {
+            "baseline_mean": 8.264858333333333,
+            "candidate_mean": 2.302151041666667,
+            "delta": -5.962707291666667,
+            "ci95": [
+              -6.673804140624999,
+              -5.30959015625
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          }
+        }
+      },
+      "fresh": {
+        "pairs": 960,
+        "old_win_rate": 0.6520833333333333,
+        "new_win_rate": 0.6729166666666667,
+        "delta_pp": 2.0833333333333335,
+        "ci95_pp": [
+          -1.356770833333331,
+          5.520833333333333
+        ],
+        "method": "10000 paired bootstrap draws within census and learner side; draws count as non-wins",
+        "checkpoint_sha256": "fb777048e438a51ede685df20978195a3091ded7299c4d5fc93d022deea3ecd5",
+        "candidate_wins": 646,
+        "win_ci95": [
+          64.26015181792248,
+          70.18534717588693
+        ],
+        "baseline_wins": 626,
+        "baseline_win_ci95": [
+          62.14010146540707,
+          68.15533740866626
+        ],
+        "behaviour": {
+          "accepted_ability_presses_per_game": {
+            "baseline_mean": 1.7,
+            "candidate_mean": 0.32916666666666666,
+            "delta": -1.3708333333333333,
+            "ci95": [
+              -1.4833333333333334,
+              -1.2614583333333333
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "rocket_per_game": {
+            "baseline_mean": 0.571875,
+            "candidate_mean": 0.5645833333333333,
+            "delta": -0.007291666666666667,
+            "ci95": [
+              -0.07291666666666667,
+              0.05416666666666667
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "tornado_per_game": {
+            "baseline_mean": 1.1572916666666666,
+            "candidate_mean": 1.1333333333333333,
+            "delta": -0.023958333333333335,
+            "ci95": [
+              -0.13127604166666668,
+              0.07502604166666652
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "presses_froze_per_game": {
+            "baseline_mean": 1.1479166666666667,
+            "candidate_mean": 0.25104166666666666,
+            "delta": -0.896875,
+            "ci95": [
+              -0.9823177083333333,
+              -0.8125
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "frozen_elixir_per_game": {
+            "baseline_mean": 7.923971875000001,
+            "candidate_mean": 2.1659729166666666,
+            "delta": -5.757998958333333,
+            "ci95": [
+              -6.4943957291666665,
+              -5.072008489583335
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          }
+        }
+      },
+      "pooled": {
+        "pairs": 1920,
+        "old_win_rate": 0.6604166666666667,
+        "new_win_rate": 0.6942708333333333,
+        "delta_pp": 3.3854166666666665,
+        "ci95_pp": [
+          0.9375,
+          5.833333333333333
+        ],
+        "method": "10000 paired bootstrap draws within census and learner side; draws count as non-wins",
+        "candidate_wins": 1333,
+        "win_ci95": [
+          67.32921102386418,
+          71.44737301218701
+        ],
+        "baseline_wins": 1268,
+        "baseline_win_ci95": [
+          63.89324672678749,
+          68.12602373729769
+        ]
+      }
+    },
+    "missing": [],
+    "standard_and_fresh_gain": false
+  },
+  {
+    "context": "c3_same_code",
+    "candidate": "c3_ab",
+    "comparisons": {},
+    "missing": [
+      "std",
+      "fresh"
+    ]
+  },
+  {
+    "context": "c3_same_code",
+    "candidate": "c3_ctl",
+    "comparisons": {
+      "std": {
+        "pairs": 960,
+        "old_win_rate": 0.66875,
+        "new_win_rate": 0.6802083333333333,
+        "delta_pp": 1.1458333333333333,
+        "ci95_pp": [
+          -2.3958333333333335,
+          4.6875
+        ],
+        "method": "10000 paired bootstrap draws within census and learner side; draws count as non-wins",
+        "checkpoint_sha256": "f405a478e191f906235f3402b8e91ace59e749ed4586277b8aba0c367471788c",
+        "candidate_wins": 653,
+        "win_ci95": [
+          65.00371364068634,
+          70.89430639503068
+        ],
+        "baseline_wins": 642,
+        "baseline_win_ci95": [
+          63.83562338214447,
+          69.7798635877177
+        ],
+        "behaviour": {
+          "accepted_ability_presses_per_game": {
+            "baseline_mean": 1.7177083333333334,
+            "candidate_mean": 1.6979166666666667,
+            "delta": -0.019791666666666666,
+            "ci95": [
+              -0.14166666666666666,
+              0.10104166666666667
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "rocket_per_game": {
+            "baseline_mean": 0.6125,
+            "candidate_mean": 0.5072916666666667,
+            "delta": -0.10520833333333333,
+            "ci95": [
+              -0.170859375,
+              -0.040625
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "tornado_per_game": {
+            "baseline_mean": 1.075,
+            "candidate_mean": 1.0385416666666667,
+            "delta": -0.036458333333333336,
+            "ci95": [
+              -0.136484375,
+              0.06981770833333319
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "presses_froze_per_game": {
+            "baseline_mean": 1.171875,
+            "candidate_mean": 1.1208333333333333,
+            "delta": -0.051041666666666666,
+            "ci95": [
+              -0.15315104166666668,
+              0.04583333333333333
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "frozen_elixir_per_game": {
+            "baseline_mean": 8.264858333333333,
+            "candidate_mean": 7.60230625,
+            "delta": -0.6625520833333333,
+            "ci95": [
+              -1.4580216666666665,
+              0.14600458333333258
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          }
+        }
+      },
+      "fresh": {
+        "pairs": 960,
+        "old_win_rate": 0.6520833333333333,
+        "new_win_rate": 0.66875,
+        "delta_pp": 1.6666666666666667,
+        "ci95_pp": [
+          -1.7708333333333333,
+          5.0
+        ],
+        "method": "10000 paired bootstrap draws within census and learner side; draws count as non-wins",
+        "checkpoint_sha256": "f405a478e191f906235f3402b8e91ace59e749ed4586277b8aba0c367471788c",
+        "candidate_wins": 642,
+        "win_ci95": [
+          63.83562338214447,
+          69.7798635877177
+        ],
+        "baseline_wins": 626,
+        "baseline_win_ci95": [
+          62.14010146540707,
+          68.15533740866626
+        ],
+        "behaviour": {
+          "accepted_ability_presses_per_game": {
+            "baseline_mean": 1.7,
+            "candidate_mean": 1.8104166666666666,
+            "delta": 0.11041666666666666,
+            "ci95": [
+              -0.013645833333333328,
+              0.2375
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "rocket_per_game": {
+            "baseline_mean": 0.571875,
+            "candidate_mean": 0.4864583333333333,
+            "delta": -0.08541666666666667,
+            "ci95": [
+              -0.14690104166666668,
+              -0.024973958333333476
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "tornado_per_game": {
+            "baseline_mean": 1.1572916666666666,
+            "candidate_mean": 1.1854166666666666,
+            "delta": 0.028125,
+            "ci95": [
+              -0.07291666666666667,
+              0.13020833333333334
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "presses_froze_per_game": {
+            "baseline_mean": 1.1479166666666667,
+            "candidate_mean": 1.209375,
+            "delta": 0.06145833333333333,
+            "ci95": [
+              -0.03963541666666666,
+              0.15835937499999986
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "frozen_elixir_per_game": {
+            "baseline_mean": 7.923971875000001,
+            "candidate_mean": 8.292688541666667,
+            "delta": 0.36871666666666664,
+            "ci95": [
+              -0.43580953124999994,
+              1.1402019010416662
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          }
+        }
+      },
+      "pooled": {
+        "pairs": 1920,
+        "old_win_rate": 0.6604166666666667,
+        "new_win_rate": 0.6744791666666666,
+        "delta_pp": 1.40625,
+        "ci95_pp": [
+          -1.0416666666666665,
+          3.802083333333333
+        ],
+        "method": "10000 paired bootstrap draws within census and learner side; draws count as non-wins",
+        "candidate_wins": 1295,
+        "win_ci95": [
+          65.31897819489949,
+          69.50717636831004
+        ],
+        "baseline_wins": 1268,
+        "baseline_win_ci95": [
+          63.89324672678749,
+          68.12602373729769
+        ]
+      }
+    },
+    "missing": [],
+    "standard_and_fresh_gain": false
+  },
+  {
+    "context": "combo_off",
+    "candidate": "combo_ctl_c3",
+    "comparisons": {
+      "std": {
+        "pairs": 960,
+        "old_win_rate": 0.66875,
+        "new_win_rate": 0.65,
+        "delta_pp": -1.875,
+        "ci95_pp": [
+          -5.520833333333333,
+          1.6666666666666667
+        ],
+        "method": "10000 paired bootstrap draws within census and learner side; draws count as non-wins",
+        "checkpoint_sha256": "0da2b241303d00bada2510cbea2f5745e3413afddcd1eab7a1d10ccfd2bb05af",
+        "candidate_wins": 624,
+        "win_ci95": [
+          61.928448063591766,
+          67.95198479850795
+        ],
+        "baseline_wins": 642,
+        "baseline_win_ci95": [
+          63.83562338214447,
+          69.7798635877177
+        ],
+        "behaviour": {
+          "accepted_ability_presses_per_game": {
+            "baseline_mean": 1.7177083333333334,
+            "candidate_mean": 1.6208333333333333,
+            "delta": -0.096875,
+            "ci95": [
+              -0.21458333333333332,
+              0.021875
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "rocket_per_game": {
+            "baseline_mean": 0.6125,
+            "candidate_mean": 0.503125,
+            "delta": -0.109375,
+            "ci95": [
+              -0.178125,
+              -0.04164062500000014
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "tornado_per_game": {
+            "baseline_mean": 1.075,
+            "candidate_mean": 1.084375,
+            "delta": 0.009375,
+            "ci95": [
+              -0.08440104166666668,
+              0.10625
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          }
+        }
+      },
+      "fresh": {
+        "pairs": 960,
+        "old_win_rate": 0.6520833333333333,
+        "new_win_rate": 0.6447916666666667,
+        "delta_pp": -0.7291666666666666,
+        "ci95_pp": [
+          -4.0625,
+          2.604166666666667
+        ],
+        "method": "10000 paired bootstrap draws within census and learner side; draws count as non-wins",
+        "checkpoint_sha256": "0da2b241303d00bada2510cbea2f5745e3413afddcd1eab7a1d10ccfd2bb05af",
+        "candidate_wins": 619,
+        "win_ci95": [
+          61.399588931425534,
+          67.44332890074017
+        ],
+        "baseline_wins": 626,
+        "baseline_win_ci95": [
+          62.14010146540707,
+          68.15533740866626
+        ],
+        "behaviour": {
+          "accepted_ability_presses_per_game": {
+            "baseline_mean": 1.7,
+            "candidate_mean": 1.6104166666666666,
+            "delta": -0.08958333333333333,
+            "ci95": [
+              -0.20520833333333333,
+              0.025026041666666526
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "rocket_per_game": {
+            "baseline_mean": 0.571875,
+            "candidate_mean": 0.5041666666666667,
+            "delta": -0.06770833333333333,
+            "ci95": [
+              -0.13125,
+              -0.009375
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "tornado_per_game": {
+            "baseline_mean": 1.1572916666666666,
+            "candidate_mean": 1.0916666666666666,
+            "delta": -0.065625,
+            "ci95": [
+              -0.17083333333333334,
+              0.030208333333333334
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          }
+        }
+      },
+      "pooled": {
+        "pairs": 1920,
+        "old_win_rate": 0.6604166666666667,
+        "new_win_rate": 0.6473958333333333,
+        "delta_pp": -1.3020833333333333,
+        "ci95_pp": [
+          -3.75,
+          1.1979166666666667
+        ],
+        "method": "10000 paired bootstrap draws within census and learner side; draws count as non-wins",
+        "candidate_wins": 1243,
+        "win_ci95": [
+          62.574977306829716,
+          66.84532639880698
+        ],
+        "baseline_wins": 1268,
+        "baseline_win_ci95": [
+          63.89324672678749,
+          68.12602373729769
+        ]
+      }
+    },
+    "missing": [],
+    "standard_and_fresh_gain": false
+  },
+  {
+    "context": "combo_off",
+    "candidate": "combo_rew_c3",
+    "comparisons": {
+      "std": {
+        "pairs": 960,
+        "old_win_rate": 0.66875,
+        "new_win_rate": 0.6635416666666667,
+        "delta_pp": -0.5208333333333334,
+        "ci95_pp": [
+          -4.0625,
+          2.9192708333332957
+        ],
+        "method": "10000 paired bootstrap draws within census and learner side; draws count as non-wins",
+        "checkpoint_sha256": "850a86631972696eed039789b39e7a4b1ed06ad27151ba02e03c74e187910207",
+        "candidate_wins": 637,
+        "win_ci95": [
+          63.305330375855405,
+          69.27264156407277
+        ],
+        "baseline_wins": 642,
+        "baseline_win_ci95": [
+          63.83562338214447,
+          69.7798635877177
+        ],
+        "behaviour": {
+          "accepted_ability_presses_per_game": {
+            "baseline_mean": 1.7177083333333334,
+            "candidate_mean": 1.7520833333333334,
+            "delta": 0.034375,
+            "ci95": [
+              -0.08854166666666667,
+              0.14377604166666652
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "rocket_per_game": {
+            "baseline_mean": 0.6125,
+            "candidate_mean": 0.5989583333333334,
+            "delta": -0.013541666666666667,
+            "ci95": [
+              -0.07919270833333333,
+              0.05210937499999986
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "tornado_per_game": {
+            "baseline_mean": 1.075,
+            "candidate_mean": 0.825,
+            "delta": -0.25,
+            "ci95": [
+              -0.33752604166666667,
+              -0.16039062500000015
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          }
+        }
+      },
+      "fresh": {
+        "pairs": 960,
+        "old_win_rate": 0.6520833333333333,
+        "new_win_rate": 0.6385416666666667,
+        "delta_pp": -1.3541666666666667,
+        "ci95_pp": [
+          -4.791666666666667,
+          2.083333333333333
+        ],
+        "method": "10000 paired bootstrap draws within census and learner side; draws count as non-wins",
+        "checkpoint_sha256": "850a86631972696eed039789b39e7a4b1ed06ad27151ba02e03c74e187910207",
+        "candidate_wins": 613,
+        "win_ci95": [
+          60.76547091588457,
+          66.83242888036031
+        ],
+        "baseline_wins": 626,
+        "baseline_win_ci95": [
+          62.14010146540707,
+          68.15533740866626
+        ],
+        "behaviour": {
+          "accepted_ability_presses_per_game": {
+            "baseline_mean": 1.7,
+            "candidate_mean": 1.7645833333333334,
+            "delta": 0.06458333333333334,
+            "ci95": [
+              -0.056276041666666665,
+              0.190625
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "rocket_per_game": {
+            "baseline_mean": 0.571875,
+            "candidate_mean": 0.5541666666666667,
+            "delta": -0.017708333333333333,
+            "ci95": [
+              -0.07916666666666666,
+              0.042708333333333334
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "tornado_per_game": {
+            "baseline_mean": 1.1572916666666666,
+            "candidate_mean": 0.915625,
+            "delta": -0.24166666666666667,
+            "ci95": [
+              -0.33229166666666665,
+              -0.15104166666666666
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          }
+        }
+      },
+      "pooled": {
+        "pairs": 1920,
+        "old_win_rate": 0.6604166666666667,
+        "new_win_rate": 0.6510416666666666,
+        "delta_pp": -0.9375,
+        "ci95_pp": [
+          -3.3333333333333335,
+          1.5104166666666667
+        ],
+        "method": "10000 paired bootstrap draws within census and learner side; draws count as non-wins",
+        "candidate_wins": 1250,
+        "win_ci95": [
+          62.94391615475956,
+          67.20409824324271
+        ],
+        "baseline_wins": 1268,
+        "baseline_win_ci95": [
+          63.89324672678749,
+          68.12602373729769
+        ]
+      }
+    },
+    "missing": [],
+    "standard_and_fresh_gain": false
+  },
+  {
+    "context": "combo_offc",
+    "candidate": "combo_ctl_c3",
+    "comparisons": {
+      "std": {
+        "pairs": 960,
+        "old_win_rate": 0.6697916666666667,
+        "new_win_rate": 0.6510416666666666,
+        "delta_pp": -1.875,
+        "ci95_pp": [
+          -5.520833333333333,
+          1.6666666666666667
+        ],
+        "method": "10000 paired bootstrap draws within census and learner side; draws count as non-wins",
+        "checkpoint_sha256": "0da2b241303d00bada2510cbea2f5745e3413afddcd1eab7a1d10ccfd2bb05af",
+        "candidate_wins": 625,
+        "win_ci95": [
+          62.03426689322535,
+          68.05366897486115
+        ],
+        "baseline_wins": 643,
+        "baseline_win_ci95": [
+          63.9417308722944,
+          69.88125910355458
+        ],
+        "behaviour": {
+          "accepted_ability_presses_per_game": {
+            "baseline_mean": 1.6989583333333333,
+            "candidate_mean": 1.6270833333333334,
+            "delta": -0.071875,
+            "ci95": [
+              -0.18856770833333333,
+              0.04791666666666667
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "rocket_per_game": {
+            "baseline_mean": 0.6822916666666666,
+            "candidate_mean": 0.54375,
+            "delta": -0.13854166666666667,
+            "ci95": [
+              -0.20729166666666668,
+              -0.06979166666666667
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "tornado_per_game": {
+            "baseline_mean": 1.125,
+            "candidate_mean": 1.1291666666666667,
+            "delta": 0.004166666666666667,
+            "ci95": [
+              -0.08544270833333334,
+              0.10002604166666652
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          }
+        }
+      },
+      "fresh": {
+        "pairs": 960,
+        "old_win_rate": 0.65,
+        "new_win_rate": 0.6416666666666667,
+        "delta_pp": -0.8333333333333334,
+        "ci95_pp": [
+          -4.270833333333333,
+          2.5
+        ],
+        "method": "10000 paired bootstrap draws within census and learner side; draws count as non-wins",
+        "checkpoint_sha256": "0da2b241303d00bada2510cbea2f5745e3413afddcd1eab7a1d10ccfd2bb05af",
+        "candidate_wins": 616,
+        "win_ci95": [
+          61.08246034020702,
+          67.13794847399826
+        ],
+        "baseline_wins": 624,
+        "baseline_win_ci95": [
+          61.928448063591766,
+          67.95198479850795
+        ],
+        "behaviour": {
+          "accepted_ability_presses_per_game": {
+            "baseline_mean": 1.6791666666666667,
+            "candidate_mean": 1.6208333333333333,
+            "delta": -0.058333333333333334,
+            "ci95": [
+              -0.17606770833333335,
+              0.05940104166666652
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "rocket_per_game": {
+            "baseline_mean": 0.6375,
+            "candidate_mean": 0.5541666666666667,
+            "delta": -0.08333333333333333,
+            "ci95": [
+              -0.14794270833333334,
+              -0.019791666666666666
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "tornado_per_game": {
+            "baseline_mean": 1.2354166666666666,
+            "candidate_mean": 1.15,
+            "delta": -0.08541666666666667,
+            "ci95": [
+              -0.189609375,
+              0.013541666666666667
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          }
+        }
+      },
+      "pooled": {
+        "pairs": 1920,
+        "old_win_rate": 0.6598958333333333,
+        "new_win_rate": 0.6463541666666667,
+        "delta_pp": -1.3541666666666667,
+        "ci95_pp": [
+          -3.802083333333333,
+          1.1458333333333333
+        ],
+        "method": "10000 paired bootstrap draws within census and learner side; draws count as non-wins",
+        "candidate_wins": 1241,
+        "win_ci95": [
+          62.46959119942957,
+          66.74279516553126
+        ],
+        "baseline_wins": 1267,
+        "baseline_win_ci95": [
+          63.840482109776076,
+          68.07482968397117
+        ]
+      }
+    },
+    "missing": [],
+    "standard_and_fresh_gain": false
+  },
+  {
+    "context": "combo_offc",
+    "candidate": "combo_rew_c3",
+    "comparisons": {
+      "std": {
+        "pairs": 960,
+        "old_win_rate": 0.6697916666666667,
+        "new_win_rate": 0.6625,
+        "delta_pp": -0.7291666666666666,
+        "ci95_pp": [
+          -4.270833333333333,
+          2.7083333333333335
+        ],
+        "method": "10000 paired bootstrap draws within census and learner side; draws count as non-wins",
+        "checkpoint_sha256": "850a86631972696eed039789b39e7a4b1ed06ad27151ba02e03c74e187910207",
+        "candidate_wins": 636,
+        "win_ci95": [
+          63.199320399068014,
+          69.17114853487334
+        ],
+        "baseline_wins": 643,
+        "baseline_win_ci95": [
+          63.9417308722944,
+          69.88125910355458
+        ],
+        "behaviour": {
+          "accepted_ability_presses_per_game": {
+            "baseline_mean": 1.6989583333333333,
+            "candidate_mean": 1.7208333333333334,
+            "delta": 0.021875,
+            "ci95": [
+              -0.09067708333333332,
+              0.13645833333333332
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "rocket_per_game": {
+            "baseline_mean": 0.6822916666666666,
+            "candidate_mean": 0.7322916666666667,
+            "delta": 0.05,
+            "ci95": [
+              -0.01875,
+              0.121875
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "tornado_per_game": {
+            "baseline_mean": 1.125,
+            "candidate_mean": 0.9520833333333333,
+            "delta": -0.17291666666666666,
+            "ci95": [
+              -0.26666666666666666,
+              -0.07705729166666682
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          }
+        }
+      },
+      "fresh": {
+        "pairs": 960,
+        "old_win_rate": 0.65,
+        "new_win_rate": 0.6354166666666666,
+        "delta_pp": -1.4583333333333333,
+        "ci95_pp": [
+          -4.895833333333333,
+          2.083333333333333
+        ],
+        "method": "10000 paired bootstrap draws within census and learner side; draws count as non-wins",
+        "checkpoint_sha256": "850a86631972696eed039789b39e7a4b1ed06ad27151ba02e03c74e187910207",
+        "candidate_wins": 610,
+        "win_ci95": [
+          60.448619870609576,
+          66.52677090767489
+        ],
+        "baseline_wins": 624,
+        "baseline_win_ci95": [
+          61.928448063591766,
+          67.95198479850795
+        ],
+        "behaviour": {
+          "accepted_ability_presses_per_game": {
+            "baseline_mean": 1.6791666666666667,
+            "candidate_mean": 1.7416666666666667,
+            "delta": 0.0625,
+            "ci95": [
+              -0.06979166666666667,
+              0.1854427083333332
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "rocket_per_game": {
+            "baseline_mean": 0.6375,
+            "candidate_mean": 0.6885416666666667,
+            "delta": 0.051041666666666666,
+            "ci95": [
+              -0.014609374999999999,
+              0.11875
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          },
+          "tornado_per_game": {
+            "baseline_mean": 1.2354166666666666,
+            "candidate_mean": 1.0479166666666666,
+            "delta": -0.1875,
+            "ci95": [
+              -0.2823177083333333,
+              -0.08958333333333333
+            ],
+            "method": "2000 paired bootstrap draws within census and learner side"
+          }
+        }
+      },
+      "pooled": {
+        "pairs": 1920,
+        "old_win_rate": 0.6598958333333333,
+        "new_win_rate": 0.6489583333333333,
+        "delta_pp": -1.09375,
+        "ci95_pp": [
+          -3.4375000000000004,
+          1.3541666666666667
+        ],
+        "method": "10000 paired bootstrap draws within census and learner side; draws count as non-wins",
+        "candidate_wins": 1246,
+        "win_ci95": [
+          62.73307726640333,
+          66.9991024502472
+        ],
+        "baseline_wins": 1267,
+        "baseline_win_ci95": [
+          63.840482109776076,
+          68.07482968397117
+        ]
+      }
+    },
+    "missing": [],
+    "standard_and_fresh_gain": false
+  }
+]

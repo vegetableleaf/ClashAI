@@ -1,0 +1,1532 @@
+[
+  {
+    "port": 19899,
+    "arm": "v7c_hr",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 16506,
+      "matches": 492,
+      "agree_unperturbed": 0.921,
+      "agree": 0.919,
+      "agree_ci": [
+        0.914,
+        0.924
+      ],
+      "ceiling": 0.976,
+      "normalised": 0.942,
+      "normalised_ci": [
+        0.937,
+        0.946
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.87,
+      "body_miss": 0.053,
+      "body_miss_ceiling": 0.013,
+      "tower_fail": 0.014,
+      "tower_fail_ceiling": 0.005
+    }
+  },
+  {
+    "port": 19899,
+    "arm": "v7c_snap",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 16509,
+      "matches": 492,
+      "agree_unperturbed": 0.922,
+      "agree": 0.919,
+      "agree_ci": [
+        0.914,
+        0.925
+      ],
+      "ceiling": 0.976,
+      "normalised": 0.942,
+      "normalised_ci": [
+        0.937,
+        0.947
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.87,
+      "body_miss": 0.052,
+      "body_miss_ceiling": 0.013,
+      "tower_fail": 0.014,
+      "tower_fail_ceiling": 0.005
+    }
+  },
+  {
+    "port": 19899,
+    "arm": "FIN12",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 16506,
+      "matches": 492,
+      "agree_unperturbed": 0.921,
+      "agree": 0.919,
+      "agree_ci": [
+        0.913,
+        0.924
+      ],
+      "ceiling": 0.976,
+      "normalised": 0.941,
+      "normalised_ci": [
+        0.936,
+        0.946
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.87,
+      "body_miss": 0.053,
+      "body_miss_ceiling": 0.013,
+      "tower_fail": 0.014,
+      "tower_fail_ceiling": 0.005
+    }
+  },
+  {
+    "port": 19899,
+    "arm": "r7a_J_st",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 8862,
+      "matches": 265,
+      "agree_unperturbed": 0.928,
+      "agree": 0.927,
+      "agree_ci": [
+        0.919,
+        0.934
+      ],
+      "ceiling": 0.992,
+      "normalised": 0.935,
+      "normalised_ci": [
+        0.928,
+        0.942
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.881,
+      "body_miss": 0.047,
+      "body_miss_ceiling": 0.004,
+      "tower_fail": 0.014,
+      "tower_fail_ceiling": 0.002
+    }
+  },
+  {
+    "port": 19899,
+    "arm": "r7a_P2_oth",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 7647,
+      "matches": 227,
+      "agree_unperturbed": 0.917,
+      "agree": 0.913,
+      "agree_ci": [
+        0.905,
+        0.922
+      ],
+      "ceiling": 0.958,
+      "normalised": 0.954,
+      "normalised_ci": [
+        0.947,
+        0.96
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.869,
+      "body_miss": 0.054,
+      "body_miss_ceiling": 0.024,
+      "tower_fail": 0.015,
+      "tower_fail_ceiling": 0.008
+    }
+  },
+  {
+    "port": 19899,
+    "arm": "r7a_P2_st",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 8861,
+      "matches": 265,
+      "agree_unperturbed": 0.928,
+      "agree": 0.927,
+      "agree_ci": [
+        0.919,
+        0.934
+      ],
+      "ceiling": 0.992,
+      "normalised": 0.934,
+      "normalised_ci": [
+        0.927,
+        0.941
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.881,
+      "body_miss": 0.047,
+      "body_miss_ceiling": 0.004,
+      "tower_fail": 0.014,
+      "tower_fail_ceiling": 0.002
+    }
+  },
+  {
+    "port": 19899,
+    "arm": "r7a_S2_oth",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 6471,
+      "matches": 187,
+      "agree_unperturbed": 0.91,
+      "agree": 0.907,
+      "agree_ci": [
+        0.899,
+        0.915
+      ],
+      "ceiling": 0.957,
+      "normalised": 0.948,
+      "normalised_ci": [
+        0.94,
+        0.954
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.862,
+      "body_miss": 0.059,
+      "body_miss_ceiling": 0.024,
+      "tower_fail": 0.015,
+      "tower_fail_ceiling": 0.008
+    }
+  },
+  {
+    "port": 19899,
+    "arm": "r7a_S2_st",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 7435,
+      "matches": 211,
+      "agree_unperturbed": 0.923,
+      "agree": 0.923,
+      "agree_ci": [
+        0.915,
+        0.931
+      ],
+      "ceiling": 0.991,
+      "normalised": 0.932,
+      "normalised_ci": [
+        0.924,
+        0.939
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.872,
+      "body_miss": 0.051,
+      "body_miss_ceiling": 0.005,
+      "tower_fail": 0.014,
+      "tower_fail_ceiling": 0.002
+    }
+  },
+  {
+    "port": 19899,
+    "arm": "r7b_hr",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 16506,
+      "matches": 492,
+      "agree_unperturbed": 0.921,
+      "agree": 0.919,
+      "agree_ci": [
+        0.914,
+        0.924
+      ],
+      "ceiling": 0.976,
+      "normalised": 0.942,
+      "normalised_ci": [
+        0.937,
+        0.946
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.87,
+      "body_miss": 0.053,
+      "body_miss_ceiling": 0.013,
+      "tower_fail": 0.014,
+      "tower_fail_ceiling": 0.005
+    }
+  },
+  {
+    "port": 19899,
+    "arm": "r7b_hr_stamped",
+    "cohort": "stamped",
+    "overall": {
+      "card": "OVERALL",
+      "n": 8858,
+      "matches": 265,
+      "agree_unperturbed": 0.926,
+      "agree": 0.925,
+      "agree_ci": [
+        0.918,
+        0.932
+      ],
+      "ceiling": 0.991,
+      "normalised": 0.934,
+      "normalised_ci": [
+        0.926,
+        0.94
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.876,
+      "body_miss": 0.05,
+      "body_miss_ceiling": 0.004,
+      "tower_fail": 0.013,
+      "tower_fail_ceiling": 0.002
+    }
+  },
+  {
+    "port": 19899,
+    "arm": "r7b_pd",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 16522,
+      "matches": 492,
+      "agree_unperturbed": 0.921,
+      "agree": 0.92,
+      "agree_ci": [
+        0.914,
+        0.925
+      ],
+      "ceiling": 0.977,
+      "normalised": 0.942,
+      "normalised_ci": [
+        0.937,
+        0.947
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.872,
+      "body_miss": 0.052,
+      "body_miss_ceiling": 0.013,
+      "tower_fail": 0.014,
+      "tower_fail_ceiling": 0.005
+    }
+  },
+  {
+    "port": 19899,
+    "arm": "r7b_pd5",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 16518,
+      "matches": 492,
+      "agree_unperturbed": 0.921,
+      "agree": 0.919,
+      "agree_ci": [
+        0.913,
+        0.924
+      ],
+      "ceiling": 0.977,
+      "normalised": 0.941,
+      "normalised_ci": [
+        0.936,
+        0.946
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.871,
+      "body_miss": 0.053,
+      "body_miss_ceiling": 0.013,
+      "tower_fail": 0.014,
+      "tower_fail_ceiling": 0.005
+    }
+  },
+  {
+    "port": 19899,
+    "arm": "r7b_pd5_stamped",
+    "cohort": "stamped",
+    "overall": {
+      "card": "OVERALL",
+      "n": 8856,
+      "matches": 265,
+      "agree_unperturbed": 0.927,
+      "agree": 0.926,
+      "agree_ci": [
+        0.918,
+        0.933
+      ],
+      "ceiling": 0.992,
+      "normalised": 0.933,
+      "normalised_ci": [
+        0.926,
+        0.94
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.878,
+      "body_miss": 0.049,
+      "body_miss_ceiling": 0.004,
+      "tower_fail": 0.013,
+      "tower_fail_ceiling": 0.002
+    }
+  },
+  {
+    "port": 19899,
+    "arm": "r7b_pd_stamped",
+    "cohort": "stamped",
+    "overall": {
+      "card": "OVERALL",
+      "n": 8858,
+      "matches": 265,
+      "agree_unperturbed": 0.928,
+      "agree": 0.926,
+      "agree_ci": [
+        0.919,
+        0.934
+      ],
+      "ceiling": 0.992,
+      "normalised": 0.934,
+      "normalised_ci": [
+        0.926,
+        0.941
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.878,
+      "body_miss": 0.049,
+      "body_miss_ceiling": 0.004,
+      "tower_fail": 0.013,
+      "tower_fail_ceiling": 0.002
+    }
+  },
+  {
+    "port": 19899,
+    "arm": "v7_r7b_null",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 558,
+      "matches": 10,
+      "agree_unperturbed": 0.891,
+      "agree": 0.884,
+      "agree_ci": [
+        0.857,
+        0.917
+      ],
+      "ceiling": 0.978,
+      "normalised": 0.904,
+      "normalised_ci": [
+        0.877,
+        0.935
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor missed)",
+      "whole_fight_outcome": 0.821,
+      "body_miss": 0.072,
+      "body_miss_ceiling": 0.014,
+      "tower_fail": 0.014,
+      "tower_fail_ceiling": 0.004
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "v7_r7c_ht_stamped",
+    "cohort": "stamped",
+    "overall": {
+      "card": "OVERALL",
+      "n": 8858,
+      "matches": 265,
+      "agree_unperturbed": 0.927,
+      "agree": 0.925,
+      "agree_ci": [
+        0.918,
+        0.933
+      ],
+      "ceiling": 0.991,
+      "normalised": 0.934,
+      "normalised_ci": [
+        0.926,
+        0.941
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.877,
+      "body_miss": 0.05,
+      "body_miss_ceiling": 0.005,
+      "tower_fail": 0.014,
+      "tower_fail_ceiling": 0.002
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "v7_r7d_cube_arm",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 11638,
+      "matches": 333,
+      "agree_unperturbed": 0.918,
+      "agree": 0.916,
+      "agree_ci": [
+        0.909,
+        0.923
+      ],
+      "ceiling": 0.976,
+      "normalised": 0.938,
+      "normalised_ci": [
+        0.932,
+        0.945
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.872,
+      "body_miss": 0.051,
+      "body_miss_ceiling": 0.013,
+      "tower_fail": 0.013,
+      "tower_fail_ceiling": 0.005
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "v7_r7d_joint",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 12432,
+      "matches": 353,
+      "agree_unperturbed": 0.92,
+      "agree": 0.918,
+      "agree_ci": [
+        0.912,
+        0.925
+      ],
+      "ceiling": 0.977,
+      "normalised": 0.94,
+      "normalised_ci": [
+        0.935,
+        0.946
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.873,
+      "body_miss": 0.05,
+      "body_miss_ceiling": 0.013,
+      "tower_fail": 0.013,
+      "tower_fail_ceiling": 0.005
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "v7_r7c_ht",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 16506,
+      "matches": 492,
+      "agree_unperturbed": 0.921,
+      "agree": 0.919,
+      "agree_ci": [
+        0.914,
+        0.924
+      ],
+      "ceiling": 0.976,
+      "normalised": 0.942,
+      "normalised_ci": [
+        0.937,
+        0.946
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.871,
+      "body_miss": 0.053,
+      "body_miss_ceiling": 0.013,
+      "tower_fail": 0.014,
+      "tower_fail_ceiling": 0.005
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7c_fixaim",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 4230,
+      "matches": 110,
+      "agree_unperturbed": 0.925,
+      "agree": 0.918,
+      "agree_ci": [
+        0.908,
+        0.927
+      ],
+      "ceiling": 0.973,
+      "normalised": 0.943,
+      "normalised_ci": [
+        0.935,
+        0.952
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.855,
+      "body_miss": 0.063,
+      "body_miss_ceiling": 0.016,
+      "tower_fail": 0.017,
+      "tower_fail_ceiling": 0.005
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7c_fixaim2",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 4231,
+      "matches": 110,
+      "agree_unperturbed": 0.927,
+      "agree": 0.92,
+      "agree_ci": [
+        0.91,
+        0.929
+      ],
+      "ceiling": 0.973,
+      "normalised": 0.945,
+      "normalised_ci": [
+        0.937,
+        0.954
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.863,
+      "body_miss": 0.061,
+      "body_miss_ceiling": 0.016,
+      "tower_fail": 0.017,
+      "tower_fail_ceiling": 0.005
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7c_ht",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 16506,
+      "matches": 492,
+      "agree_unperturbed": 0.921,
+      "agree": 0.919,
+      "agree_ci": [
+        0.914,
+        0.924
+      ],
+      "ceiling": 0.976,
+      "normalised": 0.942,
+      "normalised_ci": [
+        0.937,
+        0.946
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.871,
+      "body_miss": 0.053,
+      "body_miss_ceiling": 0.013,
+      "tower_fail": 0.014,
+      "tower_fail_ceiling": 0.005
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7c_joint",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 16507,
+      "matches": 492,
+      "agree_unperturbed": 0.922,
+      "agree": 0.92,
+      "agree_ci": [
+        0.914,
+        0.925
+      ],
+      "ceiling": 0.976,
+      "normalised": 0.942,
+      "normalised_ci": [
+        0.938,
+        0.947
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.873,
+      "body_miss": 0.052,
+      "body_miss_ceiling": 0.013,
+      "tower_fail": 0.014,
+      "tower_fail_ceiling": 0.005
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7c_pulse",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 590,
+      "matches": 19,
+      "agree_unperturbed": 0.903,
+      "agree": 0.915,
+      "agree_ci": [
+        0.883,
+        0.94
+      ],
+      "ceiling": 0.98,
+      "normalised": 0.933,
+      "normalised_ci": [
+        0.907,
+        0.956
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor missed)",
+      "whole_fight_outcome": 0.866,
+      "body_miss": 0.114,
+      "body_miss_ceiling": 0.009,
+      "tower_fail": 0.031,
+      "tower_fail_ceiling": 0.005
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7d_cube2_st0",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 2960,
+      "matches": 89,
+      "agree_unperturbed": 0.929,
+      "agree": 0.927,
+      "agree_ci": [
+        0.914,
+        0.939
+      ],
+      "ceiling": 0.992,
+      "normalised": 0.934,
+      "normalised_ci": [
+        0.922,
+        0.946
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.896,
+      "body_miss": 0.051,
+      "body_miss_ceiling": 0.005,
+      "tower_fail": 0.011,
+      "tower_fail_ceiling": 0.001
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7d_cube2_st1",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 3005,
+      "matches": 89,
+      "agree_unperturbed": 0.93,
+      "agree": 0.93,
+      "agree_ci": [
+        0.917,
+        0.942
+      ],
+      "ceiling": 0.993,
+      "normalised": 0.936,
+      "normalised_ci": [
+        0.924,
+        0.948
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.869,
+      "body_miss": 0.042,
+      "body_miss_ceiling": 0.004,
+      "tower_fail": 0.013,
+      "tower_fail_ceiling": 0.002
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7d_cube2_st20",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 647,
+      "matches": 22,
+      "agree_unperturbed": 0.93,
+      "agree": 0.931,
+      "agree_ci": [
+        0.902,
+        0.957
+      ],
+      "ceiling": 0.991,
+      "normalised": 0.939,
+      "normalised_ci": [
+        0.913,
+        0.963
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor missed)",
+      "whole_fight_outcome": 0.89,
+      "body_miss": 0.056,
+      "body_miss_ceiling": 0.004,
+      "tower_fail": 0.019,
+      "tower_fail_ceiling": 0.002
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7d_cube2_st21",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 877,
+      "matches": 22,
+      "agree_unperturbed": 0.92,
+      "agree": 0.917,
+      "agree_ci": [
+        0.894,
+        0.937
+      ],
+      "ceiling": 0.991,
+      "normalised": 0.926,
+      "normalised_ci": [
+        0.902,
+        0.947
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor missed)",
+      "whole_fight_outcome": 0.842,
+      "body_miss": 0.059,
+      "body_miss_ceiling": 0.005,
+      "tower_fail": 0.016,
+      "tower_fail_ceiling": 0.002
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7d_cube2_st22",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 666,
+      "matches": 21,
+      "agree_unperturbed": 0.914,
+      "agree": 0.912,
+      "agree_ci": [
+        0.884,
+        0.942
+      ],
+      "ceiling": 0.995,
+      "normalised": 0.917,
+      "normalised_ci": [
+        0.889,
+        0.947
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor missed)",
+      "whole_fight_outcome": 0.86,
+      "body_miss": 0.047,
+      "body_miss_ceiling": 0.002,
+      "tower_fail": 0.014,
+      "tower_fail_ceiling": 0.002
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7d_cube_st0",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 2960,
+      "matches": 89,
+      "agree_unperturbed": 0.929,
+      "agree": 0.927,
+      "agree_ci": [
+        0.915,
+        0.939
+      ],
+      "ceiling": 0.991,
+      "normalised": 0.935,
+      "normalised_ci": [
+        0.924,
+        0.947
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.895,
+      "body_miss": 0.051,
+      "body_miss_ceiling": 0.005,
+      "tower_fail": 0.011,
+      "tower_fail_ceiling": 0.001
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7d_cube_st1",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 3007,
+      "matches": 89,
+      "agree_unperturbed": 0.929,
+      "agree": 0.929,
+      "agree_ci": [
+        0.915,
+        0.941
+      ],
+      "ceiling": 0.991,
+      "normalised": 0.937,
+      "normalised_ci": [
+        0.925,
+        0.948
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.87,
+      "body_miss": 0.042,
+      "body_miss_ceiling": 0.005,
+      "tower_fail": 0.013,
+      "tower_fail_ceiling": 0.003
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7d_cube_st2",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 2891,
+      "matches": 87,
+      "agree_unperturbed": 0.923,
+      "agree": 0.922,
+      "agree_ci": [
+        0.908,
+        0.933
+      ],
+      "ceiling": 0.99,
+      "normalised": 0.931,
+      "normalised_ci": [
+        0.918,
+        0.943
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor missed)",
+      "whole_fight_outcome": 0.87,
+      "body_miss": 0.054,
+      "body_miss_ceiling": 0.006,
+      "tower_fail": 0.016,
+      "tower_fail_ceiling": 0.002
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7d_cube_un0",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 2473,
+      "matches": 76,
+      "agree_unperturbed": 0.918,
+      "agree": 0.916,
+      "agree_ci": [
+        0.904,
+        0.929
+      ],
+      "ceiling": 0.956,
+      "normalised": 0.959,
+      "normalised_ci": [
+        0.949,
+        0.968
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.864,
+      "body_miss": 0.047,
+      "body_miss_ceiling": 0.024,
+      "tower_fail": 0.019,
+      "tower_fail_ceiling": 0.011
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7d_cube_un1",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 2732,
+      "matches": 76,
+      "agree_unperturbed": 0.915,
+      "agree": 0.916,
+      "agree_ci": [
+        0.904,
+        0.929
+      ],
+      "ceiling": 0.962,
+      "normalised": 0.952,
+      "normalised_ci": [
+        0.941,
+        0.963
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.872,
+      "body_miss": 0.054,
+      "body_miss_ceiling": 0.023,
+      "tower_fail": 0.008,
+      "tower_fail_ceiling": 0.006
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7d_cube_un2",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 2448,
+      "matches": 75,
+      "agree_unperturbed": 0.911,
+      "agree": 0.904,
+      "agree_ci": [
+        0.888,
+        0.919
+      ],
+      "ceiling": 0.958,
+      "normalised": 0.944,
+      "normalised_ci": [
+        0.93,
+        0.956
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.853,
+      "body_miss": 0.067,
+      "body_miss_ceiling": 0.023,
+      "tower_fail": 0.018,
+      "tower_fail_ceiling": 0.008
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7d_ewc",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 2813,
+      "matches": 85,
+      "agree_unperturbed": 0.898,
+      "agree": 0.897,
+      "agree_ci": [
+        0.882,
+        0.912
+      ],
+      "ceiling": 0.969,
+      "normalised": 0.926,
+      "normalised_ci": [
+        0.912,
+        0.939
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor missed)",
+      "whole_fight_outcome": 0.873,
+      "body_miss": 0.057,
+      "body_miss_ceiling": 0.015,
+      "tower_fail": 0.012,
+      "tower_fail_ceiling": 0.005
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7d_joint_st0",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 2960,
+      "matches": 89,
+      "agree_unperturbed": 0.929,
+      "agree": 0.927,
+      "agree_ci": [
+        0.914,
+        0.939
+      ],
+      "ceiling": 0.992,
+      "normalised": 0.934,
+      "normalised_ci": [
+        0.922,
+        0.946
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.896,
+      "body_miss": 0.051,
+      "body_miss_ceiling": 0.005,
+      "tower_fail": 0.011,
+      "tower_fail_ceiling": 0.001
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7d_joint_st1",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 3005,
+      "matches": 89,
+      "agree_unperturbed": 0.931,
+      "agree": 0.93,
+      "agree_ci": [
+        0.917,
+        0.942
+      ],
+      "ceiling": 0.993,
+      "normalised": 0.937,
+      "normalised_ci": [
+        0.924,
+        0.948
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.87,
+      "body_miss": 0.041,
+      "body_miss_ceiling": 0.004,
+      "tower_fail": 0.012,
+      "tower_fail_ceiling": 0.002
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7d_joint_st2",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 2892,
+      "matches": 87,
+      "agree_unperturbed": 0.924,
+      "agree": 0.923,
+      "agree_ci": [
+        0.909,
+        0.935
+      ],
+      "ceiling": 0.991,
+      "normalised": 0.931,
+      "normalised_ci": [
+        0.918,
+        0.944
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor missed)",
+      "whole_fight_outcome": 0.873,
+      "body_miss": 0.053,
+      "body_miss_ceiling": 0.005,
+      "tower_fail": 0.016,
+      "tower_fail_ceiling": 0.002
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7d_joint_un0",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 2473,
+      "matches": 76,
+      "agree_unperturbed": 0.918,
+      "agree": 0.916,
+      "agree_ci": [
+        0.904,
+        0.929
+      ],
+      "ceiling": 0.956,
+      "normalised": 0.959,
+      "normalised_ci": [
+        0.949,
+        0.968
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.868,
+      "body_miss": 0.047,
+      "body_miss_ceiling": 0.024,
+      "tower_fail": 0.019,
+      "tower_fail_ceiling": 0.011
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7d_joint_un1",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 2732,
+      "matches": 76,
+      "agree_unperturbed": 0.916,
+      "agree": 0.917,
+      "agree_ci": [
+        0.904,
+        0.929
+      ],
+      "ceiling": 0.962,
+      "normalised": 0.953,
+      "normalised_ci": [
+        0.942,
+        0.963
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.874,
+      "body_miss": 0.054,
+      "body_miss_ceiling": 0.023,
+      "tower_fail": 0.008,
+      "tower_fail_ceiling": 0.006
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7d_joint_un2",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 2449,
+      "matches": 75,
+      "agree_unperturbed": 0.912,
+      "agree": 0.905,
+      "agree_ci": [
+        0.889,
+        0.92
+      ],
+      "ceiling": 0.958,
+      "normalised": 0.945,
+      "normalised_ci": [
+        0.931,
+        0.957
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.856,
+      "body_miss": 0.067,
+      "body_miss_ceiling": 0.023,
+      "tower_fail": 0.018,
+      "tower_fail_ceiling": 0.008
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7d_ng0",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 3687,
+      "matches": 106,
+      "agree_unperturbed": 0.906,
+      "agree": 0.906,
+      "agree_ci": [
+        0.895,
+        0.918
+      ],
+      "ceiling": 0.957,
+      "normalised": 0.947,
+      "normalised_ci": [
+        0.938,
+        0.957
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.857,
+      "body_miss": 0.056,
+      "body_miss_ceiling": 0.025,
+      "tower_fail": 0.016,
+      "tower_fail_ceiling": 0.01
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7d_ng1",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 3595,
+      "matches": 106,
+      "agree_unperturbed": 0.91,
+      "agree": 0.907,
+      "agree_ci": [
+        0.894,
+        0.919
+      ],
+      "ceiling": 0.976,
+      "normalised": 0.93,
+      "normalised_ci": [
+        0.918,
+        0.94
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor missed)",
+      "whole_fight_outcome": 0.87,
+      "body_miss": 0.066,
+      "body_miss_ceiling": 0.012,
+      "tower_fail": 0.018,
+      "tower_fail_ceiling": 0.005
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7d_ng2",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 3613,
+      "matches": 104,
+      "agree_unperturbed": 0.909,
+      "agree": 0.908,
+      "agree_ci": [
+        0.896,
+        0.92
+      ],
+      "ceiling": 0.991,
+      "normalised": 0.917,
+      "normalised_ci": [
+        0.904,
+        0.928
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor missed)",
+      "whole_fight_outcome": 0.851,
+      "body_miss": 0.059,
+      "body_miss_ceiling": 0.004,
+      "tower_fail": 0.016,
+      "tower_fail_ceiling": 0.002
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7d_tpl",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 3775,
+      "matches": 105,
+      "agree_unperturbed": 0.916,
+      "agree": 0.911,
+      "agree_ci": [
+        0.899,
+        0.924
+      ],
+      "ceiling": 0.977,
+      "normalised": 0.933,
+      "normalised_ci": [
+        0.922,
+        0.943
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.865,
+      "body_miss": 0.06,
+      "body_miss_ceiling": 0.012,
+      "tower_fail": 0.013,
+      "tower_fail_ceiling": 0.006
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "r7d_vol",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 2096,
+      "matches": 53,
+      "agree_unperturbed": 0.932,
+      "agree": 0.926,
+      "agree_ci": [
+        0.914,
+        0.938
+      ],
+      "ceiling": 0.972,
+      "normalised": 0.953,
+      "normalised_ci": [
+        0.943,
+        0.964
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.857,
+      "body_miss": 0.047,
+      "body_miss_ceiling": 0.016,
+      "tower_fail": 0.013,
+      "tower_fail_ceiling": 0.006
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "v7_r7c_fixaim",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 16507,
+      "matches": 492,
+      "agree_unperturbed": 0.921,
+      "agree": 0.919,
+      "agree_ci": [
+        0.914,
+        0.925
+      ],
+      "ceiling": 0.976,
+      "normalised": 0.942,
+      "normalised_ci": [
+        0.937,
+        0.947
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.871,
+      "body_miss": 0.053,
+      "body_miss_ceiling": 0.013,
+      "tower_fail": 0.014,
+      "tower_fail_ceiling": 0.005
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "v7_r7c_pulse",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 590,
+      "matches": 19,
+      "agree_unperturbed": 0.903,
+      "agree": 0.915,
+      "agree_ci": [
+        0.883,
+        0.94
+      ],
+      "ceiling": 0.98,
+      "normalised": 0.933,
+      "normalised_ci": [
+        0.907,
+        0.956
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor missed)",
+      "whole_fight_outcome": 0.866,
+      "body_miss": 0.114,
+      "body_miss_ceiling": 0.009,
+      "tower_fail": 0.031,
+      "tower_fail_ceiling": 0.005
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "v7_r7c_pulse_rest",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 15916,
+      "matches": 473,
+      "agree_unperturbed": 0.921,
+      "agree": 0.919,
+      "agree_ci": [
+        0.913,
+        0.924
+      ],
+      "ceiling": 0.976,
+      "normalised": 0.942,
+      "normalised_ci": [
+        0.936,
+        0.946
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.87,
+      "body_miss": 0.051,
+      "body_miss_ceiling": 0.013,
+      "tower_fail": 0.014,
+      "tower_fail_ceiling": 0.005
+    }
+  },
+  {
+    "port": 15617,
+    "arm": "v7_r7d_vol",
+    "cohort": "all",
+    "overall": {
+      "card": "OVERALL",
+      "n": 2096,
+      "matches": 53,
+      "agree_unperturbed": 0.932,
+      "agree": 0.926,
+      "agree_ci": [
+        0.914,
+        0.938
+      ],
+      "ceiling": 0.972,
+      "normalised": 0.953,
+      "normalised_ci": [
+        0.943,
+        0.964
+      ],
+      "goal": 0.975,
+      "floor": 0.92,
+      "flag": "below (floor met)",
+      "whole_fight_outcome": 0.857,
+      "body_miss": 0.047,
+      "body_miss_ceiling": 0.016,
+      "tower_fail": 0.013,
+      "tower_fail_ceiling": 0.006
+    }
+  }
+]

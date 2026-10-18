@@ -1,5 +1,77 @@
 # Step-d status
 
+## 2026-10-18 14:15 EDT -- Codex handoff complete; D1 smoke failed after acquiring CPUs
+
+- All Codex cue/combo follow-ups are DONE (13,440 SIM games). Final cue archive: 2,008 files, SHA-verified at
+  pod_backup_weekend/codex1018/30988/20261018T181127Z. ALL_DONE was written at 18:10:32 UTC.
+- Final paired readout (14:21 EDT): sampled cue +5.21 pp [1.67, 8.85] standard / +1.25 [-2.19, 4.69] fresh;
+  greedy cue +4.69 [1.15, 8.23] standard / +2.08 [-1.36, 5.52] fresh. Both fail the fresh gate. C3 control and both
+  combo settings also fail the two-set CLIII bar. All seven completed candidate/settings comparisons and behavior CIs
+  are in codex1018/CANDIDATE_RESULTS.md; c3_ab still awaits its complete standard/fresh evaluations.
+- D1 acquired CPUs at 18:11:03 UTC and exited 1 at 18:11:11 UTC. drive_smoke.out records
+  `TypeError: drive() got an unexpected keyword argument 'on_frame'`. The alive executor owns the compatibility repair
+  and smoke retry. Codex has not restarted or edited D1. This supersedes the older table's waiting status for 30988.
+
+## 2026-10-18 14:10 EDT -- milestone 5: Codex-released pods 10757 + 34210 taken; every arm has a waiter
+
+| pod | job | state |
+|---|---|---|
+| 30988 | D1 (cue drive, fin13, 26 workers) -> D2b (IL-cue-w s0 = REB init) -> il_compare | D1 waiter pid 7392 waits for Codex ALL_DONE (~14:12) |
+| 10757 | CLIII fin13 re-score (stepd_chain REF, NAME=clIII_fin13: fin13 std+fresh + fork36 std) | ref_now.sh pid 8049 (smoke try 2; try 1 failed only on a missing gen_v32_s0 stand-in, now copied) |
+| 13396 | stepd_ctrl | arm_waiter pid 10423: Stage 2 CHAIN_DONE (~17:10) + GO_stepd_ctrl |
+| 19834 | stepd_reb | arm_waiter pid 10686: CHAIN_DONE + GO + IL ckpt + S2 sA u0130 (relay) |
+| 14009 | stepd_rebc3 (CLIII card-anchor twin) | arm_waiter pid 22714: c3_ab done + GO (put NO36=1 in it) + IL + S2 |
+| 34210 | stepd_ctrl_nos2 (CTRL minus Stage-2 opponents = LEAGUE attribution, lowest priority) | arm_waiter pid 13920: GO only (pod free now) |
+
+- GO files = /workspace/stepd/GO_<RUN> (sourced by stepd_chain.sh; may set DECODE=--ability-head-decode=sample and NO36=1).
+  Write them only after the ability-head decision (c3_ab vs c3_ctl) and after copying the final yaml into cb_stepd.
+- Inputs still to relay (stepd/relay_ckpt.sh, sha-verified, .part then mv): the REB init
+  icebow/data/pipeline/stepd_il/gen_cuew_s0.pt (30988 -> 19834, 14009) and s2_all_il_sA_u0130.pt (13396 -> 19834, 14009).
+- 14009's REF waiter was cancelled (pid 22609 killed) since the re-score moved to 10757.
+- Combo reward: Codex's paired check confirms reward minus control +1.35 [-2.08, +4.69] -> OFF in every arm.
+
+## 2026-10-18 13:50 EDT -- milestone 4: D2a DONE; 14009 staged with the CLIII fin13 re-score waiter
+
+- D2a result (30988, 17:39 UTC; pod_backup_weekend/stepd/d2/, 14 files sha-verified). best_val (30k val sample) / v3val:
+  - IL-nocue-w s0 (88a466ae): card .614, cell-tile .221, gate bal .744 / v3val .660, .208, .777
+  - IL-nocue-w s1 (1b814adc): card .615, cell-tile .232, gate bal .744 / v3val .672, .209, .779
+  - gen_v32_s0 (old base, unweighted, laptop): .613 / .224 / .747; v3val .657 / .204 / .776
+  -> the x3 weighting costs nothing measurable overall; seed noise ~1 pp cell-tile (val sample), ~1.2 pp card (v3val).
+    The weights reach 2.3% of rows, so a large overall effect was never expected. (b) whether it changes play vs the six
+    archetypes is untested here -- the RL evals' per-archetype slices are where it would show.
+- 14009 staged (files only; c3_ab still training): /workspace/cb_tt = hard-link copy of /workspace/c3/cb, /workspace/cb_stepd,
+  /workspace/venvf13 from /workspace/ab/venvf36 (that pod has no /workspace/venvf36; the ab venv's fork36 binary 80b6b94b is
+  unchanged; fin13 binary 2ec5ec39 = 13396's). setup_fin13.sh now takes SRCV=<real venv dir> and SKIP36=1.
+- 14009 REF waiter (stepd/ref_waiter.sh, pid 22609 under flock claim.lock): when /workspace/c3/results_c3_ab/{ALL_DONE|DONE}
+  exists and no rl_royale / gap.py is left -> stepd_smoke.sh -> CLIII fin13 re-score (stepd_chain.sh REF, NAME=clIII_fin13,
+  NO36=1: std + fresh on fin13 only; CLIII's fork36 std rows from the same code still owed, e.g. on 30988).
+- D1 waiter relaunched with WORKERS=26 (pid 7392) since D2a is done; Codex's ALL_DONE expected ~14:05 EDT.
+- Laptop readout ready: stepd/readout.py (selftest PASS) over pod_backup_weekend/stepd/<job>/ (pull_stepd.sh layout).
+
+## 2026-10-18 13:30 EDT -- milestone 3: trainer COMMITTED (3f72766), RL pods staged + claimed, arm waiters armed
+
+- Committed + pushed 3f72766 (owner decision 1) after the real fin13 pod smokes: smoke (warm-up only) and smoke2
+  (critic_warmup_updates=1, update 1 = a real PPO step: clip 0.019 / 0.022, leash driver card) both PASS for stepd_ctrl and
+  stepd_rebc3. Logs: pod_backup_weekend/stepd/smoke/ (10 files sha-verified).
+- RL pods staged (no compute, Stage 2 untouched): 13396 + 19834 have /workspace/cb_stepd (code 3f72766-era tar + CLIII raw
+  05d42da7 / grafted edc82ada) and /workspace/venvf13 (FIN13_OK, same wheel 969a2ac8; venvf36 intact).
+- Arm waiters (stepd/arm_waiter.sh, run under `flock /workspace/stepd/claim.lock` so stop_pod.sh refuses to stop the pod):
+  13396 RUN=stepd_ctrl (pid 10423), 19834 RUN=stepd_reb (pid 10686). Each waits for Stage 2 CHAIN_DONE + no rl_royale/gap,
+  then for /workspace/stepd/GO_<RUN> (the lead writes it once the yaml is final), then for the init + the S2 exploiter
+  (icebow/data/bench/rl_royale/s2_all_il_sA/s2_all_il_sA_u0130.pt inside cb_stepd; 13396 links it from cb_tt; 19834 needs it
+  copied over), then runs stepd_smoke.sh on that pod and stepd_chain.sh. Logs /workspace/stepd/arm_waiter.log.
+  DO NOT re-ship code (ship_stepd.sh) to a pod whose arm is running: it rm -rf's the code dirs the actors import from.
+- Arm-config decisions so far (from Codex's CANDIDATE_RESULTS.md, same-code evals vs CLIII, 960 paired, std seeds):
+  - spell-value reward: OFF. combo_rew_c3 -0.52 [-4.06, +2.92], combo_ctl_c3 -1.88 [-5.52, +1.67] vs CLIII; the reward
+    arm is ~+1.4 pp over its control (not paired-tested here; certainly not a clear win); it cut Tornados 0.25 / game.
+  - ability head: PENDING c3_ab (14009, training ~u45/65 at 17:00 UTC; evals after). Bar (PLAN): on if c3_ab is "not
+    clearly worse" than c3_ctl. Context: c3_ctl vs CLIII +1.41 [-1.04, +3.80] pooled; cue_ab2 sampled (CXXXVIII + head)
+    +5.21 [+1.67, +8.85] std (fresh pending) with 0.93 vs 1.72 presses / game.
+- Plan for the other pods: 14009 after c3_ab -> CLIII fin13 re-score (stepd_chain REF mode; its /workspace/fork36 parity
+  checkout breaks fork36 evals there unless hidden -> fork36 rows from another pod), then the REB CLIII-anchor twin
+  (stepd_rebc3) once IL-cue-w exists; 30988 after D2 -> stepd_ctrl_nos2 (CTRL minus the S2 opponents = the LEAGUE
+  attribution, lowest priority).
+
 ## 2026-10-18 12:55 EDT -- milestone 2: fin13 runtime built (R1 done), D2a training, real smoke running
 
 - R1 DONE on 30988: wheel royalesim-0.1.36 from clashbot36 a697d1f9 (sha 969a2ac8...), /workspace/venvf13; manifest
@@ -47,12 +119,27 @@
 
 ## 2026-10-18 12:19 EDT -- coordination notice: pod 30988 currently has an authorized SIM evaluation
 
+- Codex handoff/failure finding at 14:12 EDT: all 12 isolated cue/CLIII seed blocks are DONE; ALL_DONE was written
+  18:10:32 UTC. D1 waiter acquired the freed CPUs at 18:11:03 UTC, then D1 exited 1 at 18:11:11 UTC. Read-only inspection
+  of /workspace/stepd/d1/drive_smoke.out found `TypeError: drive() got an unexpected keyword argument 'on_frame'`.
+  The executor remains alive; it owns this D1 smoke/API compatibility repair. Codex did not restart or modify D1.
+- Codex capacity notice at 14:01 EDT: 216.81.245.71:34210 has finished all original combo-reward and Codex follow-up
+  evaluations. The final follow-up is fully SHA-verified at pod_backup_weekend/codex1018/34210/20261018T175911Z;
+  earlier full reward/main-follow-up receipts are in codex1018/backup_index.json. It is available for remaining
+  delegable step-d / final-runtime work, alongside 10757. Codex has not stopped either pod or dispatched step-d there.
+  The control pod 19400 is on its final fresh block. Cue pod 30988 is approaching its last greedy fresh block;
+  allow roughly 14:12 EDT for ALL_DONE, not 14:05. D1 must still wait for the actual marker and CPU-lock release.
+- Codex paired attribution check at 13:39 EDT, unchanged mix/live_cmp.py on the verified standard 960-game views:
+  combo reward minus its control = +1.35 pp [-2.08, +4.69] off; +1.15 pp [-2.29, +4.58] offc. Neither is a clear gain.
+  Both candidate arms also fail the standard CLIII bar. Full tables: codex1018/COMBO_CONTROL_RESULTS.md.
 - Codex capacity notice at 13:13 EDT: c3_ctl on 64.247.206.79:10757 is DONE (all 1,920 evaluation games) and its full
   result/checkpoint directory is SHA-verified at pod_backup_weekend/codex1018/10757/20261018T171001Z. That temporary
   pod is available for remaining delegable step-d / final-runtime gate work. Codex has not launched step-d there or
   stopped it. The existing D1 waiter on 30988 remains the executor's responsibility; avoid duplicate D1 dispatch.
-- Codex progress at 12:44 EDT: 3 of 12 seed blocks are complete; the fourth started at 12:42:49 EDT. Observed throughput
-  is about 9 minutes per block, so allow roughly 14:05 EDT for ALL_DONE (the marker, not this estimate, releases D1).
+- Codex progress at 13:28 EDT: 7 of 12 seed blocks are complete; the last sampled block started at 13:21:48 EDT, followed
+  by the four greedy blocks. Candidate blocks take about 10 minutes, so allow roughly 14:12 EDT for ALL_DONE (the marker,
+  not this estimate, releases D1). Sampled cue is +5.21 pp [1.67, 8.85] standard but +1.25 pp [-2.19, 4.69] fresh versus
+  CLIII: it fails the two-set bar. Greedy results are still running. No live change is authorized by these SIM numbers.
 - The shared lead committed the API workspace-header repair as dc5363e at 12:14 EDT and relaunched API-worker wrappers.
   Codex did not restart them; check their current descendants/logs rather than the old PIDs.
 - IMPORTANT for the executor: 30988 is now running the ticket's required same-code CLIII / cue_ab2 standard+fresh SIM

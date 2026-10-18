@@ -1,0 +1,13 @@
+{
+  "verified_utc": "2026-10-18T18:10:14.233685+00:00",
+  "source_map_sha256": "39667a6f1bc624f22409439d84b45e87be178558e4d0b3adb2d5ae4c1fe9bd29",
+  "unchanged": true,
+  "ports": [
+    10757,
+    14009,
+    19400,
+    30988,
+    34210
+  ],
+  "paths_checked_per_pod": 21
+}

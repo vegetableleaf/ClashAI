@@ -1,0 +1,145 @@
+{
+  "files": {
+    "14009": {
+      "pipeline/search_s0.py": "ab08032d6a7849799cb42f3868135c44ec80c37c9d14b6980397d900fea4159d",
+      "pipeline/e1_eval.py": "d9db43ad3811b488f56dbbf90696848f2162e49cd625d7a6237c25c6912a5385",
+      "pipeline/decision_options.py": "6ddea577c9788e5ad89164256f080f6daa759285a83edde1ac20a3bf1bd6058c",
+      "pipeline/ability_head.py": null,
+      "pipeline/model_gen.py": "c1857f24766f04186d0dd6708563327a6dfed7d3a53563d8b959adf6fcbd1776",
+      "pipeline/model_v3.py": "be379f5c7a2e90bfbc1c2294c9d66a27ba0d86413154d9fb9a099f783200ea14",
+      "pipeline/dataset.py": "013b3df55fe06b679952696bdac1da5c5f315e153fadcf324dcf5957bda83839",
+      "pipeline/vocab.py": "3532baa8fddf7e7065a5974ac4614f5aaefcc0b1404f5d023b777f0ade34fab2",
+      "pipeline/e1_pool.py": "cc4b90becfe9d350e8e5d54b2473ff261f97152f4cf93e0cd3da83836d3884b4",
+      "pipeline/e1_view.py": "3f7fa3456cff8aebf2b5252155ff9dbfc328f624571f19ac9133ad658cbed81e",
+      "pipeline/obs_contract.py": "953a15d913f1b646de4f6f9559c7d29c0ba0e546795776bca25e53e6ab8dc3b2",
+      "pipeline/own_ability.py": "ebb3525d92daf7fe4ebf2ada95f88edb98619676eeade19d40929613d7ace1c2",
+      "pipeline/spell_value.py": null,
+      "pipeline/royale_runtime.py": "db0bb3ae8e77f27c5c503b6be94a80ef6c53130370c51423c24680630c635519",
+      "pipeline/royale_env.py": "9bc59ff0ad107822d6b3778cca2f35541de40243e9bc089acc7d53e8e60f71cc",
+      "pipeline/royale_heroiw.py": "86f95f8b4bf5be8ce8af256b0d38519493b165461bd34618145718d8ee3368bf",
+      "scratchpad/gauntlet/L74/gap/gap.py": "87dc41284e7644366b73483c4550fd96d3b3d8c2f33313e8c44d5a8266dd75ba",
+      "scratchpad/gauntlet/L74/livecal/livecal.py": "aedfeef958c2eec1ba93cd15785349a8d65671779da1b451877f2cfe0c589de2",
+      "scratchpad/gauntlet/L74/livecal/live_truth.py": "cd6961ff0f145303c6de8c996962c49e48be322142e926241a44cbfebb7c8bc1",
+      "scratchpad/gauntlet/L74/troops/build_manifest_fork36.json": "112c5154d0f546d70014d452add05462e530a5dcab8640dd3b9af26de3fb3154",
+      "scratchpad/gauntlet/L74/mix/decks_live_eval.json": "06f5bc9a5472b3544cd889984e4915ec30e80217a501b591753c1b369b7fdc13"
+    },
+    "30988": {
+      "pipeline/search_s0.py": "ab08032d6a7849799cb42f3868135c44ec80c37c9d14b6980397d900fea4159d",
+      "pipeline/e1_eval.py": "d9db43ad3811b488f56dbbf90696848f2162e49cd625d7a6237c25c6912a5385",
+      "pipeline/decision_options.py": "6ddea577c9788e5ad89164256f080f6daa759285a83edde1ac20a3bf1bd6058c",
+      "pipeline/ability_head.py": null,
+      "pipeline/model_gen.py": "c1857f24766f04186d0dd6708563327a6dfed7d3a53563d8b959adf6fcbd1776",
+      "pipeline/model_v3.py": "be379f5c7a2e90bfbc1c2294c9d66a27ba0d86413154d9fb9a099f783200ea14",
+      "pipeline/dataset.py": "013b3df55fe06b679952696bdac1da5c5f315e153fadcf324dcf5957bda83839",
+      "pipeline/vocab.py": "3532baa8fddf7e7065a5974ac4614f5aaefcc0b1404f5d023b777f0ade34fab2",
+      "pipeline/e1_pool.py": "cc4b90becfe9d350e8e5d54b2473ff261f97152f4cf93e0cd3da83836d3884b4",
+      "pipeline/e1_view.py": "3f7fa3456cff8aebf2b5252155ff9dbfc328f624571f19ac9133ad658cbed81e",
+      "pipeline/obs_contract.py": "953a15d913f1b646de4f6f9559c7d29c0ba0e546795776bca25e53e6ab8dc3b2",
+      "pipeline/own_ability.py": "ebb3525d92daf7fe4ebf2ada95f88edb98619676eeade19d40929613d7ace1c2",
+      "pipeline/spell_value.py": null,
+      "pipeline/royale_runtime.py": "db0bb3ae8e77f27c5c503b6be94a80ef6c53130370c51423c24680630c635519",
+      "pipeline/royale_env.py": "9bc59ff0ad107822d6b3778cca2f35541de40243e9bc089acc7d53e8e60f71cc",
+      "pipeline/royale_heroiw.py": "86f95f8b4bf5be8ce8af256b0d38519493b165461bd34618145718d8ee3368bf",
+      "scratchpad/gauntlet/L74/gap/gap.py": "87dc41284e7644366b73483c4550fd96d3b3d8c2f33313e8c44d5a8266dd75ba",
+      "scratchpad/gauntlet/L74/livecal/livecal.py": "aedfeef958c2eec1ba93cd15785349a8d65671779da1b451877f2cfe0c589de2",
+      "scratchpad/gauntlet/L74/livecal/live_truth.py": "cd6961ff0f145303c6de8c996962c49e48be322142e926241a44cbfebb7c8bc1",
+      "scratchpad/gauntlet/L74/troops/build_manifest_fork36.json": "112c5154d0f546d70014d452add05462e530a5dcab8640dd3b9af26de3fb3154",
+      "scratchpad/gauntlet/L74/mix/decks_live_eval.json": "06f5bc9a5472b3544cd889984e4915ec30e80217a501b591753c1b369b7fdc13"
+    },
+    "10757": {
+      "pipeline/search_s0.py": "ab08032d6a7849799cb42f3868135c44ec80c37c9d14b6980397d900fea4159d",
+      "pipeline/e1_eval.py": "d9db43ad3811b488f56dbbf90696848f2162e49cd625d7a6237c25c6912a5385",
+      "pipeline/decision_options.py": "6ddea577c9788e5ad89164256f080f6daa759285a83edde1ac20a3bf1bd6058c",
+      "pipeline/ability_head.py": null,
+      "pipeline/model_gen.py": "c1857f24766f04186d0dd6708563327a6dfed7d3a53563d8b959adf6fcbd1776",
+      "pipeline/model_v3.py": "be379f5c7a2e90bfbc1c2294c9d66a27ba0d86413154d9fb9a099f783200ea14",
+      "pipeline/dataset.py": "013b3df55fe06b679952696bdac1da5c5f315e153fadcf324dcf5957bda83839",
+      "pipeline/vocab.py": "3532baa8fddf7e7065a5974ac4614f5aaefcc0b1404f5d023b777f0ade34fab2",
+      "pipeline/e1_pool.py": "cc4b90becfe9d350e8e5d54b2473ff261f97152f4cf93e0cd3da83836d3884b4",
+      "pipeline/e1_view.py": "3f7fa3456cff8aebf2b5252155ff9dbfc328f624571f19ac9133ad658cbed81e",
+      "pipeline/obs_contract.py": "953a15d913f1b646de4f6f9559c7d29c0ba0e546795776bca25e53e6ab8dc3b2",
+      "pipeline/own_ability.py": "ebb3525d92daf7fe4ebf2ada95f88edb98619676eeade19d40929613d7ace1c2",
+      "pipeline/spell_value.py": null,
+      "pipeline/royale_runtime.py": "db0bb3ae8e77f27c5c503b6be94a80ef6c53130370c51423c24680630c635519",
+      "pipeline/royale_env.py": "9bc59ff0ad107822d6b3778cca2f35541de40243e9bc089acc7d53e8e60f71cc",
+      "pipeline/royale_heroiw.py": "86f95f8b4bf5be8ce8af256b0d38519493b165461bd34618145718d8ee3368bf",
+      "scratchpad/gauntlet/L74/gap/gap.py": "87dc41284e7644366b73483c4550fd96d3b3d8c2f33313e8c44d5a8266dd75ba",
+      "scratchpad/gauntlet/L74/livecal/livecal.py": "aedfeef958c2eec1ba93cd15785349a8d65671779da1b451877f2cfe0c589de2",
+      "scratchpad/gauntlet/L74/livecal/live_truth.py": "cd6961ff0f145303c6de8c996962c49e48be322142e926241a44cbfebb7c8bc1",
+      "scratchpad/gauntlet/L74/troops/build_manifest_fork36.json": "112c5154d0f546d70014d452add05462e530a5dcab8640dd3b9af26de3fb3154",
+      "scratchpad/gauntlet/L74/mix/decks_live_eval.json": "06f5bc9a5472b3544cd889984e4915ec30e80217a501b591753c1b369b7fdc13"
+    },
+    "19400": {
+      "pipeline/search_s0.py": "12f5cde8d496b14a4341708629bdb1a50ec47a439c251b0295e0da82351c54a5",
+      "pipeline/e1_eval.py": "84c9ea89713eb530902f23c24fc72c98bedf723a0752295f359fc53e037d69bf",
+      "pipeline/decision_options.py": "fad52ded1d4c6f60de782bbeeb7c9957b97907747b303753adc1e3e128f8e378",
+      "pipeline/ability_head.py": null,
+      "pipeline/model_gen.py": "c1857f24766f04186d0dd6708563327a6dfed7d3a53563d8b959adf6fcbd1776",
+      "pipeline/model_v3.py": "be379f5c7a2e90bfbc1c2294c9d66a27ba0d86413154d9fb9a099f783200ea14",
+      "pipeline/dataset.py": "013b3df55fe06b679952696bdac1da5c5f315e153fadcf324dcf5957bda83839",
+      "pipeline/vocab.py": "3532baa8fddf7e7065a5974ac4614f5aaefcc0b1404f5d023b777f0ade34fab2",
+      "pipeline/e1_pool.py": "cc4b90becfe9d350e8e5d54b2473ff261f97152f4cf93e0cd3da83836d3884b4",
+      "pipeline/e1_view.py": "3f7fa3456cff8aebf2b5252155ff9dbfc328f624571f19ac9133ad658cbed81e",
+      "pipeline/obs_contract.py": "953a15d913f1b646de4f6f9559c7d29c0ba0e546795776bca25e53e6ab8dc3b2",
+      "pipeline/own_ability.py": "ebb3525d92daf7fe4ebf2ada95f88edb98619676eeade19d40929613d7ace1c2",
+      "pipeline/spell_value.py": "74df5a795df33f2668f41f21f28337c1686e40e6d65ec16138953b9a6c7fe423",
+      "pipeline/royale_runtime.py": "db0bb3ae8e77f27c5c503b6be94a80ef6c53130370c51423c24680630c635519",
+      "pipeline/royale_env.py": "af7c2aca3f3f3dc554190bc16f86a8c6db2181a6ea2786be86e574975545f070",
+      "pipeline/royale_heroiw.py": "86f95f8b4bf5be8ce8af256b0d38519493b165461bd34618145718d8ee3368bf",
+      "scratchpad/gauntlet/L74/gap/gap.py": "87dc41284e7644366b73483c4550fd96d3b3d8c2f33313e8c44d5a8266dd75ba",
+      "scratchpad/gauntlet/L74/livecal/livecal.py": "aedfeef958c2eec1ba93cd15785349a8d65671779da1b451877f2cfe0c589de2",
+      "scratchpad/gauntlet/L74/livecal/live_truth.py": "cd6961ff0f145303c6de8c996962c49e48be322142e926241a44cbfebb7c8bc1",
+      "scratchpad/gauntlet/L74/troops/build_manifest_fork36.json": "112c5154d0f546d70014d452add05462e530a5dcab8640dd3b9af26de3fb3154",
+      "scratchpad/gauntlet/L74/mix/decks_live_eval.json": "06f5bc9a5472b3544cd889984e4915ec30e80217a501b591753c1b369b7fdc13"
+    },
+    "34210": {
+      "pipeline/search_s0.py": "12f5cde8d496b14a4341708629bdb1a50ec47a439c251b0295e0da82351c54a5",
+      "pipeline/e1_eval.py": "84c9ea89713eb530902f23c24fc72c98bedf723a0752295f359fc53e037d69bf",
+      "pipeline/decision_options.py": "fad52ded1d4c6f60de782bbeeb7c9957b97907747b303753adc1e3e128f8e378",
+      "pipeline/ability_head.py": null,
+      "pipeline/model_gen.py": "c1857f24766f04186d0dd6708563327a6dfed7d3a53563d8b959adf6fcbd1776",
+      "pipeline/model_v3.py": "be379f5c7a2e90bfbc1c2294c9d66a27ba0d86413154d9fb9a099f783200ea14",
+      "pipeline/dataset.py": "013b3df55fe06b679952696bdac1da5c5f315e153fadcf324dcf5957bda83839",
+      "pipeline/vocab.py": "3532baa8fddf7e7065a5974ac4614f5aaefcc0b1404f5d023b777f0ade34fab2",
+      "pipeline/e1_pool.py": "cc4b90becfe9d350e8e5d54b2473ff261f97152f4cf93e0cd3da83836d3884b4",
+      "pipeline/e1_view.py": "3f7fa3456cff8aebf2b5252155ff9dbfc328f624571f19ac9133ad658cbed81e",
+      "pipeline/obs_contract.py": "953a15d913f1b646de4f6f9559c7d29c0ba0e546795776bca25e53e6ab8dc3b2",
+      "pipeline/own_ability.py": "ebb3525d92daf7fe4ebf2ada95f88edb98619676eeade19d40929613d7ace1c2",
+      "pipeline/spell_value.py": "74df5a795df33f2668f41f21f28337c1686e40e6d65ec16138953b9a6c7fe423",
+      "pipeline/royale_runtime.py": "db0bb3ae8e77f27c5c503b6be94a80ef6c53130370c51423c24680630c635519",
+      "pipeline/royale_env.py": "af7c2aca3f3f3dc554190bc16f86a8c6db2181a6ea2786be86e574975545f070",
+      "pipeline/royale_heroiw.py": "86f95f8b4bf5be8ce8af256b0d38519493b165461bd34618145718d8ee3368bf",
+      "scratchpad/gauntlet/L74/gap/gap.py": "87dc41284e7644366b73483c4550fd96d3b3d8c2f33313e8c44d5a8266dd75ba",
+      "scratchpad/gauntlet/L74/livecal/livecal.py": "aedfeef958c2eec1ba93cd15785349a8d65671779da1b451877f2cfe0c589de2",
+      "scratchpad/gauntlet/L74/livecal/live_truth.py": "cd6961ff0f145303c6de8c996962c49e48be322142e926241a44cbfebb7c8bc1",
+      "scratchpad/gauntlet/L74/troops/build_manifest_fork36.json": "112c5154d0f546d70014d452add05462e530a5dcab8640dd3b9af26de3fb3154",
+      "scratchpad/gauntlet/L74/mix/decks_live_eval.json": "06f5bc9a5472b3544cd889984e4915ec30e80217a501b591753c1b369b7fdc13"
+    }
+  },
+  "comparisons": {
+    "c3": {
+      "ports": [
+        14009,
+        10757
+      ],
+      "checked": 21,
+      "differences": []
+    },
+    "combo": {
+      "ports": [
+        19400,
+        34210
+      ],
+      "checked": 21,
+      "differences": []
+    },
+    "cue_c3_source": {
+      "ports": [
+        14009,
+        30988
+      ],
+      "checked": 21,
+      "differences": []
+    }
+  }
+}

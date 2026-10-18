@@ -1,0 +1,9 @@
+{
+  "initial_checked_utc": "2026-10-18T16:07:44Z",
+  "recovery_evidence": "job_snapshot.json contains the latest timestamped replacement-wrapper inventory, condensed from local_workers_current.json; original PIDs are not reused as recovery identities",
+  "jobs": [
+    {"name": "step-d executor", "recorded_pid": 10448, "status": "failed", "descendant_found": false, "evidence": "Original executor.log HTTP 400: missing workspace scope; no original D1/D2 artifacts; launcher exit 0 is not completion", "restart": "Claude repaired the header in dc5363e and relaunched at 12:14 EDT; replacement root PID 54792 is alive; Codex did not restart it"},
+    {"name": "round-7 closer", "recorded_pid": 26708, "status": "failed", "descendant_found": false, "evidence": "Original r7_closer.log HTTP 400: missing workspace scope; initial status/report absent", "restart": "Claude repaired the header in dc5363e and relaunched at 12:14 EDT; replacement root PID 58888 is alive and has written R7_STATUS.md"},
+    {"name": "combo relay", "recorded_pid": 41080, "status": "failed", "descendant_found": false, "evidence": "relay.log last update 08:14:22 EDT; old control attempt copied as FAILED; replacement control/reward training and original evaluations subsequently completed and were copied by Codex", "restart": "manual verified collection replaces stale completion markers for this ticket"}
+  ]
+}

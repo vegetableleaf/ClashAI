@@ -1,0 +1,62 @@
+[
+  {
+    "mode": "off",
+    "seeds": "std",
+    "control_wins": 624,
+    "reward_wins": 637,
+    "pairs": 960,
+    "old_win_rate": 0.65,
+    "new_win_rate": 0.6635416666666667,
+    "delta_pp": 1.3541666666666667,
+    "ci95_pp": [
+      -2.083333333333333,
+      4.6875
+    ],
+    "method": "10000 paired bootstrap draws within census and learner side; draws count as non-wins"
+  },
+  {
+    "mode": "off",
+    "seeds": "fresh",
+    "control_wins": 619,
+    "reward_wins": 613,
+    "pairs": 960,
+    "old_win_rate": 0.6447916666666667,
+    "new_win_rate": 0.6385416666666667,
+    "delta_pp": -0.625,
+    "ci95_pp": [
+      -4.166666666666666,
+      2.9166666666666665
+    ],
+    "method": "10000 paired bootstrap draws within census and learner side; draws count as non-wins"
+  },
+  {
+    "mode": "offc",
+    "seeds": "std",
+    "control_wins": 625,
+    "reward_wins": 636,
+    "pairs": 960,
+    "old_win_rate": 0.6510416666666666,
+    "new_win_rate": 0.6625,
+    "delta_pp": 1.1458333333333333,
+    "ci95_pp": [
+      -2.2916666666666665,
+      4.583333333333333
+    ],
+    "method": "10000 paired bootstrap draws within census and learner side; draws count as non-wins"
+  },
+  {
+    "mode": "offc",
+    "seeds": "fresh",
+    "control_wins": 616,
+    "reward_wins": 610,
+    "pairs": 960,
+    "old_win_rate": 0.6416666666666667,
+    "new_win_rate": 0.6354166666666666,
+    "delta_pp": -0.625,
+    "ci95_pp": [
+      -4.0625,
+      2.8125
+    ],
+    "method": "10000 paired bootstrap draws within census and learner side; draws count as non-wins"
+  }
+]

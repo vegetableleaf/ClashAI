@@ -1,0 +1,896 @@
+{
+  "source_inventory": "inventory_20261018T181156Z.json",
+  "local_checked_utc": "2026-10-18T18:12:22.5837258Z",
+  "local_workers": [
+    {
+      "kind": "round-7 closer",
+      "root_pid": 58888,
+      "process_count": 14,
+      "status": "alive"
+    },
+    {
+      "kind": "step-d executor",
+      "root_pid": 54792,
+      "process_count": 11,
+      "status": "alive"
+    }
+  ],
+  "pods": [
+    {
+      "host": "216.81.151.5",
+      "port": 15617,
+      "reachable": true,
+      "utc": "2026-10-18T18:11:52.260235+00:00",
+      "keep": true,
+      "free_gib": 9.66,
+      "active_job_parents": [],
+      "results": [
+        {
+          "path": "/workspace/results/r7d_ewc",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7c_ht",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7d_vol",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7d_tpl",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7d_cube_st0",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7d_cube_st1",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7d_cube_st2",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7c_pulse",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7c_fixaim",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7d_ng0",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7d_ng1",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7c_fixaim2",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7d_ng2",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7d_cube_un0",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7d_cube_un1",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7c_joint",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7d_cube2_st0",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7d_cube_un2",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7d_cube2_st1",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7d_cube2_st2",
+          "markers": [],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7d_cube2_st20",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7d_cube2_st21",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7d_cube2_st22",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7d_joint_st0",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7d_joint_st1",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7d_joint_st2",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7d_joint_un0",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7d_joint_un2",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7d_joint_un1",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7d_joint_stamped",
+          "markers": [],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/v7_r7c_fixaim",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/v7_r7c_pulse",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/v7_r7c_pulse_rest",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/v7_r7c_ht",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/v7_r7d_vol",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/v7_r7d_joint",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/v7_r7d_cube_arm",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/v7_r7c_ht_stamped",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        }
+      ],
+      "stepd": {
+        "d2/D2A_DONE": false,
+        "d2/D2B_DONE": false,
+        "d1/DONE": false,
+        "logs": []
+      }
+    },
+    {
+      "host": "64.247.206.76",
+      "port": 19899,
+      "reachable": true,
+      "utc": "2026-10-18T18:11:53.036559+00:00",
+      "keep": true,
+      "free_gib": 13.9,
+      "active_job_parents": [
+        {
+          "pid": 499518,
+          "ppid": 499509,
+          "state": "S",
+          "comm": "python3",
+          "kinds": [
+            "fights.py"
+          ],
+          "runs": [
+            "v7_r7b_hr"
+          ]
+        },
+        {
+          "pid": 558850,
+          "ppid": 558803,
+          "state": "S",
+          "comm": "python3",
+          "kinds": [
+            "fights.py"
+          ],
+          "runs": [
+            "FIN13"
+          ]
+        }
+      ],
+      "results": [
+        {
+          "path": "/workspace/results/r7b_hr",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7b_pd",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7a_P2_oth",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7a_P_part1",
+          "markers": [],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7a_P_st",
+          "markers": [],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7a_P2_st",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7a_S2_st",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7b_pd_stamped",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7b_pd5",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7b_hr_stamped",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7a_S2_oth",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7a_J_st",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/r7b_pd5_stamped",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/v7_r7b_null",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/v7_r7b_hr",
+          "markers": [],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/v7c_snap",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/v7c_hr",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0
+        },
+        {
+          "path": "/workspace/results/FIN13",
+          "markers": [],
+          "completed_eval_rows": 0
+        }
+      ],
+      "stepd": {
+        "d2/D2A_DONE": false,
+        "d2/D2B_DONE": false,
+        "d1/DONE": false,
+        "logs": []
+      }
+    },
+    {
+      "host": "64.247.206.76",
+      "port": 13396,
+      "reachable": true,
+      "utc": "2026-10-18T18:11:52.651541+00:00",
+      "keep": true,
+      "free_gib": 39.59,
+      "active_job_parents": [
+        {
+          "pid": 9167,
+          "ppid": 1,
+          "state": "S",
+          "comm": "bash",
+          "kinds": [
+            "s2chain"
+          ],
+          "runs": []
+        },
+        {
+          "pid": 10420,
+          "ppid": 1,
+          "state": "S",
+          "comm": "bash",
+          "kinds": [
+            "arm_waiter.sh"
+          ],
+          "runs": [
+            "stepd_ctrl"
+          ]
+        }
+      ],
+      "results": [
+        {
+          "path": "/workspace/s2/runs/s2_all_il_sA_prep_smoke",
+          "markers": [
+            "DONE",
+            "COPIED"
+          ],
+          "completed_eval_rows": 0,
+          "training_update": 1,
+          "training_done": true
+        },
+        {
+          "path": "/workspace/s2/runs/s2_all_il_sA_smoke",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0,
+          "training_update": 1,
+          "training_done": true
+        },
+        {
+          "path": "/workspace/s2/runs/s2_all_il_sA",
+          "markers": [],
+          "completed_eval_rows": 0,
+          "training_update": 85
+        }
+      ],
+      "stepd": {
+        "d2/D2A_DONE": false,
+        "d2/D2B_DONE": false,
+        "d1/DONE": false,
+        "logs": [
+          {
+            "name": "arm_waiter.log",
+            "mtime": 1792344147.0967658,
+            "tail": [
+              "[arm stepd_ctrl] waiting (pid 10423) 2026-10-18T17:22:27Z"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "host": "64.247.206.76",
+      "port": 14009,
+      "reachable": true,
+      "utc": "2026-10-18T18:11:52.975523+00:00",
+      "keep": true,
+      "free_gib": 27.69,
+      "active_job_parents": [
+        {
+          "pid": 18613,
+          "ppid": 1,
+          "state": "S",
+          "comm": "bash",
+          "kinds": [
+            "run14009_c3"
+          ],
+          "runs": [
+            "cue_ab2"
+          ]
+        },
+        {
+          "pid": 22712,
+          "ppid": 1,
+          "state": "S",
+          "comm": "flock",
+          "kinds": [
+            "arm_waiter.sh"
+          ],
+          "runs": []
+        }
+      ],
+      "results": [
+        {
+          "path": "/workspace/ab2/results_cue_ab2",
+          "markers": [
+            "ALL_DONE",
+            "DONE"
+          ],
+          "completed_eval_rows": 1920,
+          "training_update": 64,
+          "training_done": true
+        },
+        {
+          "path": "/workspace/c3/results_clIII_ref",
+          "markers": [
+            "ALL_DONE",
+            "DONE"
+          ],
+          "completed_eval_rows": 1920
+        },
+        {
+          "path": "/workspace/c3/results_c3_ab",
+          "markers": [],
+          "completed_eval_rows": 310,
+          "training_update": 64,
+          "training_done": true
+        }
+      ],
+      "stepd": {
+        "d2/D2A_DONE": false,
+        "d2/D2B_DONE": false,
+        "d1/DONE": false,
+        "logs": [
+          {
+            "name": "arm_waiter.log",
+            "mtime": 1792345833.8723912,
+            "tail": [
+              "[arm stepd_rebc3] waiting (pid 22714) 2026-10-18T17:50:33Z"
+            ]
+          },
+          {
+            "name": "ref_waiter.log",
+            "mtime": 1792345823.3273432,
+            "tail": [
+              "[ref] waiting (pid 22609) 2026-10-18T17:45:25Z",
+              "[ref] cancelled by the executor: the CLIII fin13 re-score runs on 10757 instead 2026-10-18T17:50:23Z"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "host": "64.247.206.80",
+      "port": 30988,
+      "reachable": true,
+      "utc": "2026-10-18T18:11:52.678143+00:00",
+      "keep": true,
+      "free_gib": 39.5,
+      "active_job_parents": [],
+      "results": [
+        {
+          "path": "/workspace/codex1018/results",
+          "markers": [
+            "ALL_DONE",
+            "DONE"
+          ],
+          "completed_eval_rows": 5760
+        }
+      ],
+      "stepd": {
+        "d2/D2A_DONE": true,
+        "d2/D2B_DONE": false,
+        "d1/DONE": false,
+        "logs": [
+          {
+            "name": "d2/d2.log",
+            "mtime": 1792345144.0752625,
+            "tail": [
+              "[d2a] weights ROW_WEIGHTS_DONE {\"xbow_sides\": 2945, \"boosted_sides\": 645, \"opp_archetypes\": {\"other\": 1544, \"hyperbait\": 199, \"weak_other\": 756, \"pekka_bridge\": 102, \"golem\": 105, \"lava_hound\": 130, \"royal_giant\": 91, \"royal_giant_monk\": 18}, \"boosted_rows\": 81114, \"rows\": 351786",
+              "[d2a] IL-nocue-w s0 + s1 start 2026-10-18T16:40:42Z",
+              "[d2a] done 2026-10-18T17:39:04Z"
+            ]
+          },
+          {
+            "name": "d1_waiter.log",
+            "mtime": 1792347071.0657382,
+            "tail": [
+              "[d1w] cpus free 2026-10-18T18:11:03Z",
+              "[d1w] D1 start RT=fin13-linux 2026-10-18T18:11:03Z",
+              "[d1w] D1 exit 1 2026-10-18T18:11:11Z"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "host": "64.247.206.120",
+      "port": 19834,
+      "reachable": true,
+      "utc": "2026-10-18T18:11:53.146498+00:00",
+      "keep": true,
+      "free_gib": 39.46,
+      "active_job_parents": [
+        {
+          "pid": 9435,
+          "ppid": 1,
+          "state": "S",
+          "comm": "bash",
+          "kinds": [
+            "s2chain"
+          ],
+          "runs": []
+        },
+        {
+          "pid": 10684,
+          "ppid": 1,
+          "state": "S",
+          "comm": "flock",
+          "kinds": [
+            "arm_waiter.sh"
+          ],
+          "runs": []
+        }
+      ],
+      "results": [
+        {
+          "path": "/workspace/s2/runs/s2_all_il_sB_smoke",
+          "markers": [
+            "DONE"
+          ],
+          "completed_eval_rows": 0,
+          "training_update": 1,
+          "training_done": true
+        },
+        {
+          "path": "/workspace/s2/runs/s2_all_il_sB",
+          "markers": [],
+          "completed_eval_rows": 0,
+          "training_update": 92
+        }
+      ],
+      "stepd": {
+        "d2/D2A_DONE": false,
+        "d2/D2B_DONE": false,
+        "d1/DONE": false,
+        "logs": [
+          {
+            "name": "arm_waiter.log",
+            "mtime": 1792344288.7872314,
+            "tail": [
+              "[arm stepd_reb] waiting (pid 10686) 2026-10-18T17:24:48Z"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "host": "64.247.206.79",
+      "port": 10757,
+      "reachable": true,
+      "utc": "2026-10-18T18:11:53.123541+00:00",
+      "keep": true,
+      "free_gib": 38.22,
+      "active_job_parents": [
+        {
+          "pid": 8050,
+          "ppid": 8049,
+          "state": "S",
+          "comm": "bash",
+          "kinds": [
+            "stepd_smoke.sh"
+          ],
+          "runs": []
+        }
+      ],
+      "results": [
+        {
+          "path": "/workspace/c3/results_c3_ctl",
+          "markers": [
+            "ALL_DONE",
+            "DONE"
+          ],
+          "completed_eval_rows": 1920,
+          "training_update": 64,
+          "training_done": true
+        }
+      ],
+      "stepd": {
+        "d2/D2A_DONE": false,
+        "d2/D2B_DONE": false,
+        "d1/DONE": false,
+        "logs": []
+      }
+    },
+    {
+      "host": "64.247.206.79",
+      "port": 19400,
+      "reachable": true,
+      "utc": "2026-10-18T18:11:53.200132+00:00",
+      "keep": true,
+      "free_gib": 39.17,
+      "active_job_parents": [],
+      "results": [
+        {
+          "path": "/workspace/combo/runs/combo_rew",
+          "markers": [],
+          "completed_eval_rows": 0,
+          "training_update": 43
+        },
+        {
+          "path": "/workspace/combo/runs/combo_ctl_c3",
+          "markers": [
+            "SMOKE_PASS",
+            "DONE"
+          ],
+          "completed_eval_rows": 1920,
+          "training_update": 64,
+          "training_done": true
+        },
+        {
+          "path": "/workspace/codex1018_combo_eval/results",
+          "markers": [
+            "ALL_DONE",
+            "DONE"
+          ],
+          "completed_eval_rows": 2880
+        },
+        {
+          "path": "/workspace/codex1018_combo_fresh_rules/results",
+          "markers": [
+            "ALL_DONE",
+            "DONE"
+          ],
+          "completed_eval_rows": 960
+        }
+      ],
+      "stepd": {
+        "d2/D2A_DONE": false,
+        "d2/D2B_DONE": false,
+        "d1/DONE": false,
+        "logs": []
+      }
+    },
+    {
+      "host": "216.81.245.71",
+      "port": 34210,
+      "reachable": true,
+      "utc": "2026-10-18T18:11:52.454883+00:00",
+      "keep": true,
+      "free_gib": 39.24,
+      "active_job_parents": [
+        {
+          "pid": 13918,
+          "ppid": 1,
+          "state": "S",
+          "comm": "flock",
+          "kinds": [
+            "arm_waiter.sh"
+          ],
+          "runs": []
+        }
+      ],
+      "results": [
+        {
+          "path": "/workspace/combo/runs/combo_rew_c3",
+          "markers": [
+            "SMOKE_PASS",
+            "DONE"
+          ],
+          "completed_eval_rows": 1920,
+          "training_update": 64,
+          "training_done": true
+        },
+        {
+          "path": "/workspace/codex1018_combo_eval/results",
+          "markers": [
+            "ALL_DONE",
+            "DONE"
+          ],
+          "completed_eval_rows": 1920
+        },
+        {
+          "path": "/workspace/codex1018_combo_fresh_rules/results",
+          "markers": [
+            "ALL_DONE",
+            "DONE"
+          ],
+          "completed_eval_rows": 1920
+        }
+      ],
+      "stepd": {
+        "d2/D2A_DONE": false,
+        "d2/D2B_DONE": false,
+        "d1/DONE": false,
+        "logs": [
+          {
+            "name": "arm_waiter.log",
+            "mtime": 1792346915.8745134,
+            "tail": [
+              "[arm stepd_ctrl_nos2] waiting (pid 13920) 2026-10-18T18:08:35Z",
+              "[arm stepd_ctrl_nos2] pod free 2026-10-18T18:08:35Z"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "host": "216.81.245.71",
+      "port": 38758,
+      "reachable": false,
+      "current_evidence": "SSH connection refused",
+      "prior_record": "HEAD SESSION HANDOVER says stopped before this worker ticket; no lifecycle action by Codex"
+    },
+    {
+      "host": "81.27.69.177",
+      "port": 23363,
+      "reachable": false,
+      "current_evidence": "SSH connection refused",
+      "prior_record": "HEAD SESSION HANDOVER says stopped before this worker ticket; no lifecycle action by Codex"
+    },
+    {
+      "host": "216.81.245.71",
+      "port": 29286,
+      "reachable": false,
+      "current_evidence": "SSH connection refused",
+      "prior_record": "HEAD SESSION HANDOVER says stopped before this worker ticket; no lifecycle action by Codex"
+    },
+    {
+      "host": "81.27.69.177",
+      "port": 23408,
+      "reachable": false,
+      "current_evidence": "SSH connection refused",
+      "prior_record": "HEAD SESSION HANDOVER says stopped before this worker ticket; no lifecycle action by Codex"
+    }
+  ]
+}
