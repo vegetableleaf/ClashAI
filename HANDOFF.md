@@ -1,3 +1,22 @@
+## 2026-10-18 07:49 EDT -- owner morning decisions; CLIII = new base; combo / ability re-planned from CLIII; pods 23408 stopped
+
+- Owner:
+  - (1) KEEP the IW ability; incorporate it while preserving / improving win rate
+  - (2) the combo reward OK only if the Tornado is used only when a lone Rocket doesn't suffice
+  - (3) finish the deck-conditioned Stage 2 opponents before the budget drops
+  - (4) I stop the released pods; keep 15617, 19899, 13396, 14009
+  - asked why the retrains weren't from CLIII: they predated it (02:40 vs CLIII passing 06:42); from now on new runs start from
+    CLIII raw (05d42da7, live_levels true)
+- Combo: the old combo_rew (CXXXVIII, old reward) had already started on 19400 at 09:16 UTC; I stopped it at u43 / 65 (my error:
+  paused without checking it had started; ~2.5 pod-hours lost; not resumed: non-compliant reward + old base). Worker re-plan:
+  - Tornado counterfactual credit w x ((V_combo - V_lone) - 3)
+  - margin variant of the live rule measured vs the deployed one (CLIII learner, 38758)
+  - combo_ctl_c3 (19400 now) / combo_rew_c3 (34210 after the factorial), both from CLIII + live_levels
+- Ability: cue_ctl2 cancelled. cue_ab2 finishes on 14009. Then from CLIII: c3_ctl (live press in training, rule press) on 10757
+  and c3_ab (+ head with target-centred features, live warm start, sampled decode) on 14009.
+- Pod 81.27.69.177:23408 STOPPED 11:55 UTC (its outputs verified on the laptop). NOTE: the stop ran while 2 job processes were up
+  (the cancelled ctl2): my mistake. New scratchpad/gauntlet/L74/deploy/stop_pod.sh refuses while any job runs; use it for every
+  stop.
 ## 2026-10-18 07:36 EDT -- ICEBOW Mark CLIII: LEVELS LIVE (overnight auto-promote, owner bar CI low > 0); morning report given; owner wants 3-4 pods
 
 - Mark CLIII = CXXXVIII raw + 65 updates with live_levels (succ_levels, seed 74, fork36-linux; grafted edc82ada38e10236).
