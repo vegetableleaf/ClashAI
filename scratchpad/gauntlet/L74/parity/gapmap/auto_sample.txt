@@ -1,0 +1,86 @@
+20261018_013551@2477 | AxeMan | ? | no dossier
+20261018_010615@1936 | BattleRam | ? | no dossier
+20261018_010615@3526 | BattleRam | ? | no dossier
+20261018_031029@1877 | BattleRam | ? | no dossier
+20261018_032854@1957 | Fisherman | ? | no dossier
+20261018_043206@2736 | GoblinBarrel | ? | no dossier
+20261018_023416@2139 | GoblinDrill | ? | no dossier
+20261018_023416@2844 | GoblinDrill | ? | no dossier
+20261017_233834@3022 | Log | ? | no dossier
+20261018_023416@3549 | Log | ? | no dossier
+20261018_041217@2427 | Log | ? | no dossier
+20261017_233834@2117 | MinionHorde | ? | no dossier
+20261018_005312@3000 | RageBarbarian | ? | no dossier
+20261018_031645@2765 | Rocket | ? | no dossier
+20261017_235844@2849 | RoyalHogs | ? | no dossier
+20261018_034030@3020 | RoyalHogs | ? | no dossier
+20261018_024251@2403 | SkeletonBalloon | ? | no dossier
+20261018_041217@1787 | SkeletonBalloon | ? | no dossier
+20261018_033525@4527 | SkeletonWarriors | ? | no dossier
+20261018_043206@3032 | Valkyrie | ? | no dossier
+20261018_014537@1603 | Vines | ? | no dossier
+20261017_231623@1851 | Xbow | ? | no dossier
+20261017_233146@2870 | Xbow | ? | no dossier
+20261017_234150@370 | Xbow | ? | no dossier
+20261018_000828@342 | Xbow | ? | no dossier
+20261018_031645@1143 | Xbow | ? | no dossier
+20261018_031645@2140 | Xbow | ? | no dossier
+20261018_031645@4193 | Xbow | ? | no dossier
+20261018_041217@2112 | Xbow | ? | no dossier
+20261018_045719@3052 | Xbow | ? | no dossier
+20261017_115914@1174 | BattleRam | D | +154 hp T0L/0 (own) [3591, 3312]
+20261017_204920@663 | BlowdartGoblin | D | +94 hp T1R/1 (own) [3541, 3576]
+20261017_123716@2132 | ElectroDragon | D | +8 hp Skeletons/0 (opp) [1, 81]
+20261017_204223@2769 | ElixirGolem | D | +72 hp ElixirGolem/0 (opp) [686, 205]
+20261017_204223@3789 | ElixirGolem | D | +120 hp ElixirGolem*/0 (anchor) [542, 893]
+20261017_131742@664 | GoblinDrill | D | +4 hp GoblinDemolisher/0 (opp) [56, 66]
+20261017_204602@1631 | Log | D | +12 hp Witch/0 (own) [1341, 1243]
+20261017_180704@4444 | Mortar | D | +11 hp T1R/1 (own) [1445, 1870]
+20261017_161141@2991 | Ronin | D | +4 hp Tesla/1 (own) [1438, 1724]
+20261017_175054@1232 | RoyalHogs | D | +55 hp Bats/1 (opp) [130, 19]
+20261017_180311@3001 | RoyalHogs | D | +84 hp RoyalHogs*/0 (anchor) [1207, 1337]
+20261017_223547@353 | SkeletonBalloon | D | +128 hp T1K/1 (own) [6939, 7032]
+20261017_221306@1856 | SkeletonWarriors | D | +15 hp Knight/1 (own) [1198, 1183]
+20261017_120801@2375 | WitchMother | D | +6 hp Knight/1 (own) [2662, 2422]
+20261017_203510@2476 | Xbow | D | +98 hp Xbow*/1 (anchor) [1510, 1410]
+20261017_183905@2063 | AngryBarbarians | IWCUBE | +12 gone_sim IceWizard/0 (own) [386]
+20261017_175947@2836 | ElectroWizard | IWCUBE | +16 gone_sim IceWizard/1 (own) [386]
+20261017_134527@3331 | RamRider | IWCUBE | +79 gone_sim IceWizard/0 (own) [352]
+20261017_175410@1263 | SkeletonBalloon | IWCUBE | +114 gone_sim IceWizard/1 (own) [352]
+20261017_131742@2083 | GoblinDrill | K | +11 gone_sim GoblinDrill*/0 (anchor) [4090]
+20261017_131742@216 | GoblinDrill | K | +11 gone_sim GoblinDrill*/0 (anchor) [4090]
+20261017_140050@1153 | GoblinDrill | K | +10 gone_sim GoblinDrill*/1 (anchor) [4090]
+20261017_140050@2426 | GoblinDrill | K | +10 gone_sim GoblinDrill*/1 (anchor) [4090]
+20261017_192835@3270 | Log | K | +44 gone_sim Witch/0 (own) [130]
+20261017_205409@5345 | Log | K | +12 gone_sim BlowdartGoblin/0 (own) [259]
+20261017_203827@232 | RoyalHogs | K | +67 gone_sim Skeletons/1 (own) [130]
+20261017_105331@2974 | Skeletons | K | +109 gone_sim Skeletons*/0 (anchor) [108]
+20261017_141425@640 | Tombstone | K | +204 gone_live Tombstone*/0 (anchor) [588]
+20261017_215605@2487 | WitchMother | K | +15 gone_live Skeletons/1 (own) [130]
+20261017_225137@2801 | Xbow | K | +88 gone_sim GoblinHut/0 (own) [193]
+20261017_115914@3525 | BattleRam | P | +74 pos BattleRam*/1 (anchor) [[4507, 14887], [4051, 14639]]
+20261017_205055@2304 | Berserker | P-other | +8 pos Skeletons/1 (own) [[13429, 12119], [14270, 12061]]
+20261017_171439@3080 | BlowdartGoblin | P-other | +80 pos GoblinGang/0 (opp) [[14192, 16684], [13489, 16532]]
+20261017_183220@1919 | BlowdartGoblin | P-other | +19 pos Knight/0 (own) [[4746, 12708], [5621, 12771]]
+20261017_183220@2821 | BlowdartGoblin | P-other | +24 pos MegaKnight/1 (opp) [[3289, 16534], [2499, 17499]]
+20261017_144756@575 | Bowler | P-other | +61 pos Witch/0 (opp) [[14334, 12795], [14669, 12385]]
+20261017_205055@2344 | FireSpirits | P-other | +12 pos Berserker/0 (opp) [[14224, 14606], [14828, 14962]]
+20261017_210407@2779 | MinionHorde | P-other | +36 pos Witch/1 (opp) [[13000, 16500], [12480, 17000]]
+20261017_114028@4285 | Musketeer | P-other | +10 pos GoblinGang/1 (opp) [[14784, 15303], [14044, 15604]]
+20261017_175410@290 | SkeletonBalloon | P-other | +98 pos Witch/0 (opp) [[14818, 11635], [15273, 11863]]
+20261017_205409@2772 | SkeletonBalloon | P-other | +6 pos Knight/1 (own) [[14268, 18796], [14088, 17715]]
+20261017_205923@256 | SkeletonBalloon | P-other | +140 pos IceWizard/1 (own) [[1372, 24195], [962, 23607]]
+20261017_141825@1301 | SkeletonWarriors | P-other | +4 pos Skeletons/1 (own) [[10903, 10572], [12394, 12918]]
+20261017_195826@2620 | BlowdartGoblin | T | +34 tgt BlowdartGoblin*/1 (anchor) ['Tesla:845248', None]
+20261017_222222@2545 | ElixirGolem | T | +146 tgt Xbow/1 (own) ['ElixirGolem:4e32cd', 'T0R:T0R']
+20261017_214720@3758 | GoblinHut | T | +4 tgt Xbow/1 (own) [None, 'FirespiritHut:b18242']
+20261017_113130@2784 | Log | T | +4 tgt RoyalRecruits/0 (own) ['Tesla:b8b55d', 'Xbow:b12958']
+20261017_152050@3475 | Log | T | +4 tgt Pekka/0 (own) [None, 'IceWizard:263c56']
+20261017_201510@3524 | RoyalHogs | T | +12 tgt IceWizard/1 (own) ['T0L:T0L', 'RoyalRecruits:91afdd']
+20261017_121156@591 | SkeletonWarriors | T | +18 tgt Tesla/1 (own) ['Ghost:5f6b00', 'SkeletonWarriors:5cf08a']
+20261017_152050@2304 | SkeletonWarriors | T | +1 tgt GoblinGiant/0 (opp) ['T1R:T1R', 'Skeletons:520013']
+20261017_105856@2218 | WitchMother | T | +67 tgt Knight/0 (own) ['T1R:T1R', 'Witch:s11']
+20261017_143723@1716 | WitchMother | T | +147 tgt Xbow/1 (own) ['a3275bcfbbc0.1:a3275b', 'WitchMother:s8']
+20261017_215248@3157 | WitchMother | T | +86 tgt Tesla/1 (own) ['dfda50194d6a.1:dfda50', 'WitchMother:s10']
+20261017_211745@4271 | Xbow | T | +154 tgt Assassin/0 (own) ['Tesla:39ed74', None]
+Counter({'?': 30, 'D': 15, 'T': 12, 'P-other': 12, 'K': 11, 'IWCUBE': 4, 'P': 1})

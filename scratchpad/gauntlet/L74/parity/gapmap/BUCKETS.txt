@@ -1,0 +1,10 @@
+bucket | failing fights | miss mass | share of mass | recoverable to ceiling
+r7b | 127 | 117.6 | 0.177 | 110.4
+opp tier B (not r7d) | 129 | 116.6 | 0.176 | 98.5
+r7a | 95 | 91.8 | 0.138 | 87.1
+r7d | 104 | 88.9 | 0.134 | 75.9
+opp below tier C | 92 | 82.9 | 0.125 | 76.6
+r7c | 77 | 68.8 | 0.104 | 63.9
+opp tier C only | 63 | 56.2 | 0.085 | 49.3
+own other (X-Bow, Log) | 49 | 41.4 | 0.062 | 35.0
+TOTAL | 736 | 664.1 | 1 | 596.6

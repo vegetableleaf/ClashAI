@@ -1,0 +1,77 @@
++1 d: free (MEETS today or data-limited) 0.2080 of plays = 0.250 of tier B; gap to 0.90: 0.5399 of plays
+error-limited cards to FIX (largest share first): 23, 0.5403 of plays
+  own Skeletons | share 0.1055 | n 737 | p 0.876 -> p_need 0.962 | deficit 63.6 fights
+  own IceWizard hero | share 0.1034 | n 845 | p 0.936 -> p_need 0.959 | deficit 20.0 fights
+  own Knight | share 0.0741 | n 577 | p 0.933 -> p_need 0.962 | deficit 16.6 fights
+  own Tesla | share 0.0576 | n 554 | p 0.914 -> p_need 0.962 | deficit 26.9 fights
+  own Tornado | share 0.0373 | n 138 | p 0.971 -> p_need 0.972 | deficit 0.1 fights
+  own Knight evo | share 0.0276 | n 214 | p 0.894 -> p_need 0.968 | deficit 15.8 fights
+  own Tesla evo | share 0.0203 | n 157 | p 0.903 -> p_need 0.971 | deficit 10.7 fights
+  own Rocket | share 0.0166 | n 74 | p 0.954 -> p_need 0.976 | deficit 1.6 fights
+  opp HogRider | share 0.0121 | n 147 | p 0.931 -> p_need 0.967 | deficit 5.3 fights
+  opp Skeletons | share 0.0096 | n 114 | p 0.965 -> p_need 0.978 | deficit 1.4 fights
+  opp Firecracker | share 0.0093 | n 111 | p 0.958 -> p_need 0.972 | deficit 1.5 fights
+  opp Valkyrie | share 0.0074 | n 85 | p 0.953 -> p_need 0.977 | deficit 2.0 fights
+  opp SkeletonArmy | share 0.0073 | n 66 | p 0.858 -> p_need 0.982 | deficit 8.2 fights
+  opp GoblinGang | share 0.0069 | n 59 | p 0.818 -> p_need 0.983 | deficit 9.7 fights
+  opp MiniPekka hero | share 0.0061 | n 35 | p 0.900 -> p_need 0.983 | deficit 2.9 fights
+  opp MegaKnight | share 0.0060 | n 85 | p 0.965 -> p_need 0.974 | deficit 0.8 fights
+  opp Princess | share 0.0059 | n 64 | p 0.979 -> p_need 0.979 | deficit 0.0 fights
+  opp Miner | share 0.0057 | n 36 | p 0.875 -> p_need 0.984 | deficit 3.9 fights
+  opp Prince | share 0.0049 | n 25 | p 0.960 -> p_need 0.983 | deficit 0.6 fights
+  opp ElectroSpirit | share 0.0048 | n 76 | p 0.974 -> p_need 0.975 | deficit 0.1 fights
+  opp Wallbreakers | share 0.0044 | n 18 | p 0.944 -> p_need 0.989 | deficit 0.8 fights
+  opp Cannon | share 0.0039 | n 49 | p 0.967 -> p_need 0.982 | deficit 0.8 fights
+  opp MiniPekka | share 0.0039 | n 29 | p 0.897 -> p_need 0.986 | deficit 2.6 fights
+reachable but not needed: 1 cards, 0.0032 of plays (spare)
+unreachable: 17 cards, 0.0790: opp Witch, opp BlowdartGoblin, opp ElixirGolem, opp SkeletonBalloon, opp Bats, opp GoldenKnight, opp AngryBarbarians, opp ElectroWizard, opp SkeletonKing, opp Witch evo, opp RoyalHogs, opp Minions, opp RageBarbarian, opp MinionHorde, opp FireSpirits, opp Balloon hero, opp Ghost
+free cards: opp GoblinBarrel, opp Graveyard, opp Tesla, opp InfernoDragon, opp Knight
+
++3 d: free (MEETS today or data-limited) 0.2560 of plays = 0.308 of tier B; gap to 0.90: 0.4919 of plays
+error-limited cards to FIX (largest share first): 20, 0.4939 of plays
+  own Skeletons | share 0.1055 | n 737 | p 0.876 -> p_need 0.958 | deficit 61.1 fights
+  own IceWizard hero | share 0.1034 | n 845 | p 0.936 -> p_need 0.957 | deficit 17.8 fights
+  own Knight | share 0.0741 | n 577 | p 0.933 -> p_need 0.958 | deficit 14.7 fights
+  own Tesla | share 0.0576 | n 554 | p 0.914 -> p_need 0.959 | deficit 25.0 fights
+  own Knight evo | share 0.0276 | n 214 | p 0.894 -> p_need 0.963 | deficit 14.7 fights
+  own Tesla evo | share 0.0203 | n 157 | p 0.903 -> p_need 0.965 | deficit 9.8 fights
+  own Rocket | share 0.0166 | n 74 | p 0.954 -> p_need 0.969 | deficit 1.1 fights
+  opp HogRider | share 0.0121 | n 147 | p 0.931 -> p_need 0.962 | deficit 4.6 fights
+  opp Skeletons | share 0.0096 | n 114 | p 0.965 -> p_need 0.970 | deficit 0.5 fights
+  opp Firecracker | share 0.0093 | n 111 | p 0.958 -> p_need 0.966 | deficit 0.8 fights
+  opp Valkyrie | share 0.0074 | n 85 | p 0.953 -> p_need 0.969 | deficit 1.4 fights
+  opp SkeletonArmy | share 0.0073 | n 66 | p 0.858 -> p_need 0.973 | deficit 7.6 fights
+  opp GoblinGang | share 0.0069 | n 59 | p 0.818 -> p_need 0.973 | deficit 9.2 fights
+  opp MiniPekka hero | share 0.0061 | n 35 | p 0.900 -> p_need 0.974 | deficit 2.6 fights
+  opp MegaKnight | share 0.0060 | n 85 | p 0.965 -> p_need 0.967 | deficit 0.2 fights
+  opp Miner | share 0.0057 | n 36 | p 0.875 -> p_need 0.974 | deficit 3.6 fights
+  opp Bats | share 0.0053 | n 84 | p 0.768 -> p_need 0.977 | deficit 17.6 fights
+  opp Prince | share 0.0049 | n 25 | p 0.960 -> p_need 0.974 | deficit 0.3 fights
+  opp Wallbreakers | share 0.0044 | n 18 | p 0.944 -> p_need 0.978 | deficit 0.6 fights
+  opp ElectroWizard | share 0.0041 | n 29 | p 0.909 -> p_need 0.977 | deficit 2.0 fights
+reachable but not needed: 7 cards, 0.0250 of plays (spare)
+unreachable: 11 cards, 0.0556: opp Witch, opp BlowdartGoblin, opp ElixirGolem, opp SkeletonBalloon, opp GoldenKnight, opp AngryBarbarians, opp SkeletonKing, opp Witch evo, opp RoyalHogs, opp MinionHorde, opp Ghost
+free cards: own Tornado, opp GoblinBarrel, opp Graveyard, opp Princess, opp ElectroSpirit, opp Tesla, opp InfernoDragon, opp Knight
+
++7 d: free (MEETS today or data-limited) 0.2755 of plays = 0.332 of tier B; gap to 0.90: 0.4724 of plays
+error-limited cards to FIX (largest share first): 17, 0.4752 of plays
+  own Skeletons | share 0.1055 | n 737 | p 0.876 -> p_need 0.956 | deficit 59.3 fights
+  own IceWizard hero | share 0.1034 | n 845 | p 0.936 -> p_need 0.955 | deficit 16.2 fights
+  own Knight | share 0.0741 | n 577 | p 0.933 -> p_need 0.956 | deficit 13.3 fights
+  own Tesla | share 0.0576 | n 554 | p 0.914 -> p_need 0.956 | deficit 23.6 fights
+  own Knight evo | share 0.0276 | n 214 | p 0.894 -> p_need 0.959 | deficit 13.9 fights
+  own Tesla evo | share 0.0203 | n 157 | p 0.903 -> p_need 0.961 | deficit 9.1 fights
+  own Rocket | share 0.0166 | n 74 | p 0.954 -> p_need 0.963 | deficit 0.7 fights
+  opp HogRider | share 0.0121 | n 147 | p 0.931 -> p_need 0.959 | deficit 4.1 fights
+  opp Firecracker | share 0.0093 | n 111 | p 0.958 -> p_need 0.961 | deficit 0.3 fights
+  opp Valkyrie | share 0.0074 | n 85 | p 0.953 -> p_need 0.964 | deficit 0.9 fights
+  opp SkeletonArmy | share 0.0073 | n 66 | p 0.858 -> p_need 0.967 | deficit 7.2 fights
+  opp GoblinGang | share 0.0069 | n 59 | p 0.818 -> p_need 0.967 | deficit 8.8 fights
+  opp MiniPekka hero | share 0.0061 | n 35 | p 0.900 -> p_need 0.967 | deficit 2.3 fights
+  opp Miner | share 0.0057 | n 36 | p 0.875 -> p_need 0.967 | deficit 3.3 fights
+  opp SkeletonBalloon | share 0.0053 | n 36 | p 0.556 -> p_need 0.978 | deficit 15.2 fights
+  opp Bats | share 0.0053 | n 84 | p 0.768 -> p_need 0.969 | deficit 16.9 fights
+  opp Prince | share 0.0049 | n 25 | p 0.960 -> p_need 0.967 | deficit 0.2 fights
+reachable but not needed: 10 cards, 0.0362 of plays (spare)
+unreachable: 8 cards, 0.0436: opp Witch, opp BlowdartGoblin, opp ElixirGolem, opp GoldenKnight, opp AngryBarbarians, opp SkeletonKing, opp Witch evo, opp RoyalHogs
+free cards: own Tornado, opp GoblinBarrel, opp Skeletons, opp Graveyard, opp MegaKnight, opp Princess, opp ElectroSpirit, opp Tesla, opp Cannon, opp InfernoDragon, opp Knight

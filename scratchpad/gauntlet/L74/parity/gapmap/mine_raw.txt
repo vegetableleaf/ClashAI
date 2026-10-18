@@ -1,0 +1,87 @@
+# gapmap hand labels of the unlabeled-sample fights (FIN12_stamped; K=0 dossiers divS/ = r7d div.py on cb12 + rsfork_fin11 +
+# exports 11; read in SAMPLE_VIEW.txt). key | class | lever | first divergence (t0 + ticks) / why
+20261017_105856@2218 | H? | H Witch Mother cursed-hog child view | SIM card view has one more own body than live (L [None] S [None, None]); 5/5 Witch Mother fights show it
+20261017_120801@2375 | H? | H Witch Mother cursed-hog child view | L [2570] S [2570, None]: extra SIM-only own body
+20261017_143723@1716 | H? | H Witch Mother cursed-hog child view | L [None] S [1893, None]
+20261017_215248@3157 | H? | H Witch Mother cursed-hog child view | L [None] S [3274, None]
+20261017_215605@2487 | H? | H Witch Mother cursed-hog child view | L [None] S [None, None]; also tower 537/1257
+20261017_113130@2784 | H? | H shield state at t0 (3c field) | +8 Royal Recruits pos then +12 a recruit dies in the SIM (173 hp) that lives 485 live; setup_shield_broken
+20261017_152050@3475 | U? | U t0 target state (unresolved / unseen target) | +4 Pekka target live None / SIM our IW; setup_p3_target_unresolved
+20261017_192835@3270 | S? | S swarm / walker movement (new bodies) | +44 Witch skeleton gone in the SIM, +46/48 skeleton positions 700 mt off: the Log's hit set differs
+20261017_204602@1631 | S? | S target pick (acquisition / retarget) | +4 our X-Bow takes another Witch skeleton (sibling tie), +12 hp 32 vs 130: the Log kills differ
+20261017_205409@5345 | S? | S unresolved hit / death timing | +12 the Log kills the Blowdart Goblin (259 hp) in the SIM only
+20261017_115914@1174 | H? | H Hero IW cube / press date | +154 Hero IW cube gone in the SIM (352); tower 1049/1328
+20261017_115914@3525 | S? | S swarm / walker movement (new bodies) | +74 the Battle Ram 500 mt off (charge path), death 112 ticks apart
+20261017_121156@591 | S? | S/H Royal Ghost visibility | +18 our Tesla takes the Ghost live, Guards in the SIM (setup_ghost_revealed): r5b family
+20261017_141825@1301 | U? | U/H set-up walker movement state | +4 our set-up Skeleton 2 tiles off, gone live at +8
+20261017_152050@2304 | U? | U t0 target state (unresolved / unseen target) | +1 Goblin Giant target live tower / SIM a Skeleton
+20261017_221306@1856 | S? | S swarm / walker movement (new bodies) | +57 Guards 700 mt off (new bodies)
+20261017_131742@216 | S? | S/H Goblin Drill tunnel + spawn waves | +11 the drill body (4090) gone in the SIM; SIM view has 8 bodies vs live 5; 12/12 Goblin Drill fights fail
+20261017_131742@664 | S? | S/H Goblin Drill tunnel + spawn waves | same: +10 drill gone in the SIM, 8 vs 6 bodies
+20261017_131742@2083 | S? | S/H Goblin Drill tunnel + spawn waves | same
+20261017_140050@1153 | S? | S/H Goblin Drill tunnel + spawn waves | same
+20261017_140050@2426 | S? | S/H Goblin Drill tunnel + spawn waves | same
+20261017_171439@3080 | S? | S swarm / walker movement (new bodies) | +80 Goblin Gang 700 mt off, +160 Blowdart pos; dies live only
+20261017_183220@1919 | S? | S Mega Knight jump / landing / stand | +19 our Knight 900 mt off (MK jump push), +41 MK hp, +91 MK target Tesla vs Knight
+20261017_183220@2821 | S? | S Mega Knight jump / landing / stand | +24 MK 1300 mt off + target (sibling skeletons)
+20261017_195826@2620 | S? | S Tesla hide / under-damage | +34 the Blowdart takes our just-deployed Tesla live, nothing in the SIM (post-deploy hide, r5b family); Ghost flags too
+20261017_204920@663 | N | N noise (perturbation-sensitive) | only +94 tower 3541/3576; card views equal unperturbed; perturbed replays disagree (aK .375)
+20261017_175054@1232 | S? | S unresolved hit / death timing | +55 bat hp 130/19 (our IW splash), 3rd hog death 18 ticks apart
+20261017_201510@3524 | S? | S swarm / walker movement (new bodies) | +12 Royal Recruits 700 mt off, +47 recruit targets
+20261017_203827@232 | S? | S unresolved hit / death timing | +67 three of our Skeletons die early in the SIM
+20261017_175410@290 | S? | S target pick (acquisition / retarget) | +98 a Witch skeleton pos; +170 the balloon takes our IW (SIM) vs the tower (live): tower 260/390
+20261017_175410@1263 | H? | H Hero IW cube / press date | +114 Hero IW cube gone in the SIM (352)
+20261017_205409@2772 | U? | U/H set-up walker movement state | +6 our set-up Knight 1000 mt off
+20261017_205923@256 | S? | S target pick (acquisition / retarget) | +146 the balloon takes another IW (sibling) / skeleton; 4 dropped skeletons die together in the SIM
+20261017_223547@353 | S? | S spawner / death-spawn counts and positions | +164 the balloon's dropped skeletons 1000-1700 mt off (death-drop scatter)
+20261017_203510@2476 | S? | S target pick (acquisition / retarget) | +120 our X-Bow takes the enemy Tesla live / the Archer in the SIM; tower 51/1031
+20261017_211745@4271 | S? | S target pick (acquisition / retarget) | +154 the Assassin takes our Tesla live / nothing in the SIM, then +156 pos
+20261017_225137@2801 | S? | S/H unpaired body first (spawn point / pairing) | +76 our X-Bow's Goblin Hut target is a SIM-only body (s14); tower 1862/0
+20261017_134527@3331 | H? | H Hero IW cube / press date | +79 Hero IW cube gone in the SIM (352)
+20261017_141425@640 | S? | S spawner / death-spawn counts and positions | Hero Tombstone: live 12 bodies, SIM 8 (fewer skeletons spawned)
+20261017_180311@3001 | S? | S swarm / walker movement (new bodies) | +84 evo Royal Hogs 850 mt off (jump path)
+20261017_183905@2063 | H? | H Hero IW cube / press date | +12 Hero IW cube gone in the SIM (386)
+20261017_105331@2974 | S? | S unresolved hit / death timing | +109 an opp skeleton (108 hp) gone early in the SIM
+20261017_205055@2344 | S? | S swarm / walker movement (new bodies) | +12 Berserker / +14 Fire Spirits 700 mt off (spirit jump path)
+20261017_144756@575 | S? | S swarm / walker movement (new bodies) | +61..98 Witch skeletons 400-1100 mt off, then Tesla target
+20261017_204223@3789 | S? | S unresolved hit / death timing | +120 Elixir Golem hp 542/893, split 20 ticks apart
+20261017_180704@4444 | H? | H shot in flight at t0 (skipped / targetless) | +11 tower 1445/1870: an in-flight Mortar shell not seeded (setup_shot_skipped:no_template)
+20261017_123716@2132 | H? | H/S status buff unset at t0 (status_unset) | +8 our Skeletons hp 1 live / 81 SIM; status_unset SkeletonDuplication_EV1 (r6d saw the same match)
+20261017_205055@2304 | U? | U/H set-up walker movement state | +8 our set-up Skeleton 850 mt off
+20261017_222222@2545 | S? | S/H unpaired body first (spawn point / pairing) | Elixir Golem pieces: live 10 bodies, SIM 7
+20261017_210407@2779 | S? | S swarm / walker movement (new bodies) | +36 Witch skeleton pos, +92 horde hp 116/234
+20261017_175947@2836 | H? | H Hero IW cube / press date | +16 Hero IW cube gone in the SIM (386)
+20261017_114028@4285 | S? | S swarm / walker movement (new bodies) | +10 Goblin Gang 750 mt off
+20261017_204223@2769 | S? | S unresolved hit / death timing | +72 Elixir Golem piece hp 686/205
+20261017_161141@2991 | H? | H shot in flight at t0 (skipped / targetless) | +4 our Tesla 1438/1724 (a hit live at t0+4 the SIM lacks; setup_shot_targetless), +6 Knight pos
+20261017_214720@3758 | U? | U t0 target state (unresolved / unseen target) | +4 our X-Bow target live None / SIM the Firespirit Hut; setup_p3_target_unresolved
+20261017_233834@3022 | U? | U/H set-up walker movement state | +2 a set-up Barbarian 630 mt off, +8 Hog Rider; then targets
+20261018_023416@3549 | S? | S unresolved hit / death timing | nothing before +116 (Log hit set: Firecracker gone in the SIM at +128)
+20261018_041217@2427 | U? | U other reader gaps (hp -1 overheal, unseen hit) | +9 a 1674-hp Mini PEKKA (deployed +5) gone live, not in the SIM: a body the reader lost
+20261018_010615@1936 | S? | S target pick (acquisition / retarget) | +22 our Tesla takes another Barbarian (sibling tie), hp splits follow
+20261018_010615@3526 | H? | H Hero IW cube / press date | +28 Hero IW cube gone in the SIM (352)
+20261018_031029@1877 | U? | U unseen opp spell / hit at t0 | +18 our tower 508 live / 1366 SIM: an 858 hit the SIM never sees
+20261018_033525@4527 | S? | S Mega Knight jump / landing / stand | +18 Mega Knight 1000 mt off (jump), targets follow
+20261017_235844@2849 | H? | H shot in flight at t0 (skipped / targetless) | +4 tower 1049/1474 (425 hit live only at t0+4)
+20261018_034030@3020 | H? | H/S status buff unset at t0 (status_unset) | +33 evo Barbarians 570 mt off; status_unset Barbarian_EVO_Rage
+20261017_231623@1851 | S? | S unresolved hit / death timing | +108 a Skeleton death live only, +190 X-Bow hp 399/705; tower 1372/1666
+20261017_233146@2870 | H? | H shot in flight at t0 (skipped / targetless) | +5 our Knight 1445/1231 at t0+5, then Skeleton Army takes a SIM-only skeleton
+20261017_234150@370 | S? | S swarm / walker movement (new bodies) | +104 our Skeleton 800 mt off; tower 1325/2011
+20261018_000828@342 | S? | S target pick (acquisition / retarget) | +74 our X-Bow takes a Skeleton live / the tower in the SIM
+20261018_031645@1143 | S? | S/H building lifetime (X-Bow / Tombstone) | X-Bow dies 40 ticks early in the SIM (hp 255/40 at +106); same signature on 3 X-Bow fights of this match
+20261018_031645@2140 | S? | S/H building lifetime (X-Bow / Tombstone) | X-Bow dies 50 ticks early in the SIM (hp 276/61 at +100)
+20261018_031645@4193 | S? | S/H building lifetime (X-Bow / Tombstone) | X-Bow dies 38 ticks early in the SIM (first divergence a Hero IW cube at +29)
+20261018_041217@2112 | S? | S unresolved hit / death timing | +152 our Skeleton gone in the SIM, Skeleton Army targets; X-Bow death 14 ticks apart
+20261018_045719@3052 | S? | S/H building lifetime (X-Bow / Tombstone) | +120 X-Bow hp 2155/2424, +122 the opp Tombstone (32 hp) gone live, alive in the SIM
+20261018_013551@2477 | S? | S/H unpaired body first (spawn point / pairing) | +9 a Firespirit Hut 960 mt off (a building: wrong pairing), setup_spawner_unseen
+20261018_024251@2403 | S? | S spawner / death-spawn counts and positions | live 7 dropped skeletons at 2508, the SIM none
+20261018_014537@1603 | S? | S other laws | Vines (new card): +35 our Skeletons' target, +53 deaths
+20261018_023416@2139 | S? | S/H Goblin Drill tunnel + spawn waves | +60 drill gone in the SIM; 5 vs 4 bodies
+20261017_233834@2117 | S? | S swarm / walker movement (new bodies) | +68 Minion Horde 500-900 mt off
+20261018_031645@2765 | H? | H shot in flight at t0 (skipped / targetless) | +4 X-Bow 1905/2142 (a hit at t0+4 the SIM lacks)
+20261018_023416@2844 | S? | S/H Goblin Drill tunnel + spawn waves | +24 drill gone in the SIM (+6 a set-up Knight 900 mt off first)
+20261018_043206@2736 | S? | S target pick (acquisition / retarget) | +4 Skeleton Army takes our Skeletons in the SIM / the tower live
+20261018_005312@3000 | S? | S target pick (acquisition / retarget) | +8 our Knight takes the Rage Barbarian live / the Royal Giant in the SIM
+20261018_032854@1957 | S? | S Tesla hide / under-damage | +4 Royal Giant takes our Tesla live / the tower in the SIM (setup_tesla_hidden)
+20261018_043206@3032 | S? | S unresolved hit / death timing | +14 Witch hp 802/557
+20261018_041217@1787 | S? | S unresolved hit / death timing | +88 our Tesla (92 hp) gone live only; balloon retargets

@@ -1,0 +1,13 @@
+ALL: strict 8858 ; blocked by ONE blocker only 4645
+  opp_ability_unobserved: on 2152 fights, the ONLY blocker on 1453
+  spell_in_flight_at_start: on 2141 fights, the ONLY blocker on 1283
+  setup_child_skipped: on 1184 fights, the ONLY blocker on 586
+  ability_active_at_start: on 635 fights, the ONLY blocker on 247
+  play_refused: on 601 fights, the ONLY blocker on 278
+  sim_game_over: on 465 fights, the ONLY blocker on 224
+  setup_spawn_refused: on 408 fights, the ONLY blocker on 175
+  setup_was_deploying: on 346 fights, the ONLY blocker on 95
+  setup_mid_jump: on 315 fights, the ONLY blocker on 182
+  event_card_missing: on 229 fights, the ONLY blocker on 94
+  setup_unmapped_body: on 138 fights, the ONLY blocker on 12
+  spell_spawned_units_timing_unknown: on 51 fights, the ONLY blocker on 16

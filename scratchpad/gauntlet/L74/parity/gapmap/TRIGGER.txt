@@ -1,0 +1,71 @@
+cohort: 8858 strict fights in 265 matches; accrual 240.0 matches/day (stamped share ~100%)
+OVERALL raw 0.9250 lower CI 0.9176 (goal 0.975); ceiling 0.9911; design effect f 1.68
+OVERALL raw needed for lower CI >= 0.975: 0d (n 8858) 0.9792, 1d (n 16880) 0.9781, 3d (n 32925) 0.9772, 7d (n 65014) 0.9766
+  = share of the EXCESS miss mass (above the noise floor) that must be removed: 0d 82%, 1d 80%, 3d 79%, 7d 78%
+tier B: 61 cards = 0.8310 of live plays; 90% needs 0.7479 of plays on MEETING cards
+pooled design effect (median over tier-B cards with misses, n >= 30): 0.66
+
+card | share | n | /match | raw p | lower CI | ceiling | f | p_need now | +1d | +3d | +7d | days to meet at this p | limit
+own Skeletons | 0.1055 | 737 | 2.781 | 0.876 | 0.849 | 0.993 | 1.07 | 0.966 | 0.962 | 0.958 | 0.956 | - | error
+own IceWizard hero | 0.1034 | 845 | 3.189 | 0.936 | 0.920 | 0.993 | 0.75 | 0.963 | 0.959 | 0.957 | 0.955 | - | error
+own Log | 0.0873 | 726 | 2.740 | 0.973 | 0.962 | 0.994 | 0.67 | 0.963 | 0.959 | 0.957 | 0.955 | 0.0 | MEETS
+own Knight | 0.0741 | 577 | 2.177 | 0.933 | 0.912 | 0.995 | 0.82 | 0.966 | 0.962 | 0.958 | 0.956 | - | error
+own Tesla | 0.0576 | 554 | 2.091 | 0.914 | 0.889 | 0.995 | 0.86 | 0.967 | 0.962 | 0.959 | 0.956 | - | error
+own Xbow | 0.0572 | 664 | 2.506 | 0.967 | 0.952 | 0.995 | 0.86 | 0.965 | 0.961 | 0.958 | 0.956 | 0.0 | MEETS
+own Tornado | 0.0373 | 138 | 0.521 | 0.971 | 0.938 | 0.992 | 0.67 | 0.980 | 0.972 | 0.965 | 0.961 | 1.1 | data (1.1 d)
+own Knight evo | 0.0276 | 214 | 0.808 | 0.894 | 0.854 | 0.995 | 0.72 | 0.975 | 0.968 | 0.963 | 0.959 | - | error
+own Tesla evo | 0.0203 | 157 | 0.592 | 0.903 | 0.856 | 0.997 | 0.73 | 0.979 | 0.971 | 0.965 | 0.961 | - | error
+own Rocket | 0.0166 | 74 | 0.279 | 0.954 | 0.906 | 0.985 | 0.53 | 0.986 | 0.976 | 0.969 | 0.963 | 73.1 | error
+opp HogRider | 0.0121 | 147 | 0.555 | 0.931 | 0.898 | 0.978 | 0.46 | 0.974 | 0.967 | 0.962 | 0.959 | - | error
+opp GoblinBarrel | 0.0098 | 93 | 0.351 | 0.978 | 0.942 | 0.995 | 0.59 | 0.984 | 0.975 | 0.968 | 0.963 | 0.5 | data (0.5 d)
+opp Skeletons | 0.0096 | 114 | 0.430 | 0.965 | 0.917 | 1.000 | 0.90 | 0.988 | 0.978 | 0.970 | 0.964 | 6.1 | data (6.1 d)
+opp Firecracker | 0.0093 | 111 | 0.419 | 0.958 | 0.921 | 0.981 | 0.56 | 0.980 | 0.972 | 0.966 | 0.961 | 13.5 | error
+opp IceSpirits | 0.0082 | 79 | 0.298 | 0.987 | 0.954 | 1.000 | 0.52 | 0.985 | 0.975 | 0.968 | 0.963 | 0.0 | MEETS
+opp Witch | 0.0080 | 119 | 0.449 | 0.818 | 0.751 | 0.959 | 0.75 | 0.984 | 0.975 | 0.968 | 0.962 | - | noise: p_need(+7d) above its ceiling
+opp BlowdartGoblin | 0.0076 | 67 | 0.253 | 0.789 | 0.674 | 0.952 | 1.05 | - | 0.989 | 0.978 | 0.970 | - | noise: p_need(+7d) above its ceiling
+opp Valkyrie | 0.0074 | 85 | 0.321 | 0.953 | 0.903 | 0.994 | 0.63 | 0.987 | 0.977 | 0.969 | 0.964 | 172.7 | error
+opp Knight hero | 0.0073 | 122 | 0.460 | 0.995 | 0.983 | 0.996 | 0.26 | 0.970 | 0.964 | 0.960 | 0.957 | 0.0 | MEETS
+opp SkeletonArmy | 0.0073 | 66 | 0.249 | 0.858 | 0.772 | 0.994 | 0.72 | 0.995 | 0.982 | 0.973 | 0.967 | - | error
+opp GoblinGang | 0.0069 | 59 | 0.223 | 0.818 | 0.726 | 0.983 | 0.65 | 0.995 | 0.983 | 0.973 | 0.967 | - | error
+opp ElixirGolem | 0.0067 | 35 | 0.132 | 0.775 | 0.659 | 0.929 | 0.54 | - | 0.989 | 0.978 | 0.970 | - | noise: p_need(+7d) above its ceiling
+opp BarbLog | 0.0063 | 55 | 0.208 | 1.000 | 1.000 | 1.000 | 0.66 | 0.997 | 0.984 | 0.974 | 0.967 | 0.0 | MEETS
+opp Graveyard | 0.0062 | 19 | 0.072 | 1.000 | 1.000 | 1.000 | 0.66 | - | - | 0.991 | 0.979 | 0.6 | data (n < 30, perfect so far)
+opp MiniPekka hero | 0.0061 | 35 | 0.132 | 0.900 | 0.818 | 0.984 | 0.41 | 0.996 | 0.983 | 0.974 | 0.967 | - | error
+opp MegaKnight | 0.0060 | 85 | 0.321 | 0.965 | 0.925 | 1.000 | 0.50 | 0.983 | 0.974 | 0.967 | 0.962 | 4.4 | data (4.4 d)
+opp Princess | 0.0059 | 64 | 0.242 | 0.979 | 0.933 | 0.992 | 0.54 | 0.989 | 0.979 | 0.970 | 0.965 | 1.0 | data (1.0 d)
+opp Miner | 0.0057 | 36 | 0.136 | 0.875 | 0.788 | 0.984 | 0.43 | 0.996 | 0.984 | 0.974 | 0.967 | - | error
+opp SkeletonBalloon | 0.0053 | 36 | 0.136 | 0.556 | 0.387 | 0.985 | 1.12 | - | - | 0.989 | 0.978 | - | error
+opp Bats | 0.0053 | 84 | 0.317 | 0.768 | 0.653 | 0.982 | 1.27 | - | 0.988 | 0.977 | 0.969 | - | error
+opp GoldenKnight | 0.0050 | 0 | - | - | - | - | - | - | - | - | - | never (no strict fights) | not in cohort
+opp Prince | 0.0049 | 25 | 0.094 | 0.960 | 0.897 | 1.000 | 0.28 | 0.995 | 0.983 | 0.974 | 0.967 | 21.7 | error
+opp ElectroSpirit | 0.0048 | 76 | 0.287 | 0.974 | 0.935 | 1.000 | 0.49 | 0.984 | 0.975 | 0.968 | 0.963 | 1.2 | data (1.2 d)
+opp BabyDragon | 0.0048 | 34 | 0.128 | 1.000 | 1.000 | 1.000 | 0.66 | - | 0.993 | 0.981 | 0.972 | 0.0 | MEETS
+opp AngryBarbarians | 0.0045 | 21 | 0.079 | 0.810 | 0.613 | 0.949 | 0.89 | - | - | 0.996 | 0.983 | - | noise: p_need(+7d) above its ceiling
+opp Tesla | 0.0045 | 61 | 0.230 | 0.984 | 0.945 | 1.000 | 0.45 | 0.987 | 0.977 | 0.969 | 0.964 | 0.2 | data (0.2 d)
+opp Wallbreakers | 0.0044 | 18 | 0.068 | 0.944 | 0.857 | 1.000 | 0.29 | - | 0.989 | 0.978 | 0.970 | - | error
+opp ElectroWizard | 0.0041 | 29 | 0.109 | 0.909 | 0.818 | 0.982 | 0.42 | - | 0.987 | 0.977 | 0.969 | - | error
+opp SkeletonKing | 0.0040 | 0 | - | - | - | - | - | - | - | - | - | never (no strict fights) | not in cohort
+opp Cannon | 0.0039 | 49 | 0.185 | 0.967 | 0.908 | 0.989 | 0.53 | 0.995 | 0.982 | 0.973 | 0.966 | 6.6 | data (6.6 d)
+opp MiniPekka | 0.0039 | 29 | 0.109 | 0.897 | 0.806 | 1.000 | 0.39 | 1.000 | 0.986 | 0.976 | 0.968 | - | error
+opp Witch evo | 0.0039 | 42 | 0.158 | 0.777 | 0.641 | 0.968 | 0.88 | - | 0.995 | 0.982 | 0.973 | - | noise: p_need(+7d) above its ceiling
+opp RoyalHogs | 0.0038 | 28 | 0.106 | 0.585 | 0.399 | 0.830 | 1.05 | - | - | 0.993 | 0.980 | - | noise: p_need(+7d) above its ceiling
+opp InfernoDragon | 0.0038 | 29 | 0.109 | 1.000 | 1.000 | 1.000 | 0.66 | - | 0.997 | 0.984 | 0.974 | 0.0 | data (n < 30, perfect so far)
+opp Minions | 0.0036 | 32 | 0.121 | 0.906 | 0.792 | 0.983 | 0.66 | - | 0.995 | 0.982 | 0.973 | - | error
+opp RageBarbarian | 0.0036 | 28 | 0.106 | 0.857 | 0.714 | 0.991 | 0.73 | - | 1.000 | 0.986 | 0.975 | - | error
+opp MinionHorde | 0.0035 | 16 | 0.060 | 0.625 | 0.353 | 1.000 | 1.35 | - | - | - | 0.996 | - | error
+opp FireSpirits | 0.0035 | 36 | 0.136 | 0.872 | 0.746 | 0.985 | 0.77 | - | 0.995 | 0.983 | 0.973 | - | error
+opp Knight | 0.0034 | 21 | 0.079 | 1.000 | 1.000 | 1.000 | 0.66 | - | - | 0.989 | 0.978 | 0.5 | data (n < 30, perfect so far)
+opp Balloon hero | 0.0033 | 25 | 0.094 | 0.970 | 0.887 | 0.983 | 0.44 | - | 0.991 | 0.980 | 0.971 | 7.8 | error
+opp Archer | 0.0032 | 51 | 0.192 | 0.912 | 0.836 | 0.989 | 0.55 | 0.994 | 0.982 | 0.973 | 0.966 | - | error
+opp Ghost | 0.0032 | 28 | 0.106 | 0.862 | 0.785 | 0.966 | 0.25 | 0.991 | 0.979 | 0.971 | 0.965 | - | error
+opp Valkyrie hero | 0.0032 | 52 | 0.196 | 1.000 | 1.000 | 1.000 | 0.66 | 0.998 | 0.985 | 0.975 | 0.968 | 0.0 | MEETS
+opp Bomber | 0.0031 | 46 | 0.174 | 1.000 | 1.000 | 1.000 | 0.66 | - | 0.987 | 0.977 | 0.969 | 0.0 | MEETS
+opp GiantSkeleton | 0.0031 | 36 | 0.136 | 1.000 | 1.000 | 1.000 | 0.66 | - | 0.992 | 0.980 | 0.971 | 0.0 | MEETS
+
+meeting now: 0.1804 of plays = 0.217 of tier B (need 0.9)
+  + data accrual alone at today's agreement, after 1 d: 0.250 of tier B
+  + data accrual alone at today's agreement, after 3 d: 0.308 of tier B
+  + data accrual alone at today's agreement, after 7 d: 0.332 of tier B
+
+MINIMAL SET by live share (gap 0.5675 of plays): 26 cards, 0.5724
+  own Skeletons (0.1055, error), own IceWizard hero (0.1034, error), own Knight (0.0741, error), own Tesla (0.0576, error), own Tornado (0.0373, data (1.1 d)), own Knight evo (0.0276, error), own Tesla evo (0.0203, error), own Rocket (0.0166, error), opp HogRider (0.0121, error), opp GoblinBarrel (0.0098, data (0.5 d)), opp Skeletons (0.0096, data (6.1 d)), opp Firecracker (0.0093, error), opp Witch (0.0080, noise: p_need(+7d) above its ceiling), opp BlowdartGoblin (0.0076, noise: p_need(+7d) above its ceiling), opp Valkyrie (0.0074, error), opp SkeletonArmy (0.0073, error), opp GoblinGang (0.0069, error), opp ElixirGolem (0.0067, noise: p_need(+7d) above its ceiling), opp Graveyard (0.0062, data (n < 30, perfect so far)), opp MiniPekka hero (0.0061, error), opp MegaKnight (0.0060, data (4.4 d)), opp Princess (0.0059, data (1.0 d)), opp Miner (0.0057, error), opp SkeletonBalloon (0.0053, error), opp Bats (0.0053, error), opp GoldenKnight (0.0050, not in strict cohort)

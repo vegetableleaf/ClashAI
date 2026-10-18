@@ -1,0 +1,696 @@
+## 20261017_105331@2974:Knight  L [None] S [None] tw 0/323
+   ev 0:oBats 27:oKnight+ 44:oSkeletons 77:oFireball 147:oTesla
+    +109 gone_sim Skeletons/0 [108]
+    +109 hp Knight*/1 [1468, 1587]
+    +133 tgt Knight*/1 ['Skeletons:57c2f7', 'T0R:T0R']
+    +141 pos Knight*/1 [[13190, 14884], [13431, 14284]]
+    +239 hp T0R/0 [2796, 2473]
+## 20261017_105331@2974:Skeletons  L [3075, 3097, 3121] S [3075, 3081, 3097] tw 0/0
+   ev 0:oBats 27:oKnight+ 44:oSkeletons 77:oFireball 147:oTesla
+    +109 gone_sim Skeletons*/0 [108]
+    +109 hp Knight/1 [1468, 1587]
+    +133 tgt Knight/1 ['Skeletons:57c2f7', 'T0R:T0R']
+    +141 pos Knight/1 [[13190, 14884], [13431, 14284]]
+    +239 hp T0R/0 [2796, 2473]
+## 20261017_105856@2218:WitchMother  L [None] S [None, None] tw 0/0
+   ev 1:oWitchMother 113:oGoblinBarrel 156:oLog 183:oTornado
+    +67 tgt Knight/0 ['T1R:T1R', 'Witch:s11']
+    +69 hp Knight/0 [1640, 1521]
+    +74 pos Knight/0 [[14743, 15852], [14695, 15186]]
+    +112 pos WitchMother*/1 [[13121, 23633], [13399, 22988]]
+    +173 gone_sim GoblinBarrel/1 [293]
+    +173 gone_sim GoblinBarrel/1 [293]
+    +186 hp WitchMother*/1 [447, 770]
+    +189 gone_live Knight/0 [109]
+## 20261017_113130@2784:Log  L None S None tw 51/51
+   ev 2:oLog 29:oIceWizard++ 48:oCannon 112:oKnight
+    +4 tgt RoyalRecruits/0 ['Tesla:b8b55d', 'Xbow:b12958']
+    +8 pos RoyalRecruits/0 [[5106, 16647], [4515, 16739]]
+    +12 pos RoyalRecruits/0 [[2286, 16246], [2997, 16035]]
+    +12 gone_sim RoyalRecruits/0 [173]
+    +14 hp RoyalRecruits/0 [485, 875]
+    +14 tgt Tesla/1 ['RoyalRecruits:145f81', None]
+    +18 hp Tesla/1 [1235, 1660]
+    +19 pos RoyalRecruits/0 [[3158, 16691], [2689, 16501]]
+## 20261017_114028@4285:IceWizard  L [None] S [None] tw 0/0
+   ev 1:oIceWizard++ 16:oMusketeer++ 27:oKnight 96:oTornado 127:oSkeletons
+    +10 pos GoblinGang/1 [[14784, 15303], [14044, 15604]]
+    +14 pos GoblinGang/1 [[14132, 13946], [13387, 14242]]
+    +14 tgt GoblinGang/1 ['T0R:T0R', 'IceWizard:052948']
+    +46 hp T0R/0 [1109, 1239]
+    +80 gone_live GoblinGang/1 [54]
+    +108 hp IceWizard*/0 [651, 521]
+    +114 pos MiniPekka/1 [[10557, 14999], [9499, 15319]]
+    +118 hp MiniPekka/1 [848, 966]
+## 20261017_114028@4285:Musketeer  L [4513] S [4487] tw 0/0
+   ev 1:oIceWizard++ 16:oMusketeer++ 27:oKnight 96:oTornado 127:oSkeletons
+    +10 pos GoblinGang/1 [[14784, 15303], [14044, 15604]]
+    +14 pos GoblinGang/1 [[14132, 13946], [13387, 14242]]
+    +14 tgt GoblinGang/1 ['T0R:T0R', 'IceWizard:052948']
+    +46 hp T0R/0 [1109, 1239]
+    +80 gone_live GoblinGang/1 [54]
+    +108 hp IceWizard/0 [651, 521]
+    +114 pos MiniPekka/1 [[10557, 14999], [9499, 15319]]
+    +118 hp MiniPekka/1 [848, 966]
+## 20261017_114028@4285:Knight  L [4399] S [4399] tw 0/0
+   ev 1:oIceWizard++ 16:oMusketeer++ 27:oKnight 96:oTornado 127:oSkeletons
+    +10 pos GoblinGang/1 [[14784, 15303], [14044, 15604]]
+    +14 pos GoblinGang/1 [[14132, 13946], [13387, 14242]]
+    +14 tgt GoblinGang/1 ['T0R:T0R', 'IceWizard:052948']
+    +46 hp T0R/0 [1109, 1239]
+    +80 gone_live GoblinGang/1 [54]
+    +108 hp IceWizard/0 [651, 521]
+    +114 pos MiniPekka/1 [[10557, 14999], [9499, 15319]]
+    +118 hp MiniPekka/1 [848, 966]
+## 20261017_115914@1174:BattleRam  L [1296, 1350, 1386] S [1296, 1350, 1386] tw 1049/1328
+   ev 1:oBattleRam 27:oKnight 53:oSkeletons 77:oIceWizard++ 150:oIceWizard
+    +154 hp T0L/0 [3591, 3312]
+    +154 gone_sim IceWizard/0 [352]
+    +160 pos EliteArcher/1 [[4147, 18092], [4092, 18742]]
+    +176 hp IceWizard/0 [342, 352]
+    +178 tgt IceWizard/0 ['BattleRam:2cc9cf', None]
+    +212 gone_live IceWizard/0 [10]
+## 20261017_115914@3525:BattleRam  L [3635, 3685, 3757] S [3637, 3685, 3737] tw 0/0
+   ev 1:oBattleRam 13:oTesla 162:oMusketeer++ 179:oIceWizard++
+    +74 pos BattleRam*/1 [[4507, 14887], [4051, 14639]]
+    +112 gone_sim BattleRam*/1 [1041]
+    +112 gone_sim BattleRam*/1 [1041]
+    +112 gone_live BattleRam*/1 [581]
+    +128 hp BattleRam*/1 [690, 1041]
+    +140 pos BattleRam*/1 [[7414, 12110], [7746, 12660]]
+    +160 pos BattleRam*/1 [[8480, 11847], [8139, 11329]]
+    +184 hp BattleRam*/1 [772, 614]
+## 20261017_115914@3525:Tesla  L [3679] S [3679] tw 0/0
+   ev 1:oBattleRam 13:oTesla 162:oMusketeer++ 179:oIceWizard++
+    +74 pos BattleRam/1 [[4507, 14887], [4051, 14639]]
+    +112 gone_sim BattleRam/1 [1041]
+    +112 gone_sim BattleRam/1 [1041]
+    +112 gone_live BattleRam/1 [581]
+    +128 hp BattleRam/1 [690, 1041]
+    +140 pos BattleRam/1 [[7414, 12110], [7746, 12660]]
+    +160 pos BattleRam/1 [[8480, 11847], [8139, 11329]]
+    +184 hp BattleRam/1 [772, 614]
+## 20261017_120801@2375:WitchMother  L [2570] S [2570, None] tw 0/0
+   ev 2:oWitchMother 83:oMiniSparkys 133:oRocket
+    +6 hp Knight/1 [2662, 2422]
+    +8 pos Knight/1 [[4029, 14862], [4299, 15620]]
+    +104 pos WitchMother*/0 [[5772, 3692], [5357, 4190]]
+    +121 hp MiniSparkys/0 [846, 523]
+    +121 hp MiniSparkys/0 [523, 846]
+## 20261017_121156@591:SkeletonWarriors  L [680, 782, 811] S [636, 680, 788] tw 0/0
+   ev 3:oSkeletonWarriors 33:oLog 62:oSnowball 67:oSkeletons
+    +18 tgt Tesla/1 ['Ghost:5f6b00', 'SkeletonWarriors:5cf08a']
+    +23 hp Ghost/0 [972, 1323]
+    +46 gone_sim SkeletonWarriors*/0 [130]
+    +49 pos SkeletonWarriors*/0 [[2747, 14613], [3446, 14713]]
+    +49 pos SkeletonWarriors*/0 [[3832, 14523], [4328, 15197]]
+    +72 tgt SkeletonWarriors*/0 ['Skeletons:c8e313', 'Tesla:bb1f51']
+    +78 gone_sim Skeletons/1 [130]
+    +78 gone_sim Skeletons/1 [130]
+## 20261017_123716@2132:ElectroDragon  L [None] S [None] tw 1122/982
+   ev 1:oElectroDragon+ 92:oElixirGolem 106:oIceWizard 214:oTornado
+    +8 hp Skeletons/0 [1, 81]
+    +8 hp Skeletons/0 [1, 81]
+    +15 hp T1R/1 [4186, 4305]
+    +17 pos Skeletons/0 [[14584, 23219], [14818, 23956]]
+    +19 tgt Skeletons/0 ['Skeletons:b5cc60', 'T1R:T1R']
+    +23 gone_live Skeletons/0 [1]
+    +25 tgt IceWizard/1 ['BattleHealer:cdda2f', None]
+    +30 tgt Skeletons/1 ['Skeletons:04fec2', None]
+## 20261017_131742@216:GoblinDrill  L [287, 373, 387, 407, 423] S [225, 412, 443, None, None, None, None, None] tw 600/0
+   ev 1:oGoblinDrill 26:oXbow 42:oFireSpirits 51:oLog 102:oKnight 130:oKnight++ 189:oGoblinDemolisher
+    +11 gone_sim GoblinDrill*/0 [4090]
+    +77 hp Xbow/1 [2422, 2556]
+    +99 tgt Xbow/1 ['GoblinDrill:5cda7a', 'T0L:T0L']
+    +107 hp T0L/0 [4858, 4807]
+    +127 hp T1L/1 [4224, 4424]
+    +127 tgt Knight/1 ['GoblinDrill:5cda7a', None]
+    +129 pos Knight/1 [[3511, 17885], [3423, 17093]]
+    +151 hp Knight/0 [2566, 2243]
+## 20261017_131742@664:GoblinDrill  L [738, 818, 838, 860, 880, 902] S [672, 860, 892, None, None, None, None, None] tw 432/0
+   ev 1:oGoblinDrill 52:oSkeletons 78:oFireSpirits 128:oTesla
+    +4 hp GoblinDemolisher/0 [56, 66]
+    +10 gone_sim GoblinDrill*/0 [4090]
+    +72 hp IceWizard/1 [911, 738]
+    +78 hp T1L/1 [3792, 3824]
+    +92 hp FireSpirits/0 [194, 312]
+    +96 hp T0L/0 [4807, 4689]
+    +102 gone_sim FireSpirits/0 [194]
+    +120 pos Skeletons/1 [[1809, 24641], [2350, 24088]]
+## 20261017_131742@2083:GoblinDrill  L [2156, 2258, 2302, None, None] S [2092, 2238, 2312, None, None, None, None, None] tw 1200/0
+   ev 2:oGoblinDrill 43:oFireSpirits 53:oXbow 89:oLog 142:oTesla
+    +11 gone_sim GoblinDrill*/0 [4090]
+    +126 tgt Xbow/1 ['T0R:T0R', 'GoblinDrill:s14']
+    +139 hp T0R/0 [4270, 4368]
+    +169 hp Tesla/0 [1694, 1596]
+    +189 hp T1L/1 [3192, 3392]
+    +229 hp Xbow/1 [1148, 948]
+## 20261017_134527@3331:Xbow  L [3510] S [3510] tw 0/0
+   ev 1:oXbow 27:oIceWizard++ 30:oRamRider 61:oValkyrie++ 75:oIceWizard 134:oKnight 220:oPrince
+    +79 gone_sim IceWizard/0 [352]
+    +101 hp IceWizard/0 [342, 352]
+    +101 tgt IceWizard/0 ['RamRider:378628', None]
+    +105 gone_sim Skeletons/0 [130]
+    +123 hp RamRider/1 [1161, 1291]
+    +151 hp IceWizard/0 [759, 607]
+    +175 hp Knight/0 [2397, 2245]
+    +177 gone_live RamRider/1 [369]
+## 20261017_134527@3331:IceWizard  L [None] S [None] tw 0/0
+   ev 1:oXbow 27:oIceWizard++ 30:oRamRider 61:oValkyrie++ 75:oIceWizard 134:oKnight 220:oPrince
+    +79 gone_sim IceWizard*/0 [352]
+    +101 hp IceWizard*/0 [342, 352]
+    +101 tgt IceWizard*/0 ['RamRider:378628', None]
+    +105 gone_sim Skeletons/0 [130]
+    +123 hp RamRider/1 [1161, 1291]
+    +151 hp IceWizard*/0 [759, 607]
+    +175 hp Knight/0 [2397, 2245]
+    +177 gone_live RamRider/1 [369]
+## 20261017_134527@3331:RamRider  L [3506, 3506] S [None, None] tw 0/0
+   ev 1:oXbow 27:oIceWizard++ 30:oRamRider 61:oValkyrie++ 75:oIceWizard 134:oKnight 220:oPrince
+    +79 gone_sim IceWizard/0 [352]
+    +101 hp IceWizard/0 [342, 352]
+    +101 tgt IceWizard/0 ['RamRider:378628', None]
+    +105 gone_sim Skeletons/0 [130]
+    +123 hp RamRider*/1 [1161, 1291]
+    +151 hp IceWizard/0 [759, 607]
+    +175 hp Knight/0 [2397, 2245]
+    +177 gone_live RamRider*/1 [369]
+## 20261017_134527@3331:Valkyrie  L [None] S [None] tw 0/0
+   ev 1:oXbow 27:oIceWizard++ 30:oRamRider 61:oValkyrie++ 75:oIceWizard 134:oKnight 220:oPrince
+    +79 gone_sim IceWizard/0 [352]
+    +101 hp IceWizard/0 [342, 352]
+    +101 tgt IceWizard/0 ['RamRider:378628', None]
+    +105 gone_sim Skeletons/0 [130]
+    +123 hp RamRider/1 [1161, 1291]
+    +151 hp IceWizard/0 [759, 607]
+    +175 hp Knight/0 [2397, 2245]
+    +177 gone_live RamRider/1 [369]
+## 20261017_140050@1153:GoblinDrill  L [1225, 1326, 1326, 1354, 1382, None] S [1161, 1336, 1380, None, None, None, None, None] tw 1497/0
+   ev 2:oGoblinDrill 28:oIceWizard++ 62:oLog 147:oSnowball 148:oTesla
+    +10 gone_sim GoblinDrill*/1 [4090]
+    +77 hp T0R/0 [4392, 4424]
+    +171 tgt Tesla/0 ['GoblinDrill:df9190', None]
+    +177 hp Tesla/0 [1596, 1856]
+    +181 pos IceWizard/0 [[5093, 6939], [5256, 6244]]
+## 20261017_140050@2426:GoblinDrill  L [2496, 2568, 2616, 2619, 2620, 2620] S [2434, 2620, 2653, None, None, None, None, None] tw 697/0
+   ev 1:oGoblinDrill 55:oKnight+ 126:oSnowball 142:oSkeletons 152:oZap 182:oLog
+    +10 gone_sim GoblinDrill*/1 [4090]
+    +74 hp T0R/0 [2695, 2727]
+    +80 tgt Knight/0 ['GoblinDrill:17e5f0', None]
+    +146 pos Knight/0 [[15998, 7134], [15700, 7799]]
+    +156 hp Knight/0 [2718, 2596]
+## 20261017_141425@640:Tombstone  L [692, 716, 756, 780, 842, 878, None, None, None, None, None, None] S [692, 716, 756, 780, None, None, None, None] tw 0/0
+   ev 1:oTombstone++
+    +204 gone_live Tombstone*/0 [588]
+    +214 pos Tombstone*/0 [[6731, 13225], [7165, 12757]]
+    +216 pos Tombstone*/0 [[5904, 14108], [6355, 13618]]
+## 20261017_141825@1301:SkeletonWarriors  L [1429, 1491, 1528] S [1429, 1461, 1526] tw 1316/940
+   ev 2:oSkeletonWarriors 180:oKnight
+    +4 pos Skeletons/1 [[10903, 10572], [12394, 12918]]
+    +8 gone_live Skeletons/1 [130]
+    +10 tgt Fisherman/0 [None, 'Skeletons:4e806a']
+    +18 hp IceWizard/1 [175, 2]
+    +40 tgt SkeletonWarriors*/0 ['T1R:T1R', 'Skeletons:4e806a']
+    +40 tgt SkeletonWarriors*/0 ['T1R:T1R', 'Skeletons:4e806a']
+    +42 pos SkeletonWarriors*/0 [[15296, 14572], [15346, 13866]]
+    +44 pos SkeletonWarriors*/0 [[14073, 15049], [14550, 14735]]
+## 20261017_143723@1716:WitchMother  L [None] S [1893, None] tw 0/0
+   ev 2:oWitchMother 72:oXbow
+    +147 tgt Xbow/1 ['a3275bcfbbc0.1:a3275b', 'WitchMother:s8']
+## 20261017_144756@575:Bowler  L [810] S [782] tw 0/0
+   ev 2:oBowler++ 12:oSkeletons 38:oIceWizard++ 86:oTesla 131:oIceWizard
+    +61 pos Witch/0 [[14334, 12795], [14669, 12385]]
+    +71 pos Witch/0 [[13132, 13209], [14218, 13018]]
+    +80 pos Witch/0 [[15971, 15879], [16054, 15158]]
+    +98 pos Witch/0 [[15688, 15273], [15776, 16016]]
+    +109 tgt Tesla/1 ['Witch:16a162', 'Bowler:affee7']
+    +113 gone_live Witch/0 [119]
+    +115 hp Bowler*/0 [3024, 2673]
+    +117 gone_live Witch/0 [119]
+## 20261017_152050@2304:SkeletonWarriors  L [2394, 2422, 2452] S [2396, 2424, 2460] tw 188/0
+   ev 0:oSkeletons 1:oSkeletonWarriors 26:oLog 84:oIceWizard 188:oPekka
+    +1 tgt GoblinGiant/0 ['T1R:T1R', 'Skeletons:520013']
+    +1 tgt GoblinGiant/0 ['T1R:T1R', 'Skeletons:520013']
+    +48 gone_sim Skeletons/1 [130]
+    +78 gone_sim Skeletons/1 [130]
+    +82 hp T0L/0 [1624, 1573]
+    +88 hp GoblinGiant/0 [3557, 3687]
+    +88 gone_sim IceWizard/1 [386]
+    +92 gone_live SkeletonWarriors*/0 [130]
+## 20261017_152050@2304:Log  L None S None tw 51/51
+   ev 0:oSkeletons 1:oSkeletonWarriors 26:oLog 84:oIceWizard 188:oPekka
+    +1 tgt GoblinGiant/0 ['T1R:T1R', 'Skeletons:520013']
+    +1 tgt GoblinGiant/0 ['T1R:T1R', 'Skeletons:520013']
+    +48 gone_sim Skeletons/1 [130]
+    +78 gone_sim Skeletons/1 [130]
+    +82 hp T0L/0 [1624, 1573]
+    +88 hp GoblinGiant/0 [3557, 3687]
+    +88 gone_sim IceWizard/1 [386]
+    +92 gone_live SkeletonWarriors/0 [130]
+## 20261017_152050@3475:Log  L None S None tw 0/0
+   ev 2:oLog 37:oSkeletons 168:oGoblinGiant 192:oTesla 218:oIceWizard++ 228:oBomber
+    +4 tgt Pekka/0 [None, 'IceWizard:263c56']
+## 20261017_161141@2991:Ronin  L [None] S [3212] tw 0/0
+   ev 2:oRonin 70:oSkeletons 102:oIceWizard++ 132:oKnight 167:oMiniPekka++ 219:oLog
+    +4 hp Tesla/1 [1438, 1724]
+    +6 pos Knight/1 [[3793, 17657], [4130, 16870]]
+    +16 tgt Knight/1 ['Ronin:989b28', 'AxeMan:f834b0']
+    +20 hp AxeMan/0 [1418, 1095]
+    +24 hp Knight/1 [531, 300]
+    +30 gone_sim Knight/1 [531]
+    +32 tgt Ronin*/0 ['Knight:e40698', None]
+    +32 tgt AxeMan/0 ['Knight:e40698', None]
+## 20261017_171439@3080:BlowdartGoblin  L [3304] S [None] tw 100/100
+   ev 2:oBlowdartGoblin 41:oIceSpirits 58:oKnight 78:oGoblinBarrel 132:oTornado 137:oSkeletons 161:oSkeletons
+    +80 pos GoblinGang/0 [[14192, 16684], [13489, 16532]]
+    +124 hp T1R/1 [3104, 3234]
+    +158 pos GoblinGang/0 [[3389, 16887], [3486, 17978]]
+    +160 pos BlowdartGoblin*/0 [[3572, 17692], [3568, 17157]]
+    +160 tgt Knight/1 ['IceSpirits:014113', 'GoblinGang:063baa']
+    +176 hp Knight/1 [1732, 1602]
+    +218 gone_sim GoblinGang/0 [78]
+    +218 pos Knight/1 [[4224, 19783], [4001, 20271]]
+## 20261017_175054@1232:RoyalHogs  L [1341, 1371, 1407, 1455] S [1341, 1371, 1425, 1461] tw 0/0
+   ev 2:oRoyalHogs 25:oTesla 25:oBats 51:oIceWizard++ 95:oIceWizard
+    +55 hp Bats/1 [130, 19]
+    +79 hp IceWizard/0 [651, 781]
+    +85 gone_sim Bats/1 [12]
+    +87 tgt IceWizard/0 ['Bats:b2a399', 'Bats:380d85']
+    +101 gone_live Bats/1 [12]
+    +101 gone_live Bats/1 [19]
+    +119 gone_live Bats/1 [69]
+    +129 pos RoyalHogs*/1 [[7128, 11964], [6938, 11047]]
+## 20261017_175054@1232:Tesla  L [1437] S [1421] tw 0/0
+   ev 2:oRoyalHogs 25:oTesla 25:oBats 51:oIceWizard++ 95:oIceWizard
+    +55 hp Bats/1 [130, 19]
+    +79 hp IceWizard/0 [651, 781]
+    +85 gone_sim Bats/1 [12]
+    +87 tgt IceWizard/0 ['Bats:b2a399', 'Bats:380d85']
+    +101 gone_live Bats/1 [12]
+    +101 gone_live Bats/1 [19]
+    +119 gone_live Bats/1 [69]
+    +129 pos RoyalHogs/1 [[7128, 11964], [6938, 11047]]
+## 20261017_175054@1232:Bats  L [1315, 1331, 1331, 1331, 1349] S [1315, 1315, 1333, 1351, 1385] tw 0/0
+   ev 2:oRoyalHogs 25:oTesla 25:oBats 51:oIceWizard++ 95:oIceWizard
+    +55 hp Bats*/1 [130, 19]
+    +79 hp IceWizard/0 [651, 781]
+    +85 gone_sim Bats*/1 [12]
+    +87 tgt IceWizard/0 ['Bats:b2a399', 'Bats:380d85']
+    +101 gone_live Bats*/1 [12]
+    +101 gone_live Bats*/1 [19]
+    +119 gone_live Bats*/1 [69]
+    +129 pos RoyalHogs/1 [[7128, 11964], [6938, 11047]]
+## 20261017_175054@1232:IceWizard  L [None] S [None] tw 0/0
+   ev 2:oRoyalHogs 25:oTesla 25:oBats 51:oIceWizard++ 95:oIceWizard
+    +55 hp Bats/1 [130, 19]
+    +79 hp IceWizard*/0 [651, 781]
+    +85 gone_sim Bats/1 [12]
+    +87 tgt IceWizard*/0 ['Bats:b2a399', 'Bats:380d85']
+    +101 gone_live Bats/1 [12]
+    +101 gone_live Bats/1 [19]
+    +119 gone_live Bats/1 [69]
+    +129 pos RoyalHogs/1 [[7128, 11964], [6938, 11047]]
+## 20261017_175410@290:SkeletonBalloon  L [418, 450, 452, 466, 474, 483, 487, 499] S [418, 450, 452, 466, 474, 483, 487, 499] tw 260/390
+   ev 2:oSkeletonBalloon 51:oRocket 124:oRageBarbarian 167:oIceWizard++
+    +98 pos Witch/0 [[14818, 11635], [15273, 11863]]
+    +170 tgt SkeletonBalloon*/0 ['T1R:T1R', 'IceWizard:3adf03']
+    +180 hp T1R/1 [3931, 3801]
+    +184 hp IceWizard/1 [911, 781]
+    +201 hp RageBarbarian/0 [1745, 1863]
+    +223 hp Knight/1 [2199, 1827]
+    +227 tgt IceWizard/1 ['RageBarbarian:e367c0', 'Skeletons:21f3aa']
+    +229 gone_sim Witch/0 [130]
+## 20261017_175410@1263:SkeletonBalloon  L [1389, 1451, 1451, 1451, 1499, None, None, None] S [1389, 1457, 1457, 1457, 1491, 1499, None, None] tw 520/866
+   ev 1:oSkeletonBalloon 38:oLog 65:oIceWizard++ 110:oIceWizard
+    +114 gone_sim IceWizard/1 [352]
+    +138 hp IceWizard/1 [338, 345]
+    +138 tgt IceWizard/1 ['Witch:707785', None]
+    +142 hp IceWizard/1 [911, 678]
+    +146 pos IceWizard/1 [[17033, 23604], [17749, 24332]]
+    +157 pos SkeletonBalloon*/0 [[13661, 20973], [14414, 21875]]
+    +157 pos SkeletonBalloon*/0 [[16397, 22260], [16178, 23048]]
+    +159 hp T1R/1 [3605, 3475]
+## 20261017_175947@2836:ElectroWizard  L [2942] S [2964] tw 0/0
+   ev 2:oElectroWizard 12:oIceWizard 76:oKnight++ 168:oKnight 213:oXbow
+    +16 gone_sim IceWizard/1 [386]
+    +26 tgt ElectroWizard*/0 ['IceWizard:2445cb', 'IceWizard:d8d308']
+    +28 hp IceWizard/1 [352, 136]
+    +36 gone_sim IceWizard/1 [181]
+    +38 hp IceWizard/1 [204, 215]
+    +48 tgt IceWizard/1 ['Witch:6fdd81', None]
+    +50 gone_live IceWizard/1 [11]
+    +62 pos ElectroWizard*/0 [[17500, 12500], [17122, 12878]]
+## 20261017_180311@3001:RoyalHogs  L [3141, 3201, None, None] S [3141, 3219, 3235, None] tw 826/1298
+   ev 1:oRoyalHogs+ 26:oIceSpirits 45:oIceWizard++ 72:oLog 72:oTornado 156:oKnight
+    +84 hp RoyalHogs*/0 [1207, 1337]
+    +84 pos RoyalHogs*/0 [[4095, 18856], [4231, 19709]]
+    +88 pos RoyalHogs*/0 [[2591, 18603], [2285, 19365]]
+    +90 pos RoyalHogs*/0 [[3452, 19078], [3243, 19756]]
+    +98 pos RoyalHogs*/0 [[3170, 17280], [3357, 17800]]
+    +100 pos IceSpirits/0 [[3393, 16611], [3391, 17136]]
+    +138 hp T1L/1 [2314, 2196]
+    +138 gone_sim IceSpirits/0 [209]
+## 20261017_180311@3001:IceSpirits  L [3141] S [3137] tw 0/0
+   ev 1:oRoyalHogs+ 26:oIceSpirits 45:oIceWizard++ 72:oLog 72:oTornado 156:oKnight
+    +84 hp RoyalHogs/0 [1207, 1337]
+    +84 pos RoyalHogs/0 [[4095, 18856], [4231, 19709]]
+    +88 pos RoyalHogs/0 [[2591, 18603], [2285, 19365]]
+    +90 pos RoyalHogs/0 [[3452, 19078], [3243, 19756]]
+    +98 pos RoyalHogs/0 [[3170, 17280], [3357, 17800]]
+    +100 pos IceSpirits*/0 [[3393, 16611], [3391, 17136]]
+    +138 hp T1L/1 [2314, 2196]
+    +138 gone_sim IceSpirits*/0 [209]
+## 20261017_180311@3001:IceWizard  L [None] S [None] tw 0/0
+   ev 1:oRoyalHogs+ 26:oIceSpirits 45:oIceWizard++ 72:oLog 72:oTornado 156:oKnight
+    +84 hp RoyalHogs/0 [1207, 1337]
+    +84 pos RoyalHogs/0 [[4095, 18856], [4231, 19709]]
+    +88 pos RoyalHogs/0 [[2591, 18603], [2285, 19365]]
+    +90 pos RoyalHogs/0 [[3452, 19078], [3243, 19756]]
+    +98 pos RoyalHogs/0 [[3170, 17280], [3357, 17800]]
+    +100 pos IceSpirits/0 [[3393, 16611], [3391, 17136]]
+    +138 hp T1L/1 [2314, 2196]
+    +138 gone_sim IceSpirits/0 [209]
+## 20261017_180704@4444:Mortar  L [4504, None] S [None] tw 400/0
+   ev 1:oMortar 33:oXbow 83:oSkeletons 100:oInfernoDragon 154:oKnight++ 179:oTesla+
+    +11 hp T1R/1 [1445, 1870]
+    +130 hp Knight/1 [2377, 2412]
+## 20261017_183220@1919:BlowdartGoblin  L [None] S [2126] tw 790/0
+   ev 2:oBlowdartGoblin 22:oSkeletons 87:oLog
+    +19 pos Knight/0 [[4746, 12708], [5621, 12771]]
+    +41 hp MegaKnight/1 [4470, 4147]
+    +51 pos MegaKnight/1 [[2947, 13272], [3572, 13142]]
+    +53 hp Knight/0 [1723, 2393]
+    +91 tgt MegaKnight/1 ['Tesla:baa8b0', 'Knight:2461ae']
+    +101 pos BlowdartGoblin*/1 [[2943, 17283], [2817, 17855]]
+    +169 gone_live Knight/0 [535]
+    +173 gone_sim MegaKnight/1 [636]
+## 20261017_183220@2821:BlowdartGoblin  L [3009] S [None] tw 0/0
+   ev 0:oSkeletons 20:oBlowdartGoblin 30:oIceWizard++ 60:oLog 93:oKnight 240:oElectroWizard
+    +24 pos MegaKnight/1 [[3289, 16534], [2499, 17499]]
+    +24 tgt MegaKnight/1 ['Skeletons:7d342d', 'Skeletons:298b9e']
+    +36 gone_live Skeletons/0 [130]
+    +36 gone_live Skeletons/0 [130]
+    +36 gone_live Skeletons/0 [130]
+    +38 hp IceWizard/0 [142, 1000]
+    +40 hp MegaKnight/1 [5059, 5410]
+    +40 pos IceWizard/0 [[6952, 13790], [6440, 14345]]
+## 20261017_183905@2063:AngryBarbarians  L [None, None] S [None, None] tw 65/786
+   ev 1:oAngryBarbarians+ 8:oIceWizard 83:oTornado 238:oKnight
+    +12 gone_sim IceWizard/0 [386]
+    +16 pos IceWizard/0 [[13839, 15457], [13154, 15077]]
+    +16 hp AngryBarbarians*/1 [2077, 2143]
+    +30 pos AngryBarbarians*/1 [[15800, 17499], [15176, 17019]]
+    +36 hp IceWizard/0 [371, 375]
+    +36 tgt IceWizard/0 ['Witch:6ae583', None]
+    +42 gone_live IceWizard/0 [1]
+    +46 tgt AngryBarbarians*/1 ['T0R:T0R', 'IceWizard:e78fc0']
+## 20261017_192835@3270:SkeletonDragons  L [None, None] S [None, None] tw 0/0
+   ev 1:oSkeletonDragons 24:oLog 61:oSkeletons 179:oGiantSkeleton 204:oIceWizard++ 232:oKnight+
+    +44 gone_sim Witch/0 [130]
+    +46 pos Witch/0 [[12810, 11032], [13421, 10595]]
+    +48 pos Witch/0 [[13895, 10470], [14121, 9918]]
+    +58 gone_live Witch/0 [130]
+    +62 gone_live Witch/0 [130]
+    +80 hp T0R/0 [3685, 3634]
+    +184 gone_live Xbow/1 [1]
+## 20261017_192835@3270:Log  L None S None tw 51/51
+   ev 1:oSkeletonDragons 24:oLog 61:oSkeletons 179:oGiantSkeleton 204:oIceWizard++ 232:oKnight+
+    +44 gone_sim Witch/0 [130]
+    +46 pos Witch/0 [[12810, 11032], [13421, 10595]]
+    +48 pos Witch/0 [[13895, 10470], [14121, 9918]]
+    +58 gone_live Witch/0 [130]
+    +62 gone_live Witch/0 [130]
+    +80 hp T0R/0 [3685, 3634]
+    +184 gone_live Xbow/1 [1]
+## 20261017_195826@2620:Tesla  L [None] S [None] tw 0/0
+   ev 1:oTesla+ 11:oBlowdartGoblin 86:oSkeletons 155:oElectroSpirit 195:oXbow 206:oWitch+
+    +34 tgt BlowdartGoblin/1 ['Tesla:845248', None]
+    +36 tgt Ghost/1 ['Tesla:845248', 'T0L:T0L']
+    +38 pos BlowdartGoblin/1 [[7269, 17441], [6676, 17363]]
+    +86 hp T0L/0 [1170, 1072]
+    +96 gone_sim Ghost/1 [98]
+    +100 tgt Ghost/1 ['IceWizard:36b088', 'T0L:T0L']
+    +104 hp BlowdartGoblin/1 [417, 259]
+    +106 hp Ghost/1 [277, 435]
+## 20261017_195826@2620:BlowdartGoblin  L [2790] S [2750] tw 0/0
+   ev 1:oTesla+ 11:oBlowdartGoblin 86:oSkeletons 155:oElectroSpirit 195:oXbow 206:oWitch+
+    +34 tgt BlowdartGoblin*/1 ['Tesla:845248', None]
+    +36 tgt Ghost/1 ['Tesla:845248', 'T0L:T0L']
+    +38 pos BlowdartGoblin*/1 [[7269, 17441], [6676, 17363]]
+    +86 hp T0L/0 [1170, 1072]
+    +96 gone_sim Ghost/1 [98]
+    +100 tgt Ghost/1 ['IceWizard:36b088', 'T0L:T0L']
+    +104 hp BlowdartGoblin*/1 [417, 259]
+    +106 hp Ghost/1 [277, 435]
+## 20261017_201510@3524:RoyalHogs  L [3609, 3636, 3645, 3696] S [3609, 3629, 3668, 3685] tw 0/0
+   ev 0:oSkeletons 9:oRoyalHogs 35:oLog 61:oKnight+ 168:oDartBarrell 192:oTesla+
+    +12 tgt IceWizard/1 ['T0L:T0L', 'RoyalRecruits:91afdd']
+    +12 pos RoyalRecruits/0 [[4795, 17290], [4080, 17337]]
+    +14 pos RoyalRecruits/0 [[5558, 16428], [5317, 16962]]
+    +45 gone_live Skeletons/1 [130]
+    +47 tgt RoyalRecruits/0 [None, 'Skeletons:bb5177']
+    +47 tgt RoyalRecruits/0 ['Skeletons:bf3413', 'Skeletons:bb5177']
+    +47 tgt RoyalRecruits/0 ['Skeletons:bf3413', 'Skeletons:bb5177']
+    +49 hp RoyalHogs*/0 [1216, 1086]
+## 20261017_201510@3524:Log  L None S None tw 0/0
+   ev 0:oSkeletons 9:oRoyalHogs 35:oLog 61:oKnight+ 168:oDartBarrell 192:oTesla+
+    +12 tgt IceWizard/1 ['T0L:T0L', 'RoyalRecruits:91afdd']
+    +12 pos RoyalRecruits/0 [[4795, 17290], [4080, 17337]]
+    +14 pos RoyalRecruits/0 [[5558, 16428], [5317, 16962]]
+    +45 gone_live Skeletons/1 [130]
+    +47 tgt RoyalRecruits/0 [None, 'Skeletons:bb5177']
+    +47 tgt RoyalRecruits/0 ['Skeletons:bf3413', 'Skeletons:bb5177']
+    +47 tgt RoyalRecruits/0 ['Skeletons:bf3413', 'Skeletons:bb5177']
+    +49 hp RoyalHogs/0 [1216, 1086]
+## 20261017_203510@2476:Archer  L [2638, None] S [2630, None] tw 0/0
+   ev 1:oArcher+ 17:oXbow 20:oTesla+ 70:oFireball 160:oKnight++ 175:oLog 209:oSkeletons
+    +98 hp Xbow/1 [1510, 1410]
+    +112 hp Tesla/0 [1146, 1244]
+    +120 tgt Xbow/1 ['Tesla:481bae', 'Archer:75b535']
+    +128 hp Archer*/0 [486, 388]
+    +156 gone_sim Archer*/0 [94]
+    +168 hp T0L/0 [4598, 4500]
+    +172 hp Knight/0 [2468, 2566]
+## 20261017_203510@2476:Xbow  L [None] S [None] tw 51/1031
+   ev 1:oArcher+ 17:oXbow 20:oTesla+ 70:oFireball 160:oKnight++ 175:oLog 209:oSkeletons
+    +98 hp Xbow*/1 [1510, 1410]
+    +112 hp Tesla/0 [1146, 1244]
+    +120 tgt Xbow*/1 ['Tesla:481bae', 'Archer:75b535']
+    +128 hp Archer/0 [486, 388]
+    +156 gone_sim Archer/0 [94]
+    +168 hp T0L/0 [4598, 4500]
+    +172 hp Knight/0 [2468, 2566]
+## 20261017_203510@2476:Tesla  L [None] S [None] tw 0/0
+   ev 1:oArcher+ 17:oXbow 20:oTesla+ 70:oFireball 160:oKnight++ 175:oLog 209:oSkeletons
+    +98 hp Xbow/1 [1510, 1410]
+    +112 hp Tesla*/0 [1146, 1244]
+    +120 tgt Xbow/1 ['Tesla:481bae', 'Archer:75b535']
+    +128 hp Archer/0 [486, 388]
+    +156 gone_sim Archer/0 [94]
+    +168 hp T0L/0 [4598, 4500]
+    +172 hp Knight/0 [2468, 2566]
+## 20261017_203510@2476:Fireball  L None S None tw 0/0
+   ev 1:oArcher+ 17:oXbow 20:oTesla+ 70:oFireball 160:oKnight++ 175:oLog 209:oSkeletons
+    +98 hp Xbow/1 [1510, 1410]
+    +112 hp Tesla/0 [1146, 1244]
+    +120 tgt Xbow/1 ['Tesla:481bae', 'Archer:75b535']
+    +128 hp Archer/0 [486, 388]
+    +156 gone_sim Archer/0 [94]
+    +168 hp T0L/0 [4598, 4500]
+    +172 hp Knight/0 [2468, 2566]
+## 20261017_203827@232:RoyalHogs  L [355, 389, 433, 453] S [367, 391, 433, 465] tw 0/590
+   ev 2:oRoyalHogs 22:oSkeletonDragons 29:oSkeletons 56:oIceWizard++ 83:oTornado 110:oTesla
+    +67 gone_sim Skeletons/1 [130]
+    +67 gone_sim Skeletons/1 [130]
+    +67 gone_sim Skeletons/1 [130]
+    +71 hp RoyalHogs*/0 [1207, 1337]
+    +73 tgt SkeletonDragons/0 ['Skeletons:2b51e8', 'T1R:T1R']
+    +91 hp RoyalHogs*/0 [631, 603]
+    +93 pos RoyalHogs*/0 [[13693, 19588], [13897, 20286]]
+    +93 pos SkeletonDragons/0 [[14702, 17984], [14382, 18459]]
+## 20261017_204223@2769:ElixirGolem  L [2889, 2904, 2936, 2942, 2970, 3000, 3002, None, None, None, None] S [2904, 2908, 2926, 2940, 2956, 2984, 3002, None, None, None, None] tw 0/0
+   ev 2:oElixirGolem 2:oLog 56:oIceWizard++ 102:oMegaMinion 132:oIceWizard 163:oArcher+ 198:oSkeletons
+    +72 hp ElixirGolem/0 [686, 205]
+    +88 tgt Xbow/1 ['ElixirGolem:46702e', 'ElixirGolem:9664c9']
+    +92 hp ElixirGolem*/0 [1218, 1120]
+    +92 hp ElixirGolem*/0 [1120, 1218]
+    +122 gone_sim ElixirGolem*/0 [576]
+    +122 gone_sim ElixirGolem*/0 [576]
+    +122 gone_live ElixirGolem*/0 [284]
+    +124 tgt Knight/1 [None, 'ElixirGolem:46702e']
+## 20261017_204223@2769:Log  L None S None tw 51/51
+   ev 2:oElixirGolem 2:oLog 56:oIceWizard++ 102:oMegaMinion 132:oIceWizard 163:oArcher+ 198:oSkeletons
+    +72 hp ElixirGolem/0 [686, 205]
+    +88 tgt Xbow/1 ['ElixirGolem:46702e', 'ElixirGolem:9664c9']
+    +92 hp ElixirGolem/0 [1218, 1120]
+    +92 hp ElixirGolem/0 [1120, 1218]
+    +122 gone_sim ElixirGolem/0 [576]
+    +122 gone_sim ElixirGolem/0 [576]
+    +122 gone_live ElixirGolem/0 [284]
+    +124 tgt Knight/1 [None, 'ElixirGolem:46702e']
+## 20261017_204223@3789:ElixirGolem  L [3927, 3979, 4007, None, None] S [3947, 3993, 4007, None, None] tw 0/0
+   ev 2:oElixirGolem 26:oTesla 82:oMegaMinion 102:oIceWizard++ 162:oSkeletons 172:oSkeletonArmy 188:oIceWizard 196:oLog
+    +120 hp ElixirGolem*/0 [542, 893]
+    +140 gone_sim ElixirGolem*/0 [1218]
+    +140 gone_sim ElixirGolem*/0 [1218]
+    +140 gone_live ElixirGolem*/0 [409]
+    +142 tgt Xbow/1 ['T0L:T0L', 'ElixirGolem:2ed672']
+    +142 tgt IceWizard/1 ['MegaMinion:1b34d6', 'ElixirGolem:2ed672']
+    +152 hp T0L/0 [1362, 1460]
+    +164 hp ElixirGolem*/0 [867, 1218]
+## 20261017_204602@1631:Log  L None S None tw 0/0
+   ev 2:oLog 34:oRageBarbarian 203:oBalloon++
+    +4 tgt Xbow/1 ['Witch:95fae6', 'Witch:fc20d2']
+    +12 hp Witch/0 [1341, 1243]
+    +12 hp Witch/0 [32, 130]
+    +18 gone_live Witch/0 [130]
+    +58 gone_sim Witch/0 [185]
+    +70 hp RageBarbarian/0 [2049, 1951]
+    +158 gone_sim RageBarbarian/0 [83]
+## 20261017_204920@663:BlowdartGoblin  L [881] S [881] tw 1566/1513
+   ev 1:oBlowdartGoblin 68:oTornado 178:oBattleRam 180:oLog
+    +94 hp T1R/1 [3541, 3576]
+## 20261017_205055@2304:Berserker  L [2480] S [2468] tw 0/0
+   ev 2:oBerserker 42:oFireSpirits 47:oKnight 82:oWallbreakers+ 107:oTesla 152:oEliteArcher++
+    +8 pos Skeletons/1 [[13429, 12119], [14270, 12061]]
+    +48 pos Berserker*/0 [[14498, 14400], [13866, 14371]]
+    +48 pos FireSpirits/0 [[13965, 15099], [14811, 14821]]
+    +96 hp FireSpirits/0 [154, 312]
+    +104 hp Berserker*/0 [1431, 1273]
+    +106 gone_live FireSpirits/0 [312]
+    +134 hp T1R/1 [2188, 1876]
+    +166 gone_sim Berserker*/0 [255]
+## 20261017_205055@2344:FireSpirits  L [2408] S [2428] tw 0/0
+   ev 2:oFireSpirits 7:oKnight 42:oWallbreakers+ 67:oTesla 112:oEliteArcher++ 221:oXbow
+    +12 pos Berserker/0 [[14224, 14606], [14828, 14962]]
+    +14 pos FireSpirits*/0 [[13703, 15558], [13973, 14827]]
+    +56 hp FireSpirits*/0 [154, 312]
+    +60 hp Berserker/0 [1431, 1273]
+    +66 gone_live FireSpirits*/0 [312]
+    +90 tgt Tesla/1 ['Berserker:f3e6ed', 'Wallbreakers:e31ddf']
+    +96 hp Wallbreakers/0 [479, 128]
+    +98 hp Tesla/1 [1848, 1536]
+## 20261017_205409@2772:SkeletonBalloon  L [2897, 2937, 2941, 2953, 2963, 2965, 2977, 2983] S [2903, 2945, 2959, 2961, 2963, 2979, 2981, 2981] tw 476/238
+   ev 2:oSkeletonBalloon 4:oTesla 69:oBlowdartGoblin 94:oLog 122:oTornado 149:oSkeletons 153:oGiantSkeleton 193:oIceWizard++
+    +6 pos Knight/1 [[14268, 18796], [14088, 17715]]
+    +8 tgt Witch/0 ['T1R:T1R', 'Knight:6cde68']
+    +14 pos Witch/0 [[14101, 15590], [13540, 16011]]
+    +16 pos Witch/0 [[13718, 11974], [13692, 11256]]
+    +18 hp Knight/1 [742, 526]
+    +18 pos Witch/0 [[15179, 15857], [14558, 15438]]
+    +22 hp IceGolemite/0 [1030, 707]
+    +22 pos Witch/0 [[14709, 15269], [14853, 14627]]
+## 20261017_205409@5345:Log  L None S None tw 51/51
+   ev 2:oLog 31:oIceWizard++ 33:oSkeletonArmy+ 57:oSkeletons 82:oFirecracker 82:oTornado 133:oKnight 176:oSkeletonBalloon 176:oLog 237:oBlowdartGoblin
+    +12 gone_sim BlowdartGoblin/0 [259]
+    +14 gone_sim BlowdartGoblin/0 [27]
+    +14 tgt Knight/1 ['BlowdartGoblin:ef9417', 'GiantSkeleton:65a06d']
+    +18 hp Knight/1 [1135, 1376]
+    +34 hp GiantSkeleton/0 [4372, 4049]
+    +58 hp T0R/0 [636, 585]
+    +64 gone_sim SkeletonArmy/0 [119]
+    +76 pos SkeletonArmy/0 [[15563, 16042], [14955, 16019]]
+## 20261017_205923@256:SkeletonBalloon  L [374, 402, 412, 428, 430, 440, 456, 472] S [374, 402, 412, 412, 412, 412, 430, 440] tw 0/0
+   ev 2:oSkeletonBalloon 25:oSkeletons 51:oIceWizard++ 120:oIceWizard 143:oMovingCannon 211:oXbow
+    +140 pos IceWizard/1 [[1372, 24195], [962, 23607]]
+    +146 tgt SkeletonBalloon*/0 ['IceWizard:ef8505', 'IceWizard:e2eeca']
+    +146 tgt SkeletonBalloon*/0 ['IceWizard:ef8505', 'Skeletons:e7abfe']
+    +150 pos SkeletonBalloon*/0 [[2136, 20831], [2253, 21689]]
+    +150 pos SkeletonBalloon*/0 [[1042, 22621], [1565, 22416]]
+    +152 hp SkeletonBalloon*/0 [119, 1]
+    +154 pos SkeletonBalloon*/0 [[3233, 20831], [3045, 21552]]
+    +158 hp IceWizard/1 [792, 673]
+## 20261017_210407@2779:MinionHorde  L [2857, 2871, 2890, 2902, 2902, 2902] S [2857, 2873, 2888, 2890, 2902, 2935] tw 0/0
+   ev 2:oMinionHorde 26:oTornado 52:oIceWizard++ 52:oTombstone 97:oSkeletons 98:oIceWizard
+    +36 pos Witch/1 [[13000, 16500], [12480, 17000]]
+    +92 hp MinionHorde*/1 [116, 234]
+    +94 gone_live MinionHorde*/1 [116]
+    +96 gone_live Witch/1 [119]
+    +98 hp MinionHorde*/1 [234, 76]
+    +102 tgt IceWizard/0 ['MinionHorde:819fbf', 'MinionHorde:c7c5ec']
+    +102 gone_sim IceWizard/0 [352]
+    +111 gone_sim MinionHorde*/1 [55]
+## 20261017_211745@4271:Xbow  L [None] S [None] tw 813/617
+   ev 1:oXbow 35:oGhost 111:oAssassin 135:oTesla+ 163:oIceWizard++ 229:oElectroWizard
+    +154 tgt Assassin/0 ['Tesla:39ed74', None]
+    +156 pos Assassin/0 [[3787, 16787], [2907, 15907]]
+    +156 hp Tesla/1 [1265, 1886]
+    +186 hp Assassin/0 [84, 691]
+    +186 hp IceWizard/1 [911, 290]
+    +192 tgt IceWizard/1 ['T0L:T0L', 'Assassin:393606']
+    +194 gone_live Assassin/0 [593]
+    +196 tgt Xbow*/1 ['T0L:T0L', 'Assassin:393606']
+## 20261017_211745@4271:Ghost  L [4509] S [None] tw 0/0
+   ev 1:oXbow 35:oGhost 111:oAssassin 135:oTesla+ 163:oIceWizard++ 229:oElectroWizard
+    +154 tgt Assassin/0 ['Tesla:39ed74', None]
+    +156 pos Assassin/0 [[3787, 16787], [2907, 15907]]
+    +156 hp Tesla/1 [1265, 1886]
+    +186 hp Assassin/0 [84, 691]
+    +186 hp IceWizard/1 [911, 290]
+    +192 tgt IceWizard/1 ['T0L:T0L', 'Assassin:393606']
+    +194 gone_live Assassin/0 [593]
+    +196 tgt Xbow/1 ['T0L:T0L', 'Assassin:393606']
+## 20261017_214720@3758:GoblinHut  L [3868, 3872, None] S [3856, 3880, None, None] tw 0/0
+   ev 9:oGoblinHut 111:oBerserker 123:oSkeletons 169:oIceWizard++ 237:oXbow
+    +4 tgt Xbow/1 [None, 'FirespiritHut:b18242']
+    +10 tgt IceWizard/1 ['T0L:T0L', 'FirespiritHut:35321c']
+    +12 hp IceWizard/1 [287, 599]
+    +16 hp FirespiritHut/0 [1056, 958]
+    +56 gone_live IceWizard/1 [27]
+    +68 pos FirespiritHut/0 [[4264, 13923], [4261, 13256]]
+    +78 gone_sim FirespiritHut/0 [154]
+    +86 hp GoblinHut*/0 [212, 114]
+## 20261017_215248@3157:WitchMother  L [None] S [3274, None] tw 0/0
+   ev 1:oWitchMother 64:oTesla 119:oLog 214:oIceWizard++
+    +86 tgt Tesla/1 ['dfda50194d6a.1:dfda50', 'WitchMother:s10']
+    +147 hp Pekka/0 [2429, 2208]
+## 20261017_215605@2487:WitchMother  L [None] S [None, None] tw 537/1257
+   ev 1:oWitchMother 50:oIceWizard 114:oTornado 198:oKnight
+    +15 gone_live Skeletons/1 [130]
+    +17 hp ElectroGiant/0 [3636, 3766]
+    +44 hp T1R/1 [1559, 1404]
+    +54 gone_sim IceWizard/1 [352]
+    +76 hp IceWizard/1 [130, 140]
+    +76 tgt IceWizard/1 ['4d07dcda04c1.1:4d07dc', None]
+    +93 gone_live IceWizard/1 [81]
+    +163 hp IceWizard/1 [699, 911]
+## 20261017_221306@1856:SkeletonWarriors  L [2073, None, None] S [2093, None, None] tw 0/0
+   ev 1:oSkeletonWarriors 96:oAngryBarbarians 119:oTesla 161:oKnight+
+    +15 hp Knight/1 [1198, 1183]
+    +57 pos SkeletonWarriors*/0 [[8344, 10774], [7643, 10294]]
+    +61 pos SkeletonWarriors*/0 [[8162, 12113], [8229, 11392]]
+    +63 pos SkeletonWarriors*/0 [[8519, 13049], [8304, 12390]]
+    +65 tgt Knight/1 ['SkeletonWarriors:78523b', 'SkeletonWarriors:b1b85f']
+    +77 hp IceWizard/1 [426, 411]
+    +169 hp AngryBarbarians/0 [1792, 2143]
+    +201 hp Knight/1 [2209, 2577]
+## 20261017_222222@2545:ElixirGolem  L [2687, 2743, 2767, 2771, None, None, None, None, None, None] S [2687, 2731, 2755, 2769, 2777, None, None] tw 0/0
+   ev 2:oElixirGolem 27:oSkeletons 52:oIceWizard++ 102:oTesla 152:oArcher+ 168:oIceWizard 176:oLog
+    +146 tgt Xbow/1 ['ElixirGolem:4e32cd', 'T0R:T0R']
+    +146 tgt IceWizard/1 ['ElixirGolem:4e32cd', None]
+    +152 tgt Tesla/1 ['ElixirGolem:4e32cd', 'ElixirGolem:f78b64']
+    +158 hp T0R/0 [4858, 4760]
+    +160 hp ElixirGolem*/0 [990, 757]
+    +162 hp ElixirGolem*/0 [860, 978]
+    +172 gone_sim IceWizard/1 [352]
+    +178 pos ElixirGolem*/0 [[14350, 18624], [14356, 18015]]
+## 20261017_223547@353:SkeletonBalloon  L [501, 535, 545, 557, 578, 578, None, None] S [501, 535, 545, 557, 563, 578, 578, None] tw 0/0
+   ev 1:oSkeletonBalloon 48:oKnight 129:oTornado 193:oIceWizard++
+    +128 hp T1K/1 [6939, 7032]
+    +164 pos SkeletonBalloon*/0 [[15135, 19575], [13445, 19123]]
+    +164 pos SkeletonBalloon*/0 [[15401, 18790], [14158, 17726]]
+    +166 pos SkeletonBalloon*/0 [[15537, 17391], [15856, 18684]]
+    +166 pos SkeletonBalloon*/0 [[14096, 17075], [15507, 17356]]
+    +166 pos SkeletonBalloon*/0 [[13174, 19283], [14194, 20083]]
+    +166 pos SkeletonBalloon*/0 [[14194, 20083], [15386, 19772]]
+    +184 gone_sim SkeletonBalloon*/0 [119]
+## 20261017_225137@2801:Xbow  L [None] S [None] tw 1862/0
+   ev 2:oXbow 23:oFirespiritHut 60:oBarbLog 101:oValkyrie 117:oIceWizard++ 217:oPoison
+    +76 tgt Xbow*/1 ['GoblinHut:c68c3d', 'GoblinHut:s14']
+    +88 gone_sim GoblinHut/0 [193]
+    +88 gone_live GoblinHut/0 [45]
+    +96 hp T0R/0 [2121, 2219]
+    +96 hp BarbLog/0 [1041, 804]
+    +100 pos GoblinHut/0 [[9558, 12064], [9339, 10810]]
+    +100 tgt GoblinHut/0 ['Tesla:421ae2', None]
+    +104 hp Valkyrie/0 [2771, 2534]

@@ -1,3 +1,17 @@
+## 2026-10-18 09:04 EDT -- parity gap map toward the trigger (scratchpad/gauntlet/L74/parity/gapmap/)
+
+- The overall raw needed for the lower CI to reach 0.975 is ~0.978-0.979 (not 0.986: the CI narrows as misses fall). Now 0.925
+  on FIN12_stamped (265 matches) -> ~80% of the excess miss mass must go. Tier-B coverage needs 0.90; now 0.217; data alone ->
+  0.33 at +7 d.
+- Coverage minimal set at +3 d: all 7 error-limited own cards (Skeletons 61 fights, Tesla 25, IW hero 18, Knight 15, Knight evo
+  15, Tesla evo 10, Rocket 1) + 13 opp cards (Bats 18, Goblin Gang 9, Skeleton Army 8, Hog 5, ...) ~195 fights.
+- Miss mass 664 (noise floor 79); ~59% SIM laws. Ranked levers:
+  1. timing 162
+  2. swarm / walker movement 86
+  3. target picks 61
+  4. set-up walker state 43: the Skeletons gate, needs H-PREROLL repair + a phase-3d reader capture with the device
+  then unpaired-first 33, Tesla hide 27, IW cube / press date 26, MK jump 24, shot-in-flight 18, Goblin Drill 12
+- Pace: ~9 more rounds at +0.005 each (extrapolation). Next: the FIN13 re-score (+UD v2), then the 5 streams in its report §5.
 ## 2026-10-18 08:23 EDT -- fork: S-TESLA-UNDER-DAMAGE v2 LANDED on clashbot36 (4ae08e9f + a697d1f9 record fixes); wheel rsfork_fin13
 
 - clashbot36 = ... d40f331 + 4ae08e9f (hide.HIDDEN_IMMUNE_FROM = client16402_after_hide_time_fired_under_early) + a697d1f9 (the

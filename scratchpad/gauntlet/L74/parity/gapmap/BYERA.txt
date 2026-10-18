@@ -1,0 +1,21 @@
+old (<= cut): matches 126, fights 4366, raw 0.9293 CI (0.9179903730445247, 0.9399927042801557)
+new (> cut): matches 139, fights 4492, raw 0.9209 CI (0.9113483406822929, 0.9305400890868597)
+card | old n raw | new n raw
+own IceWizard hero | 406 0.948 | 439 0.924
+own Skeletons | 367 0.891 | 370 0.860
+own Log | 362 0.969 | 364 0.978
+own Xbow | 315 0.976 | 349 0.959
+own Knight | 284 0.941 | 293 0.924
+own Tesla | 264 0.922 | 290 0.906
+own Knight evo | 101 0.875 | 113 0.912
+own Tesla evo | 84 0.890 | 73 0.918
+opp HogRider | 70 0.934 | 77 0.929
+own Tornado | 65 0.938 | 73 1.000
+opp Knight hero | 57 1.000 | 65 0.990
+opp Witch | 65 0.813 | 54 0.824
+opp Skeletons | 68 0.956 | 46 0.978
+opp Firecracker | 56 0.958 | 55 0.959
+opp Fireball | 60 0.979 | 47 0.979
+opp Log | 46 1.000 | 53 1.000
+opp GoblinBarrel | 50 1.000 | 43 0.953
+opp Valkyrie | 43 1.000 | 42 0.905

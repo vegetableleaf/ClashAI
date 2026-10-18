@@ -1,0 +1,153 @@
+failing fights 736; labeled by rounds 4-7 609, this gapmap's sample 85, extrapolated 127 (stratum mix of the sample)
+
+lever | fights | miss mass | recoverable (UB) | overall +p (UB) | in r7 buckets (a/b/c/d) | tier-B coverage alone (+7 d; data-only base) | top cards by recoverable
+S unresolved hit / death timing | 163 | 162.2 | 162.2 | +0.0183 | 8/47/25/34 | 0.559 (+0.227) | own IceWizard hero 26.5, own Knight 18.0, own Tesla 16.9, opp Bats 10.2, own Skeletons 8.0, opp SkeletonArmy 7.0
+S swarm / walker movement (new bodies) | 87 | 86.1 | 86.1 | +0.0097 | 13/0/17/19 | 0.357 (+0.026) | own Skeletons 13.0, own Knight 11.0, opp Witch 7.5, own Knight evo 5.0, opp Bats 3.2, opp MinionHorde 2.5
+S target pick (acquisition / retarget) | 62 | 61.4 | 61.4 | +0.0069 | 8/20/0/15 | 0.343 (+0.011) | own IceWizard hero 10.0, own Tesla 9.0, own Skeletons 8.0, opp GoblinGang 5.0, opp SkeletonBalloon 3.1, opp Bats 3.1
+U/H set-up walker movement state | 43 | 42.9 | 42.9 | +0.0048 | 34/0/0/0 | 0.332 (+0.000) | own Skeletons 34.0, opp SkeletonBalloon 1.6, opp Berserker 1.0, opp SkeletonWarriors 1.0, own Log 1.0, opp Assassin 0.2
+S/H unpaired body first (spawn point / pairing) | 33 | 32.6 | 32.6 | +0.0037 | 21/0/0/0 | 0.332 (+0.000) | own Skeletons 21.0, opp ElixirGolem 1.1, opp AxeMan 1.1, own Xbow 1.0, opp Assassin 0.3, opp Zap 0.3
+N noise (ceiling <= 0.75) | 164 | 96.8 | 29.3 | +0.0033 | 3/3/1/5 | 0.335 (+0.004) | own Skeletons 3.1, own Log 2.8, opp BlowdartGoblin 2.7, opp RoyalHogs 2.2, own IceWizard hero 1.8, opp Witch evo 1.2
+S Tesla hide / under-damage | 27 | 27.4 | 27.4 | +0.0031 | 0/12/5/0 | 0.332 (+0.000) | own Tesla 9.0, own Knight 5.0, own Tesla evo 3.0, opp BlowdartGoblin 2.1, opp Ghost 1.1, opp Fisherman 1.1
+H Hero IW cube / press date | 27 | 26.2 | 26.2 | +0.0030 | 0/2/0/5 | 0.343 (+0.011) | opp BattleRam 2.4, opp Witch 2.2, opp SkeletonBalloon 1.6, opp RamRider 1.2, opp ElectroWizard 1.1, opp Bats 1.1
+S Mega Knight jump / landing / stand | 25 | 24.4 | 24.4 | +0.0028 | 0/16/0/0 | 0.332 (+0.000) | own IceWizard hero 7.2, own Tesla 6.0, opp BlowdartGoblin 4.2, opp MegaKnight evo 3.0, own Tesla evo 3.0, opp SkeletonWarriors 1.0
+H shot in flight at t0 (skipped / targetless) | 18 | 17.9 | 17.9 | +0.0020 | 0/0/0/1 | 0.332 (+0.000) | opp Ronin 1.0, opp Mortar 1.0, own Xbow 1.0, opp RoyalHogs 1.0, opp Rocket 1.0, opp Assassin 0.5
+S other laws | 12 | 12.3 | 12.3 | +0.0014 | 0/0/0/1 | 0.332 (+0.000) | opp Miner 3.0, opp Ghost evo 2.0, opp Archer 1.0, opp Witch evo 1.0, opp Vines 1.0, opp Assassin 0.2
+S/H Goblin Drill tunnel + spawn waves | 12 | 12.0 | 12.0 | +0.0014 | 0/0/0/0 | 0.332 (+0.000) | opp GoblinDrill 12.0
+S Evo Knight reduction / hit tick | 13 | 11.6 | 11.6 | +0.0013 | 0/0/12/0 | 0.332 (+0.000) | own Knight evo 10.6, own Tornado 1.0
+H H-ORDER tie flips (broke FIN11-agreeing fights) | 10 | 10.0 | 10.0 | +0.0011 | 0/10/0/0 | 0.332 (+0.000) | own Tesla 4.0, own Tesla evo 3.0, own IceWizard hero 3.0
+S spawner / death-spawn counts and positions | 8 | 8.5 | 8.5 | +0.0010 | 0/0/0/0 | 0.332 (+0.000) | opp SkeletonBalloon 3.1, opp Tombstone hero 1.0, opp Assassin 0.2, opp Zap 0.2, opp Tombstone 0.1, opp SkeletonBalloon evo 0.1
+U t0 target state (unresolved / unseen target) | 7 | 7.3 | 7.3 | +0.0008 | 0/0/0/0 | 0.332 (+0.000) | opp SkeletonWarriors 1.0, own Log 1.0, opp GoblinHut 1.0, opp Assassin 0.2, opp Zap 0.2, opp Tombstone 0.1
+U other reader gaps (hp -1 overheal, unseen hit) | 7 | 7.0 | 7.0 | +0.0008 | 0/0/3/0 | 0.352 (+0.020) | own Log 4.0, own Rocket 1.0, own Tornado 1.0, own Knight 1.0
+H/S status buff unset at t0 (status_unset) | 6 | 6.3 | 6.3 | +0.0007 | 0/0/0/0 | 0.332 (+0.000) | opp ElectroDragon evo 1.0, opp RoyalHogs 1.0, opp Assassin 0.2, opp Zap 0.2, opp Tombstone 0.1, opp SkeletonBalloon evo 0.1
+H Witch Mother cursed-hog child view | 5 | 5.0 | 5.0 | +0.0006 | 0/0/0/0 | 0.332 (+0.000) | opp WitchMother 5.0
+H other harness | 4 | 4.0 | 4.0 | +0.0005 | 0/0/1/0 | 0.332 (+0.000) | own Xbow 2.0, own Log 1.0, own Knight 1.0
+S/H building lifetime (X-Bow / Tombstone) | 4 | 4.0 | 4.0 | +0.0005 | 0/0/0/0 | 0.332 (+0.000) | own Xbow 4.0
+U unseen opp spell / hit at t0 | 1 | 1.2 | 1.2 | +0.0001 | 0/0/0/0 | 0.332 (+0.000) | opp BattleRam 1.2
+H shield state at t0 (3c field) | 1 | 1.0 | 1.0 | +0.0001 | 0/0/0/0 | 0.332 (+0.000) | own Log 1.0
+S/H Royal Ghost visibility | 1 | 1.0 | 1.0 | +0.0001 | 0/0/0/0 | 0.332 (+0.000) | opp SkeletonWarriors 1.0
+
+CUMULATIVE (full recovery, biggest first) at +7.0 d of live data (per-card p_need from trigger.json; a card counts when its new p >= its p_need at its +7.0 d n):
+after lever | overall p (need) | tier-B coverage (need 0.90) | cards meeting at +d that do not meet today
+(none: data only) | 0.9250 (0.9766) | 0.332 | own Tornado, opp GoblinBarrel, opp Skeletons, opp Graveyard, opp MegaKnight, opp Princess, opp ElectroSpirit, opp Tesla, opp Cannon, opp InfernoDragon, opp Knight
++ S unresolved hit / death timing | 0.9433 (0.9766) | 0.559 | 15 cards
++ S swarm / walker movement (new bodies) | 0.9531 (0.9766) | 0.608 | 19 cards
++ S target pick (acquisition / retarget) | 0.9600 (0.9766) | 0.702 | 23 cards
++ U/H set-up walker movement state | 0.9648 (0.9766) | 0.829 | 24 cards
++ S/H unpaired body first (spawn point / pairing) | 0.9685 (0.9766) | 0.829 | 24 cards
++ S Tesla hide / under-damage | 0.9716 (0.9766) | 0.829 | 24 cards
++ H Hero IW cube / press date | 0.9746 (0.9766) | 0.847 | 27 cards
++ S Mega Knight jump / landing / stand | 0.9773 (0.9766) | 0.872 | 28 cards
++ H shot in flight at t0 (skipped / targetless) | 0.9793 (0.9766) | 0.880 | 30 cards
++ S other laws | 0.9807 (0.9766) | 0.887 | 31 cards
++ S/H Goblin Drill tunnel + spawn waves | 0.9821 (0.9766) | 0.887 | 31 cards
++ S Evo Knight reduction / hit tick | 0.9834 (0.9766) | 0.920 | 32 cards
++ H H-ORDER tie flips (broke FIN11-agreeing fights) | 0.9845 (0.9766) | 0.920 | 32 cards
++ S spawner / death-spawn counts and positions | 0.9855 (0.9766) | 0.920 | 32 cards
++ U t0 target state (unresolved / unseen target) | 0.9863 (0.9766) | 0.924 | 33 cards
++ U other reader gaps (hp -1 overheal, unseen hit) | 0.9871 (0.9766) | 0.924 | 33 cards
++ H/S status buff unset at t0 (status_unset) | 0.9878 (0.9766) | 0.928 | 34 cards
++ H Witch Mother cursed-hog child view | 0.9884 (0.9766) | 0.928 | 34 cards
++ H other harness | 0.9888 (0.9766) | 0.928 | 34 cards
++ S/H building lifetime (X-Bow / Tombstone) | 0.9893 (0.9766) | 0.928 | 34 cards
++ U unseen opp spell / hit at t0 | 0.9894 (0.9766) | 0.928 | 34 cards
++ H shield state at t0 (3c field) | 0.9895 (0.9766) | 0.928 | 34 cards
++ S/H Royal Ghost visibility | 0.9896 (0.9766) | 0.928 | 34 cards
+  final flips: own Skeletons, own IceWizard hero, own Knight, own Tesla, own Tornado, own Knight evo, own Tesla evo, own Rocket, opp HogRider, opp GoblinBarrel, opp Skeletons, opp Firecracker, opp Valkyrie, opp SkeletonArmy, opp GoblinGang, opp Graveyard, opp MiniPekka hero, opp MegaKnight, opp Princess, opp Miner, opp Bats, opp Prince, opp ElectroSpirit, opp Tesla, opp Wallbreakers, opp ElectroWizard, opp Cannon, opp MiniPekka, opp InfernoDragon, opp MinionHorde, opp FireSpirits, opp Knight, opp Archer, opp Ghost
+
+PER CARD (tier B, not meeting): fights to recover for p >= p_need(+7 d) vs recoverable, and its levers
+card | share | n | p | p_need | deficit (fights) | recoverable | needed share of recoverable | levers (recoverable)
+own Skeletons | 0.1055 | 737 | 0.876 | 0.956 | 59.3 | 84.0 | 71%  | set-up walker movement state 34.0, unpaired body first (spawn p 21.0, swarm / walker movement (new 13.0, unresolved hit / death timin 8.0
+own IceWizard hero | 0.1034 | 845 | 0.936 | 0.955 | 16.2 | 47.8 | 34%  | unresolved hit / death timin 26.5, target pick (acquisition / r 10.0, Mega Knight jump / landing / 7.2, H-ORDER tie flips (broke FIN 3.0
+own Knight | 0.0741 | 577 | 0.933 | 0.956 | 13.3 | 36.0 | 37%  | unresolved hit / death timin 18.0, swarm / walker movement (new 11.0, Tesla hide / under-damage 5.0, other reader gaps (hp -1 ove 1.0
+own Tesla | 0.0576 | 554 | 0.914 | 0.956 | 23.6 | 44.9 | 53%  | unresolved hit / death timin 16.9, target pick (acquisition / r 9.0, Tesla hide / under-damage 9.0, Mega Knight jump / landing / 6.0
+own Tornado | 0.0373 | 138 | 0.971 | 0.961 | 0.0 | 3.0 | 0%  | unresolved hit / death timin 1.0, other reader gaps (hp -1 ove 1.0, Evo Knight reduction / hit t 1.0
+own Knight evo | 0.0276 | 214 | 0.894 | 0.959 | 13.9 | 21.6 | 64%  | Evo Knight reduction / hit t 10.6, unresolved hit / death timin 6.0, swarm / walker movement (new 5.0
+own Tesla evo | 0.0203 | 157 | 0.903 | 0.961 | 9.1 | 15.0 | 61%  | unresolved hit / death timin 4.0, Tesla hide / under-damage 3.0, H-ORDER tie flips (broke FIN 3.0, Mega Knight jump / landing / 3.0
+own Rocket | 0.0166 | 74 | 0.954 | 0.963 | 0.7 | 2.0 | 33%  | other reader gaps (hp -1 ove 1.0, swarm / walker movement (new 1.0
+opp HogRider | 0.0121 | 147 | 0.931 | 0.959 | 4.1 | 7.2 | 56%  | unresolved hit / death timin 3.2, swarm / walker movement (new 2.2, target pick (acquisition / r 1.1, Hero IW cube / press date 0.4
+opp GoblinBarrel | 0.0098 | 93 | 0.978 | 0.963 | 0.0 | 1.0 | 0%  | target pick (acquisition / r 1.0
+opp Skeletons | 0.0096 | 114 | 0.965 | 0.964 | 0.0 | 4.0 | 0%  | unresolved hit / death timin 2.3, swarm / walker movement (new 0.5, Hero IW cube / press date 0.2, shot in flight at t0 (skippe 0.2
+opp Firecracker | 0.0093 | 111 | 0.958 | 0.961 | 0.3 | 3.0 | 11%  | target pick (acquisition / r 2.0, Hero IW cube / press date 1.0
+opp Witch | 0.0080 | 119 | 0.818 | 0.962 | 17.2 | 19.0 | 90% cannot (p_need > ceiling 0.959) | swarm / walker movement (new 7.5, unresolved hit / death timin 6.3, Hero IW cube / press date 2.2, target pick (acquisition / r 2.2
+opp BlowdartGoblin | 0.0076 | 67 | 0.789 | 0.970 | 12.1 | 8.3 | 145% cannot (p_need > ceiling 0.952) | Mega Knight jump / landing / 4.2, swarm / walker movement (new 2.1, Tesla hide / under-damage 2.1
+opp Valkyrie | 0.0074 | 85 | 0.953 | 0.964 | 0.9 | 3.0 | 30%  | unresolved hit / death timin 1.3, swarm / walker movement (new 0.5, Hero IW cube / press date 0.2, shot in flight at t0 (skippe 0.2
+opp SkeletonArmy | 0.0073 | 66 | 0.858 | 0.967 | 7.2 | 8.6 | 83%  | unresolved hit / death timin 7.0, swarm / walker movement (new 1.6
+opp GoblinGang | 0.0069 | 59 | 0.818 | 0.967 | 8.8 | 10.0 | 88%  | target pick (acquisition / r 5.0, unresolved hit / death timin 3.0, swarm / walker movement (new 2.0
+opp ElixirGolem | 0.0067 | 35 | 0.775 | 0.970 | 6.8 | 5.0 | 136% cannot (p_need > ceiling 0.929) | unresolved hit / death timin 3.2, unpaired body first (spawn p 1.1, swarm / walker movement (new 0.2, Hero IW cube / press date 0.1
+opp Graveyard | 0.0062 | 19 | 1.000 | 0.979 | 0.0 | 0.0 | -  | 
+opp MiniPekka hero | 0.0061 | 35 | 0.900 | 0.967 | 2.3 | 3.0 | 78%  | unresolved hit / death timin 1.3, swarm / walker movement (new 0.5, Hero IW cube / press date 0.2, shot in flight at t0 (skippe 0.2
+opp MegaKnight | 0.0060 | 85 | 0.965 | 0.962 | 0.0 | 3.0 | 0%  | swarm / walker movement (new 0.7, unresolved hit / death timin 0.5, Hero IW cube / press date 0.3, shot in flight at t0 (skippe 0.3
+opp Princess | 0.0059 | 64 | 0.979 | 0.965 | 0.0 | 1.0 | 0%  | swarm / walker movement (new 0.2, unresolved hit / death timin 0.2, Hero IW cube / press date 0.1, shot in flight at t0 (skippe 0.1
+opp Miner | 0.0057 | 36 | 0.875 | 0.967 | 3.3 | 4.0 | 83%  | other laws 3.0, swarm / walker movement (new 0.2, unresolved hit / death timin 0.2, Hero IW cube / press date 0.1
+opp SkeletonBalloon | 0.0053 | 36 | 0.556 | 0.978 | 15.2 | 15.0 | 101%  | unresolved hit / death timin 4.6, target pick (acquisition / r 3.1, spawner / death-spawn counts 3.1, Hero IW cube / press date 1.6
+opp Bats | 0.0053 | 84 | 0.768 | 0.969 | 16.9 | 18.0 | 94%  | unresolved hit / death timin 10.2, swarm / walker movement (new 3.2, target pick (acquisition / r 3.1, Hero IW cube / press date 1.1
+opp Prince | 0.0049 | 25 | 0.960 | 0.967 | 0.2 | 1.0 | 17%  | swarm / walker movement (new 0.2, unresolved hit / death timin 0.2, Hero IW cube / press date 0.1, shot in flight at t0 (skippe 0.1
+opp ElectroSpirit | 0.0048 | 76 | 0.974 | 0.963 | 0.0 | 2.0 | 0%  | swarm / walker movement (new 0.5, unresolved hit / death timin 0.3, Hero IW cube / press date 0.2, shot in flight at t0 (skippe 0.2
+opp AngryBarbarians | 0.0045 | 21 | 0.810 | 0.983 | 3.6 | 3.0 | 121% cannot (p_need > ceiling 0.949) | swarm / walker movement (new 0.7, unresolved hit / death timin 0.5, Hero IW cube / press date 0.3, shot in flight at t0 (skippe 0.3
+opp Tesla | 0.0045 | 61 | 0.984 | 0.964 | 0.0 | 1.0 | 0%  | swarm / walker movement (new 0.2, unresolved hit / death timin 0.2, Hero IW cube / press date 0.1, shot in flight at t0 (skippe 0.1
+opp Wallbreakers | 0.0044 | 18 | 0.944 | 0.970 | 0.5 | 1.0 | 46%  | swarm / walker movement (new 0.2, unresolved hit / death timin 0.2, Hero IW cube / press date 0.1, shot in flight at t0 (skippe 0.1
+opp ElectroWizard | 0.0041 | 29 | 0.909 | 0.969 | 1.7 | 2.0 | 86%  | Hero IW cube / press date 1.1, swarm / walker movement (new 0.2, unresolved hit / death timin 0.2, shot in flight at t0 (skippe 0.1
+opp Cannon | 0.0039 | 49 | 0.967 | 0.966 | 0.0 | 1.0 | 0%  | swarm / walker movement (new 0.2, unresolved hit / death timin 0.2, Hero IW cube / press date 0.1, shot in flight at t0 (skippe 0.1
+opp MiniPekka | 0.0039 | 29 | 0.897 | 0.968 | 2.1 | 3.0 | 69%  | unresolved hit / death timin 2.2, swarm / walker movement (new 0.2, Hero IW cube / press date 0.1, shot in flight at t0 (skippe 0.1
+opp Witch evo | 0.0039 | 42 | 0.777 | 0.973 | 8.2 | 8.0 | 103% cannot (p_need > ceiling 0.968) | unresolved hit / death timin 3.2, swarm / walker movement (new 2.2, target pick (acquisition / r 1.1, other laws 1.0
+opp RoyalHogs | 0.0038 | 28 | 0.585 | 0.980 | 11.1 | 5.0 | 222% cannot (p_need > ceiling 0.830) | unresolved hit / death timin 2.0, swarm / walker movement (new 1.0, shot in flight at t0 (skippe 1.0, status buff unset at t0 (sta 1.0
+opp InfernoDragon | 0.0038 | 29 | 1.000 | 0.974 | 0.0 | 0.0 | -  | 
+opp Minions | 0.0036 | 32 | 0.906 | 0.973 | 2.1 | 2.0 | 106%  | unresolved hit / death timin 1.2, swarm / walker movement (new 0.2, Hero IW cube / press date 0.1, shot in flight at t0 (skippe 0.1
+opp RageBarbarian | 0.0036 | 28 | 0.857 | 0.975 | 3.3 | 3.0 | 110%  | target pick (acquisition / r 1.2, swarm / walker movement (new 0.5, unresolved hit / death timin 0.3, Hero IW cube / press date 0.2
+opp MinionHorde | 0.0035 | 16 | 0.625 | 0.996 | 5.9 | 6.0 | 99%  | swarm / walker movement (new 2.5, unresolved hit / death timin 2.3, Hero IW cube / press date 0.2, shot in flight at t0 (skippe 0.2
+opp FireSpirits | 0.0035 | 36 | 0.872 | 0.973 | 3.7 | 4.0 | 91%  | swarm / walker movement (new 1.5, unresolved hit / death timin 1.3, Hero IW cube / press date 0.2, shot in flight at t0 (skippe 0.2
+opp Knight | 0.0034 | 21 | 1.000 | 0.978 | 0.0 | 0.0 | -  | 
+opp Balloon hero | 0.0033 | 25 | 0.970 | 0.971 | 0.0 | 0.0 | -  | 
+opp Archer | 0.0032 | 51 | 0.912 | 0.966 | 2.8 | 4.0 | 70%  | unresolved hit / death timin 2.2, other laws 1.0, swarm / walker movement (new 0.2, Hero IW cube / press date 0.1
+opp Ghost | 0.0032 | 28 | 0.862 | 0.965 | 2.9 | 3.0 | 97%  | Tesla hide / under-damage 1.1, swarm / walker movement (new 0.5, unresolved hit / death timin 0.3, Hero IW cube / press date 0.2
+
+LEAVE-ONE-OUT at +7 d (every other lever fully recovered): what is lost without this lever
+lever missing | overall p (need) | tier-B coverage | cards that then miss
+- S unresolved hit / death timing | 0.9713 (0.9766) | 0.876 GATES | opp SkeletonArmy, opp GoblinGang, opp MiniPekka hero, opp Bats, opp MiniPekka, opp MinionHorde, opp FireSpirits, opp Archer, opp Ghost
+- S swarm / walker movement (new bodies) | 0.9799 (0.9766) | 0.892 GATES | opp SkeletonArmy, opp GoblinGang, opp Bats, opp MinionHorde, opp FireSpirits, opp Ghost
+- S target pick (acquisition / retarget) | 0.9827 (0.9766) | 0.905 | opp GoblinGang, opp Bats, opp MinionHorde, opp Ghost
+- U/H set-up walker movement state | 0.9848 (0.9766) | 0.797 GATES | own Skeletons, opp MinionHorde
+- S/H unpaired body first (spawn point / pairing) | 0.9860 (0.9766) | 0.920 | opp MinionHorde, opp Ghost
+- S Tesla hide / under-damage | 0.9865 (0.9766) | 0.920 | opp MinionHorde, opp Ghost
+- H Hero IW cube / press date | 0.9867 (0.9766) | 0.909 | opp Bats, opp ElectroWizard, opp MinionHorde, opp Ghost
+- S Mega Knight jump / landing / stand | 0.9869 (0.9766) | 0.928 | 
+- H shot in flight at t0 (skipped / targetless) | 0.9876 (0.9766) | 0.920 | opp MinionHorde, opp Ghost
+- S other laws | 0.9882 (0.9766) | 0.917 | opp Miner, opp MinionHorde
+- S/H Goblin Drill tunnel + spawn waves | 0.9883 (0.9766) | 0.928 | 
+- S Evo Knight reduction / hit tick | 0.9883 (0.9766) | 0.895 GATES | own Knight evo
+- H H-ORDER tie flips (broke FIN11-agreeing fights) | 0.9885 (0.9766) | 0.928 | 
+- S spawner / death-spawn counts and positions | 0.9887 (0.9766) | 0.924 | opp MinionHorde
+- U t0 target state (unresolved / unseen target) | 0.9888 (0.9766) | 0.924 | opp MinionHorde
+- U other reader gaps (hp -1 overheal, unseen hit) | 0.9888 (0.9766) | 0.928 | 
+- H/S status buff unset at t0 (status_unset) | 0.9889 (0.9766) | 0.924 | opp MinionHorde
+- H Witch Mother cursed-hog child view | 0.9891 (0.9766) | 0.928 | 
+- H other harness | 0.9892 (0.9766) | 0.928 | 
+- S/H building lifetime (X-Bow / Tombstone) | 0.9892 (0.9766) | 0.928 | 
+- U unseen opp spell / hit at t0 | 0.9895 (0.9766) | 0.928 | 
+- H shield state at t0 (3c field) | 0.9895 (0.9766) | 0.928 | 
+- S/H Royal Ghost visibility | 0.9895 (0.9766) | 0.928 | 
+
+HALF recovery (each lever recovers 50% of its recoverable mass), same order:
++ S unresolved hit / death timing | 0.9342 (0.9766) | 0.332 | 11 cards
++ S swarm / walker movement (new bodies) | 0.9390 (0.9766) | 0.427 | 13 cards
++ S target pick (acquisition / retarget) | 0.9425 (0.9766) | 0.571 | 16 cards
++ U/H set-up walker movement state | 0.9449 (0.9766) | 0.571 | 16 cards
++ S/H unpaired body first (spawn point / pairing) | 0.9468 (0.9766) | 0.571 | 16 cards
++ S Tesla hide / under-damage | 0.9483 (0.9766) | 0.571 | 16 cards
++ H Hero IW cube / press date | 0.9498 (0.9766) | 0.571 | 16 cards
++ S Mega Knight jump / landing / stand | 0.9512 (0.9766) | 0.571 | 16 cards
++ H shot in flight at t0 (skipped / targetless) | 0.9522 (0.9766) | 0.571 | 16 cards
++ S other laws | 0.9529 (0.9766) | 0.571 | 16 cards
++ S/H Goblin Drill tunnel + spawn waves | 0.9536 (0.9766) | 0.571 | 16 cards
++ S Evo Knight reduction / hit tick | 0.9542 (0.9766) | 0.571 | 16 cards
++ H H-ORDER tie flips (broke FIN11-agreeing fights) | 0.9548 (0.9766) | 0.571 | 16 cards
++ S spawner / death-spawn counts and positions | 0.9553 (0.9766) | 0.576 | 17 cards
++ U t0 target state (unresolved / unseen target) | 0.9557 (0.9766) | 0.576 | 17 cards
++ U other reader gaps (hp -1 overheal, unseen hit) | 0.9561 (0.9766) | 0.596 | 18 cards
++ H/S status buff unset at t0 (status_unset) | 0.9564 (0.9766) | 0.596 | 18 cards
++ H Witch Mother cursed-hog child view | 0.9567 (0.9766) | 0.596 | 18 cards
++ H other harness | 0.9569 (0.9766) | 0.596 | 18 cards
++ S/H building lifetime (X-Bow / Tombstone) | 0.9571 (0.9766) | 0.596 | 18 cards
++ U unseen opp spell / hit at t0 | 0.9572 (0.9766) | 0.596 | 18 cards
++ H shield state at t0 (3c field) | 0.9573 (0.9766) | 0.596 | 18 cards
++ S/H Royal Ghost visibility | 0.9573 (0.9766) | 0.596 | 18 cards
