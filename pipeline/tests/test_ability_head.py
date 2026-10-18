@@ -154,7 +154,7 @@ class TestConfig(unittest.TestCase):
         cfg = RL.load_config(YAML, ["advantage=gae", "ability_head=on", "ability_bc_matches=16"], False)
         self.assertIs(cfg["ability_head"], True)                                  # YAML 1.1: on = true
         self.assertEqual(RL.ability_cfg(cfg), {"ent_coef": 0.01, "lr": 3e-4, "bc_matches": 16, "bc_steps": 300,
-                                               "bc_lr": 1e-3})
+                                               "bc_lr": 1e-3, "features": "base"})   # L74: + the head inputs
 
     def test_validation(self):
         ok = {"advantage": "gae", "ability_head": True}
@@ -181,7 +181,7 @@ class TestConfig(unittest.TestCase):
             self.assertNotIn("ability", RL.actor_cfg(base, k, 0, "cpu"))
         ab = {"d_g": 16, "hidden": 64, "n_feat": NF}
         r, s = (RL.actor_cfg({**base, "ability": ab}, k, 0, "cpu") for k in ("rollout", "screen"))
-        self.assertEqual((r["ability"], s["ability"]), ({"mode": "sample"}, {"mode": "greedy"}))
+        self.assertEqual((r["ability"], s["ability"]), ({"mode": "sample", "n_feat": 44}, {"mode": "greedy", "n_feat": 44}))   # L74: + n_feat
 
 
 # ------------------------------------------------------------------------------------------------------

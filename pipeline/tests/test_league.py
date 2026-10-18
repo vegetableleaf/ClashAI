@@ -492,6 +492,21 @@ class TestLeash(unittest.TestCase):
         with self.assertRaises(ValueError):
             RL.leash_kl({}, "sum")
 
+    def test_k1_kl_heads(self):
+        upd = {"kl_gate": 0.3, "kl_card": 0.01, "kl_cell": 0.05}
+        self.assertEqual(RL.leash_kl(upd, "max", ["card"]), (0.01, "card"))
+        self.assertEqual(RL.leash_kl(upd, "max", None), (0.3, "gate"))
+        y = REPO / "pipeline" / "rl_royale.yaml"
+        base = RL.load_config(y, [], False)
+        self.assertEqual(RL.config_sha(base), RL.config_sha(dict(base, kl_heads=None, kl_ref_card=None)))
+        on = RL.load_config(y, ["kl_heads=[cell, card]"], False)
+        self.assertEqual(on["kl_heads"], ["card", "cell"])
+        self.assertNotEqual(RL.config_sha(on), RL.config_sha(base))
+        for bad in (["kl_heads=[]"], ["kl_heads=[card, card]"], ["kl_heads=[value]"], ["kl_ref_card=3"],
+                    ["kl_heads=[card]", "leash=cell"]):
+            with self.assertRaises(SystemExit):
+                RL.load_config(y, bad, False)
+
     def test_yaml(self):
         import yaml
         y = yaml.safe_load((REPO / "pipeline" / "rl_royale.yaml").read_text(encoding="utf-8"))

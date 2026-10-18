@@ -5,7 +5,7 @@ from .royale_runtime import RUNTIME_ID
 from .reader_identity_aliases import HERO_ICE_WIZARD_ID, HERO_ICE_WIZARD_NAMES
 
 ENABLED = RUNTIME_ID in ('20261012', '20261012-linux', '20261016-linux',   # 20261016-linux: 0.1.35, same card table + forms
-                       'fork36-linux')                                    # the 0.1.36-based fork: same table + forms
+                       'fork36-linux', 'fin13-linux')                     # the 0.1.36-based fork: same table + forms
 CARD_TABLE = 'client160402017_20261006'
 ICEBOW = frozenset(('Tornado', 'Tesla', 'IceWizard', 'Xbow', 'Rocket', 'Knight', 'Log', 'Skeletons'))
 

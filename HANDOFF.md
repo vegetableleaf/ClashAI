@@ -1,3 +1,26 @@
+## 2026-10-18 13:17 EDT -- step d: trainer code COMMITTED after a real fin13 pod smoke (owner decision 1); fin13 runtime built; D2a imitation training
+
+- Executor = headless API worker (relaunched 12:14; status scratchpad/gauntlet/L74/stepd/STATUS.md, read it first).
+- Committed (explicit paths): the in-flight trainer stack the c3 / combo runs already use (rl_royale heroiw_press live +
+  ability_features + spell_value reward; royale_env / e1_eval / search_s0 / spell_value; train_gen --cue-data / --row-weights,
+  eval_gen cue rows) PLUS:
+  - K1 (rl_royale): `kl_heads: [card]` (needs leash: max; only those heads' KL in the loss, leash steers on their max) and
+    `kl_ref_card: <ckpt>` (card KL to another frozen net). Absent = the historical config hash.
+  - R1: ROYALE_RUNTIME `fin13-linux` = fork clashbot36 a697d1f9 (fork36 bc2bf9d + Tesla hold, ring stun, reflect held, uppercut
+    count / stand, Tesla under-damage v2) in /workspace/venvf13; manifest stepd/build_manifest_fin13.json; wheel 969a2ac8 at
+    pod_backup_weekend/stepd/fin13/ (setup_fin13.sh installs it on other pods). TRAP: the wheel reads its build checkout's
+    data/derived if that dir exists -> the checkout is deleted after the build.
+  - step-d scripts: ship_stepd.sh, d2a/d2b imitation, d1_waiter, stepd_smoke, stepd_chain (train -> graft -> fin13 std+fresh +
+    fork36 std evals), pull_stepd.sh (relay), cfg/stepd_{ctrl,reb,rebc3}.yaml.
+- Smoke (pod 30988, fin13): stepd_ctrl (CLIII, card-only leash) and stepd_rebc3 (gen_v32_s0 stand-in init + CLIII card anchor,
+  update-0 KL_card 0.38 / 0.58) both SMOKE PASS, incl. a run with critic_warmup_updates=1 so update 1 is a real PPO step
+  (clip 0.019 / 0.022, leash driver = card). pyflakes clean. Laptop tests: 185 pass; failures are pre-existing (test_heroiw
+  builds RoyalePoolEnv without _iw_never / _v2_q; test_royale_runtime_rt35 path formatting) -- not from these edits.
+- NOT committed (outside decision 1): decision_options / live_options / test_rocket_tornado_v2 (live-path, combo 'margin' +
+  head-decode flag), L68 ability_head_live, L74 ability_live tests.
+- D2 per owner decision 5: every imitation run has the x3 unfavourable weights (81,114 / 3.52 M rows) and they are compared on
+  one pod / torch: IL-nocue-w s0 + s1 (training on 30988 GPU now, ~13:50 EDT), IL-cue-w s0 after D1 (= REB's init).
+- D1 waits for Codex's SIM re-eval on 30988 to release the CPUs (~14:05 EDT), then runs on fin13 (22 workers).
 ## 2026-10-18 11:31 EDT -- round-7 CLOSER launched (API-key worker, WMI pid 26708)
 
 - Ticket scratchpad/gauntlet/L74/parity/diag_night/R7_CLOSER_TICKET.md; log r7_closer.log; status R7_STATUS.md; summary

@@ -117,6 +117,92 @@ class TestRowRewards(unittest.TestCase):
         self.assertEqual(SV.row_rewards(None, self.PLAYS, self.TICKS, P)["r"].tolist(), [0.0] * 6)
 
 
+PL = {**P, "spell_value_lone": True, **SV.LONE_DEFAULTS}
+R = SV.ROCKET_R_TILES + 0.5                                          # the engine reach of a 0.5-radius body (2.5 tiles)
+
+
+def combo(bodies, cast, kill=None, dmg=0.0, **kw):
+    """An event whose setup Tornado recorded ``cast`` (one [x, y, reach] or None per hit body)."""
+    kill = sum(b[1] * b[2] for b in bodies if b[3]) if kill is None else kill
+    return {**ev(kill=kill, dmg=dmg, tornado={"seen": 95, "aim": (9.0, 11.0), "cost": 3, "cast": cast}, **kw), "bodies": bodies}
+
+
+class TestLone(unittest.TestCase):
+    """spell_value_lone (owner 10-18: the Tornado only where a lone Rocket does not suffice)."""
+
+    def test_spread_pair_vs_one_blast(self):
+        two = [["Wizard", 5.0, 1.0, True], ["Musketeer", 4.0, 1.0, True]]
+        far = combo(two, [[3.0, 20.0, R], [9.0, 20.0, R]])                 # 6 tiles apart > 2 x 2.5: one blast holds one
+        self.assertAlmostEqual(SV.lone_value(far, PL), 5.0)
+        near = combo(two, [[3.0, 20.0, R], [7.8, 20.0, R]])                # 4.8 tiles: the blast between them holds both
+        self.assertAlmostEqual(SV.lone_value(near, PL), 9.0)
+
+    def test_best_point_may_be_only_a_crossing(self):
+        # a triangle no body centre covers (sides 4 / 3.77 > 2.5) but its circumcentre does (2.23 from each): a crossing
+        tri = combo([["Knight", 3.0, 1.0, True]] * 3, [[0.0, 0.0, R], [4.0, 0.0, R], [2.0, 3.2, R]])
+        self.assertAlmostEqual(SV.lone_value(tri, PL), 9.0)
+        self.assertEqual(len(SV._crossings((0, 0, 1), (5, 0, 1))), 0)       # apart / nested / same centre: none
+        self.assertEqual(len(SV._crossings((0, 0, 3), (0.5, 0, 1))), 0)
+
+    def test_combo_shares_dmg_w_spawned_and_unknown(self):
+        b = [["Giant", 5.0, 0.4, False], ["Skeleton", 1 / 3, 1.0, True], ["Wizard", 5.0, 1.0, True]]
+        e = combo(b, [[9.0, 20.0, R], None, [9.0, 21.0, R]], dmg=2.0)       # the Skeleton spawned after the cast: 0
+        self.assertAlmostEqual(SV.lone_value(e, PL), 5.0 + 2.0)
+        self.assertAlmostEqual(SV.lone_value(e, {**PL, "spell_value_dmg_w": 0.5}), 5.0 + 1.0)
+        self.assertIsNone(SV.lone_value(ev(kill=5.0), PL))                 # no Tornado
+        self.assertIsNone(SV.lone_value(ev(kill=5.0, tornado={"seen": 1, "aim": (9, 9), "cost": 3}), PL))   # no cast recorded
+        self.assertEqual(SV.tornado_credit(ev(kill=5.0, tornado={"seen": 1, "aim": (9, 9), "cost": 3}), 5.0, PL), (0.0, None))
+
+    def test_tornado_credit(self):
+        b = [["RoyalGiant_EV1", 6.0, 0.5, False], ["Ronin", 4.0, 1.0, True], ["Witch_EV1", 5.0, 1.0, True]]
+        spread = combo(b, [[9.0, 16.0, 3.0], [13.0, 22.0, R], [3.0, 24.0, R]], dmg=3.0)   # V_combo 12, V_lone 5 (a Witch)
+        r, lone = SV.tornado_credit(spread, 12.0, PL)
+        self.assertAlmostEqual((r, lone), (0.02 * ((12.0 - 5.0) - 3.0), 5.0))         # the pull added 7 for 3: +0.08
+        thin = combo(b, [[9.0, 16.0, 3.0], [9.5, 20.0, R], [3.0, 24.0, R]], dmg=3.0)    # Giant + Ronin in one blast: 7
+        r, lone = SV.tornado_credit(thin, 12.0, PL)
+        self.assertAlmostEqual((r, lone), (0.02 * ((12.0 - 7.0) - 3.0), 7.0))          # 5 for 3: +0.04
+        r, _ = SV.tornado_credit(combo(b[1:], [[13.0, 22.0, R], [11.0, 22.0, R]]), 9.0, PL)
+        self.assertLess(r, 0.0)                                                         # lone 9 = the clump: not needed
+
+    def test_lone_suffices_is_negative_whatever_the_pull_added(self):
+        # synthetic "lone suffices": Wizard + Musketeer (9) in one blast at the cast; the pull added a Knight (12 total)
+        b = [["Wizard", 5.0, 1.0, True], ["Musketeer", 4.0, 1.0, True], ["Knight", 3.0, 1.0, True]]
+        e = combo(b, [[9.0, 22.0, R], [10.0, 22.0, R], [15.0, 22.0, R]])
+        r, lone = SV.tornado_credit(e, 12.0, PL)
+        self.assertEqual(lone, 9.0)
+        self.assertAlmostEqual(r, -0.02 * 3.0)                                         # -0.06, not w x (3 - 3) = 0
+        self.assertAlmostEqual(SV.tornado_credit(e, 12.0, {**PL, "spell_value_lone_min": 10.0})[0], 0.0)   # below a 10 bar
+
+    def test_row_rewards_lone_mode(self):
+        b = [["Wizard", 5.0, 1.0, True], ["Musketeer", 4.0, 1.0, True], ["Knight", 3.0, 1.0, True]]
+        e = combo(b, [[3.0, 22.0, R], [9.0, 22.0, R], [15.0, 22.0, R]], seen=101)       # spread: V_lone 5, V_combo 12
+        out = SV.row_rewards([e], TestRowRewards.PLAYS, TestRowRewards.TICKS, PL)
+        self.assertAlmostEqual(out["r"][4], 0.02 * (12.0 - 6.0))                        # the Rocket keeps its whole reward
+        self.assertAlmostEqual(out["r"][2], 0.02 * ((12.0 - 5.0) - 3.0))                # the Tornado: its marginal
+        self.assertEqual((out["events"][0]["lone"], out["events"][0]["tornado_reward"]), (5.0, 0.08))
+        old = SV.row_rewards([e], TestRowRewards.PLAYS, TestRowRewards.TICKS, P)        # off: the 6 : 3 split, as before
+        self.assertAlmostEqual(old["r"][4], 0.12 * 2 / 3)
+        self.assertAlmostEqual(old["r"][2], 0.12 / 3)
+        self.assertNotIn("lone", old["events"][0])
+        miss = combo([], [], seen=101)                                                  # a combo miss: both rows charged
+        out = SV.row_rewards([miss], TestRowRewards.PLAYS, TestRowRewards.TICKS, PL)
+        self.assertAlmostEqual((out["r"][4], out["r"][2]), (-0.12, -0.06))
+        capped = [combo(b, [[3.0, 22.0, R], [9.0, 22.0, R], [15.0, 22.0, R]], kill=40.0, princess=True, seen=101, tick=t)
+                  for t in (200, 300)]
+        out = SV.row_rewards(capped, TestRowRewards.PLAYS, TestRowRewards.TICKS, PL)   # Rocket 0.3, its Tornado 0.2, then 0
+        self.assertAlmostEqual(out["r"].sum(), 0.5)
+
+    def test_match_summary_lone_keys_only_when_on(self):
+        b = [["Wizard", 5.0, 1.0, True], ["Musketeer", 4.0, 1.0, True]]
+        evs = [combo(b, [[9.0, 22.0, R], [10.0, 22.0, R]]), combo(b, [[3.0, 22.0, R], [10.0, 22.0, R]]), ev(kill=6.0)]
+        self.assertNotIn("lone_known", SV.match_summary(evs, P))
+        s = SV.match_summary(evs, PL)
+        self.assertEqual((s["combos"], s["lone_known"], s["lone_suffices"]), (2, 2, 1))
+        self.assertAlmostEqual(s["tornado_gain"], 0.0 + 4.0)
+        self.assertAlmostEqual(s["tornado_reward"], -0.06 + 0.02)
+        self.assertAlmostEqual(s["reward"], SV.match_summary(evs, P)["reward"] - 0.04)
+
+
 def ent(uid, team, card, bx, by, hp, mx, kind=0, radius=0.5, unit=-1):
     x, y = sub(bx, by)
     return NS(uid=uid, team=team, kind=kind, card_id=card, x=x, y=y, hp=hp, max_hp=mx, radius=radius * T, unit_type=unit)
@@ -133,7 +219,7 @@ class TestTracker(unittest.TestCase):
         names = {ROCKET: "Rocket", TORNADO: "Tornado", 1: "Wizard", 2: "Musketeer", 3: "Knight", 4: "Giant"}
         env = NS(ids={v: k for k, v in names.items()}, names=names,
                  core=NS(cards=lambda: cards, unit_types=lambda: ["Wizard", "Musketeer", "Knight", "Giant"]))
-        self.trk = SV.SpellTracker(env, 0)
+        self.trk, self.trk_env = SV.SpellTracker(env, 0), env
         ax, ay = sub(9.0, 10.0)
         self.rocket = NS(team=0, card_id=ROCKET, x=0, y=0, aim_x=ax, aim_y=ay)
         tx, ty = sub(9.0, 11.0)
@@ -198,6 +284,32 @@ class TestTracker(unittest.TestCase):
         self.assertAlmostEqual(e["kill"], 5.0)
         self.assertIsNone(e["tornado"])
         self.assertFalse(e["princess"])
+
+    def test_tornado_cast_bodies_are_the_pre_pull_board(self):
+        import copy
+        trk, full = self.trk, [700, 600, 1500, 4000, 3000]
+        trk.observe(state(95, [], self.board(full)))                         # the stop the Tornado lands on (act after it)
+        trk.played(0, TORNADO, 95)
+        self.assertEqual([c[0] for c in trk.casts], [95])
+        self.assertEqual(trk.casts[0][1][3][:2], [9.0, 9.0])                   # the Knight, 1 tile off the aim (tiles)
+        self.assertNotIn(6, trk.casts[0][1])                                  # my own body is never recorded
+        self.assertNotIn(5, trk.casts[0][1])                                  # nor a tower
+        self.assertIsNone(copy.deepcopy(trk).now)                             # search_s0 forks: no engine state copied
+        pulled = [ent(b.uid, b.team, b.card_id, 9.0, 10.0, b.hp, b.max_hp, b.kind, b.radius / T, b.unit_type)
+                  if b.uid in (2, 3) else b for b in self.board(full)]        # the pull dragged Musketeer + Knight onto the aim
+        trk.observe(state(100, [self.tornado], pulled))
+        trk.played(0, ROCKET, 100)
+        trk.observe(state(101, [self.rocket, self.tornado], pulled))
+        trk.observe(state(102, [self.tornado], pulled))
+        trk.observe(state(103, [], [b for b in pulled if b.uid not in (1, 2, 3)]))   # all three killed
+        (e,) = trk.events
+        self.assertEqual(e["tornado"]["seen"], 100)
+        self.assertEqual([c[:2] for c in e["tornado"]["cast"]], [[9.0, 10.0], [10.5, 10.0], [9.0, 9.0]])   # pre-pull
+        self.assertAlmostEqual(SV.lone_value(e, PL), 12.0)                    # all three fit one blast anyway: not needed
+        trk2 = SV.SpellTracker(self.trk_env, 0)
+        trk2.observe(state(90, [], self.board(full)))
+        trk2.played(0, TORNADO, 95)                                           # no state at the cast tick: nothing recorded
+        self.assertEqual(trk2.casts, [])
 
     def test_opponent_rocket_and_unarmed_expiry(self):
         trk = self.trk
@@ -267,6 +379,26 @@ class TestTrainerWiring(unittest.TestCase):
         self.assertNotEqual(on, h)
         self.assertEqual(RL.config_sha({**base, "spell_value_reward": True, "spell_value_w": 0.02}), on)
         self.assertNotEqual(RL.config_sha({**base, "spell_value_reward": True, "spell_value_w": 0}), on)
+
+    def test_lone_keys(self):
+        from pipeline import rl_royale as RL
+        on = {**self.BASE, "spell_value_reward": True}
+        self.assertEqual(RL.spell_cfg({**on, "spell_value_lone": False}), P)          # off: the cost split's dict
+        self.assertEqual(RL.spell_cfg({**on, "spell_value_lone": True}), PL)
+        self.assertEqual(RL.spell_cfg({**on, "spell_value_lone": True, "spell_value_lone_min": 7})["spell_value_lone_min"], 7.0)
+        for bad in ({"spell_value_lone_min": 9.0}, {"spell_value_lone": "yes"}, {"spell_value_lone": True, "spell_value_lone_min": -1}):
+            with self.assertRaises(SystemExit, msg=str(bad)):
+                RL.spell_cfg({**on, **bad})
+        with self.assertRaises(SystemExit):                                   # lone without the reward switch
+            RL.spell_cfg({**self.BASE, "spell_value_lone": True})
+        base = {**self.BASE, "seed": 1, "spell_value_reward": True, "spell_value_w": 0.02}
+        h = RL.config_sha(base)                                               # the 10-18 (cost split) hash
+        for off in (None, False):
+            self.assertEqual(RL.config_sha({**base, "spell_value_lone": off}), h)
+        lone = RL.config_sha({**base, "spell_value_lone": True})
+        self.assertNotEqual(lone, h)
+        self.assertEqual(RL.config_sha({**base, "spell_value_lone": True, "spell_value_lone_min": 9}), lone)
+        self.assertEqual(RL.config_sha({**self.BASE, "seed": 1, "spell_value_lone": False}), RL.config_sha({**self.BASE, "seed": 1}))
 
     def test_actor_cfg_only_with_the_key(self):
         from pipeline import rl_royale as RL

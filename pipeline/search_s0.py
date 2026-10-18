@@ -740,6 +740,7 @@ def _init_worker(args: dict) -> None:
     if ability is not None:
         if not args.get("hero_abilities"):
             raise ValueError(f"{args['gen']} carries an ability head: run with --hero-abilities (else it never decides)")
+        ability['mode'] = args.get('ability_head_decode', 'greedy')   # --ability-head-decode (default greedy)
         learner_cfg['ability'] = ability
     if args.get('behaviour_telemetry'):
         learner_cfg['behaviour_telemetry'] = True
@@ -758,7 +759,8 @@ def _init_worker(args: dict) -> None:
                           lambda: RoyaleSelfPlayEnv(decision_ticks=10, tail_cap=cap, forms_mode=fm,
                                                     hero_abilities=args.get("hero_abilities", False),
                                                     ability_policy=args.get("ability_policy", "generic"),
-                                                    ability_outcomes=bool(args.get("ability_stats"))),
+                                                    ability_outcomes=bool(args.get("ability_stats")),
+                                                    ability_features=(ability or {}).get("features", "base")),
                           horizon_s=args["horizon"], interval=args["interval"], topk=args["topk"], cells=args["cells"],
                           search_min_p=args["search_min_p"], rollout_self=args.get("rollout_self", "idle"),
                           scorer_version=args.get("scorer", "v1"))
@@ -938,6 +940,10 @@ def main(argv=None) -> int:
     ap.add_argument("--ability-stats", action="store_true",
                     help="with --hero-abilities: each line gets ability_stats (our presses, elixir on them, enemies in "
                          "radius at the press and how many lost HP / died within 2 s); default off = unchanged")
+    ap.add_argument("--ability-head-decode", default="greedy", choices=("greedy", "sample"),
+                    help="a checkpoint with a learned ability head (rl_royale B6): greedy = press iff p > 0.5 (default, "
+                         "unchanged); sample = Bernoulli(p) as in RL rollouts, seeded per match (e1_eval.ability_decide's "
+                         "rng_ability from the match tag) so paired arms draw alike (L74 overpress 10-18)")
     ap.add_argument("--forms-mode", default="base", choices=("base", "deck"),
                     help="RoyaleSim card forms: base = every card as its base card (today); deck = decked evolutions / "
                          "heroes the engine loads, refused forms fall back to base (royale_env docstring)")
@@ -1045,6 +1051,8 @@ def main(argv=None) -> int:
         wargs['probe_xbow_focus'] = True
     if a.ability_stats:
         wargs['ability_stats'] = True
+    if a.ability_head_decode != 'greedy':
+        wargs['ability_head_decode'] = a.ability_head_decode
     if a.opp_tower_troops is not None:
         wargs['opp_tower_troops'] = a.opp_tower_troops
     if a.live_levels:
@@ -1056,7 +1064,7 @@ def main(argv=None) -> int:
     for k in ('opp_decide_every', 'opp_reaction_ticks'):
         if getattr(a, k) is not None:
             wargs[k] = getattr(a, k)
-    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads', 'learner_T_gate') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays', 'probe_xbow_focus', 'ability_stats', 'live_levels', 'habit_log', 'spell_log') or v) and (k not in ('opp_decide_every', 'opp_reaction_ticks', 'opp_tower_troops') or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
+    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads', 'learner_T_gate') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k != 'ability_head_decode' or v != 'greedy') and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays', 'probe_xbow_focus', 'ability_stats', 'live_levels', 'habit_log', 'spell_log') or v) and (k not in ('opp_decide_every', 'opp_reaction_ticks', 'opp_tower_troops') or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
                                                 "gen_sha256": sha256(REPO / a.gen), "opp_gen_sha256": opp_sha,
                                                 "s1_sha256": sha256(REPO / a.s1),
                                                 "tau_plain": TAU_PLAIN, "tau_opp": TAU_OPP, "crown_w": CROWN_W,

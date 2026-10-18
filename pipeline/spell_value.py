@@ -28,6 +28,12 @@ DEFAULTS = {"spell_value_w": 0.02,           # reward per elixir (win = +1): 6 e
             "spell_value_tower_min": 7.0,    # ... of troops (elixir): above every lone card the eval rows caught (max 6.0)
             "spell_value_event_cap": 0.3,    # |one Rocket's reward| <= this
             "spell_value_match_cap": 0.5}    # |a match's summed spell reward| <= this (rl_royale's critic scale needs 1 + it)
+# ``spell_value_lone: on`` (owner 10-18: "only rocket is used when it suffices"; absent / false = the 6 : 3 cost split, same hash):
+# a combo's Tornado row earns w x ((V_combo - V_lone) - cost_w x Tornado cost) -- V_lone = what a LONE Rocket at its best blast
+# point held on the same bodies where they stood at the Tornado's cast (lone_value) -- and -w x cost_w x Tornado cost when
+# V_lone >= spell_value_lone_min (a lone Rocket already had the clump); the Rocket row keeps its whole event reward.
+LONE_DEFAULTS = {"spell_value_lone_min": 9.0}   # the clump a lone Rocket must already hold: = LIVE_OPTIONS --rocket-value 9
+CAST_TICKS = 20               # a Tornado first seen this long after its cast is that cast (normal stops: <= decide_every apart)
 ROCKET_R_TILES = 2.0          # catalog Rocket radius (decision_options.rocket_radius_tiles)
 TORNADO_R_TILES = 5.5         # catalog Tornado radius (decision_options.tornado_radius_tiles)
 BODY_SLACK_TILES = 0.25       # a body counts when its edge is within the blast + this (scenarios.impact)
@@ -82,8 +88,13 @@ class SpellTracker:
         self.flying = {}              # (aim_x, aim_y) subtiles -> first tick seen
         self.last = None              # the previous tick's state while busy
         self.pending = []             # [(event, bodies, towers)] waiting for the next tick's hp
-        self.tornados = []            # [first, last, x, y] subtiles
+        self.tornados = []            # [first, last, x, y, cast bodies or None] subtiles
+        self.casts = []               # [(tick, {uid: [x, y, reach]})]: enemy bodies (board tiles) when my Tornado was cast
+        self.now = None               # the last observed state = the one a play at this tick is cast on (no engine call)
         self.events = []
+
+    def __getstate__(self):           # search_s0 forks deep-copy the tracker: never the engine state reference (a fork's
+        return {**self.__dict__, "now": None}   # play lands after an _advance_to, which observes again)
 
     def busy(self, tick: int) -> bool:
         """True = royale_env steps one tick (a Rocket armed, in flight, or an impact waiting for its hp)."""
@@ -94,6 +105,17 @@ class SpellTracker:
     def played(self, side: int, card_id: int, tick: int) -> None:
         if side == self.side and card_id == self.rocket:
             self.armed = int(tick)
+        elif side == self.side and card_id == self.tornado and self.now is not None and int(self.now.tick) == int(tick):
+            self.casts.append((int(tick), self._cast_bodies(self.now)))   # before the pull moved anything
+
+    def _cast_bodies(self, st) -> dict:
+        """Enemy bodies on ``st`` -> {uid: [x, y, reach]}: board tiles in my frame, reach = the distance from a blast centre
+        within which the ENGINE's area hit reaches the body: Rocket radius + its collision radius (RoyaleSim spell.rs
+        in_range_edge, AoeHitTest::EdgeInclusive). Not _inside's + slack: that is a measuring superset (the hp drop decides
+        there), here it would only widen the lone Rocket (10-18 hand check: +0.25 per body). ponytail: a building is a disc
+        here, the engine's square (in_square) reaches its corners up to 1.41 x its radius."""
+        return {e.uid: [*to_board(e.x, e.y, self.side), round(ROCKET_R_TILES + e.radius / TILE, 4)]
+                for e in st.entities if e.team != self.side and e.hp > 0 and int(e.kind) not in (self.king, self.princess)}
 
     def observe(self, st) -> None:
         """After every engine step: resolve waiting impacts, log my Tornados, find my Rockets that landed in this step."""
@@ -110,10 +132,13 @@ class SpellTracker:
             elif s.card_id == self.tornado:
                 rec = next((r for r in self.tornados if (r[2], r[3]) == (s.x, s.y) and t - r[1] <= 30), None)
                 if rec is None:
-                    self.tornados.append([t, t, s.x, s.y])
+                    cast = [c for c in self.casts if 0 <= t - c[0] <= CAST_TICKS]     # the latest cast before it
+                    self.tornados.append([t, t, s.x, s.y, cast[-1][1] if cast else None])
+                    self.casts = [c for c in self.casts if c not in cast[-1:]]
                 else:
                     rec[1] = t
         self.tornados = [r for r in self.tornados if t - r[1] <= 2 * SETUP_TICKS]
+        self.casts = [c for c in self.casts if t - c[0] <= CAST_TICKS]
         for k in now - set(self.flying):
             self.flying[k] = t
             self.armed = None
@@ -127,6 +152,7 @@ class SpellTracker:
                 self._resolve(ev, bodies, towers, st)
             self.pending = []
         self.last = st if (self.flying or self.armed is not None) else None
+        self.now = st
 
     def _inside(self, st, aim) -> tuple:
         """Enemy bodies / crown towers inside the blast at ``aim`` on state ``st`` -> ([(uid, hp, max_hp, value, name)],
@@ -150,7 +176,7 @@ class SpellTracker:
     def _resolve(self, ev: dict, bodies: list, towers: list, st) -> None:
         hp = {e.uid: int(e.hp) for e in st.entities}
         kill = dmg = 0.0
-        hit = []
+        hit, uids = [], []
         for uid, h0, mx, v, name in bodies:
             h1 = max(hp.get(uid, 0), 0)
             if h1 >= h0:
@@ -161,23 +187,30 @@ class SpellTracker:
             else:
                 dmg += v * f
             hit.append([name, round(v, 3), round(f, 3), h1 == 0])
+            uids.append(uid)
         down = [(kind, h0 - max(hp.get(uid, 0), 0)) for uid, kind, h0 in towers if max(hp.get(uid, 0), 0) < h0]
+        tor = self._setup(ev)
+        if tor is not None and tor.get("cast") is not None:  # spell_value_lone: each hit body where it stood at the cast
+            tor["cast"] = [tor["cast"].get(u) for u in uids]  # (None = not on the board then, e.g. spawned during the pull)
         ev.update(kill=round(kill, 4), dmg=round(dmg, 4), bodies=hit,
                   princess=any(k == self.princess for k, _ in down), king=any(k == self.king for k, _ in down),
-                  tower_dmg=int(sum(d for _, d in down)), tornado=self._setup(ev))
+                  tower_dmg=int(sum(d for _, d in down)), tornado=tor)
         self.events.append(ev)
 
     def _setup(self, ev: dict):
         """My Tornado that set this Rocket up: first seen <= SETUP_TICKS before the impact, centre within its radius of the
-        aim (the latest such) -> {"seen", "aim", "cost"} or None."""
+        aim (the latest such) -> {"seen", "aim", "cost"} (+ "cast": its cast's enemy bodies when that was recorded) or None."""
         ax, ay = ev["aim"]
         best = None
-        for first, last, x, y in self.tornados:
+        for first, last, x, y, cast in self.tornados:
             bx, by = to_board(x, y, self.side)
             if 0 <= ev["tick"] - first <= SETUP_TICKS and math.hypot(bx - ax, by - ay) <= TORNADO_R_TILES:
                 if best is None or first > best[0]:
-                    best = (first, (bx, by))
-        return None if best is None else {"seen": best[0], "aim": best[1], "cost": self.cost.get(self.tornado, 3)}
+                    best = (first, (bx, by), cast)
+        if best is None:
+            return None
+        out = {"seen": best[0], "aim": best[1], "cost": self.cost.get(self.tornado, 3)}
+        return out if best[2] is None else {**out, "cast": best[2]}
 
 
 # ---------------------------------------------------------------------------------------------------- learner side (pure)
@@ -194,6 +227,54 @@ def event_reward(ev: dict, p: dict) -> tuple:
         r = max(r, 0.0)
     cap = p["spell_value_event_cap"]
     return v, g, float(np.clip(r, -cap, cap))
+
+
+def _crossings(a, b) -> list:
+    """The 0-2 points where two circles (x, y, r, ...) cross."""
+    (x0, y0, r0), (x1, y1, r1) = a[:3], b[:3]
+    d = math.hypot(x1 - x0, y1 - y0)
+    if d == 0 or d > r0 + r1 or d < abs(r0 - r1):
+        return []
+    a_ = (r0 * r0 - r1 * r1 + d * d) / (2 * d)
+    h = math.sqrt(max(r0 * r0 - a_ * a_, 0.0))
+    mx, my, ux, uy = x0 + a_ * (x1 - x0) / d, y0 + a_ * (y1 - y0) / d, (x1 - x0) / d, (y1 - y0) / d
+    return [(mx + h * uy, my - h * ux), (mx - h * uy, my + h * ux)]
+
+
+def lone_value(ev: dict, p: dict):
+    """spell_value_lone's counterfactual -> V_lone (elixir) or None (no setup Tornado, or its cast was not recorded): the troop
+    value a LONE Rocket would have held at its best blast point on this event's hit bodies where they stood when the Tornado
+    was cast (before any pull). Each body counts what the combo's blast took from it (value x hp share; damaged-only ones
+    x dmg_w, as event_reward), inside a blast when its distance from the centre <= its reach (Rocket radius + its collision
+    radius: the engine's own area-hit rule, _cast_bodies). The best point is exact (an optimal region's corner is a reach
+    circle's centre or two circles' crossing), anywhere on the board, i.e. an ORACLE-aimed lone Rocket. Capped at V_combo.
+    ponytail: the SAME bodies only (one the combo missed is not counted), static (no walk during a lone Rocket's flight) and
+    oracle-aimed, so V_lone is an upper bound for a real lone Rocket: the Tornado's credit for HOLDING a clump that a flying
+    Rocket would see walk out is not counted, only for gathering it (L74/combo/RL_COMBO_REWARD.md 10-18); a body spawned after
+    the cast counts 0 (e.g. a Witch's Skeletons). A forked engine replay of the real lone Rocket is the upgrade."""
+    tor = ev.get("tornado")
+    cast = tor.get("cast") if tor else None
+    if cast is None:
+        return None
+    dw = p["spell_value_dmg_w"]
+    pts = [(c[0], c[1], c[2], b[1] * b[2] * (1.0 if b[3] else dw)) for b, c in zip(ev.get("bodies") or (), cast) if c is not None]
+    cand = [q[:2] for q in pts] + [x for i, a in enumerate(pts) for b in pts[i + 1:] for x in _crossings(a, b)]
+    best = max((sum(w for x, y, r, w in pts if math.hypot(cx - x, cy - y) <= r + 1e-6) for cx, cy in cand), default=0.0)
+    return min(best, float(ev["kill"]) + dw * float(ev["dmg"]))
+
+
+def tornado_credit(ev: dict, v: float, p: dict) -> tuple:
+    """spell_value_lone: one combo's Tornado row -> (reward, V_lone); (0.0, None) when V_lone is unknown. ``v`` = the event's
+    troop value V_combo (event_reward's V: no princess bonus -- the pull gathers troops). reward = w x ((V_combo - V_lone) -
+    cost_w x Tornado cost), or w x (-cost_w x Tornado cost) when V_lone >= spell_value_lone_min (a lone Rocket already held
+    the clump: the Tornado was not needed), clipped to +- event_cap."""
+    lone = lone_value(ev, p)
+    if lone is None:
+        return 0.0, None
+    gain = 0.0 if lone + 1e-9 >= p["spell_value_lone_min"] else v - lone
+    r = p["spell_value_w"] * (gain - p["spell_value_cost_w"] * float(ev["tornado"]["cost"]))
+    cap = p["spell_value_event_cap"]
+    return float(np.clip(r, -cap, cap)), round(lone, 4)
 
 
 def _slug(name) -> str:
@@ -215,13 +296,16 @@ def row_rewards(events, plays, row_ticks, p: dict) -> dict:
     """One match: its Rocket events (SpellTracker.events, time order), its side's ``plays`` (e1_eval play records: tick, card,
     accepted, land_tick) and the decision tick of every traj row -> {"r": reward per row, "events": per-event rows}.
     Credit: each event's reward lands on the row that DECIDED the Rocket; with a setup Tornado it is split by elixir cost
-    (6 : 3) with the row that decided the Tornado -- both choices made the combo, a miss charges both. Clipped per event
-    (event_cap), then the match's running sum is kept within +- match_cap (later events clipped)."""
+    (6 : 3) with the row that decided the Tornado -- both choices made the combo, a miss charges both. ``spell_value_lone``
+    on instead: the Rocket row keeps the whole event reward (its own marginal: the Tornado was played) and the Tornado row
+    gets tornado_credit (ITS marginal over a lone Rocket). Clipped per event (event_cap), then the match's running sum is kept
+    within +- match_cap (later events clipped; the Rocket part before the Tornado part)."""
     ticks = np.asarray(row_ticks, dtype=np.int64)
     row = {int(t): i for i, t in enumerate(ticks)}
     r = np.zeros(len(ticks))
     total, out = 0.0, []
     m = p["spell_value_match_cap"]
+    lone_on = bool(p.get("spell_value_lone"))
     for ev in sorted(events or (), key=lambda e: e["tick"]):
         v, g, e = event_reward(ev, p)
         e = float(np.clip(total + e, -m, m) - total)
@@ -229,27 +313,48 @@ def row_rewards(events, plays, row_ticks, p: dict) -> dict:
         ir = _row_of(int(ev["seen"]), "rocket", plays, row)
         tor = ev.get("tornado")
         it = _row_of(int(tor["seen"]), "tornado", plays, row) if tor else None
-        if ir is not None and it is not None:
+        if lone_on:
+            te, vl = tornado_credit(ev, v, p) if tor else (0.0, None)
+            te = float(np.clip(total + te, -m, m) - total)
+            total += te
+            if ir is not None:
+                r[ir] += e
+            if it is not None:
+                r[it] += te
+        elif ir is not None and it is not None:
             share = float(tor["cost"]) / (float(ev["cost"]) + float(tor["cost"]))
             r[ir] += e * (1.0 - share)
             r[it] += e * share
         elif ir is not None:
             r[ir] += e
         out.append({"tick": int(ev["tick"]), "value": round(v, 3), "gross": round(g, 3), "reward": round(e, 4),
-                    "row": ir, "tornado_row": it, "combo": tor is not None, "princess": bool(ev["princess"])})
+                    "row": ir, "tornado_row": it, "combo": tor is not None, "princess": bool(ev["princess"]),
+                    **({"lone": vl, "tornado_reward": round(te, 4)} if lone_on else {})})
     return {"r": r, "events": out}
 
 
 def match_summary(events, p: dict = None) -> dict:
     """One match's spell numbers (eval rows, train monitors): Rockets that landed, combos, troop value / gross / reward sums,
     misses (V < 2 elixir, no princess), cheap-swarm hits (every body hit worth < 1 elixir, >= 3 hit), princess hits, combos
-    on my half (aim y >= 16) and near my king (aim within 7 tiles of (9, 28.65))."""
-    p = {**DEFAULTS, **(p or {})}
+    on my half (aim y >= 16) and near my king (aim within 7 tiles of (9, 28.65)). ``spell_value_lone`` on: + combos whose
+    V_lone is known / already >= spell_value_lone_min (a Tornado a lone Rocket did not need), the elixir the pulls added
+    (V_combo - V_lone) and the Tornado rows' reward (also in ``reward``)."""
+    p = {**DEFAULTS, **LONE_DEFAULTS, **(p or {})}
+    lone_on = bool(p.get("spell_value_lone"))
     s = {k: 0 for k in ("rockets", "combos", "misses", "swarm", "princess", "king", "my_half", "near_my_king",
                         "combo_my_half")}
     s.update(value=0.0, gross=0.0, reward=0.0, bodies=0)
+    if lone_on:
+        s.update(lone_known=0, lone_suffices=0, tornado_gain=0.0, tornado_reward=0.0)
     for ev in events or ():
         v, g, e = event_reward(ev, p)
+        if lone_on and ev.get("tornado") is not None:
+            te, vl = tornado_credit(ev, v, p)
+            s["lone_known"] += vl is not None
+            s["lone_suffices"] += vl is not None and vl + 1e-9 >= p["spell_value_lone_min"]
+            s["tornado_gain"] += 0.0 if vl is None else v - vl
+            s["tornado_reward"] += te
+            e += te
         b = ev.get("bodies") or []
         mine = ev["aim"][1] >= 16.0
         s["rockets"] += 1

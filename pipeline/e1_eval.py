@@ -422,11 +422,13 @@ def random_decide(rng: random.Random, allowed: np.ndarray, p_random: float) -> d
 
 
 ABILITY_FEAT_N = 44   # = royale_env.ABILITY_FEAT_N (royalegym-free copy; pipeline/tests/test_ability_head.py checks it)
+ABILITY_FEAT_SETS = {"base": ABILITY_FEAT_N, "freeze": ABILITY_FEAT_N + 11}   # + royale_env.FREEZE_FEAT_N (test checks)
 
 
-def ability_defaults() -> dict:
-    """The per-decision ability record of a row with no ability decision (cfg["ability"] on)."""
-    return {"ab_sampled": False, "ab_press": False, "ab_lp": 0.0, "ab_feat": np.zeros(ABILITY_FEAT_N, np.float32),
+def ability_defaults(n_feat: int = ABILITY_FEAT_N) -> dict:
+    """The per-decision ability record of a row with no ability decision (cfg["ability"] on; ``n_feat`` = the head's
+    feature count, cfg["ability"]["n_feat"])."""
+    return {"ab_sampled": False, "ab_press": False, "ab_lp": 0.0, "ab_feat": np.zeros(n_feat, np.float32),
             "ab_cand": False, "ab_q": 0.0}
 
 
@@ -442,7 +444,7 @@ def ability_decide(matches: Sequence, enc, cfg: dict) -> Optional[list]:
     if not ab:
         return None
     import torch
-    out = [ability_defaults() for _ in matches]
+    out = [ability_defaults(int(ab.get("n_feat", ABILITY_FEAT_N))) for _ in matches]
     rows = [r for r, m in enumerate(matches) if getattr(m, "_ability_opts", None)]
     pick = {r: matches[r]._ability_opts[matches[r].n_dec % len(matches[r]._ability_opts)] for r in rows}
     for m in matches:

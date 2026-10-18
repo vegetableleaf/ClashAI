@@ -125,6 +125,9 @@ def main(argv=None) -> int:
     ap.add_argument('--mmap-cache-dir', type=Path,
                     help='Fresh directory for version4 disk-backed dataset arrays; identical values, bounded heap.')
     ap.add_argument("--data", type=Path, required=True)
+    ap.add_argument("--cue-data", type=Path, default=None,
+                    help="step d: a cue sidecar of THIS --data (scratchpad/gauntlet/L74/stepd/cue_sidecar.py) -> the model "
+                         "gets the zero-init cue_in layer and every unit token its 22 cue floats. Absent = unchanged")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--epochs", type=int, default=20)
     ap.add_argument("--amp", choices=("none", "bf16"), default="none",
@@ -141,6 +144,9 @@ def main(argv=None) -> int:
     ap.add_argument("--grid", default="floor", choices=("floor", "lattice"))
     ap.add_argument("--limit-rows", type=int, default=0)
     ap.add_argument("--deck-weighting", default="none", choices=("none", "sqrt"))
+    ap.add_argument("--row-weights", type=Path, default=None,
+                    help="step d: a per-row weight .npy for THIS --data (L74/stepd/row_weights.py: unfavourable "
+                         "matchups x3); each epoch draws len(train) rows with replacement in proportion. Absent = unchanged")
     ap.add_argument("--select", default="cell_tile_top1")
     ap.add_argument("--val-sample", type=int, default=30000,
                     help="per-epoch all-deck val = a FIXED seed-0 sample of N val rows (0 = all); v3val is always full")
@@ -176,6 +182,18 @@ def main(argv=None) -> int:
         raise ValueError('Rocket context weight must be finite and >= 1')
     if version < 4 and a.rocket_context_weight not in (None, 1.0):
         raise ValueError('Rocket context weighting requires public-only version 4')
+    if a.cue_data is not None:
+        import hashlib
+        with np.load(a.cue_data, allow_pickle=False) as cz:
+            cmeta = json.loads(str(cz["meta"]))
+            h = hashlib.sha256()
+            with a.data.open("rb") as f:
+                for blk in iter(lambda: f.read(1 << 22), b""):
+                    h.update(blk)
+            if cmeta["data_sha256"] != h.hexdigest() or cz["cue"].shape[0] != len(arrs["tok"]):
+                raise ValueError(f"--cue-data {a.cue_data} was built for another dataset (sha / token count differ)")
+            arrs["cue"] = cz["cue"]
+        meta["cue_sidecar"] = cmeta
     if meta.get("grid") != a.grid:
         print(json.dumps({"warning": f"dataset built with grid {meta.get('grid')!r}, training with {a.grid!r}"}))
     a.out_dir.mkdir(parents=True, exist_ok=True)
@@ -194,8 +212,18 @@ def main(argv=None) -> int:
         n_dk = np.bincount(arrs["deck_id"][tr_idx])
         p_row = 1.0 / np.sqrt(n_dk[arrs["deck_id"][tr_idx]])
         p_row /= p_row.sum()
+    if a.row_weights is not None:
+        if p_row is not None:
+            raise ValueError("--row-weights and --deck-weighting sqrt are exclusive")
+        w = np.load(a.row_weights)
+        if w.shape != (len(arrs["split"]),) or not np.all(np.isfinite(w)) or (w < 0).any():
+            raise ValueError(f"--row-weights {a.row_weights}: need {len(arrs['split'])} finite non-negative weights")
+        p_row = w[tr_idx].astype(np.float64)
+        p_row /= p_row.sum()
     vocab_list = meta["card_vocab"]
     model = GenModel(d=a.d, layers=a.layers, d_c=a.d_c, n_cards=len(vocab_list), feature_version=a.feature_version).to(dev)
+    if a.cue_data is not None:
+        model.add_cue_in()                                    # zero-init (STEP_C_SPEC 3); trained from row 1 here
     n_params = sum(p.numel() for p in model.parameters())
     opt = torch.optim.AdamW(model.parameters(), lr=a.lr, weight_decay=0.01)
     if a.smoke_one_batch:

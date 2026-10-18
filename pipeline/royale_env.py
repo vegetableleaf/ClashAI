@@ -71,6 +71,20 @@ V2_REPRESS_TICKS = 60      # boss-bandit's second charge: phase2_build.eligible 
 ABILITY_CARDS = tuple(V2_KEYS) + ("IceWizard",)
 ABILITY_FEAT_N = 18 + len(ABILITY_CARDS) + 1
 _V2_SCALE = (30., 1., 10., 10., 5., 2000., 5., 2000., 1., 10., 10., 3., 3., 3.)   # -> each feature ~O(1)
+# ``ability_features`` 'freeze' (L74 press audit 10-18; opt-in, default 'base' = the ABILITY_FEAT_N values unchanged):
+# FREEZE_FEAT_N more values, Hero Ice Wizard only (zeros for every other card), appended after the base ones:
+#   [has target, target's 2.5 t troops / 5, their elixir / 10, a win condition among them,
+#    the cube point's 2.5 t troops / 5, elixir / 10, win condition, cube y-distance from my princess line / 10 tiles,
+#    cube on my half, enemy already IW-marked, (elixir - press cost - cheapest hand card) / 10]
+# target = the closest (to the IW) enemy troop carrying IW_MARKS (the cube's own target rule), else the IW's attack
+# target; cube point = target + CUBE_AHEAD_T toward the enemy side (audit: real offset p25 / med / p75 1.5 / 1.6 / 1.75 t).
+# Not here: the 1.4 s velocity lead (audit: Spearman 0.313 with it vs 0.326 without, 389 presses -- no gain) and the IW
+# HP fraction (already base feature 1).
+ABILITY_FEATURE_SETS = ("base", "freeze")
+FREEZE_FEAT_N = 11
+IW_MARKS = frozenset(("IceWizardHeroCold", "IceWizardHeroSlow"))
+FREEZE_R_T, CUBE_AHEAD_T, MY_LINE_T = 2.5, 1.5, (6.5, 25.5)   # tiles; my princess-tower line y per side
+FREEZE_BUFF = "IceWizardHero_FreezeBuff"   # ``ability_outcomes``: the Hero IW cube's freeze (not its 150 ms _dummy)
 ABILITY_OUTCOME_TICKS = 40      # ``ability_outcomes``: a press's outcome is read 2 s after it
 _POLICY = None
 
@@ -185,7 +199,11 @@ class RoyalePoolEnv:
     def __init__(self, *, decision_ticks: int = 10, elixir_slack: int = 40, tail_cap: int = 7200,
                  warmup_ticks: int = 90, seed: int = 0, subs: Optional[dict[str, str]] = None,
                  forms_mode: str = "base", hero_abilities: bool = False, feature_version: int = 1,
-                 ability_policy: str = "generic", ability_outcomes: bool = False, **_ignored):
+                 ability_policy: str = "generic", ability_outcomes: bool = False, iw_press: Optional[str] = None,
+                 ability_features: str = "base", **_ignored):
+        if ability_features not in ABILITY_FEATURE_SETS:
+            raise ValueError(f"ability_features {ability_features!r} not in {ABILITY_FEATURE_SETS}")
+        self.ability_features = ability_features
         self.feature_version = int(feature_version)
         self.ability_outcomes = bool(ability_outcomes)   # opt-in press outcome tally (``ability_stats``); off = unchanged
         if type(hero_abilities) is not bool:
@@ -196,8 +214,13 @@ class RoyalePoolEnv:
         if ability_policy == "v2" and not hero_abilities:
             raise ValueError("ability_policy v2 needs hero_abilities=True")
         self.ability_policy = ability_policy
-        self._iw_never = heroiw.press_mode() == 'never'
-        if heroiw.live_press_enabled():
+        # iw_press None = ROYALE_HEROIW_PRESS (heroiw.press_mode); 'off' = rl_royale's deck-loadability env, which never
+        # steps a press, so the live rule's hero_abilities / v2 guard below must not trip there (L74 overpress 10-18)
+        if iw_press not in (None, 'off'):
+            raise ValueError(f"iw_press must be None (= ROYALE_HEROIW_PRESS) or 'off', got {iw_press!r}")
+        mode = heroiw.press_mode() if iw_press is None else iw_press
+        self._iw_never = mode == 'never'
+        if mode == 'live':
             if ability_policy != 'v2' or not hero_abilities:
                 raise ValueError('Live IW press rule needs hero_abilities and ability_policy v2')
             from .royale_iw_policy import LiveIWPolicy
@@ -535,7 +558,39 @@ class RoyalePoolEnv:
         card = [0.] * (len(ABILITY_CARDS) + 1)
         nm = self.names[cid]
         card[ABILITY_CARDS.index(nm) if nm in ABILITY_CARDS else -1] = 1.
-        return f + [n / 5, el / 10, float(tower), float(info["presses"] if info else 0)] + card
+        out = f + [n / 5, el / 10, float(tower), float(info["presses"] if info else 0)] + card
+        if getattr(self, "ability_features", "base") == "freeze":
+            out += self._freeze_features(side, button, cid, hero, st)
+        return out
+
+    def _freeze_features(self, side: int, button, cid, hero, st) -> list[float]:
+        """The FREEZE_FEAT_N 'freeze' values (module comment above) from the engine state; zeros unless Hero IW."""
+        if self.names[cid] != "IceWizard":
+            return [0.] * FREEZE_FEAT_N
+        from pipeline.royale_iw_policy import WINCONS
+        T = SCALE * 1000                                        # engine units per tile
+        foes = [e for e in st.entities if e.team != side and e.hp > 0 and e.card_id != EMPTY_CARD
+                and e.kind == EntityKind.TROOP]
+        marked = [e for e in foes if any(n in IW_MARKS for b in e.buffs for n in b[0].split("|"))]
+        d2 = lambda e, x, y: (e.x - x) ** 2 + (e.y - y) ** 2    # noqa: E731
+        tgt = min(marked, key=lambda e: d2(e, hero.x, hero.y)) if marked else next(
+            (e for e in st.entities if e.uid == hero.target_uid and e.team != side and e.hp > 0), None)
+
+        def around(x, y):
+            near = [e for e in foes if d2(e, x, y) <= (FREEZE_R_T * T) ** 2]
+            return [len(near) / 5, sum(self._body_elixir.get(e.card_id, 0.) for e in near) / 10,
+                    float(any(self.names.get(e.card_id) in WINCONS for e in near))]
+        me = st.players[side]
+        if not hasattr(self, "_card_cost"):
+            self._card_cost = {c.card_id: float(c.elixir) for c in self.core.cards()}
+        cheap = min((self._card_cost.get(c, 0.) for c in me.hand if c != EMPTY_CARD), default=0.)
+        cost = float(self._ability_cost(side, cid, me.abilities[button]) or 0)
+        tail = [float(bool(marked)), (me.elixir_milli / 1000 - cost - cheap) / 10]
+        if tgt is None:
+            return [0.] * (FREEZE_FEAT_N - 2) + tail
+        cy = tgt.y + (1 if side == 0 else -1) * CUBE_AHEAD_T * T
+        return ([1.] + around(tgt.x, tgt.y) + around(tgt.x, cy)
+                + [abs(cy / T - MY_LINE_T[side]) / 10, float((cy > 16 * T) == (side == 1))] + tail)
 
     def ability_options(self, side: int, rule: Optional[list] = None) -> list[dict]:
         """The buttons of ``side`` that pass every readiness check of ``_scan`` (no press gate), each as
@@ -558,9 +613,10 @@ class RoyalePoolEnv:
         self._scan(side, gate)
         return out
 
-    def _ab_track(self, side: int, button: int, cid, uid) -> None:
-        """``ability_outcomes``: an accepted press -> its cost, and the enemy bodies inside its radius now (uid -> hp),
-        re-read ABILITY_OUTCOME_TICKS later (``_ab_resolve``)."""
+    def _ab_track(self, side: int, button: int, cid, uid, pre_milli=None) -> None:
+        """``ability_outcomes``: an accepted press -> its cost, the elixir in the bank just before it (``pre_milli``:
+        sum + presses at >= 5), and the enemy bodies inside its radius now (uid -> hp), re-read ABILITY_OUTCOME_TICKS
+        later (``_ab_resolve``)."""
         st = self.core.state()
         hero = next((e for e in st.entities if e.uid == uid), None)
         self._units = None                  # _ability_radius's uid -> unit map, re-read at this tick
@@ -574,6 +630,9 @@ class RoyalePoolEnv:
         out["presses"] += 1
         out["elixir"] += float(self._ability_cost(side, cid, st.players[side].abilities[button]) or 0)
         out["in_radius"] += len(near)
+        if pre_milli is not None:
+            out["elixir_before"] += pre_milli / 1000
+            out["presses_ge5"] += int(pre_milli >= 5000)
         self._ab_checks.append({"due": self.tick + ABILITY_OUTCOME_TICKS, "side": side, "near": near})
         self._ab_checks.sort(key=lambda c: c["due"])
 
@@ -581,9 +640,17 @@ class RoyalePoolEnv:
         """Each due check (every one when ``final``): of the bodies in radius at the press, how many lost HP
         (``hit_2s``) and how many are gone / dead (``killed_2s``) -- from ANY damage source, not only the ability."""
         alive = {e.uid: e.hp for e in st.entities if e.hp > 0}
+        if not hasattr(self, "_body_elixir"):
+            self._body_elixir = {c.card_id: c.elixir / max(1, int(c.count)) for c in self.core.cards()}
+        frozen = {e.uid: (e.team, self._body_elixir.get(e.card_id, 0.)) for e in st.entities
+                  if e.hp > 0 and e.card_id != EMPTY_CARD and any(n == FREEZE_BUFF for b in e.buffs for n in b[0].split("|"))}
         while self._ab_checks and (final or self._ab_checks[0]["due"] <= self.tick):
             c = self._ab_checks.pop(0)
             out = self._ab_out[c["side"]]
+            fz = [v for t, v in frozen.values() if t != c["side"]]   # ponytail: frozen NOW (2 s after the press); a body
+            out["frozen"] += len(fz)                                 # frozen then killed before the check is missed
+            out["frozen_elixir"] += sum(fz)
+            out["presses_froze"] += int(bool(fz))
             hit = sum(1 for u, hp in c["near"].items() if alive.get(u, 0) < hp)
             out["hit_2s"] += hit
             out["killed_2s"] += sum(1 for u in c["near"] if u not in alive)
@@ -592,10 +659,14 @@ class RoyalePoolEnv:
 
     def ability_stats(self, side: int) -> dict:
         """``ability_outcomes``: ``side``'s accepted presses this match, elixir spent on them, enemy bodies in radius at
-        the press and how many of those lost HP / died within 2 s (open checks resolved on the current state)."""
+        the press and how many of those lost HP / died within 2 s (open checks resolved on the current state); the bank
+        before each press (elixir_before sum, presses_ge5) and the enemy bodies frozen 2 s after it (Hero IW cube:
+        frozen, their catalogue elixir frozen_elixir, presses_froze = presses that froze >= 1)."""
         self._ab_resolve(self.core.state(), final=True)
-        keys = ("presses", "elixir", "in_radius", "hit_2s", "killed_2s", "presses_hit", "resolved")
-        return {k: (round(float(self._ab_out[side][k]), 3) if k == "elixir" else int(self._ab_out[side][k])) for k in keys}
+        keys = ("presses", "elixir", "in_radius", "hit_2s", "killed_2s", "presses_hit", "resolved",
+                "elixir_before", "presses_ge5", "frozen", "frozen_elixir", "presses_froze")
+        flt = ("elixir", "elixir_before", "frozen_elixir")
+        return {k: (round(float(self._ab_out[side][k]), 3) if k in flt else int(self._ab_out[side][k])) for k in keys}
 
     def _v2_recheck(self, button, cid, hero, st) -> bool:
         """At landing the decision is made; only a fallback ability re-asks its (range) rule."""
@@ -648,11 +719,12 @@ class RoyalePoolEnv:
             if not self.terminated and (button, cid, uid) in (
                     self._scan(side, _any_gate) if side in getattr(self, "learned_sides", ()) else
                     self.ability_commands(side) if self.ability_policy == "generic" else self._scan(side, self._v2_recheck)):
+                pre = self.core.state().players[side].elixir_milli if self.ability_outcomes else None
                 r = self.eng.act(side=side, ability_button=button)
                 if r["accepted"]:
                     self.ability_presses[side][self.names[cid]] += 1
                     if self.ability_outcomes:
-                        self._ab_track(side, button, cid, uid)
+                        self._ab_track(side, button, cid, uid, pre)
                     if self.ability_policy == "v2":
                         info = self._ability_uid.setdefault((side, uid), {"dep": self.tick, "presses": 0, "last": None,
                                                               "card": self.names[cid]})

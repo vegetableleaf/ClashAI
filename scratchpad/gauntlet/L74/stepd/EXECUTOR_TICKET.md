@@ -12,7 +12,11 @@ You are the step-d EXECUTOR for ClashBot. Repo C:\Users\benpe\ClashBot (Windows 
 3. D1 on a temporary pod
 4. the LEAGUE arm yes, lowest priority
 5. APPLY the 3x unfavourable-matchup weighting in imitation too
-6. REB leash = the CARD choice only, anchored to CLIII, VERY loose (no other heads leashed)
+6. REB leash = the CARD choice only, anchored to the PRO-IMITATION policy (IL-cue), VERY loose (no other heads leashed).
+   This follows the owner's FINAL 10-18 guidance in HEAD's 11:27 EDT HANDOFF entry and supersedes the earlier CLIII-anchor
+   and tight/all-head leash wording in PLAN.md. If pod capacity allows, run a twin with a CLIII card-choice anchor and
+   keep the better candidate on the promotion evaluation AND fresh seeds. This is a ticket correction only; it does not
+   change a running trainer's configuration. CTRL remains the CLIII-initialized attribution arm.
 
 Owner doctrine to measure: offensive bridge X-Bow only in a punish window; Rocket / Rocket + Tornado vs heavy pushes.
 

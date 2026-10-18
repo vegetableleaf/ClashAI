@@ -36,6 +36,9 @@ old KL_cell rule exactly (and what a run resumed from before the key keeps).
 F6 (``kl_ref_gate: <checkpoint>``, opt-in; absent / null = unchanged, same config hash): KL_gate (and the gate entropy
 baseline) is taken to that frozen net -- e.g. the imitation generalist -- instead of the run's own init; card and cell
 keep the init ref (``ref_terms(gate_ref=)``, ``Learner._load_gate_ref``). The update-0 KL check then skips KL_gate.
+K1 (step d, opt-in; absent / null = unchanged, same config hash): ``kl_heads: [card]`` (a subset of gate / card / cell;
+needs ``leash: max``) puts only those heads' KL in the loss and the leash steers on their max; ``kl_ref_card: <ckpt>``
+anchors KL_card to that frozen net instead of the init (``ref_terms(card_ref=)``; the update-0 check then skips KL_card).
 F6' (``kl_ref_gate_max_elixir: X`` + optional ``kl_ref_gate_target_frac`` (default 0.5), needs kl_ref_gate; absent /
 null = F6 / F1 exactly, same hash; ``gate_lo_cfg``): only gate rows with own elixir < X (``row["elixir"]``, the
 actor's exact elixir at the decision, ``record_elixir``) are anchored to the kl_ref_gate net, with their OWN
@@ -232,7 +235,8 @@ def actor_cfg(base: dict, kind: str, aid: int, dev: str) -> dict:
     if kind == "rollout" and base.get("kl_ref_gate_max_elixir") is not None:
         cfg["record_elixir"] = True                           # F6': each row carries its exact own elixir
     if base.get("ability") is not None:                       # B6: sampled in rollouts, greedy in screens; actor_main
-        cfg["ability"] = {"mode": "sample" if kind == "rollout" else "greedy"}   # attaches the head (or: label mode)
+        cfg["ability"] = {"mode": "sample" if kind == "rollout" else "greedy",   # attaches the head (or: label mode)
+                          "n_feat": int(base["ability"].get("n_feat", E.ABILITY_FEAT_N))}
     if kind == "rollout" and base.get("spell_value"):         # L74 combo: the learner's Rocket events + each row's tick
         cfg["spell_track"] = cfg["record_tick"] = True        # (spell_value.row_rewards maps events to rows by tick)
     return cfg
@@ -299,7 +303,7 @@ def ability_cfg(cfg: dict) -> Optional[dict]:
     head then never sees a pressable button: a no-op the Learner logs), so the plain smoke runs with the key."""
     on = cfg.get("ability_head")
     if on is None or on is False:
-        stray = [k for k in ABILITY_DEFAULTS if cfg.get(k) is not None]
+        stray = [k for k in (*ABILITY_DEFAULTS, "ability_features") if cfg.get(k) is not None]
         if stray:
             raise SystemExit(f"bad ability config: {stray} set without ability_head on")
         return None
@@ -321,11 +325,14 @@ def ability_cfg(cfg: dict) -> Optional[dict]:
         bad.append(f"ability_head needs advantage gae (refusing {cfg.get('advantage', 'match_loo')!r})")
     if cfg.get("branch_gate"):
         bad.append("ability_head with branch_gate is not supported (branch workers press with the rule)")
+    feats = cfg.get("ability_features") or "base"            # L74 press audit (10-18): opt-in head inputs
+    if feats not in E.ABILITY_FEAT_SETS:
+        bad.append(f"ability_features must be one of {sorted(E.ABILITY_FEAT_SETS)} (or absent / null), got {feats!r}")
     if bad:
         raise SystemExit("bad ability config: " + "; ".join(bad))
     return {"ent_coef": float(c["ability_ent_coef"]), "lr": float(c["ability_lr"]),
             "bc_matches": int(c["ability_bc_matches"]), "bc_steps": int(c["ability_bc_steps"]),
-            "bc_lr": float(c["ability_bc_lr"])}
+            "bc_lr": float(c["ability_bc_lr"]), "features": feats}
 
 
 def store_ability_cfg(cfg: dict) -> Optional[dict]:
@@ -333,8 +340,41 @@ def store_ability_cfg(cfg: dict) -> Optional[dict]:
     back into ``cfg`` as its validated value (the posture_lr lesson: every later reader finds every key)."""
     ac = ability_cfg(cfg)
     if ac is not None:
-        cfg.update(ability_head=True, **{f"ability_{k}": v for k, v in ac.items()})
+        cfg.update(ability_head=True, **{f"ability_{k}": v for k, v in ac.items() if k != "features"})
+        if ac["features"] != "base":                          # base = absent (the historical config and hash)
+            cfg["ability_features"] = ac["features"]
     return ac
+
+
+HEROIW_PRESS_MODES = ("off", "live", "never")         # = royale_heroiw.press_mode's values
+
+
+def heroiw_press_cfg(cfg: dict) -> str:
+    """L74 overpress (10-18). ``heroiw_press`` (optional; absent / null = unchanged, same config hash) sets
+    ROYALE_HEROIW_PRESS for this process and so for every actor it starts later (off | live | never); an environment
+    that already holds a DIFFERENT value refuses. Then a hard refusal: with ``ability_head`` on, hero_abilities, the
+    Hero IW runtime and the hero form, the press mode must be 'live' -- else the Hero Ice Wizard's rule is v2's generic
+    range fallback (~5.4 presses / match vs the live rule's ~1.9) and the warm start would clone it (cue_ab, 10-18).
+    -> the press mode in force."""
+    from pipeline import royale_heroiw as heroiw
+    want = cfg.get("heroiw_press")
+    if want is not None:
+        if want not in HEROIW_PRESS_MODES:
+            raise SystemExit(f"heroiw_press must be one of {HEROIW_PRESS_MODES} (or absent / null), got {want!r}")
+        have = os.environ.get("ROYALE_HEROIW_PRESS")
+        if have not in (None, want):
+            raise SystemExit(f"heroiw_press {want} but the environment has ROYALE_HEROIW_PRESS={have}: unset one")
+        os.environ["ROYALE_HEROIW_PRESS"] = want
+    try:
+        mode = heroiw.press_mode()
+    except ValueError as exc:
+        raise SystemExit(str(exc))
+    if (cfg.get("ability_head") not in (None, False) and cfg.get("hero_abilities") and heroiw.ENABLED
+            and os.environ.get("ROYALE_HEROIW_FORM", "hero") == "hero" and mode != "live"):
+        raise SystemExit(f"REFUSING: ability_head with the Hero Ice Wizard needs the live press rule (press mode is "
+                         f"{mode!r}: the IW would press by the generic range rule and the warm start would clone it); "
+                         f"set heroiw_press: live")
+    return mode
 
 
 def posture_cfg(cfg: dict) -> Optional[dict]:
@@ -390,15 +430,23 @@ def store_posture_cfg(cfg: dict) -> Optional[dict]:
 # (the elixir of enemy bodies the blast removed, x (1 + tower_bonus) with a princess in it and >= tower_min caught, - the
 # Rocket's cost; floored at 0 when a princess was hit), added to r_step (``collate``); the critic becomes the residual one (phi = 0) at shaping_critic_scale,
 # which must cover 1 + spell_value_match_cap. spell_value_w 0 = the measuring control (tracker, rows, critic scale, no reward).
-SPELL_KEYS = ("spell_value_reward",) + tuple(SV.DEFAULTS)
+# ``spell_value_lone: on`` (owner 10-18; needs spell_value_reward on; absent / null / false = the 6 : 3 cost split, same hash):
+# a combo's Tornado row earns its marginal over a LONE Rocket instead (spell_value.tornado_credit; spell_value_lone_min).
+SPELL_KEYS = ("spell_value_reward", "spell_value_lone") + tuple(SV.DEFAULTS) + tuple(SV.LONE_DEFAULTS)
 
 
 def spell_cfg(cfg: dict) -> Optional[dict]:
     """The combo-reward keys of a config, validated (SystemExit naming the bad key): None when ``spell_value_reward`` is
     absent / null / false (the other spell_value keys must then be unset), else {spell_value_*: value} with the defaults."""
-    on = cfg.get("spell_value_reward")
+    on, lone = cfg.get("spell_value_reward"), cfg.get("spell_value_lone")
+    if lone is None or lone is False:                # spell_value_lone off: its keys must be unset (the cost split)
+        stray = [k for k in SV.LONE_DEFAULTS if cfg.get(k) is not None]
+        if stray:
+            raise SystemExit(f"bad spell_value config: {stray} set without spell_value_lone on")
+    elif lone is not True:
+        raise SystemExit(f"bad spell_value config: spell_value_lone must be on / off (a bool), got {lone!r}")
     if on is None or on is False:
-        stray = [k for k in SV.DEFAULTS if cfg.get(k) is not None]
+        stray = [k for k in SV.DEFAULTS if cfg.get(k) is not None] + (["spell_value_lone"] if lone else [])
         if stray:
             raise SystemExit(f"bad spell_value config: {stray} set without spell_value_reward on")
         return None
@@ -411,9 +459,11 @@ def spell_cfg(cfg: dict) -> Optional[dict]:
         bad.append(f"spell_value_reward needs advantage gae (refusing {cfg.get('advantage', 'match_loo')!r})")
     if not cfg.get("league"):
         bad.append("spell_value_reward needs league true (the tracker rides on self-play matches)")
+    lp = {k: (v if cfg.get(k) is None else cfg[k]) for k, v in SV.LONE_DEFAULTS.items()} if lone else {}
+    bad += [f"{k} must be a finite number >= 0, got {v!r}" for k, v in lp.items() if not (num(v) and v >= 0)]
     if bad:
         raise SystemExit("bad spell_value config: " + "; ".join(bad))
-    return {k: float(v) for k, v in p.items()}
+    return {**{k: float(v) for k, v in {**p, **lp}.items()}, **({"spell_value_lone": True} if lone else {})}
 
 
 def adv_cfg(cfg: dict) -> dict:
@@ -1083,7 +1133,8 @@ def load_ability_head(path, device: str = "cpu") -> Optional[dict]:
     meta = rl["ability"]
     head = AbilityHead(int(meta["d_g"]), int(meta.get("hidden", ABILITY_HIDDEN)), int(meta.get("n_feat", E.ABILITY_FEAT_N)))
     head.load_state_dict(rl["ability_head"])
-    return {"head": head.to(device).eval(), "mode": "greedy"}
+    return {"head": head.to(device).eval(), "mode": "greedy", "n_feat": int(meta.get("n_feat", E.ABILITY_FEAT_N)),
+            "features": meta.get("features", "base")}
 
 
 def trunk_g(model, B: dict, idx) -> torch.Tensor:
@@ -1191,11 +1242,12 @@ def match_weights(n_rows) -> list[np.ndarray]:
 LEASH_MODES = ("cell", "max")
 
 
-def leash_kl(upd: dict, mode: str) -> tuple[float, str]:
+def leash_kl(upd: dict, mode: str, heads=None) -> tuple[float, str]:
     """The KL ``adapt_beta`` steers on (owner ruling 2026-09-25, T12b), from ``ppo_update``'s monitors (None = 0.0):
     ``cell`` = KL_cell (the S1 rule, unchanged); ``max`` = max(KL_gate, KL_card, KL_cell). -> (value, the head that
-    drove it; a tie goes to the first of gate, card, cell). A config without the key is ``cell`` (Learner)."""
-    kls = {h: float(upd.get(f"kl_{h}") or 0.0) for h in ("gate", "card", "cell")}
+    drove it; a tie goes to the first of gate, card, cell). A config without the key is ``cell`` (Learner).
+    ``heads`` (K1 ``kl_heads``; None = all three): ``max`` over the leashed heads only."""
+    kls = {h: float(upd.get(f"kl_{h}") or 0.0) for h in (heads or ("gate", "card", "cell"))}
     if mode == "cell":
         return kls["cell"], "cell"
     if mode != "max":
@@ -2104,14 +2156,15 @@ def cat_ent(lp):
 
 @torch.no_grad()
 def ref_terms(ref, B: dict, tau: float, T: float, chunk: int = 512, T_gate: Optional[float] = None,
-              gate_ref=None, gate_lo_max: Optional[float] = None) -> dict:
+              gate_ref=None, gate_lo_max: Optional[float] = None, card_ref=None) -> dict:
     """Frozen-ref tempered distributions for every row, once per update (E1 3.4): gate x [N], card log-probs [N, 8],
     cell log-probs [P, 2304] for the P played rows (``play_pos`` maps a row to its position, -1 if not played).
     ``gate_ref`` (F6 ``kl_ref_gate``): the gate x -- and so KL_gate and the gate entropy baseline -- comes from this
     second frozen net instead; card and cell stay ``ref``'s. None = unchanged.
     ``gate_lo_max`` (F6', needs gate_ref and ``B["elixir"]``): only rows with elixir < gate_lo_max (``R["low"]``) take
     gate_ref's x; the others keep ``ref``'s (so the entropy baseline follows the split). ``R["kl_lo_init"]`` = mean
-    KL(ref gate || gate_ref gate) over the low gate-sampled rows (None without such rows): update 0's KL_gate_imit_low."""
+    KL(ref gate || gate_ref gate) over the low gate-sampled rows (None without such rows): update 0's KL_gate_imit_low.
+    ``card_ref`` (K1 ``kl_ref_card``): the card log-probs come from this frozen net instead; None = unchanged."""
     N = len(B["A"])
     dev = B["A"].device
     if gate_lo_max is not None and (gate_ref is None or "elixir" not in B):
@@ -2126,6 +2179,8 @@ def ref_terms(ref, B: dict, tau: float, T: float, chunk: int = 512, T_gate: Opti
                 t["x"] = xg
             else:
                 xis.append(xg)
+        if card_ref is not None:
+            t["card_lp"] = policy_terms(card_ref, B, idx, tau, T, T_gate=T_gate)["card_lp"]
         xs.append(t["x"]); cards.append(t["card_lp"])
         if t["cell_lp"] is not None:
             cells.append(t["cell_lp"])
@@ -2188,7 +2243,10 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
     gs = B["gate_sampled"][idx]                               # the entropy monitor below: every gate-sampled row
     kl_c = cat_kl(t["card_lp"][pl], R["card_lp"][idx][pl]).mean() if pl.any() else zero
     kl_x = cat_kl(t["cell_lp"], R["cell_lp"][R["play_pos"][idx[pl]]]).mean() if pl.any() else zero
-    loss = l_pg + beta * (kl_g + kl_c + kl_x)
+    if "kl_heads" in R:                                       # K1: only the leashed heads' KL enters the loss
+        loss = l_pg + beta * sum({"gate": kl_g, "card": kl_c, "cell": kl_x}[h] for h in R["kl_heads"])
+    else:
+        loss = l_pg + beta * (kl_g + kl_c + kl_x)
     if kl_gi is not None:
         loss = loss + float(R["beta_g"]) * kl_gi
     pst = None
@@ -2497,7 +2555,7 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
                     if asd:                                   # rollout then records the rule's labels (warm start)
                         c["ability"] = {**c["ability"], "head": ahead}
                     elif k == "rollout":
-                        c["ability"] = {"mode": "label"}
+                        c["ability"] = {"mode": "label", "n_feat": c["ability"]["n_feat"]}
                     else:
                         del c["ability"]
                 return c
@@ -2530,7 +2588,8 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
                         for i, (pol, oc) in opps.items()}            # L74 human tempo: the OPPONENT's cfg only
                 E.run_selfplay_batch(lambda: RoyaleSelfPlayEnv(decision_ticks=int(base["decide_every"]), forms_mode=fm,
                                                                hero_abilities=base.get("hero_abilities", False),
-                                                               ability_policy=base.get("ability_policy", "generic")), model, opps,
+                                                               ability_policy=base.get("ability_policy", "generic"),
+                                                               ability_features=base.get("ability_features") or "base"), model, opps,
                                      rollout_jobs(jobs, update, base.get("learner_pipeline_frac", 0), base["seed"]),
                                      cfg, n_fl, on_result=on_result, on_skip=on_skip,
                                      skip=(UnsupportedDeck,))
@@ -2539,7 +2598,8 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
                       if kind == "rollout" else jobs)     # screen: eval obs seed of (tag, k)
                 E.run_batch(lambda: RoyalePoolEnv(decision_ticks=int(base["decide_every"]), forms_mode=fm,
                                                                hero_abilities=base.get("hero_abilities", False),
-                                                               ability_policy=base.get("ability_policy", "generic")), model, deck, it, cfg,
+                                                               ability_policy=base.get("ability_policy", "generic"),
+                                                               ability_features=base.get("ability_features") or "base"), model, deck, it, cfg,
                             n_fl, on_result=on_result, on_skip=on_skip, skip=(UnsupportedDeck,))
             stats = {"wall_s": time.perf_counter() - t0, "matches": len(results),
                      "gpu_peak_mb": (torch.cuda.max_memory_allocated() / 2**20) if dev.startswith("cuda") else None}
@@ -2885,12 +2945,22 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                 and k not in VALUE_PHI_KEYS and k not in STATE_PHI_KEYS and k not in AO.DEFAULTS
                 and k not in ("league_learner_icebow_share", "learner_pipeline_frac", "league_opp_T", "kl_ref_gate",
                               "critic_ctx", "kl_ref_gate_max_elixir", "kl_ref_gate_target_frac",
-                              "league_exploiters", "cue_inputs", "opp_tower_troops", "live_levels") + OPP_TEMPO_KEYS
+                              "league_exploiters", "cue_inputs", "opp_tower_troops", "live_levels",
+                              "heroiw_press", "ability_features", "kl_heads", "kl_ref_card") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
         cfg[k] = yaml.safe_load(v)
     if type(cfg["hero_abilities"]) is not bool:
         raise SystemExit("hero_abilities must be a bool")
+    if cfg.get("kl_heads") is not None:                      # K1 (step d): absent / null = all three heads leashed
+        hs = cfg["kl_heads"]
+        if not isinstance(hs, list) or not hs or len(set(hs)) != len(hs) or not set(hs) <= {"gate", "card", "cell"}:
+            raise SystemExit(f"kl_heads must be null or a non-empty list of distinct gate / card / cell, got {hs!r}")
+        if cfg.get("leash", "cell") != "max":
+            raise SystemExit("kl_heads needs leash: max (the leash steers on the max over the leashed heads)")
+        cfg["kl_heads"] = [h for h in ("gate", "card", "cell") if h in hs]    # canonical order: one hash
+    if cfg.get("kl_ref_card") is not None and not (isinstance(cfg["kl_ref_card"], str) and cfg["kl_ref_card"]):
+        raise SystemExit(f"kl_ref_card must be null or a checkpoint path, got {cfg['kl_ref_card']!r}")
     if cfg.get("cue_inputs") not in (None, False, True):     # step c (yaml "on" = true): absent / null / false = off
         raise SystemExit(f"cue_inputs must be on / off (a bool) or null, got {cfg['cue_inputs']!r}")
     if smoke and cfg.get("ability_head") not in (None, False) and cfg.get("ability_bc_matches") is None:
@@ -2931,6 +3001,9 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "ability_policy"}
     if cfg.get("kl_ref_gate") is None:                       # F6 off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "kl_ref_gate"}
+    for k in ("kl_heads", "kl_ref_card"):                    # K1 off (absent or null) = the historical hash
+        if cfg.get(k) is None:
+            cfg = {kk: v for kk, v in cfg.items() if kk != k}
     if cfg.get("league_exploiters") is None:                 # O2 off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "league_exploiters"}
     if cfg.get("opp_tower_troops") is None:                  # L74 troops off (absent or null) = the historical hash
@@ -2939,6 +3012,8 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "live_levels"}
     else:                                                    # on: the table's bytes are part of the run (resume refuses a change)
         cfg = {**cfg, "live_levels": hashlib.sha256(LIVE_LEVELS.read_bytes()).hexdigest()}
+    if cfg.get("heroiw_press") is None:                      # L74 overpress key absent / null = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "heroiw_press"}
     if cfg.get("critic_ctx") is None:                        # C2 / F2 off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "critic_ctx"}
     if not cfg.get("cue_inputs"):                            # step c off (absent / null / false) = the historical hash
@@ -2954,6 +3029,8 @@ def config_sha(cfg: dict) -> str:
         cfg = {**cfg, "posture_head": True, **{k: (v if cfg.get(k) is None else cfg[k]) for k, v in POSTURE_DEFAULTS.items()}}
         if isinstance(cfg["posture_dtau"], (list, tuple)):
             cfg["posture_dtau"] = [float(x) for x in cfg["posture_dtau"]]
+    if cfg.get("ability_features") in (None, "base"):       # L74 head inputs absent / null / base = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "ability_features"}
     if cfg.get("ability_head") is None or cfg.get("ability_head") is False:   # B6 off (absent / null / false) = historical
         cfg = {k: v for k, v in cfg.items() if k not in ABILITY_KEYS}
     else:                                                    # B6 on: defaults filled, one hash for implicit / explicit
@@ -2964,6 +3041,11 @@ def config_sha(cfg: dict) -> str:
     else:                                                    # on: defaults filled (floats), one hash for implicit / explicit
         cfg = {**cfg, "spell_value_reward": True,
                **{k: float(v if cfg.get(k) is None else cfg[k]) for k, v in SV.DEFAULTS.items()}}
+        if cfg.get("spell_value_lone") is None or cfg.get("spell_value_lone") is False:   # lone off = the 10-18 hash
+            cfg = {k: v for k, v in cfg.items() if k != "spell_value_lone" and k not in SV.LONE_DEFAULTS}
+        else:                                                # lone on: defaults filled (floats)
+            cfg = {**cfg, "spell_value_lone": True,
+                   **{k: float(v if cfg.get(k) is None else cfg[k]) for k, v in SV.LONE_DEFAULTS.items()}}
     return hashlib.sha256(json.dumps(cfg, sort_keys=True, default=str).encode()).hexdigest()
 
 
@@ -3061,6 +3143,7 @@ class Learner:
             cfg["kl_ref_gate_target_frac"] = gate_lo_cfg(cfg)["frac"]
         pc = store_posture_cfg(cfg)                           # ... and the C1 keys; the defaults stored
         abc = store_ability_cfg(cfg)                          # ... and the B6 keys; the defaults stored
+        heroiw_press_cfg(cfg)                                 # ... heroiw_press -> env (before any actor starts); refusal
         bc = branch_cfg(cfg)                                 # ... and the branch (opt3) keys
         if bc["branch_gate"]:
             try:
@@ -3093,6 +3176,7 @@ class Learner:
         for p in self.ref.parameters():
             p.requires_grad_(False)
         self.gate_ref = self._load_gate_ref(ick) if cfg.get("kl_ref_gate") is not None else None   # F6
+        self.card_ref = self._load_gate_ref(ick, "kl_ref_card") if cfg.get("kl_ref_card") is not None else None   # K1
         if adv_cfg(cfg)["shaping"] in ("value_phi", "live_phi"):            # lever C: the frozen Phi net, loaded once from FILE
             self.phi_net = self._load_phi_net(ick)            # (never self.model / a resumed one), never trained
         self.model.eval()                                     # eval() for rollout AND update (E1 3.3 dropout trap)
@@ -3150,12 +3234,17 @@ class Learner:
         the checkpoint carries rl["ability_head"] / ["ability_optimizer"] / ["ability"]."""
         with torch.random.fork_rng(devices=list(range(torch.cuda.device_count()))):
             torch.manual_seed(zlib.crc32(f"ability:{int(self.cfg['seed'])}".encode()))
-            self.ability_head = AbilityHead(self.model.value_head.in_features).to(self.dev)
+            self.ability_head = AbilityHead(self.model.value_head.in_features, n_feat=self._ability_n_feat()).to(self.dev)
         self.ability_opt = torch.optim.Adam(self.ability_head.parameters(), lr=float(self.cfg["ability_lr"]))
         self.ability_bc = None                                # the warm start's monitors (``_ability_warm_start``)
 
+    def _ability_n_feat(self) -> int:
+        return E.ABILITY_FEAT_SETS[self.cfg.get("ability_features") or "base"]
+
     def _ability_meta(self) -> dict:
-        return {"d_g": int(self.model.value_head.in_features), "hidden": ABILITY_HIDDEN, "n_feat": E.ABILITY_FEAT_N,
+        feats = self.cfg.get("ability_features") or "base"
+        return {"d_g": int(self.model.value_head.in_features), "hidden": ABILITY_HIDDEN, "n_feat": self._ability_n_feat(),
+                **({"features": feats} if feats != "base" else {}),
                 "bc": _py(getattr(self, "ability_bc", None))}
 
     def _ability_warm_start(self) -> None:
@@ -3197,7 +3286,7 @@ class Learner:
             rows["q"].append(tj["ab_q"][c])
             for k in (E.gen_row_keys(self.model) if "hand_card" in tj else ("tok", "mask", "sc", "past")):
                 inp.setdefault(k, []).append(tj[k][c])
-            cards.update(names[i] for i in tj["ab_feat"][c][:, 18:].argmax(1))
+            cards.update(names[i] for i in tj["ab_feat"][c][:, 18:18 + len(names)].argmax(1))
         nl = int(sum(len(x) for x in rows["q"]))
         if not nl:
             self.ability_bc = {"n": 0, "matches": len(res), "skipped": len(skipped)}
@@ -3309,7 +3398,9 @@ class Learner:
             keep_tr, keep_ho = set(c["train"]), set(c["heldout"])
         else:
             from pipeline.royale_env import RoyalePoolEnv, UnsupportedDeck
-            env = RoyalePoolEnv(decision_ticks=int(self.cfg["decide_every"]))
+            # iw_press off: this env only resets (no hero_abilities, never presses); the live IW rule's guard must not
+            # trip here (L74 overpress 10-18) -- loadability is independent of the press mode
+            env = RoyalePoolEnv(decision_ticks=int(self.cfg["decide_every"]), iw_press="off")
 
             def ok(e):
                 try:
@@ -3369,32 +3460,34 @@ class Learner:
             p.requires_grad_(False)
         return net.eval()
 
-    def _load_gate_ref(self, ick: dict):
+    def _load_gate_ref(self, ick: dict, key: str = "kl_ref_gate"):
         """F6 ``kl_ref_gate``: the frozen net the GATE's KL term is anchored to (card / cell keep the init ref). Refuses
         a non-generalist init, a missing file, or a checkpoint whose card_vocab / d_c / grid / row inputs differ from
         the init's. feature_version may differ while the row inputs are the same (fv5 vs fv6: fv6 only adds the
-        projectile-target branch, which feeds the cell patches, never the gate), so the fv5 imitation model loads as is."""
-        ck = self.cfg["kl_ref_gate"]
+        projectile-target branch, which feeds the cell patches, never the gate), so the fv5 imitation model loads as is.
+        ``key`` "kl_ref_card" (K1): the same checks for the CARD head's anchor."""
+        ck = self.cfg[key]
         if not (isinstance(ck, str) and ck):
-            raise SystemExit(f"kl_ref_gate must be null or a checkpoint path, got {ck!r}")
+            raise SystemExit(f"{key} must be null or a checkpoint path, got {ck!r}")
         if not self.gen:
-            raise SystemExit("kl_ref_gate needs a generalist init")
+            raise SystemExit(f"{key} needs a generalist init")
         path = REPO / ck
         if not path.exists():
-            raise SystemExit(f"kl_ref_gate {ck} not found")
+            raise SystemExit(f"{key} {ck} not found")
         gck = torch.load(path, map_location="cpu")
         sig = (lambda c: (bool(c.get("gen")), c.get("d_c"), list(c.get("card_vocab") or []),
                           str(c["args"].get("grid", "lattice"))))
         if sig(gck) != sig(ick):
-            raise SystemExit(f"kl_ref_gate {ck}: gen / d_c / card_vocab / grid differ from the init's")
+            raise SystemExit(f"{key} {ck}: gen / d_c / card_vocab / grid differ from the init's")
         net = self._load_net(path)
         if E.gen_row_keys(net) != E.gen_row_keys(self.model):
-            raise SystemExit(f"kl_ref_gate {ck}: row inputs differ from the init's (feature_version "
+            raise SystemExit(f"{key} {ck}: row inputs differ from the init's (feature_version "
                              f"{net.feature_version} vs {self.model.feature_version})")
         for p in net.parameters():
             p.requires_grad_(False)
-        self.log(f"[rl] kl_ref_gate: KL_gate anchored to {ck} (fv {net.feature_version}, sha256 "
-                 f"{hashlib.sha256(path.read_bytes()).hexdigest()[:16]}); card / cell stay on the init")
+        head = "gate" if key == "kl_ref_gate" else "card"
+        self.log(f"[rl] {key}: KL_{head} anchored to {ck} (fv {net.feature_version}, sha256 "
+                 f"{hashlib.sha256(path.read_bytes()).hexdigest()[:16]}); the other heads stay on the init")
         return net.eval()
 
     def _phi_values(self, Bn: dict) -> np.ndarray:
@@ -3674,8 +3767,12 @@ class Learner:
         B = to_device(Bn, self.dev)
         gate_ref = getattr(self, "gate_ref", None)            # F6 kl_ref_gate (None = the init ref for all heads)
         glo = gate_lo_cfg(cfg)                                # F6' (None = off)
+        card_ref = getattr(self, "card_ref", None)            # K1 kl_ref_card (None = the init ref)
         R = ref_terms(self.ref, B, cfg["tau"], cfg["T"], T_gate=cfg.get("T_gate"), gate_ref=gate_ref,
-                      **({"gate_lo_max": glo["max_elixir"]} if glo else {}))
+                      **({"gate_lo_max": glo["max_elixir"]} if glo else {}),
+                      **({"card_ref": card_ref} if card_ref is not None else {}))
+        if cfg.get("kl_heads") is not None:                   # K1: only these heads' KL enters the loss
+            R["kl_heads"] = tuple(cfg["kl_heads"])
         if glo is not None:
             if getattr(self, "beta_g", None) is None:
                 self.beta_g = float(cfg["beta0"])
@@ -3721,7 +3818,13 @@ class Learner:
         if u == 0 and not upd["nonfinite"]:
             # kl_ref_gate: KL_gate is to another net, so > 0 by design; the ratio check still covers the gate's recompute
             # F6': KL_gate is the init ref's over the high rows only, so ~0 again; the low rows' imitation KL is not
-            kl0 = (first["kl_card"], first["kl_cell"]) + ((first["kl_gate"],) if gate_ref is None or glo else ())
+            # K1 kl_ref_card: KL_card is to another net, so > 0 by design, the same way
+            kl0 = (((first["kl_card"],) if card_ref is None else ()) + (first["kl_cell"],)
+                   + ((first["kl_gate"],) if gate_ref is None or glo else ()))
+            if card_ref is not None:
+                self.log(f"[rl] kl_ref_card: update-0 KL_card to {cfg['kl_ref_card']} = {first['kl_card']:.4f} (first "
+                         f"minibatch), {upd['kl_card']:.4f} (last-epoch mean); kl_target {cfg['kl_target']}, kl_heads "
+                         f"{cfg.get('kl_heads')}")
             bad = first["ratio_maxdev"] >= ASSERT_RATIO or max(kl0) >= ASSERT_KL or (
                 (first.get("post_ratio_maxdev") or 0.0) >= ASSERT_RATIO) or (     # C1: the posture's own ratio
                 (first.get("ab_ratio_maxdev") or 0.0) >= ASSERT_RATIO)            # B6: the press's own ratio
@@ -3759,7 +3862,7 @@ class Learner:
                 reasons.append("non-finite parameters after the branch step")
                 crash = True
         leash = cfg.get("leash", "cell")
-        kl_leash, kl_driver = leash_kl(upd, leash)
+        kl_leash, kl_driver = leash_kl(upd, leash, cfg.get("kl_heads"))
         if not crash:
             if not warm:                                        # warm-up: no KL step (the policy did not move)
                 self.beta = adapt_beta(beta_used, kl_leash, float(cfg["kl_target"]), float(cfg["beta_min"]),
@@ -4000,6 +4103,7 @@ class Learner:
         if type(base["hero_abilities"]) is not bool:
             raise SystemExit("hero_abilities must be a bool")
         base["ability_policy"] = self.cfg.get("ability_policy", "generic")
+        base["ability_features"] = self.cfg.get("ability_features") or "base"   # L74: the env's head-input set
         if base["ability_policy"] not in ("generic", "v2"):
             raise SystemExit(f"ability_policy must be generic or v2, got {base['ability_policy']!r}")
         base["forms_mode"] = self.cfg.get("forms_mode", "base")

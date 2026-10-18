@@ -51,6 +51,8 @@ class GenRows(Rows):
         self.opp_cycle = torch.as_tensor(arrs['opp_cycle'], device=device) if 'opp_cycle' in arrs else None
         # Keep the larger public-object arrays on CPU; gather only this batch.
         self.public_objects = {k: torch.as_tensor(arrs[k]) for k in ('projectiles', 'effects', 'own_ability', 'rocket_context_probability') if k in arrs}
+        # step d (L74/stepd/cue_sidecar.py): per-TOKEN cue rows [n_tok, CUE_N] uint8 (x 255), ragged like tok; absent = no b["cue"]
+        self.cue = torch.as_tensor(arrs["cue"]) if "cue" in arrs else None
         if (self.unit_form is None) != (self.opp_past is None):
             raise ValueError("v3 rows require both unit_form and opp_past")
 
@@ -83,6 +85,9 @@ class GenRows(Rows):
             b['opp_cycle'] = self.opp_cycle[t]
         for key, values in self.public_objects.items():
             b[key] = values[torch.from_numpy(ids)].to(self.dev)
+        if self.cue is not None:            # same gather as tok; pads 0 (= cue unknown), uint8 -> 0..1 floats
+            c = self.cue[src].float().div_(255.0) if len(self.cue) else torch.zeros((*src.shape, self.cue.shape[-1]))
+            b["cue"] = c.masked_fill_(~mask.unsqueeze(-1), 0.0).to(self.dev)
         return b
 
 
