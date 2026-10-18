@@ -1,0 +1,27 @@
+== CXXIV last 200: 93 OT matches
+   entering OT ahead on tower damage (dealt - taken >= +300)  n 40 win 77.5% [62.5%, 87.7%]
+   level (|diff| < 300)                                       n 11 win 63.6% [35.4%, 84.8%]
+   behind (<= -300)                                           n 42 win 45.2% [31.2%, 60.1%]
+   OT WIN: n 57; OT length 67 s; locked X-Bows in OT 1.42, Rockets in OT 0.98 (on a tower 0.84); OT pushes 1.6/match lost 11%, own elixir at OT push 4.1; OT taken/dealt 1313/3247; enemy lowest tower at end 2553
+   OT LOSS: n 36; OT length 75 s; locked X-Bows in OT 1.39, Rockets in OT 0.72 (on a tower 0.56); OT pushes 1.9/match lost 37%, own elixir at OT push 2.8; OT taken/dealt 3662/2451; enemy lowest tower at end 1718
+== CXXXVIII < 13,000: 18 OT matches
+   entering OT ahead on tower damage (dealt - taken >= +300)  n 14 win 92.9% [68.5%, 98.7%]
+   behind (<= -300)                                           n  4 win 50.0% [15.0%, 85.0%]
+   OT WIN: n 15; OT length 44 s; locked X-Bows in OT 1.47, Rockets in OT 0.33 (on a tower 0.33); OT pushes 0.9/match lost 0%, own elixir at OT push 3.4; OT taken/dealt 535/3057; enemy lowest tower at end 1576
+   OT LOSS: n 3; OT length 76 s; locked X-Bows in OT 1.33, Rockets in OT 0.67 (on a tower 0.67); OT pushes 2.0/match lost 17%, own elixir at OT push 3.9; OT taken/dealt 3185/2384; enemy lowest tower at end 1045
+== CXXXVIII >= 13,000: 24 OT matches
+   entering OT ahead on tower damage (dealt - taken >= +300)  n 10 win 50.0% [23.7%, 76.3%]
+   level (|diff| < 300)                                       n  1 win 0.0% [0.0%, 79.3%]
+   behind (<= -300)                                           n 13 win 0.0% [0.0%, 22.8%]
+   OT WIN: n 5; OT length 39 s; locked X-Bows in OT 0.40, Rockets in OT 0.60 (on a tower 0.60); OT pushes 1.6/match lost 25%, own elixir at OT push 4.3; OT taken/dealt 1005/2150; enemy lowest tower at end 3177
+   OT LOSS: n 19; OT length 62 s; locked X-Bows in OT 1.32, Rockets in OT 0.37 (on a tower 0.16); OT pushes 1.6/match lost 33%, own elixir at OT push 2.8; OT taken/dealt 2681/1856; enemy lowest tower at end 2262
+
+== CXXIV all ladder matches by hour of day (time-of-day pool check) and trophies
+   20261015 16-19h n  24 win 54.2% [35.1%, 72.1%]   trophies 12181..12336
+   20261016 12-15h n  11 win 54.5% [28.0%, 78.7%]   trophies 12159..12222
+   20261016 16-19h n  10 win 50.0% [23.7%, 76.3%]   trophies 12131..12219
+   20261016 20-23h n  38 win 47.4% [32.5%, 62.7%]   trophies 12000..12224
+   20261017 00-03h n  65 win 50.8% [38.9%, 62.5%]   trophies 12133..12434
+   20261017 04-07h n  60 win 61.7% [49.0%, 72.9%]   trophies 12082..12702
+   20261017 08-11h n  63 win 49.2% [37.3%, 61.2%]   trophies 12500..12802
+   20261017 12-15h n  22 win 36.4% [19.7%, 57.0%]   trophies 12500..12658

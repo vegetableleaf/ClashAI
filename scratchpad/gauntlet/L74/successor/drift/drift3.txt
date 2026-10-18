@@ -1,0 +1,20 @@
+== any 13k-core card (electrogiant,elixirgolem,firecracker,goldenknight,hogrider,megaknight,witch): pool share train 18.3%, train+B 30.6%, d3 52.9%
+   since 10-15 (both Marks)   live share  54.8% (n 322) win  45.3% [40.0, 50.8] vs rest  59.0% (n 266) | ceiling if closed to the rest: +7.5 pp overall
+   CXXIV (u250) window        live share  53.4% (n 156) win  46.2% [38.5, 54.0] vs rest  57.4% (n 136) | ceiling if closed to the rest: +6.0 pp overall
+   CXXXVIII all               live share  61.7% (n  50) win  42.0% [29.4, 55.8] vs rest  71.0% (n 31) | ceiling if closed to the rest: +17.9 pp overall
+   CXXXVIII >= 12.8k          live share  64.0% (n  32) win  37.5% [22.9, 54.7] vs rest  61.1% (n 18) | ceiling if closed to the rest: +15.1 pp overall
+== megaknight: pool share train 1.8%, train+B 9.2%, d3 20.2%
+   since 10-15 (both Marks)   live share  17.5% (n 103) win  42.7% [33.6, 52.4] vs rest  53.4% (n 485) | ceiling if closed to the rest: +1.9 pp overall
+   CXXIV (u250) window        live share  16.1% (n  47) win  40.4% [27.6, 54.7] vs rest  53.5% (n 245) | ceiling if closed to the rest: +2.1 pp overall
+   CXXXVIII all               live share  23.5% (n  19) win  36.8% [19.1, 59.0] vs rest  58.1% (n 62) | ceiling if closed to the rest: +5.0 pp overall
+   CXXXVIII >= 12.8k          live share  28.0% (n  14) win  42.9% [21.4, 67.4] vs rest  47.2% (n 36) | ceiling if closed to the rest: +1.2 pp overall
+== witch: pool share train 3.2%, train+B 8.7%, d3 18.5%
+   since 10-15 (both Marks)   live share  25.0% (n 147) win  44.9% [37.1, 53.0] vs rest  53.7% (n 441) | ceiling if closed to the rest: +2.2 pp overall
+   CXXIV (u250) window        live share  26.4% (n  77) win  49.4% [38.5, 60.3] vs rest  52.1% (n 215) | ceiling if closed to the rest: +0.7 pp overall
+   CXXXVIII all               live share  28.4% (n  23) win  34.8% [18.8, 55.1] vs rest  60.3% (n 58) | ceiling if closed to the rest: +7.3 pp overall
+   CXXXVIII >= 12.8k          live share  28.0% (n  14) win  35.7% [16.3, 61.2] vs rest  50.0% (n 36) | ceiling if closed to the rest: +4.0 pp overall
+== unfavourable six (owner): pool share train 60.0%, train+B 48.9%, d3 22.2%
+   since 10-15 (both Marks)   live share  21.8% (n 128) win  48.4% [40.0, 57.0] vs rest  52.4% (n 460) | ceiling if closed to the rest: +0.9 pp overall
+   CXXIV (u250) window        live share  24.0% (n  70) win  44.3% [33.2, 55.9] vs rest  53.6% (n 222) | ceiling if closed to the rest: +2.2 pp overall
+   CXXXVIII all               live share  12.3% (n  10) win  50.0% [23.7, 76.3] vs rest  53.5% (n 71) | ceiling if closed to the rest: +0.4 pp overall
+   CXXXVIII >= 12.8k          live share  14.0% (n   7) win  42.9% [15.8, 75.0] vs rest  46.5% (n 43) | ceiling if closed to the rest: +0.5 pp overall

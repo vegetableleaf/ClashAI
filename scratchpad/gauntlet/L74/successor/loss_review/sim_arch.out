@@ -1,0 +1,21 @@
+960 960 paired 960
+  ALL                          n  960  CXXXVIII  63.2%  CXXIV  59.4%  diff +3.9% +- 3.5%
+  other (not six)              n  725  CXXXVIII  64.3%  CXXIV  60.4%  diff +3.9% +- 4.1%
+  unfavourable six             n  235  CXXXVIII  60.0%  CXXIV  56.2%  diff +3.8% +- 7.1%
+  Hog (incl. Royal Hogs)       n  208  CXXXVIII  66.3%  CXXIV  59.1%  diff +7.2% +- 8.0%
+  Golem                        n  135  CXXXVIII  64.4%  CXXIV  52.6%  diff +11.9% +- 9.7%
+  Ram/Bridge spam              n  103  CXXXVIII  56.3%  CXXIV  51.5%  diff +4.9% +- 9.9%
+  Balloon                      n   88  CXXXVIII  76.1%  CXXIV  71.6%  diff +4.5% +- 11.8%
+  Giant (incl. Goblin/Electro) n   76  CXXXVIII  65.8%  CXXIV  68.4%  diff -2.6% +- 12.7%
+  Mega Knight                  n   66  CXXXVIII  60.6%  CXXIV  51.5%  diff +9.1% +- 14.5%
+  X-Bow/Mortar                 n   50  CXXXVIII  38.0%  CXXIV  44.0%  diff -6.0% +- 16.2%
+  Bait                         n   47  CXXXVIII  66.0%  CXXIV  72.3%  diff -6.4% +- 13.9%
+  Other/no clear wincon        n   44  CXXXVIII  56.8%  CXXIV  68.2%  diff -11.4% +- 14.6%
+  Royal Giant                  n   32  CXXXVIII  62.5%  CXXIV  78.1%  diff -15.6% +- 19.9%
+  Graveyard                    n   28  CXXXVIII  53.6%  CXXIV  50.0%  diff +3.6% +- 25.7%
+  Spawners (Witch/huts)        n   27  CXXXVIII  74.1%  CXXIV  66.7%  diff +7.4% +- 14.5%
+  Lava Hound                   n   25  CXXXVIII  48.0%  CXXIV  40.0%  diff +8.0% +- 19.3%
+  P.E.K.K.A                    n   16  CXXXVIII  87.5%  CXXIV  68.8%  diff +18.8% +- 19.8%
+  Miner                        n   15  CXXXVIII  73.3%  CXXIV  66.7%  diff +6.7% +- 13.1%
+ref_cxxxviii: OT share 60%, OT win 61.5% (n 579); Hog OT win 65.5% (n 139); Rockets/game 0.72, princess Rockets 0.62
+ref_u250: OT share 69%, OT win 60.5% (n 659); Hog OT win 60.5% (n 162); Rockets/game 0.97, princess Rockets 0.84

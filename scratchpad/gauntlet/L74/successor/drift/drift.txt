@@ -1,0 +1,111 @@
+live rows (main account, plays read, since live_play_20261007): 2064; ladder anchors 372, 116 inconsistent (>2 tr)
+  window cue      n   81  win 53.1%  trophies-before [12558, 13147]  live_play_20261017_132941 .. live_play_20261017_205055
+  window cue_hi   n   50  win 46.0%  trophies-before [12826, 13147]  live_play_20261017_152453 .. live_play_20261017_205055
+  window hi       n   50  win 46.0%  trophies-before [12826, 13147]  live_play_20261017_152453 .. live_play_20261017_205055
+  window last120  n  120  win 49.2%  trophies-before [12500, 13147]  live_play_20261017_105009 .. live_play_20261017_205055
+  window build    n 1658  win 49.4%  trophies-before [1104, 12458]  live_play_20261007_183005 .. live_play_20261015_142821
+  window u250     n  292  win 51.4%  trophies-before [4723, 12772]  live_play_20261015_172639 .. live_play_20261017_132435
+pools: train 999 decks (max p 0.0558); exploit 520 (max p 0.0217); d3 894 (max p 0.0163)
+
+== ARCHETYPE share (A.classify; live = played cards; pool = full deck)  + live win rate per window
+arch               train     +B     d3  build last120    cue cue>=12.8k | cue n cue win%        95% CI | u250 n u250 win% build n build win
+royal_giant_monk     1.3    1.2    1.5    1.2     0.0    0.0        0.0 |     0      nan [  nan,  nan] |      1     100.0      20      90.0
+royal_giant          7.8    6.3    2.6    2.9     2.5    2.5        4.0 |     2    100.0 [ 34.2,100.0] |     17      23.5      48      52.1
+lava_hound           9.1    7.4    2.2    1.7     0.8    1.2        0.0 |     1      0.0 [  0.0, 79.3] |     11      27.3      29      34.5
+golem               21.7   17.5    5.6    5.7     2.5    2.5        2.0 |     2     50.0 [  9.5, 90.5] |     11      45.5      94      37.2
+pekka_bridge         6.8    5.5    2.0    1.6     1.7    0.0        0.0 |     0      nan [  nan,  nan] |      6      66.7      26      26.9
+hyperbait           13.3   11.0    8.2    5.7     5.0    6.2        8.0 |     5     40.0 [ 11.8, 76.9] |     24      58.3      94      57.4
+weak_other          22.2   32.7   45.0   44.3    47.5   45.7       44.0 |    37     45.9 [ 31.0, 61.6] |    109      47.7     734      40.7
+other               17.8   18.3   32.8   37.0    40.0   42.0       42.0 |    34     61.8 [ 45.0, 76.1] |    113      59.3     613      60.5
+  unfavourable six share in train: 60.0%
+  unfavourable six share in train+B: 48.9%
+  unfavourable six share in d3: 22.2%
+  unfavourable six share live build: 18.8%
+  unfavourable six share live last120: 12.5%
+  unfavourable six share live cue: 12.3%
+  unfavourable six share live cue_hi: 14.0%
+
+== CARD presence (% of matches / % of pool draws), top 45 by last120 presence; live win% (cue window, all CXXIV+CXXXVIII since 10-15)
+   (overall win since 10-15: 51.5% over 588 matches)
+card               train     +B     d3  build last120    cue    L/T  L/D3 | cue n cue win | 1015+ n  win%        95% CI   cost
+witch                3.2    8.7   18.5   17.2    27.5   28.4    8.6   1.5 |    23    34.8 |     147  44.9 [ 37.1, 53.0]   +9.7
+valkyrie            10.1   14.3   22.2   18.6    25.0   28.4    2.5   1.1 |    23    52.2 |     138  59.4 [ 51.1, 67.3]  -10.9
+firecracker          2.5    7.3   15.3   16.6    22.5   22.2    8.9   1.5 |    18    38.9 |      93  44.1 [ 34.4, 54.2]   +6.9
+fireball            30.2   25.2   14.3    0.0    21.7   22.2    0.7   1.5 |    18    50.0 |      56  53.6 [ 40.7, 66.0]   -1.1
+megaknight           1.8    9.2   20.2   17.0    21.7   23.5   11.9   1.1 |    19    36.8 |     103  42.7 [ 33.6, 52.4]   +9.1
+log                 15.7   13.1   15.9    0.0    20.0   23.5    1.3   1.3 |    19    68.4 |      63  60.3 [ 48.0, 71.5]   -5.5
+skeletons           19.4   14.9   13.2   12.3    19.2   23.5    1.0   1.5 |    19    68.4 |      78  60.3 [ 49.2, 70.4]   -6.8
+hogrider             6.8    9.7   17.7   14.5    18.3   21.0    2.7   1.0 |    17    29.4 |      99  46.5 [ 37.0, 56.2]   +5.0
+bats                 3.9    6.3   11.6    9.2    17.5   18.5    4.5   1.5 |    15    53.3 |      66  56.1 [ 44.1, 67.4]   -3.0
+knight               7.7    8.1   13.7   11.8    15.8   18.5    2.0   1.2 |    15    66.7 |      92  53.3 [ 43.1, 63.1]   -1.6
+arrows              18.5   24.1   29.7    0.0    14.2   16.0    0.8   0.5 |    13    30.8 |      57  56.1 [ 43.3, 68.2]   -2.6
+skeletonarmy        14.2   17.6   20.4   15.6    14.2   13.6    1.0   0.7 |    11    54.5 |      97  60.8 [ 50.9, 69.9]   -9.0
+tesla                3.1    4.0    8.9    9.3    14.2   16.0    4.6   1.6 |    13    84.6 |      66  72.7 [ 61.0, 82.0]  -14.0
+goblinbarrel        10.7   11.0   13.5   14.0    11.7   12.3    1.1   0.9 |    10    50.0 |      90  56.7 [ 46.4, 66.4]   -4.6
+electrospirit       15.7   12.3    7.5    6.6    10.8   12.3    0.7   1.4 |    10    60.0 |      43  55.8 [ 41.1, 69.6]   -1.8
+cannon              11.3    9.2    8.7    6.9    10.8   11.1    1.0   1.2 |     9    55.6 |      43  60.5 [ 45.6, 73.6]   -3.8
+goblingang           7.1    8.4   11.5   10.4    10.8    7.4    1.5   0.9 |     6    33.3 |      64  48.4 [ 36.6, 60.4]   +2.0
+icespirit            9.4    7.9    9.9    9.3    10.8   13.6    1.1   1.1 |    11    63.6 |      49  57.1 [ 43.3, 70.0]   -2.8
+archer               1.9    2.4    5.2    5.2    10.8    9.9    5.8   2.1 |     8    75.0 |      36  69.4 [ 53.1, 82.0]   -6.4
+wizard               6.1    9.1   14.3   14.2    10.8    8.6    1.8   0.8 |     7    42.9 |      71  52.1 [ 40.7, 63.3]   -0.4
+pekka                7.6    7.2    6.7    7.1    10.0    8.6    1.3   1.5 |     7    14.3 |      60  43.3 [ 31.6, 55.9]   +4.9
+barblog             31.7   25.4   12.2    9.8     9.2    8.6    0.3   0.7 |     7    28.6 |      47  55.3 [ 41.2, 68.6]   -1.8
+minipekka            6.7   11.3   18.2   17.7     9.2    8.6    1.4   0.5 |     7    42.9 |      74  54.1 [ 42.8, 64.9]   -1.9
+axeman               2.4    3.4    7.8    7.7     9.2    7.4    3.8   1.2 |     6    66.7 |      47  51.1 [ 37.2, 64.7]   +0.2
+musketeer            4.8    5.2    7.7    8.3     8.3    7.4    1.7   1.1 |     6    50.0 |      39  43.6 [ 29.3, 59.0]   +3.1
+elixirgolem          1.9    3.7    6.3    8.2     8.3    8.6    4.4   1.3 |     7    71.4 |      38  39.5 [ 25.6, 55.3]   +4.6
+dartgoblin          10.3   10.9   12.0   10.9     8.3    8.6    0.8   0.7 |     7    42.9 |      70  54.3 [ 42.7, 65.4]   -1.9
+goldenknight         4.0    4.8    6.5    6.6     8.3    8.6    2.1   1.3 |     7    28.6 |      44  36.4 [ 23.8, 51.1]   +6.7
+electrodragon        8.6    7.4    4.8    5.1     8.3    8.6    1.0   1.8 |     7    42.9 |      36  47.2 [ 32.0, 63.0]   +1.6
+elitearcher          3.5    3.7    4.4    5.1     8.3    6.2    2.4   1.9 |     5    80.0 |      36  63.9 [ 47.6, 77.5]   -4.4
+electrogiant         1.3    1.6    2.1    4.2     7.5    7.4    5.8   3.6 |     6    16.7 |      27  33.3 [ 18.6, 52.2]   +4.9
+ronin                0.1    0.7    2.5    2.5     7.5    8.6   60.2   3.0 |     7    57.1 |      29  55.2 [ 37.5, 71.6]   -1.1
+rage                 3.9    4.9    8.3    0.0     7.5    9.9    1.9   0.9 |     8    75.0 |      25  64.0 [ 44.5, 79.8]   -3.1
+wallbreakers         6.5    5.8    6.3    6.5     6.7    2.5    1.0   1.1 |     2   100.0 |      28  71.4 [ 52.9, 84.7]   -5.6
+infernodragon       10.3   10.6    8.4    9.1     6.7    3.7    0.6   0.8 |     3   100.0 |      46  41.3 [ 28.3, 55.7]   +4.7
+firespirits          1.5    1.5    4.9    4.8     6.7    3.7    4.6   1.4 |     3   100.0 |      28  75.0 [ 56.6, 87.3]   -6.6
+bowler               4.8    4.8    5.4    5.5     6.7    6.2    1.4   1.2 |     5    80.0 |      35  48.6 [ 33.0, 64.4]   +1.0
+royalghost          12.6   10.7    5.3    5.1     6.7    7.4    0.5   1.3 |     6    66.7 |      34  58.8 [ 42.2, 73.6]   -2.5
+minisparkys          7.2    7.4    6.0    4.8     5.8    3.7    0.8   1.0 |     3    33.3 |      30  50.0 [ 33.2, 66.8]   +0.5
+princess            11.7    9.8    7.9    8.3     5.8    6.2    0.5   0.7 |     5    60.0 |      62  53.2 [ 41.0, 65.1]   -1.1
+bomber              11.8    9.7    5.5    4.9     5.8    3.7    0.5   1.1 |     3    66.7 |      31  51.6 [ 34.8, 68.0]   -0.0
+darkprince           6.7    6.6    6.4    6.4     5.8    4.9    0.9   0.9 |     4    75.0 |      34  55.9 [ 39.5, 71.1]   -1.5
+giantskeleton        4.7    5.3    5.5    5.6     5.8    6.2    1.2   1.1 |     5    20.0 |      30  43.3 [ 27.4, 60.8]   +2.5
+balloon             10.6   11.0   10.3    8.4     5.8    6.2    0.6   0.6 |     5    40.0 |      45  35.6 [ 23.2, 50.2]   +7.2
+tornado             17.1   13.8    8.3    0.0     5.8    6.2    0.3   0.7 |     5    60.0 |      15  60.0 [ 35.7, 80.2]   -1.3
+
+== live opponent PLAYS from cards a pool lacks (base card; exact form) and from cards the pool holds rarely
+  build    vs train   : 39276 plays; base card absent   0.0%; exact form absent   1.3%; base card in < 1% of pool draws   4.5%
+  build    vs train+B : 39276 plays; base card absent   0.0%; exact form absent   0.2%; base card in < 1% of pool draws   1.3%
+  build    vs d3      : 39276 plays; base card absent   0.0%; exact form absent   0.2%; base card in < 1% of pool draws   0.9%
+  last120  vs train   :  3151 plays; base card absent   0.0%; exact form absent   1.2%; base card in < 1% of pool draws   4.3%
+  last120  vs train+B :  3151 plays; base card absent   0.0%; exact form absent   0.8%; base card in < 1% of pool draws   2.0%
+  last120  vs d3      :  3151 plays; base card absent   0.0%; exact form absent   0.8%; base card in < 1% of pool draws   0.2%
+  cue      vs train   :  2116 plays; base card absent   0.0%; exact form absent   1.2%; base card in < 1% of pool draws   4.3%
+  cue      vs train+B :  2116 plays; base card absent   0.0%; exact form absent   0.7%; base card in < 1% of pool draws   1.9%
+  cue      vs d3      :  2116 plays; base card absent   0.0%; exact form absent   0.7%; base card in < 1% of pool draws   0.1%
+  cue_hi   vs train   :  1309 plays; base card absent   0.0%; exact form absent   1.1%; base card in < 1% of pool draws   3.4%
+  cue_hi   vs train+B :  1309 plays; base card absent   0.0%; exact form absent   0.6%; base card in < 1% of pool draws   2.1%
+  cue_hi   vs d3      :  1309 plays; base card absent   0.0%; exact form absent   0.6%; base card in < 1% of pool draws   0.2%
+  last120 plays whose exact form the TRAIN pool lacks (top 20): icewizard@hero 0.7%, angrybarbarians 0.5%, electrogiant@evo 0.1%
+  last120 plays whose exact form the D3 pool lacks (top 20): icewizard@hero 0.7%, electrogiant@evo 0.1%
+  last120 plays from base cards in < 1% of TRAIN draws (top 20): ronin 0.8% (train 0.12%), archerqueen 0.6% (train 0.83%), royaldelivery 0.6% (train 0.89%), speargoblins 0.5% (train 0.75%), bossbandit 0.4% (train 0.51%), battlehealer 0.3% (train 0.42%), clone 0.3% (train 0.55%), goblingiant 0.2% (train 0.98%), goblingiant@evo 0.2% (train 0.98%), mergemaiden 0.2% (train 0.95%), goblinmachine 0.2% (train 0.18%), mirror 0.1% (train 0.07%)
+
+== opponent tower level / tower troop / card levels (frames), vs live_levels.json (310 matches 10-15..10-17 09:57) and SIM L11
+  live_levels.json opp tower: {13: 1, 14: 15, 15: 159, 16: 135} (n 310)
+  cue      n 81: opp king level {14: 1, 15: 22, 16: 58}; princess slot {'PrincessTower': 69, 'DaggerDuchess': 4, 'Cannoneer': 5, 'ChefTower': 3} -> troop 14.8% [8.7, 24.1]
+           opp card levels (one reading per body, n 4932): 13: 0.6%, 14: 5.0%, 15: 32.5%, 16: 61.3%, 17: 0.6%
+  cue_hi   n 50: opp king level {15: 14, 16: 36}; princess slot {'PrincessTower': 42, 'ChefTower': 3, 'DaggerDuchess': 3, 'Cannoneer': 2} -> troop 16.0% [8.3, 28.5]
+           opp card levels (one reading per body, n 3136): 14: 3.9%, 15: 31.4%, 16: 63.3%, 17: 0.9%
+  last120  n 120: opp king level {14: 3, 15: 27, 16: 90}; princess slot {'PrincessTower': 107, 'ChefTower': 4, 'DaggerDuchess': 4, 'Cannoneer': 5} -> troop 10.8% [6.4, 17.7]
+           opp card levels (one reading per body, n 7731): 11: 1.7%, 14: 4.0%, 15: 32.8%, 16: 60.2%, 17: 0.6%
+
+== DRIFT x COST per archetype: live share (last120) - train share, matchup win (since 10-15, both Marks), matches lost per 100 vs an average opponent
+  royal_giant_monk  live   0.0% train   1.3% (xinf) | n    2 win 100.0% [34.2,100.0] | lost/100 vs avg -0.00
+  royal_giant       live   2.5% train   7.8% (x3.13) | n   27 win  37.0% [21.5,55.8] | lost/100 vs avg +0.36
+  lava_hound        live   0.8% train   9.1% (x10.94) | n   16 win  25.0% [10.2,49.5] | lost/100 vs avg +0.22
+  golem             live   2.5% train  21.7% (x8.68) | n   22 win  50.0% [30.7,69.3] | lost/100 vs avg +0.04
+  pekka_bridge      live   1.7% train   6.8% (x4.06) | n   15 win  46.7% [24.8,69.9] | lost/100 vs avg +0.08
+  hyperbait         live   5.0% train  13.3% (x2.65) | n   46 win  60.9% [46.5,73.6] | lost/100 vs avg -0.47
+  weak_other        live  47.5% train  22.2% (x0.47) | n  235 win  49.8% [43.4,56.1] | lost/100 vs avg +0.83
+  other             live  40.0% train  17.8% (x0.44) | n  225 win  55.1% [48.6,61.5] | lost/100 vs avg -1.43

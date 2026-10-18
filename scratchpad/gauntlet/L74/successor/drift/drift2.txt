@@ -1,0 +1,95 @@
+== same-method opponent drift (all three windows = frame logs): u250 window vs CXXXVIII windows; train / d3 for reference
+  u250: n 292, trophies-before median 12375, win 51.4%
+  cue: n 81, trophies-before median 13000, win 53.1%
+  cue_hi: n 50, trophies-before median 13033, win 46.0%
+arch               train     d3 u250win    cue cue_hi
+royal_giant_monk     1.3    1.5     0.3    0.0    0.0
+royal_giant          7.8    2.6     5.8    2.5    4.0
+lava_hound           9.1    2.2     3.8    1.2    0.0
+golem               21.7    5.6     3.8    2.5    2.0
+pekka_bridge         6.8    2.0     2.1    0.0    0.0
+hyperbait           13.3    8.2     8.2    6.2    8.0
+weak_other          22.2   45.0    37.3   45.7   44.0
+other               17.8   32.8    38.7   42.0   42.0
+
+card (troops/buildings)   train     d3 u250win    cue cue_hi cue/u250 cue/train cue/d3
+valkyrie                   10.1   22.2    19.2   28.4   26.0      1.5       2.8    1.3
+witch                       3.2   18.5    26.4   28.4   28.0      1.1       8.9    1.5
+megaknight                  1.8   20.2    16.1   23.5   28.0      1.5      12.9    1.2
+skeletons                  19.4   13.2    12.3   23.5   22.0      1.9       1.2    1.8
+firecracker                 2.5   15.3    16.4   22.2   16.0      1.4       8.8    1.5
+hogrider                    6.8   17.7    16.8   21.0   20.0      1.3       3.1    1.2
+bats                        3.9   11.6    10.6   18.5   20.0      1.7       4.8    1.6
+knight                      7.7   13.7    15.8   18.5   22.0      1.2       2.4    1.4
+tesla                       3.1    8.9    12.0   16.0   16.0      1.3       5.3    1.8
+skeletonarmy               14.2   20.4    18.5   13.6   18.0      0.7       1.0    0.7
+icespirit                   9.4    9.9     7.2   13.6   14.0      1.9       1.4    1.4
+electrospirit              15.7    7.5     7.9   12.3   16.0      1.6       0.8    1.6
+cannon                     11.3    8.7     7.2   11.1   10.0      1.5       1.0    1.3
+archer                      1.9    5.2     5.1    9.9   10.0      1.9       5.3    1.9
+wizard                      6.1   14.3    11.3    8.6   10.0      0.8       1.4    0.6
+goldenknight                4.0    6.5     8.9    8.6   10.0      1.0       2.1    1.3
+pekka                       7.6    6.7     8.9    8.6    4.0      1.0       1.1    1.3
+elixirgolem                 1.9    6.3     6.8    8.6   12.0      1.3       4.6    1.4
+dartgoblin                 10.3   12.0    13.7    8.6   12.0      0.6       0.8    0.7
+ronin                       0.1    2.5     2.7    8.6   10.0      3.2      69.4    3.5
+minipekka                   6.7   18.2    12.0    8.6   10.0      0.7       1.3    0.5
+electrodragon               8.6    4.8     6.2    8.6    8.0      1.4       1.0    1.8
+skeletonwarriors            3.1    6.1     2.1    7.4    2.0      3.6       2.4    1.2
+electrogiant                1.3    2.1     3.8    7.4    8.0      2.0       5.7    3.6
+xbow                        1.1    1.7     2.7    7.4   10.0      2.7       6.5    4.3
+electrowizard               8.6   10.2     7.9    7.4    6.0      0.9       0.9    0.7
+musketeer                   4.8    7.7     4.8    7.4   12.0      1.5       1.6    1.0
+royalghost                 12.6    5.3     3.4    7.4    6.0      2.2       0.6    1.4
+goblingang                  7.1   11.5    10.3    7.4    6.0      0.7       1.0    0.6
+axeman                      2.4    7.8     6.5    7.4    8.0      1.1       3.1    1.0
+ramrider                    1.0    2.1     1.7    6.2    8.0      3.6       5.9    2.9
+archerqueen                 0.8    2.8     2.4    6.2    6.0      2.6       7.5    2.2
+royalhogs                   3.9    5.1     4.5    6.2    8.0      1.4       1.6    1.2
+bowler                      4.8    5.4     4.8    6.2    4.0      1.3       1.3    1.1
+giantskeleton               4.7    5.5     4.5    6.2    8.0      1.4       1.3    1.1
+princess                   11.7    7.9    12.3    6.2    4.0      0.5       0.5    0.8
+balloon                    10.6   10.3     8.9    6.2    8.0      0.7       0.6    0.6
+elitearcher                 3.5    4.4     4.8    6.2    4.0      1.3       1.8    1.4
+skeletondragons            14.4    2.7     2.4    4.9    4.0      2.1       0.3    1.8
+ragebarbarian               6.5    6.2     6.2    4.9    6.0      0.8       0.8    0.8
+babydragon                  8.6    8.5     7.9    4.9    4.0      0.6       0.6    0.6
+angrybarbarians            24.9   11.7     5.8    4.9    6.0      0.8       0.2    0.4
+darkprince                  6.7    6.4     5.8    4.9    2.0      0.8       0.7    0.8
+firespirithut               5.2    4.1     3.8    4.9    2.0      1.3       1.0    1.2
+firespirits                 1.5    4.9     6.5    3.7    4.0      0.6       2.5    0.8
+icewizard                   2.3    3.3     6.8    3.7    2.0      0.5       1.6    1.1
+miner                       7.0    8.1     7.2    3.7    4.0      0.5       0.5    0.5
+
+== win rate by the opponent's KING TOWER LEVEL and tower troop (first frame; all matches since 10-15 with frames)
+  opp king level 13: n    1 win 100.0% [20.7, 100.0]
+  opp king level 14: n   16 win  62.5% [38.6, 81.5]
+  opp king level 15: n  173 win  52.0% [44.6, 59.3]
+  opp king level 16: n  241 win  50.2% [43.9, 56.5]
+  opp princess: n  399 win  52.6% [47.7, 57.5]
+  opp troop   : n   32 win  37.5% [22.9, 54.7]
+  trophies lt12500    : n  234 opp king level L14 4.3%, L15 52.1%, L16 43.6%
+  trophies 12500-12799: n  147 opp king level L13 0.7%, L14 4.1%, L15 25.2%, L16 70.1%
+  trophies ge12800    : n   50 opp king level L15 28.0%, L16 72.0%
+  CXXIV    vs opp king L15: n  128 win  53.9% [45.3, 62.3]
+  CXXIV    vs opp king L16: n  150 win  48.7% [40.8, 56.6]
+  CXXXVIII vs opp king L15: n   22 win  40.9% [23.3, 61.3]
+  CXXXVIII vs opp king L16: n   58 win  56.9% [44.1, 68.8]
+
+== per-card drift x cost (troops/buildings): u = cue-window presence - train presence; cost = win-rate gap when present (both Marks since 10-15); product = matches lost per 100 that the card's under-representation touches
+  megaknight        under-rep +21.6 pp | n  103 win  42.7% [33.6, 52.4] | product +1.91
+  witch             under-rep +25.2 pp | n  147 win  44.9% [37.1, 53.0] | product +1.67
+  firecracker       under-rep +19.7 pp | n   93 win  44.1% [34.4, 54.2] | product +1.47
+  electrogiant      under-rep  +6.1 pp | n   27 win  33.3% [18.6, 52.2] | product +1.11
+  elixirgolem       under-rep  +6.8 pp | n   38 win  39.5% [25.6, 55.3] | product +0.81
+  wallbreakers      under-rep  -4.0 pp | n   28 win  71.4% [52.9, 84.7] | product +0.80
+  hogrider          under-rep +14.2 pp | n   99 win  46.5% [37.0, 56.2] | product +0.72
+  goldenknight      under-rep  +4.6 pp | n   44 win  36.4% [23.8, 51.1] | product +0.70
+  royalghost        under-rep  -5.2 pp | n   34 win  58.8% [42.2, 73.6] | product +0.38
+  miner             under-rep  -3.3 pp | n   34 win  58.8% [42.2, 73.6] | product +0.24
+  bossbandit        under-rep  +2.0 pp | n   30 win  40.0% [24.6, 57.7] | product +0.23
+  musketeer         under-rep  +2.6 pp | n   39 win  43.6% [29.3, 59.0] | product +0.21
+  electrospirit     under-rep  -3.3 pp | n   43 win  55.8% [41.1, 69.6] | product +0.14
+  giantskeleton     under-rep  +1.4 pp | n   30 win  43.3% [27.4, 60.8] | product +0.12
+  princess          under-rep  -5.6 pp | n   62 win  53.2% [41.0, 65.1] | product +0.09
+  (overall win since 10-15 51.5%, n 588)

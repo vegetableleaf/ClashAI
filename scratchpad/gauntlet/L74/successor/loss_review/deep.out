@@ -1,0 +1,65 @@
+== bands: n | win | opp card level mean [95% CI] | matches with opp mean level >= 16 | opp towers L16 | Hog share | OT share | OT win | hours
+  CXXIV < 12,500        84 | 54.8% [44.1%, 65.0%]   | 15.38 [15.26, 15.49] | 12% | 46% | 20% | 52% | 61.4% [46.6%, 74.3%] | 0042-0553
+  CXXIV >= 12,500      116 | 48.3% [39.4%, 57.3%]   | 15.50 [15.42, 15.59] | 20% | 70% | 19% | 42% | 61.2% [47.2%, 73.6%] | 0558-1324
+  CXXXVIII < 13,000     37 | 70.3% [54.2%, 82.5%]   | 15.55 [15.41, 15.68] | 30% | 68% | 24% | 49% | 83.3% [60.8%, 94.2%] | 1329-1622
+  CXXXVIII >= 13,000    39 | 35.9% [22.7%, 51.6%]   | 15.54 [15.43, 15.66] | 26% | 72% | 31% | 62% | 20.8% [9.2%, 40.5%] | 1626-2035
+
+== win rate by opponent mean card level (both Marks pooled, then per Mark)
+  < 15.25              both      n  88 win 61.4% [50.9%, 70.9%]; OT share 50%
+  < 15.25              CXXIV     n  67 win 58.2% [46.3%, 69.3%]; OT share 48%
+  < 15.25              CXXXVIII  n  21 win 71.4% [50.0%, 86.2%]; OT share 57%
+  15.25-15.75          both      n  79 win 59.5% [48.5%, 69.6%]; OT share 53%
+  15.25-15.75          CXXIV     n  55 win 56.4% [43.3%, 68.6%]; OT share 53%
+  15.25-15.75          CXXXVIII  n  24 win 66.7% [46.7%, 82.0%]; OT share 54%
+  15.75-16.0 (excl.)   both      n  54 win 42.6% [30.3%, 55.8%]; OT share 43%
+  15.75-16.0 (excl.)   CXXIV     n  44 win 43.2% [29.7%, 57.8%]; OT share 43%
+  15.75-16.0 (excl.)   CXXXVIII  n  10 win 40.0% [16.8%, 68.7%]; OT share 40%
+  >= 16.0              both      n  54 win 31.5% [20.7%, 44.7%]; OT share 48%
+  >= 16.0              CXXIV     n  33 win 36.4% [22.2%, 53.4%]; OT share 39%
+  >= 16.0              CXXXVIII  n  21 win 23.8% [10.6%, 45.1%]; OT share 62%
+
+== logistic regression of WIN (276 matches): what remains of the >= 13,000 drop after measured opponent strength
+  model: mark + ge13k
+    intercept                          +0.040 +- 0.277  (odds x1.04; p~0.777)
+    Mark CXXXVIII (vs CXXIV)           +0.820 +- 0.758  (odds x2.27; p~0.034)
+    start >= 13,000                    -1.440 +- 0.962  (odds x0.24; p~0.003)
+  model: mark + ge13k + lv + L16 + hog
+    intercept                          +0.076 +- 0.456  (odds x1.08; p~0.743)
+    Mark CXXXVIII (vs CXXIV)           +0.956 +- 0.778  (odds x2.60; p~0.016)
+    start >= 13,000                    -1.488 +- 0.981  (odds x0.23; p~0.003)
+    opp card level (+1 = one level)    -0.934 +- 0.563  (odds x0.39; p~0.001)
+    opp towers L16                     -0.046 +- 0.521  (odds x0.95; p~0.862)
+    Hog deck                           -0.219 +- 0.610  (odds x0.80; p~0.483)
+
+== Hog matchup drilldown
+  CXXIV last 200     n  39 win 56.4% [41.0%, 70.7%]; OT 59%; opp lv 15.52; plays/match Tornado 2.03 (hit something 82%) Tesla 5.33 Knight 6.64 Skeletons 6.92 IW 7.18 Log 5.92 Rocket 0.95 X-Bow 4.41 (locked 3.36, defensive 1.05)
+      Hog pushes 99 (2.5/match): lost-episode 40%, own elixir median 2.9, met < 4 66%, answered <= 2 s 55%, HP lost/push 1282; first answer [('Knight', 20), ('Skeletons', 19), ('IceWizard', 15), ('Log', 14), ('Xbow', 14)]
+      opp cards (share of matches): HogRider 79%, Witch 38%, Firecracker 38%, Arrows 28%, Valkyrie 28%, Log 26%, SkeletonArmy 23%, MegaKnight 21%, MiniPekka 21%, RoyalHogs 21%
+      tower HP taken 1x/2x/OT 3040/1786/1277; dealt 1980/1184/2253
+  CXXXVIII < 13k     n   9 win 44.4% [18.9%, 73.3%]; OT 67%; opp lv 15.56; plays/match Tornado 0.78 (hit something 100%) Tesla 5.67 Knight 6.22 Skeletons 6.33 IW 6.67 Log 5.56 Rocket 0.56 X-Bow 3.44 (locked 3.00, defensive 0.44)
+      Hog pushes 20 (2.2/match): lost-episode 30%, own elixir median 3.4, met < 4 65%, answered <= 2 s 45%, HP lost/push 932; first answer [('IceWizard', 6), ('Log', 4), ('Knight', 3), ('Tesla', 1), ('Tornado', 1)]
+      opp cards (share of matches): HogRider 89%, Firecracker 67%, Cannon 33%, Log 33%, Witch 33%, Valkyrie 33%, Arrows 33%, IceSpirits 22%, ArcherQueen 22%, Pekka 22%
+      tower HP taken 1x/2x/OT 2406/1592/1150; dealt 2422/1141/2283
+  CXXXVIII >= 13k    n  12 win 16.7% [4.7%, 44.8%]; OT 75%; opp lv 15.43; plays/match Tornado 1.75 (hit something 90%) Tesla 5.92 Knight 7.75 Skeletons 7.58 IW 7.75 Log 6.83 Rocket 0.25 X-Bow 4.67 (locked 3.67, defensive 1.00)
+      Hog pushes 34 (2.8/match): lost-episode 47%, own elixir median 3.3, met < 4 65%, answered <= 2 s 59%, HP lost/push 1618; first answer [('Knight', 7), ('Tesla', 6), ('Log', 6), ('IceWizard', 6), ('Xbow', 3)]
+      opp cards (share of matches): HogRider 75%, MegaKnight 42%, Log 42%, Valkyrie 33%, Arrows 33%, IceSpirits 33%, Fireball 33%, Witch 25%, RoyalHogs 25%, Cannon 25%
+      tower HP taken 1x/2x/OT 3238/1906/2722; dealt 2344/1369/1902
+  CXXIV non-Hog      n 161 win 49.7% [42.1%, 57.3%]; OT 43%; opp lv 15.43; plays/match Tornado 1.88 (hit something 86%) Tesla 4.34 Knight 5.80 Skeletons 6.20 IW 6.09 Log 4.90 Rocket 0.75 X-Bow 3.66 (locked 2.90, defensive 0.76)
+      Hog pushes 22 (0.1/match): lost-episode 64%, own elixir median 1.4, met < 4 86%, answered <= 2 s 45%, HP lost/push 2931; first answer [('Knight', 8), ('Skeletons', 3), ('IceWizard', 3), ('Tornado', 3), ('Tesla', 1)]
+      opp cards (share of matches): Witch 24%, Knight 20%, GoblinBarrel 19%, SkeletonArmy 19%, Valkyrie 17%, Fireball 16%, Log 16%, Tesla 14%, Arrows 14%, Firecracker 13%
+      tower HP taken 1x/2x/OT 3662/1965/1136; dealt 2636/2015/1341
+  CXXXVIII non-Hog   n  55 win 61.8% [48.6%, 73.5%]; OT 49%; opp lv 15.57; plays/match Tornado 1.02 (hit something 91%) Tesla 4.25 Knight 5.33 Skeletons 5.58 IW 5.55 Log 4.80 Rocket 0.65 X-Bow 3.49 (locked 3.04, defensive 0.45)
+      opp cards (share of matches): Witch 29%, Valkyrie 27%, Fireball 24%, Knight 22%, Log 20%, MegaKnight 18%, Tesla 18%, Firecracker 16%, SkeletonArmy 15%, ElectroSpirit 15%
+      tower HP taken 1x/2x/OT 3107/1649/664; dealt 3192/2179/1129
+
+== overtime
+  CXXIV < 12,500       OT 44, win 61.4% [46.6%, 74.3%]; OT losses by class {'Hog (incl.': 5, 'X-Bow/Mort': 2, 'Golem': 2, 'Ram/Bridge': 2, 'Balloon': 1}; OT tower HP taken/dealt per OT match 1828/2672; elixir at play in OT 5.47; OT locked X-Bows/match 1.39; OT Rockets/match 0.84
+  CXXIV >= 12,500      OT 49, win 61.2% [47.2%, 73.6%]; OT losses by class {'Giant (inc': 4, 'Ram/Bridge': 4, 'X-Bow/Mort': 3, 'Hog (incl.': 2, 'P.E.K.K.A': 1}; OT tower HP taken/dealt per OT match 2576/3178; elixir at play in OT 5.41; OT locked X-Bows/match 1.43; OT Rockets/match 0.92
+  CXXXVIII < 13,000    OT 18, win 83.3% [60.8%, 94.2%]; OT losses by class {'Hog (incl.': 3}; OT tower HP taken/dealt per OT match 977/2945; elixir at play in OT 5.66; OT locked X-Bows/match 1.44; OT Rockets/match 0.39
+  CXXXVIII >= 13,000   OT 24, win 20.8% [9.2%, 40.5%]; OT losses by class {'Hog (incl.': 9, 'Ram/Bridge': 3, 'Balloon': 2, 'Giant (inc': 2, 'Other/no c': 1}; OT tower HP taken/dealt per OT match 2332/1917; elixir at play in OT 5.37; OT locked X-Bows/match 1.12; OT Rockets/match 0.42
+
+== >= 13,000 trophies at stake (flip value 58 = +29.7 win, -28.5 mean unfloored loss)
+  Hog decks (ref: CXXIV live vs Hog 56.4%)             12 matches, win 2/12; at the reference win rate 56.4%: +7.09 trophies/match
+  Hog decks (ref: non-Hog >= 13k)                      12 matches, win 2/12; at the reference win rate 44.4%: +4.96 trophies/match
+  overtime matches (ref: CXXIV OT win 61.3%)           24 matches, win 5/24; at the reference win rate 61.3%: +14.44 trophies/match
+  opp mean card level >= 16 (ref: CXXXVIII < 16 overall) 10 matches, win 1/10; at the reference win rate 63.6%: +7.98 trophies/match

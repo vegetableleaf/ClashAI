@@ -1,0 +1,298 @@
+
+== CXXIV_last200: 200 matches 20261017_004246..20261017_132435, win 51.0% [44.1%, 57.8%], trophies/match +1.81, win +29.6 / loss -27.1 (break-even win rate 47.8%), trophies 12082..12802
+  by trophy band at match start: class | n (share) | win [95% CI] | trophies/match | net trophies per match of ALL matches | lost vs the rest (per match of all)
+    12000-12249                  |  24 (12.0%) | 58.3% [38.8%, 75.5%]   |   +5.2 |  +0.63 |  -0.57
+    12250-12499                  |  60 (30.0%) | 53.3% [40.9%, 65.4%]   |   +1.9 |  +0.57 |  -0.57
+    12500-12749                  | 112 (56.0%) | 49.1% [40.0%, 58.2%]   |   +1.7 |  +0.93 |  +1.37
+    12750-12999                  |   4 ( 2.0%) | 25.0% [4.6%, 69.9%]    |  -15.8 |  -0.32 |  +0.30
+  by archetype (live_eval.classify): class | n (share) | win [95% CI] | trophies/match | net trophies per match of ALL matches | lost vs the rest (per match of all)
+    Hog (incl. Royal Hogs)       |  39 (19.5%) | 56.4% [41.0%, 70.7%]   |   +3.8 |  +0.74 |  -0.74
+    Ram/Bridge spam              |  22 (11.0%) | 50.0% [30.7%, 69.3%]   |   +1.6 |  +0.18 |  +0.07
+    Spawners (Witch/huts)        |  16 ( 8.0%) | 75.0% [50.5%, 89.8%]   |  +16.1 |  +1.28 |  -1.18
+    Giant (incl. Goblin/Electro) |  16 ( 8.0%) | 37.5% [18.5%, 61.4%]   |   -5.7 |  -0.46 |  +0.67
+    X-Bow/Mortar                 |  16 ( 8.0%) | 50.0% [28.0%, 72.0%]   |   +0.4 |  +0.04 |  +0.05
+    Golem                        |  16 ( 8.0%) | 31.2% [14.2%, 55.6%]   |   -8.9 |  -0.71 |  +0.97
+    Balloon                      |  12 ( 6.0%) | 50.0% [25.4%, 74.6%]   |   +3.5 |  +0.21 |  +0.04
+    Other/no clear wincon        |  12 ( 6.0%) | 83.3% [55.2%, 95.3%]   |  +19.7 |  +1.18 |  -1.17
+    Mega Knight                  |  11 ( 5.5%) | 45.5% [21.3%, 72.0%]   |   -1.7 |  -0.10 |  +0.18
+    Graveyard                    |   9 ( 4.5%) | 55.6% [26.7%, 81.1%]   |   +3.6 |  +0.16 |  -0.12
+    Royal Giant                  |   8 ( 4.0%) | 25.0% [7.1%, 59.1%]    |  -12.9 |  -0.52 |  +0.61
+    Lava Hound                   |   8 ( 4.0%) | 37.5% [13.7%, 69.4%]   |   -7.0 |  -0.28 |  +0.32
+    Bait                         |   7 ( 3.5%) | 71.4% [35.9%, 91.8%]   |  +15.7 |  +0.55 |  -0.42
+    P.E.K.K.A                    |   4 ( 2.0%) | 25.0% [4.6%, 69.9%]    |  -14.8 |  -0.29 |  +0.30
+    Miner                        |   4 ( 2.0%) | 25.0% [4.6%, 69.9%]    |   -8.8 |  -0.17 |  +0.30
+  owner's X-Bow-unfavourable six: class | n (share) | win [95% CI] | trophies/match | net trophies per match of ALL matches | lost vs the rest (per match of all)
+    unfavourable                 |  50 (25.0%) | 46.0% [33.0%, 59.6%]   |   -1.3 |  -0.34 |  +0.95
+    other                        | 150 (75.0%) | 52.7% [44.7%, 60.5%]   |   +2.9 |  +2.15 |  -2.84
+  opponent king-tower level {14: 10, 15: 69, 16: 120, None: 1}; mean opp card level 15.45 over 199 matches (share of opp units at >= 16: 56%)
+    opp towers L14: 60.0% [31.3%, 83.2%], n 10
+    opp towers L15: 55.1% [43.4%, 66.2%], n 69
+    opp towers L16: 47.5% [38.8%, 56.4%], n 120
+    opp card level < 15.5: 59.8% [49.8%, 69.0%], n 97
+    15.5-16.0: 44.9% [33.8%, 56.6%], n 69
+    >= 16.0: 36.4% [22.2%, 53.4%], n 33
+  losses 98: 0 crowns scored 82, three-crowned 10; score lines {(0, 1): 49, (0, 2): 14, (0, 0): 11, (1, 2): 10, (0, 3): 8, (1, 1): 4}; opp first crown in {'OT': 18, '2x': 15, '1x': 44, 'bot first': 10, 'none': 11}
+  overtime: 93/200 (46%) reach OT, OT win 61.3% [51.1%, 70.6%]; losses decided in OT 36/98
+  tower HP taken per match (losses): left 3261, right 3530, king 2468; by phase 1x 5140/2356, 2x 2976/1156, OT 1714/1131 (taken/dealt)
+  tower HP taken per match (wins): left 1479, right 1768, king 365; by phase 1x 2003/2653, 2x 966/2489, OT 742/1836 (taken/dealt)
+  losses where a princess fell: first fallen on my X-Bow lane 35, on the OPPOSITE lane 48, no locked X-Bow 4
+  pushes 728 (3.6/match): elixir at push start median 3.0, met < 4 65%; lost-episode rate < 4 43% / >= 4 27%; air in push 38% (lost 45% vs 33%); opp public lead >= 3 28%; cheap plays at < 5 elixir 4.05/min; push size median 10.0 elixir; lost-episode rate 38%
+  X-Bows 3.81/match, locked 2.99/match; locked at opp counter >= 7 56%; dealt in 20 s 1419 HP; dud (< 300 HP) 33%; life 16.7 s
+  late (2x + OT) X-Bow-unfavourable (owner six): 50 matches, win 46.0% [33.0%, 59.6%]; locked X-Bows 1.60/match, tower Rockets 0.30, all Rockets 0.38
+  late (2x + OT) other: 150 matches, win 52.7% [44.7%, 60.5%]; locked X-Bows 1.93/match, tower Rockets 0.57, all Rockets 0.75
+  losses ending with the enemy's lowest tower <= 497 HP (one Rocket): 9/98; final 20 s Rocket in hand 78%, in hand AND >= 6 elixir 7%
+  Rocket: 0.79/match, on nothing 82%, on a tower 76%
+  Tornado: 1.91/match, on nothing 15%
+  Log: 5.10/match, on nothing 9%
+  Hero IW ability presses 1.33/match (confirmed 1.33); Tornado first answer 7.4% of pushes
+  report.py factors -> C:/Users/benpe/ClashBot/scratchpad/gauntlet/L74/successor/loss_review/report_CXXIV_last200.md
+     1 (a) Cheap low-elixir plays above the median (3.9/min at < 5 elixir)        | L 74/98 (76%) | W 25/102 (25%) | L-W 51.0% [37.9%, 61.4%]; WR with/without 25% / 76% | wins 50.5 | +14.33 trophies/match ceiling
+     2 (a) Unconfirmed play (>= 1 in a match)                                     | L 79/98 (81%) | W 57/102 (56%) | L-W 24.7% [11.9%, 36.4%]; WR with/without 42% / 70% | wins 38.6 | +10.95 trophies/match ceiling
+     3 (a) Low elixir when a push arrives (< 4)                                   | L 263/380 eps (69%) | W 208/348 eps (60%) | MH P(lost episode) 14.0% [5.0%, 21.1%] | wins 34.9 | +9.90 trophies/match ceiling
+     4 (a) Air unit in the push                                                   | L 156/380 eps (41%) | W 124/348 eps (36%) | MH P(lost episode) 12.3% [2.4%, 22.1%] | wins 24.1 | +6.84 trophies/match ceiling
+     5 (a) Locked X-Bow placed into a full opponent elixir bar (public counter >= | L 136/250 X-Bows | W 197/348 | MH dealt20 -278 HP [-589, -17]; MH dud rate 7.9% [-1.9%, 17.6%] | wins 10.5 | +2.98 trophies/match ceiling
+     6 (a) Lost while the enemy's lowest tower was within one Rocket (<= 497 HP)  | L 9/98 (9%) | W n/a (end state of losses) | by ending: regulation end (Rocket -> tie -> OT) 2, OT sudden death 5,  | wins 7.2 | +2.04 trophies/match ceiling
+     7 (a) Tornado as the first answer                                            | L 39/380 eps (10%) | W 15/348 eps (4%) | MH P(lost episode) 24.3% [7.1%, 38.0%] | wins 2.0 | +0.57 trophies/match ceiling
+     8 (c) Gate below threshold >= 3 s while threatened                           | L 73/380 eps (19%) | W 124/348 eps (36%) | MH P(lost episode) -11.2% [-19.7%, -3.5%] | wins 0.0 | +0.00 trophies/match ceiling
+     9 (c) Elixir wasted at the cap >= 5 in a match                               | L 7/98 (7%) | W 29/102 (28%) | L-W -21.3% [-31.4%, -10.9%]; WR with/without 81% / 45% | wins 0.0 | +0.00 trophies/match ceiling
+    10 (c) Gate freeze >= 10 s at >= 9.5 elixir                                   | L 2/98 (2%) | W 9/102 (9%) | L-W -6.8% [-14.0%, -0.2%]; WR with/without 82% / 49% | wins 0.0 | +0.00 trophies/match ceiling
+    11 (c) Lethal Rocket window not used (>= 3 s)                                 | L 1/98 (1%) | W 10/102 (10%) | L-W -8.8% [-16.1%, -2.5%]; WR with/without 91% / 49% | wins 0.0 | +0.00 trophies/match ceiling
+    12 (c) CPU starvation (>= 3 warnings)                                         | L 18/98 (18%) | W 33/102 (32%) | L-W -14.0% [-25.5%, -1.9%]; WR with/without 65% / 46% | wins 0.0 | +0.00 trophies/match ceiling
+    13 (b) X-Bow committed <= 10 s before a push                                  | L 59/380 eps (16%) | W 67/348 eps (19%) | MH P(lost episode) -4.9% [-14.0%, 4.2%] | wins - | -
+    14 (b) Offence spending before a push (>= 3 elixir)                           | L 68/380 eps (18%) | W 65/348 eps (19%) | MH P(lost episode) 1.7% [-7.7%, 11.0%] | wins - | -
+    15 (b) Opponent public elixir lead >= 3 at push start                         | L 123/380 eps (32%) | W 80/348 eps (23%) | MH P(lost episode) 0.5% [-10.6%, 10.7%] | wins - | -
+    16 (b) Slow first answer (> 2 s)                                              | L 141/380 eps (37%) | W 166/348 eps (48%) | MH P(lost episode) 3.3% [-4.0%, 10.1%] | wins - | -
+    17 (b) Heavy spending in the 10 s before a push (>= 7)                        | L 185/380 eps (49%) | W 207/348 eps (59%) | MH P(lost episode) -3.0% [-11.0%, 4.5%] | wins - | -
+    18 (b) Sat at full elixir just before a push                                  | L 7/380 eps (2%) | W 16/348 eps (5%) | MH P(lost episode) -6.5% [-19.5%, 8.3%] | wins - | -
+    19 (b) Opponent archetype: Golem                                              | L 11/98 (11%) | W 5/102 (5%) | L-W 6.3% [-1.4%, 14.6%]; WR with/without 31% / 53% | wins - | -
+    20 (b) Opponent archetype: Lava Hound                                         | L 5/98 (5%) | W 3/102 (3%) | L-W 2.2% [-3.9%, 8.7%]; WR with/without 38% / 52% | wins - | -
+    21 (b) Opponent archetype: Balloon                                            | L 6/98 (6%) | W 6/102 (6%) | L-W 0.2% [-6.9%, 7.6%]; WR with/without 50% / 51% | wins - | -
+    22 (b) Log or Tornado on nothing (>= 2 in a match)                            | L 19/98 (19%) | W 13/102 (13%) | L-W 6.6% [-3.6%, 16.9%]; WR with/without 41% / 53% | wins - | -
+    23 (b) Placement error >= 1 tile                                              | L 0/98 (0%) | W 2/102 (2%) | L-W -2.0% [-6.9%, 2.1%]; WR with/without 100% / 51% | wins - | -
+    24 (b) Rocket held >= 90% of the match                                        | L 65/98 (66%) | W 61/102 (60%) | L-W 6.5% [-6.8%, 19.5%]; WR with/without 48% / 55% | wins - | -
+    25 (b) Hero Ice Wizard ability pressed >= 3 times                             | L 13/98 (13%) | W 18/102 (18%) | L-W -4.4% [-14.4%, 5.8%]; WR with/without 58% / 50% | wins - | -
+
+== CXXXVIII_all: 76 matches 20261017_132941..20261017_203510, win 52.6% [41.6%, 63.5%], trophies/match +4.51, win +29.7 / loss -23.5 (break-even win rate 44.1%), trophies 12558..13147
+  by trophy band at match start: class | n (share) | win [95% CI] | trophies/match | net trophies per match of ALL matches | lost vs the rest (per match of all)
+    12500-12749                  |  29 (38.2%) | 65.5% [47.3%, 80.1%]   |   +9.1 |  +3.46 |  -4.23
+    12750-12999                  |   8 (10.5%) | 87.5% [52.9%, 97.8%]   |  +22.1 |  +2.33 |  -2.18
+    13000-13249                  |  39 (51.3%) | 35.9% [22.7%, 51.6%]   |   -2.5 |  -1.28 |  +9.38
+  by archetype (live_eval.classify): class | n (share) | win [95% CI] | trophies/match | net trophies per match of ALL matches | lost vs the rest (per match of all)
+    Hog (incl. Royal Hogs)       |  21 (27.6%) | 28.6% [13.8%, 50.0%]   |   -8.7 |  -2.39 |  +4.88
+    Giant (incl. Goblin/Electro) |  10 (13.2%) | 40.0% [16.8%, 68.7%]   |   -1.3 |  -0.17 |  +1.02
+    Golem                        |   8 (10.5%) | 62.5% [30.6%, 86.3%]   |  +11.8 |  +1.24 |  -0.62
+    Ram/Bridge spam              |   7 ( 9.2%) | 28.6% [8.2%, 64.1%]    |   -8.4 |  -0.78 |  +1.30
+    X-Bow/Mortar                 |   7 ( 9.2%) | 100.0% [64.6%, 100.0%] |  +30.0 |  +2.76 |  -2.56
+    Spawners (Witch/huts)        |   7 ( 9.2%) | 85.7% [48.7%, 97.4%]   |  +21.6 |  +1.99 |  -1.78
+    Other/no clear wincon        |   4 ( 5.3%) | 75.0% [30.1%, 95.4%]   |  +21.8 |  +1.14 |  -0.66
+    Mega Knight                  |   3 ( 3.9%) | 66.7% [20.8%, 93.9%]   |   +9.3 |  +0.37 |  -0.31
+    Graveyard                    |   3 ( 3.9%) | 100.0% [43.8%, 100.0%] |  +30.0 |  +1.18 |  -1.04
+    Balloon                      |   3 ( 3.9%) | 0.0% [0.0%, 56.2%]     |  -30.3 |  -1.20 |  +1.15
+    Lava Hound                   |   1 ( 1.3%) | 0.0% [0.0%, 79.3%]     |  -32.0 |  -0.42 |  +0.37
+    Bait                         |   1 ( 1.3%) | 100.0% [20.7%, 100.0%] |  +30.0 |  +0.39 |  -0.34
+    Royal Giant                  |   1 ( 1.3%) | 100.0% [20.7%, 100.0%] |  +30.0 |  +0.39 |  -0.34
+  owner's X-Bow-unfavourable six: class | n (share) | win [95% CI] | trophies/match | net trophies per match of ALL matches | lost vs the rest (per match of all)
+    unfavourable                 |   9 (11.8%) | 44.4% [18.9%, 73.3%]   |   +0.4 |  +0.05 |  +0.58
+    other                        |  67 (88.2%) | 53.7% [41.9%, 65.1%]   |   +5.1 |  +4.46 |  -4.35
+  opponent king-tower level {14: 1, 15: 22, 16: 53}; mean opp card level 15.55 over 76 matches (share of opp units at >= 16: 63%)
+    opp towers L14: 100.0% [20.7%, 100.0%], n 1
+    opp towers L15: 40.9% [23.3%, 61.3%], n 22
+    opp towers L16: 56.6% [43.3%, 69.0%], n 53
+    opp card level < 15.5: 64.5% [46.9%, 78.9%], n 31
+    15.5-16.0: 62.5% [42.7%, 78.8%], n 24
+    >= 16.0: 23.8% [10.6%, 45.1%], n 21
+  losses 36: 0 crowns scored 29, three-crowned 4; score lines {(0, 1): 22, (1, 1): 5, (0, 3): 4, (0, 0): 2, (1, 2): 2, (0, 2): 1}; opp first crown in {'1x': 11, '2x': 3, 'OT': 15, 'bot first': 5, 'none': 2}
+  overtime: 42/76 (55%) reach OT, OT win 47.6% [33.4%, 62.3%]; losses decided in OT 22/36
+  tower HP taken per match (losses): left 3439, right 3040, king 1662; by phase 1x 4381/2292, 2x 2357/1281, OT 1922/1328 (taken/dealt)
+  tower HP taken per match (wins): left 1391, right 1530, king 202; by phase 1x 1842/3575, 2x 1111/2465, OT 333/1442 (taken/dealt)
+  losses where a princess fell: first fallen on my X-Bow lane 17, on the OPPOSITE lane 16, no locked X-Bow 1
+  pushes 263 (3.5/match): elixir at push start median 3.2, met < 4 64%; lost-episode rate < 4 38% / >= 4 25%; air in push 26% (lost 50% vs 28%); opp public lead >= 3 23%; cheap plays at < 5 elixir 3.68/min; push size median 10.0 elixir; lost-episode rate 33%
+  X-Bows 3.67/match, locked 3.13/match; locked at opp counter >= 7 59%; dealt in 20 s 1466 HP; dud (< 300 HP) 32%; life 16.6 s
+  late (2x + OT) X-Bow-unfavourable (owner six): 9 matches, win 44.4% [18.9%, 73.3%]; locked X-Bows 2.00/match, tower Rockets 0.33, all Rockets 0.33
+  late (2x + OT) other: 67 matches, win 53.7% [41.9%, 65.1%]; locked X-Bows 1.91/match, tower Rockets 0.27, all Rockets 0.45
+  losses ending with the enemy's lowest tower <= 497 HP (one Rocket): 3/36; final 20 s Rocket in hand 76%, in hand AND >= 6 elixir 2%
+  Rocket: 0.58/match, on nothing 80%, on a tower 61%
+  Tornado: 1.11/match, on nothing 8%
+  Log: 5.21/match, on nothing 9%
+  Hero IW ability presses 1.46/match (confirmed 1.46); Tornado first answer 4.2% of pushes
+  report.py factors -> C:/Users/benpe/ClashBot/scratchpad/gauntlet/L74/successor/loss_review/report_CXXXVIII_all.md
+     1 (a) Cheap low-elixir plays above the median (3.5/min at < 5 elixir)        | L 26/36 (72%) | W 11/40 (28%) | L-W 44.7% [22.4%, 61.2%]; WR with/without 30% / 74% | wins 16.5 | +11.54 trophies/match ceiling
+     2 (a) Low elixir when a push arrives (< 4)                                   | L 109/155 eps (70%) | W 59/108 eps (55%) | MH P(lost episode) 15.6% [3.5%, 26.7%] | wins 12.6 | +8.82 trophies/match ceiling
+     3 (a) Locked X-Bow placed into a full opponent elixir bar (public counter >= | L 68/103 X-Bows | W 73/135 | MH dealt20 -637 HP [-1138, -180]; MH dud rate 9.9% [-4.0%, 24.7%] | wins 9.9 | +6.93 trophies/match ceiling
+     4 (a) Slow first answer (> 2 s)                                              | L 59/155 eps (38%) | W 56/108 eps (52%) | MH P(lost episode) 13.5% [1.7%, 26.1%] | wins 4.0 | +2.80 trophies/match ceiling
+     5 (a) Lost while the enemy's lowest tower was within one Rocket (<= 497 HP)  | L 3/36 (8%) | W n/a (end state of losses) | by ending: OT end 1, OT sudden death 2 | wins 2.5 | +1.75 trophies/match ceiling
+     6 (c) Lethal Rocket window not used (>= 3 s)                                 | L 0/36 (0%) | W 6/40 (15%) | L-W -15.0% [-29.1%, -2.5%]; WR with/without 100% / 49% | wins 0.0 | +0.00 trophies/match ceiling
+     7 (b) Air unit in the push                                                   | L 32/155 eps (21%) | W 36/108 eps (33%) | MH P(lost episode) 15.4% [-10.2%, 40.0%] | wins - | -
+     8 (b) X-Bow committed <= 10 s before a push                                  | L 26/155 eps (17%) | W 17/108 eps (16%) | MH P(lost episode) -13.3% [-30.5%, 0.9%] | wins - | -
+     9 (b) Offence spending before a push (>= 3 elixir)                           | L 23/155 eps (15%) | W 15/108 eps (14%) | MH P(lost episode) -13.3% [-28.6%, 4.9%] | wins - | -
+    10 (b) Opponent public elixir lead >= 3 at push start                         | L 39/155 eps (25%) | W 22/108 eps (20%) | MH P(lost episode) 5.8% [-8.5%, 22.7%] | wins - | -
+    11 (b) Tornado as the first answer                                            | L 9/155 eps (6%) | W 2/108 eps (2%) | MH P(lost episode) 17.7% [-5.9%, 40.9%] | wins - | -
+    12 (b) Heavy spending in the 10 s before a push (>= 7)                        | L 82/155 eps (53%) | W 57/108 eps (53%) | MH P(lost episode) -9.6% [-21.3%, 2.7%] | wins - | -
+    13 (b) Gate below threshold >= 3 s while threatened                           | L 38/155 eps (25%) | W 41/108 eps (38%) | MH P(lost episode) -1.7% [-14.8%, 11.3%] | wins - | -
+    14 (b) Sat at full elixir just before a push                                  | L 9/155 eps (6%) | W 7/108 eps (6%) | MH P(lost episode) 10.8% [-20.9%, 40.9%] | wins - | -
+    15 (b) Elixir wasted at the cap >= 5 in a match                               | L 8/36 (22%) | W 12/40 (30%) | L-W -7.8% [-26.4%, 12.1%]; WR with/without 60% / 50% | wins - | -
+    16 (b) Gate freeze >= 10 s at >= 9.5 elixir                                   | L 5/36 (14%) | W 8/40 (20%) | L-W -6.1% [-22.8%, 11.5%]; WR with/without 62% / 51% | wins - | -
+    17 (b) Opponent archetype: Golem                                              | L 3/36 (8%) | W 5/40 (12%) | L-W -4.2% [-18.8%, 11.1%]; WR with/without 62% / 51% | wins - | -
+    18 (b) Opponent archetype: Lava Hound                                         | L 1/36 (3%) | W 0/40 (0%) | L-W 2.8% [-6.3%, 14.2%]; WR with/without 0% / 53% | wins - | -
+    19 (b) Opponent archetype: Balloon                                            | L 3/36 (8%) | W 0/40 (0%) | L-W 8.3% [-2.0%, 21.8%]; WR with/without 0% / 55% | wins - | -
+    20 (b) Log or Tornado on nothing (>= 2 in a match)                            | L 3/36 (8%) | W 5/40 (12%) | L-W -4.2% [-18.8%, 11.1%]; WR with/without 62% / 51% | wins - | -
+    21 (b) Unconfirmed play (>= 1 in a match)                                     | L 27/36 (75%) | W 27/40 (68%) | L-W 7.5% [-12.8%, 26.6%]; WR with/without 50% / 59% | wins - | -
+    22 (b) Placement error >= 1 tile                                              | L 1/36 (3%) | W 0/40 (0%) | L-W 2.8% [-6.3%, 14.2%]; WR with/without 0% / 53% | wins - | -
+    23 (b) CPU starvation (>= 3 warnings)                                         | L 4/36 (11%) | W 6/40 (15%) | L-W -3.9% [-19.5%, 12.4%]; WR with/without 60% / 52% | wins - | -
+    24 (b) Rocket held >= 90% of the match                                        | L 20/36 (56%) | W 26/40 (65%) | L-W -9.4% [-30.0%, 12.1%]; WR with/without 57% / 47% | wins - | -
+    25 (b) Hero Ice Wizard ability pressed >= 3 times                             | L 8/36 (22%) | W 8/40 (20%) | L-W 2.2% [-15.9%, 20.7%]; WR with/without 50% / 53% | wins - | -
+
+== CXXXVIII_12800plus: 44 matches 20261017_160806..20261017_203510, win 43.2% [29.7%, 57.8%], trophies/match +1.14, win +29.6 / loss -20.5 (break-even win rate 40.9%), trophies 12855..13147
+  by trophy band at match start: class | n (share) | win [95% CI] | trophies/match | net trophies per match of ALL matches | lost vs the rest (per match of all)
+    12750-12999                  |   5 (11.4%) | 100.0% [56.6%, 100.0%] |  +29.4 |  +3.34 |  -3.65
+    13000-13249                  |  39 (88.6%) | 35.9% [22.7%, 51.6%]   |   -2.5 |  -2.20 | +28.50
+  by archetype (live_eval.classify): class | n (share) | win [95% CI] | trophies/match | net trophies per match of ALL matches | lost vs the rest (per match of all)
+    Hog (incl. Royal Hogs)       |  12 (27.3%) | 16.7% [4.7%, 44.8%]    |  -12.7 |  -3.45 |  +4.99
+    X-Bow/Mortar                 |   6 (13.6%) | 100.0% [61.0%, 100.0%] |  +30.0 |  +4.09 |  -4.50
+    Golem                        |   6 (13.6%) | 50.0% [18.8%, 81.2%]   |   +5.7 |  +0.77 |  -0.54
+    Giant (incl. Goblin/Electro) |   5 (11.4%) | 20.0% [3.6%, 62.4%]    |   -8.2 |  -0.93 |  +1.49
+    Ram/Bridge spam              |   4 ( 9.1%) | 0.0% [0.0%, 49.0%]     |  -22.5 |  -2.05 |  +2.17
+    Other/no clear wincon        |   3 ( 6.8%) | 66.7% [20.8%, 93.9%]   |  +19.7 |  +1.34 |  -0.86
+    Spawners (Witch/huts)        |   2 ( 4.5%) | 50.0% [9.5%, 90.5%]    |   +0.5 |  +0.02 |  -0.16
+    Graveyard                    |   2 ( 4.5%) | 100.0% [34.2%, 100.0%] |  +30.0 |  +1.36 |  -1.36
+    Balloon                      |   2 ( 4.5%) | 0.0% [0.0%, 65.8%]     |  -29.5 |  -1.34 |  +1.03
+    Mega Knight                  |   1 ( 2.3%) | 100.0% [20.7%, 100.0%] |  +28.0 |  +0.64 |  -0.66
+    Royal Giant                  |   1 ( 2.3%) | 100.0% [20.7%, 100.0%] |  +30.0 |  +0.68 |  -0.66
+  owner's X-Bow-unfavourable six: class | n (share) | win [95% CI] | trophies/match | net trophies per match of ALL matches | lost vs the rest (per match of all)
+    unfavourable                 |   6 (13.6%) | 33.3% [9.7%, 70.0%]    |   -4.0 |  -0.55 |  +0.78
+    other                        |  38 (86.4%) | 44.7% [30.1%, 60.3%]   |   +1.9 |  +1.68 |  -4.94
+  opponent king-tower level {15: 13, 16: 31}; mean opp card level 15.57 over 44 matches (share of opp units at >= 16: 63%)
+    opp towers L15: 30.8% [12.7%, 57.6%], n 13
+    opp towers L16: 48.4% [32.0%, 65.2%], n 31
+    opp card level < 15.5: 42.1% [23.1%, 63.7%], n 19
+    15.5-16.0: 61.5% [35.5%, 82.3%], n 13
+    >= 16.0: 25.0% [8.9%, 53.2%], n 12
+  losses 25: 0 crowns scored 19, three-crowned 2; score lines {(0, 1): 15, (1, 1): 4, (0, 3): 2, (0, 0): 2, (1, 2): 2}; opp first crown in {'OT': 12, '1x': 6, 'bot first': 4, 'none': 2, '2x': 1}
+  overtime: 28/44 (64%) reach OT, OT win 32.1% [17.9%, 50.7%]; losses decided in OT 19/25
+  tower HP taken per match (losses): left 3768, right 2723, king 1576; by phase 1x 3662/2095, 2x 2360/1279, OT 2224/1533 (taken/dealt)
+  tower HP taken per match (wins): left 1409, right 1729, king 295; by phase 1x 2301/4395, 2x 1175/2564, OT 297/1307 (taken/dealt)
+  losses where a princess fell: first fallen on my X-Bow lane 13, on the OPPOSITE lane 10, no locked X-Bow 0
+  pushes 158 (3.6/match): elixir at push start median 2.8, met < 4 64%; lost-episode rate < 4 40% / >= 4 32%; air in push 23% (lost 59% vs 30%); opp public lead >= 3 24%; cheap plays at < 5 elixir 3.97/min; push size median 10.0 elixir; lost-episode rate 37%
+  X-Bows 3.75/match, locked 3.07/match; locked at opp counter >= 7 63%; dealt in 20 s 1468 HP; dud (< 300 HP) 34%; life 16.8 s
+  late (2x + OT) X-Bow-unfavourable (owner six): 6 matches, win 33.3% [9.7%, 70.0%]; locked X-Bows 2.17/match, tower Rockets 0.50, all Rockets 0.50
+  late (2x + OT) other: 38 matches, win 44.7% [30.1%, 60.3%]; locked X-Bows 1.74/match, tower Rockets 0.24, all Rockets 0.50
+  losses ending with the enemy's lowest tower <= 497 HP (one Rocket): 2/25; final 20 s Rocket in hand 100%, in hand AND >= 6 elixir 2%
+  Rocket: 0.64/match, on nothing 79%, on a tower 57%
+  Tornado: 1.39/match, on nothing 10%
+  Log: 5.55/match, on nothing 9%
+  Hero IW ability presses 1.48/match (confirmed 1.48); Tornado first answer 5.7% of pushes
+  report.py factors -> C:/Users/benpe/ClashBot/scratchpad/gauntlet/L74/successor/loss_review/report_CXXXVIII_12800plus.md
+     1 (a) Low elixir when a push arrives (< 4)                                   | L 77/113 eps (68%) | W 24/45 eps (53%) | MH P(lost episode) 17.0% [3.2%, 30.4%] | wins 14.5 | +16.53 trophies/match ceiling
+     2 (a) Locked X-Bow placed into a full opponent elixir bar (public counter >= | L 49/75 X-Bows | W 36/60 | MH dealt20 -780 HP [-1359, -131]; MH dud rate 11.4% [-6.9%, 28.2%] | wins 7.3 | +8.32 trophies/match ceiling
+     3 (a) Slow first answer (> 2 s)                                              | L 41/113 eps (36%) | W 20/45 eps (44%) | MH P(lost episode) 15.5% [1.0%, 29.5%] | wins 3.6 | +4.10 trophies/match ceiling
+     4 (a) Lost while the enemy's lowest tower was within one Rocket (<= 497 HP)  | L 2/25 (8%) | W n/a (end state of losses) | by ending: OT sudden death 2 | wins 2.0 | +2.28 trophies/match ceiling
+     5 (c) Lethal Rocket window not used (>= 3 s)                                 | L 0/25 (0%) | W 5/19 (26%) | L-W -26.3% [-48.8%, -6.6%]; WR with/without 100% / 36% | wins 0.0 | +0.00 trophies/match ceiling
+     6 (b) Air unit in the push                                                   | L 24/113 eps (21%) | W 13/45 eps (29%) | MH P(lost episode) 5.4% [-32.8%, 44.8%] | wins - | -
+     7 (b) X-Bow committed <= 10 s before a push                                  | L 16/113 eps (14%) | W 7/45 eps (16%) | MH P(lost episode) 6.2% [-12.0%, 27.0%] | wins - | -
+     8 (b) Offence spending before a push (>= 3 elixir)                           | L 13/113 eps (12%) | W 6/45 eps (13%) | MH P(lost episode) 6.0% [-13.7%, 34.1%] | wins - | -
+     9 (b) Opponent public elixir lead >= 3 at push start                         | L 30/113 eps (27%) | W 8/45 eps (18%) | MH P(lost episode) 0.9% [-19.7%, 19.7%] | wins - | -
+    10 (b) Heavy spending in the 10 s before a push (>= 7)                        | L 63/113 eps (56%) | W 23/45 eps (51%) | MH P(lost episode) -1.3% [-15.9%, 10.0%] | wins - | -
+    11 (b) Gate below threshold >= 3 s while threatened                           | L 27/113 eps (24%) | W 12/45 eps (27%) | MH P(lost episode) -8.3% [-24.5%, 7.8%] | wins - | -
+    12 (b) Elixir wasted at the cap >= 5 in a match                               | L 4/25 (16%) | W 6/19 (32%) | L-W -15.6% [-40.0%, 9.1%]; WR with/without 60% / 38% | wins - | -
+    13 (b) Gate freeze >= 10 s at >= 9.5 elixir                                   | L 3/25 (12%) | W 5/19 (26%) | L-W -14.3% [-38.1%, 8.8%]; WR with/without 62% / 39% | wins - | -
+    14 (b) Cheap low-elixir plays above the median (4.0/min at < 5 elixir)        | L 15/25 (60%) | W 6/19 (32%) | L-W 28.4% [-1.1%, 51.6%]; WR with/without 29% / 57% | wins - | -
+    15 (b) Opponent archetype: Golem                                              | L 3/25 (12%) | W 3/19 (16%) | L-W -3.8% [-26.9%, 16.9%]; WR with/without 50% / 42% | wins - | -
+    16 (b) Opponent archetype: Lava Hound                                         | L 0/25 (0%) | W 0/19 (0%) | L-W 0.0% [-16.8%, 13.3%]; WR with/without n/a / 43% | wins - | -
+    17 (b) Opponent archetype: Balloon                                            | L 2/25 (8%) | W 0/19 (0%) | L-W 8.0% [-9.8%, 25.0%]; WR with/without 0% / 45% | wins - | -
+    18 (b) Log or Tornado on nothing (>= 2 in a match)                            | L 2/25 (8%) | W 4/19 (21%) | L-W -13.1% [-36.1%, 8.0%]; WR with/without 67% / 39% | wins - | -
+    19 (b) Unconfirmed play (>= 1 in a match)                                     | L 20/25 (80%) | W 12/19 (63%) | L-W 16.8% [-9.2%, 41.6%]; WR with/without 38% / 58% | wins - | -
+    20 (b) Placement error >= 1 tile                                              | L 0/25 (0%) | W 0/19 (0%) | L-W 0.0% [-16.8%, 13.3%]; WR with/without n/a / 43% | wins - | -
+    21 (b) CPU starvation (>= 3 warnings)                                         | L 4/25 (16%) | W 6/19 (32%) | L-W -15.6% [-40.0%, 9.1%]; WR with/without 60% / 38% | wins - | -
+    22 (b) Rocket held >= 90% of the match                                        | L 15/25 (60%) | W 12/19 (63%) | L-W -3.2% [-29.3%, 24.5%]; WR with/without 44% / 41% | wins - | -
+    23 (b) Hero Ice Wizard ability pressed >= 3 times                             | L 6/25 (24%) | W 3/19 (16%) | L-W 8.2% [-16.9%, 30.2%]; WR with/without 33% / 46% | wins - | -
+
+== CXXXVIII_below12800: 32 matches 20261017_132941..20261017_152453, win 65.6% [48.3%, 79.6%], trophies/match +9.16, win +29.8 / loss -30.2 (break-even win rate 50.4%), trophies 12558..12795
+  by trophy band at match start: class | n (share) | win [95% CI] | trophies/match | net trophies per match of ALL matches | lost vs the rest (per match of all)
+    12500-12749                  |  29 (90.6%) | 65.5% [47.3%, 80.1%]   |   +9.1 |  +8.22 |  +0.62
+    12750-12999                  |   3 ( 9.4%) | 66.7% [20.8%, 93.9%]   |  +10.0 |  +0.94 |  -0.06
+  by archetype (live_eval.classify): class | n (share) | win [95% CI] | trophies/match | net trophies per match of ALL matches | lost vs the rest (per match of all)
+    Hog (incl. Royal Hogs)       |   9 (28.1%) | 44.4% [18.9%, 73.3%]   |   -3.3 |  -0.94 |  +4.97
+    Spawners (Witch/huts)        |   5 (15.6%) | 100.0% [56.6%, 100.0%] |  +30.0 |  +4.69 |  -3.82
+    Giant (incl. Goblin/Electro) |   5 (15.6%) | 60.0% [23.1%, 88.2%]   |   +5.6 |  +0.88 |  +0.62
+    Ram/Bridge spam              |   3 ( 9.4%) | 66.7% [20.8%, 93.9%]   |  +10.3 |  +0.97 |  -0.06
+    Golem                        |   2 ( 6.2%) | 100.0% [34.2%, 100.0%] |  +30.0 |  +1.88 |  -1.37
+    Mega Knight                  |   2 ( 6.2%) | 50.0% [9.5%, 90.5%]    |   +0.0 |  +0.00 |  +0.62
+    Lava Hound                   |   1 ( 3.1%) | 0.0% [0.0%, 79.3%]     |  -32.0 |  -1.00 |  +1.27
+    Other/no clear wincon        |   1 ( 3.1%) | 100.0% [20.7%, 100.0%] |  +28.0 |  +0.88 |  -0.66
+    Graveyard                    |   1 ( 3.1%) | 100.0% [20.7%, 100.0%] |  +30.0 |  +0.94 |  -0.66
+    X-Bow/Mortar                 |   1 ( 3.1%) | 100.0% [20.7%, 100.0%] |  +30.0 |  +0.94 |  -0.66
+    Balloon                      |   1 ( 3.1%) | 0.0% [0.0%, 79.3%]     |  -32.0 |  -1.00 |  +1.27
+    Bait                         |   1 ( 3.1%) | 100.0% [20.7%, 100.0%] |  +30.0 |  +0.94 |  -0.66
+  owner's X-Bow-unfavourable six: class | n (share) | win [95% CI] | trophies/match | net trophies per match of ALL matches | lost vs the rest (per match of all)
+    unfavourable                 |   3 ( 9.4%) | 66.7% [20.8%, 93.9%]   |   +9.3 |  +0.88 |  -0.06
+    other                        |  29 (90.6%) | 65.5% [47.3%, 80.1%]   |   +9.1 |  +8.28 |  +0.62
+  opponent king-tower level {14: 1, 15: 9, 16: 22}; mean opp card level 15.52 over 32 matches (share of opp units at >= 16: 61%)
+    opp towers L14: 100.0% [20.7%, 100.0%], n 1
+    opp towers L15: 55.6% [26.7%, 81.1%], n 9
+    opp towers L16: 68.2% [47.3%, 83.6%], n 22
+    opp card level < 15.5: 100.0% [75.7%, 100.0%], n 12
+    15.5-16.0: 63.6% [35.4%, 84.8%], n 11
+    >= 16.0: 22.2% [6.3%, 54.7%], n 9
+  losses 11: 0 crowns scored 10, three-crowned 2; score lines {(0, 1): 7, (0, 3): 2, (0, 2): 1, (1, 1): 1}; opp first crown in {'1x': 5, '2x': 2, 'OT': 3, 'bot first': 1}
+  overtime: 14/32 (44%) reach OT, OT win 78.6% [52.4%, 92.4%]; losses decided in OT 3/11
+  tower HP taken per match (losses): left 2691, right 3760, king 1858; by phase 1x 6014/2739, 2x 2350/1286, OT 1152/806 (taken/dealt)
+  tower HP taken per match (wins): left 1374, right 1350, king 119; by phase 1x 1426/2833, 2x 1052/2376, OT 365/1564 (taken/dealt)
+  losses where a princess fell: first fallen on my X-Bow lane 4, on the OPPOSITE lane 6, no locked X-Bow 1
+  pushes 105 (3.3/match): elixir at push start median 3.4, met < 4 64%; lost-episode rate < 4 36% / >= 4 16%; air in push 30% (lost 39% vs 24%); opp public lead >= 3 22%; cheap plays at < 5 elixir 3.26/min; push size median 9.5 elixir; lost-episode rate 29%
+  X-Bows 3.56/match, locked 3.22/match; locked at opp counter >= 7 54%; dealt in 20 s 1463 HP; dud (< 300 HP) 29%; life 16.4 s
+  late (2x + OT) X-Bow-unfavourable (owner six): 3 matches, win 66.7% [20.8%, 93.9%]; locked X-Bows 1.67/match, tower Rockets 0.00, all Rockets 0.00
+  late (2x + OT) other: 29 matches, win 65.5% [47.3%, 80.1%]; locked X-Bows 2.14/match, tower Rockets 0.31, all Rockets 0.38
+  losses ending with the enemy's lowest tower <= 497 HP (one Rocket): 1/11; final 20 s Rocket in hand 27%, in hand AND >= 6 elixir 4%
+  Rocket: 0.50/match, on nothing 81%, on a tower 69%
+  Tornado: 0.72/match, on nothing 4%
+  Log: 4.75/match, on nothing 11%
+  Hero IW ability presses 1.44/match (confirmed 1.44); Tornado first answer 1.9% of pushes
+  report.py factors -> C:/Users/benpe/ClashBot/scratchpad/gauntlet/L74/successor/loss_review/report_CXXXVIII_below12800.md
+     1 (a) Cheap low-elixir plays above the median (2.9/min at < 5 elixir)        | L 10/11 (91%) | W 5/21 (24%) | L-W 67.1% [31.4%, 82.2%]; WR with/without 33% / 94% | wins 9.1 | +17.05 trophies/match ceiling
+     2 (a) Lost while the enemy's lowest tower was within one Rocket (<= 497 HP)  | L 1/11 (9%) | W n/a (end state of losses) | by ending: OT end 1 | wins 0.5 | +0.94 trophies/match ceiling
+     3 (c) X-Bow committed <= 10 s before a push                                  | L 10/42 eps (24%) | W 10/63 eps (16%) | MH P(lost episode) -37.8% [-56.0%, -21.1%] | wins 0.0 | +0.00 trophies/match ceiling
+     4 (c) Offence spending before a push (>= 3 elixir)                           | L 10/42 eps (24%) | W 9/63 eps (14%) | MH P(lost episode) -35.1% [-53.6%, -16.8%] | wins 0.0 | +0.00 trophies/match ceiling
+     5 (c) Heavy spending in the 10 s before a push (>= 7)                        | L 19/42 eps (45%) | W 34/63 eps (54%) | MH P(lost episode) -23.2% [-43.5%, -0.5%] | wins 0.0 | +0.00 trophies/match ceiling
+     6 (b) Low elixir when a push arrives (< 4)                                   | L 32/42 eps (76%) | W 35/63 eps (56%) | MH P(lost episode) 12.9% [-6.7%, 32.3%] | wins - | -
+     7 (b) Air unit in the push                                                   | L 8/42 eps (19%) | W 23/63 eps (37%) | MH P(lost episode) 28.5% [-4.3%, 58.8%] | wins - | -
+     8 (b) Opponent public elixir lead >= 3 at push start                         | L 9/42 eps (21%) | W 14/63 eps (22%) | MH P(lost episode) 14.4% [-15.2%, 45.4%] | wins - | -
+     9 (b) Slow first answer (> 2 s)                                              | L 18/42 eps (43%) | W 36/63 eps (57%) | MH P(lost episode) 10.8% [-7.3%, 32.3%] | wins - | -
+    10 (b) Gate below threshold >= 3 s while threatened                           | L 11/42 eps (26%) | W 29/63 eps (46%) | MH P(lost episode) 6.3% [-14.9%, 27.7%] | wins - | -
+    11 (b) Locked X-Bow placed into a full opponent elixir bar (public counter >= | L 19/28 X-Bows | W 37/75 | MH dealt20 -459 HP [-1159, 310]; MH dud rate 8.1% [-20.1%, 31.2%] | wins - | -
+    12 (b) Elixir wasted at the cap >= 5 in a match                               | L 4/11 (36%) | W 6/21 (29%) | L-W 7.8% [-22.3%, 39.7%]; WR with/without 60% / 68% | wins - | -
+    13 (b) Gate freeze >= 10 s at >= 9.5 elixir                                   | L 2/11 (18%) | W 3/21 (14%) | L-W 3.9% [-20.3%, 34.8%]; WR with/without 60% / 67% | wins - | -
+    14 (b) Opponent archetype: Golem                                              | L 0/11 (0%) | W 2/21 (10%) | L-W -9.5% [-28.9%, 17.3%]; WR with/without 100% / 63% | wins - | -
+    15 (b) Opponent archetype: Lava Hound                                         | L 1/11 (9%) | W 0/21 (0%) | L-W 9.1% [-8.1%, 37.7%]; WR with/without 0% / 68% | wins - | -
+    16 (b) Opponent archetype: Balloon                                            | L 1/11 (9%) | W 0/21 (0%) | L-W 9.1% [-8.1%, 37.7%]; WR with/without 0% / 68% | wins - | -
+    17 (b) Lethal Rocket window not used (>= 3 s)                                 | L 0/11 (0%) | W 1/21 (5%) | L-W -4.8% [-22.7%, 21.4%]; WR with/without 100% / 65% | wins - | -
+    18 (b) Log or Tornado on nothing (>= 2 in a match)                            | L 1/11 (9%) | W 1/21 (5%) | L-W 4.3% [-15.1%, 33.2%]; WR with/without 50% / 67% | wins - | -
+    19 (b) Unconfirmed play (>= 1 in a match)                                     | L 7/11 (64%) | W 15/21 (71%) | L-W -7.8% [-39.7%, 22.3%]; WR with/without 68% / 60% | wins - | -
+    20 (b) Placement error >= 1 tile                                              | L 1/11 (9%) | W 0/21 (0%) | L-W 9.1% [-8.1%, 37.7%]; WR with/without 0% / 68% | wins - | -
+    21 (b) CPU starvation (>= 3 warnings)                                         | L 0/11 (0%) | W 0/21 (0%) | L-W 0.0% [-15.5%, 25.9%]; WR with/without n/a / 66% | wins - | -
+    22 (b) Rocket held >= 90% of the match                                        | L 5/11 (45%) | W 14/21 (67%) | L-W -21.2% [-50.3%, 12.8%]; WR with/without 74% / 54% | wins - | -
+    23 (b) Hero Ice Wizard ability pressed >= 3 times                             | L 2/11 (18%) | W 5/21 (24%) | L-W -5.6% [-30.6%, 26.7%]; WR with/without 71% / 64% | wins - | -
+
+== deck mix: archetype share CXXIV last 200 vs CXXXVIII >= 12,800 (and all CXXXVIII)
+    Hog (incl. Royal Hogs)       19.5% -> 27.3% (all CXXXVIII 27.6%); diff +7.8% [-4.7%, +23.1%]
+    Ram/Bridge spam              11.0% ->  9.1% (all CXXXVIII  9.2%); diff -1.9% [-9.4%, +10.7%]
+    Giant (incl. Goblin/Electro)  8.0% -> 11.4% (all CXXXVIII 13.2%); diff +3.4% [-4.5%, +16.3%]
+    Golem                         8.0% -> 13.6% (all CXXXVIII 10.5%); diff +5.6% [-2.9%, +19.1%]
+    X-Bow/Mortar                  8.0% -> 13.6% (all CXXXVIII  9.2%); diff +5.6% [-2.9%, +19.1%]
+    Spawners (Witch/huts)         8.0% ->  4.5% (all CXXXVIII  9.2%); diff -3.5% [-9.1%, +7.6%]
+    Other/no clear wincon         6.0% ->  6.8% (all CXXXVIII  5.3%); diff +0.8% [-5.3%, +12.5%]
+    Balloon                       6.0% ->  4.5% (all CXXXVIII  3.9%); diff -1.5% [-6.8%, +9.4%]
+    Mega Knight                   5.5% ->  2.3% (all CXXXVIII  3.9%); diff -3.2% [-7.7%, +6.6%]
+    Graveyard                     4.5% ->  4.5% (all CXXXVIII  3.9%); diff +0.0% [-5.0%, +10.8%]
+    Royal Giant                   4.0% ->  2.3% (all CXXXVIII  1.3%); diff -1.7% [-5.9%, +8.0%]
+    Lava Hound                    4.0% ->  0.0% (all CXXXVIII  1.3%); diff -4.0% [-7.7%, +4.3%]
+    Bait                          3.5% ->  0.0% (all CXXXVIII  1.3%); diff -3.5% [-7.0%, +4.7%]
+    Miner                         2.0% ->  0.0% (all CXXXVIII  0.0%); diff -2.0% [-5.0%, +6.1%]
+    P.E.K.K.A                     2.0% ->  0.0% (all CXXXVIII  0.0%); diff -2.0% [-5.0%, +6.1%]
+
+== per-archetype win rate: CXXIV last 200 -> CXXXVIII all
+    Hog (incl. Royal Hogs)       22/39 56.4% -> 6/21 28.6%  diff -27.8% [-48.4%, -1.5%]
+    Ram/Bridge spam              11/22 50.0% -> 2/7 28.6%  diff -21.4% [-49.5%, +19.0%]
+    Giant (incl. Goblin/Electro) 6/16 37.5% -> 4/10 40.0%  diff +2.5% [-30.8%, +37.0%]
+    Golem                        5/16 31.2% -> 5/8 62.5%  diff +31.2% [-8.9%, +60.6%]
+    X-Bow/Mortar                 8/16 50.0% -> 7/7 100.0%  diff +50.0% [+8.3%, +72.0%]
+    Spawners (Witch/huts)        12/16 75.0% -> 6/7 85.7%  diff +10.7% [-29.2%, +37.9%]
