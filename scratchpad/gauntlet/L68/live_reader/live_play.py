@@ -807,10 +807,14 @@ def main() -> int:
                                f"D{st.get('D', 0)} before this match")
             if a.tau_alternate:                          # owner 2026-10-07 threshold A/B: alternate per match
                 a.tau = pilot.gate_tau = next_alternate_tau(Path(a.tau_alternate_state), a.tau_alternate)
+            a.match_end = None
             why = play_match(a, pilot, lay, device, renders if k + 1 < a.matches else None,
                              start_timeout=180 if a.ladder else (60 if navigated else None),   # ladder: matchmaking;
                              # also on launch: an unrecognised screen then goes back to the nav, not a 600-s wait
                              record=record, clip_caption=caption)
+            end = getattr(a, "match_end", None) or {}
+            if end.get("battle") and hasattr(nav, "note_match"):   # ladder: the next nav writes its ONE result line
+                nav.note_match(end["log"], end["towers"])
             if why not in MATCH_OVER and caption is not None:
                 last_clip = prev_clip                    # no match was played: the clip stays due (Codex review F9)
             if why == "no_battle_start" and a.ladder and k + 1 < a.matches and no_start < 2:
@@ -939,6 +943,27 @@ def anti_leak_log(a) -> dict:
 MATCH_OVER = {"battle_over_hands_visible", "battle_inactive", "tick_stalled", "menu_screen:results"}
 
 
+def tower_verdict(f, side):
+    """The match result from the towers of its last in-play reader frame: crowns = the other side's towers missing
+    (king gone = 3), the rule of L74/replay_rec/convert.crowns. Checked 10-17 on the last 400 ladder matches with a
+    results-screen outcome: 394 / 394 agree, 0 ties (6 logs had no frames). -> None without a frame / side."""
+    if f is None or side is None:
+        return None
+    alive = {0: [0, 0], 1: [0, 0]}                       # side -> [king, princess] towers with hp > 0
+    for e in f.get("entities") or ():
+        if int(e.get("card_id", 0)) != -1 or int(e.get("hp", 0)) <= 0 or e.get("side") not in (0, 1):
+            continue
+        x, y = float(e.get("x", -1e9)), float(e.get("y", -1e9))   # runs in play_match's finally: never raise
+        if abs(x - 9000) < 1500 and min(abs(y - 3000), abs(y - 29000)) < 1500:
+            alive[e["side"]][0] += 1
+        elif min(abs(x - 3500), abs(x - 14500)) < 1500 and min(abs(y - 6500), abs(y - 25500)) < 1500:
+            alive[e["side"]][1] += 1
+    cr = {s: 3 if not alive[1 - s][0] else 2 - min(2, alive[1 - s][1]) for s in (0, 1)}
+    me, opp = cr[side], cr[1 - side]
+    return {"crowns_me": me, "crowns_opp": opp, "won": True if me > opp else False if me < opp else None,
+            "tick": int(f.get("game_tick", -1))}
+
+
 def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float | None = None,
                record: bool = True, clip_caption: str | None = None) -> str:
     """One match (the whole pre---matches main loop). renders=None: overlay rendered here before returning, as a
@@ -1061,6 +1086,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                           # or CONFIRM_TICKS pass after its release (a slot rotates only when OUR card in it is played)
     fails_run = 0   # CONSECUTIVE unconfirmed taps: 5 in a row = real malfunction (5 slow taps over a match under load is not)
     seen_active, both_vis, warmed, waiting_logged = False, 0, False, False
+    end_f, end_side = None, None
     from collections import deque
     dec_times: deque = deque(maxlen=20)
     warned_at = 0.0
@@ -1163,6 +1189,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                     W(event="stop", why="battle_over_hands_visible", tick=tick); break
                 continue
             both_vis = 0
+            end_f, end_side = f, vis[0]                  # the last in-play frame: the tower verdict at the end
             if cap is not None and cap.side is None:     # once per match; the adb call runs on a side thread
                 cap.start(vis[0], tick, RVA, ROOT_CTX, a.interval_ms)
             opp_est = pilot.observe(f)                   # public-events opp-elixir counter: EVERY active+coherent frame
@@ -1479,7 +1506,9 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
             W(**cap.finish(Path(log.name)))
         if rec:
             W(event="recording", segments=rec.stop())
-        W(event="end", played=played, confirmed=confirmed, fails=fails, seconds=round(time.time() - t0, 1),
+        towers = tower_verdict(end_f, end_side)
+        a.match_end = {"log": Path(log.name).name, "towers": towers, "battle": last_tick >= 0}   # ladder result fallback
+        W(event="end", played=played, confirmed=confirmed, fails=fails, seconds=round(time.time() - t0, 1), towers=towers,
           **({"follow_ups_fired": follow_n["fired"], "follow_ups_cancelled": follow_n["cancelled"],
               "follow_ups_unfired": len(sched)} if follow else {}),
           **({"pipelined_plays": pipe_n["second"]} if pipe else {}),

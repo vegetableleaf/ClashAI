@@ -481,6 +481,47 @@ class LadderNavRunner:
             v = None
         return v, round(1000 * (time.perf_counter() - t0), 2)
 
+    def note_match(self, log: str | None, towers: dict | None) -> None:
+        """live_play, after every ladder match whose battle started: its log + in-match tower verdict. The next nav (this
+        run's, or after a restart the next run's: kept in the state file) writes its ONE result line."""
+        if self.st.get("pending_match"):           # no nav since the previous match (a run launched mid-battle)
+            self.report(lambda **k: None)
+        self.st["pending_match"] = {"log": log, "towers": towers}
+        self.save()
+
+    def report(self, W, banner_seen: bool = False, banner: bool | None = None, mag: int | None = None,
+               total: int | None = None, ms: float = 0.0) -> None:
+        """THE one '[ladder] result:' line of a match (critic 10-17: a trophy-road screen in place of the results screen,
+        or a run ending right after its match, left wins with no line). Outcome: the results screen's WINNER banner >
+        the in-match tower verdict > the sign of the trophy-total change > UNKNOWN. Trophies: the results-screen number
+        (sign = outcome) > the total change since the last total read, when it agrees with the outcome > n/a."""
+        pm = self.st.pop("pending_match", None) or {}
+        tw = (pm.get("towers") or {}).get("won")
+        t0, since = self.st.get("trophies_total"), self.st.get("trophies_since")
+        dtot = None if total is None or t0 is None or since is None else total - t0 - since
+        won, src = ((banner, "results") if banner is not None else (tw, "towers") if tw is not None
+                    else (dtot > 0, "trophy_total") if dtot else (None, "none"))
+        if mag is not None and won is not None:
+            delta, dsrc = (mag if won else -mag), "results"
+        elif dtot is not None and won is not None and (dtot > 0 if won else dtot <= 0):   # 0 = a loss at a floor
+            delta, dsrc = dtot, "trophy_total"
+        else:
+            delta, dsrc = None, None
+        if won is not None and banner is None:     # the planner counts results-screen banners only (unread = D)
+            if banner_seen:
+                self.st["D"] = self.st.get("D", 0) - 1
+            self.st["W" if won else "L"] = self.st.get("W" if won else "L", 0) + 1
+        self.st["trophies_since"] = None if since is None or delta is None else since + delta
+        self.last_outcome = won
+        extra = {} if self.trophy is None else {"trophies_delta": delta, "trophies_abs": mag, "trophy_ms": ms,
+                                                "delta_src": dsrc}   # --no-trophy-log: no trophy fields, as before
+        W(event="outcome", won=won, src=src, log=pm.get("log"), towers=pm.get("towers"), **extra, state=dict(self.st))
+        tag = f"src={src}" + (f" delta_src={dsrc}" if dsrc and dsrc != src else "")
+        print(f"[ladder] result: {'WIN' if won else 'LOSS' if won is False else 'UNKNOWN'}"
+              f"  (session W{self.st.get('W', 0)} L{self.st.get('L', 0)} D{self.st.get('D', 0)}, "
+              f"wins today {self.st.get('wins_today', 0)})  trophies {'n/a' if delta is None else f'{delta:+d}'}  {tag}",
+              flush=True)
+
     def probe(self, seconds: float = 8.0) -> str | None:
         t_end = time.time() + seconds
         while time.time() < t_end:
@@ -500,36 +541,29 @@ class LadderNavRunner:
         def W(**k):
             log.write(json.dumps({"t": round(time.time(), 2), **k}, default=str) + "\n")
             log.flush()
-        nav, prev, last, reported = LadderNav(time.time(), self.st, self.rng), None, None, False
-        d_pending, d_tries, total_tries, total_done = False, 0, 0, False   # passive trophy reads (see read_trophy)
+        nav, prev, last = LadderNav(time.time(), self.st, self.rng), None, None
+        res, total_tries, total_done = None, 0, False   # res = this nav's results screen; passive trophy reads
         W(event="nav_start", dry_run=self.dry_run, state={k: v for k, v in self.st.items()})
+
+        def report_res():
+            res["done"] = True
+            self.report(W, banner_seen=True, banner=res["won"], mag=res["mag"], ms=res["ms"])
         try:
             while True:
                 img = grab(self.adb)
                 scr = self.clf.classify(img)
                 p = nav.plan(scr, time.time())
-                if scr["screen"] == "results" and nav.counted and not reported:
-                    reported, outcome = True, scr["won"]
-                    self.last_outcome = outcome
+                if scr["screen"] == "results" and nav.counted and res is None:
                     mag, ms = self.read_trophy("delta", img)
-                    delta = None if mag is None or outcome is None else (mag if outcome else -mag)   # sign = WINNER banner
-                    d_pending = self.trophy is not None and delta is None and outcome is not None
-                    extra = {} if self.trophy is None else {"trophies_delta": delta, "trophies_abs": mag,
-                                                            "trophy_ms": ms}     # --no-trophy-log: event unchanged
-                    W(event="outcome", won=outcome, **extra, state=dict(self.st))
-                    tro = "" if self.trophy is None else f"  trophies {delta:+d}" if delta is not None else "  trophies n/a"
-                    print(f"[ladder] result: {'WIN' if outcome else 'LOSS' if outcome is False else 'draw/unread'}"
-                          f"  (session W{self.st.get('W', 0)} L{self.st.get('L', 0)} D{self.st.get('D', 0)}, "
-                          f"wins today {self.st.get('wins_today', 0)}){tro}", flush=True)
-                elif d_pending and scr["screen"] == "results" and d_tries < 4:
-                    # the banner may still be animating on the first results frame: retry on the next few (we are
-                    # still on this screen until the Play Again tap), then give up with the null already logged
-                    d_tries += 1
-                    mag, ms = self.read_trophy("delta", img)
-                    if mag is not None and self.last_outcome is not None:
-                        d_pending, delta = False, mag if self.last_outcome else -mag
-                        W(event="trophies", trophies_delta=delta, trophies_abs=mag, trophy_ms=ms, retry=d_tries)
-                        print(f"[ladder] trophies: {delta:+d}", flush=True)
+                    res = {"won": scr["won"], "mag": mag, "ms": ms, "tries": 0, "done": False}
+                elif res is not None and not res["done"] and scr["screen"] == "results" and res["mag"] is None:
+                    # the number may still be animating on the first results frame: retry on the next few (we are
+                    # still on this screen until the Play Again tap); the ONE result line waits for them
+                    res["tries"] += 1
+                    res["mag"], res["ms"] = self.read_trophy("delta", img)
+                if res is not None and not res["done"] and (res["mag"] is not None or self.trophy is None
+                                                            or res["tries"] >= 4 or scr["screen"] != "results"):
+                    report_res()
                 if scr["screen"] == "main" and p[:2] == ("act", "battle") and not total_done and total_tries < 3:
                     total_tries += 1       # the main screen is stable here (planner waited STABLE_N frames)
                     tot, ms = self.read_trophy("total", img)
@@ -537,6 +571,9 @@ class LadderNavRunner:
                         W(event="trophies", trophies_total=tot, trophy_ms=ms)     # null = failed read
                     if tot is not None:
                         total_done, self.trophies_total = True, tot
+                        if "pending_match" in self.st:   # no results screen this nav (a trophy-road screen instead):
+                            self.report(W, total=tot)    # its line now, BEFORE the total line it belongs to
+                        self.st["trophies_total"], self.st["trophies_since"] = tot, 0
                         print(f"[ladder] trophies: {tot} total", flush=True)
                 if (scr["screen"], p[:2]) != last:
                     W(event="screen", screen=scr["screen"], plan=p, scores=scr["scores"],
@@ -597,5 +634,9 @@ class LadderNavRunner:
                     prev = None
                 time.sleep(self.POLL_S)
         finally:
+            if res is not None and not res["done"]:
+                report_res()
+            elif "pending_match" in self.st:     # nav over with no results screen and no total read: towers / UNKNOWN
+                self.report(W)
             self.save()
             log.close()

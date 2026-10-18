@@ -1,3 +1,14 @@
+## 2026-10-17 23:13 EDT -- live logger fix (owner OK): one ladder result line per match; restart between matches
+
+- Root causes (overnight.out): (1) a trophy-road screen replaced the results screen, so no line (200646, 205409); (2) the run's
+  last match before a STOP / restart never got a nav (164525; every restart could lose one); (3) the results number was still
+  animating -> 'trophies n/a' + a separate '[ladder] trophies: +30' that no monitor reads (191748).
+- Fix: live_play.tower_verdict (last in-play frame, towers by POSITION per replay_rec/convert.crowns; checked on the last 400
+  ladder matches with a results screen: 394 / 394 agree, 0 ties) -> a.match_end; ladder_nav.note_match stores pending_match in
+  ladder_state.json (survives a STOP / restart); report() prints ONE line: outcome from the results banner > towers > the sign
+  of the trophy-total change > UNKNOWN, with src= / delta_src= tags. Taps, waits and planner unchanged. Ranked shares the runner.
+- Tests: test_ladder_result.py (8); the live_reader suite 240 passed / 2 failed (the 2 test_live_entry failures predate this) /
+  1 skipped; start_live.sh --check LIVE_CHECK_PASS. The monitor-side inference (card_use.results) stays as a backstop.
 ## 2026-10-17 22:03 EDT -- successor research done (plateau = trophy floor; overtime / Hog); critics: plan flawed; monitor misses wins (fixed); CXXXVIII passes the 100-match revert test
 
 - Workflow successor-research (wf_b9775d1c-eb0); reports in scratchpad/gauntlet/L74/successor/ (cfg/, critic2/, critic_evidence/).
