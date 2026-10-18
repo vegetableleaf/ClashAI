@@ -1,3 +1,17 @@
+## 2026-10-17 20:48 EDT -- FIN9 scored (upgraded 0.923 [0.912, 0.934], 126 matches; tier-B coverage 0.044); S-TESLA-HOLD full +17 / -7, verifier running
+
+- FIN9 (P3 64.247.206.76:19899, HEAD 1d5f209, rsfork_f36ek, 359 logs, 0 crashes; laptop copy pod_backup_weekend/parity1016/
+  FIN9_stamped): full 0.912 [0.906, 0.919]; upgraded 0.923 [0.912, 0.934] (FIN8 0.916), ceiling 0.99, normalised 0.932 [0.922,
+  0.942]. coverage.py: valid cohort; overall not met; tier B 0.044 of plays meet (FIN8 0.023); tier C 0.040.
+  Own upgraded: X-Bow 0.966 [0.944, 0.984], Log 0.964 [0.945, 0.981], IW hero 0.945 [0.923, 0.965], Tornado 0.935 (62), Knight
+  0.933, Tesla 0.913, Tesla evo 0.903, Knight evo 0.882, Skeletons 0.881 [0.840, 0.916]. Opp: Witch 0.811 (64), Witch evo 0.731
+  (26), Bats 0.787 (50), MegaKnight evo 0.77 (19), Goblin Gang 0.858, Skeleton Army 0.883, Hog 0.90.
+- r5d S-TESLA-HOLD (fork 5978d02e on clashbot36 72a18a5; diag_night/r5d/S_TESLA_HOLD.patch) vs FIN7 all 316: OVERALL 0.9054 ->
+  0.9066, aK +17 / -7 (unperturbed +17 / -2; downs 151714@2792 explained, 001748@348 opp Blowdart unexamined, 5 ceiling-only).
+  Independent verifier rebuilding the wheel on P3 (/workspace/rsfork_v5d_th) and re-measuring vs FIN9 before it lands in the
+  fork branch. r5d now on the Tesla post-deploy / post-attack hittable window (live: 25-75x more hits in the first 16 ticks under).
+- Successor research workflow (wf_b9775d1c-eb0): CXXXVIII loss review at 13k + opponent-pool drift -> critic-checked successor plan
+  with configs (scratchpad/gauntlet/L74/successor/). Overnight auto-promote rule: memory overnight-2026-10-17-auto-promote.
 ## 2026-10-17 20:34 EDT -- owner: NEVER stop pods; new pod P3; 13,063 trophies; FIN9 + parity round 6 (workflow) + IW press audit + control run
 
 - Owner 10-17 ~20:10: "don't close down a pod unless there is absolutely no more use for it in the long term". Done: /workspace/
