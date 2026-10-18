@@ -1,3 +1,13 @@
+## 2026-10-18 01:20 EDT -- rlarm_gae_cue_ab (CXXXVIII + learned IW press) CLEARLY WORSE: -5.00 [-8.65, -1.35]; NOT deployed; over-pressing diagnosis started
+
+- Promotion eval, same pod and command, both models (pod1017_cue_ab/results/eval; compare.py helpers): cue_ab vs CXXXVIII
+  -5.00 pp [-8.65, -1.35], n 960 (the owner's ability bar = "not clearly worse" -> FAILS).
+- Presses (eval rows): CXXXVIII rule press 1.88 / match, 28% of 6.76 IW deploys; cue_ab head 4.08 / match, 64% of 6.4 deploys
+  (head decisions 62.5 / match). Pros 2.34, 32%; live CXXXVIII 1.41, 23%. RL doubled the press rate from its rule-cloned warm
+  start -> the SIM likely over-rewards pressing (cost, freeze strength, or a bug) = an env exploit per the owner's leash rule.
+- Pending: cue_ctl (CXXXVIII + 65 upd, rule press) separates "more training" from "head". Diagnosis worker on P2 14009 (idle
+  otherwise): ability cost SIM vs live, freeze effect SIM vs live, press value, training trend, free-press bugs ->
+  scratchpad/gauntlet/L74/ability_live/overpress/.
 ## 2026-10-18 01:12 EDT -- overnight queue state (pods all busy or queued); combo arms queued behind the factorial; probe result
 
 - Combo arms queued behind the factorial (waiters: CHAIN_DONE + every run COPIED + no python, then a real smoke, then the
