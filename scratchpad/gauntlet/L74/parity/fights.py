@@ -2837,14 +2837,10 @@ def pair_frame(pairs, live, simb, catalog):
     """Grow live-id -> sim-id pairing: same side, display name, form and max_hp within 40%, nearest within 2.5 tiles."""
     taken = set(pairs.values())
     cand = []
-    # H-EVO-CHILD (diag_night/r5b 130511@5790): a spawner's child carries its card id live, so an Evo Witch's Skeleton is
-    # card Witch form 1 while the SIM child is form 0 -> never paired (sim_only), e.g. 4 Skeletons our Tornado pulled and
-    # killed scored as 4 misses. A body with a same-card, same-side body of >= 1.5x its max_hp in the frame (its spawner)
-    # pairs across forms on exactly the same max_hp, as the Skeletrooper below.
-    big = defaultdict(int)
-    for a in live:
-        if not a['tower']:
-            big[a['card_id'], a['side']] = max(big[a['card_id'], a['side']], a['max_hp'])
+    # H-CHILDFORM (diag_night/r5d) + H-EVO-CHILD (r5b 130511@5790): a unit an evolved / hero body made (Evo Witch and Hero
+    # Tombstone Skeletons, Evo Skeleton Balloon's, Evo Goblin Giant's Spear Goblins) carries its maker's evo / hero card id
+    # live, while the SIM spawns it plain (form 0) -> never paired, so a spell that killed it scored misses (1,942 of 2,185
+    # Evo Witch bodies unpaired on FIN7). Paired across forms on exactly the same max_hp, after every same-form candidate.
     for a in live:
         if a['tower'] or pairs.get(a['id']) is not None:
             continue
@@ -2858,12 +2854,12 @@ def pair_frame(pairs, live, simb, catalog):
             # a Hero Balloon's thrown Skeletrooper: the hero's card id live (form 2), no hero flag in the SIM (form 0); paired
             # across forms on exactly the same max_hp (diag_night/r3c 234407@3888)
             trooper = f == 2 and s_['form'] == 0 and c['display_name'] in HERO_THROWERS and s_['max_hp'] == a['max_hp']
-            child = f != 0 and s_['form'] == 0 and s_['max_hp'] == a['max_hp'] and big[a['card_id'], a['side']] >= 1.5*a['max_hp']
+            child = f != 0 and s_['form'] == 0 and s_['max_hp'] == a['max_hp'] and not trooper
             if (s_['form'] != f and not trooper and not child) or not .6 <= s_['max_hp']/max(1, a['max_hp']) <= 1.67:
                 continue
             d = math.hypot(a['x']-s_['x'], a['y']-s_['y'])
             if d < 2500:
-                cand.append((d, a['id'], s_['id']))
+                cand.append((d + 2500*child, a['id'], s_['id']))
     for d, a, s_ in sorted(cand):
         if pairs.get(a) is None and s_ not in taken:
             pairs[a] = s_; taken.add(s_)

@@ -1,3 +1,14 @@
+## 2026-10-17 20:12 EDT -- H-CHILDFORM landed (r5d; full +13 / -0 vs FIN7), MERGED with H-EVO-CHILD into one rule
+
+- H-CHILDFORM (diag_night/r5d/H_childform.patch): a unit an evolved / hero body made (Evo Witch / Hero Tombstone Skeletons, Evo
+  Skeleton Balloon's, Evo Goblin Giant's Spear Goblins) carries its maker's evo / hero card id live; the SIM spawns it plain. Pairs
+  across forms on exactly the same max_hp, ranked after every same-form candidate (+2500 on the distance). Full FIN7 cohort +13 /
+  -0: OVERALL 0.9054 -> 0.9065; own Log 0.964 -> 0.970, Tornado 0.919 -> 0.924, Rocket 0.915 -> 0.930; opp Goblin Barrel, Arrows,
+  Snowball up. 1,942 of 2,185 Evo Witch bodies were unpaired on FIN7.
+- Same line as H-EVO-CHILD (a01fb19, +8 / -0), which required a >= 1.5x same-card spawner on the frame. CHILDFORM is the superset
+  and measured higher, so the code now holds CHILDFORM's rule only (the spawner requirement removed). The merged rule = exactly
+  what r5d measured; the combination with NEARPARENT / POSTKILL is first scored in FIN9.
+- 86 parity tests pass. S-TESLA-HOLD (fork law) full-cohort run still going on 15617.
 ## 2026-10-17 20:01 EDT -- B6 stage B built: live_play --iw-press head (opt-in; rule / never unchanged); owner: passing ability model deploys DIRECTLY
 
 - Owner 10-17 ~19:55: no live A/B for the ability model; a model with an ability head that passes the SIM bar vs Mark CXXXVIII
