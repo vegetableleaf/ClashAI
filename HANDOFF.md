@@ -1,3 +1,17 @@
+## 2026-10-18 11:27 EDT -- FINAL entry from account 1 (usage at 100%): leash decision + where to start
+
+- Owner (final): "anchor the step-d leash to whichever one will allow the model to perform better: if it's the pro-imitation
+  model, then so be it." The evidence (habits/: pros play the doctrine habits, CLIII doesn't) favours the PRO-IMITATION policy.
+  So the REB card-choice leash anchors to the IL-cue model, very loose. If pods allow, run a twin with the anchor on CLIII and
+  keep the better on the promotion eval + fresh seeds. The step-d executor (WMI pid 10448, stepd/EXECUTOR_TICKET.md) was told
+  "CLIII": the next session must update it (edit stepd/PLAN.md + STATUS.md, or relaunch the executor with an amended ticket).
+- START HERE next session:
+  1. read the "SESSION HANDOVER" entry below (99d5b77) and the habit-diagnosis entry (6c3df2f)
+  2. tail scratchpad/gauntlet/L74/stepd/executor.log + STATUS.md
+  3. collect Stage 2 Phase D, the combo arms, the ability arms (c3_ab / c3_ctl) and round 7 (wf_21fd22dc-130) results
+  4. land verified fixes -> FIN13
+  5. stop temporary pods via stop_pod.sh when done (keep 15617, 19899, 13396, 14009)
+- Pods STOPPED today: 23408, 29286, 23363, 38758.
 ## 2026-10-18 11:02 EDT -- habit diagnosis (scratchpad/gauntlet/L74/habits/): one SIM gap behind all 3 owner complaints; pods 29286 / 23363 / 38758 stopped
 
 - Early bridge X-Bow:
