@@ -1,0 +1,65 @@
+===== CXXIV: 300 logs, 390 logged rule presses
+--- A. logged presses: NEW verdict by truth at the press frame (replay fidelity: the OLD rule geometry reproduces 390 / 390 logged presses)
+   306  pressed (same decision)                    truth=ready          n_own=1
+    37  pressed (same decision)                    truth=no_phase2      n_own=1
+    20  held: rule on the ability body says no     truth=ready          n_own=2
+     9  pressed (judged on the ability body)       truth=ready          n_own=2
+     8  pressed (judged on the ability body)       truth=no_phase2      n_own=2
+     3  withheld why=state                         truth=no_elixir      n_own=1
+     2  held: rule on the ability body says no     truth=no_phase2      n_own=2
+     2  pressed (same decision)                    truth=ready          n_own=2
+     1  withheld why=stale                         truth=no_phase2      n_own=1
+     1  withheld why=state                         truth=spent          n_own=3
+     1  withheld why=state                         truth=pending        n_own=1
+  changed presses:
+    live_play_20261016_123836.jsonl t=3870 truth=no_phase2 n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_hold frozen=0
+    live_play_20261016_124439.jsonl t=1330 truth=no_phase2 n_own=2 gate=None blue=0.41 -> pressed (judged on the ability body) | new rule: iw_clump n=2 value=7.0 target=Knight
+    live_play_20261016_124905.jsonl t=3459 truth=no_phase2 n_own=2 gate=None blue=0.41 -> pressed (judged on the ability body) | new rule: iw_clump n=5 value=25.0 target=Witch
+    live_play_20261016_155808.jsonl t=2781 truth=no_phase2 n_own=2 gate=None blue=0.41 -> pressed (judged on the ability body) | new rule: iw_clump n=2 value=6.3 target=Bowler
+    live_play_20261016_160536.jsonl t=2883 truth=no_phase2 n_own=2 gate=None blue=0.41 -> pressed (judged on the ability body) | new rule: iw_wincon MegaKnight tesla_in_hand=True elixir=3.4
+    live_play_20261016_161320.jsonl t=765 truth=no_phase2 n_own=1 gate=stale blue=0.41 -> withheld why=stale | new rule: iw_clump n=3 value=4.0 target=GoblinGang
+    live_play_20261016_161320.jsonl t=4401 truth=no_phase2 n_own=2 gate=None blue=0.41 -> pressed (judged on the ability body) | new rule: iw_clump n=2 value=6.0 target=AngryBarbarians
+    live_play_20261016_165317.jsonl t=2972 truth=no_phase2 n_own=2 gate=None blue=0.41 -> pressed (judged on the ability body) | new rule: iw_wincon Golem tesla_in_hand=False elixir=3.1
+    live_play_20261016_165317.jsonl t=3396 truth=no_phase2 n_own=2 gate=None blue=0.41 -> pressed (judged on the ability body) | new rule: iw_wincon Golem tesla_in_hand=False elixir=2.3
+    live_play_20261016_171824.jsonl t=4946 truth=no_phase2 n_own=2 gate=None blue=0.41 -> pressed (judged on the ability body) | new rule: iw_wincon SkeletonBalloon tesla_in_hand=True elixir=3.6
+    live_play_20261016_213647.jsonl t=2799 truth=no_phase2 n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_no_target
+    live_play_20261016_214908.jsonl t=5636 truth=no_elixir n_own=1 gate=state blue=0.41 -> withheld why=state | new rule: iw_clump n=2 value=8.0 target=Knight
+    live_play_20261016_220623.jsonl t=3773 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_no_target
+    live_play_20261016_223054.jsonl t=4912 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_no_target
+    live_play_20261016_223620.jsonl t=3549 truth=ready n_own=2 gate=None blue=0.41 -> pressed (judged on the ability body) | new rule: iw_clump n=5 value=5.0 target=Barbarians
+    live_play_20261016_225838.jsonl t=5253 truth=ready n_own=2 gate=None blue=0.41 -> pressed (judged on the ability body) | new rule: iw_clump n=3 value=9.0 target=SkeletonBalloon
+    live_play_20261016_231412.jsonl t=3560 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_no_target
+    live_play_20261016_232221.jsonl t=3459 truth=spent n_own=3 gate=state blue=0.399 -> withheld why=state | new rule: iw_clump n=5 value=4.2 target=MinionHorde
+    live_play_20261016_232540.jsonl t=3534 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_no_target
+    live_play_20261016_233321.jsonl t=3254 truth=no_elixir n_own=1 gate=state blue=0.41 -> withheld why=state | new rule: iw_clump n=2 value=10.0 target=Balloon
+    live_play_20261016_233956.jsonl t=3846 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_no_target
+    live_play_20261016_233956.jsonl t=4643 truth=ready n_own=2 gate=None blue=0.41 -> pressed (judged on the ability body) | new rule: iw_clump n=4 value=17.0 target=Witch
+    live_play_20261017_004607.jsonl t=2967 truth=ready n_own=2 gate=None blue=0.41 -> pressed (judged on the ability body) | new rule: iw_wincon Pekka tesla_in_hand=True elixir=2.5
+    live_play_20261017_005444.jsonl t=2904 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_no_target
+    live_play_20261017_012441.jsonl t=2858 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_no_target
+    live_play_20261017_013322.jsonl t=3178 truth=ready n_own=2 gate=None blue=0.41 -> pressed (judged on the ability body) | new rule: iw_clump n=10 value=4.8 target=AngryBarbarians
+    live_play_20261017_032250.jsonl t=5695 truth=ready n_own=2 gate=None blue=0.395 -> pressed (judged on the ability body) | new rule: iw_clump n=5 value=22.0 target=Witch
+    live_play_20261017_043438.jsonl t=5175 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_hold frozen=1
+    live_play_20261017_050051.jsonl t=3204 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_hold frozen=1
+    live_play_20261017_050540.jsonl t=4493 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_hold frozen=1
+    live_play_20261017_051049.jsonl t=3375 truth=ready n_own=2 gate=None blue=0.41 -> pressed (judged on the ability body) | new rule: iw_wincon SkeletonBalloon tesla_in_hand=False elixir=5.3
+    live_play_20261017_054016.jsonl t=5482 truth=ready n_own=2 gate=None blue=0.41 -> pressed (judged on the ability body) | new rule: iw_clump n=2 value=9.0 target=Balloon
+    live_play_20261017_055812.jsonl t=2993 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_no_target
+    live_play_20261017_055812.jsonl t=5428 truth=ready n_own=2 gate=None blue=0.41 -> pressed (judged on the ability body) | new rule: iw_clump n=2 value=8.0 target=ElectroWizard
+    live_play_20261017_062000.jsonl t=3458 truth=no_elixir n_own=1 gate=state blue=0.41 -> withheld why=state | new rule: iw_wincon HogRider tesla_in_hand=False elixir=1.1
+    live_play_20261017_070322.jsonl t=3400 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_no_target
+    live_play_20261017_073400.jsonl t=5473 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_hold frozen=1
+    live_play_20261017_080114.jsonl t=3081 truth=pending n_own=1 gate=state blue=0.41 -> withheld why=state | new rule: iw_clump n=2 value=4.0 target=Knight
+    live_play_20261017_095049.jsonl t=3136 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_no_target
+    live_play_20261017_095432.jsonl t=3034 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_no_target
+    live_play_20261017_095432.jsonl t=3473 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_no_target
+    live_play_20261017_102732.jsonl t=3740 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_no_target
+    live_play_20261017_102732.jsonl t=4352 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_hold frozen=2
+    live_play_20261017_115914.jsonl t=5292 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_no_target
+    live_play_20261017_130511.jsonl t=3434 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_hold frozen=0
+--- B. ready-button frames (button read ready); 245 more frames had no own hero (old rule: iw_unseen, no press; gate: state) and are left out below
+  gate verdict by truth: {(None, 'no_phase2'): 6605, ('stale', 'no_phase2'): 21, ('band', 'no_phase2'): 8, (None, 'ready'): 54169, ('state', 'no_elixir'): 37, ('state', 'no_own_action'): 122, ('state', 'spent'): 56, ('state', 'pending'): 17, ('state', 'state11'): 1}
+  judged body changed: 3300 frames; n_own: {2: 3141, 3: 159}; truth on the ability body: {'no_phase2': 489, 'ready': 2804, 'no_elixir': 6, 'state11': 1}
+  geometry old -> new on those frames (gate passing only): {(False, False): 2321, (True, False): 315, (True, True): 296, (False, True): 345}
+  identical by construction (same body, gate passes): 57497 frames, geometry equal on all
+  gate fires on single-body frames: {('stale', 'no_phase2'): 5, ('band', 'no_phase2'): 8, ('state', 'no_elixir'): 31, ('state', 'no_own_action'): 122, ('state', 'pending'): 17, ('state', 'spent'): 9}

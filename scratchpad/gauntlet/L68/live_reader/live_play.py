@@ -53,7 +53,8 @@ REPO = HERE.parents[3]
 sys.path.insert(0, str(REPO))
 from pipeline.live_gen_v2 import GenPilot, posture_summary  # noqa: E402
 from pipeline.obs_contract import _catalog_names  # noqa: E402
-from hero_button import HeroButton, hero_ids, should_press  # noqa: E402
+from hero_button import HeroButton, hero_ids, press_gate, should_press  # noqa: E402
+from ability_head_live import deploy_state  # noqa: E402
 from friend_nav import MenuGuard  # noqa: E402
 import emote_spam  # noqa: E402
 
@@ -574,6 +575,9 @@ def main() -> int:
                          "stops the button screenshots. head (B6 stage B) = the checkpoint's LEARNED ability head decides "
                          "instead of should_press, greedily, on a ready button after the frame's model decision "
                          "(ability_head_live.py; refuses a checkpoint without a head). Default rule = unchanged")
+    ap.add_argument("--iw-press-head-decode", choices=("greedy", "sample"), default="greedy",
+                    help="with --iw-press head: greedy = press iff p > 0.5 (default, unchanged); sample = Bernoulli(p) "
+                         "as the head was trained (RL rollouts), from a seeded rng (ability_head_live.SAMPLE_SEED)")
     ap.add_argument("--matches", type=int, default=1,
                     help="play this many matches back to back (default 1 = one match, no navigation). > 1 needs "
                          "--friend: between matches friend_nav.py starts the next FRIENDLY 1v1 against that friend's "
@@ -667,6 +671,9 @@ def main() -> int:
               flush=True)
     if a.iw_press == "head" and a.no_ability:
         print("refusing: --iw-press head decides on the watched hero button; --no-ability stops watching it")
+        return 2
+    if a.iw_press_head_decode != "greedy" and a.iw_press != "head":
+        print("refusing: --iw-press-head-decode is the learned head's decoding; it needs --iw-press head")
         return 2
     if a.iw_press == "head" and (a.iw_press_pstar is not None or a.no_iw_pro_gate):
         print("[live] note: --iw-press head replaces should_press, so --iw-press-pstar / --no-iw-pro-gate have no effect",
@@ -896,13 +903,17 @@ def load_pilot(a, decision_cfg, ckpt=None):
         pilot.cues = LiveCues()                  # loads + sha-checks the card table the SIM embeds
     if getattr(a, "iw_press", "rule") == "head":   # B6 stage B; rule / never: nothing loaded, unchanged
         from ability_head_live import load_head
-        pilot.ability = load_head(ckpt or a.ckpt, device, pilot)   # refuses (SystemExit) a checkpoint without a head
+        pilot.ability = load_head(ckpt or a.ckpt, device, pilot,   # refuses (SystemExit) a checkpoint without a head
+                                  decode=getattr(a, "iw_press_head_decode", "greedy"))
     return device, pilot
 
 
 def head_log(a) -> dict:
     """--iw-press head (B6 stage B), only when on: rule / never leave the --check JSON and the start event unchanged."""
-    return {"iw_press": "head"} if getattr(a, "iw_press", "rule") == "head" else {}
+    if getattr(a, "iw_press", "rule") != "head":
+        return {}
+    dec = getattr(a, "iw_press_head_decode", "greedy")
+    return {"iw_press": "head", **({"iw_press_head_decode": dec} if dec != "greedy" else {})}
 
 
 def cue_log(pilot, reader=None) -> dict:
@@ -1045,6 +1056,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                                                   on_frame=guard.feed if guard else None)
     ab_pending, last_bstate = None, None
     ab_withheld = -10 ** 9                               # --iw-press never: tick of the last ability_withheld log line
+    ab_gated = -10 ** 9                                  # press_gate: tick of the last ability_withheld (state/stale/band)
     iw_head = getattr(a, "iw_press", "rule") == "head"   # B6 stage B: the learned head decides after pilot.decide(f)
     head_due, ab_held = False, -10 ** 9                  # head: this frame's button is ready / tick of the last ability_held
     sampler, extra = READERS[a.reader]
@@ -1238,23 +1250,35 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                     elif tick - ab_pending["tick"] > CONFIRM_TICKS:
                         W(event="ability_unconfirmed", tick=tick, button_after=st)
                         ab_pending = None
-                elif iw_head and st == "ready" and not pending and not sched and newest and advanced and guard_clear():
-                    head_due = True                      # decided below, on this frame's model decision (its g)
                 elif st == "ready" and not pending and not sched and newest and advanced and guard_clear():
-                    press, why = should_press(f, side, hids, pilot=None if a.no_iw_pro_gate else pilot,
-                                              p_star=getattr(a, "iw_press_pstar", None))
-                    if press and getattr(a, "iw_press", "rule") == "never":
-                        if tick - ab_withheld >= 20:     # at most one line per second while the button stays ready
-                            W(event="ability_withheld", tick=tick, why=why, elixir=me["elixir_raw"] / 1e4)
-                            ab_withheld = tick
-                    elif press:
-                        W(event="ability", tick=tick, t_dev=t_dev, why=why, tap=list(button.point),
-                          elixir=me["elixir_raw"] / 1e4)
-                        if not a.dry_run and guard_clear():
-                            emote_hold(tick)
-                            if not input_cmd(f"input tap {button.point[0]} {button.point[1]}"):
-                                W(event="stop", why="tap_timeout", tick=tick, input="ability"); break
-                            ab_pending = {"t": now, "tick": tick, "elixir_raw": me["elixir_raw"]}
+                    # perception gate (rule AND head): phase-2 ability state, else one press per deployment + blue band
+                    try:
+                        spent_n = max(deploy_state(pilot, _catalog_names().get(int(h), str(h)), tick)[1] for h in hids)
+                    except Exception:                    # noqa: BLE001 -- a memory error must not end a live match
+                        spent_n = 0                      # (no memory: the band check still applies)
+                    gate = press_gate(f, side, hids, button.blue, spent_n)
+                    if gate:
+                        if tick - ab_gated >= 20:        # at most one line per second while the button stays ready
+                            W(event="ability_withheld", tick=tick, why=gate, blue=round(button.blue, 3),
+                              elixir=me["elixir_raw"] / 1e4)
+                            ab_gated = tick
+                    elif iw_head:
+                        head_due = True                  # decided below, on this frame's model decision (its g)
+                    else:
+                        press, why = should_press(f, side, hids, pilot=None if a.no_iw_pro_gate else pilot,
+                                                  p_star=getattr(a, "iw_press_pstar", None))
+                        if press and getattr(a, "iw_press", "rule") == "never":
+                            if tick - ab_withheld >= 20:     # at most one line per second while the button stays ready
+                                W(event="ability_withheld", tick=tick, why=why, elixir=me["elixir_raw"] / 1e4)
+                                ab_withheld = tick
+                        elif press:
+                            W(event="ability", tick=tick, t_dev=t_dev, why=why, tap=list(button.point),
+                              elixir=me["elixir_raw"] / 1e4)
+                            if not a.dry_run and guard_clear():
+                                emote_hold(tick)
+                                if not input_cmd(f"input tap {button.point[0]} {button.point[1]}"):
+                                    W(event="stop", why="tap_timeout", tick=tick, input="ability"); break
+                                ab_pending = {"t": now, "tick": tick, "elixir_raw": me["elixir_raw"]}
             for rp, rel in list(released.items()):       # --early-release-margin: released taps that land late
                 if (me["hand_deck_indices"][rp] != rel["me"]["hand_deck_indices"][rp]
                         and not any(pd["d"]["hand_pos"] == rp for pd in pending)):

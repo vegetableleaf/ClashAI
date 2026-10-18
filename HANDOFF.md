@@ -1,3 +1,28 @@
+## 2026-10-18 05:33 EDT -- Hero IW press perception gate LIVE (P1 + P2; allowed perception fix); audit: "trigger happy" = misreads + bridge freezes + low-elixir presses
+
+- Audit (round-6 Ability agent; scratchpad/gauntlet/L74/ability_live/audit/):
+  - The bot does NOT press more than pros (24.7% of deploys vs 31.6%), and its in-game timing matches theirs (median 4.2 s vs
+    4.15 s; my earlier "2.8 s vs 4.15 s" omitted the 1.15 s tap latency = contradicted).
+  - 13.3% of CXXXVIII presses were misreads: 3 re-presses on a spent charge, 15 judged around the OLDER of two IWs (the newer one
+    held the ability). The button reads 'ready' on the high-arena floor (blue > 0.48), but that produced 0 presses.
+  - The freeze cube spawns 1.6 tiles behind the closest IW-hit enemy: median 7.8 tiles in front of our princess line, and 24%
+    on the enemy half.
+  - It presses at >= 5 elixir only 24-39% of the time (pros 62%), with a win condition present 56% (pros 19.5%).
+  - The learned head's IW-centred features run AGAINST the frozen value (Spearman -0.32): use target-centred features (+0.43-0.49)
+    for the next head.
+- Fix (hero_button.pick_hero / press_gate; live_play press path; ability_head_live.hero_of):
+  - gate rule AND head on the phase-2 ability state (state_raw 2 + charges >= 1; without phase 2: one press per deployment +
+    blue band 0.38-0.44)
+  - judge the board around the IW body that carries the ability block, else the newest generation
+  - withheld presses logged (why = state / stale / band)
+- Offline replay, 137 CXXXVIII presses:
+  - blocked 3 spent + 1 pending
+  - 15 wrong-body re-judged: 8 held, 7 pressed
+  - 18,303 other ready frames identical
+  - two-IW frames: 95 new passes / 96 new fails
+- Tests: test_ability_gate 8 + suite 249 pass (the 2 test_live_entry failures predate this). --check PASS.
+- Also in this commit (ab2 worker): live_play --iw-press-head-decode greedy|sample (opt-in; default greedy unchanged; refused
+  without --iw-press head).
 ## 2026-10-18 04:58 EDT -- parity round 6: harness fixes LANDED (r6b joint, H-POSTKILL-T0, H-FORM-ELIXIR + H-MK-SEQ), every one independently reproduced
 
 - Workflow parity-round6 (wf_72d868ba-9f3): 4 buckets + one verifier per 'land' patch, each verifier on a clean HEAD tree.

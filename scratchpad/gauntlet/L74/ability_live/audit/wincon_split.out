@@ -1,0 +1,4 @@
+CXXXVIII wincon presses 60 tesla_in_hand {'False': 37, 'True': 23} elixir med 3.39 <4: 41 | clump elixir med 3.63 <4: 47 / 76
+   wincons: [('HogRider', 14), ('MegaKnight', 11), ('RoyalHogs', 9), ('ElectroGiant', 6), ('Balloon', 5), ('Pekka', 4), ('Miner', 2), ('ElixirGolem', 2)]
+CXXIV wincon presses 136 tesla_in_hand {'False': 79, 'True': 57} elixir med 3.21 <4: 100 | clump elixir med 3.76 <4: 143 / 254
+   wincons: [('HogRider', 24), ('Balloon', 12), ('MegaKnight', 11), ('Pekka', 11), ('Miner', 10), ('SkeletonBalloon', 10), ('RoyalHogs', 9), ('ElixirGolem', 8)]

@@ -10,7 +10,8 @@ the same states. Live substitutions (no engine here; each is approximate, not ex
   * body elixir (15): unit_values.json (RoyaleAPI cost / units spawned), else the card cost (one body), else 0 -- SIM:
     the engine catalogue's elixir / count of the body's card
   * the hero Goblins flag is not skipped (the reader cannot tell it from a building)
-The press is e1_eval.ability_decide's own greedy rule (p > 0.5), called on a one-match stand-in.
+The press is e1_eval.ability_decide's own rule, called on a one-match stand-in: greedy (p > 0.5, default) or, with
+live_play --iw-press-head-decode sample, Bernoulli(p) as in training.
 """
 from __future__ import annotations
 
@@ -120,10 +121,10 @@ def head_features(ents, side: int, tick: int, my_elixir: float, hero: dict, card
 
 
 def hero_of(frame, side: int, hids):
-    """My hero body (hero_button.should_press's pick: hero card ids or their reader form ids), or None."""
-    from hero_button import hero_form_ids
-    ids = set(hids) | hero_form_ids(set(hids))
-    return next((e for e in frame["entities"] if int(e["side"]) == side and int(e["card_id"]) in ids), None)
+    """My hero body (hero_button.should_press's pick, hero_button.pick_hero: hero card ids or their reader form ids;
+    the body carrying the phase-2 ability block, else the newest generation), or None."""
+    from hero_button import hero_form_ids, pick_hero
+    return pick_hero(frame, side, set(hids) | hero_form_ids(set(hids)))
 
 
 def deploy_state(pilot, card: str, tick: int) -> tuple[int, int]:
@@ -144,7 +145,8 @@ def head_press(ability: dict, g, feat) -> tuple[float, bool]:
     """(p, press) of e1_eval.ability_decide in ``ability["mode"]`` (greedy: p > 0.5) for one option ``feat`` with trunk
     feature ``g`` [1, d_g]."""
     from pipeline.e1_eval import ability_decide
-    m = SimpleNamespace(_ability_opts=[{"cmd": 0, "feat": feat}], n_dec=0, side=0, _ability_commands={0: []})
+    m = SimpleNamespace(_ability_opts=[{"cmd": 0, "feat": feat}], n_dec=0, side=0, _ability_commands={0: []},
+                        rng_ability=ability.get("rng"))   # sample mode: the head's own seeded rng (load_head)
     ability_decide([m], {"g": g}, {"ability": ability})
     return float(m.ab_stats["p_sum"]), bool(m.ab_stats["presses"])
 
@@ -182,10 +184,17 @@ def decide(pilot, frame, side: int, hids) -> tuple[bool, str, list | None]:
                         pilot.ability)
 
 
-def load_head(ckpt, device: str, pilot) -> dict:
-    """The checkpoint's ability head (rl_royale.load_ability_head, greedy) for --iw-press head; SystemExit (refusing)
-    when it has none or its g width is not the model's."""
+SAMPLE_SEED = 0     # --iw-press-head-decode sample: one rng per live process (a fixed seed: the draw sequence is reproducible)
+
+
+def load_head(ckpt, device: str, pilot, decode: str = "greedy") -> dict:
+    """The checkpoint's ability head (rl_royale.load_ability_head) for --iw-press head, decoded ``decode``: greedy
+    (p > 0.5, default) or sample (Bernoulli(p) from ab["rng"], seeded SAMPLE_SEED); SystemExit (refusing) when it has
+    none or its g width is not the model's."""
+    import numpy as np
     from pipeline.rl_royale import load_ability_head
+    if decode not in ("greedy", "sample"):
+        raise SystemExit(f"refusing: --iw-press-head-decode must be greedy or sample, got {decode!r}")
     ab = load_ability_head(ckpt, str(device))
     if ab is None:
         raise SystemExit(f"refusing: --iw-press head needs a checkpoint with a learned ability head (rl['ability_head'], "
@@ -194,4 +203,6 @@ def load_head(ckpt, device: str, pilot) -> dict:
     width = pilot.model.value_head.in_features
     if d_g != width:
         raise SystemExit(f"refusing: {ckpt}'s ability head reads g of width {d_g}, the model's g is {width}")
+    if decode == "sample":
+        ab.update(mode="sample", rng=np.random.default_rng(SAMPLE_SEED))
     return ab

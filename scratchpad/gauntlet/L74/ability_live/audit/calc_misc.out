@@ -1,0 +1,18 @@
+
+== CXXXVIII: 117 truth-ready presses, 107 with a full 16 s window
+  pending wait (ability active -> cube) s: p50/p75/p90/max 0.25 0.3 0.7 54.65 | > 1 s: 7 | > 3 s: 2 / 112
+  frozen elixir value per press: {'0': 3, '2-4': 4, '4-8': 33, '<2': 3, '>=8': 64}
+   iw_clump: n=57 frozen value < 2: 4; median value 12.5
+   iw_wincon: n=50 frozen value < 2: 2; median value 7.0
+  frozen bodies: 451 | already dying (<30% HP, dead within 1 s of the freeze start): 46 value 158.2 of 1521.1
+  frozen bodies on the enemy half at freeze start: 130
+  IW bodies with >1 press: 9
+
+== CXXIV: 308 truth-ready presses, 282 with a full 16 s window
+  pending wait (ability active -> cube) s: p50/p75/p90/max 0.3 0.3 0.8 35.7 | > 1 s: 25 | > 3 s: 17 / 285
+  frozen elixir value per press: {'0': 16, '2-4': 16, '4-8': 76, '<2': 5, '>=8': 169}
+   iw_clump: n=179 frozen value < 2: 10; median value 11.0
+   iw_wincon: n=103 frozen value < 2: 11; median value 7.0
+  frozen bodies: 1021 | already dying (<30% HP, dead within 1 s of the freeze start): 133 value 383.1 of 3611.7
+  frozen bodies on the enemy half at freeze start: 258
+  IW bodies with >1 press: 8

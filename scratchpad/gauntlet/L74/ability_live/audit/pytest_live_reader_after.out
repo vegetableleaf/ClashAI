@@ -1,0 +1,146 @@
+Windows fatal exception: access violation
+
+Current thread 0x00009d24 (most recent call first):
+  File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\trophy_read.py", line 30 in glyphs
+  File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\trophy_read.py", line 46 in _digits
+  File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\trophy_read.py", line 57 in total
+  File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\test_trophy_read.py", line 31 in <module>
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\_pytest\assertion\rewrite.py", line 188 in exec_module
+  File "<frozen importlib._bootstrap>", line 935 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 1331 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1360 in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1395 in _gcd_import
+  File "C:\Users\benpe\AppData\Local\Programs\Python\Python313\Lib\importlib\__init__.py", line 88 in import_module
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\_pytest\pathlib.py", line 596 in import_path
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\_pytest\python.py", line 508 in importtestmodule
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\_pytest\python.py", line 561 in _getobj
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\_pytest\python.py", line 290 in obj
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\_pytest\python.py", line 577 in _register_setup_module_fixture
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\_pytest\python.py", line 564 in collect
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\_pytest\runner.py", line 406 in collect
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\_pytest\runner.py", line 361 in from_call
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\_pytest\runner.py", line 408 in pytest_make_collect_report
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\pluggy\_callers.py", line 121 in _multicall
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\pluggy\_manager.py", line 120 in _hookexec
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\pluggy\_hooks.py", line 512 in __call__
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\_pytest\runner.py", line 589 in collect_one_node
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\_pytest\main.py", line 895 in _collect_one_node
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\_pytest\main.py", line 1032 in genitems
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\_pytest\main.py", line 1035 in genitems
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\_pytest\main.py", line 869 in perform_collect
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\_pytest\main.py", line 394 in pytest_collection
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\pluggy\_callers.py", line 121 in _multicall
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\pluggy\_manager.py", line 120 in _hookexec
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\pluggy\_hooks.py", line 512 in __call__
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\_pytest\main.py", line 383 in _main
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\_pytest\main.py", line 330 in wrap_session
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\_pytest\main.py", line 377 in pytest_cmdline_main
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\pluggy\_callers.py", line 121 in _multicall
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\pluggy\_manager.py", line 120 in _hookexec
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\pluggy\_hooks.py", line 512 in __call__
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\_pytest\config\__init__.py", line 229 in _main
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\_pytest\config\__init__.py", line 253 in _console_main
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\pytest\__main__.py", line 9 in <module>
+  File "<frozen runpy>", line 88 in _run_code
+  File "<frozen runpy>", line 203 in _run_module_as_main
+........................................................................ [ 28%]
+........................................................................ [ 57%]
+............s..................................F.F...................... [ 85%]
+....................................                                     [100%]
+================================== FAILURES ===================================
+__________________ test_preflight_loads_default_without_adb ___________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001D3D387FB60>
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-720/test_preflight_loads_default_w0')
+capsys = <_pytest.capture.CaptureFixture object at 0x000001D3D3945850>
+
+    def test_preflight_loads_default_without_adb(monkeypatch, tmp_path, capsys):
+        checkpoint, _ = args(monkeypatch, tmp_path, '--check')
+        loaded = []
+        def pilot(path, **kw):
+            loaded.append((path, kw))
+            return SimpleNamespace(feature_version=4, decision_options=kw['decision_options'])
+        monkeypatch.setattr(lp, 'GenPilot', pilot)
+        monkeypatch.setattr(lp, 'screen_size', lambda: pytest.fail('Offline check touched ADB'))
+        assert lp.main() == 0
+        assert loaded[0][0] == str(checkpoint)
+        kw = loaded[0][1]
+        import torch                                    # owner 2026-10-08: default --device auto (GPU when available)
+        assert kw['device'] == ('cuda' if torch.cuda.is_available() else 'cpu')
+        assert kw['gate_tau'] == .35 and kw['public_audit']
+>       assert not kw['decision_options'].active
+E       AssertionError: assert not True
+E        +  where True = DecisionOptions(card_choice='argmax', card_ratio=0.7, card_T=1.0, spell_aim='rocket_area', tau_phase=(0.35, 0.45, 0.55...cket_value_lead='off', rocket_value_idle='off', rocket_value_min_elixir=0.0, card_levels=(('Log', 15), ('Rocket', 16))).active
+
+test_live_entry.py:36: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[live] LIVE_OPTIONS applied from C:\Users\benpe\ClashBot\scratchpad\gauntlet\L70\live\LIVE_OPTIONS: ['afford_ticks', 'capture_p3', 'card_levels', 'cue_inputs', 'early_release_margin', 'extrapolate', 'fast_input', 'follow_up_taps', 'gate_decode', 'gate_hazard_min_elixir', 'gate_hazard_threatened', 'hero_ability_spec', 'identity_ext', 'iw_press_pstar', 'lethal_log', 'lethal_rocket', 'log_aim', 'log_air', 'log_frames', 'own_effects', 'rocket_dead_target', 'rocket_tornado', 'rocket_tornado_lone', 'rocket_tornado_order', 'rocket_tornado_window', 'rocket_value', 'rocket_value_hitbox', 'rocket_value_mode', 'spell_aim', 'tap_gap_ms', 'tau_phase', 'tau_threatened', 'tornado_river', 'xbow_class', 'xbow_class_floor', 'xbow_dead_lane']; explicit flags: []
+[live] note: tau_phase 1x/2x/OT = (0.35, 0.45, 0.55) sets the play threshold; --tau 0.35 is not used by the gate (it equals the 1x value)
+[live] checkpoint: C:\Users\benpe\AppData\Local\Temp\pytest-of-benpe\pytest-720\test_preflight_loads_default_w0\accepted.pt
+[live] selected by: C:\Users\benpe\AppData\Local\Temp\pytest-of-benpe\pytest-720\test_preflight_loads_default_w0\CKPT_OVERRIDE
+[live] SHA256: e6a8036e9cb9f8c9f52ffd985c4d6f0498d94e6919f4c67b6423da0176e549fa
+{"check": "LIVE_CHECK_PASS", "checkpoint": "C:\\Users\\benpe\\AppData\\Local\\Temp\\pytest-of-benpe\\pytest-720\\test_preflight_loads_default_w0\\accepted.pt", "sha256": "e6a8036e9cb9f8c9f52ffd985c4d6f0498d94e6919f4c67b6423da0176e549fa", "feature_version": 4, "device": "cuda", "tau": 0.35, "anti_leak": false, "anti_leak_elixir": null, "anti_leak_seconds": null, "extrapolate": 24, "afford_ticks": 23, "early_release_margin": 8, "fast_input": true, "tap_gap_ms": 0, "follow_up_taps": true, "public_audit": true, "legal_guard": true, "predict_drops": false, "own_effects": true, "iw_press_pstar": 0.03, "hero_ability_spec": "supplement", "identity_ext": true, "decision_options": {"card_choice": "argmax", "card_ratio": 0.7, "card_T": 1.0, "spell_aim": "rocket_area", "tau_phase": [0.35, 0.45, 0.55], "xbow_class": "class_sample", "xbow_class_floor": 0.3, "log_aim": "log_barrel", "log_air": "block", "gate_decode": "hazard_below_tau", "gate_hazard_min_elixir": 9.0, "gate_hazard_quiet": false, "gate_hazard_threatened": 2.0, "gate_hazard_threat_radius": 0.0, "lethal_rocket": "ot_behind", "lethal_log": "on", "xbow_dead_lane": "block", "rocket_dead_target": "block", "tau_threatened": 0.2, "rocket_value": 9.0, "rocket_value_mode": "damage", "rocket_value_min_y": 16.0, "rocket_value_max_left": 99.0, "rocket_value_threat": "off", "rocket_tornado": "only", "tornado_river": "full", "rocket_tornado_window": "measured", "rocket_tornado_order": "either", "rocket_tornado_lone": "combo", "rocket_value_towers": "off", "rocket_tornado_lead": "off", "rocket_value_hitbox": "edge", "rocket_value_lead": "off", "rocket_value_idle": "off", "rocket_value_min_elixir": 0.0, "card_levels": [["Log", 15], ["Rocket", 16]]}, "live_options": {"status": "applied", "path": "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L70\\live\\LIVE_OPTIONS", "file": "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L70\\live\\LIVE_OPTIONS", "from_file": {"afford_ticks": 23, "capture_p3": true, "card_levels": ["Rocket=16", "Log=15"], "cue_inputs": "on", "early_release_margin": 8, "extrapolate": 24, "fast_input": true, "follow_up_taps": true, "gate_decode": "hazard_below_tau", "gate_hazard_min_elixir": 9.0, "gate_hazard_threatened": 2.0, "hero_ability_spec": "supplement", "identity_ext": "on", "iw_press_pstar": 0.03, "lethal_log": "on", "lethal_rocket": "ot_behind", "log_aim": "log_barrel", "log_air": "block", "log_frames": true, "own_effects": true, "rocket_dead_target": "block", "rocket_tornado": "only", "rocket_tornado_lone": "combo", "rocket_tornado_order": "either", "rocket_tornado_window": "measured", "rocket_value": 9.0, "rocket_value_hitbox": "edge", "rocket_value_mode": "damage", "spell_aim": "rocket_area", "tap_gap_ms": 0, "tau_phase": [0.35, 0.45, 0.55], "tau_threatened": 0.2, "tornado_river": "full", "xbow_class": "class_sample", "xbow_class_floor": 0.3, "xbow_dead_lane": "block"}, "explicit": [], "ignored": false, "message": "LIVE_OPTIONS applied from C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L70\\live\\LIVE_OPTIONS: ['afford_ticks', 'capture_p3', 'card_levels', 'cue_inputs', 'early_release_margin', 'extrapolate', 'fast_input', 'follow_up_taps', 'gate_decode', 'gate_hazard_min_elixir', 'gate_hazard_threatened', 'hero_ability_spec', 'identity_ext', 'iw_press_pstar', 'lethal_log', 'lethal_rocket', 'log_aim', 'log_air', 'log_frames', 'own_effects', 'rocket_dead_target', 'rocket_tornado', 'rocket_tornado_lone', 'rocket_tornado_order', 'rocket_tornado_window', 'rocket_value', 'rocket_value_hitbox', 'rocket_value_mode', 'spell_aim', 'tap_gap_ms', 'tau_phase', 'tau_threatened', 'tornado_river', 'xbow_class', 'xbow_class_floor', 'xbow_dead_lane']; explicit flags: []", "tau_note": "note: tau_phase 1x/2x/OT = (0.35, 0.45, 0.55) sets the play threshold; --tau 0.35 is not used by the gate (it equals the 1x value)"}, "cue_inputs": {"active": false, "reader": "v2", "why": "the checkpoint has no cue layer: --cue-inputs is a no-op for it"}}
+______________ test_manual_run_records_locally_and_explicit_wins ______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001D3D38BA3C0>
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-720/test_manual_run_records_locall0')
+
+    def test_manual_run_records_locally_and_explicit_wins(monkeypatch, tmp_path):
+        checkpoint, pointer = args(monkeypatch, tmp_path)
+        explicit = tmp_path / 'explicit.pt'
+        explicit.write_bytes(b'override')
+        monkeypatch.setattr(sys, 'argv', sys.argv + ['--ckpt', str(explicit)])
+        monkeypatch.setattr(lp, 'screen_size', lambda: (900, 1600))
+        monkeypatch.setattr(lp, 'GenPilot', lambda *a, **kw: object())
+        observed = []
+        def play(a, pilot, lay, device, renders, **kw):
+            observed.append((a, kw))
+            return 'battle_inactive'
+        monkeypatch.setattr(lp, 'play_match', play)
+>       assert lp.main() == 0
+               ^^^^^^^^^
+
+test_live_entry.py:59: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+live_play.py:762: in main
+    device, pilot = load_pilot(a, decision_cfg)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+a = Namespace(card_choice='argmax', card_ratio=0.7, card_T=1.0, spell_aim='rocket_area', tau_phase=[0.35, 0.45, 0.55], xbo...alue)'}, ckpt_source='explicit --ckpt', ckpt_sha256='ce603774135699e9abdfd65eb1f2733774da58af91782528e82ef5f9efdb8fba')
+decision_cfg = {'card_choice': 'argmax', 'card_ratio': 0.7, 'card_T': 1.0, 'spell_aim': 'rocket_area', ...}
+ckpt = None
+
+    def load_pilot(a, decision_cfg, ckpt=None):
+        import torch
+        from pipeline.decision_options import options_from_config
+        torch.set_num_threads(4)
+        device = ("cuda" if torch.cuda.is_available() else "cpu") if a.device == "auto" else a.device
+        pilot = GenPilot(ckpt or a.ckpt, device=device, gate_tau=a.tau, use_counter=not a.no_opp_counter,
+                         extrapolate_ticks=a.extrapolate, decision_options=options_from_config(decision_cfg),
+                         decision_seed=a.decision_seed, public_audit=a.public_audit,
+                         **({"predict_drops": True} if getattr(a, "predict_drops", False) else {}),
+                         **({"own_effects": True} if getattr(a, "own_effects", False) else {}),
+                         **({"hero_ability_spec": a.hero_ability_spec} if getattr(a, "hero_ability_spec", "off") != "off" else {}))
+>       pilot.legal_guard = not getattr(a, 'no_legal_guard', False)
+        ^^^^^^^^^^^^^^^^^
+E       AttributeError: 'object' object has no attribute 'legal_guard' and no __dict__ for setting new attributes
+
+live_play.py:887: AttributeError
+---------------------------- Captured stdout call -----------------------------
+[live] LIVE_OPTIONS applied from C:\Users\benpe\ClashBot\scratchpad\gauntlet\L70\live\LIVE_OPTIONS: ['afford_ticks', 'capture_p3', 'card_levels', 'cue_inputs', 'early_release_margin', 'extrapolate', 'fast_input', 'follow_up_taps', 'gate_decode', 'gate_hazard_min_elixir', 'gate_hazard_threatened', 'hero_ability_spec', 'identity_ext', 'iw_press_pstar', 'lethal_log', 'lethal_rocket', 'log_aim', 'log_air', 'log_frames', 'own_effects', 'rocket_dead_target', 'rocket_tornado', 'rocket_tornado_lone', 'rocket_tornado_order', 'rocket_tornado_window', 'rocket_value', 'rocket_value_hitbox', 'rocket_value_mode', 'spell_aim', 'tap_gap_ms', 'tau_phase', 'tau_threatened', 'tornado_river', 'xbow_class', 'xbow_class_floor', 'xbow_dead_lane']; explicit flags: []
+[live] note: tau_phase 1x/2x/OT = (0.35, 0.45, 0.55) sets the play threshold; --tau 0.35 is not used by the gate (it equals the 1x value)
+[live] checkpoint: C:\Users\benpe\AppData\Local\Temp\pytest-of-benpe\pytest-720\test_manual_run_records_locall0\explicit.pt
+[live] selected by: explicit --ckpt
+[live] SHA256: ce603774135699e9abdfd65eb1f2733774da58af91782528e82ef5f9efdb8fba
+============================== warnings summary ===============================
+test_ckpt_alternate.py::test_check_loads_fv4_and_fv5_side_by_side
+test_pipeline_decisions.py::test_pending_view_hand_elixir_past_and_mask
+  C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+    self.encoder = nn.TransformerEncoder(enc, layers)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED test_live_entry.py::test_preflight_loads_default_without_adb - Asserti...
+FAILED test_live_entry.py::test_manual_run_records_locally_and_explicit_wins
+2 failed, 249 passed, 1 skipped, 2 warnings in 434.32s (0:07:14)

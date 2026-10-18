@@ -1,0 +1,53 @@
+CXXIV 20261016_214908.jsonl 5636 no_elixir nIW 1 hero IceWizardHero eff None -5636 cube None frozen 0 0 | iw_clump n=2 value=8.0 target=Knight | pro_hazard p=0.2636 >
+CXXIV 20261016_220623.jsonl 3773 stateNone nIW 2 hero IceWizardHero eff None -3773 cube 62 frozen 3 13.0 | iw_clump n=3 value=14.0 target=Witch | pro_hazard p=0.0437 >
+CXXIV 20261016_223054.jsonl 4912 stateNone nIW 2 hero IceWizardHero eff None -4912 cube 52 frozen 4 18.5 | iw_clump n=2 value=10.0 target=Witch | pro_hazard p=0.0309 >
+CXXIV 20261016_223620.jsonl 3549 stateNone nIW 2 hero IceWizardHero eff None -3549 cube 29 frozen 3 3.0 | iw_clump n=5 value=5.0 target=Barbarians | pro_hazard p=0.03
+CXXIV 20261016_225838.jsonl 5253 stateNone nIW 2 hero IceWizardHero eff None -5253 cube 30 frozen 2 4.5 | iw_wincon SkeletonBalloon tesla_in_hand=False elixir=8.2 | p
+CXXIV 20261016_231412.jsonl 3560 stateNone nIW 2 hero IceWizardHero eff None -3560 cube 28 frozen 2 7.5 | iw_clump n=2 value=9.0 target=Pekka | pro_hazard p=0.2808 >=
+CXXIV 20261016_232221.jsonl 3459 spent nIW 1 hero IceWizardHero eff None -3459 cube None frozen 2 1.67 | iw_clump n=5 value=4.2 target=MinionHorde | pro_hazard p=0.0
+CXXIV 20261016_232540.jsonl 3534 stateNone nIW 2 hero IceWizardHero eff None -3534 cube 48 frozen 7 21.0 | iw_clump n=2 value=11.0 target=MegaKnight | pro_hazard p=0.0
+CXXIV 20261016_233321.jsonl 3254 no_elixir nIW 1 hero IceWizardHero eff 2 6 cube None frozen 0 0 | iw_clump n=2 value=10.0 target=Balloon | pro_hazard p=0.0619
+CXXIV 20261016_233956.jsonl 3846 stateNone nIW 2 hero IceWizardHero eff None -3846 cube 26 frozen 7 29.0 | iw_clump n=3 value=12.0 target=Witch | pro_hazard p=0.0887 >
+CXXIV 20261016_233956.jsonl 4643 stateNone nIW 2 hero IceWizardHero eff None -4643 cube 28 frozen 3 12.0 | iw_clump n=4 value=17.0 target=Witch | pro_hazard p=0.1044 >
+CXXIV 20261017_004607.jsonl 2967 stateNone nIW 2 hero IceWizardHero eff None -2967 cube 30 frozen 1 7.0 | iw_wincon Pekka tesla_in_hand=True elixir=2.5 | pro_hazard p
+CXXIV 20261017_005444.jsonl 2904 stateNone nIW 2 hero IceWizardHero eff None -2904 cube 79 frozen 1 0.5 | iw_clump n=2 value=10.0 target=Witch | pro_hazard p=0.2497 >
+CXXIV 20261017_012441.jsonl 2858 stateNone nIW 2 hero IceWizardHero eff None -2858 cube 28 frozen 2 10.0 | iw_clump n=2 value=9.0 target=Witch | pro_hazard p=0.0823 >=
+CXXIV 20261017_013322.jsonl 3178 stateNone nIW 2 hero IceWizardHero eff None -3178 cube 62 frozen 4 2.0 | iw_clump n=10 value=4.8 target=AngryBarbarians | pro_hazard 
+CXXIV 20261017_032250.jsonl 5695 stateNone nIW 2 hero IceWizardHero eff None -5695 cube 28 frozen 5 20.0 | iw_clump n=5 value=20.0 target=ElixirGolem | pro_hazard p=0.
+CXXIV 20261017_043438.jsonl 5175 stateNone nIW 2 hero IceWizardHero eff None -5175 cube 21 frozen 2 8.0 | iw_wincon Golem tesla_in_hand=False elixir=4.9 | pro_hazard 
+CXXIV 20261017_050051.jsonl 3204 stateNone nIW 2 hero IceWizardHero eff None -3204 cube 459 frozen 4 13.0 | iw_wincon HogRider tesla_in_hand=False elixir=2.4 | pro_haza
+CXXIV 20261017_050540.jsonl 4493 stateNone nIW 2 hero IceWizardHero eff None -4493 cube 637 frozen 1 4.0 | iw_clump n=2 value=9.0 target=InfernoDragon | pro_hazard p=0
+CXXIV 20261017_051049.jsonl 3375 stateNone nIW 2 hero IceWizardHero eff None -3375 cube 28 frozen 3 11.0 | iw_wincon SkeletonBalloon tesla_in_hand=False elixir=5.3 | p
+CXXIV 20261017_054016.jsonl 5482 stateNone nIW 2 hero IceWizardHero eff None -5482 cube 28 frozen 2 9.0 | iw_clump n=2 value=9.0 target=Balloon | pro_hazard p=0.0325 
+CXXIV 20261017_055812.jsonl 2993 stateNone nIW 2 hero IceWizardHero eff None -2993 cube 28 frozen 2 11.0 | iw_clump n=2 value=4.5 target=Valkyrie | pro_hazard p=0.1195
+CXXIV 20261017_055812.jsonl 5428 stateNone nIW 2 hero IceWizardHero eff None -5428 cube 30 frozen 1 4.0 | iw_clump n=2 value=4.5 target=Goblinstein | pro_hazard p=0.0
+CXXIV 20261017_062000.jsonl 3458 no_elixir nIW 1 hero IceWizardHero eff 2 28 cube 782 frozen 12 16.0 | iw_wincon HogRider tesla_in_hand=False elixir=1.1 | pro_haza
+CXXIV 20261017_070322.jsonl 3400 stateNone nIW 2 hero IceWizardHero eff None -3400 cube 643 frozen 3 8.5 | iw_clump n=2 value=9.0 target=HogRider | pro_hazard p=0.0980
+CXXIV 20261017_073400.jsonl 5473 stateNone nIW 2 hero IceWizardHero eff None -5473 cube 51 frozen 5 15.0 | iw_clump n=2 value=6.0 target=SkeletonBalloon | pro_hazard p
+CXXIV 20261017_080114.jsonl 3081 pending nIW 1 hero IceWizardHero eff 6 2 cube 4 frozen 3 7.0 | iw_clump n=2 value=4.0 target=Knight | pro_hazard p=0.0518 >
+CXXIV 20261017_095049.jsonl 3136 stateNone nIW 2 hero IceWizardHero eff None -3136 cube 28 frozen 4 24.0 | iw_wincon LavaHound tesla_in_hand=False elixir=5.0 | pro_haz
+CXXIV 20261017_095432.jsonl 3034 stateNone nIW 2 hero IceWizardHero eff None -3034 cube 26 frozen 11 16.6 | iw_clump n=5 value=8.8 target=Golem | pro_hazard p=0.0485 >=
+CXXIV 20261017_095432.jsonl 3473 stateNone nIW 2 hero IceWizardHero eff None -3473 cube 28 frozen 3 3.4 | iw_clump n=5 value=20.0 target=DarkWitch | pro_hazard p=0.09
+CXXIV 20261017_102732.jsonl 3740 stateNone nIW 2 hero IceWizardHero eff None -3740 cube 36 frozen 7 23.9 | iw_clump n=2 value=10.0 target=RoyalGiant | pro_hazard p=0.0
+CXXIV 20261017_102732.jsonl 4352 stateNone nIW 2 hero IceWizardHero eff None -4352 cube 92 frozen 4 10.9 | iw_clump n=3 value=6.8 target=Bats | pro_hazard p=0.1191 >= 
+CXXIV 20261017_115914.jsonl 5292 stateNone nIW 2 hero IceWizardHero eff None -5292 cube 29 frozen 2 10.0 | iw_clump n=2 value=7.0 target=BattleRam | pro_hazard p=0.048
+CXXIV 20261017_130511.jsonl 3434 stateNone nIW 2 hero IceWizardHero eff None -3434 cube 28 frozen 5 16.5 | iw_wincon GiantSkeleton tesla_in_hand=True elixir=2.3 | pro_
+CXXXVIII 20261017_133526.jsonl 2938 stateNone nIW 2 hero IceWizardHero eff None -2938 cube 29 frozen 9 29.0 | iw_wincon Golem tesla_in_hand=True elixir=3.2 | pro_hazard p
+CXXXVIII 20261017_133840.jsonl 2760 spent nIW 1 hero IceWizardHero eff None 276 cube None frozen 2 6.0 | iw_clump n=4 value=12.0 target=ElixirGolem | pro_hazard p=0.
+CXXXVIII 20261017_142944.jsonl 2786 stateNone nIW 2 hero IceWizardHero eff None -2786 cube 28 frozen 3 15.0 | iw_wincon HogRider tesla_in_hand=True elixir=2.5 | pro_hazar
+CXXXVIII 20261017_145920.jsonl 5512 stateNone nIW 2 hero IceWizardHero eff None -5512 cube 28 frozen 3 8.5 | iw_wincon HogRider tesla_in_hand=False elixir=4.4 | pro_haza
+CXXXVIII 20261017_151038.jsonl 2465 stateNone nIW 2 hero IceWizardHero eff None -2465 cube 28 frozen 4 24.0 | iw_wincon ElectroGiant tesla_in_hand=True elixir=3.1 | pro_h
+CXXXVIII 20261017_152050.jsonl 4154 stateNone nIW 2 hero IceWizardHero eff None -4154 cube 36 frozen 2 7.5 | iw_wincon Pekka tesla_in_hand=False elixir=5.2 | pro_hazard 
+CXXXVIII 20261017_161821.jsonl 2853 stateNone nIW 2 hero IceWizardHero eff None -2853 cube 28 frozen 4 10.0 | iw_clump n=2 value=6.0 target=ElixirGolem | pro_hazard p=0.0
+CXXXVIII 20261017_162943.jsonl 4532 stateNone nIW 2 hero IceWizardHero eff None -4532 cube 28 frozen 5 23.0 | iw_clump n=2 value=10.0 target=GiantSkeleton | pro_hazard p=
+CXXXVIII 20261017_171023.jsonl 3751 stateNone nIW 2 hero IceWizardHero eff None -3751 cube 28 frozen 2 11.0 | iw_clump n=2 value=14.0 target=MegaKnight | pro_hazard p=0.0
+CXXXVIII 20261017_175947.jsonl 2824 stateNone nIW 2 hero IceWizardHero eff None -2824 cube 28 frozen 1 5.0 | iw_clump n=2 value=10.0 target=Witch | pro_hazard p=0.0661 >
+CXXXVIII 20261017_182814.jsonl 3798 stateNone nIW 2 hero IceWizardHero eff None -3798 cube 30 frozen 3 17.0 | iw_clump n=3 value=14.0 target=RamRider | pro_hazard p=0.033
+CXXXVIII 20261017_184327.jsonl 5225 stateNone nIW 2 hero IceWizardHero eff None -5225 cube 52 frozen 1 7.0 | iw_clump n=2 value=10.0 target=Witch | pro_hazard p=0.0497 >
+CXXXVIII 20261017_185542.jsonl 2850 spent nIW 1 hero IceWizardHero eff None -2850 cube None frozen 2 6.0 | iw_wincon ElixirGolem tesla_in_hand=False elixir=3.5 | pro_h
+CXXXVIII 20261017_190405.jsonl 5442 stateNone nIW 2 hero IceWizardHero eff None -5442 cube 95 frozen 1 0.5 | iw_wincon RoyalGiant tesla_in_hand=True elixir=2.8 | pro_haz
+CXXXVIII 20261017_191748.jsonl 3783 stateNone nIW 2 hero IceWizardHero eff None -3783 cube 28 frozen 0 0 | iw_wincon Balloon tesla_in_hand=False elixir=3.3 | pro_hazar
+CXXXVIII 20261017_193851.jsonl 3413 stateNone nIW 2 hero IceWizardHero eff None -3413 cube 36 frozen 4 15.0 | iw_clump n=2 value=7.0 target=ElixirGolem | pro_hazard p=0.1
+CXXXVIII 20261017_193851.jsonl 3441 stateNone nIW 2 hero IceWizardHero eff None -3441 cube 8 frozen 4 15.0 | iw_clump n=3 value=10.0 target=ElixirGolem | pro_hazard p=0.
+CXXXVIII 20261017_201510.jsonl 4425 spent nIW 1 hero IceWizardHero eff None -4425 cube 2 frozen 1 1.17 | iw_clump n=4 value=4.7 target=RoyalRecruits | pro_hazard p=0
+Counter({('CXXIV', 'stateNone'): 29, ('CXXXVIII', 'stateNone'): 15})

@@ -1,0 +1,35 @@
+===== CXXXVIII: 96 logs, 137 logged rule presses
+--- A. logged presses: NEW verdict by truth at the press frame (replay fidelity: the OLD rule geometry reproduces 137 / 137 logged presses)
+   117  pressed (same decision)                    truth=ready          n_own=1
+     8  held: rule on the ability body says no     truth=ready          n_own=2
+     7  pressed (judged on the ability body)       truth=ready          n_own=2
+     2  withheld why=state                         truth=spent          n_own=2
+     1  pressed (same decision)                    truth=no_phase2      n_own=1
+     1  withheld why=state                         truth=pending        n_own=2
+     1  withheld why=state                         truth=spent          n_own=1
+  changed presses:
+    live_play_20261017_133526.jsonl t=2938 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_no_target
+    live_play_20261017_133840.jsonl t=2760 truth=spent n_own=2 gate=state blue=0.405 -> withheld why=state | new rule: iw_clump n=4 value=12.0 target=ElixirGolem
+    live_play_20261017_142944.jsonl t=2786 truth=ready n_own=2 gate=None blue=0.41 -> pressed (judged on the ability body) | new rule: iw_wincon HogRider tesla_in_hand=True elixir=2.5
+    live_play_20261017_145920.jsonl t=5512 truth=ready n_own=2 gate=None blue=0.41 -> pressed (judged on the ability body) | new rule: iw_wincon HogRider tesla_in_hand=False elixir=4.4
+    live_play_20261017_151038.jsonl t=2465 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_no_target
+    live_play_20261017_152050.jsonl t=4154 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_no_target
+    live_play_20261017_161821.jsonl t=2853 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_no_target
+    live_play_20261017_162943.jsonl t=4532 truth=ready n_own=2 gate=None blue=0.41 -> pressed (judged on the ability body) | new rule: iw_clump n=2 value=10.0 target=GiantSkeleton
+    live_play_20261017_171023.jsonl t=3751 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_no_target
+    live_play_20261017_175947.jsonl t=2824 truth=ready n_own=2 gate=None blue=0.41 -> pressed (judged on the ability body) | new rule: iw_clump n=2 value=10.0 target=Witch
+    live_play_20261017_182814.jsonl t=3798 truth=ready n_own=2 gate=None blue=0.41 -> pressed (judged on the ability body) | new rule: iw_clump n=3 value=14.0 target=RamRider
+    live_play_20261017_184327.jsonl t=5225 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_no_target
+    live_play_20261017_185542.jsonl t=2850 truth=spent n_own=2 gate=state blue=0.394 -> withheld why=state | new rule: iw_wincon ElixirGolem tesla_in_hand=False elixir=3.5
+    live_play_20261017_190405.jsonl t=5442 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_no_target
+    live_play_20261017_191748.jsonl t=3783 truth=ready n_own=2 gate=None blue=0.41 -> pressed (judged on the ability body) | new rule: iw_wincon Balloon tesla_in_hand=False elixir=3.3
+    live_play_20261017_193851.jsonl t=3413 truth=ready n_own=2 gate=None blue=0.41 -> held: rule on the ability body says no | new rule: iw_no_target
+    live_play_20261017_193851.jsonl t=3441 truth=pending n_own=2 gate=state blue=0.41 -> withheld why=state | new rule: iw_no_target
+    live_play_20261017_201510.jsonl t=4425 truth=spent n_own=1 gate=state blue=0.41 -> withheld why=state | new rule: iw_clump n=4 value=4.7 target=RoyalRecruits
+    live_play_20261017_203827.jsonl t=3403 truth=ready n_own=2 gate=None blue=0.41 -> pressed (judged on the ability body) | new rule: iw_wincon RoyalHogs tesla_in_hand=True elixir=2.5
+--- B. ready-button frames (button read ready); 69 more frames had no own hero (old rule: iw_unseen, no press; gate: state) and are left out below
+  gate verdict by truth: {(None, 'ready'): 19264, ('state', 'spent'): 71, ('state', 'no_elixir'): 6, (None, 'no_phase2'): 100, ('state', 'pending'): 28, ('state', 'no_own_action'): 59}
+  judged body changed: 1066 frames; n_own: {2: 982, 3: 84}; truth on the ability body: {'ready': 1061, 'pending': 3, 'spent': 2}
+  geometry old -> new on those frames (gate passing only): {(True, False): 96, (False, False): 795, (True, True): 75, (False, True): 95}
+  identical by construction (same body, gate passes): 18303 frames, geometry equal on all
+  gate fires on single-body frames: {('state', 'no_elixir'): 6, ('state', 'pending'): 25, ('state', 'spent'): 15, ('state', 'no_own_action'): 59}

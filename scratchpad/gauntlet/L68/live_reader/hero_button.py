@@ -91,6 +91,59 @@ def _names() -> dict:
     return _catalog_names()
 
 
+# Perception gate (lead 2026-10-18, audit L74/ability_live/audit/: 18 of 135 Mark CXXXVIII rule presses came from a
+# misread state). The merged reader's phase-2 block names each body's own ability state (FINDINGS_P2 state_raw:
+# 2 Ready, 3 Deploying, 6 AllChargesConsumed, 7 Pending, 9 NotEnoughElixir) -- the truth the button pixels only guess.
+P2_READY = 2
+READY_BLUE = (0.38, 0.44)   # 'ready' readings on a real button: blue 0.38-0.44; the arena floor reads > 0.48
+
+
+def _ability_body(f: dict, side: int, bodies: list):
+    """(body, own_action) of my hero body whose phase-2 unit carries the own ability block; (None, None) when no body
+    has one; None when the frame has no valid phase-2 block. Joined on generation (entity 'category') or address."""
+    p2 = f.get("phase2") or {}
+    if not p2.get("valid"):
+        return None
+    units = [u for u in p2.get("units") or () if int(u.get("side", -1)) == side
+             and ((u.get("ability") or {}).get("own_action"))]
+    for e in bodies:
+        for u in units:
+            if (e.get("category") is not None and u.get("generation") == e.get("category")) or \
+                    (e.get("address") is not None and u.get("address") == e.get("address")):
+                return e, u["ability"]["own_action"]
+    return None, None
+
+
+def pick_hero(f: dict, side: int, ids) -> dict | None:
+    """My hero body to judge the board around: the one carrying the phase-2 ability block, else the NEWEST generation
+    (largest 'category'), else the first listed (the old rule). Two own IWs: the older one holds no ability (audit:
+    the old first-listed pick took it 15 / 15 for CXXXVIII, 29 / 29 for CXXIV)."""
+    bodies = [e for e in f["entities"] if int(e["side"]) == side and int(e["card_id"]) in ids]
+    if not bodies:
+        return None
+    hit = _ability_body(f, side, bodies)
+    if hit and hit[0] is not None:
+        return hit[0]
+    # ponytail: without phase 2 an IceWizardHero_IceCube (also 203000023, newer than its IW) can win this max; it only
+    # exists after this deployment's press, which press_gate's 'stale' memory blocks first. Exclude cubes if that fails.
+    return max(bodies, key=lambda e: -1 if e.get("category") is None else int(e["category"]))   # ties: first listed
+
+
+def press_gate(f: dict, side: int, hero_card_ids, blue: float, presses: int) -> str | None:
+    """Why a 'ready' button must NOT be pressed (None = go ahead), checked before the rule AND the head decide.
+    Phase 2 present: 'state' unless my hero body carrying the ability block reads Ready with charges_raw >= 1 (spent,
+    pending, no own hero, older body only). Phase 2 absent: 'stale' = already pressed this deployment (``presses``, the
+    confirmed presses since the hero's last deploy, ability_head_live.deploy_state), 'band' = blue outside READY_BLUE."""
+    ids = set(hero_card_ids) | hero_form_ids(set(hero_card_ids))
+    hit = _ability_body(f, side, [e for e in f["entities"] if int(e["side"]) == side and int(e["card_id"]) in ids])
+    if hit is not None:
+        oa = hit[1] or {}
+        return None if oa.get("state_raw") == P2_READY and int(oa.get("charges_raw") or 0) >= 1 else "state"
+    if presses:
+        return "stale"
+    return None if READY_BLUE[0] <= float(blue) <= READY_BLUE[1] else "band"
+
+
 def ice_wizard_should_press(f: dict, side: int, hero: dict | None, names: dict | None = None) -> tuple[bool, str]:
     names = names if names is not None else _names()
     if hero is None:
@@ -129,8 +182,7 @@ def should_press(f: dict, side: int, hero_card_ids: set[int], reach_tiles: float
     f = dedupe_hero_bodies(f)                  # 2026-10-06: a hero + its FloatingCube share 203000023
     ids = hero_card_ids | hero_form_ids(hero_card_ids)
     if ICE_WIZARD in hero_card_ids:
-        ok, why = ice_wizard_should_press(f, side, next((e for e in f["entities"] if e["side"] == side
-                                                         and int(e["card_id"]) in ids), None))
+        ok, why = ice_wizard_should_press(f, side, pick_hero(f, side, ids))
         pub = getattr(pilot, "public", None) if pilot is not None else None
         if pub is None:
             return ok, why
@@ -143,7 +195,7 @@ def should_press(f: dict, side: int, hero_card_ids: set[int], reach_tiles: float
         from ability_ice_wizard import should_press_pro
         ok2, why2 = should_press_pro(pilot, f, side, dep[-1], geometry_ok=ok, v_min=CLUMP_VALUE_MIN, p_star=p_star)
         return ok2, why + " | " + why2
-    hero = next((e for e in f["entities"] if e["side"] == side and int(e["card_id"]) in ids), None)
+    hero = pick_hero(f, side, ids)
     foes = [e for e in f["entities"] if e["side"] != side and int(e["card_id"]) >= 0]
     if hero is not None:
         d = min((((e["x"] - hero["x"]) ** 2 + (e["y"] - hero["y"]) ** 2) ** 0.5 / 1000 for e in foes), default=99.0)

@@ -238,7 +238,7 @@ def fake_match(mod, tmp, pilot, rule=(True, "test rule"), **extra):
     """One fake match of module ``mod`` (live_play or PRE's) -> (adb shell commands, log events, should_press calls)."""
     cmds, calls = [], []
     stream = iter([frame(t) for t in range(150, 400, 2)])
-    button = SimpleNamespace(want=False, blue=1.0, grey=0.0, point=BUTTON, ts=0.0, stop=lambda: None,
+    button = SimpleNamespace(want=False, blue=0.41, grey=0.0, point=BUTTON, ts=0.0, stop=lambda: None,   # .41: a real ready button (press_gate band)
                              fresh_state=lambda: "ready")
     a = SimpleNamespace(tau=.35, leak=9.5, dry_run=False, ckpt="x", extrapolate=0, no_opp_counter=True, ckpt_source="t",
                         ckpt_sha256="t", public_audit=False, menu_guard=False, no_ability=False, reader="v2",
@@ -346,6 +346,29 @@ class TestLivePlay(unittest.TestCase):
                 AL.load_head(other, "cpu", pilot)
             pilot.model.value_head = torch.nn.Linear(4, 3)
             self.assertEqual(AL.load_head(other, "cpu", pilot)["mode"], "greedy")
+            self.assertNotIn("rng", AL.load_head(other, "cpu", pilot))
+            self.assertEqual(AL.load_head(other, "cpu", pilot, decode="sample")["mode"], "sample")
+            with self.assertRaisesRegex(SystemExit, "greedy or sample"):
+                AL.load_head(other, "cpu", pilot, decode="argmax")
+
+    def test_sample_decode_is_bernoulli_seeded_and_greedy_unchanged(self):
+        """L74 overpress 10-18: --iw-press-head-decode sample presses with p (here .5) from load_head's seeded rng; the
+        same seed replays the same draws; greedy (default) never presses at p = .5 (p > .5 is strict)."""
+        import numpy as np
+        zero = lambda g, f: torch.zeros(len(g))   # noqa: E731 -- logit 0 = p .5
+        g, feat = torch.zeros(1, 4), [0.0] * 44
+        draws = lambda: [AL.head_press(ab, g, feat)[1] for _ in range(400)]   # noqa: E731
+        ab = {"head": zero, "mode": "sample", "rng": np.random.default_rng(AL.SAMPLE_SEED)}
+        a = draws()
+        ab = {"head": zero, "mode": "sample", "rng": np.random.default_rng(AL.SAMPLE_SEED)}
+        self.assertEqual(draws(), a)
+        self.assertTrue(150 < sum(a) < 250, sum(a))
+        ab = {"head": zero, "mode": "greedy"}
+        self.assertFalse(any(draws()))
+        self.assertEqual(lp.head_log(SimpleNamespace(iw_press="head")), {"iw_press": "head"})
+        self.assertEqual(lp.head_log(SimpleNamespace(iw_press="head", iw_press_head_decode="sample")),
+                         {"iw_press": "head", "iw_press_head_decode": "sample"})
+        self.assertEqual(lp.head_log(SimpleNamespace(iw_press="rule", iw_press_head_decode="sample")), {})
 
 
 if __name__ == "__main__":

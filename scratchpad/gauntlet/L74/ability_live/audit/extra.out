@@ -1,0 +1,34 @@
+
+== CXXXVIII: 135 presses with phase-2 truth
+  opp_birth_3s: 68/135 = 50.4%
+  opp_birth_my_half_6s: 28/135 = 20.7%
+  opp_recent_troop_on_my_half_6s: 85/135 = 63.0%
+  opp_wincon_birth_10s: 83/135 = 61.5%
+  opp_wincon_on_my_half_10s: 76/135 = 56.3%
+  own_played_3s: 63/135 = 46.7%
+  overtime: 32/135 = 23.7%
+  noaff_threat: 40/135 = 29.6%
+  noaff_threat_cf2: 38/135 = 28.1%
+  own elixir >= 5 at decision: 32 / 135 | <= 2: 0
+  own elixir >= 5 when the press landed in game: 52 / 135 | median 4.05
+  in-game delay landing -> ability active (s): p10/p25/med/p75/p90 [3.45, 3.6, 4.2, 7.5, 10.5] n 115
+  since_last_opp_birth_s: median 2.9  p25 0.95  p75 4.8
+  since_last_opp_birth_my_half_s: median 19.1  p25 3.5  p75 41.2
+  two-IW presses: 15 | rule used the body WITHOUT the ability: 15 | that body was the OLDER one: 15 | ability-holder state at press: [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7]
+
+== CXXIV: 342 presses with phase-2 truth
+  opp_birth_3s: 181/342 = 52.9%
+  opp_birth_my_half_6s: 103/342 = 30.1%
+  opp_recent_troop_on_my_half_6s: 224/342 = 65.5%
+  opp_wincon_birth_10s: 208/342 = 60.8%
+  opp_wincon_on_my_half_10s: 179/342 = 52.3%
+  own_played_3s: 170/342 = 49.7%
+  overtime: 100/342 = 29.2%
+  noaff_threat: 120/342 = 35.1%
+  noaff_threat_cf2: 116/342 = 33.9%
+  own elixir >= 5 at decision: 76 / 342 | <= 2: 3
+  own elixir >= 5 when the press landed in game: 136 / 337 | median 4.3992
+  in-game delay landing -> ability active (s): p10/p25/med/p75/p90 [3.5, 3.55, 4.0, 6.0, 8.0] n 291
+  since_last_opp_birth_s: median 2.8  p25 1.0  p75 4.7
+  since_last_opp_birth_my_half_s: median 8.4  p25 1.6  p75 36.35
+  two-IW presses: 29 | rule used the body WITHOUT the ability: 29 | that body was the OLDER one: 29 | ability-holder state at press: [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]

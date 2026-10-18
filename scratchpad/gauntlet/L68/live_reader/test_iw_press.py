@@ -21,9 +21,9 @@ class WaitPilot(Pilot):
         pass
 
 
-def run(monkeypatch, tmp_path, **extra):
-    shots = []
-    button = SimpleNamespace(want=False, blue=1.0, grey=0.0, point=BUTTON, ts=0.0, stop=lambda: None,
+def run(monkeypatch, tmp_path, blue=0.41, **extra):
+    shots = []                                  # blue .41 = a real ready button (no phase 2 here: press_gate's band)
+    button = SimpleNamespace(want=False, blue=blue, grey=0.0, point=BUTTON, ts=0.0, stop=lambda: None,
                              fresh_state=lambda: shots.append(1) or "ready")
     monkeypatch.setattr(lp, "HeroButton", lambda *a, **k: button)
     monkeypatch.setattr(lp, "hero_ids", lambda me: [26000000])
@@ -42,3 +42,13 @@ def test_rule_presses_and_never_only_logs(monkeypatch, tmp_path):
     held = [e["tick"] for e in ev if e["event"] == "ability_withheld"]
     assert taps == [] and not any(e["event"] == "ability" for e in ev)
     assert shots and held and all(b - a >= 20 for a, b in zip(held, held[1:]))   # still watched; logged <= 1/s
+
+
+def test_gate_withholds_a_floor_misread_on_rule_and_head(monkeypatch, tmp_path):
+    for k, extra in enumerate(({}, {"iw_press": "head"})):   # no phase 2 + blue .52 (the arena floor): never pressed
+        (tmp_path / str(k)).mkdir()
+        taps, ev, _ = run(monkeypatch, tmp_path / str(k), blue=0.52, **extra)
+        held = [e for e in ev if e["event"] == "ability_withheld"]
+        assert taps == [] and not any(e["event"] in ("ability", "ability_held") for e in ev)
+        assert held and all(e["why"] == "band" and e["blue"] == 0.52 for e in held)
+        assert all(b["tick"] - a["tick"] >= 20 for a, b in zip(held, held[1:]))   # <= one line per second

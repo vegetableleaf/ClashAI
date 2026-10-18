@@ -1,0 +1,30 @@
+
+== CXXXVIII: 107 presses (not truncated)
+  head  press-time value in 2.5 t: median 0.0  zero in 77  Spearman vs frozen value -0.315  vs bodies frozen -0.252
+  rule  press-time value in 2.5 t: median 6.8  zero in 0  Spearman vs frozen value 0.485  vs bodies frozen 0.275
+  cube0 press-time value in 2.5 t: median 6.0  zero in 15  Spearman vs frozen value 0.273  vs bodies frozen 0.126
+  cube1 press-time value in 2.5 t: median 6.0  zero in 15  Spearman vs frozen value 0.281  vs bodies frozen 0.115
+  real target identified: 104 | == rule target: 72 | == closest IW-marked enemy at press: 68
+  cube offset from its target toward the enemy side (t): p25/med/p75 1.5 1.6 1.75
+  cube y-distance from my princess-tower line (t): p25/med/p75 5.47 7.56 9.46 | cube on my half: 81 / 106
+  no IW-marked enemy at press: 15
+
+== CXXIV: 282 presses (not truncated)
+  head  press-time value in 2.5 t: median 0.0  zero in 213  Spearman vs frozen value -0.197  vs bodies frozen -0.164
+  rule  press-time value in 2.5 t: median 7.0  zero in 0  Spearman vs frozen value 0.425  vs bodies frozen 0.177
+  cube0 press-time value in 2.5 t: median 6.0  zero in 27  Spearman vs frozen value 0.359  vs bodies frozen 0.147
+  cube1 press-time value in 2.5 t: median 6.0  zero in 27  Spearman vs frozen value 0.337  vs bodies frozen 0.119
+  real target identified: 261 | == rule target: 164 | == closest IW-marked enemy at press: 150
+  cube offset from its target toward the enemy side (t): p25/med/p75 1.5 1.6 1.74
+  cube y-distance from my princess-tower line (t): p25/med/p75 6.54 7.81 9.36 | cube on my half: 213 / 274
+  no IW-marked enemy at press: 27
+
+== both: 389 presses (not truncated)
+  head  press-time value in 2.5 t: median 0.0  zero in 290  Spearman vs frozen value -0.23  vs bodies frozen -0.188
+  rule  press-time value in 2.5 t: median 7.0  zero in 0  Spearman vs frozen value 0.43  vs bodies frozen 0.194
+  cube0 press-time value in 2.5 t: median 6.0  zero in 42  Spearman vs frozen value 0.326  vs bodies frozen 0.133
+  cube1 press-time value in 2.5 t: median 6.0  zero in 42  Spearman vs frozen value 0.313  vs bodies frozen 0.112
+  real target identified: 365 | == rule target: 236 | == closest IW-marked enemy at press: 218
+  cube offset from its target toward the enemy side (t): p25/med/p75 1.5 1.6 1.75
+  cube y-distance from my princess-tower line (t): p25/med/p75 6.09 7.8 9.39 | cube on my half: 294 / 380
+  no IW-marked enemy at press: 42
