@@ -40,20 +40,31 @@ class TestEventReward(unittest.TestCase):
 
     def test_net_of_cost_and_damage_share(self):
         v, g, r = SV.event_reward(ev(kill=9.0, dmg=1.0), P)                     # Wizard + Musketeer killed, Knight 1/3
-        self.assertAlmostEqual(v, 9.5)
-        self.assertAlmostEqual(g, 9.5)
-        self.assertAlmostEqual(r, 0.02 * (9.5 - 6.0))
+        self.assertAlmostEqual(v, 10.0)                                        # dmg_w 1: hp removed counts in full
+        self.assertAlmostEqual(g, 10.0)
+        self.assertAlmostEqual(r, 0.02 * (10.0 - 6.0))
 
-    def test_princess_with_a_clump_bonus_and_no_cost(self):
+    def test_princess_with_a_clump_multiplies_and_pays_the_cost(self):
         v, g, r = SV.event_reward(ev(kill=9.0, dmg=1.0, princess=True), P)
-        self.assertAlmostEqual(g, 9.5 * 1.5)
-        self.assertAlmostEqual(r, 0.02 * 14.25)
+        self.assertAlmostEqual(g, 10.0 * 1.5)
+        self.assertAlmostEqual(r, 0.02 * (15.0 - 6.0))
 
-    def test_princess_alone_is_neutral_and_below_min_no_bonus(self):
-        self.assertEqual(SV.event_reward(ev(princess=True), P)[2], 0.0)           # a tower Rocket: the win reward's job
-        v, g, r = SV.event_reward(ev(kill=1.0, princess=True), P)              # one Knight-ish body < tower_min
-        self.assertAlmostEqual(g, 1.0)
-        self.assertAlmostEqual(r, 0.02)
+    def test_princess_floors_at_zero_and_below_min_no_bonus(self):
+        self.assertEqual(SV.event_reward(ev(princess=True), P)[2], 0.0)           # tower Rocket-cycling: never charged
+        v, g, r = SV.event_reward(ev(kill=5.333, princess=True), P)            # lone Witch + 1 Skeleton (741200 t2869)
+        self.assertAlmostEqual(g, 5.333)                                       # < tower_min 7: no bonus
+        self.assertEqual(r, 0.0)                                               # below the Rocket's cost: 0, not +0.16
+        v, g, r = SV.event_reward(ev(kill=6.5, princess=True), P)
+        self.assertAlmostEqual((g, r), (6.5, 0.02 * 0.5))                      # above cost, below min: the plain trade
+        self.assertAlmostEqual(SV.event_reward(ev(kill=7.0, princess=True), P)[1], 10.5)   # at the min: x1.5
+
+    def test_a_big_combo_outranks_a_lone_defender_princess_rocket(self):
+        combo = SV.event_reward(ev(kill=9.245, dmg=2.976, tornado={"seen": 1, "aim": (13.5, 16.5), "cost": 3}), P)[2]
+        lone = SV.event_reward(ev(kill=5.333, princess=True), P)[2]
+        swarm = SV.event_reward(ev(kill=6.0, princess=True), P)[2]            # Witch_EV1 + 3 Skeletons (741208 t3942)
+        self.assertGreater(combo, 0.12)
+        self.assertEqual((lone, swarm), (0.0, 0.0))
+        self.assertGreater(SV.event_reward(ev(kill=9.245, dmg=2.976, princess=True), P)[2], combo)   # "even more so"
 
     def test_king_hit_is_not_exempt(self):
         self.assertAlmostEqual(SV.event_reward(ev(king=True), P)[2], -0.12)
@@ -73,16 +84,16 @@ class TestRowRewards(unittest.TestCase):
     def test_rocket_row_gets_it(self):
         out = SV.row_rewards([ev(kill=9.0, dmg=1.0, seen=101)], self.PLAYS, self.TICKS, P)
         want = np.zeros(6)
-        want[4] = 0.02 * 3.5
+        want[4] = 0.02 * 4.0
         np.testing.assert_allclose(out["r"], want)
         self.assertEqual(out["events"][0]["row"], 4)
 
     def test_combo_split_by_cost_with_the_tornado_row(self):
         e = ev(kill=9.0, dmg=1.0, princess=True, seen=101, tornado={"seen": 95, "aim": (9.0, 11.0), "cost": 3})
         out = SV.row_rewards([e], self.PLAYS, self.TICKS, P)
-        self.assertAlmostEqual(out["r"][4], 0.285 * 2 / 3)
-        self.assertAlmostEqual(out["r"][2], 0.285 / 3)
-        self.assertAlmostEqual(out["r"].sum(), 0.285)
+        self.assertAlmostEqual(out["r"][4], 0.18 * 2 / 3)                     # 0.02 x (10 x 1.5 - 6)
+        self.assertAlmostEqual(out["r"][2], 0.18 / 3)
+        self.assertAlmostEqual(out["r"].sum(), 0.18)
         self.assertEqual((out["events"][0]["row"], out["events"][0]["tornado_row"]), (4, 2))
 
     def test_combo_miss_charges_both_rows(self):
@@ -167,6 +178,16 @@ class TestTracker(unittest.TestCase):
         self.assertEqual(e["tower_dmg"], 400)
         self.assertEqual(e["tornado"], {"seen": 95, "aim": (9.0, 11.0), "cost": 3})
         self.assertEqual([b[0] for b in e["bodies"]], ["Wizard", "Musketeer", "Knight"])
+
+    def test_overheal_counts_at_most_the_body(self):
+        trk, full = self.trk, [1008, 600, 1500, 4000, 3000]                    # Wizard at 1.44 x its max hp (Witch_EV1 case)
+        trk.played(0, ROCKET, 100)
+        trk.observe(state(101, [self.rocket], self.board(full)))
+        trk.observe(state(102, [], self.board(full)))                          # gone: the impact
+        trk.observe(state(103, [], [b for b in self.board([0, 600, 1500, 4000, 3000]) if b.uid != 1]))
+        (e,) = trk.events
+        self.assertAlmostEqual(e["kill"], 5.0)                                 # not 7.2
+        self.assertEqual(e["bodies"][0][2], 1.0)
 
     def test_game_over_resolves_on_the_final_state(self):
         trk, full = self.trk, [700, 600, 1500, 4000, 3000]
@@ -282,6 +303,10 @@ class TestTrainerWiring(unittest.TestCase):
         self.assertEqual(st1["spell"]["rows_rewarded"], 2)
         self.assertEqual((st1["spell"]["rows_lost"], st1["spell"]["unmapped_rockets"]), (0, 0))
         self.assertEqual(st1["spell"]["rockets_per_match"], 1.0)
+        self.assertEqual((st1["spell"]["pipelined_matches"], st1["spell"]["second_plays"]), (0, 0))
+        res[1]["pipeline_decisions"] = {"decisions_pending": 5, "second_plays": 2}
+        st2 = RL.collate(res, advantage="gae", spell=P)[1]
+        self.assertEqual((st2["spell"]["pipelined_matches"], st2["spell"]["second_plays"]), (1, 2))
         self.assertEqual({k: v for k, v in st1.items() if k != "spell"}, st0)
         for k in B0:
             if k != "r_step":

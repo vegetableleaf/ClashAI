@@ -7,25 +7,27 @@ The goal is to eventually wean the model off of hardcoded rules once it learns h
 This note says what the reward is, why its numbers are what they are, how it is measured, what each training arm tests,
 and what is still unproven. Code: `pipeline/spell_value.py` (the reward and the measurement), wired into
 `pipeline/rl_royale.py` (key `spell_value_reward`), `pipeline/royale_env.py`, `pipeline/e1_eval.py` (the measurement hooks)
-and `pipeline/search_s0.py` (`--spell-log` for evals). Tests: `pipeline/tests/test_spell_value.py` (23).
+and `pipeline/search_s0.py` (`--spell-log` for evals). Tests: `pipeline/tests/test_spell_value.py` (26).
 
 ## 1. The reward in one paragraph
 
 Every time **our** Rocket lands, the game engine is read on the exact ticks of the impact: which enemy bodies were inside the
 blast, how much of each one's HP the blast removed, whether an enemy crown tower was hit, and whether one of our Tornados set
 it up. The Rocket earns the **elixir value of what it removed** (a Wizard killed = 5 elixir; a Knight left at 2/3 HP =
-3 x 1/3 = 1 elixir, counted at half weight because it survived), **minus the Rocket's 6 elixir**, times a weight that turns
-elixir into reward. If an enemy **princess** tower is in the same blast as at least 4 elixir of troops, the troop value gets a
-**x1.5 bonus**. The reward is given to the decision that **chose** the Rocket (and, for a combo, partly to the decision that
-chose the Tornado).
+3 x 1/3 = 1 elixir; a body's share is capped at its full value), **minus the Rocket's 6 elixir**, times a weight that turns
+elixir into reward. If an enemy **princess** tower is in the same blast as a real clump (at least 7 elixir of troops), the
+troop value is **multiplied by 1.5**; any Rocket that hits a princess never goes below 0 (tower Rocket-cycling is not
+charged), but the troops must beat the Rocket's cost before it earns anything. The reward is given to the decision that
+**chose** the Rocket (and, for a combo, partly to the decision that chose the Tornado).
 
 ## 2. The formula and its numbers
 
 For one Rocket impact (`spell_value.event_reward`):
 
-    V      = (elixir of bodies killed, at their HP share)  +  0.5 x (elixir of HP removed from bodies that survived)
-    G      = V x 1.5   if an enemy princess tower is in the blast and V >= 4 elixir,   else V
-    reward = 0.02 x (G - 6)      (the 6 = the Rocket's cost; NOT charged when an enemy princess tower was hit)
+    V      = sum over bodies hit of (body elixir x min(HP share removed, 1))      (dmg_w 1.0: survivors count in full)
+    G      = V x 1.5   if an enemy princess tower is in the blast and V >= 7 elixir,   else V
+    reward = 0.02 x (G - 6)      (the 6 = the Rocket's cost, always charged)
+             max(0, that)        when an enemy princess tower was hit
     reward clipped to [-0.3, +0.3] per Rocket, and a match's running total to [-0.5, +0.5]
 
 | Situation | V | reward |
@@ -34,12 +36,39 @@ For one Rocket impact (`spell_value.event_reward`):
 | Rocket + Tornado, 2 elixir caught (the owner's "pulled in too late" miss) | 2 | -0.08, split -0.053 Rocket / -0.027 Tornado |
 | Rocket kills Wizard + Musketeer | 9 | +0.06 |
 | Combo kills a 14-elixir clump | 14 | +0.16 |
-| Combo kills 14 elixir AND hits a princess | 14 x 1.5 = 21 | +0.42 -> clipped **+0.30** |
-| Rocket on a princess, no troops (tower chip / Rocket cycle) | 0 | **0** (neutral, as today) |
+| Combo kills 14 elixir AND hits a princess | 14 x 1.5 = 21 | +0.30 -> at the cap **+0.30** |
+| Rocket on a princess, no troops (tower chip / Rocket cycle) | 0 | **0** (floored, as before) |
+| Rocket on a princess + one lone defender (Witch + 1 Skeleton, 5.33) | 5.33 | **0** (below cost, below 7: no bonus) |
 | Rocket on the king tower, no troops | 0 | -0.12 (no exemption: owner doctrine "never the king") |
 
-Keys (all optional; absent = the defaults above): `spell_value_w` 0.02, `spell_value_dmg_w` 0.5, `spell_value_cost_w` 1.0,
-`spell_value_tower_bonus` 0.5, `spell_value_tower_min` 4.0, `spell_value_event_cap` 0.3, `spell_value_match_cap` 0.5.
+Keys (all optional; absent = the defaults above): `spell_value_w` 0.02, `spell_value_dmg_w` 1.0, `spell_value_cost_w` 1.0,
+`spell_value_tower_bonus` 0.5, `spell_value_tower_min` 7.0, `spell_value_event_cap` 0.3, `spell_value_match_cap` 0.5.
+
+### Review fixes (2026-10-18, before any training)
+
+The first version (cd93ae7) mostly paid Rockets on a princess, not the combo. Measured on the P3 eval rows
+(`--spell-log`, Mark CXXXVIII, seeds 741200-741211, rules off + on = 24 rows, 29 Rocket events; the before is the cd93ae7
+code, the after this one, the after's kill / dmg recomputed from each event's bodies with the share capped):
+
+| Event | before V / r | after V / r |
+|---|---|---|
+| Good combo, 741201 t2814 (Ronin + Witch_EV1 killed, Royal Giant EV1 at 50%) | 12.93 / **+0.139** | 12.22 / **+0.124** (Rocket 0.083 / Tornado 0.041) |
+| X-Bow left at 7%, 741207 t3381 (the reviewer's "miss": in fact a near-kill) | 2.80 / -0.064 | 5.59 / -0.008 |
+| Witch_EV1 + 3 Skeletons at a princess, 741208 t3942 | 6.00 / **+0.180** | 6.00 / **0** |
+| Lone Witch + 1 Skeleton at a princess, 741200 t2869 | 5.33 / **+0.160** | 5.33 / **0** |
+
+1. **HP share capped at 1** (`_resolve`): the engine reported Witch_EV1 at 1.44 x its max HP, so a 5-elixir Witch counted 7.2.
+2. **Princess path:** the cost is now charged on every Rocket and a princess hit floors the reward at 0 (Rocket-cycling still
+   never goes negative), and the x1.5 is a multiplier on the clump, not a waiver. Before, a lone defender at a princess
+   (+0.16) outranked the 12-elixir defensive combo; now the combo is the only positive Rocket in those 24 rows.
+3. **`spell_value_tower_min` 4 -> 7.** Every princess Rocket in the eval rows that caught troops caught ONE card: V = 5.33,
+   5.33, 5.67 (Witch + her Skeletons), 6.00 (Witch_EV1 + 3 Skeletons), 6.00 (ZapMachine alone); max 6.0. 7 is above all of
+   them and above the Rocket's own cost, so the bonus needs a second card. A single high-cost body (Golem, P.E.K.K.A, Mega
+   Knight) cannot reach 7 because a Rocket removes only a share of its HP. (b) Untested on a larger sample: 5 distinct
+   princess-with-troops events.
+4. **`spell_value_dmg_w` 0.5 -> 1.0** (owner: "eliminating or heavily damaging"): a 93% hit now earns 0.93 of a kill.
+5. **Monitor:** `spell.pipelined_matches` and `spell.second_plays` per update (matches that ran pipelined decisions and
+   their accepted second plays), so arm 2's fast-play exposure is visible in the train log.
 
 **Body values** are the rule's own table (`decision_options.rocket_unit_table`: card cost / bodies the card puts out), looked
 up by the engine's own unit name, so a Witch's Skeleton is worth 1/3 (the Skeletons card's share), not the Witch's 5;
@@ -58,7 +87,7 @@ a one-body card is valued as that card's body (a Balloon's bomb would read 5).
 * "A combo worth 10+ elixir should matter, 6 elixir for nothing should cost": a 10-elixir combo = +0.08, a miss = -0.12.
 * (b) **Untested:** whether 0.02 is the best weight. The measurement is the arm-1 result; a 0.01 / 0.04 sweep only after it.
 
-### Why net of cost, and why princess Rockets are not charged
+### Why net of cost, and why princess Rockets floor at 0
 
 * Net of cost = an even elixir trade scores 0, so misses are punished (owner: "punish combo misses") and Rocketing cheap
   swarms does not pay (4 Skeletons = 1.3 elixir -> -0.09).
@@ -66,6 +95,8 @@ a one-body card is valued as that card's body (a Balloon's bomb would read 5).
 * Princess-tower Rockets stay **neutral** (0 when no troops are caught) because Rocket cycling on a tower is a legitimate late
   plan the owner is already watching (late-game rocket-cycle concern, 10-17); charging them 6 elixir would teach the model to
   stop doing it, which this reward was never meant to decide. The win reward keeps judging tower Rockets exactly as today.
+  The floor (not a waiver) means the troops caught must still beat the Rocket's 6 elixir to earn: a waiver paid a lone
+  defender at a princess more than a 12-elixir combo (review fixes above).
 
 ## 3. Credit assignment (which decision gets the reward)
 
@@ -194,7 +225,9 @@ three REAL `rl_royale --smoke` runs and `eval_inv.py`).
 
 ## 9. Still open (labelled)
 
-* (b) Untested: the weight 0.02, the damage share 0.5, the bonus x1.5 and the 4-elixir threshold are reasoned, not tuned.
+* (b) Untested: the weight 0.02, the bonus x1.5 and the 7-elixir threshold are reasoned, not tuned (damage share 1.0 = the
+  owner's wording). With these values the 24 eval rows hold ONE positive Rocket (the combo): the signal is sparse, so the
+  per-update `spell.rockets_per_match` / `value_per_match` trend is what shows whether 65 updates are enough.
 * (b) Untested: whether 65 updates is enough for a 0.43-Rocket-per-match signal to move the Rocket head; the per-update
   monitors (`spell.rockets_per_match`, `value_per_match`, `combos_per_match`) show the trend during training.
 * (b) Untested: SIM fidelity of Rocket flight and Tornado pull (overall fight parity 0.941 on 145 matches, not Rocket-specific);

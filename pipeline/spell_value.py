@@ -1,6 +1,6 @@
 """L74 combo (owner 2026-10-17): an OPT-IN reward for OUR Rocket -- and the Tornado that set it up -- = the elixir value of the
-enemy bodies the blast removes, net of the Rocket's cost, with a bonus when an enemy princess tower is caught in the same blast
-as a clump (scratchpad/gauntlet/L74/combo/RL_COMBO_REWARD.md). The owner's goal: the model learns the Rocket + Tornado combo by
+enemy bodies the blast removes, net of the Rocket's cost, multiplied up when an enemy princess tower is caught in the same blast
+as a real clump (scratchpad/gauntlet/L74/combo/RL_COMBO_REWARD.md). The owner's goal: the model learns the Rocket + Tornado combo by
 itself, so the hard-coded rocket_tornado rule can go.
 
 Two halves:
@@ -22,10 +22,10 @@ import numpy as np
 
 # rl_royale keys (``spell_value_reward: on`` + these; absent = the defaults). Elixir is the currency: w converts it to reward.
 DEFAULTS = {"spell_value_w": 0.02,           # reward per elixir (win = +1): 6 elixir for nothing = -0.12
-            "spell_value_dmg_w": 0.5,        # a body the blast damages but does not kill counts this share of its hp removed
-            "spell_value_cost_w": 1.0,       # x the Rocket's cost, charged unless an enemy princess tower is in the blast
+            "spell_value_dmg_w": 1.0,        # a body the blast damages but does not kill counts this x its hp share removed
+            "spell_value_cost_w": 1.0,       # x the Rocket's cost, always charged (a princess hit floors the reward at 0)
             "spell_value_tower_bonus": 0.5,  # troop value x (1 + this) when a princess is in the blast with >= tower_min elixir
-            "spell_value_tower_min": 4.0,    # ... of troops (elixir), so a tower chip with one Skeleton earns no bonus
+            "spell_value_tower_min": 7.0,    # ... of troops (elixir): above every lone card the eval rows caught (max 6.0)
             "spell_value_event_cap": 0.3,    # |one Rocket's reward| <= this
             "spell_value_match_cap": 0.5}    # |a match's summed spell reward| <= this (rl_royale's critic scale needs 1 + it)
 ROCKET_R_TILES = 2.0          # catalog Rocket radius (decision_options.rocket_radius_tiles)
@@ -155,7 +155,7 @@ class SpellTracker:
             h1 = max(hp.get(uid, 0), 0)
             if h1 >= h0:
                 continue
-            f = (h0 - h1) / mx
+            f = min((h0 - h1) / mx, 1.0)                      # an engine overheal (h0 > max) never counts > the body
             if h1 == 0:
                 kill += v * f
             else:
@@ -183,15 +183,17 @@ class SpellTracker:
 # ---------------------------------------------------------------------------------------------------- learner side (pure)
 def event_reward(ev: dict, p: dict) -> tuple:
     """One Rocket event -> (troop value V, gross G, reward) in elixir / elixir / reward units:
-    V = elixir of the bodies it killed (their hp share at impact) + dmg_w x that of the bodies it only damaged;
-    G = V x (1 + tower_bonus) when an enemy princess was in the blast and V >= tower_min, else V;
-    reward = w x (G - cost_w x Rocket cost), the cost charged only when NO enemy princess tower was hit (a tower Rocket stays
-    the win reward's business: neutral, as today), clipped to +- event_cap."""
+    V = elixir of the bodies it killed (their hp share at impact, <= 1) + dmg_w x that of the bodies it only damaged;
+    G = V x (1 + tower_bonus) when an enemy princess was in the blast and V >= tower_min (a real clump), else V;
+    reward = w x (G - cost_w x Rocket cost), floored at 0 when an enemy princess tower was hit (tower Rocket-cycling is never
+    charged, but the clump must beat the Rocket's cost to earn), clipped to +- event_cap."""
     v = float(ev["kill"]) + p["spell_value_dmg_w"] * float(ev["dmg"])
     g = v * (1.0 + p["spell_value_tower_bonus"]) if ev["princess"] and v >= p["spell_value_tower_min"] else v
-    cost = 0.0 if ev["princess"] else p["spell_value_cost_w"] * float(ev["cost"])
+    r = p["spell_value_w"] * (g - p["spell_value_cost_w"] * float(ev["cost"]))
+    if ev["princess"]:
+        r = max(r, 0.0)
     cap = p["spell_value_event_cap"]
-    return v, g, float(np.clip(p["spell_value_w"] * (g - cost), -cap, cap))
+    return v, g, float(np.clip(r, -cap, cap))
 
 
 def _slug(name) -> str:

@@ -69,8 +69,9 @@ rl["ability_head"] / ["ability_optimizer"] / ["ability"]; weights message keys `
 decision, the head is fitted to it (``ability_bc_fit``) before the init screen and u0000.
 L74 combo (``spell_value_reward: on``, gae + league only, opt-in; absent / null / false = unchanged, same config hash; owner
 10-17, scratchpad/gauntlet/L74/combo/RL_COMBO_REWARD.md): the learner's Rocket impacts are measured in the engine
-(``spell_value.SpellTracker``) and each adds spell_value_w x (troop elixir removed, + a princess-in-blast bonus, - the Rocket's
-cost unless a princess was hit) to the r_step of the rows that decided the Rocket and its setup Tornado (``collate``).
+(``spell_value.SpellTracker``) and each adds spell_value_w x (troop elixir removed, x a princess-in-blast bonus for a real
+clump, - the Rocket's cost; a princess hit floors at 0) to the r_step of the rows that decided the Rocket and its setup Tornado
+(``collate``).
 
     research/ext/Royale/.venv/Scripts/python.exe -m pipeline.rl_royale --config pipeline/rl_royale.yaml --run NAME
     ... --smoke          E=4, G=2, 1 actor, 2 updates + the checks below; prints SMOKE PASS, exits 0
@@ -386,8 +387,8 @@ def store_posture_cfg(cfg: dict) -> Optional[dict]:
 
 # L74 combo (``spell_value_reward: on``, gae + league only, opt-in; absent / null / false = off, same hash; owner 10-17,
 # L74/combo/RL_COMBO_REWARD.md): per-row reward on the rows that decided OUR Rocket (+ its setup Tornado) = spell_value_w x
-# (the elixir of enemy bodies the blast removed, x (1 + tower_bonus) with a princess in it, - the Rocket's cost unless a
-# princess was hit), added to r_step (``collate``); the critic becomes the residual one (phi = 0) at shaping_critic_scale,
+# (the elixir of enemy bodies the blast removed, x (1 + tower_bonus) with a princess in it and >= tower_min caught, - the
+# Rocket's cost; floored at 0 when a princess was hit), added to r_step (``collate``); the critic becomes the residual one (phi = 0) at shaping_critic_scale,
 # which must cover 1 + spell_value_match_cap. spell_value_w 0 = the measuring control (tracker, rows, critic scale, no reward).
 SPELL_KEYS = ("spell_value_reward",) + tuple(SV.DEFAULTS)
 
@@ -1786,7 +1787,10 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
         st["spell"] = {**SV.batch_stats([SV.match_summary(results[j].get("spell"), spell) for j in use],
                                         [float(sp[j]["r"].sum()) for j in use]),
                        "w": spell["spell_value_w"], "rows_rewarded": int(sum(np.count_nonzero(sp[j]["r"]) for j in use)),
-                       "rows_lost": lost, "unmapped_rockets": sum(e["row"] is None for j in use for e in sp[j]["events"])}
+                       "rows_lost": lost, "unmapped_rockets": sum(e["row"] is None for j in use for e in sp[j]["events"]),
+                       # learner_pipeline_frac: matches that ran pipelined decisions, and their accepted second plays
+                       "pipelined_matches": sum("pipeline_decisions" in r for r in results),
+                       "second_plays": sum(r.get("pipeline_decisions", {}).get("second_plays", 0) for r in results)}
     return B, st
 
 
