@@ -1,3 +1,19 @@
+## 2026-10-18 07:36 EDT -- ICEBOW Mark CLIII: LEVELS LIVE (overnight auto-promote, owner bar CI low > 0); morning report given; owner wants 3-4 pods
+
+- Mark CLIII = CXXXVIII raw + 65 updates with live_levels (succ_levels, seed 74, fork36-linux; grafted edc82ada38e10236).
+  - vs CXXXVIII promotion eval: std +3.65 [+0.21, +7.19] (642 / 960), fresh +5.21 [+1.77, +8.75], pooled 1,920 +4.43 [+2.08,
+    +6.88]
+  - slices: core decks +2.24, Hog -0.59, OT +3.45, L16 towers +2.31 (all n.s.)
+  - habits: early bridge X-Bow 65.7% vs 58.3% (WORSE on the owner's complaint), unforced princess Rockets 0.33 vs 0.41
+- Deployed 07:36 via deploy_ckpt.sh (CKPT_OVERRIDE; LIVE_OPTIONS / reader unchanged; first-match guard OK, icebow deck). Revert =
+  CKPT_OVERRIDE.pre_20261018_07xx. It should have gone live ~06:45: nothing alerted on the successor relay's copy-back (gap).
+- CXXXVIII live final: 261 graded matches, win 48.3%; trophies at the 13,000 floor.
+- Other overnight successors: succ_hist -0.42 [-3.96, +3.23] (fresh +3.44); succ_ctl / tower / troops not complete; factorial
+  12 / 16 (none beats CXXXVIII; fact16 all-on +0.83).
+- Stage 2 Phase B (6 no-training options) + Phase C (s2_hog_il / s2_hog_e4, u25 / 45 / 65) ALL FAIL the gate: Hog OT live 7.7%
+  vs SIM ~53%; the 12k regulation-loss rate live 24% vs SIM 10-14%. Imitation start ~= E4 start.
+- Owner (morning): costs -> limit to 3-4 pods after finishing. Proposed keep: P1 15617, P3 19899, 13396, 14009; release the
+  other 8 as their jobs finish (awaiting the owner's OK on who stops them).
 ## 2026-10-18 06:09 EDT -- H-ORDER (creation_seq only) LANDED per its verifier; FIN12 base (HEAD + rsfork_fin11) for round 7 on P1 + P3
 
 - H-ORDER cseq (diag_night/v6_r6a/H_order_cseq.patch): after setup, deal the existing creation_seq values out again over the
