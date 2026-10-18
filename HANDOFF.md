@@ -1,3 +1,23 @@
+## 2026-10-18 19:30 EDT -- doctrine MEASURED (API worker): "keep both princess towers" holds and is X-Bow-specific; the bot's gap is GIVING LEADS BACK; the SIM teaches neither
+
+- Report: scratchpad/gauntlet/L74/doctrine/DOCTRINE_MEASURED.md (measure.py -> measure.out). Pros = 10,400 X-Bow Path of Legend
+  sides (2,050 exact icebow deck; HF + crawl2); live CLIII 168 / CXXXVIII 262 / CXXIV 300 (cue_ab2 only 9); SIM = CLIII fin13
+  promotion eval (1,920, vs gen opponents). Pros / SIM have no tower timeline: overtime-start state exact, "first" bounded.
+- (a) Overtime starting 1-1 vs 0-0, pro X-Bow: 29.9% vs 52.7% = -22.9 pp [-28.4, -16.8]; opponent-archetype adjusted -24.6
+  [-30.3, -18.9]; X-Bow is the worst deck type (mortar -5.0, bridge/bait -10.7, beatdown +11.9). Live -28..-39 pp. SIM -8.1
+  [-18.8, +2.3]: the SIM does not reproduce it.
+- (a) Losing the FIRST princess: pros win <= 0.6% (icebow) / <= 2.5% (X-Bow) vs <= 21% non-X-Bow; live 1.4-3.6%.
+- (c) "the bot loses towers too often" as such: no -- 47-55% of matches vs 48.4% icebow pros. Gap = after 1-0 it gives the lead
+  back in 15-20% (pros <= 5.1%); both sides take a princess in 14-20% of our matches vs 2.0% (icebow pros).
+- Style gaps (measured): cheap-only answers to heavy pushes 32-42% vs 27.5%; Rocket in heavy answers 0.4-2.2% vs 8.3%; tower
+  Rockets 0.39-0.58 vs 1.60 / match; first bridge X-Bow 51 s vs 74.5 s. NOT supported: spend trades (ours already as
+  positive), "early X-Bow loses" (pros who X-Bow before 60 s win +5.4 pp [+1.1, +9.7]; association).
+- SIM opponents take a princess in 31.6% of games vs 47-55% live; SIM P(win | reached 1-1) 54% vs live 20-27%.
+- Proposals only (no config / live change): crown-path + style slices in stepd/readout + live monitor; gate Stage-2 opponents
+  on crown stats; crown-state starts (1-0 / 1-1); then a lead-protection penalty (~0.2 x win reward). Report section 4.
+- Factorial: 15/16 copied (fact15 missing) -> analyze.py refuses effects; naive E (tower_score) +1.4 pp, inconclusive.
+- HOOK GAP: block_stdin_python.sh misses an option before the dash (`python.exe -I - <<EOF` hung as a REPL here; killed by exact
+  PIDs 34344 / 32516, spill files deleted, no other effect). Hook not edited.
 ## 2026-10-18 17:36 EDT -- step d: SIX RL arms training on fin13 (CTRL, REB, REB CLIII-anchor twin, LEAGUE attribution, CTRL + REB seed-75 replicates); results ~01:00-02:00 EDT 10-19
 
 - STATUS: scratchpad/gauntlet/L74/stepd/STATUS.md (pod table at the top). Readout when the relays land:

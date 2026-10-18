@@ -1,0 +1,238 @@
+pros: 10400 X-Bow sides kept (Path of Legend, >= 6 plays), 0 duplicates dropped; Counter({('pro_xbow_other', 'hf'): 8350, ('pro_icebow8', 'crawl2'): 1335, ('pro_icebow8', 'hf'): 715})
+live: Counter({'CXXIV': 300, 'CXXXVIII': 262, 'CLIII': 168, 'cue_ab2': 9})
+live crown timeline vs logged result: 737/739 agree (unequal-crown matches)
+crawl2 overtime rule check on HF overtime games: 77/6746 have no play after 3600 (would be missed)
+pocket evidence false positives on pros: own pocket with 0 crowns 0/4827, opponent pocket with 0 opp crowns 0/5195
+pocket estimate vs exact first crown on LIVE matches where both sides lost a princess: 56/118 correct (47.5%), 4 without evidence
+  live lag pocket deploy - tower fall (own princess): median 16.8 s, p90 48.4 s, before the fall (impossible = reader position noise) 13/283
+  live lag pocket deploy - tower fall (opp princess): median 62.1 s, p90 159.1 s, before the fall (impossible = reader position noise) 0/3
+
+  match-end class shares: {'pro_icebow8': {'ot': 1278, 'reg': 248, 'pre': 222, 'otend': 302}, 'pro_xbow_other': {'pre': 955, 'ot': 3373, 'otend': 2801, 'reg': 1221}, 'pro_all_xbow': {'ot': 4651, 'reg': 1469, 'pre': 1177, 'otend': 3103}, 'pro_nonxbow': {'pre': 63356, 'ot': 183742, 'otend': 54226, 'reg': 96386}, 'sim_CLIII': {'otend': 297, 'ot': 785, 'reg': 773, 'pre': 65}, 'live_CLIII': {'ot': 67, 'reg': 74, 'pre': 14, 'otend': 13}, 'live_CXXXVIII': {'ot': 100, 'pre': 24, 'reg': 119, 'otend': 19}, 'live_cue_ab2': {'reg': 6, 'otend': 1, 'ot': 1, 'pre': 1}, 'live_CXXIV': {'ot': 110, 'reg': 131, 'otend': 27, 'pre': 32}}
+
+## CROWN STATE (exact for every source): overall, overtime-start state, ever lost / ever took a princess (tiebreak tower COUNTED as a crown)
+  group            P(win) all                   OT start 0-0                 OT start 1-1                 1-1 minus 0-0 (pp)    
+  pro_icebow8       47.2% [45.0, 49.3] n=2050    50.7% [48.3, 53.2] n=1555    20.0% [ 8.9, 39.1] n=25     -30.7 [-42.2, -11.4]
+  pro_xbow_other    51.7% [50.6, 52.8] n=8350    53.3% [52.0, 54.5] n=5949    31.0% [25.3, 37.4] n=221    -22.3 [-28.1, -15.8]
+  pro_all_xbow      50.8% [49.9, 51.8] n=10400   52.7% [51.6, 53.9] n=7504    29.9% [24.5, 35.9] n=246    -22.9 [-28.4, -16.8]
+  pro_nonxbow       50.0% [49.8, 50.2] n=397710  50.0% [49.8, 50.2] n=197448  50.0% [49.5, 50.5] n=38520   +0.0 [ -0.5,  +0.5]
+  sim_CLIII         65.2% [63.0, 67.3] n=1920    62.5% [59.5, 65.5] n=990     54.4% [44.2, 64.3] n=90      -8.1 [-18.8,  +2.3]
+  live_CLIII        47.6% [40.2, 55.1] n=168     56.4% [43.3, 68.6] n=55      26.3% [11.8, 48.8] n=19     -30.0 [-49.0,  -4.0]
+  live_CXXXVIII     48.1% [42.1, 54.1] n=262     62.8% [52.2, 72.3] n=86      24.0% [11.5, 43.4] n=25     -38.8 [-54.5, -16.7]
+  live_cue_ab2      44.4% [18.9, 73.3] n=9       50.0% [ 9.5, 90.5] n=2         n=0                        +nan [ +nan,  +nan]
+  live_CXXIV        51.3% [45.7, 56.9] n=300     67.0% [57.7, 75.1] n=109     39.1% [22.2, 59.2] n=23     -27.8 [-46.7,  -5.7]
+
+  group            P(win | ever lost a princess)    P(win | ever took one)           P(lose a princess at all)   
+  pro_icebow8        0.6% [ 0.3,  1.2] n=1089        96.5% [95.2, 97.5] n=1002        53.1% [51.0, 55.3] n=2050  
+  pro_xbow_other     2.1% [ 1.7,  2.6] n=4116        94.4% [93.7, 95.0] n=4571        49.3% [48.2, 50.4] n=8350  
+  pro_all_xbow       1.8% [ 1.4,  2.2] n=5205        94.8% [94.2, 95.3] n=5573        50.0% [49.1, 51.0] n=10400 
+  pro_nonxbow       15.5% [15.4, 15.7] n=234670      84.5% [84.3, 84.6] n=234670      59.0% [58.9, 59.2] n=397710
+  sim_CLIII          9.6% [ 7.7, 11.9] n=739         94.2% [92.8, 95.3] n=1329        38.5% [36.3, 40.7] n=1920  
+  live_CLIII         9.3% [ 5.0, 16.7] n=97          76.2% [67.2, 83.3] n=105         57.7% [50.2, 65.0] n=168   
+  live_CXXXVIII      6.2% [ 3.3, 11.4] n=145         78.3% [71.3, 83.9] n=161         55.3% [49.3, 61.2] n=262   
+  live_cue_ab2       0.0% [ 0.0, 43.4] n=5           66.7% [30.0, 90.3] n=6           55.6% [26.7, 81.1] n=9     
+  live_CXXIV         6.5% [ 3.6, 11.5] n=154         81.9% [75.8, 86.8] n=188         51.3% [45.7, 56.9] n=300   
+
+## OVERTIME 1-1 vs 0-0, pro X-Bow sides, adjusted for opponent archetype (Mantel-Haenszel; 95% bootstrap CI)
+  beatdown     1-1:  29.5% n= 222 | 0-0:  54.9% n= 3821
+  bridge/bait  1-1:  36.4% n=  22 | 0-0:  51.6% n= 2982
+  other        1-1:   0.0% n=   0 | 0-0:  50.0% n=   52
+  siege        1-1:   0.0% n=   2 | 0-0:  45.6% n=  649
+  adjusted 1-1 minus 0-0: -24.6 pp [-30.3, -18.9]
+
+## Is the OT 1-1 penalty X-Bow-specific? P(win | OT 1-1) - P(win | OT 0-0) by OWN deck archetype (pros, Path of Legend, same-archetype mirrors dropped)
+  beatdown     1-1  56.1% n=  8568 | 0-0  44.2% n= 53575 | +11.9 pp [+10.8, +13.1]
+  bridge/bait  1-1  44.3% n=  7429 | 0-0  54.9% n= 52174 | -10.7 pp [-11.9,  -9.5]
+  mortar       1-1  46.9% n=  1229 | 0-0  51.8% n= 14059 |  -5.0 pp [ -7.9,  -2.1]
+  x-bow        1-1  30.2% n=   230 | 0-0  53.2% n=  6372 | -23.0 pp [-28.7, -16.7]
+  other        1-1  30.6% n=    62 | 0-0  54.7% n=  1870 | -24.0 pp [-34.3, -11.5]
+
+# From here on the tiebreak tower (destroyed at the overtime buzzer) is NOT counted as a princess lost / taken.
+
+## CROWN STATE, tiebreak crown removed
+  group            P(win) all                   OT start 0-0                 OT start 1-1                 1-1 minus 0-0 (pp)    
+  pro_icebow8       47.2% [45.0, 49.3] n=2050    50.7% [48.3, 53.2] n=1555    20.0% [ 8.9, 39.1] n=25     -30.7 [-42.2, -11.4]
+  pro_xbow_other    51.7% [50.6, 52.8] n=8350    53.3% [52.0, 54.5] n=5949    31.0% [25.3, 37.4] n=221    -22.3 [-28.1, -15.8]
+  pro_all_xbow      50.8% [49.9, 51.8] n=10400   52.7% [51.6, 53.9] n=7504    29.9% [24.5, 35.9] n=246    -22.9 [-28.4, -16.8]
+  pro_nonxbow       50.0% [49.8, 50.2] n=397710  50.0% [49.8, 50.2] n=197448  50.0% [49.5, 50.5] n=38520   +0.0 [ -0.5,  +0.5]
+  sim_CLIII         65.2% [63.0, 67.3] n=1920    62.5% [59.5, 65.5] n=990     54.4% [44.2, 64.3] n=90      -8.1 [-18.8,  +2.3]
+  live_CLIII        47.6% [40.2, 55.1] n=168     56.4% [43.3, 68.6] n=55      26.3% [11.8, 48.8] n=19     -30.0 [-49.0,  -4.0]
+  live_CXXXVIII     48.1% [42.1, 54.1] n=262     62.8% [52.2, 72.3] n=86      24.0% [11.5, 43.4] n=25     -38.8 [-54.5, -16.7]
+  live_cue_ab2      44.4% [18.9, 73.3] n=9       50.0% [ 9.5, 90.5] n=2         n=0                        +nan [ +nan,  +nan]
+  live_CXXIV        51.3% [45.7, 56.9] n=300     67.0% [57.7, 75.1] n=109     39.1% [22.2, 59.2] n=23     -27.8 [-46.7,  -5.7]
+
+  group            P(win | ever lost a princess)    P(win | ever took one)           P(lose a princess at all)   
+  pro_icebow8        0.6% [ 0.3,  1.3] n=993         95.6% [94.0, 96.8] n=797         48.4% [46.3, 50.6] n=2050  
+  pro_xbow_other     2.8% [ 2.3,  3.5] n=3004        91.3% [90.2, 92.3] n=2943        36.0% [35.0, 37.0] n=8350  
+  pro_all_xbow       2.3% [ 1.9,  2.8] n=3997        92.2% [91.3, 93.0] n=3740        38.4% [37.5, 39.4] n=10400 
+  pro_nonxbow       17.3% [17.2, 17.5] n=210080      82.7% [82.5, 82.8] n=210080      52.8% [52.7, 53.0] n=397710
+  sim_CLIII         11.7% [ 9.4, 14.5] n=607         93.5% [92.0, 94.8] n=1187        31.6% [29.6, 33.7] n=1920  
+  live_CLIII         9.8% [ 5.2, 17.6] n=92          75.0% [65.7, 82.5] n=100         54.8% [47.2, 62.1] n=168   
+  live_CXXXVIII      6.7% [ 3.6, 12.3] n=134         77.4% [70.2, 83.3] n=155         51.1% [45.1, 57.1] n=262   
+  live_cue_ab2       0.0% [ 0.0, 49.0] n=4           66.7% [30.0, 90.3] n=6           44.4% [18.9, 73.3] n=9     
+  live_CXXIV         7.0% [ 3.9, 12.5] n=142         80.9% [74.5, 86.0] n=178         47.3% [41.8, 53.0] n=300   
+
+## FIRST PRINCESS IN PLAY: lost first vs took first (live exact; pros / SIM bounded: both sides ended with a crown = order unknown)
+  pro_icebow8      known lost-first n=952 (wins 0), took-first n=756 (wins 756), ambiguous n=41 (wins 6) -> bounds P(win | lost first) [0.0, 0.6]%, P(win | took first) [95.6, 100.0]%
+  pro_xbow_other   known lost-first n=2663 (wins 0), took-first n=2602 (wins 2602), ambiguous n=341 (wins 85.5) -> bounds P(win | lost first) [0.0, 3.1]%, P(win | took first) [91.1, 100.0]%
+  pro_all_xbow     known lost-first n=3615 (wins 0), took-first n=3358 (wins 3358), ambiguous n=382 (wins 91.5) -> bounds P(win | lost first) [0.0, 2.5]%, P(win | took first) [92.0, 100.0]%
+  pro_nonxbow      known lost-first n=137290 (wins 0), took-first n=137290 (wins 137290), ambiguous n=72790 (wins 36395) -> bounds P(win | lost first) [0.0, 21.0]%, P(win | took first) [79.0, 100.0]%
+  sim_CLIII        known lost-first n=459 (wins 0), took-first n=1039 (wins 1039), ambiguous n=148 (wins 71) -> bounds P(win | lost first) [0.0, 13.4]%, P(win | took first) [93.1, 100.0]%
+  live_CLIII       lost first   1.4% [ 0.2,  7.3] n=74 | took first  88.1% [79.5, 93.4] n=84 | took-lost +86.7 pp [+76.3, +92.2] | no princess fell 10, king first 0
+  live_CXXXVIII    lost first   3.6% [ 1.4,  9.0] n=110 | took first  85.9% [79.1, 90.8] n=135 | took-lost +82.3 pp [+73.6, +87.6] | no princess fell 17, king first 0
+  live_cue_ab2     lost first   0.0% [ 0.0, 49.0] n=4 | took first 100.0% [51.0, 100.0] n=4 | took-lost +100.0 pp [+30.7, +100.0] | no princess fell 1, king first 0
+  live_CXXIV       lost first   3.4% [ 1.3,  8.4] n=118 | took first  87.5% [81.5, 91.8] n=160 | took-lost +84.1 pp [+76.3, +88.8] | no princess fell 22, king first 0
+
+## CROWN TRADES: both sides took a princess; a 1-0 lead given back
+  pro_icebow8      both sides took a princess   2.0% [ 1.5,  2.7] n=2050     | gave a 1-0 lead back (reached 1-1 after 1-0) <= 5.1% (bound; took-first n=756, ambiguous n=41)
+  pro_xbow_other   both sides took a princess   4.1% [ 3.7,  4.5] n=8350     | gave a 1-0 lead back (reached 1-1 after 1-0) <= 11.6% (bound; took-first n=2602, ambiguous n=341)
+  pro_all_xbow     both sides took a princess   3.7% [ 3.3,  4.1] n=10400    | gave a 1-0 lead back (reached 1-1 after 1-0) <= 10.2% (bound; took-first n=3358, ambiguous n=382)
+  pro_nonxbow      both sides took a princess  18.3% [18.2, 18.4] n=397710   | gave a 1-0 lead back (reached 1-1 after 1-0) <= 34.6% (bound; took-first n=137290, ambiguous n=72790)
+  sim_CLIII        both sides took a princess   7.7% [ 6.6,  9.0] n=1920     | gave a 1-0 lead back (reached 1-1 after 1-0) <= 12.5% (bound; took-first n=1039, ambiguous n=148)
+  live_CLIII       both sides took a princess  20.2% [14.9, 26.9] n=168      | gave a 1-0 lead back (reached 1-1 after 1-0)  20.2% [13.0, 30.0] n=84
+  live_CXXXVIII    both sides took a princess  16.8% [12.8, 21.8] n=262      | gave a 1-0 lead back (reached 1-1 after 1-0)  17.0% [11.6, 24.3] n=135
+  live_cue_ab2     both sides took a princess  22.2% [ 6.3, 54.7] n=9        | gave a 1-0 lead back (reached 1-1 after 1-0)   0.0% [ 0.0, 49.0] n=4
+  live_CXXIV       both sides took a princess  14.0% [10.5, 18.4] n=300      | gave a 1-0 lead back (reached 1-1 after 1-0)  15.0% [10.3, 21.3] n=160
+
+## REACHED 1-1 at any point (live exact; pros / SIM: yes when final 1-1 or overtime started 1-1)
+  pro_icebow8      reached 1-1  20.0% [ 8.9, 39.1] n=25 | never 1-1  47.8% [45.7, 50.0] n=2009 | ambiguous n=16 wins 1 -> bounds P(win | reached 1-1) [12.5, 23.1]%
+  pro_xbow_other   reached 1-1  31.0% [25.3, 37.4] n=221 | never 1-1  52.8% [51.7, 53.9] n=8009 | ambiguous n=120 wins 17 -> bounds P(win | reached 1-1) [21.1, 35.9]%
+  pro_all_xbow     reached 1-1  29.9% [24.5, 35.9] n=246 | never 1-1  51.8% [50.9, 52.8] n=10018 | ambiguous n=136 wins 18 -> bounds P(win | reached 1-1) [20.2, 34.7]%
+  pro_nonxbow      reached 1-1  50.0% [49.5, 50.5] n=38520 | never 1-1  50.0% [49.8, 50.2] n=324920 | ambiguous n=34270 wins 17135 -> bounds P(win | reached 1-1) [34.6, 65.4]%
+  sim_CLIII        reached 1-1  54.4% [44.2, 64.3] n=90 | never 1-1  66.6% [64.4, 68.8] n=1772 | ambiguous n=58 wins 22 -> bounds P(win | reached 1-1) [38.9, 63.4]%
+  live_CLIII       reached 1-1  26.7% [14.2, 44.4] n=30 | never 1-1  52.2% [43.9, 60.3] n=138 | ambiguous n=0 wins 0
+  live_CXXXVIII    reached 1-1  19.5% [10.2, 34.0] n=41 | never 1-1  53.4% [46.8, 59.9] n=221 | ambiguous n=0 wins 0
+  live_cue_ab2     reached 1-1   0.0% [ 0.0, 65.8] n=2 | never 1-1  57.1% [25.0, 84.2] n=7 | ambiguous n=0 wins 0
+  live_CXXIV       reached 1-1  25.6% [14.6, 41.1] n=39 | never 1-1  55.2% [49.1, 61.1] n=261 | ambiguous n=0 wins 0
+
+## LIVE exact: P(win | crown state at clock t), state = (we took, we lost) princesses; matches still running at t
+  -- at 60 s
+    CLIII      0-0: 49% [41,57] n=144 | 1-0: 82% [52,95] n=11 | 0-1: 0% [0,32] n=8 | 1-1: 0% [0,49] n=4 | other n=1
+    CXXXVIII   0-0: 52% [45,58] n=232 | 1-0: 71% [36,92] n=7 | 0-1: 0% [0,19] n=16 | 1-1: 25% [5,70] n=4 | other n=2
+    cue_ab2    0-0: 57% [25,84] n=7 | 0-1: 0% [0,66] n=2
+    CXXIV      0-0: 55% [49,61] n=254 | 1-0: 86% [60,96] n=14 | 0-1: 7% [2,23] n=27 | 1-1: 0% [0,66] n=2 | other n=2
+  -- at 120 s (double elixir)
+    CLIII      0-0: 56% [46,65] n=106 | 1-0: 100% [82,100] n=17 | 0-1: 4% [1,20] n=24 | 1-1: 22% [6,55] n=9 | other n=8
+    CXXXVIII   0-0: 60% [52,67] n=161 | 1-0: 92% [75,98] n=25 | 0-1: 7% [3,19] n=41 | 1-1: 12% [3,34] n=17 | other n=4
+    cue_ab2    0-0: 33% [6,79] n=3 | 1-0: 100% [44,100] n=3 | 0-1: 0% [0,79] n=1 | 1-1: 0% [0,66] n=2
+    CXXIV      0-0: 64% [57,71] n=193 | 1-0: 83% [66,93] n=30 | 0-1: 6% [2,16] n=50 | 1-1: 10% [2,40] n=10 | other n=11
+  -- at 180 s (overtime start)
+    CLIII      0-0: 56% [43,69] n=55 | 1-0: 100% [85,100] n=21 | 0-1: 0% [0,19] n=16 | 1-1: 26% [12,49] n=19 | other n=9
+    CXXXVIII   0-0: 63% [52,72] n=86 | 1-0: 100% [89,100] n=31 | 0-1: 0% [0,14] n=24 | 1-1: 24% [11,43] n=25 | other n=22
+    cue_ab2    0-0: 50% [9,91] n=2 | 1-0: 100% [21,100] n=1
+    CXXIV      0-0: 67% [58,75] n=109 | 1-0: 100% [90,100] n=34 | 0-1: 0% [0,14] n=24 | 1-1: 39% [22,59] n=23 | other n=15
+
+  P(win | crown state reached at ANY point):
+    CLIII      1-0: 88% [79,93] n=84 | 0-1: 1% [0,7] n=74 | 1-1: 27% [14,44] n=30 | no princess fell:  50.0% [23.7, 76.3] n=10
+    CXXXVIII   1-0: 86% [79,91] n=135 | 0-1: 4% [1,9] n=110 | 1-1: 20% [10,34] n=41 | no princess fell:  35.3% [17.3, 58.7] n=17
+    cue_ab2    1-0: 100% [51,100] n=4 | 0-1: 0% [0,49] n=4 | 1-1: 0% [0,66] n=2 | no princess fell:   0.0% [ 0.0, 79.3] n=1
+    CXXIV      1-0: 88% [81,92] n=160 | 0-1: 3% [1,8] n=118 | 1-1: 26% [15,41] n=39 | no princess fell:  45.5% [26.9, 65.3] n=22
+
+  trade order among matches that reached 1-1:
+    CLIII      took first then traded (1-0 -> 1-1):  41.2% [21.6, 64.0] n=17 | lost first then traded back (0-1 -> 1-1):   7.7% [ 1.4, 33.3] n=13
+    CXXXVIII   took first then traded (1-0 -> 1-1):  17.4% [ 7.0, 37.1] n=23 | lost first then traded back (0-1 -> 1-1):  22.2% [ 9.0, 45.2] n=18
+    cue_ab2    took first then traded (1-0 -> 1-1):    n=0 | lost first then traded back (0-1 -> 1-1):   0.0% [ 0.0, 65.8] n=2
+    CXXIV      took first then traded (1-0 -> 1-1):  25.0% [12.0, 44.9] n=24 | lost first then traded back (0-1 -> 1-1):  26.7% [10.9, 52.0] n=15
+
+## STYLE (plays only, identical code for pros and live). Groups: pros icebow8 (exact deck), pros other X-Bow decks, live Marks
+
+  Defence episodes (opponent troop pushes; our answers on our half):
+  group           band            n  elixir trade (their - ours)    positive-trade share       cheap-only share (answered)  unanswered               Rocket in answer      
+  pro_icebow8     all         34785  +0.64 [+0.59, +0.68]          50.5% [50.0, 51.0]      53.2% [52.6, 53.7]        15.3% [14.8, 15.7]     4.5% [4.2, 4.7]
+  pro_icebow8     mid5-9      14236  +1.09 [+1.02, +1.15]          57.0% [56.1, 57.9]      49.6% [48.8, 50.3]        13.5% [12.9, 14.0]     5.9% [5.4, 6.4]
+  pro_icebow8     heavy>=10    5149  +2.44 [+2.29, +2.58]          66.3% [64.9, 67.6]      27.5% [26.4, 28.7]         3.8% [3.3, 4.3]     8.3% [7.4, 9.2]
+  pro_xbow_other  all        136141  +0.64 [+0.61, +0.66]          50.9% [50.6, 51.2]      53.0% [52.6, 53.3]        13.4% [13.2, 13.6]     1.3% [1.3, 1.4]
+  pro_xbow_other  mid5-9      55201  +1.13 [+1.10, +1.16]          58.5% [58.0, 58.9]      49.5% [49.0, 49.9]        11.3% [11.1, 11.6]     1.7% [1.6, 1.8]
+  pro_xbow_other  heavy>=10   19983  +2.62 [+2.54, +2.68]          68.2% [67.5, 69.0]      29.5% [28.9, 30.3]         3.4% [3.2, 3.7]     2.7% [2.4, 2.9]
+  CLIII           all          2264  +0.60 [+0.46, +0.73]          50.3% [48.1, 52.6]      60.0% [58.2, 61.7]        14.1% [12.7, 15.6]     0.7% [0.3, 1.1]
+  CLIII           mid5-9        984  +1.13 [+0.93, +1.33]          59.3% [56.2, 62.7]      58.8% [55.7, 61.7]        12.0% [9.9, 14.0]     1.2% [0.5, 1.9]
+  CLIII           heavy>=10     232  +2.60 [+2.18, +3.02]          75.4% [70.2, 81.2]      42.4% [36.3, 48.8]         0.4% [0.0, 1.4]     0.4% [0.0, 1.4]
+  CXXXVIII        all          3444  +0.71 [+0.61, +0.81]          51.8% [50.1, 53.4]      59.4% [57.8, 60.9]        14.3% [13.2, 15.5]     0.9% [0.6, 1.2]
+  CXXXVIII        mid5-9       1459  +1.18 [+1.03, +1.32]          59.6% [57.2, 62.1]      57.0% [54.4, 59.5]        12.1% [10.3, 14.1]     1.6% [0.9, 2.2]
+  CXXXVIII        heavy>=10     400  +2.83 [+2.52, +3.14]          77.0% [73.0, 80.9]      32.4% [28.1, 36.9]         0.5% [0.0, 1.3]     0.8% [0.0, 1.7]
+  cue_ab2         all           118  +0.56 [+0.17, +1.09]          51.7% [42.8, 62.7]      61.9% [52.9, 70.5]        17.8% [10.1, 25.0]     0.0% [0.0, 0.0]
+  cue_ab2         mid5-9         53  +1.17 [+0.60, +1.87]          60.4% [46.7, 72.2]      66.0% [56.7, 74.1]        11.3% [4.4, 18.4]     0.0% [0.0, 0.0]
+  cue_ab2         heavy>=10      10  +2.90 [+1.70, +4.43]          80.0% [55.6, 100.0]      40.0% [10.0, 70.0]         0.0% [0.0, 0.0]     0.0% [0.0, 0.0]
+  CXXIV           all          4149  +0.68 [+0.59, +0.77]          51.3% [49.8, 52.8]      59.8% [58.4, 61.2]        15.0% [14.0, 16.0]     1.0% [0.7, 1.4]
+  CXXIV           mid5-9       1817  +1.22 [+1.07, +1.35]          60.2% [57.8, 62.4]      56.1% [53.9, 58.4]        13.3% [11.7, 14.8]     1.2% [0.7, 1.7]
+  CXXIV           heavy>=10     463  +2.94 [+2.56, +3.30]          73.9% [69.3, 78.3]      39.0% [34.3, 43.7]         0.9% [0.2, 1.8]     2.2% [0.9, 3.6]
+
+  Per match (mean [95% CI] n):
+  early offensive spend, first 60 s (elixir)
+    pro_icebow8     4.00 [3.85, 4.14] n=2050
+    pro_xbow_other  4.23 [4.15, 4.30] n=8350
+    CLIII           4.66 [4.18, 5.14] n=168
+    CXXXVIII        4.61 [4.19, 5.03] n=262
+    cue_ab2         5.67 [4.00, 7.00] n=9
+    CXXIV           4.35 [3.98, 4.73] n=300
+    share of matches with any offensive spend in the first 60 s:
+      pro_icebow8      61.7% [59.5, 63.7] n=2050
+      pro_xbow_other   65.9% [64.9, 66.9] n=8350
+      CLIII            73.2% [66.1, 79.3] n=168
+      CXXXVIII         69.1% [63.2, 74.4] n=262
+      cue_ab2          88.9% [56.5, 98.0] n=9
+      CXXIV            67.0% [61.5, 72.1] n=300
+  total spend, first 60 s (elixir)
+    pro_icebow8     20.05 [19.89, 20.20] n=2050
+    pro_xbow_other  20.99 [20.92, 21.05] n=8350
+    CLIII           21.99 [21.48, 22.49] n=168
+    CXXXVIII        21.62 [21.13, 22.07] n=262
+    cue_ab2         24.00 [21.22, 26.44] n=9
+    CXXIV           21.93 [21.55, 22.32] n=300
+  first bridge X-Bow (clock s)
+    pro_icebow8     74.5 [72.1, 76.9] n=1898
+    pro_xbow_other  64.8 [63.9, 65.9] n=7983
+    CLIII           51.2 [44.1, 58.7] n=165
+    CXXXVIII        51.9 [46.5, 57.5] n=256
+    cue_ab2         38.2 [22.5, 56.6] n=9
+    CXXIV           56.5 [50.8, 62.4] n=294
+  bridge X-Bows per minute
+    pro_icebow8     0.690 [0.672, 0.709] n=2050
+    pro_xbow_other  0.890 [0.881, 0.900] n=8350
+    CLIII           0.877 [0.824, 0.928] n=168
+    CXXXVIII        0.886 [0.840, 0.929] n=262
+    cue_ab2         0.932 [0.679, 1.222] n=9
+    CXXIV           0.816 [0.779, 0.855] n=300
+  Rockets per minute (all aims)
+    pro_icebow8     0.593 [0.576, 0.609] n=2050
+    pro_xbow_other  0.159 [0.153, 0.166] n=8350
+    CLIII           0.139 [0.108, 0.168] n=168
+    CXXXVIII        0.153 [0.126, 0.182] n=262
+    cue_ab2         0.210 [0.096, 0.306] n=9
+    CXXIV           0.200 [0.172, 0.227] n=300
+  Rockets at a tower per minute
+    pro_icebow8     0.360 [0.344, 0.374] n=2050
+    pro_xbow_other  0.095 [0.090, 0.100] n=8350
+    CLIII           0.111 [0.084, 0.138] n=168
+    CXXXVIII        0.115 [0.091, 0.139] n=262
+    cue_ab2         0.173 [0.068, 0.272] n=9
+    CXXIV           0.155 [0.131, 0.176] n=300
+  Rockets at a tower per match
+    pro_icebow8     1.60 [1.53, 1.67] n=2050
+    pro_xbow_other  0.43 [0.40, 0.45] n=8350
+    CLIII           0.39 [0.30, 0.49] n=168
+    CXXXVIII        0.42 [0.33, 0.52] n=262
+    cue_ab2         0.56 [0.22, 0.89] n=9
+    CXXIV           0.58 [0.49, 0.67] n=300
+
+  Does early aggression go with losing? P(win) split by the match's own early play (association only: the opponent deck drives both)
+    pro_icebow8     first bridge X-Bow < 60 s:  50.1% [46.9, 53.3] n=942 | later / none:  44.7% [41.8, 47.6] n=1108 | diff +5.4 pp [+1.1, +9.7]
+    pro_xbow_other  first bridge X-Bow < 60 s:  54.8% [53.3, 56.2] n=4365 | later / none:  48.3% [46.8, 49.9] n=3985 | diff +6.4 pp [+4.3, +8.6]
+    CLIII           first bridge X-Bow < 60 s:  49.6% [40.5, 58.6] n=113 | later / none:  43.6% [31.4, 56.7] n=55 | diff +5.9 pp [-10.0, +21.2]
+    CXXXVIII        first bridge X-Bow < 60 s:  48.2% [40.7, 55.7] n=166 | later / none:  47.9% [38.2, 57.8] n=96 | diff +0.3 pp [-12.1, +12.6]
+    cue_ab2         first bridge X-Bow < 60 s:  42.9% [15.8, 75.0] n=7 | later / none:  50.0% [ 9.5, 90.5] n=2 | diff -7.1 pp [-55.9, +44.6]
+    CXXIV           first bridge X-Bow < 60 s:  50.3% [43.0, 57.6] n=175 | later / none:  52.8% [44.1, 61.3] n=125 | diff -2.5 pp [-13.8, +8.9]
+
+  Own princess-tower HP lost, in princess-tower units (1.0 = one tower) per match and per minute:
+    full princess HP by tower level (max seen): {16: 4858}
+    pro_icebow8     per match 1.297 [1.258, 1.337] n=715 | per minute 0.340 [0.322, 0.357] n=715
+    pro_xbow_other  per match 1.201 [1.187, 1.212] n=8345 | per minute 0.323 [0.317, 0.328] n=8345
+    CLIII           per match 1.174 [1.083, 1.267] n=168 | per minute 0.381 [0.344, 0.424] n=168
+    CXXXVIII        per match 1.175 [1.104, 1.251] n=262 | per minute 0.396 [0.358, 0.436] n=262
+    cue_ab2         per match 1.394 [1.013, 1.763] n=9 | per minute 0.449 [0.311, 0.589] n=9
+    CXXIV           per match 1.132 [1.062, 1.198] n=300 | per minute 0.365 [0.333, 0.397] n=300
+
+  X-Bow tower damage (LIVE only: needs frames; pros have no frames). Per bridge X-Bow: life (s) and enemy tower HP lost during its life:
+    CLIII           life 16.7 [16.2, 17.3] n=494 | tower dmg 1664 [1516, 1806] n=494 | own tower HP taken 203 [158, 258] n=494
+    CXXXVIII        life 16.4 [16.0, 16.8] n=796 | tower dmg 1567 [1466, 1673] n=796 | own tower HP taken 179 [149, 213] n=796
+    cue_ab2         life 16.3 [14.0, 18.7] n=29 | tower dmg 1498 [1003, 2046] n=29 | own tower HP taken 303 [134, 541] n=29
+    CXXIV           life 17.0 [16.6, 17.4] n=857 | tower dmg 1550 [1451, 1649] n=857 | own tower HP taken 223 [190, 261] n=857
