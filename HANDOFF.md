@@ -1,3 +1,8 @@
+## 2026-10-18 11:31 EDT -- round-7 CLOSER launched (API-key worker, WMI pid 26708)
+
+- Ticket scratchpad/gauntlet/L74/parity/diag_night/R7_CLOSER_TICKET.md; log r7_closer.log; status R7_STATUS.md; summary
+  R7_SUMMARY.md. It waits for round 7 to finish or go quiet 60 min, lands only verified patches (verifies any unverified),
+  then runs FIN13. Next session: check those files first.
 ## 2026-10-18 11:27 EDT -- FINAL entry from account 1 (usage at 100%): leash decision + where to start
 
 - Owner (final): "anchor the step-d leash to whichever one will allow the model to perform better: if it's the pro-imitation
