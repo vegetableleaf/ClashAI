@@ -1,3 +1,25 @@
+## 2026-10-18 06:04 EDT -- FIN11 scored: upgraded 0.924 [0.916, 0.931] on 265 matches; tier-B coverage 0.044 -> 0.217 (X-Bow + Log MEET); fork clashbot36 has 5 new laws
+
+- Fork clashbot36 (worktree C:/Users/benpe/rsfork36):
+  - 72a18a5 + 1e7d45f S-TESLA-HOLD + 3dfb6bc S-RING-STUN + e816842 S-REFLECT-HELD + a4676a2 S-UPPERCUT-COUNT + d40f331
+    S-UPPERCUT-STAND
+  - conflicts were append-only lists (client_arms.rs / state.rs / calibration.json), both sides kept, diff stats equal the
+    patches'
+  - cargo test --profile gate: 1952 / 0 / 3 ignored
+  - bundle parity1016/clashbot36_fin11.bundle; wheel P3 /workspace/rsfork_fin11
+- FIN11 (P3 /workspace/results/FIN11, FIN11_stamped; code HEAD 25a2579; 499 logs = 359 + 140 new; exports attacks11s.json
+  (+ _shields rows for H-SHIELD-3C) / buffs11.json; 0 crashes):
+  - full 0.917 [0.912, 0.922] (normalised 0.940)
+  - upgraded 0.924 [0.916, 0.931] (ceiling 0.991, normalised 0.932)
+  - on FIN9's 353 matches only: full 0.916, upgraded 0.927 (+0.004 each vs FIN9)
+- coverage.py: valid; overall not met; tier B 0.217 of plays meet (FIN9 0.044); tier C 0.200.
+- Own upgraded:
+  - MEET: Log 0.973 [0.961, 0.983], X-Bow 0.968 [0.953, 0.982]
+  - not yet: Tornado 0.971 (CI lower < 0.95), Rocket 0.942, IW hero 0.931, Knight 0.926, Tesla 0.921, Tesla evo 0.909, Knight
+    evo 0.894, Skeletons 0.871
+- Opp MK / Goblin Barrel / Cannon / Princess no longer MEET: the new matches score them 0.965-0.98 (still 1.0 on FIN9's
+  matches).
+- P3 disk was 98% full: removed build caches only (w_fin11/target_gate, w_v5d/*/target, w_r6b/target): now 61%.
 ## 2026-10-18 05:33 EDT -- Hero IW press perception gate LIVE (P1 + P2; allowed perception fix); audit: "trigger happy" = misreads + bridge freezes + low-elixir presses
 
 - Audit (round-6 Ability agent; scratchpad/gauntlet/L74/ability_live/audit/):
