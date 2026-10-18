@@ -1,5 +1,50 @@
 # Step-d status
 
+## 2026-10-18 17:25 EDT -- milestone 9 (executor's last): ALL FIVE RL ARMS TRAINING; results land ~01:00-02:00 EDT 10-19
+
+| arm (yaml stepd/cfg/) | pod | init | started (UTC) | state at 21:20 UTC |
+|---|---|---|---|---|
+| stepd_ctrl | 64.247.206.76:13396 | CLIII raw 05d42da7 | 21:08 | u1, rollouts 159/97; RAW_TOO=1 |
+| stepd_reb | 64.247.206.120:19834 | IL-cue-w s0 279b4f30 | 21:09 | u0, rollouts 52/204 |
+| stepd_rebc3 (twin, card KL to CLIII) | 64.247.206.76:14009 | IL-cue-w s0 | 21:08 | u1, update-0 KL_card to CLIII 0.35; NO36=1 |
+| stepd_ctrl_s75 (CTRL seed 75 = run-to-run noise) | 64.247.206.80:30988 | CLIII raw | 21:10 | u0, rollouts 163/93 |
+| stepd_ctrl_nos2 (no Stage-2 opponents = LEAGUE) | 216.81.245.71:34210 | CLIII raw | 19:32 | u30; KL g/c/x .045/.017/.207 |
+
+- Speed ~2.5-3 min / update -> u130 ~03:00-04:00 UTC; then graft (fv6) or raw (fv5) + evals (fin13 std + fresh, fork36 std,
+  u65 std; CTRL also raw) -> pack -> laptop relay pulls to pod_backup_weekend/stepd/<arm>/. Read with
+  `icebow/.venv/Scripts/python.exe scratchpad/gauntlet/L74/stepd/readout.py` (bar: CI low > 0 on fin13 std AND fresh vs CLIII).
+- Laptop helpers (WMI): pull_stepd LOOP pid 55520 (6 jobs, log relay.log) then pid 53496 takes over for the 7th (relay2.log).
+  If both are gone: `bash scratchpad/gauntlet/L74/stepd/pull_stepd.sh HOST PORT ...` (one pass, safe to repeat).
+- Informational (plan c): IL-cue-w RAW vs CLIII grafted on fin13: std 382 vs 633 = -26.15 [-30.00, -22.29]; fresh 364 vs
+  619 = -26.56 [-30.21, -22.81]. Habits (std, IL-cue / CLIII): Rockets 1.09 / 0.62 per game, Tornados 2.42 / 1.11,
+  early bridge X-Bow 63.4% / 65.7% (n.s.), unforced princess Rockets 0.75 / 0.32. The pro base carries the Rocket habit,
+  not the patient X-Bow. Part of the -26 may be the missing refine heads (CTRL raw vs grafted will size that).
+- Watch: the card-only loose leash lets cell / gate move freely (nos2 KL_cell 0.21 at u30 vs ~0.05-0.09 under the old
+  all-head leash). Guards (tripwire 5 / hard 8 pp pro agreement, entropy floor, screen stop -10) are the collapse backstop.
+- 6th arm: stepd_reb_s75 (REB seed 75 = REB's run-to-run noise) on 64.247.206.79:10757 (idle after the CLIII re-score):
+  own smoke A + B PASS, chain start 21:36 UTC. readout.py pairs it with stepd_reb (and ctrl_s75 with ctrl).
+- Copy-back relays (WMI): 55520 (6 jobs) -> 53496 (7) -> 61864 (8 = every job incl. both replicates).
+- Pods: none to stop (all six train; owner rule). 15617 / 19899 parity untouched.
+
+## 2026-10-18 15:55 EDT -- milestone 8: graft defect caught before REB; relays armed; IL-cue informational eval running
+
+- DEFECT (would have voided REB's evals): graft_generic.py copies u250's fv6 projectile_target tensors into an fv5 model, which
+  then cannot load ("Unexpected key(s) ... projectile_target_in"). REB / twin checkpoints stay fv5 (checked: IL init and the REB
+  smoke u0002 are fv5; CLIII fv6). And u250's add-ons were fitted to the u250 / CLIII trunk, not to an imitation trunk.
+  FIX (stepd_chain.sh graft()): an fv < 6 arm is evaluated RAW (the refine heads are optional at inference); fv6 arms keep the
+  42-tensor graft as deployed. CTRL's GO has RAW_TOO=1, so CTRL is also scored raw on fin13 std + fresh -> the init's
+  attribution is REB raw vs CTRL raw (readout.py prints it); REB raw vs CLIII grafted = the as-deployable bar. A REB winner
+  would need its own refine heads trained (the gen_v32 cellref recipe) before or after a live trial: an owner decision.
+  Pushed to 13396 / 19834 / 14009 / 30988; NOT to 34210 (its running chain is fv6 = unaffected; never overwrite a running script).
+- IL-cue (raw) fin13 eval rerunning on 30988 (the grafted attempt produced 0 rows for the reason above), std + fresh.
+- CLIII fin13 vs fork36, same std seeds, paired: -0.94 pp [-3.23, +1.46]; fork36 std via cb_stepd = 642/960 (= the original
+  promotion and Codex's rerun: the step-d eval tree reproduces).
+- Laptop jobs (WMI, survive this session): relay pull_stepd.sh LOOP (pid 55520 -> pod_backup_weekend/stepd/relay.log; pulls
+  each packed job, sha-verified; stops after 6 jobs); relay_s2.sh (pid 39224 -> relay_s2.log): at 13396 CHAIN_DONE it copies
+  s2_all_il_sA_u0130.pt to 19834 + 14009, which releases REB and the twin.
+- Deviation from PLAN (stated): no mid-run u65 stop/go for REB. Its only purpose was to free REB's pod for LEAGUE / a CTRL
+  replicate; LEAGUE already runs on 34210 and no pod is short. u65 is still scored after training (monitoring only).
+
 ## 2026-10-18 15:50 EDT -- milestone 7: D2 EVALUATED; REB init on its pods; LEAGUE arm training; smoke-check fix
 
 - D2b IL-cue-w s0 (30988, 18:56-19:27 UTC; sha 279b4f30...; pod_backup_weekend/stepd/d2/ + d2_relay/, sha-verified).

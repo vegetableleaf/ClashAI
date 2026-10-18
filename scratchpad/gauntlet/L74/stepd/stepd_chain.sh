@@ -29,7 +29,12 @@ ev() {   # ev CKPT TAG SEED RUNTIME PYTHON
     --workers ${WORKERS:-26} --extra="$EV_EXTRA" > $D.log 2>&1 || log "GAP EXIT $? $2 $3 $4"
   log "$2 $3 $4 rows: $(grep -c '"outcome"' $D/D3/matches.jsonl 2>/dev/null)"
 }
-graft() { local G=${1%.pt}_grafted.pt; [ -f $G ] || $P13 scratchpad/gauntlet/L74/weekend/graft_generic.py $1 $U250 $G >> $O/graft.log 2>&1; echo $G; }
+graft() {   # an fv < 6 arm (imitation init: REB, twin) cannot load u250's fv6 projectile branch, and u250's add-ons were fitted
+            # to another trunk -> it is evaluated RAW (the heads are optional at inference); fv6 arms get the 42 tensors as deployed
+  local fv; fv=$($P13 -c "import sys, torch; print(int(torch.load(sys.argv[1], map_location='cpu')['args'].get('feature_version', 1)))" $1)
+  if [ "${fv:-0}" -lt 6 ]; then log "fv $fv arm: evaluated raw (no graft) $1" >&2; echo $1; return; fi
+  local G=${1%.pt}_grafted.pt; [ -f $G ] || $P13 scratchpad/gauntlet/L74/weekend/graft_generic.py $1 $U250 $G >> $O/graft.log 2>&1; echo $G
+}
 evall() {   # evall GRAFTED TAG: the u130 set
   for S in 741200 742000 743000 744000; do ev $1 $2 $S fin13-linux $P13; done
   [ -n "${NO36:-}" ] && return 0     # NO36=1: a pod whose /workspace/fork36 parity checkout breaks the fork36 wheel (14009)
@@ -56,6 +61,9 @@ cp scratchpad/gauntlet/L68/rl/$R/train_log.jsonl scratchpad/gauntlet/L68/rl/$R/c
 G=$(graft $CK); [ -f $G ] || { log "graft failed"; exit 5; }
 sha256sum $CK $G > $O/final.sha; ln -f $CK $G $O/
 evall $G $NAME
+if [ -n "${RAW_TOO:-}" ] && [ "$G" != "$CK" ]; then   # RAW_TOO=1 (GO file): also the raw u130 on fin13 std + fresh, so an fv6 arm
+  for S in 741200 742000 743000 744000; do ev $CK ${NAME}_raw $S fin13-linux $P13; done   # compares like-for-like with raw REB
+fi
 G65=$(graft $RL/$R/${R}_u0065.pt)
 for S in 741200 742000; do [ -f $G65 ] && ev $G65 ${NAME}_u65 $S fin13-linux $P13; done
 pack; touch $O/ALL_DONE; log "ALL_DONE"

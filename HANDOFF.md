@@ -1,3 +1,22 @@
+## 2026-10-18 17:36 EDT -- step d: SIX RL arms training on fin13 (CTRL, REB, REB CLIII-anchor twin, LEAGUE attribution, CTRL + REB seed-75 replicates); results ~01:00-02:00 EDT 10-19
+
+- STATUS: scratchpad/gauntlet/L74/stepd/STATUS.md (pod table at the top). Readout when the relays land:
+  `icebow/.venv/Scripts/python.exe scratchpad/gauntlet/L74/stepd/readout.py` (owner bar: CI low > 0 vs CLIII on fin13 std AND
+  fresh; CLIII fin13 = 633 / 619 of 960). Nothing deployed; SIM passes are weak evidence (CLIII +4.4 SIM, ~0 live).
+- Arms (130 updates, fin13, live IW press, live levels, cues, ability head ON, card-only very loose leash, Stage-2 sA opponents
+  share 0.3): stepd_ctrl 13396 (CLIII init; also scored raw), stepd_reb 19834 (IL-cue-w init), stepd_rebc3 14009 (REB + card
+  KL to CLIII), stepd_ctrl_nos2 34210 (CTRL minus Stage-2 opponents), stepd_ctrl_s75 30988 + stepd_reb_s75 10757 (seed 75).
+- Measured context: IL-cue-w (raw, before RL) vs CLIII: -26.35 pp pooled [-29.01, -23.70]. It plays more Rockets (1.09 vs 0.62
+  / game) and Tornados (2.42 vs 1.11) but NOT the patient bridge X-Bow (early X-Bow 63% vs 66%, n.s.). REB has to close ~26 pp in
+  130 updates (plan risk 1).
+- DEFECT caught before it voided REB: graft_generic puts u250's fv6 projectile branch into an fv5 (imitation) model, which then
+  cannot load; and u250's add-ons were fitted to another trunk. stepd_chain now evaluates fv < 6 arms RAW; CTRL is scored raw
+  too (RAW_TOO) so REB vs CTRL stays like-for-like; REB raw vs CLIII grafted is the as-deployable bar. A REB winner needs its own
+  refine heads (cellref recipe) -- owner decision.
+- Deviations from PLAN (stated): no mid-run u65 stop/go for REB (it only freed a pod; none is short; u65 still scored);
+  REB anchor = its own pro-imitation init on the card head only (owner's final guidance), twin anchored to CLIII.
+- Laptop helpers (WMI): copy-back relays 55520 -> 53496 -> 61864 (pod_backup_weekend/stepd/relay*.log). All pods in use; none
+  stopped. Owed: the live dry check of IL-cue (plan c); per-archetype slices of the x3 weighting in the arm evals.
 ## 2026-10-18 15:44 EDT -- step d: D1 + D2 DONE (cues help imitation only on gate NLL, tiny); ability head ON in all arms; 4 RL arms armed, LEAGUE arm training
 
 - STATUS: scratchpad/gauntlet/L74/stepd/STATUS.md (pod table, PIDs, incidents). Results: pod_backup_weekend/stepd/.

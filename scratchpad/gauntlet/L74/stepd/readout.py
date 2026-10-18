@@ -17,7 +17,7 @@ from analyze import metrics, HABITS  # noqa: E402
 
 ROOT = Path("C:/Users/benpe/pod_backup_weekend/stepd")
 STD, FRESH = (741200, 742000), (743000, 744000)
-ARMS = ("stepd_ctrl", "stepd_reb", "stepd_rebc3", "stepd_ctrl_nos2")
+ARMS = ("stepd_ctrl", "stepd_reb", "stepd_rebc3", "stepd_ctrl_nos2", "stepd_ctrl_s75", "stepd_reb_s75")
 REF = "clIII_fin13"
 
 
@@ -56,6 +56,7 @@ def report(root):
         r = {k: rows(root, a, a, seeds, rt) for k, seeds, rt in
              (("std", STD, "fin13"), ("fresh", FRESH, "fin13"), ("std36", STD, "fork36"))}
         r["u65"] = rows(root, a, f"{a}_u65", STD, "fin13")
+        r["raw_std"], r["raw_fresh"] = rows(root, a, f"{a}_raw", STD, "fin13"), rows(root, a, f"{a}_raw", FRESH, "fin13")
         if not any(r.values()):
             continue
         got[a] = r
@@ -71,9 +72,16 @@ def report(root):
             m, mr = metrics(r["std"]), metrics(ref["std"])
             print("  habits (arm / CLIII): " + ", ".join(f"{h} {m[h][0]:.2f} / {mr[h][0]:.2f}" for h in HABITS
                                                          if h in m and h in mr))
-    for a, b in (("stepd_reb", "stepd_ctrl"), ("stepd_rebc3", "stepd_reb"), ("stepd_ctrl", "stepd_ctrl_nos2")):
+    for a, b in (("stepd_reb", "stepd_ctrl"), ("stepd_rebc3", "stepd_reb"), ("stepd_ctrl", "stepd_ctrl_nos2"), ("stepd_ctrl_s75", "stepd_ctrl"), ("stepd_reb_s75", "stepd_reb")):
         if a in got and b in got:
             print(f"\n{a} vs {b}: std {pd(got[b]['std'], got[a]['std'])[0]}, fresh {pd(got[b]['fresh'], got[a]['fresh'])[0]}")
+    # REB / twin (fv5 imitation init) are evaluated RAW (stepd_chain graft()); CTRL (fv6) grafted, plus raw via RAW_TOO:
+    # the init's attribution is REB raw vs CTRL raw (like-for-like heads); REB raw vs CLIII grafted is the as-deployable bar
+    if "stepd_reb" in got and "stepd_ctrl" in got and got["stepd_ctrl"]["raw_std"]:
+        c = got["stepd_ctrl"]
+        print(f"\nstepd_reb vs stepd_ctrl RAW (like-for-like): std {pd(c['raw_std'], got['stepd_reb']['std'])[0]}, "
+              f"fresh {pd(c['raw_fresh'], got['stepd_reb']['fresh'])[0]};  CTRL raw vs CTRL grafted std "
+              f"{pd(c['std'], c['raw_std'])[0]}")
 
 
 def selftest():
