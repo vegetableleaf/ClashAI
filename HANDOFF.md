@@ -1,3 +1,49 @@
+## 2026-10-18 10:54 EDT -- SESSION HANDOVER (first account near its usage cap): full status for the next session
+
+**Live:** ICEBOW Mark CLIII: LEVELS (since 10-18 07:36; ckpt icebow/data/models/ICEBOW/ICEBOW_Mark_CLIII_LEVELS_grafted.pt,
+edc82ada). 46 matches, 47.8%, -0.1 trophies / match, ~13,012 trophies (SIM +4.4 vs CXXXVIII did NOT transfer). LIVE_OPTIONS = the
+upgraded reader + capture-p3 + cue-inputs on + the combo rules (newc) + the IW press perception gate. The ladder logger writes 1
+result line / match (src=). Monitor: icebow/.venv/Scripts/python.exe scratchpad/gauntlet/L74/monitor/card_use.py [--habits].
+
+**API-key workers:** scratchpad/gauntlet/L74/deploy/api_worker.sh PROFILE PROMPT LOG; key file C:\Users\benpe\.anthropic_key.txt
+(bz-northwestern / bz-personal; NEVER print or commit). Launch detached via PowerShell Invoke-CimMethod Win32_Process Create
+with "C:\Program Files\Git\bin\bash.exe" -c "...".
+
+**Running now (where / what / where results land):**
+- STEP-D EXECUTOR: an API worker, WMI pid 10448; ticket scratchpad/gauntlet/L74/stepd/EXECUTOR_TICKET.md; log stepd/executor.log;
+  status stepd/STATUS.md; results pod_backup_weekend/stepd/. Runs D1 + D2 on 64.247.206.80:30988, then the RL arms REB (IL-cue +
+  RL, live levels, live IW press, card-only very loose leash to CLIII, Stage 2 opponents) + CTRL on 13396 / 19834 after Stage 2.
+  It reports and does NOT deploy.
+- Stage 2 Phase D: s2_all_il_sA on 64.247.206.76:13396 and s2_all_il_sB on 64.247.206.120:19834 (since 12:14 UTC, ~8.7 h). Chain
+  /workspace/s2/chain.log; copy back with scratchpad/gauntlet/L74/stage2/pod/pull_s2.sh HOST PORT.
+- Combo arms from CLIII: combo_ctl_c3 on 64.247.206.79:19400 and combo_rew_c3 on 216.81.245.71:34210 (~16:40 UTC); relay WMI
+  41080 -> pod_backup_weekend/pod1017_combo/<arm>/. Readout scratchpad/gauntlet/L74/combo/analyze_combo.py.
+- Ability: cue_ab2 (CXXXVIII + live press env + live warm start + sampled decode) on 64.247.206.76:14009, then c3_ab (CLIII + head
+  with target-centred features) there and c3_ctl on 64.247.206.79:10757 -> pod_backup_weekend/pod1018_c3_{ab,ctl}/. Readout:
+  successor/cfg/compare.py style, vs CLIII.
+- Parity round 7: Workflow wf_21fd22dc-130 (4 buckets + verifiers) on P1 216.81.151.5:15617 and P3 64.247.206.76:19899 vs FIN12
+  (/workspace/results/FIN12[_stamped]; HEAD c8f5219 + rsfork_fin11). Fork clashbot36 head a697d1f9 (UD v2 landed; wheel P3
+  /workspace/rsfork_fin13) = the base for FIN13. The gap map scratchpad/gauntlet/L74/parity/gapmap/ = the ranked levers.
+- The habit diagnosis worker (bridge X-Bow punish window / heavy-push Rocket) -> scratchpad/gauntlet/L74/habits/ (sim probe arms
+  pending).
+- The factorial (16 runs from u250): pod_backup_weekend/pod1017_factorial/; analyze.py when all 16 are copied.
+
+**Pods:** keep P1 15617, P3 19899, 13396, 14009. TEMPORARY: 30988 (step d), 19834, 10757, 19400, 34210, 38758 (idle after the
+combo margin eval), 23363, 29286 (factorial done -> stop after verifying copies). Stop ONLY with
+scratchpad/gauntlet/L74/deploy/stop_pod.sh HOST PORT (refuses while jobs run). 23408 is already stopped.
+
+**Owner decisions in force:** stepd-started-exception, owner-decisions-1017-night, overnight bars (other successors need CI low > 0
+vs CLIII on standard + fresh seeds), keep the IW ability (learn it), the combo reward only when a Tornado is needed, Hero Bowler
+siege counter learned, device time OK for the phase-3d reader capture (ask first), Discord updates, short updates to the owner.
+
+**Next for the next session:**
+1. collect each result above
+2. land verified round-7 fixes, then FIN13 (HEAD + rsfork_fin13 + new captures)
+3. the next parity round from the gap map (Skeletons gate needs the reader capture)
+4. promote a candidate only per the bar, and judge live on 13k win rate over ~100 matches
+5. the habit levers into step d
+6. reduce pods to 3-4 when the temporary jobs end
+Path note: the API key file path in the 10:15 entry printed garbled; it is C:\Users\benpe\.anthropic_key.txt.
 ## 2026-10-18 10:15 EDT -- API-key background workers (owner 10-18)
 
 - Heavy workers now run as headless `claude -p` billed to API keys in C:\Usersenpe\.anthropic_key.txt (profiles
