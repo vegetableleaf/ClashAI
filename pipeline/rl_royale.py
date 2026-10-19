@@ -1603,21 +1603,24 @@ def live_levels(cfg: dict) -> Optional[dict]:
     """``live_levels`` (L74 factor D 10-17; optional, absent / null / false = None = matchups unchanged: every card and
     tower at the engine default, level 11): true -> the measured live table LIVE_LEVELS -- our side at our live levels,
     the opponent's drawn per match from the live opponents (``draw_live_levels``). Its file's sha256 enters config_sha.
-    Needs league true. SystemExit on a bad value."""
+    "all16" -> every card and both towers at level 16 (cards clamped to their engine ranges); the string enters
+    config_sha. Needs league true. SystemExit on a bad value."""
     x = cfg.get("live_levels")
     if x is None or x is False:
         return None
-    if x is not True:
-        raise SystemExit(f"live_levels must be true, false or null, got {x!r}")
+    if x is not True and x != "all16":
+        raise SystemExit(f"live_levels must be true, false, null or 'all16', got {x!r}")
     if not cfg.get("league"):
         raise SystemExit("live_levels needs league true (it sets the self-play match levels)")
-    return _live_level_table()
+    return _live_level_table(x)
 
 
 _LIVE_TABLE: dict = {}
 
 
-def _live_level_table() -> dict:
+def _live_level_table(mode=True) -> dict:
+    if mode == "all16":
+        return {"own": {"cards": {}, "default": 16, "tower": 16}, "opp_profiles": [[None, 16, [16]]]}
     if not _LIVE_TABLE:
         _LIVE_TABLE.update(json.loads(LIVE_LEVELS.read_text(encoding="utf-8")))
     return _LIVE_TABLE
@@ -1681,7 +1684,7 @@ def sample_matchups(rng: np.random.Generator, n: int, update: int, snaps: list[d
         if cfg.get("opp_tower_troops") is not None:          # L74 troops: absent / null = no key (unchanged)
             out[-1]["opp_tower"] = draw_tower_troop(cfg["opp_tower_troops"], f"{out[-1]['seed']}:{out[-1]['tag']}")
         if cfg.get("live_levels"):                            # L74 factor D: absent / null / false = no key (unchanged)
-            out[-1]["levels"] = draw_live_levels(_live_level_table(), ld["engine"], od["engine"],
+            out[-1]["levels"] = draw_live_levels(_live_level_table(cfg["live_levels"]), ld["engine"], od["engine"],
                                                  f"{out[-1]['seed']}:{out[-1]['tag']}")
     return out
 
@@ -3010,7 +3013,7 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "opp_tower_troops"}
     if not cfg.get("live_levels"):                           # L74 factor D off (absent / null / false) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "live_levels"}
-    else:                                                    # on: the table's bytes are part of the run (resume refuses a change)
+    elif cfg["live_levels"] != "all16":                       # true: measured bytes enter the hash; all16 keeps its string
         cfg = {**cfg, "live_levels": hashlib.sha256(LIVE_LEVELS.read_bytes()).hexdigest()}
     if cfg.get("heroiw_press") is None:                      # L74 overpress key absent / null = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "heroiw_press"}

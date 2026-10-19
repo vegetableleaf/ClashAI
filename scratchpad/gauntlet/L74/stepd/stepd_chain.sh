@@ -9,6 +9,7 @@
 set -uo pipefail
 CB=/workspace/cb_stepd; RUNN=${RUN:-stepd_ctrl}; NAME=${NAME:-$RUNN}; O=/workspace/stepd/rl_$NAME
 GO=/workspace/stepd/GO_$RUNN; [ -z "${REF:-}" ] && [ -s $GO ] && . $GO   # the lead's GO file may set DECODE=--ability-head-decode=sample
+LEVEL_ARGS=(); [ -n "${EVAL_LEVELS:-}" ] && LEVEL_ARGS=(--levels "$EVAL_LEVELS")
 RL=icebow/data/bench/rl_royale; U250=$RL/rlarm_gae/rlarm_gae_u0250_grafted.pt; Y=scratchpad/gauntlet/L74/stepd/cfg/$RUNN.yaml
 P13=/workspace/venvf13/bin/python; P36=/workspace/venvf36/bin/python
 EV_EXTRA="--habit-log --live-levels --card-levels Rocket=16 Log=15 --opp-tower-troops DaggerDuchess:0.028,Cannoneer:0.028,ChefTower:0.014 --record-plays --ability-stats${DECODE:+ $DECODE}"
@@ -26,7 +27,7 @@ ev() {   # ev CKPT TAG SEED RUNTIME PYTHON
   rm -rf $D; log "eval $2 $3 $4"
   ROYALE_RUNTIME=$4 flock /workspace/cpu.lock $5 scratchpad/gauntlet/L74/gap/gap.py --ckpt $1 --out $D --arms D3 \
     --seed-start $3 --runtime $4 --python $5 --census-file scratchpad/gauntlet/L74/mix/decks_live_eval.json \
-    --workers ${WORKERS:-26} --extra="$EV_EXTRA" > $D.log 2>&1 || log "GAP EXIT $? $2 $3 $4"
+    --workers ${WORKERS:-26} --extra="$EV_EXTRA" "${LEVEL_ARGS[@]}" > $D.log 2>&1 || log "GAP EXIT $? $2 $3 $4"
   log "$2 $3 $4 rows: $(grep -c '"outcome"' $D/D3/matches.jsonl 2>/dev/null)"
 }
 graft() {   # an fv < 6 arm (imitation init: REB, twin) cannot load u250's fv6 projectile branch, and u250's add-ons were fitted

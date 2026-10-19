@@ -46,12 +46,14 @@ def flags(keys):
     return out
 
 
-def command(arm, job, census, dest, python, extra=(), drop=(), opp=()):
+def command(arm, job, census, dest, python, extra=(), drop=(), opp=(), levels='none'):
     cmd = livecal.command(job, census, dest, python=python, opp=opp)   # opp: opponent-tempo flags, () = unchanged
     tail = ['--own-effects', *livecal.LV]
     if cmd[-len(tail):] != tail:
         raise ValueError('livecal.command layout changed; refusing to guess the rule flags')
     cmd = cmd[:-len(tail)]
+    if levels == 'all16':
+        cmd[1:3] = [str(HERE/'gap.py'), '--worker-all16']
     if arm == 'D0':
         cmd[cmd.index('--tau-plain')+1] = '0.27'
         return cmd + ['--learner-policy', 'sample', '--learner-T', '0.5']
@@ -72,6 +74,25 @@ def command(arm, job, census, dest, python, extra=(), drop=(), opp=()):
                                         for x in ['--'+k.replace('_', '-'), *map(str, v if isinstance(v, list) else [v])]]
         return cmd + tail + list(extra)          # --extra: more decision flags on the live stack (10-14 river A/B)
     return cmd
+
+
+def worker_all16():
+    """Use the usual LIVECAL worker, with all16 levels on every Runner.setup match spec.
+
+    Runner.setup uses rl_royale.draw_live_levels, including its per-card range clamps. The
+    wrapper only runs in explicitly selected all16 subprocesses; ordinary workers stay unchanged.
+    """
+    from pipeline import search_s0 as S
+    from pipeline.rl_royale import _live_level_table
+    original = S._init_worker
+    def init_worker(args):
+        original(args)
+        S._W['runner'].live_levels = _live_level_table('all16')
+    S._init_worker = init_worker
+    try:
+        return livecal.worker()
+    finally:
+        S._init_worker = original
 
 
 def opp_flags(decide_every=None, reaction_ticks=None):
@@ -112,7 +133,7 @@ def prepare(directory, ckpt, seed_start=741200, opp=None, opp_T=.1, census_file=
 
 
 def run_arm(arm, plan, inputs, out, python, workers, iw_form='hero', iw_press='live', extra=(), drop=(), opp=(),
-            runtime='20261012-linux'):
+            runtime='20261012-linux', levels='none'):
     out.mkdir()
     # iw_form normal (10-14): r1's TRAINING condition (no hero, so no press rule) instead of the live condition.
     env = dict(os.environ, ROYALE_RUNTIME=runtime, ROYALE_HEROIW_FORM=iw_form,   # runtime: --runtime (10-16 RT35)
@@ -122,7 +143,7 @@ def run_arm(arm, plan, inputs, out, python, workers, iw_form='hero', iw_press='l
     def one(item):
         i, job = item
         dest = out/f'{i:05d}'
-        cmd = command(arm, job, inputs/plan['censuses'][job['census']]['path'], dest, python, extra, drop, opp)
+        cmd = command(arm, job, inputs/plan['censuses'][job['census']]['path'], dest, python, extra, drop, opp, levels)
         with dest.with_suffix('.log').open('w', encoding='utf8') as log:
             subprocess.run(cmd, cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT, check=True)
         rows = [json.loads(s) for s in (dest/'matches.jsonl').read_text().splitlines() if s.strip()]
@@ -162,6 +183,8 @@ def summarize(out):
 
 
 def main():
+    if len(sys.argv) > 1 and sys.argv[1] == '--worker-all16':
+        return worker_all16()
     ap = argparse.ArgumentParser()
     ap.add_argument('--ckpt', default='icebow/data/bench/rl_royale/newsim_r1/newsim_base_r1_final_grafted.pt')
     ap.add_argument('--out', type=Path, required=True)
@@ -180,15 +203,17 @@ def main():
     ap.add_argument('--opp-decide-every', type=int, default=None, help='opponent decision interval, ticks (L74 human tempo)')
     ap.add_argument('--opp-reaction-ticks', type=int, default=None, help='extra opponent action delay, ticks (L74 human tempo)')
     ap.add_argument('--runtime', default='20261012-linux', help='ROYALE_RUNTIME for the workers (10-16: 20261016-linux = 0.1.35)')
+    ap.add_argument('--levels', choices=('none', 'all16'), default='none',
+                    help='all16: both sides cards and towers at level 16, clamped to each card range; none = unchanged')
     a = ap.parse_args()
     opp = opp_flags(a.opp_decide_every, a.opp_reaction_ticks)
     if not a.summarize_only:
         plan = prepare(a.out/'inputs', a.ckpt, a.seed_start, a.opp_ckpt, a.opp_T, a.census_file)
         for arm in a.arms.split(','):
             run_arm(arm, plan, a.out/'inputs', a.out/arm, a.python, a.workers, a.iw_form, a.iw_press, a.extra.split(),
-                    tuple(x for x in a.drop.split(',') if x), opp, a.runtime)
+                    tuple(x for x in a.drop.split(',') if x), opp, a.runtime, a.levels)
     summarize(a.out)
 
 
 if __name__ == '__main__':
-    main()
+    raise SystemExit(main())
