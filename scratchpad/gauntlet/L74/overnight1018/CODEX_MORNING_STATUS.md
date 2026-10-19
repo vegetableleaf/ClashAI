@@ -2,7 +2,14 @@
 
 Ticket: `overnight1018/CODEX_MORNING_TICKET.md` (also supplied by the owner in chat). Lead: Claude. EXECUTE ONLY; stop a branch on a failed step or a procedure mismatch; no improvised fixes.
 
-## Current execution outcome -- 09:03 EDT
+## Current execution outcome -- 10:43 EDT
+
+- **s76 collected and scored, SHA verified; 19834 stopped; Discord posted (HTTP 204).** BAR PASS: pooled +5.68 pp vs CLIII and +0.05 pp vs CLX. No live change or deployment.
+- **s77 / 13396 still training at u0070 at 10:42:33 EDT; s78 / 14009 still training at u0072 at 10:42:35 EDT.** Both STATE RUNNING. Neither arm was pulled, scored, or stopped; no wait for either arm.
+- The lead's 10:25 follow-up exit condition is met: s76 scored, s77/s78 unfinished. The s76 monitor exited normally; no ongoing collection monitor remains.
+- Delivery scope for this follow-up is only `overnight1018/LOG.md` and this status file, with explicit-path commit and push. Earlier execution history is retained below.
+
+## Previous execution outcome -- 09:03 EDT
 
 - **s75 collected and scored, SHA verified; 34210 stopped; Discord posted (HTTP 204).** No pass: pooled -0.36 pp vs CLIII and -5.99 pp vs CLX.
 - **s76 still training at u0121 at 09:02:36 EDT.** Left running under the fixed exit condition; not pulled or stopped.
@@ -120,3 +127,20 @@ This ticket supersedes the stopped A77/A78 preparation above only. One launch at
 - Independent read-only review confirmed the LOG line and B75 status match both saved scoring outputs; archive sidecar SHA and both YAML hashes match. No discrepancies found.
 - This execution stopped only 34210. It did not stop 13396, 14009, 15617, 19899, or 19834; it never contacted 15617/19899 or any unlisted pod. No live setting or deployment was changed by this execution.
 - Delivery scope: only the four explicitly authorized paths. The two YAMLs are unchanged and already committed in ceb4694; remaining delivery is LOG.md and this status file. The index was empty and HEAD matched origin/main before final staging. Final commit/push outcome is reported in the execution response.
+
+## Lead 10:25 follow-up -- s76 COMPLETE, s77/s78 unfinished, EXIT
+
+Repeated the successful s75 procedure recorded in commit `e4ac89b`, using the existing pull, readout, pair comparison, pod-stop, and Discord helpers without modifying them.
+
+- First s76 poll at **10:24:59 EDT** found training and all main fin13/fork36 evaluations finished, with u65 seed 741200 running. The local monitor (PID 78844) then polled at 10:25:27, 10:29:08, 10:32:49, 10:36:30, and 10:40:11 EDT. Maximum polling gap was **221 seconds**, below nine minutes. Full observations: `C:/Users/benpe/AppData/Local/Temp/codex_morning1019_s76/collection_polls.log`.
+- u65 seed 741200 finished at 10:29:58 EDT and seed 742000 at 10:39:00 EDT, each with 480 rows. Chain packing and ALL_DONE completed at **10:39:04 EDT**. The 10:40:11 completion poll found the archive and sidecar and no failed chain step; the monitor exited 0.
+- `bash scratchpad/gauntlet/L74/stepd/pull_stepd.sh 64.247.206.120 19834` completed at **10:40:49 EDT**, reporting the s76 copy and remote COPIED marking. Local COPY_OK is present. Independently recomputed archive SHA-256 **b221ba162a37b3656237dd6f5236d4f4ef3baf46c98dbc40223c375c8bee264c** matches the remote and local sidecars. All eight expected evaluation files independently contain exactly 480 nonempty rows.
+- Ran `icebow/.venv/Scripts/python.exe scratchpad/gauntlet/L74/stepd/readout.py` (exit 0), then existing `pair_cmp.py` with CLX as A and s76 as B using their `eval/<run>_{s}_fin13/D3/matches.jsonl` templates (exit 0). Standard, fresh, and pooled comparisons are complete; no fallback was needed. Outputs are saved in the same temporary directory as `readout_s76.txt` and `pair_cmp_s76_clx.txt`.
+- s76 fin13 std **694/960**, fresh **667/960**. Versus CLIII: std **+6.35 [+2.81, +9.79] pp**; fresh **+5.00 [+1.46, +8.65] pp**; pooled **+5.68 [+3.18, +8.12] pp**. **BAR PASS** under the existing rule: both standard and fresh CI lower bounds exceed zero.
+- Versus CLX: std **+2.08 [-1.46, +5.52] pp**; fresh **-1.98 [-5.42, +1.46] pp**; pooled **+0.05 [-2.34, +2.50] pp**.
+- u65 fin13 std versus CLIII: **+1.67 [-1.88, +5.21] pp**. Fork36 std versus CLIII: **+7.50 [+3.96, +10.94] pp**. One score line was appended to LOG.md. Independent read-only review confirmed the line and pass classification match both saved scoring outputs.
+- After verified collection, scoring, and the LOG entry, `bash scratchpad/gauntlet/L74/deploy/stop_pod.sh 64.247.206.120 19834` exited 0 and reported pod **4kc3p6ar2sunss stopped**.
+- Wrote `discord_stop_19834.txt` in the temporary directory and posted it through `scratchpad/gauntlet/L69/discord/post.py`: exit 0, **86 chars, HTTP 204**. Exact note: `[orchestrator] stopped pod 19834 after stepd_ctrl_nos2_s76 results were saved (sha OK)`.
+- Final single polls on `64.247.206.76`: **s77 / 13396 at 10:42:33 EDT, u0070, STATE RUNNING**; **s78 / 14009 at 10:42:35 EDT, u0072, STATE RUNNING**. The same read-only polling helper was copied to these two pods and invoked through script-file SSH commands. No chain failure was reported; neither chain is complete. Evidence: `final_s77_s78_polls.log` in the temporary directory. Neither pod was stopped, and no further monitoring was started.
+- Future collection note: current `readout.py` does not enumerate s77/s78. Neither arm reached collection in this execution, and the script was not changed. The previously authorized s78 NO36=1 configuration was not changed or reverified by this follow-up.
+- Only 19834 was stopped. Only the three ticket pods were contacted. No live settings, deployment, code, YAML, or other pod was changed. Only LOG.md and this status file are included in the explicit-path delivery; commit/push outcome is reported in the execution response.

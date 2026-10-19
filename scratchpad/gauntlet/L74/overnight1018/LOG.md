@@ -48,3 +48,4 @@
 - 05:20 par_eval.sh (+ par_eval_pod.sh) validated on 14009: CLX seed 741200 re-run = 348/480, outcome sequence IDENTICAL to
   the chain's rows (deterministic eval). Plan: when seed 76 grafts (~09:00) run its fresh/std seeds on 13396 + 14009 in parallel.
 - 09:02 stepd_ctrl_nos2_s75 pulled (sha ec209d8c): std 647/960, fresh 598/960 -> vs CLIII std +1.46 [-2.29, +5.00] / fresh -2.19 [-5.73, +1.35] / pooled -0.36 [-2.92, +2.19]; pooled vs stepd_ctrl_nos2 (CLX) -5.99 [-8.33, -3.59]; u65 std vs CLIII -0.21 [-3.96, +3.54] -> no pass.
+- 10:41 stepd_ctrl_nos2_s76 pulled (sha b221ba16): std 694/960, fresh 667/960 -> vs CLIII std +6.35 [+2.81, +9.79] / fresh +5.00 [+1.46, +8.65] / pooled +5.68 [+3.18, +8.12]; pooled vs stepd_ctrl_nos2 (CLX) +0.05 [-2.34, +2.50]; u65 std vs CLIII +1.67 [-1.88, +5.21] -> BAR PASS.
