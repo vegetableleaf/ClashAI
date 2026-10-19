@@ -42,6 +42,7 @@ C. Sim parity (biggest lever first).
    - Explain why the 139 new captures score lower.
    - Land H-PREROLL with more data; the H-NEGHP reader fix.
    - Add the doctrine's tower-loss parity metric.
+   - Card levels: icebow is all level 16 from 10-19; the SIM plays every card at 11 -- check the SIM level model vs live (relative levels vs 12-13k opponents).
 D. RL arms on the CLX recipe, after A says which eval to trust:
    - R1 lead-protection penalty (~0.2 x the win reward);
    - C2 crown-state starts (check engine support);
