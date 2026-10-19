@@ -250,6 +250,7 @@ def load_state(path: Path = STATE) -> dict:
 class LadderNav:
     """Pure planner for ONE transition (results -> ... -> battle loading). No I/O; time passed in."""
     UNKNOWN_S, TRANSITION_S, HANDOFF_S, TAP_WAIT_S, TAP_MAX, STABLE_N, PROBE_S = 60.0, 300.0, 3.0, 2.5, 40, 3, 1800.0
+    MAIN_MAX = 10
     TR_SWIPES = 8                                 # Trophy Road scan: at most this many drags down the tree
     CHOOSE_MAX, FLOW_UNKNOWN_S, CARD_WAIT_S = 3, 10.0, 8.0   # reward choice: Choose taps; unknown / stuck limits
 
@@ -267,7 +268,7 @@ class LadderNav:
         self.results_since: float | None = None
         self.nograb_since: float | None = None
         self.tr_swipes, self.tr_sig, self.tr_sig_before = 0, None, None
-        self.taps, self.main_n, self.main_sig = 0, 0, None
+        self.taps, self.main_n, self.main_sig, self.main_seen = 0, 0, None, 0
         self.recovered = False                    # RESTART tapped / app relaunched in this stuck episode
 
     def plan(self, scr: dict, now: float) -> tuple:
@@ -304,7 +305,7 @@ class LadderNav:
             return ("wait", s)
         self.unknown_since, self.recovered = None, False   # a known screen ends the stuck episode
         if s != "main":
-            self.main_n, self.main_sig = 0, None
+            self.main_n, self.main_sig, self.main_seen = 0, None, 0
         if s == "choose_reward":   # owner 2026-10-07: "the model can randomly choose" -- one random card, tapped once
             self.choose_flow = True
             if self.picked_at is None:
@@ -363,7 +364,10 @@ class LadderNav:
         sig = scr["sig"].astype(int)
         same = self.main_sig is not None and float(np.abs(sig - self.main_sig).mean()) < 2.0
         self.main_sig, self.main_n = sig, (self.main_n + 1 if same else 1)
-        if self.main_n < self.STABLE_N:
+        # 10-19: an always-animated home (second account: bouncing event panel) never reads stable -> press anyway after
+        # MAIN_MAX consecutive main frames
+        self.main_seen = getattr(self, "main_seen", 0) + 1
+        if self.main_n < self.STABLE_N and self.main_seen < self.MAIN_MAX:
             return ("wait", f"main screen settling ({self.main_n}/{self.STABLE_N})")
         w = self.st.get("wins_today", 0)
         if not scr["bonus"] and w < DAILY_WINS:
