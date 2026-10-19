@@ -50,3 +50,4 @@ D. RL arms on the CLX recipe, after A says which eval to trust:
    - more seeds per arm (seed spread: -0.4..+5.7 pp).
 E. Live: an A/B protocol at the same trophy level, >= 150 matches per arm. Bait: watch the bait_gae u65 record.
 F. Ops: heavy agentic work on Codex with Claude-written decision trees; API key credits are empty (bz-northwestern).
+G. Live ops (owner 10-19): add a --ranked flag to start_live.sh. With it, the supervisor never taps the end-of-match OK to check Trophy Road rewards or open chests; it loops back-to-back matches (Play Again) until the STOP file exists.
