@@ -17,7 +17,7 @@ from analyze import metrics, HABITS  # noqa: E402
 
 ROOT = Path("C:/Users/benpe/pod_backup_weekend/stepd")
 STD, FRESH = (741200, 742000), (743000, 744000)
-ARMS = ("stepd_ctrl", "stepd_reb", "stepd_rebc3", "stepd_ctrl_nos2", "stepd_ctrl_s75", "stepd_reb_s75")
+ARMS = ("stepd_ctrl", "stepd_reb", "stepd_rebc3", "stepd_ctrl_nos2", "stepd_ctrl_s75", "stepd_reb_s75", "stepd_rebc3_s75", "stepd_ctrl_nos2_s75", "stepd_ctrl_nos2_s76", "stepd_ctrl_nos2_s77", "stepd_ctrl_nos2_s78")
 REF = "clIII_fin13"
 
 
@@ -72,7 +72,7 @@ def report(root):
             m, mr = metrics(r["std"]), metrics(ref["std"])
             print("  habits (arm / CLIII): " + ", ".join(f"{h} {m[h][0]:.2f} / {mr[h][0]:.2f}" for h in HABITS
                                                          if h in m and h in mr))
-    for a, b in (("stepd_reb", "stepd_ctrl"), ("stepd_rebc3", "stepd_reb"), ("stepd_ctrl", "stepd_ctrl_nos2"), ("stepd_ctrl_s75", "stepd_ctrl"), ("stepd_reb_s75", "stepd_reb")):
+    for a, b in (("stepd_reb", "stepd_ctrl"), ("stepd_rebc3", "stepd_reb"), ("stepd_ctrl", "stepd_ctrl_nos2"), ("stepd_ctrl_s75", "stepd_ctrl"), ("stepd_reb_s75", "stepd_reb"), ("stepd_rebc3_s75", "stepd_rebc3"), ("stepd_ctrl_nos2_s75", "stepd_ctrl_nos2"), ("stepd_ctrl_nos2_s76", "stepd_ctrl_nos2"), ("stepd_ctrl_nos2_s77", "stepd_ctrl_nos2"), ("stepd_ctrl_nos2_s78", "stepd_ctrl_nos2")):
         if a in got and b in got:
             print(f"\n{a} vs {b}: std {pd(got[b]['std'], got[a]['std'])[0]}, fresh {pd(got[b]['fresh'], got[a]['fresh'])[0]}")
     # REB / twin (fv5 imitation init) are evaluated RAW (stepd_chain graft()); CTRL (fv6) grafted, plus raw via RAW_TOO:
