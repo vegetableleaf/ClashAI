@@ -11,19 +11,20 @@ L=scratchpad/gauntlet/L70/live; ADB="bash scratchpad/gauntlet/L68/live_reader/ad
 # usage: start_live.sh [icebow|bait] [--emotes] [--check]   (owner 2026-10-10: specialist, default icebow;
 #        owner 2026-10-11: --emotes turns the King-emote spam on, default OFF;
 #        owner 2026-10-12: fast consecutive plays (--pipeline-decisions, no restraint) ON by default, --no-fast-plays turns them off)
-DECK=icebow; CHECK=0; EMOTES=off; FAST=on
+DECK=icebow; CHECK=0; EMOTES=off; FAST=on; RANKED=off
 for a in "$@"; do
   case "$a" in
     icebow|bait) DECK=$a ;;
     --check) CHECK=1 ;;
     --emotes) EMOTES=on ;;
     --no-fast-plays) FAST=off ;;
-    *) echo "usage: start_live.sh [icebow|bait] [--emotes] [--no-fast-plays] [--check]"; exit 2 ;;
+    --ranked) RANKED=on ;;   # owner 10-19: no end-of-match OK (Trophy Road rewards / chests); Play Again until STOP
+    *) echo "usage: start_live.sh [icebow|bait] [--emotes] [--no-fast-plays] [--ranked] [--check]"; exit 2 ;;
   esac
 done
 source "$L/live_config.sh" || exit 2
-LIVE_EMOTES=$EMOTES LIVE_FAST=$FAST load_live_config "$DECK" || exit 2
-echo "live deck: $LIVE_DECK_EFFECTIVE   emotes: $LIVE_EMOTES_EFFECTIVE   fast plays: $LIVE_FAST_EFFECTIVE"
+LIVE_EMOTES=$EMOTES LIVE_FAST=$FAST LIVE_RANKED=$RANKED load_live_config "$DECK" || exit 2
+echo "live deck: $LIVE_DECK_EFFECTIVE   emotes: $LIVE_EMOTES_EFFECTIVE   fast plays: $LIVE_FAST_EFFECTIVE   ranked: $LIVE_RANKED_EFFECTIVE"
 if [ "$CHECK" = 1 ]; then
   echo "hand-reader model input: $HAND_READER_EFFECTIVE"
   "$PY" "$LIVE_ENTRY" "${CKPT_ARGS[@]}" "${DECK_ARGS[@]}" --tau 0.35 --no-anti-leak --check
@@ -47,7 +48,7 @@ $ADB -s 127.0.0.1:16384 shell am force-stop com.mumu.store; sleep 30; $ADB -s 12
 # owner 2026-10-07: the emulator gets the CPU before training / sim jobs (live_play raises its own priority)
 powershell -NoProfile -Command "Get-Process MuMuNxDevice -ErrorAction SilentlyContinue | ForEach-Object { \$_.PriorityClass = 'AboveNormal' }" > /dev/null 2>&1 || true
 rm -f $L/STOP
-echo "$LIVE_DECK_EFFECTIVE" > "$L/LIVE_DECK"; echo "$EMOTES" > "$L/LIVE_EMOTES"; echo "$FAST" > "$L/LIVE_FAST"   # persisted so supervisor restarts (restart_live.py) keep the deck
+echo "$LIVE_DECK_EFFECTIVE" > "$L/LIVE_DECK"; echo "$EMOTES" > "$L/LIVE_EMOTES"; echo "$FAST" > "$L/LIVE_FAST"; echo "$RANKED" > "$L/LIVE_RANKED"   # persisted so supervisor restarts (restart_live.py) keep the deck
 nohup bash $L/run_live.sh > /dev/null 2>&1 &
 echo "live started; deck: $LIVE_DECK_EFFECTIVE; selected model: ${CKPT:-$(cat ${DECK_ARGS[1]:-$L/CKPT_OVERRIDE} 2>/dev/null || echo 'MISSING - live_play will refuse to run')}"
 echo "hand-reader model input: $HAND_READER_EFFECTIVE"

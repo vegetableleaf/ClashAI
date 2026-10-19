@@ -34,6 +34,11 @@ load_live_config() {
 ' < "$L/LIVE_FAST" 2>/dev/null)}"
   LIVE_FAST_EFFECTIVE="${LIVE_FAST_EFFECTIVE:-on}"
   if [ "$LIVE_FAST_EFFECTIVE" = on ]; then DECK_ARGS+=(--pipeline-decisions --pipeline-tau-delta 0); fi
+  # owner 10-19 --ranked: LIVE_RANKED env (start_live.sh) or the persisted $L/LIVE_RANKED file; ladder_nav reads CLASHBOT_RANKED
+  LIVE_RANKED_EFFECTIVE="${LIVE_RANKED:-$(tr -d "
+" < "$L/LIVE_RANKED" 2>/dev/null)}"
+  LIVE_RANKED_EFFECTIVE="${LIVE_RANKED_EFFECTIVE:-off}"
+  if [ "$LIVE_RANKED_EFFECTIVE" = on ]; then export CLASHBOT_RANKED=1; else unset CLASHBOT_RANKED; fi
   CKPT_ARGS=()
   if [ -n "${CKPT:-}" ]; then CKPT_ARGS=(--ckpt "$CKPT"); fi
 }

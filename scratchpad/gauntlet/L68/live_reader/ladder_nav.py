@@ -34,6 +34,7 @@ through at one fixed neutral point (reward / chest screens are "tap to continue"
 from __future__ import annotations
 
 import json
+import os
 import random
 import subprocess
 import threading
@@ -45,6 +46,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 
+RANKED = os.environ.get("CLASHBOT_RANKED") == "1"   # set by live_config.sh from start_live.sh --ranked
 HERE = Path(__file__).resolve().parent
 TEMPLATES = HERE.parents[1] / "L70" / "ladder_nav" / "templates"
 STATE = HERE / "ladder_state.json"
@@ -357,6 +359,8 @@ class LadderNav:
                         self.via_main = True      # the day's 4th win: OK -> open the chests on the main screen
                 if self.st.get("wins_today", 0) >= DAILY_WINS and now - self.st.get("last_main_t", 0) > self.PROBE_S:
                     self.via_main = True          # bonus used up: look at the main screen for the day's rollover
+            if RANKED:   # owner 10-19 start_live.sh --ranked: never OK / Trophy Road / chests, back-to-back matches
+                return ("act", "play_again", scr["play_again"])
             return ("act", "results_ok", scr["ok"]) if self.via_main else ("act", "play_again", scr["play_again"])
         # main: wait until it is stable (chest / crown animations finished), then re-sync the count and queue
         if self.committed:
