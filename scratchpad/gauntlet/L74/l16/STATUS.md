@@ -91,3 +91,13 @@ REF evaluation has no training YAML. Both REF preflight smokes used the seed 74 
 Estimated completion: both training phases about **00:20 EDT Oct 20** (~5.5 hours), followed by about **1-1.5 hours of evaluations**. CLIII REF about **19:20-19:40 EDT Oct 19**; CLX REF about **19:30-19:50 EDT Oct 19**. These are estimates; full training/evaluation outcomes are pending.
 
 Pod logs: `/workspace/stepd/rl_<job>/chain.log`; arms also have `train.log`; REF rows are under `eval/<name>_<seed>_fin13/D3/`. Additional runtime, smoke and launch receipts: [ref_receipts.md](ref_receipts.md). All four jobs are left running. No pod stops, live changes or deploys. Unrelated working-tree edits were excluded from commits and shipping.
+
+- 2026-10-19T19:06:55-04:00 follow-on poll: 13396: stepd_l16_s74 active u=3 rows=0 pids=1764 smoke=PASS | 14009: stepd_l16_s75 active u=3 rows=0 pids=1074 smoke=PASS | 15617: clx_l16 active u=None rows=310 pids=- smoke=pending | 19899: cliii_l16 active u=None rows=791 pids=- smoke=pending
+
+- 2026-10-19T19:07:07-04:00 follow-on poll: 13396: stepd_l16_s74 active u=3 rows=0 pids=1764 smoke=PASS | 14009: stepd_l16_s75 active u=3 rows=0 pids=1074 smoke=PASS | 15617: clx_l16 active u=None rows=310 pids=- smoke=pending | 19899: cliii_l16 active u=None rows=791 pids=- smoke=pending
+
+## 2026-10-19T19:07:29.9609713-04:00 - follow-on accepted
+
+Monitoring four authorized pods every 4 minutes (maximum requested 9). Initial poll at 19:04 EDT found all original chains active; 19:06 poll confirms s74/s75 at u3, CLX 310 rows and CLIII 791 rows. New s76-s79 YAML files differ from s74 ONLY in seed. Readout extension and safe successor staging helpers are being prepared independently. Prior code db84ac9 and original chain scripts remain unchanged. No deployment, live changes, pod stops, or messages to external channels. Final exit requires s74/s75 scored and required successors verified through SMOKE PASS and u1.
+
+- 2026-10-19T19:09:54.6540916-04:00 preparation verified: readout.py adds s74-s79 with exclusive all16 reference routing and std/fresh/pooled CIs; --selftest passed independently, offline pyflakes clean, prior legacy output byte-identical. Four successor YAML files verified seed-only. Preparing explicit six-path commit before any successor staging.
