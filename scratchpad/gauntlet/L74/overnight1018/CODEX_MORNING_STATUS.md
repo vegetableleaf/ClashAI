@@ -2,6 +2,13 @@
 
 Ticket: `overnight1018/CODEX_MORNING_TICKET.md` (also supplied by the owner in chat). Lead: Claude. EXECUTE ONLY; stop a branch on a failed step or a procedure mismatch; no improvised fixes.
 
+## Current execution outcome -- 09:03 EDT
+
+- **s75 collected and scored, SHA verified; 34210 stopped; Discord posted (HTTP 204).** No pass: pooled -0.36 pp vs CLIII and -5.99 pp vs CLX.
+- **s76 still training at u0121 at 09:02:36 EDT.** Left running under the fixed exit condition; not pulled or stopped.
+- **This execution's s77/s78 launch branches stopped** at the local archive error, without an improvised fix. Their seed-only YAMLs are valid; a separate existing shared-checkout commit ceb4694 now tracks them. This execution did not perform or reverify the launch named by that commit.
+- Normal exit condition reached: s75 scored, s76 not yet finished. Detailed evidence and the historical first-attempt report follow.
+
 ## First-attempt outcome (historical; superseded by retry section below)
 
 All branches stopped or ineligible under the ticket's failure rule. No new arm was launched; no results were pulled or scored; no pod was stopped; no Discord note was sent. No live settings, deployment, existing scripts, or existing YAMLs were changed. No other pods were contacted. The two new YAMLs were not created because launch preflight failed before configuration preparation. No scored-arm line was appended to `LOG.md`.
@@ -84,3 +91,32 @@ This ticket supersedes the stopped A77/A78 preparation above only. One launch at
 - Training evidence: `/workspace/stepd/rl_stepd_ctrl_nos2_s77/train.log` contains `[rl] u0001 W/L/D 180/76/0`; the corresponding s78 log contains `[rl] u0001 W/L/D 150/106/0`. These are training updates, not evaluation results. Chain PIDs are recorded in each run's `chain.log`; waiter PIDs are in `/workspace/stepd/arm_waiter.log`.
 - No launch/runtime failure was observed through the success checks. Both detached flock processes were present, and both runs were left running. The local monitor exited successfully after both gates passed. Full poll evidence: `C:/Users/benpe/AppData/Local/Temp/codex_clx_1019_062803/polls.log`; remote per-run launch state: `/workspace/codex_clx1019_<run>.state`.
 - No live changes, deploys, pod stops, changes to existing running processes, or contact with other pods occurred. Full training/evaluation completion is outside this launch ticket. Commit scope: this status file and the two seed YAMLs only.
+- 07:09:41 EDT: s75 u0118, s76 u0090; both RUNNING. No chain failure or completion marker; collection and pod-stop branches remain pending.
+- 07:39:18 EDT: s75 u0126, s76 u0098; both RUNNING. No chain failure or completion marker. Polling remains active; no results pulled or pod stopped.
+- 07:50:27 EDT: s75 training reached u0129 and chain started fin13 seed 741200 evaluation at 07:50:12 EDT. No ALL_DONE yet. s76 training at u0101. Both branches continue under the same polling interval.
+- 08:08:55 EDT: s75 fin13 standard seeds 741200 and 742000 each completed with 480 rows; fresh seed 743000 evaluation started 08:07:35 EDT. s76 training at u0107. Full-chain completion and collection remain pending.
+- 08:27:24 EDT: all four s75 u130 fin13 evaluations completed with 480 rows each (1,920 total); fork36 seed 741200 started 08:25:31 EDT. Fork36 and u65 evaluations remain. s76 training at u0111; no chain failure observed.
+- 08:45:52 EDT: s75 fork36 standard seeds both completed with 480 rows each; first u65 fin13 evaluation started 08:42:44 EDT. Only the two u65 evaluations and packing remain. s76 training at u0117. No failed chain step observed.
+
+- 08:55 EDT shared-checkout audit: the new YAMLs are already tracked by existing commit ceb4694 (Launch CLX seeds 77 and 78 on existing step-d pods). Their current hashes exactly match this run's recorded seed-only files. This was not a commit/launch performed by this execution; this run's A branches remain stopped, and no new remote A verification was attempted. Remaining changed ticket paths are LOG.md (untracked) and this status file; the index is empty.
+
+### B75 COMPLETE -- collected and scored
+
+- Chain finished and packed at 09:00:10 EDT; poll at 09:00:37 EDT confirmed ALL_DONE plus archive/sidecar, with no failed chain step. All eight eval files contain the expected 480 rows as reported by the chain and accepted by readout.
+- Prescribed one-pass `bash scratchpad/gauntlet/L74/stepd/pull_stepd.sh 216.81.245.71 34210` succeeded at 09:01:19 EDT. Local COPY_OK exists and SHA-256 independently recomputed as `ec209d8c484f600951f83ead290ecb177882a13dc2fdda7f2a4d4a7ca3a84620`, matching the remote and local sidecars. Helper success also confirms remote COPIED marking.
+- Ran the prescribed `icebow/.venv/Scripts/python.exe scratchpad/gauntlet/L74/stepd/readout.py` (exit 0), then existing pair_cmp.py with CLX rows as A and s75 rows as B (exit 0). Both seed sets pooled successfully; no fallback needed.
+- s75 fin13 std **647/960**, fresh **598/960**. Versus CLIII: std **+1.46 [-2.29, +5.00] pp**; fresh **-2.19 [-5.73, +1.35] pp**; pooled **-0.36 [-2.92, +2.19] pp**. **No pass** under the existing bar.
+- Versus CLX: std **-2.81 [-6.15, +0.42] pp**; fresh **-9.17 [-12.50, -5.73] pp**; pooled **-5.99 [-8.33, -3.59] pp**.
+- u65 fin13 std versus CLIII: **-0.21 [-3.96, +3.54] pp**. Fork36 std versus CLIII: **+1.88 [-1.67, +5.31] pp**.
+- One requested score line appended to LOG.md. Readout and pair comparison output saved in the execution temporary directory as readout_s75.txt and pair_cmp_s75_clx.txt.
+- Local monitor PID 59660 exited normally after the completion poll. No ongoing collection monitor remains. s76 was still training at u0121 in the same 09:00:38 EDT poll; a final check follows before exit.
+
+### C75 COMPLETE / C76 NOT ELIGIBLE / D EXIT CONDITION MET
+
+- `bash scratchpad/gauntlet/L74/deploy/stop_pod.sh 216.81.245.71 34210` exited 0 and reported pod `hs07wzlqkhunpt` stopped. This happened after successful result pull, independent SHA verification, and scoring.
+- Wrote the authorized single-line note to `C:/Users/benpe/AppData/Local/Temp/codex_morning1019_retry/discord_stop_34210.txt` and ran `python scratchpad/gauntlet/L69/discord/post.py FILE`: exit 0, **HTTP 204**, 86 chars posted. Note: `[orchestrator] stopped pod 34210 after stepd_ctrl_nos2_s75 results were saved (sha OK)`.
+- Final s76 poll: **09:02:36 EDT, u0121, STATE RUNNING**, no ALL_DONE or completed archive. Under the fixed exit condition, this arm remains for the lead; 19834 was not stopped and no s76 score was fabricated.
+- Poll audit: **55 monitor polls per arm**, maximum per-arm gap **224 seconds**, below the nine-minute limit. Earlier manual polls and final s76 check also stayed within the limit.
+- Independent read-only review confirmed the LOG line and B75 status match both saved scoring outputs; archive sidecar SHA and both YAML hashes match. No discrepancies found.
+- This execution stopped only 34210. It did not stop 13396, 14009, 15617, 19899, or 19834; it never contacted 15617/19899 or any unlisted pod. No live setting or deployment was changed by this execution.
+- Delivery scope: only the four explicitly authorized paths. The two YAMLs are unchanged and already committed in ceb4694; remaining delivery is LOG.md and this status file. The index was empty and HEAD matched origin/main before final staging. Final commit/push outcome is reported in the execution response.
