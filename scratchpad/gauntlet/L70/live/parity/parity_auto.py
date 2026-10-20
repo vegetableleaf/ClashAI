@@ -20,6 +20,7 @@ import ladder_nav as ln  # noqa: E402
 ADB = [r"C:\Program Files\Netease\MuMuPlayer\nx_device\15.0\shell\adb.exe", "-s", "127.0.0.1:16384"]
 L = REPO / "scratchpad/gauntlet/L70/live"
 STOP = L / "STOP"
+OK_XY = tuple(int(v) for v in __import__('os').environ['OK_XY'].split(',')) if __import__('os').environ.get('OK_XY') else None
 
 
 def say(msg):
@@ -52,6 +53,13 @@ def wait_for(clf, wanted, limit_s=90):
             return s
         time.sleep(1.5)
     return None
+
+
+def live_pids():
+    r = subprocess.run(["powershell", "-NoProfile", "-Command", "Get-CimInstance Win32_Process -Filter \"Name='python.exe'\" | "
+                        "Where-Object {$_.CommandLine -like '*live_play.py*'} | ForEach-Object { $_.ProcessId }"],
+                       capture_output=True, text=True)
+    return [int(x) for x in r.stdout.split() if x.isdigit()]
 
 
 def newest_log():
@@ -96,20 +104,37 @@ def main():
             alert(f"{tag}: home screen changed before battle {i} ({s['screen']}); stopped"); bot.kill(); return
         say(f"{tag}: battle {i}/{n}: tapping Battle")
         tap(s["battle"])
-        bot.wait()
-        log = newest_log()
+        t0 = time.time()                               # live_play lingers after the match (video render): watch its log
+        log = None
+        while time.time() - t0 < 1500:
+            lg = newest_log()
+            if lg is not None and lg != before and '"event": "end"' in lg.read_text(encoding="utf-8", errors="replace"):
+                log = lg
+                break
+            time.sleep(3)
+        time.sleep(5)
+        subprocess.run(["taskkill", "/T", "/F", "/PID", str(bot.pid)], capture_output=True)
+        for pid in live_pids():                        # the python children taskkill /T may miss (Git Bash spawns)
+            subprocess.run(["taskkill", "/F", "/PID", str(pid)], capture_output=True)
         won = result_of(log) if log is not None and log != before else None
         losses += won is False
         say(f"{tag}: battle {i} done: won={won}  challenge losses={losses}/3  log={log.name if log else None}")
         # results -> OK (the challenge results screen: results_ok / bottom OK), back to the challenge home
-        t0 = time.time()
-        while time.time() - t0 < 120:
+        t0, asked = time.time(), False
+        while time.time() - t0 < 600:
             s = screen(clf)
             if s["screen"] == "main":
                 break
             ok = s.get("ok") if s["screen"] in ("results", "trophy_road") else None
+            if ok is None and OK_XY and time.time() - t0 > 4:   # the challenge results: ONE OK button (owner 10-20)
+                ok = OK_XY
             if ok:
                 tap(ok)
+            elif not asked and time.time() - t0 > 8:
+                png = L / "parity" / f"results_{tag}_{i}.png"
+                subprocess.run(ADB + ["exec-out", "screencap", "-p"], stdout=open(png, "wb"), timeout=30)
+                alert(f"{tag}: battle {i} over -- please tap OK once on the results screen (screenshot saved for the lead)")
+                asked = True
             time.sleep(2)
         else:
             alert(f"{tag}: stuck after battle {i} (no OK / home for 120 s); stopped, nothing else tapped"); return
