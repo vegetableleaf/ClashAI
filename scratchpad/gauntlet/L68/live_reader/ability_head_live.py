@@ -167,8 +167,62 @@ def decide_board(f, side: int, hids, my_elixir: float, deploy, g_of, ability) ->
     if presses:
         return False, "head spent", None
     feat = head_features(f["entities"], side, tick, my_elixir, hero, card, dep, presses)
+    if ability.get("features") == "freeze":   # L74 press audit: the head was trained with the 'freeze' set
+        feat = feat + freeze_features(f, side, hero, card, my_elixir)
     p, press = head_press(ability, g_of(), feat)
     return press, f"head p={p:.4f}", feat
+
+
+# = royale_env FREEZE_FEAT_N / IW_MARKS / FREEZE_R_T / CUBE_AHEAD_T / MY_LINE_T (the test pins them)
+FREEZE_FEAT_N = 11
+IW_MARKS = frozenset(("IceWizardHeroCold", "IceWizardHeroSlow"))
+FREEZE_R_T, CUBE_AHEAD_T, MY_LINE_T, IW_PRESS_COST = 2.5, 1.5, (6.5, 25.5), 2.0
+
+
+def freeze_features(f, side: int, hero: dict, card: str, my_elixir: float, name_of=None, value_of=None,
+                    cost_of=None) -> list[float]:
+    """royale_env.RoyalePoolEnv._freeze_features on a reader frame (the 'freeze' head inputs; zeros unless Hero IW).
+    Marks (IceWizardHeroCold / Slow) come from the merged reader's phase-2 buffs, the IW's attack target from its
+    phase-3 attack row, joined on generation (entity 'category'); a frame without a valid block reads no mark / no
+    target (the SIM always knows both). ``cost_of`` card name -> elixir (default opp_elixir_count.card_cost)."""
+    if card != "IceWizard":
+        return [0.] * FREEZE_FEAT_N
+    from pipeline.royale_iw_policy import WINCONS
+    name_of = name_of or _names().get
+    value_of = value_of or body_elixir
+    if cost_of is None:
+        from pipeline import vocab
+        from pipeline.opp_elixir_count import card_cost
+        cost_of = lambda n: float(card_cost(vocab.engine_key(n)) or 0.)   # noqa: E731
+    ents = f["entities"]
+    foes = [e for e in ents if int(e["side"]) != side and float(e["hp"]) > 0 and int(e["card_id"]) >= 0
+            and int(e["kind"]) not in TOWER_KINDS]
+    p2, p3 = f.get("phase2") or {}, f.get("phase3") or {}
+    buffs = {u.get("generation"): {n for b in u.get("buffs") or () for n in str(b.get("name", "")).split("|")}
+             for u in (p2.get("units") or ()) if p2.get("valid")}
+    marked = [e for e in foes if buffs.get(e.get("category"), set()) & IW_MARKS]
+    d2 = lambda e, x, y: (float(e["x"]) - x) ** 2 + (float(e["y"]) - y) ** 2    # noqa: E731
+    hx, hy = float(hero["x"]), float(hero["y"])
+    tgt = min(marked, key=lambda e: d2(e, hx, hy)) if marked else None
+    if tgt is None and p3.get("valid"):
+        tg = next(((b.get("attack") or {}).get("target_gen") for b in p3.get("bodies") or ()
+                   if b.get("generation") == hero.get("category") and b.get("attack")), None)
+        tgt = next((e for e in ents if tg is not None and e.get("category") == tg and int(e["side"]) != side
+                    and float(e["hp"]) > 0), None)
+
+    def around(x, y):
+        near = [e for e in foes if d2(e, x, y) <= (FREEZE_R_T * TILE) ** 2]
+        return [len(near) / 5, sum(value_of(name_of(int(e["card_id"]))) for e in near) / 10,
+                float(any(name_of(int(e["card_id"])) in WINCONS for e in near))]
+    me = next(p for p in f["players"] if int(p["side"]) == side)
+    hand = [me["deck_card_ids"][i] for i in me.get("hand_deck_indices") or () if i is not None and int(i) >= 0]
+    cheap = min((cost_of(name_of(int(c)) or "") for c in hand), default=0.)
+    tail = [float(bool(marked)), (float(my_elixir) - IW_PRESS_COST - cheap) / 10]
+    if tgt is None:
+        return [0.] * (FREEZE_FEAT_N - 2) + tail
+    cx, cy = float(tgt["x"]), float(tgt["y"]) + (1 if side == 0 else -1) * CUBE_AHEAD_T * TILE
+    return ([1.] + around(float(tgt["x"]), float(tgt["y"])) + around(cx, cy)
+            + [abs(cy / TILE - MY_LINE_T[side]) / 10, float((cy > 16 * TILE) == (side == 1))] + tail)
 
 
 def decide(pilot, frame, side: int, hids) -> tuple[bool, str, list | None]:
@@ -199,7 +253,7 @@ def load_head(ckpt, device: str, pilot, decode: str = "greedy") -> dict:
     if ab is None:
         raise SystemExit(f"refusing: --iw-press head needs a checkpoint with a learned ability head (rl['ability_head'], "
                          f"B6 stage A); {ckpt} has none -- use --iw-press rule")
-    d_g = ab["head"].net[0].in_features - ABILITY_FEAT_N
+    d_g = ab["head"].net[0].in_features - int(ab.get("n_feat", ABILITY_FEAT_N))   # 'freeze' heads read 55 values
     width = pilot.model.value_head.in_features
     if d_g != width:
         raise SystemExit(f"refusing: {ckpt}'s ability head reads g of width {d_g}, the model's g is {width}")
