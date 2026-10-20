@@ -36,3 +36,16 @@ process, /workspace/stepd/claim.lock free by `flock -n`).
 - The stepd chain also reads `/workspace/stepd/smoke/SMOKE_OK` (stepd_chain.sh); it exists on all four pods (older) and
   was not touched. The tn arms need GO files with RT=fin15-linux VENV=/workspace/venvf15 (the launcher's job).
 - Not done / not touched: no training chain, no GO file, no pod stop, pods 48148 and 15617 not touched.
+
+## Addendum: pod 15617 (216.81.151.5, tn_tornado_s74), 22:05-22:17 UTC
+
+- Idle first (no rl_royale / gap.py / stepd_chain, claim.lock free). Code = git HEAD b74ef20 (includes tn_tornado_s74.yaml with
+  tornado_king_w 0.1); CODE_OK. NOTE: the four pods above hold the earlier HEAD 88cd357; only this pod has b74ef20.
+- fin15: FIN15_OK (no venvf36 on this pod either: venvf15 built from venvf13 with SRCV=/workspace/venvf13 SKIP36=1).
+- w7opp.pt full sha256 ea1d080496b3413cf15d31ac149567024e8c727d7241ae5289f665736a087909. The 11 ckpt/data shas are
+  identical to 40548's list.
+- Smoke (pod_smoke15.sh, RT fin15-linux): SMOKE PASS 22:17:08Z, log /workspace/stepd/tn_smoke_tn_tornado_s74/smoke.log;
+  exploiter_league 0.75/4 games (> 0, the W7 opponent played).
+- DISK: 5.6 GB free (target was >= 12 GB; the stop-and-report floor is 10 GB). NOT cleaned: I do not permanently delete data,
+  even backed-up trees. Candidates for the lead/owner to delete by hand: /workspace/w_v7_r7c_ht (5.5 GB) alone gives ~11 GB;
+  with w_r7c (582 MB) / w_r5d (570 MB) ~12 GB. I did not verify their backups. READY except for the disk target.
