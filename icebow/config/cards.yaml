@@ -1276,6 +1276,26 @@ cards:
     hit_speed: null
     unsourced: true
 
+  # TargetOnlyBuildings, AttacksGround, Range 4000 (4 tiles), Speed 60, HitSpeed 1700, homing projectile;
+  minion_giant:
+    display: "Minion Giant"
+    elixir: 4
+    kind: troop
+    rarity: rare
+    attacks: [ground]
+    movement: air
+    speed: medium
+    range: short
+    splash: false
+    count: 1
+    targets: buildings_only
+    flags: [flying, building_targeting]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
   skeleton_army:
     display: "Skeleton Army"
     elixir: 3

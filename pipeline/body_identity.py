@@ -54,10 +54,10 @@ EXTENSION = False
 # classes only in form 0 (an evo / hero form of them never occurs in gen_dataset_v32_fv5).
 EXT_CARD_IDS = {'13000043': 'AngryBarbarians', '13000075': 'ElectroGiant', '203000042': 'ElectroWizard',
                 '26000107': 'MinionGiant'}
-# No vocab class -> closest learned class. Minion Giant (catalog: flying_height 3000, target_only_buildings, speed 60,
-# 1817 HP at L11) vs Balloon (flying, buildings only, speed 60, 1676 HP); differs in range (4 tiles vs melee) and
-# damage (189 / 1.5 s vs 640 / 2 s at L11).
-EXT_CLASS = {'minion_giant': 'balloon'}
+# No vocab class -> closest learned class. Empty since W9 (10-20): Minion Giant has its own class (vocab
+# APPENDED_CLASSES, id 232, embedding initialised from balloon); the 10-20 catalog extension names all four ids above, so
+# this table and EXT_CARD_IDS only act on a host whose catalog was not extended.
+EXT_CLASS: dict[str, str] = {}
 # Souldiers = skeleton HP / damage / speed (catalog Ghost_EV1_Summon_*, wiki 81 / 81 at L11; hit 1.8 s splash vs 1.1 s
 # single); Little Prince's Guardienne = Knight-like (catalog ChampionGuard 625 / 91 / 1.2 s / speed 60 / range 1.2 vs
 # Knight 690 / 79 / 1.2 s / 60 / 1.2; the wiki calls her "comparable to a Knight").
