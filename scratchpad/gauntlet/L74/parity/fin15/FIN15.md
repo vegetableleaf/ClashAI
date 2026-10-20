@@ -407,6 +407,7 @@ adapter under it. Unset or another id keeps its behaviour: `pipeline/tests/test_
 | R3 | rare cards (10-20) | H-DRILL-SURFACE | own Goblin Drill 0.34 -> 0.61, opp 0.00 -> 0.74; evo drill 0.00 -> 0.04 | the evo needs its relocate action in the engine (not implemented in the fork; no device parameters on hand) |
 | R4 | J3 / J6 / J2 (all fights) | H-PRESPELL=spawn (fights.py opt-in: a fight starts before an in-flight Goblin Barrel / Graveyard cast, so the spell is replayed) | J3 0.933 -> **0.947 [0.939, 0.955]**; J6 0.697 -> 0.718 [0.697, 0.737] (pathing proper 0.828 -> 0.838); J2 0.917 -> 0.917 | gain on J3 / J6; DEFAULT since 10-20 |
 | R4 | J1 | the same, on the J1 cohort | stamped 0.9289 -> 0.9273: 0 fights moved, 304 newly clean fights join at a lower agreement (own Tornado 0.978 -> 0.959 on 24 more) | ADOPTED as the default grading (lead, 10-20); J1 reported both ways above |
+| R5 | J1 coverage | H-CHAMP-CASTS (fights.py): an opponent champion press is dated from its live state-10 burst (Skeleton King, Monk, Mighty Miner; the Golden Knight shows none) and replayed through the ability slot | stamped fights 13,356 -> 14,188 (+832; 0 existing fights moved); raw 0.9273 -> 0.9268 [0.921, 0.933]; newly graded: opp Mighty Miner 0.996 (60), Monk 0.924 (36), Skeleton King 0.875 (57) | DEFAULT since 10-20 (same rule as H-PRESPELL: it measures more of the real game); PARITY_CHAMP_CASTS=0 restores |
 | - | J5a, J5b, J8 winner, J3 wake law | - | >= 0.98 | meet |
 
 Section 6 has the full values. No metric has reached a confirmed plateau (two rounds with no CI-significant gain plus a written
@@ -418,7 +419,8 @@ restores the old cohort). J1 on the final fin15, reported both ways once so the 
 | J1 cohort | stamped raw [95% CI] | stamped fights | full raw | full fights |
 |---|---|---|---|---|
 | old definition (FIN15F, PARITY_PRESPELL=off) | 0.9289 / 0.929 [0.923, 0.935] | 13,052 | 0.9242 | 20,711 |
-| **new definition (FIN15P, default)** | **0.9273 / 0.927 [0.921, 0.933]** | 13,357 (+304) | 0.9225 | 21,328 (+617) |
+| new definition, round 4 (FIN15P: + H-PRESPELL) | 0.9273 / 0.927 [0.921, 0.933] | 13,357 (+304) | 0.9225 | 21,328 (+617) |
+| **new definition, round 5 (FIN15C: + H-CHAMP-CASTS) = the series from now on** | **0.9268 / 0.927 [0.921, 0.933]** | 14,188 (+832) | 0.9215 | 22,590 (+1,262) |
 
 - Not one existing fight moved (0 up / 0 down). The gap is the 304 newly gradable fights, set up from before the in-flight
   Goblin Barrel or Graveyard cast; their agreement is lower.
@@ -431,7 +433,9 @@ restores the old cohort). J1 on the final fin15, reported both ways once so the 
    - Every fight with an opponent champion is flagged `opp_ability_unobserved` and left out of J1-strict. For 3,692 of the 36,078
      fights it is the ONLY blocker: Golden Knight 1,143, Boss Bandit 567, Mighty Miner 518, Skeleton King 452, Archer Queen 376,
      Monk 318, Goblinstein 297, Little Prince 21.
-   - The fix: infer each press from its visible effect, as `seen_casts` already does for hero casts. Examples: the Skeleton King's
+   - Round 5 (landed, H-CHAMP-CASTS) covers the three champions with a state-10 burst: Skeleton King, Monk, Mighty Miner.
+     Still open: Golden Knight 1,143, Boss Bandit 567, Archer Queen 376, Goblinstein 297.
+   - The fix for the rest: infer each press from its visible effect, as `seen_casts` already does for hero casts. Examples: the Skeleton King's
      soul copies appearing, the Golden Knight's dash chain, the Archer Queen's cloak.
    - This is also the 'unpaired summoned skeletons' item: 1,144 SkeletonKing-labelled bodies are unpaired because the SIM never
      pressed the ability.

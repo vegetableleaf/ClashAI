@@ -64,6 +64,11 @@ SPELL_WINDOW = 60                 # ticks after a cast in which a drop/death cou
 # H-PRESPELL (cut): the DEFAULT since the lead's 10-20 decision ('spawn'); PARITY_PRESPELL=off restores the pre-10-20 cohort, 'all' widens it
 PRESPELL = {'off': ''}.get(os.environ.get('PARITY_PRESPELL', 'spawn'), os.environ.get('PARITY_PRESPELL', 'spawn'))
 PRESPELL_SPAWN = {'GoblinBarrel', 'Graveyard'}
+# H-CHAMP-CASTS (W8 round 5, default on; PARITY_CHAMP_CASTS=0 off): the champions whose press shows a state-10 burst live (Skeleton King,
+# Monk, Mighty Miner; the Golden Knight shows none) are dated from it as hero casts are, replayed through the ability slot,
+# and no longer flag their fights opp_ability_unobserved on ext logs
+CHAMP_CASTS = os.environ.get('PARITY_CHAMP_CASTS', '1') != '0'   # the default since 10-20 (as H-PRESPELL); PARITY_CHAMP_CASTS=0 restores
+CHAMP_STATE10 = {'SkeletonKing', 'Monk', 'MightyMiner'}
 DIGGERS = {'Miner', 'GoblinDrill'}  # tunnel in: seen active on their way, deploying where they surface (Knight etc. can show
                                    # 13/15 -> 12/14 too: 31 of 531 Knights, so the rule is by card)
 TOWER_RADIUS = 1400                # millitiles, king (princess 1000): attribution slack, not a law
@@ -450,7 +455,7 @@ def seen_casts(m, catalog, life=None):
     for t, bodies in m['frames']:
         for bd in bodies:
             c = catalog.get(bd['card_id'])
-            if bd['tower'] or c is None or form_of(bd['card_id'], c) != 2:
+            if bd['tower'] or c is None or (form_of(bd['card_id'], c) != 2 and not (CHAMP_CASTS and c['display_name'] in CHAMP_STATE10)):
                 continue
             if bd.get('state') == CAST and prev.get(bd['id']) != CAST:
                 casts.append((t, bd['side'], c['display_name']))
@@ -1487,7 +1492,7 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
         for bd in bodies:
             c = catalog.get(bd['card_id'])
             if c and not bd['tower'] and bd['side'] != m['side'] and (form_of(bd['card_id'], c) == 2 and not m['ext'] or
-                                                                   eng.cat[eng.ids[c['display_name']]].get('champion') if c['display_name'] in eng.ids else False):
+                                                                   eng.cat[eng.ids[c['display_name']]].get('champion') if c['display_name'] in eng.ids else False)                     and not (CHAMP_CASTS and m['ext'] and c['display_name'] in CHAMP_STATE10):
                 heroes.add(c['display_name'])
     for h in heroes:
         flags['opp_ability_unobserved:'+h] += 1
@@ -1518,7 +1523,7 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
             flags['spell_spawned_units_timing_unknown'] += 1
     for e in evs:
         if e['kind'] == 'ability':
-            need(e['side'], e['name'], 2)
+            need(e['side'], e['name'], 0 if CHAMP_CASTS and e['name'] in CHAMP_STATE10 else 2)
     for s_ in (0, 1):
         if not decks[s_]:
             need(s_, 'Knight', 0)
