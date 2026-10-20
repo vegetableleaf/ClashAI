@@ -26,8 +26,15 @@ CHAMPIONS = {'archer-queen', 'golden-knight', 'skeleton-king', 'mighty-miner',
 def card_catalog():
     from pipeline import vocab
     cards = json.loads((ROOT/'research/ext/cr-native-sandbox/native_core/data/live_card_catalog.json').read_text(encoding='utf-8'))['cards']
-    return {vocab.base_key(vocab.engine_key(c['display_name'])).replace('_', '-'): c for c in cards
-            if vocab.engine_key(c['display_name'])}
+    # FIRST entry per slug: 20 slugs collide (knight: Knight / SuperKnight, rocket: Rocket / GoblinPartyRocket, ...) and
+    # the old last-wins dict loaded the event variant (L74 step d dry run 10-18: 'SuperKnight' refused form 1).
+    # 10-20 (W9): standard ladder cards first -- the event building BarbarianLauncher preceded BarbLog (hero Barbarian
+    # Barrel decks asked the SIM for a hero BarbarianLauncher) and MergeMaiden_Normal preceded MergeMaiden (Spirit Empress)
+    out = {}
+    for c in sorted(cards, key=lambda c: not c.get('standard_1v1')):
+        if vocab.engine_key(c['display_name']):
+            out.setdefault(vocab.base_key(vocab.engine_key(c['display_name'])).replace('_', '-'), c)
+    return out
 
 
 def snapshot(raw, catalog):
@@ -65,7 +72,9 @@ def snapshot(raw, catalog):
                          for p in raw['players']])
 
 
-def drive(source, catalog):
+def drive(source, catalog, on_frame=None, record_ticks=()):
+    """``on_frame(env, frame, kind)`` (optional, L74 step d cue_drive; kind 'frame' = a recorded frame, 'play' = a pre-act
+    play frame): called while the SIM is AT that state (read-only use only). ``record_ticks``: extra ticks to record. Defaults = unchanged."""
     from pipeline.royale_env import RoyalePoolEnv, NOT_ENOUGH_ELIXIR
     decks = {}
     for s in (0, 1):
@@ -98,11 +107,15 @@ def drive(source, catalog):
             due = []
             while cursor < len(commands) and commands[cursor]['tick'] <= env.tick:
                 due.append(commands[cursor]); cursor += 1
-            if env.tick % 10 == 0 or due or pending:
+            if env.tick % 10 == 0 or due or pending or env.tick in record_ticks:
                 rec['frames'].append(snapshot(raw, catalog))
+                if on_frame:
+                    on_frame(env, rec['frames'][-1], 'frame')
             retry = []
             for p in pending + due:
                 pf = snapshot(env.raw(), catalog)
+                if on_frame:
+                    on_frame(env, pf, 'play')
                 side = p['side']; slug = base(p['card'])
                 event = dict(play_index=p['play_index'], tick=p['tick'], side=side, card=slug,
                              ability=p['ability'], x=None if p['x'] is None else round(p['x']*1000),
