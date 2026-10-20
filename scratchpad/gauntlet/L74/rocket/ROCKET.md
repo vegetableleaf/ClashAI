@@ -102,7 +102,9 @@ same situation cluster, never matchup-blind averages. Full tables: `slices_all.o
   `test_updates_identical`, test_rl_gae `test_one_update_identical`, test_league 2 `TestSelfPlayCounters` tests. Two runs of
   the SAME PRE module already differ in the 9th digit after 2 updates on this laptop, so whole-update byte identity is not
   a usable proof here; collate byte identity is used instead.
-- Commit = HEAD + the W10 hunks only (W7's princess_take / league_opp_live edits stay uncommitted in the working copy).
+- The trainer hunks are HEAD + W10 only (W7's princess_take / league_opp_live edits stay uncommitted). They were staged as
+  blobs and swept into W8's commit b386aaf by the shared index before the W10 commit; checked byte-identical to the
+  worktree-tested versions. The W10 commit carries the tests, the arm yaml and this directory.
 
 ## Smoke
 
