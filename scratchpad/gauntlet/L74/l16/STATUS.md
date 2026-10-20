@@ -101,3 +101,67 @@ Pod logs: `/workspace/stepd/rl_<job>/chain.log`; arms also have `train.log`; REF
 Monitoring four authorized pods every 4 minutes (maximum requested 9). Initial poll at 19:04 EDT found all original chains active; 19:06 poll confirms s74/s75 at u3, CLX 310 rows and CLIII 791 rows. New s76-s79 YAML files differ from s74 ONLY in seed. Readout extension and safe successor staging helpers are being prepared independently. Prior code db84ac9 and original chain scripts remain unchanged. No deployment, live changes, pod stops, or messages to external channels. Final exit requires s74/s75 scored and required successors verified through SMOKE PASS and u1.
 
 - 2026-10-19T19:09:54.6540916-04:00 preparation verified: readout.py adds s74-s79 with exclusive all16 reference routing and std/fresh/pooled CIs; --selftest passed independently, offline pyflakes clean, prior legacy output byte-identical. Four successor YAML files verified seed-only. Preparing explicit six-path commit before any successor staging.
+
+- 2026-10-19T19:11:08-04:00 follow-on poll: 13396: stepd_l16_s74 active u=5 rows=0 pids=1764 smoke=PASS | 14009: stepd_l16_s75 active u=4 rows=0 pids=1074 smoke=PASS | 15617: clx_l16 active u=None rows=480 pids=4022 smoke=pending | 19899: cliii_l16 active u=None rows=960 pids=27676 smoke=pending
+
+- 2026-10-19T19:15:07-04:00 Bounded successor controller active; four-minute poller remains independent. Only assigned s76-s79 launches are permitted.
+
+- 2026-10-19T19:15:09-04:00 follow-on poll: 13396: stepd_l16_s74 active u=6 rows=0 pids=1764 smoke=PASS | 14009: stepd_l16_s75 active u=6 rows=0 pids=1074 smoke=PASS | 15617: clx_l16 active u=None rows=790 pids=4022 smoke=pending | 19899: cliii_l16 active u=None rows=1042 pids=27676 smoke=pending
+
+- 2026-10-19T19:15:31.1711595-04:00 controller preflight: independent reviews resolved archive/extraction byte verification, per-set 480-row completeness, checkpoint/decode provenance, genuine smoke failure detection and interrupted-launch reconciliation. Bounded controller running locally; no new pod jobs launched yet. Seed/readout preparation commit 7355b8c pushed to origin/main. All four successors retain committed db84ac9 trainer/gap/chain bytes; only new YAML seed differs. Pod15617 free space measured ~1.3GB and is now logged in poll evidence; no unrelated data removed.
+
+- 2026-10-19T19:19:10-04:00 follow-on poll: 13396: stepd_l16_s74 active u=7 rows=0 pids=1764 smoke=PASS | 14009: stepd_l16_s75 active u=7 rows=0 pids=1074 smoke=PASS | 15617: clx_l16 active u=None rows=960 pids=4207 smoke=pending | 19899: cliii_l16 active u=None rows=1306 pids=27676 smoke=pending
+
+- 2026-10-19T19:23:11-04:00 follow-on poll: 13396: stepd_l16_s74 active u=9 rows=0 pids=1764 smoke=PASS | 14009: stepd_l16_s75 active u=8 rows=0 pids=1074 smoke=PASS | 15617: clx_l16 active u=None rows=1007 pids=4207 smoke=pending | 19899: cliii_l16 active u=None rows=1440 pids=28817 smoke=pending
+
+- 2026-10-19T19:27:12-04:00 follow-on poll: 13396: stepd_l16_s74 active u=9 rows=0 pids=1764 smoke=PASS | 14009: stepd_l16_s75 active u=9 rows=0 pids=1074 smoke=PASS | 15617: clx_l16 active u=None rows=1270 pids=4207 smoke=pending | 19899: cliii_l16 active u=None rows=1750 pids=28817 smoke=pending
+
+- 2026-10-19T19:31:14-04:00 follow-on poll: 13396: stepd_l16_s74 active u=10 rows=0 pids=1764 smoke=PASS | 14009: stepd_l16_s75 active u=10 rows=0 pids=1074 smoke=PASS | 15617: clx_l16 active u=None rows=1440 pids=4321 smoke=pending | 19899: cliii_l16 ALL_DONE u=None rows=1920 pids=- smoke=pending
+
+- 2026-10-19T19:31:36.296272-04:00 SHA-verified pull cliii_l16 from 19899: `C:\Users\benpe\pod_backup_weekend\stepd\cliii_l16.tgz` SHA256 `1f505ba89426cb2b45da9550292aa9fe6ff3356edaf1e46da061656df58f0908`; extraction `C:\Users\benpe\pod_backup_weekend\stepd\cliii_l16`, COPY_OK and pod COPIED written.
+
+- 2026-10-19T19:31:38-04:00 cliii_l16 archive contents, 4x480 all16 rows, checkpoint and decode provenance VERIFIED
+
+- 2026-10-19T19:31:45-04:00 2026-10-19T23:31:44Z STAGED stepd_l16_s77 yaml=8dd2cd2cfda090fef6eae216e6e91cc947c7da1f7485869ca1ac9f6542dd2a3c predecessor=cliii_l16 archive=1f505ba89426cb2b45da9550292aa9fe6ff3356edaf1e46da061656df58f0908
+
+- 2026-10-19T19:31:46-04:00 2026-10-19T23:31:45Z SMOKE_LAUNCHED stepd_l16_s77 pid=30409
+
+- 2026-10-19T19:35:15-04:00 follow-on poll: 13396: stepd_l16_s74 active u=12 rows=0 pids=1764 smoke=PASS | 14009: stepd_l16_s75 active u=11 rows=0 pids=1074 smoke=PASS | 15617: clx_l16 active u=None rows=1751 pids=4321 smoke=pending | 19899: cliii_l16 ALL_DONE u=None rows=1920 pids=- smoke=pending; stepd_l16_s77 active u=None rows=0 pids=30445 smoke=pending
+
+- 2026-10-19T19:39:16-04:00 follow-on poll: 13396: stepd_l16_s74 active u=13 rows=0 pids=1764 smoke=PASS | 14009: stepd_l16_s75 active u=13 rows=0 pids=1074 smoke=PASS | 15617: clx_l16 ALL_DONE u=None rows=1920 pids=- smoke=pending | 19899: cliii_l16 ALL_DONE u=None rows=1920 pids=- smoke=pending; stepd_l16_s77 active u=None rows=0 pids=30445 smoke=pending
+
+- 2026-10-19T19:39:33.834756-04:00 SHA-verified pull clx_l16 from 15617: `C:\Users\benpe\pod_backup_weekend\stepd\clx_l16.tgz` SHA256 `9164e587668a4a1325fa8ea79c81c4e2d77677a40752edacbd281695c2c7f2ad`; extraction `C:\Users\benpe\pod_backup_weekend\stepd\clx_l16`, COPY_OK and pod COPIED written.
+
+- 2026-10-19T19:39:35-04:00 clx_l16 archive contents, 4x480 all16 rows, checkpoint and decode provenance VERIFIED
+
+- 2026-10-19T19:39:41-04:00 2026-10-19T23:39:40Z STAGED stepd_l16_s76 yaml=0ff4bed77dff2d3a20fddd9a8680bcfb73846c705b4c9063c01258167bf04ce6 predecessor=clx_l16 archive=9164e587668a4a1325fa8ea79c81c4e2d77677a40752edacbd281695c2c7f2ad
+
+- 2026-10-19T19:39:42-04:00 2026-10-19T23:39:41Z SMOKE_LAUNCHED stepd_l16_s76 pid=4606
+
+- 2026-10-19T19:43:17-04:00 follow-on poll: 13396: stepd_l16_s74 active u=14 rows=0 pids=1764 smoke=PASS | 14009: stepd_l16_s75 active u=14 rows=0 pids=1074 smoke=PASS | 15617: clx_l16 ALL_DONE u=None rows=1920 pids=- smoke=pending; stepd_l16_s76 active u=None rows=0 pids=4642 smoke=pending | 19899: cliii_l16 ALL_DONE u=None rows=1920 pids=- smoke=pending; stepd_l16_s77 active u=None rows=0 pids=- smoke=PASS
+
+- 2026-10-19T19:43:22-04:00 stepd_l16_s77 genuine per-arm SMOKE PASS observed
+
+- 2026-10-19T19:43:23-04:00 2026-10-19T23:43:23Z START_LAUNCHED stepd_l16_s77 pid=31755
+
+- 2026-10-19T19:47:18-04:00 follow-on poll: 13396: stepd_l16_s74 active u=16 rows=0 pids=1764 smoke=PASS | 14009: stepd_l16_s75 active u=15 rows=0 pids=1074 smoke=PASS | 15617: clx_l16 ALL_DONE u=None rows=1920 pids=- smoke=pending; stepd_l16_s76 active u=None rows=0 pids=4642 smoke=pending | 19899: cliii_l16 ALL_DONE u=None rows=1920 pids=- smoke=pending; stepd_l16_s77 active u=None rows=0 pids=31794 smoke=PASS
+
+- 2026-10-19T19:51:19-04:00 follow-on poll: 13396: stepd_l16_s74 active u=17 rows=0 pids=1764 smoke=PASS | 14009: stepd_l16_s75 active u=17 rows=0 pids=1074 smoke=PASS | 15617: clx_l16 ALL_DONE u=None rows=1920 pids=- smoke=pending; stepd_l16_s76 active u=None rows=0 pids=- smoke=PASS | 19899: cliii_l16 ALL_DONE u=None rows=1920 pids=- smoke=pending; stepd_l16_s77 active u=0 rows=0 pids=31794 smoke=PASS
+
+- 2026-10-19T19:51:24-04:00 stepd_l16_s76 genuine per-arm SMOKE PASS observed
+
+- 2026-10-19T19:51:24-04:00 2026-10-19T23:51:24Z START_LAUNCHED stepd_l16_s76 pid=4742
+
+- 2026-10-19T19:55:21-04:00 follow-on poll: 13396: stepd_l16_s74 active u=18 rows=0 pids=1764 smoke=PASS | 14009: stepd_l16_s75 active u=18 rows=0 pids=1074 smoke=PASS | 15617: clx_l16 ALL_DONE u=None rows=1920 pids=- smoke=pending; stepd_l16_s76 active u=None rows=0 pids=4781 smoke=PASS | 19899: cliii_l16 ALL_DONE u=None rows=1920 pids=- smoke=pending; stepd_l16_s77 active u=1 rows=0 pids=31794 smoke=PASS
+
+- 2026-10-19T19:55:26-04:00 PID    PPID     ELAPSED COMMAND;   31755       1       12:02 flock; 31793 flock /workspace/cpu.lock /workspace/venvf13/bin/python -m pipeline.rl_royale --config scratchpad/gauntlet/L74/stepd/cfg/stepd_l16_s77.yaml --run rlarm_stepd_l16_s77; 31794 /workspace/venvf13/bin/python -m pipeline.rl_royale --config scratchpad/gauntlet/L74/stepd/cfg/stepd_l16_s77.yaml --run rlarm_stepd_l16_s77; [rl] u0001 W/L/D 178/78/0 ppm 11.02 pgate 0.124 KL g/c/x 0.0000/0.0000/0.0000 beta 0.03->0.03 (leash max: card) clip 0.000 mixed 36/64 rows 74524 wall roll 138s upd 24s | gae WARMUP (critic only) vloss 0.0162 ev 0.893 A +0.0338/0.1811 ret +0.106 V +0.072 vshare - | ability dec 20692 press 0.028 p 0.026 acc/m 2.11 H 0.061 lab -0.1309 | league wr init 0.64/92 snapshot -/0 s1 -/0 exploiter 0.73/164 D 0; U1_JSON_CONFIRMED update=1; live_levels: all16; seed: 77; 8dd2cd2cfda090fef6eae216e6e91cc947c7da1f7485869ca1ac9f6542dd2a3c  scratchpad/gauntlet/L74/stepd/cfg/stepd_l16_s77.yaml; 2026-10-19T23:55:25Z SUCCESSOR_RUNNING_VERIFIED stepd_l16_s77
+
+- 2026-10-19T19:59:22-04:00 follow-on poll: 13396: stepd_l16_s74 active u=19 rows=0 pids=1764 smoke=PASS | 14009: stepd_l16_s75 active u=19 rows=0 pids=1074 smoke=PASS | 15617: clx_l16 ALL_DONE u=None rows=1920 pids=- smoke=pending; stepd_l16_s76 active u=0 rows=0 pids=4781 smoke=PASS | 19899: cliii_l16 ALL_DONE u=None rows=1920 pids=- smoke=pending; stepd_l16_s77 active u=3 rows=0 pids=31794 smoke=PASS
+
+- 2026-10-19T20:03:23-04:00 follow-on poll: 13396: stepd_l16_s74 active u=20 rows=0 pids=1764 smoke=PASS | 14009: stepd_l16_s75 active u=20 rows=0 pids=1074 smoke=PASS | 15617: clx_l16 ALL_DONE u=None rows=1920 pids=- smoke=pending; stepd_l16_s76 active u=1 rows=0 pids=4781 smoke=PASS | 19899: cliii_l16 ALL_DONE u=None rows=1920 pids=- smoke=pending; stepd_l16_s77 active u=4 rows=0 pids=31794 smoke=PASS
+
+- 2026-10-19T20:03:27-04:00 PID    PPID     ELAPSED COMMAND;    4742       1       12:02 flock; 4780 flock /workspace/cpu.lock /workspace/venvf13/bin/python -m pipeline.rl_royale --config scratchpad/gauntlet/L74/stepd/cfg/stepd_l16_s76.yaml --run rlarm_stepd_l16_s76; 4781 /workspace/venvf13/bin/python -m pipeline.rl_royale --config scratchpad/gauntlet/L74/stepd/cfg/stepd_l16_s76.yaml --run rlarm_stepd_l16_s76; [rl] u0001 W/L/D 177/79/0 ppm 10.84 pgate 0.129 KL g/c/x 0.0000/0.0000/0.0000 beta 0.03->0.03 (leash max: card) clip 0.000 mixed 41/64 rows 71816 wall roll 130s upd 23s | gae WARMUP (critic only) vloss 0.0175 ev 0.884 A +0.0375/0.1827 ret +0.061 V +0.024 vshare - | ability dec 18749 press 0.030 p 0.029 acc/m 2.02 H 0.068 lab -0.0988 | league wr init 0.50/32 snapshot -/0 s1 -/0 exploiter 0.72/224 D 0; U1_JSON_CONFIRMED update=1; live_levels: all16; seed: 76; 0ff4bed77dff2d3a20fddd9a8680bcfb73846c705b4c9063c01258167bf04ce6  scratchpad/gauntlet/L74/stepd/cfg/stepd_l16_s76.yaml; 2026-10-20T00:03:26Z SUCCESSOR_RUNNING_VERIFIED stepd_l16_s76
+
+## 2026-10-19T20:05:13.1745138-04:00 - both reference successors verified
+
+Independent re-verification passed for both REF archives (1,920 all16 fin13 rows each, archive/extraction bytes and checkpoint/decode provenance) and both new training arms. 15617 s76: wrapper4742/trainer4781, smoke PASS, u1 JSON+production log confirmed, seed76/all16 YAML SHA0ff4bed77dff2d3a20fddd9a8680bcfb73846c705b4c9063c01258167bf04ce6, GO all16/sample/NO36=1. 19899 s77: wrapper31755/trainer31794, smoke PASS, u1 JSON+log confirmed, seed77/all16 SHA8dd2cd2cfda090fef6eae216e6e91cc947c7da1f7485869ca1ac9f6542dd2a3c, GO all16/sample with fork36 retained. All exact db84ac9 manifest files still pass. Largest measured successful-poll gap so far242 seconds (limit540). Pod15617 free1268228096 bytes at20:03; continue monitoring. Original s74/s75 at u20; scoring and s78/s79 are still pending. No deployment, live changes or pod stops.
