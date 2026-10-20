@@ -427,6 +427,14 @@ restores the old cohort). J1 on the final fin15, reported both ways once so the 
 
 ### 8.2 Queue for round 5 (fin16), biggest lever first
 
+0. **NEW TOP LEVER (a, counted 10-20 on FIN15F): the opponent's champion ability presses are never replayed.**
+   - Every fight with an opponent champion is flagged `opp_ability_unobserved` and left out of J1-strict. For 3,692 of the 36,078
+     fights it is the ONLY blocker: Golden Knight 1,143, Boss Bandit 567, Mighty Miner 518, Skeleton King 452, Archer Queen 376,
+     Monk 318, Goblinstein 297, Little Prince 21.
+   - The fix: infer each press from its visible effect, as `seen_casts` already does for hero casts. Examples: the Skeleton King's
+     soul copies appearing, the Golden Knight's dash chain, the Archer Queen's cloak.
+   - This is also the 'unpaired summoned skeletons' item: 1,144 SkeletonKing-labelled bodies are unpaired because the SIM never
+     pressed the ability.
 1. **J4 (MET in round 2: 0.990).** Left:
    - the 3x phase, 0.937 [0.914, 0.956] (n 135 matches). The live switch tick is right: 2x -> 3x on the step into t4801 on 72 of
      78 logs (analysis/x3.py), the SIM's too. Median |d| is 0.018 = one 3x-minus-2x step, so a spend dated one tick off at 3x
