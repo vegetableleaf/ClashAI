@@ -15,3 +15,7 @@ crown baseline stepd_l16_s74_crown (19899). O0 opponent-model check passed (opp_
   Crown slices (1,920 SIM games): lost a princess 0.291 vs 0.318; gave back a 1-0 lead 2.6% vs 1.9% of matches; king_end 0.900 vs 0.907.
   NOTE: in this SIM (E4 opponents) give-backs happen in ~2% of games, so the penalty barely fires (live: 15-20%). Re-test on the
   calibrated-opponent base (both-crown 10.9%) -> tonight's lineup.
+- stepd_l16_redirect (princess_redirect penalty, seed 74) vs CLX l16: std 690 vs 693 = -0.31 [-3.94, +3.31]; fresh 710 vs 687 = +2.40 [-1.21, +6.01] -> NO PASS.
+  vs control: std +0.10 [-3.47, +3.68], fresh +6.04 [+2.35, +9.73]. Crown: lost a princess 0.292 vs 0.318; gave back 2.1% vs 1.9%; king_end 0.918 vs 0.907.
+  Both reward arms show the SAME pattern (std ~0, fresh ~+6 vs control): the control's fresh set (652) is low against CLX (687) and
+  the other seeds -> read it as control noise, not a reward effect. Neither term moves much in the old SIM; re-test both on the new base.
