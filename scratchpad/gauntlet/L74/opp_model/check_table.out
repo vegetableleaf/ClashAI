@@ -1,0 +1,27 @@
+3372 rows
+  140 icebow ICEBOW Mark LII: RL                20261007_151300 20261008_033553 win 0.539 tro p10/50/90 11030/11150/11323 exact-reading share 0.11 plays/match 22.1 towers6 1.00
+    6 icebow ICEBOW Mark LXXIX: LADDER          20261007_211123 20261007_212939 win 0.500 tro p10/50/90 11240/11269/11295 exact-reading share 0.17 plays/match 24.5 towers6 1.00
+   96 icebow ICEBOW Mark XCI: CELLREFINE        20261008_040027 20261008_125939 win 0.557 tro p10/50/90 11062/11218/11337 exact-reading share 0.15 plays/match 23.5 towers6 1.00
+  877 icebow ICEBOW Mark XCVIII: TOWERREFINE    20261008_130524 20261014_090142 win 0.547 tro p10/50/90 2574/11722/12125 exact-reading share 0.14 plays/match 22.4 towers6 1.00
+   56 icebow ICEBOW Mark XCIX: DEFENCE          20261010_100451 20261010_212858 win 0.509 tro p10/50/90 1869/12145/12209 exact-reading share 0.23 plays/match 28.1 towers6 1.00
+  187 bait   Bait Mark I: SPECIALIST            20261011_114328 20261016_151939 win 0.660 tro p10/50/90 3003/3877/4483 exact-reading share 0.23 plays/match 23.5 towers6 1.00
+   46 icebow ICEBOW Mark CIV: TORNADOFIX        20261012_043946 20261012_072918 win 0.435 tro p10/50/90 12061/12114/12196 exact-reading share 0.11 plays/match 24.3 towers6 1.00
+   41 icebow ICEBOW Mark CII: ADAPTIVE          20261012_073501 20261012_112238 win 0.476 tro p10/50/90 3693/12041/12079 exact-reading share 0.15 plays/match 24.0 towers6 1.00
+  210 icebow ICEBOW Mark CVI: LONGER            20261012_194040 20261013_085906 win 0.467 tro p10/50/90 12002/12092/12204 exact-reading share 0.12 plays/match 23.7 towers6 1.00
+  386 icebow ICEBOW Mark CXII: PLAINIW          20261013_094957 20261015_090454 win 0.478 tro p10/50/90 12008/12091/12278 exact-reading share 0.12 plays/match 21.5 towers6 1.00
+    5 icebow ICEBOW Mark CXIII: HEADSONLY       20261014_130050 20261014_131605 win 0.600 tro p10/50/90 12042/12071/12071 exact-reading share 0.20 plays/match 28.2 towers6 1.00
+  158 icebow ICEBOW Mark CXVII: GAE             20261014_225736 20261015_163047 win 0.525 tro p10/50/90 12164/12282/12368 exact-reading share 0.15 plays/match 22.6 towers6 1.00
+    5 icebow ICEBOW Mark CXX: GAE               20261015_170420 20261015_172050 win 0.400 tro p10/50/90 12213/12243/12243 exact-reading share 0.20 plays/match 34.0 towers6 1.00
+  300 icebow ICEBOW Mark CXXIV: LONGER          20261015_172639 20261017_132435 win 0.515 tro p10/50/90 12131/12372/12642 exact-reading share 0.12 plays/match 23.0 towers6 1.00
+  262 icebow ICEBOW Mark CXXXVIII: CUES         20261017_132941 20261018_073137 win 0.481 tro p10/50/90 12737/13049/13166 exact-reading share 0.13 plays/match 22.0 towers6 1.00
+  168 icebow ICEBOW Mark CLIII: LEVELS          20261018_073522 20261018_175251 win 0.476 tro p10/50/90 13012/13069/13127 exact-reading share 0.12 plays/match 21.1 towers6 1.00
+  104 icebow ICEBOW Mark CLIX: PRESS            20261018_180751 20261019_001644 win 0.471 tro p10/50/90 13009/13128/13221 exact-reading share 0.14 plays/match 21.3 towers6 1.00
+  253 icebow ICEBOW Mark CLX: PARITY            20261019_002011 20261019_235402 win 0.551 tro p10/50/90 13008/13274/13891 exact-reading share 0.14 plays/match 23.9 towers6 1.00
+   72 bait   Bait Mark II: GAE                  20261019_084708 20261019_130058 win 0.646 tro p10/50/90 4837/5123/5302 exact-reading share 0.15 plays/match 20.4 towers6 1.00
+{'result match': 3328, 'result mismatch': 2, 'end_evt match': 731, 'end_evt mismatch': 2}
+('CXII', 'tel_cal_e4', 'std') {'match': 960}
+('CXXIV', 'tel_hog_e4', 'std') {'match': 480}
+('CXXIV', 'tel_hog_il65', 'std') {'match': 480}
+('CXXIV', 'tel_hog_e4u65', 'std') {'match': 480}
+('CXXXVIII', 'c_hog13k_il65', 'std') {'no telemetry': 960}
+('CXXXVIII', 'c_hog13k_e4u65', 'std') {'no telemetry': 960}

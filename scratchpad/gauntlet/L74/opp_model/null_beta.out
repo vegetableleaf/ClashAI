@@ -1,0 +1,10 @@
+== CLX pooled over both tower levels: observed beta -0.543 per 1,000 trophies
+null beta (no trophy effect, 200 sims): mean -0.601, 2.5-97.5% [-1.323, -0.139]; share of null betas <= observed 0.485
+== CLX split at the tower level-up (CLX / CLX_T16): observed beta -1.603 per 1,000 trophies
+null beta (no trophy effect, 200 sims): mean -0.580, 2.5-97.5% [-1.135, -0.112]; share of null betas <= observed 0.000
+binned CXVII     - CXII     : true  +4.8 pp, binned estimator mean  +9.0 (bias  +4.2), sims with shared bins 300/300
+binned CXXIV     - CXVII    : true  -1.1 pp, binned estimator mean  +5.8 (bias  +6.9), sims with shared bins 286/300
+binned CXXXVIII  - CXXIV    : true  -3.4 pp, binned estimator mean  -0.5 (bias  +3.0), sims with shared bins 293/300
+binned CLIII     - CXXXVIII : true  -0.5 pp, binned estimator mean  -1.0 (bias  -0.5), sims with shared bins 56/300
+binned CLIX      - CLIII    : true  -0.5 pp, binned estimator mean  -0.8 (bias  -0.3), sims with shared bins 300/300
+binned CLX       - CLIII    : true  -1.1 pp, binned estimator mean  -1.6 (bias  -0.5), sims with shared bins 300/300
