@@ -750,6 +750,8 @@ def _init_worker(args: dict) -> None:
         learner_cfg['own_effects'] = True
     if args.get('spell_log'):                               # rl_royale spell_value's tracker (measurement only)
         learner_cfg['spell_track'] = True
+    if args.get('crown_log'):                               # rl_royale crown terms' tracker (read-only, measurement only)
+        learner_cfg['crown_track'] = True
     if args.get('pipeline_decisions'):
         learner_cfg['pipeline_decisions'] = True
         if args.get('pipeline_tau_delta'):
@@ -818,6 +820,9 @@ def _run_job(job: tuple) -> dict:
         from pipeline.spell_value import match_summary
         rec["spell"] = {"summary": match_summary(_W["runner"].last_result["spell"]),
                         "events": _W["runner"].last_result["spell"]}
+    if "crown" in _W["runner"].last_result:                 # --crown-log: our crown path, Tornado pulls, Rocket aims
+        from pipeline.reward_terms import crown_log
+        rec["crown"] = crown_log(_W["runner"].last_result)
     rec.update(_W.get("opp_meta") or {})
     return rec
 
@@ -971,6 +976,11 @@ def main(argv=None) -> int:
                     help="each match line gets 'spell' (pipeline.spell_value: our Rocket impacts -- troop elixir value hit, "
                          "princess in the blast, setup Tornado -- and their summary); measurement only, decisions unchanged "
                          "(the engine steps one tick at a time while our Rocket is up); default off = lines unchanged")
+    ap.add_argument("--crown-log", action="store_true",
+                    help="each match line gets 'crown' (pipeline.reward_terms.CrownTracker: princess falls with the crowns "
+                         "before each, king / princess hp at the end, our Tornados' net pull toward our king, our Rocket "
+                         "aims, + match_summary); read-only (never steps the engine), decisions unchanged; default off = "
+                         "lines unchanged")
     ap.add_argument("--max-wall-min", type=float, default=0.0,
                     help="0 = none; else no match starts after this and running matches stop (wall_truncated)")
     a = ap.parse_args(argv)
@@ -1061,10 +1071,12 @@ def main(argv=None) -> int:
         wargs['habit_log'] = True
     if a.spell_log:
         wargs['spell_log'] = True
+    if a.crown_log:
+        wargs['crown_log'] = True
     for k in ('opp_decide_every', 'opp_reaction_ticks'):
         if getattr(a, k) is not None:
             wargs[k] = getattr(a, k)
-    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads', 'learner_T_gate') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k != 'ability_head_decode' or v != 'greedy') and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays', 'probe_xbow_focus', 'ability_stats', 'live_levels', 'habit_log', 'spell_log') or v) and (k not in ('opp_decide_every', 'opp_reaction_ticks', 'opp_tower_troops') or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
+    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads', 'learner_T_gate') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k != 'ability_head_decode' or v != 'greedy') and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays', 'probe_xbow_focus', 'ability_stats', 'live_levels', 'habit_log', 'spell_log', 'crown_log') or v) and (k not in ('opp_decide_every', 'opp_reaction_ticks', 'opp_tower_troops') or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
                                                 "gen_sha256": sha256(REPO / a.gen), "opp_gen_sha256": opp_sha,
                                                 "s1_sha256": sha256(REPO / a.s1),
                                                 "tau_plain": TAU_PLAIN, "tau_opp": TAU_OPP, "crown_w": CROWN_W,

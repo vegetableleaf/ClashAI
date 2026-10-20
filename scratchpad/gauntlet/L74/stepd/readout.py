@@ -19,6 +19,9 @@ from analyze import metrics, HABITS  # noqa: E402
 ROOT = Path("C:/Users/benpe/pod_backup_weekend/stepd")
 STD, FRESH = (741200, 742000), (743000, 744000)
 L16_ARMS = tuple(f"stepd_l16_s{s}" for s in range(74, 80))
+W6_ARMS = ("stepd_l16_lead", "stepd_l16_redirect", "stepd_l16_tornado")   # stepd_l16_s74 + ONE crown term each (seed 74)
+L16_ARMS += W6_ARMS
+S74_CROWN = "stepd_l16_s74_crown"   # REF re-score of stepd_l16_s74's u130 with --crown-log: the W6 arms' crown baseline
 L16_REFS = (("clx_l16", "CLX-l16"), ("cliii_l16", "CLIII-l16"))
 ARMS = ("stepd_ctrl", "stepd_reb", "stepd_rebc3", "stepd_ctrl_nos2", "stepd_ctrl_s75", "stepd_reb_s75", "stepd_rebc3_s75", "stepd_ctrl_nos2_s75", "stepd_ctrl_nos2_s76", "stepd_ctrl_nos2_s77", "stepd_ctrl_nos2_s78") + L16_ARMS
 REF = "clIII_fin13"
@@ -50,9 +53,23 @@ def wins(v):
     return f"{sum(r['outcome'] == 'win' for r in v)}/{len(v)}" if v else "-"
 
 
+def crown(v):
+    """W6 crown slices of eval rows run with search_s0 --crown-log (every row must carry it), else why not."""
+    cs = [r["crown"]["summary"] for r in v or () if isinstance(r.get("crown"), dict)]
+    if not v or len(cs) != len(v):
+        return f"n/a (crown log on {len(cs)}/{len(v or ())} rows: evaluate with --crown-log)"
+    n, led = len(cs), [s for s in cs if s["led_10"]]
+    k = sum(s["king_end"] for s in cs if s["king_end"] is not None) / n
+    lost, back = sum(s["lost_princess"] for s in cs), sum(s["gave_back"] for s in led)
+    return (f"king hp at end {k:.3f}; lost a princess {lost}/{n} = {100 * lost / n:.1f}%; give-back after 1-0 {back}/"
+            f"{len(led)}" + (f" = {100 * back / len(led):.1f}%" if led else "") + "; Tornado-to-king after a princess fell "
+            f"{sum(s['tornado_to_king'] for s in cs) / n:.3f}/match; tower Rockets {sum(s['rockets_tower'] for s in cs) / n:.2f}/match")
+
+
 def report_l16(root, arm, r):
     """All16 comparisons never fall back to a legacy level-11 reference."""
     print(f"\n{arm}: u130 fin13 all16 std {wins(r['std'])}, fresh {wins(r['fresh'])}; paired 95% CIs (pp)")
+    print(f"  crown (std + fresh): {crown((r['std'] or []) + (r['fresh'] or []) or None)}")
     for job, label in L16_REFS:
         ref = {k: rows(root, job, job, seeds, "fin13") for k, seeds in (("std", STD), ("fresh", FRESH))}
         s, lo_s = pd(ref["std"], r["std"])
@@ -62,6 +79,13 @@ def report_l16(root, arm, r):
         print(f"  vs {label} std   {s}\n  vs {label} fresh {f}")
         if r["std"] and r["fresh"] and ref["std"] and ref["fresh"]:
             print(f"  vs {label} pooled 1,920 {pd(ref['std'] + ref['fresh'], r['std'] + r['fresh'])[0]}")
+        print(f"  {label} crown (std + fresh): {crown((ref['std'] or []) + (ref['fresh'] or []) or None)}")
+    if arm in W6_ARMS:                     # the one-change attribution: the same recipe and seed without the term
+        base = {k: rows(root, "stepd_l16_s74", "stepd_l16_s74", seeds, "fin13") for k, seeds in (("std", STD), ("fresh", FRESH))}
+        print(f"  vs stepd_l16_s74 (term off) std {pd(base['std'], r['std'])[0]}, fresh {pd(base['fresh'], r['fresh'])[0]}")
+        cl = {k: rows(root, S74_CROWN, S74_CROWN, seeds, "fin13") for k, seeds in (("std", STD), ("fresh", FRESH))}
+        print(f"  stepd_l16_s74 crown ({S74_CROWN}, its u130 re-scored with --crown-log): "
+              f"{crown((cl['std'] or []) + (cl['fresh'] or []) or None)}")
 
 
 def report(root):
@@ -149,6 +173,12 @@ def selftest():
         assert "BAR PASS" not in missing and "pooled" not in missing, missing
         for _, label in L16_REFS:
             assert f"  vs {label} std   -" in missing, missing
+    s = dict(king_end=.5, lost_princess=True, led_10=True, gave_back=True, tornado_to_king=1, rockets_tower=2)
+    v = [{"crown": {"summary": s}}, {"crown": {"summary": dict(s, king_end=1.0, lost_princess=False, led_10=False,
+                                                                 gave_back=False, tornado_to_king=0, rockets_tower=0)}}]
+    assert crown(v) == ("king hp at end 0.750; lost a princess 1/2 = 50.0%; give-back after 1-0 1/1 = 100.0%; "
+                        "Tornado-to-king after a princess fell 0.500/match; tower Rockets 1.00/match"), crown(v)
+    assert crown(v[:1] + [{}]).startswith("n/a (crown log on 1/2 rows") and crown(None).startswith("n/a")
     print("SELFTEST PASS")
 
 

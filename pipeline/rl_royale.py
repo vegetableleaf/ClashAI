@@ -75,6 +75,10 @@ L74 combo (``spell_value_reward: on``, gae + league only, opt-in; absent / null 
 (``spell_value.SpellTracker``) and each adds spell_value_w x (troop elixir removed, x a princess-in-blast bonus for a real
 clump, - the Rocket's cost; a princess hit floors at 0) to the r_step of the rows that decided the Rocket and its setup Tornado
 (``collate``).
+L74 W6 crown terms (``lead_protect: on`` / ``princess_redirect: penalty | potential`` / ``tornado_king_penalty: on``, gae +
+league only, opt-in, one per arm; absent / null / false = unchanged, same config hash; plan1019 TUESDAY D / I / I2): a
+read-only ``reward_terms.CrownTracker`` on the learner's crown towers, crowns and Tornados (e1_eval ``crown_track``) and
+``reward_terms.row_terms`` on each match's kept rows: rewards into r_step, the redirect potential into ``phi`` (``collate``).
 
     research/ext/Royale/.venv/Scripts/python.exe -m pipeline.rl_royale --config pipeline/rl_royale.yaml --run NAME
     ... --smoke          E=4, G=2, 1 actor, 2 updates + the checks below; prints SMOKE PASS, exits 0
@@ -162,6 +166,7 @@ if str(REPO) not in sys.path:
 
 from pipeline import e1_eval as E                                               # noqa: E402
 from pipeline import reward_shaping as RS                                       # noqa: E402
+from pipeline import reward_terms as RT                                         # noqa: E402
 from pipeline import spell_value as SV                                          # noqa: E402
 from pipeline import adaptive_opponents as AO                                  # noqa: E402
 from pipeline.model_v3 import hand_mask_from_sc                                 # noqa: E402
@@ -239,6 +244,8 @@ def actor_cfg(base: dict, kind: str, aid: int, dev: str) -> dict:
                           "n_feat": int(base["ability"].get("n_feat", E.ABILITY_FEAT_N))}
     if kind == "rollout" and base.get("spell_value"):         # L74 combo: the learner's Rocket events + each row's tick
         cfg["spell_track"] = cfg["record_tick"] = True        # (spell_value.row_rewards maps events to rows by tick)
+    if kind == "rollout" and base.get("crown_track"):         # L74 W6: the crown record + each row's tick
+        cfg["crown_track"] = cfg["record_tick"] = True        # (reward_terms.row_terms maps events to rows by tick)
     return cfg
 
 
@@ -466,6 +473,45 @@ def spell_cfg(cfg: dict) -> Optional[dict]:
     return {**{k: float(v) for k, v in {**p, **lp}.items()}, **({"spell_value_lone": True} if lone else {})}
 
 
+# L74 W6 crown terms (reward_terms; gae + league only, opt-in, one key per arm; absent / null / false = off, same hash): the
+# rewards go into r_step (the residual critic at shaping_critic_scale, phi = 0, which must cover 1 + reward_terms.bound),
+# princess_redirect potential into phi instead (``collate``).
+CROWN_KEYS = tuple(RT.TERMS) + tuple(RT.DEFAULTS)
+
+
+def crown_cfg(cfg: dict) -> Optional[dict]:
+    """The crown-term keys of a config, validated (SystemExit naming the bad key): None when every switch is absent / null /
+    false (their weight keys must then be unset), else {switch: True (princess_redirect: its mode), weight: float} for the
+    terms that are on."""
+    off = (lambda v: v is None or v is False)
+    num = (lambda v: isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v))
+    bad = [f"{w} set without {k} on" for k, w in RT.TERMS.items() if off(cfg.get(k)) and cfg.get(w) is not None]
+    if all(off(cfg.get(k)) for k in RT.TERMS):
+        if bad:
+            raise SystemExit("bad crown-term config: " + "; ".join(bad))
+        return None
+    p = {}
+    for k, wk in RT.TERMS.items():
+        v = cfg.get(k)
+        if off(v):
+            continue
+        if k == "princess_redirect" and v not in RT.REDIRECT_MODES:
+            bad.append(f"princess_redirect must be one of {RT.REDIRECT_MODES} (or absent / null / false), got {v!r}")
+        elif k != "princess_redirect" and v is not True:
+            bad.append(f"{k} must be on / off (a bool), got {v!r}")
+        w = RT.DEFAULTS[wk] if cfg.get(wk) is None else cfg[wk]
+        if not (num(w) and w >= 0):
+            bad.append(f"{wk} must be a finite number >= 0, got {w!r}")
+        p[k], p[wk] = v, w
+    if cfg.get("advantage", "match_loo") != "gae":
+        bad.append(f"crown terms need advantage gae (refusing {cfg.get('advantage', 'match_loo')!r})")
+    if not cfg.get("league"):
+        bad.append("crown terms need league true (the tracker rides on self-play matches)")
+    if bad:
+        raise SystemExit("bad crown-term config: " + "; ".join(bad))
+    return {k: (float(v) if k in RT.DEFAULTS else v) for k, v in p.items()}
+
+
 def adv_cfg(cfg: dict) -> dict:
     """The R1 keys of a config (``GAE_DEFAULTS`` for missing ones), validated: SystemExit naming the bad key."""
     c = {k: cfg.get(k, v) for k, v in GAE_DEFAULTS.items()}
@@ -558,6 +604,14 @@ def adv_cfg(cfg: dict) -> dict:
         if c["critic_warmup_updates"] == 0:
             bad.append("spell_value_reward needs critic_warmup_updates > 0 (the pretrained value head predicts G, "
                        "not G / scale)")
+    ct = crown_cfg(cfg)                                                      # L74 W6: the return (or |Phi|) widens too
+    if ct is not None and not bad:
+        need += RT.bound(ct)
+        if sc < need:
+            bad.append(f"shaping_critic_scale {sc} < {need:.4f} = the return bound + reward_terms.bound: the residual "
+                       f"target ret / scale could leave the value head's [-1, 1]")
+        if c["critic_warmup_updates"] == 0:
+            bad.append("crown terms need critic_warmup_updates > 0 (the pretrained value head predicts G, not G / scale)")
     cc = cfg.get("critic_ctx")
     if cc not in CRITIC_CTX_MODES:
         bad.append(f"critic_ctx must be one of {CRITIC_CTX_MODES}, got {cc!r}")
@@ -1716,7 +1770,8 @@ def _py(x):
 # ------------------------------------------------------------------------------------------------------
 def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_loo",
             shaping: Optional[dict] = None, gamma_tick: Optional[float] = None,
-            gae_terminal_gap: bool = False, spell: Optional[dict] = None) -> tuple[dict, dict]:
+            gae_terminal_gap: bool = False, spell: Optional[dict] = None,
+            crown: Optional[dict] = None) -> tuple[dict, dict]:
     """Rollout result records (each with ``traj`` = ``Match._traj_arrays``) -> numpy batch of the CONTRIBUTING rows
     (gate sampled or card/cell played) with per-row A, per-match weight w, match id, and the stored log-probs.
     ``advantage="gae"`` adds ``r_step`` (``terminal_rewards``, the UNSHAPED win/loss reward); A stays the LOO value
@@ -1727,7 +1782,9 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
     discounts only the last reward by gamma_tick ** (end_tick - last_kept_tick); requires every result's end_tick.
     ``spell`` (gae only; ``spell_cfg``'s dict, L74 combo): + ``spell_value.row_rewards`` of each result's "spell" events on
     its rows (by the traj ``tick``) into r_step, ``phi`` = 0 when no shaping made one (the residual critic at the config's
-    scale), and the per-update monitors under ``st["spell"]``."""
+    scale), and the per-update monitors under ``st["spell"]``. ``crown`` (gae only; ``crown_cfg``'s dict, L74 W6): + each
+    result's ``reward_terms.row_terms`` on its kept rows (by the traj ``tick``) into r_step, the princess_redirect potential
+    into ``phi`` (added to a shaping phi), ``phi`` = 0 otherwise, and the monitors under ``st["crown"]``."""
     if gae_terminal_gap:
         if advantage != "gae" or gamma_tick is None:
             raise ValueError("gae_terminal_gap true needs advantage gae AND gamma_tick (gae_gamma_unit tick)")
@@ -1804,6 +1861,13 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
                 sp[j] = SV.row_rewards(results[j].get("spell"), results[j]["plays"], results[j]["traj"]["tick"], spell)
                 lost += int(np.count_nonzero(sp[j]["r"][~keep[j]]))     # a played row is always kept: 0
                 rs[j] = rs[j] + sp[j]["r"][keep[j]]
+        if crown is not None:                                 # L74 W6: the crown terms on each match's kept rows
+            cr = {}
+            for j in use:
+                if "tick" not in results[j]["traj"] or "crown" not in results[j]:
+                    raise ValueError("crown terms need the per-row tick and the crown record (actor_cfg crown_track)")
+                cr[j] = RT.row_terms(results[j]["crown"], results[j]["plays"], results[j]["traj"]["tick"][keep[j]], crown)
+                rs[j] = rs[j] + cr[j]["r"]
         B["r_step"] = cat(lambda j: rs[j])
         gr = None
         if gamma_tick is not None:
@@ -1823,10 +1887,13 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
             sh = {j: shaping_rewards(results[j]["traj"]["phi_state"][keep[j]],
                                      shaping if gr is None else {**shaping, "gamma": gr[j]}) for j in use}
             B["phi"] = cat(lambda j: sh[j]["phi"])
-        if spell is not None and "phi" not in B:              # L74 combo: residual critic with Phi = 0 (gae_batch)
+        if crown is not None and crown.get("princess_redirect") == "potential":   # L74 W6: Phi into the residual critic
+            ph = cat(lambda j: cr[j]["phi"])
+            B["phi"] = B["phi"] + ph if "phi" in B else ph
+        if (spell is not None or crown is not None) and "phi" not in B:   # combo / W6: residual critic, Phi = 0
             B["phi"] = np.zeros(len(B["r_step"]))
-    elif shaping is not None or gamma_tick is not None or spell is not None:
-        raise ValueError("shaping / gamma_tick / spell need advantage gae")
+    elif shaping is not None or gamma_tick is not None or spell is not None or crown is not None:
+        raise ValueError("shaping / gamma_tick / spell / crown need advantage gae")
     st = {"matches": len(results), "groups": len(groups), "mixed_groups": mixed,
           "mixed_group_share": mixed / max(len(groups), 1), "mean_abs_A": float(np.abs(A).mean()) if len(A) else 0.0,
           "rows": int(len(B["A"])), "rows_played": int(B["played"].sum()), "rows_gate": int(B["gate_sampled"].sum()),
@@ -1846,6 +1913,8 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
                        # learner_pipeline_frac: matches that ran pipelined decisions, and their accepted second plays
                        "pipelined_matches": sum("pipeline_decisions" in r for r in results),
                        "second_plays": sum(r.get("pipeline_decisions", {}).get("second_plays", 0) for r in results)}
+    if crown is not None:                                     # L74 W6 monitors
+        st["crown"] = RT.batch_stats([RT.match_summary(results[j]["crown"]) for j in use], [cr[j] for j in use])
     return B, st
 
 
@@ -2950,7 +3019,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                               "critic_ctx", "kl_ref_gate_max_elixir", "kl_ref_gate_target_frac",
                               "league_exploiters", "cue_inputs", "opp_tower_troops", "live_levels",
                               "heroiw_press", "ability_features", "kl_heads", "kl_ref_card") + OPP_TEMPO_KEYS
-                and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS):
+                and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS and k not in CROWN_KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
         cfg[k] = yaml.safe_load(v)
     if type(cfg["hero_abilities"]) is not bool:
@@ -3049,6 +3118,11 @@ def config_sha(cfg: dict) -> str:
         else:                                                # lone on: defaults filled (floats)
             cfg = {**cfg, "spell_value_lone": True,
                    **{k: float(v if cfg.get(k) is None else cfg[k]) for k, v in SV.LONE_DEFAULTS.items()}}
+    for k, wk in RT.TERMS.items():                           # L74 W6: off (absent / null / false) = the historical hash;
+        if cfg.get(k) is None or cfg.get(k) is False:        # on: its weight filled, one hash for implicit / explicit
+            cfg = {kk: v for kk, v in cfg.items() if kk not in (k, wk)}
+        else:
+            cfg = {**cfg, wk: float(RT.DEFAULTS[wk] if cfg.get(wk) is None else cfg[wk])}
     return hashlib.sha256(json.dumps(cfg, sort_keys=True, default=str).encode()).hexdigest()
 
 
@@ -3758,10 +3832,12 @@ class Learner:
             shp = {"mode": ac["shaping"], "gamma": ac["gae_gamma"], "params": {k: ac[k] for k in STATE_PHI_KEYS}}
         tick_unit = gae_on and ac["gae_gamma_unit"] == "tick"
         sv = spell_cfg(cfg)                                   # L74 combo (None = off: the call unchanged)
+        ct = crown_cfg(cfg)                                   # L74 W6 (None = off: the call unchanged)
         Bn, bst = collate(results, float(cfg["adv_clip"]), advantage=ac["advantage"], shaping=shp,
                           **({"gamma_tick": ac["gae_gamma_tick"]} if tick_unit else {}),
                           **({"gae_terminal_gap": True} if ac["gae_terminal_gap"] else {}),
-                          **({"spell": sv} if sv is not None else {}))
+                          **({"spell": sv} if sv is not None else {}),
+                          **({"crown": ct} if ct is not None else {}))
         gamma_row_mean = float(Bn["gamma_row"].mean()) if tick_unit and len(Bn["gamma_row"]) else None
         ab_acc = ([sum(dict(r.get("ability_presses", {}).get(r["side"], {})).values()) for r in results]
                   if getattr(self, "ability_head", None) is not None else None)   # B6: engine-accepted learner presses
@@ -4016,6 +4092,12 @@ class Learner:
                     f"{f(rec['ability']['p_mean'])} acc/m {f(rec['ability']['accepted_per_match'], '{:.2f}')} H "
                     f"{f(rec['ability']['ent_ability_ep0'])} lab {f(rec['ability']['l_ab'], '{:+.4f}')}"
                     if "ability" in rec else "")
+                 + (f" | crown r/m lead {f(bst['crown']['lead_reward_per_match'], '{:+.4f}')} redirect "
+                    f"{f(bst['crown']['redirect_reward_per_match'], '{:+.4f}')} tornado "
+                    f"{f(bst['crown']['tornado_reward_per_match'], '{:+.4f}')} lost {f(bst['crown'].get('lost_princess_per_match'), '{:.2f}')}"
+                    f" gave {f(bst['crown'].get('gave_back_per_match'), '{:.2f}')} king_end "
+                    f"{f(bst['crown'].get('king_end_per_match'), '{:.2f}')} tor>king {f(bst['crown'].get('tornado_to_king_per_match'), '{:.2f}')}"
+                    if "crown" in bst else "")
                  + (f" | shape |F| {f(shs['mean_abs_F'], '{:.4f}')} (t {f(shs['mean_abs_tower'], '{:.4f}')} c "
                     f"{f(shs['mean_abs_crown'], '{:.4f}')}) |Phi| {f(shs['mean_abs_phi'], '{:.4f}')} dom "
                     f"{f(shs['shaping_dominates'])}" if shs and shs.get("mode") is None else "")
@@ -4129,6 +4211,8 @@ class Learner:
                 base[k] = self.cfg[k]
         if spell_cfg(self.cfg) is not None:                   # L74 combo -> actor_cfg spell_track (absent by default)
             base["spell_value"] = True
+        if crown_cfg(self.cfg) is not None:                   # L74 W6 -> actor_cfg crown_track (absent by default)
+            base["crown_track"] = True
         return base
 
     def start_actors(self) -> None:

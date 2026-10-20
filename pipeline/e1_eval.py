@@ -1933,6 +1933,9 @@ class SelfPlayMatch:
         if cfg.get("spell_track"):                           # ... and this match's: the learner's Rocket impacts
             from pipeline.spell_value import SpellTracker
             env.spell_tracker = SpellTracker(env, L)
+        if cfg.get("crown_track"):                           # rl_royale crown terms / search_s0 --crown-log (opt-in):
+            from pipeline.reward_terms import CrownTracker    # read-only stops on the learner's crown towers + Tornados
+            self.crown = CrownTracker(env, L)
         tag = str(spec["tag"])
         self.learner = SelfPlaySide(env, spec["learner_deck"], L, tag, k, cfg, learner)
         from pipeline.adaptive_opponents import style_config
@@ -1943,7 +1946,10 @@ class SelfPlayMatch:
 
     def due(self) -> list[SelfPlaySide]:
         env = self.env
+        crown = getattr(self, "crown", None)                 # crown_track only (a search_s0 fork never has one)
         while True:
+            if crown is not None:                            # every stop, before its plays land: never steps the engine
+                crown.observe(env.core.state())
             t = int(env.tick)
             for s in self.sides:
                 if s.pending and s.pending[0] <= t and not env.terminated:
@@ -1988,6 +1994,8 @@ class SelfPlayMatch:
                          "stall_fired": o.n_stall, "decisions": o.n_dec}
         if getattr(self.env, "spell_tracker", None) is not None:   # rl_royale spell_value: the learner's Rocket events
             r["spell"] = list(self.env.spell_tracker.events)
+        if getattr(self, "crown", None) is not None:          # crown_track: reward_terms.CrownTracker.result
+            r["crown"] = self.crown.result()
         return r
 
 
