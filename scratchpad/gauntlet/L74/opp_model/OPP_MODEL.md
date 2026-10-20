@@ -515,8 +515,60 @@ opponent takes a princess 31.2%).
    - Testable in about 1.5 h: re-label spells with the projectile target (the reader logs target_x / y), rebuild O1, refit O2,
      re-score the decide-40 config.
 
-**New baseline (running):** CLX and CLIII vs gen_v32_s0 T .1 decide 40 at all16, standard + fresh (4 x 480 each): P1
-`base_genD40T01_clx`, P2 `base_genD40T01_cliii`.
+**O1b / O2b, the spell-target relabel (a).**
+- `o1_records.py --spell-targets` labels 2,586 projectile-spell plays at their projectile's target.
+- Even the UNTOUCHED pro net now places better on the holdout: cell_nll 6.44 -> 4.77, cell_tile 0.210 -> 0.247. So the old
+  live labels really were mis-placed.
+- O2b kept model: seed 0, epoch 14, sha 0882374c. Holdout card 0.531, cell_tile 0.317, gate 0.680, cell_nll 3.05.
+
+| opponent | CLX SIM win | opp takes a princess | style distance |
+|---|---|---|---|
+| O2b, T .1, decide 40 | 83.8% | 19.8% | 0.65 |
+| O2b, T .3, decide 40 | 81.2% | 21.7% | 0.67 |
+
+- The relabel made it 4-6 pp stronger than O2, but it is still above the lead's 76% rule.
+- **Decision, by the lead's rule: league opponent = (A) gen_v32_s0, T .1, decide 40.**
+  - (A): CLX SIM win 74.8%, opp takes 23.3%, style distance 0.79.
+  - (B) O2b: 83.8% > 76%.
+- Option B's arm configs are kept (stepd_l16_liveopp_s7x). Option C (RL-strengthening O2b against frozen CLX at all16, gated)
+  is planned in `cfg/oppC_liveopp_rl_s74.yaml` for the next iteration.
+
+**New baseline.**
+- CLX vs gen_v32_s0 T .1 decide 40, all16, seed 741200: **359/480 = 74.79%**. That is the identical game list to the O3
+  config: the eval is deterministic.
+- CLIII, same: 328/480 = 68.33%.
+- The other three blocks each were paused to free the pods for O2b and the smokes. Their rows stay on the pods
+  (/workspace/o3/out); rerunning `opp_eval.sh` skips finished blocks.
+
+**Trainer opt-in (lead decision 2): `league_exploiters` takes optional `T` / `decide_every` / `reaction_ticks`.**
+- Commit 0bcc4c5 (`rl_royale.exploiter_league` + `own_opp_cfg`; the rollout actors and branch workers apply them to that
+  opponent only).
+- Absent keys give the identical trainer: `pipeline/tests/test_exploit_own_cfg.py` compares against e3f52a0, covering the
+  exploiter dict, matchups + rng state, load_config, config_sha (incl. stepd_l16_s74.yaml) and the opponent cfg.
+- Tests: 5 new + 6 old exploiter tests + 34 league tests pass. pyflakes clean.
+- Real all16 pod smoke: **SMOKE PASS** on P2 (stepd_l16_proopp_s74, 12:04 UTC). It played 6 games against the exploiter
+  opponent, and all 11 resume checks were true.
+
+### 6.2c O6 launch plan (awaiting the lead's go)
+
+**Arms** (code 25f0c42 shipped to both pods, CODE_OK):
+- `stepd_l16_proopp_s74` on P1 48148, and the seed twin `stepd_l16_proopp_s75` on P2 40548.
+- Each = `stepd_l16_s7x.yaml` + `league_exploiters {ckpt gen_v32_s0, decks decks_live_train, share 0.3, T 0.1,
+  decide_every 40}`. That is ONE change vs its same-seed all16 control (stepd_l16_s74 / s75, trained overnight).
+- Launch the way w6_arm.sh does: per-arm real smoke (`l16/pod_smoke.sh`); GO file EVAL_LEVELS=all16,
+  DECODE='--ability-head-decode=sample --crown-log'; `stepd_chain.sh` under `/workspace/stepd/claim.lock`.
+- Expected run time: about 5.5 h train + 1.5 h evals at nominal speed. This host is running 2-4x slower today, so expect
+  ~8-14 h.
+
+**Gating** (both are paired, same seeds):
+- **Old eval:** the chain's own all16 E4 rows (fin13, std + fresh, 1,920 games) vs CLX's `clx_l16` rows and vs the same-seed
+  control's rows.
+- **New eval:** `pod/opp_eval.sh` against gen_v32_s0 T .1 decide 40, all16, std + fresh, for the arm, CLX (baseline
+  block 1 done) and the control. Needs about 6 x 1,920 games: 19899 once it is free.
+- Report both. The lead / owner gates.
+
+**O5 (post-hoc):** if an arm goes live, its next >= 150 live matches at fixed levels are predicted by both evals before they
+are played.
 
 ### 6.3 Path to a successor tonight (owner 10-20 goal; lead's plan)
 
