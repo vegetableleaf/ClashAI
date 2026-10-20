@@ -23,7 +23,9 @@ import sys
 import numpy as np
 import torch
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[5]))     # the checkout root (scratchpad/gauntlet/L74/opp_model/pod/..)
+_up = Path(__file__).resolve().parents
+if len(_up) > 5 and (_up[5] / 'pipeline').is_dir():                 # run from a checkout (scratchpad/gauntlet/L74/opp_model/pod/..)
+    sys.path.insert(0, str(_up[5]))                                  # else: PYTHONPATH names the checkout (o2_pod.sh)
 from pipeline.dataset import load as load_ds
 from pipeline.eval_gen import evaluate
 from pipeline.model_gen import GenModel

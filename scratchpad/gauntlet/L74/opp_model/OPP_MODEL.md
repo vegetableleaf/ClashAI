@@ -463,6 +463,61 @@ compared: 20,440 train / 6,924 holdout.
 - When determined it was **exactly right in 99.39% / 99.65%**. So the opponent-seat hands in the training rows are about 99%
   correct where defined.
 
+### 6.2b O2 + O3 results (pods P1 48148 / P2 40548, 10-20 10:42-11:50 UTC; `o2_summary.out`, `o3_score.out`)
+
+**O2 (a).** gen_v32_s0 fine-tuned on the 43,714 opponent-seat train rows; 2 seeds; scored on the 15,885 time-ordered holdout
+rows.
+- Epoch 0 (untouched) vs the kept model (seed 1, epoch 16, sha f03f36d3):
+
+| metric | untouched | fine-tuned |
+|---|---|---|
+| cell_nll | 6.44 | **3.19** |
+| cell_tile_top1 | 0.210 | 0.301 |
+| placement error | 5.2 tiles | 3.3 tiles |
+| card_top1 | 0.509 | 0.532 |
+| wait_top1 | 0.391 | 0.419 |
+| gate_bal_acc | 0.685 | 0.685 (unchanged) |
+
+- The seed gap is <= 0.01 on every metric, so the improvement is far outside it. **O2 acceptance passes**, except the
+  timing (gate) head, which did not improve.
+- Card and wait accuracy peak around epoch 15, then decline (over-fit).
+
+**O3 (a).** Each config: CLX at all16, 480 games, fin13, live-mirrored pool. Style distance is to live 13k on the 9 position-free
+opp_behaviour features (13k vs 12k humans: 0.10). Gaps are SIM minus live CLX at our tower 4858 (n = 138: win 62.3%,
+opponent takes a princess 31.2%).
+
+| opponent | style dist | CLX SIM win | win gap | opp takes a princess | gap |
+|---|---|---|---|---|---|
+| **live-imitation O2, T .1, decide 40** | **0.58** | 87.9% | +25.6 | 16.0% | -15.1 |
+| live-imitation O2, T .3, decide 40 | 0.61 | 86.9% | +24.6 | 16.9% | -14.3 |
+| live-imitation O2, T .1-.5, decide 10 | 0.81-0.84 | 90.6-96.2% | +28..+34 | 6.9-13.5% | -18..-24 |
+| **pro-imitation gen_v32_s0, T .1, decide 40** | 0.79 | **74.8%** | **+12.5** | **23.3%** | **-7.8** |
+| gen_v32_s0, T .1-.3, decide 30 | 0.86-0.88 | 76.0-76.2% | +13.7..+13.9 | 21.7-23.3% | -8..-9.5 |
+| gen_v32_s0, decide 20 | 0.91-0.92 | 76.9-78.3% | +15..+16 | 20-22% | -9..-11 |
+| gen_v32_s0, decide 10 | 0.97-1.00 | 82.3-85.4% | +20..+23 | 15-19% | -12..-16 |
+| + 20-tick reaction delay (decide 10) | 0.78 | 82.9-88.8% | +21..+26 | 15-20% | -11..-16 |
+| E4 T .1, all16, decide 10 (clx_l16 rows; no play telemetry) | - | 71.9% | +9.6 | 20.4% | -10.7 |
+
+**Verdict (a).**
+1. **Style vs strength trade-off.** The live-imitation model is the most human-like opponent we have ever had: distance 0.58
+   vs 0.75-1.00 for everything else. Its opening time and plays per minute match live. But it is **far too weak**: CLX wins
+   88%.
+2. **Decision cadence is the biggest single knob.** Both imitation nets were trained on rows with a 40-tick wait stride.
+   Deciding every 10 ticks makes them over-play and lose. At decide 40 they are at their strongest and most human.
+3. **No opponent is calibrated.** The best on strength (gen_v32_s0 T .1 decide 40, or E4) still leaves CLX +10..+13 pp above
+   live, and its princess-take 8-11 pp below. **O4's acceptance (every J9 cell inside the live CI) fails for every
+   candidate.**
+4. Why the live-imitation model is weak is **(b), untested.** Leading suspects:
+   - spell labels: the public observer places a spell at its first-seen projectile position, mid-flight, not at its target, so
+     the model learns to cast spells short;
+   - 24% of troop sightings come after a reader gap, so their positions are late;
+   - the model trains on the public elixir estimate (biased high) but plays on its true elixir in the SIM.
+   - Testable in about 1.5 h: re-label spells with the projectile target (the reader logs target_x / y), rebuild O1, refit O2,
+     re-score the decide-40 config.
+
+**New baseline (running):** CLX and CLIII vs gen_v32_s0 T .1 decide 40 at all16, standard + fresh (4 x 480 each): P1
+`base_genD40T01_clx`, P2 `base_genD40T01_cliii`.
+
 ### 6.3 Path to a successor tonight (owner 10-20 goal; lead's plan)
 
 1. **O1** done.

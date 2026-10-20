@@ -10,7 +10,7 @@
 set -uo pipefail
 NAME=$1; CK=$2; OPP=$3; T=$4; DE=$5; RT=$6; shift 6; SEEDS="$*"
 B=/workspace/o3; CB=$B/cb; O=$B/out/$NAME; P13=/workspace/venvf13/bin/python
-EV_EXTRA="--habit-log --live-levels --card-levels Rocket=16 Log=15 --opp-tower-troops DaggerDuchess:0.028,Cannoneer:0.028,ChefTower:0.014 --record-plays --ability-stats --crown-log --ability-head-decode=sample"
+EV_EXTRA="--habit-log --live-levels --card-levels Rocket=16 Log=15 --opp-tower-troops DaggerDuchess:0.028,Cannoneer:0.028,ChefTower:0.014 --record-plays --ability-stats --crown-log ${DECODE---ability-head-decode=sample}"
 mkdir -p $O; exec >> $O/run.log 2>&1
 log() { echo "$(date -u +%FT%TZ) $*"; }
 trap 'log exit' EXIT
