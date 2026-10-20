@@ -45,8 +45,8 @@ def xtype(y):
 
 
 # ------------------------------------------------------------------------------------------------------------ loaders
-def live_matches(marks=None):
-    idx = json.load(open(HERE / 'index.json'))
+def live_matches(marks=None, index=None):
+    idx = json.load(open(index or HERE / 'index.json'))     # index: another build_live-format index (W10 rocket/)
     for name, v in sorted(idx.items()):
         g = SHORT.get(v['mark'])
         if g is None or (marks and g not in marks):

@@ -1,0 +1,24 @@
+[rl] runtime {"card_table": {"cards_json_fnv1a64": "21935265e615e337", "cards_json_hash_source": "embedded", "cards_vintage": "15.535.29 client (2026, LIVE build family)"}, "manifest_sha256": "eb455896367d94107dbf3fd35ffc8f01de097a1ac2c3beebdca00445b2f45903", "pins": {"RoyaleGym": "3117816366b00754da1b56c9543412e4706de62a", "RoyaleSim": "015f9b0084afe574915e3f6ce2f0764c6dec6099"}, "schema": 1, "wheels": {"royalegym-0.1.15-py3-none-any.whl": "51219cef17867069abf22c206c1fbc309b3e8f93927a658e19b543b6ba96156b", "royalesim-0.1.13-cp310-abi3-win_amd64.whl": "ab61577d3926df7a43463f41c479ec31e6864d3702c13075f170d97f3b30406c"}}
+[rl] START smoke_w10_rocket pid 81528 SMOKE config sha 668e20acacc1 argv ['--config', 'scratchpad/gauntlet/L74/stepd/cfg/stepd_l16_rocket_s74.yaml', '--run', 'smoke_w10_rocket', '--smoke', 'critic_warmup_updates=1', 'actor_device=cpu', 'learner_device=cpu', 'n_actors=2']
+[rl] CRASH: SystemExit('ROYALE_HEROIW_PRESS=live needs the Hero IW runtime')
+Traceback (most recent call last):
+  File "C:\Users\benpe\ClashBot\pipeline\rl_royale.py", line 377, in heroiw_press_cfg
+    mode = heroiw.press_mode()
+  File "C:\Users\benpe\ClashBot\pipeline\royale_heroiw.py", line 34, in press_mode
+    raise ValueError(f'ROYALE_HEROIW_PRESS={mode} needs the Hero IW runtime')
+ValueError: ROYALE_HEROIW_PRESS=live needs the Hero IW runtime
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\benpe\ClashBot\pipeline\rl_royale.py", line 4448, in main
+    L = Learner(cfg, a.run, run_dir, ck_dir, log, a.resume)
+  File "C:\Users\benpe\ClashBot\pipeline\rl_royale.py", line 3294, in __init__
+    heroiw_press_cfg(cfg)                                 # ... heroiw_press -> env (before any actor starts); refusal
+    ~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\benpe\ClashBot\pipeline\rl_royale.py", line 379, in heroiw_press_cfg
+    raise SystemExit(str(exc))
+SystemExit: ROYALE_HEROIW_PRESS=live needs the Hero IW runtime
+
+SMOKE FAIL: SystemExit('ROYALE_HEROIW_PRESS=live needs the Hero IW runtime')
+EXIT 1

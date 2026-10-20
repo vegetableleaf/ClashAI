@@ -1,0 +1,53 @@
+# W10 rocket_slices  --pro -1 --out slices_pro.out
+K (X-Bow answers, investment/analyze.py rule): earthquake, electro_giant, giant, goblinstein, hog_rider, musketeer, pekka, royal_giant
+pro: matches 1629, win 0.487, Rockets 3633, Rocket-opp-min 2844, refused {}
+## S1 Rocket in the answer to a HEAVY push (>= 10 elixir), only pushes where Rocket was in our hand
+group | all heavy pushes w/ Rocket in hand: P(defensive Rocket in answer) | elixir >= 6 at push start | ... 14+ elixir pushes
+pro | 0.076 [0.07, 0.09] (n 2553) | 0.100 [0.08, 0.12] (n 1328) | 0.087 [0.06, 0.12] (n 390)
+
+## S2 Chip tower Rockets (non-finishing) per Rocket-opportunity-minute, by matchup x answer context
+EQ/ready      | pro: 2.152 [1.77, 2.51] (opp-min 56)
+EQ/short      | pro: 3.776 [1.88, 6.02] (opp-min 5)
+EQ/cycled     | pro: 1.567 [1.15, 2.04] (opp-min 54)
+EQ/unrevealed | pro: 0.115 [0.03, 0.24] (opp-min 35)
+SIEGE/ready      | pro: 1.168 [0.74, 1.66] (opp-min 16)
+SIEGE/short      | pro: 1.756 [0.56, 3.30] (opp-min 3)
+SIEGE/cycled     | pro: 1.100 [0.73, 1.59] (opp-min 31)
+SIEGE/unrevealed | pro: 0.710 [0.58, 0.84] (opp-min 185)
+HOG/ready      | pro: 1.806 [1.47, 2.12] (opp-min 94)
+HOG/short      | pro: 2.973 [2.09, 3.94] (opp-min 16)
+HOG/cycled     | pro: 1.225 [1.03, 1.42] (opp-min 135)
+HOG/unrevealed | pro: 0.196 [0.10, 0.31] (opp-min 61)
+BEATDOWN/ready      | pro: 1.188 [0.99, 1.41] (opp-min 126)
+BEATDOWN/short      | pro: 1.513 [1.16, 1.90] (opp-min 50)
+BEATDOWN/cycled     | pro: 0.718 [0.62, 0.84] (opp-min 260)
+BEATDOWN/unrevealed | pro: 0.349 [0.30, 0.40] (opp-min 759)
+OTHER/ready      | pro: 1.353 [0.98, 1.80] (opp-min 27)
+OTHER/short      | pro: 2.087 [0.58, 3.78] (opp-min 4)
+OTHER/cycled     | pro: 1.596 [1.17, 2.01] (opp-min 38)
+OTHER/unrevealed | pro: 0.710 [0.64, 0.79] (opp-min 889)
+
+## S2b Investment shares in the hostile clusters (EQ / HOG / BEATDOWN x ready / short): bridge X / def X / chip Rocket
+pro | n 1545 | bridge 0.43 | defensive 0.19 | chip Rocket 0.38
+
+## S3 After a FAILED bridge X-Bow (no lock, not censored): chip Rocket within 30 s (any tower Rocket in brackets)
+pro | all 0.184 [0.17, 0.20] (n 2466) [0.192 [0.18, 0.21] (n 2466)] | EQ/HOG/BEATDOWN 0.165 [0.14, 0.19] (n 1379)
+
+## S4 Late game: chip Rockets per Rocket-opportunity-minute by phase x crown state
+1x/ahead  | pro: 0.448 [0.18, 0.83] (opp-min 18)
+1x/even   | pro: 0.187 [0.17, 0.20] (opp-min 1756)
+1x/behind | pro: 0.274 [0.00, 0.65] (opp-min 11)
+2x/ahead  | pro: 1.054 [0.74, 1.42] (opp-min 39)
+2x/even   | pro: 0.928 [0.84, 1.03] (opp-min 519)
+2x/behind | pro: 0.898 [0.53, 1.34] (opp-min 19)
+OT/ahead  | pro: -
+OT/even   | pro: 2.791 [2.61, 2.98] (opp-min 482)
+OT/behind | pro: -
+
+## S5 Rocket + Tornado combos: share of our Rockets with our Tornado landing -24..+40 ticks around them; per match
+pro | combo share of Rockets 0.039 [0.03, 0.05] (n 3633) | combos / match 0.087 | Rockets / match 2.23 | chip / match 1.37 | finishers / match 0.09
+
+## V Value (ASSOCIATION): win rate by chip Rockets per match, all / hostile-cluster chips; tiebreak matches
+pro | chip 0: 0.392 [0.35, 0.43] (n 638) | chip 1: 0.528 [0.48, 0.57] (n 411) | chip 2+: 0.564 [0.52, 0.60] (n 580)
+   pro matches with >= 0.5 hostile opp-min: hostile chip 0: 0.434 [0.34, 0.51] (n 113)
+   pro matches with >= 0.5 hostile opp-min: hostile chip 1+: 0.617 [0.55, 0.68] (n 201)

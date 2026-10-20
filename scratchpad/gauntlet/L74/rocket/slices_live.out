@@ -1,0 +1,53 @@
+# W10 rocket_slices  --live --out slices_live.out
+K (X-Bow answers, investment/analyze.py rule): earthquake, electro_giant, giant, goblinstein, hog_rider, musketeer, pekka, royal_giant
+live CLX@4858: matches 138, win 0.623, Rockets 56, Rocket-opp-min 150, refused {}
+## S1 Rocket in the answer to a HEAVY push (>= 10 elixir), only pushes where Rocket was in our hand
+group | all heavy pushes w/ Rocket in hand: P(defensive Rocket in answer) | elixir >= 6 at push start | ... 14+ elixir pushes
+live CLX@4858 | 0.019 [0.00, 0.04] (n 263) | 0.031 [0.01, 0.07] (n 130) | 0.036 [0.00, 0.11] (n 28)
+
+## S2 Chip tower Rockets (non-finishing) per Rocket-opportunity-minute, by matchup x answer context
+EQ/ready      | live CLX@4858: 0.000 [0.00, 0.00] (opp-min 3)
+EQ/short      | live CLX@4858: -
+EQ/cycled     | live CLX@4858: 0.000 [0.00, 0.00] (opp-min 4)
+EQ/unrevealed | live CLX@4858: 1.176 [0.00, 2.40] (opp-min 1)
+SIEGE/ready      | live CLX@4858: -
+SIEGE/short      | live CLX@4858: -
+SIEGE/cycled     | live CLX@4858: -
+SIEGE/unrevealed | live CLX@4858: 0.000 [0.00, 0.00] (opp-min 5)
+HOG/ready      | live CLX@4858: 0.000 [0.00, 0.00] (opp-min 8)
+HOG/short      | live CLX@4858: 0.000 [0.00, 0.00] (opp-min 2)
+HOG/cycled     | live CLX@4858: 0.205 [0.05, 0.40] (opp-min 20)
+HOG/unrevealed | live CLX@4858: 0.243 [0.00, 1.01] (opp-min 4)
+BEATDOWN/ready      | live CLX@4858: 0.231 [0.00, 0.81] (opp-min 4)
+BEATDOWN/short      | live CLX@4858: 0.000 [0.00, 0.00] (opp-min 2)
+BEATDOWN/cycled     | live CLX@4858: 0.000 [0.00, 0.00] (opp-min 9)
+BEATDOWN/unrevealed | live CLX@4858: 0.249 [0.10, 0.46] (opp-min 40)
+OTHER/ready      | live CLX@4858: 0.000 [0.00, 0.00] (opp-min 1)
+OTHER/short      | live CLX@4858: -
+OTHER/cycled     | live CLX@4858: 0.000 [0.00, 0.00] (opp-min 2)
+OTHER/unrevealed | live CLX@4858: 0.183 [0.06, 0.35] (opp-min 44)
+
+## S2b Investment shares in the hostile clusters (EQ / HOG / BEATDOWN x ready / short): bridge X / def X / chip Rocket
+live CLX@4858 | n 100 | bridge 0.84 | defensive 0.15 | chip Rocket 0.01
+
+## S3 After a FAILED bridge X-Bow (no lock, not censored): chip Rocket within 30 s (any tower Rocket in brackets)
+live CLX@4858 | all 0.016 [0.00, 0.04] (n 187) [0.032 [0.01, 0.07] (n 187)] | EQ/HOG/BEATDOWN 0.021 [0.00, 0.05] (n 142)
+
+## S4 Late game: chip Rockets per Rocket-opportunity-minute by phase x crown state
+1x/ahead  | live CLX@4858: 0.000 [0.00, 0.00] (opp-min 2)
+1x/even   | live CLX@4858: 0.065 [0.02, 0.12] (opp-min 93)
+1x/behind | live CLX@4858: 0.000 [0.00, 0.00] (opp-min 1)
+2x/ahead  | live CLX@4858: 0.164 [0.00, 0.54] (opp-min 6)
+2x/even   | live CLX@4858: 0.370 [0.18, 0.58] (opp-min 27)
+2x/behind | live CLX@4858: 0.000 [0.00, 0.00] (opp-min 3)
+OT/ahead  | live CLX@4858: 0.000 [0.00, 0.00] (opp-min 1)
+OT/even   | live CLX@4858: 0.444 [0.14, 0.83] (opp-min 18)
+OT/behind | live CLX@4858: -
+
+## S5 Rocket + Tornado combos: share of our Rockets with our Tornado landing -24..+40 ticks around them; per match
+live CLX@4858 | combo share of Rockets 0.107 [0.04, 0.20] (n 56) | combos / match 0.043 | Rockets / match 0.41 | chip / match 0.18 | finishers / match 0.12
+
+## V Value (ASSOCIATION): win rate by chip Rockets per match, all / hostile-cluster chips; tiebreak matches
+live CLX@4858 | chip 0: 0.610 [0.53, 0.69] (n 118) | chip 1: 0.800 [0.60, 0.93] (n 15) | chip 2+: 0.400 [0.00, 0.80] (n 5)
+   live CLX@4858 matches with >= 0.5 hostile opp-min: hostile chip 0: 0.706 [0.53, 0.88] (n 17)
+   live CLX@4858 hostile chip 1+: -

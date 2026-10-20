@@ -1,0 +1,81 @@
+# W10 rocket_slices  --live --pro -1 --sim SIM CLX vs C1u50=C:/Users/benpe/pod_backup_weekend/w7/o3/w7O4_C1u50 SIM CLX vs genD40=C:/Users/benpe/pod_backup_weekend/w7/base/base_genD40T01_clx --out slices_all.out
+K (X-Bow answers, investment/analyze.py rule): earthquake, electro_giant, giant, goblinstein, hog_rider, musketeer, pekka, royal_giant
+live CLX@4858: matches 138, win 0.623, Rockets 56, Rocket-opp-min 150, refused {}
+pro: matches 1629, win 0.487, Rockets 3633, Rocket-opp-min 2844, refused {}
+SIM CLX vs C1u50: matches 1920, win 0.681, Rockets 867, Rocket-opp-min 1813, refused {}
+SIM CLX vs genD40: matches 1920, win 0.732, Rockets 864, Rocket-opp-min 1818, refused {}
+## S1 Rocket in the answer to a HEAVY push (>= 10 elixir), only pushes where Rocket was in our hand
+group | all heavy pushes w/ Rocket in hand: P(defensive Rocket in answer) | elixir >= 6 at push start | ... 14+ elixir pushes
+live CLX@4858 | 0.019 [0.00, 0.04] (n 263) | 0.031 [0.01, 0.07] (n 130) | 0.036 [0.00, 0.11] (n 28)
+pro | 0.076 [0.07, 0.09] (n 2553) | 0.100 [0.08, 0.12] (n 1328) | 0.087 [0.06, 0.12] (n 390)
+SIM CLX vs C1u50 | 0.008 [0.01, 0.01] (n 3926) | 0.011 [0.01, 0.01] (n 1880) | 0.011 [0.00, 0.02] (n 700)
+SIM CLX vs genD40 | 0.005 [0.00, 0.01] (n 4536) | 0.007 [0.00, 0.01] (n 2193) | 0.006 [0.00, 0.01] (n 805)
+
+## S2 Chip tower Rockets (non-finishing) per Rocket-opportunity-minute, by matchup x answer context
+EQ/ready      | live CLX@4858: 0.000 [0.00, 0.00] (opp-min 3) | pro: 2.152 [1.77, 2.51] (opp-min 56) | SIM CLX vs C1u50: 0.242 [0.05, 0.52] (opp-min 21) | SIM CLX vs genD40: 0.154 [0.00, 0.35] (opp-min 32)
+EQ/short      | live CLX@4858: - | pro: 3.776 [1.88, 6.02] (opp-min 5) | SIM CLX vs C1u50: 0.000 [0.00, 0.00] (opp-min 4) | SIM CLX vs genD40: 0.217 [0.00, 0.73] (opp-min 5)
+EQ/cycled     | live CLX@4858: 0.000 [0.00, 0.00] (opp-min 4) | pro: 1.567 [1.15, 2.04] (opp-min 54) | SIM CLX vs C1u50: 0.184 [0.04, 0.41] (opp-min 27) | SIM CLX vs genD40: 0.390 [0.18, 0.66] (opp-min 28)
+EQ/unrevealed | live CLX@4858: 1.176 [0.00, 2.40] (opp-min 1) | pro: 0.115 [0.03, 0.24] (opp-min 35) | SIM CLX vs C1u50: 0.000 [0.00, 0.00] (opp-min 6) | SIM CLX vs genD40: 0.000 [0.00, 0.00] (opp-min 2)
+SIEGE/ready      | live CLX@4858: - | pro: 1.168 [0.74, 1.66] (opp-min 16) | SIM CLX vs C1u50: 0.000 [0.00, 0.00] (opp-min 2) | SIM CLX vs genD40: 0.000 [0.00, 0.00] (opp-min 1)
+SIEGE/short      | live CLX@4858: - | pro: 1.756 [0.56, 3.30] (opp-min 3) | SIM CLX vs C1u50: 1.333 [0.00, 2.73] (opp-min 1) | SIM CLX vs genD40: 0.000 [0.00, 0.00] (opp-min 1)
+SIEGE/cycled     | live CLX@4858: - | pro: 1.100 [0.73, 1.59] (opp-min 31) | SIM CLX vs C1u50: 0.455 [0.00, 0.95] (opp-min 2) | SIM CLX vs genD40: 0.000 [0.00, 0.00] (opp-min 4)
+SIEGE/unrevealed | live CLX@4858: 0.000 [0.00, 0.00] (opp-min 5) | pro: 0.710 [0.58, 0.84] (opp-min 185) | SIM CLX vs C1u50: 0.133 [0.06, 0.22] (opp-min 98) | SIM CLX vs genD40: 0.206 [0.11, 0.36] (opp-min 87)
+HOG/ready      | live CLX@4858: 0.000 [0.00, 0.00] (opp-min 8) | pro: 1.806 [1.47, 2.12] (opp-min 94) | SIM CLX vs C1u50: 0.331 [0.20, 0.48] (opp-min 73) | SIM CLX vs genD40: 0.129 [0.05, 0.21] (opp-min 78)
+HOG/short      | live CLX@4858: 0.000 [0.00, 0.00] (opp-min 2) | pro: 2.973 [2.09, 3.94] (opp-min 16) | SIM CLX vs C1u50: 0.199 [0.04, 0.38] (opp-min 25) | SIM CLX vs genD40: 0.249 [0.10, 0.41] (opp-min 28)
+HOG/cycled     | live CLX@4858: 0.205 [0.05, 0.40] (opp-min 20) | pro: 1.225 [1.03, 1.42] (opp-min 135) | SIM CLX vs C1u50: 0.135 [0.07, 0.22] (opp-min 171) | SIM CLX vs genD40: 0.204 [0.13, 0.28] (opp-min 137)
+HOG/unrevealed | live CLX@4858: 0.243 [0.00, 1.01] (opp-min 4) | pro: 0.196 [0.10, 0.31] (opp-min 61) | SIM CLX vs C1u50: 0.000 [0.00, 0.00] (opp-min 25) | SIM CLX vs genD40: 0.028 [0.00, 0.09] (opp-min 36)
+BEATDOWN/ready      | live CLX@4858: 0.231 [0.00, 0.81] (opp-min 4) | pro: 1.188 [0.99, 1.41] (opp-min 126) | SIM CLX vs C1u50: 0.094 [0.04, 0.17] (opp-min 75) | SIM CLX vs genD40: 0.186 [0.09, 0.31] (opp-min 86)
+BEATDOWN/short      | live CLX@4858: 0.000 [0.00, 0.00] (opp-min 2) | pro: 1.513 [1.16, 1.90] (opp-min 50) | SIM CLX vs C1u50: 0.312 [0.16, 0.48] (opp-min 51) | SIM CLX vs genD40: 0.461 [0.26, 0.66] (opp-min 52)
+BEATDOWN/cycled     | live CLX@4858: 0.000 [0.00, 0.00] (opp-min 9) | pro: 0.718 [0.62, 0.84] (opp-min 260) | SIM CLX vs C1u50: 0.109 [0.06, 0.17] (opp-min 138) | SIM CLX vs genD40: 0.113 [0.05, 0.18] (opp-min 115)
+BEATDOWN/unrevealed | live CLX@4858: 0.249 [0.10, 0.46] (opp-min 40) | pro: 0.349 [0.30, 0.40] (opp-min 759) | SIM CLX vs C1u50: 0.173 [0.13, 0.22] (opp-min 502) | SIM CLX vs genD40: 0.170 [0.13, 0.21] (opp-min 554)
+OTHER/ready      | live CLX@4858: 0.000 [0.00, 0.00] (opp-min 1) | pro: 1.353 [0.98, 1.80] (opp-min 27) | SIM CLX vs C1u50: 0.198 [0.03, 0.40] (opp-min 30) | SIM CLX vs genD40: 0.029 [0.00, 0.09] (opp-min 34)
+OTHER/short      | live CLX@4858: - | pro: 2.087 [0.58, 3.78] (opp-min 4) | SIM CLX vs C1u50: 0.000 [0.00, 0.00] (opp-min 8) | SIM CLX vs genD40: 0.304 [0.00, 0.84] (opp-min 10)
+OTHER/cycled     | live CLX@4858: 0.000 [0.00, 0.00] (opp-min 2) | pro: 1.596 [1.17, 2.01] (opp-min 38) | SIM CLX vs C1u50: 0.191 [0.07, 0.37] (opp-min 26) | SIM CLX vs genD40: 0.168 [0.04, 0.34] (opp-min 24)
+OTHER/unrevealed | live CLX@4858: 0.183 [0.06, 0.35] (opp-min 44) | pro: 0.710 [0.64, 0.79] (opp-min 889) | SIM CLX vs C1u50: 0.092 [0.07, 0.12] (opp-min 530) | SIM CLX vs genD40: 0.112 [0.08, 0.15] (opp-min 502)
+
+## S2b Investment shares in the hostile clusters (EQ / HOG / BEATDOWN x ready / short): bridge X / def X / chip Rocket
+live CLX@4858 | n 100 | bridge 0.84 | defensive 0.15 | chip Rocket 0.01
+pro | n 1545 | bridge 0.43 | defensive 0.19 | chip Rocket 0.38
+SIM CLX vs C1u50 | n 1207 | bridge 0.79 | defensive 0.16 | chip Rocket 0.05
+SIM CLX vs genD40 | n 1363 | bridge 0.81 | defensive 0.14 | chip Rocket 0.05
+
+## S3 After a FAILED bridge X-Bow (no lock, not censored): chip Rocket within 30 s (any tower Rocket in brackets)
+live CLX@4858 | all 0.016 [0.00, 0.04] (n 187) [0.032 [0.01, 0.07] (n 187)] | EQ/HOG/BEATDOWN 0.021 [0.00, 0.05] (n 142)
+pro | all 0.184 [0.17, 0.20] (n 2466) [0.192 [0.18, 0.21] (n 2466)] | EQ/HOG/BEATDOWN 0.165 [0.14, 0.19] (n 1379)
+SIM CLX vs C1u50 | n/a (SIM rows carry no X-Bow life / tower HP series; see ROCKET.md "logging owed")
+SIM CLX vs genD40 | n/a (SIM rows carry no X-Bow life / tower HP series; see ROCKET.md "logging owed")
+
+## S4 Late game: chip Rockets per Rocket-opportunity-minute by phase x crown state
+1x/ahead  | live CLX@4858: 0.000 [0.00, 0.00] (opp-min 2) | pro: 0.448 [0.18, 0.83] (opp-min 18) | SIM CLX vs C1u50: 0.000 [0.00, 0.00] (opp-min 54) | SIM CLX vs genD40: 0.045 [0.00, 0.10] (opp-min 67)
+1x/even   | live CLX@4858: 0.065 [0.02, 0.12] (opp-min 93) | pro: 0.187 [0.17, 0.20] (opp-min 1756) | SIM CLX vs C1u50: 0.030 [0.02, 0.04] (opp-min 890) | SIM CLX vs genD40: 0.026 [0.02, 0.04] (opp-min 935)
+1x/behind | live CLX@4858: 0.000 [0.00, 0.00] (opp-min 1) | pro: 0.274 [0.00, 0.65] (opp-min 11) | SIM CLX vs C1u50: 0.024 [0.00, 0.07] (opp-min 42) | SIM CLX vs genD40: 0.000 [0.00, 0.00] (opp-min 17)
+2x/ahead  | live CLX@4858: 0.164 [0.00, 0.54] (opp-min 6) | pro: 1.054 [0.74, 1.42] (opp-min 39) | SIM CLX vs C1u50: 0.127 [0.07, 0.19] (opp-min 111) | SIM CLX vs genD40: 0.127 [0.06, 0.20] (opp-min 110)
+2x/even   | live CLX@4858: 0.370 [0.18, 0.58] (opp-min 27) | pro: 0.928 [0.84, 1.03] (opp-min 519) | SIM CLX vs C1u50: 0.104 [0.07, 0.14] (opp-min 366) | SIM CLX vs genD40: 0.161 [0.12, 0.20] (opp-min 354)
+2x/behind | live CLX@4858: 0.000 [0.00, 0.00] (opp-min 3) | pro: 0.898 [0.53, 1.34] (opp-min 19) | SIM CLX vs C1u50: 0.312 [0.17, 0.49] (opp-min 45) | SIM CLX vs genD40: 0.394 [0.18, 0.63] (opp-min 28)
+OT/ahead  | live CLX@4858: 0.000 [0.00, 0.00] (opp-min 1) | pro: - | SIM CLX vs C1u50: - | SIM CLX vs genD40: -
+OT/even   | live CLX@4858: 0.444 [0.14, 0.83] (opp-min 18) | pro: 2.791 [2.61, 2.98] (opp-min 482) | SIM CLX vs C1u50: 0.549 [0.46, 0.65] (opp-min 306) | SIM CLX vs genD40: 0.595 [0.49, 0.70] (opp-min 307)
+OT/behind | live CLX@4858: - | pro: - | SIM CLX vs C1u50: - | SIM CLX vs genD40: -
+
+## S5 Rocket + Tornado combos: share of our Rockets with our Tornado landing -24..+40 ticks around them; per match
+live CLX@4858 | combo share of Rockets 0.107 [0.04, 0.20] (n 56) | combos / match 0.043 | Rockets / match 0.41 | chip / match 0.18 | finishers / match 0.12
+pro | combo share of Rockets 0.039 [0.03, 0.05] (n 3633) | combos / match 0.087 | Rockets / match 2.23 | chip / match 1.37 | finishers / match 0.09
+SIM CLX vs C1u50 | combo share of Rockets 0.000 [0.00, 0.00] (n 867) | combos / match 0.000 | Rockets / match 0.45 | chip / match 0.17 | finishers / match 0.18
+SIM CLX vs genD40 | combo share of Rockets 0.000 [0.00, 0.00] (n 864) | combos / match 0.000 | Rockets / match 0.45 | chip / match 0.18 | finishers / match 0.19
+
+## V Value (ASSOCIATION): win rate by chip Rockets per match, all / hostile-cluster chips; tiebreak matches
+live CLX@4858 | chip 0: 0.610 [0.53, 0.69] (n 118) | chip 1: 0.800 [0.60, 0.93] (n 15) | chip 2+: 0.400 [0.00, 0.80] (n 5)
+   live CLX@4858 matches with >= 0.5 hostile opp-min: hostile chip 0: 0.706 [0.53, 0.88] (n 17)
+   live CLX@4858 hostile chip 1+: -
+pro | chip 0: 0.392 [0.35, 0.43] (n 638) | chip 1: 0.528 [0.48, 0.57] (n 411) | chip 2+: 0.564 [0.52, 0.60] (n 580)
+   pro matches with >= 0.5 hostile opp-min: hostile chip 0: 0.434 [0.34, 0.51] (n 113)
+   pro matches with >= 0.5 hostile opp-min: hostile chip 1+: 0.617 [0.55, 0.68] (n 201)
+SIM CLX vs C1u50 | chip 0: 0.696 [0.68, 0.72] (n 1663) | chip 1: 0.582 [0.51, 0.64] (n 208) | chip 2+: 0.592 [0.45, 0.73] (n 49)
+   SIM CLX vs C1u50 matches with >= 0.5 hostile opp-min: hostile chip 0: 0.805 [0.74, 0.87] (n 154)
+   SIM CLX vs C1u50 matches with >= 0.5 hostile opp-min: hostile chip 1+: 0.538 [0.35, 0.69] (n 26)
+   SIM CLX vs C1u50 TIEBREAK matches (n 282): chip 0: 0.497 [0.43, 0.56] (n 191)
+   SIM CLX vs C1u50 TIEBREAK matches (n 282): chip 1+: 0.484 [0.39, 0.57] (n 91)
+SIM CLX vs genD40 | chip 0: 0.746 [0.72, 0.77] (n 1636) | chip 1: 0.684 [0.62, 0.74] (n 237) | chip 2+: 0.489 [0.34, 0.64] (n 47)
+   SIM CLX vs genD40 matches with >= 0.5 hostile opp-min: hostile chip 0: 0.763 [0.70, 0.81] (n 186)
+   SIM CLX vs genD40 matches with >= 0.5 hostile opp-min: hostile chip 1+: 0.615 [0.42, 0.81] (n 26)
+   SIM CLX vs genD40 TIEBREAK matches (n 295): chip 0: 0.474 [0.41, 0.54] (n 192)
+   SIM CLX vs genD40 TIEBREAK matches (n 295): chip 1+: 0.485 [0.39, 0.57] (n 103)

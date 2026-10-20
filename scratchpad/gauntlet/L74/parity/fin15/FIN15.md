@@ -256,7 +256,7 @@ on both engines where it matters.
 | J5a deploy (fights / FIN bodies) | 0.989 / 0.992 | 0.989 / 0.992 | yes |
 | J5b card cycle | 0.996 | 0.996 | yes |
 | **J6 river crossing** | 0.692 [0.672, 0.712] | 0.697 [0.677, 0.717]; pathing proper 0.828; strict-clean fights 0.838 (pathing proper 0.904) | no |
-| **J7 whole match, 573 matches** | trajectory 0.896, crown sequence 0.483, falls in time 0.454, result 0.496, king wake 0.771 | trajectory 0.898, crown sequence **0.506** (ceiling 0.834), falls 0.476, result 0.518, king wake 0.778 | no (the raw goal is above the ceiling; section 8) |
+| **J7 whole match, 573 matches** | trajectory 0.896, crown sequence 0.483, falls in time 0.454, result 0.496, king wake 0.771 | trajectory 0.898, crown sequence **0.506** (ceiling 0.834), falls 0.476, result 0.518, king wake 0.778 | no (J7 is graded normalised from 10-20: crown sequence 0.61; section 8) |
 | **J8 regulation / tiebreak winner** | 102 / 102, 19 / 20 | 102 / 102, 17 / 18 (H-J8-CLASS) | yes |
 | J8 tiebreak end tick | 15 / 20 | 15 / 18 | no |
 
@@ -430,8 +430,9 @@ diagnosis): J4 met the goal in round 2, and every other metric has had at most t
    - **J7's goal is out of reach as a raw score (a).** Its own noise ceiling sits below 0.95 (fin15, 573 matches): SIM vs perturbed
      SIM, with only the deploy tick redrawn inside its frame gap, gives crown sequence 0.834, falls in time 0.819, result 0.838.
      So a perfect engine would still score about 0.83 raw on these three.
-   - The goal for them has to be the normalised form (raw / ceiling): crown sequence 0.499 / 0.834 = 0.60 today. That is an owner
-     decision.
+   - **Decision (lead, 10-20): J7's goal is now the NORMALISED score** (raw / SIM-vs-SIM ceiling), not the raw one. On the final
+     wheel: crown sequence 0.506 / 0.834 = 0.61; falls in time 0.476 / 0.820 = 0.58; result 0.518 / 0.838 = 0.62; trajectory
+     0.898 / 0.970 = 0.93.
    - The trajectory's ceiling is 0.970 (normalised 0.924). It also needs a time tolerance, or the 14 / 39 hit-phase offsets
      (section 3) keep failing a perfect engine.
 5. **W9's ranked SIM gaps** (identities/IDENTITIES.md) and the owner's facts:

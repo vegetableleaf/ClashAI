@@ -11,8 +11,12 @@ CB=/workspace/cb_stepd; RUNN=${RUN:-stepd_ctrl}; NAME=${NAME:-$RUNN}; O=/workspa
 GO=/workspace/stepd/GO_$RUNN; [ -z "${REF:-}" ] && [ -s $GO ] && . $GO   # the lead's GO file may set DECODE=--ability-head-decode=sample
 LEVEL_ARGS=(); [ -n "${EVAL_LEVELS:-}" ] && LEVEL_ARGS=(--levels "$EVAL_LEVELS")
 RL=icebow/data/bench/rl_royale; U250=$RL/rlarm_gae/rlarm_gae_u0250_grafted.pt; Y=scratchpad/gauntlet/L74/stepd/cfg/$RUNN.yaml
-P13=/workspace/venvf13/bin/python; P36=/workspace/venvf36/bin/python
+# RT / VENV (env or the GO file; W8 10-20): the training + main-eval runtime. Defaults = fin13-linux / venvf13 (unchanged);
+# tonight's fin15 arms: RT=fin15-linux VENV=/workspace/venvf15 (parity/fin15/setup_fin15.sh). DRY=1: print the selection, exit.
+RT=${RT:-fin13-linux}; VENV=${VENV:-/workspace/venvf13}
+P13=$VENV/bin/python; P36=/workspace/venvf36/bin/python
 EV_EXTRA="--habit-log --live-levels --card-levels Rocket=16 Log=15 --opp-tower-troops DaggerDuchess:0.028,Cannoneer:0.028,ChefTower:0.014 --record-plays --ability-stats${DECODE:+ $DECODE}"
+[ -n "${DRY:-}" ] && { echo "RUN=$RUNN NAME=$NAME RT=$RT VENV=$VENV P13=$P13 train: ROYALE_RUNTIME=$RT $P13 -m pipeline.rl_royale --config $Y; evals: $RT + fork36-linux"; exit 0; }
 mkdir -p $O/eval; exec >> $O/chain.log 2>&1
 log() { echo "$(date -u +%FT%TZ) $*"; }
 trap 'log "exit"; touch $O/DONE' EXIT
@@ -37,7 +41,7 @@ graft() {   # an fv < 6 arm (imitation init: REB, twin) cannot load u250's fv6 p
   local G=${1%.pt}_grafted.pt; [ -f $G ] || $P13 scratchpad/gauntlet/L74/weekend/graft_generic.py $1 $U250 $G >> $O/graft.log 2>&1; echo $G
 }
 evall() {   # evall GRAFTED TAG: the u130 set
-  for S in 741200 742000 743000 744000; do ev $1 $2 $S fin13-linux $P13; done
+  for S in 741200 742000 743000 744000; do ev $1 $2 $S $RT $P13; done
   [ -n "${NO36:-}" ] && return 0     # NO36=1: a pod whose /workspace/fork36 parity checkout breaks the fork36 wheel (14009)
   for S in 741200 742000; do ev $1 $2 $S fork36-linux $P36; done
 }
@@ -54,7 +58,7 @@ R=rlarm_$RUNN; CK=$RL/$R/${R}_u0130.pt
 if [ ! -f $CK ]; then
   RES=; [ -f $RL/$R/${R}_latest.pt ] && RES=--resume
   log "train $R $RES (waiting for cpu.lock)"
-  ROYALE_RUNTIME=fin13-linux flock /workspace/cpu.lock $P13 -m pipeline.rl_royale --config $Y --run $R $RES >> $O/train.log 2>&1 \
+  ROYALE_RUNTIME=$RT flock /workspace/cpu.lock $P13 -m pipeline.rl_royale --config $Y --run $R $RES >> $O/train.log 2>&1 \
     || log "TRAIN EXIT $?"
 fi
 cp scratchpad/gauntlet/L68/rl/$R/train_log.jsonl scratchpad/gauntlet/L68/rl/$R/config.yaml $O/ 2>/dev/null
@@ -63,8 +67,8 @@ G=$(graft $CK); [ -f $G ] || { log "graft failed"; exit 5; }
 sha256sum $CK $G > $O/final.sha; ln -f $CK $G $O/
 evall $G $NAME
 if [ -n "${RAW_TOO:-}" ] && [ "$G" != "$CK" ]; then   # RAW_TOO=1 (GO file): also the raw u130 on fin13 std + fresh, so an fv6 arm
-  for S in 741200 742000 743000 744000; do ev $CK ${NAME}_raw $S fin13-linux $P13; done   # compares like-for-like with raw REB
+  for S in 741200 742000 743000 744000; do ev $CK ${NAME}_raw $S $RT $P13; done   # compares like-for-like with raw REB
 fi
 G65=$(graft $RL/$R/${R}_u0065.pt)
-for S in 741200 742000; do [ -f $G65 ] && ev $G65 ${NAME}_u65 $S fin13-linux $P13; done
+for S in 741200 742000; do [ -f $G65 ] && ev $G65 ${NAME}_u65 $S $RT $P13; done
 pack; touch $O/ALL_DONE; log "ALL_DONE"
