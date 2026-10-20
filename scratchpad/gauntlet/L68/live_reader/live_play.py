@@ -1389,7 +1389,14 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                 pilot.set_pending([dict(hand_pos=pd["d"]["hand_pos"], deck_index=pd["d"]["deck_index"], card=pd["d"]["card"],
                                         form=pd["d"]["form"], name=pd["d"]["name"], xy=pd["d"]["xy"],
                                         land=pd["tick"] + (a.extrapolate or PIPELINE_LAND_TICKS)) for pd in pending])
-            d = pilot.decide(f)
+            try:
+                d = pilot.decide(f)
+            except KeyError as e:                        # 10-20: a deck card the catalog / vocab does not know (new card):
+                if not getattr(pilot, "_record_only", False):   # record-only for this match -- frames (+ captures) keep
+                    pilot._record_only = True            # logging, no taps; the owner plays the battle by hand
+                    W(event="record_only", tick=tick, why=f"unknown card {e}")
+                    print(f"[live] RECORD-ONLY: unknown card {e} -- logging frames, not playing", flush=True)
+                continue
             decide_ms = round((time.time() - t_dec) * 1000)
             if head_due:                                 # --iw-press head: the button read ready on this frame
                 head_due = False
