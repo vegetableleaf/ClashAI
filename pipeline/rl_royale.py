@@ -1598,12 +1598,22 @@ def sample_opponent(rng: np.random.Generator, snaps: list[dict], mix: dict, init
 def exploiter_league(cfg: dict) -> Optional[dict]:
     """``league_exploiters`` (O2, owner 10-16; optional, absent / null = None = sample_matchups unchanged):
     {ckpt, decks, share} -> {share, opp, decks, p}: a ``share`` of matchups is against the frozen ``ckpt`` playing
-    ``decks`` (a league_decks file, drawn with ``deck_weights`` under the run's alpha / floor). SystemExit on a bad value."""
+    ``decks`` (a league_decks file, drawn with ``deck_weights`` under the run's alpha / floor). SystemExit on a bad value.
+    L74 O6 (lead 10-20; OPTIONAL keys, each absent = the run's own setting, all absent = the dict and opp spec above
+    unchanged): ``T`` (> 0, that opponent's sampling temperature instead of ``league_opp_T``), ``decide_every`` (int >= 1)
+    and ``reaction_ticks`` (int >= 0) (that opponent's tempo instead of ``opp_decide_every`` / ``opp_reaction_ticks``) ->
+    opp["cfg"]; ``own_opp_cfg`` applies them to THAT opponent only."""
     x = cfg.get("league_exploiters")
     if x is None:
         return None
-    if not isinstance(x, dict) or set(x) != {"ckpt", "decks", "share"}:
-        raise SystemExit(f"league_exploiters must be {{ckpt, decks, share}}, got {x!r}")
+    if not isinstance(x, dict) or not {"ckpt", "decks", "share"} <= set(x) <= {"ckpt", "decks", "share", *EXPLOITER_OWN}:
+        raise SystemExit(f"league_exploiters must be {{ckpt, decks, share}} (+ optional {', '.join(EXPLOITER_OWN)}), got {x!r}")
+    own = {k: x[k] for k in EXPLOITER_OWN if k in x}
+    for k, v in own.items():
+        ok = ((not isinstance(v, bool) and isinstance(v, (int, float)) and v > 0) if k == "T" else
+              (type(v) is int and v >= (1 if k == "decide_every" else 0)))
+        if not ok:
+            raise SystemExit(f"league_exploiters.{k} must be {'a number > 0' if k == 'T' else 'an int >= ' + ('1' if k == 'decide_every' else '0')}, got {v!r}")
     sh = x["share"]
     if isinstance(sh, bool) or not isinstance(sh, (int, float)) or not 0 < sh <= 1:
         raise SystemExit(f"league_exploiters.share must be a number in (0, 1], got {sh!r}")
@@ -1616,7 +1626,23 @@ def exploiter_league(cfg: dict) -> Optional[dict]:
     return {"share": float(sh), "decks": decks,
             "p": deck_weights([d["sides"] for d in decks], cfg["league_deck_alpha"], cfg["league_deck_floor"]),
             "opp": {"id": "exploiter_league:" + x["ckpt"], "cat": "exploiter_league", "type": "exploiter_league",
-                    "path": x["ckpt"]}}
+                    "path": x["ckpt"], **({"cfg": own} if own else {})}}
+
+
+EXPLOITER_OWN = ("T", "decide_every", "reaction_ticks")      # league_exploiters' optional per-opponent keys (L74 O6)
+
+
+def own_opp_cfg(oc: dict, opp: dict, base: dict) -> dict:
+    """A league opponent's match cfg: the run's human tempo (``opp_decide_every`` / ``opp_reaction_ticks``) on ``oc``
+    as before, unless ``opp`` carries a league_exploiters ``cfg`` (L74 O6): then ITS T / decide_every / reaction_ticks
+    (each absent = the run's). No ``cfg`` = exactly ``E.opp_tempo(oc, run tempo)``."""
+    c = opp.get("cfg")
+    if not c:
+        return E.opp_tempo(oc, base.get("opp_decide_every"), base.get("opp_reaction_ticks"))
+    if c.get("T") is not None:
+        oc = {**oc, "T": float(c["T"])}
+    return E.opp_tempo(oc, c.get("decide_every", base.get("opp_decide_every")),
+                       c.get("reaction_ticks", base.get("opp_reaction_ticks")))
 
 
 TOWER_TROOPS = ("DaggerDuchess", "Cannoneer", "ChefTower")    # the RoyaleSim fork's crown tower troops (card.rs)
@@ -2656,8 +2682,9 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
                                              "T": opp_T(base),
                                              **{k: base[k] for k in AO.STYLE_KEYS if k in base},
                                              "grid": opp_cache[j[1]["opp"]["path"]][1]}) for j in jobs}
-                opps = {i: (pol, E.opp_tempo(oc, base.get("opp_decide_every"), base.get("opp_reaction_ticks")))
-                        for i, (pol, oc) in opps.items()}            # L74 human tempo: the OPPONENT's cfg only
+                specs = {j[1]["opp"]["id"]: j[1]["opp"] for j in jobs}
+                opps = {i: (pol, own_opp_cfg(oc, specs[i], base))
+                        for i, (pol, oc) in opps.items()}            # L74 human tempo (+ O6 per-exploiter): the OPPONENT's cfg only
                 E.run_selfplay_batch(lambda: RoyaleSelfPlayEnv(decision_ticks=int(base["decide_every"]), forms_mode=fm,
                                                                hero_abilities=base.get("hero_abilities", False),
                                                                ability_policy=base.get("ability_policy", "generic"),
@@ -2854,8 +2881,9 @@ def branch_worker_main(wid: int, in_q, out_q, base: dict) -> None:
         return True
 
     lcfg = actor_cfg(base, "screen", wid, dev)                # the greedy live rule, unrecorded
-    ocfg = E.opp_tempo({**actor_cfg(base, "rollout", wid, dev), "policy": base["league_opp_policy"], "record": False,
-                        "T_gate": None, "T": opp_T(base)}, base.get("opp_decide_every"), base.get("opp_reaction_ticks"))
+    ocfg0 = {**actor_cfg(base, "rollout", wid, dev), "policy": base["league_opp_policy"], "record": False,
+             "T_gate": None, "T": opp_T(base)}
+    ocfg = E.opp_tempo(ocfg0, base.get("opp_decide_every"), base.get("opp_reaction_ticks"))
     sp_env = (lambda: RoyaleSelfPlayEnv(decision_ticks=int(base["decide_every"]), forms_mode=base.get("forms_mode", "base"),
                                         hero_abilities=base.get("hero_abilities", False),
                                         ability_policy=base.get("ability_policy", "generic")))
@@ -2880,7 +2908,8 @@ def branch_worker_main(wid: int, in_q, out_q, base: dict) -> None:
             pol, grid = opp_cache[pth]
             tag = f"bw{wid:02d}_{n_match:05d}"
             n_match += 1
-            branch_jobs(sp_env, model, {spec["opp"]["id"]: (pol, {**ocfg, "grid": grid})}, [(n_match, {**spec, "tag": tag}, 0)],
+            oc = ocfg if not spec["opp"].get("cfg") else own_opp_cfg(ocfg0, spec["opp"], base)   # L74 O6: own T / tempo
+            branch_jobs(sp_env, model, {spec["opp"]["id"]: (pol, {**oc, "grid": grid})}, [(n_match, {**spec, "tag": tag}, 0)],
                         lcfg, bc, st["version"], skip=(UnsupportedDeck,), sync=sync, emit=emit, phi=phi)
             errors = 0
         except Exception:

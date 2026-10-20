@@ -63,7 +63,7 @@ beta_min: 0.03
 beta_max: 3.0
 kl_target: 0.3
 leash: max
-seed: 74
+seed: 75
 max_updates: 130
 save_every: 5
 proagree_every: 5
@@ -108,10 +108,13 @@ kl_heads:
 - card
 ability_head: true
 ability_features: freeze
-# O6 (opp_model/OPP_MODEL.md 6.3): ONE change vs stepd_l16_s74.yaml (the all16 CLX recipe; its seed-74 run = the control):
-# 30% of training matchups against the O2 live-opponent model (gen_v32_s0 fine-tuned on 43,714 opponent-seat live rows;
-# seed 1, epoch 16, sha f03f36d3) playing the live census decks. NOT launched: the lead decides after O4.
+# L74 O6 option A (opp_model/OPP_MODEL.md 6.2b / 6.3): ONE change vs stepd_l16_s75.yaml (the all16 CLX recipe, seed 75 = the
+# control): 30% of training matchups against the pro-imitation net gen_v32_s0 (61011b6c) at its O3-chosen setting -- sampling
+# T .1, deciding every 40 ticks (league_exploiters' opt-in per-opponent keys) -- on the live census decks. Every other league
+# opponent keeps the recipe's league_opp_T / tempo. NOT launched until the lead approves.
 league_exploiters:
-  ckpt: icebow/data/pipeline/o2/gen_live_s1.pt
+  ckpt: icebow/data/pipeline/gen_v32_s0/gen_s0.pt
   decks: scratchpad/gauntlet/L74/mix/decks_live_train.json
   share: 0.3
+  T: 0.1
+  decide_every: 40
