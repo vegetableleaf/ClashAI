@@ -79,6 +79,25 @@ def main():
     n = int(sys.argv[2]) if len(sys.argv) > 2 else 15
     losses = int(sys.argv[3]) if len(sys.argv) > 3 else 0
     clf = ln.Classifier()
+    if live_pids():                                    # resume: a battle is running (an earlier autopilot's bot)
+        lg = newest_log()
+        say(f"{tag}: resuming -- waiting for the running battle ({lg.name if lg else None}) to end")
+        t0 = time.time()
+        while time.time() - t0 < 1500 and lg is not None and '"event": "end"' not in lg.read_text(encoding="utf-8", errors="replace"):
+            time.sleep(3)
+        won = result_of(lg) if lg is not None else None
+        losses += won is False
+        time.sleep(5)
+        for pid in live_pids():
+            subprocess.run(["taskkill", "/F", "/PID", str(pid)], capture_output=True)
+        say(f"{tag}: resumed battle done: won={won}  challenge losses={losses}/3")
+        if losses >= 3:
+            alert(f"{tag}: 3 challenge losses -- please re-enter the challenge (I stopped)"); return
+        t0 = time.time()
+        while time.time() - t0 < 120 and screen(clf)["screen"] != "main":
+            if OK_XY and time.time() - t0 > 4:
+                tap(OK_XY)
+            time.sleep(3)
     for i in range(1, n + 1):
         if STOP.exists():
             say("STOP file: done"); return
