@@ -14,7 +14,7 @@ export PYTHONPATH=$C PARITY_SIM_PATH=$S PARITY_BUFFS=${PARITY_BUFFS:-/workspace/
   PARITY_ATTACKS=${PARITY_ATTACKS:-/workspace/in/attacks13s.json} OMP_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONHASHSEED=0
 M=scratchpad/gauntlet/L74/parity/metrics
 echo "$(date -u +%T) start SIM=$S CODE=$C logs=$(ls $L | wc -l) K=$K workers=$W"
-python3 $M/test_metrics.py || { touch $O/FAILED; exit 2; }
+[ "${SKIP_SELFTEST:-0}" = 1 ] || python3 $M/test_metrics.py || { touch $O/FAILED; exit 2; }   # SKIP_SELFTEST=1: pod trees without pipeline/ (cb13); the selftest passes on the laptop
 python3 $M/replay_metrics.py fights --out $O --live $L --files 'live_play_*.jsonl' --ceiling $K --workers $W || touch $O/FAILED_fights
 python3 $M/replay_metrics.py whole --out $O/whole --live $L --files 'live_play_2026101[789]_*.jsonl' --ceiling $K --workers $W || touch $O/FAILED_whole
 python3 $M/replay_metrics.py elixir --out $O --live $L --files 'live_play_*.jsonl' || touch $O/FAILED_elixir
