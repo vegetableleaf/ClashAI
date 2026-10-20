@@ -1,3 +1,30 @@
+## 2026-10-20 ~18:45 EDT -- tonight's 6 successor arms launched on fin15 + the calibrated opponent
+
+- fin15 (W8, b386aaf): wheel 88f3fdcb, fork pin 305aaafc = fin14c + 3 engine laws (elixir floor, Tornado pack cap, tiebreak regen).
+  - J4 elixir 0.991 (goal met); J1 0.927 on 14,188 fights (new grading: pre-spell starts + champion casts); J2 0.917; J3 0.933.
+  - J7 is graded normalised (SIM-vs-SIM ceiling 0.834). Round queue: FIN15.md section 8.2.
+- Opponent (W7, OPP_MODEL.md section 7): R6 u20 (34522564), T .1 / decide 40, league share 0.3.
+  - O4: all 6 overall cells pass (CLX SIM win 63.2 vs live 62.3); fails only the hog cell; style 0.71.
+  - Key `league_opp_live` (training the opponent vs the frozen models' live stack) was the breakthrough.
+- Arms, each = tn_base (all16 + fin15 + the W7 opponent) + ONE key; GO: RT=fin15-linux VENV=/workspace/venvf15
+  EVAL_LEVELS=all16 DECODE=sample + --crown-log, NO36=1:
+  - tn_base_s74 on 13396; tn_base_s75 on 14009;
+  - tn_lead_s74 on 19899; tn_rocket_s74 on 40548 (W10 rocket_tower);
+  - tn_tornado_s74 on 15617 (tornado_king_w 0.1, 10x); tn_redirect_s74 on 48148.
+  - Results ~07:00-08:00 10-21.
+  - Gate: vs CLX at level 16 (std + fresh, CI low > 0) -> promote with --ranked.
+  - Report also: vs the W7 opponent, crown / aggression / Rocket slices, and each reward arm vs tn_base_s74.
+- Afternoon reward arms (old SIM): lead, redirect and tornado all NO PASS. Their penalties barely fire vs E4 opponents
+  (give-back about 2%). Tornado at 0.01/tile did not reduce post-fall pulls. l16/RESULTS.md.
+- W9: exact identities (Minion Giant has its own vocab id 232). W10: rocket/ROCKET.md -- chip Rockets do NOT pay in the SIM
+  (not even vs the calibrated opponent), the opposite of pros. Parity battles: 35 classic-challenge matches covering the 11
+  rare cards (L70/live/parity/).
+- Owner rules today (memories):
+  - iterate rounds to goal or a confirmed plateau; checkpoints finish the in-flight rounds;
+  - all levels 16;
+  - king-pull doctrine;
+  - workers use Fable Foreman + Codex.
+
 ## 2026-10-20 ~09:00 EDT -- Tuesday plan running; L16 = 0/4 passes; opponent model O0-O2 done, O6 training; reward arms training; parity metrics
 
 - LIVE: ICEBOW Mark CLX: PARITY (5d212358). The live climb to ~14,030 lines up with OUR tower going 4424 -> 4858 hp
