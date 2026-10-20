@@ -29,6 +29,13 @@ FIN15_SHA=a144f8fe1235e89e3abdee4f138f35c65552a0e4dfc30b91994578b3542ebdca FIN15
   - `activate()` passes against the frozen manifest (provenance c6887a69 clean, embedded card table, tower-troop API);
   - the Hero IW adapter is on;
   - the elixir unit is 10000, and a 600-tick battle runs.
+- **Verification (fin15 READY checklist, all on P2 = 64.247.206.80:40548):**
+  - the cargo gate passes and each plant is red (section 7);
+  - J1 FIN15 + the J-suite METRICS_J15 ran on the 638-log cohort (section 6), plus the 10-20 battles;
+  - `setup_fin15.sh` (FREEZE, then the plain second-pod path) ended in FIN15_OK: activate() pins c6887a69 clean with the embedded
+    table, the Hero IW adapter is on, the unit is 10000 and a 600-tick battle ran; venvf36 is intact;
+  - a real `python -m pipeline.rl_royale --smoke` on stepd_l16_s74.yaml under ROYALE_RUNTIME=fin15-linux with /workspace/venvf15: **SMOKE PASS** (u0000 W/L/D 3/5/0, the round trip identical, the resume check all True).
+  - The manifest `build_manifest_fin15.json` (30 files) is frozen from P2's venvf15 and committed here.
 - **Trap**: on a pod that has the wheel's BUILD checkout (P2: `/workspace/w8/src_rsfork_fin15`), the wheel reads that checkout's
   data and `activate()` refuses it. setup_fin15.sh checks for this.
 
@@ -272,7 +279,55 @@ classified by analysis/j6cause_clean.py.
 - No river-crossing or lane law was found; the lane disagrees on only 15 of 7,974 pathing-proper crossings.
 - J6's lever is the harness's set-up of in-flight spawning spells (H, round 3), plus J1.
 
-**The 10-20 classic-challenge parity battles:** RUN20_PLACEHOLDER
+**The 10-20 classic-challenge parity battles:** the owner's 10-20 battles (a).
+
+**The logs.** 40 logs with phase-3 captures (export20.py; caplogs20), run20.sh, the same K = 8, fin14c and fin15:
+- 4 are ladder icebow matches (06:02-06:40, level 16).
+- 3 are record-only stubs with no own decisions (skipped).
+- 33 are classic-challenge battles at level 11. The BOT plays three rare-card decks:
+  1. Goblin Drill evo, Little Prince, Minion Giant, Ice Spirits evo, Merge Maiden, Fire Spirits, Skeletons, Tesla;
+  2. Barbarian Barrel hero, Goblin Barrel evo, Zap evo, Princess, Valkyrie, Firecracker, Ice Spirits, Skeletons;
+  3. Electro Wizard hero, Goblin Drill evo, Snowball evo, Knight, Cannon, Poison, Fire Spirits, Skeletons.
+
+**Harness changes needed to score them.**
+- The J1 harness skipped every one of the 33 as `not_main_account`: no X-Bow in the hand, capped towers. The opt-in
+  `PARITY_ANY_DECK=1` (fights.py) lets them in.
+- Code tree cb20 = cb13's harness catalog + MinionGiant (26000107) only. W9's other in-progress catalog edits were left out, so
+  the identities match the 638-log cohort.
+- The Hero Electro Wizard form was tried and taken out again: the fork refuses it ("ElectroWizard has no loadable hero form:
+  ability ElectroWizardHero_Ability"), which errored 91 of 122 fights of 20261020_100134.
+- Spirit Empress has no identity in any catalog.
+
+**Results.**
+
+| metric (37 scored matches) | fin14c | fin15 |
+|---|---|---|
+| J1 strict, raw | 0.873 [0.840, 0.905] (832 fights) | 0.873 [0.840, 0.905] |
+| J1 all, raw | 0.689 [0.648, 0.731] (2,591 fights) | 0.689 [0.648, 0.731] |
+| J4 elixir (round-2 harness) | 0.891 [0.834, 0.942] | **0.999 [0.998, 1.000]** |
+| J2 (447 bodies) / Tornado (25) | 0.803 / 0.920 | 0.803 / 0.920 |
+| J3 all | 0.916 | 0.916 |
+| J6 | 0.522 | 0.521 |
+| J7 crown sequence (32 matches) | 0.250 | 0.219 (7 vs 8 of 32: inside the noise; n small) |
+
+These decks hold few Tornados, so only J4 moves.
+
+**The 11 rare cards** (J1 raw on these battles, fin15; "all" = every fight, "strict" = J1-clean; n = fights / matches):
+
+| card | J1 all | J1 strict | J-suite (PERCARD.md) | note |
+|---|---|---|---|---|
+| Goblin Drill evo (own) | **0.00** (24 / 18) | 0.00 (12 / 9) | J5a 0.81 (42), J6 0.65 (23) | tower damage, not deaths: live 110 / 270 / 747 vs SIM 395 / 395 / 0 on the first three fights. Round 3's top rare-card lead (b: the evo's surfacing / resurfacing strike vs crown towers) |
+| Little Prince (own) | 0.615 (26 / 4) | 1.0 (3) | J2 0.77 (13), J5a 1.00 (33), J6 0.60 (5) | strict n too small |
+| Minion Giant (own / opp) | 0.632 (19) / 0.689 (45) | 0.714 (7) / 0.750 (16) | J2 0.83 (24), J5a 1.00 (62), J6 0.57 (14) | identity added for this run only |
+| Zap evo (own) | 0.609 (31 / 11) | 1.0 (8) | - | - |
+| Ice Spirits evo (own) | 0.824 (17) | 1.0 (5) | J5a 1.00 (27) | - |
+| Snowball evo (own) | 1.0 (1) | 1.0 (1) | - | n = 1 |
+| Goblin Barrel evo, Barbarian Barrel hero | no fight anchored on them | - | - | (b) plays not confirmed, or a labelling gap; untested |
+| Electro Wizard hero | not scorable | - | - | the fork refuses the form (W9 item 1) |
+| Spirit Empress (both forms) | not scorable | - | - | no identity |
+
+No rare card reaches n >= 30 strict fights: one battle day is far below the per-card goal's n. Per-card raw values come from
+FIN_20_fin15/CEILING_{all,strict}.txt and METRICS_20_fin15/PERCARD.md on P2.
 
 ## 7. Fork bundle, files, reproduction
 
@@ -379,5 +434,5 @@ diagnosis): J4 met the goal in round 2, and every other metric has had at most t
 - The 18:00 checkpoint wheel is this fin15. The lead decides whether tonight's successor trains on it; switching means
   `ROYALE_RUNTIME=fin15-linux` + venvf15 in stepd_chain.sh and the scripts that hardcode fin13-linux.
 - The FIN re-score could not run on 19899: it was busy all day with W7 / O3 evals. Everything ran on P2.
-- The setup smoke (section 0) can only pass on P2 after the build checkout is removed; it ran at the end (section 6).
+- The setup smoke and the trainer smoke ran on P2 after its build checkout was removed (section 0).
 - HANDOFF is not updated in this commit (worker rule: never stage the working copy); the lead adds the entry.

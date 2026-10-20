@@ -10,6 +10,9 @@ import royalesim  # noqa: E402  (after activate: the pinned runtime)
 from pipeline import royale_heroiw as h  # noqa: E402
 assert h.ENABLED, 'royale_heroiw is off under fin15-linux'
 b = royalesim.Battle(None, [[0, 1, 2], [0, 2, 1]], calibration_overrides={'cards.CARD_TABLE': json.dumps(h.CARD_TABLE)})
+ids = {r['name']: i for i, r in enumerate(dict(zip(royalesim.CATALOGUE_FIELDS, x)) for x in json.loads(b.catalogue_json()))}
+deck = [ids[n] for n in sorted(h.ICEBOW)]
+b.reset(1, [deck, deck], 0, 0, [6000, 6000], None, [], levels=[[16] * 8, [16] * 8], tower_levels=[16, 16])
 assert json.loads(b.save())['mana_unit'] == 10000, 'match.MANA_REGEN_STEP is not the floor arm'
 b.step([], 600)
 st = json.loads(b.state_json())
