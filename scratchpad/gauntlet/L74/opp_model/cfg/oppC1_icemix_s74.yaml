@@ -1,0 +1,115 @@
+# L74 W7 option C, arm C1 (10-20): RL-strengthen the O2b live-imitation net (sha 0882374c) at all16 against a FROZEN MIX of
+# icebow checkpoints (CLX live 5d212358, CLIII edc82ada, CLIX fb777048, CXXXVIII 0fba110c), so the SIM opponent reaches live
+# strength while staying human in style, without over-fitting one model. = oppC_liveopp_rl_s74.yaml with:
+#   league_frozen_opponent (one model) -> league_pfsp hard over league_external = the 4 icebow checkpoints, every opponent on the
+#     icebow deck (league_icebow_share 1.0) and the learner (= the opponent-to-be) on the live census decks (learner share 0);
+#     no learner snapshots (league_snapshot_every 1000: only u0, the init, joins the pool next to the init);
+#   kl_target 0.05 -> 0.1 (Stage 2 hog_il reached +25 pp at KL ~0.1 in 48 updates), max_updates 65 -> 100;
+#   heroiw_press: live (the frozen icebow models press the Hero IW by the live rule, as the step-d arms).
+# Gates every 10 updates (opp_eval.sh: CLX learner, T .1, decide 40, 480 games): CLX SIM win, P(opp takes a princess),
+# both-took, OT share, style distance (o3_score.py) vs live CLX@4858. Keep the best gated snapshot (OPP_MODEL.md section 7).
+init: icebow/data/pipeline/o2/gen_live_b.pt
+pool: icebow/data/ghost_pool/pool_env_v1.jsonl
+proagree_data: icebow/data/pipeline/s1_dataset.npz
+proagree_rows: 0
+proagree_data_gen: icebow/data/pipeline/gen_dataset_v32_fv5.npz
+noise_off: all
+opp_elixir: counter
+action_delay_ticks: 26
+extrapolate_ticks: 26
+hero_abilities: true
+forms_mode: deck
+league: true
+league_decks: scratchpad/gauntlet/L74/mix/decks_live_train.json
+league_specialist: icebow/data/pipeline/s1_icebow_v6aug_s1.pt
+league_opp_policy: live
+league_mix:
+  latest: 0.5
+  older: 0.25
+  init: 0.25
+  s1: 0.0
+league_snapshot_every: 1000
+league_snapshot_keep: 12
+league_icebow_share: 1.0
+league_deck_alpha: 1.0
+league_deck_floor: 0.0
+E: 64
+G: 4
+adv_clip: 2.0
+advantage: gae
+gae_gamma: 0.999
+gae_gamma_unit: tick
+gae_gamma_tick: 0.99994
+gae_terminal_gap: false
+gae_lambda: 0.95
+vf_coef: 0.5
+vf_clip: 0.2
+critic_warmup_updates: 5
+vf_trunk_grad: true
+shaping: none
+shaping_w_tower: 0.3
+shaping_w_crown: 0.3
+shaping_critic_scale: 1.5
+n_actors: 24
+in_flight: 8
+actor_device: cpu
+actor_threads: 1
+actor_timeout_s: 3600
+T: 0.5
+tau: 0.27
+afford_mask: true
+stall_elixir: null
+stall_seconds: 12
+obs: live
+decide_every: 40
+learner_device: cuda
+lr: 1.0e-05
+grad_clip: 0.5
+ppo_epochs: 2
+minibatch: 256
+clip: 0.2
+beta0: 0.3
+beta_min: 0.03
+beta_max: 3.0
+kl_target: 0.1
+leash: max
+seed: 74
+max_updates: 100
+save_every: 5
+proagree_every: 5
+screen_every: 10
+screen_entries: 0
+screen_seeds:
+- 0
+- 1
+- 2
+stop_consecutive: 2
+plays_lo: 0.6
+plays_hi: 1.6
+kl_cell_stop: 0.5
+kl_gate_stop: 0.1
+tripwire_cell_pp: 1.0
+hard_cell_pp: 3.0
+hard_card_pp: 3.0
+hard_gate_bal: 0.05
+screen_stop_pp: -10.0
+entropy_floor_frac: 0.5
+outlived_pp: 15.0
+low_delivered_pp: 10.0
+ghost_refusal_x: 2.0
+league_pfsp: hard
+opp_style: 'off'
+league_pfsp_gamma: 2.0
+league_pfsp_floor: 0.05
+league_external:
+- icebow/data/bench/rl_royale/rlarm_stepd_ctrl_nos2/rlarm_stepd_ctrl_nos2_u0130_grafted.pt
+- icebow/data/bench/rl_royale/rlarm_succ_levels/rlarm_succ_levels_u0065_grafted.pt
+- icebow/data/bench/rl_royale/rlarm_gae_cue_ab2/rlarm_gae_cue_ab2_u0065_grafted.pt
+- icebow/data/bench/rl_royale/rlarm_gae_cue_u250/rlarm_gae_cue_u250_u0130_grafted.pt
+league_learner_icebow_share: 0.0
+ability_policy: v2
+branch_gate: false
+learner_pipeline_frac: 0.0
+live_levels: all16
+opp_decide_every: 10
+heroiw_press: live

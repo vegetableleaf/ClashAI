@@ -330,7 +330,7 @@ Hidden:
 
 Not usable:
 - the bait-account matches (4-5k trophies, a different population);
-- the 29 card_use fallback grades (section 7).
+- the 29 card_use fallback grades (section 8).
 
 ## 6. Opponent model design and build plan
 
@@ -624,7 +624,7 @@ f7095b61, gen_s0.pt 61011b6c, init rlarm_succ_levels_u0065.pt 05d42da7.
      - the 4-plays warm-up gap at the start of every match (no hand rows before the 5th play).
 4. **O3 grid on the new baseline opponent:** reaction delay never helped. Decide 40 beat 30 / 20 / 10 for both nets. A
    decide-60 point is untested.
-5. **The card_use.results() account-switch grading bug** (section 7.1) is still open (lead: not this worker's fix).
+5. **The card_use.results() account-switch grading bug** (section 8, item 1) is still open (lead: not this worker's fix).
 
 ### 6.3 Path to a successor tonight (owner 10-20 goal; lead's plan)
 
@@ -655,7 +655,39 @@ f7095b61, gen_s0.pt 61011b6c, init rlarm_succ_levels_u0065.pt 05d42da7.
 6. **O5** (the sealed live block) **cannot finish today.** It becomes the post-hoc check: the next >= 150 live matches of
    whatever trains tonight, predicted by the O4 SIM before they are played.
 
-## 7. Problems found along the way (not fixed outside this directory)
+## 7. W7 option C: an RL-strengthened live-imitation opponent (10-20, rounds logged below)
+
+**Goal (O4 acceptance, all16, our tower 16)**, vs live CLX at our tower 4858 (n = 138: win 62.3%, opponent takes a princess
+31.2%, both took one 9.4%, OT share 57.2%, regulation loss 15.2%): CLX SIM win within ~5 pp of live, princess-take with CI
+overlap, OT / both-crown near live (no Stage-2 stall), style distance <= ~0.65. Strict O4 cell rule: |z| < 1.96 per cell.
+
+**Setup (a).**
+- Trainer arm C1 = `cfg/oppC1_icemix_s74.yaml` (sha c08d8c10, config sha 92a66d5a): init O2b (0882374c); the learner = the
+  opponent-to-be on the live census decks, deciding every 40 ticks; opponents = league_pfsp hard over a FROZEN icebow mix
+  (CLX 5d212358, CLIII edc82ada, CLIX fb777048, CXXXVIII 0fba110c; all on the icebow deck, live policy, decide 10, the
+  live IW press rule) plus the init; no learner snapshots; win / loss reward only; KL target 0.1 to O2b; 100 updates; all16.
+  P1 (64.247.206.80:48148), `optC/w7_train.sh` (real smoke SMOKE PASS 12:57 UTC, then training; ~2.6 min / update).
+- Gate = `pod/opp_eval.sh` on 19899: CLX learner vs the snapshot at T .1 / decide 40, all16, seed block 741200 (480 games,
+  the O3 games). O4 = the same + blocks 742000 / 743000 / 744000 (1,920 games). Relay `optC/gate.sh`; tables
+  `optC/o4_table.py` (SIM vs live per cell with z, style distance from o3_score.py's 9 features, per archetype).
+- Rows: C:/Users/benpe/pod_backup_weekend/w7/o3/ (sha-checked); snapshots + shas: pod_backup_weekend/w7/.
+
+**Round log** (CLX SIM win / opponent takes a princess / OT share / both took one / style distance; 480 games = block 741200
+unless marked 1,920; live 62.3 / 31.2 / 57.2 / 9.4; the 480-game SE is ~2 pp on win).
+
+| round | change | win | opp takes | OT | both | style | verdict |
+|---|---|---|---|---|---|---|---|
+| R0 | O2b, T .1, decide 40 (O3) | 83.8 | 19.8 | 48.8 | 9.4 | 0.65 | too weak |
+| R0 | option A gen_v32_s0, T .1, decide 40 (1,920) | 73.2 | 22.8 | 58.3 | 6.5 | 0.77 | the current baseline; fails win / princess |
+| R1 | O2b knobs: T .5 d40 / T .1 d60 / T .3 d60 / T .1 d80 | 86.7 / 80.4 / 83.5 / 84.8 | 16.9 / 22.9 / 22.7 / 20.2 | 43-44, 39 | 8.5-13.5 | 0.67 / 0.67 / 0.68 / 0.44 | tempo / T alone: <= 3 pp, no fix |
+| R1 | gen_v32_s0 knobs: T .1 d60 / d80 | 74.2 / 78.8 | 26.5 / 26.5 | 51.2 / 43.5 | 10.4 / 14.0 | 0.84 / 0.58 | no gain on strength |
+| R2 | C1 RL u10 / u15 / u20 / u25 | 83.5 / 78.5 / 76.0 / 74.6 | 19.2 / 21.9 / 22.1 / 25.6 | 51.5 / 54.0 / 55.0 / 50.0 | 9.6 / 7.3 / 7.5 / 10.0 | 0.69 / 0.68 / 0.68 / 0.68 | strengthening, defence first |
+| R2 | C1 RL u30 / u35 / u40 / u45 / u50 | 72.3 / 70.8 / 70.0 / 69.8 / 67.7 | 31.9 / 30.2 / 34.6 / 32.7 / 31.9 | 54.8 / 50.4 / 49.0 / 50.6 / 54.4 | 15.4 / 13.8 / 15.2 / 12.1 / 11.5 | 0.67 / 0.68 / 0.62 / 0.65 / 0.62 | princess-take reaches live; no stall |
+| R2 | C1 u30 at T .3 | 74.4 | 28.1 | 52.1 | 11.5 | 0.67 | T .1 kept |
+| R3 | C1 u45 at decide 60 | 69.0 | 35.6 | 50.6 | 18.8 | 0.66 | no gain, both-took worse; decide 40 kept |
+| **O4** | **C1 u40 (5935b73a), 1,920** | **67.7** | **33.2** | **53.9** | **13.5** | **0.63** | 5 of 6 cells pass; CLX takes a princess 69.9 vs 61.6 (z 2.06) |
+
+## 8. Problems found along the way (not fixed outside this directory)
 
 1. **card_use.results() grades across account switches.**
    - Its trophy-total fallback, when a match has no result line, computes the change across the switch to the bait account.
@@ -669,7 +701,7 @@ f7095b61, gen_s0.pt 61011b6c, init rlarm_succ_levels_u0065.pt 05d42da7.
 3. **HANDOFF / TUESDAY "CLX 46.0% (113)"** is the pre-level-up CLX. The 253-match record (55.2%) mixes two tower levels and
    must not be read as a model effect.
 
-## 8. Files and reproduce
+## 9. Files and reproduce
 
 ```
 icebow/.venv/Scripts/python.exe -I scratchpad/gauntlet/L74/opp_model/live_table.py     # -> cache/ + out/live_matches.jsonl.gz (~2-4 min cold, 36 s warm; not committed)
