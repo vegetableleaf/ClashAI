@@ -686,6 +686,30 @@ unless marked 1,920; live 62.3 / 31.2 / 57.2 / 9.4; the 480-game SE is ~2 pp on 
 | R2 | C1 u30 at T .3 | 74.4 | 28.1 | 52.1 | 11.5 | 0.67 | T .1 kept |
 | R3 | C1 u45 at decide 60 | 69.0 | 35.6 | 50.6 | 18.8 | 0.66 | no gain, both-took worse; decide 40 kept |
 | **O4** | **C1 u40 (5935b73a), 1,920** | **67.7** | **33.2** | **53.9** | **13.5** | **0.63** | 5 of 6 cells pass; CLX takes a princess 69.9 vs 61.6 (z 2.06) |
+| **O4** | **C1 u50 (38328249), 1,920** | **68.1** | **29.9** | **56.3** | **10.9** | **0.63** | **all 6 overall cells pass** (max z 1.53); win +5.8 pp; per archetype: hog CLX-takes 64.5 vs 44.1 (z 2.34), other win 78.3 vs 63.6 (z 1.96) |
+| R2 | C1 u55 / u60 / u65 / u70 / u75 / u80 | 71.2 / 70.6 / 72.3 / 69.0 / 69.8 / 66.5 | 28.3 / 27.9 / 28.5 / 30.2 / 32.5 / 32.1 | 51.7 / 52.5 / 53.3 / 54.4 / 52.9 / 56.7 | 10.0 / 9.4 / 9.4 / 10.6 / 13.5 / 9.4 | 0.64 / 0.63 / 0.59 / 0.59 / 0.60 / 0.62 | PLATEAU: no gain u50 -> u75 (training win vs the mix 0.38 -> 0.40) |
+| R3d | diag, C1 u50 vs CLX without its ability head (rule press, as the trainer plays it) | 67.3 | 32.7 | 55.8 | 11.7 | 0.66 | (c) the press head is not the train / eval gap |
+| R3d | diag, C1 u50 vs CLX at plain tau .27 (live stack kept) | 67.7 | 31.9 | 54.4 | 11.5 | 0.62 | identical rows: tau_phase overrides the plain tau |
+| R3d | diag, C1 u50 vs CLX WITHOUT its live decision stack, tau .27 (= the trainer's CLX) | 63.8 | 33.8 | 61.0 | 11.5 | 0.63 | (a) the live stack is worth +3.9 pp to CLX on the same 480 games: C1 trained against a weaker CLX than it is scored against |
+| O4 | C1 u80, 1,920 | 68.1 | 32.7 | 56.6 | 11.4 | 0.64 | = u50 on 1,920 games: the plateau is confirmed; hog win z 2.21 / CLX-takes z 2.86 |
+| R4 | C1 resumed from u84 with `league_opp_live` (the frozen icebow opponents play the D3 live stack; cfg/oppC3_icemix_live_s74.yaml; snapshots u85+ keep C1's run name). Training win vs the mix fell 0.49 -> 0.28-0.33 at once: the stack reached the opponents | | | | | | |
+| R4 | u85 / u90 / u95 / u100 / u105 / u110 | 68.8 / 67.5 / 64.8 / 63.8 / 65.6 / 67.3 | 31.2 / 31.7 / 36.9 / 34.2 / 36.2 / 36.0 | 50.2 / 54.8 / 53.1 / 51.9 / 56.7 / 55.0 | 10.0 / 10.2 / 12.3 / 10.6 / 15.6 / 16.0 | 0.63 / 0.73 / 0.73 / 0.76 / 0.74 / 0.76 | past the plateau on strength; style drifts (answers faster) |
+| **O4** | **R4 u100 (ea1d0804), 1,920** | **63.7** | **35.9** | **54.0** | **12.6** | **0.74** | **all 6 overall cells pass, win +1.4 pp (z 0.34)**; per archetype only hog CLX-takes fails (64.8 vs 44.1, z 2.38); style misses the ~0.65 goal |
+| R4k | u100 eval knobs: decide 60 / decide 80 / +20 / +40 reaction ticks | 64.0 / 68.1 / 74.6 / 81.5 | 40.0 / 36.7 / 33.8 / 31.7 | 50.6 / 45.8 / 46.7 / 34.0 | 15.6 / 19.8 / 19.4 / 20.4 | 0.78 / 0.49 / 0.52 / 0.47 | slowing it at eval time buys style but costs strength: train at the slower tempo |
+| R5 | R4 resumed from u117 with the learner deciding every 80 ticks (cfg/oppC5_icemix_live_d80_s74.yaml); gated at T .1 / decide 80 | | | | | | running |
+
+**Plateau diagnosis (R2 -> R4).** C1's gate win stopped falling at ~u50 while its training win rate kept creeping up
+(vs CLX 0.44 by PFSP rating at u72; vs the mix 0.38 -> 0.40). The KL leash never bound (beta stayed at its 0.03 floor,
+KL ~0.08 < 0.1), so the budget was not the limit. Two train / eval differences were tested on the same 480 games: the
+Hero IW press head (no effect) and CLX's live decision stack (`livecal.LIVE`: tau by phase, hazard gate, X-Bow class
+sampling, Rocket / Log aims, lethal finishers, dead-lane blocks + own effects), which gap.py D3 always applies and the
+trainer's league never did: +3.9 pp for CLX. So the trainer was optimising against a weaker, different CLX. R4 removes
+that difference with an opt-in trainer key (`league_opp_live`, pipeline/rl_royale.py; tests
+pipeline/tests/test_league_opp_live_1020.py: absent = the 0bcc4c5 load_config + config hash on 3 yamls; pyflakes clean).
+
+**Also built, not used:** `princess_take` (pipeline/reward_terms.py, opt-in crown term, +w per enemy princess felled in
+play; tests pipeline/tests/test_princess_take_1020.py vs 0bcc4c5) and `cfg/oppC2_icemix_take_s74.yaml`. Not run: C1 did
+not stall (OT 50-57%, both-took 9-15%, at or above live), so a tower-taking bonus would push the wrong way.
 
 ## 8. Problems found along the way (not fixed outside this directory)
 
