@@ -405,12 +405,17 @@ adapter under it. Unset or another id keeps its behaviour: `pipeline/tests/test_
 | R3 | J4 | S-TIEBREAK-REGEN (engine) | 0.991 [0.986, 0.994]; 3x phase 0.961 [0.937, 0.979] | goal met overall; 3x lower CI 0.937 (n 135) |
 | R3 | J1 | H-DRILL-SURFACE (harness) | stamped 0.9289 (+24 / -0); full 0.9242 (+35 / -0) | gain; below the owner's 0.975 |
 | R3 | rare cards (10-20) | H-DRILL-SURFACE | own Goblin Drill 0.34 -> 0.61, opp 0.00 -> 0.74; evo drill 0.00 -> 0.04 | the evo needs its relocate action in the engine (not implemented in the fork; no device parameters on hand) |
+| R4 | J3 / J6 / J2 (all fights) | H-PRESPELL=spawn (fights.py opt-in: a fight starts before an in-flight Goblin Barrel / Graveyard cast, so the spell is replayed) | J3 0.933 -> **0.947 [0.939, 0.955]**; J6 0.697 -> 0.718 [0.697, 0.737] (pathing proper 0.828 -> 0.838); J2 0.917 -> 0.917 | gain on J3 / J6; kept OPT-IN, see below |
+| R4 | J1 | the same, on the J1 cohort | stamped 0.9289 -> 0.9273: 0 fights moved, 304 newly clean fights join at a lower agreement (own Tornado 0.978 -> 0.959 on 24 more) | not landed for J1: it changes the graded cohort; lead decision |
 | - | J5a, J5b, J8 winner, J3 wake law | - | >= 0.98 | meet |
 
 Section 6 has the full values. No metric has reached a confirmed plateau (two rounds with no CI-significant gain plus a written
 diagnosis): J4 met the goal in round 2, and every other metric has had at most two rounds.
 
-### 8.2 Queue for round 3 (fin16), biggest lever first
+**Round 4 decision owed (lead):** run the J-suite with `PARITY_PRESPELL=spawn` (J3 0.947, J6 0.718) and keep J1 without it
+(cohort continuity), or grade both with it (J1 0.927 on 13,357 stamped fights). The opt-in leaves every default run byte-identical.
+
+### 8.2 Queue for round 5 (fin16), biggest lever first
 
 1. **J4 (MET in round 2: 0.990).** Left:
    - the 3x phase, 0.937 [0.914, 0.956] (n 135 matches). The live switch tick is right: 2x -> 3x on the step into t4801 on 72 of
