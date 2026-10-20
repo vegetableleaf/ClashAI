@@ -64,8 +64,15 @@ deployed or run on a pod. Every number below comes from `analyze.out` (and `null
    - **First pod job:** the tower-level natural experiment. Score CLX against E4 with our tower at 15 vs 16, using the 13k
      opponent level table: 2 x 1,920 games, about 1.2 pod-h, no code change. Does the SIM reproduce live's +15.8 pp and
      -19.7 pp?
-   - That separates engine / level error from opponent error before any opponent is fitted. Pods are the lead's to assign
-     (rules: ask after 06:00).
+   - That separates engine / level error from opponent error before any opponent is fitted.
+8. **O0 result (ran 10-20 09:03-09:48 UTC on pods 13396 and 14009; section 6.1).** The SIM gets the direction right and about
+   half the size.
+   - Tower 15 -> 16: P(win) +7.8 pp [+5.6, +10.1] in the SIM vs +15.8 [+3.5, +27.6] live.
+   - P(opp takes a princess): -7.7 [-9.8, -5.7] in the SIM vs -19.7 [-31.2, -7.5] live.
+   - By the pre-registered rule this is a **PASS**: both SIM changes fall inside the live 95% CIs. But the princess cell
+     passes only at the edge: the SIM-minus-live gap is +12.0 pp, z ~ 2.0.
+   - The absolute gap does not come from the level: at tower 16 the SIM still says 78.1% wins / 17.2% princesses lost, vs
+     live 62.3% / 31.2%.
 
 ## 1. J11: does SIM win rate predict live?
 
@@ -355,6 +362,60 @@ judgement happens at O3 / O4, where each archetype with live n >= 30 is its own 
 - (b) fine-tuning moves crown behaviour and not only play style: O4. If it does not, the crown gap belongs to the engine
   (O0 / parity), not the opponent.
 - (b) the 13.5k+ difficulty effect: the sealed block must be at a fixed band, or reported per band.
+
+### 6.1 O0 result: the tower-level natural experiment (run 2026-10-20, `o0_verdict.py` -> `o0_verdict.out`)
+
+**Setup (a).**
+- Learner: CLX grafted (5d212358), sampled ability head, the stepd promotion EXTRA. Opponent: E4 T .1 on the live-mirrored
+  pool, fin13-linux, seed blocks 741200 / 742000 / 743000 / 744000 = 1,920 games per configuration.
+- Opponent levels: `stage2/levels/levels13k.json` (sha 3547c8d3). Opponent towers came out 1,290 at level 16 and 630 at 15 in
+  BOTH runs: same draw, same seeds, so the difference is **paired**.
+- The only difference: our tower level in the pod-local table copy.
+  - Pod 13396: own.tower 15, table sha dfd712ad.
+  - Pod 14009: own.tower 16, sha a860d0a5.
+- Each pod's `/workspace/cb_stepd` is untouched: its table is still 19e8d155. The runs used a hard-link copy, `/workspace/o0/cb`,
+  with only that file replaced.
+- Rows: pod_backup_weekend/o0/ (o0_t15.tgz 45d7c7eb, o0_t16.tgz 9f9b7f20, sha-verified). Scripts: `pod/o0_run.sh`,
+  `pod/mklevels.py`, `pod/pull_o0.sh`.
+
+| cell | SIM tower 15 | SIM tower 16 | SIM change (paired, n 1,920) | live CLX @4424 (n 114) | live CLX @4858 (n 138) | live change [Newcombe] |
+|---|---|---|---|---|---|---|
+| P(win) | 70.3% | 78.1% | **+7.8 [+5.6, +10.1]** | 46.5% | 62.3% | **+15.8 [+3.5, +27.6]** |
+| P(opp takes a princess in play) | 24.9% | 17.2% | **-7.7 [-9.8, -5.7]** | 50.9% | 31.2% | **-19.7 [-31.2, -7.5]** |
+| both sides took one | 6.6 | 4.5 | -2.1 | 13.2 | 9.4 | -3.8 |
+| OT share | 59.5 | 61.7 | +2.2 | 50.0 | 57.2 | +7.2 |
+| regulation loss | 11.3 | 6.5 | -4.8 | 30.7 | 15.2 | -15.5 |
+| P(win \| OT 0-0) | 70.2 | 75.9 | +5.7 | 60.0 | 63.2 | +3.2 |
+
+Per archetype, SIM win change: Royal Giant +16.3 [-0.2, +32.8], hyperbait +13.6 [+6.2, +21.1], Hog +8.9 [+3.8, +14.0],
+P.E.K.K.A bridge +8.9, lava +7.8, other +6.9, weak_other +6.5, golem +5.1.
+
+**Verdict.**
+- **(a) PASS by the rule written beforehand.** Both SIM changes are inside the live 95% CIs. The SIM's level physics has the
+  right sign and a material size; it is not a no-op.
+- **(a) But the SIM effect is about half the live point estimate:** 7.8 vs 15.8 pp (wins), 7.7 vs 19.7 pp (princesses).
+  - Win gap: 8.0 pp, z ~ 1.3.
+  - Princess gap: 12.0 pp, z ~ 2.0.
+  - The live side has n = 114 / 138, so these can be neither confirmed nor ruled out.
+- **(b) Two explanations, untested:**
+  1. The SIM under-models what a tower level does against human pushes (tower HP / damage vs the pushes that actually reach
+     the tower).
+  2. Part of the live jump is not the level: time of day, or the pool at 13.3-13.9k.
+  - The test that separates them: more live matches at 4858 inside the 13,000-13,249 band (today n = 9), or the O4 opponent
+    re-running this same pair. If the gap closes with a realistic opponent, cause 1 is about the opponent letting the tower
+    matter.
+- **(a) The absolute gap does not come from the level.**
+  - At tower 16 (today's live state) the SIM gives 78.1% wins and 17.2% princesses lost, vs live 62.3% and 31.2%: still +15.8
+    / -14.0 pp.
+  - The 13k level table makes the SIM *more* optimistic than all-16 (78.1% vs 71.9%), because a third of its opponents have
+    level-15 towers.
+- **Consequences.**
+  - Eval levels should now be our tower 16 + the 13k opponent table. That is the live state since 10-19 14:02, and it is
+    lead / owner's call.
+  - Section 2.1's gap (B) used all-16. Against the 13k table the princess-take gap is -14.0 pp, larger.
+  - The remaining SIM-vs-live gap belongs to O1-O4 (opponent behaviour) and to the J-ENGINE tower metrics. A level-table fix
+    alone cannot close it.
+  - O1+ waits for the lead's go.
 
 ## 7. Problems found along the way (not fixed outside this directory)
 
