@@ -245,7 +245,8 @@ def actor_cfg(base: dict, kind: str, aid: int, dev: str) -> dict:
     if kind == "rollout" and base.get("spell_value"):         # L74 combo: the learner's Rocket events + each row's tick
         cfg["spell_track"] = cfg["record_tick"] = True        # (spell_value.row_rewards maps events to rows by tick)
     if kind == "rollout" and base.get("crown_track"):         # L74 W6: the crown record + each row's tick
-        cfg["crown_track"] = cfg["record_tick"] = True        # (reward_terms.row_terms maps events to rows by tick)
+        cfg["crown_track"], cfg["record_tick"] = base["crown_track"], True   # (row_terms maps events to rows by tick;
+        #                                                       W10 rocket_tower: "rocket_dmg" = the tracker measures Rockets)
     return cfg
 
 
@@ -4243,8 +4244,9 @@ class Learner:
                 base[k] = self.cfg[k]
         if spell_cfg(self.cfg) is not None:                   # L74 combo -> actor_cfg spell_track (absent by default)
             base["spell_value"] = True
-        if crown_cfg(self.cfg) is not None:                   # L74 W6 -> actor_cfg crown_track (absent by default)
-            base["crown_track"] = True
+        ct = crown_cfg(self.cfg)
+        if ct is not None:                                    # L74 W6 -> actor_cfg crown_track (absent by default)
+            base["crown_track"] = "rocket_dmg" if ct.get("rocket_tower") else True   # W10: Rocket damage only when on
         return base
 
     def start_actors(self) -> None:

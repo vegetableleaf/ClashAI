@@ -61,6 +61,8 @@ DEATH_TOL, SWARM_SLACK, TOWER_FLOOR, TOWER_REL = 10, .1, 100, .1
 TIME_OUT_TICK = 6000               # the ladder match's end (180 s + 120 s overtime at 20 ticks/s), the live frames' tick base
 LEAD_AHEAD = {'Rascals': 2000}     # the SIM formation's lead body ahead of its play point (H-RASCALS). ponytail: hardcoded; probe the formation if another card needs it
 SPELL_WINDOW = 60                 # ticks after a cast in which a drop/death counts as the spell's hit
+PRESPELL = os.environ.get('PARITY_PRESPELL', '')       # H-PRESPELL (cut): '' off, 'spawn', 'all'
+PRESPELL_SPAWN = {'GoblinBarrel', 'Graveyard'}
 DIGGERS = {'Miner', 'GoblinDrill'}  # tunnel in: seen active on their way, deploying where they surface (Knight etc. can show
                                    # 13/15 -> 12/14 too: 31 of 531 Knights, so the rule is by card)
 TOWER_RADIUS = 1400                # millitiles, king (princess 1000): attribution slack, not a law
@@ -355,6 +357,17 @@ def tracks(frames):
             elif r['active'] is not None and b['kind'] in (12, 14) and 'land' not in r and t - r['first'] <= 80:
                 r['land'] = (t, b['x'], b['y'])     # active first, deploying later: a digger (Miner) surfacing here
     return tr
+
+
+def drill_surface(tr, side, card_id, after):
+    """H-DRILL-SURFACE (W8 round 3): where a Goblin Drill came up. Its dig and the building it leaves are two bodies (two
+    tracks); the building's first point, a static track of the same side and card first seen 20..150 ticks after `after`.
+    The bot's tap on an exact tile corner is snapped by the game: 49 of 93 drill taps in the 10-20 battles came up 1 tile
+    off ((3000, 23000) -> (2000, 22000)), where the SIM, put down at the tap, dealt a median 315 tower damage against 125."""
+    for q in tr:
+        if q['side'] == side and q['card_id'] == card_id and after + 20 <= q['first'] <= after + 150 and                 max(abs(x - q['x']) + abs(y - q['y']) for _, x, y in q['traj']) < 300:
+            return round(q['x']), round(q['y'])
+    return None
 
 
 def form_of(cid, c):
@@ -687,6 +700,10 @@ def deployments(m, catalog, life=None, own_unit=None, stats=None):
                   x=round(g['x']), y=round(g['y']), n=len(g['members']), source='first_seen',
                   spell_spawned=c.get('type') == 'spell', lo=lo, hi=hi)
         land = [r['land'] for r in g['members'] if 'land' in r] if c['display_name'] in DIGGERS else []
+        if not land and c['display_name'] == 'GoblinDrill' and os.environ.get('PARITY_DRILL_TAP') != '1':
+            s = drill_surface(tr, g['side'], g['card_id'], g['tick'])
+            if s and (abs(s[0] - g['x']) + abs(s[1] - g['y'])) > 300:
+                land = [(None, s[0], s[1])]
         if land:
             # A Miner is seen tunnelling from its own side (active rows) before it surfaces (deploying rows): the play's
             # point is where it surfaces, not where it was first seen (ceiling subset: every opp Miner was replayed
@@ -709,6 +726,10 @@ def deployments(m, catalog, life=None, own_unit=None, stats=None):
             if cand:
                 i = cand[-1]; used.add(i); p = m['plays'][i]
                 ev.update(x=p['x'], y=p['y'], source='own_tap', tap=p['tick']); delays.append(tick-p['tick'])
+                if ev['name'] == 'GoblinDrill' and os.environ.get('PARITY_DRILL_TAP') != '1':   # H-DRILL-SURFACE
+                    s = drill_surface(tr, g['side'], g['card_id'], p['tick'])
+                    if s:
+                        ev.update(x=s[0], y=s[1], dig=True)
                 waits.append(elixir_wait(p['tick'], p.get('elixir'), c.get('elixir')))
         out.append(ev)
     delay = statistics.median(delays) if delays else 23
@@ -776,9 +797,16 @@ def cut(m, events, window):
             born = [tr[b['id']]['first'] for b in m['frames'][max(i, 0)][1]
                     if not b['tower'] and b['kind'] in (12, 14) and tr[b['id']]['first'] > ticks[max(i, 0)]-80]
             dead = [lo for lo, hi in pend if i >= 0 and lo < ticks[i] < hi]
-            if not (born or dead) or i < 0:
+            # H-PRESPELL (W8 round 4, opt-in PARITY_PRESPELL=spawn|all): a seen spell still in flight / its area running at
+            # the start frame (fights.py flags it spell_in_flight_at_start, an unclean fight) is not set up; start before its
+            # cast instead, so it is replayed. 'spawn': the spawning spells only (a Goblin Barrel's goblins, a Graveyard's
+            # skeletons: in the J6 round-2 dumps 15 of 24 unclean failures had a live enemy from one that the SIM lacked).
+            inflight = [e['tick'] for e in events if PRESPELL and e.get('source') == 'spell_seen' and i >= 0
+                        and e['tick'] < ticks[i] <= e.get('end', e['tick']) and (PRESPELL == 'all' or e['name'] in PRESPELL_SPAWN)]
+            if not (born or dead or inflight) or i < 0:
                 break
-            i = min(([bisect_left(ticks, min(born)) - 1] if born else []) + ([bisect_left(ticks, min(dead))] if dead else []))
+            i = min(([bisect_left(ticks, min(born)) - 1] if born else []) + ([bisect_left(ticks, min(dead))] if dead else [])
+                    + ([bisect_left(ticks, min(inflight)) - 1] if inflight else []))
         if i < 0:
             continue
         t0 = ticks[i]; t1 = t0 + window

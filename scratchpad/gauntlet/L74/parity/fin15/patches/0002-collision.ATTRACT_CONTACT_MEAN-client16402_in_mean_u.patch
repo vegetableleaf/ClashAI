@@ -1,7 +1,7 @@
 From c6887a69646b6c180e25ef98d6cdec958dbcc1a0 Mon Sep 17 00:00:00 2001
 From: w8 <w8@local>
 Date: Tue, 20 Oct 2026 10:17:45 -0400
-Subject: [PATCH 2/2] collision.ATTRACT_CONTACT_MEAN =
+Subject: [PATCH 2/3] collision.ATTRACT_CONTACT_MEAN =
  client16402_in_mean_uncapped: a contact mean that holds a pull is not capped
  at 150
 

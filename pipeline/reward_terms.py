@@ -13,6 +13,13 @@ Off (absent / null / false) = no tracker, no extra engine call, the same rows, b
                                   residual critic, B["phi"]). Policy-INVARIANT by construction (gae_batch's docstring: with a
                                   converged critic A = the unshaped advantage), so it can speed credit assignment but never
                                   make the redirect pay. The literal 10-20 ticket; the arm yaml uses penalty.
+    rocket_tower: on              L74 W10 (10-20, plan1019 Rocket use; scratchpad/gauntlet/L74/rocket/ROCKET.md): +rocket_tower_w per
+                                  princess tower of ENEMY PRINCESS HP our Rocket removed (king damage never pays: owner doctrine,
+                                  never the king), on the row that DECIDED the Rocket, summed <= ROCKET_MATCH_CAP per match. It
+                                  CHANGES the optimum, deliberately: the potential form is policy-invariant (W6) and the tower
+                                  potential (factorial factor E) did not move tower Rockets; the SIM's win-only reward shows no
+                                  payoff for chip Rockets even vs the calibrated opponent (ROCKET.md). The tracker measures the
+                                  damage only with rocket_dmg (actor crown_track "rocket_dmg"); otherwise its result is unchanged.
     tornado_king_penalty: on      owner 10-19 I2: each of OUR Tornados cast while >= 1 own princess is down costs
                                   tornado_king_w x the NET displacement (tiles) of the enemy bodies it caught TOWARD our king,
                                   floored at 0 and capped, on the row that decided it. A Tornado that holds its bodies in place
@@ -37,15 +44,20 @@ import numpy as np
 
 from pipeline.spell_value import KING_TOWER, PRINCESS_TOWER, TILE, TORNADO_R_TILES, _row_of, to_board
 
-TERMS = {"lead_protect": "lead_protect_w", "princess_redirect": "princess_redirect_w",
+TERMS = {"rocket_tower": "rocket_tower_w",                          # W10 (first: W7's princess_take edits the last line)
+         "lead_protect": "lead_protect_w", "princess_redirect": "princess_redirect_w",
          "tornado_king_penalty": "tornado_king_w"}                     # switch -> its weight key (rl_royale CROWN_KEYS)
-DEFAULTS = {"lead_protect_w": 0.2,            # x the win reward, once per match (DOCTRINE_MEASURED 4 R1)
+DEFAULTS = {"rocket_tower_w": 0.5,           # W10: per princess tower of enemy princess HP our Rocket removed (a ~0.11
+            #                                   chip = 0.055 ~ 2.75 elixir at spell_value's 0.02 / elixir; <= the match cap)
+            "lead_protect_w": 0.2,            # x the win reward, once per match (DOCTRINE_MEASURED 4 R1)
             "princess_redirect_w": 0.2,       # per princess tower of HP lost while both stand: a felled first princess
             #                                   costs <= 0.2 on top of the terminal reward; |sum| < 2 w per match
             "tornado_king_w": 0.01}           # per tile of net pull toward our king (3 bodies x 3 tiles = 0.09; spell_value
 #                                               prices elixir at 0.02, so a Tornado's 3 elixir = 0.06)
 REDIRECT_MODES = ("penalty", "potential")
 TORNADO_EVENT_CAP, TORNADO_MATCH_CAP = 0.15, 0.3   # ponytail: fixed caps, a config key if an arm needs another
+ROCKET_MATCH_CAP = 0.3          # W10: |rocket_tower reward| per match (~5 chips at the default weight; pros fire 1.6 / match)
+ROCKET_BLAST_TILES = 2.0        # catalog Rocket radius (spell_value.ROCKET_R_TILES); a tower counts by the engine's edge rule
 TOWARD_MIN_TILES = 1.0          # eval slice: a Tornado "to the king" moved its bodies >= this net toward our king
 TOWER_AIM_TILES = 3.0           # doctrine (habits/hablib.rocket_uses): a tower Rocket's aim is this close to a slot
 ENEMY_SLOTS = ((3.5, 6.5), (14.5, 6.5), (9.0, 3.0))   # enemy princess L / R and king, board tiles, my frame
@@ -55,7 +67,8 @@ TRACK_TICKS = 30                # SpellTracker's rule: a spell seen again at the
 def bound(p: dict) -> float:
     """max |summed reward| (or |Phi|) per match of the terms on in ``p`` (crown_cfg's dict): lead w (crowns never fall, so
     1-0 -> 1-1 happens at most once), redirect 2 w (< 2 princess towers of HP before the first falls), Tornado its cap."""
-    return (float(p.get("lead_protect_w", 0.0)) * bool(p.get("lead_protect"))
+    return (ROCKET_MATCH_CAP * bool(p.get("rocket_tower"))
+            + float(p.get("lead_protect_w", 0.0)) * bool(p.get("lead_protect"))
             + 2.0 * float(p.get("princess_redirect_w", 0.0)) * bool(p.get("princess_redirect"))
             + TORNADO_MATCH_CAP * bool(p.get("tornado_king_penalty")))
 
@@ -63,9 +76,11 @@ def bound(p: dict) -> float:
 class CrownTracker:
     """One match, one side (rl_royale crown terms / search_s0 --crown-log). Holds no env reference after __init__."""
 
-    def __init__(self, env, side: int):
+    def __init__(self, env, side: int, rocket_dmg: bool = False):
         self.side = int(side)
         self.tornado, self.rocket = env.ids.get("Tornado"), env.ids.get("Rocket")
+        self.rocket_dmg = bool(rocket_dmg)  # W10 rocket_tower (opt-in): our Rockets' enemy-princess damage -> "rocket_hits"
+        self.fly, self.wait, self.hits, self.fpos, self.foe_last = {}, [], [], None, None
         self.pr = self.fpr = None          # own / foe princess uids (first stop: the match start, all towers stand)
         self.alive = self.crowns = None    # at the previous stop
         self.prev = None                   # enemy non-tower bodies at the previous stop: uid -> (x, y, radius) subtiles
@@ -116,6 +131,8 @@ class CrownTracker:
             self.frozen = not all(alive[u] for u in self.pr)
         self._tornados(st, t, bodies, sum(not alive[u] for u in self.pr))
         self._rockets(st, t)
+        if self.rocket_dmg:                                            # W10 (off: never called, the result unchanged)
+            self._rocket_hits(st, t, dict(zip(self.fpr, foe)))
         self.alive, self.crowns, self.prev = alive, crowns, bodies
         self.end = {"tick": t, "king": round(king[2], 4) if king else 0.0, "princess": [round(f, 4) for f in own],
                     "foe_princess": [round(f, 4) for f in foe], "crowns": crowns}
@@ -154,12 +171,41 @@ class CrownTracker:
                         math.hypot(ax - x, ay - y) <= TOWER_AIM_TILES for x, y in ENEMY_SLOTS)})
                 self.rk[k] = t
 
+    def _rocket_hits(self, st, t, foe) -> None:
+        """W10 rocket_tower: each of our Rockets -> the enemy PRINCESS HP (princess-tower units) inside its blast at its aim,
+        lost from the last stop it was seen in flight to the first stop AFTER the one where it is gone (the impact shows one
+        tick after the spell leaves: spell_value's rule). ponytail: stop resolution (<= 2 decision stops), so other damage on
+        the same tower in that window (an X-Bow bolt, a troop) counts too; SpellTracker's single-tick stepping is the exact
+        upgrade if a census shows the excess matters."""
+        if self.fpos is None:
+            self.fpos = {e.uid: (e.x, e.y, e.radius) for e in st.entities if e.uid in self.fpr}
+        for w in [w for w in self.wait if t > w["gone"]]:
+            self.hits.append({"seen": w["seen"], "impact": w["gone"],
+                              "dmg": round(sum(max(0.0, w["before"][u] - foe[u]) for u in w["in"]), 4)})
+        self.wait = [w for w in self.wait if t <= w["gone"]]
+        here = {(s.aim_x, s.aim_y) for s in st.spells if int(s.team) == self.side and s.card_id == self.rocket}
+        for k in [k for k in self.fly if k not in here]:
+            f = self.fly.pop(k)
+            self.wait.append({"seen": f["seen"], "gone": t, "before": f["hp"], "in": f["in"]})
+        for k in here:
+            if k in self.fly:
+                self.fly[k]["hp"] = dict(foe)
+            else:
+                self.fly[k] = {"seen": t, "hp": dict(foe), "in": [u for u, (x, y, r) in self.fpos.items() if math.hypot(
+                    k[0] - x, k[1] - y) <= ROCKET_BLAST_TILES * TILE + r]}
+        self.foe_last = dict(foe)
+
     def result(self) -> dict:
         for a in self.active:                                          # the match ended under a Tornado
             self._close(a)
         self.active = []
-        return {"lost": [list(x) for x in self.lost], "falls": list(self.falls), "tornados": list(self.tornados),
-                "rockets": list(self.rockets), "end": self.end}
+        out = {"lost": [list(x) for x in self.lost], "falls": list(self.falls), "tornados": list(self.tornados),
+               "rockets": list(self.rockets), "end": self.end}
+        if self.rocket_dmg:                                            # W10: impacts still waiting resolve on the last stop
+            hits = list(self.hits) + [{"seen": w["seen"], "impact": w["gone"], "dmg": round(sum(
+                max(0.0, w["before"][u] - self.foe_last[u]) for u in w["in"]), 4)} for w in self.wait]
+            out["rocket_hits"] = hits
+        return out
 
 
 # ---------------------------------------------------------------------------------------------------- learner side (pure)
@@ -218,6 +264,21 @@ def row_terms(crown: dict, plays: list, ticks, p: dict) -> dict:
             r[i] -= e
             total += e
         out["tornado"] = -total
+    if p.get("rocket_tower"):                         # W10: off = no "rocket" keys (the W6 / W7 outputs unchanged)
+        if "rocket_hits" not in crown:
+            raise ValueError("rocket_tower needs the tracker's rocket_hits (actor_cfg crown_track 'rocket_dmg')")
+        row, total, out["rocket_unmapped"] = {int(t): i for i, t in enumerate(ticks)}, 0.0, 0
+        for h in sorted(crown["rocket_hits"], key=lambda h: h["seen"]):
+            e = min(p["rocket_tower_w"] * float(h["dmg"]), ROCKET_MATCH_CAP - total)
+            if e <= 0:
+                continue
+            i = _row_of(int(h["seen"]), "rocket", plays, row)
+            if i is None:
+                out["rocket_unmapped"] += 1
+                continue
+            r[i] += e
+            total += e
+        out["rocket"] = total
     out["r"] = r
     return out
 
@@ -230,12 +291,15 @@ def match_summary(crown: dict) -> dict:
         at.setdefault(f["tick"], []).append(f["who"])
     led = any(list(f["before"]) == [0, 0] and at[f["tick"]] == ["foe"] for f in falls)   # 0-0 -> exactly 1-0
     tor = [e for e in crown["tornados"] if e["down"] >= 1]
-    return {"king_end": end.get("king"), "lost_princess": any(f["who"] == "own" for f in falls),
+    s = {"king_end": end.get("king"), "lost_princess": any(f["who"] == "own" for f in falls),
             "took_princess": any(f["who"] == "foe" for f in falls), "led_10": led,
             "gave_back": bool(gave_back(crown)), "tornados": len(crown["tornados"]), "tornados_after_fall": len(tor),
             "tornado_to_king": sum(e["toward"] >= TOWARD_MIN_TILES for e in tor),
             "toward_after_fall": round(sum(max(0.0, e["toward"]) for e in tor), 4),
             "rockets": len(crown["rockets"]), "rockets_tower": sum(bool(x["tower"]) for x in crown["rockets"])}
+    if "rocket_hits" in crown:                       # W10 rocket_dmg tracker only (otherwise the summary is unchanged)
+        s["rocket_princess_dmg"] = round(sum(h["dmg"] for h in crown["rocket_hits"]), 4)
+    return s
 
 
 def batch_stats(summaries: list, sums: list) -> dict:
@@ -247,6 +311,9 @@ def batch_stats(summaries: list, sums: list) -> dict:
         st[f"{k}_per_match"] = round(float(sum(vals)) / max(len(vals), 1), 4)
     for k in ("lead", "redirect", "tornado"):
         st[f"{k}_reward_per_match"] = round(sum(s[k] for s in sums) / n, 5)
+    if any("rocket" in s for s in sums):            # W10 rocket_tower on (off: no keys, the stats unchanged)
+        st["rocket_reward_per_match"] = round(sum(s.get("rocket", 0.0) for s in sums) / n, 5)
+        st["rocket_unmapped"] = int(sum(s.get("rocket_unmapped", 0) for s in sums))
     st["unmapped_tornados"] = int(sum(s["unmapped"] for s in sums))
     tot = [abs(float(s["r"].sum())) for s in sums]
     st["dominates"] = float(np.mean(tot)) if tot else 0.0          # mean |match term reward| / 1 (the win reward)

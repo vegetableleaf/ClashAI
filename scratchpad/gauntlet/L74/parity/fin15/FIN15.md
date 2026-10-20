@@ -7,34 +7,37 @@ Cohort for every before/after: the 638 caplogs13 logs (the FIN13 / METRICS_J coh
 ## 0. Deliverable
 
 - **Wheel `fin15`**: `royalesim-0.1.36-cp310-abi3-manylinux_2_34_x86_64.whl`, sha256
-  **a144f8fe1235e89e3abdee4f138f35c65552a0e4dfc30b91994578b3542ebdca** (4,979,516 bytes).
-  - The fork commit compiled into it: c6887a69646b6c180e25ef98d6cdec958dbcc1a0, clean.
+  **88f3fdcbebabe3e81d64954b48861ccabe03457b2d92fd5e34eb2f56a607f5ab**.
+  - The fork commit compiled into it: 305aaafceb7b28bf5108c9fe028fafae97d32676, clean.
+  - The first candidate earlier on 10-20 (a144f8fe..., pin c6887a69, 2 laws) is superseded: it is the same fork without
+    TIEBREAK_REGEN.
   - Copies: the laptop's `/tmp/claude/parity1016/fin15/` and P2's `/workspace/w8/wheels/rsfork_fin15/`.
-- **Landed laws** (fin14c + 2):
+- **Landed laws** (fin14c + 3):
   1. `match.MANA_REGEN_STEP = client16402_floor_10000` (elixir per tick floored in 1/10000).
   2. `collision.ATTRACT_CONTACT_MEAN = client16402_in_mean_uncapped` (a Tornado pull in a contact mean is not capped at 150).
+  3. `match.TIEBREAK_REGEN = client16402_stops_after_end` (the elixir bar stops after the step into t6003 under the drain).
 - **Install on a training pod** (the setup_fin13.sh pattern; `ROYALE_RUNTIME=fin15-linux`, venv `/workspace/venvf15`):
 
 ```bash
 # laptop -> pod: the wheel, and a code tree at the W8 commit (royale_runtime.py knows fin15-linux; parity/fin15/ has the manifest)
 scp /tmp/claude/parity1016/fin15/royalesim-*.whl <pod>:/workspace/in/fin15/
 # pod (CB = that code tree):
-FIN15_SHA=a144f8fe1235e89e3abdee4f138f35c65552a0e4dfc30b91994578b3542ebdca FIN15_PIN=c6887a69646b6c180e25ef98d6cdec958dbcc1a0 \
+FIN15_SHA=88f3fdcbebabe3e81d64954b48861ccabe03457b2d92fd5e34eb2f56a607f5ab FIN15_PIN=305aaafceb7b28bf5108c9fe028fafae97d32676 \
   CB=/workspace/<code tree> bash $CB/scratchpad/gauntlet/L74/parity/fin15/setup_fin15.sh   # -> /workspace/stepd/fin15/FIN15_OK
 # train / eval on it: /workspace/venvf15/bin/python + ROYALE_RUNTIME=fin15-linux where stepd_chain.sh (and the other launchers)
 # say /workspace/venvf13 + fin13-linux
 ```
 
 - **The smoke** (smoke_fin15.py) checks three things:
-  - `activate()` passes against the frozen manifest (provenance c6887a69 clean, embedded card table, tower-troop API);
+  - `activate()` passes against the frozen manifest (provenance 305aaafc clean, embedded card table, tower-troop API);
   - the Hero IW adapter is on;
   - the elixir unit is 10000, and a 600-tick battle runs.
 - **Verification (fin15 READY checklist, all on P2 = 64.247.206.80:40548):**
   - the cargo gate passes and each plant is red (section 7);
   - J1 FIN15 + the J-suite METRICS_J15 ran on the 638-log cohort (section 6), plus the 10-20 battles;
-  - `setup_fin15.sh` (FREEZE, then the plain second-pod path) ended in FIN15_OK: activate() pins c6887a69 clean with the embedded
+  - `setup_fin15.sh` (FREEZE, then the plain second-pod path) ended in FIN15_OK: activate() pins 305aaafc clean with the embedded
     table, the Hero IW adapter is on, the unit is 10000 and a 600-tick battle ran; venvf36 is intact;
-  - a real `python -m pipeline.rl_royale --smoke` on stepd_l16_s74.yaml under ROYALE_RUNTIME=fin15-linux with /workspace/venvf15: **SMOKE PASS** (u0000 W/L/D 3/5/0, the round trip identical, the resume check all True).
+  - a real `python -m pipeline.rl_royale --smoke` on stepd_l16_s74.yaml under ROYALE_RUNTIME=fin15-linux with /workspace/venvf15 on the FINAL wheel: **SMOKE PASS** (u0000 W/L/D 3/5/0, the round trip identical, the resume check all True).
   - The manifest `build_manifest_fin15.json` (30 files) is frozen from P2's venvf15 and committed here.
 - **Trap**: on a pod that has the wheel's BUILD checkout (P2: `/workspace/w8/src_rsfork_fin15`), the wheel reads that checkout's
   data and `activate()` refuses it. setup_fin15.sh checks for this.
@@ -50,6 +53,8 @@ FIN15_SHA=a144f8fe1235e89e3abdee4f138f35c65552a0e4dfc30b91994578b3542ebdca FIN15
 | 4a | tiebreak drain timing | H, LANDED (harness) | 2 of 5 misses were sudden-death matches labelled tiebreak (a); the drain law fits within 2-3 ticks | H-J8-CLASS (replay_metrics.py) | selftest OK | J8 tiebreak end tick 15 / 20 -> 15 / 18 | - |
 | 4b | Clone copy deploy | not patched | the SIM holds copies for the same 10 ticks; J5a compares a flag (b) | - | - | - | - |
 | 4c | river crossing / lane | DIAGNOSED (round 2), no engine law | of 30 failing own crossings, 24 are in fights J1 flags unclean (missing in-flight Graveyard / Goblin Barrel spawns, fight outcomes); 0 crossing law (a) | - | - | J6 0.692 -> 0.694; strict-clean 0.838 | - |
+| 4d | elixir past overtime's end | S, LANDED (round 3) | under the drain the live bar stops after the step into t6003; the SIM regenerated on, up to 6.9 elixir above (a, 3 of 3 matches) | `match.TIEBREAK_REGEN = client16402_stops_after_end` (305aaafc) | green (1966 / 0 / 3), plant red | J4 3x phase 0.937 -> **0.961 [0.937, 0.979]**; J4 0.990 -> 0.991 [0.986, 0.994] | none by construction (no play after t6000) |
+| 5 | Goblin Drill play point | H, LANDED (round 3) | the dig and the building it leaves are two bodies; the harness replayed the drill at the tap (own: the game moves 49 of 93 corner taps one tile) or at the dig's first-seen point near the opponent's king (opponent drills) (a) | H-DRILL-SURFACE (fights.py `drill_surface`; PARITY_DRILL_TAP=1 restores) | parity selftest OK | J1 stamped 0.9271 -> **0.9289** (+24 / -0), full 0.9226 -> 0.9242 (+35 / -0); opp Goblin Drill 0.00 -> 0.84; 10-20: own drill 0.34 -> 0.61, opp 0.00 -> 0.74 | J1 up |
 
 ## 2. Fix 1: elixir regen truncation (LANDED, `match.MANA_REGEN_STEP = client16402_floor_10000`)
 
@@ -228,29 +233,30 @@ of 15). No card lost more. J1 is checked in the FIN15 re-score (section 6).
 
 ## 6. J1-J8 before / after
 
-**Runs.** Before = METRICS_J and FIN13 (fork fin14c, W1 harness, 19899 / P3). After = METRICS_J15 and FIN15 (fork fin15, P2).
+**Runs.** Before = METRICS_J and FIN13 (fork fin14c, W1 harness, 19899 / P3). After = the FINAL fin15: METRICS_J15F and FIN15F
+(fork 305aaafc + the W8 harness, P2). The intermediate METRICS_J15 / FIN15 (2 laws, older harness) are in the round log.
 Both cover the same 638 caplogs13 logs, the same exports and K = 8. The W8 harness fixes are marked; each one's effect is shown
 on both engines where it matters.
 
-| metric | before (fin14c) | after (fin15) | goal 0.95 (lower CI) |
+| metric | before (fin14c, W1 harness) | after (FINAL fin15 = 305aaafc + the W8 harness) | goal 0.95 (lower CI) |
 |---|---|---|---|
-| **J1 fight, stamped** (FIN13 -> FIN15) | 0.926 [0.920, 0.932] (13,049 fights / 403 matches) | **0.927 [0.921, 0.933]** (13,053); cmp.py: 0.9263 -> 0.9271, 18 fights up / 7 down | no (owner's 0.975) |
-| J1 fight, full | 0.9217 | 0.9226 (+42 / -20) | no |
+| **J1 fight, stamped** (FIN13 -> FIN15F) | 0.926 [0.920, 0.932] (13,049 fights / 403 matches) | **0.929 [0.923, 0.935]** (13,053); cmp.py 0.9263 -> 0.9289, 42 fights up / 7 down | no (owner's 0.975) |
+| J1 fight, full | 0.9217 | 0.9242 (77 up / 20 down) | no |
+| J1, the laws alone (FIN15, W1 harness) / + H-DRILL-SURFACE (FIN15d) / + TIEBREAK_REGEN (FIN15F) | - | 0.9271 / 0.9289 / 0.9289 (FIN15d -> FIN15F: 0 fights moved) | - |
 | J1 own cards that MEET | Log, X-Bow, Tornado | the same: Log 0.971, X-Bow 0.968, Tornado 0.978 (0.976 before) | - |
 | J1 coverage, tier B (coverage.py, same census) | 0.278 | 0.278 | no (0.9) |
-| **J2 spell effect** | 0.904 [0.894, 0.914] | **0.914 [0.906, 0.923]** | no |
-| J2 with H-J2-REACH (no air body under a ground-only spell) | - | 0.917 [0.909, 0.925]; strict-clean fights **0.951 [0.942, 0.960]** | point yes, lower CI no |
+| **J2 spell effect** (H-J2-REACH from FINAL on) | 0.904 [0.894, 0.914] | **0.917 [0.909, 0.925]**; strict-clean fights 0.951 [0.942, 0.960] | point yes on strict-clean, lower CI no |
 | J2 Tornado | 0.821 [0.792, 0.850] | **0.880 [0.855, 0.902]**; strict-clean fights 0.939 | no |
 | **J3 king activation, all** | 0.931 [0.922, 0.940] | 0.933 [0.925, 0.942]; strict-clean fights 0.973 | strict: yes |
 | J3 positives / damage triggers after our Tornado | 0.851 / 0.569 | 0.856 / 0.641 | no |
 | J3 wake law given the SIM trigger | 1090 / 1090 | 1107 / 1107 | yes |
-| **J4 own elixir, open loop, W1 harness** | 0.840 [0.820, 0.858] | 0.909 | - |
-| J4, round-2 harness (CAPDATE + DROPCOST + GAIN) | 0.878 [0.863, 0.892] | **0.990 [0.985, 0.993]** | **YES** |
-| J4 by phase (round-2 harness) | 1x 0.951, 2x 0.752, ot2x 0.802, 3x 0.799 | 1x 0.995, 2x 0.985, ot2x 0.977, **3x 0.937 [0.914, 0.956]** | 3x no |
-| J5a deploy (fights / FIN bodies) | 0.989 / 0.992 | 0.989 / 0.991 | yes |
+| **J4 own elixir, open loop** (W1 harness) | 0.840 [0.820, 0.858] | 0.909 (fin15 laws, W1 harness) | - |
+| J4, final harness (CAPDATE + DROPCOST + GAIN) | 0.878 [0.863, 0.892] | **0.991 [0.986, 0.994]** | **YES** |
+| J4 by phase, final harness | 1x 0.951, 2x 0.752, ot2x 0.802, 3x 0.799 | 1x 0.995, 2x 0.985, ot2x 0.977, **3x 0.961 [0.937, 0.979]** | 3x: point yes, lower CI no |
+| J5a deploy (fights / FIN bodies) | 0.989 / 0.992 | 0.989 / 0.992 | yes |
 | J5b card cycle | 0.996 | 0.996 | yes |
-| **J6 river crossing** | 0.692 [0.672, 0.712] | 0.694 [0.674, 0.714]; pathing proper 0.827; strict-clean fights 0.838 (pathing proper 0.904) | no |
-| **J7 whole match, 573 matches** | trajectory 0.896, crown sequence 0.483, falls in time 0.454, result 0.496, king wake 0.771 | trajectory 0.896, crown sequence **0.499**, falls 0.469, result 0.511, king wake 0.773 | no |
+| **J6 river crossing** | 0.692 [0.672, 0.712] | 0.697 [0.677, 0.717]; pathing proper 0.828; strict-clean fights 0.838 (pathing proper 0.904) | no |
+| **J7 whole match, 573 matches** | trajectory 0.896, crown sequence 0.483, falls in time 0.454, result 0.496, king wake 0.771 | trajectory 0.898, crown sequence **0.506** (ceiling 0.834), falls 0.476, result 0.518, king wake 0.778 | no (the raw goal is above the ceiling; section 8) |
 | **J8 regulation / tiebreak winner** | 102 / 102, 19 / 20 | 102 / 102, 17 / 18 (H-J8-CLASS) | yes |
 | J8 tiebreak end tick | 15 / 20 | 15 / 18 | no |
 
@@ -300,14 +306,14 @@ classified by analysis/j6cause_clean.py.
 
 **Results.**
 
-| metric (37 scored matches) | fin14c | fin15 |
-|---|---|---|
-| J1 strict, raw | 0.873 [0.840, 0.905] (832 fights) | 0.873 [0.840, 0.905] |
-| J1 all, raw | 0.689 [0.648, 0.731] (2,591 fights) | 0.689 [0.648, 0.731] |
-| J4 elixir (round-2 harness) | 0.891 [0.834, 0.942] | **0.999 [0.998, 1.000]** |
-| J2 (447 bodies) / Tornado (25) | 0.803 / 0.920 | 0.803 / 0.920 |
-| J3 all | 0.916 | 0.916 |
-| J6 | 0.522 | 0.521 |
+| metric (37 scored matches) | fin14c | fin15 (2 laws) | FINAL fin15 + H-DRILL-SURFACE |
+|---|---|---|---|
+| J1 strict, raw | 0.873 [0.840, 0.905] (832 fights) | 0.873 [0.840, 0.905] | **0.888 [0.858, 0.916]** |
+| J1 all, raw | 0.689 [0.648, 0.731] (2,591 fights) | 0.689 [0.648, 0.731] | **0.700 [0.662, 0.739]** |
+| J4 elixir (round-2 harness) | 0.891 [0.834, 0.942] | **0.999 [0.998, 1.000]** | 0.999 |
+| J2 (447 bodies) / Tornado (25) | 0.803 / 0.920 | 0.803 / 0.920 | 0.803 / 0.920 |
+| J3 all | 0.916 | 0.916 | 0.916 |
+| J6 | 0.522 | 0.521 | 0.528 |
 | J7 crown sequence (32 matches) | 0.250 | 0.219 (7 vs 8 of 32: inside the noise; n small) |
 
 These decks hold few Tornados, so only J4 moves.
@@ -316,9 +322,9 @@ These decks hold few Tornados, so only J4 moves.
 
 | card | J1 all | J1 strict | J-suite (PERCARD.md) | note |
 |---|---|---|---|---|
-| Goblin Drill evo (own) | **0.00** (24 / 18) | 0.00 (12 / 9) | J5a 0.81 (42), J6 0.65 (23) | tower damage, not deaths: live 110 / 270 / 747 vs SIM 395 / 395 / 0 on the first three fights. Round 3's top rare-card lead (b: the evo's surfacing / resurfacing strike vs crown towers) |
+| Goblin Drill evo (own) | **0.00** (24 / 18); FINAL 0.04 | 0.00 (12 / 9) | J5a 0.81 (42), J6 0.65 (23) | tower damage, not deaths: live 110 / 270 / 747 vs SIM 395 / 395 / 0 on the first three fights. Round 3: the base drill's tower-damage gap was the replayed play point (H-DRILL-SURFACE: base own 0.34 -> 0.61). The evo's own gap is its relocate action, which the fork does not implement. Live, it is seen to dig and resurface twice in 1 of 7 evo drills (at about 2/3 and 1/3 hp, ~15 ticks later, round its tower); another dropped below 2/3 without moving. (b: data-limited) |
 | Little Prince (own) | 0.615 (26 / 4) | 1.0 (3) | J2 0.77 (13), J5a 1.00 (33), J6 0.60 (5) | strict n too small |
-| Minion Giant (own / opp) | 0.632 (19) / 0.689 (45) | 0.714 (7) / 0.750 (16) | J2 0.83 (24), J5a 1.00 (62), J6 0.57 (14) | identity added for this run only |
+| Minion Giant (own / opp) | 0.632 (19) / 0.689 (45); FINAL 0.684 / 0.694 | 0.714 (7) / 0.750 (16) | J2 0.83 (24), J5a 1.00 (62), J6 0.57 (14) | identity added for this run only |
 | Zap evo (own) | 0.609 (31 / 11) | 1.0 (8) | - | - |
 | Ice Spirits evo (own) | 0.824 (17) | 1.0 (5) | J5a 1.00 (27) | - |
 | Snowball evo (own) | 1.0 (1) | 1.0 (1) | - | n = 1 |
@@ -333,29 +339,31 @@ FIN_20_fin15/CEILING_{all,strict}.txt and METRICS_20_fin15/PERCARD.md on P2.
 
 **The fork.**
 - Branch `fin15` of the RoyaleSim fork (worktree C:/Users/benpe/rsfork_w8, same repository as rsfork36): clashbot36 427597d3
-  (fin14c) + 2 commits.
+  (fin14c) + 3 commits.
   - `4167f972` match.MANA_REGEN_STEP
   - `c6887a69` collision.ATTRACT_CONTACT_MEAN
-  - head c6887a69646b6c180e25ef98d6cdec958dbcc1a0, tree 4cc229d2.
+  - `305aaafc` match.TIEBREAK_REGEN
+  - head 305aaafceb7b28bf5108c9fe028fafae97d32676, tree d56d7717.
 - As round 7 handled fin14:
-  - the commits are tracked here as `patches/000{1,2}-*.patch` (git format-patch 427597d3..fin15);
-  - the bundle is not tracked: `/tmp/claude/parity1016/clashbot36_fin15.bundle` (laptop, sha256 24980dda...) and
+  - the commits are tracked here as `patches/000{1,2,3}-*.patch` (git format-patch 427597d3..fin15);
+  - the bundle is not tracked: `/tmp/claude/parity1016/clashbot36_fin15.bundle` (laptop, sha256 7bbd9a35...) and
     P2 `/workspace/w8/in/fin15.bundle`;
   - clashbot36 itself was not moved; the lead fast-forwards it if wanted.
 - Rebuild anywhere: `git am patches/*.patch` on clashbot36 427597d3, or clone the bundle, then `fork_build.sh`.
 
 **Gate (a)** (fork_build.sh, `cargo test --profile gate --no-fail-fast`): fin14c 1960 / 0 / 3 ignored ->
-**fin15 1964 passed / 0 failed / 3 ignored** (362 suites). Each plant turns its own test red (`1 passed; 1 failed`):
+**fin15 1966 passed / 0 failed / 3 ignored** (363 suites). Each plant turns its own test red (`1 passed; 1 failed`):
 - mana_regen_exact -> mana_regen_step;
 - attract_mean_capped -> attract_mean_uncapped;
-- attract_after_mean -> attract_contact_mean (the existing plant, still red).
+- attract_after_mean -> attract_contact_mean (the existing plant, still red);
+- tiebreak_regen_runs -> tiebreak_regen.
 
 **Files in this folder.**
 
 | file | what |
 |---|---|
 | FIN15.md | this report |
-| patches/ | the two fork commits |
+| patches/ | the three fork commits |
 | fork_build.sh | P2 build: bundle -> wheel -> runtime dir, cargo gate, plants |
 | fin15_pod.sh, fin15_laws.sh | FIN15 (J1, K = 8) + the J-suite's fights / whole, and beside it elixir / laws + the scores |
 | law_ab.sh | a one-wheel law A/B through PARITY_OVERRIDES (J2 / J3 / J6 / J5a, optionally J1), K = 0 |
@@ -394,6 +402,9 @@ adapter under it. Unset or another id keeps its behaviour: `pipeline/tests/test_
 | R1 | J7 | diagnosis + via S-TORNADO | crown sequence 0.499; trajectory 0.896 | no single law (section 3); 14 / 39 first divergences are hit-phase offsets the metric scores as misses |
 | R0 / R1 | J8 tiebreak end tick | H-J8-CLASS | 15 / 20 -> 15 / 18 | the drain law fits within 2-3 ticks; the remaining 3 are probe-snapshot / small (section 5) |
 | R0 / R1 | J1 | both laws | 0.926 -> 0.927 stamped (+18 / -7) | no regression; below goal |
+| R3 | J4 | S-TIEBREAK-REGEN (engine) | 0.991 [0.986, 0.994]; 3x phase 0.961 [0.937, 0.979] | goal met overall; 3x lower CI 0.937 (n 135) |
+| R3 | J1 | H-DRILL-SURFACE (harness) | stamped 0.9289 (+24 / -0); full 0.9242 (+35 / -0) | gain; below the owner's 0.975 |
+| R3 | rare cards (10-20) | H-DRILL-SURFACE | own Goblin Drill 0.34 -> 0.61, opp 0.00 -> 0.74; evo drill 0.00 -> 0.04 | the evo needs its relocate action in the engine (not implemented in the fork; no device parameters on hand) |
 | - | J5a, J5b, J8 winner, J3 wake law | - | >= 0.98 | meet |
 
 Section 6 has the full values. No metric has reached a confirmed plateau (two rounds with no CI-significant gain plus a written
@@ -415,8 +426,14 @@ diagnosis): J4 met the goal in round 2, and every other metric has had at most t
    - set up the spawning spells that are in flight or whose area is running at a fight's start (Graveyard, Goblin Barrel);
      today they are missing in the SIM, and J1 calls those fights unclean;
    - then the special movers: Goblin Drill 0.00, Mega Knight 0.50.
-4. **J7 / J3 positives:** both are driven by J1's unit fights (section 3). The J7 metric needs a time tolerance, or the 14 / 39
-   hit-phase offsets will keep failing a perfect engine.
+4. **J7 / J3 positives:** both are driven by J1's unit fights (section 3).
+   - **J7's goal is out of reach as a raw score (a).** Its own noise ceiling sits below 0.95 (fin15, 573 matches): SIM vs perturbed
+     SIM, with only the deploy tick redrawn inside its frame gap, gives crown sequence 0.834, falls in time 0.819, result 0.838.
+     So a perfect engine would still score about 0.83 raw on these three.
+   - The goal for them has to be the normalised form (raw / ceiling): crown sequence 0.499 / 0.834 = 0.60 today. That is an owner
+     decision.
+   - The trajectory's ceiling is 0.970 (normalised 0.924). It also needs a time tolerance, or the 14 / 39 hit-phase offsets
+     (section 3) keep failing a perfect engine.
 5. **W9's ranked SIM gaps** (identities/IDENTITIES.md) and the owner's facts:
    - Skeleton King souls: the engine ALREADY puts its soul copies down at 1 hp (state.rs `soul_pass`: `cloned = true`; the
      15.535.29 reading "each 1 hitpoint"). W9's "119-130" is the static row check (SkeletonKingSkeleton 32 x the ladder), so "the

@@ -1936,7 +1936,7 @@ class SelfPlayMatch:
             env.spell_tracker = SpellTracker(env, L)
         if cfg.get("crown_track"):                           # rl_royale crown terms / search_s0 --crown-log (opt-in):
             from pipeline.reward_terms import CrownTracker    # read-only stops on the learner's crown towers + Tornados
-            self.crown = CrownTracker(env, L)
+            self.crown = CrownTracker(env, L, rocket_dmg=cfg.get("crown_track") == "rocket_dmg")   # W10 rocket_tower
         tag = str(spec["tag"])
         self.learner = SelfPlaySide(env, spec["learner_deck"], L, tag, k, cfg, learner)
         from pipeline.adaptive_opponents import style_config

@@ -21,7 +21,7 @@ echo "start $(date -u)"
 W=$(ls /workspace/in/fin15/royalesim-*.whl | head -1)
 echo "$FIN15_SHA  $W" | sha256sum -c -
 # the wheel reads its BUILD checkout's data/derived when that directory exists (the hide_run trap): no fin15 build checkout here
-[ ! -e /workspace/w8/src_rsfork_fin15 ] || { echo "a fin15 build checkout exists on this pod: remove /workspace/w8/src_rsfork_fin15 first"; false; }
+! ls -d /workspace/w8/src_rsfork_fin15* > /dev/null 2>&1 || { echo "a fin15 build checkout exists on this pod: remove /workspace/w8/src_rsfork_fin15* first"; false; }
 [ -x $PY ] || cp -al $SRCV $V    # SRCV = a real venv dir (never a symlink: cp -a would copy the link and the install would write through it)
 uv pip install -q -p $PY --no-deps --reinstall --link-mode=copy $W
 $PY -c "import importlib.metadata as m; print({k: m.version(k) for k in ('royalesim', 'royalegym', 'torch', 'numpy')})"

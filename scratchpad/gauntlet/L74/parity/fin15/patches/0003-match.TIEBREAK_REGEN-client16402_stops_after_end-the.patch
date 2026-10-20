@@ -1,0 +1,202 @@
+From 305aaafceb7b28bf5108c9fe028fafae97d32676 Mon Sep 17 00:00:00 2001
+From: w8 <w8@local>
+Date: Tue, 20 Oct 2026 12:40:23 -0400
+Subject: [PATCH 3/3] match.TIEBREAK_REGEN = client16402_stops_after_end: the
+ elixir regen stops after the step into t6003 under the drain
+
+Mechanic: phase_upkeep regenerated elixir on past a level overtime's end. Under OVERTIME_TIEBREAK = client_hp_drain no play is
+accepted from that end (tiebreak_frozen), and the live bar stops too: its last step is the one into t6003 (end + 150 ms). New arm
+client16402_stops_after_end (shipped; TIEBREAK_REGEN_STOP_MS = 150); old arm runs; format-3 snapshots keep it. No play effect
+(nothing can be played then); the bar is what a player and the model observe.
+
+Minimal reproduction: tests/tiebreak_regen.rs: a battle with no play put on t5990, bars emptied: regen steps into t5991..t6003,
+none after. Plant tiebreak_regen_runs turns it red.
+
+Parity-Evidence: ClashBot scratchpad/gauntlet/L74/parity/fin15 (probe_j4.py; FIN15.md round 3) on client 16.402 live frame logs:
+20261018_020557 3.0096 on t6001, 3.117 on t6003 / t6005 / t6007 ...; 20261017_061258 6.6057 on t6001, 6.7131 on t6004 / t6005;
+20261017_064045 5.2829 on t6004 / t6006. J4's 3x phase (135 matches) was 0.937 with the regen running on.
+---
+ crates/royalesim/src/state.rs            | 43 ++++++++++++++++++++-
+ crates/royalesim/tests/tiebreak_regen.rs | 49 ++++++++++++++++++++++++
+ data/calibration.json                    | 13 +++++++
+ 3 files changed, 103 insertions(+), 2 deletions(-)
+ create mode 100644 crates/royalesim/tests/tiebreak_regen.rs
+
+diff --git a/crates/royalesim/src/state.rs b/crates/royalesim/src/state.rs
+index 038a9dc0..da8d5c6e 100644
+--- a/crates/royalesim/src/state.rs
++++ b/crates/royalesim/src/state.rs
+@@ -1094,6 +1094,10 @@ pub struct Calib {
+     /// SNAPSHOT_FORMAT 20; the `default` is the old arm, `ExactLcm` (a snapshot carries its own unit and steps).
+     #[serde(default = "mana_regen_step_default")]
+     pub mana_regen_step: ManaRegenStep,
++    /// match.TIEBREAK_REGEN (`phase_upkeep`): whether the elixir regen runs on past a level overtime's end under the client's
++    /// drain. Added after SNAPSHOT_FORMAT 20; the `default` is the old arm, `Runs`.
++    #[serde(default = "tiebreak_regen_default")]
++    pub tiebreak_regen: TiebreakRegen,
+     /// status.IDLE_BUFF_HIT_TICK (combat.rs `damage_reduction_of`): whether a unit's own idle buff reduces the hits landing
+     /// on the tick of its own hit. Added after SNAPSHOT_FORMAT 20; the `default` is the old arm, `StartOfTick`.
+     #[serde(default = "idle_buff_hit_tick_default")]
+@@ -3207,6 +3211,10 @@ fn mana_regen_step_default() -> ManaRegenStep {
+     ManaRegenStep::ExactLcm
+ }
+ 
++fn tiebreak_regen_default() -> TiebreakRegen {
++    TiebreakRegen::Runs
++}
++
+ fn idle_buff_retarget_default() -> IdleBuffRetarget {
+     IdleBuffRetarget::IdleReturns
+ }
+@@ -8849,6 +8857,19 @@ calib_enum!(
+         Client16402Floor10000 = "client16402_floor_10000",
+     }
+ );
++calib_enum!(
++    /// match.TIEBREAK_REGEN -- the elixir regen past a level overtime's end under match.OVERTIME_TIEBREAK = client_hp_drain
++    /// (`phase_upkeep`; no play is accepted from that end, `tiebreak_frozen`).
++    TiebreakRegen {
++        /// The engine's: the regen runs on to the cap.
++        Runs = "runs",
++        /// The regen stops: the last step is the one into end + TIEBREAK_REGEN_STOP_MS / TICK_MS (t6003). Measured on
++        /// ClashBot's client 16.402 live frame logs: the own bar read 3.0096 on t6001 and 3.117 on t6003, t6005, t6007 ...
++        /// (20261018_020557); 6.6057 on t6001, 6.7131 on t6004 and t6005 (20261017_061258); 5.2829 on t6004 and t6006
++        /// (20261017_064045); open loop, the running regen put the engine up to 6.9 elixir above the bar.
++        Client16402StopsAfterEnd = "client16402_stops_after_end",
++    }
++);
+ calib_enum!(
+     /// status.IDLE_BUFF_HIT_TICK -- whether a unit's OWN idle buff (status.IDLE_BUFF; card.rs `IdleBuffDef::own`, the Evo
+     /// Knight's Knight_Fortify_EV1) reduces the hits that land on the tick of the unit's own hit (combat.rs
+@@ -11371,6 +11392,7 @@ impl Calib {
+             idle_buff_retarget: pick(&v, &["status", "IDLE_BUFF_RETARGET", "value"], IdleBuffRetarget::from_calibration_name)?,
+             buff_pulse_reduction: pick(&v, &["status", "BUFF_PULSE_REDUCTION", "value"], BuffPulseReduction::from_calibration_name)?,
+             mana_regen_step: pick(&v, &["match", "MANA_REGEN_STEP", "value"], ManaRegenStep::from_calibration_name)?,
++            tiebreak_regen: pick(&v, &["match", "TIEBREAK_REGEN", "value"], TiebreakRegen::from_calibration_name)?,
+             idle_buff_hit_tick: pick(&v, &["status", "IDLE_BUFF_HIT_TICK", "value"], IdleBuffHitTick::from_calibration_name)?,
+             invisibility: pick(&v, &["targeting", "INVISIBILITY", "value"], Invisibility::from_calibration_name)?,
+             production_rate: pick(&v, &["economy", "PRODUCTION_RATE_IN_DOUBLE_ELIXIR", "value"], ProductionRate::from_calibration_name)?,
+@@ -12587,6 +12609,10 @@ pub const TIEBREAK_EXACT_DRAW_AFTER_MS: i64 = 4000;
+ /// accepted (`tiebreak_frozen`).
+ pub const TIEBREAK_CLEAR_MS: i64 = 100;
+ 
++/// THE TIEBREAK'S LAST REGEN STEP, ms past overtime's end (match.TIEBREAK_REGEN = client16402_stops_after_end): the step into
++/// the tick whose elapsed time is this past the end is the last one (t6003; measured on 16.402 live frames, 3 of 3).
++pub const TIEBREAK_REGEN_STOP_MS: i64 = 150;
++
+ /// THE DRAIN'S STEP: the hp every standing crown tower loses this tick, from the lowest crown tower hp of all six read
+ /// before it. Measured on client 15.535.29 (sp-tiebreak-dmg-s0, t6067..6167): 50 from 1000 up, 40 from 500, 20 from
+ /// 200, 10 from 21, else 1; checked on client 16.402 over six live level overtimes (21, 23 and 28 drained 10; 20, 18,
+@@ -18846,8 +18872,19 @@ impl BattleState {
+             self.mana_rate[usize::from(double)]
+         };
+         let cap = (c.max_mana as i64) * self.mana_unit;
+-        for p in self.players.iter_mut() {
+-            p.mana = (p.mana + rate).min(cap);
++        // match.TIEBREAK_REGEN = client16402_stops_after_end: under the drain, no regen once the step into end +
++        // TIEBREAK_REGEN_STOP_MS is past. PLANT (regression) tiebreak_regen_runs: the new arm regenerates on.
++        #[cfg(not(clash_plant = "tiebreak_regen_runs"))]
++        let stops = c.tiebreak_regen == TiebreakRegen::Client16402StopsAfterEnd;
++        #[cfg(clash_plant = "tiebreak_regen_runs")]
++        let stops = false;
++        let end = (c.regular_time_s as i64 + c.overtime_s as i64) * 1000;
++        let frozen = stops && c.overtime_tiebreak == OvertimeTiebreak::ClientHpDrain && self.overtime && self.outcome.is_none()
++            && self.elapsed_ms(self.tick + 1) > end + TIEBREAK_REGEN_STOP_MS;
++        if !frozen {
++            for p in self.players.iter_mut() {
++                p.mana = (p.mana + rate).min(cap);
++            }
+         }
+         if self.tick_order() == TickOrder::LegacyMoveBeforeAttack {
+             // the legacy order matures deploy timers here, before the walk
+@@ -39816,6 +39853,8 @@ fn migrate_v3(v: &mut Value, cards: &CardDb) -> Result<Vec<u16>, String> {
+     sh.insert("buff_pulse_reduction".into(), serde_json::to_value(BuffPulseReduction::Once).map_err(|e| e.to_string())?);
+     // match.MANA_REGEN_STEP: a format-3 battle's elixir was the exact lcm unit (the old arm; its snapshot keeps its unit).
+     sh.insert("mana_regen_step".into(), serde_json::to_value(ManaRegenStep::ExactLcm).map_err(|e| e.to_string())?);
++    // match.TIEBREAK_REGEN: a format-3 battle's regen ran past overtime's end (the old arm).
++    sh.insert("tiebreak_regen".into(), serde_json::to_value(TiebreakRegen::Runs).map_err(|e| e.to_string())?);
+     // status.IDLE_BUFF_HIT_TICK: a format-3 battle's own idle buff reduced the hits landing with the unit's own (the old arm).
+     sh.insert("idle_buff_hit_tick".into(), serde_json::to_value(IdleBuffHitTick::StartOfTick).map_err(|e| e.to_string())?);
+     // status.BUFF_PULSE_CROWN_ORDER: a format-3 battle's pulses took their crown-tower percent of the pulse (the old arm).
+diff --git a/crates/royalesim/tests/tiebreak_regen.rs b/crates/royalesim/tests/tiebreak_regen.rs
+new file mode 100644
+index 00000000..6877b6e6
+--- /dev/null
++++ b/crates/royalesim/tests/tiebreak_regen.rs
+@@ -0,0 +1,49 @@
++//! match.TIEBREAK_REGEN = client16402_stops_after_end: past a level overtime's end under the client's drain the elixir
++//! regen stops; the last step is the one into t6003 (end + TIEBREAK_REGEN_STOP_MS).
++//!
++//! THE READING (ClashBot's client 16.402 live frame logs): the own bar read 3.0096 on t6001 and 3.117 on t6003, t6005,
++//! t6007 ... (20261018_020557); 6.6057 on t6001 and 6.7131 on t6004 and t6005 (20261017_061258).
++//!
++//! The scene: a battle with no play put on t5990 (level towers: overtime runs to its end), both bars emptied; the steps
++//! into t5995..t6010.
++//!
++//! PLANT (regression): tiebreak_regen_runs -> `the_regen_stops_after_the_step_into_6003` red.
++//!   RUSTFLAGS='--cfg clash_plant="tiebreak_regen_runs"' CARGO_TARGET_DIR=target/plant cargo test --profile gate --test
++//!   tiebreak_regen
++#![allow(unexpected_cfgs)]
++mod common;
++
++use common::*;
++use royalesim::state::{BattleState, Calib, TiebreakRegen};
++use royalesim::Team;
++
++fn steps(arm: TiebreakRegen) -> Vec<(u32, i64)> {
++    let mut cfg = config();
++    cfg.calib.tiebreak_regen = arm;
++    let mut s = BattleState::try_new(0, cfg).expect("the default battle");
++    s.scenario_set_tick(5990);
++    s.scenario_set_elixir_milli(Team::Blue, 0);
++    let mut out = Vec::new();
++    while s.tick_count() < 6010 {
++        let before = s.elixir_raw(Team::Blue).0;
++        s.tick();
++        out.push((s.tick_count(), s.elixir_raw(Team::Blue).0 - before));
++    }
++    out
++}
++
++/// Plant: tiebreak_regen_runs.
++#[test]
++fn the_regen_stops_after_the_step_into_6003() {
++    let new = steps(Calib::shipped().tiebreak_regen);
++    for &(t, d) in &new {
++        assert_eq!(d > 0, t <= 6003, "the step into t{t}: {d} ({new:?})");
++    }
++    // NOT VACUOUS: the old arm regenerates on.
++    assert!(steps(TiebreakRegen::Runs).iter().all(|&(_, d)| d > 0), "the old arm stopped too");
++}
++
++#[test]
++fn the_shipped_arm_stops_the_regen() {
++    assert_eq!(Calib::shipped().tiebreak_regen, TiebreakRegen::Client16402StopsAfterEnd);
++}
+diff --git a/data/calibration.json b/data/calibration.json
+index f9f3330f..c8d5ca7e 100644
+--- a/data/calibration.json
++++ b/data/calibration.json
+@@ -3338,6 +3338,19 @@
+       "promotion_rules": "The test file (crates/royalesim/tests/mana_regen_step.rs) passes. Re-open only against a new client build.",
+       "engine": "state.rs BattleState::new (mana_unit, mana_rate), selected by Calib::mana_regen_step; phase_upkeep's third rate floors in the same unit; plant mana_regen_exact; tests/mana_regen_step.rs."
+     },
++    "TIEBREAK_REGEN": {
++      "value": "client16402_stops_after_end",
++      "candidates": [
++        "runs",
++        "client16402_stops_after_end"
++      ],
++      "status": "measured",
++      "confidence": "MEDIUM: 3 of 3 live matches agree on the last step (into t6003, end + 150 ms); the boundary is bracketed by 2-tick frames (t6001 / t6003 / t6004 / t6005).",
++      "provenance": "MEASURED by ClashBot parity (W8 fin15 round 3, 2026-10-20; parity/fin15/probe_j4.py) on client 16.402 live frame logs, the reader's own elixir (exact to 1e-4): 20261018_020557 3.0096 on t6001, 3.117 on t6003, t6005, t6007 ... to the match's end; 20261017_061258 6.6057 on t6001, 6.7131 on t6004 and t6005; 20261017_064045 5.2829 on t6004 and t6006. The running engine regen put the open-loop SIM up to 6.9 elixir above the bar past t6000 (J4's 3x phase 0.937 on 135 matches).",
++      "meaning": "runs: the engine's; the regen runs on past a level overtime's end. client16402_stops_after_end: under OVERTIME_TIEBREAK = client_hp_drain, no regen step after the one into end + TIEBREAK_REGEN_STOP_MS (150 ms: t6003). No play is accepted from the end either (tiebreak_frozen), so the bar has no effect on play; it is what a player and the model see.",
++      "promotion_rules": "The test file (crates/royalesim/tests/tiebreak_regen.rs) passes.",
++      "engine": "state.rs phase_upkeep (TIEBREAK_REGEN_STOP_MS), selected by Calib::tiebreak_regen; plant tiebreak_regen_runs; tests/tiebreak_regen.rs."
++    },
+     "START_MANA": {
+       "value": 6,
+       "supersedes_globals": {
+-- 
+2.55.0.windows.3
+

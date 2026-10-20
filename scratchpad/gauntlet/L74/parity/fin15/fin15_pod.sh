@@ -5,8 +5,8 @@
 #   S=rsfork_fin15 WORKERS=24 setsid nohup bash fin15_pod.sh > /dev/null 2>&1 < /dev/null &
 # -> /workspace/results/{FIN15, FIN15_stamped, METRICS_J15}/..., /workspace/w8/fin15_pod.DONE
 set -uo pipefail
-S=/workspace/${S:?}; C=/workspace/cb13; L=/workspace/caplogs13; W=${WORKERS:-24}; K=${CEILING:-8}
-O=/workspace/results/FIN15; M=/workspace/results/METRICS_J15; mkdir -p $O $M; exec >> /workspace/w8/fin15_pod.log 2>&1
+S=/workspace/${S:?}; C=${C:-/workspace/cb13}; L=/workspace/caplogs13; W=${WORKERS:-24}; K=${CEILING:-8}
+O=${O:-/workspace/results/FIN15}; M=${M:-/workspace/results/METRICS_J15}; TAG=${TAG:-fin15}; mkdir -p $O $M; exec >> /workspace/w8/${TAG}_pod.log 2>&1
 cd $C
 export PYTHONPATH=$C PARITY_SIM_PATH=$S PARITY_BUFFS=/workspace/in13/buffs13.json PARITY_ATTACKS=/workspace/in13/attacks13s.json \
   OMP_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONHASHSEED=0
@@ -27,4 +27,4 @@ echo "$(date -u +%T) FIN15 stamped end; J-suite start"
 python3 $P/metrics/replay_metrics.py fights --out $M --live $L --files 'live_play_*.jsonl' --ceiling $K --workers $W > $M/run_fights.log 2>&1 || touch $M/FAILED_fights
 python3 $P/metrics/replay_metrics.py whole --out $M/whole --live $L --files 'live_play_2026101[789]_*.jsonl' --ceiling $K --workers $W > $M/run_whole.log 2>&1 || touch $M/FAILED_whole
 mkdir -p $M/fin15; python3 $P/metrics/replay_metrics.py score --out $O --to $M/fin15 > $M/SCORE_fin15_deploy.txt 2>&1 || true   # J5a from the FIN15 bodies
-echo "$(date -u +%T) done"; touch /workspace/w8/fin15_pod.DONE
+echo "$(date -u +%T) done"; touch /workspace/w8/${TAG}_pod.DONE

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "pins": {
-    "RoyaleSim": "c6887a69646b6c180e25ef98d6cdec958dbcc1a0",
+    "RoyaleSim": "305aaafceb7b28bf5108c9fe028fafae97d32676",
     "RoyaleGym": "a7deb6e48c3580fe2cd7d856b7c7d19ce67f02f9"
   },
   "versions": {
@@ -12,10 +12,10 @@
     "royalesim": "royalesim-0.1.36-cp310-abi3-manylinux_2_34_x86_64.whl",
     "royalegym": "royalegym==0.1.23"
   },
-  "wheel_sha256": "a144f8fe1235e89e3abdee4f138f35c65552a0e4dfc30b91994578b3542ebdca",
+  "wheel_sha256": "88f3fdcbebabe3e81d64954b48861ccabe03457b2d92fd5e34eb2f56a607f5ab",
   "files": {
     "royalesim/__init__.py": "6cdaea4a1e3bda9e1cad4d50b9f83741af6ca077aa7fedd1a407051a116dd1f2",
-    "royalesim/data/calibration.json": "21f92ecd3cb21a99646d1a6462393bf2e8e5313e27473941dde49f637ca8ca18",
+    "royalesim/data/calibration.json": "86a5b22140014b4b5233b89ec6a74773bd2a34b908bbb19c99e26c851bfdf222",
     "royalesim/data/derived/arena.json": "7fbe4b0dce373d49ec69f1cdaeb65047b1602ea58dd6ce3a79dfe9be03fe7169",
     "royalesim/data/derived/cards-15.535.json": "6cdc78a82d2be466cb528952e234c51753f51d8a4f38851bd0d3df58e9b9d5fa",
     "royalesim/data/derived/cards-2018.json": "ac63cff6160ab3df8242db9f0617917528e59a174acea9e1b3610cb29fd0862d",
@@ -25,7 +25,7 @@
     "royalesim/data/raw/retroroyale-2018/csv_logic/globals.csv": "96fd97686f93c3b6a622155bce61f973d6284f15f90006a592378d066335fa9a",
     "royalesim/data/raw/retroroyale-2018/csv_logic/rarities.csv": "8b289dec57957db3a74ce7bae46f16b2e67785df85a2c641e4df1148fd4c6e7f",
     "royalesim/py.typed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "royalesim/royalesim.abi3.so": "de43278de95bb5d686650b23aecd55c8e318dd72d385ff095cc03165d206ce9f",
+    "royalesim/royalesim.abi3.so": "edf51b3885927e89ea9a758abf29e6246e51bcafaffc98e60203d697c1f63b48",
     "royalegym/__init__.py": "cdc76bb9676a6c041f91c8928e7bfcfc8fb540a99fa894cb119445c3fb894b22",
     "royalegym/action.py": "d64d5f6afd3de1597938883f88585e2e9a937f35ce4ff355a2437f3df2caae71",
     "royalegym/done_condition.py": "2b13fc239f193e960751ae60f9e174b92e29371f340b27ea881b450a67ea107c",

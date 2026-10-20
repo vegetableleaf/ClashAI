@@ -5,13 +5,13 @@
 # rare-card decks here, not icebow. Waits for the 638-log fin15 runs (one CPU job on the pod).
 #   setsid nohup bash run20.sh > /dev/null 2>&1 < /dev/null &
 set -uo pipefail
-while [ ! -e /workspace/results/METRICS_J15/DONE ]; do sleep 60; done
-C=/workspace/cb20; L=/workspace/caplogs20; W=${WORKERS:-24}; K=8; exec >> /workspace/w8/run20.log 2>&1
+while [ ! -e ${WAIT:-/workspace/results/METRICS_J15/DONE} ]; do sleep 60; done
+C=${C:-/workspace/cb20}; L=/workspace/caplogs20; W=${WORKERS:-24}; K=8; exec >> /workspace/w8/run20${TAG:-}.log 2>&1
 cd $C
 export PARITY_ANY_DECK=1 PYTHONPATH=$C PARITY_BUFFS=/workspace/w8/in20/buffs20.json PARITY_ATTACKS=/workspace/w8/in20/attacks20.json \
   OMP_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONHASHSEED=0
 P=scratchpad/gauntlet/L74/parity
-for S in rsfork_fin15 rsfork_fin14c; do
+for S in ${SIMS:-rsfork_fin15 rsfork_fin14c}; do
   export PARITY_SIM_PATH=/workspace/$S; T=${S#rsfork_}
   O=/workspace/results/FIN_20_$T; M=/workspace/results/METRICS_20_$T; mkdir -p $O $M
   echo "$(date -u +%T) $S start"
@@ -26,4 +26,4 @@ for S in rsfork_fin15 rsfork_fin14c; do
   python3 $P/metrics/percard.py $M 1 > $M/PERCARD.md 2>&1
   echo "$(date -u +%T) $S done"
 done
-touch /workspace/w8/run20.DONE
+touch /workspace/w8/run20${TAG:-}.DONE
