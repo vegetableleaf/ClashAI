@@ -8,3 +8,10 @@ Paired by (seed, tag, side, opp deck, occurrence); C:/Users/benpe/AppData/Local/
 => L16 recipe (CLX recipe + all-16 levels), 4 seeds: 0 passes; about level with CLX. No promotion.
 Next on the pods (10-20 ~06:30): reward arms stepd_l16_redirect (13396), stepd_l16_lead (14009), stepd_l16_tornado (15617);
 crown baseline stepd_l16_s74_crown (19899). O0 opponent-model check passed (opp_model/OPP_MODEL.md 6.1); O1 started (laptop).
+# Reward arms (W6) -- lead, 10-20 15:40
+- stepd_l16_lead (lead_protect, seed 74) vs CLX l16: std 692 vs 693 = -0.10 [-3.88, +3.67]; fresh 711 vs 687 = +2.50 [-1.01, +6.01] -> NO PASS.
+  vs its control stepd_l16_s74_crown (same seed, --crown-log; win rows identical to s74 = crown log does not change play):
+  std +0.31 [-3.34, +3.96], fresh +6.15 [+2.53, +9.76] (inconsistent across seed sets).
+  Crown slices (1,920 SIM games): lost a princess 0.291 vs 0.318; gave back a 1-0 lead 2.6% vs 1.9% of matches; king_end 0.900 vs 0.907.
+  NOTE: in this SIM (E4 opponents) give-backs happen in ~2% of games, so the penalty barely fires (live: 15-20%). Re-test on the
+  calibrated-opponent base (both-crown 10.9%) -> tonight's lineup.
