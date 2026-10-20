@@ -1,3 +1,47 @@
+## 2026-10-20 ~09:00 EDT -- Tuesday plan running; L16 = 0/4 passes; opponent model O0-O2 done, O6 training; reward arms training; parity metrics
+
+- LIVE: ICEBOW Mark CLX: PARITY (5d212358). The live climb to ~14,030 lines up with OUR tower going 4424 -> 4858 hp
+  (level-up) at 10-19 14:02: CLX 46.5% before vs 62.3% after, same model (+15.8 pp [+3.5, +27.6]; W3, opp_model/OPP_MODEL.md).
+  The SIM over-predicts every Mark, and more each promotion: CXXIV +7.9 ... CLX +24.3.
+- LEVELS: every icebow card + tower is level 16. Standing rule: ALL training + evals at all16:
+  - rl_royale `live_levels: all16`;
+  - gap.py `--levels all16`;
+  - stepd_chain `EVAL_LEVELS=all16`;
+  - commit db84ac9.
+- L16 successors (CLX recipe at all16), vs CLX at all16 (std 693 / fresh 687 of 960): 0 of 4 seeds pass.
+  s75 +3.75/+1.46, s77 +3.44/+1.98, s74 and s76 worse (l16/RESULTS.md).
+- Reward arms (W6, 133b38a), each = stepd_l16_s74 + ONE key, training:
+  - lead_protect on 14009;
+  - princess_redirect (penalty) on 13396;
+  - tornado_king_penalty on 15617.
+  Crown baseline: stepd_l16_s74_crown (19899, done).
+- Opponent model (W3, OPP_MODEL.md):
+  - O0 passed: the SIM gets about half the live tower-level effect;
+  - O1 done: 1,075 live matches -> opponent-seat rows;
+  - O2 done: placement 5.2 -> 3.3 tiles;
+  - O3: no opponent is calibrated. Live-imitation is human-like but weak (CLX 83.8%); pro-imitation at T .1 / decide 40:
+    CLX 74.8%, princess-take 23.3%.
+  - O6 arms TRAINING with that opponent at a 0.3 league share (per-opponent T / decide key, 0bcc4c5): stepd_l16_proopp_s74
+    on P1 64.247.206.80:48148 and s75 on P2 64.247.206.80:40548. Updates 130 around 15:00 EDT, then evals.
+  - New baseline vs that opponent on 19899: CLX 74.79%, CLIII 68.33% (seed 741200).
+  - Option C (RL-strengthened live-imitation opponent): next iteration.
+- Parity metric suite (W1, parity/metrics/METRICS.md):
+  - whole-match replay crown sequence 0.44 (SIM vs SIM 0.96); king wake 0.64; river crossing 0.69;
+  - Tornado 0.82 (light units 0.59-0.66); elixir 0.84; spells 0.90;
+  - deploy 0.99; card stats match the device tables 524/526;
+  - fix order: tower damage within a push, elixir truncation, lane / river crossing, Tornado on light units.
+- Studies:
+  - W5 investment/INVESTMENT.md: forced bridge X-Bows into ready counters at 2-4x the pros' rate; Tornado vs bridge Hog
+    44.5% pros vs 8.7% ours;
+  - W3 opponent-model analyses.
+- Parity battles (owner, classic challenge): deck 1 done (11 battles; L70/live/parity/). Then decks 2 and 3.
+  - Autopilot: parity_auto.py with OK_XY=450,1400. It stops at 3 losses.
+  - live_play has a record-only mode for unknown cards.
+  - MinionGiant (26000107) was added to the local catalog, with vocab stand-in -> balloon.
+- New pods 64.247.206.80:48148 / :40548 (27.2 CPU, L40, set up 10-20). That host is overloaded: one CPU job per pod.
+- Key: the bz-northwestern API key needs the anthropic-workspace-id header (api_worker.sh sets it; its credits ran out
+  10-19 05:28).
+
 ## 2026-10-18 19:30 EDT -- doctrine MEASURED (API worker): "keep both princess towers" holds and is X-Bow-specific; the bot's gap is GIVING LEADS BACK; the SIM teaches neither
 
 - Report: scratchpad/gauntlet/L74/doctrine/DOCTRINE_MEASURED.md (measure.py -> measure.out). Pros = 10,400 X-Bow Path of Legend
