@@ -570,6 +570,62 @@ opponent takes a princess 31.2%).
 **O5 (post-hoc):** if an arm goes live, its next >= 150 live matches at fixed levels are predicted by both evals before they
 are played.
 
+### 6.2d O6 LAUNCHED (lead GO 10-20 ~08:28 EDT)
+
+Launched with `pod/o6_launch.sh` (= w6_arm.sh's steps). Same files on both pods: stepd_chain.sh 6da7c2f3, rl_royale.py
+f7095b61, gen_s0.pt 61011b6c, init rlarm_succ_levels_u0065.pt 05d42da7.
+
+| arm | pod | code | yaml sha | trainer config sha | chain pid | trainer pid | started (UTC) | smoke |
+|---|---|---|---|---|---|---|---|---|
+| stepd_l16_proopp_s74 | P1 64.247.206.80:48148 | 25f0c42 | bf803157 | b15d89a084b5 | 7624 (chain 7627) | 7635 | 12:28:42 | SMOKE PASS 12:26 |
+| stepd_l16_proopp_s75 | P2 64.247.206.80:40548 | 25f0c42 | 23d3789c | a9b76a3805b7 | 7210 (chain 7213) | 7221 | 12:28:45 | SMOKE PASS 12:26 |
+
+- GO files: EVAL_LEVELS=all16, DECODE='--ability-head-decode=sample --crown-log'.
+- Logs: /workspace/stepd/rl_<arm>/{chain,train}.log. Results are packed to /workspace/stepd/out/<arm>.tgz; pull with
+  stepd/pull_stepd.sh.
+- **Update 1 reached on both arms** (critic warm-up, as the recipe).
+  - s74: u0000 W/L 151/105, u0001 150/106, about 3.1 min / update.
+  - s75: u0000 159/97, u0001 159/97, about 2.8 min / update.
+  - The exploiter_league opponent is being played: s74 76-96 games / update at win 0.49-0.55; s75 48-84 at 0.58. That is
+    about 30% of 256, matching the share.
+  - Expected u0130 about 6.5 h after start (~19:00 UTC), then the all16 evals.
+- **Remaining new-baseline blocks** moved to 19899 (64.247.206.76): CLX then CLIII vs gen_v32_s0 T .1 decide 40, all16, seeds
+  742000 / 743000 / 744000.
+  - `/workspace/o3/opp_eval.sh`, serialised on cpu.lock: one CPU job at a time.
+  - CLX grafted 5d212358 was added to that pod's cb_stepd data; the code was untouched.
+  - The 741200 blocks (CLX 359/480, CLIII 328/480) are pulled, sha-verified: pod_backup_weekend/o3/base741200/.
+
+## 6.4 Open items (for the next session)
+
+1. **Option C** (`cfg/oppC_liveopp_rl_s74.yaml`, not run): RL-strengthen the O2b live-imitation net against frozen CLX at all16.
+   - Settings: KL 0.05 to O2b, the learner (opponent-to-be) deciding every 40 ticks, CLX at 10, 65 updates.
+   - Next steps:
+     - (i) copy O2b (sha 0882374c) to the pod as icebow/data/pipeline/o2/gen_live_b.pt and run a real smoke of the yaml.
+       Untested: `decide_every 40` on the learner in league_frozen_opponent mode, and the frozen CLX's ability head (Stage 2
+       used CXXXVIII with the rule press).
+     - (ii) train.
+     - (iii) gate the u15 / u30 / u45 / u65 snapshots with `pod/opp_eval.sh` (CLX learner, T .1, decide 40, 480 games):
+       stop at the first with CLX SIM win <= 65%, style distance <= 0.70, OT share <= live + 5 pp, both-took >= 5%.
+     - (iv) if one passes, re-run O4 (CLX + CLIII, std + fresh) and offer it as the league opponent of the next arm.
+   - Risk: Stage 2's stalling exploiter. The OT and both-took gates are the guard.
+2. **O1 self-check shortfalls** (vs the pre-registered 99% bar):
+   - The public opponent-elixir counter is within 0.5 of the live counter in 93.8% (train) / 96.2% (holdout).
+     - Cause (b): the rows' counter sees frames every 8 ticks, live every 2.
+     - Test: rebuild O1 with FRAME_EVERY = 2 (4x data).
+   - Unit positions pass 99.2% on the holdout era but 96.8% on the train era (count differs in 638 of 20,440).
+     - Cause unexplained. The first check: diff the body lists of a few mismatched rows; candidates are older reader
+       versions and unreadable-hp bodies.
+3. **Why the live-imitation net is weak** (O2: 87.9%, O2b: 83.8% CLX SIM win; pro-imitation: 74.8%).
+   - Spell targets explained 4-6 pp.
+   - Untested candidates:
+     - late troop sightings after reader gaps (24% of plays): use the 2-tick frames' first appearance or the deploy-timer
+       state;
+     - the public elixir estimate (biased high) as the opponent's own-elixir input;
+     - the 4-plays warm-up gap at the start of every match (no hand rows before the 5th play).
+4. **O3 grid on the new baseline opponent:** reaction delay never helped. Decide 40 beat 30 / 20 / 10 for both nets. A
+   decide-60 point is untested.
+5. **The card_use.results() account-switch grading bug** (section 7.1) is still open (lead: not this worker's fix).
+
 ### 6.3 Path to a successor tonight (owner 10-20 goal; lead's plan)
 
 1. **O1** done.
