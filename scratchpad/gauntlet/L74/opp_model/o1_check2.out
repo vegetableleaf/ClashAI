@@ -1,0 +1,35 @@
+records 1075 (holdout from 20261018_231645); builder totals {"bodies_dropped_dup_id_or_unknown_card": 54234, "opp_cards_seen:1": 6, "opp_deck:seen_lt7": 148, "own_play_rows_offered": 36484, "opp_cards_seen:0": 21, "opp_cards_seen:7": 339, "opp_deck:no_census_match": 281, "opp_cards_seen:8": 587, "opp_deck:seen8": 587, "opp_play_hand_unknown": 2869, "opp_play_hand_known": 16331, "opp_cards_seen:6": 91, "opp_deck:census": 57, "skip_mirror": 10, "opp_cards_seen:5": 22, "opp_cards_seen:4": 2, "skip_own_deck_incomplete": 2, "opp_cards_seen:2": 2, "opp_deck:census_ambiguous": 1, "opp_cards_seen:3": 4, "opp_cards_seen:9": 1, "opp_deck:seen_gt8": 1}
+
+==== train: 131492 rows from 808 records; dataset_gen stats play_rows 38767 wait_rows 92725 play_skipped 2145 wait_no_hand 7062
+   tower mismatch example live_play_20261015_173028 3734 [0.49, 0.727, 0.859, 0.971, 1.0, 1.0] [0.49, 0.727, 0.859, 0.971, 1.0, 1.0, 1.0]
+   tower mismatch example live_play_20261015_173028 4438 [0.091, 0.455, 0.859, 0.971, 1.0, 1.0] [0.091, 0.455, 0.859, 0.971, 1.0, 1.0, 1.0]
+   tower mismatch example live_play_20261016_170937 4777 [0.254, 0.623, 0.673, 0.818, 1.0, 1.0] [0.254, 0.331, 0.623, 0.673, 0.818, 1.0, 1.0]
+
+## (a) self-check, OUR seat rows vs the live decision logged at the same tick
+  rows compared 20440 (of 87778 our-seat rows; the rest have no decision at that exact tick)
+  hand (4-card set)                99.80% (20399/20440)
+  own elixir (|d| <= 0.1)          100.00% (20440/20440)
+  opponent elixir counter (<= 0.5) 93.78% (19168/20440)  mean |d| 0.287
+  unit positions (count + 0.02)    96.79% (19784/20440)  (count differs in 638)
+  tower hp fractions (<= 0.01)     99.68% (20375/20440)
+
+## (b) hand inference on OUR seat (train): the opponent rule applied to our publicly detected plays
+  our true plays 26833, publicly detected 26098 (97.26% (26098/26833) of true), matched to a tap 21991
+  hand determined 88.04% (19361/21991); of those, exactly the true 4 cards 99.39% (19242/19361)
+
+==== holdout: 46279 rows from 267 records; dataset_gen stats play_rows 14048 wait_rows 32231 play_skipped 724 wait_no_hand 2321
+   tower mismatch example live_play_20261018_235816 2816 [0.666, 0.867, 0.939, 0.977, 1.0, 1.0] [0.377, 0.666, 0.867, 0.939, 0.977, 1.0, 1.0]
+   tower mismatch example live_play_20261019_001329 983 [0.934, 1.0, 1.0, 1.0, 1.0, 1.0] [0.934, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+   tower mismatch example live_play_20261019_001329 1245 [0.904, 0.923, 1.0, 1.0, 1.0, 1.0] [0.858, 0.904, 0.923, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+
+## (a) self-check, OUR seat rows vs the live decision logged at the same tick
+  rows compared 6924 (of 30394 our-seat rows; the rest have no decision at that exact tick)
+  hand (4-card set)                99.78% (6909/6924)
+  own elixir (|d| <= 0.1)          100.00% (6924/6924)
+  opponent elixir counter (<= 0.5) 96.20% (6661/6924)  mean |d| 0.185
+  unit positions (count + 0.02)    99.23% (6871/6924)  (count differs in 39)
+  tower hp fractions (<= 0.01)     99.44% (6885/6924)
+
+## (b) hand inference on OUR seat (holdout): the opponent rule applied to our publicly detected plays
+  our true plays 9651, publicly detected 9667 (100.17% (9667/9651) of true), matched to a tap 7955
+  hand determined 88.90% (7072/7955); of those, exactly the true 4 cards 99.65% (7047/7072)

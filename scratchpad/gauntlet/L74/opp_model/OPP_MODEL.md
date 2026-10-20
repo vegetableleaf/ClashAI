@@ -417,6 +417,71 @@ P.E.K.K.A bridge +8.9, lava +7.8, other +6.9, weak_other +6.5, golem +5.1.
     alone cannot close it.
   - O1+ waits for the lead's go.
 
+### 6.2 O1 result: opponent-seat training rows from the live logs (`o1_build.sh` -> `o1_check.out`, `o1_check2.out`)
+
+**Build (a).**
+- `o1_records.py` converts each live ladder log into the driven-corpus record schema that `pipeline.dataset_gen` reads
+  unchanged: the replay_rec/to_record.py schema, record_native + record_full.
+  - Inputs: icebow main-account logs at trophies >= 12,000 that have 2-tick frame events. 1,087 matches since 10-15 17:26;
+    1,075 records built.
+  - Holdout: the newest 25% by time, from 10-18 23:16 on (CLIX / CLX era, 267 records). The other 808 train.
+- `dataset_gen --feature-version 5` gives:
+
+| split | rows | opponent-seat rows | opponent play rows | opponent wait rows | our-seat rows |
+|---|---|---|---|---|---|
+| train | 131,492 | **43,714** | 11,934 | 31,780 | 87,778 |
+| holdout | 46,279 | **15,885** | 4,397 | 11,488 | 30,394 |
+
+- `o1_finalize.py` remaps every card column to gen_v32_s0's vocabulary (no card was missing) and adds `opp_mask`. Our-seat
+  rows stay in the file, masked out: they are our live model's play, never imitation targets.
+  - Files: out/o1_train_v32.npz (sha eeac6965), out/o1_holdout_v32.npz (sha be175c5b). Not committed: derived, about 23 MB.
+- Coverage limits **(a)**:
+  - An opponent deck is known for 644 / 1,075 matches: 587 with all 8 cards seen, 57 completed from the census. The other 431
+    give no opponent rows: 281 had 7 cards with no census match, 148 had <= 6.
+  - 16,331 opponent plays had a determinable hand; 2,869 did not (fewer than 4 earlier plays, or a repeat inside 4 plays).
+  - 54,234 bodies with a card id the catalog lacks were dropped, mostly 203000042 (the Hero Ice Wizard's ice cube, which the
+    hero dedupe does not cover).
+
+**Self-check (a).** OUR seat, the same converter + dataset_gen, compared with the live decision logged at the same tick. Rows
+compared: 20,440 train / 6,924 holdout.
+
+| field | train | holdout | pre-registered 99% bar |
+|---|---|---|---|
+| hand (4-card set) | 99.80% | 99.78% | pass |
+| own elixir (\|d\| <= 0.1) | 100.00% | 100.00% | pass |
+| tower hp fractions (<= 0.01) | 99.68% | 99.44% | pass |
+| unit positions (same count, each within 0.02) | 96.79% | 99.23% | holdout pass, train fail (count differs in 638 / 20,440) |
+| public opponent-elixir counter vs the live counter (<= 0.5) | 93.78% (mean \|d\| 0.29) | 96.20% (mean \|d\| 0.19) | fail |
+
+- The counter misses are the cadence (b): the rows' public counter sees frames every 8 ticks, the live one every 2. Keeping
+  all 2-tick frames should close it, at 4x the data. Untested.
+- The train-era unit-count misses are not explained yet (b). The holdout era passes.
+
+**Hand inference check (a).**
+- The opponent rule (hand = deck - last 4 publicly detected plays) applied to OUR side, against the hand we really held.
+- 97-100% of our plays were publicly detected. The hand was determined for 88.0% (train) / 88.9% (holdout) of them.
+- When determined it was **exactly right in 99.39% / 99.65%**. So the opponent-seat hands in the training rows are about 99%
+  correct where defined.
+
+### 6.3 Path to a successor tonight (owner 10-20 goal; lead's plan)
+
+1. **O1** done.
+2. **O2:** fine-tune on P1's GPU: `pod/o2_pod.sh`, 2 seeds, time-ordered holdout.
+3. **O3 in parallel:** tempo grid on P1 + P2 (`pod/o3_grid.sh` -> `pod/opp_eval.sh`).
+   - 12 configs of gen_v32_s0: T .1 / .3 x decide 10 / 20 / 30 x reaction 0 / 20.
+   - Each config: CLX at all16, 480 games, with exact crown falls (`--crown-log`) and both sides' plays (pod-local o3_plays patch).
+   - Scored by `o3_score.py`: J10 style distance plus J9 crown gaps vs live CLX @4858.
+   - Then the O2 model at the best 2-3 tempos.
+4. **O4:** the chosen opponent, 4 seed blocks, CLX and CLIII at all16. This is also the **new baseline**.
+   - Acceptance: every J9 cell inside live CLX@4858's CI. At n = 138 the CIs are about +-8 pp, so this is a weak gate. Say so.
+5. **O6:** the CLX recipe at all16 (stepd_l16_s74.yaml) + `league_exploiters {ckpt: the O4 model, decks: decks_live_train,
+   share: 0.3}`. The lead decides before launch.
+   - Known gap: rl_royale gives every league opponent the same temperature (`league_opp_T`) and tempo (`opp_decide_every` /
+     `opp_reaction_ticks`). The calibrated tempo can therefore apply to all opponents (a second change) or to none. Applying
+     it to the exploiter only needs an opt-in trainer key, with tests and a smoke.
+6. **O5** (the sealed live block) **cannot finish today.** It becomes the post-hoc check: the next >= 150 live matches of
+   whatever trains tonight, predicted by the O4 SIM before they are played.
+
 ## 7. Problems found along the way (not fixed outside this directory)
 
 1. **card_use.results() grades across account switches.**

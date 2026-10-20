@@ -1,7 +1,8 @@
 """O1 step 3: (a) the SELF-CHECK on OUR seat, (b) the hand-inference check, (c) the final O2 inputs.
 Single process, laptop.
 
-    icebow/.venv/Scripts/python.exe -I scratchpad/gauntlet/L74/opp_model/o1_finalize.py   -> o1_check.out (+ out/o1_{train,holdout}_v32.npz)
+    icebow/.venv/Scripts/python.exe -I scratchpad/gauntlet/L74/opp_model/o1_finalize.py [--check-only]   -> o1_check.out (+ out/o1_{train,holdout}_v32.npz)
+  (units: the reference drops bodies whose card id the catalog lacks, as the O1 converter does -- e.g. the Hero IW's ice cube)
 
 Inputs: out/o1_{train,holdout}.npz (pipeline.dataset_gen --feature-version 5 over out/o1_corpus/{train,holdout}), the corpus
 index, the live logs.
@@ -99,7 +100,7 @@ def selfcheck(arrs, meta, index):
             ours = sorted((round(float(x), 2), round(float(y), 2)) for x, y in tok[:, 4:6])
             ref = sorted((round(a, 2), round(b, 2)) for a, b in
                          (_engine_xy(float(b_['x']), float(b_['y']), mir) for b_ in d['bodies']
-                          if int(b_.get('card_id', -1)) >= 0 and int(b_.get('side', -1)) in (0, 1)
+                          if int(b_.get('card_id', -1)) >= 0 and int(b_.get('side', -1)) in (0, 1) and R.cname(b_['card_id'])
                           and not (b_['hp'] <= 0 < b_['max_hp'])))
             c['units_n'] += 1
             same = len(ours) == len(ref) and all(abs(a[0] - b[0]) <= .02 and abs(a[1] - b[1]) <= .02 for a, b in zip(ours, ref))
@@ -207,7 +208,8 @@ def main():
               f'play_skipped {meta["stats"].get("play_skipped")} wait_no_hand {meta["stats"].get("wait_no_hand")}')
         selfcheck(arrs, meta, index)
         inference_check(list(index.values()), split)
-        remap(arrs, meta, index, OUT / f'o1_{split}_v32.npz')
+        if '--check-only' not in sys.argv:
+            remap(arrs, meta, index, OUT / f'o1_{split}_v32.npz')
 
 
 if __name__ == '__main__':
