@@ -13,6 +13,10 @@ Off (absent / null / false) = no tracker, no extra engine call, the same rows, b
                                   residual critic, B["phi"]). Policy-INVARIANT by construction (gae_batch's docstring: with a
                                   converged critic A = the unshaped advantage), so it can speed credit assignment but never
                                   make the redirect pay. The literal 10-20 ticket; the arm yaml uses penalty.
+    princess_take: on             L74 W7 (10-20, the SIM OPPONENT's crown-aware objective; option C of opp_model/OPP_MODEL.md):
+                                  +princess_take_w per ENEMY princess tower the learner fells in play (tick < TIEBREAK_TICK),
+                                  on the last kept row at or before the fall. It CHANGES the optimum, deliberately: an opponent
+                                  trained on win / loss alone learns to stall (Stage 2: OT 66-75%); this pays converting towers.
     rocket_tower: on              L74 W10 (10-20, plan1019 Rocket use; scratchpad/gauntlet/L74/rocket/ROCKET.md): +rocket_tower_w per
                                   princess tower of ENEMY PRINCESS HP our Rocket removed (king damage never pays: owner doctrine,
                                   never the king), on the row that DECIDED the Rocket, summed <= ROCKET_MATCH_CAP per match. It
@@ -46,12 +50,14 @@ from pipeline.spell_value import KING_TOWER, PRINCESS_TOWER, TILE, TORNADO_R_TIL
 
 TERMS = {"rocket_tower": "rocket_tower_w",                          # W10 (first: W7's princess_take edits the last line)
          "lead_protect": "lead_protect_w", "princess_redirect": "princess_redirect_w",
-         "tornado_king_penalty": "tornado_king_w"}                     # switch -> its weight key (rl_royale CROWN_KEYS)
+         "tornado_king_penalty": "tornado_king_w",
+         "princess_take": "princess_take_w"}                           # switch -> its weight key (rl_royale CROWN_KEYS)
 DEFAULTS = {"rocket_tower_w": 0.5,           # W10: per princess tower of enemy princess HP our Rocket removed (a ~0.11
             #                                   chip = 0.055 ~ 2.75 elixir at spell_value's 0.02 / elixir; <= the match cap)
             "lead_protect_w": 0.2,            # x the win reward, once per match (DOCTRINE_MEASURED 4 R1)
             "princess_redirect_w": 0.2,       # per princess tower of HP lost while both stand: a felled first princess
             #                                   costs <= 0.2 on top of the terminal reward; |sum| < 2 w per match
+            "princess_take_w": 0.2,           # W7: per enemy princess felled in play (<= 2 per match)
             "tornado_king_w": 0.01}           # per tile of net pull toward our king (3 bodies x 3 tiles = 0.09; spell_value
 #                                               prices elixir at 0.02, so a Tornado's 3 elixir = 0.06)
 REDIRECT_MODES = ("penalty", "potential")
@@ -61,6 +67,7 @@ ROCKET_BLAST_TILES = 2.0        # catalog Rocket radius (spell_value.ROCKET_R_TI
 TOWARD_MIN_TILES = 1.0          # eval slice: a Tornado "to the king" moved its bodies >= this net toward our king
 TOWER_AIM_TILES = 3.0           # doctrine (habits/hablib.rocket_uses): a tower Rocket's aim is this close to a slot
 ENEMY_SLOTS = ((3.5, 6.5), (14.5, 6.5), (9.0, 3.0))   # enemy princess L / R and king, board tiles, my frame
+TIEBREAK_TICK = 5990            # opp_model/crowns.py's rule: a fall at clock >= this is the tiebreak tower, not play
 TRACK_TICKS = 30                # SpellTracker's rule: a spell seen again at the same point within this is the same cast
 
 
@@ -70,7 +77,8 @@ def bound(p: dict) -> float:
     return (ROCKET_MATCH_CAP * bool(p.get("rocket_tower"))
             + float(p.get("lead_protect_w", 0.0)) * bool(p.get("lead_protect"))
             + 2.0 * float(p.get("princess_redirect_w", 0.0)) * bool(p.get("princess_redirect"))
-            + TORNADO_MATCH_CAP * bool(p.get("tornado_king_penalty")))
+            + TORNADO_MATCH_CAP * bool(p.get("tornado_king_penalty"))
+            + 2.0 * float(p.get("princess_take_w", 0.0)) * bool(p.get("princess_take")))
 
 
 class CrownTracker:
@@ -264,6 +272,14 @@ def row_terms(crown: dict, plays: list, ticks, p: dict) -> dict:
             r[i] -= e
             total += e
         out["tornado"] = -total
+    if p.get("princess_take"):                        # W7: off = no "take" key (the W6 outputs unchanged)
+        out["take"] = 0.0
+        for f in crown["falls"]:
+            if f["who"] == "foe" and int(f["tick"]) < TIEBREAK_TICK:
+                i = int(np.searchsorted(ticks, f["tick"], side="right")) - 1
+                if i >= 0:
+                    r[i] += p["princess_take_w"]
+                    out["take"] += p["princess_take_w"]
     if p.get("rocket_tower"):                         # W10: off = no "rocket" keys (the W6 / W7 outputs unchanged)
         if "rocket_hits" not in crown:
             raise ValueError("rocket_tower needs the tracker's rocket_hits (actor_cfg crown_track 'rocket_dmg')")
@@ -309,7 +325,7 @@ def batch_stats(summaries: list, sums: list) -> dict:
     for k in (summaries[0] if summaries else ()):
         vals = [s[k] for s in summaries if s[k] is not None]
         st[f"{k}_per_match"] = round(float(sum(vals)) / max(len(vals), 1), 4)
-    for k in ("lead", "redirect", "tornado"):
+    for k in ("lead", "redirect", "tornado") + (("take",) if any("take" in s for s in sums) else ()):
         st[f"{k}_reward_per_match"] = round(sum(s[k] for s in sums) / n, 5)
     if any("rocket" in s for s in sums):            # W10 rocket_tower on (off: no keys, the stats unchanged)
         st["rocket_reward_per_match"] = round(sum(s.get("rocket", 0.0) for s in sums) / n, 5)

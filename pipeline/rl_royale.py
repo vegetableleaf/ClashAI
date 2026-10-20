@@ -1646,6 +1646,43 @@ def own_opp_cfg(oc: dict, opp: dict, base: dict) -> dict:
                        c.get("reaction_ticks", base.get("opp_reaction_ticks")))
 
 
+LIVE_OPP_TYPES = ("exploiter", "frozen")      # league_external / league_frozen_opponent checkpoints (league_opp_live)
+
+
+def league_opp_live(cfg: dict) -> Optional[dict]:
+    """``league_opp_live`` (L74 W7 10-20; optional, absent / null = None = every opponent cfg unchanged, same hash): a
+    dict of decision_options.DecisionOptions fields (+ optional ``tau`` in (0, 1) and ``own_effects`` true, which needs
+    extrapolate_ticks > 0) merged into the match cfg of every league_external / league_frozen_opponent opponent
+    (``live_opp_cfg``), so frozen icebow checkpoints play their LIVE decision stack in training as gap.py D3 plays them in
+    the eval (livecal.LIVE + tau .35 + own effects). Init / snapshot / S1 / league_exploiters opponents: unchanged.
+    SystemExit on a bad value."""
+    x = cfg.get("league_opp_live")
+    if x is None:
+        return None
+    from pipeline.decision_options import DecisionOptions, options_from_config
+    keys = set(DecisionOptions.__dataclass_fields__) | {"tau", "own_effects"}
+    if not isinstance(x, dict) or not x or set(x) - keys:
+        raise SystemExit(f"league_opp_live must be a non-empty dict over DecisionOptions fields + tau / own_effects, "
+                         f"got {x!r}")
+    if not cfg.get("league"):
+        raise SystemExit("league_opp_live needs league true (it sets self-play opponents' decisions)")
+    if "tau" in x and not (isinstance(x["tau"], (int, float)) and not isinstance(x["tau"], bool) and 0 < x["tau"] < 1):
+        raise SystemExit(f"league_opp_live.tau must be a number in (0, 1), got {x['tau']!r}")
+    if "own_effects" in x and (x["own_effects"] is not True or int(cfg.get("extrapolate_ticks") or 0) <= 0):
+        raise SystemExit("league_opp_live.own_effects must be true and needs extrapolate_ticks > 0")
+    try:
+        options_from_config(x)
+    except (TypeError, ValueError) as exc:
+        raise SystemExit(f"league_opp_live: {exc}")
+    return dict(x)
+
+
+def live_opp_cfg(oc: dict, opp: dict, base: dict) -> dict:
+    """``oc`` with ``league_opp_live`` merged in for a league_external / frozen opponent; else ``oc`` itself."""
+    lv = base.get("league_opp_live")
+    return {**oc, **lv} if lv and opp.get("type") in LIVE_OPP_TYPES else oc
+
+
 TOWER_TROOPS = ("DaggerDuchess", "Cannoneer", "ChefTower")    # the RoyaleSim fork's crown tower troops (card.rs)
 
 
@@ -2684,8 +2721,8 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
                                              **{k: base[k] for k in AO.STYLE_KEYS if k in base},
                                              "grid": opp_cache[j[1]["opp"]["path"]][1]}) for j in jobs}
                 specs = {j[1]["opp"]["id"]: j[1]["opp"] for j in jobs}
-                opps = {i: (pol, own_opp_cfg(oc, specs[i], base))
-                        for i, (pol, oc) in opps.items()}            # L74 human tempo (+ O6 per-exploiter): the OPPONENT's cfg only
+                opps = {i: (pol, live_opp_cfg(own_opp_cfg(oc, specs[i], base), specs[i], base))
+                        for i, (pol, oc) in opps.items()}            # L74 human tempo (+ O6 per-exploiter, W7 live stack): the OPPONENT's cfg only
                 E.run_selfplay_batch(lambda: RoyaleSelfPlayEnv(decision_ticks=int(base["decide_every"]), forms_mode=fm,
                                                                hero_abilities=base.get("hero_abilities", False),
                                                                ability_policy=base.get("ability_policy", "generic"),
@@ -2910,6 +2947,7 @@ def branch_worker_main(wid: int, in_q, out_q, base: dict) -> None:
             tag = f"bw{wid:02d}_{n_match:05d}"
             n_match += 1
             oc = ocfg if not spec["opp"].get("cfg") else own_opp_cfg(ocfg0, spec["opp"], base)   # L74 O6: own T / tempo
+            oc = live_opp_cfg(oc, spec["opp"], base)                                            # L74 W7: live stack
             branch_jobs(sp_env, model, {spec["opp"]["id"]: (pol, {**oc, "grid": grid})}, [(n_match, {**spec, "tag": tag}, 0)],
                         lcfg, bc, st["version"], skip=(UnsupportedDeck,), sync=sync, emit=emit, phi=phi)
             errors = 0
@@ -3047,7 +3085,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                 and k not in VALUE_PHI_KEYS and k not in STATE_PHI_KEYS and k not in AO.DEFAULTS
                 and k not in ("league_learner_icebow_share", "learner_pipeline_frac", "league_opp_T", "kl_ref_gate",
                               "critic_ctx", "kl_ref_gate_max_elixir", "kl_ref_gate_target_frac",
-                              "league_exploiters", "cue_inputs", "opp_tower_troops", "live_levels",
+                              "league_exploiters", "cue_inputs", "opp_tower_troops", "live_levels", "league_opp_live",
                               "heroiw_press", "ability_features", "kl_heads", "kl_ref_card") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS and k not in CROWN_KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
@@ -3075,6 +3113,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
         raise SystemExit("ability_policy v2 needs hero_abilities=true")
     AO.validate(cfg)
     exploiter_league(cfg)                                     # O2: checked at start (files exist, league on); absent = no-op
+    league_opp_live(cfg)                                      # L74 W7: checked at start; absent = no-op
     opp_tower_troops(cfg)                                     # L74 troops: checked at start; absent = no-op
     live_levels(cfg)                                          # L74 factor D: checked (and the table read) at start
     frac = cfg.get("learner_pipeline_frac", 0.0)
@@ -3108,6 +3147,8 @@ def config_sha(cfg: dict) -> str:
             cfg = {kk: v for kk, v in cfg.items() if kk != k}
     if cfg.get("league_exploiters") is None:                 # O2 off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "league_exploiters"}
+    if cfg.get("league_opp_live") is None:                   # L74 W7 off (absent or null) = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "league_opp_live"}
     if cfg.get("opp_tower_troops") is None:                  # L74 troops off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "opp_tower_troops"}
     if not cfg.get("live_levels"):                           # L74 factor D off (absent / null / false) = the historical hash
@@ -4242,6 +4283,8 @@ class Learner:
         for k in OPP_TEMPO_KEYS:                              # L74 human tempo -> the opponent's cfg (absent by default)
             if self.cfg.get(k) is not None:
                 base[k] = self.cfg[k]
+        if self.cfg.get("league_opp_live") is not None:       # L74 W7 -> live_opp_cfg (absent by default)
+            base["league_opp_live"] = dict(self.cfg["league_opp_live"])
         if spell_cfg(self.cfg) is not None:                   # L74 combo -> actor_cfg spell_track (absent by default)
             base["spell_value"] = True
         ct = crown_cfg(self.cfg)

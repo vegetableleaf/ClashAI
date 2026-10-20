@@ -696,7 +696,75 @@ unless marked 1,920; live 62.3 / 31.2 / 57.2 / 9.4; the 480-game SE is ~2 pp on 
 | R4 | u85 / u90 / u95 / u100 / u105 / u110 | 68.8 / 67.5 / 64.8 / 63.8 / 65.6 / 67.3 | 31.2 / 31.7 / 36.9 / 34.2 / 36.2 / 36.0 | 50.2 / 54.8 / 53.1 / 51.9 / 56.7 / 55.0 | 10.0 / 10.2 / 12.3 / 10.6 / 15.6 / 16.0 | 0.63 / 0.73 / 0.73 / 0.76 / 0.74 / 0.76 | past the plateau on strength; style drifts (answers faster) |
 | **O4** | **R4 u100 (ea1d0804), 1,920** | **63.7** | **35.9** | **54.0** | **12.6** | **0.74** | **all 6 overall cells pass, win +1.4 pp (z 0.34)**; per archetype only hog CLX-takes fails (64.8 vs 44.1, z 2.38); style misses the ~0.65 goal |
 | R4k | u100 eval knobs: decide 60 / decide 80 / +20 / +40 reaction ticks | 64.0 / 68.1 / 74.6 / 81.5 | 40.0 / 36.7 / 33.8 / 31.7 | 50.6 / 45.8 / 46.7 / 34.0 | 15.6 / 19.8 / 19.4 / 20.4 | 0.78 / 0.49 / 0.52 / 0.47 | slowing it at eval time buys style but costs strength: train at the slower tempo |
-| R5 | R4 resumed from u117 with the learner deciding every 80 ticks (cfg/oppC5_icemix_live_d80_s74.yaml); gated at T .1 / decide 80 | | | | | | running |
+| R5 | R4 resumed from u117 with the learner deciding every 80 ticks (cfg/oppC5_icemix_live_d80_s74.yaml; at u119 the held-out GHOST screen's -10 pp stop fired, set to -100 and resumed); gate T .1 / decide 80 | | | | | | |
+| R5 | u120 / u125 / u130 / u135 | 67.9 / 67.5 / 64.4 / 67.5 | 37.3 / 38.8 / 40.2 / 36.9 | 47.3 / 45.8 / 46.9 / 45.4 | 19.6 / 19.6 / 21.0 / 17.7 | 0.49 / 0.52 / 0.51 / 0.55 | FAIL: human style, but the games are too OPEN (both took one 2x live, z ~ 3; CLX takes a princess 77% vs 62%; OT 46% vs 57%). Stopped at u138 |
+
+**Verdict at the 18:00 checkpoint: R4 u100 is the opponent (READY below).** The two rounds after it gained nothing on the
+whole goal: R4k (eval-time slowdowns) and R5 (training at the slower tempo). Both bought style only by opening the game. This
+counts as a confirmed plateau on style at this recipe. Diagnosis, (b) untested: in this SIM, every way of making the
+opponent answer later (decide 60 / 80, +20 / +40 reaction ticks, trained or not) lets CLX's pushes through. CLX then takes a
+princess in 69-88% of games vs 62% live, and both sides take one in 16-21% vs 9.4%. Live humans answer as late yet lose fewer
+towers. That fits O0's finding that the SIM gives about half of live's tower-level effect (tower physics against human-sized
+pushes), more than it fits an opponent problem. The test that separates the two: re-score R4 u100 at decide 80 on the
+next parity runtime (fin15) and see whether both-took falls toward live.
+
+### 7.1 READY: the opponent for tonight's arm
+
+- **Checkpoint:** R4 u100 = `rlarm_oppC1_icemix_s74_u0100.pt`, sha256 **ea1d080496b3**. Lineage: O2b (0882374c) -> C1 u0-u84
+  -> R4 (league_opp_live) u85-u100.
+  - Laptop: C:/Users/benpe/pod_backup_weekend/w7/rlarm_oppC1_icemix_s74_u0100.pt.
+  - P1: cb_stepd/icebow/data/pipeline/o2/w7opp.pt (hard link).
+  - 19899: o3/cb/icebow/data/pipeline/o2/w7/.
+- **Setting:** sampling T .1, deciding every 40 ticks, reaction 0. This is the setting it was gated and scored at.
+- **League config verified on a training pod (a):** `cfg/stepd_l16_w7opp_s74.yaml` = stepd_l16_s74.yaml + ONE block:
+  ```
+  league_exploiters:
+    ckpt: icebow/data/pipeline/o2/w7opp.pt      # = ea1d0804
+    decks: scratchpad/gauntlet/L74/mix/decks_live_train.json
+    share: 0.3
+    T: 0.1
+    decide_every: 40
+  ```
+  - Real `rl_royale --smoke` on P1: **SMOKE PASS** at 20:31 UTC (yaml 2f77bbcd, rl_royale 3188e77d = 25f0c42 + the W7
+    patch, with the key absent = identical).
+  - The opponent was played: exploiter_league 4 + 2 games, and all 11 resume checks were true.
+  - Log: P1 /workspace/w7/stepd_l16_w7opp_s74/.
+  - Ship the checkpoint to the arm's pod as icebow/data/pipeline/o2/w7opp.pt.
+- **O4 (a), CLX vs the opponent, all16, 1,920 games (741200 + three fresh blocks), vs live CLX @4858 (n 138):**
+
+| cell | R4 u100 (chosen) | C1 u50 (style fallback) | option A gen_v32_s0 T .1 d40 | live CLX @4858 |
+|---|---|---|---|---|
+| CLX win | **63.7** [61.6, 65.9] (z +0.34) | 68.1 (z +1.41) | 73.2 (z +2.76) | 62.3 [54.0, 70.0] |
+| opp takes a princess | **35.9** [33.8, 38.1] (z +1.12) | 29.9 (z -0.30) | 22.8 (z -2.24) | 31.2 [24.0, 39.3] |
+| CLX takes a princess | 65.7 (z +0.99) | 67.9 (z +1.53) | 69.8 (z +2.03) | 61.6 |
+| both took one | 12.6 (z +1.08) | 10.9 (z +0.55) | 6.5 (z -1.35) | 9.4 |
+| OT share | 54.0 (z -0.74) | 56.3 (z -0.22) | 58.3 (z +0.24) | 57.2 |
+| regulation loss | 21.2 (z +1.69) | 16.0 (z +0.26) | 10.7 (z -1.63) | 15.2 |
+| give-back | 9.8 (z +0.99) | 8.6 (z +0.66) | - | 6.4 |
+| style distance (live 13k; floor 0.05, 12k vs 13k 0.10) | **0.74** | 0.63 | 0.77 | - |
+| cells with \|z\| >= 1.96 | **0 of 6** | 0 of 6 | 3 of 6 | |
+| per archetype (live n >= 30) | hog CLX-takes 64.8 vs 44.1 (z 2.38); all others pass | hog CLX-takes z 2.34, other win z 1.96 | - | |
+
+- Fresh blocks only (742000-744000, 1,440 games, not used to pick u100): CLX win 918 / 1,440 = 63.8%; 741200 alone 306 / 480 = 63.8%. The pick on 741200 did not inflate it.
+- **Against the goal:**
+  - Win within ~5 pp of live: met, +1.4 pp.
+  - Opponent princess-take near live with CI overlap: met, 35.9 [33.8, 38.1] vs [24.0, 39.3].
+  - OT and both-took near live: met.
+  - Style <= ~0.65: **not met**, 0.74. Better than option A's 0.77, worse than its own O2b init's 0.65.
+  - C1 u50 is the fallback if the lead weighs style over strength: 0.63, but CLX wins +5.8 pp.
+- **Caveats (b), untested:**
+  - In training, the opponent's frozen icebow opponents press the Hero IW by the live rule, not CLX's head. Tested
+    harmless: R3d, 67.3 vs 67.7.
+  - The opponent-to-be fields no crown tower troops in training; the eval gives it about 7%.
+  - All rows are fin13. The O5 sealed-block prediction is still owed.
+  - The O4 rule is weak at live n = 138 (CIs about +-8 pp); hog has n = 34.
+
+### 7.2 Next round (after tonight's arm ships; not started)
+
+- R6: train at decide 40 with a style term or a KL anchor to O2b's gate head only (`kl_ref_gate`). The aim is to keep R4's
+  closed games and pull react_s / ppm_2x back toward live.
+- Or first run R5's diagnosis test (fin15 re-score at decide 80). It separates "the SIM's towers fall too easily" from
+  "the opponent defends badly".
 
 **Plateau diagnosis (R2 -> R4).** C1's gate win stopped falling at ~u50 while its training win rate kept creeping up
 (vs CLX 0.44 by PFSP rating at u72; vs the mix 0.38 -> 0.40). The KL leash never bound (beta stayed at its 0.03 floor,
