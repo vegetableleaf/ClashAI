@@ -12,6 +12,6 @@ for i in $(seq 1 $N); do
   [ -e "$L/STOP" ] && { echo "STOP file: ending before battle $i"; break; }
   echo "$(date +%T) [$TAG] battle $i/$N: start the classic battle now"
   $PY -u $LIVE_ENTRY --ckpt-override-file $L/CKPT_OVERRIDE --live-options-file $L/parity/LIVE_OPTIONS --tau 0.35 \
-    --no-anti-leak --max-seconds 600 2>&1 | tee -a $L/parity/parity_${TAG}.out | grep -E "^\{|\[live\] (start|end|result)|error" | tail -2
+    --no-anti-leak --max-seconds 1500 2>&1 | tee -a $L/parity/parity_${TAG}.out | grep -E "^\{|\[live\] (start|end|result)|error" | tail -2
   sleep 5
 done
