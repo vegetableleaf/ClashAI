@@ -123,6 +123,12 @@ def main():
             alert(f"{tag}: home screen changed before battle {i} ({s['screen']}); stopped"); bot.kill(); return
         say(f"{tag}: battle {i}/{n}: tapping Battle")
         tap(s["battle"])
+        for _ in range(3):                             # 10-20: a tap during the home screen's animations can be lost
+            time.sleep(8)
+            if screen(clf)["screen"] != "main":
+                break
+            say(f"{tag}: battle {i}: still on the home screen -- tapping Battle again")
+            tap(s["battle"])
         t0 = time.time()                               # live_play lingers after the match (video render): watch its log
         log = None
         while time.time() - t0 < 1500:
