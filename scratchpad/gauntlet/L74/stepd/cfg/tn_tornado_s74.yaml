@@ -120,3 +120,4 @@ league_exploiters:
   T: 0.1
   decide_every: 40
 tornado_king_penalty: on
+tornado_king_w: 0.1   # lead 10-20: 10x the default -- at 0.01/tile the old arm's post-fall pulls did not drop (1.04 vs 0.90 tiles per fall-match)

@@ -19,3 +19,6 @@ crown baseline stepd_l16_s74_crown (19899). O0 opponent-model check passed (opp_
   vs control: std +0.10 [-3.47, +3.68], fresh +6.04 [+2.35, +9.73]. Crown: lost a princess 0.292 vs 0.318; gave back 2.1% vs 1.9%; king_end 0.918 vs 0.907.
   Both reward arms show the SAME pattern (std ~0, fresh ~+6 vs control): the control's fresh set (652) is low against CLX (687) and
   the other seeds -> read it as control noise, not a reward effect. Neither term moves much in the old SIM; re-test both on the new base.
+- stepd_l16_tornado (tornado_king_penalty, w 0.01/tile) vs CLX l16: std 687 vs 693 = -0.62 [-4.28, +3.03]; fresh 671 vs 687 = -1.67 [-5.24, +1.91] -> NO PASS, not clearly worse.
+  Behaviour: toward-king displacement after a princess fell 1.04 vs control 0.90 tiles per fall-match (tornados/match 1.26 vs 1.40)
+  -> the penalty did NOT reduce the target behaviour: too weak (as W6 warned). Tonight's tn_tornado_s74 uses tornado_king_w 0.1 (10x).
