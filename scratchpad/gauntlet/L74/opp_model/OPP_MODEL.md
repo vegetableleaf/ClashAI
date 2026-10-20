@@ -699,6 +699,19 @@ unless marked 1,920; live 62.3 / 31.2 / 57.2 / 9.4; the 480-game SE is ~2 pp on 
 | R5 | R4 resumed from u117 with the learner deciding every 80 ticks (cfg/oppC5_icemix_live_d80_s74.yaml; at u119 the held-out GHOST screen's -10 pp stop fired, set to -100 and resumed); gate T .1 / decide 80 | | | | | | |
 | R5 | u120 / u125 / u130 / u135 | 67.9 / 67.5 / 64.4 / 67.5 | 37.3 / 38.8 / 40.2 / 36.9 | 47.3 / 45.8 / 46.9 / 45.4 | 19.6 / 19.6 / 21.0 / 17.7 | 0.49 / 0.52 / 0.51 / 0.55 | FAIL: human style, but the games are too OPEN (both took one 2x live, z ~ 3; CLX takes a princess 77% vs 62%; OT 46% vs 57%). Stopped at u138 |
 
+| R6 | R4 u100 + KL on the play / wait gate anchored to O2b (`kl_ref_gate`; card / cell stay anchored to u100), decide 40, live stack; fresh run rlarm_oppC6_gate_s74 (cfg/oppC6_gate_s74.yaml), started 20:36 UTC on the lead's order to keep P1 busy until 18:00 EDT. kl_target 0.1 -> 0.03 after update 0 (u100's gate began at KL 0.08 from O2b, under a 0.1 target that would never pull it back); KL_gate fell to 0.017 by u7. Stopped at 18:00 EDT (u26) | | | | | | |
+| R6 | u5 / u10 / u15 / u20 / u25 | 68.5 / 70.0 / 66.5 / 64.0 / 65.4 | 33.8 / 31.2 / 34.8 / 35.4 / 32.3 | 56.7 / 56.5 / 56.5 / 56.2 / 55.0 | 12.1 / 11.7 / 11.5 / 12.9 / 11.5 | 0.71 / 0.72 / 0.70 / 0.73 / 0.75 | strength back to R4's level by u20; style only -0.03 |
+| **O4** | **R6 u20 (34522564), 1,920** | **63.2** | **36.2** | **54.9** | **11.9** | **0.71** | **all 6 overall cells pass (max z 1.42)**; per archetype hog CLX-takes still fails (63.9 vs 44.1, z 2.26; R4 u100 z 2.38); every other archetype cell passes |
+
+**Final pick (lead's rule: all overall cells, then the hog cell, then style): R6 u20.** Both R4 u100 and R6 u20 pass every
+overall cell. Both fail the hog CLX-takes cell (z 2.26 vs 2.38). R6 u20 has the better style, 0.71 vs 0.74. The margins are
+small: on the same 1,920 games CLX wins 63.2 vs 63.7%, and a style gap of 0.03 is about the size of the style noise between
+neighbouring gates. **Why the gate anchor bought so little style (a):** R6's react features are O2b's own (react_s 4.85 vs
+O2b's 4.94, live 6.16). The live-imitation net itself already answers about 1.2 s faster than humans, so pulling the gate
+back to it cannot move react_s. R4's extra drift came from push_mean and ppm_2x, which the gate does not set. The style
+floor of this family is O2b's 0.65. Going below it needs a better imitation target (O1's open items: late sightings after
+reader gaps, the public-elixir input). More RL will not do it.
+
 **Verdict at the 18:00 checkpoint: R4 u100 is the opponent (READY below).** The two rounds after it gained nothing on the
 whole goal: R4k (eval-time slowdowns) and R5 (training at the slower tempo). Both bought style only by opening the game. This
 counts as a confirmed plateau on style at this recipe. Diagnosis, (b) untested: in this SIM, every way of making the
@@ -710,7 +723,17 @@ next parity runtime (fin15) and see whether both-took falls toward live.
 
 ### 7.1 READY: the opponent for tonight's arm
 
-- **Checkpoint:** R4 u100 = `rlarm_oppC1_icemix_s74_u0100.pt`, sha256 **ea1d080496b3**. Lineage: O2b (0882374c) -> C1 u0-u84
+**FINAL (22:22 UTC): R6 u20 = `rlarm_oppC6_gate_s74_u0020.pt`, sha256 345225645845 (full
+3452256458450fcc8fc4848445e5c06c64970ad0b1b8a60c1a915208509c475b).**
+- Same setting as R4 u100: T .1, decide 40.
+- O4 is in the R6 row above.
+- P1's icebow/data/pipeline/o2/w7opp.pt now IS R6 u20; R4 u100 is kept beside it as w7opp_R4u100.pt.
+- League config smoke with it on P1: **SMOKE PASS** 22:21 UTC (yaml 2f77bbcd unchanged). exploiter_league was played in 4
+  games. Log: /workspace/w7/stepd_l16_w7opp_s74/.
+- Laptop copy: pod_backup_weekend/w7/rlarm_oppC6_gate_s74_u0020.pt.
+- The R4 u100 block below stays valid as the alternate (its smoke log: /workspace/w7/stepd_l16_w7opp_s74_R4u100/).
+
+- **Alternate, R4 u100:** `rlarm_oppC1_icemix_s74_u0100.pt`, sha256 **ea1d080496b3**. Lineage: O2b (0882374c) -> C1 u0-u84
   -> R4 (league_opp_live) u85-u100.
   - Laptop: C:/Users/benpe/pod_backup_weekend/w7/rlarm_oppC1_icemix_s74_u0100.pt.
   - P1: cb_stepd/icebow/data/pipeline/o2/w7opp.pt (hard link).
