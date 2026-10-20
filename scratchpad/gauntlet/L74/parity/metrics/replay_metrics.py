@@ -233,6 +233,12 @@ def j2(m, events, fight, rows, pert):
         sid = pairs.get(b['id'])
         lb, sb0, sb1 = L1.get(b['id']), S0.get(sid), S1.get(sid)
         st = eng.stats(c['display_name'])
+        # H-J2-REACH (W8 round 2): a body the spell cannot touch is not a spell-effect item (an air body under a ground-only spell:
+        # the Log's Minion Horde / Bats, 300 items on the clean fights, whose end point is their own flight). J2_AIR_ALL=1 keeps them.
+        # (the projectile's aoe_to_air: the card-level attacks_air reads False for the Tornado and Poison too, which do touch air)
+        if st.get('flying_height') and ((eng.stats(ev['name']) or {}).get('projectile') or {}).get('aoe_to_air') is False \
+                and os.environ.get('J2_AIR_ALL') != '1':
+            continue
         rec = dict(victim=label(m, b['side'], c['display_name'], F.form_of(b['card_id'], c)), mass=st.get('mass'),
                    flying=bool(st.get('flying_height')), d0=round(d0), paired=sb0 is not None,
                    live_end=None if lb is None else (lb['x'], lb['y']), sim_end=None if sb1 is None else (sb1['x'], sb1['y']))
@@ -406,7 +412,7 @@ def select_fights(mode, eng, catalog):
 
 # ------------------------------------------------------------------ J4: own elixir
 
-def j4(path, eng, catalog, resync=False):
+def j4(path, eng, catalog, resync=False, cap_date=True, drop_cost=True, gain=True):
     """Own elixir, open loop: the SIM's battle from the first live frame (its tick, the live elixir there), with every
     live own deduction applied by its card's cost at the live drop tick (deduction amount + timing are J5's / static's;
     this isolates regeneration, the 2x / 3x / overtime switches and the cap). Compared on every live frame."""
@@ -435,8 +441,29 @@ def j4(path, eng, catalog, resync=False):
             names = [n for t, n in plays if t is not None and abs(t - tb) <= 6]
             press = any(t is not None and abs(t - tb) <= 6 for t in presses)
             c = cost(names[0]) if names else (F.HERO_IW_ABILITY_COST if press else None)
-            drops.append(dict(tick=tb, live_drop=round(ea - eb, 3), card=names[0] if names else ('IceWizard ability' if press else None), cost=c,
+            # H-J4-DROPCOST (W8 round 2): every drop is deducted by its OWN size rounded to whole elixir (costs are whole; the regen
+            # inside the gap is at most 2 x 0.0537, so the rounding is exact, and two spends in one gap sum exactly). Before, a drop
+            # that matched no confirmed play / press was never deducted (an 'unconfirmed' tap the game took, a Hero IW press without
+            # its event: analysis/j4_unmatched.py), and two drops beside one play were both charged its cost (20261017_021702 t4812:
+            # 1.893 + 2.893 both read as the Knight's 3)
+            if drop_cost:
+                c = round(ea - eb)
+            # H-J4-CAPDATE (W8): a spend from a FULL bar (ea at the cap) lands between the frames; the live bar regenerates
+            # from the spend tick td, so date it td = tb - (eb - (10 - cost)) / step (step = the live 1/10000 step a tick),
+            # inside (ta, tb]. Deducting at tb instead lost (tb - td) steps: 0.018-0.036 at 1x, 0.071 at 2x, 0.107 at 3x
+            # (20261017_114921 t2843: live 4.0714, SIM 4.0). Below the cap the spend tick does not move the bar.
+            td = tb
+            if c and ea >= 9.995 and cap_date:
+                step = .0178 if tb <= 2400 else .0357 if tb <= 4800 else .0537
+                td = min(tb, max(ta + 1, tb - round((eb - (10 - c)) / step)))
+            drops.append(dict(tick=tb, td=td, live_drop=round(ea - eb, 3), card=names[0] if names else ('IceWizard ability' if press else None), cost=c,
                               after=eb))
+        # H-J4-GAIN (W8 round 2): a live rise beyond the regen (the opponent's Elixir Golem pays us 1 / 0.5 / 0.5 as its golem,
+        # golemites and blobs die: 20261016_213647 t328-t514 rose +1, then +0.5 six times) is credited in 0.5 steps; the open
+        # loop has no units, so before it the SIM fell up to 4 elixir behind until the cap
+        elif gain and eb - ea - (.0178 if tb <= 2400 else .0357 if tb <= 4800 else .0537) * (tb - ta) >= .4:
+            g = round(2 * (eb - ea - (.0178 if tb <= 2400 else .0357 if tb <= 4800 else .0537) * (tb - ta))) / 2
+            drops.append(dict(tick=tb, td=tb, live_drop=round(ea - eb, 3), card='gain', cost=-g, after=eb))
     b = eng.b
     t0, e0 = fr[0]
     mana = [10000, 10000]; mana[side] = round(e0 * 1000)
@@ -449,13 +476,14 @@ def j4(path, eng, catalog, resync=False):
         now = json.loads(b.state_json())['tick']
         while di < len(drops) and drops[di]['tick'] <= t:
             d = drops[di]; di += 1
-            if d['tick'] > now:
-                b.step([], d['tick'] - now); now = d['tick']
+            at = d['tick'] if resync else d['td']
+            if at > now:
+                b.step([], at - now); now = at
             if d['cost'] or resync:
                 # open loop: minus the card's cost; resync: set to the live value after the drop (the error then is one
                 # segment's regeneration only, i.e. the regen law, not its accumulation)
                 sv = json.loads(b.save()); after = json.loads(json.dumps(sv))
-                after['players'][side]['mana'] = round(d['after'] * unit) if resync else max(0, after['players'][side]['mana'] - d['cost'] * unit)
+                after['players'][side]['mana'] = round(d['after'] * unit) if resync else min(10 * unit, max(0, after['players'][side]['mana'] - round(d['cost'] * unit)))
                 load_edited(b, sv, after)
         if t > now:
             b.step([], t - now)
@@ -476,7 +504,7 @@ def j4(path, eng, catalog, resync=False):
         if tb in dt or tb == ta or max(ea, eb, sa, sb) >= 9.99:
             continue
         slope[phase(tb)][0].append((eb - ea) / (tb - ta)); slope[phase(tb)][1].append((sb - sa) / (tb - ta))
-    return dict(match=Path(path).stem, side=side, frames=len(out), drops=len(drops), unmatched_drops=sum(d['cost'] is None for d in drops),
+    return dict(match=Path(path).stem, side=side, frames=len(out), drops=len(drops), unmatched_drops=sum(d['card'] is None for d in drops),
                 start=(t0, e0), per_phase={k: dict(ok=v[0], n=v[1], med_abs=round(statistics.median(v[2]), 4), max_abs=round(max(v[2]), 3))
                                            for k, v in per.items()},
                 slope={k: dict(live=round(statistics.median(v[0]) * 20, 4), sim=round(statistics.median(v[1]) * 20, 4), n=len(v[0]))
@@ -553,7 +581,10 @@ def j8_end(path, eng):
         for k_ in [k_ for k_ in up if cur.get(k_, 0) <= 0]:
             fell.append(t); up.pop(k_); king |= abs(k_[1] - 9000) < 1000
     tf = max(fell, default=0)
-    cls = 'early_3crown' if king else 'tiebreak' if last >= 6000 else 'overtime_crown' if tf > 3600 and last - tf < 150 else         'regulation' if 3600 <= last < 3800 else 'other'
+    # H-J8-CLASS (W8): a tiebreak's real end (last - 81) is past overtime's end; a sudden-death fall just before 6000 whose result
+    # screen runs past it (20261018_072302 last 6050, 100712 last 6009) is an overtime crown, not a drain
+    cls = 'early_3crown' if king else 'tiebreak' if last - 81 >= 6000 else 'overtime_crown' if tf > 3600 and last - tf < 150 else \
+        'regulation' if 3600 <= last < 3800 else 'other'
     if cls not in ('tiebreak', 'regulation'):
         return dict(match=Path(path).stem, cls=cls, end_tick=et, won=end['won'])
     at = 5990 if cls == 'tiebreak' else 3590
@@ -640,8 +671,9 @@ def score(out, to=None):
         s = [(m, r) for m, r in j2r if 'err' in r]
         v, ci = boot([(m, r['agree']) for m, r in s], mean)
         cv, cci = boot([(m, mean(r['ceiling'])) for m, r in s if r.get('ceiling')], mean)
+        ctxt = f"ceiling {cv:.3f} [{cci[0]:.3f}, {cci[1]:.3f}]; normalised {v / cv:.3f}" if cv else "ceiling n/a (K = 0)"
         lines.append(f"J2 spell effect (body end point within {PULL_TOL} mt at the window end, both alive): agree {v:.3f} [{ci[0]:.3f}, {ci[1]:.3f}] n={len(s)} bodies "
-                     f"in {len({m for m, _ in s})} matches; ceiling {cv:.3f} [{cci[0]:.3f}, {cci[1]:.3f}]; normalised {v / cv:.3f}")
+                     f"in {len({m for m, _ in s})} matches; {ctxt}")
         lines.append(f"   unpaired / one-side-gone bodies (counted as fails in 'all'): {sum(1 for _, r in j2r if 'err' not in r and not r.get('both_gone'))}; "
                      f"all-bodies agree {mean([r['agree'] for _, r in j2r]):.3f} n={len(j2r)}")
         bys = defaultdict(list)
@@ -672,7 +704,7 @@ def score(out, to=None):
             v, ci = boot([(m, r['agree']) for m, r in g], mean)
             cv, _ = boot([(m, mean(r['ceiling'])) for m, r in g if r['ceiling']], mean)
             lines.append(f"J3 king activation [{kind or 'all'}] (trigger within {KING_TOL} ticks or both none): agree {v:.3f} [{ci[0]:.3f}, {ci[1]:.3f}] "
-                         f"n={len(g)} side-windows, {len({m for m, _ in g})} matches; ceiling {cv:.3f}")
+                         f"n={len(g)} side-windows, {len({m for m, _ in g})} matches; ceiling {'n/a' if cv is None else format(cv, '.3f')}")
         for nm, sel in (('princess-fall triggers', lambda r: r.get('cause') == 'princess'), ('damage triggers', lambda r: r.get('cause') == 'damage'),
                         ('damage triggers after the defender Tornado', lambda r: r.get('cause') == 'damage' and r.get('tornado'))):
             g = [(m, r) for m, r in j3r if sel(r)]
@@ -765,6 +797,9 @@ def main():
     ap.add_argument('--live', type=Path, default=F.ps.LIVE)
     ap.add_argument('--workers', type=int, default=1)
     ap.add_argument('--resync', action='store_true', help='elixir: re-sync the SIM to the live value at every deduction')
+    ap.add_argument('--no-cap-date', action='store_true', help='elixir: deduct a spend from a full bar at its frame tick (the pre-W8 harness)')
+    ap.add_argument('--no-drop-cost', action='store_true', help='elixir: never deduct a drop that matches no confirmed play / press (pre-W8 round 2)')
+    ap.add_argument('--no-gain', action='store_true', help='elixir: never credit a live rise beyond the regen (pre-W8 round 2)')
     ap.add_argument('--to', type=Path, help='score: write SCORE.txt / score.json here (default --out)')
     a = ap.parse_args()
     if a.mode == 'score':
@@ -799,7 +834,7 @@ def main():
             if o.exists():
                 continue
             try:
-                r = j4(str(p), eng, catalog, resync=a.resync)
+                r = j4(str(p), eng, catalog, resync=a.resync, cap_date=not a.no_cap_date, drop_cost=not a.no_drop_cost, gain=not a.no_gain)
             except Exception as e:
                 r = dict(match=p.stem, crash=type(e).__name__ + ':' + str(e)[:200])
             o.write_text(json.dumps(r))

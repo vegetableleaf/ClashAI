@@ -60,3 +60,17 @@ def test_old_ids_unchanged(runtime):
 @pytest.mark.parametrize('runtime', ['20261016', '20261016-Linux', 'rt35'])
 def test_unknown_still_raises(runtime):
     assert 'Unknown ROYALE_RUNTIME' in probe(runtime)['error']
+
+
+def test_fin15_selection():
+    """W8 10-20: fin15-linux = the parity fork fin15 in /workspace/venvf15 (parity/fin15/setup_fin15.sh), Hero IW adapter on."""
+    out = probe('fin15-linux')
+    assert out['id'] == 'fin15-linux' and out['heroiw'] is True
+    assert out['manifest'] == 'scratchpad/gauntlet/L74/parity/fin15/build_manifest_fin15.json'
+    assert out['options'] == {'calibration_overrides': {'cards.CARD_TABLE': 'client160402017_20261006'}}
+
+
+@pytest.mark.parametrize('runtime', ['fork36-linux', 'fin13-linux'])
+def test_fork_ids_unchanged_by_fin15(runtime):
+    now, before = probe(runtime), probe(runtime, '3f727662229e36ed4f890b5deb0a5a39a523acc2')   # the last selector commit before fin15
+    assert (ROOT/now.pop('runtime')).resolve() == (ROOT/before.pop('runtime')).resolve() and now == before   # runtime: repo-relative or absolute

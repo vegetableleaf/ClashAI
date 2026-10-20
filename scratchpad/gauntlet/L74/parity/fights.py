@@ -143,7 +143,10 @@ def read_match(path):
     own_pr = {e[5] for e in first if e[3] == -1 and e[0] == side and e[6] == 13 and abs(e[1]-9000) > 1000}
     # Level-capped (classic / friendly) battles show capped towers on every account: an ext log counts when the own hand
     # is the icebow deck (the owner's 10-16 classic battles: princess 3052).
-    if own_pr != {OWN_PRINCESS_MAX} and not (extra and any('Xbow' in h for _, h in hands)):
+    # PARITY_ANY_DECK=1 (opt-in, W8 10-20): also an ext log whose own deck is not icebow (the owner's classic-challenge parity
+    # battles, where the bot plays decks built from the rare cards); unset = this gate unchanged
+    if own_pr != {OWN_PRINCESS_MAX} and not (extra and any('Xbow' in h for _, h in hands)) \
+            and not (extra and hands and os.environ.get('PARITY_ANY_DECK') == '1'):
         return None, 'not_main_account'
     # confirmed own plays: each play is followed by exactly one confirmed/unconfirmed event, in order
     plays = [dict(p, xy=o[2] or p['xy']) for p, o in zip(plays, outcome) if o[0] == 'confirmed' and o[1] == p['name']]

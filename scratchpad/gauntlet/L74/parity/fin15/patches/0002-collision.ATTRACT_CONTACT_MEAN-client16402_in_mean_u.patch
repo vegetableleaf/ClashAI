@@ -1,0 +1,204 @@
+From c6887a69646b6c180e25ef98d6cdec958dbcc1a0 Mon Sep 17 00:00:00 2001
+From: w8 <w8@local>
+Date: Tue, 20 Oct 2026 10:17:45 -0400
+Subject: [PATCH 2/2] collision.ATTRACT_CONTACT_MEAN =
+ client16402_in_mean_uncapped: a contact mean that holds a pull is not capped
+ at 150
+
+Mechanic: under client15535_in_mean a pulled unit with a contact takes the pull as one entry of its contact accumulator, and
+move16402 collision_mean then caps the whole mean at 150. A fast unit's pull (Speed 120 under a Tornado: 432 a tick) in a pack is
+cut to 150 against its walk: the engine's Royal Hogs closed on the centre at ~30 a tick. New arm client16402_in_mean_uncapped
+(shipped): the same mean, but one holding a pull is not cut (state.rs `cap_back` puts back what the cap takes). Old arms
+after_mean and client15535_in_mean kept; CLIENT15535_ARMS keeps client15535_in_mean for 15.535.29 captures (their rows never
+reached the cap). A knockback ladder or a death slide is untouched (still after the mean).
+
+Minimal reproduction: tests/attract_mean_uncapped.rs: tests/attract_contact_mean.rs's scene with Hog Riders (a 432 pull, where
+the Knight's 216 never meets the cap): from the first contact tick the uncapped step goes further toward the Tornado. Plant
+attract_mean_capped turns it red.
+
+Parity-Evidence: ClashBot scratchpad/gauntlet/L74/parity/fin15 (FIN15.md section 4; j2diag.py, law_ab.sh, analysis/torn_ab_*.txt):
+- live, 9 Tornado casts on Royal Hogs (36 hogs, e.g. 20261017_040555 t1304-t1320): hogs in contact close on the centre at 80-150
+  a tick, the capped engine at 25-65;
+- A/B on the 638 captured client 16.402 frame logs (one wheel, K = 0, PARITY_OVERRIDES): J2 Tornado end point within 0.5 tile
+  0.821 -> 0.880 (1,540 bodies), all spells 0.904 -> 0.914; mass 1 0.59 -> 0.75, mass 2 0.66 -> 0.81, mass 4 0.82 -> 0.88, no
+  mass class lower; Royal Hogs 0.32 -> 0.72 (n 47), Hog Rider 0.81 -> 0.93 (54), Minion Horde 0.71 -> 0.82 (180), Goblin Gang
+  0.76 -> 0.86 (51); J3 king wakes on a damage trigger after our Tornado 0.569 -> 0.641 (184); J6 0.692 -> 0.694.
+Open: the Evo Royal Hogs stay at 0.41 (n 32); the exact 16.402 form (no cap vs a larger cap) is not separated.
+---
+ crates/royalesim/src/state.rs                 | 26 +++++++-
+ .../royalesim/tests/attract_contact_mean.rs   |  3 +-
+ .../royalesim/tests/attract_mean_uncapped.rs  | 65 +++++++++++++++++++
+ data/calibration.json                         | 14 ++--
+ 4 files changed, 98 insertions(+), 10 deletions(-)
+ create mode 100644 crates/royalesim/tests/attract_mean_uncapped.rs
+
+diff --git a/crates/royalesim/src/state.rs b/crates/royalesim/src/state.rs
+index 87519c50..038a9dc0 100644
+--- a/crates/royalesim/src/state.rs
++++ b/crates/royalesim/src/state.rs
+@@ -7873,6 +7873,12 @@ calib_enum!(
+         /// 32 of 32 pulled steps with an overlapping neighbour (sp-form-Wizard-hero-s0's Musketeer pulled into a Knight
+         /// t248-t251, sp-form-Valkyrie-evo-s0's Knight among Skeletons), the after-mean reading 0 of 32.
+         Client15535InMean = "client15535_in_mean",
++        /// As client15535_in_mean, but a mean holding a pull is not capped at 150 (the 15.535.29 rows never reached the
++        /// cap). Measured on client 16.402 live frames (ClashBot parity fin15 j2diag, METRICS_J J2 on 628 captured logs):
++        /// Royal Hogs (Speed 120: a 432 pull) in contact under our Tornado close on its centre at 115-143 a tick against
++        /// the walk where the capped mean holds them at ~30 (20261017_040555 t1304-t1320, 4 of 4 hogs); the J2 Tornado
++        /// end point agreed on 0.32 (n 47) / 0.28 (evo, n 32) of Royal Hogs, the live pull 1.41x / 2.0x the engine's.
++        Client16402InMeanUncapped = "client16402_in_mean_uncapped",
+     }
+ );
+ calib_enum!(
+@@ -27274,13 +27280,29 @@ impl BattleState {
+                 // overlapping neighbour); with none it stays whole, after the (empty) mean.
+                 // PLANT (regression) attract_after_mean: the new arm adds the pull after the mean.
+                 #[cfg(not(clash_plant = "attract_after_mean"))]
+-                let in_mean = calib.attract_contact_mean == AttractContactMean::Client15535InMean;
++                let in_mean = matches!(calib.attract_contact_mean, AttractContactMean::Client15535InMean | AttractContactMean::Client16402InMeanUncapped);
+                 #[cfg(clash_plant = "attract_after_mean")]
+                 let in_mean = false;
++                // collision.ATTRACT_CONTACT_MEAN = client16402_in_mean_uncapped: the same mean, but one holding a pull is not
++                // cut to 150 (`collision_mean`'s cap): `cap_back` adds back what the cap takes off. PLANT (regression)
++                // attract_mean_capped: the new arm still caps it.
++                #[cfg(not(clash_plant = "attract_mean_capped"))]
++                let uncapped = calib.attract_contact_mean == AttractContactMean::Client16402InMeanUncapped;
++                #[cfg(clash_plant = "attract_mean_capped")]
++                let uncapped = false;
++                let mut cap_back = (0, 0);
+                 let pull = if in_mean && pull != (0, 0) && con.count > 0 {
+                     con.acc.0 += pull.0;
+                     con.acc.1 += pull.1;
+                     con.count += attract_n[i].max(1);
++                    if uncapped {
++                        let mean = (move16402::tdiv(con.acc.0, con.count), move16402::tdiv(con.acc.1, con.count));
++                        let mut capped = mean;
++                        if move16402::len_sq(capped.0, capped.1) >= 22501 {
++                            move16402::normalize_to(&mut capped, 150);
++                        }
++                        cap_back = (mean.0 - capped.0, mean.1 - capped.1);
++                    }
+                     (0, 0)
+                 } else {
+                     pull
+@@ -27303,7 +27325,7 @@ impl BattleState {
+                     is_water,
+                     arena.cols,
+                     arena.rows,
+-                    pull,
++                    (pull.0 + cap_back.0, pull.1 + cap_back.1),
+                 );
+                 offsets[i] = con.offset;
+                 push_applied[i] = Vec2::new(m.push.0, m.push.1);
+diff --git a/crates/royalesim/tests/attract_contact_mean.rs b/crates/royalesim/tests/attract_contact_mean.rs
+index 3df45a94..bc62e23f 100644
+--- a/crates/royalesim/tests/attract_contact_mean.rs
++++ b/crates/royalesim/tests/attract_contact_mean.rs
+@@ -69,5 +69,6 @@ fn a_pulled_unit_takes_the_pull_into_its_contact_mean_under_client15535_in_mean(
+ 
+ #[test]
+ fn the_shipped_arm_adds_the_pull_after_the_mean() {
+-    assert_eq!(Calib::shipped().attract_contact_mean, AttractContactMean::Client15535InMean);
++    // since W8 fin15 the shipped arm is the uncapped in-mean (tests/attract_mean_uncapped.rs); both take the pull into the mean
++    assert_eq!(Calib::shipped().attract_contact_mean, AttractContactMean::Client16402InMeanUncapped);
+ }
+diff --git a/crates/royalesim/tests/attract_mean_uncapped.rs b/crates/royalesim/tests/attract_mean_uncapped.rs
+new file mode 100644
+index 00000000..97df5bc3
+--- /dev/null
++++ b/crates/royalesim/tests/attract_mean_uncapped.rs
+@@ -0,0 +1,65 @@
++//! collision.ATTRACT_CONTACT_MEAN = client16402_in_mean_uncapped: a pulled unit's contact mean that holds the pull is not
++//! cut to 150.
++//!
++//! THE READING (client 16.402 live frames, ClashBot parity fin15 j2diag): Royal Hogs (Speed 120: a 432 pull) in contact
++//! under a Tornado close on its centre at 115-143 a tick against their walk, where the capped mean holds them at ~30
++//! (20261017_040555 t1304-t1320).
++//!
++//! The scene (tests/attract_contact_mean.rs's, with Hog Riders: a 432 pull where the Knight's 216 never meets the cap): a
++//! Blue Hog Rider on (9000, 9000), a second held at (9000, 10300), a Red Tornado 900 north of the first on its fourth tick.
++//! The first one's step per tick under the capped and the uncapped arm: they agree until the two touch, and from then the
++//! uncapped step goes further north (toward the Tornado).
++//!
++//! PLANT (regression): attract_mean_capped -> `a_mean_holding_a_pull_is_not_capped` red.
++//!   RUSTFLAGS='--cfg clash_plant="attract_mean_capped"' CARGO_TARGET_DIR=target/plant cargo test --profile gate --test
++//!   attract_mean_uncapped
++#![allow(unexpected_cfgs)]
++mod common;
++
++use common::*;
++use royalesim::fixed::{Vec2, SUBTILE_PER_MILLITILE as K};
++use royalesim::state::{AttractContactMean, BattleConfig, BattleState, Calib};
++use royalesim::Team;
++
++fn at(p: (i32, i32)) -> Vec2 {
++    Vec2::new(p.0 * K, p.1 * K)
++}
++
++const HELD_AT: (i32, i32) = (9000, 10300);
++
++fn steps(arm: AttractContactMean) -> Vec<(i32, i32)> {
++    let mut cfg: BattleConfig = config();
++    cfg.calib.attract_contact_mean = arm;
++    let mut s = BattleState::new(0, cfg);
++    let hog = s.scenario_spawn_now(Team::Blue, "HogRider", at((9000, 9000)), None).expect("the Hog Rider");
++    let held = s.scenario_spawn_now(Team::Blue, "HogRider", at(HELD_AT), None).expect("the held Hog Rider");
++    for _ in 0..3 {
++        assert!(s.debug_set_pos(held, at(HELD_AT)));
++        s.tick();
++    }
++    let p = s.entity(hog).expect("the Hog Rider").pos;
++    s.spawn_unit(Team::Red, "Tornado", Vec2::new(p.x, p.y + 900 * K), None).expect("cast the Tornado");
++    let mut out = Vec::new();
++    for _ in 0..24 {
++        assert!(s.debug_set_pos(held, at(HELD_AT)));
++        let a = s.entity(hog).expect("the scene drifted: the Hog Rider died").pos;
++        s.tick();
++        let b = s.entity(hog).expect("the scene drifted: the Hog Rider died").pos;
++        out.push((b.x / K - a.x / K, b.y / K - a.y / K));
++    }
++    out
++}
++
++/// Plant: attract_mean_capped.
++#[test]
++fn a_mean_holding_a_pull_is_not_capped() {
++    let capped = steps(AttractContactMean::Client15535InMean);
++    let uncapped = steps(AttractContactMean::Client16402InMeanUncapped);
++    let part = (0..capped.len()).find(|&k| capped[k] != uncapped[k]).expect("NOT VACUOUS: the arms never part (no capped mean)");
++    assert!(uncapped[part].1 > capped[part].1, "client16402_in_mean_uncapped: the first parted step is not further north ({:?} vs {:?})", uncapped[part], capped[part]);
++}
++
++#[test]
++fn the_shipped_arm_is_the_uncapped_mean() {
++    assert_eq!(Calib::shipped().attract_contact_mean, AttractContactMean::Client16402InMeanUncapped);
++}
+diff --git a/data/calibration.json b/data/calibration.json
+index 6e5aca23..f9f3330f 100644
+--- a/data/calibration.json
++++ b/data/calibration.json
+@@ -933,15 +933,15 @@
+       ]
+     },
+     "ATTRACT_CONTACT_MEAN": {
+-      "value": "client15535_in_mean",
+-      "candidates": ["after_mean", "client15535_in_mean"],
++      "value": "client16402_in_mean_uncapped",
++      "candidates": ["after_mean", "client15535_in_mean", "client16402_in_mean_uncapped"],
+       "status": "measured",
+-      "confidence": "SHIPPED for client 16.402 by parity r66 (2026-10-10, the c4 flip: the 15.535.29 arm the current client shares, examples/replay_parity/harness.rs CLIENT15535_ARMS). The 116-key set scored on the rob4 stack against ship54's c2: live +65,835 within on 223 same-end battles (129 up, 45 down), live3 +95,175, sp017 +31,705 (bar 231 -> 265 of 294), il017 +1,689. HIGH for client15535_in_mean on client 15.535.29: 32 of 32 pulled ground-troop steps with an overlapping troop neighbour, where after_mean gives 0; whether the 150 cap applies to a mean with a pull in it is not separated (no such mean reached 150); 16.402 unread.",
++      "confidence": "MEDIUM for client16402_in_mean_uncapped on client 16.402 (W8 fin15, 2026-10-20): ClashBot parity fin15 A/B on the 638 captured client 16.402 frame logs (law_ab, K = 0, same wheel, PARITY_OVERRIDES): J2 Tornado end point within 0.5 tile 0.821 -> 0.880 (1,540 bodies), all spells 0.904 -> 0.914; mass 1 0.59 -> 0.75, mass 2 0.66 -> 0.81, mass 4 0.82 -> 0.88, no mass class lower; Royal Hogs 0.32 -> 0.72 (n 47), Hog Rider 0.81 -> 0.93 (54), Minion Horde 0.71 -> 0.82 (180), Goblin Gang 0.76 -> 0.86 (51); J3 damage-trigger king wakes after our Tornado 0.569 -> 0.641; J6 0.692 -> 0.694. Royal Hogs in contact close on the centre at 80-150 a tick live where the capped mean holds them at 25-65 (fin15 j2diag, 9 casts, 36 hogs). SHIPPED for client 16.402 by parity r66 (2026-10-10, the c4 flip: the 15.535.29 arm the current client shares, examples/replay_parity/harness.rs CLIENT15535_ARMS). The 116-key set scored on the rob4 stack against ship54's c2: live +65,835 within on 223 same-end battles (129 up, 45 down), live3 +95,175, sp017 +31,705 (bar 231 -> 265 of 294), il017 +1,689. HIGH for client15535_in_mean on client 15.535.29: 32 of 32 pulled ground-troop steps with an overlapping troop neighbour, where after_mean gives 0; whether the 150 cap applies to a mean with a pull in it is not separated (no such mean reached 150); 16.402 unread.",
+       "provenance": "MEASURED by parity (2026-10-06) on client 15.535.29's raw frames (r54_pull_survey.py: the captures carrying a pull, the raw collision_accumulator on the tick before with collision_count the pulling sources: sp-form-Wizard-hero-s0, sp-form-Valkyrie-evo-s0, ub-sd14-b0..b3; r54_pull_mean_census.py: every pulled ground-troop step with an overlapping troop neighbour, its walk, the pull, and the contact law's push from each neighbour at both mass readings). 32 rows: the in-mean reading (walk + tdiv(pull + the pushes, sources + contacts)) fits 32 of 32 with the engine's own skips (a neighbour under NO_PUSHED_BY_ALLY / ENEMY adds no entry: 10 Wizard-hero rows whose ally neighbour carried HeroWizardNoMove), the engine's after-mean (walk + the capped mean + the pull) 0 of 32. sp-form-Wizard-hero-s0 t249: the Musketeer pulled (-12, -149) with a contact push (6, 172) stepped (-3, 11), the in-mean (-3, 11), the engine (-7, 0); its t248..t250 steps put the engine's Musketeer 131 closer to the Knight, whose avoidance then turned it (offset 190 at t251) and walked it 300 off. sp-form-Valkyrie-evo-s0 t1138: the Knight pulled (-140, -113) among Skeletons stepped (-64, -72), in-mean (-64, -72), after-mean (-128, -144). A pull with no contact is applied whole: the Tornado's 432 on a Hog Rider (ub-sd14-b*), 84 rows above 150.",
+-      "meaning": "after_mean: the engine's; move16402 move_towards adds the pull after the contact mean (capped at 150). client15535_in_mean: a pulled ground unit with at least one contact this tick adds the pull to its contact accumulator as one entry per pulling source, so its step is the walk plus tdiv(pull + the pushes, sources + contacts) (the 150 cap applied to that mean as to any); with no contact the pull is applied whole, as under after_mean.",
+-      "open": "Whether the 150 cap applies to a mean holding a pull (never reached in the corpus); a pulled unit on a knockback ladder or in a death slide (left at after_mean); 16.402.",
+-      "promotion_rules": "replay_parity runs a client 15.535.29 capture at client15535_in_mean (examples/replay_parity/harness.rs CLIENT15535_ARMS).",
+-      "engine": "state.rs phase_path16402 (the walk step's `pull`, the attract pre-pass's source count `attract_n`), selected by Calib::attract_contact_mean; tests/attract_contact_mean.rs."
++      "meaning": "after_mean: the engine's; move16402 move_towards adds the pull after the contact mean (capped at 150). client15535_in_mean: a pulled ground unit with at least one contact this tick adds the pull to its contact accumulator as one entry per pulling source, so its step is the walk plus tdiv(pull + the pushes, sources + contacts) (the 150 cap applied to that mean as to any); with no contact the pull is applied whole, as under after_mean. client16402_in_mean_uncapped: as client15535_in_mean, but a mean holding a pull is not cut to 150 (state.rs `cap_back`).",
++      "open": "Whether the 150 cap applies to a mean holding a pull: read on client 16.402 live frames only (no raw collision accumulator: the uncapped arm fits the Royal Hogs and the J2 A/B; the exact form, e.g. a cap at another length, is not separated); a pulled unit on a knockback ladder or in a death slide (left at after_mean); 16.402.",
++      "promotion_rules": "replay_parity runs a client 15.535.29 capture at client15535_in_mean (examples/replay_parity/harness.rs CLIENT15535_ARMS). The 16.402 arm: tests/attract_mean_uncapped.rs passes; ClashBot parity J2 Tornado by victim mass on the captured live logs.",
++      "engine": "state.rs phase_path16402 (the walk step's `pull`, the attract pre-pass's source count `attract_n`), selected by Calib::attract_contact_mean; tests/attract_contact_mean.rs. The uncapped arm: `cap_back` in the walk step; plant attract_mean_capped; tests/attract_mean_uncapped.rs."
+     },
+     "PUSH_MODEL": {
+       "value": "mass_weighted",
+-- 
+2.55.0.windows.3
+

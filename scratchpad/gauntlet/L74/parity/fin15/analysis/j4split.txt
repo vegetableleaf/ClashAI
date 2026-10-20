@@ -1,0 +1,10 @@
+j4cd_rsfork_fin15a all 0.912 634 | no unmatched drop 0.936 583 | with 0.642 51
+   clean 1x 0.953 583  perfect matches 532
+   clean 2x 0.921 565  perfect matches 511
+   clean ot2x 0.912 529  perfect matches 478
+   clean ot3x 0.854 113  perfect matches 64
+j4cd_rsfork_fin14c all 0.812 634 | no unmatched drop 0.831 583 | with 0.591 51
+   clean 1x 0.91 583  perfect matches 330
+   clean 2x 0.702 565  perfect matches 326
+   clean ot2x 0.744 529  perfect matches 350
+   clean ot3x 0.744 113  perfect matches 40

@@ -1,0 +1,54 @@
+matches 573 with first_div 500
+first div tick median 1754.0 quartiles [967.75, 1754.0, 2715.25]
+tower whose {'own': 355, 'opp': 145}
+sign {('own', 'sim_less_dmg'): 169, ('own', 'sim_more_dmg'): 186, ('opp', 'sim_more_dmg'): 115, ('opp', 'sim_less_dmg'): 30}
+cards in 12 s before (match count weighted by play): [('own:Skeletons', 228), ('own:IceWizard', 200), ('own:Log', 199), ('own:Knight', 178), ('own:Tesla', 114), ('own:Tornado', 100), ('opp:HogRider', 47), ('own:Xbow', 47), ('opp:GoblinBarrel', 40), ('own:Rocket', 32), ('opp:BarbLog', 24), ('opp:Firecracker', 21), ('opp:Valkyrie', 21), ('opp:BlowdartGoblin', 20), ('opp:Witch', 18), ('opp:Knight', 18), ('opp:Skeletons', 17), ('opp:Bats', 17), ('opp:GoldenKnight', 16), ('opp:SkeletonBalloon', 15), ('opp:Zap', 15), ('opp:Arrows', 13), ('opp:GoblinGang', 13), ('opp:IceSpirits', 13), ('opp:Log', 12), ('opp:Rage', 12), ('opp:RageBarbarian', 11), ('opp:MiniPekka', 10), ('opp:SkeletonArmy', 10), ('opp:Clone', 10), ('opp:ElectroSpirit', 10), ('opp:Tesla', 10), ('opp:Fireball', 10), ('opp:RoyalGiant', 9), ('opp:Cannon', 9), ('opp:Vines', 9), ('opp:Assassin', 8), ('opp:Wizard', 8), ('opp:BossBandit', 8), ('opp:Wallbreakers', 8)]
+seq_same 277 / 573
+('live_play_20261017_000229', 405, 'T1L', 'own', 3680, 4424, 744, ['own:Log', 'own:IceWizard', 'opp:Ghost', 'own:Knight', 'opp:GoldenKnight', 'own:Tesla'])
+('live_play_20261017_000559', 3566, 'T0L', 'own', 3303, 2813, -490, ['own:Tesla', 'own:Skeletons', 'own:Log', 'opp:Skeletons', 'own:IceWizard', 'opp:RoyalGiant'])
+('live_play_20261017_001415', 1593, 'T0R', 'opp', 2847, 2357, -490, ['opp:Lightning', 'own:Tesla', 'opp:Assassin', 'own:Skeletons', 'own:Knight'])
+('live_play_20261017_001748', 3135, 'T0R', 'own', 4424, 3562, -862, ['opp:BlowdartGoblin', 'own:Knight', 'opp:Assassin', 'opp:MiniPekka', 'own:Tesla'])
+('live_play_20261017_002354', 1385, 'T1L', 'own', 2994, 3514, 520, ['opp:Graveyard', 'opp:BarbLog', 'own:Tesla', 'own:Skeletons', 'own:Knight'])
+('live_play_20261017_003023', 931, 'T0R', 'opp', 3883, 4373, 490, ['opp:GoldenKnight', 'own:IceWizard', 'opp:SkeletonArmy', 'own:Log'])
+('live_play_20261017_003335', 2039, 'T0L', 'opp', 4424, 3934, -490, ['opp:Monk', 'own:Tesla'])
+('live_play_20261017_003824', 1068, 'T0L', 'own', 4057, 3455, -602, ['opp:GoblinBarrel', 'own:Skeletons', 'own:IceWizard', 'own:Knight', 'opp:Bats', 'opp:Lightning'])
+('live_play_20261017_004246', 1795, 'T1L', 'own', 3318, 3783, 465, ['opp:GoblinCurse', 'own:Knight'])
+('live_play_20261017_004607', 836, 'T1R', 'own', 2490, 4424, 1934, ['own:IceWizard', 'opp:Musketeer', 'own:Log'])
+('live_play_20261017_004922', 809, 'T1R', 'own', 4424, 3904, -520, ['opp:Clone', 'own:IceWizard', 'own:Skeletons', 'opp:Clone'])
+('live_play_20261017_005444', 234, 'T0L', 'own', 4424, 3917, -507, ['opp:BlowdartGoblin', 'own:Knight', 'own:Tornado'])
+('live_play_20261017_010111', 2296, 'T0R', 'own', 3590, 4039, 449, ['opp:Firecracker', 'own:Log', 'own:IceWizard', 'own:Skeletons'])
+('live_play_20261017_010451', 2294, 'T0L', 'own', 4424, 3948, -476, ['opp:SkeletonArmy'])
+('live_play_20261017_010804', 980, 'T0L', 'own', 4424, 3917, -507, ['opp:Skeletons', 'opp:HogRider', 'own:Skeletons', 'own:Tornado'])
+('live_play_20261017_011120', 1156, 'T0L', 'own', 959, 1479, 520, ['own:Log', 'opp:Bats', 'own:IceWizard', 'opp:Assassin'])
+('live_play_20261017_012118', 1394, 'T0R', 'own', 4360, 3332, -1028, ['opp:RageBarbarian', 'opp:Balloon', 'own:Knight', 'own:Tesla'])
+('live_play_20261017_012441', 1802, 'T1R', 'own', 825, 1362, 537, ['own:Knight'])
+('live_play_20261017_012807', 4456, 'T0R', 'opp', 2013, 1523, -490, ['opp:Arrows', 'opp:Skeletons', 'own:IceWizard', 'opp:HogRider'])
+('live_play_20261017_013322', 1732, 'T1R', 'own', 3982, 3098, -884, ['own:Log', 'own:Skeletons', 'opp:GoblinGang'])
+('live_play_20261017_013641', 1198, 'T1L', 'own', 4424, 3974, -450, ['opp:SkeletonBalloon', 'own:Tornado'])
+('live_play_20261017_014007', 736, 'T1L', 'opp', 3542, 2996, -546, ['opp:Witch', 'own:Rocket'])
+('live_play_20261017_014323', 2543, 'T1L', 'own', 725, 87, -638, ['opp:GoblinBarrel', 'own:Knight', 'own:Tornado', 'opp:RoyalGiant', 'own:Tesla'])
+('live_play_20261017_014644', 3832, 'T1L', 'own', 4424, 2490, -1934, ['opp:GoblinBarrel', 'own:Log', 'own:Tornado'])
+('live_play_20261017_015555', 1710, 'T1L', 'opp', 4317, 4807, 490, ['opp:ElectroSpirit', 'own:Log', 'opp:SpearGoblins'])
+('live_play_20261017_015935', 725, 'T0L', 'opp', 1722, 2212, 490, ['opp:InfernoDragon', 'own:Tesla', 'own:Knight'])
+('live_play_20261017_020500', 2099, 'T0L', 'opp', 1983, 1493, -490, ['opp:BarbLog', 'opp:Valkyrie', 'own:Knight', 'opp:BarbLog'])
+('live_play_20261017_020842', 3024, 'T1L', 'own', 1933, 2533, 600, ['own:Tesla', 'opp:Knight', 'own:Xbow', 'opp:GoblinBarrel', 'own:IceWizard', 'own:Skeletons', 'opp:Rocket'])
+('live_play_20261017_021337', 632, 'T1L', 'own', 3978, 4424, 446, ['opp:RoyalGiant', 'own:Xbow', 'own:IceWizard', 'opp:GoldenKnight', 'own:Log', 'own:Skeletons'])
+('live_play_20261017_021702', 4408, 'T1L', 'own', 2871, 3555, 684, ['opp:MightyMiner', 'opp:Minions', 'own:Knight', 'own:IceWizard'])
+('live_play_20261017_022137', 1173, 'T0R', 'own', 4023, 3537, -486, ['own:Skeletons', 'opp:Wizard', 'own:Tornado', 'opp:HogRider'])
+('live_play_20261017_022417', 3319, 'T0L', 'opp', 3874, 3384, -490, ['own:Skeletons', 'opp:Log', 'own:IceWizard', 'opp:Firecracker', 'own:Xbow'])
+('live_play_20261017_022800', 637, 'T1R', 'own', 4268, 3800, -468, ['own:Tornado', 'opp:Minions', 'own:IceWizard'])
+('live_play_20261017_023210', 979, 'T0R', 'opp', 4368, 4858, 490, ['own:Xbow', 'opp:LavaHound'])
+('live_play_20261017_023527', 4031, 'T1R', 'own', 3813, 3352, -461, ['opp:GoblinGang', 'own:Tornado', 'own:Skeletons', 'opp:HogRider', 'own:Log', 'opp:Firecracker', 'own:IceWizard'])
+('live_play_20261017_024409', 635, 'T1R', 'opp', 3981, 3491, -490, ['own:Skeletons', 'own:Log'])
+('live_play_20261017_024728', 1752, 'T0R', 'own', 2574, 3081, 507, ['opp:HogRider', 'own:Knight', 'own:Tornado'])
+('live_play_20261017_025048', 1499, 'T1R', 'own', 4424, 3926, -498, [])
+('live_play_20261017_025408', 706, 'T1L', 'own', 3102, 3852, 750, ['opp:RoyalGiant', 'own:Log', 'opp:Rage', 'own:Tornado'])
+('live_play_20261017_025725', 781, 'T1L', 'own', 3646, 4294, 648, ['opp:MegaKnight', 'own:Tesla', 'own:Log', 'opp:Minions'])
+own 355 d values [(-507, 17), (-520, 8), (507, 8), (-600, 8), (535, 7), (-486, 6), (-546, 6), (744, 5), (520, 5), (600, 5), (-482, 5), (-476, 4), (490, 4), (1022, 4), (-558, 4), (850, 4), (-490, 3), (-461, 3), (-613, 3), (538, 3), (-858, 3), (858, 3), (613, 3), (-449, 3), (-501, 3)]
+   own cards before [('own:Skeletons', 180), ('own:Log', 154), ('own:IceWizard', 154), ('own:Knight', 138), ('own:Tornado', 92), ('own:Tesla', 80), ('own:Xbow', 20), ('own:Rocket', 6)]
+   opp cards before [('opp:HogRider', 42), ('opp:GoblinBarrel', 36), ('opp:BlowdartGoblin', 16), ('opp:Firecracker', 15), ('opp:SkeletonBalloon', 14), ('opp:GoldenKnight', 12), ('opp:BarbLog', 12), ('opp:Bats', 12), ('opp:Valkyrie', 11), ('opp:RageBarbarian', 10), ('opp:Arrows', 10), ('opp:Skeletons', 9)]
+   live hp at div [(4424, 49), (7032, 5), (3514, 3), (3886, 3), (3680, 2), (3303, 2), (3318, 2), (3866, 2)] sim hp [(4424, 41), (3917, 11), (7032, 7), (3824, 3), (3878, 3), (3514, 2), (3332, 2), (3098, 2)]
+opp 145 d values [(-490, 58), (-546, 19), (-646, 19), (490, 17), (-530, 3), (-764, 3), (-510, 3), (646, 3), (546, 1), (-559, 1), (-644, 1), (-452, 1), (421, 1), (568, 1), (-557, 1), (-577, 1), (530, 1), (-776, 1), (551, 1), (-520, 1), (-453, 1), (784, 1), (519, 1), (-443, 1), (510, 1)]
+   own cards before [('own:Skeletons', 47), ('own:IceWizard', 46), ('own:Log', 44), ('own:Knight', 39), ('own:Tesla', 34), ('own:Xbow', 27), ('own:Rocket', 26), ('own:Tornado', 8), ('own:Zap', 1)]
+   opp cards before [('opp:Witch', 12), ('opp:Valkyrie', 10), ('opp:BarbLog', 9), ('opp:Skeletons', 8), ('opp:Tesla', 8), ('opp:Knight', 8), ('opp:IceSpirits', 7), ('opp:Log', 6), ('opp:Firecracker', 6), ('opp:Zap', 6), ('opp:ElectroSpirit', 5), ('opp:InfernoDragon', 5)]
+   live hp at div [(4858, 14), (4373, 10), (4424, 9), (4807, 4), (3883, 2), (1722, 2), (2217, 2), (2954, 2)] sim hp [(4212, 6), (3878, 4), (4317, 4), (3727, 3), (3778, 3), (4312, 3), (1769, 3), (4368, 3)]

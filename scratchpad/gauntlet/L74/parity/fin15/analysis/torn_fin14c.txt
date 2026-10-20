@@ -1,0 +1,75 @@
+tornado bodies with pulls 1487
+card                         mass fly   n agree  d0   pull_live pull_sim  ratio(live/sim, d0>=3000)
+MinionHorde                     2   1  180 0.71  3289     1820     1819  1.060 (n 101)
+HogRider                        4   0   54 0.81  4727     3928     3890  1.000 (n 48)
+Witch                           8   0   51 0.88  3606     2280     2240  1.004 (n 32)
+GoblinGang                      2   0   51 0.76  2723     1604     1792  1.065 (n 23)
+RoyalHogs                       2   0   47 0.32  3886     2008     1511  1.410 (n 27)
+MinionHorde evo                 2   1   38 0.92  2646     1952     1650  1.018 (n 17)
+Balloon hero                    6   1   33 0.88  4265     3035     3273  1.000 (n 29)
+RoyalHogs evo                   2   0   32 0.28  3645     2203      814  2.013 (n 19)
+Firecracker                     6   0   31 0.97  3889     3775     3738  1.000 (n 24)
+MegaKnight                     18   0   29 0.83  4142     2664     2190  1.000 (n 19)
+IceWizard hero                  5   0   26 1.00  3697     3451     3282  1.000 (n 20)
+LavaHound                       5   1   23 1.00  3846     2483     2485  1.000 (n 17)
+InfernoDragon                   5   1   23 0.91  4568     3464     3529  1.000 (n 21)
+Barbarians                      4   0   23 0.78  4340     2231     2169  1.000 (n 17)
+DarkWitch                       4   0   21 0.90  3789     2881     2880  0.997 (n 16)
+MegaKnight evo                 18   0   21 0.67  4360     3075     3075  0.995 (n 18)
+ElectroGiant                   18   0   20 0.95  4234     2262     2222  1.000 (n 18)
+ThreeMusketeers                 5   0   20 0.95  3844     1928     2206  1.000 (n 15)
+GiantSkeleton                  18   0   19 0.89  3550     1869     2178  1.000 (n 11)
+SkeletonBalloon                 7   1   18 1.00  4596     4336     4403  1.000 (n 15)
+BabyDragon                      5   1   18 1.00  3638     3442     3442  1.000 (n 11)
+BattleHealer                    6   0   18 0.72  3107     2242     2150  1.051 (n 9)
+GoldenKnight                   10   0   18 0.61  3626     2284     2308  1.000 (n 11)
+MiniPekka hero                  4   0   18 0.89  4300     3532     3551  1.000 (n 17)
+MiniSparkys                     4   0   17 0.94  4124     2441     2427  1.000 (n 13)
+Minions                         2   1   17 0.82  2595     1936     2046  1.045 (n 7)
+Archer                          3   0   17 0.94  4096     2696     2690  1.002 (n 11)
+Pekka                          18   0   16 0.88  3962     1919     2030  1.000 (n 13)
+BlowdartGoblin                  3   0   16 0.94  3606     2998     2821  1.015 (n 12)
+ElixirGolem                    15   0   16 0.94  4310     2250     2250  1.000 (n 11)
+Knight                          6   0   15 1.00  4015     3067     2905  1.000 (n 12)
+Valkyrie                        5   0   15 0.87  3278     1825     1825  1.000 (n 8)
+RoyalGiant                     18   0   14 1.00  4110     2550     2651  1.000 (n 12)
+SkeletonDragons                 4   1   14 1.00  2336     1565     1576  1.006 (n 4)
+Balloon                         6   1   14 0.86  4734     3046     3063  1.000 (n 12)
+AngryBarbarians                 4   0   14 0.71  3728     2696     2350  1.006 (n 11)
+Golem                          20   0   14 1.00  4488     2608     2606  0.999 (n 12)
+SkeletonWarriors                1   0   13 0.46  2801     1625     1716  1.012 (n 5)
+BossBandit                      4   0   13 0.85  3586     3426     2746  0.999 (n 8)
+BattleRam                       6   0   13 1.00  4907     2518     2513  1.057 (n 13)
+Prince                          6   0   12 1.00  3889     1530     1544  1.000 (n 7)
+FirespiritHut                   6   0   12 0.92  3448     2275     2278  1.000 (n 7)
+Princess                        3   0   12 1.00  4095     2684     2708  1.000 (n 9)
+ElectroDragon evo               7   1   12 1.00  3050     2796     2528  1.000 (n 6)
+Witch evo                       8   0   11 0.82  2875     2660     2510  1.039 (n 5)
+Wizard hero                     5   0   11 0.91  3967     3120     2907  1.000 (n 8)
+Musketeer hero                  5   0   10 0.90  3619     2786     2476  1.000 (n 7)
+RageBarbarian                   4   0   10 0.80  3884     3216     3211  1.000 (n 8)
+SkeletonKing                   10   0   10 0.80  3444     2082     2758  1.000 (n 6)
+AxeMan evo                      4   0    9 1.00  3761     2799     2797  1.000 (n 5)
+AngryBarbarians evo             4   0    9 0.67  2939     2300     2172  1.361 (n 4)
+MegaMinion hero                 6   1    9 0.67  3494     2560     3067  1.000 (n 5)
+Bowler                         18   0    9 1.00  2709     2256     2565  1.000 (n 4)
+Assassin                        3   0    8 0.50  3672     3526     3396  0.957 (n 6)
+MiniPekka                       4   0    8 0.88  4356     3560     3014  1.000 (n 6)
+Knight evo                      6   0    8 0.88  2459     2162     2144  1.000 (n 3)
+RoyalRecruits evo               5   0    8 0.62  2564     1076     1367  1.000 (n 1)
+fly 0 mass 1 n 27 agree 0.556 median live-sim pull 25 share sim pulls less by >300 0.3 more by >300 0.07
+fly 0 mass 2 n 146 agree 0.507 median live-sim pull 276.5 share sim pulls less by >300 0.49 more by >300 0.08
+fly 0 mass 3 n 73 agree 0.89 median live-sim pull 0 share sim pulls less by >300 0.07 more by >300 0.04
+fly 0 mass 4 n 228 agree 0.811 median live-sim pull 0.0 share sim pulls less by >300 0.15 more by >300 0.07
+fly 0 mass 5 n 128 agree 0.922 median live-sim pull 0.0 share sim pulls less by >300 0.07 more by >300 0.03
+fly 0 mass 6 n 161 agree 0.907 median live-sim pull 0 share sim pulls less by >300 0.08 more by >300 0.06
+fly 0 mass 8 n 62 agree 0.871 median live-sim pull 26.5 share sim pulls less by >300 0.13 more by >300 0.05
+fly 0 mass 10 n 34 agree 0.706 median live-sim pull 0.0 share sim pulls less by >300 0.09 more by >300 0.21
+fly 0 mass 15 n 16 agree 0.938 median live-sim pull 0.0 share sim pulls less by >300 0.0 more by >300 0.0
+fly 0 mass 18 n 168 agree 0.881 median live-sim pull 0.0 share sim pulls less by >300 0.08 more by >300 0.11
+fly 0 mass 20 n 14 agree 1.0 median live-sim pull -32.5 share sim pulls less by >300 0.0 more by >300 0.07
+fly 1 mass 2 n 238 agree 0.748 median live-sim pull 36.0 share sim pulls less by >300 0.18 more by >300 0.1
+fly 1 mass 4 n 14 agree 1.0 median live-sim pull 0.0 share sim pulls less by >300 0.0 more by >300 0.0
+fly 1 mass 5 n 74 agree 0.946 median live-sim pull 0.0 share sim pulls less by >300 0.01 more by >300 0.05
+fly 1 mass 6 n 58 agree 0.845 median live-sim pull 0.0 share sim pulls less by >300 0.0 more by >300 0.16
+fly 1 mass 7 n 34 agree 1.0 median live-sim pull 0.0 share sim pulls less by >300 0.03 more by >300 0.03
