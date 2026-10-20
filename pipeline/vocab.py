@@ -132,6 +132,8 @@ _ALIAS_INV: dict[str, str] = {
     "GiantBuffer": "rune_giant", "SkeletonBalloon": "skeleton_barrel", "ZapMachine": "sparky", "MergeMaiden": "spirit_empress",
     "MergeMaiden_Normal": "spirit_empress", "MergeMaiden_Mounted": "spirit_empress_air", "Log": "the_log",
     "DarkMagic": "void", "MiniSparkys": "zappies", "Xbow": "x_bow", "Wallbreakers": "wall_breakers",
+    "MinionGiant": "balloon",   # 10-20 stand-in: a card newer than the vocab (no own token); flying, building-targeting
+
     "Elixir Collector": "elixir_collector", "Pekka": "pekka", "MiniPekka": "mini_pekka", "GlobalLightning": "lightning",
     "GlobalClone": "clone", "RoyalRecruits_Chess": "royal_recruits", "SkeletonWarriors_SpookyChess": "guards",
     "SuperArcher": "archers", "SuperEliteArcher": "magic_archer", "SuperHogRider": "hog_rider",
