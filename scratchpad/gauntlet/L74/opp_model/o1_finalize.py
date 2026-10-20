@@ -126,13 +126,16 @@ def selfcheck(arrs, meta, index):
     return c
 
 
+PREFIX = sys.argv[sys.argv.index('--prefix') + 1] if '--prefix' in sys.argv else 'o1'     # o1b = the spell-target rebuild
+
+
 def inference_check(index, split):
     """Our hand inferred from OUR publicly detected plays (observers[opp].plays) vs the hand we logged before each play."""
     c = Counter()
     for m in index:
         if m['split'] != split:
             continue
-        rec = json.loads((OUT / 'o1_corpus' / split / f"replay_{m['tag']}.json").read_text(encoding='utf-8'))
+        rec = json.loads((OUT / f'{PREFIX}_corpus' / split / f"replay_{m['tag']}.json").read_text(encoding='utf-8'))
         me, opp = m['my_side'], m['opp_side']
         obs = recording_observers(tag_native_recording(dict(rec, log=[]), {}))
         seq = [dict(key=R.key_of(e['card']), **e) for e in sorted(obs[opp].plays, key=lambda e: e['tick'])]
@@ -197,19 +200,20 @@ def remap(arrs, meta, index, dst):
 
 
 def main():
-    idx = json.loads((OUT / 'o1_corpus/index.json').read_text(encoding='utf-8'))
+    idx = json.loads((OUT / f'{PREFIX}_corpus/index.json').read_text(encoding='utf-8'))
     index = {m['tag']: dict(m, recording=m['tag'] + '.jsonl') for m in idx['matches']}
     print(f"records {idx['n']} (holdout from {idx['cut_ts']}); builder totals {json.dumps(idx['totals'])}")
     for split in ('train', 'holdout'):
-        arrs, meta = load_ds(OUT / f'o1_{split}.npz')
+        arrs, meta = load_ds(OUT / f'{PREFIX}_{split}.npz')
         arrs['tags'] = arrs['tags']
         print(f'\n==== {split}: {len(arrs["sc"])} rows from {len(arrs["tags"])} records; dataset_gen stats '
               f'play_rows {meta["stats"].get("play_rows")} wait_rows {meta["stats"].get("wait_rows")} '
               f'play_skipped {meta["stats"].get("play_skipped")} wait_no_hand {meta["stats"].get("wait_no_hand")}')
-        selfcheck(arrs, meta, index)
-        inference_check(list(index.values()), split)
+        if '--remap-only' not in sys.argv:
+            selfcheck(arrs, meta, index)
+            inference_check(list(index.values()), split)
         if '--check-only' not in sys.argv:
-            remap(arrs, meta, index, OUT / f'o1_{split}_v32.npz')
+            remap(arrs, meta, index, OUT / f'{PREFIX}_{split}_v32.npz')
 
 
 if __name__ == '__main__':

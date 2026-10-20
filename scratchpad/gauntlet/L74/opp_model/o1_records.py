@@ -48,6 +48,7 @@ OUT = HERE / 'out' / 'o1_corpus'
 LIVE_OFF = LT.LIVE_OFF
 FRAME_EVERY = 8
 PRE_PLAY = 4
+SPELL_TARGETS = '--spell-targets' in sys.argv     # O1b (opt-in): projectile spells labelled at the projectile's target
 SUFFIX = {0: '', 1: '@evolution', 2: '@hero'}
 CENSUS = [ROOT / 'scratchpad/gauntlet/L74/mix/decks_live_train.json', ROOT / 'scratchpad/gauntlet/L74/mix/decks_live_eval.json']
 
@@ -284,6 +285,15 @@ def build(row, path):
     if deck is not None:
         opp_final = [n + SUFFIX[seen_forms.get(k, 0)] for n, k in zip(dnames, deck)]
         seq = [dict(key=key_of(e['card']), **e) for e in oplays]
+        if SPELL_TARGETS:                               # O1b: a projectile spell's label = its TARGET, not where it was first seen
+            fr_at = {f['tick']: f for f in frames}
+            for e in seq:
+                f = fr_at.get(int(e['tick']))
+                hits = [p for p in (f or {}).get('proj', []) if p[0] == opp and int(p[3]) >= 0 and key_of(cname(p[3]) or '') == e['key']
+                        and p[4] is not None and p[5] is not None and (p[4], p[5]) != (0, 0)]
+                if hits:
+                    e['x'], e['y'] = sum(p[4] for p in hits) / len(hits), sum(p[5] for p in hits) / len(hits)
+                    st['opp_spell_label_target'] += 1
         hands = infer_hands(seq, deck)
         for e, h in zip(seq, hands):
             k = len(log)
@@ -337,7 +347,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--limit', type=int, default=0)
     ap.add_argument('--holdout', type=float, default=0.25)
+    ap.add_argument('--spell-targets', action='store_true', help='O1b: label projectile spells at their target')
+    ap.add_argument('--out', default=str(OUT))
     a = ap.parse_args()
+    out_dir = Path(a.out)
     rows = [orjson.loads(l) for l in gzip.open(HERE / 'out/live_matches.jsonl.gz')]
     rows = sorted([r for r in rows if r['deck'] == 'icebow' and (r['tro'] or 0) >= 12000 and r['ts'] >= '20261015_172600'],
                   key=lambda r: r['ts'])
@@ -345,11 +358,11 @@ def main():
         rows = rows[-a.limit:]
     cut = int(round(len(rows) * (1 - a.holdout)))
     for d in ('train', 'holdout'):
-        (OUT / d).mkdir(parents=True, exist_ok=True)
+        (out_dir / d).mkdir(parents=True, exist_ok=True)
     index, tot, t0 = [], Counter(), time.time()
     for i, r in enumerate(rows):
         split = 'train' if i < cut else 'holdout'
-        dst = OUT / split / f'replay_{Path(r["log"]).stem}.json'
+        dst = out_dir / split / f'replay_{Path(r["log"]).stem}.json'
         try:
             rec, st = build(r, LT.LOGS / r['log'])
         except Exception as ex:                       # noqa: BLE001 -- a broken log is counted and named, never fatal
@@ -363,7 +376,7 @@ def main():
         index.append(dict(tag=rec['tag'], split=split, **rec['o1'], stats=dict(st)))
         if i % 50 == 0:
             print(i, len(rows), r['log'], round(time.time() - t0), 's', flush=True)
-    (OUT / 'index.json').write_text(json.dumps(dict(n=len(index), cut_ts=rows[cut]['ts'] if cut < len(rows) else None,
+    (out_dir / 'index.json').write_text(json.dumps(dict(n=len(index), cut_ts=rows[cut]['ts'] if cut < len(rows) else None,
                                                     totals=dict(tot), matches=index), indent=0), encoding='utf-8')
     print(json.dumps(dict(records=len(index), seconds=round(time.time() - t0), totals=dict(tot))))
 

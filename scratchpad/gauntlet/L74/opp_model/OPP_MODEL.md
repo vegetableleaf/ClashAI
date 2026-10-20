@@ -534,6 +534,16 @@ opponent takes a princess 31.2%).
    - Known gap: rl_royale gives every league opponent the same temperature (`league_opp_T`) and tempo (`opp_decide_every` /
      `opp_reaction_ticks`). The calibrated tempo can therefore apply to all opponents (a second change) or to none. Applying
      it to the exploiter only needs an opt-in trainer key, with tests and a smoke.
+   - **Decision needed (10-20 ~07:50 EDT).** No opponent passes O4. The candidates for the league opponent:
+     - **(A)** gen_v32_s0 at T .1 / decide 40. Strongest of the human-tempo opponents: CLX 74.8%, opponent takes a princess
+       23.3%, style distance 0.79.
+     - **(B)** the live-imitation model after the spell-target relabel (O1b, building now). It goes to O2b and then a
+       decide-40 eval, about 1-2 h on this slow host.
+     - **(C)** RL-strengthen the live-imitation model against frozen CLX at all16. KL leash to O2, stopped by crown / OT-share /
+       style gates. About 3-4 h, with the Stage-2 stalling risk.
+     - Every option needs the per-opponent temperature and tempo. Without them a league opponent plays at the learner's decide 10
+       and league T. That needs an opt-in `league_exploiters` key (trainer edit: test, pyflakes, real smoke). The alternative is
+       the global `league_opp_T` / `opp_decide_every`, which also slows the self-play snapshots: a second change.
 6. **O5** (the sealed live block) **cannot finish today.** It becomes the post-hoc check: the next >= 150 live matches of
    whatever trains tonight, predicted by the O4 SIM before they are played.
 
