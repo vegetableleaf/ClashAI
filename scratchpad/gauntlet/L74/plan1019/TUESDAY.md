@@ -75,3 +75,4 @@ J. SIM PARITY METRIC SUITE (owner 10-19: fight parity is not enough; >= 95% on E
    J-PREDICTIVE:
      11. SIM eval vs live win rate across the models with live records: calibration / rank agreement.
    First: define all 11 with data sources, measure the current values, rank by gap. Then fix biggest-first.
+   J-ALL-CARDS (owner 10-19): every engine metric (J1-J8) is graded PER CARD for ALL cards, not only icebow. Build a per-card coverage table from the live logs (ours + bait). Fill gaps by: (a) owner-played targeted classic battles with the missing cards; (b) static checks of each card's stats vs the card table / wiki (hp, damage, hit speed, range, sight, mass, speed, deploy time) for every card in the game.
