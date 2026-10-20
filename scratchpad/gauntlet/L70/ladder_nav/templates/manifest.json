@@ -275,6 +275,23 @@
     1420
    ],
    "threshold": 0.85
+  },
+  "skip_strikes": {
+   "file": "skip_strikes.png",
+   "source": "strikes.png",
+   "box": [
+    350,
+    1432,
+    550,
+    1518
+   ],
+   "region": [
+    250,
+    1350,
+    650,
+    1600
+   ],
+   "threshold": 0.85
   }
  }
 }

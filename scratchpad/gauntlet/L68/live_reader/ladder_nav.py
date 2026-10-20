@@ -64,6 +64,7 @@ TARGETS = {                                     # rectangle the tap point must l
     "choose": (0, 150, 900, 1480),              # Trophy Road: green Choose (a pick-one-of-two card reward)
     "reward_card": (0, 60, 900, 1100),          # "Choose your reward": one of the two card tiles
     "restart": (60, 820, 420, 940),             # "Content Update" modal: its only button (RESTART ~ (144, 876))
+    "skip_strikes": (340, 1420, 560, 1530),     # 10-20 lightning-chest strikes screen: "Skip Strikes" (free; replaces nothing)
     "reload": (100, 700, 400, 1100),           # "Connection lost" dialog, NOT the another-device kind        # neutral point: top-centre art on every popup seen so far
 }
 # com.mumu.store is stopped as start_live.sh does (its advert overlay). Stopping com.android.vending (Play Store) is
@@ -217,6 +218,8 @@ class Classifier:
             won = None if w is None else w[1] > 600            # loss: banner at y ~174 above the opponent's name
             return {"screen": "results", "play_again": hit["play_again"], "ok": hit["results_ok"], "won": won,
                     "scores": sc}
+        if "skip_strikes" in hit:                       # 10-20: lightning-chest strikes ("Select a card to replace, or skip!")
+            return {"screen": "strikes", "skip": hit["skip_strikes"], "scores": sc}
         if "red_x" in hit:
             return {"screen": "popup_x", "x": hit["red_x"], "scores": sc}
         if "modes_hdr" in hit:
@@ -326,6 +329,8 @@ class LadderNav:
             if scr["other_device"]:
                 return ("stop", "ANOTHER_DEVICE: the account was opened on another device (Connection lost)")
             return ("act", "reload", scr["reload"]) if scr["reload"] else ("wait", "connection lost: no RELOAD seen")
+        if s == "strikes":
+            return ("act", "skip_strikes", scr["skip"])
         if s == "popup_x":
             return ("act", "close_x", scr["x"])
         if s == "modes":
@@ -449,7 +454,7 @@ def grab(adb: list[str]):
 class LadderNavRunner:
     """Device side, same interface as friend_nav.FriendNav: probe() before match 1, run() between matches."""
     POLL_S, COOLDOWN_S, RELAUNCH_WAIT_S = 0.5, 1.5, 15.0
-    NAV_SCREENS = {"results", "main", "popup_x", "modes", "trophy_road", "choose_reward", "conn_lost",
+    NAV_SCREENS = {"results", "main", "popup_x", "strikes", "modes", "trophy_road", "choose_reward", "conn_lost",
                    "content_update"}
 
     def __init__(self, adb: list[str], dry_run: bool = False, log_dir: Path = HERE, state_path: Path = STATE,
