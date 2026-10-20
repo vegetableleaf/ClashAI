@@ -292,6 +292,23 @@
     1600
    ],
    "threshold": 0.85
+  },
+  "single_ok": {
+   "file": "single_ok.png",
+   "source": "results_ok_only.png",
+   "box": [
+    350,
+    1364,
+    550,
+    1442
+   ],
+   "region": [
+    280,
+    1300,
+    620,
+    1500
+   ],
+   "threshold": 0.85
   }
  }
 }
