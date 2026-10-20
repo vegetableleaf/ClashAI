@@ -61,7 +61,8 @@ DEATH_TOL, SWARM_SLACK, TOWER_FLOOR, TOWER_REL = 10, .1, 100, .1
 TIME_OUT_TICK = 6000               # the ladder match's end (180 s + 120 s overtime at 20 ticks/s), the live frames' tick base
 LEAD_AHEAD = {'Rascals': 2000}     # the SIM formation's lead body ahead of its play point (H-RASCALS). ponytail: hardcoded; probe the formation if another card needs it
 SPELL_WINDOW = 60                 # ticks after a cast in which a drop/death counts as the spell's hit
-PRESPELL = os.environ.get('PARITY_PRESPELL', '')       # H-PRESPELL (cut): '' off, 'spawn', 'all'
+# H-PRESPELL (cut): the DEFAULT since the lead's 10-20 decision ('spawn'); PARITY_PRESPELL=off restores the pre-10-20 cohort, 'all' widens it
+PRESPELL = {'off': ''}.get(os.environ.get('PARITY_PRESPELL', 'spawn'), os.environ.get('PARITY_PRESPELL', 'spawn'))
 PRESPELL_SPAWN = {'GoblinBarrel', 'Graveyard'}
 DIGGERS = {'Miner', 'GoblinDrill'}  # tunnel in: seen active on their way, deploying where they surface (Knight etc. can show
                                    # 13/15 -> 12/14 too: 31 of 531 Knights, so the rule is by card)
@@ -797,7 +798,7 @@ def cut(m, events, window):
             born = [tr[b['id']]['first'] for b in m['frames'][max(i, 0)][1]
                     if not b['tower'] and b['kind'] in (12, 14) and tr[b['id']]['first'] > ticks[max(i, 0)]-80]
             dead = [lo for lo, hi in pend if i >= 0 and lo < ticks[i] < hi]
-            # H-PRESPELL (W8 round 4, opt-in PARITY_PRESPELL=spawn|all): a seen spell still in flight / its area running at
+            # H-PRESPELL (W8 round 4; default 'spawn' since 10-20, PARITY_PRESPELL=off|all): a seen spell still in flight / its area running at
             # the start frame (fights.py flags it spell_in_flight_at_start, an unclean fight) is not set up; start before its
             # cast instead, so it is replayed. 'spawn': the spawning spells only (a Goblin Barrel's goblins, a Graveyard's
             # skeletons: in the J6 round-2 dumps 15 of 24 unclean failures had a live enemy from one that the SIM lacked).

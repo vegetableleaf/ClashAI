@@ -405,15 +405,25 @@ adapter under it. Unset or another id keeps its behaviour: `pipeline/tests/test_
 | R3 | J4 | S-TIEBREAK-REGEN (engine) | 0.991 [0.986, 0.994]; 3x phase 0.961 [0.937, 0.979] | goal met overall; 3x lower CI 0.937 (n 135) |
 | R3 | J1 | H-DRILL-SURFACE (harness) | stamped 0.9289 (+24 / -0); full 0.9242 (+35 / -0) | gain; below the owner's 0.975 |
 | R3 | rare cards (10-20) | H-DRILL-SURFACE | own Goblin Drill 0.34 -> 0.61, opp 0.00 -> 0.74; evo drill 0.00 -> 0.04 | the evo needs its relocate action in the engine (not implemented in the fork; no device parameters on hand) |
-| R4 | J3 / J6 / J2 (all fights) | H-PRESPELL=spawn (fights.py opt-in: a fight starts before an in-flight Goblin Barrel / Graveyard cast, so the spell is replayed) | J3 0.933 -> **0.947 [0.939, 0.955]**; J6 0.697 -> 0.718 [0.697, 0.737] (pathing proper 0.828 -> 0.838); J2 0.917 -> 0.917 | gain on J3 / J6; kept OPT-IN, see below |
-| R4 | J1 | the same, on the J1 cohort | stamped 0.9289 -> 0.9273: 0 fights moved, 304 newly clean fights join at a lower agreement (own Tornado 0.978 -> 0.959 on 24 more) | not landed for J1: it changes the graded cohort; lead decision |
+| R4 | J3 / J6 / J2 (all fights) | H-PRESPELL=spawn (fights.py opt-in: a fight starts before an in-flight Goblin Barrel / Graveyard cast, so the spell is replayed) | J3 0.933 -> **0.947 [0.939, 0.955]**; J6 0.697 -> 0.718 [0.697, 0.737] (pathing proper 0.828 -> 0.838); J2 0.917 -> 0.917 | gain on J3 / J6; DEFAULT since 10-20 |
+| R4 | J1 | the same, on the J1 cohort | stamped 0.9289 -> 0.9273: 0 fights moved, 304 newly clean fights join at a lower agreement (own Tornado 0.978 -> 0.959 on 24 more) | ADOPTED as the default grading (lead, 10-20); J1 reported both ways above |
 | - | J5a, J5b, J8 winner, J3 wake law | - | >= 0.98 | meet |
 
 Section 6 has the full values. No metric has reached a confirmed plateau (two rounds with no CI-significant gain plus a written
 diagnosis): J4 met the goal in round 2, and every other metric has had at most two rounds.
 
-**Round 4 decision owed (lead):** run the J-suite with `PARITY_PRESPELL=spawn` (J3 0.947, J6 0.718) and keep J1 without it
-(cohort continuity), or grade both with it (J1 0.927 on 13,357 stamped fights). The opt-in leaves every default run byte-identical.
+**Round 4 decision (lead, 10-20): H-PRESPELL=spawn is the DEFAULT grading from now on** (fights.py; `PARITY_PRESPELL=off`
+restores the old cohort). J1 on the final fin15, reported both ways once so the series stays comparable:
+
+| J1 cohort | stamped raw [95% CI] | stamped fights | full raw | full fights |
+|---|---|---|---|---|
+| old definition (FIN15F, PARITY_PRESPELL=off) | 0.9289 / 0.929 [0.923, 0.935] | 13,052 | 0.9242 | 20,711 |
+| **new definition (FIN15P, default)** | **0.9273 / 0.927 [0.921, 0.933]** | 13,357 (+304) | 0.9225 | 21,328 (+617) |
+
+- Not one existing fight moved (0 up / 0 down). The gap is the 304 newly gradable fights, set up from before the in-flight
+  Goblin Barrel or Graveyard cast; their agreement is lower.
+- These are real gaps, not noise, so the series continues on the new definition.
+- J-suite on the new definition: J3 0.947 [0.939, 0.955]; J6 0.718 [0.697, 0.737] (pathing proper 0.838); J2 0.917.
 
 ### 8.2 Queue for round 5 (fin16), biggest lever first
 
