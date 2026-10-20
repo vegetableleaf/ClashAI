@@ -79,7 +79,7 @@ def main():
             alert(f"{tag}: challenge home (Battle button) not found for 90 s before battle {i}; stopped, nothing tapped")
             return
         before = newest_log()
-        bot = subprocess.Popen(["bash", str(L / "parity/parity_battles.sh"), "1", tag], cwd=str(REPO),
+        bot = subprocess.Popen([r"C:Program FilesGitbinbash.exe", str(L / "parity/parity_battles.sh"), "1", tag], cwd=str(REPO),
                                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         out = L / "parity" / f"parity_{tag}.out"
         n0 = out.read_text(encoding="utf-8", errors="replace").count("capture-p3: ready") if out.exists() else 0
