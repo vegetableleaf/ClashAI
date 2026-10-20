@@ -134,7 +134,10 @@ class TestModel(unittest.TestCase):
         m.load_state_dict(st["model"])                                # strict; cue_in zero-filled
         self.assertTrue(torch.equal(m.cue_in.weight, torch.zeros_like(m.cue_in.weight)))
         sd = m.state_dict()
+        from pipeline import vocab
         for k, v in st["model"].items():
+            if k == "cls_emb.weight":                                 # an older vocab grows on load (W9 10-20)
+                v = v[vocab.grown_rows(v.shape[0] - 1)]
             self.assertTrue(torch.equal(sd[k], v), k)
         missing = dict(st["model"])
         missing.pop("gate_head.weight")

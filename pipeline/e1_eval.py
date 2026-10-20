@@ -782,8 +782,9 @@ class GenPolicy:
     The chosen slot goes to ``Match.apply`` as S1's does (slot -> engine deck index -> ``env.eng.act``)."""
 
     def __init__(self, model, card_vocab: Sequence[str]):
+        from pipeline.dataset_gen import checkpoint_gid
         self.model = model
-        self.gid = {k: i for i, k in enumerate(card_vocab)}              # 0 = <pad>
+        self.gid = checkpoint_gid(card_vocab)              # 0 = <pad>; + stand-ins for cards newer than the vocab
 
     def slot_ident(self, engine_deck: Sequence[str], deck_index_of_slot: dict) -> tuple[np.ndarray, np.ndarray]:
         """[9] card id / form per deck slot; index 8 (the sc one-hots' 'unknown' column) = pad (0, FORM_PAD)."""

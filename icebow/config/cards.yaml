@@ -1282,6 +1282,29 @@ cards:
     hit_speed: null
     unsourced: true
 
+  # 2026-10-20 (W9, scratchpad/gauntlet/L74/identities): Minion Giant, card 26000107, its own class (was a balloon alias).
+  # Device tables 10-12 (spells_characters + characters/minion_giant.toml): 4 elixir Rare; FlyingHeight 3000,
+  # TargetOnlyBuildings, AttacksGround, Range 4000 (4 tiles), Speed 60, HitSpeed 1700, homing projectile;
+  # base HP 710 / damage 66 (object rarity Common: 1817 HP at L11, = 8 live max_hp values exactly).
+  minion_giant:
+    display: "Minion Giant"
+    elixir: 4
+    kind: troop
+    rarity: rare
+    attacks: [ground]
+    movement: air
+    speed: medium
+    range: short
+    splash: false
+    count: 1
+    targets: buildings_only
+    flags: [flying, building_targeting]
+    evolution: null
+    verified: true
+    hitpoints: null
+    damage: null
+    hit_speed: null
+
   skeleton_army:
     display: "Skeleton Army"
     elixir: 3

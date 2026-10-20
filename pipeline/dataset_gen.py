@@ -59,6 +59,22 @@ def card_key(engine_name: str) -> Optional[str]:
     return vocab.base_key(k).replace("_", "-") if k else None
 
 
+# Cards newer than a CHECKPOINT's card_vocab (the GenModel card-identity table: hand / deck / past / cycle / objects): such
+# a checkpoint reads the card through the named stand-in's row -- what the 10-20 MinionGiant -> balloon vocab alias did
+# for every table before W9. The unit token is the card's own (vocab.APPENDED_CLASSES); a dataset built from data that
+# holds the card gives it its own card_vocab row (card_vocab = the data's keys). L74/identities/IDENTITIES.md.
+CARD_STANDINS = {"minion-giant": "balloon"}
+
+
+def checkpoint_gid(card_vocab) -> dict:
+    """card slug -> id in a checkpoint's ``card_vocab`` (0 = <pad>), plus ``CARD_STANDINS`` for cards it predates."""
+    gid = {k: i for i, k in enumerate(card_vocab)}
+    for k, src in CARD_STANDINS.items():
+        if k not in gid and src in gid:
+            gid[k] = gid[src]
+    return gid
+
+
 def card_form(engine_name: str) -> int:
     """``Knight@evolution`` -> 1, ``@hero`` -> 2, plain -> 0; an unknown suffix raises."""
     return _FORMS[str(engine_name).split("@", 1)[1] if "@" in str(engine_name) else ""]

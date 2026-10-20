@@ -1,0 +1,469 @@
+........................sssss........................................... [ 12%]
+........................................................................ [ 25%]
+........................................................................ [ 38%]
+....FF.........FFFFF...F.....FF..F..s.F.F.s.F........................... [ 51%]
+.................................................................... [ 64%]
+.............................F....sss................................ [ 76%]
+........................................................................ [ 89%]
+.......................................................F..               [100%]
+================================== FAILURES ===================================
+_______________ test_checked_in_file_holds_the_deployed_options _______________
+
+    def test_checked_in_file_holds_the_deployed_options():
+>       assert (REPO / 'scratchpad/gauntlet/L70/live/LIVE_OPTIONS').read_text() == DEPLOYED_FILE
+E       AssertionError: assert '--xbow-class...code sample\n' == '--xbow-class...e-inputs on\n'
+E         
+E         Skipping 511 identical leading characters in diff, use -v to show
+E         - t=16 Log=15 --log-air block --rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-tornado only --follow-up-taps --tornado-river full --rocket-tornado-window measured --rocket-tornado-order either --rocket-tornado-lone combo --log-frames --capture-p3 --cue-inputs on
+E         ?           ^^^^^^^^^^^
+E         + t=16 Log=16 --log-air block --rocket-value 9 --rocket-value-mode damage --rocket-value-hitbox edge --rocket-tornado only --follow-up-taps --tornado-river full --rocket-tornado-window measured -...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+pipeline\tests\test_live_options.py:51: AssertionError
+______________ test_checked_in_file_applies_every_bundle_option _______________
+
+    def test_checked_in_file_applies_every_bundle_option():
+        f = REPO / 'scratchpad/gauntlet/L70/live/LIVE_OPTIONS'
+        ap = parser(f); ap.add_argument('--own-effects', action='store_true'); ap.add_argument('--iw-press-pstar', type=float)
+        a, rec = parse_with_live_options(ap, [])
+        opts = options_from_config(config_from_args(a))
+        assert (opts.gate_decode, opts.gate_hazard_min_elixir, opts.log_aim, opts.lethal_rocket) == \
+            ('hazard_below_tau', 9.0, 'log_barrel', 'ot_behind')
+        assert a.iw_press_pstar == 0.03 and a.own_effects is True and rec['explicit'] == []
+        assert opts.gate_hazard_threatened == 2.0 and a.hero_ability_spec == 'supplement' and a.early_release_margin == 8
+        assert a.identity_ext == 'on' and opts.rocket_dead_target == 'block'
+        assert opts.lethal_log == 'on' and opts.tau_threatened == 0.2
+>       assert dict(opts.card_levels) == {'Rocket': 16, 'Log': 15}
+E       AssertionError: assert {'Log': 16, 'Rocket': 16} == {'Rocket': 16, 'Log': 15}
+E         
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'Log': 16} != {'Log': 15}
+E         Use -v to get more diff
+
+pipeline\tests\test_live_options.py:65: AssertionError
+____ test_check_json_reports_options_and_their_source[extra0-rocket_area] _____
+
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-735/test_check_json_reports_option0')
+extra = [], expect = 'rocket_area'
+
+    @pytest.mark.skipif(not CKPT.is_file(), reason='live checkpoint not present')
+    @pytest.mark.parametrize('extra,expect', [([], 'rocket_area'), (['--spell-aim', 'argmax'], 'argmax'),
+                                              (['--no-live-options'], 'argmax')])
+    def test_check_json_reports_options_and_their_source(tmp_path, extra, expect):
+        f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED)
+        out = subprocess.run([sys.executable, str(REPO / 'scratchpad/gauntlet/L68/live_reader/live_play.py'), '--check',
+                              '--ckpt', str(CKPT), '--live-options-file', str(f), *extra],
+                             capture_output=True, text=True, timeout=300, cwd=REPO)
+>       assert out.returncode == 0, out.stdout + out.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\live_play.py", line 56, in <module>
+E             from hero_button import HeroButton, hero_ids, press_gate, should_press  # noqa: E402
+E             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\hero_button.py", line 23, in <module>
+E             import cv2
+E         ModuleNotFoundError: No module named 'cv2'
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe', 'C:\\Users\\be...8\\live_reader\\hero_button.py", line 23, in <module>\n    import cv2\nModuleNotFoundError: No module named \'cv2\'\n').returncode
+
+pipeline\tests\test_live_options.py:152: AssertionError
+_______ test_check_json_reports_options_and_their_source[extra1-argmax] _______
+
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-735/test_check_json_reports_option1')
+extra = ['--spell-aim', 'argmax'], expect = 'argmax'
+
+    @pytest.mark.skipif(not CKPT.is_file(), reason='live checkpoint not present')
+    @pytest.mark.parametrize('extra,expect', [([], 'rocket_area'), (['--spell-aim', 'argmax'], 'argmax'),
+                                              (['--no-live-options'], 'argmax')])
+    def test_check_json_reports_options_and_their_source(tmp_path, extra, expect):
+        f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED)
+        out = subprocess.run([sys.executable, str(REPO / 'scratchpad/gauntlet/L68/live_reader/live_play.py'), '--check',
+                              '--ckpt', str(CKPT), '--live-options-file', str(f), *extra],
+                             capture_output=True, text=True, timeout=300, cwd=REPO)
+>       assert out.returncode == 0, out.stdout + out.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\live_play.py", line 56, in <module>
+E             from hero_button import HeroButton, hero_ids, press_gate, should_press  # noqa: E402
+E             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\hero_button.py", line 23, in <module>
+E             import cv2
+E         ModuleNotFoundError: No module named 'cv2'
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe', 'C:\\Users\\be...8\\live_reader\\hero_button.py", line 23, in <module>\n    import cv2\nModuleNotFoundError: No module named \'cv2\'\n').returncode
+
+pipeline\tests\test_live_options.py:152: AssertionError
+_______ test_check_json_reports_options_and_their_source[extra2-argmax] _______
+
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-735/test_check_json_reports_option2')
+extra = ['--no-live-options'], expect = 'argmax'
+
+    @pytest.mark.skipif(not CKPT.is_file(), reason='live checkpoint not present')
+    @pytest.mark.parametrize('extra,expect', [([], 'rocket_area'), (['--spell-aim', 'argmax'], 'argmax'),
+                                              (['--no-live-options'], 'argmax')])
+    def test_check_json_reports_options_and_their_source(tmp_path, extra, expect):
+        f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED)
+        out = subprocess.run([sys.executable, str(REPO / 'scratchpad/gauntlet/L68/live_reader/live_play.py'), '--check',
+                              '--ckpt', str(CKPT), '--live-options-file', str(f), *extra],
+                             capture_output=True, text=True, timeout=300, cwd=REPO)
+>       assert out.returncode == 0, out.stdout + out.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\live_play.py", line 56, in <module>
+E             from hero_button import HeroButton, hero_ids, press_gate, should_press  # noqa: E402
+E             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\hero_button.py", line 23, in <module>
+E             import cv2
+E         ModuleNotFoundError: No module named 'cv2'
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe', 'C:\\Users\\be...8\\live_reader\\hero_button.py", line 23, in <module>\n    import cv2\nModuleNotFoundError: No module named \'cv2\'\n').returncode
+
+pipeline\tests\test_live_options.py:152: AssertionError
+_____________________ test_check_json_absent_file_is_loud _____________________
+
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-735/test_check_json_absent_file_is0')
+
+    @pytest.mark.skipif(not CKPT.is_file(), reason='live checkpoint not present')
+    def test_check_json_absent_file_is_loud(tmp_path):
+        out = run_live_play('--check', '--ckpt', str(CKPT), '--live-options-file', str(tmp_path / 'missing'))
+>       assert out.returncode == 0, out.stdout + out.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\live_play.py", line 56, in <module>
+E             from hero_button import HeroButton, hero_ids, press_gate, should_press  # noqa: E402
+E             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\hero_button.py", line 23, in <module>
+E             import cv2
+E         ModuleNotFoundError: No module named 'cv2'
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe', 'C:\\Users\\be...8\\live_reader\\hero_button.py", line 23, in <module>\n    import cv2\nModuleNotFoundError: No module named \'cv2\'\n').returncode
+
+pipeline\tests\test_live_options.py:170: AssertionError
+____________ test_live_play_refuses_tau_alternate_under_tau_phase _____________
+
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-735/test_live_play_refuses_tau_alt0')
+
+    def test_live_play_refuses_tau_alternate_under_tau_phase(tmp_path):
+        f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED)
+        out = run_live_play('--check', '--tau-alternate', '.35', '.45', '--live-options-file', str(f))
+>       assert out.returncode == 2 and '[live] refusing: --tau-alternate' in out.stdout, out.stdout + out.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\live_play.py", line 56, in <module>
+E             from hero_button import HeroButton, hero_ids, press_gate, should_press  # noqa: E402
+E             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\hero_button.py", line 23, in <module>
+E             import cv2
+E         ModuleNotFoundError: No module named 'cv2'
+E         
+E       assert (1 == 2)
+E        +  where 1 = CompletedProcess(args=['C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe', 'C:\\Users\\be...8\\live_reader\\hero_button.py", line 23, in <module>\n    import cv2\nModuleNotFoundError: No module named \'cv2\'\n').returncode
+
+pipeline\tests\test_live_options.py:179: AssertionError
+_____________________ test_check_json_reports_gate_decode _____________________
+
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-735/test_check_json_reports_gate_d0')
+
+    @pytest.mark.skipif(not CKPT.is_file(), reason='live checkpoint not present')
+    def test_check_json_reports_gate_decode(tmp_path):
+        f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + GATE)
+        out = run_live_play('--check', '--ckpt', str(CKPT), '--live-options-file', str(f))
+>       assert out.returncode == 0, out.stdout + out.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\live_play.py", line 56, in <module>
+E             from hero_button import HeroButton, hero_ids, press_gate, should_press  # noqa: E402
+E             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\hero_button.py", line 23, in <module>
+E             import cv2
+E         ModuleNotFoundError: No module named 'cv2'
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe', 'C:\\Users\\be...8\\live_reader\\hero_button.py", line 23, in <module>\n    import cv2\nModuleNotFoundError: No module named \'cv2\'\n').returncode
+
+pipeline\tests\test_live_options.py:220: AssertionError
+__________________ test_check_json_reports_lethal_rocket[ot] __________________
+
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-735/test_check_json_reports_lethal0')
+mode = 'ot'
+
+    @pytest.mark.skipif(not CKPT.is_file(), reason='live checkpoint not present')
+    @pytest.mark.parametrize('mode', ['ot', 'ot_behind'])
+    def test_check_json_reports_lethal_rocket(tmp_path, mode):
+        f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + f'--lethal-rocket {mode}\n')
+        out = run_live_play('--check', '--ckpt', str(CKPT), '--live-options-file', str(f))
+>       assert out.returncode == 0, out.stdout + out.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\live_play.py", line 56, in <module>
+E             from hero_button import HeroButton, hero_ids, press_gate, should_press  # noqa: E402
+E             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\hero_button.py", line 23, in <module>
+E             import cv2
+E         ModuleNotFoundError: No module named 'cv2'
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe', 'C:\\Users\\be...8\\live_reader\\hero_button.py", line 23, in <module>\n    import cv2\nModuleNotFoundError: No module named \'cv2\'\n').returncode
+
+pipeline\tests\test_live_options.py:273: AssertionError
+______________ test_check_json_reports_lethal_rocket[ot_behind] _______________
+
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-735/test_check_json_reports_lethal1')
+mode = 'ot_behind'
+
+    @pytest.mark.skipif(not CKPT.is_file(), reason='live checkpoint not present')
+    @pytest.mark.parametrize('mode', ['ot', 'ot_behind'])
+    def test_check_json_reports_lethal_rocket(tmp_path, mode):
+        f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + f'--lethal-rocket {mode}\n')
+        out = run_live_play('--check', '--ckpt', str(CKPT), '--live-options-file', str(f))
+>       assert out.returncode == 0, out.stdout + out.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\live_play.py", line 56, in <module>
+E             from hero_button import HeroButton, hero_ids, press_gate, should_press  # noqa: E402
+E             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\hero_button.py", line 23, in <module>
+E             import cv2
+E         ModuleNotFoundError: No module named 'cv2'
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe', 'C:\\Users\\be...8\\live_reader\\hero_button.py", line 23, in <module>\n    import cv2\nModuleNotFoundError: No module named \'cv2\'\n').returncode
+
+pipeline\tests\test_live_options.py:273: AssertionError
+_____________________ test_check_json_reports_lethal_log ______________________
+
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-735/test_check_json_reports_lethal2')
+
+    @pytest.mark.skipif(not CKPT.is_file(), reason='live checkpoint not present')
+    def test_check_json_reports_lethal_log(tmp_path):
+        f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + '--lethal-rocket ot_behind --lethal-log on\n')
+        out = run_live_play('--check', '--ckpt', str(CKPT), '--live-options-file', str(f))
+>       assert out.returncode == 0, out.stdout + out.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\live_play.py", line 56, in <module>
+E             from hero_button import HeroButton, hero_ids, press_gate, should_press  # noqa: E402
+E             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\hero_button.py", line 23, in <module>
+E             import cv2
+E         ModuleNotFoundError: No module named 'cv2'
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe', 'C:\\Users\\be...8\\live_reader\\hero_button.py", line 23, in <module>\n    import cv2\nModuleNotFoundError: No module named \'cv2\'\n').returncode
+
+pipeline\tests\test_live_options.py:307: AssertionError
+_____________________ test_check_json_reports_card_levels _____________________
+
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-735/test_check_json_reports_card_l0')
+
+    @pytest.mark.skipif(not CKPT.is_file(), reason='live checkpoint not present')
+    def test_check_json_reports_card_levels(tmp_path):
+        f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED + CARD_LEVELS)
+        out = run_live_play('--check', '--ckpt', str(CKPT), '--live-options-file', str(f))
+>       assert out.returncode == 0, out.stdout + out.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\live_play.py", line 56, in <module>
+E             from hero_button import HeroButton, hero_ids, press_gate, should_press  # noqa: E402
+E             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\hero_button.py", line 23, in <module>
+E             import cv2
+E         ModuleNotFoundError: No module named 'cv2'
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe', 'C:\\Users\\be...8\\live_reader\\hero_button.py", line 23, in <module>\n    import cv2\nModuleNotFoundError: No module named \'cv2\'\n').returncode
+
+pipeline\tests\test_live_options.py:361: AssertionError
+_______________________ test_check_json_reports_log_air _______________________
+
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-735/test_check_json_reports_log_ai0')
+
+    @pytest.mark.skipif(not CKPT.is_file(), reason='live checkpoint not present')
+    def test_check_json_reports_log_air(tmp_path):
+        f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED_FILE.replace('--log-air block', '--log-air retarget'))
+        out = run_live_play('--check', '--ckpt', str(CKPT), '--live-options-file', str(f))
+>       assert out.returncode == 0, out.stdout + out.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\live_play.py", line 56, in <module>
+E             from hero_button import HeroButton, hero_ids, press_gate, should_press  # noqa: E402
+E             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\hero_button.py", line 23, in <module>
+E             import cv2
+E         ModuleNotFoundError: No module named 'cv2'
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe', 'C:\\Users\\be...8\\live_reader\\hero_button.py", line 23, in <module>\n    import cv2\nModuleNotFoundError: No module named \'cv2\'\n').returncode
+
+pipeline\tests\test_live_options.py:380: AssertionError
+________ test_live_play_refuses_rocket_tornado_without_follow_up_taps _________
+
+tmp_path = WindowsPath('C:/Users/benpe/AppData/Local/Temp/pytest-of-benpe/pytest-735/test_live_play_refuses_rocket_0')
+
+    def test_live_play_refuses_rocket_tornado_without_follow_up_taps(tmp_path):
+        f = tmp_path / 'LIVE_OPTIONS'; f.write_text(DEPLOYED)
+        for mode in ('on', 'only'):
+            out = run_live_play('--check', '--rocket-value', '9', '--rocket-tornado', mode, '--live-options-file', str(f))
+>           assert out.returncode == 2 and f'--rocket-tornado {mode} plays its Tornado as a follow-up tap' in out.stdout, out.stdout + out.stderr
+E           AssertionError: Traceback (most recent call last):
+E               File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\live_play.py", line 56, in <module>
+E                 from hero_button import HeroButton, hero_ids, press_gate, should_press  # noqa: E402
+E                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L68\live_reader\hero_button.py", line 23, in <module>
+E                 import cv2
+E             ModuleNotFoundError: No module named 'cv2'
+E             
+E           assert (1 == 2)
+E            +  where 1 = CompletedProcess(args=['C:\\Users\\benpe\\ClashBot\\research\\ext\\Royale\\.venv\\Scripts\\python.exe', 'C:\\Users\\be...8\\live_reader\\hero_button.py", line 23, in <module>\n    import cv2\nModuleNotFoundError: No module named \'cv2\'\n').returncode
+
+pipeline\tests\test_live_options.py:420: AssertionError
+__________________ TestModel.test_u250_loads_with_the_layer ___________________
+
+self = <pipeline.tests.test_cue_inputs.TestModel testMethod=test_u250_loads_with_the_layer>
+
+    def test_u250_loads_with_the_layer(self):
+        _need(U250)
+        st = torch.load(U250, map_location="cpu", weights_only=False)
+        a = st["args"]
+        m = MG.GenModel(d=int(a["d"]), layers=int(a["layers"]), d_c=int(st["d_c"]), n_cards=len(st["card_vocab"]),
+                        feature_version=int(a["feature_version"]))
+        m.add_cue_in()
+        with torch.no_grad():
+            m.cue_in.weight.fill_(1.0)
+        m.load_state_dict(st["model"])                                # strict; cue_in zero-filled
+        self.assertTrue(torch.equal(m.cue_in.weight, torch.zeros_like(m.cue_in.weight)))
+        sd = m.state_dict()
+        for k, v in st["model"].items():
+>           self.assertTrue(torch.equal(sd[k], v), k)
+E           AssertionError: False is not true : cls_emb.weight
+
+pipeline\tests\test_cue_inputs.py:138: AssertionError
+_______ test_live_pilot_row_board_has_the_skeletons_only_with_the_flag ________
+
+    def test_live_pilot_row_board_has_the_skeletons_only_with_the_flag():
+        barrel = vocab.engine_unit_id("SkeletonBalloon")
+        seen = []
+        for flag in (False, True):
+            p = _pilot(flag)
+            p.observe(fr(1000, [ent("0xb", 5000, 9000)]))
+            f = fr(1002, [])
+            p.observe(f)
+>           seen.append(sum(u.cls == barrel for u in p.row(f)[1]["bs"].units))
+                                                     ^^^^^^^^
+
+pipeline\tests\test_predict_drops.py:223: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pipeline.live_gen.GenPilot object at 0x0000017A8BC0ECF0>
+frame = {'battle_active': True, 'game_tick': 1028, 'failure': 'none', 'players': [{'side': 0, 'elixir_raw': 96668, 'next_deck_... -1, -1], ...}, {'side': 1, 'elixir_raw': 71296.0, 'next_deck_index': 5, 'hand_deck_indices': [2, 1, 6, 7], ...}], ...}
+
+    def row(self, frame: Mapping[str, Any]) -> tuple[dict, dict]:
+        from .reader_identity_aliases import dedupe_hero_bodies
+        frame = dedupe_hero_bodies(frame)        # lead 2026-10-06: the 203000023 Hero + FloatingCube pair -> one Hero
+        raw_frame, raw_tick = frame, frame["game_tick"]
+        side = my_side_of(frame)
+        _, names = deck_of(frame, side)
+        me = next(p for p in frame["players"] if int(p["side"]) == side)
+        forms = list(me.get("deck_form_flags") or [0] * 8)                # reader 0/1/2 = base/evo/hero (as ours)
+        opp = self.opp_est
+        pend = self._pending_in_hand(me) if getattr(self, "pending_plays", None) else []   # --pipeline-decisions
+        if self.ext_h:
+            # ALWAYS advance (prev None -> clock + my elixir only), so history ages never jump by H mid-match
+            tick = int(frame["game_tick"])
+            prev = next((f for t, f in reversed(self.frames) if t <= tick - 10), None)
+            object_context = (self.public.object_context(tick)
+                              if getattr(self, 'feature_version', 1) >= 4 and self.public is not None else {})
+            if getattr(self, 'drops', None) is not None:
+                object_context = dict(object_context, drops=self.drops.pending)
+            if getattr(self, 'own_fx', None) is not None:      # + a pending play at its expected landing tick
+                fx = self.own_fx + [dict(card=card_key(q["name"]), xy=q["xy"], tick=q["land"]) for q in pend]
+                object_context = dict(object_context, own_effects=own_effects_raw(
+                    fx, side, tick, river=getattr(getattr(self, 'decision_options', None), 'tornado_river', 'off') in ('on', 'full')))
+            frame = extrapolate(frame, prev, self.ext_h, side, **object_context)
+            if opp is not None:
+                opp = min(10.0, opp + regen_between(tick, tick + self.ext_h))
+        if pend:                                          # --pipeline-decisions: pending plays on the look-ahead board
+            frame = pending_frame(frame, me, side, pend)
+        if getattr(self, 'feature_version', 1) >= 4 and getattr(self, 'public', None) is not None:
+            opp = self.public.estimate_at(int(frame['game_tick'])) if self.use_counter else None
+        if getattr(self, "feature_version", 1) >= 3:
+            from dataclasses import replace
+            from .live_mem import to_observe
+            from .obs_contract import from_engine
+            from contextlib import nullcontext
+            from .body_identity import extension
+            live_deck, live_names = deck_of(frame, side)
+            with extension() if getattr(self, "identity_ext", False) else nullcontext():
+                bs = from_engine(to_observe(frame, side, live_names), side, live_deck, history=self.history,
+                                 engine_deck=live_names, unmapped=set(), feature_version=self.feature_version)
+            bs = replace(bs, source="live_mem", opp_elixir=opp if self.use_counter else None)
+        else:
+            bs = board_state(frame, history=self.history, opp_elixir=opp)
+        if getattr(self, 'feature_version', 1) >= 4:
+            from .public_observation import body_only_board
+            bs = body_only_board(bs)
+        deck = [self._card(n) for n in names]
+        hand_idx, nd, pos = list(me["hand_deck_indices"]), int(me["next_deck_index"]), []
+        cost_of = lambda d: (card_cost(vocab.engine_key(names[d])) or 0.0) if d >= 0 else 0.0   # noqa: E731
+        spent = 0.0
+        if pend:   # --pipeline-decisions: pending = executed (e1_eval.pending_hand; the SIM's Match._pending_view)
+            from dataclasses import replace
+            hand_idx, nd, pos = pending_hand(list(range(len(deck))), hand_idx, nd,
+                                             [deck.index(c) for c, *_ in self.past], [q["deck_index"] for q in pend])
+            spent = sum(cost_of(me["hand_deck_indices"][i]) for i in pos)
+            bs = replace(bs, my_elixir=max(0.0, bs.my_elixir - spent))
+        tok, mask, sc = to_tokens(bs, MAX_U)
+        sc = sc.copy()
+        sc[SC_SLOT_COLS] = 0.0
+        hand = [(deck[d], forms[d]) if d >= 0 else (0, FORM_PAD) for d in hand_idx]
+        nxt = (deck[nd], forms[nd]) if nd >= 0 else (0, FORM_PAD)
+        order = np.argsort(deck, kind="stable")                           # dataset_gen: canonical deck order
+        past = np.tile(np.array([0, FORM_PAD, -1, -1, -1], np.float32), (PAST_K, 1))
+        rows = self.past + [(q["card"], q["form"], *q["xy"], min(q["land"] * 0.05, bs.t_sec)) for q in pend]
+        for i, (c, f, x, y, t) in enumerate(reversed(rows[-PAST_K:])):
+            past[i] = (c, f, x, y, bs.t_sec - t)
+        T = lambda a, dt=torch.long: torch.as_tensor(np.asarray(a), dtype=dt, device=self.dev).unsqueeze(0)  # noqa: E731
+        b = {"tok": T(tok, torch.float32), "mask": T(mask, torch.bool), "sc": T(sc, torch.float32),
+             "past": T(past, torch.float32),
+             "hand_card": T([h[0] for h in hand]), "hand_form": T([h[1] for h in hand]),
+             "next_card": T([nxt[0]]).squeeze(0), "next_form": T([nxt[1]]).squeeze(0),
+             "deck_card": T(np.asarray(deck)[order]), "deck_form": T(np.asarray(forms)[order])}
+>       if getattr(self.model, "cue_in", None) is not None:    # step c: the decision frame's cues on the unit tokens
+                   ^^^^^^^^^^
+E       AttributeError: 'GenPilot' object has no attribute 'model'
+
+pipeline\live_gen.py:354: AttributeError
+============================== warnings summary ===============================
+pipeline/tests/test_vocab_extension.py: 6 warnings
+pipeline/tests/test_live_anti_leak.py: 5 warnings
+pipeline/tests/test_live_phi.py: 2 warnings
+pipeline/tests/test_model_gen.py: 7 warnings
+pipeline/tests/gen_v3/test_contract.py: 1 warning
+pipeline/tests/test_e1_eval_gen.py: 5 warnings
+pipeline/tests/test_cue_inputs.py: 4 warnings
+pipeline/tests/test_branching.py: 5 warnings
+pipeline/tests/test_decision_options.py: 1 warning
+pipeline/tests/test_rl_gen.py: 8 warnings
+pipeline/tests/test_rl_royale.py: 12 warnings
+pipeline/tests/test_cell_refine.py: 5 warnings
+pipeline/tests/test_tower_refine.py: 3 warnings
+pipeline/tests/test_gen_v31.py: 5 warnings
+pipeline/tests/test_gen_v31_legacy.py: 8 warnings
+pipeline/tests/test_extrapolate.py: 2 warnings
+  C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+    self.encoder = nn.TransformerEncoder(enc, layers)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED pipeline/tests/test_live_options.py::test_checked_in_file_holds_the_deployed_options
+FAILED pipeline/tests/test_live_options.py::test_checked_in_file_applies_every_bundle_option
+FAILED pipeline/tests/test_live_options.py::test_check_json_reports_options_and_their_source[extra0-rocket_area]
+FAILED pipeline/tests/test_live_options.py::test_check_json_reports_options_and_their_source[extra1-argmax]
+FAILED pipeline/tests/test_live_options.py::test_check_json_reports_options_and_their_source[extra2-argmax]
+FAILED pipeline/tests/test_live_options.py::test_check_json_absent_file_is_loud
+FAILED pipeline/tests/test_live_options.py::test_live_play_refuses_tau_alternate_under_tau_phase
+FAILED pipeline/tests/test_live_options.py::test_check_json_reports_gate_decode
+FAILED pipeline/tests/test_live_options.py::test_check_json_reports_lethal_rocket[ot]
+FAILED pipeline/tests/test_live_options.py::test_check_json_reports_lethal_rocket[ot_behind]
+FAILED pipeline/tests/test_live_options.py::test_check_json_reports_lethal_log
+FAILED pipeline/tests/test_live_options.py::test_check_json_reports_card_levels
+FAILED pipeline/tests/test_live_options.py::test_check_json_reports_log_air
+FAILED pipeline/tests/test_live_options.py::test_live_play_refuses_rocket_tornado_without_follow_up_taps
+FAILED pipeline/tests/test_cue_inputs.py::TestModel::test_u250_loads_with_the_layer
+FAILED pipeline/tests/test_predict_drops.py::test_live_pilot_row_board_has_the_skeletons_only_with_the_flag
+16 failed, 529 passed, 10 skipped, 79 warnings, 7 subtests passed in 480.63s (0:08:00)

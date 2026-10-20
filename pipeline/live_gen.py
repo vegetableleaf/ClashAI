@@ -157,7 +157,8 @@ class GenPilot:
         self.model, st = load_model(ckpt, torch.device(device))
         self.model.eval()
         self.feature_version = int(st["args"].get("feature_version", 1))
-        self.gid = {k: i for i, k in enumerate(st["card_vocab"])}          # 0 = <pad>
+        from .dataset_gen import checkpoint_gid
+        self.gid = checkpoint_gid(st["card_vocab"])          # 0 = <pad>; + stand-ins for cards newer than the vocab
         self.grid = str(st["args"].get("grid", "lattice"))
         self.dev, self.gate_tau = torch.device(device), float(gate_tau)
         self.past: list[tuple[int, int, float, float, float]] = []       # (card gid, form, x, y, t_sec) confirmed

@@ -2,7 +2,8 @@
 
 Canonical unit identity = the detector's 230 class names (``icebow/config/detect_classes.yaml``,
 byte-identical to the weights' ``model.names``; id = position). Live is the lower-information side, so
-its vocabulary is the contract's. Engine-only names are appended after id 229. Engine display names
+its vocabulary is the contract's. Engine-only names are appended after id 229, cards newer than the vocab after id 231
+(``APPENDED_CLASSES``; older checkpoints load through ``grown_rows``). Engine display names
 (native_core CARD_NAMES = live catalog display_name) reach the vocab through the same rules
 ``scratchpad/gauntlet/L61/build_bc_v2.py:44-69`` uses (``_ALIAS_INV`` + CamelCase -> snake), plus a
 ``(name, max_hp)`` rule for the six detector-only sub-spawn classes the engine names by parent card.
@@ -63,10 +64,32 @@ DETECTOR_CLASSES: tuple[str, ...] = (
 # DarkElixir_Bottle is a not-in-use catalog card; CHAR_DISABLED_* are placeholders (-> None).
 ENGINE_ONLY_CLASSES: tuple[str, ...] = ("spirit_empress_air", "dark_elixir_bottle")
 
-UNIT_VOCAB: list[str] = list(DETECTOR_CLASSES) + list(ENGINE_ONLY_CLASSES)
+# Cards newer than the 232-class vocab every checkpoint before 2026-10-20 was built with: APPENDED after id 231 in this
+# order, never renumbered (W9, scratchpad/gauntlet/L74/identities/IDENTITIES.md). (class, init source): loading an older
+# checkpoint copies the source's embedding row into the new row (model_v3.S1Model._load_from_state_dict), so the model's
+# output for every old-token input is unchanged and a new card starts where its old stand-in was.
+#   minion_giant <- balloon: MinionGiant 26000107 (4-elixir Rare troop, device tables 10-12): flying (height 3000),
+#     buildings only, speed 60, 710 HP base (1817 at L11); Balloon: flying, buildings only, speed 60 -- the 10-20
+#     MinionGiant -> balloon alias it replaces. Differs in range (4 tiles vs melee) and damage (66 per 1.7 s base).
+APPENDED_CLASSES: tuple[tuple[str, str], ...] = (("minion_giant", "balloon"),)
+
+UNIT_VOCAB: list[str] = list(DETECTOR_CLASSES) + list(ENGINE_ONLY_CLASSES) + [n for n, _ in APPENDED_CLASSES]
 _ID: dict[str, int] = {n: i for i, n in enumerate(UNIT_VOCAB)}
 N_DETECTOR = len(DETECTOR_CLASSES)      # 230
-N_VOCAB = len(UNIT_VOCAB)               # 232
+N_BASE = N_DETECTOR + len(ENGINE_ONLY_CLASSES)   # 232: the vocab size of every checkpoint before 2026-10-20
+N_VOCAB = len(UNIT_VOCAB)               # 233
+assert all(_ID[src] < N_BASE for _, src in APPENDED_CLASSES), "an init source must be an original class"
+
+
+def grown_rows(n_old: int) -> list[int]:
+    """Row map that grows a unit-embedding table of an OLDER vocab (``n_old`` classes + 1 pad row, pad id = n_old) to
+    the current one (N_VOCAB + 1 rows, pad last): new row i = old row ``grown_rows(n_old)[i]``. Old classes keep their
+    rows, each class appended since copies its init source's row, the pad row moves to the end. ValueError for a size
+    that is not an older vocab (any other shape mismatch is refused)."""
+    if not N_BASE <= n_old <= N_VOCAB:
+        raise ValueError(f"unit embedding of {n_old} classes: not a vocab size this code can grow "
+                         f"({N_BASE}..{N_VOCAB}; APPENDED_CLASSES)")
+    return list(range(n_old)) + [_ID[src] for _, src in APPENDED_CLASSES[n_old - N_BASE:]] + [n_old]
 
 # The 46 detector spell classes (26 card-art/projectile + 20 ``_aoe`` ground effects), derived from
 # CardDB.kind(card_threat.base_key(cls)) == "spell" over the 230 classes (2026-09-06; test asserts).
@@ -132,8 +155,6 @@ _ALIAS_INV: dict[str, str] = {
     "GiantBuffer": "rune_giant", "SkeletonBalloon": "skeleton_barrel", "ZapMachine": "sparky", "MergeMaiden": "spirit_empress",
     "MergeMaiden_Normal": "spirit_empress", "MergeMaiden_Mounted": "spirit_empress_air", "Log": "the_log",
     "DarkMagic": "void", "MiniSparkys": "zappies", "Xbow": "x_bow", "Wallbreakers": "wall_breakers",
-    "MinionGiant": "balloon",   # 10-20 stand-in: a card newer than the vocab (no own token); flying, building-targeting
-
     "Elixir Collector": "elixir_collector", "Pekka": "pekka", "MiniPekka": "mini_pekka", "GlobalLightning": "lightning",
     "GlobalClone": "clone", "RoyalRecruits_Chess": "royal_recruits", "SkeletonWarriors_SpookyChess": "guards",
     "SuperArcher": "archers", "SuperEliteArcher": "magic_archer", "SuperHogRider": "hog_rider",

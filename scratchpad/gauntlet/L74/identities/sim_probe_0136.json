@@ -1,0 +1,5348 @@
+{
+ "stamp": {
+  "runtime": "PARITY_SIM_PATH",
+  "path": "C:/Users/benpe/rt_wheels/royalesim-0.1.36",
+  "royalesim": "0.1.36"
+ },
+ "cards": {
+  "Knight": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1766,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1766
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1766
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1766,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1766
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1766
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1766,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1766
+    ],
+    "hero_unit": true,
+    "table_hp_l11": [
+     1766
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   }
+  },
+  "Archer": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 304,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 304,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 2,
+    "n_new_60": 2,
+    "hp_60": [
+     304
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     304
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 304,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 304,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 2,
+    "n_new_60": 2,
+    "hp_60": [
+     304
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     304
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "Archer has no loadable hero form: the table carries none"
+   }
+  },
+  "Goblins": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 202,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 202,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 202,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 202,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 4,
+    "n_new_60": 4,
+    "hp_60": [
+     202
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     202
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "Goblins has no evolution that loads"
+   },
+   "2": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 202,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 202,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 202,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 202,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 4,
+    "n_new_60": 4,
+    "hp_60": [
+     202
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     202
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   }
+  },
+  "Giant": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 3968,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     3968
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     3968
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "Giant has no evolution that loads"
+   },
+   "2": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 3968,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     3968
+    ],
+    "hero_unit": true,
+    "table_hp_l11": [
+     3968
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   }
+  },
+  "Pekka": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 3760,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     3760
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     3760
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 3760,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     3760
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     3760
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "Pekka has no loadable hero form: the table carries none"
+   }
+  },
+  "Minions": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 230,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 230,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 230,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 3,
+    "n_new_60": 3,
+    "hp_60": [
+     230
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     230
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "Minions has no evolution that loads"
+   },
+   "2": {
+    "refused": "Minions has no loadable hero form: the table carries none"
+   }
+  },
+  "Balloon": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1676,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1676
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1676
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "Balloon has no evolution that loads"
+   },
+   "2": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1676,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1676
+    ],
+    "hero_unit": true,
+    "table_hp_l11": [
+     1676
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   }
+  },
+  "Witch": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 839,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 5,
+    "hp_60": [
+     81,
+     839
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     81,
+     839
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 839,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 5,
+    "hp_60": [
+     81,
+     839
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     81,
+     839
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "Witch has no loadable hero form: the table carries none"
+   }
+  },
+  "Barbarians": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 716,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 716,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 716,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 716,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 716,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 5,
+    "n_new_60": 5,
+    "hp_60": [
+     716
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     716
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 716,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 716,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 716,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 716,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 716,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 5,
+    "n_new_60": 5,
+    "hp_60": [
+     716
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     716
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "Barbarians has no loadable hero form: the table carries none"
+   }
+  },
+  "Golem": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 5120,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     5120
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1039,
+     5120
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "Golem has no evolution that loads"
+   },
+   "2": {
+    "refused": "Golem has no loadable hero form: the table carries none"
+   }
+  },
+  "Skeletons": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 3,
+    "n_new_60": 3,
+    "hp_60": [
+     81
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     81
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 3,
+    "n_new_60": 3,
+    "hp_60": [
+     81
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     81
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "Skeletons has no loadable hero form: the table carries none"
+   }
+  },
+  "Valkyrie": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1907,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1907
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1907
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1907,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1907
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1907
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1907,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1907
+    ],
+    "hero_unit": true,
+    "table_hp_l11": [
+     1907
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   }
+  },
+  "SkeletonArmy": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 15,
+    "n_new_60": 15,
+    "hp_60": [
+     81
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     81
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 16,
+    "n_new_60": 16,
+    "hp_60": [
+     81
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     81
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "SkeletonArmy has no loadable hero form: the table carries none"
+   }
+  },
+  "Bomber": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 304,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     304
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     304
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 304,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     304
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     304
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "Bomber has no loadable hero form: the table carries none"
+   }
+  },
+  "Musketeer": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 721,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     721
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     721
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 721,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     721
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     721
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 721,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     721
+    ],
+    "hero_unit": true,
+    "table_hp_l11": [
+     721
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   }
+  },
+  "BabyDragon": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1152,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1152
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1152
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1152,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1152
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1152
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "BabyDragon has no loadable hero form: the table carries none"
+   }
+  },
+  "Prince": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1920,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1920
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1920
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "Prince has no evolution that loads"
+   },
+   "2": {
+    "refused": "Prince has no loadable hero form: the table carries none"
+   }
+  },
+  "Wizard": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 755,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     755
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     755
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 755,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     755
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     755
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 755,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     755
+    ],
+    "hero_unit": true,
+    "table_hp_l11": [
+     755
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   }
+  },
+  "MiniPekka": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1390,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1390
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1390
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "MiniPekka has no evolution that loads"
+   },
+   "2": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1390,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1390
+    ],
+    "hero_unit": true,
+    "table_hp_l11": [
+     1390
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   }
+  },
+  "SpearGoblins": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 133,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 133,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 133,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 3,
+    "n_new_60": 3,
+    "hp_60": [
+     133
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     133
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "SpearGoblins has no evolution that loads"
+   },
+   "2": {
+    "refused": "SpearGoblins has no loadable hero form: the table carries none"
+   }
+  },
+  "GiantSkeleton": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 3361,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     3361
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     3361
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "GiantSkeleton has no evolution that loads"
+   },
+   "2": {
+    "refused": "GiantSkeleton has no loadable hero form: the table carries none"
+   }
+  },
+  "HogRider": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1697,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1697
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1697
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "HogRider has no evolution that loads"
+   },
+   "2": {
+    "refused": "HogRider has no loadable hero form: the table carries none"
+   }
+  },
+  "MinionHorde": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 230,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 230,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 230,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 230,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 230,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 230,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 6,
+    "n_new_60": 6,
+    "hp_60": [
+     230
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     230
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 230,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 230,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 230,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 230,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 230,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 230,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 6,
+    "n_new_60": 6,
+    "hp_60": [
+     230
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     230
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "MinionHorde has no loadable hero form: the table carries none"
+   }
+  },
+  "IceWizard": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 688,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     688
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     688
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "IceWizard has no evolution that loads"
+   },
+   "2": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 688,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     688
+    ],
+    "hero_unit": true,
+    "table_hp_l11": [
+     688
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   }
+  },
+  "RoyalGiant": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 3164,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     3164
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     3164
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 3164,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     3164
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     3164
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "RoyalGiant has no loadable hero form: the table carries none"
+   }
+  },
+  "SkeletonWarriors": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 3,
+    "n_new_60": 3,
+    "hp_60": [
+     81
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     81
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "SkeletonWarriors has no evolution that loads"
+   },
+   "2": {
+    "refused": "SkeletonWarriors has no loadable hero form: the table carries none"
+   }
+  },
+  "Princess": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 261,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     261
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     261
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 261,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     261
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     261
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "Princess has no loadable hero form: the table carries none"
+   }
+  },
+  "DarkPrince": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1200,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1200
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1200
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "DarkPrince has no evolution that loads"
+   },
+   "2": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1200,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1200
+    ],
+    "hero_unit": true,
+    "table_hp_l11": [
+     1200
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   }
+  },
+  "ThreeMusketeers": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 906,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 906,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 906,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 3,
+    "n_new_60": 3,
+    "hp_60": [
+     906
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     906
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "ThreeMusketeers has no evolution that loads"
+   },
+   "2": {
+    "refused": "ThreeMusketeers has no loadable hero form: the table carries none"
+   }
+  },
+  "LavaHound": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 3581,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     3581
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     215,
+     3581
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "LavaHound has no evolution that loads"
+   },
+   "2": {
+    "refused": "LavaHound has no loadable hero form: the table carries none"
+   }
+  },
+  "IceSpirits": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 215,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     215
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     215
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 215,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     215
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     215
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "IceSpirits has no loadable hero form: the table carries none"
+   }
+  },
+  "FireSpirits": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 215,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     215
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     215
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "FireSpirits has no evolution that loads"
+   },
+   "2": {
+    "refused": "FireSpirits has no loadable hero form: the table carries none"
+   }
+  },
+  "Miner": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1210,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1210
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1210
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "Miner has no evolution that loads"
+   },
+   "2": {
+    "refused": "Miner has no loadable hero form: the table carries none"
+   }
+  },
+  "ZapMachine": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1451,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1451
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1451
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "ZapMachine has no evolution that loads"
+   },
+   "2": {
+    "refused": "ZapMachine has no loadable hero form: the table carries none"
+   }
+  },
+  "Bowler": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 2081,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     2081
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     2081
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "Bowler has no evolution that loads"
+   },
+   "2": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 2081,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     2081
+    ],
+    "hero_unit": true,
+    "table_hp_l11": [
+     2081
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   }
+  },
+  "RageBarbarian": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1282,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1282
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1282
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1282,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1282
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1282
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "RageBarbarian has no loadable hero form: the table carries none"
+   }
+  },
+  "BattleRam": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 967,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     967
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     716,
+     967
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 967,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     967
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     716,
+     967
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "BattleRam has no loadable hero form: the table carries none"
+   }
+  },
+  "InfernoDragon": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1295,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1295
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1295
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1295,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1295
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1295
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "InfernoDragon has no loadable hero form: the table carries none"
+   }
+  },
+  "IceGolemite": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1228,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1228
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1228
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "IceGolemite has no evolution that loads"
+   },
+   "2": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1228,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1228
+    ],
+    "hero_unit": true,
+    "table_hp_l11": [
+     1228
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   }
+  },
+  "MegaMinion": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 837,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     837
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     837
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "MegaMinion has no evolution that loads"
+   },
+   "2": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 837,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     837
+    ],
+    "hero_unit": true,
+    "table_hp_l11": [
+     837
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   }
+  },
+  "BlowdartGoblin": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 261,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     261
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     261
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 261,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     261
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     261
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "BlowdartGoblin has no loadable hero form: the table carries none"
+   }
+  },
+  "GoblinGang": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 202,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 202,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 202,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 133,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 133,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 133,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 6,
+    "n_new_60": 6,
+    "hp_60": [
+     133,
+     202
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     133,
+     202
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "GoblinGang has no evolution that loads"
+   },
+   "2": {
+    "refused": "GoblinGang has no loadable hero form: the table carries none"
+   }
+  },
+  "ElectroWizard": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 714,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     714
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     714
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "ElectroWizard has no evolution that loads"
+   },
+   "2": {
+    "refused": "ElectroWizard has no loadable hero form: ability ElectroWizardHero_Ability: effect surge is not simulated"
+   }
+  },
+  "AngryBarbarians": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1341,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 1341,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 2,
+    "n_new_60": 2,
+    "hp_60": [
+     1341
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1341
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1341,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 1341,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 2,
+    "n_new_60": 2,
+    "hp_60": [
+     1341
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1341
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "AngryBarbarians has no loadable hero form: the table carries none"
+   }
+  },
+  "Hunter": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 885,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     885
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     885
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 885,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     885
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     885
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "Hunter has no loadable hero form: the table carries none"
+   }
+  },
+  "AxeMan": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1280,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1280
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1280
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1280,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1280
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1280
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "AxeMan has no loadable hero form: the table carries none"
+   }
+  },
+  "Assassin": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 906,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     906
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     906
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "Assassin has no evolution that loads"
+   },
+   "2": {
+    "refused": "Assassin has no loadable hero form: the table carries none"
+   }
+  },
+  "RoyalRecruits": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 547,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 547,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 547,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 547,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 547,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 547,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 6,
+    "n_new_60": 6,
+    "hp_60": [
+     547
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     547
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 547,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 547,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 547,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 547,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 547,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 547,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 6,
+    "n_new_60": 6,
+    "hp_60": [
+     547
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     547
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "RoyalRecruits has no loadable hero form: the table carries none"
+   }
+  },
+  "DarkWitch": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 906,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 3,
+    "hp_60": [
+     81,
+     906
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     81,
+     906
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "DarkWitch has no evolution that loads"
+   },
+   "2": {
+    "refused": "DarkWitch has no loadable hero form: the table carries none"
+   }
+  },
+  "Bats": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 5,
+    "n_new_60": 5,
+    "hp_60": [
+     81
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     81
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 122,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 122,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 122,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 122,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 122,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 5,
+    "n_new_60": 5,
+    "hp_60": [
+     122
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     81
+    ],
+    "fx_new": 0,
+    "hp_exact": false
+   },
+   "2": {
+    "refused": "Bats has no loadable hero form: the table carries none"
+   }
+  },
+  "Ghost": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1152,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1152
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1152
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1152,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1152
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1152
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "Ghost has no loadable hero form: the table carries none"
+   }
+  },
+  "RamRider": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1766,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 593,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 2,
+    "n_new_60": 2,
+    "hp_60": [
+     593,
+     1766
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     593,
+     1766
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "RamRider has no evolution that loads"
+   },
+   "2": {
+    "refused": "RamRider has no loadable hero form: the table carries none"
+   }
+  },
+  "MiniSparkys": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 529,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 529,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 529,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 3,
+    "n_new_60": 3,
+    "hp_60": [
+     529
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     529
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "MiniSparkys has no evolution that loads"
+   },
+   "2": {
+    "refused": "MiniSparkys has no loadable hero form: the table carries none"
+   }
+  },
+  "Rascals": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1832,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 261,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 261,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 3,
+    "n_new_60": 3,
+    "hp_60": [
+     261,
+     1832
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     261,
+     1832
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "Rascals has no evolution that loads"
+   },
+   "2": {
+    "refused": "Rascals has no loadable hero form: the table carries none"
+   }
+  },
+  "MovingCannon": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1809,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1809
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1809
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "MovingCannon has no evolution that loads"
+   },
+   "2": {
+    "refused": "MovingCannon has no loadable hero form: the table carries none"
+   }
+  },
+  "MegaKnight": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 3993,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     3993
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     3993
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 3993,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     3993
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     3993
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "MegaKnight has no loadable hero form: the table carries none"
+   }
+  },
+  "SkeletonBalloon": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 532,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     532
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     81,
+     532
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 665,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     665
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     81,
+     532
+    ],
+    "fx_new": 0,
+    "hp_exact": false
+   },
+   "2": {
+    "refused": "SkeletonBalloon has no loadable hero form: the table carries none"
+   }
+  },
+  "DartBarrell": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 614,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     614
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     614
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "DartBarrell has no evolution that loads"
+   },
+   "2": {
+    "refused": "DartBarrell has no loadable hero form: the table carries none"
+   }
+  },
+  "Wallbreakers": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 330,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 330,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 2,
+    "n_new_60": 2,
+    "hp_60": [
+     330
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     330
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 330,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 330,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 2,
+    "n_new_60": 2,
+    "hp_60": [
+     330
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     330
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "Wallbreakers has no loadable hero form: the table carries none"
+   }
+  },
+  "RoyalHogs": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 837,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 837,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 837,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 837,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 4,
+    "n_new_60": 4,
+    "hp_60": [
+     837
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     837
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 837,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 837,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 837,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 837,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 4,
+    "n_new_60": 4,
+    "hp_60": [
+     837
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     837
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "RoyalHogs has no loadable hero form: the table carries none"
+   }
+  },
+  "GoblinGiant": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 3110,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 133,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 133,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 3,
+    "n_new_60": 3,
+    "hp_60": [
+     133,
+     3110
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     133,
+     3110
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 3110,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 133,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 133,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 3,
+    "n_new_60": 3,
+    "hp_60": [
+     133,
+     3110
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     133,
+     3110
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "GoblinGiant has no loadable hero form: the table carries none"
+   }
+  },
+  "Fisherman": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 870,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     870
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     870
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "Fisherman has no evolution that loads"
+   },
+   "2": {
+    "refused": "Fisherman has no loadable hero form: the table carries none"
+   }
+  },
+  "EliteArcher": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 529,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     529
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     529
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "EliteArcher has no evolution that loads"
+   },
+   "2": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 529,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     529
+    ],
+    "hero_unit": true,
+    "table_hp_l11": [
+     529
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   }
+  },
+  "ElectroDragon": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1049,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1049
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1049
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1049,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1049
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1049
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "ElectroDragon has no loadable hero form: the table carries none"
+   }
+  },
+  "Firecracker": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 304,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     304
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     304
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 304,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     304
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     304
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "Firecracker has no loadable hero form: the table carries none"
+   }
+  },
+  "MightyMiner": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 2250,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     2250
+    ],
+    "hero_unit": true,
+    "table_hp_l11": [
+     2250
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "MightyMiner has no evolution that loads"
+   },
+   "2": {
+    "refused": "MightyMiner has no loadable hero form: the table carries none"
+   }
+  },
+  "ElixirGolem": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1569,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1569
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     360,
+     762,
+     1569
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "ElixirGolem has no evolution that loads"
+   },
+   "2": {
+    "refused": "ElixirGolem has no loadable hero form: the table carries none"
+   }
+  },
+  "BattleHealer": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1920,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1920
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1920
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "BattleHealer has no evolution that loads"
+   },
+   "2": {
+    "refused": "BattleHealer has no loadable hero form: the table carries none"
+   }
+  },
+  "SkeletonKing": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 2298,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     2298
+    ],
+    "hero_unit": true,
+    "table_hp_l11": [
+     81,
+     2298
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "SkeletonKing has no evolution that loads"
+   },
+   "2": {
+    "refused": "SkeletonKing has no loadable hero form: the table carries none"
+   }
+  },
+  "ArcherQueen": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1000,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1000
+    ],
+    "hero_unit": true,
+    "table_hp_l11": [
+     1000
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "ArcherQueen has no evolution that loads"
+   },
+   "2": {
+    "refused": "ArcherQueen has no loadable hero form: the table carries none"
+   }
+  },
+  "GoldenKnight": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1799,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1799
+    ],
+    "hero_unit": true,
+    "table_hp_l11": [
+     1799
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "GoldenKnight has no evolution that loads"
+   },
+   "2": {
+    "refused": "GoldenKnight has no loadable hero form: the table carries none"
+   }
+  },
+  "SuperIceGolemite": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 3630,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     3630
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     3630
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "SuperIceGolemite has no evolution that loads"
+   },
+   "2": {
+    "refused": "SuperIceGolemite has no loadable hero form: the table carries none"
+   }
+  },
+  "Monk": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 2214,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     2214
+    ],
+    "hero_unit": true,
+    "table_hp_l11": [
+     2214
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "Monk has no evolution that loads"
+   },
+   "2": {
+    "refused": "Monk has no loadable hero form: the table carries none"
+   }
+  },
+  "SuperArcher": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 701,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 701,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 2,
+    "n_new_60": 2,
+    "hp_60": [
+     701
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     701
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "SuperArcher has no evolution that loads"
+   },
+   "2": {
+    "refused": "SuperArcher has no loadable hero form: the table carries none"
+   }
+  },
+  "RoyalRecruits_Chess": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 532,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 532,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 532,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 532,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 532,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 532,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 532,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 532,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 8,
+    "n_new_60": 8,
+    "hp_60": [
+     532
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     532
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "RoyalRecruits_Chess has no evolution that loads"
+   },
+   "2": {
+    "refused": "RoyalRecruits_Chess has no loadable hero form: the table carries none"
+   }
+  },
+  "SkeletonDragons": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 560,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 560,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 2,
+    "n_new_60": 2,
+    "hp_60": [
+     560
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     560
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "SkeletonDragons has no evolution that loads"
+   },
+   "2": {
+    "refused": "SkeletonDragons has no loadable hero form: the table carries none"
+   }
+  },
+  "SuperHogRiderTerry": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 2300,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     2300
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     2300
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "SuperHogRiderTerry has no evolution that loads"
+   },
+   "2": {
+    "refused": "SuperHogRiderTerry has no loadable hero form: the table carries none"
+   }
+  },
+  "WitchMother": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 529,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     529
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     529,
+     629
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "WitchMother has no evolution that loads"
+   },
+   "2": {
+    "refused": "WitchMother has no loadable hero form: the table carries none"
+   }
+  },
+  "ElectroSpirit": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 215,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     215
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     215
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "ElectroSpirit has no evolution that loads"
+   },
+   "2": {
+    "refused": "ElectroSpirit has no loadable hero form: the table carries none"
+   }
+  },
+  "ElectroGiant": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 3952,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     3952
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     3952
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 3952,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     3952
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     3952
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "ElectroGiant has no loadable hero form: the table carries none"
+   }
+  },
+  "PrinceBuff": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 2304,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     2304
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     2304
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "PrinceBuff has no evolution that loads"
+   },
+   "2": {
+    "refused": "PrinceBuff has no loadable hero form: the table carries none"
+   }
+  },
+  "Phoenix": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1052,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1052
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     317,
+     1052
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "Phoenix has no evolution that loads"
+   },
+   "2": {
+    "refused": "Phoenix has no loadable hero form: the table carries none"
+   }
+  },
+  "TriWizards": {
+   "0": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 3,
+    "hp_60": [
+     688,
+     714,
+     755
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     688,
+     714,
+     755
+    ],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "1": {
+    "refused": "TriWizards has no evolution that loads"
+   },
+   "2": {
+    "refused": "TriWizards has no loadable hero form: the table carries none"
+   }
+  },
+  "GoblinDemolisher": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1300,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1300
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1300
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "GoblinDemolisher has no evolution that loads"
+   },
+   "2": {
+    "refused": "GoblinDemolisher has no loadable hero form: the table carries none"
+   }
+  },
+  "GoblinMachine": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 2265,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     2265
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     2265
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "GoblinMachine has no evolution that loads"
+   },
+   "2": {
+    "refused": "GoblinMachine has no loadable hero form: the table carries none"
+   }
+  },
+  "SuspiciousBush": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     81
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     81,
+     337
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "SuspiciousBush has no evolution that loads"
+   },
+   "2": {
+    "refused": "SuspiciousBush has no loadable hero form: the table carries none"
+   }
+  },
+  "SuperKnight": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 2030,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     2030
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     2030
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "SuperKnight has no evolution that loads"
+   },
+   "2": {
+    "refused": "SuperKnight has no loadable hero form: the table carries none"
+   }
+  },
+  "SkeletonWarriors_SpookyChess": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 81,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 8,
+    "n_new_60": 8,
+    "hp_60": [
+     81
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     81
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "SkeletonWarriors_SpookyChess has no evolution that loads"
+   },
+   "2": {
+    "refused": "SkeletonWarriors_SpookyChess has no loadable hero form: the table carries none"
+   }
+  },
+  "GiantBuffer": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 2816,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     2816
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     2816
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "GiantBuffer has no evolution that loads"
+   },
+   "2": {
+    "refused": "GiantBuffer has no loadable hero form: the table carries none"
+   }
+  },
+  "Berserker": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 896,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     896
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     896
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "Berserker has no evolution that loads"
+   },
+   "2": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 896,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     896
+    ],
+    "hero_unit": true,
+    "table_hp_l11": [
+     896
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   }
+  },
+  "MergeMaiden_Normal": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1121,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1121
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1121
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "MergeMaiden_Normal has no evolution that loads"
+   },
+   "2": {
+    "refused": "MergeMaiden_Normal has no loadable hero form: the table carries none"
+   }
+  },
+  "MergeMaiden_Mounted": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1121,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1121
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1121
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "MergeMaiden_Mounted has no evolution that loads"
+   },
+   "2": {
+    "refused": "MergeMaiden_Mounted has no loadable hero form: the table carries none"
+   }
+  },
+  "Ronin": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1779,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1779
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1779
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "Ronin has no evolution that loads"
+   },
+   "2": {
+    "refused": "Ronin has no loadable hero form: the table carries none"
+   }
+  },
+  "Cannon": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 824,
+      "kind": "Building"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     824
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     824
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 824,
+      "kind": "Building"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     824
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     824
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "Cannon has no loadable hero form: the table carries none"
+   }
+  },
+  "GoblinHut": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1180,
+      "kind": "Building"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1180
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     133,
+     1180
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "GoblinHut has no evolution that loads"
+   },
+   "2": {
+    "refused": "GoblinHut has no loadable hero form: the table carries none"
+   }
+  },
+  "Mortar": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1369,
+      "kind": "Building"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1369
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1369
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1369,
+      "kind": "Building"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1369
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1369
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "Mortar has no loadable hero form: the table carries none"
+   }
+  },
+  "InfernoTower": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1748,
+      "kind": "Building"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1748
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1748
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "InfernoTower has no evolution that loads"
+   },
+   "2": {
+    "refused": "InfernoTower has no loadable hero form: the table carries none"
+   }
+  },
+  "BombTower": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1356,
+      "kind": "Building"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1356
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1356
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "BombTower has no evolution that loads"
+   },
+   "2": {
+    "refused": "BombTower has no loadable hero form: the table carries none"
+   }
+  },
+  "BarbarianHut": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1164,
+      "kind": "Building"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 4,
+    "hp_60": [
+     716,
+     1164
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     716,
+     1164
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "BarbarianHut has no evolution that loads"
+   },
+   "2": {
+    "refused": "BarbarianHut has no loadable hero form: the table carries none"
+   }
+  },
+  "Tesla": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1182,
+      "kind": "Building"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1182
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1182
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1182,
+      "kind": "Building"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1182
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1182
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "Tesla has no loadable hero form: the table carries none"
+   }
+  },
+  "Elixir Collector": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1070,
+      "kind": "Building"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1070
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1070
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "Elixir Collector has no evolution that loads"
+   },
+   "2": {
+    "refused": "Elixir Collector has no loadable hero form: the table carries none"
+   }
+  },
+  "Xbow": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1600,
+      "kind": "Building"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1600
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1600
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "Xbow has no evolution that loads"
+   },
+   "2": {
+    "refused": "Xbow has no loadable hero form: the table carries none"
+   }
+  },
+  "Tombstone": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 529,
+      "kind": "Building"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 3,
+    "hp_60": [
+     81,
+     529
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     81,
+     529
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "Tombstone has no evolution that loads"
+   },
+   "2": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 529,
+      "kind": "Building"
+     },
+     {
+      "max_hp": 529,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 2,
+    "n_new_60": 4,
+    "hp_60": [
+     81,
+     529
+    ],
+    "hero_unit": true,
+    "table_hp_l11": [
+     81,
+     529
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   }
+  },
+  "FirespiritHut": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 727,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 2,
+    "hp_60": [
+     215,
+     727
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     215,
+     727
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 727,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 2,
+    "hp_60": [
+     215,
+     727
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     215,
+     727
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "FirespiritHut has no loadable hero form: the table carries none"
+   }
+  },
+  "BarbarianLauncher": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1472,
+      "kind": "Building"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1472
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1472
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "BarbarianLauncher has no evolution that loads"
+   },
+   "2": {
+    "refused": "BarbarianLauncher has no loadable hero form: the table carries none"
+   }
+  },
+  "GoblinCage": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 780,
+      "kind": "Building"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     780
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     780,
+     1121
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 780,
+      "kind": "Building"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     780
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     780,
+     1121
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "GoblinCage has no loadable hero form: the table carries none"
+   }
+  },
+  "GoblinDrill": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 2560,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 2,
+    "hp_60": [
+     202,
+     1313
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     202,
+     1313,
+     2560
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 2560,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 2,
+    "hp_60": [
+     202,
+     1313
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     202,
+     1313,
+     2560
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "2": {
+    "refused": "GoblinDrill has no loadable hero form: the table carries none"
+   }
+  },
+  "GoblinPartyHut": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1180,
+      "kind": "Building"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1180
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     133,
+     202,
+     1180
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "GoblinPartyHut has no evolution that loads"
+   },
+   "2": {
+    "refused": "GoblinPartyHut has no loadable hero form: the table carries none"
+   }
+  },
+  "Fireball": {
+   "0": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 0,
+    "hp_60": [],
+    "hero_unit": false,
+    "table_hp_l11": [],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "1": {
+    "refused": "Fireball has no evolution that loads"
+   },
+   "2": {
+    "refused": "Fireball has no loadable hero form: the table carries none"
+   }
+  },
+  "Arrows": {
+   "0": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 0,
+    "hp_60": [],
+    "hero_unit": false,
+    "table_hp_l11": [],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "1": {
+    "refused": "Arrows has no evolution that loads"
+   },
+   "2": {
+    "refused": "Arrows has no loadable hero form: the table carries none"
+   }
+  },
+  "Rage": {
+   "0": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 0,
+    "hp_60": [],
+    "hero_unit": false,
+    "table_hp_l11": [],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "1": {
+    "refused": "Rage has no evolution that loads"
+   },
+   "2": {
+    "refused": "Rage has no loadable hero form: the table carries none"
+   }
+  },
+  "Rocket": {
+   "0": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 0,
+    "hp_60": [],
+    "hero_unit": false,
+    "table_hp_l11": [],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "1": {
+    "refused": "Rocket has no evolution that loads"
+   },
+   "2": {
+    "refused": "Rocket has no loadable hero form: the table carries none"
+   }
+  },
+  "GoblinBarrel": {
+   "0": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 3,
+    "hp_60": [
+     202
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     202
+    ],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "1": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 6,
+    "hp_60": [
+     81,
+     202
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     202
+    ],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "2": {
+    "refused": "GoblinBarrel has no loadable hero form: the table carries none"
+   }
+  },
+  "Freeze": {
+   "0": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 0,
+    "hp_60": [],
+    "hero_unit": false,
+    "table_hp_l11": [],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "1": {
+    "refused": "Freeze has no evolution that loads"
+   },
+   "2": {
+    "refused": "Freeze has no loadable hero form: the table carries none"
+   }
+  },
+  "Mirror": {
+   "0": {
+    "reason": "NOTHING_TO_MIRROR",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 0,
+    "hp_60": [],
+    "hero_unit": false,
+    "table_hp_l11": [],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "1": {
+    "refused": "Mirror has no evolution that loads"
+   },
+   "2": {
+    "refused": "Mirror has no loadable hero form: the table carries none"
+   }
+  },
+  "Lightning": {
+   "0": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 0,
+    "hp_60": [],
+    "hero_unit": false,
+    "table_hp_l11": [],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "1": {
+    "refused": "Lightning has no evolution that loads"
+   },
+   "2": {
+    "refused": "Lightning has no loadable hero form: the table carries none"
+   }
+  },
+  "Zap": {
+   "0": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 0,
+    "hp_60": [],
+    "hero_unit": false,
+    "table_hp_l11": [],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "1": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 0,
+    "hp_60": [],
+    "hero_unit": false,
+    "table_hp_l11": [],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "2": {
+    "refused": "Zap has no loadable hero form: the table carries none"
+   }
+  },
+  "Poison": {
+   "0": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 0,
+    "hp_60": [],
+    "hero_unit": false,
+    "table_hp_l11": [],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "1": {
+    "refused": "Poison has no evolution that loads"
+   },
+   "2": {
+    "refused": "Poison has no loadable hero form: the table carries none"
+   }
+  },
+  "Graveyard": {
+   "0": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 2,
+    "hp_60": [
+     81
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     81
+    ],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "1": {
+    "refused": "Graveyard has no evolution that loads"
+   },
+   "2": {
+    "refused": "Graveyard has no loadable hero form: the table carries none"
+   }
+  },
+  "Log": {
+   "0": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 0,
+    "hp_60": [],
+    "hero_unit": false,
+    "table_hp_l11": [],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "1": {
+    "refused": "Log has no evolution that loads"
+   },
+   "2": {
+    "refused": "Log has no loadable hero form: the table carries none"
+   }
+  },
+  "Tornado": {
+   "0": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 0,
+    "hp_60": [],
+    "hero_unit": false,
+    "table_hp_l11": [],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "1": {
+    "refused": "Tornado has no evolution that loads"
+   },
+   "2": {
+    "refused": "Tornado has no loadable hero form: the table carries none"
+   }
+  },
+  "Clone": {
+   "0": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 0,
+    "hp_60": [],
+    "hero_unit": false,
+    "table_hp_l11": [],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "1": {
+    "refused": "Clone has no evolution that loads"
+   },
+   "2": {
+    "refused": "Clone has no loadable hero form: the table carries none"
+   }
+  },
+  "Earthquake": {
+   "0": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 0,
+    "hp_60": [],
+    "hero_unit": false,
+    "table_hp_l11": [],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "1": {
+    "refused": "Earthquake has no evolution that loads"
+   },
+   "2": {
+    "refused": "Earthquake has no loadable hero form: the table carries none"
+   }
+  },
+  "BarbLog": {
+   "0": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 1,
+    "hp_60": [
+     716
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     716
+    ],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "1": {
+    "refused": "BarbLog has no evolution that loads"
+   },
+   "2": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 1,
+    "hp_60": [
+     716
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     716
+    ],
+    "fx_new": 0,
+    "hp_exact": null
+   }
+  },
+  "Heal": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 215,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     215
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     215
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "Heal has no evolution that loads"
+   },
+   "2": {
+    "refused": "Heal has no loadable hero form: the table carries none"
+   }
+  },
+  "Snowball": {
+   "0": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 0,
+    "hp_60": [],
+    "hero_unit": false,
+    "table_hp_l11": [],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "1": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 0,
+    "hp_60": [],
+    "hero_unit": false,
+    "table_hp_l11": [],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "2": {
+    "refused": "Snowball has no loadable hero form: the table carries none"
+   }
+  },
+  "RoyalDelivery": {
+   "0": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 1,
+    "hp_60": [
+     547
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     547
+    ],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "1": {
+    "refused": "RoyalDelivery has no evolution that loads"
+   },
+   "2": {
+    "refused": "RoyalDelivery has no loadable hero form: the table carries none"
+   }
+  },
+  "WarmSpell": {
+   "0": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 0,
+    "hp_60": [],
+    "hero_unit": false,
+    "table_hp_l11": [],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "1": {
+    "refused": "WarmSpell has no evolution that loads"
+   },
+   "2": {
+    "refused": "WarmSpell has no loadable hero form: the table carries none"
+   }
+  },
+  "DarkMagic": {
+   "0": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 0,
+    "hp_60": [],
+    "hero_unit": false,
+    "table_hp_l11": [],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "1": {
+    "refused": "DarkMagic has no evolution that loads"
+   },
+   "2": {
+    "refused": "DarkMagic has no loadable hero form: the table carries none"
+   }
+  },
+  "GoblinCurse": {
+   "0": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 0,
+    "hp_60": [],
+    "hero_unit": false,
+    "table_hp_l11": [
+     202
+    ],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "1": {
+    "refused": "GoblinCurse has no evolution that loads"
+   },
+   "2": {
+    "refused": "GoblinCurse has no loadable hero form: the table carries none"
+   }
+  },
+  "MergeMaiden": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1121,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1121
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1121
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "MergeMaiden has no evolution that loads"
+   },
+   "2": {
+    "refused": "MergeMaiden has no loadable hero form: the table carries none"
+   }
+  },
+  "Vines": {
+   "0": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 0,
+    "hp_60": [],
+    "hero_unit": false,
+    "table_hp_l11": [],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "1": {
+    "refused": "Vines has no evolution that loads"
+   },
+   "2": {
+    "refused": "Vines has no loadable hero form: the table carries none"
+   }
+  },
+  "MinionGiant": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1817,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1817
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1817
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "MinionGiant has no evolution that loads"
+   },
+   "2": {
+    "refused": "MinionGiant has no loadable hero form: the table carries none"
+   }
+  },
+  "LittlePrince": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 698,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     698
+    ],
+    "hero_unit": true,
+    "table_hp_l11": [
+     698,
+     1600
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "LittlePrince has no evolution that loads"
+   },
+   "2": {
+    "refused": "LittlePrince has no loadable hero form: the table carries none"
+   }
+  },
+  "Goblinstein": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 2240,
+      "kind": "Troop"
+     },
+     {
+      "max_hp": 721,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 2,
+    "n_new_60": 2,
+    "hp_60": [
+     721,
+     2240
+    ],
+    "hero_unit": true,
+    "table_hp_l11": [
+     721,
+     2240
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "Goblinstein has no evolution that loads"
+   },
+   "2": {
+    "refused": "Goblinstein has no loadable hero form: the table carries none"
+   }
+  },
+  "BossBandit": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 2624,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     2624
+    ],
+    "hero_unit": true,
+    "table_hp_l11": [
+     2624
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "BossBandit has no evolution that loads"
+   },
+   "2": {
+    "refused": "BossBandit has no loadable hero form: the table carries none"
+   }
+  },
+  "SuperWitch": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1064,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 5,
+    "hp_60": [
+     81,
+     1064
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     81,
+     629,
+     1064
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "SuperWitch has no evolution that loads"
+   },
+   "2": {
+    "refused": "SuperWitch has no loadable hero form: the table carries none"
+   }
+  },
+  "SuperLavaHound": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 7168,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     7168
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     215,
+     3840,
+     7168
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "SuperLavaHound has no evolution that loads"
+   },
+   "2": {
+    "refused": "SuperLavaHound has no loadable hero form: the table carries none"
+   }
+  },
+  "SuperEliteArcher": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 701,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     701
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     701
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "SuperEliteArcher has no evolution that loads"
+   },
+   "2": {
+    "refused": "SuperEliteArcher has no loadable hero form: the table carries none"
+   }
+  },
+  "SuperMiniPekka": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1573,
+      "kind": "Troop"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 2,
+    "hp_60": [
+     2,
+     1573
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     2,
+     1573
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "SuperMiniPekka has no evolution that loads"
+   },
+   "2": {
+    "refused": "SuperMiniPekka has no loadable hero form: the table carries none"
+   }
+  },
+  "GoblinRocketSilo": {
+   "0": {
+    "reason": "OK",
+    "new": [
+     {
+      "max_hp": 1999,
+      "kind": "Building"
+     }
+    ],
+    "n_new": 1,
+    "n_new_60": 1,
+    "hp_60": [
+     1999
+    ],
+    "hero_unit": false,
+    "table_hp_l11": [
+     1999
+    ],
+    "fx_new": 0,
+    "hp_exact": true
+   },
+   "1": {
+    "refused": "GoblinRocketSilo has no evolution that loads"
+   },
+   "2": {
+    "refused": "GoblinRocketSilo has no loadable hero form: the table carries none"
+   }
+  },
+  "GlobalClone": {
+   "0": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 0,
+    "hp_60": [],
+    "hero_unit": false,
+    "table_hp_l11": [],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "1": {
+    "refused": "GlobalClone has no evolution that loads"
+   },
+   "2": {
+    "refused": "GlobalClone has no loadable hero form: the table carries none"
+   }
+  },
+  "GoblinPartyRocket": {
+   "0": {
+    "reason": "OK",
+    "new": [],
+    "n_new": 0,
+    "n_new_60": 0,
+    "hp_60": [],
+    "hero_unit": false,
+    "table_hp_l11": [
+     202
+    ],
+    "fx_new": 0,
+    "hp_exact": null
+   },
+   "1": {
+    "refused": "GoblinPartyRocket has no evolution that loads"
+   },
+   "2": {
+    "refused": "GoblinPartyRocket has no loadable hero form: the table carries none"
+   }
+  }
+ }
+}

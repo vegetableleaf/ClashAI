@@ -30,7 +30,7 @@ CASES = [
     (('13000043', 1949, 0), (None, 'elite_barbarians', 0)),           # Evo Elite Barbarians (not in the catalog)
     (('203000042', 945, 0), (None, 'electro_wizard', 0)),             # Hero Electro Wizard
     (('13000075', 6314, 0), (None, 'electro_giant', 0)),              # Evo Electro Giant
-    (('26000107', 1817, 0), (None, 'balloon', 0)),                    # Minion Giant -> closest learned class
+    (('26000107', 1817, 0), (None, 'minion_giant', 0)),               # Minion Giant: its own class since W9 (10-20)
     (('Balloon', 688, 2), ('balloon', 'bandit', 0)),                  # Hero Balloon Skeletrooper, L15
     (('Balloon', 2436, 2), ('balloon', 'balloon', 2)),                # the Hero Balloon itself, L15
     (('Goblins', 3720, 2), ('goblins', None, 0)),                     # Hero Goblins banner, L15: dropped
@@ -110,10 +110,11 @@ def test_from_engine_changes_only_the_targeted_bodies():
     # Rhino, Evo E-Barbs, a base Musketeer, a Hero Goblins banner
     f = _frame_with((203000027, 1971), (13000043, 1949), (26000014, 2232), (203000002, 3720))
     off, on = _units(f, False), _units(f, True)
-    assert [u[0] for u in off] == ['knight', 'dark_prince', 'musketeer', 'goblins']   # the evo id is dropped today
+    # W9 (10-20): the extended catalog names 13000043 (Evo Elite Barbarians), so it is an exact form-1 body either way
+    assert [u[0] for u in off] == ['knight', 'dark_prince', 'elite_barbarians', 'musketeer', 'goblins']
     assert [u[0] for u in on] == ['knight', 'ram_rider', 'elite_barbarians', 'musketeer']   # the banner is dropped
     assert off[1][1:-1] == on[1][1:-1] and on[1][-1] == 0 and off[1][-1] == 2   # same position / hp, form 0
-    assert off[0] == on[0] and off[2] == on[3]
+    assert off[0] == on[0] and off[2] == on[2] and on[2][-1] == 1 and off[3] == on[3]
 
 
 def test_live_pilot_scopes_the_extension_to_its_board(monkeypatch):

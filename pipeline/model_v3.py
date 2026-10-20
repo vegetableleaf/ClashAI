@@ -105,6 +105,17 @@ class S1Model(nn.Module):
         py, px = torch.meshgrid(torch.arange(PATCH_Y), torch.arange(PATCH_X), indexing="ij")
         self.register_buffer("patch_xy", torch.stack([(px.flatten() + 0.5) / PATCH_X, (py.flatten() + 0.5) / PATCH_Y], -1).float())
 
+    def _load_from_state_dict(self, state_dict, prefix, *args, **kwargs):
+        # A checkpoint of an older vocab (fewer cls_emb rows; vocab.APPENDED_CLASSES) grows on load, whatever loader or
+        # wrapper module calls load_state_dict: old rows byte-identical, each appended class starts as a copy of its
+        # named init source, the pad row moves last. Any other row count raises (vocab.grown_rows).
+        key = prefix + "cls_emb.weight"
+        w = state_dict.get(key)
+        if (w is not None and w.dim() == 2 and w.shape[1] == self.cls_emb.embedding_dim
+                and w.shape[0] != self.cls_emb.num_embeddings):
+            state_dict[key] = w[vocab.grown_rows(w.shape[0] - 1)]
+        super()._load_from_state_dict(state_dict, prefix, *args, **kwargs)
+
     # ---- encoder -------------------------------------------------------------------------------------
     def encode(self, tok: torch.Tensor, mask: torch.Tensor, sc: torch.Tensor, past: torch.Tensor) -> dict:
         B, U, _ = tok.shape
@@ -153,6 +164,16 @@ class S1Model(nn.Module):
         if card_slot is not None:
             out["cell"] = self.cell_logits(enc, card_slot)
         return out
+
+
+def grow_optimizer_state(opt: torch.optim.Optimizer, model: nn.Module) -> None:
+    """After ``opt.load_state_dict`` of a run saved before vocab classes were appended: grow the cls_emb parameter's
+    per-row state (Adam exp_avg / exp_avg_sq) with the same row map as the weights. No-op when the shapes match."""
+    w = model.cls_emb.weight
+    st = opt.state.get(w) or {}
+    for k, v in list(st.items()):
+        if torch.is_tensor(v) and v.dim() == 2 and v.shape[1] == w.shape[1] and v.shape[0] != w.shape[0]:
+            st[k] = v[vocab.grown_rows(v.shape[0] - 1)]
 
 
 def hand_mask_from_sc(sc: torch.Tensor) -> torch.Tensor:

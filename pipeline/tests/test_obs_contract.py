@@ -160,7 +160,7 @@ class TestVocab(unittest.TestCase):
             self.skipTest("catalog not on disk")
         cards = json.loads(p.read_text(encoding="utf-8"))["cards"]
         inuse = [c for c in cards if c.get("standard_1v1") and not c.get("not_in_use") and not c.get("not_visible")]
-        self.assertEqual(len(inuse), 122)
+        self.assertEqual(len(inuse), 123)       # 122 libg 15.535.29 cards + MinionGiant (W9 catalog extension 10-20)
         missing = [c["display_name"] for c in inuse if vocab.engine_unit_id(c["display_name"]) is None]
         self.assertEqual(missing, [])
         allmiss = sorted(c["display_name"] for c in cards if vocab.engine_unit_id(c["display_name"]) is None)

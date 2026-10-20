@@ -1,0 +1,10 @@
+.............sssss...................................................... [ 75%]
+.....................sss                                                 [100%]
+============================== warnings summary ===============================
+pipeline/tests/test_vocab_extension.py: 6 warnings
+pipeline/tests/test_cue_inputs.py: 4 warnings
+  C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+    self.encoder = nn.TransformerEncoder(enc, layers)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+88 passed, 8 skipped, 10 warnings in 65.94s (0:01:05)

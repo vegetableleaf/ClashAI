@@ -3711,9 +3711,12 @@ class Learner:
             require_same(rl.get("runtime"))
         self.model.load_state_dict(ck["model"])
         self.model.eval()
-        self.opt.load_state_dict(rl["optimizer"])
+        from pipeline.model_v3 import grow_optimizer_state    # a run saved before vocab classes were appended: its
+        self.opt.load_state_dict(rl["optimizer"])              # cls_emb Adam rows grow like the weights (no-op otherwise)
+        grow_optimizer_state(self.opt, self.model)
         if getattr(self, "branch_opt", None) is not None and "branch_optimizer" in rl:
             self.branch_opt.load_state_dict(rl["branch_optimizer"])
+            grow_optimizer_state(self.branch_opt, self.model)
         if getattr(self, "ctx_head", None) is not None:      # critic_ctx
             if "ctx_head" in rl:
                 self.ctx_head.load_state_dict(rl["ctx_head"])

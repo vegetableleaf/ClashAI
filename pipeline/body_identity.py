@@ -64,10 +64,10 @@ EXTENSION = False
 # classes only in form 0 (an evo / hero form of them never occurs in gen_dataset_v32_fv5).
 EXT_CARD_IDS = {'13000043': 'AngryBarbarians', '13000075': 'ElectroGiant', '203000042': 'ElectroWizard',
                 '26000107': 'MinionGiant'}
-# No vocab class -> closest learned class. Minion Giant (catalog: flying_height 3000, target_only_buildings, speed 60,
-# 1817 HP at L11) vs Balloon (flying, buildings only, speed 60, 1676 HP); differs in range (4 tiles vs melee) and
-# damage (189 / 1.5 s vs 640 / 2 s at L11).
-EXT_CLASS = {'minion_giant': 'balloon'}
+# No vocab class -> closest learned class. Empty since W9 (10-20): Minion Giant has its own class (vocab
+# APPENDED_CLASSES, id 232, embedding initialised from balloon); the 10-20 catalog extension names all four ids above, so
+# this table and EXT_CARD_IDS only act on a host whose catalog was not extended.
+EXT_CLASS: dict[str, str] = {}
 # (parent key, reader form) -> ((unit, level-1 HP or None = catalog units[unit], class or None = drop), ...): spawned /
 # ability bodies the reader names by their card, given today the card's own class. HP x the parent's level multipliers
 # reproduces every live value (census). Mortar evo shells spawn Goblins (catalog Mortar_EV1, wiki); Evo Royal Ghost
