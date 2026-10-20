@@ -49,3 +49,17 @@ process, /workspace/stepd/claim.lock free by `flock -n`).
 - DISK: 5.6 GB free (target was >= 12 GB; the stop-and-report floor is 10 GB). NOT cleaned: I do not permanently delete data,
   even backed-up trees. Candidates for the lead/owner to delete by hand: /workspace/w_v7_r7c_ht (5.5 GB) alone gives ~11 GB;
   with w_r7c (582 MB) / w_r5d (570 MB) ~12 GB. I did not verify their backups. READY except for the disk target.
+
+## Addendum 2: pod 48148 (64.247.206.80 -p 48148, tn_redirect_s74), 22:20-22:39 UTC -- PREPARED AND LAUNCHED (lead-authorised)
+
+- Idle first (no rl_royale / gap.py / stepd_chain, claim.lock free); disk 23 GB free (>= 10).
+- Code = git HEAD 4ec11f2 (the W7 FINAL commit), CODE_OK. W7's files were protected: ship_stepd.sh would `rm -rf` the code dirs
+  (incl. scratchpad/gauntlet/L74, where W7's uncommitted work may live), so the tar was extracted OVER the tree with no rm
+  (GNU tar unlinks before writing, so hard links to cb_tt are not written through); nothing was deleted.
+- fin15: FIN15_OK (venvf36 present; "venvf36 intact"). Checkpoint/data shas identical to 40548's list.
+- w7opp.pt = R6 u20, sha256 3452256458450fcc8fc4848445e5c06c64970ad0b1b8a60c1a915208509c475b (verified before and after the
+  launch script's identical-byte cp; w7opp_R4u100.pt and gen_live_b.pt untouched next to it).
+- Smoke tn_redirect_s74 (pod_smoke15.sh): SMOKE PASS 22:38:15Z; exploiter_league 0.50/4 games (> 0).
+- LAUNCHED 22:38:59Z with the lead's launch.sh: /workspace/stepd/GO_tn_redirect_s74 = RT=fin15-linux VENV=/workspace/venvf15
+  EVAL_LEVELS=all16 DECODE='--ability-head-decode=sample --crown-log' NO36=1; chain pid 21909 under claim.lock; log
+  /workspace/stepd/rl_tn_redirect_s74/chain.log.
