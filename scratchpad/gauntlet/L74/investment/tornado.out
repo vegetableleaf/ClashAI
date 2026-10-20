@@ -1,0 +1,100 @@
+# W5 tornado.out
+## (a) bridge attacker, both princesses up, Tornado in hand, own elixir >= 3  (first response within 5 s)
+hog_rider       | pro      | n  838 | Tornado within 5 s 0.445 | first: tesla 0.19, tornado 0.18, ice_wizard 0.17, knight 0.13, skeletons 0.11 | princess lost 15 s 0.085 | king hit 0.379
+hog_rider       | ours     | n  437 | Tornado within 5 s 0.087 | first: tesla 0.31, knight 0.18, ice_wizard 0.16, skeletons 0.16, the_log 0.12 | princess lost 15 s 0.104 | king hit 0.080
+hog_rider       | CXXXVIII | n  163 | Tornado within 5 s 0.080 | first: tesla 0.31, ice_wizard 0.18, skeletons 0.16, the_log 0.16, knight 0.14 | princess lost 15 s 0.099 | king hit 0.110
+hog_rider       | CLIII    | n   85 | Tornado within 5 s 0.106 | first: tesla 0.35, knight 0.19, ice_wizard 0.18, skeletons 0.15, the_log 0.07 | princess lost 15 s 0.109 | king hit 0.129
+hog_rider       | CLIX     | n   32 | Tornado within 5 s 0.094 | first: tesla 0.38, knight 0.19, ice_wizard 0.16, skeletons 0.16, the_log 0.09 | princess lost 15 s 0.124 | king hit 0.062
+hog_rider       | CLX      | n  157 | Tornado within 5 s 0.083 | first: tesla 0.27, knight 0.22, skeletons 0.17, ice_wizard 0.14, the_log 0.12 | princess lost 15 s 0.101 | king hit 0.025
+BUILDING other  | pro      | n 2147 | Tornado within 5 s 0.177 | first: tesla 0.21, ice_wizard 0.16, knight 0.14, skeletons 0.12, the_log 0.11 | princess lost 15 s 0.095 | king hit 0.075
+BUILDING other  | ours     | n  704 | Tornado within 5 s 0.054 | first: tesla 0.28, ice_wizard 0.18, skeletons 0.17, knight 0.16, the_log 0.11 | princess lost 15 s 0.091 | king hit 0.020
+BUILDING other  | CXXXVIII | n  211 | Tornado within 5 s 0.057 | first: tesla 0.31, skeletons 0.20, ice_wizard 0.18, knight 0.16, the_log 0.07 | princess lost 15 s 0.099 | king hit 0.014
+BUILDING other  | CLIII    | n  147 | Tornado within 5 s 0.109 | first: tesla 0.27, ice_wizard 0.20, skeletons 0.17, the_log 0.14, knight 0.12 | princess lost 15 s 0.082 | king hit 0.027
+BUILDING other  | CLIX     | n   94 | Tornado within 5 s 0.011 | first: tesla 0.28, ice_wizard 0.22, skeletons 0.18, knight 0.16, the_log 0.10 | princess lost 15 s 0.093 | king hit 0.011
+BUILDING other  | CLX      | n  252 | Tornado within 5 s 0.036 | first: tesla 0.27, knight 0.19, skeletons 0.15, ice_wizard 0.15, the_log 0.13 | princess lost 15 s 0.089 | king hit 0.024
+troop-targeting | pro      | n 7991 | Tornado within 5 s 0.186 | first: tesla 0.16, knight 0.15, ice_wizard 0.14, the_log 0.12, skeletons 0.11 | princess lost 15 s 0.081 | king hit 0.091
+troop-targeting | ours     | n 3867 | Tornado within 5 s 0.054 | first: tesla 0.21, ice_wizard 0.18, knight 0.15, the_log 0.15, skeletons 0.13 | princess lost 15 s 0.068 | king hit 0.031
+troop-targeting | CXXXVIII | n 1370 | Tornado within 5 s 0.046 | first: tesla 0.21, ice_wizard 0.17, knight 0.16, the_log 0.14, skeletons 0.14 | princess lost 15 s 0.067 | king hit 0.038
+troop-targeting | CLIII    | n  774 | Tornado within 5 s 0.062 | first: tesla 0.19, the_log 0.18, ice_wizard 0.17, skeletons 0.13, knight 0.12 | princess lost 15 s 0.077 | king hit 0.037
+troop-targeting | CLIX     | n  443 | Tornado within 5 s 0.063 | first: tesla 0.22, knight 0.16, ice_wizard 0.15, skeletons 0.14, the_log 0.13 | princess lost 15 s 0.072 | king hit 0.018
+troop-targeting | CLX      | n 1280 | Tornado within 5 s 0.053 | first: ice_wizard 0.21, tesla 0.21, knight 0.15, the_log 0.14, skeletons 0.12 | princess lost 15 s 0.062 | king hit 0.023
+
+(a2) the owner case: bridge HOG, both princesses up, Tornado in hand, own elixir in [3, 4) (exactly enough for one 3-cost card)
+pro      n  92 | first: tornado 0.25, ice_wizard 0.17, tesla 0.14, skeletons 0.14, the_log 0.12, knight 0.09
+ours     n  65 | first: tesla 0.34, knight 0.20, the_log 0.15, skeletons 0.14, ice_wizard 0.12, tornado 0.03
+CXXXVIII n  17 | first: tesla 0.47, knight 0.18, the_log 0.12, ice_wizard 0.12, skeletons 0.06, tornado 0.06
+CLIII    n  15 | first: tesla 0.40, knight 0.20, ice_wizard 0.20, skeletons 0.13, the_log 0.07
+CLIX     n   6 | first: tesla 0.33, knight 0.33, the_log 0.17, skeletons 0.17
+CLX      n  27 | first: tesla 0.22, the_log 0.22, skeletons 0.19, knight 0.19, ice_wizard 0.11, tornado 0.04
+
+(a3) outcome by first response to a bridge HOG (Tornado in hand, >= 3 elixir, both princesses up): own princess HP lost in 15 s, king hit (= king activated), n
+pro   first=tesla        n  162 | princess lost 0.056 | king hit 0.117 | king lost 0.010
+pro   first=tornado      n  149 | princess lost 0.064 | king hit 0.678 | king lost 0.102
+pro   first=ice_wizard   n  140 | princess lost 0.105 | king hit 0.307 | king lost 0.040
+pro   first=knight       n  110 | princess lost 0.071 | king hit 0.418 | king lost 0.055
+pro   first=skeletons    n   94 | princess lost 0.081 | king hit 0.383 | king lost 0.047
+pro   first=the_log      n   89 | princess lost 0.088 | king hit 0.427 | king lost 0.044
+pro   first=rocket       n   59 | princess lost 0.170 | king hit 0.356 | king lost 0.040
+ours  first=tesla        n  136 | princess lost 0.055 | king hit 0.051 | king lost 0.003
+ours  first=knight       n   80 | princess lost 0.175 | king hit 0.100 | king lost 0.010
+ours  first=ice_wizard   n   71 | princess lost 0.118 | king hit 0.113 | king lost 0.016
+ours  first=skeletons    n   70 | princess lost 0.073 | king hit 0.071 | king lost 0.005
+ours  first=the_log      n   54 | princess lost 0.154 | king hit 0.093 | king lost 0.011
+ours  first=x_bow        n   17 | princess lost 0.087 | king hit 0.059 | king lost 0.004
+ours  first=tornado      n    4 | princess lost 0.120 | king hit 0.250 | king lost 0.054
+
+(a3b) bridge HOG: did the Hog itself come <= 3.5 tiles from our king centre in the next 15 s (redirected onto the king)?
+pro   with a Tornado within 5 s: n 373 Hog at king 0.590 | without: n 465 Hog at king 0.140
+ours  with a Tornado within 5 s: n  38 Hog at king 0.184 | without: n 399 Hog at king 0.038
+
+(a4) WHERE our Tornado went vs a bridge Hog (distance of the cast from our king centre), and king hit rate
+pro   cast 0-4 tiles from our king: n  54 king hit 0.815 princess lost 0.100
+pro   cast 4-6 tiles from our king: n 189 king hit 0.910 princess lost 0.054
+pro   cast 6-8 tiles from our king: n   3 king hit 0.000 princess lost 0.020
+pro   cast 8-99 tiles from our king: n 127 king hit 0.142 princess lost 0.125
+ours  cast 0-4 tiles from our king: n   2 king hit 1.000 princess lost 0.066
+ours  cast 4-6 tiles from our king: n  12 king hit 0.333 princess lost 0.230
+ours  cast 8-99 tiles from our king: n  24 king hit 0.000 princess lost 0.136
+
+## (b) our Tornado casts by own princesses standing and pull direction (toward_king > 1 tile = enemies pulled toward OUR king; needs >= 1 enemy body in the radius)
+pro      princesses up 2 | casts 4065 (2.50/match) | toward king 1297 (0.32 of casts, 0.796/match) | king lost 10 s: toward 0.033 vs other 0.004 | own lost 20 s: toward 0.193 vs other 0.181 | win: toward 0.524 vs other 0.501
+pro      princesses up 1 | casts  107 (0.07/match) | toward king   30 (0.28 of casts, 0.018/match) | king lost 10 s: toward 0.086 vs other 0.046 | own lost 20 s: toward 0.365 vs other 0.360 | win: toward 0.367 vs other 0.390
+ours     princesses up 2 | casts  659 (0.84/match) | toward king  230 (0.35 of casts, 0.292/match) | king lost 10 s: toward 0.034 vs other 0.006 | own lost 20 s: toward 0.342 vs other 0.317 | win: toward 0.417 vs other 0.438
+ours     princesses up 1 | casts  294 (0.37/match) | toward king   72 (0.24 of casts, 0.091/match) | king lost 10 s: toward 0.187 vs other 0.072 | own lost 20 s: toward 0.673 vs other 0.463 | win: toward 0.125 vs other 0.104
+CXXXVIII princesses up 2 | casts  194 (0.74/match) | toward king   68 (0.35 of casts, 0.260/match) | king lost 10 s: toward 0.028 vs other 0.009 | own lost 20 s: toward 0.375 vs other 0.425 | win: toward 0.397 vs other 0.357
+CXXXVIII princesses up 1 | casts  113 (0.43/match) | toward king   30 (0.27 of casts, 0.115/match) | king lost 10 s: toward 0.219 vs other 0.084 | own lost 20 s: toward 0.784 vs other 0.447 | win: toward 0.100 vs other 0.036
+CLIII    princesses up 2 | casts  144 (0.86/match) | toward king   45 (0.31 of casts, 0.268/match) | king lost 10 s: toward 0.042 vs other 0.008 | own lost 20 s: toward 0.384 vs other 0.297 | win: toward 0.333 vs other 0.404
+CLIII    princesses up 1 | casts   61 (0.36/match) | toward king   15 (0.25 of casts, 0.089/match) | king lost 10 s: toward 0.177 vs other 0.065 | own lost 20 s: toward 0.503 vs other 0.516 | win: toward 0.067 vs other 0.130
+CLIX     princesses up 2 | casts   84 (0.81/match) | toward king   32 (0.38 of casts, 0.308/match) | king lost 10 s: toward 0.051 vs other 0.003 | own lost 20 s: toward 0.412 vs other 0.350 | win: toward 0.469 vs other 0.519
+CLIX     princesses up 1 | casts   42 (0.40/match) | toward king    9 (0.21 of casts, 0.087/match) | king lost 10 s: toward 0.171 vs other 0.130 | own lost 20 s: toward 0.748 vs other 0.691 | win: toward 0.333 vs other 0.121
+CLX      princesses up 2 | casts  237 (0.94/match) | toward king   85 (0.36 of casts, 0.336/match) | king lost 10 s: toward 0.027 vs other 0.003 | own lost 20 s: toward 0.267 vs other 0.228 | win: toward 0.459 vs other 0.500
+CLX      princesses up 1 | casts   78 (0.31/match) | toward king   18 (0.23 of casts, 0.071/match) | king lost 10 s: toward 0.147 vs other 0.029 | own lost 20 s: toward 0.591 vs other 0.321 | win: toward 0.111 vs other 0.167
+
+(b2) post-princess-loss pulls toward our king: which units were pulled (ours, all Marks)
+[('witch', 12), ('hog_rider', 10), ('balloon', 7), ('elixir_golem', 5), ('goblin_barrel', 5), ('mega_knight', 5), ('firecracker', 5), ('night_witch', 4), ('dark_prince', 4), ('lumberjack', 3), ('electro_dragon', 3), ('wizard', 3), ('royal_recruits', 3), ('golem', 3), ('skeleton_army', 3)]
+(b3) same for pros
+[('balloon', 5), ('hog_rider', 4), ('skeleton_army', 4), ('ram_rider', 3), ('giant', 2), ('goblin_gang', 2), ('inferno_dragon', 2), ('baby_dragon', 2), ('golden_knight', 2), ('pekka', 2), ('mega_knight', 2), ('zap_machine', 2), ('dart_barrell', 2), ('mini_pekka', 2), ('bomber', 2)]
+
+(b4) both princesses up, Tornado pulling a building-targeter toward our king (the redirect trick): king hit within 10 s (king HP down) by unit (ours / pros)
+pro   hog_rider    n   36 king hit (lost > 0) 0.472 | that unit came <= 3.5 tiles from our king centre 0.444
+pro   ram_rider    n    6 king hit (lost > 0) 0.333 | that unit came <= 3.5 tiles from our king centre 0.333
+pro   battle_ram   n   11 king hit (lost > 0) 0.273 | that unit came <= 3.5 tiles from our king centre 0.273
+pro   royal_hogs   n   58 king hit (lost > 0) 0.655 | that unit came <= 3.5 tiles from our king centre 0.655
+pro   giant        n   23 king hit (lost > 0) 0.261 | that unit came <= 3.5 tiles from our king centre 0.087
+pro   balloon      n   98 king hit (lost > 0) 0.592 | that unit came <= 3.5 tiles from our king centre 0.469
+pro   golem        n    8 king hit (lost > 0) 0.125 | that unit came <= 3.5 tiles from our king centre 0.000
+pro   goblinstein  n   20 king hit (lost > 0) 0.000 | that unit came <= 3.5 tiles from our king centre 0.000
+pro   knight       n   24 king hit (lost > 0) 0.042 | that unit came <= 3.5 tiles from our king centre 0.000
+pro   mini_pekka   n   27 king hit (lost > 0) 0.519 | that unit came <= 3.5 tiles from our king centre 0.556
+pro   valkyrie     n   15 king hit (lost > 0) 0.000 | that unit came <= 3.5 tiles from our king centre 0.000
+pro   musketeer    n   22 king hit (lost > 0) 0.000 | that unit came <= 3.5 tiles from our king centre 0.000
+pro   wizard       n    8 king hit (lost > 0) 0.000 | that unit came <= 3.5 tiles from our king centre 0.000
+pro   mega_knight  n   20 king hit (lost > 0) 0.350 | that unit came <= 3.5 tiles from our king centre 0.200
+pro   pekka        n   15 king hit (lost > 0) 0.333 | that unit came <= 3.5 tiles from our king centre 0.000
+ours  hog_rider    n   20 king hit (lost > 0) 0.600 | that unit came <= 3.5 tiles from our king centre 0.700
+ours  battle_ram   n    5 king hit (lost > 0) 0.000 | that unit came <= 3.5 tiles from our king centre 0.000
+ours  royal_hogs   n    8 king hit (lost > 0) 0.500 | that unit came <= 3.5 tiles from our king centre 0.750
+ours  balloon      n   17 king hit (lost > 0) 0.294 | that unit came <= 3.5 tiles from our king centre 0.235
+ours  knight       n    6 king hit (lost > 0) 0.333 | that unit came <= 3.5 tiles from our king centre 0.000
+ours  valkyrie     n   13 king hit (lost > 0) 0.077 | that unit came <= 3.5 tiles from our king centre 0.000
+ours  mega_knight  n    5 king hit (lost > 0) 0.400 | that unit came <= 3.5 tiles from our king centre 0.400

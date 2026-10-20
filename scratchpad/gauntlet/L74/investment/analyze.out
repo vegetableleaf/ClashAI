@@ -1,0 +1,297 @@
+# W5 analyze.out  (rows.pkl: {'match': 2416, 'xbow': 9111, 'rocket': 4027, 'opp_samples': 142354, 'bridge': 29270, 'tornado': 6474} )
+X-Bow answer list K (lock when engaged <= source base - 0.10 in BOTH sources, n_eng >= 20 each): ['earthquake', 'electro_giant', 'giant', 'goblinstein', 'hog_rider', 'musketeer', 'pekka', 'royal_giant']
+NOTE pro outcomes = native level-11 open-loop re-drive (counterfactual); pro decisions + match results are real.
+Base bridge lock: live 0.65 pro 0.413
+
+## 1. Matchup archetypes (revealed by the match end): per match
+arch | group | n | win | bridge X/match | def X/match | tower Rockets/match | lock/bridge X | reach dmg/bridge X | next20 net/bridge X
+EQ       | pro      |   78 | 0.564 [0.45, 0.67] | 2.79 | 0.33 | 3.03 | 0.322 | 0.097 | +0.049
+EQ       | CXXXVIII |   13 | 0.615 [0.31, 0.85] | 4.46 | 0.15 | 0.92 | 0.655 | 0.230 | +0.172
+EQ       | CLIII    |    6 | 0.333 [0.00, 0.67] | 4.50 | 0.17 | 0.00 | 0.556 | 0.188 | +0.098
+EQ       | CLIX     |    4 | 0.750 [0.25, 1.00] | 5.00 | 0.50 | 1.00 | 0.700 | 0.281 | +0.129
+EQ       | CLX      |    8 | 0.875 [0.62, 1.00] | 4.25 | 0.88 | 0.25 | 0.559 | 0.261 | +0.208
+EQ       | ours     |   31 | 0.645 [0.48, 0.81] | 4.48 | 0.39 | 0.58 | 0.619 | 0.237 | +0.160
+SIEGE    | pro      |  150 | 0.400 [0.33, 0.48] | 2.68 | 1.52 | 1.31 | 0.329 | 0.112 | +0.047
+SIEGE    | CXXXVIII |   22 | 0.636 [0.46, 0.82] | 3.14 | 0.64 | 0.32 | 0.783 | 0.358 | +0.324
+SIEGE    | CLIII    |   15 | 0.533 [0.27, 0.80] | 2.53 | 1.00 | 0.13 | 0.737 | 0.334 | +0.257
+SIEGE    | CLIX     |    5 | 0.800 [0.40, 1.00] | 3.40 | 1.40 | 0.60 | 0.588 | 0.262 | +0.233
+SIEGE    | CLX      |    7 | 0.857 [0.57, 1.00] | 3.86 | 1.00 | 0.29 | 0.630 | 0.329 | +0.271
+SIEGE    | ours     |   49 | 0.653 [0.53, 0.78] | 3.08 | 0.88 | 0.29 | 0.722 | 0.336 | +0.288
+HOG      | pro      |  172 | 0.640 [0.57, 0.70] | 2.83 | 0.86 | 2.44 | 0.341 | 0.117 | +0.057
+HOG      | CXXXVIII |   43 | 0.326 [0.19, 0.44] | 3.00 | 0.49 | 0.33 | 0.543 | 0.279 | +0.212
+HOG      | CLIII    |   28 | 0.429 [0.25, 0.61] | 3.36 | 0.43 | 0.50 | 0.585 | 0.268 | +0.211
+HOG      | CLIX     |   15 | 0.333 [0.13, 0.60] | 2.53 | 0.47 | 0.47 | 0.579 | 0.341 | +0.294
+HOG      | CLX      |   52 | 0.500 [0.36, 0.65] | 3.56 | 0.67 | 0.31 | 0.541 | 0.226 | +0.175
+HOG      | ours     |  138 | 0.413 [0.33, 0.48] | 3.23 | 0.54 | 0.37 | 0.554 | 0.260 | +0.203
+BEATDOWN | pro      |  688 | 0.455 [0.42, 0.49] | 2.56 | 1.04 | 1.05 | 0.431 | 0.169 | +0.105
+BEATDOWN | CXXXVIII |  117 | 0.419 [0.34, 0.50] | 2.64 | 0.59 | 0.43 | 0.676 | 0.348 | +0.278
+BEATDOWN | CLIII    |   80 | 0.438 [0.34, 0.55] | 2.77 | 0.46 | 0.36 | 0.662 | 0.355 | +0.274
+BEATDOWN | CLIX     |   59 | 0.407 [0.29, 0.53] | 2.47 | 0.71 | 0.41 | 0.692 | 0.396 | +0.327
+BEATDOWN | CLX      |  119 | 0.479 [0.39, 0.57] | 3.13 | 0.92 | 0.27 | 0.609 | 0.296 | +0.233
+BEATDOWN | ours     |  375 | 0.440 [0.40, 0.48] | 2.80 | 0.69 | 0.36 | 0.651 | 0.338 | +0.268
+OTHER    | pro      |  541 | 0.494 [0.45, 0.53] | 2.98 | 0.98 | 1.47 | 0.448 | 0.163 | +0.084
+OTHER    | CXXXVIII |   67 | 0.612 [0.48, 0.73] | 3.45 | 0.55 | 0.42 | 0.719 | 0.323 | +0.259
+OTHER    | CLIII    |   39 | 0.590 [0.44, 0.74] | 2.90 | 0.64 | 0.54 | 0.770 | 0.392 | +0.300
+OTHER    | CLIX     |   21 | 0.619 [0.43, 0.81] | 3.48 | 0.38 | 0.62 | 0.644 | 0.290 | +0.251
+OTHER    | CLX      |   67 | 0.642 [0.54, 0.75] | 3.42 | 0.94 | 0.31 | 0.672 | 0.278 | +0.199
+OTHER    | ours     |  194 | 0.619 [0.55, 0.70] | 3.33 | 0.69 | 0.43 | 0.703 | 0.316 | +0.244
+
+## 2. Decision clusters (matchup x answer context at the moment): propensity per opportunity-minute and outcome
+cluster | group | opp-min | bridge X / opp-min [CI] | def X / opp-min | bridge n | lock | reach dmg | next20 net | answer el - 6 | win (bridge X placed)
+EQ/ready      | pro   |   55.9 | 1.61 [1.20, 2.00] | 0.23 |   90 | 0.337 | 0.108 | +0.045 | -0.47 | 0.600
+EQ/ready      | ours  |   11.0 | 6.26 [4.97, 7.92] | 0.64 |   69 | 0.507 | 0.165 | +0.077 | +0.29 | 0.551
+EQ/short      | pro   |    4.3 | 0.94 [0.20, 2.16] | 0.00 |    4 | 0.250 | 0.028 | -0.030 | +0.25 | 0.250
+EQ/cycled     | pro   |   41.4 | 2.46 [1.86, 3.06] | 0.29 |  102 | 0.320 | 0.093 | +0.051 | +0.03 | 0.559
+EQ/cycled     | ours  |   12.8 | 3.84 [2.77, 5.33] | 0.16 |   49 | 0.653 | 0.252 | +0.203 | +0.49 | 0.653
+EQ/unrevealed | pro   |   10.3 | 2.14 [1.43, 3.10] | 0.10 |   22 | 0.286 | 0.080 | +0.070 | +0.38 | 0.545
+EQ/unrevealed | ours  |    5.8 | 3.09 [2.45, 4.15] | 0.34 |   18 | 0.944 | 0.435 | +0.352 | +0.17 | 0.556
+SIEGE/ready      | pro   |   11.1 | 2.88 [1.93, 4.21] | 3.06 |   32 | 0.250 | 0.080 | +0.031 | -0.12 | 0.250
+SIEGE/short      | pro   |    3.2 | 1.54 [0.32, 3.16] | 0.92 |    5 | 0.200 | 0.082 | +0.076 | +1.40 | 0.800
+SIEGE/cycled     | pro   |   24.1 | 2.08 [1.51, 2.75] | 1.50 |   50 | 0.383 | 0.128 | +0.021 | -0.17 | 0.340
+SIEGE/unrevealed | pro   |  104.4 | 3.02 [2.60, 3.50] | 1.48 |  315 | 0.331 | 0.113 | +0.053 | +0.45 | 0.463
+SIEGE/unrevealed | ours  |   37.5 | 3.89 [3.25, 4.59] | 1.12 |  146 | 0.719 | 0.333 | +0.290 | -0.25 | 0.767
+HOG/ready      | pro   |   83.7 | 2.55 [2.12, 2.98] | 0.81 |  213 | 0.346 | 0.130 | +0.072 | +0.04 | 0.601
+HOG/ready      | ours  |   24.4 | 4.84 [4.01, 5.91] | 0.57 |  118 | 0.534 | 0.224 | +0.205 | +0.12 | 0.551
+HOG/short      | pro   |   13.2 | 1.21 [0.67, 1.75] | 0.45 |   16 | 0.500 | 0.173 | +0.040 | +1.14 | 0.750
+HOG/short      | ours  |    8.6 | 4.53 [2.90, 6.29] | 0.81 |   39 | 0.615 | 0.285 | +0.221 | +0.28 | 0.564
+HOG/cycled     | pro   |  109.8 | 2.09 [1.79, 2.44] | 0.66 |  229 | 0.311 | 0.102 | +0.040 | +0.28 | 0.576
+HOG/cycled     | ours  |   74.5 | 3.34 [2.97, 3.82] | 0.58 |  249 | 0.530 | 0.251 | +0.195 | +1.43 | 0.422
+HOG/unrevealed | pro   |   10.1 | 2.76 [1.96, 3.77] | 0.20 |   28 | 0.464 | 0.118 | +0.101 | +0.21 | 0.571
+HOG/unrevealed | ours  |   16.4 | 2.43 [1.82, 3.06] | 0.67 |   40 | 0.700 | 0.398 | +0.236 | +0.80 | 0.350
+BEATDOWN/ready      | pro   |  107.2 | 2.29 [1.99, 2.64] | 1.52 |  246 | 0.270 | 0.095 | +0.040 | +1.05 | 0.321
+BEATDOWN/ready      | ours  |   26.6 | 4.32 [3.41, 5.32] | 0.56 |  115 | 0.409 | 0.170 | +0.129 | +2.46 | 0.496
+BEATDOWN/short      | pro   |   42.2 | 2.18 [1.78, 2.71] | 1.21 |   92 | 0.467 | 0.179 | +0.113 | +0.37 | 0.435
+BEATDOWN/short      | ours  |   18.3 | 4.15 [3.25, 5.45] | 1.04 |   76 | 0.579 | 0.253 | +0.181 | +1.01 | 0.605
+BEATDOWN/cycled     | pro   |  176.8 | 2.77 [2.48, 3.06] | 1.17 |  489 | 0.394 | 0.151 | +0.090 | +0.33 | 0.382
+BEATDOWN/cycled     | ours  |   54.4 | 4.49 [3.90, 5.11] | 1.03 |  244 | 0.668 | 0.324 | +0.288 | +0.68 | 0.623
+BEATDOWN/unrevealed | pro   |  373.9 | 2.49 [2.30, 2.69] | 0.79 |  932 | 0.489 | 0.197 | +0.130 | -0.06 | 0.505
+BEATDOWN/unrevealed | ours  |  181.3 | 3.39 [3.18, 3.66] | 0.92 |  615 | 0.699 | 0.385 | +0.297 | +0.93 | 0.454
+OTHER/ready      | pro   |   21.5 | 2.93 [2.15, 3.73] | 0.79 |   63 | 0.254 | 0.078 | +0.056 | -0.71 | 0.635
+OTHER/ready      | ours  |    5.0 | 5.00 [3.66, 7.03] | 0.20 |   25 | 0.680 | 0.253 | +0.209 | -1.04 | 0.680
+OTHER/short      | pro   |    3.5 | 3.14 [1.64, 4.93] | 0.57 |   11 | 0.636 | 0.346 | +0.127 | -1.18 | 0.818
+OTHER/cycled     | pro   |   29.9 | 2.21 [1.58, 2.92] | 1.20 |   66 | 0.365 | 0.121 | +0.067 | +0.54 | 0.576
+OTHER/cycled     | ours  |    6.4 | 4.99 [3.42, 7.28] | 1.56 |   32 | 0.750 | 0.354 | +0.299 | -0.97 | 0.562
+OTHER/unrevealed | pro   |  497.1 | 2.96 [2.76, 3.15] | 0.95 | 1473 | 0.459 | 0.167 | +0.086 | +0.42 | 0.492
+OTHER/unrevealed | ours  |  163.4 | 3.58 [3.25, 3.91] | 0.75 |  585 | 0.703 | 0.317 | +0.243 | +0.54 | 0.629
+
+## 2b. Same clusters per Mark (bridge X / opp-min, lock, n)
+BEATDOWN/cycled     | CLIII    | opp-min  12.1 | bridge/opp-min 4.04 [3.00, 5.54] | n  49 | lock 0.612 | net +0.228
+BEATDOWN/cycled     | CLIX     | opp-min   8.2 | bridge/opp-min 3.93 [2.61, 5.73] | n  32 | lock 0.750 | net +0.396
+BEATDOWN/cycled     | CLX      | opp-min  14.3 | bridge/opp-min 5.78 [4.89, 7.00] | n  83 | lock 0.639 | net +0.230
+BEATDOWN/cycled     | CXXXVIII | opp-min  19.7 | bridge/opp-min 4.06 [3.03, 5.42] | n  80 | lock 0.700 | net +0.342
+BEATDOWN/ready      | CLIII    | opp-min   5.6 | bridge/opp-min 3.59 [2.21, 5.40] | n  20 | lock 0.550 | net +0.200
+BEATDOWN/ready      | CLIX     | opp-min   4.7 | bridge/opp-min 4.24 [2.33, 5.85] | n  20 | lock 0.300 | net +0.141
+BEATDOWN/ready      | CLX      | opp-min   8.4 | bridge/opp-min 4.88 [3.26, 6.69] | n  41 | lock 0.390 | net +0.062
+BEATDOWN/ready      | CXXXVIII | opp-min   8.0 | bridge/opp-min 4.27 [2.93, 5.70] | n  34 | lock 0.412 | net +0.161
+BEATDOWN/short      | CLIII    | opp-min   4.8 | bridge/opp-min 2.94 [1.56, 4.89] | n  14 | lock 0.643 | net +0.241
+BEATDOWN/short      | CLIX     | opp-min   2.5 | bridge/opp-min 5.10 [3.21, 8.37] | n  13 | lock 0.769 | net +0.308
+BEATDOWN/short      | CLX      | opp-min   4.8 | bridge/opp-min 5.66 [3.80, 8.51] | n  27 | lock 0.481 | net +0.123
+BEATDOWN/short      | CXXXVIII | opp-min   6.2 | bridge/opp-min 3.54 [2.21, 5.35] | n  22 | lock 0.545 | net +0.138
+BEATDOWN/unrevealed | CLIII    | opp-min  40.9 | bridge/opp-min 3.40 [2.90, 3.95] | n 139 | lock 0.698 | net +0.305
+BEATDOWN/unrevealed | CLIX     | opp-min  24.6 | bridge/opp-min 3.30 [2.68, 4.02] | n  81 | lock 0.753 | net +0.350
+BEATDOWN/unrevealed | CLX      | opp-min  60.4 | bridge/opp-min 3.68 [3.18, 4.18] | n 222 | lock 0.653 | net +0.279
+BEATDOWN/unrevealed | CXXXVIII | opp-min  55.5 | bridge/opp-min 3.11 [2.59, 3.60] | n 173 | lock 0.734 | net +0.289
+EQ/cycled     | CLIII    | opp-min   1.7 | bridge/opp-min 6.47 [3.61, 11.58] | n  11 | lock 0.636 | net +0.139
+EQ/cycled     | CLIX     | opp-min   1.7 | bridge/opp-min 4.16 [0.97, 9.23] | n   7 | lock 0.714 | net +0.151
+EQ/cycled     | CLX      | opp-min   2.7 | bridge/opp-min 2.98 [0.91, 6.67] | n   8 | lock 0.750 | net +0.318
+EQ/cycled     | CXXXVIII | opp-min   6.7 | bridge/opp-min 3.43 [2.17, 6.02] | n  23 | lock 0.609 | net +0.210
+EQ/ready      | CLIII    | opp-min   1.9 | bridge/opp-min 5.17 [4.79, 6.82] | n  10 | lock 0.300 | net -0.048
+EQ/ready      | CLIX     | opp-min   1.7 | bridge/opp-min 7.20 [4.14, 18.00] | n  12 | lock 0.667 | net +0.080
+EQ/ready      | CLX      | opp-min   2.0 | bridge/opp-min 10.08 [7.37, 14.12] | n  20 | lock 0.350 | net +0.098
+EQ/ready      | CXXXVIII | opp-min   5.4 | bridge/opp-min 4.97 [3.56, 7.19] | n  27 | lock 0.630 | net +0.106
+EQ/unrevealed | CLIII    | opp-min   1.5 | bridge/opp-min 4.04 [3.02, 5.88] | n   6 | lock 0.833 | net +0.265
+EQ/unrevealed | CLX      | opp-min   1.1 | bridge/opp-min 3.53 [1.94, 4.87] | n   4 | lock 1.000 | net +0.458
+EQ/unrevealed | CXXXVIII | opp-min   2.8 | bridge/opp-min 2.49 [1.44, 4.36] | n   7 | lock 1.000 | net +0.337
+HOG/cycled     | CLIII    | opp-min  15.4 | bridge/opp-min 3.37 [2.52, 4.26] | n  52 | lock 0.519 | net +0.188
+HOG/cycled     | CLIX     | opp-min   7.6 | bridge/opp-min 2.62 [1.75, 3.68] | n  20 | lock 0.450 | net +0.175
+HOG/cycled     | CLX      | opp-min  25.3 | bridge/opp-min 4.15 [3.35, 5.05] | n 105 | lock 0.533 | net +0.183
+HOG/cycled     | CXXXVIII | opp-min  26.1 | bridge/opp-min 2.76 [2.22, 3.31] | n  72 | lock 0.556 | net +0.221
+HOG/ready      | CLIII    | opp-min   6.2 | bridge/opp-min 3.71 [2.07, 5.90] | n  23 | lock 0.652 | net +0.258
+HOG/ready      | CLIX     | opp-min   2.0 | bridge/opp-min 4.46 [2.81, 7.16] | n   9 | lock 0.778 | net +0.468
+HOG/ready      | CLX      | opp-min   8.2 | bridge/opp-min 6.10 [4.53, 7.72] | n  50 | lock 0.540 | net +0.186
+HOG/ready      | CXXXVIII | opp-min   8.0 | bridge/opp-min 4.51 [3.31, 6.08] | n  36 | lock 0.389 | net +0.131
+HOG/short      | CLIII    | opp-min   1.9 | bridge/opp-min 7.96 [3.56, 13.80] | n  15 | lock 0.733 | net +0.191
+HOG/short      | CLX      | opp-min   3.3 | bridge/opp-min 3.62 [1.41, 6.08] | n  12 | lock 0.500 | net +0.185
+HOG/short      | CXXXVIII | opp-min   2.8 | bridge/opp-min 2.87 [1.19, 5.13] | n   8 | lock 0.625 | net +0.266
+HOG/unrevealed | CLIII    | opp-min   2.2 | bridge/opp-min 1.83 [0.55, 3.69] | n   4 | lock 0.500 | net +0.317
+HOG/unrevealed | CLIX     | opp-min   2.0 | bridge/opp-min 2.48 [1.28, 4.08] | n   5 | lock 0.800 | net +0.407
+HOG/unrevealed | CLX      | opp-min   6.0 | bridge/opp-min 2.98 [1.83, 4.44] | n  18 | lock 0.611 | net +0.091
+HOG/unrevealed | CXXXVIII | opp-min   6.2 | bridge/opp-min 2.10 [1.22, 3.42] | n  13 | lock 0.846 | net +0.345
+OTHER/cycled     | CLX      | opp-min   2.2 | bridge/opp-min 6.46 [3.23, 10.56] | n  14 | lock 0.571 | net +0.259
+OTHER/cycled     | CXXXVIII | opp-min   3.0 | bridge/opp-min 3.63 [2.32, 5.69] | n  11 | lock 1.000 | net +0.304
+OTHER/ready      | CLX      | opp-min   2.2 | bridge/opp-min 5.08 [2.84, 8.00] | n  11 | lock 0.636 | net +0.161
+OTHER/ready      | CXXXVIII | opp-min   2.0 | bridge/opp-min 5.50 [3.39, 8.04] | n  11 | lock 0.636 | net +0.202
+OTHER/unrevealed | CLIII    | opp-min  34.8 | bridge/opp-min 3.13 [2.43, 3.87] | n 109 | lock 0.771 | net +0.290
+OTHER/unrevealed | CLIX     | opp-min  17.7 | bridge/opp-min 3.79 [2.83, 4.73] | n  67 | lock 0.627 | net +0.249
+OTHER/unrevealed | CLX      | opp-min  51.5 | bridge/opp-min 3.88 [3.34, 4.49] | n 200 | lock 0.685 | net +0.197
+OTHER/unrevealed | CXXXVIII | opp-min  59.4 | bridge/opp-min 3.52 [3.09, 4.04] | n 209 | lock 0.708 | net +0.260
+SIEGE/unrevealed | CLIII    | opp-min  11.5 | bridge/opp-min 2.87 [1.86, 4.14] | n  33 | lock 0.727 | net +0.264
+SIEGE/unrevealed | CLIX     | opp-min   4.9 | bridge/opp-min 3.48 [3.11, 3.97] | n  17 | lock 0.588 | net +0.233
+SIEGE/unrevealed | CLX      | opp-min   5.0 | bridge/opp-min 5.35 [4.21, 7.06] | n  27 | lock 0.630 | net +0.271
+SIEGE/unrevealed | CXXXVIII | opp-min  16.1 | bridge/opp-min 4.29 [3.31, 5.31] | n  69 | lock 0.783 | net +0.324
+
+## 3. Bridge-X-Bow propensity ratio ours / pro per cluster (> 1 = we force more bridge X-Bows than pros there)
+BEATDOWN/cycled     ours 4.49 vs pro 2.77 -> x1.62 | def ours 1.03 vs pro 1.17 | our lock 0.67 (pro re-drive 0.39) | our net +0.288 | our opp-min 54
+BEATDOWN/ready      ours 4.32 vs pro 2.29 -> x1.88 | def ours 0.56 vs pro 1.52 | our lock 0.41 (pro re-drive 0.27) | our net +0.129 | our opp-min 27
+BEATDOWN/short      ours 4.15 vs pro 2.18 -> x1.90 | def ours 1.04 vs pro 1.21 | our lock 0.58 (pro re-drive 0.47) | our net +0.181 | our opp-min 18
+BEATDOWN/unrevealed ours 3.39 vs pro 2.49 -> x1.36 | def ours 0.92 vs pro 0.79 | our lock 0.70 (pro re-drive 0.49) | our net +0.297 | our opp-min 181
+EQ/cycled     ours 3.84 vs pro 2.46 -> x1.56 | def ours 0.16 vs pro 0.29 | our lock 0.65 (pro re-drive 0.32) | our net +0.203 | our opp-min 13
+EQ/ready      ours 6.26 vs pro 1.61 -> x3.89 | def ours 0.64 vs pro 0.23 | our lock 0.51 (pro re-drive 0.34) | our net +0.077 | our opp-min 11
+EQ/unrevealed ours 3.09 vs pro 2.14 -> x1.45 | def ours 0.34 vs pro 0.10 | our lock 0.94 (pro re-drive 0.29) | our net +0.352 | our opp-min 6
+HOG/cycled     ours 3.34 vs pro 2.09 -> x1.60 | def ours 0.58 vs pro 0.66 | our lock 0.53 (pro re-drive 0.31) | our net +0.195 | our opp-min 74
+HOG/ready      ours 4.84 vs pro 2.55 -> x1.90 | def ours 0.57 vs pro 0.81 | our lock 0.53 (pro re-drive 0.35) | our net +0.205 | our opp-min 24
+HOG/short      ours 4.53 vs pro 1.21 -> x3.73 | def ours 0.81 vs pro 0.45 | our lock 0.62 (pro re-drive 0.50) | our net +0.221 | our opp-min 9
+HOG/unrevealed ours 2.43 vs pro 2.76 -> x0.88 | def ours 0.67 vs pro 0.20 | our lock 0.70 (pro re-drive 0.46) | our net +0.236 | our opp-min 16
+OTHER/cycled     ours 4.99 vs pro 2.21 -> x2.26 | def ours 1.56 vs pro 1.20 | our lock 0.75 (pro re-drive 0.37) | our net +0.299 | our opp-min 6
+OTHER/ready      ours 5.00 vs pro 2.93 -> x1.71 | def ours 0.20 vs pro 0.79 | our lock 0.68 (pro re-drive 0.25) | our net +0.209 | our opp-min 5
+OTHER/unrevealed ours 3.58 vs pro 2.96 -> x1.21 | def ours 0.75 vs pro 0.95 | our lock 0.70 (pro re-drive 0.46) | our net +0.243 | our opp-min 163
+SIEGE/unrevealed ours 3.89 vs pro 3.02 -> x1.29 | def ours 1.12 vs pro 1.48 | our lock 0.72 (pro re-drive 0.33) | our net +0.290 | our opp-min 38
+
+## 4. Sunk cost: the X-Bow AFTER a failed bridge X-Bow (no lock, not censored) in the same match
+arch | group | failed bridge X | next X-Bow: bridge share | its lock | defensive share | no further X-Bow | tower Rockets in the 30 s after the failure
+EQ       | pro  |  144 | 0.646 | 0.250 | 0.104 | 0.250 | 0.306
+EQ       | ours |   47 | 0.787 | 0.568 | 0.043 | 0.170 | 0.128
+SIEGE    | pro  |  256 | 0.625 | 0.285 | 0.191 | 0.184 | 0.191
+SIEGE    | ours |   34 | 0.647 | 0.773 | 0.147 | 0.206 | 0.088
+HOG      | pro  |  305 | 0.662 | 0.278 | 0.154 | 0.184 | 0.295
+HOG      | ours |  180 | 0.667 | 0.400 | 0.100 | 0.233 | 0.044
+BEATDOWN | pro  |  930 | 0.611 | 0.344 | 0.170 | 0.219 | 0.139
+BEATDOWN | ours |  334 | 0.629 | 0.414 | 0.111 | 0.260 | 0.063
+OTHER    | pro  |  831 | 0.658 | 0.348 | 0.153 | 0.189 | 0.256
+OTHER    | ours |  167 | 0.754 | 0.492 | 0.108 | 0.138 | 0.054
+ALL      | pro  | 2466 | 0.637 | 0.325 | 0.161 | 0.203 | 0.213
+ALL      | ours |  762 | 0.676 | 0.456 | 0.105 | 0.219 | 0.062
+
+## 5. Rocket use per matchup: tower Rockets per minute of match, share fired with NO X-Bow alive ("Rocket cycle"), tower damage per tower Rocket
+EQ       | pro  | matches   78 | tower Rockets/min 0.678 | no-X-Bow share 0.84 | dmg/Rocket 0.109 | Rocket-cycle Rockets/min 0.572
+EQ       | ours | matches   31 | tower Rockets/min 0.154 | no-X-Bow share 0.56 | dmg/Rocket 0.120 | Rocket-cycle Rockets/min 0.086
+SIEGE    | pro  | matches  150 | tower Rockets/min 0.312 | no-X-Bow share 0.59 | dmg/Rocket 0.113 | Rocket-cycle Rockets/min 0.186
+SIEGE    | ours | matches   49 | tower Rockets/min 0.086 | no-X-Bow share 0.50 | dmg/Rocket 0.110 | Rocket-cycle Rockets/min 0.043
+HOG      | pro  | matches  172 | tower Rockets/min 0.569 | no-X-Bow share 0.74 | dmg/Rocket 0.115 | Rocket-cycle Rockets/min 0.418
+HOG      | ours | matches  138 | tower Rockets/min 0.105 | no-X-Bow share 0.78 | dmg/Rocket 0.100 | Rocket-cycle Rockets/min 0.082
+BEATDOWN | pro  | matches  688 | tower Rockets/min 0.265 | no-X-Bow share 0.72 | dmg/Rocket 0.111 | Rocket-cycle Rockets/min 0.191
+BEATDOWN | ours | matches  375 | tower Rockets/min 0.109 | no-X-Bow share 0.66 | dmg/Rocket 0.095 | Rocket-cycle Rockets/min 0.072
+OTHER    | pro  | matches  541 | tower Rockets/min 0.367 | no-X-Bow share 0.69 | dmg/Rocket 0.111 | Rocket-cycle Rockets/min 0.252
+OTHER    | ours | matches  194 | tower Rockets/min 0.126 | no-X-Bow share 0.41 | dmg/Rocket 0.092 | Rocket-cycle Rockets/min 0.052
+
+## 6. Defensive X-Bows: next-20-s net and own tower HP lost, by matchup (live real frames; pro re-drive)
+EQ       | pro  | def n   26 net +0.002 own lost 0.078 | bridge n  218 net +0.049 own lost 0.105
+EQ       | ours | def n   12 net -0.029 own lost 0.059 | bridge n  139 net +0.160 own lost 0.077
+SIEGE    | pro  | def n  228 net -0.020 own lost 0.067 | bridge n  402 net +0.047 own lost 0.074
+SIEGE    | ours | def n   43 net -0.012 own lost 0.025 | bridge n  151 net +0.288 own lost 0.048
+HOG      | pro  | def n  148 net +0.001 own lost 0.066 | bridge n  486 net +0.057 own lost 0.080
+HOG      | ours | def n   75 net -0.032 own lost 0.044 | bridge n  446 net +0.203 own lost 0.072
+BEATDOWN | pro  | def n  717 net -0.012 own lost 0.047 | bridge n 1759 net +0.105 own lost 0.069
+BEATDOWN | ours | def n  257 net -0.012 own lost 0.045 | bridge n 1050 net +0.268 own lost 0.075
+OTHER    | pro  | def n  528 net -0.014 own lost 0.064 | bridge n 1613 net +0.084 own lost 0.068
+OTHER    | ours | def n  133 net -0.016 own lost 0.054 | bridge n  646 net +0.244 own lost 0.084
+
+## 7. Robustness: pro rows restricted to re-drives that reproduced the recorded crowns (crowns_match)
+EQ       pro bridge lock all 0.322 (n 214) vs crowns_match 0.313 (n 147)
+SIEGE    pro bridge lock all 0.329 (n 392) vs crowns_match 0.320 (n 331)
+HOG      pro bridge lock all 0.341 (n 472) vs crowns_match 0.345 (n 368)
+BEATDOWN pro bridge lock all 0.431 (n 1707) vs crowns_match 0.417 (n 1231)
+OTHER    pro bridge lock all 0.448 (n 1558) vs crowns_match 0.438 (n 1137)
+
+## 8. OUR bridge X-Bows (live, real frames) by answer context within each matchup: lock [match-bootstrap CI], net over 40 s, P(an own princess falls within 40 s)
+EQ       ready      ours n   69 | lock 0.507 [0.40, 0.63] | net40 +0.076 | own princess falls <= 40 s 0.130
+EQ       ready      pro  n   89 | lock 0.337 [0.24, 0.43] | net40 +0.042 | own princess falls <= 40 s 0.067
+EQ       cycled     ours n   49 | lock 0.653 [0.53, 0.76] | net40 +0.170 | own princess falls <= 40 s 0.061
+EQ       cycled     pro  n  100 | lock 0.320 [0.22, 0.41] | net40 +0.057 | own princess falls <= 40 s 0.090
+EQ       unrevealed ours n   18 | lock 0.944 [0.80, 1.00] | net40 +0.269 | own princess falls <= 40 s 0.056
+EQ       unrevealed pro  n   21 | lock 0.286 [0.10, 0.47] | net40 +0.029 | own princess falls <= 40 s 0.000
+SIEGE    ready      pro  n   32 | lock 0.250 [0.12, 0.41] | net40 -0.052 | own princess falls <= 40 s 0.281
+SIEGE    cycled     pro  n   47 | lock 0.383 [0.26, 0.55] | net40 +0.027 | own princess falls <= 40 s 0.085
+SIEGE    unrevealed ours n  146 | lock 0.719 [0.64, 0.79] | net40 +0.214 | own princess falls <= 40 s 0.103
+SIEGE    unrevealed pro  n  308 | lock 0.331 [0.27, 0.40] | net40 +0.037 | own princess falls <= 40 s 0.094
+HOG      ready      ours n  118 | lock 0.534 [0.44, 0.62] | net40 +0.227 | own princess falls <= 40 s 0.127
+HOG      ready      pro  n  208 | lock 0.346 [0.28, 0.41] | net40 +0.078 | own princess falls <= 40 s 0.048
+HOG      short      ours n   39 | lock 0.615 [0.45, 0.77] | net40 +0.165 | own princess falls <= 40 s 0.154
+HOG      cycled     ours n  249 | lock 0.530 [0.46, 0.61] | net40 +0.119 | own princess falls <= 40 s 0.153
+HOG      cycled     pro  n  222 | lock 0.311 [0.25, 0.38] | net40 +0.007 | own princess falls <= 40 s 0.063
+HOG      unrevealed ours n   40 | lock 0.700 [0.55, 0.83] | net40 -0.148 | own princess falls <= 40 s 0.200
+HOG      unrevealed pro  n   28 | lock 0.464 [0.31, 0.62] | net40 +0.037 | own princess falls <= 40 s 0.000
+BEATDOWN ready      ours n  115 | lock 0.409 [0.30, 0.52] | net40 +0.101 | own princess falls <= 40 s 0.113
+BEATDOWN ready      pro  n  237 | lock 0.270 [0.22, 0.34] | net40 -0.049 | own princess falls <= 40 s 0.143
+BEATDOWN short      ours n   76 | lock 0.579 [0.46, 0.68] | net40 +0.043 | own princess falls <= 40 s 0.158
+BEATDOWN short      pro  n   90 | lock 0.467 [0.35, 0.57] | net40 +0.092 | own princess falls <= 40 s 0.100
+BEATDOWN cycled     ours n  244 | lock 0.668 [0.61, 0.73] | net40 +0.197 | own princess falls <= 40 s 0.123
+BEATDOWN cycled     pro  n  470 | lock 0.394 [0.35, 0.44] | net40 +0.012 | own princess falls <= 40 s 0.111
+BEATDOWN unrevealed ours n  615 | lock 0.699 [0.65, 0.74] | net40 +0.093 | own princess falls <= 40 s 0.187
+BEATDOWN unrevealed pro  n  910 | lock 0.489 [0.46, 0.52] | net40 +0.034 | own princess falls <= 40 s 0.099
+OTHER    ready      ours n   25 | lock 0.680 [0.52, 0.85] | net40 +0.234 | own princess falls <= 40 s 0.160
+OTHER    ready      pro  n   63 | lock 0.254 [0.14, 0.39] | net40 +0.059 | own princess falls <= 40 s 0.063
+OTHER    cycled     ours n   32 | lock 0.750 [0.54, 0.93] | net40 +0.242 | own princess falls <= 40 s 0.094
+OTHER    cycled     pro  n   63 | lock 0.365 [0.25, 0.48] | net40 +0.082 | own princess falls <= 40 s 0.016
+OTHER    unrevealed ours n  585 | lock 0.703 [0.66, 0.75] | net40 +0.191 | own princess falls <= 40 s 0.144
+OTHER    unrevealed pro  n 1421 | lock 0.459 [0.43, 0.49] | net40 +0.114 | own princess falls <= 40 s 0.074
+ALL      ready      ours n  328 | lock 0.494 [0.44, 0.54] | net40 +0.150 | own princess falls <= 40 s 0.125
+ALL      ready      pro  n  629 | lock 0.302 [0.27, 0.34] | net40 +0.016 | own princess falls <= 40 s 0.100
+ALL      short      ours n  123 | lock 0.593 [0.51, 0.68] | net40 +0.095 | own princess falls <= 40 s 0.146
+ALL      short      pro  n  124 | lock 0.468 [0.39, 0.55] | net40 +0.090 | own princess falls <= 40 s 0.089
+ALL      cycled     ours n  577 | lock 0.614 [0.57, 0.66] | net40 +0.165 | own princess falls <= 40 s 0.128
+ALL      cycled     pro  n  902 | lock 0.363 [0.33, 0.39] | net40 +0.021 | own princess falls <= 40 s 0.089
+ALL      unrevealed ours n 1404 | lock 0.706 [0.67, 0.74] | net40 +0.142 | own princess falls <= 40 s 0.159
+ALL      unrevealed pro  n 2688 | lock 0.453 [0.43, 0.47] | net40 +0.077 | own princess falls <= 40 s 0.083
+
+## 9. Investment plays per context: shares of bridge X-Bow / defensive X-Bow / tower Rocket (all own X-Bows + tower Rockets placed in that context) and tower Rockets per opportunity-minute
+EQ/ready      pro  n  229 | bridge 0.39 | defensive 0.06 | tower Rocket 0.55 | tower Rockets / opp-min 2.25
+EQ/ready      ours n   79 | bridge 0.87 | defensive 0.09 | tower Rocket 0.04 | tower Rockets / opp-min 0.27
+EQ/short      pro  n   24 | bridge 0.17 | defensive 0.00 | tower Rocket 0.83 | tower Rockets / opp-min 4.69
+EQ/cycled     pro  n  200 | bridge 0.51 | defensive 0.06 | tower Rocket 0.43 | tower Rockets / opp-min 2.08
+EQ/cycled     ours n   59 | bridge 0.83 | defensive 0.03 | tower Rocket 0.14 | tower Rockets / opp-min 0.63
+EQ/unrevealed pro  n   27 | bridge 0.81 | defensive 0.04 | tower Rocket 0.15 | tower Rockets / opp-min 0.39
+EQ/unrevealed ours n   22 | bridge 0.82 | defensive 0.09 | tower Rocket 0.09 | tower Rockets / opp-min 0.34
+SIEGE/ready      pro  n   85 | bridge 0.38 | defensive 0.40 | tower Rocket 0.22 | tower Rockets / opp-min 1.71
+SIEGE/cycled     pro  n  121 | bridge 0.41 | defensive 0.30 | tower Rocket 0.29 | tower Rockets / opp-min 1.45
+SIEGE/unrevealed pro  n  607 | bridge 0.52 | defensive 0.26 | tower Rocket 0.23 | tower Rockets / opp-min 1.31
+SIEGE/unrevealed ours n  202 | bridge 0.72 | defensive 0.21 | tower Rocket 0.07 | tower Rockets / opp-min 0.37
+HOG/ready      pro  n  461 | bridge 0.46 | defensive 0.15 | tower Rocket 0.39 | tower Rockets / opp-min 2.15
+HOG/ready      ours n  142 | bridge 0.83 | defensive 0.10 | tower Rocket 0.07 | tower Rockets / opp-min 0.41
+HOG/short      pro  n   74 | bridge 0.22 | defensive 0.08 | tower Rocket 0.70 | tower Rockets / opp-min 3.94
+HOG/short      ours n   53 | bridge 0.74 | defensive 0.13 | tower Rocket 0.13 | tower Rockets / opp-min 0.81
+HOG/cycled     pro  n  476 | bridge 0.48 | defensive 0.15 | tower Rocket 0.37 | tower Rockets / opp-min 1.59
+HOG/cycled     ours n  318 | bridge 0.78 | defensive 0.14 | tower Rocket 0.08 | tower Rockets / opp-min 0.35
+HOG/unrevealed pro  n   42 | bridge 0.67 | defensive 0.05 | tower Rocket 0.29 | tower Rockets / opp-min 1.18
+HOG/unrevealed ours n   59 | bridge 0.68 | defensive 0.19 | tower Rocket 0.14 | tower Rockets / opp-min 0.49
+BEATDOWN/ready      pro  n  565 | bridge 0.44 | defensive 0.29 | tower Rocket 0.28 | tower Rockets / opp-min 1.45
+BEATDOWN/ready      ours n  140 | bridge 0.82 | defensive 0.11 | tower Rocket 0.07 | tower Rockets / opp-min 0.38
+BEATDOWN/short      pro  n  222 | bridge 0.41 | defensive 0.23 | tower Rocket 0.36 | tower Rockets / opp-min 1.87
+BEATDOWN/short      ours n  109 | bridge 0.70 | defensive 0.17 | tower Rocket 0.13 | tower Rockets / opp-min 0.77
+BEATDOWN/cycled     pro  n  897 | bridge 0.55 | defensive 0.23 | tower Rocket 0.22 | tower Rockets / opp-min 1.14
+BEATDOWN/cycled     ours n  317 | bridge 0.77 | defensive 0.18 | tower Rocket 0.05 | tower Rockets / opp-min 0.31
+BEATDOWN/unrevealed pro  n 1514 | bridge 0.62 | defensive 0.20 | tower Rocket 0.19 | tower Rockets / opp-min 0.76
+BEATDOWN/unrevealed ours n  876 | bridge 0.70 | defensive 0.19 | tower Rocket 0.11 | tower Rockets / opp-min 0.52
+OTHER/ready      pro  n  119 | bridge 0.53 | defensive 0.14 | tower Rocket 0.33 | tower Rockets / opp-min 1.81
+OTHER/ready      ours n   27 | bridge 0.93 | defensive 0.04 | tower Rocket 0.04 | tower Rockets / opp-min 0.20
+OTHER/short      pro  n   21 | bridge 0.52 | defensive 0.10 | tower Rocket 0.38 | tower Rockets / opp-min 2.29
+OTHER/cycled     pro  n  165 | bridge 0.40 | defensive 0.22 | tower Rocket 0.38 | tower Rockets / opp-min 2.11
+OTHER/cycled     ours n   44 | bridge 0.73 | defensive 0.23 | tower Rocket 0.05 | tower Rockets / opp-min 0.31
+OTHER/unrevealed pro  n 2633 | bridge 0.56 | defensive 0.18 | tower Rocket 0.26 | tower Rockets / opp-min 1.38
+OTHER/unrevealed ours n  787 | bridge 0.74 | defensive 0.16 | tower Rocket 0.10 | tower Rockets / opp-min 0.49
+
+## 10. Within our live matches (association only; a losing match also produces failures): win rate by the number of FAILED bridge X-Bows and by tower Rockets, per matchup
+EQ       ours | fails 0: 0.88 (n 8) | fails 1: 0.60 (n 10) | fails 2+: 0.54 (n 13) | rockets 0: 0.56 (n 18) | rockets 1: 0.67 (n 9) | rockets 2+: 1.00 (n 4)
+EQ       pro  | fails 0: 0.67 (n 18) | fails 1: 0.48 (n 21) | fails 2+: 0.56 (n 39) | rockets 0: 0.43 (n 7) | rockets 1: 0.57 (n 14) | rockets 2+: 0.58 (n 57)
+SIEGE    ours | fails 0: 0.62 (n 26) | fails 1: 0.75 (n 16) | fails 2+: 0.57 (n 7) | rockets 0: 0.54 (n 35) | rockets 1: 0.93 (n 14) | rockets 2+: -
+SIEGE    pro  | fails 0: 0.44 (n 43) | fails 1: 0.44 (n 41) | fails 2+: 0.35 (n 66) | rockets 0: 0.24 (n 51) | rockets 1: 0.49 (n 41) | rockets 2+: 0.48 (n 58)
+HOG      ours | fails 0: 0.51 (n 49) | fails 1: 0.47 (n 38) | fails 2+: 0.27 (n 51) | rockets 0: 0.40 (n 99) | rockets 1: 0.45 (n 31) | rockets 2+: 0.38 (n 8)
+HOG      pro  | fails 0: 0.89 (n 44) | fails 1: 0.56 (n 41) | fails 2+: 0.55 (n 87) | rockets 0: 0.51 (n 35) | rockets 1: 0.69 (n 35) | rockets 2+: 0.67 (n 102)
+BEATDOWN ours | fails 0: 0.47 (n 196) | fails 1: 0.42 (n 102) | fails 2+: 0.39 (n 77) | rockets 0: 0.39 (n 264) | rockets 1: 0.60 (n 92) | rockets 2+: 0.37 (n 19)
+BEATDOWN pro  | fails 0: 0.57 (n 228) | fails 1: 0.47 (n 205) | fails 2+: 0.35 (n 255) | rockets 0: 0.33 (n 300) | rockets 1: 0.49 (n 191) | rockets 2+: 0.61 (n 197)
+OTHER    ours | fails 0: 0.72 (n 105) | fails 1: 0.54 (n 50) | fails 2+: 0.44 (n 39) | rockets 0: 0.58 (n 132) | rockets 1: 0.70 (n 47) | rockets 2+: 0.67 (n 15)
+OTHER    pro  | fails 0: 0.57 (n 168) | fails 1: 0.46 (n 151) | fails 2+: 0.45 (n 222) | rockets 0: 0.40 (n 191) | rockets 1: 0.55 (n 146) | rockets 2+: 0.54 (n 204)
+ALL      ours | fails 0: 0.56 (n 384) | fails 1: 0.49 (n 216) | fails 2+: 0.39 (n 187) | rockets 0: 0.45 (n 548) | rockets 1: 0.63 (n 193) | rockets 2+: 0.52 (n 46)
+ALL      pro  | fails 0: 0.59 (n 501) | fails 1: 0.47 (n 459) | fails 2+: 0.42 (n 669) | rockets 0: 0.36 (n 584) | rockets 1: 0.53 (n 427) | rockets 2+: 0.58 (n 618)
+
+## 11. Bridge X-Bows and tower Rockets per minute of match, per matchup (match length differs between groups)
+EQ       pro  | minutes  347.9 | bridge X-Bows/min 0.627 | defensive/min 0.075 | mean match length 268 s
+EQ       ours | minutes  116.6 | bridge X-Bows/min 1.192 | defensive/min 0.103 | mean match length 226 s
+SIEGE    pro  | minutes  630.7 | bridge X-Bows/min 0.637 | defensive/min 0.362 | mean match length 252 s
+SIEGE    ours | minutes  162.4 | bridge X-Bows/min 0.930 | defensive/min 0.265 | mean match length 199 s
+HOG      pro  | minutes  736.0 | bridge X-Bows/min 0.660 | defensive/min 0.201 | mean match length 257 s
+HOG      ours | minutes  487.1 | bridge X-Bows/min 0.916 | defensive/min 0.154 | mean match length 212 s
+BEATDOWN pro  | minutes 2728.5 | bridge X-Bows/min 0.645 | defensive/min 0.263 | mean match length 238 s
+BEATDOWN ours | minutes 1233.8 | bridge X-Bows/min 0.851 | defensive/min 0.208 | mean match length 197 s
+OTHER    pro  | minutes 2170.3 | bridge X-Bows/min 0.743 | defensive/min 0.243 | mean match length 241 s
+OTHER    ours | minutes  658.5 | bridge X-Bows/min 0.981 | defensive/min 0.202 | mean match length 204 s

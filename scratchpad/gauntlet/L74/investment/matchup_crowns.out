@@ -1,0 +1,11 @@
+arch | group | n | win | P(lose >= 1 princess) | P(take >= 1) | P(both)  (pros: real final crowns; live: frames)
+EQ       | pro  |   78 | 0.564 | 0.436 | 0.564 | 0.000
+EQ       | ours |   31 | 0.645 | 0.387 | 0.677 | 0.065
+SIEGE    | pro  |  150 | 0.400 | 0.600 | 0.400 | 0.000
+SIEGE    | ours |   49 | 0.653 | 0.408 | 0.735 | 0.143
+HOG      | pro  |  172 | 0.640 | 0.360 | 0.645 | 0.006
+HOG      | ours |  138 | 0.413 | 0.601 | 0.529 | 0.130
+BEATDOWN | pro  |  688 | 0.455 | 0.551 | 0.478 | 0.029
+BEATDOWN | ours |  375 | 0.440 | 0.587 | 0.603 | 0.197
+OTHER    | pro  |  541 | 0.494 | 0.508 | 0.495 | 0.004
+OTHER    | ours |  194 | 0.619 | 0.448 | 0.675 | 0.124

@@ -1,0 +1,4 @@
+pro  all matches  | king activated by a bridge attacker (both princesses up): 0.449 of 1629 | win: activated 0.564 (0.528, 0.602) vs not 0.425 (0.394, 0.455)
+pro  Hog matches  | king activated by a bridge attacker (both princesses up): 0.844 of 231 | win: activated 0.636 (0.569, 0.692) vs not 0.583 (0.444, 0.75)
+ours all matches  | king activated by a bridge attacker (both princesses up): 0.258 of 787 | win: activated 0.251 (0.192, 0.31) vs not 0.587 (0.55, 0.627)
+ours Hog matches  | king activated by a bridge attacker (both princesses up): 0.436 of 149 | win: activated 0.308 (0.2, 0.415) vs not 0.571 (0.464, 0.667)

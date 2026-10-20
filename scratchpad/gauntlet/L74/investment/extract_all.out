@@ -1,0 +1,14 @@
+live 200 11 s
+live 400 24 s
+live 600 33 s
+live done 787
+pro 200 79 s
+pro 400 88 s
+pro 600 94 s
+pro 800 101 s
+pro 1000 107 s
+pro 1200 115 s
+pro 1400 122 s
+pro 1600 129 s
+pro done 1629
+{'match': 2416, 'xbow': 9111, 'rocket': 4027, 'opp_samples': 142354, 'bridge': 29270, 'tornado': 6474} 130 s
