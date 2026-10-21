@@ -1007,7 +1007,9 @@ before the drain / opponent takes / both took / style vs Ranked; Ranked 48.1 / 2
 | R2 | A2 = A continued as a FRESH run from A u40 (cf9f60f9; new KL anchor, the 0.1 budget restarts), 48148 from 15:16 EDT: u5 | 61.9 | 52.8 | 68.3 | 57.1 | 70.8 | 76.8 | 43.1 | 13.1 | 0.66 | 9 | no gain over A u40: stopped at u10 (16:00 EDT) for A3 |
 | R1 | B u20 | **55.0** | 51.0 | 57.7 | 51.5 | 58.3 | 63.0 | 50.2 | 14.6 | 0.54 | 6 | the first clear step below 59: -11.2 pp vs R6 u20 on the same 480 games, style better than R0 |
 | probe | B u15 at decide 20 (eval-time tempo only) | 61.9 | 56.6 | 65.6 | 59.8 | 67.9 | 76.7 | 43.3 | 12.7 | 0.70 | 8 | (c) a faster opponent is not stronger: +2.3 pp for CLX vs decide 40 (59.6), style worse |
-| R2 | A3 = A u40 continued fresh WITHOUT kl_ref_gate (B's change on A's net), 48148 from 16:02 EDT | | | | | | | | | | | |
+| R1 | B u25 / u30 / u35 / u40 | 58.5 / 54.6 / 56.0 / 56.2 | 54.5 / 48.2 / 46.5 / 50.5 | 61.4 / 59.1 / 62.8 / 60.3 | 52.9 / 56.9 / 57.1 / 54.2 | 63.0 / 61.9 / 64.2 / 62.7 | 67.9 / 73.3 / 71.6 / 69.9 | 46.5 / 49.8 / 50.0 / 48.3 | 12.9 / 12.3 / 14.8 / 14.2 | 0.59 / 0.69 / 0.68 / 0.66 | 7 / 7 / 7 / 8 | **plateau u20-u40 at ~56** (55.0 / 58.5 / 54.6 / 56.0 / 56.2); leash NOT binding (KL <= 0.056, beta at its floor); training win vs the mix flat at ~0.47 |
+| R2 | A3 = A u40 continued fresh WITHOUT kl_ref_gate (B's change on A's net), 48148 from 16:02 EDT: u5 / u10 / u15 | 56.5 / 60.4 / 54.8 | 50.0 / 54.3 / 53.5 | 61.1 / 64.8 / 55.7 | 55.2 / 60.6 / 56.5 | 64.5 / 66.7 / 63.1 | 71.6 / 75.1 / 73.7 | 49.6 / 46.5 / 50.0 | 14.2 / 16.2 / 12.7 | 0.66 / 0.67 / 0.68 | 7 / 8 / 7 | gate-free moves A's net too (61.9 -> ~57), to B's level, with worse style |
+| **O4** | **B u20 (40275759), 1,920 = 741200 + fresh 742000-744000** | **57.0** | **48.7** | **62.3** | **54.2** | **63.0** | **68.8** | **47.4** | **12.1** | **0.53** | **7 of 12** | fresh blocks only (1,440): 57.7%; the 741200 pick (55.0) regressed by 2.7 pp, as expected from picking on one block |
 
 **Round-1 facts (a).**
 - The pods are CPU-capped: cgroup quota 27.2 cores (48148) / 30.6 (19899) on 256-thread hosts. That is why cpu.lock exists.
@@ -1016,6 +1018,94 @@ before the drain / opponent takes / both took / style vs Ranked; Ranked 48.1 / 2
 - Determinism and cross-pod identity: R6 u20 replayed on block 741200 on 48148 gives W12's rows 480 / 480 identical
   (outcome, end tick, crowns). Every arm's u0 (critic warm-up only) gives the same 480 rows, on 48148 (A, D) and on
   19899 (C). So arm differences are not pod or code differences, and the SIM is deterministic per seed.
+
+### 8.1 Result at the 20:00 checkpoint: best-so-far (NOT at the Ranked target) + plateau diagnosis
+
+**Best-so-far opponent = B u20: `rlarm_oppW14B_gatefree_s74_u0020.pt`, sha256 40275759ecf3
+(40275759ecf33170267456a6ceddb3e14e7952e353364c2bd278e12d82ae60a0).**
+- Lineage: O2b -> C1 -> R4 -> R6 u20 (34522564) -> W14 arm B, 20 updates on fin15 without kl_ref_gate.
+- Copies:
+  - laptop: C:/Users/benpe/pod_backup_weekend/w14/rlarm_oppW14B_gatefree_s74_u0020.pt;
+  - 19899: cb_stepd/icebow/data/pipeline/o2/w14opp.pt and the eval copy;
+  - 19899 run dir: cb_stepd/icebow/data/bench/rl_royale/rlarm_oppW14B_gatefree_s74/.
+  - Not installed on 48148.
+- Setting: T .1, decide 40, reaction 0, as R6 u20.
+
+**O4-Ranked, 1,920 games, CLX on fin15 all16** (`w14/o4r_O4_Bu20.out`), vs R6 u20 (R0) and live Ranked:
+
+| cell | R0 = R6 u20 | **B u20** | live Ranked [95%] | B u20 verdict |
+|---|---|---|---|---|
+| CLX win | 64.0 | **57.0** (fresh only 57.7) | 48.1 [41.7, 54.5] | FAIL: +9.0, z 2.60 (tolerance 5) |
+| win vs BEAT (revealed) | 56.9 | **48.7** | 25.3 [17.2, 35.6] | FAIL: +23.4 |
+| win vs the rest | 68.4 | 62.3 | 60.7 | pass (+1.6) |
+| OT share | 55.2 | 54.2 | 62.7 | FAIL (-8.4) |
+| win \| OT | 70.1 | 63.0 | 47.3 | FAIL (+15.8) |
+| win \| OT decided before the drain | 77.5 | 68.8 | 52.6 | FAIL (+16.2) |
+| CLX lost the first princess | 34.6 | 41.7 | 48.1 | pass (z -1.87) |
+| opponent takes a princess | 40.5 | 47.4 | 51.1 | pass (-3.6) |
+| CLX takes a princess | 71.4 | 64.7 | 52.8 | FAIL (+11.9) |
+| both took one | 11.9 | 12.1 | 5.6 | FAIL (+6.6) |
+| regulation loss | 19.5 | 22.9 | 18.9 | pass |
+| style vs Ranked | 0.58 | **0.53** | <= 0.65 | pass |
+| items passed | 3 of 12 | **5 of 12** | | |
+
+Post-fall cells of B u20 (block 741200 with positions; `w14/pocket.py`; live / R6 u20 in the table above):
+- pocket share 49.1% (live 41.0, R6 45.3);
+- pocket deploys 3.30 per minute (live 2.60);
+- P(our king falls \| our princess fell) 17.8% (live 7.6);
+- surviving princess HP lost 0.32 per minute (live 0.285);
+- X-Bow lock rate 0-0 / 1-0 / 0-1 / 1-1: 50.1 / 30.8 / 34.9 / 35.8% (live 40.2 / 44.2 / 15.7 / 12.2; R6 u20 1-1 48.2);
+- log bait per match 0.74 / 0.58 / 0.50 (live 0.72 / 0.54 / 0.63); Log punished within 6 s 20.1% (live 19.2).
+
+**League config (verified on a pod):** `cfg/tn_base_w14opp_s74.yaml` = tn_base_s74.yaml + ONE change, the exploiter
+checkpoint:
+```
+league_exploiters:
+  ckpt: icebow/data/pipeline/o2/w14opp.pt      # = B u20, 40275759
+  decks: scratchpad/gauntlet/L74/mix/decks_live_train.json
+  share: 0.3
+  T: 0.1
+  decide_every: 40
+```
+- Real `rl_royale --smoke` on 19899 (fin15, venvf15, rl_royale e96c830d): **SMOKE PASS** 21:25 UTC.
+- The exploiter was played: exploiter_league 4 + 4 games. Log: /workspace/w14/tn_base_w14opp_s74/.
+- Ship the checkpoint to an arm's pod as icebow/data/pipeline/o2/w14opp.pt.
+
+**Plateau diagnosis (iterate-parity-rounds rule: two rounds with no CI-significant gain, plus a written why).**
+1. (a) Every arm stops at a floor.
+   - lr arms: A (lr 3e-5) reaches ~60-62% at u20 and stays there to u40. C (lr 1e-4) never leaves the 66% baseline; the leash
+     binds from u3.
+   - A2 (A continued with a new KL anchor) stays at A's level: 61.9 / 60.0 at u5 / u10.
+   - The one lever that moved: dropping the gate's anchor to O2b (B; A3 on A's net). That gives another ~5 pp, then a
+     plateau at ~56% on 741200 / 57.0% on 1,920 games, from u20 to u40.
+   - B's leash is not binding (KL <= 0.056, beta at its floor), so the leash budget is not the limit.
+2. (a) The training signal is saturating: the opponent-to-be wins ~0.45-0.47 of its training games vs the frozen mix (A, B).
+   The residual gap to Ranked is in specific cells, not spread evenly:
+   - vs the rest of the decks: met (62.3 vs 60.7);
+   - opponent takes a princess, CLX loses the first princess: met;
+   - vs tank / bridge-spam decks: +23 pp;
+   - CLX takes a princess: +12 pp (the opponent defends X-Bow pushes too weakly);
+   - OT conversion: +16 pp;
+   - X-Bow lock at 1-1: 36 vs 12%.
+3. (b) Why this recipe cannot close those cells. Untested; each comes with its test.
+   - Tank decks. The opponent trains on the census mix, where BEAT is 41% of draws, against an icebow mix that beats it
+     ~53%. The BEAT x3 practice arm (withdrawn on the lead's order) is the direct test.
+   - OT conversion. Win-only RL sees an OT state only in the ~55% of games that reach it, and never from a Ranked-like 3:00
+     state. W15's `ot_start_share` (OT-state starts, uncommitted in the working tree) applied to the opponent's training
+     is the test.
+   - X-Bow defence at 1-1. Ranked humans deny the X-Bow cheaply (T10: 5.73 elixir per bridge X-Bow); the opponent is
+     trained against the whole icebow mix with PFSP. A CLX-weighted mix (or CLX-only) for the opponent is the test.
+   - All three are training-mix / start-state changes. None is another lr / anchor / tempo knob, and those knobs are what
+     rounds 1-2 exhausted.
+4. (c) Contradicted on the way:
+   - "a faster opponent is stronger" (decide 20: +2.3 pp for CLX);
+   - "the SIM opponent never uses the pocket" (R6 u20 45%, B u20 49% vs live 41%; only E4 under-uses it, 16%);
+   - "the eval deck mix is the gap" (re-weighting moves 0.4 pp).
+
+**What B u20 is good for now.** It is strictly closer to Ranked than R6 u20 on the main cells: -7.0 pp CLX win, -8.2 pp
+vs BEAT, -7.1 / -8.7 pp in OT, opponent princess takes +6.9, style 0.53 vs 0.58. The lead can swap it in as the
+tn_base exploiter, or use it as a stricter eval opponent. It still OVER-predicts CLX on Ranked by ~9 pp overall and ~23 pp vs
+tank decks. A successor gated against it is gated against a ~57%-CLX opponent, not a 48% one.
 
 ## 9. Problems found along the way (not fixed outside this directory)
 
@@ -1046,5 +1136,12 @@ icebow/.venv/Scripts/python.exe -I scratchpad/gauntlet/L74/opp_model/null_beta.p
 - `analyze.py`: J11 / J9 / J10 / Stage-2 / audit.
 - `null_beta.py`: the random-walk null for the trophy-adjustment methods.
 - `check_table.py`: validation.
+- W14 (section 8), `w14/`:
+  - `o4r_table.py`: the O4-Ranked table (`--check` reproduces CLX_RANKED T11);
+  - `pocket.py`: the post-fall, X-Bow-lock and log-bait cells;
+  - `pos_patch.py`: the opt-in pod telemetry;
+  - `launch.sh` / `w14_gate.sh` / `pull.sh` / `confirm.sh`: the pod loop;
+  - `o4r_*.out`: the tables.
+  - Gate rows: C:/Users/benpe/pod_backup_weekend/w14/o3/ (sha-checked tarballs).
 - Inputs: L68/live_reader logs, L70/live/overnight.out, pod_backup_weekend/{rt35, pod1017_*, codex1018, stepd, stage2,
   pod1014b_econ}, human/data/*.json.gz.

@@ -1,0 +1,36 @@
+
+== LIVE Ranked (CLX): (f) bait plays per match (233 matches): goblin_barrel 0.72 skeleton_barrel 0.54 dart_goblin 0.63; our Logs vs a bait deck followed by a bait card within 6 s:  19.2% [15.6, 23.4] n=396
+
+== LIVE Ranked (CLX): 233 matches; our first princess fell in 119
+  (a) pocket share of opp troop deploys AFTER the fall:  41.0% [36.9, 45.2] n=527; BEFORE (floor):   0.2% [ 0.1,  0.4] n=5202; matches with >= 1 pocket deploy:  37.0% [28.8, 45.9] n=119
+  (b) pocket deploys per minute after the fall: 2.60 (post-fall time 83 min)
+  (c) our king HP lost after the fall: 0.350 princess/min, 0.244 per match; P(king falls | princess fell)   7.6% [ 4.0, 13.8] n=119
+  (d) surviving princess HP lost after the fall: 0.285 princess/min, 0.198 per match
+  (e) X-Bow locks by crown state (ours-theirs): 0-0:  40.2% [37.1, 43.3] n=936, 0.52 locks/min (720 min) | 1-0:  44.2% [31.6, 57.7] n=52, 0.42 locks/min (54 min) | 0-1:  15.7% [ 8.2, 28.0] n=51, 0.15 locks/min (52 min) | 1-1:  12.2% [ 5.3, 25.5] n=41, 0.16 locks/min (31 min)
+
+== SIM w14p_R6u20_pos: (f) bait plays per match (480 matches): goblin_barrel 0.74 skeleton_barrel 0.48 dart_goblin 0.53; our Logs vs a bait deck followed by a bait card within 6 s:  19.7% [16.2, 23.8] n=411
+
+== SIM w14p_R6u20_pos: 480 matches; our first princess fell in 184
+  (a) pocket share of opp troop deploys AFTER the fall:  45.3% [42.4, 48.2] n=1124; BEFORE (floor):   0.7% [ 0.5,  0.9] n=8376; matches with >= 1 pocket deploy:  56.0% [48.8, 63.0] n=184
+  (b) pocket deploys per minute after the fall: 2.74 (post-fall time 186 min)
+  (c) our king HP lost after the fall: 0.503 princess/min, 0.508 per match; P(king falls | princess fell)  18.5% [13.5, 24.7] n=184
+  (d) surviving princess HP lost after the fall: 0.299 princess/min, 0.302 per match
+  (e) X-Bow locks by crown state (ours-theirs): 0-0:  49.5% [47.2, 51.9] n=1741, 0.63 locks/min (1379 min) | 1-0:  47.2% [39.7, 54.9] n=163, 0.69 locks/min (111 min) | 0-1:  35.1% [26.9, 44.2] n=114, 0.39 locks/min (102 min) | 1-1:  48.2% [37.9, 58.7] n=85, 0.52 locks/min (78 min)
+
+== SIM w14p_E4_pos: (f) bait plays per match (480 matches): goblin_barrel 0.70 skeleton_barrel 0.40 dart_goblin 0.51; our Logs vs a bait deck followed by a bait card within 6 s:  14.6% [11.6, 18.3] n=417
+
+== SIM w14p_E4_pos: 480 matches; our first princess fell in 141
+  (a) pocket share of opp troop deploys AFTER the fall:  15.8% [12.8, 19.4] n=474; BEFORE (floor):   0.2% [ 0.1,  0.3] n=10101; matches with >= 1 pocket deploy:  21.3% [15.3, 28.7] n=141
+  (b) pocket deploys per minute after the fall: 1.06 (post-fall time 70 min)
+  (c) our king HP lost after the fall: 0.357 princess/min, 0.178 per match; P(king falls | princess fell)   6.4% [ 3.4, 11.7] n=141
+  (d) surviving princess HP lost after the fall: 0.271 princess/min, 0.135 per match
+  (e) X-Bow locks by crown state (ours-theirs): 0-0:  42.6% [40.6, 44.7] n=2190, 0.60 locks/min (1544 min) | 1-0:  31.9% [26.4, 37.9] n=251, 0.52 locks/min (155 min) | 0-1:  32.4% [19.6, 48.5] n=37, 0.34 locks/min (36 min) | 1-1:  36.4% [22.2, 53.4] n=33, 0.37 locks/min (32 min)
+
+== SIM w14c_Bu20_pos: (f) bait plays per match (480 matches): goblin_barrel 0.71 skeleton_barrel 0.44 dart_goblin 0.54; our Logs vs a bait deck followed by a bait card within 6 s:  20.6% [16.8, 24.9] n=389
+
+== SIM w14c_Bu20_pos: 480 matches; our first princess fell in 241
+  (a) pocket share of opp troop deploys AFTER the fall:  49.1% [46.5, 51.6] n=1429; BEFORE (floor):   0.8% [ 0.6,  1.0] n=7880; matches with >= 1 pocket deploy:  54.8% [48.5, 60.9] n=241
+  (b) pocket deploys per minute after the fall: 3.30 (post-fall time 213 min)
+  (c) our king HP lost after the fall: 0.574 princess/min, 0.506 per match; P(king falls | princess fell)  17.8% [13.5, 23.2] n=241
+  (d) surviving princess HP lost after the fall: 0.323 princess/min, 0.285 per match
+  (e) X-Bow locks by crown state (ours-theirs): 0-0:  50.1% [47.7, 52.4] n=1694, 0.64 locks/min (1328 min) | 1-0:  30.8% [24.2, 38.4] n=159, 0.44 locks/min (111 min) | 0-1:  34.9% [26.5, 44.4] n=106, 0.36 locks/min (103 min) | 1-1:  35.8% [27.4, 45.3] n=106, 0.37 locks/min (102 min)
