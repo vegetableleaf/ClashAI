@@ -20,7 +20,10 @@ def main():
     run_dir.mkdir(parents=True, exist_ok=True)
     ck_dir.mkdir(parents=True, exist_ok=True)
     L = RL.Learner(cfg, run, run_dir, ck_dir, RL.Log(run_dir), False)
-    L.start_actors()
+    if "--startup" in sys.argv:                            # v4: the trainer's startup first (ability warm start + init
+        L.startup(False)                                  # screen run on the 2 actors -> different histories)
+    else:
+        L.start_actors()
     calls, orig = [], L.actors.run
     L.actors.run = lambda kind, update, sd, jobs, **kw: calls.append((kind, update, sd, jobs)) or ([], [], {})
     L.rollout(0)
