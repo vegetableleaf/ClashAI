@@ -64,6 +64,7 @@ TARGETS = {                                     # rectangle the tap point must l
     "choose": (0, 150, 900, 1480),              # Trophy Road: green Choose (a pick-one-of-two card reward)
     "reward_card": (0, 60, 900, 1100),          # "Choose your reward": one of the two card tiles
     "restart": (60, 820, 420, 940),             # "Content Update" modal: its only button (RESTART ~ (144, 876))
+    "chest_open": (300, 650, 600, 1050),         # 10-21 chest reveal: tap the chest itself (the neutral tap_through point misses it)
     "single_ok": (340, 1350, 560, 1460),        # 10-20 results screen with ONE OK (classic challenge / some Ranked results)
     "skip_strikes": (340, 1420, 560, 1530),     # 10-20 lightning-chest strikes screen: "Skip Strikes" (free; replaces nothing)
     "reload": (100, 700, 400, 1100),           # "Connection lost" dialog, NOT the another-device kind        # neutral point: top-centre art on every popup seen so far
@@ -219,6 +220,8 @@ class Classifier:
             won = None if w is None else w[1] > 600            # loss: banner at y ~174 above the opponent's name
             return {"screen": "results", "play_again": hit["play_again"], "ok": hit["results_ok"], "won": won,
                     "scores": sc}
+        if "chest_q" in hit and "battle" not in hit:    # 10-21: chest reveal ("?" reward coins at the bottom)
+            return {"screen": "chest_reveal", "scores": sc}
         if "single_ok" in hit and "play_again" not in hit and "results_ok" not in hit:   # 10-20: results with only one OK
             w = hit.get("winner")
             return {"screen": "results1", "ok": hit["single_ok"], "won": None if w is None else w[1] > 600, "scores": sc}
@@ -333,6 +336,8 @@ class LadderNav:
             if scr["other_device"]:
                 return ("stop", "ANOTHER_DEVICE: the account was opened on another device (Connection lost)")
             return ("act", "reload", scr["reload"]) if scr["reload"] else ("wait", "connection lost: no RELOAD seen")
+        if s == "chest_reveal":
+            return ("act", "chest_open", (450, 840))
         if s == "results1":                       # 10-20: only an OK -- tap it; the next screen (home -> Battle) queues the match
             return ("act", "single_ok", scr["ok"])
         if s == "strikes":
@@ -460,7 +465,7 @@ def grab(adb: list[str]):
 class LadderNavRunner:
     """Device side, same interface as friend_nav.FriendNav: probe() before match 1, run() between matches."""
     POLL_S, COOLDOWN_S, RELAUNCH_WAIT_S = 0.5, 1.5, 15.0
-    NAV_SCREENS = {"results", "results1", "main", "popup_x", "strikes", "modes", "trophy_road", "choose_reward", "conn_lost",
+    NAV_SCREENS = {"results", "results1", "chest_reveal", "main", "popup_x", "strikes", "modes", "trophy_road", "choose_reward", "conn_lost",
                    "content_update"}
 
     def __init__(self, adb: list[str], dry_run: bool = False, log_dir: Path = HERE, state_path: Path = STATE,
