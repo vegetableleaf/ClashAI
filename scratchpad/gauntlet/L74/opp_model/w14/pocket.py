@@ -11,6 +11,9 @@ frame: own king y 29).
   (e) X-Bow locks by crown state at placement (0-0 / 1-0 / 0-1 / 1-1 = our crowns - theirs): lock rate per X-Bow placed and
       locks per minute of time in that state. Lock = enemy tower HP lost >= 5% of a princess while the X-Bow lived
       (live: invlib.xbow_rows, towers in reach; SIM: HP lost by the tower an X-Bow targeted, from o3_trace).
+  (f) log bait (lead 10-21): opponent plays per match of Goblin Barrel / Skeleton Barrel / Dart Goblin, and the PUNISH rate:
+      of our Logs played while the opponent's deck holds one of them (live: seen cards; SIM: the deck), the share followed
+      by one of them within PUNISH_S seconds. Needs only o3_plays, so it runs on every gate row (pocket_bait()).
 Live clock = game tick - 78; SIM tick = clock. Deploys are not independent: the shares carry Wilson CIs on deploys (too
 narrow) and the per-match share of matches with >= 1 pocket deploy.
     icebow/.venv/Scripts/python.exe -B scratchpad/gauntlet/L74/opp_model/w14/pocket.py [SIM_ROOT ...]"""
@@ -33,6 +36,8 @@ POCKET_Y = 17.5
 ANYWHERE = {'miner', 'goblin_drill'}
 STATES = ('0-0', '1-0', '0-1', '1-1')
 MIN = 1200.0                      # ticks per minute
+BAIT = ('goblin_barrel', 'skeleton_barrel', 'dart_goblin')
+PUNISH_S = 6.0
 
 
 def troop(card):
@@ -41,8 +46,20 @@ def troop(card):
 
 
 def blank():
-    return dict(n=0, pre_n=0, pre_pocket=0, post_n=0, pocket=0, post_min=0.0, m_fell=0, m_pocket=0, king=0.0, king_fell=0,
+    return dict(bait=defaultdict(int), logs=0, punished=0, n=0, pre_n=0, pre_pocket=0, post_n=0, pocket=0, post_min=0.0, m_fell=0, m_pocket=0, king=0.0, king_fell=0,
                 surv=0.0, xb=defaultdict(lambda: [0, 0]), st_min=defaultdict(float))
+
+
+def add_bait(acc, opp_plays, own_logs, deck_has_bait):
+    """opp_plays [(tick, key)], own_logs [tick] (the same clock)."""
+    for _, k in opp_plays:
+        if k in BAIT:
+            acc['bait'][k] += 1
+    if deck_has_bait:
+        bt = [t for t, k in opp_plays if k in BAIT]
+        for t in own_logs:
+            acc['logs'] += 1
+            acc['punished'] += any(t < b <= t + PUNISH_S * 20 for b in bt)
 
 
 def add_match(acc, deploys, t_fall, end, king_loss, surv_loss, king_fell, xbows, state_ticks):
@@ -104,6 +121,9 @@ def live():
             for (t0, *_), (t1, *_) in zip(fr, fr[1:]):
                 st[state(*I.crowns(m, t0))] += t1 - t0
             add_match(acc, dep, t_fall, m['end'], king, surv, kf, xb, st)
+            seen = {H.norm(c) for c in rk[m['key']].get('deck') or []} | {p['card'] for p in m['opp']}
+            add_bait(acc, [(p['tick'], p['card']) for p in m['opp']], [q['tick'] for q in m['own'] if q['card'] == 'the_log'],
+                     bool(seen & set(BAIT)))
     finally:
         sub.unlink()
     return acc
@@ -166,18 +186,29 @@ def sim_match(j):
 def sim(root):
     out = {}
     for name, raw in sorted(T.load_sim(root).items()):
-        acc = blank()
+        acc, nb = blank(), 0
         for j in raw:
+            pl = j.get('o3_plays')
+            if pl:
+                nb += 1
+                add_bait(acc, [(int(t), H.norm(c)) for t, c in pl['opp']],
+                         [int(t) for t, c in pl['learner'] if H.norm(c) == 'the_log'],
+                         bool({H.norm(c) for c in j['opp_deck']} & set(BAIT)))
             r = sim_match(j)
             if r is not None:
                 add_match(acc, *r)
-        if acc['n']:
-            out[name] = acc
+        acc['n_bait'] = nb
+        out[name] = acc
     return out
 
 
 def show(name, a):
     f = lambda k, n: T.AN.fmt(k, n)  # noqa: E731
+    nb = a.get('n_bait', a['n'])
+    print('\n' + f'== {name}: (f) bait plays per match ({nb} matches): ' + ' '.join(f'{k} {a["bait"][k] / max(1, nb):.2f}' for k in BAIT)
+          + f'; our Logs vs a bait deck followed by a bait card within {PUNISH_S:g} s: {f(a["punished"], a["logs"])}')
+    if not a['n']:
+        return
     print(f'\n== {name}: {a["n"]} matches; our first princess fell in {a["m_fell"]}')
     print(f'  (a) pocket share of opp troop deploys AFTER the fall: {f(a["pocket"], a["post_n"])}; BEFORE (floor): '
           f'{f(a["pre_pocket"], a["pre_n"])}; matches with >= 1 pocket deploy: {f(a["m_pocket"], a["m_fell"])}')

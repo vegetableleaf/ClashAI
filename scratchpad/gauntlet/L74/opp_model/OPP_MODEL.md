@@ -915,6 +915,64 @@ Round 1 = four arms, two per pod, each ONE change vs the base:
 - Deadline order: the O4-Ranked confirmation (1,920 games) and the league-config smoke need about 1 h of pod time. No new
   round starts after about 18:30 EDT.
 
+**Post-princess-fall cells (owner 10-21: pocket, surviving princess, X-Bow locks by crown state; `w14/pocket.py`).**
+- SIM side needs deploy positions and a tower / X-Bow trace. Those come from an opt-in, pod-local telemetry patch of the
+  isolated eval copy (`w14/pos_patch.py` v2; env O3_POS=1).
+  - It wraps env.eng.act and env.core.step of the REAL match only; search forks run on other envs.
+  - (a) It does not change play: R6 u20 with it on block 741200 = the replay rows, 480 / 480 identical.
+  - It slows an eval about 2.5x, so it runs on probes and final candidates only, not on every gate.
+- Definitions, one frame on both sides: our half = y > 16; pocket = y >= 17.5. Troops / buildings only: no spells, no
+  Miner / Goblin Drill. Lock = enemy tower HP lost >= 5% of a princess while the X-Bow lived.
+  - Live lock: invlib.xbow_rows, towers in reach.
+  - SIM lock: the tower the X-Bow targeted.
+- Live Ranked vs SIM R6 u20 (block 741200, 480 games):
+
+| cell | live Ranked (CLX, 233) | SIM R6 u20 | SIM E4 |
+|---|---|---|---|
+| matches where our first princess fell | 119 | 184 / 480 | 141 / 480 |
+| (a) pocket share of opponent troop deploys after the fall | 41.0% [36.9, 45.2] (n 527) | 45.3% [42.4, 48.2] (n 1,124) | 15.8% [12.8, 19.4] (n 474) |
+| (a) same area BEFORE the fall (detection / rule floor) | 0.2% | 0.7% | 0.2% |
+| (a) matches with >= 1 pocket deploy (of those with a fall) | 37.0% | 56.0% | 21.3% |
+| (b) pocket deploys per minute after the fall | 2.60 | 2.74 | 1.06 |
+| (c) our king HP lost after the fall, per min / per match (princess units; not attributed to pocket units) | 0.35 / 0.24 | 0.50 / 0.51 | 0.36 / 0.18 |
+| (c) P(our king falls \| our princess fell) | 7.6% [4.0, 13.8] | 18.5% [13.5, 24.7] | 6.4% [3.4, 11.7] |
+| (d) surviving princess HP lost after the fall, per min / per match | 0.285 / 0.198 | 0.299 / 0.302 | 0.271 / 0.135 |
+| (e) X-Bow lock rate at 0-0 (n) | 40.2% (936) | 49.5% (1,741) | 42.6% (2,190) |
+| (e) at 1-0 | 44.2% (52) | 47.2% (163) | 31.9% (251) |
+| (e) at 0-1 | 15.7% (51) | 35.1% (114) | 32.4% (37) |
+| (e) at 1-1 | **12.2% (41)** | **48.2% (85)** | 36.4% (33) |
+| (e) locks per minute 0-0 / 1-0 / 0-1 / 1-1 | 0.52 / 0.42 / 0.15 / 0.16 | 0.63 / 0.69 / 0.39 / 0.52 | 0.60 / 0.52 / 0.34 / 0.37 |
+
+- **E4 (the promotion-gate opponent) DOES under-use the pocket (a).** After our first princess falls, 15.8% of its troop
+  deploys go into the pocket (live 41.0%), at 1.06 per minute (live 2.60). So the owner's diagnosis holds for the gate
+  opponent every promotion was decided on: CLX 72.9% vs it on this block. E4's style distance vs Ranked is 1.01.
+- **(c) "The SIM opponent does not use the pocket" is contradicted for R6 u20, the tn_base opponent.**
+  - After our first princess falls, 45.3% of its troop deploys go into the pocket, vs 41.0% live.
+  - Rate: 2.74 vs 2.60 per minute.
+  - It is also no gentler on the king: 18.5% of those matches end with our king down, vs 7.6% live.
+  - The SIM allows pocket deploys: the floor before a fall is 0.7%, after 45%.
+- **(a) The owner's 1-1 X-Bow observation IS a calibration gap.**
+  - Live, the lock rate falls from 40% at 0-0 to 16% at 0-1 and 12% at 1-1.
+  - In the SIM it stays near 48% at 1-1 (35% at 0-1). That is a 36 pp gap at 1-1.
+  - The live n is small (41 / 51 X-Bows).
+  - The lock definitions differ (towers in reach vs the targeted tower). The 0-0 cells (40 vs 50) bound how much of the gap
+    that can explain: about 10 pp.
+  - So the SIM opponent defends X-Bows at 1-1 far worse than Ranked humans, although it uses the pocket as often.
+  - Where the gap comes from is (b) untested: what the opponent places into the pocket, and when (at our X-Bow or at our
+    king).
+- **(f) Log bait (lead 10-21, `pocket.py` (f); only o3_plays needed).** Opponent plays per match of Goblin Barrel /
+  Skeleton Barrel / Dart Goblin, and the punish rate: our Logs vs a deck holding one, followed by one of them within 6 s.
+
+| | live Ranked | SIM R6 u20 (1,920) | SIM E4 (480) | A u30 | B u5 |
+|---|---|---|---|---|---|
+| bait plays per match (GB / SB / DG) | 0.72 / 0.54 / 0.63 | 0.74 / 0.61 / 0.53 | 0.70 / 0.40 / 0.51 | 0.74 / 0.50 / 0.46 | 0.73 / 0.51 / 0.57 |
+| Log punished within 6 s | 19.2% [15.6, 23.4] (n 396) | 19.9% [18.0, 21.9] | 14.6% [11.6, 18.3] | 23.3% | 25.2% |
+
+  - (a) R6 u20 plays and punishes the bait at the live rate.
+  - E4 punishes a wasted Log about 25% less often than live humans.
+- Calibration targets added: X-Bow lock rate at 0-1 / 1-1 (live 15.7 / 12.2) and P(king falls | princess fell) (7.6).
+  Each candidate's final 1,920-game check runs with O3_POS=1.
+
 **Plan review (Codex gpt-6-astra, read-only, 10-21 08:10 EDT; seat unverified). The ten findings, adjudicated:**
 
 | # | finding | verdict | action |
@@ -939,7 +997,11 @@ before the drain / opponent takes / both took / style vs Ranked; Ranked 48.1 / 2
 | R0 | R6 u20, 1,920 | 64.0 | 56.9 | 68.4 | 55.2 | 70.1 | 77.5 | 40.5 | 11.9 | 0.58 | 9 | ladder-calibrated, not Ranked |
 | R0 | R6 u20, block 741200 only (the gate block) | 66.2 | 63.1 | 68.4 | 55.4 | 72.2 | 80.5 | 38.3 | 10.2 | 0.56 | 8 | the per-gate baseline |
 | R1 | A lr 3e-5 u5 / u10 / u15 | 63.3 / 61.7 / 62.3 | 58.6 / 52.8 / 52.5 | 66.7 / 67.8 / 69.1 | 54.4 / 53.3 / 54.0 | 68.6 / 68.0 / 69.5 | 77.3 / 78.1 / 75.8 | 41.9 / 43.8 / 40.8 | 13.8 / 14.6 / 11.7 | 0.58 / 0.54 / 0.52 | 9 / 8 / 9 | -4 pp by u10, mostly vs BEAT; style improves |
-| R1 | C lr 1e-4 u5 | 69.8 | 64.3 | 73.7 | 55.2 | 74.7 | 79.5 | 36.0 | 13.8 | 0.64 | 9 | worse: the leash binds (cell KL 0.10, beta held 0.075), clip_frac 0.24, training win 0.45 -> 0.32 |
+| R1 | A u20 / u25 | 60.6 / 60.2 | 56.3 / 55.0 | 63.7 / 63.9 | 59.8 / 57.5 | 67.6 / 65.6 | 73.0 / 72.9 | 44.6 / 43.5 | 13.3 / 10.8 | 0.66 / 0.67 | 8 / 8 | still falling, slower; style drifts past 0.65; cell KL from R6 u20 reaches the 0.1 target at u25 |
+| R1 | C lr 1e-4 u5 / u10 / u15 | 69.8 / 63.5 / 66.0 | 64.3 / 57.3 / 58.6 | 73.7 / 68.0 / 71.3 | 55.2 / 54.4 / 58.8 | 74.7 / 69.7 / 75.2 | 79.5 / 76.4 / 80.4 | 36.0 / 40.8 / 39.6 | 13.8 / 13.3 / 11.2 | 0.64 / 0.66 / 0.61 | 9 / 10 / 9 | no gain (noise around the 66.2 baseline): the leash binds from u3 (cell KL 0.10, beta held 0.075), clip_frac 0.24. Stopped at u16 (14:26 EDT) |
+| R1 | B gate-free (19899, from 14:27 EDT) u0 | 66.2 | 63.1 | 68.4 | 55.4 | 72.2 | 80.5 | 38.3 | 10.2 | 0.56 | 8 | = R6 u20 (critic warm-up only), as every u0 |
+| R1 | A u30 | 60.2 | 54.0 | 64.6 | 56.2 | 63.3 | 69.8 | 44.6 | 13.8 | 0.63 | 7 | still moving on OT cells |
+| R1 | B u5 | 59.6 | 52.5 | 64.5 | 57.1 | 67.2 | 77.2 | 45.0 | 11.9 | 0.62 | 7 | B (gate free) is already where A is at u30 |
 
 **Round-1 facts (a).**
 - The pods are CPU-capped: cgroup quota 27.2 cores (48148) / 30.6 (19899) on 256-thread hosts. That is why cpu.lock exists.
