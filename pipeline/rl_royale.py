@@ -3223,7 +3223,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
 def config_sha(cfg: dict) -> str:
     # Off is the historical configuration, including checkpoint resume hashes.
     cfg = AO.canonical_config(cfg)
-    cfg = {k: v for k, v in cfg.items() if k != "remote_actors"}   # W16: where actors run never enters the hash (same rows)
+    cfg = {k: v for k, v in cfg.items() if k != "remote_actors"}   # W16: infrastructure, never in the hash (rows follow N = local + remote actors, logged)
     if cfg.get("learner_pipeline_frac", 0) == 0:
         cfg = {k: v for k, v in cfg.items() if k != "learner_pipeline_frac"}
     if cfg.get("hero_abilities") is False:

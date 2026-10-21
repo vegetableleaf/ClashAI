@@ -132,10 +132,10 @@ class Remote:
             pass
 
 
-def _open(ep: str, key: bytes, base: dict, code: dict) -> Remote:
+def _open(ep: str, key: bytes, base: dict, code: dict, timeout_s: float = 3600.0) -> Remote:
     host, port = ep.rsplit(":", 1)
     conn = Client((host, int(port)), authkey=key)
-    conn.send(("hello", base, code, royale_env()))
+    conn.send(("hello", base, code, royale_env(), float(timeout_s)))   # timeout: the learner's actor_timeout_s
     if not conn.poll(READY_S):
         conn.close()
         raise TimeoutError(f"server not ready after {READY_S} s")
@@ -200,7 +200,7 @@ class DistPool:
 
         def go(ep):
             try:
-                got[ep] = _open(ep, self.key, self.base, self.code)
+                got[ep] = _open(ep, self.key, self.base, self.code, self.timeout_s)
             except BaseException as exc:            # noqa: BLE001 -- any failure = skip this endpoint for now
                 got[ep] = exc
         ths = {ep: threading.Thread(target=go, args=(ep,), daemon=True) for ep in todo}
@@ -296,18 +296,18 @@ def _log(msg: str) -> None:
     print(time.strftime("%H:%M:%S"), msg, flush=True)
 
 
-def _serve_conn(conn, st: dict, workers: int, timeout_s: float, code: dict) -> None:
+def _serve_conn(conn, st: dict, workers: int, code: dict) -> None:
     from pipeline import rl_royale as RL
     while True:
         msg = conn.recv()
         if msg[0] == "hello":
-            _, base, lcode, env = msg
+            _, base, lcode, env, timeout_s = msg
             diff = sorted(k for k in set(code) | set(lcode) if code.get(k) != lcode.get(k))
             if diff:
                 conn.send(("refuse", f"pipeline code differs from the learner's: {diff[:12]}"))
                 _log(f"REFUSED a learner: code differs {diff[:12]}")
                 return
-            if st["pool"] is None or st["base"] != (base, env):
+            if st["pool"] is None or st["base"] != (base, env, timeout_s):
                 if st["pool"] is not None:
                     st["pool"].close()
                 st["pool"], st["base"] = None, None
@@ -316,7 +316,7 @@ def _serve_conn(conn, st: dict, workers: int, timeout_s: float, code: dict) -> N
                 os.environ.update(env)                   # the actors (spawned below) inherit the learner's ROYALE* env
                 t = time.perf_counter()
                 st["pool"] = RL.ActorPool(base, workers, _log, timeout_s)
-                st["base"] = (base, env)
+                st["base"] = (base, env, timeout_s)
                 _log(f"actor env: {sorted(env.items())}")
                 _log(f"ActorPool of {workers} ready in {time.perf_counter() - t:.0f}s")
             conn.send(("ready", workers))
@@ -353,7 +353,7 @@ def _serve_conn(conn, st: dict, workers: int, timeout_s: float, code: dict) -> N
             raise RuntimeError(f"unexpected message {msg[0]!r}")
 
 
-def serve(port: int, workers: int, timeout_s: float, host: str = "127.0.0.1") -> None:
+def serve(port: int, workers: int, host: str = "127.0.0.1") -> None:
     from multiprocessing import AuthenticationError
     key, code = token(), code_hash()
     st = {"pool": None, "base": None}               # kept across learner connections (a reconnect is instant)
@@ -367,7 +367,7 @@ def serve(port: int, workers: int, timeout_s: float, host: str = "127.0.0.1") ->
                 continue
             _log("learner connected")
             try:
-                _serve_conn(conn, st, workers, timeout_s, code)
+                _serve_conn(conn, st, workers, code)
             except (EOFError, OSError) as exc:
                 _log(f"learner gone ({type(exc).__name__})")
             except Exception:
@@ -380,10 +380,9 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="W16 remote actor server")
     ap.add_argument("--port", type=int, required=True)
     ap.add_argument("--workers", type=int, required=True)
-    ap.add_argument("--timeout-s", type=float, default=3600.0, help="per-actor timeout (rl_royale actor_timeout_s)")
     ap.add_argument("--host", default="127.0.0.1", help="bind address; default loopback = SSH-tunnel only")
     a = ap.parse_args(argv)
-    serve(a.port, a.workers, a.timeout_s, a.host)
+    serve(a.port, a.workers, a.host)
     return 0
 
 

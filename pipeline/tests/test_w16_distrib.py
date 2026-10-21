@@ -100,7 +100,7 @@ class TestDistPool(unittest.TestCase):
         cls._orig = RL.ActorPool
         RL.ActorPool = FakePool
         cls.port = _free_port()
-        threading.Thread(target=RA.serve, args=(cls.port, 3, 30.0), daemon=True).start()
+        threading.Thread(target=RA.serve, args=(cls.port, 3), daemon=True).start()
         time.sleep(0.5)
 
     @classmethod
