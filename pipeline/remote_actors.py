@@ -10,8 +10,9 @@ Sharding: with L local and W_r remote actors the update's job list is dealt ``jo
 actor slots -- exactly ActorPool's deal for ``n_actors = N`` -- slots 0..L-1 local, then each remote's block in endpoint
 file order. Every slot's share runs as one ``actor_main`` message (same code, same in-flight batch), so the rows equal a
 single-pod run with ``n_actors = N`` (measured: DISTRIB.md). A remote that fails / times out has its shares re-run by
-local actors, one share per actor, same batches: never a partial update, never different rows. Transport:
-``multiprocessing.connection`` (pickle) with the shared-token HMAC handshake (``RL_REMOTE_TOKEN`` or the gitignored
+local actors, one share per actor, same batches: never a partial update (measured: 1 of 4 re-run shares still
+came out different -- DISTRIB.md, cause open). Transport: ``multiprocessing.connection`` (pickle) with the
+shared-token HMAC handshake (``RL_REMOTE_TOKEN`` or the gitignored
 icebow/data/remote_actors.token); the server refuses a learner whose pipeline/*.py differ from its own.
 """
 from __future__ import annotations
@@ -265,7 +266,7 @@ class DistPool:
             why = f"{type(got).__name__}: {got}" if got is not None else "thread still running past the timeout"
             self._drop(r.ep, why)
             self.log(f"[dist] FAILOVER u{update} {kind}: re-running {r.ep}'s {sum(map(len, sh))} jobs "
-                     f"({len(sh)} shares) on the local actors, one share per actor (same rows)")
+                     f"({len(sh)} shares) on the local actors, one share per actor")
             t1 = time.perf_counter()
             for c in range(0, len(sh), L):
                 chunk = sh[c:c + L]
