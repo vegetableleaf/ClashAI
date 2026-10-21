@@ -132,3 +132,9 @@ max_updates 3, screens and proagree off, critic_warmup 0, RL_PROFILE=1) on fin15
   - Expect about 180-195 s per update without screens, so roughly 205-225 s in production (b).
   - The CPU quota is not the limit at 24 actors: 40144 (31 cores) is the fastest.
 - u0 is identical on all four pods (154/102, 71,212 rows). batch_sha differs, as W16 found: the log-prob float bits.
+- **Code refresh, 22:20Z.** origin/main had moved to 93c68de: 16 files, no pipeline/ change, only yamls and L74 analysis
+  (tn_otstart_s75/s76, tn_bait_s74-76, tn_w14_s74-76). They were overlaid on all four pods and pass `sha256sum -c`; the
+  tn_base_s74 and tn_otstart_s74 yamls did not change, so the smokes still hold.
+  - **tn_w14_*** needs icebow/data/pipeline/o2/w14opp.pt (W14 B u20, 40275759). It is **NOT on these pods**: install it the way
+    launch.sh installs w7opp.
+  - tn_bait_* uses league_deck_weights, which is in the code. It was not smoked here.
