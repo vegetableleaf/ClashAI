@@ -52,3 +52,23 @@ Results pulled sha-verified to C:/Users/benpe/pod_backup_weekend/tonight1020/<RU
 - (a) The tornado arm has the lowest tornados_after_fall (0.227 vs CLX 0.369) and toward_after_fall (0.399 vs 0.827) and the lowest win rate; the rocket arm has the highest rockets_tower (0.496) and also loses to CLX. More rocket-to-tower or fewer post-fall tornados did not convert to wins here (b: the opponent punishes them / the reward over-weighted them; untested).
 - (a) lost_princess is within 36-42% for every arm; the best arm (tn_base_s75) has the lowest (36.0%) and the worst (tornado 42.4%) the highest, consistent with the win-rate order.
 - Single opponent model (one checkpoint, one temperature), SIM only; nothing was deployed.
+
+## Base recipe, 6 seeds (batch 2, same method; s76/s77 on their own pods, s78/s79 grafted u130 copied sha-verified to 13396/14009)
+
+Copied checkpoints: tn_base_s78 u0130_grafted sha256 ff4693c405fd631f1b27f8c4a409981d9a316ebb9ddb9ff9a73ac193f39962d4; tn_base_s79 2738f2c58fd6d2ade8c7577e1d12f5e0480a6981adcba00df3824afa0245d4de (source and destination hashes equal). Script: w12_base6.py; driver pod/w12_batch2.sh. Pooled 4 seeds x 480 = 1920 games per arm, paired vs the clx_fin15 w7-opp rows.
+
+| arm | n | win% | delta vs CLX pp | 95% CI | lost_princess | gave_back | king_end |
+|---|---|---|---|---|---|---|---|
+| tn_base_s74 | 1920 | 63.5 | -0.47 | [-3.16, +2.22] | 40.1% | 4.4% | 0.871 |
+| tn_base_s75 | 1920 | 67.8 | +3.85 | [+1.22, +6.48] | 36.0% | 4.5% | 0.875 |
+| tn_base_s76 | 1920 | 64.5 | +0.52 | [-2.15, +3.19] | 40.3% | 5.8% | 0.851 |
+| tn_base_s77 | 1920 | 60.7 | -3.28 | [-5.98, -0.58] | 42.3% | 4.0% | 0.874 |
+| tn_base_s78 | 1920 | 63.3 | -0.68 | [-3.35, +2.00] | 41.0% | 6.0% | 0.841 |
+| tn_base_s79 | 1920 | 62.3 | -1.67 | [-4.36, +1.03] | 39.5% | 3.9% | 0.862 |
+| **mean of 6** | | 63.7 | -0.29 | seed-level 95% CI [-2.81, +2.24] (t, 5 df) | | | |
+
+CLX win% 64.0. Across-seed SD of the delta 2.40 pp (min -3.28, max +3.85, range 7.14); SD of win% 2.40.
+
+- (a) Six runs of the identical base recipe span -3.28 to +3.85 pp vs CLX (range 7.1 pp, SD 2.40 pp); their mean is -0.29 pp, seed-level 95% CI [-2.81, +2.24]. The base recipe is statistically level with CLX on this opponent.
+- (a) Pure eval sampling noise per arm at n=1920 is about 1.1 pp (binomial, p=0.64), so most but not all of the 2.4 pp seed SD is eval noise; the implied training-seed SD is about 2 pp (b: rough, derived, not separately measured).
+- (a) Of 6 runs: one is above CLX (s75, CI excludes 0), one below (s77, CI excludes 0), four inside noise. Consequence: tonight's single-seed arm contrasts (lead +1.2, redirect -0.2, rocket -3.3, tornado -4.4) must be read against a +/-2.4 pp seed SD; only a gap well beyond that (the tornado arm's -4.4 is about 1.8 SD) is even suggestive. A multi-seed run per arm is needed before any arm is ranked (b: untested).
