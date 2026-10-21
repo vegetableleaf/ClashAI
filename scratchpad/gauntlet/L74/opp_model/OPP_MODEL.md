@@ -1010,6 +1010,7 @@ before the drain / opponent takes / both took / style vs Ranked; Ranked 48.1 / 2
 | R1 | B u25 / u30 / u35 / u40 | 58.5 / 54.6 / 56.0 / 56.2 | 54.5 / 48.2 / 46.5 / 50.5 | 61.4 / 59.1 / 62.8 / 60.3 | 52.9 / 56.9 / 57.1 / 54.2 | 63.0 / 61.9 / 64.2 / 62.7 | 67.9 / 73.3 / 71.6 / 69.9 | 46.5 / 49.8 / 50.0 / 48.3 | 12.9 / 12.3 / 14.8 / 14.2 | 0.59 / 0.69 / 0.68 / 0.66 | 7 / 7 / 7 / 8 | **plateau u20-u40 at ~56** (55.0 / 58.5 / 54.6 / 56.0 / 56.2); leash NOT binding (KL <= 0.056, beta at its floor); training win vs the mix flat at ~0.47 |
 | R2 | A3 = A u40 continued fresh WITHOUT kl_ref_gate (B's change on A's net), 48148 from 16:02 EDT: u5 / u10 / u15 | 56.5 / 60.4 / 54.8 | 50.0 / 54.3 / 53.5 | 61.1 / 64.8 / 55.7 | 55.2 / 60.6 / 56.5 | 64.5 / 66.7 / 63.1 | 71.6 / 75.1 / 73.7 | 49.6 / 46.5 / 50.0 | 14.2 / 16.2 / 12.7 | 0.66 / 0.67 / 0.68 | 7 / 8 / 7 | gate-free moves A's net too (61.9 -> ~57), to B's level, with worse style |
 | R2 | A3 u20 / u25 / u30 / u35 / u40 | 60.0 / 59.8 / 54.2 / **52.5** / 55.8 | 53.5 / 54.5 / 48.2 / 48.0 / 52.8 | 64.5 / 63.6 / 58.4 / 55.7 / 58.0 | 56.5 / 51.0 / 59.8 / 58.8 / 55.6 | 66.1 / 67.3 / 63.1 / 61.3 / 65.5 | 71.7 / 74.4 / 71.2 / 69.7 / 76.4 | 46.2 / 45.8 / 52.9 / 53.3 / 48.3 | 16.9 / 13.5 / 16.5 / 14.6 / 12.3 | 0.68 / 0.71 / 0.71 / 0.72 / 0.69 | 8 / 9 / 7 / 6 / 7 | still moving at u30-u40 (mean 54.2 vs B's ~56), but style 0.69-0.72 fails the 0.65 bound; A3 u35 (45a1c8b0) gets a fresh-block check |
+| **O4** | **A3 u35 (45a1c8b0), 1,920 = 741200 + fresh 742000-744000** | **53.0** | **45.5** | **57.8** | **58.0** | **60.1** | **67.5** | **51.7** | **13.8** | **0.75** | **6 of 12** | fresh blocks only (1,440): 53.1%. **The CLX win cell PASSES** (+4.9, z 1.41, tolerance 5); style fails |
 | R3 | E = B u20 continued fresh (gate-free, lr 1e-5) + ONE change: BEAT x3 in the opponent's own training draw (lead 10-21 ~18:00: one training-mix change on 48148), from 18:23 EDT | | | | | | | | | | | running |
 | **O4** | **B u20 (40275759), 1,920 = 741200 + fresh 742000-744000** | **57.0** | **48.7** | **62.3** | **54.2** | **63.0** | **68.8** | **47.4** | **12.1** | **0.53** | **7 of 12** | fresh blocks only (1,440): 57.7%; the 741200 pick (55.0) regressed by 2.7 pp, as expected from picking on one block |
 
@@ -1058,6 +1059,29 @@ Post-fall cells of B u20 (block 741200 with positions; `w14/pocket.py`; live / R
 - surviving princess HP lost 0.32 per minute (live 0.285);
 - X-Bow lock rate 0-0 / 1-0 / 0-1 / 1-1: 50.1 / 30.8 / 34.9 / 35.8% (live 40.2 / 44.2 / 15.7 / 12.2; R6 u20 1-1 48.2);
 - log bait per match 0.74 / 0.58 / 0.50 (live 0.72 / 0.54 / 0.63); Log punished within 6 s 20.1% (live 19.2).
+
+**Update 19:20 EDT: a stronger alternative, A3 u35 = `rlarm_oppW14A3_gatefree_s74_u0035.pt`, sha256 45a1c8b0ce48
+(45a1c8b0ce4808e01ee0cc7a964fbafc4328c22178b491cdf4b40dfbf4b4e1eb).**
+- Lineage: A u40 (R6 u20 + 40 updates at lr 3e-5) + 35 gate-free updates.
+- Laptop copy: pod_backup_weekend/w14/; 48148: its run dir.
+- O4-Ranked, 1,920 games (`w14/o4r_O4_A3u35.out`), first R6 u20 -> B u20 -> A3 u35, then live Ranked:
+  - CLX win **53.0** (64.0 -> 57.0 -> 53.0; live 48.1): **PASSES** (+4.9 within the 5 pp tolerance, z 1.41);
+  - vs BEAT 45.5 (56.9 -> 48.7 -> 45.5; live 25.3);
+  - win | OT 60.1 (live 47.3);
+  - opponent takes a princess 51.7 (live 51.1);
+  - CLX takes a princess 62.1 (live 52.8);
+  - style 0.75 (B u20 0.53): FAILS the 0.65 bound.
+  - Log bait: 0.75 / 0.62 / 0.53 per match; punished 22.2% (live 19.2).
+- Trade-off:
+  - A3 u35 is the strength-calibrated one: the overall CLX win is inside the Ranked tolerance.
+  - B u20 is the human-like one: style 0.53.
+  - Neither closes the tank, OT and CLX-takes cells.
+  - Recommendation: A3 u35 as the next round's exploiter / eval opponent if strength calibration is the priority (this
+    ticket's target); B u20 where human-like timing matters. The league yaml is unchanged either way: install the chosen
+    file as icebow/data/pipeline/o2/w14opp.pt. The smoke ran with B u20; A3 u35 has the same architecture and
+    loader path, but its own smoke is (b) not run.
+- Plateau diagnosis amended: A3 kept improving to u35 (60 -> 52.5 on block 741200), so gate-free on A's net was NOT plateaued
+  at u40. It bought strength with style (0.64 -> 0.75).
 
 **League config (verified on a pod):** `cfg/tn_base_w14opp_s74.yaml` = tn_base_s74.yaml + ONE change, the exploiter
 checkpoint:
