@@ -1,3 +1,36 @@
+## 2026-10-21 ~18:20 EDT -- live = interim Mark CLXI on Ranked; 9 successor runs training (3 arms x 3 seeds); Log flaw measured
+
+- **Live:** ICEBOW Mark CLXI: FIN15 (tn_base_s75 u130, 686b245a) on Ranked since 14:32 by owner request, as an INTERIM model
+  (not a gate pass: w7opp std +3.44 [-0.27, +7.15], fresh +4.27 [+0.54, +8.00]). Revert = CLX (5d212358). CLX Ranked
+  baseline 48.1% over 233. Account guard fingerprint now 4858 (towers level 16; was 4424 -> false-alarm STOP at 14:29, b95a0a1).
+- **Base recipe, 6 seeds vs CLX (w7opp eval, W12):** mean -0.29 pp, seed-level CI [-2.81, +2.24], SD 2.40; only s75 above
+  (+3.85), s77 below (-3.28). Seed variance ~ the size of every reward-arm effect: rank arms on >= 3 seeds.
+- **Log over-use (owner 10-21; log_use/LOG_USE.md, e6e5d82 + 93c68de):** rate is pro-level (1.53 vs 1.55 /min) but TIMING and
+  TARGET are wrong: hold-to-first-bait 0.516 CLX vs 0.733 pros; 52% of Logs kill < 1 elixir; bait while Log out costs 283 vs
+  125 hp (Goblin Barrel 643 vs 245). The model SEES revealed bait (opp_cycle filled, 27/27) but ignores it (P(Log) +1.7%
+  [-3.4, +7.5] with a Barrel inserted). SIM Goblin Barrel tower damage = 0.93 [0.87, 0.99] of live (no parity block).
+  Gate (owner requirement): G-LOG1 hold rate >= 0.60 and CI vs CLX > 0; G-LOG2 >= 1.3 Logs/min (log_use/glog_score.py).
+- **W14 opponent:** B u20 (40275759, gate-free) best so far, CLX 57.0% vs Ranked 48.1; knob plateau; next round = one
+  training-mix change on 48148. W16 distributed rollouts built (c8aa969): bit-identical to 1 pod, but 1+1 pods = 1.35x
+  (learner step ~42 s is the floor); 1,000 updates ~24 h even at 5 pods.
+- **Training now (one arm per slot, fin15, all16; chains pack to /workspace/stepd/out/<run>.tgz):**
+
+  | pod | runs |
+  |---|---|
+  | 64.247.206.76:13396 / :14009 | tn_otstart_s74 / tn_otstart_s75 (arm B: ot_start_share 0.25) |
+  | 64.247.206.76:19899 | tn_w14_s74 (arm A: league exploiter = W14 B u20) |
+  | 157.157.221.29:32621 | tn_w14_s75 + tn_bait_s74 (2nd arm on cpu_b.lock / claim_b.lock via stepd_chain_b.sh) |
+  | 157.157.221.29:32525 | tn_w14_s76 + tn_bait_s75 (same) |
+  | 213.192.2.125:40144 | tn_otstart_s76 |
+  | 64.247.206.120:22539 (L40, 60 GB) | tn_bait_s76 (E1: league_deck_weights 2.5x on bait cards) |
+  | 64.247.206.79:48148 | W14 opponent round (after A3) |
+
+  First three started 21:33Z (~3.4 min/update -> training done ~01:00 EDT); the other six 22:14Z. Score each arm vs CLX
+  (w7opp + E4 sets, paircmp) AND vs its same-seed tn_base, plus glog_score.py. Promotion = both seed sets CI > 0 AND G-LOG.
+- New pods use ~/.ssh/runpod_clashbot (owner's id_ed25519 does not exist). Setup record: tonight1020/PREP.md Addendum 3.
+- Laptop: local HANDOFF.md is a stale uncommitted 10-13 copy (+94/-2327 vs HEAD); this entry was committed onto HEAD's
+  version via plumbing; the working copy was not touched. Autostash conflict on pods.txt resolved to HEAD; stash@{0} kept.
+
 ## 2026-10-21 ~04:30 EDT -- tonight's 6 arms: NO promotion; seed-variance runs launched; 2 pods stopped
 
 - vs CLX on fin15 at all16, E4 opponent (tonight1020/RESULTS.md):
