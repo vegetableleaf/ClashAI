@@ -6,7 +6,7 @@ set -uo pipefail
 NOTAB=${1:-}
 KEY=$HOME/.ssh/runpod_clashbot
 D=/c/Users/benpe/pod_backup_weekend/w14/o3; mkdir -p $D; cd $D || exit 1
-for HP in "root@64.247.206.80 48148" "root@64.247.206.76 19899"; do
+for HP in "root@64.247.206.80 48148" "root@64.247.206.76 19899" "root@213.192.2.123 40116"; do
   set -- $HP
   for f in $(ssh -i $KEY -p $2 $1 'cd /workspace/o3w12/out && ls w14*.tgz 2>/dev/null'); do
     n=${f%.tgz}; [ -f $n.OK ] && continue

@@ -1011,7 +1011,20 @@ before the drain / opponent takes / both took / style vs Ranked; Ranked 48.1 / 2
 | R2 | A3 = A u40 continued fresh WITHOUT kl_ref_gate (B's change on A's net), 48148 from 16:02 EDT: u5 / u10 / u15 | 56.5 / 60.4 / 54.8 | 50.0 / 54.3 / 53.5 | 61.1 / 64.8 / 55.7 | 55.2 / 60.6 / 56.5 | 64.5 / 66.7 / 63.1 | 71.6 / 75.1 / 73.7 | 49.6 / 46.5 / 50.0 | 14.2 / 16.2 / 12.7 | 0.66 / 0.67 / 0.68 | 7 / 8 / 7 | gate-free moves A's net too (61.9 -> ~57), to B's level, with worse style |
 | R2 | A3 u20 / u25 / u30 / u35 / u40 | 60.0 / 59.8 / 54.2 / **52.5** / 55.8 | 53.5 / 54.5 / 48.2 / 48.0 / 52.8 | 64.5 / 63.6 / 58.4 / 55.7 / 58.0 | 56.5 / 51.0 / 59.8 / 58.8 / 55.6 | 66.1 / 67.3 / 63.1 / 61.3 / 65.5 | 71.7 / 74.4 / 71.2 / 69.7 / 76.4 | 46.2 / 45.8 / 52.9 / 53.3 / 48.3 | 16.9 / 13.5 / 16.5 / 14.6 / 12.3 | 0.68 / 0.71 / 0.71 / 0.72 / 0.69 | 8 / 9 / 7 / 6 / 7 | still moving at u30-u40 (mean 54.2 vs B's ~56), but style 0.69-0.72 fails the 0.65 bound; A3 u35 (45a1c8b0) gets a fresh-block check |
 | **O4** | **A3 u35 (45a1c8b0), 1,920 = 741200 + fresh 742000-744000** | **53.0** | **45.5** | **57.8** | **58.0** | **60.1** | **67.5** | **51.7** | **13.8** | **0.75** | **6 of 12** | fresh blocks only (1,440): 53.1%. **The CLX win cell PASSES** (+4.9, z 1.41, tolerance 5); style fails |
-| R3 | E = B u20 continued fresh (gate-free, lr 1e-5) + ONE change: BEAT x3 in the opponent's own training draw (lead 10-21 ~18:00: one training-mix change on 48148), from 18:23 EDT | | | | | | | | | | | running |
+| R3 | E = B u20 continued fresh (gate-free, lr 1e-5) + ONE change: BEAT x3 in the opponent's own training draw (lead 10-21 ~18:00: one training-mix change on 48148), from 18:23 EDT | | | | | | | | | | | |
+| R3 | E u0 (= B u20) / u5 / u10 / u15 / u20 | 55.0 / 55.4 / 54.6 / 50.0 / 55.2 | 51.0 / 51.0 / 49.2 / 38.7 / 51.5 | 57.7 / 58.5 / 58.4 / 58.0 / 57.9 | 51.5 / 50.6 / 56.9 / 54.4 / 50.4 | 58.3 / 58.4 / 60.1 / 59.0 / 62.4 | 63.0 / 65.9 / 65.8 / 67.9 / 70.8 | 50.2 / 47.7 / 50.4 / 56.5 / 49.2 | 14.6 / 14.8 / 14.6 / 18.1 / 14.6 | 0.54 / 0.56 / 0.54 / 0.63 / 0.68 | 6 / 7 / 6 / 7 / 9 | no clear gain by u20 (u15 was noise: the BEAT cell has n ~200 per gate, SE ~3.5 pp); runs on to u40 |
+| R4b | F = A3 u35 continued fresh (A3 recipe) + ONE change: ot_start_share 0.25 from the MIRRORED live 3:00 states (pod 40116, main HEAD code a7fa2292, from 19:54 EDT) | | | | | | | | | | | |
+
+- **Pod 40116 (owner-rented, RTX 3090, quota 31 cores), set up 10-21 19:35-19:55 EDT.**
+  - Copied from 48148 through a temporary key, which was removed afterwards: venvf15 (fin15 runtime), the fin15 marker,
+    cb_stepd without .git and bench, plus 5 bench checkpoints (CLX, CLIII, CLIX, CXXXVIII, E4).
+  - sha256 check: the 26,480 non-bench files are identical to 48148; the 5 bench files match.
+  - Then main HEAD's pipeline/ + L74 nextround / gap / livecal were overlaid: git archive with autocrlf OFF, 7,9xx files,
+    every one sha-checked. An autocrlf archive had shipped CRLF files first; that copy was overwritten.
+  - nextround/ot_states.json on THAT pod only = w14/ot_states_mirror.json (sha f4d3ad86). The original is kept at
+    /workspace/w14/ot_states_original.json.
+  - Eval copy /workspace/o3w12/cb with o3_patch + pos_patch v2.
+
 | **O4** | **B u20 (40275759), 1,920 = 741200 + fresh 742000-744000** | **57.0** | **48.7** | **62.3** | **54.2** | **63.0** | **68.8** | **47.4** | **12.1** | **0.53** | **7 of 12** | fresh blocks only (1,440): 57.7%; the 741200 pick (55.0) regressed by 2.7 pp, as expected from picking on one block |
 
 **Round-1 facts (a).**

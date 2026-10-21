@@ -9,7 +9,7 @@
 # (smoke, then training; OUTD=/workspace/w14, venvf15, fin15-linux, its own TLOCK instead of cpu.lock) + w14_gate.sh.
 set -uo pipefail
 PORT=$1; Y=$2; WAIT=${3:-}
-case $PORT in 48148) H=root@64.247.206.80 ;; 19899) H=root@64.247.206.76 ;; *) echo "unknown port"; exit 2 ;; esac
+case $PORT in 48148) H=root@64.247.206.80 ;; 19899) H=root@64.247.206.76 ;; 40116) H=root@213.192.2.123 ;; *) echo "unknown port"; exit 2 ;; esac
 KEY=$HOME/.ssh/runpod_clashbot; R=/c/Users/benpe/ClashBot; L=scratchpad/gauntlet/L74/opp_model; CB=/workspace/cb_stepd
 on() { ssh -i $KEY -p $PORT $H "$@"; }
 put() {  # LOCAL REMOTE: copy to a temp name, then an atomic mv (a running bash keeps reading the old inode) + sha check
