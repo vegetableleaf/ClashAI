@@ -936,7 +936,18 @@ before the drain / opponent takes / both took / style vs Ranked; Ranked 48.1 / 2
 
 | round | config | win | BEAT | rest | OT | win\|OT | pre-drain | opp takes | both | style R | gate fails | verdict |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| R0 | R6 u20, 1,920 | 64.0 | 57.5 | 68.4 | 55.2 | 70.1 | 77.5 | 40.5 | 11.9 | 0.58 | 8 | ladder-calibrated, not Ranked |
+| R0 | R6 u20, 1,920 | 64.0 | 56.9 | 68.4 | 55.2 | 70.1 | 77.5 | 40.5 | 11.9 | 0.58 | 9 | ladder-calibrated, not Ranked |
+| R0 | R6 u20, block 741200 only (the gate block) | 66.2 | 63.1 | 68.4 | 55.4 | 72.2 | 80.5 | 38.3 | 10.2 | 0.56 | 8 | the per-gate baseline |
+| R1 | A lr 3e-5 u5 / u10 / u15 | 63.3 / 61.7 / 62.3 | 58.6 / 52.8 / 52.5 | 66.7 / 67.8 / 69.1 | 54.4 / 53.3 / 54.0 | 68.6 / 68.0 / 69.5 | 77.3 / 78.1 / 75.8 | 41.9 / 43.8 / 40.8 | 13.8 / 14.6 / 11.7 | 0.58 / 0.54 / 0.52 | 9 / 8 / 9 | -4 pp by u10, mostly vs BEAT; style improves |
+| R1 | C lr 1e-4 u5 | 69.8 | 64.3 | 73.7 | 55.2 | 74.7 | 79.5 | 36.0 | 13.8 | 0.64 | 9 | worse: the leash binds (cell KL 0.10, beta held 0.075), clip_frac 0.24, training win 0.45 -> 0.32 |
+
+**Round-1 facts (a).**
+- The pods are CPU-capped: cgroup quota 27.2 cores (48148) / 30.6 (19899) on 256-thread hosts. That is why cpu.lock exists.
+  Two arms per pod ran at ~6 min / update each. Arm D (control) was therefore stopped at u2 (13:01 EDT, exact PIDs;
+  its run dir is kept), and 19899 runs one arm (C).
+- Determinism and cross-pod identity: R6 u20 replayed on block 741200 on 48148 gives W12's rows 480 / 480 identical
+  (outcome, end tick, crowns). Every arm's u0 (critic warm-up only) gives the same 480 rows, on 48148 (A, D) and on
+  19899 (C). So arm differences are not pod or code differences, and the SIM is deterministic per seed.
 
 ## 9. Problems found along the way (not fixed outside this directory)
 

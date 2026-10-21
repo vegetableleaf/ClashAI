@@ -173,7 +173,7 @@ def table(name, raw, live, brief=False, feats=False):
     if not dr <= STYLE_MAX:
         fails.append('style')
     sb, lb, rew, top = mix(sim, live)
-    keys = {(j['seed'], j['tag'], j['learner_side']) for j in raw}
+    keys = {(j['seed'], j['tag'], j['learner_side'], str(j.get('census')), j.get('opp_deck_name')) for j in raw}
     warn = '' if len(keys) == len(raw) and len(raw) % 480 == 0 else f'  !! {len(raw)} rows / {len(keys)} unique: INCOMPLETE OR DUPLICATED'
     if brief:
         print(f'{name:40s} n {len(sim):4d} style R {dr:.2f} / 13k {d13:.2f} | ' + ' '.join(
