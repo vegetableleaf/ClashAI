@@ -1,0 +1,313 @@
+
+## T1 record
+ranked    112 W /  121 L / 0 D   win  48.1% [41.7, 54.5] n=233
+ladder     86 W /   52 L / 0 D   win  62.3% [54.0, 70.0] n=138
+sim_w12  1228 W /  692 L / 0 D   win  64.0% [61.8, 66.1] n=1920
+sim_e4   1389 W /  531 L / 0 D   win  72.3% [70.3, 74.3] n=1920
+ranked span 20261020_132855 .. 20261021_070801
+  ranked 10-20 13:28-17:59          62.5% [48.4, 74.8] n=48
+  ranked 10-20 18:00-21:59          41.2% [28.8, 54.8] n=51
+  ranked 10-20 22:00-10-21 07:10    45.5% [37.3, 54.0] n=134
+
+## T2 crown path (exclusive; share of ALL matches) -- live vs SIM
+path                                  ranked                  ladder                 sim_w12                  sim_e4   ranked - sim_w12 (pp)
+win_clean             110  47.2%               84  60.9%             1190  62.0%             1366  71.1%               -14.8 [-21.4,  -8.0]
+win_comeback            2   0.9%                2   1.4%               38   2.0%               23   1.2%                -1.1 [ -2.1,  +1.2]
+L_gave_back             4   1.7%                3   2.2%               55   2.9%               20   1.0%                -1.1 [ -2.5,  +1.5]
+L_never_led_1x         27  11.6%                4   2.9%              201  10.5%               60   3.1%                +1.1 [ -2.7,  +6.0]
+L_never_led_2x         16   6.9%               14  10.1%              139   7.2%               77   4.0%                -0.4 [ -3.3,  +3.8]
+L_never_led_OT2x       23   9.9%               10   7.2%              108   5.6%               96   5.0%                +4.2 [ +0.9,  +8.8]
+L_never_led_OT3x       15   6.4%                6   4.3%               48   2.5%               79   4.1%                +3.9 [ +1.3,  +7.9]
+L_tiebreak_drain       36  15.5%               15  10.9%              141   7.3%              199  10.4%                +8.1 [ +3.8, +13.4]
+
+## T2b crown-path conditionals
+ranked   lost first princess  48.1% [41.7, 54.5] n=233 -> win   1.8% [ 0.5,  6.3] n=112 | took first  50.2% [43.8, 56.6] n=233 -> win  94.0% [88.2, 97.1] n=117
+         reached 1-1   5.6% [ 3.3,  9.3] n=233 -> win  15.4% [ 4.3, 42.2] n=13 | OT  62.7% [56.3, 68.6] n=233 -> win  47.3% [39.3, 55.3] n=146 | king lost 9
+         led at some point  51.1% [44.7, 57.4] n=233 -> gave it back and lost   5.9% [ 2.9, 11.6] n=119
+ladder   lost first princess  34.8% [27.3, 43.0] n=138 -> win   4.2% [ 1.2, 14.0] n=48 | took first  63.0% [54.7, 70.6] n=138 -> win  95.4% [88.8, 98.2] n=87
+         reached 1-1   9.4% [ 5.6, 15.5] n=138 -> win  38.5% [17.7, 64.5] n=13 | OT  58.7% [50.4, 66.6] n=138 -> win  60.5% [49.6, 70.4] n=81 | king lost 1
+         led at some point  64.5% [56.2, 72.0] n=138 -> gave it back and lost   4.5% [ 1.8, 11.0] n=89
+sim_w12  lost first princess  34.6% [32.5, 36.7] n=1920 -> win   5.7% [ 4.2,  7.8] n=664 | took first  65.4% [63.3, 67.5] n=1920 -> win  94.7% [93.4, 95.8] n=1256
+         reached 1-1  11.9% [10.5, 13.4] n=1920 -> win  37.7% [31.7, 44.2] n=228 | OT  55.2% [52.9, 57.4] n=1920 -> win  70.1% [67.2, 72.7] n=1059 | king lost 134
+         led at some point  67.4% [65.3, 69.5] n=1920 -> gave it back and lost   5.2% [ 4.1,  6.5] n=1295
+sim_e4   lost first princess  27.5% [25.5, 29.5] n=1920 -> win   4.4% [ 2.9,  6.5] n=528 | took first  72.5% [70.5, 74.5] n=1920 -> win  98.1% [97.3, 98.7] n=1392
+         reached 1-1   4.5% [ 3.7,  5.6] n=1920 -> win  52.9% [42.5, 63.0] n=87 | OT  65.1% [62.9, 67.2] n=1920 -> win  69.3% [66.6, 71.8] n=1249 | king lost 37
+         led at some point  73.7% [71.7, 75.6] n=1920 -> gave it back and lost   1.8% [ 1.3,  2.7] n=1415
+
+## T3 overtime: where the OT match was decided (share of OT matches, CLX win %)
+  ranked   OT 2x minute (180-240 s)       63 of  146 OT   CLX win  52.4% [40.3, 64.2] n=63
+  ranked   OT 3x minute (240-299 s)       32 of  146 OT   CLX win  53.1% [36.4, 69.1] n=32
+  ranked   tiebreak drain (>= 299 s)      51 of  146 OT   CLX win  37.3% [25.3, 51.0] n=51
+  ladder   OT 2x minute (180-240 s)       40 of   81 OT   CLX win  70.0% [54.6, 81.9] n=40
+  ladder   OT 3x minute (240-299 s)       18 of   81 OT   CLX win  55.6% [33.7, 75.4] n=18
+  ladder   tiebreak drain (>= 299 s)      23 of   81 OT   CLX win  47.8% [29.2, 67.0] n=23
+  sim_w12  OT 2x minute (180-240 s)      508 of 1059 OT   CLX win  75.8% [71.9, 79.3] n=508
+  sim_w12  OT 3x minute (240-299 s)      274 of 1059 OT   CLX win  80.7% [75.6, 84.9] n=274
+  sim_w12  tiebreak drain (>= 299 s)     277 of 1059 OT   CLX win  49.1% [43.3, 55.0] n=277
+  sim_e4   OT 2x minute (180-240 s)      522 of 1249 OT   CLX win  79.9% [76.2, 83.1] n=522
+  sim_e4   OT 3x minute (240-299 s)      293 of 1249 OT   CLX win  72.7% [67.3, 77.5] n=293
+  sim_e4   tiebreak drain (>= 299 s)     434 of 1249 OT   CLX win  54.1% [49.4, 58.8] n=434
+  ranked - sim_w12, CLX win in OT decided before the drain: -24.9 [-35.2, -14.7]
+
+## T3b live: lowest standing princess HP at 180 s decides the 0-0 overtime (live only; SIM rows have no 180 s HP)
+  ranked: 0-0 at 180 s = 132; mean lowest own 0.529 vs opp 0.611
+     behind  (own < opp - 0.10)    50.0% [41.6, 58.4] n=132 of 0-0 OT matches; CLX win  28.8% [19.3, 40.6] n=66
+     level   (within 0.10)         18.9% [13.2, 26.5] n=132 of 0-0 OT matches; CLX win  44.0% [26.7, 62.9] n=25
+     ahead   (own > opp + 0.10)    31.1% [23.8, 39.4] n=132 of 0-0 OT matches; CLX win  90.2% [77.5, 96.1] n=41
+  ladder: 0-0 at 180 s = 69; mean lowest own 0.560 vs opp 0.497
+     behind  (own < opp - 0.10)    30.4% [20.8, 42.1] n=69 of 0-0 OT matches; CLX win  23.8% [10.6, 45.1] n=21
+     level   (within 0.10)         24.6% [16.0, 36.0] n=69 of 0-0 OT matches; CLX win  70.6% [46.9, 86.7] n=17
+     ahead   (own > opp + 0.10)    44.9% [33.8, 56.6] n=69 of 0-0 OT matches; CLX win  87.1% [71.1, 94.9] n=31
+
+## T3c princess HP (in princess units per match) taken / dealt in regulation, 0-0 OT matches, by result (chip proxy)
+  ranked WIN n=67  taken (0.485, {'unseen': 0.085, 'hog_rider': 0.063, 'goblin_barrel': 0.051, 'goblin_gang': 0.022, 'valkyrie': 0.017, 'dart_goblin': 0.016, 'wizard': 0.015, 'witch': 0.015, 'battle_ram': 0.012, 'wall_breakers': 0.012})
+                   dealt (0.603, {'x_bow': 0.473, 'other': 0.13})
+  ranked LOSS n=65  taken (0.696, {'unseen': 0.112, 'hog_rider': 0.055, 'royal_hogs': 0.053, 'goblin_barrel': 0.05, 'ronin': 0.031, 'battle_ram': 0.026, 'goblin_gang': 0.026, 'balloon': 0.024, 'knight': 0.019, 'goblin_drill': 0.017})
+                    dealt (0.365, {'x_bow': 0.264, 'other': 0.1, 'rocket': 0.002})
+  ladder WIN n=44  taken (0.45, {'unseen': 0.101, 'goblin_barrel': 0.07, 'hog_rider': 0.05, 'battle_ram': 0.021, 'wizard': 0.015, 'dart_goblin': 0.015, 'elite_barbarians': 0.014, 'mega_knight': 0.014, 'balloon': 0.014, 'bandit': 0.013})
+                   dealt (0.811, {'x_bow': 0.62, 'other': 0.192})
+  ladder LOSS n=25  taken (0.655, {'goblin_barrel': 0.096, 'hog_rider': 0.084, 'unseen': 0.083, 'witch': 0.037, 'wizard': 0.027, 'ram_rider': 0.027, 'zappies': 0.021, 'valkyrie': 0.02, 'wall_breakers': 0.019, 'royal_recruits': 0.019})
+                    dealt (0.476, {'x_bow': 0.298, 'other': 0.175, 'rocket': 0.003})
+  ALL ranked: taken_reg 0.758  dealt_reg (0.768, {'x_bow': 0.65, 'other': 0.118, 'rocket': 0.0})
+  ALL ladder: taken_reg 0.721  dealt_reg (0.938, {'x_bow': 0.755, 'other': 0.182, 'rocket': 0.0})
+
+## T3d play intensity per minute (own plays; opponent TROOP plays and troop elixir) -- live vs SIM w12
+  ranked   reg_0-120    matches  233  own  7.22/min  opp troops  4.79/min  opp troop elixir 17.53/min
+  ranked   reg_120-180  matches  226  own 12.94/min  opp troops  8.14/min  opp troop elixir 30.44/min
+  ranked   ot_0-60      matches  143  own 13.42/min  opp troops  8.78/min  opp troop elixir 32.61/min
+  ranked   ot_60-120    matches   81  own 19.18/min  opp troops 11.56/min  opp troop elixir 43.70/min
+  ladder   reg_0-120    matches  138  own  7.45/min  opp troops  4.89/min  opp troop elixir 18.23/min
+  ladder   reg_120-180  matches  136  own 13.63/min  opp troops  8.64/min  opp troop elixir 32.74/min
+  ladder   ot_0-60      matches   79  own 13.65/min  opp troops  8.82/min  opp troop elixir 32.76/min
+  ladder   ot_60-120    matches   39  own 19.85/min  opp troops 12.61/min  opp troop elixir 47.68/min
+  sim_w12  reg_0-120    matches 1920  own  7.05/min  opp troops  5.02/min  opp troop elixir 18.82/min
+  sim_w12  reg_120-180  matches 1885  own 14.03/min  opp troops  9.97/min  opp troop elixir 36.61/min
+  sim_w12  ot_0-60      matches 1039  own 14.18/min  opp troops  9.90/min  opp troop elixir 35.29/min
+  sim_w12  ot_60-120    matches  535  own 21.24/min  opp troops 13.71/min  opp troop elixir 50.21/min
+
+## T4 opponent win condition (first of anatomy.WINCON in the seen deck): n, CLX win, losses; SIM w12 by the same key
+  mega_knight      ranked  48.5% [32.5, 64.8] n=33       losses  17 | ladder  63.3% [45.5, 78.1] n=30       | sim_w12  54.2% [49.0, 59.2] n=360
+  hog_rider        ranked  66.7% [50.3, 79.8] n=36       losses  12 | ladder  47.8% [29.2, 67.0] n=23       | sim_w12  73.7% [67.2, 79.4] n=198
+  electro_giant    ranked  23.1% [ 8.2, 50.3] n=13       losses  10 | ladder  60.0% [23.1, 88.2] n=5        | sim_w12  52.3% [37.9, 66.2] n=44
+  giant            ranked   9.1% [ 1.6, 37.7] n=11       losses  10 | ladder  40.0% [11.8, 76.9] n=5        | sim_w12  49.2% [37.1, 61.4] n=61
+  pekka            ranked  35.7% [16.3, 61.2] n=14       losses   9 | ladder  87.5% [52.9, 97.8] n=8        | sim_w12  63.4% [53.3, 72.5] n=93
+  royal_hogs       ranked  18.2% [ 5.1, 47.7] n=11       losses   9 | ladder  60.0% [23.1, 88.2] n=5        | sim_w12  55.1% [44.1, 65.7] n=78
+  goblin_barrel    ranked  63.6% [43.0, 80.3] n=22       losses   8 | ladder  87.5% [64.0, 96.5] n=16       | sim_w12  86.2% [79.8, 90.8] n=152
+  battle_ram       ranked  30.0% [10.8, 60.3] n=10       losses   7 | ladder n=0                            | sim_w12  52.8% [37.0, 68.0] n=36
+  mortar           ranked  33.3% [12.1, 64.6] n=9        losses   6 | ladder 100.0% [43.9, 100.0] n=3       | sim_w12  35.6% [24.6, 48.3] n=59
+  golem            ranked  16.7% [ 3.0, 56.4] n=6        losses   5 | ladder  50.0% [ 9.5, 90.5] n=2        | sim_w12  39.8% [31.5, 48.8] n=118
+  graveyard        ranked  50.0% [21.5, 78.5] n=8        losses   4 | ladder   0.0% [ 0.0, 79.3] n=1        | sim_w12  63.3% [50.7, 74.4] n=60
+  balloon          ranked  55.6% [26.7, 81.1] n=9        losses   4 | ladder  25.0% [ 4.6, 69.9] n=4        | sim_w12  80.0% [71.4, 86.5] n=105
+  royal_giant      ranked  33.3% [ 9.7, 70.0] n=6        losses   4 | ladder  40.0% [11.8, 76.9] n=5        | sim_w12  67.1% [55.7, 76.8] n=73
+  miner            ranked   0.0% [ 0.0, 65.8] n=2        losses   2 | ladder  50.0% [ 9.5, 90.5] n=2        | sim_w12  96.2% [87.2, 99.0] n=53
+  skeleton_barrel  ranked  77.8% [45.3, 93.7] n=9        losses   2 | ladder 100.0% [51.0, 100.0] n=4       | sim_w12 n=0
+  lava_hound       ranked  33.3% [ 6.1, 79.2] n=3        losses   2 | ladder n=0                            | sim_w12  47.1% [34.1, 60.5] n=51
+  goblin_drill     ranked  50.0% [15.0, 85.0] n=4        losses   2 | ladder   0.0% [ 0.0, 79.3] n=1        | sim_w12  94.7% [82.7, 98.5] n=38
+  wall_breakers    ranked  80.0% [37.6, 96.4] n=5        losses   1 | ladder   0.0% [ 0.0, 79.3] n=1        | sim_w12 n=0
+  elixir_golem     ranked  66.7% [20.8, 93.9] n=3        losses   1 | ladder  50.0% [21.5, 78.5] n=8        | sim_w12  67.6% [59.5, 74.8] n=139
+  giant_skeleton   ranked  50.0% [ 9.5, 90.5] n=2        losses   1 | ladder n=0                            | sim_w12  71.4% [52.9, 84.7] n=28
+  three_musketeers ranked   0.0% [ 0.0, 79.3] n=1        losses   1 | ladder n=0                            | sim_w12   0.0% [ 0.0, 79.3] n=1
+  x_bow            ranked   0.0% [ 0.0, 79.3] n=1        losses   1 | ladder 100.0% [34.2, 100.0] n=2       | sim_w12  84.8% [69.1, 93.3] n=33
+  rune_giant       ranked   0.0% [ 0.0, 79.3] n=1        losses   1 | ladder n=0                            | sim_w12 n=0
+  goblin_giant     ranked   0.0% [ 0.0, 79.3] n=1        losses   1 | ladder 100.0% [20.7, 100.0] n=1       | sim_w12  70.0% [56.2, 80.9] n=50
+  boss_bandit      ranked   0.0% [ 0.0, 79.3] n=1        losses   1 | ladder n=0                            | sim_w12  66.7% [35.4, 87.9] n=9
+  other            ranked 100.0% [72.2, 100.0] n=10      losses   0 | ladder  80.0% [37.6, 96.4] n=5        | sim_w12  53.2% [39.2, 66.7] n=47
+  bowler           ranked 100.0% [20.7, 100.0] n=1       losses   0 | ladder n=0                            | sim_w12  50.0% [18.8, 81.2] n=6
+  sparky           ranked 100.0% [20.7, 100.0] n=1       losses   0 | ladder  75.0% [30.1, 95.4] n=4        | sim_w12 n=0
+  owner archetypes (weekend/archetypes.classify):
+    ranked {'other': ' 52.3% [43.7, 60.8] n=128', 'weak_other': ' 43.5% [31.9, 55.9] n=62', 'hyperbait': ' 63.6% [43.0, 80.3] n=22', 'royal_giant': ' 33.3% [ 9.7, 70.0] n=6', 'golem': ' 16.7% [ 3.0, 56.4] n=6', 'pekka_bridge': '  0.0% [ 0.0, 39.0] n=6', 'lava_hound': ' 33.3% [ 6.1, 79.2] n=3'}
+    ladder {'other': ' 63.5% [51.1, 74.3] n=63', 'weak_other': ' 58.3% [44.3, 71.2] n=48', 'hyperbait': ' 73.3% [48.0, 89.1] n=15', 'pekka_bridge': ' 80.0% [37.6, 96.4] n=5', 'royal_giant': ' 40.0% [11.8, 76.9] n=5', 'golem': ' 50.0% [ 9.5, 90.5] n=2'}
+    sim_w12 {'weak_other': ' 56.2% [52.7, 59.5] n=821', 'other': ' 78.3% [75.0, 81.2] n=658', 'hyperbait': ' 71.4% [63.8, 78.0] n=154', 'golem': ' 39.8% [31.5, 48.8] n=118', 'lava_hound': ' 47.1% [34.1, 60.5] n=51', 'royal_giant': ' 57.1% [43.3, 70.0] n=49', 'pekka_bridge': ' 48.9% [35.0, 63.0] n=45', 'royal_giant_monk': ' 87.5% [69.0, 95.7] n=24'}
+
+## T5 loss clusters (decisive fall; ranked, then ladder) -- n, share of losses, window features, examples
+  ranked: 121 losses
+   K_tiebreak_drain              36 (29.8% of losses)  hp20 0.34  el20 4.22  elmin 1.95  own_off(40s) 8.44  opp_lane_el 8.12  gave_back 0
+                                attackers {'mega_minion': 15, 'giant': 11, 'miner': 10, 'barbarian_barrel': 9, 'graveyard': 4, 'goblin_drill': 3}  wincons {'giant': 5, 'pekka': 5, 'mega_knight': 4, 'hog_rider': 3, 'graveyard': 3}
+                                e.g. live_play_20261020_133916.jsonl fall 300.9 s (R), seq [[39.4, 'opp', 'R'], [45.7, 'own', 'L'], [300.9, 'own', 'R']]
+                                e.g. live_play_20261020_151757.jsonl fall 300.9 s (L), seq [[300.9, 'own', 'L']]
+                                e.g. live_play_20261020_172338.jsonl fall 303.8 s (R), seq [[303.8, 'own', 'R']]
+   ot_A_finish_weak_tower        22 (18.2% of losses)  hp20 0.12  el20 4.55  elmin 1.44  own_off(40s) 7.09  opp_lane_el 11.82  gave_back 0
+                                attackers {'royal_hogs': 90, 'hog_rider': 74, 'graveyard': 65, 'bowler': 52, 'valkyrie': 50, 'goblin_barrel': 46}  wincons {'mega_knight': 5, 'hog_rider': 4, 'royal_hogs': 2, 'balloon': 2, 'mortar': 2}
+                                e.g. live_play_20261020_142524.jsonl fall 257.9 s (R), seq [[257.9, 'own', 'R']]
+                                e.g. live_play_20261020_143334.jsonl fall 241.4 s (L), seq [[241.4, 'own', 'L']]
+                                e.g. live_play_20261020_164340.jsonl fall 223.8 s (L), seq [[223.8, 'own', 'L']]
+   reg_A_finish_weak_tower       16 (13.2% of losses)  hp20 0.15  el20 4.85  elmin 1.5  own_off(40s) 4.88  opp_lane_el 8.81  gave_back 0
+                                attackers {'bats': 77, 'mega_knight': 67, 'guards': 44, 'minions': 40, 'witch': 40, 'royal_recruits': 39}  wincons {'mega_knight': 5, 'electro_giant': 2, 'mortar': 2, 'royal_hogs': 2, 'goblin_barrel': 1}
+                                e.g. live_play_20261020_145711.jsonl fall 111.5 s (L), seq [[111.5, 'own', 'L'], [113.0, 'own', 'R'], [151.6, 'own', 'K']]
+                                e.g. live_play_20261020_200644.jsonl fall 75.1 s (R), seq [[75.1, 'own', 'R'], [147.4, 'own', 'L'], [154.9, 'own', 'K']]
+                                e.g. live_play_20261020_211617.jsonl fall 159.6 s (L), seq [[159.6, 'own', 'L']]
+   reg_B_punished_commit         15 (12.4% of losses)  hp20 0.89  el20 1.96  elmin 0.52  own_off(40s) 6.6  opp_lane_el 4.93  gave_back 2
+                                attackers {'witch': 565, 'clone': 254, 'lava_hound': 241, 'skeleton_king': 184, 'battle_ram': 84, 'skeleton_barrel': 82}  wincons {'electro_giant': 3, 'mega_knight': 2, 'lava_hound': 2, 'pekka': 2, 'giant_skeleton': 1}
+                                e.g. live_play_20261020_153052.jsonl fall 106.9 s (R), seq [[106.9, 'own', 'R']]
+                                e.g. live_play_20261020_185147.jsonl fall 58.6 s (R), seq [[58.6, 'own', 'R']]
+                                e.g. live_play_20261020_201818.jsonl fall 73.2 s (R), seq [[73.2, 'own', 'R']]
+   reg_D_small_push               9 ( 7.4% of losses)  hp20 0.74  el20 4.76  elmin 1.8  own_off(40s) 0.67  opp_lane_el 4.89  gave_back 0
+                                attackers {'night_witch': 152, 'goblin_barrel': 147, 'golem': 135, 'elite_barbarians': 38, 'valkyrie': 35, 'phoenix': 34}  wincons {'golem': 3, 'battle_ram': 1, 'electro_giant': 1, 'miner': 1, 'mortar': 1}
+                                e.g. live_play_20261020_145359.jsonl fall 120.4 s (R), seq [[120.4, 'own', 'R']]
+                                e.g. live_play_20261020_150005.jsonl fall 74.3 s (R), seq [[74.3, 'own', 'R']]
+                                e.g. live_play_20261020_151049.jsonl fall 76.9 s (R), seq [[76.9, 'own', 'R']]
+   ot_B_punished_commit           9 ( 7.4% of losses)  hp20 0.47  el20 3.13  elmin 1.15  own_off(40s) 8.67  opp_lane_el 12.67  gave_back 0
+                                attackers {'royal_hogs': 113, 'goblin_barrel': 78, 'rune_giant': 57, 'royal_ghost': 50, 'archers': 40, 'valkyrie': 39}  wincons {'royal_hogs': 2, 'goblin_barrel': 2, 'royal_giant': 1, 'x_bow': 1, 'hog_rider': 1}
+                                e.g. live_play_20261020_154222.jsonl fall 192.7 s (R), seq [[192.7, 'own', 'R']]
+                                e.g. live_play_20261020_182456.jsonl fall 214.0 s (R), seq [[214.0, 'own', 'R']]
+                                e.g. live_play_20261020_194332.jsonl fall 274.9 s (L), seq [[274.9, 'own', 'L']]
+   ot_C_big_push                  5 ( 4.1% of losses)  hp20 0.41  el20 6.81  elmin 1.26  own_off(40s) 4.8  opp_lane_el 12.8  gave_back 0
+                                attackers {'hog_rider': 48, 'giant': 30, 'barbarian_barrel': 27, 'spirit_empress_air': 27, 'mega_minion': 22, 'giant_skeleton': 10}  wincons {'hog_rider': 2, 'royal_hogs': 1, 'giant': 1, 'goblin_barrel': 1}
+                                e.g. live_play_20261020_195738.jsonl fall 196.6 s (L), seq [[196.6, 'own', 'L']]
+                                e.g. live_play_20261020_213337.jsonl fall 223.3 s (R), seq [[223.3, 'own', 'R']]
+                                e.g. live_play_20261020_230525.jsonl fall 201.5 s (R), seq [[201.5, 'own', 'R']]
+   reg_C_big_push                 5 ( 4.1% of losses)  hp20 0.8  el20 4.67  elmin 1.16  own_off(40s) 1.8  opp_lane_el 12.8  gave_back 0
+                                attackers {'battle_ram': 58, 'three_musketeers': 49, 'musketeer': 42, 'little_prince': 30, 'balloon': 29, 'hog_rider': 29}  wincons {'battle_ram': 2, 'giant': 1, 'hog_rider': 1, 'mega_knight': 1}
+                                e.g. live_play_20261020_210055.jsonl fall 79.6 s (R), seq [[79.6, 'own', 'R']]
+                                e.g. live_play_20261020_213018.jsonl fall 165.6 s (R), seq [[165.6, 'own', 'R']]
+                                e.g. live_play_20261020_224703.jsonl fall 77.7 s (R), seq [[77.7, 'own', 'R']]
+   ot_D_small_push                4 ( 3.3% of losses)  hp20 0.61  el20 4.46  elmin 0.95  own_off(40s) 3.75  opp_lane_el 5.75  gave_back 2
+                                attackers {'skeleton_barrel': 82, 'witch': 56, 'goblinstein': 49, 'minions': 47, 'bomber': 34, 'wizard': 31}  wincons {'balloon': 1, 'giant': 1, 'electro_giant': 1, 'pekka': 1}
+                                e.g. live_play_20261020_162330.jsonl fall 246.8 s (L), seq [[246.8, 'own', 'L']]
+                                e.g. live_play_20261020_185525.jsonl fall 229.1 s (L), seq [[84.5, 'opp', 'L'], [94.9, 'own', 'R'], [229.1, 'own', 'L']]
+                                e.g. live_play_20261020_214310.jsonl fall 188.1 s (R), seq [[31.8, 'opp', 'R'], [101.5, 'own', 'L'], [188.1, 'own', 'R']]
+  ladder: 52 losses
+   K_tiebreak_drain              15 (28.8% of losses)  hp20 0.36  el20 4.48  elmin 1.95  own_off(40s) 7.0  opp_lane_el 9.92  gave_back 0
+                                attackers {'graveyard': 41, 'witch': 36, 'mega_knight': 19, 'valkyrie': 11, 'knight': 8, 'ram_rider': 6}  wincons {'mega_knight': 5, 'electro_giant': 2, 'ram_rider': 2, 'graveyard': 1, 'royal_hogs': 1}
+                                e.g. live_play_20261019_144026.jsonl fall 302.6 s (R), seq [[302.6, 'own', 'R']]
+                                e.g. live_play_20261019_144950.jsonl fall 303.6 s (R), seq [[303.6, 'own', 'R']]
+                                e.g. live_play_20261019_165027.jsonl fall 302.7 s (L), seq [[302.7, 'own', 'L']]
+   ot_A_finish_weak_tower         9 (17.3% of losses)  hp20 0.09  el20 4.15  elmin 1.32  own_off(40s) 7.67  opp_lane_el 8.22  gave_back 1
+                                attackers {'goblin_barrel': 67, 'witch': 47, 'goblin_drill': 39, 'valkyrie': 22, 'miner': 18, 'wall_breakers': 17}  wincons {'hog_rider': 3, 'miner': 1, 'wall_breakers': 1, 'giant': 1, 'balloon': 1}
+                                e.g. live_play_20261019_150718.jsonl fall 189.3 s (L), seq [[189.3, 'own', 'L']]
+                                e.g. live_play_20261019_151424.jsonl fall 249.1 s (L), seq [[121.8, 'own', 'R'], [151.2, 'opp', 'R'], [249.1, 'own', 'L']]
+                                e.g. live_play_20261019_152254.jsonl fall 295.3 s (L), seq [[295.3, 'own', 'L']]
+   reg_A_finish_weak_tower        8 (15.4% of losses)  hp20 0.16  el20 4.66  elmin 0.84  own_off(40s) 6.0  opp_lane_el 7.25  gave_back 0
+                                attackers {'goblin_barrel': 87, 'goblin_gang': 75, 'royal_hogs': 70, 'hog_rider': 64, 'witch': 63, 'balloon': 33}  wincons {'hog_rider': 4, 'mega_knight': 3, 'balloon': 1}
+                                e.g. live_play_20261019_140744.jsonl fall 173.0 s (L), seq [[173.0, 'own', 'L']]
+                                e.g. live_play_20261019_163119.jsonl fall 176.4 s (L), seq [[176.4, 'own', 'L']]
+                                e.g. live_play_20261019_171319.jsonl fall 123.1 s (R), seq [[123.1, 'own', 'R']]
+   reg_B_punished_commit          6 (11.5% of losses)  hp20 0.59  el20 2.51  elmin 0.65  own_off(40s) 7.0  opp_lane_el 5.17  gave_back 0
+                                attackers {'skeleton_barrel': 92, 'elixir_golem': 83, 'executioner': 72, 'zappies': 70, 'hog_rider': 29, 'furnace': 28}  wincons {'hog_rider': 3, 'royal_giant': 2, 'elixir_golem': 1}
+                                e.g. live_play_20261019_200142.jsonl fall 116.9 s (R), seq [[116.9, 'own', 'R']]
+                                e.g. live_play_20261019_201851.jsonl fall 95.4 s (L), seq [[95.4, 'own', 'L'], [103.5, 'own', 'R']]
+                                e.g. live_play_20261019_210449.jsonl fall 53.0 s (R), seq [[53.0, 'own', 'R'], [115.8, 'own', 'L']]
+   ot_C_big_push                  5 ( 9.6% of losses)  hp20 0.58  el20 3.73  elmin 0.9  own_off(40s) 0.0  opp_lane_el 15.4  gave_back 1
+                                attackers {'clone': 177, 'witch': 175, 'goblin_gang': 117, 'bats': 88, 'graveyard': 78, 'giant': 61}  wincons {'giant': 2, 'mega_knight': 2, 'royal_giant': 1}
+                                e.g. live_play_20261019_161113.jsonl fall 244.8 s (R), seq [[244.8, 'own', 'R']]
+                                e.g. live_play_20261019_165554.jsonl fall 231.0 s (K), seq [[19.2, 'opp', 'R'], [150.6, 'opp', 'L'], [163.6, 'own', 'R'], [171.7, 'own', 'L'], [231.0, 'own', 'K']]
+                                e.g. live_play_20261019_202214.jsonl fall 194.6 s (R), seq [[42.3, 'own', 'L'], [145.7, 'opp', 'R'], [194.6, 'own', 'R']]
+   reg_D_small_push               3 ( 5.8% of losses)  hp20 0.72  el20 3.7  elmin 0.68  own_off(40s) 0.0  opp_lane_el 4.33  gave_back 1
+                                attackers {'elixir_golem': 132, 'golem': 57, 'battle_healer': 34, 'mini_pekka': 34, 'executioner': 30, 'goblin_barrel': 27}  wincons {'elixir_golem': 2, 'golem': 1}
+                                e.g. live_play_20261019_145834.jsonl fall 124.4 s (R), seq [[124.4, 'own', 'R']]
+                                e.g. live_play_20261019_201220.jsonl fall 67.1 s (R), seq [[67.1, 'own', 'R']]
+                                e.g. live_play_20261019_204746.jsonl fall 161.6 s (L), seq [[26.1, 'opp', 'L'], [127.8, 'own', 'R'], [161.6, 'own', 'L']]
+   ot_B_punished_commit           3 ( 5.8% of losses)  hp20 0.42  el20 2.83  elmin 0.95  own_off(40s) 6.0  opp_lane_el 11.33  gave_back 0
+                                attackers {'skeleton_dragons': 55, 'hog_rider': 32, 'royal_recruits': 32, 'flying_machine': 30, 'royal_hogs': 30, 'magic_archer': 21}  wincons {'hog_rider': 1, 'other': 1, 'royal_hogs': 1}
+                                e.g. live_play_20261019_155341.jsonl fall 218.9 s (L), seq [[218.9, 'own', 'L']]
+                                e.g. live_play_20261019_162437.jsonl fall 196.0 s (L), seq [[196.0, 'own', 'L']]
+                                e.g. live_play_20261019_202944.jsonl fall 204.6 s (R), seq [[204.6, 'own', 'R']]
+   reg_C_big_push                 2 ( 3.8% of losses)  hp20 0.4  el20 0.61  elmin 0.61  own_off(40s) 0.0  opp_lane_el 9.5  gave_back 0
+                                attackers {'skeleton_dragons': 55, 'ronin': 31, 'elixir_golem': 12, 'witch': 6, 'boss_bandit': 1}  wincons {'elixir_golem': 1, 'mega_knight': 1}
+                                e.g. live_play_20261019_185321.jsonl fall 173.8 s (R), seq [[173.8, 'own', 'R']]
+                                e.g. live_play_20261019_221922.jsonl fall 135.7 s (L), seq [[135.7, 'own', 'L']]
+   ot_D_small_push                1 ( 1.9% of losses)  hp20 0.4  el20 6.38  elmin 0.81  own_off(40s) 6.0  opp_lane_el 8.0  gave_back 0
+                                attackers {'balloon': 34, 'skeleton_army': 20, 'goblin_gang': 4}  wincons {'balloon': 1}
+                                e.g. live_play_20261019_195800.jsonl fall 199.9 s (R), seq [[199.9, 'own', 'R']]
+
+## T5b SIM w12 losses: the same window features (cards / elixir only; no positions)
+  1x     n= 210 own_off(40s) 3.77  opp troop elixir in window 5.91
+  2x     n= 163 own_off(40s) 3.68  opp troop elixir in window 11.43
+  OT2x   n= 125 own_off(40s) 3.36  opp troop elixir in window 12.47
+  OT3x   n=  53 own_off(40s) 6.34  opp troop elixir in window 15.89
+  drain  n= 141 own_off(40s) 7.74  opp troop elixir in window 11.90
+  ranked 1x     n= 27 own_off(40s) 3.22  opp lane elixir in window 5.56
+  ranked 2x     n= 18 own_off(40s) 5.83  opp lane elixir in window 9.61
+  ranked OT2x   n= 25 own_off(40s) 5.04  opp lane elixir in window 11.44
+  ranked OT3x   n= 15 own_off(40s) 9.80  opp lane elixir in window 11.67
+  ranked drain  n= 32 own_off(40s) 8.44  opp lane elixir in window 8.12
+  ladder 1x     n=  4 own_off(40s) 4.50  opp lane elixir in window 3.00
+  ladder 2x     n= 15 own_off(40s) 4.80  opp lane elixir in window 7.27
+  ladder OT2x   n= 11 own_off(40s) 4.36  opp lane elixir in window 10.55
+  ladder OT3x   n=  7 own_off(40s) 6.43  opp lane elixir in window 11.00
+  ladder drain  n= 12 own_off(40s) 7.00  opp lane elixir in window 9.92
+
+## T6 CPU starvation vs result (per match: median decision ms, cpu_starved events)
+  ranked  median < 60 ms   41.2% [21.6, 64.0] n=17
+  ranked  60-80 ms         44.3% [35.2, 53.8] n=106
+  ranked  80-100 ms        48.8% [38.3, 59.4] n=82
+  ranked  >= 100 ms        64.3% [45.8, 79.3] n=28
+  ranked  any CPU-STARVED event  50.9% [41.8, 60.0] n=112 vs none  45.5% [36.9, 54.3] n=121  diff  +5.4 [ -7.3, +17.9]
+  ladder  median < 60 ms  n=0
+  ladder  60-80 ms         58.8% [47.8, 68.9] n=80
+  ladder  80-100 ms        66.7% [53.7, 77.5] n=57
+  ladder  >= 100 ms       100.0% [20.7, 100.0] n=1
+  ladder  any CPU-STARVED event  66.0% [52.2, 77.6] n=50 vs none  60.2% [49.8, 69.8] n=88  diff  +5.8 [-11.1, +21.4]
+  ranked 10-20 13:28-21:59        n=99 median-of-medians 90 ms; starved  50.0% [39.9, 60.1] n=90 vs not  66.7% [35.4, 87.9] n=9
+  ranked 10-20 22:00-10-21 07:10  n=134 median-of-medians 68.0 ms; starved  54.5% [34.7, 73.1] n=22 vs not  43.8% [34.9, 53.0] n=112
+  ranked  unconfirmed plays / match: wins 2.87, losses 2.74; confirm latency median wins 1.262 s, losses 1.296 s
+  ladder  unconfirmed plays / match: wins 2.24, losses 2.25; confirm latency median wins 1.203 s, losses 1.209 s
+
+## T7 tank / bridge-spam win conditions (anatomy.wincon in BEAT) vs the rest
+  ranked   BEAT  25.3% [17.2, 35.6] n=83       losses   62 | rest  60.7% [52.7, 68.1] n=150      losses   59
+  ladder   BEAT  59.0% [43.4, 72.9] n=39       losses   16 | rest  63.6% [53.8, 72.4] n=99       losses   36
+  sim_w12  BEAT  57.5% [54.0, 60.9] n=781      losses  332 | rest  68.4% [65.6, 71.0] n=1139     losses  360
+  sim_e4   BEAT  69.4% [66.1, 72.5] n=781      losses  239 | rest  74.4% [71.7, 76.8] n=1139     losses  292
+  ranked - sim_w12 on BEAT: -32.2 [-41.0, -21.3]
+  ranked - sim_w12 on the rest:  -7.7 [-16.1,  +0.2]
+  ranked BEAT paths {'win_clean': 21, 'L_tiebreak_drain': 21, 'L_never_led_1x': 16, 'L_never_led_OT2x': 9, 'L_never_led_2x': 7, 'L_never_led_OT3x': 5, 'L_gave_back': 4}
+  sim_w12 BEAT paths {'win_clean': 428, 'L_never_led_1x': 96, 'L_never_led_2x': 78, 'L_tiebreak_drain': 60, 'L_never_led_OT2x': 46, 'L_gave_back': 40, 'win_comeback': 21, 'L_never_led_OT3x': 12}
+
+## T8 loss mechanisms (ranked; T5 clusters grouped) x opponent group
+  1 chip race lost, decided in OT           58 (47.9%)   BEAT  27  rest  31
+  2 punished offensive commit               24 (19.8%)   BEAT  17  rest   7
+  3 chipped tower finished in regulation    16 (13.2%)   BEAT   4  rest  12
+  4 push through a healthy tower            23 (19.0%)   BEAT  14  rest   9
+
+## T9 OT targeting: in OT losses before the drain, did the fallen tower = CLX lowest princess at 180 s?
+  ranked: 39 / 40 fell on the tower that was lowest at 180 s
+  ranked: CLX OT takes on the opponent tower lowest at 180 s: 48 / 67
+  ladder: 16 / 17 fell on the tower that was lowest at 180 s
+  ladder: CLX OT takes on the opponent tower lowest at 180 s: 33 / 43
+
+## T10 bridge X-Bow efficiency, live (invlib.xbow_rows: lock = >= 5% of a princess while alive, dmg in princess units)
+  ranked  X-Bows/match 4.64  bridge/match 3.90  lock  45.3% [42.1, 48.5] n=908  dmg/bridge X-Bow 0.211  answer elixir/bridge X-Bow 5.73  life 16.1 s
+     wins   lock  59.7% [55.1, 64.2] n=447  dmg/bridge 0.291
+     losses lock  31.2% [27.2, 35.6] n=461  dmg/bridge 0.133
+  ladder  X-Bows/match 4.54  bridge/match 3.54  lock  57.3% [52.8, 61.6] n=489  dmg/bridge X-Bow 0.257  answer elixir/bridge X-Bow 6.42  life 16.5 s
+     wins   lock  68.4% [63.0, 73.3] n=310  dmg/bridge 0.313
+     losses lock  38.0% [31.2, 45.3] n=179  dmg/bridge 0.160
+
+## T11 is the SIM calibrated to the ladder or to Ranked?  (live - sim_w12, pp, Newcombe 95%)
+  overall win                    ladder  62.3 vs  64.0:  -1.6 [-10.2,  +6.3]   |   ranked  48.1 vs  64.0: -15.9 [-22.6,  -9.1]
+  win vs BEAT                    ladder  59.0 vs  57.5:  +1.5 [-14.4, +15.9]   |   ranked  25.3 vs  57.5: -32.2 [-41.0, -21.3]
+  win vs rest                    ladder  63.6 vs  68.4:  -4.8 [-14.9,  +4.5]   |   ranked  60.7 vs  68.4:  -7.7 [-16.1,  +0.2]
+  win | OT                       ladder  60.5 vs  70.1:  -9.6 [-20.8,  +0.8]   |   ranked  47.3 vs  70.1: -22.8 [-31.2, -14.3]
+  win | OT decided before drain  ladder  65.5 vs  77.5: -12.0 [-25.1,  -0.6]   |   ranked  52.6 vs  77.5: -24.9 [-35.2, -14.7]
+  lost first princess            ladder  34.8 vs  34.6:  +0.2 [ -7.5,  +8.7]   |   ranked  48.1 vs  34.6: +13.5 [ +6.8, +20.2]
+  lost in regulation             ladder  14.5 vs  19.5:  -5.0 [-10.3,  +2.0]   |   ranked  18.9 vs  19.5:  -0.6 [ -5.5,  +5.1]
+
+## T12 examples per mechanism (ranked; log file, decisive fall clock s and GAME tick = clock tick + 78)
+  1 chip race lost, decided in OT:
+    live_play_20261020_133916.jsonl fall 300.9 s (game tick 6096) R tower hp20 0.018 el20 2.95 | mega_knight | attackers ['minion_horde'] | CLX: knight@-16s:other_lane, tornado@-12s:other_lane, skeletons@-8s:other_lane, ice_wizard@-6s:other_lane, the_log@-5s:other_lane | opp: minion_horde@-17s, firecracker@-14s, valkyrie@-11s, mega_knight@-8s
+    live_play_20261020_142524.jsonl fall 257.9 s (game tick 5235) R tower hp20 0.209 el20 1.77 | hog_rider | attackers ['minions', 'hog_rider'] | CLX: skeletons@-14s:other_lane, knight@-12s:defend_lane, tornado@-11s:defend_lane, tesla@-10s:defend_lane, rocket@-3s:rocket_tower | opp: minions@-16s, hog_rider@-15s, lightning@-11s, arrows@-2s
+    live_play_20261020_143334.jsonl fall 241.4 s (game tick 4905) L tower hp20 0.093 el20 2.29 | royal_giant | attackers [] | CLX: knight@-18s:defend_lane, tornado@-14s:defend_lane, ice_wizard@-4s:defend_lane, skeletons@-2s:defend_lane, the_log@-1s:defend_lane | opp: goblin_barrel@-17s, knight@-10s, electro_wizard@-7s, ice_spirit@-5s, the_log@-3s
+    live_play_20261020_151757.jsonl fall 300.9 s (game tick 6096) L tower hp20 0.128 el20 3.53 | miner | attackers ['miner'] | CLX: x_bow@-17s:xbow_bridge, tesla@-12s:other_lane, skeletons@-11s:other_lane, ice_wizard@-9s:other_lane, knight@-6s:defend_lane | opp: knight@-14s, archer_queen@-13s, the_log@-9s, miner@-8s
+    live_play_20261020_164340.jsonl fall 223.8 s (game tick 4554) L tower hp20 0.111 el20 5.15 | hog_rider | attackers ['goblin_barrel', 'hog_rider', 'valkyrie'] | CLX: x_bow@-18s:xbow_defensive, knight@-12s:defend_lane, the_log@-10s:defend_lane, ice_wizard@-7s:defend_lane, skeletons@-5s:defend_lane | opp: valkyrie@-15s, princess@-13s, hog_rider@-10s, goblin_barrel@-7s, the_log@-3s
+    live_play_20261020_164745.jsonl fall 224.6 s (game tick 4569) L tower hp20 0.055 el20 2.4 | three_musketeers | attackers ['monk'] | CLX: ice_wizard@-14s:defend_lane, the_log@-11s:defend_lane, skeletons@-10s:other_lane, knight@-8s:defend_lane, tesla@+0s:other_lane | opp: monk@-17s, knight@-6s, heal_spirit@-2s, rage@-0s
+  2 punished offensive commit:
+    live_play_20261020_153052.jsonl fall 106.9 s (game tick 2216) R tower hp20 0.867 el20 4.05 | giant_skeleton | attackers ['clone', 'witch', 'giant_skeleton'] | CLX: the_log@-13s:defend_lane, tesla@-12s:defend_lane, skeletons@-11s:defend_lane, ice_wizard@-2s:defend_lane | opp: giant_skeleton@-15s, clone@-8s
+    live_play_20261020_154222.jsonl fall 192.7 s (game tick 3931) R tower hp20 0.83 el20 2.23 | royal_hogs | attackers ['royal_hogs', 'royal_ghost', 'archer_queen'] | CLX: ice_wizard@-13s:defend_lane, tornado@-11s:defend_lane, skeletons@-9s:defend_lane, the_log@-6s:defend_lane, knight@-2s:defend_lane | opp: skeletons@-20s, royal_hogs@-14s, royal_ghost@-11s, fireball@-3s
+    live_play_20261020_182456.jsonl fall 214.0 s (game tick 4358) R tower hp20 0.339 el20 2.24 | royal_giant | attackers ['royal_giant', 'barbarian_barrel'] | CLX: x_bow@-12s:xbow_bridge, skeletons@-11s:defend_lane, the_log@-10s:defend_lane, knight@-5s:defend_lane, ice_wizard@-1s:defend_lane | opp: royal_ghost@-16s, royal_giant@-14s, fisherman@-9s, barbarian_barrel@-7s, skeletons@-3s
+    live_play_20261020_185147.jsonl fall 58.6 s (game tick 1249) R tower hp20 1.0 el20 1.6 | mega_knight | attackers ['battle_ram', 'mega_knight'] | CLX: the_log@-19s:defend_lane, ice_wizard@-11s:defend_lane, tornado@-2s:defend_lane | opp: battle_ram@-14s
+    live_play_20261020_194332.jsonl fall 274.9 s (game tick 5575) L tower hp20 0.325 el20 2.01 | x_bow | attackers [] | CLX: knight@-11s:defend_lane, the_log@-8s:defend_lane, skeletons@-7s:other_lane, tornado@-5s:offence, ice_wizard@-3s:defend_lane | opp: knight@-11s, electro_spirit@-10s, archers@-8s, fireball@-5s, skeletons@-3s
+    live_play_20261020_201818.jsonl fall 73.2 s (game tick 1542) R tower hp20 1.0 el20 0.96 | giant | attackers ['mini_pekka', 'giant'] | CLX: ice_wizard@-13s:defend_lane | opp: the_log@-19s, mini_pekka@-19s, fireball@-10s
+  3 chipped tower finished in regulation:
+    live_play_20261020_145711.jsonl fall 111.5 s (game tick 2308) L tower hp20 0.128 el20 3.27 | electro_giant | attackers ['electro_giant'] | CLX: knight@-14s:defend_lane, ice_wizard@-11s:defend_lane, skeletons@-9s:other_lane, the_log@-3s:other_lane | opp: barbarians@-13s
+    live_play_20261020_200644.jsonl fall 75.1 s (game tick 1580) R tower hp20 0.017 el20 4.11 | mega_knight | attackers ['firecracker'] | CLX: tesla@-1s:other_lane | opp: firecracker@-15s, balloon@-5s, lumberjack@-3s
+    live_play_20261020_211617.jsonl fall 159.6 s (game tick 3269) L tower hp20 0.053 el20 1.98 | mega_knight | attackers ['minions', 'mega_knight', 'wizard'] | CLX: knight@-16s:defend_lane, skeletons@-12s:defend_lane, ice_wizard@-11s:defend_lane, the_log@-5s:defend_lane, tesla@-3s:other_lane | opp: mega_knight@-18s, minions@-13s, boss_bandit@-5s, goblin_barrel@-0s
+    live_play_20261020_225020.jsonl fall 164.0 s (game tick 3357) R tower hp20 0.006 el20 7.64 | mortar | attackers ['mortar', 'barbarian_barrel', 'skeleton_barrel'] | CLX: tesla@-18s:defend_lane, x_bow@-11s:xbow_bridge, skeletons@-10s:defend_lane, knight@-8s:defend_lane, the_log@-5s:defend_lane | opp: mortar@-19s, skeleton_barrel@-15s, barbarian_barrel@-14s, rascals@-8s, fireball@-2s
+    live_play_20261020_231314.jsonl fall 174.8 s (game tick 3574) R tower hp20 0.157 el20 7.39 | mega_knight | attackers ['goblin_barrel'] | CLX: x_bow@-19s:xbow_bridge, tesla@-15s:defend_lane, the_log@-11s:defend_lane, skeletons@-10s:defend_lane, knight@-6s:defend_lane | opp: mega_knight@-16s, firecracker@-13s, goblin_barrel@-8s, arrows@-1s
+    live_play_20261021_000834.jsonl fall 161.0 s (game tick 3298) R tower hp20 0.104 el20 8.18 | goblin_barrel | attackers ['goblin_barrel', 'knight'] | CLX: tesla@-15s:defend_lane, the_log@-13s:defend_lane, skeletons@-11s:defend_lane, ice_wizard@-8s:defend_lane, knight@-4s:defend_lane | opp: 
+  4 push through a healthy tower:
+    live_play_20261020_145359.jsonl fall 120.4 s (game tick 2485) R tower hp20 0.303 el20 10.0 | battle_ram | attackers ['battle_ram'] | CLX: knight@-8s:defend_lane, tesla@-1s:defend_lane | opp: battle_ram@-9s
+    live_play_20261020_150005.jsonl fall 74.3 s (game tick 1564) R tower hp20 0.992 el20 1.89 | electro_giant | attackers ['valkyrie', 'electro_giant'] | CLX: the_log@-15s:defend_lane, ice_wizard@-10s:defend_lane | opp: valkyrie@-13s
+    live_play_20261020_151049.jsonl fall 76.9 s (game tick 1615) R tower hp20 0.92 el20 9.57 | miner | attackers ['goblin_barrel', 'miner'] | CLX: tesla@-13s:defend_lane, skeletons@-12s:defend_lane | opp: goblin_barrel@-14s, miner@-14s
+    live_play_20261020_152320.jsonl fall 87.0 s (game tick 1817) R tower hp20 0.99 el20 1.15 | golem | attackers ['golem', 'phoenix', 'executioner'] | CLX: tornado@-14s:defend_lane, ice_wizard@-6s:defend_lane | opp: tornado@-16s
+    live_play_20261020_162330.jsonl fall 246.8 s (game tick 5014) L tower hp20 0.764 el20 7.58 | balloon | attackers ['wizard', 'balloon'] | CLX: tornado@-9s:defend_lane, the_log@-7s:defend_lane, skeletons@-6s:defend_lane, ice_wizard@-4s:defend_lane, knight@-1s:other_lane | opp: balloon@-16s, electro_wizard@-10s, valkyrie@-6s
+    live_play_20261020_162756.jsonl fall 58.2 s (game tick 1241) R tower hp20 1.0 el20 0.59 | golem | attackers ['night_witch', 'golem'] | CLX: skeletons@-18s:defend_lane, tornado@-10s:defend_lane | opp: lightning@-16s

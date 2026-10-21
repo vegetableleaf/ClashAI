@@ -1,0 +1,1818 @@
+[
+{
+"key": "live_play_20261020_132855.jsonl",
+"kind": "win_first_take",
+"match_med": 103,
+"win_med": 100,
+"win_gt80": 1.0,
+"n_win": 31
+},
+{
+"key": "live_play_20261020_133216.jsonl",
+"kind": "win_first_take",
+"match_med": 88,
+"win_med": 97.5,
+"win_gt80": 1.0,
+"n_win": 38
+},
+{
+"key": "live_play_20261020_133533.jsonl",
+"kind": "win_first_take",
+"match_med": 86,
+"win_med": 86.0,
+"win_gt80": 0.861,
+"n_win": 36
+},
+{
+"key": "live_play_20261020_133916.jsonl",
+"kind": "loss_decisive",
+"match_med": 85.0,
+"win_med": 91,
+"win_gt80": 0.862,
+"n_win": 29
+},
+{
+"key": "live_play_20261020_134440.jsonl",
+"kind": "win_first_take",
+"match_med": 84,
+"win_med": 48,
+"win_gt80": 0.226,
+"n_win": 31
+},
+{
+"key": "live_play_20261020_134758.jsonl",
+"kind": "win_first_take",
+"match_med": 82.0,
+"win_med": 84.5,
+"win_gt80": 0.667,
+"n_win": 24
+},
+{
+"key": "live_play_20261020_135241.jsonl",
+"kind": "win_first_take",
+"match_med": 86,
+"win_med": 93,
+"win_gt80": 0.88,
+"n_win": 25
+},
+{
+"key": "live_play_20261020_141754.jsonl",
+"kind": "win_first_take",
+"match_med": 111.0,
+"win_med": 118.0,
+"win_gt80": 1.0,
+"n_win": 32
+},
+{
+"key": "live_play_20261020_142115.jsonl",
+"kind": "win_first_take",
+"match_med": 87.0,
+"win_med": 77,
+"win_gt80": 0.323,
+"n_win": 31
+},
+{
+"key": "live_play_20261020_142524.jsonl",
+"kind": "loss_decisive",
+"match_med": 86,
+"win_med": 83,
+"win_gt80": 0.636,
+"n_win": 33
+},
+{
+"key": "live_play_20261020_143004.jsonl",
+"kind": "win_first_take",
+"match_med": 88,
+"win_med": 98.0,
+"win_gt80": 0.882,
+"n_win": 34
+},
+{
+"key": "live_play_20261020_143334.jsonl",
+"kind": "loss_decisive",
+"match_med": 77.0,
+"win_med": 75,
+"win_gt80": 0.258,
+"n_win": 31
+},
+{
+"key": "live_play_20261020_143755.jsonl",
+"kind": "win_first_take",
+"match_med": 84.0,
+"win_med": 56,
+"win_gt80": 0.364,
+"n_win": 33
+},
+{
+"key": "live_play_20261020_144315.jsonl",
+"kind": "win_first_take",
+"match_med": 88.0,
+"win_med": 98.5,
+"win_gt80": 0.971,
+"n_win": 34
+},
+{
+"key": "live_play_20261020_144719.jsonl",
+"kind": "win_first_take",
+"match_med": 87,
+"win_med": 89,
+"win_gt80": 0.727,
+"n_win": 33
+},
+{
+"key": "live_play_20261020_145037.jsonl",
+"kind": "win_first_take",
+"match_med": 102.0,
+"win_med": 84.0,
+"win_gt80": 0.667,
+"n_win": 30
+},
+{
+"key": "live_play_20261020_145359.jsonl",
+"kind": "loss_decisive",
+"match_med": 96,
+"win_med": 106.5,
+"win_gt80": 1.0,
+"n_win": 36
+},
+{
+"key": "live_play_20261020_145711.jsonl",
+"kind": "loss_decisive",
+"match_med": 92,
+"win_med": 88,
+"win_gt80": 0.517,
+"n_win": 29
+},
+{
+"key": "live_play_20261020_150005.jsonl",
+"kind": "loss_decisive",
+"match_med": 96.0,
+"win_med": 66,
+"win_gt80": 0.486,
+"n_win": 35
+},
+{
+"key": "live_play_20261020_150323.jsonl",
+"kind": "win_first_take",
+"match_med": 92.0,
+"win_med": 53,
+"win_gt80": 0.333,
+"n_win": 27
+},
+{
+"key": "live_play_20261020_150636.jsonl",
+"kind": "win_first_take",
+"match_med": 113.0,
+"win_med": 151.5,
+"win_gt80": 0.938,
+"n_win": 32
+},
+{
+"key": "live_play_20261020_151049.jsonl",
+"kind": "loss_decisive",
+"match_med": 94.0,
+"win_med": 92.0,
+"win_gt80": 0.974,
+"n_win": 38
+},
+{
+"key": "live_play_20261020_151401.jsonl",
+"kind": "win_first_take",
+"match_med": 85,
+"win_med": 89,
+"win_gt80": 0.857,
+"n_win": 35
+},
+{
+"key": "live_play_20261020_151757.jsonl",
+"kind": "loss_decisive",
+"match_med": 87,
+"win_med": 87,
+"win_gt80": 0.818,
+"n_win": 33
+},
+{
+"key": "live_play_20261020_152320.jsonl",
+"kind": "loss_decisive",
+"match_med": 99.0,
+"win_med": 50.0,
+"win_gt80": 0.1,
+"n_win": 30
+},
+{
+"key": "live_play_20261020_152639.jsonl",
+"kind": "win_first_take",
+"match_med": 87.0,
+"win_med": 87,
+"win_gt80": 0.788,
+"n_win": 33
+},
+{
+"key": "live_play_20261020_153052.jsonl",
+"kind": "loss_decisive",
+"match_med": 86,
+"win_med": 59,
+"win_gt80": 0.452,
+"n_win": 31
+},
+{
+"key": "live_play_20261020_153403.jsonl",
+"kind": "win_first_take",
+"match_med": 86,
+"win_med": 90,
+"win_gt80": 0.852,
+"n_win": 27
+},
+{
+"key": "live_play_20261020_153903.jsonl",
+"kind": "win_first_take",
+"match_med": 83,
+"win_med": 83,
+"win_gt80": 0.636,
+"n_win": 33
+},
+{
+"key": "live_play_20261020_154222.jsonl",
+"kind": "loss_decisive",
+"match_med": 86,
+"win_med": 64,
+"win_gt80": 0.32,
+"n_win": 25
+},
+{
+"key": "live_play_20261020_162330.jsonl",
+"kind": "loss_decisive",
+"match_med": 88.0,
+"win_med": 90,
+"win_gt80": 0.737,
+"n_win": 19
+},
+{
+"key": "live_play_20261020_162756.jsonl",
+"kind": "loss_decisive",
+"match_med": 63,
+"win_med": 45,
+"win_gt80": 0.152,
+"n_win": 33
+},
+{
+"key": "live_play_20261020_163014.jsonl",
+"kind": "win_first_take",
+"match_med": 85.0,
+"win_med": 82,
+"win_gt80": 0.68,
+"n_win": 25
+},
+{
+"key": "live_play_20261020_163641.jsonl",
+"kind": "win_first_take",
+"match_med": 99.0,
+"win_med": 87,
+"win_gt80": 0.655,
+"n_win": 29
+},
+{
+"key": "live_play_20261020_163959.jsonl",
+"kind": "win_first_take",
+"match_med": 88,
+"win_med": 87.0,
+"win_gt80": 0.972,
+"n_win": 36
+},
+{
+"key": "live_play_20261020_164340.jsonl",
+"kind": "loss_decisive",
+"match_med": 81.0,
+"win_med": 85.5,
+"win_gt80": 0.594,
+"n_win": 32
+},
+{
+"key": "live_play_20261020_164745.jsonl",
+"kind": "loss_decisive",
+"match_med": 86,
+"win_med": 87.5,
+"win_gt80": 0.875,
+"n_win": 32
+},
+{
+"key": "live_play_20261020_165147.jsonl",
+"kind": "loss_decisive",
+"match_med": 88,
+"win_med": 89,
+"win_gt80": 0.839,
+"n_win": 31
+},
+{
+"key": "live_play_20261020_165557.jsonl",
+"kind": "win_first_take",
+"match_med": 87.0,
+"win_med": 85.0,
+"win_gt80": 0.7,
+"n_win": 30
+},
+{
+"key": "live_play_20261020_165923.jsonl",
+"kind": "win_first_take",
+"match_med": 85.0,
+"win_med": 86,
+"win_gt80": 0.718,
+"n_win": 39
+},
+{
+"key": "live_play_20261020_170235.jsonl",
+"kind": "loss_decisive",
+"match_med": 89,
+"win_med": 98.0,
+"win_gt80": 0.786,
+"n_win": 28
+},
+{
+"key": "live_play_20261020_170622.jsonl",
+"kind": "win_first_take",
+"match_med": 89.0,
+"win_med": 86,
+"win_gt80": 0.778,
+"n_win": 27
+},
+{
+"key": "live_play_20261020_171147.jsonl",
+"kind": "win_first_take",
+"match_med": 92.0,
+"win_med": 86,
+"win_gt80": 0.724,
+"n_win": 29
+},
+{
+"key": "live_play_20261020_171628.jsonl",
+"kind": "win_first_take",
+"match_med": 90,
+"win_med": 68.5,
+"win_gt80": 0.471,
+"n_win": 34
+},
+{
+"key": "live_play_20261020_171924.jsonl",
+"kind": "win_first_take",
+"match_med": 83.0,
+"win_med": 85.0,
+"win_gt80": 0.844,
+"n_win": 32
+},
+{
+"key": "live_play_20261020_172338.jsonl",
+"kind": "loss_decisive",
+"match_med": 85.0,
+"win_med": 85.5,
+"win_gt80": 0.812,
+"n_win": 32
+},
+{
+"key": "live_play_20261020_172902.jsonl",
+"kind": "win_first_take",
+"match_med": 85,
+"win_med": 90.0,
+"win_gt80": 0.906,
+"n_win": 32
+},
+{
+"key": "live_play_20261020_173220.jsonl",
+"kind": "win_first_take",
+"match_med": 91.0,
+"win_med": 82.0,
+"win_gt80": 0.571,
+"n_win": 28
+},
+{
+"key": "live_play_20261020_182456.jsonl",
+"kind": "loss_decisive",
+"match_med": 97.5,
+"win_med": 90.5,
+"win_gt80": 0.607,
+"n_win": 28
+},
+{
+"key": "live_play_20261020_182854.jsonl",
+"kind": "loss_decisive",
+"match_med": 94.0,
+"win_med": 88,
+"win_gt80": 0.879,
+"n_win": 33
+},
+{
+"key": "live_play_20261020_183411.jsonl",
+"kind": "win_first_take",
+"match_med": 81,
+"win_med": 85,
+"win_gt80": 0.828,
+"n_win": 29
+},
+{
+"key": "live_play_20261020_183850.jsonl",
+"kind": "win_first_take",
+"match_med": 90,
+"win_med": 87,
+"win_gt80": 0.655,
+"n_win": 29
+},
+{
+"key": "live_play_20261020_184210.jsonl",
+"kind": "loss_decisive",
+"match_med": 84,
+"win_med": 64.5,
+"win_gt80": 0.462,
+"n_win": 26
+},
+{
+"key": "live_play_20261020_184730.jsonl",
+"kind": "win_first_take",
+"match_med": 86,
+"win_med": 82,
+"win_gt80": 0.548,
+"n_win": 31
+},
+{
+"key": "live_play_20261020_185147.jsonl",
+"kind": "loss_decisive",
+"match_med": 86.0,
+"win_med": 44.0,
+"win_gt80": 0.067,
+"n_win": 30
+},
+{
+"key": "live_play_20261020_185525.jsonl",
+"kind": "loss_decisive",
+"match_med": 73,
+"win_med": 44.0,
+"win_gt80": 0.136,
+"n_win": 22
+},
+{
+"key": "live_play_20261020_185935.jsonl",
+"kind": "win_first_take",
+"match_med": 74,
+"win_med": 65.0,
+"win_gt80": 0.265,
+"n_win": 34
+},
+{
+"key": "live_play_20261020_190258.jsonl",
+"kind": "win_first_take",
+"match_med": 104,
+"win_med": 99.5,
+"win_gt80": 1.0,
+"n_win": 28
+},
+{
+"key": "live_play_20261020_190642.jsonl",
+"kind": "win_first_take",
+"match_med": 102.0,
+"win_med": 58,
+"win_gt80": 0.481,
+"n_win": 27
+},
+{
+"key": "live_play_20261020_191634.jsonl",
+"kind": "loss_decisive",
+"match_med": 94,
+"win_med": 96.0,
+"win_gt80": 1.0,
+"n_win": 24
+},
+{
+"key": "live_play_20261020_192008.jsonl",
+"kind": "loss_decisive",
+"match_med": 93,
+"win_med": 100,
+"win_gt80": 1.0,
+"n_win": 29
+},
+{
+"key": "live_play_20261020_192604.jsonl",
+"kind": "win_first_take",
+"match_med": 96,
+"win_med": 99.0,
+"win_gt80": 0.9,
+"n_win": 10
+},
+{
+"key": "live_play_20261020_193318.jsonl",
+"kind": "win_first_take",
+"match_med": 88,
+"win_med": 100,
+"win_gt80": 0.771,
+"n_win": 35
+},
+{
+"key": "live_play_20261020_193701.jsonl",
+"kind": "loss_decisive",
+"match_med": 89.5,
+"win_med": 107,
+"win_gt80": 1.0,
+"n_win": 29
+},
+{
+"key": "live_play_20261020_194332.jsonl",
+"kind": "loss_decisive",
+"match_med": 108,
+"win_med": 119.5,
+"win_gt80": 0.95,
+"n_win": 20
+},
+{
+"key": "live_play_20261020_194833.jsonl",
+"kind": "win_first_take",
+"match_med": 114.0,
+"win_med": 114.0,
+"win_gt80": 0.895,
+"n_win": 38
+},
+{
+"key": "live_play_20261020_195151.jsonl",
+"kind": "win_first_take",
+"match_med": 106,
+"win_med": 104,
+"win_gt80": 0.968,
+"n_win": 31
+},
+{
+"key": "live_play_20261020_195520.jsonl",
+"kind": "win_first_take",
+"match_med": 109.0,
+"win_med": 108.5,
+"win_gt80": 0.895,
+"n_win": 38
+},
+{
+"key": "live_play_20261020_195738.jsonl",
+"kind": "loss_decisive",
+"match_med": 113.0,
+"win_med": 111,
+"win_gt80": 0.64,
+"n_win": 25
+},
+{
+"key": "live_play_20261020_200118.jsonl",
+"kind": "win_first_take",
+"match_med": 112.0,
+"win_med": 119,
+"win_gt80": 0.963,
+"n_win": 27
+},
+{
+"key": "live_play_20261020_200644.jsonl",
+"kind": "loss_decisive",
+"match_med": 106.0,
+"win_med": 115.0,
+"win_gt80": 1.0,
+"n_win": 22
+},
+{
+"key": "live_play_20261020_200942.jsonl",
+"kind": "win_first_take",
+"match_med": 107.0,
+"win_med": 91.0,
+"win_gt80": 0.562,
+"n_win": 32
+},
+{
+"key": "live_play_20261020_201302.jsonl",
+"kind": "win_first_take",
+"match_med": 107,
+"win_med": 105,
+"win_gt80": 1.0,
+"n_win": 25
+},
+{
+"key": "live_play_20261020_201818.jsonl",
+"kind": "loss_decisive",
+"match_med": 106,
+"win_med": 56,
+"win_gt80": 0.103,
+"n_win": 29
+},
+{
+"key": "live_play_20261020_202141.jsonl",
+"kind": "loss_decisive",
+"match_med": 100,
+"win_med": 56.5,
+"win_gt80": 0.441,
+"n_win": 34
+},
+{
+"key": "live_play_20261020_202500.jsonl",
+"kind": "loss_decisive",
+"match_med": 105.0,
+"win_med": 98,
+"win_gt80": 0.565,
+"n_win": 23
+},
+{
+"key": "live_play_20261020_202834.jsonl",
+"kind": "loss_decisive",
+"match_med": 80.5,
+"win_med": 57,
+"win_gt80": 0.103,
+"n_win": 29
+},
+{
+"key": "live_play_20261020_203152.jsonl",
+"kind": "win_first_take",
+"match_med": 84.0,
+"win_med": 137.0,
+"win_gt80": 0.958,
+"n_win": 24
+},
+{
+"key": "live_play_20261020_203838.jsonl",
+"kind": "win_first_take",
+"match_med": 128,
+"win_med": 134.5,
+"win_gt80": 1.0,
+"n_win": 26
+},
+{
+"key": "live_play_20261020_204216.jsonl",
+"kind": "win_first_take",
+"match_med": 109.0,
+"win_med": 112.0,
+"win_gt80": 1.0,
+"n_win": 30
+},
+{
+"key": "live_play_20261020_204741.jsonl",
+"kind": "loss_decisive",
+"match_med": 82,
+"win_med": 112.0,
+"win_gt80": 0.964,
+"n_win": 28
+},
+{
+"key": "live_play_20261020_205234.jsonl",
+"kind": "loss_decisive",
+"match_med": 117,
+"win_med": 119.5,
+"win_gt80": 0.85,
+"n_win": 20
+},
+{
+"key": "live_play_20261020_205741.jsonl",
+"kind": "win_first_take",
+"match_med": 114.0,
+"win_med": 117.5,
+"win_gt80": 0.974,
+"n_win": 38
+},
+{
+"key": "live_play_20261020_210055.jsonl",
+"kind": "loss_decisive",
+"match_med": 112,
+"win_med": 127.0,
+"win_gt80": 1.0,
+"n_win": 32
+},
+{
+"key": "live_play_20261020_210413.jsonl",
+"kind": "loss_decisive",
+"match_med": 89,
+"win_med": 59.5,
+"win_gt80": 0.471,
+"n_win": 34
+},
+{
+"key": "live_play_20261020_210940.jsonl",
+"kind": "loss_decisive",
+"match_med": 104,
+"win_med": 79,
+"win_gt80": 0.48,
+"n_win": 25
+},
+{
+"key": "live_play_20261020_211259.jsonl",
+"kind": "loss_decisive",
+"match_med": 84.0,
+"win_med": 91,
+"win_gt80": 0.655,
+"n_win": 29
+},
+{
+"key": "live_play_20261020_211617.jsonl",
+"kind": "loss_decisive",
+"match_med": 91.0,
+"win_med": 92,
+"win_gt80": 0.828,
+"n_win": 29
+},
+{
+"key": "live_play_20261020_211937.jsonl",
+"kind": "loss_decisive",
+"match_med": 87.0,
+"win_med": 92,
+"win_gt80": 0.862,
+"n_win": 29
+},
+{
+"key": "live_play_20261020_212504.jsonl",
+"kind": "win_first_take",
+"match_med": 87.0,
+"win_med": 89,
+"win_gt80": 0.697,
+"n_win": 33
+},
+{
+"key": "live_play_20261020_213018.jsonl",
+"kind": "loss_decisive",
+"match_med": 90,
+"win_med": 59.5,
+"win_gt80": 0.429,
+"n_win": 28
+},
+{
+"key": "live_play_20261020_213337.jsonl",
+"kind": "loss_decisive",
+"match_med": 98.0,
+"win_med": 97,
+"win_gt80": 0.92,
+"n_win": 25
+},
+{
+"key": "live_play_20261020_213744.jsonl",
+"kind": "loss_decisive",
+"match_med": 98,
+"win_med": 97,
+"win_gt80": 0.935,
+"n_win": 31
+},
+{
+"key": "live_play_20261020_214310.jsonl",
+"kind": "loss_decisive",
+"match_med": 94.0,
+"win_med": 90,
+"win_gt80": 0.586,
+"n_win": 29
+},
+{
+"key": "live_play_20261020_214648.jsonl",
+"kind": "win_first_take",
+"match_med": 99.0,
+"win_med": 98,
+"win_gt80": 0.828,
+"n_win": 29
+},
+{
+"key": "live_play_20261020_215002.jsonl",
+"kind": "win_first_take",
+"match_med": 97,
+"win_med": 89,
+"win_gt80": 0.758,
+"n_win": 33
+},
+{
+"key": "live_play_20261020_215409.jsonl",
+"kind": "loss_decisive",
+"match_med": 94,
+"win_med": 89,
+"win_gt80": 0.811,
+"n_win": 37
+},
+{
+"key": "live_play_20261020_220152.jsonl",
+"kind": "win_first_take",
+"match_med": 116.0,
+"win_med": 121.5,
+"win_gt80": 0.962,
+"n_win": 26
+},
+{
+"key": "live_play_20261020_220718.jsonl",
+"kind": "win_first_take",
+"match_med": 103,
+"win_med": 95,
+"win_gt80": 0.92,
+"n_win": 25
+},
+{
+"key": "live_play_20261020_221242.jsonl",
+"kind": "win_first_take",
+"match_med": 64.5,
+"win_med": 53.5,
+"win_gt80": 0.033,
+"n_win": 30
+},
+{
+"key": "live_play_20261020_221620.jsonl",
+"kind": "win_first_take",
+"match_med": 54.0,
+"win_med": 51,
+"win_gt80": 0.086,
+"n_win": 35
+},
+{
+"key": "live_play_20261020_221942.jsonl",
+"kind": "win_first_take",
+"match_med": 56,
+"win_med": 52,
+"win_gt80": 0.087,
+"n_win": 23
+},
+{
+"key": "live_play_20261020_222321.jsonl",
+"kind": "win_first_take",
+"match_med": 48.5,
+"win_med": 49.0,
+"win_gt80": 0.067,
+"n_win": 30
+},
+{
+"key": "live_play_20261020_222947.jsonl",
+"kind": "loss_decisive",
+"match_med": 41,
+"win_med": 41.0,
+"win_gt80": 0.0,
+"n_win": 22
+},
+{
+"key": "live_play_20261020_223511.jsonl",
+"kind": "loss_decisive",
+"match_med": 47,
+"win_med": 30,
+"win_gt80": 0.043,
+"n_win": 23
+},
+{
+"key": "live_play_20261020_223825.jsonl",
+"kind": "loss_decisive",
+"match_med": 43,
+"win_med": 47,
+"win_gt80": 0.032,
+"n_win": 31
+},
+{
+"key": "live_play_20261020_224344.jsonl",
+"kind": "loss_decisive",
+"match_med": 41,
+"win_med": 23.0,
+"win_gt80": 0.0,
+"n_win": 34
+},
+{
+"key": "live_play_20261020_224703.jsonl",
+"kind": "loss_decisive",
+"match_med": 39.0,
+"win_med": 33,
+"win_gt80": 0.0,
+"n_win": 33
+},
+{
+"key": "live_play_20261020_225020.jsonl",
+"kind": "loss_decisive",
+"match_med": 38.0,
+"win_med": 39.0,
+"win_gt80": 0.0,
+"n_win": 28
+},
+{
+"key": "live_play_20261020_225340.jsonl",
+"kind": "win_first_take",
+"match_med": 38,
+"win_med": 38.0,
+"win_gt80": 0.0,
+"n_win": 32
+},
+{
+"key": "live_play_20261020_225716.jsonl",
+"kind": "loss_decisive",
+"match_med": 39.0,
+"win_med": 43,
+"win_gt80": 0.032,
+"n_win": 31
+},
+{
+"key": "live_play_20261020_230525.jsonl",
+"kind": "loss_decisive",
+"match_med": 60.0,
+"win_med": 53,
+"win_gt80": 0.04,
+"n_win": 25
+},
+{
+"key": "live_play_20261020_230907.jsonl",
+"kind": "win_first_take",
+"match_med": 84,
+"win_med": 85.0,
+"win_gt80": 0.567,
+"n_win": 30
+},
+{
+"key": "live_play_20261020_231314.jsonl",
+"kind": "loss_decisive",
+"match_med": 86.0,
+"win_med": 84,
+"win_gt80": 0.576,
+"n_win": 33
+},
+{
+"key": "live_play_20261020_231630.jsonl",
+"kind": "win_first_take",
+"match_med": 77,
+"win_med": 71,
+"win_gt80": 0.129,
+"n_win": 31
+},
+{
+"key": "live_play_20261020_232152.jsonl",
+"kind": "win_first_take",
+"match_med": 67,
+"win_med": 71.5,
+"win_gt80": 0.1,
+"n_win": 40
+},
+{
+"key": "live_play_20261020_232506.jsonl",
+"kind": "loss_decisive",
+"match_med": 61.0,
+"win_med": 43,
+"win_gt80": 0.0,
+"n_win": 35
+},
+{
+"key": "live_play_20261020_232823.jsonl",
+"kind": "win_first_take",
+"match_med": 66,
+"win_med": 71,
+"win_gt80": 0.161,
+"n_win": 31
+},
+{
+"key": "live_play_20261020_233303.jsonl",
+"kind": "win_first_take",
+"match_med": 61.5,
+"win_med": 64.5,
+"win_gt80": 0.0,
+"n_win": 30
+},
+{
+"key": "live_play_20261020_233735.jsonl",
+"kind": "loss_decisive",
+"match_med": 75.0,
+"win_med": 44.5,
+"win_gt80": 0.267,
+"n_win": 30
+},
+{
+"key": "live_play_20261020_234259.jsonl",
+"kind": "loss_decisive",
+"match_med": 73,
+"win_med": 73,
+"win_gt80": 0.103,
+"n_win": 29
+},
+{
+"key": "live_play_20261020_234640.jsonl",
+"kind": "win_first_take",
+"match_med": 68,
+"win_med": 64,
+"win_gt80": 0.061,
+"n_win": 33
+},
+{
+"key": "live_play_20261020_235058.jsonl",
+"kind": "loss_decisive",
+"match_med": 64.0,
+"win_med": 63.5,
+"win_gt80": 0.036,
+"n_win": 28
+},
+{
+"key": "live_play_20261020_235616.jsonl",
+"kind": "loss_decisive",
+"match_med": 66.0,
+"win_med": 68,
+"win_gt80": 0.138,
+"n_win": 29
+},
+{
+"key": "live_play_20261021_000123.jsonl",
+"kind": "win_first_take",
+"match_med": 63.5,
+"win_med": 68,
+"win_gt80": 0.091,
+"n_win": 33
+},
+{
+"key": "live_play_20261021_000446.jsonl",
+"kind": "loss_decisive",
+"match_med": 65.0,
+"win_med": 66,
+"win_gt80": 0.135,
+"n_win": 37
+},
+{
+"key": "live_play_20261021_000834.jsonl",
+"kind": "loss_decisive",
+"match_med": 78.0,
+"win_med": 66.5,
+"win_gt80": 0.077,
+"n_win": 26
+},
+{
+"key": "live_play_20261021_001151.jsonl",
+"kind": "win_first_take",
+"match_med": 73.0,
+"win_med": 61,
+"win_gt80": 0.08,
+"n_win": 25
+},
+{
+"key": "live_play_20261021_001503.jsonl",
+"kind": "win_first_take",
+"match_med": 67,
+"win_med": 65.0,
+"win_gt80": 0.147,
+"n_win": 34
+},
+{
+"key": "live_play_20261021_001823.jsonl",
+"kind": "loss_decisive",
+"match_med": 65.0,
+"win_med": 63,
+"win_gt80": 0.032,
+"n_win": 31
+},
+{
+"key": "live_play_20261021_002219.jsonl",
+"kind": "win_first_take",
+"match_med": 64,
+"win_med": 47.5,
+"win_gt80": 0.026,
+"n_win": 38
+},
+{
+"key": "live_play_20261021_002514.jsonl",
+"kind": "win_first_take",
+"match_med": 69,
+"win_med": 68,
+"win_gt80": 0.148,
+"n_win": 27
+},
+{
+"key": "live_play_20261021_003020.jsonl",
+"kind": "win_first_take",
+"match_med": 69,
+"win_med": 61.0,
+"win_gt80": 0.133,
+"n_win": 30
+},
+{
+"key": "live_play_20261021_003408.jsonl",
+"kind": "loss_decisive",
+"match_med": 65,
+"win_med": 40,
+"win_gt80": 0.048,
+"n_win": 21
+},
+{
+"key": "live_play_20261021_003802.jsonl",
+"kind": "loss_decisive",
+"match_med": 68,
+"win_med": 68.5,
+"win_gt80": 0.188,
+"n_win": 32
+},
+{
+"key": "live_play_20261021_004657.jsonl",
+"kind": "win_first_take",
+"match_med": 79,
+"win_med": 80.0,
+"win_gt80": 0.467,
+"n_win": 30
+},
+{
+"key": "live_play_20261021_005037.jsonl",
+"kind": "loss_decisive",
+"match_med": 81,
+"win_med": 81.0,
+"win_gt80": 0.528,
+"n_win": 36
+},
+{
+"key": "live_play_20261021_005356.jsonl",
+"kind": "win_first_take",
+"match_med": 74.0,
+"win_med": 53.0,
+"win_gt80": 0.033,
+"n_win": 30
+},
+{
+"key": "live_play_20261021_005823.jsonl",
+"kind": "loss_decisive",
+"match_med": 67,
+"win_med": 70.0,
+"win_gt80": 0.143,
+"n_win": 28
+},
+{
+"key": "live_play_20261021_010309.jsonl",
+"kind": "loss_decisive",
+"match_med": 65,
+"win_med": 70,
+"win_gt80": 0.086,
+"n_win": 35
+},
+{
+"key": "live_play_20261021_010626.jsonl",
+"kind": "win_first_take",
+"match_med": 69.0,
+"win_med": 72,
+"win_gt80": 0.103,
+"n_win": 29
+},
+{
+"key": "live_play_20261021_011125.jsonl",
+"kind": "win_first_take",
+"match_med": 65,
+"win_med": 33.5,
+"win_gt80": 0.0,
+"n_win": 36
+},
+{
+"key": "live_play_20261021_011439.jsonl",
+"kind": "win_first_take",
+"match_med": 65.0,
+"win_med": 67,
+"win_gt80": 0.258,
+"n_win": 31
+},
+{
+"key": "live_play_20261021_011757.jsonl",
+"kind": "win_first_take",
+"match_med": 69.0,
+"win_med": 68.0,
+"win_gt80": 0.118,
+"n_win": 34
+},
+{
+"key": "live_play_20261021_012118.jsonl",
+"kind": "loss_decisive",
+"match_med": 76,
+"win_med": 40,
+"win_gt80": 0.08,
+"n_win": 25
+},
+{
+"key": "live_play_20261021_012332.jsonl",
+"kind": "win_first_take",
+"match_med": 72,
+"win_med": 72.5,
+"win_gt80": 0.176,
+"n_win": 34
+},
+{
+"key": "live_play_20261021_012643.jsonl",
+"kind": "loss_decisive",
+"match_med": 67.0,
+"win_med": 64,
+"win_gt80": 0.037,
+"n_win": 27
+},
+{
+"key": "live_play_20261021_013101.jsonl",
+"kind": "win_first_take",
+"match_med": 69,
+"win_med": 66,
+"win_gt80": 0.114,
+"n_win": 35
+},
+{
+"key": "live_play_20261021_013512.jsonl",
+"kind": "win_first_take",
+"match_med": 67,
+"win_med": 67,
+"win_gt80": 0.097,
+"n_win": 31
+},
+{
+"key": "live_play_20261021_013936.jsonl",
+"kind": "loss_decisive",
+"match_med": 66.0,
+"win_med": 69.0,
+"win_gt80": 0.156,
+"n_win": 32
+},
+{
+"key": "live_play_20261021_014500.jsonl",
+"kind": "win_first_take",
+"match_med": 66,
+"win_med": 68,
+"win_gt80": 0.091,
+"n_win": 33
+},
+{
+"key": "live_play_20261021_014911.jsonl",
+"kind": "loss_decisive",
+"match_med": 66.0,
+"win_med": 71,
+"win_gt80": 0.097,
+"n_win": 31
+},
+{
+"key": "live_play_20261021_015434.jsonl",
+"kind": "win_first_take",
+"match_med": 80.0,
+"win_med": 79,
+"win_gt80": 0.414,
+"n_win": 29
+},
+{
+"key": "live_play_20261021_015959.jsonl",
+"kind": "loss_decisive",
+"match_med": 76,
+"win_med": 79,
+"win_gt80": 0.257,
+"n_win": 35
+},
+{
+"key": "live_play_20261021_020340.jsonl",
+"kind": "win_first_take",
+"match_med": 67.5,
+"win_med": 74.0,
+"win_gt80": 0.132,
+"n_win": 38
+},
+{
+"key": "live_play_20261021_020620.jsonl",
+"kind": "loss_decisive",
+"match_med": 68.0,
+"win_med": 70,
+"win_gt80": 0.097,
+"n_win": 31
+},
+{
+"key": "live_play_20261021_021139.jsonl",
+"kind": "win_first_take",
+"match_med": 59,
+"win_med": 40,
+"win_gt80": 0.0,
+"n_win": 33
+},
+{
+"key": "live_play_20261021_021457.jsonl",
+"kind": "loss_decisive",
+"match_med": 69,
+"win_med": 67.0,
+"win_gt80": 0.0,
+"n_win": 34
+},
+{
+"key": "live_play_20261021_022022.jsonl",
+"kind": "win_first_take",
+"match_med": 67.5,
+"win_med": 65.0,
+"win_gt80": 0.067,
+"n_win": 30
+},
+{
+"key": "live_play_20261021_022543.jsonl",
+"kind": "loss_decisive",
+"match_med": 81.0,
+"win_med": 81.0,
+"win_gt80": 0.529,
+"n_win": 34
+},
+{
+"key": "live_play_20261021_023110.jsonl",
+"kind": "loss_decisive",
+"match_med": 77.0,
+"win_med": 67,
+"win_gt80": 0.148,
+"n_win": 27
+},
+{
+"key": "live_play_20261021_023635.jsonl",
+"kind": "loss_decisive",
+"match_med": 67.0,
+"win_med": 71,
+"win_gt80": 0.103,
+"n_win": 39
+},
+{
+"key": "live_play_20261021_024154.jsonl",
+"kind": "loss_decisive",
+"match_med": 67,
+"win_med": 74.0,
+"win_gt80": 0.265,
+"n_win": 34
+},
+{
+"key": "live_play_20261021_024712.jsonl",
+"kind": "win_first_take",
+"match_med": 66,
+"win_med": 42,
+"win_gt80": 0.0,
+"n_win": 35
+},
+{
+"key": "live_play_20261021_025031.jsonl",
+"kind": "loss_decisive",
+"match_med": 64.0,
+"win_med": 70.5,
+"win_gt80": 0.118,
+"n_win": 34
+},
+{
+"key": "live_play_20261021_025433.jsonl",
+"kind": "win_first_take",
+"match_med": 63.0,
+"win_med": 53.5,
+"win_gt80": 0.029,
+"n_win": 34
+},
+{
+"key": "live_play_20261021_025838.jsonl",
+"kind": "loss_decisive",
+"match_med": 78,
+"win_med": 80,
+"win_gt80": 0.48,
+"n_win": 25
+},
+{
+"key": "live_play_20261021_030243.jsonl",
+"kind": "loss_decisive",
+"match_med": 74.0,
+"win_med": 72,
+"win_gt80": 0.241,
+"n_win": 29
+},
+{
+"key": "live_play_20261021_030807.jsonl",
+"kind": "win_first_take",
+"match_med": 68,
+"win_med": 67,
+"win_gt80": 0.065,
+"n_win": 31
+},
+{
+"key": "live_play_20261021_031330.jsonl",
+"kind": "loss_decisive",
+"match_med": 69,
+"win_med": 64,
+"win_gt80": 0.24,
+"n_win": 25
+},
+{
+"key": "live_play_20261021_031856.jsonl",
+"kind": "loss_decisive",
+"match_med": 62,
+"win_med": 59.0,
+"win_gt80": 0.0,
+"n_win": 30
+},
+{
+"key": "live_play_20261021_032213.jsonl",
+"kind": "win_first_take",
+"match_med": 68,
+"win_med": 68,
+"win_gt80": 0.129,
+"n_win": 31
+},
+{
+"key": "live_play_20261021_032739.jsonl",
+"kind": "loss_decisive",
+"match_med": 66.0,
+"win_med": 54,
+"win_gt80": 0.037,
+"n_win": 27
+},
+{
+"key": "live_play_20261021_033142.jsonl",
+"kind": "loss_decisive",
+"match_med": 80,
+"win_med": 43.0,
+"win_gt80": 0.281,
+"n_win": 32
+},
+{
+"key": "live_play_20261021_033708.jsonl",
+"kind": "win_first_take",
+"match_med": 75.0,
+"win_med": 71.5,
+"win_gt80": 0.2,
+"n_win": 30
+},
+{
+"key": "live_play_20261021_034232.jsonl",
+"kind": "win_first_take",
+"match_med": 69,
+"win_med": 77,
+"win_gt80": 0.355,
+"n_win": 31
+},
+{
+"key": "live_play_20261021_034750.jsonl",
+"kind": "win_first_take",
+"match_med": 64.5,
+"win_med": 54.5,
+"win_gt80": 0.077,
+"n_win": 26
+},
+{
+"key": "live_play_20261021_035108.jsonl",
+"kind": "win_first_take",
+"match_med": 66.0,
+"win_med": 42.5,
+"win_gt80": 0.059,
+"n_win": 34
+},
+{
+"key": "live_play_20261021_035402.jsonl",
+"kind": "win_first_take",
+"match_med": 68,
+"win_med": 61,
+"win_gt80": 0.065,
+"n_win": 31
+},
+{
+"key": "live_play_20261021_035715.jsonl",
+"kind": "loss_decisive",
+"match_med": 63,
+"win_med": 36,
+"win_gt80": 0.0,
+"n_win": 31
+},
+{
+"key": "live_play_20261021_040033.jsonl",
+"kind": "loss_decisive",
+"match_med": 47,
+"win_med": 39,
+"win_gt80": 0.029,
+"n_win": 35
+},
+{
+"key": "live_play_20261021_040223.jsonl",
+"kind": "win_first_take",
+"match_med": 81,
+"win_med": 80,
+"win_gt80": 0.419,
+"n_win": 31
+},
+{
+"key": "live_play_20261021_040713.jsonl",
+"kind": "loss_decisive",
+"match_med": 75,
+"win_med": 82.5,
+"win_gt80": 0.667,
+"n_win": 30
+},
+{
+"key": "live_play_20261021_041656.jsonl",
+"kind": "loss_decisive",
+"match_med": 81.0,
+"win_med": 84,
+"win_gt80": 0.71,
+"n_win": 31
+},
+{
+"key": "live_play_20261021_042017.jsonl",
+"kind": "win_first_take",
+"match_med": 76,
+"win_med": 73.0,
+"win_gt80": 0.088,
+"n_win": 34
+},
+{
+"key": "live_play_20261021_042358.jsonl",
+"kind": "loss_decisive",
+"match_med": 73,
+"win_med": 72.0,
+"win_gt80": 0.1,
+"n_win": 30
+},
+{
+"key": "live_play_20261021_042914.jsonl",
+"kind": "loss_decisive",
+"match_med": 71,
+"win_med": 75.0,
+"win_gt80": 0.267,
+"n_win": 30
+},
+{
+"key": "live_play_20261021_043430.jsonl",
+"kind": "loss_decisive",
+"match_med": 70.0,
+"win_med": 71.5,
+"win_gt80": 0.094,
+"n_win": 32
+},
+{
+"key": "live_play_20261021_043955.jsonl",
+"kind": "win_first_take",
+"match_med": 69,
+"win_med": 41,
+"win_gt80": 0.0,
+"n_win": 27
+},
+{
+"key": "live_play_20261021_044415.jsonl",
+"kind": "win_first_take",
+"match_med": 68.0,
+"win_med": 64,
+"win_gt80": 0.148,
+"n_win": 27
+},
+{
+"key": "live_play_20261021_044911.jsonl",
+"kind": "win_first_take",
+"match_med": 82,
+"win_med": 85.0,
+"win_gt80": 0.722,
+"n_win": 36
+},
+{
+"key": "live_play_20261021_045323.jsonl",
+"kind": "loss_decisive",
+"match_med": 74,
+"win_med": 71.5,
+"win_gt80": 0.147,
+"n_win": 34
+},
+{
+"key": "live_play_20261021_045844.jsonl",
+"kind": "loss_decisive",
+"match_med": 68,
+"win_med": 41.5,
+"win_gt80": 0.0,
+"n_win": 28
+},
+{
+"key": "live_play_20261021_050156.jsonl",
+"kind": "loss_decisive",
+"match_med": 64.0,
+"win_med": 68,
+"win_gt80": 0.0,
+"n_win": 31
+},
+{
+"key": "live_play_20261021_050507.jsonl",
+"kind": "loss_decisive",
+"match_med": 67.0,
+"win_med": 69,
+"win_gt80": 0.212,
+"n_win": 33
+},
+{
+"key": "live_play_20261021_050822.jsonl",
+"kind": "loss_decisive",
+"match_med": 71,
+"win_med": 68,
+"win_gt80": 0.103,
+"n_win": 39
+},
+{
+"key": "live_play_20261021_051139.jsonl",
+"kind": "win_first_take",
+"match_med": 66.0,
+"win_med": 70,
+"win_gt80": 0.103,
+"n_win": 29
+},
+{
+"key": "live_play_20261021_051543.jsonl",
+"kind": "win_first_take",
+"match_med": 68,
+"win_med": 41,
+"win_gt80": 0.172,
+"n_win": 29
+},
+{
+"key": "live_play_20261021_051902.jsonl",
+"kind": "win_first_take",
+"match_med": 68,
+"win_med": 67.0,
+"win_gt80": 0.088,
+"n_win": 34
+},
+{
+"key": "live_play_20261021_052440.jsonl",
+"kind": "loss_decisive",
+"match_med": 80,
+"win_med": 47,
+"win_gt80": 0.286,
+"n_win": 21
+},
+{
+"key": "live_play_20261021_052757.jsonl",
+"kind": "loss_decisive",
+"match_med": 72.0,
+"win_med": 76,
+"win_gt80": 0.242,
+"n_win": 33
+},
+{
+"key": "live_play_20261021_053318.jsonl",
+"kind": "loss_decisive",
+"match_med": 63,
+"win_med": 70.0,
+"win_gt80": 0.1,
+"n_win": 30
+},
+{
+"key": "live_play_20261021_053633.jsonl",
+"kind": "loss_decisive",
+"match_med": 64.0,
+"win_med": 68,
+"win_gt80": 0.065,
+"n_win": 31
+},
+{
+"key": "live_play_20261021_053955.jsonl",
+"kind": "loss_decisive",
+"match_med": 62,
+"win_med": 36,
+"win_gt80": 0.0,
+"n_win": 31
+},
+{
+"key": "live_play_20261021_054307.jsonl",
+"kind": "loss_decisive",
+"match_med": 69.0,
+"win_med": 57,
+"win_gt80": 0.148,
+"n_win": 27
+},
+{
+"key": "live_play_20261021_054722.jsonl",
+"kind": "loss_decisive",
+"match_med": 68.0,
+"win_med": 64,
+"win_gt80": 0.118,
+"n_win": 17
+},
+{
+"key": "live_play_20261021_055229.jsonl",
+"kind": "loss_decisive",
+"match_med": 69.0,
+"win_med": 71,
+"win_gt80": 0.143,
+"n_win": 35
+},
+{
+"key": "live_play_20261021_055746.jsonl",
+"kind": "loss_decisive",
+"match_med": 77,
+"win_med": 44.0,
+"win_gt80": 0.107,
+"n_win": 28
+},
+{
+"key": "live_play_20261021_060103.jsonl",
+"kind": "win_first_take",
+"match_med": 75.5,
+"win_med": 66.5,
+"win_gt80": 0.214,
+"n_win": 28
+},
+{
+"key": "live_play_20261021_060414.jsonl",
+"kind": "win_first_take",
+"match_med": 68,
+"win_med": 61,
+"win_gt80": 0.054,
+"n_win": 37
+},
+{
+"key": "live_play_20261021_060731.jsonl",
+"kind": "win_first_take",
+"match_med": 68,
+"win_med": 56.0,
+"win_gt80": 0.079,
+"n_win": 38
+},
+{
+"key": "live_play_20261021_061046.jsonl",
+"kind": "loss_decisive",
+"match_med": 66,
+"win_med": 36,
+"win_gt80": 0.0,
+"n_win": 29
+},
+{
+"key": "live_play_20261021_061402.jsonl",
+"kind": "loss_decisive",
+"match_med": 69.0,
+"win_med": 71.0,
+"win_gt80": 0.269,
+"n_win": 26
+},
+{
+"key": "live_play_20261021_061807.jsonl",
+"kind": "loss_decisive",
+"match_med": 45.5,
+"win_med": 37,
+"win_gt80": 0.103,
+"n_win": 29
+},
+{
+"key": "live_play_20261021_061932.jsonl",
+"kind": "win_first_take",
+"match_med": 69,
+"win_med": 59.5,
+"win_gt80": 0.067,
+"n_win": 30
+},
+{
+"key": "live_play_20261021_062433.jsonl",
+"kind": "loss_decisive",
+"match_med": 67.0,
+"win_med": 67.5,
+"win_gt80": 0.233,
+"n_win": 30
+},
+{
+"key": "live_play_20261021_062941.jsonl",
+"kind": "loss_decisive",
+"match_med": 79,
+"win_med": 72,
+"win_gt80": 0.4,
+"n_win": 25
+},
+{
+"key": "live_play_20261021_063300.jsonl",
+"kind": "loss_decisive",
+"match_med": 72.0,
+"win_med": 39.5,
+"win_gt80": 0.0,
+"n_win": 32
+},
+{
+"key": "live_play_20261021_063617.jsonl",
+"kind": "win_first_take",
+"match_med": 70,
+"win_med": 68.0,
+"win_gt80": 0.067,
+"n_win": 30
+},
+{
+"key": "live_play_20261021_064141.jsonl",
+"kind": "loss_decisive",
+"match_med": 69,
+"win_med": 65.5,
+"win_gt80": 0.088,
+"n_win": 34
+},
+{
+"key": "live_play_20261021_064525.jsonl",
+"kind": "win_first_take",
+"match_med": 69,
+"win_med": 73.0,
+"win_gt80": 0.167,
+"n_win": 30
+},
+{
+"key": "live_play_20261021_065050.jsonl",
+"kind": "loss_decisive",
+"match_med": 59,
+"win_med": 36,
+"win_gt80": 0.0,
+"n_win": 29
+},
+{
+"key": "live_play_20261021_065408.jsonl",
+"kind": "loss_decisive",
+"match_med": 64,
+"win_med": 66.0,
+"win_gt80": 0.083,
+"n_win": 24
+},
+{
+"key": "live_play_20261021_065729.jsonl",
+"kind": "win_first_take",
+"match_med": 70,
+"win_med": 82.5,
+"win_gt80": 0.607,
+"n_win": 28
+},
+{
+"key": "live_play_20261021_070110.jsonl",
+"kind": "win_first_take",
+"match_med": 103,
+"win_med": 104,
+"win_gt80": 0.939,
+"n_win": 33
+},
+{
+"key": "live_play_20261021_070435.jsonl",
+"kind": "win_first_take",
+"match_med": 80,
+"win_med": 72.5,
+"win_gt80": 0.088,
+"n_win": 34
+},
+{
+"key": "live_play_20261021_070801.jsonl",
+"kind": "loss_decisive",
+"match_med": 78.5,
+"win_med": 98.0,
+"win_gt80": 0.933,
+"n_win": 30
+}
+]

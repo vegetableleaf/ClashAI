@@ -1,0 +1,2 @@
+loss_decisive   n=117  window median-of-medians 70.0 ms vs match 75 ms; window share > 80 ms 0.353; window slower than its match in 49 / 117
+win_first_take  n=110  window median-of-medians 75.5 ms vs match 81.0 ms; window share > 80 ms 0.453; window slower than its match in 41 / 110

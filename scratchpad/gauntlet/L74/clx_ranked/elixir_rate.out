@@ -1,0 +1,6 @@
+25 OT-length Ranked logs
+reg_0-60     0.356 elixir/s over 1279 s  (= 1 per 2.81 s)
+reg_60-120   0.380 elixir/s over 1388 s  (= 1 per 2.63 s)
+reg_120-180  0.714 elixir/s over 1420 s  (= 1 per 1.40 s)
+ot_0-60      0.730 elixir/s over 1255 s  (= 1 per 1.37 s)
+ot_60-120    1.002 elixir/s over 776 s  (= 1 per 1.00 s)
