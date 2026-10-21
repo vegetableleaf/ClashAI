@@ -14,7 +14,7 @@ def mh(r):
 
 
 def main():
-    cfg = RL.load_config(Path(sys.argv[1]), sys.argv[3:] + ["n_actors=2"], False)
+    cfg = RL.load_config(Path(sys.argv[1]), [a for a in sys.argv[3:] if "=" in a] + ["n_actors=2"], False)
     run = sys.argv[2]
     run_dir, ck_dir = RL.RUN_ROOT / run, RL.CKPT_ROOT / run
     run_dir.mkdir(parents=True, exist_ok=True)
@@ -31,6 +31,9 @@ def main():
     N = 8
     res, _, _ = orig(k0, u0, sd, [], shares={0: J0[5::N], 1: J0[1::N]})
     print("u0 done", len(res), flush=True)
+    if "--same-update" in sys.argv:                       # v3: actor 1 first runs u1 slot 1 (the failover order)
+        orig(k1, u1, sd, [], shares={1: J1[1::N]})
+        print("u1 slot1 done on actor 1", flush=True)
     res, _, _ = orig(k1, u1, sd, [], shares={0: J1[5::N], 1: J1[5::N]})
     by = {}
     for r in res:
