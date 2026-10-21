@@ -330,7 +330,7 @@ Hidden:
 
 Not usable:
 - the bait-account matches (4-5k trophies, a different population);
-- the 29 card_use fallback grades (section 8).
+- the 29 card_use fallback grades (section 9).
 
 ## 6. Opponent model design and build plan
 
@@ -624,7 +624,7 @@ f7095b61, gen_s0.pt 61011b6c, init rlarm_succ_levels_u0065.pt 05d42da7.
      - the 4-plays warm-up gap at the start of every match (no hand rows before the 5th play).
 4. **O3 grid on the new baseline opponent:** reaction delay never helped. Decide 40 beat 30 / 20 / 10 for both nets. A
    decide-60 point is untested.
-5. **The card_use.results() account-switch grading bug** (section 8, item 1) is still open (lead: not this worker's fix).
+5. **The card_use.results() account-switch grading bug** (section 9, item 1) is still open (lead: not this worker's fix).
 
 ### 6.3 Path to a successor tonight (owner 10-20 goal; lead's plan)
 
@@ -802,7 +802,90 @@ pipeline/tests/test_league_opp_live_1020.py: absent = the 0bcc4c5 load_config + 
 play; tests pipeline/tests/test_princess_take_1020.py vs 0bcc4c5) and `cfg/oppC2_icemix_take_s74.yaml`. Not run: C1 did
 not stall (OT 50-57%, both-took 9-15%, at or above live), so a tower-taking bonus would push the wrong way.
 
-## 8. Problems found along the way (not fixed outside this directory)
+## 8. W14: calibrate the opponent to RANKED (10-21, rounds logged below)
+
+**Why (a).** CLX's 233 Ranked matches (clx_ranked/CLX_RANKED.md) sit 16-32 pp below what the SIM says against W7's R6 u20.
+R6 u20 reproduces the 13.5-14k ladder (section 7), not Ranked. Every gate so far picked successors against a ladder-strength
+opponent.
+
+**Target = the O4-Ranked table** (`w14/o4r_table.py`). Each SIM opponent is compared with CLX's 233 Ranked matches, cell by
+cell:
+- Same definitions on both sides: the SIM rows go through clx_ranked/sim.py `row()`, the live rows are clx_ranked/rows.json.
+- BEAT = the tank / bridge-spam win conditions of report.py.
+- Gate = the 10 `*` cells below, each |z| < 1.96 (two-proportion z, as W7's O4 rule).
+- Style = the opponent's play-style distance (o3_score's 9 features) vs the live RANKED opponents of those 233 matches (and
+  vs W7's 13k ladder set, for continuity).
+- Live n = 233, so the CIs are about +-6.5 pp on the overall win and +-9 pp vs BEAT. This is a weak gate, as W7's was.
+
+**R0 = R6 u20 (34522564) on fin15, 1,920 games (W12's rows, the tn_base opponent today): 2 of 10 gate cells pass.**
+This reproduces CLX_RANKED.md T11 exactly (64.0 / 57.5 / 77.5 / 34.6), which checks the table code.
+
+| cell | SIM R6 u20 | Ranked [95%] | SIM - Ranked [95%] | z |
+|---|---|---|---|---|
+| * CLX win | 64.0 | 48.1 [41.7, 54.5] | +15.9 [+9.1, +22.6] | +4.72 |
+| * win vs BEAT | 57.5 | 25.3 [17.2, 35.6] | +32.2 [+21.3, +41.0] | +5.60 |
+| * win vs the rest | 68.4 | 60.7 [52.7, 68.1] | +7.7 [-0.2, +16.1] | +1.90 |
+| * OT share | 55.2 | 62.7 [56.3, 68.6] | -7.5 [-13.9, -0.8] | -2.18 |
+| * win \| OT | 70.1 | 47.3 [39.3, 55.3] | +22.8 [+14.3, +31.2] | +5.51 |
+| * win \| OT decided before the drain | 77.5 | 52.6 [42.7, 62.4] | +24.9 [+14.7, +35.2] | +5.27 |
+| win at the drain | 49.1 | 37.3 [25.3, 51.0] | +11.8 [-3.1, +25.1] | +1.56 |
+| * CLX lost the first princess | 34.6 | 48.1 [41.7, 54.5] | -13.5 [-20.2, -6.8] | -4.05 |
+| * opponent takes a princess | 40.5 | 51.1 [44.7, 57.4] | -10.6 [-17.3, -3.8] | -3.09 |
+| CLX takes a princess | 71.4 | 52.8 [46.4, 59.1] | +18.6 [+12.0, +25.3] | +5.82 |
+| * both took one | 11.9 | 5.6 [3.3, 9.3] | +6.3 [+2.4, +9.1] | +2.90 |
+| * regulation loss | 19.5 | 18.9 [14.4, 24.4] | +0.6 [-5.1, +5.5] | +0.24 |
+| loss by tiebreak drain | 7.3 | 15.5 [11.4, 20.6] | -8.1 [-13.4, -3.8] | -4.25 |
+| style distance vs Ranked / vs 13k ladder | 0.58 / 0.70 | | | |
+
+What the target asks for (a):
+- An opponent that both defends better and attacks better than R6 u20.
+  - CLX takes a princess 18.6 pp less often.
+  - The opponent takes one 10.6 pp more often.
+  - Both took one is half as common (5.6 vs 11.9): Ranked games are more one-sided.
+- More overtime (62.7 vs 55.2), and the opponent wins it: CLX wins 47.3% of Ranked OTs vs 70.1% in the SIM.
+- Style vs Ranked:
+  - R6 u20 answers faster (react_s d -1.10);
+  - it plays more in double elixir (ppm_2x d +0.90);
+  - it pushes with more elixir (push_mean d +0.61).
+
+**Not the lever (a): the deck mix.** Re-weighting the SIM's per-win-condition CLX win rates to the Ranked win-condition
+mix moves 64.0 -> 62.8. The SIM pool already has more BEAT (40.7% of games) than Ranked (35.6%). So the gap is opponent
+strength, mostly with BEAT decks.
+
+**Not tried, with the reason (b):** a Ranked-only imitation fine-tune (O1 -> O2 on the 233 Ranked logs, about 5k opponent
+plays).
+- The imitation nets are the weak end of this family: O2 87.9% / O2b 83.8% CLX win, vs 62.3% live ladder.
+- All of the strength since then came from RL (section 7).
+- 5k plays would at best move style, not the 16 pp of strength.
+
+**Method.** W7's recipe: RL-strengthen the opponent-to-be vs the FROZEN icebow mix with `league_opp_live`, on the census
+decks. The W14 base:
+- start from R6 u20 (KL card / cell anchored to it, the gate to O2b);
+- kl_target 0.1;
+- trained on **fin15** (the tn_base / eval runtime; W7 trained on fin13);
+- 40 updates per round (round 2 resumes the winners);
+- gated every 5 updates on block 741200 (480 games, T .1, decide 40), by a pod-local watcher (`w14/w14_gate.sh`) beside the
+  training;
+- `w14/launch.sh` installs and starts an arm, `w14/pull.sh` pulls (sha-checked) and prints the brief table.
+
+Round 1 = four arms, two per pod, each ONE change vs the base:
+
+| arm | change vs the W14 base | why |
+|---|---|---|
+| A `oppW14A_lr3_s74` | lr 1e-5 -> 3e-5 | W7's plateaus came with the KL leash NOT binding: beta at its floor, clip_frac ~0.04, ratio_mean 1.0000. The policy moves too little per update |
+| B `oppW14B_beat3_s74` | BEAT decks x3 in the opponent's training draw (0.407 -> 0.673 of draws) | the gap is concentrated vs BEAT (+32.2 pp vs +7.7) |
+| C `oppW14C_chip_s74` | shaping tower_crown (residual critic; critic warm-up 5) | 47.9% of Ranked losses are a chip race lost in OT; win-only reward gives the opponent no credit for chip damage |
+| D `oppW14D_base_s74` | none (control) | W7's history says more updates plateau; D measures it on fin15 and is the baseline for A-C |
+
+**Round log** (480 games = block 741200 unless marked; CLX win / vs BEAT / vs rest / OT share / win \| OT / win \| OT
+before the drain / opponent takes / both took / style vs Ranked; Ranked 48.1 / 25.3 / 60.7 / 62.7 / 47.3 / 52.6 / 51.1 /
+5.6; the 480-game SE is about 2.2 pp on win).
+
+| round | config | win | BEAT | rest | OT | win\|OT | pre-drain | opp takes | both | style R | gate fails | verdict |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| R0 | R6 u20, 1,920 | 64.0 | 57.5 | 68.4 | 55.2 | 70.1 | 77.5 | 40.5 | 11.9 | 0.58 | 8 | ladder-calibrated, not Ranked |
+
+## 9. Problems found along the way (not fixed outside this directory)
 
 1. **card_use.results() grades across account switches.**
    - Its trophy-total fallback, when a match has no result line, computes the change across the switch to the bait account.
@@ -816,7 +899,7 @@ not stall (OT 50-57%, both-took 9-15%, at or above live), so a tower-taking bonu
 3. **HANDOFF / TUESDAY "CLX 46.0% (113)"** is the pre-level-up CLX. The 253-match record (55.2%) mixes two tower levels and
    must not be read as a model effect.
 
-## 9. Files and reproduce
+## 10. Files and reproduce
 
 ```
 icebow/.venv/Scripts/python.exe -I scratchpad/gauntlet/L74/opp_model/live_table.py     # -> cache/ + out/live_matches.jsonl.gz (~2-4 min cold, 36 s warm; not committed)

@@ -7,6 +7,7 @@
 # Telemetry: an ISOLATED hard-link copy /workspace/o3/cb of /workspace/cb_stepd whose pipeline/search_s0.py is a NEW file (never
 # the linked original) adding rec['o3_plays'] = both sides' accepted plays [landing tick, card] when O3_PLAYS=1. cb_stepd is
 # untouched. Output /workspace/o3/out/NAME/NAME_SEED/D3/matches.jsonl, then /workspace/o3/out/NAME.tgz + .sha.
+# W14 (opt-in, absent = unchanged): EVLOCK=<lock file> instead of /workspace/cpu.lock (gate evals beside a training run).
 set -uo pipefail
 NAME=$1; CK=$2; OPP=$3; T=$4; DE=$5; RT=$6; shift 6; SEEDS="$*"
 B=${O3B:-/workspace/o3}; CB=$B/cb; O=$B/out/$NAME; P15=/workspace/venvf15/bin/python
@@ -34,7 +35,7 @@ for S in $SEEDS; do
   D=$O/${NAME}_$S
   [ "$(grep -c '"outcome"' $D/D3/matches.jsonl 2>/dev/null)" = 480 ] && continue
   rm -rf $D; log "eval $S"
-  ROYALE_RUNTIME=fin15-linux flock /workspace/cpu.lock $P15 scratchpad/gauntlet/L74/gap/gap.py --ckpt $CK --out $D --arms D3 \
+  ROYALE_RUNTIME=fin15-linux flock ${EVLOCK:-/workspace/cpu.lock} $P15 scratchpad/gauntlet/L74/gap/gap.py --ckpt $CK --out $D --arms D3 \
     --seed-start $S --runtime fin15-linux --python $P15 --census-file scratchpad/gauntlet/L74/mix/decks_live_eval.json \
     --workers ${WORKERS:-26} --levels all16 "${OPP_ARGS[@]}" --extra="$EV_EXTRA" > $D.log 2>&1 || log "GAP EXIT $? $S"
   log "rows $S: $(grep -c '"outcome"' $D/D3/matches.jsonl 2>/dev/null) with o3_plays: $(grep -c o3_plays $D/D3/matches.jsonl 2>/dev/null)"
