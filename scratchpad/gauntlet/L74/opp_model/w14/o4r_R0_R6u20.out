@@ -15,4 +15,6 @@ Ranked reference: 233 CLX matches (clx_ranked/rows.json); gate cells: win, win_v
   * both_took_one          SIM  11.9% [10.6, 13.5] n=1920   Ranked   5.6% [ 3.3,  9.3] n=233      +6.3 [  +2.4,   +9.1] z +2.90  <-- FAIL
   * reg_loss               SIM  19.5% [17.8, 21.4] n=1920   Ranked  18.9% [14.4, 24.4] n=233      +0.6 [  -5.1,   +5.5] z +0.24
     loss_tiebreak_drain    SIM   7.3% [ 6.3,  8.6] n=1920   Ranked  15.5% [11.4, 20.6] n=233      -8.1 [ -13.4,   -3.8] z -4.25
+  deck mix (revealed win condition): BEAT share SIM 38.5% vs Ranked 35.6%; CLX win re-weighted to Ranked's BEAT share 64.3% (vs 64.0% at the SIM mix)
+  Ranked / SIM win-condition shares (%): hog_rider 15/10 mega_knight 14/19 goblin_barrel 9/8 pekka 6/5 electro_giant 6/2 royal_hogs 5/4 giant 5/3 battle_ram 4/2 other 4/1 balloon 4/5
   gate (* cells + style; |z| < 1.96 and the TOL pp bounds {'win': 5.0, 'win_vs_BEAT': 10.0, 'win_given_OT': 8.0, 'opp_takes_princess': 8.0, 'clx_takes_princess': 8.0}): 3 of 12 pass, max |z| 5.82; fails: ['win', 'win_vs_BEAT', 'ot_share', 'win_given_OT', 'win_OT_pre_drain', 'lost_first_princess', 'opp_takes_princess', 'clx_takes_princess', 'both_took_one']

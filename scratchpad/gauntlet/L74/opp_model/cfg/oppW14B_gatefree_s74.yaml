@@ -5,9 +5,11 @@
 #   trained on fin15 (w14_train.sh RT=fin15-linux VENV=venvf15 = the tn_base / eval runtime; W7 trained on fin13).
 # Gated every 5 updates by w14_gate.sh: CLX vs the snapshot at T .1 / decide 40, fin15, all16, block 741200 (480 games),
 # scored by w14/o4r_table.py against CLX's 233 Ranked matches.
-# ARM B = W14 base + ONE change: the opponent-to-be's training decks with BEAT win conditions x3 (w14/beat3_decks.py: 310
-# of 895 decks, draw share 0.407 -> 0.673). Why: the Ranked gap is concentrated vs BEAT (CLX 57.5% SIM vs 25.3% Ranked,
-# +32.2 pp) while vs the rest it is +7.7 [-0.2, +16.1]; lr stays 1e-5.
+# ARM B = W14 base + ONE change: no kl_ref_gate (the play / wait gate is anchored to the init R6 u20 like card / cell, as in
+# W7 R4). Why: the gate decides WHEN to play -- bank elixir and build a push, or answer now. Anchoring it to O2b pulls it toward
+# an imitation timing that answers fast and over-plays in double elixir (style d: react_s -1.10, ppm_2x +0.90 vs Ranked).
+# Tank / bridge-spam decks need that timing most (CLX 56.9% SIM vs 25.3% Ranked). (b) untested; R6 vs R4 showed no strength
+# difference over 26 updates.
 init: icebow/data/pipeline/o2/w14/r6u20.pt
 pool: icebow/data/ghost_pool/pool_env_v1.jsonl
 proagree_data: icebow/data/pipeline/s1_dataset.npz
@@ -20,7 +22,7 @@ extrapolate_ticks: 26
 hero_abilities: true
 forms_mode: deck
 league: true
-league_decks: scratchpad/gauntlet/L74/opp_model/w14/decks_live_train_beat3.json
+league_decks: scratchpad/gauntlet/L74/mix/decks_live_train.json
 league_specialist: icebow/data/pipeline/s1_icebow_v6aug_s1.pt
 league_opp_policy: live
 league_mix:
@@ -129,4 +131,3 @@ league_opp_live:
   lethal_log: 'on'
   tau: 0.35
   own_effects: true
-kl_ref_gate: icebow/data/pipeline/o2/gen_live_b.pt

@@ -855,9 +855,15 @@ What the target asks for (a):
   - it plays more in double elixir (ppm_2x d +0.90);
   - it pushes with more elixir (push_mean d +0.61).
 
-**Not the lever (a): the deck mix.** Re-weighting the SIM's per-win-condition CLX win rates to the Ranked win-condition
-mix moves 64.0 -> 62.8. The SIM pool already has more BEAT (40.7% of games) than Ranked (35.6%). So the gap is opponent
-strength, mostly with BEAT decks.
+**Not the lever (a): the eval deck mix.** It already matches Ranked's archetype shares closely.
+- BEAT share by revealed win condition: SIM eval 38.5% vs Ranked 35.6%.
+- CLX win re-weighted to Ranked's BEAT share: 64.3% (vs 64.0% at the SIM mix). Re-weighted per win condition: 62.8%.
+- Ranked / SIM win-condition shares (%): Hog 15 / 10, MK 14 / 19, Goblin Barrel 9 / 8, PEKKA 6 / 5, E-Giant 6 / 2, Royal
+  Hogs 5 / 4, Giant 5 / 3, Battle Ram 4 / 2, Balloon 4 / 5. The table prints this line for every config.
+- So the gap is how well the SIM opponent plays, mostly with BEAT decks. Per win condition (R0, SIM vs Ranked; live n
+  6-36): Giant 49 vs 9, Royal Hogs 55 vs 18, E-Giant 55 vs 23, Golem 39 vs 17, PEKKA 63 vs 36, Battle Ram 53 vs 30, Goblin
+  Barrel 86 vs 64, Balloon 79 vs 56.
+- The BEAT cell is a primary target: gated with a 10 pp tolerance.
 
 **Not tried, with the reason (b):** a Ranked-only imitation fine-tune (O1 -> O2 on the 233 Ranked logs, about 5k opponent
 plays).
@@ -880,10 +886,19 @@ Round 1 = four arms, two per pod, each ONE change vs the base:
 | arm | change vs the W14 base | why |
 |---|---|---|
 | A `oppW14A_lr3_s74` | lr 1e-5 -> 3e-5 | W7's plateaus came with the KL leash NOT binding: beta at its floor, clip_frac ~0.04, ratio_mean 1.0000. The policy moves too little per update |
-| B `oppW14B_beat3_s74` | BEAT decks x3 in the opponent's training draw (0.407 -> 0.673 of draws) | the gap is concentrated vs BEAT (+32.2 pp vs +7.7) |
+| B `oppW14B_gatefree_s74` | no `kl_ref_gate`: the play / wait gate is anchored to R6 u20 like card / cell (W7 R4's rule) instead of to O2b | the gate decides WHEN to play: bank and build a push, or answer now. O2b's timing answers fast and over-plays in 2x (react_s d -1.10, ppm_2x +0.90). Tank decks need that timing most. (b) R6 vs R4 showed no strength difference over 26 updates |
 | C `oppW14C_lr10_s74` | lr 1e-5 -> 1e-4 | the upper bracket of A |
 | D `oppW14D_base_s74` | none (control) | W7's history says more updates plateau; D measures it on fin15 and is the baseline for A-C |
 
+- **Arm B was first "BEAT decks x3 in the opponent-to-be's training draw".** It was withdrawn before launch on the lead's
+  order (10-21 09:05, after W15's LEVERS23.md: BEAT is already 61% of tn_base's opponent draws vs 35.6% on Ranked; do not
+  upweight tank decks in the arms or in opponent training).
+  - What the 61% measures: the LEARNER's opponent pool in tn_base (decks_rl.json census 0.663 + the exploiter pool, by
+    "contains a BEAT card").
+  - What the old arm B changed: the deck draw of the opponent-to-be while it is being trained. With anatomy.wincon that is
+    0.407 of draws, x3 -> 0.673.
+  - That arm aimed at the lead's own diagnosis: the SIM opponent plays these decks too easily, so more practice WITH them.
+    It is withdrawn, not refuted. It stays an option if A-D leave the BEAT cell open, and needs the lead's OK.
 - Pods: 48148 runs A (gate every 5) + D (every 10); 19899 runs C (every 5) + B (every 10). That is 12 gates per pod per
   round (about 7-10 min each, beside about 2.3 h of training).
 - Two arms share a pod: each holds the pod's claim.lock SHARED and its own train lock, so exclusive claimers such as

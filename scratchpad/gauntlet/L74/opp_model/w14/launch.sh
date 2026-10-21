@@ -3,7 +3,7 @@
 #   [EVERY=5] bash scratchpad/gauntlet/L74/opp_model/w14/launch.sh PORT YAML [WAIT_RUN]   (EVERY = gate every N updates)
 #     PORT 48148 (root@64.247.206.80) | 19899 (root@64.247.206.76); YAML = a name under opp_model/cfg (no .yaml)
 #     WAIT_RUN = the pod's own chain that must show ALL_DONE first (e.g. tn_base_s79); refuses if rl_royale / gap.py run.
-# Copies (sha-checked): the yaml, w14/decks_live_train_beat3.json, R6 u20 as cb_stepd/icebow/data/pipeline/o2/w14/r6u20.pt,
+# Copies (sha-checked): the yaml, R6 u20 as cb_stepd/icebow/data/pipeline/o2/w14/r6u20.pt,
 # O2b (kl_ref_gate) + CLIX when the pod lacks them, w7_train.sh / opp_eval_fin15.sh / w14_gate.sh into /workspace/w14/.
 # Starts: flock -s claim.lock (SHARED: two W14 arms per pod; exclusive claimers such as stepd_chain wait) w7_train.sh
 # (smoke, then training; OUTD=/workspace/w14, venvf15, fin15-linux, its own TLOCK instead of cpu.lock) + w14_gate.sh.
@@ -20,7 +20,6 @@ if [ -n "$WAIT" ]; then on "grep -q ALL_DONE /workspace/stepd/rl_$WAIT/chain.log
 on "ps -eo args | grep -E 'rl_royale|gap\.py|stepd_chain' | grep -v -e grep -e oppW14" && { echo "BUSY"; exit 1; }   # a W14 arm is fine
 on "mkdir -p /workspace/w14 $CB/icebow/data/pipeline/o2/w14 $CB/$L/w14 $CB/$L/cfg"
 put $R/$L/cfg/$Y.yaml $CB/$L/cfg/$Y.yaml
-put $R/$L/w14/decks_live_train_beat3.json $CB/$L/w14/decks_live_train_beat3.json
 put $R/$L/optC/w7_train.sh /workspace/w14/w7_train.sh
 put $R/$L/pod/opp_eval_fin15.sh /workspace/w14/opp_eval_fin15.sh
 put $R/$L/w14/w14_gate.sh /workspace/w14/w14_gate.sh

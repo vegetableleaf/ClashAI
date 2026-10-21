@@ -138,6 +138,20 @@ def style_dist(raw, which):
     return (math.sqrt(sum(d * d for d in ds) / len(ds)) if ds else float('nan')), cmp
 
 
+def mix(sim, live):
+    """Deck mix (revealed win condition): BEAT share SIM vs Ranked, CLX win re-weighted to Ranked's BEAT share, and the
+    Ranked win-condition shares next to the SIM's (lead 10-21: the eval mix should match Ranked's archetype shares)."""
+    from collections import Counter
+    b = lambda x: [r for r in x if r['wincon_rev'] in BEAT]  # noqa: E731
+    w = lambda x: sum(r['win'] == 1 for r in x) / max(1, len(x))  # noqa: E731
+    sb, lb = len(b(sim)) / len(sim), len(b(live)) / len(live)
+    rest = [r for r in sim if r['wincon_rev'] not in BEAT]
+    rew = lb * w(b(sim)) + (1 - lb) * w(rest)
+    cs, cl = Counter(r['wincon_rev'] for r in sim), Counter(r['wincon_rev'] for r in live)
+    top = ' '.join(f'{k} {100 * cl[k] / len(live):.0f}/{100 * cs[k] / len(sim):.0f}' for k, _ in cl.most_common(10))
+    return sb, lb, rew, top
+
+
 def table(name, raw, live, brief=False, feats=False):
     sim = [sim_row(j, name) for j in raw]
     out = {}
@@ -158,11 +172,13 @@ def table(name, raw, live, brief=False, feats=False):
     d13, _ = style_dist(raw, '13k')
     if not dr <= STYLE_MAX:
         fails.append('style')
+    sb, lb, rew, top = mix(sim, live)
     keys = {(j['seed'], j['tag'], j['learner_side']) for j in raw}
     warn = '' if len(keys) == len(raw) and len(raw) % 480 == 0 else f'  !! {len(raw)} rows / {len(keys)} unique: INCOMPLETE OR DUPLICATED'
     if brief:
         print(f'{name:40s} n {len(sim):4d} style R {dr:.2f} / 13k {d13:.2f} | ' + ' '.join(
-            f'{c} {100 * out[c][0] / max(1, out[c][1]):5.1f}' for c in BRIEF) + f' | gate fails {len(fails)}: {",".join(fails)}' + warn)
+            f'{c} {100 * out[c][0] / max(1, out[c][1]):5.1f}' for c in BRIEF) + f' | win@RankedMix {100 * rew:5.1f}'
+              + f' | gate fails {len(fails)}: {",".join(fails)}' + warn)
         if feats and cmp:
             import o3_score as O3
             print('      ' + ' '.join(f'{k} {cmp[k][3]:.2f}({cmp[k][4]:+.2f})' for k in O3.FEATS))
@@ -175,6 +191,9 @@ def table(name, raw, live, brief=False, feats=False):
         tol = f' tol {TOL[cell]:g}' if cell in TOL else ''
         print(f'  {g} {cell:22s} SIM {AN.fmt(k1, n1):28s} Ranked {AN.fmt(k2, n2):28s} {100 * d:+6.1f} [{100 * lo:+6.1f}, '
               f'{100 * hi:+6.1f}] z {z:+5.2f}{tol}{"  <-- FAIL" if cell in fails else ""}')
+    print(f'  deck mix (revealed win condition): BEAT share SIM {100 * sb:.1f}% vs Ranked {100 * lb:.1f}%; CLX win re-weighted to '
+          f"Ranked's BEAT share {100 * rew:.1f}% (vs {100 * out['win'][0] / out['win'][1]:.1f}% at the SIM mix)")
+    print(f'  Ranked / SIM win-condition shares (%): {top}')
     print(f'  gate (* cells + style; |z| < 1.96 and the TOL pp bounds {TOL}): {len(GATE) + 1 - len(fails)} of {len(GATE) + 1} '
           f'pass, max |z| {worst:.2f}; fails: {fails or "none"}')
     return out, fails, dr
