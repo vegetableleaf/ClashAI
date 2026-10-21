@@ -4045,6 +4045,8 @@ class Learner:
         del results
         if os.environ.get("RL_BATCH_SHA"):                    # W16 identity check: a log line only (env, not config)
             self.log(f"[rl] W16 u{u:04d} batch_sha {batch_sha(Bn)} weights_sha {batch_sha(self.model.state_dict())}")
+            (self.run_dir / f"w16_batch_u{u:04d}.json").write_text(json.dumps({k: batch_sha({k: Bn[k]}) for k in Bn}),
+                                                                 encoding="utf-8")
         t1 = time.perf_counter()
         B = to_device(Bn, self.dev)
         gate_ref = getattr(self, "gate_ref", None)            # F6 kl_ref_gate (None = the init ref for all heads)
