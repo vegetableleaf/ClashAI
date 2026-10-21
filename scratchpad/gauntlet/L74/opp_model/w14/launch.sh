@@ -23,6 +23,7 @@ put $R/$L/cfg/$Y.yaml $CB/$L/cfg/$Y.yaml
 put $R/$L/optC/w7_train.sh /workspace/w14/w7_train.sh
 put $R/$L/pod/opp_eval_fin15.sh /workspace/w14/opp_eval_fin15.sh
 put $R/$L/w14/w14_gate.sh /workspace/w14/w14_gate.sh
+put $R/$L/w14/decks_live_train_beat3.json $CB/$L/w14/decks_live_train_beat3.json   # round 3 (oppW14E)
 put /c/Users/benpe/pod_backup_weekend/w7/rlarm_oppC6_gate_s74_u0020.pt $CB/icebow/data/pipeline/o2/w14/r6u20.pt
 on "mkdir -p /workspace/o3w12/cb/icebow/data/pipeline/o2/w14 && cp $CB/icebow/data/pipeline/o2/w14/r6u20.pt /workspace/o3w12/cb/icebow/data/pipeline/o2/w14/r6u20.pt"   # for eval probes
 for f in icebow/data/pipeline/o2/gen_live_b.pt icebow/data/bench/rl_royale/rlarm_gae_cue_ab2/rlarm_gae_cue_ab2_u0065_grafted.pt; do
