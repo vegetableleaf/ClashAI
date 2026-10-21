@@ -4048,7 +4048,16 @@ class Learner:
             (self.run_dir / f"w16_batch_u{u:04d}.json").write_text(json.dumps({k: batch_sha({k: Bn[k]}) for k in Bn}),
                                                                  encoding="utf-8")
         t1 = time.perf_counter()
+        prof = {} if os.environ.get("RL_PROFILE") else None   # W16 learner profile: a log line only (env, not config)
+
+        def mark(name):
+            if prof is not None:
+                if self.dev.type == "cuda":
+                    torch.cuda.synchronize(self.dev)
+                prof[name] = time.perf_counter()
+        mark("t0")
         B = to_device(Bn, self.dev)
+        mark("to_device")
         gate_ref = getattr(self, "gate_ref", None)            # F6 kl_ref_gate (None = the init ref for all heads)
         glo = gate_lo_cfg(cfg)                                # F6' (None = off)
         card_ref = getattr(self, "card_ref", None)            # K1 kl_ref_card (None = the init ref)
@@ -4077,6 +4086,7 @@ class Learner:
             R["beta_g"] = beta_g_used = self.beta_g
             sel = B["gate_sampled"] & R["low"]
             imit_p_low = float(torch.sigmoid(R["x"][sel]).mean()) if sel.any() else None
+        mark("ref_terms")
         beta_used = self.beta
         vf = gst = None
         warm = gae_on and self.update < ac["critic_warmup_updates"]        # critic warm-up: policy frozen
@@ -4099,10 +4109,17 @@ class Learner:
             if "ab_sampled" not in B:
                 raise SystemExit("ability_head: the rollout rows carry no press decisions (actor_cfg ability rows)")
             abl = {"head": ah, "opt": self.ability_opt, "ent_coef": float(cfg["ability_ent_coef"])}
+        mark("gae_vfshare_heads")
         upd = ppo_update(self.model, self.opt, B, R, cfg, beta_used, self.rng, vf=vf,
                          **({"posture": post} if post is not None else {}),
                          **({"ability": abl} if abl is not None else {}))
+        mark("ppo_update")
         t_upd = time.perf_counter() - t1
+        if prof is not None:
+            ks = list(prof)
+            self.log(f"[rl] W16 profile u{u:04d} rows {len(B['A'])} steps {upd['steps']} " + " ".join(
+                f"{b} {prof[b] - prof[a]:.2f}s" for a, b in zip(ks, ks[1:]))
+                + f" ({1000 * (prof['ppo_update'] - prof['gae_vfshare_heads']) / max(upd['steps'], 1):.1f} ms/step)")
         first = upd["first"]
         if u == 0 and not upd["nonfinite"]:
             # kl_ref_gate: KL_gate is to another net, so > 0 by design; the ratio check still covers the gate's recompute
@@ -4590,6 +4607,9 @@ def main(argv=None) -> int:
         f"{'SMOKE ' if a.smoke else ''}config sha {config_sha(cfg)[:12]} argv {sys.argv[1:] if argv is None else argv}")
     L = None
     try:
+        if os.environ.get("RL_DETERMINISTIC"):              # W16 identity runs only (needs CUBLAS_WORKSPACE_CONFIG)
+            torch.use_deterministic_algorithms(True)
+            log("[rl] RL_DETERMINISTIC: torch.use_deterministic_algorithms(True)")
         L = Learner(cfg, a.run, run_dir, ck_dir, log, a.resume)
         if a.resume:
             log(f"[rl] resumed at update {L.update}, beta {L.beta}")

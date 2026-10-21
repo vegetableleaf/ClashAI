@@ -9,6 +9,8 @@ export PYTHONPATH=/workspace/cb_w16 ROYALE_RUNTIME=${ROYALE_RUNTIME:-fin13-linux
        OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1 RL_BATCH_SHA=1
 unset ROYALE_HEROIW_PRESS
 PY=${PY:-/workspace/venvf13/bin/python}
+[ -n "${RL_DETERMINISTIC:-}" ] && export CUBLAS_WORKSPACE_CONFIG=:4096:8
+ulimit -n 65536                                  # ~9 fds per actor: 100+ actors pass the 1024 default
 EXTRA=(); [ "$EP" != none ] && EXTRA=(remote_actors=$EP)
 flock /workspace/cpu.lock $PY -m pipeline.rl_royale --config scratchpad/gauntlet/L74/stepd/cfg/tn_base_s74.yaml \
   --run w16_$NAME n_actors=$N max_updates=3 screen_every=1000 proagree_every=1000 critic_warmup_updates=0 \

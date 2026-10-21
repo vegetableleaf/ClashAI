@@ -7,6 +7,8 @@ export PYTHONPATH=/workspace/cb_w16 ROYALE_RUNTIME=${ROYALE_RUNTIME:-fin13-linux
        OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1
 unset ROYALE_HEROIW_PRESS
 PY=${PY:-/workspace/venvf13/bin/python}
+[ -n "${RL_DETERMINISTIC:-}" ] && export CUBLAS_WORKSPACE_CONFIG=:4096:8
+ulimit -n 65536                                  # ~9 fds per actor: 100+ actors pass the 1024 default
 mkdir -p /workspace/w16
 if [ -s /workspace/w16/server.pid ] && kill -0 "$(cat /workspace/w16/server.pid)" 2>/dev/null; then
   echo "server already running pid $(cat /workspace/w16/server.pid)"; exit 0; fi
