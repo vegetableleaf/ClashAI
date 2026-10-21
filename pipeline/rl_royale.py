@@ -3433,6 +3433,7 @@ class Learner:
         self.ref = copy.deepcopy(self.model).eval()
         for p in self.ref.parameters():
             p.requires_grad_(False)
+        self.ref_init = self.ref                              # W16: stays the init when kl_ref_refresh_every moves self.ref
         self.gate_ref = self._load_gate_ref(ick) if cfg.get("kl_ref_gate") is not None else None   # F6
         self.card_ref = self._load_gate_ref(ick, "kl_ref_card") if cfg.get("kl_ref_card") is not None else None   # K1
         if adv_cfg(cfg)["shaping"] in ("value_phi", "live_phi"):            # lever C: the frozen Phi net, loaded once from FILE
@@ -4052,6 +4053,11 @@ class Learner:
         R = ref_terms(self.ref, B, cfg["tau"], cfg["T"], T_gate=cfg.get("T_gate"), gate_ref=gate_ref,
                       **({"gate_lo_max": glo["max_elixir"]} if glo else {}),
                       **({"card_ref": card_ref} if card_ref is not None else {}))
+        ent_init = R["ent"]                                   # the entropy floor's baseline: the INIT's, same rows
+        if self.ref is not getattr(self, "ref_init", self.ref):   # W16 moved anchor: one more no-grad pass, init net
+            ent_init = ref_terms(self.ref_init, B, cfg["tau"], cfg["T"], T_gate=cfg.get("T_gate"), gate_ref=gate_ref,
+                                 **({"gate_lo_max": glo["max_elixir"]} if glo else {}),
+                                 **({"card_ref": card_ref} if card_ref is not None else {}))["ent"]
         if cfg.get("kl_heads") is not None:                   # K1: only these heads' KL enters the loss
             R["kl_heads"] = tuple(cfg["kl_heads"])
         if glo is not None:
@@ -4164,10 +4170,10 @@ class Learner:
                 self.log(f"[rl] update-0 plays/min baseline {self.guards.s['base']['plays_per_min']:.3f} (stop outside "
                          f"[{cfg['plays_lo']}, {cfg['plays_hi']}]x for {cfg['stop_consecutive']} updates)")
             reasons += self.guards.after_update(mon, beta_used, upd["kl_cell"] or 0.0, upd["kl_gate"] or 0.0,
-                                                ent=upd["ent"], ent_init=R["ent"])
+                                                ent=upd["ent"], ent_init=ent_init)
             self.update = u + 1                                 # a crashed update is not counted (crash save = u)
             rr = cfg.get("kl_ref_refresh_every")
-            if rr and self.update % int(rr) == 0:               # W16 moving anchor: KL (+ entropy floor) now to this policy
+            if rr and self.update % int(rr) == 0:               # W16 moving anchor: KL now to this policy (the entropy floor stays the init's)
                 self.ref = self._frozen(self.model)
                 self.log(f"[rl] kl_ref_refresh_every {rr}: the KL anchor is now the policy after update {u} "
                          f"({self.update} done)")
@@ -4178,7 +4184,7 @@ class Learner:
                "kl_gate": upd["kl_gate"], "kl_card": upd["kl_card"], "kl_cell": upd["kl_cell"], "beta_used": beta_used,
                "beta_next": self.beta, "kl_target": cfg["kl_target"], "leash": leash, "kl_leash": kl_leash,
                "kl_driver": kl_driver, "l_pg": upd["l_pg"],
-               "entropy": upd["ent"], "entropy_init": R["ent"], "clip_frac": upd["clip_frac"],
+               "entropy": upd["ent"], "entropy_init": ent_init, "clip_frac": upd["clip_frac"],
                "ratio_mean": upd["ratio_mean"], "grad_norm_mean": upd["grad_norm_mean"],
                "first_minibatch": {k: first[k] for k in ("ratio_maxdev", "kl_gate", "kl_card", "kl_cell", "lp_maxdiff")},
                "picked": rinfo["picked"], "skipped": rinfo["skipped"],
@@ -4361,7 +4367,7 @@ class Learner:
         """--resume of a run whose cached init screen is outcome-only (older code): re-run it with the frozen INIT
         weights (greedy live rule, eval seeds: the same matches) so the screen exploit guards have their init side."""
         t = time.perf_counter()
-        sc = self.screen(self.ref)
+        sc = self.screen(self.ref_init)
         old = self.base.get("init_screen") or {}
         same = sum(1 for k, v in sc["per_key"].items() if k in old and not isinstance(old[k], dict) and float(old[k]) == v["v"])
         self.base["init_screen"] = sc["per_key"]

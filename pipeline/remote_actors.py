@@ -29,7 +29,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 TOKEN_FILE = REPO / "icebow" / "data" / "remote_actors.token"
 CONNECT_S = 60          # TCP + HMAC handshake; a hung endpoint is skipped (retried every RETRY_EVERY updates)
-READY_S = 1200          # the server's ActorPool startup (spawn + runtime import) after the hello
+READY_S = 300           # the server's ActorPool startup (spawn + runtime import) after the hello
 RETRY_EVERY = 5
 
 
@@ -72,6 +72,13 @@ def opp_files(kind: str, shares: list) -> dict:
     return {p: file_sha(REPO / p) for p in sorted(paths)}
 
 
+def royale_env() -> dict:
+    """The learner's ROYALE* environment (ROYALE_RUNTIME, ROYALE_HEROIW_PRESS -- which rl_royale.load_config SETS from
+    ``heroiw_press`` --, ROYALE_HEROIW_FORM, ROYALESIM_DATA_DIR, ...): local actors inherit it, so remote actors must
+    get exactly the same (verifier W16 F1: a remote without ROYALE_HEROIW_PRESS=live presses with the generic rule)."""
+    return {k: v for k, v in os.environ.items() if k.startswith("ROYALE")}
+
+
 def safe_rel(p: str) -> Path:
     q = Path(p)
     if q.is_absolute() or q.anchor or ".." in q.parts:
@@ -103,6 +110,8 @@ class Remote:
             buf = self.conn.recv_bytes()                 # = conn.recv(), with the reply's size and read time
             msg = pickle.loads(buf)
             if msg[0] == "files?":
+                if not set(msg[1]) <= set(need):
+                    raise RuntimeError(f"server asked for files it was not offered: {sorted(set(msg[1]) - set(need))}")
                 blob = {p: safe_rel(p).read_bytes() for p in msg[1]}
                 log(f"[dist] {self.ep}: shipping {len(blob)} opponent file(s), "
                     f"{sum(map(len, blob.values())) / 2**20:.1f} MB: {sorted(blob)}")
@@ -125,7 +134,7 @@ class Remote:
 def _open(ep: str, key: bytes, base: dict, code: dict) -> Remote:
     host, port = ep.rsplit(":", 1)
     conn = Client((host, int(port)), authkey=key)
-    conn.send(("hello", base, code))
+    conn.send(("hello", base, code, royale_env()))
     if not conn.poll(READY_S):
         conn.close()
         raise TimeoutError(f"server not ready after {READY_S} s")
@@ -143,6 +152,7 @@ class DistPool:
 
     def __init__(self, local, endpoints: Path, base: dict, log, timeout_s: float):
         self.local, self.file, self.base, self.log, self.timeout_s = local, Path(endpoints), base, log, float(timeout_s)
+        self.remote_timeout_s = 2 * self.timeout_s + 300     # a remote pool may restart an actor once (= 2 timeouts)
         self.key, self.code = token(), code_hash()
         self.remotes: dict = {}                  # ep -> Remote (connected, ready)
         self.failed: dict = {}                   # ep -> runs left before the next connect attempt
@@ -226,18 +236,19 @@ class DistPool:
 
         def go(r, sh):
             try:
-                out[r.ep] = r.run(kind, update, sd, sh, self.timeout_s, self.log)
+                out[r.ep] = r.run(kind, update, sd, sh, self.remote_timeout_s, self.log)
             except BaseException as exc:            # noqa: BLE001 -- reported + re-run locally below
                 out[r.ep] = exc
         ths = [(r, threading.Thread(target=go, args=(r, sh), daemon=True)) for r, _, sh in plan if any(sh)]
         for _, t in ths:
             t.start()
         t0 = time.perf_counter()
+        t_end = time.time() + self.remote_timeout_s + 60          # one deadline for all remotes (joined in turn)
         results, skipped, stats = self.local.run(kind, update, sd, jobs,
                                                  shares={a: shares[a] for a in range(L)})
         t_local = time.perf_counter() - t0
         for r, t in ths:
-            t.join(self.timeout_s + 60)
+            t.join(max(0.0, t_end - time.time()))
         notes = [f"local {t_local:.0f}s"]
         for r, o, sh in plan:
             if not any(sh):
@@ -289,19 +300,23 @@ def _serve_conn(conn, st: dict, workers: int, timeout_s: float, code: dict) -> N
     while True:
         msg = conn.recv()
         if msg[0] == "hello":
-            _, base, lcode = msg
+            _, base, lcode, env = msg
             diff = sorted(k for k in set(code) | set(lcode) if code.get(k) != lcode.get(k))
             if diff:
                 conn.send(("refuse", f"pipeline code differs from the learner's: {diff[:12]}"))
                 _log(f"REFUSED a learner: code differs {diff[:12]}")
                 return
-            if st["pool"] is None or st["base"] != base:
+            if st["pool"] is None or st["base"] != (base, env):
                 if st["pool"] is not None:
                     st["pool"].close()
                 st["pool"], st["base"] = None, None
+                for k in [k for k in os.environ if k.startswith("ROYALE") and k not in env]:
+                    del os.environ[k]
+                os.environ.update(env)                   # the actors (spawned below) inherit the learner's ROYALE* env
                 t = time.perf_counter()
                 st["pool"] = RL.ActorPool(base, workers, _log, timeout_s)
-                st["base"] = base
+                st["base"] = (base, env)
+                _log(f"actor env: {sorted(env.items())}")
                 _log(f"ActorPool of {workers} ready in {time.perf_counter() - t:.0f}s")
             conn.send(("ready", workers))
         elif msg[0] == "run":
@@ -310,6 +325,8 @@ def _serve_conn(conn, st: dict, workers: int, timeout_s: float, code: dict) -> N
             if miss:
                 conn.send(("files?", miss))
                 tag, blob = conn.recv()
+                if tag != "files":
+                    raise RuntimeError(f"expected files, got {tag!r}")
                 for p, b in blob.items():
                     dst = safe_rel(p)
                     if hashlib.sha256(b).hexdigest() != need[p]:
