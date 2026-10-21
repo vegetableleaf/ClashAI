@@ -10,6 +10,7 @@ PY=${PY:-/workspace/venvf13/bin/python}
 mkdir -p /workspace/w16
 if [ -s /workspace/w16/server.pid ] && kill -0 "$(cat /workspace/w16/server.pid)" 2>/dev/null; then
   echo "server already running pid $(cat /workspace/w16/server.pid)"; exit 0; fi
-setsid nohup $PY -m pipeline.remote_actors --port ${SERVE_PORT:-5601} --workers ${WORKERS:-24} \
+L=(); [ -n "${LOCK:-}" ] && L=(flock /workspace/cpu.lock)
+setsid nohup "${L[@]}" $PY -m pipeline.remote_actors --port ${SERVE_PORT:-5601} --workers ${WORKERS:-24} \
   >> /workspace/w16/server.log 2>&1 < /dev/null &
 echo $! > /workspace/w16/server.pid; echo "server pid $!"

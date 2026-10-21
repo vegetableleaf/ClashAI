@@ -19,6 +19,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import os
+import pickle
 import threading
 import time
 import traceback
@@ -98,15 +99,17 @@ class Remote:
         while True:
             if not self.conn.poll(timeout_s):
                 raise TimeoutError(f"no answer in {timeout_s:.0f} s")
-            msg = self.conn.recv()
+            t1 = time.perf_counter()
+            buf = self.conn.recv_bytes()                 # = conn.recv(), with the reply's size and read time
+            msg = pickle.loads(buf)
             if msg[0] == "files?":
                 blob = {p: safe_rel(p).read_bytes() for p in msg[1]}
                 log(f"[dist] {self.ep}: shipping {len(blob)} opponent file(s), "
                     f"{sum(map(len, blob.values())) / 2**20:.1f} MB: {sorted(blob)}")
                 self.conn.send(("files", blob))
             elif msg[0] == "done":
-                return msg[1], msg[2], msg[3], {"send_s": t_send, "mb": len(sd) / 2**20,
-                                                "wall_s": time.perf_counter() - t0}
+                return msg[1], msg[2], msg[3], {"send_s": t_send, "mb": len(sd) / 2**20, "recv_mb": len(buf) / 2**20,
+                                                "recv_s": time.perf_counter() - t1, "wall_s": time.perf_counter() - t0}
             elif msg[0] == "error":
                 raise RuntimeError(f"remote error:\n{msg[1]}")
             else:
@@ -245,7 +248,8 @@ class DistPool:
                 results += res
                 skipped += sk
                 stats.update({o + int(a): s for a, s in st.items()})
-                notes.append(f"{r.ep} {tx['wall_s']:.0f}s (send {tx['mb']:.1f} MB in {tx['send_s']:.1f}s)")
+                notes.append(f"{r.ep} {tx['wall_s']:.0f}s (send {tx['mb']:.1f} MB in {tx['send_s']:.1f}s, rows "
+                             f"{tx['recv_mb']:.0f} MB read in {tx['recv_s']:.1f}s)")
                 continue
             why = f"{type(got).__name__}: {got}" if got is not None else "thread still running past the timeout"
             self._drop(r.ep, why)
