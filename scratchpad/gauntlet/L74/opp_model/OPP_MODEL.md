@@ -1002,6 +1002,12 @@ before the drain / opponent takes / both took / style vs Ranked; Ranked 48.1 / 2
 | R1 | B gate-free (19899, from 14:27 EDT) u0 | 66.2 | 63.1 | 68.4 | 55.4 | 72.2 | 80.5 | 38.3 | 10.2 | 0.56 | 8 | = R6 u20 (critic warm-up only), as every u0 |
 | R1 | A u30 | 60.2 | 54.0 | 64.6 | 56.2 | 63.3 | 69.8 | 44.6 | 13.8 | 0.63 | 7 | still moving on OT cells |
 | R1 | B u5 | 59.6 | 52.5 | 64.5 | 57.1 | 67.2 | 77.2 | 45.0 | 11.9 | 0.62 | 7 | B (gate free) is already where A is at u30 |
+| R1 | A u35 / u40 (u40 = A2 u0: its own gate lost its tarball when launch.sh overwrote the running eval script; launch.sh now copies atomically) | 59.2 / 61.9 | 55.1 / 56.5 | 62.1 / 65.7 | 57.5 / 56.9 | 62.7 / 67.4 | 71.2 / 75.2 | 48.1 / 43.1 | 15.0 / 13.3 | 0.63 / 0.64 | 7 / 8 | **plateau since u20: 60.6 / 60.2 / 60.2 / 59.2 / 61.9** (480-game SE 2.2) |
+| R1 | B u10 / u15 | 62.3 / 59.6 | 52.8 / 53.0 | 68.9 / 64.2 | 53.8 / 53.8 | 65.1 / 62.8 | 73.2 / 67.0 | 41.7 / 44.6 | 9.4 / 13.3 | 0.58 / 0.59 | 8 / 8 | the same level as A (~60), with better style (0.58-0.62 vs A's 0.63-0.67) |
+| R2 | A2 = A continued as a FRESH run from A u40 (cf9f60f9; new KL anchor, the 0.1 budget restarts), 48148 from 15:16 EDT: u5 | 61.9 | 52.8 | 68.3 | 57.1 | 70.8 | 76.8 | 43.1 | 13.1 | 0.66 | 9 | no gain over A u40: stopped at u10 (16:00 EDT) for A3 |
+| R1 | B u20 | **55.0** | 51.0 | 57.7 | 51.5 | 58.3 | 63.0 | 50.2 | 14.6 | 0.54 | 6 | the first clear step below 59: -11.2 pp vs R6 u20 on the same 480 games, style better than R0 |
+| probe | B u15 at decide 20 (eval-time tempo only) | 61.9 | 56.6 | 65.6 | 59.8 | 67.9 | 76.7 | 43.3 | 12.7 | 0.70 | 8 | (c) a faster opponent is not stronger: +2.3 pp for CLX vs decide 40 (59.6), style worse |
+| R2 | A3 = A u40 continued fresh WITHOUT kl_ref_gate (B's change on A's net), 48148 from 16:02 EDT | | | | | | | | | | | |
 
 **Round-1 facts (a).**
 - The pods are CPU-capped: cgroup quota 27.2 cores (48148) / 30.6 (19899) on 256-thread hosts. That is why cpu.lock exists.

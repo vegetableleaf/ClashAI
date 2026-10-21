@@ -12,8 +12,8 @@ PORT=$1; Y=$2; WAIT=${3:-}
 case $PORT in 48148) H=root@64.247.206.80 ;; 19899) H=root@64.247.206.76 ;; *) echo "unknown port"; exit 2 ;; esac
 KEY=$HOME/.ssh/runpod_clashbot; R=/c/Users/benpe/ClashBot; L=scratchpad/gauntlet/L74/opp_model; CB=/workspace/cb_stepd
 on() { ssh -i $KEY -p $PORT $H "$@"; }
-put() {  # LOCAL REMOTE: copy + sha check
-  scp -q -i $KEY -P $PORT "$1" $H:"$2" || { echo "SCP FAIL $1"; exit 3; }
+put() {  # LOCAL REMOTE: copy to a temp name, then an atomic mv (a running bash keeps reading the old inode) + sha check
+  scp -q -i $KEY -P $PORT "$1" $H:"$2.w14tmp" && on "mv $2.w14tmp $2" || { echo "SCP FAIL $1"; exit 3; }
   [ "$(sha256sum "$1" | awk '{print $1}')" = "$(on "sha256sum $2" | awk '{print $1}')" ] || { echo "SHA FAIL $2"; exit 3; }
 }
 if [ -n "$WAIT" ]; then on "grep -q ALL_DONE /workspace/stepd/rl_$WAIT/chain.log" || { echo "$WAIT not ALL_DONE"; exit 1; }; fi
