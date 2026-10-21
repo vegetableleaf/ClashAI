@@ -63,3 +63,72 @@ process, /workspace/stepd/claim.lock free by `flock -n`).
 - LAUNCHED 22:38:59Z with the lead's launch.sh: /workspace/stepd/GO_tn_redirect_s74 = RT=fin15-linux VENV=/workspace/venvf15
   EVAL_LEVELS=all16 DECODE='--ability-head-decode=sample --crown-log' NO36=1; chain pid 21909 under claim.lock; log
   /workspace/stepd/rl_tn_redirect_s74/chain.log.
+
+## Addendum 3 (W17, 2026-10-21 21:00-22:10 UTC): four NEW empty pods prepared for tn_* arms -- nothing launched
+
+| pod | GPU / cgroup CPU quota / disk | smoke tn_otstart_s74 | smoke tn_base_s74 | free disk after |
+|---|---|---|---|---|
+| 157.157.221.29:32621 | RTX 4090 / 54.4 / 200 GB | SMOKE PASS 21:41:26Z | SMOKE PASS 21:54:53Z | 185 GB |
+| 64.247.206.120:22539 | L40 / 27.2 / 60 GB | SMOKE PASS 21:37:43Z | SMOKE PASS 21:48:40Z | 45 GB |
+| 157.157.221.29:32525 | RTX 4090 / 54.4 / 60 GB (lead: two arms at once) | SMOKE PASS 21:39:34Z | SMOKE PASS 21:51:34Z | 45 GB |
+| 213.192.2.125:40144 | RTX 4090 / 31.1 / 60 GB | SMOKE PASS 21:38:35Z | SMOKE PASS 21:49:38Z | 45 GB |
+
+Same layout as 13396/14009 (which were only read):
+
+- **Code.** /workspace/cb_stepd = `git archive origin/main` at **c8aa969** (includes W16's remote_actors.py, ot_start_share and
+  league_deck_weights in rl_royale.py). L67, video-analytics and */templates are left out (not read by the trainer or the eval).
+  It has 7,884 files; every one was checked with `sha256sum -c` against the laptop's extract (/workspace/in/code.sha).
+- **Venv.**
+  - /workspace/venvbase was rebuilt with uv from 13396's venvf15 freeze, with royalesim left out. The freeze is the same
+    52 pins (torch 2.11.0+cu128, numpy 2.5.4, royalegym 0.1.23 from PyPI, ...); the diff is empty.
+  - /workspace/venvf15 is a hard-link copy of venvbase made by setup_fin15.sh with `SRCV=/workspace/venvbase SKIP36=1`
+    (no venvf36 or fork36: the GO file's NO36=1). The fin15 wheel's sha256 is 88f3fdcb... (FIN15_SHA), and the fork pin is
+    305aaafc. The result is FIN15_OK.
+  - `activate()` checks royalegym's bytes against the manifest: they pass, with pins RoyaleSim 305aaafc and RoyaleGym
+    a7deb6e4. `import royalesim, royalegym, torch` works and CUDA is available.
+- **Data.** 25 files were copied from 13396's cb_stepd through the laptop to 22539, then fanned out from 22539 to the other
+  three with a temporary key, which was removed afterwards. sha256 equals 13396 on all files and 14009 on the shared ones
+  (14009 holds the same files plus some extras).
+  - init rlarm_succ_levels_u0065 05d42da7 (+ grafted edc82ada);
+  - the s1 specialist 287dda04; s1_dataset 43401900; gen_dataset_v32_fv5.npz 29ecefa9;
+  - pool_env_v1 c37cb7bd; decks_rl b43dd085;
+  - wk_adapt_exp1/2/3 u0015 3e019ae9 / efe5e3f6 / ead818a8; newsim_base_exp1/2 u0015 d0ef0ea3 / 24cbbe3f;
+  - **o2/w7opp.pt = R6 u20 3452256458450fcc8fc4848445e5c06c64970ad0b1b8a60c1a915208509c475b** (w7opp_R4u100.pt ea1d0804 next
+    to it, as on 13396);
+  - for the eval and graft: rlarm_gae_u0250_grafted 00c845c0 (stepd_chain U250), gen_v1_s0/gen_s0.pt 05db85a0 (livecal GEN)
+    and rdef_e4_u0020_barrel2k_cellref_towerref_w2 430faaee (the E4 opponent);
+  - also gen_v32_s0/*, card_ids.json and pool_env_v1_split.json.
+  - /workspace/w7opp_R6u20.pt, /workspace/launch.sh and /workspace/pod_smoke15.sh are byte-equal to 13396's.
+- **Also needed: research/ext** (38 files, 17 MB, byte-equal on 13396 and 14009). The first smoke CRASHED without it:
+  decision_options reads research/ext/Royale/RoyaleSim/data/derived/cards.json for the all16 level table. Copied and verified.
+- **Smokes.** `RUN=<arm> bash /workspace/pod_smoke15.sh` as above. Logs: /workspace/stepd/tn_smoke_<arm>/smoke.log.
+  - After both smokes passed, /workspace/stepd/smoke/SMOKE_OK was written (stepd_chain.sh needs it).
+  - The crashed first attempts were moved to /workspace/failed_smoke1/.
+- **Eval / graft dependency check (22539).**
+  - The chain's own ev() command ran gap.py D3 on u250 grafted (fin15-linux, `--levels all16`, the GO DECODE + EV_EXTRA,
+    decks_live_eval census, 26 workers). It wrote 15 match rows in 30 s with no traceback; it was stopped on purpose.
+  - graft_generic.py grafted a probe checkpoint (fv 6) with u250: 42 tensors.
+  - Output: /workspace/gaptest.
+- **Not done.** No GO file, no chain, nothing launched. The transfer tars (/workspace/in/{code,data,ext}.tar, ~1 GB) were kept.
+  Two arms on ONE pod: stepd_chain.sh trains AND evaluates under `flock /workspace/cpu.lock` (launch.sh also holds
+  claim.lock), so a second arm on 32525 waits for the first unless its launcher uses other locks. Disk is not the limit: one
+  finished arm on 13396 uses ~0.65 GB (bench 517 MB + stepd 117 MB + L68 11 MB).
+
+**Speed (a): seconds per PPO update.** W16's S1 probe (distrib/run_learner.sh flags: tn_base_s74, n_actors 24, E 64 x G 4,
+max_updates 3, screens and proagree off, critic_warmup 0, RL_PROFILE=1) on fin15-linux. Log: /workspace/stepd/probe_speed.log.
+
+| pod | rollout s u0/u1/u2 | learner s | roll + learn s/update (mean of 3) | ppo ms/step |
+|---|---|---|---|---|
+| 14009 (W16 S1, **fin13**, L40) | 117 / 140 / 132 | 41 / 43 / 41 | 158 / 183 / 173 = **171** (W16 wall total 176) | 57 |
+| 22539 (L40, quota 27.2) | 127 / 143 / 173 | 42 / 44 / 45 | 169 / 187 / 218 = **191** | 58-63 |
+| 32621 (4090, quota 54.4) | 151 / 162 / 153 | 40 / 40 / 40 | 191 / 202 / 193 = **195** | 56.5-57 |
+| 32525 (4090, quota 54.4) | 144 / 144 / 148 | 40 / 41 / 40 | 184 / 185 / 188 = **186** | 56.5-57 |
+| 40144 (4090, quota 31.1) | 132 / 156 / 132 | 38 / 39 / 39 | 170 / 195 / 171 = **179** | 53-54 |
+
+- Production (fin15, screens every 10, proagree every 5): the median wall time between updates over 130 updates is 199 / 204 s
+  on 13396 (tn_base_s74 / s76) and 197 / 201 s on 14009 (s75 / s77).
+- Reading: the 4090 learner equals the L40's (38-41 s). The new pods' rollouts are 0-25 % slower than 14009's, with n = 3
+  updates each, so this is noisy. The runtime also differs (fin15 here, fin13 in S1), and that effect was not measured.
+  - Expect about 180-195 s per update without screens, so roughly 205-225 s in production (b).
+  - The CPU quota is not the limit at 24 actors: 40144 (31 cores) is the fastest.
+- u0 is identical on all four pods (154/102, 71,212 rows). batch_sha differs, as W16 found: the log-prob float bits.
