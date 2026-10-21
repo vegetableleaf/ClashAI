@@ -4042,6 +4042,10 @@ class Learner:
         gamma_row_mean = float(Bn["gamma_row"].mean()) if tick_unit and len(Bn["gamma_row"]) else None
         ab_acc = ([sum(dict(r.get("ability_presses", {}).get(r["side"], {})).values()) for r in results]
                   if getattr(self, "ability_head", None) is not None else None)   # B6: engine-accepted learner presses
+        if os.environ.get("RL_BATCH_SHA"):                    # W16 identity check: per-match hashes (env, not config)
+            (self.run_dir / f"w16_matches_u{u:04d}.json").write_text(json.dumps(
+                [f"{r.get('tag')}:{r.get('k')}:{r.get('side')} {r.get('outcome')} {batch_sha(r.get('traj') or {})}"
+                 for r in results]), encoding="utf-8")
         del results
         if os.environ.get("RL_BATCH_SHA"):                    # W16 identity check: a log line only (env, not config)
             self.log(f"[rl] W16 u{u:04d} batch_sha {batch_sha(Bn)} weights_sha {batch_sha(self.model.state_dict())}")
