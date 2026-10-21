@@ -3682,6 +3682,567 @@
     }
    ],
    "registered": "2026-10-17T15:21"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 141,
+   "word": "FACTORIAL",
+   "name": "ICEBOW Mark CXLI: FACTORIAL",
+   "run": "rlarm_fact03",
+   "parent": "ICEBOW Mark CXXIV: LONGER",
+   "change": "factorial fact03: A-B+C-D-E- seed 303 (A cue layer, B exploiter league, C opp tower troops, D live levels, E tower shaping; 2^(5-1) E=ABCD; u250 raw + 65 updates)",
+   "created": "2026-10-17T20:46",
+   "eval": "factorial eval (fork36 + troops + live levels, D3, 960 paired): 584/960 wins",
+   "live": "",
+   "files": [
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact03/rlarm_fact03_u0065.pt",
+     "sha256": "9b09159be5a6cc1dfe2f7547e961d65c8f1cab27feb55071f0dcf59dbf6319b4",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CXLI_FACTORIAL.pt"
+    },
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact03/rlarm_fact03_u0065_grafted.pt",
+     "sha256": "ae6baf8bafee7a84310b4fea6b9b3a1e067513f6da055dcc3714aa0d8357b664",
+     "role": "grafted",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CXLI_FACTORIAL_grafted.pt"
+    }
+   ],
+   "registered": "2026-10-17T21:07"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 142,
+   "word": "FACTORIAL",
+   "name": "ICEBOW Mark CXLII: FACTORIAL",
+   "run": "rlarm_fact02",
+   "parent": "ICEBOW Mark CXXIV: LONGER",
+   "change": "factorial fact02: A+B-C-D-E- seed 302 (A cue layer, B exploiter league, C opp tower troops, D live levels, E tower shaping; 2^(5-1) E=ABCD; u250 raw + 65 updates)",
+   "created": "2026-10-17T21:13",
+   "eval": "factorial eval (fork36 + troops + live levels, D3, 960 paired): 558/960 wins",
+   "live": "",
+   "files": [
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact02/rlarm_fact02_u0065.pt",
+     "sha256": "c0ec26ebf2f2052cc0cdd4116e6705a4326a567e534f1ca937ee75c914a453f1",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CXLII_FACTORIAL.pt"
+    },
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact02/rlarm_fact02_u0065_grafted.pt",
+     "sha256": "ec435bf26e55bc45f5042826cf959c6ea251835ef7437fdde5cb2f9748dea52e",
+     "role": "grafted",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CXLII_FACTORIAL_grafted.pt"
+    }
+   ],
+   "registered": "2026-10-17T21:38"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 143,
+   "word": "FACTORIAL",
+   "name": "ICEBOW Mark CXLIII: FACTORIAL",
+   "run": "rlarm_fact04",
+   "parent": "ICEBOW Mark CXXIV: LONGER",
+   "change": "factorial fact04: A+B+C-D-E+ seed 304 (A cue layer, B exploiter league, C opp tower troops, D live levels, E tower shaping; 2^(5-1) E=ABCD; u250 raw + 65 updates)",
+   "created": "2026-10-17T21:25",
+   "eval": "factorial eval (fork36 + troops + live levels, D3, 960 paired): 602/960 wins",
+   "live": "",
+   "files": [
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact04/rlarm_fact04_u0065.pt",
+     "sha256": "0458057f532d5d7dc73596e5cab46d645d047d3849a31c69829ad4039e7c65f5",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CXLIII_FACTORIAL.pt"
+    },
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact04/rlarm_fact04_u0065_grafted.pt",
+     "sha256": "a58ae7e25c6d31fc0bf469c67914791c25a2d78592e4906091fda3d0f473bb74",
+     "role": "grafted",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CXLIII_FACTORIAL_grafted.pt"
+    }
+   ],
+   "registered": "2026-10-17T21:48"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 144,
+   "word": "FACTORIAL",
+   "name": "ICEBOW Mark CXLIV: FACTORIAL",
+   "run": "rlarm_fact16",
+   "parent": "ICEBOW Mark CXXIV: LONGER",
+   "change": "factorial fact16: A+B+C+D+E+ seed 316 (A cue layer, B exploiter league, C opp tower troops, D live levels, E tower shaping; 2^(5-1) E=ABCD; u250 raw + 65 updates)",
+   "created": "2026-10-17T21:37",
+   "eval": "factorial eval (fork36 + troops + live levels, D3, 960 paired): 615/960 wins",
+   "live": "",
+   "files": [
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact16/rlarm_fact16_u0065.pt",
+     "sha256": "a8438adb59f776e10359d5b525a8d6d64400e162d9ff84e5f071833d76495ce8",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CXLIV_FACTORIAL.pt"
+    },
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact16/rlarm_fact16_u0065_grafted.pt",
+     "sha256": "4009e8406eaade71f22a17809de64cecb0002734a3ddcd5fc5ce87a83da7c1f2",
+     "role": "grafted",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CXLIV_FACTORIAL_grafted.pt"
+    }
+   ],
+   "registered": "2026-10-17T21:59"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 145,
+   "word": "FACTORIAL",
+   "name": "ICEBOW Mark CXLV: FACTORIAL",
+   "run": "rlarm_fact07",
+   "parent": "ICEBOW Mark CXXIV: LONGER",
+   "change": "factorial fact07: A-B+C+D-E+ seed 307 (A cue layer, B exploiter league, C opp tower troops, D live levels, E tower shaping; 2^(5-1) E=ABCD; u250 raw + 65 updates)",
+   "created": "2026-10-18T00:33",
+   "eval": "factorial eval (fork36 + troops + live levels, D3, 960 paired): 586/960 wins",
+   "live": "",
+   "files": [
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact07/rlarm_fact07_u0065.pt",
+     "sha256": "ed91c76634ba79361e752627ce5e83ea8d9a8c78ae032dbb4f69d620c6c7ddc0",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CXLV_FACTORIAL.pt"
+    },
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact07/rlarm_fact07_u0065_grafted.pt",
+     "sha256": "7919bbf4ae734e51bd6a047f92e1f21fd8ddd7d83571494bcf9dd5788cc257ea",
+     "role": "grafted",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CXLV_FACTORIAL_grafted.pt"
+    }
+   ],
+   "registered": "2026-10-18T00:52"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 146,
+   "word": "FACTORIAL",
+   "name": "ICEBOW Mark CXLVI: FACTORIAL",
+   "run": "rlarm_fact06",
+   "parent": "ICEBOW Mark CXXIV: LONGER",
+   "change": "factorial fact06: A+B-C+D-E+ seed 306 (A cue layer, B exploiter league, C opp tower troops, D live levels, E tower shaping; 2^(5-1) E=ABCD; u250 raw + 65 updates)",
+   "created": "2026-10-18T00:50",
+   "eval": "factorial eval (fork36 + troops + live levels, D3, 960 paired): 604/960 wins",
+   "live": "",
+   "files": [
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact06/rlarm_fact06_u0065.pt",
+     "sha256": "dc6881f413d3b173c83cea5f8526876539ebc6093f400a4a9cb248e366189a51",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CXLVI_FACTORIAL.pt"
+    },
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact06/rlarm_fact06_u0065_grafted.pt",
+     "sha256": "ba962bab9c36fda0097e01f6b19ccd3ec3ff541ff51a19875d4aa257c94ea94c",
+     "role": "grafted",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CXLVI_FACTORIAL_grafted.pt"
+    }
+   ],
+   "registered": "2026-10-18T01:12"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 147,
+   "word": "FACTORIAL",
+   "name": "ICEBOW Mark CXLVII: FACTORIAL",
+   "run": "rlarm_fact05",
+   "parent": "ICEBOW Mark CXXIV: LONGER",
+   "change": "factorial fact05: A-B-C+D-E- seed 305 (A cue layer, B exploiter league, C opp tower troops, D live levels, E tower shaping; 2^(5-1) E=ABCD; u250 raw + 65 updates)",
+   "created": "2026-10-18T00:51",
+   "eval": "factorial eval (fork36 + troops + live levels, D3, 960 paired): 598/960 wins",
+   "live": "",
+   "files": [
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact05/rlarm_fact05_u0065.pt",
+     "sha256": "b3fd845d8fc992ab725ee953823e32ce31e13eb2cf9ee3710d09ea3524705bc1",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CXLVII_FACTORIAL.pt"
+    },
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact05/rlarm_fact05_u0065_grafted.pt",
+     "sha256": "b978e8e9b414b85b5e9169b589a542ad01165106d7ee21ccbe452ca8f0ea4fb9",
+     "role": "grafted",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CXLVII_FACTORIAL_grafted.pt"
+    }
+   ],
+   "registered": "2026-10-18T01:12"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 148,
+   "word": "FACTORIAL",
+   "name": "ICEBOW Mark CXLVIII: FACTORIAL",
+   "run": "rlarm_fact01",
+   "parent": "ICEBOW Mark CXXIV: LONGER",
+   "change": "factorial fact01: A-B-C-D-E+ seed 301 (A cue layer, B exploiter league, C opp tower troops, D live levels, E tower shaping; 2^(5-1) E=ABCD; u250 raw + 65 updates)",
+   "created": "2026-10-18T01:39",
+   "eval": "factorial eval (fork36 + troops + live levels, D3, 960 paired): 589/960 wins",
+   "live": "",
+   "files": [
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact01/rlarm_fact01_u0065.pt",
+     "sha256": "a8278e424e2a0f2e4e020b3e664a94b77029827599b4bf4efb08ad0bd4154f6c",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CXLVIII_FACTORIAL.pt"
+    },
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact01/rlarm_fact01_u0065_grafted.pt",
+     "sha256": "9e03f009ac0866dcde35cb89ff581f1c9db0ab22938057eb7be676f941f19e43",
+     "role": "grafted",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CXLVIII_FACTORIAL_grafted.pt"
+    }
+   ],
+   "registered": "2026-10-18T02:03"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 149,
+   "word": "HISTDECKS",
+   "name": "ICEBOW Mark CXLIX: HISTDECKS",
+   "run": "rlarm_succ_hist",
+   "parent": "ICEBOW Mark CXXXVIII: CUES",
+   "change": "successor succ_hist: Mark CXXXVIII raw u0130 + 65 updates, seed 74, fork36-linux; one change vs succ_ctl (successor/cfg/succ_hist.yaml)",
+   "created": "2026-10-18T03:26",
+   "eval": "promotion eval (fork36 + troops + live levels, D3, 960 paired): 603/960 wins",
+   "live": "",
+   "files": [
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_successor/succ_hist/rlarm_succ_hist_u0065.pt",
+     "sha256": "346d155d74c7c2a097121eec411c7fac3c53c06faf64b86d4db2deac9eee3fd9",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CXLIX_HISTDECKS.pt"
+    },
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_successor/succ_hist/rlarm_succ_hist_u0065_grafted.pt",
+     "sha256": "8894ed7b4b7e59ef695d539ae25ba6cd62ed6523a7dfdddc73514df431a3e77e",
+     "role": "grafted",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CXLIX_HISTDECKS_grafted.pt"
+    }
+   ],
+   "registered": "2026-10-18T03:49"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 150,
+   "word": "FACTORIAL",
+   "name": "ICEBOW Mark CL: FACTORIAL",
+   "run": "rlarm_fact11",
+   "parent": "ICEBOW Mark CXXIV: LONGER",
+   "change": "factorial fact11: A-B+C-D+E+ seed 311 (A cue layer, B exploiter league, C opp tower troops, D live levels, E tower shaping; 2^(5-1) E=ABCD; u250 raw + 65 updates)",
+   "created": "2026-10-18T04:05",
+   "eval": "factorial eval (fork36 + troops + live levels, D3, 960 paired): 591/960 wins",
+   "live": "",
+   "files": [
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact11/rlarm_fact11_u0065.pt",
+     "sha256": "b84e7c7f6982e0417a0fc10649923cfbb233addfc6dbf03183b6c6a6f4ccd019",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CL_FACTORIAL.pt"
+    },
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact11/rlarm_fact11_u0065_grafted.pt",
+     "sha256": "554afa3086fc1e64a2f9c955cd5fbdde534eeb714f9c940381543681b5780030",
+     "role": "grafted",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CL_FACTORIAL_grafted.pt"
+    }
+   ],
+   "registered": "2026-10-18T04:25"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 151,
+   "word": "FACTORIAL",
+   "name": "ICEBOW Mark CLI: FACTORIAL",
+   "run": "rlarm_fact10",
+   "parent": "ICEBOW Mark CXXIV: LONGER",
+   "change": "factorial fact10: A+B-C-D+E+ seed 310 (A cue layer, B exploiter league, C opp tower troops, D live levels, E tower shaping; 2^(5-1) E=ABCD; u250 raw + 65 updates)",
+   "created": "2026-10-18T04:19",
+   "eval": "factorial eval (fork36 + troops + live levels, D3, 960 paired): 591/960 wins",
+   "live": "",
+   "files": [
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact10/rlarm_fact10_u0065.pt",
+     "sha256": "a1c560a675a7bc430626e4388d700bc96dae40d8bff68b57069fcf1e483314c1",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLI_FACTORIAL.pt"
+    },
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact10/rlarm_fact10_u0065_grafted.pt",
+     "sha256": "466447fcd476e1644f042d1997ba8236f5fb089d59455e4b4c1e0fe300c95656",
+     "role": "grafted",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLI_FACTORIAL_grafted.pt"
+    }
+   ],
+   "registered": "2026-10-18T04:46"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 152,
+   "word": "FACTORIAL",
+   "name": "ICEBOW Mark CLII: FACTORIAL",
+   "run": "rlarm_fact12",
+   "parent": "ICEBOW Mark CXXIV: LONGER",
+   "change": "factorial fact12: A+B+C-D+E- seed 312 (A cue layer, B exploiter league, C opp tower troops, D live levels, E tower shaping; 2^(5-1) E=ABCD; u250 raw + 65 updates)",
+   "created": "2026-10-18T04:40",
+   "eval": "factorial eval (fork36 + troops + live levels, D3, 960 paired): 581/960 wins",
+   "live": "",
+   "files": [
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact12/rlarm_fact12_u0065.pt",
+     "sha256": "78a9f2a9177eefecc7b6538383db286479a9873ee2a60452d5cf86d084549486",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLII_FACTORIAL.pt"
+    },
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact12/rlarm_fact12_u0065_grafted.pt",
+     "sha256": "ddf71b0c436d89e608c4b17fcd7d5198b444774d904b17ae014f716973be154d",
+     "role": "grafted",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLII_FACTORIAL_grafted.pt"
+    }
+   ],
+   "registered": "2026-10-18T05:06"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 153,
+   "word": "LEVELS",
+   "name": "ICEBOW Mark CLIII: LEVELS",
+   "run": "rlarm_succ_levels",
+   "parent": "ICEBOW Mark CXXXVIII: CUES",
+   "change": "successor succ_levels: Mark CXXXVIII raw u0130 + 65 updates, seed 74, fork36-linux; one change vs succ_ctl (successor/cfg/succ_levels.yaml)",
+   "created": "2026-10-18T05:57",
+   "eval": "promotion eval (fork36 + troops + live levels, D3, 960 paired): 642/960 wins",
+   "live": "",
+   "files": [
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_successor/succ_levels/rlarm_succ_levels_u0065.pt",
+     "sha256": "05d42da7048daf0e59e5370a6ef1a1c561b538a7ea5822d0fd51cf06b52a53cf",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLIII_LEVELS.pt"
+    },
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_successor/succ_levels/rlarm_succ_levels_u0065_grafted.pt",
+     "sha256": "edc82ada38e102369f9e99bdd681df16355851185ae44b95027378b404289952",
+     "role": "grafted",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLIII_LEVELS_grafted.pt"
+    }
+   ],
+   "registered": "2026-10-18T06:21"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 154,
+   "word": "FACTORIAL",
+   "name": "ICEBOW Mark CLIV: FACTORIAL",
+   "run": "rlarm_fact08",
+   "parent": "ICEBOW Mark CXXIV: LONGER",
+   "change": "factorial fact08: A+B+C+D-E- seed 308 (A cue layer, B exploiter league, C opp tower troops, D live levels, E tower shaping; 2^(5-1) E=ABCD; u250 raw + 65 updates)",
+   "created": "2026-10-18T06:28",
+   "eval": "factorial eval (fork36 + troops + live levels, D3, 960 paired): 570/960 wins",
+   "live": "",
+   "files": [
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact08/rlarm_fact08_u0065.pt",
+     "sha256": "1770dbfa348bb02c88dd07737a09338be0062980ab4be6cc4fe5a3b4d01fd9ae",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLIV_FACTORIAL.pt"
+    },
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact08/rlarm_fact08_u0065_grafted.pt",
+     "sha256": "41d30f952e1a33e0f93d6b11966e60cb0d13d5c65fab2a2e9bfa9e726e87af81",
+     "role": "grafted",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLIV_FACTORIAL_grafted.pt"
+    }
+   ],
+   "registered": "2026-10-18T06:58"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 155,
+   "word": "LONGER",
+   "name": "ICEBOW Mark CLV: LONGER",
+   "run": "rlarm_succ_ctl",
+   "parent": "ICEBOW Mark CXXXVIII: CUES",
+   "change": "successor succ_ctl: Mark CXXXVIII raw u0130 + 65 updates, seed 74, fork36-linux; one change vs succ_ctl (successor/cfg/succ_ctl.yaml)",
+   "created": "2026-10-18T07:45",
+   "eval": "promotion eval (fork36 + troops + live levels, D3, 960 paired): 634/960 wins",
+   "live": "",
+   "files": [
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_successor/succ_ctl/rlarm_succ_ctl_u0065.pt",
+     "sha256": "ac7068a2e9ea08d6651196c586b94c9b1d0bea4b1c652dd97de7cb27bfceeb8c",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLV_LONGER.pt"
+    },
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_successor/succ_ctl/rlarm_succ_ctl_u0065_grafted.pt",
+     "sha256": "155d512f85e27ad612ac993f7519287c144a4d415c731591fa0b02f7e3c7dbe4",
+     "role": "grafted",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLV_LONGER_grafted.pt"
+    }
+   ],
+   "registered": "2026-10-18T08:03"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 156,
+   "word": "FACTORIAL",
+   "name": "ICEBOW Mark CLVI: FACTORIAL",
+   "run": "rlarm_fact14",
+   "parent": "ICEBOW Mark CXXIV: LONGER",
+   "change": "factorial fact14: A+B-C+D+E- seed 314 (A cue layer, B exploiter league, C opp tower troops, D live levels, E tower shaping; 2^(5-1) E=ABCD; u250 raw + 65 updates)",
+   "created": "2026-10-18T07:54",
+   "eval": "factorial eval (fork36 + troops + live levels, D3, 960 paired): 615/960 wins",
+   "live": "",
+   "files": [
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact14/rlarm_fact14_u0065.pt",
+     "sha256": "e3f6224c838c0b83118f17afadf63b319ea5aabf35491d9af48e6f7c3cc51da8",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLVI_FACTORIAL.pt"
+    },
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact14/rlarm_fact14_u0065_grafted.pt",
+     "sha256": "27ce25b92316b215d686c5df30142107114b04db62a7a4b486c7db9eeae49cb1",
+     "role": "grafted",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLVI_FACTORIAL_grafted.pt"
+    }
+   ],
+   "registered": "2026-10-18T08:19"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 157,
+   "word": "FACTORIAL",
+   "name": "ICEBOW Mark CLVII: FACTORIAL",
+   "run": "rlarm_fact13",
+   "parent": "ICEBOW Mark CXXIV: LONGER",
+   "change": "factorial fact13: A-B-C+D+E+ seed 313 (A cue layer, B exploiter league, C opp tower troops, D live levels, E tower shaping; 2^(5-1) E=ABCD; u250 raw + 65 updates)",
+   "created": "2026-10-18T07:58",
+   "eval": "factorial eval (fork36 + troops + live levels, D3, 960 paired): 572/960 wins",
+   "live": "",
+   "files": [
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact13/rlarm_fact13_u0065.pt",
+     "sha256": "a164aba8ec012a595f0dff4d7963c3d369ccd12488273dfb7d237a2f37202041",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLVII_FACTORIAL.pt"
+    },
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact13/rlarm_fact13_u0065_grafted.pt",
+     "sha256": "613f9f9757e25af6938234e682f59b0d68029da283eb07e5c2f2e2e143014e2b",
+     "role": "grafted",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLVII_FACTORIAL_grafted.pt"
+    }
+   ],
+   "registered": "2026-10-18T08:19"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 158,
+   "word": "FACTORIAL",
+   "name": "ICEBOW Mark CLVIII: FACTORIAL",
+   "run": "rlarm_fact09",
+   "parent": "ICEBOW Mark CXXIV: LONGER",
+   "change": "factorial fact09: A-B-C-D+E- seed 309 (A cue layer, B exploiter league, C opp tower troops, D live levels, E tower shaping; 2^(5-1) E=ABCD; u250 raw + 65 updates)",
+   "created": "2026-10-18T10:25",
+   "eval": "factorial eval (fork36 + troops + live levels, D3, 960 paired): 553/960 wins",
+   "live": "",
+   "files": [
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact09/rlarm_fact09_u0065.pt",
+     "sha256": "d8bef3ac28f7d6971bdbb919e5d2c1d83197aebf5ddb218f00563ed6c20d2e6e",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLVIII_FACTORIAL.pt"
+    },
+    {
+     "path": "C:/Users/benpe/pod_backup_weekend/pod1017_factorial/fact09/rlarm_fact09_u0065_grafted.pt",
+     "sha256": "b59e7db0c010fa34f98f2d5ae93ff10182fd7f7acd0612c4da6f59857adcf9c4",
+     "role": "grafted",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLVIII_FACTORIAL_grafted.pt"
+    }
+   ],
+   "registered": "2026-10-18T10:51"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 159,
+   "word": "PRESS",
+   "name": "ICEBOW Mark CLIX: PRESS",
+   "run": "rlarm_gae_cue_ab2",
+   "parent": "ICEBOW Mark CXXXVIII: CUES",
+   "change": "learned Hero IW press head, live-rule warm start + live press in training; owner-approved live trial from 10-18 18:10 (greedy head)",
+   "created": "2026-10-18T09:23",
+   "eval": "",
+   "live": "",
+   "files": [
+    {
+     "path": "icebow/data/bench/rl_royale/rlarm_gae_cue_ab2/rlarm_gae_cue_ab2_u0065.pt",
+     "sha256": "599a404a7473e1985fc4bfe393590cc0e1c9a1addee8b94c82fde5575e22d947",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLIX_PRESS.pt"
+    },
+    {
+     "path": "icebow/data/bench/rl_royale/rlarm_gae_cue_ab2/rlarm_gae_cue_ab2_u0065_grafted.pt",
+     "sha256": "fb777048e438a51ede685df20978195a3091ded7299c4d5fc93d022deea3ecd5",
+     "role": "grafted",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLIX_PRESS_grafted.pt"
+    }
+   ],
+   "registered": "2026-10-19T00:19"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 160,
+   "word": "PARITY",
+   "name": "ICEBOW Mark CLX: PARITY",
+   "run": "rlarm_stepd_ctrl_nos2",
+   "parent": "ICEBOW Mark CLIII: LEVELS",
+   "change": "step d: CLIII + 130 PPO updates on the FIN13 parity SIM (fin13-linux), ability head, cues, card-only loose leash, no Stage-2 opponents",
+   "created": "2026-10-18T23:00",
+   "eval": "fin13 vs CLIII: std +4.27 [+0.73, +7.92], fresh +6.98 [+3.54, +10.31], pooled +5.62 [+3.12, +8.12] (960 each)",
+   "live": "",
+   "files": [
+    {
+     "path": "icebow/data/bench/rl_royale/rlarm_stepd_ctrl_nos2/rlarm_stepd_ctrl_nos2_u0130.pt",
+     "sha256": "0452c6197de613d4241c0f0952ff6716b3b315746c1ed4ff13c84332a093bacd",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLX_PARITY.pt"
+    },
+    {
+     "path": "icebow/data/bench/rl_royale/rlarm_stepd_ctrl_nos2/rlarm_stepd_ctrl_nos2_u0130_grafted.pt",
+     "sha256": "5d212358322eb0dd9874448f848a56d633ebb64f8049dd1ac46fe96a374f2492",
+     "role": "grafted",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLX_PARITY_grafted.pt"
+    }
+   ],
+   "registered": "2026-10-19T00:19"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 161,
+   "word": "FIN15",
+   "name": "ICEBOW Mark CLXI: FIN15",
+   "run": "rlarm_tn_base_s75",
+   "parent": "ICEBOW Mark CLX: PARITY",
+   "change": "tonight-10-20 base recipe, seed 75, u130 on fin15; owner 10-21 interim live (not a gate pass)",
+   "created": "2026-10-21T14:24",
+   "eval": "calibrated opp vs CLX: std +3.44 [-0.27,+7.15], fresh +4.27 [+0.54,+8.00]; E4 opp: std +3.44 [-0.11,+6.99], fresh -3.44 [-7.23,+0.35]",
+   "live": "",
+   "files": [
+    {
+     "path": "icebow/data/bench/rl_royale/rlarm_tn_base_s75/rlarm_tn_base_s75_u0130_grafted.pt",
+     "sha256": "686b245ae18445563820da54faf899ab1bbac174c44e970266ce7410a7ef4e52",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLXI_FIN15.pt"
+    }
+   ],
+   "registered": "2026-10-21T14:26"
   }
  ],
  "unmarked": [
