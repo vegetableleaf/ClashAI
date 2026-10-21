@@ -1,0 +1,5 @@
+share/data_20261020/decks_rl.json: L3 six-card subset ['BattleRam', 'ElectroGiant', 'Giant', 'Golem', 'Pekka', 'RoyalHogs'] mass 0.432
+share/data_20261020/decks_rl.json: 999 decks | contains-BEAT mass 0.663 -> x3 0.855 | wincon-BEAT mass 0.642 -> under x3-contains 0.828 | contains but wincon not BEAT 0.021, wincon BEAT but not contained 0.000
+scratchpad/gauntlet/L74/mix/decks_live_train.json: L3 six-card subset ['BattleRam', 'ElectroGiant', 'Giant', 'Golem', 'Pekka', 'RoyalHogs'] mass 0.268
+scratchpad/gauntlet/L74/mix/decks_live_train.json: 895 decks | contains-BEAT mass 0.486 -> x3 0.739 | wincon-BEAT mass 0.393 -> under x3-contains 0.598 | contains but wincon not BEAT 0.093, wincon BEAT but not contained 0.000
+weight keys -> W13 slug: {'Giant': 'giant', 'ElectroGiant': 'electro_giant', 'RoyalHogs': 'royal_hogs', 'BattleRam': 'battle_ram', 'Pekka': 'pekka', 'Golem': 'golem', 'GoblinGiant': 'goblin_giant', 'LavaHound': 'lava_hound', 'RoyalGiant': 'royal_giant', 'ElixirGolem': 'elixir_golem', 'GiantBuffer': 'rune_giant', 'GiantSkeleton': 'giant_skeleton', 'ThreeMusketeers': 'three_musketeers', 'BossBandit': 'boss_bandit'}

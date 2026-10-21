@@ -1,0 +1,138 @@
+# tonight 10-20 (lead): fin15 runtime (GO RT=fin15-linux VENV=/workspace/venvf15) + W7 opponent R4 u100 (ea1d0804) via opp_model/cfg/stepd_l16_w7opp_s74.yaml
+init: icebow/data/bench/rl_royale/rlarm_succ_levels/rlarm_succ_levels_u0065.pt
+pool: icebow/data/ghost_pool/pool_env_v1.jsonl
+proagree_data: icebow/data/pipeline/s1_dataset.npz
+proagree_rows: 0
+proagree_data_gen: icebow/data/pipeline/gen_dataset_v32_fv5.npz
+noise_off: all
+opp_elixir: counter
+action_delay_ticks: 26
+extrapolate_ticks: 26
+hero_abilities: true
+forms_mode: deck
+league: true
+league_decks: icebow/data/rltest/decks_rl.json
+league_specialist: icebow/data/pipeline/s1_icebow_v6aug_s1.pt
+league_opp_policy: sample
+league_mix:
+  latest: 0.5
+  older: 0.25
+  init: 0.25
+  s1: 0.0
+league_snapshot_every: 5
+league_snapshot_keep: 12
+league_icebow_share: 0.0
+league_deck_alpha: 1.0
+league_deck_floor: 0.0
+E: 64
+G: 4
+adv_clip: 2.0
+advantage: gae
+gae_gamma: 0.999
+gae_gamma_unit: tick
+gae_gamma_tick: 0.99994
+gae_terminal_gap: false
+gae_lambda: 0.95
+vf_coef: 0.5
+vf_clip: 0.2
+critic_warmup_updates: 5
+vf_trunk_grad: true
+shaping: none
+shaping_w_tower: 0.3
+shaping_w_crown: 0.3
+shaping_critic_scale: 1.5
+n_actors: 24
+in_flight: 8
+actor_device: cpu
+actor_threads: 1
+actor_timeout_s: 3600
+T: 0.5
+tau: 0.27
+afford_mask: true
+stall_elixir: null
+stall_seconds: 12
+obs: live
+decide_every: 10
+learner_device: cuda
+lr: 1.0e-05
+grad_clip: 0.5
+ppo_epochs: 2
+minibatch: 256
+clip: 0.2
+beta0: 0.03
+beta_min: 0.03
+beta_max: 3.0
+kl_target: 0.3
+leash: max
+seed: 74
+max_updates: 130
+save_every: 5
+proagree_every: 5
+screen_every: 10
+screen_entries: 0
+screen_seeds:
+- 0
+- 1
+- 2
+stop_consecutive: 2
+plays_lo: 0.6
+plays_hi: 1.6
+kl_cell_stop: 0.5
+kl_gate_stop: 0.1
+tripwire_cell_pp: 5.0
+hard_cell_pp: 8.0
+hard_card_pp: 8.0
+hard_gate_bal: 0.05
+screen_stop_pp: -10.0
+entropy_floor_frac: 0.5
+outlived_pp: 15.0
+low_delivered_pp: 10.0
+ghost_refusal_x: 2.0
+league_pfsp: hard
+opp_style: 'on'
+league_pfsp_gamma: 2.0
+league_pfsp_floor: 0.05
+league_external:
+- icebow/data/bench/rl_royale/wk_adapt_exp1/wk_adapt_exp1_u0015.pt
+- icebow/data/bench/rl_royale/wk_adapt_exp2/wk_adapt_exp2_u0015.pt
+- icebow/data/bench/rl_royale/wk_adapt_exp3/wk_adapt_exp3_u0015.pt
+- icebow/data/bench/rl_royale/newsim_base_exp1/newsim_base_exp1_u0015.pt
+- icebow/data/bench/rl_royale/newsim_base_exp2/newsim_base_exp2_u0015.pt
+league_learner_icebow_share: 1.0
+ability_policy: v2
+branch_gate: false
+learner_pipeline_frac: 0.0
+cue_inputs: true
+live_levels: all16
+heroiw_press: live
+kl_heads:
+- card
+ability_head: true
+ability_features: freeze
+# L74 W7 (opp_model/OPP_MODEL.md section 7): ONE change vs stepd_l16_s74.yaml (the all16 CLX recipe, seed 74 = the control):
+# 30% of training matchups against the W7 opponent -- the O2b live-imitation net RL-strengthened against a frozen icebow mix
+# (round log, section 7) -- at its gated setting (sampling T .1, deciding every 40 ticks) on the live census decks.
+# icebow/data/pipeline/o2/w7opp.pt = a copy of the chosen snapshot (sha in section 7). NOT launched until the lead approves.
+league_exploiters:
+  ckpt: icebow/data/pipeline/o2/w7opp.pt
+  decks: scratchpad/gauntlet/L74/mix/decks_live_train.json
+  share: 0.3
+  T: 0.1
+  decide_every: 40
+# W15 lever 3 (nextround/LEVERS23.md, clx_ranked/CLX_RANKED.md L3): ONE change vs tn_base_s74.yaml -- x3 opponent-deck draw
+# weight for decks holding a tank / bridge-spam win condition (W13's BEAT set, report.py), census AND W7-exploiter pools.
+league_deck_weights:
+  Giant: 3.0
+  ElectroGiant: 3.0
+  RoyalHogs: 3.0
+  BattleRam: 3.0
+  Pekka: 3.0
+  Golem: 3.0
+  GoblinGiant: 3.0
+  LavaHound: 3.0
+  RoyalGiant: 3.0
+  ElixirGolem: 3.0
+  GiantBuffer: 3.0
+  GiantSkeleton: 3.0
+  ThreeMusketeers: 3.0
+  BossBandit: 3.0

@@ -1013,6 +1013,8 @@ class Match:
             from pipeline.public_observation import PublicObserver
             if self.public is None:
                 self.public = PublicObserver(self.side, schedule=getattr(self.env, 'elixir_regen_schedule', None))
+                if getattr(self, "_counter_start", None) is not None:      # W15 lever 2 (SelfPlaySide)
+                    self.public.start_at(*self._counter_start)
             self.public.own_events=[e for e in getattr(self.env,'public_plays',[])+getattr(self.env,'own_ability_events',[]) if e['side']==self.side]
             self.public.update(self.state, source='sim')
         if self.extrap:                                      # cfg["extrapolate_ticks"]; 0 -> this block is skipped
@@ -1473,7 +1475,8 @@ class Match:
     def result(self) -> dict:
         env, entry, cfg, tag, k = self.env, self.entry, self.cfg, self.tag, self.k
         outcome, crowns = self._outcome()
-        minutes = env.tick * TICK_S / 60.0
+        t0 = int((getattr(env, "scenario_start", None) or {}).get("tick", 0))   # W15 lever 2: played time only
+        minutes = (env.tick - t0) * TICK_S / 60.0
         end = int(env.tick)
         pg = np.asarray(self.p_gates, dtype=np.float64)
         n_att, n_acc, n_dec, n_deg, plays = self.n_att, self.n_acc, self.n_dec, self.n_deg, self.plays
@@ -1483,7 +1486,7 @@ class Match:
             "afford_mask": cfg["afford_mask"], "stall_elixir": cfg["stall_elixir"], "p_random": cfg["p_random"],
             "obs_seed": self.obs_seed_used, "side": self.side,
             "outcome": outcome, "crowns_for": int(crowns[0]), "crowns_against": int(crowns[1]),
-            "end_tick": end, "seconds": round(end * TICK_S, 1), "terminated": bool(env.terminated),
+            "end_tick": end, "seconds": round((end - t0) * TICK_S, 1), "terminated": bool(env.terminated),
             "termination_reason": (env.eng.last_episode or {}).get("termination_reason"),
             **self._opponent_fields(outcome, end),
             "plays_attempted": n_att, "plays_accepted": n_acc, "plays_refused": n_att - n_acc,
@@ -1763,6 +1766,10 @@ class SelfPlaySide(Match):
         self._fu: Optional[dict] = None                     # the open follow-up plan of my last play (see _follow_start)
         self.fu_tasks: list = []                            # its unresolved follow-ups (SelfPlayMatch.due evaluates them)
         self.next_tick = int(env.tick)
+        st = getattr(env, "scenario_start", None)           # W15 lever 2: a mid-match start (None = from tick 0)
+        if st is not None and self.opp_mode:                # the counter starts there at the TRUE opponent elixir
+            self._counter_start = (int(st["tick"]), float(st["elixir"][1 - self.side]))
+            self.opp_counter.tick, self.opp_counter.est = self._counter_start
 
     def _opp_plays(self) -> list:
         return self.other.accepted
@@ -1928,6 +1935,10 @@ class SelfPlayMatch:
         if "levels" in spec:                    # L74 factor D (opt-in): rl_royale.draw_live_levels, learner / opp -> sides
             lv = {L: spec["levels"]["learner"], 1 - L: spec["levels"]["opp"]}
             kw["levels"] = {"cards": [lv[0]["cards"], lv[1]["cards"]], "towers": [lv[0]["tower"], lv[1]["tower"]]}
+        if "start" in spec:                     # W15 lever 2 (opt-in): rl_royale.draw_ot_start, learner / opp -> sides
+            st = {L: spec["start"]["learner"], 1 - L: spec["start"]["opp"]}
+            kw["start"] = {"tick": spec["start"]["tick"], "princess": [st[0]["princess"], st[1]["princess"]],
+                           "elixir": [st[0]["elixir"], st[1]["elixir"]]}
         if getattr(env, "spell_tracker", None) is not None:  # rl_royale spell_value (opt-in): a reused env's old tracker
             env.spell_tracker = None
         env.reset(decks[0], decks[1], int(spec["seed"]), **kw)
@@ -1986,7 +1997,8 @@ class SelfPlayMatch:
 
     def result(self) -> dict:
         r = self.learner.result()
-        o, minutes = self.opp, self.env.tick * TICK_S / 60.0
+        t0 = int((getattr(self.env, "scenario_start", None) or {}).get("tick", 0))   # W15 lever 2: played time only
+        o, minutes = self.opp, (self.env.tick - t0) * TICK_S / 60.0
         r["league"] = dict(self.spec)
         if "_opp_style" in o.cfg:
             r["opp_style"] = dict(o.cfg["_opp_style"])

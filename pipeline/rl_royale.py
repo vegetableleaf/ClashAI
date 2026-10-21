@@ -1538,6 +1538,36 @@ def sample_deck(rng: np.random.Generator, census: list[dict], p: np.ndarray, ice
     return census[int(rng.choice(len(census), p=p))]
 
 
+def opp_deck_p(p: np.ndarray, decks: list[dict], weights: Optional[dict]) -> np.ndarray:
+    """``league_deck_weights`` (W15 lever 3, CLX_RANKED.md L3; optional, absent / null = ``p`` itself, unchanged):
+    {engine card base name -> multiplier} on the OPPONENT deck draw. A deck's weight is multiplied by the largest
+    multiplier among its cards (``Giant@hero`` counts as ``Giant``; 1 when none matches), then renormalised. The
+    learner's own deck draw keeps ``p``."""
+    if not weights:
+        return p
+    m = [max([float(weights[n]) for n in {str(c).split("@")[0] for c in d["engine"]} if n in weights] or [1.0])
+         for d in decks]
+    q = np.asarray(p, dtype=np.float64) * np.asarray(m)
+    return q / q.sum()
+
+
+def check_deck_weights(cfg: dict, pools: Optional[list] = None) -> None:
+    """``league_deck_weights``: null, or a non-empty {card name: number > 0}; needs league true; with ``pools`` (the
+    loaded league decks, ``Learner._league_setup``) every name must be a card of some pool deck (a typo would weight
+    nothing). SystemExit otherwise."""
+    w = cfg.get("league_deck_weights")
+    if w is None:
+        return
+    if (not isinstance(w, dict) or not w or any(not isinstance(k, str) or isinstance(v, bool) or not isinstance(v, (int, float))
+                                                or not 0 < v < math.inf for k, v in w.items())):
+        raise SystemExit(f"league_deck_weights must be null or a non-empty {{card name: number > 0}}, got {w!r}")
+    if not cfg.get("league"):
+        raise SystemExit("league_deck_weights needs league true (it weights the league opponent decks)")
+    gone = set(w) - {str(c).split("@")[0] for d in pools for c in d["engine"]} if pools is not None else set()
+    if gone:
+        raise SystemExit(f"league_deck_weights: no league deck holds {sorted(gone)} (engine card names)")
+
+
 def validate_league(cfg: dict) -> None:
     """The league keys, checked before anything runs (SystemExit with the offending key and value)."""
     AO.validate(cfg)
@@ -1625,7 +1655,8 @@ def exploiter_league(cfg: dict) -> Optional[dict]:
         raise SystemExit("league_exploiters needs league true and no league_frozen_opponent (that is the exploiter run)")
     decks = league_decks(REPO / x["decks"])
     return {"share": float(sh), "decks": decks,
-            "p": deck_weights([d["sides"] for d in decks], cfg["league_deck_alpha"], cfg["league_deck_floor"]),
+            "p": opp_deck_p(deck_weights([d["sides"] for d in decks], cfg["league_deck_alpha"], cfg["league_deck_floor"]),
+                            decks, cfg.get("league_deck_weights")),
             "opp": {"id": "exploiter_league:" + x["ckpt"], "cat": "exploiter_league", "type": "exploiter_league",
                     "path": x["ckpt"], **({"cfg": own} if own else {})}}
 
@@ -1775,6 +1806,43 @@ def draw_live_levels(table: dict, learner_deck, opp_deck, key: str) -> dict:
                     "tower": int(tower), "profile": i}}
 
 
+OT_STATES = REPO / "scratchpad/gauntlet/L74/nextround/ot_states.json"   # ot_states.py output (measured, 10-21)
+_OT_TABLE: dict = {}
+
+
+def ot_start_share(cfg: dict) -> Optional[float]:
+    """``ot_start_share`` (W15 lever 2, CLX_RANKED.md L2; optional, absent / null = None = matchups unchanged): the
+    share of league matchups that START at clock 3590, 0-0, from a live Ranked state (``draw_ot_start``). Needs league
+    true; OT_STATES' sha256 enters config_sha. SystemExit on a bad value."""
+    x = cfg.get("ot_start_share")
+    if x is None:
+        return None
+    if isinstance(x, bool) or not isinstance(x, (int, float)) or not 0 < x <= 1:
+        raise SystemExit(f"ot_start_share must be null or a number in (0, 1], got {x!r}")
+    if not cfg.get("league"):
+        raise SystemExit("ot_start_share needs league true (it sets the self-play match start)")
+    if not OT_STATES.is_file():
+        raise SystemExit(f"ot_start_share: {OT_STATES} not found (scratchpad/gauntlet/L74/nextround/ot_states.py)")
+    return float(x)
+
+
+def draw_ot_start(share: float, key: str) -> Optional[dict]:
+    """One matchup's start, from a stream of its own seeded by ``key`` (no other stream moves, so the matchups are those
+    of the option off): with probability ``share`` one OT_STATES row drawn uniformly -> {"tick", "learner": {princess
+    [LEFT, RIGHT] hp fractions, elixir}, "opp": {...}} in each side's OWN tower frame (the row's ``opp`` is in our screen
+    frame: reversed). The opponent's elixir is unobserved live: another row's own elixir, drawn independently."""
+    rng = np.random.default_rng(zlib.crc32(f"ot_start:{key}".encode()))
+    if rng.random() >= share:
+        return None
+    if not _OT_TABLE:
+        _OT_TABLE.update(json.loads(OT_STATES.read_text(encoding="utf-8")))
+    S = _OT_TABLE["states"]
+    a, b = S[int(rng.integers(len(S)))], S[int(rng.integers(len(S)))]
+    return {"tick": int(_OT_TABLE["tick"]), "row": a["key"],
+            "learner": {"princess": list(a["own"]), "elixir": float(a["elixir"])},
+            "opp": {"princess": list(a["opp"])[::-1], "elixir": float(b["elixir"])}}
+
+
 def sample_matchups(rng: np.random.Generator, n: int, update: int, snaps: list[dict], cfg: dict, census: list[dict],
                     p: np.ndarray, league_state=None, exploiters: Optional[dict] = None) -> list[dict]:
     """``n`` league matchups (one LOO group each): opponent (``sample_opponent``), learner deck (``sample_deck``),
@@ -1787,6 +1855,7 @@ def sample_matchups(rng: np.random.Generator, n: int, update: int, snaps: list[d
     out = []
     lshare = cfg.get("league_learner_icebow_share")
     lshare = cfg["league_icebow_share"] if lshare is None else lshare      # null = the shared rule (league1/1b)
+    po = opp_deck_p(p, census, cfg.get("league_deck_weights"))            # W15 lever 3: absent = p (unchanged)
     for i in range(int(n)):
         ex = exploiters is not None and rng.random() < exploiters["share"]
         adaptive = cfg.get("league_pfsp") == "hard" or cfg.get("league_frozen_opponent")
@@ -1794,7 +1863,7 @@ def sample_matchups(rng: np.random.Generator, n: int, update: int, snaps: list[d
                sample_opponent(rng, snaps, cfg["league_mix"], cfg["init"], cfg["league_specialist"]))
         ld = sample_deck(rng, census, p, lshare)
         od = (exploiters["decks"][int(rng.choice(len(exploiters["decks"]), p=exploiters["p"]))] if ex else
-              ICEBOW_DECK if opp["type"] in ("s1", "frozen") else sample_deck(rng, census, p, cfg["league_icebow_share"]))
+              ICEBOW_DECK if opp["type"] in ("s1", "frozen") else sample_deck(rng, census, po, cfg["league_icebow_share"]))
         out.append({"tag": f"sp{int(update):04d}_{i:02d}", "opp": opp,
                     "learner_deck": ld["engine"], "learner_deck_name": ld["name"], "learner_bucket": ld["bucket"],
                     "opp_deck": od["engine"], "opp_deck_name": od["name"],
@@ -1804,6 +1873,10 @@ def sample_matchups(rng: np.random.Generator, n: int, update: int, snaps: list[d
         if cfg.get("live_levels"):                            # L74 factor D: absent / null / false = no key (unchanged)
             out[-1]["levels"] = draw_live_levels(_live_level_table(cfg["live_levels"]), ld["engine"], od["engine"],
                                                  f"{out[-1]['seed']}:{out[-1]['tag']}")
+        if cfg.get("ot_start_share") is not None:             # W15 lever 2: absent / null = no key (unchanged)
+            st = draw_ot_start(float(cfg["ot_start_share"]), f"{out[-1]['seed']}:{out[-1]['tag']}")
+            if st is not None:
+                out[-1]["start"] = st
     return out
 
 
@@ -3086,7 +3159,8 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                 and k not in ("league_learner_icebow_share", "learner_pipeline_frac", "league_opp_T", "kl_ref_gate",
                               "critic_ctx", "kl_ref_gate_max_elixir", "kl_ref_gate_target_frac",
                               "league_exploiters", "cue_inputs", "opp_tower_troops", "live_levels", "league_opp_live",
-                              "heroiw_press", "ability_features", "kl_heads", "kl_ref_card") + OPP_TEMPO_KEYS
+                              "heroiw_press", "ability_features", "kl_heads", "kl_ref_card", "league_deck_weights",
+                              "ot_start_share") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS and k not in CROWN_KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
         cfg[k] = yaml.safe_load(v)
@@ -3116,6 +3190,8 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
     league_opp_live(cfg)                                      # L74 W7: checked at start; absent = no-op
     opp_tower_troops(cfg)                                     # L74 troops: checked at start; absent = no-op
     live_levels(cfg)                                          # L74 factor D: checked (and the table read) at start
+    check_deck_weights(cfg)                                   # W15 lever 3: absent = no-op
+    ot_start_share(cfg)                                       # W15 lever 2: absent = no-op
     frac = cfg.get("learner_pipeline_frac", 0.0)
     if isinstance(frac, bool) or not isinstance(frac, (int, float)) or not 0 <= frac <= 1:
         raise SystemExit("learner_pipeline_frac must be a finite number in [0, 1]")
@@ -3157,6 +3233,12 @@ def config_sha(cfg: dict) -> str:
         cfg = {**cfg, "live_levels": hashlib.sha256(LIVE_LEVELS.read_bytes()).hexdigest()}
     if cfg.get("heroiw_press") is None:                      # L74 overpress key absent / null = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "heroiw_press"}
+    if cfg.get("league_deck_weights") is None:               # W15 lever 3 off (absent or null) = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "league_deck_weights"}
+    if cfg.get("ot_start_share") is None:                    # W15 lever 2 off (absent or null) = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "ot_start_share"}
+    else:                                                     # on: the share AND the measured states' bytes
+        cfg = {**cfg, "ot_start_share": [cfg["ot_start_share"], hashlib.sha256(OT_STATES.read_bytes()).hexdigest()]}
     if cfg.get("critic_ctx") is None:                        # C2 / F2 off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "critic_ctx"}
     if not cfg.get("cue_inputs"):                            # step c off (absent / null / false) = the historical hash
@@ -3476,6 +3558,7 @@ class Learner:
         self.league = {"snapshots": []}
         AO.sync_pool(self.league, cfg)
         self.exploiters = exploiter_league(cfg)               # O2: absent / null = None (matchups unchanged)
+        check_deck_weights(cfg, self.census + (self.exploiters["decks"] if self.exploiters else []))   # W15 lever 3
 
     def _snapshot_payload(self) -> dict:
         """What a FROZEN opponent needs and nothing else: the weights + the keys ``e1_eval.load_policy`` /

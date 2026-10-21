@@ -1,0 +1,2001 @@
+{
+"source": "clx_ranked/rows.json + habits/cache (W15 ot_states.py)",
+"tick": 3590,
+"summary": {
+"n_rows_0_0_ot": 132,
+"n_loaded": 132,
+"n_dropped": 0,
+"n": 132,
+"behind_gt_0_10": 0.5,
+"ahead_gt_0_10": 0.311,
+"elixir_median": 4.13,
+"elixir_mean": 4.327,
+"opp_cards_seen_median": 8.0,
+"opp_cards_seen_ge7": 0.924,
+"board_units_median": 2.0,
+"board_units_zero": 0.144,
+"win": 0.508
+},
+"states": [
+{
+"key": "live_play_20261020_133533.jsonl",
+"win": 1.0,
+"own": [
+1.0,
+0.76
+],
+"opp": [
+0.987,
+0.988
+],
+"elixir": 10.0,
+"opp_cards_seen": 6,
+"board_units": 0
+},
+{
+"key": "live_play_20261020_134758.jsonl",
+"win": 1.0,
+"own": [
+0.846,
+0.978
+],
+"opp": [
+0.653,
+0.912
+],
+"elixir": 2.27,
+"opp_cards_seen": 7,
+"board_units": 3
+},
+{
+"key": "live_play_20261020_135241.jsonl",
+"win": 1.0,
+"own": [
+1.0,
+0.796
+],
+"opp": [
+1.0,
+0.654
+],
+"elixir": 10.0,
+"opp_cards_seen": 8,
+"board_units": 4
+},
+{
+"key": "live_play_20261020_141754.jsonl",
+"win": 1.0,
+"own": [
+1.0,
+0.29
+],
+"opp": [
+1.0,
+0.023
+],
+"elixir": 2.37,
+"opp_cards_seen": 8,
+"board_units": 0
+},
+{
+"key": "live_play_20261020_142115.jsonl",
+"win": 1.0,
+"own": [
+1.0,
+0.791
+],
+"opp": [
+0.262,
+0.453
+],
+"elixir": 6.99,
+"opp_cards_seen": 8,
+"board_units": 0
+},
+{
+"key": "live_play_20261020_142524.jsonl",
+"win": 0.0,
+"own": [
+1.0,
+0.418
+],
+"opp": [
+0.879,
+0.535
+],
+"elixir": 3.23,
+"opp_cards_seen": 8,
+"board_units": 4
+},
+{
+"key": "live_play_20261020_143334.jsonl",
+"win": 0.0,
+"own": [
+0.277,
+0.977
+],
+"opp": [
+0.383,
+0.988
+],
+"elixir": 6.19,
+"opp_cards_seen": 8,
+"board_units": 0
+},
+{
+"key": "live_play_20261020_143755.jsonl",
+"win": 1.0,
+"own": [
+1.0,
+0.807
+],
+"opp": [
+1.0,
+0.775
+],
+"elixir": 7.63,
+"opp_cards_seen": 7,
+"board_units": 0
+},
+{
+"key": "live_play_20261020_145037.jsonl",
+"win": 1.0,
+"own": [
+0.447,
+0.792
+],
+"opp": [
+0.033,
+0.988
+],
+"elixir": 0.86,
+"opp_cards_seen": 8,
+"board_units": 4
+},
+{
+"key": "live_play_20261020_150636.jsonl",
+"win": 1.0,
+"own": [
+0.905,
+1.0
+],
+"opp": [
+0.977,
+0.536
+],
+"elixir": 7.06,
+"opp_cards_seen": 7,
+"board_units": 1
+},
+{
+"key": "live_play_20261020_151401.jsonl",
+"win": 1.0,
+"own": [
+1.0,
+0.916
+],
+"opp": [
+0.585,
+0.849
+],
+"elixir": 7.6,
+"opp_cards_seen": 8,
+"board_units": 2
+},
+{
+"key": "live_play_20261020_151757.jsonl",
+"win": 0.0,
+"own": [
+0.523,
+1.0
+],
+"opp": [
+0.412,
+0.989
+],
+"elixir": 1.87,
+"opp_cards_seen": 8,
+"board_units": 2
+},
+{
+"key": "live_play_20261020_152639.jsonl",
+"win": 1.0,
+"own": [
+0.738,
+0.767
+],
+"opp": [
+0.573,
+0.466
+],
+"elixir": 9.29,
+"opp_cards_seen": 7,
+"board_units": 2
+},
+{
+"key": "live_play_20261020_153403.jsonl",
+"win": 1.0,
+"own": [
+0.878,
+0.465
+],
+"opp": [
+0.342,
+0.514
+],
+"elixir": 3.67,
+"opp_cards_seen": 8,
+"board_units": 1
+},
+{
+"key": "live_play_20261020_154222.jsonl",
+"win": 0.0,
+"own": [
+0.839,
+0.83
+],
+"opp": [
+0.626,
+0.452
+],
+"elixir": 4.13,
+"opp_cards_seen": 8,
+"board_units": 8
+},
+{
+"key": "live_play_20261020_162330.jsonl",
+"win": 0.0,
+"own": [
+0.774,
+1.0
+],
+"opp": [
+0.373,
+0.989
+],
+"elixir": 8.63,
+"opp_cards_seen": 7,
+"board_units": 2
+},
+{
+"key": "live_play_20261020_163014.jsonl",
+"win": 1.0,
+"own": [
+0.511,
+1.0
+],
+"opp": [
+0.876,
+0.814
+],
+"elixir": 5.15,
+"opp_cards_seen": 8,
+"board_units": 0
+},
+{
+"key": "live_play_20261020_164340.jsonl",
+"win": 0.0,
+"own": [
+0.44,
+1.0
+],
+"opp": [
+0.599,
+0.959
+],
+"elixir": 0.84,
+"opp_cards_seen": 8,
+"board_units": 3
+},
+{
+"key": "live_play_20261020_164745.jsonl",
+"win": 0.0,
+"own": [
+0.055,
+0.801
+],
+"opp": [
+0.965,
+0.323
+],
+"elixir": 3.63,
+"opp_cards_seen": 8,
+"board_units": 4
+},
+{
+"key": "live_play_20261020_165147.jsonl",
+"win": 0.0,
+"own": [
+0.902,
+0.119
+],
+"opp": [
+0.401,
+0.919
+],
+"elixir": 2.01,
+"opp_cards_seen": 8,
+"board_units": 3
+},
+{
+"key": "live_play_20261020_165557.jsonl",
+"win": 1.0,
+"own": [
+0.825,
+1.0
+],
+"opp": [
+0.026,
+1.0
+],
+"elixir": 2.59,
+"opp_cards_seen": 8,
+"board_units": 3
+},
+{
+"key": "live_play_20261020_170235.jsonl",
+"win": 0.0,
+"own": [
+0.951,
+0.07
+],
+"opp": [
+1.0,
+0.936
+],
+"elixir": 3.02,
+"opp_cards_seen": 8,
+"board_units": 3
+},
+{
+"key": "live_play_20261020_170622.jsonl",
+"win": 1.0,
+"own": [
+0.952,
+0.522
+],
+"opp": [
+0.988,
+0.585
+],
+"elixir": 3.08,
+"opp_cards_seen": 8,
+"board_units": 1
+},
+{
+"key": "live_play_20261020_171147.jsonl",
+"win": 1.0,
+"own": [
+0.214,
+0.834
+],
+"opp": [
+0.962,
+0.56
+],
+"elixir": 6.45,
+"opp_cards_seen": 7,
+"board_units": 7
+},
+{
+"key": "live_play_20261020_171924.jsonl",
+"win": 1.0,
+"own": [
+0.934,
+0.923
+],
+"opp": [
+0.274,
+0.565
+],
+"elixir": 5.55,
+"opp_cards_seen": 8,
+"board_units": 4
+},
+{
+"key": "live_play_20261020_172338.jsonl",
+"win": 0.0,
+"own": [
+1.0,
+0.693
+],
+"opp": [
+1.0,
+0.977
+],
+"elixir": 6.24,
+"opp_cards_seen": 8,
+"board_units": 2
+},
+{
+"key": "live_play_20261020_173220.jsonl",
+"win": 1.0,
+"own": [
+0.906,
+0.397
+],
+"opp": [
+0.988,
+0.899
+],
+"elixir": 1.84,
+"opp_cards_seen": 8,
+"board_units": 2
+},
+{
+"key": "live_play_20261020_182456.jsonl",
+"win": 0.0,
+"own": [
+0.827,
+0.339
+],
+"opp": [
+1.0,
+0.988
+],
+"elixir": 8.25,
+"opp_cards_seen": 8,
+"board_units": 2
+},
+{
+"key": "live_play_20261020_182854.jsonl",
+"win": 0.0,
+"own": [
+1.0,
+0.491
+],
+"opp": [
+1.0,
+0.977
+],
+"elixir": 8.67,
+"opp_cards_seen": 8,
+"board_units": 1
+},
+{
+"key": "live_play_20261020_183411.jsonl",
+"win": 1.0,
+"own": [
+0.338,
+0.629
+],
+"opp": [
+1.0,
+0.19
+],
+"elixir": 4.02,
+"opp_cards_seen": 7,
+"board_units": 6
+},
+{
+"key": "live_play_20261020_183850.jsonl",
+"win": 1.0,
+"own": [
+0.305,
+0.802
+],
+"opp": [
+0.977,
+0.04
+],
+"elixir": 2.22,
+"opp_cards_seen": 7,
+"board_units": 15
+},
+{
+"key": "live_play_20261020_184730.jsonl",
+"win": 1.0,
+"own": [
+0.304,
+1.0
+],
+"opp": [
+0.945,
+1.0
+],
+"elixir": 6.43,
+"opp_cards_seen": 8,
+"board_units": 4
+},
+{
+"key": "live_play_20261020_191014.jsonl",
+"win": 0.0,
+"own": [
+0.406,
+0.922
+],
+"opp": [
+0.977,
+0.363
+],
+"elixir": 2.31,
+"opp_cards_seen": 8,
+"board_units": 2
+},
+{
+"key": "live_play_20261020_191634.jsonl",
+"win": 0.0,
+"own": [
+0.005,
+0.128
+],
+"opp": [
+1.0,
+0.652
+],
+"elixir": 4.21,
+"opp_cards_seen": 8,
+"board_units": 1
+},
+{
+"key": "live_play_20261020_192604.jsonl",
+"win": 1.0,
+"own": [
+1.0,
+0.608
+],
+"opp": [
+1.0,
+0.399
+],
+"elixir": 6.67,
+"opp_cards_seen": 8,
+"board_units": 2
+},
+{
+"key": "live_play_20261020_193701.jsonl",
+"win": 0.0,
+"own": [
+0.853,
+0.787
+],
+"opp": [
+0.778,
+0.766
+],
+"elixir": 3.66,
+"opp_cards_seen": 8,
+"board_units": 2
+},
+{
+"key": "live_play_20261020_194332.jsonl",
+"win": 0.0,
+"own": [
+0.619,
+0.756
+],
+"opp": [
+0.965,
+0.977
+],
+"elixir": 1.18,
+"opp_cards_seen": 8,
+"board_units": 5
+},
+{
+"key": "live_play_20261020_195738.jsonl",
+"win": 0.0,
+"own": [
+0.586,
+1.0
+],
+"opp": [
+0.925,
+0.72
+],
+"elixir": 2.26,
+"opp_cards_seen": 8,
+"board_units": 2
+},
+{
+"key": "live_play_20261020_200118.jsonl",
+"win": 1.0,
+"own": [
+1.0,
+0.98
+],
+"opp": [
+1.0,
+0.988
+],
+"elixir": 7.42,
+"opp_cards_seen": 8,
+"board_units": 1
+},
+{
+"key": "live_play_20261020_201302.jsonl",
+"win": 1.0,
+"own": [
+1.0,
+0.459
+],
+"opp": [
+0.617,
+0.876
+],
+"elixir": 4.39,
+"opp_cards_seen": 7,
+"board_units": 1
+},
+{
+"key": "live_play_20261020_202500.jsonl",
+"win": 0.0,
+"own": [
+1.0,
+0.322
+],
+"opp": [
+1.0,
+0.414
+],
+"elixir": 1.65,
+"opp_cards_seen": 8,
+"board_units": 1
+},
+{
+"key": "live_play_20261020_203152.jsonl",
+"win": 1.0,
+"own": [
+1.0,
+0.973
+],
+"opp": [
+1.0,
+0.853
+],
+"elixir": 3.31,
+"opp_cards_seen": 6,
+"board_units": 7
+},
+{
+"key": "live_play_20261020_204216.jsonl",
+"win": 1.0,
+"own": [
+0.8,
+0.495
+],
+"opp": [
+0.988,
+0.965
+],
+"elixir": 7.68,
+"opp_cards_seen": 7,
+"board_units": 2
+},
+{
+"key": "live_play_20261020_204741.jsonl",
+"win": 0.0,
+"own": [
+1.0,
+0.445
+],
+"opp": [
+1.0,
+0.811
+],
+"elixir": 5.57,
+"opp_cards_seen": 8,
+"board_units": 1
+},
+{
+"key": "live_play_20261020_205234.jsonl",
+"win": 0.0,
+"own": [
+1.0,
+0.966
+],
+"opp": [
+1.0,
+0.977
+],
+"elixir": 7.2,
+"opp_cards_seen": 7,
+"board_units": 2
+},
+{
+"key": "live_play_20261020_210413.jsonl",
+"win": 0.0,
+"own": [
+0.718,
+0.627
+],
+"opp": [
+0.977,
+0.977
+],
+"elixir": 5.11,
+"opp_cards_seen": 7,
+"board_units": 5
+},
+{
+"key": "live_play_20261020_211937.jsonl",
+"win": 0.0,
+"own": [
+0.348,
+0.973
+],
+"opp": [
+0.988,
+0.989
+],
+"elixir": 5.98,
+"opp_cards_seen": 8,
+"board_units": 1
+},
+{
+"key": "live_play_20261020_212504.jsonl",
+"win": 1.0,
+"own": [
+0.747,
+1.0
+],
+"opp": [
+0.799,
+0.342
+],
+"elixir": 1.53,
+"opp_cards_seen": 8,
+"board_units": 1
+},
+{
+"key": "live_play_20261020_213337.jsonl",
+"win": 0.0,
+"own": [
+0.484,
+0.397
+],
+"opp": [
+1.0,
+0.988
+],
+"elixir": 5.06,
+"opp_cards_seen": 9,
+"board_units": 1
+},
+{
+"key": "live_play_20261020_215002.jsonl",
+"win": 1.0,
+"own": [
+1.0,
+0.561
+],
+"opp": [
+0.868,
+0.239
+],
+"elixir": 4.7,
+"opp_cards_seen": 8,
+"board_units": 0
+},
+{
+"key": "live_play_20261020_215409.jsonl",
+"win": 0.0,
+"own": [
+0.615,
+0.977
+],
+"opp": [
+0.947,
+0.735
+],
+"elixir": 2.2,
+"opp_cards_seen": 8,
+"board_units": 2
+},
+{
+"key": "live_play_20261020_220152.jsonl",
+"win": 1.0,
+"own": [
+0.919,
+0.547
+],
+"opp": [
+0.988,
+0.977
+],
+"elixir": 2.81,
+"opp_cards_seen": 7,
+"board_units": 3
+},
+{
+"key": "live_play_20261020_220718.jsonl",
+"win": 1.0,
+"own": [
+0.89,
+0.551
+],
+"opp": [
+0.957,
+0.546
+],
+"elixir": 1.27,
+"opp_cards_seen": 7,
+"board_units": 2
+},
+{
+"key": "live_play_20261020_221242.jsonl",
+"win": 1.0,
+"own": [
+0.824,
+0.072
+],
+"opp": [
+1.0,
+0.069
+],
+"elixir": 1.64,
+"opp_cards_seen": 7,
+"board_units": 1
+},
+{
+"key": "live_play_20261020_221620.jsonl",
+"win": 1.0,
+"own": [
+0.879,
+0.847
+],
+"opp": [
+0.044,
+0.748
+],
+"elixir": 4.42,
+"opp_cards_seen": 8,
+"board_units": 0
+},
+{
+"key": "live_play_20261020_221942.jsonl",
+"win": 1.0,
+"own": [
+1.0,
+0.615
+],
+"opp": [
+0.242,
+0.688
+],
+"elixir": 4.38,
+"opp_cards_seen": 7,
+"board_units": 5
+},
+{
+"key": "live_play_20261020_222947.jsonl",
+"win": 0.0,
+"own": [
+1.0,
+0.612
+],
+"opp": [
+0.976,
+0.907
+],
+"elixir": 0.84,
+"opp_cards_seen": 8,
+"board_units": 3
+},
+{
+"key": "live_play_20261020_223825.jsonl",
+"win": 0.0,
+"own": [
+0.937,
+0.656
+],
+"opp": [
+0.977,
+0.988
+],
+"elixir": 3.74,
+"opp_cards_seen": 7,
+"board_units": 3
+},
+{
+"key": "live_play_20261020_225340.jsonl",
+"win": 1.0,
+"own": [
+0.457,
+0.988
+],
+"opp": [
+1.0,
+0.334
+],
+"elixir": 0.85,
+"opp_cards_seen": 7,
+"board_units": 10
+},
+{
+"key": "live_play_20261020_225716.jsonl",
+"win": 0.0,
+"own": [
+0.168,
+0.674
+],
+"opp": [
+0.319,
+0.354
+],
+"elixir": 4.11,
+"opp_cards_seen": 8,
+"board_units": 4
+},
+{
+"key": "live_play_20261020_230525.jsonl",
+"win": 0.0,
+"own": [
+0.892,
+0.452
+],
+"opp": [
+0.403,
+0.686
+],
+"elixir": 4.88,
+"opp_cards_seen": 8,
+"board_units": 1
+},
+{
+"key": "live_play_20261020_230907.jsonl",
+"win": 1.0,
+"own": [
+0.76,
+1.0
+],
+"opp": [
+0.153,
+0.988
+],
+"elixir": 2.16,
+"opp_cards_seen": 8,
+"board_units": 3
+},
+{
+"key": "live_play_20261020_231630.jsonl",
+"win": 1.0,
+"own": [
+1.0,
+1.0
+],
+"opp": [
+0.899,
+0.977
+],
+"elixir": 4.3,
+"opp_cards_seen": 8,
+"board_units": 3
+},
+{
+"key": "live_play_20261020_232823.jsonl",
+"win": 1.0,
+"own": [
+0.732,
+0.892
+],
+"opp": [
+0.988,
+0.953
+],
+"elixir": 6.42,
+"opp_cards_seen": 8,
+"board_units": 0
+},
+{
+"key": "live_play_20261020_233303.jsonl",
+"win": 1.0,
+"own": [
+0.336,
+0.617
+],
+"opp": [
+0.801,
+0.192
+],
+"elixir": 1.88,
+"opp_cards_seen": 8,
+"board_units": 2
+},
+{
+"key": "live_play_20261020_233735.jsonl",
+"win": 0.0,
+"own": [
+0.656,
+0.644
+],
+"opp": [
+0.977,
+0.922
+],
+"elixir": 2.2,
+"opp_cards_seen": 7,
+"board_units": 5
+},
+{
+"key": "live_play_20261020_234259.jsonl",
+"win": 0.0,
+"own": [
+0.664,
+0.341
+],
+"opp": [
+0.576,
+0.578
+],
+"elixir": 4.13,
+"opp_cards_seen": 8,
+"board_units": 0
+},
+{
+"key": "live_play_20261020_234640.jsonl",
+"win": 1.0,
+"own": [
+0.565,
+0.866
+],
+"opp": [
+0.778,
+0.877
+],
+"elixir": 2.38,
+"opp_cards_seen": 8,
+"board_units": 2
+},
+{
+"key": "live_play_20261020_235058.jsonl",
+"win": 0.0,
+"own": [
+0.705,
+0.67
+],
+"opp": [
+1.0,
+0.988
+],
+"elixir": 1.98,
+"opp_cards_seen": 8,
+"board_units": 8
+},
+{
+"key": "live_play_20261020_235616.jsonl",
+"win": 0.0,
+"own": [
+0.963,
+0.476
+],
+"opp": [
+0.706,
+0.77
+],
+"elixir": 3.63,
+"opp_cards_seen": 6,
+"board_units": 3
+},
+{
+"key": "live_play_20261021_000123.jsonl",
+"win": 1.0,
+"own": [
+1.0,
+0.692
+],
+"opp": [
+1.0,
+0.299
+],
+"elixir": 7.2,
+"opp_cards_seen": 7,
+"board_units": 0
+},
+{
+"key": "live_play_20261021_000446.jsonl",
+"win": 0.0,
+"own": [
+1.0,
+0.13
+],
+"opp": [
+0.838,
+0.977
+],
+"elixir": 3.68,
+"opp_cards_seen": 7,
+"board_units": 4
+},
+{
+"key": "live_play_20261021_001823.jsonl",
+"win": 0.0,
+"own": [
+0.898,
+0.325
+],
+"opp": [
+0.988,
+0.674
+],
+"elixir": 8.21,
+"opp_cards_seen": 8,
+"board_units": 2
+},
+{
+"key": "live_play_20261021_002514.jsonl",
+"win": 1.0,
+"own": [
+0.617,
+1.0
+],
+"opp": [
+0.637,
+0.25
+],
+"elixir": 2.57,
+"opp_cards_seen": 7,
+"board_units": 6
+},
+{
+"key": "live_play_20261021_003020.jsonl",
+"win": 1.0,
+"own": [
+0.122,
+0.873
+],
+"opp": [
+0.969,
+0.576
+],
+"elixir": 4.67,
+"opp_cards_seen": 7,
+"board_units": 1
+},
+{
+"key": "live_play_20261021_003408.jsonl",
+"win": 0.0,
+"own": [
+0.367,
+0.964
+],
+"opp": [
+0.796,
+0.705
+],
+"elixir": 7.27,
+"opp_cards_seen": 7,
+"board_units": 1
+},
+{
+"key": "live_play_20261021_003802.jsonl",
+"win": 0.0,
+"own": [
+0.753,
+0.701
+],
+"opp": [
+1.0,
+1.0
+],
+"elixir": 3.99,
+"opp_cards_seen": 8,
+"board_units": 1
+},
+{
+"key": "live_play_20261021_005356.jsonl",
+"win": 1.0,
+"own": [
+1.0,
+0.975
+],
+"opp": [
+0.939,
+0.896
+],
+"elixir": 0.84,
+"opp_cards_seen": 8,
+"board_units": 1
+},
+{
+"key": "live_play_20261021_010626.jsonl",
+"win": 1.0,
+"own": [
+0.209,
+1.0
+],
+"opp": [
+0.683,
+0.607
+],
+"elixir": 2.99,
+"opp_cards_seen": 8,
+"board_units": 2
+},
+{
+"key": "live_play_20261021_011757.jsonl",
+"win": 1.0,
+"own": [
+0.797,
+0.897
+],
+"opp": [
+0.009,
+0.472
+],
+"elixir": 4.54,
+"opp_cards_seen": 6,
+"board_units": 9
+},
+{
+"key": "live_play_20261021_012643.jsonl",
+"win": 0.0,
+"own": [
+0.416,
+0.913
+],
+"opp": [
+0.959,
+0.989
+],
+"elixir": 6.03,
+"opp_cards_seen": 5,
+"board_units": 2
+},
+{
+"key": "live_play_20261021_013101.jsonl",
+"win": 1.0,
+"own": [
+1.0,
+0.721
+],
+"opp": [
+1.0,
+0.885
+],
+"elixir": 7.24,
+"opp_cards_seen": 7,
+"board_units": 1
+},
+{
+"key": "live_play_20261021_013512.jsonl",
+"win": 1.0,
+"own": [
+1.0,
+0.382
+],
+"opp": [
+1.0,
+0.844
+],
+"elixir": 4.28,
+"opp_cards_seen": 8,
+"board_units": 0
+},
+{
+"key": "live_play_20261021_013936.jsonl",
+"win": 0.0,
+"own": [
+0.193,
+0.768
+],
+"opp": [
+0.988,
+1.0
+],
+"elixir": 1.2,
+"opp_cards_seen": 7,
+"board_units": 3
+},
+{
+"key": "live_play_20261021_014500.jsonl",
+"win": 1.0,
+"own": [
+0.298,
+1.0
+],
+"opp": [
+0.848,
+0.758
+],
+"elixir": 4.42,
+"opp_cards_seen": 7,
+"board_units": 3
+},
+{
+"key": "live_play_20261021_014911.jsonl",
+"win": 0.0,
+"own": [
+1.0,
+0.653
+],
+"opp": [
+0.989,
+0.655
+],
+"elixir": 5.59,
+"opp_cards_seen": 7,
+"board_units": 1
+},
+{
+"key": "live_play_20261021_015434.jsonl",
+"win": 1.0,
+"own": [
+0.975,
+1.0
+],
+"opp": [
+0.988,
+0.948
+],
+"elixir": 7.39,
+"opp_cards_seen": 8,
+"board_units": 4
+},
+{
+"key": "live_play_20261021_015959.jsonl",
+"win": 0.0,
+"own": [
+0.098,
+0.493
+],
+"opp": [
+0.415,
+0.969
+],
+"elixir": 2.67,
+"opp_cards_seen": 8,
+"board_units": 4
+},
+{
+"key": "live_play_20261021_020620.jsonl",
+"win": 0.0,
+"own": [
+1.0,
+0.827
+],
+"opp": [
+0.977,
+0.858
+],
+"elixir": 2.03,
+"opp_cards_seen": 7,
+"board_units": 8
+},
+{
+"key": "live_play_20261021_021457.jsonl",
+"win": 0.0,
+"own": [
+1.0,
+0.45
+],
+"opp": [
+0.92,
+0.755
+],
+"elixir": 5.48,
+"opp_cards_seen": 8,
+"board_units": 1
+},
+{
+"key": "live_play_20261021_022022.jsonl",
+"win": 1.0,
+"own": [
+0.454,
+0.605
+],
+"opp": [
+0.844,
+0.847
+],
+"elixir": 8.53,
+"opp_cards_seen": 7,
+"board_units": 2
+},
+{
+"key": "live_play_20261021_022543.jsonl",
+"win": 0.0,
+"own": [
+1.0,
+0.676
+],
+"opp": [
+1.0,
+0.977
+],
+"elixir": 4.25,
+"opp_cards_seen": 8,
+"board_units": 3
+},
+{
+"key": "live_play_20261021_023110.jsonl",
+"win": 0.0,
+"own": [
+0.839,
+0.881
+],
+"opp": [
+0.98,
+0.841
+],
+"elixir": 6.84,
+"opp_cards_seen": 8,
+"board_units": 2
+},
+{
+"key": "live_play_20261021_023635.jsonl",
+"win": 0.0,
+"own": [
+1.0,
+0.441
+],
+"opp": [
+1.0,
+0.948
+],
+"elixir": 10.0,
+"opp_cards_seen": 4,
+"board_units": 0
+},
+{
+"key": "live_play_20261021_024154.jsonl",
+"win": 0.0,
+"own": [
+1.0,
+0.547
+],
+"opp": [
+1.0,
+0.791
+],
+"elixir": 4.16,
+"opp_cards_seen": 7,
+"board_units": 0
+},
+{
+"key": "live_play_20261021_025031.jsonl",
+"win": 0.0,
+"own": [
+0.194,
+0.232
+],
+"opp": [
+0.977,
+0.546
+],
+"elixir": 4.77,
+"opp_cards_seen": 7,
+"board_units": 0
+},
+{
+"key": "live_play_20261021_025433.jsonl",
+"win": 1.0,
+"own": [
+0.43,
+0.879
+],
+"opp": [
+0.432,
+0.989
+],
+"elixir": 4.11,
+"opp_cards_seen": 7,
+"board_units": 1
+},
+{
+"key": "live_play_20261021_025838.jsonl",
+"win": 0.0,
+"own": [
+0.186,
+0.435
+],
+"opp": [
+0.245,
+0.988
+],
+"elixir": 4.17,
+"opp_cards_seen": 8,
+"board_units": 2
+},
+{
+"key": "live_play_20261021_030243.jsonl",
+"win": 0.0,
+"own": [
+0.564,
+0.756
+],
+"opp": [
+0.959,
+0.481
+],
+"elixir": 4.49,
+"opp_cards_seen": 7,
+"board_units": 3
+},
+{
+"key": "live_play_20261021_030807.jsonl",
+"win": 1.0,
+"own": [
+0.593,
+0.478
+],
+"opp": [
+0.821,
+0.815
+],
+"elixir": 3.3,
+"opp_cards_seen": 7,
+"board_units": 2
+},
+{
+"key": "live_play_20261021_031330.jsonl",
+"win": 0.0,
+"own": [
+0.507,
+0.941
+],
+"opp": [
+0.988,
+0.871
+],
+"elixir": 3.15,
+"opp_cards_seen": 8,
+"board_units": 2
+},
+{
+"key": "live_play_20261021_032213.jsonl",
+"win": 1.0,
+"own": [
+0.869,
+0.62
+],
+"opp": [
+0.372,
+0.977
+],
+"elixir": 4.24,
+"opp_cards_seen": 8,
+"board_units": 0
+},
+{
+"key": "live_play_20261021_032739.jsonl",
+"win": 0.0,
+"own": [
+1.0,
+0.9
+],
+"opp": [
+1.0,
+0.836
+],
+"elixir": 2.24,
+"opp_cards_seen": 7,
+"board_units": 5
+},
+{
+"key": "live_play_20261021_033142.jsonl",
+"win": 0.0,
+"own": [
+1.0,
+0.559
+],
+"opp": [
+0.988,
+0.767
+],
+"elixir": 6.78,
+"opp_cards_seen": 6,
+"board_units": 3
+},
+{
+"key": "live_play_20261021_033708.jsonl",
+"win": 1.0,
+"own": [
+0.883,
+0.664
+],
+"opp": [
+0.8,
+0.939
+],
+"elixir": 5.25,
+"opp_cards_seen": 8,
+"board_units": 2
+},
+{
+"key": "live_play_20261021_034232.jsonl",
+"win": 1.0,
+"own": [
+1.0,
+0.502
+],
+"opp": [
+0.579,
+0.951
+],
+"elixir": 0.83,
+"opp_cards_seen": 8,
+"board_units": 0
+},
+{
+"key": "live_play_20261021_040223.jsonl",
+"win": 1.0,
+"own": [
+1.0,
+0.805
+],
+"opp": [
+0.988,
+0.895
+],
+"elixir": 0.85,
+"opp_cards_seen": 6,
+"board_units": 7
+},
+{
+"key": "live_play_20261021_040713.jsonl",
+"win": 0.0,
+"own": [
+0.753,
+0.768
+],
+"opp": [
+0.97,
+0.377
+],
+"elixir": 0.88,
+"opp_cards_seen": 8,
+"board_units": 13
+},
+{
+"key": "live_play_20261021_041208.jsonl",
+"win": 0.0,
+"own": [
+0.662,
+0.468
+],
+"opp": [
+0.697,
+0.413
+],
+"elixir": 5.82,
+"opp_cards_seen": 8,
+"board_units": 4
+},
+{
+"key": "live_play_20261021_041656.jsonl",
+"win": 0.0,
+"own": [
+0.935,
+0.109
+],
+"opp": [
+1.0,
+0.879
+],
+"elixir": 5.59,
+"opp_cards_seen": 8,
+"board_units": 1
+},
+{
+"key": "live_play_20261021_042017.jsonl",
+"win": 1.0,
+"own": [
+0.895,
+0.666
+],
+"opp": [
+0.668,
+0.988
+],
+"elixir": 0.86,
+"opp_cards_seen": 8,
+"board_units": 1
+},
+{
+"key": "live_play_20261021_042358.jsonl",
+"win": 0.0,
+"own": [
+1.0,
+0.197
+],
+"opp": [
+0.746,
+0.954
+],
+"elixir": 2.43,
+"opp_cards_seen": 8,
+"board_units": 2
+},
+{
+"key": "live_play_20261021_042914.jsonl",
+"win": 0.0,
+"own": [
+0.327,
+0.591
+],
+"opp": [
+0.567,
+0.394
+],
+"elixir": 5.03,
+"opp_cards_seen": 7,
+"board_units": 4
+},
+{
+"key": "live_play_20261021_043430.jsonl",
+"win": 0.0,
+"own": [
+0.765,
+0.814
+],
+"opp": [
+0.965,
+1.0
+],
+"elixir": 2.99,
+"opp_cards_seen": 8,
+"board_units": 2
+},
+{
+"key": "live_play_20261021_043955.jsonl",
+"win": 1.0,
+"own": [
+0.955,
+0.321
+],
+"opp": [
+0.989,
+0.78
+],
+"elixir": 9.28,
+"opp_cards_seen": 7,
+"board_units": 2
+},
+{
+"key": "live_play_20261021_044415.jsonl",
+"win": 1.0,
+"own": [
+0.633,
+0.524
+],
+"opp": [
+0.631,
+0.19
+],
+"elixir": 1.2,
+"opp_cards_seen": 8,
+"board_units": 5
+},
+{
+"key": "live_play_20261021_044911.jsonl",
+"win": 1.0,
+"own": [
+0.685,
+0.895
+],
+"opp": [
+0.478,
+0.941
+],
+"elixir": 3.61,
+"opp_cards_seen": 8,
+"board_units": 1
+},
+{
+"key": "live_play_20261021_051139.jsonl",
+"win": 1.0,
+"own": [
+0.603,
+0.988
+],
+"opp": [
+0.311,
+0.697
+],
+"elixir": 4.72,
+"opp_cards_seen": 8,
+"board_units": 1
+},
+{
+"key": "live_play_20261021_051902.jsonl",
+"win": 1.0,
+"own": [
+0.746,
+1.0
+],
+"opp": [
+0.646,
+0.399
+],
+"elixir": 5.71,
+"opp_cards_seen": 7,
+"board_units": 5
+},
+{
+"key": "live_play_20261021_054307.jsonl",
+"win": 0.0,
+"own": [
+0.504,
+0.945
+],
+"opp": [
+0.791,
+1.0
+],
+"elixir": 3.79,
+"opp_cards_seen": 8,
+"board_units": 0
+},
+{
+"key": "live_play_20261021_054722.jsonl",
+"win": 0.0,
+"own": [
+0.14,
+0.786
+],
+"opp": [
+0.734,
+0.836
+],
+"elixir": 2.96,
+"opp_cards_seen": 7,
+"board_units": 1
+},
+{
+"key": "live_play_20261021_055229.jsonl",
+"win": 0.0,
+"own": [
+0.979,
+0.31
+],
+"opp": [
+0.686,
+1.0
+],
+"elixir": 1.31,
+"opp_cards_seen": 6,
+"board_units": 3
+},
+{
+"key": "live_play_20261021_061402.jsonl",
+"win": 0.0,
+"own": [
+0.292,
+0.432
+],
+"opp": [
+0.93,
+0.259
+],
+"elixir": 2.58,
+"opp_cards_seen": 8,
+"board_units": 2
+},
+{
+"key": "live_play_20261021_061932.jsonl",
+"win": 1.0,
+"own": [
+1.0,
+0.442
+],
+"opp": [
+1.0,
+0.2
+],
+"elixir": 3.59,
+"opp_cards_seen": 8,
+"board_units": 3
+},
+{
+"key": "live_play_20261021_062433.jsonl",
+"win": 0.0,
+"own": [
+0.688,
+0.336
+],
+"opp": [
+0.536,
+0.542
+],
+"elixir": 2.66,
+"opp_cards_seen": 8,
+"board_units": 2
+},
+{
+"key": "live_play_20261021_063617.jsonl",
+"win": 1.0,
+"own": [
+0.946,
+0.786
+],
+"opp": [
+0.529,
+0.988
+],
+"elixir": 7.46,
+"opp_cards_seen": 7,
+"board_units": 4
+},
+{
+"key": "live_play_20261021_064141.jsonl",
+"win": 0.0,
+"own": [
+0.369,
+0.977
+],
+"opp": [
+0.907,
+0.827
+],
+"elixir": 3.46,
+"opp_cards_seen": 8,
+"board_units": 3
+},
+{
+"key": "live_play_20261021_064525.jsonl",
+"win": 1.0,
+"own": [
+0.824,
+0.642
+],
+"opp": [
+1.0,
+0.481
+],
+"elixir": 2.69,
+"opp_cards_seen": 7,
+"board_units": 3
+},
+{
+"key": "live_play_20261021_065729.jsonl",
+"win": 1.0,
+"own": [
+0.377,
+0.632
+],
+"opp": [
+0.185,
+0.196
+],
+"elixir": 7.81,
+"opp_cards_seen": 7,
+"board_units": 6
+},
+{
+"key": "live_play_20261021_070110.jsonl",
+"win": 1.0,
+"own": [
+0.672,
+1.0
+],
+"opp": [
+0.123,
+0.989
+],
+"elixir": 6.61,
+"opp_cards_seen": 6,
+"board_units": 0
+},
+{
+"key": "live_play_20261021_070435.jsonl",
+"win": 1.0,
+"own": [
+1.0,
+0.507
+],
+"opp": [
+1.0,
+0.205
+],
+"elixir": 1.2,
+"opp_cards_seen": 8,
+"board_units": 2
+},
+{
+"key": "live_play_20261021_070801.jsonl",
+"win": 0.0,
+"own": [
+1.0,
+0.46
+],
+"opp": [
+1.0,
+0.816
+],
+"elixir": 4.82,
+"opp_cards_seen": 7,
+"board_units": 1
+}
+]
+}

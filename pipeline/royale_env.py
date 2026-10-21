@@ -196,6 +196,8 @@ class _Core:
 
 
 class RoyalePoolEnv:
+    scenario_start: Optional[dict] = None    # RoyaleSelfPlayEnv.reset(start=...) of this match (W15); None = from tick 0
+
     def __init__(self, *, decision_ticks: int = 10, elixir_slack: int = 40, tail_cap: int = 7200,
                  warmup_ticks: int = 90, seed: int = 0, subs: Optional[dict[str, str]] = None,
                  forms_mode: str = "base", hero_abilities: bool = False, feature_version: int = 1,
@@ -802,14 +804,18 @@ class RoyaleSelfPlayEnv(RoyalePoolEnv):
     ``raw()`` is the full two-sided state; each side mirrors it as today: ``from_engine(obs, side, ...)``. Its
     ``next_deck_index`` indexes the CALLER's deck order (``self.decks[side]``)."""
 
-    def reset(self, deck0, deck1, seed: int = 0, tower_troops=None, levels=None) -> dict:
+    def reset(self, deck0, deck1, seed: int = 0, tower_troops=None, levels=None, start=None) -> dict:
         """``tower_troops`` (opt-in, L74 troops 10-17): [Blue, Red] crown tower troop names (rl_royale.TOWER_TROOPS;
         the engine refuses any other) or None for the Princess; needs the ClashBot RoyaleSim fork
         (Battle.set_tower_troops). None on an env that never fielded one = no engine call (unchanged); a later None
         resets a reused env to Princess towers.
         ``levels`` (opt-in, L74 factor D 10-17): {"cards": [[8 levels in deck0 order], [8 in deck1 order]], "towers":
         [Blue, Red]} -> MatchSetup.levels / tower_levels (permuted with the deal); None = the engine default (level 11
-        everywhere), the setup unchanged."""
+        everywhere), the setup unchanged.
+        ``start`` (opt-in, W15 lever 2 10-21): {"tick", "princess": [[LEFT, RIGHT] hp fractions of max, Blue], [.., Red]],
+        "elixir": [Blue, Red]} -> MatchSetup.start_tick / tower_hp (fraction x the tower's max at this match's levels and
+        troops, read off a plain reset first; kings full) / elixir_milli: the battle starts mid-match there (an empty
+        board; ``scenario_start``). None = the setup unchanged."""
         if tower_troops is not None or getattr(self, "_tower_troops", None) is not None:
             self.core._battle.set_tower_troops(*(tower_troops or (None, None)))
             self._tower_troops = tower_troops
@@ -838,6 +844,15 @@ class RoyaleSelfPlayEnv(RoyalePoolEnv):
             import msgspec
             setup = msgspec.structs.replace(setup, levels=[[int(levels["cards"][s][i]) for i in orders[s]] for s in (0, 1)],
                                             tower_levels=[int(t) for t in levels["towers"]])
+        self.scenario_start = start
+        if start is not None:
+            import msgspec
+            self.core.reset(self.seed, setup)                # the towers' max hp at these levels / troops
+            mx = [list(self.core.state().players[s].tower_max_hp) for s in (0, 1)]
+            hp = [[int(mx[s][0])] + [max(1, round(float(f) * mx[s][k + 1])) for k, f in enumerate(start["princess"][s])]
+                  for s in (0, 1)]
+            setup = msgspec.structs.replace(setup, start_tick=int(start["tick"]), tower_hp=hp,
+                                            elixir_milli=[round(1000 * float(e)) for e in start["elixir"]])
         self.core.reset(self.seed, setup)
         self.public_plays = []
         self._ghosts, self._gi, self._pending = [], 0, []

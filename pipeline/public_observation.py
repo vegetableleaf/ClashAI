@@ -107,6 +107,7 @@ class PublicObserver:
         self.body = PlayDetector()
         self.body.my_side = self.side
         self.counter = OppElixirCounter(schedule=self.schedule)
+        self.start = None                     # start_at (W15 lever 2): (tick, elixir) the counter starts from
         self.plays = []
         self.ticks = []
         self.estimates = []
@@ -177,12 +178,19 @@ class PublicObserver:
             self.estimates.append(self.counter.est)
         return self.estimate_at(tick)
 
+    def start_at(self, tick, elixir):
+        """A match that starts mid-way (rl_royale ot_start_share): the counter starts at ``tick`` with ``elixir``."""
+        self.start = (int(tick), float(elixir))
+        self.counter.tick, self.counter.est = self.start
+
     def estimate_at(self, tick):
         """Causal public counter, excluding same-tick sightings like opp_past."""
         i = bisect_left(self.ticks, int(tick)) - 1
         counter = OppElixirCounter(schedule=self.schedule)
         if i >= 0:
             counter.tick, counter.est = self.ticks[i], self.estimates[i]
+        elif self.start is not None:
+            counter.tick, counter.est = self.start
         return counter.at(int(tick))
 
     def object_context(self, tick):
