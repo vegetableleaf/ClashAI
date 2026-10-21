@@ -5,7 +5,8 @@
 # the evals run beside the training job (which holds /workspace/cpu.lock). Exits when the run's DONE file exists and every
 # snapshot is evaluated. Each snapshot is COPIED (cp, sha-checked) into the eval copy as icebow/data/pipeline/o2/w14/.
 #   RUN=rlarm_oppW14A_lr3_s74 YAML=oppW14A_lr3_s74 setsid nohup bash /workspace/w14/w14_gate.sh > /dev/null 2>&1 < /dev/null &
-# EVERY=5 (default): gate snapshots whose update is a multiple of EVERY.
+# EVERY=5 (default): gate snapshots whose update is a multiple of EVERY. A failed eval (GAP EXIT, or != 480 merged rows) is
+# moved aside to NAME_FAILED_k and retried once; after two failures NAME/GAVE_UP marks it skipped.
 set -uo pipefail
 R=${RUN:?}; Y=${YAML:?}; EVERY=${EVERY:-5}
 CK=/workspace/cb_stepd/icebow/data/bench/rl_royale/$R
@@ -24,7 +25,13 @@ while :; do
     cp $f $DST/ && [ "$(sha256sum < $f)" = "$(sha256sum < $DST/$(basename $f))" ] || { log "COPY FAIL $f"; continue; }
     log "eval $N sha $(sha256sum < $f | cut -c1-12)"
     bash /workspace/w14/opp_eval_fin15.sh $N $CLX icebow/data/pipeline/o2/w14/$(basename $f) 0.1 40 - 741200
-    log "done $N: $(cat $O3B/out/$N/${N}_741200/D3/matches.jsonl 2>/dev/null | wc -l) merged rows; tgz $(ls $O3B/out/$N.tgz 2>/dev/null)"
+    n=$(cat $O3B/out/$N/${N}_741200/D3/matches.jsonl 2>/dev/null | wc -l)
+    if [ "$n" != 480 ] || grep -q "GAP EXIT" $O3B/out/$N/run.log; then          # never let a failed eval pass as a gate
+      k=$(ls -d $O3B/out/${N}_FAILED_* 2>/dev/null | wc -l); F=$O3B/out/${N}_FAILED_$k
+      mv $O3B/out/$N $F; mv $O3B/out/$N.tgz $O3B/out/$N.tgz.sha $F/ 2>/dev/null
+      log "FAIL $N ($n merged rows), attempt $((k + 1)) -> $F"
+      [ $k -ge 1 ] && { mkdir -p $O3B/out/$N; touch $O3B/out/$N/ALL_DONE $O3B/out/$N/GAVE_UP; log "GAVE UP $N"; }
+    else log "done $N: $n rows, tgz $(ls $O3B/out/$N.tgz 2>/dev/null)"; fi
   done
   if [ $done_now = 1 ]; then log "train DONE and all snapshots gated"; break; fi
   sleep 60

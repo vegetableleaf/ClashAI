@@ -812,18 +812,25 @@ opponent.
 cell:
 - Same definitions on both sides: the SIM rows go through clx_ranked/sim.py `row()`, the live rows are clx_ranked/rows.json.
 - BEAT = the tank / bridge-spam win conditions of report.py.
-- Gate = the 10 `*` cells below, each |z| < 1.96 (two-proportion z, as W7's O4 rule).
+- Gate = the 11 `*` cells below plus style. Each cell needs |z| < 1.96 (two-proportion z, as W7's O4 rule) AND, where a
+  point tolerance is predeclared, |SIM - Ranked| within it: win 5 pp, vs BEAT 10, win \| OT 8, opponent takes 8, CLX
+  takes 8. Style vs Ranked <= 0.65. An undefined cell counts as a FAIL.
+- A z pass alone only says "no detectable difference at n = 233". The point tolerances are the calibration claim.
+- BEAT is classified from REVEALED cards on both sides: live = the seen cards; SIM = the cards the opponent played
+  (o3_plays). The full-deck version (W13's T7 / T11) is kept as a monitored cell. On R0 the two differ by 0.6 pp (56.9 vs
+  57.5).
 - Style = the opponent's play-style distance (o3_score's 9 features) vs the live RANKED opponents of those 233 matches (and
   vs W7's 13k ladder set, for continuity).
 - Live n = 233, so the CIs are about +-6.5 pp on the overall win and +-9 pp vs BEAT. This is a weak gate, as W7's was.
 
-**R0 = R6 u20 (34522564) on fin15, 1,920 games (W12's rows, the tn_base opponent today): 2 of 10 gate cells pass.**
-This reproduces CLX_RANKED.md T11 exactly (64.0 / 57.5 / 77.5 / 34.6), which checks the table code.
+**R0 = R6 u20 (34522564) on fin15, 1,920 games (W12's rows, the tn_base opponent today): 3 of 12 gate items pass.**
+`o4r_table.py --check` reproduces CLX_RANKED.md T11 exactly (64.0 / 57.5 full-deck / 77.5 / 34.6 / 19.5), which checks the
+table code. Full table: `w14/o4r_R0_R6u20.out`.
 
 | cell | SIM R6 u20 | Ranked [95%] | SIM - Ranked [95%] | z |
 |---|---|---|---|---|
 | * CLX win | 64.0 | 48.1 [41.7, 54.5] | +15.9 [+9.1, +22.6] | +4.72 |
-| * win vs BEAT | 57.5 | 25.3 [17.2, 35.6] | +32.2 [+21.3, +41.0] | +5.60 |
+| * win vs BEAT (revealed cards) | 56.9 | 25.3 [17.2, 35.6] | +31.6 [+20.7, +40.4] | +5.47 |
 | * win vs the rest | 68.4 | 60.7 [52.7, 68.1] | +7.7 [-0.2, +16.1] | +1.90 |
 | * OT share | 55.2 | 62.7 [56.3, 68.6] | -7.5 [-13.9, -0.8] | -2.18 |
 | * win \| OT | 70.1 | 47.3 [39.3, 55.3] | +22.8 [+14.3, +31.2] | +5.51 |
@@ -831,7 +838,7 @@ This reproduces CLX_RANKED.md T11 exactly (64.0 / 57.5 / 77.5 / 34.6), which che
 | win at the drain | 49.1 | 37.3 [25.3, 51.0] | +11.8 [-3.1, +25.1] | +1.56 |
 | * CLX lost the first princess | 34.6 | 48.1 [41.7, 54.5] | -13.5 [-20.2, -6.8] | -4.05 |
 | * opponent takes a princess | 40.5 | 51.1 [44.7, 57.4] | -10.6 [-17.3, -3.8] | -3.09 |
-| CLX takes a princess | 71.4 | 52.8 [46.4, 59.1] | +18.6 [+12.0, +25.3] | +5.82 |
+| * CLX takes a princess | 71.4 | 52.8 [46.4, 59.1] | +18.6 [+12.0, +25.3] | +5.82 |
 | * both took one | 11.9 | 5.6 [3.3, 9.3] | +6.3 [+2.4, +9.1] | +2.90 |
 | * regulation loss | 19.5 | 18.9 [14.4, 24.4] | +0.6 [-5.1, +5.5] | +0.24 |
 | loss by tiebreak drain | 7.3 | 15.5 [11.4, 20.6] | -8.1 [-13.4, -3.8] | -4.25 |
@@ -874,8 +881,39 @@ Round 1 = four arms, two per pod, each ONE change vs the base:
 |---|---|---|
 | A `oppW14A_lr3_s74` | lr 1e-5 -> 3e-5 | W7's plateaus came with the KL leash NOT binding: beta at its floor, clip_frac ~0.04, ratio_mean 1.0000. The policy moves too little per update |
 | B `oppW14B_beat3_s74` | BEAT decks x3 in the opponent's training draw (0.407 -> 0.673 of draws) | the gap is concentrated vs BEAT (+32.2 pp vs +7.7) |
-| C `oppW14C_chip_s74` | shaping tower_crown (residual critic; critic warm-up 5) | 47.9% of Ranked losses are a chip race lost in OT; win-only reward gives the opponent no credit for chip damage |
+| C `oppW14C_lr10_s74` | lr 1e-5 -> 1e-4 | the upper bracket of A |
 | D `oppW14D_base_s74` | none (control) | W7's history says more updates plateau; D measures it on fin15 and is the baseline for A-C |
+
+- Pods: 48148 runs A (gate every 5) + D (every 10); 19899 runs C (every 5) + B (every 10). That is 12 gates per pod per
+  round (about 7-10 min each, beside about 2.3 h of training).
+- Two arms share a pod: each holds the pod's claim.lock SHARED and its own train lock, so exclusive claimers such as
+  stepd_chain wait. The gate evals share one eval lock per pod.
+- Cross-pod identity check before reading arm differences: both pods first replay R6 u20 on block 741200 (T .1, decide
+  40). Same code (rl_royale e96c830d, royale_env 9059df4d on both, checked 08:00 EDT) and the same seeds should give W12's
+  741200 rows.
+- Selection vs confirmation: snapshots are picked on block 741200 only. The pick is then confirmed on three FRESH blocks
+  (742000 / 743000 / 744000, 1,440 games), and the fresh-only numbers are reported, as W7 did.
+- Round 2 = the winner(s) continued for 40 more updates, one of:
+  - a RESUME of the arm's run (w7_train.sh RUNNAME=<arm>, a yaml with max_updates 80; keeps the optimizer, rng, PFSP
+    ratings and KL anchor);
+  - a FRESH run whose init is the chosen snapshot (a new KL anchor, as W7's R6 from R4 u100).
+- Deadline order: the O4-Ranked confirmation (1,920 games) and the league-config smoke need about 1 h of pod time. No new
+  round starts after about 18:30 EDT.
+
+**Plan review (Codex gpt-6-astra, read-only, 10-21 08:10 EDT; seat unverified). The ten findings, adjudicated:**
+
+| # | finding | verdict | action |
+|---|---|---|---|
+| 1 | a failed eval still writes ALL_DONE; an undefined z passes silently | valid (observed) | the watcher moves a failed eval (GAP EXIT or != 480 rows) aside and retries once; the table counts an undefined cell as a FAIL and flags incomplete or duplicated row sets |
+| 2 | round-2 continuation not specified | valid | specified above (resume vs fresh-from-snapshot) |
+| 3 | \|z\| < 1.96 is not equivalence | valid | point tolerances predeclared above |
+| 4 | selection on one reused block | valid | fresh-block confirmation of the pick |
+| 5 | eval throughput can lag the training | valid | gate cadence 5 / 10 per arm (12 gates per pod per round) |
+| 6 | code identity across pods not verified | partly: the trainer and env shas were checked | add the R6 u20 replay check on both pods |
+| 7 | CLX takes a princess (+18.6) and drain losses are not gated; style has no threshold | valid | CLX-takes gated (tol 8), style <= 0.65; drain losses stay a monitored cell, because OT share and win \| OT cover them |
+| 8 | the planned arm C (tower_crown shaping) is a critic prior, not a chip reward: with an accurate critic the potential cancels out of the GAE advantages | valid (derived; R6's critic explained variance is 0.77) | arm C dropped before launch, replaced by lr 1e-4 |
+| 9 | a beta floor and ratio_mean 1 do not prove lr is the limit | valid | A and C are labelled exploratory (b); their KL, clip_frac and beta logs are read before round 2 |
+| 10 | live BEAT uses revealed cards, SIM the full deck | valid | revealed-card BEAT on both sides (difference 0.6 pp on R0) |
 
 **Round log** (480 games = block 741200 unless marked; CLX win / vs BEAT / vs rest / OT share / win \| OT / win \| OT
 before the drain / opponent takes / both took / style vs Ranked; Ranked 48.1 / 25.3 / 60.7 / 62.7 / 47.3 / 52.6 / 51.1 /

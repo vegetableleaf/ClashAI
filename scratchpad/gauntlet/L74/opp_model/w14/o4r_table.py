@@ -27,8 +27,9 @@ ALL = lambda x: x  # noqa: E731
 WIN = lambda r: r['win'] == 1  # noqa: E731
 CELLS = (  # (name, row selector, hit) -- the same functions on live Ranked rows and SIM rows
     ('win', ALL, WIN),
-    ('win_vs_BEAT', lambda x: [r for r in x if r['wincon'] in BEAT], WIN),
-    ('win_vs_rest', lambda x: [r for r in x if r['wincon'] not in BEAT], WIN),
+    ('win_vs_BEAT', lambda x: [r for r in x if r['wincon_rev'] in BEAT], WIN),       # REVEALED cards on both sides
+    ('win_vs_rest', lambda x: [r for r in x if r['wincon_rev'] not in BEAT], WIN),
+    ('win_vs_BEAT_fulldeck', lambda x: [r for r in x if r['wincon'] in BEAT], WIN),   # SIM full deck (W13's T7 / T11)
     ('ot_share', ALL, lambda r: r['ot']),
     ('win_given_OT', lambda x: [r for r in x if r['ot']], WIN),
     ('win_OT_pre_drain', lambda x: [r for r in x if r['ot'] and r['end_s'] < DRAIN_S], WIN),
@@ -41,13 +42,29 @@ CELLS = (  # (name, row selector, hit) -- the same functions on live Ranked rows
     ('loss_tiebreak_drain', ALL, lambda r: r['path'] == 'L_tiebreak_drain'),
 )
 GATE = ('win', 'win_vs_BEAT', 'win_vs_rest', 'ot_share', 'win_given_OT', 'win_OT_pre_drain', 'lost_first_princess',
-        'opp_takes_princess', 'both_took_one', 'reg_loss')
+        'opp_takes_princess', 'clx_takes_princess', 'both_took_one', 'reg_loss')
+# Predeclared point tolerances (|SIM - Ranked| in pp) on top of |z| < 1.96 -- a z pass alone only says "no detectable
+# difference" at live n = 233 (W14 plan review, finding 3); style vs Ranked <= STYLE_MAX (R0 = 0.58).
+TOL = dict(win=5.0, win_vs_BEAT=10.0, win_given_OT=8.0, opp_takes_princess=8.0, clx_takes_princess=8.0)
+STYLE_MAX = 0.65
 BRIEF = ('win', 'win_vs_BEAT', 'win_vs_rest', 'ot_share', 'win_given_OT', 'win_OT_pre_drain', 'opp_takes_princess',
          'both_took_one')
 
 
 def ranked_rows():
-    return [r for r in json.load(open(L74 / 'clx_ranked/rows.json')) if r['sample'] == 'ranked']
+    rows = [r for r in json.load(open(L74 / 'clx_ranked/rows.json')) if r['sample'] == 'ranked']
+    for r in rows:
+        r['wincon_rev'] = r['wincon']          # live: anatomy.wincon of the REVEALED (seen) cards already
+    return rows
+
+
+def sim_row(j, name):
+    """clx_ranked/sim.py row() + wincon_rev = the win condition among the cards the opponent actually PLAYED (o3_plays),
+    the live definition (revealed cards only); rows without o3_plays fall back to the full deck."""
+    r = SR.row(j, name)
+    pl = (j.get('o3_plays') or {}).get('opp')
+    r['wincon_rev'] = AN.wincon({AN.H.norm(c) for _, c in pl}) if pl else r['wincon']
+    return r
 
 
 def wilson(k, n):
@@ -122,7 +139,7 @@ def style_dist(raw, which):
 
 
 def table(name, raw, live, brief=False, feats=False):
-    sim = [SR.row(j, name) for j in raw]
+    sim = [sim_row(j, name) for j in raw]
     out = {}
     worst, fails = 0.0, []
     for cell, sel, hit in CELLS:
@@ -130,15 +147,22 @@ def table(name, raw, live, brief=False, feats=False):
         k1, n1, k2, n2 = sum(map(hit, a)), len(a), sum(map(hit, b)), len(b)
         z = z2(k1, n1, k2, n2)
         out[cell] = (k1, n1, k2, n2, z)
-        if cell in GATE and not math.isnan(z):
+        if cell in GATE:
+            if math.isnan(z) or not n1:
+                fails.append(cell + '(nan)')              # an undefined cell is a FAIL, never a silent pass
+                continue
             worst = max(worst, abs(z))
-            if abs(z) >= 1.96:
+            if abs(z) >= 1.96 or abs(100 * (k1 / n1 - k2 / n2)) > TOL.get(cell, 1e9):
                 fails.append(cell)
     dr, cmp = style_dist(raw, 'ranked')
     d13, _ = style_dist(raw, '13k')
+    if not dr <= STYLE_MAX:
+        fails.append('style')
+    keys = {(j['seed'], j['tag'], j['learner_side']) for j in raw}
+    warn = '' if len(keys) == len(raw) and len(raw) % 480 == 0 else f'  !! {len(raw)} rows / {len(keys)} unique: INCOMPLETE OR DUPLICATED'
     if brief:
         print(f'{name:40s} n {len(sim):4d} style R {dr:.2f} / 13k {d13:.2f} | ' + ' '.join(
-            f'{c} {100 * out[c][0] / max(1, out[c][1]):5.1f}' for c in BRIEF) + f' | gate fails {len(fails)}: {",".join(fails)}')
+            f'{c} {100 * out[c][0] / max(1, out[c][1]):5.1f}' for c in BRIEF) + f' | gate fails {len(fails)}: {",".join(fails)}' + warn)
         if feats and cmp:
             import o3_score as O3
             print('      ' + ' '.join(f'{k} {cmp[k][3]:.2f}({cmp[k][4]:+.2f})' for k in O3.FEATS))
@@ -148,9 +172,11 @@ def table(name, raw, live, brief=False, feats=False):
         k1, n1, k2, n2, z = out[cell]
         d, lo, hi = newcombe(k1, n1, k2, n2)
         g = '*' if cell in GATE else ' '
+        tol = f' tol {TOL[cell]:g}' if cell in TOL else ''
         print(f'  {g} {cell:22s} SIM {AN.fmt(k1, n1):28s} Ranked {AN.fmt(k2, n2):28s} {100 * d:+6.1f} [{100 * lo:+6.1f}, '
-              f'{100 * hi:+6.1f}] z {z:+5.2f}{"  <-- FAIL" if g == "*" and abs(z) >= 1.96 else ""}')
-    print(f'  gate (* cells): {len(GATE) - len(fails)} of {len(GATE)} pass, max |z| {worst:.2f}; fails: {fails or "none"}')
+              f'{100 * hi:+6.1f}] z {z:+5.2f}{tol}{"  <-- FAIL" if cell in fails else ""}')
+    print(f'  gate (* cells + style; |z| < 1.96 and the TOL pp bounds {TOL}): {len(GATE) + 1 - len(fails)} of {len(GATE) + 1} '
+          f'pass, max |z| {worst:.2f}; fails: {fails or "none"}')
     return out, fails, dr
 
 
@@ -160,10 +186,10 @@ W12 = 'C:/Users/benpe/pod_backup_weekend/tonight1020/clx_fin15/w12_clx_fin15'
 def check():
     """--check: the table must reproduce CLX_RANKED.md T11 on W12's R6 u20 rows (SIM side; Ranked side = rows.json)."""
     (name, raw), = load_sim(W12).items()
-    sim = [SR.row(j, name) for j in raw]
+    sim = [sim_row(j, name) for j in raw]
     live = ranked_rows()
     got = {c: round(100 * sum(map(h, sel(x))) / len(sel(x)), 1) for c, sel, h in CELLS for x in (sim,)}
-    want = dict(win=64.0, win_vs_BEAT=57.5, win_OT_pre_drain=77.5, lost_first_princess=34.6, reg_loss=19.5)
+    want = dict(win=64.0, win_vs_BEAT_fulldeck=57.5, win_OT_pre_drain=77.5, lost_first_princess=34.6, reg_loss=19.5)
     assert len(sim) == 1920 and len(live) == 233, (len(sim), len(live))
     assert all(got[k] == v for k, v in want.items()), (got, want)
     print('CHECK OK', want)

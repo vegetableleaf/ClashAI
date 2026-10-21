@@ -6,7 +6,8 @@
 # Gated every 5 updates by w14_gate.sh: CLX vs the snapshot at T .1 / decide 40, fin15, all16, block 741200 (480 games),
 # scored by w14/o4r_table.py against CLX's 233 Ranked matches.
 # ARM A = W14 base + ONE change: lr 1e-5 -> 3e-5. Why: W7's runs plateaued at CLX ~64-68% with the KL leash NOT binding
-# (C1: beta at its 0.03 floor; per-update clip_frac ~0.04, ratio_mean 1.0000): the policy moves too little per update.
+# (C1: beta at its 0.03 floor; per-update clip_frac ~0.04, ratio_mean 1.0000): the policy may move too little per update.
+# (b) exploratory: a beta floor and a mean ratio of 1 do not prove the lr is the limit (W14 plan review, finding 9).
 init: icebow/data/pipeline/o2/w14/r6u20.pt
 pool: icebow/data/ghost_pool/pool_env_v1.jsonl
 proagree_data: icebow/data/pipeline/s1_dataset.npz

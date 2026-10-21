@@ -1,6 +1,6 @@
 #!/bin/bash
 # W14 launcher (laptop, Git Bash): install + start one W14 opponent-training arm and its gate watcher on a pod.
-#   bash scratchpad/gauntlet/L74/opp_model/w14/launch.sh PORT YAML [WAIT_RUN]
+#   [EVERY=5] bash scratchpad/gauntlet/L74/opp_model/w14/launch.sh PORT YAML [WAIT_RUN]   (EVERY = gate every N updates)
 #     PORT 48148 (root@64.247.206.80) | 19899 (root@64.247.206.76); YAML = a name under opp_model/cfg (no .yaml)
 #     WAIT_RUN = the pod's own chain that must show ALL_DONE first (e.g. tn_base_s79); refuses if rl_royale / gap.py run.
 # Copies (sha-checked): the yaml, w14/decks_live_train_beat3.json, R6 u20 as cb_stepd/icebow/data/pipeline/o2/w14/r6u20.pt,
@@ -31,4 +31,4 @@ for f in icebow/data/pipeline/o2/gen_live_b.pt icebow/data/bench/rl_royale/rlarm
 done
 on "cd $CB && sha256sum \$(sed -n 's/^init: //p; s/^kl_ref_gate: //p; s/^- \(icebow.*\.pt\)$/\1/p' $L/cfg/$Y.yaml)" || { echo "MISSING INPUT"; exit 3; }
 on "RUN=$Y OUTD=/workspace/w14 VENV=/workspace/venvf15 RT=fin15-linux SMOKE_EXTRA=outlived_pp=100 TLOCK=/workspace/w14/train_$Y.lock setsid nohup flock -s /workspace/stepd/claim.lock bash /workspace/w14/w7_train.sh > /dev/null 2>&1 < /dev/null &
-    RUN=rlarm_$Y YAML=$Y setsid nohup bash /workspace/w14/w14_gate.sh > /dev/null 2>&1 < /dev/null & sleep 3; echo started; ps -eo pid,args | grep -E 'w7_train|w14_gate' | grep -v grep"
+    RUN=rlarm_$Y YAML=$Y EVERY=${EVERY:-5} setsid nohup bash /workspace/w14/w14_gate.sh > /dev/null 2>&1 < /dev/null & sleep 3; echo started; ps -eo pid,args | grep -E 'w7_train|w14_gate' | grep -v grep"
