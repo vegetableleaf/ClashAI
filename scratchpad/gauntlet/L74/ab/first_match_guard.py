@@ -1,4 +1,4 @@
-"""First-match guard for a live (re)start outside live_ab: MAIN account (live_ab.guard: two own princesses at 4424) AND the
+"""First-match guard for a live (re)start outside live_ab: MAIN account (live_ab.guard: two own princesses at 4858) AND the
 icebow deck (owner 10-15: a classic challenge with the bait deck may leave the main account's battle deck on bait, which the
 tower check cannot see). Waits for the first live_play log newer than --after; any BAIT-only card in the own hand -> wrong
 deck; >= 6 distinct icebow cards seen -> right deck. Wrong account / deck -> STOP file + Discord, exit 2; OK exit 0; no match

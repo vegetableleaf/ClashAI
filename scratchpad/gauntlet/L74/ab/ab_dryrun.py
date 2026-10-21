@@ -7,7 +7,7 @@ from pathlib import Path
 from live_ab import Arm, sha256
 
 
-def towers(hp=4424, own=3, enemy=3, side=1):
+def towers(hp=4858, own=3, enemy=3, side=1):
     bodies = []
     for team, alive in ((side, own), (1-side, enemy)):
         for i, x in enumerate((9000, 3500, 14500)):
@@ -18,7 +18,7 @@ def towers(hp=4424, own=3, enemy=3, side=1):
     return bodies
 
 
-def decision(tick=20, hp=4424, xbow=True, own=3, enemy=3, side=1):
+def decision(tick=20, hp=4858, xbow=True, own=3, enemy=3, side=1):
     return dict(event='decision', tick=tick, public=dict(
         observer_side=side, raw_bodies=towers(hp, own, enemy, side),
         own_hand=[dict(name='Xbow' if xbow else 'GoblinBarrel', deck_index=4)]))
@@ -169,7 +169,7 @@ class FakeSupervisor:
             self.junk()
             self.noise_done = True
         path = self.filename()
-        emit(path, self.header(), decision(hp=4392 if self.scenario == 'wrong_account' else 4424,
+        emit(path, self.header(), decision(hp=4392 if self.scenario == 'wrong_account' else 4858,
                                           xbow=self.scenario != 'missing_xbow'))
         if self.scenario == 'partial':
             emit(path, decision(3000, enemy=2))

@@ -5,7 +5,7 @@ Waits for live_ab.py's RUNNING.lock to go (the runner restores the pre-A/B model
   has the long live record);
 - anything else (STOP_AB, abort, crash, lock left behind) -> no switch, Discord alert only.
 Switch = back up CKPT_OVERRIDE, write the winner, start_live --check (sha must match), start live, then account-guard
-the first match (two own princesses at max HP 4424 = MAIN account); a wrong account -> STOP + alert.
+the first match (two own princesses at max HP 4858 = MAIN account); a wrong account -> STOP + alert.
 
   python ab_autoswitch.py --run-id ID --arm A:label:ckpt:off --arm B:label:ckpt:off [--total 150]
   python ab_autoswitch.py --selftest
@@ -148,7 +148,7 @@ def main():
         ctl.post(f':rotating_light: [A/B auto-switch] live started but no {arm.key} match seen in '
                  f'{a.guard_wait/60:.0f} min; account not verified.')
     elif res:
-        ctl.post('[A/B auto-switch] first match passed the account guard (main account, towers 4424).')
+        ctl.post('[A/B auto-switch] first match passed the account guard (main account, towers 4858).')
     say(f'account check: {res}')
     return 0 if res else 1
 

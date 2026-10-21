@@ -95,13 +95,13 @@ def project(j):
 
 
 def guard(d):
-    """Account check = own princess max HP 4424 on BOTH towers (main account; the bait account shows 4392). The opening
+    """Account check = own princess max HP 4858 on BOTH towers (main account at level-16 towers since 10-20; was 4424; the bait account shows 4392). The opening
     hand is 4 of 8 cards, so X-Bow absence there is NOT evidence of a wrong deck (lead fix 10-12: it would stop ~half
     of all valid runs); the deck is reported, not enforced."""
     towers = [b for b in d['bodies'] if b['side'] == d['side'] and tower_kind(b) == 'princess']
     hp = [b['max_hp'] for b in towers]
-    if len(hp) != 2 or set(hp) != {4424}:
-        raise Abort(f'ACCOUNT GUARD: own princess max HP={hp} (need two 4424 = MAIN account). STOP requested; '
+    if len(hp) != 2 or set(hp) != {4858}:
+        raise Abort(f'ACCOUNT GUARD: own princess max HP={hp} (need two 4858 = MAIN account). STOP requested; '
                     'switch MuMu to the main account.')
 
 
