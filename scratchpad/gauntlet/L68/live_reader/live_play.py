@@ -1327,6 +1327,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                       **({"release_ticks": pd["release"]} if "release" in pd else {}),
                       **({"follow_up": True} if pd.get("follow_up") else {}),
                       **({"pipelined": True} if pd.get("pipelined") else {}))
+                    getattr(pilot, "note_unconfirmed", lambda *a: None)(pd["d"]["name"], pd["d"]["xy"], tick)  # 10-21
                     if pd.get("release", CONFIRM_TICKS) < CONFIRM_TICKS:
                         released[pd["d"]["hand_pos"]] = pd          # an early release: watch for a late landing
                     pd["state"] = "unconfirmed"

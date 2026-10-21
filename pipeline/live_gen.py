@@ -429,6 +429,8 @@ class GenPilot:
         """``logits`` ([..., N_CELLS]) with the cells the card would not land on as tapped set to -inf (legal_cells);
         unchanged when the guard is off, the row waits, or nothing is restricted. d['xy_unguarded'] = the plain argmax
         it replaced."""
+        if d["play"]:
+            logits = self._mask_failed(frame, d, logits)
         if not self.legal_guard or not d["play"]:
             return logits
         side = my_side_of(frame)
@@ -449,3 +451,34 @@ class GenPilot:
         if not ok[raw]:
             d["xy_unguarded"] = cell_xy(raw, self.grid)
         return logits.masked_fill(~ok, float("-inf"))
+
+    # 10-21: a play the game does not register (a lost tap) used to be re-chosen at once -- same state, same argmax -- up to
+    # live_play's N-unconfirmed stop (175 lost taps at one corner cell 10-19..21). After FAIL_N unconfirmed taps of a card
+    # within 0.6 tile of one spot, that card avoids that spot for FAIL_BLOCK_TICKS; the policy's next-best cell is used.
+    FAIL_N, FAIL_BLOCK_TICKS, FAIL_RADIUS = 2, 400, 0.6
+
+    def note_unconfirmed(self, name: str, xy, tick: int) -> None:
+        fails = self.__dict__.setdefault("_fails", {})
+        hits = [k for k in fails if k[0] == name and abs(k[1] - xy[0] * 18) < self.FAIL_RADIUS
+                and abs(k[2] - xy[1] * 32) < self.FAIL_RADIUS]
+        k = hits[0] if hits else (name, xy[0] * 18, xy[1] * 32)
+        n, _ = fails.get(k, (0, 0))
+        fails[k] = (n + 1, tick + self.FAIL_BLOCK_TICKS if n + 1 >= self.FAIL_N else 0)
+
+    def _mask_failed(self, frame: Mapping[str, Any], d: dict, logits: torch.Tensor) -> torch.Tensor:
+        fails = self.__dict__.get("_fails")
+        if not fails:
+            return logits
+        tick = int(frame.get("game_tick", frame.get("tick", 0)))   # live frames carry game_tick
+        spots = [(x, y) for (nm, x, y), (n, until) in fails.items() if nm == d["name"] and until > tick]
+        if not spots:
+            return logits
+        n_cells = logits.shape[-1]
+        xy = np.array([cell_xy(c, self.grid) for c in range(n_cells)]) * np.array([18.0, 32.0])
+        bad = np.zeros(n_cells, bool)
+        for x, y in spots:
+            bad |= (np.abs(xy[:, 0] - x) < self.FAIL_RADIUS) & (np.abs(xy[:, 1] - y) < self.FAIL_RADIUS)
+        if bad.all():
+            return logits
+        d["avoided_failed_spot"] = True
+        return logits.masked_fill(torch.from_numpy(bad).to(logits.device), float("-inf"))
