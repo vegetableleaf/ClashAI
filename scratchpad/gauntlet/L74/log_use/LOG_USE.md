@@ -19,7 +19,7 @@ hand does **2.3x the tower damage** (283 vs 125 hp; Goblin Barrel 643 vs 245). (
 `opp_cycle` (checked on all 27 first plays) **but barely reacts to them**: adding a Goblin Barrel to its memory changes P(Log)
 by +1.7% (no effect; the sign is even wrong). **Most likely cause:** the reward is win/loss only. A held Log is worth about
 150-400 tower hp, and that saving shows up seconds to tens of seconds later, so the learner gets almost no credit for holding
-it. Bait decks are also under-represented in training (~23% of matchups vs 42% live). The fix proposed below is a learned
+it. Bait decks are also under-represented in training (~23% of matchups vs 42% live). The SIM's Goblin Barrel punish costs ~93% of live (section 6), so parity does not block the fix. The fix proposed below is a learned
 change (more bait decks in training first, then denser reward). The proposed gate metric is the **bait-hold rate**.
 
 ## Data and method
@@ -50,7 +50,7 @@ change (more bait decks in training first, then denser reward). The proposed gat
 - **Pros**: `habits/pro_sides.jsonl` = 2,210 Path of Legend sides of the exact icebow8 deck (mirror matches dropped). It has
   the play lists of both seats. It has **no board**, so Log targets cannot be measured for pros.
 - **SIM**: W12 eval matches (vs the W7 opponent; `o3_plays` holds both seats' play lists) for CLX and the 6 tn_base seeds +
-  4 arms, 3,840 matches each, in `pod_backup_weekend/tonight1020/*/w12_*`. SIM eval logs hold **no per-play board or tower
+  4 arms, 1,920 matches each (4 seed blocks x 480; the merged D3/matches.jsonl and its shards are read once -- a first pass read both and doubled n, rates unchanged), in `pod_backup_weekend/tonight1020/*/w12_*`. SIM eval logs hold **no per-play board or tower
   hp**, so SIM Log targets and SIM punish damage cannot be measured from them.
 - **Play-list metrics** (`playlist.py`, `early.py`) are computed the same way on all three sources. Our hand is rebuilt
   from our play order: a played card is back in hand after 4 more of our plays, so the hand is known after our first Log.
@@ -90,7 +90,7 @@ Run: `python log_use.py --out per_match.jsonl` (~40 min at idle priority on the 
   | **pros** | **0.94** | 1.90 | **0.733** (401) | 16 s |
   | live CXII / CXXIV / CXXXVIII / CLIII / CLIX | 1.41 / 1.30 / 1.25 / 1.25 / 1.24 | 2.30-2.44 | 0.320 / 0.580 / 0.557 / 0.603 / 0.538 | 13-24 s |
   | **live CLX** | **1.25** | 2.32 | **0.559** (222) | 13 s |
-  | SIM CLX (W12) | 1.21 | 2.28 | 0.516 (1,218) | 26 s |
+  | SIM CLX (W12) | 1.21 | 2.28 | 0.516 (609) | 26 s |
   | SIM tn_base s74..s79 | 1.08-1.16 | 2.08-2.21 | 0.521-0.583 | 24-26 s |
 
   This is the clearest gap to the pros. It is chronic (every Mark), not a recent regression.
@@ -130,15 +130,15 @@ Run: `python log_use.py --out per_match.jsonl` (~40 min at idle priority on the 
 ## 3. SIM
 
 **(i) The same metrics on SIM evals (a, play lists only).** W12 vs the W7 opponent: CLX 5.80 Logs / match, 1.62 / min; tn_base
-seeds 5.39-5.92; bait timing at chance (CLX 0.691 vs 0.691); punish rate CLX 25.8% [24.9, 26.8], tn_base 25.6-27.9%; hold rate
+seeds 5.39-5.92; bait timing at chance (CLX 0.691 vs 0.691); punish rate CLX 25.8% [24.4, 27.3], tn_base 25.6-27.9%; hold rate
 in the table above. The SIM eval logs (`matches.jsonl`, `--crown-log`) hold no per-play board or tower hp, so **SIM Log
 targets and SIM punish damage are unmeasured** (b). The D3 (E4) eval logs hold only our own plays.
 
 **(ii) Training opponents.**
 - **Deck exposure (a).** Decks holding a CORE bait card:
-  - league census `decks_rl.json` (share/data_20261020 copy) **17.8%** (EXT 34.6%);
+  - league census `decks_rl.json` (share/data_20261020 copy) **17.8%** of distinct decks (EXT 34.6%);
   - W7 exploiter `decks_live_train.json` **35.8%** (EXT 62.1%);
-  - at the 0.7 / 0.3 split that is **~23% of training matchups**, before PFSP / deck weights, vs **41.7% of live CLX
+  - weighted by census sides (the actual draw, deck_weights alpha 1): census 20.1%, exploiter 34.1%, so at the 0.7 / 0.3 split **~24% of training matchups**, vs **41.7% of live CLX
     matches**. Training sees bait decks about half as often as live does.
 - **Punish frequency (c for the exploiter).** Lead W14: bait cards / match and the 6-s punish rate are at parity (live
   19.2%, R6 u20 19.9%, E4 14.6%); here W12 25.8% vs live 20.6%. The W7 opponent punishes at least as often as live
@@ -147,15 +147,15 @@ targets and SIM punish damage are unmeasured** (b). The D3 (E4) eval logs hold o
   playing the bait decks. Their punish rate and timing are not in any local log: no eval runs vs league snapshots with
   `o3_plays`. Measurement: one pod eval of CLX vs 3 league snapshots on the CORE-bait decks of `decks_rl.json`, with
   `o3_plays` (480 games, CPU pod).
-- **Gap 2, punish cost SIM vs live (b, untested).** Live: 353 hp per punish, 283 vs 125 hp per CORE bait play Log out / in.
+- **Gap 2, punish cost SIM vs live: MEASURED since, section 6 (a): the SIM bait punish costs 0.93 [0.87, 0.98] of live
+  (Goblin Barrel 0.93; Dart Goblin / Skeleton Barrel thin).** Original note: live 353 hp per punish, 283 vs 125 hp per CORE bait play Log out / in.
   SIM: no per-play tower hp in eval logs. Parity facts on file:
   - the Log meets fight parity (J1 0.971, FIN15.md);
   - Log on packs J2: Royal Hogs 0.67, Barbarians 0.88;
   - Goblin Barrel goblins are a harness set-up gap (in-flight spawns), not an engine law;
   - **no per-card tower-damage parity for Goblin Barrel / Skeleton Barrel / Dart Goblin exists**.
 
-  Measurement: add the own-tower hp delta in the 15 s after each opponent play to the gap.py crown-log record (a few lines),
-  re-run one W12 block, and compare to section 1.
+  (Superseded by section 6, which uses the existing per-fight replays instead.)
 - **Does training punish a wasted Log?**
   - In frequency, yes, as often as live, for the 30% exploiter share.
   - In reward, only through the final win / loss (`shaping: none` in tn_base; KL anchor on the card head).
@@ -216,7 +216,7 @@ Run 2 (`--every 4`, 959 states, same 20 matches) adds the two "seen 25 s ago" ro
 | model sees but does not use them | **(a)** | (B): Goblin Barrel seen 25 s ago (likely back in their hand): dP(Log) +1.7% [-3.4%, +7.5%]; Dart Goblin +5.3% (wrong sign) |
 | imitation prior | **(b)**, unlikely the main cause | pros hold the Log early (0.733) and Log only 0.94 times in 60 s; our Marks 1.24-1.41 since CXII, so the deviation is from the pros, not toward them; S1 / pro-imitation checkpoint not measured |
 | bait decks under-represented in training | **(a)**, size bounded | ~23% of training matchups vs 41.7% live |
-| SIM parity gap (Barrel / Log) | **(b)** | Log J1 0.971 meets; Barrel / Skeleton Barrel / Dart Goblin tower-damage parity never measured (gap 2) |
+| SIM parity gap (Barrel / Log) | **(c)** for Goblin Barrel; **(b)** for Dart Goblin / Skeleton Barrel (thin n) | Log J1 0.971 meets; section 6: SIM own-tower damage in bait-anchored fights = 0.93 [0.87, 0.98] of live (Goblin Barrel 0.93 [0.87, 0.99], n 326 fights / 89 matches) |
 | **weak credit for holding** | **(b), most likely** | a held Log saves ~150-400 hp per later bait play (section 1), seconds to tens of seconds later, ~270 hp per bait match. A terminal-only reward over a ~3-minute match with tower HP swings of thousands gives that decision almost no gradient, and bait decks are only ~23% of training. Test = E1 / E2 below |
 
 ## 5. Proposed fix (learned; not implemented, not trained) and gate metric
@@ -226,25 +226,24 @@ file), evaluated on the standard gate + the new metric.
 
 - **E1, exposure.** `league_deck_weights` (existing key, the W15 lever-3 mechanism) with weight **2.5** for GoblinBarrel,
   SkeletonBalloon, BlowdartGoblin, Princess, GoblinGang.
-  - CORE-bait share rises to ~35% of census and ~58% of exploiter matchups, **~42% overall = the live CLX rate**.
-  - The sum: share' = w s / (w s + 1 - s), with s = 0.178 / 0.358.
+  - CORE-bait share (sides-weighted, checked with rl_royale.opp_deck_p on the census file): census 0.201 -> 0.385, exploiter 0.341 -> 0.564, **0.7 / 0.3 mix 0.243 -> 0.439 ~ the live CLX rate 0.417**.
+  - share' = w s / (w s + 1 - s). Configs drafted: section 7.
   - Cheapest change; tests whether more bait games alone teach holding.
 - **E2, credit** (only if E1 fails the gate). `shaping: tower` (the existing potential-based Phi_tower, w_tower 0.3). Every
   hp a bait card takes off our tower becomes an immediate, policy-invariant credit at the decisions before it, instead of a
   faint change in P(win). It is generic (not a Log rule), and Ng et al. potential shaping keeps the optimal policy.
 - Not proposed: a Log-specific penalty (e.g. "-x per bait hp while the Log is out"). It is closer to a habit rule and would
   teach "never Log". It is kept as a last resort if E1 / E2 both fail.
-- Before E1, do the gap-2 measurement (gap.py per-play tower-hp delta, one W12 block). If the SIM Barrel does much less
-  damage than live 643 / 724 hp, fix that parity first, because no amount of exposure teaches holding against a harmless
-  Barrel.
+- The gap-2 prerequisite is done (section 6). The SIM Goblin Barrel punish is ~93% as costly as live, so E1 is not blocked
+  by parity.
 
 **Gate metric (SIM, W12 eval vs the W7 opponent, computed from the existing `o3_plays` with `early.py` logic, no new
 logging):**
 - **G-LOG1 bait-hold rate** = share of CORE-bait matches in which no Log was spent before the opponent's first CORE bait card.
-  - CLX 0.516 (n 1,218); tn_base seeds 0.521-0.583 (sd ~0.024); pros 0.733.
+  - CLX 0.516 (n 609 bait matches of 1,920); tn_base seeds 0.521-0.583 (sd ~0.024); pros 0.733.
   - **PASS: >= 0.60 AND the match-bootstrap CI of (candidate - CLX) has its low end > 0.**
-  - Why 0.60: it sits above the best of the 6 current-recipe seeds (0.583), so seed luck cannot pass it. At n ~1,220 bait
-    matches per arm the difference's 95% half-width is ~4 pp. It closes ~40% of the pro gap. Long-run target 0.70.
+  - Why 0.60: it sits above the best of the 6 current-recipe seeds (0.583), so seed luck cannot pass it. On ~610 shared bait
+    matches the paired difference's 95% half-width is ~3 pp (glog_score.py: tn_base s75 +6.9 [+4.1, +9.7], s74 +4.8 [+1.6, +7.7] vs CLX; both FAIL the 0.60 floor). It closes ~40% of the pro gap. Long-run target 0.70.
 - **G-LOG2 guard against "never Log"**: Logs / min >= 1.3 (pros 1.55, CLX SIM 1.62) and the win-rate gate unchanged. A
   model that simply stops Logging would pass G-LOG1 and fail this.
 - **Live review after a deploy** (not pass / fail: live n is small). Over the first ~100 matches compare to CLX:
@@ -256,10 +255,98 @@ logging):**
 - Once gap.py logs per-play tower hp, add **G-LOG3 = Log-out CORE bait damage per CORE-bait match in the SIM** (must not
   exceed CLX's).
 
+## 6. Bait punish cost: SIM vs live (lead follow-up, 10-21)
+
+**Question.** Does the fin15 SIM's Goblin Barrel (base / evo), Skeleton Barrel and Dart Goblin do live-level tower damage?
+If a SIM punish were much cheaper, extra bait exposure (E1) could not teach holding.
+
+**Method (a).**
+- `bait_parity.py` reads EXISTING fight-parity outputs; nothing was re-simulated on the laptop.
+- Every recorded live fight anchored on an opponent bait play: fights.py / `replay_metrics.py fights`, 12-s window, the
+  replayed setup.
+- Kept: the fights where our towers lost hp live OR in the SIM replay.
+- Compared: own-tower damage `towers[T].live` vs `.sim`, summed. CI = match-cluster bootstrap.
+- Runs used, all on the 638-log caplogs13 cohort (10-13 .. 10-19, any account):
+  - `abB` (W8 10-20, `rsfork_fin15b` + the uncapped-pull override = fin15's three laws minus TIEBREAK_REGEN, which acts only
+    after overtime's end);
+  - `abA` / `mj_base` (fin14c);
+  - `fin20` (fin15 final, the 40 10-20 classic-challenge logs).
+- H-PRESPELL=spawn only changes fights that START with a Barrel already in flight. Here the Barrel play IS the anchor, so
+  the default is immaterial.
+
+**fin15 (abB), all fights:**
+
+| card | fights | matches | live hp | SIM hp | SIM / live [95% CI] | median live / SIM | SIM within max(100, 10%) of live per fight |
+|---|---|---|---|---|---|---|---|
+| **all three** | 354 | 104 | 431,253 | 400,077 | **0.928 [0.874, 0.981]** | 800 / 739 | 0.61 |
+| **Goblin Barrel** | 326 | 89 | 394,345 | 368,326 | **0.934 [0.874, 0.989]** | 800 / 739 | 0.62 |
+| Dart Goblin | 18 | 17 | 28,916 | 24,238 | 0.838 [0.614, 1.041] | 1,069 / 812 | 0.39 |
+| Skeleton Barrel | 6 | 6 | 5,373 | 5,280 | 0.983 [0.914, 1.000] | 865 / 865 | 1.00 |
+| Dart Goblin evo | 2 | 2 | 1,499 | 1,499 | 1.000 | 1,283 / 1,283 | 1.00 |
+| Skeleton Barrel evo | 2 | 2 | 1,120 | 734 | 0.655 [0.500, 1.000] | 772 / 386 | 0.50 |
+| Goblin Barrel evo | 0 | - | - | - | - | - | - |
+
+- **J1-clean fights:** all three 0.939 [0.897, 0.978] (263 fights); Goblin Barrel 0.931 [0.885, 0.974] (243); Dart Goblin
+  1.079 [0.931, 1.449] (11).
+- **fin14c** (abA / mj_base) gives the same numbers (Goblin Barrel 0.937 [0.876, 0.991]): fin15's laws did not move the bait
+  damage.
+- **fin20** (fin15 final, 10-20 battles): 24 fights / 5 matches, all three 1.14 [0.88, 1.53]. Too thin to read.
+
+**Verdict.**
+- **Goblin Barrel (a): the SIM punish costs ~93% of live.** It is within the ~10% bar at the point estimate. The CI upper end
+  is < 1, so the SIM is slightly but significantly cheaper: about 7% [1, 13]. Per fight the median is 739 vs 800 hp, and 62%
+  of fights land within max(100 hp, 10%).
+- **Dart Goblin (b):** point 0.84, CI 0.61-1.04, n 18; 1.08 on the clean subset. Not resolved.
+- **Skeleton Barrel (b):** n 6 (+2 evo). Not resolved.
+- **Goblin Barrel evo:** no fight in any cohort (COVERAGE.md: 0 live opponent plays). Not measurable and rare live.
+- **Conclusion: E1 is NOT blocked by parity.** The dominant bait card (Goblin Barrel: 1,031 of 3,880 live CORE bait plays,
+  and most of the Log-out damage) punishes in the SIM at ~93% of live. No engine fix is needed before E1.
+
+**Thin cells: what would close them.** No targeted battles are needed. The live logs since 10-19 already hold the plays:
+- CLX alone met 259 Skeleton Barrel and 382 Dart Goblin plays (section 1). They are simply not in the caplogs13 replay
+  cohort.
+- The fix: run `replay_metrics.py fights` (fin15, H-PRESPELL default) on the ext logs 10-19 .. 10-21 (~600 logs), then
+  `bait_parity.py` on the output.
+- How many of those plays become tower-hitting fights is (b): the cohort gave only 6 Skeleton Barrel fights from its matches,
+  so the yield may be low. At Goblin Barrel's yield (326 fights / 89 matches), ~300 plays would give ~100 fights, a CI near
+  +-10-15%. The run's output answers this directly.
+- That is real compute: abB took a 22-worker pod. **It needs the pod (213.192.2.125:40144) once it is READY**, not the
+  laptop. Goblin Barrel evo would need the owner's targeted battles; it is low priority (no live opponent plays).
+
+## 7. E1 configs and the gate scorer (drafted; not launched)
+
+- `stepd/cfg/tn_bait_s74.yaml`, `tn_bait_s75.yaml`, `tn_bait_s76.yaml` are `tn_base_s7{4,5,6}.yaml` + ONE key:
+
+  ```yaml
+  league_deck_weights: {GoblinBarrel: 2.5, SkeletonBalloon: 2.5, BlowdartGoblin: 2.5, Princess: 2.5, GoblinGang: 2.5}
+  ```
+
+  - Engine card names, as the deck files spell them.
+  - YAML-diffed: only `league_deck_weights` differs from the matching tn_base seed.
+  - `rl_royale.check_deck_weights` passes against the census decks.
+  - `opp_deck_p` moves the census CORE share 0.201 -> 0.385.
+- **Attribution.** Compare tn_bait_s7X with tn_base_s7X (same seed; the W12 evals of tn_base s74-s76 exist). The promotion
+  gate is vs CLX.
+- **`glog_score.py CAND_DIR ... --base CLX_DIR`** scores G-LOG1 / G-LOG2 on gap.py eval output dirs. It reads `matches.jsonl`
+  recursively, skips shard copies of a merged file, and keys a match by tag + opponent deck + side (the tag alone repeats).
+  Exit code 0 = all candidates pass.
+  - G-LOG1 needs `o3_plays`: the W12 / W7-opponent eval has them; the D3 E4 eval reports n/a.
+  - Check run on the existing W12 evals vs CLX (hold 0.516, 1.62 Logs / min):
+
+    | seed | hold | vs CLX [paired CI] | Logs / min | G-LOG1 (needs >= 0.60) | G-LOG2 |
+    |---|---|---|---|---|---|
+    | tn_base s75 | 0.583 | +6.9 [+4.1, +9.7] | 1.56 | FAIL | PASS |
+    | tn_base s74 | 0.562 | +4.8 [+1.6, +7.7] | 1.49 | FAIL | PASS |
+
+  - So the base recipe already holds a little better than CLX in the SIM, but no current seed reaches the 0.60 floor.
+
 ## Files
 
 - `log_use.py`: live per-Log / per-bait-play extraction and the per-Mark summary (`--from-out` re-summarises).
 - `playlist.py`: play-list metrics on pros / SIM / live; training-deck bait shares.
 - `early.py`: early-spending and bait-hold metrics (G-LOG1).
 - `cycle_probe.py`: (A) opp_cycle check and (B) the counterfactual probe.
+- `bait_parity.py`: section 6, SIM vs live bait punish cost from fight-parity outputs.
+- `glog_score.py`: the G-LOG1 / G-LOG2 gate scorer (section 7).
+- `../stepd/cfg/tn_bait_s74.yaml`, `tn_bait_s75.yaml`, `tn_bait_s76.yaml`: E1 configs.
 - `per_match.jsonl` (1,571 rows) is regenerated by `log_use.py` and is not committed.

@@ -28,7 +28,7 @@ def rows_pro():
 
 def rows_sim(g):
     import glob
-    for f in glob.glob(g, recursive=True):
+    for f in P.match_files(g):
         if 'clx_fin15' not in f:
             continue
         for line in open(f, encoding='utf-8'):

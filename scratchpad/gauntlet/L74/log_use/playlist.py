@@ -116,9 +116,16 @@ def pros():
     return rows
 
 
+def match_files(root_glob):
+    """gap.py eval matches.jsonl files without duplicates: a D3/NNNNN/matches.jsonl shard is skipped when its merged
+    D3/matches.jsonl exists (the merged file repeats every shard row; reading both counted each match twice)."""
+    fs = glob.glob(root_glob, recursive=True)
+    return [f for f in fs if not (Path(f).parent.parent / 'matches.jsonl').exists() or Path(f).parent.name == 'D3']
+
+
 def sim(root_glob):
     rows = defaultdict(list)
-    for f in glob.glob(root_glob, recursive=True):
+    for f in match_files(root_glob):
         arm = next((p for p in Path(f).parts if p.startswith('w12_')), 'sim')
         arm = arm.rsplit('_7', 1)[0] if arm.count('_7') else arm
         for line in open(f, encoding='utf-8'):
