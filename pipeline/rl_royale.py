@@ -2824,6 +2824,11 @@ class ActorCrash(RuntimeError):
     pass
 
 
+def row_key(r: dict):
+    """The batch's row order (ActorPool.run, remote_actors.DistPool.run): independent of actor count and timing."""
+    return (str(r.get("tag")), int(r.get("k", 0)), int(r.get("entry_index", -1)), str(r.get("side")))
+
+
 class ActorPool:
     """``n`` actor processes; ``run`` deals a job list round-robin and gathers the records. A crash (error message, dead
     process or timeout) restarts that actor ONCE and re-runs its share; a second crash raises ActorCrash."""
@@ -2877,8 +2882,11 @@ class ActorPool:
         self.restarts[a] += 1
         self._start(a)
 
-    def run(self, kind: str, update: int, sd: bytes, jobs: list) -> tuple[list[dict], list[dict], dict]:
-        shares = {a: jobs[a::self.n] for a in range(self.n) if jobs[a::self.n]}
+    def run(self, kind: str, update: int, sd: bytes, jobs: list,
+            shares: Optional[dict] = None) -> tuple[list[dict], list[dict], dict]:
+        """``shares`` (W16 remote_actors only): {actor: its job list} instead of the deal ``jobs[a::n]``."""
+        shares = ({a: jobs[a::self.n] for a in range(self.n) if jobs[a::self.n]} if shares is None
+                  else {a: js for a, js in shares.items() if js})
         for a, js in shares.items():
             self.in_qs[a].put((kind, update, sd, js))
         pending = {a: time.time() for a in shares}
@@ -2898,8 +2906,7 @@ class ActorPool:
                     results += msg[3]; skipped += msg[4]; stats[a] = msg[5]
                     del pending[a]
                     if not pending:   # lead 2026-10-04: arrival order (actor count, timing) must not reorder the batch
-                        results.sort(key=lambda r: (str(r.get("tag")), int(r.get("k", 0)),
-                                                    int(r.get("entry_index", -1)), str(r.get("side"))))
+                        results.sort(key=row_key)
                 elif tag == "error" and a in pending:
                     self._crash(a, msg[3])
                     self.in_qs[a].put((kind, update, sd, shares[a]))
@@ -3160,7 +3167,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                               "critic_ctx", "kl_ref_gate_max_elixir", "kl_ref_gate_target_frac",
                               "league_exploiters", "cue_inputs", "opp_tower_troops", "live_levels", "league_opp_live",
                               "heroiw_press", "ability_features", "kl_heads", "kl_ref_card", "league_deck_weights",
-                              "ot_start_share") + OPP_TEMPO_KEYS
+                              "ot_start_share", "remote_actors", "kl_ref_refresh_every") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS and k not in CROWN_KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
         cfg[k] = yaml.safe_load(v)
@@ -3192,6 +3199,12 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
     live_levels(cfg)                                          # L74 factor D: checked (and the table read) at start
     check_deck_weights(cfg)                                   # W15 lever 3: absent = no-op
     ot_start_share(cfg)                                       # W15 lever 2: absent = no-op
+    ra = cfg.get("remote_actors")                             # W16: absent / null = local actors only
+    if ra is not None and not (isinstance(ra, str) and (REPO / ra).is_file()):
+        raise SystemExit(f"remote_actors must be null or an endpoints file (one host:port per line), got {ra!r}")
+    rr = cfg.get("kl_ref_refresh_every")                     # W16 moving KL anchor: absent / null = the frozen init
+    if rr is not None and not (type(rr) is int and rr >= 1):
+        raise SystemExit(f"kl_ref_refresh_every must be null or an int >= 1, got {rr!r}")
     frac = cfg.get("learner_pipeline_frac", 0.0)
     if isinstance(frac, bool) or not isinstance(frac, (int, float)) or not 0 <= frac <= 1:
         raise SystemExit("learner_pipeline_frac must be a finite number in [0, 1]")
@@ -3210,6 +3223,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
 def config_sha(cfg: dict) -> str:
     # Off is the historical configuration, including checkpoint resume hashes.
     cfg = AO.canonical_config(cfg)
+    cfg = {k: v for k, v in cfg.items() if k != "remote_actors"}   # W16: where actors run never enters the hash (same rows)
     if cfg.get("learner_pipeline_frac", 0) == 0:
         cfg = {k: v for k, v in cfg.items() if k != "learner_pipeline_frac"}
     if cfg.get("hero_abilities") is False:
@@ -3235,6 +3249,8 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "heroiw_press"}
     if cfg.get("league_deck_weights") is None:               # W15 lever 3 off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "league_deck_weights"}
+    if cfg.get("kl_ref_refresh_every") is None:              # W16 moving anchor off (absent or null) = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "kl_ref_refresh_every"}
     if cfg.get("ot_start_share") is None:                    # W15 lever 2 off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "ot_start_share"}
     else:                                                     # on: the share AND the measured states' bytes
@@ -3291,6 +3307,18 @@ class Log:
     def json(self, rec: dict) -> None:
         with self.jl.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(_py(rec)) + "\n")
+
+
+def batch_sha(d: dict) -> str:
+    """sha256 over a collated batch / state_dict, key-sorted (W16 RL_BATCH_SHA: rows identical across actor layouts)."""
+    h = hashlib.sha256()
+    for k in sorted(d):
+        v = d[k]
+        v = v.detach().cpu().numpy() if torch.is_tensor(v) else v
+        h.update(k.encode())
+        h.update(np.ascontiguousarray(v).tobytes() if isinstance(v, np.ndarray) and v.dtype != object
+                 else repr(v.tolist() if isinstance(v, np.ndarray) else v).encode())
+    return h.hexdigest()[:16]
 
 
 def state_bytes(model) -> bytes:
@@ -3773,6 +3801,13 @@ class Learner:
         return out
 
     # ---- checkpoints -----------------------------------------------------------------------------
+    @staticmethod
+    def _frozen(model):
+        ref = copy.deepcopy(model).eval()
+        for p in ref.parameters():
+            p.requires_grad_(False)
+        return ref
+
     def _rl_state(self) -> dict:
         return {"update": int(self.update), "beta": float(self.beta), "optimizer": self.opt.state_dict(),
                 **({"branch_optimizer": self.branch_opt.state_dict()}
@@ -3785,6 +3820,7 @@ class Learner:
                     "ability": self._ability_meta()} if getattr(self, "ability_head", None) is not None else {}),
                 **({"beta_g": float(self.beta_g), "gate_lo_target": self.gate_lo_target}
                    if getattr(self, "beta_g", None) is not None else {}),
+                **({"kl_ref": self.ref.state_dict()} if self.cfg.get("kl_ref_refresh_every") else {}),   # W16
                 "rng": _py(self.rng.bit_generator.state), "visits": list(map(int, self.visits)),
                 "config": _py(self.cfg), "config_sha256": config_sha(self.cfg), "run": self.run,
                 "init": str(self.cfg["init"]), "pool_sha256": self.pool_sha,
@@ -3865,6 +3901,13 @@ class Learner:
                 self.log(f"[rl] RESUME: the checkpoint has no ability_head (run started without it) -- it starts at its "
                          f"init (P(press) {ABILITY_P0}), no warm start")
         self.update, self.beta = int(rl["update"]), float(rl["beta"])
+        if self.cfg.get("kl_ref_refresh_every"):              # W16 moving anchor: the anchor in force at the save
+            if "kl_ref" in rl:
+                self.ref = self._frozen(self.model)
+                self.ref.load_state_dict(rl["kl_ref"])
+            else:
+                self.log("[rl] RESUME: the checkpoint has no kl_ref (run started without kl_ref_refresh_every) -- the "
+                         "anchor stays the init until the next refresh")
         if gate_lo_cfg(self.cfg) is not None:                 # F6': beta_g + the update-0 target (None = not measured)
             self.beta_g, self.gate_lo_target = float(rl.get("beta_g", self.cfg["beta0"])), rl.get("gate_lo_target")
             if "beta_g" not in rl:
@@ -3999,6 +4042,8 @@ class Learner:
         ab_acc = ([sum(dict(r.get("ability_presses", {}).get(r["side"], {})).values()) for r in results]
                   if getattr(self, "ability_head", None) is not None else None)   # B6: engine-accepted learner presses
         del results
+        if os.environ.get("RL_BATCH_SHA"):                    # W16 identity check: a log line only (env, not config)
+            self.log(f"[rl] W16 u{u:04d} batch_sha {batch_sha(Bn)} weights_sha {batch_sha(self.model.state_dict())}")
         t1 = time.perf_counter()
         B = to_device(Bn, self.dev)
         gate_ref = getattr(self, "gate_ref", None)            # F6 kl_ref_gate (None = the init ref for all heads)
@@ -4121,6 +4166,11 @@ class Learner:
             reasons += self.guards.after_update(mon, beta_used, upd["kl_cell"] or 0.0, upd["kl_gate"] or 0.0,
                                                 ent=upd["ent"], ent_init=R["ent"])
             self.update = u + 1                                 # a crashed update is not counted (crash save = u)
+            rr = cfg.get("kl_ref_refresh_every")
+            if rr and self.update % int(rr) == 0:               # W16 moving anchor: KL (+ entropy floor) now to this policy
+                self.ref = self._frozen(self.model)
+                self.log(f"[rl] kl_ref_refresh_every {rr}: the KL anchor is now the policy after update {u} "
+                         f"({self.update} done)")
         else:
             self.log(f"[rl] NON-FINITE at update {u}: {reasons[0]}; crash save, {self.run}_latest.pt left at the last "
                      f"good update ({self.update} done)")
@@ -4379,6 +4429,10 @@ class Learner:
         base = self.actor_base()
         self.actors = ActorPool(base, int(self.cfg["n_actors"]), self.log, self.cfg["actor_timeout_s"],
                                 pid_file=self.run_dir / "actors.pid")
+        if self.cfg.get("remote_actors") is not None:          # W16: + the remote actor servers (absent = unchanged)
+            from pipeline.remote_actors import DistPool
+            self.actors = DistPool(self.actors, REPO / self.cfg["remote_actors"], base, self.log,
+                                   self.cfg["actor_timeout_s"])
         (self.run_dir / "pid.json").write_text(json.dumps({"learner": os.getpid(), "actors": self.actors.pids}),
                                                encoding="utf-8")
         bc = branch_cfg(self.cfg)
