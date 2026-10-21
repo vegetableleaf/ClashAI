@@ -1,3 +1,18 @@
+## 2026-10-21 ~04:30 EDT -- tonight's 6 arms: NO promotion; seed-variance runs launched; 2 pods stopped
+
+- vs CLX on fin15 at all16, E4 opponent (tonight1020/RESULTS.md):
+  - 0 of 6 pass;
+  - rocket (std -4.69 / fresh -6.46) and tornado w 0.1 (-7.92 / -10.94) CLEARLY WORSE;
+  - base s75 +3.44 / -3.44; lead +0.31 / -1.46; redirect -1.25 / -6.35; base s74 -1.88 / -8.12.
+- vs the W7 calibrated opponent on fin15 (W12, tonight1020/W7OPP_EVAL.md; CLX 64.0%):
+  - base s75 pooled +3.85 [+1.22, +6.48]; lead +1.20; redirect -0.21; base s74 -0.47;
+  - rocket -3.28 [-6.02, -0.55], tornado -4.38 [-7.11, -1.64].
+  - SAME-config seeds s74 vs s75 differ 4.3 pp -> seed variance is as large as any gain.
+  - More tower Rockets (0.50 vs CLX 0.35) and fewer post-fall pulls (0.40 vs 0.83) did NOT turn into wins.
+- Launched 08:25 UTC: tn_base seeds 76 / 77 / 78 / 79 on 13396 / 14009 / 19899 / 48148, to measure the recipe's mean.
+- Stopped via stop_pod.sh: 40548 and 15617 (results verified on the laptop).
+- Live: CLX on Ranked overnight. The ladder_nav fixes needed tonight: Skip Strikes, one-OK results, chest reveal (taps the chest).
+  stuck_watch.sh re-arms the watcher.
 ## 2026-10-20 ~18:45 EDT -- tonight's 6 successor arms launched on fin15 + the calibrated opponent
 
 - fin15 (W8, b386aaf): wheel 88f3fdcb, fork pin 305aaafc = fin14c + 3 engine laws (elixir floor, Tornado pack cap, tiebreak regen).
