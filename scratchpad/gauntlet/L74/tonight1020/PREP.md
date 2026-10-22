@@ -138,3 +138,37 @@ max_updates 3, screens and proagree off, critic_warmup 0, RL_PROFILE=1) on fin15
   - **tn_w14_*** needs icebow/data/pipeline/o2/w14opp.pt (W14 B u20, 40275759). It is **NOT on these pods**: install it the way
     launch.sh installs w7opp.
   - tn_bait_* uses league_deck_weights, which is in the code. It was not smoked here.
+
+## Addendum 4 (W17, 2026-10-22 12:12-12:40 UTC): three more new pods, the Addendum 3 setup -- nothing launched
+
+| pod | GPU / disk | smoke tn_base_s74 (pod_smoke15.sh) | READY reported | free disk |
+|---|---|---|---|---|
+| 157.157.221.29:33401 | RTX 4090 / 80 GB | SMOKE PASS 12:29:34Z (exploiter_league 0.50/4) | 12:30Z | 65 GB |
+| 157.157.221.29:33591 | RTX 4090 / 80 GB | SMOKE PASS 12:30:31Z | 12:31Z | 65 GB |
+| 157.157.221.29:33572 | RTX 4090 / 80 GB | SMOKE PASS 12:30:34Z | 12:31Z | 65 GB |
+
+- **Venv.** As in Addendum 3. /workspace/venvbase was rebuilt with uv from the same 52-pin freeze (the diff is empty on each pod).
+  setup_fin15.sh with SRCV=/workspace/venvbase SKIP36=1 gives venvf15 FIN15_OK (wheel 88f3fdcb, pins 305aaafc / a7deb6e4),
+  the imports work and CUDA is on.
+- **Code.**
+  - /workspace/cb_stepd came from GitHub's tarball of origin/main 3205622, downloaded on each pod (about 100 s, no laptop
+    upload), with the same exclusions as Addendum 3.
+  - `sha256sum -c` against the laptop's `git archive` of the same commit passed: 7,928 files, and the file count is equal.
+  - After the smokes it was refreshed to **3fe9bcf** (12 files, all sha-checked; the pods were idle). rl_royale.py did not
+    change; e1_eval/search_s0 only gained opt-in W18 flags (--tap-loss / --tap-slow). So the smoke ran on 3205622 and was not
+    re-run.
+- **Data, copied pod-to-pod from 32525 (read-only there).**
+  - One `nice -n 19 ionice -c3 tar` read on 32525 (2.4 s, same host) went to 33401, using a temporary key (fanout-33401-tmp).
+    Its pubkey was removed from 32525 right after, and the refusal was verified. 33401 then copied to 33591 and 33572, and
+    the key was removed there too.
+  - Every file was checked against shas from independent sources (13396's list, the repo, the laptop backup), not 32525's:
+    - the 25 Addendum 3 files;
+    - **o2/w14opp_I.pt = W14 I u40 4ff9fe93b02dcdd445e4fb2a0e8c65e5ad78909534f3d6db965ba00432c8d444** (= the laptop's
+      pod_backup_weekend/w14/rlarm_oppW14I_otstartE_s74_u0040.pt);
+    - o2/w14opp.pt = B u20 40275759 (for tn_w14_*);
+    - research/ext (38 files);
+    - /workspace: w7opp_R6u20.pt, launch.sh, pod_smoke15.sh, **go2.sh** (32525 has no go.sh; go2.sh = GO file + chain,
+      optional "b" second-arm locks), long_train.sh, progress.py, ckpt_eval.sh (= tonight1021), o3w12/opp_eval_fin15.sh and
+      o3w12/o3_patch.py (= opp_model/pod/), and in/fin15/*.whl.
+- /workspace/stepd/smoke/SMOKE_OK is written. The transfer tars (/workspace/in/{cbdata,wsdata}.tar and gh/code.tgz, ~1.8 GB)
+  were kept.
