@@ -57,6 +57,14 @@ r1)   # opponent round R1 inputs + queue: training at the end of stream A, its g
       cd /workspace/w18 && echo 'RUN=oppW18R1_redirect_s74 OUTD=/workspace/w18 VENV=/workspace/venvf15 RT=fin15-linux SMOKE_EXTRA=outlived_pp=100 TLOCK=/workspace/w18/train.lock bash $CB/$L/optC/w7_train.sh' >> jobs_A.txt
       echo 'cd /workspace/w18 && RUN=rlarm_oppW18R1_redirect_s74 YAML=oppW18R1_redirect_s74 EVERY=5 EVLOCK=/workspace/w18/evalB.lock bash /workspace/w18/w18_gate.sh' >> jobs_B.txt
       tail -1 jobs_A.txt; tail -1 jobs_B.txt" ;;
+pull)  # every finished eval tarball not yet on the laptop -> pod_backup_weekend/w18/ (sha-checked, extracted)
+  D=/c/Users/benpe/pod_backup_weekend/w18; mkdir -p $D
+  for n in $(on "cd /workspace/w18/o3/out && ls *.tgz 2>/dev/null"); do
+    [ -f $D/$n.OK ] && continue
+    scp -q -i $KEY -P $PORT $H:/workspace/w18/o3/out/$n $D/$n || continue
+    [ "$(sha256sum $D/$n | cut -c1-64)" = "$(on "cut -c1-64 /workspace/w18/o3/out/$n.sha")" ] || { echo "SHA FAIL $n"; continue; }
+    tar xzf $D/$n -C $D && touch $D/$n.OK && echo "pulled $n"
+  done ;;
 status)
   on "tail -5 /workspace/w18/runner_A.log /workspace/w18/runner_B.log 2>/dev/null; for d in /workspace/w18/o3/out/*/; do
       echo \"\$(basename \$d): \$(cat \$d/*/D3/matches.jsonl 2>/dev/null | wc -l) rows \$(ls \$d/ALL_DONE 2>/dev/null)\"; done; uptime" ;;

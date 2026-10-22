@@ -16,7 +16,7 @@ import o4r_table as T  # noqa: E402
 
 
 def key(j):
-    return (j['seed'], j['tag'], j['learner_side'])
+    return (j['seed'], j['tag'], j['learner_side'], str(j.get('census')), j.get('opp_deck_name'))   # o4r_table's row key
 
 
 def arrays(rows, cell):
