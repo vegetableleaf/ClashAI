@@ -454,3 +454,27 @@ What it means:
   - repeated taps on unplayable corner cells, e.g. 20261020_142524's Skeletons at (0.5, 30.5);
   - the slow 15% of deploys.
 - Next pod job (queued, stream C): tau 0.55 + the handicap, 2,880. It tests style + OT without losing CLX takes.
+
+## 11. Prediction and round order after pass 3 (supersedes section 7; my estimates)
+
+Target = the owner's recent 100 with the scaled tolerances. Pass counts: under G2 (CLX handicap applied) / without it.
+
+| check | I u40 now (G2) | needed | what moves it | expected after R1 + R2 + R3 + tau | confidence |
+|---|---|---|---|---|---|
+| both took one | 13.3 (z 2.42) | <= ~11.2 (z < 1.96 at live n 100) | R2 lead_protect, R1 (defend when ahead) | 10-12 | low-medium |
+| style | 0.80 | <= 0.65 | tau 0.55 alone: 0.58 on block 741200; R3 play_cost | pass | medium |
+| CLX takes | 54.1 (z 1.80) | < ~55 | R1 (+); tau 0.55 (-5.4 wrong way) | at risk with tau, safe with R1 | medium |
+| OT before the drain | 57.8 (z 1.42) | z < 1.96 | tau 0.55 (-17 on 741200), R1 | pass | medium |
+| the other 8 | pass | stay | - | pass | medium |
+| **total** | **10 / 12** (5 / 12 without G2) | 12 | | **11-12 / 12 with G2; 7-9 without** | medium-low |
+
+On the old all-233 target the same opponent sits at 6 / 12 with or without G2. The target choice (G5, now made by the owner)
+is worth more cells than any single round.
+
+**Order on the pod (all queued or running on 33401; nothing waits for a decision).**
+1. Running now: R1 princess_redirect, R3 play_cost (parallel arms vs the I2 control, gated every 5 updates on block 741200 with
+   positions off), tau 0.55 2,880, then tau 0.55 + handicap 2,880.
+2. R2 lead_protect after R3 (stream A).
+3. Then the best snapshot of R1 / R2 / R3 x tau {0.27, 0.55}, each 2,880 with the handicap, scored on both targets
+   (`w18/o4r_recent.py`, `w14/o4r_table.py`, paired `w18/paired.py`).
+4. If both took one is still out, the next round stacks R1 + R2 on the better snapshot. If style is out, R3 at w 0.01.
