@@ -1299,6 +1299,73 @@ Post-fall and bait cells, block 741200 with positions (`w14/pocket.out`):
   - 40116: stopped 03:25 EDT after a verified copy-back.
   - 48148: idle since 04:00 EDT. claim.lock is free; it holds I u40 as w14opp.pt.
 
+### 8.3 W18 (10-22): NEW TARGET (owner 10-22): the most recent 100 Ranked CLX matches (`w18/o4r_recent.py`; diagnosis of the 6 / 12 plateau: `DIAG_12.md`)
+
+**Data (a).**
+- W13's pipeline (index.py -> anatomy.py), re-run over every CLX Ranked log: 267 matches, 10-20 13:28 -> 10-21 14:32 (the switch
+  to Mark CLXI). That is 34 more than the 233, which stopped at 07:08.
+- Output: `diag12/recent/rows_ext.json`. W13's rows.json stays the 233-match reference.
+- The window is the last 100: 10-21 02:47 -> 14:22.
+
+**Tolerance rule (stated).**
+- Each predeclared point tolerance is scaled by sqrt(n_233 / n_recent) of that cell's live n, so it stays the same multiple of
+  the live standard error as W14's rule.
+- |z| < 1.96 is unchanged; it widens by itself with n.
+- The style bound stays 0.65 (an effect size), measured against these 100 matches' opponents.
+
+| cell | all 233 [95%] | **recent 100 [95%]** | tolerance (pp) |
+|---|---|---|---|
+| * CLX win | 48.1 [41.7, 54.5] | **40.0 [30.9, 49.8]** | 5 -> 7.6 |
+| * win vs BEAT | 25.3 [17.2, 35.6] (n 83) | **41.9 [26.4, 59.2] (n 31)** | 10 -> 16.4 |
+| * win vs the rest | 60.7 [52.7, 68.1] (n 150) | **39.1 [28.5, 50.9] (n 69)** | z only |
+| * OT share | 62.7 [56.3, 68.6] | **57.0 [47.2, 66.3]** | z only |
+| * win \| OT | 47.3 [39.3, 55.3] (n 146) | **43.9 [31.8, 56.7] (n 57)** | 8 -> 12.8 |
+| * win \| OT before the drain | 52.6 [42.7, 62.4] (n 95) | **45.7 [30.5, 61.8] (n 35)** | z only |
+| * CLX lost the first princess | 48.1 [41.7, 54.5] | **53.0 [43.3, 62.5]** | z only |
+| * opponent takes a princess | 51.1 [44.7, 57.4] | **57.0 [47.2, 66.3]** | 8 -> 12.2 |
+| * CLX takes a princess | 52.8 [46.4, 59.1] | **45.0 [35.6, 54.8]** | 8 -> 12.2 |
+| * both took one | 5.6 [3.3, 9.3] | **5.0 [2.2, 11.2]** | z only |
+| * regulation loss | 18.9 [14.4, 24.4] | **28.0 [20.1, 37.5]** | z only |
+| loss by tiebreak drain | 15.5 [11.4, 20.6] | 16.0 [10.1, 24.4] | monitored |
+
+**Re-score against the recent 100** (`diag12/recent/o4r_recent100.out`):
+
+| opponent | CLX win | vs BEAT | vs rest | win \| OT | pre-drain | CLX takes | both took | reg loss | style | pass |
+|---|---|---|---|---|---|---|---|---|---|---|
+| target (recent 100) | 40.0 | 41.9 | 39.1 | 43.9 | 45.7 | 45.0 | 5.0 | 28.0 | <= 0.65 | 12 |
+| I u40 (2,880) | 48.8 F | 41.0 | 53.7 F | 57.6 F | 66.3 F | 58.0 F | 13.3 F | 26.5 | 0.79 F | **5** |
+| E u40 (2,880) | 50.7 F | 43.4 | 55.1 F | 57.5 F | 63.3 F | 60.3 F | 14.8 F | 25.6 | 0.69 F | 5 |
+| B u20 (1,920) | 57.0 F | 48.7 | 62.3 F | 63.0 F | 68.8 F | 64.7 F | 12.1 F | 22.9 | 0.54 | 5 (+ lost-first F) |
+| A3 u35 (1,920) | 53.0 F | 45.5 | 57.8 F | 60.1 F | 67.5 F | 62.1 F | 13.8 F | 23.9 | 0.75 F | 5 |
+
+**What changes with the target (a), and what does not.**
+- At the current rank the opponent must be STRONGER overall: CLX win 40 vs I u40's 48.8.
+  - The extra strength is with the NON-tank decks (vs rest 39.1 live vs 53.7).
+  - BEAT and regulation loss now PASS for I u40. On the old target those two were failing.
+- Failing on BOTH targets, i.e. the robust gaps:
+  - CLX takes a princess: X-Bow denial, ledger B8 / T5;
+  - win \| OT and OT before the drain: 3:00 state + OT focus, O5 / O6;
+  - both took one: T5 / T6;
+  - style: tempo, S6.
+- The fix rounds already queued aim at exactly these:
+  - R1 princess_redirect: chip / X-Bow denial;
+  - R3 play_cost: tempo;
+  - R2 lead_protect: lead defence.
+- The new target adds one requirement: R1's extra defence must not cost strength. CLX win has to FALL (48.8 -> <= 47.6), not rise.
+
+**The window is noisy (iv), so read single cells with care.** With I u40, the failing set changes with the window length:
+
+| window | fails | which |
+|---|---|---|
+| 80 | 5 | win, vs rest, pre-drain, CLX takes, style |
+| 100 | 7 | (as in the table above) |
+| 120 | 6 | win, win \| OT, pre-drain, CLX takes, both took, ... |
+| 150 | 5 | win \| OT, pre-drain, CLX takes, both took, style |
+
+- The BEAT swing (25.3 on all 233 -> 41.9 on the last 100) rests on 31 matches.
+- The vs-rest swing (60.7 -> 39.1) rests on 69.
+- The cells stable across windows are CLX takes, win \| OT, pre-drain and both took one. Those are the ones to fix first.
+
 ## 9. Problems found along the way (not fixed outside this directory)
 
 1. **card_use.results() grades across account switches.**
