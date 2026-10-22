@@ -1438,7 +1438,8 @@ class Match:
         self.n_stall += int(d["why"] == "stall")
         x, y = ep.cell_center(d["cell"], grid)
         X, Y = ep.cell_to_engine(d["cell"], self.mirror, grid)
-        r = env.eng.act(side=self.side, deck_index=self.deck_index_of_slot[d["slot"]], x=X, y=Y) if landed \
+        lost = landed and bool(d.get("_tap_lost"))            # SelfPlaySide cfg["tap_loss"]: never reaches the engine
+        r = env.eng.act(side=self.side, deck_index=self.deck_index_of_slot[d["slot"]], x=X, y=Y) if landed and not lost \
             else {"accepted": False}
         acc = bool(r["accepted"])
         code = int(r.get("result_code", -1))
@@ -1459,6 +1460,10 @@ class Match:
             self.n_unlanded += 1
             self.refuse["match_over_before_landing"] += 1
             rec["reason"] = "match_over_before_landing"
+        elif lost:
+            self.n_tap_lost += 1
+            self.refuse["tap_lost"] += 1
+            rec["reason"] = "tap_lost"
         else:
             # RoyaleSim names its own codes (e.g. 2008 -> out_of_territory); the real engine path keeps
             # engine_play's table, which differs from PoolV1Env's _code_names at 13 and 22 (names unchanged).
@@ -1511,6 +1516,8 @@ class Match:
             **({"pipeline_decisions": dict(self.pipe_n)} if self.pipe else {}),
             **({"action_delay_ticks": self.delay, "plays_unlanded": self.n_unlanded,
                 "plays_refused_at_landing": n_att - n_acc - self.n_unlanded} if self.delay else {}),
+            **({"tap_loss": dict(self.tap_loss), "plays_tap_lost": self.n_tap_lost}
+               if getattr(self, "tap_loss", None) is not None else {}),   # SelfPlaySide cfg["tap_loss"] (L74 W18)
             **({"extrapolate_ticks": self.extrap} if self.extrap else {}),
             **({"afford_ticks": int(cfg["afford_ticks"])} if cfg.get("afford_ticks") is not None else {}),
             **({"predict_drops": True} if self.drops is not None else {}),
@@ -1770,6 +1777,15 @@ class SelfPlaySide(Match):
         if st is not None and self.opp_mode:                # the counter starts there at the TRUE opponent elixir
             self._counter_start = (int(st["tick"]), float(st["elixir"][1 - self.side]))
             self.opp_counter.tick, self.opp_counter.est = self._counter_start
+        # cfg["tap_loss"] (L74 W18, opt-in; absent = no draw, byte-identical): a decided play is LOST with the window's
+        # probability -- the board runs through the action delay, the card stays in hand, no elixir is spent (the live
+        # pilot's 'unconfirmed' tap with no elixir drop). Its own stream: no other RNG moves.
+        self.tap_loss = parse_tap_loss(cfg.get("tap_loss"))
+        self.n_tap_lost = 0
+        if self.tap_loss is not None:
+            if not self.delay or self.pipe:
+                raise ValueError("cfg['tap_loss'] needs action_delay_ticks > 0 and no pipeline_decisions")
+            self._tl_rng = random.Random(zlib.crc32(f"{tag}:tap_loss".encode()))
 
     def _opp_plays(self) -> list:
         return self.other.accepted
@@ -1785,6 +1801,8 @@ class SelfPlaySide(Match):
         if d["play"] and d.get("follow_ups"):                 # follow_up_spec second plays: the ghost Match's rules (module comment)
             if not delay:
                 raise ValueError("follow_ups need cfg['action_delay_ticks'] > 0 in a SelfPlaySide")
+            if self.tap_loss is not None:
+                raise ValueError("cfg['tap_loss'] is not defined for follow_ups plays")
             self._follow_start(p, d, tick)
             if self.pipe:   # + cfg["pipeline_decisions"] (L74 fastplays P2, as live --follow-up-taps + --pipeline-decisions, live_play
                 # ~1306): no decision while a follow-up is scheduled (_follow_start); once resolved, _follow_resolved resumes on the
@@ -1799,6 +1817,8 @@ class SelfPlaySide(Match):
                 self._hz_step_ticks = self.next_tick - tick
             return
         if d["play"] and delay:
+            if self.tap_loss is not None and self._tl_rng.random() < tap_loss_p(self.tap_loss, tick):
+                d = dict(d, _tap_lost=True)                   # cfg["tap_loss"]: _land refuses it at landing
             self.pending = (tick + delay, p, d)
             self.next_tick = tick + de * (delay // de + 1)
             return
@@ -1915,6 +1935,34 @@ def opp_tempo(cfg: dict, decide_every=None, reaction_ticks=None) -> dict:
     if reaction_ticks:
         out["action_delay_ticks"] = int(cfg.get("action_delay_ticks") or 0) + reaction_ticks
     return out
+
+
+TAP_LOSS_WINDOWS = (("1x", 0, 2400), ("2x", 2400, 3600), ("ot2x", 3600, 4800), ("ot3x", 4800, 10 ** 9))
+
+
+def parse_tap_loss(spec) -> Optional[dict]:
+    """L74 W18 (opt-in; None / '' = off): the LIVE pilot's lost-tap rate, applied to a SelfPlaySide in the SIM.
+    ``spec`` = 'NAME:P,...' or {NAME: P} with NAME in TAP_LOSS_WINDOWS (1x / 2x / ot2x / ot3x, by decision tick) and
+    0 <= P < 1; an unnamed window is 0. -> {NAME: P} for all four windows."""
+    if not spec:
+        return None
+    if isinstance(spec, str):
+        try:
+            spec = {k.strip(): float(v) for k, v in (x.split(":") for x in spec.split(",") if x.strip())}
+        except ValueError:
+            raise ValueError(f"tap_loss: 'NAME:P,...' expected, got {spec!r}") from None
+    names = [w for w, _, _ in TAP_LOSS_WINDOWS]
+    bad = sorted(set(spec) - set(names))
+    if bad:
+        raise ValueError(f"tap_loss: unknown window(s) {bad}; use {names}")
+    out = {w: float(spec.get(w, 0.0)) for w in names}
+    if any(isinstance(spec.get(w), bool) or not 0.0 <= out[w] < 1.0 for w in names):
+        raise ValueError(f"tap_loss: every P must be in [0, 1), got {spec!r}")
+    return out
+
+
+def tap_loss_p(rates: dict, tick: int) -> float:
+    return next(rates[w] for w, a, b in TAP_LOSS_WINDOWS if a <= tick < b)
 
 
 class SelfPlayMatch:

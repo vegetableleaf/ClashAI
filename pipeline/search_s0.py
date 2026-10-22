@@ -583,6 +583,7 @@ class Runner:
                 "end_tick": r["end_tick"], "tail_cap": int(env.tail_cap), "wall_truncated": truncated,
                 "plays_attempted": r["plays_attempted"], "plays_accepted": r["plays_accepted"],
                 "opp_plays_accepted": r["opp_side"]["plays_accepted"], "decisions": r["decisions"],
+                **({"plays_tap_lost": r["plays_tap_lost"]} if "plays_tap_lost" in r else {}),   # --tap-loss (W18)
                 **st, "search_s": round(st["search_s"], 2),
                 "s_per_searched": round(st["search_s"] / st["searched"], 3) if st["searched"] else None,
                 **({k: r[k] for k in ("hero_abilities", "ability_presses", "ability_policy", "ability_fallback_generic",
@@ -720,8 +721,12 @@ def _init_worker(args: dict) -> None:
     if args.get("opp_decide_every") is not None or args.get("opp_reaction_ticks") is not None:   # L74 human tempo
         opps = {i: (pol, E.opp_tempo(oc, args.get("opp_decide_every"), args.get("opp_reaction_ticks")))
                 for i, (pol, oc) in opps.items()}
+    if args.get("opp_tau") is not None:                       # L74 W18 probe: the opponent's play / wait threshold
+        opps = {i: (pol, {**oc, "tau": float(args["opp_tau"])}) for i, (pol, oc) in opps.items()}
     cap, fm = int(args["tail_cap"]), args.get("forms_mode", "base")
     learner_cfg = live_cfg(args.get('tau_plain', TAU_PLAIN), gi['grid'], dev)
+    if args.get('tap_loss'):                                # L74 W18: the live pilot's lost taps on OUR side only
+        learner_cfg['tap_loss'] = E.parse_tap_loss(args['tap_loss'])
     if args.get('decision_options'):
         learner_cfg.update(args['decision_options'])
     if args.get('learner_policy', 'live') == 'sample':   # 10-13: rl_royale's rollout sampler for OUR side (actor_cfg)
@@ -956,6 +961,12 @@ def main(argv=None) -> int:
                     help="opponent side's decision interval in ticks (L74 human tempo, e1_eval.opp_tempo); default = ours (10)")
     ap.add_argument("--opp-reaction-ticks", type=int, default=None,
                     help="extra ticks added to the opponent's action delay (L74 human tempo); default none")
+    ap.add_argument("--opp-tau", type=float, default=None,
+                    help="L74 W18 probe: the opponent's play/wait threshold (sample policy: logit(tau) is subtracted from "
+                         "the gate logit); default = TAU_OPP")
+    ap.add_argument("--tap-loss", default=None, metavar="1x:P,2x:P,ot2x:P,ot3x:P",
+                    help="L74 W18: OUR side loses a decided play with the window's probability (e1_eval.parse_tap_loss: the "
+                         "live pilot's measured lost taps); default none")
     ap.add_argument("--probe-xbow-focus", action="store_true",
                     help="SIM-ONLY measurement probe (owner 2026-10-15; never live): once an enemy princess is damaged, an "
                          "offensive X-Bow of ours that misses the weaker alive princess moves to the model's best cell "
@@ -1073,10 +1084,12 @@ def main(argv=None) -> int:
         wargs['spell_log'] = True
     if a.crown_log:
         wargs['crown_log'] = True
-    for k in ('opp_decide_every', 'opp_reaction_ticks'):
+    for k in ('opp_decide_every', 'opp_reaction_ticks', 'opp_tau', 'tap_loss'):   # L74 tempo; W18 opp_tau / tap_loss
         if getattr(a, k) is not None:
             wargs[k] = getattr(a, k)
-    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads', 'learner_T_gate') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k != 'ability_head_decode' or v != 'greedy') and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays', 'probe_xbow_focus', 'ability_stats', 'live_levels', 'habit_log', 'spell_log', 'crown_log') or v) and (k not in ('opp_decide_every', 'opp_reaction_ticks', 'opp_tower_troops') or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
+    if a.tap_loss is not None:
+        E.parse_tap_loss(a.tap_loss)                         # fail before any worker starts
+    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads', 'learner_T_gate') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k != 'ability_head_decode' or v != 'greedy') and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays', 'probe_xbow_focus', 'ability_stats', 'live_levels', 'habit_log', 'spell_log', 'crown_log') or v) and (k not in ('opp_decide_every', 'opp_reaction_ticks', 'opp_tower_troops', 'opp_tau', 'tap_loss') or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
                                                 "gen_sha256": sha256(REPO / a.gen), "opp_gen_sha256": opp_sha,
                                                 "s1_sha256": sha256(REPO / a.s1),
                                                 "tau_plain": TAU_PLAIN, "tau_opp": TAU_OPP, "crown_w": CROWN_W,
