@@ -562,3 +562,17 @@ its own measure.**
   depth / building share; plus W19's replay check of X-Bow activation with a tower-front blocker.
 - Only if the engine reproduces the live benefit is a depth round worth building. Example: R4's starts with the opponent's hand
   holding its deck's building.
+
+**R4 status (10-22 14:27Z).**
+- Code on main (e6edf09) and on 33401's cb_stepd (sha-checked).
+- The R4 tests pass on the pod's fin15 runtime (7 + 1 skipped: the hash test needs git).
+- Pod smoke of the R4 yaml with `xbow_start_share=1.0`: **SMOKE PASS** (SMOKE_OK in /workspace/w18/oppW18R4_xbowstart_s74).
+- Launch it when R1's gates show the tank-deck window gap still open:
+  `RUN=oppW18R4_xbowstart_s74 OUTD=/workspace/w18 VENV=/workspace/venvf15 RT=fin15-linux TLOCK=/workspace/w18/train_R4.lock bash /workspace/cb_stepd/scratchpad/gauntlet/L74/opp_model/optC/w7_train.sh`
+  as a stream-A line, plus
+  `cd /workspace/w18 && RUN=rlarm_oppW18R4_xbowstart_s74 YAML=oppW18R4_xbowstart_s74 EVERY=5 EVLOCK=/workspace/w18/evalB.lock O3_POS=1 bash /workspace/w18/w18_gate2.sh`
+  as a stream-B line.
+- The test of "open":
+  - the window-blocker share vs tank decks on R1's gate rows (`diag12/xbow_window.py` on its pos rows): below ~55% (live 66,
+    I u40 43) = open;
+  - or the gate-v2 BEAT damage per X-Bow still above ~0.26.
