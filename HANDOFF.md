@@ -1,3 +1,8 @@
+## 2026-10-22 13:37 EDT -- owner: back to CLX after CLXII hits 30 Ranked matches (watcher armed)
+
+- scratchpad/gauntlet/L74/deploy/revert_clx_at30.sh (WMI pid 53712; log revert_clx_at30.log): at 30 result lines after
+  overnight.out line 64611 it runs deploy_ckpt.sh with CLX (ICEBOW_Mark_CLX_PARITY_grafted.pt, 5d212358); skips if CKPT_OVERRIDE changed.
+  LIVE_RANKED / LIVE_OPTIONS / reader unchanged.
 ## 2026-10-22 13:14 EDT -- W21 tap fix VERIFIED on live; CLXII 5-12 on Ranked (29%) -> revert to CLX recommended to the owner
 
 - livetaps.py VERIFY on 32 matches since 11:01 (CLX 11:22-12:02 + CLXII): affordable lost 0.34 / match vs the baseline 1.47 (the
