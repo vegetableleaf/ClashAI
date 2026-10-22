@@ -34,10 +34,17 @@ The fifth check (regulation loss) is the other half of the same imbalance. The S
 That tempo wins it regulation games, keeps games open after the first princess falls (both took one), and is the whole style
 failure.
 
-**CLX's own live execution explains little.**
+**UPDATE after pod job P-A2 (section 10): CLX's own live execution is HALF of the overtime gap (a).** The first-pass statement
+"explains little" is contradicted. With CLX's measured live lost and slow taps applied to CLX in the SIM (paired, 2,880 games):
+- win \| OT -5.2 [-8.3, -2.1] (half the 10.3-pp gap); OT before the drain -8.5 [-12.2, -5.0] (62% of 13.7);
+- CLX win -4.1 [-6.1, -2.1]; vs the rest of the decks -6.3; vs BEAT -0.5 (no help there);
+- both took one -0.1 (no help).
+- Against the owner's recent-100 target, I u40 then passes **10 of 12** (both took one and style fail); against all 233, 6.
+
+The handicap is invisible in the obvious places:
 - (a) CLX answers tank pushes as fast live as in the SIM: 1.3 vs 1.5 s median.
 - (a) X-Bow placement is exact (0.1% off by > 0.5 tile).
-- (a) Two measured handicaps the SIM does not model; their effect on the cells is the first pod job:
+- (a) The two measured handicaps the SIM does not model:
   - LOST taps: 1.57 per match with enough elixir and no deploy. That is 8.9% of taps in OT 3x.
   - SLOW taps: the median tap-to-deploy (the game's elixir drop) is the SIM's 26 ticks, but 15.1% of plays land at 35-59 ticks
     (mean +17). Spells 23%, troops 13%.
@@ -160,8 +167,10 @@ first 48.9, opponent takes 55.3, CLX takes 58.0 (+5.2, tolerance 8).
 - **G1 (iv)**: the live OT label = crowns level at 3:00 AND end > 3610 (the SIM's rule).
   - Moves reg_loss 18.9 -> 20.2, win \| OT 47.3 -> 47.9, pre-drain 52.6 -> 53.8, OT share 62.7 -> 60.9.
   - It does not flip a cell on I u40.
-- **G2 (iii)**: run the O4 check with CLX's measured live lost and slow taps applied to CLX (`--tap-loss`, `--tap-slow`), if P-A2
-  shows the cells move.
+- **G2 (iii), MEASURED (section 10)**: run the O4 check with CLX's measured live lost and slow taps applied to CLX:
+  `--tap-loss 1x:0.0180,2x:0.0363,ot2x:0.0388,ot3x:0.0890 --tap-slow 0.151:17`.
+  - It moves win \| OT -5.2 and pre-drain -8.5. That is CLX's handicap, which no opponent should be trained to reproduce.
+  - **Recommended.** Re-measure the rates when the live pilot changes (a pilot fix makes the correction smaller).
   The opponent should not be trained to reproduce CLX's handicap.
 - **G3 (iv)**: report both-took-one and the 1-1 lock cell with match-cluster CIs. The 1-1 cell has an effective n of 13.
 
@@ -197,7 +206,7 @@ Shares are in pp of the cell's SIM - Ranked gap, measured on the I u40 2,880 / p
 | B4 | (ii) fight parity of the tank cards | the gap on J1 >= 0.95 tanks is +13.6 [+0.6, +23.6]; the J1-suspect group (Royal Hogs, E-Golem, Battle Ram) is +17.3 n.s. [G1] | <= 2.8 (bound) | U (W19 asked for fin15 per-card numbers) |
 | B5 | (ii) X-Bow first-target geometry vs a tank | lock when a same-lane tank lands <= 3.5 s after our X-Bow: SIM 19.1 vs live 18.5 [X1b] | 0 | R |
 | B6 | (iii) CLX's defensive latency vs tanks | first own play after a tank: 1.3 s live vs 1.5 s SIM; 10-s spend equal [K1] | 0 | R |
-| B7 | (iii) CLX lost / slow taps | vs BEAT live 1.75 lost / match, 17.4% slow (vs rest 1.47 / 14.1%) [L5] | ? | P (P-A2) |
+| B7 | (iii) CLX lost / slow taps | P-A2 paired: vs BEAT -0.5 [-3.7, +2.7] | 0.5 | R |
 | B8 | (i) X-Bow denial by tank decks -> chip race -> drain | dmg per bridge X-Bow 0.306 vs 0.196; drain losses 12.2 vs 25.3% of BEAT matches; 0-0 OT behind at 3:00 37.2 vs 56.5% [X1b, P3, P4] | the drain excess alone is 13.1 of the 15.7 | C (mechanism) |
 | B9 | (i) tank-push lethality in regulation | BEAT regulation losses 33.1 vs 28.9 (n.s.) [P1] | ~0 | R |
 | | **remainder** | 15.7 - 2.5 - 1.7 = 11.5, all inside B8's OT / drain mechanism; B4 (<= 2.8) and B7 (P-A2) still open | | |
@@ -212,7 +221,7 @@ Shares are in pp of the cell's SIM - Ranked gap, measured on the I u40 2,880 / p
 | O4 | interaction with BEAT: tank-deck overtimes | if the SIM's BEAT OTs went at the Ranked rate: 57.6 -> 50.3 [L1] | 7.3 of 10.3 (70%) | C |
 | O5 | (i) the 3:00 state (chip race in regulation) | SIM win rates at Ranked state shares 59.1 vs 64.7 [S1] | ~40-55% of the 0-0 OT gap | C |
 | O6 | (i) OT play given the state: weak-lane focus | OT troop elixir on CLX's weakest princess 46.6 vs 66.9% [O1]; P(win \| behind) 38.9 vs 28.8 | the rest of S1 | C (mechanism) |
-| O7 | (iii) lost / slow taps in OT 3x | P-A2; association: won OTs have MORE lost taps (2.16 vs 1.55 per match) [L5] | ? | P |
+| O7 | (iii) lost / slow taps (CLX's live execution) | P-A2 paired: win \| OT -5.2 [-8.3, -2.1], pre-drain -8.5 [-12.2, -5.0] | **5.2 of 10.3; 8.5 of 13.7** | **C** (G2) |
 | O8 | (ii) OT rules (triple elixir, drain timing) | J4 3x 0.961, J8 drain law within 2-3 ticks (FIN15) | 0 | R |
 | | **remainder** | O4 + O5 / O6 overlap (tank-deck OTs are where the state and the conversion differ); no unexplained part beyond P-A2 | | |
 
@@ -239,7 +248,7 @@ Shares are in pp of the cell's SIM - Ranked gap, measured on the I u40 2,880 / p
 | R4 | deck class | at the Ranked mix: rest +5.4, BEAT +0.3. Hog 15.9 vs 5.6, MK 34.4 vs 24.2, Royal Hogs 28.9 vs 0 [L2] | (where, not why) | - |
 | R5 | (i) 2x tempo / aggression | troop elixir per min in 2x 38.3 vs 30.4; 2x regulation losses 9.5 vs 5.6% [I1, P2] | ? | U (R3 play_cost tests it) |
 | R6 | (ii)/(i) king kills after a princess | regulation losses with our king down 9.3 vs 3.4% of matches [L2] | <= 5.9 (overlaps R5) | U (W19 + T7) |
-| R7 | (iii) CLX execution | would RAISE live regulation losses; lost taps in regulation 1.13 / match [L5] | 0 (sign) | R |
+| R7 | (iii) CLX execution | P-A2 paired: regulation losses +1.7 [+0.0, +3.5], i.e. it RAISES the SIM side (the sign predicted) | -1.7 (wrong sign for the 233 target; on the recent-100 target it closes the cell: 28.2 vs 28.0) | C (sign) |
 | | **remainder** | 6.3 after R1, split R5 / R6, neither isolated yet | | |
 
 ### 8.5 style: 0.78 (bound 0.65)
@@ -346,6 +355,8 @@ instant answer, so the variant is not used.
 | 0.35 | 0.72 | 11.30 | -0.2 | -4.7 | -1.4 | -2.5 | +1.9 | +2.9 | -0.4 |
 | 0.45 | 0.70 | 11.02 | +1.0 | -1.4 | -4.7 | -4.6 | +5.2 | +2.9 | -2.3 |
 | **0.55** | **0.58** | 10.61 | +1.5 | +5.5 | **-12.4 [-20.0, -4.7]** | **-17.0 [-27.2, -7.1]** | +5.4 [+0.2, +10.8] | +3.5 | **-7.7 [-12.3, -2.9]** |
+| 0.65 | 0.47 | 9.35 | **+10.6 [+5.2, +16.3]** | +10.6 | -3.1 | -3.9 | +11.2 | +1.0 | -10.6 |
+| 0.75 | 0.63 | 6.81 | **+25.4** | +24.4 | +3.9 | +0.9 | +24.0 | -0.8 | -17.5 |
 
 - **What tau 0.55 does (a):**
   - It is a strong lever above ~0.5. It fixes style (0.58 passes) and pulls win \| OT and OT-before-drain to the targets
@@ -354,7 +365,12 @@ instant answer, so the variant is not used.
   - It does NOT fix X-Bow denial. CLX takes a princess +5.4 and both-took +3.5 go the wrong way: a banking opponent lets more
     X-Bows through.
   - So tau and R1 (chip denial) are complementary, not substitutes.
-- Queued on stream C: tau 0.65 / 0.75 (positions) and the full 2,880 at tau 0.55, for both targets.
+- **Above 0.55 the opponent collapses (a).** tau 0.65 gives CLX +10.6 pp, tau 0.75 +25.4 pp.
+  - Its strength IS its tempo.
+  - A decode can trade tempo for style only up to ~0.55. There it costs no strength (+1.5 n.s.) and moves strength from
+    regulation into overtime: exactly the direction of the all-233 target.
+  - The rest has to be trained (R3 play_cost: the policy re-optimises at a lower tempo).
+- Queued on stream C: the full 2,880 at tau 0.55, for both targets.
 
 ### 8.8 X-Bow denial: the robust gap on both targets (CLX takes a princess; ledger B8 / T5), split further
 
@@ -398,3 +414,43 @@ Scripts: `diag12/pocket_timing.py`, `diag12/pocket_lanes.py`. SIM-pos = I u40 on
   - it then has more post-fall time: 0.94 min per fall vs 0.70 live;
   - and it pockets more often: 2.93 vs 2.60 per minute.
 - The king gap moves to R5 / T6 (opponent policy, regulation tempo). R3 (play_cost) and tau 0.55 test it.
+
+## 10. P-A2: CLX's live execution handicap in the SIM (pod 33401, 2,880 games paired with w14F_Iu40)
+
+Setup:
+- CLX loses taps at the live rate per window: 1.8 / 3.6 / 3.9 / 8.9% (1x / 2x / OT 2x / OT 3x).
+- 15.1% of CLX's plays land 17 ticks late.
+- Everything else as w14F_Iu40.
+- 412 of 2,880 games end identically; the rest diverge after the first changed tap.
+
+| cell | I u40 | + CLX handicap | paired diff [95%] | Ranked all 233 | Ranked recent 100 |
+|---|---|---|---|---|---|
+| CLX win | 48.8 | 44.7 | -4.1 [-6.1, -2.1] | 48.1 | 40.0 |
+| vs BEAT | 41.0 | 40.5 | -0.5 [-3.7, +2.7] | 25.3 | 41.9 |
+| vs rest | 53.7 | 47.4 | -6.3 [-9.0, -3.8] | 60.7 | 39.1 |
+| OT share | 58.3 | 56.9 | -1.4 [-3.4, +0.6] | 62.7 | 57.0 |
+| win \| OT | 57.6 | 52.4 | -5.2 [-8.3, -2.1] | 47.3 | 43.9 |
+| pre-drain | 66.3 | 57.8 | -8.5 [-12.2, -5.0] | 52.6 | 45.7 |
+| CLX lost first | 48.9 | 52.6 | +3.7 [+1.8, +5.7] | 48.1 | 53.0 |
+| opponent takes | 55.3 | 59.1 | +3.8 [+1.9, +5.8] | 51.1 | 57.0 |
+| CLX takes | 58.0 | 54.1 | -3.9 [-5.9, -1.8] | 52.8 | 45.0 |
+| both took one | 13.3 | 13.3 | -0.1 [-1.3, +1.2] | 5.6 | 5.0 |
+| regulation loss | 26.5 | 28.2 | +1.7 [+0.0, +3.5] | 18.9 | 28.0 |
+| style | 0.78 | 0.79 | - | - | - |
+| **O4 pass** | 6 / 12 (233), 5 / 12 (recent) | **6 / 12 (233), 10 / 12 (recent 100)** | | | |
+
+What it means:
+- **Half the overtime gap was never the opponent's.** CLX loses more of its own overtimes live because 8.9% of its taps in
+  triple elixir are lost and 15% land 0.85 s late.
+- No opponent round should chase that part. G2 puts it on CLX's side of the check.
+- Under G2 and the owner's recent-100 target, the opponent work left is:
+  - **both took one** (13.3 vs 5.0, z 2.42): ledger T5 / T6; R2 lead_protect and R1;
+  - **style** (0.80): S6; tau 0.55 alone gives 0.58, R3 play_cost trains it;
+  - keeping the borderline cells inside: CLX takes 54.1 vs 45.0 (z 1.80), pre-drain z 1.42.
+- Against the all-233 target the handicap trades failures instead (BEAT, vs rest, opponent takes, both, reg loss, style). It is
+  the target, not the handicap, that decides which cells remain (section 9).
+- The live pilot itself is the bigger lever for the BOT, outside this ticket. 366 lost taps with enough elixir in 233 matches
+  is a pilot bug class worth its own ticket:
+  - repeated taps on unplayable corner cells, e.g. 20261020_142524's Skeletons at (0.5, 30.5);
+  - the slow 15% of deploys.
+- Next pod job (queued, stream C): tau 0.55 + the handicap, 2,880. It tests style + OT without losing CLX takes.
