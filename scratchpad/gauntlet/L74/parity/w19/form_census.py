@@ -47,6 +47,7 @@ for p in sorted(glob.glob(str(d / g))):
     m, why = F.read_match(p)
     if m is None:
         continue
+    births = F.phase3_births(p) if m['ext'] else {}
     tr = F.tracks(m['frames'])
     used = set()
     for pl in m['plays']:
@@ -60,13 +61,14 @@ for p in sorted(glob.glob(str(d / g))):
         grp = [r for r in cands if r['first'] <= t1 + 2]
         used.update(r['id'] for r in grp)
         live = [(r['x'], r['y']) for r in grp]
+        seen_lag = [r['first'] - births[r['gen']][0] if r.get('gen') in births else None for r in grp]
         sim = sim_layout(pl['name'], m['side'], pl['x'], pl['y'])
         if len(live) != len(sim) or not live:
             err[pl['name']]['count_mismatch'] += 1
             continue
         best = min(itertools.permutations(range(len(sim))), key=lambda pm: sum(math.hypot(live[i][0] - sim[j][0], live[i][1] - sim[j][1]) for i, j in enumerate(pm)))
         col = 'left half' if pl['x'] < 9000 else 'right half'
-        EX.append(dict(match=Path(p).stem, side=m['side'], tap=(pl['x'], pl['y']), live=live, sim=[sim[j] for j in best], elixir=pl.get('elixir'), tick=pl['tick'], first=t1, xy=pl['xy']))
+        EX.append(dict(match=Path(p).stem, side=m['side'], tap=(pl['x'], pl['y']), live=live, sim=[sim[j] for j in best], elixir=pl.get('elixir'), tick=pl['tick'], first=t1, xy=pl['xy'], seen_lag=seen_lag))
         for i, j in enumerate(best):
             e = math.hypot(live[i][0] - sim[j][0], live[i][1] - sim[j][1])
             err[pl['name']][min(int(e // 20) * 20, 300)] += 1

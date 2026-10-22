@@ -71,6 +71,8 @@ CHAMP_CASTS = os.environ.get('PARITY_CHAMP_CASTS', '1') != '0'   # the default s
 CHAMP_STATE10 = {'SkeletonKing', 'Monk', 'MightyMiner'}
 SPAWN_SLOW = os.environ.get('PARITY_SPAWN_SLOW', '1') == '1'   # H-SPAWN-SLOW (W19 round 1, kept: +11 / -4 on 43,867 fights); PARITY_SPAWN_SLOW=0 restores
 FORM_ORACLE = set(filter(None, os.environ.get('PARITY_FORM_ORACLE', '').split(',')))   # W19 DIAGNOSTIC oracle (cards), never a default
+FORM_SYM = set(filter(None, os.environ.get('PARITY_FORM_SYM', '').split(',')))         # W19 round-2 probe (cards), opt-in
+FORM_SYM_FROM = os.environ.get('PARITY_FORM_SYM_FROM', '20261019_1000')               # matches from this stamp on
 DIGGERS = {'Miner', 'GoblinDrill'}  # tunnel in: seen active on their way, deploying where they surface (Knight etc. can show
                                    # 13/15 -> 12/14 too: 31 of 531 Knights, so the rule is by card)
 TOWER_RADIUS = 1400                # millitiles, king (princess 1000): attribution slack, not a law
@@ -2187,7 +2189,7 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
         if after != before:
             load_edited(b, before, after)
         slot = 0 if e['kind'] == 'play' else sim.HAND_SIZE
-        pts = form_live.get(id(e)) if FORM_ORACLE else None
+        pts = form_live.get(id(e)) if (FORM_ORACLE or FORM_SYM) else None
         if pts:
             pre = set(i for i, a_ in enumerate(json.loads(b.save())['ents']['alive']) if a_)
         r = b.step([(e['side'], slot, round(e['x']*18) if 'x' in e else 0, round(e['y']*18) if 'y' in e else 0)], 0)[0]
@@ -2221,6 +2223,16 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
             elif item[3] >= 3:
                 flags['form_oracle_unmatched'] += 1
                 pending.remove(item)
+    if FORM_SYM:
+        # W19 round 2 probe (harness emulation of an engine law, opt-in): the 10-19 live client lays three Skeletons on a
+        # symmetric ring, r 580 at 90 / 210 / 330 degrees in the owner's frame (live after 10-19 ~10:00: (-500, -287),
+        # (0, +580), (+500, -287) in 60 % of mid-field deploys; before: the fork's lane-shifted ring in 91 %)
+        for e in evs:
+            if e['kind'] == 'play' and e['name'] in FORM_SYM and e['side'] == m['side'] and 'x' in e and FORM_SYM_FROM <= m['match'][10:23]:
+                fy = 1 if e['side'] == 0 else -1
+                own_y = e['y'] if e['side'] == 0 else 32000 - e['y']
+                if 3000 <= own_y < 13000 and 1000 <= e['x'] <= 17000:   # off the clamps: own rows 13500+, back wall, edge columns keep the fork's
+                    form_live[id(e)] = [(e['x'] + dx, e['y'] + dy * fy) for dx, dy in ((-500, -287), (0, 580), (500, -287))]
     if FORM_ORACLE:
         trw = tracks([f for f in m['frames'] if t0 - 4 <= f[0] <= t1])
         for e in evs:

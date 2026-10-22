@@ -570,6 +570,7 @@ The new data is worse, and it is a step: our-tower level-15 era 0.926 [0.921, 0.
 | H15 | the X-Bow ignores tower-front blockers (W18) | xbow_lock census (1,104 fights) | blocker 8-11.5 t: first target 289/297; ends on tower live 28.6 % vs SIM 22.2 % | (c); lead: no blocker, live tower vs SIM unit first target 77/807 |
 | H16 | pocket deploy rule (W18) | fork probe + live census | fallen lane only (live 1,766 vs 5 standing-lane plays); depth <= 4.5 tiles in both | (c) |
 | H17 | walk speed / frame cadence / reader / tap point changed at 10-19 | censuses | 0 | (c) |
+| H18 | a LIVE GAME change on 10-19 (08:47-13:56) changed the 3-Skeleton layout | hourly shape census of own mid-field deploys; formation x era census of 23 multi-unit cards | before: lane-shifted ring (the fork's) in 45 of 47 mid-field deploys; after: symmetric ring r 580 in ~60 %, the rest clamp-zone shapes; only Skeletons moved | (a), owner-confirmed balance patch 10-19; other stat changes of that patch: W23 |
 
 ### 9.5 Unexplained share after each pass (explain.py; a fight counts under its first matching signature)
 
@@ -591,3 +592,19 @@ hero, Tesla, Knight, X-Bow) and opponent swarms. **Not a confirmed plateau**: ev
 | round | law | kind | metric before -> after (stamped strict, K=0, paired by fight) | kept? |
 |---|---|---|---|---|
 | R1 | H-SPAWN-SLOW: a set-up spawner's elapsed cycle counts 35/50 for every tick the live buff rows show it under an Ice Wizard slow (start_state, both the last-wave and the H-SPAWN-BORN path) | harness | c13 0.9277 -> 0.9279, +0.00021 [-0.00014, +0.00059], +6 / -3; c22 0.9170 -> 0.9171, +0.00014 [0.00000, +0.00030], +5 / -1; **union +0.00016 [0.00000, +0.00032], +11 / -4** | **kept** (default on, PARITY_SPAWN_SLOW=0 restores; the mechanism is measured live; the 4 downs are not dossiered (b)) |
+| ORF | FORMATION ORACLE (diagnostic only, PARITY_FORM_ORACLE=Skeletons): own Skeleton members put on their live first-frame points one tick after the play | sizing | c22 0.9170 -> 0.9221, **+0.00507 [+0.00386, +0.00638]**, +210 / -60 (own Skeletons 0.838 -> 0.869, opp Royal Hogs 0.714 -> 0.766); c13 **-0.00182 [-0.00283, -0.00088]**, +10 / -36; union +0.00283 [+0.00192, +0.00377] | never a law: sizes the formation lever (largest found); the c13 loss shows the first-seen points are not creation points where the fork was already right |
+| R2 probe | the post-10-19 modal 3-Skeleton ring (symmetric, r 580: (-500, -287), (0, +580), (+500, -287) owner frame) for own plays after 10-19 10:00, mid-field taps only (own rows 3000-12999, columns 1000-17000), as a harness emulation (PARITY_FORM_SYM) | sizing of an engine law | c22 +0.00108 [+0.00050, +0.00174], +53 / -21 (4,487 plays re-laid; own Skeletons 0.8375 -> 0.8402) | not landed in the harness (it is engine behaviour): it goes into the fork as the CLIENT-DATED 10-19 card-data change with W23's patch (9.7). It captures ~21 % of the oracle; the rest sits in the clamp zones (back wall, river rows, edge columns) where most of the model's Skeleton taps are |
+
+### 9.7 The 10-19 balance patch (owner-confirmed 10-22) and what it means for the rounds
+
+- (a) Formation x era census (form_era.py: every multi-unit play of both sides, live first-seen members vs the fork's layout at the
+  harness's point; 23 cards): ONLY Skeletons changed -- own median member error 29 -> 102 mt (> 60 mt: 43 % -> 54 %), opp 17 -> 50
+  mt; Goblin Gang, Barbarians, Minion Horde, Bats, Royal Hogs, Spear Goblins, Skeleton Warriors, Recruits, Minions, Goblins,
+  Archers, Wall Breakers, Royal Hogs ... stay at a median of 0 in both eras (Rascals > 60 mt 0.05 -> 0.19, n 153: watch).
+- (a) Walk speeds (Hog, Bats, Goblin Gang, Valkyrie, Skeletons) and damage values are unchanged across the patch in the censuses;
+  only the Skeletons' movement divergence doubles (gaps with |SIM - live| >= 10 mt/tick: own 4 % -> 7.5 %, opp 2 % -> 6 %).
+- Owner: the patch changed the Skeletons' spread "alongside other stats changes". W23 delivers the card-data diff; W19 integrates it
+  into the fork as a client-dated table (new data = training / eval default, old data = dated arm for pre-10-19 captures), gated on
+  c22 with c13 as the control, with the formation law folded in.
+- Until then (lead rule): any c22-only parity drop counts as possibly patch-caused before it is called an engine law.
+- K=8 of c22 is running (resumed 15:01Z) to give the post-patch cohort its official raw score.
