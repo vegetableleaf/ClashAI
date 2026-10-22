@@ -1366,6 +1366,43 @@ Post-fall and bait cells, block 741200 with positions (`w14/pocket.out`):
 - The vs-rest swing (60.7 -> 39.1) rests on 69.
 - The cells stable across windows are CLX takes, win \| OT, pre-drain and both took one. Those are the ones to fix first.
 
+### 8.4 O4 GATE v2 -- the gate version used from 10-22 on (owner decisions G1-G4 + the recent-window target)
+
+**Run it:** `icebow/.venv/Scripts/python.exe -B scratchpad/gauntlet/L74/opp_model/w18/o4_gate.py [--targets] [--lock11] ROOT ...`
+
+| item | rule |
+|---|---|
+| target | the most recent 100 live Ranked CLX matches: `diag12/recent/rows_ext.json`, 10-21 02:47 -> 14:22, the last 100 of 267 |
+| tolerances | W14's point tolerances x sqrt(n_233 / n_100) of each cell's live n: win 7.6, vs BEAT 16.4, win \| OT 13.1, opp takes 12.2, CLX takes 12.2; plus \|z\| < 1.96 per cell; an undefined cell fails |
+| G1 | live overtime = end > 3610 AND crowns level at 3:00 (the SIM's rule) |
+| G2 | CLX plays WITH its measured live handicap in every SIM run of the gate: `--tap-loss 1x:0.0180,2x:0.0363,ot2x:0.0388,ot3x:0.0890 --tap-slow 0.151:17` (w18_eval.sh `W18_EXTRA`). The scorer marks a row set without it **INVALID (G2)** |
+| G3 | both took one: per-match Wilson (unchanged, stated). The 1-1 X-Bow lock cell (monitored) uses a match-cluster bootstrap CI |
+| G4 | live style = the opponents' features with our CONFIRMED taps (lost / retried taps out, tap tick kept); bound 0.65 vs the same 100 matches |
+| pass | 12 of 12 (11 cells + style) |
+
+**Targets** (recent 100, G1; `o4_gate.py --targets`):
+
+| cell | target | cell | target |
+|---|---|---|---|
+| CLX win | 40.0 [30.9, 49.8] | win \| OT | 43.4 [31.0, 56.7] (n 53) |
+| vs BEAT | 41.9 [26.4, 59.2] (n 31) | OT before the drain | 45.2 [29.2, 62.2] (n 31) |
+| vs rest | 39.1 [28.5, 50.9] (n 69) | CLX lost the first princess | 53.0 |
+| OT share | 53.0 [43.3, 62.5] | opponent takes / CLX takes | 57.0 / 45.0 |
+| regulation loss | 30.0 [21.9, 39.6] | both took one | 5.0 [2.2, 11.2] |
+
+1-1 X-Bow lock (G3, monitored): live 5.3 [0.0, 33.3]. That is 19 X-Bows in 5 matches, so the cell is uninformative at this n.
+
+**Re-scored under v2:**
+
+| config | rows | v2 result |
+|---|---|---|
+| I u40 + CLX handicap (w18_Iu40_tl, 2,880) | valid | **10 of 12**; fails both took one (13.3, z 2.42) and style (0.72) |
+| I u40 / E u40 / B u20 / A3 u35 W14 runs, the tau probes, R1's first two gates | no handicap | INVALID (G2); re-run with the handicap |
+| E u40 + handicap, I u40 tau 0.55 / 0.50 + handicap (2,880 each) | queued on 33401 stream C | pending |
+| R1 / R3 / R2 gates | gate watcher v2 (`w18/w18_gate2.sh`, every 5 updates on block 741200 WITH the handicap) | pending |
+
+R-round gates pair with `w18_Iu40_tl`'s block-741200 rows: the same 480 seeds, the handicap on, the opponent's init.
+
 ## 9. Problems found along the way (not fixed outside this directory)
 
 1. **card_use.results() grades across account switches.**

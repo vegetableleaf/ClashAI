@@ -478,3 +478,49 @@ is worth more cells than any single round.
 3. Then the best snapshot of R1 / R2 / R3 x tau {0.27, 0.55}, each 2,880 with the handicap, scored on both targets
    (`w18/o4r_recent.py`, `w14/o4r_table.py`, paired `w18/paired.py`).
 4. If both took one is still out, the next round stacks R1 + R2 on the better snapshot. If style is out, R3 at w 0.01.
+
+### 8.10 OWNER HYPOTHESIS (10-22): humans block the X-Bow during its ~3.5 s deploy; no blocker in that window = it locks
+
+Setup:
+- Bridge X-Bows at 0-0; the live lock rule on both sides.
+- A **blocker** = the opponent's first GROUND troop or building deployed within X-Bow range (11.5 tiles) of our X-Bow, from 1 s
+  before to 10 s after our X-Bow landed.
+- Times: live = X-Bow confirmation and opponent first sighting; SIM = both landing ticks.
+- Scripts: `diag12/xbow_window.py`, `diag12/xbow_window_inside.py`.
+- Data: live Ranked 233 vs SIM-pos (I u40, block 741200, no CLX handicap; the handicap does not change the opponent's
+  placements).
+
+**The mechanism is real on both sides (a).** A blocker placed inside the window cuts the lock:
+- live 37.0% inside vs 61.7% otherwise;
+- SIM 48.0% vs 71.2%.
+- The effect holds for window lengths of 2.5-5 s.
+
+| deck class | blocker INSIDE the window: Ranked / SIM | lock inside: Ranked / SIM | lock gap SIM - Ranked | explained by WHEN (the SIM's shares at live rates) | explained by what happens GIVEN the timing |
+|---|---|---|---|---|---|
+| tank decks (BEAT) | **66.3% / 43.3%** | 29.2 / 41.0 | +17.8 | **+9.1 (51%)** | +10.4 |
+| the rest | 60.0% / 58.5% | 41.0 / 50.8 | +9.9 | +0.3 | +9.6 |
+| all | 62.0% / 53.2% | 37.0 / 48.0 | +12.5 | +2.2 | +10.6 |
+
+The damage per X-Bow vs tank decks (0.306 vs 0.196) splits the same way: +0.055 from timing, +0.062 given the timing.
+- Median first blocker vs tank decks: +2.8 s live vs +3.5 s SIM.
+- vs the rest of the decks: +2.9 vs +2.5 s.
+
+**Verdict:**
+- **Confirmed for tank decks:** the SIM opponent places its blocker inside the deploy window a third less often (43 vs 66%).
+  That is half the BEAT lock and damage gap.
+- **Not the whole story:**
+  - Even with a blocker in the window the SIM locks more: 48 vs 37% overall, 41 vs 29% vs tank decks.
+  - Humans place window blockers DEEPER: 40% at 8-11.5 tiles from the X-Bow (near their tower) vs 11% in the SIM, with lock 31%
+    there.
+  - The SIM's window blockers sit 4-8 tiles out (lock 48% vs 41% live in that band).
+  - Buildings in the window fail more in the SIM: 61 vs 40%.
+  - So the other half is WHERE the blocker goes (depth / type), plus a possible engine share at activation (W19: no contrary
+    evidence on first-target geometry; the tank-before-lock rate agrees, 19.1 vs 18.5%).
+
+**Fix mapping (one change per round):**
+- **R1, running:** `princess_redirect` penalty is the owner's "reward for opponent tower damage prevented". It pays for blocking
+  in time and in the right place, without prescribing either.
+- **R4, prepared if R1 leaves the BEAT timing gap:** scenario starts at our X-Bow placement. The match starts at a live Ranked
+  bridge-X-Bow state (clock, tower HP, CLX's elixir; the opponent's elixir unobserved, drawn as ot_start does) with the frozen
+  icebow side's first action forced to that X-Bow. This needs a forced-first-play option in e1_eval's SelfPlaySide plus a start
+  table builder: ~1 day with tests; not built yet.
