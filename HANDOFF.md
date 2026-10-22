@@ -1,3 +1,19 @@
+## 2026-10-22 14:53 EDT -- CLX back live (14:13, after CLXII 11 W / 19 L); CLXII behaviour vs CLX; long-run u175 / u150 evals started
+
+- The revert watcher deployed CLX at 14:13 (guard OK, Discord). CLXII final: 30 Ranked, 11 W / 19 L (36.7%).
+- ape_score live (since 10-19), CLXII n 30 vs CLX n 433:
+  - win 0.367 vs 0.520
+  - threat ignored share 0.296 vs 0.213; of which idle >= 4 s with elixir 0.268 vs 0.167 (+0.101 [+0.003, +0.218])
+  - defence elixir trade per push -0.47 vs +0.08
+  - G-LOG hold 0.455 vs 0.551
+  - APE, low-reserve X-Bow and Tesla shares ~ equal
+  -> CLXII sat idle on threats more and lost more value on defence.
+- Pods:
+  - 32525: long run at u178 (W/L/D 155/100/1 in rollouts); evals queued long_u0175 then long_u0150 (ckpt_eval.sh, E4 std + fresh
+    + I u40, --record-board) -> /workspace/ckev/out/; clx_rb (the CLX record-board base) done in /workspace/ckev/out/clx_rb.tgz
+  - 33572: branches tn_br_tower_s74 u28 / s75 u27 (u40 ~1 h)
+  - 33401: W18 busy
+  - 33591: W19 busy (parity)
 ## 2026-10-22 13:37 EDT -- owner: back to CLX after CLXII hits 30 Ranked matches (watcher armed)
 
 - scratchpad/gauntlet/L74/deploy/revert_clx_at30.sh (WMI pid 53712; log revert_clx_at30.log): at 30 result lines after
