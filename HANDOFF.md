@@ -1,3 +1,26 @@
+## 2026-10-22 ~06:00 EDT -- night 10-21/22: 9 successor runs, NO promotion; long run started; pods cut to 2
+
+- **Results** (tonight1021/RESULTS.md; E4 promotion eval, paired, 960 per set; vs CLX and vs same-seed tn_base):
+
+  | arm | s74 vs base | s75 vs base | s76 vs base | avg | verdict |
+  |---|---|---|---|---|---|
+  | B ot_start 0.25 | +0.42 / +2.29 | -5.42 / -1.98 | -7.71 / -3.96 | -2.7 | closed (hurts) |
+  | A W14 opp B u20 | +4.06 / +5.83 | -5.73 / -3.85 | -5.21 / -2.92 | -1.3 | closed (no gain on E4) |
+  | E1 bait 2.5x | +3.02 / +4.90 | -1.15 / +2.81 | +1.04 / +1.15 | +2.0 | best; 5/6 > 0, not significant at 3 seeds |
+
+  Closest to the gate: tn_bait_s76 vs CLX std +3.65 [-0.01, +7.30], fresh -1.88. No arm passed both sets -> no live run
+  (owner had closed MuMu; open_mumu.sh is ready for a promotion).
+- **Long run** tn_long_e1i_s74 on 157.157.221.29:32525 since 09:49Z: E1 + league exploiter = W14 I u40 (4ff9fe93,
+  installed as o2/w14opp_I.pt), 500 updates, n_actors 48, save_every 25, kl_ref_refresh_every 50 (stepd/cfg/
+  tn_long_e1i_s74.yaml; launcher tonight1021/long_train.sh, training only -- no chain evals). Plan (owner 10-21): eval
+  every 100 updates vs CLX on E4 AND vs I u40; stop if behind CLX; continue to 1,000 only if still improving.
+- **G-LOG**: per-play w7opp evals of the 3 E1 u130 ckpts running on 157.157.221.29:32621 (/workspace/o3w12/e1_glog.sh ->
+  out/w12_tn_bait_s7X.tgz, E1_GLOG_DONE); score with log_use/glog_score.py vs w12_clx_fin15.
+- **W14 final** (OPP_MODEL.md 8.2, d3c9300): I u40 = best opponent, CLX 48.8% vs Ranked 48.1, 6/12 cells; fails tank decks
+  (41.0 vs 25.3), win|OT, both-took, regulation loss, X-Bow lock at 1-1 (35.8 vs 12.2), style 0.78. Plateaued.
+- **Pods (owner budget rule: 2 pods)**: stopped 13396, 14009, 19899, 40144, 22539 (L40), 40116 (3090), 48148 -- each after a
+  sha-verified copy-back. Kept: 157.157.221.29:32621 and :32525 (54-core 4090s).
+
 ## 2026-10-21 ~18:20 EDT -- live = interim Mark CLXI on Ranked; 9 successor runs training (3 arms x 3 seeds); Log flaw measured
 
 - **Live:** ICEBOW Mark CLXI: FIN15 (tn_base_s75 u130, 686b245a) on Ranked since 14:32 by owner request, as an INTERIM model
