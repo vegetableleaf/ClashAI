@@ -16,7 +16,7 @@ sys.path.insert(0, "C:/Users/benpe/ClashBot")
 from pipeline.obs_contract import _catalog_names  # noqa: E402
 
 LOGS = "C:/Users/benpe/ClashBot/scratchpad/gauntlet/L68/live_reader/"
-NAMES = {"fce50ebb": "r1", "693889c3": "F1 s74 u65", "4987c582": "F1 s76", "00c845c0": "F1 u250"}
+NAMES = {"fce50ebb": "r1", "693889c3": "F1 s74 u65", "4987c582": "F1 s76", "00c845c0": "F1 u250", "5d212358": "CLX", "686b245a": "CLXI"}
 COST = {"Xbow": 6, "Tesla": 4, "IceWizard": 3, "Tornado": 3, "Rocket": 6, "Knight": 3, "Log": 2, "Skeletons": 1}
 COMMIT, THREAT, LOW, WIN_T = 6.0, 7.0, 0.5, 200
 
@@ -48,7 +48,7 @@ def run(since, n_list):
                 d = json.loads(line); p = d["public"]; dec = d.get("decision") or {}; t = d["tick"]; o = p["observer_side"]
                 if first:
                     pr = sorted(b["max_hp"] for b in p["raw_bodies"] if b["side"] == o and b.get("kind") == 13)
-                    if pr != [4424, 4424]:
+                    if pr not in ([4424, 4424], [4858, 4858]):   # main account; 4858 = level-16 towers since 10-19
                         ok = False; break
                     first = False
                 ticks += 1

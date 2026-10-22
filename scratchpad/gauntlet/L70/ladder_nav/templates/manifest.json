@@ -326,6 +326,23 @@
     1600
    ],
    "threshold": 0.85
+  },
+  "chest_q2": {
+   "file": "chest_q2.png",
+   "source": "chest_reveal_orange.png",
+   "box": [
+    461,
+    1440,
+    551,
+    1530
+   ],
+   "region": [
+    150,
+    1380,
+    900,
+    1600
+   ],
+   "threshold": 0.85
   }
  }
 }
