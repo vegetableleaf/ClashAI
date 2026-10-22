@@ -355,3 +355,22 @@ instant answer, so the variant is not used.
     X-Bows through.
   - So tau and R1 (chip denial) are complementary, not substitutes.
 - Queued on stream C: tau 0.65 / 0.75 (positions) and the full 2,880 at tau 0.55, for both targets.
+
+### 8.8 X-Bow denial: the robust gap on both targets (CLX takes a princess; ledger B8 / T5), split further
+
+Bridge X-Bows at 0-0, the live lock rule on both sides.
+Scripts: `diag12/xbow_answers.py`, `diag12/xbow_stun.py`, `diag12/pocket_mix.py`.
+
+| # | hypothesis | test | result | status |
+|---|---|---|---|---|
+| X1 | the SIM answers too late | median first troop answer +3.0 s SIM vs +3.5 s live; within 3.5 s 57 vs 51% | SIM is EARLIER | R |
+| X2 | the SIM answers from too far | median distance 5.1 vs 5.1 tiles | equal | R |
+| X3 | the SIM answers with air units (the X-Bow ignores air) | air-first answers 13% SIM (lock 80%) vs 9% live (lock 56%) | +4 pp of answers, ~1 pp of the lock gap | C (small) |
+| X4 | an EARLY ground answer (before the X-Bow can lock) works worse in the SIM | lock 48 vs 42% | ~6 pp at this step | C (small) |
+| X5 | a LATE ground answer works worse in the SIM | lock 69 vs 54%: humans' late answers still deny | the largest single step | C (the cause inside it: U) |
+| X6 | (ii) the stun reset of a locked X-Bow (owner fact: only a stun / freeze / taunt retargets it) | visible stun troops (E-Spirit / E-Wiz / E-Dragon / E-Giant) at the X-Bow: lock 53% SIM vs 52% live, same share (10.0 vs 9.7%). Stun SPELLS (Zap / Lightning / Freeze): 73% SIM (n 63) vs 49% live (n 35, detected only) | troops R; spells flagged for W19 (small n) | R / U |
+| X7 | (iv) live misses bodiless spell answers | damage spells detected at 8.6% of live X-Bows vs 28.2% SIM (exact); the live "no troop answer" X-Bows lock 39% vs 58% SIM | live answers are under-counted, not the locks | caveat on X1-X5 |
+| X8 | (ii) pocket / king after OUR princess falls | king HP per pocket deploy +28% in the SIM with the same pocket card mix (4.19 vs 4.51 elixir) | W19 | U |
+
+Remainder for X-Bow denial: the late-answer step (X5) and the answers live cannot see (X7). The training lever is R1, which
+pays the opponent for keeping its towers whole. A decode lever is not available: tau 0.55 makes it worse (+5.4).
