@@ -1,0 +1,20 @@
+Ranked reference: 233 CLX matches (clx_ranked/rows.json); gate cells: win, win_vs_BEAT, win_vs_rest, ot_share, win_given_OT, win_OT_pre_drain, lost_first_princess, opp_takes_princess, clx_takes_princess, both_took_one, reg_loss
+
+== w14F_Eu40: 2880 SIM games vs 233 Ranked; style distance vs Ranked 0.68, vs 13k ladder 0.79
+  * win                    SIM  50.7% [48.8, 52.5] n=2880   Ranked  48.1% [41.7, 54.5] n=233      +2.6 [  -4.1,   +9.2] z +0.76 tol 5
+  * win_vs_BEAT            SIM  43.4% [40.5, 46.4] n=1103   Ranked  25.3% [17.2, 35.6] n=83      +18.1 [  +7.4,  +26.8] z +3.22 tol 10  <-- FAIL
+  * win_vs_rest            SIM  55.1% [52.8, 57.4] n=1777   Ranked  60.7% [52.7, 68.1] n=150      -5.5 [ -13.3,   +2.8] z -1.31
+    win_vs_BEAT_fulldeck   SIM  43.0% [40.1, 45.8] n=1159   Ranked  25.3% [17.2, 35.6] n=83      +17.7 [  +7.0,  +26.3] z +3.15
+  * ot_share               SIM  55.9% [54.1, 57.7] n=2880   Ranked  62.7% [56.3, 68.6] n=233      -6.7 [ -13.0,   -0.1] z -1.99  <-- FAIL
+  * win_given_OT           SIM  57.5% [55.1, 59.9] n=1611   Ranked  47.3% [39.3, 55.3] n=146     +10.2 [  +1.8,  +18.5] z +2.39 tol 8  <-- FAIL
+  * win_OT_pre_drain       SIM  63.3% [60.4, 66.1] n=1104   Ranked  52.6% [42.7, 62.4] n=95      +10.7 [  +0.5,  +21.0] z +2.06  <-- FAIL
+    win_at_drain           SIM  44.8% [40.5, 49.1] n=507    Ranked  37.3% [25.3, 51.0] n=51       +7.5 [  -6.9,  +20.2] z +1.03
+  * lost_first_princess    SIM  47.2% [45.3, 49.0] n=2880   Ranked  48.1% [41.7, 54.5] n=233      -0.9 [  -7.6,   +5.7] z -0.27
+  * opp_takes_princess     SIM  54.5% [52.7, 56.4] n=2880   Ranked  51.1% [44.7, 57.4] n=233      +3.5 [  -3.1,  +10.1] z +1.02 tol 8
+  * clx_takes_princess     SIM  60.3% [58.5, 62.1] n=2880   Ranked  52.8% [46.4, 59.1] n=233      +7.5 [  +0.9,  +14.1] z +2.24 tol 8  <-- FAIL
+  * both_took_one          SIM  14.8% [13.6, 16.2] n=2880   Ranked   5.6% [ 3.3,  9.3] n=233      +9.2 [  +5.3,  +11.9] z +3.90  <-- FAIL
+  * reg_loss               SIM  25.6% [24.0, 27.2] n=2880   Ranked  18.9% [14.4, 24.4] n=233      +6.7 [  +0.9,  +11.5] z +2.26  <-- FAIL
+    loss_tiebreak_drain    SIM   9.7% [ 8.7, 10.9] n=2880   Ranked  15.5% [11.4, 20.6] n=233      -5.7 [ -11.0,   -1.5] z -2.78
+  deck mix (revealed win condition): BEAT share SIM 38.3% vs Ranked 35.6%; CLX win re-weighted to Ranked's BEAT share 51.0% (vs 50.7% at the SIM mix)
+  Ranked / SIM win-condition shares (%): hog_rider 15/10 mega_knight 14/19 goblin_barrel 9/8 pekka 6/5 electro_giant 6/2 royal_hogs 5/4 giant 5/4 battle_ram 4/2 other 4/1 balloon 4/5
+  gate (* cells + style; |z| < 1.96 and the TOL pp bounds {'win': 5.0, 'win_vs_BEAT': 10.0, 'win_given_OT': 8.0, 'opp_takes_princess': 8.0, 'clx_takes_princess': 8.0}): 4 of 12 pass, max |z| 3.90; fails: ['win_vs_BEAT', 'ot_share', 'win_given_OT', 'win_OT_pre_drain', 'clx_takes_princess', 'both_took_one', 'reg_loss', 'style']

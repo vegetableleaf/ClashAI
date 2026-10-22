@@ -1029,6 +1029,7 @@ before the drain / opponent takes / both took / style vs Ranked; Ranked 48.1 / 2
 | O4 | I u15 (08118523), fresh 1,440 only | 50.3 | 41.4 | 55.8 | 56.9 | 57.1 | 65.3 | 53.1 | 12.8 | 0.72 | | between E u40 and I u40 |
 | probe | I u40 at decide 60 / 80; E u40 at decide 60 (eval-time tempo, block 741200) | 54.0 / 57.3; 52.5 | 47.7 / 46.5; 43.9 | 58.4 / 65.0; 58.5 | 49.8 / 44.0; 50.0 | 66.5 / 67.3; 58.8 | 73.3 / 78.9; 65.2 | 51.9 / 47.1; 54.0 | 18.5 / 16.7; 19.6 | 0.65 / 0.53; 0.60 | | (a) as W7's R4k: slowing the opponent buys style and opens the game (OT share 44-50, both took 17-20), and CLX gains 4-7 pp. Tempo is not the style fix |
 | R7 | I2 = I u40 continued fresh, I's recipe unchanged (40116, from 01:32 EDT, last round on that pod) | | | | | | | | | | | |
+| R7 | I2 u5 / u10 / u15 / u20 / u25 / u30 | 50.0 / 52.3 / 53.3 / 52.5 / 49.8 / 47.9 (mean 51.0) | 45.2 / 50.8 / 47.5 / 45.8 / 43.5 / 43.8 | 53.4 / 53.4 / 57.5 / 57.3 / 54.3 / 50.9 | 59.6 / 57.7 / 59.4 / 61.9 / 58.8 / 56.7 | 56.3 / 58.8 / 61.8 / 58.9 / 55.7 / 58.5 | 63.1 / 67.2 / 68.3 / 68.3 / 60.8 / 65.3 | 53.3 / 52.1 / 51.2 / 51.0 / 52.9 / 54.8 | 11.9 / 10.4 / 9.6 / 9.8 / 10.2 / 11.9 | 0.74 / 0.74 / 0.76 / 0.81 / 0.78 / 0.75 | 4-6 | **plateau** (= I u40's 50.2 on this block), style drifts up. Stopped at u33 (03:22 EDT); pod 40116 stopped 03:25 EDT after the copy-back (27 tarballs + logs, sha 251db8c7) |
 
 **Rounds 5-6, pooled per arm (every gate snapshot u5-u40 of the arm on block 741200; `w14/pool.py`, numbers
 here):**
@@ -1210,6 +1211,93 @@ league_exploiters:
 vs BEAT, -7.1 / -8.7 pp in OT, opponent princess takes +6.9, style 0.53 vs 0.58. The lead can swap it in as the
 tn_base exploiter, or use it as a stricter eval opponent. It still OVER-predicts CLX on Ranked by ~9 pp overall and ~23 pp vs
 tank decks. A successor gated against it is gated against a ~57%-CLX opponent, not a 48% one.
+
+### 8.2 Night checkpoint (10-22 ~04:15 EDT): the opponent for the next successor round
+
+**Recommended: I u40 = `rlarm_oppW14I_otstartE_s74_u0040.pt`, sha256 4ff9fe93b02d
+(4ff9fe93b02dcdd4...; laptop C:/Users/benpe/pod_backup_weekend/w14/rlarm_oppW14I_otstartE_s74_u0040.pt).**
+- Lineage: R6 u20 -> B (gate-free, 20 updates) -> E (tank-deck practice, 40 updates) -> I (E's recipe + opponent OT-starts
+  from the mirrored Ranked 3:00 states, 40 updates).
+- Trained on pod 40116 with main HEAD code; evaluated on 48148.
+- Installed: 48148 cb_stepd/icebow/data/pipeline/o2/w14opp.pt.
+- League smoke (cfg/tn_base_w14opp_s74.yaml with it as w14opp.pt) on 48148: **SMOKE PASS** 06:36:52 UTC; the exploiter was
+  played 4 + 8 games.
+- Alternative: E u40 (e5198fb7). Style 0.68 vs 0.78; smoke PASS.
+
+**Final O4-Ranked, 2,880 games each** (blocks 741200 + fresh 742000-746000; `w14/o4r_final_{Iu40,Eu40}.out`):
+
+| cell (Ranked [95%]) | R0 = R6 u20 (1,920) | E u40 | **I u40** | I u40 verdict |
+|---|---|---|---|---|
+| CLX win (48.1 [41.7, 54.5]) | 64.0 | 50.7 | **48.8** | pass (z 0.22) |
+| vs BEAT (25.3) | 56.9 | 43.4 | **41.0** | FAIL (+15.7) |
+| vs the rest (60.7) | 68.4 | 55.1 | 53.7 | pass (z -1.64) |
+| OT share (62.7) | 55.2 | 55.9 | **58.3** | pass (z -1.29) |
+| win \| OT (47.3) | 70.1 | 57.5 | 57.6 | FAIL (+10.4) |
+| win \| OT before the drain (52.6) | 77.5 | 63.3 | 66.3 | FAIL (+13.6) |
+| CLX lost the first princess (48.1) | 34.6 | 47.2 | 48.9 | pass |
+| opponent takes a princess (51.1) | 40.5 | 54.5 | 55.3 | pass |
+| CLX takes a princess (52.8) | 71.4 | 60.3 | **58.0** | pass (+5.2, z 1.55) |
+| both took one (5.6) | 11.9 | 14.8 | 13.3 | FAIL (+7.8) |
+| regulation loss (18.9) | 19.5 | 25.6 | 26.5 | FAIL (+7.6) |
+| style vs Ranked (<= 0.65) | 0.58 | 0.68 | **0.78** | FAIL |
+| items passed | 3 of 12 | 4 of 12 | **6 of 12** | |
+
+Post-fall and bait cells, block 741200 with positions (`w14/pocket.out`):
+
+| cell | live Ranked | R6 u20 | E u40 | I u40 |
+|---|---|---|---|---|
+| pocket share after our first princess falls | 41.0% | 45.3% | 44.5% | 44.7% |
+| pocket deploys per minute | 2.60 | 2.74 | 2.91 | 2.93 |
+| P(our king falls \| our princess fell) | 7.6% | 18.5% | 19.6% | 16.9% |
+| surviving princess HP lost per minute | 0.285 | 0.299 | 0.324 | 0.292 |
+| X-Bow lock 0-0 / 1-1 | 40.2 / 12.2 | 49.5 / 48.2 | 49.6 / 35.6 | 45.3 / 35.8 |
+| Log punished within 6 s | 19.2% | 19.9% | 21.8% | 24.8% |
+
+**Why I u40 over E u40 (the lead's guard: prefer Ranked cells to a lower CLX win alone).**
+- I u40 improves Ranked cells beyond the CLX win: OT share +2.4 (now a pass), CLX takes a princess -2.3 (now a pass), BEAT
+  -2.4, both took one -1.5, king falls after a princess -2.7.
+- On top of that, CLX's win is 1.9 pp closer to Ranked.
+- Its costs:
+  - style 0.78 vs 0.68 (both fail the 0.65 bound);
+  - OT-before-drain +3.0 and regulation loss +0.9 (both fail either way).
+- If the owner weighs human-like timing over these cells, E u40 is the pick: the same yaml, a different w14opp.pt.
+
+**Gap closure since R6 u20 (2,880 vs 1,920 games):**
+- CLX win 64.0 -> 48.8, closed.
+- vs BEAT 56.9 -> 41.0: half of the 31.6 pp gap closed.
+- win \| OT 70.1 -> 57.6: 55% of the gap closed.
+- CLX takes a princess 71.4 -> 58.0: 72% closed.
+- Opponent takes a princess 40.5 -> 55.3: overshoots Ranked by 4.2.
+- Style 0.58 -> 0.78: worse.
+
+**Round summary (one change per round; the full log is above):**
+1. lr x3 / x10: plateau / no gain.
+2. Gate-free (B; A3 on A's net): -7 pp, the first lever.
+3. Tank-deck practice (E): -6.9 pp over B on 1,920 games, and the OT cells.
+4. New KL anchor / continuation (A2, E2, I2): plateau each time.
+5. Opponent OT-starts (I vs control E2): OT share +4.5, both took one -3.0, CLX takes a princess -2.8.
+6. CLX-only mix (J), gate anchored to B u20 (K), eval tempo (decide 20 / 60 / 80): no gain on their targets.
+   Tempo trades style for open games.
+
+**Confirmed plateau and what is left (b, untested):**
+- The last two rounds on I's line (I2) and on E's line (E2) gave no gain. The cells still failing:
+  - BEAT (+15.7);
+  - OT conversion (+10 / +14);
+  - both took one (+7.8);
+  - regulation loss (+7.6): the SIM opponent wins more in regulation than Ranked humans do;
+  - X-Bow lock at 1-1 (36 vs 12%);
+  - style (0.78).
+- Next fixes, one each, in order of expected gap closed:
+  1. A tank-specific reward or start state. For example, OT / regulation scenario starts with the opponent holding a tank
+     deck at 10 elixir. Deck weighting alone closed only half of the BEAT gap.
+  2. A style term for the opponent that does not slow it: a KL to O2b on the timing features only, or an imitation loss on
+     the live-detected Ranked plays (O1 rows). Every tempo or anchor knob tried so far traded style against strength.
+  3. Engine fidelity of tank pushes and pocket play at 1-1. The SIM opponent puts as many troops into the pocket as humans
+     (44.7 vs 41.0%), yet CLX's X-Bow locks there 3x as often as live. That points at what the pocket troops do (targets,
+     placement), or at the engine, not at how often they are played.
+- Pods:
+  - 40116: stopped 03:25 EDT after a verified copy-back.
+  - 48148: idle since 04:00 EDT. claim.lock is free; it holds I u40 as w14opp.pt.
 
 ## 9. Problems found along the way (not fixed outside this directory)
 
