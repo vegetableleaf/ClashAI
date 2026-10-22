@@ -106,3 +106,14 @@ fresh: n=960 A=677 B=630 delta=+4.90 pp [+1.18, +8.61]
 ```
 gate: FAIL
 
+
+## E1 per-play evals vs w7opp (R6 u20), 10-22 07:30 -- G-LOG (log_use/glog_score.py) + win vs CLX / same-seed base
+
+| seed | vs CLX std | vs CLX fresh | vs base std | vs base fresh | hold E1 | hold base | Logs/min E1 |
+|---|---|---|---|---|---|---|---|
+| 74 | +1.88 [-1.91, +5.66] | +1.77 [-1.96, +5.50] | +2.29 | +2.29 | 0.562 | 0.562 | 1.49 |
+| 75 | +3.65 [-0.15, +7.44] | +5.00 [+1.24, +8.76] | +0.21 | +0.73 | 0.524 | 0.583 | 1.69 |
+| 76 | +1.56 [-2.21, +5.33] | -0.42 [-4.27, +3.44] | +2.19 | -2.08 | 0.588 | 0.525 | 1.59 |
+
+CLX hold 0.516 (1.62 Logs/min). E1 mean hold 0.558 = base mean 0.557: bait exposure does NOT change the Log habit
+(contradicted, measured). All six fail G-LOG1 (< 0.60). Next: E2 = tn_base + shaping tower_crown (tn_tower_s74, pod 32621).
