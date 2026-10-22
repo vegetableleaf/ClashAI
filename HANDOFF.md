@@ -1,3 +1,13 @@
+## 2026-10-22 13:14 EDT -- W21 tap fix VERIFIED on live; CLXII 5-12 on Ranked (29%) -> revert to CLX recommended to the owner
+
+- livetaps.py VERIFY on 32 matches since 11:01 (CLX 11:22-12:02 + CLXII): affordable lost 0.34 / match vs the baseline 1.47 (the
+  expected ~0.7); post-end taps out 0.4% / 0.3% / 0.0% / 0.5% per phase; the button class with the hero up 0 / 0 (the UI guard moved
+  7 cells); taps after tick 5979 = 0; 5_unconfirmed stops 0. PASS.
+- CLXII (tn_long_e1i_s74 u100) on Ranked since 12:04: 5 W / 12 L (29.4%) vs CLX 48.1% / 233 (P <= ~0.05 at CLX's rate).
+  Not a tap problem (above). The revert to CLX (5d212358) was recommended to the owner. NOT auto-reverted (the owner chose
+  CLXII).
+- Killed an orphan `find / -maxdepth 6 -name FIN15C*` (pid 14288, since 08:12, parent gone): it starved live decisions
+  (101-128 ms).
 ## 2026-10-22 ~12:45 EDT -- SESSION HANDOVER (account 1 at 100% usage). READ THIS FIRST.
 
 **Live (MuMu OPEN, Ranked loop, LIVE_RANKED on):** ICEBOW **Mark CLXII: LONG** since 12:04, i.e. the long run tn_long_e1i_s74 at u100
