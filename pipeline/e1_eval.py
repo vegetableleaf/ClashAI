@@ -1946,6 +1946,16 @@ def opp_tempo(cfg: dict, decide_every=None, reaction_ticks=None) -> dict:
     return out
 
 
+def forced_name(deck, card: str) -> str:
+    """W18 R4: the engine name (form suffix stripped) of ``deck``'s card matching ``card`` (case / punctuation-free)."""
+    key = lambda n: str(n["name"] if isinstance(n, dict) else n).split("@")[0]  # noqa: E731
+    norm = lambda n: "".join(ch for ch in n.lower() if ch.isalnum())  # noqa: E731
+    hit = [key(n) for n in deck if norm(key(n)) == norm(card)]
+    if not hit:
+        raise ValueError(f"forced card {card!r} not in deck {list(deck)}")
+    return hit[0]
+
+
 TAP_LOSS_WINDOWS = (("1x", 0, 2400), ("2x", 2400, 3600), ("ot2x", 3600, 4800), ("ot3x", 4800, 10 ** 9))
 
 
@@ -2012,6 +2022,8 @@ class SelfPlayMatch:
             st = {L: spec["start"]["learner"], 1 - L: spec["start"]["opp"]}
             kw["start"] = {"tick": spec["start"]["tick"], "princess": [st[0]["princess"], st[1]["princess"]],
                            "elixir": [st[0]["elixir"], st[1]["elixir"]]}
+            if spec["start"].get("force"):      # W18 R4 (rl_royale.draw_xbow_start): the forced card is in the opp's hand
+                kw["start"]["hand_first"] = {1 - L: forced_name(spec["opp_deck"], spec["start"]["force"]["card"])}
         if getattr(env, "spell_tracker", None) is not None:  # rl_royale spell_value (opt-in): a reused env's old tracker
             env.spell_tracker = None
         env.reset(decks[0], decks[1], int(spec["seed"]), **kw)
@@ -2028,6 +2040,25 @@ class SelfPlayMatch:
         self.opp = SelfPlaySide(env, spec["opp_deck"], 1 - L, f"{tag}:opp", k, opp_cfg, opponent)
         self.learner.other, self.opp.other = self.opp, self.learner
         self.sides = sorted((self.learner, self.opp), key=lambda s: s.side)
+        self.forced = None
+        if "start" in spec and spec["start"].get("force"):
+            self._force(spec["start"]["force"], spec["opp_deck"])
+
+    def _force(self, f: dict, opp_deck) -> None:
+        """W18 R4: the OPPONENT side's first act at the scenario start = ``f["card"]`` at ``f["board"]`` (its own board frame,
+        [x, y] in [0, 1], me at the bottom), straight into the engine at the start tick (the live play had already been
+        decided); the learner's opponent-elixir counter sees it as an accepted play. ``self.forced`` = accepted or not."""
+        from pipeline import engine_play as ep
+        from pipeline.dataset_gen import card_key
+        o, env = self.opp, self.env
+        name = forced_name(opp_deck, f["card"])
+        idx = next(i for i, n in enumerate(env.decks[o.side]) if n == name)
+        X, Y = ep.board_to_engine(float(f["board"][0]), float(f["board"][1]), o.mirror)
+        r = env.eng.act(side=o.side, deck_index=idx, x=int(round(X)), y=int(round(Y)))
+        self.forced = bool(r.get("accepted"))
+        if self.forced:
+            o.accepted.append((int(env.tick), str(card_key(o.engine_deck[idx]))))
+            o.last_play_tick = int(env.tick)
 
     def due(self) -> list[SelfPlaySide]:
         env = self.env
@@ -2070,6 +2101,8 @@ class SelfPlayMatch:
 
     def result(self) -> dict:
         r = self.learner.result()
+        if getattr(self, "forced", None) is not None:          # W18 R4: the forced opening act landed or not
+            r["forced_start"] = self.forced
         t0 = int((getattr(self.env, "scenario_start", None) or {}).get("tick", 0))   # W15 lever 2: played time only
         o, minutes = self.opp, (self.env.tick - t0) * TICK_S / 60.0
         r["league"] = dict(self.spec)

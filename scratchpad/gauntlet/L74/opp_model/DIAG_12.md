@@ -524,3 +524,41 @@ The damage per X-Bow vs tank decks (0.306 vs 0.196) splits the same way: +0.055 
   bridge-X-Bow state (clock, tower HP, CLX's elixir; the opponent's elixir unobserved, drawn as ot_start does) with the frozen
   icebow side's first action forced to that X-Bow. This needs a forced-first-play option in e1_eval's SelfPlaySide plus a start
   table builder: ~1 day with tests; not built yet.
+
+### 8.11 R4 built (lead 10-22: build now, run only if R1 leaves the tank-deck timing gap)
+
+**What R4 is.**
+- `cfg/oppW18R4_xbowstart_s74.yaml` = R1's recipe exactly (I u40 + I's recipe + princess_redirect penalty) + ONE change,
+  `xbow_start_share: 0.25`. The A/B is vs R1 at matched updates.
+- Code (opt-in; absent = byte-identical: hash test vs HEAD, 8 + 41 regression tests pass):
+  - `rl_royale.draw_xbow_start` / `xbow_start_share`: a quarter of the matchups against an icebow deck start at one of 841 live
+    Ranked bridge-X-Bow states (`w18/xbow_states.py` -> `w18/xbow_states.json`; 258 matches, 0-0). A state holds:
+    - the clock 26 ticks before the X-Bow's confirmation;
+    - both sides' princess HP (each in its own frame);
+    - CLX's elixir there (>= 6);
+    - the opponent-to-be's elixir, drawn from another state (its live elixir is never read).
+  - `royale_env.reset(start["hand_first"])`: the forced card is dealt into the starting hand.
+  - `e1_eval.SelfPlayMatch._force`: the icebow side's first act is that X-Bow at its live point, straight into the engine at the
+    start tick, counted for the learner's opponent-elixir counter; `forced_start` in the match result.
+  - A real-engine test checks that the X-Bow lands at the live point (Red's rotated frame) within 0.6 tile.
+- Smoke: the opponent yaml needs the Linux fin15 Hero-IW runtime. The laptop smoke runs the same path with the Hero IW press
+  off and `xbow_start_share=1.0`. The full pod smoke (w7_train.sh, SMOKE_ONLY, `xbow_start_share=1.0`) is run on 33401 before
+  the round is queued.
+
+**Can R4 move blocker DEPTH (live 40% of window blockers at 8-11.5 tiles vs SIM 11%)? Expected: no, not by itself. Depth needs
+its own measure.**
+- (a) In the SIM, depth does not pay: window blockers at 8-11.5 tiles lock 49.4% vs 48.2% at 4-8. Live, depth pays: 30.7% vs
+  41.1%. RL can only learn a placement that pays inside the SIM, so neither R4's starts nor R1's tower-damage term rewards
+  going deeper.
+- (a) What the deep live blockers are: mostly y ~ 10 (right in front of their princess, 91 of 199):
+  - Valkyrie 18 (lock 5), Knight 17 (5), Skeletons 20 (10);
+  - buildings: Cannon 9, Tombstone 8, Goblin Cage 7, Goblin Hut 5. These 29 buildings lock in 8 cases.
+- The SIM's 85 deep blockers include no building, and its Valkyries lock 5 of 7.
+- So the depth half is either:
+  - the SIM's opponent not using buildings / tower-front blockers (policy), or
+  - the engine not reproducing why a tower-front blocker denies the X-Bow (X-Bow target choice at activation between a
+    tower-front unit and the tower; to W19).
+- Measure before any depth round: the R3 / R2 gates now carry positions (`O3_POS=1`), so each snapshot reports the window-blocker
+  depth / building share; plus W19's replay check of X-Bow activation with a tower-front blocker.
+- Only if the engine reproduces the live benefit is a depth round worth building. Example: R4's starts with the opponent's hand
+  holding its deck's building.

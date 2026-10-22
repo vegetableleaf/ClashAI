@@ -1843,6 +1843,50 @@ def draw_ot_start(share: float, key: str) -> Optional[dict]:
             "opp": {"princess": list(a["opp"])[::-1], "elixir": float(b["elixir"])}}
 
 
+XBOW_STATES = REPO / "scratchpad/gauntlet/L74/opp_model/w18/xbow_states.json"   # w18/xbow_states.py (live Ranked, 10-22)
+_XB_TABLE: dict = {}
+
+
+def xbow_start_share(cfg: dict) -> Optional[float]:
+    """``xbow_start_share`` (L74 W18 R4, opponent training; optional, absent / null = None = matchups unchanged): the share
+    of league matchups whose OPPONENT plays icebow and that START at a live Ranked bridge-X-Bow state (``draw_xbow_start``):
+    the clock and both sides' princess HP of the moment CLX bridged an X-Bow at 0-0, with that X-Bow forced as the icebow
+    side's first act (e1_eval.SelfPlayMatch). Needs league true; XBOW_STATES' sha256 enters config_sha."""
+    x = cfg.get("xbow_start_share")
+    if x is None:
+        return None
+    if isinstance(x, bool) or not isinstance(x, (int, float)) or not 0 < x <= 1:
+        raise SystemExit(f"xbow_start_share must be null or a number in (0, 1], got {x!r}")
+    if not cfg.get("league"):
+        raise SystemExit("xbow_start_share needs league true (it sets the self-play match start)")
+    if not XBOW_STATES.is_file():
+        raise SystemExit(f"xbow_start_share: {XBOW_STATES} not found (scratchpad/gauntlet/L74/opp_model/w18/xbow_states.py)")
+    return float(x)
+
+
+def has_xbow(deck) -> bool:
+    return any(str(n["name"] if isinstance(n, dict) else n).split("@")[0].replace("-", "").replace("_", "").lower() == "xbow"
+               for n in deck)
+
+
+def draw_xbow_start(share: float, key: str) -> Optional[dict]:
+    """One matchup's X-Bow start, from a stream of its own seeded by ``key`` (no other stream moves): with probability
+    ``share`` one XBOW_STATES row drawn uniformly -> {"tick", "row", "learner": {princess [LEFT, RIGHT] in the learner's own
+    frame, elixir}, "opp": {princess in the icebow side's own frame, elixir}, "force": {"card": "Xbow", "board": [x, y]}}.
+    The learner is the opponent-to-be: its elixir is unobserved live, so another row's icebow elixir is drawn for it."""
+    rng = np.random.default_rng(zlib.crc32(f"xbow_start:{key}".encode()))
+    if rng.random() >= share:
+        return None
+    if not _XB_TABLE:
+        _XB_TABLE.update(json.loads(XBOW_STATES.read_text(encoding="utf-8")))
+    S = _XB_TABLE["states"]
+    a, b = S[int(rng.integers(len(S)))], S[int(rng.integers(len(S)))]
+    return {"tick": int(a["tick"]), "row": a["key"],
+            "learner": {"princess": list(a["learner"]), "elixir": float(b["icebow_elixir"])},
+            "opp": {"princess": list(a["icebow"]), "elixir": float(a["icebow_elixir"])},
+            "force": {"card": "Xbow", "board": [float(v) for v in a["xbow_board"]]}}
+
+
 def sample_matchups(rng: np.random.Generator, n: int, update: int, snaps: list[dict], cfg: dict, census: list[dict],
                     p: np.ndarray, league_state=None, exploiters: Optional[dict] = None) -> list[dict]:
     """``n`` league matchups (one LOO group each): opponent (``sample_opponent``), learner deck (``sample_deck``),
@@ -1876,6 +1920,10 @@ def sample_matchups(rng: np.random.Generator, n: int, update: int, snaps: list[d
         if cfg.get("ot_start_share") is not None:             # W15 lever 2: absent / null = no key (unchanged)
             st = draw_ot_start(float(cfg["ot_start_share"]), f"{out[-1]['seed']}:{out[-1]['tag']}")
             if st is not None:
+                out[-1]["start"] = st
+        if cfg.get("xbow_start_share") is not None and has_xbow(od["engine"]):   # W18 R4: absent / null = no key
+            st = draw_xbow_start(float(cfg["xbow_start_share"]), f"{out[-1]['seed']}:{out[-1]['tag']}")
+            if st is not None:                                # takes the place of an ot start drawn for the same matchup
                 out[-1]["start"] = st
     return out
 
@@ -3167,7 +3215,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                               "critic_ctx", "kl_ref_gate_max_elixir", "kl_ref_gate_target_frac",
                               "league_exploiters", "cue_inputs", "opp_tower_troops", "live_levels", "league_opp_live",
                               "heroiw_press", "ability_features", "kl_heads", "kl_ref_card", "league_deck_weights",
-                              "ot_start_share", "remote_actors", "kl_ref_refresh_every") + OPP_TEMPO_KEYS
+                              "ot_start_share", "xbow_start_share", "remote_actors", "kl_ref_refresh_every") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS and k not in CROWN_KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
         cfg[k] = yaml.safe_load(v)
@@ -3199,6 +3247,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
     live_levels(cfg)                                          # L74 factor D: checked (and the table read) at start
     check_deck_weights(cfg)                                   # W15 lever 3: absent = no-op
     ot_start_share(cfg)                                       # W15 lever 2: absent = no-op
+    xbow_start_share(cfg)                                     # W18 R4: absent = no-op
     ra = cfg.get("remote_actors")                             # W16: absent / null = local actors only
     if ra is not None and not (isinstance(ra, str) and (REPO / ra).is_file()):
         raise SystemExit(f"remote_actors must be null or an endpoints file (one host:port per line), got {ra!r}")
@@ -3255,6 +3304,10 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "ot_start_share"}
     else:                                                     # on: the share AND the measured states' bytes
         cfg = {**cfg, "ot_start_share": [cfg["ot_start_share"], hashlib.sha256(OT_STATES.read_bytes()).hexdigest()]}
+    if cfg.get("xbow_start_share") is None:                  # W18 R4 off (absent or null) = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "xbow_start_share"}
+    else:                                                     # on: the share AND the states' bytes
+        cfg = {**cfg, "xbow_start_share": [cfg["xbow_start_share"], hashlib.sha256(XBOW_STATES.read_bytes()).hexdigest()]}
     if cfg.get("critic_ctx") is None:                        # C2 / F2 off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "critic_ctx"}
     if not cfg.get("cue_inputs"):                            # step c off (absent / null / false) = the historical hash

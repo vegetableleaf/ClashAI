@@ -815,7 +815,9 @@ class RoyaleSelfPlayEnv(RoyalePoolEnv):
         ``start`` (opt-in, W15 lever 2 10-21): {"tick", "princess": [[LEFT, RIGHT] hp fractions of max, Blue], [.., Red]],
         "elixir": [Blue, Red]} -> MatchSetup.start_tick / tower_hp (fraction x the tower's max at this match's levels and
         troops, read off a plain reset first; kings full) / elixir_milli: the battle starts mid-match there (an empty
-        board; ``scenario_start``). None = the setup unchanged."""
+        board; ``scenario_start``). None = the setup unchanged.
+        ``start["hand_first"]`` (opt-in, W18 R4): {side: engine card name} -> that card is dealt FIRST (in the starting hand)
+        for that side; the rest of the seeded deal keeps its order. Absent = the deal unchanged."""
         if tower_troops is not None or getattr(self, "_tower_troops", None) is not None:
             self.core._battle.set_tower_troops(*(tower_troops or (None, None)))
             self._tower_troops = tower_troops
@@ -838,6 +840,10 @@ class RoyaleSelfPlayEnv(RoyalePoolEnv):
         orders = {s: list(range(8)) for s in (0, 1)}
         for s in (0, 1):
             random.Random(f"deal:{self.seed}:{s}").shuffle(orders[s])   # str seed: stable across processes
+        for s, name in ((start or {}).get("hand_first") or {}).items():     # W18 R4: that card into the starting hand
+            s = int(s)
+            i = next(i for i, n in enumerate(decks[s]) if n == str(name).split("@")[0])
+            orders[s] = [i] + [j for j in orders[s] if j != i]
         self.deal = {s: [self.decks[s][i] for i in orders[s]] for s in (0, 1)}
         setup = self._setup({s: [self.deck_ids[s][i] for i in orders[s]] for s in (0, 1)}, orders, wanted)
         if levels is not None:

@@ -1,0 +1,14312 @@
+{
+"source": "diag12/recent/index_ext.json + habits/cache (w18/xbow_states.py)",
+"delay": 26,
+"summary": {
+"n": 841,
+"dropped": 63,
+"matches": 258,
+"tick_median": 2759,
+"in_2x": 0.597,
+"icebow_elixir_median": 7.96,
+"xbow_left": 0.361
+},
+"states": [
+{
+"key": "live_play_20261020_132855.jsonl",
+"tick": 159,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.06,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_132855.jsonl",
+"tick": 1079,
+"learner": [
+0.839,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.56,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_132855.jsonl",
+"tick": 2081,
+"learner": [
+0.839,
+0.605
+],
+"icebow": [
+1.0,
+0.14
+],
+"icebow_elixir": 7.39,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_132855.jsonl",
+"tick": 2758,
+"learner": [
+0.182,
+0.605
+],
+"icebow": [
+1.0,
+0.036
+],
+"icebow_elixir": 8.29,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_133216.jsonl",
+"tick": 479,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+0.643
+],
+"icebow_elixir": 8.59,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_133533.jsonl",
+"tick": 1303,
+"learner": [
+1.0,
+0.987
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.18,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_133533.jsonl",
+"tick": 2243,
+"learner": [
+0.987,
+0.987
+],
+"icebow": [
+1.0,
+0.775
+],
+"icebow_elixir": 6.84,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_133533.jsonl",
+"tick": 3753,
+"learner": [
+0.987,
+0.987
+],
+"icebow": [
+1.0,
+0.76
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_133916.jsonl",
+"tick": 280,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 7.46,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_134440.jsonl",
+"tick": 1223,
+"learner": [
+0.959,
+1.0
+],
+"icebow": [
+1.0,
+0.986
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_134758.jsonl",
+"tick": 358,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.45,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_134758.jsonl",
+"tick": 2010,
+"learner": [
+0.971,
+1.0
+],
+"icebow": [
+0.846,
+1.0
+],
+"icebow_elixir": 6.65,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_134758.jsonl",
+"tick": 3333,
+"learner": [
+0.912,
+0.673
+],
+"icebow": [
+0.846,
+0.978
+],
+"icebow_elixir": 8.35,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_134758.jsonl",
+"tick": 4358,
+"learner": [
+0.912,
+0.641
+],
+"icebow": [
+0.846,
+0.924
+],
+"icebow_elixir": 6.98,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_135241.jsonl",
+"tick": 615,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+0.956
+],
+"icebow_elixir": 7.24,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_135241.jsonl",
+"tick": 2869,
+"learner": [
+0.666,
+1.0
+],
+"icebow": [
+1.0,
+0.796
+],
+"icebow_elixir": 7.29,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_135241.jsonl",
+"tick": 4189,
+"learner": [
+0.643,
+1.0
+],
+"icebow": [
+1.0,
+0.628
+],
+"icebow_elixir": 8.89,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_135241.jsonl",
+"tick": 4808,
+"learner": [
+0.631,
+0.988
+],
+"icebow": [
+1.0,
+0.628
+],
+"icebow_elixir": 8.56,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_141754.jsonl",
+"tick": 293,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+0.966
+],
+"icebow_elixir": 9.6,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_141754.jsonl",
+"tick": 1480,
+"learner": [
+0.922,
+1.0
+],
+"icebow": [
+1.0,
+0.905
+],
+"icebow_elixir": 7.33,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_141754.jsonl",
+"tick": 2478,
+"learner": [
+0.377,
+1.0
+],
+"icebow": [
+1.0,
+0.436
+],
+"icebow_elixir": 7.92,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_142115.jsonl",
+"tick": 2830,
+"learner": [
+0.977,
+0.988
+],
+"icebow": [
+1.0,
+0.791
+],
+"icebow_elixir": 9.54,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_142115.jsonl",
+"tick": 3273,
+"learner": [
+0.977,
+0.625
+],
+"icebow": [
+1.0,
+0.791
+],
+"icebow_elixir": 7.85,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_142115.jsonl",
+"tick": 4234,
+"learner": [
+0.301,
+0.262
+],
+"icebow": [
+1.0,
+0.791
+],
+"icebow_elixir": 7.94,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_142524.jsonl",
+"tick": 313,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.39,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_142524.jsonl",
+"tick": 2355,
+"learner": [
+0.93,
+1.0
+],
+"icebow": [
+1.0,
+0.793
+],
+"icebow_elixir": 7.46,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_142524.jsonl",
+"tick": 2830,
+"learner": [
+0.546,
+1.0
+],
+"icebow": [
+1.0,
+0.688
+],
+"icebow_elixir": 7.53,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_142524.jsonl",
+"tick": 3461,
+"learner": [
+0.535,
+0.879
+],
+"icebow": [
+1.0,
+0.418
+],
+"icebow_elixir": 8.95,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_142524.jsonl",
+"tick": 4009,
+"learner": [
+0.476,
+0.728
+],
+"icebow": [
+1.0,
+0.314
+],
+"icebow_elixir": 6.33,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_142524.jsonl",
+"tick": 4496,
+"learner": [
+0.343,
+0.62
+],
+"icebow": [
+1.0,
+0.209
+],
+"icebow_elixir": 7.04,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_143004.jsonl",
+"tick": 303,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.78,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_143004.jsonl",
+"tick": 1254,
+"learner": [
+0.697,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.5,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_143004.jsonl",
+"tick": 2159,
+"learner": [
+0.323,
+1.0
+],
+"icebow": [
+1.0,
+0.975
+],
+"icebow_elixir": 9.61,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_143334.jsonl",
+"tick": 1949,
+"learner": [
+1.0,
+0.959
+],
+"icebow": [
+0.738,
+1.0
+],
+"icebow_elixir": 9.76,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_143334.jsonl",
+"tick": 2519,
+"learner": [
+1.0,
+0.383
+],
+"icebow": [
+0.726,
+1.0
+],
+"icebow_elixir": 7.25,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_143334.jsonl",
+"tick": 2980,
+"learner": [
+0.988,
+0.383
+],
+"icebow": [
+0.726,
+0.988
+],
+"icebow_elixir": 7.63,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_143334.jsonl",
+"tick": 3628,
+"learner": [
+0.988,
+0.383
+],
+"icebow": [
+0.277,
+0.977
+],
+"icebow_elixir": 7.84,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_143334.jsonl",
+"tick": 4221,
+"learner": [
+0.988,
+0.383
+],
+"icebow": [
+0.277,
+0.977
+],
+"icebow_elixir": 6.72,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_143755.jsonl",
+"tick": 2454,
+"learner": [
+0.876,
+1.0
+],
+"icebow": [
+1.0,
+0.807
+],
+"icebow_elixir": 9.13,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_143755.jsonl",
+"tick": 3192,
+"learner": [
+0.876,
+1.0
+],
+"icebow": [
+1.0,
+0.807
+],
+"icebow_elixir": 7.42,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_143755.jsonl",
+"tick": 3689,
+"learner": [
+0.775,
+1.0
+],
+"icebow": [
+1.0,
+0.807
+],
+"icebow_elixir": 7.91,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_143755.jsonl",
+"tick": 4623,
+"learner": [
+0.755,
+1.0
+],
+"icebow": [
+1.0,
+0.807
+],
+"icebow_elixir": 7.43,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_143755.jsonl",
+"tick": 4957,
+"learner": [
+0.755,
+1.0
+],
+"icebow": [
+1.0,
+0.727
+],
+"icebow_elixir": 6.68,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_144315.jsonl",
+"tick": 278,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.34,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_144315.jsonl",
+"tick": 1257,
+"learner": [
+0.987,
+0.926
+],
+"icebow": [
+0.739,
+1.0
+],
+"icebow_elixir": 8.76,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_144315.jsonl",
+"tick": 2648,
+"learner": [
+0.987,
+0.926
+],
+"icebow": [
+0.739,
+1.0
+],
+"icebow_elixir": 7.23,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_144315.jsonl",
+"tick": 3130,
+"learner": [
+0.987,
+0.064
+],
+"icebow": [
+0.728,
+1.0
+],
+"icebow_elixir": 7.43,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_144719.jsonl",
+"tick": 88,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.85,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_144719.jsonl",
+"tick": 1476,
+"learner": [
+0.354,
+1.0
+],
+"icebow": [
+0.739,
+0.735
+],
+"icebow_elixir": 7.52,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_145037.jsonl",
+"tick": 1099,
+"learner": [
+1.0,
+0.971
+],
+"icebow": [
+0.777,
+0.901
+],
+"icebow_elixir": 7.11,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_145037.jsonl",
+"tick": 2469,
+"learner": [
+0.988,
+0.971
+],
+"icebow": [
+0.544,
+0.792
+],
+"icebow_elixir": 9.05,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_145037.jsonl",
+"tick": 3016,
+"learner": [
+0.988,
+0.567
+],
+"icebow": [
+0.488,
+0.792
+],
+"icebow_elixir": 6.65,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_145359.jsonl",
+"tick": 594,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+0.685
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_145711.jsonl",
+"tick": 213,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_145711.jsonl",
+"tick": 1605,
+"learner": [
+1.0,
+0.254
+],
+"icebow": [
+0.128,
+0.127
+],
+"icebow_elixir": 9.35,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_150323.jsonl",
+"tick": 1971,
+"learner": [
+0.988,
+0.855
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.94,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_150636.jsonl",
+"tick": 2669,
+"learner": [
+0.971,
+0.977
+],
+"icebow": [
+0.905,
+1.0
+],
+"icebow_elixir": 8.75,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_150636.jsonl",
+"tick": 3261,
+"learner": [
+0.547,
+0.977
+],
+"icebow": [
+0.905,
+1.0
+],
+"icebow_elixir": 7.88,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_150636.jsonl",
+"tick": 4320,
+"learner": [
+0.524,
+0.977
+],
+"icebow": [
+0.905,
+1.0
+],
+"icebow_elixir": 7.65,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_151049.jsonl",
+"tick": 263,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.07,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_151401.jsonl",
+"tick": 179,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.07,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_151401.jsonl",
+"tick": 1242,
+"learner": [
+1.0,
+0.597
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_151401.jsonl",
+"tick": 2460,
+"learner": [
+1.0,
+0.585
+],
+"icebow": [
+1.0,
+0.928
+],
+"icebow_elixir": 7.44,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_151401.jsonl",
+"tick": 2932,
+"learner": [
+1.0,
+0.585
+],
+"icebow": [
+1.0,
+0.928
+],
+"icebow_elixir": 7.36,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_151401.jsonl",
+"tick": 3785,
+"learner": [
+0.849,
+0.585
+],
+"icebow": [
+1.0,
+0.905
+],
+"icebow_elixir": 8.03,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_151757.jsonl",
+"tick": 1382,
+"learner": [
+1.0,
+0.988
+],
+"icebow": [
+0.783,
+1.0
+],
+"icebow_elixir": 8.32,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_151757.jsonl",
+"tick": 2390,
+"learner": [
+0.988,
+0.988
+],
+"icebow": [
+0.783,
+1.0
+],
+"icebow_elixir": 7.89,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_151757.jsonl",
+"tick": 3459,
+"learner": [
+0.988,
+0.412
+],
+"icebow": [
+0.562,
+1.0
+],
+"icebow_elixir": 6.34,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_151757.jsonl",
+"tick": 3959,
+"learner": [
+0.686,
+0.412
+],
+"icebow": [
+0.523,
+1.0
+],
+"icebow_elixir": 7.19,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_151757.jsonl",
+"tick": 4430,
+"learner": [
+0.627,
+0.412
+],
+"icebow": [
+0.386,
+1.0
+],
+"icebow_elixir": 7.04,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_152320.jsonl",
+"tick": 193,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 7.79,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_152639.jsonl",
+"tick": 486,
+"learner": [
+0.971,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_152639.jsonl",
+"tick": 2412,
+"learner": [
+0.466,
+1.0
+],
+"icebow": [
+1.0,
+0.767
+],
+"icebow_elixir": 7.93,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_152639.jsonl",
+"tick": 3724,
+"learner": [
+0.466,
+0.573
+],
+"icebow": [
+0.738,
+0.767
+],
+"icebow_elixir": 8.03,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_152639.jsonl",
+"tick": 4381,
+"learner": [
+0.466,
+0.542
+],
+"icebow": [
+0.738,
+0.767
+],
+"icebow_elixir": 6.77,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_153052.jsonl",
+"tick": 133,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.76,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_153403.jsonl",
+"tick": 378,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+0.712
+],
+"icebow_elixir": 9.12,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_153403.jsonl",
+"tick": 2055,
+"learner": [
+0.988,
+0.971
+],
+"icebow": [
+0.889,
+0.712
+],
+"icebow_elixir": 8.97,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_153403.jsonl",
+"tick": 2528,
+"learner": [
+0.988,
+0.818
+],
+"icebow": [
+0.889,
+0.547
+],
+"icebow_elixir": 6.07,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_153403.jsonl",
+"tick": 2972,
+"learner": [
+0.514,
+0.818
+],
+"icebow": [
+0.889,
+0.547
+],
+"icebow_elixir": 6.92,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_153403.jsonl",
+"tick": 3513,
+"learner": [
+0.514,
+0.342
+],
+"icebow": [
+0.878,
+0.465
+],
+"icebow_elixir": 6.95,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_153403.jsonl",
+"tick": 4030,
+"learner": [
+0.514,
+0.313
+],
+"icebow": [
+0.878,
+0.424
+],
+"icebow_elixir": 8.66,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_153403.jsonl",
+"tick": 4516,
+"learner": [
+0.514,
+0.313
+],
+"icebow": [
+0.878,
+0.368
+],
+"icebow_elixir": 6.94,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_153403.jsonl",
+"tick": 4949,
+"learner": [
+0.514,
+0.313
+],
+"icebow": [
+0.878,
+0.368
+],
+"icebow_elixir": 6.59,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_153903.jsonl",
+"tick": 796,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.92,
+1.0
+],
+"icebow_elixir": 9.55,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_153903.jsonl",
+"tick": 2378,
+"learner": [
+0.426,
+1.0
+],
+"icebow": [
+0.626,
+1.0
+],
+"icebow_elixir": 6.49,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_153903.jsonl",
+"tick": 3094,
+"learner": [
+0.011,
+1.0
+],
+"icebow": [
+0.611,
+1.0
+],
+"icebow_elixir": 6.02,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_154222.jsonl",
+"tick": 300,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.65,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_154222.jsonl",
+"tick": 2790,
+"learner": [
+0.988,
+0.637
+],
+"icebow": [
+1.0,
+0.83
+],
+"icebow_elixir": 8.24,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_154222.jsonl",
+"tick": 3212,
+"learner": [
+0.988,
+0.626
+],
+"icebow": [
+0.839,
+0.83
+],
+"icebow_elixir": 7.31,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_162330.jsonl",
+"tick": 144,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.84,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_162330.jsonl",
+"tick": 2710,
+"learner": [
+0.988,
+0.385
+],
+"icebow": [
+0.774,
+1.0
+],
+"icebow_elixir": 7.29,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_162330.jsonl",
+"tick": 4203,
+"learner": [
+0.988,
+0.373
+],
+"icebow": [
+0.764,
+1.0
+],
+"icebow_elixir": 7.87,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_162330.jsonl",
+"tick": 4597,
+"learner": [
+0.988,
+0.373
+],
+"icebow": [
+0.764,
+1.0
+],
+"icebow_elixir": 6.87,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_163014.jsonl",
+"tick": 1458,
+"learner": [
+0.941,
+1.0
+],
+"icebow": [
+0.786,
+1.0
+],
+"icebow_elixir": 8.43,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_163014.jsonl",
+"tick": 3240,
+"learner": [
+0.814,
+0.948
+],
+"icebow": [
+0.522,
+1.0
+],
+"icebow_elixir": 7.54,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_163014.jsonl",
+"tick": 3641,
+"learner": [
+0.814,
+0.875
+],
+"icebow": [
+0.511,
+1.0
+],
+"icebow_elixir": 6.97,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_163014.jsonl",
+"tick": 4263,
+"learner": [
+0.803,
+0.846
+],
+"icebow": [
+0.511,
+0.989
+],
+"icebow_elixir": 6.99,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_163014.jsonl",
+"tick": 4908,
+"learner": [
+0.791,
+0.846
+],
+"icebow": [
+0.511,
+0.989
+],
+"icebow_elixir": 7.31,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_163014.jsonl",
+"tick": 5208,
+"learner": [
+0.791,
+0.846
+],
+"icebow": [
+0.511,
+0.989
+],
+"icebow_elixir": 6.37,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_163641.jsonl",
+"tick": 260,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.02,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_163641.jsonl",
+"tick": 1221,
+"learner": [
+0.737,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_163641.jsonl",
+"tick": 2314,
+"learner": [
+0.273,
+1.0
+],
+"icebow": [
+0.878,
+0.958
+],
+"icebow_elixir": 7.94,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_163641.jsonl",
+"tick": 2772,
+"learner": [
+0.261,
+1.0
+],
+"icebow": [
+0.878,
+0.958
+],
+"icebow_elixir": 7.17,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_163959.jsonl",
+"tick": 643,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+0.876
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_163959.jsonl",
+"tick": 1710,
+"learner": [
+0.987,
+1.0
+],
+"icebow": [
+1.0,
+0.656
+],
+"icebow_elixir": 9.44,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_163959.jsonl",
+"tick": 2505,
+"learner": [
+0.987,
+1.0
+],
+"icebow": [
+1.0,
+0.645
+],
+"icebow_elixir": 6.5,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_163959.jsonl",
+"tick": 3009,
+"learner": [
+0.392,
+1.0
+],
+"icebow": [
+1.0,
+0.645
+],
+"icebow_elixir": 7.67,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_164340.jsonl",
+"tick": 402,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.43,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_164340.jsonl",
+"tick": 3459,
+"learner": [
+1.0,
+0.599
+],
+"icebow": [
+0.452,
+1.0
+],
+"icebow_elixir": 6.91,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_164745.jsonl",
+"tick": 161,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_164745.jsonl",
+"tick": 1169,
+"learner": [
+1.0,
+0.988
+],
+"icebow": [
+1.0,
+0.801
+],
+"icebow_elixir": 8.01,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_164745.jsonl",
+"tick": 3016,
+"learner": [
+0.323,
+0.977
+],
+"icebow": [
+0.125,
+0.801
+],
+"icebow_elixir": 7.92,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_164745.jsonl",
+"tick": 3510,
+"learner": [
+0.323,
+0.965
+],
+"icebow": [
+0.055,
+0.801
+],
+"icebow_elixir": 6.77,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_165147.jsonl",
+"tick": 301,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.927,
+1.0
+],
+"icebow_elixir": 8.75,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_165147.jsonl",
+"tick": 2312,
+"learner": [
+1.0,
+0.706
+],
+"icebow": [
+0.902,
+0.423
+],
+"icebow_elixir": 8.64,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_165147.jsonl",
+"tick": 2919,
+"learner": [
+1.0,
+0.412
+],
+"icebow": [
+0.902,
+0.119
+],
+"icebow_elixir": 7.09,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_165147.jsonl",
+"tick": 3379,
+"learner": [
+0.919,
+0.412
+],
+"icebow": [
+0.902,
+0.119
+],
+"icebow_elixir": 7.59,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_165147.jsonl",
+"tick": 4288,
+"learner": [
+0.679,
+0.401
+],
+"icebow": [
+0.902,
+0.021
+],
+"icebow_elixir": 8.04,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_165557.jsonl",
+"tick": 388,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.09,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_165557.jsonl",
+"tick": 2484,
+"learner": [
+1.0,
+0.977
+],
+"icebow": [
+0.825,
+1.0
+],
+"icebow_elixir": 9.28,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_165557.jsonl",
+"tick": 3259,
+"learner": [
+1.0,
+0.026
+],
+"icebow": [
+0.825,
+1.0
+],
+"icebow_elixir": 8.74,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_165923.jsonl",
+"tick": 275,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.973,
+1.0
+],
+"icebow_elixir": 6.96,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_165923.jsonl",
+"tick": 1550,
+"learner": [
+1.0,
+0.444
+],
+"icebow": [
+0.894,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_170235.jsonl",
+"tick": 94,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.03,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_170235.jsonl",
+"tick": 2641,
+"learner": [
+0.948,
+1.0
+],
+"icebow": [
+0.951,
+0.167
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_170235.jsonl",
+"tick": 3368,
+"learner": [
+0.936,
+1.0
+],
+"icebow": [
+0.951,
+0.07
+],
+"icebow_elixir": 6.88,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_170235.jsonl",
+"tick": 3803,
+"learner": [
+0.714,
+1.0
+],
+"icebow": [
+0.951,
+0.07
+],
+"icebow_elixir": 7.63,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_170622.jsonl",
+"tick": 333,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.28,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_170622.jsonl",
+"tick": 1533,
+"learner": [
+0.597,
+1.0
+],
+"icebow": [
+1.0,
+0.866
+],
+"icebow_elixir": 8.62,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_170622.jsonl",
+"tick": 2341,
+"learner": [
+0.597,
+1.0
+],
+"icebow": [
+1.0,
+0.825
+],
+"icebow_elixir": 6.49,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_170622.jsonl",
+"tick": 2789,
+"learner": [
+0.597,
+0.988
+],
+"icebow": [
+0.952,
+0.739
+],
+"icebow_elixir": 6.48,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_170622.jsonl",
+"tick": 3430,
+"learner": [
+0.585,
+0.988
+],
+"icebow": [
+0.952,
+0.554
+],
+"icebow_elixir": 7.37,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_170622.jsonl",
+"tick": 4519,
+"learner": [
+0.364,
+0.968
+],
+"icebow": [
+0.904,
+0.494
+],
+"icebow_elixir": 7.25,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_170622.jsonl",
+"tick": 4879,
+"learner": [
+0.364,
+0.896
+],
+"icebow": [
+0.844,
+0.494
+],
+"icebow_elixir": 7.82,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_171147.jsonl",
+"tick": 2310,
+"learner": [
+1.0,
+0.975
+],
+"icebow": [
+0.319,
+1.0
+],
+"icebow_elixir": 7.5,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_171147.jsonl",
+"tick": 4289,
+"learner": [
+0.56,
+0.949
+],
+"icebow": [
+0.031,
+0.834
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_171628.jsonl",
+"tick": 613,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_171924.jsonl",
+"tick": 228,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.32,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_171924.jsonl",
+"tick": 1425,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+0.988
+],
+"icebow_elixir": 8.5,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_171924.jsonl",
+"tick": 2268,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+0.923
+],
+"icebow_elixir": 8.5,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_171924.jsonl",
+"tick": 2763,
+"learner": [
+1.0,
+0.294
+],
+"icebow": [
+0.988,
+0.923
+],
+"icebow_elixir": 8.13,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_171924.jsonl",
+"tick": 3716,
+"learner": [
+0.565,
+0.274
+],
+"icebow": [
+0.934,
+0.923
+],
+"icebow_elixir": 7.16,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_171924.jsonl",
+"tick": 4215,
+"learner": [
+0.452,
+0.274
+],
+"icebow": [
+0.934,
+0.911
+],
+"icebow_elixir": 8.79,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_172338.jsonl",
+"tick": 3356,
+"learner": [
+0.977,
+1.0
+],
+"icebow": [
+1.0,
+0.693
+],
+"icebow_elixir": 8.1,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_172338.jsonl",
+"tick": 3817,
+"learner": [
+0.977,
+1.0
+],
+"icebow": [
+1.0,
+0.569
+],
+"icebow_elixir": 7.53,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_172338.jsonl",
+"tick": 4295,
+"learner": [
+0.977,
+1.0
+],
+"icebow": [
+1.0,
+0.569
+],
+"icebow_elixir": 7.63,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_172338.jsonl",
+"tick": 4902,
+"learner": [
+0.744,
+1.0
+],
+"icebow": [
+1.0,
+0.557
+],
+"icebow_elixir": 7.54,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_172338.jsonl",
+"tick": 5208,
+"learner": [
+0.744,
+0.98
+],
+"icebow": [
+1.0,
+0.557
+],
+"icebow_elixir": 6.97,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_172338.jsonl",
+"tick": 5699,
+"learner": [
+0.744,
+0.847
+],
+"icebow": [
+1.0,
+0.546
+],
+"icebow_elixir": 7.34,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_172902.jsonl",
+"tick": 272,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.18,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_172902.jsonl",
+"tick": 2744,
+"learner": [
+0.484,
+1.0
+],
+"icebow": [
+1.0,
+0.94
+],
+"icebow_elixir": 8.46,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_173220.jsonl",
+"tick": 2253,
+"learner": [
+0.91,
+1.0
+],
+"icebow": [
+1.0,
+0.636
+],
+"icebow_elixir": 9.46,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_173220.jsonl",
+"tick": 3979,
+"learner": [
+0.899,
+0.959
+],
+"icebow": [
+0.906,
+0.34
+],
+"icebow_elixir": 6.87,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_173220.jsonl",
+"tick": 4543,
+"learner": [
+0.323,
+0.871
+],
+"icebow": [
+0.906,
+0.272
+],
+"icebow_elixir": 7.94,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_182456.jsonl",
+"tick": 648,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+0.948
+],
+"icebow_elixir": 7.12,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_182456.jsonl",
+"tick": 2414,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+0.827,
+0.444
+],
+"icebow_elixir": 8.22,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_182456.jsonl",
+"tick": 3571,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+0.827,
+0.339
+],
+"icebow_elixir": 8.25,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_182456.jsonl",
+"tick": 4004,
+"learner": [
+0.922,
+1.0
+],
+"icebow": [
+0.827,
+0.339
+],
+"icebow_elixir": 6.71,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_182854.jsonl",
+"tick": 401,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+0.975
+],
+"icebow_elixir": 9.63,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_182854.jsonl",
+"tick": 2766,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+0.503
+],
+"icebow_elixir": 7.54,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_182854.jsonl",
+"tick": 3736,
+"learner": [
+0.977,
+1.0
+],
+"icebow": [
+1.0,
+0.45
+],
+"icebow_elixir": 9.11,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_183411.jsonl",
+"tick": 556,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 7.73,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_183411.jsonl",
+"tick": 1485,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+0.56,
+1.0
+],
+"icebow_elixir": 9.24,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_183411.jsonl",
+"tick": 2709,
+"learner": [
+0.19,
+1.0
+],
+"icebow": [
+0.338,
+0.681
+],
+"icebow_elixir": 8.78,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_183411.jsonl",
+"tick": 3450,
+"learner": [
+0.19,
+1.0
+],
+"icebow": [
+0.338,
+0.628
+],
+"icebow_elixir": 6.45,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_183411.jsonl",
+"tick": 4514,
+"learner": [
+0.19,
+1.0
+],
+"icebow": [
+0.338,
+0.617
+],
+"icebow_elixir": 7.65,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_183850.jsonl",
+"tick": 2793,
+"learner": [
+1.0,
+0.977
+],
+"icebow": [
+0.441,
+1.0
+],
+"icebow_elixir": 8.33,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_184210.jsonl",
+"tick": 1425,
+"learner": [
+0.959,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_184210.jsonl",
+"tick": 2444,
+"learner": [
+0.071,
+1.0
+],
+"icebow": [
+0.081,
+0.721
+],
+"icebow_elixir": 7.84,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_184730.jsonl",
+"tick": 2948,
+"learner": [
+1.0,
+0.977
+],
+"icebow": [
+0.316,
+1.0
+],
+"icebow_elixir": 7.68,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_184730.jsonl",
+"tick": 3729,
+"learner": [
+1.0,
+0.945
+],
+"icebow": [
+0.252,
+1.0
+],
+"icebow_elixir": 6.78,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_184730.jsonl",
+"tick": 4198,
+"learner": [
+0.386,
+0.945
+],
+"icebow": [
+0.252,
+1.0
+],
+"icebow_elixir": 7.53,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_184730.jsonl",
+"tick": 4610,
+"learner": [
+0.386,
+0.167
+],
+"icebow": [
+0.252,
+1.0
+],
+"icebow_elixir": 6.23,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_185147.jsonl",
+"tick": 509,
+"learner": [
+0.987,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 7.4,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_185525.jsonl",
+"tick": 1099,
+"learner": [
+0.986,
+1.0
+],
+"icebow": [
+1.0,
+0.923
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_185935.jsonl",
+"tick": 940,
+"learner": [
+0.867,
+0.988
+],
+"icebow": [
+0.905,
+1.0
+],
+"icebow_elixir": 7.01,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_185935.jsonl",
+"tick": 2040,
+"learner": [
+0.867,
+0.092
+],
+"icebow": [
+0.905,
+0.961
+],
+"icebow_elixir": 7.59,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_190258.jsonl",
+"tick": 274,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_190258.jsonl",
+"tick": 1205,
+"learner": [
+0.859,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.02,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_190258.jsonl",
+"tick": 2228,
+"learner": [
+0.051,
+1.0
+],
+"icebow": [
+1.0,
+0.687
+],
+"icebow_elixir": 8.21,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_190642.jsonl",
+"tick": 231,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_191014.jsonl",
+"tick": 2116,
+"learner": [
+1.0,
+0.977
+],
+"icebow": [
+0.523,
+1.0
+],
+"icebow_elixir": 8.16,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_191014.jsonl",
+"tick": 2693,
+"learner": [
+0.375,
+0.977
+],
+"icebow": [
+0.406,
+1.0
+],
+"icebow_elixir": 7.62,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_191634.jsonl",
+"tick": 368,
+"learner": [
+0.987,
+1.0
+],
+"icebow": [
+1.0,
+0.923
+],
+"icebow_elixir": 8.4,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_192008.jsonl",
+"tick": 146,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.9,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_192008.jsonl",
+"tick": 938,
+"learner": [
+1.0,
+0.395
+],
+"icebow": [
+0.825,
+0.382
+],
+"icebow_elixir": 7.62,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_192604.jsonl",
+"tick": 2394,
+"learner": [
+0.735,
+1.0
+],
+"icebow": [
+1.0,
+0.608
+],
+"icebow_elixir": 6.69,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_192604.jsonl",
+"tick": 2876,
+"learner": [
+0.412,
+1.0
+],
+"icebow": [
+1.0,
+0.608
+],
+"icebow_elixir": 7.14,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_192604.jsonl",
+"tick": 3792,
+"learner": [
+0.387,
+1.0
+],
+"icebow": [
+1.0,
+0.508
+],
+"icebow_elixir": 7.59,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_192604.jsonl",
+"tick": 5287,
+"learner": [
+0.387,
+0.987
+],
+"icebow": [
+0.433,
+0.508
+],
+"icebow_elixir": 9.99,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_193318.jsonl",
+"tick": 1003,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.702,
+1.0
+],
+"icebow_elixir": 9.45,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_193701.jsonl",
+"tick": 824,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.59,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_193701.jsonl",
+"tick": 2413,
+"learner": [
+0.977,
+1.0
+],
+"icebow": [
+1.0,
+0.899
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_193701.jsonl",
+"tick": 2869,
+"learner": [
+0.977,
+1.0
+],
+"icebow": [
+1.0,
+0.899
+],
+"icebow_elixir": 8.03,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_193701.jsonl",
+"tick": 3258,
+"learner": [
+0.91,
+0.919
+],
+"icebow": [
+1.0,
+0.787
+],
+"icebow_elixir": 7.31,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_193701.jsonl",
+"tick": 3791,
+"learner": [
+0.766,
+0.778
+],
+"icebow": [
+0.853,
+0.787
+],
+"icebow_elixir": 7.3,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_193701.jsonl",
+"tick": 4264,
+"learner": [
+0.766,
+0.738
+],
+"icebow": [
+0.853,
+0.787
+],
+"icebow_elixir": 7.19,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_193701.jsonl",
+"tick": 4775,
+"learner": [
+0.754,
+0.738
+],
+"icebow": [
+0.853,
+0.787
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_193701.jsonl",
+"tick": 5258,
+"learner": [
+0.743,
+0.738
+],
+"icebow": [
+0.853,
+0.674
+],
+"icebow_elixir": 6.25,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_194332.jsonl",
+"tick": 2022,
+"learner": [
+0.988,
+0.988
+],
+"icebow": [
+0.723,
+0.768
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_194332.jsonl",
+"tick": 3031,
+"learner": [
+0.977,
+0.977
+],
+"icebow": [
+0.619,
+0.768
+],
+"icebow_elixir": 7.97,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_194332.jsonl",
+"tick": 3446,
+"learner": [
+0.977,
+0.977
+],
+"icebow": [
+0.619,
+0.756
+],
+"icebow_elixir": 6.93,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_194332.jsonl",
+"tick": 3947,
+"learner": [
+0.977,
+0.965
+],
+"icebow": [
+0.619,
+0.745
+],
+"icebow_elixir": 7.85,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_194332.jsonl",
+"tick": 4802,
+"learner": [
+0.969,
+0.965
+],
+"icebow": [
+0.607,
+0.733
+],
+"icebow_elixir": 6.22,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_194833.jsonl",
+"tick": 304,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.945,
+1.0
+],
+"icebow_elixir": 8.78,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_195151.jsonl",
+"tick": 903,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.757,
+1.0
+],
+"icebow_elixir": 8.8,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_195151.jsonl",
+"tick": 1756,
+"learner": [
+1.0,
+0.019
+],
+"icebow": [
+0.469,
+1.0
+],
+"icebow_elixir": 9.12,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_195151.jsonl",
+"tick": 2547,
+"learner": [
+0.304,
+0.019
+],
+"icebow": [
+0.345,
+1.0
+],
+"icebow_elixir": 7.73,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_195520.jsonl",
+"tick": 180,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_195738.jsonl",
+"tick": 1959,
+"learner": [
+0.853,
+0.988
+],
+"icebow": [
+0.691,
+1.0
+],
+"icebow_elixir": 7.85,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_195738.jsonl",
+"tick": 3043,
+"learner": [
+0.72,
+0.977
+],
+"icebow": [
+0.586,
+1.0
+],
+"icebow_elixir": 7.91,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_195738.jsonl",
+"tick": 3542,
+"learner": [
+0.72,
+0.925
+],
+"icebow": [
+0.586,
+1.0
+],
+"icebow_elixir": 6.73,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_200118.jsonl",
+"tick": 646,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.58,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_200118.jsonl",
+"tick": 2330,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.92,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_200118.jsonl",
+"tick": 3162,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+0.992
+],
+"icebow_elixir": 8.32,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_200118.jsonl",
+"tick": 3624,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+0.98
+],
+"icebow_elixir": 8.7,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_200118.jsonl",
+"tick": 4249,
+"learner": [
+0.977,
+1.0
+],
+"icebow": [
+1.0,
+0.901
+],
+"icebow_elixir": 8.03,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_200118.jsonl",
+"tick": 5392,
+"learner": [
+0.953,
+1.0
+],
+"icebow": [
+1.0,
+0.901
+],
+"icebow_elixir": 8.06,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_200644.jsonl",
+"tick": 444,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+0.959
+],
+"icebow_elixir": 9.67,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_200942.jsonl",
+"tick": 429,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+0.718
+],
+"icebow_elixir": 7.93,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_200942.jsonl",
+"tick": 1628,
+"learner": [
+0.585,
+1.0
+],
+"icebow": [
+1.0,
+0.529
+],
+"icebow_elixir": 6.49,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_201302.jsonl",
+"tick": 933,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+0.946
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_201302.jsonl",
+"tick": 2415,
+"learner": [
+0.988,
+0.657
+],
+"icebow": [
+1.0,
+0.539
+],
+"icebow_elixir": 8.62,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_201302.jsonl",
+"tick": 2932,
+"learner": [
+0.876,
+0.657
+],
+"icebow": [
+1.0,
+0.539
+],
+"icebow_elixir": 7.07,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_201302.jsonl",
+"tick": 3705,
+"learner": [
+0.876,
+0.617
+],
+"icebow": [
+1.0,
+0.459
+],
+"icebow_elixir": 8.6,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_201302.jsonl",
+"tick": 4131,
+"learner": [
+0.876,
+0.528
+],
+"icebow": [
+1.0,
+0.459
+],
+"icebow_elixir": 6.84,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_201302.jsonl",
+"tick": 4653,
+"learner": [
+0.876,
+0.528
+],
+"icebow": [
+0.756,
+0.459
+],
+"icebow_elixir": 8.32,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_201302.jsonl",
+"tick": 5364,
+"learner": [
+0.876,
+0.528
+],
+"icebow": [
+0.756,
+0.459
+],
+"icebow_elixir": 8.54,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_201302.jsonl",
+"tick": 5653,
+"learner": [
+0.865,
+0.307
+],
+"icebow": [
+0.756,
+0.459
+],
+"icebow_elixir": 6.96,
+"xbow_board": [
+0.4722,
+0.5781
+]
+},
+{
+"key": "live_play_20261020_201818.jsonl",
+"tick": 777,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 7.67,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_202141.jsonl",
+"tick": 376,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.41,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_202141.jsonl",
+"tick": 1088,
+"learner": [
+0.565,
+1.0
+],
+"icebow": [
+1.0,
+0.761
+],
+"icebow_elixir": 7.12,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_202500.jsonl",
+"tick": 433,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+0.791
+],
+"icebow_elixir": 8.92,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_202500.jsonl",
+"tick": 2299,
+"learner": [
+0.516,
+1.0
+],
+"icebow": [
+1.0,
+0.5
+],
+"icebow_elixir": 6.97,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_202500.jsonl",
+"tick": 3245,
+"learner": [
+0.414,
+1.0
+],
+"icebow": [
+1.0,
+0.322
+],
+"icebow_elixir": 8.4,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_202834.jsonl",
+"tick": 140,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.86,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_203152.jsonl",
+"tick": 2538,
+"learner": [
+0.977,
+1.0
+],
+"icebow": [
+1.0,
+0.973
+],
+"icebow_elixir": 7.17,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_203152.jsonl",
+"tick": 5071,
+"learner": [
+0.807,
+1.0
+],
+"icebow": [
+1.0,
+0.88
+],
+"icebow_elixir": 7.72,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_203152.jsonl",
+"tick": 5481,
+"learner": [
+0.795,
+1.0
+],
+"icebow": [
+1.0,
+0.88
+],
+"icebow_elixir": 7.74,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_203838.jsonl",
+"tick": 194,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.52,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_203838.jsonl",
+"tick": 2358,
+"learner": [
+0.267,
+1.0
+],
+"icebow": [
+1.0,
+0.513
+],
+"icebow_elixir": 8.28,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_204216.jsonl",
+"tick": 3619,
+"learner": [
+0.965,
+0.958
+],
+"icebow": [
+0.8,
+0.425
+],
+"icebow_elixir": 8.96,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_204216.jsonl",
+"tick": 4620,
+"learner": [
+0.965,
+0.305
+],
+"icebow": [
+0.8,
+0.343
+],
+"icebow_elixir": 7.73,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_204216.jsonl",
+"tick": 4989,
+"learner": [
+0.965,
+0.305
+],
+"icebow": [
+0.8,
+0.343
+],
+"icebow_elixir": 8.75,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_204216.jsonl",
+"tick": 5239,
+"learner": [
+0.965,
+0.305
+],
+"icebow": [
+0.8,
+0.343
+],
+"icebow_elixir": 7.03,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_204216.jsonl",
+"tick": 5780,
+"learner": [
+0.274,
+0.238
+],
+"icebow": [
+0.8,
+0.343
+],
+"icebow_elixir": 6.81,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_204741.jsonl",
+"tick": 548,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+0.988
+],
+"icebow_elixir": 8.66,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_204741.jsonl",
+"tick": 1702,
+"learner": [
+0.834,
+1.0
+],
+"icebow": [
+1.0,
+0.884
+],
+"icebow_elixir": 9.06,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_204741.jsonl",
+"tick": 2533,
+"learner": [
+0.834,
+1.0
+],
+"icebow": [
+1.0,
+0.786
+],
+"icebow_elixir": 8.62,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_204741.jsonl",
+"tick": 2968,
+"learner": [
+0.822,
+1.0
+],
+"icebow": [
+1.0,
+0.766
+],
+"icebow_elixir": 8.3,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_204741.jsonl",
+"tick": 4506,
+"learner": [
+0.58,
+1.0
+],
+"icebow": [
+0.914,
+0.136
+],
+"icebow_elixir": 6.91,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_204741.jsonl",
+"tick": 4845,
+"learner": [
+0.58,
+0.908
+],
+"icebow": [
+0.914,
+0.136
+],
+"icebow_elixir": 6.3,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_204741.jsonl",
+"tick": 5173,
+"learner": [
+0.58,
+0.818
+],
+"icebow": [
+0.903,
+0.049
+],
+"icebow_elixir": 6.65,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_205234.jsonl",
+"tick": 1203,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+0.966
+],
+"icebow_elixir": 8.71,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_205234.jsonl",
+"tick": 4723,
+"learner": [
+0.954,
+1.0
+],
+"icebow": [
+1.0,
+0.79
+],
+"icebow_elixir": 7.51,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_205234.jsonl",
+"tick": 5061,
+"learner": [
+0.942,
+1.0
+],
+"icebow": [
+1.0,
+0.79
+],
+"icebow_elixir": 7.78,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_205741.jsonl",
+"tick": 707,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+0.931
+],
+"icebow_elixir": 7.76,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_210413.jsonl",
+"tick": 2268,
+"learner": [
+1.0,
+0.977
+],
+"icebow": [
+0.911,
+1.0
+],
+"icebow_elixir": 8.08,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_210413.jsonl",
+"tick": 2841,
+"learner": [
+0.988,
+0.977
+],
+"icebow": [
+0.813,
+0.685
+],
+"icebow_elixir": 6.58,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_210413.jsonl",
+"tick": 4208,
+"learner": [
+0.977,
+0.977
+],
+"icebow": [
+0.689,
+0.627
+],
+"icebow_elixir": 7.39,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_210413.jsonl",
+"tick": 5228,
+"learner": [
+0.591,
+0.977
+],
+"icebow": [
+0.66,
+0.613
+],
+"icebow_elixir": 8.22,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_210413.jsonl",
+"tick": 5544,
+"learner": [
+0.591,
+0.965
+],
+"icebow": [
+0.66,
+0.599
+],
+"icebow_elixir": 6.51,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_210940.jsonl",
+"tick": 446,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.31,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_210940.jsonl",
+"tick": 2707,
+"learner": [
+1.0,
+0.988
+],
+"icebow": [
+0.799,
+1.0
+],
+"icebow_elixir": 8.31,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_211259.jsonl",
+"tick": 163,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.13,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_211617.jsonl",
+"tick": 1139,
+"learner": [
+0.9,
+1.0
+],
+"icebow": [
+1.0,
+0.956
+],
+"icebow_elixir": 8.47,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_211617.jsonl",
+"tick": 2165,
+"learner": [
+0.871,
+1.0
+],
+"icebow": [
+0.712,
+0.655
+],
+"icebow_elixir": 7.55,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_211617.jsonl",
+"tick": 2684,
+"learner": [
+0.871,
+0.988
+],
+"icebow": [
+0.053,
+0.655
+],
+"icebow_elixir": 8.27,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_211937.jsonl",
+"tick": 333,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_211937.jsonl",
+"tick": 1348,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.93,
+0.973
+],
+"icebow_elixir": 8.48,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_211937.jsonl",
+"tick": 4013,
+"learner": [
+0.988,
+0.977
+],
+"icebow": [
+0.296,
+0.973
+],
+"icebow_elixir": 8.01,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_211937.jsonl",
+"tick": 4492,
+"learner": [
+0.948,
+0.977
+],
+"icebow": [
+0.296,
+0.973
+],
+"icebow_elixir": 8.18,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_211937.jsonl",
+"tick": 4982,
+"learner": [
+0.937,
+0.977
+],
+"icebow": [
+0.296,
+0.973
+],
+"icebow_elixir": 8.6,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_211937.jsonl",
+"tick": 5273,
+"learner": [
+0.937,
+0.977
+],
+"icebow": [
+0.296,
+0.973
+],
+"icebow_elixir": 6.8,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_211937.jsonl",
+"tick": 5628,
+"learner": [
+0.925,
+0.859
+],
+"icebow": [
+0.296,
+0.973
+],
+"icebow_elixir": 8.24,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_212504.jsonl",
+"tick": 2408,
+"learner": [
+0.959,
+0.988
+],
+"icebow": [
+0.896,
+1.0
+],
+"icebow_elixir": 8.33,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_212504.jsonl",
+"tick": 3508,
+"learner": [
+0.342,
+0.799
+],
+"icebow": [
+0.747,
+1.0
+],
+"icebow_elixir": 8.31,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_212504.jsonl",
+"tick": 4011,
+"learner": [
+0.342,
+0.799
+],
+"icebow": [
+0.642,
+0.917
+],
+"icebow_elixir": 6.23,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_212504.jsonl",
+"tick": 4429,
+"learner": [
+0.331,
+0.799
+],
+"icebow": [
+0.329,
+0.912
+],
+"icebow_elixir": 6.48,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_213018.jsonl",
+"tick": 2467,
+"learner": [
+0.972,
+1.0
+],
+"icebow": [
+1.0,
+0.786
+],
+"icebow_elixir": 8.3,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_213337.jsonl",
+"tick": 2409,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+0.45
+],
+"icebow_elixir": 8.87,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_213337.jsonl",
+"tick": 2820,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.719,
+0.45
+],
+"icebow_elixir": 6.68,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_213337.jsonl",
+"tick": 3319,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+0.589,
+0.45
+],
+"icebow_elixir": 8.35,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_213337.jsonl",
+"tick": 3735,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+0.484,
+0.397
+],
+"icebow_elixir": 6.35,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_213337.jsonl",
+"tick": 4209,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+0.484,
+0.397
+],
+"icebow_elixir": 6.2,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_213744.jsonl",
+"tick": 358,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 7.74,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_213744.jsonl",
+"tick": 1583,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+0.889
+],
+"icebow_elixir": 9.14,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_214310.jsonl",
+"tick": 131,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.58,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_214648.jsonl",
+"tick": 138,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.72,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_214648.jsonl",
+"tick": 1400,
+"learner": [
+0.987,
+1.0
+],
+"icebow": [
+1.0,
+0.852
+],
+"icebow_elixir": 9.14,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_214648.jsonl",
+"tick": 2444,
+"learner": [
+0.975,
+1.0
+],
+"icebow": [
+1.0,
+0.601
+],
+"icebow_elixir": 7.8,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_214648.jsonl",
+"tick": 2934,
+"learner": [
+0.819,
+1.0
+],
+"icebow": [
+1.0,
+0.557
+],
+"icebow_elixir": 8.33,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_215002.jsonl",
+"tick": 923,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+0.941
+],
+"icebow_elixir": 8.67,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_215002.jsonl",
+"tick": 2360,
+"learner": [
+0.251,
+1.0
+],
+"icebow": [
+1.0,
+0.631
+],
+"icebow_elixir": 7.9,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_215002.jsonl",
+"tick": 2902,
+"learner": [
+0.239,
+1.0
+],
+"icebow": [
+1.0,
+0.62
+],
+"icebow_elixir": 8.21,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_215002.jsonl",
+"tick": 3804,
+"learner": [
+0.239,
+0.867
+],
+"icebow": [
+1.0,
+0.561
+],
+"icebow_elixir": 8.32,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_215002.jsonl",
+"tick": 4199,
+"learner": [
+0.228,
+0.867
+],
+"icebow": [
+1.0,
+0.502
+],
+"icebow_elixir": 6.42,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_215409.jsonl",
+"tick": 279,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.34,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_215409.jsonl",
+"tick": 1232,
+"learner": [
+1.0,
+0.971
+],
+"icebow": [
+0.896,
+0.988
+],
+"icebow_elixir": 9.3,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_215409.jsonl",
+"tick": 2198,
+"learner": [
+0.859,
+0.971
+],
+"icebow": [
+0.687,
+0.977
+],
+"icebow_elixir": 7.5,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_215409.jsonl",
+"tick": 3769,
+"learner": [
+0.735,
+0.948
+],
+"icebow": [
+0.615,
+0.664
+],
+"icebow_elixir": 6.38,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_215409.jsonl",
+"tick": 4659,
+"learner": [
+0.712,
+0.948
+],
+"icebow": [
+0.511,
+0.641
+],
+"icebow_elixir": 6.15,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_215409.jsonl",
+"tick": 5038,
+"learner": [
+0.712,
+0.936
+],
+"icebow": [
+0.511,
+0.629
+],
+"icebow_elixir": 6.37,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_220152.jsonl",
+"tick": 225,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_220152.jsonl",
+"tick": 2920,
+"learner": [
+0.977,
+1.0
+],
+"icebow": [
+0.973,
+0.547
+],
+"icebow_elixir": 9.75,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_220152.jsonl",
+"tick": 3554,
+"learner": [
+0.977,
+0.988
+],
+"icebow": [
+0.92,
+0.547
+],
+"icebow_elixir": 7.67,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_220718.jsonl",
+"tick": 581,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+0.958
+],
+"icebow_elixir": 9.69,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_220718.jsonl",
+"tick": 2373,
+"learner": [
+0.605,
+1.0
+],
+"icebow": [
+1.0,
+0.874
+],
+"icebow_elixir": 7.89,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_220718.jsonl",
+"tick": 3249,
+"learner": [
+0.546,
+0.969
+],
+"icebow": [
+0.89,
+0.64
+],
+"icebow_elixir": 7.17,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_220718.jsonl",
+"tick": 3976,
+"learner": [
+0.546,
+0.929
+],
+"icebow": [
+0.89,
+0.551
+],
+"icebow_elixir": 8.19,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_220718.jsonl",
+"tick": 5092,
+"learner": [
+0.503,
+0.929
+],
+"icebow": [
+0.89,
+0.355
+],
+"icebow_elixir": 7.69,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_221242.jsonl",
+"tick": 712,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.89,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_221242.jsonl",
+"tick": 3452,
+"learner": [
+0.069,
+1.0
+],
+"icebow": [
+0.824,
+0.072
+],
+"icebow_elixir": 8.78,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_221620.jsonl",
+"tick": 609,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.918,
+1.0
+],
+"icebow_elixir": 8.1,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_221620.jsonl",
+"tick": 1642,
+"learner": [
+0.827,
+1.0
+],
+"icebow": [
+0.891,
+0.847
+],
+"icebow_elixir": 7.51,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_221620.jsonl",
+"tick": 2894,
+"learner": [
+0.748,
+1.0
+],
+"icebow": [
+0.891,
+0.847
+],
+"icebow_elixir": 7.82,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_221620.jsonl",
+"tick": 3524,
+"learner": [
+0.748,
+0.244
+],
+"icebow": [
+0.879,
+0.847
+],
+"icebow_elixir": 8.06,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_221942.jsonl",
+"tick": 2408,
+"learner": [
+0.699,
+1.0
+],
+"icebow": [
+1.0,
+0.64
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_221942.jsonl",
+"tick": 3211,
+"learner": [
+0.688,
+0.254
+],
+"icebow": [
+1.0,
+0.615
+],
+"icebow_elixir": 7.77,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_222321.jsonl",
+"tick": 793,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+0.871
+],
+"icebow_elixir": 6.42,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_222321.jsonl",
+"tick": 2278,
+"learner": [
+0.14,
+1.0
+],
+"icebow": [
+1.0,
+0.808
+],
+"icebow_elixir": 8.89,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_222633.jsonl",
+"tick": 1153,
+"learner": [
+0.941,
+1.0
+],
+"icebow": [
+0.732,
+1.0
+],
+"icebow_elixir": 7.77,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_222947.jsonl",
+"tick": 112,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.38,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_222947.jsonl",
+"tick": 1375,
+"learner": [
+0.93,
+1.0
+],
+"icebow": [
+1.0,
+0.777
+],
+"icebow_elixir": 6.72,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_222947.jsonl",
+"tick": 3398,
+"learner": [
+0.907,
+0.977
+],
+"icebow": [
+1.0,
+0.612
+],
+"icebow_elixir": 6.13,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_222947.jsonl",
+"tick": 3838,
+"learner": [
+0.907,
+0.965
+],
+"icebow": [
+0.958,
+0.528
+],
+"icebow_elixir": 6.63,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_222947.jsonl",
+"tick": 4339,
+"learner": [
+0.907,
+0.401
+],
+"icebow": [
+0.958,
+0.528
+],
+"icebow_elixir": 7.73,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_222947.jsonl",
+"tick": 4798,
+"learner": [
+0.907,
+0.401
+],
+"icebow": [
+0.958,
+0.424
+],
+"icebow_elixir": 8.37,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_222947.jsonl",
+"tick": 5429,
+"learner": [
+0.883,
+0.401
+],
+"icebow": [
+0.958,
+0.213
+],
+"icebow_elixir": 7.37,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_223511.jsonl",
+"tick": 1894,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+0.895
+],
+"icebow_elixir": 6.94,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_223825.jsonl",
+"tick": 325,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.976,
+1.0
+],
+"icebow_elixir": 9.03,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_223825.jsonl",
+"tick": 2702,
+"learner": [
+1.0,
+0.988
+],
+"icebow": [
+0.976,
+0.729
+],
+"icebow_elixir": 8.25,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_223825.jsonl",
+"tick": 3103,
+"learner": [
+0.988,
+0.988
+],
+"icebow": [
+0.937,
+0.729
+],
+"icebow_elixir": 7.56,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_223825.jsonl",
+"tick": 5328,
+"learner": [
+0.977,
+0.954
+],
+"icebow": [
+0.864,
+0.43
+],
+"icebow_elixir": 7.7,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_224344.jsonl",
+"tick": 550,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_224344.jsonl",
+"tick": 1412,
+"learner": [
+0.928,
+1.0
+],
+"icebow": [
+1.0,
+0.951
+],
+"icebow_elixir": 9.81,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_225020.jsonl",
+"tick": 192,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_225020.jsonl",
+"tick": 1573,
+"learner": [
+0.657,
+0.882
+],
+"icebow": [
+0.839,
+0.058
+],
+"icebow_elixir": 9.67,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_225020.jsonl",
+"tick": 3025,
+"learner": [
+0.657,
+0.669
+],
+"icebow": [
+0.768,
+0.006
+],
+"icebow_elixir": 7.07,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_225340.jsonl",
+"tick": 168,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_225340.jsonl",
+"tick": 2262,
+"learner": [
+0.516,
+1.0
+],
+"icebow": [
+0.725,
+0.988
+],
+"icebow_elixir": 8.48,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_225340.jsonl",
+"tick": 3420,
+"learner": [
+0.334,
+1.0
+],
+"icebow": [
+0.544,
+0.988
+],
+"icebow_elixir": 6.85,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_225716.jsonl",
+"tick": 558,
+"learner": [
+0.987,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_225716.jsonl",
+"tick": 1692,
+"learner": [
+0.987,
+0.955
+],
+"icebow": [
+1.0,
+0.882
+],
+"icebow_elixir": 7.63,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_225716.jsonl",
+"tick": 3222,
+"learner": [
+0.987,
+0.319
+],
+"icebow": [
+0.168,
+0.674
+],
+"icebow_elixir": 6.08,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_225716.jsonl",
+"tick": 3665,
+"learner": [
+0.354,
+0.319
+],
+"icebow": [
+0.168,
+0.674
+],
+"icebow_elixir": 6.61,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_225716.jsonl",
+"tick": 4533,
+"learner": [
+0.342,
+0.319
+],
+"icebow": [
+0.168,
+0.644
+],
+"icebow_elixir": 7.82,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_230148.jsonl",
+"tick": 159,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_230148.jsonl",
+"tick": 2473,
+"learner": [
+0.452,
+0.912
+],
+"icebow": [
+0.002,
+0.946
+],
+"icebow_elixir": 9.55,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_230148.jsonl",
+"tick": 2968,
+"learner": [
+0.12,
+0.134
+],
+"icebow": [
+0.002,
+0.946
+],
+"icebow_elixir": 7.78,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_230525.jsonl",
+"tick": 2637,
+"learner": [
+0.948,
+0.847
+],
+"icebow": [
+0.952,
+0.616
+],
+"icebow_elixir": 7.03,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_230525.jsonl",
+"tick": 3102,
+"learner": [
+0.907,
+0.847
+],
+"icebow": [
+0.952,
+0.556
+],
+"icebow_elixir": 6.45,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_230907.jsonl",
+"tick": 1105,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+0.842,
+1.0
+],
+"icebow_elixir": 7.7,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_230907.jsonl",
+"tick": 2279,
+"learner": [
+0.988,
+0.597
+],
+"icebow": [
+0.781,
+1.0
+],
+"icebow_elixir": 9.75,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_230907.jsonl",
+"tick": 2718,
+"learner": [
+0.988,
+0.597
+],
+"icebow": [
+0.781,
+1.0
+],
+"icebow_elixir": 7.31,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_230907.jsonl",
+"tick": 3420,
+"learner": [
+0.988,
+0.153
+],
+"icebow": [
+0.76,
+1.0
+],
+"icebow_elixir": 7.45,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_231314.jsonl",
+"tick": 190,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.73,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_231314.jsonl",
+"tick": 2352,
+"learner": [
+0.464,
+1.0
+],
+"icebow": [
+0.948,
+0.265
+],
+"icebow_elixir": 7.72,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_231314.jsonl",
+"tick": 3088,
+"learner": [
+0.464,
+0.504
+],
+"icebow": [
+0.948,
+0.157
+],
+"icebow_elixir": 7.39,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_231630.jsonl",
+"tick": 2384,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.39,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_231630.jsonl",
+"tick": 2880,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.24,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_231630.jsonl",
+"tick": 3442,
+"learner": [
+0.977,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.2,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_231630.jsonl",
+"tick": 5172,
+"learner": [
+0.965,
+0.585
+],
+"icebow": [
+0.691,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_231630.jsonl",
+"tick": 5513,
+"learner": [
+0.824,
+0.585
+],
+"icebow": [
+0.552,
+1.0
+],
+"icebow_elixir": 7.97,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_232152.jsonl",
+"tick": 629,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+0.834
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_232506.jsonl",
+"tick": 186,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_232823.jsonl",
+"tick": 1729,
+"learner": [
+0.976,
+1.0
+],
+"icebow": [
+1.0,
+0.946
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_232823.jsonl",
+"tick": 2544,
+"learner": [
+0.964,
+1.0
+],
+"icebow": [
+0.845,
+0.946
+],
+"icebow_elixir": 9.77,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_232823.jsonl",
+"tick": 3019,
+"learner": [
+0.953,
+1.0
+],
+"icebow": [
+0.845,
+0.891
+],
+"icebow_elixir": 9.85,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_232823.jsonl",
+"tick": 3610,
+"learner": [
+0.953,
+0.988
+],
+"icebow": [
+0.732,
+0.891
+],
+"icebow_elixir": 7.13,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_232823.jsonl",
+"tick": 4503,
+"learner": [
+0.61,
+0.372
+],
+"icebow": [
+0.682,
+0.891
+],
+"icebow_elixir": 6.87,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_232823.jsonl",
+"tick": 4915,
+"learner": [
+0.518,
+0.372
+],
+"icebow": [
+0.682,
+0.88
+],
+"icebow_elixir": 6.05,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_233303.jsonl",
+"tick": 2757,
+"learner": [
+0.545,
+0.8
+],
+"icebow": [
+0.336,
+0.652
+],
+"icebow_elixir": 7.04,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_233303.jsonl",
+"tick": 4438,
+"learner": [
+0.181,
+0.616
+],
+"icebow": [
+0.336,
+0.538
+],
+"icebow_elixir": 6.26,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_233735.jsonl",
+"tick": 1435,
+"learner": [
+0.988,
+0.988
+],
+"icebow": [
+0.789,
+0.948
+],
+"icebow_elixir": 9.91,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_233735.jsonl",
+"tick": 2688,
+"learner": [
+0.988,
+0.988
+],
+"icebow": [
+0.655,
+0.644
+],
+"icebow_elixir": 8.43,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_233735.jsonl",
+"tick": 3293,
+"learner": [
+0.988,
+0.988
+],
+"icebow": [
+0.655,
+0.644
+],
+"icebow_elixir": 8.03,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_233735.jsonl",
+"tick": 3939,
+"learner": [
+0.922,
+0.91
+],
+"icebow": [
+0.603,
+0.644
+],
+"icebow_elixir": 7.02,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_233735.jsonl",
+"tick": 4598,
+"learner": [
+0.922,
+0.777
+],
+"icebow": [
+0.603,
+0.511
+],
+"icebow_elixir": 8.58,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_233735.jsonl",
+"tick": 5164,
+"learner": [
+0.91,
+0.777
+],
+"icebow": [
+0.603,
+0.459
+],
+"icebow_elixir": 6.67,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_234259.jsonl",
+"tick": 279,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 6.17,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_234259.jsonl",
+"tick": 2469,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.664,
+0.696
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_234259.jsonl",
+"tick": 2942,
+"learner": [
+0.847,
+1.0
+],
+"icebow": [
+0.664,
+0.686
+],
+"icebow_elixir": 7.03,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_234640.jsonl",
+"tick": 286,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.973,
+1.0
+],
+"icebow_elixir": 9.46,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_234640.jsonl",
+"tick": 1254,
+"learner": [
+1.0,
+0.778
+],
+"icebow": [
+0.938,
+1.0
+],
+"icebow_elixir": 9.47,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_234640.jsonl",
+"tick": 2427,
+"learner": [
+0.9,
+0.778
+],
+"icebow": [
+0.74,
+0.866
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_234640.jsonl",
+"tick": 2930,
+"learner": [
+0.889,
+0.778
+],
+"icebow": [
+0.565,
+0.866
+],
+"icebow_elixir": 7.89,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_234640.jsonl",
+"tick": 3459,
+"learner": [
+0.877,
+0.778
+],
+"icebow": [
+0.565,
+0.866
+],
+"icebow_elixir": 7.95,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_234640.jsonl",
+"tick": 3919,
+"learner": [
+0.877,
+0.512
+],
+"icebow": [
+0.565,
+0.866
+],
+"icebow_elixir": 7.41,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_234640.jsonl",
+"tick": 4368,
+"learner": [
+0.664,
+0.512
+],
+"icebow": [
+0.367,
+0.866
+],
+"icebow_elixir": 7.4,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_235616.jsonl",
+"tick": 1469,
+"learner": [
+0.77,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 7.37,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_235616.jsonl",
+"tick": 2531,
+"learner": [
+0.77,
+1.0
+],
+"icebow": [
+1.0,
+0.583
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_235616.jsonl",
+"tick": 3301,
+"learner": [
+0.77,
+0.867
+],
+"icebow": [
+0.964,
+0.476
+],
+"icebow_elixir": 6.53,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_235616.jsonl",
+"tick": 4509,
+"learner": [
+0.77,
+0.706
+],
+"icebow": [
+0.964,
+0.058
+],
+"icebow_elixir": 6.72,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_235616.jsonl",
+"tick": 4905,
+"learner": [
+0.77,
+0.706
+],
+"icebow": [
+0.964,
+0.058
+],
+"icebow_elixir": 6.72,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261020_235616.jsonl",
+"tick": 5438,
+"learner": [
+0.747,
+0.706
+],
+"icebow": [
+0.964,
+0.035
+],
+"icebow_elixir": 7.67,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_000123.jsonl",
+"tick": 1934,
+"learner": [
+0.827,
+1.0
+],
+"icebow": [
+1.0,
+0.867
+],
+"icebow_elixir": 7.67,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_000123.jsonl",
+"tick": 3140,
+"learner": [
+0.472,
+1.0
+],
+"icebow": [
+1.0,
+0.692
+],
+"icebow_elixir": 6.64,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_000123.jsonl",
+"tick": 3574,
+"learner": [
+0.339,
+1.0
+],
+"icebow": [
+1.0,
+0.692
+],
+"icebow_elixir": 7.13,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_000446.jsonl",
+"tick": 1216,
+"learner": [
+1.0,
+0.971
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 7.32,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_000446.jsonl",
+"tick": 2169,
+"learner": [
+1.0,
+0.838
+],
+"icebow": [
+1.0,
+0.388
+],
+"icebow_elixir": 9.33,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_000446.jsonl",
+"tick": 3475,
+"learner": [
+0.977,
+0.838
+],
+"icebow": [
+1.0,
+0.13
+],
+"icebow_elixir": 7.61,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_000834.jsonl",
+"tick": 1249,
+"learner": [
+0.986,
+0.964
+],
+"icebow": [
+0.753,
+1.0
+],
+"icebow_elixir": 9.63,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_000834.jsonl",
+"tick": 2817,
+"learner": [
+0.25,
+0.964
+],
+"icebow": [
+0.712,
+0.104
+],
+"icebow_elixir": 8.18,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_001151.jsonl",
+"tick": 669,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_001151.jsonl",
+"tick": 1989,
+"learner": [
+0.585,
+1.0
+],
+"icebow": [
+0.921,
+0.976
+],
+"icebow_elixir": 9.85,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_001151.jsonl",
+"tick": 2633,
+"learner": [
+0.585,
+0.988
+],
+"icebow": [
+0.921,
+0.976
+],
+"icebow_elixir": 9.6,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_001151.jsonl",
+"tick": 3034,
+"learner": [
+0.585,
+0.777
+],
+"icebow": [
+0.921,
+0.587
+],
+"icebow_elixir": 7.32,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_001503.jsonl",
+"tick": 589,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+0.908
+],
+"icebow_elixir": 7.37,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_001503.jsonl",
+"tick": 2189,
+"learner": [
+0.977,
+1.0
+],
+"icebow": [
+1.0,
+0.439
+],
+"icebow_elixir": 7.85,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_001503.jsonl",
+"tick": 2892,
+"learner": [
+0.025,
+1.0
+],
+"icebow": [
+1.0,
+0.425
+],
+"icebow_elixir": 8.53,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_001503.jsonl",
+"tick": 3274,
+"learner": [
+0.014,
+1.0
+],
+"icebow": [
+1.0,
+0.425
+],
+"icebow_elixir": 7.24,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_001823.jsonl",
+"tick": 552,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_001823.jsonl",
+"tick": 1558,
+"learner": [
+0.726,
+1.0
+],
+"icebow": [
+0.897,
+1.0
+],
+"icebow_elixir": 7.6,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_002219.jsonl",
+"tick": 292,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.918,
+1.0
+],
+"icebow_elixir": 9.1,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_002514.jsonl",
+"tick": 209,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_002514.jsonl",
+"tick": 1333,
+"learner": [
+0.988,
+0.992
+],
+"icebow": [
+0.731,
+1.0
+],
+"icebow_elixir": 6.98,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_002514.jsonl",
+"tick": 2466,
+"learner": [
+0.988,
+0.77
+],
+"icebow": [
+0.724,
+1.0
+],
+"icebow_elixir": 7.59,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_002514.jsonl",
+"tick": 2945,
+"learner": [
+0.767,
+0.77
+],
+"icebow": [
+0.724,
+1.0
+],
+"icebow_elixir": 7.54,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_002514.jsonl",
+"tick": 3354,
+"learner": [
+0.706,
+0.637
+],
+"icebow": [
+0.617,
+1.0
+],
+"icebow_elixir": 7.43,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_002514.jsonl",
+"tick": 4112,
+"learner": [
+0.178,
+0.637
+],
+"icebow": [
+0.617,
+1.0
+],
+"icebow_elixir": 8.49,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_002514.jsonl",
+"tick": 4585,
+"learner": [
+0.178,
+0.637
+],
+"icebow": [
+0.51,
+1.0
+],
+"icebow_elixir": 6.16,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_002514.jsonl",
+"tick": 4953,
+"learner": [
+0.178,
+0.637
+],
+"icebow": [
+0.51,
+1.0
+],
+"icebow_elixir": 6.46,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_003020.jsonl",
+"tick": 1691,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.698,
+1.0
+],
+"icebow_elixir": 6.38,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_003020.jsonl",
+"tick": 2436,
+"learner": [
+0.576,
+0.988
+],
+"icebow": [
+0.43,
+1.0
+],
+"icebow_elixir": 6.75,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_003020.jsonl",
+"tick": 3239,
+"learner": [
+0.576,
+0.98
+],
+"icebow": [
+0.122,
+0.873
+],
+"icebow_elixir": 7.14,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_003020.jsonl",
+"tick": 3769,
+"learner": [
+0.576,
+0.727
+],
+"icebow": [
+0.08,
+0.873
+],
+"icebow_elixir": 7.38,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_003408.jsonl",
+"tick": 415,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+0.757,
+1.0
+],
+"icebow_elixir": 6.7,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_003408.jsonl",
+"tick": 3152,
+"learner": [
+0.988,
+0.795
+],
+"icebow": [
+0.644,
+0.963
+],
+"icebow_elixir": 6.6,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_003408.jsonl",
+"tick": 3803,
+"learner": [
+0.705,
+0.529
+],
+"icebow": [
+0.367,
+0.963
+],
+"icebow_elixir": 6.84,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_003802.jsonl",
+"tick": 902,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+0.712
+],
+"icebow_elixir": 8.44,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_003802.jsonl",
+"tick": 2501,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.753,
+0.712
+],
+"icebow_elixir": 9.11,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_003802.jsonl",
+"tick": 3002,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.753,
+0.701
+],
+"icebow_elixir": 7.78,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_003802.jsonl",
+"tick": 3484,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.753,
+0.701
+],
+"icebow_elixir": 8.13,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_003802.jsonl",
+"tick": 4163,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.629,
+0.701
+],
+"icebow_elixir": 7.23,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_003802.jsonl",
+"tick": 4695,
+"learner": [
+1.0,
+0.941
+],
+"icebow": [
+0.547,
+0.68
+],
+"icebow_elixir": 7.37,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_003802.jsonl",
+"tick": 5084,
+"learner": [
+0.888,
+0.941
+],
+"icebow": [
+0.547,
+0.633
+],
+"icebow_elixir": 6.68,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_004657.jsonl",
+"tick": 1072,
+"learner": [
+1.0,
+0.988
+],
+"icebow": [
+0.888,
+1.0
+],
+"icebow_elixir": 8.02,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_004657.jsonl",
+"tick": 2065,
+"learner": [
+0.882,
+0.287
+],
+"icebow": [
+0.888,
+0.705
+],
+"icebow_elixir": 6.73,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_004657.jsonl",
+"tick": 2614,
+"learner": [
+0.539,
+0.275
+],
+"icebow": [
+0.777,
+0.705
+],
+"icebow_elixir": 6.62,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_005037.jsonl",
+"tick": 2265,
+"learner": [
+0.922,
+1.0
+],
+"icebow": [
+1.0,
+0.615
+],
+"icebow_elixir": 7.71,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_005037.jsonl",
+"tick": 2818,
+"learner": [
+0.922,
+0.706
+],
+"icebow": [
+0.952,
+0.507
+],
+"icebow_elixir": 7.43,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_005037.jsonl",
+"tick": 3405,
+"learner": [
+0.748,
+0.706
+],
+"icebow": [
+0.952,
+0.036
+],
+"icebow_elixir": 9.1,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_005356.jsonl",
+"tick": 2951,
+"learner": [
+0.936,
+1.0
+],
+"icebow": [
+1.0,
+0.975
+],
+"icebow_elixir": 8.89,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_005356.jsonl",
+"tick": 3372,
+"learner": [
+0.936,
+0.98
+],
+"icebow": [
+1.0,
+0.975
+],
+"icebow_elixir": 6.99,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_005356.jsonl",
+"tick": 3935,
+"learner": [
+0.239,
+0.939
+],
+"icebow": [
+1.0,
+0.975
+],
+"icebow_elixir": 8.05,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_005356.jsonl",
+"tick": 4425,
+"learner": [
+0.227,
+0.939
+],
+"icebow": [
+1.0,
+0.975
+],
+"icebow_elixir": 6.37,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_005823.jsonl",
+"tick": 154,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_010309.jsonl",
+"tick": 170,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_010626.jsonl",
+"tick": 2449,
+"learner": [
+1.0,
+0.977
+],
+"icebow": [
+0.423,
+1.0
+],
+"icebow_elixir": 7.25,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_010626.jsonl",
+"tick": 4759,
+"learner": [
+0.407,
+0.184
+],
+"icebow": [
+0.121,
+0.973
+],
+"icebow_elixir": 7.12,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_010626.jsonl",
+"tick": 5104,
+"learner": [
+0.407,
+0.173
+],
+"icebow": [
+0.121,
+0.973
+],
+"icebow_elixir": 6.59,
+"xbow_board": [
+0.5278,
+0.5781
+]
+},
+{
+"key": "live_play_20261021_011125.jsonl",
+"tick": 133,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.76,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_011439.jsonl",
+"tick": 209,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.43,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_011439.jsonl",
+"tick": 2758,
+"learner": [
+0.867,
+0.049
+],
+"icebow": [
+0.988,
+0.368
+],
+"icebow_elixir": 7.31,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_011757.jsonl",
+"tick": 310,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.84,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_011757.jsonl",
+"tick": 1859,
+"learner": [
+0.988,
+0.778
+],
+"icebow": [
+0.852,
+1.0
+],
+"icebow_elixir": 8.35,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_011757.jsonl",
+"tick": 2996,
+"learner": [
+0.977,
+0.02
+],
+"icebow": [
+0.797,
+0.897
+],
+"icebow_elixir": 6.51,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_012118.jsonl",
+"tick": 783,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_012332.jsonl",
+"tick": 538,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.96,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_012332.jsonl",
+"tick": 1403,
+"learner": [
+1.0,
+0.847
+],
+"icebow": [
+0.992,
+1.0
+],
+"icebow_elixir": 9.33,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_012332.jsonl",
+"tick": 2342,
+"learner": [
+0.677,
+0.847
+],
+"icebow": [
+0.992,
+1.0
+],
+"icebow_elixir": 9.36,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_012643.jsonl",
+"tick": 3760,
+"learner": [
+0.988,
+0.959
+],
+"icebow": [
+0.416,
+0.913
+],
+"icebow_elixir": 7.96,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_012643.jsonl",
+"tick": 4495,
+"learner": [
+0.988,
+0.322
+],
+"icebow": [
+0.35,
+0.913
+],
+"icebow_elixir": 6.2,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_013101.jsonl",
+"tick": 436,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+0.963
+],
+"icebow_elixir": 8.66,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_013101.jsonl",
+"tick": 2302,
+"learner": [
+0.908,
+1.0
+],
+"icebow": [
+1.0,
+0.777
+],
+"icebow_elixir": 8.55,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_013101.jsonl",
+"tick": 2924,
+"learner": [
+0.896,
+1.0
+],
+"icebow": [
+1.0,
+0.746
+],
+"icebow_elixir": 8.29,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_013101.jsonl",
+"tick": 3949,
+"learner": [
+0.873,
+1.0
+],
+"icebow": [
+1.0,
+0.678
+],
+"icebow_elixir": 9.09,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_013101.jsonl",
+"tick": 4380,
+"learner": [
+0.752,
+1.0
+],
+"icebow": [
+1.0,
+0.678
+],
+"icebow_elixir": 7.48,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_013512.jsonl",
+"tick": 2403,
+"learner": [
+0.855,
+1.0
+],
+"icebow": [
+1.0,
+0.451
+],
+"icebow_elixir": 6.52,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_013512.jsonl",
+"tick": 2963,
+"learner": [
+0.855,
+1.0
+],
+"icebow": [
+1.0,
+0.451
+],
+"icebow_elixir": 8.18,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_013512.jsonl",
+"tick": 3682,
+"learner": [
+0.844,
+1.0
+],
+"icebow": [
+1.0,
+0.382
+],
+"icebow_elixir": 7.85,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_013512.jsonl",
+"tick": 4559,
+"learner": [
+0.308,
+1.0
+],
+"icebow": [
+1.0,
+0.275
+],
+"icebow_elixir": 7.05,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_013936.jsonl",
+"tick": 1541,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+0.929
+],
+"icebow_elixir": 8.28,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_013936.jsonl",
+"tick": 2650,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.756,
+0.768
+],
+"icebow_elixir": 8.32,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_013936.jsonl",
+"tick": 3379,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.594,
+0.768
+],
+"icebow_elixir": 7.63,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_013936.jsonl",
+"tick": 4410,
+"learner": [
+1.0,
+0.988
+],
+"icebow": [
+0.106,
+0.606
+],
+"icebow_elixir": 8.29,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_013936.jsonl",
+"tick": 4801,
+"learner": [
+0.706,
+0.988
+],
+"icebow": [
+0.106,
+0.606
+],
+"icebow_elixir": 7.82,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_013936.jsonl",
+"tick": 5594,
+"learner": [
+0.686,
+0.484
+],
+"icebow": [
+0.106,
+0.606
+],
+"icebow_elixir": 7.4,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_014500.jsonl",
+"tick": 223,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.34,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_014500.jsonl",
+"tick": 2873,
+"learner": [
+0.758,
+0.859
+],
+"icebow": [
+0.323,
+1.0
+],
+"icebow_elixir": 8.39,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_014500.jsonl",
+"tick": 3468,
+"learner": [
+0.758,
+0.848
+],
+"icebow": [
+0.298,
+1.0
+],
+"icebow_elixir": 6.63,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_014500.jsonl",
+"tick": 4109,
+"learner": [
+0.356,
+0.836
+],
+"icebow": [
+0.298,
+0.884
+],
+"icebow_elixir": 6.52,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_014911.jsonl",
+"tick": 520,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.53,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_014911.jsonl",
+"tick": 2674,
+"learner": [
+0.744,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_014911.jsonl",
+"tick": 4263,
+"learner": [
+0.543,
+0.988
+],
+"icebow": [
+1.0,
+0.492
+],
+"icebow_elixir": 7.66,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_014911.jsonl",
+"tick": 4838,
+"learner": [
+0.543,
+0.977
+],
+"icebow": [
+1.0,
+0.409
+],
+"icebow_elixir": 6.49,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_014911.jsonl",
+"tick": 5835,
+"learner": [
+0.531,
+0.977
+],
+"icebow": [
+1.0,
+0.165
+],
+"icebow_elixir": 6.58,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_015434.jsonl",
+"tick": 313,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.96,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_015434.jsonl",
+"tick": 1298,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.49,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_015434.jsonl",
+"tick": 2308,
+"learner": [
+1.0,
+0.988
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.01,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_015434.jsonl",
+"tick": 4359,
+"learner": [
+0.924,
+0.988
+],
+"icebow": [
+0.975,
+0.975
+],
+"icebow_elixir": 7.21,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_015434.jsonl",
+"tick": 5151,
+"learner": [
+0.807,
+0.461
+],
+"icebow": [
+0.931,
+0.975
+],
+"icebow_elixir": 6.49,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_015959.jsonl",
+"tick": 2421,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+0.493
+],
+"icebow_elixir": 8.25,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_015959.jsonl",
+"tick": 2934,
+"learner": [
+0.969,
+0.415
+],
+"icebow": [
+0.399,
+0.493
+],
+"icebow_elixir": 8.57,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_015959.jsonl",
+"tick": 3338,
+"learner": [
+0.969,
+0.415
+],
+"icebow": [
+0.098,
+0.493
+],
+"icebow_elixir": 6.85,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_020340.jsonl",
+"tick": 99,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.06,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_020620.jsonl",
+"tick": 2669,
+"learner": [
+0.971,
+0.988
+],
+"icebow": [
+1.0,
+0.827
+],
+"icebow_elixir": 7.15,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_020620.jsonl",
+"tick": 3158,
+"learner": [
+0.87,
+0.977
+],
+"icebow": [
+1.0,
+0.827
+],
+"icebow_elixir": 7.54,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_021139.jsonl",
+"tick": 226,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.41,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_021457.jsonl",
+"tick": 585,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+0.988
+],
+"icebow_elixir": 8.68,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_021457.jsonl",
+"tick": 1548,
+"learner": [
+0.859,
+0.919
+],
+"icebow": [
+1.0,
+0.988
+],
+"icebow_elixir": 9.81,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_021457.jsonl",
+"tick": 2394,
+"learner": [
+0.767,
+0.919
+],
+"icebow": [
+1.0,
+0.914
+],
+"icebow_elixir": 9.62,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_021457.jsonl",
+"tick": 2979,
+"learner": [
+0.755,
+0.919
+],
+"icebow": [
+1.0,
+0.641
+],
+"icebow_elixir": 6.99,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_021457.jsonl",
+"tick": 3639,
+"learner": [
+0.755,
+0.919
+],
+"icebow": [
+1.0,
+0.45
+],
+"icebow_elixir": 7.27,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_021457.jsonl",
+"tick": 4260,
+"learner": [
+0.755,
+0.919
+],
+"icebow": [
+1.0,
+0.389
+],
+"icebow_elixir": 7.58,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_021457.jsonl",
+"tick": 4879,
+"learner": [
+0.755,
+0.919
+],
+"icebow": [
+1.0,
+0.341
+],
+"icebow_elixir": 6.65,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_021457.jsonl",
+"tick": 5179,
+"learner": [
+0.744,
+0.919
+],
+"icebow": [
+1.0,
+0.328
+],
+"icebow_elixir": 7.76,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_021457.jsonl",
+"tick": 5654,
+"learner": [
+0.744,
+0.879
+],
+"icebow": [
+1.0,
+0.28
+],
+"icebow_elixir": 7.27,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_022022.jsonl",
+"tick": 341,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.17,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_022022.jsonl",
+"tick": 3754,
+"learner": [
+0.847,
+0.844
+],
+"icebow": [
+0.454,
+0.605
+],
+"icebow_elixir": 8.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_022022.jsonl",
+"tick": 4859,
+"learner": [
+0.459,
+0.815
+],
+"icebow": [
+0.454,
+0.564
+],
+"icebow_elixir": 8.98,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_022022.jsonl",
+"tick": 5144,
+"learner": [
+0.459,
+0.662
+],
+"icebow": [
+0.454,
+0.564
+],
+"icebow_elixir": 7.53,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_022022.jsonl",
+"tick": 5484,
+"learner": [
+0.459,
+0.65
+],
+"icebow": [
+0.454,
+0.564
+],
+"icebow_elixir": 7.01,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_022022.jsonl",
+"tick": 5803,
+"learner": [
+0.448,
+0.65
+],
+"icebow": [
+0.454,
+0.564
+],
+"icebow_elixir": 7.35,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_022543.jsonl",
+"tick": 244,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.64,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_022543.jsonl",
+"tick": 2907,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+0.731
+],
+"icebow_elixir": 8.11,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_022543.jsonl",
+"tick": 3495,
+"learner": [
+0.977,
+1.0
+],
+"icebow": [
+1.0,
+0.683
+],
+"icebow_elixir": 6.85,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_022543.jsonl",
+"tick": 3964,
+"learner": [
+0.977,
+1.0
+],
+"icebow": [
+1.0,
+0.676
+],
+"icebow_elixir": 6.56,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_022543.jsonl",
+"tick": 4820,
+"learner": [
+0.977,
+1.0
+],
+"icebow": [
+0.852,
+0.629
+],
+"icebow_elixir": 7.85,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_022543.jsonl",
+"tick": 5470,
+"learner": [
+0.965,
+1.0
+],
+"icebow": [
+0.852,
+0.595
+],
+"icebow_elixir": 8.08,
+"xbow_board": [
+0.5278,
+0.5781
+]
+},
+{
+"key": "live_play_20261021_023110.jsonl",
+"tick": 320,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.9,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_023110.jsonl",
+"tick": 1410,
+"learner": [
+0.959,
+1.0
+],
+"icebow": [
+1.0,
+0.929
+],
+"icebow_elixir": 9.06,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_023110.jsonl",
+"tick": 2806,
+"learner": [
+0.959,
+1.0
+],
+"icebow": [
+0.839,
+0.929
+],
+"icebow_elixir": 7.31,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_023110.jsonl",
+"tick": 3271,
+"learner": [
+0.841,
+1.0
+],
+"icebow": [
+0.839,
+0.929
+],
+"icebow_elixir": 6.77,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_023110.jsonl",
+"tick": 3764,
+"learner": [
+0.841,
+0.98
+],
+"icebow": [
+0.839,
+0.875
+],
+"icebow_elixir": 7.34,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_023110.jsonl",
+"tick": 4294,
+"learner": [
+0.43,
+0.98
+],
+"icebow": [
+0.839,
+0.875
+],
+"icebow_elixir": 7.15,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_023110.jsonl",
+"tick": 4735,
+"learner": [
+0.43,
+0.98
+],
+"icebow": [
+0.758,
+0.875
+],
+"icebow_elixir": 6.2,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_023110.jsonl",
+"tick": 5380,
+"learner": [
+0.419,
+0.98
+],
+"icebow": [
+0.483,
+0.875
+],
+"icebow_elixir": 6.89,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_024154.jsonl",
+"tick": 465,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+0.747
+],
+"icebow_elixir": 8.22,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_024154.jsonl",
+"tick": 2505,
+"learner": [
+0.818,
+1.0
+],
+"icebow": [
+1.0,
+0.547
+],
+"icebow_elixir": 7.46,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_024154.jsonl",
+"tick": 3112,
+"learner": [
+0.791,
+1.0
+],
+"icebow": [
+1.0,
+0.547
+],
+"icebow_elixir": 8.27,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_024154.jsonl",
+"tick": 4330,
+"learner": [
+0.768,
+1.0
+],
+"icebow": [
+1.0,
+0.295
+],
+"icebow_elixir": 7.56,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_024154.jsonl",
+"tick": 4783,
+"learner": [
+0.637,
+1.0
+],
+"icebow": [
+1.0,
+0.295
+],
+"icebow_elixir": 8.35,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_024154.jsonl",
+"tick": 5265,
+"learner": [
+0.623,
+1.0
+],
+"icebow": [
+1.0,
+0.295
+],
+"icebow_elixir": 8.18,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_024154.jsonl",
+"tick": 5809,
+"learner": [
+0.623,
+0.987
+],
+"icebow": [
+0.844,
+0.295
+],
+"icebow_elixir": 6.74,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_024712.jsonl",
+"tick": 1469,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+0.988,
+0.876
+],
+"icebow_elixir": 9.54,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_025031.jsonl",
+"tick": 1755,
+"learner": [
+1.0,
+0.988
+],
+"icebow": [
+0.945,
+0.896
+],
+"icebow_elixir": 7.44,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_025031.jsonl",
+"tick": 2992,
+"learner": [
+0.558,
+0.977
+],
+"icebow": [
+0.194,
+0.287
+],
+"icebow_elixir": 6.46,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_025031.jsonl",
+"tick": 3671,
+"learner": [
+0.546,
+0.977
+],
+"icebow": [
+0.194,
+0.232
+],
+"icebow_elixir": 7.62,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_025031.jsonl",
+"tick": 4382,
+"learner": [
+0.474,
+0.977
+],
+"icebow": [
+0.028,
+0.232
+],
+"icebow_elixir": 7.94,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_025433.jsonl",
+"tick": 1004,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+0.796,
+0.973
+],
+"icebow_elixir": 7.66,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_025433.jsonl",
+"tick": 2295,
+"learner": [
+0.988,
+0.444
+],
+"icebow": [
+0.62,
+0.973
+],
+"icebow_elixir": 7.6,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_025433.jsonl",
+"tick": 2969,
+"learner": [
+0.988,
+0.444
+],
+"icebow": [
+0.565,
+0.879
+],
+"icebow_elixir": 7.18,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_025433.jsonl",
+"tick": 3559,
+"learner": [
+0.988,
+0.432
+],
+"icebow": [
+0.43,
+0.879
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_025433.jsonl",
+"tick": 4022,
+"learner": [
+0.928,
+0.432
+],
+"icebow": [
+0.418,
+0.879
+],
+"icebow_elixir": 6.35,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_025838.jsonl",
+"tick": 83,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.87,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_025838.jsonl",
+"tick": 1033,
+"learner": [
+0.988,
+0.912
+],
+"icebow": [
+0.623,
+0.953
+],
+"icebow_elixir": 8.96,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_025838.jsonl",
+"tick": 2616,
+"learner": [
+0.988,
+0.369
+],
+"icebow": [
+0.386,
+0.435
+],
+"icebow_elixir": 7.51,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_025838.jsonl",
+"tick": 3942,
+"learner": [
+0.988,
+0.186
+],
+"icebow": [
+0.086,
+0.435
+],
+"icebow_elixir": 6.85,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_030243.jsonl",
+"tick": 417,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.911,
+1.0
+],
+"icebow_elixir": 8.45,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_030243.jsonl",
+"tick": 2618,
+"learner": [
+0.988,
+0.959
+],
+"icebow": [
+0.816,
+0.756
+],
+"icebow_elixir": 7.79,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_030243.jsonl",
+"tick": 3236,
+"learner": [
+0.493,
+0.959
+],
+"icebow": [
+0.564,
+0.756
+],
+"icebow_elixir": 6.99,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_030243.jsonl",
+"tick": 3768,
+"learner": [
+0.481,
+0.959
+],
+"icebow": [
+0.564,
+0.756
+],
+"icebow_elixir": 6.95,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_030807.jsonl",
+"tick": 2322,
+"learner": [
+0.863,
+0.952
+],
+"icebow": [
+0.84,
+0.687
+],
+"icebow_elixir": 9.54,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_030807.jsonl",
+"tick": 3508,
+"learner": [
+0.815,
+0.821
+],
+"icebow": [
+0.593,
+0.478
+],
+"icebow_elixir": 6.27,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_031330.jsonl",
+"tick": 2014,
+"learner": [
+0.871,
+1.0
+],
+"icebow": [
+0.845,
+1.0
+],
+"icebow_elixir": 7.7,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_031330.jsonl",
+"tick": 2622,
+"learner": [
+0.871,
+1.0
+],
+"icebow": [
+0.75,
+1.0
+],
+"icebow_elixir": 7.62,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_031330.jsonl",
+"tick": 3425,
+"learner": [
+0.871,
+0.988
+],
+"icebow": [
+0.507,
+0.941
+],
+"icebow_elixir": 7.58,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_031330.jsonl",
+"tick": 3963,
+"learner": [
+0.871,
+0.988
+],
+"icebow": [
+0.318,
+0.887
+],
+"icebow_elixir": 7.6,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_031330.jsonl",
+"tick": 4755,
+"learner": [
+0.859,
+0.988
+],
+"icebow": [
+0.208,
+0.887
+],
+"icebow_elixir": 6.38,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_031330.jsonl",
+"tick": 5129,
+"learner": [
+0.859,
+0.988
+],
+"icebow": [
+0.181,
+0.887
+],
+"icebow_elixir": 9.32,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_031330.jsonl",
+"tick": 5434,
+"learner": [
+0.859,
+0.988
+],
+"icebow": [
+0.181,
+0.887
+],
+"icebow_elixir": 7.69,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_031856.jsonl",
+"tick": 241,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.34,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_031856.jsonl",
+"tick": 1149,
+"learner": [
+0.987,
+1.0
+],
+"icebow": [
+1.0,
+0.714
+],
+"icebow_elixir": 9.55,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_031856.jsonl",
+"tick": 2409,
+"learner": [
+0.975,
+1.0
+],
+"icebow": [
+1.0,
+0.273
+],
+"icebow_elixir": 9.14,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_031856.jsonl",
+"tick": 2920,
+"learner": [
+0.975,
+0.955
+],
+"icebow": [
+1.0,
+0.064
+],
+"icebow_elixir": 6.28,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_032213.jsonl",
+"tick": 276,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+0.937
+],
+"icebow_elixir": 8.18,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_032213.jsonl",
+"tick": 2273,
+"learner": [
+1.0,
+0.383
+],
+"icebow": [
+0.946,
+0.645
+],
+"icebow_elixir": 8.24,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_032213.jsonl",
+"tick": 3668,
+"learner": [
+0.977,
+0.372
+],
+"icebow": [
+0.869,
+0.62
+],
+"icebow_elixir": 6.85,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_032213.jsonl",
+"tick": 4390,
+"learner": [
+0.936,
+0.372
+],
+"icebow": [
+0.869,
+0.62
+],
+"icebow_elixir": 7.32,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_032739.jsonl",
+"tick": 650,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.74,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_032739.jsonl",
+"tick": 2343,
+"learner": [
+0.859,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 6.62,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_033142.jsonl",
+"tick": 649,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.94,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_033142.jsonl",
+"tick": 3232,
+"learner": [
+0.988,
+0.988
+],
+"icebow": [
+1.0,
+0.559
+],
+"icebow_elixir": 9.25,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_033142.jsonl",
+"tick": 4166,
+"learner": [
+0.767,
+0.977
+],
+"icebow": [
+0.984,
+0.559
+],
+"icebow_elixir": 8.13,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_033142.jsonl",
+"tick": 5319,
+"learner": [
+0.755,
+0.758
+],
+"icebow": [
+0.984,
+0.559
+],
+"icebow_elixir": 7.98,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_033142.jsonl",
+"tick": 5862,
+"learner": [
+0.744,
+0.758
+],
+"icebow": [
+0.984,
+0.559
+],
+"icebow_elixir": 7.71,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_033708.jsonl",
+"tick": 317,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.03,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_033708.jsonl",
+"tick": 2008,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.895,
+0.988
+],
+"icebow_elixir": 9.02,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_033708.jsonl",
+"tick": 2759,
+"learner": [
+1.0,
+0.8
+],
+"icebow": [
+0.883,
+0.675
+],
+"icebow_elixir": 7.25,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_033708.jsonl",
+"tick": 3300,
+"learner": [
+1.0,
+0.8
+],
+"icebow": [
+0.883,
+0.675
+],
+"icebow_elixir": 7.82,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_033708.jsonl",
+"tick": 3905,
+"learner": [
+0.847,
+0.8
+],
+"icebow": [
+0.883,
+0.622
+],
+"icebow_elixir": 6.71,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_033708.jsonl",
+"tick": 4457,
+"learner": [
+0.847,
+0.385
+],
+"icebow": [
+0.872,
+0.622
+],
+"icebow_elixir": 7.2,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_033708.jsonl",
+"tick": 4908,
+"learner": [
+0.836,
+0.385
+],
+"icebow": [
+0.872,
+0.61
+],
+"icebow_elixir": 6.57,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_033708.jsonl",
+"tick": 5252,
+"learner": [
+0.777,
+0.373
+],
+"icebow": [
+0.872,
+0.599
+],
+"icebow_elixir": 6.12,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_034232.jsonl",
+"tick": 2248,
+"learner": [
+0.98,
+1.0
+],
+"icebow": [
+1.0,
+0.618
+],
+"icebow_elixir": 9.39,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_034232.jsonl",
+"tick": 3051,
+"learner": [
+0.98,
+0.646
+],
+"icebow": [
+1.0,
+0.502
+],
+"icebow_elixir": 8.59,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_034232.jsonl",
+"tick": 4338,
+"learner": [
+0.939,
+0.513
+],
+"icebow": [
+1.0,
+0.376
+],
+"icebow_elixir": 6.61,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_034232.jsonl",
+"tick": 5009,
+"learner": [
+0.827,
+0.513
+],
+"icebow": [
+1.0,
+0.376
+],
+"icebow_elixir": 7.62,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_034232.jsonl",
+"tick": 5334,
+"learner": [
+0.815,
+0.291
+],
+"icebow": [
+1.0,
+0.376
+],
+"icebow_elixir": 7.07,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_034750.jsonl",
+"tick": 554,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+0.99,
+0.953
+],
+"icebow_elixir": 9.76,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_034750.jsonl",
+"tick": 2949,
+"learner": [
+0.334,
+0.889
+],
+"icebow": [
+0.451,
+0.934
+],
+"icebow_elixir": 7.07,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_035108.jsonl",
+"tick": 126,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.56,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_035108.jsonl",
+"tick": 985,
+"learner": [
+0.506,
+1.0
+],
+"icebow": [
+0.963,
+0.988
+],
+"icebow_elixir": 9.72,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_035402.jsonl",
+"tick": 1026,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+0.948
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_035715.jsonl",
+"tick": 189,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_040033.jsonl",
+"tick": 554,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 6.43,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_040223.jsonl",
+"tick": 476,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+0.961
+],
+"icebow_elixir": 9.86,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_040223.jsonl",
+"tick": 3861,
+"learner": [
+0.836,
+0.988
+],
+"icebow": [
+0.991,
+0.805
+],
+"icebow_elixir": 7.6,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_040223.jsonl",
+"tick": 4944,
+"learner": [
+0.623,
+0.988
+],
+"icebow": [
+0.755,
+0.795
+],
+"icebow_elixir": 8.29,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_040223.jsonl",
+"tick": 5183,
+"learner": [
+0.591,
+0.988
+],
+"icebow": [
+0.755,
+0.795
+],
+"icebow_elixir": 6.13,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_040713.jsonl",
+"tick": 153,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.04,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_040713.jsonl",
+"tick": 1365,
+"learner": [
+0.475,
+1.0
+],
+"icebow": [
+1.0,
+0.876
+],
+"icebow_elixir": 8.69,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_040713.jsonl",
+"tick": 3371,
+"learner": [
+0.443,
+0.971
+],
+"icebow": [
+0.753,
+0.768
+],
+"icebow_elixir": 6.85,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_040713.jsonl",
+"tick": 4598,
+"learner": [
+0.365,
+0.912
+],
+"icebow": [
+0.587,
+0.406
+],
+"icebow_elixir": 8.04,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_040713.jsonl",
+"tick": 5049,
+"learner": [
+0.354,
+0.912
+],
+"icebow": [
+0.587,
+0.21
+],
+"icebow_elixir": 6.59,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_041208.jsonl",
+"tick": 1305,
+"learner": [
+0.988,
+0.971
+],
+"icebow": [
+0.83,
+0.636
+],
+"icebow_elixir": 7.24,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_041208.jsonl",
+"tick": 2705,
+"learner": [
+0.413,
+0.971
+],
+"icebow": [
+0.83,
+0.516
+],
+"icebow_elixir": 8.44,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_041656.jsonl",
+"tick": 491,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+0.945
+],
+"icebow_elixir": 9.07,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_041656.jsonl",
+"tick": 2832,
+"learner": [
+0.91,
+1.0
+],
+"icebow": [
+1.0,
+0.314
+],
+"icebow_elixir": 8.53,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_042017.jsonl",
+"tick": 1309,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+0.901
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_042017.jsonl",
+"tick": 2534,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+0.765
+],
+"icebow_elixir": 7.88,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_042017.jsonl",
+"tick": 3028,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+0.765
+],
+"icebow_elixir": 8.55,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_042017.jsonl",
+"tick": 3459,
+"learner": [
+0.988,
+0.801
+],
+"icebow": [
+0.895,
+0.666
+],
+"icebow_elixir": 7.22,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_042017.jsonl",
+"tick": 3914,
+"learner": [
+0.988,
+0.174
+],
+"icebow": [
+0.883,
+0.666
+],
+"icebow_elixir": 7.25,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_042358.jsonl",
+"tick": 1815,
+"learner": [
+0.977,
+1.0
+],
+"icebow": [
+1.0,
+0.304
+],
+"icebow_elixir": 8.03,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_042358.jsonl",
+"tick": 2484,
+"learner": [
+0.965,
+1.0
+],
+"icebow": [
+1.0,
+0.281
+],
+"icebow_elixir": 7.76,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_042358.jsonl",
+"tick": 2890,
+"learner": [
+0.954,
+1.0
+],
+"icebow": [
+1.0,
+0.239
+],
+"icebow_elixir": 6.33,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_042358.jsonl",
+"tick": 3433,
+"learner": [
+0.954,
+0.867
+],
+"icebow": [
+1.0,
+0.197
+],
+"icebow_elixir": 6.71,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_042358.jsonl",
+"tick": 4001,
+"learner": [
+0.942,
+0.746
+],
+"icebow": [
+1.0,
+0.197
+],
+"icebow_elixir": 7.74,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_042358.jsonl",
+"tick": 4612,
+"learner": [
+0.942,
+0.735
+],
+"icebow": [
+1.0,
+0.197
+],
+"icebow_elixir": 7.66,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_042358.jsonl",
+"tick": 5363,
+"learner": [
+0.942,
+0.712
+],
+"icebow": [
+0.958,
+0.197
+],
+"icebow_elixir": 7.15,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_042914.jsonl",
+"tick": 121,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.4,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_042914.jsonl",
+"tick": 994,
+"learner": [
+1.0,
+0.637
+],
+"icebow": [
+0.827,
+0.93
+],
+"icebow_elixir": 9.94,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_042914.jsonl",
+"tick": 1921,
+"learner": [
+0.697,
+0.578
+],
+"icebow": [
+0.327,
+0.741
+],
+"icebow_elixir": 9.06,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_042914.jsonl",
+"tick": 2512,
+"learner": [
+0.686,
+0.578
+],
+"icebow": [
+0.327,
+0.741
+],
+"icebow_elixir": 7.76,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_042914.jsonl",
+"tick": 3483,
+"learner": [
+0.406,
+0.566
+],
+"icebow": [
+0.327,
+0.591
+],
+"icebow_elixir": 7.53,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_042914.jsonl",
+"tick": 3964,
+"learner": [
+0.394,
+0.566
+],
+"icebow": [
+0.327,
+0.591
+],
+"icebow_elixir": 7.88,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_042914.jsonl",
+"tick": 4371,
+"learner": [
+0.394,
+0.555
+],
+"icebow": [
+0.24,
+0.591
+],
+"icebow_elixir": 7.06,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_042914.jsonl",
+"tick": 4961,
+"learner": [
+0.394,
+0.543
+],
+"icebow": [
+0.153,
+0.521
+],
+"icebow_elixir": 7.71,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_043430.jsonl",
+"tick": 1339,
+"learner": [
+1.0,
+0.988
+],
+"icebow": [
+0.896,
+0.948
+],
+"icebow_elixir": 7.26,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_043430.jsonl",
+"tick": 2298,
+"learner": [
+1.0,
+0.988
+],
+"icebow": [
+0.765,
+0.815
+],
+"icebow_elixir": 7.44,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_043430.jsonl",
+"tick": 2924,
+"learner": [
+1.0,
+0.977
+],
+"icebow": [
+0.765,
+0.815
+],
+"icebow_elixir": 7.25,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_043430.jsonl",
+"tick": 3708,
+"learner": [
+1.0,
+0.965
+],
+"icebow": [
+0.765,
+0.815
+],
+"icebow_elixir": 7.28,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_043430.jsonl",
+"tick": 4675,
+"learner": [
+1.0,
+0.965
+],
+"icebow": [
+0.318,
+0.763
+],
+"icebow_elixir": 8.89,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_043430.jsonl",
+"tick": 5128,
+"learner": [
+0.988,
+0.965
+],
+"icebow": [
+0.318,
+0.763
+],
+"icebow_elixir": 9.31,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_043430.jsonl",
+"tick": 5478,
+"learner": [
+0.988,
+0.954
+],
+"icebow": [
+0.318,
+0.763
+],
+"icebow_elixir": 8.45,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_043955.jsonl",
+"tick": 2390,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+0.694
+],
+"icebow_elixir": 7.22,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_043955.jsonl",
+"tick": 3045,
+"learner": [
+0.921,
+0.988
+],
+"icebow": [
+0.956,
+0.41
+],
+"icebow_elixir": 8.61,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_043955.jsonl",
+"tick": 3591,
+"learner": [
+0.78,
+0.988
+],
+"icebow": [
+0.956,
+0.321
+],
+"icebow_elixir": 9.28,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_044415.jsonl",
+"tick": 345,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.775,
+1.0
+],
+"icebow_elixir": 9.76,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_044415.jsonl",
+"tick": 2582,
+"learner": [
+0.202,
+1.0
+],
+"icebow": [
+0.634,
+0.524
+],
+"icebow_elixir": 8.75,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_044415.jsonl",
+"tick": 3166,
+"learner": [
+0.19,
+1.0
+],
+"icebow": [
+0.634,
+0.524
+],
+"icebow_elixir": 6.74,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_044415.jsonl",
+"tick": 4626,
+"learner": [
+0.19,
+0.498
+],
+"icebow": [
+0.634,
+0.12
+],
+"icebow_elixir": 6.57,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_044415.jsonl",
+"tick": 5089,
+"learner": [
+0.179,
+0.498
+],
+"icebow": [
+0.634,
+0.12
+],
+"icebow_elixir": 6.73,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_044911.jsonl",
+"tick": 343,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.76,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_044911.jsonl",
+"tick": 2912,
+"learner": [
+0.941,
+0.772
+],
+"icebow": [
+0.76,
+0.895
+],
+"icebow_elixir": 6.89,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_044911.jsonl",
+"tick": 3462,
+"learner": [
+0.941,
+0.478
+],
+"icebow": [
+0.685,
+0.895
+],
+"icebow_elixir": 9.96,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_044911.jsonl",
+"tick": 4038,
+"learner": [
+0.941,
+0.446
+],
+"icebow": [
+0.637,
+0.895
+],
+"icebow_elixir": 6.35,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_045323.jsonl",
+"tick": 339,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.4,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_045844.jsonl",
+"tick": 2049,
+"learner": [
+0.845,
+0.987
+],
+"icebow": [
+0.129,
+1.0
+],
+"icebow_elixir": 7.72,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_050156.jsonl",
+"tick": 149,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.01,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_050507.jsonl",
+"tick": 170,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_050507.jsonl",
+"tick": 1752,
+"learner": [
+1.0,
+0.092
+],
+"icebow": [
+1.0,
+0.338
+],
+"icebow_elixir": 9.06,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_050507.jsonl",
+"tick": 2440,
+"learner": [
+1.0,
+0.081
+],
+"icebow": [
+1.0,
+0.338
+],
+"icebow_elixir": 8.53,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_050507.jsonl",
+"tick": 3335,
+"learner": [
+0.977,
+0.081
+],
+"icebow": [
+1.0,
+0.021
+],
+"icebow_elixir": 7.41,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_050822.jsonl",
+"tick": 644,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+0.654,
+1.0
+],
+"icebow_elixir": 9.39,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_051139.jsonl",
+"tick": 750,
+"learner": [
+1.0,
+0.988
+],
+"icebow": [
+0.855,
+1.0
+],
+"icebow_elixir": 8.62,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_051139.jsonl",
+"tick": 1719,
+"learner": [
+1.0,
+0.475
+],
+"icebow": [
+0.795,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_051139.jsonl",
+"tick": 2831,
+"learner": [
+0.697,
+0.463
+],
+"icebow": [
+0.711,
+0.988
+],
+"icebow_elixir": 6.48,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_051139.jsonl",
+"tick": 4137,
+"learner": [
+0.403,
+0.252
+],
+"icebow": [
+0.578,
+0.988
+],
+"icebow_elixir": 9.07,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_051543.jsonl",
+"tick": 354,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_051543.jsonl",
+"tick": 1413,
+"learner": [
+1.0,
+0.657
+],
+"icebow": [
+0.993,
+0.914
+],
+"icebow_elixir": 9.37,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_051543.jsonl",
+"tick": 2094,
+"learner": [
+0.504,
+0.657
+],
+"icebow": [
+0.993,
+0.914
+],
+"icebow_elixir": 6.38,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_051902.jsonl",
+"tick": 1452,
+"learner": [
+0.988,
+0.912
+],
+"icebow": [
+0.77,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_051902.jsonl",
+"tick": 2445,
+"learner": [
+0.988,
+0.646
+],
+"icebow": [
+0.77,
+1.0
+],
+"icebow_elixir": 9.18,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_051902.jsonl",
+"tick": 3714,
+"learner": [
+0.399,
+0.634
+],
+"icebow": [
+0.746,
+1.0
+],
+"icebow_elixir": 7.99,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_051902.jsonl",
+"tick": 4148,
+"learner": [
+0.399,
+0.453
+],
+"icebow": [
+0.746,
+1.0
+],
+"icebow_elixir": 6.3,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_052440.jsonl",
+"tick": 302,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.73,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_052440.jsonl",
+"tick": 1164,
+"learner": [
+0.919,
+1.0
+],
+"icebow": [
+1.0,
+0.988
+],
+"icebow_elixir": 8.88,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_052757.jsonl",
+"tick": 90,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.85,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_053318.jsonl",
+"tick": 958,
+"learner": [
+0.959,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_053633.jsonl",
+"tick": 2479,
+"learner": [
+1.0,
+0.93
+],
+"icebow": [
+0.812,
+1.0
+],
+"icebow_elixir": 8.04,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_053955.jsonl",
+"tick": 1258,
+"learner": [
+1.0,
+0.988
+],
+"icebow": [
+0.956,
+1.0
+],
+"icebow_elixir": 8.83,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_054307.jsonl",
+"tick": 2352,
+"learner": [
+1.0,
+0.971
+],
+"icebow": [
+0.721,
+0.945
+],
+"icebow_elixir": 7.42,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_054307.jsonl",
+"tick": 3438,
+"learner": [
+1.0,
+0.912
+],
+"icebow": [
+0.586,
+0.945
+],
+"icebow_elixir": 6.33,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_054307.jsonl",
+"tick": 3923,
+"learner": [
+1.0,
+0.119
+],
+"icebow": [
+0.504,
+0.945
+],
+"icebow_elixir": 8.5,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_054722.jsonl",
+"tick": 142,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.92,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_054722.jsonl",
+"tick": 1325,
+"learner": [
+0.847,
+0.734
+],
+"icebow": [
+0.504,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_054722.jsonl",
+"tick": 2414,
+"learner": [
+0.836,
+0.734
+],
+"icebow": [
+0.194,
+0.874
+],
+"icebow_elixir": 6.6,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_054722.jsonl",
+"tick": 2949,
+"learner": [
+0.836,
+0.734
+],
+"icebow": [
+0.194,
+0.874
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_054722.jsonl",
+"tick": 3549,
+"learner": [
+0.836,
+0.734
+],
+"icebow": [
+0.14,
+0.787
+],
+"icebow_elixir": 7.53,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_054722.jsonl",
+"tick": 4008,
+"learner": [
+0.836,
+0.734
+],
+"icebow": [
+0.14,
+0.787
+],
+"icebow_elixir": 6.81,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_054722.jsonl",
+"tick": 4463,
+"learner": [
+0.836,
+0.734
+],
+"icebow": [
+0.113,
+0.787
+],
+"icebow_elixir": 6.09,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_054722.jsonl",
+"tick": 4865,
+"learner": [
+0.663,
+0.734
+],
+"icebow": [
+0.113,
+0.787
+],
+"icebow_elixir": 8.12,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_054722.jsonl",
+"tick": 5259,
+"learner": [
+0.622,
+0.734
+],
+"icebow": [
+0.113,
+0.787
+],
+"icebow_elixir": 7.22,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_055229.jsonl",
+"tick": 265,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.07,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_055229.jsonl",
+"tick": 1269,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.87,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_055229.jsonl",
+"tick": 2399,
+"learner": [
+1.0,
+0.686
+],
+"icebow": [
+1.0,
+0.874
+],
+"icebow_elixir": 9.68,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_055229.jsonl",
+"tick": 3448,
+"learner": [
+1.0,
+0.686
+],
+"icebow": [
+0.979,
+0.436
+],
+"icebow_elixir": 7.41,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_055229.jsonl",
+"tick": 3919,
+"learner": [
+1.0,
+0.674
+],
+"icebow": [
+0.979,
+0.31
+],
+"icebow_elixir": 9.41,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_055229.jsonl",
+"tick": 5674,
+"learner": [
+0.669,
+0.674
+],
+"icebow": [
+0.979,
+0.117
+],
+"icebow_elixir": 6.09,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_055746.jsonl",
+"tick": 1665,
+"learner": [
+0.971,
+0.977
+],
+"icebow": [
+0.246,
+1.0
+],
+"icebow_elixir": 9.92,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_060103.jsonl",
+"tick": 1339,
+"learner": [
+0.948,
+1.0
+],
+"icebow": [
+1.0,
+0.569
+],
+"icebow_elixir": 7.96,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_060103.jsonl",
+"tick": 2054,
+"learner": [
+0.249,
+1.0
+],
+"icebow": [
+1.0,
+0.569
+],
+"icebow_elixir": 9.58,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_060414.jsonl",
+"tick": 1315,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+0.948
+],
+"icebow_elixir": 8.19,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_060414.jsonl",
+"tick": 2290,
+"learner": [
+0.647,
+1.0
+],
+"icebow": [
+1.0,
+0.948
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_060414.jsonl",
+"tick": 3132,
+"learner": [
+0.636,
+0.175
+],
+"icebow": [
+1.0,
+0.784
+],
+"icebow_elixir": 7.06,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_060731.jsonl",
+"tick": 1771,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.678,
+1.0
+],
+"icebow_elixir": 8.88,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_061046.jsonl",
+"tick": 1953,
+"learner": [
+1.0,
+0.959
+],
+"icebow": [
+0.786,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_061402.jsonl",
+"tick": 2503,
+"learner": [
+0.977,
+0.93
+],
+"icebow": [
+0.292,
+0.819
+],
+"icebow_elixir": 7.42,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_061402.jsonl",
+"tick": 3095,
+"learner": [
+0.977,
+0.93
+],
+"icebow": [
+0.292,
+0.431
+],
+"icebow_elixir": 6.62,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_061402.jsonl",
+"tick": 4043,
+"learner": [
+0.129,
+0.93
+],
+"icebow": [
+0.086,
+0.431
+],
+"icebow_elixir": 8.32,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_061807.jsonl",
+"tick": 288,
+"learner": [
+0.987,
+1.0
+],
+"icebow": [
+1.0,
+0.973
+],
+"icebow_elixir": 7.37,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_061932.jsonl",
+"tick": 399,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+0.791
+],
+"icebow_elixir": 8.2,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_061932.jsonl",
+"tick": 2323,
+"learner": [
+0.515,
+1.0
+],
+"icebow": [
+1.0,
+0.732
+],
+"icebow_elixir": 6.49,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_061932.jsonl",
+"tick": 4221,
+"learner": [
+0.2,
+0.403
+],
+"icebow": [
+0.988,
+0.337
+],
+"icebow_elixir": 7.33,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_061932.jsonl",
+"tick": 4895,
+"learner": [
+0.192,
+0.403
+],
+"icebow": [
+0.977,
+0.326
+],
+"icebow_elixir": 6.13,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_062433.jsonl",
+"tick": 393,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.24,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_062433.jsonl",
+"tick": 1369,
+"learner": [
+0.553,
+1.0
+],
+"icebow": [
+0.972,
+0.6
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_062433.jsonl",
+"tick": 2299,
+"learner": [
+0.553,
+0.697
+],
+"icebow": [
+0.874,
+0.356
+],
+"icebow_elixir": 7.11,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_062433.jsonl",
+"tick": 3240,
+"learner": [
+0.542,
+0.657
+],
+"icebow": [
+0.787,
+0.336
+],
+"icebow_elixir": 6.17,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_062433.jsonl",
+"tick": 3894,
+"learner": [
+0.542,
+0.536
+],
+"icebow": [
+0.688,
+0.232
+],
+"icebow_elixir": 6.66,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_062433.jsonl",
+"tick": 4626,
+"learner": [
+0.248,
+0.536
+],
+"icebow": [
+0.688,
+0.125
+],
+"icebow_elixir": 6.79,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_062433.jsonl",
+"tick": 5275,
+"learner": [
+0.216,
+0.536
+],
+"icebow": [
+0.688,
+0.114
+],
+"icebow_elixir": 6.52,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_062941.jsonl",
+"tick": 563,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_062941.jsonl",
+"tick": 1748,
+"learner": [
+0.928,
+1.0
+],
+"icebow": [
+0.843,
+1.0
+],
+"icebow_elixir": 8.67,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_062941.jsonl",
+"tick": 2515,
+"learner": [
+0.928,
+1.0
+],
+"icebow": [
+0.228,
+0.928
+],
+"icebow_elixir": 6.77,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_062941.jsonl",
+"tick": 2949,
+"learner": [
+0.916,
+1.0
+],
+"icebow": [
+0.228,
+0.928
+],
+"icebow_elixir": 7.27,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_063300.jsonl",
+"tick": 181,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_063300.jsonl",
+"tick": 1383,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+0.78
+],
+"icebow_elixir": 9.22,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_063617.jsonl",
+"tick": 149,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.01,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_063617.jsonl",
+"tick": 1235,
+"learner": [
+1.0,
+0.959
+],
+"icebow": [
+1.0,
+0.895
+],
+"icebow_elixir": 9.3,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_063617.jsonl",
+"tick": 3312,
+"learner": [
+0.987,
+0.893
+],
+"icebow": [
+0.946,
+0.786
+],
+"icebow_elixir": 7.11,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_063617.jsonl",
+"tick": 3939,
+"learner": [
+0.987,
+0.247
+],
+"icebow": [
+0.946,
+0.746
+],
+"icebow_elixir": 7.78,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_063617.jsonl",
+"tick": 4442,
+"learner": [
+0.947,
+0.247
+],
+"icebow": [
+0.946,
+0.732
+],
+"icebow_elixir": 8.7,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_063617.jsonl",
+"tick": 4822,
+"learner": [
+0.947,
+0.247
+],
+"icebow": [
+0.946,
+0.732
+],
+"icebow_elixir": 6.99,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_063617.jsonl",
+"tick": 5354,
+"learner": [
+0.947,
+0.235
+],
+"icebow": [
+0.946,
+0.732
+],
+"icebow_elixir": 8.4,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_063617.jsonl",
+"tick": 5729,
+"learner": [
+0.947,
+0.224
+],
+"icebow": [
+0.946,
+0.678
+],
+"icebow_elixir": 6.7,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_064141.jsonl",
+"tick": 1414,
+"learner": [
+1.0,
+0.959
+],
+"icebow": [
+0.599,
+1.0
+],
+"icebow_elixir": 9.01,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_064141.jsonl",
+"tick": 2332,
+"learner": [
+1.0,
+0.919
+],
+"icebow": [
+0.599,
+1.0
+],
+"icebow_elixir": 8.35,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_064141.jsonl",
+"tick": 2931,
+"learner": [
+1.0,
+0.907
+],
+"icebow": [
+0.369,
+0.988
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_064141.jsonl",
+"tick": 3918,
+"learner": [
+0.827,
+0.896
+],
+"icebow": [
+0.241,
+0.977
+],
+"icebow_elixir": 7.16,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_064525.jsonl",
+"tick": 1765,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+0.911,
+0.908
+],
+"icebow_elixir": 8.51,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_064525.jsonl",
+"tick": 3121,
+"learner": [
+0.493,
+1.0
+],
+"icebow": [
+0.911,
+0.642
+],
+"icebow_elixir": 8.88,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_064525.jsonl",
+"tick": 4124,
+"learner": [
+0.47,
+1.0
+],
+"icebow": [
+0.824,
+0.627
+],
+"icebow_elixir": 6.51,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_064525.jsonl",
+"tick": 4553,
+"learner": [
+0.47,
+0.988
+],
+"icebow": [
+0.824,
+0.627
+],
+"icebow_elixir": 6.93,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_065050.jsonl",
+"tick": 167,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.2,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_065408.jsonl",
+"tick": 209,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.11,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_065408.jsonl",
+"tick": 2514,
+"learner": [
+0.464,
+1.0
+],
+"icebow": [
+1.0,
+0.698
+],
+"icebow_elixir": 6.57,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_065729.jsonl",
+"tick": 606,
+"learner": [
+1.0,
+0.941
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.18,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_065729.jsonl",
+"tick": 2253,
+"learner": [
+1.0,
+0.185
+],
+"icebow": [
+0.687,
+1.0
+],
+"icebow_elixir": 7.47,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_065729.jsonl",
+"tick": 3585,
+"learner": [
+0.196,
+0.185
+],
+"icebow": [
+0.377,
+0.632
+],
+"icebow_elixir": 7.81,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_070110.jsonl",
+"tick": 1878,
+"learner": [
+0.988,
+0.971
+],
+"icebow": [
+0.791,
+1.0
+],
+"icebow_elixir": 7.76,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_070110.jsonl",
+"tick": 2640,
+"learner": [
+0.988,
+0.858
+],
+"icebow": [
+0.776,
+1.0
+],
+"icebow_elixir": 7.98,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_070110.jsonl",
+"tick": 3300,
+"learner": [
+0.988,
+0.734
+],
+"icebow": [
+0.672,
+1.0
+],
+"icebow_elixir": 6.61,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_070435.jsonl",
+"tick": 463,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.25,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_070435.jsonl",
+"tick": 2772,
+"learner": [
+0.828,
+1.0
+],
+"icebow": [
+1.0,
+0.519
+],
+"icebow_elixir": 8.17,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_070435.jsonl",
+"tick": 3411,
+"learner": [
+0.205,
+1.0
+],
+"icebow": [
+1.0,
+0.507
+],
+"icebow_elixir": 8.06,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_070801.jsonl",
+"tick": 2071,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+0.945
+],
+"icebow_elixir": 8.72,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_070801.jsonl",
+"tick": 3541,
+"learner": [
+0.816,
+1.0
+],
+"icebow": [
+1.0,
+0.46
+],
+"icebow_elixir": 9.2,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_070801.jsonl",
+"tick": 4942,
+"learner": [
+0.726,
+1.0
+],
+"icebow": [
+1.0,
+0.344
+],
+"icebow_elixir": 8.77,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_070801.jsonl",
+"tick": 5308,
+"learner": [
+0.726,
+0.839
+],
+"icebow": [
+1.0,
+0.344
+],
+"icebow_elixir": 7.2,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_070801.jsonl",
+"tick": 5735,
+"learner": [
+0.714,
+0.839
+],
+"icebow": [
+1.0,
+0.344
+],
+"icebow_elixir": 7.24,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_071322.jsonl",
+"tick": 838,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+0.946
+],
+"icebow_elixir": 7.67,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_071602.jsonl",
+"tick": 211,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_071602.jsonl",
+"tick": 2508,
+"learner": [
+0.674,
+1.0
+],
+"icebow": [
+1.0,
+0.791
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_071602.jsonl",
+"tick": 3423,
+"learner": [
+0.663,
+1.0
+],
+"icebow": [
+0.163,
+0.64
+],
+"icebow_elixir": 6.49,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_071602.jsonl",
+"tick": 4058,
+"learner": [
+0.28,
+0.98
+],
+"icebow": [
+0.021,
+0.615
+],
+"icebow_elixir": 6.44,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_072010.jsonl",
+"tick": 434,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+0.702,
+1.0
+],
+"icebow_elixir": 8.98,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_072010.jsonl",
+"tick": 1619,
+"learner": [
+0.988,
+0.646
+],
+"icebow": [
+0.696,
+1.0
+],
+"icebow_elixir": 7.54,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_072010.jsonl",
+"tick": 2696,
+"learner": [
+0.988,
+0.634
+],
+"icebow": [
+0.014,
+1.0
+],
+"icebow_elixir": 8.42,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_072010.jsonl",
+"tick": 3153,
+"learner": [
+0.988,
+0.634
+],
+"icebow": [
+0.014,
+1.0
+],
+"icebow_elixir": 7.74,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_072327.jsonl",
+"tick": 640,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 7.85,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_072543.jsonl",
+"tick": 2759,
+"learner": [
+0.935,
+0.975
+],
+"icebow": [
+0.496,
+0.638
+],
+"icebow_elixir": 7.65,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_072905.jsonl",
+"tick": 2299,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+0.762
+],
+"icebow_elixir": 9.82,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_072905.jsonl",
+"tick": 3002,
+"learner": [
+0.847,
+1.0
+],
+"icebow": [
+1.0,
+0.762
+],
+"icebow_elixir": 8.24,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_072905.jsonl",
+"tick": 3374,
+"learner": [
+0.816,
+1.0
+],
+"icebow": [
+1.0,
+0.762
+],
+"icebow_elixir": 6.49,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_072905.jsonl",
+"tick": 5180,
+"learner": [
+0.657,
+1.0
+],
+"icebow": [
+1.0,
+0.248
+],
+"icebow_elixir": 8.72,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_073811.jsonl",
+"tick": 2280,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+0.945
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_074120.jsonl",
+"tick": 229,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 7.32,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_074120.jsonl",
+"tick": 2489,
+"learner": [
+0.585,
+0.605
+],
+"icebow": [
+0.571,
+1.0
+],
+"icebow_elixir": 7.4,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_074120.jsonl",
+"tick": 4838,
+"learner": [
+0.573,
+0.559
+],
+"icebow": [
+0.286,
+0.651
+],
+"icebow_elixir": 6.75,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_074120.jsonl",
+"tick": 5202,
+"learner": [
+0.554,
+0.559
+],
+"icebow": [
+0.286,
+0.651
+],
+"icebow_elixir": 7.19,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_074645.jsonl",
+"tick": 124,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.56,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_075000.jsonl",
+"tick": 329,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.946,
+1.0
+],
+"icebow_elixir": 9.62,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_075000.jsonl",
+"tick": 3127,
+"learner": [
+0.734,
+0.852
+],
+"icebow": [
+0.084,
+1.0
+],
+"icebow_elixir": 8.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_075317.jsonl",
+"tick": 384,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 6.19,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_075317.jsonl",
+"tick": 2824,
+"learner": [
+0.266,
+0.443
+],
+"icebow": [
+0.058,
+0.634
+],
+"icebow_elixir": 8.64,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_075629.jsonl",
+"tick": 411,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_075629.jsonl",
+"tick": 1439,
+"learner": [
+0.988,
+0.552
+],
+"icebow": [
+0.913,
+0.971
+],
+"icebow_elixir": 8.87,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_075629.jsonl",
+"tick": 2728,
+"learner": [
+0.965,
+0.552
+],
+"icebow": [
+0.913,
+0.883
+],
+"icebow_elixir": 7.1,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_075629.jsonl",
+"tick": 3958,
+"learner": [
+0.954,
+0.552
+],
+"icebow": [
+0.913,
+0.702
+],
+"icebow_elixir": 7.67,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_075629.jsonl",
+"tick": 4772,
+"learner": [
+0.398,
+0.552
+],
+"icebow": [
+0.913,
+0.702
+],
+"icebow_elixir": 8.57,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_080155.jsonl",
+"tick": 2532,
+"learner": [
+0.847,
+1.0
+],
+"icebow": [
+1.0,
+0.862
+],
+"icebow_elixir": 7.36,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_080155.jsonl",
+"tick": 3035,
+"learner": [
+0.654,
+1.0
+],
+"icebow": [
+1.0,
+0.862
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_080155.jsonl",
+"tick": 4910,
+"learner": [
+0.642,
+1.0
+],
+"icebow": [
+1.0,
+0.784
+],
+"icebow_elixir": 7.46,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_080155.jsonl",
+"tick": 5302,
+"learner": [
+0.542,
+0.988
+],
+"icebow": [
+1.0,
+0.784
+],
+"icebow_elixir": 8.52,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_080716.jsonl",
+"tick": 279,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 8.17,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_080716.jsonl",
+"tick": 2199,
+"learner": [
+0.438,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_081037.jsonl",
+"tick": 542,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_081037.jsonl",
+"tick": 1841,
+"learner": [
+0.424,
+1.0
+],
+"icebow": [
+0.094,
+0.421
+],
+"icebow_elixir": 9.7,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_130753.jsonl",
+"tick": 343,
+"learner": [
+1.0,
+0.988
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 7.46,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_131110.jsonl",
+"tick": 2543,
+"learner": [
+0.987,
+1.0
+],
+"icebow": [
+1.0,
+0.458
+],
+"icebow_elixir": 8.09,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_132415.jsonl",
+"tick": 1370,
+"learner": [
+0.821,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.62,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_132415.jsonl",
+"tick": 2259,
+"learner": [
+0.478,
+1.0
+],
+"icebow": [
+0.605,
+1.0
+],
+"icebow_elixir": 9.38,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_132415.jsonl",
+"tick": 3164,
+"learner": [
+0.478,
+0.977
+],
+"icebow": [
+0.605,
+0.644
+],
+"icebow_elixir": 7.85,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_132415.jsonl",
+"tick": 4015,
+"learner": [
+0.467,
+0.977
+],
+"icebow": [
+0.605,
+0.644
+],
+"icebow_elixir": 7.16,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_132415.jsonl",
+"tick": 4528,
+"learner": [
+0.455,
+0.977
+],
+"icebow": [
+0.291,
+0.644
+],
+"icebow_elixir": 7.62,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_132415.jsonl",
+"tick": 4959,
+"learner": [
+0.444,
+0.777
+],
+"icebow": [
+0.291,
+0.644
+],
+"icebow_elixir": 8.13,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_132937.jsonl",
+"tick": 488,
+"learner": [
+1.0,
+0.988
+],
+"icebow": [
+0.876,
+0.973
+],
+"icebow_elixir": 8.07,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_132937.jsonl",
+"tick": 1329,
+"learner": [
+0.988,
+0.988
+],
+"icebow": [
+0.541,
+0.85
+],
+"icebow_elixir": 8.04,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_132937.jsonl",
+"tick": 2444,
+"learner": [
+0.285,
+0.988
+],
+"icebow": [
+0.541,
+0.455
+],
+"icebow_elixir": 6.79,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_132937.jsonl",
+"tick": 2869,
+"learner": [
+0.285,
+0.977
+],
+"icebow": [
+0.541,
+0.455
+],
+"icebow_elixir": 7.25,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_133256.jsonl",
+"tick": 394,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.901,
+0.901
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_133256.jsonl",
+"tick": 2693,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+0.802,
+0.65
+],
+"icebow_elixir": 8.53,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_133256.jsonl",
+"tick": 3106,
+"learner": [
+0.795,
+1.0
+],
+"icebow": [
+0.802,
+0.65
+],
+"icebow_elixir": 7.21,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_133256.jsonl",
+"tick": 3675,
+"learner": [
+0.602,
+0.718
+],
+"icebow": [
+0.691,
+0.65
+],
+"icebow_elixir": 8.63,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_133256.jsonl",
+"tick": 4096,
+"learner": [
+0.602,
+0.625
+],
+"icebow": [
+0.691,
+0.65
+],
+"icebow_elixir": 7.69,
+"xbow_board": [
+0.75,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_133701.jsonl",
+"tick": 2859,
+"learner": [
+1.0,
+0.977
+],
+"icebow": [
+0.532,
+1.0
+],
+"icebow_elixir": 8.78,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_134032.jsonl",
+"tick": 2119,
+"learner": [
+0.987,
+0.977
+],
+"icebow": [
+0.583,
+1.0
+],
+"icebow_elixir": 9.11,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_134032.jsonl",
+"tick": 2834,
+"learner": [
+0.774,
+0.977
+],
+"icebow": [
+0.472,
+0.988
+],
+"icebow_elixir": 9.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_134441.jsonl",
+"tick": 823,
+"learner": [
+0.987,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.0,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_134945.jsonl",
+"tick": 1116,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.776,
+1.0
+],
+"icebow_elixir": 9.46,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_135323.jsonl",
+"tick": 305,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.75,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_135639.jsonl",
+"tick": 905,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+0.965,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_135957.jsonl",
+"tick": 1093,
+"learner": [
+0.988,
+1.0
+],
+"icebow": [
+0.948,
+1.0
+],
+"icebow_elixir": 8.02,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_135957.jsonl",
+"tick": 2451,
+"learner": [
+0.049,
+0.867
+],
+"icebow": [
+0.896,
+1.0
+],
+"icebow_elixir": 8.61,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_140316.jsonl",
+"tick": 352,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 9.58,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_140316.jsonl",
+"tick": 3070,
+"learner": [
+0.853,
+1.0
+],
+"icebow": [
+0.959,
+0.423
+],
+"icebow_elixir": 8.13,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_140316.jsonl",
+"tick": 3608,
+"learner": [
+0.853,
+0.383
+],
+"icebow": [
+0.871,
+0.024
+],
+"icebow_elixir": 8.2,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_140654.jsonl",
+"tick": 2339,
+"learner": [
+0.971,
+0.789
+],
+"icebow": [
+0.913,
+1.0
+],
+"icebow_elixir": 7.11,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_140654.jsonl",
+"tick": 2980,
+"learner": [
+0.971,
+0.728
+],
+"icebow": [
+0.826,
+0.603
+],
+"icebow_elixir": 6.71,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_140654.jsonl",
+"tick": 3433,
+"learner": [
+0.971,
+0.621
+],
+"icebow": [
+0.727,
+0.603
+],
+"icebow_elixir": 6.02,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_140654.jsonl",
+"tick": 4338,
+"learner": [
+0.959,
+0.621
+],
+"icebow": [
+0.727,
+0.405
+],
+"icebow_elixir": 7.48,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_140654.jsonl",
+"tick": 4818,
+"learner": [
+0.948,
+0.621
+],
+"icebow": [
+0.727,
+0.405
+],
+"icebow_elixir": 6.91,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_140654.jsonl",
+"tick": 5149,
+"learner": [
+0.948,
+0.621
+],
+"icebow": [
+0.64,
+0.405
+],
+"icebow_elixir": 8.01,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_140654.jsonl",
+"tick": 5439,
+"learner": [
+0.705,
+0.621
+],
+"icebow": [
+0.64,
+0.307
+],
+"icebow_elixir": 6.69,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_141218.jsonl",
+"tick": 185,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.1389,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_141218.jsonl",
+"tick": 1581,
+"learner": [
+1.0,
+0.908
+],
+"icebow": [
+1.0,
+0.895
+],
+"icebow_elixir": 9.87,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_141529.jsonl",
+"tick": 3275,
+"learner": [
+0.988,
+0.977
+],
+"icebow": [
+0.686,
+1.0
+],
+"icebow_elixir": 7.24,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_141905.jsonl",
+"tick": 438,
+"learner": [
+1.0,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 10.0,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_141905.jsonl",
+"tick": 1872,
+"learner": [
+0.476,
+1.0
+],
+"icebow": [
+0.636,
+0.599
+],
+"icebow_elixir": 7.97,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_141905.jsonl",
+"tick": 2591,
+"learner": [
+0.464,
+1.0
+],
+"icebow": [
+0.636,
+0.156
+],
+"icebow_elixir": 6.34,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_141905.jsonl",
+"tick": 3239,
+"learner": [
+0.464,
+1.0
+],
+"icebow": [
+0.636,
+0.146
+],
+"icebow_elixir": 6.68,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_142227.jsonl",
+"tick": 1371,
+"learner": [
+0.922,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 7.63,
+"xbow_board": [
+0.25,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_142227.jsonl",
+"tick": 2213,
+"learner": [
+0.922,
+1.0
+],
+"icebow": [
+1.0,
+1.0
+],
+"icebow_elixir": 7.69,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_142227.jsonl",
+"tick": 3258,
+"learner": [
+0.316,
+1.0
+],
+"icebow": [
+1.0,
+0.956
+],
+"icebow_elixir": 6.1,
+"xbow_board": [
+0.8611,
+0.6094
+]
+},
+{
+"key": "live_play_20261021_142227.jsonl",
+"tick": 4269,
+"learner": [
+0.316,
+1.0
+],
+"icebow": [
+1.0,
+0.859
+],
+"icebow_elixir": 6.23,
+"xbow_board": [
+0.25,
+0.6094
+]
+}
+]
+}
