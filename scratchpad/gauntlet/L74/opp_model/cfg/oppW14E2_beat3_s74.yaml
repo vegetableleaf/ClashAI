@@ -1,0 +1,124 @@
+# L74 W14 round 5 (10-21 night, pod 48148): E u40 (e5198fb7; O4-Ranked 1,920: CLX 50.1, vs BEAT 42.1, style 0.66) continued as a fresh
+# run with E's recipe UNCHANGED (gate-free, lr 1e-5, BEAT x3 practice): E was still improving at u40 (741200: 55.2 / 54.2 /
+# 51.7 / 54.8 / 50.6 at u20-u40; fresh-block check 49.9), so this round is the continuation, with a new KL anchor.
+init: icebow/data/pipeline/o2/w14/e_u40.pt
+pool: icebow/data/ghost_pool/pool_env_v1.jsonl
+proagree_data: icebow/data/pipeline/s1_dataset.npz
+proagree_rows: 0
+proagree_data_gen: icebow/data/pipeline/gen_dataset_v32_fv5.npz
+noise_off: all
+opp_elixir: counter
+action_delay_ticks: 26
+extrapolate_ticks: 26
+hero_abilities: true
+forms_mode: deck
+league: true
+league_decks: scratchpad/gauntlet/L74/opp_model/w14/decks_live_train_beat3.json
+league_specialist: icebow/data/pipeline/s1_icebow_v6aug_s1.pt
+league_opp_policy: live
+league_mix:
+  latest: 0.5
+  older: 0.25
+  init: 0.25
+  s1: 0.0
+league_snapshot_every: 1000
+league_snapshot_keep: 12
+league_icebow_share: 1.0
+league_deck_alpha: 1.0
+league_deck_floor: 0.0
+E: 64
+G: 4
+adv_clip: 2.0
+advantage: gae
+gae_gamma: 0.999
+gae_gamma_unit: tick
+gae_gamma_tick: 0.99994
+gae_terminal_gap: false
+gae_lambda: 0.95
+vf_coef: 0.5
+vf_clip: 0.2
+critic_warmup_updates: 1
+vf_trunk_grad: true
+shaping: none
+shaping_w_tower: 0.3
+shaping_w_crown: 0.3
+shaping_critic_scale: 1.5
+n_actors: 24
+in_flight: 8
+actor_device: cpu
+actor_threads: 1
+actor_timeout_s: 3600
+T: 0.5
+tau: 0.27
+afford_mask: true
+stall_elixir: null
+stall_seconds: 12
+obs: live
+decide_every: 40
+learner_device: cuda
+lr: 1.0e-05
+grad_clip: 0.5
+ppo_epochs: 2
+minibatch: 256
+clip: 0.2
+beta0: 0.3
+beta_min: 0.03
+beta_max: 3.0
+kl_target: 0.1
+leash: max
+seed: 74
+max_updates: 40
+save_every: 5
+proagree_every: 5
+screen_every: 10
+screen_entries: 0
+screen_seeds:
+- 0
+- 1
+- 2
+stop_consecutive: 2
+plays_lo: 0.6
+plays_hi: 1.6
+kl_cell_stop: 0.5
+kl_gate_stop: 0.1
+tripwire_cell_pp: 1.0
+hard_cell_pp: 3.0
+hard_card_pp: 3.0
+hard_gate_bal: 0.05
+screen_stop_pp: -100.0
+entropy_floor_frac: 0.5
+outlived_pp: 15.0
+low_delivered_pp: 10.0
+ghost_refusal_x: 2.0
+league_pfsp: hard
+opp_style: 'off'
+league_pfsp_gamma: 2.0
+league_pfsp_floor: 0.05
+league_external:
+- icebow/data/bench/rl_royale/rlarm_stepd_ctrl_nos2/rlarm_stepd_ctrl_nos2_u0130_grafted.pt
+- icebow/data/bench/rl_royale/rlarm_succ_levels/rlarm_succ_levels_u0065_grafted.pt
+- icebow/data/bench/rl_royale/rlarm_gae_cue_ab2/rlarm_gae_cue_ab2_u0065_grafted.pt
+- icebow/data/bench/rl_royale/rlarm_gae_cue_u250/rlarm_gae_cue_u250_u0130_grafted.pt
+league_learner_icebow_share: 0.0
+ability_policy: v2
+branch_gate: false
+learner_pipeline_frac: 0.0
+live_levels: all16
+opp_decide_every: 10
+heroiw_press: live
+league_opp_live:
+  xbow_class: class_sample
+  xbow_class_floor: 0.3
+  tau_phase: [0.35, 0.45, 0.55]
+  spell_aim: rocket_area
+  gate_decode: hazard_below_tau
+  gate_hazard_min_elixir: 9
+  log_aim: log_barrel
+  lethal_rocket: ot_behind
+  xbow_dead_lane: block
+  gate_hazard_threatened: 2
+  rocket_dead_target: block
+  tau_threatened: 0.2
+  lethal_log: 'on'
+  tau: 0.35
+  own_effects: true
