@@ -1020,6 +1020,13 @@ before the drain / opponent takes / both took / style vs Ranked; Ranked 48.1 / 2
 | R4b | F u20 | 50.0 | 45.5 | 53.2 | 58.8 | 59.2 | 65.9 | 52.9 | 12.1 | 0.68 | 6 | win \| OT 61.3 -> 59.2: within noise, and confounded with A3's own drift (lr 3e-5 continuation, no control). Stopped at u25 (21:31 EDT) for the clean A/B below |
 | R5 | E2 = E u40 continued fresh, E's recipe unchanged (48148, from 21:27 EDT) | | | | | | | | | | | the CONTROL for R5b |
 | R5b | I = E2's exact recipe + ONE change: ot_start_share 0.25 from the mirrored Ranked 3:00 states (40116, from 21:35 EDT) | | | | | | | | | | | A/B vs E2 at matched updates |
+| R5 | E2 u5 / u10 / u15 / u20 / u25 / u30 / u35 / u40 | 49.2 / 54.4 / 51.2 / 49.0 / 51.5 / 48.8 / 54.6 / 50.6 (mean 51.2) | 43.2 / 54.0 / 47.7 / 43.7 / 47.7 / 44.2 / 46.5 / 48.2 | | 53.8 / 56.5 / 53.3 / 48.8 / 48.3 / 51.5 / 51.0 / 54.8 | 55.4 / 61.6 / 61.3 / 61.5 / 60.3 / 55.9 / 62.9 / 60.8 (mean 60.0) | | | | 0.64-0.70 | 5-8 | **plateau**: = E u40 (50.6 on this block); OT share drifts down (48-55) |
+| R5b | I u5 / u10 / u15 / u20 / u25 / u30 / u35 | 52.9 / 48.8 / 48.8 / 53.8 / 47.9 / 46.9 / 50.0 (mean 49.9) | 48.7 / 41.9 / 42.0 / 46.2 / 43.2 / 38.9 / 47.0 | | 57.1 / 55.4 / 56.9 / 59.4 / 53.5 / 57.3 / 56.0 | 59.1 / 56.4 / 55.7 / 61.4 / 56.4 / 57.5 / 58.7 (mean 57.9) | | | | 0.67-0.71 | 5-7 | vs the control E2 at matched updates: CLX win -1.3, win \| OT -2.1, OT share +4, BEAT -3. Each gap is about one 480-game SE, so (b) the effect is not established; style 0.02-0.04 worse |
+
+**Round 5 verdict.** Continuing E's recipe is a plateau: E2 averages 51.2 on block 741200 over u5-u40, vs E u40's 50.6. Adding
+opponent OT-starts (I) keeps the OT share near Ranked's direction and lowers win \| OT by ~2 pp, but within noise. Neither
+beats E u40 by a margin that a 1,920-game check could resolve. E u40 stays the pick.
+
 
 - **Pod 40116 (owner-rented, RTX 3090, quota 31 cores), set up 10-21 19:35-19:55 EDT.**
   - Copied from 48148 through a temporary key, which was removed afterwards: venvf15 (fin15 runtime), the fin15 marker,
