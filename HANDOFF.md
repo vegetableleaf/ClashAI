@@ -1,3 +1,51 @@
+## 2026-10-22 ~12:45 EDT -- SESSION HANDOVER (account 1 at 100% usage). READ THIS FIRST.
+
+**Live (MuMu OPEN, Ranked loop, LIVE_RANKED on):** ICEBOW **Mark CLXII: LONG** since 12:04, i.e. the long run tn_long_e1i_s74 at u100
+(grafted 8af4b560, raw 921cc4d0). Evals vs CLX: pooled E4 +1.15 [-1.39, +3.68]; vs W14 I u40 (Ranked-calibrated) +6.82 [+4.03, +9.62].
+It trained against I u40 at 30% share, so part of that may be opponent-specific. Owner 10-22: "get a new and better model live ASAP,
+I don't care about CIs, a model that doesn't play like an ape". Revert = CLX (5d212358) via deploy_ckpt.sh. CLXI (686b245a) is NOT
+the fallback: the owner complained about it and it scored the same as CLX on every behaviour metric.
+- The stuck-screen watcher was re-armed 12:11 (L70/live/stuck_watch.sh). Nav fix 5ac7eb7 (orange chest screen) takes effect at the next live restart.
+- W21 live tap fix c4e3902 is live (UI guard under the hero button + no taps in the drain + per-match reset of spot blocks). Verify it on the
+  first ~40 matches since 11:01 (CLX 11:22-12:02, then CLXII) with scratchpad/gauntlet/L74/livetaps/livetaps.py
+  (commands in LIVETAPS.md section 5). Baseline 1.47 lost taps/match, expected ~0.7; button class ~0; drain class 0.
+- Next: score CLXII's live behaviour vs CLX after ~30 matches: `ape_score.py live:<CLXII> --base live:CLX`
+  (scratchpad/gauntlet/L74/ape/; W22; live table CLX: Tesla APE share 0.21, low-reserve X-Bow 0.27, threat ignored 0.21, Log hold 0.55).
+  Report to the owner. The owner wants the behaviour fixed, not CIs.
+
+**Pods (all 54.4-core 4090s, key ~/.ssh/runpod_clashbot; owner rule: NEVER idle; ask before releasing a pod you said you'd keep):**
+
+| pod | job | ETA / next |
+|---|---|---|
+| 157.157.221.29:32525 | long run tn_long_e1i_s74 (E1 + I u40 opp, 500 upd, moving KL 50; long_train.sh, local 48 actors) at ~u125; ckpt evals via tonight1021/ckpt_eval.sh (E4 + I u40, --record-board) | ~150 s/upd -> u500 ~Fri 06:00. clx_rb = CLX baseline WITH --record-board, running (E4 then I u40) -> gives W22 the SIM base for behaviour |
+| 157.157.221.29:33572 | branches tn_br_tower_s74 / s75 = long u100 + shaping tower_crown (targets ignored threats + Log), 80 upd, save_every 20 | u40 ~18:30, u80 ~01:00. Eval: ckpt_eval.sh TAG CKPT on the pod (cpu_b lock; trainers use cpu.lock / cpu_c.lock) |
+| 157.157.221.29:33401 | W18 opponent rounds R1 (princess_redirect), R3 (play_cost), then R2 (lead_protect); stream C tau probes; P-D payoff probe next; R4/R4b built | W18 scripts opp_model/w18/ (pod_start.sh pull, o4_gate.py) |
+| 157.157.221.29:33591 | W19 parity: K=8 re-score (queue8.sh) + censuses | busy to ~18:30Z; next = the 10-19 patch as a client-dated fork table (W23 diff) |
+
+Stopped today: 32621 (07:20, mistake -- owner wanted it kept), 13396, 14009, 19899, 40144, 22539, 40116, 48148.
+
+**Owner rules set today (memory has them):**
+- Promotion gate = POOLED 1,920 games (paircmp_pooled.py). Owner now prioritises a better-behaving live model over CIs.
+- "No learner training until the opponent passes 12/12" was SUPERSEDED by "new better model ASAP".
+- Opponent targets = recent-100 Ranked window; gate v2 = G1-G4 (OPP_MODEL.md 8.4). G2's tap handicap must use W21's CORRECTED rates
+  (53% of 'lost' taps were post-end; slow taps are the game's elixir hold). I told W18; its re-score is pending.
+- Spell use (Rocket / Tornado / Log incl. sneaky lock) is measured on every candidate (spell-use-measurement-requirement.md).
+- Search wide with a hypothesis ledger; a plateau only counts when every angle has been tested.
+
+**Findings today:**
+- 9 overnight arms: none beat CLX. Arm B (OT starts) hurts, -2.7 vs base; arm A (W14 opp) -1.3; E1 (bait 2.5x) +2.0. E1 does NOT fix the Log
+  habit: hold 0.558 vs 0.557.
+- Opponent W18 (DIAG_12.md): I u40 passes 10/12 on gate v2 (before the G2 correction). Tank-deck lock gap: half is TIMING (humans block
+  inside the X-Bow's 3.5 s deploy 66% vs SIM 43%), half is DEPTH (humans use tower-front blockers and buildings; the SIM opponent never does).
+  The engine is correct there (W19).
+- Parity W19 (FIN15.md section 9): 0.920 [0.916, 0.923] vs goal 0.975. A long tail of mechanisms. The 10-19 Skeleton formation is the biggest lever.
+- 10-19 BALANCE PATCH (W23, PATCH1019.md; memory balance-patch-1019.md): only Skeletons for icebow (spread 0.4 -> 0.5, always split on
+  middle tiles), plus 9 opponent-card stat changes. The SIM table is client160402017_20261006: integrate the patch as client-dated.
+- Sneaky lock (W20, sneaky/SNEAKY.md): CLX attempts 0.6%, pros 1.9%; forcing it lost 9.8 pp. The counterfactual fork test (~2 pod-h) is designed, not run.
+
+**Background agents (this account; they may stop at its usage limit):** W18 opponent, W19 parity, W23 patch. Their state lives in the
+files and commits above. Resume each from its doc (DIAG_12.md / OPP_MODEL.md 8.x, FIN15.md 9.x, patch1019/PATCH1019.md).
+
 ## 2026-10-22 ~11:30 EDT -- W21 LIVETAPS: the pilot's "lost / slow taps" decomposed; hero-button guard + drain stop + spot-block reset
 
 - L74/livetaps/LIVETAPS.md (livetaps.py / .out). 233 CLX Ranked: 343 affordable lost taps (1.47/match). **53% post-end**
