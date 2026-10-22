@@ -1,0 +1,17 @@
+diff --git a/pipeline/royale_heroiw.py b/pipeline/royale_heroiw.py
+index 7e9fbca..974f880 100644
+--- a/pipeline/royale_heroiw.py
++++ b/pipeline/royale_heroiw.py
+@@ -6,7 +6,11 @@ from .reader_identity_aliases import HERO_ICE_WIZARD_ID, HERO_ICE_WIZARD_NAMES
+ 
+ ENABLED = RUNTIME_ID in ('20261012', '20261012-linux', '20261016-linux',   # 20261016-linux: 0.1.35, same card table + forms
+                        'fork36-linux', 'fin13-linux', 'fin15-linux')      # the 0.1.36-based fork: same table + forms
+-CARD_TABLE = 'client160402017_20261006'
++# The live client's table since the 2026-10-19 balance update (content 16.402.22, W23 PATCH1019): the default for
++# training and eval. The 10-06 table is the dated arm for replaying captures before 2026-10-19 ~06:00 EDT.
++# Needs a wheel that carries the arm (the fork's client160402017_20261019); older wheels refuse the name.
++CARD_TABLE = 'client160402017_20261019'
++CARD_TABLE_1006 = 'client160402017_20261006'
+ ICEBOW = frozenset(('Tornado', 'Tesla', 'IceWizard', 'Xbow', 'Rocket', 'Knight', 'Log', 'Skeletons'))
+ 
+ 

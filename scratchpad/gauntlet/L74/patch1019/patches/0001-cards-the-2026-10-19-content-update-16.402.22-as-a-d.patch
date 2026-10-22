@@ -1,0 +1,649 @@
+From b2809aa1858eaf32528b8b4792981a19d775a977 Mon Sep 17 00:00:00 2001
+From: vegetableleaf <benpecan106@gmail.com>
+Date: Thu, 22 Oct 2026 12:25:43 -0400
+Subject: [PATCH] cards: the 2026-10-19 content update (16.402.22) as a dated
+ table, cards-160402017-20261019.json
+
+The live game changed 13 client values on 2026-10-19 (device update folder, content 16.402.21 -> 16.402.22; the APK is
+unchanged since 09-23): Skeletons and Evo Skeletons SummonRadius 400 -> 500, Dart Goblin 59 -> 56, Cannon Cart 83 -> 79
+and Mass 3 -> 6, Minion Giant 66 -> 60, Flying Machine 67 -> 70, Skeleton Barrel death 57 -> 64 (evo 75 -> 64), the
+Void's 2-4 target tier DPS 1155 -> 1200, Electro Dragon LoadTime 1400 -> 1600, Rune Giant FinishIfInstigatorDies
+5000 -> 500, Hero Electro Wizard AttackStartDelay 500 -> removed (the shop global CHRONOS_MAX_FREE_VALUE also moved).
+
+- tools/extract_cards.py: vintage 160402017-20261019 (raw pack + data/raw/cr-160402017-20261019 update folder); the
+  Clones entry of a filter's Filters list (16.402.21: the Evo Electro Giant pulse's CommonAreaDamageFilterNoClones) is
+  read as filter_clones and accepted by the delevel-pulse reader (unmodelled by the engine).
+- data/derived/cards-160402017-20261019.json: the 10-06 table with exactly the 56 field deltas the extractor yields
+  between 16.402.21 and 16.402.22 on one base (ClashBot scratchpad/gauntlet/L74/patch1019/make_table.py); every other
+  field is the 10-06 table's. The 16.402.21-only changes are not in it (Evo E-Giant clone filter; Hero E-Wiz
+  Forbid_Movement links and refund window, which the hero reader does not read yet).
+- Not wired: the engine still loads only client15535 / client160402017_20261006 / client160402017. W19 integrates the
+  new arm (card.rs, state.rs, py.rs, calibration cards.CARD_TABLE candidates, tests) -- PATCH1019.md section 5.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+---
+ .gitignore                                    |   4 +
+ ...006.json => cards-160402017-20261019.json} | 120 +++++++++---------
+ tools/extract_cards.py                        |  38 +++++-
+ 3 files changed, 98 insertions(+), 64 deletions(-)
+ copy data/derived/{cards-160402017-20261006.json => cards-160402017-20261019.json} (99%)
+
+diff --git a/.gitignore b/.gitignore
+index 9821a541..19f53b28 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -52,6 +52,10 @@ data/derived/*
+ # The same client's install-time table (content 16.402.2, before that update): what a capture recorded before the
+ # update is scored against (cards.CARD_TABLE = client160402017). Same ruling, same category of numbers.
+ !data/derived/cards-160402017.json
++# The same client with its 2026-10-19 content update (16.402.22): the 10-06 table plus the update's field deltas (W23
++# PATCH1019), what a battle under cards.CARD_TABLE = client160402017_20261019 reads once the engine wires that arm.
++# Same ruling, same category of numbers; the raw update folder stays excluded.
++!data/derived/cards-160402017-20261019.json
+ 
+ # Ground-truth traces (large; not distributed). The PREFIX, not the exact path: a
+ # byte-identical copy at data/oracle-native-2026-09-18-backup/ sat untracked for five
+diff --git a/data/derived/cards-160402017-20261006.json b/data/derived/cards-160402017-20261019.json
+similarity index 99%
+copy from data/derived/cards-160402017-20261006.json
+copy to data/derived/cards-160402017-20261019.json
+index 676685b4..1761518d 100644
+--- a/data/derived/cards-160402017-20261006.json
++++ b/data/derived/cards-160402017-20261019.json
+@@ -1,6 +1,6 @@
+ {
+- "version": "cards-160402017-20261006.1",
+- "vintage_warning": "LIVE 2026 BUILD (the 160402017 client with its 2026-10-06 content update, content 16.402.19: the update's files over the install-time pack, decoded by tools/decode_sc_assets.py). Every number in this file is EVIDENCE, NOT SPEC: the columns are the client's, what the engine does with each is calibration.json's. Stats are UNIFIED LEVEL-1 base values (calibration.json combat.STAT_BASE_LEVEL). Effective row = the client's TOML rows; evolutions and hero forms are excluded from `cards`.",
++ "version": "cards-160402017-20261019.1",
++ "vintage_warning": "LIVE 2026 BUILD (the 160402017 client with its 2026-10-19 content update, content 16.402.22: the update's files over the install-time pack, decoded by tools/decode_sc_assets.py). Every number in this file is EVIDENCE, NOT SPEC: the columns are the client's, what the engine does with each is calibration.json's. Stats are UNIFIED LEVEL-1 base values (calibration.json combat.STAT_BASE_LEVEL). Effective row = the client's TOML rows; evolutions and hero forms are excluded from `cards`.",
+  "provenance": {
+   "source": "Supercell csv_logic/ of the 160402017 client: the 2026-10-06 update folder over the install-time pack, decoded by tools/decode_sc_assets.py (each pack's MANIFEST.json carries its per-file hashes)",
+   "vintage": "160402017 client, content 16.402.19 (the 2026-10-06 balance update)",
+@@ -2012,7 +2012,7 @@
+    "action_graph": null,
+    "death_spawn_pushback": false,
+    "count": 3,
+-   "summon_radius_milli": 400,
++   "summon_radius_milli": 500,
+    "summon_width_milli": null,
+    "summon_deploy_delay_ms": null,
+    "summon_deploy_delay_second_ms": null,
+@@ -5936,7 +5936,7 @@
+    "rarity": "Rare",
+    "summon_character": "BlowdartGoblin",
+    "hitpoints": 102,
+-   "damage": 59,
++   "damage": 56,
+    "damage_source": "projectiles.BlowdartGoblinProjectile.Damage",
+    "hit_speed_ms": 800,
+    "load_time_ms": 450,
+@@ -5959,7 +5959,7 @@
+    "projectile": {
+     "name": "BlowdartGoblinProjectile",
+     "speed": 800,
+-    "damage": 59,
++    "damage": 56,
+     "crown_tower_damage_percent": 100,
+     "crown_tower_damage_percent_raw": null,
+     "homing": true,
+@@ -7676,7 +7676,7 @@
+    "rarity": "Epic",
+    "summon_character": "MovingCannon",
+    "hitpoints": 707,
+-   "damage": 83,
++   "damage": 79,
+    "damage_source": "projectiles.MovingCannonProjectile.Damage",
+    "hit_speed_ms": 900,
+    "load_time_ms": 400,
+@@ -7688,7 +7688,7 @@
+    "minimum_range_milli": null,
+    "sight_range_milli": 6000,
+    "collision_radius_milli": 500,
+-   "mass": 3,
++   "mass": 6,
+    "deploy_time_ms": 1000,
+    "attacks_air": false,
+    "attacks_ground": true,
+@@ -7699,7 +7699,7 @@
+    "projectile": {
+     "name": "MovingCannonProjectile",
+     "speed": 1000,
+-    "damage": 83,
++    "damage": 79,
+     "crown_tower_damage_percent": 100,
+     "crown_tower_damage_percent_raw": null,
+     "homing": true,
+@@ -8125,7 +8125,7 @@
+    "rarity": "Rare",
+    "summon_character": "DartBarrell",
+    "hitpoints": 240,
+-   "damage": 67,
++   "damage": 70,
+    "damage_source": "projectiles.DartBarrellProjectile.Damage",
+    "hit_speed_ms": 1100,
+    "load_time_ms": 600,
+@@ -8148,7 +8148,7 @@
+    "projectile": {
+     "name": "DartBarrellProjectile",
+     "speed": 800,
+-    "damage": 67,
++    "damage": 70,
+     "crown_tower_damage_percent": 100,
+     "crown_tower_damage_percent_raw": null,
+     "homing": true,
+@@ -8945,7 +8945,7 @@
+    "damage": 75,
+    "damage_source": "projectiles.ElectroDragonProjectile.Damage",
+    "hit_speed_ms": 2100,
+-   "load_time_ms": 1400,
++   "load_time_ms": 1600,
+    "load_first_hit": false,
+    "speed": 60,
+    "stop_movement_after_ms": null,
+@@ -13665,7 +13665,7 @@
+      "attack_amount": 3,
+      "added_damage": 86,
+      "added_crown_tower_damage": 86,
+-     "finish_if_instigator_dies_ms": 5000,
++     "finish_if_instigator_dies_ms": 500,
+      "multipliers": [
+       [
+        "ElectroWizard",
+@@ -14500,7 +14500,7 @@
+    "rarity": "Rare",
+    "summon_character": "MinionGiant",
+    "hitpoints": 710,
+-   "damage": 66,
++   "damage": 60,
+    "damage_source": "projectiles.MinionGiant_Projectile.Damage",
+    "hit_speed_ms": 1700,
+    "load_time_ms": 900,
+@@ -14523,7 +14523,7 @@
+    "projectile": {
+     "name": "MinionGiant_Projectile",
+     "speed": 600,
+-    "damage": 66,
++    "damage": 60,
+     "crown_tower_damage_percent": 100,
+     "crown_tower_damage_percent_raw": null,
+     "homing": true,
+@@ -20638,7 +20638,7 @@
+          "speed_multiplier_raw": null,
+          "hit_speed_multiplier_raw": null,
+          "spawn_speed_multiplier_raw": null,
+-         "damage_per_second": 1155,
++         "damage_per_second": 1200,
+          "hit_frequency_ms": 100,
+          "heal_per_second": null,
+          "damage_reduction": null,
+@@ -21507,7 +21507,7 @@
+     "NoDeploySizeW": 11,
+     "NoDeploySizeH": 21
+    },
+-   "no_deploy_size_provenance": "buildings.csv PrincessTower.NoDeploySizeW/NoDeploySizeH (160402017-20261006 csv_logic/characters/*.toml overlay [BUILDING.PrincessTower], evidence not spec); unit TILES inferred from 4/4 arena landmarks, gated by tools/check_data.py",
++   "no_deploy_size_provenance": "buildings.csv PrincessTower.NoDeploySizeW/NoDeploySizeH (160402017-20261019 csv_logic/characters/*.toml overlay [BUILDING.PrincessTower], evidence not spec); unit TILES inferred from 4/4 arena landmarks, gated by tools/check_data.py",
+    "level_scaling": {
+     "rarity": "Common",
+     "level_count": 16,
+@@ -21655,7 +21655,7 @@
+     "NoDeploySizeW": 18,
+     "NoDeploySizeH": 16
+    },
+-   "no_deploy_size_provenance": "buildings.csv KingTower.NoDeploySizeW/NoDeploySizeH (160402017-20261006 csv_logic/characters/*.toml overlay [BUILDING.KingTower], evidence not spec); unit TILES inferred from 4/4 arena landmarks, gated by tools/check_data.py",
++   "no_deploy_size_provenance": "buildings.csv KingTower.NoDeploySizeW/NoDeploySizeH (160402017-20261019 csv_logic/characters/*.toml overlay [BUILDING.KingTower], evidence not spec); unit TILES inferred from 4/4 arena landmarks, gated by tools/check_data.py",
+    "level_scaling": {
+     "rarity": "Common",
+     "level_count": 16,
+@@ -25000,7 +25000,7 @@
+    "source_table": "characters",
+    "rarity": "Common",
+    "hitpoints": 102,
+-   "damage": 59,
++   "damage": 56,
+    "damage_source": "projectiles.BlowdartGoblinEvoProjectile.Damage",
+    "hit_speed_ms": 800,
+    "load_time_ms": 450,
+@@ -25023,7 +25023,7 @@
+    "projectile": {
+     "name": "BlowdartGoblinEvoProjectile",
+     "speed": 800,
+-    "damage": 59,
++    "damage": 56,
+     "crown_tower_damage_percent": 100,
+     "crown_tower_damage_percent_raw": null,
+     "homing": true,
+@@ -25145,7 +25145,7 @@
+    "source_table": "characters",
+    "rarity": "Common",
+    "hitpoints": 102,
+-   "damage": 59,
++   "damage": 56,
+    "damage_source": "projectiles.BlowdartGoblinProjectile.Damage",
+    "hit_speed_ms": 800,
+    "load_time_ms": 450,
+@@ -25168,7 +25168,7 @@
+    "projectile": {
+     "name": "BlowdartGoblinProjectile",
+     "speed": 800,
+-    "damage": 59,
++    "damage": 56,
+     "crown_tower_damage_percent": 100,
+     "crown_tower_damage_percent_raw": null,
+     "homing": true,
+@@ -25799,7 +25799,7 @@
+    "source_table": "characters",
+    "rarity": "Common",
+    "hitpoints": 707,
+-   "damage": 83,
++   "damage": 79,
+    "damage_source": "projectiles.MovingCannonProjectile.Damage",
+    "hit_speed_ms": 900,
+    "load_time_ms": 400,
+@@ -25811,7 +25811,7 @@
+    "minimum_range_milli": null,
+    "sight_range_milli": 6000,
+    "collision_radius_milli": 500,
+-   "mass": 3,
++   "mass": 6,
+    "deploy_time_ms": 1000,
+    "attacks_air": false,
+    "attacks_ground": true,
+@@ -25822,7 +25822,7 @@
+    "projectile": {
+     "name": "MovingCannonProjectile",
+     "speed": 1000,
+-    "damage": 83,
++    "damage": 79,
+     "crown_tower_damage_percent": 100,
+     "crown_tower_damage_percent_raw": null,
+     "homing": true,
+@@ -25933,7 +25933,7 @@
+     "AttacksGround": true,
+     "IgnorePushback": true,
+     "CollisionRadius": 500,
+-    "Mass": 3,
++    "Mass": 6,
+     "DeployDelay": 400,
+     "IgnoreBuff": "VoodooCurse",
+     "IgnoreResurrect": true,
+@@ -26669,7 +26669,7 @@
+    "source_table": "characters",
+    "rarity": "Common",
+    "hitpoints": 240,
+-   "damage": 67,
++   "damage": 70,
+    "damage_source": "projectiles.DartBarrellProjectile.Damage",
+    "hit_speed_ms": 1100,
+    "load_time_ms": 600,
+@@ -26692,7 +26692,7 @@
+    "projectile": {
+     "name": "DartBarrellProjectile",
+     "speed": 800,
+-    "damage": 67,
++    "damage": 70,
+     "crown_tower_damage_percent": 100,
+     "crown_tower_damage_percent_raw": null,
+     "homing": true,
+@@ -26796,7 +26796,7 @@
+    "damage": 75,
+    "damage_source": "projectiles.ElectroDragonProjectile.Damage",
+    "hit_speed_ms": 2100,
+-   "load_time_ms": 1400,
++   "load_time_ms": 1600,
+    "load_first_hit": false,
+    "speed": 60,
+    "stop_movement_after_ms": null,
+@@ -26923,7 +26923,7 @@
+     "FlyingHeight": 3500,
+     "HitSpeed": 2100,
+     "Hitpoints": 410,
+-    "LoadTime": 1400,
++    "LoadTime": 1600,
+     "Mass": 7,
+     "Name": "ElectroDragon",
+     "OverrideAttackFinishTime": true,
+@@ -27202,7 +27202,7 @@
+    "damage": 75,
+    "damage_source": "projectiles.ElectroDragonProjectile.Damage",
+    "hit_speed_ms": 2100,
+-   "load_time_ms": 1400,
++   "load_time_ms": 1600,
+    "load_first_hit": false,
+    "speed": 60,
+    "stop_movement_after_ms": null,
+@@ -27328,7 +27328,7 @@
+     "FlyingHeight": 3500,
+     "HitSpeed": 2100,
+     "Hitpoints": 410,
+-    "LoadTime": 1400,
++    "LoadTime": 1600,
+     "Mass": 7,
+     "Name": "ElectroDragon",
+     "OverrideAttackFinishTime": true,
+@@ -30010,7 +30010,7 @@
+      "attack_amount": 3,
+      "added_damage": 86,
+      "added_crown_tower_damage": 86,
+-     "finish_if_instigator_dies_ms": 5000,
++     "finish_if_instigator_dies_ms": 500,
+      "multipliers": [
+       [
+        "ElectroWizard",
+@@ -36310,7 +36310,7 @@
+    "source_table": "characters",
+    "rarity": "Common",
+    "hitpoints": 710,
+-   "damage": 66,
++   "damage": 60,
+    "damage_source": "projectiles.MinionGiant_Projectile.Damage",
+    "hit_speed_ms": 1700,
+    "load_time_ms": 900,
+@@ -36333,7 +36333,7 @@
+    "projectile": {
+     "name": "MinionGiant_Projectile",
+     "speed": 600,
+-    "damage": 66,
++    "damage": 60,
+     "crown_tower_damage_percent": 100,
+     "crown_tower_damage_percent_raw": null,
+     "homing": true,
+@@ -52901,7 +52901,7 @@
+    "source_table": "buildings",
+    "rarity": "Common",
+    "hitpoints": 707,
+-   "damage": 83,
++   "damage": 79,
+    "damage_source": "projectiles.MovingCannonProjectile.Damage",
+    "hit_speed_ms": 900,
+    "load_time_ms": 400,
+@@ -52924,7 +52924,7 @@
+    "projectile": {
+     "name": "MovingCannonProjectile",
+     "speed": 1000,
+-    "damage": 83,
++    "damage": 79,
+     "crown_tower_damage_percent": 100,
+     "crown_tower_damage_percent_raw": null,
+     "homing": true,
+@@ -55549,7 +55549,7 @@
+    "lifetime_ms": null,
+    "ignore_pushback": false,
+    "tile_size_override": null,
+-   "death_damage": 57,
++   "death_damage": 64,
+    "death_damage_radius_milli": 2000,
+    "death_spawn": {
+     "character": "Skeleton",
+@@ -55637,7 +55637,7 @@
+    "lifetime_ms": null,
+    "ignore_pushback": false,
+    "tile_size_override": null,
+-   "death_damage": 57,
++   "death_damage": 64,
+    "death_damage_radius_milli": 2000,
+    "death_spawn": {
+     "character": "Skeleton",
+@@ -59902,7 +59902,7 @@
+   "BlowdartGoblinEvoProjectile": {
+    "name": "BlowdartGoblinEvoProjectile",
+    "speed": 800,
+-   "damage": 59,
++   "damage": 56,
+    "crown_tower_damage_percent": 100,
+    "crown_tower_damage_percent_raw": null,
+    "homing": true,
+@@ -59948,7 +59948,7 @@
+   "BlowdartGoblinEvoProjectile_Special": {
+    "name": "BlowdartGoblinEvoProjectile_Special",
+    "speed": 800,
+-   "damage": 59,
++   "damage": 56,
+    "crown_tower_damage_percent": 100,
+    "crown_tower_damage_percent_raw": null,
+    "homing": true,
+@@ -59994,7 +59994,7 @@
+   "BlowdartGoblinProjectile": {
+    "name": "BlowdartGoblinProjectile",
+    "speed": 800,
+-   "damage": 59,
++   "damage": 56,
+    "crown_tower_damage_percent": 100,
+    "crown_tower_damage_percent_raw": null,
+    "homing": true,
+@@ -60295,7 +60295,7 @@
+   "MovingCannonProjectile": {
+    "name": "MovingCannonProjectile",
+    "speed": 1000,
+-   "damage": 83,
++   "damage": 79,
+    "crown_tower_damage_percent": 100,
+    "crown_tower_damage_percent_raw": null,
+    "homing": true,
+@@ -60559,7 +60559,7 @@
+   "DartBarrellProjectile": {
+    "name": "DartBarrellProjectile",
+    "speed": 800,
+-   "damage": 67,
++   "damage": 70,
+    "crown_tower_damage_percent": 100,
+    "crown_tower_damage_percent_raw": null,
+    "homing": true,
+@@ -62832,7 +62832,7 @@
+   "MinionGiant_Projectile": {
+    "name": "MinionGiant_Projectile",
+    "speed": 600,
+-   "damage": 66,
++   "damage": 60,
+    "crown_tower_damage_percent": 100,
+    "crown_tower_damage_percent_raw": null,
+    "homing": true,
+@@ -67252,7 +67252,7 @@
+        "speed_multiplier_raw": null,
+        "hit_speed_multiplier_raw": null,
+        "spawn_speed_multiplier_raw": null,
+-       "damage_per_second": 1155,
++       "damage_per_second": 1200,
+        "hit_frequency_ms": 100,
+        "heal_per_second": null,
+        "damage_reduction": null,
+@@ -70597,7 +70597,7 @@
+    "life_duration_ms": null,
+    "radius_milli": 2000,
+    "hit_speed_ms": null,
+-   "damage": 57,
++   "damage": 64,
+    "crown_tower_damage_percent": 100,
+    "crown_tower_damage_percent_raw": null,
+    "no_effect_to_crown_towers": false,
+@@ -70632,7 +70632,7 @@
+    "life_duration_ms": 600,
+    "radius_milli": 2000,
+    "hit_speed_ms": null,
+-   "damage": 75,
++   "damage": 64,
+    "crown_tower_damage_percent": 100,
+    "crown_tower_damage_percent_raw": null,
+    "no_effect_to_crown_towers": false,
+@@ -70690,7 +70690,7 @@
+    "life_duration_ms": 600,
+    "radius_milli": 2000,
+    "hit_speed_ms": null,
+-   "damage": 75,
++   "damage": 64,
+    "crown_tower_damage_percent": 100,
+    "crown_tower_damage_percent_raw": null,
+    "no_effect_to_crown_towers": false,
+@@ -70748,7 +70748,7 @@
+    "life_duration_ms": 600,
+    "radius_milli": 2000,
+    "hit_speed_ms": null,
+-   "damage": 75,
++   "damage": 64,
+    "crown_tower_damage_percent": 100,
+    "crown_tower_damage_percent_raw": null,
+    "no_effect_to_crown_towers": false,
+@@ -76238,7 +76238,7 @@
+    "action_graph": null,
+    "death_spawn_pushback": false,
+    "count": 3,
+-   "summon_radius_milli": 400,
++   "summon_radius_milli": 500,
+    "summon_width_milli": null,
+    "summon_deploy_delay_ms": null,
+    "summon_deploy_delay_second_ms": null,
+@@ -78450,7 +78450,7 @@
+      "lifetime_ms": null,
+      "ignore_pushback": false,
+      "tile_size_override": null,
+-     "death_damage": 75,
++     "death_damage": 64,
+      "death_damage_radius_milli": 2000,
+      "death_spawn": {
+       "character": "Skeleton",
+@@ -78526,7 +78526,7 @@
+      "lifetime_ms": null,
+      "ignore_pushback": false,
+      "tile_size_override": null,
+-     "death_damage": 75,
++     "death_damage": 64,
+      "death_damage_radius_milli": 2000,
+      "death_spawn": {
+       "character": "Skeleton",
+@@ -82811,7 +82811,7 @@
+    "rarity": "Rare",
+    "summon_character": "BlowdartGoblin_EV1",
+    "hitpoints": 102,
+-   "damage": 59,
++   "damage": 56,
+    "damage_source": "projectiles.BlowdartGoblinEvoProjectile.Damage",
+    "hit_speed_ms": 800,
+    "load_time_ms": 450,
+@@ -82834,7 +82834,7 @@
+    "projectile": {
+     "name": "BlowdartGoblinEvoProjectile",
+     "speed": 800,
+-    "damage": 59,
++    "damage": 56,
+     "crown_tower_damage_percent": 100,
+     "crown_tower_damage_percent_raw": null,
+     "homing": true,
+@@ -83177,7 +83177,7 @@
+    "damage": 75,
+    "damage_source": "projectiles.ElectroDragonProjectile.Damage",
+    "hit_speed_ms": 2100,
+-   "load_time_ms": 1400,
++   "load_time_ms": 1600,
+    "load_first_hit": false,
+    "speed": 60,
+    "stop_movement_after_ms": null,
+@@ -91558,7 +91558,7 @@
+      "multiple_targets": 2,
+      "hit_speed_multiplier": 360,
+      "remember_targets": true,
+-     "attack_start_delay_ms": 500,
++     "attack_start_delay_ms": 0,
+      "recovery_no_attack_ms": 500,
+      "recovery_root_ms": 500,
+      "recovery_root_range_milli": 5000,
+@@ -91707,7 +91707,6 @@
+          "CustomOnAttackAction": "ElectroWizardHero_Set_Spin_Animation_Done",
+          "CustomRememberMultipleTargets": 1,
+          "DisableAttackAnimationFrameMatching": true,
+-         "AttackStartDelay": 500,
+          "StatsTags": {
+           "Damage": "surge_damage",
+           "HitSpeedMultiplier": "dps_boost"
+@@ -91718,8 +91717,7 @@
+          "HitSpeedMultiplier": 360,
+          "CustomMultipleTargets": 2,
+          "CustomRememberMultipleTargets": 1,
+-         "DisableAttackAnimationFrameMatching": true,
+-         "AttackStartDelay": 500
++         "DisableAttackAnimationFrameMatching": true
+         }
+        ]
+       },
+@@ -91868,7 +91866,6 @@
+          "CustomOnAttackAction": "ElectroWizardHero_Set_Spin_Animation_Done",
+          "CustomRememberMultipleTargets": 1,
+          "DisableAttackAnimationFrameMatching": true,
+-         "AttackStartDelay": 500,
+          "StatsTags": {
+           "Damage": "surge_damage",
+           "HitSpeedMultiplier": "dps_boost"
+@@ -91879,8 +91876,7 @@
+          "HitSpeedMultiplier": 360,
+          "CustomMultipleTargets": 2,
+          "CustomRememberMultipleTargets": 1,
+-         "DisableAttackAnimationFrameMatching": true,
+-         "AttackStartDelay": 500
++         "DisableAttackAnimationFrameMatching": true
+         }
+        ]
+       },
+diff --git a/tools/extract_cards.py b/tools/extract_cards.py
+index 4fabff1d..3f132f9a 100644
+--- a/tools/extract_cards.py
++++ b/tools/extract_cards.py
+@@ -415,6 +415,34 @@ VINTAGES = {
+         character_dirs=("characters", "events"),
+         filters_format=True,
+     ),
++    # THE 2026-10-19 BALANCE UPDATE (content 16.402.22; the device's update folder pulled 2026-10-22, decoded into
++    # data/raw/cr-160402017-20261019 by tools/decode_sc_assets.py): the live game since 2026-10-19 ~06:03 EDT (the folder's
++    # mtime on the device). Against 16.402.21 it changes 13 values (W23 PATCH1019.md): Skeletons and Evo Skeletons
++    # SummonRadius 400 -> 500, Dart Goblin, Cannon Cart (+ Mass 3 -> 6), Minion Giant, Flying Machine, Skeleton Barrel
++    # (+ evo) death damage, the Void's 2-4 target tier, the Electro Dragon's LoadTime, the Rune Giant's linger, the Hero
++    # Electro Wizard's AttackStartDelay.
++    "160402017-20261019": Vintage(
++        key="160402017-20261019",
++        raw=ROOT / "data" / "raw" / "cr-160402017" / "csv_logic",
++        update=ROOT / "data" / "raw" / "cr-160402017-20261019" / "csv_logic",
++        version="cards-160402017-20261019.1",
++        warning=(
++            "LIVE 2026 BUILD (the 160402017 client with its 2026-10-19 content update, content 16.402.22: the "
++            "update's files over the install-time pack, decoded by tools/decode_sc_assets.py). Every number in this "
++            "file is EVIDENCE, NOT SPEC: the columns are the client's, what the engine does with each is "
++            "calibration.json's. Stats are UNIFIED LEVEL-1 base values (calibration.json combat.STAT_BASE_LEVEL). "
++            "Effective row = the client's TOML rows; evolutions and hero forms are excluded from `cards`."
++        ),
++        source="Supercell csv_logic/ of the 160402017 client: the 2026-10-19 update folder over the install-time "
++        "pack, decoded by tools/decode_sc_assets.py (each pack's MANIFEST.json carries its per-file hashes)",
++        vintage="160402017 client, content 16.402.22 (the 2026-10-19 balance update)",
++        roster_dating="The content is in the files (the update's fingerprint.json version 16.402.22; the device's "
++                      "APK is versionCode 160402012, unchanged since 2026-09-23).",
++        sources=SOURCES_16402,
++        overlays=OVERLAYS_16402,
++        character_dirs=("characters", "events"),
++        filters_format=True,
++    ),
+ }
+ # The 15.535 file became the default once it passed every gate (cargo test, clippy,
+ # tools/check_data.py).
+@@ -1500,7 +1528,10 @@ FILTER_FLAGS = {
+ FILTER_LIST_FLAGS = {"Hidden": "filter_hidden", "Underground": "filter_underground", "Cloning": "filter_cloning",
+                      "Invisible": "filter_invisible", "NoHitpointComponent": "filter_if_no_hitpoint_component",
+                      "DashImmune": "filter_dash_immune", "Flying": "filter_flying", "Summoner": "filter_summoner",
+-                     "Buildings": "filter_buildings", "PrincessTowers": "filter_princess_towers"}
++                     "Buildings": "filter_buildings", "PrincessTowers": "filter_princess_towers",
++                     # 16.402.21: CommonAreaDamageFilterNoClones (the Evo Electro Giant's pulse) skips Clone copies.
++                     # ponytail: the engine does not read it (serde ignores the key); model it if a Clone fight fails.
++                     "Clones": "filter_clones"}
+ FILTER_LABELS = frozenset({"FilterDescriptionTID"})
+ # The columns an inline laser-ball tier buff may set (`laser_ball_block`).
+ LASER_BALL_BUFF_KEYS = frozenset(
+@@ -8011,7 +8042,10 @@ def delevel_pulse_block(t: Tables, card: dict) -> dict:
+     unread = tb.set_fields.get(name, set()) - DELEVEL_AREA_READ - DELEVEL_AREA_DISPLAY
+     need(not unread, f"area {name} sets {sorted(unread)}")
+     flt = filter_block(t, r["Filter"])
+-    need(r["Filter"] == DELEVEL_AREA_FILTER and flt is not None, f"area {name}'s Filter {r['Filter']!r}")
++    # 16.402.21 (live by 10-12): the pulse names CommonAreaDamageFilterNoClones, the common filter plus "Clones" (a
++    # Clone spell's copies are not hit). ponytail: clone exclusion unmodelled, read as the common filter.
++    need(r["Filter"] in (DELEVEL_AREA_FILTER, "CommonAreaDamageFilterNoClones") and flt is not None,
++         f"area {name}'s Filter {r['Filter']!r}")
+     need(r["OnlyEnemies"] is True and r["OnlyOwnTroops"] is False and r["IgnoreBuildings"] is False
+          and r["NoEffectToCrownTowers"] is False and r["Damage"] is None and r["TowerDamage"] is None,
+          f"area {name}'s targets")
+-- 
+2.55.0.windows.3
+
