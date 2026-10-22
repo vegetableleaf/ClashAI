@@ -1017,7 +1017,9 @@ before the drain / opponent takes / both took / style vs Ranked; Ranked 48.1 / 2
 | **O4** | **E u40 (e5198fb7), 1,920 = 741200 + fresh 742000-744000** | **50.1** | **42.1** | **55.1** | **54.8** | **56.9** | **62.2** | **55.2** | **15.4** | **0.66** | **7 of 12 fail (5 pass)** | fresh only (1,440): 49.9. **The new best on the Ranked cells**: win +2.0 (z 0.59); BEAT +16.8 (A3 u35 +20.2); win \| OT +9.6; pre-drain +9.5 (pass); CLX takes +7.4 (z 2.18); style 0.66 (A3 0.75). New fail: regulation loss 26.2 vs 18.9 |
 | R4b | F = A3 u35 continued fresh (A3 recipe) + ONE change: ot_start_share 0.25 from the MIRRORED live 3:00 states (pod 40116, main HEAD code a7fa2292, from 19:54 EDT) | | | | | | | | | | | |
 | R4b | F u0 (= A3 u35 on pod 40116 with HEAD code: the same 52.5 as A3 u35's own gate, so HEAD code with the new keys absent = identical) / u5 / u10 / u15 | 52.5 / 55.4 / 52.9 / 56.5 | 48.0 / 49.0 / 46.5 / 54.0 | 55.7 / 60.0 / 57.5 / 58.2 | 58.8 / 57.7 / 64.6 / 60.0 | 61.3 / 64.6 / 59.0 / 65.6 | 69.7 / 74.7 / 70.6 / 73.0 | 53.3 / 49.4 / 50.6 / 48.1 | 14.6 / 15.4 / 12.5 / 9.4 | 0.72 / 0.65 / 0.70 / 0.69 | 6 / 7 / 6 / 6 | no OT gain by u15 |
-| R5 | E2 = E u40 continued fresh, E's recipe unchanged (48148, from 21:27 EDT) | | | | | | | | | | | |
+| R4b | F u20 | 50.0 | 45.5 | 53.2 | 58.8 | 59.2 | 65.9 | 52.9 | 12.1 | 0.68 | 6 | win \| OT 61.3 -> 59.2: within noise, and confounded with A3's own drift (lr 3e-5 continuation, no control). Stopped at u25 (21:31 EDT) for the clean A/B below |
+| R5 | E2 = E u40 continued fresh, E's recipe unchanged (48148, from 21:27 EDT) | | | | | | | | | | | the CONTROL for R5b |
+| R5b | I = E2's exact recipe + ONE change: ot_start_share 0.25 from the mirrored Ranked 3:00 states (40116, from 21:35 EDT) | | | | | | | | | | | A/B vs E2 at matched updates |
 
 - **Pod 40116 (owner-rented, RTX 3090, quota 31 cores), set up 10-21 19:35-19:55 EDT.**
   - Copied from 48148 through a temporary key, which was removed afterwards: venvf15 (fin15 runtime), the fin15 marker,
@@ -1099,6 +1101,30 @@ Post-fall cells of B u20 (block 741200 with positions; `w14/pocket.py`; live / R
     loader path, but its own smoke is (b) not run.
 - Plateau diagnosis amended: A3 kept improving to u35 (60 -> 52.5 on block 741200), so gate-free on A's net was NOT plateaued
   at u40. It bought strength with style (0.64 -> 0.75).
+
+**Update 21:30 EDT: E u40 is the best confirmed opponent (recommended for the next successor round).**
+- Checkpoint: `rlarm_oppW14E_beat3_s74_u0040.pt`, sha256 e5198fb7bd3933253e79a6cbba9992db7a7239643b718c62dc8d8eca34d5b372.
+- Lineage: B u20 + 40 updates of tank-deck practice (gate-free, lr 1e-5).
+- Copies: laptop pod_backup_weekend/w14/; 48148 cb_stepd/icebow/data/pipeline/o2/w14/e_u40.pt and w14opp.pt; 40116
+  o2/w14/e_u40.pt.
+- O4-Ranked, 1,920 games (`w14/o4r_O4_Eu40.out`), vs Ranked:
+  - CLX win 50.1 (pass, z 0.59);
+  - vs BEAT 42.1 (+16.8);
+  - win \| OT 56.9 (+9.6);
+  - OT decided before the drain 62.2 (pass);
+  - opponent takes a princess 55.2 (pass);
+  - CLX takes a princess 60.2 (+7.4, z 2.18);
+  - both took one 15.4;
+  - regulation loss 26.2 (+7.4, a new fail);
+  - style 0.66.
+- Post-fall cells (block 741200 with positions):
+  - pocket share 44.5% (live 41.0);
+  - pocket deploys 2.91 per minute (live 2.60);
+  - P(king falls \| princess fell) 19.6% (live 7.6);
+  - X-Bow lock rate 0-0 / 1-0 / 0-1 / 1-1: 49.6 / 38.3 / 43.1 / 35.6 (live 40.2 / 44.2 / 15.7 / 12.2): the 1-1 gap stays.
+- Log punished within 6 s: 21.8% (live 19.2).
+- League smoke with it as w14opp.pt on 48148: **SMOKE PASS** 01:29:56 UTC; the exploiter was played 4 + 6 games.
+- A3 u35's own smoke on 48148: SMOKE PASS 23:38:46 UTC (exploiter 4 + 8 games).
 
 **League config (verified on a pod):** `cfg/tn_base_w14opp_s74.yaml` = tn_base_s74.yaml + ONE change, the exploiter
 checkpoint:
