@@ -443,6 +443,76 @@ def shortlist(model, enc, heads, allowed: np.ndarray, topk: int, cells: int) -> 
     return out
 
 
+# ------------------------------------------------------------------------------------------------------
+# W18 P-D payoff probe (--probe-xbow-start ARM; SIM-only measurement, opponent-model work): every match starts at a live
+# Ranked bridge-X-Bow state (rl_royale.draw_xbow_start's table) with OUR X-Bow forced at its live point; the opponent's FIRST
+# decision is scripted per ARM, both policies play on, the match stops 12 s (240 ticks) later. ARM:
+#   policy  the opponent's own answer (its deck's building dealt into its hand, so the option exists)
+#   bfront / bnear  its deck's BUILDING at the tower front (9.5 tiles from our X-Bow) / 6 tiles from it (just past the river)
+#   tfront / tnear  its CHEAPEST GROUND TROOP there (the troop dealt into its hand instead)
+# Opponent decks are redrawn (seeded) until they hold a building AND a ground troop, so every arm plays the same deck / state.
+# ------------------------------------------------------------------------------------------------------
+PROBE_ARMS = ("policy", "bfront", "bnear", "tfront", "tnear")
+PROBE_TICKS = 240
+PROBE_FRONT_TILES, PROBE_NEAR_TILES = 9.5, 6.0
+PROBE_AIR = {"minions", "minionhorde", "bats", "megaminion", "babydragon", "infernodragon", "balloon", "lavahound",
+             "skeletondragons", "electrodragon", "phoenix", "flyingmachine", "skeletonballoon"}
+
+
+def _norm(n) -> str:
+    return "".join(ch for ch in str(n).split("@")[0].lower() if ch.isalnum())
+
+
+def probe_cards(env, deck_names) -> tuple:
+    """(building, cheapest ground troop) engine names of a deck (None when absent), from the engine's own catalogue."""
+    if not hasattr(env, "_probe_kinds"):
+        env._probe_kinds = {int(c.card_id): (str(c.card_kind).upper(), float(c.elixir)) for c in env.core.cards()}
+    b = t = None
+    for n in deck_names:
+        try:
+            k = env._probe_kinds.get(env.card_id(str(n).split("@")[0]))
+        except (KeyError, ValueError):
+            k = None
+        if k is None:
+            continue
+        if "BUILDING" in k[0] and b is None:
+            b = str(n).split("@")[0]
+        elif "TROOP" in k[0] and _norm(n) not in PROBE_AIR and (t is None or k[1] < t[1]):
+            t = (str(n).split("@")[0], k[1])
+    return b, (t[0] if t else None)
+
+
+def probe_spec(spec: dict, seed: int, arm: str, card) -> dict:
+    """The live X-Bow start for OUR side (the learner here = icebow) + the card the opponent gets in hand."""
+    from pipeline.rl_royale import draw_xbow_start
+    st = draw_xbow_start(1.0, f"probe:{int(seed)}")
+    xb = st["force"]["board"]
+    ox, oy = 18.0 * (1.0 - xb[0]), 32.0 * (1.0 - xb[1])    # our X-Bow in the OPPONENT's own (rotated) frame, tiles
+    dist = PROBE_FRONT_TILES if arm.endswith("front") else PROBE_NEAR_TILES
+    spec["start"] = {"tick": st["tick"], "row": st["row"], "learner": dict(st["opp"]), "opp": dict(st["learner"]),
+                     "force": {"card": "Xbow", "board": xb, "side": "learner"}, "hand": {"opp": card}}
+    spec["probe"] = {"arm": arm, "card": card, "row": st["row"],
+                     "target_tiles": None if arm == "policy" else [round(ox, 2), round(oy + dist, 2)]}
+    return spec
+
+
+def probe_towers(env, side: int) -> dict:
+    """{engine x: (hp, max_hp)} of ``side``'s princess towers now."""
+    st = env.core.state()
+    return {int(e.x): (int(e.hp), int(e.max_hp)) for e in st.entities if e.tower_slot in (1, 2) and int(e.team) == side}
+
+
+def probe_decision(s, target_tiles, card) -> dict:
+    """The scripted first decision of the opponent side ``s``: ``card`` at the cell nearest ``target_tiles`` (its own frame)."""
+    from pipeline import engine_play as ep
+    from pipeline.model_v3 import GRID_X, GRID_Y
+    slot = s.deck.slot_of(E.vocab.engine_key(card))
+    tx, ty = target_tiles[0] / 18.0, target_tiles[1] / 32.0
+    cell = min(range(GRID_X * GRID_Y), key=lambda c: (ep.cell_center(c, s.cfg["grid"])[0] - tx) ** 2
+               + (ep.cell_center(c, s.cfg["grid"])[1] - ty) ** 2)
+    return {"play": True, "slot": int(slot), "cell": int(cell), "why": "probe"}
+
+
 class Runner:
     """Plays one (arm, opponent, seed) match. ``learner`` = our policy (also the rollout self-model of the opponent);
     ``opps`` = {id: (policy, cfg)}; ``make_env()`` -> RoyaleSelfPlayEnv."""
@@ -545,8 +615,19 @@ class Runner:
             spec["levels"] = draw_live_levels(table, spec["learner_deck"], spec["opp_deck"],
                                               f"{int(seed)}:{','.join(map(str, opp_deck))}")
         opp, ocfg = self.opps[opp_id]
-        return E.SelfPlayMatch(self.make_env(), spec, 0, {**self.lcfg, "entry_index": 0}, {**ocfg, "entry_index": 0},
-                               self.learner, opp)
+        probe = getattr(self, "probe", None)                 # W18 P-D (--probe-xbow-start); None = unchanged
+        if probe is None:
+            return E.SelfPlayMatch(self.make_env(), spec, 0, {**self.lcfg, "entry_index": 0}, {**ocfg, "entry_index": 0},
+                                   self.learner, opp)
+        env = self.make_env()
+        b, t = probe_cards(env, opp_deck)
+        if b is None or t is None:
+            raise E.UnsupportedProbeDeck(f"probe needs a building and a ground troop: {list(opp_deck)}")
+        probe_spec(spec, seed, probe, t if probe.startswith("t") else b)
+        m = E.SelfPlayMatch(env, spec, 0, {**self.lcfg, "entry_index": 0}, {**ocfg, "entry_index": 0}, self.learner, opp)
+        m.probe = dict(spec["probe"], t0=int(env.tick), towers0=probe_towers(env, m.opp.side), answered=None)
+        env.tail_cap = int(env.tick) + PROBE_TICKS
+        return m
 
     def play(self, arm: str, m, deadline: Optional[float] = None) -> dict:
         if arm not in ARMS:
@@ -594,7 +675,23 @@ class Runner:
                 **({k: r[k] for k in ("forms_mode", "form_fallbacks")} if "forms_mode" in r else {}),
                 **{k: r[k] for k in ("ability_head", "ability_stats") if k in r},   # B6 / --ability-stats
                 **self.posture_fields(m.learner),
+                **({"probe": self.probe_row(m)} if getattr(m, "probe", None) is not None else {}),
                 "wall_s": round(time.perf_counter() - t0, 1)}
+
+    @staticmethod
+    def probe_row(m) -> dict:
+        """W18 P-D: the opponent's princess HP lost over the 12 s (the X-Bow's lane and all), the forced X-Bow, the answer."""
+        from pipeline import engine_play as ep
+        pr = m.probe
+        X, _ = ep.board_to_engine(*m.spec["start"]["force"]["board"], m.learner.mirror)
+        a, b = pr["towers0"], probe_towers(m.env, m.opp.side)
+        lane = min(a, key=lambda x: abs(x - X)) if a else None
+        lost = lambda x: max(0, a[x][0] - b.get(x, (0, a[x][1]))[0]) / max(1, a[x][1])  # noqa: E731
+        return {"arm": pr["arm"], "card": pr["card"], "row": pr["row"], "target_tiles": pr["target_tiles"],
+                "forced": m.forced, "answered": pr["answered"], "ticks": int(m.env.tick) - pr["t0"],
+                "lane_lost": round(lost(lane), 4) if lane is not None else None,
+                "towers_lost": round(sum(lost(x) for x in a), 4),
+                "answer_accepted": any(p.get("why") == "probe" and p["accepted"] for p in m.opp.plays)}
 
     @staticmethod
     def posture_fields(side) -> dict:
@@ -625,6 +722,12 @@ class Runner:
                 tau, kw = E.posture_live([s], enc, s.cfg, s.cfg["tau"], decision_match_kwargs([s]))
                 d = live_decide_batch(s.model, enc, heads, [p], allowed[None], np.array([stalled]), tau=tau,
                                       device=s.cfg["device"], **kw)[0]
+            pr = getattr(m, "probe", None)
+            if pr is not None and s is m.opp and pr["answered"] is None:   # W18 P-D: the opponent's first decision
+                pr["answered"] = False
+                if pr["arm"] != "policy" and bool(allowed[s.deck.slot_of(E.vocab.engine_key(pr["card"]))]):
+                    d = probe_decision(s, pr["target_tiles"], pr["card"])
+                    pr["answered"] = True
             if s is m.learner and self.probe_xbow_focus and d["play"]:
                 d = self.probe_xbow(s, enc, d, st)
             if s is m.learner and arm == "never":
@@ -775,6 +878,8 @@ def _init_worker(args: dict) -> None:
                           search_min_p=args["search_min_p"], rollout_self=args.get("rollout_self", "idle"),
                           scorer_version=args.get("scorer", "v1"))
     _W["runner"].probe_xbow_focus = bool(args.get("probe_xbow_focus"))
+    if args.get("probe_xbow_start"):                        # W18 P-D payoff probe (SIM-only)
+        _W["runner"].probe = args["probe_xbow_start"]
     if args.get("opp_tower_troops") is not None:
         _W["runner"].opp_tower_troops = args["opp_tower_troops"]
     if args.get("live_levels"):                             # L74 factor D: the measured live level table
@@ -792,13 +897,13 @@ def setup_job(run, census, opp_id: str, seed: int):
     from pipeline.royale_env import UnsupportedDeck
     if opp_id == "s1":
         return run.setup(opp_id, seed, E.ICEBOW_ENGINE_DECK), "icebow"
-    for j in range(50):                                            # redraw an unloadable deck, deterministically
+    for j in range(400 if getattr(run, "probe", None) else 50):    # redraw an unloadable deck, deterministically
         d = opp_deck_for(seed * 1000 + j, census)
         if any(card_key(n) not in run.opps[opp_id][0].gid for n in d["engine"]):
             continue                                               # a card the generalist never saw
         try:
             return run.setup(opp_id, seed, d["engine"]), d["name"]
-        except (UnsupportedDeck, KeyError):
+        except (UnsupportedDeck, KeyError, E.UnsupportedProbeDeck):
             continue
     return None
 
@@ -970,6 +1075,9 @@ def main(argv=None) -> int:
     ap.add_argument("--tap-loss", default=None, metavar="1x:P,2x:P,ot2x:P,ot3x:P",
                     help="L74 W18: OUR side loses a decided play with the window's probability (e1_eval.parse_tap_loss: the "
                          "live pilot's measured lost taps); default none")
+    ap.add_argument("--probe-xbow-start", default=None, choices=PROBE_ARMS,
+                    help="W18 P-D payoff probe (SIM-only): live X-Bow starts, the opponent's first answer scripted per arm, "
+                         "12 s matches; default off")
     ap.add_argument("--tap-slow", default=None, metavar="P:EXTRA",
                     help="L74 W18: OUR decided play lands EXTRA ticks late with probability P (e1_eval.parse_tap_slow: the "
                          "live pilot's slow taps); default none")
@@ -1090,14 +1198,14 @@ def main(argv=None) -> int:
         wargs['spell_log'] = True
     if a.crown_log:
         wargs['crown_log'] = True
-    for k in ('opp_decide_every', 'opp_reaction_ticks', 'opp_tau', 'tap_loss', 'tap_slow'):   # L74 tempo; W18 opp_tau / tap_loss
+    for k in ('opp_decide_every', 'opp_reaction_ticks', 'opp_tau', 'tap_loss', 'tap_slow', 'probe_xbow_start'):   # L74 tempo; W18 opp_tau / tap_loss
         if getattr(a, k) is not None:
             wargs[k] = getattr(a, k)
     if a.tap_loss is not None:
         E.parse_tap_loss(a.tap_loss)                         # fail before any worker starts
     if a.tap_slow is not None:
         E.parse_tap_slow(a.tap_slow)
-    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads', 'learner_T_gate') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k != 'ability_head_decode' or v != 'greedy') and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays', 'probe_xbow_focus', 'ability_stats', 'live_levels', 'habit_log', 'spell_log', 'crown_log') or v) and (k not in ('opp_decide_every', 'opp_reaction_ticks', 'opp_tower_troops', 'opp_tau', 'tap_loss', 'tap_slow') or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
+    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads', 'learner_T_gate') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k != 'ability_head_decode' or v != 'greedy') and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays', 'probe_xbow_focus', 'ability_stats', 'live_levels', 'habit_log', 'spell_log', 'crown_log') or v) and (k not in ('opp_decide_every', 'opp_reaction_ticks', 'opp_tower_troops', 'opp_tau', 'tap_loss', 'tap_slow', 'probe_xbow_start') or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
                                                 "gen_sha256": sha256(REPO / a.gen), "opp_gen_sha256": opp_sha,
                                                 "s1_sha256": sha256(REPO / a.s1),
                                                 "tau_plain": TAU_PLAIN, "tau_opp": TAU_OPP, "crown_w": CROWN_W,

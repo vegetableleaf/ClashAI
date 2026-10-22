@@ -109,7 +109,7 @@ class TestSearchS0Flags(unittest.TestCase):
         src = (REPO / "pipeline" / "search_s0.py").read_text(encoding="utf-8")
         for flag in ("--opp-tau", "--tap-loss", "--tap-slow"):
             self.assertEqual(src.count(f'ap.add_argument("{flag}"'), 1, flag)
-        self.assertIn("'opp_tau', 'tap_loss', 'tap_slow') or v is not None)", src)      # absent = not written to run.json
+        self.assertIn("'opp_tau', 'tap_loss', 'tap_slow', 'probe_xbow_start') or v is not None)", src)      # absent = not written to run.json
         self.assertIn("learner_cfg['tap_loss'] = E.parse_tap_loss(args['tap_loss'])", src)
 
 

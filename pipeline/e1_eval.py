@@ -1946,6 +1946,10 @@ def opp_tempo(cfg: dict, decide_every=None, reaction_ticks=None) -> dict:
     return out
 
 
+class UnsupportedProbeDeck(ValueError):
+    """search_s0 --probe-xbow-start: the opponent deck lacks the probe's building / ground troop (redrawn, seeded)."""
+
+
 def forced_name(deck, card: str) -> str:
     """W18 R4: the engine name (form suffix stripped) of ``deck``'s card matching ``card`` (case / punctuation-free)."""
     key = lambda n: str(n["name"] if isinstance(n, dict) else n).split("@")[0]  # noqa: E731
@@ -2022,8 +2026,15 @@ class SelfPlayMatch:
             st = {L: spec["start"]["learner"], 1 - L: spec["start"]["opp"]}
             kw["start"] = {"tick": spec["start"]["tick"], "princess": [st[0]["princess"], st[1]["princess"]],
                            "elixir": [st[0]["elixir"], st[1]["elixir"]]}
-            if spec["start"].get("force"):      # W18 R4 (rl_royale.draw_xbow_start): the forced card is in the opp's hand
-                kw["start"]["hand_first"] = {1 - L: forced_name(spec["opp_deck"], spec["start"]["force"]["card"])}
+            hf, side_of = {}, {"learner": L, "opp": 1 - L}
+            f = spec["start"].get("force")
+            if f:                               # W18 R4 (rl_royale.draw_xbow_start): the forced card is in that side's hand
+                role = f.get("side", "opp")
+                hf[side_of[role]] = forced_name(decks[side_of[role]], f["card"])
+            for role, card in (spec["start"].get("hand") or {}).items():   # W18 P-D: a card dealt into a side's hand
+                hf[side_of[role]] = forced_name(decks[side_of[role]], card)
+            if hf:
+                kw["start"]["hand_first"] = hf
         if getattr(env, "spell_tracker", None) is not None:  # rl_royale spell_value (opt-in): a reused env's old tracker
             env.spell_tracker = None
         env.reset(decks[0], decks[1], int(spec["seed"]), **kw)
@@ -2042,7 +2053,8 @@ class SelfPlayMatch:
         self.sides = sorted((self.learner, self.opp), key=lambda s: s.side)
         self.forced = None
         if "start" in spec and spec["start"].get("force"):
-            self._force(spec["start"]["force"], spec["opp_deck"])
+            f = spec["start"]["force"]
+            self._force(f, spec["learner_deck"] if f.get("side", "opp") == "learner" else spec["opp_deck"])
 
     def _force(self, f: dict, opp_deck) -> None:
         """W18 R4: the OPPONENT side's first act at the scenario start = ``f["card"]`` at ``f["board"]`` (its own board frame,
@@ -2050,7 +2062,7 @@ class SelfPlayMatch:
         decided); the learner's opponent-elixir counter sees it as an accepted play. ``self.forced`` = accepted or not."""
         from pipeline import engine_play as ep
         from pipeline.dataset_gen import card_key
-        o, env = self.opp, self.env
+        o, env = (self.learner if f.get("side", "opp") == "learner" else self.opp), self.env   # P-D: the learner side
         name = forced_name(opp_deck, f["card"])
         idx = next(i for i, n in enumerate(env.decks[o.side]) if n == name)
         X, Y = ep.board_to_engine(float(f["board"][0]), float(f["board"][1]), o.mirror)

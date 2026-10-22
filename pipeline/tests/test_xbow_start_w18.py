@@ -156,3 +156,43 @@ class TestRealEngine(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestProbe(unittest.TestCase):
+    """W18 P-D payoff probe helpers (search_s0 --probe-xbow-start)."""
+
+    def setUp(self):
+        try:
+            from pipeline import search_s0 as S
+            from pipeline.royale_env import RoyaleSelfPlayEnv
+        except ImportError as exc:
+            raise unittest.SkipTest(str(exc))
+        self.S, self.Env = S, RoyaleSelfPlayEnv
+        self.opp = ["Giant", "Cannon", "Musketeer", "Skeletons", "Valkyrie", "Fireball", "Zap", "Minions"]
+
+    def test_cards_and_spec(self):
+        env = self.Env(decision_ticks=10, tail_cap=7200)
+        b, t = self.S.probe_cards(env, self.opp)
+        self.assertEqual((b, t), ("Cannon", "Skeletons"))                     # Minions are air, never the troop
+        spec = self.S.probe_spec({}, 5, "bfront", b)
+        st, xb = spec["start"], spec["start"]["force"]["board"]
+        self.assertEqual(st["force"]["side"], "learner")
+        self.assertEqual(st["hand"], {"opp": "Cannon"})
+        tx, ty = spec["probe"]["target_tiles"]
+        self.assertAlmostEqual(tx, 18 * (1 - xb[0]), places=1)                 # the X-Bow's lane, the opponent's frame
+        self.assertAlmostEqual(ty - 32 * (1 - xb[1]), self.S.PROBE_FRONT_TILES, places=1)
+        self.assertIsNone(self.S.probe_spec({}, 5, "policy", b)["probe"]["target_tiles"])
+
+    def test_match_forces_ours_and_deals_theirs(self):
+        env = self.Env(decision_ticks=10, tail_cap=7200)
+        spec = {"tag": "p", "learner_side": 1, "seed": 9, "learner_deck": list(E.ICEBOW_ENGINE_DECK), "opp_deck": self.opp}
+        self.S.probe_spec(spec, 9, "bnear", "Cannon")
+        cfg = {"policy": "live", "tau": 0.35, "afford_mask": True, "stall_elixir": None, "stall_seconds": 12.0, "obs": "clean",
+               "noise": E.Noise(), "p_random": 0.0, "random_hand_only": False, "grid": "lattice", "device": "cpu",
+               "decide_every": 10, "slot": 0, "port": 0, "T": 0.5, "record": False, "entry_index": 0, "action_delay_ticks": 26}
+        m = E.SelfPlayMatch(env, spec, 0, cfg, dict(cfg), None, None)
+        self.assertTrue(m.forced)                                               # OUR X-Bow (the learner side)
+        self.assertEqual(env.deal[1][0], "Xbow")
+        self.assertEqual(env.deal[0][0], "Cannon")                              # the opponent's probe card is in its hand
+        d = self.S.probe_decision(m.opp, spec["probe"]["target_tiles"], "Cannon")
+        self.assertEqual(m.opp.deck.cards[d["slot"]], m.opp.deck.cards[m.opp.deck.slot_of(E.vocab.engine_key("Cannon"))])
