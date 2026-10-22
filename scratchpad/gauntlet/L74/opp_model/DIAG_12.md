@@ -576,3 +576,45 @@ its own measure.**
   - the window-blocker share vs tank decks on R1's gate rows (`diag12/xbow_window.py` on its pos rows): below ~55% (live 66,
     I u40 43) = open;
   - or the gate-v2 BEAT damage per X-Bow still above ~0.26.
+
+### 8.12 Blocker depth: the SIM's "no depth benefit" is CONFOUNDED (W19: the engine is right; 8.11 corrected)
+
+Window blockers (<= 3.5 s) by class and distance from our X-Bow (`diag12/xbow_depth_confound.py`):
+
+| class | live 4-8 tiles | live 8-11.5 | SIM 4-8 | SIM 8-11.5 |
+|---|---|---|---|---|
+| troop | 50.3% lock (n 183) | **30.7% (n 140)** | 51.5% (n 423) | 52.5% (n 80) |
+| tank | 11.6% (n 69) | 35.0% (n 20) | 25.4% (n 130) | n 5 |
+| building | 48.1% (n 52) | **28.2% (n 39)** | 60.8% (n 102) | **n 0** |
+| tower-front (y <= 11), any class | 29.4% lock, 27% of blockers | | 51.6% lock, 8% of blockers | |
+
+What the table shows:
+- The SIM opponent NEVER places a window building deep (0 of 102). So "depth does not pay in the SIM" was never observed for
+  buildings: no data, not a null.
+- Its deep troops are a different set: Witch, Ice Spirits, Skeleton King, Musketeer (support placed for other reasons). Live they
+  are deliberate Valkyrie / Knight / Skeletons tower-front distractions.
+- W19's replay shows the engine with the SAME blocker at the end of the X-Bow's deploy:
+  - first target agrees 289 / 297 fights, including 51 buildings;
+  - X-Bow ends on a tower in 22.2% SIM vs 28.6% live.
+  - So a tower-front building or distractor SHOULD pay inside the SIM. The opponent just never tries it.
+- 8.11's "R4 alone cannot move depth" stands, for a different reason than I gave: not "no payoff" but "no exploration". The
+  policy almost never has the right card in hand at the right moment AND tries the tower-front cell.
+
+**Proposal (two steps, each one change):**
+1. **P-D probe (eval only, ~1 h pod, no training).** Before any depth round, measure the payoff inside the SIM directly.
+   - From the 841 X-Bow start states, with I u40's deck pool, script the opponent's answer within 1.5 s of the forced X-Bow:
+     - (a) its deck's building at the tower front (y 9-11, the X-Bow's lane);
+     - (b) the same building 4-8 tiles out;
+     - (c) its policy's own answer.
+   - Run 12 s per start; measure the reach-rule lock and the tower damage.
+   - Pays if (a) beats (b) and (c) by >= 10 pp lock, about what live shows (28 vs 48).
+   - This settles "would it pay" before ~$3 of pod training.
+2. **R4b = R4 + the opponent-to-be's own building (if its deck has one) dealt into its starting hand at X-Bow starts.**
+   - This uses the same `hand_first` hook, now for the learner side: one key, `xbow_start_hand: building`.
+   - Why it pays: R4 puts the decision in the 3.5 s window, `hand_first` makes the building available, and R1's penalty prices
+     the lock it prevents. With P-D showing the payoff, the policy gradient has something to find.
+   - Measured by the R-gates' position rows: window-blocker share at 8-11.5 tiles and building share vs tank decks.
+   - Only ~20% of census decks hold a building. The troop distractors (Valkyrie / Knight / Skeletons at the tower front) are not
+     covered by this hook. If P-D shows they pay too, a second variant deals the cheapest ground troop instead.
+
+Order: P-D now on stream C (cheap); R4 if R1 leaves the timing gap; R4b if P-D pays and R4's gates show depth unchanged.
