@@ -498,6 +498,10 @@ workers fit in the pod's 62 GB).
 | BASE0 | c13 | 0 | 14,252 / 404 | 0.928 [0.922, 0.934] |
 | BASE0 | **c22 = 786 new captured logs 10-18 13:19 .. 10-21 16:13** (no 10-22 log exists) | 0 | 29,615 / 748 | **0.917 [0.913, 0.921]** |
 | BASE0 | union c13 + c22 | 0 | 43,867 / 1,152 | 0.9205 [0.9170, 0.9239] |
+| BASE8 | c22 | 8 | 29,615 / 748 | **0.917 [0.912, 0.921]**, ceiling 0.993; tier-B coverage 0.044 (census_since1007) |
+| BASE8 | union | 8 | 43,867 / 1,152 | **0.920 [0.916, 0.923]**, ceiling 0.993; tier-B coverage 0.160 (c13 alone 0.237 on the same census) |
+
+R1K8 (the K=8 re-score of both cohorts with the kept R1 law) is queued on the pod behind BASE8 (queue8.sh).
 
 ### 9.2 Why the plateau: what the remaining failures are (a)
 
