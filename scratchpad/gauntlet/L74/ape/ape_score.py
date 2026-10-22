@@ -1,0 +1,522 @@
+"""W22 BEHAVIOUR SCORER (owner 10-22: "a model that doesn't play like an ape" -- "completely ignores threats and plays X-Bows
+and Teslas like an ape, and still wastes the Log"). Per match, then per model, on LIVE logs and SIM gap.py rows. APE.md has
+the definitions, the frame check and which metrics the SIM rows support.
+
+  python ape_score.py live:CLX live:CLXI --base live:CLX [--since 20261019] [--no-log]
+  python ape_score.py SIM_DIR [SIM_DIR ...] --base SIM_CLX_DIR
+  (a set is live:<name or ckpt sha8> or a dir searched recursively for matches.jsonl; sets can be mixed)
+
+Live: decision lines only (public reader bodies, OUR elixir/hand, play events); the opponent's hand/deck/elixir
+(opponent_elixir_estimate) is never read. Log metrics reuse log_use.analyse (frames; ~1-2 s/match, cached in cache_live.jsonl).
+Frame: own frame, own edge y = 1, forward = DECREASING y (pipeline/obs_contract.py MY_PRINCESS_Y 0.797; verified per run
+by the X-Bow frame check printed at the end: our X-Bow body's own-frame y vs the play's y).
+"""
+from __future__ import annotations
+
+import argparse
+from collections import defaultdict
+import json
+from pathlib import Path
+import random
+import sys
+
+HERE = Path(__file__).resolve().parent
+REPO = HERE.parents[3]
+sys.path[:0] = [str(REPO), str(HERE.parent / 'log_use'), str(HERE.parent / 'monitor')]
+import log_use as L                                         # noqa: E402  (also sets idle priority)
+from pipeline.opp_elixir_count import card_cost             # noqa: E402
+
+LOGS = REPO / 'scratchpad/gauntlet/L68/live_reader'
+CACHE = HERE / 'cache_live.jsonl'
+NAMES = {'5d212358': 'CLX', '686b245a': 'CLXI'}
+COST = {'Xbow': 6, 'Tesla': 4, 'IceWizard': 3, 'Tornado': 3, 'Rocket': 6, 'Knight': 3, 'Log': 2, 'Skeletons': 1}
+THREAT, CLEAR = 5.0, 2.5        # threat episode: lane enemy value on our half >= 5, ends when < 2.5
+ANSWER_T, IDLE_T, GRACE = 60, 80, 20   # answer within 3 s, idle >= 4 s, a play up to 1 s before onset counts
+XBOW_FWD = 0.58                 # own-frame y below this = offensive (live xbow_forward_board_y; pro row 0.604 = defensive)
+PUSH_WIN, PUSH_CAP, PUSH_MIN, HP_GRACE = 120, 400, 3.0, 40
+KING_HP, PRINCESS_HP = 7728, 4858   # level-16 towers (main account since 10-19)
+
+
+# ------------------------------------------------------------------ live
+def own_xy(b, o):
+    """raw body -> (own-frame x tiles 0..18, own-frame y 0..1 with own edge 1)."""
+    bx, by = (b['x'], b['y']) if o == 0 else (18000 - b['x'], 32000 - b['y'])
+    return bx / 1000, 1 - by / 32000
+
+
+def body_value(b, top):
+    """hp-scaled elixir of one enemy body; None for buildings. Role children (max_hp < 45% of the card's biggest body)
+    and spell-spawned bodies (Graveyard, Clone) are worth log_use.CHILD_VALUE."""
+    k, _ = L.key_of(b['card_id'])
+    tr = L.TRAITS.get(k, {})
+    if tr.get('kind') == 'building':
+        return None
+    cost = card_cost(k) or tr.get('elixir') or 3.0       # TRAITS elixir is wrong for Witch 6 / Lava Hound 8 (challenge forms)
+    if b['max_hp'] < .45 * top[b['card_id']] or (tr.get('kind') == 'spell' and k not in L.BODY_COUNT):
+        base = L.CHILD_VALUE                             # role child, or a Graveyard / Clone body
+    else:
+        base = cost / L.BODY_COUNT.get(k, 1)
+    return base * max(0, b['hp']) / max(1, b['max_hp'])
+
+
+def parse_live(path):
+    """-> (sha8, rows) or None. rows: decision states + play events of one main-account match."""
+    sha = None; decs = []; plays = []; end = None
+    with open(path, 'rb') as fh:
+        for raw in fh:
+            h = raw[:30]
+            if b'"decision"' in h:
+                decs.append(json.loads(raw))
+            elif b'"play"' in h:
+                plays.append(json.loads(raw))
+            elif b'"start"' in h and sha is None:
+                j = json.loads(raw)
+                if j.get('dry_run'):
+                    return None
+                sha = str(j.get('ckpt_sha256', ''))[:8]
+            elif b'"end"' in h:
+                end = json.loads(raw)
+    if not decs or sha is None:
+        return None
+    o = decs[0]['public']['observer_side']
+    pr = sorted(b['max_hp'] for b in decs[0]['public']['raw_bodies'] if b['side'] == o and b['kind'] == 13 and b['card_id'] == -1)
+    hand = {c.get('name') for d in decs for c in d['public'].get('own_hand') or []}
+    if pr != [PRINCESS_HP, PRINCESS_HP] or not {'Xbow', 'Log'} <= hand:   # main-account icebow, level-16 towers
+        return None
+    return sha, decs, plays, end
+
+
+def live_match(path):
+    got = parse_live(path)
+    if got is None:
+        return None
+    sha, decs, plays, end = got
+    o = decs[0]['public']['observer_side']
+    top = defaultdict(int)
+    for d in decs:
+        for b in d['public']['raw_bodies']:
+            if b['side'] != o and b['card_id'] != -1:
+                top[b['card_id']] = max(top[b['card_id']], b['max_hp'])
+    S = []                       # per decision: t, vh[2], vl[2], own cover[2], elixir, min hand cost, tower hp, crossings
+    xb_new = {}                  # our X-Bow bodies by address: first tick seen, own-frame y (frame check)
+    for d in decs:
+        p = d['public']
+        vh, vl, cov = [0.0, 0.0], [0.0, 0.0], [0.0, 0.0]
+        on_half = {}
+        for b in p['raw_bodies']:
+            if b['card_id'] == -1:
+                continue
+            x, y = own_xy(b, o)
+            lane = int(x >= 9)
+            if b['side'] == o:
+                if y > .5:
+                    cov[lane] += 1
+                if L.key_of(b['card_id'])[0] == 'x_bow' and b['address'] not in xb_new:
+                    xb_new[b['address']] = (d['tick'], round(y, 4))
+                continue
+            v = body_value(b, top)
+            if v is None:
+                continue
+            vl[lane] += v
+            if y > .5:
+                vh[lane] += v
+                on_half[b['address'], b['card_id']] = v
+        hand = [c.get('cost') or 3 for c in p.get('own_hand') or []]
+        tw = sum((KING_HP if t['kind'] == 'king' else PRINCESS_HP) * t['hp_frac'] if t['alive'] else 0
+                 for t in p.get('model_towers') or [] if t['side'] == 0)
+        S.append(dict(t=d['tick'], vh=vh, vl=vl, cov=cov, el=p.get('own_elixir_raw') or 0, mc=min(hand) if hand else 1,
+                      tw=tw, on=on_half))
+    P = [dict(t=q['tick'], name=q['name'], x=q['xy'][0] * 18, y=q['xy'][1], el=q.get('elixir') or 0) for q in plays]
+    r = score(S, P)
+    r['won'] = float(bool(((end or {}).get('towers') or {}).get('won')))
+    return dict(model=NAMES.get(sha, sha), match=path.stem, **r, xb_new=sorted(xb_new.values()),
+                xb_plays=[[q['t'], round(q['y'], 4)] for q in P if q['name'] == 'Xbow'],
+                te_y=[round(q['y'], 4) for q in P if q['name'] == 'Tesla'])
+
+
+def score(S, P):
+    """Metrics 1, 2, 4 of one match. S: board states in time order, dicts t (tick), vh / vl (enemy troop value on our half /
+    anywhere, per lane 0 = own-frame x < 9), cov (own units on our half per lane; None = not recorded), el (our elixir),
+    mc (cheapest card in hand), tw (our tower HP), on ({body: value} enemy troops on our half). P: our plays in time
+    order, dicts t, name (live names Xbow / Tesla / ...), x (own lane frame tiles), y (own frame, 1 = own edge), el."""
+    ticks = [s['t'] for s in S]
+    from bisect import bisect_right
+
+    def state(t):
+        return S[max(0, bisect_right(ticks, t) - 1)]
+
+    def answers(q, lane):
+        return q['y'] > .5 and (abs(q['x'] - 9) <= 1.5 or int(q['x'] >= 9) == lane)
+
+    r = defaultdict(float)
+    # 1 THREAT IGNORED
+    for lane in (0, 1):
+        ep = None
+        for s in S + [dict(t=10 ** 9, vh=[0, 0], cov=None)]:
+            if ep is None and s['vh'][lane] >= THREAT:
+                ep = dict(t0=s['t'], cov=None if s['cov'] is None else s['cov'][lane] > 0)
+            elif ep is not None and s['vh'][lane] < CLEAR:
+                t0, t1, cov = ep['t0'], min(s['t'], S[-1]['t']), ep['cov']
+                ep = None
+                if t1 - t0 <= ANSWER_T:
+                    r['thr_short'] += 1          # gone within 3 s: not a threat that needed an answer
+                    continue
+                r['thr'] += 1
+                first = next((q for q in P if q['t'] >= t0 - GRACE), None)
+                ans = next((q for q in P if q['t'] >= t0 - GRACE and answers(q, lane)), None)
+                if first and first['t'] <= t0 + ANSWER_T:
+                    kind = 'ans' if answers(first, lane) else 'wrong'
+                elif (not first or first['t'] > t0 + IDLE_T) and any(
+                        s2['el'] >= s2['mc'] for s2 in S if t0 <= s2['t'] <= t0 + IDLE_T):
+                    kind = 'idle'
+                else:
+                    kind = 'slow'
+                r['thr_' + kind] += 1
+                if kind in ('wrong', 'idle'):
+                    r['thr_ign'] += 1
+                    if cov is not None:
+                        r['thr_ign_uncov'] += not cov
+                ans_t = ans['t'] if ans and ans['t'] <= t1 else t1
+                r['thr_secs'] += max(0, min(ans_t - t0, 300)) / 20
+    # 2 APE BUILDINGS (per card: xb = X-Bow, te = Tesla)
+    for q in P:
+        if q['name'] not in ('Xbow', 'Tesla'):
+            continue
+        c = 'xb' if q['name'] == 'Xbow' else 'te'
+        s = state(q['t'])
+        lane = int(q['x'] >= 9)
+        off = q['y'] < XBOW_FWD
+        half, push = sum(s['vh']) >= THREAT, s['vl'][lane] >= THREAT
+        other = any(s['vh'][ln] >= THREAT and ln != lane for ln in (0, 1)) and abs(q['x'] - 9) > 1.5
+        for k in ('xt', c):
+            r[k] += 1
+            r[k + '_off'] += off
+            r[k + '_ape'] += off and (half or push)
+            r[k + '_other'] += other
+        if c == 'xb':
+            r['xb_lowres'] += q['el'] - 6 < 4 and sum(s['vl']) >= THREAT
+    # 4 DEFENCE OUTCOME: pushes = enemy troops crossing onto our half, grouped until the half is clear
+    seen, cross = set(), []
+    for s in S:
+        for k, v in s['on'].items():
+            if k not in seen:
+                seen.add(k); cross.append((s['t'], v))
+    i = 0
+    while i < len(cross):             # push: from a crossing until our half is clear (>= 6 s, <= 20 s); its crossings
+        t0 = cross[i][0]
+        t1 = min(next((s['t'] for s in S if s['t'] >= t0 + PUSH_WIN and sum(s['vh']) < .5), S[-1]['t']), t0 + PUSH_CAP)
+        val = 0.0
+        while i < len(cross) and cross[i][0] <= t1:
+            val += cross[i][1]; i += 1
+        if val < PUSH_MIN:
+            continue
+        lost = state(t0 - 1)['tw'] - state(t1 + HP_GRACE)['tw']
+        spend = sum(COST.get(q['name'], 3) for q in P if t0 - HP_GRACE <= q['t'] <= t1 and q['y'] > .5)
+        r['push'] += 1
+        r['push_val'] += val
+        r['push_lost'] += max(0.0, lost)
+        r['push_spend'] += spend
+    r['matches'] = 1
+    return r
+
+
+def log_part(path):
+    """log_use: G-LOG hold (no Log before the opponent's first CORE bait play) and Logs killing < 1 elixir."""
+    try:
+        m = L.analyse(path, {})
+    except Exception as e:                                   # noqa: BLE001 -- a broken log is counted, not fatal
+        print('log_use skip', path.name, type(e).__name__, e, file=sys.stderr)
+        return {}
+    if not m:
+        return {}
+    lg = [x for x in m['logs'] if not x['forced']]
+    core = m['core_revealed']
+    out = dict(logs=len(lg), log_low=sum(L.kill_value(x) < 1 for x in lg), minutes=m['ticks'] / 1200)
+    if core is not None:
+        out.update(bait=1, hold=float(not any(x['tick'] < core for x in m['logs'])))
+    return out
+
+
+def live_rows(since, want_log):
+    cache = {}
+    if CACHE.exists():
+        for line in open(CACHE, encoding='utf-8'):
+            j = json.loads(line); cache[j['key']] = j
+    rows = []
+    with open(CACHE, 'a', encoding='utf-8') as fo:
+        for p in sorted(LOGS.glob('live_play_2026*.jsonl')):
+            if p.stem < 'live_play_' + since:
+                continue
+            key = f'{p.name}:{p.stat().st_size}'
+            j = cache.get(key)
+            dirty = j is None
+            if dirty:
+                j = dict(key=key, row=live_match(p))
+            if want_log and 'log' not in j and j['row'] and j['row']['model'] in WANT.values():
+                j['log'] = log_part(p); dirty = True
+            if dirty:
+                fo.write(json.dumps(j) + '\n'); fo.flush()
+            if j['row'] and j['row']['model'] in WANT.values():
+                rows.append({**j['row'], **(j.get('log') or {})})
+    return rows
+
+
+# ------------------------------------------------------------------ SIM (gap.py / e1_eval matches.jsonl)
+def slug(c):
+    return str(c).replace('-', '_').lower()             # o3_plays use 'the-log' / 'goblin-barrel'
+
+
+def sim_rows(d):
+    """Proxies from own_plays (+ habits.xbow_y, o3_plays): no board bodies in these rows (APE.md section 4)."""
+    from playlist import match_files
+    rows = []
+    for f in match_files(str(Path(d) / '**' / 'matches.jsonl')):
+        for line in open(f, encoding='utf-8'):
+            j = json.loads(line)
+            if 'own_plays' not in j:
+                continue
+            own = [p for p in j['own_plays'] if p[3]]
+            xy = list((j.get('habits') or {}).get('xbow_y') or [])
+            opp = [(t, card_cost(slug(c)) or 3.0) for t, c in (j.get('o3_plays') or {}).get('opp', [])]
+            r = defaultdict(float, matches=1, won=float(j.get('outcome') == 'win'), minutes=(j.get('end_tick') or 3600) / 1200)
+            xbs = [p for p in own if p[2] == 'x_bow']
+            if len(xbs) == len(xy):
+                for p, y in zip(xbs, xy):
+                    r['s_xb'] += 1; r['s_xb_off'] += y < XBOW_FWD
+                    if j.get('o3_plays'):
+                        burst = sum(c for t, c in opp if p[0] - 160 <= t <= p[0])   # enemy elixir played in the last 8 s
+                        r['s_xb_o3'] += 1
+                        r['s_xb_burst'] += burst >= THREAT
+                        r['s_xb_lowres'] += p[4] - 6 < 4 and burst >= THREAT
+            r['s_tesla'] += sum(slug(p[2]).replace('_evo', '') == 'tesla' for p in own)      # 'tesla_evo' in deck mode
+            logs = [p[1] for p in own if p[2] == 'the_log']
+            r['logs'] = len(logs)
+            if j.get('o3_plays'):
+                fb = min((t for t, c in j['o3_plays']['opp'] if slug(c) in L.CORE), default=None)
+                if fb is not None:          # glog_score.py's G-LOG1 definition
+                    r['bait'] = 1; r['hold'] = float(not any(t < fb for t, c in j['o3_plays']['learner']
+                                                              if slug(c) == 'the_log'))
+                r['opp_elixir'] = sum(c for _, c in opp)
+            e = (j.get('crown') or {}).get('end') or {}
+            if e.get('princess') is not None:
+                r['own_lost'] = (1 - e.get('king', 1)) + sum(1 - x for x in e['princess'])
+                r['crowned'] = 1
+            if j.get('hab'):                # --record-board rows: the live definitions (metrics 1-4 + Log)
+                r.update(hab_match(j['hab']))
+            rows.append(dict(model=str(d), **r))
+    return rows
+
+
+SIM_NAME = {'x_bow': 'Xbow', 'tesla': 'Tesla', 'the_log': 'Log', 'rocket': 'Rocket', 'tornado': 'Tornado',
+            'ice_wizard': 'IceWizard', 'knight': 'Knight', 'knight_evo': 'Knight', 'skeletons': 'Skeletons'}
+SIM_MC = 2          # cheapest card in hand is not recorded in 'hab' samples: the Log's cost stands in (live: the real hand)
+
+
+def sim_value(name, hp, max_hp, scaled=True):
+    """hp-scaled elixir of a SIM enemy body (engine display name); None for buildings / spell effects / towers. Spawned
+    bodies that are not a card (Skeleton from Witch / Graveyard, LavaPups, Goblin) map to their plural card when one
+    exists (goblins, skeletons, barbarians), else log_use.CHILD_VALUE -- the live card_id rule's equivalent."""
+    k = L.vocab.engine_key(name) or ''
+    if 'tower' in k:
+        return None
+    kind = L.TRAITS.get(k, {}).get('kind')
+    if kind in ('building', 'spell'):
+        return None
+    card = k if card_cost(k) is not None else k + 's' if card_cost(k + 's') is not None else None
+    base = card_cost(card) / L.BODY_COUNT.get(card, 1) if card else L.CHILD_VALUE
+    return base * max(0, hp) / max(1, max_hp) if scaled else base
+
+
+def hab_match(h):
+    """'hab' (search_s0 --record-board) -> metric counts with the live definitions. Engine millitiles; own frame from our king."""
+    side = h['L']
+    smp = h['samples']
+    if not smp:
+        return {}
+    king_y = next(t[3] for t in smp[0][5] if t[0] == side and t[1] == 'k')    # engine millitiles (3000 or 29000)
+    low = king_y < 16000                         # our king near engine y 0: own-frame y = 1 - y/32 (forward = decreasing)
+
+    def own(x, y):
+        x, y = (x / 1000, y / 1000) if max(abs(x), abs(y)) > 100 else (x, y)
+        return (x, 1 - y / 32) if low else (18 - x, y / 32)
+
+    S = []
+    for t, _a, _b, _c, el, tw, en, _xb in smp:
+        vh, vl, on = [0.0, 0.0], [0.0, 0.0], {}
+        for uid, name, hp, mx, x, y in en:
+            v = sim_value(name, hp, mx)
+            if v is None:
+                continue
+            ox, oy = own(x, y)
+            lane = int(ox >= 9)
+            vl[lane] += v
+            if oy > .5:
+                vh[lane] += v
+                on[uid] = v
+        S.append(dict(t=t, vh=vh, vl=vl, cov=None, el=el, mc=SIM_MC, on=on,
+                      tw=sum(max(0, t_[4]) for t_ in tw if t_[0] == side)))
+    mine = [q for q in h['own'] if q[3]]
+    P = []
+    for q in mine:
+        ox, oy = own(q[8], q[9])
+        P.append(dict(t=q[0], name=SIM_NAME.get(slug(q[2]).replace('_evo', ''), q[2]), x=ox, y=oy, el=q[5]))
+    r = score(S, P)
+    r['frame_err'] = max((abs(own(q[8], q[9])[1] - q[7]) for q in h['own']), default=0.0)   # vs the decided cell's y
+    # 3 Log: G-LOG hold (glog_score) + Logs killing < 1 elixir (log_use.kill_value: path bodies with hp <= LOG_DMG)
+    logs = [q for q in mine if slug(q[2]) == 'the_log' and not str(q[4]).startswith('lethal')]
+    r['logs'] = len(logs)
+    r['minutes'] = smp[-1][0] / 1200
+    for q in logs:
+        land = q[1]
+        prior = [s_ for s_ in smp if s_[0] <= land + 10]
+        bodies = prior[-1][6] if prior else []
+        cx, cy = own(q[8], q[9])
+        kv = 0.0
+        for uid, name, hp, mx, x, y in bodies:
+            v = sim_value(name, hp, mx, scaled=False)       # live kill_value: the body's full elixir
+            k = L.vocab.engine_key(name) or ''
+            if v is None or L.TRAITS.get(k, {}).get('air'):
+                continue
+            ox, oy = own(x, y)
+            ahead = (cy - oy) * 32                       # tiles toward the enemy (forward = decreasing own-frame y)
+            if abs(ox - cx) <= (L.HALF + L.PAD) / 1000 and -(600 + L.PAD) / 1000 <= ahead <= (L.REACH + L.PAD) / 1000 \
+                    and 0 < hp <= L.LOG_DMG:
+                kv += v
+        r['log_low'] += kv < 1
+    fb = min((q[1] for q in h['opp'] if q[3] and slug(q[2]) in L.CORE), default=None)      # landing ticks, as live
+    if fb is not None:
+        r['bait'] = 1
+        r['hold'] = float(not any(q[1] < fb for q in mine if slug(q[2]) == 'the_log'))
+    return r
+
+
+# ------------------------------------------------------------------ table
+METRICS = [   # (label, numerator, denominator, scale, fmt)
+    ('win rate', 'won', 'matches', 1, '.3f'),
+    ('1 threats (>=5 elixir on our half, > 3 s) / match', 'thr', 'matches', 1, '.2f'),
+    ('1 THREAT IGNORED share (wrong play or idle >= 4 s)', 'thr_ign', 'thr', 1, '.3f'),
+    ('1   of which: next play elsewhere (wrong)', 'thr_wrong', 'thr', 1, '.3f'),
+    ('1   of which: idle >= 4 s with elixir', 'thr_idle', 'thr', 1, '.3f'),
+    ('1 ignored AND no own unit on our half in that lane', 'thr_ign_uncov', 'thr', 1, '.3f'),
+    ('1 seconds unanswered per threat', 'thr_secs', 'thr', 1, '.2f'),
+    ('2 X-Bow+Tesla plays / match', 'xt', 'matches', 1, '.2f'),
+    ('2 APE / match (X-Bow+Tesla offensive while >= 5 on our half or lane push)', 'xt_ape', 'matches', 1, '.3f'),
+    ('2 APE share of X-Bow+Tesla plays', 'xt_ape', 'xt', 1, '.3f'),
+    ('2 X-Bows / match', 'xb', 'matches', 1, '.2f'),
+    ('2   X-Bow offensive share (y < 0.58)', 'xb_off', 'xb', 1, '.3f'),
+    ('2   X-Bow APE share', 'xb_ape', 'xb', 1, '.3f'),
+    ('2   X-Bow in the OTHER lane of a >= 5 threat on our half (any y)', 'xb_other', 'xb', 1, '.3f'),
+    ('2   X-Bow at < 4 reserve with >= 5 enemy troop elixir on board', 'xb_lowres', 'xb', 1, '.3f'),
+    ('2 Teslas / match', 'te', 'matches', 1, '.2f'),
+    ('2   Tesla offensive share (y < 0.58)', 'te_off', 'te', 1, '.3f'),
+    ('2   Tesla APE share', 'te_ape', 'te', 1, '.3f'),
+    ('2   Tesla in the OTHER lane of a >= 5 threat on our half (any y)', 'te_other', 'te', 1, '.3f'),
+    ('3 G-LOG hold rate (no Log before first CORE bait)', 'hold', 'bait', 1, '.3f'),
+    ('3 Logs / minute (not forced)', 'logs', 'minutes', 1, '.2f'),
+    ('3 Logs killing < 1 elixir (share)', 'log_low', 'logs', 1, '.3f'),
+    ('4 pushes (>= 3 elixir crossing) / match', 'push', 'matches', 1, '.2f'),
+    ('4 own tower HP lost per push', 'push_lost', 'push', 1, '.0f'),
+    ('4 own tower HP lost per push elixir', 'push_lost', 'push_val', 1, '.0f'),
+    ('4 defence elixir trade per push (push value - our spend)', None, 'push', 1, '.2f'),
+    # SIM proxies
+    ('S X-Bows / match', 's_xb', 'matches', 1, '.2f'),
+    ('S X-Bow offensive share (y < 0.58)', 's_xb_off', 's_xb', 1, '.3f'),
+    ('S X-Bow within 8 s after >= 5 enemy elixir was played', 's_xb_burst', 's_xb_o3', 1, '.3f'),
+    ('S X-Bow at < 4 reserve within 8 s after >= 5 enemy elixir', 's_xb_lowres', 's_xb_o3', 1, '.3f'),
+    ('S Teslas / match', 's_tesla', 'matches', 1, '.2f'),
+    ('S own tower lost (tower fractions) / match', 'own_lost', 'crowned', 1, '.3f'),
+    ('S own tower lost per 10 enemy elixir played', 'own_lost', 'opp_elixir', 10, '.4f'),
+]
+
+
+def ratio(rows, num, den, scale):
+    if num is None:
+        n = sum(r.get('push_val', 0) - r.get('push_spend', 0) for r in rows)
+    elif not any(num in r for r in rows):
+        return None                                      # this source does not record it
+    else:
+        n = sum(r.get(num, 0) for r in rows)
+    dd = sum(r.get(den, 0) for r in rows)
+    return scale * n / dd if dd else None
+
+
+def boot_diff(a, b, num, den, scale, B=1000):
+    rng = random.Random(0); v = []
+    for _ in range(B):
+        x = ratio([rng.choice(a) for _ in a], num, den, scale)
+        y = ratio([rng.choice(b) for _ in b], num, den, scale)
+        if x is not None and y is not None:
+            v.append(x - y)
+    v.sort()
+    return (v[int(.025 * len(v))], v[int(.975 * len(v)) - 1]) if len(v) > 20 else None
+
+
+def table(sets, base):
+    names = list(sets)
+    out = ['| metric | ' + ' | '.join(f'{n} (n {len(sets[n])})' for n in names) + ' |', '|---' * (len(names) + 1) + '|']
+    for lab, num, den, sc, fmt in METRICS:
+        vals = [ratio(sets[n], num, den, sc) for n in names]
+        if all(v is None for v in vals):
+            continue
+        cells = []
+        for n, v in zip(names, vals):
+            if v is None:
+                cells.append('n/a'); continue
+            c = format(v, fmt)
+            if base and n != base and ratio(sets[base], num, den, sc) is not None:
+                d = v - ratio(sets[base], num, den, sc)
+                ci = boot_diff(sets[n], sets[base], num, den, sc)
+                c += f' ({d:+{fmt}}' + (f' [{ci[0]:+{fmt}}, {ci[1]:+{fmt}}]' if ci else '') + ')'
+            cells.append(c)
+        out.append(f'| {lab} | ' + ' | '.join(cells) + ' |')
+    return '\n'.join(out)
+
+
+def frame_check(rows):
+    """our X-Bow body's own-frame y within 3 s after an X-Bow play vs the play's y (verifies the board-y frame)."""
+    errs = []
+    for r in rows:
+        for t, y in r.get('xb_plays', []):
+            near = [by for bt, by in r.get('xb_new', []) if t < bt <= t + 60]   # an X-Bow body NEW after the play
+            if near:
+                errs.append(min(abs(by - y) for by in near))
+    if errs:
+        errs.sort()
+        return f'X-Bow frame check: {len(errs)} plays with our X-Bow body seen <= 3 s later, |body y - play y| median ' \
+               f'{errs[len(errs)//2]:.4f}, p90 {errs[int(.9*len(errs))]:.4f} (own frame, 1 = own edge)'
+    return 'X-Bow frame check: no X-Bow plays'
+
+
+WANT = {}
+
+
+def main(argv):
+    ap = argparse.ArgumentParser()
+    ap.add_argument('sets', nargs='+')
+    ap.add_argument('--base', default=None)
+    ap.add_argument('--since', default='20261019')
+    ap.add_argument('--no-log', action='store_true', help='skip the log_use Log metrics (frames; the slow part)')
+    a = ap.parse_args(argv)
+    specs = list(dict.fromkeys(a.sets + ([a.base] if a.base else [])))
+    live = [s[5:] for s in specs if s.startswith('live:')]
+    inv = {v: k for k, v in NAMES.items()}
+    for n in live:
+        WANT[inv.get(n, n)] = NAMES.get(inv.get(n, n), n)
+    sets = {}
+    if live:
+        rows = live_rows(a.since, not a.no_log)
+        for n in live:
+            sets['live:' + n] = [r for r in rows if r['model'] == WANT[inv.get(n, n)]]
+        print(frame_check(rows))
+    for s in specs:
+        if not s.startswith('live:'):
+            sets[s] = sim_rows(s)
+            fe = [r['frame_err'] for r in sets[s] if 'frame_err' in r]
+            if fe:
+                print(f'SIM frame check {s}: {len(fe)} --record-board matches, max |own-frame y from engine Y - decided '
+                      f'cell y| {max(fe):.4f}')
+    print(table(sets, a.base))
+
+
+if __name__ == '__main__':
+    main(sys.argv[1:])

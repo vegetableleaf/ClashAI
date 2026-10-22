@@ -1,0 +1,12 @@
+| metric | C:/Users/benpe/pod_backup_weekend/tonight1020/clx_fin15/w12_clx_fin15 (n 1920) | C:/Users/benpe/pod_backup_weekend/w14/o4/w14F_Iu40 (n 2880) | C:/Users/benpe/pod_backup_weekend/tonight1020/clx_fin15/eval (n 1920) |
+|---|---|---|---|
+| win rate | 0.640 (-0.084 [-0.112, -0.056]) | 0.488 (-0.235 [-0.263, -0.208]) | 0.723 |
+| 3 G-LOG hold rate (no Log before first CORE bait) | 0.516 | 0.508 | n/a |
+| 3 Logs / minute (not forced) | 1.62 (-0.03 [-0.05, +0.00]) | 1.67 (+0.02 [-0.00, +0.05]) | 1.64 |
+| S X-Bows / match | 4.32 (-0.86 [-0.98, -0.73]) | 4.30 (-0.88 [-1.00, -0.75]) | 5.17 |
+| S X-Bow offensive share (y < 0.58) | 0.003 (-0.001 [-0.002, +0.001]) | 0.004 (+0.000 [-0.002, +0.002]) | 0.004 |
+| S X-Bow within 8 s after >= 5 enemy elixir was played | 0.487 | 0.462 | n/a |
+| S X-Bow at < 4 reserve within 8 s after >= 5 enemy elixir | 0.416 | 0.391 | n/a |
+| S Teslas / match | 5.21 (-0.22 [-0.39, -0.05]) | 5.56 (+0.13 [-0.03, +0.28]) | 5.43 |
+| S own tower lost (tower fractions) / match | 1.248 (+0.246 [+0.203, +0.286]) | 1.468 (+0.466 [+0.425, +0.507]) | 1.001 |
+| S own tower lost per 10 enemy elixir played | 0.1106 | 0.1235 | n/a |

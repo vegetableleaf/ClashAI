@@ -379,6 +379,41 @@ def habits(m) -> dict:
             "xbow_off_first2": bool(off_first2), **h, "late": late, "xbow_y": xbow_y}
 
 
+# ---- --record-board (W22 ape_score.py; MEASUREMENT ONLY, the decisions are never touched) ---------------------------
+# Ported from the L74/habits/pod copy's HABITS_REC record (same 'hab' format): both sides' plays at engine x,y and a 1-s
+# sample of the learner's board (towers, enemy bodies, own X-Bows). Engine millitiles, not mirrored.
+HAB_EVERY = 20
+
+
+def hab_sample(m, s) -> list:
+    """[tick, opp truth, counter now (true counter), model's opp input, own elixir, towers [side, type, x, y, hp],
+    enemy bodies [uid, name, hp, max_hp, x, y], own X-Bows [uid, hp, x, y]] (engine millitiles)."""
+    tick, bs, view = s._cur
+    raw = s.state
+    pub = s.public
+    est = getattr(pub, "_hab_est", pub.estimate_at)(tick) if pub is not None else None
+    tw = [[t["side"], t["type"][0], round(t["x"], 1), round(t["y"], 1), int(t["hp"])]
+          for t in raw["episode"]["crown_towers"]]
+    en = [[e["entity_id"], e["name"], int(e["hp"]), int(e["max_hp"]), round(e["x"], 1), round(e["y"], 1)]
+          for e in raw["entities"] if e["side"] != s.side]
+    xb = [[e["entity_id"], int(e["hp"]), round(e["x"], 1), round(e["y"], 1)]
+          for e in raw["entities"] if e["side"] == s.side and str(e["name"]).lower().replace("-", "") == "xbow"]
+    return [int(tick), None if bs.opp_elixir is None else round(float(bs.opp_elixir), 3),
+            None if est is None else round(float(est), 3), None if view.opp_elixir is None else round(float(view.opp_elixir), 3),
+            round(float(bs.my_elixir), 3), tw, en, xb]
+
+
+def hab_plays(side) -> list:
+    """[decision tick, landing tick, card, accepted, why, elixir seen, cell x, cell y (my frame 0..1), engine X, Y]."""
+    out = []
+    for q in side.plays:
+        X, Y = side.ep.cell_to_engine(q["cell"], side.mirror, side.cfg["grid"])
+        x, y = side.ep.cell_center(q["cell"], side.cfg["grid"])
+        out.append([int(q["tick"]), int(q.get("land_tick", q["tick"])), q["card"], bool(q["accepted"]), q["why"],
+                    q["elixir_exact"], round(float(x), 2), round(float(y), 2), X, Y])
+    return out
+
+
 # ------------------------------------------------------------------------------------------------------
 # forking
 # ------------------------------------------------------------------------------------------------------
@@ -639,6 +674,8 @@ class Runner:
             st.update(probe_xbow_focus_xbows=0, probe_xbow_focus_changed=0)
         if getattr(self, "habit_log", False):
             m.habit_dec = {}        # --habit-log: decision tick -> the board our Rocket decisions saw (habit_board)
+        if getattr(self, "record_board", False):
+            m.hab_samples = []      # --record-board: 1-s board samples (hab_sample)
         t0, truncated = time.perf_counter(), False
         while True:
             if deadline is not None and time.time() > deadline:
@@ -709,8 +746,11 @@ class Runner:
         """One round of run_selfplay_batch for one match (prepare all, decide each on its own model, apply in side
         order), with our side's decision replaced per ``arm``."""
         from pipeline.e1_eval import live_decide_batch
+        rb = getattr(self, "record_board", False)
         for s in ds:
             s.prepare()
+            if rb and s is m.learner and (not m.hab_samples or s._cur[0] - m.hab_samples[-1][0] >= HAB_EVERY):
+                m.hab_samples.append(hab_sample(m, s))       # --record-board: read only
         todo = []
         for s in ds:
             p, enc, heads, hand = forward(s)
@@ -887,6 +927,8 @@ def _init_worker(args: dict) -> None:
         _W["runner"].live_levels = live_levels({"league": True, "live_levels": True})
     if args.get("habit_log"):
         _W["runner"].habit_log = True
+    if args.get("record_board"):
+        _W["runner"].record_board = True
     _W["census"] = league_decks(REPO / args.get("census", CENSUS))
 
 
@@ -929,6 +971,10 @@ def _run_job(job: tuple) -> dict:
                               if e["side"] == m.learner.side]
     if getattr(_W["runner"], "habit_log", False):           # --habit-log: the learner's habit counts (measurement only)
         rec["habits"] = habits(m)
+    if getattr(_W["runner"], "record_board", False):        # --record-board: plays at x,y + 1-s board (W22 ape_score)
+        L, O = m.learner, m.opp
+        rec["hab"] = {"own": hab_plays(L), "opp": hab_plays(O), "samples": m.hab_samples,
+                      "L": int(L.side), "mirror": [bool(L.mirror), bool(O.mirror)]}
     if "spell" in _W["runner"].last_result:                 # --spell-log: our Rocket events + their spell_value summary
         from pipeline.spell_value import match_summary
         rec["spell"] = {"summary": match_summary(_W["runner"].last_result["spell"]),
@@ -1093,6 +1139,10 @@ def main(argv=None) -> int:
                     help="L74 factor D: our cards / towers at our live levels, the opponent's drawn per seed + opponent deck "
                          "from the live opponents (rl_royale.draw_live_levels, L74/levels/live_levels.json); rows carry "
                          "'levels'. Default off = every card and tower at the engine default level 11 (unchanged)")
+    ap.add_argument("--record-board", action="store_true",
+                    help="W22: each match line gets 'hab' (both sides' plays with engine x,y + a 1-s sample of towers, "
+                         "enemy bodies and our X-Bows; the L74/habits HABITS_REC format) for ape_score.py; measurement "
+                         "only, decisions unchanged; default off = lines unchanged")
     ap.add_argument("--habit-log", action="store_true",
                     help="each match line gets 'habits' (search_s0.habits: opening-hand X-Bow, offensive X-Bow in the first "
                          "two plays, Rockets on an enemy princess / forced by the finisher, late X-Bow / Rocket / Tornado); "
@@ -1194,6 +1244,8 @@ def main(argv=None) -> int:
         wargs['live_levels'] = True
     if a.habit_log:
         wargs['habit_log'] = True
+    if a.record_board:
+        wargs['record_board'] = True
     if a.spell_log:
         wargs['spell_log'] = True
     if a.crown_log:
@@ -1205,7 +1257,7 @@ def main(argv=None) -> int:
         E.parse_tap_loss(a.tap_loss)                         # fail before any worker starts
     if a.tap_slow is not None:
         E.parse_tap_slow(a.tap_slow)
-    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads', 'learner_T_gate') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k != 'ability_head_decode' or v != 'greedy') and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays', 'probe_xbow_focus', 'ability_stats', 'live_levels', 'habit_log', 'spell_log', 'crown_log') or v) and (k not in ('opp_decide_every', 'opp_reaction_ticks', 'opp_tower_troops', 'opp_tau', 'tap_loss', 'tap_slow', 'probe_xbow_start') or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
+    (a.out / "run.json").write_text(json.dumps({**{k: v for k, v in vars(a).items() if (k != "census" or a.census != CENSUS) and (k != 'behaviour_telemetry' or v) and (k != 'tau_plain' or v is not None) and (k not in ('opp_policy', 'opp_T') or a.opp_policy != 'live') and (k not in ('learner_policy', 'learner_T', 'learner_sample_heads', 'learner_T_gate') or a.learner_policy != 'live') and (k != 'predict_drops' or v) and (k != 'own_effects' or v) and (k != 'ability_head_decode' or v != 'greedy') and (k not in ('pipeline_decisions', 'pipeline_tau_delta', 'record_plays', 'probe_xbow_focus', 'ability_stats', 'live_levels', 'habit_log', 'spell_log', 'crown_log', 'record_board') or v) and (k not in ('opp_decide_every', 'opp_reaction_ticks', 'opp_tower_troops', 'opp_tau', 'tap_loss', 'tap_slow', 'probe_xbow_start') or v is not None) and (decision_active or k not in decision_cfg)}, "out": str(a.out), "summarise": None,
                                                 "gen_sha256": sha256(REPO / a.gen), "opp_gen_sha256": opp_sha,
                                                 "s1_sha256": sha256(REPO / a.s1),
                                                 "tau_plain": TAU_PLAIN, "tau_opp": TAU_OPP, "crown_w": CROWN_W,
