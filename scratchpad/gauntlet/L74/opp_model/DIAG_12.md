@@ -250,7 +250,7 @@ Shares are in pp of the cell's SIM - Ranked gap, measured on the I u40 2,880 / p
 | S2 | (iv) the clock offset (game tick vs clock) | ticks - 78 [L6] | 0.78 -> 0.79 | R |
 | S3 | (iv) the detector's same-card 100-tick merge | [Y1] | 0.78 -> 0.78 | R |
 | S4 | (iv) the live detector misses short-lived cheap units | 2x plays of cost <= 2: SIM 1.79 vs live 1.10 per min (+63%; c3 +20%, c4 +13%, c5+ +34%) | <= the c<=2 share of ppm_2x | U (detector recall on live frames) |
-| S5 | (i) the gate threshold | eval tau 0.35 / 0.45: ppm_2x 11.30 / 11.02 vs 11.32 [P-B] | ~0 | R |
+| S5 | (i) the gate threshold (eval-time decode) | paired on block 741200 (pos rows), tau 0.27 -> 0.35 / 0.45 / 0.55: style 0.73 -> 0.72 / 0.70 / **0.58**; ppm_2x 11.32 -> 11.30 / 11.02 / 10.61 [P-B] | 0.15 at tau 0.55 (it binds only above ~0.5) | C (with costs, 8.7) |
 | S6 | (i) tempo inside the policy (plays whenever affordable) | R3 play_cost | ? | P |
 | | **remainder** | 0.71 after S1 (needs <= 0.65): react_s d -1.12, ppm_2x +1.22, push_mean +1.00 | | |
 
@@ -333,3 +333,25 @@ instant answer, so the variant is not used.
 - The BEAT swing (25.3 on all 233 -> 41.9 on the last 100) rests on 31 matches.
 - The vs-rest swing (60.7 -> 39.1) rests on 69.
 - The cells stable across windows are CLX takes, win \| OT, pre-drain and both took one. Those are the ones to fix first.
+
+### 8.7 Pass 2 results (pod 33401, 10-22 12:30-13:00Z)
+
+- **P-A1 identity (a):** block 741200 on 33401 with HEAD code + the W18 flags absent = W14's rows, 480 / 480 identical. Every
+  W18 run pairs with W14's 2,880 / pos rows.
+- **P-B opponent gate threshold (a)**, paired on block 741200 with positions, vs tau 0.27:
+
+| tau | style | ppm_2x | win | vs BEAT | win \| OT | pre-drain | CLX takes | both took | reg loss |
+|---|---|---|---|---|---|---|---|---|---|
+| 0.27 (I u40 as gated) | 0.73 | 11.32 | 50.2 | 43.2 | 62.8 | 71.6 | 59.0 | 13.3 | 28.3 |
+| 0.35 | 0.72 | 11.30 | -0.2 | -4.7 | -1.4 | -2.5 | +1.9 | +2.9 | -0.4 |
+| 0.45 | 0.70 | 11.02 | +1.0 | -1.4 | -4.7 | -4.6 | +5.2 | +2.9 | -2.3 |
+| **0.55** | **0.58** | 10.61 | +1.5 | +5.5 | **-12.4 [-20.0, -4.7]** | **-17.0 [-27.2, -7.1]** | +5.4 [+0.2, +10.8] | +3.5 | **-7.7 [-12.3, -2.9]** |
+
+- **What tau 0.55 does (a):**
+  - It is a strong lever above ~0.5. It fixes style (0.58 passes) and pulls win \| OT and OT-before-drain to the targets
+    (50.4 / 54.6 vs 47.3 / 52.6 on all 233; 43.9 / 45.7 on the recent 100).
+  - It cuts regulation losses (20.6: the all-233 target 18.9, below the recent 28.0).
+  - It does NOT fix X-Bow denial. CLX takes a princess +5.4 and both-took +3.5 go the wrong way: a banking opponent lets more
+    X-Bows through.
+  - So tau and R1 (chip denial) are complementary, not substitutes.
+- Queued on stream C: tau 0.65 / 0.75 (positions) and the full 2,880 at tau 0.55, for both targets.

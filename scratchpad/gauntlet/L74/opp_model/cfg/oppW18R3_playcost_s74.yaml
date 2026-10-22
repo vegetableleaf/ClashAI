@@ -2,8 +2,8 @@
 # (reward_terms, W18; default w 0.005 per ACCEPTED play of the learner, <= 0.3 per match). The learner is the OPPONENT-to-be.
 # Why (DIAG_12.md Y1 / P-B): it plays 36% more cards per minute in 2x / OT than Ranked humans (ppm_2x 11.36 vs 8.33, style d
 # +1.22) in every cost class, which is the style failure and wins it regulation games (reg loss 26.5 vs 18.9) and opens games
-# after a fall (both took one 13.3 vs 5.6). Its play / wait threshold does NOT bind in 2x (eval probes tau 0.35 / 0.45: ppm_2x
-# 11.30 / 11.02 vs 11.32), so the tempo is in the policy: a marginal play must now pay for itself.
+# after a fall (both took one 13.3 vs 5.6). Its play / wait threshold binds only above ~0.5 (eval probes tau 0.35 / 0.45 / 0.55:
+# ppm_2x 11.30 / 11.02 / 10.61 vs 11.32): this trains the tempo into the policy instead of a decode knob.
 init: icebow/data/pipeline/o2/w14/i_u40.pt
 pool: icebow/data/ghost_pool/pool_env_v1.jsonl
 proagree_data: icebow/data/pipeline/s1_dataset.npz

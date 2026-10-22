@@ -35,7 +35,9 @@ cd /workspace/w18 && EVLOCK=/workspace/w18/evalB.lock O3_POS=1 W18_EXTRA='--opp-
 cd /workspace/w18 && EVLOCK=/workspace/w18/evalB.lock O3_POS=1 W18_EXTRA='--opp-tau 0.35' bash w18_eval.sh w18_Iu40_tau35_pos $CLX $OPP 0.1 40 - 741200
 cd /workspace/w18 && EVLOCK=/workspace/w18/evalB.lock O3_POS=1 W18_EXTRA='--opp-tau 0.55' bash w18_eval.sh w18_Iu40_tau55_pos $CLX $OPP 0.1 40 - 741200
 EOF
-for s in A B; do ( pgrep -f \"w18_runner.sh \$s\" || setsid nohup bash /workspace/w18/w18_runner.sh \$s ) > /dev/null 2>&1 < /dev/null & done
+for s in A B C; do   # anchored pattern: never matches this ssh command's own text (pkill self-match trap)
+  if ! pgrep -f \"^bash /workspace/w18/w18_runner.sh \$s\\\$\" > /dev/null; then setsid nohup bash /workspace/w18/w18_runner.sh \$s > /dev/null 2>&1 < /dev/null & fi
+done
 sleep 3; ps -eo pid,args | grep w18_runner | grep -v grep" ;;
 r1)   # opponent round R1 inputs + queue: training at the end of stream A, its gate watcher at the end of stream B
   for f in icebow/data/bench/rl_royale/rlarm_gae_cue_ab2/rlarm_gae_cue_ab2_u0065_grafted.pt \
