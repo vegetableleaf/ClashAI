@@ -637,3 +637,26 @@ Order: P-D now on stream C (cheap); R4 if R1 leaves the timing gap; R4b if P-D p
   Score: `w18/pd_score.py` (paired bootstrap).
 - Decision rule (lead): R4b deals a BUILDING if bfront beats bnear and policy by >= 10 pp lock, a TROOP if tfront does, both if
   both do, nothing if neither.
+
+### 8.14 G2 CORRECTED (W21 LIVETAPS, 10-22) + first P-D result
+
+**G2 correction.** My lost-tap rates counted taps sent after the match was decided (W21: 182 of 343; the game takes none),
+and my "slow taps" were taps placed before the card was affordable, which the game holds until paid (residual > 8 ticks: 0.5% of
+plays).
+- Corrected handicap: `--tap-loss 1x:0.015,2x:0.018,ot2x:0.020,ot3x:0.019`, no `--tap-slow`.
+- The hero-button losses (fixed live by W21 from now on) stay in, but only for this historical target window. Re-measure the
+  target after the fix (~0.6% per tap).
+- `o4_gate.py` HANDICAP and gate watcher v3 (`w18_gate3.sh`) carry it; R1's gates are re-run with it (prefix `w18c_`); R3 / R2
+  gates use v3.
+- **Section 10's -5.2 / -8.5 OT effects and the 10 / 12 used the OVERSTATED handicap (c).** Treat them as an upper bound.
+- The corrected I u40 run (`w18_Iu40_tl2`, 2,880) is running on stream E. The new pass count comes from
+  `o4_gate.py --brief <pulled w18_Iu40_tl2>`.
+
+**P-D, first two arms (960 paired starts, 12 s):**
+- Policy answer (its building in hand): lock 17.9%, lane princess lost 0.057.
+- Building at the tower front: lock **10.6%** (-7.3 [-9.7, -4.8] pp), lane lost 0.030 (-0.027 [-0.035, -0.019]); the scripted
+  building landed in 88%.
+- So the tower-front building cuts the 12-s lock by 41% and the damage by 47% inside the SIM: it PAYS.
+- The lead's ">= 10 pp" rule was set on full-life lock rates (~50%). In a 12-s window the base rate is 18%, so the bar should be
+  relative: about >= 40% fewer locks.
+- bnear / tfront / tnear are still running (stream D). They decide building vs troop and front vs near.
