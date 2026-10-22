@@ -1,3 +1,13 @@
+## 2026-10-22 16:06 EDT -- long run DEGRADES past u100: u175 -7.86 [-10.53, -5.20] vs CLX (E4 pooled 1,920); branch u40 evals started
+
+- paircmp_pooled.py (copied to 32525 /workspace/ckev/) vs clx_rb (CLX with --record-board): long u100 (= CLXII) +1.15 [-1.39,
+  +3.68] (1411 vs 1389); long u175 -7.86 [-10.53, -5.20] (1238 vs 1389). The long run is at u198 and behind CLX -> the plan rule
+  says stop if behind. u150 eval queued (32525, after u175's I u40 part) to locate the turn; then decide stop vs a KL / anchor
+  change.
+  Score: P=/workspace/venvf15/bin/python; cd /workspace/ckev/out; $P ../paircmp_pooled.py
+  "long_uXXXX/e4/long_uXXXX_{s}_fin15/**/matches.jsonl" "clx_rb/e4/clx_rb_{s}_fin15/**/matches.jsonl"
+- 33572: ckpt_eval.sh br74_u0040 then br75_u0040 started 20:06Z (branches still training to u80). The CLX base rows live on
+  32525 (clx_rb): copy them over, or pull both to the laptop, to score.
 ## 2026-10-22 14:53 EDT -- CLX back live (14:13, after CLXII 11 W / 19 L); CLXII behaviour vs CLX; long-run u175 / u150 evals started
 
 - The revert watcher deployed CLX at 14:13 (guard OK, Discord). CLXII final: 30 Ranked, 11 W / 19 L (36.7%).
