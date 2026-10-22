@@ -1,0 +1,87 @@
+## M. Match end, every log since 10-07 (4017 logs): taps by ticks before the deploy end (regulation timeout / tower kill: last in-play frame - 81; drain: 6002)
+  decided : >= 80 accepted 25119 / 25440 | 40-80 accepted 299 / 313 | 22-40 accepted 91 / 115 | 0-21 accepted 1 / 152 | after the end accepted 1 / 428
+  drain   : >= 80 accepted 7091 / 7234 | 40-80 accepted 74 / 76 | 22-40 accepted 25 / 40 | 0-21 accepted 0 / 19 | after the end accepted 0 / 181
+
+## H. Board taps within 72 px of the hero ability button (818, 1224) vs the mirror corner, affordable, since 10-07
+  button               unconfirmed 407 / 1176 ( 34.6%)
+  mirror (17.5, 1.5)   unconfirmed 4 / 387 (  1.0%)
+
+# RANKED (233 CLX Ranked, the W18 E1 set): matches 233, taps 9669
+  outcomes: confirmed 9016, lost 414, open 135, taken 54, late 50
+  lost 414 (  4.3% of taps; 1.78/match); elixir >= cost at the tap 343 (1.47/match); short 71
+  affordable-lost per tap by phase (the W18 --tap-loss definition): 1x   1.6% | 2x   3.2% | OT2x   3.8% | OT3x   8.7%
+  CLASSES of the affordable lost taps (first rule that matches):
+    A board tap under the hero ability button (<= 72 px)                      109 ( 31.8%)  1x 32 2x 36 OT2x 23 OT3x 18
+    B ability tap <= 10 ticks before the card tap                               9 (  2.6%)  1x 2 2x 4 OT2x 3 OT3x 0
+    E elixir fell below the cost before the release                             3 (  0.9%)  1x 0 2x 3 OT2x 0 OT3x 0
+    L device load (reader frame gap >= 0.15 s or < 18 game ticks / s)          18 (  5.2%)  1x 8 2x 6 OT2x 2 OT3x 2
+    P1 post-end, tiebreak drain (no tap after tick 5980 since W21)             72 ( 21.0%)  1x 0 2x 0 OT2x 0 OT3x 72
+    P2 post-end, after the deciding event (81-tick end sequence)              110 ( 32.1%)  1x 5 2x 45 OT2x 32 OT3x 28
+    R remainder (no logged cause)                                              22 (  6.4%)  1x 9 2x 6 OT2x 3 OT3x 4
+    A split, all button-area taps: my hero body on the board True : lost 109 / 146 ( 74.7%)
+    A split, all button-area taps: my hero body on the board False: lost 0 / 154 (  0.0%)
+  affordable-lost per tap by phase without P (post-end): 1x   1.5% | 2x   1.8% | OT2x   2.0% | OT3x   1.9%
+  affordable-lost per tap by phase without P and A (the fixes): 1x   0.6% | 2x   0.7% | OT2x   0.5% | OT3x   0.5%
+  remaining lost rate by factor (affordable, not post-end, not under the button; n 7281):
+    kind troop                                                 lost   0.6% (22/3838)
+    kind building                                              lost   1.0% (21/2187)
+    kind spell                                                 lost   0.7% (9/1256)
+    lethal_rocket rule                                         lost   7.7% (1/13)
+    ability tap <= 10 ticks before                             lost  37.5% (9/24)
+    device load (frame gap >= .15 s / tps < 18)                lost  12.2% (18/148)
+    no device load                                             lost   0.5% (34/7133)
+    tap_end_ms in [0, 150)                                     lost   0.3% (16/5598)
+    tap_end_ms in [150, 250)                                   lost   0.7% (7/995)
+    tap_end_ms in [250, 1000000)                               lost   4.3% (29/679)
+    ticks since the last confirmation (0, 6)                   lost   0.5% (9/1752)
+    ticks since the last confirmation (7, 30)                  lost   0.6% (6/1012)
+    ticks since the last confirmation (31, 1000000)            lost   0.8% (35/4287)
+    phase 1x                                                   lost   0.7% (19/2787)
+    phase 2x                                                   lost   0.8% (19/2320)
+    phase OT2x                                                 lost   0.7% (8/1192)
+    phase OT3x                                                 lost   0.6% (6/982)
+  retries: the next tap after a lost tap (not post-end) is the same card 163 times, lost again 56; same cell 80 (lost again 45); the first was under the button 99
+  SLOW plays: tap -> slot rotation (= the elixir charge) of 9016 confirmed plays: median 26.0, p90 42; > 34 ticks 1302 ( 14.4%)
+    of these, tapped BEFORE the card was affordable (need > 0; --afford-ticks lets the tap go up to 23 ticks early): 1076 ( 82.6%); need > 0 among the not-slow plays   8.0%
+    residual = latency - (max(arrival, need) + 22) [the game's own floor]: median 0.2, p90 2.0, p99 6.2; > 8 ticks 48 (  0.5%)
+    residual > 8 by tap_end_ms: [0,150)   0.0%, [150,250)   0.1%, [250,1000000)   6.6%
+    need-driven slow plays land need + 22 - 26 = mean 16.8 ticks after the SIM's fixed 26-tick landing (SIM Match.apply lands at T + 26 whatever the elixir wait)
+
+# POSTFIX (after 10-21 13:49): matches 34, taps 1505
+  outcomes: confirmed 1437, lost 40, open 22, taken 6
+  lost 40 (  2.7% of taps; 1.18/match); elixir >= cost at the tap 30 (0.88/match); short 10
+  affordable-lost per tap by phase (the W18 --tap-loss definition): 1x   0.8% | 2x   1.5% | OT2x   2.3% | OT3x   4.5%
+  CLASSES of the affordable lost taps (first rule that matches):
+    A board tap under the hero ability button (<= 72 px)                        7 ( 23.3%)  1x 4 2x 1 OT2x 2 OT3x 0
+    B ability tap <= 10 ticks before the card tap                               1 (  3.3%)  1x 0 2x 0 OT2x 1 OT3x 0
+    P1 post-end, tiebreak drain (no tap after tick 5980 since W21)             10 ( 33.3%)  1x 0 2x 0 OT2x 0 OT3x 10
+    P2 post-end, after the deciding event (81-tick end sequence)               10 ( 33.3%)  1x 0 2x 6 OT2x 3 OT3x 1
+    R remainder (no logged cause)                                               2 (  6.7%)  1x 0 2x 0 OT2x 0 OT3x 2
+    A split, all button-area taps: my hero body on the board True : lost 7 / 11 ( 63.6%)
+    A split, all button-area taps: my hero body on the board False: lost 0 / 15 (  0.0%)
+  affordable-lost per tap by phase without P (post-end): 1x   0.8% | 2x   0.2% | OT2x   1.2% | OT3x   0.7%
+  affordable-lost per tap by phase without P and A (the fixes): 1x   0.0% | 2x   0.0% | OT2x   0.4% | OT3x   0.8%
+  remaining lost rate by factor (affordable, not post-end, not under the button; n 1184):
+    kind troop                                                 lost   0.2% (1/628)
+    kind building                                              lost   0.0% (0/346)
+    kind spell                                                 lost   1.0% (2/210)
+    lethal_rocket rule                                         lost   0.0% (0/3)
+    ability tap <= 10 ticks before                             lost  25.0% (1/4)
+    device load (frame gap >= .15 s / tps < 18)                lost   n/a (0/0)
+    no device load                                             lost   0.3% (3/1184)
+    tap_end_ms in [0, 150)                                     lost   0.2% (2/1054)
+    tap_end_ms in [150, 250)                                   lost   0.8% (1/126)
+    tap_end_ms in [250, 1000000)                               lost   0.0% (0/1)
+    ticks since the last confirmation (0, 6)                   lost   0.3% (1/288)
+    ticks since the last confirmation (7, 30)                  lost   0.0% (0/142)
+    ticks since the last confirmation (31, 1000000)            lost   0.3% (2/720)
+    phase 1x                                                   lost   0.0% (0/418)
+    phase 2x                                                   lost   0.0% (0/360)
+    phase OT2x                                                 lost   0.5% (1/204)
+    phase OT3x                                                 lost   1.0% (2/202)
+  retries: the next tap after a lost tap (not post-end) is the same card 12 times, lost again 4; same cell 1 (lost again 1); the first was under the button 6
+  SLOW plays: tap -> slot rotation (= the elixir charge) of 1437 confirmed plays: median 25, p90 33; > 34 ticks 135 (  9.4%)
+    of these, tapped BEFORE the card was affordable (need > 0; --afford-ticks lets the tap go up to 23 ticks early): 135 (100.0%); need > 0 among the not-slow plays   8.3%
+    residual = latency - (max(arrival, need) + 22) [the game's own floor]: median 0.0, p90 1.7, p99 3.5; > 8 ticks 0 (  0.0%)
+    residual > 8 by tap_end_ms: [0,150)   0.0%, [150,250)   0.0%, [250,1000000)   0.0%
+    need-driven slow plays land need + 22 - 26 = mean 17.1 ticks after the SIM's fixed 26-tick landing (SIM Match.apply lands at T + 26 whatever the elixir wait)

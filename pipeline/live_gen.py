@@ -202,6 +202,8 @@ class GenPilot:
 
     def reset_match(self) -> None:
         self.pending_plays = []
+        self.__dict__.pop("_fails", None)    # W21 10-22: the lost-spot blocks hold game ticks of THIS match (they leaked into the next)
+        self.ui_blocked = None
         if getattr(self, "cues", None) is not None:
             self.cues.reset()
         self.past.clear()
@@ -430,7 +432,7 @@ class GenPilot:
         unchanged when the guard is off, the row waits, or nothing is restricted. d['xy_unguarded'] = the plain argmax
         it replaced."""
         if d["play"]:
-            logits = self._mask_failed(frame, d, logits)
+            logits = self._mask_ui(d, self._mask_failed(frame, d, logits))
         if not self.legal_guard or not d["play"]:
             return logits
         side = my_side_of(frame)
@@ -482,3 +484,18 @@ class GenPilot:
             return logits
         d["avoided_failed_spot"] = True
         return logits.masked_fill(torch.from_numpy(bad).to(logits.device), float("-inf"))
+
+    # W21 10-22 (L74/livetaps): [N_CELLS] bool of cells whose screen tap point lies under an on-screen button that is showing
+    # (live_play sets it while my hero body is on the board: its ability button swallowed 109 of 146 such taps in the 233 CLX
+    # Ranked matches, 0 of 154 with no hero up). None = nothing covered = unchanged. d['ui_guard'] = the covered argmax replaced.
+    ui_blocked = None
+
+    def _mask_ui(self, d: dict, logits: torch.Tensor) -> torch.Tensor:
+        bad = getattr(self, "ui_blocked", None)
+        if bad is None or bad.all():
+            return logits
+        bad = torch.from_numpy(bad).to(logits.device)
+        raw = int(logits.reshape(-1).argmax())
+        if bool(bad[raw]):
+            d["ui_guard"] = cell_xy(raw, self.grid)
+        return logits.masked_fill(bad, float("-inf"))

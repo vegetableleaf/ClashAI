@@ -53,7 +53,7 @@ REPO = HERE.parents[3]
 sys.path.insert(0, str(REPO))
 from pipeline.live_gen_v2 import GenPilot, posture_summary  # noqa: E402
 from pipeline.obs_contract import _catalog_names  # noqa: E402
-from hero_button import HeroButton, hero_ids, press_gate, should_press  # noqa: E402
+from hero_button import BUTTON, HeroButton, hero_form_ids, hero_ids, press_gate, should_press  # noqa: E402
 from ability_head_live import deploy_state  # noqa: E402
 from friend_nav import MenuGuard  # noqa: E402
 import emote_spam  # noqa: E402
@@ -96,6 +96,25 @@ GUARD_BLIND_S = 30.0     # menu guard without a successful screen classification
 
 
 CONFIRM_BASE = 22        # L74 (afford_arrival.txt): an accepted tap's slot rotates ~22 ticks after it can be paid
+DEPLOY_END = 6002        # opp_elixir_count.REGEN_SCHEDULE's last entry: overtime is over, the tiebreak drain takes no deploy
+UI_BUTTON_R = 0.08       # x screen width: the hero ability button's disc around hero_button.BUTTON (its crop radius)
+
+
+def deploy_closed(tick: int) -> bool:
+    """W21 10-22 (L74/livetaps): True once no tap can land before DEPLOY_END (tap -> landing >= CONFIRM_BASE ticks). Every
+    log since 10-07: 0 of 200 such taps were taken (latest taken tap 5976); in the 233 CLX Ranked matches they were 100 of
+    the 124 'lost' OT-3x taps, and 19 of the 29 runs stopped on 5_unconfirmed did so in the drain."""
+    return tick + CONFIRM_BASE >= DEPLOY_END
+
+
+def button_cells(lay: "Layout", grid: str):
+    """W21 10-22: [N_CELLS] bool, the cells whose screen tap point (Layout.board) lies inside the hero ability button's disc.
+    While my hero is on the board that button swallows the tap (CLX Ranked: 109 / 146 lost; 0 / 154 with no hero up)."""
+    import numpy as np
+    from pipeline.model_v3 import N_CELLS, cell_xy
+    bx, by, r = BUTTON[0] * lay.w, BUTTON[1] * lay.h, UI_BUTTON_R * lay.w
+    pts = np.array([lay.board(cell_xy(c, grid), 0) for c in range(N_CELLS)], float)   # side-free: x = 1 - xy on both sides
+    return np.hypot(pts[:, 0] - bx, pts[:, 1] - by) < r
 
 # --log-frames parity extras (owner 10-16 reader upgrade, L74/parity/READER_UPGRADE.md): PUBLIC board objects the v2
 # reader already samples but the 'frame' event dropped. Rows of these keys, in this order (missing key -> null).
@@ -485,6 +504,10 @@ def main() -> int:
                          "the card lands on AS TAPPED (not on my own building/tower, not across the river in a lane "
                          "whose enemy princess stands -- the game moved such taps >= 1 tile 77/81 times, tap_audit.py). "
                          "This flag restores the plain argmax (= SIM's rule)")
+    ap.add_argument("--no-ui-guard", action="store_true",
+                    help="W21 10-22: by default, while my hero body is on the board, the cell is chosen only among cells whose tap "
+                         "point is not under the hero ability button (button_cells; it swallowed 109 / 146 such taps). This flag "
+                         "restores the unguarded choice")
     ap.add_argument("--predict-drops", action="store_true",
                     help="OPT-IN (needs --extrapolate): an observed enemy Skeleton Barrel balloon disappearance adds its 7 "
                          "skeletons to the look-ahead board 12 ticks later (pipeline/extrapolate.py DropTracker). Off = unchanged")
@@ -937,6 +960,7 @@ def latency_log(a) -> dict:
     return dict(extrapolate=getattr(a, "extrapolate", None), afford_ticks=getattr(a, "afford_ticks", None),
                 early_release_margin=getattr(a, "early_release_margin", None),
                 fast_input=bool(getattr(a, "fast_input", False)), tap_gap_ms=getattr(a, "tap_gap_ms", 50),
+                ui_guard=not getattr(a, "no_ui_guard", False), deploy_end=DEPLOY_END,
                 **({"follow_up_taps": True} if getattr(a, "follow_up_taps", False) else {}),
                 **emote_log(a),
                 **({"pipeline_decisions": True, "pipeline_tau_delta": getattr(a, "pipeline_tau_delta", 0.0)}
@@ -1002,6 +1026,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
       **({"predict_drops": True} if getattr(a, "predict_drops", False) else {}),
       **({"own_effects": True} if getattr(a, "own_effects", False) else {}),
       fast_input=bool(getattr(a, "fast_input", False)), tap_gap_ms=getattr(a, "tap_gap_ms", 50),
+      ui_guard=not getattr(a, "no_ui_guard", False), deploy_end=DEPLOY_END,
       afford_ticks=getattr(pilot, "afford_ticks", None), early_release_margin=getattr(a, "early_release_margin", None),
       identity_ext=bool(getattr(pilot, "identity_ext", False)),
       **({"cue_inputs": cue_log(pilot, a.reader)} if getattr(a, "cue_inputs", "off") == "on" else {}),
@@ -1033,6 +1058,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
     release_margin = getattr(a, "early_release_margin", None)
     tap_gap = getattr(a, "tap_gap_ms", 50)
     tap_sleep = f" sleep {tap_gap / 1000:g};" if tap_gap > 0 else ""    # default 50 -> "...; sleep 0.05; ..." as before
+    ui_mask = (None if getattr(a, "no_ui_guard", False) or not hasattr(pilot, "grid")   # W21: cells under the hero button
+               else button_cells(lay, pilot.grid))                                    # (test fakes have no grid)
     rec = ScreenRec(stamp) if record else None
     # Menu guard (2026-09-30 verifier): card taps are gated only by reader flags, and 249/1378 past board taps fall
     # inside the main screen's Battle button -> the SCREEN is classified every <= 2 s; any menu stops the match.
@@ -1229,6 +1256,11 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                   ents=[[e["side"], e["x"], e["y"], e["card_id"], e["hp"], e["max_hp"], e["kind"], e["address"]]
                         for e in f["entities"]], **(frame_extras(f) if getattr(a, "log_frames", False) else {}))
             hids = hero_ids(me)
+            closed = deploy_closed(tick)                 # W21: no input can land any more (tiebreak drain): tap nothing
+            if ui_mask is not None:                      # W21: the hero button shows while my hero body is on the board
+                ids = hids | hero_form_ids(hids)
+                pilot.ui_blocked = ui_mask if ids and any(int(e["side"]) == side and int(e["card_id"]) in ids
+                                                          for e in f["entities"]) else None
             head_due = False                             # --iw-press head: set below for THIS frame only
             if button:                                   # screenshot only after the hero was played (not in hand)
                 button.want = bool(hids) and any(i not in me["hand_deck_indices"] for i, fl in
@@ -1250,7 +1282,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                     elif tick - ab_pending["tick"] > CONFIRM_TICKS:
                         W(event="ability_unconfirmed", tick=tick, button_after=st)
                         ab_pending = None
-                elif st == "ready" and not pending and not sched and newest and advanced and guard_clear():
+                elif st == "ready" and not pending and not sched and newest and advanced and not closed and guard_clear():
                     # perception gate (rule AND head): phase-2 ability state, else one press per deployment + blue band
                     try:
                         spent_n = max(deploy_state(pilot, _catalog_names().get(int(h), str(h)), tick)[1] for h in hids)
@@ -1336,7 +1368,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                 W(event="stop", why="5_unconfirmed"); break
             stop_now = False
             for fu in list(sched):                       # --follow-up-taps: scheduled second plays (sched empty = skipped)
-                if not (advanced and newest):            # a frozen clock fires and cancels nothing; a stale frame (newer ones
+                if not (advanced and newest) or closed:  # a frozen clock fires and cancels nothing; a stale frame (newer ones
                     break                                # queued) would judge "never late" on an old tick: wait for the newest
                 act, why = follow_verdict(fu, tick, me, pending)
                 if act == "wait":
@@ -1383,7 +1415,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                 # the frame on which the last outstanding tap confirmed (pending empty, had) still never decides
                 if not (pipe and pending and not sched and len(pending) < FOLLOW_MAX_OUT):
                     continue
-            if not newest or not advanced:               # stale frame: newer ones queued / the clock did not move
+            if not newest or not advanced or closed:     # stale frame: newer ones queued / the clock did not move
                 continue
             t_dec = time.time()
             if pipe:                                     # the pilot sees every unconfirmed tap as executed ([] = none)
@@ -1439,7 +1471,7 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                   backlog=q.qsize(), forced=forced,
                   decision={k:d[k] for k in ('play','p_play','no_affordable','hand_pos','name','card','form','xy','gate_tau',
                                              'xy_unguarded','stalled','hazard_step_s','hazard_play','why',
-                                             'lethal_rocket', 'posture', 'posture_dtau', 'cue') if k in d},
+                                             'lethal_rocket', 'posture', 'posture_dtau', 'cue', 'ui_guard') if k in d},
                   **({"pending": [pd["d"]["name"] for pd in pending]} if pending else {}),
                   public=d['public_audit'])
                 last_audit_tick = tick
@@ -1478,6 +1510,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
             W(event="play", tick=tick, t_dev=t_dev, name=d["name"], p_play=round(d["p_play"], 4), forced=forced, elixir=el,
               hand_pos=d["hand_pos"], xy=[round(v, 4) for v in d["xy"]], tap_hand=hand, tap_board=board,
               **({"hazard_play": True} if d.get("hazard_play") else {}),
+              **({"ui_guard": d["ui_guard"]} if "ui_guard" in d else {}),
+              **({"hero_up": True} if getattr(pilot, "ui_blocked", None) is not None else {}),
               **({"why": d["why"], "lethal_rocket": d["lethal_rocket"]} if d.get("why") == "lethal_rocket" else {}),
               **({"pipelined": True, "outstanding": len(pending)} if pending else {}),
               **({"posture": d["posture"], "posture_dtau": d["posture_dtau"]} if "posture" in d else {}))

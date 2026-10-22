@@ -1,3 +1,17 @@
+## 2026-10-22 ~11:30 EDT -- W21 LIVETAPS: the pilot's "lost / slow taps" decomposed; hero-button guard + drain stop + spot-block reset
+
+- L74/livetaps/LIVETAPS.md (livetaps.py / .out). 233 CLX Ranked: 343 affordable lost taps (1.47/match). **53% post-end**
+  (the match already decided: 81-tick end sequence 110, tiebreak drain 72; the game took 2 of 780 such taps) -- 100 of the
+  124 OT-3x losses. Without them the loss is flat: 1.5 / 1.8 / 2.0 / 1.9% (1x / 2x / OT2x / OT3x), so P-A2's tap-loss
+  spec (8.9% OT3x) overstates CLX's handicap (c on its size). **32% hero ability button**: back-corner cells under it,
+  lost 109 / 146 with my hero up, 0 / 154 without. Rest 0.22/match (load 18, ability-then-card 9, other 25).
+- Slow taps (14.4% > 34 ticks): 83% tapped before affordable (--afford-ticks 23), landing at need + 22 = the game's
+  floor; residual > 8 ticks 0.5%. Not a pilot fault; the SIM lands at a fixed +26 (parity recommendation in the file).
+- Fixes (default on, --check LIVE_CHECK_PASS on CLXI 686b245a): UI guard masks button cells while my hero body is up
+  (--no-ui-guard); no taps once tick + 22 >= 6002; GenPilot.reset_match clears the 10-21 lost-spot blocks (they leaked
+  across matches). 19 + 9 of the 29 5_unconfirmed run stops were drain / button. Tests pass; pre-existing failures
+  unchanged (12 pipeline, 9 live_reader, same on HEAD). Short live verification run: plan in LIVETAPS.md section 5.
+
 ## 2026-10-22 ~06:00 EDT -- night 10-21/22: 9 successor runs, NO promotion; long run started; pods cut to 2
 
 - **Results** (tonight1021/RESULTS.md; E4 promotion eval, paired, 960 per set; vs CLX and vs same-seed tn_base):
