@@ -69,6 +69,8 @@ PRESPELL_SPAWN = {'GoblinBarrel', 'Graveyard'}
 # and no longer flag their fights opp_ability_unobserved on ext logs
 CHAMP_CASTS = os.environ.get('PARITY_CHAMP_CASTS', '1') != '0'   # the default since 10-20 (as H-PRESPELL); PARITY_CHAMP_CASTS=0 restores
 CHAMP_STATE10 = {'SkeletonKing', 'Monk', 'MightyMiner'}
+SPAWN_SLOW = os.environ.get('PARITY_SPAWN_SLOW', '1') == '1'   # H-SPAWN-SLOW (W19 round 1, kept: +11 / -4 on 43,867 fights); PARITY_SPAWN_SLOW=0 restores
+FORM_ORACLE = set(filter(None, os.environ.get('PARITY_FORM_ORACLE', '').split(',')))   # W19 DIAGNOSTIC oracle (cards), never a default
 DIGGERS = {'Miner', 'GoblinDrill'}  # tunnel in: seen active on their way, deploying where they surface (Knight etc. can show
                                    # 13/15 -> 12/14 too: 31 of 531 Knights, so the rule is by card)
 TOWER_RADIUS = 1400                # millitiles, king (princess 1000): attribution slack, not a law
@@ -2185,8 +2187,49 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
         if after != before:
             load_edited(b, before, after)
         slot = 0 if e['kind'] == 'play' else sim.HAND_SIZE
+        pts = form_live.get(id(e)) if FORM_ORACLE else None
+        if pts:
+            pre = set(i for i, a_ in enumerate(json.loads(b.save())['ents']['alive']) if a_)
         r = b.step([(e['side'], slot, round(e['x']*18) if 'x' in e else 0, round(e['y']*18) if 'y' in e else 0)], 0)[0]
+        if pts and sim.DEPLOY_REASONS[r[1]] == 'OK':
+            # W19 FORMATION ORACLE (diagnostic, never a landed law): once its members exist (the tick after the command),
+            # they are put on the points the live members were first seen on (nearest one-to-one), to measure what an exact
+            # formation law would be worth
+            pending.append([pts, e['side'], pre, 0])
         return sim.DEPLOY_REASONS[r[1]]
+
+    form_live, pending = {}, []
+
+    def apply_pending():
+        import itertools
+        for item in list(pending):
+            pts, side, pre, tries = item
+            bf = json.loads(b.save()); af = json.loads(json.dumps(bf)); E = af['ents']
+            new = [i for i, a_ in enumerate(E['alive']) if a_ and i not in pre and E['team'][i] == ('Blue', 'Red')[side]
+                   and E['kind'][i] == 'Troop']
+            item[3] += 1
+            if len(new) == len(pts):
+                best = min(itertools.permutations(range(len(pts))), key=lambda pm: sum(
+                    math.hypot(E['pos'][i]['x']/18 - pts[j][0], E['pos'][i]['y']/18 - pts[j][1]) for i, j in zip(new, pm)))
+                for i, j in zip(new, best):
+                    E['pos'][i] = {'x': round(pts[j][0]*18), 'y': round(pts[j][1]*18)}
+                try:
+                    load_edited(b, bf, af); flags['form_oracle'] += 1
+                except Exception:
+                    flags['form_oracle_not_set'] += 1
+                pending.remove(item)
+            elif item[3] >= 3:
+                flags['form_oracle_unmatched'] += 1
+                pending.remove(item)
+    if FORM_ORACLE:
+        trw = tracks([f for f in m['frames'] if t0 - 4 <= f[0] <= t1])
+        for e in evs:
+            if e['kind'] == 'play' and e['name'] in FORM_ORACLE and e['side'] == m['side'] and 'x' in e:
+                cand = [q for q in trw.values() if q['side'] == e['side'] and (catalog.get(q['card_id']) or {}).get('display_name') == e['name']
+                        and e['tick'] - 2 <= q['first'] <= e['tick'] + 80]
+                if cand:
+                    f1 = min(q['first'] for q in cand)
+                    form_live[id(e)] = [(q['x'], q['y']) for q in cand if q['first'] <= f1 + 2]
 
     def simulate(rng=None):
         """(rows, refused, game over). rng None: the replay as built. Else: the setup state reloaded, hidden state redrawn
@@ -2208,7 +2251,11 @@ def run_fight(eng, m, events, fight, catalog, by_name, levels, tower_levels, top
                     refused[reason] += 1
             st = json.loads(b.state_json())
             if st['tick'] < tick:
-                b.step([], tick-st['tick'])
+                if pending:
+                    b.step([], 1); apply_pending()
+                    st = json.loads(b.state_json())
+                if st['tick'] < tick:
+                    b.step([], tick-st['tick'])
             st, simb = eng.bodies(by_name)
             if st['tick'] != tick:
                 over = True
@@ -2771,6 +2818,22 @@ def start_state(eng, m, fight, setup, start, events, catalog):
     # of it. The SIM record is set to what it holds that many ticks after the same child of a wave (spawn_table).
     tick_of = [t for t, _ in m['frames']]
     tr = None
+    # H-SPAWN-SLOW (W19 round 1): a spawner's cycle runs at 35 / 50 under an Ice Wizard slow, live as in the SIM (live Witch
+    # waves 140 ticks apart unslowed, 140 / (1 - 0.3 x slowed share) slowed: 155 at 32 %, 177 at 70 %; SIM probe 140 -> 200
+    # fully slowed). Its elapsed cycle since the last wave (or its creation) is counted at that rate over the ticks the live
+    # buff rows show it slowed; before, every tick counted whole and the SIM wave came early (20261017_195826@3135: 14 ticks).
+    btick = sorted(m.get('buffs') or {}) if SPAWN_SLOW else []
+
+    def slowed(g, lo, hi):
+        if g is None or not btick:
+            return 0
+        n, i = 0, max(0, bisect_left(btick, lo) - 1)
+        while i < len(btick) and btick[i] < hi:
+            t = btick[i]; nxt = btick[i + 1] if i + 1 < len(btick) else hi
+            if min(nxt, hi) > max(t, lo) and any(nm in SLOW_BUFFS for nm, _ in m['buffs'][t].get(g, ())):
+                n += min(nxt, hi) - max(t, lo)
+            i += 1
+        return n
     for bd in setup:
         a = live.get(bd['id'])
         tab = eng.spawn_table(catalog[a['card_id']]['display_name'], probe=False) if a and not bd.get('proxy') else None
@@ -2795,8 +2858,9 @@ def start_state(eng, m, fight, setup, start, events, catalog):
             # 162943@5518 a Witch made 32 ticks before t0 spawned on 5524 live, on 5538 in the SIM (first wave = creation + 38).
             born = (m.get('births') or {}).get(a.get('gen'), (None,))[0]
             first = eng.first_cycle(catalog[a['card_id']]['display_name'], probe=False) if born is not None else None
-            if first and t0 - born in first:
-                ms, wl = first[t0 - born]
+            age = None if born is None else t0 - born - round(.3 * slowed(a.get('gen'), born, t0))
+            if first and age in first:
+                ms, wl = first[age]
                 out.append((('body', bd), dict(spawn_ms=ms, spawn_wave_left=wl))); flags['setup_spawner_born'] += 1; continue
             flags['setup_spawner_unseen'] += 1; continue
         kids.sort()
@@ -2806,7 +2870,7 @@ def start_state(eng, m, fight, setup, start, events, catalog):
                 break
             k += 1
         ms, wl = tab[min(tab, key=lambda q: abs(q - k))]
-        left = ms - 50*(t0 - last)
+        left = ms - 50*(t0 - last) + 15*slowed(a.get('gen'), last, t0)
         if left <= 0:
             flags['setup_spawner_overdue'] += 1; continue
         out.append((('body', bd), dict(spawn_ms=left, spawn_wave_left=wl))); flags['setup_spawner_seen'] += 1

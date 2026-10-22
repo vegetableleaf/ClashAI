@@ -481,3 +481,113 @@ restores the old cohort). J1 on the final fin15, reported both ways once so the 
 - The FIN re-score could not run on 19899: it was busy all day with W7 / O3 evals. Everything ran on P2.
 - The setup smoke and the trainer smoke ran on P2 after its build checkout was removed (section 0).
 - HANDOFF is not updated in this commit (worker rule: never stage the working copy); the lead adds the entry.
+
+## 9. W19 (10-22): why J1 has plateaued -- diagnosis, hypothesis ledger, rounds
+
+Labels as above: **(a) measured**, **(b) plausible but untested**, **(c) contradicted**. Pod 157.157.221.29:33591; fin15 wheel
+88f3fdcb (pip --target, PARITY_SIM_PATH); harness = HEAD parity tree + the W19 edits below. Tools: `parity/w19/` (cls.py
+first-divergence classifier; hits / births / speeds / retarget / xbow_lock / form_census censuses; explain.py ledger pass and
+the other laptop analyses in `w19/analysis/`; base_run.sh = chunked runner, 8 chunk dirs per cohort with one export each, so 48
+workers fit in the pod's 62 GB).
+
+### 9.1 Cohorts and baselines (a)
+
+| run | cohort | K | stamped strict fights / matches | J1 raw [95% CI] |
+|---|---|---|---|---|
+| BASE8 (reproduces FIN15C) | c13 = caplogs13, 638 logs 10-16 .. 10-18 13:15 | 8 | 14,252 / 404 | **0.927 [0.921, 0.933]**, ceiling 0.992 |
+| BASE0 | c13 | 0 | 14,252 / 404 | 0.928 [0.922, 0.934] |
+| BASE0 | **c22 = 786 new captured logs 10-18 13:19 .. 10-21 16:13** (no 10-22 log exists) | 0 | 29,615 / 748 | **0.917 [0.913, 0.921]** |
+| BASE0 | union c13 + c22 | 0 | 43,867 / 1,152 | 0.9205 [0.9170, 0.9239] |
+
+### 9.2 Why the plateau: what the remaining failures are (a)
+
+- **Systematic, not noise.** Of the 1,030 failing c13 fights (live vs the unperturbed SIM), 943 have 0 of 8 perturbed SIMs
+  agreeing with live; only 87 (8.4 %) sit inside the modelled hidden-state noise. The ceiling (0.992) says the replay is
+  deterministic, not that it is right.
+- **Not tolerance edge.** Re-scoring the c13 failures with a looser death tolerance: 15 / 20 / 30 / 60 ticks pass 14 / 26 / 41 /
+  59 % of them (raw 0.938 / 0.947 / 0.957 / 0.970); tower tolerance x2 passes 4 %. Even 3 s of tolerance stays below 0.975.
+- **Damage values are right.** Hit census over every strict fight (same frame gap, same body, both runs in step): 972,567 equal
+  drops vs 14,108 different; of the drops > 30 hp, 329,253 equal vs 4,652 different, mostly two attackers coinciding. Real but
+  small leads: the Evo Knight fortify state (live 48 vs SIM 122), an opponent princess tower read one level high (158 vs 173).
+  Our level-16 tower shots on troops: 14,521 of 14,616 equal.
+- **Divergences are everywhere; only EARLY ones predict failure.** First-divergence classifier (pass 3) on all 14,252 c13 fights:
+  65.6 % of PASSING fights also diverge somewhere. Late first divergences (> 40 ticks) are as common in passing as in failing
+  fights (P(fail) 0.064-0.094 vs base 0.072). Divergences within 40 ticks of the start are 2-3x enriched: set-up body target
+  P(fail) 0.219, hp 0.212, position 0.160; early position 0.164, hp 0.122, target 0.133.
+- **The tail is long.** No mechanism found holds more than ~13 % of a cohort's failures; most hold 1-6 %. That is why each round
+  since FIN12 moved J1 by +0.0002 to +0.002: one law fixes one mechanism, i.e. 5-40 of ~1,000 failures.
+- Classifier artefacts found and removed: 380 of 518 pass-1 'target' first divergences were "live target = crown tower, SIM
+  none" (the reader names the tower a unit walks to; the SIM sets target_uid on lock); building decay rounds 1 hp apart
+  (2096 vs 2097) -> hp tolerance 5 from pass 3.
+
+### 9.3 The level-16 step (a: located; a cause found for own Skeletons)
+
+The new data is worse, and it is a step: our-tower level-15 era 0.926 [0.921, 0.930] (25,229 fights) vs level-16 era (our towers
+4424 -> 4858 at 10-19 13:56) 0.913 [0.907, 0.919] (18,638). Per live segment (the same model, CLX, before and after):
+
+| segment | ALL | own Skeletons | opp Skeletons | opp Hog Rider |
+|---|---|---|---|---|
+| CLX, our towers L15 (10-19 00:20-08:47) | 0.921 | 0.879 (381) | 0.950 | 0.955 |
+| CLX, L16 ladder (10-19 13:56-10-20 10:43) | 0.919 | 0.822 (533) | 0.903 | 0.851 |
+| CLX, L16 Ranked (10-20 13:28-10-21 14:28) | 0.910 | 0.803 (975) | 0.764 | 0.902 |
+| CLXI, L16 Ranked | 0.910 | 0.750 (88) | 0.793 | 0.844 |
+
+- Within-card, not card mix (the L16 per-card rates on the pre-era mix: 0.910); across every opponent card present and every fight
+  context (even with no enemy on board, own Skeletons 0.966 -> 0.829).
+- Ruled out (a/c): our card levels in the replay (read per match from max_hp: Skeletons 16 in both eras; IW 14/15 -> 16, Log 15
+  -> 16, towers 15 -> 16, all read right); tower damage (equal) and fire rate (16 ticks at L15 and L16 live); deploy durations
+  (exact in both eras); walk speed (SIM/live 0.998-1.000 in both eras); frame cadence (2 ticks, unchanged); tower troop (Princess
+  in both eras); reader binary (unchanged since 10-17 18:00); tap vs spawn point (median < 160 mt in both eras).
+- **Found (a): the fork's 3-Skeleton FORMATION.** 35.5 % of own Skeleton members stand > 30 mt off live on their first frame
+  (Knight 2.7 %, X-Bow / Tesla 0.1 %). Failing fights carrying it: c13 15 / 1,030, **c22 323 / 2,456**. The L16-era model plays
+  Skeletons at taps that expose it, e.g. behind the king at x 8,500: the SIM stands the right member at x 8,956 (live 9,003), so
+  it walks to the LEFT lane in the SIM and the RIGHT lane live (6 of 6 dossiers identical: 20261020_204741@1210, 232823@1689,
+  20261019_200142@1631, 20261020_163959@2940, 20261019_183336@3921, 20261020_150323@1883). The formation census (fork deploy vs live
+  first frame, same tap) shows two live ring shapes for 3 members (symmetric r ~580: (-503, -288), (-1, +579), (+498, -288); and a
+  lane-mirrored one: (-516, +261), (-1, -612), (+456, +259)) and a river-edge clamp of the inner member that the SIM always applies
+  and live applies in ~45 % of identical taps (independent of queued taps and lag: (b) an observation phase or a rule not yet found).
+- The opp Skeletons / Hog drops are plausibly the cascade of our Skeletons walking in the other lane (b). Ranked adds a further
+  opp-Skeletons drop (0.903 -> 0.764): (b), not separated.
+
+### 9.4 Hypothesis ledger
+
+| # | hypothesis | test | failing fights it explains (measured) | status |
+|---|---|---|---|---|
+| H1 | failures are hidden-state noise | K=8 perturbed SIMs agreeing with live | c13 87 / 1,030 | (a) 8.4 % only |
+| H2 | failures are tolerance-edge near misses | re-score at looser tolerance | c13 145 at 15 ticks, 269 at 20 | (a) characterisation, not a cause |
+| H3 | wrong damage values / levels | hit census; per-match level read-off | < 1.5 % of same-gap hits differ | (c) as a family; EK fortify, opp tower level open |
+| H4 | the 10-19 step = our card / tower levels in the replay | levels per match, hit census by era, fire rate | 0 | (c) |
+| H5 | the 10-19 step = the model's play mix | segments: CLX at L15 = earlier models (own Skel 0.879) | 0 | (c) as the whole story; the model's TAPS expose H6 |
+| H6 | 3-Skeleton formation law (fork) | probe + formation census + 6 dossiers | signature in c13 15, c22 323 | (a) mechanism; oracle arm (9.6) sizes it |
+| H7 | unseen / late opponent splash spells | live group death the SIM does not match | c13 58, c22 122 (first-signature) | (a) signature; reader-limited (Log seen after impact x17, Arrows x3) |
+| H8 | spawned-body timing / presence | birth census + first divergence | c13 61, c22 112 | (a) family; per-card laws open (Elixir Golem split 436 timing offsets; Witch 254; Goblin Barrel goblins 461 live-only / 306 SIM-only; Skeleton King souls 190 live-only; Clone 148 SIM-only) |
+| H9 | spawner timers under an Ice Wizard slow | live wave intervals vs slowed share (140 -> 155 at 32 %, 177 at 70 % = SIM 140 / (1 - 0.3 s)) | R1 +11 / -4 | (a) engine right, harness set-up wrong -> R1 kept |
+| H10 | start-state: a set-up body diverges within 10 ticks | classifier + passing control | c13 197, c22 421 (after H1-H8) | (a) family: route / target / attack phase of set-up bodies (reader-limited) |
+| H11 | other early divergences (<= 40 ticks) | classifier | c13 176, c22 401 | (a) family: retarget, pathing at bridge edges, kamikaze retarget onto deploying units (dossiers) |
+| H12 | retarget rules | retarget census (live switches, old target alive) | SIM makes the same switch 84.6 % (walkers to fresh deploys 93.5 %; Firecracker 61 %, Goblin Cage 25 %) | (a) per-card leads |
+| H13 | the SIM wakes the king late (W18) | live wake - trigger | princess-triggered: 70 ticks live = SIM law (569/569 own, 757/758 opp) | (c); damage-triggered wakes vary live (246/351 at 70): (b) source-dependent |
+| H14 | the SIM king takes more damage after our princess falls (W18) | replayed fights after a fall | SIM/live 0.991 [0.950, 1.037] strict | (c) (W18 withdrew the premise) |
+| H15 | the X-Bow ignores tower-front blockers (W18) | xbow_lock census (1,104 fights) | blocker 8-11.5 t: first target 289/297; ends on tower live 28.6 % vs SIM 22.2 % | (c); lead: no blocker, live tower vs SIM unit first target 77/807 |
+| H16 | pocket deploy rule (W18) | fork probe + live census | fallen lane only (live 1,766 vs 5 standing-lane plays); depth <= 4.5 tiles in both | (c) |
+| H17 | walk speed / frame cadence / reader / tap point changed at 10-19 | censuses | 0 | (c) |
+
+### 9.5 Unexplained share after each pass (explain.py; a fight counts under its first matching signature)
+
+| pass | c13 unexplained (of 1,030) | c22 unexplained (of 2,456) |
+|---|---|---|
+| noise (K=8) | 943 (0.916) | K=8 pending |
+| formation (H6) | 928 (0.901) | 2,133 (0.868) |
+| unseen / late spell (H7) | 870 (0.845) | 2,011 (0.819) |
+| spawn timing / presence (H8) | 809 (0.785) | 1,899 (0.773) |
+| start-state <= 10 ticks (H10) | 612 (0.594) | 1,478 (0.602) |
+| early <= 40 ticks (H11) | 436 (0.423) | 1,077 (0.439) |
+| near miss <= 15 ticks (H2) | 329 (0.319) | 797 (0.325) |
+
+These are attributions by signature, not proofs: only an arm proves a cause. The remaining ~32 % is spread over the own deck (IW
+hero, Tesla, Knight, X-Bow) and opponent swarms. **Not a confirmed plateau**: every family above still holds untested laws.
+
+### 9.6 Rounds
+
+| round | law | kind | metric before -> after (stamped strict, K=0, paired by fight) | kept? |
+|---|---|---|---|---|
+| R1 | H-SPAWN-SLOW: a set-up spawner's elapsed cycle counts 35/50 for every tick the live buff rows show it under an Ice Wizard slow (start_state, both the last-wave and the H-SPAWN-BORN path) | harness | c13 0.9277 -> 0.9279, +0.00021 [-0.00014, +0.00059], +6 / -3; c22 0.9170 -> 0.9171, +0.00014 [0.00000, +0.00030], +5 / -1; **union +0.00016 [0.00000, +0.00032], +11 / -4** | **kept** (default on, PARITY_SPAWN_SLOW=0 restores; the mechanism is measured live; the 4 downs are not dossiered (b)) |
