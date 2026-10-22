@@ -1023,6 +1023,31 @@ before the drain / opponent takes / both took / style vs Ranked; Ranked 48.1 / 2
 | R5 | E2 u5 / u10 / u15 / u20 / u25 / u30 / u35 / u40 | 49.2 / 54.4 / 51.2 / 49.0 / 51.5 / 48.8 / 54.6 / 50.6 (mean 51.2) | 43.2 / 54.0 / 47.7 / 43.7 / 47.7 / 44.2 / 46.5 / 48.2 | | 53.8 / 56.5 / 53.3 / 48.8 / 48.3 / 51.5 / 51.0 / 54.8 | 55.4 / 61.6 / 61.3 / 61.5 / 60.3 / 55.9 / 62.9 / 60.8 (mean 60.0) | | | | 0.64-0.70 | 5-8 | **plateau**: = E u40 (50.6 on this block); OT share drifts down (48-55) |
 | R5b | I u5 / u10 / u15 / u20 / u25 / u30 / u35 | 52.9 / 48.8 / 48.8 / 53.8 / 47.9 / 46.9 / 50.0 (mean 49.9) | 48.7 / 41.9 / 42.0 / 46.2 / 43.2 / 38.9 / 47.0 | | 57.1 / 55.4 / 56.9 / 59.4 / 53.5 / 57.3 / 56.0 | 59.1 / 56.4 / 55.7 / 61.4 / 56.4 / 57.5 / 58.7 (mean 57.9) | | | | 0.67-0.71 | 5-7 | vs the control E2 at matched updates: CLX win -1.3, win \| OT -2.1, OT share +4, BEAT -3. Each gap is about one 480-game SE, so (b) the effect is not established; style 0.02-0.04 worse |
 
+| R6a | J = E u40 + ONE change: the frozen mix = CLX only (48148, 23:50-01:27 EDT) u5 / u10 / u15 / u20 / u25 / u30 | 53.1 / 51.7 / 50.6 / 50.2 / 48.8 / 52.9 | 48.0 / 45.2 / 47.5 / 44.7 / 41.7 / 50.8 | | 57.7 / 56.5 / 55.6 / 58.3 / 52.9 / 56.9 | 58.8 / 55.0 / 56.6 / 57.5 / 57.1 / 65.6 | | | | 0.61-0.70 | 4-7 | its target cell did not move: CLX takes a princess 63.0 pooled (control E2 61.8). Stopped at u31 |
+| R6b | K = E u40 + ONE change: kl_ref_gate = B u20 (40116, 00:00-01:27 EDT) u5 / u10 / u15 / u20 | 52.9 / 48.8 / 48.8 / 51.0 | 51.5 / 43.2 / 43.7 / 43.1 | | 50.6 / 52.3 / 57.1 / 59.6 | 60.5 / 55.4 / 52.9 / 58.4 | | | | 0.61 / 0.64 / 0.69 / 0.67 | 7 / 6 / 3 / 6 | its target (style) did not move: 0.67 pooled vs 0.69. Stopped at u21 |
+| R7 | I2 = I u40 continued fresh, I's recipe unchanged (40116, from 01:32 EDT, last round on that pod) | | | | | | | | | | | |
+
+**Rounds 5-6, pooled per arm (every gate snapshot u5-u40 of the arm on block 741200; `w14/pool.py`, numbers
+here):**
+
+| arm (one change vs E u40's recipe) | n | CLX win | vs BEAT | OT share | win \| OT | pre-drain | CLX takes | both took | reg loss | style |
+|---|---|---|---|---|---|---|---|---|---|---|
+| E2 (control: continue) | 3,840 | 51.1 | 46.9 | 52.2 | 60.0 | 67.1 | 61.8 | 15.8 | 27.9 | 0.69 |
+| I (+ opponent OT-starts) | 3,840 | 49.9 | 43.9 | **56.7** | 58.5 | 65.3 | **59.0** | **12.8** | 26.6 | 0.72 |
+| J (CLX-only mix) | 2,880 | 51.2 | 46.3 | 56.3 | 58.4 | 63.2 | 63.0 | 16.9 | 25.4 | 0.68 |
+| K (gate anchored to B u20) | 1,920 | 50.4 | 45.4 | 54.9 | 56.7 | 64.8 | 61.9 | 15.9 | 25.9 | 0.67 |
+| live Ranked | 233 | 48.1 | 25.3 | 62.7 | 47.3 | 52.6 | 52.8 | 5.6 | 18.9 | <= 0.65 |
+
+- (a) Only I moves Ranked cells beyond the pooled SE (~1.1 pp on the overall cells, ~1.8 on BEAT):
+  - OT share +4.5 (z ~4);
+  - both took one -3.0 (z ~3.8);
+  - CLX takes a princess -2.8 (z ~2.5);
+  - BEAT -3.0 (z ~1.7).
+  - Each moves toward Ranked; style is 0.03 worse.
+  - The snapshots of one arm are correlated, so these z are optimistic.
+- So OT-state starts are the one training-mix change that helped. I's u40 and u15 go to fresh-block checks on 48148, and I2
+  continues it on 40116.
+
 **Round 5 verdict.** Continuing E's recipe is a plateau: E2 averages 51.2 on block 741200 over u5-u40, vs E u40's 50.6. Adding
 opponent OT-starts (I) keeps the OT share near Ranked's direction and lowers win \| OT by ~2 pp, but within noise. Neither
 beats E u40 by a margin that a 1,920-game check could resolve. E u40 stays the pick.
