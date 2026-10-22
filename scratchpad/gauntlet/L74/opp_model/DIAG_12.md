@@ -618,3 +618,22 @@ What the table shows:
      covered by this hook. If P-D shows they pay too, a second variant deals the cheapest ground troop instead.
 
 Order: P-D now on stream C (cheap); R4 if R1 leaves the timing gap; R4b if P-D pays and R4's gates show depth unchanged.
+
+### 8.13 P-D payoff probe (lead-approved 10-22): built and running
+
+- `search_s0 --probe-xbow-start ARM` (b7a7925; SIM-only):
+  - every match starts at a live Ranked bridge-X-Bow state with OUR X-Bow forced at its live point;
+  - the opponent's first decision is scripted;
+  - both policies then play on; the match stops after 12 s.
+- Arms:
+  - `policy`: the opponent's own answer, with its building in hand;
+  - `bfront` / `bnear`: its building 9.5 / 6 tiles from our X-Bow, in the X-Bow's lane, its own frame;
+  - `tfront` / `tnear`: its cheapest ground troop there (the lead's addition).
+- Opponent decks are redrawn (seeded) until they hold a building and a ground troop, so all arms are paired on the same
+  state / deck / deal. CLX carries the gate-v2 handicap.
+- Row field `probe`: lane_lost (the X-Bow lane princess's HP lost in the 12 s), towers_lost, forced, answer_accepted. Lock =
+  lane_lost >= 0.05 (the reach rule).
+- Running on 33401 stream D: 5 arms x blocks 741200 + 742000 (960 starts each; ~5 min per block).
+  Score: `w18/pd_score.py` (paired bootstrap).
+- Decision rule (lead): R4b deals a BUILDING if bfront beats bnear and policy by >= 10 pp lock, a TROOP if tfront does, both if
+  both do, nothing if neither.
