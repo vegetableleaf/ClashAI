@@ -35,8 +35,28 @@ cd /workspace/w18 && EVLOCK=/workspace/w18/evalB.lock O3_POS=1 W18_EXTRA='--opp-
 cd /workspace/w18 && EVLOCK=/workspace/w18/evalB.lock O3_POS=1 W18_EXTRA='--opp-tau 0.35' bash w18_eval.sh w18_Iu40_tau35_pos $CLX $OPP 0.1 40 - 741200
 cd /workspace/w18 && EVLOCK=/workspace/w18/evalB.lock O3_POS=1 W18_EXTRA='--opp-tau 0.55' bash w18_eval.sh w18_Iu40_tau55_pos $CLX $OPP 0.1 40 - 741200
 EOF
-for s in A B; do pgrep -f \"w18_runner.sh \$s\" > /dev/null || setsid nohup bash /workspace/w18/w18_runner.sh \$s > /dev/null 2>&1 < /dev/null & done
+for s in A B; do ( pgrep -f \"w18_runner.sh \$s\" || setsid nohup bash /workspace/w18/w18_runner.sh \$s ) > /dev/null 2>&1 < /dev/null & done
 sleep 3; ps -eo pid,args | grep w18_runner | grep -v grep" ;;
+r1)   # opponent round R1 inputs + queue: training at the end of stream A, its gate watcher at the end of stream B
+  for f in icebow/data/bench/rl_royale/rlarm_gae_cue_ab2/rlarm_gae_cue_ab2_u0065_grafted.pt \
+           icebow/data/bench/rl_royale/rlarm_gae_cue_u250/rlarm_gae_cue_u250_u0130_grafted.pt; do
+    on "test -f $CB/$f" && continue
+    on "mkdir -p $CB/$(dirname $f)" && scp -q -i $KEY -P $PORT $R/$f $H:$CB/$f.w18tmp && on "mv $CB/$f.w18tmp $CB/$f"
+    [ "$(sha256sum $R/$f | cut -c1-64)" = "$(on "sha256sum $CB/$f" | cut -c1-64)" ] || { echo "SHA FAIL $f"; exit 3; }
+    echo "shipped $f"
+  done
+  cd $R && git -c core.autocrlf=false archive HEAD $L/w18/w18_gate.sh | on "tar -x -C $CB && cp $CB/$L/w18/w18_gate.sh /workspace/w18/"
+  # I's recipe needs the MIRRORED Ranked 3:00 states at rl_royale.OT_STATES (the learner is the opponent-to-be; W14 8.x):
+  # new inode via mv (never write through a hard link into an eval copy); the original is kept beside it
+  on "cd $CB && mkdir -p icebow/data/pipeline/o2/w14 && cp icebow/data/pipeline/o2/w14opp_I.pt icebow/data/pipeline/o2/w14/i_u40.pt
+      sha256sum icebow/data/pipeline/o2/w14/i_u40.pt | grep -q ^4ff9fe93b02d || { echo I_U40_SHA_FAIL; exit 3; }
+      N=scratchpad/gauntlet/L74/nextround; M=scratchpad/gauntlet/L74/opp_model/w14/ot_states_mirror.json
+      [ -f \$N/ot_states_original.json ] || cp \$N/ot_states.json \$N/ot_states_original.json
+      cp \$M \$N/ot_states.json.w18tmp && mv \$N/ot_states.json.w18tmp \$N/ot_states.json
+      cmp -s \$M \$N/ot_states.json && echo MIRROR_OK || { echo MIRROR_FAIL; exit 3; }
+      cd /workspace/w18 && echo 'RUN=oppW18R1_redirect_s74 OUTD=/workspace/w18 VENV=/workspace/venvf15 RT=fin15-linux SMOKE_EXTRA=outlived_pp=100 TLOCK=/workspace/w18/train.lock bash $CB/$L/optC/w7_train.sh' >> jobs_A.txt
+      echo 'cd /workspace/w18 && RUN=rlarm_oppW18R1_redirect_s74 YAML=oppW18R1_redirect_s74 EVERY=5 EVLOCK=/workspace/w18/evalB.lock bash /workspace/w18/w18_gate.sh' >> jobs_B.txt
+      tail -1 jobs_A.txt; tail -1 jobs_B.txt" ;;
 status)
   on "tail -5 /workspace/w18/runner_A.log /workspace/w18/runner_B.log 2>/dev/null; for d in /workspace/w18/o3/out/*/; do
       echo \"\$(basename \$d): \$(cat \$d/*/D3/matches.jsonl 2>/dev/null | wc -l) rows \$(ls \$d/ALL_DONE 2>/dev/null)\"; done; uptime" ;;
