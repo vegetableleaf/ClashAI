@@ -1,3 +1,13 @@
+## 2026-10-22 18:33 EDT -- long run STOPPED ITSELF at u219 (pro-agreement tripwire); u150 -1.72 vs CLX; sim-check diagnosis on 32525
+
+- E4 pooled vs CLX (clx_rb): u100 +1.15 / u150 -1.72 [-4.24, +0.80] / u175 -7.86 [-10.53, -5.20] -> a steady decline after u100.
+- 21:24Z: "STOP after update 219: pro-agreement tripwire: cell 0.1399 < init 0.1938 - 5.0 pp AND latest screen paired delta -0.9
+  pp <= 0" -> 32525 freed (idle ~70 min before noticed).
+- 32525 now: the SIMCHECK API worker (WMI pid 73232; ticket scratchpad/gauntlet/L74/ape/SIMCHECK_TICKET.md, log simcheck.log,
+  result SIMCHECK.md): why the SIM behaviour check missed CLXII's live idle-on-threat / defence-trade failure; build a check that
+  would have caught it.
+- Proposed next for 32525 (awaiting the owner): a new long run from CLX with a FIXED KL anchor to CLX, checkpoints every 25 ->
+  the SIM pre-filter -> 30-match trial.
 ## 2026-10-22 16:48 EDT -- owner: branch candidates passing the SIM pre-filter get a 30-match Ranked trial (auto-revert to CLX); watcher armed
 
 - scratchpad/gauntlet/L74/deploy/trial30.sh CKPT SHA16 NAME: deploy_ckpt -> 30 Ranked results -> KEEP only if >= 16 / 30 wins AND
