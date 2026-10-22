@@ -1,3 +1,9 @@
+## 2026-10-22 19:16 EDT -- br74 trial ENDED early (2 W / 4 L); CLX redeployed; no more candidates until the exploit is fixed (owner)
+
+- SIM pre-filter had: br74 u40 -1.04 [-3.68, +1.60], br75 u40 -1.88 [-4.51, +0.76] vs CLX. Watchers branch_trials.sh / trial30.sh
+  stopped by PID (38996, 80156, 16076, 49072); br75 trial cancelled.
+- Owner: every post-CLX checkpoint regressed (worse habits, lost good ones). Consistent with the SIM-exploit hypothesis -> exploit
+  investigation (in-session agent, 32525) -> fix -> drift test BEFORE any new live candidate.
 ## 2026-10-22 18:52 EDT -- API key OUT OF CREDITS: SIMCHECK + exploit API workers never ran; relaunched as ONE in-session agent
 
 - Both api_worker.sh launches (18:33, 18:37) died in ~10 s with "Credit balance is too low" (api_worker.sh still logs exit 0).
