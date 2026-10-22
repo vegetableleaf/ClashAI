@@ -12,7 +12,7 @@ unset ROYALE_HEROIW_PRESS
 export HABITS_REC=1 PYTHONPATH=$CB ROYALE_HEROIW_FORM=hero OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1
 G=${CK%.pt}_grafted.pt; [ -f $G ] || $P scratchpad/gauntlet/L74/weekend/graft_generic.py $CK $U250 $G >> $O/graft.log 2>&1
 [ -f $G ] || { log "graft failed"; exit 5; }; sha256sum $CK $G > $O/ckpt.sha; log "grafted $G"
-EV_EXTRA="--habit-log --live-levels --card-levels Rocket=16 Log=15 --opp-tower-troops DaggerDuchess:0.028,Cannoneer:0.028,ChefTower:0.014 --record-plays --ability-stats --ability-head-decode=sample --crown-log"
+EV_EXTRA="--habit-log --live-levels --card-levels Rocket=16 Log=15 --opp-tower-troops DaggerDuchess:0.028,Cannoneer:0.028,ChefTower:0.014 --record-plays --ability-stats --ability-head-decode=sample --crown-log --record-board"
 for S in 741200 742000 743000 744000; do
   D=$O/e4/${TAG}_${S}_fin15; mkdir -p $(dirname $D); log "E4 $S"
   ROYALE_RUNTIME=fin15-linux flock $LK $P scratchpad/gauntlet/L74/gap/gap.py --ckpt $G --out $D --arms D3 --seed-start $S \
