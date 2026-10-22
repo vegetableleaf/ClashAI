@@ -1,0 +1,220 @@
+
+## D1 (iv) live OT label vs the SIM rule: a match whose crowns were UNEQUAL at 3:00 ended in regulation
+live rows labelled OT (end > 3610) with unequal crowns at 3:00: 4 of 146 (end_s [182.7, 183.2, 181.4, 181.8]; results [1.0, 0.0, 0.0, 0.0]); the SIM ends such a match at tick 3600
+SIM end_tick classes: {'reg_end<3600': 268, '==3600': 927, '3601-3610': 5, '>3610': 1680} | SIM outcomes {'win': 1406, 'loss': 1474}
+cells with the live OT label made SIM-consistent (ot := crowns level at 3:00 and end > 3610):
+  ot_share           SIM  58.3 | live as scored  62.7 (n 233) -> SIM-consistent  60.9 (n 233); z -1.29 -> -0.78
+  win_given_OT       SIM  57.6 | live as scored  47.3 (n 146) -> SIM-consistent  47.9 (n 142); z +2.42 -> +2.25
+  win_OT_pre_drain   SIM  66.3 | live as scored  52.6 (n 95) -> SIM-consistent  53.8 (n 91); z +2.68 -> +2.39
+  reg_loss           SIM  26.5 | live as scored  18.9 (n 233) -> SIM-consistent  20.2 (n 233); z +2.54 -> +2.10
+
+## D2 (iv) live sampling noise: Ranked n, Wilson CI, and how far the SIM point sits outside it
+  win                  SIM  48.8 (n 2880) | Ranked  48.1% [41.7, 54.5] n=233 -> SIM inside; pass needs SIM in [43.1, 53.1] and |z| < 1.96
+  win_vs_BEAT          SIM  41.0 (n 1109) | Ranked  25.3% [17.2, 35.6] n=83 -> SIM outside by 5.4 pp; pass needs SIM in [15.3, 35.3] and |z| < 1.96
+  win_vs_rest          SIM  53.7 (n 1771) | Ranked  60.7% [52.7, 68.1] n=150 -> SIM inside
+  ot_share             SIM  58.3 (n 2880) | Ranked  62.7% [56.3, 68.6] n=233 -> SIM inside
+  win_given_OT         SIM  57.6 (n 1680) | Ranked  47.3% [39.3, 55.3] n=146 -> SIM outside by 2.3 pp; pass needs SIM in [39.3, 55.3] and |z| < 1.96
+  win_OT_pre_drain     SIM  66.3 (n 1091) | Ranked  52.6% [42.7, 62.4] n=95 -> SIM outside by 3.9 pp
+  lost_first_princess  SIM  48.9 (n 2880) | Ranked  48.1% [41.7, 54.5] n=233 -> SIM inside
+  opp_takes_princess   SIM  55.3 (n 2880) | Ranked  51.1% [44.7, 57.4] n=233 -> SIM inside; pass needs SIM in [43.1, 59.1] and |z| < 1.96
+  clx_takes_princess   SIM  58.0 (n 2880) | Ranked  52.8% [46.4, 59.1] n=233 -> SIM inside; pass needs SIM in [44.8, 60.8] and |z| < 1.96
+  both_took_one        SIM  13.3 (n 2880) | Ranked   5.6% [ 3.3,  9.3] n=233 -> SIM outside by 4.0 pp
+  reg_loss             SIM  26.5 (n 2880) | Ranked  18.9% [14.4, 24.4] n=233 -> SIM outside by 2.1 pp
+
+## D3 (iv) the live target is not stationary: Ranked cells by time block (rank climb, W13 1)
+  10-20 13:28-17:59  n  48: win  62.5 (n 48) | win_vs_BEAT  31.2 (n 16) | win_given_OT  60.7 (n 28) | win_OT_pre_drain  61.9 (n 21) | both_took_one   2.1 (n 48) | reg_loss  14.6 (n 48)
+  10-20 18:00-21:59  n  51: win  41.2 (n 51) | win_vs_BEAT  13.6 (n 22) | win_given_OT  34.5 (n 29) | win_OT_pre_drain  35.3 (n 17) | both_took_one  11.8 (n 51) | reg_loss  21.6 (n 51)
+  10-20 22:00-10-21  n 134: win  45.5 (n 134) | win_vs_BEAT  28.9 (n 45) | win_given_OT  47.2 (n 89) | win_OT_pre_drain  54.4 (n 57) | both_took_one   4.5 (n 134) | reg_loss  19.4 (n 134)
+
+## P1 where the CLX win comes from: regulation vs overtime, share of ALL matches (SIM I u40 2,880 vs Ranked 233)
+  all      SIM n 2880: reg_W  15.2 reg_L  26.5 ot_W  33.6 ot_L  24.7 | Ranked n 233: reg_W  18.5 reg_L  18.9 ot_W  29.6 ot_L  33.0 | SIM - Ranked: reg_L  +7.6 [ +1.8, +12.4] ot_L  -8.3 [-14.8,  -2.4]
+  vs BEAT  SIM n 1109: reg_W  14.4 reg_L  33.1 ot_W  26.6 ot_L  25.9 | Ranked n  83: reg_W   6.0 reg_L  28.9 ot_W  19.3 ot_L  45.8 | SIM - Ranked: reg_L  +4.2 [ -6.7, +13.3] ot_L -19.9 [-30.9,  -9.3]
+  vs rest  SIM n 1771: reg_W  15.7 reg_L  22.3 ot_W  38.0 ot_L  24.0 | Ranked n 150: reg_W  25.3 reg_L  13.3 ot_W  35.3 ot_L  26.0 | SIM - Ranked: reg_L  +9.0 [ +2.3, +13.9] ot_L  -2.0 [ -9.8,  +4.7]
+
+## P2 regulation losses by the phase of the decisive fall (share of all matches)
+  SIM    L_gave_back   2.3 L_never_led_1x  14.5 L_never_led_2x   9.5 L_never_led_OT2x   0.1
+  Ranked L_gave_back   0.9 L_never_led_1x  11.6 L_never_led_2x   5.6 L_tiebreak_drain   0.9
+
+## P3 every crown path, share of the BEAT / rest matches (SIM vs Ranked)
+  vs BEAT  SIM    n 1109: L_gave_back   6.9 L_never_led_1x  16.4 L_never_led_2x  11.9 L_never_led_OT2x   8.4 L_never_led_OT3x   3.2 L_tiebreak_drain  12.2 win_clean  38.8 win_comeback   2.3
+  vs BEAT  Ranked n   83: L_gave_back   4.8 L_never_led_1x  19.3 L_never_led_2x   8.4 L_never_led_OT2x  10.8 L_never_led_OT3x   6.0 L_tiebreak_drain  25.3 win_clean  25.3
+  vs rest  SIM    n 1771: L_gave_back   1.2 L_never_led_1x  13.3 L_never_led_2x   8.0 L_never_led_OT2x   7.3 L_never_led_OT3x   4.6 L_tiebreak_drain  11.8 win_clean  51.9 win_comeback   1.8
+  vs rest  Ranked n  150: L_never_led_1x   7.3 L_never_led_2x   6.0 L_never_led_OT2x   9.3 L_never_led_OT3x   6.7 L_tiebreak_drain  10.0 win_clean  59.3 win_comeback   1.3
+
+## P4 0-0 overtimes vs BEAT: the 3:00 state (Ranked: all 0-0 OTs; SIM: the pos rows of block 741200)
+  behind Ranked share  56.5 (n 46) win  11.5% [ 4.0, 29.0] n=26 | SIM share  37.2 (n 86) win  31.2% [18.0, 48.6] n=32
+  level  Ranked share  17.4 (n 46) win  25.0% [ 7.1, 59.1] n=8 | SIM share  16.3 (n 86) win  35.7% [16.3, 61.2] n=14
+  ahead  Ranked share  26.1 (n 46) win  91.7% [64.6, 98.5] n=12 | SIM share  46.5 (n 86) win  90.0% [76.9, 96.0] n=40
+
+## S1 the 0-0 overtime is decided by the 3:00 state (W13 T3b): SIM pos rows (block 741200) vs Ranked
+  Ranked 0-0 OTs n 132
+    behind share  50.0  CLX win  28.8% [19.3, 40.6] n=66
+    level  share  18.9  CLX win  44.0% [26.7, 62.9] n=25
+    ahead  share  31.1  CLX win  90.2% [77.5, 96.1] n=41
+  SIM I u40 0-0 OTs n 241 (of 480 games)
+    behind share  39.4 (Ranked  50.0)  CLX win  38.9% [29.8, 49.0] n=95  vs Ranked  28.8
+    level  share  19.5 (Ranked  18.9)  CLX win  55.3% [41.2, 68.6] n=47  vs Ranked  44.0
+    ahead  share  41.1 (Ranked  31.1)  CLX win  93.9% [87.4, 97.2] n=99  vs Ranked  90.2
+    0-0 OT win: SIM 64.7 | Ranked 50.8 | SIM win rates at Ranked state shares 59.1 | Ranked win rates at SIM state shares 57.0
+  SIM E u40 0-0 OTs n 211 (of 480 games)
+    behind share  40.8 (Ranked  50.0)  CLX win  37.2% [27.7, 47.8] n=86  vs Ranked  28.8
+    level  share  19.4 (Ranked  18.9)  CLX win  61.0% [45.7, 74.3] n=41  vs Ranked  44.0
+    ahead  share  39.8 (Ranked  31.1)  CLX win  81.0% [71.3, 87.9] n=84  vs Ranked  90.2
+  SIM B u20 0-0 OTs n 210 (of 480 games)
+    behind share  36.7 (Ranked  50.0)  CLX win  29.9% [20.8, 40.8] n=77  vs Ranked  28.8
+    level  share  22.9 (Ranked  18.9)  CLX win  58.3% [44.3, 71.2] n=48  vs Ranked  44.0
+    ahead  share  40.5 (Ranked  31.1)  CLX win  87.1% [78.3, 92.6] n=85  vs Ranked  90.2
+  SIM R6 u20 0-0 OTs n 236 (of 480 games)
+    behind share  36.0 (Ranked  50.0)  CLX win  49.4% [39.0, 59.8] n=85  vs Ranked  28.8
+    level  share  20.8 (Ranked  18.9)  CLX win  77.6% [64.1, 87.0] n=49  vs Ranked  44.0
+    ahead  share  43.2 (Ranked  31.1)  CLX win  92.2% [85.3, 96.0] n=102  vs Ranked  90.2
+
+## S2 regulation chip race: princess HP at 3:00 (sum of standing princesses, fractions), 0-0 at 3:00, all such matches
+  Ranked n 134: own sum mean 1.421 opp sum mean 1.523; own min 0.535 opp min 0.617
+  SIM I u40  n 242: own min 0.539 opp min 0.532
+  SIM E u40  n 212: own min 0.541 opp min 0.545
+  SIM B u20  n 212: own min 0.537 opp min 0.501
+  SIM R6 u20 n 237: own min 0.571 opp min 0.531
+
+## B1 both took one = P(first fall) x P(the trailing side answers): SIM vs Ranked
+  SIM    n 2880 | CLX lost first  48.9 -> CLX takes one back  14.1% [12.4, 16.0] n=1407 | CLX took first  51.1 -> opponent takes one back  12.6% [11.0, 14.4] n=1473
+  Ranked n  233 | CLX lost first  48.1 -> CLX takes one back   5.4% [ 2.5, 11.2] n=112 | CLX took first  50.2 -> opponent takes one back   6.0% [ 2.9, 11.8] n=117
+  SIM    CLX answered a lost first princess: of those,  28.3 won; answer before 3:00 100.0 (live only exact)
+  Ranked CLX answered a lost first princess: of those,  33.3 won; answer before 3:00 100.0 (live only exact)
+
+## B2 (iv) comebacks by the time of the first princess fall (more clock left = more chances to answer)
+  SIM    first fall time: median 184 s; share by bin 0-90s  20.2 90-150s  18.5 150-180s  10.3 180-999s  51.0
+  SIM    P(the trailing side answers) by bin: 0-90s  43.9% [39.9, 48.0] n=583 | 90-150s  20.1% [16.9, 23.7] n=532 | 150-180s   7.1% [ 4.7, 10.6] n=296 | 180-999s   0.0% [ 0.0,  0.3] n=1469
+  Ranked first fall time: median 197 s; share by bin 0-90s  18.3 90-150s  14.0 150-180s  11.4 180-999s  56.3
+  Ranked P(the trailing side answers) by bin: 0-90s  19.0% [10.0, 33.3] n=42 | 90-150s   9.4% [ 3.2, 24.2] n=32 | 150-180s   7.7% [ 2.1, 24.1] n=26 | 180-999s   0.0% [-0.0,  2.9] n=129
+  SIM P(answer | a first fall) at the Ranked fall-time mix: 11.7 (SIM raw  13.3, Ranked   5.7)
+
+## W1 CLX win by the opponent win condition (revealed cards), SIM I u40 vs Ranked; BEAT first
+  BEAT pekka            SIM  39.1 (n  133) | Ranked  35.7% [16.3, 61.2] n=14
+  BEAT electro_giant    SIM  40.0 (n   60) | Ranked  23.1% [ 8.2, 50.3] n=13
+  BEAT giant            SIM  37.3 (n  110) | Ranked   9.1% [ 1.6, 37.7] n=11
+  BEAT royal_hogs       SIM  38.6 (n  114) | Ranked  18.2% [ 5.1, 47.7] n=11
+  BEAT battle_ram       SIM  33.9 (n   59) | Ranked  30.0% [10.8, 60.3] n=10
+  BEAT golem            SIM  30.2 (n  162) | Ranked  16.7% [ 3.0, 56.4] n=6
+  BEAT royal_giant      SIM  46.0 (n  113) | Ranked  33.3% [ 9.7, 70.0] n=6
+  BEAT elixir_golem     SIM  54.9 (n  195) | Ranked  66.7% [20.8, 93.9] n=3
+  BEAT lava_hound       SIM  42.0 (n   69) | Ranked  33.3% [ 6.1, 79.2] n=3
+  BEAT goblin_giant     SIM  38.8 (n   80) | Ranked   0.0% [ 0.0, 79.3] n=1
+  rest hog_rider        SIM  65.4 (n  295) | Ranked  66.7% [50.3, 79.8] n=36
+  rest mega_knight      SIM  40.0 (n  553) | Ranked  48.5% [32.5, 64.8] n=33
+  rest goblin_barrel    SIM  61.5 (n  221) | Ranked  63.6% [43.0, 80.3] n=22
+  rest other            SIM  50.0 (n   22) | Ranked 100.0% [72.2, 100.0] n=10
+  rest skeleton_barrel  SIM  32.8 (n   61) | Ranked  77.8% [45.3, 93.7] n=9
+  rest balloon          SIM  65.0 (n  143) | Ranked  55.6% [26.7, 81.1] n=9
+  rest mortar           SIM  22.6 (n   93) | Ranked  33.3% [12.1, 64.6] n=9
+  rest graveyard        SIM  50.5 (n   91) | Ranked  50.0% [21.5, 78.5] n=8
+  rest wall_breakers    SIM  42.2 (n   64) | Ranked  80.0% [37.6, 96.4] n=5
+  rest goblin_drill     SIM  82.5 (n   57) | Ranked  50.0% [15.0, 85.0] n=4
+  rest miner            SIM  89.3 (n   75) | Ranked   0.0% [ 0.0, 65.8] n=2
+  rest x_bow            SIM  76.5 (n   51) | Ranked   0.0% [ 0.0, 79.3] n=1
+  SIM BEAT win re-weighted to the Ranked BEAT win-condition mix: 38.5 (raw  41.0; Ranked  25.3)
+
+## I1 per-minute intensity by window: opponent TROOP elixir (visible on both sides) and CLX plays, SIM vs Ranked
+  all      opp troop elixir/min   reg_0-120 SIM 19.44 Ranked 17.53 | reg_120-180 SIM 38.29 Ranked 30.43 | ot_0-60 SIM 36.65 Ranked 32.56 | ot_60-120 SIM 52.65 Ranked 43.68
+  all      opp troop plays/min    reg_0-120 SIM  5.14 Ranked  4.79 | reg_120-180 SIM 10.31 Ranked  8.14 | ot_0-60 SIM 10.19 Ranked  8.76 | ot_60-120 SIM 14.41 Ranked 11.56
+  all      CLX plays/min          reg_0-120 SIM  7.14 Ranked  7.22 | reg_120-180 SIM 14.30 Ranked 12.94 | ot_0-60 SIM 14.37 Ranked 13.40 | ot_60-120 SIM 21.62 Ranked 19.17
+  vs BEAT  opp troop elixir/min   reg_0-120 SIM 19.96 Ranked 18.18 | reg_120-180 SIM 38.73 Ranked 32.85 | ot_0-60 SIM 37.53 Ranked 34.14 | ot_60-120 SIM 54.09 Ranked 44.64
+  vs BEAT  opp troop plays/min    reg_0-120 SIM  4.86 Ranked  4.51 | reg_120-180 SIM  9.72 Ranked  8.03 | ot_0-60 SIM  9.67 Ranked  8.60 | ot_60-120 SIM 13.77 Ranked 10.77
+  vs BEAT  CLX plays/min          reg_0-120 SIM  7.25 Ranked  7.22 | reg_120-180 SIM 14.63 Ranked 13.26 | ot_0-60 SIM 14.70 Ranked 13.64 | ot_60-120 SIM 22.17 Ranked 18.76
+  vs rest  opp troop elixir/min   reg_0-120 SIM 19.11 Ranked 17.17 | reg_120-180 SIM 38.03 Ranked 29.13 | ot_0-60 SIM 36.19 Ranked 31.59 | ot_60-120 SIM 51.91 Ranked 43.04
+  vs rest  opp troop plays/min    reg_0-120 SIM  5.32 Ranked  4.94 | reg_120-180 SIM 10.66 Ranked  8.20 | ot_0-60 SIM 10.46 Ranked  8.86 | ot_60-120 SIM 14.74 Ranked 12.09
+  vs rest  CLX plays/min          reg_0-120 SIM  7.08 Ranked  7.22 | reg_120-180 SIM 14.11 Ranked 12.76 | ot_0-60 SIM 14.19 Ranked 13.26 | ot_60-120 SIM 21.33 Ranked 19.45
+
+## K1 tank pushes (first tank play after >= 15 s without one): composition, timing, CLX response
+  SIM    pushes 6154 (2.14 per match, all decks)
+    1x   n 2682: support elixir in 10 s mean 2.43 | after our X-Bow  20.6% | CLX first play after the tank: median  1.5 s, <= 3 s  81.1% | CLX elixir in 10 s 6.58 | match won  43.0%
+    2x   n 2017: support elixir in 10 s mean 4.72 | after our X-Bow  38.7% | CLX first play after the tank: median  1.5 s, <= 3 s  84.9% | CLX elixir in 10 s 8.09 | match won  49.2%
+    OT2x n  822: support elixir in 10 s mean 4.54 | after our X-Bow  38.3% | CLX first play after the tank: median  1.5 s, <= 3 s  86.4% | CLX elixir in 10 s 8.29 | match won  49.3%
+    OT3x n  617: support elixir in 10 s mean 7.20 | after our X-Bow  41.7% | CLX first play after the tank: median  1.5 s, <= 3 s  95.7% | CLX elixir in 10 s 10.62 | match won  38.4%
+    tank cards: elixir_golem 994 battle_ram 668 royal_giant 655 giant_skeleton 644 pekka 633 royal_hogs 569 giant 494 golem 372
+  Ranked pushes 446 (1.91 per match, all decks)
+    1x   n  175: support elixir in 10 s mean 1.61 | after our X-Bow  25.7% | CLX first play after the tank: median  1.3 s, <= 3 s  78.2% | CLX elixir in 10 s 6.40 | match won  27.4%
+    2x   n  128: support elixir in 10 s mean 3.83 | after our X-Bow  35.2% | CLX first play after the tank: median  1.4 s, <= 3 s  79.5% | CLX elixir in 10 s 7.80 | match won  32.0%
+    OT2x n   84: support elixir in 10 s mean 3.56 | after our X-Bow  40.5% | CLX first play after the tank: median  1.3 s, <= 3 s  85.7% | CLX elixir in 10 s 8.29 | match won  34.5%
+    OT3x n   59: support elixir in 10 s mean 4.88 | after our X-Bow  55.9% | CLX first play after the tank: median  1.3 s, <= 3 s  89.7% | CLX elixir in 10 s 10.00 | match won  33.9%
+    tank cards: giant 61 battle_ram 60 pekka 59 electro_giant 55 royal_hogs 54 boss_bandit 41 giant_skeleton 35 royal_giant 26
+
+## X1 our X-Bows by crown state at placement (ours-theirs): type, lock, opponent answer at the X-Bow (<= 7 tiles)
+  slot -> lane vote (learner side, slot): (0, 1):{'L': 930, 'R': 7} (0, 2):{'R': 1113, 'L': 9} (1, 1):{'L': 928, 'R': 8} (1, 2):{'R': 1047, 'L': 8}
+  Ranked 0-0: n  936 in 229 matches | type bridge  86.6 defensive  13.4 | lock (scorer rule)  40.2 reach-rule  40.2 | life 17.1 s | answer elixir 5.12, answered  73.9, first answer median  3.7 s, spells 162
+           bridge  n  811: lock  46.4 reach-rule  46.4 answer elixir 5.76 life 16.1 s
+  Ranked 1-0: n   52 in  31 matches | type bridge  69.2 defensive  28.8 pocket   1.9 | lock (scorer rule)  44.2 reach-rule  44.2 | life 20.2 s | answer elixir 2.10, answered  26.9, first answer median  3.1 s, spells 4
+           bridge  n   36: lock  61.1 reach-rule  61.1 answer elixir 3.03 life 21.1 s | lane princess alive  86.1 (lock there  71.0)
+           pocket  n    1: lock 100.0 reach-rule 100.0 answer elixir 0.00 life 20.2 s | lane princess alive   0.0 (lock there   n/a)
+  Ranked 0-1: n   51 in  29 matches | type bridge  60.8 defensive  39.2 | lock (scorer rule)  15.7 reach-rule  15.7 | life 12.7 s | answer elixir 6.00, answered  88.2, first answer median  3.0 s, spells 11
+           bridge  n   31: lock  25.8 reach-rule  25.8 answer elixir 6.03 life 12.6 s
+  Ranked 1-1: n   41 in  13 matches | type bridge  73.2 defensive  26.8 | lock (scorer rule)  12.2 reach-rule  12.2 | life 12.4 s | answer elixir 7.85, answered  95.1, first answer median  2.8 s, spells 8
+           bridge  n   30: lock  16.7 reach-rule  16.7 answer elixir 7.93 life 11.6 s | lane princess alive  93.3 (lock there  17.9)
+  SIM    0-0: n 1748 in 240 matches | type bridge  79.6 defensive  20.4 | lock (scorer rule)  45.3 reach-rule  46.9 | life 17.5 s | answer elixir 8.23, answered  85.5, first answer median  2.8 s, spells 790
+           bridge  n 1392: lock  56.8 reach-rule  58.8 answer elixir 9.96 life 15.5 s
+  SIM    1-0: n   81 in  51 matches | type bridge  82.7 defensive  17.3 | lock (scorer rule)  33.3 reach-rule  37.0 | life 13.8 s | answer elixir 8.47, answered  81.5, first answer median  2.3 s, spells 34
+           bridge  n   67: lock  40.3 reach-rule  44.8 answer elixir 9.90 life 13.3 s | lane princess alive  92.5 (lock there  43.5)
+  SIM    0-1: n  138 in  79 matches | type bridge  77.5 defensive  22.5 | lock (scorer rule)  34.8 reach-rule  37.0 | life 13.7 s | answer elixir 7.93, answered  87.7, first answer median  2.8 s, spells 34
+           bridge  n  107: lock  44.9 reach-rule  47.7 answer elixir 8.79 life 13.1 s
+  SIM    1-1: n  106 in  40 matches | type bridge  73.6 defensive  26.4 | lock (scorer rule)  35.8 reach-rule  39.6 | life 13.6 s | answer elixir 9.93, answered  95.3, first answer median  2.3 s, spells 48
+           bridge  n   78: lock  48.7 reach-rule  53.8 answer elixir 11.24 life 13.5 s | lane princess alive  98.7 (lock there  49.4)
+  SIM 1-1 X-Bows targeting the KING (counts as a lock in the SIM rule; the live reach rule counts the king only from <= 13.5 tiles): 0 of 106; locks among them 0
+  Ranked 1-1 clustering: 41 X-Bows in 13 matches (max 7 per match); matches with >= 1 lock 5 of 13
+  SIM    1-1 clustering: 106 X-Bows in 40 matches (max 6 per match); matches with >= 1 lock 23 of 40
+
+## X1b bridge X-Bows at 0-0 by deck class: reach-rule lock (the live rule) and troop answer elixir
+  vs BEAT  Ranked n  258 lock  42.6% [36.8, 48.7] n=258 | tower dmg per X-Bow 0.196 | troop answer elixir 5.84 | life 16.0 s
+           a tank played during the X-Bow life: SAME lane  47.3 (lock  27.0) | OTHER lane only   6.2 (lock  87.5) | none  46.5 (lock  52.5)
+           opponent troop elixir in the OTHER lane during the X-Bow life: mean 1.48
+           same-lane tank vs the X-Bow landing: median +3.4 s, within 3.5 s (before the X-Bow can lock)  52.0%; placed on OUR half (y > 16, at / past the bridge)   0.8%, at the river (15 <= y <= 17)   0.0%, back (y < 10)  17.6%
+             X-Bows with a same-lane tank <= 3.5 s: n 65 lock  18.5
+             X-Bows with a same-lane tank > 3.5 s: n 59 lock  37.3
+  vs BEAT  SIM    n  490 lock  60.4% [56.0, 64.6] n=490 | tower dmg per X-Bow 0.306 | troop answer elixir 8.06 | life 15.6 s
+           a tank played during the X-Bow life: SAME lane  41.0 (lock  45.3) | OTHER lane only   5.1 (lock  56.0) | none  53.9 (lock  72.3)
+           opponent troop elixir in the OTHER lane during the X-Bow life: mean 1.13
+           same-lane tank vs the X-Bow landing: median +4.3 s, within 3.5 s (before the X-Bow can lock)  45.0%; placed on OUR half (y > 16, at / past the bridge)   0.9%, at the river (15 <= y <= 17)   0.0%, back (y < 10)   5.2%
+             X-Bows with a same-lane tank <= 3.5 s: n 94 lock  19.1
+             X-Bows with a same-lane tank > 3.5 s: n 115 lock  64.3
+  vs rest  Ranked n  553 lock  48.1% [44.0, 52.3] n=553 | tower dmg per X-Bow 0.217 | troop answer elixir 4.82 | life 16.2 s
+  vs rest  SIM    n  902 lock  58.0% [54.7, 61.2] n=902 | tower dmg per X-Bow 0.252 | troop answer elixir 8.62 | life 15.4 s
+
+## X2 bridge X-Bows: the opponent's answer at the X-Bow by card class (TROOPS only on both sides: live misses bodiless spells)
+  Ranked 0-0 bridge n  811: troop answer elixir 5.14 | first troop answer class (share, reach-rule lock): melee/tank  36.6 ( 40.4) | other troop  29.5 ( 57.7) | no troop answer  24.4 ( 39.4) | building   9.5 ( 51.9)
+  Ranked 0-1 bridge n   31: troop answer elixir 5.39 | first troop answer class (share, reach-rule lock): other troop  38.7 ( 33.3) | melee/tank  35.5 (  9.1) | no troop answer  19.4 ( 33.3) | building   6.5 ( 50.0)
+  Ranked 1-1 bridge n   30: troop answer elixir 7.43 | first troop answer class (share, reach-rule lock): melee/tank  53.3 (  0.0) | other troop  33.3 ( 20.0) | building   6.7 ( 50.0) | no troop answer   6.7 (100.0)
+  SIM    0-0 bridge n 1392: troop answer elixir 8.42 | first troop answer class (share, reach-rule lock): other troop  48.7 ( 62.7) | melee/tank  35.8 ( 51.7) | building   9.6 ( 66.4) | no troop answer   5.8 ( 58.0)
+  SIM    0-1 bridge n  107: troop answer elixir 8.05 | first troop answer class (share, reach-rule lock): other troop  49.5 ( 67.9) | melee/tank  38.3 ( 29.3) | no troop answer   8.4 ( 22.2) | building   3.7 ( 25.0)
+  SIM    1-1 bridge n   78: troop answer elixir 9.85 | first troop answer class (share, reach-rule lock): other troop  51.3 ( 65.0) | melee/tank  39.7 ( 38.7) | building   9.0 ( 57.1)
+
+## E1 (iii) CLX live execution on the 233 Ranked logs: taps, confirmations, lost taps, tap->confirm delay, X-Bow placement
+  matches 233; taps 9669 (41.5/match), confirmed 9016, unconfirmed 518 (2.22/match): elixir dropped within 2.5 s (the game took it) 78, no drop = LOST tap 440 (1.89/match,   4.6% of taps)
+  lost taps per minute by window: reg_0-120 0.19 (taps 7.6/min) | reg_120-180 0.58 (taps 13.8/min) | ot_0-60 0.70 (taps 14.4/min) | ot_60-120 2.18 (taps 21.9/min)
+  lost taps with elixir >= cost at the tap (the game should have taken it: an EXECUTION loss) 366; short of elixir at the tap (the SIM refuses those too) 74
+  EXECUTION lost-tap rate per tap (elixir >= cost, no drop) by window -> the SIM --tap-loss spec: 1x:0.0180,2x:0.0363,ot2x:0.0388,ot3x:0.0890
+  SIM refused own plays per minute by window: reg_0-120 0.14 | reg_120-180 0.38 | ot_0-60 0.45 | ot_60-120 1.22
+  a lost tap's card was confirmed later in 182 of 440 cases, median 4.8 s after the first tap (p75 8.8 s)
+  tap -> confirmed (game ticks): median 26, p10 24, p90 42 (n 9113); the SIM lands every play 26 ticks after its decision (action_delay_ticks)
+    histogram (4-tick bins, 60 = >= 60): 0:  0.1 4:  0.1 8:  0.0 12:  0.0 16:  0.0 20:  5.1 24: 68.7 28:  8.1 32:  2.8 36:  2.5 40:  3.5 44:  7.3 48:  0.4 52:  0.1 56:  0.2 60:  0.8
+    by window: reg_0-120 median 26 p90 44 share > 34  16.7% | reg_120-180 median 26 p90 42 share > 34  15.9% | ot_0-60 median 26.0 p90 40 share > 34  13.7% | ot_60-120 median 26 p90 37 share > 34  12.4%
+  X-Bow placement error (confirmed spawn vs intended): mean 0.00 tiles, > 0.5 tile   0.1%; intended rows (y, own frame): 12.5:1 18.5:6 19.5:903 21.5:115 22.5:56
+  SIM X-Bow rows (habits.xbow_y x 32): 18.5:47 19.5:9712 20:2 20.5:2 21.5:1399 22.5:1193 23.5:13 29.5:3
+  SIM: rejected own plays (not accepted by the engine) 1.17/match; every accepted play lands
+
+## O1 0-0 overtime targeting: does the opponent attack CLX's WEAK princess (lowest at 3:00)?  SIM pos rows vs Ranked
+  Ranked 0-0 OTs 132: opponent troop elixir in OT placed in the weak lane  66.9% | pre-drain OT falls of ours on the weak princess 36 of 37
+  SIM I u40 0-0 OTs 241: opponent troop elixir in OT placed in the weak lane  46.6% | pre-drain OT falls of ours on the weak princess 38 of 45
+  (SIM weak-lane mapping: our princess slot -> lane taken as the enemy vote of the OTHER learner side, i.e. the same engine x; checked by the fall-on-weak share, which must be high if the mapping is right)
+
+## G1 (ii) the BEAT gap split by the engine fight parity of the win condition (FIN13 per-card J1, strict cohort)
+  J1 >= 0.95 tanks                               SIM  38.2% [34.7, 41.7] n=731 | Ranked  24.6% [15.2, 37.1] n=57 | SIM - Ranked +13.6 [ +0.6, +23.6]
+      drain-loss share SIM  14.1 Ranked  28.1
+  J1-suspect (Royal Hogs, E-Golem, Battle Ram)   SIM  46.5% [41.4, 51.6] n=368 | Ranked  29.2% [14.9, 49.2] n=24 | SIM - Ranked +17.3 [ -3.3, +32.4]
+      drain-loss share SIM   7.6 Ranked  16.7
+  other BEAT (Boss Bandit, Rune Giant ...)       SIM  50.0% [23.7, 76.3] n=10 | Ranked   0.0% [ 0.0, 65.8] n=2 | SIM - Ranked +50.0 [-20.8, +76.3]
+      drain-loss share SIM  40.0 Ranked  50.0
+
+## Y1 style distance: per-feature live Ranked mean / SIM mean (Cohen d) -- the O4 style cell is the RMS of these d
+  I u40 (2,880)  distance 0.78: ppm_1x 5.12/5.43 (+0.24) | ppm_2x 8.33/11.36 (+1.22) | first_tick 259.20/237.50 (-0.23) | react_s 5.98/4.72 (-1.30) | react_3s 0.29/0.40 (+0.87) | react_lift -0.02/0.03 (+0.55) | push_mean 3.28/3.90 (+1.00) | push_max 10.07/10.48 (+0.22) | spell_share 0.06/0.06 (-0.01)
+  E u40 (2,880)  distance 0.68: ppm_1x 5.12/5.33 (+0.16) | ppm_2x 8.33/11.24 (+1.12) | first_tick 259.20/248.81 (-0.09) | react_s 5.98/4.82 (-1.16) | react_3s 0.29/0.39 (+0.76) | react_lift -0.02/0.02 (+0.47) | push_mean 3.28/3.83 (+0.85) | push_max 10.07/10.44 (+0.19) | spell_share 0.06/0.06 (-0.01)
+  B u20 (1,920)  distance 0.53: ppm_1x 5.12/5.13 (+0.00) | ppm_2x 8.33/10.71 (+0.77) | first_tick 259.20/253.71 (-0.04) | react_s 5.98/4.97 (-0.96) | react_3s 0.29/0.37 (+0.67) | react_lift -0.02/0.02 (+0.52) | push_mean 3.28/3.66 (+0.49) | push_max 10.07/10.30 (+0.12) | spell_share 0.06/0.06 (-0.00)
+  I u40 with the live detector's same-card 100-tick merge applied to the SIM plays: distance 0.78: ppm_1x (+0.24) | ppm_2x (+1.22) | first_tick (-0.23) | react_s (-1.30) | react_3s (+0.87) | react_lift (+0.55) | push_mean (+1.00) | push_max (+0.22) | spell_share (-0.01)
