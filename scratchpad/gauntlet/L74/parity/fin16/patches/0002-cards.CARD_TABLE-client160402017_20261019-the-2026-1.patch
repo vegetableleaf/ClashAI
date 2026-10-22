@@ -1,0 +1,133 @@
+From be0766c5f08932e5f211c14bdb4ec177f53aa98a Mon Sep 17 00:00:00 2001
+From: W19 <w19@local>
+Date: Thu, 22 Oct 2026 16:36:46 +0000
+Subject: [PATCH 2/2] cards.CARD_TABLE client160402017_20261019: the 2026-10-19
+ update as a client-dated arm (embedded table + load_table, CardTable +
+ repo_cards cell, py export, calibration candidate, tests/card_table.rs)
+
+---
+ crates/royalesim/src/card.rs         | 20 ++++++++++++++++++++
+ crates/royalesim/src/py.rs           |  1 +
+ crates/royalesim/src/state.rs        |  7 ++++++-
+ crates/royalesim/tests/card_table.rs | 15 +++++++++++++++
+ data/calibration.json                |  2 +-
+ 5 files changed, 43 insertions(+), 2 deletions(-)
+
+diff --git a/crates/royalesim/src/card.rs b/crates/royalesim/src/card.rs
+index d7fd690..055944c 100644
+--- a/crates/royalesim/src/card.rs
++++ b/crates/royalesim/src/card.rs
+@@ -102,6 +102,19 @@ pub const CARDS_160402017_INSTALL_FILE: &str = "cards-160402017.json";
+ /// The install-time table's `version` (its file's own).
+ pub const CARDS_160402017_INSTALL_VERSION: &str = "cards-160402017.1";
+ 
++/// THE 160402017 CLIENT AFTER THE 2026-10-19 BALANCE UPDATE (content 16.402.22; W23 PATCH1019.md): the 2026-10-06 table
++/// with that update's 13 values (the Skeletons' and Evo Skeletons' SummonRadius 400 -> 500, Dart Goblin, Cannon Cart, ...),
++/// compiled in: what a battle under cards.CARD_TABLE = client160402017_20261019 loads. Measured live (parity W19): from the
++/// update the three Skeletons stand on the 580 ring this radius gives (formation.rs `scale_radius`), member for member, and
++/// a tap on a middle column then puts members on both sides of x 9000 ("always split" in the notes; no rule change).
++pub const EMBEDDED_CARDS_160402017_20261019_JSON: &str = include_str!("../../../data/derived/cards-160402017-20261019.json");
++
++/// The 2026-10-19 table's file name under data/derived/.
++pub const CARDS_160402017_20261019_FILE: &str = "cards-160402017-20261019.json";
++
++/// The 2026-10-19 table's `version` (its file's own).
++pub const CARDS_160402017_20261019_VERSION: &str = "cards-160402017-20261019.1";
++
+ /// A projectile an attack launches instead of hitting instantly.
+ #[derive(Clone, Copy, PartialEq, Eq, Debug)]
+ pub struct ProjectileDef {
+@@ -15407,6 +15420,13 @@ impl CardDb {
+                 }
+                 CardDb::from_json_str(EMBEDDED_CARDS_160402017_JSON, CardSource::Embedded)
+             }
++            crate::state::CardTable::Client160402017Oct19 => {
++                #[cfg(feature = "checkout-data")]
++                if std::path::Path::new(&CardDb::repo_file_path(CARDS_160402017_20261019_FILE)).exists() {
++                    return CardDb::load_repo_file(CARDS_160402017_20261019_FILE);
++                }
++                CardDb::from_json_str(EMBEDDED_CARDS_160402017_20261019_JSON, CardSource::Embedded)
++            }
+             crate::state::CardTable::Client160402017Install => {
+                 if cfg!(feature = "checkout-data") {
+                     CardDb::load_repo_file(CARDS_160402017_INSTALL_FILE)
+diff --git a/crates/royalesim/src/py.rs b/crates/royalesim/src/py.rs
+index 93c91f9..a9c1c20 100644
+--- a/crates/royalesim/src/py.rs
++++ b/crates/royalesim/src/py.rs
+@@ -2526,6 +2526,7 @@ pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
+     m.add("EMBEDDED_GLOBALS_CSV", EMBEDDED_GLOBALS_CSV)?;
+     m.add("EMBEDDED_CARDS_JSON", crate::card::EMBEDDED_CARDS_JSON)?;
+     m.add("EMBEDDED_CARDS_160402017_JSON", crate::card::EMBEDDED_CARDS_160402017_JSON)?;
++    m.add("EMBEDDED_CARDS_160402017_20261019_JSON", crate::card::EMBEDDED_CARDS_160402017_20261019_JSON)?;
+     #[cfg(feature = "checkout-data")]
+     m.add("BUILD_DATA_DIR", BUILD_DATA_DIR)?;
+     m.add_function(wrap_pyfunction!(card_table_source, m)?)?;
+diff --git a/crates/royalesim/src/state.rs b/crates/royalesim/src/state.rs
+index da8d5c6..7abfb27 100644
+--- a/crates/royalesim/src/state.rs
++++ b/crates/royalesim/src/state.rs
+@@ -5255,6 +5255,10 @@ calib_enum!(
+         /// (data/derived/cards-160402017.json, card.rs `CARDS_160402017_INSTALL_FILE`, read from a checkout only).
+         /// What a capture recorded before that update is scored against; cards.CLIENT16402_VALUES does not apply to it.
+         Client160402017Install = "client160402017",
++        /// The same client after the 2026-10-19 balance update (data/derived/cards-160402017-20261019.json,
++        /// `EMBEDDED_CARDS_160402017_20261019_JSON`): the 10-06 table with that update's changes. What a capture recorded
++        /// from 2026-10-19 on is scored against, and the table training runs on from then.
++        Client160402017Oct19 = "client160402017_20261019",
+     }
+ );
+ 
+@@ -40456,11 +40460,12 @@ fn migrate_v3(v: &mut Value, cards: &CardDb) -> Result<Vec<u16>, String> {
+ /// The card table `t` names (cards.CARD_TABLE, card.rs `CardDb::load_table`), loaded once per process, for
+ /// `BattleState::load`.
+ fn repo_cards(t: CardTable) -> Result<Arc<CardDb>, String> {
+-    static CELLS: [OnceLock<Result<Arc<CardDb>, String>>; 3] = [OnceLock::new(), OnceLock::new(), OnceLock::new()];
++    static CELLS: [OnceLock<Result<Arc<CardDb>, String>>; 4] = [OnceLock::new(), OnceLock::new(), OnceLock::new(), OnceLock::new()];
+     let i = match t {
+         CardTable::Client15535 => 0,
+         CardTable::Client160402017 => 1,
+         CardTable::Client160402017Install => 2,
++        CardTable::Client160402017Oct19 => 3,
+     };
+     CELLS[i].get_or_init(|| CardDb::load_table(t).map(Arc::new)).clone()
+ }
+diff --git a/crates/royalesim/tests/card_table.rs b/crates/royalesim/tests/card_table.rs
+index 558496b..e168e72 100644
+--- a/crates/royalesim/tests/card_table.rs
++++ b/crates/royalesim/tests/card_table.rs
+@@ -100,3 +100,18 @@ fn the_install_arm_loads_the_table_from_before_the_update() {
+     assert!(names(&db).len() > 100, "the catalogue: {}", names(&db).len());
+     assert_eq!(names(&db), names(&updated), "the update changes values, not the catalogue");
+ }
++
++
++/// THE 2026-10-19 ARM (client160402017_20261019): the 10-06 table with that update's changes -- the Skeletons' summon
++/// radius 500 (400 on the 10-06 table, 700 on the install-time one). Plant card_table_unread loads 15.535.29 instead.
++#[test]
++fn the_2026_10_19_arm_loads_the_updated_skeleton_ring() {
++    let c = arm("client160402017_20261019");
++    assert_eq!(c.card_table, CardTable::Client160402017Oct19);
++    let db = CardDb::load_table(c.card_table).expect("the 10-19 table loads");
++    assert_eq!(db.version, royalesim::card::CARDS_160402017_20261019_VERSION);
++    let r = |db: &CardDb| db.get(db.index("Skeletons").expect("Skeletons load")).formation.summon_radius;
++    assert_eq!(r(&db), milli(500));
++    let old = CardDb::load_table(CardTable::Client160402017).expect("the 10-06 table loads");
++    assert_eq!(r(&old), milli(400));
++}
+diff --git a/data/calibration.json b/data/calibration.json
+index c8d5ca7..5f24404 100644
+--- a/data/calibration.json
++++ b/data/calibration.json
+@@ -7575,7 +7575,7 @@
+     },
+     "CARD_TABLE": {
+       "value": "client15535",
+-      "candidates": ["client15535", "client160402017_20261006", "client160402017"],
++      "candidates": ["client15535", "client160402017_20261006", "client160402017", "client160402017_20261019"],
+       "status": "datamined",
+       "confidence": "HIGH that each arm is its client's own table: all three are tools/extract_cards.py extractions of the client's shipped data. The engine's measured mechanics were measured on client 15.535.29 (and on the 16.402 corpus), not on the 160402017 table.",
+       "provenance": "DATAMINED: client15535 is the 15.535.29 extraction (data/derived/cards-15.535.json, version cards-15535.1); client160402017_20261006 is the 160402017 client with its 2026-10-06 content update, content 16.402.19 (data/derived/cards-160402017-20261006.json, version cards-160402017-20261006.1); client160402017 is the same client's install-time pack, content 16.402.2, the game before that update (data/derived/cards-160402017.json, version cards-160402017.1, read from a checkout only). The second loads with the option B loader work (UNMODELLED_KEYS lists the keys it reads without modelling; table_census prints the rows it refuses).",
+-- 
+2.43.0
+

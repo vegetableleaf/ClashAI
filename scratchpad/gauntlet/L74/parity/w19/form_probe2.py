@@ -6,7 +6,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[5]))
 from scratchpad.gauntlet.L74.parity import fights as F  # noqa: E402
 from scratchpad.gauntlet.L74.parity.mechanics import load_edited  # noqa: E402
-eng = F.Engine(); b = eng.b; S = eng.ids['Skeletons']
+import os
+eng = F.Engine(os.environ.get('PROBE_TABLE')); b = eng.b; S = eng.ids['Skeletons']
 for x, y in ((8500, 533), (8500, 10500), (8530, 10500), (8470, 10500)):
     b.reset(1, [[S], [S]], 0, 200, None, [[7728, 4858, 4858], [7728, 4858, 4858]], [], levels=[[16], [16]], tower_levels=[16, 16])
     before = json.loads(b.save()); after = json.loads(json.dumps(before))

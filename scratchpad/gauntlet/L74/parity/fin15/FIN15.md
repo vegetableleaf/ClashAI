@@ -612,3 +612,19 @@ hero, Tesla, Knight, X-Bow) and opponent swarms. **Not a confirmed plateau**: ev
   c22 with c13 as the control, with the formation law folded in.
 - Until then (lead rule): any c22-only parity drop counts as possibly patch-caused before it is called an engine law.
 - K=8 of c22 is running (resumed 15:01Z) to give the post-patch cohort its official raw score.
+- **W23 (patch1019/PATCH1019.md, relayed 10-22):** the whole 10-19 update is 13 single-value table lines (content 16.402.21 ->
+  16.402.22), NO client code change (APK versionCode 160402012 unchanged). Skeletons + Evo Skeletons SummonRadius 400 -> 500 is
+  the entire formation change; "always split on middle tiles" follows from it (members at +-500 from a middle-tile tap stand on
+  both sides of x 9000). Patch time: 10-19 between 05:58:41 and 06:03:27 EDT (exact-value tower hits flip old -> new; the
+  device's update folder mtime 06:03). So 06:03-08:47 is post-patch with L15 towers, separating the patch from our L16 upgrade.
+  Also missing in the SIM since 16.402.21: Evo Electro Giant pulse filter NoClones; Hero E-Wiz attack sequence (Forbid_Movement
+  150 ms, refund window 400); the 10-19 table keeps the 10-06 Hero E-Wiz except attack_start_delay 500 -> 0.
+- (a) Probe: with the 10-19 table the fork lays a tap at (8500, 533) as (8501, 1110), (7996, 246), (9003, 242) and one at
+  (8500, 10500) as (8499, 11079), (7997, 10212), (8998, 10212): the LIVE positions, member for member (live 20261020_204741 and
+  20261020_163959 first frames). No formation code change is needed; the old ring was right for the 400 radius.
+- **fin16 (in progress):** fork branch fin16 = fin15 305aaafc + W23 4f7e14f (the 10-19 table: 10-06 + 56 field deltas) + W19
+  be0766c (the client160402017_20261019 arm: card.rs embedded table + load_table, state.rs CardTable + repo_cards cell, py.rs
+  export, calibration candidate, tests/card_table.rs). Patches: `parity/fin16/patches/`. Harness: fights.py `table_for(stem)`
+  picks the 10-19 table for captures stamped from 20261019_0600 when PARITY_TABLE_1019=1 (default 0 until a fin16 wheel is the
+  pinned runtime). Round 3 = that A/B on both cohorts (c13 must be byte-identical: pre-patch control). Training default: W23's
+  `patch1019/pipeline_card_table_after_wheel.diff` (royale_heroiw.CARD_TABLE -> the 10-19 table) waits for the fin16 runtime id.

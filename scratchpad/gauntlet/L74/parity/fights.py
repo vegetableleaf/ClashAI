@@ -42,6 +42,16 @@ sys.path.insert(0, str(ROOT))
 from scratchpad.gauntlet.L74.parity.core import load_catalog, ps, raw_xy
 
 CARD_TABLE = 'client160402017_20261006'
+# W19 round 2 (client-dated card tables): a capture from the 2026-10-19 balance update on replays on that client's table
+# (fork fin16: client160402017_20261019, the Skeletons' 500 ring + middle-column split, W23's stat changes); older captures
+# keep the 10-06 table. The update shipped between our last pre-update main-account match (10-19 08:47) and the first after
+# it (13:56); W23 dated it 05:58-06:03 from exact-value tower hits. PARITY_TABLE_1019=0 keeps every match on the 10-06 table (a pre-fin16 wheel has no 10-19 table).
+TABLE_1019, TABLE_1019_FROM = 'client160402017_20261019', '20261019_0600'   # W23: the update landed 05:58:41-06:03:27 EDT
+DATED_TABLES = os.environ.get('PARITY_TABLE_1019', '0') == '1'
+
+
+def table_for(stem):
+    return TABLE_1019 if DATED_TABLES and stem[10:23] >= TABLE_1019_FROM else CARD_TABLE
 OWN_PRINCESS_MAX = 4424            # icebow main account signature (HANDOFF; verify-mumu-account note)
 GAP_SPLIT = 60                     # an address unseen this long is a new body (phase_stats Tracks rule)
 QUARTER = 250                      # millitiles: the 1/4-tile position metric (upstream replay_parity "<=250")
@@ -72,7 +82,7 @@ CHAMP_STATE10 = {'SkeletonKing', 'Monk', 'MightyMiner'}
 SPAWN_SLOW = os.environ.get('PARITY_SPAWN_SLOW', '1') == '1'   # H-SPAWN-SLOW (W19 round 1, kept: +11 / -4 on 43,867 fights); PARITY_SPAWN_SLOW=0 restores
 FORM_ORACLE = set(filter(None, os.environ.get('PARITY_FORM_ORACLE', '').split(',')))   # W19 DIAGNOSTIC oracle (cards), never a default
 FORM_SYM = set(filter(None, os.environ.get('PARITY_FORM_SYM', '').split(',')))         # W19 round-2 probe (cards), opt-in
-FORM_SYM_FROM = os.environ.get('PARITY_FORM_SYM_FROM', '20261019_1000')               # matches from this stamp on
+FORM_SYM_FROM = os.environ.get('PARITY_FORM_SYM_FROM', '20261019_0600')               # matches from this stamp on
 DIGGERS = {'Miner', 'GoblinDrill'}  # tunnel in: seen active on their way, deploying where they surface (Knight etc. can show
                                    # 13/15 -> 12/14 too: 31 of 531 Knights, so the rule is by card)
 TOWER_RADIUS = 1400                # millitiles, king (princess 1000): attribution slack, not a law
@@ -830,7 +840,7 @@ def cut(m, events, window):
 # ---------------------------------------------------------------- engine side
 
 class Engine:
-    def __init__(self):
+    def __init__(self, table=None):
         if os.environ.get('PARITY_SIM_PATH'):
             sys.path.insert(0, os.environ['PARITY_SIM_PATH'])
             self.stamp = dict(runtime='PARITY_SIM_PATH', path=os.environ['PARITY_SIM_PATH'])
@@ -849,7 +859,7 @@ class Engine:
         # PARITY_OVERRIDES='{"status.ATTRACT_ONSET": "<arm>", ...}': per-law calibration overrides for law A/Bs (diag_night/skel
         # law_override_hook); unset = the runtime's own arms, outputs byte-identical
         extra = {k: json.dumps(v) for k, v in json.loads(os.environ.get('PARITY_OVERRIDES') or '{}').items()}
-        self.b = sim.Battle(None, [[0, 1, 2], [0, 2, 1]], calibration_overrides={'cards.CARD_TABLE': json.dumps(CARD_TABLE), **extra})
+        self.b = sim.Battle(None, [[0, 1, 2], [0, 2, 1]], calibration_overrides={'cards.CARD_TABLE': json.dumps(table or CARD_TABLE), **extra})
         if extra:
             self.stamp['overrides'] = sorted(extra)
         self.cat = [dict(zip(sim.CATALOGUE_FIELDS, r)) for r in json.loads(self.b.catalogue_json())]
@@ -3287,7 +3297,7 @@ def run_match(path, window, out_dir, ceiling=0):
         res = dict(match=Path(path).stem, skipped=reason)
         out.write_text(json.dumps(dict(summary=res)))
         return res
-    eng = Engine()
+    eng = Engine(table_for(m['match']))
     m['births'] = phase3_births(path) if m['ext'] else {}
     events, delay = deployments(m, catalog, eng.effect_life, own_unit=lambda n, hp: eng.level(n, hp) is not None, stats=eng.stats)
     fights = cut(m, events, window)
