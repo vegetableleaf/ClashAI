@@ -9,7 +9,7 @@ U250=icebow/data/bench/rl_royale/rlarm_gae/rlarm_gae_u0250_grafted.pt; OPP=$CB/i
 mkdir -p $O; exec >> $O/run.log 2>&1; log() { echo "$(date -u +%FT%TZ) $*"; }
 cd $CB || exit 1
 unset ROYALE_HEROIW_PRESS
-export PYTHONPATH=$CB ROYALE_HEROIW_FORM=hero OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1
+export HABITS_REC=1 PYTHONPATH=$CB ROYALE_HEROIW_FORM=hero OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1
 G=${CK%.pt}_grafted.pt; [ -f $G ] || $P scratchpad/gauntlet/L74/weekend/graft_generic.py $CK $U250 $G >> $O/graft.log 2>&1
 [ -f $G ] || { log "graft failed"; exit 5; }; sha256sum $CK $G > $O/ckpt.sha; log "grafted $G"
 EV_EXTRA="--habit-log --live-levels --card-levels Rocket=16 Log=15 --opp-tower-troops DaggerDuchess:0.028,Cannoneer:0.028,ChefTower:0.014 --record-plays --ability-stats --ability-head-decode=sample --crown-log"
