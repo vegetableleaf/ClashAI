@@ -1215,7 +1215,7 @@ tank decks. A successor gated against it is gated against a ~57%-CLX opponent, n
 ### 8.2 Night checkpoint (10-22 ~04:15 EDT): the opponent for the next successor round
 
 **Recommended: I u40 = `rlarm_oppW14I_otstartE_s74_u0040.pt`, sha256 4ff9fe93b02d
-(4ff9fe93b02dcdd4...; laptop C:/Users/benpe/pod_backup_weekend/w14/rlarm_oppW14I_otstartE_s74_u0040.pt).**
+(4ff9fe93b02dcdd445e4fb2a0e8c65e5ad78909534f3d6db965ba00432c8d444; laptop C:/Users/benpe/pod_backup_weekend/w14/rlarm_oppW14I_otstartE_s74_u0040.pt).**
 - Lineage: R6 u20 -> B (gate-free, 20 updates) -> E (tank-deck practice, 40 updates) -> I (E's recipe + opponent OT-starts
   from the mirrored Ranked 3:00 states, 40 updates).
 - Trained on pod 40116 with main HEAD code; evaluated on 48148.
