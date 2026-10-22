@@ -4,8 +4,9 @@ Changes vs W14's O4-Ranked (w14/o4r_table.py, whose cells / SIM rows / z rule it
   TARGET  the most recent N (100) live Ranked CLX matches (diag12/recent/rows_ext.json, W13's anatomy rows over all 267 CLX Ranked
           logs to the 10-21 14:32 switch); point tolerances scaled by sqrt(n_233 / n_N) of each cell's live n (o4r_recent.py).
   G1      live overtime label = the SIM's rule: end > 3610 AND crowns level at 3:00 (4 regulation results were labelled OT).
-  G2      the SIM rows must come from CLX playing WITH its measured live handicap (search_s0 --tap-loss 1x:0.0180,2x:0.0363,
-          ot2x:0.0388,ot3x:0.0890 --tap-slow 0.151:17; DIAG_12 section 10). A row set without it is NOT a gate result (flagged,
+  G2      the SIM rows must come from CLX playing WITH its measured live handicap (corrected 10-22, W21 LIVETAPS: search_s0
+          --tap-loss 1x:0.015,2x:0.018,ot2x:0.020,ot3x:0.019, no --tap-slow; the hero-button losses stay in for this historical
+          target window; DIAG_12 section 10). A row set without it is NOT a gate result (flagged,
           verdict 'INVALID (G2)').
   G3      both took one is scored per MATCH (Wilson on matches, as before -- stated); the 1-1 X-Bow lock cell (monitored, not
           gated) gets a match-cluster bootstrap CI (live: 41 X-Bows sit in 13 matches).
@@ -25,7 +26,7 @@ import o4r_table as T  # noqa: E402
 import o4r_recent as R  # noqa: E402
 
 VERSION = 'O4 gate v2 (10-22: recent-100 target, G1-G4)'
-HANDICAP = '--tap-loss 1x:0.0180,2x:0.0363,ot2x:0.0388,ot3x:0.0890 --tap-slow 0.151:17'
+HANDICAP = '--tap-loss 1x:0.015,2x:0.018,ot2x:0.020,ot3x:0.019'   # G2 corrected 10-22 (W21 LIVETAPS: post-end taps excluded, slow taps = 0.5% residual, dropped)
 
 
 def g1(rows):
@@ -96,7 +97,7 @@ def lock11(live, raws):
 
 
 def g2_ok(raw):
-    n = sum('plays_tap_lost' in j and 'plays_tap_slow' in j for j in raw)
+    n = sum('plays_tap_lost' in j for j in raw)
     return n == len(raw), n
 
 
