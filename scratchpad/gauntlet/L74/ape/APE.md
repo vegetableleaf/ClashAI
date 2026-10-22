@@ -121,6 +121,11 @@ CLX SIM (base = E4 `clx_fin15/eval`, n 1920; W12 = R6 u20 opponent; Iu40 = CLX v
 | Teslas / match | 5.21 | 5.56 | 5.43 |
 | own tower fractions lost / match | 1.248 | 1.468 | 1.001 |
 
+First candidate, long-run u100 on the same E4 set (`tonight1021/long/u100_e4`, n 1920, no o3 / hab, `sim_u100.out`): win
+0.735 (+0.011 [-0.016, +0.037]), X-Bows 5.14 / match, offensive X-Bow 0.006, Teslas 5.43, Logs / min 1.68 (+0.04
+[+0.01, +0.07]), own tower fractions lost 0.966 (-0.035 [-0.075, +0.008]) -- indistinguishable from CLX on everything
+these rows can show; the behaviour check needs its `--record-board` re-eval.
+
 SIM agrees with live where both measure the same thing: X-Bows almost never forward of 0.58 (0.3-0.4% vs 0.4% live),
 G-LOG hold 0.51-0.52 vs 0.55 live.
 
