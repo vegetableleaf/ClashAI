@@ -226,7 +226,7 @@ Shares are in pp of the cell's SIM - Ranked gap, measured on the I u40 2,880 / p
 | T4 | deck class | BEAT 20.4 vs 9.6, rest 8.9 vs 3.3: both elevated ~2-2.7x [L3] | (not a cause) | - |
 | T5 | (i) the opponent's defence when LEADING (CLX trailing 0-1) | CLX takes one back 14.1 vs 5.4%; bridge X-Bow lock at 0-1 47.7 vs 25.8% [B1, X1] | ~half (one of two directions) | C (mechanism) |
 | T6 | (i) the opponent's attack when TRAILING (CLX led 1-0) | opponent takes one back 12.6 vs 6.0% [B1]; CLX's own execution cannot produce this sign | the other half | C (mechanism, cause inside it U) |
-| T7 | (ii) pocket / king behaviour after a fall | king HP per pocket deploy 0.173 vs 0.135 (+28%), same pocket card mix [pocket2] | ? | U (W19) |
+| T7 | (ii) pocket / king behaviour after a fall | 8.9: per pocket deploy the king loses the same in 20 s (0.174 SIM vs 0.180 live); W19: own-king fight parity after a fall 0.991, king wake law 569 / 569 | 0 | R |
 | | **remainder** | 6.1 after T1, split T5 / T6 by direction; what makes the trailing SIM opponent score is untested | | |
 
 ### 8.4 regulation loss: gap +7.6 (26.5 vs 18.9)
@@ -370,7 +370,31 @@ Scripts: `diag12/xbow_answers.py`, `diag12/xbow_stun.py`, `diag12/pocket_mix.py`
 | X5 | a LATE ground answer works worse in the SIM | lock 69 vs 54%: humans' late answers still deny | the largest single step | C (the cause inside it: U) |
 | X6 | (ii) the stun reset of a locked X-Bow (owner fact: only a stun / freeze / taunt retargets it) | visible stun troops (E-Spirit / E-Wiz / E-Dragon / E-Giant) at the X-Bow: lock 53% SIM vs 52% live, same share (10.0 vs 9.7%). Stun SPELLS (Zap / Lightning / Freeze): 73% SIM (n 63) vs 49% live (n 35, detected only) | troops R; spells flagged for W19 (small n) | R / U |
 | X7 | (iv) live misses bodiless spell answers | damage spells detected at 8.6% of live X-Bows vs 28.2% SIM (exact); the live "no troop answer" X-Bows lock 39% vs 58% SIM | live answers are under-counted, not the locks | caveat on X1-X5 |
-| X8 | (ii) pocket / king after OUR princess falls | king HP per pocket deploy +28% in the SIM with the same pocket card mix (4.19 vs 4.51 elixir) | W19 | U |
+| X8 | (ii) pocket / king after OUR princess falls | see 8.9: the +28% was a per-minute ratio, not per deploy; per deploy the king loses the same (0.174 vs 0.180 in 20 s) | 0 | R (correction) |
 
 Remainder for X-Bow denial: the late-answer step (X5) and the answers live cannot see (X7). The training lever is R1, which
 pays the opponent for keeping its towers whole. A decode lever is not available: tau 0.55 makes it worse (+5.4).
+
+### 8.9 The king after OUR princess falls (W19 lead 1 + my own correction)
+
+Scripts: `diag12/pocket_timing.py`, `diag12/pocket_lanes.py`. SIM-pos = I u40 on block 741200.
+
+| measure | Ranked | SIM-pos | verdict |
+|---|---|---|---|
+| our king HP lost in the 20 s after a pocket deploy (princess units) | 0.180 (n 216) | 0.174 (n 718) | **equal**: the "+28% per pocket deploy" I sent to W19 was king loss per minute / pocket deploys per minute, not attributable per deploy; withdrawn (c) |
+| deploys followed by any king damage | 44% | 43% | equal |
+| first king damage after our princess fell | 7.2 s median (n 41) | 6.2 s (n 147) | similar |
+| pocket depth (y, our frame) | median 20.5; none y >= 24 | median 20.5; 1 of 718 y >= 24 | equal |
+| pocket deploys in the centre band (\|x - 9\| < 2) | 58% | 76% | SIM more central (a, i) |
+| matches using BOTH lanes' pockets while one princess is down | 1 of 28 | 11 of 64 | small SIM excess; 14 of 175 SIM deploys in the minority lane. Flag for W19 (deploy-zone law after one fall); too small to move a cell |
+| CLX's first answer to a pocket deploy | 78% within 3 s, median 1.4 s; Tesla, IW, Knight, Skeletons | 72% within 3 s, median 1.5 s; Tesla, Knight, IW, Tornado | similar (CLX's pocket defence is not slower live) |
+| time since our last play at the deploy | 2.1 s | 2.0 s | equal |
+
+- W19 found the engine side clean:
+  - own-king damage fight parity after a fall: 0.991 strict-clean;
+  - king wake 70 ticks after a princess fall: 569 / 569 own falls.
+- So the excess of king falls and 3-crown regulation losses (9.3 vs 3.4%) is not per-deploy lethality. It is exposure:
+  - the SIM opponent gets our princess down earlier and more often in regulation (ledger R5: tempo);
+  - it then has more post-fall time: 0.94 min per fall vs 0.70 live;
+  - and it pockets more often: 2.93 vs 2.60 per minute.
+- The king gap moves to R5 / T6 (opponent policy, regulation tempo). R3 (play_cost) and tau 0.55 test it.
