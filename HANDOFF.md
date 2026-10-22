@@ -1,3 +1,14 @@
+## 2026-10-22 18:37 EDT -- owner: NO leash to CLX; long-run regression = SIM exploit -> investigate + upgrade engine / opponents first; drift test before any long run
+
+- Memory no-clx-leash-fix-exploit-first.
+- Exploit investigation API worker (WMI pid 18992; ticket scratchpad/gauntlet/L74/exploit/TICKET.md; log worker.log; result
+  EXPLOIT.md):
+  - what grew u100 -> u219 in the long run
+  - why the SIM rewards it (opponent gap / engine gap / reward artefact)
+  - an upgrade proposal
+  - the unleashed DRIFT TEST config + script (not launched)
+  Runs on 32525 next to SIMCHECK (pid 73232).
+- The branch 30-match trial watcher (pid 38996) stays as the owner set it (branches are u100 + tower shaping, not long runs).
 ## 2026-10-22 18:33 EDT -- long run STOPPED ITSELF at u219 (pro-agreement tripwire); u150 -1.72 vs CLX; sim-check diagnosis on 32525
 
 - E4 pooled vs CLX (clx_rb): u100 +1.15 / u150 -1.72 [-4.24, +0.80] / u175 -7.86 [-10.53, -5.20] -> a steady decline after u100.
