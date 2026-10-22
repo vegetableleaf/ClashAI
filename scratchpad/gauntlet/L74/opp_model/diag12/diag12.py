@@ -696,6 +696,7 @@ def sec_exec():
     lat, lost_ph, taps_ph = [], Counter(), Counter()
     lat_ph = defaultdict(list)
     aff_ph = Counter()
+    drop = []                       # (tap -> the game's elixir drop in ticks, spell?) of confirmed plays
     xb_err, xb_rows = [], Counter()
     retry = []
     for key in sorted(r['key'] for r in live_rows()):
@@ -716,6 +717,10 @@ def sec_exec():
             taps_ph[ph] += 1
             q = next((q for q in conf if q['name'] == p['name'] and 0 <= q['tick'] - p['tick'] <= 80), None)
             if q is not None:
+                i, k = bisect.bisect_left(ets, p['tick']), bisect.bisect_right(ets, p['tick'] + 80)
+                dt = next((el[x][0] for x in range(max(1, i), k) if el[x - 1][1] - el[x][1] >= .75 * cost_of(p['name'])), None)
+                if dt is not None:
+                    drop.append((dt - p['tick'], H.kind(H.norm(p['name'])) == 'spell'))
                 lat.append(q['tick'] - p['tick'])
                 lat_ph[ph].append(q['tick'] - p['tick'])
         for u in unc:
@@ -772,6 +777,15 @@ def sec_exec():
         print('    by window: ' + ' | '.join(f'{w} median {st.median(v)} p90 {sorted(v)[9 * len(v) // 10]} share > 34 '
                                             f'{pct(sum(x > 34 for x in v), len(v))}%' for w, v in lat_ph.items() if v))
         _C['lat'] = ls
+    if drop:
+        dd = sorted(x for x, _ in drop)
+        for lab, f in (('all', lambda sp: True), ('troops / buildings', lambda sp: not sp), ('spells', lambda sp: sp)):
+            v = [x for x, sp in drop if f(sp)]
+            print(f'  tap -> elixir drop ({lab}): n {len(v)} median {st.median(v)} share > 34 ticks {pct(sum(x > 34 for x in v), len(v))}% '
+                  f'(the game took the play late; the SIM lands every play at 26)')
+        slow = [x for x in dd if 34 < x < 60]
+        print(f'    slow plays (35-59 ticks): mean {st.mean(slow):.1f} -> extra {st.mean(slow) - 26:.0f} ticks; --tap-slow '
+              f'{sum(x > 34 for x in dd) / len(dd):.3f}:{round(st.mean(slow) - 26)}')
     if xb_err:
         print(f'  X-Bow placement error (confirmed spawn vs intended): mean {st.mean(xb_err):.2f} tiles, > 0.5 tile '
               f'{pct(sum(e > .5 for e in xb_err), len(xb_err))}%; intended rows (y, own frame): ' +
@@ -853,6 +867,25 @@ def sec_ot():
           'engine x; checked by the fall-on-weak share, which must be high if the mapping is right)')
 
 
+J1_CLEAN = {'giant', 'electro_giant', 'golem', 'pekka', 'royal_giant', 'giant_skeleton', 'lava_hound', 'three_musketeers',
+            'goblin_giant'}     # FIN13 stamped strict J1 >= 0.95 (n 10-58); fin15 changed only Tornado / elixir / drain laws
+J1_SUSPECT = {'royal_hogs', 'elixir_golem', 'battle_ram'}   # J1 0.60 (fin14c; fin15 Tornado law 0.32 -> 0.72 on J2), 0.66, 0.89
+
+
+def sec_engine():
+    h('G1 (ii) the BEAT gap split by the engine fight parity of the win condition (FIN13 per-card J1, strict cohort)')
+    for lab, ks in (('J1 >= 0.95 tanks', J1_CLEAN), ('J1-suspect (Royal Hogs, E-Golem, Battle Ram)', J1_SUSPECT),
+                    ('other BEAT (Boss Bandit, Rune Giant ...)', T.BEAT - J1_CLEAN - J1_SUSPECT)):
+        a = [r for r in sim_rows() if r['wincon_rev'] in ks]
+        b = [r for r in live_rows() if r['wincon_rev'] in ks]
+        print(f'  {lab:46s} SIM {fmt(sum(r["win"] == 1 for r in a), len(a))} | Ranked {fmt(sum(r["win"] == 1 for r in b), len(b))}'
+              f' | SIM - Ranked {nc(sum(r["win"] == 1 for r in a), len(a), sum(r["win"] == 1 for r in b), len(b))}')
+        if b:
+            c = Counter(r['path'] for r in b)
+            d = Counter(r['path'] for r in a)
+            print(f'      drain-loss share SIM {pct(d["L_tiebreak_drain"], len(a))} Ranked {pct(c["L_tiebreak_drain"], len(b))}')
+
+
 def sec_style():
     h('Y1 style distance: per-feature live Ranked mean / SIM mean (Cohen d) -- the O4 style cell is the RMS of these d')
     import o3_score as O3
@@ -892,7 +925,7 @@ def sec_style():
 
 
 SECTIONS = dict(defs=sec_defs, phase=sec_phase, state=sec_state, both=sec_both, comeback=sec_comeback, wincon=sec_wincon,
-                intensity=sec_intensity, tank=sec_tank, xbow=sec_xbow, exec=sec_exec, ot=sec_ot, style=sec_style)
+                intensity=sec_intensity, tank=sec_tank, xbow=sec_xbow, exec=sec_exec, ot=sec_ot, engine=sec_engine, style=sec_style)
 
 
 def main():

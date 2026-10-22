@@ -28,7 +28,7 @@ check)
 jobs)
   on "cd /workspace/w18 && cat >> jobs_A.txt <<'EOF'
 cd /workspace/w18 && EVLOCK=/workspace/w18/evalA.lock bash w18_eval.sh w18_Iu40_base $CLX $OPP 0.1 40 - 741200
-cd /workspace/w18 && EVLOCK=/workspace/w18/evalA.lock W18_EXTRA='--tap-loss 1x:0.0180,2x:0.0363,ot2x:0.0388,ot3x:0.0890' bash w18_eval.sh w18_Iu40_tl $CLX $OPP 0.1 40 - 741200 742000 743000 744000 745000 746000
+cd /workspace/w18 && EVLOCK=/workspace/w18/evalA.lock W18_EXTRA='--tap-loss 1x:0.0180,2x:0.0363,ot2x:0.0388,ot3x:0.0890 --tap-slow 0.151:17' bash w18_eval.sh w18_Iu40_tl $CLX $OPP 0.1 40 - 741200 742000 743000 744000 745000 746000
 EOF
 cat >> jobs_B.txt <<'EOF'
 cd /workspace/w18 && EVLOCK=/workspace/w18/evalB.lock O3_POS=1 W18_EXTRA='--opp-tau 0.45' bash w18_eval.sh w18_Iu40_tau45_pos $CLX $OPP 0.1 40 - 741200

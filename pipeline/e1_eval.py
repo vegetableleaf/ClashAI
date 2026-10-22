@@ -1518,6 +1518,8 @@ class Match:
                 "plays_refused_at_landing": n_att - n_acc - self.n_unlanded} if self.delay else {}),
             **({"tap_loss": dict(self.tap_loss), "plays_tap_lost": self.n_tap_lost}
                if getattr(self, "tap_loss", None) is not None else {}),   # SelfPlaySide cfg["tap_loss"] (L74 W18)
+            **({"tap_slow": list(self.tap_slow), "plays_tap_slow": self.n_tap_slow}
+               if getattr(self, "tap_slow", None) is not None else {}),   # SelfPlaySide cfg["tap_slow"] (L74 W18)
             **({"extrapolate_ticks": self.extrap} if self.extrap else {}),
             **({"afford_ticks": int(cfg["afford_ticks"])} if cfg.get("afford_ticks") is not None else {}),
             **({"predict_drops": True} if self.drops is not None else {}),
@@ -1781,11 +1783,15 @@ class SelfPlaySide(Match):
         # probability -- the board runs through the action delay, the card stays in hand, no elixir is spent (the live
         # pilot's 'unconfirmed' tap with no elixir drop). Its own stream: no other RNG moves.
         self.tap_loss = parse_tap_loss(cfg.get("tap_loss"))
-        self.n_tap_lost = 0
-        if self.tap_loss is not None:
+        self.tap_slow = parse_tap_slow(cfg.get("tap_slow"))   # cfg["tap_slow"] (W18, opt-in): a play lands EXTRA ticks late
+        self.n_tap_lost = self.n_tap_slow = 0
+        if self.tap_loss is not None or self.tap_slow is not None:
             if not self.delay or self.pipe:
-                raise ValueError("cfg['tap_loss'] needs action_delay_ticks > 0 and no pipeline_decisions")
+                raise ValueError("cfg['tap_loss'] / cfg['tap_slow'] need action_delay_ticks > 0 and no pipeline_decisions")
+        if self.tap_loss is not None:
             self._tl_rng = random.Random(zlib.crc32(f"{tag}:tap_loss".encode()))
+        if self.tap_slow is not None:
+            self._ts_rng = random.Random(zlib.crc32(f"{tag}:tap_slow".encode()))
 
     def _opp_plays(self) -> list:
         return self.other.accepted
@@ -1801,8 +1807,8 @@ class SelfPlaySide(Match):
         if d["play"] and d.get("follow_ups"):                 # follow_up_spec second plays: the ghost Match's rules (module comment)
             if not delay:
                 raise ValueError("follow_ups need cfg['action_delay_ticks'] > 0 in a SelfPlaySide")
-            if self.tap_loss is not None:
-                raise ValueError("cfg['tap_loss'] is not defined for follow_ups plays")
+            if self.tap_loss is not None or self.tap_slow is not None:
+                raise ValueError("cfg['tap_loss'] / cfg['tap_slow'] are not defined for follow_ups plays")
             self._follow_start(p, d, tick)
             if self.pipe:   # + cfg["pipeline_decisions"] (L74 fastplays P2, as live --follow-up-taps + --pipeline-decisions, live_play
                 # ~1306): no decision while a follow-up is scheduled (_follow_start); once resolved, _follow_resolved resumes on the
@@ -1819,6 +1825,9 @@ class SelfPlaySide(Match):
         if d["play"] and delay:
             if self.tap_loss is not None and self._tl_rng.random() < tap_loss_p(self.tap_loss, tick):
                 d = dict(d, _tap_lost=True)                   # cfg["tap_loss"]: _land refuses it at landing
+            if self.tap_slow is not None and self._ts_rng.random() < self.tap_slow[0]:
+                delay += self.tap_slow[1]                     # cfg["tap_slow"]: this play lands late
+                self.n_tap_slow += 1
             self.pending = (tick + delay, p, d)
             self.next_tick = tick + de * (delay // de + 1)
             return
@@ -1963,6 +1972,22 @@ def parse_tap_loss(spec) -> Optional[dict]:
 
 def tap_loss_p(rates: dict, tick: int) -> float:
     return next(rates[w] for w, a, b in TAP_LOSS_WINDOWS if a <= tick < b)
+
+
+def parse_tap_slow(spec) -> Optional[tuple]:
+    """L74 W18 (opt-in; None / '' = off): the live pilot's SLOW taps -- with probability P a decided play lands EXTRA ticks
+    after the action delay (live: 17% of plays land at 36-59 ticks instead of 24-28). ``spec`` = 'P:EXTRA' or (P, EXTRA),
+    0 <= P < 1, EXTRA an int >= 1. -> (P, EXTRA)."""
+    if not spec:
+        return None
+    try:
+        p, x = (spec.split(":") if isinstance(spec, str) else spec)
+        p, x = float(p), int(x)
+    except (ValueError, TypeError):
+        raise ValueError(f"tap_slow: 'P:EXTRA' expected, got {spec!r}") from None
+    if not 0.0 <= p < 1.0 or x < 1:
+        raise ValueError(f"tap_slow: need 0 <= P < 1 and EXTRA >= 1, got {spec!r}")
+    return p, x
 
 
 class SelfPlayMatch:

@@ -76,6 +76,22 @@ class TestFakeMatch(unittest.TestCase):
         # the fake board is f(tick): the opponent's plays do not depend on ours, so they are unchanged
         self.assertEqual(self._plays(a[0].opp), self._plays(m.opp))
 
+    def test_slow_taps_land_late(self):
+        self.assertEqual(E.parse_tap_slow("0.2:18"), (0.2, 18))
+        for x in ("1.0:18", "0.2:0", "0.2", "a:b"):
+            with self.assertRaises(ValueError, msg=x):
+                E.parse_tap_slow(x)
+        base = self._match(_cfg(action_delay_ticks=D))
+        m, res, env = self._match(_cfg(action_delay_ticks=D, tap_slow="0.5:18"))
+        late = [p for p in m.learner.plays if p.get("land_tick") == p["tick"] + D + 18]
+        self.assertGreater(len(late), 0)
+        self.assertEqual(res["plays_tap_slow"], len(late))                  # every recorded play carries its land_tick
+        self.assertTrue(all(p.get("land_tick") in (p["tick"] + D, p["tick"] + D + 18) for p in m.learner.plays))
+        self.assertEqual(self._plays(base[0].opp), self._plays(m.opp))
+        z = self._match(_cfg(action_delay_ticks=D, tap_slow="0:18"))          # P 0 = the same match
+        self.assertEqual(self._plays(base[0].learner), self._plays(z[0].learner))
+        self.assertEqual(base[2].log, z[2].log)
+
     def test_needs_delay(self):
         with self.assertRaises(ValueError):
             self._match(_cfg(tap_loss="1x:0.1"))
@@ -91,9 +107,9 @@ class TestSearchS0Flags(unittest.TestCase):
 
     def test_flags_parse(self):
         src = (REPO / "pipeline" / "search_s0.py").read_text(encoding="utf-8")
-        for flag in ("--opp-tau", "--tap-loss"):
+        for flag in ("--opp-tau", "--tap-loss", "--tap-slow"):
             self.assertEqual(src.count(f'ap.add_argument("{flag}"'), 1, flag)
-        self.assertIn("'opp_tau', 'tap_loss') or v is not None)", src)      # absent = not written to run.json
+        self.assertIn("'opp_tau', 'tap_loss', 'tap_slow') or v is not None)", src)      # absent = not written to run.json
         self.assertIn("learner_cfg['tap_loss'] = E.parse_tap_loss(args['tap_loss'])", src)
 
 
