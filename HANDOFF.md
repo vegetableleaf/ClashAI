@@ -1,3 +1,11 @@
+## 2026-10-22 16:48 EDT -- owner: branch candidates passing the SIM pre-filter get a 30-match Ranked trial (auto-revert to CLX); watcher armed
+
+- scratchpad/gauntlet/L74/deploy/trial30.sh CKPT SHA16 NAME: deploy_ckpt -> 30 Ranked results -> KEEP only if >= 16 / 30 wins AND
+  ape idle-on-threat <= CLX + 0.05; else redeploy CLX. Log trial30_<NAME>.log.
+- scratchpad/gauntlet/L74/deploy/branch_trials.sh (WMI pid 38996; log branch_trials.log): waits for br74_u0040 / br75_u0040 E4
+  (1,920 rows each on 33572 /workspace/ckev/out), scores each pooled vs clx_rb (copied to 33572), keeps those with CI top >= 0,
+  trials the better; the second runs only if the first reverts.
+- Memory live-trial-30.
 ## 2026-10-22 16:06 EDT -- long run DEGRADES past u100: u175 -7.86 [-10.53, -5.20] vs CLX (E4 pooled 1,920); branch u40 evals started
 
 - paircmp_pooled.py (copied to 32525 /workspace/ckev/) vs clx_rb (CLX with --record-board): long u100 (= CLXII) +1.15 [-1.39,
