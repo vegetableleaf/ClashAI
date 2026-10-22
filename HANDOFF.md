@@ -1,3 +1,8 @@
+## 2026-10-22 18:52 EDT -- API key OUT OF CREDITS: SIMCHECK + exploit API workers never ran; relaunched as ONE in-session agent
+
+- Both api_worker.sh launches (18:33, 18:37) died in ~10 s with "Credit balance is too low" (api_worker.sh still logs exit 0).
+  The 32525 pod stayed idle. Memory api-key-workers marks the key out of credits.
+- One in-session agent now runs exploit/TICKET.md with SIMCHECK folded into step 1, on 32525 (all 54 cores).
 ## 2026-10-22 18:37 EDT -- owner: NO leash to CLX; long-run regression = SIM exploit -> investigate + upgrade engine / opponents first; drift test before any long run
 
 - Memory no-clx-leash-fix-exploit-first.
