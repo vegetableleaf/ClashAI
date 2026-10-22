@@ -178,3 +178,91 @@ first 48.9, opponent takes 55.3, CLX takes 58.0 (+5.2, tolerance 8).
 
 Expected: 8-10 of 12 after these rounds, not 12. BEAT and both-took-one are the two I expect to need a second fix each
 (R3 X-Bow-state starts; a Ranked-imitation tempo term).
+
+## 8. HYPOTHESIS LEDGER (owner 10-22: several independent causes per cell; updated after every pass)
+
+Shares are in pp of the cell's SIM - Ranked gap, measured on the I u40 2,880 / pos 480 rows vs the 233 Ranked rows
+(`diag12.out` sections in brackets).
+- Status: **C** = confirmed (measured, explains that much), **R** = rejected (measured, explains ~0 or the wrong sign), **U** =
+  untested (the test named), **P** = a pod job is measuring it.
+- "Remainder" = the gap no confirmed hypothesis has accounted for yet.
+
+### 8.1 win vs BEAT: gap +15.7 (SIM 41.0 vs 25.3)
+
+| # | hypothesis | test | share | status |
+|---|---|---|---|---|
+| B1 | (iv) within-BEAT win-condition mix (SIM 18% E-Golem, Ranked ~4%) | re-weight SIM per-wincon rates to Ranked's BEAT mix [W1] | 2.5 | C |
+| B2 | (iv) opponent tower level / tower troops: 13% of Ranked opponents below max | live BEAT vs max-tower opponents only: 27.0 (n 74) [L4] | 1.7 | C |
+| B3 | (iv) Ranked skill drift | BEAT by thirds: 29.6 / 20.0 / 26.9 [L7] | 0 (no trend) | R |
+| B4 | (ii) fight parity of the tank cards | the gap on J1 >= 0.95 tanks is +13.6 [+0.6, +23.6]; the J1-suspect group (Royal Hogs, E-Golem, Battle Ram) is +17.3 n.s. [G1] | <= 2.8 (bound) | U (W19 asked for fin15 per-card numbers) |
+| B5 | (ii) X-Bow first-target geometry vs a tank | lock when a same-lane tank lands <= 3.5 s after our X-Bow: SIM 19.1 vs live 18.5 [X1b] | 0 | R |
+| B6 | (iii) CLX's defensive latency vs tanks | first own play after a tank: 1.3 s live vs 1.5 s SIM; 10-s spend equal [K1] | 0 | R |
+| B7 | (iii) CLX lost / slow taps | vs BEAT live 1.75 lost / match, 17.4% slow (vs rest 1.47 / 14.1%) [L5] | ? | P (P-A2) |
+| B8 | (i) X-Bow denial by tank decks -> chip race -> drain | dmg per bridge X-Bow 0.306 vs 0.196; drain losses 12.2 vs 25.3% of BEAT matches; 0-0 OT behind at 3:00 37.2 vs 56.5% [X1b, P3, P4] | the drain excess alone is 13.1 of the 15.7 | C (mechanism) |
+| B9 | (i) tank-push lethality in regulation | BEAT regulation losses 33.1 vs 28.9 (n.s.) [P1] | ~0 | R |
+| | **remainder** | 15.7 - 2.5 - 1.7 = 11.5, all inside B8's OT / drain mechanism; B4 (<= 2.8) and B7 (P-A2) still open | | |
+
+### 8.2 win | OT: gap +10.3 (57.6 vs 47.3); OT decided before the drain: +13.7 (66.3 vs 52.6)
+
+| # | hypothesis | test | share | status |
+|---|---|---|---|---|
+| O1 | (iv) 4 regulation results labelled OT live | SIM-consistent label [D1] | 0.6 / 1.2 | C (G1) |
+| O2 | (iv) tower level | max-tower live win \| OT 46.7 (n 137) [L4] | -0.6 (wrong sign) | R |
+| O3 | (iv) Ranked drift | win \| OT by thirds 51.1 / 52.0 / 39.2 [L7] | the target moves 12 pp; see G5 | C (target issue) |
+| O4 | interaction with BEAT: tank-deck overtimes | if the SIM's BEAT OTs went at the Ranked rate: 57.6 -> 50.3 [L1] | 7.3 of 10.3 (70%) | C |
+| O5 | (i) the 3:00 state (chip race in regulation) | SIM win rates at Ranked state shares 59.1 vs 64.7 [S1] | ~40-55% of the 0-0 OT gap | C |
+| O6 | (i) OT play given the state: weak-lane focus | OT troop elixir on CLX's weakest princess 46.6 vs 66.9% [O1]; P(win \| behind) 38.9 vs 28.8 | the rest of S1 | C (mechanism) |
+| O7 | (iii) lost / slow taps in OT 3x | P-A2; association: won OTs have MORE lost taps (2.16 vs 1.55 per match) [L5] | ? | P |
+| O8 | (ii) OT rules (triple elixir, drain timing) | J4 3x 0.961, J8 drain law within 2-3 ticks (FIN15) | 0 | R |
+| | **remainder** | O4 + O5 / O6 overlap (tank-deck OTs are where the state and the conversion differ); no unexplained part beyond P-A2 | | |
+
+### 8.3 both took one: gap +7.7 (13.3 vs 5.6)
+
+| # | hypothesis | test | share | status |
+|---|---|---|---|---|
+| T1 | (iv) first falls come earlier in the SIM | SIM comeback rate at Ranked's fall-time mix 11.7 [B2] | 1.6 | C |
+| T2 | (iv) tower level | max-tower live 5.4 [L4] | 0.2 | R |
+| T3 | (iv) Ranked drift | 5.2 / 7.7 / 3.8 [L7] | 0 | R |
+| T4 | deck class | BEAT 20.4 vs 9.6, rest 8.9 vs 3.3: both elevated ~2-2.7x [L3] | (not a cause) | - |
+| T5 | (i) the opponent's defence when LEADING (CLX trailing 0-1) | CLX takes one back 14.1 vs 5.4%; bridge X-Bow lock at 0-1 47.7 vs 25.8% [B1, X1] | ~half (one of two directions) | C (mechanism) |
+| T6 | (i) the opponent's attack when TRAILING (CLX led 1-0) | opponent takes one back 12.6 vs 6.0% [B1]; CLX's own execution cannot produce this sign | the other half | C (mechanism, cause inside it U) |
+| T7 | (ii) pocket / king behaviour after a fall | king HP per pocket deploy 0.173 vs 0.135 (+28%), same pocket card mix [pocket2] | ? | U (W19) |
+| | **remainder** | 6.1 after T1, split T5 / T6 by direction; what makes the trailing SIM opponent score is untested | | |
+
+### 8.4 regulation loss: gap +7.6 (26.5 vs 18.9)
+
+| # | hypothesis | test | share | status |
+|---|---|---|---|---|
+| R1 | (iv) live OT mislabel | [D1] | 1.3 | C (G1) |
+| R2 | (iv) tower level / tower troops | max-tower live 15.3 (n 203); lower-tower 43.3 (n 30) [L4] | -1.6 at the SIM's 7% tower-troop mix (wrong sign) | R |
+| R3 | (iv) Ranked drift | 14.3 / 20.5 / 21.8 [L7] | recent thirds are closer (gap 4.7 on the last third) | C (target issue, G5) |
+| R4 | deck class | at the Ranked mix: rest +5.4, BEAT +0.3. Hog 15.9 vs 5.6, MK 34.4 vs 24.2, Royal Hogs 28.9 vs 0 [L2] | (where, not why) | - |
+| R5 | (i) 2x tempo / aggression | troop elixir per min in 2x 38.3 vs 30.4; 2x regulation losses 9.5 vs 5.6% [I1, P2] | ? | U (R3 play_cost tests it) |
+| R6 | (ii)/(i) king kills after a princess | regulation losses with our king down 9.3 vs 3.4% of matches [L2] | <= 5.9 (overlaps R5) | U (W19 + T7) |
+| R7 | (iii) CLX execution | would RAISE live regulation losses; lost taps in regulation 1.13 / match [L5] | 0 (sign) | R |
+| | **remainder** | 6.3 after R1, split R5 / R6, neither isolated yet | | |
+
+### 8.5 style: 0.78 (bound 0.65)
+
+| # | hypothesis | test | distance | status |
+|---|---|---|---|---|
+| S1 | (iv) the live tap list holds lost / retried taps (the SIM's: landed plays only) | live 'mine' = confirmed taps at their tap tick [L6b] | 0.78 -> 0.71 (react_s d -1.30 -> -1.12) | C (G4) |
+| S2 | (iv) the clock offset (game tick vs clock) | ticks - 78 [L6] | 0.78 -> 0.79 | R |
+| S3 | (iv) the detector's same-card 100-tick merge | [Y1] | 0.78 -> 0.78 | R |
+| S4 | (iv) the live detector misses short-lived cheap units | 2x plays of cost <= 2: SIM 1.79 vs live 1.10 per min (+63%; c3 +20%, c4 +13%, c5+ +34%) | <= the c<=2 share of ppm_2x | U (detector recall on live frames) |
+| S5 | (i) the gate threshold | eval tau 0.35 / 0.45: ppm_2x 11.30 / 11.02 vs 11.32 [P-B] | ~0 | R |
+| S6 | (i) tempo inside the policy (plays whenever affordable) | R3 play_cost | ? | P |
+| | **remainder** | 0.71 after S1 (needs <= 0.65): react_s d -1.12, ppm_2x +1.22, push_mean +1.00 | | |
+
+Note on L6: the 0.64 printed for "our plays = confirmed - 26" is an artefact. 24% of live taps share their tick with a
+detected opponent play (the pilot reacts on that frame). Shifting our play 2 ticks earlier makes that same play count as an
+instant answer, so the variant is not used.
+
+### 8.6 Owner decisions added by this pass
+
+- **G4 (iv)**: score style with the live pilot's CONFIRMED taps (lost / retried taps out), as the SIM side counts only landed
+  plays: 0.78 -> 0.71.
+- **G5 (iv)**: which Ranked target to calibrate to.
+  - CLX's Ranked win falls with the rank climb, by thirds of the 233: 57.1 / 48.7 / 38.5; win \| OT 51.1 / 52.0 / 39.2.
+  - The 233-match average is a moving mixture; the current rank is ~38-45%.
+  - Options: the whole 233 (today's gate), or the last 100-150 matches. The latter needs more Ranked play for n.

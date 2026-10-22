@@ -886,6 +886,134 @@ def sec_engine():
             print(f'      drain-loss share SIM {pct(d["L_tiebreak_drain"], len(a))} Ranked {pct(c["L_tiebreak_drain"], len(b))}')
 
 
+def _wr(rows):
+    return sum(r['win'] == 1 for r in rows), len(rows)
+
+
+def sec_ledger():
+    """Hypothesis tests beyond the first pass (owner 10-22: several independent causes per cell). Each prints the measured
+    share of the cell's gap it accounts for."""
+    sr, lr = sim_rows(), live_rows()
+    beat = lambda r: r['wincon_rev'] in T.BEAT  # noqa: E731
+
+    h('L1 win | OT split by deck class: how much of the win | OT gap is tank decks?')
+    tot_s = [r for r in sr if r['ot']]
+    tot_l = [r for r in lr if r['ot']]
+    for lab, f in (('vs BEAT', beat), ('vs rest', lambda r: not beat(r))):
+        a, b = [r for r in tot_s if f(r)], [r for r in tot_l if f(r)]
+        print(f'  {lab:8s} OT games: SIM {pct(len(a), len(tot_s))}% of OTs, win {fmt(*_wr(a))} | Ranked {pct(len(b), len(tot_l))}% '
+              f'of OTs, win {fmt(*_wr(b))}')
+    # counterfactual: the SIM's win | OT if its BEAT OTs won at the Ranked BEAT-OT rate (and the rest unchanged)
+    a_b, a_r = [r for r in tot_s if beat(r)], [r for r in tot_s if not beat(r)]
+    b_b = [r for r in tot_l if beat(r)]
+    cf = (len(a_b) * _wr(b_b)[0] / _wr(b_b)[1] + _wr(a_r)[0]) / len(tot_s)
+    print(f'  SIM win | OT {pct(*_wr(tot_s))} -> {100 * cf:.1f} if its BEAT overtimes went as on Ranked (Ranked {pct(*_wr(tot_l))}): '
+          f'tank decks carry {100 * (_wr(tot_s)[0] / len(tot_s) - cf) / (_wr(tot_s)[0] / len(tot_s) - _wr(tot_l)[0] / len(tot_l)):.0f}% of '
+          'the gap')
+
+    h('L2 regulation losses by win condition (share of that win condition\'s matches), SIM vs Ranked; the excess by class')
+    rl_ = lambda x: sum(r['win'] == 0 and not r['ot'] for r in x)  # noqa: E731
+    s, l = defaultdict(list), defaultdict(list)
+    for r in sr:
+        s[r['wincon_rev']].append(r)
+    for r in lr:
+        l[r['wincon_rev']].append(r)
+    exc = Counter()
+    for k in sorted(set(s) | set(l), key=lambda k: -len(l.get(k, []))):
+        a, b = s.get(k, []), l.get(k, [])
+        if len(b) >= 8:
+            print(f'  {k:16s} SIM {pct(rl_(a), len(a))} (n {len(a)}) Ranked {fmt(rl_(b), len(b))}')
+        if a:
+            # contribution to the overall SIM-Ranked reg-loss gap at the RANKED deck mix
+            exc['BEAT' if k in T.BEAT else 'rest'] += len(b) / len(lr) * (rl_(a) / len(a) - (rl_(b) / len(b) if b else rl_(a) / len(a)))
+    print('  gap contribution at the Ranked deck mix (pp): ' + ' '.join(f'{k} {100 * v:+.1f}' for k, v in exc.items()))
+    kings = [r for r in sr if r['win'] == 0 and not r['ot'] and r['king_lost']]
+    print(f'  SIM regulation losses with our KING down: {pct(len(kings), len(sr))}% of matches (Ranked: crowns count princesses '
+          f'only; king falls {pct(sum(r["king_lost"] for r in lr if r["win"] == 0 and not r["ot"]), len(lr))}%)')
+
+    h('L3 both took one by deck class and by who fell first')
+    for lab, f in (('vs BEAT', beat), ('vs rest', lambda r: not beat(r))):
+        a, b = [r for r in sr if f(r)], [r for r in lr if f(r)]
+        both = lambda x: sum(r['our_cr'] >= 1 and r['their_cr'] >= 1 for r in x)  # noqa: E731
+        print(f'  {lab:8s} SIM {fmt(both(a), len(a))} | Ranked {fmt(both(b), len(b))}')
+
+    h('L4 (iv) opponent tower level on Ranked (87% max): CLX win and cells vs max-tower opponents only')
+    mx = [r for r in lr if (r.get('opp_pmax') or 0) >= 4858]
+    lo = [r for r in lr if 0 < (r.get('opp_pmax') or 0) < 4858]
+    for lab, x in (('max towers', mx), ('lower towers', lo)):
+        cells = []
+        for cell in ('win', 'win_vs_BEAT', 'win_given_OT', 'win_OT_pre_drain', 'both_took_one', 'reg_loss'):
+            sel, hit = next((s_, f_) for c, s_, f_ in T.CELLS if c == cell)
+            y = sel(x)
+            cells.append(f'{cell} {pct(sum(map(hit, y)), len(y))} (n {len(y)})')
+        print(f'  {lab:12s} n {len(x):3d}: ' + ' | '.join(cells))
+
+    h('L5 (iii) CLX lost / slow taps by deck class and in won vs lost overtimes (live)')
+    import bisect
+    acc = defaultdict(Counter)
+    for r in lr:
+        try:
+            plays, conf, unc, el = read_exec(r['key'])
+        except FileNotFoundError:
+            continue
+        ets = [t for t, _ in el]
+        g = ('BEAT' if beat(r) else 'rest', 'OT ' + ('won' if r['win'] == 1 else 'lost') if r['ot'] else 'reg')
+        for key in (g[0], g[1]):
+            a = acc[key]
+            a['m'] += 1
+            a['taps'] += len(plays)
+            for u in unc:
+                p = max((p for p in plays if p['name'] == u['name'] and p['tick'] <= u['tick']), key=lambda p: p['tick'], default=None)
+                t0 = p['tick'] if p else u['tick'] - 34
+                i, k = bisect.bisect_left(ets, t0), bisect.bisect_right(ets, t0 + 50)
+                if not any(el[x - 1][1] - el[x][1] >= .75 * cost_of(u['name']) for x in range(max(1, i), k)) \
+                        and (p or u).get('elixir', 0) >= cost_of(u['name']) - 1e-6:
+                    a['lost'] += 1
+                    a['lost_ot'] += t0 >= REG
+            for p in plays:
+                q = next((q for q in conf if q['name'] == p['name'] and 0 <= q['tick'] - p['tick'] <= 80), None)
+                if q is not None:
+                    a['conf'] += 1
+                    a['slow'] += q['tick'] - p['tick'] > 34
+    for k, a in acc.items():
+        print(f'  {k:8s} matches {a["m"]:3d}: lost taps {a["lost"] / a["m"]:.2f}/match ({pct(a["lost"], a["taps"])}% of taps; in OT '
+              f'{a["lost_ot"] / a["m"]:.2f}/match) | slow (> 34 ticks) {pct(a["slow"], a["conf"])}% of confirmed plays')
+
+    h('L6 (iv) style: the live inputs measured differently from the SIM\'s (the tap list, the clock offset)')
+    import o3_score as O3
+    import opp_behaviour as OB
+    import live_table as LT
+    base, conf_m, off_m = [], [], []
+    for r in lr:
+        d = LT.cached(LT.LOGS / r['key'])
+        if not (d and d.get('start')):
+            continue
+        m = dict(src='live', id=r['key'], seen=d['seen'], res=0, end=d['end'], t0=d['t0'], side=d['side'], plays=d['plays'],
+                 mine=d['mine'])
+        base.append(OB.features(m))
+        conf_m.append(OB.features({**m, 'mine': [t - 26 for t, _ in d.get('own_conf') or []]}))   # landed plays, SIM's rule
+        off_m.append(OB.features({**m, 'plays': [[p[0] - OFF] + list(p[1:]) for p in d['plays']],
+                                  'mine': [t - OFF for t in d['mine']], 'end': d['end'] - OFF, 't0': d['t0'] - OFF}))
+    simf = [f for _, f in O3.behaviour(sim_raw())]
+    for lab, L_ in (('as scored (taps, game ticks)', base), ('our plays = confirmed - 26 (lost / retried taps out)', conf_m),
+                    ('ticks - 78 (clock, the SIM\'s frame)', off_m)):
+        cmp = OB.compare(L_, simf)
+        ds = [cmp[k][4] for k in O3.FEATS if not math.isnan(cmp[k][4])]
+        print(f'  {lab:52s} distance {math.sqrt(sum(x * x for x in ds) / len(ds)):.2f} | react_s live {cmp["react_s"][1]:.2f} '
+              f'(d {cmp["react_s"][4]:+.2f}) ppm_1x {cmp["ppm_1x"][1]:.2f} ppm_2x {cmp["ppm_2x"][1]:.2f} (d {cmp["ppm_2x"][4]:+.2f})')
+
+    h('L7 (iv) Ranked opponent skill drift: cells by Ranked match order (thirds of the 233)')
+    srt = sorted(lr, key=lambda r: r['key'])
+    for i in range(3):
+        x = srt[i * len(srt) // 3:(i + 1) * len(srt) // 3]
+        cells = []
+        for cell in ('win', 'win_vs_BEAT', 'win_given_OT', 'both_took_one', 'reg_loss'):
+            sel, hit = next((s_, f_) for c, s_, f_ in T.CELLS if c == cell)
+            y = sel(x)
+            cells.append(f'{cell} {pct(sum(map(hit, y)), len(y))}')
+        print(f'  third {i + 1} ({x[0]["key"][10:23]}..{x[-1]["key"][10:23]}): ' + ' | '.join(cells))
+
+
 def sec_style():
     h('Y1 style distance: per-feature live Ranked mean / SIM mean (Cohen d) -- the O4 style cell is the RMS of these d')
     import o3_score as O3
@@ -925,7 +1053,7 @@ def sec_style():
 
 
 SECTIONS = dict(defs=sec_defs, phase=sec_phase, state=sec_state, both=sec_both, comeback=sec_comeback, wincon=sec_wincon,
-                intensity=sec_intensity, tank=sec_tank, xbow=sec_xbow, exec=sec_exec, ot=sec_ot, engine=sec_engine, style=sec_style)
+                intensity=sec_intensity, tank=sec_tank, xbow=sec_xbow, exec=sec_exec, ot=sec_ot, engine=sec_engine, ledger=sec_ledger, style=sec_style)
 
 
 def main():

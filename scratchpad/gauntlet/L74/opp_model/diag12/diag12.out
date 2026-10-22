@@ -92,8 +92,8 @@ cells with the live OT label made SIM-consistent (ot := crowns level at 3:00 and
 ## W1 CLX win by the opponent win condition (revealed cards), SIM I u40 vs Ranked; BEAT first
   BEAT pekka            SIM  39.1 (n  133) | Ranked  35.7% [16.3, 61.2] n=14
   BEAT electro_giant    SIM  40.0 (n   60) | Ranked  23.1% [ 8.2, 50.3] n=13
-  BEAT giant            SIM  37.3 (n  110) | Ranked   9.1% [ 1.6, 37.7] n=11
   BEAT royal_hogs       SIM  38.6 (n  114) | Ranked  18.2% [ 5.1, 47.7] n=11
+  BEAT giant            SIM  37.3 (n  110) | Ranked   9.1% [ 1.6, 37.7] n=11
   BEAT battle_ram       SIM  33.9 (n   59) | Ranked  30.0% [10.8, 60.3] n=10
   BEAT golem            SIM  30.2 (n  162) | Ranked  16.7% [ 3.0, 56.4] n=6
   BEAT royal_giant      SIM  46.0 (n  113) | Ranked  33.3% [ 9.7, 70.0] n=6
@@ -105,8 +105,8 @@ cells with the live OT label made SIM-consistent (ot := crowns level at 3:00 and
   rest goblin_barrel    SIM  61.5 (n  221) | Ranked  63.6% [43.0, 80.3] n=22
   rest other            SIM  50.0 (n   22) | Ranked 100.0% [72.2, 100.0] n=10
   rest skeleton_barrel  SIM  32.8 (n   61) | Ranked  77.8% [45.3, 93.7] n=9
-  rest balloon          SIM  65.0 (n  143) | Ranked  55.6% [26.7, 81.1] n=9
   rest mortar           SIM  22.6 (n   93) | Ranked  33.3% [12.1, 64.6] n=9
+  rest balloon          SIM  65.0 (n  143) | Ranked  55.6% [26.7, 81.1] n=9
   rest graveyard        SIM  50.5 (n   91) | Ranked  50.0% [21.5, 78.5] n=8
   rest wall_breakers    SIM  42.2 (n   64) | Ranked  80.0% [37.6, 96.4] n=5
   rest goblin_drill     SIM  82.5 (n   57) | Ranked  50.0% [15.0, 85.0] n=4
@@ -196,6 +196,10 @@ cells with the live OT label made SIM-consistent (ot := crowns level at 3:00 and
   tap -> confirmed (game ticks): median 26, p10 24, p90 42 (n 9113); the SIM lands every play 26 ticks after its decision (action_delay_ticks)
     histogram (4-tick bins, 60 = >= 60): 0:  0.1 4:  0.1 8:  0.0 12:  0.0 16:  0.0 20:  5.1 24: 68.7 28:  8.1 32:  2.8 36:  2.5 40:  3.5 44:  7.3 48:  0.4 52:  0.1 56:  0.2 60:  0.8
     by window: reg_0-120 median 26 p90 44 share > 34  16.7% | reg_120-180 median 26 p90 42 share > 34  15.9% | ot_0-60 median 26.0 p90 40 share > 34  13.7% | ot_60-120 median 26 p90 37 share > 34  12.4%
+  tap -> elixir drop (all): n 9111 median 26 share > 34 ticks  15.1% (the game took the play late; the SIM lands every play at 26)
+  tap -> elixir drop (troops / buildings): n 7329 median 26 share > 34 ticks  13.2% (the game took the play late; the SIM lands every play at 26)
+  tap -> elixir drop (spells): n 1782 median 26.0 share > 34 ticks  23.1% (the game took the play late; the SIM lands every play at 26)
+    slow plays (35-59 ticks): mean 42.7 -> extra 17 ticks; --tap-slow 0.151:17
   X-Bow placement error (confirmed spawn vs intended): mean 0.00 tiles, > 0.5 tile   0.1%; intended rows (y, own frame): 12.5:1 18.5:6 19.5:903 21.5:115 22.5:56
   SIM X-Bow rows (habits.xbow_y x 32): 18.5:47 19.5:9712 20:2 20.5:2 21.5:1399 22.5:1193 23.5:13 29.5:3
   SIM: rejected own plays (not accepted by the engine) 1.17/match; every accepted play lands
@@ -212,6 +216,53 @@ cells with the live OT label made SIM-consistent (ot := crowns level at 3:00 and
       drain-loss share SIM   7.6 Ranked  16.7
   other BEAT (Boss Bandit, Rune Giant ...)       SIM  50.0% [23.7, 76.3] n=10 | Ranked   0.0% [ 0.0, 65.8] n=2 | SIM - Ranked +50.0 [-20.8, +76.3]
       drain-loss share SIM  40.0 Ranked  50.0
+
+## L1 win | OT split by deck class: how much of the win | OT gap is tank decks?
+  vs BEAT  OT games: SIM  34.6% of OTs, win  50.7% [46.6, 54.7] n=582 | Ranked  37.0% of OTs, win  29.6% [19.1, 42.8] n=54
+  vs rest  OT games: SIM  65.4% of OTs, win  61.3% [58.4, 64.1] n=1098 | Ranked  63.0% of OTs, win  57.6% [47.4, 67.2] n=92
+  SIM win | OT  57.6 -> 50.3 if its BEAT overtimes went as on Ranked (Ranked  47.3): tank decks carry 70% of the gap
+
+## L2 regulation losses by win condition (share of that win condition's matches), SIM vs Ranked; the excess by class
+  hog_rider        SIM  15.9 (n 295) Ranked   5.6% [ 1.5, 18.1] n=36
+  mega_knight      SIM  34.4 (n 553) Ranked  24.2% [12.8, 41.0] n=33
+  goblin_barrel    SIM  14.0 (n 221) Ranked  13.6% [ 4.7, 33.3] n=22
+  pekka            SIM  27.1 (n 133) Ranked  14.3% [ 4.0, 39.9] n=14
+  electro_giant    SIM  21.7 (n 60) Ranked  46.2% [23.2, 70.9] n=13
+  royal_hogs       SIM  28.9 (n 114) Ranked   0.0% [ 0.0, 25.9] n=11
+  giant            SIM  35.5 (n 110) Ranked  27.3% [ 9.7, 56.6] n=11
+  battle_ram       SIM  35.6 (n 59) Ranked  40.0% [16.8, 68.7] n=10
+  other            SIM  13.6 (n 22) Ranked   0.0% [ 0.0, 27.8] n=10
+  skeleton_barrel  SIM  34.4 (n 61) Ranked  11.1% [ 2.0, 43.5] n=9
+  mortar           SIM  28.0 (n 93) Ranked  33.3% [12.1, 64.6] n=9
+  balloon          SIM  16.8 (n 143) Ranked  11.1% [ 2.0, 43.5] n=9
+  graveyard        SIM  13.2 (n 91) Ranked   0.0% [ 0.0, 32.4] n=8
+  gap contribution at the Ranked deck mix (pp): rest +5.4 BEAT +0.3
+  SIM regulation losses with our KING down:   9.3% of matches (Ranked: crowns count princesses only; king falls   3.4%)
+
+## L3 both took one by deck class and by who fell first
+  vs BEAT  SIM  20.4% [18.1, 22.8] n=1109 | Ranked   9.6% [ 5.0, 17.9] n=83
+  vs rest  SIM   8.9% [ 7.7, 10.3] n=1771 | Ranked   3.3% [ 1.4,  7.6] n=150
+
+## L4 (iv) opponent tower level on Ranked (87% max): CLX win and cells vs max-tower opponents only
+  max towers   n 203: win  48.8 (n 203) | win_vs_BEAT  27.0 (n 74) | win_given_OT  46.7 (n 137) | win_OT_pre_drain  52.8 (n 89) | both_took_one   5.4 (n 203) | reg_loss  15.3 (n 203)
+  lower towers n  30: win  43.3 (n 30) | win_vs_BEAT  11.1 (n 9) | win_given_OT  55.6 (n 9) | win_OT_pre_drain  50.0 (n 6) | both_took_one   6.7 (n 30) | reg_loss  43.3 (n 30)
+
+## L5 (iii) CLX lost / slow taps by deck class and in won vs lost overtimes (live)
+  rest     matches 150: lost taps 1.47/match (  3.6% of taps; in OT 0.79/match) | slow (> 34 ticks)  14.1% of confirmed plays
+  reg      matches  87: lost taps 1.13/match (  4.3% of taps; in OT 0.00/match) | slow (> 34 ticks)  20.9% of confirmed plays
+  OT won   matches  69: lost taps 2.16/match (  4.4% of taps; in OT 1.64/match) | slow (> 34 ticks)  11.4% of confirmed plays
+  OT lost  matches  77: lost taps 1.55/match (  3.0% of taps; in OT 1.01/match) | slow (> 34 ticks)  15.5% of confirmed plays
+  BEAT     matches  83: lost taps 1.75/match (  4.1% of taps; in OT 0.87/match) | slow (> 34 ticks)  17.4% of confirmed plays
+
+## L6 (iv) style: the live inputs measured differently from the SIM's (the tap list, the clock offset)
+  as scored (taps, game ticks)                         distance 0.78 | react_s live 5.98 (d -1.30) ppm_1x 5.12 ppm_2x 8.33 (d +1.22)
+  our plays = confirmed - 26 (lost / retried taps out) distance 0.64 | react_s live 4.96 (d -0.24) ppm_1x 5.12 ppm_2x 8.33 (d +1.22)
+  ticks - 78 (clock, the SIM's frame)                  distance 0.79 | react_s live 5.98 (d -1.30) ppm_1x 5.15 ppm_2x 8.42 (d +1.18)
+
+## L7 (iv) Ranked opponent skill drift: cells by Ranked match order (thirds of the 233)
+  third 1 (20261020_1328..20261020_2025): win  57.1 | win_vs_BEAT  29.6 | win_given_OT  51.1 | both_took_one   5.2 | reg_loss  14.3
+  third 2 (20261020_2028..20261021_0145): win  48.7 | win_vs_BEAT  20.0 | win_given_OT  52.0 | both_took_one   7.7 | reg_loss  20.5
+  third 3 (20261021_0149..20261021_0708): win  38.5 | win_vs_BEAT  26.9 | win_given_OT  39.2 | both_took_one   3.8 | reg_loss  21.8
 
 ## Y1 style distance: per-feature live Ranked mean / SIM mean (Cohen d) -- the O4 style cell is the RMS of these d
   I u40 (2,880)  distance 0.78: ppm_1x 5.12/5.43 (+0.24) | ppm_2x 8.33/11.36 (+1.22) | first_tick 259.20/237.50 (-0.23) | react_s 5.98/4.72 (-1.30) | react_3s 0.29/0.40 (+0.87) | react_lift -0.02/0.03 (+0.55) | push_mean 3.28/3.90 (+1.00) | push_max 10.07/10.48 (+0.22) | spell_share 0.06/0.06 (-0.01)

@@ -37,6 +37,10 @@ changes the engine, so a match with the tracker plays exactly as one without it.
     tornados  [{seen, end, down (own princesses down at the cast), toward (tiles), n (bodies caught)}]
     rockets   [{seen, aim (board tiles, my frame), tower (aim within 3 tiles of an enemy princess / king slot)}]
     end       {tick, king, princess, foe_princess (hp fractions), crowns} at the last stop
+    play_cost: on                 L74 W18 (10-22, opp_model/DIAG_12.md): -play_cost_w per ACCEPTED play of the learner, on the
+                                  row that decided it, summed <= PLAY_COST_MATCH_CAP per match. For the SIM OPPONENT's tempo: it
+                                  plays 36% more cards per minute in 2x / OT than Ranked humans (style d +1.22) and wins
+                                  regulation games by it. It CHANGES the optimum, deliberately: a marginal play must now pay.
 The learner side (``row_terms``) is pure: the record + the side's plays + the KEPT rows' decision ticks -> per-row reward.
 """
 from __future__ import annotations
@@ -51,16 +55,19 @@ from pipeline.spell_value import KING_TOWER, PRINCESS_TOWER, TILE, TORNADO_R_TIL
 TERMS = {"rocket_tower": "rocket_tower_w",                          # W10 (first: W7's princess_take edits the last line)
          "lead_protect": "lead_protect_w", "princess_redirect": "princess_redirect_w",
          "tornado_king_penalty": "tornado_king_w",
-         "princess_take": "princess_take_w"}                           # switch -> its weight key (rl_royale CROWN_KEYS)
+         "princess_take": "princess_take_w",                           # switch -> its weight key (rl_royale CROWN_KEYS)
+         "play_cost": "play_cost_w"}                                   # W18 (10-22): the SIM opponent's tempo
 DEFAULTS = {"rocket_tower_w": 0.5,           # W10: per princess tower of enemy princess HP our Rocket removed (a ~0.11
             #                                   chip = 0.055 ~ 2.75 elixir at spell_value's 0.02 / elixir; <= the match cap)
             "lead_protect_w": 0.2,            # x the win reward, once per match (DOCTRINE_MEASURED 4 R1)
             "princess_redirect_w": 0.2,       # per princess tower of HP lost while both stand: a felled first princess
             #                                   costs <= 0.2 on top of the terminal reward; |sum| < 2 w per match
             "princess_take_w": 0.2,           # W7: per enemy princess felled in play (<= 2 per match)
+            "play_cost_w": 0.005,             # W18: per ACCEPTED play of the learner (~40 per match = 0.2, <= the match cap)
             "tornado_king_w": 0.01}           # per tile of net pull toward our king (3 bodies x 3 tiles = 0.09; spell_value
 #                                               prices elixir at 0.02, so a Tornado's 3 elixir = 0.06)
 REDIRECT_MODES = ("penalty", "potential")
+PLAY_COST_MATCH_CAP = 0.3       # W18: |play_cost reward| per match
 TORNADO_EVENT_CAP, TORNADO_MATCH_CAP = 0.15, 0.3   # ponytail: fixed caps, a config key if an arm needs another
 ROCKET_MATCH_CAP = 0.3          # W10: |rocket_tower reward| per match (~5 chips at the default weight; pros fire 1.6 / match)
 ROCKET_BLAST_TILES = 2.0        # catalog Rocket radius (spell_value.ROCKET_R_TILES); a tower counts by the engine's edge rule
@@ -78,7 +85,8 @@ def bound(p: dict) -> float:
             + float(p.get("lead_protect_w", 0.0)) * bool(p.get("lead_protect"))
             + 2.0 * float(p.get("princess_redirect_w", 0.0)) * bool(p.get("princess_redirect"))
             + TORNADO_MATCH_CAP * bool(p.get("tornado_king_penalty"))
-            + 2.0 * float(p.get("princess_take_w", 0.0)) * bool(p.get("princess_take")))
+            + 2.0 * float(p.get("princess_take_w", 0.0)) * bool(p.get("princess_take"))
+            + PLAY_COST_MATCH_CAP * bool(p.get("play_cost")))
 
 
 class CrownTracker:
@@ -295,6 +303,18 @@ def row_terms(crown: dict, plays: list, ticks, p: dict) -> dict:
             r[i] += e
             total += e
         out["rocket"] = total
+    if p.get("play_cost"):                           # W18: off = no "play_cost" key (the outputs above unchanged)
+        row, total = {int(t): i for i, t in enumerate(ticks)}, 0.0
+        for pl in plays:                             # -w on the row that DECIDED each accepted play, summed <= the cap
+            i = row.get(int(pl["tick"]))
+            if i is None or not pl.get("accepted"):
+                continue
+            e = min(p["play_cost_w"], PLAY_COST_MATCH_CAP - total)
+            if e <= 0:
+                break
+            r[i] -= e
+            total += e
+        out["play_cost"] = -total
     out["r"] = r
     return out
 
@@ -327,6 +347,8 @@ def batch_stats(summaries: list, sums: list) -> dict:
         st[f"{k}_per_match"] = round(float(sum(vals)) / max(len(vals), 1), 4)
     for k in ("lead", "redirect", "tornado") + (("take",) if any("take" in s for s in sums) else ()):
         st[f"{k}_reward_per_match"] = round(sum(s[k] for s in sums) / n, 5)
+    if any("play_cost" in s for s in sums):         # W18 play_cost on (off: no key, the stats unchanged)
+        st["play_cost_reward_per_match"] = round(sum(s.get("play_cost", 0.0) for s in sums) / n, 5)
     if any("rocket" in s for s in sums):            # W10 rocket_tower on (off: no keys, the stats unchanged)
         st["rocket_reward_per_match"] = round(sum(s.get("rocket", 0.0) for s in sums) / n, 5)
         st["rocket_unmapped"] = int(sum(s.get("rocket_unmapped", 0) for s in sums))
