@@ -1,0 +1,387 @@
+
+## LIVE  matches 439  (attempt = attempt)
+
+### all: matches 439, own X-Bows 2039 (4.64/match), opportunities 1268 (2.888/match, 0.622/X-Bow); matches with >= 1 opportunity 338
+  per match (bootstrap over matches): opportunities 2.89 [2.62, 3.15] (n 439); attempts 0.018 [0.007, 0.032] (n 439)
+  X-Bow alive 582 min; X-Bow targeting an enemy troop 244.7 min; lone-blocker episodes 1860, of them without Tornado-in-hand + 3 elixir 592
+  [held] n 604 | ATTEMPT 3/604 = 0.5% [0.2, 1.5] | any Tornado in the window 5/604 = 0.8% [0.4, 1.9] | attempt rate, match-cluster CI 0.5 [0.0, 1.1] (n 604)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 0/3 = 0.0% [0.0, 56.2]; blocker out of range after 1/3
+      natural lock <= 5 s, no attempt: 194/601 = 32.3% [28.7, 36.1]; with attempt 0/3 = 0.0% [0.0, 56.2]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.000 [0.000, 0.000] (n 3) | no attempt 0.075 [0.064, 0.086] (n 601) | diff -0.075 [-0.086, -0.063] | matched (kind, phase, X-Bow hp, elixir) -0.073 [-0.116, -0.033] (n 3)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.061 [0.000, 0.182] (n 3) | no attempt 0.094 [0.080, 0.111] (n 601) | diff -0.034 [-0.105, +0.077] | matched (kind, phase, X-Bow hp, elixir) -0.051 [-0.131, +0.010] (n 3)
+      match win: with attempt 0.000 [0.000, 0.000] (n 3) | without 0.565 [0.488, 0.637] (n 601)
+      blocker gone <= 3 s: 227/604 = 37.6% [33.8, 41.5]; late Tornado (after 2 s, same episode) 1/604 = 0.2% [0.0, 0.9]; elixir at t0 4.26 [4.14, 4.38] (n 604)
+      blockers: valkyrie 82, knight 50, firecracker 32, mega_knight 31, electro_wizard 25, musketeer 24, dart_goblin 19, pekka 18, hog_rider 18, witch 18
+  [about] n 664 | ATTEMPT 5/664 = 0.8% [0.3, 1.8] | any Tornado in the window 10/664 = 1.5% [0.8, 2.7] | attempt rate, match-cluster CI 0.8 [0.2, 1.5] (n 664)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 0/5 = 0.0% [0.0, 43.4]; blocker out of range after 1/5
+      natural lock <= 5 s, no attempt: 78/659 = 11.8% [9.6, 14.5]; with attempt 0/5 = 0.0% [0.0, 43.4]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.000 [0.000, 0.000] (n 5) | no attempt 0.044 [0.036, 0.053] (n 659) | diff -0.044 [-0.052, -0.036] | matched (kind, phase, X-Bow hp, elixir) -0.042 [-0.049, -0.036] (n 5)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.000 [0.000, 0.000] (n 5) | no attempt 0.092 [0.078, 0.107] (n 659) | diff -0.092 [-0.107, -0.078] | matched (kind, phase, X-Bow hp, elixir) -0.091 [-0.109, -0.078] (n 5)
+      match win: with attempt 0.200 [0.000, 0.600] (n 5) | without 0.477 [0.414, 0.541] (n 659)
+      blocker gone <= 3 s: 146/664 = 22.0% [19.0, 25.3]; late Tornado (after 2 s, same episode) 0/664 = 0.0% [0.0, 0.6]; elixir at t0 3.72 [3.66, 3.79] (n 664)
+      blockers: valkyrie 77, knight 61, mega_knight 44, firecracker 24, pekka 22, hog_rider 21, electro_wizard 19, executioner 19, witch 17, mini_pekka 16
+  [both] n 1268 | ATTEMPT 8/1268 = 0.6% [0.3, 1.2] | any Tornado in the window 15/1268 = 1.2% [0.7, 1.9] | attempt rate, match-cluster CI 0.6 [0.2, 1.1] (n 1268)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 0/8 = 0.0% [0.0, 32.4]; blocker out of range after 2/8
+      natural lock <= 5 s, no attempt: 272/1260 = 21.6% [19.4, 23.9]; with attempt 0/8 = 0.0% [0.0, 32.4]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.000 [0.000, 0.000] (n 8) | no attempt 0.058 [0.051, 0.066] (n 1260) | diff -0.058 [-0.066, -0.051] | matched (kind, phase, X-Bow hp, elixir) -0.054 [-0.074, -0.039] (n 8)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.023 [0.000, 0.068] (n 8) | no attempt 0.093 [0.082, 0.105] (n 1260) | diff -0.070 [-0.102, -0.020] | matched (kind, phase, X-Bow hp, elixir) -0.076 [-0.103, -0.044] (n 8)
+      match win: with attempt 0.125 [0.000, 0.375] (n 8) | without 0.519 [0.453, 0.584] (n 1260)
+      blocker gone <= 3 s: 373/1268 = 29.4% [27.0, 32.0]; late Tornado (after 2 s, same episode) 1/1268 = 0.1% [0.0, 0.4]; elixir at t0 3.98 [3.91, 4.05] (n 1268)
+      blockers: valkyrie 159, knight 111, mega_knight 75, firecracker 56, electro_wizard 44, pekka 40, hog_rider 39, executioner 36, witch 35, dart_goblin 33
+
+### ICEBOW Mark CLX: PARITY: matches 414, own X-Bows 1895 (4.58/match), opportunities 1170 (2.826/match, 0.617/X-Bow); matches with >= 1 opportunity 316
+  per match (bootstrap over matches): opportunities 2.83 [2.56, 3.10] (n 414); attempts 0.014 [0.005, 0.027] (n 414)
+  X-Bow alive 545 min; X-Bow targeting an enemy troop 226.4 min; lone-blocker episodes 1737, of them without Tornado-in-hand + 3 elixir 567
+  [held] n 560 | ATTEMPT 3/560 = 0.5% [0.2, 1.6] | any Tornado in the window 4/560 = 0.7% [0.3, 1.8] | attempt rate, match-cluster CI 0.5 [0.0, 1.2] (n 560)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 0/3 = 0.0% [0.0, 56.2]; blocker out of range after 1/3
+      natural lock <= 5 s, no attempt: 182/557 = 32.7% [28.9, 36.7]; with attempt 0/3 = 0.0% [0.0, 56.2]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.000 [0.000, 0.000] (n 3) | no attempt 0.078 [0.066, 0.090] (n 557) | diff -0.078 [-0.090, -0.066] | matched (kind, phase, X-Bow hp, elixir) -0.075 [-0.119, -0.035] (n 3)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.061 [0.000, 0.182] (n 3) | no attempt 0.098 [0.084, 0.115] (n 557) | diff -0.038 [-0.110, +0.083] | matched (kind, phase, X-Bow hp, elixir) -0.053 [-0.131, +0.008] (n 3)
+      match win: with attempt 0.000 [0.000, 0.000] (n 3) | without 0.570 [0.496, 0.646] (n 557)
+      blocker gone <= 3 s: 216/560 = 38.6% [34.6, 42.7]; late Tornado (after 2 s, same episode) 1/560 = 0.2% [0.0, 1.0]; elixir at t0 4.25 [4.12, 4.39] (n 560)
+      blockers: valkyrie 75, knight 47, firecracker 29, mega_knight 29, musketeer 21, electro_wizard 20, dart_goblin 18, witch 17, wizard 17, executioner 17
+  [about] n 610 | ATTEMPT 3/610 = 0.5% [0.2, 1.4] | any Tornado in the window 8/610 = 1.3% [0.7, 2.6] | attempt rate, match-cluster CI 0.5 [0.0, 1.1] (n 610)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 0/3 = 0.0% [0.0, 56.2]; blocker out of range after 0/3
+      natural lock <= 5 s, no attempt: 75/607 = 12.4% [10.0, 15.2]; with attempt 0/3 = 0.0% [0.0, 56.2]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.000 [0.000, 0.000] (n 3) | no attempt 0.045 [0.037, 0.054] (n 607) | diff -0.045 [-0.054, -0.036] | matched (kind, phase, X-Bow hp, elixir) -0.043 [-0.051, -0.039] (n 3)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.000 [0.000, 0.000] (n 3) | no attempt 0.094 [0.080, 0.110] (n 607) | diff -0.094 [-0.111, -0.080] | matched (kind, phase, X-Bow hp, elixir) -0.096 [-0.121, -0.083] (n 3)
+      match win: with attempt 0.333 [0.000, 1.000] (n 3) | without 0.487 [0.420, 0.555] (n 607)
+      blocker gone <= 3 s: 130/610 = 21.3% [18.2, 24.7]; late Tornado (after 2 s, same episode) 0/610 = 0.0% [0.0, 0.6]; elixir at t0 3.70 [3.63, 3.77] (n 610)
+      blockers: valkyrie 67, knight 52, mega_knight 43, firecracker 22, electro_wizard 19, executioner 19, pekka 18, hog_rider 17, witch 17, mini_pekka 15
+  [both] n 1170 | ATTEMPT 6/1170 = 0.5% [0.2, 1.1] | any Tornado in the window 12/1170 = 1.0% [0.6, 1.8] | attempt rate, match-cluster CI 0.5 [0.2, 1.0] (n 1170)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 0/6 = 0.0% [0.0, 39.0]; blocker out of range after 1/6
+      natural lock <= 5 s, no attempt: 257/1164 = 22.1% [19.8, 24.6]; with attempt 0/6 = 0.0% [0.0, 39.0]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.000 [0.000, 0.000] (n 6) | no attempt 0.061 [0.053, 0.069] (n 1164) | diff -0.061 [-0.069, -0.053] | matched (kind, phase, X-Bow hp, elixir) -0.059 [-0.084, -0.040] (n 6)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.030 [0.000, 0.091] (n 6) | no attempt 0.096 [0.084, 0.109] (n 1164) | diff -0.066 [-0.106, -0.003] | matched (kind, phase, X-Bow hp, elixir) -0.074 [-0.110, -0.036] (n 6)
+      match win: with attempt 0.167 [0.000, 0.500] (n 6) | without 0.527 [0.458, 0.596] (n 1164)
+      blocker gone <= 3 s: 346/1170 = 29.6% [27.0, 32.3]; late Tornado (after 2 s, same episode) 1/1170 = 0.1% [0.0, 0.5]; elixir at t0 3.96 [3.89, 4.04] (n 1170)
+      blockers: valkyrie 142, knight 99, mega_knight 72, firecracker 51, electro_wizard 39, executioner 36, pekka 34, witch 34, hog_rider 31, dart_goblin 31
+
+### ICEBOW Mark CLXI: FIN15: matches 25, own X-Bows 144 (5.76/match), opportunities 98 (3.920/match, 0.681/X-Bow); matches with >= 1 opportunity 22
+  per match (bootstrap over matches): opportunities 3.92 [2.64, 5.32] (n 25); attempts 0.080 [0.000, 0.200] (n 25)
+  X-Bow alive 37 min; X-Bow targeting an enemy troop 18.4 min; lone-blocker episodes 123, of them without Tornado-in-hand + 3 elixir 25
+  [held] n 44 | ATTEMPT 0/44 = 0.0% [0.0, 8.0] | any Tornado in the window 1/44 = 2.3% [0.4, 11.8] | attempt rate, match-cluster CI 0.0 [0.0, 0.0] (n 44)
+      natural lock <= 5 s, no attempt: 12/44 = 27.3% [16.3, 41.8]; with attempt 0/0
+      X-Bow tower dmg next 10 s (princess units): attempt n/a | no attempt 0.035 [0.018, 0.053] (n 44) | diff +nan [+nan, +nan] | matched (kind, phase, X-Bow hp, elixir) +nan [+nan, +nan] (n 0)
+      X-Bow tower dmg next 15 s (princess units): attempt n/a | no attempt 0.044 [0.023, 0.067] (n 44) | diff +nan [+nan, +nan] | matched (kind, phase, X-Bow hp, elixir) +nan [+nan, +nan] (n 0)
+      match win: with attempt n/a | without 0.500 [0.176, 0.756] (n 44)
+      blocker gone <= 3 s: 11/44 = 25.0% [14.6, 39.4]; late Tornado (after 2 s, same episode) 0/44 = 0.0% [0.0, 8.0]; elixir at t0 4.37 [3.89, 4.74] (n 44)
+      blockers: valkyrie 7, electro_wizard 5, hog_rider 4, musketeer 3, knight 3, firecracker 3, golden_knight 2, mega_knight 2, pekka 2, mighty_miner 2
+  [about] n 54 | ATTEMPT 2/54 = 3.7% [1.0, 12.5] | any Tornado in the window 2/54 = 3.7% [1.0, 12.5] | attempt rate, match-cluster CI 3.7 [0.0, 7.7] (n 54)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 0/2 = 0.0% [0.0, 65.8]; blocker out of range after 1/2
+      natural lock <= 5 s, no attempt: 3/52 = 5.8% [2.0, 15.6]; with attempt 0/2 = 0.0% [0.0, 65.8]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.000 [0.000, 0.000] (n 2) | no attempt 0.031 [0.008, 0.064] (n 52) | diff -0.031 [-0.062, -0.008] | matched (kind, phase, X-Bow hp, elixir) -0.014 [-0.029, +0.000] (n 2)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.000 [0.000, 0.000] (n 2) | no attempt 0.065 [0.030, 0.108] (n 52) | diff -0.065 [-0.108, -0.030] | matched (kind, phase, X-Bow hp, elixir) -0.055 [-0.079, -0.030] (n 2)
+      match win: with attempt 0.000 [0.000, 0.000] (n 2) | without 0.365 [0.148, 0.635] (n 52)
+      blocker gone <= 3 s: 16/54 = 29.6% [19.1, 42.8]; late Tornado (after 2 s, same episode) 0/54 = 0.0% [0.0, 6.6]; elixir at t0 3.95 [3.65, 4.27] (n 54)
+      blockers: valkyrie 10, knight 9, hog_rider 4, pekka 4, mighty_miner 3, skeletons 2, bowler 2, zappies 2, electro_spirit 2, firecracker 2
+  [both] n 98 | ATTEMPT 2/98 = 2.0% [0.6, 7.1] | any Tornado in the window 3/98 = 3.1% [1.0, 8.6] | attempt rate, match-cluster CI 2.0 [0.0, 4.6] (n 98)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 0/2 = 0.0% [0.0, 65.8]; blocker out of range after 1/2
+      natural lock <= 5 s, no attempt: 15/96 = 15.6% [9.7, 24.2]; with attempt 0/2 = 0.0% [0.0, 65.8]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.000 [0.000, 0.000] (n 2) | no attempt 0.033 [0.018, 0.052] (n 96) | diff -0.033 [-0.051, -0.018] | matched (kind, phase, X-Bow hp, elixir) -0.014 [-0.029, +0.000] (n 2)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.000 [0.000, 0.000] (n 2) | no attempt 0.055 [0.035, 0.081] (n 96) | diff -0.055 [-0.081, -0.035] | matched (kind, phase, X-Bow hp, elixir) -0.055 [-0.079, -0.030] (n 2)
+      match win: with attempt 0.000 [0.000, 0.000] (n 2) | without 0.427 [0.161, 0.682] (n 96)
+      blocker gone <= 3 s: 27/98 = 27.6% [19.7, 37.1]; late Tornado (after 2 s, same episode) 0/98 = 0.0% [0.0, 3.8]; elixir at t0 4.14 [3.84, 4.43] (n 98)
+      blockers: valkyrie 17, knight 12, hog_rider 8, pekka 6, firecracker 5, electro_wizard 5, mighty_miner 5, musketeer 4, mega_knight 3, zappies 3
+
+  every own Tornado while our X-Bow lived: 167; X-Bow target then: {'troop': 93, 'tower': 36, None: 35, 'air': 1, 'building': 2}
+    target troop: tower locked <= 3 s after landing 4/93 = 4.3% [1.7, 10.5]
+    target tower: tower locked <= 3 s after landing 26/36 = 72.2% [56.0, 84.2]
+    target None: tower locked <= 3 s after landing 7/35 = 20.0% [10.0, 35.9]
+    target air: tower locked <= 3 s after landing 0/1 = 0.0% [0.0, 79.3]
+    target building: tower locked <= 3 s after landing 0/2 = 0.0% [0.0, 65.8]
+
+  reader target vs the X-Bow bolt in flight: same body 143450/145785 = 98.4% [98.3, 98.5], same class 143534/145785 = 98.5% [98.4, 98.5]; degraded X-Bow frames 12106 of 358444; reader target classes troop 146846, building 17684, tower 69317, unseen 1034, air 552, king 914
+
+## LIVESUP  matches 439  (attempt = tornado_any)
+
+### all: matches 439, own X-Bows 2039 (4.64/match), opportunities 2375 (5.410/match, 1.165/X-Bow); matches with >= 1 opportunity 359
+  per match (bootstrap over matches): opportunities 5.41 [4.90, 5.95] (n 439); attempts 0.082 [0.052, 0.114] (n 439)
+  [1 troop in range] n 934 | ATTEMPT 10/934 = 1.1% [0.6, 2.0] | any Tornado in the window 10/934 = 1.1% [0.6, 2.0] | attempt rate, match-cluster CI 1.1 [0.4, 1.8] (n 934)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 0/10 = 0.0% [0.0, 27.8]; blocker out of range after 1/10
+      natural lock <= 5 s, no attempt: 219/924 = 23.7% [21.1, 26.5]; with attempt 0/10 = 0.0% [0.0, 27.8]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.000 [0.000, 0.000] (n 10) | no attempt 0.063 [0.054, 0.072] (n 924) | diff -0.063 [-0.072, -0.054] | matched (kind, phase, X-Bow hp, elixir) -0.044 [-0.067, -0.023] (n 10)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.028 [0.000, 0.067] (n 10) | no attempt 0.089 [0.077, 0.102] (n 924) | diff -0.061 [-0.095, -0.017] | matched (kind, phase, X-Bow hp, elixir) -0.034 [-0.064, -0.003] (n 10)
+      match win: with attempt 0.200 [0.000, 0.500] (n 10) | without 0.543 [0.476, 0.611] (n 924)
+      blocker gone <= 3 s: 277/934 = 29.7% [26.8, 32.7]; late Tornado (after 2 s, same episode) 9/934 = 1.0% [0.5, 1.8]; elixir at t0 4.25 [4.16, 4.34] (n 934)
+      blockers: valkyrie 124, knight 101, mega_knight 61, firecracker 39, pekka 32, electro_wizard 31, musketeer 28, wizard 25, executioner 25, golden_knight 24
+  [2+ troops] n 1441 | ATTEMPT 26/1441 = 1.8% [1.2, 2.6] | any Tornado in the window 26/1441 = 1.8% [1.2, 2.6] | attempt rate, match-cluster CI 1.8 [1.0, 2.7] (n 1441)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 4/26 = 15.4% [6.1, 33.5]; blocker out of range after 2/26
+      natural lock <= 5 s, no attempt: 172/1415 = 12.2% [10.6, 14.0]; with attempt 4/26 = 15.4% [6.1, 33.5]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.037 [0.009, 0.075] (n 26) | no attempt 0.035 [0.029, 0.042] (n 1415) | diff +0.002 [-0.029, +0.039] | matched (kind, phase, X-Bow hp, elixir) +0.004 [-0.023, +0.036] (n 26)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.049 [0.016, 0.088] (n 26) | no attempt 0.059 [0.049, 0.070] (n 1415) | diff -0.010 [-0.043, +0.028] | matched (kind, phase, X-Bow hp, elixir) -0.008 [-0.041, +0.026] (n 26)
+      match win: with attempt 0.308 [0.120, 0.542] (n 26) | without 0.473 [0.398, 0.550] (n 1415)
+      blocker gone <= 3 s: 792/1441 = 55.0% [52.4, 57.5]; late Tornado (after 2 s, same episode) 16/1441 = 1.1% [0.7, 1.8]; elixir at t0 4.09 [3.98, 4.21] (n 1441)
+      blockers: skeletons 105, knight 102, valkyrie 101, witch 97, skeleton_army 77, royal_recruits 75, goblin_gang 54, hog_rider 44, mega_knight 43, barbarian_barrel 38
+  [all] n 2375 | ATTEMPT 36/2375 = 1.5% [1.1, 2.1] | any Tornado in the window 36/2375 = 1.5% [1.1, 2.1] | attempt rate, match-cluster CI 1.5 [1.0, 2.1] (n 2375)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 4/36 = 11.1% [4.4, 25.3]; blocker out of range after 3/36
+      natural lock <= 5 s, no attempt: 391/2339 = 16.7% [15.3, 18.3]; with attempt 4/36 = 11.1% [4.4, 25.3]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.027 [0.005, 0.053] (n 36) | no attempt 0.046 [0.040, 0.053] (n 2339) | diff -0.019 [-0.042, +0.009] | matched (kind, phase, X-Bow hp, elixir) -0.016 [-0.036, +0.007] (n 36)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.044 [0.016, 0.073] (n 36) | no attempt 0.071 [0.062, 0.081] (n 2339) | diff -0.028 [-0.057, +0.004] | matched (kind, phase, X-Bow hp, elixir) -0.023 [-0.047, +0.004] (n 36)
+      match win: with attempt 0.278 [0.132, 0.457] (n 36) | without 0.500 [0.432, 0.565] (n 2339)
+      blocker gone <= 3 s: 1069/2375 = 45.0% [43.0, 47.0]; late Tornado (after 2 s, same episode) 25/2375 = 1.1% [0.7, 1.5]; elixir at t0 4.15 [4.07, 4.24] (n 2375)
+      blockers: valkyrie 225, knight 203, skeletons 118, witch 115, mega_knight 104, skeleton_army 77, royal_recruits 76, hog_rider 67, goblin_gang 59, pekka 57
+
+### ICEBOW Mark CLX: PARITY: matches 414, own X-Bows 1895 (4.58/match), opportunities 2152 (5.198/match, 1.136/X-Bow); matches with >= 1 opportunity 334
+  per match (bootstrap over matches): opportunities 5.20 [4.70, 5.73] (n 414); attempts 0.082 [0.053, 0.116] (n 414)
+  [1 troop in range] n 855 | ATTEMPT 9/855 = 1.1% [0.6, 2.0] | any Tornado in the window 9/855 = 1.1% [0.6, 2.0] | attempt rate, match-cluster CI 1.1 [0.5, 1.8] (n 855)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 0/9 = 0.0% [0.0, 29.9]; blocker out of range after 1/9
+      natural lock <= 5 s, no attempt: 204/846 = 24.1% [21.4, 27.1]; with attempt 0/9 = 0.0% [0.0, 29.9]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.000 [0.000, 0.000] (n 9) | no attempt 0.065 [0.056, 0.074] (n 846) | diff -0.065 [-0.074, -0.056] | matched (kind, phase, X-Bow hp, elixir) -0.047 [-0.071, -0.025] (n 9)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.031 [0.000, 0.081] (n 9) | no attempt 0.092 [0.079, 0.106] (n 846) | diff -0.061 [-0.097, -0.014] | matched (kind, phase, X-Bow hp, elixir) -0.036 [-0.069, -0.001] (n 9)
+      match win: with attempt 0.222 [0.000, 0.556] (n 9) | without 0.550 [0.483, 0.619] (n 846)
+      blocker gone <= 3 s: 257/855 = 30.1% [27.1, 33.2]; late Tornado (after 2 s, same episode) 9/855 = 1.1% [0.6, 2.0]; elixir at t0 4.21 [4.12, 4.31] (n 855)
+      blockers: valkyrie 109, knight 89, mega_knight 60, firecracker 35, pekka 28, electro_wizard 26, musketeer 25, executioner 25, wizard 24, giant_skeleton 22
+  [2+ troops] n 1297 | ATTEMPT 25/1297 = 1.9% [1.3, 2.8] | any Tornado in the window 25/1297 = 1.9% [1.3, 2.8] | attempt rate, match-cluster CI 1.9 [1.1, 2.9] (n 1297)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 4/25 = 16.0% [6.4, 34.7]; blocker out of range after 2/25
+      natural lock <= 5 s, no attempt: 155/1272 = 12.2% [10.5, 14.1]; with attempt 4/25 = 16.0% [6.4, 34.7]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.039 [0.009, 0.077] (n 25) | no attempt 0.036 [0.029, 0.043] (n 1272) | diff +0.003 [-0.028, +0.041] | matched (kind, phase, X-Bow hp, elixir) +0.005 [-0.024, +0.035] (n 25)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.051 [0.017, 0.090] (n 25) | no attempt 0.060 [0.049, 0.072] (n 1272) | diff -0.009 [-0.044, +0.032] | matched (kind, phase, X-Bow hp, elixir) -0.008 [-0.041, +0.025] (n 25)
+      match win: with attempt 0.320 [0.133, 0.560] (n 25) | without 0.481 [0.400, 0.561] (n 1272)
+      blocker gone <= 3 s: 717/1297 = 55.3% [52.6, 58.0]; late Tornado (after 2 s, same episode) 15/1297 = 1.2% [0.7, 1.9]; elixir at t0 4.06 [3.94, 4.18] (n 1297)
+      blockers: valkyrie 91, knight 90, skeletons 86, witch 85, skeleton_army 67, goblin_gang 53, royal_recruits 46, mega_knight 42, hog_rider 38, ice_wizard 32
+  [all] n 2152 | ATTEMPT 34/2152 = 1.6% [1.1, 2.2] | any Tornado in the window 34/2152 = 1.6% [1.1, 2.2] | attempt rate, match-cluster CI 1.6 [1.0, 2.2] (n 2152)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 4/34 = 11.8% [4.7, 26.6]; blocker out of range after 3/34
+      natural lock <= 5 s, no attempt: 359/2118 = 16.9% [15.4, 18.6]; with attempt 4/34 = 11.8% [4.7, 26.6]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.028 [0.006, 0.056] (n 34) | no attempt 0.048 [0.041, 0.055] (n 2118) | diff -0.019 [-0.043, +0.012] | matched (kind, phase, X-Bow hp, elixir) -0.016 [-0.037, +0.009] (n 34)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.046 [0.016, 0.078] (n 34) | no attempt 0.073 [0.063, 0.084] (n 2118) | diff -0.027 [-0.057, +0.010] | matched (kind, phase, X-Bow hp, elixir) -0.023 [-0.049, +0.007] (n 34)
+      match win: with attempt 0.294 [0.132, 0.486] (n 34) | without 0.509 [0.437, 0.578] (n 2118)
+      blocker gone <= 3 s: 974/2152 = 45.3% [43.2, 47.4]; late Tornado (after 2 s, same episode) 24/2152 = 1.1% [0.8, 1.7]; elixir at t0 4.12 [4.03, 4.21] (n 2152)
+      blockers: valkyrie 200, knight 179, mega_knight 102, witch 101, skeletons 98, skeleton_army 67, goblin_gang 57, hog_rider 55, pekka 52, firecracker 47
+
+### ICEBOW Mark CLXI: FIN15: matches 25, own X-Bows 144 (5.76/match), opportunities 223 (8.920/match, 1.549/X-Bow); matches with >= 1 opportunity 25
+  per match (bootstrap over matches): opportunities 8.92 [6.24, 11.88] (n 25); attempts 0.080 [0.000, 0.200] (n 25)
+  [1 troop in range] n 79 | ATTEMPT 1/79 = 1.3% [0.2, 6.8] | any Tornado in the window 1/79 = 1.3% [0.2, 6.8] | attempt rate, match-cluster CI 1.3 [0.0, 4.8] (n 79)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 0/1 = 0.0% [0.0, 79.3]; blocker out of range after 0/1
+      natural lock <= 5 s, no attempt: 15/78 = 19.2% [12.0, 29.3]; with attempt 0/1 = 0.0% [0.0, 79.3]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.000 [0.000, 0.000] (n 1) | no attempt 0.040 [0.023, 0.067] (n 78) | diff -0.040 [-0.066, -0.022] | matched (kind, phase, X-Bow hp, elixir) +0.000 [+0.000, +0.000] (n 1)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.000 [0.000, 0.000] (n 1) | no attempt 0.061 [0.033, 0.101] (n 78) | diff -0.061 [-0.103, -0.033] | matched (kind, phase, X-Bow hp, elixir) +0.000 [+0.000, +0.000] (n 1)
+      match win: with attempt 0.000 [0.000, 0.000] (n 1) | without 0.462 [0.208, 0.716] (n 78)
+      blocker gone <= 3 s: 20/79 = 25.3% [17.0, 35.9]; late Tornado (after 2 s, same episode) 0/79 = 0.0% [0.0, 4.6]; elixir at t0 4.65 [4.34, 4.94] (n 79)
+      blockers: valkyrie 15, knight 12, hog_rider 6, electro_wizard 5, firecracker 4, pekka 4, musketeer 3, mighty_miner 3, golden_knight 2, bowler 2
+  [2+ troops] n 144 | ATTEMPT 1/144 = 0.7% [0.1, 3.8] | any Tornado in the window 1/144 = 0.7% [0.1, 3.8] | attempt rate, match-cluster CI 0.7 [0.0, 2.3] (n 144)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 0/1 = 0.0% [0.0, 79.3]; blocker out of range after 0/1
+      natural lock <= 5 s, no attempt: 17/143 = 11.9% [7.6, 18.2]; with attempt 0/1 = 0.0% [0.0, 79.3]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.000 [0.000, 0.000] (n 1) | no attempt 0.028 [0.014, 0.049] (n 143) | diff -0.028 [-0.048, -0.013] | matched (kind, phase, X-Bow hp, elixir) -0.033 [-0.033, -0.033] (n 1)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.000 [0.000, 0.000] (n 1) | no attempt 0.052 [0.024, 0.096] (n 143) | diff -0.052 [-0.094, -0.023] | matched (kind, phase, X-Bow hp, elixir) -0.042 [-0.042, -0.042] (n 1)
+      match win: with attempt 0.000 [0.000, 0.000] (n 1) | without 0.399 [0.143, 0.663] (n 143)
+      blocker gone <= 3 s: 75/144 = 52.1% [44.0, 60.1]; late Tornado (after 2 s, same episode) 1/144 = 0.7% [0.1, 3.8]; elixir at t0 4.42 [4.08, 4.71] (n 144)
+      blockers: royal_recruits 29, skeletons 19, witch 12, knight 12, valkyrie 10, skeleton_army 10, spear_goblins 6, hog_rider 6, barbarian_barrel 6, mini_pekka 4
+  [all] n 223 | ATTEMPT 2/223 = 0.9% [0.2, 3.2] | any Tornado in the window 2/223 = 0.9% [0.2, 3.2] | attempt rate, match-cluster CI 0.9 [0.0, 2.4] (n 223)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 0/2 = 0.0% [0.0, 65.8]; blocker out of range after 0/2
+      natural lock <= 5 s, no attempt: 32/221 = 14.5% [10.4, 19.7]; with attempt 0/2 = 0.0% [0.0, 65.8]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.000 [0.000, 0.000] (n 2) | no attempt 0.032 [0.018, 0.051] (n 221) | diff -0.032 [-0.052, -0.018] | matched (kind, phase, X-Bow hp, elixir) -0.031 [-0.063, +0.000] (n 2)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.000 [0.000, 0.000] (n 2) | no attempt 0.055 [0.031, 0.089] (n 221) | diff -0.055 [-0.090, -0.030] | matched (kind, phase, X-Bow hp, elixir) -0.039 [-0.077, +0.000] (n 2)
+      match win: with attempt 0.000 [0.000, 0.000] (n 2) | without 0.421 [0.163, 0.661] (n 221)
+      blocker gone <= 3 s: 95/223 = 42.6% [36.3, 49.2]; late Tornado (after 2 s, same episode) 1/223 = 0.4% [0.1, 2.5]; elixir at t0 4.50 [4.22, 4.76] (n 223)
+      blockers: royal_recruits 30, valkyrie 25, knight 24, skeletons 20, witch 14, hog_rider 12, skeleton_army 10, firecracker 8, spear_goblins 6, electro_wizard 6
+
+  every own Tornado while our X-Bow lived: 167; X-Bow target then: {'troop': 93, 'tower': 36, None: 35, 'air': 1, 'building': 2}
+    target troop: tower locked <= 3 s after landing 4/93 = 4.3% [1.7, 10.5]
+    target tower: tower locked <= 3 s after landing 26/36 = 72.2% [56.0, 84.2]
+    target None: tower locked <= 3 s after landing 7/35 = 20.0% [10.0, 35.9]
+    target air: tower locked <= 3 s after landing 0/1 = 0.0% [0.0, 79.3]
+    target building: tower locked <= 3 s after landing 0/2 = 0.0% [0.0, 65.8]
+
+## SIM  matches 4800  (attempt = tornado_any)
+
+### all: matches 4800, own X-Bows 20735 (4.32/match), opportunities 14512 (3.023/match, 0.700/X-Bow); matches with >= 1 opportunity 2957
+  per match (bootstrap over matches): opportunities 3.02 [2.89, 3.15] (n 4800); attempts 0.061 [0.054, 0.070] (n 4800)
+  [held] n 14512 | ATTEMPT 295/14512 = 2.0% [1.8, 2.3] | any Tornado in the window 295/14512 = 2.0% [1.8, 2.3] | attempt rate, match-cluster CI 2.0 [1.8, 2.3] (n 14512)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 44/295 = 14.9% [11.3, 19.4]; blocker out of range after 0/295
+      natural lock <= 5 s, no attempt: 2991/14217 = 21.0% [20.4, 21.7]; with attempt 51/295 = 17.3% [13.4, 22.0]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.051 [0.039, 0.065] (n 295) | no attempt 0.066 [0.063, 0.069] (n 14217) | diff -0.015 [-0.028, -0.000] | matched (kind, phase, X-Bow hp, elixir) -0.011 [-0.023, +0.002] (n 295)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.072 [0.054, 0.090] (n 295) | no attempt 0.094 [0.090, 0.099] (n 14217) | diff -0.022 [-0.041, -0.004] | matched (kind, phase, X-Bow hp, elixir) -0.016 [-0.032, +0.001] (n 295)
+      match win: with attempt 0.508 [0.439, 0.573] (n 295) | without 0.633 [0.608, 0.656] (n 14217)
+  [both] n 14512 | ATTEMPT 295/14512 = 2.0% [1.8, 2.3] | any Tornado in the window 295/14512 = 2.0% [1.8, 2.3] | attempt rate, match-cluster CI 2.0 [1.8, 2.3] (n 14512)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 44/295 = 14.9% [11.3, 19.4]; blocker out of range after 0/295
+      natural lock <= 5 s, no attempt: 2991/14217 = 21.0% [20.4, 21.7]; with attempt 51/295 = 17.3% [13.4, 22.0]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.051 [0.039, 0.065] (n 295) | no attempt 0.066 [0.063, 0.069] (n 14217) | diff -0.015 [-0.028, -0.000] | matched (kind, phase, X-Bow hp, elixir) -0.011 [-0.023, +0.002] (n 295)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.072 [0.054, 0.090] (n 295) | no attempt 0.094 [0.090, 0.099] (n 14217) | diff -0.022 [-0.041, -0.004] | matched (kind, phase, X-Bow hp, elixir) -0.016 [-0.032, +0.001] (n 295)
+      match win: with attempt 0.508 [0.439, 0.573] (n 295) | without 0.633 [0.608, 0.656] (n 14217)
+
+### w14c_Bu20_pos: matches 480, own X-Bows 2065 (4.30/match), opportunities 1305 (2.719/match, 0.632/X-Bow); matches with >= 1 opportunity 294
+  per match (bootstrap over matches): opportunities 2.72 [2.38, 3.06] (n 480); attempts 0.067 [0.044, 0.092] (n 480)
+  [held] n 1305 | ATTEMPT 32/1305 = 2.5% [1.7, 3.4] | any Tornado in the window 32/1305 = 2.5% [1.7, 3.4] | attempt rate, match-cluster CI 2.5 [1.6, 3.5] (n 1305)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 3/32 = 9.4% [3.2, 24.2]; blocker out of range after 0/32
+      natural lock <= 5 s, no attempt: 273/1273 = 21.4% [19.3, 23.8]; with attempt 4/32 = 12.5% [5.0, 28.1]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.031 [0.007, 0.062] (n 32) | no attempt 0.069 [0.059, 0.082] (n 1273) | diff -0.039 [-0.065, -0.008] | matched (kind, phase, X-Bow hp, elixir) -0.038 [-0.062, -0.012] (n 32)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.040 [0.012, 0.077] (n 32) | no attempt 0.096 [0.081, 0.112] (n 1273) | diff -0.056 [-0.088, -0.021] | matched (kind, phase, X-Bow hp, elixir) -0.055 [-0.082, -0.024] (n 32)
+      match win: with attempt 0.406 [0.214, 0.600] (n 32) | without 0.576 [0.498, 0.659] (n 1273)
+  [both] n 1305 | ATTEMPT 32/1305 = 2.5% [1.7, 3.4] | any Tornado in the window 32/1305 = 2.5% [1.7, 3.4] | attempt rate, match-cluster CI 2.5 [1.6, 3.5] (n 1305)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 3/32 = 9.4% [3.2, 24.2]; blocker out of range after 0/32
+      natural lock <= 5 s, no attempt: 273/1273 = 21.4% [19.3, 23.8]; with attempt 4/32 = 12.5% [5.0, 28.1]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.031 [0.007, 0.062] (n 32) | no attempt 0.069 [0.059, 0.082] (n 1273) | diff -0.039 [-0.065, -0.008] | matched (kind, phase, X-Bow hp, elixir) -0.038 [-0.062, -0.012] (n 32)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.040 [0.012, 0.077] (n 32) | no attempt 0.096 [0.081, 0.112] (n 1273) | diff -0.056 [-0.088, -0.021] | matched (kind, phase, X-Bow hp, elixir) -0.055 [-0.082, -0.024] (n 32)
+      match win: with attempt 0.406 [0.214, 0.600] (n 32) | without 0.576 [0.498, 0.659] (n 1273)
+
+### w14c_Eu40_pos: matches 480, own X-Bows 2039 (4.25/match), opportunities 1345 (2.802/match, 0.660/X-Bow); matches with >= 1 opportunity 314
+  per match (bootstrap over matches): opportunities 2.80 [2.47, 3.16] (n 480); attempts 0.060 [0.035, 0.087] (n 480)
+  [held] n 1345 | ATTEMPT 29/1345 = 2.2% [1.5, 3.1] | any Tornado in the window 29/1345 = 2.2% [1.5, 3.1] | attempt rate, match-cluster CI 2.2 [1.3, 3.1] (n 1345)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 5/29 = 17.2% [7.6, 34.5]; blocker out of range after 0/29
+      natural lock <= 5 s, no attempt: 266/1316 = 20.2% [18.1, 22.5]; with attempt 6/29 = 20.7% [9.8, 38.4]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.084 [0.023, 0.158] (n 29) | no attempt 0.062 [0.053, 0.073] (n 1316) | diff +0.022 [-0.040, +0.104] | matched (kind, phase, X-Bow hp, elixir) +0.026 [-0.030, +0.089] (n 29)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.103 [0.030, 0.190] (n 29) | no attempt 0.087 [0.074, 0.102] (n 1316) | diff +0.016 [-0.059, +0.112] | matched (kind, phase, X-Bow hp, elixir) +0.020 [-0.046, +0.095] (n 29)
+      match win: with attempt 0.276 [0.103, 0.483] (n 29) | without 0.590 [0.517, 0.665] (n 1316)
+  [both] n 1345 | ATTEMPT 29/1345 = 2.2% [1.5, 3.1] | any Tornado in the window 29/1345 = 2.2% [1.5, 3.1] | attempt rate, match-cluster CI 2.2 [1.3, 3.1] (n 1345)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 5/29 = 17.2% [7.6, 34.5]; blocker out of range after 0/29
+      natural lock <= 5 s, no attempt: 266/1316 = 20.2% [18.1, 22.5]; with attempt 6/29 = 20.7% [9.8, 38.4]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.084 [0.023, 0.158] (n 29) | no attempt 0.062 [0.053, 0.073] (n 1316) | diff +0.022 [-0.040, +0.104] | matched (kind, phase, X-Bow hp, elixir) +0.026 [-0.030, +0.089] (n 29)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.103 [0.030, 0.190] (n 29) | no attempt 0.087 [0.074, 0.102] (n 1316) | diff +0.016 [-0.059, +0.112] | matched (kind, phase, X-Bow hp, elixir) +0.020 [-0.046, +0.095] (n 29)
+      match win: with attempt 0.276 [0.103, 0.483] (n 29) | without 0.590 [0.517, 0.665] (n 1316)
+
+### w14c_Iu40_pos: matches 480, own X-Bows 2073 (4.32/match), opportunities 1544 (3.217/match, 0.745/X-Bow); matches with >= 1 opportunity 321
+  per match (bootstrap over matches): opportunities 3.22 [2.86, 3.59] (n 480); attempts 0.081 [0.050, 0.113] (n 480)
+  [held] n 1544 | ATTEMPT 39/1544 = 2.5% [1.9, 3.4] | any Tornado in the window 39/1544 = 2.5% [1.9, 3.4] | attempt rate, match-cluster CI 2.5 [1.6, 3.6] (n 1544)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 7/39 = 17.9% [9.0, 32.7]; blocker out of range after 0/39
+      natural lock <= 5 s, no attempt: 338/1505 = 22.5% [20.4, 24.6]; with attempt 8/39 = 20.5% [10.8, 35.5]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.050 [0.019, 0.090] (n 39) | no attempt 0.068 [0.058, 0.077] (n 1505) | diff -0.018 [-0.050, +0.023] | matched (kind, phase, X-Bow hp, elixir) -0.016 [-0.047, +0.022] (n 39)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.077 [0.033, 0.126] (n 39) | no attempt 0.097 [0.083, 0.111] (n 1505) | diff -0.020 [-0.064, +0.032] | matched (kind, phase, X-Bow hp, elixir) -0.017 [-0.059, +0.032] (n 39)
+      match win: with attempt 0.410 [0.238, 0.618] (n 39) | without 0.589 [0.519, 0.662] (n 1505)
+  [both] n 1544 | ATTEMPT 39/1544 = 2.5% [1.9, 3.4] | any Tornado in the window 39/1544 = 2.5% [1.9, 3.4] | attempt rate, match-cluster CI 2.5 [1.6, 3.6] (n 1544)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 7/39 = 17.9% [9.0, 32.7]; blocker out of range after 0/39
+      natural lock <= 5 s, no attempt: 338/1505 = 22.5% [20.4, 24.6]; with attempt 8/39 = 20.5% [10.8, 35.5]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.050 [0.019, 0.090] (n 39) | no attempt 0.068 [0.058, 0.077] (n 1505) | diff -0.018 [-0.050, +0.023] | matched (kind, phase, X-Bow hp, elixir) -0.016 [-0.047, +0.022] (n 39)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.077 [0.033, 0.126] (n 39) | no attempt 0.097 [0.083, 0.111] (n 1505) | diff -0.020 [-0.064, +0.032] | matched (kind, phase, X-Bow hp, elixir) -0.017 [-0.059, +0.032] (n 39)
+      match win: with attempt 0.410 [0.238, 0.618] (n 39) | without 0.589 [0.519, 0.662] (n 1505)
+
+### w14p_E4_pos: matches 480, own X-Bows 2511 (5.23/match), opportunities 2143 (4.465/match, 0.853/X-Bow); matches with >= 1 opportunity 351
+  per match (bootstrap over matches): opportunities 4.46 [3.97, 4.99] (n 480); attempts 0.052 [0.031, 0.075] (n 480)
+  [held] n 2143 | ATTEMPT 25/2143 = 1.2% [0.8, 1.7] | any Tornado in the window 25/2143 = 1.2% [0.8, 1.7] | attempt rate, match-cluster CI 1.2 [0.7, 1.7] (n 2143)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 2/25 = 8.0% [2.2, 25.0]; blocker out of range after 0/25
+      natural lock <= 5 s, no attempt: 530/2118 = 25.0% [23.2, 26.9]; with attempt 2/25 = 8.0% [2.2, 25.0]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.027 [0.006, 0.056] (n 25) | no attempt 0.077 [0.067, 0.086] (n 2118) | diff -0.050 [-0.073, -0.021] | matched (kind, phase, X-Bow hp, elixir) -0.039 [-0.061, -0.013] (n 25)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.050 [0.013, 0.100] (n 25) | no attempt 0.108 [0.095, 0.122] (n 2118) | diff -0.058 [-0.098, -0.008] | matched (kind, phase, X-Bow hp, elixir) -0.041 [-0.081, +0.005] (n 25)
+      match win: with attempt 0.520 [0.304, 0.731] (n 25) | without 0.730 [0.665, 0.790] (n 2118)
+  [both] n 2143 | ATTEMPT 25/2143 = 1.2% [0.8, 1.7] | any Tornado in the window 25/2143 = 1.2% [0.8, 1.7] | attempt rate, match-cluster CI 1.2 [0.7, 1.7] (n 2143)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 2/25 = 8.0% [2.2, 25.0]; blocker out of range after 0/25
+      natural lock <= 5 s, no attempt: 530/2118 = 25.0% [23.2, 26.9]; with attempt 2/25 = 8.0% [2.2, 25.0]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.027 [0.006, 0.056] (n 25) | no attempt 0.077 [0.067, 0.086] (n 2118) | diff -0.050 [-0.073, -0.021] | matched (kind, phase, X-Bow hp, elixir) -0.039 [-0.061, -0.013] (n 25)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.050 [0.013, 0.100] (n 25) | no attempt 0.108 [0.095, 0.122] (n 2118) | diff -0.058 [-0.098, -0.008] | matched (kind, phase, X-Bow hp, elixir) -0.041 [-0.081, +0.005] (n 25)
+      match win: with attempt 0.520 [0.304, 0.731] (n 25) | without 0.730 [0.665, 0.790] (n 2118)
+
+### w14p_R6u20_pos: matches 480, own X-Bows 2103 (4.38/match), opportunities 1494 (3.112/match, 0.710/X-Bow); matches with >= 1 opportunity 300
+  per match (bootstrap over matches): opportunities 3.11 [2.71, 3.53] (n 480); attempts 0.079 [0.050, 0.113] (n 480)
+  [held] n 1494 | ATTEMPT 38/1494 = 2.5% [1.9, 3.5] | any Tornado in the window 38/1494 = 2.5% [1.9, 3.5] | attempt rate, match-cluster CI 2.5 [1.7, 3.6] (n 1494)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 6/38 = 15.8% [7.4, 30.4]; blocker out of range after 0/38
+      natural lock <= 5 s, no attempt: 344/1456 = 23.6% [21.5, 25.9]; with attempt 7/38 = 18.4% [9.2, 33.4]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.064 [0.022, 0.110] (n 38) | no attempt 0.076 [0.065, 0.086] (n 1456) | diff -0.012 [-0.056, +0.037] | matched (kind, phase, X-Bow hp, elixir) -0.011 [-0.044, +0.031] (n 38)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.099 [0.038, 0.165] (n 38) | no attempt 0.106 [0.092, 0.121] (n 1456) | diff -0.007 [-0.075, +0.063] | matched (kind, phase, X-Bow hp, elixir) -0.006 [-0.054, +0.053] (n 38)
+      match win: with attempt 0.737 [0.559, 0.878] (n 38) | without 0.714 [0.642, 0.783] (n 1456)
+  [both] n 1494 | ATTEMPT 38/1494 = 2.5% [1.9, 3.5] | any Tornado in the window 38/1494 = 2.5% [1.9, 3.5] | attempt rate, match-cluster CI 2.5 [1.7, 3.6] (n 1494)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 6/38 = 15.8% [7.4, 30.4]; blocker out of range after 0/38
+      natural lock <= 5 s, no attempt: 344/1456 = 23.6% [21.5, 25.9]; with attempt 7/38 = 18.4% [9.2, 33.4]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.064 [0.022, 0.110] (n 38) | no attempt 0.076 [0.065, 0.086] (n 1456) | diff -0.012 [-0.056, +0.037] | matched (kind, phase, X-Bow hp, elixir) -0.011 [-0.044, +0.031] (n 38)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.099 [0.038, 0.165] (n 38) | no attempt 0.106 [0.092, 0.121] (n 1456) | diff -0.007 [-0.075, +0.063] | matched (kind, phase, X-Bow hp, elixir) -0.006 [-0.054, +0.053] (n 38)
+      match win: with attempt 0.737 [0.559, 0.878] (n 38) | without 0.714 [0.642, 0.783] (n 1456)
+
+### w18_Iu40_tau35_pos: matches 480, own X-Bows 2077 (4.33/match), opportunities 1527 (3.181/match, 0.735/X-Bow); matches with >= 1 opportunity 303
+  per match (bootstrap over matches): opportunities 3.18 [2.80, 3.58] (n 480); attempts 0.071 [0.044, 0.100] (n 480)
+  [held] n 1527 | ATTEMPT 34/1527 = 2.2% [1.6, 3.1] | any Tornado in the window 34/1527 = 2.2% [1.6, 3.1] | attempt rate, match-cluster CI 2.2 [1.5, 3.1] (n 1527)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 7/34 = 20.6% [10.3, 36.8]; blocker out of range after 0/34
+      natural lock <= 5 s, no attempt: 303/1493 = 20.3% [18.3, 22.4]; with attempt 8/34 = 23.5% [12.4, 40.0]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.042 [0.016, 0.072] (n 34) | no attempt 0.065 [0.056, 0.074] (n 1493) | diff -0.023 [-0.050, +0.010] | matched (kind, phase, X-Bow hp, elixir) -0.019 [-0.044, +0.010] (n 34)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.051 [0.019, 0.087] (n 34) | no attempt 0.093 [0.080, 0.105] (n 1493) | diff -0.042 [-0.075, +0.000] | matched (kind, phase, X-Bow hp, elixir) -0.036 [-0.068, -0.002] (n 34)
+      match win: with attempt 0.588 [0.400, 0.763] (n 34) | without 0.597 [0.521, 0.669] (n 1493)
+  [both] n 1527 | ATTEMPT 34/1527 = 2.2% [1.6, 3.1] | any Tornado in the window 34/1527 = 2.2% [1.6, 3.1] | attempt rate, match-cluster CI 2.2 [1.5, 3.1] (n 1527)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 7/34 = 20.6% [10.3, 36.8]; blocker out of range after 0/34
+      natural lock <= 5 s, no attempt: 303/1493 = 20.3% [18.3, 22.4]; with attempt 8/34 = 23.5% [12.4, 40.0]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.042 [0.016, 0.072] (n 34) | no attempt 0.065 [0.056, 0.074] (n 1493) | diff -0.023 [-0.050, +0.010] | matched (kind, phase, X-Bow hp, elixir) -0.019 [-0.044, +0.010] (n 34)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.051 [0.019, 0.087] (n 34) | no attempt 0.093 [0.080, 0.105] (n 1493) | diff -0.042 [-0.075, +0.000] | matched (kind, phase, X-Bow hp, elixir) -0.036 [-0.068, -0.002] (n 34)
+      match win: with attempt 0.588 [0.400, 0.763] (n 34) | without 0.597 [0.521, 0.669] (n 1493)
+
+### w18_Iu40_tau45_pos: matches 480, own X-Bows 2042 (4.25/match), opportunities 1413 (2.944/match, 0.692/X-Bow); matches with >= 1 opportunity 289
+  per match (bootstrap over matches): opportunities 2.94 [2.58, 3.33] (n 480); attempts 0.065 [0.044, 0.090] (n 480)
+  [held] n 1413 | ATTEMPT 31/1413 = 2.2% [1.5, 3.1] | any Tornado in the window 31/1413 = 2.2% [1.5, 3.1] | attempt rate, match-cluster CI 2.2 [1.4, 3.0] (n 1413)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 6/31 = 19.4% [9.2, 36.3]; blocker out of range after 0/31
+      natural lock <= 5 s, no attempt: 277/1382 = 20.0% [18.0, 22.2]; with attempt 7/31 = 22.6% [11.4, 39.8]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.074 [0.029, 0.125] (n 31) | no attempt 0.063 [0.054, 0.074] (n 1382) | diff +0.010 [-0.036, +0.061] | matched (kind, phase, X-Bow hp, elixir) +0.015 [-0.025, +0.063] (n 31)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.100 [0.042, 0.164] (n 31) | no attempt 0.092 [0.079, 0.106] (n 1382) | diff +0.008 [-0.051, +0.072] | matched (kind, phase, X-Bow hp, elixir) +0.015 [-0.039, +0.077] (n 31)
+      match win: with attempt 0.581 [0.379, 0.767] (n 31) | without 0.611 [0.537, 0.681] (n 1382)
+  [both] n 1413 | ATTEMPT 31/1413 = 2.2% [1.5, 3.1] | any Tornado in the window 31/1413 = 2.2% [1.5, 3.1] | attempt rate, match-cluster CI 2.2 [1.4, 3.0] (n 1413)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 6/31 = 19.4% [9.2, 36.3]; blocker out of range after 0/31
+      natural lock <= 5 s, no attempt: 277/1382 = 20.0% [18.0, 22.2]; with attempt 7/31 = 22.6% [11.4, 39.8]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.074 [0.029, 0.125] (n 31) | no attempt 0.063 [0.054, 0.074] (n 1382) | diff +0.010 [-0.036, +0.061] | matched (kind, phase, X-Bow hp, elixir) +0.015 [-0.025, +0.063] (n 31)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.100 [0.042, 0.164] (n 31) | no attempt 0.092 [0.079, 0.106] (n 1382) | diff +0.008 [-0.051, +0.072] | matched (kind, phase, X-Bow hp, elixir) +0.015 [-0.039, +0.077] (n 31)
+      match win: with attempt 0.581 [0.379, 0.767] (n 31) | without 0.611 [0.537, 0.681] (n 1382)
+
+### w18_Iu40_tau55_pos: matches 480, own X-Bows 2097 (4.37/match), opportunities 1415 (2.948/match, 0.675/X-Bow); matches with >= 1 opportunity 284
+  per match (bootstrap over matches): opportunities 2.95 [2.61, 3.33] (n 480); attempts 0.065 [0.042, 0.092] (n 480)
+  [held] n 1415 | ATTEMPT 31/1415 = 2.2% [1.5, 3.1] | any Tornado in the window 31/1415 = 2.2% [1.5, 3.1] | attempt rate, match-cluster CI 2.2 [1.5, 3.1] (n 1415)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 2/31 = 6.5% [1.8, 20.7]; blocker out of range after 0/31
+      natural lock <= 5 s, no attempt: 246/1384 = 17.8% [15.9, 19.9]; with attempt 3/31 = 9.7% [3.3, 24.9]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.039 [0.008, 0.076] (n 31) | no attempt 0.051 [0.043, 0.061] (n 1384) | diff -0.012 [-0.040, +0.027] | matched (kind, phase, X-Bow hp, elixir) -0.007 [-0.037, +0.029] (n 31)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.054 [0.010, 0.105] (n 31) | no attempt 0.075 [0.063, 0.089] (n 1384) | diff -0.021 [-0.062, +0.036] | matched (kind, phase, X-Bow hp, elixir) -0.013 [-0.056, +0.040] (n 31)
+      match win: with attempt 0.387 [0.185, 0.581] (n 31) | without 0.570 [0.494, 0.647] (n 1384)
+  [both] n 1415 | ATTEMPT 31/1415 = 2.2% [1.5, 3.1] | any Tornado in the window 31/1415 = 2.2% [1.5, 3.1] | attempt rate, match-cluster CI 2.2 [1.5, 3.1] (n 1415)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 2/31 = 6.5% [1.8, 20.7]; blocker out of range after 0/31
+      natural lock <= 5 s, no attempt: 246/1384 = 17.8% [15.9, 19.9]; with attempt 3/31 = 9.7% [3.3, 24.9]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.039 [0.008, 0.076] (n 31) | no attempt 0.051 [0.043, 0.061] (n 1384) | diff -0.012 [-0.040, +0.027] | matched (kind, phase, X-Bow hp, elixir) -0.007 [-0.037, +0.029] (n 31)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.054 [0.010, 0.105] (n 31) | no attempt 0.075 [0.063, 0.089] (n 1384) | diff -0.021 [-0.062, +0.036] | matched (kind, phase, X-Bow hp, elixir) -0.013 [-0.056, +0.040] (n 31)
+      match win: with attempt 0.387 [0.185, 0.581] (n 31) | without 0.570 [0.494, 0.647] (n 1384)
+
+### w18_Iu40_tau65_pos: matches 480, own X-Bows 1991 (4.15/match), opportunities 1265 (2.635/match, 0.635/X-Bow); matches with >= 1 opportunity 270
+  per match (bootstrap over matches): opportunities 2.64 [2.29, 3.00] (n 480); attempts 0.044 [0.027, 0.065] (n 480)
+  [held] n 1265 | ATTEMPT 21/1265 = 1.7% [1.1, 2.5] | any Tornado in the window 21/1265 = 1.7% [1.1, 2.5] | attempt rate, match-cluster CI 1.7 [1.0, 2.4] (n 1265)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 5/21 = 23.8% [10.6, 45.1]; blocker out of range after 0/21
+      natural lock <= 5 s, no attempt: 191/1244 = 15.4% [13.5, 17.5]; with attempt 5/21 = 23.8% [10.6, 45.1]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.051 [0.013, 0.099] (n 21) | no attempt 0.049 [0.040, 0.058] (n 1244) | diff +0.002 [-0.036, +0.050] | matched (kind, phase, X-Bow hp, elixir) +0.011 [-0.027, +0.056] (n 21)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.066 [0.014, 0.138] (n 21) | no attempt 0.073 [0.061, 0.086] (n 1244) | diff -0.007 [-0.061, +0.070] | matched (kind, phase, X-Bow hp, elixir) +0.006 [-0.047, +0.078] (n 21)
+      match win: with attempt 0.571 [0.350, 0.800] (n 21) | without 0.606 [0.524, 0.686] (n 1244)
+  [both] n 1265 | ATTEMPT 21/1265 = 1.7% [1.1, 2.5] | any Tornado in the window 21/1265 = 1.7% [1.1, 2.5] | attempt rate, match-cluster CI 1.7 [1.0, 2.4] (n 1265)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 5/21 = 23.8% [10.6, 45.1]; blocker out of range after 0/21
+      natural lock <= 5 s, no attempt: 191/1244 = 15.4% [13.5, 17.5]; with attempt 5/21 = 23.8% [10.6, 45.1]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.051 [0.013, 0.099] (n 21) | no attempt 0.049 [0.040, 0.058] (n 1244) | diff +0.002 [-0.036, +0.050] | matched (kind, phase, X-Bow hp, elixir) +0.011 [-0.027, +0.056] (n 21)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.066 [0.014, 0.138] (n 21) | no attempt 0.073 [0.061, 0.086] (n 1244) | diff -0.007 [-0.061, +0.070] | matched (kind, phase, X-Bow hp, elixir) +0.006 [-0.047, +0.078] (n 21)
+      match win: with attempt 0.571 [0.350, 0.800] (n 21) | without 0.606 [0.524, 0.686] (n 1244)
+
+### w18_Iu40_tau75_pos: matches 480, own X-Bows 1737 (3.62/match), opportunities 1061 (2.210/match, 0.611/X-Bow); matches with >= 1 opportunity 231
+  per match (bootstrap over matches): opportunities 2.21 [1.86, 2.57] (n 480); attempts 0.031 [0.015, 0.050] (n 480)
+  [held] n 1061 | ATTEMPT 15/1061 = 1.4% [0.9, 2.3] | any Tornado in the window 15/1061 = 1.4% [0.9, 2.3] | attempt rate, match-cluster CI 1.4 [0.7, 2.2] (n 1061)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 1/15 = 6.7% [1.2, 29.8]; blocker out of range after 0/15
+      natural lock <= 5 s, no attempt: 223/1046 = 21.3% [18.9, 23.9]; with attempt 1/15 = 6.7% [1.2, 29.8]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.039 [0.000, 0.108] (n 15) | no attempt 0.071 [0.059, 0.083] (n 1046) | diff -0.032 [-0.076, +0.039] | matched (kind, phase, X-Bow hp, elixir) -0.022 [-0.063, +0.042] (n 15)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.066 [0.000, 0.145] (n 15) | no attempt 0.107 [0.091, 0.125] (n 1046) | diff -0.041 [-0.107, +0.035] | matched (kind, phase, X-Bow hp, elixir) -0.026 [-0.089, +0.052] (n 15)
+      match win: with attempt 0.667 [0.385, 0.889] (n 15) | without 0.707 [0.624, 0.785] (n 1046)
+  [both] n 1061 | ATTEMPT 15/1061 = 1.4% [0.9, 2.3] | any Tornado in the window 15/1061 = 1.4% [0.9, 2.3] | attempt rate, match-cluster CI 1.4 [0.7, 2.2] (n 1061)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 1/15 = 6.7% [1.2, 29.8]; blocker out of range after 0/15
+      natural lock <= 5 s, no attempt: 223/1046 = 21.3% [18.9, 23.9]; with attempt 1/15 = 6.7% [1.2, 29.8]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.039 [0.000, 0.108] (n 15) | no attempt 0.071 [0.059, 0.083] (n 1046) | diff -0.032 [-0.076, +0.039] | matched (kind, phase, X-Bow hp, elixir) -0.022 [-0.063, +0.042] (n 15)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.066 [0.000, 0.145] (n 15) | no attempt 0.107 [0.091, 0.125] (n 1046) | diff -0.041 [-0.107, +0.035] | matched (kind, phase, X-Bow hp, elixir) -0.026 [-0.089, +0.052] (n 15)
+      match win: with attempt 0.667 [0.385, 0.889] (n 15) | without 0.707 [0.624, 0.785] (n 1046)
+
+  every own Tornado while our X-Bow lived: 1792; X-Bow target then: {'tower': 374, 'unit': 1192, 'none': 226}
+    target tower: tower locked <= 3 s after landing 374/374 = 100.0% [99.0, 100.0]
+    target unit: tower locked <= 3 s after landing 123/1192 = 10.3% [8.7, 12.2]
+    target none: tower locked <= 3 s after landing 32/226 = 14.2% [10.2, 19.3]
+
+## PRO  matches 1629  (attempt = attempt)
+
+### all: matches 1629, own X-Bows 6158 (3.78/match), opportunities 2996 (1.839/match, 0.487/X-Bow); matches with >= 1 opportunity 1105
+  per match (bootstrap over matches): opportunities 1.84 [1.74, 1.94] (n 1629); attempts 0.036 [0.027, 0.045] (n 1629)
+  [held] n 1984 | ATTEMPT 31/1984 = 1.6% [1.1, 2.2] | any Tornado in the window 175/1984 = 8.8% [7.7, 10.1] | attempt rate, match-cluster CI 1.6 [1.0, 2.1] (n 1984)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 12/31 = 38.7% [23.7, 56.2]; blocker out of range after 15/31
+      natural lock <= 5 s, no attempt: 431/1953 = 22.1% [20.3, 24.0]; with attempt 12/31 = 38.7% [23.7, 56.2]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.094 [0.044, 0.153] (n 31) | no attempt 0.057 [0.051, 0.062] (n 1953) | diff +0.037 [-0.011, +0.095] | matched (kind, phase, X-Bow hp, elixir) +0.037 [-0.013, +0.097] (n 31)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.109 [0.054, 0.177] (n 31) | no attempt 0.085 [0.077, 0.093] (n 1953) | diff +0.025 [-0.031, +0.091] | matched (kind, phase, X-Bow hp, elixir) +0.017 [-0.041, +0.088] (n 31)
+      match win: with attempt 0.452 [0.290, 0.645] (n 31) | without 0.554 [0.514, 0.594] (n 1953)
+      blocker gone <= 3 s: 724/1984 = 36.5% [34.4, 38.6]; late Tornado (after 2 s, same episode) 26/1984 = 1.3% [0.9, 1.9]; elixir at t0 4.76 [4.68, 4.83] (n 1984)
+      blockers: knight 161, ice_golemite 123, valkyrie 105, berserker 99, bowler 95, pekka 76, skeletons 65, giant_skeleton 55, mega_knight 52, giant 51
+  [about] n 1012 | ATTEMPT 27/1012 = 2.7% [1.8, 3.9] | any Tornado in the window 78/1012 = 7.7% [6.2, 9.5] | attempt rate, match-cluster CI 2.7 [1.7, 3.7] (n 1012)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 9/27 = 33.3% [18.6, 52.2]; blocker out of range after 18/27
+      natural lock <= 5 s, no attempt: 102/985 = 10.4% [8.6, 12.4]; with attempt 9/27 = 33.3% [18.6, 52.2]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.084 [0.040, 0.133] (n 27) | no attempt 0.031 [0.026, 0.037] (n 985) | diff +0.053 [+0.009, +0.101] | matched (kind, phase, X-Bow hp, elixir) +0.053 [+0.009, +0.106] (n 27)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.122 [0.055, 0.201] (n 27) | no attempt 0.065 [0.055, 0.075] (n 985) | diff +0.057 [-0.010, +0.133] | matched (kind, phase, X-Bow hp, elixir) +0.056 [-0.010, +0.137] (n 27)
+      match win: with attempt 0.444 [0.269, 0.643] (n 27) | without 0.494 [0.452, 0.537] (n 985)
+      blocker gone <= 3 s: 330/1012 = 32.6% [29.8, 35.6]; late Tornado (after 2 s, same episode) 21/1012 = 2.1% [1.4, 3.2]; elixir at t0 4.07 [4.01, 4.13] (n 1012)
+      blockers: knight 72, bowler 59, berserker 42, valkyrie 39, ice_golemite 33, pekka 31, electro_spirit 31, princess 30, ghost 26, giant 25
+  [both] n 2996 | ATTEMPT 58/2996 = 1.9% [1.5, 2.5] | any Tornado in the window 253/2996 = 8.4% [7.5, 9.5] | attempt rate, match-cluster CI 1.9 [1.4, 2.5] (n 2996)
+      SUCCESS (tower locked <= 3 s after the Tornado lands) 21/58 = 36.2% [25.1, 49.1]; blocker out of range after 33/58
+      natural lock <= 5 s, no attempt: 533/2938 = 18.1% [16.8, 19.6]; with attempt 21/58 = 36.2% [25.1, 49.1]
+      X-Bow tower dmg next 10 s (princess units): attempt 0.089 [0.055, 0.129] (n 58) | no attempt 0.048 [0.044, 0.052] (n 2938) | diff +0.041 [+0.006, +0.075] | matched (kind, phase, X-Bow hp, elixir) +0.045 [+0.010, +0.083] (n 58)
+      X-Bow tower dmg next 15 s (princess units): attempt 0.115 [0.072, 0.164] (n 58) | no attempt 0.078 [0.071, 0.085] (n 2938) | diff +0.037 [-0.008, +0.082] | matched (kind, phase, X-Bow hp, elixir) +0.036 [-0.008, +0.084] (n 58)
+      match win: with attempt 0.448 [0.322, 0.586] (n 58) | without 0.534 [0.497, 0.568] (n 2938)
+      blocker gone <= 3 s: 1054/2996 = 35.2% [33.5, 36.9]; late Tornado (after 2 s, same episode) 47/2996 = 1.6% [1.2, 2.1]; elixir at t0 4.52 [4.47, 4.58] (n 2996)
+      blockers: knight 233, ice_golemite 156, bowler 154, valkyrie 144, berserker 141, pekka 107, skeletons 86, giant 76, electro_spirit 69, giant_skeleton 69
+
+## rule vs reader (live frames, X-Bow active, reader target known): n 1699; same class 1511/1699 = 88.9% [87.4, 90.3]; reader troop -> rule troop 892/931 = 95.8% [94.3, 96.9]; reader tower -> rule tower 479/606 = 79.0% [75.6, 82.1]
