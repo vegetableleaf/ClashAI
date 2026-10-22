@@ -8,7 +8,7 @@ K="-n -o StrictHostKeyChecking=no -i $HOME/.ssh/runpod_clashbot"
 D=/workspace/cb_stepd/icebow/data/bench/rl_royale/$R
 until ssh $K -p $P root@$H "[ -f $D/${R}_u$U.pt ] && [ \$(( \$(date +%s) - \$(stat -c %Y $D/${R}_u$U.pt) )) -gt 20 ]"; do sleep 30; done
 # kill the trainer + ONLY its own children (actors / resource tracker), never the checkpoint eval's gap.py workers
-ssh $K -p $P root@$H "PIDS=\$(pgrep -f 'rl_royale.*$R' | tr '\n' ' '); KIDS=\$(for p in \$PIDS; do pgrep -P \$p; done | tr '\n' ' ');
+ssh $K -p $P root@$H "PIDS=\$(pgrep -f '[r]l_royale.*$R' | tr '\n' ' '); KIDS=\$(for p in \$PIDS; do pgrep -P \$p; done | tr '\n' ' ');
   echo killing \$PIDS children \$KIDS; kill \$PIDS \$KIDS 2>/dev/null; sleep 10; kill \$KIDS 2>/dev/null;
-  pgrep -f 'rl_royale.*$R' && echo STILL_RUNNING || echo STOPPED"
+  pgrep -f '[r]l_royale.*$R' && echo STILL_RUNNING || echo STOPPED"
 ssh $K -p $P root@$H "sed -i 's#--run \$R \$RES#--run \$R \$RES remote_actors=icebow/data/w16_ep.txt#' /workspace/long_train.sh; grep -c remote_actors /workspace/long_train.sh; bash /workspace/long_train.sh tn_long_e1i_s74"
