@@ -1641,10 +1641,11 @@ def exploiter_league(cfg: dict) -> Optional[dict]:
         raise SystemExit(f"league_exploiters must be {{ckpt, decks, share}} (+ optional {', '.join(EXPLOITER_OWN)}), got {x!r}")
     own = {k: x[k] for k in EXPLOITER_OWN if k in x}
     for k, v in own.items():
-        ok = ((not isinstance(v, bool) and isinstance(v, (int, float)) and v > 0) if k == "T" else
+        ok = ((not isinstance(v, bool) and isinstance(v, (int, float)) and 0 < v < 1) if k == "tau" else
+              (not isinstance(v, bool) and isinstance(v, (int, float)) and v > 0) if k == "T" else
               (type(v) is int and v >= (1 if k == "decide_every" else 0)))
         if not ok:
-            raise SystemExit(f"league_exploiters.{k} must be {'a number > 0' if k == 'T' else 'an int >= ' + ('1' if k == 'decide_every' else '0')}, got {v!r}")
+            raise SystemExit(f"league_exploiters.{k} must be {'a number in (0, 1)' if k == 'tau' else 'a number > 0' if k == 'T' else 'an int >= ' + ('1' if k == 'decide_every' else '0')}, got {v!r}")
     sh = x["share"]
     if isinstance(sh, bool) or not isinstance(sh, (int, float)) or not 0 < sh <= 1:
         raise SystemExit(f"league_exploiters.share must be a number in (0, 1], got {sh!r}")
@@ -1661,7 +1662,8 @@ def exploiter_league(cfg: dict) -> Optional[dict]:
                     "path": x["ckpt"], **({"cfg": own} if own else {})}}
 
 
-EXPLOITER_OWN = ("T", "decide_every", "reaction_ticks")      # league_exploiters' optional per-opponent keys (L74 O6)
+EXPLOITER_OWN = ("T", "decide_every", "reaction_ticks", "tau")   # league_exploiters' optional per-opponent keys (L74 O6;
+                                                                  # tau 10-23: PUSH_CAL calibrated decode, absent = the run's tau)
 
 
 def own_opp_cfg(oc: dict, opp: dict, base: dict) -> dict:
@@ -1673,6 +1675,8 @@ def own_opp_cfg(oc: dict, opp: dict, base: dict) -> dict:
         return E.opp_tempo(oc, base.get("opp_decide_every"), base.get("opp_reaction_ticks"))
     if c.get("T") is not None:
         oc = {**oc, "T": float(c["T"])}
+    if c.get("tau") is not None:
+        oc = {**oc, "tau": float(c["tau"])}
     return E.opp_tempo(oc, c.get("decide_every", base.get("opp_decide_every")),
                        c.get("reaction_ticks", base.get("opp_reaction_ticks")))
 

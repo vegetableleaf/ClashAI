@@ -1,3 +1,20 @@
+## 2026-10-23 08:11 EDT -- CALIBRATED OPPONENT found (eval-time decode, no training): I u40 at decide 20 + tau 0.2 fails 1 / 42 push cells (default 12); calibrated drift tests on 3 pods
+
+- 32525 gate_q5 (push_cal/report_q5.out; CLX vs I u40, 960 each; cells failed of 42): default (decide 40, tau .27 = the eval
+  default; t27 rows are identical) 12; T .5 + tau .27 (its TRAINING decode) 7; T .3 12; tau .2 7; decide 20 6;
+  **decide 20 + tau .2: 1** (only bait pushes / match 1.27x). Elixir / push 9.10 vs live 7.61 (1.19x), HP lost / push 690 vs
+  607, HP per push elixir 75.8 vs 79.7, conversion 0.222 vs 0.202, conversion at our elixir < 4 0.318 vs 0.268 (1.18x).
+- CLX wins 572 / 960 (59.6%) vs it (default 477 / 960, 49.7%; live CLX Ranked ~48%, ladder ~62%) -> pushes calibrated, overall
+  difficulty a bit soft for Ranked (b: our live handicaps -- taps, perception, CPU -- are not in the SIM).
+- Train / eval mismatch found (a): in training the league_exploiters opponent took the LEARNER's tau (0.35 in drift_tg; 0.27
+  before), evals use 0.27. pipeline/rl_royale.py: league_exploiters accepts an opponent-only `tau` (EXPLOITER_OWN + own_opp_cfg;
+  absent = unchanged). Pod check: exploiter cfg tau .2 / T .1 / decide 20, other opponents keep the run's tau. pyflakes clean,
+  rl_royale --smoke PASS (32525, the pod tree = HEAD minus W18 R4; same hunks applied to HEAD).
+- Runs (all drift_test.sh, E4 board-recorded drift checks every 25, fixed scorer + 99% rules):
+  - 33572 drift_x70_s74 (share 0.7, uncalibrated decode; same-seed comparison), started 10:57Z
+  - 32525 / 33591 / 33401 drift_x70cal_s74 / s75 / s76 = x70 + exploiter decide_every 20 + tau 0.2, started 12:11Z.
+    TWO changes vs drift_tg (share + decode): a PASS needs an ablation (cal at share 0.3) before attribution.
+  - x70_s75 / x70_s76 (uncalibrated, ~u15) stopped for these; 33591 / 33401 rl_royale.py.pre1023 kept.
 ## 2026-10-23 07:00 EDT -- owner decisions 10-23 morning; scorer FIXED; drift rules changed; s76 tripwire bug fixed; opponent calibration + x70 drift tests on all 4 pods
 
 - OWNER: (1) banking must be situational, not constant (constant banking = idling); drift limits = lead's call. (2) fix the
