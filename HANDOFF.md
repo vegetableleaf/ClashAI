@@ -1,3 +1,22 @@
+## 2026-10-23 19:33 EDT -- rollout tau_phase shipped (opt-in; ratio test exact); habc_s74 u50 PASS; cal30_s74 FAIL u100 (hazard x2); next = combined recipe hph x3
+
+- pipeline: `tau_phase: [0.35, 0.45, 0.55]` (rl_royale tau_phase_cfg; e1_eval.sample_decide_batch per-row threshold from
+  m._cur[1].t_sec + posture dtau; rows record `gate_tau`, collated like posture_dtau; policy_terms / ref_terms / loss /
+  rollout_monitors use it; screens decode with DecisionOptions(tau_phase); opponents strip it; branch_gate refused).
+  Absent = identical config_sha (cal30_s74 f982c69630c4 = the running test's) and rows. Tests pipeline/tests/test_tau_phase.py
+  20 / 20 laptop + pod (vs the pod's unpatched tree). RATIO TEST (a): recorded vs recomputed gate / card / cell log-probs within
+  1e-9 (posture off / on); pod smoke PASS; real policy step first minibatch max|ratio - 1| 1.2e-5 (float noise; a threshold
+  mismatch would be ~1e-1). Init effect (32 matches): P(play | gate row) 2x 0.168 -> 0.158, OT 0.213 -> 0.188, 1x unchanged.
+  Apply: exploit/apply_tau_phase.py TREE (idempotent; works with / without the habit hooks).
+- cal30_s74 (32525) VERDICT FAIL u100: hazard +0.016 [+0.009, +0.023] (2nd consecutive); win -0.054 [-0.109, +0.000]; idle
+  -0.012, ignored -0.008, trade +0.005.
+- habc_s74 (33401) u25 / u50 PASS (u50: win -0.019, idle -0.019, ignored -0.020, trade -0.15 n.s., hazard +0.005). Train log:
+  habit r / match idle -0.05..-0.07 (idle threats / match 0.75 -> 0.55), trade -0.08..-0.09.
+- 32525: habc_s75 running (train 22:39Z) with the NO-HAZARD eval (livecal patched there; cal30 s75 / s76 cfgs copied).
+- Cfgs: drift_phc_s74-76 = cal30 + tau_phase (phase-only ablation); drift_hph_s74-76 = habc + tau_phase (the COMBINED candidate).
+- Queued (lead's laptop-side deploy_next.sh: wait for VERDICT -> apply habit + tau_phase patches + no-hazard livecal + tests
+  [+ smoke] -> launch): 33591 cal30_s75 -> hph_s74 (with smoke); 33572 cal30_s76 -> hph_s75; 33401 habc_s74 -> hph_s76;
+  32525 habc_s75 -> phc_s74.
 ## 2026-10-23 17:37 EDT -- OWNER: STRIP the 9-elixir hazard play from live (done); training gets per-phase gate thresholds only; LIVE IS OFF since 07:54 EDT (STOP file)
 
 - Correction (a): live ended 07:54 EDT 10-23 (supervisor: STOP file before match 2; earlier 06:59 / 07:50 "[nav] transition over

@@ -226,6 +226,8 @@ def actor_cfg(base: dict, kind: str, aid: int, dev: str) -> dict:
     cfg.update(condition_cfg(base))
     if base.get("T_gate") is not None:                       # 10-13: learner gate temperature; absent = unchanged cfg
         cfg["T_gate"] = float(base["T_gate"])
+    if base.get("tau_phase") is not None:                    # 10-23 tau_phase_cfg: rollouts sample at it, screens decode
+        cfg["tau_phase"] = [float(x) for x in base["tau_phase"]]   # with live's DecisionOptions tau_phase; absent = unchanged
     if kind == "rollout" and base.get("shaping", "none") == "tower_crown":
         cfg["record_phi"] = True                              # R2: each row carries reward_shaping.phi_record
     elif kind == "rollout" and base.get("shaping") in RS.STATE_PHI_MODES:
@@ -434,6 +436,27 @@ def store_posture_cfg(cfg: dict) -> Optional[dict]:
     if pc is not None:
         cfg.update(posture_head=True, **{f"posture_{k}": v for k, v in pc.items()})
     return pc
+
+
+def tau_phase_cfg(cfg: dict) -> Optional[list]:
+    """``tau_phase`` (owner 10-23; optional, absent / null = None = the scalar ``tau`` everywhere, same hash): live's
+    per-phase gate thresholds [1x, 2x, OT] (decision_options.phase_index: t < 120 s, 120-180 s, >= 180 s). The learner's
+    rollouts sample the gate against tau_phase[phase] (+ the posture's dtau) and record it per row (``gate_tau``, which
+    policy_terms recomputes from); screens decode with live's DecisionOptions tau_phase; opponents keep their own
+    threshold. -> the three floats, or None; SystemExit naming the key on a bad value."""
+    x = cfg.get("tau_phase")
+    if x is None:
+        return None
+    num = (lambda v: isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v))
+    if not (isinstance(x, (list, tuple)) and len(x) == 3 and all(num(v) and 0.0 < v < 1.0 for v in x)):
+        raise SystemExit(f"tau_phase must be null or three finite numbers in (0, 1) [1x, 2x, OT], got {x!r}")
+    if cfg.get("branch_gate"):
+        raise SystemExit("tau_phase with branch_gate is not supported (branch workers decide with the plain tau)")
+    dt = cfg.get("posture_dtau") or POSTURE_DEFAULTS["posture_dtau"]
+    if (cfg.get("posture_head") not in (None, False) and isinstance(dt, (list, tuple)) and all(num(d) for d in dt)
+            and not all(0.0 < t + d < 1.0 for t in x for d in dt)):
+        raise SystemExit(f"tau_phase {list(x)} + posture_dtau {list(dt)}: every tau_phase + dtau must lie in (0, 1)")
+    return [float(v) for v in x]
 
 
 # L74 combo (``spell_value_reward: on``, gae + league only, opt-in; absent / null / false = off, same hash; owner 10-17,
@@ -2038,6 +2061,8 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
         nc = {j: int(results[j]["traj"]["posture_new"][keep[j]].sum()) for j in use}
         Mp = max(1, sum(1 for n in nc.values() if n))           # w_post: each match's choices sum to 1/Mp
         B["w_post"] = cat(lambda j: np.where(results[j]["traj"]["posture_new"][keep[j]], 1.0 / (max(nc[j], 1) * Mp), 0.0))
+    if use and "gate_tau" in results[use[0]]["traj"]:                # tau_phase: the threshold each row was sampled at
+        B["gate_tau"] = cat(lambda j: results[j]["traj"]["gate_tau"][keep[j]])
     if use and "ab_sampled" in results[use[0]]["traj"]:              # B6: the press decisions (actor cfg ability)
         for k in ("ab_sampled", "ab_press", "ab_lp", "ab_feat"):
             B[k] = cat(lambda j, k=k: results[j]["traj"][k][keep[j]])
@@ -2259,7 +2284,10 @@ def policy_terms(model, B: dict, idx, tau: float, T: float, value: bool = False,
     allowed, gs, played = B["allowed"][idx], B["gate_sampled"][idx], B["played"][idx]
     slot, cell = B["slot"][idx], B["cell"][idx]
     lt = _logit(tau)
-    if "posture_dtau" in B:                                   # C1: the threshold of the posture in force (e1_eval)
+    if "gate_tau" in B:                                       # tau_phase: the row's own sampled threshold (+ dtau)
+        tt = B["gate_tau"][idx]
+        lt = torch.log(tt / (1.0 - tt))
+    elif "posture_dtau" in B:                                 # C1: the threshold of the posture in force (e1_eval)
         tt = tau + B["posture_dtau"][idx]
         lt = torch.log(tt / (1.0 - tt))
     x = (heads["gate"].double() - lt) / (T_gate or T)                   # T_gate: the sampler's own gate temperature
@@ -2721,9 +2749,13 @@ def rollout_monitors(results: list[dict], tau: float, T: float) -> dict:
     el = [e for r in results for e in r["play_elixir"]]
     pg = np.concatenate([r["traj"]["p_gate"] for r in results if "traj" in r]) if results and "traj" in results[0] \
         else np.concatenate([[r["p_gate_mean"] or 0.0] for r in results])
+    lt = _logit(tau)
+    if results and "gate_tau" in (results[0].get("traj") or {}):   # tau_phase: each row's own threshold
+        tau = np.concatenate([r["traj"].get("gate_tau", np.zeros(0)) for r in results if "traj" in r])
+        lt = np.log(tau / (1.0 - tau))
     with np.errstate(divide="ignore", over="ignore"):
         z = np.log(pg) - np.log1p(-pg)
-        p_b = 1.0 / (1.0 + np.exp(-(z - _logit(tau)) / T))
+        p_b = 1.0 / (1.0 + np.exp(-(z - lt) / T))
     share = (lambda xs: len(xs) / len(wins) if wins else None)
     return {
         "matches": n, "W": len(wins), "L": sum(r["outcome"] == "loss" for r in results),
@@ -2859,7 +2891,7 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
                 for pth in need - set(opp_cache):
                     pol, mi = E.load_policy(REPO / pth, dev)
                     opp_cache[pth] = (pol, str(mi.get("grid", "floor")))
-                ocfg0 = {k: v for k, v in cfg.items() if k not in ("posture", "ability")}   # C1 / B6: the learner's only
+                ocfg0 = {k: v for k, v in cfg.items() if k not in ("posture", "ability", "tau_phase")}   # C1 / B6 / tau_phase: the learner's only
                 opps = {j[1]["opp"]["id"]: (opp_cache[j[1]["opp"]["path"]][0],
                                             {**ocfg0, "policy": base["league_opp_policy"], "record": False, "T_gate": None,
                                              "T": opp_T(base),
@@ -3239,7 +3271,8 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                               "critic_ctx", "kl_ref_gate_max_elixir", "kl_ref_gate_target_frac",
                               "league_exploiters", "cue_inputs", "opp_tower_troops", "live_levels", "league_opp_live",
                               "heroiw_press", "ability_features", "kl_heads", "kl_ref_card", "league_deck_weights",
-                              "ot_start_share", "xbow_start_share", "remote_actors", "kl_ref_refresh_every") + OPP_TEMPO_KEYS
+                              "ot_start_share", "xbow_start_share", "remote_actors", "kl_ref_refresh_every",
+                              "tau_phase") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS and k not in CROWN_KEYS
                 and k not in HT.KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
@@ -3276,6 +3309,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
     ra = cfg.get("remote_actors")                             # W16: absent / null = local actors only
     if ra is not None and not (isinstance(ra, str) and (REPO / ra).is_file()):
         raise SystemExit(f"remote_actors must be null or an endpoints file (one host:port per line), got {ra!r}")
+    tau_phase_cfg(cfg)                                        # 10-23: absent = no-op
     rr = cfg.get("kl_ref_refresh_every")                     # W16 moving KL anchor: absent / null = the frozen init
     if rr is not None and not (type(rr) is int and rr >= 1):
         raise SystemExit(f"kl_ref_refresh_every must be null or an int >= 1, got {rr!r}")
@@ -3325,6 +3359,10 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "league_deck_weights"}
     if cfg.get("kl_ref_refresh_every") is None:              # W16 moving anchor off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "kl_ref_refresh_every"}
+    if cfg.get("tau_phase") is None:                         # 10-23 tau_phase off (absent or null) = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "tau_phase"}
+    else:                                                     # on: floats, one hash for [.35, .45, .55] and (.35, ...)
+        cfg = {**cfg, "tau_phase": [float(x) for x in cfg["tau_phase"]]}
     if cfg.get("ot_start_share") is None:                    # W15 lever 2 off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "ot_start_share"}
     else:                                                     # on: the share AND the measured states' bytes
@@ -4141,6 +4179,8 @@ class Learner:
                     torch.cuda.synchronize(self.dev)
                 prof[name] = time.perf_counter()
         mark("t0")
+        if tau_phase_cfg(cfg) is not None and len(Bn["A"]) and "gate_tau" not in Bn:
+            raise SystemExit("tau_phase: the rollout rows carry no gate_tau (an actor without the tau_phase code?)")
         B = to_device(Bn, self.dev)
         mark("to_device")
         gate_ref = getattr(self, "gate_ref", None)            # F6 kl_ref_gate (None = the init ref for all heads)
@@ -4501,6 +4541,8 @@ class Learner:
         if tg is not None and self.cfg.get("branch_gate"):
             raise SystemExit("T_gate with branch_gate is not supported (branch_terms parameterise the gate with T)")
         base["T_gate"] = tg
+        if tau_phase_cfg(self.cfg) is not None:               # 10-23 -> actor_cfg tau_phase (absent by default)
+            base["tau_phase"] = tau_phase_cfg(self.cfg)
         base["learner_pipeline_frac"] = self.cfg.get("learner_pipeline_frac", 0)   # 0 = no learner pipelining (default)
         base["league_opp_policy"] = self.cfg.get("league_opp_policy", "sample")
         if AO.mode(self.cfg.get("opp_style", "off")) == "on":
@@ -4563,6 +4605,7 @@ class Learner:
             f"(screen uses {len(self.screen_entries())}); init {cfg['init']} ({'GENERALIST' if self.gen else 'S1'}) "
             f"grid {self.grid}; conditions (rollouts + screens): "
             + " ".join(f"{k}={cfg.get(k)}" for k in COND_KEYS) + f"; leash {cfg.get('leash', 'cell')}"
+            + (f"; TAU_PHASE {cfg['tau_phase']} (learner rollouts + screens)" if cfg.get("tau_phase") is not None else "")
             + ("; advantage gae " + " ".join(f"{k}={v}" for k, v in adv_cfg(cfg).items() if k != "advantage")
                if adv_cfg(cfg)["advantage"] == "gae" else "")
             + (f"; POSTURE every {cfg['posture_every']} dtau {cfg['posture_dtau']} ent {cfg['posture_ent_coef']}"

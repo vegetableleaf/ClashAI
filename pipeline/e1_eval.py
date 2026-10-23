@@ -599,7 +599,13 @@ def sample_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.n
     gate_sampled = any_allowed & ~stalled                      # forced (stalled) or impossible (no card) -> not sampled
     logit_tau = math.log(tau / (1.0 - tau))
     dt = posture_dtau(matches, enc, cfg)                       # rl_royale C1 (None = no posture: all as before)
-    if dt is not None:
+    tau_r = None
+    if cfg.get("tau_phase") is not None:                       # rl_royale tau_phase: live's threshold of the row's phase
+        from .decision_options import phase_index              # (decision_options.gate_taus, the board's t_sec) + dtau
+        tau_r = np.asarray(cfg["tau_phase"], dtype=np.float64)[phase_index([float(m._cur[1].t_sec) for m in matches])]
+        tau_r = tau_r if dt is None else tau_r + dt
+        logit_tau = np.log(tau_r / (1.0 - tau_r))
+    elif dt is not None:
         tau_r = tau + dt                                       # the threshold of each row's posture in force
         logit_tau = np.log(tau_r / (1.0 - tau_r))
     z_gate = heads["gate"].detach().cpu().numpy().astype(np.float64)
@@ -609,7 +615,7 @@ def sample_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.n
     lp_gate = np.zeros(B, dtype=np.float64)
     for r in range(B):
         if gate_sampled[r] and "gate" not in heads_sampled:
-            g[r] = p[r] > (tau if dt is None else tau_r[r])    # greedy gate, as live_decide
+            g[r] = p[r] > (tau if tau_r is None else tau_r[r])  # greedy gate, as live_decide
         elif gate_sampled[r]:
             g[r] = matches[r].rng_behave.random() < p_b[r]
             lp_gate[r] = math.log(p_b[r] if g[r] else 1.0 - p_b[r])
@@ -663,6 +669,8 @@ def sample_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.n
             m = matches[r]
             out[r].update(posture=int(m._posture[0]), posture_dtau=float(dt[r]), posture_new=m._posture_new is not None,
                           posture_lp=0.0 if m._posture_new is None else m._posture_new)
+        if cfg.get("tau_phase") is not None:                   # tau_phase: the threshold this row's gate was sampled at
+            out[r]["gate_tau"] = float(tau_r[r])
     ab = ability_decide(matches, enc, cfg)                     # rl_royale ability_head (None = off: rows unchanged)
     if ab is not None:
         for r in range(B):
@@ -1416,6 +1424,8 @@ class Match:
                 row = {**row, "elixir": self._obs_elixir}     # from the raw state (prepare), set with self._obs
             if "posture" in d:                                # rl_royale C1: the posture in force, its choice
                 row = {**row, **{k: d[k] for k in ("posture", "posture_dtau", "posture_lp", "posture_new")}}
+            if "gate_tau" in d:                               # rl_royale tau_phase: the row's sampled gate threshold
+                row = {**row, "gate_tau": d["gate_tau"]}
             if "ab_sampled" in d:                             # rl_royale ability_head: the press decision / label
                 row = {**row, **{k: d[k] for k in ability_defaults()}}
             self.traj.append({**row, "allowed": d["allowed"],
@@ -1612,6 +1622,8 @@ class Match:
             out.update(posture=scalar("posture", np.int64), posture_dtau=scalar("posture_dtau", np.float64),
                        posture_lp=scalar("posture_lp", np.float64),           # log pi(z) on the rows that chose it
                        posture_new=scalar("posture_new", bool))
+        if tj and "gate_tau" in tj[0]:                       # cfg["tau_phase"] (rl_royale): each row's gate threshold
+            out["gate_tau"] = scalar("gate_tau", np.float64)
         if tj and "ab_sampled" in tj[0]:                     # cfg["ability"] (rl_royale ability_head): per row
             out.update(ab_sampled=scalar("ab_sampled", bool), ab_press=scalar("ab_press", bool),
                        ab_lp=scalar("ab_lp", np.float64), ab_feat=stack("ab_feat").astype(np.float32),
