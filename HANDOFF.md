@@ -1,3 +1,20 @@
+## 2026-10-23 15:51 EDT -- HABIT REWARD TERMS shipped (opt-in; penalty-only trade); drift_habc_s74 running on 33401
+
+- pipeline/habit_terms.py (+ hooks in rl_royale.py / e1_eval.py via exploit/apply_habit_terms.py TREE, idempotent, both trees;
+  tests pipeline/tests/test_habit_terms.py 10/10 laptop, 9 + 1 skip (git) on 33401; pyflakes clean on the pod tree; smoke
+  PASS on 32525 /workspace/cb_hab; switch off = identical config_sha on 7 cfgs).
+  - habit_idle_w 0.1 per THREAT (>= 5 elixir lane value on our half > 3 s) unanswered >= 4 s while affordable; cap 0.3 / match.
+  - habit_trade_w 0.01 x clip(push value - our spend on our half, -5, 0): PENALTY ONLY (lead 10-23: symmetric +5 paid an
+    unanswered push + its value while tower shaping is off); cap 0.3 / match. Agent's scale check (128 rollouts, symmetric
+    0.01): mean +0.047, 1.6% at cap; at 0.03 the cap bound 35% of matches -> 0.01.
+  - Idle / threat / push counts = ape_score hab_match on 960 / 960 board-recorded matches (a).
+  - NO hazard term (a): training rollouts use the sample policy (plays labelled gate / stall / wait); the 'hazard' label only
+    exists in decision_options.decide_batch (live / eval decode) -> the hazard-share drift is invisible to training. OWNER
+    DECISION if it should be addressed (hazard decoder in rollouts, or a gate-level term).
+  - habc cfgs: drift_cal30_sNN + habit keys + shaping_critic_scale 1.5 -> 1.6 (bound 1 + 0.3 + 0.3).
+- 33401: x70_s76 stopped at u50 (PASS: win +0.004, idle +0.002, ignored -0.008, trade 0.000, hazard -0.022) for
+  drift_habc_s74 (train 19:50Z). Pod tree patched (rl_royale.py / e1_eval.py .prehab kept); cal30 cfgs copied there.
+- Next: habc_s75 / s76 when cal30_s75 / s76 end (deploy: scratchpad deploy_hab.sh PORT SEED [KILL_RUN] pattern).
 ## 2026-10-23 14:38 EDT -- OWNER: go ahead with habit REWARD TERMS (in-session agent building them); x70 / x70cal s74-s75 FAIL at u75 (over-defending + hazard); cal30 x3 seeds running
 
 - Owner 10-23: "go ahead with the reward terms" (proposed: learned fix for habits the SIM barely rewards / punishes).

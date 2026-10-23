@@ -2051,6 +2051,9 @@ class SelfPlayMatch:
         self.opp = SelfPlaySide(env, spec["opp_deck"], 1 - L, f"{tag}:opp", k, opp_cfg, opponent)
         self.learner.other, self.opp.other = self.opp, self.learner
         self.sides = sorted((self.learner, self.opp), key=lambda s: s.side)
+        if cfg.get("habit_track"):                           # rl_royale habit terms (opt-in): read-only board samples at
+            from pipeline.habit_terms import HabitTracker     # the learner's decision stops (search_s0 --record-board rule)
+            self.habit = HabitTracker(L)
         self.forced = None
         if "start" in spec and spec["start"].get("force"):
             f = spec["start"]["force"]
@@ -2105,6 +2108,8 @@ class SelfPlayMatch:
                 raw = env.raw()
                 for s in ds:
                     s.state = raw
+                if getattr(self, "habit", None) is not None and self.learner in ds:   # habit_track: read only
+                    self.habit.observe(raw, self.learner)
                 return ds
             nxt = min([s.next_tick for s in self.sides] + [s.pending[0] for s in self.sides if s.pending]
                       + [s.pend[0][0] for s in self.sides if s.pend]
@@ -2127,6 +2132,8 @@ class SelfPlayMatch:
             r["spell"] = list(self.env.spell_tracker.events)
         if getattr(self, "crown", None) is not None:          # crown_track: reward_terms.CrownTracker.result
             r["crown"] = self.crown.result()
+        if getattr(self, "habit", None) is not None:          # habit_track: habit_terms.HabitTracker.result
+            r["habit"] = self.habit.result(self.learner)
         return r
 
 

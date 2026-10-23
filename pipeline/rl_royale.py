@@ -168,6 +168,7 @@ from pipeline import e1_eval as E                                               
 from pipeline import reward_shaping as RS                                       # noqa: E402
 from pipeline import reward_terms as RT                                         # noqa: E402
 from pipeline import spell_value as SV                                          # noqa: E402
+from pipeline import habit_terms as HT                                          # noqa: E402
 from pipeline import adaptive_opponents as AO                                  # noqa: E402
 from pipeline.model_v3 import hand_mask_from_sc                                 # noqa: E402
 
@@ -247,6 +248,8 @@ def actor_cfg(base: dict, kind: str, aid: int, dev: str) -> dict:
     if kind == "rollout" and base.get("crown_track"):         # L74 W6: the crown record + each row's tick
         cfg["crown_track"], cfg["record_tick"] = base["crown_track"], True   # (row_terms maps events to rows by tick;
         #                                                       W10 rocket_tower: "rocket_dmg" = the tracker measures Rockets)
+    if kind == "rollout" and base.get("habit_track"):         # L74 habit terms: the learner's board samples + row ticks
+        cfg["habit_track"] = cfg["record_tick"] = True
     return cfg
 
 
@@ -613,6 +616,14 @@ def adv_cfg(cfg: dict) -> dict:
                        f"target ret / scale could leave the value head's [-1, 1]")
         if c["critic_warmup_updates"] == 0:
             bad.append("crown terms need critic_warmup_updates > 0 (the pretrained value head predicts G, not G / scale)")
+    hb = HT.habit_cfg(cfg)                                                   # L74 habit terms: + their per-match caps
+    if hb is not None and not bad:
+        need += HT.bound(hb)
+        if sc < need:
+            bad.append(f"shaping_critic_scale {sc} < {need:.4f} = the return bound + habit_terms.bound: the residual "
+                       f"target ret / scale could leave the value head's [-1, 1]")
+        if c["critic_warmup_updates"] == 0:
+            bad.append("habit terms need critic_warmup_updates > 0 (the pretrained value head predicts G, not G / scale)")
     cc = cfg.get("critic_ctx")
     if cc not in CRITIC_CTX_MODES:
         bad.append(f"critic_ctx must be one of {CRITIC_CTX_MODES}, got {cc!r}")
@@ -1960,7 +1971,7 @@ def _py(x):
 def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_loo",
             shaping: Optional[dict] = None, gamma_tick: Optional[float] = None,
             gae_terminal_gap: bool = False, spell: Optional[dict] = None,
-            crown: Optional[dict] = None) -> tuple[dict, dict]:
+            crown: Optional[dict] = None, habit: Optional[dict] = None) -> tuple[dict, dict]:
     """Rollout result records (each with ``traj`` = ``Match._traj_arrays``) -> numpy batch of the CONTRIBUTING rows
     (gate sampled or card/cell played) with per-row A, per-match weight w, match id, and the stored log-probs.
     ``advantage="gae"`` adds ``r_step`` (``terminal_rewards``, the UNSHAPED win/loss reward); A stays the LOO value
@@ -2057,6 +2068,13 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
                     raise ValueError("crown terms need the per-row tick and the crown record (actor_cfg crown_track)")
                 cr[j] = RT.row_terms(results[j]["crown"], results[j]["plays"], results[j]["traj"]["tick"][keep[j]], crown)
                 rs[j] = rs[j] + cr[j]["r"]
+        if habit is not None:                                 # L74 habit terms (habit_terms.row_terms) on the kept rows
+            hbr = {}
+            for j in use:
+                if "tick" not in results[j]["traj"] or "habit" not in results[j]:
+                    raise ValueError("habit terms need the per-row tick and the habit record (actor_cfg habit_track)")
+                hbr[j] = HT.row_terms(results[j]["habit"], results[j]["traj"]["tick"][keep[j]], habit)
+                rs[j] = rs[j] + hbr[j]["r"]
         B["r_step"] = cat(lambda j: rs[j])
         gr = None
         if gamma_tick is not None:
@@ -2079,9 +2097,9 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
         if crown is not None and crown.get("princess_redirect") == "potential":   # L74 W6: Phi into the residual critic
             ph = cat(lambda j: cr[j]["phi"])
             B["phi"] = B["phi"] + ph if "phi" in B else ph
-        if (spell is not None or crown is not None) and "phi" not in B:   # combo / W6: residual critic, Phi = 0
+        if (spell is not None or crown is not None or habit is not None) and "phi" not in B:   # combo / W6: residual critic, Phi = 0
             B["phi"] = np.zeros(len(B["r_step"]))
-    elif shaping is not None or gamma_tick is not None or spell is not None or crown is not None:
+    elif shaping is not None or gamma_tick is not None or spell is not None or crown is not None or habit is not None:
         raise ValueError("shaping / gamma_tick / spell / crown need advantage gae")
     st = {"matches": len(results), "groups": len(groups), "mixed_groups": mixed,
           "mixed_group_share": mixed / max(len(groups), 1), "mean_abs_A": float(np.abs(A).mean()) if len(A) else 0.0,
@@ -2104,6 +2122,8 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
                        "second_plays": sum(r.get("pipeline_decisions", {}).get("second_plays", 0) for r in results)}
     if crown is not None:                                     # L74 W6 monitors
         st["crown"] = RT.batch_stats([RT.match_summary(results[j]["crown"]) for j in use], [cr[j] for j in use])
+    if habit is not None:                                     # L74 habit monitors
+        st["habit"] = HT.batch_stats([hbr[j] for j in use])
     return B, st
 
 
@@ -3220,7 +3240,8 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                               "league_exploiters", "cue_inputs", "opp_tower_troops", "live_levels", "league_opp_live",
                               "heroiw_press", "ability_features", "kl_heads", "kl_ref_card", "league_deck_weights",
                               "ot_start_share", "xbow_start_share", "remote_actors", "kl_ref_refresh_every") + OPP_TEMPO_KEYS
-                and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS and k not in CROWN_KEYS):
+                and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS and k not in CROWN_KEYS
+                and k not in HT.KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
         cfg[k] = yaml.safe_load(v)
     if type(cfg["hero_abilities"]) is not bool:
@@ -3349,6 +3370,7 @@ def config_sha(cfg: dict) -> str:
             cfg = {kk: v for kk, v in cfg.items() if kk not in (k, wk)}
         else:
             cfg = {**cfg, wk: float(RT.DEFAULTS[wk] if cfg.get(wk) is None else cfg[wk])}
+    cfg = HT.canonical(cfg)                                  # L74 habit terms: off (absent / null / false) = historical
     return hashlib.sha256(json.dumps(cfg, sort_keys=True, default=str).encode()).hexdigest()
 
 
@@ -4091,11 +4113,13 @@ class Learner:
         tick_unit = gae_on and ac["gae_gamma_unit"] == "tick"
         sv = spell_cfg(cfg)                                   # L74 combo (None = off: the call unchanged)
         ct = crown_cfg(cfg)                                   # L74 W6 (None = off: the call unchanged)
+        hbt = HT.habit_cfg(cfg)                               # L74 habit terms (None = off: the call unchanged)
         Bn, bst = collate(results, float(cfg["adv_clip"]), advantage=ac["advantage"], shaping=shp,
                           **({"gamma_tick": ac["gae_gamma_tick"]} if tick_unit else {}),
                           **({"gae_terminal_gap": True} if ac["gae_terminal_gap"] else {}),
                           **({"spell": sv} if sv is not None else {}),
-                          **({"crown": ct} if ct is not None else {}))
+                          **({"crown": ct} if ct is not None else {}),
+                          **({"habit": hbt} if hbt is not None else {}))
         gamma_row_mean = float(Bn["gamma_row"].mean()) if tick_unit and len(Bn["gamma_row"]) else None
         ab_acc = ([sum(dict(r.get("ability_presses", {}).get(r["side"], {})).values()) for r in results]
                   if getattr(self, "ability_head", None) is not None else None)   # B6: engine-accepted learner presses
@@ -4391,6 +4415,10 @@ class Learner:
                     f" gave {f(bst['crown'].get('gave_back_per_match'), '{:.2f}')} king_end "
                     f"{f(bst['crown'].get('king_end_per_match'), '{:.2f}')} tor>king {f(bst['crown'].get('tornado_to_king_per_match'), '{:.2f}')}"
                     if "crown" in bst else "")
+                 + (f" | habit r/m idle {f(bst['habit']['idle_r_mean'], '{:+.4f}')} trade "
+                    f"{f(bst['habit']['trade_r_mean'], '{:+.4f}')} thr/m {f(bst['habit']['thr_per_match'], '{:.2f}')} idle/m "
+                    f"{f(bst['habit']['idle_per_match'], '{:.2f}')} push/m {f(bst['habit']['push_per_match'], '{:.2f}')}"
+                    if "habit" in bst else "")
                  + (f" | shape |F| {f(shs['mean_abs_F'], '{:.4f}')} (t {f(shs['mean_abs_tower'], '{:.4f}')} c "
                     f"{f(shs['mean_abs_crown'], '{:.4f}')}) |Phi| {f(shs['mean_abs_phi'], '{:.4f}')} dom "
                     f"{f(shs['shaping_dominates'])}" if shs and shs.get("mode") is None else "")
@@ -4509,6 +4537,8 @@ class Learner:
         ct = crown_cfg(self.cfg)
         if ct is not None:                                    # L74 W6 -> actor_cfg crown_track (absent by default)
             base["crown_track"] = "rocket_dmg" if ct.get("rocket_tower") else True   # W10: Rocket damage only when on
+        if HT.habit_cfg(self.cfg) is not None:                # L74 habit terms -> actor_cfg habit_track (absent by default)
+            base["habit_track"] = True
         return base
 
     def start_actors(self) -> None:
