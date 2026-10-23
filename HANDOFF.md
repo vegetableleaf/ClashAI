@@ -1,3 +1,20 @@
+## 2026-10-23 17:37 EDT -- OWNER: STRIP the 9-elixir hazard play from live (done); training gets per-phase gate thresholds only; LIVE IS OFF since 07:54 EDT (STOP file)
+
+- Correction (a): live ended 07:54 EDT 10-23 (supervisor: STOP file before match 2; earlier 06:59 / 07:50 "[nav] transition over
+  300 s" restarts). Tally W 2317 / L 2182, trophies_total 14060. My "CLX still live" lines after that were wrong (not re-read).
+  Memory verify-live-status-before-reporting.
+- Owner: "Phase thresholds only. ... If the forced rule is live, strip it immediately." It WAS live: LIVE_OPTIONS had
+  --gate-decode hazard_below_tau --gate-hazard-min-elixir 9 --gate-hazard-threatened 2 (below tau at >= 9 elixir or a tower hit
+  in 2 s: play with the gate's learned rate). Stripped (backup LIVE_OPTIONS.bak_1023_prehazard); start_live.sh icebow
+  --no-fast-plays --check -> LIVE_CHECK_PASS (CLX 5d212358). Live NOT restarted (owner's call).
+- Eval: livecal.LIVE drops gate_decode / gate_hazard_min_elixir / gate_hazard_threatened (backup livecal.py.bak_1023_prehazard)
+  so SIM evals match live. Pods keep the OLD livecal until their running drift tests end (their u0 baselines used it).
+- Why the hazard share kept drifting (b): training gated at 0.35 in every phase; live / eval gate 0.35 / 0.45 / 0.55, so 2x / OT
+  plays learned above 0.35 were blocked at deploy, elixir rose, the hazard play fired. cal30_s74 u75 FAIL hazard +0.022
+  [+0.015, +0.029] (habits clean: idle -0.010, ignored -0.010, trade -0.08 n.s., win -0.032).
+- In-session agent: rollout `tau_phase` key (sample_decide_batch per-row threshold + the SAME per-row tau in the PPO ratio /
+  KL / monitors / screens; ratio == 1 test; smoke + a real policy step on 32525 /workspace/cb_ph), cfgs drift_phc_s74-76 =
+  cal30 + tau_phase. Not committed yet.
 ## 2026-10-23 15:51 EDT -- HABIT REWARD TERMS shipped (opt-in; penalty-only trade); drift_habc_s74 running on 33401
 
 - pipeline/habit_terms.py (+ hooks in rl_royale.py / e1_eval.py via exploit/apply_habit_terms.py TREE, idempotent, both trees;

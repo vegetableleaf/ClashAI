@@ -27,9 +27,9 @@ RUNTIME_FILES = ['pipeline/'+name+'.py' for name in (
 RUNTIME_FILES += ['scratchpad/gauntlet/L70/abilities/ability_policy.py',
                   'scratchpad/gauntlet/L70/abilities/ability_models_v2.json']
 LIVE = dict(xbow_class='class_sample', xbow_class_floor=.3, tau_phase=[.35, .45, .55],
-            spell_aim='rocket_area', gate_decode='hazard_below_tau', gate_hazard_min_elixir=9,
+            spell_aim='rocket_area',     # 10-23 owner: the 9-elixir hazard play is stripped from live -> from the eval too
             log_aim='log_barrel', lethal_rocket='ot_behind', xbow_dead_lane='block',
-            gate_hazard_threatened=2, rocket_dead_target='block', tau_threatened=.2, lethal_log='on')
+            rocket_dead_target='block', tau_threatened=.2, lethal_log='on')
 LV = [arg for k, v in LIVE.items() for arg in ['--'+k.replace('_', '-'), *map(str, v if isinstance(v, list) else [v])]]
 
 
