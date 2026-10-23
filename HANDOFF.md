@@ -1,3 +1,18 @@
+## 2026-10-22 20:55 EDT -- EXPLOIT FOUND: a train / deploy mismatch in the PLAY GATE (not mainly opponents / engine); drift test with the live gate launching
+
+- exploit/EXPLOIT.md + ape/SIMCHECK.md (in-session agent):
+  - SIMCHECK: CLXII's old evals had NO --record-board rows (0 / 164), so the "indistinguishable" verdict was empty. With board
+    rows, the SIM shows the live direction: idle-on-threat +0.023 [+0.008, +0.037], defence trade -0.55, elixir at play +0.20,
+    full-elixir seconds +3.0.
+  - New check exploit/tools/drift_check.py FAILS CLXII / u150 / u175 / u220 vs CLX.
+- Cause:
+  - Training samples the play gate at threshold 0.27 / T 0.5; live plays at tau 0.35 / 0.45 / 0.55 + rules.
+  - Same E4 opponent, 480 matches: u175 training-rule 0.673 vs live-rule 0.658; u220 0.594 vs 0.719; u0 0.58-0.61 vs 0.669.
+  - Elixir hoarding (full-elixir seconds up to 31 at u175) grows; the live rule amplifies it.
+  - Opponent push softness is real (tower HP lost per push elixir SIM 37 vs live 81) but does NOT drive this drift -> W18.
+- Fix under test: stepd/cfg/drift_tg_e1i_s74.yaml (rollout threshold 0.35, T 0.1; 100-update cap). Drift test exploit/drift_test.sh
+  (no CLX leash; board-recorded E4 + drift_check every 25; STOP tripwires) launching on 32525 via an in-session agent.
+- Owner overnight rule: successors only after the drift test PASSES; a gate pass is REPORTED, never started live.
 ## 2026-10-22 20:18 EDT -- owner asleep: after the exploit is diagnosed + fixed, pods may train successors; a gate-passing candidate is REPORTED, NOT started live
 
 - Memory overnight-2026-10-22. CLX stays live. The exploit agent is running on 32525; W18 33401, W19 33591, 33572 free after the branch evals.

@@ -33,7 +33,8 @@ ARMS = ('D0', 'D1', 'D2', 'D3')
 HEAD_ARMS = {'G': ('gate', '0.27'), 'C': ('card', '.35'), 'X': ('cell', '.35')}
 # 10-13 rollout-decoder candidates: (tau, T, T_gate or None, heads). Gc/G2/G1 separate the gate's centre and temperature.
 SWEEP = {'Gc': ('.35', '0.5', None, 'gate'), 'G2': ('0.27', '0.5', '0.2', 'gate'), 'G1': ('0.27', '0.5', '0.1', 'gate'),
-         'R1': ('0.27', '0.5', '0.1', 'gate,card,cell'), 'R2': ('0.27', '0.2', None, 'gate,card,cell')}
+         'R1': ('0.27', '0.5', '0.1', 'gate,card,cell'), 'R2': ('0.27', '0.2', None, 'gate,card,cell'),
+         'R35': ('.35', '0.5', '0.1', 'gate,card,cell')}   # 10-22 exploit: rollout decoder of stepd/cfg/drift_tg_e1i_s74.yaml
 STEPS = [('D1', 'D0', 'decoding: greedy vs RL sampler'), ('D2', 'D1', '+ timing rules'),
          ('D3', 'D2', '+ card/cell overrides'), ('D3', 'D0', 'whole gap: live stack vs RL sampler')]
 
