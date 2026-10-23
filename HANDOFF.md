@@ -1,3 +1,22 @@
+## 2026-10-23 06:15 EDT -- s76 STOPPED at u50 (idle + ignored threats up, survives the scorer fix); training WR up vs training opps while E4 WR down; W18 R1-R3 opponents on the push gate (32525)
+
+- s76 check_u0050 vs u0 (960 E4): FAIL threat idle >= 4 s +0.030 [+0.008, +0.050], threat ignored +0.029 [+0.004, +0.050]; G-LOG
+  hold -0.102 (more Logs); win -0.033 [-0.072, +0.008]; seconds at full -12.0, first play -5.1 s, plays / min +0.16.
+  Tripwire (2 consecutive) stopped it.
+- Re-scored with push_cal's one rule (threat_check.py, copied to 33572 repo): idle share 0.211 -> 0.234 -> 0.248, ignored 0.269
+  -> 0.290 -> 0.308 (u0 / u25 / u50) -> the drift is REAL (a), not the sim_value bug.
+- Live-gate recipe, 3 seeds: hoarding fixed 3/3; every seed fails on a different habit (s74 hazard share, s75 elixir at play,
+  s76 idle / ignored). Idle-on-threat by seed: -0.019 / -0.010 / +0.030 -> no consistent direction = weak SIM signal on
+  threat response; habits random-walk without a leash.
+- s76 train_table u0-24 -> u25-49: rollout WR 0.509 -> 0.538, vs I u40 0.63 -> 0.67, vs init 0.54 -> 0.62; E4 WR 0.700 ->
+  0.667. Learns what beats the TRAINING opponents (I u40 ~25-30% too hard per PUSH_CAL) but not E4 (~20-25% soft) -> lead =
+  opponent calibration (b: plausible, the transfer to live is untested).
+- 33401: W18 runners idle since 21:32Z 10-22 (R1 / R2 / R3 trained to u40 + gated). Queued board-recorded pushes there:
+  FAILED in seconds (W18's o3/cb copy lacks --record-board; no compute used).
+- Moved to 32525: push_cal/gate_eval.sh now takes MODE = an opponent ckpt path (T 0.1, decide 40, no tap handicap);
+  /workspace/pushcal/gate_q4.txt = W18 R1 / R3 / R2 u40 x 741200 742000 (960 each); opp ckpts sha-verified relay from 33401.
+  Scoring (push_cal sim + report vs live / E4 / I u40 -> report_w18.out) runs in the lead's background when the queue ends.
+- 33572 idle after s76; 33591 idle (W19 agent gone).
 ## 2026-10-23 05:54 EDT -- s74 u100 (drift-fixed recipe) promotion gate vs CLX: NOT a pass; s76 u25 drift check FAIL (idle-on-threat)
 
 - 32525 ckpt_eval.sh drift_s74_u0100 (/workspace/ckev/out/drift_s74_u0100; paired vs clx_rb, paircmp_pooled.py, 1,920 each):

@@ -1,7 +1,7 @@
 #!/bin/bash
 # gate_eval.sh QUEUE -- PUSH_CAL gate run (pod 32525): board-recorded CLX evals vs an opponent setting, scored by
 # push_cal.py. = exploit/ev.sh's command (D3, all16, live census, same EXTRA + --record-board) with per-line extra flags.
-# Queue line: TAG|MODE|EXTRA_FLAGS|SEED...   MODE e4 | iu40 (W14 I u40, T .1, decide 40). Writes only /workspace/pushcal/ev.
+# Queue line: TAG|MODE|EXTRA_FLAGS|SEED...   MODE e4 | iu40 (W14 I u40, T .1, decide 40) | /abs/opp.pt (same T / decide). Writes only /workspace/pushcal/ev.
 set -uo pipefail
 CB=/workspace/cb_stepd; PYB=/workspace/venvf15/bin/python; X=/workspace/pushcal
 G=/workspace/ckev/ckpt/rlarm_stepd_ctrl_nos2_u0130_grafted.pt          # CLX (5d212358), as clx_rb
@@ -16,6 +16,7 @@ exec 9>/workspace/cpu.lock; flock 9
 while IFS='|' read -r TAG MODE XF SEEDS; do
   [ -z "$TAG" ] && continue
   OA=(); [ "$MODE" = iu40 ] && OA=(--opp-ckpt $OPP --opp-T 0.1 --opp-decide-every 40)
+  [ "${MODE:0:1}" = / ] && OA=(--opp-ckpt $MODE --opp-T 0.1 --opp-decide-every 40)    # MODE = an opponent ckpt path (W18 R1-R3)
   for S in $SEEDS; do
     D=$X/ev/$TAG/${TAG}_${S}; [ "$(grep -c '"outcome"' $D/D3/matches.jsonl 2>/dev/null)" = 480 ] && continue
     mkdir -p $(dirname $D); log "$TAG $MODE $S start ($XF)"
