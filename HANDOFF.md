@@ -1,3 +1,23 @@
+## 2026-10-23 04:37 EDT -- push calibration: the "SIM pushes 1.75x bigger, half the damage" gap was mostly a SCORER bug; E4 ~20-25% soft, I u40 ~25-30% hard; no opponent training launched
+
+- opp_model/PUSH_CAL.md (in-session agent, 32525; tools opp_model/push_cal/, selftest passes laptop + pod).
+- Bug (a): SIM board rows name a spawned unit by its OWNER card (a Witch's skeletons = "Witch", max_hp 130).
+  exploit/ape_punish.py + ape/ape_score.py `sim_value` priced each child at the full card -> E4 elixir / push 13.5 (now 8.2,
+  live 7.6). Fix proposed, NOT applied (drift test on 33572 runs the pod copy): value with push_cal.card_val (= live
+  body_value on engine_key, top = card's max max_hp in the match) + drop max_hp < 20.
+- Same definition both sides (live = 473 CLX matches, punish_live.txt): HP lost per push elixir E4 60.4 / I u40 81.4 / live
+  79.7; push takes a tower or >= 1,000 HP 0.163 / 0.251 / 0.202; caught under 4 elixir costs I u40 ~1.9x live (+752 vs +405
+  HP) -> training over-rewards banking, E4 ~0.6x live.
+- Cause: engine ruled out (c) (one-card pushes match live: Hog 359 vs 381, Barrel 612 vs 612). E4 = policy (a), what exactly is
+  (b). I u40 = push size (a) (W18 tempo). Eval-time knobs (tau 0.55, decide every 60, temp 0.03) do not fix it -> needs
+  training; the config-level match is W18 R3 play_cost already on 33401 (not duplicated).
+- Drift gate impact: idle-on-threat survives the fix (CLXII +0.023 -> +0.020); defence-trade drift does NOT (-0.55 -> +0.07) ->
+  the "-0.25 trade" bar needs re-basing. s74/s75 FLAGS (hazard share, elixir at play) do not use sim_value: verdicts stand.
+- SIM board recording omits the final tower fall (search_s0.py) -> "princess fell" = 0 for every SIM OT push.
+- Laptop: two orphaned whole-disk `find` processes (other sessions, parents dead, ~1 core each) killed 03:3x; live median
+  decision still ~100 ms (55-90 on earlier days); remaining load = MuMu, Defender, TextInputHost, other projects (left alone).
+- 32525 idle; s76 on 33572 (train 06:50Z, u100 ~13:00Z). Owner decisions: drift bars; fix sim_value; score W18 R3 on the push
+  gate; gate on an E4 + I u40 mix.
 ## 2026-10-23 03:25 EDT -- drift test s74 VERDICT FAIL at u100 (1 borderline flag); live-gate fix stops idle / ignore / capping drift; no successor training
 
 - s74 check_u0100 vs u0 (960 E4):
