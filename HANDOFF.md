@@ -1,3 +1,14 @@
+## 2026-10-23 00:56 EDT -- drift tests: s74 PASS at u25 / u50 (running to u100); s75 FAIL at u50 (tripwire stop); s76 queued on 33572
+
+- s75 (33572) check_u0050 vs u0 (960 E4):
+  - FLAGS: elixir at play 6.756 vs 6.507 (+0.249 [+0.182, +0.320]); hazard-fired play share 0.102 vs 0.087 (+0.015)
+  - neutral / better: win -0.010 [-0.051, +0.029]; threat idle -0.010; threat ignored -0.027 [-0.052, -0.005]; defence trade
+    +0.08; X-Bow low-reserve -0.034; seconds at full elixir -4.9 [-6.1, -3.7]
+  - Tornado / min -0.037 (a watch flag)
+  -> more BANKING, less capping. The owner's 3.5-cycle doctrine says banking is correct: the drift_check "elixir at play +0.10"
+     bar may be too strict for icebow -> OWNER DECISION (not changed).
+- s74 (32525): u25 PASS, u50 PASS (proagree cell 0.1938 -> 0.1790; tripwire 0.1638), at u62; u100 ~07:20Z.
+- 33572: s76 (seed only) queued behind s75's shutdown (/workspace/start_s76.sh) for a 3-seed read.
 ## 2026-10-22 21:38 EDT -- 2nd drift test (seed 75) on 33572 (branches finished at u79; the pod was idle)
 
 - drift_tg_e1i_s75 = the s74 cfg with seed 75 (diff: seed only); smoke PASS; trainer pid 4573 (drift_test.sh setsid). Kit from
