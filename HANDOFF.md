@@ -1,3 +1,15 @@
+## 2026-10-23 05:54 EDT -- s74 u100 (drift-fixed recipe) promotion gate vs CLX: NOT a pass; s76 u25 drift check FAIL (idle-on-threat)
+
+- 32525 ckpt_eval.sh drift_s74_u0100 (/workspace/ckev/out/drift_s74_u0100; paired vs clx_rb, paircmp_pooled.py, 1,920 each):
+  - E4: 1352 vs 1389 wins, -1.93 pp [-4.56, +0.70]; vs long u100 -3.07 [-5.59, -0.55]
+  - I u40: 954 vs 919, +1.82 pp [-0.98, +4.62]
+  - I u40 glob needs D3/*/matches.jsonl (sharded).
+- s76 (33572) check_u0025 vs u0: FAIL threat idle >= 4 s +0.025 [+0.005, +0.045] (the CLXII live habit); win -0.034 [-0.075,
+  +0.002]; seconds at full -7.9 (hoarding still fixed); elixir at play / hazard share fine; Tornado / min -0.05 (watch).
+- 3 seeds, 3 different failing metrics (s74 hazard +0.010 u100, s75 elixir at play +0.25 u50, s76 idle +0.025 u25). Caution:
+  ~9 gated metrics at 95% each -> a no-drift check fails one by chance ~1/3 of the time; s75 is clear, s74 / s76 borderline.
+  s76 u50 (~10:10Z) decides its tripwire (2 consecutive FAILs stop it).
+- 32525 idle after the eval.
 ## 2026-10-23 04:37 EDT -- push calibration: the "SIM pushes 1.75x bigger, half the damage" gap was mostly a SCORER bug; E4 ~20-25% soft, I u40 ~25-30% hard; no opponent training launched
 
 - opp_model/PUSH_CAL.md (in-session agent, 32525; tools opp_model/push_cal/, selftest passes laptop + pod).
