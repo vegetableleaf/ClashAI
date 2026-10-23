@@ -477,7 +477,10 @@ def selftest():
     assert card_val('tombstone', 130, 130, top)[0] is None                     # building children: none (live rule)
     assert card_val('goblin_barrel', 323, 323, top)[0] == 1.0                  # spell in BODY_COUNT: 3 / 3
     assert abs(card_val('golem', 1827, 1827, top)[0] - 1 / 3) < 1e-9          # Golemite
-    assert AP.sim_value('Witch', 130, 130) == 5.0                              # the old SIM rule this replaces
+    assert AP.sim_value('Witch', 130, 130) == 5.0                              # no top: the old whole-card price
+    for nm, hp, mx in (('Witch', 130, 130), ('Witch', 670, 1341), ('Golem', 1827, 1827), ('GoblinBarrel', 323, 323)):
+        k = AP.L.vocab.engine_key(nm) or ''                                    # 10-23: ape_punish.sim_value(top=) = this rule
+        assert abs(AP.sim_value(nm, hp, mx, top=top) - card_val(k, hp, mx, top)[0]) < 1e-9, nm
     print('selftest ok')
 
 

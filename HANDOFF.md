@@ -1,3 +1,24 @@
+## 2026-10-23 07:00 EDT -- owner decisions 10-23 morning; scorer FIXED; drift rules changed; s76 tripwire bug fixed; opponent calibration + x70 drift tests on all 4 pods
+
+- OWNER: (1) banking must be situational, not constant (constant banking = idling); drift limits = lead's call. (2) fix the
+  scorer. (3) calibrate the opponents. (4) fill every pod fully; stop a pod only if still idle after that.
+- Scorer fix (a): ape/ape_score.py + exploit/ape_punish.py sim_value(..., top=) = the live body_value rule (push_cal.card_val:
+  owner-card names, role child < 45% of the card's biggest body, max_hp < 20 dropped); hab_match builds top per match
+  (sim_top). push_cal selftest asserts sim_value(top=) == card_val. Live side unchanged.
+- Drift rules (exploit/tools/drift_check.py; lead decision): elixir at play -> WATCH (not gated; its harm is gated by idle /
+  ignored / seconds at full); bootstrap 99% (B 2000) instead of 95% (~9 gated metrics: 95% failed a no-drift check ~1/3 of the
+  time); defence trade bar -0.25 now on the fixed scale. NOT tuned to pass: re-run on 33572 -> s76 u50 still FAIL (idle +0.037
+  [+0.007, +0.064], ignored +0.040 [+0.007, +0.071]); s75 u50 FAIL (hazard share +0.015 [+0.008, +0.021]); s76 u25 PASS.
+- BUG (a): the tripwire's STOP file is read by rl_royale only on proagree updates -> s76 trained on to u76 after its 10:01Z
+  STOP. Killed 10:55Z (+ orphaned spawn_main workers). drift_test.sh now kills the trainer's process group (kill -- -$TPID).
+- W18 opponents on the push gate (report push_cal/report_w18.out, 960 each; cells failed of 42): E4 8, I u40 12, R1 8, R3 9,
+  R2 12. Elixir / push 8.22 / 9.66 / 9.38 / 9.58 / 9.63 vs live 7.61 -> W18's reward changes do not fix push size.
+- Training pool finding: drift recipe = 70% self-play league (learner snapshots driving opponent decks) + 30% I u40.
+- Pods (all busy):
+  - 32525: gate_q5 = I u40 eval-time calibration sweep (T .5 + tau .27 = its TRAINING decode; T .3; tau .27; tau .2; decide 20;
+    decide 20 + tau .2), 960 each -> push_cal report_q5.out (lead background scorer).
+  - 33572 / 33591 / 33401: drift_x70_s74 / s75 / s76 = drift_tg_e1i_sNN + ONE change: league_exploiters share 0.3 -> 0.7.
+    33591 / 33401 get 33572's kit (cb_stepd minus run outputs + exploit); their old cb_stepd kept as cb_stepd_pre1023.
 ## 2026-10-23 06:15 EDT -- s76 STOPPED at u50 (idle + ignored threats up, survives the scorer fix); training WR up vs training opps while E4 WR down; W18 R1-R3 opponents on the push gate (32525)
 
 - s76 check_u0050 vs u0 (960 E4): FAIL threat idle >= 4 s +0.030 [+0.008, +0.050], threat ignored +0.029 [+0.004, +0.050]; G-LOG
