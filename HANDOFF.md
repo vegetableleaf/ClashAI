@@ -1,3 +1,16 @@
+## 2026-10-23 12:32 EDT -- calibrated drift tests: u25 / u50 all PASS on the fixed rules; x70cal_s74 STOPPED at u75 by the PRO-AGREEMENT tripwire (card -1.66 pp), habits clean; cal-only ablation on 32525
+
+- Checks vs u0 (960 E4 each, 99% rules):
+  - x70cal_s74 (32525): u25 PASS, u50 PASS, u75 habits PASS (win -0.030 [-0.083, +0.024], idle +0.009, ignored +0.005,
+    hazard -0.007, full-elixir s -12.4) BUT proagree card 0.6277 -> 0.6111 (-1.66 pp; bar 1.5) -> tripwire STOP, VERDICT FAIL
+    (cell 0.1938 -> 0.1788, bar 3 pp). Trainer killed by the new process-group kill (worked).
+  - x70cal_s76 (33401): u25 PASS, u50 PASS: win +0.036 [-0.020, +0.087], idle -0.028, ignored -0.030 (the SAME seed on
+    drift_tg FAILED u50: idle +0.037, ignored +0.040).
+  - x70cal_s75 (33591): u25 PASS (win -0.009; idle 0.000; ignored -0.015; hazard 0.000).
+  - x70_s74 (33572, share only): u25 PASS, u50 PASS (win +0.004, idle -0.018, ignored -0.019, hazard +0.004).
+- Reading (b): the habit drift is gone on every run so far; x70 (share only) is clean too at u50 -> part of the effect may be the
+  share, not the decode. Card-choice pro agreement still erodes (~-0.6 pp / 25 updates on x70cal_s74).
+- 32525 now: drift_cal30_s74 = drift_tg_e1i_s74 + ONLY the calibrated exploiter decode (share 0.3) -> splits x70cal.
 ## 2026-10-23 08:11 EDT -- CALIBRATED OPPONENT found (eval-time decode, no training): I u40 at decide 20 + tau 0.2 fails 1 / 42 push cells (default 12); calibrated drift tests on 3 pods
 
 - 32525 gate_q5 (push_cal/report_q5.out; CLX vs I u40, 960 each; cells failed of 42): default (decide 40, tau .27 = the eval
