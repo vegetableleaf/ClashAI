@@ -1,3 +1,17 @@
+## 2026-10-23 03:25 EDT -- drift test s74 VERDICT FAIL at u100 (1 borderline flag); live-gate fix stops idle / ignore / capping drift; no successor training
+
+- s74 check_u0100 vs u0 (960 E4):
+  - the only FLAG: hazard-fired play share 0.097 vs 0.087 (+0.010 [+0.005, +0.015]; bar +0.01)
+  - win +0.008 [-0.031, +0.052]; threat idle -0.019; threat ignored -0.023 [-0.047, -0.002]; elixir at play +0.03; seconds at
+    full -7.4 [-8.5, -6.2]; defence trade ~0; APE share +0.014 (not gated)
+  - proagree cell 0.1938 -> 0.1772 (tripwire 0.1638)
+- Reading: the live-gate fix removes the long-run drift (idle, ignore, hoarding); the residual = slightly more plays forced by the
+  9-elixir hazard rule. s75 FAIL (elixir at play +0.25 = banking); s76 queued / running on 33572.
+- Per the owner: drift test not passed -> NO successor training; nothing live. OWNER DECISIONS for the morning:
+  (1) are the "elixir at play" (+0.10) / "hazard-fired share" (+0.01) bars right for a 3.5-cycle banking deck?
+  (2) if s76 passes / the bars are loosened, train successors on the live-gate recipe.
+- 32525 -> opponent push calibration (in-session agent; opp_model/PUSH_CAL.md): SIM pushes are softer (tower HP / push elixir
+  37 vs 81 live).
 ## 2026-10-23 00:56 EDT -- drift tests: s74 PASS at u25 / u50 (running to u100); s75 FAIL at u50 (tripwire stop); s76 queued on 33572
 
 - s75 (33572) check_u0050 vs u0 (960 E4):
