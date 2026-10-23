@@ -1,3 +1,6 @@
+## 2026-10-22 20:18 EDT -- owner asleep: after the exploit is diagnosed + fixed, pods may train successors; a gate-passing candidate is REPORTED, NOT started live
+
+- Memory overnight-2026-10-22. CLX stays live. The exploit agent is running on 32525; W18 33401, W19 33591, 33572 free after the branch evals.
 ## 2026-10-22 19:16 EDT -- br74 trial ENDED early (2 W / 4 L); CLX redeployed; no more candidates until the exploit is fixed (owner)
 
 - SIM pre-filter had: br74 u40 -1.04 [-3.68, +1.60], br75 u40 -1.88 [-4.51, +0.76] vs CLX. Watchers branch_trials.sh / trial30.sh
