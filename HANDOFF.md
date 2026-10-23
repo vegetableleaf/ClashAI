@@ -1,3 +1,8 @@
+## 2026-10-22 21:38 EDT -- 2nd drift test (seed 75) on 33572 (branches finished at u79; the pod was idle)
+
+- drift_tg_e1i_s75 = the s74 cfg with seed 75 (diff: seed only); smoke PASS; trainer pid 4573 (drift_test.sh setsid). Kit from
+  32525 /workspace/exploit (exploit_kit.tgz). Same outputs under /workspace/exploit/drift/drift_tg_e1i_s75/ on 33572.
+- Purpose: the fix is checked on 2 seeds (seed SD ~2.4 pp). The VERDICT read command is as for s74 with -p 33572 and _s75.
 ## 2026-10-22 21:23 EDT -- DRIFT TEST RUNNING on 32525 (live-gate rollouts, no CLX leash; init CLIII raw u65 as the long run)
 
 - drift_tg_e1i_s74 vs tn_long_e1i_s74 (load_config diff): tau 0.27 -> 0.35, T_gate none -> 0.1, max_updates 500 -> 100.
