@@ -1,3 +1,20 @@
+## 2026-10-23 13:42 EDT -- owner loosens the pro-agreement tripwire to 5 pp (pros vary in style); x70cal_s76 FAIL at u100 = OVER-defending (trade -0.45); handover / resume tooling
+
+- OWNER 10-23: "loosen the pro limit; between different icebow pros and even the same players across matches there will be
+  significant variation in playstyle". drift_test.sh: PA_CELL / PA_CARD env, default 5 pp each (was 3 / 1.5) + resume mode
+  (3rd arg FROM_U). Memory no-clx-leash-fix-exploit-first updated (do not re-tighten).
+- Deploy: new drift_test.sh swapped by mv (new inode; running bash keeps the old one). exploit/handover.sh RUN moves a running
+  test onto it between evals (30 s quiet -> kill the old bash, resume at last check + 25; trainer untouched).
+  exploit/resume_run.sh RUN FROM_U restarts a STOPPED test (rl_royale --resume + checks from FROM_U; STOP / VERDICT kept .prev).
+  TRAP (a): `a && b && setsid nohup x &` over ssh backgrounds the WHOLE list in a subshell holding ssh's stdout -> ssh blocks
+  until x ends, and dies (SIGHUP) if the ssh is killed. Put the setsid nohup line on its own.
+- x70cal_s76 (33401) VERDICT FAIL (2 consecutive): u75 trade -0.352 [-0.666, -0.070], u100 trade -0.446 [-0.763, -0.129];
+  plays / min +0.79, first play -4.5 s, elixir at play -0.39, APE +0.022; idle -0.045, ignored -0.050 (better); win -0.007.
+  -> the calibrated recipe moves the drift from under- to OVER-defending (answers everything, spends more than the push).
+- x70cal_s75 (33591): u50 FAIL hazard share +0.012 [+0.005, +0.018] (1 consecutive); habits clean. Handover started.
+- Pods: 33572 x70_s74 (handover pending, u75 eval) | 32525 cal30_s74 (handover pending) | 33591 x70cal_s75 | 33401 x70_s76
+  RESUMED from its 12:11Z stop (u18) with checks from u25 (share-only arm, 2nd seed).
+- Owed: x70cal_s74 to u100 under the 5 pp bar (resume_run.sh drift_x70cal_s74 100 on 32525 after cal30).
 ## 2026-10-23 12:32 EDT -- calibrated drift tests: u25 / u50 all PASS on the fixed rules; x70cal_s74 STOPPED at u75 by the PRO-AGREEMENT tripwire (card -1.66 pp), habits clean; cal-only ablation on 32525
 
 - Checks vs u0 (960 E4 each, 99% rules):
