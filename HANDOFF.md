@@ -1,3 +1,18 @@
+## 2026-10-23 14:38 EDT -- OWNER: go ahead with habit REWARD TERMS (in-session agent building them); x70 / x70cal s74-s75 FAIL at u75 (over-defending + hazard); cal30 x3 seeds running
+
+- Owner 10-23: "go ahead with the reward terms" (proposed: learned fix for habits the SIM barely rewards / punishes).
+  In-session agent builds pipeline/habit_terms.py (opt-in habit_reward: idle-under-threat penalty, defence-trade reward
+  clip(push value - our spend), hazard forced-play penalty only if rollouts fire that rule; ape_score definitions; caps 0.3 /
+  match) + apply_habit_terms.py for both trees + tests + pod smoke on a /workspace/cb_hab copy (32525) + scale check;
+  cfgs drift_habx_s74-76 = x70cal + habit keys (base may change, see below). Not committed yet.
+- u75 results (old script, old 1.5 pp pro bar also tripped):
+  - x70_s74 (33572): FAIL trade -0.403 [-0.697, -0.104] + hazard +0.011; plays / min +0.41; idle -0.021, ignored -0.030.
+  - x70cal_s75 (33591): FAIL hazard +0.022 [+0.015, +0.029] (2nd consecutive); trade -0.23 n.s.; plays / min +0.28.
+  -> over-defending appears in BOTH share-0.7 recipes (x70_s74, x70cal_s76): the 0.7 share itself may drive it (b).
+- handover.sh BUG (a): its quiet check grep'd the literal "trainlog_table" and matched ITSELF -> never handed over. Fixed
+  (trainlog_tabl[e]); 32525 cal30_s74 resumed at u50 on the 5 pp script.
+- Pods: 32525 cal30_s74 (u25 PASS: win +0.027, idle -0.006, ignored -0.005, trade -0.16 n.s., hazard +0.003) | 33591
+  cal30_s75 | 33572 cal30_s76 (tau-patched trainer copied in; .pre1023 kept) | 33401 x70_s76 (resumed).
 ## 2026-10-23 13:42 EDT -- owner loosens the pro-agreement tripwire to 5 pp (pros vary in style); x70cal_s76 FAIL at u100 = OVER-defending (trade -0.45); handover / resume tooling
 
 - OWNER 10-23: "loosen the pro limit; between different icebow pros and even the same players across matches there will be
