@@ -1,3 +1,14 @@
+## 2026-10-22 21:23 EDT -- DRIFT TEST RUNNING on 32525 (live-gate rollouts, no CLX leash; init CLIII raw u65 as the long run)
+
+- drift_tg_e1i_s74 vs tn_long_e1i_s74 (load_config diff): tau 0.27 -> 0.35, T_gate none -> 0.1, max_updates 500 -> 100.
+  - Side effect: tau also gates the trainer's screen and the league / init opponents (at T 0.5): untested confounder.
+  - Smoke PASS 01:09Z. Trainer pid 17552 (drift_test.sh 17543); ~200 s / update (48 local actors).
+- Evals: u0 then every 25 (board-recorded E4 D3, drift_check vs u0); the R35 sign check (i) is NOT in the script.
+- ETA: VERDICT ~07:40Z (03:40 EDT).
+- Read: ssh -p 32525 root@157.157.221.29 'D=/workspace/exploit/drift/drift_tg_e1i_s74; cat $D/VERDICT $D/STOP_REASON
+  2>/dev/null; grep -E "check FAIL|TRIPWIRE|VERDICT|ended" $D/drift.log; grep -h "^## " $D/check_u*.txt'
+- On PASS (owner overnight rule): the promotion-gate eval of u100 vs CLX (pooled 1,920, ckpt_eval.sh) + successor training on
+  the live-gate recipe; a gate pass is REPORTED, never started live.
 ## 2026-10-22 20:55 EDT -- EXPLOIT FOUND: a train / deploy mismatch in the PLAY GATE (not mainly opponents / engine); drift test with the live gate launching
 
 - exploit/EXPLOIT.md + ape/SIMCHECK.md (in-session agent):
