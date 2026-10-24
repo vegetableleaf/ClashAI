@@ -1,4 +1,4 @@
-# succ48 -- the 48-hour successor (owner 2026-10-23 ~20:45 EDT; deadline ~20:45 EDT 10-25 = 00:45Z 10-26)
+# succ48 -- the 48-hour successor (owner 2026-10-23 ~20:45 EDT; deadline EXTENDED 10-24 by 24 h to ~20:45 EDT 10-26 = 00:45Z 10-27)
 
 Goal (owner): a successor that spends elixir well WITHOUT the forced (hazard) play, performs better live than CLX, and holds
 50%+ climbing Ranked. No live runs without the owner. Reward design is the lead's call; every experiment goes in EXPERIMENTS.md.

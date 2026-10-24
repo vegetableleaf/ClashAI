@@ -88,3 +88,14 @@ GATE G1 (gate48 + compare48, 32525): S7 (f_s79) u50 vs CLX WITH the hazard play,
 | S14 | succ48_m | s86 / 33591 | running |
 | S7 u75/u100 | succ48_f (32525) | s79 | u100 PASS: full 9.5 s, first play 10.0 s, win 0.654 (u50 0.674: not improving), idle / ignored +0.008 / +0.007 |
 | S9 u50 | succ48_h (33572) | s81 | PASS: full 15.4 s, first play 9.5 s, win 0.672 |
+
+10-24 ~23:20Z: OWNER extended the deadline by 24 h (to ~00:45Z 10-27). Pod speeds: 32525 / 33401 ~2.5 min / update; 33572 / 33591
+(shared host, load ~85) ~6 min. f / h plateaued (win 0.65-0.67) -> their pods go to CLX-start runs; their checkpoints stay as fallbacks
+(f u50 gated in G1; f u100 leak 9.5 s).
+
+| id | arm | seed / pod | result |
+|---|---|---|---|
+| S7 end | succ48_f | s79 / 32525 | stopped u~112 |
+| S9 end | succ48_h | s81 / 33572 | stopped u~59 |
+| S15 | succ48_m (CLX start) | s87 / 32525 | running |
+| S16 | succ48_n: m with leak .02 | s88 / 33572 | running |
