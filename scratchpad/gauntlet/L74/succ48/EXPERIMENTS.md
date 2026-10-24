@@ -50,3 +50,13 @@ trade stays reported and is compared with CLX-with-hazard in the final gate. Not
 |---|---|---|---|
 | S5 | succ48_d: BRANCH of S3 (b_s74) u125 (init = that ckpt, sha 16e7d958), leak .015, trade .04 | s77 / 32525 | running (train 15:08Z) |
 | S6 | succ48_e: BRANCH of S2 (a_s75) u125 (sha 7b6ee5f9), leak .015, trade .04 | s78 / 33401 | running (15:09Z) |
+
+S5 (d_s77) u25 FAIL: seconds at full 36.0 -> 49.4 [+5.7, +21.3], first play 23 -> 38 s, win -0.053 [-0.109, 0.000]. Cause (a, by
+the weights): trade .04 > leak .015 made WASTING elixir cheaper than over-paying, so the policy held more. Stopped at u~35
+with S6 (same weights, u~28). DECISION: leak weight must exceed trade weight; LEAK_MATCH_CAP 0.3 -> 0.6 (a > 20 s leak still
+gets gradient); shaping_critic_scale 2.2 (bound 1 + 0.3 + 0.3 + 0.6).
+
+| id | arm | seed / pod | result |
+|---|---|---|---|
+| S7 | succ48_f: BRANCH of S3 (b_s74) u150 (sha 9300ba4c; leak 24.8 s, win 0.644), leak .03, trade .02, cap .6 | s79 / 32525 | running (17:06Z) |
+| S8 | succ48_g: BRANCH of S2 (a_s75) u150 (sha 7aeb2f19; leak 32.1 s, win 0.693), leak .03, trade .02, cap .6 | s80 / 33401 | running (17:07Z) |

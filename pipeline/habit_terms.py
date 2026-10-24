@@ -42,7 +42,8 @@ DEFAULTS = {"habit_idle_w": 0.1,      # per idle threat (win = +1): ~ a third of
 #                                       ignoring a 6-elixir threat paid idle -0.1 + trade +0.15 > 0; at 0.01 it costs -0.05
             "habit_leak_w": 0.0}      # succ48 10-23: per elixir WASTED (regenerated while at full); 0 = off (no hash change)
 KEYS = ("habit_reward",) + tuple(DEFAULTS)
-IDLE_MATCH_CAP = TRADE_MATCH_CAP = LEAK_MATCH_CAP = 0.3   # summed |reward| per match and term (ponytail: fixed)
+IDLE_MATCH_CAP = TRADE_MATCH_CAP = 0.3   # summed |reward| per match and term (ponytail: fixed)
+LEAK_MATCH_CAP = 0.6                      # succ48 10-24: a leaky match (> 20 s at full) must still feel the leak term
 FULL_E = 9.95                             # elixir counted as full (the cap is 10; the drift metric uses >= 9.9)
 TRADE_CLIP_E = 5.0                        # elixir: one push's trade is clipped to [-this, 0] (over-paying only)
 
