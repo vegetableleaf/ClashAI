@@ -86,3 +86,5 @@ GATE G1 (gate48 + compare48, 32525): S7 (f_s79) u50 vs CLX WITH the hazard play,
 | S12 end | succ48_k | s84 / 33591 | stopped at u~5 for S14 |
 | S13 | succ48_m: the f recipe from CLX (raw stepd_ctrl_nos2 u130, sha 0452c619); moving KL anchor every 50 | s85 / 33401 | running |
 | S14 | succ48_m | s86 / 33591 | running |
+| S7 u75/u100 | succ48_f (32525) | s79 | u100 PASS: full 9.5 s, first play 10.0 s, win 0.654 (u50 0.674: not improving), idle / ignored +0.008 / +0.007 |
+| S9 u50 | succ48_h (33572) | s81 | PASS: full 15.4 s, first play 9.5 s, win 0.672 |
