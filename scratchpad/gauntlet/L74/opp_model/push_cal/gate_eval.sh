@@ -4,7 +4,7 @@
 # Queue line: TAG|MODE|EXTRA_FLAGS|SEED...   MODE e4 | iu40 (W14 I u40, T .1, decide 40) | /abs/opp.pt (same T / decide). Writes only /workspace/pushcal/ev.
 set -uo pipefail
 CB=/workspace/cb_stepd; PYB=/workspace/venvf15/bin/python; X=/workspace/pushcal
-G=/workspace/ckev/ckpt/rlarm_stepd_ctrl_nos2_u0130_grafted.pt          # CLX (5d212358), as clx_rb
+G=${G:-/workspace/ckev/ckpt/rlarm_stepd_ctrl_nos2_u0130_grafted.pt}   # CLX (5d212358), as clx_rb; succ48: G= the candidate
 OPP=$CB/icebow/data/pipeline/o2/w14opp_I.pt
 cd $CB || exit 1
 unset ROYALE_HEROIW_PRESS
@@ -12,7 +12,7 @@ export HABITS_REC=1 PYTHONPATH=$CB ROYALE_HEROIW_FORM=hero OMP_NUM_THREADS=1 MKL
 EX="--habit-log --live-levels --card-levels Rocket=16 Log=15 --opp-tower-troops DaggerDuchess:0.028,Cannoneer:0.028,ChefTower:0.014 --record-plays --ability-stats --ability-head-decode=sample --crown-log --record-board"
 log() { echo "$(date -u +%FT%TZ) $*"; }
 sha256sum $G $OPP
-exec 9>/workspace/cpu.lock; flock 9
+exec 9>${LOCK:-/workspace/cpu.lock}; flock 9          # succ48: LOCK=/workspace/cpu_b.lock beside a trainer
 while IFS='|' read -r TAG MODE XF SEEDS; do
   [ -z "$TAG" ] && continue
   OA=(); [ "$MODE" = iu40 ] && OA=(--opp-ckpt $OPP --opp-T 0.1 --opp-decide-every 40)

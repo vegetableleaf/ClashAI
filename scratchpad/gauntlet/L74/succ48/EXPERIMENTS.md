@@ -64,3 +64,5 @@ gets gradient); shaping_critic_scale 2.2 (bound 1 + 0.3 + 0.3 + 0.6).
 | S3 end | succ48_b_s74 stopped at u~188 for S9 | s74 / 33572 | u150 PASS (full 24.8, first play 13.8 s, win 0.644); u175 full 46.2, first play 40.1 s, win 0.626 -- the leak OSCILLATES with low leak weight (18.7 / 44.9 / 36.0 / 24.8 / 46.2) |
 | S9 | succ48_h: BRANCH of S3 u75 (its best leak 18.7 s, win 0.669), leak .03, trade .02, cap .6 | s81 / 33572 | running (17:44Z) |
 | S10 | succ48_i: BRANCH of S2 u125 (full 27.2, win 0.693), leak .03, trade .02, cap .6 | s82 / 33591 | running (17:47Z) |
+| S7 u25 | succ48_f (32525) | s79 | PASS: full 24.8 -> 17.1 [-13.8, -1.4], first play 13.8 -> 10.4 s, win 0.644 -> 0.673, trade +0.25, idle / ignored flat |
+| S8 u25 | succ48_g (33401) | s80 | PASS: full 32.1 -> 27.5, first play 28.9 -> 20.8 s, win 0.685 (-0.007), trade -0.20 -> +0.04 |
