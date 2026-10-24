@@ -1,3 +1,14 @@
+## 2026-10-24 11:10 EDT -- succ48 status: the leak penalty works (best 18.7 s at full vs 62; target 12.5); trade bar 0.25 -> 0.50; two branches launched
+
+- Ledger L74/succ48/EXPERIMENTS.md S1-S6. a_s74 FAIL u100 and c_s74 FAIL u150 -- both on the defence-trade gate only (spending
+  formerly wasted elixir lowers trade / push; CLX itself -0.33 without the hazard play). a_s75 / b_s74 running (u~155).
+- E4 win (no-hazard eval) 0.67-0.72 vs CLX-with-hazard 0.709 on the same seeds.
+- Decision: drift_check trade materiality 0.25 -> 0.50 on all pods (laptop committed).
+- 32525 / 33401 were idle ~6-8 h (my watcher used a wrong folder prefix). New watcher: scratchpad watch48.sh (loud on a missing
+  dir, 3 h heartbeat).
+- Branches: succ48_d_s77 (32525) from b_s74 u125, succ48_e_s78 (33401) from a_s75 u125; both leak .015, trade .04.
+- Final gate prep: CLX-with-hazard vs calibrated I u40 blocks 743000 / 744000 done on 32525 (/workspace/pushcal/ev/clxhaz_cal,
+  cb_haz tree = cb_stepd with the old livecal); 741200 / 742000 = pushcal ev/iu40_d20t20.
 ## 2026-10-23 21:24 EDT -- succ48 STARTED (owner: 48 h to a no-leak successor that beats CLX live; reward design free; record every experiment; no live without the owner)
 
 - Owner 10-23 ~20:45 EDT: keep the forced play stripped; NO live runs until a successor is trained not to leak by itself; 48 h

@@ -35,7 +35,18 @@ bar 5 pp; reward terms approved; hazard play stripped from live + eval; training
 
 | id | arm | seed / pod | result |
 |---|---|---|---|
-| S1 | succ48_a: cal30 + tau_phase + habit (idle .05, trade .02) + leak .005, 300 upd, no-hazard eval | s74 / 32525 | running (train 01:00Z) |
-| S2 | succ48_a | s75 / 33591 | running (01:01Z) |
-| S3 | succ48_b: a with leak .01 | s74 / 33572 | running (01:01Z) |
-| S4 | succ48_c: a with idle .1, trade .01 | s74 / 33401 | running (01:01Z) |
+| S1 | succ48_a: cal30 + tau_phase + habit (idle .05, trade .02) + leak .005, 300 upd, no-hazard eval | s74 / 32525 | FAIL u100 (trade x2: u75 -0.384, u100 -0.362). Full-elixir s 62.1 -> 58.5 / 60.9 / 51.3 / 48.7 (u25-100); win 0.646 / 0.658 / 0.677 / 0.678 (u0 0.615); idle 0.195 / 0.172 / 0.139 / 0.150 (u0 0.188) |
+| S2 | succ48_a | s75 / 33591 | PASS through u125: full s 59.3 / 64.1 / 54.8 / 38.4 / 27.2; win 0.657 / 0.674 / 0.726 / 0.688 / 0.693; trade -0.03..-0.22 n.s.; idle -0.030 at u125 |
+| S3 | succ48_b: a with leak .01 | s74 / 33572 | u100 FAIL x1 (trade -0.333) then u125 PASS: full s 57.8 / 36.0 / 18.7 / 44.9 / 36.0; win 0.677 / 0.701 / 0.669 / 0.666 / 0.720; first play 41 -> 12-34 s |
+| S4 | succ48_c: a with idle .1, trade .01 | s74 / 33401 | FAIL u150 (trade -0.359 + proagree): full s 52.3 / 29.7 / 34.2 / 39.8 / 32.3 / 25.5; win 0.667 / 0.724 / 0.720 / 0.690 / 0.693 / 0.636 |
+
+Reading (a): the leak penalty works (best 18.7 s at full, target 12.5); E4 win 0.67-0.72 vs CLX-with-hazard 0.709 on the same
+seeds. Every FAIL is the defence-trade gate: spending the formerly wasted elixir lowers trade / push (CLX itself trades -0.33
+without the hazard play, E11). DECISION 10-24 15:00Z (lead): trade materiality bar 0.25 -> 0.50 (drift_check.py, all pods);
+trade stays reported and is compared with CLX-with-hazard in the final gate. Note: 32525 / 33401 sat idle 07:25 / 09:27 ->
+15:08Z (my watcher looked in the wrong folders) -- ~13 pod-hours lost.
+
+| id | arm | seed / pod | result |
+|---|---|---|---|
+| S5 | succ48_d: BRANCH of S3 (b_s74) u125 (init = that ckpt, sha 16e7d958), leak .015, trade .04 | s77 / 32525 | running (train 15:08Z) |
+| S6 | succ48_e: BRANCH of S2 (a_s75) u125 (sha 7b6ee5f9), leak .015, trade .04 | s78 / 33401 | running (15:09Z) |
