@@ -72,3 +72,17 @@ gets gradient); shaping_critic_scale 2.2 (bound 1 + 0.3 + 0.3 + 0.6).
 | S11 | succ48_j: BRANCH of S7 (f) u50 (sha 91ba1666), same weights | s83 / 33401 | running (replaces g) |
 | S10 u25 | succ48_i (33591) | s82 | FAIL: idle +0.030 [+0.005, +0.057]; leak 27.2 -> 22.9; win 0.665 -> stopped (a-lineage twice weaker) |
 | S12 | succ48_k: BRANCH of S9 (h) u25 (sha 1535d51e; leak 11.6 s), same weights | s84 / 33591 | running (replaces i) |
+
+GATE G1 (gate48 + compare48, 32525): S7 (f_s79) u50 vs CLX WITH the hazard play, paired 1,920 each:
+- E4 1328 vs 1389 wins, -3.18 pp [-5.78, -0.57]; calibrated I u40 1053 vs 1129, -3.96 pp [-6.72, -1.20] -> NOT a pass.
+- Behaviour vs CLX-with-hazard (E4, 99%): seconds at full 11.5 vs 12.3 (equal); idle -0.026 [-0.045, -0.009] and ignored -0.029
+  (better); trade +0.01 (equal); elixir at play 5.66 vs 6.14; plays / min +0.27; first play 10.5 vs 13.0 s.
+- Reading (a): the leak is fixed and the habits beat CLX's, but the lineage starts ~9 pp below CLX without the hazard play
+  (drift init 0.615 vs CLX 0.706, E4 same seeds) and has not closed it. -> start the recipe from CLX itself.
+
+| id | arm | seed / pod | result |
+|---|---|---|---|
+| S11 end | succ48_j | s83 / 33401 | stopped at u~20 for S13 |
+| S12 end | succ48_k | s84 / 33591 | stopped at u~5 for S14 |
+| S13 | succ48_m: the f recipe from CLX (raw stepd_ctrl_nos2 u130, sha 0452c619); moving KL anchor every 50 | s85 / 33401 | running |
+| S14 | succ48_m | s86 / 33591 | running |
