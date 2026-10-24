@@ -1,3 +1,18 @@
+## 2026-10-23 21:24 EDT -- succ48 STARTED (owner: 48 h to a no-leak successor that beats CLX live; reward design free; record every experiment; no live without the owner)
+
+- Owner 10-23 ~20:45 EDT: keep the forced play stripped; NO live runs until a successor is trained not to leak by itself; 48 h
+  (deadline ~00:45Z 10-26); reward architecture is the lead's call, every experiment recorded; no live without the owner.
+  Memory succ48-mandate-1023. Plan + ledger: L74/succ48/PLAN.md, L74/succ48/EXPERIMENTS.md (E1-E11 = today's runs).
+- E11 (a): CLX WITHOUT the hazard play vs with it (E4 960, same seeds): win 0.706 vs 0.709 (n.s.) but seconds at >= 9.9 elixir
+  52.6 vs 12.5, first play 39.7 vs 12.8 s, plays / min -0.97, defence trade -0.52 -> CLX leaks badly and the soft E4 does not
+  punish it (so the SIM win rate alone cannot teach this). Success bar 1: successor leak <= 12.5 s / match.
+- pipeline/habit_terms.py: habit_leak_w = penalty per elixir regenerated while full (regen_between over sample gaps full at both
+  ends; cap 0.3 / match; 0 = off = the pre-leak config hash). Tests 11 / 11 laptop; 26 + 5 skip (git) on all 4 pods; real
+  smoke PASS on 32525 (succ48_a_s74, resume check all True).
+- Runs (drift_test.sh ARM 300, NO-hazard eval, checks every 25): 32525 succ48_a_s74, 33591 succ48_a_s75 (idle .05, trade .02,
+  leak .005), 33572 succ48_b_s74 (leak .01), 33401 succ48_c_s74 (idle .1, trade .01, leak .005); all = cal30 + tau_phase.
+  All pods: cb_stepd patched (habit + leak + tau_phase; .pre1023b backups), livecal no hazard. Old runs (cal30_s75 / s76,
+  habc_s74 / s75) stopped for these.
 ## 2026-10-23 19:33 EDT -- rollout tau_phase shipped (opt-in; ratio test exact); habc_s74 u50 PASS; cal30_s74 FAIL u100 (hazard x2); next = combined recipe hph x3
 
 - pipeline: `tau_phase: [0.35, 0.45, 0.55]` (rl_royale tau_phase_cfg; e1_eval.sample_decide_batch per-row threshold from

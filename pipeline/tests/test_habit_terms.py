@@ -25,7 +25,7 @@ from pipeline import rl_royale as RL                                      # noqa
 
 PRE = "9c4efa8"
 CFG = REPO / "scratchpad/gauntlet/L74/stepd/cfg"
-W = {"habit_idle_w": 0.1, "habit_trade_w": 0.01}            # the defaults
+W = {"habit_idle_w": 0.1, "habit_trade_w": 0.01, "habit_leak_w": 0.0}   # the defaults
 P3 = {"habit_idle_w": 0.1, "habit_trade_w": 0.03}           # explicit weights for the logic tests
 BASE = {"advantage": "gae", "league": True, "critic_warmup_updates": 5, "shaping_critic_scale": 1.6}
 
@@ -198,3 +198,22 @@ def test_selfplay_wiring_identical_play_and_the_elixir_the_decision_saw():
     assert any(abs(s[1] - 7.0) > 1e-9 for s in m.habit.smp[1:])           # the extrapolated regen is in
     for tk, el, _ in m.habit.smp:
         assert el == pytest.approx(seen[tk], abs=1e-9)
+
+
+def test_leak_wasted_elixir_at_full():
+    """succ48 10-23: habit_leak_w x elixir regenerated while full (both ends of a sample gap at >= FULL_E), capped."""
+    from pipeline.opp_elixir_count import regen_between
+    smp = [(t, el, []) for t, el in ((100, 8.0), (140, 10.0), (180, 10.0), (220, 10.0), (260, 6.0), (300, 10.0))]
+    ev = HT.events(smp, [], low=True)
+    assert [x[0] for x in ev["leak"]] == [180, 220]                       # gaps 140-180 and 180-220 are full at both ends
+    wasted = regen_between(140, 220)
+    assert sum(x[1] for x in ev["leak"]) == pytest.approx(wasted, abs=1e-3)
+    p = {**W, "habit_idle_w": 0.0, "habit_trade_w": 0.0, "habit_leak_w": 0.02}
+    out = HT.row_terms(ev, [100, 150, 200, 250], p)
+    assert out["leak"] == pytest.approx(-0.02 * wasted, abs=1e-4) and out["leak_e"] == pytest.approx(wasted, abs=1e-3)
+    assert out["r"][1] < 0 and out["r"][2] < 0 and out["r"][0] == 0      # charged to the row at / before each gap end
+    big = {"thr": 0, "idle": [], "push": [], "leak": [[t, 5.0] for t in range(100, 1000, 100)]}
+    assert HT.row_terms(big, np.arange(0, 1000, 10), p)["leak"] == pytest.approx(-HT.LEAK_MATCH_CAP)
+    assert HT.bound(p) == pytest.approx(HT.LEAK_MATCH_CAP)
+    off = HT.canonical({"habit_reward": True})
+    assert "habit_leak_w" not in off and HT.canonical({"habit_reward": True, "habit_leak_w": 0.02})["habit_leak_w"] == 0.02

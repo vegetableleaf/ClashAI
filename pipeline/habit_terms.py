@@ -37,11 +37,13 @@ REPO = Path(__file__).resolve().parents[1]
 TRAITS_PATH = REPO / "research/ext/Royale/RoyaleSim/data/derived/cards-160402017-20261006.json"   # = log_use.SIMCARDS
 
 DEFAULTS = {"habit_idle_w": 0.1,      # per idle threat (win = +1): ~ a third of a typical tower-term event
-            "habit_trade_w": 0.01}    # per elixir of push value - our spend (5 over-paid = -0.05). 10-23 scale check: at 0.03
+            "habit_trade_w": 0.01,    # per elixir of push value - our spend (5 over-paid = -0.05). 10-23 scale check: at 0.03
 #                                       the 0.3 cap bound in 35% of 128 rollout matches (median 18 elixir of |trade|), and
 #                                       ignoring a 6-elixir threat paid idle -0.1 + trade +0.15 > 0; at 0.01 it costs -0.05
+            "habit_leak_w": 0.0}      # succ48 10-23: per elixir WASTED (regenerated while at full); 0 = off (no hash change)
 KEYS = ("habit_reward",) + tuple(DEFAULTS)
-IDLE_MATCH_CAP = TRADE_MATCH_CAP = 0.3   # summed |reward| per match and term (ponytail: fixed, a key if an arm needs another)
+IDLE_MATCH_CAP = TRADE_MATCH_CAP = LEAK_MATCH_CAP = 0.3   # summed |reward| per match and term (ponytail: fixed)
+FULL_E = 9.95                             # elixir counted as full (the cap is 10; the drift metric uses >= 9.9)
 TRADE_CLIP_E = 5.0                        # elixir: one push's trade is clipped to [-this, 0] (over-paying only)
 
 # ape_score.py (the drift metrics) -- keep in step with it
@@ -87,7 +89,8 @@ def habit_cfg(cfg: dict) -> Optional[dict]:
 
 def bound(p: dict) -> float:
     """max |summed reward| per match (any suffix of it too: each term caps the sum of |reward|)."""
-    return IDLE_MATCH_CAP * (p["habit_idle_w"] > 0) + TRADE_MATCH_CAP * (p["habit_trade_w"] > 0)
+    return (IDLE_MATCH_CAP * (p["habit_idle_w"] > 0) + TRADE_MATCH_CAP * (p["habit_trade_w"] > 0)
+            + LEAK_MATCH_CAP * (p.get("habit_leak_w", 0.0) > 0))
 
 
 def canonical(cfg: dict) -> dict:
@@ -95,7 +98,8 @@ def canonical(cfg: dict) -> dict:
     implicit / explicit)."""
     if cfg.get("habit_reward") is None or cfg.get("habit_reward") is False:
         return {k: v for k, v in cfg.items() if k not in KEYS}
-    return {**cfg, "habit_reward": True, **{k: float(v if cfg.get(k) is None else cfg[k]) for k, v in DEFAULTS.items()}}
+    c = {**cfg, "habit_reward": True, **{k: float(v if cfg.get(k) is None else cfg[k]) for k, v in DEFAULTS.items()}}
+    return c if c["habit_leak_w"] else {k: v for k, v in c.items() if k != "habit_leak_w"}   # leak off = the pre-leak hash
 
 
 # ------------------------------------------------------------------------------------------------------------ values
@@ -145,9 +149,13 @@ def events(samples: list, plays: list, low: bool) -> dict:
     bodies [(uid, name, hp, max_hp, x, y)] engine millitiles)] in time order; ``plays`` our ACCEPTED plays [(decision tick,
     card, engine X, engine Y)] in order; ``low`` = our king at engine y < 16000. -> {"thr": threats, "idle": [[onset tick,
     lane]], "push": [[t0, t1, value, our spend]]} (plain JSON types)."""
-    out = {"thr": 0, "idle": [], "push": []}
+    out = {"thr": 0, "idle": [], "push": [], "leak": []}
     if not samples:
         return out
+    from pipeline.opp_elixir_count import regen_between      # 5 LEAK: elixir regenerated while full at both ends of a gap
+    for (ta, ea, _), (tb, eb, _) in zip(samples, samples[1:]):   # (ponytail: misses the first gap of each full spell)
+        if ea >= FULL_E and eb >= FULL_E:
+            out["leak"].append([int(tb), round(regen_between(ta, tb), 4)])
     top = {}
     for _, _, en in samples:
         for _, name, _, mx, _, _ in en:
@@ -248,8 +256,8 @@ def row_terms(rec: dict, ticks, p: dict) -> dict:
     "trade": the terms' sums, "n_idle", "n_push", "thr", "unmapped" (pushes ending before the first kept row)}."""
     ticks = np.asarray(ticks, dtype=np.int64)
     r = np.zeros(len(ticks))
-    out = {"idle": 0.0, "trade": 0.0, "n_idle": len(rec["idle"]), "n_push": len(rec["push"]), "thr": int(rec["thr"]),
-           "unmapped": 0, "r": r}
+    out = {"idle": 0.0, "trade": 0.0, "leak": 0.0, "n_idle": len(rec["idle"]), "n_push": len(rec["push"]),
+           "thr": int(rec["thr"]), "leak_e": float(sum(x[1] for x in rec.get("leak", []))), "unmapped": 0, "r": r}
     if not len(ticks):
         return out
     w, total = p["habit_idle_w"], 0.0
@@ -271,6 +279,15 @@ def row_terms(rec: dict, ticks, p: dict) -> dict:
         r[i] += e
         used += abs(e)
         out["trade"] += e
+    w, used = p.get("habit_leak_w", 0.0), 0.0
+    for t1, wasted in rec.get("leak", []) if w > 0 else ():
+        i = max(int(np.searchsorted(ticks, t1, side="right")) - 1, 0)   # the kept row at / before the gap end
+        e = min(w * wasted, LEAK_MATCH_CAP - used)
+        if e <= 0:
+            break
+        r[i] -= e
+        used += e
+    out["leak"] = -used
     return out
 
 
@@ -280,9 +297,10 @@ def batch_stats(sums: list) -> dict:
     n = max(len(sums), 1)
     st = {"matches": len(sums), "thr_per_match": sum(s["thr"] for s in sums) / n,
           "idle_per_match": sum(s["n_idle"] for s in sums) / n, "push_per_match": sum(s["n_push"] for s in sums) / n,
-          "unmapped": int(sum(s["unmapped"] for s in sums))}
-    for k in ("idle", "trade"):
-        v = [float(s[k]) for s in sums] or [0.0]
+          "unmapped": int(sum(s["unmapped"] for s in sums)),
+          "leak_e_per_match": sum(s.get("leak_e", 0.0) for s in sums) / n}
+    for k in ("idle", "trade", "leak"):
+        v = [float(s.get(k, 0.0)) for s in sums] or [0.0]
         st.update({f"{k}_r_mean": sum(v) / n, f"{k}_r_min": min(v), f"{k}_r_max": max(v),
                    f"{k}_r_nz": sum(x != 0 for x in v) / n})
     return st
