@@ -70,3 +70,5 @@ gets gradient); shaping_critic_scale 2.2 (bound 1 + 0.3 + 0.3 + 0.6).
 | S8 u50 | succ48_g (33401) | s80 | PASS but leak STALLED: full 32.7 (u25 27.5), first play 30.4 s, win 0.676 -> stopped (a-lineage does not fix the leak) |
 | S9 u25 | succ48_h (33572) | s81 | PASS: full 18.7 -> 11.6 s (target met), first play 9.5 s, win 0.657 |
 | S11 | succ48_j: BRANCH of S7 (f) u50 (sha 91ba1666), same weights | s83 / 33401 | running (replaces g) |
+| S10 u25 | succ48_i (33591) | s82 | FAIL: idle +0.030 [+0.005, +0.057]; leak 27.2 -> 22.9; win 0.665 -> stopped (a-lineage twice weaker) |
+| S12 | succ48_k: BRANCH of S9 (h) u25 (sha 1535d51e; leak 11.6 s), same weights | s84 / 33591 | running (replaces i) |
