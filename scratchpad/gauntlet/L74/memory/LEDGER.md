@@ -95,3 +95,10 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
   were not archived, so the bar is CLXIII (live, = CLX in SIM: G3 +0.3 [-2.4, +2.9]). Live --check PASS on the v1 adapter ckpt.
 - launch_v2.sh: mem2_o_s105 (memory v2) on 33458 after D1 s74, then its chain. launch_tc.sh: memtc_o_s105 (mem + tower_crown,
   scale 3.5) on 33522 after D1 s75 -- tests the Rocket-credit lever + which x-arm term leaked; report only.
+- 10-25 ~20:20Z MEASURED: the S3-imitation memory model is broken in SIM. E4 at u0 (seeds 741200 + 742000, 960 paired games):
+  mem v1 (S3 v1 control adapter, grafted) 272 / 960 = 28.3% vs CLXIII 710 / 960 = 74.0%. Rollouts at u0 agree: mem v1 113 / 256,
+  mem v2 100-119 / 256, control 171-177 / 256. Both memory arms + the 3 laptop chains STOPPED (STOP_REASON_LEAD on the pods).
+  Also: the drift_test u0000 eval crashed for absolute `init:` paths ($CB prefixed); any memory arm must use a repo-relative init.
+- Diagnosis worker on the SIM memory path (H1 skew / feed bug vs H2 pro-imitation policy shift); build worker on S3-aux (encoder
+  trained only by per-card prediction heads, coupling stays zero = CLXIII at u0; memory_encoder_frozen in RL). Owner 10-25 ~17:00
+  EDT: per-card memory signals for every deck card, deploy-ready by the morning; 5 more double pods requested.
