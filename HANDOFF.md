@@ -1,3 +1,17 @@
+## 2026-10-25 ~18:20 EDT -- NIGHT RUN: six memory arms training (to u100), gate + memory ablation on each pod, auto-deploy by 06:30 EDT
+
+- Memory bug (diagnosed): S3 IMITATION taught the adapter a constant offset toward waiting (SIM gate prob 0.22 vs 0.34); the
+  SIM memory builder is correct. Redesign: encoder pretrained ONLY by per-card prediction heads on pro replays (S3-aux, sha
+  3d75a25d8ebedd4e), coupling zero (= CLXIII at u0, verified), zero_empty, encoder frozen in RL.
+- Arms (CLXIII recipe + memory v2 + aux encoder; D1 + I u40 + W18 R3 exploiter pool, counter decks x3; drift-tested to u100):
+  mem_e_s106 33912, mem_e_s107 33184, mem_e_s108 33458, mem_e_s109 33522 (candidate: + failed-X-Bow cost + rocket_cycle +
+  king_redirect), mem_l_s106 33015 (no X-Bow cost), mem_a_s106 33040 (memory only). Control ctrl_o_s105 (no memory) on 33569.
+- Each pod: arm_chain.sh -> drift VERDICT -> 3,840-game gate vs CLXIII -> ablation real vs empty memory -> /workspace/abl/res_ARM.txt.
+  Laptop night_decide.sh (deadline 10:30Z): best with drift PASS + pooled CI low > 0 + ablation > 0 -> Mark CLXIV ADAPTIVE
+  via deploy_ckpt.sh (owner permission tonight); failure -> revert CLXIII NOLEAK. Log scratchpad/gauntlet/L74/memory/promote/.
+- New reward terms: rocket_cycle (free chips only; enemy SPELL damage does not block), king_redirect (king absorbs after a
+  redirect Tornado). Live: CLXIII NOLEAK Ranked (owner started 14:53).
+
 ## 2026-10-25 ~15:35 EDT -- S5 memory pair launched (mem_o_s105 vs ctrl_o_s105, CLXIII recipe); x101/x102 recipe drift-tripped on the leak
 
 - x_s101 / x_s102 (tower_crown + xbow cost, no memory) both tripped the drift test: time at full ~13.5 -> ~31 s, win -4 to -5 pp.
