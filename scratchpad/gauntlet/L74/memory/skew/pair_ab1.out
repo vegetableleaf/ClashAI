@@ -1,0 +1,6 @@
+paired matches (all arms present): 120
+base   win 92/120 = 76.7%  plays/game 39.7  opp plays/game 36.4  decisions 374  tower HP diff +2107
+delta  win 76/120 = 63.3%  plays/game 45.0  opp plays/game 40.7  decisions 387  tower HP diff +468
+shadow win 92/120 = 76.7%  plays/game 39.7  opp plays/game 36.4  decisions 374  tower HP diff +2107
+delta - base: -13.3 pp [-24.2, -2.5]  identical outcomes 76/120
+shadow - base: +0.0 pp [+0.0, +0.0]  identical outcomes 120/120

@@ -1,0 +1,30 @@
+== real
+45985 learner decisions
+m vs b: gate p mean 0.218 vs 0.338; |dp| mean 0.175 p90 0.404; p>=.35 share 0.170 vs 0.486; card KL 0.789 top-card same 0.605; top-card cell argmax same 0.591 cell KL 0.513
+e vs b: gate p mean 0.216 vs 0.338; |dp| mean 0.128 p90 0.294; p>=.35 share 0.192 vs 0.486; card KL 0.687 top-card same 0.625; top-card cell argmax same 0.664 cell KL 0.298
+m vs e: gate p mean 0.218 vs 0.216; |dp| mean 0.111 p90 0.291; p>=.35 share 0.170 vs 0.192; card KL 0.330 top-card same 0.776; top-card cell argmax same 0.768 cell KL 0.191
+tick [0, 200): n  1317  gate p  mem 0.104  empty 0.104  base 0.209;  >= .35: 0.006 / 0.005 / 0.147
+tick [200, 1200): n 11080  gate p  mem 0.189  empty 0.202  base 0.329;  >= .35: 0.040 / 0.105 / 0.585
+tick [1200, 2400): n 13177  gate p  mem 0.174  empty 0.168  base 0.286;  >= .35: 0.048 / 0.107 / 0.445
+tick [2400, 3600): n 11295  gate p  mem 0.247  empty 0.234  base 0.370;  >= .35: 0.275 / 0.272 / 0.469
+tick [3600, 99999): n  9116  gate p  mem 0.298  empty 0.295  base 0.405;  >= .35: 0.398 / 0.347 / 0.493
+== delta
+46419 learner decisions
+m vs b: gate p mean 0.236 vs 0.244; |dp| mean 0.120 p90 0.282; p>=.35 share 0.242 vs 0.273; card KL 0.318 top-card same 0.792; top-card cell argmax same 0.696 cell KL 0.261
+e vs b: gate p mean 0.244 vs 0.244; |dp| mean 0.000 p90 0.000; p>=.35 share 0.273 vs 0.273; card KL 0.000 top-card same 1.000; top-card cell argmax same 1.000 cell KL 0.000
+m vs e: gate p mean 0.236 vs 0.244; |dp| mean 0.120 p90 0.282; p>=.35 share 0.242 vs 0.273; card KL 0.318 top-card same 0.792; top-card cell argmax same 0.696 cell KL 0.261
+tick [0, 200): n  1240  gate p  mem 0.187  empty 0.184  base 0.184;  >= .35: 0.072 / 0.068 / 0.068
+tick [200, 1200): n 10351  gate p  mem 0.162  empty 0.162  base 0.162;  >= .35: 0.079 / 0.138 / 0.138
+tick [1200, 2400): n 12555  gate p  mem 0.156  empty 0.142  base 0.142;  >= .35: 0.077 / 0.129 / 0.129
+tick [2400, 3600): n 10922  gate p  mem 0.273  empty 0.298  base 0.298;  >= .35: 0.311 / 0.359 / 0.359
+tick [3600, 99999): n 11351  gate p  mem 0.360  empty 0.386  base 0.386;  >= .35: 0.525 / 0.494 / 0.494
+== shadow
+44053 learner decisions
+m vs b: gate p mean 0.180 vs 0.220; |dp| mean 0.123 p90 0.292; p>=.35 share 0.157 vs 0.216; card KL 0.635 top-card same 0.722; top-card cell argmax same 0.576 cell KL 0.445
+e vs b: gate p mean 0.140 vs 0.220; |dp| mean 0.089 p90 0.228; p>=.35 share 0.110 vs 0.216; card KL 0.640 top-card same 0.680; top-card cell argmax same 0.655 cell KL 0.228
+m vs e: gate p mean 0.180 vs 0.140; |dp| mean 0.114 p90 0.275; p>=.35 share 0.157 vs 0.110; card KL 0.458 top-card same 0.704; top-card cell argmax same 0.711 cell KL 0.207
+tick [0, 200): n  1222  gate p  mem 0.092  empty 0.091  base 0.184;  >= .35: 0.002 / 0.002 / 0.067
+tick [200, 1200): n 10245  gate p  mem 0.111  empty 0.101  base 0.164;  >= .35: 0.044 / 0.061 / 0.123
+tick [1200, 2400): n 12489  gate p  mem 0.137  empty 0.092  base 0.169;  >= .35: 0.076 / 0.064 / 0.129
+tick [2400, 3600): n 10958  gate p  mem 0.210  empty 0.172  base 0.263;  >= .35: 0.193 / 0.140 / 0.288
+tick [3600, 99999): n  9139  gate p  mem 0.290  empty 0.218  base 0.304;  >= .35: 0.372 / 0.204 / 0.374

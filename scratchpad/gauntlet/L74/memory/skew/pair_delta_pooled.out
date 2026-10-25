@@ -1,0 +1,4 @@
+paired matches (all arms present): 360
+base   win 274/360 = 76.1%  plays/game 40.9  opp plays/game 37.7  decisions 379  tower HP diff +1843
+delta  win 208/360 = 57.8%  plays/game 43.3  opp plays/game 40.0  decisions 381  tower HP diff +238
+delta - base: -18.3 pp [-24.4, -12.2]  identical outcomes 226/360

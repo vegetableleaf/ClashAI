@@ -129,3 +129,10 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
   hardest SIM opponent and the closest to live denial.
 - league_exploiters LIST form (rl_royale; dict form unchanged, test_exploit_league + own_cfg pass; new test_exploiter_list_1025):
   tonight's pool D1 u60 0.15 + I u40 0.15 + W18 R3 0.10 (40% of games), cx3 decks, calibrated decode.
+- MEMORY BUG FOUND (skew/, diagnosis worker, 10-25 ~22:40Z): H1 (SIM builds memory wrongly) CONTRADICTED -- own plays 7,917 /
+  7,935 exact, opponent plays 95.6% detected (median lag 4 ticks), field distributions close to pro / live. CAUSE = S3 imitation:
+  the adapter learned a CONSTANT offset (empty memory adds a length-18.2 vector) that lowers the gate on every state (SIM gate
+  prob 0.218 vs base 0.338; share above 0.35: 0.17 vs 0.49); on pro rows memory content cancels it (+0.10) but not in SIM
+  (+0.002). E4 120-match pairs: base 76.7%, mem 32.5%, mem + empty memory 35.0%, offset removed 63.3% (360 pairs 57.8 vs 76.1:
+  -18.3 pp [-24.4, -12.2] = pro-imitation drift, H2). Fix: skew/fix/zero_empty.patch (empty memory adds exactly 0; test 4 / 4)
+  -> being merged by the S3-aux worker. S3-imitation adapters are dead; the S3-aux design (coupling zero) avoids it.
