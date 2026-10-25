@@ -85,3 +85,13 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
 - S5 pair launched 19:30Z, CLXIII's own recipe (succ48_o_s91), seed 105, 100 updates, drift_test (CB override -> cb_mem):
   mem_o_s105 (33912, init = S3 v1 adapter mem_best, memory v1) vs ctrl_o_s105 (33569, init = CLXIII raw). ONE change: memory.
   Graft check: graft_generic keeps all 36 memory tensors; eval_gen loads it as memory v1.
+- 19:31Z the pair crashed at start: CLXIII's cfg has shaping_critic_scale 2.2 < 2.6 (bound since LEAK_MATCH_CAP 1.0). Both cfgs ->
+  2.6 (same for both arms), relaunched 19:55Z; mem arm init pro agreement (12,237 VAL rows) cell 0.162 card 0.609 gate 0.686.
+- S3 v2 FINAL = tie with v1 (val loss 4.7204 vs 4.7201; card 0.5788 both; cell 0.1964 vs 0.1972; gate 0.7124 vs 0.7110; probes
+  equal): the S1c inputs add nothing to imitation; whether they help RL is the v2 arm's question.
+- OWNER 10-25 ~15:40 EDT: v1 candidate live if it passes, then v2 if it passes; I may stop / start live overnight.
+  promote_mem.sh: drift PASS at u100 -> 3,840-game gate vs CLXIII rows on 33522 (pair_both.py; pooled CI low > 0) ->
+  deploy_ckpt.sh (Mark CLXIV MEMORY / CLXV ADAPTIVE), revert to CLXIII on a deploy or guard failure. The CLX baseline rows
+  were not archived, so the bar is CLXIII (live, = CLX in SIM: G3 +0.3 [-2.4, +2.9]). Live --check PASS on the v1 adapter ckpt.
+- launch_v2.sh: mem2_o_s105 (memory v2) on 33458 after D1 s74, then its chain. launch_tc.sh: memtc_o_s105 (mem + tower_crown,
+  scale 3.5) on 33522 after D1 s75 -- tests the Rocket-credit lever + which x-arm term leaked; report only.
