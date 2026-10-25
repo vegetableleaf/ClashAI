@@ -299,10 +299,15 @@ def main(argv=None) -> int:
         b = va.batch(va_idx[:min(256, len(va_idx))])
         with torch.no_grad():
             o1, o0 = model(b, card=b["card"], form=b["form"]), base(b, card=b["card"], form=b["form"])
-        diff = max(float((o1[k] - o0[k]).abs().max()) for k in ("gate", "card", "value", "cell"))
-        if diff > 1e-6:
-            raise SystemExit(f"step-0 identity failed: max |diff| {diff}")
-        emit({"step": 0, "identity_max_diff": diff})
+            o0b = base(b, card=b["card"], form=b["form"])
+        ks = ("gate", "card", "value", "cell")
+        diff = max(float((o1[k] - o0[k]).abs().max()) for k in ks)
+        noise = max(float((o0b[k] - o0[k]).abs().max()) for k in ks)
+        scale = max(float(o0[k].abs().max()) for k in ks)
+        # GPU fp32 kernels round by a few ulp (1 ulp = 7.6e-6 at |x| ~ 60); the exact-0 check is the CPU test
+        if diff > 1e-6 * max(1.0, scale):
+            raise SystemExit(f"step-0 identity failed: max |diff| {diff} (base-vs-base {noise}, max |out| {scale})")
+        emit({"step": 0, "identity_max_diff": diff, "base_noise": noise, "out_scale": scale})
     amp = a.amp == "bf16" and dev.type == "cuda"
     best, step, ep, hist = math.inf, 0, 0, []
     tl, sl = time.time(), 0

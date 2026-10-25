@@ -45,3 +45,17 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
   owner stopped it 12:15 EDT. Icebow LIVE_OPTIONS / CKPT_OVERRIDE untouched.
 - Pod tree for memory work: 33912 /workspace/cb_mem = cb_stepd hard links + laptop pipeline (HEAD + S1b). Tests 52 + 9 skip
   (ROYALE_RUNTIME=fin15-linux needed for test_memory_s1b); rl_royale --smoke PASS with memory (mem_x_s110) and without (x_s101).
+
+## 10-25 evening (17:40Z on)
+- D1 deny opponent cfg CHECKED: no hazard keys (only a comment mentions it); gate_decode defaults to 'threshold' in
+  decision_options.py, so the opponents' live stack has no forced play. D1 s74 on 33458 (u5 at 17:40Z, ~4 min / update).
+- D1 s75 (replication seed, only `seed` differs) launched on 33522 17:5xZ from /workspace/cb_mem (= cb_stepd + 33458's cb_mem
+  pipeline + D1 inputs relayed via the laptop); rl_royale --smoke PASS first. 33522 had been idle since its CLXIII gate queue
+  finished 16:20Z (rows in /workspace/pushcal/ev/g48_succ48_o_s91_u0075_{e4,cal}).
+- S3 step-0 identity on GPU: memory-vs-base 5.72e-6 = base-vs-base 5.72e-6 at max |out| 39.7 (fp32 GPU rounding, 1-2 ulp).
+  Check made relative (1e-6 x max |out|) and both numbers logged; the exact-0 identity stays the CPU test.
+- Per-card X-Bow counters, pro tables (xbow_cards.py -> xbow_cards_pro.out): 8,874 resolved own reach X-Bows, lock 0.507;
+  unanswered 0.606. Lowest lock when ANSWERED by (n >= 60): E-Giant 0.16, Goblinstein 0.23, Giant 0.24, PEKKA 0.26,
+  Giant Skeleton 0.28, Ice Golem 0.33, Ice Spirit 0.35, Bowler 0.36 (tanking the X-Bow / counter-push). DECK view (opponent
+  played the card at any time; not causal): Goblinstein 0.36, Zappies 0.37, Archers 0.38 ... Lava 0.74, Skeleton Dragons 0.69,
+  Balloon 0.65 (air beatdown = X-Bow locks). Pro X-Bow players, not our bot: a prior, not the bot's own rates.
