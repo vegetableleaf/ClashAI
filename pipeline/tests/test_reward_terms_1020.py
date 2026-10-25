@@ -392,6 +392,7 @@ class TestAbsentIsPre(_Tmp):
 
     @classmethod
     def setUpClass(cls):
+        torch.set_num_threads(1)              # 10-25: multi-thread CPU reductions differ run to run at ~1e-8 (same module twice)
         cls.P = _pre_module()
         cls.model = _tiny_model(6)
         cls.results = _with_crown(_monitor_fields(_results(cls.model, SPEC, seed=13)))
