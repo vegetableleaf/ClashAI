@@ -15,7 +15,7 @@ from .decision_options import (BARREL_KEY, DecisionOptions, barrel_landings, cho
                                gate_taus, hazard_draw, is_xbow, lethal_rocket_choice, tau_threat_state,
                                threat_on, threat_taus, tower_threat, xbow_dead_lane_cells, enemy_body_tiles,
                                princess_dead_state, rocket_covers_king, rocket_kills_king, log_air_board, LOG_AIR_BLOCKED,
-                               log_air_ground_child_tiles, is_log)
+                               log_air_ground_child_tiles, is_log, recently_hit)
 from .decision_options import rocket_tornado_choice, rocket_tornado_timing, rocket_value_cell, rocket_value_choice
 from .live_mem import my_side_of
 from .decision_options import enemy_princess_hps, hp_after, record_hp
@@ -190,13 +190,16 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
         side = my_side_of(frame)
         towers = to_observe(frame, side, info['names'])['episode']['crown_towers']
         names = [info['names'][di] if di >= 0 else None for di in info['hand_deck_indices']]
-        own = None
-        if getattr(options, 'lethal_log', 'off') == 'on':   # my confirmed plays (card, model xy, landing t): in flight
+        own, skip = None, ()
+        if getattr(options, 'lethal_log', 'off') == 'on' or getattr(options, 'lethal_quiet', 0.0) > 0:
             hist = self._lethal_snapshot(frame, towers, side)   # + the public tower HP each spell landed on
+            if getattr(options, 'lethal_quiet', 0.0) > 0:       # owner 10-25: a princess something else is hitting: no finisher
+                skip = recently_hit(hist, hist[-1][0], round(options.lethal_quiet / 0.05))
+        if getattr(options, 'lethal_log', 'off') == 'on':   # my confirmed plays (card, model xy, landing t): in flight
             key = {v: k for k, v in getattr(self, 'gid', {}).items()}
             own = [(key.get(c), x, y, t, hp_after(hist, round(t / 0.05))) for c, f, x, y, t in getattr(self, 'past', [])[-8:]]
         return lethal_rocket_choice(options, info['bs'].t_sec, names, allowed, towers, side, self.grid, own=own,
-                                    pending=bool(info.get('pending')))   # --pipeline-decisions: never fires with a play pending
+                                    pending=bool(info.get('pending')), skip=skip)   # --pipeline-decisions: never fires with a play pending
 
     def rocket_value(self, info, allowed, playing=False):
         """decision_options.rocket_value_choice on the live board (info['bs']: the reader's bodies with hp_frac; live_play never
@@ -254,7 +257,8 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
         tau_threat = None
         if options.tau_threatened is not None:          # every decision (as SIM match_kwargs), affordable or not
             self._tau_threat_state, tau_threat = tau_threat_state(getattr(self, '_tau_threat_state', None), info['bs'])
-        if getattr(options, 'lethal_rocket', 'off') != 'off' and getattr(options, 'lethal_log', 'off') == 'on':
+        if getattr(options, 'lethal_rocket', 'off') != 'off' and (getattr(options, 'lethal_log', 'off') == 'on'
+                                                                  or getattr(options, 'lethal_quiet', 0.0) > 0):
             self._lethal_snapshot(frame, names=info['names'])  # every decision (as SIM match_kwargs), affordable or not
         if not allowed.any():
             self.rocket_value(info, allowed)        # nothing affordable: only the per-match state the rule keeps (SIM decide_batch sees it too)

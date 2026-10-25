@@ -151,3 +151,11 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
 - Training trees /workspace/cb_arm on 33912 / 33184 / 33040 / 33015 / 33458 / 33522 (= cb_stepd + 57dcdc4 pipeline + s1c
   artifacts + cx3 decks + D1 / R3 opponents + pro memory tables). Arms: mem_e_s106 33912, mem_e_s107 33184, mem_a_s106 33040,
   mem_l_s106 33015, mem_e_s108 33458, mem_e_s109 33522 (extra candidate seeds on the two freed gate pods).
+- OWNER 10-25 ~18:20 EDT: finishing Rocket only if the tower is finishable AND nothing else damaged it in the past 1 s.
+  Done: DecisionOptions.lethal_quiet (CLI --lethal-quiet SEC; 0 = off = unchanged): lethal_rocket_target(skip=lanes) drops a
+  princess whose public HP fell within the last SEC s of decision snapshots (recently_hit on record_hp's history); applies to
+  the Rocket AND the Log finisher. Live pilot (live_gen_v2) snapshots every decision when on. Tests test_lethal_quiet_1025 3 / 3,
+  test_lethal_rocket + test_lethal_log 49 / 49. LIVE_OPTIONS += --lethal-quiet 1.0 (backup .bak_1025_prequiet); --check PASS;
+  live restarted between matches 18:29 EDT; live_play_20261025_182957 start record shows lethal_quiet 1.0, CLXIII NOLEAK.
+  NOT in the SIM path yet (e1_eval / decide_batch pass no history): tonight's gates stay on the old rule (pairing with the
+  CLXIII rows); SIM support owed before the next training so SIM matches live.

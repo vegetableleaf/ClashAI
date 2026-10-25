@@ -38,6 +38,8 @@ class DecisionOptions:
     gate_hazard_threat_radius: float = 0.0  # ... or while an enemy unit is within this many tiles of my alive tower
     lethal_rocket: str = 'off'
     lethal_log: str = 'off'                 # 'on': the lethal finisher also uses the Log (rides on lethal_rocket's mode)
+    lethal_quiet: float = 0.0               # owner 10-25: > 0 = the finisher skips a princess whose HP dropped in the last
+                                            # this many s (an X-Bow / troop already finishing it: the Rocket would be overkill)
     xbow_dead_lane: str = 'allow'           # 'block': no X-Bow cell that reaches only the king / a destroyed princess
     rocket_dead_target: str = 'allow'       # 'block': no Rocket on a fallen tower / the king with nothing alive in it
     tau_threatened: Optional[float] = None  # gate threshold while threatened (tau_threat_state); None = the phase tau
@@ -55,7 +57,9 @@ class DecisionOptions:
     rocket_tornado_order: str = 'rocket'    # 'either' (10-17): also Tornado first + the Rocket as its follow-up, when that window is wider
     rocket_tornado_lone: str = 'skip'       # 'best' (10-17): a clump one Rocket covers gets the combo if its pull gathers more value, else
                                             # that lone Rocket (COMBO_GAIN_MIN; 'only' mode used to leave it with neither play); 'combo':
-                                            # the same combo, but no lone Rocket (the model plays where the pull adds nothing)
+                                            # the same combo, but no lone Rocket (the model plays where the pull adds nothing);
+                                            # 'margin' (10-18): the combo only where no lone blast holds V AND the pull adds >= the
+                                            # Tornado's elixir (COMBO_MARGIN_ELIXIR) over the best lone blast, else the model plays
     rocket_value_towers: str = 'off'        # 'on' (10-17): an alive enemy PRINCESS in the blast adds ROCKET_TOWER_VALUE elixir
     rocket_tornado_lead: str = 'off'        # 'drift' (10-17): the pull is judged where enemy-half / bridge bodies will have walked to
                                             # when the Tornado lands (combo_drift); my-half bodies stay (mostly engaged at my towers)
@@ -94,6 +98,8 @@ class DecisionOptions:
         for k in ('gate_hazard_threatened', 'gate_hazard_threat_radius'):
             if not math.isfinite(getattr(self, k)) or getattr(self, k) < 0:
                 raise ValueError(f'{k} must be finite and >= 0')
+        if not math.isfinite(self.lethal_quiet) or self.lethal_quiet < 0:
+            raise ValueError('lethal_quiet must be finite and >= 0 (0 = off)')
         if self.lethal_rocket not in ('off', 'ot', 'ot_behind'):
             raise ValueError('lethal_rocket must be off, ot or ot_behind')
         if self.xbow_dead_lane not in ('allow', 'block'):
@@ -110,7 +116,7 @@ class DecisionOptions:
                       ('rocket_value_lead', ('off', 'on', 'drift', 'blend')), ('rocket_value_idle', ('off', 'on')),
                       ('rocket_value_threat', ('off', 'on')), ('rocket_tornado', ('off', 'on', 'only', 'rocket_only')),
                       ('tornado_river', ('off', 'on', 'full')), ('rocket_tornado_window', ('v1', 'measured')),
-                      ('rocket_tornado_order', ('rocket', 'either')), ('rocket_tornado_lone', ('skip', 'best', 'combo')),
+                      ('rocket_tornado_order', ('rocket', 'either')), ('rocket_tornado_lone', ('skip', 'best', 'combo', 'margin')),
                       ('rocket_value_towers', ('off', 'on')), ('rocket_tornado_lead', ('off', 'drift'))):
             if getattr(self, k) not in ok:
                 raise ValueError(f'{k} must be one of {ok}')
@@ -195,6 +201,10 @@ def add_arguments(parser):
                              'also uses the Log: an alive enemy PRINCESS with HP <= my Log crown-tower damage gets the '
                              'Log, cast on my side at (tower x, y 17.5 tiles) so its roll reaches the tower; preferred over '
                              'the Rocket when both finish')
+    parser.add_argument('--lethal-quiet', type=float, default=0.0, metavar='SEC',
+                        help='owner 2026-10-25: the --lethal-rocket / --lethal-log finisher skips an enemy princess whose public '
+                             'HP dropped within the last SEC s of decision snapshots (something else -- a locked X-Bow, a troop -- '
+                             'is already damaging it, so the finishing spell would be overkill); 0 = off (unchanged)')
     parser.add_argument('--xbow-dead-lane', choices=('allow', 'block'), default='allow',
                         help='block (owner 2026-10-08, never the king): the X-Bow never takes a cell within reach of the '
                              'enemy king or of a DESTROYED enemy princess that reaches no alive enemy princess '
@@ -247,11 +257,13 @@ def add_arguments(parser):
     parser.add_argument('--rocket-tornado-order', choices=('rocket', 'either'), default='rocket',
                         help='owner 2026-10-17: either = also Tornado now and the Rocket as its follow-up tap, whichever order leaves the '
                              'wider timing window (short flights near my towers); rocket = Rocket first only (unchanged)')
-    parser.add_argument('--rocket-tornado-lone', choices=('skip', 'best', 'combo'), default='skip',
+    parser.add_argument('--rocket-tornado-lone', choices=('skip', 'best', 'combo', 'margin'), default='skip',
                         help='owner 2026-10-17: best = where one Rocket blast already holds V, the combo when its pull gathers more '
                              'value than that blast (> COMBO_GAIN_MIN elixir), else that lone Rocket; skip = no combo there (unchanged; '
                              'with --rocket-tornado only such a clump got neither play); combo = that combo, but never the lone Rocket '
-                             '(10-17 SIM: lone Rockets of best lost net 12 of 110 changed matches)')
+                             '(10-17 SIM: lone Rockets of best lost net 12 of 110 changed matches); margin (10-18) = the combo only '
+                             'where no lone blast holds V and the pull adds >= 3 elixir (the Tornado) over the best lone blast, else '
+                             'the model plays')
     parser.add_argument('--rocket-tornado-lead', choices=('off', 'drift'), default='off',
                         help='owner 2026-10-17: drift = judge the pull where the bodies on the enemy half or a bridge will have walked to '
                              'when the Tornado lands (decision -> Tornado deploy: 26 ticks + the follow-up gap): ground bodies toward '
@@ -1036,7 +1048,7 @@ def rocket_tower_damage(level, name='Rocket'):
     raise ValueError(f'unknown crown-tower rounding {rounding!r}')
 
 
-def lethal_rocket_target(crown_towers, side, card='Rocket', own=None, t_sec=None, levels=None):
+def lethal_rocket_target(crown_towers, side, card='Rocket', own=None, t_sec=None, levels=None, skip=()):
     """The alive ENEMY PRINCESS my Rocket finishes in one hit, lowest HP first -> dict(lane (my frame), hp, damage,
     level), else None. ``crown_towers``: raw ``episode.crown_towers`` rows (side, type, x, y in 1/1000 tile, hp, max_hp;
     live_mem.to_observe / RoyaleSim raw()). My card level = my own tower max HP (from_engine's level factor: level 11
@@ -1063,6 +1075,8 @@ def lethal_rocket_target(crown_towers, side, card='Rocket', own=None, t_sec=None
         x, _ = _engine_xy(float(t['x']), float(t['y']), side == 1)
         if covered.get('L' if x < .5 else 'R', 0) >= t['hp']:
             continue                                # my own spell already on its way finishes it
+        if ('L' if x < .5 else 'R') in skip:
+            continue                                # lethal_quiet: something else is damaging it right now
         if best is None or t['hp'] < best['hp']:
             best = dict(lane='L' if x < .5 else 'R', hp=int(t['hp']), damage=damage, level=level)
     if best is not None and card != 'Rocket':
@@ -1110,6 +1124,20 @@ def enemy_princess_hps(crown_towers, side):
     for t in crown_towers:
         if int(t['side']) != side and t.get('type') == 'princess' and not t.get('destroyed') and t['hp'] > 0:
             out['L' if _engine_xy(float(t['x']), float(t['y']), side == 1)[0] < .5 else 'R'] = int(t['hp'])
+    return out
+
+
+def recently_hit(history, tick, window_ticks):
+    """lethal_quiet: the lanes ('L' / 'R', my frame) whose enemy princess HP NOW (the snapshot at ``tick``) is below any
+    snapshot from the last ``window_ticks`` (``record_hp`` history, one per decision) -> set. No earlier snapshot in the window
+    = no evidence = not hit (the finisher may fire). ponytail: decision-snapshot resolution (live decides every few ticks)."""
+    now = next((h for t, h in reversed(history) if t == tick), None) if history else None
+    if now is None:
+        return set()
+    out = set()
+    for t, hps in history:
+        if tick - window_ticks <= t < tick:
+            out |= {k for k, v in now.items() if hps.get(k, v) > v}
     return out
 
 
@@ -1218,18 +1246,18 @@ def is_log(name):
     return ROLLING_CARDS.get(re.sub(r'[^a-z]', '', str(name).split('@')[0].lower())) == 'Log'
 
 
-def lethal_log_choice(options, t_sec, names, allowed, crown_towers, side, grid, own=None):
+def lethal_log_choice(options, t_sec, names, allowed, crown_towers, side, grid, own=None, skip=()):
     """lethal_log: -> (slot, cell, target with card='Log') or None, under lethal_rocket's phase / crown rules."""
     slots = [i for i, n in enumerate(names) if n is not None and is_log(n) and allowed[i]]
     if not slots or not _lethal_phase(options, t_sec, crown_towers, side, LOG_HIT_TICKS):
         return None
     levels = dict(options.card_levels) if options.card_levels else None
-    target = (lethal_rocket_target(crown_towers, side, 'Log', own, t_sec, levels=levels) if levels else
-              lethal_rocket_target(crown_towers, side, 'Log', own, t_sec))
+    target = (lethal_rocket_target(crown_towers, side, 'Log', own, t_sec, levels=levels, skip=skip) if levels else
+              lethal_rocket_target(crown_towers, side, 'Log', own, t_sec, skip=skip))
     return None if target is None else (slots[0], lethal_log_cell(target['lane'], grid), target)
 
 
-def lethal_rocket_choice(options, t_sec, names, allowed, crown_towers, side, grid, pending=False, own=None):
+def lethal_rocket_choice(options, t_sec, names, allowed, crown_towers, side, grid, pending=False, own=None, skip=()):
     """-> (slot, cell, target) when lethal_rocket fires, else None: overtime (phase_index 2, the tau_phase edge), no
     card pending, an affordable Rocket slot (``allowed``: in hand and cost <= integer elixir), a lethal princess.
     ``ot_behind`` also fires in regulation while ``crowns_behind`` and the Rocket lands before tick 3600 (cutoff above)."""
@@ -1238,7 +1266,7 @@ def lethal_rocket_choice(options, t_sec, names, allowed, crown_towers, side, gri
     if options.lethal_log != 'on':
         own = None                                  # off: today's rule exactly (no in-flight guard)
     else:                                           # the Log first: cheaper and it hits sooner
-        hit = lethal_log_choice(options, t_sec, names, allowed, crown_towers, side, grid, own)
+        hit = lethal_log_choice(options, t_sec, names, allowed, crown_towers, side, grid, own, skip=skip)
         if hit is not None:
             return hit
     if phase_index([t_sec])[0] != 2:
@@ -1248,10 +1276,10 @@ def lethal_rocket_choice(options, t_sec, names, allowed, crown_towers, side, gri
     slots = [i for i, n in enumerate(names) if n is not None and str(n).lower() == 'rocket' and allowed[i]]
     levels = dict(options.card_levels) if options.card_levels else None
     if levels:                                       # card_levels: the Rocket's own level (default: my tower level)
-        target = lethal_rocket_target(crown_towers, side, own=own, t_sec=t_sec, levels=levels) if slots else None
+        target = lethal_rocket_target(crown_towers, side, own=own, t_sec=t_sec, levels=levels, skip=skip) if slots else None
     else:
-        target = (lethal_rocket_target(crown_towers, side, own=own, t_sec=t_sec) if own else
-                  lethal_rocket_target(crown_towers, side)) if slots else None
+        target = (lethal_rocket_target(crown_towers, side, own=own, t_sec=t_sec, skip=skip) if own else
+                  lethal_rocket_target(crown_towers, side, skip=skip)) if slots else None
     if target is None:
         return None
     return slots[0], lethal_rocket_cell(target['lane'], grid), target
@@ -1594,6 +1622,9 @@ FLIGHT_V2_OFFSET = 0.5
 # the fork36 sweep's ORACLE-aimed lone Rocket took 1102 / 2314 / 2200 hp of the my-king / my-princess / my-bridge columns where the
 # combo took 4206 / 4441 / 4496, and the 10-17 scenario re-run's lone rule (the margin 3 version) 1476 / 1840 / 1476.
 COMBO_GAIN_MIN = 0.5
+# rocket_tornado_lone margin (owner 10-18: "only rocket is used when it suffices (no tornado use if not needed for the clump)"): the pull
+# must add at least the Tornado's own 3 elixir over the best lone blast (value - single >= this), and no lone blast may hold V already.
+COMBO_MARGIN_ELIXIR = 3.0
 # rocket_tornado_window measured: the decision board's elixir is a LOOK-AHEAD one (extrapolate: SIM 26 ticks, live --extrapolate 24).
 # v1's check (board elixir - 6 + regen x earliest gap >= 3) counted those ticks twice: 6 of 127 cur combos (fast-plays offc) and 10 of 38
 # early 10-17 enemy-half combos lost their follow-up 'unaffordable'. measured: the follow-up's own verdict (e1_eval.follow_up_have: its
@@ -1862,6 +1893,8 @@ def rocket_tornado_choice(options, names, allowed, bs, grid, pending=False, min_
         return no
     if lone and value <= single + COMBO_GAIN_MIN + 1e-9:
         return no
+    if options.rocket_tornado_lone == 'margin' and value + 1e-9 < single + COMBO_MARGIN_ELIXIR:   # (single >= V: returned above)
+        return None
     best = plan_at(cell)
     if best is None:
         return no
