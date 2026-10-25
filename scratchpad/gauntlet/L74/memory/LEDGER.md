@@ -168,3 +168,13 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
   skip; finisher suites 55. LIVE_OPTIONS += --barrel-lane on (backup .bak_1025_prebarrel); --check PASS; live restarted 18:46
   EDT; live_play_20261025_184734 start record: barrel_lane on, lethal_quiet 1.0, CLXIII NOLEAK; no decision errors.
   Tonight's gates do NOT use it (pairing with the CLXIII rows); next training's live stack should include both.
+- OWNER 10-25 ~18:55 EDT: overnight, shut down idle pods unless planned work. night_decide.sh v2: as each arm finishes it copies
+  res + drift checks + u100 raw / grafted ckpts to pod_backup_weekend/night1025/ARM/ (sha-checked) and STOPS that pod
+  (runpodctl from inside); the control ctrl_o_s105 (33569) too. S3-aux ckpt + D1 / R3 opponents backed up there first.
+- RESTART 23:1xZ, MEASURED reason: ctrl_o_s105 (CLXIII recipe continued from CLXIII, no memory) u25 drift check FLAGGED the leak:
+  time at full 13.5 -> 25.8 s [+7.2, +17.3], first play 12.7 -> 22.4 s, plays / min -0.26 (third recipe to re-learn the leak
+  under continued training: x_s101 / x_s102 and CLXIII's own run 13.8 -> 20.3 s u75 -> u100). The memory arms share the recipe,
+  so all were restarted from u0 with a stronger leak weight (was 0.03; r_s95's 0.06 from a leaky parent: 20.9 -> 16.0 s, win
+  -3.3 pp; LEAK_MATCH_CAP 1.0 bounds the term, critic bound unchanged): 0.12 on mem_e_s106 / mem_e_s107 / mem_a_s106 /
+  mem_l_s106 / ctrl_o_s105, 0.08 on mem_e_s108, 0.16 on mem_e_s109 (weight hedge). restart_arm.sh.
+- 33040 + 33015 share one host (load ~95): their arms run ~2x slower (rollout 270-615 s vs 123 s on 33184).
