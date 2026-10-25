@@ -1,3 +1,14 @@
+## 2026-10-25 10:25 EDT -- Plan A APPROVED (match memory, all cards); deadline removed; all pods stopped for a quintuple pod; CLXIII NOLEAK = current best
+
+- Owner 10-25: approved L74/memory/PLAN_A.md (match memory = every event + result; scope: ALL cards / abilities, plus Rocket use /
+  Rocket cycling, Rocket + Tornado combo (carefully), failed / forced X-Bows); deadline removed. Memory plan-a-match-memory.
+- succ48 result: ICEBOW Mark CLXIII: NOLEAK (succ48_o_s91 u75, sha 8d328a43 grafted) = CLX start + leak penalty + gate T .3;
+  G3 vs CLX-with-hazard: E4 +0.3 pp [-2.4, +2.9], cal I u40 0.0 -> equal WITHOUT the forced play; leak 13.8 vs 12.3 s (n.s.);
+  trade better. Wired live (deploy_ckpt wire); the owner started it 08:58 EDT 10-25. Ledger L74/succ48/EXPERIMENTS.md.
+- Owner live feedback: better defence; weak Rocket use / no Rocket cycling; no combos (combo is a live RULE, SIM has none); forces
+  failed X-Bows all match (no memory: inputs = board + last 3 own / opp plays + opp cycle).
+- All 5 pods STOPPED (owner authorised) after a verified laptop archive pod_backup_weekend/succ48_1025/ (code tree, venv,
+  checkpoints, scripts). Next: owner rents the 5x4090 pod; S0 = restore the archive there, check the cgroup CPU quota.
 ## 2026-10-24 11:10 EDT -- succ48 status: the leak penalty works (best 18.7 s at full vs 62; target 12.5); trade bar 0.25 -> 0.50; two branches launched
 
 - Ledger L74/succ48/EXPERIMENTS.md S1-S6. a_s74 FAIL u100 and c_s74 FAIL u150 -- both on the defence-trade gate only (spending

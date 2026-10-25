@@ -184,3 +184,12 @@ for xbow instead of switching to defensive mode and rocket cycling ... it's a in
   since, age); no recurrence. Lead proposal: (B) compact match-summary inputs now (zero-init), (A) full event memory after the deadline.
   x_s101 / x_s102 NOT launched pending the owner's choice; 32525 idle.
 - r_s95 u75 PASS: full 16.0 s, win 0.700 (-0.033), first play 15.8 s.
+
+10-25 ~14:20Z: ALL PODS STOPPED for the owner's quintuple pod (Plan A). Archive (laptop, verified with tar -t):
+C:/Users/benpe/pod_backup_weekend/succ48_1025/ = cb_stepd_lean.tgz (32525 tree minus run outputs, 8,556 files: patched trainer,
+habit_terms with leak + xbow, tau_phase, no-hazard livecal, card table, w14opp_I), key_ckpts.tgz (succ_levels u65, gae u250
+graft base, o_s91 u75 raw + grafted = CLXIII, parents), scripts_opps.tgz (ckev/ckpt CLX raw + graft, eval / gate / drift scripts,
+exploit/repo, pushcal scripts + W18 opps), venvf15.tgz (21,390 files: torch 2.11 cu128, royalesim 0.1.36 fork, royalegym), parents/
+(all branch parents), w18opp/, latest ckpts of r_s95 u75, t_s100 / t_s103 u0. Eval rows NOT kept (regenerable baselines).
+Stopped (runpodctl stop, not terminated): 32525 a7be2cjt3mcn4f, 33401 v7yjl9cg1scsn0, 33572 ervh9h3jhmlq19, 33591
+mu1fz7ut35l75v, 33906 vt8n4xspb852lx (the double, never used). Runs cut: r_s95 (u~95), t_s100 / t_s103 (u<25).
