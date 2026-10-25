@@ -102,3 +102,9 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
 - Diagnosis worker on the SIM memory path (H1 skew / feed bug vs H2 pro-imitation policy shift); build worker on S3-aux (encoder
   trained only by per-card prediction heads, coupling stays zero = CLXIII at u0; memory_encoder_frozen in RL). Owner 10-25 ~17:00
   EDT: per-card memory signals for every deck card, deploy-ready by the morning; 5 more double pods requested.
+- Reward-term history for tonight's arms (tonight1020/RESULTS.md, older SIM + W7 opponent, vs CLX): rocket_tower -4.69 / -6.46 pp
+  (CLEARLY WORSE), princess_redirect penalty -1.25 / -6.35, tornado_king -7.92 / -10.94, lead +0.31 / -1.46; W10: chip Rockets
+  do not pay in the SIM. -> Rocket / redirect arms may fail the SIM gate even if they fix the live flaw; report flaw metrics.
+- counter_x3.py -> memory/decks_live_train_beat3_cx3.json: 104 fast (avg <= 3.2) decks with a S1c counter card (28 cards,
+  answer lift < -0.10) sides x3 = 25.9% of league weight (was 9.9%).
+- D1 s74 X-Bow-denial check running on 33458 (CLXIII vs D1 u60 / u40 calibrated, 2 x 960): q_xbD1.
