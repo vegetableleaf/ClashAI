@@ -136,3 +136,9 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
   (+0.002). E4 120-match pairs: base 76.7%, mem 32.5%, mem + empty memory 35.0%, offset removed 63.3% (360 pairs 57.8 vs 76.1:
   -18.3 pp [-24.4, -12.2] = pro-imitation drift, H2). Fix: skew/fix/zero_empty.patch (empty memory adds exactly 0; test 4 / 4)
   -> being merged by the S3-aux worker. S3-imitation adapters are dead; the S3-aux design (coupling zero) avoids it.
+- Night chain READY (waiting on the S3-aux checkpoint): arm_chain.sh (pod-side: drift test to u100 -> 3,840-game gate vs CLXIII
+  on the same pod -> memory ablation real vs EMPTY memory, 2 x 480 paired; abl.sh = generalised skew/run_skew.sh) and
+  night_decide.sh (laptop: best arm with drift PASS + gate pooled CI low > 0 + ablation real - empty > 0 -> Mark CLXIV
+  ADAPTIVE via deploy_ckpt.sh, revert to CLXIII on failure; deadline 10:30Z). CLXIII gate rows (matches.jsonl only) copied to
+  33912 / 33184 / 33040 / 33015; D1 u60 + W18 R3 opponents + cx3 decks in their cb_stepd. Pods: mem_e_s106 33912,
+  mem_e_s107 33184, mem_a_s106 33040, mem_l_s106 33015.
