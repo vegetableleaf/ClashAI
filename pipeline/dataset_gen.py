@@ -541,38 +541,44 @@ def memory_replay(path: str, card_vocab: list) -> dict[str, Any]:
     engine x / y / elixir_before) + the log's own ability presses, samples = every recorded frame (towers, own elixir,
     public_frame 'native' bodies). -> {tag, tables {side: table}, stats} or {path, error}."""
     try:
-        from . import match_memory as MM
-        from .native_recording import tag_native_recording
-        from .public_observation import public_frame, recording_observers
-        rec = json.loads(Path(path).read_text(encoding="utf-8"))
-        st: dict[str, Any] = {}
-        rec = tag_native_recording(rec, st)
-        observers = recording_observers(rec)
+        tag, mems, st = replay_memories(path)
         gid = checkpoint_gid(card_vocab)
-        own = played_forms(rec)
-        presses = [dict(e) for e in rec["log"] if e.get("accepted") and e.get("ability") and e.get("card")]
-        frames = sorted(rec["frames"], key=lambda f: int(f["tick"]))
-        units = [public_frame(f, source="native")["entities"] for f in frames]
-        st = {"frames": len(frames), "frames_no_towers": sum(not f.get("towers") for f in frames),
-              "frames_no_elixir": sum(len(f.get("elixir") or []) != 2 for f in frames),
-              "own_plays": len(own), "own_plays_no_xy": sum(e.get("x") is None or e.get("y") is None for e in own),
-              "own_plays_actual_form": sum("actual_form" in e for e in own),
-              "own_forms": dict(Counter(int(e["form"]) for e in own)), "presses": len(presses),
-              "opp_plays_detected": sum(len(o.plays) for o in observers)}
-        tables = {}
-        for s in (0, 1):
-            samples = []
-            for f, u in zip(frames, units):
-                tw, al = MM.tower_reads_engine(f.get("towers") or [], s)
-                el = f.get("elixir") or []
-                samples.append(dict(tick=int(f["tick"]), towers=tw, alive=al,
-                                    elixir=float(el[s]) if len(el) == 2 else None, units=u))
-            plays = list(observers[s].plays) + [e for e in own + presses if int(e["side"]) == s]
-            tables[s] = MM.build(s, samples, plays).table(gid)
+        tables = {s: m.table(gid) for s, m in mems.items()}
         st["events"] = {s: int(len(t["tick"])) for s, t in tables.items()}
-        return {"tag": str(rec["tag"]), "tables": tables, "stats": st}
+        return {"tag": tag, "tables": tables, "stats": st}
     except Exception as ex:                                      # a corrupt / partial file is counted, not fatal
         return {"path": path, "error": f"{type(ex).__name__}: {ex}"}
+
+
+def replay_memories(path: str) -> tuple[str, dict, dict]:
+    """memory_replay's inputs for one replay -> (tag, {side: MatchMemory built over the whole match}, stats)."""
+    from . import match_memory as MM
+    from .native_recording import tag_native_recording
+    from .public_observation import public_frame, recording_observers
+    rec = json.loads(Path(path).read_text(encoding="utf-8"))
+    rec = tag_native_recording(rec, {})
+    observers = recording_observers(rec)
+    own = played_forms(rec)
+    presses = [dict(e) for e in rec["log"] if e.get("accepted") and e.get("ability") and e.get("card")]
+    frames = sorted(rec["frames"], key=lambda f: int(f["tick"]))
+    units = [public_frame(f, source="native")["entities"] for f in frames]
+    st = {"frames": len(frames), "frames_no_towers": sum(not f.get("towers") for f in frames),
+          "frames_no_elixir": sum(len(f.get("elixir") or []) != 2 for f in frames),
+          "own_plays": len(own), "own_plays_no_xy": sum(e.get("x") is None or e.get("y") is None for e in own),
+          "own_plays_actual_form": sum("actual_form" in e for e in own),
+          "own_forms": dict(Counter(int(e["form"]) for e in own)), "presses": len(presses),
+          "opp_plays_detected": sum(len(o.plays) for o in observers)}
+    mems = {}
+    for s in (0, 1):
+        samples = []
+        for f, u in zip(frames, units):
+            tw, al = MM.tower_reads_engine(f.get("towers") or [], s)
+            el = f.get("elixir") or []
+            samples.append(dict(tick=int(f["tick"]), towers=tw, alive=al,
+                                elixir=float(el[s]) if len(el) == 2 else None, units=u))
+        plays = list(observers[s].plays) + [e for e in own + presses if int(e["side"]) == s]
+        mems[s] = MM.build(s, samples, plays)
+    return str(rec["tag"]), mems, st
 
 
 def _memory_job(args: tuple) -> dict[str, Any]:

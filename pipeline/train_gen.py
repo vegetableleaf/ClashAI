@@ -63,7 +63,16 @@ def _ce(logits: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     return Fn.cross_entropy(logits[ok], target[ok]) if ok.any() else logits.new_zeros(())
 
 
-def losses(model: GenModel, b: dict, mirror: bool, grid: str = "floor", rocket_context_weight: float = 1.0) -> tuple[torch.Tensor, dict]:
+def losses(model: GenModel, b: dict, mirror: bool, grid: str = "floor", rocket_context_weight: float = 1.0,
+           heads=None) -> tuple[torch.Tensor, dict]:
+    """``heads``: the loss terms summed into the returned loss (None = all: cell, card, wait, gate, value -- unchanged);
+    the parts dict always reports every term (Plan A S3 trains the memory adapter on gate / card / cell only)."""
+    total, parts = _losses(model, b, mirror, grid, rocket_context_weight)
+    use = parts if heads is None else {k: v for k, v in parts.items() if k in heads}
+    return (sum(use.values()) if use else total * 0.0), {k: float(v.detach()) for k, v in parts.items()}
+
+
+def _losses(model: GenModel, b: dict, mirror: bool, grid: str = "floor", rocket_context_weight: float = 1.0):
     tok, sc, past, xy = b["tok"], b["sc"], b["past"], b["xy"]
     if mirror:
         tok, sc, past, xy = mirror_gen(tok, sc, past, xy)
@@ -97,7 +106,7 @@ def losses(model: GenModel, b: dict, mirror: bool, grid: str = "floor", rocket_c
             parts['wait'] = .5*weighted_ce(out['wait'][~play], b['wait'][~play], weights[~play])
         parts['gate'] = mean_loss(Fn.binary_cross_entropy_with_logits(out['gate'], b['gate'], reduction='none'), weights)
         parts['value'] = .5*weighted_ce(out['value'], b['value'], weights)
-        return sum(parts.values()), {k: float(v.detach()) for k, v in parts.items()}
+        return sum(parts.values()), parts
     if play.any():
         parts["cell"] = Fn.cross_entropy(out["cell"][play], cell_label(xy[play], grid))
         parts["card"] = _ce(out["card"][play], b["slot"][play])
@@ -105,7 +114,7 @@ def losses(model: GenModel, b: dict, mirror: bool, grid: str = "floor", rocket_c
         parts["wait"] = 0.5 * _ce(out["wait"][~play], b["wait"][~play])
     parts["gate"] = Fn.binary_cross_entropy_with_logits(out["gate"], b["gate"])
     parts["value"] = 0.5 * Fn.cross_entropy(out["value"], b["value"])
-    return sum(parts.values()), {k: float(v.detach()) for k, v in parts.items()}
+    return sum(parts.values()), parts
 
 
 def main(argv=None) -> int:

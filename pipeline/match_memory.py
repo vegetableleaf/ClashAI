@@ -581,68 +581,76 @@ def summary(events, t, deck=(), gid=None):
 
 
 # ------------------------------------------------------------------------------------------------------------ tables
-def features_at(tab, ticks, deck=()):
-    """MatchMemory.features(t, gid, deck) for every t in ``ticks``, from the match's ``table(gid)``, vectorised (numpy, CPU;
-    sums run in event order through np.cumsum, as the python sums do, so the arrays are bit-identical). ``deck`` = 8 gid ids."""
+def _features(E, ticks, decks):
+    """The vectorised MatchMemory.features: ``E`` = per-ROW event arrays {TABLE_KEYS: [T, N, ...]} (each row its own match's
+    events, padding never visible), ``ticks`` [T], ``decks`` [T, <= 8] gid ids. Sums run in event order through np.cumsum,
+    as the python sums do, so every array is bit-identical to MatchMemory.features (tested)."""
     ticks = np.asarray(ticks, np.int64)
-    T, N = len(ticks), len(tab['tick'])
-    out = dict(mem_ev=np.zeros((T, E_MAX, F), np.float32), mem_mask=np.zeros((T, E_MAX), bool),
-               mem_card=np.zeros((T, E_MAX), np.int64), mem_form=np.full((T, E_MAX), FORM_PAD, np.int64),
-               mem_summary=np.zeros((T, S), np.float32), mem_answer=np.zeros(T, np.int64))
+    T, N = E['tick'].shape
+    out = empty_rows(T)
     if not T or not N:
         return out
-    tick, vals, res = tab['tick'].astype(np.int64), tab['vals'], tab['res'].astype(np.int64)
+    tick, vals, res = E['tick'].astype(np.int64), E['vals'], E['res'].astype(np.int64)
     t = ticks[:, None]
-    V = t >= tab['vis'].astype(np.int64)[None]
+    V = t >= E['vis'].astype(np.int64)
     rank = np.cumsum(V[:, ::-1], 1)[:, ::-1]                  # visible events at or after each one
     r, n = np.nonzero(V & (rank <= E_MAX))
     p = rank[r, n] - 1                                        # 0 = the newest
-    rows = np.where(ticks[r][:, None] >= res[n][:, FIELD_GROUP], vals[n], np.float32(0))
-    rows[:, _COL['ago_60']] = ((ticks[r] - tick[n]) * TICK_S / 60).astype(np.float32)
+    rows = np.where(ticks[r][:, None] >= res[r, n][:, FIELD_GROUP], vals[r, n], np.float32(0))
+    rows[:, _COL['ago_60']] = ((ticks[r] - tick[r, n]) * TICK_S / 60).astype(np.float32)
     out['mem_ev'][r, p] = rows
     out['mem_mask'][r, p] = True
-    out['mem_card'][r, p] = tab['card'][n]
-    out['mem_form'][r, p] = tab['form'][n]
-    col = (lambda k: vals[:, _COL[k]] == 1)
-    fl = tab['flag'].astype(np.int64)
-    idx = np.arange(N)
-    csum = (lambda m, x: np.cumsum(np.where(m, x[None], 0.0), 1)[:, -1])
+    out['mem_card'][r, p] = E['card'][r, n]
+    out['mem_form'][r, p] = E['form'][r, n]
+    col = (lambda k: vals[..., _COL[k]] == 1)
+    fl = E['flag'].astype(np.int64)
+    idx = np.arange(N)[None]
+    csum = (lambda m, x: np.cumsum(np.where(m, x, 0.0), 1)[:, -1])
     mean = (lambda m, x: np.where(m.sum(1) > 0, csum(m, x) / np.maximum(m.sum(1), 1), 0.0))
-    xb = V & ((fl & 1) > 0)[None]
-    reach = xb & col('xb_reach')[None]
-    done = reach & (t >= res[None, :, 2])
-    locked = done & col('xb_locked')[None]
+    xb = V & ((fl & 1) > 0)
+    reach = xb & col('xb_reach')
+    done = reach & (t >= res[..., 2])
+    locked = done & col('xb_locked')
     last = np.where(locked, idx, -1).max(1)
-    since = (done & ~locked & (idx[None] > last[:, None])).sum(1)
-    ans = xb & (t >= res[None, :, 3])
-    found = ans & ((fl & 4) > 0)[None]
-    rk = V & ((fl & 2) > 0)[None]
-    rkt = rk & col('rk_tower')[None]
-    rkd = rk & (t >= res[None, :, 5])
+    since = (done & ~locked & (idx > last[:, None])).sum(1)
+    ans = xb & (t >= res[..., 3])
+    found = ans & ((fl & 4) > 0)
+    rk = V & ((fl & 2) > 0)
+    rkt = rk & col('rk_tower')
+    rkd = rk & (t >= res[..., 5])
     nl, na = locked.sum(1), ans.sum(1)
+    t_last = np.take_along_axis(tick, np.maximum(last, 0)[:, None], 1)[:, 0]
     s = [xb.sum(1) / 10, done.sum(1) / 10, nl / 10, (done.sum(1) - nl) / 10, (reach.sum(1) - done.sum(1)) / 10, since / 10,
-         mean(done, tab['xb_dmg']), (nl > 0).astype(np.float64),
-         np.where(nl > 0, (ticks - tick[np.maximum(last, 0)]) * TICK_S / 60, 0.0),
-         np.where(na > 0, found.sum(1) / np.maximum(na, 1), 0.0), rkt.sum(1) / 5, csum(rkt & rkd, tab['rk_tl']),
-         rk.sum(1) / 5, (rkd & col('rk_combo')[None]).sum(1) / 5]
-    own = V & (col('is_play') & col('mine'))[None]
-    od = own & (t >= res[None, :, 1])
-    tk, vk = od & col('out_tower_known')[None], od & (col('out_value_known') & (vals[:, _COL['cost_10']] > 0))[None]
-    card = tab['card'].astype(np.int64)
-    for c in list(deck)[:DECK_N]:
-        c = int(c)
-        m = (card == c)[None] & (c != 0)
-        s += [(own & m).sum(1) / 10, ((tk & m).sum(1) > 0).astype(np.float64), mean(tk & m, tab['swing']),
-              ((vk & m).sum(1) > 0).astype(np.float64), mean(vk & m, tab['vpe']) / 2]
+         mean(done, E['xb_dmg']), (nl > 0).astype(np.float64), np.where(nl > 0, (ticks - t_last) * TICK_S / 60, 0.0),
+         np.where(na > 0, found.sum(1) / np.maximum(na, 1), 0.0), rkt.sum(1) / 5, csum(rkt & rkd, E['rk_tl']),
+         rk.sum(1) / 5, (rkd & col('rk_combo')).sum(1) / 5]
+    own = V & col('is_play') & col('mine')
+    od = own & (t >= res[..., 1])
+    tk, vk = od & col('out_tower_known'), od & col('out_value_known') & (vals[..., _COL['cost_10']] > 0)
+    card = E['card'].astype(np.int64)
+    decks = np.asarray(decks, np.int64).reshape(T, -1)
+    for k in range(min(decks.shape[1], DECK_N)):
+        c = decks[:, k:k + 1]
+        m = (card == c) & (c != 0)
+        s += [(own & m).sum(1) / 10, ((tk & m).sum(1) > 0).astype(np.float64), mean(tk & m, E['swing']),
+              ((vk & m).sum(1) > 0).astype(np.float64), mean(vk & m, E['vpe']) / 2]
     out['mem_summary'][:, :len(s)] = np.stack([np.broadcast_to(np.asarray(x, np.float64), (T,)) for x in s], 1)
-    ac = tab['ans_card'].astype(np.int64)
+    ac = E['ans_card'].astype(np.int64)
     best, key = np.zeros(T, np.int64), np.full(T, -1, np.int64)
     for u in np.unique(ac[(fl & 4) > 0]):                     # most frequent answer card, tie = the latest
-        mu = found & (ac == u)[None]
-        k = np.where(mu.any(1), mu.sum(1) * (N + 1) + np.where(mu, idx, -1).max(1), -1)
-        best, key = np.where(k > key, u, best), np.maximum(k, key)
+        mu = found & (ac == u)
+        kk = np.where(mu.any(1), mu.sum(1) * (N + 1) + np.where(mu, idx, -1).max(1), -1)
+        best, key = np.where(kk > key, u, best), np.maximum(kk, key)
     out['mem_answer'][:] = best
     return out
+
+
+def features_at(tab, ticks, deck=()):
+    """MatchMemory.features(t, gid, deck) for every t in ``ticks``, from the match's ``table(gid)``, vectorised (numpy, CPU).
+    ``deck`` = up to 8 gid ids (the model's deck_card order)."""
+    T = len(ticks)
+    E = {k: np.broadcast_to(tab[k], (T,) + tab[k].shape) for k in TABLE_KEYS}
+    return _features(E, ticks, np.broadcast_to(np.asarray(deck, np.int64).reshape(1, -1), (T, len(deck))))
 
 
 def pack(tables):
@@ -658,19 +666,26 @@ def unpack(packed, j):
     return {k: packed[k][a:b] for k in TABLE_KEYS}
 
 
+def gather_rows(packed, tabs):
+    """Per-row padded event arrays {TABLE_KEYS: [T, N, ...]} of tables ``tabs`` [T] (-1 = none); padding is never visible."""
+    tabs = np.asarray(tabs, np.int64)
+    off = np.asarray(packed['off'], np.int64)
+    a = np.where(tabs >= 0, off[np.maximum(tabs, 0)], 0)
+    n = np.where(tabs >= 0, off[np.maximum(tabs, 0) + 1] - a, 0)
+    N = int(n.max()) if len(n) else 0
+    j = np.arange(N)[None]
+    ok = j < n[:, None]
+    src = np.where(ok, a[:, None] + j, 0)
+    E = {k: np.asarray(packed[k])[src] for k in TABLE_KEYS}
+    E['vis'] = np.where(ok, E['vis'], NEVER)
+    return E
+
+
 def rows_features(packed, row_tab, row_t, row_deck, ids):
     """MEM_KEYS arrays for rows ``ids`` of a batch / dataset: row i is table ``row_tab[i]`` (index into ``packed``; -1 = no
-    table: an empty memory) at tick ``row_t[i]`` with deck ``row_deck[i]`` (8 gid ids; one table = one match side = one
-    deck). Grouped per table."""
+    table: an empty memory) at tick ``row_t[i]`` with deck ``row_deck[i]`` (8 gid ids). One vectorised pass for the batch."""
     ids = np.asarray(ids, np.int64)
-    tabs = np.asarray(row_tab)[ids]
-    out = empty_rows(len(ids))
-    for j in np.unique(tabs[tabs >= 0]):
-        sel = np.flatnonzero(tabs == j)
-        f = features_at(unpack(packed, int(j)), np.asarray(row_t)[ids[sel]], np.asarray(row_deck)[ids[sel[0]]])
-        for k in MEM_KEYS:
-            out[k][sel] = f[k]
-    return out
+    return _features(gather_rows(packed, np.asarray(row_tab)[ids]), np.asarray(row_t)[ids], np.asarray(row_deck)[ids])
 
 
 def mirror_ev(ev):
