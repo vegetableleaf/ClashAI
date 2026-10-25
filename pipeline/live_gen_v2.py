@@ -15,7 +15,7 @@ from .decision_options import (BARREL_KEY, DecisionOptions, barrel_landings, cho
                                gate_taus, hazard_draw, is_xbow, lethal_rocket_choice, tau_threat_state,
                                threat_on, threat_taus, tower_threat, xbow_dead_lane_cells, enemy_body_tiles,
                                princess_dead_state, rocket_covers_king, rocket_kills_king, log_air_board, LOG_AIR_BLOCKED,
-                               log_air_ground_child_tiles, is_log, recently_hit)
+                               log_air_ground_child_tiles, is_log, recently_hit, barrel_goblin_tiles)
 from .decision_options import rocket_tornado_choice, rocket_tornado_timing, rocket_value_cell, rocket_value_choice
 from .live_mem import my_side_of
 from .decision_options import enemy_princess_hps, hp_after, record_hp
@@ -395,6 +395,8 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
                     context['rocket_boards'] = [(self._princess_alive, enemy_body_tiles(bs), kills_king)]
             if cell_options.uses_barrels:              # the model's own projectile tokens, as SIM's match_kwargs
                 context.update(grid=self.grid, barrels=[barrel_landings(b['projectiles'][0], self.gid.get(BARREL_KEY))])
+            if getattr(cell_options, 'barrel_lane', 'off') == 'on':   # owner 10-25: goblins on my half, as SIM's match_kwargs
+                context.update(grid=self.grid, barrel_goblins=[barrel_goblin_tiles(bs)])
             if cell_options.log_air != 'off' and is_log(name):   # the decision board's enemy units / towers, as SIM's match_kwargs
                 from .live_mem import to_observe        # the raw bodies: an egg is ground whatever class it wears
                 side = my_side_of(frame)

@@ -159,3 +159,12 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
   live restarted between matches 18:29 EDT; live_play_20261025_182957 start record shows lethal_quiet 1.0, CLXIII NOLEAK.
   NOT in the SIM path yet (e1_eval / decide_batch pass no history): tonight's gates stay on the old rule (pairing with the
   CLXIII rows); SIM support owed before the next training so SIM matches live.
+- OWNER 10-25 ~18:35 EDT: port the Log's Goblin Barrel lane fix to the troop answers (Knight / IW / Skeletons / Tornado were
+  sometimes placed on the wrong side). Done: DecisionOptions.barrel_lane (--barrel-lane on|off; off = unchanged): a Knight / Ice
+  Wizard (any form) / Skeletons / Tornado the model places on MY half while an enemy Goblin Barrel lands (in flight: visible
+  target, as log_barrel) or its goblins stand on my half, all in ONE lane, moves to the model's best cell within 6 tiles of the
+  barrel / goblins in that lane; enemy-half placements, both-lane threats and right-lane choices unchanged. Shared code: SIM
+  decide_batch (match_kwargs barrel_goblins) and live_gen_v2. Tests test_barrel_lane_1025 3 / 3; decision-option suites 132 + 1
+  skip; finisher suites 55. LIVE_OPTIONS += --barrel-lane on (backup .bak_1025_prebarrel); --check PASS; live restarted 18:46
+  EDT; live_play_20261025_184734 start record: barrel_lane on, lethal_quiet 1.0, CLXIII NOLEAK; no decision errors.
+  Tonight's gates do NOT use it (pairing with the CLXIII rows); next training's live stack should include both.

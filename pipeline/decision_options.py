@@ -38,6 +38,8 @@ class DecisionOptions:
     gate_hazard_threat_radius: float = 0.0  # ... or while an enemy unit is within this many tiles of my alive tower
     lethal_rocket: str = 'off'
     lethal_log: str = 'off'                 # 'on': the lethal finisher also uses the Log (rides on lethal_rocket's mode)
+    barrel_lane: str = 'off'                # owner 10-25 'on': Knight / Ice Wizard / Skeletons / Tornado answering an enemy
+                                            # Goblin Barrel go to ITS lane (log_barrel's fix ported to the troop answers)
     lethal_quiet: float = 0.0               # owner 10-25: > 0 = the finisher skips a princess whose HP dropped in the last
                                             # this many s (an X-Bow / troop already finishing it: the Rocket would be overkill)
     xbow_dead_lane: str = 'allow'           # 'block': no X-Bow cell that reaches only the king / a destroyed princess
@@ -98,6 +100,8 @@ class DecisionOptions:
         for k in ('gate_hazard_threatened', 'gate_hazard_threat_radius'):
             if not math.isfinite(getattr(self, k)) or getattr(self, k) < 0:
                 raise ValueError(f'{k} must be finite and >= 0')
+        if self.barrel_lane not in ('off', 'on'):
+            raise ValueError('barrel_lane must be off or on')
         if not math.isfinite(self.lethal_quiet) or self.lethal_quiet < 0:
             raise ValueError('lethal_quiet must be finite and >= 0 (0 = off)')
         if self.lethal_rocket not in ('off', 'ot', 'ot_behind'):
@@ -141,12 +145,12 @@ class DecisionOptions:
                 or self.xbow_class != 'argmax' or self.log_aim != 'argmax' or self.gate_decode != 'threshold'
                 or self.lethal_rocket != 'off' or self.xbow_dead_lane != 'allow' or self.rocket_dead_target != 'allow'
                 or self.tau_threatened is not None or self.log_air != 'off' or self.rocket_value > 0
-                or self.rocket_tornado != 'off')
+                or self.rocket_tornado != 'off' or self.barrel_lane != 'off')
 
     @property
     def uses_barrels(self):
         """The Goblin Barrel landing points are read (log_barrel's aim; log_air's exclusion)."""
-        return self.log_aim != 'argmax' or self.log_air != 'off'
+        return self.log_aim != 'argmax' or self.log_air != 'off' or self.barrel_lane != 'off'
 
 
 def options_from_config(cfg=None):
@@ -201,6 +205,12 @@ def add_arguments(parser):
                              'also uses the Log: an alive enemy PRINCESS with HP <= my Log crown-tower damage gets the '
                              'Log, cast on my side at (tower x, y 17.5 tiles) so its roll reaches the tower; preferred over '
                              'the Rocket when both finish')
+    parser.add_argument('--barrel-lane', choices=('off', 'on'), default='off',
+                        help='owner 2026-10-25: on = a Knight / Ice Wizard / Skeletons / Tornado the model places on MY half while '
+                             'an enemy Goblin Barrel lands (in flight: its visible target) or its goblins stand on my half, in ONE lane '
+                             'only, is moved to that lane: the model\'s best cell within BARREL_LANE_TILES of the barrel / goblins '
+                             '(--log-aim log_barrel\'s lane fix for the troop answers); a placement on the enemy half, both lanes '
+                             'threatened or already the right lane = unchanged; off = unchanged')
     parser.add_argument('--lethal-quiet', type=float, default=0.0, metavar='SEC',
                         help='owner 2026-10-25: the --lethal-rocket / --lethal-log finisher skips an enemy princess whose public '
                              'HP dropped within the last SEC s of decision snapshots (something else -- a locked X-Bow, a troop -- '
@@ -869,7 +879,7 @@ def log_air_cell(logits, corridor, board, barrels, grid, mode, cell):
 
 
 def choose_cells(logits, card_names, options, *, rngs=None, enemy_alive=None, grid=None, barrels=None,
-                 rocket_boards=None, log_air_boards=None, log_air_moved=None):
+                 rocket_boards=None, log_air_boards=None, log_air_moved=None, barrel_goblins=None):
     """Aim only after card selection. Other cards retain exact argmax behaviour.
     ``barrels`` (log_aim): per row, the enemy Goblin Barrel landing points from ``barrel_landings``.
     xbow_dead_lane 'block': X-Bow rows lose ``xbow_dead_lane_cells`` before any X-Bow aim; a row with no finite cell
@@ -938,7 +948,59 @@ def choose_cells(logits, card_names, options, *, rngs=None, enemy_alive=None, gr
             result[ids] = selected.masked_fill(~maxima, -torch.inf).argmax(dim=-1)
     if options.rocket_dead_target == 'block':
         rocket_dead_target_choice(result, logits, card_names, options, rocket_boards, grid)
+    if options.barrel_lane == 'on':
+        for i, name in enumerate(card_names):
+            if not is_barrel_answer(name) or result[i] < 0:
+                continue
+            if grid is None:
+                raise ValueError('barrel_lane requires the grid')
+            pts = [(bx * 18.0, by * 32.0) for bx, by in (barrels[i] if barrels is not None else [])]
+            pts += list(barrel_goblins[i]) if barrel_goblins is not None else []
+            cell = barrel_lane_cell(logits[i], pts, int(result[i]), grid)
+            if cell is not None:
+                result[i] = cell
     return result
+
+
+# ---- barrel_lane (owner 2026-10-25: "the model's log response to enemy goblin barrel follows the correct lane, but its troop
+# responses are still wonky: sometimes it plays knight, ice wizard, tornado, or skeletons on the wrong side") ----
+BARREL_ANSWERS = ('knight', 'icewizard', 'skeletons', 'tornado')
+BARREL_GOBLIN_KEYS = ('goblins', 'goblin_barrel', 'goblin_gang')   # the barrel's goblins (and their class aliases)
+BARREL_LANE_TILES = 6.0          # the answer lands within this of the barrel's landing / its goblins
+MY_HALF_Y_TILES = 16.0           # my frame: my edge is y = 32, the river y = 16
+
+
+def is_barrel_answer(name):
+    return re.sub(r'[^a-z]', '', str(name).split('@')[0].lower()) in BARREL_ANSWERS
+
+
+def barrel_goblin_tiles(bs):
+    """(x, y) tiles (my frame) of enemy goblins standing on MY half of a BoardState (public bodies)."""
+    from . import vocab
+    out = []
+    for u in bs.units:
+        if int(u.side) == 0 or not 0 <= int(u.cls) < len(vocab.UNIT_VOCAB):
+            continue
+        if vocab.base_key(vocab.UNIT_VOCAB[int(u.cls)]) in BARREL_GOBLIN_KEYS and float(u.y) * 32.0 > MY_HALF_Y_TILES:
+            out.append((float(u.x) * 18.0, float(u.y) * 32.0))
+    return tuple(out)
+
+
+def barrel_lane_cell(logits, points, chosen, grid):
+    """-> the model's best cell within BARREL_LANE_TILES of the barrel / goblin ``points`` on my half, or None (keep the
+    choice): the chosen cell is on the enemy half, no point is on my half, the points span both lanes, or the choice is
+    already in their lane."""
+    x, y = cell_centres_tiles(grid)
+    if y[chosen] <= MY_HALF_Y_TILES:
+        return None
+    pts = [(px, py) for px, py in points if py > MY_HALF_Y_TILES]
+    lanes = {px < 9.0 for px, _ in pts}
+    if len(lanes) != 1 or (x[chosen] < 9.0) in lanes:
+        return None
+    d = np.min([np.hypot(x - px, y - py) for px, py in pts], axis=0)
+    keep = torch.as_tensor((d <= BARREL_LANE_TILES) & (y > MY_HALF_Y_TILES), device=logits.device)
+    masked = logits.masked_fill(~keep, -torch.inf)
+    return int(masked.argmax()) if bool(torch.isfinite(masked).any()) else None
 
 
 def rocket_dead_target_choice(result, logits, card_names, options, rocket_boards, grid):
@@ -1912,7 +1974,7 @@ def rocket_tornado_choice(options, names, allowed, bs, grid, pending=False, min_
 def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options, rngs, card_names,
                  t_sec=None, enemy_alive=None, grid=None, projectiles=None, step_s=None, elixir=None,
                  enemy_units=None, lethal=None, threatened=None, rocket_boards=None, tau_threat=None, tau_delta=None,
-                 log_air_boards=None, rocket_value=None):
+                 log_air_boards=None, rocket_value=None, barrel_goblins=None):
     """Optional branch of e1_eval's live decision; default branch remains untouched.
     ``t_sec`` (tau_phase) and ``enemy_alive`` [(K, L, R) alive] + ``grid`` (xbow_class) are per-row match context;
     ``projectiles`` (log_aim) = each row's model projectile tokens, decoded with the model's own card vocabulary.
@@ -1957,7 +2019,9 @@ def decide_batch(model, enc, heads, p, allowed, stalled, *, tau, device, options
             barrel_id = getattr(model, 'gid', {}).get(BARREL_KEY)
             barrels = [barrel_landings(projectiles[r], barrel_id) for r in ids]
         moved = []
+        gob = None if barrel_goblins is None else [barrel_goblins[r] for r in ids]
         cells[ids] = choose_cells(logits, names, options, rngs=[rngs[r] for r in ids], grid=grid, barrels=barrels,
+                                  barrel_goblins=gob,
                                   enemy_alive=None if enemy_alive is None else [enemy_alive[r] for r in ids],
                                   rocket_boards=None if rocket_boards is None else [rocket_boards[r] for r in ids],
                                   log_air_boards=None if log_air_boards is None else [log_air_boards[r] for r in ids],
@@ -2105,6 +2169,8 @@ def match_kwargs(matches):
         out.update(grid=cfg['grid'], log_air_boards=[
             log_air_board(m._cur[1], log_air_ground_child_tiles((getattr(m, 'state', None) or {}).get('entities'), getattr(m, 'side', 0)))
             for m in matches])
+    if options.barrel_lane == 'on':     # owner 10-25: the goblins on my half (the decision BoardState, my frame)
+        out.update(grid=cfg['grid'], barrel_goblins=[barrel_goblin_tiles(m._cur[1]) for m in matches])
     if options.rocket_value > 0:        # the decision's engine BoardState (hp_frac known, as live's): same board as tau_phase
         out.update(grid=cfg['grid'], rocket_value=[(m._cur[1], getattr(m, 'pending', None) is not None, m) for m in matches])
     if options.uses_barrels:            # the very projectile tokens the model saw (gen_row, fv >= 4), as live's batch
