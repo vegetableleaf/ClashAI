@@ -99,3 +99,6 @@ GATE G1 (gate48 + compare48, 32525): S7 (f_s79) u50 vs CLX WITH the hazard play,
 | S9 end | succ48_h | s81 / 33572 | stopped u~59 |
 | S15 | succ48_m (CLX start) | s87 / 32525 | running |
 | S16 | succ48_n: m with leak .02 | s88 / 33572 | running |
+| S13 u25 | succ48_m (CLX start) | s85 / 33401 | PASS but leak NOT moving: full 52.6 -> 55.6, first play 39.7 -> 44.0 s; win -0.034 [-0.090, +0.020]; idle -0.025 |
+| S15 u25 | succ48_m | s87 / 32525 | FAIL win -0.052 [-0.115, -0.001]; full 50.9, first play 45.2 s; trade +0.31 -> stopped for S17 |
+| S17 | succ48_o: m + T_gate 0.1 -> 0.3 (exploration: at T .1 CLX's opening play prob ~1e-7 = no gradient for the leak term) | s89 / 32525 | running |
