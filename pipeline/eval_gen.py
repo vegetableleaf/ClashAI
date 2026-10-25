@@ -23,7 +23,7 @@ import torch
 import torch.nn.functional as Fn
 
 from .dataset import load as load_ds
-from .model_gen import IDENT, GenModel, card_form_of
+from .model_gen import IDENT, GenModel, attach_vocab, card_form_of, check_memory_meta
 from .model_v3 import GRID_X, GRID_Y, cell_index, cell_label, tile_of_cell
 from .train_s1 import MAX_U, Rows
 
@@ -57,8 +57,10 @@ class GenRows(Rows):
             raise ValueError("v3 rows require both unit_form and opp_past")
         # Plan A memory v1 inputs (a model with a memory encoder): None = none (a memory model then fails loudly), "empty"
         # = an empty memory (declared by the caller), or (packed event tables, row -> table index, row tick) for
-        # match_memory.rows_features (dataset_gen.memory_tables' file aligned to these arrays; deck = arrs["deck_card"])
+        # match_memory.rows_features (dataset_gen.memory_tables' file aligned to these arrays; deck = arrs["deck_card"]).
+        # memory_version: the rows' memory version ("v2" = + S1C_FIELDS, then memory_gid = the tables' vocabulary)
         self.memory = None
+        self.memory_version, self.memory_gid = "v1", None
 
     def view(self, idx: np.ndarray) -> "GenRows":
         """Same device arrays, another index set (the arrays are not copied again)."""
@@ -94,8 +96,10 @@ class GenRows(Rows):
             b["cue"] = c.masked_fill_(~mask.unsqueeze(-1), 0.0).to(self.dev)
         if self.memory is not None:
             from .match_memory import empty_rows, rows_features
-            m = (empty_rows(len(ids)) if isinstance(self.memory, str) and self.memory == "empty"
-                 else rows_features(self.memory[0], self.memory[1], self.memory[2], self.a["deck_card"], ids))
+            ver = getattr(self, "memory_version", "v1")
+            m = (empty_rows(len(ids), ver) if isinstance(self.memory, str) and self.memory == "empty"
+                 else rows_features(self.memory[0], self.memory[1], self.memory[2], self.a["deck_card"], ids, ver,
+                                    getattr(self, "memory_gid", None)))
             b.update({k: torch.from_numpy(v).to(self.dev) for k, v in m.items()})
         return b
 
@@ -228,8 +232,9 @@ def load_model(ckpt: Path, device) -> tuple[GenModel, dict]:
     a = st["args"]
     model = GenModel(d=int(a["d"]), layers=int(a["layers"]), d_c=int(st["d_c"]), n_cards=len(st["card_vocab"]),
                      feature_version=int(a.get("feature_version", 1))).to(device)
+    check_memory_meta(st)
     model.load_state_dict(st["model"])
-    return model, st
+    return attach_vocab(model, st["card_vocab"]), st
 
 
 def val_rows(arrs: dict, sample: int = 0) -> np.ndarray:

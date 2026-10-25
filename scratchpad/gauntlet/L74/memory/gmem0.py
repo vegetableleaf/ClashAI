@@ -1,6 +1,6 @@
 """Plan A gate G-mem-0 (S1b): a memory model at init = CLXIII exactly.
 
-    icebow/.venv/Scripts/python.exe -B -X utf8 scratchpad/gauntlet/L74/memory/gmem0.py [--rows 2500] > gmem0.out
+    icebow/.venv/Scripts/python.exe -B -X utf8 scratchpad/gauntlet/L74/memory/gmem0.py [--rows 2500] [--memory v2] > gmem0.out
 
 Rows: the first N rows of icebow/data/pipeline/gen_dataset_v32_fv5.npz (the pro set CLXIII's imitation parent trained on),
 read as a STREAMED PREFIX of each npz member (no member is loaded whole: projectiles alone are 7.2 GB). Models: CLXIII
@@ -65,8 +65,8 @@ def outputs(model, b):
                 cell=torch.log_softmax(out['cell'].double(), -1), value=torch.softmax(out['value'].double(), -1))
 
 
-def random_memory(n, n_cards, rng):
-    m = MM.empty_rows(n)
+def random_memory(n, n_cards, rng, version='v1'):
+    m = MM.empty_rows(n, version)
     m['mem_ev'][:] = rng.random(m['mem_ev'].shape, dtype=np.float32)
     k = rng.integers(0, MM.E_MAX + 1, n)
     k[::7] = 0                                                  # every 7th row: an EMPTY memory
@@ -82,13 +82,14 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--rows', type=int, default=2500)
     ap.add_argument('--bs', type=int, default=250)
+    ap.add_argument('--memory', choices=('v1', 'v2'), default='v1')        # v2: the S1c summary (114 floats)
     a = ap.parse_args()
     torch.set_num_threads(4)
     dev = torch.device('cpu')
     arrs = npz_prefix(NPZ, a.rows)
     n = len(arrs['y_gate'])
     base, st = load_model(CKPT, dev)
-    mem, _ = load_model(CKPT, dev, memory='v1')
+    mem, _ = load_model(CKPT, dev, memory=a.memory)
     base.eval(), mem.eval()
     rows = GenRows(arrs, np.arange(n), dev)
     rng = np.random.default_rng(0)
@@ -103,11 +104,12 @@ def main():
             b['_cell_card'] = torch.where(play, b['card'], b['hand_card'][:, 0])
             b['_cell_form'] = torch.where(play, b['form'], b['hand_form'][:, 0])
             ref = outputs(base, b)
-            bm = dict(b, **{k: torch.from_numpy(v) for k, v in random_memory(len(ids), len(st['card_vocab']), rng).items()})
+            bm = dict(b, **{k: torch.from_numpy(v) for k, v in random_memory(len(ids), len(st['card_vocab']), rng,
+                                                                             a.memory).items()})
             got = outputs(mem, bm)
             for k in worst:
                 worst[k] = max(worst[k], float((got[k] - ref[k]).abs().max()))
-    print(f'G-mem-0: {n} real rows ({n_play} play rows) from {NPZ.name} prefix; CLXIII vs CLXIII + memory v1 (random memory '
+    print(f'G-mem-0: {n} real rows ({n_play} play rows) from {NPZ.name} prefix; CLXIII vs CLXIII + memory {a.memory} (random memory '
           f'inputs, every 7th row empty)')
     print('  max |diff|:', ' '.join(f'{k} {v:.3g}' for k, v in worst.items()), '->',
           'PASS (< 1e-6)' if max(worst.values()) < 1e-6 else 'FAIL')
@@ -116,7 +118,7 @@ def main():
     # liveness: a nonzero output layer moves the outputs; the output layer gets a gradient at init
     b = rows.batch(np.arange(min(64, n)))
     b['_cell_card'], b['_cell_form'] = b['hand_card'][:, 0], b['hand_form'][:, 0]
-    bm = dict(b, **{k: torch.from_numpy(v) for k, v in random_memory(len(b['gate']), len(st['card_vocab']), rng).items()})
+    bm = dict(b, **{k: torch.from_numpy(v) for k, v in random_memory(len(b['gate']), len(st['card_vocab']), rng, a.memory).items()})
     out = mem(bm, card=bm['_cell_card'], form=bm['_cell_form'])
     (out['gate'].sum() + out['value'].sum()).backward()
     gnorm = float(mem.mem.out.weight.grad.norm())

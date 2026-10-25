@@ -1,0 +1,4 @@
+G-mem-0: 2500 real rows (813 play rows) from gen_dataset_v32_fv5.npz prefix; CLXIII vs CLXIII + memory v2 (random memory inputs, every 7th row empty)
+  max |diff|: gate 0 card 0 cell 0 value 0 -> PASS (< 1e-6)
+  memory encoder parameters: 334,376 (base model 1,759,432)
+  liveness: output-layer grad norm at init 3.57e+03 (> 0 = it can learn); perturbed output layer moves the gate logit by up to 0.786

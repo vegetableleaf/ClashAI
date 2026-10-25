@@ -1,0 +1,7 @@
+Q3. fights anchored on our Tornado, our king asleep + both princesses up at t0: 164 fights, 86 matches
+  king damaged in the window: {'not live / not SIM': 52, 'king hit live / king hit SIM': 92, 'king hit live / not SIM': 17, 'not live / king hit SIM': 3}
+  king share of the enemy damage on our towers: live 0.404, SIM 0.389; SIM - live -0.015 [-0.050, +0.019] (match bootstrap)
+  totals hp: king live 96881 SIM 85717 (SIM/live 0.88); princesses live 142830 SIM 134462 (SIM/live 0.94)
+  building-targeter or Goblin Barrel victim  n  28: king share live 0.335 SIM 0.291 (SIM - live [-0.108, +0.018]); king hit both 13, live only 5, SIM only 0, neither 10; king hp live 14653 SIM 11873, princess hp live 29103 SIM 28960
+  Hog Rider victim                           n  14: king share live 0.437 SIM 0.414 (SIM - live [-0.099, +0.037]); king hit both 10, live only 1, SIM only 0, neither 3; king hp live 11385 SIM 10878, princess hp live 14673 SIM 15386
+  no building-targeter victim                n 136: king share live 0.420 SIM 0.412 (SIM - live [-0.043, +0.027]); king hit both 79, live only 12, SIM only 3, neither 42; king hp live 82228 SIM 73844, princess hp live 113727 SIM 105502

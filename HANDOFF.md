@@ -1,3 +1,17 @@
+## 2026-10-25 ~16:30 EDT -- S1c memory v2 DONE (lock head AUC 0.622 vs 0.584 v1-only); S3 v1 control PASS; gate metrics; Tornado/king parity; live CLXIII started by owner 14:53
+
+- memory v2 = v1 + 60 S1c fields (S 114): counter priors (s1c/counter_priors.json), cycle / counter-ready + opp elixir, king
+  activated, margin + trend, lock-likelihood head (s1c/lock_head.json). v1 byte-identical (tested); v2 causal, incremental ==
+  offline, zero-init identity 0 on CPU; pod smokes PASS. Lock head held-out (match split): AUC 0.622 vs 0.584 v1-only
+  (+0.039 [0.001, 0.075]); does NOT firm up with revealed cards (c). live_play.py logs xb_lock_p for v2 models only.
+- S3 v1 control (2 epochs): val loss 5.471 -> 4.720, card top-1 +3.1 pp, cell +3.1 pp, gate bal-acc +0.9 pp; probes toward pros
+  (X-Bow after >= 2 fails 12.2 -> 9.4% vs pro 8.6; Rocket 1.1 -> 5.7% vs 8.6). Memory-zeroed is worse than CLXIII (64.1% gate).
+- gate_metrics.py (live + pro): tower Rockets / min in 2x+OT, CLX vs pro: ahead 0.30 / 0.65, level 0.16 / 0.76, behind small
+  0.08 / 0.84, behind > 2000 0.06 / 0.47. King share of own tower damage 2.8% vs pro 14.0%.
+- Tornado / king parity (upstream 0.1.36 wheel; fin15 re-run owed): king rule matches; same-situation activation 0.81-0.85,
+  misses all SIM under-pull (packs); redirect share live 0.404 vs SIM 0.389. No exploit direction found.
+- Live: owner started icebow CLXIII NOLEAK Ranked 14:53 EDT (forced play stripped).
+
 ## 2026-10-25 ~14:45 EDT -- owner APPROVED S1c; S3 smoke PASS, no target leak; S3 v1 control running; D1 s75 replication; per-card X-Bow counters
 
 - S1c approved (per-card counter priors, cycle / counter-ready, king activated, damage margin + trend, lock-likelihood head;

@@ -1,0 +1,12 @@
+own-king sides {'own sides': 1207, 'never awake': 441, 'cause=damage both_princesses_up=True': 211, 'cause=princess both_princesses_up=False': 525, 'cause=other both_princesses_up=True': 27, 'awake at first frame': 1, 'cause=damage both_princesses_up=False': 1, 'cause=other both_princesses_up=False': 1}
+
+own king DAMAGE-woken with both princesses up: 211 sides in 1207 matches (0.175 per match); regulation (trigger < 3600): 194
+  own Tornado in the 80 ticks before the trigger: 123 (0.58)
+  activators (enemy in king reach at the trigger), all: [('GoblinBarrel', 61), ('HogRider', 38), ('RoyalHogs', 6), ('ElixirGolem', 5), ('MegaKnight', 5), ('Balloon hero', 4), ('RageBarbarian', 3), ('Ghost', 3), ('MegaKnight evo', 3), ('Miner', 2), ('SkeletonBalloon', 2), ('Knight hero', 2)]
+  activators, after own Tornado: [('GoblinBarrel', 60), ('HogRider', 35), ('RoyalHogs', 6), ('RageBarbarian', 3), ('ElixirGolem', 3), ('Ghost', 3), ('Balloon hero', 3), ('SkeletonBalloon', 2), ('MegaKnight evo', 2), ('MegaKnight', 2), ('RoyalHogs evo', 2), ('Valkyrie evo', 1)]
+  trigger - Tornado cast (ticks, 10-bins): [(10, 9), (20, 27), (30, 25), (40, 30), (50, 26), (60, 4), (70, 2)]
+  win rate (association): woken-with-both-up 0.425 (n 211) vs other matches 0.516 (n 996); after own Tornado 0.422 (n 123)
+
+OTHER wakes (no princess fall and no first king damage within +-4 ticks of awake-70): 28
+  of which trigger < 5900 (before the tiebreak drain): 1
+    live_play_20261016_214002 awake 2263 trigger 2193 hurt 2251 down 2188 own Tornado None activators ['opp BattleHealer', 'opp MiniPekka hero']

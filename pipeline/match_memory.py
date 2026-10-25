@@ -44,18 +44,29 @@ EVENTS (``MatchMemory.events(t)``, chronological; dicts):
                   the blast), combo (an on-time own Tornado within COMBO).
   tower_damage    tick, mine (= my tower), tower (TOWER index), lost: debounced, >= DMG_MIN per tower and <= 1 per DMG_GAP
   tower_fall      tick, mine, tower
+
+MEMORY v2 (Plan A S1c, owner 2026-10-25): v1 + S1C_FIELDS appended to the summary (S_V2 floats), computed at feature time
+from the SAME event tables (no rebuild; ``version='v2'`` + the vocabulary ``gid`` on features / features_at / rows_features):
+counter priors of the opponent cards revealed so far (counter_priors.json), their cycle (plays since, plays until back in
+hand, elixir to cycle there, the public opponent elixir estimate, counter ready), king activation, the tower-HP margin and its
+30 / 60 s trend, and the frozen lock head's P(lock) for a reach X-Bow placed now (lock_head.json; both artifacts by
+scratchpad/gauntlet/L74/memory/s1c/fit_s1c.py). v1 (its features, tables, config hash, checkpoints) is untouched: every v2
+path is opt-in by ``version``.
 """
 from __future__ import annotations
 
+import hashlib
+import json
 import math
 from bisect import bisect_left, bisect_right
+from functools import lru_cache
 
 import numpy as np
 
 from . import vocab
-from .dataset_gen import FORM_PAD, card_key
+from .dataset_gen import CARD_STANDINS, FORM_PAD, card_key
 from .habit_terms import XB_LOCK, XB_REACH, XB_WINDOW, _card, body_value, play_cost
-from .obs_contract import (KING_X, MY_KING_Y, MY_PRINCESS_Y, OPP_KING_Y, OPP_PRINCESS_Y, PRINCESS_X_L, PRINCESS_X_R,
+from .obs_contract import (KING_X, MY_KING_Y, MY_PRINCESS_Y, OPP_KING_Y, OPP_PRINCESS_Y, PRINCESS_X_L, PRINCESS_X_R, REPO,
                            TICK_S, TILES_X, TILES_Y, _engine_xy, catalog_card_form)
 from .own_ability import SUPPLEMENT
 
@@ -108,6 +119,24 @@ DECK_N = 8
 S = len(SUMMARY_FIELDS) + DECK_N * len(CARD_FIELDS)   # 54
 MEM_KEYS = ('mem_ev', 'mem_mask', 'mem_card', 'mem_form', 'mem_summary', 'mem_answer')   # the model's batch keys
 TABLE_KEYS = ('tick', 'vis', 'vals', 'res', 'card', 'form', 'ans_card', 'flag', 'xb_dmg', 'rk_tl', 'swing', 'vpe')
+
+# memory v2 (S1c): appended to the summary, all from the visible events at t (``_s1c``)
+S1C_DIR = REPO / 'scratchpad/gauntlet/L74/memory/s1c'
+PRIORS = S1C_DIR / 'counter_priors.json'      # fit_s1c.py: per opponent card, the shrunk X-Bow lock lifts (deck / answer view)
+LOCK_HEAD = S1C_DIR / 'lock_head.json'        # fit_s1c.py: logistic P(lock) of a reach X-Bow placed now
+COUNTER_LIFT = -0.10     # a revealed card whose ANSWER-view lift is below this counts as a counter (fit_s1c.out: the spread)
+CYCLE = 4                # 8-card deck, 4 in hand: a played card is back in hand after 4 further plays
+SLOT_N = 8               # per revealed opponent card, strongest answer-lift first
+SLOT_FIELDS = ('on', 'need_4', 'cost_10', 'ans_lift', 'deck_lift')    # need = plays before it is back in hand (0 = in hand)
+S1C_FIELDS = (('opp_revealed_8', 'deck_lift_min', 'deck_lift_neg_sum', 'ans_lift_min',          # priors of revealed cards
+               'ctr_known', 'ctr_plays_4', 'ctr_cycle_el_10', 'opp_el_10', 'ctr_ready')        # cycle + counter ready
+              + tuple(f'slot{i}_{k}' for i in range(SLOT_N) for k in SLOT_FIELDS)
+              + ('own_king_on', 'own_king_since_60', 'opp_king_on', 'opp_king_since_60',       # king activated
+                 'margin_p_2', 'margin_k', 'margin_p_d30_2', 'margin_p_d60_2', 'margin_k_d30', 'margin_k_d60',
+                 'xb_lock_p'))                                                                  # the frozen lock head
+S_V2 = S + len(S1C_FIELDS)                    # 114
+N_SUM = {'v1': S, 'v2': S_V2}                 # summary width per memory version (model_gen reads the version from it)
+LOCK_INPUTS = SUMMARY_FIELDS + S1C_FIELDS[:-1] + ('t_300', 'ph_1x', 'ph_2x', 'ph_ot')
 
 
 def _tiles(a, b):
@@ -410,12 +439,19 @@ class MatchMemory:
                                        if q['mine'] and q['card'] == 'tornado')
         return out
 
-    def features(self, t, gid, deck=()):
+    def features(self, t, gid, deck=(), version='v1'):
         """The model inputs at decision tick ``t`` (MEM_KEYS); ``deck`` = the own deck's 8 card ids (gid) or names, the order
-        the per-card summary rows follow (the model's ``deck_card``)."""
+        the per-card summary rows follow (the model's ``deck_card``). ``version`` 'v2': + the S1C_FIELDS, from this match's
+        table so far (the one vectorised implementation, so incremental == offline by construction of the table)."""
         ev = self.events(t)
         e, m, c, f = encode(ev, t, gid)
         s, ans = summary(ev, t, deck, gid)
+        if version != 'v1':                       # = features_at(table, [t], deck, 'v2', gid) minus its v1 part (= s)
+            if version != 'v2':
+                raise ValueError(f'memory version {version!r}: v1 or v2')
+            tab = self.table(gid)
+            E = {k: tab[k][None] for k in TABLE_KEYS}
+            s = np.concatenate([s, _s1c(E, [t], s[None, :len(SUMMARY_FIELDS)], v2_lut(gid), lock_head())[0].astype(np.float32)])
         return dict(mem_ev=e, mem_mask=m, mem_card=c, mem_form=f, mem_summary=s, mem_answer=np.int64(ans))
 
     def table(self, gid):
@@ -581,7 +617,23 @@ def summary(events, t, deck=(), gid=None):
 
 
 # ------------------------------------------------------------------------------------------------------------ tables
-def _features(E, ticks, decks):
+def _features(E, ticks, decks, version='v1', gid=None):
+    """``_features_v1``; version 'v2' appends ``_s1c`` (needs ``gid``, the vocabulary the tables' card ids are in)."""
+    out = _features_v1(E, ticks, decks)
+    if version == 'v1':
+        return out
+    if version != 'v2':
+        raise ValueError(f'memory version {version!r}: v1 or v2')
+    T = len(out['mem_answer'])
+    s = np.zeros((T, S_V2), np.float32)
+    s[:, :S] = out['mem_summary']
+    if T:
+        s[:, S:] = _s1c(E, ticks, s[:, :len(SUMMARY_FIELDS)], v2_lut(gid), lock_head())
+    out['mem_summary'] = s
+    return out
+
+
+def _features_v1(E, ticks, decks):
     """The vectorised MatchMemory.features: ``E`` = per-ROW event arrays {TABLE_KEYS: [T, N, ...]} (each row its own match's
     events, padding never visible), ``ticks`` [T], ``decks`` [T, <= 8] gid ids. Sums run in event order through np.cumsum,
     as the python sums do, so every array is bit-identical to MatchMemory.features (tested)."""
@@ -645,12 +697,12 @@ def _features(E, ticks, decks):
     return out
 
 
-def features_at(tab, ticks, deck=()):
-    """MatchMemory.features(t, gid, deck) for every t in ``ticks``, from the match's ``table(gid)``, vectorised (numpy, CPU).
-    ``deck`` = up to 8 gid ids (the model's deck_card order)."""
+def features_at(tab, ticks, deck=(), version='v1', gid=None):
+    """MatchMemory.features(t, gid, deck, version) for every t in ``ticks``, from the match's ``table(gid)``, vectorised
+    (numpy, CPU). ``deck`` = up to 8 gid ids (the model's deck_card order); v2 needs the ``gid`` the table was built with."""
     T = len(ticks)
     E = {k: np.broadcast_to(tab[k], (T,) + tab[k].shape) for k in TABLE_KEYS}
-    return _features(E, ticks, np.broadcast_to(np.asarray(deck, np.int64).reshape(1, -1), (T, len(deck))))
+    return _features(E, ticks, np.broadcast_to(np.asarray(deck, np.int64).reshape(1, -1), (T, len(deck))), version, gid)
 
 
 def pack(tables):
@@ -681,11 +733,13 @@ def gather_rows(packed, tabs):
     return E
 
 
-def rows_features(packed, row_tab, row_t, row_deck, ids):
+def rows_features(packed, row_tab, row_t, row_deck, ids, version='v1', gid=None):
     """MEM_KEYS arrays for rows ``ids`` of a batch / dataset: row i is table ``row_tab[i]`` (index into ``packed``; -1 = no
-    table: an empty memory) at tick ``row_t[i]`` with deck ``row_deck[i]`` (8 gid ids). One vectorised pass for the batch."""
+    table: an empty memory) at tick ``row_t[i]`` with deck ``row_deck[i]`` (8 gid ids). One vectorised pass for the batch.
+    v2: + ``gid`` (the vocabulary of the tables' card ids)."""
     ids = np.asarray(ids, np.int64)
-    return _features(gather_rows(packed, np.asarray(row_tab)[ids]), np.asarray(row_t)[ids], np.asarray(row_deck)[ids])
+    return _features(gather_rows(packed, np.asarray(row_tab)[ids]), np.asarray(row_t)[ids], np.asarray(row_deck)[ids],
+                     version, gid)
 
 
 def mirror_ev(ev):
@@ -698,8 +752,179 @@ def mirror_ev(ev):
     return out
 
 
-def empty_rows(n):
+def empty_rows(n, version='v1'):
     """MEM_KEYS for ``n`` rows with an EMPTY memory (no event, zero summary): a path with no tables (declared, never silent)."""
     return dict(mem_ev=np.zeros((n, E_MAX, F), np.float32), mem_mask=np.zeros((n, E_MAX), bool),
                 mem_card=np.zeros((n, E_MAX), np.int64), mem_form=np.full((n, E_MAX), FORM_PAD, np.int64),
-                mem_summary=np.zeros((n, S), np.float32), mem_answer=np.zeros(n, np.int64))
+                mem_summary=np.zeros((n, N_SUM[version]), np.float32), mem_answer=np.zeros(n, np.int64))
+
+
+# ------------------------------------------------------------------------------------------------------------ memory v2
+def _json(path):
+    return json.loads(path.read_text(encoding='utf-8'))
+
+
+def v2_meta():
+    """The S1c artifacts a v2 model's features depend on (checkpoint ``memory_v2`` / rl config hash): their sha256."""
+    return {'priors_sha256': hashlib.sha256(PRIORS.read_bytes()).hexdigest(),
+            'lock_head_sha256': hashlib.sha256(LOCK_HEAD.read_bytes()).hexdigest()}
+
+
+def v2_lut(gid, priors=None):
+    """Per card id of ``gid``: the counter priors' lifts {'deck', 'answer'} (0 = no prior / pad); ``priors`` = a priors dict
+    (default: the PRIORS artifact). A stand-in alias (dataset_gen.CARD_STANDINS) shares its stand-in's id and never overrides
+    the vocabulary's own card."""
+    if gid is None:
+        raise ValueError('memory v2 needs the card vocabulary (gid) its tables were built with (the counter priors)')
+    return _lut(tuple(sorted(gid.items())), None if priors is None else json.dumps(priors, sort_keys=True))
+
+
+@lru_cache(maxsize=16)
+def _lut(items, priors):
+    pri = (json.loads(priors) if priors is not None else _json(PRIORS))['cards']
+    g = dict(items)
+    n = max([i for _, i in items] + [0]) + 1
+    lut = dict(deck=np.zeros(n), answer=np.zeros(n))
+    for k, i in items:
+        if i and k in pri and not (k in CARD_STANDINS and g.get(CARD_STANDINS[k]) == i):
+            lut['deck'][i], lut['answer'][i] = pri[k]['deck']['lift'], pri[k]['answer']['lift']
+    return lut
+
+
+@lru_cache(maxsize=1)
+def lock_head():
+    """The frozen lock head (fit_s1c.py's lock_head.json): standardise, logistic. Its inputs must be LOCK_INPUTS."""
+    return parse_lock_head(_json(LOCK_HEAD))
+
+
+def parse_lock_head(h):
+    if tuple(h['inputs']) != LOCK_INPUTS:
+        raise ValueError(f'lock head inputs {h["inputs"][:3]}... are not this match_memory LOCK_INPUTS')
+    return {k: np.asarray(h[k], np.float64) for k in ('mean', 'std', 'w', 'b')}
+
+
+def lock_x(s14, f, ticks):
+    """The lock head's inputs (LOCK_INPUTS): the v1 SUMMARY_FIELDS, the S1C_FIELDS before xb_lock_p, game time + phase."""
+    ticks = np.asarray(ticks, np.int64)
+    ph = np.stack([ticks < DOUBLE_T, (ticks >= DOUBLE_T) & (ticks < OT_T), ticks >= OT_T], 1)
+    return np.concatenate([np.asarray(s14, np.float64), np.asarray(f, np.float64)[:, :len(S1C_FIELDS) - 1],
+                           (ticks * TICK_S / 300)[:, None], ph], 1)
+
+
+def lock_p(head, x):
+    """P(lock) for rows of LOCK_INPUTS (sequential sums: a row's score never depends on the batch it is in)."""
+    z = np.cumsum((x - head['mean']) / head['std'] * head['w'], 1)[:, -1] + head['b']
+    return 1.0 / (1.0 + np.exp(-z))
+
+
+@lru_cache(maxsize=1)
+def _regen_table():
+    from .opp_elixir_count import REGEN_SCHEDULE
+    bp = np.array([lo for lo, _ in REGEN_SCHEDULE], np.float64)
+    rate = np.array([r for _, r in REGEN_SCHEDULE], np.float64)
+    return bp, rate, np.concatenate([[0.0], np.cumsum(np.diff(bp) * rate[:-1])])
+
+
+def _regen_cum(x):
+    """Elixir regenerated over [0, x) ticks by opp_elixir_count.REGEN_SCHEDULE (the real engine's: 1x < 2400, 2x < 4800 --
+    regulation double AND overtime's first minute --, 3x < 6002, then none), the cap ignored."""
+    bp, rate, cum = _regen_table()
+    x = np.asarray(x, np.float64)
+    i = np.maximum(np.searchsorted(bp, x, 'right') - 1, 0)
+    return cum[i] + rate[i] * (x - bp[i])
+
+
+def _s1c(E, ticks, s14, lut, head):
+    """The S1C_FIELDS [T, len(S1C_FIELDS)] float64 at ``ticks`` from per-row event arrays ``E`` (``_features``' input), only
+    from events visible at t. Sums run sequentially in event order (np.cumsum), so a row's values never depend on the other
+    rows or the padding of its batch (incremental == offline). ``lut`` = v2_lut; ``head`` None = xb_lock_p 0 (fit_s1c).
+      priors   over the opponent's REVEALED cards (a visible accepted play; card id 0 = outside the vocabulary: cycles, no prior)
+      cycle    since = the opponent's plays with a LATER tick than the card's last (public_observation.opponent_cycle's rule);
+               need = max(0, CYCLE - since) plays before it is back in hand (assumes every opponent play was seen); elixir
+               to cycle there = the need cheapest of the other 7 deck slots (revealed costs, unrevealed slots at the revealed
+               mean cost; ponytail: ignores which of them are in hand -- a lower bound); opp elixir = OppElixirCounter's rule
+               (start 6, the real regen, cap 10, a play it cannot afford re-bases to its cost) on the visible plays
+      counter  a revealed card with answer lift < COUNTER_LIFT; ready = back in hand and affordable now
+      king     activated = my (their) king took a recorded tower_damage or a tower of that side fell (DMG_MIN debounce: a hit
+               under 2 % of max HP is not seen); since = seconds since that event / 60
+      margin   per tower lost = min(1, recorded damage), 1 once fallen: princesses (enemy - mine) / 2, kings (enemy - mine);
+               trends = minus the same from the events with tick < t - 600 (30 s) / t - 1200 (60 s)"""
+    if E['tick'].shape[1] == 0:                       # no event at all: one never-visible pad event
+        E = {k: np.zeros(v.shape[:1] + (1,) + v.shape[2:], v.dtype) for k, v in E.items()}
+        E['vis'] = np.full(E['vis'].shape, NEVER, E['vis'].dtype)
+    ticks = np.asarray(ticks, np.int64)
+    T, N = E['tick'].shape
+    tick, vals, inf = E['tick'].astype(np.int64), E['vals'], np.inf
+    V = ticks[:, None] >= E['vis'].astype(np.int64)
+    col = (lambda k: vals[..., _COL[k]] == 1)
+    mine = col('mine')
+    opp = V & col('is_play') & ~mine
+    cost = np.round(vals[..., _COL['cost_10']].astype(np.float64) * 10, 1)
+    dl, al = lut['deck'], lut['answer']
+    card = E['card'].astype(np.int64)
+    card = np.where((card > 0) & (card < len(dl)), card, 0)
+    last = np.full((T, len(dl)), -1, np.int64)        # each revealed card's last visible play (event index)
+    r, n = np.nonzero(opp & (card > 0))
+    np.maximum.at(last, (r, card[r, n]), n)
+    rev = last >= 0
+    nrev = rev.sum(1)
+    K = max(int(nrev.max()), 1)
+    cid = np.argsort(~rev, 1, kind='stable')[:, :K]    # revealed card ids first, ascending: [T, K]
+    ok = np.take_along_axis(rev, cid, 1)
+    li = np.take_along_axis(np.maximum(last, 0), cid, 1)
+    cnt = np.cumsum(opp, 1)
+    brk = np.ones((T, N), bool)
+    brk[:, :-1] = tick[:, 1:] != tick[:, :-1]
+    run_end = np.minimum.accumulate(np.where(brk, np.arange(N), N)[:, ::-1], 1)[:, ::-1]   # last event of the same tick
+    since = cnt[:, -1:] - np.take_along_axis(cnt, np.take_along_axis(run_end, li, 1), 1)
+    need = np.where(ok, np.maximum(0, CYCLE - since), CYCLE)
+    x = np.where(ok, np.take_along_axis(cost, li, 1), 0.0)
+    a, d = np.where(ok, al[cid], 0.0), np.where(ok, dl[cid], 0.0)
+    est, at, R = np.full(T, 6.0), np.zeros(T), _regen_cum(tick)   # START_ELIXIR at tick 0; at = regen to the last play
+    for j in np.flatnonzero(opp.any(0)):
+        m = opp[:, j]
+        e = np.minimum(10.0, est + R[:, j] - at)
+        est = np.where(m, np.maximum(e, cost[:, j]) - cost[:, j], est)
+        at = np.where(m, R[:, j], at)
+    est = np.minimum(10.0, est + _regen_cum(ticks) - at)
+    mean = np.cumsum(np.where(ok, x, 0.0), 1)[:, -1] / np.maximum(nrev, 1)
+    fill = np.arange(DECK_N)[None] < (DECK_N - nrev)[:, None]
+    pool = np.sort(np.concatenate([np.where(ok, x, inf), np.where(fill, mean[:, None], inf)], 1), 1)[:, :CYCLE + 1]
+    P = np.concatenate([np.zeros((T, 1)), np.cumsum(pool, 1)], 1)          # P[:, k] = the k cheapest slots' elixir
+    s_k = np.take_along_axis(pool, np.maximum(need - 1, 0), 1)
+    cyc = np.where(need == 0, 0.0, np.where(x <= s_k, np.take_along_axis(P, np.minimum(need + 1, CYCLE + 1), 1) - x,
+                                            np.take_along_axis(P, need, 1)))    # (x <= s_k: the card itself is not "other")
+    ctr = ok & (a < COUNTER_LIFT)
+    ck = ctr.any(1)
+    has = nrev > 0
+    sl = np.zeros((T, SLOT_N, len(SLOT_FIELDS)))
+    order = np.lexsort((cid, np.where(ok, a, inf)), axis=1)[:, :SLOT_N]
+    g = (lambda v: np.take_along_axis(v, order, 1))
+    sl[:, :order.shape[1]] = np.stack([g(ok), g(need) / CYCLE, g(x) / 10, g(a), g(d)], -1) * g(ok)[..., None]
+    tdm, tfl = V & col('is_tower_damage'), V & col('is_tower_fall')
+    tk, tl, tr = col('tower_k'), col('tower_l'), col('tower_r')
+    big = np.iinfo(np.int64).max
+
+    def king(side):
+        first = np.where(side & ((tdm & tk) | tfl), tick, big).min(1)
+        return first < big, np.where(first < big, (ticks - first) * TICK_S / 60, 0.0)
+    lost = vals[..., _COL['tower_lost']].astype(np.float64)
+
+    def margin(cut):
+        m = V & (tick < cut[:, None])
+        hp = [[np.where((m & side & tw & tfl).any(1), 1.0,
+                        np.minimum(1.0, np.cumsum(np.where(m & side & tw & tdm, lost, 0.0), 1)[:, -1])) for tw in (tk, tl, tr)]
+              for side in (~mine, mine)]
+        return (hp[0][1] + hp[0][2]) - (hp[1][1] + hp[1][2]), hp[0][0] - hp[1][0]
+    p0, k0 = margin(ticks)
+    p30, k30 = margin(ticks - 600)
+    p60, k60 = margin(ticks - 1200)
+    f = np.column_stack([np.minimum(nrev, DECK_N) / DECK_N, np.where(has, np.where(ok, d, inf).min(1), 0.0),
+                         np.cumsum(np.minimum(d, 0.0), 1)[:, -1], np.where(has, np.where(ok, a, inf).min(1), 0.0),
+                         ck, np.where(ctr, need, CYCLE).min(1) / CYCLE, np.where(ck, np.where(ctr, cyc, inf).min(1), 0.0) / 10,
+                         est / 10, (ctr & (need == 0) & (est[:, None] >= x)).any(1), sl.reshape(T, -1),
+                         *king(mine), *king(~mine), p0 / 2, k0, (p0 - p30) / 2, (p0 - p60) / 2, k0 - k30, k0 - k60,
+                         np.zeros(T)]).astype(np.float64)
+    if head is not None:
+        f[:, -1] = lock_p(head, lock_x(s14, f, ticks))
+    return f

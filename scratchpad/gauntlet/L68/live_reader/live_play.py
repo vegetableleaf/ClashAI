@@ -1471,7 +1471,8 @@ def play_match(a, pilot, lay, device, renders: list | None, start_timeout: float
                   backlog=q.qsize(), forced=forced,
                   decision={k:d[k] for k in ('play','p_play','no_affordable','hand_pos','name','card','form','xy','gate_tau',
                                              'xy_unguarded','stalled','hazard_step_s','hazard_play','why',
-                                             'lethal_rocket', 'posture', 'posture_dtau', 'cue', 'ui_guard') if k in d},
+                                             'lethal_rocket', 'posture', 'posture_dtau', 'cue', 'ui_guard',
+                                             'xb_lock_p') if k in d},
                   **({"pending": [pd["d"]["name"] for pd in pending]} if pending else {}),
                   public=d['public_audit'])
                 last_audit_tick = tick

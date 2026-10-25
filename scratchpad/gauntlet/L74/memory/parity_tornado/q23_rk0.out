@@ -1,0 +1,22 @@
+Q2. J3 own-king windows, live trigger = king damage after our own Tornado: 161 windows, 52 distinct live wakes, 52 matches
+  per window: {'agree': 136, 'live-only (SIM king not woken)': 18, 'both, > 10 ticks apart': 7} -> agree 0.845
+  per distinct wake, replay starting on our Tornado cast: {'agree': 39, 'live-only': 7, 'no window anchored on the Tornado': 4, 'off': 2} off by (SIM - live ticks): [-23, 15]
+    -> SIM reproduces the Tornado-to-king activation (trigger within 10 ticks): 39/48 = 0.812 (positives only: a SIM-only wake cannot appear in this slice)
+    activator GoblinBarrel           {'agree': 19, 'live-only': 2, 'off': 1}
+    activator HogRider               {'agree': 16, 'off': 1, 'live-only': 1}
+    activator RoyalHogs              {'live-only': 2, 'agree': 1}
+    activator GiantSkeleton          {'agree': 1}
+    activator ElixirGolem            {'live-only': 1}
+    activator Miner                  {'live-only': 1}
+    activator BossBandit             {'agree': 1}
+    activator RageBarbarian          {'agree': 1}
+    activator MegaKnight evo         {'agree': 1}
+    activator MightyMiner            {'agree': 1}
+
+Q3. fights anchored on our Tornado, our king asleep + both princesses up at t0: 115 fights, 57 matches
+  king damaged in the window: {'king hit live / king hit SIM': 89, 'king hit live / not SIM': 15, 'not live / not SIM': 10, 'not live / king hit SIM': 1}
+  king share of the enemy damage on our towers: live 0.523, SIM 0.497; SIM - live -0.026 [-0.069, +0.011] (match bootstrap)
+  totals hp: king live 92871 SIM 82240 (SIM/live 0.89); princesses live 84598 SIM 83200 (SIM/live 0.98)
+  building-targeter or Goblin Barrel victim  n  19: king share live 0.400 SIM 0.346 (SIM - live [-0.123, +0.010]); king hit both 13, live only 4, SIM only 0, neither 2; king hp live 14483 SIM 11873, princess hp live 21735 SIM 22443
+  Hog Rider victim                           n  12: king share live 0.529 SIM 0.510 (SIM - live [-0.111, +0.052]); king hit both 10, live only 1, SIM only 0, neither 1; king hp live 11385 SIM 10878, princess hp live 10117 SIM 10455
+  no building-targeter victim                n  96: king share live 0.555 SIM 0.537 (SIM - live [-0.063, +0.020]); king hit both 76, live only 11, SIM only 1, neither 8; king hp live 78388 SIM 70367, princess hp live 62863 SIM 60757

@@ -273,11 +273,14 @@ class GenModel(S1Model):
         self.cell_refine = CellRefine(self.d, c, layers).to(self.cell_emb.device)
         return self.cell_refine
 
-    def add_memory(self, d: int = 64, layers: int = 2, heads: int = 4) -> MemoryEncoder:
-        """Attach a fresh (zero-output) ``MemoryEncoder`` (``memory: v1``); checkpoints holding ``mem.*`` weights get it on
-        load. The model then takes the match_memory MEM_KEYS in every batch."""
-        from .match_memory import F, S
-        self.mem = MemoryEncoder(self.d_c, self.global_in[0].in_features, F, S, d, layers, heads).to(self.cell_emb.device)
+    def add_memory(self, d: int = 64, layers: int = 2, heads: int = 4, version: str = "v1") -> MemoryEncoder:
+        """Attach a fresh (zero-output) ``MemoryEncoder`` (``memory: v1`` / ``v2``: the summary width match_memory.N_SUM
+        gives the version, so the saved ``mem.cfg`` rebuilds it); checkpoints holding ``mem.*`` weights get it on load. The
+        model then takes the match_memory MEM_KEYS (that version's) in every batch."""
+        from .match_memory import F, N_SUM
+        self.mem = MemoryEncoder(self.d_c, self.global_in[0].in_features, F, N_SUM[memory_flag(version)], d, layers,
+                                 heads).to(self.cell_emb.device)
+        self.mem.version = version
         return self.mem
 
     def add_cue_in(self) -> nn.Linear:
@@ -303,9 +306,13 @@ class GenModel(S1Model):
                 layers = sum(k.startswith("cell_refine.convs.") and k.endswith(".weight") for k in state_dict)
                 state_dict = {**state_dict, "cell_refine.cfg": torch.tensor([c, layers])}
             self.add_cell_refine(c, layers)
-        if getattr(self, "mem", None) is None and "mem.cfg" in state_dict:      # Plan A memory v1, by content
+        if getattr(self, "mem", None) is None and "mem.cfg" in state_dict:      # Plan A memory v1 / v2, by content
+            from .match_memory import N_SUM
             n_feat, n_sum, d, layers, heads, _ = (int(v) for v in state_dict["mem.cfg"])
-            self.add_memory(d, layers, heads)
+            ver = next((v for v, n in N_SUM.items() if n == n_sum), None)
+            if ver is None:
+                raise ValueError(f"memory weights for S={n_sum}: this match_memory has no such version ({N_SUM})")
+            self.add_memory(d, layers, heads, version=ver)
             if (n_feat, n_sum) != (self.mem.ev_in.in_features, self.mem.summary[0].in_features - self.d_c):
                 raise ValueError(f"memory weights for F={n_feat}, S={n_sum}: this match_memory has another layout")
         elif strict and getattr(self, "mem", None) is not None and not any(k.startswith("mem.") for k in state_dict):
@@ -367,18 +374,46 @@ def card_form_of(deck_card: torch.Tensor, deck_form: torch.Tensor, card: torch.T
 
 
 def memory_flag(value):
-    """The ``memory`` flag (checkpoint meta / rl_royale config): None (absent) = no memory, or "v1"; anything else refused."""
-    if value not in (None, "v1"):
-        raise ValueError(f"memory must be absent / null or 'v1', got {value!r}")
+    """The ``memory`` flag (checkpoint meta / rl_royale config): None (absent) = no memory, "v1" or "v2" (Plan A S1c: v1 +
+    match_memory.S1C_FIELDS); anything else refused."""
+    if value not in (None, "v1", "v2"):
+        raise ValueError(f"memory must be absent / null, 'v1' or 'v2', got {value!r}")
     return value
 
 
+def mem_version(model):
+    """The memory version a model's encoder reads ("v1" / "v2"), None = no memory."""
+    mem = getattr(model, "mem", None)
+    return None if mem is None else getattr(mem, "version", "v1")
+
+
+def attach_vocab(model, card_vocab):
+    """A memory model's card vocabulary (``mem.gid``: checkpoint_gid): v2 memory rows built from batch tables
+    (e1_eval.gen_batch) need it for the counter priors. A plain attribute: no state-dict key, v1 unchanged."""
+    if getattr(model, "mem", None) is not None:
+        from .dataset_gen import checkpoint_gid
+        model.mem.gid = checkpoint_gid(card_vocab)
+    return model
+
+
+def check_memory_meta(st):
+    """A v2 checkpoint records the S1c artifacts' sha256 (``memory_v2``): its features need exactly those."""
+    rec = st.get("memory_v2")
+    if rec is not None:
+        from .match_memory import v2_meta
+        now = v2_meta()
+        if {k: rec.get(k) for k in now} != now:
+            raise ValueError(f"memory v2 artifacts changed since this checkpoint: {rec} vs now {now} (counter_priors.json / "
+                             "lock_head.json; the model's memory inputs would differ)")
+
+
 def load_model(ckpt, device, memory=None):
-    """Versioned generalist loader. Only stored args enable new observations. ``memory`` "v1" (or the checkpoint's own
-    ``memory`` meta key): a memory encoder -- the checkpoint's ``mem.*`` weights, or a fresh zero-output one for a checkpoint
-    without them (e.g. CLXIII fv6 + memory v1 = CLXIII's outputs exactly). Weights in the file always build it."""
+    """Versioned generalist loader. Only stored args enable new observations. ``memory`` "v1" / "v2" (or the checkpoint's
+    own ``memory`` meta key): a memory encoder -- the checkpoint's ``mem.*`` weights, or a fresh zero-output one for a
+    checkpoint without them (e.g. CLXIII fv6 + memory v1 = CLXIII's outputs exactly). Weights in the file always build it."""
     st = torch.load(ckpt, map_location=device)
     memory = memory_flag(memory if memory is not None else st.get("memory"))
+    check_memory_meta(st)
     if not st.get("gen"):
         raise SystemExit(f"{ckpt} is not a generalist checkpoint (no 'gen' key)")
     a = st["args"]
@@ -400,9 +435,9 @@ def load_model(ckpt, device, memory=None):
         raise ValueError(f"Unsupported checkpoint architecture: {st['architecture']}")
     model = GenModel(d=int(a["d"]), layers=int(a["layers"]), d_c=int(st["d_c"]),
                      n_cards=len(st["card_vocab"]), feature_version=int(a.get("feature_version", 1))).to(device)
-    if memory == "v1":
+    if memory is not None:
         if int(a.get("feature_version", 1)) < 4:
-            raise ValueError("memory v1 needs a feature_version >= 4 model (the public observation it is built from)")
-        model.add_memory()
+            raise ValueError(f"memory {memory} needs a feature_version >= 4 model (the public observation it is built from)")
+        model.add_memory(version=memory)
     model.load_state_dict(st["model"])
-    return model, st
+    return attach_vocab(model, st["card_vocab"]), st

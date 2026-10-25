@@ -1,0 +1,48 @@
+MISS  live_play_20261016_165317 t0 1819 live trig 1837 SIM None acts ['GoblinBarrel'] | king dmg live/SIM 1000/0 | (no victim in reach at the cast)
+MISS  live_play_20261017_085451 t0 241 live trig 296 SIM None acts ['RoyalHogs'] | king dmg live/SIM 236/0 | RoyalHogs pull 4672/2605 err 2535; RoyalHogs pull 4002/2333 err 933
+MISS  live_play_20261017_144040 t0 2155 live trig 2205 SIM 2220 acts ['HogRider'] | king dmg live/SIM 2028/2028 | MightyMiner pull 2720/2076 err 644; HogRider pull 5093/4056 err 1038
+MISS  live_play_20261017_190905 t0 2572 live trig 2613 SIM None acts ['RoyalHogs'] | king dmg live/SIM 472/0 | RoyalHogs pull 3737/1983 err 1803; RoyalHogs pull 3265/1861 err 1365
+MISS  live_play_20261018_000520 t0 917 live trig 959 SIM None acts ['ElixirGolem'] | king dmg live/SIM 930/0 | ElixirGolem pull None/None err None; ElixirGolem pull None/None err None
+MISS  live_play_20261018_004835 t0 441 live trig 476 SIM None acts ['Miner'] | king dmg live/SIM 248/0 | (no victim in reach at the cast)
+MISS  live_play_20261018_032212 t0 1415 live trig 1437 SIM None acts ['GoblinBarrel'] | king dmg live/SIM 200/0 | (no victim in reach at the cast)
+MISS  live_play_20261019_044411 t0 623 live trig 653 SIM None acts ['HogRider'] | king dmg live/SIM 507/0 | HogRider pull 5379/3248 err 2232; Goblins hero pull None/None err None; Goblins hero pull 3638/2797 err 2241
+MISS  live_play_20261019_180703 t0 3116 live trig 3242 SIM 3219 acts ['GoblinBarrel'] | king dmg live/SIM 400/800 | (no victim in reach at the cast)
+AGREE live_play_20261016_121354 t0 347 live trig 433 SIM 435 acts ['GoblinBarrel'] | king dmg live/SIM 500/500 | (no victim in reach at the cast)
+AGREE live_play_20261016_235203 t0 275 live trig 328 SIM 328 acts ['HogRider'] | king dmg live/SIM 922/922 | (no victim in reach at the cast)
+AGREE live_play_20261017_012807 t0 1454 live trig 1505 SIM 1505 acts ['HogRider'] | king dmg live/SIM 1521/1521 | (no victim in reach at the cast)
+AGREE live_play_20261017_014644 t0 297 live trig 387 SIM 393 acts ['GoblinBarrel'] | king dmg live/SIM 364/364 | (no victim in reach at the cast)
+AGREE live_play_20261017_022137 t0 1119 live trig 1176 SIM 1176 acts ['GiantSkeleton'] | king dmg live/SIM 2604/2604 | GiantSkeleton pull 3885/3885 err 0
+AGREE live_play_20261017_031826 t0 1201 live trig 1254 SIM 1252 acts ['HogRider'] | king dmg live/SIM 922/922 | (no victim in reach at the cast)
+AGREE live_play_20261017_035906 t0 1804 live trig 1849 SIM 1849 acts ['HogRider'] | king dmg live/SIM 461/461 | HogRider pull 4724/5096 err 465; Witch pull None/None err None; Witch pull None/None err None; Witch pull None/None err None
+AGREE live_play_20261017_052637 t0 5575 live trig 5637 SIM 5637 acts ['HogRider'] | king dmg live/SIM 1521/1521 | (no victim in reach at the cast)
+AGREE live_play_20261017_055336 t0 202 live trig 290 SIM 290 acts ['GoblinBarrel'] | king dmg live/SIM 600/600 | (no victim in reach at the cast)
+AGREE live_play_20261017_065951 t0 2732 live trig 2821 SIM 2821 acts ['GoblinBarrel'] | king dmg live/SIM 200/200 | (no victim in reach at the cast)
+AGREE live_play_20261017_072843 t0 974 live trig 1025 SIM 1027 acts ['HogRider'] | king dmg live/SIM 1521/1521 | (no victim in reach at the cast)
+AGREE live_play_20261017_080901 t0 289 live trig 340 SIM 340 acts ['HogRider'] | king dmg live/SIM 1521/1014 | (no victim in reach at the cast)
+AGREE live_play_20261017_171439 t0 251 live trig 341 SIM 343 acts ['GoblinBarrel'] | king dmg live/SIM 200/200 | (no victim in reach at the cast)
+AGREE live_play_20261017_211111 t0 1654 live trig 1746 SIM 1746 acts ['GoblinBarrel'] | king dmg live/SIM 404/404 | (no victim in reach at the cast)
+AGREE live_play_20261017_225807 t0 442 live trig 530 SIM 530 acts ['GoblinBarrel'] | king dmg live/SIM 1400/1400 | (no victim in reach at the cast)
+AGREE live_play_20261018_022850 t0 2894 live trig 2937 SIM 2937 acts ['HogRider'] | king dmg live/SIM 1521/1521 | HogRider pull 4523/4523 err 0
+AGREE live_play_20261018_024926 t0 3281 live trig 3368 SIM 3370 acts ['GoblinBarrel'] | king dmg live/SIM 728/364 | (no victim in reach at the cast)
+AGREE live_play_20261018_052227 t0 447 live trig 517 SIM 519 acts ['BossBandit'] | king dmg live/SIM 784/784 | BossBandit pull 3556/3340 err 216
+AGREE live_play_20261018_070859 t0 2501 live trig 2552 SIM 2552 acts ['HogRider'] | king dmg live/SIM 1521/1521 | (no victim in reach at the cast)
+AGREE live_play_20261018_095950 t0 2473 live trig 2560 SIM 2562 acts ['GoblinBarrel'] | king dmg live/SIM 400/200 | (no victim in reach at the cast)
+AGREE live_play_20261018_110502 t0 3112 live trig 3203 SIM 3203 acts ['GoblinBarrel'] | king dmg live/SIM 600/600 | (no victim in reach at the cast)
+AGREE live_play_20261018_135157 t0 352 live trig 440 SIM 444 acts ['GoblinBarrel'] | king dmg live/SIM 1092/728 | (no victim in reach at the cast)
+AGREE live_play_20261018_144531 t0 2262 live trig 2290 SIM 2290 acts ['MegaKnight evo', 'RageBarbarian'] | king dmg live/SIM 5214/5214 | RageBarbarian pull 5232/5232 err 0
+AGREE live_play_20261018_155539 t0 1649 live trig 1698 SIM 1688 acts ['RoyalHogs'] | king dmg live/SIM 118/590 | RoyalHogs pull 3425/5497 err 2497
+AGREE live_play_20261018_163035 t0 2085 live trig 2136 SIM 2138 acts ['HogRider'] | king dmg live/SIM 1014/1014 | Knight pull None/None err None; HogRider pull 5286/5286 err 0
+AGREE live_play_20261018_173329 t0 2205 live trig 2262 SIM 2264 acts ['HogRider', 'MightyMiner'] | king dmg live/SIM 1014/1014 | MightyMiner pull 3883/3874 err 110; HogRider pull 5342/5342 err 0
+AGREE live_play_20261018_195359 t0 1414 live trig 1465 SIM 1467 acts ['Ghost'] | king dmg live/SIM 1263/1263 | Ghost pull 4793/4794 err 6
+AGREE live_play_20261018_204610 t0 974 live trig 1025 SIM 1027 acts ['HogRider'] | king dmg live/SIM 461/461 | HogRider pull 5171/5171 err 0
+AGREE live_play_20261018_212024 t0 750 live trig 778 SIM 780 acts ['HogRider'] | king dmg live/SIM 1844/1844 | HogRider pull 5142/5142 err 0
+AGREE live_play_20261018_230015 t0 1214 live trig 1311 SIM 1321 acts ['GoblinBarrel'] | king dmg live/SIM 400/200 | (no victim in reach at the cast)
+AGREE live_play_20261019_012912 t0 3207 live trig 3298 SIM 3304 acts ['GoblinBarrel'] | king dmg live/SIM 400/200 | (no victim in reach at the cast)
+AGREE live_play_20261019_024210 t0 1293 live trig 1390 SIM 1390 acts ['GoblinBarrel'] | king dmg live/SIM 400/600 | (no victim in reach at the cast)
+AGREE live_play_20261019_054120 t0 2660 live trig 2718 SIM 2718 acts ['HogRider'] | king dmg live/SIM 507/507 | HogRider pull 5437/5380 err 66
+AGREE live_play_20261019_140744 t0 2425 live trig 2478 SIM 2474 acts ['GoblinBarrel', 'HogRider'] | king dmg live/SIM 507/507 | HogRider pull 5179/5555 err 445
+AGREE live_play_20261019_183021 t0 1575 live trig 1610 SIM 1612 acts ['HogRider'] | king dmg live/SIM 1521/1521 | HogRider pull 5135/5135 err 0
+AGREE live_play_20261019_194638 t0 923 live trig 1012 SIM 1022 acts ['GoblinBarrel'] | king dmg live/SIM 600/400 | (no victim in reach at the cast)
+AGREE live_play_20261019_203645 t0 1652 live trig 1741 SIM 1743 acts ['GoblinBarrel'] | king dmg live/SIM 1000/800 | (no victim in reach at the cast)
+AGREE live_play_20261019_220702 t0 1174 live trig 1265 SIM 1265 acts ['GoblinBarrel'] | king dmg live/SIM 400/400 | (no victim in reach at the cast)
+AGREE live_play_20261019_234940 t0 409 live trig 498 SIM 500 acts ['GoblinBarrel'] | king dmg live/SIM 200/200 | (no victim in reach at the cast)

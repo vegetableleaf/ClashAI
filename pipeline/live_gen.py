@@ -292,7 +292,8 @@ class GenPilot:
         tw, al = MM.tower_reads_engine(to_observe(frame, side, names)["episode"]["crown_towers"], side)
         self.mem.observe(t, tw, al, elixir=me["elixir_raw"] / 10000.0, units=public_frame(frame, source="reader")["entities"],
                          plays=list(self.public.plays) + list(self.public.own_events))
-        return self.mem.features(t, self.gid, deck_ids)
+        mem_model = getattr(getattr(self, "model", None), "mem", None)          # its version (no model: v1 rows)
+        return self.mem.features(t, self.gid, deck_ids, getattr(mem_model, "version", "v1"))
 
     def stalled(self, frame: Mapping[str, Any], el_int: float) -> bool:
         """e1_eval.anti_stall on the REAL frame tick (SIM: the decision / landing clock stays real) and the elixir of
@@ -434,6 +435,10 @@ class GenPilot:
         b, info = self.row(frame)
         lookahead = ({'public_lookahead_counts': info['public_lookahead_counts']}
                      if 'public_lookahead_counts' in info else {})
+        if "mem_summary" in b:                               # memory v2 (S1c): the frozen lock head's P(lock) for a reach
+            from .match_memory import S, S1C_FIELDS, S_V2   # X-Bow placed now -- logged only (live_play 'decision')
+            if b["mem_summary"].shape[-1] == S_V2:
+                lookahead["xb_lock_p"] = round(float(b["mem_summary"][0, S + S1C_FIELDS.index("xb_lock_p")]), 4)
         out = self.model(b)
         if getattr(self, "ability", None) is not None:   # live_play --iw-press head (B6): this decision's trunk g
             self.last_g = (int(frame["game_tick"]), out["g"])

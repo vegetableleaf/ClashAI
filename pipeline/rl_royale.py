@@ -3266,7 +3266,7 @@ def _cancel_join(q) -> None:
 # config, paths, logging
 # ------------------------------------------------------------------------------------------------------
 def memory_cfg(cfg: dict) -> Optional[str]:
-    """Plan A ``memory``: absent / null = off (no key in the hash, every code path unchanged), "v1" = the learner gets a
+    """Plan A ``memory``: absent / null = off (no key in the hash, every code path unchanged), "v1" / "v2" = the learner gets a
     match-memory encoder (model_gen.add_memory, zero-output at init: = the init policy) and its rollouts record per-match
     event tables (e1_eval.Match._memory); anything else is refused, and so are the paths memory is not wired for."""
     from pipeline.model_gen import memory_flag
@@ -3275,7 +3275,7 @@ def memory_cfg(cfg: dict) -> Optional[str]:
     except ValueError as exc:
         raise SystemExit(str(exc))
     if m is not None and cfg.get("branch_gate"):
-        raise SystemExit("memory v1 is not wired for branch_gate (opt3 branch rows carry no memory tables)")
+        raise SystemExit(f"memory {m} is not wired for branch_gate (opt3 branch rows carry no memory tables)")
     return m
 
 
@@ -3386,6 +3386,9 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "kl_ref_refresh_every"}
     if cfg.get("memory") is None:                            # Plan A memory off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "memory"}
+    elif cfg["memory"] == "v2":                              # S1c: the version AND the artifacts its features read
+        from pipeline.match_memory import v2_meta
+        cfg = {**cfg, "memory": ["v2", v2_meta()]}
     if cfg.get("tau_phase") is None:                         # 10-23 tau_phase off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "tau_phase"}
     else:                                                     # on: floats, one hash for [.35, .45, .55] and (.35, ...)
@@ -3569,11 +3572,16 @@ class Learner:
             E.require_cue_runtime()
             if getattr(self.model, "cue_in", None) is None:
                 self.model.add_cue_in()
-        if memory_cfg(cfg) is not None:                       # Plan A memory v1: a ZERO-output memory encoder on the init
-            if not self.gen or int(self.gen.get("feature_version", 1)) < 4:   # (kept if the init has one); the rollouts
-                raise SystemExit("memory v1 needs a generalist init with feature_version >= 4")   # then record tables
+        if memory_cfg(cfg) is not None:                       # Plan A memory v1 / v2: a ZERO-output memory encoder on the
+            if not self.gen or int(self.gen.get("feature_version", 1)) < 4:   # init (kept if the init has one); the
+                raise SystemExit("memory needs a generalist init with feature_version >= 4")   # rollouts then record tables
             if getattr(self.model, "mem", None) is None:
-                self.model.add_memory()
+                self.model.add_memory(version=memory_cfg(cfg))
+            elif getattr(self.model.mem, "version", "v1") != memory_cfg(cfg):
+                raise SystemExit(f"memory {memory_cfg(cfg)}: the init already has a memory "
+                                 f"{getattr(self.model.mem, 'version', 'v1')} encoder")
+            from pipeline.model_gen import attach_vocab
+            attach_vocab(self.model, self.gen["card_vocab"])  # v2: e1_eval.gen_batch's counter priors
         self.init_meta = {"args": dict(ick["args"]), "deck": ick["deck"], "epoch": ick["epoch"], "n_params": ick["n_params"]}
         self.grid = self.minfo["grid"]
         self.league = None                                    # league on: {"snapshots": [{id, update, path}]}
@@ -3940,6 +3948,8 @@ class Learner:
                 if fv >= 4 and int(meta.get('feature_version', 1)) != want:
                     raise SystemExit(f'v3.1+ pro-agreement for an fv{fv} model requires public-only fv{want} data')
                 self._rows = GenRows(arrs, np.arange(len(arrs["y_gate"])), self.dev)
+            if getattr(model, "mem", None) is not None:
+                self._rows.memory_version = getattr(model.mem, "version", "v1")   # the empty rows' summary width
             if getattr(model, "mem", None) is not None and self._rows.memory is None:
                 self._rows.memory = "empty"                   # Plan A: no pro event tables wired here yet (S3) -> the
                 self.log("[rl] proagree: memory model scored with an EMPTY memory (no pro event tables for "   # memory
@@ -4001,7 +4011,10 @@ class Learner:
         if getattr(self, "gen", None):                       # train_gen's keys: eval_gen / e1_eval.load_policy load it
             out.update({"gen": True, "d_c": int(self.gen["d_c"]), "card_vocab": list(self.gen["card_vocab"])})
         if getattr(self.model, "mem", None) is not None:     # Plan A: the model flag (the weights also build it on load)
-            out["memory"] = "v1"
+            out["memory"] = getattr(self.model.mem, "version", "v1")
+            if out["memory"] == "v2":                         # S1c: the artifacts its features read (load_model checks)
+                from pipeline.match_memory import v2_meta
+                out["memory_v2"] = v2_meta()
         return out
 
     def _atomic_save(self, obj: dict, path: Path) -> None:

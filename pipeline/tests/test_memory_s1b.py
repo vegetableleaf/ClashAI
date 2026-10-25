@@ -65,12 +65,13 @@ def _vocab():
     return ["<pad>"] + sorted({card_key(n) for n in ICEBOW + HOGEQ})
 
 
-def _tiny(memory: bool, seed=0, live=False):
+def _tiny(memory: bool, seed=0, live=False, version="v1"):
     """A small fv5 GenModel (the public observation memory is built from); ``live`` = a NONZERO memory output layer."""
     torch.manual_seed(seed)
     net = MG.GenModel(d=16, layers=1, heads=2, d_c=8, n_cards=len(_vocab()), feature_version=5).eval()
     if memory:
-        net.add_memory()
+        net.add_memory(version=version)
+        MG.attach_vocab(net, _vocab())                  # v2: the learner's gen_batch reads the counter priors by it
         if live:
             with torch.no_grad():
                 net.mem.out.weight.normal_(0, 0.05)
@@ -93,7 +94,7 @@ class TestModelFlag(unittest.TestCase):
         self.assertIsNotNone(getattr(plain, "mem", None))
         self.assertTrue(torch.equal(plain.mem.out.weight, sd["mem.out.weight"]))
         with self.assertRaises(ValueError):
-            MG.memory_flag("v2")
+            MG.memory_flag("v3")                                         # v2 = S1c (test_memory_v2.py)
         self.assertEqual(MG.memory_flag(None), None)
 
     def test_checkpoint_round_trip(self):
@@ -124,7 +125,7 @@ class TestConfig(unittest.TestCase):
         self.assertEqual(on["memory"], "v1")
         self.assertNotEqual(RL.config_sha(on), RL.config_sha(cfg))
         with self.assertRaises(SystemExit):
-            RL.load_config(YAML, ["memory=v2"], False)
+            RL.load_config(YAML, ["memory=v3"], False)
         with self.assertRaises(SystemExit):
             RL.load_config(YAML, ["memory=v1", "branch_gate=true"], False)
 
@@ -168,11 +169,11 @@ class TestRollouts(unittest.TestCase):
         for k in Bp:
             self.assertEqual(Bn[k].tobytes(), Bp[k].tobytes(), k)
 
-    def test_memory_rollout_collate_learner(self):
+    def test_memory_rollout_collate_learner(self, version="v1"):
         """A memory learner (nonzero output layer, so memory moves its outputs): the result carries the match's event table
         and every row its mem_t; the learner's recomputed log-probs from the tables = the actor's (sampled with the
         rollout's own MatchMemory.features); an EMPTY memory gives other log-probs (the memory reached the learner)."""
-        net = _tiny(True, live=True)
+        net = _tiny(True, live=True, version=version)
         res = _run(E, net, _tiny(False, 1), seed=4, tail=1500)
         tj = res["traj"]
         self.assertIn("memory", res)
@@ -194,6 +195,13 @@ class TestRollouts(unittest.TestCase):
             self.assertGreater(float((empty["lp_gate"] - Bt["lp_gate"][idx]).abs().max()), 1e-4)
             g = RL.trunk_g(net, Bt, idx)                                  # the ability head's trunk path too
             self.assertEqual(tuple(g.shape), (len(idx), net.d))
+        if version == "v2":                                               # S1c: the v2 rows (114-wide summary) reached it
+            from pipeline.e1_eval import gen_batch
+            self.assertEqual(tuple(gen_batch(net, Bt, idx)["mem_summary"].shape), (len(idx), MM.S_V2))
+
+    def test_memory_v2_rollout_collate_learner(self):
+        """The same for a memory v2 learner (S1c): actor MatchMemory.features(v2) = learner rows_features(v2) from the tables."""
+        self.test_memory_rollout_collate_learner(version="v2")
 
     def test_search_s0_forward_feeds_memory(self):
         pol = E.GenPolicy(_tiny(True, live=True), _vocab())
@@ -246,10 +254,12 @@ class TestLivePilot(unittest.TestCase):
                                                  elixir_raw=0, deck_card_ids=[-1] * 8)]))
         return side, frames
 
-    def test_memory_rows_equal_offline(self):
+    def test_memory_rows_equal_offline(self, version="v1"):
         from pipeline.live_gen import GenPilot
         side, frames = self._frames()
         pilot = GenPilot.__new__(GenPilot)                              # no checkpoint: the memory path only
+        if version != "v1":                                            # only the encoder's version is read
+            pilot.model = types.SimpleNamespace(mem=types.SimpleNamespace(version=version))
         pilot.feature_version, pilot.public, pilot.public_battle = 5, None, None
         pilot.frames, pilot.opp, pilot.own_fx, pilot.past = __import__("collections").deque(maxlen=30), None, None, []
         pilot.gid = {k: i for i, k in enumerate(_vocab())}
@@ -275,15 +285,20 @@ class TestLivePilot(unittest.TestCase):
         ref = MM.build(side, want_s, want_p)
         self.assertTrue(pilot.public.plays, "the enemy Knight was detected")
         for t, f in got.items():
-            r = ref.features(t, pilot.gid, deck)
+            r = ref.features(t, pilot.gid, deck, version)
             for k in MM.MEM_KEYS:
                 self.assertTrue(np.array_equal(f[k], r[k]), (t, k))
+            self.assertEqual(f["mem_summary"].shape, (MM.N_SUM[version],))
         ev = ref.events(10 ** 6)
         own = [e for e in ev if e.get("card") == "knight" and e["mine"]]
         self.assertEqual(own[0]["form"], 1)
         self.assertAlmostEqual(own[0]["xy"][0], 0.25)
         self.assertTrue(any(e["type"] == "tower_damage" for e in ev))
         self.assertEqual(pilot.mem.late, 1)                             # the press arrived after its tap tick
+
+    def test_memory_rows_equal_offline_v2(self):
+        """S1c: the live pilot's v2 rows (incremental, reader frames) = the offline v2 build of the same match."""
+        self.test_memory_rows_equal_offline(version="v2")
 
 
 # ------------------------------------------------------------------------------------------------------ pro builder
@@ -321,13 +336,13 @@ class TestLiveRow(unittest.TestCase):
         except Exception as exc:                                      # noqa: BLE001 -- its fixture file / deps
             raise unittest.SkipTest(f"live fixtures unavailable: {exc}")
         from pipeline import live_gen
-        outs = {}
-        for name, mem in (("base", False), ("mem", True)):
+        outs, decided = {}, {}
+        for name, mem in (("base", False), ("mem", True), ("mem2", "v2")):
             p = pilot(None, cls=live_gen.GenPilot)
             torch.manual_seed(0)
             p.model = MG.GenModel(d=16, layers=1, heads=2, d_c=8, n_cards=max(p.gid.values()) + 1, feature_version=5).eval()
             if mem:
-                p.model.add_memory()
+                p.model.add_memory(version="v2" if mem == "v2" else "v1")
             p.feature_version, p.public, p.public_battle, p.use_counter = 5, None, None, True
             rows = []
             for t in (1000, 1010, 1020):
@@ -339,9 +354,17 @@ class TestLiveRow(unittest.TestCase):
                 self.assertTrue(all(k in rows[-1] for k in MM.MEM_KEYS))
                 self.assertEqual(tuple(rows[-1]["mem_ev"].shape), (1, MM.E_MAX, MM.F))
                 self.assertEqual(tuple(rows[-1]["mem_answer"].shape), (1,))
+                self.assertEqual(tuple(rows[-1]["mem_summary"].shape), (1, MM.S_V2 if mem == "v2" else MM.S))
                 self.assertEqual(len(p.mem.t), 3)
             with torch.no_grad():
                 outs[name] = [p.model(b) for b in rows]
-        for a, b in zip(outs["base"], outs["mem"]):
-            for k in ("gate", "card", "value"):
-                self.assertTrue(torch.equal(a[k], b[k]), k)
+                decided[name] = p.decide(icebow_frame(tick=1030))
+        for other in ("mem", "mem2"):
+            for a, b in zip(outs["base"], outs[other]):
+                for k in ("gate", "card", "value"):
+                    self.assertTrue(torch.equal(a[k], b[k]), (other, k))
+        p_lock = decided["mem2"].pop("xb_lock_p")                     # S1c: logged for a v2 model only, nothing else moves
+        self.assertTrue(0 < p_lock < 1)
+        self.assertNotIn("xb_lock_p", decided["mem"])
+        self.assertEqual({k: v for k, v in decided["mem2"].items() if k != "bs"},
+                         {k: v for k, v in decided["base"].items() if k != "bs"})

@@ -1,0 +1,135 @@
+tables: pro 29322 (no rows / no split: 32), live 266 (Counter({'ICEBOW_Mark_CLX_PARITY': 232, 'ICEBOW_Mark_CLXIII_NOLEAK': 34}))
+own reach X-Bows with a closed window: 8219 (pro 7407, live 812); train 7105 (pro 6476), held out 1114 (pro 931, live 183)
+  pro: lock 0.482, answered 0.663, lock when answered 0.437, unanswered 0.571
+  live: lock 0.553, answered 0.691, lock when answered 0.476, unanswered 0.725
+
+## counter priors (pro train X-Bows 6476): base 0.478227, answered mean 0.433007, EB strength (pseudo X-Bows) {'deck': 67.649, 'answer': 16.553}
+  ANSWER view: 114 cards; most X-Bow-denying (lowest shrunk lift) / most X-Bow-friendly:
+    electro-giant            n    59 raw 0.169 shrunk lift -0.251
+    pekka                    n   112 raw 0.223 shrunk lift -0.228
+    royal-giant              n    37 raw 0.189 shrunk lift -0.214
+    goblinstein              n    63 raw 0.222 shrunk lift -0.212
+    zappies                  n    35 raw 0.200 shrunk lift -0.203
+    giant                    n    98 raw 0.255 shrunk lift -0.197
+    elixir-golem             n    16 raw 0.125 shrunk lift -0.197
+    ice-spirit               n    67 raw 0.269 shrunk lift -0.177
+    giant-skeleton           n    85 raw 0.282 shrunk lift -0.171
+    royal-hogs               n    42 raw 0.262 shrunk lift -0.168
+    ...
+    lightning                n    25 raw 0.640 shrunk lift +0.079
+    skeleton-barrel          n    10 raw 0.800 shrunk lift +0.093
+    mini-pekka               n    38 raw 0.632 shrunk lift +0.093
+    minions                  n    16 raw 0.812 shrunk lift +0.141
+    minion-horde             n    11 raw 0.909 shrunk lift +0.145
+    skeleton-dragons         n    23 raw 0.783 shrunk lift +0.158
+    balloon                  n    63 raw 0.698 shrunk lift +0.165
+    fireball                 n    27 raw 0.778 shrunk lift +0.169
+    electro-dragon           n    24 raw 0.875 shrunk lift +0.216
+    inferno-dragon           n    78 raw 0.769 shrunk lift +0.232
+  answer lifts (n >= 30): quantiles 10/25/50/75/90 % [-0.199, -0.135, -0.056, 0.009, 0.062]; counters (lift < -0.1): 28 cards: ['electro-giant', 'pekka', 'royal-giant', 'goblinstein', 'zappies', 'giant', 'elixir-golem', 'ice-spirit', 'giant-skeleton', 'royal-hogs', 'ice-golem', 'archers', 'guards', 'mortar', 'goblin-hut', 'arrows', 'little-prince', 'golem', 'cannon-cart', 'bomber', 'mega-knight', 'bowler', 'monk', 'heal-spirit', 'zap', 'golden-knight', 'goblin-giant', 'wall-breakers']
+  DECK view: 122 cards; most X-Bow-denying (lowest shrunk lift) / most X-Bow-friendly:
+    zappies                  n   300 raw 0.350 shrunk lift -0.105
+    goblinstein              n   254 raw 0.346 shrunk lift -0.104
+    archers                  n   362 raw 0.356 shrunk lift -0.103
+    fisherman                n   118 raw 0.356 shrunk lift -0.078
+    golden-knight            n   256 raw 0.383 shrunk lift -0.075
+    cannon-cart              n   223 raw 0.381 shrunk lift -0.074
+    x-bow                    n   329 raw 0.389 shrunk lift -0.074
+    monk                     n    76 raw 0.342 shrunk lift -0.072
+    mother-witch             n   251 raw 0.390 shrunk lift -0.069
+    royal-hogs               n   439 raw 0.403 shrunk lift -0.065
+    ...
+    elixir-collector         n    39 raw 0.641 shrunk lift +0.060
+    electro-dragon           n    99 raw 0.586 shrunk lift +0.064
+    suspicious-bush          n    98 raw 0.592 shrunk lift +0.067
+    sparky                   n   124 raw 0.597 shrunk lift +0.077
+    golem                    n   137 raw 0.599 shrunk lift +0.081
+    skeleton-army            n   410 raw 0.590 shrunk lift +0.096
+    balloon                  n   624 raw 0.603 shrunk lift +0.112
+    inferno-dragon           n   530 raw 0.611 shrunk lift +0.118
+    skeleton-dragons         n   203 raw 0.690 shrunk lift +0.159
+    lava-hound               n   257 raw 0.774 shrunk lift +0.234
+
+## lock head: L2 by grouped 5-fold CV on train (v2 inputs)
+  lambda     1.0: CV log loss 0.6696
+  lambda    10.0: CV log loss 0.6690
+  lambda   100.0: CV log loss 0.6680
+  lambda  1000.0: CV log loss 0.6682
+  v1-only inputs:
+  lambda     1.0: CV log loss 0.6885
+  lambda    10.0: CV log loss 0.6881
+  lambda   100.0: CV log loss 0.6877
+  lambda  1000.0: CV log loss 0.6880
+  chosen lambda: v2 100.0, v1-only 100.0
+
+## HELD OUT pooled
+  v2        {'n': 1114, 'lock': 0.5081, 'auc': 0.6223, 'brier': 0.2392, 'logloss': 0.6715, 'mean_p': 0.4894}
+  v1-only   {'n': 1114, 'lock': 0.5081, 'auc': 0.5837, 'brier': 0.2462, 'logloss': 0.6856, 'mean_p': 0.4855}
+  base rate {'n': 1114, 'lock': 0.5081, 'auc': 0.5, 'brier': 0.2504, 'logloss': 0.694, 'mean_p': 0.4859}
+  v2 - v1: AUC +0.0386 95% CI [0.0012, 0.0754]; Brier -0.0070 95% CI [-0.013, -0.0011] (match-cluster bootstrap, 1000)
+  by revealed opponent cards at the X-Bow:  bin  n  lock  AUC v2  AUC v1  Brier v2  Brier v1
+    0-1    76 0.697  0.708   0.417   0.1987    0.2385
+    2-3    94 0.532  0.588   0.388   0.2404    0.2500
+    4-5   134 0.530  0.575   0.484   0.2462    0.2486
+    6-7   468 0.485  0.611   0.568   0.2420    0.2468
+    8-8   342 0.482  0.618   0.586   0.2413    0.2452
+  calibration (v2, predicted-p bins): bin  n  mean p  observed
+    [0.2,0.3)    45  0.273  0.311
+    [0.3,0.4)   203  0.357  0.414
+    [0.4,0.5)   386  0.450  0.453
+    [0.5,0.6)   291  0.544  0.557
+    [0.6,0.7)   133  0.638  0.677
+    [0.7,0.8)    36  0.742  0.694
+    [0.8,0.9)    20  0.836  0.800
+
+## HELD OUT pro
+  v2        {'n': 931, 'lock': 0.507, 'auc': 0.613, 'brier': 0.2402, 'logloss': 0.6732, 'mean_p': 0.4875}
+  v1-only   {'n': 931, 'lock': 0.507, 'auc': 0.5718, 'brier': 0.2472, 'logloss': 0.6876, 'mean_p': 0.4842}
+  base rate {'n': 931, 'lock': 0.507, 'auc': 0.5, 'brier': 0.2504, 'logloss': 0.6939, 'mean_p': 0.4859}
+  v2 - v1: AUC +0.0413 95% CI [0.0009, 0.0796]; Brier -0.0070 95% CI [-0.0131, -0.0007] (match-cluster bootstrap, 1000)
+  by revealed opponent cards at the X-Bow:  bin  n  lock  AUC v2  AUC v1  Brier v2  Brier v1
+    0-1    54 0.667  0.698   0.400   0.2063    0.2429
+    2-3    78 0.538  0.565   0.396   0.2437    0.2499
+    4-5   121 0.504  0.562   0.460   0.2490    0.2508
+    6-7   391 0.491  0.607   0.559   0.2422    0.2472
+    8-8   287 0.491  0.623   0.584   0.2393    0.2457
+  calibration (v2, predicted-p bins): bin  n  mean p  observed
+    [0.2,0.3)    38  0.271  0.342
+    [0.3,0.4)   171  0.356  0.433
+    [0.4,0.5)   326  0.451  0.442
+    [0.5,0.6)   244  0.545  0.553
+    [0.6,0.7)   110  0.637  0.673
+    [0.7,0.8)    27  0.741  0.667
+    [0.8,0.9)    15  0.839  0.933
+
+## HELD OUT live
+  v2        {'n': 183, 'lock': 0.5137, 'auc': 0.6696, 'brier': 0.234, 'logloss': 0.663, 'mean_p': 0.4993}
+  v1-only   {'n': 183, 'lock': 0.5137, 'auc': 0.6286, 'brier': 0.2412, 'logloss': 0.6755, 'mean_p': 0.492}
+  base rate {'n': 183, 'lock': 0.5137, 'auc': 0.5, 'brier': 0.2506, 'logloss': 0.6943, 'mean_p': 0.4859}
+  v2 - v1: AUC +0.0410 95% CI [-0.034, 0.123]; Brier -0.0072 95% CI [-0.0214, 0.0069] (match-cluster bootstrap, 1000)
+  by revealed opponent cards at the X-Bow:  bin  n  lock  AUC v2  AUC v1  Brier v2  Brier v1
+    0-1    22 0.773  0.682   0.400   0.1802    0.2277
+    2-3    16 0.500  0.688   0.219   0.2244    0.2506
+    4-5    13 0.769  0.833   0.800   0.2194    0.2277
+    6-7    77 0.455  0.631   0.612   0.2409    0.2444
+    8-8    55 0.436  0.602   0.590   0.2519    0.2426
+  calibration (v2, predicted-p bins): bin  n  mean p  observed
+    [0.2,0.3)     7  0.284  0.143
+    [0.3,0.4)    32  0.363  0.312
+    [0.4,0.5)    60  0.447  0.517
+    [0.5,0.6)    47  0.539  0.574
+    [0.6,0.7)    23  0.642  0.696
+    [0.7,0.8)     9  0.745  0.778
+    [0.8,0.9)     5  0.827  0.400
+
+## train (in-sample)
+  v2        {'n': 7105, 'lock': 0.4859, 'auc': 0.641, 'brier': 0.2331, 'logloss': 0.6578, 'mean_p': 0.4859}
+  v1-only   {'n': 7105, 'lock': 0.4859, 'auc': 0.5653, 'brier': 0.2462, 'logloss': 0.6854, 'mean_p': 0.4859}
+  base rate {'n': 7105, 'lock': 0.4859, 'auc': 0.5, 'brier': 0.2498, 'logloss': 0.6927, 'mean_p': 0.4859}
+
+## counter cycle at held-out X-Bows with a revealed counter (n 808 of 1114): plays to a counter in hand 0/1/2/3/4: [383, 130, 126, 63, 106]; when not in hand (n 425): elixir to cycle there median 5.0, mean 6.47, share <= 9 (icebow's cheapest 4-card cycle: Skeletons + Log + Knight + Ice Wizard / Tornado) 0.774; lock with the counter in hand 0.439 vs not 0.520 (association)
+
+## v2 head: largest standardised weights: opp_el_10 -0.222, opp_king_on +0.155, slot1_deck_lift +0.133, ctr_cycle_el_10 +0.121, ctr_plays_4 -0.120, ctr_known -0.115, slot7_on +0.106, slot3_deck_lift +0.098, xb_fails_since_lock_10 -0.094, ph_1x +0.089, slot0_deck_lift +0.088, rk_tower_damage +0.087
+
+CAVEAT: trained on X-Bows players CHOSE to place (selection bias); P(lock) is conditional on that choice.
+wrote counter_priors.json {'priors_sha256': '4312a8ada3ec930f65008447e593641c3f1d9155192fc0387ed89a9d5df54f8a', 'lock_head_sha256': '150656239778310ea0db27f0d61975b9ea147c80d88cf9046e018423bca6498d'}

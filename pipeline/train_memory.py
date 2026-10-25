@@ -1,6 +1,6 @@
 """Plan A S3 (scratchpad/gauntlet/L74/memory/PLAN_A.md): imitation warm-start of ONLY the match-memory adapter.
 
-    python -m pipeline.train_memory --init CKPT --memory v1 --memory-tables gen_dataset_v32_fv5_memory_v1.npz \
+    python -m pipeline.train_memory --init CKPT --memory v1|v2 --memory-tables gen_dataset_v32_fv5_memory_v1.npz \
         --data icebow/data/pipeline/gen_dataset_v32_fv5.npz --trainable memory --out-dir DIR [--epochs 2] [--amp bf16]
 
 Lead 10-25: the init (an RL policy, e.g. CLXIII) keeps EVERY weight FROZEN; only the new memory parameters (model_gen
@@ -12,6 +12,8 @@ depend on match history -- a residual on top of the init (S5 RL later fine-tunes
     gradients still flow THROUGH the trunk to the adapter;
   * loss = train_gen.losses on gate / card / cell (train_gen's weights and masks; wait / value are reported, not trained:
     they are not policy heads), mirror p 0.5 (memory mirrored too: match_memory.mirror_ev);
+  * ``--memory v2`` (S1c): the same v1 tables; the summary adds match_memory.S1C_FIELDS (counter priors, cycle, king,
+    margin, the frozen lock head), computed from them at feature time;
   * memory inputs per batch: match_memory.rows_features over the per-match tables (dataset_gen memory_tables) at each row's
     tick -- identical to the pro replay's MatchMemory.features (tested), built on CPU in a prefetch thread;
   * after training every frozen tensor (parameters AND buffers) is asserted bit-identical to the init.
@@ -197,7 +199,9 @@ def probes(model, base, rows, tables, arrs, gid, bs=512) -> dict:
 
 
 def save(path: Path, init_ck: dict, model, info: dict) -> None:
-    ck = dict(init_ck, model={k: v.detach().cpu() for k, v in model.state_dict().items()}, memory=MM.VERSION, s3=info)
+    ver = getattr(model.mem, "version", "v1")
+    ck = dict(init_ck, model={k: v.detach().cpu() for k, v in model.state_dict().items()}, memory=ver, s3=info,
+              **({"memory_v2": MM.v2_meta()} if ver == "v2" else {}))
     tmp = path.with_name(path.name + ".tmp")
     torch.save(ck, tmp)
     tmp.replace(path)
@@ -206,7 +210,7 @@ def save(path: Path, init_ck: dict, model, info: dict) -> None:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
     ap.add_argument("--init", type=Path, required=True, help="a feature_version >= 4 generalist checkpoint (e.g. CLXIII)")
-    ap.add_argument("--memory", choices=("v1",), required=True)
+    ap.add_argument("--memory", choices=("v1", "v2"), required=True)
     ap.add_argument("--memory-tables", type=Path, required=True, help="dataset_gen memory_tables' file for --data")
     ap.add_argument("--data", type=Path, default=REPO / "icebow/data/pipeline/gen_dataset_v32_fv5.npz")
     ap.add_argument("--trainable", choices=("memory",), required=True)
@@ -241,7 +245,7 @@ def main(argv=None) -> int:
         from .dataset import load as load_ds
         arrs, meta = load_ds(a.data)
     if int(meta.get("feature_version", 1)) < 4:
-        raise SystemExit("memory v1 needs a feature_version >= 4 dataset")
+        raise SystemExit(f"memory {a.memory} needs a feature_version >= 4 dataset")
     packed, row_tab, mmeta = load_memory_tables(a.memory_tables)
     if mmeta["card_vocab"] != meta["card_vocab"]:
         raise SystemExit("--memory-tables were built for another dataset (card_vocab differs)")
@@ -274,6 +278,7 @@ def main(argv=None) -> int:
     va_idx = val_rows(arrs, a.val_sample)
     rows = GenRows(arrs, tr, dev)
     rows.memory, rows.grid = tables, grid
+    rows.memory_version, rows.memory_gid = a.memory, gid              # v2: + S1C_FIELDS (the tables' vocabulary)
     va = rows.view(va_idx)
     params = [p for k, p in model.named_parameters() if k.startswith("mem.")]
     opt = torch.optim.AdamW(params, lr=a.lr, weight_decay=a.wd)
@@ -288,7 +293,8 @@ def main(argv=None) -> int:
             "memory_tables": str(a.memory_tables), "data": str(a.data), "head_rows": a.head_rows, "train_rows": int(len(tr)),
             "val_rows": int(len(va_idx)), "steps": steps, "bs": a.bs, "lr": a.lr, "wd": a.wd, "warmup": a.warmup,
             "heads": list(HEADS), "mirror": not a.no_mirror, "amp": a.amp, "rocket_context_weight": rcw,
-            "trainable": "memory", "n_trainable": int(sum(p.numel() for p in params)), "seed": a.seed}
+            "trainable": "memory", "n_trainable": int(sum(p.numel() for p in params)), "seed": a.seed,
+            "memory": a.memory}
     log = (a.out_dir / "s3_log.jsonl").open("a", encoding="utf-8")
 
     def emit(rec):

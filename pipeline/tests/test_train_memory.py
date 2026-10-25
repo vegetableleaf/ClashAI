@@ -39,10 +39,10 @@ def tables(tmp_path_factory):
     return out
 
 
-def _run(tmp, tables, *extra):
+def _run(tmp, tables, *extra, memory="v1"):
     torch.set_num_threads(2)
     out = tmp / "run"
-    TM.main(["--init", str(CKPT), "--memory", "v1", "--memory-tables", str(tables), "--data", str(DATA),
+    TM.main(["--init", str(CKPT), "--memory", memory, "--memory-tables", str(tables), "--data", str(DATA),
              "--trainable", "memory", "--out-dir", str(out), "--head-rows", str(HEAD), "--device", "cpu",
              "--val-sample", "64", "--prefetch", "2", *extra])
     return out
@@ -73,6 +73,20 @@ def test_identity_and_frozen_after_20_steps(tmp_path, tables, monkeypatch):
     assert set(v) == {"step", "memory", "zeroed", "init"} and v["init"]["loss"] > 0
 
 
+def test_v2_identity_and_frozen_after_20_steps(tmp_path, tables):
+    """S1c: --memory v2 on the same v1 tables: step-0 identity exact, the frozen tensors unchanged (asserted inside), the
+    checkpoint says memory v2 + the artifacts' sha256 and its encoder reads the 114-wide summary."""
+    out = _run(tmp_path, tables, "--steps", "20", "--bs", "16", "--val-every", "20", "--ckpt-every", "1000",
+               "--probe-rows", "64", memory="v2")
+    log = [json.loads(x) for x in (out / "s3_log.jsonl").read_text().splitlines()]
+    assert log[0]["identity_max_diff"] == 0.0
+    got = torch.load(out / "mem_latest.pt", map_location="cpu", weights_only=False)
+    assert got["memory"] == "v2" and got["memory_v2"] == MM.v2_meta() and got["s3"]["memory"] == "v2"
+    assert int(got["model"]["mem.cfg"][1]) == MM.S_V2 and float(got["model"]["mem.out.weight"].abs().sum()) > 0
+    m = TM.load_model(out / "mem_latest.pt", torch.device("cpu"))[0]
+    assert m.mem.version == "v2"
+
+
 def test_loss_decreases_on_a_small_set(tmp_path, tables):
     """60 steps on 32 fixed train rows (no mirror, lr 3e-3): their gate + card + cell loss with memory goes down."""
     out = _run(tmp_path, tables, "--steps", "60", "--bs", "32", "--limit-rows", "32", "--lr", "3e-3", "--warmup", "1",
@@ -89,9 +103,10 @@ def test_loss_decreases_on_a_small_set(tmp_path, tables):
     assert after < before - 0.01, (before, after)
 
 
-def test_table_rows_equal_match_memory(tables):
+@pytest.mark.parametrize("version", ["v1", "v2"])
+def test_table_rows_equal_match_memory(tables, version):
     """The memory inputs the trainer feeds (tables -> rows_features at the npz row ticks / decks) = MatchMemory.features of
-    the same replay, rebuilt from the replay file (dataset_gen.replay_memories), on every row of 3 replays."""
+    the same replay, rebuilt from the replay file (dataset_gen.replay_memories), on every row of 3 replays (v2: + S1c)."""
     from pipeline.dataset_gen import checkpoint_gid, load_memory_tables, replay_memories
     arrs, meta = TM.npz_head(DATA, HEAD)
     packed, row_tab, _ = load_memory_tables(tables)
@@ -104,9 +119,9 @@ def test_table_rows_equal_match_memory(tables):
         tag, mems, _ = replay_memories(str(path))
         assert tag == str(tags[r])
         ids = np.flatnonzero(arrs["rep"] == r)
-        got = MM.rows_features(packed, row_tab, arrs["tick"], arrs["deck_card"], ids)
+        got = MM.rows_features(packed, row_tab, arrs["tick"], arrs["deck_card"], ids, version, gid)
         for i, row in enumerate(ids):
-            ref = mems[int(arrs["side"][row])].features(int(arrs["tick"][row]), gid, arrs["deck_card"][row])
+            ref = mems[int(arrs["side"][row])].features(int(arrs["tick"][row]), gid, arrs["deck_card"][row], version)
             for k in MM.MEM_KEYS:
                 assert np.array_equal(got[k][i], ref[k]), (r, int(row), k)
             n += 1
