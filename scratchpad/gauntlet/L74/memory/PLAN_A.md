@@ -4,6 +4,20 @@
 
 **Compute (10-25):** owner offers one 5x RTX 4090 pod (~320 vCPU) replacing the double pod + 3 old pods. Lead: yes, if the cgroup quota is verified, and the new pod is rented and filled (code tree, venv + runtime, datasets, CLXIII / CLX / opponent ckpts, the running branches' latest ckpts, baselines) BEFORE the old pods stop. Use: one learner per GPU (~60 vCPU actors each) = 5 arms at once on one disk.
 
+**Owner points (10-25, later):**
+1. "You can't just consider the average lock rate ... lock rates will swing wildly depending on matchup and opponent skill level /
+   reaction time." -> S4 calibrates X-Bow denial PER ARCHETYPE and builds a deliberate SKILL SPREAD into the training pool (weak
+   blockers, human-like, strong deniers incl. opponents that shut X-Bows out completely), because adaptation only pays if
+   opponents differ within the pool and the model must read which kind it faces from the match itself. Measure: memory/xbow_arch.py
+   (lock rate by archetype + the per-match spread: share of matches with 0 / < .5 / >= .5 locks), SIM vs live.
+   - First SIM read (CLXIII, 960 per opponent): lock 0.52-0.67 by archetype for E4 / I u40 cal / W18 R1 / R3; only 2-12% of
+     matches with >= 2 reach X-Bows have ZERO locks, 62-85% lock >= half -> no SIM opponent shuts X-Bows out.
+2. "Rocket cycling late game only works out if the enemy doesn't already have a massive damage advantage going into overtime,
+   which means near-perfect defense is a must, and the damage gap must be kept small." -> defence stays first (tower_crown
+   shaping prices every own tower HP lost, plus the idle / trade terms); Rocket-cycling metrics are CONDITIONAL on the tower-HP
+   margin at 2x / OT (late chip with margin >= ~0 is the target; chip while far behind is not), and the gate reports the OT entry
+   margin (own minus enemy princess HP) next to the Rocket counts.
+
 Owner 10-25: "a memory of every event that has happened so far in the match and their results will greatly benefit the model's
 mid-match performance and adaptability"; deadline removed; go for A (full memory), B (compact summary) on top if needed. Bundle:
 Rocket use, Rocket + Tornado combo, failed / forced X-Bows. Grades: (a) measured, (b) plausible but untested (with its test).

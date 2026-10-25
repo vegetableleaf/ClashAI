@@ -62,11 +62,15 @@ def sim_matches(d):
 def live_matches(key):
     import live_dump as LD
     from pipeline import match_memory as M
-    logs = Path(__file__).resolve().parents[3] / 'scratchpad' / 'gauntlet' / 'L68' / 'live_reader'
+    logs = Path(__file__).resolve().parents[2] / 'L68' / 'live_reader'
     for f in sorted(logs.glob('live_play_*.jsonl')):
-        with open(f, 'rb') as fh:
-            head = b''.join(fh.readline() for _ in range(3))
-        if key.encode() not in head:
+        ok = False
+        with open(f, 'rb') as fh:                                 # the start event (with the ckpt) is not always line 1
+            for _, raw in zip(range(400), fh):
+                if b'"event": "start"' in raw[:60]:
+                    ok = key.encode() in raw
+                    break
+        if not ok:
             continue
         try:
             m = LD.read(f)

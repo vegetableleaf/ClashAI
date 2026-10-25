@@ -1,0 +1,16 @@
+## LIVE CLX_PARITY
+  ALL       matches   234 reach X-Bows   711 lock 0.565 [0.521, 0.613] | per-match (>= 2 reach) lock 0: 0.09, < .5: 0.30, >= .5: 0.70 (n 200)
+  bait      matches    31 reach X-Bows    99 lock 0.606 [0.488, 0.739] | per-match (>= 2 reach) lock 0: 0.08, < .5: 0.31, >= .5: 0.69 (n 26)
+  beatdown  matches    62 reach X-Bows   178 lock 0.545 [0.462, 0.629] | per-match (>= 2 reach) lock 0: 0.08, < .5: 0.31, >= .5: 0.69 (n 51)
+  bridge    matches    81 reach X-Bows   223 lock 0.565 [0.502, 0.648] | per-match (>= 2 reach) lock 0: 0.10, < .5: 0.32, >= .5: 0.68 (n 69)
+  control   matches    14 reach X-Bows    48 lock 0.417 [0.182, 0.649] | per-match (>= 2 reach) lock 0: 0.27, < .5: 0.45, >= .5: 0.55 (n 11)
+  hog       matches    34 reach X-Bows   116 lock 0.603 [0.504, 0.724] | per-match (>= 2 reach) lock 0: 0.03, < .5: 0.22, >= .5: 0.78 (n 32)
+  other     matches    12 reach X-Bows    47 lock 0.617 [0.421, 0.850] | per-match (>= 2 reach) lock 0: 0.09, < .5: 0.18, >= .5: 0.82 (n 11)
+## LIVE CLXIII
+  ALL       matches    35 reach X-Bows   132 lock 0.462 [0.343, 0.574] | per-match (>= 2 reach) lock 0: 0.16, < .5: 0.41, >= .5: 0.59 (n 32)
+  bait      matches     9 reach X-Bows    27 lock 0.593 [0.393, 0.769] | per-match (>= 2 reach) lock 0: 0.22, < .5: 0.22, >= .5: 0.78 (n 9)
+  beatdown  matches     4 reach X-Bows    14 lock 0.643 [0.381, 1.000] | per-match (>= 2 reach) lock 0: 0.00, < .5: 0.33, >= .5: 0.67 (n 3)
+  bridge    matches     7 reach X-Bows    27 lock 0.222 [0.107, 0.360] | per-match (>= 2 reach) lock 0: 0.29, < .5: 0.71, >= .5: 0.29 (n 7)
+  control   matches     8 reach X-Bows    44 lock 0.318 [0.169, 0.476] | per-match (>= 2 reach) lock 0: 0.14, < .5: 0.57, >= .5: 0.43 (n 7)
+  hog       matches     6 reach X-Bows    17 lock 0.824 [0.600, 1.000] | per-match (>= 2 reach) lock 0: 0.00, < .5: 0.20, >= .5: 0.80 (n 5)
+  other     matches     1 reach X-Bows     3 lock 0.667 [0.667, 0.667] | per-match (>= 2 reach) lock 0: 0.00, < .5: 0.00, >= .5: 1.00 (n 1)
