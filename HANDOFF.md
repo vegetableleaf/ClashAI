@@ -1,3 +1,13 @@
+## 2026-10-25 11:10 EDT -- Plan A S0 done (4 new pods restored), S1a memory builder done; S1b wiring in progress
+
+- New pods (owner): 33912 2x4090 (108.8 vCPU), 33522 / 33569 / 33458 1x4090 (54.4 each). Restored from the verified archive
+  (venv rebuilt with exact versions); tests + smoke PASS. Ledger + roles: L74/memory/LEDGER.md.
+- S1a (63a1ebb): pipeline/match_memory.py -- causal event memory (every play of both sides incl. ability presses, generic 10 s
+  outcome, tower damage / falls, X-Bow lock / fail / answer card, Rocket tower / value / combo) + summary (X-Bow and Rocket stats,
+  per-card outcomes). 14 tests; live CLXIII dumps (e.g. a loss with 9 reach X-Bows, 4 failed, Poison answered 2x).
+- Lead decisions: memory = model flag memory: v1 on fv6 (fv7 is taken); X-Bow answer = first opponent play in the lane within 4 s
+  and 12 tiles; buildings count as value removed; live_gen gets own-play x / y / form (offline-tested, no live restart).
+- Running: x_s101 (33569) / x_s102 (33912) controls, CLXIII gate baseline (33522), X-Bow lock vs opponents (33458).
 ## 2026-10-25 10:25 EDT -- Plan A APPROVED (match memory, all cards); deadline removed; all pods stopped for a quintuple pod; CLXIII NOLEAK = current best
 
 - Owner 10-25: approved L74/memory/PLAN_A.md (match memory = every event + result; scope: ALL cards / abilities, plus Rocket use /
