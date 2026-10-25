@@ -533,7 +533,130 @@ def build(corpora: list[Path], out: Path, *, grid: str = "lattice", limit: int =
             "stats": meta["stats"]}
 
 
+# ------------------------------------------------------------------------------------------------------------ memory
+def memory_replay(path: str, card_vocab: list) -> dict[str, Any]:
+    """Plan A memory v1: one native replay (gen_v3.1 recording) -> its two per-side match-memory EVENT TABLES
+    (match_memory.MatchMemory.table) from the SAME public inputs the rows use: the opponent's plays = recording_observers'
+    PublicObserver (native frames), own plays = ``played_forms`` (accepted card plays with their actual form and the log's
+    engine x / y / elixir_before) + the log's own ability presses, samples = every recorded frame (towers, own elixir,
+    public_frame 'native' bodies). -> {tag, tables {side: table}, stats} or {path, error}."""
+    try:
+        from . import match_memory as MM
+        from .native_recording import tag_native_recording
+        from .public_observation import public_frame, recording_observers
+        rec = json.loads(Path(path).read_text(encoding="utf-8"))
+        st: dict[str, Any] = {}
+        rec = tag_native_recording(rec, st)
+        observers = recording_observers(rec)
+        gid = checkpoint_gid(card_vocab)
+        own = played_forms(rec)
+        presses = [dict(e) for e in rec["log"] if e.get("accepted") and e.get("ability") and e.get("card")]
+        frames = sorted(rec["frames"], key=lambda f: int(f["tick"]))
+        units = [public_frame(f, source="native")["entities"] for f in frames]
+        st = {"frames": len(frames), "frames_no_towers": sum(not f.get("towers") for f in frames),
+              "frames_no_elixir": sum(len(f.get("elixir") or []) != 2 for f in frames),
+              "own_plays": len(own), "own_plays_no_xy": sum(e.get("x") is None or e.get("y") is None for e in own),
+              "own_plays_actual_form": sum("actual_form" in e for e in own),
+              "own_forms": dict(Counter(int(e["form"]) for e in own)), "presses": len(presses),
+              "opp_plays_detected": sum(len(o.plays) for o in observers)}
+        tables = {}
+        for s in (0, 1):
+            samples = []
+            for f, u in zip(frames, units):
+                tw, al = MM.tower_reads_engine(f.get("towers") or [], s)
+                el = f.get("elixir") or []
+                samples.append(dict(tick=int(f["tick"]), towers=tw, alive=al,
+                                    elixir=float(el[s]) if len(el) == 2 else None, units=u))
+            plays = list(observers[s].plays) + [e for e in own + presses if int(e["side"]) == s]
+            tables[s] = MM.build(s, samples, plays).table(gid)
+        st["events"] = {s: int(len(t["tick"])) for s, t in tables.items()}
+        return {"tag": str(rec["tag"]), "tables": tables, "stats": st}
+    except Exception as ex:                                      # a corrupt / partial file is counted, not fatal
+        return {"path": path, "error": f"{type(ex).__name__}: {ex}"}
+
+
+def _memory_job(args: tuple) -> dict[str, Any]:
+    return memory_replay(*args)
+
+
+def memory_tables(dataset: Path, out: Path, *, workers: int = 4, limit: int = 0, log=sys.stderr) -> dict[str, Any]:
+    """Plan A memory v1 for a dataset_gen npz (fv >= 4): the per-match event tables of every replay of its corpora (meta
+    ``corpora``, read like ``build``) -> ``out`` (npz): tab_<k> (match_memory.pack of the tables, TABLE_KEYS + off),
+    table_tag / table_side, row_tab [rows of ``dataset``] (index of the row's (tag, side) table; -1 = none) and meta. A row's
+    memory = match_memory.rows_features(tables, row_tab, the npz ``tick``, the npz ``deck_card``, ids). ``workers`` > 1 =
+    that many processes (a pod); ``limit`` = the first N files (a laptop test).
+        python -m pipeline.dataset_gen memory --dataset icebow/data/pipeline/gen_dataset_v32_fv5.npz \\
+            --out icebow/data/pipeline/gen_dataset_v32_fv5_memory_v1.npz --workers N [--limit 20]"""
+    from . import match_memory as MM
+    t0 = time.time()
+    z = np.load(dataset, allow_pickle=False)
+    meta = json.loads(str(z["meta"]))
+    if int(meta.get("feature_version", 1)) < 4:
+        raise SystemExit("memory tables need a feature_version >= 4 dataset (public observation)")
+    files, seen = [], set()
+    for c in meta["corpora"]:
+        c = Path(c) if Path(c).is_absolute() else REPO / c
+        for f in sorted(list(c.glob("replay_*.json")) + list(c.glob("j*/replay_*.json"))):
+            if f.name not in seen:
+                seen.add(f.name)
+                files.append(str(f))
+    files = files[:limit] if limit else files
+    jobs = [(f, meta["card_vocab"]) for f in files]
+    if workers > 1:
+        with ProcessPoolExecutor(max_workers=workers) as ex:
+            res = []
+            for i, r in enumerate(ex.map(_memory_job, jobs, chunksize=4)):
+                res.append(r)
+                if log and (i + 1) % 200 == 0:
+                    print(f"[memory_tables] {i + 1}/{len(jobs)} {time.time() - t0:.0f}s", file=log, flush=True)
+    else:
+        res = [_memory_job(j) for j in jobs]
+    failed = [(r["path"], r["error"]) for r in res if "error" in r]
+    res = [r for r in res if "error" not in r]
+    keys = [(r["tag"], s) for r in res for s in (0, 1)]
+    index = {k: i for i, k in enumerate(keys)}
+    packed = MM.pack([r["tables"][s] for r in res for s in (0, 1)])
+    tags, rep, side = z["tags"], z["rep"], z["side"]
+    per = np.array([[index.get((str(t), s), -1) for s in (0, 1)] for t in tags], np.int32).reshape(-1, 2)
+    row_tab = per[rep, side.astype(np.int64)] if len(rep) else np.zeros(0, np.int32)
+    st: Counter = Counter()
+    for r in res:
+        for k, v in r["stats"].items():
+            if isinstance(v, (int, float)):
+                st[k] += v
+            elif k == "own_forms":
+                for f, n in v.items():
+                    st[f"own_form_{f}"] += n
+    mmeta = {"kind": "match_memory_tables", "version": MM.VERSION, "dataset": str(dataset), "files": len(files),
+             "replays": len(res), "failed": failed, "tables": len(keys), "events": int(packed["off"][-1]),
+             "rows": int(len(row_tab)), "rows_with_table": int((row_tab >= 0).sum()), "card_vocab": meta["card_vocab"],
+             "F": MM.F, "S": MM.S, "E_MAX": MM.E_MAX, "fields": list(MM.FIELDS), "groups": list(MM.GROUPS),
+             "summary_fields": list(MM.SUMMARY_FIELDS), "card_fields": list(MM.CARD_FIELDS), "stats": dict(st),
+             "built": time.strftime("%Y-%m-%d %H:%M:%S"), "seconds": round(time.time() - t0, 1)}
+    out.parent.mkdir(parents=True, exist_ok=True)
+    np.savez_compressed(out, **{"tab_" + k: v for k, v in packed.items()}, table_tag=np.asarray([k[0] for k in keys]),
+                        table_side=np.asarray([k[1] for k in keys], np.int8), row_tab=row_tab, meta=json.dumps(mmeta))
+    return {k: v for k, v in mmeta.items() if k not in ("card_vocab", "fields", "summary_fields", "card_fields")}
+
+
+def load_memory_tables(path: Path) -> tuple[dict, np.ndarray, dict]:
+    """memory_tables' file -> (packed tables, row_tab, meta) for match_memory.rows_features / eval_gen.GenRows.memory."""
+    z = np.load(path, allow_pickle=False)
+    return ({k[4:]: z[k] for k in z.files if k.startswith("tab_")}, z["row_tab"], json.loads(str(z["meta"])))
+
+
 def main(argv: Optional[list[str]] = None) -> int:
+    if argv is None:
+        argv = sys.argv[1:]
+    if argv and argv[0] == "memory":                             # Plan A memory v1 tables (see memory_tables)
+        mp = argparse.ArgumentParser(prog="dataset_gen memory", description=memory_tables.__doc__.split("\n", 1)[0])
+        mp.add_argument("--dataset", type=Path, required=True)
+        mp.add_argument("--out", type=Path, required=True)
+        mp.add_argument("--workers", type=int, default=4)
+        mp.add_argument("--limit", type=int, default=0)
+        m = mp.parse_args(argv[1:])
+        print(json.dumps(memory_tables(m.dataset, m.out, workers=m.workers, limit=m.limit), default=str))
+        return 0
     ap = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
     ap.add_argument("--feature-version", type=int, choices=(1, 2, 3, 4, 5), default=1)
     ap.add_argument("--corpus", type=Path, nargs="+", required=True)

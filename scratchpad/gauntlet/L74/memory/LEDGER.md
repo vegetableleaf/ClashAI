@@ -29,3 +29,19 @@ smoke PASS on 33912; replicated to the singles (9.2 GB each, env check OK).
 Reading (a): the SIM mean is right (R3 = live CLX), the TAILS are not: live shut-out matches 2-5x more common, live archetypes
 swing more (owner's point). S4 target = the pool's shut-out share and per-archetype spread, not the mean: I u40 cal + R3 cal now,
 plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
+
+## S1b wiring -- DONE (committed with this entry)
+- memory: v1 model flag (fv6 base; absent = identical config hash + byte-identical records, tested). Encoder: card / form embed +
+  46-float events -> 2 transformer layers d 64 -> masked mean + query pool; summary (54 + answer card) MLP; ONE zero-init linear
+  into the global vector. G-mem-0: CLXIII vs CLXIII + memory on 2,500 pro rows: max |diff| 0 (gate / card / cell / value).
+- Storage: per-match event tables (pro ~105 MB on disk for the corpus; per-row would be ~83 GB); features_at() == MatchMemory.
+- Pro builder: python -m pipeline.dataset_gen memory --dataset gen_dataset_v32_fv5.npz --out X.npz --workers N (0.2 s / replay).
+- Rollouts: 0.94 ms / decision memory build; learner log-probs = actor's within 8e-7 with memory active.
+- Live: live_gen own_events now carry x / y / form; 6 recorded CLXIII matches replayed through GenPilot: memory == offline at
+  2,174 / 2,174 decisions; +1.0-1.6 ms median per decision (encoder forward extra, GPU not measured).
+- X-Bow answer rule: first opponent play in the lane within 4 s and 12 tiles (5 live matches: 14 / 26 answered; old 6-tile rule 3).
+- NOTE (a): the live supervisor restarted a BAIT-deck run (wk_bait u60) at 11:51:21 EDT 10-25 and imported the then-uncommitted
+  S1b live_gen / e1_eval / model_gen; for a no-memory model the only active change = extra own-play fields; ~3 matches normal;
+  owner stopped it 12:15 EDT. Icebow LIVE_OPTIONS / CKPT_OVERRIDE untouched.
+- Pod tree for memory work: 33912 /workspace/cb_mem = cb_stepd hard links + laptop pipeline (HEAD + S1b). Tests 52 + 9 skip
+  (ROYALE_RUNTIME=fin15-linux needed for test_memory_s1b); rl_royale --smoke PASS with memory (mem_x_s110) and without (x_s101).

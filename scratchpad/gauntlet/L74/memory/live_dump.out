@@ -1,6 +1,150 @@
 
-=== live_play_20261025_110314.jsonl  side 1  ckpt ICEBOW_Mark_CLXIII_NOLEAK.pt  result LOSS 0-1  decisions 437  read 1.1s
-incremental vs offline: 437/437 decisions identical; late plays 0; 2.11 ms per decision (incremental observe + features, offline features, compare)
+=== live_play_20261025_111428.jsonl  side 1  ckpt ICEBOW_Mark_CLXIII_NOLEAK.pt  result WIN 1-0  decisions 471  read 1.2s
+incremental vs offline: 471/471 decisions identical; late plays 0; 2.08 ms per decision (incremental observe + features, offline features, compare)
+events: opp play 49, own play 51, opp tower_damage 25, own tower_damage 6, opp tower_fall 1
+unknown fields: {'xy?': 0, 'el? (own)': 0, 'value? (resolved)': 0, 'tower? (resolved)': 0}
+    162    8.1s opp play    electro-spirit (0.53,0.02)          | tow +0.000/-0.012 val 0.0
+    202   10.1s OWN play    the-log      (0.81,0.55)  el  9.2 | tow +0.012/-0.000 val 0.0
+    268   13.4s opp play    archers      (0.47,0.02)          | tow +0.052/-0.000 val 0.0
+    332   16.6s OWN play    ice-wizard   (0.47,0.98)  el  9.4 | tow +0.000/-0.052 val 0.0
+    432   21.6s opp play    fireball     (0.49,0.11)          | tow +0.052/-0.000 val 0.0
+    468   23.4s OWN tower_damage L -0.052  crowns 0-0
+    494   24.7s OWN play    knight       (0.47,0.83)  el  9.3 | tow +0.000/-0.037 val 0.0
+    649   32.5s opp play    ronin        (0.47,0.02)          | tow +0.037/-0.182 val 0.0
+    652   32.6s OWN play    skeletons    (0.81,0.64)  el  9.2 | tow +0.182/-0.037 val 1.93
+    683   34.1s OWN play    x-bow        (0.14,0.61)  el  8.6 | tow +0.282/-0.037 val 0.33 | XB reach=True LOCKED dmg 0.375 ans=''
+    685   34.2s OWN tower_damage R -0.037  crowns 0-0
+    767   38.4s opp play    barbarian-barrel (0.14,0.38)          | tow +0.012/-0.375 val 2.44
+    775   38.8s opp tower_damage L -0.040  crowns 0-0
+    795   39.8s opp tower_damage L -0.040  crowns 0-0
+    823   41.2s OWN play    tesla        (0.39,0.56)  el  5.2 | tow +0.294/-0.012 val 5.08
+    825   41.2s opp tower_damage L -0.081  crowns 0-0
+    833   41.7s opp play    tesla        (0.17,0.44)          | tow +0.012/-0.213 val 0.0
+    865   43.2s OWN play    the-log      (0.14,0.55)  el  1.8 | tow +0.193/-0.012 val 8.34
+    867   43.4s opp tower_damage L -0.101  crowns 0-0
+    887   44.4s opp tower_damage L -0.061  crowns 0-0
+    897   44.9s opp play    the-log      (0.14,0.38)          | tow +0.012/-0.052 val 0.0
+    907   45.4s opp tower_damage L -0.040  crowns 0-0
+    993   49.7s opp play    electro-spirit (0.25,0.45)          | tow +0.000/-0.000 val 0.0
+   1407   70.4s OWN play    ice-wizard   (0.47,0.98)  el  9.6 | tow +0.000/-0.000 val 0.0
+   1453   72.7s opp play    archers      (0.47,0.02)          | tow +0.000/-0.000 val 0.0
+   1576   78.8s opp play    x-bow        (0.47,0.27)          | tow +0.000/-0.000 val 0.0 | XB reach=False  ans='knight' @10.8t
+   1603   80.2s OWN play    skeletons    (0.47,0.98)  el 10.0 | tow +0.000/-0.000 val 0.0
+   1628   81.4s OWN play    x-bow        (0.14,0.61)  el  9.1 | tow +0.000/-0.000 val 0.0 | XB reach=True FAILED dmg 0.000 ans=''
+   1651   82.6s OWN play    knight       (0.14,0.55)  el  3.5 | tow +0.000/-0.000 val 0.0 [answers X-Bow]
+   1692   84.6s opp play    fireball     (0.49,0.11)          | tow +0.000/-0.000 val 0.0
+   2139  107.0s OWN play    tesla        (0.67,0.56)  el  9.1 | tow +0.000/-0.000 val 0.0
+   2159  108.0s opp play    barbarian-barrel (0.47,-0.06)         | tow +0.000/-0.000 val 0.0
+   2273  113.7s opp play    electro-spirit (0.53,0.30)          | tow +0.000/-0.000 val 0.0
+   2359  118.0s opp play    ronin        (0.47,0.02)          | tow +0.000/-0.000 val 0.0
+   2376  118.8s OWN play    ice-wizard   (0.47,0.98)  el  9.3 | tow +0.000/-0.000 val 0.0
+   2452  122.6s opp play    x-bow        (0.14,0.39)          | tow +0.000/-0.012 val 0.0 | XB reach=True FAILED dmg 0.012 ans='rocket' @1.6t
+   2476  123.8s OWN play    skeletons    (0.42,0.73)  el  9.1 | tow +0.012/-0.000 val 0.18
+   2502  125.1s OWN play    rocket       (0.17,0.44)  el  9.0 | tow +0.012/-0.000 val 17.0 [answers X-Bow] | RK aim=troops tow None val 13.58 combo=False
+   2522  126.1s opp play    archers      (0.04,0.36)          | tow +0.000/-0.012 val 0.0
+   2576  128.8s OWN play    the-log      (0.14,0.55)  el  5.6 | tow +0.012/-0.000 val 6.95
+HIGHLIGHTS: own X-Bows 7 (reach 7: locked 3, failed 3), answered by {'none': 4, 'barbarian-barrel': 1, 'ronin': 1, 'tesla': 1}; opp X-Bows 7; own Rockets 3 (tower 1, combo 0); falls [('opp L', 5600)]; memory crowns at the last event 1-0 vs end 1-0
+SUMMARY: xb_placed_10=0.700 xb_resolved_10=0.600 xb_locked_10=0.300 xb_failed_10=0.300 xb_pending_10=0.100 xb_fails_since_lock_10=0.000 xb_mean_damage=0.147 xb_has_lock=1.000 xb_since_lock_60=0.632 xb_answered_share=0.429 rk_tower_5=0.200 rk_tower_damage=0.095 rk_all_5=0.600 rk_combo_5=0.000 | answer card tesla
+  per card: Xbow n=7 swing=+0.052 vpe=0.05 | Tesla n=7 swing=+0.033 vpe=0.39 | IceWizard n=10 swing=+0.050 vpe=0.04 | Tornado n=0 swing=+0.000 vpe=0.00 | Rocket n=3 swing=+0.012 vpe=2.14 | Knight n=8 swing=+0.031 vpe=1.42 | Log n=7 swing=+0.060 vpe=2.10 | Skeletons n=9 swing=+0.036 vpe=0.78
+
+=== live_play_20261025_111112.jsonl  side 1  ckpt ICEBOW_Mark_CLXIII_NOLEAK.pt  result WIN 1-0  decisions 303  read 0.6s
+incremental vs offline: 303/303 decisions identical; late plays 3; 1.12 ms per decision (incremental observe + features, offline features, compare)
+events: own ability 3, opp play 16, own play 29, opp tower_damage 21, own tower_damage 5, opp tower_fall 1
+unknown fields: {'xy?': 3, 'el? (own)': 0, 'value? (resolved)': 3, 'tower? (resolved)': 0}
+    223   11.2s OWN play    skeletons    (0.47,0.98)  el  9.5 | tow +0.000/-0.000 val 0.0
+    273   13.7s OWN play    ice-wizard   (0.47,0.98)  el  9.4 | tow +0.000/-0.000 val 0.0
+    353   17.7s opp play    hog-rider    (0.81,0.45)          | tow +0.000/-0.000 val 0.0
+    377   18.9s OWN play    knight       (0.81,0.73)  el  8.3 | tow +0.000/-0.000 val 0.0
+    403   20.2s OWN play    tesla        (0.56,0.56)  el  5.7 | tow +0.000/-0.000 val 4.0
+    543   27.2s opp play    inferno-tower (0.53,0.33)          | tow +0.000/-0.000 val 2.54
+    778   38.9s OWN play    the-log      (0.58,0.55)  el  8.4 | tow +0.000/-0.000 val 0.0
+    856   42.8s opp play    pekka        (0.58,0.02)          | tow +0.000/-0.222 val 0.0
+    882   44.1s OWN play    x-bow        (0.25,0.61)  el  8.2 | tow +0.310/-0.000 val 0.8 | XB reach=True LOCKED dmg 0.953 ans=''
+    908   45.4s OWN play    skeletons    (0.08,0.55)  el  2.7 | tow +0.354/-0.000 val 1.2
+    980   49.0s opp tower_damage L -0.022  crowns 0-0
+   1000   50.0s opp tower_damage L -0.066  crowns 0-0
+   1008   50.4s opp play    bats         (0.19,0.45)          | tow +0.000/-0.554 val 0.33
+   1020   51.0s opp tower_damage L -0.044  crowns 0-0
+   1040   52.0s opp tower_damage L -0.066  crowns 0-0
+   1060   53.0s opp tower_damage L -0.044  crowns 0-0
+   1080   54.0s opp tower_damage L -0.066  crowns 0-0
+   1100   55.0s opp tower_damage L -0.044  crowns 0-0
+   1120   56.0s opp tower_damage L -0.066  crowns 0-0
+   1140   57.0s opp tower_damage L -0.044  crowns 0-0
+   1160   58.0s opp tower_damage L -0.066  crowns 0-0
+   1180   59.0s opp tower_damage L -0.044  crowns 0-0
+   1200   60.0s opp tower_damage L -0.066  crowns 0-0
+   1244   62.2s OWN play    ice-wizard   (0.58,0.73)  el  7.7 | tow +0.266/-0.000 val 0.0
+   1246   62.3s opp tower_damage L -0.111  crowns 0-0
+   1262   63.1s opp play    wizard       (0.81,0.45)          | tow +0.000/-0.177 val 2.8
+   1276   63.8s OWN play    knight       (0.58,0.55)  el  5.2 | tow +0.177/-0.000 val 6.34
+   1278   63.9s opp tower_damage L -0.089  crowns 0-0
+   1293   64.7s OWN ability ice-wizard   (?)          el  2.9 | tow +0.066/-0.000 val ?
+   1299   65.0s opp tower_damage L -0.066  crowns 0-0
+   1320   66.0s opp tower_damage L -0.044  crowns 0-0
+   1493   74.7s opp play    hog-rider    (0.92,0.45)          | tow +0.000/-0.000 val 0.0
+   1503   75.2s OWN play    the-log      (0.81,0.67)  el  4.3 | tow +0.000/-0.104 val 5.41
+   1539   77.0s OWN play    tornado      (0.75,0.45)  el  2.8 | tow +0.000/-0.104 val 8.79
+   1595   79.8s OWN play    skeletons    (0.58,0.55)  el  0.8 | tow +0.000/-0.104 val 3.29
+   1697   84.9s OWN tower_damage R -0.104  crowns 0-0
+   1887   94.4s opp tower_damage R -0.032  crowns 0-0
+   1917   95.9s opp tower_damage R -0.032  crowns 0-0
+   2123  106.2s OWN play    ice-wizard   (0.47,0.98)  el  9.4 | tow +0.000/-0.142 val 0.0
+   2217  110.9s opp play    lightning    (0.31,0.80)          | tow +0.142/-0.000 val 3.0
+HIGHLIGHTS: own X-Bows 3 (reach 2: locked 1, failed 1), answered by {'none': 2, 'inferno-tower': 1}; opp X-Bows 0; own Rockets 0 (tower 0, combo 0); falls [('opp L', 2520)]; memory crowns at the last event 1-0 vs end 1-0
+SUMMARY: xb_placed_10=0.300 xb_resolved_10=0.200 xb_locked_10=0.100 xb_failed_10=0.100 xb_pending_10=0.000 xb_fails_since_lock_10=0.100 xb_mean_damage=0.500 xb_has_lock=1.000 xb_since_lock_60=2.333 xb_answered_share=0.333 rk_tower_5=0.000 rk_tower_damage=0.000 rk_all_5=0.000 rk_combo_5=0.000 | answer card inferno-tower
+  per card: Xbow n=3 swing=+0.074 vpe=0.07 | Tesla n=4 swing=+0.060 vpe=0.51 | IceWizard n=6 swing=+0.027 vpe=0.10 | Tornado n=1 swing=-0.104 vpe=2.93 | Rocket n=0 swing=+0.000 vpe=0.00 | Knight n=5 swing=+0.006 vpe=1.01 | Log n=4 swing=-0.031 vpe=2.29 | Skeletons n=6 swing=+0.053 vpe=2.18
+
+=== live_play_20261025_110752.jsonl  side 1  ckpt ICEBOW_Mark_CLXIII_NOLEAK.pt  result LOSS 0-1  decisions 309  read 0.6s
+incremental vs offline: 309/309 decisions identical; late plays 0; 1.18 ms per decision (incremental observe + features, offline features, compare)
+events: opp play 18, own play 29, opp tower_damage 16, own tower_damage 14, own tower_fall 1
+unknown fields: {'xy?': 0, 'el? (own)': 0, 'value? (resolved)': 0, 'tower? (resolved)': 0}
+    198    9.9s OWN play    ice-wizard   (0.47,0.98)  el  9.1 | tow +0.000/-0.104 val 0.0
+    200   10.0s opp play    hog-rider    (0.92,0.45)          | tow +0.104/-0.000 val 0.0
+    242   12.1s OWN play    the-log      (0.81,0.80)  el  6.9 | tow +0.000/-0.104 val 3.74
+    266   13.3s OWN play    skeletons    (0.86,0.73)  el  5.3 | tow +0.009/-0.104 val 3.74
+    292   14.6s OWN play    knight       (0.81,0.73)  el  4.8 | tow +0.009/-0.104 val 3.74
+    324   16.2s OWN tower_damage R -0.104  crowns 0-0
+    408   20.4s opp play    musketeer    (0.58,0.17)          | tow +0.000/-0.009 val 0.0
+    432   21.6s OWN play    tornado      (0.75,0.33)  el  4.3 | tow +0.043/-0.000 val 2.24
+    530   26.5s opp play    fire-spirit  (0.47,0.45)          | tow +0.000/-0.033 val 3.0
+    615   30.8s opp tower_damage L -0.033  crowns 0-0
+    759   38.0s opp play    musketeer    (0.79,0.64)          | tow +0.315/-0.000 val 1.17
+    759   38.0s OWN tower_damage R -0.071  crowns 0-0
+    784   39.2s OWN play    ice-wizard   (0.69,0.61)  el  7.5 | tow +0.000/-0.244 val 4.09
+    796   39.8s OWN tower_damage R -0.049  crowns 0-0
+    817   40.9s OWN tower_damage R -0.049  crowns 0-0
+    837   41.9s OWN tower_damage R -0.098  crowns 0-0
+    859   43.0s OWN tower_damage R -0.049  crowns 0-0
+    945   47.2s opp play    the-log      (0.81,0.34)          | tow +0.000/-0.033 val 3.0
+   1025   51.2s OWN play    tesla        (0.67,0.56)  el  8.8 | tow +0.033/-0.000 val 0.0
+   1027   51.4s opp tower_damage R -0.043  crowns 0-0
+   1103   55.2s opp play    cannon-cart  (0.47,0.02)          | tow +0.000/-0.000 val 0.0
+   1127   56.4s OWN play    x-bow        (0.86,0.61)  el  6.6 | tow +0.000/-0.000 val 0.0 | XB reach=True FAILED dmg 0.000 ans=''
+   1407   70.4s OWN play    knight       (0.31,0.77)  el  5.6 | tow +0.000/-0.104 val 0.0
+   1433   71.7s OWN play    skeletons    (0.19,0.58)  el  3.1 | tow +0.000/-0.219 val 5.0
+   1459   73.0s opp play    hog-rider    (0.81,0.45)          | tow +0.219/-0.000 val 0.0
+   1483   74.2s OWN play    ice-wizard   (0.64,0.73)  el  3.0 | tow +0.000/-0.334 val 3.24
+   1585   79.2s OWN tower_damage R -0.104  crowns 0-0
+   1625   81.2s OWN tower_damage R -0.115  crowns 0-0
+   1677   83.9s OWN tower_damage R -0.115  crowns 0-0
+   1868   93.4s opp play    fire-spirit  (0.53,0.45)          | tow +0.000/-0.033 val 3.18
+   1962   98.1s opp tower_damage R -0.033  crowns 0-0
+   2016  100.8s opp play    musketeer    (0.53,0.02)          | tow +0.000/-0.000 val 0.0
+   2022  101.1s OWN play    tesla        (0.67,0.56)  el  9.6 | tow +0.000/-0.000 val 0.41
+   2170  108.5s OWN play    x-bow        (0.47,0.67)  el  8.2 | tow +0.013/-0.000 val 0.0 | XB reach=False  ans=''
+   2212  110.6s opp play    pekka        (0.81,0.45)          | tow +0.000/-0.013 val 2.72
+   2264  113.2s OWN play    the-log      (0.75,0.55)  el  3.9 | tow +0.013/-0.000 val 6.51
+   2324  116.2s OWN play    skeletons    (0.53,0.55)  el  2.9 | tow +0.013/-0.000 val 5.48
+   2382  119.1s OWN play    ice-wizard   (0.58,0.77)  el  2.7 | tow +0.000/-0.000 val 0.0
+   2486  124.3s OWN play    knight       (0.86,0.55)  el  2.2 | tow +0.000/-0.000 val 2.73
+   2546  127.3s opp play    cannon-cart  (0.58,0.23)          | tow +0.000/-0.000 val 2.48
+HIGHLIGHTS: own X-Bows 3 (reach 2: locked 1, failed 1), answered by {'none': 2, 'hog-rider': 1}; opp X-Bows 0; own Rockets 0 (tower 0, combo 0); falls [('own R', 3647)]; memory crowns at the last event 0-1 vs end 0-1
+SUMMARY: xb_placed_10=0.300 xb_resolved_10=0.200 xb_locked_10=0.100 xb_failed_10=0.100 xb_pending_10=0.000 xb_fails_since_lock_10=0.000 xb_mean_damage=0.364 xb_has_lock=1.000 xb_since_lock_60=0.857 xb_answered_share=0.333 rk_tower_5=0.000 rk_tower_damage=0.000 rk_all_5=0.000 rk_combo_5=0.000 | answer card hog-rider
+  per card: Xbow n=3 swing=+0.095 vpe=0.22 | Tesla n=4 swing=+0.076 vpe=0.54 | IceWizard n=6 swing=-0.136 vpe=0.49 | Tornado n=2 swing=+0.021 vpe=0.75 | Rocket n=0 swing=+0.000 vpe=0.00 | Knight n=5 swing=-0.027 vpe=0.84 | Log n=4 swing=+0.076 vpe=2.78 | Skeletons n=5 swing=-0.005 vpe=3.35
+
+=== live_play_20261025_110314.jsonl  side 1  ckpt ICEBOW_Mark_CLXIII_NOLEAK.pt  result LOSS 0-1  decisions 437  read 0.9s
+incremental vs offline: 437/437 decisions identical; late plays 0; 2.10 ms per decision (incremental observe + features, offline features, compare)
 events: opp play 54, own play 48, opp tower_damage 11, own tower_damage 32, own tower_fall 1
 unknown fields: {'xy?': 0, 'el? (own)': 0, 'value? (resolved)': 0, 'tower? (resolved)': 0}
     175    8.8s OWN play    ice-wizard   (0.47,0.98)  el  8.7 | tow +0.000/-0.120 val 0.0
@@ -24,8 +168,8 @@ unknown fields: {'xy?': 0, 'el? (own)': 0, 'value? (resolved)': 0, 'tower? (reso
    1116   55.8s OWN tower_damage L -0.099  crowns 0-0
    1126   56.3s OWN tower_damage R -0.099  crowns 0-0
    1172   58.6s opp play    spear-goblins (0.42,0.02)          | tow +0.048/-0.000 val 0.0
-   1196   59.8s OWN play    x-bow        (0.14,0.61)  el  8.9 | tow +0.032/-0.054 val 0.0 | XB reach=True LOCKED dmg 0.173 ans='poison'
-   1211   60.6s opp play    poison       (0.19,0.67)          | tow +0.054/-0.052 val 6.0 [answers X-Bow]
+   1196   59.8s OWN play    x-bow        (0.14,0.61)  el  8.9 | tow +0.032/-0.054 val 0.0 | XB reach=True LOCKED dmg 0.173 ans='poison' @2.2t
+   1211   60.6s opp play    poison       (0.19,0.67)          | tow +0.054/-0.052 val 10.15 [answers X-Bow]
    1222   61.1s OWN play    knight       (0.14,0.55)  el  3.3 | tow +0.072/-0.054 val 0.27
    1252   62.6s opp play    knight       (0.31,0.30)          | tow +0.048/-0.153 val 2.4
    1314   65.7s OWN play    the-log      (0.14,0.55)  el  1.6 | tow +0.173/-0.041 val 2.28
@@ -42,13 +186,13 @@ unknown fields: {'xy?': 0, 'el? (own)': 0, 'value? (resolved)': 0, 'tower? (reso
    1942   97.1s OWN tower_damage R -0.099  crowns 0-0
    1952   97.6s OWN tower_damage L -0.112  crowns 0-0
    1974   98.7s opp play    spear-goblins (0.42,0.02)          | tow +0.041/-0.000 val 0.0
-   1998   99.9s OWN play    x-bow        (0.14,0.61)  el  8.1 | tow +0.000/-0.041 val 0.0 | XB reach=True FAILED dmg 0.012 ans='poison'
-HIGHLIGHTS: own X-Bows 9 (reach 9: locked 4, failed 4), answered by {'none': 7, 'poison': 2}; opp X-Bows 0; own Rockets 0 (tower 0, combo 0); falls [('own L', 5210)]; memory crowns at the last event 0-1 vs end 0-1
-SUMMARY: xb_placed_10=0.900 xb_resolved_10=0.800 xb_locked_10=0.400 xb_failed_10=0.400 xb_pending_10=0.100 xb_fails_since_lock_10=0.000 xb_mean_damage=0.062 xb_has_lock=1.000 xb_since_lock_60=0.704 xb_answered_share=0.222 rk_tower_5=0.000 rk_tower_damage=0.000 rk_all_5=0.000 rk_combo_5=0.000 | answer card poison
+   1998   99.9s OWN play    x-bow        (0.14,0.61)  el  8.1 | tow +0.000/-0.041 val 0.0 | XB reach=True FAILED dmg 0.012 ans='poison' @2.2t
+HIGHLIGHTS: own X-Bows 9 (reach 9: locked 4, failed 4), answered by {'none': 2, 'poison': 2, 'cannon': 4, 'the-log': 1}; opp X-Bows 0; own Rockets 0 (tower 0, combo 0); falls [('own L', 5210)]; memory crowns at the last event 0-1 vs end 0-1
+SUMMARY: xb_placed_10=0.900 xb_resolved_10=0.800 xb_locked_10=0.400 xb_failed_10=0.400 xb_pending_10=0.100 xb_fails_since_lock_10=0.000 xb_mean_damage=0.062 xb_has_lock=1.000 xb_since_lock_60=0.704 xb_answered_share=0.778 rk_tower_5=0.000 rk_tower_damage=0.000 rk_all_5=0.000 rk_combo_5=0.000 | answer card cannon
   per card: Xbow n=9 swing=-0.077 vpe=0.01 | Tesla n=4 swing=-0.001 vpe=0.11 | IceWizard n=10 swing=-0.075 vpe=0.11 | Tornado n=0 swing=+0.000 vpe=0.00 | Rocket n=0 swing=+0.000 vpe=0.00 | Knight n=9 swing=-0.040 vpe=0.56 | Log n=7 swing=-0.016 vpe=1.82 | Skeletons n=9 swing=+0.003 vpe=1.89
 
-=== live_play_20261025_105958.jsonl  side 0  ckpt ICEBOW_Mark_CLXIII_NOLEAK.pt  result LOSS 0-1  decisions 300  read 0.6s
-incremental vs offline: 300/300 decisions identical; late plays 0; 1.82 ms per decision (incremental observe + features, offline features, compare)
+=== live_play_20261025_105958.jsonl  side 0  ckpt ICEBOW_Mark_CLXIII_NOLEAK.pt  result LOSS 0-1  decisions 300  read 0.7s
+incremental vs offline: 300/300 decisions identical; late plays 0; 1.18 ms per decision (incremental observe + features, offline features, compare)
 events: opp play 21, own play 30, opp tower_damage 4, own tower_damage 13, own tower_fall 1
 unknown fields: {'xy?': 0, 'el? (own)': 0, 'value? (resolved)': 0, 'tower? (resolved)': 0}
     222   11.1s OWN play    the-log      (0.81,0.55)  el  9.5 | tow +0.012/-0.000 val 0.0
@@ -77,8 +221,8 @@ unknown fields: {'xy?': 0, 'el? (own)': 0, 'value? (resolved)': 0, 'tower? (reso
    1479   74.0s OWN play    skeletons    (0.47,0.98)  el  7.9 | tow +0.000/-0.000 val 0.0
    1545   77.2s OWN play    knight       (0.47,0.98)  el  8.1 | tow +0.000/-0.000 val 0.0
    1649   82.5s opp play    valkyrie     (0.08,0.20)          | tow +0.000/-0.000 val 0.0
-   1753   87.7s OWN play    x-bow        (0.86,0.61)  el  8.7 | tow +0.000/-0.000 val 2.46 | XB reach=True FAILED dmg 0.012 ans=''
-   1804   90.2s opp play    royal-recruits (0.63,0.45)          | tow +0.000/-0.012 val 0.0
+   1753   87.7s OWN play    x-bow        (0.86,0.61)  el  8.7 | tow +0.000/-0.000 val 2.46 | XB reach=True FAILED dmg 0.012 ans='royal-recruits' @6.6t
+   1804   90.2s opp play    royal-recruits (0.63,0.45)          | tow +0.000/-0.012 val 0.0 [answers X-Bow]
    1828   91.4s OWN play    tesla        (0.50,0.66)  el  4.1 | tow +0.012/-0.000 val 0.0
    1898   94.9s opp play    dart-goblin  (0.42,0.42)          | tow +0.000/-0.012 val 0.33
    1933   96.7s OWN play    the-log      (0.86,0.55)  el  1.6 | tow +0.012/-0.222 val 4.14
@@ -91,152 +235,9 @@ unknown fields: {'xy?': 0, 'el? (own)': 0, 'value? (resolved)': 0, 'tower? (reso
    2198  109.9s OWN tower_damage L -0.134  crowns 0-0
    2218  110.9s OWN tower_damage L -0.062  crowns 0-1
    2218  110.9s OWN tower_FALL L  crowns 0-1
-HIGHLIGHTS: own X-Bows 4 (reach 2: locked 0, failed 2), answered by {'none': 3, 'mighty-miner': 1}; opp X-Bows 0; own Rockets 0 (tower 0, combo 0); falls [('own L', 2218)]; memory crowns at the last event 0-1 vs end 0-1
-SUMMARY: xb_placed_10=0.400 xb_resolved_10=0.200 xb_locked_10=0.000 xb_failed_10=0.200 xb_pending_10=0.000 xb_fails_since_lock_10=0.200 xb_mean_damage=0.012 xb_has_lock=0.000 xb_since_lock_60=0.000 xb_answered_share=0.250 rk_tower_5=0.000 rk_tower_damage=0.000 rk_all_5=0.000 rk_combo_5=0.000 | answer card mighty-miner
+HIGHLIGHTS: own X-Bows 4 (reach 2: locked 0, failed 2), answered by {'none': 2, 'royal-recruits': 1, 'mighty-miner': 1}; opp X-Bows 0; own Rockets 0 (tower 0, combo 0); falls [('own L', 2218)]; memory crowns at the last event 0-1 vs end 0-1
+SUMMARY: xb_placed_10=0.400 xb_resolved_10=0.200 xb_locked_10=0.000 xb_failed_10=0.200 xb_pending_10=0.000 xb_fails_since_lock_10=0.200 xb_mean_damage=0.012 xb_has_lock=0.000 xb_since_lock_60=0.000 xb_answered_share=0.500 rk_tower_5=0.000 rk_tower_damage=0.000 rk_all_5=0.000 rk_combo_5=0.000 | answer card mighty-miner
   per card: Xbow n=4 swing=-0.025 vpe=0.24 | Tesla n=5 swing=-0.013 vpe=0.50 | IceWizard n=5 swing=-0.047 vpe=0.29 | Tornado n=0 swing=+0.000 vpe=0.00 | Rocket n=0 swing=+0.000 vpe=0.00 | Knight n=5 swing=-0.170 vpe=1.75 | Log n=5 swing=-0.112 vpe=1.64 | Skeletons n=6 swing=-0.121 vpe=5.40
 
-=== live_play_20261025_105603.jsonl  side 1  ckpt ICEBOW_Mark_CLXIII_NOLEAK.pt  result LOSS 0-1  decisions 363  read 0.7s
-incremental vs offline: 363/363 decisions identical; late plays 0; 2.64 ms per decision (incremental observe + features, offline features, compare)
-events: opp play 38, own play 41, opp tower_damage 25, own tower_damage 15, own tower_fall 1
-unknown fields: {'xy?': 0, 'el? (own)': 0, 'value? (resolved)': 0, 'tower? (resolved)': 0}
-    183    9.2s OWN play    the-log      (0.81,0.55)  el  8.8 | tow +0.012/-0.193 val 0.0
-    199   10.0s opp play    skeleton-barrel (0.08,0.45)          | tow +0.193/-0.012 val 0.0
-    235   11.8s opp play    electro-spirit (0.14,0.39)          | tow +0.193/-0.012 val 0.0
-    245   12.2s OWN play    skeletons    (0.08,0.83)  el  7.9 | tow +0.012/-0.193 val 2.48
-    271   13.6s OWN play    ice-wizard   (0.03,0.80)  el  7.4 | tow +0.000/-0.193 val 2.56
-    333   16.7s OWN tower_damage L -0.033  crowns 0-0
-    353   17.7s OWN tower_damage L -0.054  crowns 0-0
-    373   18.7s OWN tower_damage L -0.027  crowns 0-0
-    393   19.7s OWN tower_damage L -0.080  crowns 0-0
-    446   22.3s opp play    wall-breakers (0.81,0.45)          | tow +0.198/-0.000 val 0.0
-    488   24.4s OWN play    x-bow        (0.14,0.61)  el  8.2 | tow +0.000/-0.198 val 2.64 | XB reach=True LOCKED dmg 0.314 ans=''
-    496   24.8s opp play    boss-bandit  (0.36,0.42)          | tow +0.198/-0.000 val 0.24
-    528   26.4s OWN play    knight       (0.14,0.55)  el  2.7 | tow +0.012/-0.198 val 4.92
-    550   27.5s OWN tower_damage R -0.099  crowns 0-0
-    554   27.7s opp play    dart-goblin  (0.03,0.33)          | tow +0.099/-0.012 val 0.0
-    570   28.5s OWN tower_damage R -0.099  crowns 0-0
-    640   32.0s OWN play    the-log      (0.08,0.55)  el  1.6 | tow +0.072/-0.012 val 4.31
-    696   34.8s OWN play    skeletons    (0.31,0.55)  el  0.6 | tow +0.213/-0.012 val 2.64
-    706   35.3s opp play    the-log      (0.14,0.38)          | tow +0.012/-0.222 val 0.33
-    762   38.1s opp play    electro-spirit (0.31,0.45)          | tow +0.012/-0.303 val 0.33
-    818   40.9s opp tower_damage L -0.032  crowns 0-0
-    838   41.9s opp tower_damage L -0.040  crowns 0-0
-    858   42.9s opp tower_damage L -0.061  crowns 0-0
-    866   43.3s opp play    wall-breakers (0.14,0.45)          | tow +0.099/-0.182 val 0.0
-    878   43.9s opp tower_damage L -0.040  crowns 0-0
-    899   45.0s opp tower_damage L -0.061  crowns 0-0
-    920   46.0s opp tower_damage L -0.061  crowns 0-0
-    940   47.0s opp tower_damage L -0.020  crowns 0-0
-    982   49.1s OWN tower_damage L -0.111  crowns 0-0
-   1173   58.7s OWN play    ice-wizard   (0.47,0.98)  el  8.5 | tow +0.000/-0.000 val 0.0
-   1287   64.4s opp play    skeleton-barrel (0.86,0.45)          | tow +0.375/-0.000 val 0.0
-   1321   66.0s OWN play    x-bow        (0.14,0.61)  el  8.1 | tow +0.000/-0.375 val 0.0 | XB reach=True LOCKED dmg 0.453 ans=''
-   1371   68.5s OWN play    knight       (0.14,0.55)  el  2.8 | tow +0.000/-0.386 val 2.48
-   1389   69.5s opp play    boss-bandit  (0.36,0.30)          | tow +0.386/-0.000 val 0.0
-   1433   71.7s OWN tower_damage R -0.054  crowns 0-0
-   1483   74.2s OWN play    the-log      (0.81,0.80)  el  1.6 | tow +0.000/-0.333 val 2.33
-   1485   74.2s opp play    the-log      (0.19,0.38)          | tow +0.333/-0.000 val 3.67
-   1485   74.2s OWN tower_damage R -0.321  crowns 0-0
-   1539   77.0s OWN play    skeletons    (0.31,0.55)  el  0.8 | tow +0.000/-0.012 val 3.41
-   1614   80.7s opp play    berserker    (0.42,0.27)          | tow +0.000/-0.231 val 0.0
-HIGHLIGHTS: own X-Bows 5 (reach 5: locked 3, failed 2), answered by {'none': 4, 'berserker': 1}; opp X-Bows 0; own Rockets 0 (tower 0, combo 0); falls [('own R', 4444)]; memory crowns at the last event 0-1 vs end 0-1
-SUMMARY: xb_placed_10=0.500 xb_resolved_10=0.500 xb_locked_10=0.300 xb_failed_10=0.200 xb_pending_10=0.000 xb_fails_since_lock_10=0.200 xb_mean_damage=0.227 xb_has_lock=1.000 xb_since_lock_60=1.492 xb_answered_share=0.200 rk_tower_5=0.000 rk_tower_damage=0.000 rk_all_5=0.000 rk_combo_5=0.000 | answer card berserker
-  per card: Xbow n=5 swing=-0.108 vpe=0.29 | Tesla n=4 swing=+0.035 vpe=1.05 | IceWizard n=8 swing=-0.026 vpe=0.42 | Tornado n=2 swing=-0.067 vpe=1.14 | Rocket n=0 swing=+0.000 vpe=0.00 | Knight n=7 swing=-0.123 vpe=0.74 | Log n=7 swing=-0.091 vpe=2.44 | Skeletons n=8 swing=-0.008 vpe=4.16
-
-=== live_play_20261025_105240.jsonl  side 0  ckpt ICEBOW_Mark_CLXIII_NOLEAK.pt  result LOSS 0-1  decisions 283  read 0.7s
-incremental vs offline: 283/283 decisions identical; late plays 1; 1.34 ms per decision (incremental observe + features, offline features, compare)
-events: own ability 1, opp play 24, own play 31, opp tower_damage 20, own tower_damage 9, own tower_fall 1
-unknown fields: {'xy?': 1, 'el? (own)': 0, 'value? (resolved)': 1, 'tower? (resolved)': 0}
-    419   21.0s opp play    elite-barbarians (0.47,0.03)          | tow +0.000/-0.000 val 0.0
-    443   22.2s OWN play    ice-wizard   (0.47,0.98)  el 10.0 | tow +0.000/-0.000 val 0.0
-    597   29.9s OWN play    skeletons    (0.58,0.83)  el  9.3 | tow +0.000/-0.000 val 0.0
-    629   31.5s OWN play    knight       (0.53,0.61)  el  8.9 | tow +0.000/-0.000 val 5.8
-    807   40.4s OWN play    x-bow        (0.14,0.61)  el  9.1 | tow +0.242/-0.000 val 1.11 | XB reach=True LOCKED dmg 0.455 ans=''
-    893   44.7s opp tower_damage L -0.020  crowns 0-0
-    909   45.5s opp play    mini-pekka   (0.19,0.45)          | tow +0.000/-0.415 val 4.0
-    928   46.4s opp play    witch        (0.31,0.42)          | tow +0.000/-0.395 val 3.33
-    934   46.7s OWN play    tesla        (0.39,0.56)  el  5.3 | tow +0.395/-0.000 val 9.7
-    936   46.8s opp tower_damage L -0.101  crowns 0-0
-    969   48.5s OWN play    the-log      (0.25,0.55)  el  1.8 | tow +0.334/-0.000 val 10.08
-    971   48.6s opp tower_damage L -0.081  crowns 0-0
-   1002   50.1s opp play    heal-spirit  (0.14,0.45)          | tow +0.000/-0.213 val 1.0
-   1026   51.3s OWN play    skeletons    (0.14,0.55)  el  0.6 | tow +0.213/-0.000 val 6.02
-   1028   51.4s opp tower_damage L -0.173  crowns 0-0
-   1048   52.4s opp tower_damage L -0.040  crowns 0-0
-   1068   53.4s opp tower_damage L -0.040  crowns 0-0
-   1452   72.6s opp play    elixir-collector (0.92,0.08)          | tow +0.000/-0.000 val 0.0
-   1486   74.3s OWN play    ice-wizard   (0.47,0.98)  el  8.2 | tow +0.000/-0.000 val 0.0
-   1662   83.1s OWN play    x-bow        (0.14,0.61)  el  8.3 | tow +0.000/-0.000 val 1.54 | XB reach=True LOCKED dmg 0.312 ans=''
-   1700   85.0s OWN play    knight       (0.14,0.55)  el  2.8 | tow +0.012/-0.000 val 5.4
-   1724   86.2s opp play    giant        (0.08,0.42)          | tow +0.000/-0.012 val 1.59
-   1778   88.9s opp play    mini-pekka   (0.25,0.39)          | tow +0.000/-0.012 val 3.2
-   1813   90.7s OWN play    the-log      (0.14,0.55)  el  1.8 | tow +0.072/-0.000 val 8.58
-   1842   92.1s opp play    rage         (0.25,0.52)          | tow +0.000/-0.112 val 4.78
-   1868   93.4s OWN play    skeletons    (0.42,0.55)  el  0.6 | tow +0.193/-0.000 val 7.04
-   1896   94.8s opp play    heal-spirit  (0.25,0.45)          | tow +0.000/-0.242 val 4.17
-   2003  100.2s opp tower_damage L -0.052  crowns 0-0
-   2023  101.2s opp tower_damage L -0.040  crowns 0-0
-   2043  102.2s opp tower_damage L -0.061  crowns 0-0
-   2063  103.2s opp tower_damage L -0.040  crowns 0-0
-   2083  104.2s opp tower_damage L -0.061  crowns 0-0
-   2113  105.7s opp tower_damage L -0.029  crowns 0-0
-   2143  107.2s opp tower_damage L -0.029  crowns 0-0
-   2213  110.7s opp play    elixir-collector (0.53,0.23)          | tow +0.000/-0.000 val 0.0
-   2343  117.2s OWN play    ice-wizard   (0.47,0.98)  el  8.4 | tow +0.000/-0.000 val 0.0
-   2449  122.5s opp play    witch        (0.03,0.05)          | tow +0.000/-0.000 val 0.0
-   2463  123.2s OWN play    x-bow        (0.14,0.61)  el  8.2 | tow +0.000/-0.000 val 2.43 | XB reach=True FAILED dmg 0.012 ans=''
-   2475  123.8s OWN ability ice-wizard   (?)          el  3.2 | tow +0.000/-0.000 val ?
-   2537  126.9s OWN play    knight       (0.08,0.55)  el  2.9 | tow +0.012/-0.000 val 3.42
-HIGHLIGHTS: own X-Bows 3 (reach 3: locked 2, failed 1), answered by {'none': 3}; opp X-Bows 0; own Rockets 0 (tower 0, combo 0); falls [('own L', 3699)]; memory crowns at the last event 0-1 vs end 0-1
-SUMMARY: xb_placed_10=0.300 xb_resolved_10=0.300 xb_locked_10=0.200 xb_failed_10=0.100 xb_pending_10=0.000 xb_fails_since_lock_10=0.100 xb_mean_damage=0.260 xb_has_lock=1.000 xb_since_lock_60=1.753 xb_answered_share=0.000 rk_tower_5=0.000 rk_tower_damage=0.000 rk_all_5=0.000 rk_combo_5=0.000 | answer card none
-  per card: Xbow n=3 swing=+0.081 vpe=0.28 | Tesla n=3 swing=+0.117 vpe=1.48 | IceWizard n=6 swing=-0.057 vpe=0.60 | Tornado n=1 swing=-0.432 vpe=2.52 | Rocket n=0 swing=+0.000 vpe=0.00 | Knight n=6 swing=+0.081 vpe=2.48 | Log n=6 swing=+0.124 vpe=4.38 | Skeletons n=6 swing=+0.067 vpe=5.54
-
-=== live_play_20261025_104836.jsonl  side 1  ckpt ICEBOW_Mark_CLXIII_NOLEAK.pt  result WIN 1-0  decisions 373  read 0.9s
-incremental vs offline: 373/373 decisions identical; late plays 3; 2.20 ms per decision (incremental observe + features, offline features, compare)
-events: own ability 3, opp play 26, own play 38, opp tower_damage 28, own tower_damage 9, opp tower_fall 1
-unknown fields: {'xy?': 3, 'el? (own)': 0, 'value? (resolved)': 3, 'tower? (resolved)': 0}
-    183    9.2s OWN play    skeletons    (0.47,0.98)  el  8.8 | tow +0.012/-0.000 val 0.0
-    207   10.4s opp play    valkyrie     (0.19,0.45)          | tow +0.000/-0.012 val 0.0
-    233   11.7s OWN play    the-log      (0.19,0.55)  el  8.7 | tow +0.012/-0.000 val 4.47
-    243   12.2s opp play    mini-pekka   (0.19,0.45)          | tow +0.000/-0.012 val 0.0
-    263   13.2s OWN play    knight       (0.42,0.67)  el  7.2 | tow +0.012/-0.000 val 3.68
-    293   14.7s OWN play    ice-wizard   (0.03,0.77)  el  4.8 | tow +0.012/-0.000 val 2.19
-    347   17.4s OWN ability ice-wizard   (?)          el  3.1 | tow +0.000/-0.000 val ?
-    473   23.7s OWN play    tornado      (0.25,0.55)  el  2.6 | tow +0.000/-0.000 val 2.75
-    676   33.8s opp play    barbarian-barrel (0.19,0.28)          | tow +0.000/-0.000 val 1.12
-    722   36.1s opp play    dark-prince  (0.20,0.46)          | tow +0.000/-0.000 val 2.26
-    784   39.2s OWN play    tesla        (0.50,0.69)  el  5.5 | tow +0.000/-0.000 val 4.14
-    810   40.5s OWN play    skeletons    (0.42,0.55)  el  2.0 | tow +0.000/-0.000 val 4.29
-   1195   59.8s opp play    witch        (0.47,0.02)          | tow +0.000/-0.000 val 0.0
-   1219   61.0s OWN play    x-bow        (0.53,0.70)  el  8.3 | tow +0.000/-0.000 val 0.0 | XB reach=False  ans=''
-   1329   66.5s opp play    royal-recruits (0.47,0.45)          | tow +0.000/-0.012 val 0.0
-   1383   69.2s OWN play    ice-wizard   (0.42,0.80)  el  5.2 | tow +0.012/-0.000 val 0.05
-   1413   70.7s OWN play    the-log      (0.19,0.55)  el  2.7 | tow +0.012/-0.044 val 7.17
-   1473   73.7s OWN ability ice-wizard   (?)          el  2.1 | tow +0.012/-0.221 val ?
-   1475   73.8s opp tower_damage L -0.023  crowns 0-0
-   1611   80.6s OWN tower_damage L -0.044  crowns 0-0
-   1631   81.6s OWN tower_damage L -0.044  crowns 0-0
-   1631   81.6s OWN tower_damage R -0.044  crowns 0-0
-   1661   83.1s OWN tower_damage L -0.044  crowns 0-0
-   1661   83.1s OWN tower_damage R -0.044  crowns 0-0
-   1883   94.2s opp play    valkyrie     (0.19,0.45)          | tow +0.063/-0.000 val 3.67
-   1926   96.3s opp play    mini-pekka   (0.25,0.45)          | tow +0.063/-0.000 val 2.37
-   1933   96.7s OWN play    knight       (0.08,0.83)  el  7.9 | tow +0.000/-0.063 val 2.83
-   1982   99.1s OWN play    tesla        (0.50,0.66)  el  5.9 | tow +0.000/-0.063 val 6.37
-   2008  100.4s OWN play    skeletons    (0.42,0.55)  el  2.3 | tow +0.000/-0.063 val 7.37
-   2040  102.0s OWN tower_damage L -0.032  crowns 0-0
-   2060  103.0s OWN tower_damage L -0.032  crowns 0-0
-   2218  110.9s opp play    dark-prince  (0.47,0.17)          | tow +0.000/-0.000 val 0.0
-   2386  119.3s opp play    bats         (0.31,0.45)          | tow +0.000/-0.000 val 0.0
-   2398  119.9s OWN play    ice-wizard   (0.42,0.77)  el  8.3 | tow +0.000/-0.000 val 3.38
-   2424  121.2s OWN play    the-log      (0.19,0.64)  el  5.7 | tow +0.000/-0.000 val 6.0
-   2568  128.4s opp play    witch        (0.47,0.02)          | tow +0.000/-0.000 val 0.0
-   2594  129.7s OWN play    x-bow        (0.14,0.61)  el  9.7 | tow +0.000/-0.000 val 3.55 | XB reach=True FAILED dmg 0.012 ans='valkyrie'
-   2644  132.2s OWN play    knight       (0.08,0.55)  el  4.9 | tow +0.000/-0.000 val 4.83
-   2659  133.0s opp play    valkyrie     (0.19,0.45)          | tow +0.000/-0.000 val 3.68 [answers X-Bow]
-   2709  135.5s OWN play    tesla        (0.39,0.56)  el  4.2 | tow +0.000/-0.000 val 3.62
-HIGHLIGHTS: own X-Bows 4 (reach 3: locked 2, failed 1), answered by {'none': 3, 'valkyrie': 1}; opp X-Bows 0; own Rockets 1 (tower 1, combo 0); falls [('opp L', 4529)]; memory crowns at the last event 1-0 vs end 1-0
-SUMMARY: xb_placed_10=0.400 xb_resolved_10=0.300 xb_locked_10=0.200 xb_failed_10=0.100 xb_pending_10=0.000 xb_fails_since_lock_10=0.000 xb_mean_damage=0.371 xb_has_lock=1.000 xb_since_lock_60=0.863 xb_answered_share=0.250 rk_tower_5=0.200 rk_tower_damage=0.016 rk_all_5=0.200 rk_combo_5=0.000 | answer card valkyrie
-  per card: Xbow n=4 swing=+0.073 vpe=0.22 | Tesla n=6 swing=+0.087 vpe=1.03 | IceWizard n=7 swing=+0.098 vpe=0.27 | Tornado n=1 swing=+0.000 vpe=0.92 | Rocket n=1 swing=+0.000 vpe=0.00 | Knight n=6 swing=+0.071 vpe=1.50 | Log n=6 swing=+0.108 vpe=3.00 | Skeletons n=7 swing=+0.114 vpe=3.39
-
 all matches: incremental != offline at 0 decisions
+X-Bow answers (lane + 12 tiles, 4 s): own X-Bows 26, with any opponent play in 4 s 21, answered by the rule 14

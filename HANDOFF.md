@@ -1,3 +1,14 @@
+## 2026-10-25 13:01 EDT -- Plan A S1b DONE (memory wired into model / pro data / rollouts / live; zero-init identity exact; smokes PASS); S4 X-Bow denial measured SIM vs live
+
+- S1b: memory: v1 flag, zero-init encoder (CLXIII identity: max |diff| 0 on 2,500 rows), per-match event tables, pro builder,
+  rollout + learner memory, live_gen own-play x / y / form (live replay == offline on 2,174 decisions). Smokes PASS on 33912
+  /workspace/cb_mem (HEAD + S1b) with and without memory. Details memory/LEDGER.md.
+- The live supervisor restarted a Bait run at 11:51 EDT with the then-uncommitted S1b files loaded (inert for no-memory models);
+  owner stopped live 12:15. Icebow settings untouched.
+- S4 (owner: lock rates swing by matchup / skill): SIM mean lock (R3 0.563) = live CLX (0.565), but live shut-out matches (0 locks)
+  9-16% vs SIM 3-7%, and live archetypes swing more (CLX control 0.42; CLXIII bridge 0.22). Pool target = tails, not the mean.
+- Owner: Rocket cycling only works with near-perfect defence and a small damage gap -> metrics conditional on the OT entry margin.
+- Next: build the pro memory tables (33912), S3 imitation warm-start, S4 denier opponent (R4) for the shut-out tail.
 ## 2026-10-25 11:10 EDT -- Plan A S0 done (4 new pods restored), S1a memory builder done; S1b wiring in progress
 
 - New pods (owner): 33912 2x4090 (108.8 vCPU), 33522 / 33569 / 33458 1x4090 (54.4 each). Restored from the verified archive

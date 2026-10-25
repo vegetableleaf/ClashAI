@@ -1,0 +1,6 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+G-mem-0: 2500 real rows (813 play rows) from gen_dataset_v32_fv5.npz prefix; CLXIII vs CLXIII + memory v1 (random memory inputs, every 7th row empty)
+  max |diff|: gate 0 card 0 cell 0 value 0 -> PASS (< 1e-6)
+  memory encoder parameters: 330,536 (base model 1,759,432)
+  liveness: output-layer grad norm at init 4.72e+03 (> 0 = it can learn); perturbed output layer moves the gate logit by up to 1.93

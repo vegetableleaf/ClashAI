@@ -1229,7 +1229,7 @@ def load_ability_head(path, device: str = "cpu") -> Optional[dict]:
 def trunk_g(model, B: dict, idx) -> torch.Tensor:
     """The trunk feature g of rows ``idx`` (S1 encode or GenModel encode_gen, as policy_terms)."""
     if "hand_card" in B:
-        return model.encode_gen({k: B[k][idx] for k in E.gen_row_keys(model)})["g"]
+        return model.encode_gen(E.gen_batch(model, B, idx))["g"]
     return model.encode(B["tok"][idx], B["mask"][idx], B["sc"][idx], B["past"][idx])["g"]
 
 
@@ -2051,6 +2051,13 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
     B["A"] = cat(lambda j: np.full(n_rows[j], A[j]))
     B["w"] = cat(lambda j: W[j])
     B["match"] = cat(lambda j: np.full(n_rows[j], j))
+    if use and "mem_t" in results[use[0]]["traj"]:                   # Plan A memory model: per-match event tables +
+        from pipeline.match_memory import pack                        # per-row ticks (e1_eval.gen_batch rebuilds the
+        if any("memory" not in results[j] for j in use):              # rows' memory inputs by match_memory.features_at)
+            raise ValueError("memory rows without their match's event table (result['memory'])")
+        B.update({"mem_tab_" + k: v for k, v in pack([results[j]["memory"] for j in use]).items()})
+        B["mem_row_tab"] = cat(lambda j: np.full(n_rows[j], use.index(j), dtype=np.int64))
+        B["mem_row_t"] = cat(lambda j: results[j]["traj"]["mem_t"][keep[j]])
     if use and "ctx" in results[use[0]]["traj"]:                     # critic_ctx: actor_cfg record_ctx rows
         B["ctx"] = cat(lambda j: results[j]["traj"]["ctx"][keep[j]])
     if use and "elixir" in results[use[0]]["traj"]:                  # F6': actor_cfg record_elixir rows
@@ -2248,6 +2255,9 @@ def gen_v3val_arrays(path: Path, n: int = 0) -> tuple[dict, dict]:
 def to_device(B: dict, dev) -> dict:
     out = {}
     for k, v in B.items():
+        if k.startswith(("mem_tab_", "mem_row_")):          # Plan A memory tables: CPU numpy (e1_eval.gen_batch reads them)
+            out[k] = v
+            continue
         t = torch.from_numpy(np.ascontiguousarray(v))
         out[k] = t.to(dev)
     return out
@@ -2274,7 +2284,7 @@ def policy_terms(model, B: dict, idx, tau: float, T: float, value: bool = False,
     ``ctx_head`` (critic_ctx): ``v`` also adds the ``CtxHead`` residual on ``B["ctx"]`` (same g, same detach rule)."""
     if "hand_card" in B:
         pol = E.GenPolicy(model, ())
-        enc, heads = pol.heads_t({k: B[k][idx] for k in E.gen_row_keys(model)})
+        enc, heads = pol.heads_t(E.gen_batch(model, B, idx))
         cell_of = pol.cell_logits
     else:
         tok, mask, sc, past = B["tok"][idx], B["mask"][idx], B["sc"][idx], B["past"][idx]
@@ -2319,7 +2329,7 @@ def value_rows(model, B: dict, chunk: int = 512, ctx_head=None) -> torch.Tensor:
     for s in range(0, N, chunk):
         idx = torch.arange(s, min(s + chunk, N), device=B["A"].device)
         if "hand_card" in B:
-            enc = model.encode_gen({k: B[k][idx] for k in E.gen_row_keys(model)})
+            enc = model.encode_gen(E.gen_batch(model, B, idx))
         else:
             enc = model.encode(B["tok"][idx], B["mask"][idx], B["sc"][idx], B["past"][idx])
         out.append(value_scalar(critic_logits(model, enc["g"], ctx_head,
@@ -2338,7 +2348,7 @@ def posture_snapshot(model, head, B: dict, chunk: int = 512) -> Optional[dict]:
     for s in range(0, len(ch), chunk):
         c = ch[s:s + chunk]
         if "hand_card" in B:
-            gs.append(model.encode_gen({k: B[k][c] for k in E.gen_row_keys(model)})["g"])
+            gs.append(model.encode_gen(E.gen_batch(model, B, c))["g"])
         else:
             gs.append(model.encode(B["tok"][c], B["mask"][c], B["sc"][c], B["past"][c])["g"])
     g = torch.cat(gs)
@@ -3255,6 +3265,20 @@ def _cancel_join(q) -> None:
 # ------------------------------------------------------------------------------------------------------
 # config, paths, logging
 # ------------------------------------------------------------------------------------------------------
+def memory_cfg(cfg: dict) -> Optional[str]:
+    """Plan A ``memory``: absent / null = off (no key in the hash, every code path unchanged), "v1" = the learner gets a
+    match-memory encoder (model_gen.add_memory, zero-output at init: = the init policy) and its rollouts record per-match
+    event tables (e1_eval.Match._memory); anything else is refused, and so are the paths memory is not wired for."""
+    from pipeline.model_gen import memory_flag
+    try:
+        m = memory_flag(cfg.get("memory"))
+    except ValueError as exc:
+        raise SystemExit(str(exc))
+    if m is not None and cfg.get("branch_gate"):
+        raise SystemExit("memory v1 is not wired for branch_gate (opt3 branch rows carry no memory tables)")
+    return m
+
+
 def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
     import yaml
     cfg = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
@@ -3272,7 +3296,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                               "league_exploiters", "cue_inputs", "opp_tower_troops", "live_levels", "league_opp_live",
                               "heroiw_press", "ability_features", "kl_heads", "kl_ref_card", "league_deck_weights",
                               "ot_start_share", "xbow_start_share", "remote_actors", "kl_ref_refresh_every",
-                              "tau_phase") + OPP_TEMPO_KEYS
+                              "tau_phase", "memory") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS and k not in CROWN_KEYS
                 and k not in HT.KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
@@ -3310,6 +3334,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
     if ra is not None and not (isinstance(ra, str) and (REPO / ra).is_file()):
         raise SystemExit(f"remote_actors must be null or an endpoints file (one host:port per line), got {ra!r}")
     tau_phase_cfg(cfg)                                        # 10-23: absent = no-op
+    memory_cfg(cfg)                                           # Plan A memory: absent / null = no memory = no-op
     rr = cfg.get("kl_ref_refresh_every")                     # W16 moving KL anchor: absent / null = the frozen init
     if rr is not None and not (type(rr) is int and rr >= 1):
         raise SystemExit(f"kl_ref_refresh_every must be null or an int >= 1, got {rr!r}")
@@ -3359,6 +3384,8 @@ def config_sha(cfg: dict) -> str:
         cfg = {k: v for k, v in cfg.items() if k != "league_deck_weights"}
     if cfg.get("kl_ref_refresh_every") is None:              # W16 moving anchor off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "kl_ref_refresh_every"}
+    if cfg.get("memory") is None:                            # Plan A memory off (absent or null) = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "memory"}
     if cfg.get("tau_phase") is None:                         # 10-23 tau_phase off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "tau_phase"}
     else:                                                     # on: floats, one hash for [.35, .45, .55] and (.35, ...)
@@ -3542,6 +3569,11 @@ class Learner:
             E.require_cue_runtime()
             if getattr(self.model, "cue_in", None) is None:
                 self.model.add_cue_in()
+        if memory_cfg(cfg) is not None:                       # Plan A memory v1: a ZERO-output memory encoder on the init
+            if not self.gen or int(self.gen.get("feature_version", 1)) < 4:   # (kept if the init has one); the rollouts
+                raise SystemExit("memory v1 needs a generalist init with feature_version >= 4")   # then record tables
+            if getattr(self.model, "mem", None) is None:
+                self.model.add_memory()
         self.init_meta = {"args": dict(ick["args"]), "deck": ick["deck"], "epoch": ick["epoch"], "n_params": ick["n_params"]}
         self.grid = self.minfo["grid"]
         self.league = None                                    # league on: {"snapshots": [{id, update, path}]}
@@ -3652,6 +3684,7 @@ class Learner:
         names = list(ABILITY_CARDS) + ["other"]
         rows = {k: [] for k in ("feat", "q")}
         inp: dict = {}
+        tabs: list = []
         cards: Counter = Counter()
         for r in res:
             tj = r["traj"]
@@ -3661,7 +3694,12 @@ class Learner:
             rows["feat"].append(tj["ab_feat"][c])
             rows["q"].append(tj["ab_q"][c])
             for k in (E.gen_row_keys(self.model) if "hand_card" in tj else ("tok", "mask", "sc", "past")):
-                inp.setdefault(k, []).append(tj[k][c])
+                if not k.startswith("mem_"):                  # Plan A memory model: its rows are rebuilt from the
+                    inp.setdefault(k, []).append(tj[k][c])    # match tables (e1_eval.gen_batch), as in collate
+            if "mem_t" in tj:
+                inp.setdefault("mem_row_tab", []).append(np.full(int(c.sum()), len(tabs), dtype=np.int64))
+                inp.setdefault("mem_row_t", []).append(tj["mem_t"][c])
+                tabs.append(r["memory"])
             cards.update(names[i] for i in tj["ab_feat"][c][:, 18:18 + len(names)].argmax(1))
         nl = int(sum(len(x) for x in rows["q"]))
         if not nl:
@@ -3669,7 +3707,11 @@ class Learner:
             self.log(f"[rl] ability_head warm start: {len(res)} rule rollouts, NO pressable decision -- head kept at "
                      f"its init (P(press) {ABILITY_P0})")
             return
-        B = to_device({k: np.concatenate(v) for k, v in inp.items()}, self.dev)
+        B = {k: np.concatenate(v) for k, v in inp.items()}
+        if tabs:
+            from pipeline.match_memory import pack
+            B.update({"mem_tab_" + k: v for k, v in pack(tabs).items()})
+        B = to_device(B, self.dev)
         with torch.no_grad():
             g = torch.cat([trunk_g(self.model, B, torch.arange(s, min(s + 512, nl), device=self.dev))
                            for s in range(0, nl, 512)])
@@ -3857,7 +3899,8 @@ class Learner:
         if sig(gck) != sig(ick):
             raise SystemExit(f"{key} {ck}: gen / d_c / card_vocab / grid differ from the init's")
         net = self._load_net(path)
-        if E.gen_row_keys(net) != E.gen_row_keys(self.model):
+        if [k for k in E.gen_row_keys(net) if not k.startswith("mem_")] != [   # a memory learner: the anchor reads
+                k for k in E.gen_row_keys(self.model) if not k.startswith("mem_")]:   # the same rows minus memory
             raise SystemExit(f"{key} {ck}: row inputs differ from the init's (feature_version "
                              f"{net.feature_version} vs {self.model.feature_version})")
         for p in net.parameters():
@@ -3897,6 +3940,10 @@ class Learner:
                 if fv >= 4 and int(meta.get('feature_version', 1)) != want:
                     raise SystemExit(f'v3.1+ pro-agreement for an fv{fv} model requires public-only fv{want} data')
                 self._rows = GenRows(arrs, np.arange(len(arrs["y_gate"])), self.dev)
+            if getattr(model, "mem", None) is not None and self._rows.memory is None:
+                self._rows.memory = "empty"                   # Plan A: no pro event tables wired here yet (S3) -> the
+                self.log("[rl] proagree: memory model scored with an EMPTY memory (no pro event tables for "   # memory
+                         "proagree_data_gen yet)")            # model is scored on the pro rows with no events
             ev = evaluate_gen(model, self._rows, grid=self.grid)
             model.eval()
             return {k: (float(v) if isinstance(v, (float, np.floating)) else v) for k, v in ev.items()}
@@ -3953,6 +4000,8 @@ class Learner:
                "rl": self._rl_state()}
         if getattr(self, "gen", None):                       # train_gen's keys: eval_gen / e1_eval.load_policy load it
             out.update({"gen": True, "d_c": int(self.gen["d_c"]), "card_vocab": list(self.gen["card_vocab"])})
+        if getattr(self.model, "mem", None) is not None:     # Plan A: the model flag (the weights also build it on load)
+            out["memory"] = "v1"
         return out
 
     def _atomic_save(self, obj: dict, path: Path) -> None:

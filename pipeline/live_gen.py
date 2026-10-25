@@ -156,6 +156,9 @@ class GenPilot:
                  hero_ability_spec: str = "off"):
         self.model, st = load_model(ckpt, torch.device(device))
         self.model.eval()
+        if getattr(self.model, "mem", None) is not None:     # Plan A memory: imports + card tables now, not at the first
+            from .match_memory import warm                    # decision of the first match
+            warm()
         self.feature_version = int(st["args"].get("feature_version", 1))
         from .dataset_gen import checkpoint_gid
         self.gid = checkpoint_gid(st["card_vocab"])          # 0 = <pad>; + stand-ins for cards newer than the vocab
@@ -202,6 +205,7 @@ class GenPilot:
 
     def reset_match(self) -> None:
         self.pending_plays = []
+        self.mem = None                      # Plan A match memory: one per match
         self.__dict__.pop("_fails", None)    # W21 10-22: the lost-spot blocks hold game ticks of THIS match (they leaked into the next)
         self.ui_blocked = None
         if getattr(self, "cues", None) is not None:
@@ -255,7 +259,10 @@ class GenPilot:
                                     tick=round(t_sec / .05)))
         if getattr(self,'feature_version',1)>=4 and self.public is not None:
             name=next(k for k,v in self.gid.items() if v==card)
-            self.public.own_events.append(dict(card=name,tick=round(t_sec/.05),side=self.public.side,accepted=True,ability=False))
+            from .match_memory import engine_xy             # Plan A: + the play's engine position and form (match memory)
+            x, y = engine_xy(float(xy[0]), float(xy[1]), self.public.side)
+            self.public.own_events.append(dict(card=name,tick=round(t_sec/.05),side=self.public.side,accepted=True,ability=False,
+                                               form=int(form), x=x, y=y))
 
     def record_ability(self, card: str, tick: int, *, accepted: bool=True) -> None:
         """Feed the confirmed OWN live press log; never call on an attempted tap."""
@@ -264,6 +271,28 @@ class GenPilot:
                                     tick=self.frames[-1][0] if self.frames else int(tick)))
         if getattr(self,'feature_version',1)>=4 and self.public is not None and accepted:
             self.public.own_events.append(dict(card=card,tick=int(tick),side=self.public.side,accepted=True,ability=True))
+
+    def memory_rows(self, frame: Mapping[str, Any], side: int, deck_ids) -> dict:
+        """Plan A memory v1: feed this match's MatchMemory the decision's RAW (un-extrapolated, hero-deduped) reader frame --
+        crown towers (live_mem.to_observe's rule), own elixir (players.elixir_raw), the public bodies (public_frame
+        'reader') -- and the public play lists (PublicObserver.plays + own_events from record_play / record_ability),
+        -> match_memory.MatchMemory.features at the frame tick (MEM_KEYS numpy arrays). A new PublicObserver, a tick going
+        backwards or reset_match starts a new memory."""
+        from . import match_memory as MM
+        from .live_mem import to_observe
+        from .public_observation import public_frame
+        if self.public is None:
+            raise ValueError('observe() must receive reader frames before a memory row')
+        t = int(frame["game_tick"])
+        mem = getattr(self, "mem", None)
+        if mem is None or mem.side != side or getattr(self, "_mem_pub", None) is not self.public or (mem.t and t < mem.t[-1]):
+            self.mem, self._mem_pub = MM.MatchMemory(side), self.public
+        me = next(p for p in frame["players"] if int(p["side"]) == side)
+        _, names = deck_of(frame, side)
+        tw, al = MM.tower_reads_engine(to_observe(frame, side, names)["episode"]["crown_towers"], side)
+        self.mem.observe(t, tw, al, elixir=me["elixir_raw"] / 10000.0, units=public_frame(frame, source="reader")["entities"],
+                         plays=list(self.public.plays) + list(self.public.own_events))
+        return self.mem.features(t, self.gid, deck_ids)
 
     def stalled(self, frame: Mapping[str, Any], el_int: float) -> bool:
         """e1_eval.anti_stall on the REAL frame tick (SIM: the decision / landing clock stays real) and the elixir of
@@ -369,6 +398,10 @@ class GenPilot:
                 for key, value in self.public.features(int(frame['game_tick']), self.gid,
                         objects_override=frame.get('extrapolated_public_objects')).items():
                     b[key] = T(value, torch.float32)
+                if getattr(self.model, "mem", None) is not None:          # Plan A memory v1: the RAW frame's memory
+                    for key, value in self.memory_rows(raw_frame, side, np.asarray(deck)[order]).items():
+                        b[key] = T(value, torch.float32 if value.dtype == np.float32 else torch.long if
+                                   value.dtype == np.int64 else torch.bool)
                 if getattr(self, "hero_ability_spec", "off") != "off":   # same rows / events / tick as features()
                     from bisect import bisect_right
                     from .own_ability import tokens

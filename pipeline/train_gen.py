@@ -81,6 +81,9 @@ def losses(model: GenModel, b: dict, mirror: bool, grid: str = "floor", rocket_c
                     known = known & (obj[..., 4] >= 0) & (obj[..., 5] >= 0)
                 obj[..., col] = torch.where(known, 1-obj[..., col], obj[..., col])
             b[key] = obj
+    if mirror and "mem_ev" in b:                         # Plan A memory v1: events' own-frame x and tower lane mirrored too
+        from .match_memory import mirror_ev
+        b = dict(b, mem_ev=mirror_ev(b["mem_ev"]))
     play = b["gate"] > 0.5
     out = model(dict(b, tok=tok, sc=sc, past=past), card=b["card"], form=b["form"])
     parts = {}

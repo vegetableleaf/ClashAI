@@ -344,3 +344,116 @@ def test_summary_per_card_block():
     xb, sk = dict(zip(M.CARD_FIELDS, blk[0])), dict(zip(M.CARD_FIELDS, blk[DECK.index('Skeletons')]))
     assert xb['plays_10'] == pytest.approx(.3) and xb['swing_known'] == 1
     assert sk['plays_10'] == pytest.approx(.1) and blk[DECK.index('Tesla')].tolist() == [0.0] * len(M.CARD_FIELDS)
+
+
+# ------------------------------------------------------------------------------------------------------------ S1b
+def test_xbow_answer_lane_and_distance():
+    """Lead 10-25: the answer is the other side's first on-time play in 4 s in the X-Bow's LANE within 12 tiles; its
+    distance is a field. A closer play in the OTHER lane, a far one (> 12 tiles) and a late-reported one are not answers."""
+    sm = samples(range(0, 1000, 10))
+    xb = dict(tick=100, side=0, card='Xbow', x=14500, y=13000)                  # own frame x 0.81 (right lane)
+    plays = [xb, dict(tick=110, side=1, card='Knight', x=8500, y=13000),       # x 0.47: other lane, 1.7 tiles away
+             dict(tick=120, side=1, card='Valkyrie', x=14500, y=26000),        # right lane, 13 tiles: too far
+             dict(tick=130, side=1, card='Minipekka', x=11000, y=17000, seen=200),   # late report: never an answer
+             dict(tick=140, side=1, card='Musketeer', x=12000, y=20000)]       # right lane, sqrt(2.5^2 + 7^2) = 7.4
+    ev = M.build(0, sm, plays).events(999)
+    x = next(e for e in ev if e['card'] == 'x-bow')
+    assert x['answer'] == 'musketeer' and x['ans_dist'] == pytest.approx(np.hypot(2.5, 7.0))
+    f = M.build(0, sm, plays).features(999, GID)
+    r = row(f, int(np.flatnonzero(f['mem_card'] == GID['x-bow'])[0]))
+    assert r['xb_answered'] == 1 and r['xb_answer_dist_12'] == pytest.approx(np.hypot(2.5, 7.0) / 12, rel=1e-6)
+    assert sum(bool(e.get('is_answer')) for e in ev) == 1
+
+
+def test_building_value_counted():
+    """Lead 10-25: a building counts as value removed at its card cost x hp fraction (habit_terms.body_value leaves it out)."""
+    tesla = lambda t: [unit(5, 1, 'Tesla', 1000 if t < 150 else 500, 1000, 9000, 20000)]     # noqa: E731
+    m = M.build(0, samples(range(0, 600, 10), units=tesla), [dict(tick=100, side=0, card='Knight', x=9000, y=19000)])
+    o = next(e for e in m.events(301) if e.get('card') == 'knight')['out']
+    assert HT.body_value('tesla', 1000, 1000, {}) is None
+    assert o['value'] == pytest.approx(HT.play_cost('tesla') * 0.5)
+
+
+def rich_match(seed):
+    """X-Bows at the bridge, answers in lane, Rockets with Tornados around them, late own presses: every table group fires."""
+    rng = np.random.default_rng(seed)
+    side, sm, plays = rand_match(seed)
+    for k in range(12):
+        t0 = int(rng.integers(100, 3500))
+        lane = 3500 if rng.random() < .5 else 14500
+        xs = int(rng.integers(2))
+        plays.append(dict(tick=t0, side=xs, card='Xbow', x=lane, y=13000 if xs == 0 else 19000))
+        if rng.random() < .7:
+            plays.append(dict(tick=t0 + int(rng.integers(1, 90)), side=1 - xs, card='Knight', x=lane + 500,
+                              y=15000 if xs == 0 else 17000))
+        tr = int(rng.integers(100, 3500))
+        plays.append(dict(tick=tr, side=side, card='Rocket', x=lane, y=25500 if side == 0 else 6500))
+        plays.append(dict(tick=tr + int(rng.integers(-45, 45)), side=side, card='Tornado', x=lane, y=20000))
+        tl = int(rng.integers(100, 3500))
+        plays.append(dict(tick=tl, side=side, card='IceWizard', ability=True, seen=tl + int(rng.integers(0, 60))))
+    return side, sm, plays
+
+
+def test_features_at_equals_match_memory():
+    """The stored per-match table + features_at rebuild MatchMemory.features at every decision tick, bit for bit."""
+    n = 0
+    for seed in range(5):
+        side, sm, plays = rich_match(300 + seed)
+        m = M.build(side, sm, plays)
+        tab = m.table(GID)
+        deck = [GID.get(M.card_key(c), 0) for c in DECK]
+        ticks = [s['tick'] for s in sm] + [s['tick'] + 7 for s in sm[::5]]
+        fa = M.features_at(tab, ticks, deck)
+        for i, t in enumerate(ticks):
+            ref = m.features(t, GID, deck)
+            for k in M.MEM_KEYS:
+                assert np.array_equal(fa[k][i], ref[k]), (seed, t, k)
+            n += 1
+        ev = m.events(10 ** 6)
+        assert any(e.get('answer') for e in ev) and any(e.get('rk') and e['rk']['combo'] for e in ev)
+        assert any(e.get('is_answer') for e in ev) and any(e['seen'] > e['tick'] for e in ev if 'seen' in e)
+    assert n > 1000
+
+
+def test_table_does_not_leak_into_later_features():
+    """table() computes still-open windows from the samples so far; a later features(t) must not reuse those values."""
+    side, sm, plays = rich_match(7)
+    cut = sm[len(sm) // 2]['tick']
+    inc = M.MatchMemory(side)
+    for s in sm:
+        if s['tick'] == cut:
+            inc.table(GID)                                      # mid-match (a misuse, but it must stay harmless)
+        inc.observe(**s, plays=[p for p in plays if p['tick'] <= s['tick'] and p.get('seen', p['tick']) <= s['tick']])
+    off = M.build(side, sm, plays)
+    assert all(same(inc.features(s['tick'], GID, DECK), off.features(s['tick'], GID, DECK)) for s in sm)
+
+
+def test_pack_and_rows_features():
+    """Several matches packed into one table set; rows in any order and across matches get their own match's features."""
+    mms = [M.build(*rich_match(400 + s)[:1], *rich_match(400 + s)[1:]) for s in range(3)]
+    packed = M.pack([m.table(GID) for m in mms])
+    deck = np.array([GID.get(M.card_key(c), 0) for c in DECK])
+    rng = np.random.default_rng(0)
+    row_tab = rng.integers(0, 3, 50)
+    row_t = rng.integers(0, 4200, 50)
+    row_deck = np.tile(deck, (50, 1))
+    ids = rng.permutation(50)[:30]
+    got = M.rows_features(packed, row_tab, row_t, row_deck, ids)
+    for i, r in enumerate(ids):
+        ref = mms[row_tab[r]].features(int(row_t[r]), GID, deck)
+        assert all(np.array_equal(got[k][i], ref[k]) for k in M.MEM_KEYS)
+    e = M.empty_rows(4)
+    assert e['mem_mask'].sum() == 0 and e['mem_ev'].shape == (4, M.E_MAX, M.F) and e['mem_summary'].shape == (4, M.S)
+
+
+def test_mirror_ev():
+    """train_gen's mirror: x -> 1 - x where known, tower L <-> R, twice = identity, pads unchanged."""
+    side, sm, plays = rich_match(9)
+    f = M.build(side, sm, plays).features(10 ** 6, GID)
+    ev = f['mem_ev']
+    m = M.mirror_ev(ev)
+    k = ev[:, C['xy_known']] == 1
+    assert k.any() and np.allclose(m[k, C['x']], 1 - ev[k, C['x']]) and np.array_equal(m[~k, C['x']], ev[~k, C['x']])
+    assert np.array_equal(m[:, C['tower_l']], ev[:, C['tower_r']]) and np.allclose(M.mirror_ev(m), ev, atol=1e-6)
+    import torch
+    assert torch.equal(M.mirror_ev(torch.from_numpy(ev)), torch.from_numpy(m))

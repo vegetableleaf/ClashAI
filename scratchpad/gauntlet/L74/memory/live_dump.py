@@ -30,6 +30,7 @@ from pipeline.reader_identity_aliases import dedupe_hero_bodies  # noqa: E402
 LOGS = REPO / 'scratchpad/gauntlet/L68/live_reader'
 TOWER_SLOTS = ((9000, 3000), (3500, 6500), (14500, 6500), (9000, 29000), (3500, 25500), (14500, 25500))
 DECK = ['Xbow', 'Tesla', 'IceWizard', 'Tornado', 'Rocket', 'Knight', 'Log', 'Skeletons']
+ANS = []                                     # per match: (own X-Bows, with an opponent play in 4 s, answered by the rule)
 
 
 def read(path):
@@ -110,7 +111,7 @@ def line(e, t0):
         xb = e.get('xb')
         s += f" | XB reach={bool(e['reach'])} " + ('' if not e['reach'] else 'pending' if xb is None else
                                                     ('LOCKED' if xb['locked'] else 'FAILED') + f" dmg {xb['damage']:.3f}")
-        s += f" ans={e.get('answer')!r}"
+        s += f" ans={e.get('answer')!r}" + (f" @{e['ans_dist']:.1f}t" if e.get('answer') else '')
     if e.get('is_answer'):
         s += ' [answers X-Bow]'
     if 'aim' in e:
@@ -161,6 +162,8 @@ def one(path):
     lk = [e for e in rch if e.get('xb') and e['xb']['locked']]
     fl = [e for e in rch if e.get('xb') and not e['xb']['locked']]
     ans = Counter(e['answer'] or 'none' for e in oxb if e.get('answer') is not None)
+    any4 = sum(any(not q['mine'] and x['tick'] < q['tick'] <= x['tick'] + M.XB_ANSWER_T for q in pl) for x in oxb)
+    ANS.append((len(oxb), any4, sum(bool(e.get('answer')) for e in oxb)))
     rks = [e for e in pl if e['card'] == 'rocket' and e['mine']]
     falls = [(('own' if e['mine'] else 'opp') + ' ' + 'KLR'[e['tower'] % 3], e['tick']) for e in ev if e['type'] == 'tower_fall']
     fin = ev[-1]['crowns'] if ev else (0, 0)
@@ -186,6 +189,9 @@ def main():
                 break
     bad = sum(one(p) for p in paths)
     print(f'\nall matches: incremental != offline at {bad} decisions')
+    x, a4, an = (sum(v) for v in zip(*ANS)) if ANS else (0, 0, 0)
+    print(f'X-Bow answers (lane + {M.XB_ANSWER_R:.0f} tiles, 4 s): own X-Bows {x}, with any opponent play in 4 s {a4}, '
+          f'answered by the rule {an}')
 
 
 if __name__ == '__main__':

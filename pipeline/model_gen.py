@@ -112,6 +112,41 @@ class CellRefine(nn.Module):
         return ((feat * (q @ self.out.weight).unsqueeze(1)).sum(-1) + (q @ self.out.bias).unsqueeze(1)) / math.sqrt(q.shape[-1])
 
 
+class MemoryEncoder(nn.Module):
+    """Plan A match memory (``memory: v1``; pipeline/match_memory.py MEM_KEYS): per-event embedding = Linear(F floats) +
+    Linear(the model's OWN card + form embedding of the event's card) -> a learned BOS token + 2 pre-norm transformer layers
+    (d 64, 4 heads, no dropout) -> masked mean over the events + a learned-query attention pool (over BOS + events, so an
+    empty memory stays finite) -> 64-d; the summary (S floats + the answer card's embedding) -> 2-layer MLP -> 64-d; concat
+    -> ONE linear into the global feature vector, weight AND bias ZERO-initialised: a fresh encoder changes no output."""
+
+    def __init__(self, d_c: int, out_dim: int, n_feat: int, n_sum: int, d: int = 64, layers: int = 2, heads: int = 4):
+        super().__init__()
+        self.ev_in = nn.Linear(n_feat, d)
+        self.card_in = nn.Linear(d_c, d, bias=False)
+        self.bos = nn.Parameter(torch.randn(1, 1, d) * 0.02)
+        layer = nn.TransformerEncoderLayer(d, heads, 2 * d, dropout=0.0, batch_first=True, norm_first=True)
+        self.encoder = nn.TransformerEncoder(layer, layers, enable_nested_tensor=False)
+        self.query = nn.Parameter(torch.randn(d) * 0.02)
+        self.summary = nn.Sequential(nn.Linear(n_sum + d_c, d), nn.GELU(), nn.Linear(d, d))
+        self.out = nn.Linear(2 * d, out_dim)
+        nn.init.zeros_(self.out.weight)
+        nn.init.zeros_(self.out.bias)
+        # saved shape: load builds the module FROM it (n_feat, n_sum, d, layers, heads, out_dim)
+        self.register_buffer("cfg", torch.tensor([n_feat, n_sum, d, layers, heads, out_dim]))
+
+    def forward(self, ev, mask, card_emb, summary, answer_emb):
+        x = self.ev_in(ev) + self.card_in(card_emb)
+        B = x.shape[0]
+        x = torch.cat([self.bos.expand(B, -1, -1).to(x.dtype), x], 1)
+        valid = torch.cat([mask.new_ones(B, 1), mask], 1)
+        h = self.encoder(x, src_key_padding_mask=~valid)
+        mf = mask.unsqueeze(-1).to(h.dtype)
+        mean = (h[:, 1:] * mf).sum(1) / mf.sum(1).clamp(min=1)
+        a = ((h @ self.query.to(h.dtype)) / math.sqrt(h.shape[-1])).masked_fill(~valid, float("-inf")).softmax(1)
+        pooled = mean + (a.unsqueeze(-1) * h).sum(1)
+        return self.out(torch.cat([pooled, self.summary(torch.cat([summary, answer_emb], -1))], -1))
+
+
 class GenModel(S1Model):
     def __init__(self, d: int = 128, layers: int = 4, heads: int = 4, n_fourier: int = 8, dropout: float = 0.1,
                  d_c: int = 64, n_cards: int = N_CARDS, feature_version: int = 1):
@@ -194,7 +229,12 @@ class GenModel(S1Model):
             obj = b['own_ability']
             embedding = self.card_id(obj[..., 0].long())
             parts.append(_pool(self.ability_in(torch.cat([embedding, obj[..., 1:]], -1)), obj[..., 0] > 0))
-        return torch.cat(parts, -1)
+        g = torch.cat(parts, -1)
+        mem = getattr(self, "mem", None)
+        if mem is not None:             # Plan A memory v1: + a zero-initialised projection (b must carry MEM_KEYS)
+            g = g + mem(b["mem_ev"].to(g.dtype), b["mem_mask"].bool(), self.emb(b["mem_card"], b["mem_form"]).to(g.dtype),
+                        b["mem_summary"].to(g.dtype), self.card_id(b["mem_answer"].long()).to(g.dtype))
+        return g
 
     def encode_gen(self, b: dict) -> dict:
         # ponytail: S1Model.encode builds g_in = cat[sc, past-channel]; passing our full global vector as `sc` and a
@@ -233,6 +273,13 @@ class GenModel(S1Model):
         self.cell_refine = CellRefine(self.d, c, layers).to(self.cell_emb.device)
         return self.cell_refine
 
+    def add_memory(self, d: int = 64, layers: int = 2, heads: int = 4) -> MemoryEncoder:
+        """Attach a fresh (zero-output) ``MemoryEncoder`` (``memory: v1``); checkpoints holding ``mem.*`` weights get it on
+        load. The model then takes the match_memory MEM_KEYS in every batch."""
+        from .match_memory import F, S
+        self.mem = MemoryEncoder(self.d_c, self.global_in[0].in_features, F, S, d, layers, heads).to(self.cell_emb.device)
+        return self.mem
+
     def add_cue_in(self) -> nn.Linear:
         """Attach the step-c cue projection (CUE_N -> d, no bias), ZERO-initialised: every output is unchanged until it
         trains; checkpoints holding ``cue_in.weight`` get it on load (and the model then takes b["cue"])."""
@@ -256,6 +303,14 @@ class GenModel(S1Model):
                 layers = sum(k.startswith("cell_refine.convs.") and k.endswith(".weight") for k in state_dict)
                 state_dict = {**state_dict, "cell_refine.cfg": torch.tensor([c, layers])}
             self.add_cell_refine(c, layers)
+        if getattr(self, "mem", None) is None and "mem.cfg" in state_dict:      # Plan A memory v1, by content
+            n_feat, n_sum, d, layers, heads, _ = (int(v) for v in state_dict["mem.cfg"])
+            self.add_memory(d, layers, heads)
+            if (n_feat, n_sum) != (self.mem.ev_in.in_features, self.mem.summary[0].in_features - self.d_c):
+                raise ValueError(f"memory weights for F={n_feat}, S={n_sum}: this match_memory has another layout")
+        elif strict and getattr(self, "mem", None) is not None and not any(k.startswith("mem.") for k in state_dict):
+            # a checkpoint without memory into a memory model (fv6 init + memory v1): the fresh zero-output encoder is kept
+            state_dict = {**state_dict, **{"mem." + k: v for k, v in self.mem.state_dict().items()}}
         if getattr(self, "tower_refine", None) is None and "tower_refine.cfg" in state_dict:
             c, layers, hidden, card, cell = (int(v) for v in state_dict["tower_refine.cfg"])
             self.add_tower_refine(c=c, layers=layers, hidden=hidden, card=bool(card), cell=bool(cell))
@@ -311,13 +366,25 @@ def card_form_of(deck_card: torch.Tensor, deck_form: torch.Tensor, card: torch.T
                        torch.full_like(card, FORM_PAD))
 
 
-def load_model(ckpt, device):
-    """Versioned generalist loader. Only stored args enable new observations."""
+def memory_flag(value):
+    """The ``memory`` flag (checkpoint meta / rl_royale config): None (absent) = no memory, or "v1"; anything else refused."""
+    if value not in (None, "v1"):
+        raise ValueError(f"memory must be absent / null or 'v1', got {value!r}")
+    return value
+
+
+def load_model(ckpt, device, memory=None):
+    """Versioned generalist loader. Only stored args enable new observations. ``memory`` "v1" (or the checkpoint's own
+    ``memory`` meta key): a memory encoder -- the checkpoint's ``mem.*`` weights, or a fresh zero-output one for a checkpoint
+    without them (e.g. CLXIII fv6 + memory v1 = CLXIII's outputs exactly). Weights in the file always build it."""
     st = torch.load(ckpt, map_location=device)
+    memory = memory_flag(memory if memory is not None else st.get("memory"))
     if not st.get("gen"):
         raise SystemExit(f"{ckpt} is not a generalist checkpoint (no 'gen' key)")
     a = st["args"]
     if st.get("architecture") == "public_tower_spatial_v1":
+        if memory is not None:
+            raise ValueError("memory v1 is not wired for the public_tower_spatial_v1 architecture")
         # Explicit checkpoint metadata selects this owner-requested architecture;
         # ordinary checkpoints retain the original constructor and exact behavior.
         from .model_tower import construct
@@ -333,5 +400,9 @@ def load_model(ckpt, device):
         raise ValueError(f"Unsupported checkpoint architecture: {st['architecture']}")
     model = GenModel(d=int(a["d"]), layers=int(a["layers"]), d_c=int(st["d_c"]),
                      n_cards=len(st["card_vocab"]), feature_version=int(a.get("feature_version", 1))).to(device)
+    if memory == "v1":
+        if int(a.get("feature_version", 1)) < 4:
+            raise ValueError("memory v1 needs a feature_version >= 4 model (the public observation it is built from)")
+        model.add_memory()
     model.load_state_dict(st["model"])
     return model, st

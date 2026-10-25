@@ -55,6 +55,10 @@ class GenRows(Rows):
         self.cue = torch.as_tensor(arrs["cue"]) if "cue" in arrs else None
         if (self.unit_form is None) != (self.opp_past is None):
             raise ValueError("v3 rows require both unit_form and opp_past")
+        # Plan A memory v1 inputs (a model with a memory encoder): None = none (a memory model then fails loudly), "empty"
+        # = an empty memory (declared by the caller), or (packed event tables, row -> table index, row tick) for
+        # match_memory.rows_features (dataset_gen.memory_tables' file aligned to these arrays; deck = arrs["deck_card"])
+        self.memory = None
 
     def view(self, idx: np.ndarray) -> "GenRows":
         """Same device arrays, another index set (the arrays are not copied again)."""
@@ -88,6 +92,11 @@ class GenRows(Rows):
         if self.cue is not None:            # same gather as tok; pads 0 (= cue unknown), uint8 -> 0..1 floats
             c = self.cue[src].float().div_(255.0) if len(self.cue) else torch.zeros((*src.shape, self.cue.shape[-1]))
             b["cue"] = c.masked_fill_(~mask.unsqueeze(-1), 0.0).to(self.dev)
+        if self.memory is not None:
+            from .match_memory import empty_rows, rows_features
+            m = (empty_rows(len(ids)) if isinstance(self.memory, str) and self.memory == "empty"
+                 else rows_features(self.memory[0], self.memory[1], self.memory[2], self.a["deck_card"], ids))
+            b.update({k: torch.from_numpy(v).to(self.dev) for k, v in m.items()})
         return b
 
 

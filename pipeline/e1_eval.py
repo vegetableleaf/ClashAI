@@ -689,8 +689,32 @@ CUE_MATCH_TILES = 3.0                  # sim_cue_rows: a token takes the nearest
 
 def gen_row_keys(model):
     version = getattr(model, 'feature_version', 1)
-    return (GEN_ROW_KEYS + (GEN_V3_KEYS if version >= 3 else ()) + (GEN_V31_KEYS if version >= 4 else ())
+    keys = (GEN_ROW_KEYS + (GEN_V3_KEYS if version >= 3 else ()) + (GEN_V31_KEYS if version >= 4 else ())
             + (GEN_CUE_KEYS if getattr(model, "cue_in", None) is not None else ()))
+    if getattr(model, "mem", None) is not None:              # Plan A memory v1: the match_memory MEM_KEYS
+        from pipeline.match_memory import MEM_KEYS
+        keys += MEM_KEYS
+    return keys
+
+
+def gen_batch(model, B: dict, idx) -> dict:
+    """The model's input rows ``idx`` of a collated batch ``B`` (rl_royale): ``B[k][idx]`` for every gen_row key, except a
+    memory model's MEM_KEYS, rebuilt from B's per-match event tables (``mem_tab_*``) and the rows' ``mem_row_tab`` /
+    ``mem_row_t`` by match_memory.rows_features (CPU numpy, exactly the rollout's MatchMemory.features)."""
+    from pipeline.match_memory import MEM_KEYS, rows_features
+    keys = gen_row_keys(model)
+    b = {k: B[k][idx] for k in keys if k not in MEM_KEYS}
+    if getattr(model, "mem", None) is not None:
+        import torch
+        if "mem_row_t" not in B:
+            raise KeyError("a memory model needs the batch's memory tables (rollouts recorded with a memory model)")
+        ids = idx.cpu().numpy() if torch.is_tensor(idx) else np.asarray(idx)
+        deck = B["deck_card"].cpu().numpy() if torch.is_tensor(B["deck_card"]) else np.asarray(B["deck_card"])
+        packed = {k[8:]: v for k, v in B.items() if k.startswith("mem_tab_")}
+        m = rows_features(packed, B["mem_row_tab"], B["mem_row_t"], deck, ids)
+        dev = B["sc"].device if torch.is_tensor(B["sc"]) else "cpu"
+        b.update({k: torch.from_numpy(v).to(dev) for k, v in m.items()})
+    return b
 
 
 def require_cue_runtime():
@@ -935,6 +959,7 @@ class Match:
             env.behaviour_telemetry = BehaviourTelemetry()
         self.feature_version = int(cfg.get("feature_version", 1))
         self.public = None
+        self.mem = None                                      # Plan A: a MatchMemory once a memory model decides (gen_row)
         self.t0 = time.perf_counter()
         self.delay = int(cfg.get("action_delay_ticks") or 0)
         if self.delay < 0:
@@ -1158,7 +1183,24 @@ class Match:
             self._gen_row.update(sim_v3_features(self, policy))
         if getattr(policy.model, "cue_in", None) is not None:    # step c: the model has a cue layer -> its cue rows
             self._gen_row["cue"] = sim_cue_rows(self)
+        if getattr(policy.model, "mem", None) is not None:       # Plan A memory v1: this decision's memory rows
+            self._gen_row.update(self._memory(policy, self._gen_row["deck_card"]))
         return self._gen_row
+
+    def _memory(self, policy, deck) -> dict:
+        """Feed this side's MatchMemory the decision's UN-extrapolated state (``self.state`` at the prepare tick: towers,
+        own elixir, public bodies) + the public play lists (opponent: PublicObserver.plays; own: its own_events = env
+        public_plays + own_ability_events), -> MatchMemory.features at the decision tick. Idempotent per tick."""
+        from pipeline import match_memory as MM
+        if self.feature_version < 4 or self.public is None:
+            raise ValueError("memory v1 needs a feature_version >= 4 policy (the public observation it is built from)")
+        tick = int(self._cur[0])
+        if getattr(self, "mem", None) is None:
+            self.mem, self._mem_gid = MM.MatchMemory(self.side), policy.gid
+        smp = MM.sample_sim(self.state, self.side)
+        smp["tick"] = tick
+        self.mem.observe(**smp, plays=list(self.public.plays) + list(self.public.own_events))
+        return self.mem.features(tick, policy.gid, deck)
 
     def pre(self, hand) -> tuple[float, np.ndarray, bool]:
         """(a): el_int, allowed, stalled for the current prepared state -- shared by every decide path (live,
@@ -1418,6 +1460,8 @@ class Match:
                        RS.state_record(cfg["record_phi"], self.state, self.side, self.env, mem)}
             if cfg.get("record_tick"):                        # rl_royale gae_gamma_unit tick: the decision tick
                 row = {**row, "tick": int(tick)}
+            if getattr(self, "mem", None) is not None:      # Plan A memory: the row's memory tick (the match's event
+                row = {**row, "mem_t": int(tick)}             # table rides in result()["memory"]; no per-row arrays)
             if cfg.get("record_ctx"):                         # rl_royale critic_ctx: the decision's public context
                 row = {**row, "ctx": self._ctx_row(tick)}
             if cfg.get("record_elixir"):                      # rl_royale F6': my exact elixir at the decision tick,
@@ -1517,6 +1561,7 @@ class Match:
             "real_outcome": entry.get("real_outcome"), "s1_split": entry.get("s1_split"), "group": entry.get("group"),
             "unmapped": sorted(self.unmapped), "wall_s": round(time.perf_counter() - self.t0, 1),
             **({"traj": self._traj_arrays()} if cfg.get("record") else {}),
+            **({"memory": self.mem.table(self._mem_gid)} if cfg.get("record") and getattr(self, "mem", None) is not None else {}),
             **({'behaviour': env.behaviour_telemetry.result(self.side, env.eng.last_episode)}
                if cfg.get('behaviour_telemetry') else {}),
             **({'public_lookahead_counts': dict(self._public_lookahead_total)}
@@ -1614,6 +1659,8 @@ class Match:
             out["phi_state"] = stack("phi_state").astype(np.float64)
         if tj and "tick" in tj[0]:                           # cfg["record_tick"]: each row's decision tick
             out["tick"] = scalar("tick", np.int64)
+        if tj and "mem_t" in tj[0]:                          # Plan A memory model: each row's memory tick
+            out["mem_t"] = scalar("mem_t", np.int64)
         if tj and "ctx" in tj[0]:                            # cfg["record_ctx"]: [arch, tank, phase, own, foe crowns]
             out["ctx"] = stack("ctx").astype(np.int64)
         if tj and "elixir" in tj[0]:                         # cfg["record_elixir"]: own exact elixir per row
