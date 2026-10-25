@@ -1,3 +1,10 @@
+## 2026-10-25 ~15:35 EDT -- S5 memory pair launched (mem_o_s105 vs ctrl_o_s105, CLXIII recipe); x101/x102 recipe drift-tripped on the leak
+
+- x_s101 / x_s102 (tower_crown + xbow cost, no memory) both tripped the drift test: time at full ~13.5 -> ~31 s, win -4 to -5 pp.
+- S5 pair on CLXIII's recipe, seed 105, 100 updates, drift-tested: memory arm on 33912, control on 33569. S3 v2 on 33912 GPU 1.
+  First drift checks at u25 (~1.5-2 h). Ledger memory/LEDGER.md.
+- Live: CLXIII NOLEAK Ranked since 14:53 (owner).
+
 ## 2026-10-25 ~16:30 EDT -- S1c memory v2 DONE (lock head AUC 0.622 vs 0.584 v1-only); S3 v1 control PASS; gate metrics; Tornado/king parity; live CLXIII started by owner 14:53
 
 - memory v2 = v1 + 60 S1c fields (S 114): counter priors (s1c/counter_priors.json), cycle / counter-ready + opp elixir, king

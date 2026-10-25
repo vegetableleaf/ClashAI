@@ -75,3 +75,13 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
   Tombstone 0.35, Poison 0.35, Tornado 0.38, Bowler 0.38 (small n, whole-match reveal).
 - Pool check (pool_counters.py): decks_live_train_beat3 has 112 / 895 fast (avg <= 3.2) decks with >= 1 X-Bow counter =
   9.9% of training weight (>= 2 counters: 7.0%), at live frequency by construction (weights = live sides).
+- S1c DONE (70eac89). S3 v1 control FINAL: val loss 5.471 -> 4.720, card +3.1 pp, cell +3.1 pp, gate bal-acc +0.9 pp; probes
+  toward pros (X-Bow after >= 2 fails 12.2 -> 9.4%, pro 8.6; Rocket 1.1 -> 5.7%, pro 8.6). Memory zeroed = worse than CLXIII
+  (gate 64.1%): the adapter now relies on memory. RL proagree scores memory models with an EMPTY memory (TODO: pass tables).
+- S3 v2 (S1c inputs) launched 19:2xZ on 33912 GPU 1 (/workspace/s3/v2).
+- x_s101 / x_s102 (no-memory controls, tower_crown + xbow cost): BOTH drift-tripped (x101 at u50, x102 at u75): seconds at full
+  13.5 -> 30.3 / 32.2 s, first play 12.7 -> 28.7 / 31.0 s, win -5.0 / -4.1 pp vs u0. Verdict (a): that recipe re-learns the
+  leak; it is NOT used for the memory arms.
+- S5 pair launched 19:30Z, CLXIII's own recipe (succ48_o_s91), seed 105, 100 updates, drift_test (CB override -> cb_mem):
+  mem_o_s105 (33912, init = S3 v1 adapter mem_best, memory v1) vs ctrl_o_s105 (33569, init = CLXIII raw). ONE change: memory.
+  Graft check: graft_generic keeps all 36 memory tensors; eval_gen loads it as memory v1.
