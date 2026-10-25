@@ -169,3 +169,4 @@ opportunities, combo work is needed -- carefully (Rocket alone often suffices; T
 | S28 | succ48_t | s100 / 33401 | running (13:10Z) |
 | S25b | succ48_s: CLXIII branch, no shaping (control) | s97 / 33591 | running (13:11Z) |
 | S23 | succ48_r (leak .06) | s95 / 33572 | continues |
+- Live CLX baseline (live_rocket.py, 234 matches): Rockets 0.51 / match, Tornados 1.48, combos 14 (~1 / 17 matches), rule-combo decisions 15 -> live combos are rare and almost all RULE-fired; CLXIII needs ~30-50 matches before 0 combos is informative.
