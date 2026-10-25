@@ -132,3 +132,4 @@ GATE G2 (32525): S17 (o_s89, CLX start + T_gate .3) u50 vs CLX WITH the hazard p
 | S17 u125 | succ48_o | s89 / 32525 | PASS: win 0.739 (+0.032), full 25.3 s, first play 24.3 s, idle -0.026, ignored -0.021 |
 | S23 u25 | succ48_r (leak .06) | s95 / 33572 | PASS: full 20.9 -> 16.9 s, win 0.730 (-0.003), first play 13.5 s, idle -0.017, ignored -0.018 |
 | **S19 u75** | succ48_o (T .3, CLX start) | s91 / 33591 | **PASS: full 13.5 s (target 12.3), first play 12.7 s, win 0.740 (+0.033), trade +0.43, idle / ignored flat** -> gate48 G3 on 32525 (ckpt sha 3eda9d23) |
+| S24 u25 | succ48_r (leak .06) | s96 / 33401 | FAIL: full 20.9 -> 29.5 s, first play 13.5 -> 29.7 s (opening regressed; same recipe as S23 which improved -> strong seed dependence), win 0.719 |
