@@ -1,4 +1,8 @@
-# Plan A: match memory (DRAFT, for owner approval; nothing is built until approved)
+# Plan A: match memory (APPROVED by the owner 10-25, with the scope change below)
+
+**Owner scope change (10-25):** memory must inform overall strategy and plays across ALL cards and abilities ("which plays at which game states work? which plays don't?"), not only X-Bow and Rocket strategy. Section 2.1 carries a generic outcome for every play; the X-Bow / Rocket / combo outcomes stay as specialised fields.
+
+**Compute (10-25):** owner offers one 5x RTX 4090 pod (~320 vCPU) replacing the double pod + 3 old pods. Lead: yes, if the cgroup quota is verified, and the new pod is rented and filled (code tree, venv + runtime, datasets, CLXIII / CLX / opponent ckpts, the running branches' latest ckpts, baselines) BEFORE the old pods stop. Use: one learner per GPU (~60 vCPU actors each) = 5 arms at once on one disk.
 
 Owner 10-25: "a memory of every event that has happened so far in the match and their results will greatly benefit the model's
 mid-match performance and adaptability"; deadline removed; go for A (full memory), B (compact summary) on top if needed. Bundle:
@@ -47,10 +51,11 @@ were already decided by t. Events (up to the last 128 in the match, oldest dropp
 | play (both sides) | side, card, form, x, y, tick, own elixir before (own side only) | the public play history |
 | tower damage | side, tower (L / R / K), HP lost (fraction), tick; debounced (>= 2% per 1 s window) | tower HP per decision row |
 | tower fall | side, tower, tick | tower alive flags |
+| **play outcome (EVERY play, both sides, incl. abilities)** | within 10 s after the play: enemy tower HP lost, own tower HP lost, enemy elixir value removed within 5 tiles of the play, the play's own elixir, whether its units / building survived; pending until the window closes; the game state at the play (phase, elixir, crowns, tower HP margin) is in the play event itself | derived: play + board + tower HP series |
 | X-Bow outcome (own and opponent) | locked / failed / pending, damage dealt in its life, which opponent card answered it (first enemy body placed within 6 tiles in its first 4 s) | derived: play + tower HP series |
 | Rocket outcome (own) | tower hit (and HP), troop value killed, part of a combo (Tornado within -24..+40 ticks) | derived: play + board + tower HP |
 
-Plus the compact summary (B), computed from the same events: own X-Bows placed / locked / failed this match, failures since the
+Plus the compact summary (B), computed from the same events (per card for the generic outcome: plays, mean tower-HP swing, mean value removed per elixir; and): own X-Bows placed / locked / failed this match, failures since the
 last lock, damage per X-Bow, tower Rockets and their total damage, time since our last lock, opponent's most frequent X-Bow
 answer card, our princess HP lost per opponent push.
 
@@ -119,6 +124,11 @@ answer card, our princess HP lost per opponent push.
 - SIM parity of Tornado pull + Rocket timing (the combo window measured 10-17) is checked before training on it.
 - The live combo RULE stays until the learned combo matches or beats it on these metrics; then it is retired (owner's
   spell-use rule: learned spell use, live rules only for the finishing Rocket / Log).
+
+### 3.4 All cards / abilities (owner scope change)
+- The generic play outcome lets the model learn, per card and per game state, which plays worked earlier in THIS match (e.g. Tesla placements that held vs got bypassed, Knight vs Skeletons answers that traded well, Ice Wizard ability presses that saved a tower).
+- Metric (new, every check): per card, the share of plays repeated after a bad outcome vs after a good one in the same match (adaptation index); pros as the reference (pro re-drive rows carry the same events). Target: our index moves toward the pros' without hurting win rate.
+- The memory builder, tests and parity gates cover every card; the ability press events (Hero Ice Wizard) are included.
 
 ## 4. Gates (in order)
 
