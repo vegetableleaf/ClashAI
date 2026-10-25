@@ -136,3 +136,5 @@ GATE G2 (32525): S17 (o_s89, CLX start + T_gate .3) u50 vs CLX WITH the hazard p
 | S23 u50 | succ48_r | s95 / 33572 | PASS: full 24.0 s (u25 16.9), first play 21.6 s (FLAG), win 0.739 |
 | S24 u50 | succ48_r | s96 / 33401 | PASS: full 15.5 s (u25 29.5), first play 18.6 s, win 0.683 (-0.050), idle -0.033, ignored -0.035 |
 Reading (b): the leak / opening swings between checkpoints at every leak weight -- the greedy live gate flips the opening when the play prob sits near tau; checkpoint choice on one 960 check is noisy; the gate's fresh 1,920 measures it.
+| S17 u150 | succ48_o | s89 / 32525 | REVERTED: full 50.5 s, first play 45.5 s, win 0.671 -> stopped (the opening flips back; long runs do not converge -> pick checkpoints by gate) |
+| S25 | succ48_s: BRANCH of S19 (o_s91) u75 (sha 3eda9d23), same recipe | s97 / 32525 | running |
