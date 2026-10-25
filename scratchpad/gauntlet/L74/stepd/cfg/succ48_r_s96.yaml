@@ -1,0 +1,174 @@
+# succ48 r_s95 (10-25 lead): BRANCH of succ48_o_s89 u75 (leak 20.9 s, plateau since u50; win 0.733) with leak .03 -> .06 and
+# LEAK_MATCH_CAP 0.6 -> 1.0 (shaping_critic_scale 2.2 -> 2.6 = 1 + .3 + .3 + 1.0). Target: CLX-with-hazard 12.3 s. Seed 96.
+# succ48 o_s89 (10-25 lead): = succ48_m (CLX start) + ONE change T_gate 0.1 -> 0.3. Why: m u25 leak unchanged (51-56 s), first play 44-45 s:
+# CLX's opening gate p sits far below tau, and at T_gate .1 the sampled play prob there is ~1e-7, so the leak penalty gets no
+# exploration to learn from (zero gradient on those WAIT rows). T .3 gives ~0.5% play / decision there. Seed 89.
+# succ48 m_s85 (10-24 lead): the succ48 f recipe (cal30 + tau_phase + habit idle .05 / trade .02 + leak .03, cap .6, critic 2.2) started
+# from CLX ITSELF (raw rlarm_stepd_ctrl_nos2_u0130.pt, sha 0452c619; live CLX = its graft 5d212358). Why: f u50 meets the leak bar and
+# beats CLX's habits but loses -3.2 pp (E4) / -4.0 pp (cal I u40): its init (CLIII u65) starts ~9 pp below CLX without the hazard play.
+# NOT a CLX leash: the KL anchor moves to the current policy every 50 updates (kl_ref_refresh_every 50). Seed 85.
+# succ48 f_s79 (10-24 lead): BRANCH of succ48_b_s74 u150 (init = that checkpoint). leak .03 > trade .02 (d / e had trade .04 > leak .015:
+# wasting became cheaper than over-paying -> d u25 leak 36 -> 49 s); LEAK_MATCH_CAP 0.6 -> shaping_critic_scale 2.2. Seed 79.
+# succ48 b_s74 (10-23 lead; owner: reward design free, record every experiment -> L74/succ48/EXPERIMENTS.md): drift_hph_s74 (cal30 +
+# habit terms + tau_phase) with habit_idle_w 0.05, habit_trade_w 0.02, habit_leak_w 0.01 (penalty per elixir WASTED at full), max_updates 300,
+# shaping_critic_scale 2.0 (bound 1 + 0.9). Eval = no-hazard livecal (owner stripped the forced play 10-23).
+# 10-23 (lead): the combined candidate recipe = drift_habc_s74 (calibrated exploiter decode + habit reward terms) + the rollout
+# per-phase gate thresholds tau_phase [0.35, 0.45, 0.55] (owner 10-23: phase thresholds only, no hazard play). Ablations: cal30 / habc / phc.
+# 10-23 (habit terms; owner approved 10-23): drift_cal30_s74.yaml + ONLY the habit reward keys (pipeline/habit_terms.py:
+# habit_reward on, habit_idle_w 0.1 per idle threat, habit_trade_w 0.01 per elixir of push trade (PENALTY ONLY: clip -5..0, lead 10-23), each <= 0.3 / match; 0.01 not the proposed 0.03: at 0.03 the
+# trade cap bound in 35% of 128 rollout matches and ignoring a 6-elixir threat paid +0.05, see habit_terms.DEFAULTS) and the
+# critic scale those caps force (rl_royale adv_cfg: shaping_critic_scale >= 1 + 0.3 + 0.3 = 1.6; the residual critic is OFF in
+# the parent, so 1.5 -> 1.6 only scales the critic the habit switch turns on). No hazard term (rollouts never fire it).
+# Base = cal30 (exploiter share 0.3), not x70cal (0.7): lead 10-23, the over-defending showed in both share-0.7 recipes.
+# Run: bash /workspace/exploit/drift_test.sh drift_habc_s74 100 (needs the habit terms applied: exploit/apply_habit_terms.py).
+# 10-23 (lead): ABLATION for drift_x70cal: ONE change vs drift_tg_e1i_s74 = the PUSH_CAL calibrated I u40 decode only
+# (league_exploiters decide_every 20 + tau 0.2; share stays 0.3). With drift_x70_s74 (share only) it splits x70cal's two changes.
+# 10-22 exploit worker (EXPLOIT.md section 3-4): UNLEASHED DRIFT TEST template, NOT launched. ONE change vs tn_long_e1i_s74.yaml:
+# the rollout gate decoder moves to the deploy threshold: tau .27 -> .35 (live tau_phase 1x) and T_gate .1 (gap/FINDING.md:
+# G1 T_gate .1 = greedy within -0.4 pp). max_updates 500 -> 100 (drift_test.sh checks u25/50/75/100). Run: bash /workspace/exploit/drift_test.sh drift_tg_e1i_s74 100
+# 10-22 (lead) LONG RUN (owner 10-21: 500 updates on one 54-core 4090; continue to 1,000 only if still improving).
+# = tn_bait_s74.yaml (E1, best arm tonight: +2.0 pp avg vs same-seed tn_base, 5/6 positive) with: league exploiter =
+# W14 I u40 (4ff9fe93, closest to Ranked, 6/12 cells) instead of R6 u20; max_updates 500; n_actors 48 (54-core pod);
+# save_every 25; moving KL anchor every 50 updates (W16 kl_ref_refresh_every).
+# 10-21 (lead) E1 bait exposure, seed 74: ONE change vs tn_base_s74.yaml (log_use/LOG_USE.md section 5). Base header: fin15 runtime (GO RT=fin15-linux VENV=/workspace/venvf15) + W7 opponent R4 u100 (ea1d0804) via opp_model/cfg/stepd_l16_w7opp_s74.yaml
+init: icebow/data/bench/rl_royale/succ48_parents/rlarm_succ48_o_s89_u0075.pt
+pool: icebow/data/ghost_pool/pool_env_v1.jsonl
+proagree_data: icebow/data/pipeline/s1_dataset.npz
+proagree_rows: 0
+proagree_data_gen: icebow/data/pipeline/gen_dataset_v32_fv5.npz
+noise_off: all
+opp_elixir: counter
+action_delay_ticks: 26
+extrapolate_ticks: 26
+hero_abilities: true
+forms_mode: deck
+league: true
+league_decks: icebow/data/rltest/decks_rl.json
+league_specialist: icebow/data/pipeline/s1_icebow_v6aug_s1.pt
+league_opp_policy: sample
+league_mix:
+  latest: 0.5
+  older: 0.25
+  init: 0.25
+  s1: 0.0
+league_snapshot_every: 5
+league_snapshot_keep: 12
+league_icebow_share: 0.0
+league_deck_alpha: 1.0
+league_deck_floor: 0.0
+E: 64
+G: 4
+adv_clip: 2.0
+advantage: gae
+gae_gamma: 0.999
+gae_gamma_unit: tick
+gae_gamma_tick: 0.99994
+gae_terminal_gap: false
+gae_lambda: 0.95
+vf_coef: 0.5
+vf_clip: 0.2
+critic_warmup_updates: 5
+vf_trunk_grad: true
+shaping: none
+shaping_w_tower: 0.3
+shaping_w_crown: 0.3
+shaping_critic_scale: 2.6
+n_actors: 48
+in_flight: 8
+actor_device: cpu
+actor_threads: 1
+actor_timeout_s: 3600
+T: 0.5
+tau: 0.35
+T_gate: 0.3
+afford_mask: true
+stall_elixir: null
+stall_seconds: 12
+obs: live
+decide_every: 10
+learner_device: cuda
+lr: 1.0e-05
+grad_clip: 0.5
+ppo_epochs: 2
+minibatch: 256
+clip: 0.2
+beta0: 0.03
+beta_min: 0.03
+beta_max: 3.0
+kl_target: 0.3
+leash: max
+seed: 96
+max_updates: 300
+save_every: 25
+proagree_every: 5
+screen_every: 10
+screen_entries: 0
+screen_seeds:
+- 0
+- 1
+- 2
+stop_consecutive: 2
+plays_lo: 0.6
+plays_hi: 1.6
+kl_cell_stop: 0.5
+kl_gate_stop: 0.1
+tripwire_cell_pp: 5.0
+hard_cell_pp: 8.0
+hard_card_pp: 8.0
+hard_gate_bal: 0.05
+screen_stop_pp: -10.0
+entropy_floor_frac: 0.5
+outlived_pp: 15.0
+low_delivered_pp: 10.0
+ghost_refusal_x: 2.0
+league_pfsp: hard
+opp_style: 'on'
+league_pfsp_gamma: 2.0
+league_pfsp_floor: 0.05
+league_external:
+- icebow/data/bench/rl_royale/wk_adapt_exp1/wk_adapt_exp1_u0015.pt
+- icebow/data/bench/rl_royale/wk_adapt_exp2/wk_adapt_exp2_u0015.pt
+- icebow/data/bench/rl_royale/wk_adapt_exp3/wk_adapt_exp3_u0015.pt
+- icebow/data/bench/rl_royale/newsim_base_exp1/newsim_base_exp1_u0015.pt
+- icebow/data/bench/rl_royale/newsim_base_exp2/newsim_base_exp2_u0015.pt
+league_learner_icebow_share: 1.0
+ability_policy: v2
+branch_gate: false
+learner_pipeline_frac: 0.0
+cue_inputs: true
+live_levels: all16
+heroiw_press: live
+kl_heads:
+- card
+ability_head: true
+ability_features: freeze
+# L74 W7 (opp_model/OPP_MODEL.md section 7): ONE change vs stepd_l16_s74.yaml (the all16 CLX recipe, seed 74 = the control):
+# 30% of training matchups against the W7 opponent -- the O2b live-imitation net RL-strengthened against a frozen icebow mix
+# (round log, section 7) -- at its gated setting (sampling T .1, deciding every 40 ticks) on the live census decks.
+# icebow/data/pipeline/o2/w14opp_I.pt = a copy of the chosen snapshot (sha in section 7). NOT launched until the lead approves.
+league_exploiters:
+  ckpt: icebow/data/pipeline/o2/w14opp_I.pt
+  decks: scratchpad/gauntlet/L74/mix/decks_live_train.json
+  share: 0.3
+  T: 0.1
+  decide_every: 20
+  tau: 0.2
+# E1 (log_use/LOG_USE.md section 5): x2.5 opponent-deck draw weight for decks holding a CORE log-bait card, census AND
+# W7-exploiter pools (opp_deck_p: a deck takes the largest multiplier among its cards). Sides-weighted CORE-bait deck share:
+# census 0.201 -> 0.385, W7 0.341 -> 0.564, 0.7/0.3 mix 0.243 -> 0.439 (live CLX: 0.417 of matches reveal one).
+# Bait punish cost parity (log_use/bait_parity.py, fin15b fights): SIM / live own-tower damage 0.93 [0.87, 0.98].
+league_deck_weights:
+  GoblinBarrel: 2.5
+  SkeletonBalloon: 2.5
+  BlowdartGoblin: 2.5
+  Princess: 2.5
+  GoblinGang: 2.5
+kl_ref_refresh_every: 50
+# habit terms (pipeline/habit_terms.py)
+habit_reward: true
+habit_idle_w: 0.05
+habit_trade_w: 0.02
+
+# rollout per-phase gate thresholds (live's --tau-phase; owner 10-23)
+tau_phase: [0.35, 0.45, 0.55]
+habit_leak_w: 0.06

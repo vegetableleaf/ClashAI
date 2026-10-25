@@ -125,3 +125,6 @@ GATE G2 (32525): S17 (o_s89, CLX start + T_gate .3) u50 vs CLX WITH the hazard p
   idle / ignored equal, plays / min -0.55, elixir at play -0.11.
 - Reading: first no-hazard model at least even with CLX-with-hazard on both opponents; remaining gaps = mid-game leak (22 vs 12 s)
   and significance. Next: leak .06 branch (S23) + later checkpoints of S17 / S19 / S21.
+| S17 u100 | succ48_o | s89 / 32525 | PASS: full 27.9 s (u75 20.9: leak oscillates back), first play 20.1 s, win 0.733, idle -0.017, ignored -0.023 |
+| S21 u25 | succ48_q (branch of S17 u50) | s93 / 33401 | FAIL: full 21.7 -> 33.2 [+5.1, +18.0], win -0.019 -> stopped |
+| S24 | succ48_r (leak .06, cap 1.0) | s96 / 33401 | running (2nd seed of the stronger leak term) |
