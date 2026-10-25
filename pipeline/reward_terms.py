@@ -45,8 +45,10 @@ changes the engine, so a match with the tracker plays exactly as one without it.
                                   -6.5 pp vs CLX): rocket_tower's credit (+rocket_cycle_w per princess tower of enemy princess HP
                                   our Rocket removed, <= ROCKET_MATCH_CAP per match) ONLY for a FREE chip: decided at tick >=
                                   CYCLE_MIN_TICK (2x / OT), at own elixir >= CYCLE_MIN_ELIXIR (the elixir would otherwise sit
-                                  near full), with none of our princess HP lost in the CYCLE_QUIET_TICKS before (no defence
-                                  owed). A Rocket the defence needed earns nothing, so the term never pays for giving up a defence.
+                                  near full), with none of our princess HP lost to enemy TROOPS / buildings in the
+                                  CYCLE_QUIET_TICKS before (no defence owed). Enemy SPELL damage on our princesses does not block
+                                  it (owner 10-25: it lands no matter what; if they spell-cycle our tower we cycle too). A Rocket
+                                  the defence needed earns nothing, so the term never pays for giving up a defence.
     king_redirect: on             Plan A (10-25, owner: king redirect that WINS the SIM gate; the princess_redirect penalty lost
                                   10-20, -1.3 / -6.4 pp): +king_redirect_w per king tower of OUR KING HP lost from one of our
                                   Tornados' cast to KING_WINDOW ticks after it ends, for Tornados cast while BOTH our princesses
@@ -85,6 +87,7 @@ REDIRECT_MODES = ("penalty", "potential")
 PLAY_COST_MATCH_CAP = 0.3       # W18: |play_cost reward| per match
 TORNADO_EVENT_CAP, TORNADO_MATCH_CAP = 0.15, 0.3   # ponytail: fixed caps, a config key if an arm needs another
 CYCLE_MIN_TICK, CYCLE_MIN_ELIXIR, CYCLE_QUIET_TICKS = 2400, 7.0, 100   # Plan A rocket_cycle: 2x / OT, >= 7 elixir, 5 s
+SPELL_NEAR_TILES = 5.0          # rocket_cycle: an enemy spell aimed this close to our princess = its damage there is spell
 KING_WINDOW, KING_EVENT_CAP, KING_MATCH_CAP = 100, 0.1, 0.2           # Plan A king_redirect: 5 s after the Tornado ends
 ROCKET_MATCH_CAP = 0.3          # W10: |rocket_tower reward| per match (~5 chips at the default weight; pros fire 1.6 / match)
 ROCKET_BLAST_TILES = 2.0        # catalog Rocket radius (spell_value.ROCKET_R_TILES); a tower counts by the engine's edge rule
@@ -110,10 +113,12 @@ def bound(p: dict) -> float:
 class CrownTracker:
     """One match, one side (rl_royale crown terms / search_s0 --crown-log). Holds no env reference after __init__."""
 
-    def __init__(self, env, side: int, rocket_dmg: bool = False, king: bool = False):
+    def __init__(self, env, side: int, rocket_dmg: bool = False, king: bool = False, troop: bool = False):
         self.side = int(side)
         self.tornado, self.rocket = env.ids.get("Tornado"), env.ids.get("Rocket")
         self.king_track, self.klost, self.kl = bool(king), [], 0.0   # Plan A king_redirect (opt-in): own king HP lost
+        self.troop_track, self.tlost, self.tl = bool(troop), [], 0.0  # Plan A rocket_cycle: own princess HP lost to non-spells
+        self.pfrac, self.spell_near = None, set()                       # previous own princess fracs; uids near enemy spells
         self.rocket_dmg = bool(rocket_dmg)  # W10 rocket_tower (opt-in): our Rockets' enemy-princess damage -> "rocket_hits"
         self.fly, self.wait, self.hits, self.fpos, self.foe_last = {}, [], [], None, None
         self.pr = self.fpr = None          # own / foe princess uids (first stop: the match start, all towers stand)
@@ -154,6 +159,8 @@ class CrownTracker:
                 self.kl = round(1.0 - king[2], 6)
                 self.klost.append([t, self.kl])
         own = [tw[u][2] if u in tw else 0.0 for u in self.pr]          # a tower gone from the list = destroyed
+        if self.troop_track:                                           # Plan A rocket_cycle (off: never runs)
+            self._troop_loss(st, t, tw, own)
         foe = [tw[u][2] if u in tw else 0.0 for u in self.fpr]
         alive = dict(zip(self.pr + self.fpr, [f > 0 for f in own + foe]))
         crowns = [int(st.players[me].crowns), int(st.players[1 - me].crowns)]
@@ -174,6 +181,26 @@ class CrownTracker:
         self.alive, self.crowns, self.prev = alive, crowns, bodies
         self.end = {"tick": t, "king": round(king[2], 4) if king else 0.0, "princess": [round(f, 4) for f in own],
                     "foe_princess": [round(f, 4) for f in foe], "crowns": crowns}
+
+    def _troop_loss(self, st, t, tw, own) -> None:
+        """Own princess HP lost since the previous stop, minus what enemy spells explain: a tower with an enemy spell aimed
+        within SPELL_NEAR_TILES at this stop or the previous one counts its loss as spell damage (an in-flight Rocket lands
+        the stop after it is gone). ponytail: stop resolution, so troop + spell hits on one tower in one interval count as
+        spell; a rolling spell the engine does not list in st.spells (if any) counts as troop."""
+        near = set()
+        for s in st.spells:
+            if int(s.team) == self.side:
+                continue
+            for u in self.pr:
+                if u in tw and min(math.hypot(s.aim_x - tw[u][3], s.aim_y - tw[u][4]),
+                                   math.hypot(s.x - tw[u][3], s.y - tw[u][4])) <= SPELL_NEAR_TILES * TILE:
+                    near.add(u)
+        if self.pfrac is not None:
+            d = sum(max(0.0, a - b) for u, a, b in zip(self.pr, self.pfrac, own) if u not in near | self.spell_near)
+            if d > 0:
+                self.tl = round(self.tl + d, 6)
+                self.tlost.append([t, self.tl])
+        self.pfrac, self.spell_near = list(own), near
 
     def _tornados(self, st, t, bodies, down) -> None:
         here = {(s.x, s.y) for s in st.spells if int(s.team) == self.side and s.card_id == self.tornado}
@@ -243,6 +270,8 @@ class CrownTracker:
             hits = list(self.hits) + [{"seen": w["seen"], "impact": w["gone"], "dmg": round(sum(
                 max(0.0, w["before"][u] - self.foe_last[u]) for u in w["in"]), 4)} for w in self.wait]
             out["rocket_hits"] = hits
+        if self.troop_track:                                           # Plan A rocket_cycle (off: no key, unchanged)
+            out["troop_lost"] = [list(x) for x in self.tlost]
         if self.king_track:                                            # Plan A king_redirect (off: no key, unchanged)
             out["king_lost"] = [list(x) for x in self.klost]
         return out
@@ -342,9 +371,11 @@ def row_terms(crown: dict, plays: list, ticks, p: dict) -> dict:
     if p.get("rocket_cycle"):                         # Plan A: off = no "rocket_cycle" keys (the outputs above unchanged)
         if "rocket_hits" not in crown:
             raise ValueError("rocket_cycle needs the tracker's rocket_hits (actor_cfg crown_track 'rocket_dmg')")
+        if "troop_lost" not in crown:
+            raise ValueError("rocket_cycle needs the tracker's troop_lost (actor_cfg crown_track with 'troop')")
         row, total = {int(t): i for i, t in enumerate(ticks)}, 0.0
         out["rocket_cycle_unmapped"], out["rocket_cycle_free"] = 0, 0
-        lost = crown["lost"]
+        lost = crown["troop_lost"]                    # enemy spell damage does not block a cycle Rocket (owner 10-25)
         for h in sorted(crown["rocket_hits"], key=lambda h: h["seen"]):
             q = _play_of(int(h["seen"]), "rocket", plays)
             if q is None or row.get(int(q["tick"])) is None:

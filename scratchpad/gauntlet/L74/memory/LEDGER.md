@@ -120,3 +120,12 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
   ~1e-9 relative); not from these edits (they act only with crown terms on); being checked with the aux build worker.
 - mkarms.sh: tonight's arms (mem_a / mem_e x2 seeds / mem_l) from CLXIII's recipe + memory v2 + memory_aux + frozen encoder;
   exploiter decks mix/decks_live_train_cx3.json (fast counter decks x3: 104 decks, 31.5% of the exploiter's weight).
+- OWNER 10-25 ~17:45 EDT: run everything to u100 (gate at u100); rocket_cycle's "no damage" must EXCLUDE enemy spell damage.
+  Done: CrownTracker(troop=True) keeps troop_lost = own princess HP lost NOT explained by an enemy spell aimed within 5 tiles of
+  that tower at this or the previous stop; rocket_cycle's quiet check reads troop_lost (test: spell-only damage does not block,
+  troop damage does). Tests 24 / 24 (cycle_redirect + rocket_tower).
+- D1 deny check (CLXIII vs, calibrated decode, 960 games each): D1 u60 win 49.5%, lock 0.544, shut-outs 8%; D1 u40 46.6% /
+  0.562 / 6%; W18 R3 52.2% / 0.563 / 7%; I u40 61.1% / 0.626 / 4%. Live CLX 0.565 / 9%, CLXIII 0.462 / 16%. D1 u60 = the
+  hardest SIM opponent and the closest to live denial.
+- league_exploiters LIST form (rl_royale; dict form unchanged, test_exploit_league + own_cfg pass; new test_exploiter_list_1025):
+  tonight's pool D1 u60 0.15 + I u40 0.15 + W18 R3 0.10 (40% of games), cx3 decks, calibrated decode.

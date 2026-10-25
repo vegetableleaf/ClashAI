@@ -2105,7 +2105,8 @@ class SelfPlayMatch:
             from pipeline.reward_terms import CrownTracker    # read-only stops on the learner's crown towers + Tornados
             ct = str(cfg.get("crown_track"))                  # True / "rocket_dmg" / "king" / "rocket_dmg+king" (Plan A)
             self.crown = CrownTracker(env, L, rocket_dmg="rocket_dmg" in ct.split("+"),   # W10 rocket_tower / rocket_cycle
-                                      king="king" in ct.split("+"))                       # Plan A king_redirect
+                                      king="king" in ct.split("+"),                       # Plan A king_redirect
+                                      troop="troop" in ct.split("+"))                     # Plan A rocket_cycle
         tag = str(spec["tag"])
         self.learner = SelfPlaySide(env, spec["learner_deck"], L, tag, k, cfg, learner)
         from pipeline.adaptive_opponents import style_config
