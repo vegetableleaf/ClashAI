@@ -170,3 +170,17 @@ opportunities, combo work is needed -- carefully (Rocket alone often suffices; T
 | S25b | succ48_s: CLXIII branch, no shaping (control) | s97 / 33591 | running (13:11Z) |
 | S23 | succ48_r (leak .06) | s95 / 33572 | continues |
 - Live CLX baseline (live_rocket.py, 234 matches): Rockets 0.51 / match, Tornados 1.48, combos 14 (~1 / 17 matches), rule-combo decisions 15 -> live combos are rare and almost all RULE-fired; CLXIII needs ~30-50 matches before 0 combos is informative.
+
+OWNER 10-25: "the model still insists on spamming offensive xbows ... 10 separate occasions where an xbow failed and it still tries
+for xbow instead of switching to defensive mode and rocket cycling ... it's a in-general rule".
+- X1 SIM X-Bow outcomes (xbow_count.py, gate rows, de-duplicated): reach X-Bows / match, failed share (no princess -5% in 30 s),
+  matches with >= 3 failed, reach X-Bows after 2+ failures / match: CLXIII E4 4.41 / 0.421 / 29.4% / 1.27; CLX-with-hazard E4 4.28 /
+  0.395 / 24.5% / 1.05; CLXIII cal 3.50 / 0.374 / 17.2% / 0.72; CLX cal 3.51 / 0.351 / 14.8% / 0.63. (SIM locks MORE than live:
+  DIAG_12 8.8 -- with a blocker in the window 48 vs 37%, late answers 69 vs 54%; INVESTMENT.md: the model ignores answer readiness.)
+- habit_xbow_w (pipeline/habit_terms.py; tracker now also records enemy princess HP): penalty per FAILED reach X-Bow, cap .3 / match,
+  0 = off (hash-neutral). Tests 12 / 12 laptop, 11 + 1 skip pod; smoke PASS (succ48_x_s101 on 32525).
+- OWNER concern: a failure penalty does not teach switching strategy WITHIN a match; does the model have match memory? Answer (a, code):
+  NO -- inputs = current board / elixir / tower HP / clock + own last 3 plays + opponent last 3 plays + opponent cycle (8 cards, plays
+  since, age); no recurrence. Lead proposal: (B) compact match-summary inputs now (zero-init), (A) full event memory after the deadline.
+  x_s101 / x_s102 NOT launched pending the owner's choice; 32525 idle.
+- r_s95 u75 PASS: full 16.0 s, win 0.700 (-0.033), first play 15.8 s.

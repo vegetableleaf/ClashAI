@@ -40,11 +40,15 @@ DEFAULTS = {"habit_idle_w": 0.1,      # per idle threat (win = +1): ~ a third of
             "habit_trade_w": 0.01,    # per elixir of push value - our spend (5 over-paid = -0.05). 10-23 scale check: at 0.03
 #                                       the 0.3 cap bound in 35% of 128 rollout matches (median 18 elixir of |trade|), and
 #                                       ignoring a 6-elixir threat paid idle -0.1 + trade +0.15 > 0; at 0.01 it costs -0.05
-            "habit_leak_w": 0.0}      # succ48 10-23: per elixir WASTED (regenerated while at full); 0 = off (no hash change)
+            "habit_leak_w": 0.0,      # succ48 10-23: per elixir WASTED (regenerated while at full); 0 = off (no hash change)
+            "habit_xbow_w": 0.0}      # succ48 10-25: per FAILED reach X-Bow (no princess -5% in 30 s); 0 = off (no hash change)
 KEYS = ("habit_reward",) + tuple(DEFAULTS)
 IDLE_MATCH_CAP = TRADE_MATCH_CAP = 0.3   # summed |reward| per match and term (ponytail: fixed)
 LEAK_MATCH_CAP = 1.0                      # succ48 10-24 0.6, 10-25 1.0: a leaky match must still feel the (stronger) leak term
 FULL_E = 9.95                             # elixir counted as full (the cap is 10; the drift metric uses >= 9.9)
+XBOW_MATCH_CAP = 0.3                      # summed |reward| per match of the failed-X-Bow term
+XB_REACH, XB_LOCK, XB_WINDOW = 13.5, 0.05, 600   # tiles (INVESTMENT lock reach), share of princess max HP, ticks (30 s;
+#                                         ponytail: a fixed window, not the X-Bow's life) -- = succ48/xbow_count.py
 TRADE_CLIP_E = 5.0                        # elixir: one push's trade is clipped to [-this, 0] (over-paying only)
 
 # ape_score.py (the drift metrics) -- keep in step with it
@@ -91,7 +95,7 @@ def habit_cfg(cfg: dict) -> Optional[dict]:
 def bound(p: dict) -> float:
     """max |summed reward| per match (any suffix of it too: each term caps the sum of |reward|)."""
     return (IDLE_MATCH_CAP * (p["habit_idle_w"] > 0) + TRADE_MATCH_CAP * (p["habit_trade_w"] > 0)
-            + LEAK_MATCH_CAP * (p.get("habit_leak_w", 0.0) > 0))
+            + LEAK_MATCH_CAP * (p.get("habit_leak_w", 0.0) > 0) + XBOW_MATCH_CAP * (p.get("habit_xbow_w", 0.0) > 0))
 
 
 def canonical(cfg: dict) -> dict:
@@ -100,7 +104,7 @@ def canonical(cfg: dict) -> dict:
     if cfg.get("habit_reward") is None or cfg.get("habit_reward") is False:
         return {k: v for k, v in cfg.items() if k not in KEYS}
     c = {**cfg, "habit_reward": True, **{k: float(v if cfg.get(k) is None else cfg[k]) for k, v in DEFAULTS.items()}}
-    return c if c["habit_leak_w"] else {k: v for k, v in c.items() if k != "habit_leak_w"}   # leak off = the pre-leak hash
+    return {k: v for k, v in c.items() if k not in ("habit_leak_w", "habit_xbow_w") or v}   # 0 = off = the pre-key hash
 
 
 # ------------------------------------------------------------------------------------------------------------ values
@@ -145,14 +149,29 @@ def own(x: float, y: float, low: bool) -> tuple:
 
 
 # ------------------------------------------------------------------------------------------------------------ events
-def events(samples: list, plays: list, low: bool) -> dict:
+def events(samples: list, plays: list, low: bool, towers: Optional[list] = None) -> dict:
     """ape_score.score sections 1 (threats) and 4 (pushes) on hab_match's inputs. ``samples`` [(tick, own elixir, enemy
     bodies [(uid, name, hp, max_hp, x, y)] engine millitiles)] in time order; ``plays`` our ACCEPTED plays [(decision tick,
     card, engine X, engine Y)] in order; ``low`` = our king at engine y < 16000. -> {"thr": threats, "idle": [[onset tick,
     lane]], "push": [[t0, t1, value, our spend]]} (plain JSON types)."""
-    out = {"thr": 0, "idle": [], "push": [], "leak": []}
+    out = {"thr": 0, "idle": [], "push": [], "leak": [], "xbow": []}
     if not samples:
         return out
+    for t0, card, X, Y in plays if towers else ():            # 6 X-BOW: reach X-Bows and whether they locked (xbow_count.py)
+        if "bow" not in str(card).lower().replace("-", ""):
+            continue
+        px, py = (X / 1000, Y / 1000) if max(abs(X), abs(Y)) > 100 else (X, Y)
+        before = [tw for t, tw in towers if t <= t0]
+        if not before:
+            continue
+        near = [(x, y, hp) for x, y, hp in before[-1] if hp > 0 and math.hypot(px - x, py - y) <= XB_REACH]
+        if not near:
+            continue
+        top = {(x, y): max(hp for t, tw in towers for x2, y2, hp in tw if (x2, y2) == (x, y)) for x, y, _ in near}
+        later = [tw for t, tw in towers if t0 < t <= t0 + XB_WINDOW]
+        locked = any(hp0 - min([hp for tw in later for x2, y2, hp in tw if (x2, y2) == (x, y)] or [hp0]) >= XB_LOCK * top[(x, y)]
+                     for x, y, hp0 in near)
+        out["xbow"].append([int(t0), int(not locked)])
     from pipeline.opp_elixir_count import regen_between      # 5 LEAK: elixir regenerated while full at both ends of a gap
     for (ta, ea, _), (tb, eb, _) in zip(samples, samples[1:]):   # (ponytail: misses the first gap of each full spell)
         if ea >= FULL_E and eb >= FULL_E:
@@ -221,7 +240,7 @@ class HabitTracker:
     Holds no env / side reference between calls."""
 
     def __init__(self, side: int):
-        self.side, self.low, self.smp = int(side), None, []
+        self.side, self.low, self.smp, self.tw = int(side), None, [], []
 
     def observe(self, raw: dict, s) -> None:
         """``raw`` = the stop's env.raw() (the learner decides now), ``s`` = the learner's SelfPlaySide (read only)."""
@@ -236,6 +255,9 @@ class HabitTracker:
         h = s.extrap if s._prev_raw is not None else 0        # the elixir this decision sees (SelfPlaySide.prepare)
         if h:
             el = min(MAX_ELIXIR, el + regen_between(t, t + h))
+        self.tw.append((t, [(float(w["x"]) / 1000 if abs(float(w["x"])) > 100 else float(w["x"]),
+                             float(w["y"]) / 1000 if abs(float(w["y"])) > 100 else float(w["y"]), int(w["hp"]))
+                            for w in raw["episode"]["crown_towers"] if int(w["side"]) != self.side and w["type"] != "king"]))
         self.smp.append((t, el, [(e["entity_id"], e["name"], int(e["hp"]), int(e["max_hp"]), e["x"], e["y"])
                                  for e in raw["entities"] if int(e["side"]) != self.side]))
 
@@ -246,7 +268,7 @@ class HabitTracker:
             if q["accepted"]:
                 X, Y = s.ep.cell_to_engine(q["cell"], s.mirror, s.cfg["grid"])
                 plays.append((int(q["tick"]), q["card"], X, Y))
-        out = events(self.smp, plays, bool(self.low))
+        out = events(self.smp, plays, bool(self.low), self.tw)
         out["samples"] = len(self.smp)
         return out
 
@@ -258,7 +280,8 @@ def row_terms(rec: dict, ticks, p: dict) -> dict:
     ticks = np.asarray(ticks, dtype=np.int64)
     r = np.zeros(len(ticks))
     out = {"idle": 0.0, "trade": 0.0, "leak": 0.0, "n_idle": len(rec["idle"]), "n_push": len(rec["push"]),
-           "thr": int(rec["thr"]), "leak_e": float(sum(x[1] for x in rec.get("leak", []))), "unmapped": 0, "r": r}
+           "thr": int(rec["thr"]), "leak_e": float(sum(x[1] for x in rec.get("leak", []))), "unmapped": 0, "r": r,
+           "xbow": 0.0, "n_xbow": len(rec.get("xbow", [])), "n_xbow_fail": sum(f for _, f in rec.get("xbow", []))}
     if not len(ticks):
         return out
     w, total = p["habit_idle_w"], 0.0
@@ -289,6 +312,16 @@ def row_terms(rec: dict, ticks, p: dict) -> dict:
         r[i] -= e
         used += e
     out["leak"] = -used
+    w, used = p.get("habit_xbow_w", 0.0), 0.0
+    for t0, failed in rec.get("xbow", []) if w > 0 else ():
+        if not failed:
+            continue
+        e = min(w, XBOW_MATCH_CAP - used)
+        if e <= 0:
+            break
+        r[int(np.argmin(np.abs(ticks - (t0 + XB_WINDOW))))] -= e      # the row nearest the end of the lock window
+        used += e
+    out["xbow"] = -used
     return out
 
 
@@ -299,8 +332,10 @@ def batch_stats(sums: list) -> dict:
     st = {"matches": len(sums), "thr_per_match": sum(s["thr"] for s in sums) / n,
           "idle_per_match": sum(s["n_idle"] for s in sums) / n, "push_per_match": sum(s["n_push"] for s in sums) / n,
           "unmapped": int(sum(s["unmapped"] for s in sums)),
-          "leak_e_per_match": sum(s.get("leak_e", 0.0) for s in sums) / n}
-    for k in ("idle", "trade", "leak"):
+          "leak_e_per_match": sum(s.get("leak_e", 0.0) for s in sums) / n,
+          "xbow_reach_per_match": sum(s.get("n_xbow", 0) for s in sums) / n,
+          "xbow_fail_per_match": sum(s.get("n_xbow_fail", 0) for s in sums) / n}
+    for k in ("idle", "trade", "leak", "xbow"):
         v = [float(s.get(k, 0.0)) for s in sums] or [0.0]
         st.update({f"{k}_r_mean": sum(v) / n, f"{k}_r_min": min(v), f"{k}_r_max": max(v),
                    f"{k}_r_nz": sum(x != 0 for x in v) / n})

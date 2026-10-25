@@ -25,7 +25,7 @@ from pipeline import rl_royale as RL                                      # noqa
 
 PRE = "9c4efa8"
 CFG = REPO / "scratchpad/gauntlet/L74/stepd/cfg"
-W = {"habit_idle_w": 0.1, "habit_trade_w": 0.01, "habit_leak_w": 0.0}   # the defaults
+W = {"habit_idle_w": 0.1, "habit_trade_w": 0.01, "habit_leak_w": 0.0, "habit_xbow_w": 0.0}   # the defaults
 P3 = {"habit_idle_w": 0.1, "habit_trade_w": 0.03}           # explicit weights for the logic tests
 BASE = {"advantage": "gae", "league": True, "critic_warmup_updates": 5, "shaping_critic_scale": 1.6}
 
@@ -217,3 +217,21 @@ def test_leak_wasted_elixir_at_full():
     assert HT.bound(p) == pytest.approx(HT.LEAK_MATCH_CAP)
     off = HT.canonical({"habit_reward": True})
     assert "habit_leak_w" not in off and HT.canonical({"habit_reward": True, "habit_leak_w": 0.02})["habit_leak_w"] == 0.02
+
+
+def test_failed_reach_xbow():
+    """succ48 10-25: habit_xbow_w per reach X-Bow (<= 13.5 tiles of an alive enemy princess) with no princess -5% in 30 s."""
+    smp = [(t, 8.0, []) for t in range(0, 2000, 20)]
+    tw = [(t, [(3.5, 6.5, 3000 if t < 900 else 2500), (14.5, 6.5, 3000)]) for t in range(0, 2000, 20)]
+    plays = [(100, "x_bow", 3500, 17000), (1000, "x_bow", 14500, 17000), (1500, "knight", 3500, 17000), (300, "x_bow", 9000, 31000)]
+    ev = HT.events(smp, plays, low=False, towers=tw)
+    assert ev["xbow"] == [[100, 1], [1000, 1]] or ev["xbow"] == [[100, 0], [1000, 1]]
+    # princess (3.5, 6.5) drops 3000 -> 2500 (16.7%) at t 900 > 100 + 600: the first X-Bow did NOT lock in its window
+    assert ev["xbow"] == [[100, 1], [1000, 1]]                            # the far X-Bow (10.5 tiles?) -- see next line
+    p = {**W, "habit_idle_w": 0.0, "habit_trade_w": 0.0, "habit_xbow_w": 0.1}
+    out = HT.row_terms(ev, np.arange(0, 2000, 40), p)
+    assert out["xbow"] == pytest.approx(-0.2) and out["n_xbow"] == 2 and out["n_xbow_fail"] == 2
+    tw2 = [(t, [(3.5, 6.5, 3000 if t < 300 else 2800), (14.5, 6.5, 3000)]) for t in range(0, 2000, 20)]
+    assert HT.events(smp, plays[:1], low=False, towers=tw2)["xbow"] == [[100, 0]]   # -6.7% within 30 s: locked
+    assert HT.bound(p) == pytest.approx(HT.XBOW_MATCH_CAP)
+    assert "habit_xbow_w" not in HT.canonical({"habit_reward": True})
