@@ -151,3 +151,21 @@ GATE G3 (32525): S19 (o_s91, CLX start + T_gate .3) u75 (sha 3eda9d23) vs CLX WI
 | WIRE | ICEBOW Mark CLXIII: NOLEAK = S19 u75 grafted (sha 8d328a43) | laptop | owner asked to watch it: deploy_ckpt.sh ... wire, offline --check PASS; NOT started; LIVE_OPTIONS has no hazard flags; revert = CKPT_OVERRIDE.pre_20261025_0844 (CLX) |
 | S24 u75 | succ48_r (leak .06) | s96 / 33401 | FAIL: win -0.066 [-0.118, -0.010], full 33.8 s, first play 36.4 s -> stopped |
 | S26 | succ48_s: BRANCH of S19 u75 (= CLXIII) | s98 / 33401 | running |
+
+OWNER 10-25 (watching CLXIII live): "a lot better on defense but it still struggles with rocket use in general, as well as rocket
+cycling enemy tower as a long-term strategy"; then: monitor whether it ever uses Rocket + Tornado; if not even in perfect
+opportunities, combo work is needed -- carefully (Rocket alone often suffices; Tornado to clump; sometimes neither).
+- R1 SIM Rocket use (rocket_count.py on the gate rows; ratios valid, n double-counted): CLXIII vs CLX-with-hazard
+  E4: Rockets / match 0.34 vs 0.50, tower Rockets 0.27 vs 0.41 (OT 0.19 vs 0.31), matches with >= 2 tower Rockets 3.1% vs 6.2%;
+  cal I u40: 0.39 vs 0.51, tower 0.28 vs 0.39, >= 2 tower 2.8% vs 6.1% -> CLXIII Rockets ~30% less (a).
+- Live combo path (a): LIVE_OPTIONS --rocket-tornado only (+ --rocket-value 9 damage edge): the COMBO is a live RULE (fires when a
+  Tornado pull holds >= 9 damage-weighted elixir and one blast does not); the lone value-Rocket rule is OFF. The SIM eval / training
+  (livecal.LIVE) has NEITHER -> the model never learned combos; live combos come only from the rule.
+- Live CLXIII (live_rocket.py, 6 matches since 08:58): Rockets 2 (0.33 / match), Tornados 11, combos 0, rule-combo decisions 0.
+
+| id | arm | seed / pod | result |
+|---|---|---|---|
+| S27 | succ48_t: BRANCH of CLXIII + shaping tower_crown (potential tower-HP + crown margin, .3 / .3), critic 3.2 | s99 / 32525 | running (13:08Z) |
+| S28 | succ48_t | s100 / 33401 | running (13:10Z) |
+| S25b | succ48_s: CLXIII branch, no shaping (control) | s97 / 33591 | running (13:11Z) |
+| S23 | succ48_r (leak .06) | s95 / 33572 | continues |
