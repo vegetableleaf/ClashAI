@@ -118,3 +118,10 @@ GATE G1 (gate48 + compare48, 32525): S7 (f_s79) u50 vs CLX WITH the hazard play,
 | S17 u75 | succ48_o | s89 / 32525 | PASS: full 20.9 s (u50 21.7: plateau), first play 13.5 s, win 0.733 (+0.027), trade +0.35 |
 | S22 end | succ48_q | s94 / 33572 | stopped at u~7 for S23 |
 | S23 | succ48_r: BRANCH of S17 u75 (sha 5bb475b6), leak .03 -> .06, LEAK_MATCH_CAP 0.6 -> 1.0, critic 2.6 | s95 / 33572 | running (leak plateau ~21 s vs 12.3 target) |
+
+GATE G2 (32525): S17 (o_s89, CLX start + T_gate .3) u50 vs CLX WITH the hazard play, paired 1,920 each:
+- E4 1414 vs 1389, **+1.30 pp [-1.29, +3.89]**; calibrated I u40 1154 vs 1129, **+1.30 pp [-1.43, +4.04]** -> positive, not yet CI low > 0.
+- Behaviour vs CLX-with-hazard (E4, 99%): seconds at full 22.2 vs 12.3 (+9.9, FLAG), first play 11.9 vs 13.0 s, trade +0.37 vs +0.16,
+  idle / ignored equal, plays / min -0.55, elixir at play -0.11.
+- Reading: first no-hazard model at least even with CLX-with-hazard on both opponents; remaining gaps = mid-game leak (22 vs 12 s)
+  and significance. Next: leak .06 branch (S23) + later checkpoints of S17 / S19 / S21.
