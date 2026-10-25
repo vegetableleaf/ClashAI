@@ -72,7 +72,7 @@ vf_trunk_grad: true
 shaping: none
 shaping_w_tower: 0.3
 shaping_w_crown: 0.3
-shaping_critic_scale: 2.2
+shaping_critic_scale: 2.6
 n_actors: 48
 in_flight: 8
 actor_device: cpu

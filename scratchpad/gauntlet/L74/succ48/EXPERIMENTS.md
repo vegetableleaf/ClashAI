@@ -147,3 +147,4 @@ GATE G3 (32525): S19 (o_s91, CLX start + T_gate .3) u75 (sha 3eda9d23) vs CLX WI
 - = the FALLBACK successor: no leak without the hazard play, better trades, CLX-with-hazard win rate. Next: branches around it
   (S25) + further checkpoints, looking for a CI-low > 0 edge.
 | S19 u100 | succ48_o | s91 / 33591 | PASS: full 20.3 s (u75 13.5), first play 22.6 s, win 0.719 (u75 0.740) -> u75 stays the pick |
+| S25 crash | succ48_s_s97 | s97 / 32525 | refused at start 11:46Z (critic 2.2 < bound 2.6 after LEAK_MATCH_CAP 1.0); pod idle ~30 min; fixed critic 2.6, relaunched 12:19Z |
