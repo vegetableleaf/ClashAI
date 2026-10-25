@@ -107,3 +107,6 @@ GATE G1 (gate48 + compare48, 32525): S7 (f_s79) u50 vs CLX WITH the hazard play,
 | S18 | succ48_p: m + T_gate 0.5 | s90 / 33401 | running |
 | S19 | succ48_o (T_gate 0.3) | s91 / 33591 | running |
 | S20 | succ48_p (T_gate 0.5) | s92 / 33572 | running |
+| S17 u25 | succ48_o (CLX start, T_gate .3) | s89 / 32525 | PASS: first play 39.7 -> 32.2 s, full 47.9, win 0.714 |
+| S18 u25 | succ48_p (T_gate .5) | s90 / 33401 | PASS: full 48.6, first play 43.6 s (no move yet), win 0.676 (-0.030) |
+| **S17 u50** | succ48_o | s89 / 32525 | **PASS: full 52.6 -> 21.7 s, first play 11.4 s, win 0.726 (+0.020), trade -0.33 -> +0.39 [+0.42, +1.02 diff], idle / ignored flat.** Exploration (T_gate .3) unlocks the leak fix from CLX. gate48 on u50 started |
