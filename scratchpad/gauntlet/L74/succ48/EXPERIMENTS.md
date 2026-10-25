@@ -115,3 +115,6 @@ GATE G1 (gate48 + compare48, 32525): S7 (f_s79) u50 vs CLX WITH the hazard play,
 | S19 u25 | succ48_o (T_gate .3) | s91 / 33591 | PASS: full 36.6 (-16.1), first play 29.5 s (-10.2), win 0.706, trade +0.40 -> T .3 replicates |
 | S21 | succ48_q: BRANCH of S17 (o_s89) u50 (sha 5daf044f) | s93 / 33401 | running |
 | S22 | succ48_q | s94 / 33572 | running |
+| S17 u75 | succ48_o | s89 / 32525 | PASS: full 20.9 s (u50 21.7: plateau), first play 13.5 s, win 0.733 (+0.027), trade +0.35 |
+| S22 end | succ48_q | s94 / 33572 | stopped at u~7 for S23 |
+| S23 | succ48_r: BRANCH of S17 u75 (sha 5bb475b6), leak .03 -> .06, LEAK_MATCH_CAP 0.6 -> 1.0, critic 2.6 | s95 / 33572 | running (leak plateau ~21 s vs 12.3 target) |

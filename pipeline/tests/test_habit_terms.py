@@ -212,8 +212,8 @@ def test_leak_wasted_elixir_at_full():
     out = HT.row_terms(ev, [100, 150, 200, 250], p)
     assert out["leak"] == pytest.approx(-0.02 * wasted, abs=1e-4) and out["leak_e"] == pytest.approx(wasted, abs=1e-3)
     assert out["r"][1] < 0 and out["r"][2] < 0 and out["r"][0] == 0      # charged to the row at / before each gap end
-    big = {"thr": 0, "idle": [], "push": [], "leak": [[t, 5.0] for t in range(100, 1000, 100)]}
-    assert HT.row_terms(big, np.arange(0, 1000, 10), p)["leak"] == pytest.approx(-HT.LEAK_MATCH_CAP)
+    big = {"thr": 0, "idle": [], "push": [], "leak": [[t, 5.0] for t in range(100, 3000, 100)]}   # 2.9 > any cap
+    assert HT.row_terms(big, np.arange(0, 3000, 10), p)["leak"] == pytest.approx(-HT.LEAK_MATCH_CAP)
     assert HT.bound(p) == pytest.approx(HT.LEAK_MATCH_CAP)
     off = HT.canonical({"habit_reward": True})
     assert "habit_leak_w" not in off and HT.canonical({"habit_reward": True, "habit_leak_w": 0.02})["habit_leak_w"] == 0.02
