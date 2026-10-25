@@ -142,3 +142,12 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
   ADAPTIVE via deploy_ckpt.sh, revert to CLXIII on failure; deadline 10:30Z). CLXIII gate rows (matches.jsonl only) copied to
   33912 / 33184 / 33040 / 33015; D1 u60 + W18 R3 opponents + cx3 decks in their cb_stepd. Pods: mem_e_s106 33912,
   mem_e_s107 33184, mem_a_s106 33040, mem_l_s106 33015.
+- S3-aux DONE (agent): /workspace/s3/aux_v2/mem_best_ze.pt sha 3d75a25d8ebedd4e (2 epochs, 29 min, memory v2, zero_empty).
+  Policy unchanged: 106 base tensors + coupling bit-identical; CPU outputs = CLXIII exactly (real and empty memory); arm smokes'
+  init pro agreement = CLXIII's reference (cell 0.1459, card 0.6687, gate 0.7315). Per-head val (30k rows; empty-memory in
+  brackets): opp card in hand AUC 0.985 (0.603), opp next card acc 0.337 (0.060; chance 0.062), opp elixir now R2 0.83, own
+  card swing R2 0.45 (0.30), value / elixir 0.64 (0.32), plays-until-in-hand acc 0.874, our tower HP lost next 10 s R2 0.51,
+  X-Bow lock AUC 0.71 (n 87), Rocket tower dmg R2 0.14 (n 73). Committed 57dcdc4.
+- Training trees /workspace/cb_arm on 33912 / 33184 / 33040 / 33015 / 33458 / 33522 (= cb_stepd + 57dcdc4 pipeline + s1c
+  artifacts + cx3 decks + D1 / R3 opponents + pro memory tables). Arms: mem_e_s106 33912, mem_e_s107 33184, mem_a_s106 33040,
+  mem_l_s106 33015, mem_e_s108 33458, mem_e_s109 33522 (extra candidate seeds on the two freed gate pods).
