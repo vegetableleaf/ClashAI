@@ -138,3 +138,11 @@ GATE G2 (32525): S17 (o_s89, CLX start + T_gate .3) u50 vs CLX WITH the hazard p
 Reading (b): the leak / opening swings between checkpoints at every leak weight -- the greedy live gate flips the opening when the play prob sits near tau; checkpoint choice on one 960 check is noisy; the gate's fresh 1,920 measures it.
 | S17 u150 | succ48_o | s89 / 32525 | REVERTED: full 50.5 s, first play 45.5 s, win 0.671 -> stopped (the opening flips back; long runs do not converge -> pick checkpoints by gate) |
 | S25 | succ48_s: BRANCH of S19 (o_s91) u75 (sha 3eda9d23), same recipe | s97 / 32525 | running |
+
+GATE G3 (32525): S19 (o_s91, CLX start + T_gate .3) u75 (sha 3eda9d23) vs CLX WITH the hazard play, paired 1,920 each:
+- E4 1394 vs 1389, +0.26 pp [-2.36, +2.88]; calibrated I u40 1129 vs 1129, +0.00 pp [-2.72, +2.72] -> EQUAL, not a pass (CI low < 0).
+- Behaviour vs CLX-with-hazard (E4, 99%): seconds at full 13.8 vs 12.3 (+1.5 [-0.8, +3.9] n.s. = leak solved), first play 13.0 vs
+  13.0 s, trade +0.43 vs +0.16 (+0.28 [+0.06, +0.50] better), idle -0.011 / ignored -0.011 (n.s.), X-Bow low-reserve +0.026, Tornado
+  / min -0.036, plays / min -0.10.
+- = the FALLBACK successor: no leak without the hazard play, better trades, CLX-with-hazard win rate. Next: branches around it
+  (S25) + further checkpoints, looking for a CI-low > 0 edge.
