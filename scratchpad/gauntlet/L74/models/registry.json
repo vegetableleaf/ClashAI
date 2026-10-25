@@ -4243,6 +4243,54 @@
     }
    ],
    "registered": "2026-10-21T14:26"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 162,
+   "word": "LONG",
+   "name": "ICEBOW Mark CLXII: LONG",
+   "run": "rlarm_tn_long_e1i_s74",
+   "parent": "ICEBOW Mark CLX: PARITY",
+   "change": "500-update long run (E1 bait 2.5x + W14 I u40 exploiter + moving KL anchor 50) at u100; fin15 (pre-10-19-patch stats); owner 10-22: new model live ASAP",
+   "created": "2026-10-22T12:01",
+   "eval": "pooled vs CLX: E4 +1.15 [-1.39, +3.68]; vs I u40 +6.82 [+4.03, +9.62] (trained vs I u40 at 30% share)",
+   "live": "",
+   "files": [
+    {
+     "path": "icebow/data/bench/rl_royale/rlarm_tn_long_e1i_s74/rlarm_tn_long_e1i_s74_u0100.pt",
+     "sha256": "921cc4d00cafd71ab04ed2354d6aa7c3ac54e703136ea705405bbb078b4e7c31",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLXII_LONG.pt"
+    },
+    {
+     "path": "icebow/data/bench/rl_royale/rlarm_tn_long_e1i_s74/rlarm_tn_long_e1i_s74_u0100_grafted.pt",
+     "sha256": "8af4b56015658bf43ea9a09695d8e01372416751999f9a21ab9006298ca669b8",
+     "role": "grafted",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLXII_LONG_grafted.pt"
+    }
+   ],
+   "registered": "2026-10-22T12:01"
+  },
+  {
+   "deck": "ICEBOW",
+   "n": 163,
+   "word": "NOLEAK",
+   "name": "ICEBOW Mark CLXIII: NOLEAK",
+   "run": "succ48_o_s91_u0075",
+   "parent": "ICEBOW Mark CLX: PARITY",
+   "change": "CLX + leak penalty + gate T .3; plays without the forced play",
+   "created": "2026-10-25T08:44",
+   "eval": "G3 vs CLX-with-forced-play: E4 +0.3 pp [-2.4,+2.9], cal I u40 0.0; leak 13.8 vs 12.3 s; trade +0.43 vs +0.16",
+   "live": "",
+   "files": [
+    {
+     "path": "icebow/data/models/ICEBOW/succ48_o_s91_u0075_grafted.pt",
+     "sha256": "8d328a43bf09fb7e389d41f01524fbb50955e15b64fdb72e28488a123eabad42",
+     "role": "model",
+     "link": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLXIII_NOLEAK.pt"
+    }
+   ],
+   "registered": "2026-10-25T08:44"
   }
  ],
  "unmarked": [
