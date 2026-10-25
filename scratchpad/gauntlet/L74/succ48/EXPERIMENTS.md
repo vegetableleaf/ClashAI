@@ -128,3 +128,4 @@ GATE G2 (32525): S17 (o_s89, CLX start + T_gate .3) u50 vs CLX WITH the hazard p
 | S17 u100 | succ48_o | s89 / 32525 | PASS: full 27.9 s (u75 20.9: leak oscillates back), first play 20.1 s, win 0.733, idle -0.017, ignored -0.023 |
 | S21 u25 | succ48_q (branch of S17 u50) | s93 / 33401 | FAIL: full 21.7 -> 33.2 [+5.1, +18.0], win -0.019 -> stopped |
 | S24 | succ48_r (leak .06, cap 1.0) | s96 / 33401 | running (2nd seed of the stronger leak term) |
+| S19 u50 | succ48_o (T .3) | s91 / 33591 | PASS: full 39.5 s, first play 34.6 s (slow), win 0.693, trade +0.07 |
