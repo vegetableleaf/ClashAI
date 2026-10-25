@@ -9,7 +9,7 @@ BASE = {"advantage": "gae", "league": True}
 
 
 def _crown(**kw):
-    c = {"lost": [], "falls": [], "tornados": [], "rockets": [], "end": {}, "rocket_hits": [], "king_lost": []}
+    c = {"lost": [], "falls": [], "tornados": [], "rockets": [], "end": {}, "rocket_hits": [], "king_lost": [], "troop_lost": []}
     c.update(kw)
     return c
 
@@ -33,7 +33,7 @@ def test_rocket_cycle_pays_free_chips_only():
             {"seen": 5000, "dmg": 0.1}]      # own princess hit 2 s before the decision -> not paid
     plays = [_play(2970, "Rocket", 9.0), _play(970, "Rocket", 9.5), _play(3970, "Rocket", 6.0), _play(4970, "Rocket", 9.0)]
     ticks = [970, 2970, 3970, 4970]
-    c = _crown(rocket_hits=hits, lost=[[4930, 0.05]])
+    c = _crown(rocket_hits=hits, troop_lost=[[4930, 0.05]], lost=[[2950, 0.04], [4930, 0.09]])   # 2950 = enemy spell
     out = RT.row_terms(c, plays, ticks, p)
     assert out["r"][1] == pytest.approx(0.05) and out["r"][[0, 2, 3]].sum() == 0
     assert out["rocket_cycle"] == pytest.approx(0.05) and out["rocket_cycle_free"] == 1
@@ -76,3 +76,16 @@ def test_bound_and_cfg():
     assert p["rocket_cycle_w"] == 0.4 and "king_redirect" not in p
     with pytest.raises(SystemExit):
         crown_cfg({**BASE, "king_redirect_w": 0.3})     # weight without its switch
+
+
+def test_rocket_cycle_ignores_enemy_spell_damage():
+    p = crown_cfg({**BASE, "rocket_cycle": True})
+    hits, plays = [{"seen": 3000, "dmg": 0.1}], [_play(2970, "Rocket", 9.0)]
+    spell_only = _crown(rocket_hits=hits, lost=[[2940, 0.05]], troop_lost=[])          # their Rocket hit us 1.5 s before
+    assert RT.row_terms(spell_only, plays, [2970], p)["rocket_cycle"] == pytest.approx(0.05)
+    troop = _crown(rocket_hits=hits, lost=[[2940, 0.05]], troop_lost=[[2940, 0.05]])   # a troop hit us -> defence owed
+    assert RT.row_terms(troop, plays, [2970], p)["rocket_cycle"] == 0.0
+    c = _crown(rocket_hits=hits)
+    del c["troop_lost"]
+    with pytest.raises(ValueError):
+        RT.row_terms(c, plays, [2970], p)
