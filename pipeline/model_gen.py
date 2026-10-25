@@ -119,7 +119,8 @@ class MemoryEncoder(nn.Module):
     empty memory stays finite) -> 64-d; the summary (S floats + the answer card's embedding) -> 2-layer MLP -> 64-d; concat
     -> ONE linear into the global feature vector, weight AND bias ZERO-initialised: a fresh encoder changes no output."""
 
-    def __init__(self, d_c: int, out_dim: int, n_feat: int, n_sum: int, d: int = 64, layers: int = 2, heads: int = 4):
+    def __init__(self, d_c: int, out_dim: int, n_feat: int, n_sum: int, d: int = 64, layers: int = 2, heads: int = 4,
+                 zero_empty: bool = False):
         super().__init__()
         self.ev_in = nn.Linear(n_feat, d)
         self.card_in = nn.Linear(d_c, d, bias=False)
@@ -133,8 +134,22 @@ class MemoryEncoder(nn.Module):
         nn.init.zeros_(self.out.bias)
         # saved shape: load builds the module FROM it (n_feat, n_sum, d, layers, heads, out_dim)
         self.register_buffer("cfg", torch.tensor([n_feat, n_sum, d, layers, heads, out_dim]))
+        if zero_empty:      # saved as mem.zero_empty: a checkpoint holding it rebuilds it (GenModel.load_state_dict)
+            self.register_buffer("zero_empty", torch.ones(()))
 
-    def forward(self, ev, mask, card_emb, summary, answer_emb):
+    def forward(self, ev, mask, card_emb, summary, answer_emb, pad_emb=None):
+        """``zero_empty`` (skew 10-25): out(rep) - out(rep of an EMPTY memory) = W (rep - rep_empty): an empty memory adds
+        exactly 0, so the adapter cannot learn a memory-independent offset (the S3 v1 adapter learned one: |out(empty)| L2
+        18.2, gate p -0.12 on every SIM state). ``pad_emb`` = the model's card_id(0) embedding [1, d_c] (the empty answer)."""
+        z = self.rep(ev, mask, card_emb, summary, answer_emb)
+        if not hasattr(self, "zero_empty"):
+            return self.out(z)
+        z0 = self.rep(ev.new_zeros(1, 1, ev.shape[-1]), mask.new_zeros(1, 1), card_emb.new_zeros(1, 1, card_emb.shape[-1]),
+                      summary.new_zeros(1, summary.shape[-1]), pad_emb)
+        return Fn.linear(z - z0, self.out.weight)
+
+    def rep(self, ev, mask, card_emb, summary, answer_emb):
+        """The 2d representation BEFORE the zero-init coupling ``out`` (S3-aux: the aux heads read it)."""
         x = self.ev_in(ev) + self.card_in(card_emb)
         B = x.shape[0]
         x = torch.cat([self.bos.expand(B, -1, -1).to(x.dtype), x], 1)
@@ -144,7 +159,38 @@ class MemoryEncoder(nn.Module):
         mean = (h[:, 1:] * mf).sum(1) / mf.sum(1).clamp(min=1)
         a = ((h @ self.query.to(h.dtype)) / math.sqrt(h.shape[-1])).masked_fill(~valid, float("-inf")).softmax(1)
         pooled = mean + (a.unsqueeze(-1) * h).sum(1)
-        return self.out(torch.cat([pooled, self.summary(torch.cat([summary, answer_emb], -1))], -1))
+        return torch.cat([pooled, self.summary(torch.cat([summary, answer_emb], -1))], -1)
+
+
+# S3-aux (``memory_aux: v1``): prediction heads on the memory representation. Per OWN deck card: the 10 s outcome if played
+# now (swing = enemy - own tower HP lost, value removed per elixir), plays until it is back in hand (classes 0..AUX_CYC-1,
+# the last = that or more) and the elixir those plays cost; per revealed OPPONENT card (opp_cycle slots): in their hand now;
+# global: the opponent's next card (vocab logits) + AUX_GLOB regressions / logits.
+AUX_CYC = 5
+AUX_OWN = ("swing", "vpe") + tuple(f"cyc{i}" for i in range(AUX_CYC)) + ("cyc_el",)
+AUX_GLOB = ("opp_el10", "opp_el_now", "threat", "commit", "xb_lock", "rk_dmg")
+
+
+class MemoryAux(nn.Module):
+    """S3-aux heads (train_memory --aux v1). Inputs: z = MemoryEncoder.rep (2 d_mem), ctx = the FROZEN trunk's global output
+    (detached; the board, hand, elixir), card embeddings (detached) + in-hand / next flags. They never feed the policy: only
+    the memory encoder learns through them, the zero-init coupling stays zero, so the policy is the base policy exactly."""
+
+    def __init__(self, z_dim: int, ctx_dim: int, d_c: int, n_cards: int, h: int = 128):
+        super().__init__()
+        self.own = nn.Sequential(nn.Linear(z_dim + ctx_dim + d_c + 2, h), nn.GELU(), nn.Linear(h, len(AUX_OWN)))
+        self.opp = nn.Sequential(nn.Linear(z_dim + ctx_dim + d_c, h), nn.GELU(), nn.Linear(h, 1))
+        self.glob = nn.Sequential(nn.Linear(z_dim + ctx_dim, h), nn.GELU(), nn.Linear(h, n_cards + len(AUX_GLOB)))
+        self.n_cards = n_cards
+        self.register_buffer("cfg", torch.tensor([z_dim, ctx_dim, d_c, n_cards, h]))
+
+    def forward(self, z, ctx, own_emb, own_flags, opp_emb):
+        zc = torch.cat([z, ctx], -1)
+        own = self.own(torch.cat([zc.unsqueeze(1).expand(-1, own_emb.shape[1], -1), own_emb, own_flags], -1))
+        opp = self.opp(torch.cat([zc.unsqueeze(1).expand(-1, opp_emb.shape[1], -1), opp_emb], -1)).squeeze(-1)
+        g = self.glob(zc)
+        return {"own": own, "opp_hand": opp, "opp_next": g[:, :self.n_cards],
+                **{k: g[:, self.n_cards + i] for i, k in enumerate(AUX_GLOB)}}
 
 
 class GenModel(S1Model):
@@ -233,7 +279,8 @@ class GenModel(S1Model):
         mem = getattr(self, "mem", None)
         if mem is not None:             # Plan A memory v1: + a zero-initialised projection (b must carry MEM_KEYS)
             g = g + mem(b["mem_ev"].to(g.dtype), b["mem_mask"].bool(), self.emb(b["mem_card"], b["mem_form"]).to(g.dtype),
-                        b["mem_summary"].to(g.dtype), self.card_id(b["mem_answer"].long()).to(g.dtype))
+                        b["mem_summary"].to(g.dtype), self.card_id(b["mem_answer"].long()).to(g.dtype),
+                        self.card_id(b["mem_answer"].new_zeros(1).long()).to(g.dtype))
         return g
 
     def encode_gen(self, b: dict) -> dict:
@@ -273,15 +320,40 @@ class GenModel(S1Model):
         self.cell_refine = CellRefine(self.d, c, layers).to(self.cell_emb.device)
         return self.cell_refine
 
-    def add_memory(self, d: int = 64, layers: int = 2, heads: int = 4, version: str = "v1") -> MemoryEncoder:
+    def add_memory(self, d: int = 64, layers: int = 2, heads: int = 4, version: str = "v1",
+                   zero_empty: bool = False) -> MemoryEncoder:
         """Attach a fresh (zero-output) ``MemoryEncoder`` (``memory: v1`` / ``v2``: the summary width match_memory.N_SUM
         gives the version, so the saved ``mem.cfg`` rebuilds it); checkpoints holding ``mem.*`` weights get it on load. The
-        model then takes the match_memory MEM_KEYS (that version's) in every batch."""
+        model then takes the match_memory MEM_KEYS (that version's) in every batch. ``zero_empty``: MemoryEncoder.forward's
+        no-offset form (an empty memory adds exactly 0)."""
         from .match_memory import F, N_SUM
         self.mem = MemoryEncoder(self.d_c, self.global_in[0].in_features, F, N_SUM[memory_flag(version)], d, layers,
-                                 heads).to(self.cell_emb.device)
+                                 heads, zero_empty).to(self.cell_emb.device)
         self.mem.version = version
         return self.mem
+
+    def add_memory_aux(self, h: int = 128) -> MemoryAux:
+        """Attach fresh S3-aux heads (``memory_aux: v1``; needs the memory encoder); checkpoints holding ``mem_aux.*``
+        weights get them on load. Absent = no key, no parameter: the model, its state dict and outputs unchanged."""
+        if getattr(self, "mem", None) is None:
+            raise ValueError("memory_aux needs the memory encoder (memory v1 / v2) first")
+        self.mem_aux = MemoryAux(self.mem.out.in_features, self.d, self.d_c, self.n_cards, h).to(self.cell_emb.device)
+        return self.mem_aux
+
+    def memory_aux_out(self, b: dict, ctx: torch.Tensor) -> dict:
+        """S3-aux predictions for batch ``b`` (MEM_KEYS + identity + opp_cycle); ``ctx`` = the frozen trunk's global output
+        ``encode_gen(b)["g"]`` (detached here). Only the memory encoder (minus its coupling) and the heads get gradients."""
+        dt = ctx.dtype
+        z = self.mem.rep(b["mem_ev"].to(dt), b["mem_mask"].bool(), self.emb(b["mem_card"], b["mem_form"]).to(dt),
+                         b["mem_summary"].to(dt), self.card_id(b["mem_answer"].long()).to(dt))
+        dc = b["deck_card"]
+        inh = ((dc.unsqueeze(-1) == b["hand_card"].unsqueeze(1)).any(-1) & (dc > 0)).to(dt)
+        nxt = ((dc == b["next_card"].unsqueeze(-1)) & (dc > 0)).to(dt)
+        oc = b["opp_cycle"]
+        with torch.no_grad():
+            own = self.emb(dc, b["deck_form"]).to(dt)
+            opp = self.emb(oc[..., 0].long(), oc[..., 1].long().clamp(0, N_FORMS - 1)).to(dt)
+        return self.mem_aux(z, ctx.detach().to(dt), own, torch.stack([inh, nxt], -1), opp)
 
     def add_cue_in(self) -> nn.Linear:
         """Attach the step-c cue projection (CUE_N -> d, no bias), ZERO-initialised: every output is unchanged until it
@@ -312,12 +384,18 @@ class GenModel(S1Model):
             ver = next((v for v, n in N_SUM.items() if n == n_sum), None)
             if ver is None:
                 raise ValueError(f"memory weights for S={n_sum}: this match_memory has no such version ({N_SUM})")
-            self.add_memory(d, layers, heads, version=ver)
+            self.add_memory(d, layers, heads, version=ver, zero_empty="mem.zero_empty" in state_dict)
             if (n_feat, n_sum) != (self.mem.ev_in.in_features, self.mem.summary[0].in_features - self.d_c):
                 raise ValueError(f"memory weights for F={n_feat}, S={n_sum}: this match_memory has another layout")
         elif strict and getattr(self, "mem", None) is not None and not any(k.startswith("mem.") for k in state_dict):
             # a checkpoint without memory into a memory model (fv6 init + memory v1): the fresh zero-output encoder is kept
             state_dict = {**state_dict, **{"mem." + k: v for k, v in self.mem.state_dict().items()}}
+        if getattr(self, "mem", None) is not None and "mem.zero_empty" in state_dict and not hasattr(self.mem, "zero_empty"):
+            self.mem.register_buffer("zero_empty", torch.ones((), device=self.cell_emb.device))   # load_model(memory=...)
+        if getattr(self, "mem_aux", None) is None and "mem_aux.cfg" in state_dict:      # S3-aux heads, by content
+            self.add_memory_aux(int(state_dict["mem_aux.cfg"][4]))
+        elif strict and getattr(self, "mem_aux", None) is not None and not any(k.startswith("mem_aux.") for k in state_dict):
+            state_dict = {**state_dict, **{"mem_aux." + k: v for k, v in self.mem_aux.state_dict().items()}}
         if getattr(self, "tower_refine", None) is None and "tower_refine.cfg" in state_dict:
             c, layers, hidden, card, cell = (int(v) for v in state_dict["tower_refine.cfg"])
             self.add_tower_refine(c=c, layers=layers, hidden=hidden, card=bool(card), cell=bool(cell))

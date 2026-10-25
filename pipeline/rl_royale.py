@@ -1671,6 +1671,15 @@ def exploiter_league(cfg: dict) -> Optional[dict]:
     x = cfg.get("league_exploiters")
     if x is None:
         return None
+    if isinstance(x, list):                                   # Plan A 10-25 (owner: D1 + I u40 + W18 R3 pool): a LIST of
+        if not x:                                             # exploiters, each its own {ckpt, decks, share, ...}; the
+            raise SystemExit("league_exploiters list is empty")   # dict form above / below is unchanged
+        parts = [exploiter_league({**cfg, "league_exploiters": e}) for e in x]
+        tot = sum(q["share"] for q in parts)
+        if not 0 < tot <= 1:
+            raise SystemExit(f"league_exploiters shares must sum to (0, 1], got {tot}")
+        return {"share": tot, "parts": parts, "q": [q["share"] / tot for q in parts],
+                "decks": [d for q in parts for d in q["decks"]]}
     if not isinstance(x, dict) or not {"ckpt", "decks", "share"} <= set(x) <= {"ckpt", "decks", "share", *EXPLOITER_OWN}:
         raise SystemExit(f"league_exploiters must be {{ckpt, decks, share}} (+ optional {', '.join(EXPLOITER_OWN)}), got {x!r}")
     own = {k: x[k] for k in EXPLOITER_OWN if k in x}
@@ -1940,11 +1949,14 @@ def sample_matchups(rng: np.random.Generator, n: int, update: int, snaps: list[d
     po = opp_deck_p(p, census, cfg.get("league_deck_weights"))            # W15 lever 3: absent = p (unchanged)
     for i in range(int(n)):
         ex = exploiters is not None and rng.random() < exploiters["share"]
+        xp = exploiters                                           # Plan A list form: a 2nd draw picks the exploiter
+        if ex and "parts" in exploiters:
+            xp = exploiters["parts"][int(rng.choice(len(exploiters["parts"]), p=exploiters["q"]))]
         adaptive = cfg.get("league_pfsp") == "hard" or cfg.get("league_frozen_opponent")
-        opp = (exploiters["opp"] if ex else AO.sample_opponent(rng, snaps, cfg, league_state or {}) if adaptive else
+        opp = (xp["opp"] if ex else AO.sample_opponent(rng, snaps, cfg, league_state or {}) if adaptive else
                sample_opponent(rng, snaps, cfg["league_mix"], cfg["init"], cfg["league_specialist"]))
         ld = sample_deck(rng, census, p, lshare)
-        od = (exploiters["decks"][int(rng.choice(len(exploiters["decks"]), p=exploiters["p"]))] if ex else
+        od = (xp["decks"][int(rng.choice(len(xp["decks"]), p=xp["p"]))] if ex else
               ICEBOW_DECK if opp["type"] in ("s1", "frozen") else sample_deck(rng, census, po, cfg["league_icebow_share"]))
         out.append({"tag": f"sp{int(update):04d}_{i:02d}", "opp": opp,
                     "learner_deck": ld["engine"], "learner_deck_name": ld["name"], "learner_bucket": ld["bucket"],
@@ -3276,7 +3288,25 @@ def memory_cfg(cfg: dict) -> Optional[str]:
         raise SystemExit(str(exc))
     if m is not None and cfg.get("branch_gate"):
         raise SystemExit(f"memory {m} is not wired for branch_gate (opt3 branch rows carry no memory tables)")
+    # S3-aux (train_memory --aux v1): ``memory_aux: v1`` = the model carries the aux heads (the init's, else fresh; never in
+    # the policy); ``memory_encoder_frozen: true`` = the memory encoder (minus its coupling mem.out) and the aux heads get no
+    # gradient: only the coupling + the usual policy parameters train. Absent / null / false = off, the historical hash.
+    if cfg.get("memory_aux") not in (None, "v1"):
+        raise SystemExit(f"memory_aux must be absent / null or 'v1', got {cfg['memory_aux']!r}")
+    if cfg.get("memory_encoder_frozen") not in (None, False, True):
+        raise SystemExit(f"memory_encoder_frozen must be a bool or null, got {cfg['memory_encoder_frozen']!r}")
+    # skew 10-25: ``memory_zero_empty: true`` = model_gen MemoryEncoder zero_empty (an EMPTY memory adds exactly 0 whatever
+    # the coupling learns; the init's flag is kept either way: a checkpoint holding mem.zero_empty builds it)
+    if cfg.get("memory_zero_empty") not in (None, False, True):
+        raise SystemExit(f"memory_zero_empty must be a bool or null, got {cfg['memory_zero_empty']!r}")
+    if m is None and (cfg.get("memory_aux") is not None or cfg.get("memory_encoder_frozen") or cfg.get("memory_zero_empty")):
+        raise SystemExit("memory_aux / memory_encoder_frozen / memory_zero_empty need memory v1 / v2")
     return m
+
+
+def mem_frozen_name(name: str) -> bool:
+    """``memory_encoder_frozen``: the parameters that stay fixed (memory encoder minus the coupling, the aux heads)."""
+    return (name.startswith("mem.") and not name.startswith("mem.out.")) or name.startswith("mem_aux.")
 
 
 def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
@@ -3296,7 +3326,8 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
                               "league_exploiters", "cue_inputs", "opp_tower_troops", "live_levels", "league_opp_live",
                               "heroiw_press", "ability_features", "kl_heads", "kl_ref_card", "league_deck_weights",
                               "ot_start_share", "xbow_start_share", "remote_actors", "kl_ref_refresh_every",
-                              "tau_phase", "memory") + OPP_TEMPO_KEYS
+                              "tau_phase", "memory", "memory_aux", "memory_encoder_frozen",
+                              "memory_zero_empty") + OPP_TEMPO_KEYS
                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS and k not in CROWN_KEYS
                 and k not in HT.KEYS):
             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
@@ -3389,6 +3420,12 @@ def config_sha(cfg: dict) -> str:
     elif cfg["memory"] == "v2":                              # S1c: the version AND the artifacts its features read
         from pipeline.match_memory import v2_meta
         cfg = {**cfg, "memory": ["v2", v2_meta()]}
+    if cfg.get("memory_aux") is None:                        # S3-aux heads off (absent or null) = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "memory_aux"}
+    if not cfg.get("memory_encoder_frozen"):                 # frozen encoder off (absent / null / false) = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "memory_encoder_frozen"}
+    if not cfg.get("memory_zero_empty"):                     # zero_empty off (absent / null / false) = the historical hash
+        cfg = {k: v for k, v in cfg.items() if k != "memory_zero_empty"}
     if cfg.get("tau_phase") is None:                         # 10-23 tau_phase off (absent or null) = the historical hash
         cfg = {k: v for k, v in cfg.items() if k != "tau_phase"}
     else:                                                     # on: floats, one hash for [.35, .45, .55] and (.35, ...)
@@ -3582,6 +3619,19 @@ class Learner:
                                  f"{getattr(self.model.mem, 'version', 'v1')} encoder")
             from pipeline.model_gen import attach_vocab
             attach_vocab(self.model, self.gen["card_vocab"])  # v2: e1_eval.gen_batch's counter priors
+            if cfg.get("memory_zero_empty") and not hasattr(self.model.mem, "zero_empty"):
+                self.model.mem.register_buffer("zero_empty", torch.ones((), device=self.dev))   # saved: actors / snapshots
+            if cfg.get("memory_aux") == "v1" and getattr(self.model, "mem_aux", None) is None:
+                self.model.add_memory_aux()                   # S3-aux heads (fresh: the init carried none)
+            self.mem_frozen = None
+            if cfg.get("memory_encoder_frozen"):              # S3-aux encoder fixed; mem.out + the policy train
+                names = [n for n, _ in self.model.named_parameters() if mem_frozen_name(n)]
+                for n, q in self.model.named_parameters():
+                    if mem_frozen_name(n):
+                        q.requires_grad_(False)
+                self.mem_frozen = {n: q.detach().clone() for n, q in self.model.named_parameters() if mem_frozen_name(n)}
+                log(f"[rl] memory_encoder_frozen: {len(names)} memory encoder / aux tensors "
+                    f"({sum(q.numel() for q in self.mem_frozen.values())} params) frozen; mem.out trains")
         self.init_meta = {"args": dict(ick["args"]), "deck": ick["deck"], "epoch": ick["epoch"], "n_params": ick["n_params"]}
         self.grid = self.minfo["grid"]
         self.league = None                                    # league on: {"snapshots": [{id, update, path}]}
@@ -3931,6 +3981,26 @@ class Learner:
         keys = E.gen_row_keys(self.phi_net) if "hand_card" in Bn else ("tok", "mask", "sc", "past")
         return value_rows(self.phi_net, to_device({k: Bn[k] for k in (*keys, "A")}, self.dev)).cpu().numpy()
 
+    def _pro_memory_tables(self):
+        """dataset_gen.memory_tables' file for ``proagree_data_gen`` (``<stem>_memory_v1.npz`` beside it; v2 reads the same
+        tables) -> (packed, row_tab, tick) aligned to the v3val rows ``gen_v3val_arrays`` returns; None = no such file."""
+        path = REPO / self.cfg["proagree_data_gen"]
+        mp = path.with_name(path.stem + "_memory_v1.npz")
+        if not mp.is_file():
+            return None
+        from pipeline.dataset_gen import load_memory_tables
+        packed, row_tab, mmeta = load_memory_tables(mp)
+        if mmeta["card_vocab"] != self.gen["card_vocab"]:
+            raise SystemExit(f"{mp.name}: card_vocab differs from the init checkpoint's")
+        z = np.load(path, allow_pickle=False)
+        v3 = z["v3val"]
+        if len(row_tab) != len(v3):
+            raise SystemExit(f"{mp.name} holds {len(row_tab)} rows, {path.name} {len(v3)}: not this dataset")
+        idx = np.where(v3 == 1)[0]
+        n = int(self.cfg["proagree_rows"])
+        idx = idx[:n] if n else idx                           # = gen_v3val_arrays' rows, in its order
+        return packed, row_tab[idx], z["tick"][idx]
+
     def proagree(self, model) -> dict:
         """plan diff 3: train_s1.evaluate on v3 VAL clean (the eval_s1 instrument), first ``proagree_rows`` rows.
         Generalist: eval_gen.evaluate (train_s1.evaluate line for line, hand-position card) on the SAME v3 VAL rows as
@@ -3951,9 +4021,16 @@ class Learner:
             if getattr(model, "mem", None) is not None:
                 self._rows.memory_version = getattr(model.mem, "version", "v1")   # the empty rows' summary width
             if getattr(model, "mem", None) is not None and self._rows.memory is None:
-                self._rows.memory = "empty"                   # Plan A: no pro event tables wired here yet (S3) -> the
-                self.log("[rl] proagree: memory model scored with an EMPTY memory (no pro event tables for "   # memory
-                         "proagree_data_gen yet)")            # model is scored on the pro rows with no events
+                tabs = self._pro_memory_tables()              # the pro rows' REAL memory: <data stem>_memory_v1.npz
+                if tabs is not None:
+                    from pipeline.dataset_gen import checkpoint_gid
+                    self._rows.memory, self._rows.memory_gid = tabs, checkpoint_gid(self.gen["card_vocab"])
+                    self.log(f"[rl] proagree: memory model scored with the pro rows' REAL memory tables "
+                             f"({int((tabs[1] >= 0).sum())}/{len(tabs[1])} rows with a table)")
+                else:
+                    self._rows.memory = "empty"               # no tables file next to proagree_data_gen -> the memory
+                    self.log("[rl] proagree: memory model scored with an EMPTY memory (no pro event tables for "   # model
+                             "proagree_data_gen)")            # is scored on the pro rows with no events
             ev = evaluate_gen(model, self._rows, grid=self.grid)
             model.eval()
             return {k: (float(v) if isinstance(v, (float, np.floating)) else v) for k, v in ev.items()}
@@ -4640,7 +4717,9 @@ class Learner:
             base["spell_value"] = True
         ct = crown_cfg(self.cfg)
         if ct is not None:                                    # L74 W6 -> actor_cfg crown_track (absent by default)
-            base["crown_track"] = "rocket_dmg" if ct.get("rocket_tower") else True   # W10: Rocket damage only when on
+            fl = (["rocket_dmg"] if ct.get("rocket_tower") or ct.get("rocket_cycle") else []) + (["king"] if ct.get(
+                "king_redirect") else []) + (["troop"] if ct.get("rocket_cycle") else [])   # W10 Rocket dmg; Plan A king / troop
+            base["crown_track"] = "+".join(fl) if fl else True
         if HT.habit_cfg(self.cfg) is not None:                # L74 habit terms -> actor_cfg habit_track (absent by default)
             base["habit_track"] = True
         return base
@@ -4819,6 +4898,17 @@ def main(argv=None) -> int:
             if why:
                 raise SmokeFail(f"a stop rule fired during the smoke: {why}")
             smoke_resume_check(cfg, a.run, run_dir, ck_dir, log, L)
+            if getattr(L, "mem_frozen", None) is not None:    # memory_encoder_frozen: the encoder never moved
+                sd = dict(L.model.named_parameters())
+                moved = [n for n, v in L.mem_frozen.items() if not torch.equal(sd[n].detach(), v)]
+                if moved or any(sd[n].requires_grad for n in L.mem_frozen):
+                    raise SmokeFail(f"memory_encoder_frozen: frozen memory tensors moved / trainable: {moved[:5]}")
+                out_moved = float((sd["mem.out.weight"].detach()).abs().max())
+                pol = L.update - int(adv_cfg(cfg).get("critic_warmup_updates") or 0)   # updates with a policy step
+                log(f"[rl] SMOKE memory_encoder_frozen: {len(L.mem_frozen)} frozen tensors bit-identical after "
+                    f"{L.update} updates ({max(pol, 0)} policy steps); coupling mem.out max |w| {out_moved:.3g}")
+                if pol > 0 and out_moved == 0:
+                    raise SmokeFail("memory_encoder_frozen: the coupling mem.out never trained in the policy steps")
             log("SMOKE PASS")
         return code
     except SmokeFail as exc:

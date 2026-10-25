@@ -23,6 +23,13 @@ inputs ZEROED (an empty memory, same weights) and for the init; best-by-val = lo
 init's own checkpoint dict with the trained weights, ``memory: "v1"`` and an ``s3`` block (mem_best.pt, mem_latest.pt, and
 mem_s{step}.pt every --ckpt-every steps). End: two association probes on the val rows of icebow-deck sides (``probes``).
 ``--head-rows N`` reads only the first N rows of --data (a streamed prefix: laptop tests; the full set needs a pod).
+
+S3-aux (lead 10-25; ``--trainable memory_encoder --aux v1``): the S3 imitation moved the POLICY (its coupling trained) and
+that model played far worse in SIM, so this mode trains ONLY the memory encoder (minus the zero-init coupling ``mem.out``)
+and the model_gen.MemoryAux prediction heads on future-outcome labels (``AuxLabels``: per own card outcome / cycle, the
+opponent's next card / hand / elixir, threat, X-Bow lock, Rocket damage), loss = the sum of each head's loss / its trivial
+loss. ``mem.out`` and every base tensor are asserted at init at the end and the policy outputs on the val rows = the init's;
+RL (rl_royale ``memory_encoder_frozen``) then freezes the encoder and trains the coupling. No mirror augmentation here.
 """
 from __future__ import annotations
 
@@ -201,10 +208,430 @@ def probes(model, base, rows, tables, arrs, gid, bs=512) -> dict:
 def save(path: Path, init_ck: dict, model, info: dict) -> None:
     ver = getattr(model.mem, "version", "v1")
     ck = dict(init_ck, model={k: v.detach().cpu() for k, v in model.state_dict().items()}, memory=ver, s3=info,
-              **({"memory_v2": MM.v2_meta()} if ver == "v2" else {}))
+              **({"memory_v2": MM.v2_meta()} if ver == "v2" else {}),
+              **({"memory_aux": "v1"} if getattr(model, "mem_aux", None) is not None else {}))
     tmp = path.with_name(path.name + ".tmp")
     torch.save(ck, tmp)
     tmp.replace(path)
+
+
+# ------------------------------------------------------------------------------------------------------------ S3-aux
+# --trainable memory_encoder --aux v1: the memory encoder (minus its zero-init coupling mem.out) + the model_gen MemoryAux
+# heads learn ONLY the aux prediction losses below; mem.out and every base tensor stay at init, so the policy = the init's.
+AUX_W = 200                 # ticks: the 10 s label windows (= match_memory.W_OUT)
+KEY = 1 << 23               # event / row sort key = table (or replay-side) x KEY + tick
+REG = ("swing", "vpe", "cyc_el", "opp_el10", "opp_el_now", "threat", "commit", "rk_dmg")   # standardised MSE heads
+BIN = ("opp_hand", "xb_lock")                                                                  # BCE heads
+CLS = ("cyc", "opp_next")                                                                      # CE heads
+AUX_HEADS = REG + BIN + CLS
+
+
+class AuxLabels:
+    """S3-aux labels per dataset row (tick t, its side's memory table ``row_tab``), every one from AFTER t; the memory inputs
+    see only events visible at t (vis <= t, match_memory causality), so no label is an input. From the tables (TABLE_KEYS) +
+    the npz, no rebuild:
+      own play at t (PLAY rows: the table's own play with tick t and card y_card; ``slot`` = its deck position): swing / vpe
+          (that play's 10 s outcome, where known), xb_lock (an own REACH X-Bow, resolved: xb_locked), rk_dmg (an own Rocket,
+          tower damage known: rk_tl);
+      cyc / cyc_el [8]: per own deck card, own plays in [t, t') and their elixir, t' = this side's first row at or after t
+          whose TRUE hand (npz hand_card) holds the card (0 = in hand now); classes clipped at model_gen.AUX_CYC - 1;
+      opp_next: the opponent's first play with tick >= t (card id; 0 = outside the vocabulary: masked);
+      opp_hand [8]: per opp_cycle slot (their revealed cards, an input), in the opponent's TRUE hand at t = the other side's
+          npz row at the same (replay, tick) (no such row = masked);
+      opp_el_now: the opponent's TRUE elixir at t (that row's own sc[3] x 10, where its exact flag sc[4] is set); the
+          observer estimate sc[5] is an input, never a label;
+      opp_el10 / commit / threat: opponent elixir played in [t, t + 10 s) (all / at own-frame y > 0.5 = on our side) and our
+          tower HP lost (recorded tower_damage, HP fractions) in the window; masked when t + 10 s passes the replay's last row.
+    Arrays are numpy [rows]; NaN / -1 = no label."""
+
+    def __init__(self, arrs, packed, row_tab, gid, n_cards):
+        from .model_gen import AUX_CYC
+        C = MM._COL
+        self.n_cards = n_cards
+        n = len(arrs["tick"])
+        t = arrs["tick"].astype(np.int64)
+        tab = np.asarray(row_tab[:n], np.int64)
+        vals = packed["vals"]
+        etick = packed["tick"].astype(np.int64)
+        off = np.asarray(packed["off"], np.int64)
+        etab = np.repeat(np.arange(len(off) - 1), np.diff(off))
+        ekey = etab * KEY + etick                               # chronological per table, tables in order: sorted
+        if len(ekey) > 1 and (np.diff(ekey) < 0).any():
+            raise ValueError("memory tables are not in (table, tick) order")
+        play, mine = vals[:, C["is_play"]] == 1, vals[:, C["mine"]] == 1
+        cost = np.round(vals[:, C["cost_10"]].astype(np.float64) * 10, 1)
+        ecard = packed["card"].astype(np.int64)
+        has = tab >= 0
+        lo = np.where(has, tab * KEY + t, -1)
+
+        def wsum(m, x, a, b):                                   # sum of x over the events m with key in [a, b)
+            k = ekey[m]
+            c = np.concatenate([[0.0], np.cumsum(np.broadcast_to(np.asarray(x, np.float64), m.shape)[m])])
+            return c[np.searchsorted(k, b)] - c[np.searchsorted(k, a)]
+
+        rep, side = arrs["rep"].astype(np.int64), arrs["side"].astype(np.int64)
+        end = np.full(int(rep.max()) + 1 if n else 1, -1, np.int64)
+        np.maximum.at(end, rep, t)
+        win = has & (t + AUX_W <= end[rep])
+        hi = np.where(has, tab * KEY + t + AUX_W, -1)
+        own, opp = play & mine, play & ~mine
+        nan = np.full(n, np.nan)
+        self.opp_el10 = np.where(win, wsum(opp, cost, lo, hi), nan)
+        ys = (vals[:, C["xy_known"]] == 1) & (vals[:, C["y"]] > 0.5)
+        self.commit = np.where(win, wsum(opp & ys, cost, lo, hi), nan)
+        dmg = (vals[:, C["is_tower_damage"]] == 1) & mine
+        self.threat = np.where(win, wsum(dmg, vals[:, C["tower_lost"]], lo, hi), nan)
+        ok = np.flatnonzero(opp)                                # the opponent's next play
+        self.opp_next = np.full(n, -1, np.int64)
+        if len(ok):
+            j = np.searchsorted(ekey[ok], lo)
+            oi = ok[np.minimum(j, len(ok) - 1)]
+            good = has & (j < len(ok)) & (etab[oi] == tab) & (ecard[oi] > 0)
+            self.opp_next = np.where(good, ecard[oi], -1)
+        y = arrs["y_card"].astype(np.int64)                     # the own play at t (play rows)
+        pr = (arrs["y_gate"] == 1) & has
+        ow = np.flatnonzero(own)
+        ev = np.full(n, -1, np.int64)
+        if len(ow):
+            j = np.searchsorted(ekey[ow], lo)
+            for d in range(4):                                  # same-tick own plays: the one with this card
+                e = ow[np.minimum(j + d, len(ow) - 1)]
+                hit = pr & (ev < 0) & (j + d < len(ow)) & (ekey[e] == lo) & (ecard[e] == y)
+                ev = np.where(hit, e, ev)
+        dc = arrs["deck_card"].astype(np.int64)
+        ind = dc == y[:, None]
+        ev = np.where(ind.any(1), ev, -1)
+        self.slot = np.where(ev >= 0, ind.argmax(1), -1)
+        self.play_rows, self.play_found = int(pr.sum()), int((ev >= 0).sum())
+        e = np.maximum(ev, 0)
+        v = vals[e]
+        f = ev >= 0
+        self.swing = np.where(f & (v[:, C["out_tower_known"]] == 1) & win, packed["swing"][e], nan)
+        self.vpe = np.where(f & (v[:, C["out_value_known"]] == 1) & (cost[e] > 0) & win, packed["vpe"][e], nan)
+        xb, rk = gid.get("x-bow", -9), gid.get("rocket", -9)
+        self.xb_lock = np.where(f & (y == xb) & (v[:, C["xb_reach"]] == 1) & (v[:, C["xb_done"]] == 1),
+                                v[:, C["xb_locked"]].astype(np.float64), nan)
+        self.rk_dmg = np.where(f & (y == rk) & (v[:, C["rk_done"]] == 1) & (v[:, C["rk_tower_known"]] == 1),
+                               packed["rk_tl"][e], nan)
+        # own cycle: this side's first row at / after t whose true hand holds the card
+        hand = arrs["hand_card"].astype(np.int64)
+        order = np.lexsort((np.arange(n), t, tab))
+        ts, tbs = t[order], tab[order]
+        last = np.r_[tbs[1:] != tbs[:-1], True] if n else np.zeros(0, bool)
+        gend = np.minimum.accumulate(np.where(last, np.arange(n), n)[::-1])[::-1] + 1     # group end (exclusive)
+        self.cyc = np.full((n, 8), -1, np.int8)
+        self.cyc_el = np.full((n, 8), np.nan)
+        for k in range(8):
+            ih = ((dc[:, k:k + 1] == hand).any(1) & (dc[:, k] > 0))[order]
+            nx = np.minimum.accumulate(np.where(ih, np.arange(n), n)[::-1])[::-1]
+            okk = (nx < gend) & (tbs >= 0) & (dc[order, k] > 0)
+            a = tbs * KEY + ts
+            b = np.where(okk, tbs * KEY + ts[np.minimum(nx, n - 1)], a)
+            self.cyc[order, k] = np.where(okk, np.minimum(wsum(own, 1.0, a, b), AUX_CYC - 1), -1)
+            self.cyc_el[order, k] = np.where(okk, wsum(own, cost, a, b), np.nan)
+        # opponent truth: the other side's row at the same (replay, tick)
+        kself = (rep * 2 + side) * KEY + t
+        so = np.argsort(kself, kind="stable")
+        kopp = (rep * 2 + 1 - side) * KEY + t
+        pair = np.full(n, -1, np.int64)
+        if n:
+            j = np.minimum(np.searchsorted(kself[so], kopp), n - 1)
+            pair = np.where(kself[so][j] == kopp, so[j], -1)
+        self.pair_rows = int((pair >= 0).sum())
+        pp = np.maximum(pair, 0)
+        sc = arrs["sc"]
+        self.opp_el_now = np.where((pair >= 0) & (sc[pp, 4] > 0.5), sc[pp, 3].astype(np.float64) * 10, nan)
+        oc = arrs["opp_cycle"][..., 0].astype(np.int64)
+        inh = (oc[:, :, None] == hand[pp][:, None, :]).any(-1)
+        self.opp_hand = np.where((pair >= 0)[:, None] & (oc > 0), inh, -1).astype(np.int8)
+
+    def batch(self, ids, dev) -> dict:
+        ids = np.asarray(ids)
+        out = {}
+        for k in REG + BIN + CLS + ("slot",):
+            v = getattr(self, k)[ids]
+            out["aux_" + k] = torch.as_tensor(v.astype(np.float32) if v.dtype.kind == "f" else v.astype(np.int64)).to(dev)
+        return out
+
+    def coverage(self) -> dict:
+        c = {k: int(np.isfinite(getattr(self, k)).sum()) for k in REG + ("xb_lock",)}
+        c.update(cyc=int((self.cyc >= 0).sum()), opp_hand=int((self.opp_hand >= 0).sum()),
+                 opp_next=int((self.opp_next >= 0).sum()), play_rows=self.play_rows, play_found=self.play_found,
+                 pair_rows=self.pair_rows, rows=int(len(self.slot)))
+        return c
+
+    def stats(self, ids) -> dict:
+        """Train-row label statistics: mean / std (REG), base rate (BIN), class prior (CLS) -> the trivial predictors and the
+        loss normalisers (a head's loss / its trivial loss, so every head starts near 1)."""
+        from .model_gen import AUX_CYC
+        st = {}
+        for k in REG:
+            x = getattr(self, k)[ids].ravel()
+            x = x[np.isfinite(x)]
+            st[k] = {"n": int(len(x)), "mean": float(x.mean()) if len(x) else 0.0,
+                     "std": max(float(x.std()) if len(x) > 1 else 1.0, 1e-6)}
+        for k in BIN:
+            x = getattr(self, k)[ids].ravel().astype(np.float64)
+            x = x[np.isfinite(x) & (x >= 0)]
+            p = float(np.clip(x.mean() if len(x) else 0.5, 1e-4, 1 - 1e-4))
+            st[k] = {"n": int(len(x)), "p": p, "H": float(-(p * np.log(p) + (1 - p) * np.log(1 - p)))}
+        for k, nc in (("cyc", AUX_CYC), ("opp_next", self.n_cards)):
+            x = getattr(self, k)[ids].ravel().astype(np.int64)
+            x = x[x >= 0]
+            pri = np.bincount(x, minlength=nc)[:nc].astype(np.float64)
+            st[k] = {"n": int(len(x)), "majority": int(pri.argmax())}
+            pri = (pri + 0.5) / (pri + 0.5).sum()
+            st[k]["H"] = float(-(pri * np.log(pri)).sum())
+        return st
+
+
+def _pred(out, b):
+    """The prediction tensor of every REG / BIN head for this batch (own-card heads at the played card's slot)."""
+    from .model_gen import AUX_OWN
+    io = {k: i for i, k in enumerate(AUX_OWN)}
+    slot = b["aux_slot"]
+    r = torch.arange(len(slot), device=slot.device)
+    p = {k: out["own"][r, slot.clamp(min=0), io[k]] for k in ("swing", "vpe")}
+    p["cyc_el"] = out["own"][..., io["cyc_el"]]
+    p.update({k: out[k] for k in ("opp_el10", "opp_el_now", "threat", "commit", "rk_dmg", "xb_lock", "opp_hand")})
+    p["cyc"] = out["own"][..., io["cyc0"]:io["cyc0"] + sum(k.startswith("cyc") and k[3:].isdigit() for k in AUX_OWN)]
+    p["opp_next"] = out["opp_next"]
+    return p
+
+
+def _mask(b, k):
+    y = b["aux_" + k]
+    if k in REG or k == "xb_lock":
+        m = torch.isfinite(y)
+        return m & (b["aux_slot"] >= 0) if k in ("swing", "vpe") else m
+    return y >= 0
+
+
+def aux_terms(out: dict, b: dict, st: dict) -> dict:
+    """Per head: the normalised loss (None = no labelled target in the batch). REG: MSE on the standardised target (trivial
+    = 1); BIN: BCE / H(train base rate); CLS: CE / H(train prior). Labels are masked, never imputed."""
+    import torch.nn.functional as Fn
+    p = _pred(out, b)
+    terms = {}
+    for k in AUX_HEADS:
+        m = _mask(b, k)
+        if not m.any():
+            terms[k] = None
+            continue
+        y, q = b["aux_" + k][m], p[k][m].float()
+        if k in REG:
+            terms[k] = ((q - (y - st[k]["mean"]) / st[k]["std"]) ** 2).mean()
+        elif k in BIN:
+            terms[k] = Fn.binary_cross_entropy_with_logits(q, y.float()) / st[k]["H"]
+        else:
+            terms[k] = Fn.cross_entropy(q, y) / st[k]["H"]
+    return terms
+
+
+def aux_forward(model, base, b):
+    """ctx = the frozen base trunk's global output (no grad; = the memory model's own: its coupling is zero), then the heads."""
+    with torch.no_grad():
+        ctx = base.encode_gen(b)["g"]
+    return model.memory_aux_out(b, ctx)
+
+
+def aux_loss(model, base, b, st):
+    terms = aux_terms(aux_forward(model, base, b), b, st)
+    use = [v for v in terms.values() if v is not None]
+    return (sum(use) if use else None), {k: (float(v.detach()) if v is not None else None) for k, v in terms.items()}
+
+
+def _auc(score, y):
+    """Mann-Whitney AUC (ties averaged); None without both classes."""
+    y = np.asarray(y) > 0.5
+    if y.all() or not y.any():
+        return None
+    s = np.asarray(score, np.float64)
+    _, inv, cnt = np.unique(s, return_inverse=True, return_counts=True)
+    r = (np.cumsum(cnt) - (cnt - 1) / 2)[inv]                 # 1-based ranks, ties averaged
+    return float((r[y].sum() - y.sum() * (y.sum() + 1) / 2) / (y.sum() * (~y).sum()))
+
+
+@torch.no_grad()
+def aux_eval(model, base, rows, lab, st, bs=512) -> dict:
+    """Per-head val metrics vs the trivial predictor (train mean / base rate / majority class): REG r2 (trivial 0); BIN auc
+    (trivial 0.5) and acc vs trivial_acc; CLS acc vs trivial_acc, cyc also on the QUEUE cards (not in hand, not next: the
+    part the hand flags do not give away). ``loss`` = the mean over batches of the summed normalised losses."""
+    got = {k: [] for k in AUX_HEADS}
+    queue = []
+    tot, nb = 0.0, 0
+    for s in range(0, len(rows.idx), bs):
+        ids = rows.idx[s:s + bs]
+        b = rows.batch(ids)
+        b.update(lab.batch(ids, rows.dev))
+        out = aux_forward(model, base, b)
+        tot += sum(float(v) for v in aux_terms(out, b, st).values() if v is not None)
+        nb += 1
+        p = _pred(out, b)
+        for k in AUX_HEADS:
+            m = _mask(b, k)
+            q = p[k][m].float()
+            got[k].append(((q.argmax(-1) if k in CLS else q).cpu().numpy(), b["aux_" + k][m].cpu().numpy()))
+        dc = b["deck_card"]
+        q = ~((dc.unsqueeze(-1) == b["hand_card"].unsqueeze(1)).any(-1) | (dc == b["next_card"].unsqueeze(-1)))
+        queue.append(q[_mask(b, "cyc")].cpu().numpy())
+    res = {"loss": tot / max(nb, 1)}
+    for k in AUX_HEADS:
+        p = np.concatenate([g[0] for g in got[k]]) if got[k] else np.zeros(0)
+        y = np.concatenate([g[1] for g in got[k]]) if got[k] else np.zeros(0)
+        r = {"n": int(len(y))}
+        if len(y) and k in REG:
+            z = (y - st[k]["mean"]) / st[k]["std"]
+            mse, triv = float(((p - z) ** 2).mean()), float((z ** 2).mean())
+            r.update(mse_std=mse, trivial_mse_std=triv, r2=1 - mse / triv if triv > 0 else None)
+        elif len(y) and k in BIN:
+            r.update(auc=_auc(p, y), acc=float(((p > 0) == (y > 0.5)).mean()),
+                     trivial_acc=float(((st[k]["p"] > 0.5) == (y > 0.5)).mean()))
+        elif len(y):
+            r.update(acc=float((p == y).mean()), trivial_acc=float((y == st[k]["majority"]).mean()))
+            if k == "cyc":
+                qq = np.concatenate(queue)
+                if qq.any():
+                    maj = int(np.bincount(y[qq].astype(np.int64)).argmax())   # the VAL majority: a generous baseline
+                    r.update(queue_n=int(qq.sum()), queue_acc=float((p[qq] == y[qq]).mean()),
+                             queue_trivial_acc=float((y[qq] == maj).mean()))
+        res[k] = r
+    return res
+
+
+def _aux_trainable(k: str) -> bool:
+    return (k.startswith("mem.") and not k.startswith("mem.out.")) or k.startswith("mem_aux.")
+
+
+def freeze_aux(model) -> dict:
+    """S3-aux: only mem.* minus the coupling mem.out.*, and mem_aux.*, train; -> a copy of every other tensor."""
+    for k, p in model.named_parameters():
+        p.requires_grad_(_aux_trainable(k))
+    return {k: v.detach().clone() for k, v in model.state_dict().items() if not _aux_trainable(k)}
+
+
+@torch.no_grad()
+def policy_identity(model, base, rows, bs=512) -> dict:
+    """Max |memory model - base| over gate / card / value / cell on ``rows`` (zero coupling: exactly 0 on CPU), and the
+    base's own run-to-run noise (``base_noise``: the base twice; GPU kernels may differ by a few ulp)."""
+    diff, noise, scale = 0.0, 0.0, 0.0
+    for s in range(0, len(rows.idx), bs):
+        b = rows.batch(rows.idx[s:s + bs])
+        o1, o0 = model(b, card=b["card"], form=b["form"]), base(b, card=b["card"], form=b["form"])
+        o0b = base(b, card=b["card"], form=b["form"])
+        for k in ("gate", "card", "value", "cell"):
+            f = torch.isfinite(o0[k])
+            if not torch.equal(f, torch.isfinite(o1[k])):
+                return {"max_diff": float("inf"), "scale": scale, "rows": int(len(rows.idx))}
+            if f.any():
+                diff = max(diff, float((o1[k][f] - o0[k][f]).abs().max()))
+                noise = max(noise, float((o0b[k][f] - o0[k][f]).abs().max()))
+                scale = max(scale, float(o0[k][f].abs().max()))
+    return {"max_diff": diff, "base_noise": noise, "scale": scale, "rows": int(len(rows.idx))}
+
+
+def _brief(ev):
+    keep = ("r2", "auc", "acc", "trivial_acc", "queue_acc", "queue_trivial_acc")
+    return {k: {m: (round(x, 4) if isinstance(x, float) else x) for m, x in (ev.get(k) or {}).items() if m in keep}
+            for k in AUX_HEADS}
+
+
+def train_aux(a, model, base, rows, va, va_idx, tr, tables, arrs, meta, init_ck, rng, dev, t0) -> int:
+    from .dataset_gen import checkpoint_gid
+    if a.aux != "v1":
+        raise SystemExit("--trainable memory_encoder needs --aux v1")
+    model.add_memory_aux()
+    snap = freeze_aux(model)
+    if float(model.mem.out.weight.abs().max()) != 0 or float(model.mem.out.bias.abs().max()) != 0:
+        raise SystemExit("the memory coupling mem.out is not zero at start")
+    tl0 = time.time()
+    lab = AuxLabels(arrs, tables[0], tables[1], checkpoint_gid(meta["card_vocab"]), model.n_cards)
+    st = lab.stats(tr)
+    cov = {**lab.coverage(), "seconds": round(time.time() - tl0, 1)}
+    nx = (lab.cyc >= 0) & (arrs["deck_card"] == arrs["next_card"][:, None]) & (arrs["deck_card"] > 0)
+    cov["next_card_cyc1_share"] = float((lab.cyc[nx] == 1).mean()) if nx.any() else None      # sanity: ~1
+    params = [p for p in model.parameters() if p.requires_grad]
+    opt = torch.optim.AdamW(params, lr=a.lr, weight_decay=a.wd)
+    steps = a.steps if a.steps > 0 else max(int(round(a.epochs * (len(tr) // a.bs))), 1)
+    sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda s: min(1.0, (s + 1) / max(a.warmup, 1)) * 0.5 * (
+        1 + math.cos(math.pi * min(s, steps) / steps)))
+    a.out_dir.mkdir(parents=True, exist_ok=True)
+    info = {"init": str(a.init), "init_sha256": hashlib.sha256(a.init.read_bytes()).hexdigest(),
+            "memory_tables": str(a.memory_tables), "data": str(a.data), "head_rows": a.head_rows, "train_rows": int(len(tr)),
+            "val_rows": int(len(va_idx)), "steps": steps, "bs": a.bs, "lr": a.lr, "wd": a.wd, "warmup": a.warmup,
+            "amp": a.amp, "trainable": "memory_encoder", "aux": a.aux, "n_trainable": int(sum(p.numel() for p in params)),
+            "seed": a.seed, "memory": a.memory, "mirror": False, "zero_empty": a.zero_empty, "label_stats": st,
+            "label_coverage": cov,
+            # the loss is sum_h loss_h / trivial_h: REG already standardised (weight 1), BIN / CLS divided by H
+            "head_weights": {k: (1.0 if k in REG else round(1.0 / st[k]["H"], 5)) for k in AUX_HEADS}}
+    log = (a.out_dir / "s3_log.jsonl").open("a", encoding="utf-8")
+
+    def emit(rec):
+        print(json.dumps(rec), flush=True)
+        log.write(json.dumps(rec) + "\n")
+        log.flush()
+    emit({"step": 0, "label_coverage": cov, "head_weights": info["head_weights"], "n_trainable": info["n_trainable"]})
+    if len(va_idx):
+        emit({"step": 0, "policy_identity": policy_identity(model, base, va.view(va_idx[:min(256, len(va_idx))]))})
+    amp = a.amp == "bf16" and dev.type == "cuda"
+
+    class _Rows:                                              # rows.batch + this batch's labels (in the prefetch thread)
+        def batch(self, ids):
+            b = rows.batch(ids)
+            b.update(lab.batch(ids, dev))
+            return b
+    best, step, ep, hist = math.inf, 0, 0, []
+    tl, sl = time.time(), 0
+    while step < steps:
+        for b in batches(_Rows(), rng.permutation(tr), a.bs, a.prefetch):
+            with torch.autocast("cuda", dtype=torch.bfloat16, enabled=amp):
+                loss, parts = aux_loss(model, base, b, st)
+            if loss is None:
+                continue
+            opt.zero_grad(set_to_none=True)
+            loss.backward()
+            gn = float(torch.nn.utils.clip_grad_norm_(params, 1.0))
+            opt.step()
+            sched.step()
+            step += 1
+            if step % 50 == 0 or step == steps:
+                emit({"step": step, "epoch": ep, "loss": float(loss.detach()),
+                      **{f"p_{k}": (round(v, 5) if v is not None else None) for k, v in parts.items()},
+                      "grad_norm": round(gn, 4), "lr": sched.get_last_lr()[0],
+                      "s_per_step": round((time.time() - tl) / max(step - sl, 1), 4)})
+                tl, sl = time.time(), step
+            if len(va_idx) and (step % a.val_every == 0 or step == steps):
+                ev_m = aux_eval(model, base, va, lab, st)
+                va.memory = "empty"                           # the same heads with an EMPTY memory: what memory adds
+                ev_z = aux_eval(model, base, va, lab, st)
+                va.memory = tables
+                hist.append({"step": step, "memory": ev_m, "zeroed": ev_z})
+                emit({"step": step, "val_loss": {"memory": round(ev_m["loss"], 5), "zeroed": round(ev_z["loss"], 5)},
+                      "val": _brief(ev_m), "val_zeroed": _brief(ev_z)})
+                if ev_m["loss"] < best:
+                    best = ev_m["loss"]
+                    save(a.out_dir / "mem_best.pt", init_ck, model, {**info, "step": step, "val": ev_m, "val_zeroed": ev_z})
+                tl, sl = time.time(), step
+            if step % a.ckpt_every == 0:
+                save(a.out_dir / f"mem_s{step}.pt", init_ck, model, {**info, "step": step})
+                tl, sl = time.time(), step
+            if step >= steps:
+                break
+        ep += 1
+    save(a.out_dir / "mem_latest.pt", init_ck, model, {**info, "step": step})
+    bad = frozen_unchanged(model, snap)
+    if bad:
+        raise SystemExit(f"FROZEN WEIGHTS CHANGED: {bad[:5]} (+{max(0, len(bad) - 5)})")
+    if float(model.mem.out.weight.abs().max()) != 0 or float(model.mem.out.bias.abs().max()) != 0:
+        raise SystemExit("the zero-init coupling mem.out moved off zero")
+    pid = policy_identity(model, base, va) if len(va_idx) else {}
+    if pid and pid["max_diff"] > 1e-6 * max(1.0, pid["scale"]):     # GPU: a few ulp (see main's step-0 check); CPU: 0
+        raise SystemExit(f"policy outputs differ from the base on the val rows: {pid}")
+    final = {"FINAL": True, "steps": step, "frozen_tensors_unchanged": len(snap), "coupling_zero": True,
+             "policy_identity_val": pid, "best_val_loss": best, "hist": hist, "seconds": round(time.time() - t0, 1), **info}
+    (a.out_dir / "s3_final.json").write_text(json.dumps(final, indent=1), encoding="utf-8")
+    emit({k: v for k, v in final.items() if k not in ("hist", "label_stats")})
+    return 0
 
 
 def main(argv=None) -> int:
@@ -213,7 +640,10 @@ def main(argv=None) -> int:
     ap.add_argument("--memory", choices=("v1", "v2"), required=True)
     ap.add_argument("--memory-tables", type=Path, required=True, help="dataset_gen memory_tables' file for --data")
     ap.add_argument("--data", type=Path, default=REPO / "icebow/data/pipeline/gen_dataset_v32_fv5.npz")
-    ap.add_argument("--trainable", choices=("memory",), required=True)
+    ap.add_argument("--trainable", choices=("memory", "memory_encoder"), required=True,
+                    help="memory = S3 imitation (gate / card / cell) of every mem.* weight; memory_encoder (with --aux v1) = "
+                         "S3-aux: the encoder minus its zero-init coupling + the aux heads, aux losses only (policy = init)")
+    ap.add_argument("--aux", choices=("v1",), default=None, help="S3-aux heads (model_gen.MemoryAux); needs memory_encoder")
     ap.add_argument("--out-dir", type=Path, required=True)
     ap.add_argument("--epochs", type=float, default=2.0)
     ap.add_argument("--steps", type=int, default=0, help="> 0 overrides --epochs")
@@ -223,6 +653,8 @@ def main(argv=None) -> int:
     ap.add_argument("--warmup", type=int, default=500)
     ap.add_argument("--amp", choices=("none", "bf16"), default="none")
     ap.add_argument("--no-mirror", action="store_true")
+    ap.add_argument("--zero-empty", action="store_true", help="the adapter's no-offset form (model_gen MemoryEncoder "
+                    "zero_empty): an EMPTY memory adds exactly 0, so no memory-independent offset is learned (skew 10-25)")
     ap.add_argument("--val-sample", type=int, default=30000)
     ap.add_argument("--val-every", type=int, default=2000)
     ap.add_argument("--ckpt-every", type=int, default=2000)
@@ -235,6 +667,8 @@ def main(argv=None) -> int:
     ap.add_argument("--device", default=None)
     ap.add_argument("--seed", type=int, default=0)
     a = ap.parse_args(argv)
+    if (a.trainable == "memory_encoder") != (a.aux is not None):
+        raise SystemExit("--trainable memory_encoder and --aux v1 go together")
     t0 = time.time()
     torch.manual_seed(a.seed)
     rng = np.random.default_rng(a.seed)
@@ -264,6 +698,8 @@ def main(argv=None) -> int:
         raise SystemExit("the init's card_vocab differs from the dataset's: card ids would not line up")
     grid = str(init_ck["args"].get("grid", "lattice"))
     model = load_model(a.init, dev, memory=a.memory)[0].eval()
+    if a.zero_empty:
+        model.mem.register_buffer("zero_empty", torch.ones((), device=dev))
     base = load_model(a.init, dev)[0].eval()
     if getattr(base, "mem", None) is not None:
         raise SystemExit("--init already has memory weights: S3 starts from a model without them")
@@ -280,6 +716,8 @@ def main(argv=None) -> int:
     rows.memory, rows.grid = tables, grid
     rows.memory_version, rows.memory_gid = a.memory, gid              # v2: + S1C_FIELDS (the tables' vocabulary)
     va = rows.view(va_idx)
+    if a.trainable == "memory_encoder":                   # S3-aux (freeze_aux re-sets every requires_grad flag)
+        return train_aux(a, model, base, rows, va, va_idx, tr, tables, arrs, meta, init_ck, rng, dev, t0)
     params = [p for k, p in model.named_parameters() if k.startswith("mem.")]
     opt = torch.optim.AdamW(params, lr=a.lr, weight_decay=a.wd)
     if len(tr) < a.bs:
@@ -294,7 +732,7 @@ def main(argv=None) -> int:
             "val_rows": int(len(va_idx)), "steps": steps, "bs": a.bs, "lr": a.lr, "wd": a.wd, "warmup": a.warmup,
             "heads": list(HEADS), "mirror": not a.no_mirror, "amp": a.amp, "rocket_context_weight": rcw,
             "trainable": "memory", "n_trainable": int(sum(p.numel() for p in params)), "seed": a.seed,
-            "memory": a.memory}
+            "memory": a.memory, "zero_empty": a.zero_empty}
     log = (a.out_dir / "s3_log.jsonl").open("a", encoding="utf-8")
 
     def emit(rec):
