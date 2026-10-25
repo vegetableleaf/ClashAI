@@ -108,3 +108,15 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
 - counter_x3.py -> memory/decks_live_train_beat3_cx3.json: 104 fast (avg <= 3.2) decks with a S1c counter card (28 cards,
   answer lift < -0.10) sides x3 = 25.9% of league weight (was 9.9%).
 - D1 s74 X-Bow-denial check running on 33458 (CLXIII vs D1 u60 / u40 calibrated, 2 x 960): q_xbD1.
+- OWNER 10-25 ~17:30 EDT: fix the memory bug on the PRO-REPLAY path (no SIM-game fallback); rocket cycling + king redirect terms
+  must WIN the SIM gate; 3 single pods added (33184 / 33040 / 33015: 1x 4090, 72.25 vCPU quota, 251 GB RAM, 60 GB disk; key
+  runpod_clashbot). Replicating /workspace from 33912 (podlink; first try failed on host-key verification, fixed accept-new).
+- NEW reward terms (reward_terms.py, opt-in, tests test_cycle_redirect_1025.py 6 / 6; rocket_tower / play_cost suites pass):
+  rocket_cycle = rocket_tower's credit ONLY for a FREE chip (decided at tick >= 2400, own elixir >= 7, no own princess HP lost in
+  the 5 s before); king_redirect = +w per king tower of OUR king HP lost from a Tornado's cast to 5 s after it ends, for Tornados
+  cast with both princesses up that pulled >= 1 tile toward our king (caps 0.1 / event, 0.2 / match); princess damage untaxed.
+  CrownTracker(king=...) records own-king HP change points only when king_redirect is on (crown_track "rocket_dmg+king").
+- test_reward_terms_1020::test_updates_identical FAILS in the working tree (no-crown config differs from the PRE module at
+  ~1e-9 relative); not from these edits (they act only with crown terms on); being checked with the aux build worker.
+- mkarms.sh: tonight's arms (mem_a / mem_e x2 seeds / mem_l) from CLXIII's recipe + memory v2 + memory_aux + frozen encoder;
+  exploiter decks mix/decks_live_train_cx3.json (fast counter decks x3: 104 decks, 31.5% of the exploiter's weight).

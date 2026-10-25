@@ -41,6 +41,18 @@ changes the engine, so a match with the tracker plays exactly as one without it.
                                   row that decided it, summed <= PLAY_COST_MATCH_CAP per match. For the SIM OPPONENT's tempo: it
                                   plays 36% more cards per minute in 2x / OT than Ranked humans (style d +1.22) and wins
                                   regulation games by it. It CHANGES the optimum, deliberately: a marginal play must now pay.
+    rocket_cycle: on              Plan A (10-25, owner: Rocket cycling that WINS the SIM gate; rocket_tower lost it 10-20, -4.7 /
+                                  -6.5 pp vs CLX): rocket_tower's credit (+rocket_cycle_w per princess tower of enemy princess HP
+                                  our Rocket removed, <= ROCKET_MATCH_CAP per match) ONLY for a FREE chip: decided at tick >=
+                                  CYCLE_MIN_TICK (2x / OT), at own elixir >= CYCLE_MIN_ELIXIR (the elixir would otherwise sit
+                                  near full), with none of our princess HP lost in the CYCLE_QUIET_TICKS before (no defence
+                                  owed). A Rocket the defence needed earns nothing, so the term never pays for giving up a defence.
+    king_redirect: on             Plan A (10-25, owner: king redirect that WINS the SIM gate; the princess_redirect penalty lost
+                                  10-20, -1.3 / -6.4 pp): +king_redirect_w per king tower of OUR KING HP lost from one of our
+                                  Tornados' cast to KING_WINDOW ticks after it ends, for Tornados cast while BOTH our princesses
+                                  stand that pulled their bodies >= TOWARD_MIN_TILES net toward our king (the hits the king took
+                                  instead of a princess), <= KING_EVENT_CAP per Tornado and KING_MATCH_CAP per match. It pays the
+                                  redirect act only; princess damage is not taxed (the penalty's over-defence incentive).
 The learner side (``row_terms``) is pure: the record + the side's plays + the KEPT rows' decision ticks -> per-row reward.
 """
 from __future__ import annotations
@@ -56,7 +68,8 @@ TERMS = {"rocket_tower": "rocket_tower_w",                          # W10 (first
          "lead_protect": "lead_protect_w", "princess_redirect": "princess_redirect_w",
          "tornado_king_penalty": "tornado_king_w",
          "princess_take": "princess_take_w",                           # switch -> its weight key (rl_royale CROWN_KEYS)
-         "play_cost": "play_cost_w"}                                   # W18 (10-22): the SIM opponent's tempo
+         "play_cost": "play_cost_w",
+         "rocket_cycle": "rocket_cycle_w", "king_redirect": "king_redirect_w"}   # Plan A 10-25                                   # W18 (10-22): the SIM opponent's tempo
 DEFAULTS = {"rocket_tower_w": 0.5,           # W10: per princess tower of enemy princess HP our Rocket removed (a ~0.11
             #                                   chip = 0.055 ~ 2.75 elixir at spell_value's 0.02 / elixir; <= the match cap)
             "lead_protect_w": 0.2,            # x the win reward, once per match (DOCTRINE_MEASURED 4 R1)
@@ -64,11 +77,15 @@ DEFAULTS = {"rocket_tower_w": 0.5,           # W10: per princess tower of enemy 
             #                                   costs <= 0.2 on top of the terminal reward; |sum| < 2 w per match
             "princess_take_w": 0.2,           # W7: per enemy princess felled in play (<= 2 per match)
             "play_cost_w": 0.005,             # W18: per ACCEPTED play of the learner (~40 per match = 0.2, <= the match cap)
-            "tornado_king_w": 0.01}           # per tile of net pull toward our king (3 bodies x 3 tiles = 0.09; spell_value
+            "tornado_king_w": 0.01,
+            "rocket_cycle_w": 0.5,            # Plan A: as rocket_tower_w, free chips only (~0.055 per 546-HP chip)
+            "king_redirect_w": 0.5}           # Plan A: per king tower of OUR king HP absorbed after a redirect Tornado           # per tile of net pull toward our king (3 bodies x 3 tiles = 0.09; spell_value
 #                                               prices elixir at 0.02, so a Tornado's 3 elixir = 0.06)
 REDIRECT_MODES = ("penalty", "potential")
 PLAY_COST_MATCH_CAP = 0.3       # W18: |play_cost reward| per match
 TORNADO_EVENT_CAP, TORNADO_MATCH_CAP = 0.15, 0.3   # ponytail: fixed caps, a config key if an arm needs another
+CYCLE_MIN_TICK, CYCLE_MIN_ELIXIR, CYCLE_QUIET_TICKS = 2400, 7.0, 100   # Plan A rocket_cycle: 2x / OT, >= 7 elixir, 5 s
+KING_WINDOW, KING_EVENT_CAP, KING_MATCH_CAP = 100, 0.1, 0.2           # Plan A king_redirect: 5 s after the Tornado ends
 ROCKET_MATCH_CAP = 0.3          # W10: |rocket_tower reward| per match (~5 chips at the default weight; pros fire 1.6 / match)
 ROCKET_BLAST_TILES = 2.0        # catalog Rocket radius (spell_value.ROCKET_R_TILES); a tower counts by the engine's edge rule
 TOWARD_MIN_TILES = 1.0          # eval slice: a Tornado "to the king" moved its bodies >= this net toward our king
@@ -86,15 +103,17 @@ def bound(p: dict) -> float:
             + 2.0 * float(p.get("princess_redirect_w", 0.0)) * bool(p.get("princess_redirect"))
             + TORNADO_MATCH_CAP * bool(p.get("tornado_king_penalty"))
             + 2.0 * float(p.get("princess_take_w", 0.0)) * bool(p.get("princess_take"))
-            + PLAY_COST_MATCH_CAP * bool(p.get("play_cost")))
+            + PLAY_COST_MATCH_CAP * bool(p.get("play_cost"))
+            + ROCKET_MATCH_CAP * bool(p.get("rocket_cycle")) + KING_MATCH_CAP * bool(p.get("king_redirect")))
 
 
 class CrownTracker:
     """One match, one side (rl_royale crown terms / search_s0 --crown-log). Holds no env reference after __init__."""
 
-    def __init__(self, env, side: int, rocket_dmg: bool = False):
+    def __init__(self, env, side: int, rocket_dmg: bool = False, king: bool = False):
         self.side = int(side)
         self.tornado, self.rocket = env.ids.get("Tornado"), env.ids.get("Rocket")
+        self.king_track, self.klost, self.kl = bool(king), [], 0.0   # Plan A king_redirect (opt-in): own king HP lost
         self.rocket_dmg = bool(rocket_dmg)  # W10 rocket_tower (opt-in): our Rockets' enemy-princess damage -> "rocket_hits"
         self.fly, self.wait, self.hits, self.fpos, self.foe_last = {}, [], [], None, None
         self.pr = self.fpr = None          # own / foe princess uids (first stop: the match start, all towers stand)
@@ -131,6 +150,9 @@ class CrownTracker:
         king = next((v for v in tw.values() if v[0] == me and v[1] == KING_TOWER), None)
         if king is not None:
             self.king = (king[3], king[4])
+            if self.king_track and round(1.0 - king[2], 6) != self.kl:     # Plan A king_redirect: change points
+                self.kl = round(1.0 - king[2], 6)
+                self.klost.append([t, self.kl])
         own = [tw[u][2] if u in tw else 0.0 for u in self.pr]          # a tower gone from the list = destroyed
         foe = [tw[u][2] if u in tw else 0.0 for u in self.fpr]
         alive = dict(zip(self.pr + self.fpr, [f > 0 for f in own + foe]))
@@ -221,6 +243,8 @@ class CrownTracker:
             hits = list(self.hits) + [{"seen": w["seen"], "impact": w["gone"], "dmg": round(sum(
                 max(0.0, w["before"][u] - self.foe_last[u]) for u in w["in"]), 4)} for w in self.wait]
             out["rocket_hits"] = hits
+        if self.king_track:                                            # Plan A king_redirect (off: no key, unchanged)
+            out["king_lost"] = [list(x) for x in self.klost]
         return out
 
 
@@ -315,8 +339,69 @@ def row_terms(crown: dict, plays: list, ticks, p: dict) -> dict:
             r[i] -= e
             total += e
         out["play_cost"] = -total
+    if p.get("rocket_cycle"):                         # Plan A: off = no "rocket_cycle" keys (the outputs above unchanged)
+        if "rocket_hits" not in crown:
+            raise ValueError("rocket_cycle needs the tracker's rocket_hits (actor_cfg crown_track 'rocket_dmg')")
+        row, total = {int(t): i for i, t in enumerate(ticks)}, 0.0
+        out["rocket_cycle_unmapped"], out["rocket_cycle_free"] = 0, 0
+        lost = crown["lost"]
+        for h in sorted(crown["rocket_hits"], key=lambda h: h["seen"]):
+            q = _play_of(int(h["seen"]), "rocket", plays)
+            if q is None or row.get(int(q["tick"])) is None:
+                out["rocket_cycle_unmapped"] += 1
+                continue
+            t0 = int(q["tick"])
+            free = (t0 >= CYCLE_MIN_TICK and float(q.get("elixir_exact", q.get("elixir", 0.0))) >= CYCLE_MIN_ELIXIR
+                    and _lost_before(lost, t0) == _lost_before(lost, t0 - CYCLE_QUIET_TICKS))
+            e = min(p["rocket_cycle_w"] * float(h["dmg"]), ROCKET_MATCH_CAP - total) if free else 0.0
+            if e <= 0:
+                continue
+            r[row[t0]] += e
+            total += e
+            out["rocket_cycle_free"] += 1
+        out["rocket_cycle"] = total
+    if p.get("king_redirect"):                        # Plan A: off = no "king_redirect" keys (the outputs above unchanged)
+        if "king_lost" not in crown:
+            raise ValueError("king_redirect needs the tracker's king_lost (actor_cfg crown_track with 'king')")
+        row, total, out["king_redirect_unmapped"] = {int(t): i for i, t in enumerate(ticks)}, 0.0, 0
+        for ev in sorted(crown["tornados"], key=lambda e: e["seen"]):
+            if ev["down"] != 0 or ev["toward"] < TOWARD_MIN_TILES:
+                continue
+            kl = crown["king_lost"]
+            got = _lost_before(kl, int(ev["end"]) + KING_WINDOW) - _lost_before(kl, int(ev["seen"]))
+            e = min(KING_EVENT_CAP, p["king_redirect_w"] * got, KING_MATCH_CAP - total)
+            if e <= 0:
+                continue
+            i = _row_of(int(ev["seen"]), "tornado", plays, row)
+            if i is None:
+                out["king_redirect_unmapped"] += 1
+                continue
+            r[i] += e
+            total += e
+        out["king_redirect"] = total
     out["r"] = r
     return out
+
+
+def _lost_before(changes: list, t: int) -> float:
+    """[[tick, cumulative lost]] change points -> the value at tick ``t`` (0 before the first change)."""
+    v = 0.0
+    for tk, x in changes:
+        if int(tk) > t:
+            break
+        v = float(x)
+    return v
+
+
+def _play_of(seen: int, card: str, plays: list):
+    """spell_value._row_of's rule, returning the PLAY record (its decision tick + elixir) instead of the row."""
+    from pipeline.spell_value import PLAY_MATCH_TICKS, _slug
+    best = None
+    for q in plays:
+        land = int(q.get("land_tick", q["tick"]))
+        if q["accepted"] and _slug(q["card"]) == card and seen - PLAY_MATCH_TICKS <= land <= seen:
+            best = q if best is None or land >= int(best.get("land_tick", best["tick"])) else best
+    return best
 
 
 def match_summary(crown: dict) -> dict:
