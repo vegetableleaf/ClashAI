@@ -59,3 +59,19 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
   Giant Skeleton 0.28, Ice Golem 0.33, Ice Spirit 0.35, Bowler 0.36 (tanking the X-Bow / counter-push). DECK view (opponent
   played the card at any time; not causal): Goblinstein 0.36, Zappies 0.37, Archers 0.38 ... Lava 0.74, Skeleton Dragons 0.69,
   Balloon 0.65 (air beatdown = X-Bow locks). Pro X-Bow players, not our bot: a prior, not the bot's own rates.
+- OWNER APPROVED S1c (10-25 ~18:20Z): per-card counter priors, cycle / counter-ready, king-activated, damage margin + trend,
+  lock-likelihood head (pro + live X-Bow outcomes, frozen input, logged live); S3 then on the extended inputs; S4 pool D1 +
+  I u40 cal + W18 R3 with fast-cycle counter decks; Tornado / king-activation parity, then a redirect-credit RL arm of its own;
+  gate metrics (attempts vs score, Rocket cycling vs OT margin, behind > 2,000 -> seeks a lock, king activation / redirect vs pros).
+  Dispatched: worker A = memory v2 + lock head; worker B = Tornado / king parity; worker C = gate_metrics.py + pro rates.
+- S3 smoke (100 steps, GPU 1 of 33912): PASS. 104 frozen tensors unchanged; val loss 5.429 -> 5.003, cell top-1 0.171 -> 0.199,
+  card top-1 0.576 -> 0.573, gate bal-acc 0.707 -> 0.682 (100 steps, lr warm-up only: no verdict). 0.165 s / step.
+- Target-leak check (leak_check.py, 200,000 pro play rows): 0 rows with a visible own play at tick >= the row tick; the newest
+  visible own play is >= 1 tick old (median 86). The cell gain is not the target leaking.
+- S3 v1 CONTROL launched 18:25Z (2 epochs, bf16, /workspace/s3/v1ctrl on 33912): the baseline the v2 (S1c) S3 is measured
+  against (one change per experiment); not the S3 that feeds S5.
+- Live per-card X-Bow view (xbow_arch.py --live CLX_PARITY --cards 15 -> xbow_cards_live.out): answered by Mega Knight 0.13
+  (n 38), Knight 0.45, Valkyrie 0.47, Tesla 0.48; unanswered 0.74 (n 223). Deck view lowest: Barbarian Barrel 0.34 (n 89),
+  Tombstone 0.35, Poison 0.35, Tornado 0.38, Bowler 0.38 (small n, whole-match reveal).
+- Pool check (pool_counters.py): decks_live_train_beat3 has 112 / 895 fast (avg <= 3.2) decks with >= 1 X-Bow counter =
+  9.9% of training weight (>= 2 counters: 7.0%), at live frequency by construction (weights = live sides).

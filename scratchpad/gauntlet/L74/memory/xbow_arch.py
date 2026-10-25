@@ -80,7 +80,26 @@ def live_matches(key):
         ev = M.build(m['side'], m['samples'], m['plays']).events(m['last'] + 1)
         opp = {e['card'] for e in ev if e['type'] == 'play' and not e['mine']}
         rch = [e for e in ev if e['type'] == 'play' and e['mine'] and e['card'] == 'x-bow' and e['reach'] and e.get('xb')]
+        if CARDS is not None:                                     # --cards: per-card answer / deck views (xbow_cards.py's)
+            for e in rch:
+                L = int(bool(e['xb']['locked']))
+                for k in ('ans:' + (e.get('answer') or '-'),) + tuple('deck:' + c for c in opp):
+                    CARDS[k][0] += L
+                    CARDS[k][1] += 1
         yield arch_of(opp), len(rch), sum(bool(e['xb']['locked']) for e in rch)
+
+
+CARDS = None
+
+
+def card_report(min_n):
+    tot = [sum(v[i] for k, v in CARDS.items() if k.startswith('ans:')) for i in (0, 1)]
+    base = tot[0] / tot[1]
+    print(f'## per card: {tot[1]} reach X-Bows, lock {base:.3f} ("ans:-" = unanswered)')
+    for view in ('ans:', 'deck:'):
+        for k, (y, n) in sorted(((k, v) for k, v in CARDS.items() if k.startswith(view) and v[1] >= min_n),
+                                key=lambda kv: kv[1][0] / kv[1][1]):
+            print(f'  {k:28s} n {n:4d} lock {y / n:.3f} lift {y / n - base:+.3f}')
 
 
 def report(name, M):
@@ -113,12 +132,19 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--sim', nargs='*', default=[])
     ap.add_argument('--live', nargs='*', default=[])
+    ap.add_argument('--cards', type=int, default=0, help='live: also print per-card views with n >= this')
     a = ap.parse_args()
+    global CARDS
+    if a.cards:
+        CARDS = defaultdict(lambda: [0, 0])
     for arg in a.sim:
         name, d = arg.split('=', 1)
         report(f'SIM {name}', list(sim_matches(d)))
     for key in a.live:
         report(f'LIVE {key}', list(live_matches(key)))
+        if CARDS is not None:
+            card_report(a.cards)
+            CARDS.clear()
 
 
 if __name__ == '__main__':

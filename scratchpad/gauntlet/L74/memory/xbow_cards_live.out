@@ -1,0 +1,104 @@
+## LIVE CLX_PARITY
+  ALL       matches   234 reach X-Bows   711 lock 0.565 [0.521, 0.613] | per-match (>= 2 reach) lock 0: 0.09, < .5: 0.30, >= .5: 0.70 (n 200)
+  bait      matches    31 reach X-Bows    99 lock 0.606 [0.488, 0.739] | per-match (>= 2 reach) lock 0: 0.08, < .5: 0.31, >= .5: 0.69 (n 26)
+  beatdown  matches    62 reach X-Bows   178 lock 0.545 [0.462, 0.629] | per-match (>= 2 reach) lock 0: 0.08, < .5: 0.31, >= .5: 0.69 (n 51)
+  bridge    matches    81 reach X-Bows   223 lock 0.565 [0.502, 0.648] | per-match (>= 2 reach) lock 0: 0.10, < .5: 0.32, >= .5: 0.68 (n 69)
+  control   matches    14 reach X-Bows    48 lock 0.417 [0.182, 0.649] | per-match (>= 2 reach) lock 0: 0.27, < .5: 0.45, >= .5: 0.55 (n 11)
+  hog       matches    34 reach X-Bows   116 lock 0.603 [0.504, 0.724] | per-match (>= 2 reach) lock 0: 0.03, < .5: 0.22, >= .5: 0.78 (n 32)
+  other     matches    12 reach X-Bows    47 lock 0.617 [0.421, 0.850] | per-match (>= 2 reach) lock 0: 0.09, < .5: 0.18, >= .5: 0.82 (n 11)
+## per card: 711 reach X-Bows, lock 0.565 ("ans:-" = unanswered)
+  ans:mega-knight              n   38 lock 0.132 lift -0.434
+  ans:knight                   n   31 lock 0.452 lift -0.114
+  ans:valkyrie                 n   38 lock 0.474 lift -0.092
+  ans:tesla                    n   23 lock 0.478 lift -0.087
+  ans:skeletons                n   21 lock 0.524 lift -0.042
+  ans:giant-skeleton           n   17 lock 0.529 lift -0.036
+  ans:skeleton-army            n   23 lock 0.696 lift +0.130
+  ans:-                        n  223 lock 0.744 lift +0.179
+  deck:barbarian-barrel        n   89 lock 0.337 lift -0.228
+  deck:tombstone               n   51 lock 0.353 lift -0.212
+  deck:poison                  n   48 lock 0.354 lift -0.211
+  deck:tornado                 n   40 lock 0.375 lift -0.190
+  deck:bowler                  n   40 lock 0.375 lift -0.190
+  deck:goblin-cage             n   51 lock 0.392 lift -0.173
+  deck:graveyard               n   25 lock 0.400 lift -0.165
+  deck:royal-giant             n   25 lock 0.400 lift -0.165
+  deck:earthquake              n   22 lock 0.409 lift -0.156
+  deck:battle-ram              n   37 lock 0.432 lift -0.133
+  deck:magic-archer            n   32 lock 0.438 lift -0.128
+  deck:electro-spirit          n   57 lock 0.439 lift -0.127
+  deck:royal-recruits          n   29 lock 0.448 lift -0.117
+  deck:hunter                  n   20 lock 0.450 lift -0.115
+  deck:mighty-miner            n   20 lock 0.450 lift -0.115
+  deck:ice-wizard              n   33 lock 0.455 lift -0.111
+  deck:goblin-gang             n  103 lock 0.456 lift -0.109
+  deck:inferno-dragon          n   52 lock 0.462 lift -0.104
+  deck:electro-giant           n   39 lock 0.462 lift -0.104
+  deck:bandit                  n   30 lock 0.467 lift -0.099
+  deck:miner                   n   23 lock 0.478 lift -0.087
+  deck:golden-knight           n   27 lock 0.481 lift -0.084
+  deck:royal-delivery          n   27 lock 0.481 lift -0.084
+  deck:knight                  n  139 lock 0.482 lift -0.083
+  deck:giant-snowball          n   39 lock 0.487 lift -0.078
+  deck:skeletons               n  152 lock 0.500 lift -0.065
+  deck:tesla                   n   62 lock 0.500 lift -0.065
+  deck:freeze                  n   32 lock 0.500 lift -0.065
+  deck:pekka                   n   30 lock 0.500 lift -0.065
+  deck:bats                    n   81 lock 0.506 lift -0.059
+  deck:firecracker             n  146 lock 0.507 lift -0.059
+  deck:lightning               n   39 lock 0.513 lift -0.053
+  deck:ice-spirit              n  101 lock 0.515 lift -0.051
+  deck:baby-dragon             n   62 lock 0.516 lift -0.049
+  deck:rocket                  n   47 lock 0.532 lift -0.033
+  deck:mega-knight             n  133 lock 0.534 lift -0.032
+  deck:elixir-golem            n   28 lock 0.536 lift -0.030
+  deck:executioner             n   39 lock 0.538 lift -0.027
+  deck:electro-wizard          n  100 lock 0.540 lift -0.025
+  deck:musketeer               n   94 lock 0.543 lift -0.023
+  deck:guards                  n   22 lock 0.545 lift -0.020
+  deck:cannon                  n   86 lock 0.547 lift -0.019
+  deck:minions                 n   42 lock 0.548 lift -0.018
+  deck:royal-ghost             n   31 lock 0.548 lift -0.017
+  deck:the-log                 n  172 lock 0.552 lift -0.013
+  deck:arrows                  n  132 lock 0.553 lift -0.012
+  deck:inferno-tower           n   73 lock 0.562 lift -0.004
+  deck:elite-barbarians        n   23 lock 0.565 lift -0.000
+  deck:skeleton-barrel         n   51 lock 0.569 lift +0.003
+  deck:mini-pekka              n  132 lock 0.576 lift +0.010
+  deck:electro-dragon          n   26 lock 0.577 lift +0.012
+  deck:flying-machine          n   26 lock 0.577 lift +0.012
+  deck:furnace                 n   74 lock 0.581 lift +0.016
+  deck:lumberjack              n   51 lock 0.588 lift +0.023
+  deck:princess                n   95 lock 0.589 lift +0.024
+  deck:goblin-barrel           n  105 lock 0.590 lift +0.025
+  deck:hog-rider               n  171 lock 0.591 lift +0.025
+  deck:mother-witch            n   27 lock 0.593 lift +0.027
+  deck:valkyrie                n  227 lock 0.595 lift +0.029
+  deck:fireball                n  126 lock 0.595 lift +0.030
+  deck:ronin                   n   35 lock 0.600 lift +0.035
+  deck:rage                    n   20 lock 0.600 lift +0.035
+  deck:balloon                 n   63 lock 0.603 lift +0.038
+  deck:ice-golem               n   46 lock 0.609 lift +0.043
+  deck:wall-breakers           n   41 lock 0.610 lift +0.044
+  deck:royal-hogs              n   41 lock 0.634 lift +0.069
+  deck:dart-goblin             n  104 lock 0.635 lift +0.069
+  deck:witch                   n  115 lock 0.643 lift +0.078
+  deck:giant                   n   17 lock 0.647 lift +0.082
+  deck:wizard                  n  103 lock 0.650 lift +0.085
+  deck:sparky                  n   23 lock 0.652 lift +0.087
+  deck:clone                   n   23 lock 0.652 lift +0.087
+  deck:skeleton-army           n  113 lock 0.655 lift +0.089
+  deck:mortar                  n   15 lock 0.667 lift +0.101
+  deck:berserker               n   21 lock 0.667 lift +0.101
+  deck:zappies                 n   28 lock 0.679 lift +0.113
+  deck:giant-skeleton          n   56 lock 0.679 lift +0.113
+  deck:goblin-curse            n   25 lock 0.680 lift +0.115
+  deck:mega-minion             n   25 lock 0.680 lift +0.115
+  deck:vines                   n   33 lock 0.697 lift +0.132
+  deck:barbarians              n   18 lock 0.722 lift +0.157
+  deck:archer-queen            n   22 lock 0.727 lift +0.162
+  deck:dark-prince             n   27 lock 0.741 lift +0.175
+  deck:minion-horde            n   31 lock 0.742 lift +0.177
+  deck:golem                   n   17 lock 0.765 lift +0.199
+  deck:prince                  n   33 lock 0.788 lift +0.222
+  deck:ram-rider               n   23 lock 0.870 lift +0.304

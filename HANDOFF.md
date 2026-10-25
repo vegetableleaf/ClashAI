@@ -1,3 +1,15 @@
+## 2026-10-25 ~14:45 EDT -- owner APPROVED S1c; S3 smoke PASS, no target leak; S3 v1 control running; D1 s75 replication; per-card X-Bow counters
+
+- S1c approved (per-card counter priors, cycle / counter-ready, king activated, damage margin + trend, lock-likelihood head;
+  S3 on the extended inputs; S4 pool; Tornado / king parity then a redirect-credit arm; 4 new gate metrics). Three workers on
+  it (memory v2 + lock head; Tornado / king parity; gate_metrics.py + pro rates). Details memory/LEDGER.md.
+- S3 smoke PASS on 33912 GPU 1 (GPU step-0 diff 5.7e-6 = base-vs-base noise, check made relative); leak check 0 / 200,000.
+  S3 v1 CONTROL (2 epochs) running from 18:25Z: baseline for the v2 S3.
+- D1 deny cfg has no hazard keys (verified); D1 s74 on 33458 u17, D1 s75 (replication) on 33522 u3; x101 u47, x102 u58.
+- Per-card X-Bow lock (pro 8,874 X-Bows, live CLX 711): tanks answering the X-Bow deny it most (pro E-Giant 0.16, Giant 0.24,
+  PEKKA 0.26; live Mega Knight 0.13 vs 0.565 overall). Pool: 9.9% of training weight = fast counter decks (live frequency).
+- Live: still OFF. CLXIII NOLEAK wired, not started (owner starts it).
+
 ## 2026-10-25 13:01 EDT -- Plan A S1b DONE (memory wired into model / pro data / rollouts / live; zero-init identity exact; smokes PASS); S4 X-Bow denial measured SIM vs live
 
 - S1b: memory: v1 flag, zero-init encoder (CLXIII identity: max |diff| 0 on 2,500 rows), per-match event tables, pro builder,
