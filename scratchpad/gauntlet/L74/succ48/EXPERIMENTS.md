@@ -149,3 +149,5 @@ GATE G3 (32525): S19 (o_s91, CLX start + T_gate .3) u75 (sha 3eda9d23) vs CLX WI
 | S19 u100 | succ48_o | s91 / 33591 | PASS: full 20.3 s (u75 13.5), first play 22.6 s, win 0.719 (u75 0.740) -> u75 stays the pick |
 | S25 crash | succ48_s_s97 | s97 / 32525 | refused at start 11:46Z (critic 2.2 < bound 2.6 after LEAK_MATCH_CAP 1.0); pod idle ~30 min; fixed critic 2.6, relaunched 12:19Z |
 | WIRE | ICEBOW Mark CLXIII: NOLEAK = S19 u75 grafted (sha 8d328a43) | laptop | owner asked to watch it: deploy_ckpt.sh ... wire, offline --check PASS; NOT started; LIVE_OPTIONS has no hazard flags; revert = CKPT_OVERRIDE.pre_20261025_0844 (CLX) |
+| S24 u75 | succ48_r (leak .06) | s96 / 33401 | FAIL: win -0.066 [-0.118, -0.010], full 33.8 s, first play 36.4 s -> stopped |
+| S26 | succ48_s: BRANCH of S19 u75 (= CLXIII) | s98 / 33401 | running |
