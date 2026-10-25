@@ -133,3 +133,6 @@ GATE G2 (32525): S17 (o_s89, CLX start + T_gate .3) u50 vs CLX WITH the hazard p
 | S23 u25 | succ48_r (leak .06) | s95 / 33572 | PASS: full 20.9 -> 16.9 s, win 0.730 (-0.003), first play 13.5 s, idle -0.017, ignored -0.018 |
 | **S19 u75** | succ48_o (T .3, CLX start) | s91 / 33591 | **PASS: full 13.5 s (target 12.3), first play 12.7 s, win 0.740 (+0.033), trade +0.43, idle / ignored flat** -> gate48 G3 on 32525 (ckpt sha 3eda9d23) |
 | S24 u25 | succ48_r (leak .06) | s96 / 33401 | FAIL: full 20.9 -> 29.5 s, first play 13.5 -> 29.7 s (opening regressed; same recipe as S23 which improved -> strong seed dependence), win 0.719 |
+| S23 u50 | succ48_r | s95 / 33572 | PASS: full 24.0 s (u25 16.9), first play 21.6 s (FLAG), win 0.739 |
+| S24 u50 | succ48_r | s96 / 33401 | PASS: full 15.5 s (u25 29.5), first play 18.6 s, win 0.683 (-0.050), idle -0.033, ignored -0.035 |
+Reading (b): the leak / opening swings between checkpoints at every leak weight -- the greedy live gate flips the opening when the play prob sits near tau; checkpoint choice on one 960 check is noisy; the gate's fresh 1,920 measures it.
