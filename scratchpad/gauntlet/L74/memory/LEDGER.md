@@ -199,3 +199,8 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
   engineer-days (no tower troops / per-card levels / mid-match starts in its env layer). Verdict: NOT NOW for training; pilot =
   point fights.py at crforge and rescore the 145 matches + J1-J4 vs fin15 (4-7 days); usable now as a reference engine.
   C:\Users\benpe\crforge_eval (0.66 GB) kept for that pilot; drive C 25 GB free.
+- u25 drift checks (E4 960 vs u0 = CLXIII): mem_e_s106 (leak .12) win 0.760 (+2.1 [-2.8, +7.0]), full +4.9 s FLAG, first play
+  +7.6 s FLAG; mem_e_s107 (leak .12) win 0.728 (-1.1), full -3.9 s [-7.6, -0.2] (BETTER), first play +1.4 n.s., plays / min
+  +0.52: CLEAN; mem_e_s108 (leak .08) win 0.720 (-2.0), full +8.0 FLAG, first play +5.2 FLAG, elixir at play +0.28 FLAG.
+  Same weight .12, one seed leaks, one does not: the weight alone does not settle it. Pros (pro_first_play.py, 29,290 match
+  sides): first own play median 11.1 s, mean 12.7, p75 13.6, > 20 s only 7% -> the arms' 18-20 s opening wait is NOT pro-like.
