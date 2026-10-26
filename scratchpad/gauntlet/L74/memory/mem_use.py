@@ -41,6 +41,8 @@ def main():
     idx = np.sort(np.random.default_rng(0).choice(val, size=min(a.n, len(val)), replace=False))
     rows = GenRows(arrs, idx, dev)
     rows.grid = 'lattice'
+    from pipeline.dataset_gen import checkpoint_gid       # memory v2 rows need the version + the tables' vocabulary
+    rows.memory_gid = checkpoint_gid(meta['card_vocab'])
     tables = (packed, row_tab[:n], arrs['tick'])
     y = arrs['y_gate'][idx].astype(np.float64)
     t = arrs['tick'][idx].astype(np.int64)
@@ -51,6 +53,7 @@ def main():
     for name, ck, mem in arms:
         net = load_model(ck, dev)[0].eval()
         rows.memory = mem if getattr(net, 'mem', None) is not None else None
+        rows.memory_version = getattr(getattr(net, 'mem', None), 'version', 'v1')
         ps = []
         with torch.no_grad():
             for s in range(0, len(idx), 512):

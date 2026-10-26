@@ -178,3 +178,8 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
   -3.3 pp; LEAK_MATCH_CAP 1.0 bounds the term, critic bound unchanged): 0.12 on mem_e_s106 / mem_e_s107 / mem_a_s106 /
   mem_l_s106 / ctrl_o_s105, 0.08 on mem_e_s108, 0.16 on mem_e_s109 (weight hedge). restart_arm.sh.
 - 33040 + 33015 share one host (load ~95): their arms run ~2x slower (rollout 270-615 s vs 123 s on 33184).
+- Memory use, mem_e_s106 (mem_use.py, 6,000 icebow PRO val rows, real vs EMPTY memory): u0 0 (coupling 0, exact);
+  snap u10 coupling |W| 0.183 (0 at u5: critic warm-up); gate |p(real) - p(empty)| mean 0.0069, p90 0.0193, max 0.0485;
+  play / wait flips at 0.35 on 1.3% of rows; all RL change vs CLXIII |dp| 0.026. Learning, small so far; re-probe at u25.
+- Owner asked (bedtime 10-25): evaluate github.com/voonhous/crforge in depth + a couple of tests, recommend switch or not;
+  worker on it (laptop only, report L74/crforge/EVAL.md); the night run has priority.
