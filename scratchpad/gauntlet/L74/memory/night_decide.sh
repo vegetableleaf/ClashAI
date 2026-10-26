@@ -18,6 +18,7 @@ log() { echo "$(date -u +%FT%TZ) $*" | tee -a $LOG; }
 sshp() { local p=$1; shift; timeout 900 ssh -o BatchMode=yes -o ConnectTimeout=30 -i $KEY -p $p $H "$@"; }
 post() { printf '%s\n' "$*" > $D/decide.msg; $PY scratchpad/gauntlet/L69/discord/post.py $D/decide.msg >> $LOG 2>&1; }
 stop_pod() {   # $1 port $2 why
+  [ "${NOSTOP:-0}" = 1 ] && { log "NOT stopping pod $1 (NOSTOP; owner 10-26: no more stops) -- $2"; return 0; }
   sshp $1 'export $(tr "\0" "\n" < /proc/1/environ | grep -E "^RUNPOD_(API_KEY|POD_ID)="); runpodctl config --apiKey "$RUNPOD_API_KEY" > /dev/null; runpodctl stop pod "$RUNPOD_POD_ID"' >> $LOG 2>&1
   log "STOP pod $1 rc $? ($2)"; post "[ClashAI] night: pod $1 stopped ($2); results copied to the laptop."
 }
