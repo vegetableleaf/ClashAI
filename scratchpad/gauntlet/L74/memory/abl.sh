@@ -11,7 +11,9 @@ EX="--xbow-class class_sample --xbow-class-floor 0.3 --tau-phase 0.35 0.45 0.55 
 cd $CB || exit 1
 export ROYALE_RUNTIME=fin15-linux ROYALE_HEROIW_FORM=hero ROYALE_HEROIW_PRESS=live PYTHONPATH=$CB HABITS_REC=1 O3_PLAYS=1 \
   OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1 \
-  SKEW_GAP=$CB/scratchpad/gauntlet/L74/gap      # 10-26: else skew_worker loads cb_mem's gap (memory v1 only -> 0 pairs)
+  SKEW_GAP=$CB/scratchpad/gauntlet/L74/gap \
+  SKEW_BASE=${SKEW_BASE:-$CB/icebow/data/bench/rl_royale/rlarm_succ48_o_s91/rlarm_succ48_o_s91_u0075_grafted.pt}
+# 10-26: SKEW_GAP else skew_worker loads cb_mem's gap (memory v1 only -> 0 pairs); SKEW_BASE = real mode's diag reference (CLXIII)
 one() {   # ARM JOB
   local arm=$1 j=$2 mode=$1
   read -r census seeds < <($PY -c "import json,sys; j=json.load(open('$IN/plan.json'))['jobs'][$j]; print(j['census'], ','.join(map(str,j['seeds'])))")
