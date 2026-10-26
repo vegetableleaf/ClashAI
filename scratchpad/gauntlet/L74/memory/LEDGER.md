@@ -248,3 +248,13 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
   brT10_s112 33458 (the e4 arm stopped at ~u85; records in night1025/mem_e4_s107). All pods KEEP; no stops.
 - abl.sh 0-pairs cause: skew_worker imported cb_mem's gap.py (memory v1 only: "memory must be ... 'v1', got 'v2'"); fixed with
   SKEW_GAP=$CB/... ; retest running.
+- 10-26 09:41 EDT LIVE = ICEBOW Mark CLXIV: MEMORY (mem_e_s107 u50 grafted, c5be96a6; registered, parent CLXIII) on the owner's
+  signal; deploy_ckpt.sh guard OK (icebow deck). Earlier 09:23 deploy attempt's STOP file ended the owner's direct live_play
+  session between matches (my error: did not check for a direct session); cancelled, STOP removed.
+- Replays (owner): run_live.sh keeps --clip-every 1800 (Discord clip); discord_clip.py now removes the full overlaid render +
+  raw segments after cutting the clip (direct live_play.py runs keep their replays). Test on dummy files OK.
+- Live watch (live_watch.py + 45-min watch_loop.sh -> promote/watch_CLXIV_MEMORY.log + Discord; alert on leak > 20 s or no new
+  match). CLXIII live baseline (301 matches): win 0.482, full 8.2 s / match, first play 7.2 s, plays / min 10.3, Rockets 0.31 /
+  match (tower 0.20), combos 0.023, X-Bow lock 0.514, ADAPT next X-Bow <= 30 s after a FAILED one 0.302 vs after a LOCKED one
+  0.225 (CLXIII repeats more after failures), X-Bows / min 1.65 -> 0.85 after the first failure.
+- live_gen_v2 now logs xb_lock_p (the v2 path dropped it); live restarted between matches to pick it up (play unchanged).
