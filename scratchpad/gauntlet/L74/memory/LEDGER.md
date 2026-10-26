@@ -224,3 +224,6 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
   (gate_only.sh: 3,840 games vs CLXIII + memory ablation) on 33184 -> res_mem_e_s107u50. night_decide restarted on
   mem_e_s107u50 + mem_e_s109 (fetch now takes the checkpoint the res names). Note: an own-command kill pattern
   ("ev/mem_e_s107_u0100") killed my ssh shell once (pkill self-match trap); no harm (chain + trainer were already down).
+- 08:24Z FINAL: mem_e_s107u50 gate pooled +0.34 [-1.56, +2.24] FAIL (tie); ablation 0 pairs (abl.sh failed; owed); mem_e_s109
+  DRIFT FAIL at u100 (clean u75); pods 33184 / 33522 copied + stopped. mem_e4_s107 (E4 in pool) u25 FLAG (full 29.3 s, first
+  play 28.9 s): E4-opener hypothesis CONTRADICTED. Live unchanged. Morning summary in HANDOFF.

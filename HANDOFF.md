@@ -1,3 +1,26 @@
+## 2026-10-26 ~04:30 EDT -- MORNING SUMMARY: no memory successor passed; live UNCHANGED (CLXIII NOLEAK + lethal_quiet + barrel_lane)
+
+- RESULT: no arm passed drift + gate. Best = mem_e_s107 u50 (memory v2 + aux encoder + rocket_cycle + king_redirect + X-Bow cost,
+  leak .12): drift CLEAN at u50; gate vs CLXIII pooled +0.34 pp [-1.56, +2.24] (E4 +0.10, cal +0.57) = a TIE, not a pass. Its
+  memory ablation ran 0 paired matches (abl.sh failure, owed). Checkpoint: pod_backup_weekend/night1025/mem_e_s107u50/ (c5be96a6).
+- BLOCKER (a): continued RL drifts into an OPENING WAIT / leak in every recipe tonight -- leak weights .03 / .08 / .12 / .16, with
+  and without memory, with E4 in training: s106 / s108 / l_s106 / e4 flagged by u25-u50, s107 by u75, s109 by u100 (first play
+  18-34 s vs CLXIII 12.7, pros' median 11.1). Training rollouts barely leak (s109 u35: 0.73 elixir / match) while the E4 eval
+  shows 24-29 s at full: a TRAIN / EVAL mismatch (b: the eval's live decision stack vs the rollout stack is the first suspect;
+  E4-as-opener hypothesis CONTRADICTED by mem_e4_s107: 29 s at full at u25).
+- What worked (a): the memory bug = S3 imitation's constant offset (not SIM skew); S3-aux encoder (policy unchanged, opp card
+  in hand AUC 0.985, opp next card 0.337 vs 0.062, opp elixir R2 0.83); RL starts == CLXIII exactly; memory use grows (play / wait
+  flips on pro rows 1.6% / 4.2% at u25); rocket_cycle + king_redirect no longer lose the gate at u50 (tie; 10-20 forms lost
+  4.7-6.5 pp) -- confounded with memory (b).
+- Live changes last night (owner): --lethal-quiet 1.0 (no finisher on a princess something else hit in the last 1 s) and
+  --barrel-lane on (Knight / IW / Skeletons / Tornado to the barrel's lane); both live since 18:29 / 18:46 EDT; NOT yet in SIM.
+- crforge: NOT NOW for training; pilot = rescore our 145 captured matches + J1-J4 on it vs fin15 (L74/crforge/EVAL.md).
+- Pods: 33912, 33184, 33015, 33522, 33569, 33040 stopped after results were copied; 33458 (mem_e4_s107) stops at its verdict.
+  Disk: 26.8 GB of stale backups staged in pod_backup_weekend/_STALE_to_delete for the owner to delete.
+- NEXT: (1) diagnose the leak train / eval mismatch on one checkpoint (same ckpt, eval with vs without the live stack; rollout
+  stack vs eval stack diff); (2) fix abl.sh and run the memory ablation on mem_e_s107u50; (3) lethal_quiet + barrel_lane in the
+  SIM live stack; (4) crforge pilot if the owner wants it. Ledger: scratchpad/gauntlet/L74/memory/LEDGER.md.
+
 ## 2026-10-25 ~18:20 EDT -- NIGHT RUN: six memory arms training (to u100), gate + memory ablation on each pod, auto-deploy by 06:30 EDT
 
 - Memory bug (diagnosed): S3 IMITATION taught the adapter a constant offset toward waiting (SIM gate prob 0.22 vs 0.34); the
