@@ -208,3 +208,11 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
   arms, podA-E, results_weekend.tgz; referenced only by their own old relay scripts) MOVED (not deleted) to
   pod_backup_weekend/_STALE_to_delete (26.77 GB); the owner deletes it (my rules forbid permanent deletion). Kept: succ48_1025
   (pod restore source), night1025, codex1018 (HANDOFF staging), w14 / w18 (opponents), bait, parity1016, all >= 10-15.
+- 02:55Z mem_e_s106 DRIFT FAIL u50 (2nd leak flag) -> night_decide copied + STOPPED pod 33912 (03:02Z, as designed; it cut
+  across my plan to reuse that pod for a backup arm -- the decide list should have excluded it).
+- Leak diagnosis (a): training rollouts barely leak (mem_e_s109 u35: 0.73 elixir wasted / match, leak r -0.11 / match) while
+  the E4 eval shows ~29 s at full; the strongest weight (.16) has the WORST opening wait (34 s). Not the weight. (b) the arms
+  learned to wait for the opponent's opening and answer it; training opponents always open, E4 apparently waits.
+- Backup arm mem_e4_s107 on 33458 = mem_e_s107 (leak .12) + E4 (rdef_e4 u0020) in the exploiter pool (share .15, T .1), ONE
+  change; mem_e_s108 (flagged +8.0 s, weakest weight) stopped for it (records in night1025/mem_e_s108). Smoke running.
+  night_decide restarted on mem_e_s107 / mem_l_s106 / mem_e_s109 (deadline 11:00Z); the backup is decided separately.
