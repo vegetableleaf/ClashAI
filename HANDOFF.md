@@ -1,3 +1,17 @@
+## 2026-10-26 ~13:25 EDT -- owner approved decisions 4 / 5 / 7; device checks DONE; battle-log polling blocked on an API key
+
+- Owner: poll the battle log after every match; device checks with the model playing; TV Royale harvesting OK. Days 0-3 of
+  plan1026 still wait for the owner's go (see the SESSION HANDOVER entry below).
+- Device checks (scratchpad/gauntlet/L74/plan1026/devcheck/REPORT.md): one live CLXIII Ranked match (1-0 OT win; live stopped
+  after it). G-R2 (a): the battle-log replay read by the reader matches the live board exactly on 0.9971 of common ticks
+  (11,012 / 11,014 bodies identical), and it ALSO gives both decks + forms, both hands, both deal orders from tick 0 and exact
+  elixir -> seed recovery gets both deals directly; replays are a high-quality data source. G-R3 (a): no replay file cached
+  on disk.
+- Battle-log polling: `crapi.py own --tag TAG` (+ test) ready. BLOCKED: the API key is IP-locked to the stopped crawler VM
+  34.148.91.90; owner must create a key for the laptop IP (96.237.100.236 at 13:00) into ~/.cr_api/key, or restart the VM;
+  and give our player tag.
+- Live: OFF (STOP file present). CKPT_OVERRIDE = CLXIII NOLEAK.
+
 ## 2026-10-26 ~12:55 EDT -- SESSION HANDOVER (account 1 at 98% usage): plan approved, step 0 DONE, days 0-3 NOT STARTED
 
 - READ FIRST: scratchpad/gauntlet/L74/plan1026/PLAN.md (owner-approved plan; design reports + audits beside it). Owner rules

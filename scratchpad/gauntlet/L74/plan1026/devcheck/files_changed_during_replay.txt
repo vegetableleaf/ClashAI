@@ -1,0 +1,8 @@
+/data/data/com.supercell.clashroyale/cache/events/311072fa-764d-4c8c-a7be-6762ee9115e9_minipass_202610_2.99_120k.png
+/data/data/com.supercell.clashroyale/cache/events/e3d1344c-37e8-41b6-ae7d-5d44dbeb6daf_minipass_202610_header.png
+/data/data/com.supercell.clashroyale/cache/events/eecce11c-1327-4ed2-a1ff-930ef109915e_bg_pattern_mini_pass.png
+/data/data/com.supercell.clashroyale/cache/events/f825bb20-834f-400b-a133-94e6f121303b_ui_minipass_button_generic.sc
+/data/data/com.supercell.clashroyale/cache/loading/info
+/data/data/com.supercell.clashroyale/cache/manifest.json
+/data/data/com.supercell.clashroyale/cache/sentry/a770023f0ab13b5317b4bb3368bb52c75c348f71/.scope-cache/breadcrumbs.json
+/data/data/com.supercell.clashroyale/update/fingerprint.json

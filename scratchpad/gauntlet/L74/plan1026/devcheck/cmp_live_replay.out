@@ -1,0 +1,7 @@
+live frames 1983 (ticks 151-4136), replay frames 2068 (ticks 0-4136), common 1017
+exact board ticks 1014/1017 = 0.9971; first non-exact tick 682
+tower rows equal 1015/1017 = 0.9980
+paired bodies 11014; live-only 2, replay-only 1
+position diff (max |dx|,|dy| in 0.1-tile buckets): [(0, 11012), (1, 2)]
+hp diff (10-HP buckets): [(0, 11012), (9, 1), (20, 1)]
+replay player rows with a full visible hand: 4118 over 2068 frames x 2 sides

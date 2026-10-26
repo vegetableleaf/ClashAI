@@ -3,6 +3,8 @@
   python3 crapi.py selftest            # one GET /v1/cards, prints counts only
   python3 crapi.py crawl [--max-players N]
                                        # cards + rankings seeds + battlelogs -> data/ (append-only, resumable)
+  python3 crapi.py own --tag TAG       # plan 10-26 (owner: poll after every match): OUR 25-battle log -> data/own_battlelog.jsonl
+                                       # (new battles only; opponent tags + battleTime feed engine seed recovery G1)
 
 KEY: read at runtime from ~/.cr_api/key (override path: CR_API_KEY_FILE, used by tests). The key is only ever placed
 in the Authorization header of requests to api.clashroyale.com; it is never printed, logged or written anywhere.
@@ -233,9 +235,22 @@ def crawl(api, max_players=400):
     return new_total
 
 
+def poll_own(api, tag, path=None):
+    """Append our battle log's unseen battles to own_battlelog.jsonl; returns the number added. The log keeps 25
+    battles (~4-5 h of live play), so polling every <= 30 min misses none."""
+    path = path or DATA / "own_battlelog.jsonl"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    seen = load_seen(path)
+    rows = [dict(fetched=now_iso(), battle=b) for b in reversed(api.get(f"/players/{q(tag)}/battlelog") or [])
+            if battle_key(b) not in seen]
+    append_jsonl(path, rows)
+    return len(rows)
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["selftest", "crawl"])
+    ap.add_argument("cmd", choices=["selftest", "crawl", "own"])
+    ap.add_argument("--tag", help="own: our player tag")
     ap.add_argument("--max-players", type=int, default=400)
     a = ap.parse_args(argv)
     try:
@@ -251,6 +266,11 @@ def main(argv=None):
             icons = sorted({k for c in items for k in (c.get("iconUrls") or {})})
             print(f"SELFTEST OK: /v1/cards -> {len(items)} cards, {len(j.get('supportItems', []))} support items; "
                   f"card fields {keys}; icon kinds {icons}")
+            return 0
+        if a.cmd == "own":
+            if not a.tag:
+                raise SystemExit("own needs --tag")
+            log(f"own battlelog: +{poll_own(api, a.tag)} new")
             return 0
         crawl(api, a.max_players)
         return 0

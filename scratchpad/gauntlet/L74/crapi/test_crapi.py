@@ -183,3 +183,20 @@ class TestCensus(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestOwn(unittest.TestCase):
+    def test_own_poll_appends_new_battles_only_oldest_first(self):
+        logs = [[battle("20261026T1700", "#ME", "#O2", ICE, HOG, 1, 0), battle("20261026T1650", "#ME", "#O1", ICE, HOG, 0, 1)]]
+
+        class Api:
+            def get(self, path):
+                assert path == "/players/%23ME/battlelog", path
+                return logs[0]
+        with tempfile.TemporaryDirectory() as d:
+            p = Path(d) / "own.jsonl"
+            self.assertEqual(crapi.poll_own(Api(), "ME", p), 2)
+            logs[0] = [battle("20261026T1710", "#ME", "#O3", ICE, HOG, 3, 0)] + logs[0]
+            self.assertEqual(crapi.poll_own(Api(), "#ME", p), 1)
+            opp = [json.loads(l)["battle"]["opponent"][0]["tag"] for l in p.read_text().splitlines()]
+            self.assertEqual(opp, ["#O1", "#O2", "#O3"])

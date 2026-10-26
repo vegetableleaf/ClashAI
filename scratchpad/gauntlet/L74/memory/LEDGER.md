@@ -297,3 +297,14 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
   plan decision 2: CLXIII = the fixed live data config). Revert file CKPT_OVERRIDE.pre_20261026_1243 (-> CLXIV).
 - 10-26 measurements written up: memory/measure1026/REPORT.md (OT chip-race conversion gap; Mortar live / pro / SIM; live_siege.py
   evolved-Mortar Goblin bug still open).
+
+## 10-26 13:03-13:20 EDT -- owner decisions 4 / 5 / 7 approved; device checks DONE (plan1026/devcheck/REPORT.md)
+- Owner: poll the battle log after every match; device checks now with the MODEL playing; TV Royale harvesting OK.
+- One live CLXIII Ranked match (main account 4858, 1-0 OT win vs 902b; live_play_20261026_130453.jsonl), then STOP.
+- G-R2 (a): battle-log replay recorded by the reader reproduces the live board exactly on 1,014 / 1,017 common ticks (0.9971);
+  11,012 / 11,014 paired bodies identical in position and HP. The replay also gives both decks + forms, both hands, both
+  deal orders from tick 0 and exact elixir.
+- G-R3 (a): no replay file cached on disk (root find before / after: only cache / telemetry mtimes changed).
+- Battle-log polling: crapi.py `own --tag TAG` built + tested (10 / 10). BLOCKED: the only API key is IP-locked to the
+  crawler VM 34.148.91.90, which is stopped (ssh timeout); none on the laptop. Needs the owner: a key for the laptop IP or
+  the VM restarted. Our player tag also needed.
