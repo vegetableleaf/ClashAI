@@ -88,6 +88,7 @@ PLAY_COST_MATCH_CAP = 0.3       # W18: |play_cost reward| per match
 TORNADO_EVENT_CAP, TORNADO_MATCH_CAP = 0.15, 0.3   # ponytail: fixed caps, a config key if an arm needs another
 CYCLE_MIN_TICK, CYCLE_MIN_ELIXIR, CYCLE_QUIET_TICKS = 2400, 7.0, 100   # Plan A rocket_cycle: 2x / OT, >= 7 elixir, 5 s
 SPELL_NEAR_TILES = 5.0          # rocket_cycle: an enemy spell aimed this close to our princess = its damage there is spell
+CYCLE_MATCH_CAP = 0.6             # 10-26 owner (live: no Rocket cycling at all): rocket_cycle's own cap, ~5 free chips at w 1
 KING_WINDOW, KING_EVENT_CAP, KING_MATCH_CAP = 100, 0.1, 0.2           # Plan A king_redirect: 5 s after the Tornado ends
 ROCKET_MATCH_CAP = 0.3          # W10: |rocket_tower reward| per match (~5 chips at the default weight; pros fire 1.6 / match)
 ROCKET_BLAST_TILES = 2.0        # catalog Rocket radius (spell_value.ROCKET_R_TILES); a tower counts by the engine's edge rule
@@ -107,7 +108,7 @@ def bound(p: dict) -> float:
             + TORNADO_MATCH_CAP * bool(p.get("tornado_king_penalty"))
             + 2.0 * float(p.get("princess_take_w", 0.0)) * bool(p.get("princess_take"))
             + PLAY_COST_MATCH_CAP * bool(p.get("play_cost"))
-            + ROCKET_MATCH_CAP * bool(p.get("rocket_cycle")) + KING_MATCH_CAP * bool(p.get("king_redirect")))
+            + CYCLE_MATCH_CAP * bool(p.get("rocket_cycle")) + KING_MATCH_CAP * bool(p.get("king_redirect")))
 
 
 class CrownTracker:
@@ -384,7 +385,7 @@ def row_terms(crown: dict, plays: list, ticks, p: dict) -> dict:
             t0 = int(q["tick"])
             free = (t0 >= CYCLE_MIN_TICK and float(q.get("elixir_exact", q.get("elixir", 0.0))) >= CYCLE_MIN_ELIXIR
                     and _lost_before(lost, t0) == _lost_before(lost, t0 - CYCLE_QUIET_TICKS))
-            e = min(p["rocket_cycle_w"] * float(h["dmg"]), ROCKET_MATCH_CAP - total) if free else 0.0
+            e = min(p["rocket_cycle_w"] * float(h["dmg"]), CYCLE_MATCH_CAP - total) if free else 0.0
             if e <= 0:
                 continue
             r[row[t0]] += e

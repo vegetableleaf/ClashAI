@@ -41,10 +41,10 @@ def test_rocket_cycle_pays_free_chips_only():
 
 def test_rocket_cycle_cap():
     p = crown_cfg({**BASE, "rocket_cycle": True})
-    hits = [{"seen": 3000 + 100 * i, "dmg": 0.2} for i in range(6)]
+    hits = [{"seen": 3000 + 100 * i, "dmg": 0.4} for i in range(6)]
     plays = [_play(2970 + 100 * i, "Rocket", 9.0) for i in range(6)]
     out = RT.row_terms(_crown(rocket_hits=hits), plays, [q["tick"] for q in plays], p)
-    assert out["rocket_cycle"] == pytest.approx(RT.ROCKET_MATCH_CAP)
+    assert out["rocket_cycle"] == pytest.approx(RT.CYCLE_MATCH_CAP)
 
 
 def test_king_redirect_pays_redirects_only():
@@ -71,7 +71,7 @@ def test_king_redirect_event_cap_and_missing_record():
 
 
 def test_bound_and_cfg():
-    assert RT.bound({"rocket_cycle": True, "king_redirect": True}) == pytest.approx(RT.ROCKET_MATCH_CAP + RT.KING_MATCH_CAP)
+    assert RT.bound({"rocket_cycle": True, "king_redirect": True}) == pytest.approx(RT.CYCLE_MATCH_CAP + RT.KING_MATCH_CAP)
     p = crown_cfg({**BASE, "rocket_cycle": True, "rocket_cycle_w": 0.4})
     assert p["rocket_cycle_w"] == 0.4 and "king_redirect" not in p
     with pytest.raises(SystemExit):
