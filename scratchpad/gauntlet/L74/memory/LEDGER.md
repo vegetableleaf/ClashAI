@@ -204,3 +204,7 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
   +0.52: CLEAN; mem_e_s108 (leak .08) win 0.720 (-2.0), full +8.0 FLAG, first play +5.2 FLAG, elixir at play +0.28 FLAG.
   Same weight .12, one seed leaks, one does not: the weight alone does not settle it. Pros (pro_first_play.py, 29,290 match
   sides): first own play median 11.1 s, mean 12.7, p75 13.6, > 20 s only 7% -> the arms' 18-20 s opening wait is NOT pro-like.
+- Owner 10-25 ~21:40 EDT: prune stale backups. 48 items from 10-10..10-14 (old pod relays, MEMP memory runs, pod1013 / pod1014*
+  arms, podA-E, results_weekend.tgz; referenced only by their own old relay scripts) MOVED (not deleted) to
+  pod_backup_weekend/_STALE_to_delete (26.77 GB); the owner deletes it (my rules forbid permanent deletion). Kept: succ48_1025
+  (pod restore source), night1025, codex1018 (HANDOFF staging), w14 / w18 (opponents), bait, parity1016, all >= 10-15.
