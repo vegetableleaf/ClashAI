@@ -183,3 +183,10 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
   play / wait flips at 0.35 on 1.3% of rows; all RL change vs CLXIII |dp| 0.026. Learning, small so far; re-probe at u25.
 - Owner asked (bedtime 10-25): evaluate github.com/voonhous/crforge in depth + a couple of tests, recommend switch or not;
   worker on it (laptop only, report L74/crforge/EVAL.md); the night run has priority.
+- u25 memory use (mem_use.py, 6,000 icebow pro rows): mem_e_s106 gate |p(real) - p(empty)| mean 0.0114 (u10 0.0069), p90 0.033,
+  max 0.090, flips 1.6%; mem_e_s107 mean 0.0209, p90 0.055, max 0.197, flips 4.2%. Memory use is growing.
+- 00:5xZ speed triage: 33522 + 33569 share a host (load ~81), 33040 + 33015 share one (load ~83; quota 54.4 vCPU, not 72);
+  rates at 00:48Z: e_s106 u25, e_s107 u24, e_s108 u23, a_s106 u15, l_s106 u14, e_s109 u10, ctrl u16. STOPPED the two
+  attribution-only runs to speed their hostmates: ctrl_o_s105 (33569, pod myqw8dmlf9yyg2) and mem_a_s106 (33040, pod
+  5szib3vfllat54); drift dirs + train logs saved to pod_backup_weekend/night1025/. night_decide restarted on the 5 arms left,
+  deadline 11:00Z (07:00 EDT).
