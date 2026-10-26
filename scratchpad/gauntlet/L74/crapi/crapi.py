@@ -13,7 +13,7 @@ No card placements: the official API has none.
 import argparse, datetime as dt, hashlib, json, os, sys, time, urllib.error, urllib.parse, urllib.request
 from pathlib import Path
 
-API = "https://api.clashroyale.com/v1"
+API = os.environ.get("CR_API_BASE", "https://api.clashroyale.com/v1")   # or https://proxy.royaleapi.dev/v1 (key allows 45.79.218.79)
 HERE = Path(__file__).resolve().parent
 DATA = Path(os.environ.get("CR_API_DATA", HERE / "data"))
 KEY_PATH = Path(os.environ.get("CR_API_KEY_FILE", Path.home() / ".cr_api" / "key"))
