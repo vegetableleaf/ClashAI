@@ -190,3 +190,12 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
   attribution-only runs to speed their hostmates: ctrl_o_s105 (33569, pod myqw8dmlf9yyg2) and mem_a_s106 (33040, pod
   5szib3vfllat54); drift dirs + train logs saved to pod_backup_weekend/night1025/. night_decide restarted on the 5 arms left,
   deadline 11:00Z (07:00 EDT).
+- crforge evaluation (owner bedtime ask; worker, laptop only; L74/crforge/EVAL.md): commit ad8ef3a532ad, Java 17 / Gradle,
+  Apache-2.0, 652 commits in 30 days (one author). Every checked real value exact (princess HP L11 / 15 / 16 3052 / 4424 / 4858,
+  Rocket on tower L15 / 16 497 / 546, Log L15 51, X-Bow L11 61, Tornado on tower L16 40 vs RoyaleSim 0.1.35 41; Earthquake on a
+  hidden Tesla works, RoyaleSim 0.1.35 did 0); king activation = first damage + 70 ticks. CI claims 10,000 / 10,000 real battles
+  tick-exact on client 16.402.22 (10-19 patch) -- PRIVATE dataset, recording method undisclosed (b). NOT run on our 145-match
+  parity harness. Speed: ~1.5 icebow matches / s / thread on the busy laptop (RoyaleSim 0.1.17 ~3.1); integration 15-30
+  engineer-days (no tower troops / per-card levels / mid-match starts in its env layer). Verdict: NOT NOW for training; pilot =
+  point fights.py at crforge and rescore the 145 matches + J1-J4 vs fin15 (4-7 days); usable now as a reference engine.
+  C:\Users\benpe\crforge_eval (0.66 GB) kept for that pilot; drive C 25 GB free.
