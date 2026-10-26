@@ -227,3 +227,15 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
 - 08:24Z FINAL: mem_e_s107u50 gate pooled +0.34 [-1.56, +2.24] FAIL (tie); ablation 0 pairs (abl.sh failed; owed); mem_e_s109
   DRIFT FAIL at u100 (clean u75); pods 33184 / 33522 copied + stopped. mem_e4_s107 (E4 in pool) u25 FLAG (full 29.3 s, first
   play 28.9 s): E4-opener hypothesis CONTRADICTED. Live unchanged. Morning summary in HANDOFF.
+- 10-26 morning, owner: keep working until a memory successor exists; 3 new single pods 33411 / 32657 / 33920 (54.4 vCPU each);
+  no more pod stops. Replicated from 33458 (new podlink key there).
+- ROOT-CAUSE CANDIDATE for the leak drift (b, from the code): rollouts sample the gate as Bernoulli(sigmoid((z - logit tau) /
+  T_gate)) with T_gate 0.3 (e1_eval.sample_decide_batch), deployment / eval use the hard threshold p > tau. A sub-threshold
+  opening gate (p .25 at tau .35) still plays 17% of decisions in training (opens within ~2 s, no leak cost) but never under the
+  threshold -> RL lowers the opening gate for free and the deployed policy waits. Fits: training leak 0.73 elixir / match vs eval
+  24-29 s at full, and the leak swinging between checkpoints (e4 arm u25 29.3 s -> u50 9.8 s; s107 u25 9.6 / u50 12.7 / u75 24.1).
+  stall forcing ruled out (stall_elixir null -> anti_stall False). Test running: the leaky e4 u25 ckpt evaluated with
+  --gate-decode hazard (rate execution, close to the rollout gate), 480 E4 games.
+- Branch arms prepared (from mem_e_s107 u50: the graded grafted ckpt minus the 37 graft-added tensors; 5 projectile tensors keep
+  the graft's values = the version that was gated): brT10_s107 / brT10_s111 (T_gate 0.1), brT05_s107 (T_gate 0.05); smoke on
+  32657 running.
