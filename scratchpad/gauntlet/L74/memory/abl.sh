@@ -10,7 +10,8 @@ E4=icebow/data/bench/rl_royale/rdef_e4/rdef_e4_u0020_barrel2k_cellref_towerref_w
 EX="--xbow-class class_sample --xbow-class-floor 0.3 --tau-phase 0.35 0.45 0.55 --spell-aim rocket_area --log-aim log_barrel --lethal-rocket ot_behind --xbow-dead-lane block --rocket-dead-target block --tau-threatened 0.2 --lethal-log on --habit-log --live-levels --card-levels Rocket=16 Log=15 --opp-tower-troops DaggerDuchess:0.028,Cannoneer:0.028,ChefTower:0.014 --record-plays --ability-stats --ability-head-decode=sample --crown-log --record-board"
 cd $CB || exit 1
 export ROYALE_RUNTIME=fin15-linux ROYALE_HEROIW_FORM=hero ROYALE_HEROIW_PRESS=live PYTHONPATH=$CB HABITS_REC=1 O3_PLAYS=1 \
-  OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1
+  OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1 \
+  SKEW_GAP=$CB/scratchpad/gauntlet/L74/gap      # 10-26: else skew_worker loads cb_mem's gap (memory v1 only -> 0 pairs)
 one() {   # ARM JOB
   local arm=$1 j=$2 mode=$1
   read -r census seeds < <($PY -c "import json,sys; j=json.load(open('$IN/plan.json'))['jobs'][$j]; print(j['census'], ','.join(map(str,j['seeds'])))")

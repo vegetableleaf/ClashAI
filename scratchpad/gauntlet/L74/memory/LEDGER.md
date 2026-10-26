@@ -239,3 +239,12 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
 - Branch arms prepared (from mem_e_s107 u50: the graded grafted ckpt minus the 37 graft-added tensors; 5 projectile tensors keep
   the graft's values = the version that was gated): brT10_s107 / brT10_s111 (T_gate 0.1), brT05_s107 (T_gate 0.05); smoke on
   32657 running.
+- ROOT CAUSE CONFIRMED (a): the SAME leaky checkpoint (mem_e4_s107 u25, 480 E4 games, seed block 741200, vs its u0):
+  hard-threshold decode (deployed): full 31.3 s (+16.9 [+9.9, +24.5]), first play 29.8 s; rate decode (--gate-decode hazard,
+  close to the rollout's sampled gate): full 16.0 s (+1.6 n.s.), first play 11.9 s (-0.8 n.s.) but win 0.504 (-25 pp). The leak
+  is the train / deploy GATE mismatch (sampled at T_gate .3 in rollouts vs hard threshold deployed), not a learned habit the
+  leak weight could price. Fix = train closer to the deployed decode: T_gate 0.1 / 0.05.
+- 11:12Z four branch arms from mem_e_s107 u50 (smoke PASS on 32657): brT10_s107 32657, brT10_s111 33920, brT05_s107 33411,
+  brT10_s112 33458 (the e4 arm stopped at ~u85; records in night1025/mem_e4_s107). All pods KEEP; no stops.
+- abl.sh 0-pairs cause: skew_worker imported cb_mem's gap.py (memory v1 only: "memory must be ... 'v1', got 'v2'"); fixed with
+  SKEW_GAP=$CB/... ; retest running.
