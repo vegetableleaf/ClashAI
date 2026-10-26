@@ -1,0 +1,289 @@
+819 main-account Ranked matches
+
+## live win rate vs decks with a Mortar (the opponent played one) vs other decks
+  CLX     Mortar decks 0.412 [0.216, 0.640] (7/17) (0.033 of matches) | others 0.493 [0.449, 0.537] (243/493) | diff -8.1 pp [-28.2, +15.1]
+  CLXIII  Mortar decks 0.200 [0.036, 0.624] (1/5) (0.017 of matches) | others 0.483 [0.426, 0.540] (142/294) | diff -28.3 pp [-45.6, +14.5]
+  CLXIV   Mortar decks 0.000 [0.000, 0.793] (0/1) (0.100 of matches) | others 0.222 [0.063, 0.547] (2/9) | diff -22.2 pp [-54.7, +58.7]
+  pooled  Mortar decks 0.348 [0.188, 0.551] (8/23) (0.028 of matches) | others 0.486 [0.452, 0.521] (387/796) | diff -13.8 pp [-30.2, +6.8]
+
+## per enemy body (raw frame track)
+
+### CLX enemy mortar: 85 bodies
+  [all] n 85: hit our tower (>= 1 shell) 0.341 [0.249, 0.447] (29/85); tower shells / body mean 0.82 (max 7); troop shells / body 2.07; per-shell tower HP drop median 425 (n 66); tower HP lost to shells / body (sum of drops) mean 268
+      presence s (uncensored n 78): median 15.9, p25 8.8, p75 24.3; killed before 31 s 0.885 [0.795, 0.938] (69/78)
+      within 8 s: any own play 0.929 [0.854, 0.967] (79/85); ON it 0.024 [0.006, 0.082] (2/85); IN FRONT of the threatened princess 0.212 [0.138, 0.310] (18/85); ONLY elsewhere 0.706 [0.602, 0.792] (60/85); nothing 0.071 [0.033, 0.146] (6/85)
+      own X-Bow in 8 s 0.329 [0.239, 0.435] (28/85); Rocket ON it 0.024 [0.006, 0.082] (2/85); Log ON it 0.000 [0.000, 0.043] (0/85); PUMMELLED (>= 3 tower shells, nothing ON it in 8 s) 0.118 [0.065, 0.203] (10/85)
+      plays by place: ON [('rocket', 2)] | FRONT [('skeletons', 8), ('ice-wizard', 8), ('knight', 5), ('x-bow', 2), ('tesla', 1)] | ELSEWHERE [('x-bow', 26), ('tesla', 25), ('skeletons', 21), ('knight', 20), ('the-log', 17), ('ice-wizard', 14)]
+      first own play: delay median 1.5 s, 9.8 tiles from it, 7.8 tiles from the threatened princess; cards [('x-bow', 20), ('tesla', 17), ('skeletons', 15), ('knight', 10), ('ice-wizard', 8), ('the-log', 5)]
+  [in reach] n 49: hit our tower (>= 1 shell) 0.592 [0.452, 0.718] (29/49); tower shells / body mean 1.43 (max 7); troop shells / body 1.45; per-shell tower HP drop median 425 (n 66); tower HP lost to shells / body (sum of drops) mean 464
+      presence s (uncensored n 45): median 14.5, p25 9.2, p75 23.5; killed before 31 s 0.956 [0.852, 0.988] (43/45)
+      within 8 s: any own play 0.939 [0.835, 0.979] (46/49); ON it 0.041 [0.011, 0.137] (2/49); IN FRONT of the threatened princess 0.286 [0.178, 0.424] (14/49); ONLY elsewhere 0.633 [0.493, 0.753] (31/49); nothing 0.061 [0.021, 0.165] (3/49)
+      own X-Bow in 8 s 0.224 [0.130, 0.359] (11/49); Rocket ON it 0.041 [0.011, 0.137] (2/49); Log ON it 0.000 [0.000, 0.073] (0/49); PUMMELLED (>= 3 tower shells, nothing ON it in 8 s) 0.204 [0.115, 0.336] (10/49)
+      plays by place: ON [('rocket', 2)] | FRONT [('skeletons', 7), ('ice-wizard', 6), ('knight', 5), ('tesla', 1), ('x-bow', 1)] | ELSEWHERE [('tesla', 17), ('the-log', 13), ('skeletons', 13), ('knight', 11), ('x-bow', 10), ('ice-wizard', 5)]
+      first own play: delay median 1.3 s, 9.0 tiles from it, 7.9 tiles from the threatened princess; cards [('skeletons', 11), ('tesla', 11), ('x-bow', 8), ('ice-wizard', 5), ('knight', 4), ('the-log', 4)]
+
+### CLX enemy x-bow: 15 bodies
+  [all] n 15: hit our tower (>= 1 shell) 0.133 [0.037, 0.379] (2/15); tower shells / body mean 2.00 (max 23); troop shells / body 19.60; per-shell tower HP drop median 98 (n 28); tower HP lost to shells / body (sum of drops) mean 235
+      presence s (uncensored n 14): median 11.1, p25 9.1, p75 16.6; killed before 31 s 1.000 [0.785, 1.000] (14/14)
+      within 8 s: any own play 0.933 [0.702, 0.988] (14/15); ON it 0.067 [0.012, 0.298] (1/15); IN FRONT of the threatened princess 0.067 [0.012, 0.298] (1/15); ONLY elsewhere 0.800 [0.548, 0.930] (12/15); nothing 0.067 [0.012, 0.298] (1/15)
+      own X-Bow in 8 s 0.133 [0.037, 0.379] (2/15); Rocket ON it 0.067 [0.012, 0.298] (1/15); Log ON it 0.000 [-0.000, 0.204] (0/15); PUMMELLED (>= 3 tower shells, nothing ON it in 8 s) 0.133 [0.037, 0.379] (2/15)
+      plays by place: ON [('rocket', 1)] | FRONT [('knight', 1)] | ELSEWHERE [('tesla', 10), ('skeletons', 10), ('the-log', 7), ('knight', 5), ('ice-wizard', 3), ('x-bow', 2)]
+      first own play: delay median 1.5 s, 8.5 tiles from it, 9.9 tiles from the threatened princess; cards [('knight', 5), ('x-bow', 2), ('tesla', 2), ('skeletons', 2), ('the-log', 1), ('ice-wizard', 1)]
+  [in reach] n 11: hit our tower (>= 1 shell) 0.182 [0.051, 0.477] (2/11); tower shells / body mean 2.73 (max 23); troop shells / body 19.18; per-shell tower HP drop median 98 (n 28); tower HP lost to shells / body (sum of drops) mean 321
+      presence s (uncensored n 10): median 10.9, p25 7.5, p75 16.6; killed before 31 s 1.000 [0.722, 1.000] (10/10)
+      within 8 s: any own play 1.000 [0.741, 1.000] (11/11); ON it 0.091 [0.016, 0.377] (1/11); IN FRONT of the threatened princess 0.091 [0.016, 0.377] (1/11); ONLY elsewhere 0.818 [0.523, 0.949] (9/11); nothing 0.000 [0.000, 0.259] (0/11)
+      own X-Bow in 8 s 0.091 [0.016, 0.377] (1/11); Rocket ON it 0.091 [0.016, 0.377] (1/11); Log ON it 0.000 [0.000, 0.259] (0/11); PUMMELLED (>= 3 tower shells, nothing ON it in 8 s) 0.182 [0.051, 0.477] (2/11)
+      plays by place: ON [('rocket', 1)] | FRONT [('knight', 1)] | ELSEWHERE [('skeletons', 9), ('tesla', 8), ('the-log', 7), ('knight', 4), ('ice-wizard', 3), ('x-bow', 1)]
+      first own play: delay median 1.2 s, 6.0 tiles from it, 8.2 tiles from the threatened princess; cards [('knight', 4), ('skeletons', 2), ('the-log', 1), ('ice-wizard', 1), ('x-bow', 1), ('rocket', 1)]
+
+### CLXIII enemy mortar: 23 bodies
+  [all] n 23: hit our tower (>= 1 shell) 0.304 [0.156, 0.509] (7/23); tower shells / body mean 1.04 (max 6); troop shells / body 1.87; per-shell tower HP drop median 425 (n 24); tower HP lost to shells / body (sum of drops) mean 388
+      presence s (uncensored n 23): median 14.7, p25 7.9, p75 25.4; killed before 31 s 0.870 [0.679, 0.955] (20/23)
+      within 8 s: any own play 0.957 [0.790, 0.992] (22/23); ON it 0.000 [-0.000, 0.143] (0/23); IN FRONT of the threatened princess 0.478 [0.292, 0.670] (11/23); ONLY elsewhere 0.478 [0.292, 0.670] (11/23); nothing 0.043 [0.008, 0.210] (1/23)
+      own X-Bow in 8 s 0.391 [0.222, 0.592] (9/23); Rocket ON it 0.000 [-0.000, 0.143] (0/23); Log ON it 0.000 [-0.000, 0.143] (0/23); PUMMELLED (>= 3 tower shells, nothing ON it in 8 s) 0.174 [0.070, 0.371] (4/23)
+      plays by place: ON [] | FRONT [('knight', 5), ('skeletons', 4), ('ice-wizard', 3), ('x-bow', 1), ('the-log', 1)] | ELSEWHERE [('tesla', 12), ('x-bow', 8), ('knight', 5), ('the-log', 5), ('skeletons', 3), ('ice-wizard', 2)]
+      first own play: delay median 1.4 s, 10.5 tiles from it, 7.7 tiles from the threatened princess; cards [('tesla', 8), ('knight', 4), ('skeletons', 4), ('x-bow', 3), ('ice-wizard', 2), ('the-log', 1)]
+  [in reach] n 20: hit our tower (>= 1 shell) 0.350 [0.181, 0.567] (7/20); tower shells / body mean 1.20 (max 6); troop shells / body 1.65; per-shell tower HP drop median 425 (n 24); tower HP lost to shells / body (sum of drops) mean 446
+      presence s (uncensored n 20): median 13.2, p25 7.9, p75 21.3; killed before 31 s 0.900 [0.699, 0.972] (18/20)
+      within 8 s: any own play 0.950 [0.764, 0.991] (19/20); ON it 0.000 [-0.000, 0.161] (0/20); IN FRONT of the threatened princess 0.550 [0.342, 0.742] (11/20); ONLY elsewhere 0.400 [0.219, 0.613] (8/20); nothing 0.050 [0.009, 0.236] (1/20)
+      own X-Bow in 8 s 0.400 [0.219, 0.613] (8/20); Rocket ON it 0.000 [-0.000, 0.161] (0/20); Log ON it 0.000 [-0.000, 0.161] (0/20); PUMMELLED (>= 3 tower shells, nothing ON it in 8 s) 0.200 [0.081, 0.416] (4/20)
+      plays by place: ON [] | FRONT [('knight', 5), ('skeletons', 4), ('ice-wizard', 3), ('x-bow', 1), ('the-log', 1)] | ELSEWHERE [('tesla', 10), ('x-bow', 7), ('the-log', 5), ('knight', 4), ('ice-wizard', 1), ('skeletons', 1)]
+      first own play: delay median 1.3 s, 10.8 tiles from it, 7.6 tiles from the threatened princess; cards [('tesla', 6), ('knight', 4), ('x-bow', 3), ('skeletons', 3), ('ice-wizard', 2), ('the-log', 1)]
+
+### CLXIII enemy x-bow: 30 bodies
+  [all] n 30: hit our tower (>= 1 shell) 0.133 [0.053, 0.297] (4/30); tower shells / body mean 3.63 (max 40); troop shells / body 23.63; per-shell tower HP drop median 98 (n 109); tower HP lost to shells / body (sum of drops) mean 379
+      presence s (uncensored n 28): median 19.0, p25 15.1, p75 26.4; killed before 31 s 0.893 [0.728, 0.963] (25/28)
+      within 8 s: any own play 0.967 [0.833, 0.994] (29/30); ON it 0.100 [0.035, 0.256] (3/30); IN FRONT of the threatened princess 0.133 [0.053, 0.297] (4/30); ONLY elsewhere 0.767 [0.591, 0.882] (23/30); nothing 0.033 [0.006, 0.167] (1/30)
+      own X-Bow in 8 s 0.400 [0.246, 0.577] (12/30); Rocket ON it 0.100 [0.035, 0.256] (3/30); Log ON it 0.000 [-0.000, 0.114] (0/30); PUMMELLED (>= 3 tower shells, nothing ON it in 8 s) 0.100 [0.035, 0.256] (3/30)
+      plays by place: ON [('rocket', 3)] | FRONT [('knight', 2), ('skeletons', 2)] | ELSEWHERE [('knight', 15), ('x-bow', 12), ('the-log', 11), ('tesla', 11), ('ice-wizard', 10), ('skeletons', 10)]
+      first own play: delay median 1.3 s, 11.7 tiles from it, 8.1 tiles from the threatened princess; cards [('x-bow', 10), ('knight', 9), ('skeletons', 5), ('rocket', 2), ('tesla', 2), ('ice-wizard', 1)]
+  [in reach] n 15: hit our tower (>= 1 shell) 0.267 [0.109, 0.520] (4/15); tower shells / body mean 7.27 (max 40); troop shells / body 15.67; per-shell tower HP drop median 98 (n 109); tower HP lost to shells / body (sum of drops) mean 758
+      presence s (uncensored n 14): median 14.3, p25 9.2, p75 20.6; killed before 31 s 1.000 [0.785, 1.000] (14/14)
+      within 8 s: any own play 0.933 [0.702, 0.988] (14/15); ON it 0.200 [0.070, 0.452] (3/15); IN FRONT of the threatened princess 0.067 [0.012, 0.298] (1/15); ONLY elsewhere 0.733 [0.480, 0.891] (11/15); nothing 0.067 [0.012, 0.298] (1/15)
+      own X-Bow in 8 s 0.267 [0.109, 0.520] (4/15); Rocket ON it 0.200 [0.070, 0.452] (3/15); Log ON it 0.000 [-0.000, 0.204] (0/15); PUMMELLED (>= 3 tower shells, nothing ON it in 8 s) 0.200 [0.070, 0.452] (3/15)
+      plays by place: ON [('rocket', 3)] | FRONT [('skeletons', 1)] | ELSEWHERE [('the-log', 8), ('ice-wizard', 7), ('tesla', 7), ('knight', 6), ('skeletons', 5), ('x-bow', 4)]
+      first own play: delay median 1.2 s, 5.6 tiles from it, 8.1 tiles from the threatened princess; cards [('x-bow', 4), ('knight', 4), ('rocket', 2), ('tesla', 2), ('ice-wizard', 1), ('skeletons', 1)]
+
+### CLXIV enemy mortar: 4 bodies
+  [all] n 4: hit our tower (>= 1 shell) 0.750 [0.301, 0.954] (3/4); tower shells / body mean 1.50 (max 3); troop shells / body 1.25; per-shell tower HP drop median 425 (n 5); tower HP lost to shells / body (sum of drops) mean 531
+      presence s (uncensored n 3): median 22.8, p25 15.6, p75 25.1; killed before 31 s 1.000 [0.438, 1.000] (3/3)
+      within 8 s: any own play 1.000 [0.510, 1.000] (4/4); ON it 0.000 [0.000, 0.490] (0/4); IN FRONT of the threatened princess 0.750 [0.301, 0.954] (3/4); ONLY elsewhere 0.250 [0.046, 0.699] (1/4); nothing 0.000 [0.000, 0.490] (0/4)
+      own X-Bow in 8 s 0.000 [0.000, 0.490] (0/4); Rocket ON it 0.000 [0.000, 0.490] (0/4); Log ON it 0.000 [0.000, 0.490] (0/4); PUMMELLED (>= 3 tower shells, nothing ON it in 8 s) 0.250 [0.046, 0.699] (1/4)
+      plays by place: ON [] | FRONT [('tesla', 1), ('ice-wizard', 1), ('knight', 1), ('skeletons', 1)] | ELSEWHERE [('tesla', 2), ('the-log', 1)]
+      first own play: delay median 3.5 s, 9.1 tiles from it, 5.3 tiles from the threatened princess; cards [('tesla', 2), ('ice-wizard', 1), ('knight', 1)]
+  [in reach] n 4: hit our tower (>= 1 shell) 0.750 [0.301, 0.954] (3/4); tower shells / body mean 1.50 (max 3); troop shells / body 1.25; per-shell tower HP drop median 425 (n 5); tower HP lost to shells / body (sum of drops) mean 531
+      presence s (uncensored n 3): median 22.8, p25 15.6, p75 25.1; killed before 31 s 1.000 [0.438, 1.000] (3/3)
+      within 8 s: any own play 1.000 [0.510, 1.000] (4/4); ON it 0.000 [0.000, 0.490] (0/4); IN FRONT of the threatened princess 0.750 [0.301, 0.954] (3/4); ONLY elsewhere 0.250 [0.046, 0.699] (1/4); nothing 0.000 [0.000, 0.490] (0/4)
+      own X-Bow in 8 s 0.000 [0.000, 0.490] (0/4); Rocket ON it 0.000 [0.000, 0.490] (0/4); Log ON it 0.000 [0.000, 0.490] (0/4); PUMMELLED (>= 3 tower shells, nothing ON it in 8 s) 0.250 [0.046, 0.699] (1/4)
+      plays by place: ON [] | FRONT [('tesla', 1), ('ice-wizard', 1), ('knight', 1), ('skeletons', 1)] | ELSEWHERE [('tesla', 2), ('the-log', 1)]
+      first own play: delay median 3.5 s, 9.1 tiles from it, 5.3 tiles from the threatened princess; cards [('tesla', 2), ('ice-wizard', 1), ('knight', 1)]
+
+### CLXIV enemy x-bow: 0 bodies
+
+### pooled enemy mortar: 112 bodies
+  [all] n 112: hit our tower (>= 1 shell) 0.348 [0.266, 0.440] (39/112); tower shells / body mean 0.89 (max 7); troop shells / body 2.00; per-shell tower HP drop median 425 (n 95); tower HP lost to shells / body (sum of drops) mean 302
+      presence s (uncensored n 104): median 15.7, p25 8.7, p75 25.0; killed before 31 s 0.885 [0.809, 0.933] (92/104)
+      within 8 s: any own play 0.938 [0.877, 0.969] (105/112); ON it 0.018 [0.005, 0.063] (2/112); IN FRONT of the threatened princess 0.286 [0.210, 0.375] (32/112); ONLY elsewhere 0.643 [0.551, 0.726] (72/112); nothing 0.062 [0.031, 0.123] (7/112)
+      own X-Bow in 8 s 0.330 [0.250, 0.422] (37/112); Rocket ON it 0.018 [0.005, 0.063] (2/112); Log ON it 0.000 [0.000, 0.033] (0/112); PUMMELLED (>= 3 tower shells, nothing ON it in 8 s) 0.134 [0.083, 0.209] (15/112)
+      plays by place: ON [('rocket', 2)] | FRONT [('skeletons', 13), ('ice-wizard', 12), ('knight', 11), ('x-bow', 3), ('tesla', 2), ('the-log', 1)] | ELSEWHERE [('tesla', 39), ('x-bow', 34), ('knight', 25), ('skeletons', 24), ('the-log', 23), ('ice-wizard', 16)]
+      first own play: delay median 1.5 s, 9.9 tiles from it, 7.6 tiles from the threatened princess; cards [('tesla', 27), ('x-bow', 23), ('skeletons', 19), ('knight', 15), ('ice-wizard', 11), ('the-log', 6)]
+  [in reach] n 73: hit our tower (>= 1 shell) 0.534 [0.421, 0.644] (39/73); tower shells / body mean 1.37 (max 7); troop shells / body 1.49; per-shell tower HP drop median 425 (n 95); tower HP lost to shells / body (sum of drops) mean 463
+      presence s (uncensored n 68): median 14.6, p25 8.4, p75 23.5; killed before 31 s 0.941 [0.858, 0.977] (64/68)
+      within 8 s: any own play 0.945 [0.867, 0.978] (69/73); ON it 0.027 [0.008, 0.095] (2/73); IN FRONT of the threatened princess 0.384 [0.281, 0.498] (28/73); ONLY elsewhere 0.548 [0.434, 0.657] (40/73); nothing 0.055 [0.022, 0.133] (4/73)
+      own X-Bow in 8 s 0.260 [0.173, 0.371] (19/73); Rocket ON it 0.027 [0.008, 0.095] (2/73); Log ON it 0.000 [-0.000, 0.050] (0/73); PUMMELLED (>= 3 tower shells, nothing ON it in 8 s) 0.205 [0.129, 0.312] (15/73)
+      plays by place: ON [('rocket', 2)] | FRONT [('skeletons', 12), ('knight', 11), ('ice-wizard', 10), ('tesla', 2), ('x-bow', 2), ('the-log', 1)] | ELSEWHERE [('tesla', 29), ('the-log', 19), ('x-bow', 17), ('knight', 15), ('skeletons', 14), ('ice-wizard', 6)]
+      first own play: delay median 1.4 s, 9.0 tiles from it, 7.6 tiles from the threatened princess; cards [('tesla', 19), ('skeletons', 14), ('x-bow', 11), ('knight', 9), ('ice-wizard', 8), ('the-log', 5)]
+
+### pooled enemy x-bow: 45 bodies
+  [all] n 45: hit our tower (>= 1 shell) 0.133 [0.063, 0.262] (6/45); tower shells / body mean 3.09 (max 40); troop shells / body 22.29; per-shell tower HP drop median 98 (n 137); tower HP lost to shells / body (sum of drops) mean 331
+      presence s (uncensored n 42): median 17.1, p25 10.4, p75 22.8; killed before 31 s 0.929 [0.810, 0.975] (39/42)
+      within 8 s: any own play 0.956 [0.852, 0.988] (43/45); ON it 0.089 [0.035, 0.207] (4/45); IN FRONT of the threatened princess 0.111 [0.048, 0.235] (5/45); ONLY elsewhere 0.778 [0.637, 0.875] (35/45); nothing 0.044 [0.012, 0.148] (2/45)
+      own X-Bow in 8 s 0.311 [0.195, 0.457] (14/45); Rocket ON it 0.089 [0.035, 0.207] (4/45); Log ON it 0.000 [0.000, 0.079] (0/45); PUMMELLED (>= 3 tower shells, nothing ON it in 8 s) 0.111 [0.048, 0.235] (5/45)
+      plays by place: ON [('rocket', 4)] | FRONT [('knight', 3), ('skeletons', 2)] | ELSEWHERE [('tesla', 21), ('skeletons', 20), ('knight', 20), ('the-log', 18), ('x-bow', 14), ('ice-wizard', 13)]
+      first own play: delay median 1.3 s, 11.3 tiles from it, 8.1 tiles from the threatened princess; cards [('knight', 14), ('x-bow', 12), ('skeletons', 7), ('tesla', 4), ('rocket', 3), ('ice-wizard', 2)]
+  [in reach] n 26: hit our tower (>= 1 shell) 0.231 [0.110, 0.421] (6/26); tower shells / body mean 5.35 (max 40); troop shells / body 17.15; per-shell tower HP drop median 98 (n 137); tower HP lost to shells / body (sum of drops) mean 573
+      presence s (uncensored n 24): median 12.2, p25 8.4, p75 18.9; killed before 31 s 1.000 [0.862, 1.000] (24/24)
+      within 8 s: any own play 0.962 [0.811, 0.993] (25/26); ON it 0.154 [0.061, 0.335] (4/26); IN FRONT of the threatened princess 0.077 [0.021, 0.241] (2/26); ONLY elsewhere 0.769 [0.579, 0.890] (20/26); nothing 0.038 [0.007, 0.189] (1/26)
+      own X-Bow in 8 s 0.192 [0.085, 0.379] (5/26); Rocket ON it 0.154 [0.061, 0.335] (4/26); Log ON it 0.000 [0.000, 0.129] (0/26); PUMMELLED (>= 3 tower shells, nothing ON it in 8 s) 0.192 [0.085, 0.379] (5/26)
+      plays by place: ON [('rocket', 4)] | FRONT [('knight', 1), ('skeletons', 1)] | ELSEWHERE [('the-log', 15), ('tesla', 15), ('skeletons', 14), ('ice-wizard', 10), ('knight', 10), ('x-bow', 5)]
+      first own play: delay median 1.2 s, 5.7 tiles from it, 8.1 tiles from the threatened princess; cards [('knight', 8), ('x-bow', 5), ('skeletons', 3), ('rocket', 3), ('tesla', 3), ('ice-wizard', 2)]
+
+## same placements through siege_lib.report (the pro rule; memory events)
+
+## LIVE CLX vs opponent mortar -- ALL: 85 placements in 17 matches
+  lane princess HP lost in 30 s (x 4858)                527.871 [390.235, 695.906]
+  share >= 10 % lane princess lost in 30 s                0.318 [0.215, 0.435]
+  share lane princess FELL in 30 s                        0.094 [0.043, 0.158]
+  share any own play in 8 s                               0.929 [0.863, 0.978]
+  share own play ON it (<= 3.5 t) in 8 s                  0.024 [0.000, 0.088]
+  share own play ON it in 30 s                            0.035 [0.000, 0.099]
+  share own Rocket ON it in 8 s                           0.024 [0.000, 0.088]
+  share own troop/building <= 6 t of lane princess, 8 s    0.212 [0.122, 0.309]
+  share own X-Bow in 8 s                                  0.329 [0.230, 0.425]
+  reach (tiles to lane princess, mean)                   14.306 [13.690, 14.900]
+  first own play in 8 s: n 79; delay s median 1.5; tiles from it median 9.8; tiles from lane princess median 7.8; cards [('x-bow', 20), ('tesla', 17), ('skeletons', 15), ('knight', 10), ('ice-wizard', 8), ('the-log', 5), ('rocket', 3), ('tornado', 1)]
+  first own play ON it (<= 3.5 t, 30 s): n 3; delay s median 4.7 (p25 3.2, p75 6.8); cards [('rocket', 2), ('tornado', 1)]
+  all own plays in 8 s by card (per placement): skeletons 0.34, x-bow 0.33, tesla 0.31, knight 0.29, ice-wizard 0.26, the-log 0.20, rocket 0.07, tornado 0.02
+
+## LIVE CLX vs opponent mortar -- IN REACH (<= 13.5 t of a standing lane princess): 48 placements in 15 matches
+  lane princess HP lost in 30 s (x 4858)                815.833 [561.926, 1097.227]
+  share >= 10 % lane princess lost in 30 s                0.521 [0.369, 0.682]
+  share lane princess FELL in 30 s                        0.104 [0.029, 0.190]
+  share any own play in 8 s                               0.938 [0.839, 1.000]
+  share own play ON it (<= 3.5 t) in 8 s                  0.042 [0.000, 0.130]
+  share own play ON it in 30 s                            0.062 [0.000, 0.156]
+  share own Rocket ON it in 8 s                           0.042 [0.000, 0.130]
+  share own troop/building <= 6 t of lane princess, 8 s    0.292 [0.192, 0.405]
+  share own X-Bow in 8 s                                  0.229 [0.125, 0.326]
+  reach (tiles to lane princess, mean)                   12.860 [12.762, 12.940]
+  first own play in 8 s: n 45; delay s median 1.3; tiles from it median 9.0; tiles from lane princess median 7.9; cards [('skeletons', 11), ('tesla', 11), ('x-bow', 8), ('knight', 4), ('the-log', 4), ('ice-wizard', 4), ('rocket', 2), ('tornado', 1)]
+  first own play ON it (<= 3.5 t, 30 s): n 3; delay s median 4.7 (p25 3.2, p75 6.8); cards [('rocket', 2), ('tornado', 1)]
+  all own plays in 8 s by card (per placement): skeletons 0.42, tesla 0.38, knight 0.33, the-log 0.27, x-bow 0.23, ice-wizard 0.21, rocket 0.06, tornado 0.04
+
+## LIVE CLX vs opponent x-bow -- ALL: 15 placements in 2 matches
+  lane princess HP lost in 30 s (x 4858)                257.867 [86.750, 453.429]
+  share >= 10 % lane princess lost in 30 s                0.133 [0.000, 0.286]
+  share lane princess FELL in 30 s                        0.067 [0.000, 0.143]
+  share any own play in 8 s                               0.933 [0.875, 1.000]
+  share own play ON it (<= 3.5 t) in 8 s                  0.067 [0.000, 0.125]
+  share own play ON it in 30 s                            0.267 [0.250, 0.286]
+  share own Rocket ON it in 8 s                           0.067 [0.000, 0.125]
+  share own troop/building <= 6 t of lane princess, 8 s    0.067 [0.000, 0.125]
+  share own X-Bow in 8 s                                  0.133 [0.000, 0.286]
+  reach (tiles to lane princess, mean)                   13.995 [13.825, 14.189]
+  first own play in 8 s: n 14; delay s median 1.5; tiles from it median 8.5; tiles from lane princess median 9.9; cards [('knight', 5), ('x-bow', 2), ('tesla', 2), ('skeletons', 2), ('the-log', 1), ('ice-wizard', 1), ('rocket', 1)]
+  first own play ON it (<= 3.5 t, 30 s): n 4; delay s median 11.4 (p25 7.1, p75 17.4); cards [('tornado', 3), ('rocket', 1)]
+  all own plays in 8 s by card (per placement): tesla 0.67, skeletons 0.67, the-log 0.47, knight 0.40, ice-wizard 0.20, x-bow 0.13, rocket 0.07
+
+## LIVE CLX vs opponent x-bow -- IN REACH (<= 13.5 t of a standing lane princess): 11 placements in 2 matches
+  lane princess HP lost in 30 s (x 4858)                309.909 [57.833, 612.400]
+  share >= 10 % lane princess lost in 30 s                0.182 [0.000, 0.400]
+  share lane princess FELL in 30 s                        0.091 [0.000, 0.200]
+  share any own play in 8 s                               1.000 [1.000, 1.000]
+  share own play ON it (<= 3.5 t) in 8 s                  0.091 [0.000, 0.167]
+  share own play ON it in 30 s                            0.364 [0.333, 0.400]
+  share own Rocket ON it in 8 s                           0.091 [0.000, 0.167]
+  share own troop/building <= 6 t of lane princess, 8 s    0.091 [0.000, 0.167]
+  share own X-Bow in 8 s                                  0.091 [0.000, 0.200]
+  reach (tiles to lane princess, mean)                   12.832 [12.686, 13.008]
+  first own play in 8 s: n 11; delay s median 1.2; tiles from it median 6.0; tiles from lane princess median 8.2; cards [('knight', 4), ('skeletons', 2), ('the-log', 1), ('ice-wizard', 1), ('x-bow', 1), ('rocket', 1), ('tesla', 1)]
+  first own play ON it (<= 3.5 t, 30 s): n 4; delay s median 11.4 (p25 7.1, p75 17.4); cards [('tornado', 3), ('rocket', 1)]
+  all own plays in 8 s by card (per placement): skeletons 0.82, tesla 0.73, the-log 0.64, knight 0.45, ice-wizard 0.27, x-bow 0.09, rocket 0.09
+
+## LIVE CLXIII vs opponent mortar -- ALL: 23 placements in 5 matches
+  lane princess HP lost in 30 s (x 4858)                527.565 [293.933, 965.625]
+  share >= 10 % lane princess lost in 30 s                0.348 [0.250, 0.529]
+  share lane princess FELL in 30 s                        0.000 [0.000, 0.000]
+  share any own play in 8 s                               0.957 [0.824, 1.000]
+  share own play ON it (<= 3.5 t) in 8 s                  0.000 [0.000, 0.000]
+  share own play ON it in 30 s                            0.000 [0.000, 0.000]
+  share own Rocket ON it in 8 s                           0.000 [0.000, 0.000]
+  share own troop/building <= 6 t of lane princess, 8 s    0.435 [0.350, 0.524]
+  share own X-Bow in 8 s                                  0.391 [0.176, 0.545]
+  reach (tiles to lane princess, mean)                   13.430 [13.006, 13.796]
+  first own play in 8 s: n 22; delay s median 1.4; tiles from it median 10.5; tiles from lane princess median 7.7; cards [('tesla', 8), ('knight', 4), ('skeletons', 4), ('x-bow', 3), ('ice-wizard', 2), ('the-log', 1)]
+  all own plays in 8 s by card (per placement): tesla 0.52, knight 0.43, x-bow 0.39, skeletons 0.30, the-log 0.26, ice-wizard 0.22
+
+## LIVE CLXIII vs opponent mortar -- IN REACH (<= 13.5 t of a standing lane princess): 20 placements in 5 matches
+  lane princess HP lost in 30 s (x 4858)                588.350 [330.083, 1071.929]
+  share >= 10 % lane princess lost in 30 s                0.400 [0.273, 0.625]
+  share lane princess FELL in 30 s                        0.000 [0.000, 0.000]
+  share any own play in 8 s                               0.950 [0.786, 1.000]
+  share own play ON it (<= 3.5 t) in 8 s                  0.000 [0.000, 0.000]
+  share own play ON it in 30 s                            0.000 [0.000, 0.000]
+  share own Rocket ON it in 8 s                           0.000 [0.000, 0.000]
+  share own troop/building <= 6 t of lane princess, 8 s    0.500 [0.421, 0.565]
+  share own X-Bow in 8 s                                  0.400 [0.214, 0.550]
+  reach (tiles to lane princess, mean)                   12.978 [12.933, 13.019]
+  first own play in 8 s: n 19; delay s median 1.3; tiles from it median 10.8; tiles from lane princess median 7.6; cards [('tesla', 6), ('knight', 4), ('x-bow', 3), ('skeletons', 3), ('ice-wizard', 2), ('the-log', 1)]
+  all own plays in 8 s by card (per placement): tesla 0.50, knight 0.45, x-bow 0.40, the-log 0.30, skeletons 0.25, ice-wizard 0.20
+
+## LIVE CLXIII vs opponent x-bow -- ALL: 30 placements in 5 matches
+  lane princess HP lost in 30 s (x 4858)                446.433 [188.769, 723.440]
+  share >= 10 % lane princess lost in 30 s                0.133 [0.036, 0.214]
+  share lane princess FELL in 30 s                        0.000 [0.000, 0.000]
+  share any own play in 8 s                               0.967 [0.903, 1.000]
+  share own play ON it (<= 3.5 t) in 8 s                  0.100 [0.000, 0.214]
+  share own play ON it in 30 s                            0.100 [0.000, 0.214]
+  share own Rocket ON it in 8 s                           0.100 [0.000, 0.214]
+  share own troop/building <= 6 t of lane princess, 8 s    0.133 [0.042, 0.206]
+  share own X-Bow in 8 s                                  0.400 [0.324, 0.520]
+  reach (tiles to lane princess, mean)                   14.535 [13.862, 15.039]
+  first own play in 8 s: n 29; delay s median 1.3; tiles from it median 11.7; tiles from lane princess median 8.1; cards [('x-bow', 10), ('knight', 9), ('skeletons', 5), ('rocket', 2), ('tesla', 2), ('ice-wizard', 1)]
+  first own play ON it (<= 3.5 t, 30 s): n 3; delay s median 1.3 (p25 1.2, p75 1.9); cards [('rocket', 3)]
+  all own plays in 8 s by card (per placement): knight 0.57, x-bow 0.40, skeletons 0.40, the-log 0.37, tesla 0.37, ice-wizard 0.33, rocket 0.10
+
+## LIVE CLXIII vs opponent x-bow -- IN REACH (<= 13.5 t of a standing lane princess): 15 placements in 5 matches
+  lane princess HP lost in 30 s (x 4858)                877.933 [249.174, 2159.750]
+  share >= 10 % lane princess lost in 30 s                0.267 [0.050, 0.636]
+  share lane princess FELL in 30 s                        0.000 [0.000, 0.000]
+  share any own play in 8 s                               0.933 [0.864, 1.000]
+  share own play ON it (<= 3.5 t) in 8 s                  0.200 [0.000, 0.316]
+  share own play ON it in 30 s                            0.200 [0.000, 0.316]
+  share own Rocket ON it in 8 s                           0.200 [0.000, 0.316]
+  share own troop/building <= 6 t of lane princess, 8 s    0.067 [0.000, 0.136]
+  share own X-Bow in 8 s                                  0.267 [0.100, 0.438]
+  reach (tiles to lane princess, mean)                   13.026 [13.005, 13.036]
+  first own play in 8 s: n 14; delay s median 1.2; tiles from it median 5.6; tiles from lane princess median 8.1; cards [('x-bow', 4), ('knight', 4), ('rocket', 2), ('tesla', 2), ('ice-wizard', 1), ('skeletons', 1)]
+  first own play ON it (<= 3.5 t, 30 s): n 3; delay s median 1.3 (p25 1.2, p75 1.9); cards [('rocket', 3)]
+  all own plays in 8 s by card (per placement): the-log 0.53, ice-wizard 0.47, tesla 0.47, knight 0.40, skeletons 0.40, x-bow 0.27, rocket 0.20
+
+## LIVE pooled vs opponent mortar -- ALL: 112 placements in 23 matches
+  lane princess HP lost in 30 s (x 4858)                552.330 [429.286, 711.370]
+  share >= 10 % lane princess lost in 30 s                0.348 [0.261, 0.453]
+  share lane princess FELL in 30 s                        0.080 [0.037, 0.132]
+  share any own play in 8 s                               0.938 [0.881, 0.981]
+  share own play ON it (<= 3.5 t) in 8 s                  0.018 [0.000, 0.062]
+  share own play ON it in 30 s                            0.027 [0.000, 0.078]
+  share own Rocket ON it in 8 s                           0.018 [0.000, 0.062]
+  share own troop/building <= 6 t of lane princess, 8 s    0.277 [0.193, 0.372]
+  share own X-Bow in 8 s                                  0.330 [0.238, 0.414]
+  reach (tiles to lane princess, mean)                   14.074 [13.560, 14.564]
+  first own play in 8 s: n 105; delay s median 1.5; tiles from it median 9.9; tiles from lane princess median 7.6; cards [('tesla', 27), ('x-bow', 23), ('skeletons', 19), ('knight', 15), ('ice-wizard', 11), ('the-log', 6), ('rocket', 3), ('tornado', 1)]
+  first own play ON it (<= 3.5 t, 30 s): n 3; delay s median 4.7 (p25 3.2, p75 6.8); cards [('rocket', 2), ('tornado', 1)]
+  all own plays in 8 s by card (per placement): tesla 0.37, skeletons 0.33, x-bow 0.33, knight 0.32, ice-wizard 0.25, the-log 0.21, rocket 0.05, tornado 0.02
+
+## LIVE pooled vs opponent mortar -- IN REACH (<= 13.5 t of a standing lane princess): 72 placements in 21 matches
+  lane princess HP lost in 30 s (x 4858)                774.792 [566.542, 1008.838]
+  share >= 10 % lane princess lost in 30 s                0.514 [0.393, 0.656]
+  share lane princess FELL in 30 s                        0.083 [0.029, 0.147]
+  share any own play in 8 s                               0.944 [0.870, 1.000]
+  share own play ON it (<= 3.5 t) in 8 s                  0.028 [0.000, 0.088]
+  share own play ON it in 30 s                            0.042 [0.000, 0.109]
+  share own Rocket ON it in 8 s                           0.028 [0.000, 0.088]
+  share own troop/building <= 6 t of lane princess, 8 s    0.375 [0.282, 0.479]
+  share own X-Bow in 8 s                                  0.264 [0.169, 0.349]
+  reach (tiles to lane princess, mean)                   12.892 [12.822, 12.945]
+  first own play in 8 s: n 68; delay s median 1.4; tiles from it median 9.0; tiles from lane princess median 7.6; cards [('tesla', 19), ('skeletons', 14), ('x-bow', 11), ('knight', 9), ('ice-wizard', 7), ('the-log', 5), ('rocket', 2), ('tornado', 1)]
+  first own play ON it (<= 3.5 t, 30 s): n 3; delay s median 4.7 (p25 3.2, p75 6.8); cards [('rocket', 2), ('tornado', 1)]
+  all own plays in 8 s by card (per placement): tesla 0.43, skeletons 0.36, knight 0.36, the-log 0.28, x-bow 0.26, ice-wizard 0.21, rocket 0.04, tornado 0.03
+
+## LIVE pooled vs opponent x-bow -- ALL: 45 placements in 7 matches
+  lane princess HP lost in 30 s (x 4858)                383.578 [160.297, 595.796]
+  share >= 10 % lane princess lost in 30 s                0.133 [0.044, 0.222]
+  share lane princess FELL in 30 s                        0.022 [0.000, 0.067]
+  share any own play in 8 s                               0.956 [0.906, 1.000]
+  share own play ON it (<= 3.5 t) in 8 s                  0.089 [0.020, 0.167]
+  share own play ON it in 30 s                            0.156 [0.053, 0.244]
+  share own Rocket ON it in 8 s                           0.089 [0.020, 0.167]
+  share own troop/building <= 6 t of lane princess, 8 s    0.111 [0.043, 0.176]
+  share own X-Bow in 8 s                                  0.311 [0.175, 0.447]
+  reach (tiles to lane princess, mean)                   14.355 [13.909, 14.852]
+  first own play in 8 s: n 43; delay s median 1.3; tiles from it median 11.3; tiles from lane princess median 8.1; cards [('knight', 14), ('x-bow', 12), ('skeletons', 7), ('tesla', 4), ('rocket', 3), ('ice-wizard', 2), ('the-log', 1)]
+  first own play ON it (<= 3.5 t, 30 s): n 7; delay s median 2.5 (p25 1.2, p75 11.4); cards [('rocket', 4), ('tornado', 3)]
+  all own plays in 8 s by card (per placement): knight 0.51, skeletons 0.49, tesla 0.47, the-log 0.40, x-bow 0.31, ice-wizard 0.29, rocket 0.09
+
+## LIVE pooled vs opponent x-bow -- IN REACH (<= 13.5 t of a standing lane princess): 26 placements in 7 matches
+  lane princess HP lost in 30 s (x 4858)                637.615 [208.875, 1362.909]
+  share >= 10 % lane princess lost in 30 s                0.231 [0.067, 0.483]
+  share lane princess FELL in 30 s                        0.038 [0.000, 0.115]
+  share any own play in 8 s                               0.962 [0.900, 1.000]
+  share own play ON it (<= 3.5 t) in 8 s                  0.154 [0.036, 0.269]
+  share own play ON it in 30 s                            0.269 [0.115, 0.346]
+  share own Rocket ON it in 8 s                           0.154 [0.036, 0.269]
+  share own troop/building <= 6 t of lane princess, 8 s    0.077 [0.000, 0.138]
+  share own X-Bow in 8 s                                  0.192 [0.065, 0.346]
+  reach (tiles to lane princess, mean)                   12.944 [12.813, 13.030]
+  first own play in 8 s: n 25; delay s median 1.2; tiles from it median 5.7; tiles from lane princess median 8.1; cards [('knight', 8), ('x-bow', 5), ('skeletons', 3), ('rocket', 3), ('tesla', 3), ('ice-wizard', 2), ('the-log', 1)]
+  first own play ON it (<= 3.5 t, 30 s): n 7; delay s median 2.5 (p25 1.2, p75 11.4); cards [('rocket', 4), ('tornado', 3)]
+  all own plays in 8 s by card (per placement): the-log 0.58, tesla 0.58, skeletons 0.58, knight 0.42, ice-wizard 0.38, x-bow 0.19, rocket 0.15
