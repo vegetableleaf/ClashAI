@@ -136,6 +136,26 @@ def post_clip(clip: Path, caption: str, mime: str = "video/mp4") -> bool:
         return False
 
 
+def drop_render(log: Path, video: Path) -> None:
+    """The full overlaid render made for this clip + the raw screenrecord segments listed in the match log's 'recording'
+    event (overlay_replay.render's inputs) -> removed (owner 10-26: live_play.py run directly keeps its own replays)."""
+    import json
+    paths = [Path(video)]
+    try:
+        for line in open(log, encoding="utf-8"):
+            if '"recording"' in line:
+                e = json.loads(line)
+                if e.get("event") == "recording":
+                    paths += [Path(s[0]) for s in e.get("segments", [])]
+    except OSError:
+        pass
+    for p in paths:
+        try:
+            p.unlink(missing_ok=True)
+        except OSError as exc:
+            print(f"[clip] could not remove {p}: {exc}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("log", type=Path)
@@ -158,7 +178,11 @@ def main() -> int:
         if video is None:
             raise ValueError("Nothing to render")
         output = CLIPS / f"clip_{args.log.stem}.mp4"
-        encode_clip(video, output, args.seconds)
+        try:
+            encode_clip(video, output, args.seconds)
+        finally:
+            if args.video is None:                       # owner 10-26: the clip only -- the full overlaid render and its raw
+                drop_render(args.log, video)             # screen segments are not kept on disk
         print(f"[clip] {output} ({output.stat().st_size / 1_000_000:.3f} MB)")
     except ValueError as exc:
         print(f"[clip] failed: {exc}")
