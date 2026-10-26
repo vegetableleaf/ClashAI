@@ -1,3 +1,29 @@
+## 2026-10-26 ~12:55 EDT -- SESSION HANDOVER (account 1 at 98% usage): plan approved, step 0 DONE, days 0-3 NOT STARTED
+
+- READ FIRST: scratchpad/gauntlet/L74/plan1026/PLAN.md (owner-approved plan; design reports + audits beside it). Owner rules
+  in it: no-discard (iterate a failing core part, never drop it), NO KL leash on our model, reward = R_win + fitted zero-sum
+  R_exchange + fork credit + mined macros (sneaky lock, Rocket cycling ...), barrel_lane kept for successors.
+- Owner 12:50: "do not start on the plan yet" -- WAIT for the owner's go before days 0-3.
+- Done (commits 1cc1165, 752de26, cd2150d): plan saved; brT10_s107 halted on 32657 + all arm records copied to
+  C:/Users/benpe/pod_backup_weekend/night1025/; pods 33458 + 33411 STOPPED, 32657 + 33920 kept IDLE (nothing running);
+  CKPT_OVERRIDE -> CLXIII NOLEAK (8d328a43, offline --check PASS, live NOT started; revert file CKPT_OVERRIDE.pre_20261026_1243);
+  live config in use since 10-25 committed (LIVE_OPTIONS --barrel-lane on --lethal-quiet 1.0; live_options.py
+  --iw-press-head-decode, which live_play.py reads); live_siege.py evolved-Mortar Goblin fix (re-run 112 bodies = report).
+- Fork-credit WIP (stopped agent) PARKED: patch + cf_credit.py in scratchpad/gauntlet/L74/plan1026/wip_cf_credit/ (also
+  pod_backup_weekend/_staged_moves/cf_credit.py.wip_1026); pipeline/e1_eval.py, search_s0.py, rl_royale.py restored to HEAD.
+  Re-apply with `git apply` when the plan reaches the cf_credit review (days 8-22); its 6 test failures are unsorted.
+- Days 0-3 as foreman tickets (none dispatched; .foreman/ledger.md not written this run): A1 fin16 build + A/B + register
+  fin16-linux (pod 32657); A2 crforge pin + G0 random-draw census + G1 seed recovery (pod 33920); B unified decide() + identity
+  tests + SIM config from LIVE_OPTIONS (laptop, frontier seat, blind verifier: live path); C opponent scorecard A/B/D on old
+  baselines + THRESHOLDS.json (pre-register before any training).
+- Traps found: (1) brT10_s121 / s122 / brT05_s123 "DRIFT FAIL" = startup crash, shaping_critic_scale 3.5 < 3.7 bound (config
+  bug; never trained). (2) test_ability_live.py::test_rule_and_never_are_identical_to_pre FAILS against PRE 8c70811: adb tap
+  commands identical, only newer log fields (ui_guard, deploy_end, afford_ticks ...) differ = stale reference, fix the strip()
+  in ticket B; the file also has an uncommitted freeze-features test (passes). (3) ~15k dirty files in the tree: stage explicit
+  paths only.
+- Owner decisions applied as plan defaults: 2 (CLXIII data config), 6 (pods). Still pending the owner's go: 4 battle-log API
+  polling, 5 device checks, 7 TV harvesting (at D1).
+
 ## 2026-10-26 ~12:45 EDT -- PLAN APPROVED: engine + human-like opponents + new reward / training; all pod work stopped
 
 - READ scratchpad/gauntlet/L74/plan1026/PLAN.md (the approved plan; design reports beside it). Owner rules inside it:
