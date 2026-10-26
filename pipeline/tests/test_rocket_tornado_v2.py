@@ -308,3 +308,22 @@ def test_lone_combo_mode_keeps_the_combo_but_never_forces_the_lone_rocket():
     assert sim_run(o, board(*pups(), elixir=9.5)).get('why') not in ('rocket_value', 'rocket_tornado')
     d = combo_pilot(o, board(*pups(), elixir=9.5), []).decide(live_frame(0, 1092, 1092))
     assert d.get('why') not in ('rocket_value', 'rocket_tornado')
+
+
+def test_lone_margin_mode_plays_the_tornado_only_where_it_adds_at_least_its_cost():
+    o = {m: DecisionOptions(**ONLY, **V2, rocket_tornado_lone=m) for m in ('combo', 'margin')}
+
+    def pick(m, *units):
+        bs = board(*units, elixir=9.5)
+        bs.my_hand = HAND_IDS
+        return rocket_tornado_choice(o[m], DECK, [True] * 8, bs, 'lattice')
+
+    split = split_pups()                                             # lone 3.5, pull 7.0: +3.5 >= 3 -> the combo in both modes
+    assert pick('combo', *split)[5] in ('rocket', 'tornado') and pick('margin', *split)[:4] == pick('combo', *split)[:4]
+    near = pups(6, x=4.0, y=22.0) + [unit('knight', 8.5, 22.0)]      # a lone blast already holds the 7: combo plays, margin not
+    assert pick('combo', *near)[5] in ('rocket', 'tornado') and pick('margin', *near) is None
+    thin = [unit('lava_pups', 9 + .3 * i, 22.0) for i in range(5)] + [unit('lava_pups', 13.5, 22.0)]   # lone 5.83, pull 7.0
+    assert pick('combo', *thin) is not None and pick('margin', *thin) is None                         # +1.17 < the Tornado's 3
+    assert sim_run(o['margin'], board(*near, elixir=9.5)).get('why') not in ('rocket_value', 'rocket_tornado')   # the model plays
+    with pytest.raises(ValueError):
+        DecisionOptions(**ONLY, rocket_tornado_lone='margins')

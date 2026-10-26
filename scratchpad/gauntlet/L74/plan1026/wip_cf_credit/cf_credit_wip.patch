@@ -1,0 +1,421 @@
+diff --git a/pipeline/e1_eval.py b/pipeline/e1_eval.py
+index 9c9bd80..c301bc3 100644
+--- a/pipeline/e1_eval.py
++++ b/pipeline/e1_eval.py
+@@ -2197,6 +2197,9 @@ class SelfPlayMatch:
+             r["crown"] = self.crown.result()
+         if getattr(self, "habit", None) is not None:          # habit_track: habit_terms.HabitTracker.result
+             r["habit"] = self.habit.result(self.learner)
++        if getattr(self, "cf_state", None) is not None:       # rl_royale cf_credit: the fork samples (cf_credit.Runner)
++            from pipeline.cf_credit import match_record
++            r["cf"] = match_record(self.cf_state)
+         return r
+ 
+ 
+@@ -2242,6 +2245,11 @@ def run_selfplay_batch(make_env, learner, opponents: dict, jobs, cfg: dict, n: i
+                 continue
+             live.append(m)
+ 
++    # rl_royale cf_credit (opt-in; no cfg["cf"] = None = this loop exactly as before): SIM forks at selected learner decisions
++    cf = None
++    if cfg.get("cf"):
++        from pipeline.cf_credit import Runner
++        cf = Runner(make_env, cfg["cf"])
+     fill()
+     while live:
+         due: list[SelfPlaySide] = []
+@@ -2256,37 +2264,47 @@ def run_selfplay_batch(make_env, learner, opponents: dict, jobs, cfg: dict, n: i
+         fill()
+         for s in due:
+             s.prepare()
+-        groups: dict = {}
+-        for s in due:
+-            # A caller may reuse a policy object for both sides; style decode
+-            # must still never enter the learner's group.
+-            key = (id(s.model), "opponent_style") if "_opp_style" in s.cfg else id(s.model)
+-            groups.setdefault(key, []).append(s)
+-        todo = []
+-        for sides in groups.values():
+-            model, c = sides[0].model, sides[0].cfg
+-            if isinstance(model, GenPolicy):
+-                enc, heads, p, hand = model.forward_batch([s.gen_row(model) for s in sides], c["device"])
+-            else:
+-                enc, heads, p, hand = model_forward_batch(model, *zip(*[s._obs for s in sides]), device=c["device"])
+-            pre = [s.pre(hand[r]) for r, s in enumerate(sides)]
+-            allowed = np.stack([x[1] for x in pre])
+-            stalled = np.array([x[2] for x in pre], dtype=bool)
+-            from .decision_options import match_kwargs
+-            if "_opp_style" in c:
+-                from pipeline.adaptive_opponents import styled_decisions
+-                decisions = styled_decisions(model, enc, heads, p, allowed, stalled, sides)
+-            elif c["policy"] == "live":                     # (rl_royale C1: posture_live; no posture = unchanged)
+-                ability_decide(sides, enc, c)               # rl_royale ability_head, greedy (no cfg key = no-op)
+-                tau, kw = posture_live(sides, enc, c, c["tau"], match_kwargs(sides))
+-                decisions = live_decide_batch(model, enc, heads, p, allowed, stalled, tau=tau, device=c["device"], **kw)
+-            else:
+-                decisions = sample_decide_batch(model, enc, heads, p, allowed, stalled, sides, c)
+-            todo += [(s, p[r], decisions[r]) for r, s in enumerate(sides)]
++        todo = selfplay_decide(due)
++        if cf is not None:                                  # forks only: the real sides / decisions are never touched
++            cf.hook(live, todo)
+         for s, pr, d in todo:
+             s.apply(pr, d)
+ 
+ 
++def selfplay_decide(due) -> list:
++    """``run_selfplay_batch``'s per-round decide on PREPARED sides: ONE forward + one batched decide per policy group
++    (the learner, each frozen / styled opponent), each side on its own cfg and RNGs. -> [(side, p_gate, decision)] in
++    group order (the apply order). cf_credit's fork rollouts call it on their fork sides."""
++    groups: dict = {}
++    for s in due:
++        # A caller may reuse a policy object for both sides; style decode
++        # must still never enter the learner's group.
++        key = (id(s.model), "opponent_style") if "_opp_style" in s.cfg else id(s.model)
++        groups.setdefault(key, []).append(s)
++    todo = []
++    for sides in groups.values():
++        model, c = sides[0].model, sides[0].cfg
++        if isinstance(model, GenPolicy):
++            enc, heads, p, hand = model.forward_batch([s.gen_row(model) for s in sides], c["device"])
++        else:
++            enc, heads, p, hand = model_forward_batch(model, *zip(*[s._obs for s in sides]), device=c["device"])
++        pre = [s.pre(hand[r]) for r, s in enumerate(sides)]
++        allowed = np.stack([x[1] for x in pre])
++        stalled = np.array([x[2] for x in pre], dtype=bool)
++        from .decision_options import match_kwargs
++        if "_opp_style" in c:
++            from pipeline.adaptive_opponents import styled_decisions
++            decisions = styled_decisions(model, enc, heads, p, allowed, stalled, sides)
++        elif c["policy"] == "live":                     # (rl_royale C1: posture_live; no posture = unchanged)
++            ability_decide(sides, enc, c)               # rl_royale ability_head, greedy (no cfg key = no-op)
++            tau, kw = posture_live(sides, enc, c, c["tau"], match_kwargs(sides))
++            decisions = live_decide_batch(model, enc, heads, p, allowed, stalled, tau=tau, device=c["device"], **kw)
++        else:
++            decisions = sample_decide_batch(model, enc, heads, p, allowed, stalled, sides, c)
++        todo += [(s, p[r], decisions[r]) for r, s in enumerate(sides)]
++    return todo
++
++
+ def run_liveness(env, entry: dict, cfg: dict) -> dict:
+     """The caller's own path (design 5.5): ``PoolV1Env(port).reset(entry)`` + 10 ticks + observe()."""
+     t0 = time.perf_counter()
+diff --git a/pipeline/rl_royale.py b/pipeline/rl_royale.py
+index 43ff38e..3f28a41 100644
+--- a/pipeline/rl_royale.py
++++ b/pipeline/rl_royale.py
+@@ -170,6 +170,7 @@ from pipeline import reward_terms as RT
+ from pipeline import spell_value as SV                                          # noqa: E402
+ from pipeline import habit_terms as HT                                          # noqa: E402
+ from pipeline import adaptive_opponents as AO                                  # noqa: E402
++from pipeline import cf_credit as CF                                            # noqa: E402
+ from pipeline.model_v3 import hand_mask_from_sc                                 # noqa: E402
+ 
+ RUN_ROOT = REPO / "scratchpad" / "gauntlet" / "L68" / "rl"
+@@ -252,6 +253,8 @@ def actor_cfg(base: dict, kind: str, aid: int, dev: str) -> dict:
+         #                                                       W10 rocket_tower: "rocket_dmg" = the tracker measures Rockets)
+     if kind == "rollout" and base.get("habit_track"):         # L74 habit terms: the learner's board samples + row ticks
+         cfg["habit_track"] = cfg["record_tick"] = True
++    if kind == "rollout" and base.get("cf"):                  # cf_credit: SIM forks at selected learner decisions
++        cfg["cf"] = dict(base["cf"])
+     return cfg
+ 
+ 
+@@ -2006,7 +2009,7 @@ def _py(x):
+ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_loo",
+             shaping: Optional[dict] = None, gamma_tick: Optional[float] = None,
+             gae_terminal_gap: bool = False, spell: Optional[dict] = None,
+-            crown: Optional[dict] = None, habit: Optional[dict] = None) -> tuple[dict, dict]:
++            crown: Optional[dict] = None, habit: Optional[dict] = None, cf: Optional[dict] = None) -> tuple[dict, dict]:
+     """Rollout result records (each with ``traj`` = ``Match._traj_arrays``) -> numpy batch of the CONTRIBUTING rows
+     (gate sampled or card/cell played) with per-row A, per-match weight w, match id, and the stored log-probs.
+     ``advantage="gae"`` adds ``r_step`` (``terminal_rewards``, the UNSHAPED win/loss reward); A stays the LOO value
+@@ -2019,7 +2022,9 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
+     its rows (by the traj ``tick``) into r_step, ``phi`` = 0 when no shaping made one (the residual critic at the config's
+     scale), and the per-update monitors under ``st["spell"]``. ``crown`` (gae only; ``crown_cfg``'s dict, L74 W6): + each
+     result's ``reward_terms.row_terms`` on its kept rows (by the traj ``tick``) into r_step, the princess_redirect potential
+-    into ``phi`` (added to a shaping phi), ``phi`` = 0 otherwise, and the monitors under ``st["crown"]``."""
++    into ``phi`` (added to a shaping phi), ``phi`` = 0 otherwise, and the monitors under ``st["crown"]``.
++    ``cf`` (gae only; ``cf_credit.cf_cfg``'s dict): every result's cf alternatives become extra rows APPENDED after the real
++    rows (``cf_append``; ``B["cf"]`` marks them), ``st`` stays the real rows' + ``st["cf"]``."""
+     if gae_terminal_gap:
+         if advantage != "gae" or gamma_tick is None:
+             raise ValueError("gae_terminal_gap true needs advantage gae AND gamma_tick (gae_gamma_unit tick)")
+@@ -2168,9 +2173,52 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
+         st["crown"] = RT.batch_stats([RT.match_summary(results[j]["crown"]) for j in use], [cr[j] for j in use])
+     if habit is not None:                                     # L74 habit monitors
+         st["habit"] = HT.batch_stats([hbr[j] for j in use])
++    if cf is not None:                                        # cf_credit: the alternative rows ride at the end
++        if advantage != "gae":
++            raise ValueError("cf_credit needs advantage gae")
++        st["cf"] = CF.batch_stats(results, cf_append(B, results, use, keep, W))
+     return B, st
+ 
+ 
++def cf_append(B: dict, results: list[dict], use: list, keep: list, W: list) -> int:
++    """cf_credit (in place): one row per cf alternative of every kept match, appended AFTER all real rows of ``B``: the
++    decision's own inputs (its traj row ``row``) with the alternative's action (played, slot, cell) and behaviour log-probs,
++    A = the raw DeltaQ (``gae_batch`` turns it into cf_w x clip(DeltaQ / sd, +-cf_clip)), the match's row weight, no reward
++    / discount / Phi / posture / press term; ``B["cf"]`` = False on the real rows, True on these. Every row-aligned key of B
++    must have a rule (a new batch key fails loudly here instead of riding along wrong). -> rows added."""
++    n = len(B["A"])
++    cfm = np.zeros(n, dtype=bool)
++    add: dict = {k: [] for k in B if not k.startswith("mem_tab_")}
++    for j in use:
++        t = results[j]["traj"]
++        for smp in (results[j].get("cf") or {}).get("samples", []):
++            di = int(smp["row"])
++            if di >= len(keep[j]) or not keep[j][di]:
++                continue                                      # (never: a trigger decision always samples its gate)
++            for a in smp["alts"]:
++                over = {"played": bool(a["play"]), "slot": int(a["slot"]), "cell": int(a["cell"]),
++                        "lp_gate": a["lp_gate"], "lp_card": a["lp_card"], "lp_cell": a["lp_cell"],
++                        "lp_old": a["lp_gate"] + a["lp_card"] + a["lp_cell"], "A": float(a["dq"]), "w": W[j][0],
++                        "match": j, "mem_row_tab": use.index(j), "r_step": 0.0, "gamma_row": 1.0, "phi": 0.0,
++                        "w_post": 0.0, "w_ab": 0.0, "ab_sampled": False, "ab_press": False, "ab_lp": 0.0,
++                        "posture_new": False, "posture_lp": 0.0}
++                if "mem_row_t" in add:
++                    over["mem_row_t"] = t["mem_t"][di]
++                for k in add:
++                    if k in over:
++                        add[k].append(over[k])
++                    elif k in t:
++                        add[k].append(t[k][di])
++                    else:
++                        raise ValueError(f"cf_credit: no rule for batch key {k!r} on an alternative row")
++    m = len(add["A"]) if add else 0
++    for k, v in add.items():
++        if m:
++            B[k] = np.concatenate([B[k], np.asarray(v, dtype=B[k].dtype).reshape((m,) + B[k].shape[1:])])
++    B["cf"] = np.concatenate([cfm, np.ones(m, dtype=bool)])
++    return m
++
++
+ def value_phi_rewards(raw, ticks, shaping: dict) -> dict:
+     """One match's lever-C shaping on its KEPT rows (time order): ``raw`` = the frozen net's P(win) - P(loss) per row,
+     Phi_t = w_value x ``reward_shaping.trailing_mean`` of raw over [tick_t - window_ticks, tick_t] (causal), then the
+@@ -2333,10 +2381,10 @@ def policy_terms(model, B: dict, idx, tau: float, T: float, value: bool = False,
+ 
+ 
+ @torch.no_grad()
+-def value_rows(model, B: dict, chunk: int = 512, ctx_head=None) -> torch.Tensor:
+-    """V(s) (``value_scalar``) of every row under ``model``, no grad: the encoder + value head only (+ ``ctx_head``
+-    on ``B["ctx"]`` under critic_ctx)."""
+-    N = len(B["A"])
++def value_rows(model, B: dict, chunk: int = 512, ctx_head=None, n: Optional[int] = None) -> torch.Tensor:
++    """V(s) (``value_scalar``) of every row (the first ``n``) under ``model``, no grad: the encoder + value head only (+
++    ``ctx_head`` on ``B["ctx"]`` under critic_ctx)."""
++    N = len(B["A"]) if n is None else int(n)
+     out = []
+     for s in range(0, N, chunk):
+         idx = torch.arange(s, min(s + chunk, N), device=B["A"].device)
+@@ -2432,17 +2480,22 @@ def gae_batch(model, B: dict, cfg: dict, ctx_head=None) -> dict:
+     ``ctx_head`` (critic_ctx; needs ``B["ctx"]``): v_net includes the ``CtxHead`` residual, and ``ctx_tank`` splits
+     the value loss / explained variance by the match's final tank flag (``ctx_tank_stats``)."""
+     c = adv_cfg(cfg)
+-    v = value_rows(model, B, ctx_head=ctx_head)
+-    gam = B["gamma_row"].cpu().numpy() if "gamma_row" in B else c["gae_gamma"]
+-    vn, m, r = v.cpu().numpy(), B["match"].cpu().numpy(), B["r_step"].cpu().numpy()
++    cfm = B["cf"].cpu().numpy() if "cf" in B else None        # cf_credit: GAE over the real rows only (they come first)
++    sl = slice(None) if cfm is None else slice(0, int((~cfm).sum()))
++    if cfm is not None and cfm[sl].any():
++        raise ValueError("cf_credit: alternative rows must come after every real row")
++    v = value_rows(model, B, ctx_head=ctx_head, n=sl.stop)    # (cf rows: V never used -- no value target -- so 0 below)
++    gam = B["gamma_row"].cpu().numpy()[sl] if "gamma_row" in B else c["gae_gamma"]
++    vn, m, r = v.cpu().numpy()[sl], B["match"].cpu().numpy()[sl], B["r_step"].cpu().numpy()[sl]
+     if "phi" not in B:
+         A, ret = gae(r, vn, m, gam, c["gae_lambda"])
+         st = {"adv_mean": float(A.mean()) if len(A) else None, "adv_std": float(A.std()) if len(A) else None,
+-              "ret_mean": float(ret.mean()) if len(ret) else None, "v_mean": float(v.mean()) if len(v) else None,
+-              "explained_var": explained_variance(v.cpu().numpy(), ret) if len(A) else None}
++              "ret_mean": float(ret.mean()) if len(ret) else None,
++              "v_mean": (float(v.mean()) if cfm is None else float(vn.mean())) if len(vn) else None,
++              "explained_var": explained_variance(vn, ret) if len(A) else None}
+         target = ret
+     else:
+-        phi, sc = B["phi"].cpu().numpy(), float(c["shaping_critic_scale"])
++        phi, sc = B["phi"].cpu().numpy()[sl], float(c["shaping_critic_scale"])
+         veff = phi + sc * vn
+         A, ret = gae(r, veff, m, gam, c["gae_lambda"])
+         a_r1, _ = gae(r, vn, m, gam, c["gae_lambda"])
+@@ -2460,7 +2513,17 @@ def gae_batch(model, B: dict, cfg: dict, ctx_head=None) -> dict:
+     if ctx_head is not None:
+         st["ctx_tank"] = ctx_tank_stats(vn if "phi" not in B else veff, ret, vn, target, B["ctx"].cpu().numpy(), m)
+     dev = B["A"].device
+-    B["A"] = torch.from_numpy((A - A.mean()) / (A.std() + 1e-8) if len(A) else A).to(dev)
++    An = (A - A.mean()) / (A.std() + 1e-8) if len(A) else A
++    if cfm is not None:                                       # cf_credit: DeltaQ in the real rows' advantage units
++        cc = CF.cf_cfg(cfg)
++        sd = float(A.std()) if len(A) > 1 else 1.0
++        dq = B["A"].cpu().numpy()[sl.stop:]                   # cf_append put the raw DeltaQ there
++        Ac = cc["cf_w"] * np.clip(dq / (sd + 1e-8), -cc["cf_clip"], cc["cf_clip"])
++        st["cf"] = {"rows": int(len(Ac)), "sd": sd, "A_abs_mean": float(np.abs(Ac).mean()) if len(Ac) else None,
++                    "clipped_share": float((np.abs(dq / (sd + 1e-8)) >= cc["cf_clip"]).mean()) if len(Ac) else None}
++        An, target = np.concatenate([An, Ac]), np.concatenate([target, np.zeros(len(Ac))])
++        v = torch.cat([v, v.new_zeros(len(Ac))])
++    B["A"] = torch.from_numpy(An).to(dev)
+     B["ret"] = torch.from_numpy(target).to(dev)
+     B["v_old"] = v
+     return st
+@@ -2527,9 +2590,12 @@ def ref_terms(ref, B: dict, tau: float, T: float, chunk: int = 512, T_gate: Opti
+         sel = gs & low
+         R["kl_lo_init"] = float(bern_kl(R["x"][sel], xi[sel]).mean()) if sel.any() else None
+         R["x"], R["low"] = torch.where(low, xi, R["x"]), low
+-    R["ent"] = {"gate": float(bern_ent(R["x"][gs]).mean()) if gs.any() else None,
+-                "card": float(cat_ent(R["card_lp"][played]).mean()) if played.any() else None,
+-                "cell": float(cat_ent(R["cell_lp"]).mean()) if len(R["cell_lp"]) else None}
++    ge, pe, ce = gs, played, R["cell_lp"]
++    if "cf" in B:                                             # cf_credit: the entropy baseline over the real rows only
++        ge, pe, ce = gs & ~B["cf"], played & ~B["cf"], ce[~B["cf"][played]]
++    R["ent"] = {"gate": float(bern_ent(R["x"][ge]).mean()) if ge.any() else None,
++                "card": float(cat_ent(R["card_lp"][pe]).mean()) if pe.any() else None,
++                "cell": float(cat_ent(ce).mean()) if len(ce) else None}
+     return R
+ 
+ 
+@@ -2562,6 +2628,12 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip:
+     pg = -torch.min(ratio * A, ratio.clamp(1 - clip, 1 + clip) * A)
+     l_pg = (w * pg).sum() * (n_total / len(idx))
+     gs, pl = B["gate_sampled"][idx], B["played"][idx]
++    cl = t["cell_lp"]
++    real = None
++    if "cf" in B:                                             # cf_credit alternative rows: L_pg (+ the ratio monitors) only --
++        real = ~B["cf"][idx]                                  # no KL, no entropy monitor, no value loss
++        cl = cl[real[pl]] if cl is not None else cl
++        gs, pl = gs & real, pl & real
+     zero = lp_new.new_zeros(())
+     kl_gi = None
+     if "low" in R:                                            # F6': low rows -> their own term, high rows -> KL_gate
+@@ -2571,9 +2643,9 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip:
+         if lo_gs.any():
+             kl_gi = bern_kl(t["x"][lo_gs], R["x"][idx][lo_gs]).mean()
+     kl_g = bern_kl(t["x"][gs], R["x"][idx][gs]).mean() if gs.any() else zero
+-    gs = B["gate_sampled"][idx]                               # the entropy monitor below: every gate-sampled row
++    gs = B["gate_sampled"][idx] if real is None else B["gate_sampled"][idx] & real   # the entropy monitor below
+     kl_c = cat_kl(t["card_lp"][pl], R["card_lp"][idx][pl]).mean() if pl.any() else zero
+-    kl_x = cat_kl(t["cell_lp"], R["cell_lp"][R["play_pos"][idx[pl]]]).mean() if pl.any() else zero
++    kl_x = cat_kl(cl, R["cell_lp"][R["play_pos"][idx[pl]]]).mean() if pl.any() else zero
+     if "kl_heads" in R:                                       # K1: only the leashed heads' KL enters the loss
+         loss = l_pg + beta * sum({"gate": kl_g, "card": kl_c, "cell": kl_x}[h] for h in R["kl_heads"])
+     else:
+@@ -2614,7 +2686,8 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip:
+     if vf is not None:
+         v, v_old, ret = t["v"], B["v_old"][idx], B["ret"][idx]
+         v_clip = v_old + (v - v_old).clamp(-float(vf["clip"]), float(vf["clip"]))
+-        l_v = (w * 0.5 * torch.max((v - ret) ** 2, (v_clip - ret) ** 2)).sum() * (n_total / len(idx))
++        wv = w if real is None else w * real                  # cf_credit: the alternative rows carry no value target
++        l_v = (wv * 0.5 * torch.max((v - ret) ** 2, (v_clip - ret) ** 2)).sum() * (n_total / len(idx))
+         loss = (loss if vf["policy"] else 0.0) + float(vf["coef"]) * l_v
+     with torch.no_grad():
+         dev_ = (ratio - 1).abs()
+@@ -2624,7 +2697,7 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip:
+               "lp_maxdiff": {k: float((t[k] - B[k][idx]).abs().max()) for k in ("lp_gate", "lp_card", "lp_cell")},
+               "ent_gate": float(bern_ent(t["x"][gs]).mean()) if gs.any() else None,
+               "ent_card": float(cat_ent(t["card_lp"][pl]).mean()) if pl.any() else None,
+-              "ent_cell": float(cat_ent(t["cell_lp"]).mean()) if pl.any() else None}
++              "ent_cell": float(cat_ent(cl).mean()) if pl.any() else None}
+         if "low" in R:
+             st["kl_gate_imit_low"] = None if kl_gi is None else float(kl_gi)
+         if vf is not None:
+@@ -2891,6 +2964,7 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
+                         c["ability"] = {**c["ability"], "head": ahead}
+                     elif k == "rollout":
+                         c["ability"] = {"mode": "label", "n_feat": c["ability"]["n_feat"]}
++                        c.pop("cf", None)                     # the B6 warm start's rule rollouts: no cf forks
+                     else:
+                         del c["ability"]
+                 return c
+@@ -3329,7 +3403,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
+                               "tau_phase", "memory", "memory_aux", "memory_encoder_frozen",
+                               "memory_zero_empty") + OPP_TEMPO_KEYS
+                 and k not in POSTURE_KEYS and k not in ABILITY_KEYS and k not in SPELL_KEYS and k not in CROWN_KEYS
+-                and k not in HT.KEYS):
++                and k not in HT.KEYS and k not in CF.KEYS):
+             raise SystemExit(f"unknown config key {k!r}; keys: {sorted(cfg)}")
+         cfg[k] = yaml.safe_load(v)
+     if type(cfg["hero_abilities"]) is not bool:
+@@ -3366,6 +3440,7 @@ def load_config(path: Path, overrides: list[str], smoke: bool) -> dict:
+         raise SystemExit(f"remote_actors must be null or an endpoints file (one host:port per line), got {ra!r}")
+     tau_phase_cfg(cfg)                                        # 10-23: absent = no-op
+     memory_cfg(cfg)                                           # Plan A memory: absent / null = no memory = no-op
++    CF.cf_cfg(cfg)                                            # cf_credit: absent / null / false = no-op
+     rr = cfg.get("kl_ref_refresh_every")                     # W16 moving KL anchor: absent / null = the frozen init
+     if rr is not None and not (type(rr) is int and rr >= 1):
+         raise SystemExit(f"kl_ref_refresh_every must be null or an int >= 1, got {rr!r}")
+@@ -3476,6 +3551,7 @@ def config_sha(cfg: dict) -> str:
+         else:
+             cfg = {**cfg, wk: float(RT.DEFAULTS[wk] if cfg.get(wk) is None else cfg[wk])}
+     cfg = HT.canonical(cfg)                                  # L74 habit terms: off (absent / null / false) = historical
++    cfg = CF.canonical(cfg)                                  # cf_credit: off (absent / null / false) = historical
+     return hashlib.sha256(json.dumps(cfg, sort_keys=True, default=str).encode()).hexdigest()
+ 
+ 
+@@ -4291,12 +4367,14 @@ class Learner:
+         sv = spell_cfg(cfg)                                   # L74 combo (None = off: the call unchanged)
+         ct = crown_cfg(cfg)                                   # L74 W6 (None = off: the call unchanged)
+         hbt = HT.habit_cfg(cfg)                               # L74 habit terms (None = off: the call unchanged)
++        cfc = CF.cf_cfg(cfg)                                  # cf_credit (None = off: the call unchanged)
+         Bn, bst = collate(results, float(cfg["adv_clip"]), advantage=ac["advantage"], shaping=shp,
+                           **({"gamma_tick": ac["gae_gamma_tick"]} if tick_unit else {}),
+                           **({"gae_terminal_gap": True} if ac["gae_terminal_gap"] else {}),
+                           **({"spell": sv} if sv is not None else {}),
+                           **({"crown": ct} if ct is not None else {}),
+-                          **({"habit": hbt} if hbt is not None else {}))
++                          **({"habit": hbt} if hbt is not None else {}),
++                          **({"cf": cfc} if cfc is not None else {}))
+         gamma_row_mean = float(Bn["gamma_row"].mean()) if tick_unit and len(Bn["gamma_row"]) else None
+         ab_acc = ([sum(dict(r.get("ability_presses", {}).get(r["side"], {})).values()) for r in results]
+                   if getattr(self, "ability_head", None) is not None else None)   # B6: engine-accepted learner presses
+@@ -4594,6 +4672,13 @@ class Learner:
+                     f" gave {f(bst['crown'].get('gave_back_per_match'), '{:.2f}')} king_end "
+                     f"{f(bst['crown'].get('king_end_per_match'), '{:.2f}')} tor>king {f(bst['crown'].get('tornado_to_king_per_match'), '{:.2f}')}"
+                     if "crown" in bst else "")
++                 + (f" | cf trig {sum(bst['cf']['triggers'].values())} alts {bst['cf']['alts']} dq "
++                    f"{f(bst['cf']['dq_mean'], '{:+.4f}')} +{f(bst['cf']['pos_share'], '{:.2f}')} |A| "
++                    f"{f((gst or {}).get('cf', {}).get('A_abs_mean'), '{:.3f}')} fork {f(bst['cf']['wall_s_per_match'], '{:.1f}')}"
++                    f"s/m ({f(bst['cf']['wall_share'], '{:.2f}')} of match wall)"
++                    + "".join(f" [{k} {v['n']} {f(v['dq_mean'], '{:+.3f}')}]" for k, v in bst["cf"]["by_kind"].items())
++                    + (f" MISSING {bst['cf']['matches_missing']}" if bst["cf"]["matches_missing"] else "")
++                    if "cf" in bst else "")
+                  + (f" | habit r/m idle {f(bst['habit']['idle_r_mean'], '{:+.4f}')} trade "
+                     f"{f(bst['habit']['trade_r_mean'], '{:+.4f}')} thr/m {f(bst['habit']['thr_per_match'], '{:.2f}')} idle/m "
+                     f"{f(bst['habit']['idle_per_match'], '{:.2f}')} push/m {f(bst['habit']['push_per_match'], '{:.2f}')}"
+@@ -4722,6 +4807,11 @@ class Learner:
+             base["crown_track"] = "+".join(fl) if fl else True
+         if HT.habit_cfg(self.cfg) is not None:                # L74 habit terms -> actor_cfg habit_track (absent by default)
+             base["habit_track"] = True
++        cfc = CF.cf_cfg(self.cfg)
++        if cfc is not None:                                   # cf_credit -> actor_cfg cf (absent by default); the fork value
++            residual = (spell_cfg(self.cfg) is not None or ct is not None   # is in V_eff units: s x v_net under the
++                        or HT.habit_cfg(self.cfg) is not None)              # residual critic (Phi = 0, cf_cfg), else v_net
++            base["cf"] = {**cfc, "v_scale": float(adv_cfg(self.cfg)["shaping_critic_scale"]) if residual else 1.0}
+         return base
+ 
+     def start_actors(self) -> None:
+diff --git a/pipeline/search_s0.py b/pipeline/search_s0.py
+index 8feecab..9475c9d 100644
+--- a/pipeline/search_s0.py
++++ b/pipeline/search_s0.py
+@@ -417,9 +417,11 @@ def hab_plays(side) -> list:
+ # ------------------------------------------------------------------------------------------------------
+ # forking
+ # ------------------------------------------------------------------------------------------------------
+-def fork_into(m, env2, blob: bytes):
++def fork_into(m, env2, blob: bytes, fresh: tuple = ()):
+     """A copy of SelfPlayMatch ``m`` on the pooled env ``env2``: engine = ``blob`` (m.env.core.save_state()), env python
+-    fields and both sides' python state deep-copied; models / cfg / deck / modules shared. -> a SelfPlayMatch."""
++    fields and both sides' python state deep-copied; models / cfg / deck / modules shared. -> a SelfPlayMatch.
++    ``fresh``: side attributes started EMPTY in the fork instead of copied (rl_royale cf_credit: the record ``traj``,
++    which no decision reads and which grows to hundreds of rows)."""
+     env = m.env
+     for k, v in env.__dict__.items():
+         if k not in ("core", "eng"):
+@@ -433,7 +435,8 @@ def fork_into(m, env2, blob: bytes):
+     new = {}
+     for s in (m.learner, m.opp):
+         c = object.__new__(type(s))
+-        c.__dict__.update({k: (v if k in SHARED_SIDE else copy.deepcopy(v)) for k, v in s.__dict__.items()})
++        c.__dict__.update({k: (v if k in SHARED_SIDE else type(v)() if k in fresh else copy.deepcopy(v))
++                           for k, v in s.__dict__.items()})
+         c.env = env2
+         new[id(s)] = c
+     f.learner, f.opp = new[id(m.learner)], new[id(m.opp)]
