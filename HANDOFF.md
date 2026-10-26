@@ -1,3 +1,10 @@
+## 2026-10-26 ~14:25 EDT -- ACCOUNT SWITCH: start from scratchpad/gauntlet/L74/plan1026/STATUS.md
+
+- Owner is moving to the other account to work the approved plan. STATUS.md = current state, decisions, device-check facts,
+  next tickets (days 0-3 still wait for the owner's go), parked work and traps. PLAN.md = the approved plan.
+- Running right now: LIVE icebow Ranked CLXIII (since 14:14, keep the Mark fixed) + battle-log poller own_poll.sh
+  (every 15 min). Pods 32657 + 33920 kept idle.
+
 ## 2026-10-26 14:15 EDT -- LIVE ON (owner request): icebow Ranked, CLXIII NOLEAK = the plan's fixed live data config
 
 - Started by me on the owner's request (start_live.sh icebow --no-fast-plays --ranked); main account verified (towers 4858);

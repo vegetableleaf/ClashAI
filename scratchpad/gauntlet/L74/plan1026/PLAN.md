@@ -473,7 +473,7 @@ goal after that; I won't put a date on it.
 3. Memory notes for the owner's 10-26 plan rulings: the no-discard rule, no KL leash on our model, a non-win-only
    reward, macros, barrel_lane kept. Update `iterate-dont-abandon.md` rather than duplicating it.
 
-## Owner decisions (defaults apply on approval unless you say otherwise)
+## Owner decisions (RESOLVED 10-26 -- see STATUS.md: 4 polling running, 5 device checks done, 7 TV harvesting approved)
 1. The two "99.9%" definitions above (engine SME lower bound; opponent coverage H). Default: as written.
 2. Live during the build: revert CKPT_OVERRIDE to CLXIII and run it as the fixed data config; you start and stop it.
    Default: yes. CLXIV stays registered.
