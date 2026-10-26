@@ -1,3 +1,10 @@
+## 2026-10-26 14:15 EDT -- LIVE ON (owner request): icebow Ranked, CLXIII NOLEAK = the plan's fixed live data config
+
+- Started by me on the owner's request (start_live.sh icebow --no-fast-plays --ranked); main account verified (towers 4858);
+  supervisor start 14:14:37, first match log live_play_20261026_141505.jsonl. LIVE_OPTIONS unchanged (incl. barrel_lane,
+  lethal_quiet). own_poll.sh collects each match's battle-log entry. Keep the Mark fixed (no checkpoint switches) so the
+  live blocks stay clean; stop: bash scratchpad/gauntlet/L70/live/stop_live.sh.
+
 ## 2026-10-26 ~14:10 EDT -- battle-log polling RUNNING (owner API key; tag #20Q0UV0GPQ)
 
 - Owner made a new API key (allows the laptop IP 96.237.100.236 + RoyaleAPI proxy 45.79.218.79), saved at ~/.cr_api/key
