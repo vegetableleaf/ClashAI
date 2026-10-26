@@ -25,7 +25,8 @@ fetch() {   # $1 port $2 run $3 tree -> copies into $B/$2; 0 = ok
   local p=$1 a=$2 t=$3 o=$B/$2; mkdir -p $o
   sshp $p "cat /workspace/abl/res_$a.txt 2>/dev/null" > $o/res.txt
   sshp $p "cd /workspace/exploit/drift/$a && tar cf - . 2>/dev/null" > $o/drift.tar
-  for f in /workspace/$t/icebow/data/bench/rl_royale/rlarm_$a/rlarm_${a}_u0100.pt /workspace/exploit/ckpt/rlarm_${a}_u0100_grafted.pt; do
+  local ck; ck=$(grep " CKPT " $o/res.txt | awk '{print $3}')    # gate_only.sh: an earlier checkpoint (model selection)
+  for f in /workspace/$t/icebow/data/bench/rl_royale/rlarm_$a/rlarm_${a}_u0100.pt /workspace/exploit/ckpt/rlarm_${a}_u0100_grafted.pt $ck; do
     sshp $p "[ -f $f ]" || continue
     sshp $p "cat $f" > $o/$(basename $f)
     [ "$(sha256sum $o/$(basename $f) | sed 's/ .*//')" = "$(sshp $p "sha256sum $f" | sed 's/ .*//')" ] || { log "$a: sha mismatch $(basename $f)"; return 1; }
@@ -67,7 +68,7 @@ if [ -z "$best" ]; then
   post "[ClashAI] Night 10-25 memory arms: NO candidate passed (drift + gate vs CLXIII CI low > 0 + memory used). Live unchanged (CLXIII NOLEAK). Summary in $LOG."
   log "no candidate"; exit 1; fi
 a=$best; f=$B/$a/res.txt
-G=$B/$a/rlarm_${a}_u0100_grafted.pt; SHA=$(grep " CKPT " $f | awk '{print $4}')
+G=$B/$a/$(basename "$(grep " CKPT " $f | awk '{print $3}')"); SHA=$(grep " CKPT " $f | awk '{print $4}')
 [ -f $G ] && [ "$(sha256sum $G | sed 's/ .*//')" = "$SHA" ] || { log "$a: local grafted ckpt missing / sha mismatch"; post ":rotating_light: night_decide: $a checkpoint missing; live unchanged."; exit 2; }
 CK=icebow/data/models/ICEBOW/ICEBOW_Mark_CLXIV_ADAPTIVE.pt
 cp -p $G $CK

@@ -216,3 +216,11 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
 - Backup arm mem_e4_s107 on 33458 = mem_e_s107 (leak .12) + E4 (rdef_e4 u0020) in the exploiter pool (share .15, T .1), ONE
   change; mem_e_s108 (flagged +8.0 s, weakest weight) stopped for it (records in night1025/mem_e_s108). Smoke running.
   night_decide restarted on mem_e_s107 / mem_l_s106 / mem_e_s109 (deadline 11:00Z); the backup is decided separately.
+- 03:52Z mem_l_s106 DRIFT FAIL u50 -> pod 33015 copied + stopped. mem_e4_s107 (backup) launched 03:20Z on 33458 (u1 OK).
+- mem_e_s107 drift: u50 CLEAN (win 0.743 +0.3 [-4.7, +5.4], full 12.7 s vs 13.5, first play 12.2 s) but u75 FLAG (win 0.709
+  -3.0, full 24.1 s +10.6 [+6.3, +14.9], first play 27.2 s, plays / min -0.37): the arms drift into the opening wait as
+  training continues. mem_e_s109 u50: FAIL=0 (first play +5.4 s flagged, not a gate metric).
+- MODEL SELECTION 04:5xZ: mem_e_s107 training stopped at u80; its CLEAN u50 checkpoint (grafted c5be96a6) is being gated
+  (gate_only.sh: 3,840 games vs CLXIII + memory ablation) on 33184 -> res_mem_e_s107u50. night_decide restarted on
+  mem_e_s107u50 + mem_e_s109 (fetch now takes the checkpoint the res names). Note: an own-command kill pattern
+  ("ev/mem_e_s107_u0100") killed my ssh shell once (pkill self-match trap); no harm (chain + trainer were already down).
