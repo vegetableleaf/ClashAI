@@ -234,6 +234,10 @@ class GenPilot(FollowUpPlanner, LegacyGenPilot):
         b, info = self.row(frame)
         lookahead = ({'public_lookahead_counts': info['public_lookahead_counts']}
                      if 'public_lookahead_counts' in info else {})
+        if "mem_summary" in b:                           # memory v2 (S1c): the frozen lock head's P(lock), logged only
+            from .match_memory import S, S1C_FIELDS, S_V2   # (live_gen.decide does the same; this path had dropped it)
+            if b["mem_summary"].shape[-1] == S_V2:
+                lookahead["xb_lock_p"] = round(float(b["mem_summary"][0, S + S1C_FIELDS.index("xb_lock_p")]), 4)
         out = self.model(b)
         if getattr(self, 'ability', None) is not None:   # live_play --iw-press head (B6): this decision's trunk g
             self.last_g = (int(frame['game_tick']), out['g'])
