@@ -258,3 +258,16 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
   match (tower 0.20), combos 0.023, X-Bow lock 0.514, ADAPT next X-Bow <= 30 s after a FAILED one 0.302 vs after a LOCKED one
   0.225 (CLXIII repeats more after failures), X-Bows / min 1.65 -> 0.85 after the first failure.
 - live_gen_v2 now logs xb_lock_p (the v2 path dropped it); live restarted between matches to pick it up (play unchanged).
+- 10-26 ~10:00-10:30 EDT owner: CLXIV live never Rocket-cycles / barely Rockets on defence (measured 4 matches: 0.25 Rockets /
+  match, 0 tower Rockets; CLXIII 301 matches 0.31 / 0.20); SIM training of the branches: rockets 0.26 / match, rocket_cycle
+  reward 0.006 / match (dead). Rocket package (rocket_cycle_w 2-3 + spell_value) started 13:59Z, then a generic wincon
+  multiplier (14:01Z) -- owner: the multiplier pays Rocketing a lone Giant / Golem -> PAUSED, reverted (98edb8e); the three pods
+  back on T_gate-only seeds brT10_s121 (33920), brT10_s122 (33458), brT05_s123 (33411); brT10_s107 (32657) continues.
+- T_gate fix WORKS on the leak (a): brT10_s107 u25 full 4.7 s vs 12.7 (u0), first play 8.6 vs 12.2; brT10_s111 u25 7.6 s / 9.0 s
+  (flags: threat idle +3.9 pp, threat ignored +3.6 pp). Win -4.3 / -3.3 pp at u25 (n.s.).
+- SIM Rocket use in eval rows (rocket_rows.py): CLXIII gate E4 0.344 / match (2x+OT 0.278); CLXIV-base u0 0.467; brT10_s107 u25
+  0.552; pros ~1.6. Deploy-time Rocket bar wired into night_decide (ROCKET_BAR env), not a training reward.
+- OWNER APPROVED the non-exploitable design: (1) counterfactual SIM-fork credit (ROCKET and SIEGE triggers; alt vs actual
+  action, critic value difference as the alt's advantage) -- build agent running; (2) measure SIM vs live OT chip-race frequency
+  + Mortar defence live / pro / SIM -- measurement agent running. Owner also: Mortar defence must be fixed; top-1,000 Ranked aim;
+  competent successor by 10-27 morning; never stop at a failure.

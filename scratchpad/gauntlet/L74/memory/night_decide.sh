@@ -63,7 +63,13 @@ for pa in $LIST; do a=${pa#*:}; f=$B/$a/res.txt; [ -f $f ] || f=$D/res_$a.txt
   log "$a: $(grep -oE 'DRIFT [A-Z]*' $f) | $(grep 'GATE' $f | sed 's/^GATE //' | tr '\n' ' ') | ablation real-empty ${abl:-none}"
   [ -n "$pooled" ] && [ -n "$abl" ] || continue
   d=${pooled% *}; lo=${pooled#* }
-  if grep -q "GATE PASS" $f && awk "BEGIN{exit !($abl > 0 && $lo > 0 && $d > $bd)}"; then best=$a; bd=$d; fi
+  rk=1; if [ -n "${ROCKET_BAR:-}" ]; then              # owner 10-26: a candidate must USE Rocket (gate rows, both suites)
+    p=$(echo " $LIST " | grep -oE "[0-9]+:$a " | cut -d: -f1)
+    R=$(sshp $p "/workspace/venvf15/bin/python /workspace/abl/rocket_rows.py '/workspace/pushcal/ev/g48m_${a}_*_e4/*/D3/matches.jsonl' '/workspace/pushcal/ev/g48m_${a}_*_cal/*/D3/matches.jsonl' '/workspace/pushcal/ev/g48m_${a}_e4/*/D3/matches.jsonl' '/workspace/pushcal/ev/g48m_${a}_cal/*/D3/matches.jsonl'" | tail -1)
+    log "$a: $R (bar $ROCKET_BAR)"; echo "$R" >> $f
+    rk=$(echo "$R" | sed -E 's/.*per_match=([0-9.]+).*/\1/'); rk=$(awk "BEGIN{print ($rk >= $ROCKET_BAR)}")
+  fi
+  if grep -q "GATE PASS" $f && [ "$rk" = 1 ] && awk "BEGIN{exit !($abl > 0 && $lo > 0 && $d > $bd)}"; then best=$a; bd=$d; fi
 done
 if [ -z "$best" ]; then
   post "[ClashAI] Night 10-25 memory arms: NO candidate passed (drift + gate vs CLXIII CI low > 0 + memory used). Live unchanged (CLXIII NOLEAK). Summary in $LOG."
