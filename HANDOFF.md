@@ -1,3 +1,12 @@
+## 2026-10-26 ~14:10 EDT -- battle-log polling RUNNING (owner API key; tag #20Q0UV0GPQ)
+
+- Owner made a new API key (allows the laptop IP 96.237.100.236 + RoyaleAPI proxy 45.79.218.79), saved at ~/.cr_api/key
+  (outside the repo; never commit or print it). Direct and proxy self-tests OK.
+- `scratchpad/gauntlet/L74/crapi/own_poll.sh` runs in the background (nohup): `crapi.py own --tag 20Q0UV0GPQ` every 15 min,
+  proxy fallback -> data/own_battlelog.jsonl (git-ignored; first poll 34 battles, 10-08 .. 10-26; newest = the device-check
+  match vs 902b #Y2PR8YLG9). Log data/own_poll.out. Stop: touch data/OWN_POLL_STOP. After a laptop reboot, restart it.
+- Days 0-3 of plan1026 still wait for the owner's go.
+
 ## 2026-10-26 ~13:25 EDT -- owner approved decisions 4 / 5 / 7; device checks DONE; battle-log polling blocked on an API key
 
 - Owner: poll the battle log after every match; device checks with the model playing; TV Royale harvesting OK. Days 0-3 of
