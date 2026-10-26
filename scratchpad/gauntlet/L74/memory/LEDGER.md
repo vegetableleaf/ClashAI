@@ -271,3 +271,8 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
   action, critic value difference as the alt's advantage) -- build agent running; (2) measure SIM vs live OT chip-race frequency
   + Mortar defence live / pro / SIM -- measurement agent running. Owner also: Mortar defence must be fixed; top-1,000 Ranked aim;
   competent successor by 10-27 morning; never stop at a failure.
+- 10-26 10:20 EDT owner STOPPED live (CLXIV): "cannot watch this anymore". CLXIV live record (11 matches, live_watch.py): win 3 / 11
+  = 0.273 [0, 0.545]; full 0.4 s / match (no leak live); first play 6.0 s; Rockets 0.36 / match (tower 0.27); X-Bow lock 0.514;
+  ADAPT next X-Bow <= 30 s after a FAILED one 0.389 (7 / 18) vs after a LOCKED one 0.105 (2 / 19): it doubles down after failures
+  (c: the memory does not adapt the right way). CKPT_OVERRIDE left on CLXIV (no auto-revert; offered).
+  Next candidates must show the reverse adaptation (fork credit's alternatives) before any live start.
