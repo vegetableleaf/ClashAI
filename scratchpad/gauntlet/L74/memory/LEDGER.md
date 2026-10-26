@@ -276,3 +276,24 @@ plus a stronger denier (W18 R4, live-Ranked X-Bow starts) for the shut-out tail.
   ADAPT next X-Bow <= 30 s after a FAILED one 0.389 (7 / 18) vs after a LOCKED one 0.105 (2 / 19): it doubles down after failures
   (c: the memory does not adapt the right way). CKPT_OVERRIDE left on CLXIV (no auto-revert; offered).
   Next candidates must show the reverse adaptation (fork credit's alternatives) before any live start.
+
+## 10-26 ~12:45 EDT -- owner: STOP all pod work, plan first. PLAN APPROVED (scratchpad/gauntlet/L74/plan1026/PLAN.md)
+- Owner mandate: >99.9% engine (game files + replays + live logs), human-like per-deck opponents, a reward / training design
+  built from the whole history; no pods / training / experiments / live until a plan exists. Plan approved after 4 owner
+  revisions: (1) reward NOT win-only (R_win + fitted zero-sum R_exchange + fork credit); (2) barrel_lane kept for successors
+  (reader issue); (3) NO KL leash on our model (drift handled by removing its causes + noise cuts + scenario starts + per-update
+  step limit + detect / select / branch); (4) macro strategies (sneaky lock, Rocket cycling in 2x / OT ...) via a mined macro
+  library used as fork alternatives; (5) NO-DISCARD rule: a failing core part is iterated, never dropped, unless the owner says.
+- Arms ended: brT10_s121 (33920), brT10_s122 (33458), brT05_s123 (33411): "DRIFT FAIL" = training CRASHED at start (a):
+  SystemExit "shaping_critic_scale 3.5 < 3.7000 = the return bound + habit_terms.bound" -- a config bug, not a drift verdict;
+  they never trained. brT10_s107 (32657) halted by the owner order during its u75 drift eval: u50 drift PASS (win 0.734 vs
+  0.743, -0.008 [-0.061, +0.043]; flags elixir at play +0.11, first play 14.2 vs 12.2 s, Tornado / min -0.056; full 13.6 vs
+  12.7 s). Records: C:/Users/benpe/pod_backup_weekend/night1025/{brT10_s107,brT10_s121,brT10_s122,brT05_s123}/ (s107 u75
+  grafted sha 132f878f8e2cbd7f).
+- Fork-credit build agent stopped (owner order). Uncommitted edits left for review: pipeline/e1_eval.py, pipeline/search_s0.py,
+  pipeline/cf_credit.py (state: plan1026/cf_credit_build_state.md; it was sorting 6 test failures, pre-existing vs its own).
+- Pods: 33458 + 33411 STOPPED (runpodctl stop; plan decision 6 default); 32657 + 33920 kept, idle.
+- Live: CKPT_OVERRIDE wired back to CLXIII NOLEAK (8d328a43bf09fb7e; deploy_ckpt.sh wire, offline --check PASS; not started;
+  plan decision 2: CLXIII = the fixed live data config). Revert file CKPT_OVERRIDE.pre_20261026_1243 (-> CLXIV).
+- 10-26 measurements written up: memory/measure1026/REPORT.md (OT chip-race conversion gap; Mortar live / pro / SIM; live_siege.py
+  evolved-Mortar Goblin bug still open).

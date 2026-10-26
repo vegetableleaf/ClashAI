@@ -1,3 +1,21 @@
+## 2026-10-26 ~12:45 EDT -- PLAN APPROVED: engine + human-like opponents + new reward / training; all pod work stopped
+
+- READ scratchpad/gauntlet/L74/plan1026/PLAN.md (the approved plan; design reports beside it). Owner rules inside it:
+  no-discard (a failing core part is iterated, never dropped), NO KL leash on our model, reward = R_win + fitted zero-sum
+  R_exchange + counterfactual fork credit (incl. mined macros: sneaky lock, Rocket cycling ...), barrel_lane kept for successors.
+- Pillars: (1) engine: fin16 interim, crforge pilot -> D1 day 8 (crown-sequence +0.15, SME 45/50, cost <= 1.5 core-s), integrate
+  -> D2 ~day 22, certificate = SME lower bound >= 0.999 (0 fails in 2,996 seeded matches); (2) opponents: one deck / band
+  conditioned imitation network on HF 252k replays re-driven on the D1 engine, timing head, scorecard A-D, coverage H >= 0.999;
+  (3) one decide() for rollouts / forks / SIM eval / live, R_exchange gated by a farm audit, fork credit, drift control
+  without a leash. No successor training before D2 + opponents usable (~6-7 weeks).
+- Live: OFF. CKPT_OVERRIDE wired back to CLXIII NOLEAK (8d328a43) = the fixed live data config; the owner starts live.
+- Pods: 32657 + 33920 kept idle; 33458 + 33411 stopped. brT10_s121 / s122 / brT05_s123 never trained (config crash:
+  shaping_critic_scale 3.5 < 3.7 bound); brT10_s107 halted at u75 (u50 drift PASS). Records pod_backup_weekend/night1025/.
+- Uncommitted fork-credit edits (pipeline/e1_eval.py, search_s0.py, cf_credit.py) await review per the plan. Ledger:
+  L74/memory/LEDGER.md; 10-26 Mortar / OT write-up: L74/memory/measure1026/REPORT.md.
+- NEXT (plan days 0-3): unified decide() + identity tests (laptop); fin16 build + crforge on 32657, G0 / G1 seed recovery;
+  opponent scorecard + THRESHOLDS.json; owner decisions 4 (battle-log polling) and 5 (device checks) default yes.
+
 ## 2026-10-26 ~04:30 EDT -- MORNING SUMMARY: no memory successor passed; live UNCHANGED (CLXIII NOLEAK + lethal_quiet + barrel_lane)
 
 - RESULT: no arm passed drift + gate. Best = mem_e_s107 u50 (memory v2 + aux encoder + rocket_cycle + king_redirect + X-Bow cost,

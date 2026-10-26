@@ -193,3 +193,7 @@ exploit/repo, pushcal scripts + W18 opps), venvf15.tgz (21,390 files: torch 2.11
 (all branch parents), w18opp/, latest ckpts of r_s95 u75, t_s100 / t_s103 u0. Eval rows NOT kept (regenerable baselines).
 Stopped (runpodctl stop, not terminated): 32525 a7be2cjt3mcn4f, 33401 v7yjl9cg1scsn0, 33572 ervh9h3jhmlq19, 33591
 mu1fz7ut35l75v, 33906 vt8n4xspb852lx (the double, never used). Runs cut: r_s95 (u~95), t_s100 / t_s103 (u<25).
+
+10-26 ~12:45 EDT: owner stopped all pod work; plan approved (L74/plan1026/PLAN.md). brT10_s121 / brT10_s122 / brT05_s123 never
+trained (config crash: shaping_critic_scale 3.5 < 3.7 bound); brT10_s107 halted at its u75 drift eval (u50 PASS, win -0.008
+[-0.061, +0.043], first play +2.0 s FLAG). Records in pod_backup_weekend/night1025/. Next experiments follow the plan only.
