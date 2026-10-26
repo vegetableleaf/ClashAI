@@ -27,7 +27,13 @@ DEFAULTS = {"spell_value_w": 0.02,           # reward per elixir (win = +1): 6 e
             "spell_value_tower_bonus": 0.5,  # troop value x (1 + this) when a princess is in the blast with >= tower_min elixir
             "spell_value_tower_min": 7.0,    # ... of troops (elixir): above every lone card the eval rows caught (max 6.0)
             "spell_value_event_cap": 0.3,    # |one Rocket's reward| <= this
-            "spell_value_match_cap": 0.5}    # |a match's summed spell reward| <= this (rl_royale's critic scale needs 1 + it)
+            "spell_value_match_cap": 0.5,    # |a match's summed spell reward| <= this (rl_royale's critic scale needs 1 + it)
+            "spell_value_wincon_mult": 1.0}  # owner 10-26: a Rocket on MY half valuing a WIN CONDITION (catalog
+#                                              target_only_buildings: Ram Rider, Balloon, Royal Hogs, Hog, Giant...) counts that
+#                                              body's elixir x this -- the tower it would have taken is worth more than its
+#                                              cost, so a -1 elixir defensive Rocket (6 on a 5-elixir wincon) can still pay.
+#                                              1.0 = the old reward exactly.
+WINCON_MY_HALF_Y = 15.0      # board tiles, my frame (my half y >= 16, the bridge 1 tile in)
 # ``spell_value_lone: on`` (owner 10-18: "only rocket is used when it suffices"; absent / false = the 6 : 3 cost split, same hash):
 # a combo's Tornado row earns w x ((V_combo - V_lone) - cost_w x Tornado cost) -- V_lone = what a LONE Rocket at its best blast
 # point held on the same bodies where they stood at the Tornado's cast (lone_value) -- and -w x cost_w x Tornado cost when
@@ -62,6 +68,26 @@ def body_value(unit: str, card: str) -> float:
         if key in t:
             return float(t[key][0])
     return 0.0
+
+
+@lru_cache(maxsize=1)
+def _wincons() -> frozenset:
+    """Normalised names (lower case, letters only; plural 's' also stripped) of the catalog's target_only_buildings cards."""
+    import json
+    from pipeline.body_identity import CATALOG
+    cards = json.loads(CATALOG.read_text(encoding="utf-8"))["cards"]
+    out = set()
+    for c in cards:
+        if c.get("target_only_buildings"):
+            k = re.sub(r"[^a-z]", "", str(c["name"]).lower())
+            out |= {k, k[:-1] if k.endswith("s") else k}
+    return frozenset(out)
+
+
+def is_wincon(name: str) -> bool:
+    """A body (engine unit / card name; evo / hero forms as the base unit) whose card targets buildings only."""
+    k = re.sub(r"[^a-z]", "", _FORM.sub("", str(name or "")).lower())
+    return k in _wincons() or (k.endswith("s") and k[:-1] in _wincons())
 
 
 def to_board(x: float, y: float, side: int) -> tuple:
@@ -221,6 +247,10 @@ def event_reward(ev: dict, p: dict) -> tuple:
     reward = w x (G - cost_w x Rocket cost), floored at 0 when an enemy princess tower was hit (tower Rocket-cycling is never
     charged, but the clump must beat the Rocket's cost to earn), clipped to +- event_cap."""
     v = float(ev["kill"]) + p["spell_value_dmg_w"] * float(ev["dmg"])
+    mult = float(p.get("spell_value_wincon_mult", 1.0))
+    if mult != 1.0 and ev.get("bodies") and ev.get("aim") is not None and float(ev["aim"][1]) >= WINCON_MY_HALF_Y:
+        v = sum(float(val) * float(f) * (1.0 if killed else p["spell_value_dmg_w"]) * (mult if is_wincon(name) else 1.0)
+                for name, val, f, killed in ev["bodies"])
     g = v * (1.0 + p["spell_value_tower_bonus"]) if ev["princess"] and v >= p["spell_value_tower_min"] else v
     r = p["spell_value_w"] * (g - p["spell_value_cost_w"] * float(ev["cost"]))
     if ev["princess"]:
