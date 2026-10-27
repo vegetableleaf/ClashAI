@@ -1,5 +1,6 @@
 {
-  "version": 1,
+  "version": 2,
+  "changelog": "v2 (2026-10-27, before any model score): b3_stats drops first_tick (heavy-tailed: SD ratio between two random halves of 12k humans was 0.76-0.94, so humans failed the band); A.ece_min_decisions added (bin-ECE of a perfectly calibrated model is 1.9 pp at n=6000). Both found by the human-vs-human control, not by scoring a model. v1 sha 5b9cd2fa...",
   "registered": "2026-10-27",
   "source": "scratchpad/gauntlet/L74/plan1026/PLAN.md Pillar 2 + REPORT_opponents.md section 4; numbers copied, none tuned on baseline scores",
   "rule": "every pass is an equivalence test; a cell with too little data FAILS (never passes by default)",
@@ -9,6 +10,7 @@
     "agreement_ceiling_method": "L67/agreement_ceiling.py, matched states, pro pairs at board distance < 0.25",
     "nll_vs_per_deck_finetune_max_extra_nats": 0.03,
     "ece_card_pp_max": 1.0,
+    "ece_min_decisions": 200000,
     "ece_top_cell_pp_max": 1.0,
     "ece_timing_slot_pp_max": 0.5,
     "timing_rescaled_gap_ks_max": 0.02,
@@ -28,7 +30,7 @@
     "human_floor_rms_d_reference": 0.05,
     "human_12k_vs_13k_rms_d_reference": 0.10,
     "b3_spread_ratio_range": [0.9, 1.1],
-    "b3_stats": ["ppm_1x","ppm_2x","first_tick","react_s","react_3s","push_mean","push_max"],
+    "b3_stats": ["ppm_1x","ppm_2x","react_s","react_3s","push_mean","push_max"],
     "min_n_per_side_for_a_stat": 5,
     "signature_stats_abs_d_max": 0.10,
     "signature_archetypes": ["Siege","Bait","Beatdown","Hog_cycle","Bridge_spam","Control"]
