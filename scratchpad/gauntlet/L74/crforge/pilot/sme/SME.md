@@ -426,6 +426,7 @@ Sources: `results/live/dossier_body_position_top10.txt` (`dossier.py`, `dossier_
 | start (run5) | | | 17 / 109 | 188,233 | |
 | 2.1 (run6) | live own elixir 1 frame early | comparator: a read inside the step's command pass counts as torn (`torn_cmd`) | **24 / 109** | 188,233 | 0 (+7) |
 | 2.2 (run7) | Golden Knight ability never extracted | input: GK ability cast at each dash burst (`SME_GK=1`) | **25 / 109** | 197,203 | 0 (+1) |
+| 2.3 (run8) | hero Ice Golem "death area" (110 extra damage) | input: drop a hero Ice Golem "cast" that is its death (`SME_GOLEM=1`) | **27 / 109** | 202,444 | 0 (+2) |
 
 ## 2.1: the live own-elixir class is a reader read in the middle of a step (a)
 Source: `elixir_check.py` on run5, unflagged matches.
@@ -482,3 +483,25 @@ That is a torn read.
 - So in 9 / 33 crforge starts the ability's spin late. That is a crforge candidate (the ability waiting on something,
   perhaps an attack in progress), not a dating fault.
 - 31 more casts were not usable: an earlier area was already present.
+
+## 2.3: the hero Ice Golem class is a misread cast, not crforge (a)
+**The table is not the cause.** Read on the cached 16.402.22 tables (the fork uses the same):
+- `IceGolemiteHero` has `Base: CHARACTER.IceGolemite`, its own `DeathAreaEffect: IceGolemiteHero_Death_Aeo`
+  (slow) and `OnDeathAction: IceGolemiteDeathExplosion` (spawns `IceGolemiteDeathArea`, 33 base damage).
+- crforge makes both at a hero golem's death, and so does the game. On the death explosion's victims, the recorded
+  hp drops by crforge's drop in 6 cases; 11 show other drops and 1 none (`golem_check.py`).
+
+**The extra 110 comes from a misread ability cast (`golem_onsets.py`, all 4 onsets).**
+- The ability's `IceGolemiteHero_Damage_AEO` deals it: `HitSpeed` 1500, it follows the golem and stays after the
+  golem dies. The "50 units off" area is that AEO, still following, against the reader's death area.
+- In all 4 onsets an extracted `cast_seen` ability sits exactly 1 tick before the golem's death.
+- At the onset the recorded frame holds exactly the 2 death areas, and later 1 (`Death_Aeo`, 1 s). It never holds the
+  3-second ability areas.
+- **Cause:** `seen_casts` dates an instant hero's cast from its ability area row (card 203000038). The hero golem's
+  death areas carry the same card id.
+
+**Measured:** 38 of the 45 hero Ice Golem "casts" on the 109 unflagged matches are its death. The golem body is
+present at the last frame ≤ R and absent at the first frame ≥ R+2.
+
+**Rule (`golem_death_cast`):** those casts are dropped. The fix belongs in `seen_casts` / A2b-1; not edited
+here (`fights.py` is shared with the parity harness).
