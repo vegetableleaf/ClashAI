@@ -1,0 +1,30 @@
+{
+ "part": "cost",
+ "n": 50,
+ "result": {
+  "rows": [
+   {
+    "mode": "core",
+    "matches": 1300,
+    "core_s_per_match": 0.1
+   },
+   {
+    "mode": "state",
+    "matches": 1080,
+    "core_s_per_match": 0.1138
+   },
+   {
+    "mode": "raw",
+    "matches": 586,
+    "core_s_per_match": 0.2073
+   },
+   {
+    "mode": "fork",
+    "tick": 1800,
+    "save_ms": 12.756,
+    "load_ms": 6.094
+   }
+  ],
+  "note": "process CPU (all JVM + Python threads) per match after the warm-up; S3 bare harness 0.088-0.093"
+ }
+}

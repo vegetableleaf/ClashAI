@@ -1,0 +1,1111 @@
+{
+ "part": "saveload",
+ "n": 50,
+ "result": {
+  "matches": 50,
+  "identical": 50,
+  "ticks_compared": 90036,
+  "rows": [
+   {
+    "i": 0,
+    "seed": 1000,
+    "cut": 1777,
+    "opp": [
+     "Firecracker",
+     "MightyMiner",
+     "Tesla",
+     "HogRider",
+     "Earthquake",
+     "Skeletons",
+     "ElectroSpirit",
+     "BarbLog"
+    ],
+    "ticks_compared": 2320,
+    "identical": true,
+    "end_tick": 4100,
+    "crowns": [
+     1,
+     2
+    ]
+   },
+   {
+    "i": 1,
+    "seed": 1001,
+    "cut": 750,
+    "opp": [
+     "BattleRam",
+     "ElectroWizard",
+     "AngryBarbarians",
+     "Valkyrie",
+     "Log",
+     "Freeze",
+     "GoblinCage",
+     "Musketeer"
+    ],
+    "ticks_compared": 2266,
+    "identical": true,
+    "end_tick": 3016,
+    "crowns": [
+     0,
+     3
+    ]
+   },
+   {
+    "i": 2,
+    "seed": 1002,
+    "cut": 431,
+    "opp": [
+     "MegaKnight",
+     "MegaMinion",
+     "BabyDragon",
+     "RageBarbarian",
+     "DarkWitch",
+     "Princess",
+     "Poison",
+     "Zap"
+    ],
+    "ticks_compared": 3241,
+    "identical": true,
+    "end_tick": 3681,
+    "crowns": [
+     0,
+     1
+    ]
+   },
+   {
+    "i": 3,
+    "seed": 1003,
+    "cut": 1174,
+    "opp": [
+     "SkeletonArmy",
+     "SkeletonKing",
+     "Witch",
+     "ElixirGolem",
+     "DarkWitch",
+     "DarkMagic",
+     "Arrows",
+     "Rage"
+    ],
+    "ticks_compared": 1398,
+    "identical": true,
+    "end_tick": 2578,
+    "crowns": [
+     1,
+     3
+    ]
+   },
+   {
+    "i": 4,
+    "seed": 1004,
+    "cut": 1166,
+    "opp": [
+     "Firecracker",
+     "BarbLog",
+     "MegaKnight",
+     "Vines",
+     "Lightning",
+     "BlowdartGoblin",
+     "GoblinGang",
+     "RamRider"
+    ],
+    "ticks_compared": 967,
+    "identical": true,
+    "end_tick": 2137,
+    "crowns": [
+     0,
+     3
+    ]
+   },
+   {
+    "i": 5,
+    "seed": 1005,
+    "cut": 2751,
+    "opp": [
+     "AxeMan",
+     "MiniPekka",
+     "Valkyrie",
+     "Vines",
+     "GoblinHut",
+     "HogRider",
+     "Arrows",
+     "Minions"
+    ],
+    "ticks_compared": 0,
+    "identical": true,
+    "end_tick": 2735,
+    "crowns": [
+     0,
+     3
+    ]
+   },
+   {
+    "i": 6,
+    "seed": 1006,
+    "cut": 2550,
+    "opp": [
+     "SkeletonArmy",
+     "Valkyrie",
+     "GoblinBarrel",
+     "Princess",
+     "Cannon",
+     "BlowdartGoblin",
+     "Wallbreakers",
+     "IceSpirits"
+    ],
+    "ticks_compared": 1131,
+    "identical": true,
+    "end_tick": 3681,
+    "crowns": [
+     0,
+     1
+    ]
+   },
+   {
+    "i": 7,
+    "seed": 1007,
+    "cut": 1526,
+    "opp": [
+     "Valkyrie",
+     "Firecracker",
+     "Witch",
+     "ElixirGolem",
+     "Arrows",
+     "Freeze",
+     "Fireball",
+     "SkeletonArmy"
+    ],
+    "ticks_compared": 2151,
+    "identical": true,
+    "end_tick": 3681,
+    "crowns": [
+     1,
+     2
+    ]
+   },
+   {
+    "i": 8,
+    "seed": 1008,
+    "cut": 1128,
+    "opp": [
+     "AngryBarbarians",
+     "Valkyrie",
+     "Wallbreakers",
+     "BlowdartGoblin",
+     "ElectroSpirit",
+     "Log",
+     "Tesla",
+     "Lightning"
+    ],
+    "ticks_compared": 2791,
+    "identical": true,
+    "end_tick": 3921,
+    "crowns": [
+     1,
+     2
+    ]
+   },
+   {
+    "i": 9,
+    "seed": 1009,
+    "cut": 2096,
+    "opp": [
+     "BlowdartGoblin",
+     "MightyMiner",
+     "Skeletons",
+     "Log",
+     "Bats",
+     "SuspiciousBush",
+     "Wallbreakers",
+     "ElectroSpirit"
+    ],
+    "ticks_compared": 1581,
+    "identical": true,
+    "end_tick": 3681,
+    "crowns": [
+     0,
+     1
+    ]
+   },
+   {
+    "i": 10,
+    "seed": 1010,
+    "cut": 2540,
+    "opp": [
+     "RageBarbarian",
+     "BossBandit",
+     "Wizard",
+     "Balloon",
+     "Prince",
+     "SkeletonWarriors",
+     "Minions",
+     "Zap"
+    ],
+    "ticks_compared": 0,
+    "identical": true,
+    "end_tick": 2139,
+    "crowns": [
+     0,
+     3
+    ]
+   },
+   {
+    "i": 11,
+    "seed": 1011,
+    "cut": 2052,
+    "opp": [
+     "MegaKnight",
+     "EliteArcher",
+     "MinionHorde",
+     "GoblinBarrel",
+     "Log",
+     "Knight",
+     "HogRider",
+     "Arrows"
+    ],
+    "ticks_compared": 1959,
+    "identical": true,
+    "end_tick": 4019,
+    "crowns": [
+     1,
+     2
+    ]
+   },
+   {
+    "i": 12,
+    "seed": 1012,
+    "cut": 2143,
+    "opp": [
+     "GoblinBarrel",
+     "Valkyrie",
+     "SkeletonArmy",
+     "Wallbreakers",
+     "Princess",
+     "BlowdartGoblin",
+     "IceSpirits",
+     "Cannon"
+    ],
+    "ticks_compared": 1486,
+    "identical": true,
+    "end_tick": 3636,
+    "crowns": [
+     0,
+     3
+    ]
+   },
+   {
+    "i": 13,
+    "seed": 1013,
+    "cut": 1260,
+    "opp": [
+     "AxeMan",
+     "Valkyrie",
+     "GoldenKnight",
+     "Fireball",
+     "BarbLog",
+     "ElectroWizard",
+     "MiniPekka",
+     "Ronin"
+    ],
+    "ticks_compared": 2421,
+    "identical": true,
+    "end_tick": 3681,
+    "crowns": [
+     0,
+     1
+    ]
+   },
+   {
+    "i": 14,
+    "seed": 1014,
+    "cut": 637,
+    "opp": [
+     "GoblinCage",
+     "GoldenKnight",
+     "InfernoDragon",
+     "ElectroGiant",
+     "MegaKnight",
+     "DarkPrince",
+     "Bats",
+     "Arrows"
+    ],
+    "ticks_compared": 3041,
+    "identical": true,
+    "end_tick": 3681,
+    "crowns": [
+     0,
+     1
+    ]
+   },
+   {
+    "i": 15,
+    "seed": 1015,
+    "cut": 1055,
+    "opp": [
+     "BattleRam",
+     "GoldenKnight",
+     "ElectroWizard",
+     "Ronin",
+     "Ghost",
+     "FirespiritHut",
+     "Assassin",
+     "Zap"
+    ],
+    "ticks_compared": 1793,
+    "identical": true,
+    "end_tick": 2853,
+    "crowns": [
+     0,
+     3
+    ]
+   },
+   {
+    "i": 16,
+    "seed": 1016,
+    "cut": 1680,
+    "opp": [
+     "Firecracker",
+     "MightyMiner",
+     "GoblinCage",
+     "Lightning",
+     "BarbLog",
+     "MiniSparkys",
+     "Assassin",
+     "Bowler"
+    ],
+    "ticks_compared": 1705,
+    "identical": true,
+    "end_tick": 3385,
+    "crowns": [
+     1,
+     3
+    ]
+   },
+   {
+    "i": 17,
+    "seed": 1017,
+    "cut": 2338,
+    "opp": [
+     "ElectroDragon",
+     "Wizard",
+     "Valkyrie",
+     "Lightning",
+     "ElixirGolem",
+     "Ronin",
+     "DarkWitch",
+     "Arrows"
+    ],
+    "ticks_compared": 1341,
+    "identical": true,
+    "end_tick": 3681,
+    "crowns": [
+     0,
+     2
+    ]
+   },
+   {
+    "i": 18,
+    "seed": 1018,
+    "cut": 942,
+    "opp": [
+     "AngryBarbarians",
+     "Balloon",
+     "Valkyrie",
+     "RageBarbarian",
+     "Tesla",
+     "Firecracker",
+     "Witch",
+     "Vines"
+    ],
+    "ticks_compared": 2731,
+    "identical": true,
+    "end_tick": 3681,
+    "crowns": [
+     0,
+     1
+    ]
+   },
+   {
+    "i": 19,
+    "seed": 1019,
+    "cut": 2973,
+    "opp": [
+     "Knight",
+     "IceWizard",
+     "BabyDragon",
+     "Tornado",
+     "BarbLog",
+     "Graveyard",
+     "Tombstone",
+     "Poison"
+    ],
+    "ticks_compared": 723,
+    "identical": true,
+    "end_tick": 3703,
+    "crowns": [
+     1,
+     0
+    ]
+   },
+   {
+    "i": 20,
+    "seed": 1020,
+    "cut": 3160,
+    "opp": [
+     "SkeletonBalloon",
+     "Goblins",
+     "Mortar",
+     "MovingCannon",
+     "Fireball",
+     "Minions",
+     "Rascals",
+     "BarbLog"
+    ],
+    "ticks_compared": 348,
+    "identical": true,
+    "end_tick": 3508,
+    "crowns": [
+     1,
+     3
+    ]
+   },
+   {
+    "i": 21,
+    "seed": 1021,
+    "cut": 875,
+    "opp": [
+     "Musketeer",
+     "IceGolemite",
+     "Cannon",
+     "IceSpirits",
+     "Skeletons",
+     "HogRider",
+     "Fireball",
+     "Log"
+    ],
+    "ticks_compared": 4359,
+    "identical": true,
+    "end_tick": 5239,
+    "crowns": [
+     1,
+     3
+    ]
+   },
+   {
+    "i": 22,
+    "seed": 1022,
+    "cut": 774,
+    "opp": [
+     "Ghost",
+     "EliteArcher",
+     "BattleRam",
+     "ElectroWizard",
+     "Assassin",
+     "Fireball",
+     "Zap",
+     "Pekka"
+    ],
+    "ticks_compared": 2025,
+    "identical": true,
+    "end_tick": 2805,
+    "crowns": [
+     0,
+     3
+    ]
+   },
+   {
+    "i": 23,
+    "seed": 1023,
+    "cut": 1387,
+    "opp": [
+     "Cannon",
+     "IceGolemite",
+     "Musketeer",
+     "HogRider",
+     "Skeletons",
+     "IceSpirits",
+     "Log",
+     "Fireball"
+    ],
+    "ticks_compared": 2291,
+    "identical": true,
+    "end_tick": 3681,
+    "crowns": [
+     0,
+     1
+    ]
+   },
+   {
+    "i": 24,
+    "seed": 1024,
+    "cut": 3117,
+    "opp": [
+     "Hunter",
+     "Valkyrie",
+     "LittlePrince",
+     "GiantBuffer",
+     "FirespiritHut",
+     "MinionGiant",
+     "DartBarrell",
+     "Arrows"
+    ],
+    "ticks_compared": 561,
+    "identical": true,
+    "end_tick": 3681,
+    "crowns": [
+     0,
+     1
+    ]
+   },
+   {
+    "i": 25,
+    "seed": 1025,
+    "cut": 1744,
+    "opp": [
+     "RoyalHogs",
+     "BarbLog",
+     "Firecracker",
+     "Knight",
+     "Witch",
+     "Tesla",
+     "SkeletonArmy",
+     "GoblinBarrel"
+    ],
+    "ticks_compared": 1931,
+    "identical": true,
+    "end_tick": 3681,
+    "crowns": [
+     0,
+     1
+    ]
+   },
+   {
+    "i": 26,
+    "seed": 1026,
+    "cut": 1030,
+    "opp": [
+     "GoblinBarrel",
+     "Valkyrie",
+     "SkeletonArmy",
+     "Wallbreakers",
+     "Princess",
+     "BlowdartGoblin",
+     "IceSpirits",
+     "Cannon"
+    ],
+    "ticks_compared": 2651,
+    "identical": true,
+    "end_tick": 3681,
+    "crowns": [
+     0,
+     1
+    ]
+   },
+   {
+    "i": 27,
+    "seed": 1027,
+    "cut": 2856,
+    "opp": [
+     "Mortar",
+     "Berserker",
+     "SkeletonBalloon",
+     "MovingCannon",
+     "Fireball",
+     "BlowdartGoblin",
+     "Rascals",
+     "BarbLog"
+    ],
+    "ticks_compared": 821,
+    "identical": true,
+    "end_tick": 3681,
+    "crowns": [
+     0,
+     1
+    ]
+   },
+   {
+    "i": 28,
+    "seed": 1028,
+    "cut": 662,
+    "opp": [
+     "BabyDragon",
+     "Valkyrie",
+     "Bats",
+     "Bomber",
+     "ElectroSpirit",
+     "Golem",
+     "Ghost",
+     "Lightning"
+    ],
+    "ticks_compared": 2718,
+    "identical": true,
+    "end_tick": 3388,
+    "crowns": [
+     1,
+     3
+    ]
+   },
+   {
+    "i": 29,
+    "seed": 1029,
+    "cut": 2445,
+    "opp": [
+     "Firecracker",
+     "Valkyrie",
+     "Tesla",
+     "IceSpirits",
+     "Skeletons",
+     "HogRider",
+     "Log",
+     "Earthquake"
+    ],
+    "ticks_compared": 1231,
+    "identical": true,
+    "end_tick": 3681,
+    "crowns": [
+     1,
+     2
+    ]
+   },
+   {
+    "i": 30,
+    "seed": 1030,
+    "cut": 2408,
+    "opp": [
+     "SkeletonArmy",
+     "SkeletonKing",
+     "Wizard",
+     "ElixirGolem",
+     "Lightning",
+     "DarkWitch",
+     "Arrows",
+     "Rage"
+    ],
+    "ticks_compared": 124,
+    "identical": true,
+    "end_tick": 2534,
+    "crowns": [
+     0,
+     3
+    ]
+   },
+   {
+    "i": 31,
+    "seed": 1031,
+    "cut": 250,
+    "opp": [
+     "FirespiritHut",
+     "Knight",
+     "Cannon",
+     "Poison",
+     "Log",
+     "ElectroSpirit",
+     "Skeletons",
+     "Graveyard"
+    ],
+    "ticks_compared": 4169,
+    "identical": true,
+    "end_tick": 4419,
+    "crowns": [
+     0,
+     1
+    ]
+   },
+   {
+    "i": 32,
+    "seed": 1032,
+    "cut": 517,
+    "opp": [
+     "RageBarbarian",
+     "DarkPrince",
+     "Wizard",
+     "GoblinGang",
+     "Arrows",
+     "Mirror",
+     "Hunter",
+     "MegaKnight"
+    ],
+    "ticks_compared": 2792,
+    "identical": true,
+    "end_tick": 3312,
+    "crowns": [
+     0,
+     3
+    ]
+   },
+   {
+    "i": 33,
+    "seed": 1033,
+    "cut": 2536,
+    "opp": [
+     "GoblinBarrel",
+     "MightyMiner",
+     "IceSpirits",
+     "Cannon",
+     "Princess",
+     "Rocket",
+     "GoblinGang",
+     "Log"
+    ],
+    "ticks_compared": 311,
+    "identical": true,
+    "end_tick": 2851,
+    "crowns": [
+     0,
+     3
+    ]
+   },
+   {
+    "i": 34,
+    "seed": 1034,
+    "cut": 2366,
+    "opp": [
+     "BlowdartGoblin",
+     "DarkPrince",
+     "GoblinCage",
+     "Log",
+     "Golem",
+     "BabyDragon",
+     "Lightning",
+     "Tornado"
+    ],
+    "ticks_compared": 859,
+    "identical": true,
+    "end_tick": 3229,
+    "crowns": [
+     1,
+     3
+    ]
+   },
+   {
+    "i": 35,
+    "seed": 1035,
+    "cut": 2447,
+    "opp": [
+     "AxeMan",
+     "BossBandit",
+     "Valkyrie",
+     "Fireball",
+     "Log",
+     "SkeletonWarriors",
+     "GoblinBarrel",
+     "HogRider"
+    ],
+    "ticks_compared": 1231,
+    "identical": true,
+    "end_tick": 3681,
+    "crowns": [
+     0,
+     1
+    ]
+   },
+   {
+    "i": 36,
+    "seed": 1036,
+    "cut": 1546,
+    "opp": [
+     "MegaKnight",
+     "MiniPekka",
+     "Zap",
+     "Bats",
+     "HogRider",
+     "Fireball",
+     "ElectroWizard",
+     "Assassin"
+    ],
+    "ticks_compared": 500,
+    "identical": true,
+    "end_tick": 2050,
+    "crowns": [
+     0,
+     3
+    ]
+   },
+   {
+    "i": 37,
+    "seed": 1037,
+    "cut": 2993,
+    "opp": [
+     "Firecracker",
+     "Cannon",
+     "MegaKnight",
+     "BlowdartGoblin",
+     "ElectroWizard",
+     "GoblinBarrel",
+     "SkeletonArmy",
+     "Lightning"
+    ],
+    "ticks_compared": 681,
+    "identical": true,
+    "end_tick": 3681,
+    "crowns": [
+     0,
+     1
+    ]
+   },
+   {
+    "i": 38,
+    "seed": 1038,
+    "cut": 2819,
+    "opp": [
+     "BlowdartGoblin",
+     "ElectroWizard",
+     "RoyalRecruits",
+     "Assassin",
+     "Bats",
+     "Tombstone",
+     "Arrows",
+     "AxeMan"
+    ],
+    "ticks_compared": 797,
+    "identical": true,
+    "end_tick": 3617,
+    "crowns": [
+     1,
+     3
+    ]
+   },
+   {
+    "i": 39,
+    "seed": 1039,
+    "cut": 1059,
+    "opp": [
+     "BabyDragon",
+     "Bowler",
+     "ElectroWizard",
+     "Tornado",
+     "Lightning",
+     "BarbLog",
+     "GoblinHut",
+     "ElectroGiant"
+    ],
+    "ticks_compared": 2621,
+    "identical": true,
+    "end_tick": 3681,
+    "crowns": [
+     1,
+     2
+    ]
+   },
+   {
+    "i": 40,
+    "seed": 1040,
+    "cut": 2078,
+    "opp": [
+     "GoblinBarrel",
+     "Knight",
+     "SkeletonArmy",
+     "Log",
+     "Princess",
+     "BlowdartGoblin",
+     "Tesla",
+     "IceSpirits"
+    ],
+    "ticks_compared": 1277,
+    "identical": true,
+    "end_tick": 3357,
+    "crowns": [
+     0,
+     3
+    ]
+   },
+   {
+    "i": 41,
+    "seed": 1041,
+    "cut": 1760,
+    "opp": [
+     "FirespiritHut",
+     "Goblins",
+     "Musketeer",
+     "Minions",
+     "SuspiciousBush",
+     "Arrows",
+     "BattleHealer",
+     "Valkyrie"
+    ],
+    "ticks_compared": 1921,
+    "identical": true,
+    "end_tick": 3681,
+    "crowns": [
+     1,
+     2
+    ]
+   },
+   {
+    "i": 42,
+    "seed": 1042,
+    "cut": 2819,
+    "opp": [
+     "Bats",
+     "Bowler",
+     "RageBarbarian",
+     "Balloon",
+     "Skeletons",
+     "Vines",
+     "Phoenix",
+     "Arrows"
+    ],
+    "ticks_compared": 861,
+    "identical": true,
+    "end_tick": 3681,
+    "crowns": [
+     0,
+     1
+    ]
+   },
+   {
+    "i": 43,
+    "seed": 1043,
+    "cut": 357,
+    "opp": [
+     "FirespiritHut",
+     "Bats",
+     "Ghost",
+     "Earthquake",
+     "MegaKnight",
+     "Firecracker",
+     "Tesla",
+     "SkeletonBalloon"
+    ],
+    "ticks_compared": 3321,
+    "identical": true,
+    "end_tick": 3681,
+    "crowns": [
+     0,
+     1
+    ]
+   },
+   {
+    "i": 44,
+    "seed": 1044,
+    "cut": 1873,
+    "opp": [
+     "RoyalHogs",
+     "Bowler",
+     "Valkyrie",
+     "Wallbreakers",
+     "BarbLog",
+     "Princess",
+     "Firecracker",
+     "Tesla"
+    ],
+    "ticks_compared": 1801,
+    "identical": true,
+    "end_tick": 3681,
+    "crowns": [
+     0,
+     1
+    ]
+   },
+   {
+    "i": 45,
+    "seed": 1045,
+    "cut": 1313,
+    "opp": [
+     "Zap",
+     "Giant",
+     "Wizard",
+     "ZapMachine",
+     "MiniPekka",
+     "Minions",
+     "Heal",
+     "Tornado"
+    ],
+    "ticks_compared": 2361,
+    "identical": true,
+    "end_tick": 3681,
+    "crowns": [
+     0,
+     1
+    ]
+   },
+   {
+    "i": 46,
+    "seed": 1046,
+    "cut": 512,
+    "opp": [
+     "Firecracker",
+     "GiantSkeleton",
+     "MegaKnight",
+     "DarkWitch",
+     "Minions",
+     "HogRider",
+     "Zap",
+     "Arrows"
+    ],
+    "ticks_compared": 3161,
+    "identical": true,
+    "end_tick": 3681,
+    "crowns": [
+     0,
+     1
+    ]
+   },
+   {
+    "i": 47,
+    "seed": 1047,
+    "cut": 1641,
+    "opp": [
+     "Skeletons",
+     "Valkyrie",
+     "FirespiritHut",
+     "Poison",
+     "Graveyard",
+     "IceSpirits",
+     "GoblinHut",
+     "BarbLog"
+    ],
+    "ticks_compared": 2031,
+    "identical": true,
+    "end_tick": 3681,
+    "crowns": [
+     0,
+     1
+    ]
+   },
+   {
+    "i": 48,
+    "seed": 1048,
+    "cut": 2445,
+    "opp": [
+     "Cannon",
+     "Musketeer",
+     "Skeletons",
+     "Fireball",
+     "IceGolemite",
+     "MinionGiant",
+     "Log",
+     "IceSpirits"
+    ],
+    "ticks_compared": 2034,
+    "identical": true,
+    "end_tick": 4484,
+    "crowns": [
+     1,
+     0
+    ]
+   },
+   {
+    "i": 49,
+    "seed": 1049,
+    "cut": 473,
+    "opp": [
+     "SkeletonBalloon",
+     "Rascals",
+     "MegaKnight",
+     "Wallbreakers",
+     "BarbLog",
+     "BlowdartGoblin",
+     "GoblinHut",
+     "Fireball"
+    ],
+    "ticks_compared": 3201,
+    "identical": true,
+    "end_tick": 3681,
+    "crowns": [
+     1,
+     2
+    ]
+   }
+  ]
+ }
+}
