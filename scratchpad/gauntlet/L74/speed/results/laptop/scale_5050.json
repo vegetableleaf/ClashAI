@@ -1,0 +1,33 @@
+{
+ "gpu": "NVIDIA GeForce RTX 5050 Laptop GPU",
+ "rows": [
+  {
+   "d": 128,
+   "layers": 4,
+   "heads": 4,
+   "params": 1759432,
+   "cuda_b1_ms": 45.92
+  },
+  {
+   "d": 224,
+   "layers": 6,
+   "heads": 7,
+   "params": 5179176,
+   "cuda_b1_ms": 44.83
+  },
+  {
+   "d": 288,
+   "layers": 8,
+   "heads": 9,
+   "params": 10069672,
+   "cuda_b1_ms": 46.51
+  },
+  {
+   "d": 320,
+   "layers": 10,
+   "heads": 10,
+   "params": 14689160,
+   "cuda_b1_ms": 45.02
+  }
+ ]
+}

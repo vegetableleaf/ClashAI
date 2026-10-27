@@ -172,9 +172,15 @@ def decide_groups(groups: dict, outs: dict, waves: Waves, serve) -> dict:
 
 # ---- worker ---------------------------------------------------------------------------------------------------------
 def _worker(wid: int, conn, make_env, learner, opponents: dict, cfg: dict, jobs: list, in_flight: int, pol_ix: dict,
-            skip) -> None:
+            skip, fast=(), nice: int = 0) -> None:
+    import os
     import torch
     torch.set_num_threads(1)
+    if nice:                                           # the server's launch-bound forward first when cores are short
+        os.nice(nice)
+    if "cue" in fast:                                  # pipeline.fast_obs: same rows, fewer Battle.save() calls
+        from pipeline import fast_obs
+        fast_obs.install(("cue",))
     T = {k: 0.0 for k in ("due", "prepare_row", "decide", "apply", "wait_fwd", "wait_cell", "reset")}
     jobs_it, free, live = iter(jobs), [make_env() for _ in range(in_flight)], []
     results, skipped, rounds = [], [], 0
@@ -261,14 +267,139 @@ def _device_policy(pol, device: str):
     return copy.deepcopy(pol).to(device).eval()
 
 
+class LazyRefine:
+    """Server-side GenPolicy whose forward skips the features only the cell head reads (``cell_refine`` per-cell
+    features, ``tower_refine``'s cell features: [B, 2304, C] for EVERY row) and whose ``cell_logits`` computes them for
+    the requested rows only (about 3% of rows place a card). Same math per row as ``GenPolicy``; ``stats`` = stack /
+    device seconds of the forwards."""
+
+    def __init__(self, pol):
+        self.pol, self.model = pol, pol.model
+        self.cr = getattr(pol.model, "cell_refine", None)
+        tr = getattr(pol.model, "tower_refine", None)
+        self.tr = tr if tr is not None and tr.use_cell else None
+        self.stats = {"stack_s": 0.0, "device_s": 0.0}
+
+    def forward_batch(self, rows, device: str = "cpu"):
+        import torch
+        m = self.model
+        t = time.perf_counter()
+        with torch.no_grad():
+            b = {k: torch.from_numpy(np.ascontiguousarray(np.stack([r[k] for r in rows]))).to(device)
+                 for k in E.gen_row_keys(m)}
+            t1 = time.perf_counter()
+            if self.cr is not None:
+                m.cell_refine = None
+            if self.tr is not None:
+                self.tr.use_cell = False
+            try:
+                enc, heads = self.pol.heads_t(b)
+            finally:
+                if self.cr is not None:
+                    m.cell_refine = self.cr
+                if self.tr is not None:
+                    self.tr.use_cell = True
+            if self.cr is not None:
+                enc["_xy"], enc["_mask"] = b["tok"][..., 4:6], b["mask"]
+            if self.tr is not None:
+                enc["_sc"] = b["sc"]
+            B = heads["card"].shape[0]
+            hand = torch.zeros(B, E.N_SLOTS + 1, dtype=torch.bool, device=heads["card"].device)
+            hand = hand.scatter(1, b["hand_slot"], True)[:, :E.N_SLOTS]
+            p = torch.sigmoid(heads["gate"]).cpu().tolist()
+        self.stats["stack_s"] += t1 - t
+        self.stats["device_s"] += time.perf_counter() - t1
+        return enc, heads, p, hand.cpu().numpy()
+
+    def cell_logits(self, enc: dict, slot):
+        enc = dict(enc)
+        xy, mask, sc = enc.pop("_xy", None), enc.pop("_mask", None), enc.pop("_sc", None)
+        if self.cr is not None:
+            enc["cell_feat"] = self.cr.features(enc["u"], xy, mask)
+        if self.tr is not None:
+            enc["tower_cell_feat"] = self.tr.cell_feat(sc)
+        return self.pol.cell_logits(enc, slot)
+
+
+_HEADS_CLS: list = []
+
+
+def _HeadsT(pol):
+    """torch.func target: ``GenPolicy.heads_t`` as a module call (functional_call swaps the parameters in). One class
+    for every policy (stack_module_state needs equal classes)."""
+    import torch
+    if not _HEADS_CLS:
+        class HeadsT(torch.nn.Module):
+            def __init__(self, pol):
+                super().__init__()
+                self.model = pol.model
+                self.pol = copy.copy(pol)
+
+            def forward(self, b):
+                self.pol.model = self.model
+                return self.pol.heads_t(b)
+        _HEADS_CLS.append(HeadsT)
+    return _HEADS_CLS[0](pol)
+
+
+def merge_key(pol):
+    """Policies with equal keys can share one vmapped forward: plain GenModels (no cue / refine / memory layers)
+    with the same parameter names and shapes. None = not mergeable."""
+    if not isinstance(pol, E.GenPolicy):
+        return None
+    m = pol.model
+    if any(getattr(m, a, None) is not None for a in ("cue_in", "cell_refine", "tower_refine", "mem", "mem_aux")):
+        return None
+    return (int(getattr(m, "feature_version", 1)),) + tuple((n, tuple(v.shape)) for n, v in m.state_dict().items())
+
+
+class Merged:
+    """K same-architecture policies (``merge_key``) in ONE GPU call: ``torch.func.stack_module_state`` +
+    ``vmap(functional_call)``, each member's rows padded to the largest member's count with copies of its first row
+    (padding rows are dropped from the outputs). Per member the outputs are ``GenPolicy.forward_batch``'s (enc, heads,
+    p, hand) up to float noise (merge_probe.py: max abs diff 1.3e-5 on card logits)."""
+
+    def __init__(self, pols: list, device: str):
+        import torch
+        from torch.func import stack_module_state
+        self.pols = pols
+        mods = [_HeadsT(p) for p in pols]
+        self.params, self.buffers = stack_module_state(mods)
+        self.base = copy.deepcopy(mods[0]).to("meta").eval()
+        self.keys = E.gen_row_keys(pols[0].model)
+        self.torch = torch
+
+    def forward(self, members: list, rows_list: list, device: str) -> list:
+        torch = self.torch
+        from torch.func import functional_call
+        n = [len(r) for r in rows_list]
+        B = max(n)
+        b = {k: torch.from_numpy(np.ascontiguousarray(np.stack([np.stack([r[k] for r in rows] + [rows[0][k]] * (B - len(rows)))
+                                                                for rows in rows_list]))).to(device) for k in self.keys}
+        ix = torch.as_tensor(members, device=device)
+        pr = {a: v.index_select(0, ix) for a, v in self.params.items()}
+        bu = {a: v.index_select(0, ix) for a, v in self.buffers.items()}
+        with torch.no_grad():
+            enc, heads = torch.vmap(lambda p_, b_, x: functional_call(self.base, (p_, b_), (x,)))(pr, bu, b)
+            out = []
+            for j, nj in enumerate(n):
+                e = {a: v[j, :nj] for a, v in enc.items()}
+                h = {a: v[j, :nj] for a, v in heads.items()}
+                hs = b["hand_slot"][j, :nj]
+                hand = torch.zeros(nj, E.N_SLOTS + 1, dtype=torch.bool, device=hs.device).scatter(1, hs, True)[:, :E.N_SLOTS]
+                out.append((e, h, torch.sigmoid(h["gate"]).cpu().tolist(), hand.cpu().numpy()))
+        return out
+
+
 def _forward(pol, rows: list, device: str):
-    if isinstance(pol, E.GenPolicy):
+    if isinstance(pol, (E.GenPolicy, LazyRefine)):
         return pol.forward_batch(rows, device)
     return E.model_forward_batch(pol, *zip(*rows), device=device)
 
 
 def run(make_env, learner, opponents: dict, jobs, cfg: dict, on_result, on_skip=None, skip=(), *, workers: int = 8,
-        in_flight: Optional[int] = None, device: str = "cuda", cohorts: int = 2, amp: Optional[str] = None) -> dict:
+        in_flight: Optional[int] = None, device: str = "cuda", cohorts: int = 2, amp: Optional[str] = None,
+        fast=(), worker_nice: int = 0) -> dict:
     """Play ``jobs`` ((i, spec, k[, overrides]) as run_selfplay_batch) on ``workers`` processes, each with up to
     ``in_flight`` matches (default: all of its share at once). ``learner`` / ``opponents`` / ``cfg``: as
     run_selfplay_batch (CPU policies; the forked workers use them for rows and decides, the server copies them to
@@ -277,6 +408,10 @@ def run(make_env, learner, opponents: dict, jobs, cfg: dict, on_result, on_skip=
     served in turn, so one cohort's CPU work overlaps the server's forward for the other (1 = one lockstep).
     ``amp`` "bf16": the server's forward and cell calls under bf16 autocast (NOT the actors' fp32: the sampled
     actions / log-probs then differ from the actor path's; a throughput option, off by default).
+    ``fast`` (opt-in, each identity-checked in speed/SPEED.md f): "refine" = ``LazyRefine`` on the server; "cue" =
+    ``pipeline.fast_obs.sim_cue_rows`` in the workers; "merge" = same-architecture policies share one vmapped forward
+    (``Merged``). ``worker_nice``: os.nice for the workers (the server forward is CPU-launch-bound: 321 kernel launches
+    per call; it ran 2x slower under a full worker load than alone, server_prof.py).
     -> stats: rounds, server time split (forward / cell / waiting for workers), per-worker time split."""
     import torch
     check_cfgs(cfg, opponents)
@@ -294,12 +429,26 @@ def run(make_env, learner, opponents: dict, jobs, cfg: dict, on_result, on_skip=
             continue
         a, b = ctx.Pipe()
         pr = ctx.Process(target=_worker, args=(w, b, make_env, learner, opponents, cfg, share,
-                                               in_flight or len(share), pol_ix, skip), daemon=True)
+                                               in_flight or len(share), pol_ix, skip, tuple(fast),
+                                               int(worker_nice)), daemon=True)
         pr.start()
         b.close()
         conns.append(a)
         procs.append(pr)
     dev = {ix: _device_policy(p, device) for ix, p in by_ix.items()}   # after the fork: no CUDA state in workers
+    merged: dict = {}                                  # pol_ix -> (Merged, member index)
+    if "merge" in fast:
+        by_key: dict = {}
+        for ix, p in dev.items():
+            mk = merge_key(p)
+            if mk is not None:
+                by_key.setdefault(mk, []).append(ix)
+        for ixs in by_key.values():
+            if len(ixs) > 1:
+                grp = Merged([dev[i] for i in ixs], device)
+                merged.update({i: (grp, j) for j, i in enumerate(ixs)})
+    if "refine" in fast:
+        dev = {ix: LazyRefine(p) if isinstance(p, E.GenPolicy) and ix not in merged else p for ix, p in dev.items()}
     autocast = (lambda: torch.autocast("cuda", dtype=torch.bfloat16)) if amp == "bf16" else contextlib.nullcontext
     S = {"forward_s": 0.0, "cell_s": 0.0, "wait_s": 0.0, "rows": 0, "forwards": 0, "cell_calls": 0, "rounds": 0}
     wstats, lines = [], [[] for _ in conns]
@@ -334,6 +483,7 @@ def run(make_env, learner, opponents: dict, jobs, cfg: dict, on_result, on_skip=
         keys = sorted({k for w in fwd for k in got[w][1]})
         enc_of, outs = {}, {w: {} for w in fwd}
         off: dict = {}
+        rows_of: dict = {}
         for k in keys:
             rows, o = [], 0
             for w in fwd:
@@ -342,8 +492,22 @@ def run(make_env, learner, opponents: dict, jobs, cfg: dict, on_result, on_skip=
                     off[(w, k)] = o
                     rows += r
                     o += len(r)
-            with autocast():
-                enc, heads, p, hand = _forward(dev[k[0]], rows, device)
+            rows_of[k] = rows
+        res: dict = {}
+        for grp in {id(merged[k[0]][0]): merged[k[0]][0] for k in keys if k[0] in merged}.values():
+            ks = [k for k in keys if k[0] in merged and merged[k[0]][0] is grp]
+            if len(ks) > 1:
+                with autocast():
+                    res.update(zip(ks, grp.forward([merged[k[0]][1] for k in ks], [rows_of[k] for k in ks], device)))
+                S["merged_calls"] = S.get("merged_calls", 0) + 1
+        for k in keys:
+            rows = rows_of[k]
+            if k in res:
+                enc, heads, p, hand = res[k]
+            else:
+                with autocast():
+                    enc, heads, p, hand = _forward(dev[k[0]], rows, device)
+                S["forwards"] += 1
             enc_of[k] = enc
             cpu = lambda x: x.detach().float().cpu().numpy()    # noqa: E731
             gate, card = cpu(heads["gate"]), cpu(heads["card"])
@@ -356,7 +520,6 @@ def run(make_env, learner, opponents: dict, jobs, cfg: dict, on_result, on_skip=
                     outs[w][k] = (gate[s0:s0 + n], card[s0:s0 + n], ch[s0:s0 + n], p[s0:s0 + n], hand[s0:s0 + n],
                                   g[s0:s0 + n])
             S["rows"] += len(rows)
-            S["forwards"] += 1
         if device.startswith("cuda"):
             torch.cuda.synchronize()
         S["forward_s"] += time.perf_counter() - t
@@ -403,5 +566,8 @@ def run(make_env, learner, opponents: dict, jobs, cfg: dict, on_result, on_skip=
             if pr.is_alive():
                 pr.terminate()
     S["wall_s"] = time.perf_counter() - t_all
+    for k in ("stack_s", "device_s"):
+        if any(isinstance(p, LazyRefine) for p in dev.values()):
+            S[f"forward_{k}"] = sum(p.stats[k] for p in dev.values() if isinstance(p, LazyRefine))
     S["workers"] = wstats
     return {k: (round(v, 3) if isinstance(v, float) else v) for k, v in S.items()}

@@ -1,0 +1,19 @@
+{
+ "mode": "batched",
+ "E": 512,
+ "G": 4,
+ "matches": 2048,
+ "skipped": 0,
+ "build_s": 8.8,
+ "rollout_s": 640.38,
+ "matches_per_h": 11513.2,
+ "decisions": 740031,
+ "in_flight": 8,
+ "workers": 48,
+ "cohorts": 3,
+ "amp": null,
+ "fast": "refine,cue,merge",
+ "worker_nice": 0,
+ "device": "cuda",
+ "actor_device": "cpu"
+}

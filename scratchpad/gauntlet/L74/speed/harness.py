@@ -84,6 +84,8 @@ def main(argv=None) -> int:
     ap.add_argument("--workers", type=int, default=4, help="batched: worker processes")
     ap.add_argument("--device", default="cuda", help="batched: the forward's device")
     ap.add_argument("--cohorts", type=int, default=2, help="batched: worker cohorts served in turn")
+    ap.add_argument("--worker-nice", type=int, default=0, help="batched: os.nice for the workers")
+    ap.add_argument("--fast", default="", help="batched: comma list of fast paths (refine, cue)")
     ap.add_argument("--amp", default=None, choices=(None, "bf16"), help="batched: server autocast (not identical)")
     ap.add_argument("--actor-device", default=None, help="override actor_device (ref forward device)")
     ap.add_argument("--profile", action="store_true")
@@ -124,7 +126,8 @@ def main(argv=None) -> int:
         else:
             from pipeline import batched_rollout as BR
             st = BR.run(make_env, learner, opponents, jobs_it, cfg, on_result, on_skip=on_skip, skip=skip,
-                        workers=a.workers, device=a.device, cohorts=a.cohorts, amp=a.amp)
+                        workers=a.workers, device=a.device, cohorts=a.cohorts, amp=a.amp,
+                        fast=tuple(x for x in a.fast.split(",") if x), worker_nice=a.worker_nice)
             (out / "batched_stats.json").write_text(json.dumps(st, indent=1))
         wall["rollout_s"] = time.perf_counter() - t
 
@@ -148,7 +151,7 @@ def main(argv=None) -> int:
             "build_s": round(t_build, 1), "rollout_s": round(wall["rollout_s"], 2),
             "matches_per_h": round(len(results) / wall["rollout_s"] * 3600, 1),
             "decisions": sum(len((r.get("traj") or {}).get("slot", ())) for r in results),
-            "in_flight": a.in_flight, "workers": a.workers, "cohorts": a.cohorts, "amp": a.amp, "device": a.device, "actor_device": base["actor_device"]}
+            "in_flight": a.in_flight, "workers": a.workers, "cohorts": a.cohorts, "amp": a.amp, "fast": a.fast, "worker_nice": a.worker_nice, "device": a.device, "actor_device": base["actor_device"]}
     (out / "meta.json").write_text(json.dumps(meta, indent=1))
     print(json.dumps(meta))
     return 0

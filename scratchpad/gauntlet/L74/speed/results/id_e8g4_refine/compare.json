@@ -1,0 +1,18 @@
+{
+ "matches_ref": 32,
+ "matches_cand": 32,
+ "matched": 32,
+ "obs_identical": 32,
+ "actions_identical": 32,
+ "rows": 11657,
+ "rows_action_identical": 11657,
+ "max_abs_dlp_on_identical": {
+  "lp_gate": 7.105640714488715e-06,
+  "lp_card": 8.4256667527427e-06,
+  "lp_cell": 1.0200692710071735e-05,
+  "p_gate": 1.0728836059570312e-06,
+  "ab_lp": 0.0
+ },
+ "first_diffs": [],
+ "outcomes_identical": 32
+}

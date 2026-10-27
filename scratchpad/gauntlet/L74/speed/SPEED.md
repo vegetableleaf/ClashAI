@@ -107,7 +107,7 @@ match: learner 364 + opponent 341), 375 s = 11.7 s per match** (cProfile run: 13
 |---|---|---|---|
 | policy forward (CPU, about 4 rows per call) | **7.94** | 68% | `GenPolicy.forward_batch`, 5,611 calls, about 11 ms per row |
 | observation: `gen_row` | **2.38** | 20% | of which `sim_cue_rows` about 81% (cProfile): **`royalesim.Battle.save` 3.4 ms + JSON parse at every learner decision** |
-| observation: `prepare` | **0.81** | 7% | live_view about 40% (`mine_classes(deck)` rebuilt at every call, about 24%), `ability_commands` about 30%, public observer about 21%, from_engine about 14% (cProfile shares) |
+| observation: `prepare` | **0.81** | 7% | live_view about 40% (`mine_classes` about 24%: CORRECTED in S1b, section f -- three one-off CardDB loads per process, already cached, not a per-call cost), `ability_commands` about 30%, public observer about 21%, from_engine about 14% (cProfile shares) |
 | engine (advance + raw + reset) | **0.36** | 3% | matches REPORT_engine's 0.3-0.4 core-s |
 | decide (sample + styled, incl. 2,138 cell calls) | about 0.25 | 2% | per-row styled decode for every opponent |
 | apply / pre / result | 0.04 | <1% | |
@@ -182,7 +182,7 @@ rows/s** at 705 rows per match.
   deciding every 20 ticks instead of 10 (about 0.75x the rows, about 256k/h).
 - **CPU:** 128 vCPU at 250k/h means **1.84 vCPU-s per match** against 5.3 measured. Rough gains:
   - `sim_cue_rows` via an engine accessor instead of `Battle.save()` + JSON: -2.5 vCPU-s;
-  - caching `mine_classes` per deck: -0.3;
+  - (`mine_classes` is already cached: 0, see section f);
   - `ability_commands`: -0.3.
 
   Together these give about 2.2 vCPU-s per match (about 210k/h on 128 vCPU). **300k/h needs about 1.5 vCPU-s per
@@ -252,3 +252,119 @@ $P scratchpad/gauntlet/L74/speed/harness.py --cfg ... --E 8 --G 4 --mode batched
 $P scratchpad/gauntlet/L74/speed/compare.py /workspace/speed/ref_e8g4/results.jsonl /workspace/speed/id_e8g4_cuda/results.jsonl
 $P scratchpad/gauntlet/L74/speed/harness.py --cfg ... --E 256 --G 4 --mode batched --workers 48 --cohorts 2 --device cuda --out /workspace/speed/b_n1024_w48_c2
 ```
+
+## f. S1b: fast paths, one at a time, each with the identity check (10-27)
+
+**Setup.**
+- Identity: E8 x G4 = 32 matches against `ref_e8g4` (the actor path). Pass = observations and actions identical and
+  log-probs within 1e-5.
+- Throughput: N = 2,048 on pod 30408 (54 vCPU, 1x 4090, W 48, 2 cohorts, fp32).
+- vCPU-s per match = the workers' CPU work (due + prepare_row + decide + apply + reset), not their waiting
+  (`summ.py`).
+- Each step is added on top of the previous one.
+
+| step | identity (32 matches) | matches/h | worker vCPU-s / match | server forward s (stack / device) | cell s | server waiting s |
+|---|---|---|---|---|---|---|
+| baseline (S1) | (S1 d: pass) | 11,869 | 4.78 | 297.7 | 12.5 | 286.1 |
+| + (1) refine: `LazyRefine` | **pass** (32/32, 11,657 rows, max delta 1.0e-5) | 11,812 | 4.84 | 298.4 (41.2 / 253.7) | 12.7 | 288.7 |
+| + (2) cue: `fast_obs.sim_cue_rows` | **pass** (the obs sha covers the cue arrays) | 11,788 | **4.39** | 309.1 (43.6 / 261.8) | 8.4 | 272.9 |
+| + (3) merge: same-architecture opponents in one vmapped call | **pass** | **12,445** | 4.29 | 287.7 (28.7 / 202.5); 3,466 single + 1,180 merged calls (was 9,354 calls) | 8.1 | 262.7 |
+| + (4) bf16 autocast (on top of 1-3) | **FAIL**: 6 / 32 matches identical; first divergence **0.45% per decision** (E8 x G4), **0.59%** at N = 2,048 (197 / 2,048 matches identical) | 10,190 (slower) | 4.36 | 417.7 (28.3 / 331.4) | 10.4 | 259.3 |
+| extra: workers at os.nice 10 (1-3) | pass | 12,273 (no gain) | 4.44 | 281.6 | 7.9 | 280.8 |
+| extra: 3 cohorts (1-3) | - | 11,513 (worse than 2) | 4.65 | 294.6 (28.2 / 200.4); 5,199 + 1,765 merged | 11.2 | 303.0 |
+
+**What each step did (a unless labelled).**
+1. **refine: no gain in training (a), and the reason was missed in S1.**
+   - The training learner (`rlarm_succ48_o_s91_u0075.pt`, 1,546,536 params) and every league opponent have **no
+     cell_refine / tower_refine**. Only the grafted deployed CLXIII (1,759,432) carries them.
+   - So S1's 9.5k -> 18.8k rows/s figure applies to the deployed model (live, and evaluation of grafted checkpoints),
+     not to training rollouts. `league_mix.py`: 7 opponent files; each is fv5 or fv6, d 128 x 4, no refine, and only
+     the learner's own init has a cue layer.
+   - `LazyRefine` is kept: it is correct on CLXIII (`test_lazy_refine_equals_genpolicy`: heads within 1e-6, cell
+     logits within 1e-5, identical argmax).
+2. **cue: -9% worker CPU (4.78 -> 4.39 vCPU-s per match), matches/h flat** because the run is server-bound.
+   - The saving comes from skipping `Battle.save()` when no unit token can take a cue, with the buff memo still
+     updated from `state_json` (`test_memo_update_equals_extract_memo`), and from not decoding the projectiles /
+     areas / catalogue that the cue rows never read (`test_extract_units_equals_extract`).
+   - Most decisions do have a unit token, so `save()` (3.0 ms, 36 KB) still runs there. No Battle method exposes
+     attack_ms / jumping / dash_state / speed without `save()` (`probe_battle.py`). The remaining fix is an
+     engine-side unit-state call (fin16 or the crforge facade), outside this write set.
+   - `mine_classes` correction: it is already cached per deck config. Its cProfile share was 3 one-off CardDB loads
+     (0.66 s each, per process), not a per-call cost; S1's "-0.3 s per match" for it is withdrawn.
+3. **merge: +4.9% matches/h.**
+   - The 5 league externals share one architecture, so their 5 forwards per round become 1 vmapped call
+     (`batched_rollout.Merged`: `stack_module_state` + `vmap(functional_call)`). Server stack + device time fell
+     305 -> 231 s.
+   - `test_merged_forward_equals_separate`: heads within 1e-5, cell logits within 1e-4.
+   - The isolated probe (`merge_probe.py`, 5 x 146 rows) gave 64.5 -> 57.2 ms. Same-architecture forwards are close
+     to compute-bound already, so merging cannot do much more.
+4. **bf16: rejected.** Decisions diverge at 0.45-0.59% per decision, and it is slower at the batch sizes the server
+   sees (cast overhead). It is not usable for identical rows.
+
+**The bottleneck after steps 1-3 is the server loop itself (a).**
+- The server waits on cohorts about 44% of the wall and workers wait about 62%.
+- A real server forward of 146 rows takes 12.8 ms alone (`server_prof.py`: stack 1.8, H2D 0.6, heads_t 10.4 ms;
+  321 kernel launches) but 27-31 ms inside the rollout. The 2x slowdown under load is measured; its cause is untested
+  (b). os.nice on the workers did not help (a), and CFS throttling is negligible (30408: 147 throttled periods in
+  87k).
+- The next protocol change is an asynchronous server (b, not built): it forwards whatever rows are queued instead of
+  a lockstep cohort.
+
+## g. Double pod 33308 (measured, not projected): 108.8-core quota, 2x 4090, 125 GB container limit
+
+Fast paths refine + cue (merge was still being identity-checked when this chain started; GPU 1 was shared with ticket S2, see below), fp32, 2 cohorts per server.
+Memory is about **19.5 MB per match in flight + 0.41 GB per worker** (a: from the two 1-GPU runs).
+
+| config | N in flight | wall s | **matches/h** | worker vCPU-s / match | server forward s (stack / device) | server waiting s | container max memory |
+|---|---|---|---|---|---|---|---|
+| 1 server (GPU 0), W 100 | 2,048 | 529 | **13,942** | 4.89 | 294.3 (39.6 / 251.1) | 183.0 | 81 GB |
+| 1 server (GPU 0), W 100 | 4,096 | 927 | **15,907** | 4.63 | 498.7 (102.1 / 386.8) | 343.7 | **121 of 125 GB** |
+| 2 servers (GPU 0 + 1), W 50 each, 1,024 each | 2,048 | 387 / 742 | 9,517 + 4,967; **9,936 aggregate** (2,048 in 742 s) | 4.92 / - | GPU1: 555.5 (**292.6** / 210.1) | | |
+| 2 servers, W 50 each, 2,048 each | 4,096 | 665 / 973 | 11,087 + 7,581; **15,155 aggregate** (4,096 in 973 s) | 4.64 / 4.75 | GPU1: 660.0 (**291.5** / 313.8) | | 121 GB (high-water mark) |
+| 1 server on GPU 1 alone, seed 202, W 50 | 1,024 | 709 | 5,202 | 4.81 | 545.2 (**289.0** / 204.2) | 87.3 | |
+| 1 server on GPU 0 alone, seed 202, W 50 (control) | 1,024 | 361 | **10,204** | - | 205.9 (23.5 / 179.3) | 128.2 | |
+
+- **The 2-GPU numbers are contaminated: GPU 1 was in use by ticket S2 (a).** `nvidia-smi` shows pid 605397
+  (`pipeline.train_gen --data /workspace/scale/...`, running 1 h 10 min, 92% util, 20 GB) on GPU 1. The control
+  separates the cause: the same seed-202 job list ran normally on GPU 0 (10,204/h, stack 23.5 s) and slowly on
+  GPU 1 (5,202/h, stack + H2D 289 s, cell 54.5 s). It is GPU sharing, not the seed and not the PCIe link (pinned H2D
+  16-20 GB/s on both GPUs; both on NUMA node 0).
+- **So the clean 2-GPU measurement is still owed.** It needs both GPUs free of S2. The one valid point is the GPU 0
+  half of each 2-server run: 9,517/h (1,024 matches, W 50) and 11,087/h (2,048, W 50). Two free servers would
+  therefore give about 19-22k/h (b: 2 x the GPU 0 half; the cores are not the limit, workers wait 66-70%).
+- **At 108.8 cores the prototype is server-bound at about 14-16k matches/h** (workers wait 70% of the time). The CPU
+  ceiling at the measured 4.3-4.9 vCPU-s per match is 80-91k/h, and the isolated GPU rate (11-15k rows/s per 4090 at
+  146-600 rows) is about 55-75k/h per GPU.
+- N = 4,096 fits on this pod only with a single server (121 of 125 GB).
+
+## h. Laptop RTX 5050, batch-1 forward (a): live idle
+
+The supervisor log ended 05:20 and the last live log was 04:29; MuMu was open but not playing. One run, 61 s,
+`model_scale.py --b1-cuda-only`, CLXIII inputs, refine modules at each width:
+
+| model | params | cuda batch-1 ms |
+|---|---|---|
+| CLXIII 128 x 4 | 1,759,432 | **45.9** |
+| 224 x 6 | 5,179,176 | 44.8 |
+| 288 x 8 | 10,069,672 | 46.5 |
+| 320 x 10 | 14,689,160 | 45.0 |
+
+- **Flat at about 45 ms from 1.8 to 14.7 M (a).** On the laptop the forward is bound by launch / driver overhead,
+  not by compute. The 4090 pod does the same forward in 7.7 ms.
+- So on the PC the model size (up to 15 M) costs about nothing at batch 1, while each extra forward costs about
+  45 ms. The live decide runs 2 per decision, which is the logged p50 77 ms.
+- The one-forward decide (ticket B) is about -45 ms per playing decision (b).
+- CUDA graphs or a CPU forward (on the pod, CPU 4 threads: 15 ms at 1.76 M, 47 ms at 12 M) could cut it further;
+  both are untested on the laptop (b).
+- Implication for 4a (b): the p99 < 100 ms gate depends on the number of forwards per decision and the per-launch
+  overhead, not on 5 vs 15 M.
+
+## i. Projection for 128 vCPU / 2 GPUs (b, from sections f-g)
+
+- **With this lockstep prototype: about 16k matches/h on one server, measured (a: 15.9k at N = 4,096 on 108.8
+  cores), and about 19-22k/h with two free GPUs (b: 2 x the GPU 0 half; the GPU 1 runs shared their GPU with S2).**
+  The servers are the limit, not the cores.
+- With an asynchronous server (not built) the limit moves to the workers. 4.3 vCPU-s per match on 128 vCPU is about
+  **107k/h**; the 2 GPUs give about 110-150k/h at the isolated rates.
+- **200-300k/h still needs the observation CPU cut to 1.5-2.3 vCPU-s per match.** The `Battle.save()` cue path is the
+  largest single item, and it needs an engine accessor (fin16 / crforge facade).

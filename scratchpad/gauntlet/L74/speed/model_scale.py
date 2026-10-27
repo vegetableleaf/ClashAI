@@ -57,6 +57,8 @@ def main():
     ap.add_argument("--batch", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--sizes", default="128x4,192x6,256x6,288x8,320x8,256x10")
+    ap.add_argument("--b1-cuda-only", action="store_true", help="laptop: batch-1 cuda only (S1b, < 2 min)")
+    ap.add_argument("--count-only", action="store_true", help="param counts only, cpu")
     a = ap.parse_args()
     st = torch.load(a.ckpt, map_location="cpu")
     b1 = torch.load(a.batch)
@@ -66,12 +68,14 @@ def main():
         d, L = map(int, spec.split("x"))
         heads = max(4, d // 32)
         row = {"d": d, "layers": L, "heads": heads}
-        for dev in ("cpu", "cuda"):
+        for dev in (("cpu",) if a.count_only else ("cuda",) if a.b1_cuda_only else ("cpu", "cuda")):
             m = build(st, d, L, heads, dev)
             row["params"] = sum(p.numel() for p in m.parameters())
+            if a.count_only:
+                continue
             bb = {k: v.to(dev) for k, v in b1.items()}
             row[f"{dev}_b1_ms"] = round(bench(m, bb, 30 if dev == "cpu" else 200) * 1000, 2)
-            if dev == "cuda":
+            if dev == "cuda" and not a.b1_cuda_only:
                 for B in (256, 1024, 4096):
                     bb = {k: v.to(dev).expand(B, *v.shape[1:]).contiguous() for k, v in b1.items()}
                     try:
@@ -84,7 +88,8 @@ def main():
             del m
         print(json.dumps(row), flush=True)
         res.append(row)
-    Path(a.out).write_text(json.dumps({"gpu": torch.cuda.get_device_name(0), "rows": res}, indent=1))
+    gpu = torch.cuda.get_device_name(0) if torch.cuda.is_available() else None
+    Path(a.out).write_text(json.dumps({"gpu": gpu, "rows": res}, indent=1))
 
 
 if __name__ == "__main__":

@@ -1,0 +1,4 @@
+d1_n2048_refine_cue maxmem 81045905408
+d1_n4096_refine_cue maxmem 120773246976
+d2_n2048_refine_cue maxmem 120773246976
+d2_n4096_refine_cue maxmem 120773246976

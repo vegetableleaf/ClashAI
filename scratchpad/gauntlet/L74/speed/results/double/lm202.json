@@ -1,0 +1,90 @@
+{
+ "jobs": 1024,
+ "styled": 0,
+ "per_path": [
+  {
+   "path": "icebow/data/pipeline/o2/w14opp_I.pt",
+   "jobs": 352,
+   "d": 128,
+   "layers": 4,
+   "fv": 5,
+   "n_params": 1519656,
+   "gen": true,
+   "refine": [],
+   "cue": false,
+   "mem": false
+  },
+  {
+   "path": "icebow/data/bench/rl_royale/wk_adapt_exp2/wk_adapt_exp2_u0015.pt",
+   "jobs": 164,
+   "d": 128,
+   "layers": 4,
+   "fv": 6,
+   "n_params": 1546536,
+   "gen": true,
+   "refine": [],
+   "cue": false,
+   "mem": false
+  },
+  {
+   "path": "icebow/data/bench/rl_royale/newsim_base_exp1/newsim_base_exp1_u0015.pt",
+   "jobs": 120,
+   "d": 128,
+   "layers": 4,
+   "fv": 6,
+   "n_params": 1546536,
+   "gen": true,
+   "refine": [],
+   "cue": false,
+   "mem": false
+  },
+  {
+   "path": "icebow/data/bench/rl_royale/wk_adapt_exp1/wk_adapt_exp1_u0015.pt",
+   "jobs": 116,
+   "d": 128,
+   "layers": 4,
+   "fv": 6,
+   "n_params": 1546536,
+   "gen": true,
+   "refine": [],
+   "cue": false,
+   "mem": false
+  },
+  {
+   "path": "icebow/data/bench/rl_royale/rlarm_succ48_o_s91/rlarm_succ48_o_s91_u0075.pt",
+   "jobs": 100,
+   "d": 128,
+   "layers": 4,
+   "fv": 6,
+   "n_params": 1546536,
+   "gen": true,
+   "refine": [],
+   "cue": true,
+   "mem": false
+  },
+  {
+   "path": "icebow/data/bench/rl_royale/wk_adapt_exp3/wk_adapt_exp3_u0015.pt",
+   "jobs": 92,
+   "d": 128,
+   "layers": 4,
+   "fv": 6,
+   "n_params": 1546536,
+   "gen": true,
+   "refine": [],
+   "cue": false,
+   "mem": false
+  },
+  {
+   "path": "icebow/data/bench/rl_royale/newsim_base_exp2/newsim_base_exp2_u0015.pt",
+   "jobs": 80,
+   "d": 128,
+   "layers": 4,
+   "fv": 6,
+   "n_params": 1546536,
+   "gen": true,
+   "refine": [],
+   "cue": false,
+   "mem": false
+  }
+ ]
+}

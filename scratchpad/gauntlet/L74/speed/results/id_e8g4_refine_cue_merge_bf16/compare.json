@@ -1,0 +1,99 @@
+{
+ "matches_ref": 32,
+ "matches_cand": 32,
+ "matched": 32,
+ "obs_identical": 6,
+ "actions_identical": 6,
+ "rows": 12515,
+ "rows_action_identical": 8416,
+ "max_abs_dlp_on_identical": {
+  "lp_gate": 0.08147169330999215,
+  "lp_card": 0.07772565142812082,
+  "lp_cell": 0.10949676194753466,
+  "p_gate": 0.011394262313842773,
+  "ab_lp": 0.0
+ },
+ "first_divergence_per_decision": 0.004541,
+ "matches_diverged": 26,
+ "first_diffs": [
+  [
+   [
+    "sp0000_00",
+    0,
+    0
+   ],
+   25,
+   {
+    "played": [
+     false,
+     true
+    ],
+    "slot": [
+     -1,
+     2
+    ],
+    "cell": [
+     -1,
+     1491
+    ]
+   }
+  ],
+  [
+   [
+    "sp0000_00",
+    0,
+    0
+   ],
+   26,
+   {
+    "gate_sampled": [
+     true,
+     false
+    ]
+   }
+  ],
+  [
+   [
+    "sp0000_00",
+    0,
+    0
+   ],
+   27,
+   {
+    "gate_sampled": [
+     true,
+     false
+    ]
+   }
+  ],
+  [
+   [
+    "sp0000_00",
+    0,
+    0
+   ],
+   28,
+   {
+    "gate_sampled": [
+     true,
+     false
+    ]
+   }
+  ],
+  [
+   [
+    "sp0000_00",
+    0,
+    0
+   ],
+   29,
+   {
+    "gate_sampled": [
+     true,
+     false
+    ]
+   }
+  ]
+ ],
+ "outcomes_identical": 24
+}

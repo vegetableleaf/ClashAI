@@ -1,0 +1,11 @@
+{
+ "B_per_model": 146,
+ "K": 5,
+ "separate_forward_batch_ms": 64.48,
+ "vmap_merged_ms": 57.24,
+ "max_abs_diff": {
+  "gate": 2.86102294921875e-06,
+  "card": 1.2874603271484375e-05,
+  "g": 2.1457672119140625e-06
+ }
+}

@@ -1,0 +1,109 @@
+{
+ "B": 146,
+ "ms": {
+  "stack": 1.77,
+  "h2d": 0.57,
+  "heads_t": 10.39,
+  "to_host": 0.12,
+  "full_forward_batch": 12.84
+ },
+ "rows_per_s_full": 11367,
+ "cuda_ms_total": 14.47,
+ "n_kernel_launches": 321,
+ "top_cpu": [
+  {
+   "op": "cudaMemcpyAsync",
+   "cpu_ms": 2.49,
+   "n": 32
+  },
+  {
+   "op": "cudaLaunchKernel",
+   "cpu_ms": 2.48,
+   "n": 321
+  },
+  {
+   "op": "Activity Buffer Request",
+   "cpu_ms": 2.23,
+   "n": 1
+  },
+  {
+   "op": "aten::addmm",
+   "cpu_ms": 0.87,
+   "n": 24
+  },
+  {
+   "op": "aten::copy_",
+   "cpu_ms": 5.74,
+   "n": 65
+  },
+  {
+   "op": "aten::empty",
+   "cpu_ms": 0.35,
+   "n": 86
+  },
+  {
+   "op": "aten::empty_strided",
+   "cpu_ms": 0.35,
+   "n": 56
+  },
+  {
+   "op": "aten::mul",
+   "cpu_ms": 0.54,
+   "n": 30
+  },
+  {
+   "op": "aten::cat",
+   "cpu_ms": 0.53,
+   "n": 25
+  },
+  {
+   "op": "aten::add",
+   "cpu_ms": 0.38,
+   "n": 21
+  },
+  {
+   "op": "aten::index_select",
+   "cpu_ms": 0.93,
+   "n": 25
+  },
+  {
+   "op": "aten::sum",
+   "cpu_ms": 0.36,
+   "n": 17
+  }
+ ],
+ "top_cuda": [
+  {
+   "op": "aten::_addmm_activation",
+   "cuda_ms": 1.8
+  },
+  {
+   "op": "aten::bmm",
+   "cuda_ms": 1.38
+  },
+  {
+   "op": "void cublasLt::epilogue::impl::globalKernel<8, 32, float, fl",
+   "cuda_ms": 1.37
+  },
+  {
+   "op": "aten::addmm",
+   "cuda_ms": 1.09
+  },
+  {
+   "op": "ampere_sgemm_128x128_tn",
+   "cuda_ms": 0.96
+  },
+  {
+   "op": "aten::_masked_softmax",
+   "cuda_ms": 0.9
+  },
+  {
+   "op": "void (anonymous namespace)::softmax_warp_forward<float, floa",
+   "cuda_ms": 0.9
+  },
+  {
+   "op": "ampere_sgemm_64x64_tn",
+   "cuda_ms": 0.9
+  }
+ ]
+}
