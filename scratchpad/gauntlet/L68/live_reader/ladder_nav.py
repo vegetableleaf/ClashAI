@@ -220,7 +220,7 @@ class Classifier:
             won = None if w is None else w[1] > 600            # loss: banner at y ~174 above the opponent's name
             return {"screen": "results", "play_again": hit["play_again"], "ok": hit["results_ok"], "won": won,
                     "scores": sc}
-        if ("chest_q" in hit or "chest_q2" in hit) and "battle" not in hit:   # 10-21 chest reveal ("?" coins); q2 = orange chest 10-22
+        if ("chest_q" in hit or "chest_q2" in hit or "chest_tap" in hit) and "battle" not in hit:   # 10-21 chest reveal ("?" coins); q2 = orange chest 10-22; chest_tap = "Tap to open" caption 10-27
             return {"screen": "chest_reveal", "scores": sc}
         if "single_ok" in hit and "play_again" not in hit and "results_ok" not in hit:   # 10-20: results with only one OK
             w = hit.get("winner")

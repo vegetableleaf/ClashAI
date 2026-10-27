@@ -343,6 +343,23 @@
     1600
    ],
    "threshold": 0.85
+  },
+  "chest_tap": {
+   "file": "chest_tap.png",
+   "source": "chest_tap_to_open.png",
+   "box": [
+    280,
+    1445,
+    625,
+    1505
+   ],
+   "region": [
+    0,
+    1380,
+    900,
+    1600
+   ],
+   "threshold": 0.85
   }
  }
 }
