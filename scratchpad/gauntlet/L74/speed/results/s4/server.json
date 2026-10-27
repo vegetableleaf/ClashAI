@@ -1,0 +1,101 @@
+{
+ "gpu": "NVIDIA GeForce RTX 4090",
+ "rows": [
+  {
+   "mode": "eager",
+   "decide": false,
+   "block": 256,
+   "producers": 16,
+   "rows_per_s": 20109,
+   "mean_batch": 4022,
+   "stack_s": 0.029,
+   "forward_s": 0.991,
+   "decide_s": 0.0,
+   "idle_s": 0.003
+  },
+  {
+   "mode": "eager",
+   "decide": false,
+   "block": 64,
+   "producers": 64,
+   "rows_per_s": 17475,
+   "mean_batch": 3722,
+   "stack_s": 0.03,
+   "forward_s": 0.944,
+   "decide_s": 0.0,
+   "idle_s": 0.006
+  },
+  {
+   "mode": "eager",
+   "decide": true,
+   "block": 256,
+   "producers": 16,
+   "rows_per_s": 14093,
+   "mean_batch": 4027,
+   "stack_s": 0.02,
+   "forward_s": 0.711,
+   "decide_s": 0.271,
+   "idle_s": 0.003
+  },
+  {
+   "mode": "eager",
+   "decide": true,
+   "block": 64,
+   "producers": 64,
+   "rows_per_s": 11674,
+   "mean_batch": 3494,
+   "stack_s": 0.02,
+   "forward_s": 0.735,
+   "decide_s": 0.249,
+   "idle_s": 0.005
+  },
+  {
+   "mode": "graphs",
+   "decide": false,
+   "block": 256,
+   "producers": 16,
+   "rows_per_s": 19942,
+   "mean_batch": 4029,
+   "stack_s": 0.027,
+   "forward_s": 0.979,
+   "decide_s": 0.0,
+   "idle_s": 0.003
+  },
+  {
+   "mode": "graphs",
+   "decide": false,
+   "block": 64,
+   "producers": 64,
+   "rows_per_s": 0,
+   "mean_batch": 0,
+   "stack_s": 0.0,
+   "forward_s": 0.0,
+   "decide_s": 0.0,
+   "idle_s": 1.228
+  },
+  {
+   "mode": "graphs",
+   "decide": true,
+   "block": 256,
+   "producers": 16,
+   "rows_per_s": 0,
+   "mean_batch": 0,
+   "stack_s": 0.0,
+   "forward_s": 0.0,
+   "decide_s": 0.0,
+   "idle_s": 1.215
+  },
+  {
+   "mode": "graphs",
+   "decide": true,
+   "block": 64,
+   "producers": 64,
+   "rows_per_s": 0,
+   "mean_batch": 0,
+   "stack_s": 0.0,
+   "forward_s": 0.0,
+   "decide_s": 0.0,
+   "idle_s": 1.224
+  }
+ ]
+}

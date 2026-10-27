@@ -368,3 +368,142 @@ The supervisor log ended 05:20 and the last live log was 04:29; MuMu was open bu
   **107k/h**; the 2 GPUs give about 110-150k/h at the isolated rates.
 - **200-300k/h still needs the observation CPU cut to 1.5-2.3 vCPU-s per match.** The `Battle.save()` cue path is the
   largest single item, and it needs an engine accessor (fin16 / crforge facade).
+
+## j. S4: async GPU decide server, rows/s per model size and precision, the slowdown explained (pod 30408, 1x 4090)
+
+Rows are CLXIII feature-version-6 shapes: the live row fixture `results/live_batch1.pt`, jittered and tiled. Models:
+- **1.76M = the real CLXIII weights**, behind `LazyRefine`, so the forward cost equals the training models (no refine);
+- 5 / 10 / 15M = the same architecture wider and deeper, with random weights: 224 x 6, 288 x 8, 320 x 10;
+  5,179,176 / 10,069,672 / 14,689,160 params.
+
+Script: `s4_bench.py` (parts forward / server / slow / precision) and `shape_probe.py`. Results:
+`results/s4/*.json`.
+
+### j1. The server (`pipeline/policy_server.py`): no barrier, measured
+
+**What it does.**
+- Producers `submit` row blocks whenever they have them.
+- One thread takes whatever is queued, up to `max_batch` rows (it waits at most 1 ms for a fuller batch). It runs one
+  stack into pinned buffers, one H2D and one forward.
+- Then it runs **the P1 decide** (`decision_options.decide`, decode 'sample', each row with its own rng). The cell
+  logits come from the same forward's encodings.
+- Forward modes: eager, CUDA graphs (padded buckets of 64-8,192), and torch.compile.
+
+**Identity (a), fp32: `tests/test_policy_server.py`.**
+- 4 blocks of 5 / 7 / 3 / 9 rows were merged into ONE batch. play / slot / cell / why equal the same decide run block
+  by block, and log-probs are within 1e-5.
+- On CUDA, graphs and compile match eager heads (atol 1e-4 on logits, 1e-5 on p).
+- On the fixed 2,048-row obs set, fp32 decisions are bit-stable run to run (change rate 0.0, `precision` part below).
+
+**End to end, 1.76M, eager, max_batch 2,048 (a).**
+
+| producers x block | decide | rows/s | mean batch | server time split |
+|---|---|---|---|---|
+| 16 x 256 | off (forward only) | **19,968** | 2,048 | forward 97%, stack 3.6%, idle 0% |
+| 64 x 64 | off | 19,353 | 2,048 | forward 94%, stack 6% |
+| 16 x 256 | **on, in the server thread** | **14,336** | 2,048 | forward 70%, decide 28% (about 20 us per row) |
+| 64 x 64 | on | 13,721 | 2,048 | |
+| 16 x 256 | on, decide in a 2nd thread | 12,275 (slower) | 1,792 | the GIL; and the refine swap raced a concurrent cell call (72 AttributeErrors) -> now refused for refine policies and off by default |
+
+- **Without a barrier the GPU runs at its plateau (20.0k rows/s vs 21.0k in the bare loop).**
+- The decide costs about 20 us per row of Python. At 21k rows/s that is 0.42 core, so it must run outside the
+  server's process (b): in the producers (crforge's Java side, or Python producer processes), with only the cell call
+  coming back to the GPU. Not built.
+
+### j2. Forward rows/s, one 4090, fp32 (a): `forward` part
+
+| model | B 256 | 512 | 1,024 | 2,048 | 4,096 | 8,192 | CUDA graphs B 256 / 1,024 / 2,048 |
+|---|---|---|---|---|---|---|---|
+| 1.76M | 15,824 | 18,389 | 20,012 | **21,038** | 20,958 | 20,418 | 20,094 / 20,950 / 21,221 |
+| 5M | 7,695 | 8,206 | 8,437 | **8,638** | 8,602 | OOM | 8,416 / 8,554 / 8,639 |
+| 10M | 4,357 | 4,489 | **4,606** | 4,543 | 4,539 | OOM | 4,571 / 4,636 / 4,541 |
+| 15M | 2,770 | 2,834 | **2,849** | 2,796 | OOM | OOM | 2,859 / 2,862 / OOM |
+
+- **CUDA graphs help only at small batches** (1.76M at B 256: +27%). At B >= 1,024 the forward is device-bound.
+- **torch.compile** (max-autotune, no cudagraphs) gave 19,864 / 21,090 at B 256 / 512 for 1.76M, the same as graphs.
+  It spends minutes autotuning each shape, so the run was stopped and it is not used (a).
+- The OOMs at large B come from the graph pools and caching of earlier buckets in the same process (the server
+  bounds max_batch).
+
+### j3. Precision on the plateau (B 1,024 / 2,048 best), achieved TFLOPS, decision change vs fp32 (a)
+
+FLOPs per row are counted by `torch.utils.flop_counter` on the unfused fp32 forward. The decision-change rate is
+over 2,048 fixed jittered rows, the same per-row rng seeds, with a quarter of the rows forced to play.
+
+| model | GFLOP / row | fp32 rows/s (TFLOPS) | TF32 rows/s (TFLOPS), change | bf16 rows/s (TFLOPS), change |
+|---|---|---|---|---|
+| 1.76M (real CLXIII) | 0.425 | 20,925 (8.9) | 28,399 (12.1), **0.20%** | 47,072 (20.0), **0.34%** |
+| 5M | 1.759 | 8,686 (15.3) | 10,325 (18.2), 0.39% | 19,085 (33.6), 8.8% |
+| 10M | 3.751 | 4,615 (17.3) | 5,574 (20.9), 0.64% | 11,000 (41.3), 6.0% |
+| 15M | 5.719 | 2,845 (16.3) | 4,370 (25.0), 0.54% | 7,974 (45.6), 5.2% |
+
+- TF32 is +19-54%. bf16 is x2.2-2.8.
+- The 4090's vendor peaks (b, spec sheet, not measured here) are fp32 82.6, TF32 tensor 82.6 and bf16 tensor 165
+  TFLOPS dense. So **fp32 reaches 11-21% of peak and bf16 12-28%**. The forward is not purely matmul-bound: it also has
+  attention softmax, layer norms, GELU, embeddings and global features.
+- **The 5-15M change rates come from random weights** (near-flat logits flip on small perturbations). Only the 1.76M
+  row (real weights: 0.20% TF32, 0.34% bf16) speaks for a trained model (b).
+- **fp32 is the only identical path (a), and it runs on CUDA cores.** For hardware (b):
+  - a GPU wins on the identical path only through fp32 non-tensor throughput (and memory bandwidth);
+  - tensor-core datacenter parts help only if TF32 / bf16 decisions are accepted (a 0.2-0.34% per-decision change on
+    CLXIII);
+  - **the A100's fp32 non-tensor peak (19.5 TFLOPS) is below the 4090's 82.6**, so A100s would be slower than 4090s
+    for the identical path.
+- `gpu_bench/` measures this grid on the candidate card rather than projecting it.
+
+### j4. Max matches/h per 4090 (b: plateau rows/s x 3,600 / rows per match; the GPU alone)
+
+| model | fp32 (identical) 706 / 534 / 320 rows | TF32 706 / 534 / 320 | bf16 706 / 534 / 320 |
+|---|---|---|---|
+| 1.76M | **107k / 142k / 237k** | 145k / 191k / 319k | 240k / 317k / 530k |
+| 5M | 44k / 59k / 98k | 53k / 70k / 116k | 97k / 129k / 215k |
+| 10M | 24k / 31k / 52k | 28k / 38k / 63k | 56k / 74k / 124k |
+| 15M | 15k / 19k / 32k | 22k / 29k / 49k | 41k / 54k / 90k |
+
+- **(c) S3's "227k/h on one 4090 at 1.76M" needs bf16 (+ lazy refine).** On the identical fp32 path it is 107k at 706
+  rows per match.
+- 300k/h on one 4090 at 1.76M fp32 needs about 250 rows per match.
+- These ceilings assume the decide runs off the server (j1). With the decide in the server thread they are about
+  x0.68.
+
+### j5. The 12.8 -> 27-31 ms forward slowdown inside S1's rollouts: first sight of each batch shape (a)
+
+`slow` part + `shape_probe.py`, 1.76M, eager:
+
+| condition | ms per 146 rows |
+|---|---|
+| constant B 146 | 11.4 (15.1 in the probe run) |
+| 8 different models alternating, B 146 | 11.5 |
+| 48 CPU-burner processes, B 146 | 11.9 |
+| a new batch size every call (19-700), first pass | **92.5** (232 ms per call) |
+| the same 200 sizes, second pass | **8.45** |
+| 20 sizes after each was seen once | 8.52 |
+| new sizes padded to the next power-of-two bucket | 11.7 |
+
+- **The cause is the first use of each batch shape: about 210 ms each** (kernel and algorithm selection / caches).
+- It is **not CPU contention** (48 burners: +4%), **not the model switching**, and **not the allocator** (39 device
+  allocations, 0 retries, 0 frees).
+- S1's server saw an unbounded variety of row counts (19-700), so many calls paid first-sight costs. The 27-31 ms was
+  an average over those.
+- **Fix: pad to a few fixed buckets** (`policy_server.bucket`; the graphs / compile modes already do), or warm every
+  bucket at start.
+
+### j6. GPU bench bundle for the candidate card (`gpu_bench/`)
+
+`make_bundle.sh` builds `gpu_bench.tgz`: pipeline/ at HEAD plus the S4 scripts, the fixture and the CLXIII checkpoint.
+The tarball is a build artifact and is never committed (icebow/data).
+
+`bench_gpu.sh`:
+- records GPU / driver / torch / CUDA / cuDNN;
+- makes a venv that sees the image's torch (`FRESH=1` installs torch cu128 instead);
+- runs the j3 grid (precision part: 4 sizes x fp32 / TF32 / bf16, B 1,024 / 2,048, FLOPs, change rate) and the j2
+  grid (eager + graphs, B 256-8,192);
+- writes `/workspace/out/gpu_bench.json` + `bench.log` and prints DONE.
+
+torch.compile is left out (no gain, minutes per shape).
+
+Dry run on 30408 (4090, `FRESH=1`, so torch 2.11.0+cu128 was installed from scratch), measured:
+- **381 s wall**: setup 113 s (venv + torch + deps), precision grid 100 s, forward grid 166 s. All 12 precision rows and 48 forward rows were written, and DONE was the last line.
+- The numbers reproduce j2 / j3 within 1.5% (1.76M fp32 21,091 / TF32 28,193 / bf16 47,175 rows/s; same change rates).
+- On a card with more memory the OOM cells will run, so the time grows. It stays far under 40 min (b).
+- Usage: `tar xzf gpu_bench.tgz -C /workspace && bash /workspace/gpu_bench/bench_gpu.sh` (`GRID=quick`: 1.76M only).

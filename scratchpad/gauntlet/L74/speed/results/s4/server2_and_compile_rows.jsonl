@@ -1,0 +1,8 @@
+{"mode": "eager", "decide": false, "pipelined": false, "block": 256, "producers": 16, "rows_per_s": 19968, "mean_batch": 2048, "stack_s": 0.036, "forward_s": 0.97, "decide_s": 0.0, "idle_s": 0.0}
+{"mode": "eager", "decide": false, "pipelined": false, "block": 64, "producers": 64, "rows_per_s": 19353, "mean_batch": 2048, "stack_s": 0.062, "forward_s": 0.941, "decide_s": 0.0, "idle_s": 0.0}
+{"mode": "eager", "decide": true, "pipelined": false, "block": 256, "producers": 16, "rows_per_s": 14336, "mean_batch": 2048, "stack_s": 0.027, "forward_s": 0.699, "decide_s": 0.284, "idle_s": 0.0}
+{"mode": "eager", "decide": true, "pipelined": false, "block": 64, "producers": 64, "rows_per_s": 13721, "mean_batch": 2048, "stack_s": 0.052, "forward_s": 0.669, "decide_s": 0.293, "idle_s": 0.0}
+{"mode": "eager", "decide": true, "pipelined": true, "block": 256, "producers": 16, "rows_per_s": 12275, "mean_batch": 1792, "stack_s": 0.019, "forward_s": 0.61, "decide_s": 0.365, "idle_s": 0.368}
+{"mode": "eager", "decide": true, "pipelined": true, "block": 64, "producers": 64, "rows_per_s": 2419, "mean_batch": 64, "stack_s": 0.006, "forward_s": 0.631, "decide_s": 0.318, "idle_s": 0.327}
+{"size": "1.76M", "params": 1759432, "mode": "compile", "B": 256, "ms": 12.89, "rows_per_s": 19864}
+{"size": "1.76M", "params": 1759432, "mode": "compile", "B": 512, "ms": 24.28, "rows_per_s": 21090}

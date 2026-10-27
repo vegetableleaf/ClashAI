@@ -1,0 +1,27 @@
+{
+ "constant_146": {
+  "ms_per_call": 15.07,
+  "ms_per_146_rows": 15.07
+ },
+ "20_sizes_seen": {
+  "ms_per_call": 20.32,
+  "ms_per_146_rows": 8.52
+ },
+ "200_fresh_first_pass": {
+  "ms_per_call": 231.77,
+  "ms_per_146_rows": 92.53
+ },
+ "200_same_second_pass": {
+  "ms_per_call": 21.17,
+  "ms_per_146_rows": 8.45
+ },
+ "200_fresh_padded_to_bucket": {
+  "ms_per_call": 28.08,
+  "ms_per_146_rows": 11.68
+ },
+ "allocator": {
+  "num_alloc_retries": 0,
+  "num_device_alloc": 39,
+  "num_device_free": 0
+ }
+}

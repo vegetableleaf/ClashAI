@@ -1,0 +1,61 @@
+{
+ "gpu": "NVIDIA GeForce RTX 4090",
+ "rows": [
+  {
+   "burners": 0,
+   "varying_batch": false,
+   "eight_models": false,
+   "ms_per_call": 11.41,
+   "ms_per_146_rows": 11.41
+  },
+  {
+   "burners": 0,
+   "varying_batch": false,
+   "eight_models": true,
+   "ms_per_call": 11.48,
+   "ms_per_146_rows": 11.48
+  },
+  {
+   "burners": 0,
+   "varying_batch": true,
+   "eight_models": false,
+   "ms_per_call": 240.45,
+   "ms_per_146_rows": 92.12
+  },
+  {
+   "burners": 0,
+   "varying_batch": true,
+   "eight_models": true,
+   "ms_per_call": 180.75,
+   "ms_per_146_rows": 71.19
+  },
+  {
+   "burners": 48,
+   "varying_batch": false,
+   "eight_models": false,
+   "ms_per_call": 11.88,
+   "ms_per_146_rows": 11.88
+  },
+  {
+   "burners": 48,
+   "varying_batch": false,
+   "eight_models": true,
+   "ms_per_call": 11.74,
+   "ms_per_146_rows": 11.74
+  },
+  {
+   "burners": 48,
+   "varying_batch": true,
+   "eight_models": false,
+   "ms_per_call": 140.52,
+   "ms_per_146_rows": 56.23
+  },
+  {
+   "burners": 48,
+   "varying_batch": true,
+   "eight_models": true,
+   "ms_per_call": 121.02,
+   "ms_per_146_rows": 48.61
+  }
+ ]
+}

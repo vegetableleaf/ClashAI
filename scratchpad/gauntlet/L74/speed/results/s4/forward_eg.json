@@ -1,0 +1,376 @@
+{
+ "gpu": "NVIDIA GeForce RTX 4090",
+ "rows": [
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "eager",
+   "B": 256,
+   "ms": 16.18,
+   "rows_per_s": 15824
+  },
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "eager",
+   "B": 512,
+   "ms": 27.84,
+   "rows_per_s": 18389
+  },
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "eager",
+   "B": 1024,
+   "ms": 51.17,
+   "rows_per_s": 20012
+  },
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "eager",
+   "B": 2048,
+   "ms": 97.35,
+   "rows_per_s": 21038
+  },
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "eager",
+   "B": 4096,
+   "ms": 195.43,
+   "rows_per_s": 20958
+  },
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "eager",
+   "B": 8192,
+   "ms": 401.22,
+   "rows_per_s": 20418
+  },
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "graphs",
+   "B": 256,
+   "ms": 12.74,
+   "rows_per_s": 20094
+  },
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "graphs",
+   "B": 512,
+   "ms": 24.64,
+   "rows_per_s": 20782
+  },
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "graphs",
+   "B": 1024,
+   "ms": 48.88,
+   "rows_per_s": 20950
+  },
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "graphs",
+   "B": 2048,
+   "ms": 96.51,
+   "rows_per_s": 21221
+  },
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "graphs",
+   "B": 4096,
+   "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 2.67 GiB. GPU 0 has a total capacity of 23.52 GiB of which 873.75 MiB is free. Including non-PyTorch memory, this process has 22.66 GiB memory i"
+  },
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "graphs",
+   "B": 8192,
+   "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 5.33 GiB. GPU 0 has a total capacity of 23.52 GiB of which 333.75 MiB is free. Including non-PyTorch memory, this process has 23.18 GiB memory i"
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "eager",
+   "B": 256,
+   "ms": 33.27,
+   "rows_per_s": 7695
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "eager",
+   "B": 512,
+   "ms": 62.39,
+   "rows_per_s": 8206
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "eager",
+   "B": 1024,
+   "ms": 121.36,
+   "rows_per_s": 8437
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "eager",
+   "B": 2048,
+   "ms": 237.08,
+   "rows_per_s": 8638
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "eager",
+   "B": 4096,
+   "ms": 476.14,
+   "rows_per_s": 8602
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "eager",
+   "B": 8192,
+   "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 5.71 GiB. GPU 0 has a total capacity of 23.52 GiB of which 3.31 GiB is free. Including non-PyTorch memory, this process has 20.20 GiB memory in "
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "graphs",
+   "B": 256,
+   "ms": 30.42,
+   "rows_per_s": 8416
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "graphs",
+   "B": 512,
+   "ms": 60.2,
+   "rows_per_s": 8504
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "graphs",
+   "B": 1024,
+   "ms": 119.72,
+   "rows_per_s": 8554
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "graphs",
+   "B": 2048,
+   "ms": 237.07,
+   "rows_per_s": 8639
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "graphs",
+   "B": 4096,
+   "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 2.86 GiB. GPU 0 has a total capacity of 23.52 GiB of which 491.75 MiB is free. Including non-PyTorch memory, this process has 23.03 GiB memory i"
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "graphs",
+   "B": 8192,
+   "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 4.29 GiB. GPU 0 has a total capacity of 23.52 GiB of which 3.18 GiB is free. Including non-PyTorch memory, this process has 20.33 GiB memory in "
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "eager",
+   "B": 256,
+   "ms": 58.75,
+   "rows_per_s": 4357
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "eager",
+   "B": 512,
+   "ms": 114.05,
+   "rows_per_s": 4489
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "eager",
+   "B": 1024,
+   "ms": 222.3,
+   "rows_per_s": 4606
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "eager",
+   "B": 2048,
+   "ms": 450.81,
+   "rows_per_s": 4543
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "eager",
+   "B": 4096,
+   "ms": 902.38,
+   "rows_per_s": 4539
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "eager",
+   "B": 8192,
+   "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 7.35 GiB. GPU 0 has a total capacity of 23.52 GiB of which 5.80 GiB is free. Including non-PyTorch memory, this process has 17.71 GiB memory in "
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "graphs",
+   "B": 256,
+   "ms": 56.01,
+   "rows_per_s": 4571
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "graphs",
+   "B": 512,
+   "ms": 111.95,
+   "rows_per_s": 4573
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "graphs",
+   "B": 1024,
+   "ms": 220.89,
+   "rows_per_s": 4636
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "graphs",
+   "B": 2048,
+   "ms": 451.02,
+   "rows_per_s": 4541
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "graphs",
+   "B": 4096,
+   "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 2.76 GiB. GPU 0 has a total capacity of 23.52 GiB of which 1.44 GiB is free. Including non-PyTorch memory, this process has 22.07 GiB memory in "
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "graphs",
+   "B": 8192,
+   "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 1.84 GiB. GPU 0 has a total capacity of 23.52 GiB of which 1.17 GiB is free. Including non-PyTorch memory, this process has 22.34 GiB memory in "
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "eager",
+   "B": 256,
+   "ms": 92.41,
+   "rows_per_s": 2770
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "eager",
+   "B": 512,
+   "ms": 180.64,
+   "rows_per_s": 2834
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "eager",
+   "B": 1024,
+   "ms": 359.39,
+   "rows_per_s": 2849
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "eager",
+   "B": 2048,
+   "ms": 732.58,
+   "rows_per_s": 2796
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "eager",
+   "B": 4096,
+   "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 6.67 GiB. GPU 0 has a total capacity of 23.52 GiB of which 207.75 MiB is free. Including non-PyTorch memory, this process has 23.31 GiB memory i"
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "eager",
+   "B": 8192,
+   "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 13.33 GiB. GPU 0 has a total capacity of 23.52 GiB of which 8.33 GiB is free. Including non-PyTorch memory, this process has 15.18 GiB memory in"
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "graphs",
+   "B": 256,
+   "ms": 89.53,
+   "rows_per_s": 2859
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "graphs",
+   "B": 512,
+   "ms": 178.29,
+   "rows_per_s": 2872
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "graphs",
+   "B": 1024,
+   "ms": 357.83,
+   "rows_per_s": 2862
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "graphs",
+   "B": 2048,
+   "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 3.33 GiB. GPU 0 has a total capacity of 23.52 GiB of which 2.27 GiB is free. Including non-PyTorch memory, this process has 21.24 GiB memory in "
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "graphs",
+   "B": 4096,
+   "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 3.06 GiB. GPU 0 has a total capacity of 23.52 GiB of which 2.45 GiB is free. Including non-PyTorch memory, this process has 21.06 GiB memory in "
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "graphs",
+   "B": 8192,
+   "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 6.12 GiB. GPU 0 has a total capacity of 23.52 GiB of which 2.30 GiB is free. Including non-PyTorch memory, this process has 21.21 GiB memory in "
+  }
+ ]
+}

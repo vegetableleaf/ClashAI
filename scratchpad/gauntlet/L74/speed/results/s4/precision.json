@@ -1,0 +1,137 @@
+{
+ "gpu": "NVIDIA GeForce RTX 4090",
+ "rows": [
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "fp32",
+   "gflop_per_row": 0.4254,
+   "rows_per_s_B1024": 20106,
+   "rows_per_s_B2048": 20925,
+   "achieved_tflops": 8.9,
+   "decision_change_rate": 0.0,
+   "max_abs_dp_gate": 0.0
+  },
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "tf32",
+   "gflop_per_row": 0.4254,
+   "rows_per_s_B1024": 27044,
+   "rows_per_s_B2048": 28399,
+   "achieved_tflops": 12.08,
+   "decision_change_rate": 0.00195,
+   "max_abs_dp_gate": 0.00037741661071777344
+  },
+  {
+   "size": "1.76M",
+   "params": 1759432,
+   "mode": "bf16",
+   "gflop_per_row": 0.4254,
+   "rows_per_s_B1024": 43335,
+   "rows_per_s_B2048": 47072,
+   "achieved_tflops": 20.03,
+   "decision_change_rate": 0.00342,
+   "max_abs_dp_gate": 0.005730777978897095
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "fp32",
+   "gflop_per_row": 1.759,
+   "rows_per_s_B1024": 8498,
+   "rows_per_s_B2048": 8686,
+   "achieved_tflops": 15.28,
+   "decision_change_rate": 0.0,
+   "max_abs_dp_gate": 5.960464477539063e-08
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "tf32",
+   "gflop_per_row": 1.759,
+   "rows_per_s_B1024": 10125,
+   "rows_per_s_B2048": 10325,
+   "achieved_tflops": 18.16,
+   "decision_change_rate": 0.00391,
+   "max_abs_dp_gate": 7.778406143188477e-05
+  },
+  {
+   "size": "5M",
+   "params": 5179176,
+   "mode": "bf16",
+   "gflop_per_row": 1.759,
+   "rows_per_s_B1024": 18488,
+   "rows_per_s_B2048": 19085,
+   "achieved_tflops": 33.57,
+   "decision_change_rate": 0.08789,
+   "max_abs_dp_gate": 0.003224790096282959
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "fp32",
+   "gflop_per_row": 3.751,
+   "rows_per_s_B1024": 4615,
+   "rows_per_s_B2048": 4549,
+   "achieved_tflops": 17.31,
+   "decision_change_rate": 0.0,
+   "max_abs_dp_gate": 0.0
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "tf32",
+   "gflop_per_row": 3.751,
+   "rows_per_s_B1024": 5513,
+   "rows_per_s_B2048": 5574,
+   "achieved_tflops": 20.91,
+   "decision_change_rate": 0.00635,
+   "max_abs_dp_gate": 0.00010848045349121094
+  },
+  {
+   "size": "10M",
+   "params": 10069672,
+   "mode": "bf16",
+   "gflop_per_row": 3.751,
+   "rows_per_s_B1024": 10798,
+   "rows_per_s_B2048": 11000,
+   "achieved_tflops": 41.26,
+   "decision_change_rate": 0.05957,
+   "max_abs_dp_gate": 0.002477884292602539
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "fp32",
+   "gflop_per_row": 5.7189,
+   "rows_per_s_B1024": 2845,
+   "rows_per_s_B2048": 2792,
+   "achieved_tflops": 16.27,
+   "decision_change_rate": 0.0,
+   "max_abs_dp_gate": 2.9802322387695312e-08
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "tf32",
+   "gflop_per_row": 5.7189,
+   "rows_per_s_B1024": 4330,
+   "rows_per_s_B2048": 4370,
+   "achieved_tflops": 24.99,
+   "decision_change_rate": 0.00537,
+   "max_abs_dp_gate": 4.9233436584472656e-05
+  },
+  {
+   "size": "15M",
+   "params": 14689160,
+   "mode": "bf16",
+   "gflop_per_row": 5.7189,
+   "rows_per_s_B1024": 7860,
+   "rows_per_s_B2048": 7974,
+   "achieved_tflops": 45.6,
+   "decision_change_rate": 0.05176,
+   "max_abs_dp_gate": 0.0017945468425750732
+  }
+ ]
+}

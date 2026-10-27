@@ -1,0 +1,78 @@
+== env Tue Oct 27 12:39:32 UTC 2026
+name, memory.total [MiB], driver_version, clocks.max.sm [MHz]
+NVIDIA GeForce RTX 4090, 24564 MiB, 595.91.07, 3105 MHz
+== no CUDA torch visible: installing torch (cu128) into the venv
+== torch 2.11.0+cu128 cuda 12.8 cudnn 91900 NVIDIA GeForce RTX 4090
+== setup 113 s
+/workspace/gbtest/gpu_bench/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+{"size": "1.76M", "params": 1759432, "mode": "fp32", "gflop_per_row": 0.4254, "rows_per_s_B1024": 20287, "rows_per_s_B2048": 21091, "achieved_tflops": 8.97, "decision_change_rate": 0.0, "max_abs_dp_gate": 0.0}
+{"size": "1.76M", "params": 1759432, "mode": "tf32", "gflop_per_row": 0.4254, "rows_per_s_B1024": 27088, "rows_per_s_B2048": 28193, "achieved_tflops": 11.99, "decision_change_rate": 0.00195, "max_abs_dp_gate": 0.00037741661071777344}
+{"size": "1.76M", "params": 1759432, "mode": "bf16", "gflop_per_row": 0.4254, "rows_per_s_B1024": 43529, "rows_per_s_B2048": 47175, "achieved_tflops": 20.07, "decision_change_rate": 0.00342, "max_abs_dp_gate": 0.005730777978897095}
+/workspace/gbtest/gpu_bench/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+{"size": "5M", "params": 5179176, "mode": "fp32", "gflop_per_row": 1.759, "rows_per_s_B1024": 8516, "rows_per_s_B2048": 8714, "achieved_tflops": 15.33, "decision_change_rate": 0.0, "max_abs_dp_gate": 0.0}
+{"size": "5M", "params": 5179176, "mode": "tf32", "gflop_per_row": 1.759, "rows_per_s_B1024": 10147, "rows_per_s_B2048": 10288, "achieved_tflops": 18.1, "decision_change_rate": 0.00391, "max_abs_dp_gate": 7.778406143188477e-05}
+{"size": "5M", "params": 5179176, "mode": "bf16", "gflop_per_row": 1.759, "rows_per_s_B1024": 18531, "rows_per_s_B2048": 19008, "achieved_tflops": 33.44, "decision_change_rate": 0.08789, "max_abs_dp_gate": 0.003224790096282959}
+{"size": "10M", "params": 10069672, "mode": "fp32", "gflop_per_row": 3.751, "rows_per_s_B1024": 4617, "rows_per_s_B2048": 4551, "achieved_tflops": 17.32, "decision_change_rate": 0.0, "max_abs_dp_gate": 0.0}
+{"size": "10M", "params": 10069672, "mode": "tf32", "gflop_per_row": 3.751, "rows_per_s_B1024": 5502, "rows_per_s_B2048": 5547, "achieved_tflops": 20.81, "decision_change_rate": 0.00635, "max_abs_dp_gate": 0.00010848045349121094}
+{"size": "10M", "params": 10069672, "mode": "bf16", "gflop_per_row": 3.751, "rows_per_s_B1024": 10813, "rows_per_s_B2048": 10958, "achieved_tflops": 41.1, "decision_change_rate": 0.05957, "max_abs_dp_gate": 0.002477884292602539}
+{"size": "15M", "params": 14689160, "mode": "fp32", "gflop_per_row": 5.7189, "rows_per_s_B1024": 2842, "rows_per_s_B2048": 2792, "achieved_tflops": 16.25, "decision_change_rate": 0.0, "max_abs_dp_gate": 5.960464477539063e-08}
+{"size": "15M", "params": 14689160, "mode": "tf32", "gflop_per_row": 5.7189, "rows_per_s_B1024": 4320, "rows_per_s_B2048": 4369, "achieved_tflops": 24.99, "decision_change_rate": 0.00537, "max_abs_dp_gate": 4.9233436584472656e-05}
+{"size": "15M", "params": 14689160, "mode": "bf16", "gflop_per_row": 5.7189, "rows_per_s_B1024": 7843, "rows_per_s_B2048": 7977, "achieved_tflops": 45.62, "decision_change_rate": 0.05176, "max_abs_dp_gate": 0.0017945468425750732}
+== precision done 213 s
+/workspace/gbtest/gpu_bench/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+{"size": "1.76M", "params": 1759432, "mode": "eager", "B": 256, "ms": 15.95, "rows_per_s": 16052}
+{"size": "1.76M", "params": 1759432, "mode": "eager", "B": 512, "ms": 27.5, "rows_per_s": 18616}
+{"size": "1.76M", "params": 1759432, "mode": "eager", "B": 1024, "ms": 50.71, "rows_per_s": 20194}
+{"size": "1.76M", "params": 1759432, "mode": "eager", "B": 2048, "ms": 97.88, "rows_per_s": 20924}
+{"size": "1.76M", "params": 1759432, "mode": "eager", "B": 4096, "ms": 195.5, "rows_per_s": 20951}
+{"size": "1.76M", "params": 1759432, "mode": "eager", "B": 8192, "ms": 400.96, "rows_per_s": 20431}
+{"size": "1.76M", "params": 1759432, "mode": "graphs", "B": 256, "ms": 12.76, "rows_per_s": 20057}
+{"size": "1.76M", "params": 1759432, "mode": "graphs", "B": 512, "ms": 24.67, "rows_per_s": 20752}
+{"size": "1.76M", "params": 1759432, "mode": "graphs", "B": 1024, "ms": 48.92, "rows_per_s": 20931}
+{"size": "1.76M", "params": 1759432, "mode": "graphs", "B": 2048, "ms": 96.73, "rows_per_s": 21171}
+{"size": "1.76M", "params": 1759432, "mode": "graphs", "B": 4096, "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 2.67 GiB. GPU 0 has a total capacity of 23.52 GiB of which 873.75 MiB is free. Including non-PyTorch memory, this process has 22.66 GiB memory i"}
+{"size": "1.76M", "params": 1759432, "mode": "graphs", "B": 8192, "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 5.33 GiB. GPU 0 has a total capacity of 23.52 GiB of which 333.75 MiB is free. Including non-PyTorch memory, this process has 23.18 GiB memory i"}
+{"size": "5M", "params": 5179176, "mode": "eager", "B": 256, "ms": 32.8, "rows_per_s": 7805}
+{"size": "5M", "params": 5179176, "mode": "eager", "B": 512, "ms": 61.88, "rows_per_s": 8274}
+{"size": "5M", "params": 5179176, "mode": "eager", "B": 1024, "ms": 120.19, "rows_per_s": 8520}
+{"size": "5M", "params": 5179176, "mode": "eager", "B": 2048, "ms": 236.4, "rows_per_s": 8663}
+{"size": "5M", "params": 5179176, "mode": "eager", "B": 4096, "ms": 473.63, "rows_per_s": 8648}
+{"size": "5M", "params": 5179176, "mode": "eager", "B": 8192, "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 5.71 GiB. GPU 0 has a total capacity of 23.52 GiB of which 3.30 GiB is free. Including non-PyTorch memory, this process has 20.21 GiB memory in "}
+{"size": "5M", "params": 5179176, "mode": "graphs", "B": 256, "ms": 30.2, "rows_per_s": 8477}
+{"size": "5M", "params": 5179176, "mode": "graphs", "B": 512, "ms": 59.98, "rows_per_s": 8536}
+{"size": "5M", "params": 5179176, "mode": "graphs", "B": 1024, "ms": 118.89, "rows_per_s": 8613}
+{"size": "5M", "params": 5179176, "mode": "graphs", "B": 2048, "ms": 236.03, "rows_per_s": 8677}
+{"size": "5M", "params": 5179176, "mode": "graphs", "B": 4096, "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 2.86 GiB. GPU 0 has a total capacity of 23.52 GiB of which 491.75 MiB is free. Including non-PyTorch memory, this process has 23.03 GiB memory i"}
+{"size": "5M", "params": 5179176, "mode": "graphs", "B": 8192, "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 4.29 GiB. GPU 0 has a total capacity of 23.52 GiB of which 3.18 GiB is free. Including non-PyTorch memory, this process has 20.33 GiB memory in "}
+/workspace/gbtest/gpu_bench/pipeline/model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+{"size": "10M", "params": 10069672, "mode": "eager", "B": 256, "ms": 58.62, "rows_per_s": 4367}
+{"size": "10M", "params": 10069672, "mode": "eager", "B": 512, "ms": 113.81, "rows_per_s": 4499}
+{"size": "10M", "params": 10069672, "mode": "eager", "B": 1024, "ms": 221.63, "rows_per_s": 4620}
+{"size": "10M", "params": 10069672, "mode": "eager", "B": 2048, "ms": 450.11, "rows_per_s": 4550}
+{"size": "10M", "params": 10069672, "mode": "eager", "B": 4096, "ms": 898.69, "rows_per_s": 4558}
+{"size": "10M", "params": 10069672, "mode": "eager", "B": 8192, "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 7.35 GiB. GPU 0 has a total capacity of 23.52 GiB of which 5.80 GiB is free. Including non-PyTorch memory, this process has 17.71 GiB memory in "}
+{"size": "10M", "params": 10069672, "mode": "graphs", "B": 256, "ms": 55.93, "rows_per_s": 4577}
+{"size": "10M", "params": 10069672, "mode": "graphs", "B": 512, "ms": 111.74, "rows_per_s": 4582}
+{"size": "10M", "params": 10069672, "mode": "graphs", "B": 1024, "ms": 220.38, "rows_per_s": 4647}
+{"size": "10M", "params": 10069672, "mode": "graphs", "B": 2048, "ms": 449.12, "rows_per_s": 4560}
+{"size": "10M", "params": 10069672, "mode": "graphs", "B": 4096, "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 2.76 GiB. GPU 0 has a total capacity of 23.52 GiB of which 1.44 GiB is free. Including non-PyTorch memory, this process has 22.07 GiB memory in "}
+{"size": "10M", "params": 10069672, "mode": "graphs", "B": 8192, "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 1.84 GiB. GPU 0 has a total capacity of 23.52 GiB of which 1.17 GiB is free. Including non-PyTorch memory, this process has 22.34 GiB memory in "}
+{"size": "15M", "params": 14689160, "mode": "eager", "B": 256, "ms": 92.32, "rows_per_s": 2773}
+{"size": "15M", "params": 14689160, "mode": "eager", "B": 512, "ms": 180.86, "rows_per_s": 2831}
+{"size": "15M", "params": 14689160, "mode": "eager", "B": 1024, "ms": 359.55, "rows_per_s": 2848}
+{"size": "15M", "params": 14689160, "mode": "eager", "B": 2048, "ms": 733.25, "rows_per_s": 2793}
+{"size": "15M", "params": 14689160, "mode": "eager", "B": 4096, "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 6.67 GiB. GPU 0 has a total capacity of 23.52 GiB of which 219.75 MiB is free. Including non-PyTorch memory, this process has 23.29 GiB memory i"}
+{"size": "15M", "params": 14689160, "mode": "eager", "B": 8192, "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 13.33 GiB. GPU 0 has a total capacity of 23.52 GiB of which 8.34 GiB is free. Including non-PyTorch memory, this process has 15.17 GiB memory in"}
+{"size": "15M", "params": 14689160, "mode": "graphs", "B": 256, "ms": 89.45, "rows_per_s": 2862}
+{"size": "15M", "params": 14689160, "mode": "graphs", "B": 512, "ms": 178.41, "rows_per_s": 2870}
+{"size": "15M", "params": 14689160, "mode": "graphs", "B": 1024, "ms": 357.87, "rows_per_s": 2861}
+{"size": "15M", "params": 14689160, "mode": "graphs", "B": 2048, "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 3.33 GiB. GPU 0 has a total capacity of 23.52 GiB of which 2.26 GiB is free. Including non-PyTorch memory, this process has 21.25 GiB memory in "}
+{"size": "15M", "params": 14689160, "mode": "graphs", "B": 4096, "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 3.06 GiB. GPU 0 has a total capacity of 23.52 GiB of which 2.45 GiB is free. Including non-PyTorch memory, this process has 21.06 GiB memory in "}
+{"size": "15M", "params": 14689160, "mode": "graphs", "B": 8192, "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 6.12 GiB. GPU 0 has a total capacity of 23.52 GiB of which 2.29 GiB is free. Including non-PyTorch memory, this process has 21.22 GiB memory in "}
+== forward done 379 s
+wrote /workspace/gb_out/gpu_bench.json
+DONE
