@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "registered": "2026-10-27",
+  "source": "scratchpad/gauntlet/L74/plan1026/PLAN.md Pillar 2 + REPORT_opponents.md section 4; numbers copied, none tuned on baseline scores",
+  "rule": "every pass is an equivalence test; a cell with too little data FAILS (never passes by default)",
+  "A": {
+    "agreement_card_min": 0.437,
+    "agreement_cell_min": 0.275,
+    "agreement_ceiling_method": "L67/agreement_ceiling.py, matched states, pro pairs at board distance < 0.25",
+    "nll_vs_per_deck_finetune_max_extra_nats": 0.03,
+    "ece_card_pp_max": 1.0,
+    "ece_top_cell_pp_max": 1.0,
+    "ece_timing_slot_pp_max": 0.5,
+    "timing_rescaled_gap_ks_max": 0.02,
+    "timing_min_gaps_per_archetype": 5000,
+    "ability_press_ks_max": 0.05,
+    "ability_press_min_n_per_hero": 2000,
+    "memory_used": "late-match (t > 120 s) NLL with the real memory beats a memory from another match by more than the seed gap"
+  },
+  "B": {
+    "stats_features_sim_rows": ["ppm_1x","ppm_2x","first_tick","react_s","react_3s","react_lift","push_mean","push_max","spell_share"],
+    "stats_features_full": ["ppm_1x","ppm_2x","own_half","bridge","our_half","first_tick","react_s","react_3s","react_lift","push_mean","push_max","spell_share","opp_el"],
+    "extra_play_stats": ["gap_p10","gap_p50","gap_p90","card_entropy","top_card_share","repeat_rate"],
+    "b_hf_per_stat_abs_d_max": 0.10,
+    "b_hf_min_games_per_archetype": 2000,
+    "b_live_per_stat_abs_d_max": 0.20,
+    "b_live_rms_d_max": 0.10,
+    "human_floor_rms_d_reference": 0.05,
+    "human_12k_vs_13k_rms_d_reference": 0.10,
+    "b3_spread_ratio_range": [0.9, 1.1],
+    "b3_stats": ["ppm_1x","ppm_2x","first_tick","react_s","react_3s","push_mean","push_max"],
+    "min_n_per_side_for_a_stat": 5,
+    "signature_stats_abs_d_max": 0.10,
+    "signature_archetypes": ["Siege","Bait","Beatdown","Hog_cycle","Bridge_spam","Control"]
+  },
+  "C": {
+    "auc_upper_ci_max_overall": 0.55,
+    "auc_upper_ci_max_per_archetype": 0.58,
+    "auc_vs_human_12k13k_margin": 0.03,
+    "n_per_class_min": 5000,
+    "status": "level C not built yet (later ticket); thresholds registered now"
+  },
+  "D": {
+    "min_sealed_matches": 1500,
+    "mean_pred_vs_live_pp_max": 4.0,
+    "archetype_min_live_n": 150,
+    "archetype_residual_pp_max": 8.0,
+    "recalibration_slope_range": [0.8, 1.25],
+    "tost_ci": 0.90
+  },
+  "H": {
+    "definition": "H = sum_c w_c * pass_c; c = head deck (>= 200 held-out HF sides and in the live census) else archetype, per band; w_c = cell share of that band's live opponents",
+    "target": 0.999,
+    "bands_trophies": [[10000, 12000], [12000, 13000], [13000, 14000], [14000, 99999]],
+    "archetypes": ["Hog_cycle","Siege","Log_Bait","Heavy_beatdown","Light_beatdown","PEKKA_MK_bridge","Bridge_spam","Air","Control","Other"],
+    "report_separately": ["H_ABC", "H_D"]
+  },
+  "attribution_rule": "if A-C pass and D fails, the gap is assigned to the engine or the bot's live execution, not the opponent"
+}
