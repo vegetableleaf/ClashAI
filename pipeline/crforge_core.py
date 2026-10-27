@@ -29,9 +29,12 @@ What it is not (each raises rather than run something else)
   * ``ShuffleMode.NONE`` only (the deal is the setup's order: crforge's own shuffle draw is taken, then the hand is put
     back in that order). No ``start_tick`` / ``elixir_milli`` / ``tower_hp`` / ``spawns`` starts, no tower troops.
   * Levels: ``setup.levels`` / ``tower_levels`` when given, else ``level`` (16) everywhere (RoyaleSim's default is 11).
+  * Hero abilities (F1c-1): ``PlayerState.abilities`` has one row per button from the deal on, in RoyaleSim's button
+    order (heroes, then champions), from crforge's champion slots; a hero body sets STATUS_HERO (16), as RoyaleSim
+    fin16 does (its summons and champions do not). A press runs 20 ticks after it is given, like a play.
   * ``_battle`` offers what pipeline code reads off RoyaleSim's Battle: ``state_json``, ``catalogue_json``,
-    ``unit_types_json`` / ``unit_types_digest``, and ``save()`` = only the fields ``sim_unit_state.extract`` reads, from
-    crforge's nearest fields (attack / load timers; jumping / dash / hide / shot buffs fixed defaults). Cue VALUES are
+    ``unit_types_json`` / ``unit_types_digest``, ``debug_units`` (uid, name only), and ``save()`` = only the fields
+    ``sim_unit_state.extract`` reads, from crforge's nearest fields (attack / load timers; jumping / dash / hide / shot buffs fixed defaults). Cue VALUES are
     therefore not RoyaleSim's.
 """
 from __future__ import annotations
@@ -63,12 +66,13 @@ DELAY = 20                     # crforge Standard1v1Battle.PLAY_DELAY_TICKS
 LEVEL = 16
 # crforge PlayerCommands.Refusal (ordinal order) -> RoyaleSim DeployStatus; 100 = a play crforge does not model
 REFUSAL = ("NONE", "MATCH_OVER", "KING_DEAD", "NOT_IN_HAND", "START_COOLDOWN", "CARD_PENDING", "NOT_ENOUGH_ELIXIR",
-           "NO_TILE", "NO_CHAMPION", "COOLDOWN", "NO_CHARGES", "NOT_CHAMPION", "ABILITY_PENDING", "CLONE", "FROZEN")
+           "NO_TILE", "NO_CHAMPION", "COOLDOWN", "NO_CHARGES", "NOT_CHAMPION", "ABILITY_PENDING", "CLONE", "FROZEN",
+           "ABILITY_DISABLED")
 _STATUS = dict(zip(REFUSAL, (DeployStatus.OK, DeployStatus.GAME_OVER, DeployStatus.GAME_OVER, DeployStatus.EMPTY_SLOT,
                              DeployStatus.TOO_EARLY, DeployStatus.CARD_PENDING, DeployStatus.NOT_ENOUGH_ELIXIR,
                              DeployStatus.NO_DEPLOY, DeployStatus.NO_HERO, DeployStatus.ABILITY_NOT_READY,
                              DeployStatus.ABILITY_SPENT, DeployStatus.NO_HERO, DeployStatus.CARD_PENDING,
-                             DeployStatus.NO_HERO, DeployStatus.ABILITY_NOT_READY)))
+                             DeployStatus.NO_HERO, DeployStatus.ABILITY_NOT_READY, DeployStatus.ABILITY_NOT_READY)))
 _J = {}            # the JVM's classes and shared tables, once per process
 
 
@@ -138,6 +142,14 @@ class _Battle:
 
     def unit_types_digest(self) -> str:
         return hashlib.sha256(self.unit_types_json().encode()).hexdigest()
+
+    def debug_units(self) -> list:
+        """(uid, unit name) per troop, the two columns royale_env reads of RoyaleSim's debug_units (the hero range
+        lookup): a hero body (STATUS_HERO) is "<card>_hero", as RoyaleSim names its hero form, else its card. The
+        route / speed columns are not given."""
+        names = {c.card_id: c.name for c in self.core._cards}
+        return [(e.uid, names[e.card_id] + ("_hero" if e.status_flags & 16 else ""))
+                for e in self.core.state().entities if e.kind == 0 and e.card_id in names]
 
     def set_tower_troops(self, blue=None, red=None) -> None:
         if blue is not None or red is not None:

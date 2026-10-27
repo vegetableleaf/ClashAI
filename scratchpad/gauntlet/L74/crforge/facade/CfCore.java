@@ -42,6 +42,10 @@ public final class CfCore {
     int[][] deckIds = new int[2][8];
     int[][] forms = new int[2][8];
     int[][] towerMax = new int[2][3];
+    // RoyaleSim ability button b of a side = crforge champion slot buttons[side][b] (1 or 2): RoyaleSim lists heroes,
+    // then champions; crforge numbers its slots from the highest deck index down (Standard1v1Battle's deal).
+    int[][] buttons = new int[2][0];
+    int[][] abilityRun = {{-1, -1}, {-1, -1}};   // run tick of the button's last given press
 
     /** The card an entity name descends from: itself if recorded, else its root ("c5_0_3" -> c5, "proj_9_0" -> proj_9). */
     String cardOfName(String nm) {
@@ -99,6 +103,18 @@ public final class CfCore {
     n.levels = new int[][] {lv0.clone(), lv1.clone()};
     n.deckIds = new int[][] {ids0.clone(), ids1.clone()};
     n.forms = new int[][] {f0.clone(), f1.clone()};
+    for (int side = 0; side < 2; side++) {
+      TowerEntity king = n.std.getWorld().kingTower(side);
+      List<Integer> bs = new ArrayList<>();
+      for (int slot = 1; slot <= 2; slot++) if (king.championSlot(slot).getChampion() != null) bs.add(slot);
+      final int sd = side;
+      // ponytail: fixed at the deal; a slot crforge reassigns mid-match (allowsReassignment) keeps its button
+      bs.sort(Comparator.comparingInt(sl -> {
+        int idx = king.championSlot(sl).getDeckIndex();
+        return (n.forms[sd][idx] == 2 ? 0 : 8) + idx;
+      }));
+      n.buttons[side] = bs.stream().mapToInt(Integer::intValue).toArray();
+    }
     s = n;
     for (BattleEntity e : s.std.getBattle().getHolder().entities())
       if (e instanceof TowerEntity t) s.towerMax[t.side()][towerSlot(t)] = t.getHitPoints().getMaximum();
@@ -202,15 +218,34 @@ public final class CfCore {
     catch (UnsupportedOperationException e) { return 100; }
   }
 
-  /** A press of ability button ``button`` (the king's champion slot); the refusal ordinal. */
+  /**
+   * A press of RoyaleSim ability button ``button`` (St.buttons: the king's champion slot); the refusal ordinal. While
+   * a press of the button waits its 20 ticks the button refuses (ABILITY_PENDING), as RoyaleSim fin16 under a 20-tick
+   * command delay does (CARD_PENDING until the run, F1c-1 abil_repress.py); crforge's PlayerCommands would give it.
+   */
   public int ability(int side, int button, boolean dry) {
     if (over()) return PlayerCommands.Refusal.MATCH_OVER.ordinal();
-    CharacterEntity u = s.cmds.championUnit(side, button);
+    if (button < 0 || button >= s.buttons[side].length) return PlayerCommands.Refusal.NO_CHAMPION.ordinal();
+    if (s.abilityRun[side][button] >= tick()) return PlayerCommands.Refusal.ABILITY_PENDING.ordinal();
+    return gate(side, button, dry);
+  }
+
+  int gate(int side, int button, boolean dry) {
+    CharacterEntity u = s.cmds.championUnit(side, s.buttons[side][button] - 1);
     if (u == null) return PlayerCommands.Refusal.NO_CHAMPION.ordinal();
     try {
       PlayerCommands.Giving g = dry ? s.cmds.tryAbility(side, u.name()) : s.cmds.useAbility(side, u.name(), "a" + (s.cmdN++));
+      if (!dry && g.given()) s.abilityRun[side][button] = g.runTick();
       return g.refusal().ordinal();
     } catch (UnsupportedOperationException e) { return 100; }
+  }
+
+  /** Whether a card of a side's deck is played in its hero form. */
+  boolean heroCard(int side, String card) {
+    if (card == null) return false;
+    var deck = s.std.getMatch().side(side).deck();
+    for (int i = 0; i < 8; i++) if (s.forms[side][i] == 2 && deck.get(i).name().equals(card)) return true;
+    return false;
   }
 
   public St save() { return DeepCopy.of(s, this::isShared); }
@@ -383,7 +418,12 @@ public final class CfCore {
           kind = w.getData().building() ? 1 : 0;
           int p = identity(w);
           if (p >= 0) { card = p >> 8; flags = p & 0xff; }
-          if (w instanceof CharacterEntity c) flags |= (c.underground() ? 1 : 0) | (c.invisible() ? 2 : 0) | (c.hidden() ? 4 : 0);
+          if (w instanceof CharacterEntity c) {
+            flags |= (c.underground() ? 1 : 0) | (c.invisible() ? 2 : 0) | (c.hidden() ? 4 : 0);
+            // STATUS_HERO as RoyaleSim sets it: the body that carries a hero-form card's ability (not its summons,
+            // not a champion)
+            if (c.getData().ability() != null && heroCard(w.side(), rootCard(w.name()))) flags |= 16;
+          }
         }
         int target = -1;
         TargetView ref = w.getTargeting().getReference();
@@ -444,16 +484,16 @@ public final class CfCore {
       b.append(",\"tower_max_hp\":");
       ints(b, s.towerMax[side]);
       b.append(",\"king_active\":").append(kingActive[side]).append(",\"abilities\":[");
-      boolean first = true;
-      for (int button = 0; button < 2; button++) {
-        CharacterEntity u = s.cmds.championUnit(side, button);
-        if (u == null) continue;
-        int code = ability(side, button, true);
-        int cost = u.getData().ability() == null ? 0 : u.getData().ability().manaCost();
-        if (!first) b.append(',');
-        first = false;
+      // one row per button from the deal on, as RoyaleSim: [available (the press would be taken but for the elixir),
+      // spent (no charge left), the ability's cost, the button's card, its cooldown ticks left]
+      TowerEntity king = world.kingTower(side);
+      for (int button = 0; button < s.buttons[side].length; button++) {
+        var slot = king.championSlot(s.buttons[side][button]);
+        int code = gate(side, button, true);    // fin16 keeps available 1 while a press waits
+        if (button > 0) b.append(',');
         ints(b, code == 0 || code == PlayerCommands.Refusal.NOT_ENOUGH_ELIXIR.ordinal() ? 1 : 0,
-            code == PlayerCommands.Refusal.NO_CHARGES.ordinal() ? 1 : 0, cost, cardOf(u), -1);
+            slot.getCharges() == 0 ? 1 : 0, slot.getChampion().ability() == null ? 0 : slot.getChampion().ability().manaCost(),
+            s.deckIds[side][slot.getDeckIndex()], (slot.getCooldownMs() + 49) / 50);
       }
       // RoyaleSim's evo rows: [card id, plays since its last evolved play, 1 if its next play is evolved, plays needed]
       // per evolution-slot card in deck order (MatchSide.item: the item a play given now carries)
