@@ -29,7 +29,7 @@ import jpype  # noqa: E402
 import numpy as np  # noqa: E402
 
 DECKS = Path("/workspace/cfspeed/decks.tsv")
-CLXIII = "/workspace/f1/models/succ48_o_s91_u0075_grafted.pt"
+CLXIII = os.environ.get("OBSID_CLXIII", "/workspace/f1/models/succ48_o_s91_u0075_grafted.pt")   # S3b-3d: pod 30408 keeps it elsewhere
 SFX = {0: "", 1: "@evolution", 2: "@hero"}
 OPP_EL = 5            # sc index of the opponent's elixir: S3b-3c, both sides the PUBLIC estimate (no truth anywhere)
 NO_VALUES: set = set()  # keys whose first diffs record indices only
@@ -53,7 +53,7 @@ def src_shas() -> dict:
                                                                       "public_observation.py", "opp_elixir_count.py",
                                                                       "vocab.py")})
     files.update({f"builder/{p.name}": str(p) for p in (HERE.parent / "CfSpeed.java", HERE / "CfObsBind.java",
-                                                        HERE / "CfOppElixir.java", HERE / "obs_id.py")})
+                                                        HERE / "CfOppElixir.java", HERE / "CfPubObj.java", HERE / "obs_id.py")})
     out = {k: hashlib.sha256(Path(v).read_bytes()).hexdigest() for k, v in files.items()}
     fb = os.environ.get("OBSID_FACADE_BUILD")
     if fb:
@@ -251,6 +251,129 @@ class JavaIdent:
         return out
 
 
+class JavaPub:
+    """S3b-3d: CfPubObj on the facade battle -> projectiles / effects / own_ability (PublicObserver.update + features at
+    the view tick, advance_public_objects under the look-ahead) and opp_cycle (on S3b-3c's CfOppElixir detected plays).
+    Its tables come from production's own functions (projectile_observation.objects / constant_projectile_speeds /
+    unavailable_area_timers, own_ability.observe / catalog, dataset_gen.card_key, the policy's gid); its action log from
+    a hook on royale_env._Core.act (accepted plays: the facade tick at the act + the deck card id; accepted presses: the
+    tick + the button), as the loop that gives the commands will log them."""
+    KEYS = (("projectiles", (64, 8)), ("effects", (32, 6)), ("own_ability", (8, 7)), ("opp_cycle", (8, 4)))
+
+    def __init__(self, main, policy):
+        from pipeline import royale_env as R
+        self.main, self.gid = main, policy.gid
+        self.C = jpype.JClass("CfPubObj")
+        self.T, self.pub, self.ready = self.C.Tables(), {}, False
+        BB = jpype.JClass("java.nio.ByteBuffer")
+        order = jpype.JClass("java.nio.ByteOrder").nativeOrder()
+        self.b = {k: BB.allocateDirect(4 * s[0] * s[1]).order(order) for k, s in self.KEYS}
+        self.f = {k: b.asFloatBuffer() for k, b in self.b.items()}
+        self.v = {k: np.frombuffer(memoryview(self.b[k]), np.float32).reshape(s) for k, s in self.KEYS}
+        self.press_tick_mismatch = 0
+        orig, pub = R._Core.act, self
+
+        def act(core_, *, side, deck_index=-1, x=0, y=0, ability_button=None):
+            env = core_.env
+            t = int(env.core._cf.tick())
+            r = orig(core_, side=side, deck_index=deck_index, x=x, y=y, ability_button=ability_button)
+            if r["accepted"]:
+                j = pub.of(env)
+                if ability_button is None:
+                    j.act(int(side), t, int(env.deck_ids[side][deck_index]))
+                else:
+                    pub.press_tick_mismatch += int(t != int(env.tick))   # own_ability_events' tick is env.tick
+                    j.press(int(side), t, int(ability_button))
+            return r
+
+        R._Core.act = act
+
+    def key(self, k) -> int:
+        return int(self.T.addKey("\0None" if k is None else k, int(self.gid.get(k, 0)) if k is not None else 0))
+
+    def tables(self, s) -> None:
+        """Per RoyaleSim card id (-2 .. max): objects()'s key of the name raw() gives that card's shots / spell rows (sim
+        source; dropped -> -1), its catalog speed, its area-timer mask; card_key of the name (the action log's key)."""
+        from pipeline.dataset_gen import card_key
+        from pipeline.projectile_observation import constant_projectile_speeds, objects
+        assert s.env.feature_version >= 4 and "projectiles" in s.state      # raw() carries sim_objects
+        names = s.env.names
+        n = max(names) + 3
+        ok, nt, ev = [-1] * n, [False] * n, [-1] * n
+        for cid in range(-2, n - 2):
+            nm = names.get(cid, str(cid))
+            row = dict(side=0, x=0.0, y=0.0, name=nm)
+            o = objects({"projectiles": [dict(row, target_x=0.0, target_y=0.0, time_to_impact_ms=None)],
+                         "effects": [dict(row, remaining_ms=50)]}, source="sim")
+            if o["projectiles"]:
+                k = o["projectiles"][0][0]
+                ok[cid + 2], nt[cid + 2] = self.key(k), o["effects"][0][4] is None
+                sp = constant_projectile_speeds().get(k)
+                self.T.putSpeed(ok[cid + 2], float(sp) if sp else float("nan"))
+            if cid in names:
+                ev[cid + 2] = self.key(card_key(nm))
+        self.T.objKey, self.T.objNoTimer, self.T.evKey = (jpype.JArray(jpype.JInt)(ok), jpype.JArray(jpype.JBoolean)(nt),
+                                                         jpype.JArray(jpype.JInt)(ev))
+        self.names, self.ready = dict(names), True
+
+    def resolve(self) -> None:
+        """Each new own body "card|body row|form bits" -> own_ability.observe on the entity raw() makes of it (name, or
+        'IceWizard' + public identity for a hero Ice Wizard body row, status bits) -> (key, form), or -1; the key's
+        own_ability.catalog specs (hero_spec 'off')."""
+        from pipeline import royale_heroiw as heroiw
+        from pipeline.own_ability import catalog, observe
+        for k in self.T.takeMissing():
+            card, body, bits = str(k).split("|")
+            ent = dict(side=0, hp=1, max_hp=1, x=0.0, y=0.0, name=self.names.get(int(card), card), card_id=int(card),
+                       status_flags=int(bits))
+            if heroiw.ENABLED and heroiw.public_identity(body) is not None:     # RoyalePoolEnv.raw's unit_types rule
+                ent.update(name="IceWizard", public_card_id=heroiw.public_identity(body), public_form=2)
+            rows = observe({"entities": [ent]}, 0, "sim")
+            if not rows:
+                self.T.putBody(k, -1, 0)
+                continue
+            key, form = rows[0][0], int(rows[0][1])
+            i = self.key(key)
+            self.T.putBody(k, i, form)
+            for f in (0, 1, 2):
+                sp = catalog("off").get((key, f))
+                if sp:
+                    self.T.putSpec(i, f, float(sp["max_charges"]), float(sp["deploy_ms"]), float(sp.get("cooldown_ms") or 0))
+
+    def of(self, env):
+        core = env.core
+        j = self.pub.get(id(core))
+        if j is None:
+            j = self.pub[id(core)] = self.C(core._cf, self.T)
+        return j
+
+    def __call__(self, s) -> dict:
+        from pipeline.dataset_gen import card_key
+        if not self.ready:
+            self.tables(s)
+        j, seat = self.of(s.env), int(s.side)
+        j.extrap = int(s.cfg.get("extrapolate_ticks") or 0)
+        while not j.update(seat):
+            self.resolve()
+        m = self.main.match.get(id(s.env.core))
+        opp = m.opp(seat, self.main.keys) if m is not None and hasattr(m, "opp") else None
+        if opp is not None:                                   # CfOppElixir key -> card_key's key (opp_cycle dedup)
+            cyc = list(self.T.cyc)
+            for i in range(len(cyc), int(self.C.detKeys(self.main.keys))):
+                cyc.append(self.key(card_key(str(self.C.detKey(self.main.keys, i)))))
+            self.T.cyc = jpype.JArray(jpype.JInt)(cyc)
+        f = self.f
+        j.build(seat, f["projectiles"], f["effects"], f["own_ability"], opp, f["opp_cycle"])
+        out = {k: self.v[k].copy() for k, _ in self.KEYS if k != "opp_cycle" or opp is not None}
+        prod_events = len(s.public.own_events)
+        out.update(_n_view_tick_mismatch=int(j.viewTick(seat) != s._view_tick),
+                   _n_own_events_mismatch=int(j.events(seat) != prod_events), _n_own_events=prod_events,
+                   _n_rows_proj=int(out["projectiles"][:, 0].any()), _n_rows_eff=int(out["effects"][:, 0].any()),
+                   _n_rows_abil=int(out["own_ability"][:, 0].any()), _n_rows_abil_known=int(out["own_ability"][:, 4].any()),
+                   _n_rows_cycle=int(out.get("opp_cycle", np.zeros((1, 1)))[:, 0].any()))
+        return out
+
+
 BUILDERS: list = []   # filled in main (they need the JVM); a later ticket appends one builder per ported key
 
 
@@ -345,6 +468,8 @@ def main():
     BUILDERS[0].opp_spells, BUILDERS[0].gid = bool(a.opp_spells), model.gid
     ident = JavaIdent(model)
     BUILDERS.append(ident)
+    pub = JavaPub(BUILDERS[0], model)                   # S3b-3d: projectiles / effects / own_ability / opp_cycle
+    BUILDERS.append(pub)
     cfg = S.live_cfg(0.5, info["grid"])
     cfg.update(action_delay_ticks=26, feature_version=6)
     over = {k: json.loads(v) for k, v in (x.split("=", 1) for x in a.set)}
@@ -429,9 +554,13 @@ def main():
                         sc_identical_except_opp_elixir=bool(keys.get("sc")) and keys["sc"]["dtype_shape_diff"] == 0
                         and set(keys["sc"]["rows_diff_at_last_axis_index"]) <= {OPP_EL},
                         opp_past_identical=keys.get("opp_past", {}).get("status") == "IDENTICAL",
+                        pub_keys_identical={k: keys.get(k, {}).get("status") == "IDENTICAL" for k, _ in JavaPub.KEYS},
                         sc_nospell_opp=keys.get("sc@nospell_opp", {}).get("status"),
                         opp_counter_tallies={k: keys.get(k, {}).get("status") for k in ("_opp_plays", "_opp_spawns")}),
         status_by_key={k: v["status"] for k, v in sorted(keys.items())}, keys=keys, opp_past_delivered=odiag,
+        pub_counters=dict(motion_estimated=int(sum(j.motionEstimated for j in pub.pub.values())),
+                          landed=int(sum(j.landed for j in pub.pub.values())),
+                          expired=int(sum(j.expired for j in pub.pub.values())), press_tick_mismatch=pub.press_tick_mismatch),
         opp_counter_edges=dict(zip(map(str, jpype.JClass("CfOppElixir").EDGE_NAMES),
                                    map(int, jpype.JClass("CfOppElixir").EDGE))),
         stamp=envs[0].core.card_table_stamp() if envs else None, facade_hero_rule=BUILDERS[0].facade_hero_rule,

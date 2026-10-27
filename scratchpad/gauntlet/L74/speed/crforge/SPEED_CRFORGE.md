@@ -445,3 +445,54 @@ python -I project.py results/loop_n2048_c2_t24.json --extra-core-s 0.05   # lapt
   fa3b8ee), `crforge/` (these sources), `out/`. Command: `OBSID_RL=/workspace/s3b3c/rl
   OBSID_CFCORE=/workspace/s3b3c/head/scratchpad/gauntlet/L74/crforge/facade/CfCore.java OBSID_BUILD=... crforge/obsid/run.sh
   OUT.json --n 56 [--set extrapolate_ticks=0] [--opp-spells 0 --pairs 88,166,209,...]`.
+
+## S3b-3d: the remaining public-observer keys in Java (`obsid/CfPubObj.java`): projectiles, effects, own_ability, opp_cycle
+
+- **What production computes (a, code: e1_eval.Match.prepare / gen_row / sim_v3_features at the live cfg, fv 6).**
+  CLXIII's `gen_row_keys` = 20 keys; before this ticket NOT_PORTED: `projectiles`, `effects`, `own_ability`,
+  `opp_cycle`, `cue` (`opp_past` done in S3b-3c). The four public keys are `PublicObserver.features(tick + h, gid,
+  objects_override=_public_object_view)`; `PublicObserver.update(self.state, 'sim')` runs at every prepare (the seat's
+  decision ticks only), BEFORE extrapolation.
+  - `projectiles` [64, 8] / `effects` [32, 6]: raw() `sim_objects` (shots: firer's card, -1 tower, -2 none; spell rows
+    motion 0-2 -> projectiles, 3-4 -> effects, remaining = delay x 50 only for PULSING) -> `projectile_observation.objects`
+    (key = base card key, tower / unknown dropped, area-timer mask, ceil to 50 ms) -> `ProjectileMotion(catalog_fallback)`
+    (catalog TTI every frame; else a unique (card, side, target) track's closing speed over <= 20 ticks) -> the
+    COMPRESSED snapshot history (unchanged frames not stored: `previous_objects` / gap = the last two DIFFERENT snapshots).
+    **Depends on h:** h > 0 -> `extrapolate.advance_public_objects` on that history (catalog / known TTI: land or move
+    along the aim, TTI - 50h; unknown TTI: the unique track's velocity x h / gap if 0 < gap <= 20, clamped; area clocks
+    - 50h, expired dropped); h = 0 -> the stored snapshot. Then `tokens_from_objects` (gid, my-frame position, sort, cap).
+  - `own_ability` [8, 7]: `own_ability.observe` on the UN-extrapolated board (own alive bodies, form 2 or a champion
+    key; hp > 0) + `tokens(rows, gid, own_events, tick + h)`: `own_events` = env.public_plays (tick = act + 20 on the
+    facade) + env.own_ability_events (tick = the press) of my side, counted when < tick + h; spec = `catalog('off')`.
+    **h:** only through the view tick (which events count, the cooldown).
+  - `opp_cycle` [8, 4]: `opponent_cycle(PublicObserver.plays, tick + h)` = the DETECTED plays (S3b-3c's detector):
+    built on `CfOppElixir`'s play arrays (no second detector). **h:** which plays count and the age column.
+  - Own effects: `own_effects` is not set by `search_s0.live_cfg` -> `own_fx` None (rows_own_fx 0 below); not ported.
+  - `cue`: `sim_cue_rows` (CLXIII has a cue layer), not a public-observer key: S3b-3f's (CfCue). Still NOT_PORTED here.
+- **Code.** `CfPubObj` (one per facade core, per-seat state, reset on a new battle): `update(seat)` reads the facade
+  like `CfCore.state()` (bomb spell row, spell projectiles, shots with `cardOf`'s firer, areas via `areaCard`; own bodies
+  with state()'s status bits 8 / 16), `build(seat, ...)` writes the four keys. Action log: `act(side, act tick, card id)`
+  / `press(side, tick, button)` (card = the button's champion slot), fed in the harness by a hook on
+  `royale_env._Core.act`. Tables from production functions (`JavaPub.tables` / `resolve`: `objects`,
+  `constant_projectile_speeds`, `unavailable_area_timers`, `own_ability.observe` / `catalog`, `card_key`, gid).
+  `math.hypot` -> `sqrt(dx*dx + dy*dy)`: every hypot input is integer-valued (crforge units), so the sum is exact and the
+  sqrt correctly rounded (b: equal to CPython's here; the identity below found no difference).
+- **Fix to an earlier builder (c -> fixed).** At facade 0446ab3 `unit_form` was DIFF (smoke, 2 matches: 1,533 / 1,893
+  rows equal; prod form 1, Java 0): state() now ORs STATUS_EVOLVED (8, `CfCore.evolvedBit`, an `_EV` body row) and
+  `FacadeMatch.unitCode` did not. `CfObsBind.evolved(w)` (reflection, 0 on an older facade) added; identical below.
+- **Result (a), pod 30408 `/workspace/s3b3d` (crforge lib / tables / decks / CLXIII sha-equal to 32657's), facade =
+  0446ab3's CfCore.java, pipeline at ca2930a, sources pinned in each JSON (`facade_src_sha256`), 56 matches each, 0
+  skipped, tick_mismatch 0; ALL 19 ported keys IDENTICAL (tok, mask, sc incl. sc[5], unit_form, opp_past, past + the 9
+  identity keys, projectiles, effects, own_ability, opp_cycle); `cue` NOT_PORTED:**
+
+  | cfg | JSON | seat-rows | rows w/ projectiles / effects / own_ability / opp_cycle | motion TTI / landed / expired |
+  |---|---|---:|---|---|
+  | live | `results/s3b3d_live.json` | 50,046 | 13,447 / 3,078 / 16,191 / 37,131 | 4,216 / 14,037 / 347 |
+  | extrapolate 0 | `results/s3b3d_x0.json` | 49,917 | 12,905 / 2,961 / 14,461 / 36,596 | 4,520 / 0 / 0 |
+
+  Also 0 view-tick mismatches and 0 own-event-count mismatches (Java log vs `PublicObserver.own_events`) on every row.
+  Not measured (b): how many own_ability rows had a press after the deploy (the ready = 0 / cooldown branch); every
+  controller row had readiness known (16,191 / 16,191).
+- Command (pod 30408): `OBSID_RL=/workspace/s3b3d/rl OBSID_CLXIII=/workspace/f1c/models/succ48_o_s91_u0075_grafted.pt
+  OBSID_BUILD=/workspace/s3b3d/build_live rl/scratchpad/gauntlet/L74/speed/crforge/obsid/run.sh out/s3b3d_live.json
+  --n 56 [--set extrapolate_ticks=0]`.

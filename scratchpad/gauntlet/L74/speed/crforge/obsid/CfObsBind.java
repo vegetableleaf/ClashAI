@@ -35,7 +35,7 @@ public final class CfObsBind {
       String body = w.getData().name(), root = core.rootCard(w.name());
       Integer p = packed(body, root);
       if (p == null) return -1;                                      // card -1: raw() drops the body
-      int flags = p & 0xff;
+      int flags = p & 0xff | evolved(w);
       if (w instanceof CharacterEntity c && hero(c, root)) flags |= 16;
       int form = (flags & 16) != 0 ? 2 : (flags & 8) != 0 ? 1 : 0;   // obs_contract.entity_form
       return names.unitCode((p >> 8) + "|" + body + "|" + fmhp + "|" + form + "|" + tower(w.side()));
@@ -154,6 +154,14 @@ public final class CfObsBind {
     }
   }
 
+  /** S3b-3d: STATUS_EVOLVED (8) as the facade's state() sets it from 0446ab3 on (CfCore.evolvedBit: an evolution body
+   *  row), 0 for an older facade (no such method), so unit_form follows the facade. */
+  static int evolved(WorldEntity w) {
+    try { return EVOLVED == null ? 0 : (Integer) EVOLVED.invoke(null, w); }
+    catch (ReflectiveOperationException e) { throw new IllegalStateException(e); }
+  }
+
+  static final Method EVOLVED = method("evolvedBit", WorldEntity.class);
   static final Method HERO_BODY = method("heroBody", CharacterEntity.class), HERO_CARD = method("heroCard", int.class, String.class);
 
   static Method method(String name, Class<?>... args) {
