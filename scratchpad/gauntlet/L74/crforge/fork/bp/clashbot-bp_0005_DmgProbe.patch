@@ -1,0 +1,30 @@
+From fabb2fe7a0bb8ab6471115b8642482f5474ff973 Mon Sep 17 00:00:00 2001
+From: vegetableleaf <benzhu2029@u.northwestern.edu>
+Date: Tue, 27 Oct 2026 23:42:35 +0000
+Subject: [PATCH] clashbot-bp5: MoveProbe dmg point in the direct hit
+ (instrumentation only, no behaviour change)
+
+---
+ .../main/java/org/crforge/core/battle/unit/BattleWorld.java | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java b/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java
+index 9e8ba615..65d865fa 100644
+--- a/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java
++++ b/core/src/main/java/org/crforge/core/battle/unit/BattleWorld.java
+@@ -1258,6 +1258,12 @@ public class BattleWorld implements HolderPasses {
+     for (WorldObserver observer : observers) {
+       observer.damageDealt(tick, entity, damage, result);
+     }
++    if (org.crforge.core.pathfinding.move.MoveProbe.on()) {
++      org.crforge.core.pathfinding.move.MoveProbe.tell(
++          "dmg",
++          entity.getId(),
++          new int[] {attacker == null ? -1 : attacker.getId(), damage, result.died() ? 1 : 0});
++    }
+     if (result.died()) {
+       // A hit with no attacker kills for the side it was dealt for, if any.
+       entity.die(attacker, attacker != null ? attacker.side() : side);
+-- 
+2.43.0
+

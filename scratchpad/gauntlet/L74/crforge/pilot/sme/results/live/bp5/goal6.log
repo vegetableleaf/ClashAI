@@ -1,0 +1,9 @@
+jobs=136 failed=0 
+events 32892, deciding (pre exact, crforge or alt0) 30005, clean 25808
+Counter({(True, 'crforge'): 25804, (False, 'crforge'): 4133, (False, 'neither'): 85, (True, 'gone'): 76, (False, 'alt0'): 64, (True, 'neither'): 29, (False, 'gone'): 17, (True, 'alt0'): 4})
+start  clean: agrees 18690 / 25808  (crforge&change 18687, alt0&keep 3, crforge but keeps 7117, alt0 but changes 1)
+r25    clean: agrees 21100 / 25808  (crforge&change 21099, alt0&keep 1, crforge but keeps 4705, alt0 but changes 3)
+r50    clean: agrees 16716 / 25808  (crforge&change 16713, alt0&keep 3, crforge but keeps 9091, alt0 but changes 1)
+r75    clean: agrees 14804 / 25808  (crforge&change 14800, alt0&keep 4, crforge but keeps 11004, alt0 but changes 0)
+r100   clean: agrees 14406 / 25808  (crforge&change 14402, alt0&keep 4, crforge but keeps 11402, alt0 but changes 0)
+cell   clean: agrees 20935 / 25808  (crforge&change 20934, alt0&keep 1, crforge but keeps 4870, alt0 but changes 3)

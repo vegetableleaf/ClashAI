@@ -1,0 +1,16 @@
+delay-6 direct, clean+pre: 2052 Counter({'crforge': 2047, 'earlier': 5})
+kind                     [(('dmg', 'crforge'), 1638), (('dmg', 'earlier'), 4), (('none', 'crforge'), 244), (('proj', 'crforge'), 158), (('proj', 'earlier'), 1), (('typed', 'crforge'), 7)]
+killer_is_u              [((False, 'crforge'), 1092), ((False, 'earlier'), 3), ((True, 'crforge'), 955), ((True, 'earlier'), 2)]
+k_before_u (step order)  [((False, 'crforge'), 1163), ((False, 'earlier'), 3), ((None, 'crforge'), 652), ((None, 'earlier'), 2), ((True, 'crforge'), 232)]
+k_h<u_h (holder)         [((False, 'crforge'), 1321), ((False, 'earlier'), 4), ((None, 'crforge'), 407), ((None, 'earlier'), 1), ((True, 'crforge'), 319)]
+r_h<u_h                  [((False, 'crforge'), 932), ((False, 'earlier'), 5), ((True, 'crforge'), 1115)]
+killer side == u side    [((None, 'crforge'), 2047), ((None, 'earlier'), 5)]
+hit after u              [((None, 'crforge'), 394), ((None, 'earlier'), 1), ((True, 'crforge'), 1653), ((True, 'earlier'), 4)]
+u_state                  [((14, 'crforge'), 1), ((2, 'crforge'), 2046), ((2, 'earlier'), 5)]
+u load>0                 [((False, 'crforge'), 777), ((False, 'earlier'), 1), ((True, 'crforge'), 1270), ((True, 'earlier'), 4)]
+[(('Knight', 'crforge'), 470), ((None, 'crforge'), 402), (('Skeleton', 'crforge'), 216), (('Knight_EV1', 'crforge'), 187), (('Tesla', 'crforge'), 102), (('Bat', 'crforge'), 71), (('Tesla_EV1', 'crforge'), 55), (('SkeletonWarrior', 'crforge'), 36), (('MightyMiner', 'crforge'), 35), (('Barbarian', 'crforge'), 35), (('GoldenKnight', 'crforge'), 26), (('Ronin', 'crforge'), 24), (('Prince', 'crforge'), 19), (('AngryBarbarian', 'crforge'), 18), (('GoblinBrawler', 'crforge'), 18), (('BossBandit', 'crforge'), 18), (('MiniPekka', 'crforge'), 17), (('RageBarbarian', 'crforge'), 16), (('HogRider', 'crforge'), 15), (('Pekka', 'crforge'), 14), (('RascalBoy', 'crforge'), 13), (('Bat_EV1', 'crforge'), 13), (('Goblin_Stab', 'crforge'), 13), (('KnightHero', 'crforge'), 12), (('MiniPekkaHero', 'crforge'), 10)]
+{'m': '20261026_170600', 't': 2152, 'name': 'Bat', 'R': 'Skeleton', 'killer_name': 'Bat', 'kind': 'dmg', 'killer_is_u': True, 'u_idx': 6, 'k_idx': 6, 'hit_idx': 13, 'u_h': 6, 'r_h': 7, 'k_h': 6, 'timers': '1150/100/0/0/0', 'dist': 2194}
+{'m': '20261026_171232', 't': 5586, 'name': 'Knight_EV1', 'R': 'ElixirGolem4', 'killer_name': None, 'kind': 'proj', 'killer_is_u': False, 'u_idx': 2, 'k_idx': None, 'hit_idx': 17, 'u_h': 2, 'r_h': 9, 'k_h': None, 'timers': '1650/250/0/0/0', 'dist': 2061}
+{'m': '20261026_172314', 't': 1783, 'name': 'Knight', 'R': 'Skeleton', 'killer_name': 'Knight', 'kind': 'dmg', 'killer_is_u': True, 'u_idx': 0, 'k_idx': 0, 'hit_idx': 11, 'u_h': 0, 'r_h': 6, 'k_h': 0, 'timers': '1150/0/0/0/0', 'dist': 1424}
+{'m': '20261026_211239', 't': 1527, 'name': 'IceWizardHero', 'R': 'IceWizardHero', 'killer_name': 'Pekka', 'kind': 'dmg', 'killer_is_u': False, 'u_idx': 0, 'k_idx': 6, 'hit_idx': 9, 'u_h': 0, 'r_h': 2, 'k_h': 5, 'timers': '7800/200/0/0/0', 'dist': 6478}
+{'m': '20261026_211239', 't': 1527, 'name': 'IceWizardHeroFloatingCube', 'R': 'IceWizardHero', 'killer_name': 'Pekka', 'kind': 'dmg', 'killer_is_u': False, 'u_idx': None, 'k_idx': 6, 'hit_idx': 9, 'u_h': 1, 'r_h': 2, 'k_h': 5, 'timers': '7800/200/0/0/0', 'dist': 6478}

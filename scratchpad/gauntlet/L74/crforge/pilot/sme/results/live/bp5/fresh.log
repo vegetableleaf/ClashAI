@@ -1,0 +1,4 @@
+jobs=136 failed=0 
+events 386723
+Counter({(True, 0, 'crforge'): 280123, (True, 1, 'crforge'): 53658, (False, 0, 'crforge'): 43804, (False, 1, 'crforge'): 8543, (False, 0, 'neither'): 233, (True, 0, 'neither'): 193, (False, 0, 'fresh'): 68, (False, 1, 'neither'): 58, (True, 1, 'neither'): 33, (False, 1, 'fresh'): 9, (True, 0, 'fresh'): 1})
+{'m': '20261027_001141', 't': 5399, 'id': 5000131, 'name': 'GoldenKnight', 'cell': 0, 'held': 11, 'fresh': 1054, 'aim': [4750, 14750], 'dv': (1, 4), 'gap': 2, 'clean': True, 'out': 'fresh'}

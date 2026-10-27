@@ -1,0 +1,31 @@
+deciding clean with rpx 25808 chk ok 25808
+e1   crforge&changes  13531  alt0&keeps 3  | contradicted: crforge but keeps   7117, alt0 but changes 1
+e2   crforge&changes   7729  alt0&keeps 4  | contradicted: crforge but keeps  12722, alt0 but changes 0
+e3   crforge&changes   9987  alt0&keeps 3  | contradicted: crforge but keeps  10367, alt0 but changes 1
+e4   crforge&changes  12067  alt0&keeps 3  | contradicted: crforge but keeps   8246, alt0 but changes 1
+e5   crforge&changes  14057  alt0&keeps 3  | contradicted: crforge but keeps   6200, alt0 but changes 1
+e6   crforge&changes  15596  alt0&keeps 1  | contradicted: crforge but keeps   4622, alt0 but changes 3
+acq  crforge&changes  22292  alt0&keeps 4  | contradicted: crforge but keeps   3512, alt0 but changes 0
+acq_age (0, 'crforge', False) 6861
+acq_age (0, 'crforge', True) 102
+acq_age (1, 'alt0', True) 1
+acq_age (1, 'crforge', False) 288
+acq_age (1, 'crforge', True) 801
+acq_age (2, 'alt0', True) 2
+acq_age (2, 'crforge', False) 340
+acq_age (2, 'crforge', True) 614
+acq_age (3, 'alt0', True) 1
+acq_age (3, 'crforge', False) 418
+acq_age (3, 'crforge', True) 447
+acq_age (4, 'crforge', False) 489
+acq_age (4, 'crforge', True) 290
+acq_age (5, 'crforge', False) 573
+acq_age (5, 'crforge', True) 225
+acq_age (6, 'crforge', False) 589
+acq_age (6, 'crforge', True) 169
+acq_age (7, 'crforge', False) 586
+acq_age (7, 'crforge', True) 76
+acq_age (8, 'crforge', False) 547
+acq_age (8, 'crforge', True) 82
+acq_age (9, 'crforge', False) 11601
+acq_age (9, 'crforge', True) 706

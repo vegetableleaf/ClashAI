@@ -1370,3 +1370,109 @@ item 1's open class with 000233 and 101112@5923 (b).
 - `fork/bp/clashbot-bp_0004_MoveProbe4.patch`.
 - `results/live/bp4/`: rows (.jsonl.gz), summaries (.log), coretest, trace identity.
 - Pod 32657: `/workspace/pilot/bp4/` (lib_bp4, build_aim4, from33920, a2c6/r78) and `/workspace/pilot/sme_live/bp4R0`.
+
+# A2c-BP5: the last body-position singles (pod 32657)
+
+Labels: **(a)** measured, **(b)** plausible but untested, **(c)** contradicted. All censuses run on bp4R0's plans (136
+runnable; bp4R0 = r78, 88 / 109).
+
+**No crforge mechanic change, no extractor or comparator rule:** no census below supports one, so nothing is measured on
+the 109 beyond the instrumentation identity. Combined state unchanged: r78 = 88 / 109.
+
+## Base: probes 0001-0004 ported onto F635c `clashbot-up-e5462c82` (a)
+- Pod 32657, worktree `/workspace/pilot/bp5/crforge`, branch `clashbot-bp5`: bec5811a (bundled from 30408) + 0001-0004
+  by `git am -3`, clean (334c1d63, fdc6f68d, 277028c4, 0d086747), + **0005** (fabb2fe7, below).
+- Core tests (`bp5/ct.sh`, `-Pcrforge.dataVersion`): **16.402.22 2182/0 (29 skipped), 16.635.3 2182/0 (6 skipped)**, on
+  0001-0004 (`ct_bp5.out`) and on 0001-0005 (`ct_bp5k.out`); the same counts as the F635c head.
+- Traces of all 138 bp4R0 plans, lib_bp4 (old base + 0001-0004) vs lib_bp5 and vs lib_bp5k: **138 identical** each, the
+  same 2 GoblinDrill refusals (`trace_ident_bp5.txt`, `trace_ident_bp5k.txt`). So the F635c base plays r78 exactly.
+- **Fork patch 0005** `fork/bp/clashbot-bp_0005_DmgProbe.patch` (`bp5/apply_probe5.py`): MoveProbe point `dmg` in
+  `BattleWorld.dealDamage` (target, attacker, damage, died). Instrumentation only; unset, nothing calls it.
+
+## Tracers (no fork change; `bp5/mk_aimrun*.py` write them from `bp4/AimRun4.java`)
+- AimRun5: on every `replan`, `rpx` = the endpoint goal with the reference at its point at the end of t-1 .. t-6 and at
+  the unit's acquisition replan (computed in the callback: unit not yet moved, this tick's grid).
+- AimRun6 / 7: `srch` (full crforge search from the unit's cell and its 8 neighbours to a goal), `held` (held route),
+  `epc` (every qualifying endpoint cell with rank and distances), on env-selected unit / ticks.
+- AimRun8: a WorldObserver (`hit`, `rm`) in the same ordered event list as the probe events.
+- AimRun9: at every displacement of a unit holding a ground route of 2+ nodes, a fresh search from its start cell to the
+  held goal; `fr` when its next node is not the node crforge stepped toward.
+
+## Item 1: the "kept old route" subtype (000233 x2, 180336@2910, 101112@5923)
+`goal6.py` (bp4 goal census + rpx + order / state features) reproduces bp4: 25,808 clean deciding events, 25,804 crforge,
+the same 4 kept (`goal6.log`).
+- **(c) Lagged reference.** Goal with the reference where it stood at the end of t-k; clean events where the variant
+  keeps the held goal but the game follows crforge's change (`g5sum.log`): k=1 7,117; k=2 12,722; k=3 10,367;
+  k=4 8,246; k=5 6,200; k=6 4,622. k=2 keeps all 4 and is the most contradicted.
+- **(c) Reference frozen at acquisition.** The acquisition-time point keeps all 4 (a) but contradicts 3,512 clean
+  events, 1,862 of them within 1-3 ticks of the acquisition (age 1: 801, 2: 614, 3: 447).
+- **(a) What the 4 share:** the unit acquired this reference 1-3 ticks before (and replanned then), the held goal is
+  still inside R, and the new goal is a neighbour cell of the held one.
+- **(c) None of these separates.** Inside "age 1-3 and the acquisition goal is the held one" (1,866 events) each split
+  has hundreds following crforge (`g6sep.log`, crforge / kept):
+  - the reference displaced earlier in the step 870 / 3;
+  - the reference replanned earlier in the step 238 / 1;
+  - mutual targeting 730 / 3;
+  - the reference retargeted in the same tick as the unit 457 / 3;
+  - the unit before the reference in holder order 973 / 1;
+  - the tick-start reference keeps the goal 869 / 3;
+  - the unit in state 1: 1,862 / 4; the unit's timers all zero 1,657 / 4;
+  - a neighbour-cell goal change 1,780 / 4.
+- Open (b): the cause. Not tested yet: the endpoint scan with the unit's position other than at visit start, and the
+  route search from a cell other than the unit's (both need the variant inside the engine, replayed per event).
+
+## Item 2: 211239 and the four other delay-6 "earlier" moves (kill attribution)
+`death5.py` (bp4 death census on AimRun8 + lib_bp5k) reproduces bp4: 6,082 clean, 6,071 crforge, 5 earlier, 6 neither.
+Kill attribution for the 2,052 delay-6 direct kills (`d5sum.log`):
+- **(a) Killers of the 5:**
+  - 170600: the Bat killed the Skeleton itself (direct hit);
+  - 172314: the Knight killed the Skeleton itself;
+  - 171232: the ElixirGolem4 was killed by a projectile impact;
+  - 211239: our hero IW (and so the cube's reference) was killed by the opponent's Pekka (5000025, 1,345 damage, direct).
+  - Every kill lands in the damage drain, after U's visit.
+- **(c) Not separating** (crforge-following delay-6 direct kills with the same value):
+  - hit kind dmg 1,638;
+  - killer = U 955;
+  - killer visited after U in the step 1,163; after U in holder order 1,321;
+  - R after U in holder order 932;
+  - killing hit after U's events 1,653;
+  - U attacking (state 2) 2,046; U load timer > 0 1,270;
+  - U's attack timer one tick before its HitSpeed (Bat, Knight) 545 (`bp5/d5hs.py`).
+- **(a) The game's R is not removed earlier:** 211239's recorded R is alive at 1526 (hp 528) and gone at 1528, which fits
+  crforge's kill at 1527.
+- Open (b): what moves U one tick sooner. The recorded frames are 2 ticks apart, so the game's kill tick and first-move
+  tick are each known only to within 2 ticks; frames every tick around the 5 would be needed.
+
+## Item 3: 014928@5183 (hero IW turn after a Barbarian Barrel)
+- **(c) "The Barbarian from the Barbarian Barrel finishes deploying earlier in the game" is contradicted.**
+  - `deploy_census.py`, first move: crforge's first tick off the spawn point, against the frames around the game's last
+    frame with the body on it. **Every BarbLog Barbarian agrees, 107 / 107**; all clean spawned units: 7,473 agree,
+    3 earlier.
+  - 014928's Barbarian 5000220 is exact at 5183 and 5185 and moves first at 5184 in both.
+  - The frame code 14 is not the deploy state: it ends before crforge's deploy end for 1,875 units whose first move
+    still agrees (`deploy.log`).
+- **(a) The game's turn is a fresh route search from the IW's cell at 5182.**
+  - Aim fit (`bp5/aimfit.py`) of the game's 2-tick moves: 5181 -> 5183 = aims (2750,19250) then (2750,18750); then
+    (2750,18750) twice; then (2750,18750), (2750,18250).
+  - crforge's search from the IW's cell (4,39) at 5182 to its goal 871 (`srch`) ends ... 1301, 1337, 1373: exactly those
+    nodes. crforge's held route (searched at 5146 from another cell) ends ... 1302, 1338 (equal cost, one column right).
+  - The game then stops at 5196-5197, 6,580 from our X-Bow; crforge stops at 5198-5199, 6,574 from it (the same
+    acquisition range, reached later on the longer route).
+- **(c) "The game re-searches when the unit enters a new cell" is contradicted** (`fresh_census.py`, `fresh.log`). Clean
+  events where a fresh search would step elsewhere and a frame decides:
+  - 280,123 follow the held route with no cell change; **53,658 follow it with a cell change**;
+  - 1 follows the fresh route (001141@5399, GoldenKnight);
+  - 014928@5182 falls between frames, so the census does not decide it.
+- **(c) A deploying unit as an occluder** (scratch `GridEntity.occludesCells` variant, not committed): the side-1 hash
+  changes at 5163 and 5184 and crforge re-searches, but retention keeps the held route both times; the IW is unchanged.
+- **(a)** The IW's goal 871 is the first plain cell: 868-870 are rank 1 under our X-Bow's footprint (`epc`). Nothing in
+  crforge changes at 5182: no birth, death, state change, projectile or area near the lane.
+- Open (b): what triggers the game's re-search at 5182 (a goal change by one cell, or an overlay-hash change that
+  retention lets through).
+
+## Files (A2c-BP5)
+- `bp5/`: the scripts above; `build.sh`, `ct.sh`, `aim4.py` (runner), dossiers `dos.py`, `ev.py`, `kev.py`, `fr.py`,
+  `born.py`, `pa.py`.
+- `fork/bp/clashbot-bp_0005_DmgProbe.patch`. `results/live/bp5/`.
+- Pod 32657 `/workspace/pilot/bp5/`: worktree `crforge` (branch clashbot-bp5), lib_bp5, lib_bp5k, build_aim5-9,
+  `fresh_bp4R0.jsonl.gz` (4.5 MB rows, not copied), scratch `crforge_v` / lib_vdep.
