@@ -1,0 +1,60 @@
+{
+ "forward_s": 55.151,
+ "cell_s": 1.81,
+ "wait_s": 43.28,
+ "rows": 22556,
+ "forwards": 4850,
+ "cell_calls": 1757,
+ "rounds": 1157,
+ "wall_s": 101.09,
+ "workers": [
+  {
+   "rounds": 513,
+   "time_s": {
+    "due": 4.124,
+    "prepare_row": 39.348,
+    "decide": 4.54,
+    "apply": 0.253,
+    "wait_fwd": 39.426,
+    "wait_cell": 1.251,
+    "reset": 0.668
+   }
+  },
+  {
+   "rounds": 559,
+   "time_s": {
+    "due": 4.008,
+    "prepare_row": 37.939,
+    "decide": 4.654,
+    "apply": 0.281,
+    "wait_fwd": 48.435,
+    "wait_cell": 1.082,
+    "reset": 0.75
+   }
+  },
+  {
+   "rounds": 577,
+   "time_s": {
+    "due": 4.388,
+    "prepare_row": 40.523,
+    "decide": 5.033,
+    "apply": 0.298,
+    "wait_fwd": 46.972,
+    "wait_cell": 1.125,
+    "reset": 0.7
+   }
+  },
+  {
+   "rounds": 580,
+   "time_s": {
+    "due": 4.757,
+    "prepare_row": 43.124,
+    "decide": 5.355,
+    "apply": 0.289,
+    "wait_fwd": 43.981,
+    "wait_cell": 1.156,
+    "reset": 0.673
+   }
+  }
+ ]
+}

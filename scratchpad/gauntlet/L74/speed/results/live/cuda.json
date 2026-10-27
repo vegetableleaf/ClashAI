@@ -1,0 +1,51 @@
+{
+ "device": "cuda",
+ "torch_threads": 4,
+ "ckpt": "icebow/data/models/ICEBOW/ICEBOW_Mark_CLXIII_NOLEAK.pt",
+ "n_params": 1759432,
+ "replayed": {
+  "row": {
+   "n": 300,
+   "mean": 8.63,
+   "p50": 2.37,
+   "p90": 2.8,
+   "p99": 37.05
+  },
+  "forward": {
+   "n": 300,
+   "mean": 19.47,
+   "p50": 17.56,
+   "p90": 18.2,
+   "p99": 24.03
+  },
+  "decide": {
+   "n": 300,
+   "mean": 29.97,
+   "p50": 21.14,
+   "p90": 23.69,
+   "p99": 83.97
+  },
+  "rest": {
+   "n": 300,
+   "mean": 1.87,
+   "p50": 1.05,
+   "p90": 3.08,
+   "p99": 13.06
+  }
+ },
+ "forwards_per_decision": {
+  "n": 300,
+  "mean": 1.98,
+  "p50": 2,
+  "p90": 2,
+  "p99": 2
+ },
+ "logged_decide_ms_same_logs": {
+  "n": 310,
+  "mean": 39.58,
+  "p50": 40.0,
+  "p90": 54.0,
+  "p99": 70.0
+ },
+ "forward_only_ms_b1": 7.55
+}

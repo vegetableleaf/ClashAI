@@ -1,0 +1,15 @@
+{
+ "mode": "batched",
+ "E": 2,
+ "G": 2,
+ "matches": 4,
+ "skipped": 0,
+ "build_s": 8.3,
+ "rollout_s": 57.99,
+ "matches_per_h": 248.3,
+ "decisions": 1425,
+ "in_flight": 8,
+ "workers": 2,
+ "device": "cpu",
+ "actor_device": "cpu"
+}

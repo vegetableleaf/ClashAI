@@ -1,0 +1,73 @@
+{
+ "gpu": "NVIDIA GeForce RTX 4090",
+ "rows": [
+  {
+   "d": 128,
+   "layers": 4,
+   "heads": 4,
+   "params": 1759432,
+   "cpu_b1_ms": 15.01,
+   "cuda_b1_ms": 7.71,
+   "cuda_b256_rows_per_s": 9723,
+   "cuda_b256_ms": 26.3,
+   "cuda_b1024_rows_per_s": 11050,
+   "cuda_b1024_ms": 92.7,
+   "cuda_b4096_rows_per_s": 11243,
+   "cuda_b4096_ms": 364.3
+  },
+  {
+   "d": 192,
+   "layers": 6,
+   "heads": 6,
+   "params": 3972616,
+   "cpu_b1_ms": 21.03,
+   "cuda_b1_ms": 7.61,
+   "cuda_b256_rows_per_s": 7194,
+   "cuda_b256_ms": 35.6,
+   "cuda_b1024_rows_per_s": 7927,
+   "cuda_b1024_ms": 129.2,
+   "cuda_b4096_rows_per_s": 7934,
+   "cuda_b4096_ms": 516.3
+  },
+  {
+   "d": 256,
+   "layers": 6,
+   "heads": 8,
+   "params": 6545480,
+   "cpu_b1_ms": 24.97,
+   "cuda_b1_ms": 7.62,
+   "cuda_b256_rows_per_s": 5593,
+   "cuda_b256_ms": 45.8,
+   "cuda_b1024_rows_per_s": 6025,
+   "cuda_b1024_ms": 170.0,
+   "cuda_b4096_rows_per_s": "OOM"
+  },
+  {
+   "d": 288,
+   "layers": 8,
+   "heads": 9,
+   "params": 10069672,
+   "cpu_b1_ms": 35.6,
+   "cuda_b1_ms": 9.42,
+   "cuda_b256_rows_per_s": 4124,
+   "cuda_b256_ms": 62.1,
+   "cuda_b1024_rows_per_s": 4378,
+   "cuda_b1024_ms": 233.9,
+   "cuda_b4096_rows_per_s": 4336,
+   "cuda_b4096_ms": 944.7
+  },
+  {
+   "d": 320,
+   "layers": 8,
+   "heads": 10,
+   "params": 12223240,
+   "cpu_b1_ms": 47.06,
+   "cuda_b1_ms": 8.2,
+   "cuda_b256_rows_per_s": 3268,
+   "cuda_b256_ms": 78.3,
+   "cuda_b1024_rows_per_s": 3389,
+   "cuda_b1024_ms": 302.1,
+   "cuda_b4096_rows_per_s": "OOM"
+  }
+ ]
+}

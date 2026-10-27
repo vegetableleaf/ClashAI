@@ -1,0 +1,588 @@
+{
+ "forward_s": 201.285,
+ "cell_s": 8.899,
+ "wait_s": 156.445,
+ "rows": 686764,
+ "forwards": 9304,
+ "cell_calls": 8835,
+ "rounds": 1182,
+ "wall_s": 381.846,
+ "workers": [
+  {
+   "rounds": 567,
+   "time_s": {
+    "due": 11.174,
+    "prepare_row": 91.575,
+    "decide": 10.916,
+    "apply": 0.67,
+    "wait_fwd": 233.016,
+    "wait_cell": 9.168,
+    "reset": 2.727
+   }
+  },
+  {
+   "rounds": 569,
+   "time_s": {
+    "due": 9.01,
+    "prepare_row": 81.386,
+    "decide": 10.025,
+    "apply": 0.619,
+    "wait_fwd": 246.613,
+    "wait_cell": 11.139,
+    "reset": 2.792
+   }
+  },
+  {
+   "rounds": 571,
+   "time_s": {
+    "due": 9.739,
+    "prepare_row": 85.435,
+    "decide": 9.984,
+    "apply": 0.61,
+    "wait_fwd": 242.795,
+    "wait_cell": 10.118,
+    "reset": 2.495
+   }
+  },
+  {
+   "rounds": 571,
+   "time_s": {
+    "due": 9.036,
+    "prepare_row": 84.874,
+    "decide": 10.136,
+    "apply": 0.612,
+    "wait_fwd": 244.272,
+    "wait_cell": 11.132,
+    "reset": 2.736
+   }
+  },
+  {
+   "rounds": 572,
+   "time_s": {
+    "due": 9.46,
+    "prepare_row": 79.752,
+    "decide": 9.973,
+    "apply": 0.632,
+    "wait_fwd": 249.355,
+    "wait_cell": 10.984,
+    "reset": 2.679
+   }
+  },
+  {
+   "rounds": 572,
+   "time_s": {
+    "due": 10.319,
+    "prepare_row": 87.752,
+    "decide": 10.718,
+    "apply": 0.643,
+    "wait_fwd": 240.693,
+    "wait_cell": 9.278,
+    "reset": 2.529
+   }
+  },
+  {
+   "rounds": 576,
+   "time_s": {
+    "due": 11.179,
+    "prepare_row": 91.373,
+    "decide": 11.269,
+    "apply": 0.733,
+    "wait_fwd": 235.89,
+    "wait_cell": 11.278,
+    "reset": 2.508
+   }
+  },
+  {
+   "rounds": 576,
+   "time_s": {
+    "due": 8.97,
+    "prepare_row": 81.053,
+    "decide": 9.053,
+    "apply": 0.616,
+    "wait_fwd": 249.639,
+    "wait_cell": 11.949,
+    "reset": 2.829
+   }
+  },
+  {
+   "rounds": 576,
+   "time_s": {
+    "due": 9.983,
+    "prepare_row": 84.026,
+    "decide": 10.763,
+    "apply": 0.638,
+    "wait_fwd": 244.727,
+    "wait_cell": 11.694,
+    "reset": 2.546
+   }
+  },
+  {
+   "rounds": 576,
+   "time_s": {
+    "due": 9.972,
+    "prepare_row": 93.18,
+    "decide": 10.367,
+    "apply": 0.664,
+    "wait_fwd": 235.43,
+    "wait_cell": 11.085,
+    "reset": 2.626
+   }
+  },
+  {
+   "rounds": 576,
+   "time_s": {
+    "due": 9.055,
+    "prepare_row": 84.814,
+    "decide": 9.446,
+    "apply": 0.629,
+    "wait_fwd": 245.116,
+    "wait_cell": 11.726,
+    "reset": 2.999
+   }
+  },
+  {
+   "rounds": 577,
+   "time_s": {
+    "due": 10.372,
+    "prepare_row": 90.722,
+    "decide": 10.569,
+    "apply": 0.664,
+    "wait_fwd": 238.418,
+    "wait_cell": 10.521,
+    "reset": 2.944
+   }
+  },
+  {
+   "rounds": 579,
+   "time_s": {
+    "due": 8.411,
+    "prepare_row": 74.564,
+    "decide": 8.774,
+    "apply": 0.604,
+    "wait_fwd": 260.088,
+    "wait_cell": 10.843,
+    "reset": 2.575
+   }
+  },
+  {
+   "rounds": 579,
+   "time_s": {
+    "due": 10.239,
+    "prepare_row": 86.078,
+    "decide": 10.345,
+    "apply": 0.645,
+    "wait_fwd": 245.147,
+    "wait_cell": 10.677,
+    "reset": 2.75
+   }
+  },
+  {
+   "rounds": 579,
+   "time_s": {
+    "due": 9.676,
+    "prepare_row": 81.838,
+    "decide": 10.491,
+    "apply": 0.638,
+    "wait_fwd": 251.036,
+    "wait_cell": 9.786,
+    "reset": 2.536
+   }
+  },
+  {
+   "rounds": 580,
+   "time_s": {
+    "due": 10.179,
+    "prepare_row": 85.333,
+    "decide": 10.437,
+    "apply": 0.66,
+    "wait_fwd": 246.115,
+    "wait_cell": 11.452,
+    "reset": 2.613
+   }
+  },
+  {
+   "rounds": 580,
+   "time_s": {
+    "due": 9.825,
+    "prepare_row": 83.939,
+    "decide": 10.629,
+    "apply": 0.632,
+    "wait_fwd": 248.295,
+    "wait_cell": 11.746,
+    "reset": 2.517
+   }
+  },
+  {
+   "rounds": 580,
+   "time_s": {
+    "due": 9.394,
+    "prepare_row": 87.406,
+    "decide": 10.149,
+    "apply": 0.641,
+    "wait_fwd": 246.263,
+    "wait_cell": 11.215,
+    "reset": 2.346
+   }
+  },
+  {
+   "rounds": 580,
+   "time_s": {
+    "due": 9.725,
+    "prepare_row": 88.159,
+    "decide": 10.096,
+    "apply": 0.633,
+    "wait_fwd": 245.855,
+    "wait_cell": 10.586,
+    "reset": 2.653
+   }
+  },
+  {
+   "rounds": 580,
+   "time_s": {
+    "due": 10.044,
+    "prepare_row": 84.015,
+    "decide": 10.077,
+    "apply": 0.618,
+    "wait_fwd": 249.299,
+    "wait_cell": 10.017,
+    "reset": 2.442
+   }
+  },
+  {
+   "rounds": 581,
+   "time_s": {
+    "due": 8.527,
+    "prepare_row": 82.077,
+    "decide": 9.146,
+    "apply": 0.614,
+    "wait_fwd": 253.253,
+    "wait_cell": 11.53,
+    "reset": 2.947
+   }
+  },
+  {
+   "rounds": 581,
+   "time_s": {
+    "due": 9.603,
+    "prepare_row": 91.99,
+    "decide": 10.475,
+    "apply": 0.632,
+    "wait_fwd": 242.298,
+    "wait_cell": 9.758,
+    "reset": 2.786
+   }
+  },
+  {
+   "rounds": 581,
+   "time_s": {
+    "due": 9.966,
+    "prepare_row": 85.415,
+    "decide": 10.706,
+    "apply": 0.625,
+    "wait_fwd": 248.668,
+    "wait_cell": 9.909,
+    "reset": 2.63
+   }
+  },
+  {
+   "rounds": 582,
+   "time_s": {
+    "due": 10.293,
+    "prepare_row": 91.015,
+    "decide": 11.209,
+    "apply": 0.67,
+    "wait_fwd": 241.512,
+    "wait_cell": 11.785,
+    "reset": 2.54
+   }
+  },
+  {
+   "rounds": 582,
+   "time_s": {
+    "due": 8.527,
+    "prepare_row": 79.334,
+    "decide": 9.075,
+    "apply": 0.575,
+    "wait_fwd": 257.043,
+    "wait_cell": 11.286,
+    "reset": 2.853
+   }
+  },
+  {
+   "rounds": 582,
+   "time_s": {
+    "due": 9.713,
+    "prepare_row": 90.642,
+    "decide": 11.119,
+    "apply": 0.667,
+    "wait_fwd": 244.322,
+    "wait_cell": 8.951,
+    "reset": 2.655
+   }
+  },
+  {
+   "rounds": 582,
+   "time_s": {
+    "due": 10.056,
+    "prepare_row": 89.606,
+    "decide": 10.766,
+    "apply": 0.665,
+    "wait_fwd": 245.861,
+    "wait_cell": 10.672,
+    "reset": 2.711
+   }
+  },
+  {
+   "rounds": 582,
+   "time_s": {
+    "due": 9.732,
+    "prepare_row": 83.576,
+    "decide": 9.774,
+    "apply": 0.619,
+    "wait_fwd": 252.655,
+    "wait_cell": 11.309,
+    "reset": 2.595
+   }
+  },
+  {
+   "rounds": 585,
+   "time_s": {
+    "due": 10.982,
+    "prepare_row": 88.498,
+    "decide": 11.444,
+    "apply": 0.699,
+    "wait_fwd": 246.089,
+    "wait_cell": 10.807,
+    "reset": 2.577
+   }
+  },
+  {
+   "rounds": 585,
+   "time_s": {
+    "due": 9.764,
+    "prepare_row": 94.887,
+    "decide": 10.374,
+    "apply": 0.639,
+    "wait_fwd": 242.607,
+    "wait_cell": 10.882,
+    "reset": 2.254
+   }
+  },
+  {
+   "rounds": 585,
+   "time_s": {
+    "due": 11.204,
+    "prepare_row": 94.082,
+    "decide": 11.118,
+    "apply": 0.674,
+    "wait_fwd": 240.305,
+    "wait_cell": 9.687,
+    "reset": 2.741
+   }
+  },
+  {
+   "rounds": 586,
+   "time_s": {
+    "due": 9.766,
+    "prepare_row": 87.377,
+    "decide": 9.875,
+    "apply": 0.632,
+    "wait_fwd": 250.994,
+    "wait_cell": 11.016,
+    "reset": 2.631
+   }
+  },
+  {
+   "rounds": 586,
+   "time_s": {
+    "due": 9.806,
+    "prepare_row": 94.351,
+    "decide": 10.588,
+    "apply": 0.647,
+    "wait_fwd": 242.408,
+    "wait_cell": 11.274,
+    "reset": 2.513
+   }
+  },
+  {
+   "rounds": 587,
+   "time_s": {
+    "due": 9.855,
+    "prepare_row": 93.016,
+    "decide": 10.727,
+    "apply": 0.65,
+    "wait_fwd": 244.393,
+    "wait_cell": 11.047,
+    "reset": 2.485
+   }
+  },
+  {
+   "rounds": 587,
+   "time_s": {
+    "due": 11.81,
+    "prepare_row": 96.927,
+    "decide": 11.526,
+    "apply": 0.723,
+    "wait_fwd": 238.371,
+    "wait_cell": 9.591,
+    "reset": 2.645
+   }
+  },
+  {
+   "rounds": 587,
+   "time_s": {
+    "due": 10.916,
+    "prepare_row": 100.348,
+    "decide": 11.486,
+    "apply": 0.719,
+    "wait_fwd": 236.375,
+    "wait_cell": 9.616,
+    "reset": 2.56
+   }
+  },
+  {
+   "rounds": 588,
+   "time_s": {
+    "due": 11.166,
+    "prepare_row": 96.517,
+    "decide": 11.361,
+    "apply": 0.687,
+    "wait_fwd": 240.125,
+    "wait_cell": 11.123,
+    "reset": 2.394
+   }
+  },
+  {
+   "rounds": 588,
+   "time_s": {
+    "due": 9.408,
+    "prepare_row": 82.729,
+    "decide": 10.414,
+    "apply": 0.633,
+    "wait_fwd": 257.836,
+    "wait_cell": 9.911,
+    "reset": 2.577
+   }
+  },
+  {
+   "rounds": 588,
+   "time_s": {
+    "due": 10.028,
+    "prepare_row": 95.024,
+    "decide": 11.298,
+    "apply": 0.659,
+    "wait_fwd": 243.659,
+    "wait_cell": 9.188,
+    "reset": 2.688
+   }
+  },
+  {
+   "rounds": 588,
+   "time_s": {
+    "due": 11.903,
+    "prepare_row": 96.1,
+    "decide": 11.473,
+    "apply": 0.708,
+    "wait_fwd": 239.799,
+    "wait_cell": 9.215,
+    "reset": 2.746
+   }
+  },
+  {
+   "rounds": 588,
+   "time_s": {
+    "due": 9.666,
+    "prepare_row": 85.387,
+    "decide": 10.781,
+    "apply": 0.688,
+    "wait_fwd": 253.34,
+    "wait_cell": 11.098,
+    "reset": 2.585
+   }
+  },
+  {
+   "rounds": 588,
+   "time_s": {
+    "due": 11.41,
+    "prepare_row": 93.109,
+    "decide": 12.839,
+    "apply": 0.74,
+    "wait_fwd": 242.54,
+    "wait_cell": 10.096,
+    "reset": 2.546
+   }
+  },
+  {
+   "rounds": 588,
+   "time_s": {
+    "due": 11.14,
+    "prepare_row": 95.381,
+    "decide": 11.525,
+    "apply": 0.728,
+    "wait_fwd": 241.304,
+    "wait_cell": 10.773,
+    "reset": 2.313
+   }
+  },
+  {
+   "rounds": 589,
+   "time_s": {
+    "due": 10.871,
+    "prepare_row": 93.117,
+    "decide": 10.841,
+    "apply": 0.703,
+    "wait_fwd": 246.064,
+    "wait_cell": 11.464,
+    "reset": 2.312
+   }
+  },
+  {
+   "rounds": 589,
+   "time_s": {
+    "due": 10.005,
+    "prepare_row": 89.06,
+    "decide": 11.463,
+    "apply": 0.667,
+    "wait_fwd": 251.233,
+    "wait_cell": 10.805,
+    "reset": 2.562
+   }
+  },
+  {
+   "rounds": 589,
+   "time_s": {
+    "due": 10.146,
+    "prepare_row": 83.814,
+    "decide": 10.452,
+    "apply": 0.669,
+    "wait_fwd": 255.881,
+    "wait_cell": 10.463,
+    "reset": 2.777
+   }
+  },
+  {
+   "rounds": 593,
+   "time_s": {
+    "due": 9.522,
+    "prepare_row": 83.414,
+    "decide": 10.112,
+    "apply": 0.633,
+    "wait_fwd": 258.73,
+    "wait_cell": 10.768,
+    "reset": 2.825
+   }
+  },
+  {
+   "rounds": 593,
+   "time_s": {
+    "due": 10.644,
+    "prepare_row": 90.011,
+    "decide": 11.437,
+    "apply": 0.684,
+    "wait_fwd": 250.943,
+    "wait_cell": 9.807,
+    "reset": 2.584
+   }
+  }
+ ]
+}

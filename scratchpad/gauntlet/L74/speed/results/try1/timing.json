@@ -1,0 +1,36 @@
+{
+ "inclusive_s": {
+  "engine_advance": 0.699,
+  "engine_raw": 0.6,
+  "reset": 0.35,
+  "due": 1.032,
+  "obs_prepare": 4.169,
+  "obs_gen_row": 7.656,
+  "forward": 32.426,
+  "pre": 0.054,
+  "decide_sample": 0.901,
+  "decide_styled": 0.539,
+  "apply": 0.075,
+  "cell_logits": 0.437,
+  "result": 0.089
+ },
+ "calls": {
+  "engine_advance": 1912,
+  "engine_raw": 4463,
+  "reset": 4,
+  "due": 1639,
+  "obs_prepare": 2824,
+  "obs_gen_row": 2824,
+  "forward": 1078,
+  "pre": 2824,
+  "decide_sample": 1942,
+  "decide_styled": 535,
+  "apply": 2824,
+  "cell_logits": 281,
+  "result": 4
+ },
+ "derived_s": {
+  "due_excl": -0.267,
+  "decide_sample_excl_cell": 0.901
+ }
+}

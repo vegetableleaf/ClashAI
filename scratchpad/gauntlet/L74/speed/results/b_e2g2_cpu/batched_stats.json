@@ -1,0 +1,36 @@
+{
+ "forward_s": 36.123,
+ "cell_s": 0.545,
+ "wait_s": 20.963,
+ "rows": 2824,
+ "forwards": 1078,
+ "cell_calls": 261,
+ "rounds": 577,
+ "wall_s": 57.899,
+ "workers": [
+  {
+   "rounds": 380,
+   "time_s": {
+    "due": 1.022,
+    "prepare_row": 11.009,
+    "decide": 1.477,
+    "apply": 0.086,
+    "wait_fwd": 32.572,
+    "wait_cell": 0.302,
+    "reset": 0.189
+   }
+  },
+  {
+   "rounds": 577,
+   "time_s": {
+    "due": 1.404,
+    "prepare_row": 14.085,
+    "decide": 1.946,
+    "apply": 0.115,
+    "wait_fwd": 39.211,
+    "wait_cell": 0.474,
+    "reset": 0.175
+   }
+  }
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "mode": "ref",
+ "E": 8,
+ "G": 4,
+ "matches": 32,
+ "skipped": 0,
+ "build_s": 8.7,
+ "rollout_s": 375.06,
+ "matches_per_h": 307.1,
+ "decisions": 11657,
+ "in_flight": 8,
+ "workers": 4,
+ "device": "cuda",
+ "actor_device": "cpu"
+}
