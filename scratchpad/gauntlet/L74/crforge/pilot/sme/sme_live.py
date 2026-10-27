@@ -151,6 +151,20 @@ def fitting_classes(rec, limit=None):
 
 
 # ---------------------------------------------------------------- analysis
+TORN_CMD = int(os.environ.get('SME_TORN_CMD', '0'))  # round 2.1
+
+
+def cmd_pass_read(d, by, t, me):
+    """A read inside step t, after its command pass and before its regen and spawns (SME.md round 2.1): the board
+    equals sim t, and our elixir is sim t's minus whole elixir exactly, the elixir step t+1 then reaches by its regen
+    alone (178 or 357, one or double rate)."""
+    if not d or any(x[0] != 'S%d_elixir' % me for x in d) or t + 1 not in by:
+        return False
+    r, s = d[0][1], d[0][2]
+    nxt = by[t + 1]['S'][me][0]
+    return (s - r) % 10000 == 0 and 10000 <= s - r <= 100000 and (nxt - r) in (178, 179, 357, 358)
+
+
 def analyse(obs, frames, me, lo=0, hi=10 ** 9):
     by = {o['t']: o for o in obs}
     ts = [t for t in sorted(frames) if lo <= t <= hi and t in by]
@@ -163,6 +177,8 @@ def analyse(obs, frames, me, lo=0, hi=10 ** 9):
             cls[t] = 'exact'
         elif t + 1 in by and not diff(r, sim_canon(by[t + 1], me)):
             cls[t] = 'torn_t1'
+        elif TORN_CMD and cmd_pass_read(d, by, t, me):
+            cls[t] = 'torn_cmd'
         else:
             cls[t] = 'div'
     for i, t in enumerate(ts):  # isolated frames whose every object is held by sim t or t+1

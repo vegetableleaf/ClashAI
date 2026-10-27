@@ -271,6 +271,13 @@ def match(path, bl=None, names=None, cat=None, shims=None, tt=None, uhp=None, by
         row = dict(side=e['side'], kind=e['kind'], card=None if k is None else sides[e['side']]['deck'][k], deck_index=k,
                    name=e['name'], form=e.get('form', 0), run_ticks=[e.get('lo', e['tick']), e.get('hi', e['tick'])],
                    tick=e['tick'], source=e['source'])
+        if e.get('source') == 'spell_seen' and e.get('made') is not None and row['run_ticks'][0] == row['run_ticks'][1]:
+            # crforge casts an area-effect spell in the command's own step (castSpell, opening cleanup), so its run
+            # tick is the area's made tick; seen_casts gives RoyaleSim's made - 1 (Tornado already made: PULL_AREAS lag).
+            # SME.md fix round 1 (A2c): measured on 138 live matches, Lightning/Earthquake/Poison 1 tick late otherwise.
+            row['tick'] = e['made']
+            row['run_ticks'] = [e['made'], e['made']]
+            row['dated'] = 'fx_made'
         if e['kind'] != 'ability':
             row.update(x=e['x'], y=e['y'], tile=[int(e['x']) // 1000, int(e['y']) // 1000], n=e.get('n'))
         if row['run_ticks'][0] == 0:

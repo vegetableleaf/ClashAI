@@ -406,3 +406,55 @@ Sources: `results/live/dossier_body_position_top10.txt` (`dossier.py`, `dossier_
 - Results: `results/live/run5_{summary.json,table.tsv,results.jsonl}` and
   `results/live/dossier_body_position_top10.txt`.
 - Pod: run4 and run5 under `/workspace/pilot/sme_live/`; the fork under `/workspace/crforge_fork`.
+
+## Extractor: round-1 dating in `extract.py` (a)
+- **Change:** `extract.py` now gives a countdown-dated area-effect cast its `made` tick as its run tick
+  (`dated: fx_made`).
+- **Why not `fights.py`:** `fights.seen_casts` is left alone. RoyaleSim's made - 1 is right for RoyaleSim, and the
+  parity harness shares that file.
+- **Extractor test:** `test_extract.py` passes. It gives the same numbers as EXTRACT.md: us 37 matched / 36 in window /
+  31 exact tick; opponent 35 / 35 / 30.
+- **Agreement check (`agree_fx.py`):** on 5 Lightning / Earthquake / Poison / Zap matches, the re-extracted play ticks
+  equal `SME_FX_SHIFT`'s 5 / 5. That includes the gap-dated Zap match, which stays unshifted.
+- **Not re-batched:** the pod's `inputs_rngfree.jsonl` was not rebuilt, so the runs below still apply the shift in
+  `sme_live`.
+
+# Fix loop round 2
+
+| sub-round | mechanism | change | exact apart from torn (unflagged) | exact frames | regressions |
+|---|---|---|---:|---:|---|
+| start (run5) | | | 17 / 109 | 188,233 | |
+| 2.1 (run6) | live own elixir 1 frame early | comparator: a read inside the step's command pass counts as torn (`torn_cmd`) | **24 / 109** | 188,233 | 0 (+7) |
+
+## 2.1: the live own-elixir class is a reader read in the middle of a step (a)
+Source: `elixir_check.py` on run5, unflagged matches.
+
+**What the recorded frame shows at the run tick R of each of our plays:**
+- equal to the sim: 2,303;
+- **lower by exactly the card's cost: 74 (3.1%)** (Skeletons 29, Ice Wizard 25, Knight 18, X-Bow 4, Tesla 3, Log 2);
+- at R-1: equal 2,025, with 6 odd values;
+- at R+1 and R+2: equal 1,910 and 2,319.
+
+**In those 74 frames:**
+- the board equals the sim at R exactly (no unit of the play yet);
+- our elixir is the sim's at R minus the cost, without the step's regen;
+- the next step reaches the sim's value by regen alone.
+
+So the frame was read inside step R: after the command pass took the cost, before the regen and the spawn.
+That is a torn read.
+
+**What it is not:**
+- **Not crforge's elixir model.** The elixir equals the sim at R+1 and R+2. The 10-26 match's live frames are
+  1,983 / 1,983 exact. The replay agrees with crforge.
+- **Not the extractor.** The unit appears at R+1 as the sim says, so R is right.
+- **Not the new-client local apply (160635001's tap + ~10).**
+  - Run - tap lags of the 74 early frames are 21-27 for 71 of them, the same as the 2,303 equal ones (mostly 22-24).
+  - The drop sits on the battle's run tick, not 10 ticks after the tap.
+  - All 138 matches are build 160402012.
+
+**Comparator rule (`SME_TORN_CMD=1`, `cmd_pass_read`):**
+- The frame's only differences are our elixir.
+- The elixir is lower by whole elixir.
+- The next tick reaches the sim by 178 or 357 regen alone.
+
+40 frames are reclassified as `torn_cmd`; 4 own-elixir onsets with other arithmetic stay counted.
